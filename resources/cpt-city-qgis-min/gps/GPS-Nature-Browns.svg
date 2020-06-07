@@ -1,51 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
-  <g>
-    <defs>
-      <linearGradient id="GPS-Nature-Browns" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
-        <stop offset="0.00%" stop-color="rgb(241,221,49)" stop-opacity="1.0000"/>
-        <stop offset="1.58%" stop-color="rgb(224,209,40)" stop-opacity="1.0000"/>
-        <stop offset="3.17%" stop-color="rgb(207,198,30)" stop-opacity="1.0000"/>
-        <stop offset="8.06%" stop-color="rgb(178,150,43)" stop-opacity="1.0000"/>
-        <stop offset="12.95%" stop-color="rgb(149,102,57)" stop-opacity="1.0000"/>
-        <stop offset="16.53%" stop-color="rgb(182,119,56)" stop-opacity="1.0000"/>
-        <stop offset="20.10%" stop-color="rgb(215,135,56)" stop-opacity="1.0000"/>
-        <stop offset="22.53%" stop-color="rgb(163,119,33)" stop-opacity="1.0000"/>
-        <stop offset="24.97%" stop-color="rgb(111,102,10)" stop-opacity="1.0000"/>
-        <stop offset="28.36%" stop-color="rgb(131,100,19)" stop-opacity="1.0000"/>
-        <stop offset="31.76%" stop-color="rgb(151,99,28)" stop-opacity="1.0000"/>
-        <stop offset="33.24%" stop-color="rgb(150,95,39)" stop-opacity="1.0000"/>
-        <stop offset="34.71%" stop-color="rgb(149,91,50)" stop-opacity="1.0000"/>
-        <stop offset="37.33%" stop-color="rgb(161,104,62)" stop-opacity="1.0000"/>
-        <stop offset="39.95%" stop-color="rgb(173,117,73)" stop-opacity="1.0000"/>
-        <stop offset="42.45%" stop-color="rgb(175,136,43)" stop-opacity="1.0000"/>
-        <stop offset="44.95%" stop-color="rgb(178,155,12)" stop-opacity="1.0000"/>
-        <stop offset="48.29%" stop-color="rgb(177,121,22)" stop-opacity="1.0000"/>
-        <stop offset="51.64%" stop-color="rgb(176,87,32)" stop-opacity="1.0000"/>
-        <stop offset="53.17%" stop-color="rgb(165,63,18)" stop-opacity="1.0000"/>
-        <stop offset="54.93%" stop-color="rgb(155,39,5)" stop-opacity="1.0000"/>
-        <stop offset="57.61%" stop-color="rgb(132,71,19)" stop-opacity="1.0000"/>
-        <stop offset="58.59%" stop-color="rgb(109,103,34)" stop-opacity="1.0000"/>
-        <stop offset="60.32%" stop-color="rgb(97,72,33)" stop-opacity="1.0000"/>
-        <stop offset="63.03%" stop-color="rgb(85,40,33)" stop-opacity="1.0000"/>
-        <stop offset="65.62%" stop-color="rgb(76,59,34)" stop-opacity="1.0000"/>
-        <stop offset="68.21%" stop-color="rgb(66,77,36)" stop-opacity="1.0000"/>
-        <stop offset="70.77%" stop-color="rgb(111,58,20)" stop-opacity="1.0000"/>
-        <stop offset="72.59%" stop-color="rgb(155,39,5)" stop-opacity="1.0000"/>
-        <stop offset="74.30%" stop-color="rgb(121,50,16)" stop-opacity="1.0000"/>
-        <stop offset="78.56%" stop-color="rgb(87,61,27)" stop-opacity="1.0000"/>
-        <stop offset="81.12%" stop-color="rgb(83,39,14)" stop-opacity="1.0000"/>
-        <stop offset="83.68%" stop-color="rgb(80,17,2)" stop-opacity="1.0000"/>
-        <stop offset="87.52%" stop-color="rgb(104,29,4)" stop-opacity="1.0000"/>
-        <stop offset="91.35%" stop-color="rgb(128,41,5)" stop-opacity="1.0000"/>
-        <stop offset="95.68%" stop-color="rgb(64,26,3)" stop-opacity="1.0000"/>
-        <stop offset="100.00%" stop-color="rgb(0,10,0)" stop-opacity="1.0000"/>
-      </linearGradient>
-    </defs>
-    <rect fill="url(#GPS-Nature-Browns)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
-  </g>
-  <metadata>
-    <creator name="cptutils" version="1.46"/>
-    <created date="Wed Aug 15 23:33:24 2012"/>
-  </metadata>
+<svg width="300px" height="45px" version="1.1" viewBox="0 0 300 45" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="GPS-Nature-Browns">
+   <stop stop-color="#f1dd31" offset="0"/>
+   <stop stop-color="#e0d128" offset=".0158"/>
+   <stop stop-color="#cfc61e" offset=".0317"/>
+   <stop stop-color="#b2962b" offset=".0806"/>
+   <stop stop-color="#956639" offset=".1295"/>
+   <stop stop-color="#b67738" offset=".1653"/>
+   <stop stop-color="#d78738" offset=".201"/>
+   <stop stop-color="#a37721" offset=".2253"/>
+   <stop stop-color="#6f660a" offset=".2497"/>
+   <stop stop-color="#836413" offset=".2836"/>
+   <stop stop-color="#97631c" offset=".3176"/>
+   <stop stop-color="#965f27" offset=".3324"/>
+   <stop stop-color="#955b32" offset=".3471"/>
+   <stop stop-color="#a1683e" offset=".3733"/>
+   <stop stop-color="#ad7549" offset=".3995"/>
+   <stop stop-color="#af882b" offset=".4245"/>
+   <stop stop-color="#b29b0c" offset=".4495"/>
+   <stop stop-color="#b17916" offset=".4829"/>
+   <stop stop-color="#b05720" offset=".5164"/>
+   <stop stop-color="#a53f12" offset=".5317"/>
+   <stop stop-color="#9b2705" offset=".5493"/>
+   <stop stop-color="#844713" offset=".5761"/>
+   <stop stop-color="#6d6722" offset=".5859"/>
+   <stop stop-color="#614821" offset=".6032"/>
+   <stop stop-color="#552821" offset=".6303"/>
+   <stop stop-color="#4c3b22" offset=".6562"/>
+   <stop stop-color="#424d24" offset=".6821"/>
+   <stop stop-color="#6f3a14" offset=".7077"/>
+   <stop stop-color="#9b2705" offset=".7259"/>
+   <stop stop-color="#793210" offset=".743"/>
+   <stop stop-color="#573d1b" offset=".7856"/>
+   <stop stop-color="#53270e" offset=".8112"/>
+   <stop stop-color="#501102" offset=".8368"/>
+   <stop stop-color="#681d04" offset=".8752"/>
+   <stop stop-color="#802905" offset=".9135"/>
+   <stop stop-color="#401a03" offset=".9568"/>
+   <stop stop-color="#000a00" offset="1"/>
+  </linearGradient>
+ </defs>
+ <rect x="4" y="4" width="292" height="37" fill="url(#GPS-Nature-Browns)" stroke="#000"/>
+ <metadata>
+  <creator name="cptutils" version="1.46"/>
+  <created date="Wed Aug 15 23:33:24 2012"/>
+ </metadata>
 </svg>

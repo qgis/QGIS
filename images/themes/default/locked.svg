@@ -1,7 +1,8 @@
-<svg enable-background="new 0 0 24 24" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">
-<g stroke-linecap="square" transform="translate(0 -16)">
-<path d="m4.4067695 22.865202c.118637-3.818452.9490726-5.54713 3.8198656-5.314294 2.8704699.232276 3.5159769 2.078983 3.3968089 5.897741" fill="none" stroke="#888a85" stroke-linejoin="round" stroke-width="3"/>
-<path d="m4.3924625 22.865202c.118637-3.818452.9490726-5.591324 3.8198656-5.358488 2.8704699.232276 3.5159769 2.123177 3.3968089 5.941935" fill="none" stroke="#eeeeec" stroke-linejoin="round"/>
-<rect fill="#f1db1e" height="7" rx=".84615386" ry="1" stroke="#c4a000" stroke-width=".99999994" width="11" x="2.5" y="23.5"/>
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16" height="16" enable-background="new 0 0 24 24" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0 -16)" stroke-linecap="square">
+  <path d="m4.4068 22.865c0.11864-3.8185 0.94907-5.5471 3.8199-5.3143 2.8705 0.23228 3.516 2.079 3.3968 5.8977" fill="none" stroke="#888a85" stroke-linejoin="round" stroke-width="3"/>
+  <path d="m4.3925 22.865c0.11864-3.8185 0.94907-5.5913 3.8199-5.3585 2.8705 0.23228 3.516 2.1232 3.3968 5.9419" fill="none" stroke="#eeeeec" stroke-linejoin="round"/>
+  <rect x="2.5" y="23.5" width="11" height="7" rx=".84615" ry="1" fill="#f1db1e" stroke="#c4a000"/>
+ </g>
 </svg>

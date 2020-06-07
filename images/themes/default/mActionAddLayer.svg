@@ -1,11 +1,12 @@
-<svg height="16" width="16" xmlns="http://www.w3.org/2000/svg">
-<g transform="translate(0 -16)">
-<path d="m1.500134 17.500134h10.999732v10.999732h-10.999732z" fill="#eeeeec" stroke="#888a85" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.00026798"/>
-<rect fill="#5a8c5a" height="5.99999" rx="1.206892" ry="1.2068919" width="5.99999" x="9.0000048" y="26.000006"/>
-<g style="fill:#fff;fill-rule:evenodd;stroke:#fff;stroke-width:.99097151;stroke-linecap:round;stroke-linejoin:round" transform="translate(-7.0000007 1.0109993)">
-<path d="m17.513543 28l2.972915 0" overflow="visible"/>
-<path d="m19.000001 29.486458l0-2.972915" overflow="visible"/>
-</g>
-<path d="m10 28.499998h4c0 0 0 0 0-.75 0-.75-.25-.75-2-.75-1.75 0-2 0-2 .75 0 .75 0 .75 0 .75z" fill="#fcffff" fill-rule="evenodd" opacity=".3"/>
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0 -16)">
+  <path d="m1.5001 17.5h11v11h-11z" fill="#eeeeec" stroke="#888a85" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.0003"/>
+  <rect x="9" y="26" width="6" height="6" rx="1.2069" ry="1.2069" fill="#5a8c5a"/>
+  <g transform="translate(-7 1.011)" fill="#fff" fill-rule="evenodd" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width=".99097">
+   <path d="m17.514 28h2.9729" overflow="visible"/>
+   <path d="m19 29.486v-2.9729" overflow="visible"/>
+  </g>
+  <path d="m10 28.5h4v-0.75c0-0.75-0.25-0.75-2-0.75s-2 0-2 0.75v0.75z" fill="#fcffff" fill-rule="evenodd" opacity=".3"/>
+ </g>
 </svg>

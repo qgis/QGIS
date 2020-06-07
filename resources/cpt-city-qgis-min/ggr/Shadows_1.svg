@@ -1,36 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
-  <g>
-    <defs>
-      <linearGradient id="Shadows 1" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
-        <stop offset="0.00%" stop-color="rgb(29,29,29)" stop-opacity="1.0000"/>
-        <stop offset="22.16%" stop-color="rgb(97,54,28)" stop-opacity="1.0000"/>
-        <stop offset="34.69%" stop-color="rgb(164,79,27)" stop-opacity="1.0000"/>
-        <stop offset="44.94%" stop-color="rgb(193,144,118)" stop-opacity="1.0000"/>
-        <stop offset="53.86%" stop-color="rgb(222,209,209)" stop-opacity="1.0000"/>
-        <stop offset="61.77%" stop-color="rgb(154,121,118)" stop-opacity="1.0000"/>
-        <stop offset="65.28%" stop-color="rgb(87,33,27)" stop-opacity="1.0000"/>
-        <stop offset="66.24%" stop-color="rgb(87,33,27)" stop-opacity="1.0000"/>
-        <stop offset="67.20%" stop-color="rgb(88,34,28)" stop-opacity="1.0000"/>
-        <stop offset="68.16%" stop-color="rgb(91,35,28)" stop-opacity="1.0000"/>
-        <stop offset="69.13%" stop-color="rgb(95,38,29)" stop-opacity="1.0000"/>
-        <stop offset="70.09%" stop-color="rgb(102,42,30)" stop-opacity="1.0000"/>
-        <stop offset="71.05%" stop-color="rgb(111,47,31)" stop-opacity="1.0000"/>
-        <stop offset="72.02%" stop-color="rgb(122,54,33)" stop-opacity="1.0000"/>
-        <stop offset="72.98%" stop-color="rgb(136,62,36)" stop-opacity="1.0000"/>
-        <stop offset="73.94%" stop-color="rgb(153,72,39)" stop-opacity="1.0000"/>
-        <stop offset="74.91%" stop-color="rgb(173,84,42)" stop-opacity="1.0000"/>
-        <stop offset="75.87%" stop-color="rgb(197,99,46)" stop-opacity="1.0000"/>
-        <stop offset="76.83%" stop-color="rgb(224,115,51)" stop-opacity="1.0000"/>
-        <stop offset="77.80%" stop-color="rgb(255,133,56)" stop-opacity="1.0000"/>
-        <stop offset="85.47%" stop-color="rgb(154,82,34)" stop-opacity="1.0000"/>
-        <stop offset="100.00%" stop-color="rgb(52,31,12)" stop-opacity="1.0000"/>
-      </linearGradient>
-    </defs>
-    <rect fill="url(#Shadows 1)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
-  </g>
-  <metadata>
-    <creator name="cptutils" version="1.46"/>
-    <created date="Wed Aug 15 23:33:20 2012"/>
-  </metadata>
+<svg width="300px" height="45px" version="1.1" viewBox="0 0 300 45" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="Shadows 1">
+   <stop stop-color="#1d1d1d" offset="0"/>
+   <stop stop-color="#61361c" offset=".2216"/>
+   <stop stop-color="#a44f1b" offset=".3469"/>
+   <stop stop-color="#c19076" offset=".4494"/>
+   <stop stop-color="#ded1d1" offset=".5386"/>
+   <stop stop-color="#9a7976" offset=".6177"/>
+   <stop stop-color="#57211b" offset=".6528"/>
+   <stop stop-color="#57211b" offset=".6624"/>
+   <stop stop-color="#58221c" offset=".672"/>
+   <stop stop-color="#5b231c" offset=".6816"/>
+   <stop stop-color="#5f261d" offset=".6913"/>
+   <stop stop-color="#662a1e" offset=".7009"/>
+   <stop stop-color="#6f2f1f" offset=".7105"/>
+   <stop stop-color="#7a3621" offset=".7202"/>
+   <stop stop-color="#883e24" offset=".7298"/>
+   <stop stop-color="#994827" offset=".7394"/>
+   <stop stop-color="#ad542a" offset=".7491"/>
+   <stop stop-color="#c5632e" offset=".7587"/>
+   <stop stop-color="#e07333" offset=".7683"/>
+   <stop stop-color="#ff8538" offset=".778"/>
+   <stop stop-color="#9a5222" offset=".8547"/>
+   <stop stop-color="#341f0c" offset="1"/>
+  </linearGradient>
+ </defs>
+ <rect x="4" y="4" width="292" height="37" fill="url(#Shadows 1)" stroke="#000"/>
+ <metadata>
+  <creator name="cptutils" version="1.46"/>
+  <created date="Wed Aug 15 23:33:20 2012"/>
+ </metadata>
 </svg>

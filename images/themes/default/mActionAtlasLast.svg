@@ -1,6 +1,7 @@
-<svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
-<g fill="#6d97c4" stroke="#415a75" stroke-linejoin="round" transform="translate(0 -8)">
-<path d="m18.750004 19.999999l-9.6000028-9.499999v6.333342h-6.400002v6.333322h6.400002v6.333336z" fill-rule="evenodd"/>
-<path d="m19.25 10h2v20h-2z" stroke-width=".99999982"/>
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0 -8)" fill="#6d97c4" stroke="#415a75" stroke-linejoin="round">
+  <path d="m18.75 20-9.6-9.5v6.3333h-6.4v6.3333h6.4v6.3333z" fill-rule="evenodd"/>
+  <path d="m19.25 10h2v20h-2z"/>
+ </g>
 </svg>

@@ -1,9 +1,10 @@
-<svg viewBox="0 0 5.3636333 16.15386" xmlns="http://www.w3.org/2000/svg">
-<g transform="translate(-8.8863667 .43510929)">
-<path d="m11.375977 2.4328575v14.3750005-12.781251" fill="none" stroke="param(outline)" stroke-width=".25000001" transform="translate(-1.6384771 -1.1017834)"/>
-<path d="m9.7444051 15.665089l4.2752529-11.7461562" fill="none" stroke="param(outline)" stroke-width=".25"/>
-<path d="m14.013867 3.9912304l.1875.765625" fill="none" stroke="param(outline)" stroke-width=".25"/>
-<path d="m2.784233 10.834283l-.9525351.331101-.020546 1.00823-.6092452-.803599-.96523331.29202.5760008-.827752-.5760008-.827752.96523331.292019.6092452-.8035986.020546 1.0082306z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(fill)" stroke-opacity="param(fill-opacity)" stroke-linecap="square" stroke-width=".25" transform="matrix(0 -.5 .5 0 4.3238667 1.1430154)"/>
-<path d="m19.234375 3.6516075a.796875.828125 0 0 1  .285574.055004" fill="none" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-dasharray=".020174 .010087" stroke-width=".010087" transform="matrix(14.870626 0 0 14.870626 -276.30344 -51.140509)"/>
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 5.3636 16.154" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(-8.8864 .43511)">
+  <path transform="translate(-1.6385 -1.1018)" d="m11.376 2.4329v14.375-12.781" fill="none" stroke="param(outline)" stroke-width=".25"/>
+  <path d="m9.7444 15.665 4.2753-11.746" fill="none" stroke="param(outline)" stroke-width=".25"/>
+  <path d="m14.014 3.9912 0.1875 0.76562" fill="none" stroke="param(outline)" stroke-width=".25"/>
+  <path transform="matrix(0 -.5 .5 0 4.3239 1.143)" d="m2.7842 10.834-0.95254 0.3311-0.020546 1.0082-0.60925-0.8036-0.96523 0.29202 0.576-0.82775-0.576-0.82775 0.96523 0.29202 0.60925-0.8036 0.020546 1.0082z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(fill)" stroke-linecap="square" stroke-opacity="param(fill-opacity)" stroke-width=".25"/>
+  <path transform="matrix(14.871 0 0 14.871 -276.3 -51.141)" d="m19.234 3.6516a0.79688 0.82812 0 0 1 0.28557 0.055004" fill="none" stroke="param(outline)" stroke-dasharray=".020174 .010087" stroke-opacity="param(outline-opacity)" stroke-width=".010087"/>
+ </g>
 </svg>

@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
-  <g>
-    <defs>
-      <linearGradient id="G SeaDreams 06" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
-        <stop offset="0.00%" stop-color="rgb(248,232,230)" stop-opacity="1.0000"/>
-        <stop offset="17.99%" stop-color="rgb(243,222,219)" stop-opacity="1.0000"/>
-        <stop offset="70.00%" stop-color="rgb(133,228,227)" stop-opacity="1.0000"/>
-        <stop offset="95.00%" stop-color="rgb(38,164,218)" stop-opacity="1.0000"/>
-        <stop offset="100.00%" stop-color="rgb(38,164,218)" stop-opacity="1.0000"/>
-      </linearGradient>
-    </defs>
-    <rect fill="url(#G SeaDreams 06)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
-  </g>
-  <metadata>
-    <creator name="cptutils" version="1.46"/>
-    <created date="Wed Aug 15 23:39:37 2012"/>
-  </metadata>
+<svg width="300px" height="45px" version="1.1" viewBox="0 0 300 45" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="G SeaDreams 06">
+   <stop stop-color="#f8e8e6" offset="0"/>
+   <stop stop-color="#f3dedb" offset=".1799"/>
+   <stop stop-color="#85e4e3" offset=".7"/>
+   <stop stop-color="#26a4da" offset=".95"/>
+   <stop stop-color="#26a4da" offset="1"/>
+  </linearGradient>
+ </defs>
+ <rect x="4" y="4" width="292" height="37" fill="url(#G SeaDreams 06)" stroke="#000"/>
+ <metadata>
+  <creator name="cptutils" version="1.46"/>
+  <created date="Wed Aug 15 23:39:37 2012"/>
+ </metadata>
 </svg>

@@ -1,20 +1,21 @@
-<svg height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<linearGradient id="a" gradientTransform="matrix(.91739254 0 0 1.0343191 1.182132 -33.908714)" gradientUnits="userSpaceOnUse" x1="3" x2="13" y1="1039.3622" y2="1039.3622">
-<stop offset="0" stop-color="#1e0000"/>
-<stop offset="1" stop-color="#f00"/>
-</linearGradient>
-<linearGradient id="b" gradientTransform="matrix(.91739254 0 0 1.0343191 .66085998 -31.16999)" gradientUnits="userSpaceOnUse" x1="3" x2="13" y1="1039.3622" y2="1039.3622">
-<stop offset="0" stop-color="#001e00"/>
-<stop offset="1" stop-color="#0f0"/>
-</linearGradient>
-<linearGradient id="c" gradientTransform="matrix(.91739254 0 0 1.3790921 .66085998 -386.0143)" gradientUnits="userSpaceOnUse" x1="3" x2="13" y1="1039.3622" y2="1039.3622">
-<stop offset="0"/>
-<stop offset="1" stop-color="#00f"/>
-</linearGradient>
-<g fill-rule="evenodd" transform="translate(0 -1036.3622)">
-<path d="m2.5 1038.8622h11v11h-11z" overflow="visible" stroke="#5a5a5a"/>
-<path d="m3 1039.3622h10v3h-10z" fill="url(#a)" overflow="visible"/>
-<path d="m3 1042.3622h10v3h-10z" fill="url(#b)" overflow="visible"/>
-<path d="m3 1045.3622h10v4h-10z" fill="url(#c)" overflow="visible"/>
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+ <linearGradient id="a" x1="3" x2="13" y1="1039.4" y2="1039.4" gradientTransform="matrix(.91739 0 0 1.0343 1.1821 -33.909)" gradientUnits="userSpaceOnUse">
+  <stop stop-color="#1e0000" offset="0"/>
+  <stop stop-color="#f00" offset="1"/>
+ </linearGradient>
+ <linearGradient id="b" x1="3" x2="13" y1="1039.4" y2="1039.4" gradientTransform="matrix(.91739 0 0 1.0343 .66086 -31.17)" gradientUnits="userSpaceOnUse">
+  <stop stop-color="#001e00" offset="0"/>
+  <stop stop-color="#0f0" offset="1"/>
+ </linearGradient>
+ <linearGradient id="c" x1="3" x2="13" y1="1039.4" y2="1039.4" gradientTransform="matrix(.91739 0 0 1.3791 .66086 -386.01)" gradientUnits="userSpaceOnUse">
+  <stop offset="0"/>
+  <stop stop-color="#00f" offset="1"/>
+ </linearGradient>
+ <g transform="translate(0 -1036.4)" fill-rule="evenodd">
+  <path d="m2.5 1038.9h11v11h-11z" overflow="visible" stroke="#5a5a5a"/>
+  <path d="m3 1039.4h10v3h-10z" fill="url(#a)" overflow="visible"/>
+  <path d="m3 1042.4h10v3h-10z" fill="url(#b)" overflow="visible"/>
+  <path d="m3 1045.4h10v4h-10z" fill="url(#c)" overflow="visible"/>
+ </g>
 </svg>

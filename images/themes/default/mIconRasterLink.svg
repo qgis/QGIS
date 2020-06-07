@@ -1,12 +1,13 @@
-<svg height="19.2pt" width="19.2pt" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#6e97c4" height="6.3999992pt" transform="translate(8 -.0000005)" width="6.3999992pt"/>
-<rect fill="#2b3b4d" height="6.3999992pt" transform="translate(16 -.0000005)" width="6.3999992pt"/>
-<rect fill="#2b3b4d" height="6.3999992pt" transform="translate(8 8)" width="6.3999992pt"/>
-<rect fill="#6d97c4" height="6.3999992pt" transform="translate(16 8)" width="6.3999992pt"/>
-<rect fill="#2d3e4d" height="6.3999992pt" transform="translate(-.00000048 -.0000005)" width="6.3999992pt"/>
-<rect fill="#6d97c4" height="6.3999992pt" transform="translate(-.00000048 8)" width="6.3999992pt"/>
-<rect fill="#6d97c4" height="6.3999992pt" transform="translate(8 16)" width="6.3999992pt"/>
-<rect fill="#2b3b4d" height="6.3999992pt" transform="translate(-.00000048 16)" width="6.3999992pt"/>
-<rect fill="none" height="19.1999984pt" transform="translate(-.0553638 -.0553638)" width="19.1999984pt"/>
-<path d="m9.77492 9.84033c-2.23872-3.63709-7.12176-6.74433-9.77492-8.15773.00446701-.00224.030774-.02525.0352421-.0275 3.1715779-1.1685 9.9674579-2.149377 13.8444579 3.01327 1.0122-1.36623 2.7502-2.99766 4.5944-4.66837-.0937 4.00446-.5082 7.86343 1.2932 14.0797-7.4407-1.205-11.45305 2.4158-14.64231 2.2981.83446-.988 1.85277-3.1084 4.64993-6.53747z" fill-rule="evenodd" stroke="#fff" stroke-linecap="square" stroke-miterlimit="2" stroke-width="1.89106627" transform="matrix(.228843 -.973463 .973463 .228843 2.81876 21.8383)"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="19.2pt" height="19.2pt" xmlns="http://www.w3.org/2000/svg">
+ <rect transform="translate(8 -5e-7)" width="6.4pt" height="6.4pt" fill="#6e97c4"/>
+ <rect transform="translate(16 -5e-7)" width="6.4pt" height="6.4pt" fill="#2b3b4d"/>
+ <rect transform="translate(8 8)" width="6.4pt" height="6.4pt" fill="#2b3b4d"/>
+ <rect transform="translate(16 8)" width="6.4pt" height="6.4pt" fill="#6d97c4"/>
+ <rect transform="translate(-4.8e-7 -5e-7)" width="6.4pt" height="6.4pt" fill="#2d3e4d"/>
+ <rect transform="translate(-4.8e-7 8)" width="6.4pt" height="6.4pt" fill="#6d97c4"/>
+ <rect transform="translate(8 16)" width="6.4pt" height="6.4pt" fill="#6d97c4"/>
+ <rect transform="translate(-4.8e-7 16)" width="6.4pt" height="6.4pt" fill="#2b3b4d"/>
+ <rect transform="translate(-.055364 -.055364)" width="19.2pt" height="19.2pt" fill="none"/>
+ <path transform="matrix(.22884 -.97346 .97346 .22884 2.8188 21.838)" d="m9.7749 9.8403c-2.2387-3.6371-7.1218-6.7443-9.7749-8.1577 0.004467-0.00224 0.030774-0.02525 0.035242-0.0275 3.1716-1.1685 9.9675-2.1494 13.844 3.0133 1.0122-1.3662 2.7502-2.9977 4.5944-4.6684-0.0937 4.0045-0.5082 7.8634 1.2932 14.08-7.4407-1.205-11.453 2.4158-14.642 2.2981 0.83446-0.988 1.8528-3.1084 4.6499-6.5375z" fill-rule="evenodd" stroke="#fff" stroke-linecap="square" stroke-miterlimit="2" stroke-width="1.8911"/>
 </svg>

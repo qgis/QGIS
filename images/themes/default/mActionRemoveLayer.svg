@@ -1,8 +1,9 @@
-<svg height="16" width="16" xmlns="http://www.w3.org/2000/svg">
-<g transform="translate(0 -16)">
-<path d="m1.500134 17.500134h10.999732v10.999732h-10.999732z" fill="#eeeeec" stroke="#888a85" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.00026798"/>
-<rect fill="#f05050" height="4.99999" rx="1.2068923" ry="1.005743" width="5.9999914" x="9.0000038" y="26.00001"/>
-<path d="m10 28.5h4c0 0 0 0 0-.749999 0-.750001-.249999-.750001-2.000001-.750001-1.75 0-1.999999 0-1.999999.750001 0 .749999 0 .749999 0 .749999z" fill="#fcffff" fill-rule="evenodd" opacity=".3"/>
-<path d="m10.528783 28.49995h2.942434" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1.02113414"/>
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0 -16)">
+  <path d="m1.5001 17.5h11v11h-11z" fill="#eeeeec" stroke="#888a85" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.0003"/>
+  <rect x="9" y="26" width="6" height="5" rx="1.2069" ry="1.0057" fill="#f05050"/>
+  <path d="m10 28.5h4v-0.75c0-0.75-0.25-0.75-2-0.75-1.75 0-2 0-2 0.75v0.75z" fill="#fcffff" fill-rule="evenodd" opacity=".3"/>
+  <path d="m10.529 28.5h2.9424" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1.0211"/>
+ </g>
 </svg>

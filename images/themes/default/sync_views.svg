@@ -1,12 +1,13 @@
-<svg height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<linearGradient id="a">
-<stop offset="0" stop-color="#00f"/>
-<stop offset="1" stop-color="#0000a9"/>
-</linearGradient>
-<radialGradient id="b" cx="7.9999766" cy="1040.8622" gradientTransform="matrix(1 0 0 .49999621 0 520.43504)" gradientUnits="userSpaceOnUse" r="6.9999766" xlink:href="#a"/>
-<radialGradient id="c" cx="7.9999766" cy="1040.8622" gradientTransform="matrix(-1 0 0 .49999621 16 527.43502)" gradientUnits="userSpaceOnUse" r="6.9999766" xlink:href="#a"/>
-<g fill-rule="evenodd" stroke="#0000a9" stroke-linecap="round" stroke-linejoin="round" stroke-width=".5" transform="translate(0 -1036.3622)">
-<path d="m1.5 1040.8622v1h8v2l5-3-5-3v2h-8z" fill="url(#b)"/>
-<path d="m14.5 1047.8622v1h-7.9999996v2l-5-3 5-3v2h7.9999996z" fill="url(#c)"/>
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <linearGradient id="a">
+  <stop stop-color="#00f" offset="0"/>
+  <stop stop-color="#0000a9" offset="1"/>
+ </linearGradient>
+ <radialGradient id="b" cx="8" cy="1040.9" r="7" gradientTransform="matrix(1 0 0 .5 0 520.44)" gradientUnits="userSpaceOnUse" xlink:href="#a"/>
+ <radialGradient id="c" cx="8" cy="1040.9" r="7" gradientTransform="matrix(-1 0 0 .5 16 527.44)" gradientUnits="userSpaceOnUse" xlink:href="#a"/>
+ <g transform="translate(0 -1036.4)" fill-rule="evenodd" stroke="#0000a9" stroke-linecap="round" stroke-linejoin="round" stroke-width=".5">
+  <path d="m1.5 1040.9v1h8v2l5-3-5-3v2h-8z" fill="url(#b)"/>
+  <path d="m14.5 1047.9v1h-8v2l-5-3 5-3v2h8z" fill="url(#c)"/>
+ </g>
 </svg>

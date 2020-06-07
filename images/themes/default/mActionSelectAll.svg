@@ -1,7 +1,8 @@
-<svg enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-<g fill="#fce94f" stroke="#c4a000" stroke-linecap="round" transform="translate(0 -8)">
-<path d="m2.496207 17.496208h19.007586v5.007586h-19.007586z" overflow="visible" stroke-width=".99241388"/>
-<path d="m2.5384617 10.538462h18.923077v4.9230766h-18.923077z" overflow="visible" stroke-width="1.07692313"/>
-<path d="m2.5384617 24.538462h18.923077v4.9230766h-18.923077z" overflow="visible" stroke-width="1.07692313"/>
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24" height="24" enable-background="new 0 0 24 24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0 -8)" fill="#fce94f" stroke="#c4a000" stroke-linecap="round">
+  <path d="m2.4962 17.496h19.008v5.0076h-19.008z" overflow="visible" stroke-width=".99241"/>
+  <path d="m2.5385 10.538h18.923v4.9231h-18.923z" overflow="visible" stroke-width="1.0769"/>
+  <path d="m2.5385 24.538h18.923v4.9231h-18.923z" overflow="visible" stroke-width="1.0769"/>
+ </g>
 </svg>

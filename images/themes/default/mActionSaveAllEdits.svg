@@ -1,24 +1,25 @@
-<svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
-<g transform="translate(0 -8)">
-<g transform="matrix(.94107443 0 0 .93686547 -3.5866537 2.6048543)">
-<rect height="20" rx="1.4775906" style="fill:#82a0b4;fill-rule:evenodd;stroke:#3c5a6e;stroke-linecap:round;stroke-linejoin:round;overflow:visible" width="20" x="5.5" y="7.5"/>
-<path d="m8.5 8.5h14v8h-14z" style="fill:#e6e6e6;fill-rule:evenodd;stroke:#969696;stroke-linecap:round;stroke-linejoin:round;overflow:visible"/>
-<path d="m10.5 10.5h10" fill="none" stroke="#969696"/>
-<path d="m10.5 12.5h10" fill="none" stroke="#969696"/>
-<path d="m10.5 14.5h10" fill="none" stroke="#969696"/>
-<path d="m9.5 20.5h12v7h-12z" style="fill:#e6e6e6;fill-rule:evenodd;stroke:#969696;stroke-linecap:round;stroke-linejoin:round;overflow:visible"/>
-<path d="m10.5 21.5h4v5h-4z" style="fill:#82a0b4;fill-rule:evenodd;stroke:#e6e6e6;stroke-linecap:round;stroke-linejoin:round;overflow:visible"/>
-</g>
-<g enable-background="new" stroke-dashoffset=".5" stroke-linejoin="round" transform="matrix(.56625909 .32692978 -.32692978 .56625909 15.571125 13.856155)">
-<path d="m8.0961023 18.028419l5.9999997 0-3.12491 6.990956-2.8750897-6.990956z" fill="#505050" overflow="visible" stroke="#505050" stroke-linecap="round" stroke-width=".75"/>
-<path d="m8.0961004 1.0284199l6.0000006-.000001.000001 17.0000001-5.9999997 0-.0000019-16.9999991" fill="#de6b37" overflow="visible" stroke="#c04317" stroke-linecap="round" stroke-width=".74999994"/>
-<path d="m10.576704 2.1008083l.000001 15.7948847" fill="none" opacity=".5" overflow="visible" stroke="#f8b008" stroke-width="2.10598469"/>
-<path d="m12.686221 2.0551469l-.080979 16.1486211" fill-opacity=".58823529" opacity=".25" overflow="visible" stroke="#632923" stroke-width="2.15934753"/>
-<path d="m12.096101 2.0284193l.000001 15.9999997" style="opacity:.5;fill:#fc894f;stroke:#a7481e;stroke-width:.75000006;stroke-linecap:round;overflow:visible"/>
-<path d="m11.463292 23.228968l1.996957-4.943779-1.996957-.000001 0 4.94378z" fill="#969696" overflow="visible" stroke="#969696" stroke-linecap="square" stroke-width=".49999997"/>
-<path d="m9.5961007 2.0284198l.0000015 15.9999982" style="opacity:.5;fill:#db562d;stroke:#9b3819;stroke-width:.74999994;stroke-linecap:round;overflow:visible"/>
-<path d="m7.8653316-.08727704h6.4615374v2.1791313h-6.4615374z" fill="#e6e6e6" overflow="visible" stroke="#969696" stroke-linecap="round" stroke-width=".5"/>
-<path d="m10.728912 23.38728l-1.9969556-5.102091 1.9969556 0 0 5.102091z" fill="#e6e6e6" overflow="visible" stroke="#e6e6e6" stroke-linecap="square" stroke-width=".49999997"/>
-</g>
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0 -8)">
+  <g transform="matrix(.94107 0 0 .93687 -3.5867 2.6049)">
+   <rect x="5.5" y="7.5" width="20" height="20" rx="1.4776" fill="#82a0b4" fill-rule="evenodd" stroke="#3c5a6e" stroke-linecap="round" stroke-linejoin="round"/>
+   <path d="m8.5 8.5h14v8h-14z" fill="#e6e6e6" fill-rule="evenodd" stroke="#969696" stroke-linecap="round" stroke-linejoin="round"/>
+   <path d="m10.5 10.5h10" fill="none" stroke="#969696"/>
+   <path d="m10.5 12.5h10" fill="none" stroke="#969696"/>
+   <path d="m10.5 14.5h10" fill="none" stroke="#969696"/>
+   <path d="m9.5 20.5h12v7h-12z" fill="#e6e6e6" fill-rule="evenodd" stroke="#969696" stroke-linecap="round" stroke-linejoin="round"/>
+   <path d="m10.5 21.5h4v5h-4z" fill="#82a0b4" fill-rule="evenodd" stroke="#e6e6e6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g transform="matrix(.56626 .32693 -.32693 .56626 15.571 13.856)" enable-background="new" stroke-dashoffset=".5" stroke-linejoin="round">
+   <path d="m8.0961 18.028h6l-3.1249 6.991-2.8751-6.991z" fill="#505050" overflow="visible" stroke="#505050" stroke-linecap="round" stroke-width=".75"/>
+   <path d="m8.0961 1.0284 6-1e-6 1e-6 17h-6l-1.9e-6 -17" fill="#de6b37" overflow="visible" stroke="#c04317" stroke-linecap="round" stroke-width=".75"/>
+   <path d="m10.577 2.1008 1e-6 15.795" fill="none" opacity=".5" overflow="visible" stroke="#f8b008" stroke-width="2.106"/>
+   <path d="m12.686 2.0551-0.080979 16.149" fill-opacity=".58824" opacity=".25" overflow="visible" stroke="#632923" stroke-width="2.1593"/>
+   <path d="m12.096 2.0284 1e-6 16" fill="#fc894f" opacity=".5" stroke="#a7481e" stroke-linecap="round" stroke-width=".75"/>
+   <path d="m11.463 23.229 1.997-4.9438-1.997-1e-6v4.9438z" fill="#969696" overflow="visible" stroke="#969696" stroke-linecap="square" stroke-width=".5"/>
+   <path d="m9.5961 2.0284 1.5e-6 16" fill="#db562d" opacity=".5" stroke="#9b3819" stroke-linecap="round" stroke-width=".75"/>
+   <path d="m7.8653-0.087277h6.4615v2.1791h-6.4615z" fill="#e6e6e6" overflow="visible" stroke="#969696" stroke-linecap="round" stroke-width=".5"/>
+   <path d="m10.729 23.387-1.997-5.1021h1.997v5.1021z" fill="#e6e6e6" overflow="visible" stroke="#e6e6e6" stroke-linecap="square" stroke-width=".5"/>
+  </g>
+ </g>
 </svg>

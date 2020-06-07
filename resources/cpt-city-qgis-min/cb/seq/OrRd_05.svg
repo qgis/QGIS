@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
-  <g>
-    <defs>
-      <linearGradient id="OrRd_05" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
-        <stop offset="0.00%" stop-color="rgb(254,240,217)" stop-opacity="1.0000"/>
-        <stop offset="20.00%" stop-color="rgb(254,240,217)" stop-opacity="1.0000"/>
-        <stop offset="20.00%" stop-color="rgb(253,204,138)" stop-opacity="1.0000"/>
-        <stop offset="40.00%" stop-color="rgb(253,204,138)" stop-opacity="1.0000"/>
-        <stop offset="40.00%" stop-color="rgb(252,141,89)" stop-opacity="1.0000"/>
-        <stop offset="60.00%" stop-color="rgb(252,141,89)" stop-opacity="1.0000"/>
-        <stop offset="60.00%" stop-color="rgb(227,74,51)" stop-opacity="1.0000"/>
-        <stop offset="80.00%" stop-color="rgb(227,74,51)" stop-opacity="1.0000"/>
-        <stop offset="80.00%" stop-color="rgb(179,0,0)" stop-opacity="1.0000"/>
-        <stop offset="100.00%" stop-color="rgb(179,0,0)" stop-opacity="1.0000"/>
-      </linearGradient>
-    </defs>
-    <rect fill="url(#OrRd_05)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
-  </g>
-  <metadata>
-    <creator name="cptutils" version="1.46"/>
-    <created date="Wed Aug 15 23:29:16 2012"/>
-  </metadata>
+<svg width="300px" height="45px" version="1.1" viewBox="0 0 300 45" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="OrRd_05">
+   <stop stop-color="#fef0d9" offset="0"/>
+   <stop stop-color="#fef0d9" offset=".2"/>
+   <stop stop-color="#fdcc8a" offset=".2"/>
+   <stop stop-color="#fdcc8a" offset=".4"/>
+   <stop stop-color="#fc8d59" offset=".4"/>
+   <stop stop-color="#fc8d59" offset=".6"/>
+   <stop stop-color="#e34a33" offset=".6"/>
+   <stop stop-color="#e34a33" offset=".8"/>
+   <stop stop-color="#b30000" offset=".8"/>
+   <stop stop-color="#b30000" offset="1"/>
+  </linearGradient>
+ </defs>
+ <rect x="4" y="4" width="292" height="37" fill="url(#OrRd_05)" stroke="#000"/>
+ <metadata>
+  <creator name="cptutils" version="1.46"/>
+  <created date="Wed Aug 15 23:29:16 2012"/>
+ </metadata>
 </svg>

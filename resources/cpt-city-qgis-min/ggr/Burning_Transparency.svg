@@ -1,39 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
-  <g>
-    <defs>
-      <linearGradient id="Burning Transparency" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
-        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="0.0000"/>
-        <stop offset="26.46%" stop-color="rgb(0,0,0)" stop-opacity="0.0000"/>
-        <stop offset="50.25%" stop-color="rgb(0,0,0)" stop-opacity="0.0000"/>
-        <stop offset="51.22%" stop-color="rgb(0,0,0)" stop-opacity="0.0031"/>
-        <stop offset="52.18%" stop-color="rgb(0,0,0)" stop-opacity="0.0142"/>
-        <stop offset="53.15%" stop-color="rgb(0,0,0)" stop-opacity="0.0344"/>
-        <stop offset="54.11%" stop-color="rgb(0,0,0)" stop-opacity="0.0646"/>
-        <stop offset="55.08%" stop-color="rgb(0,0,0)" stop-opacity="0.1052"/>
-        <stop offset="56.05%" stop-color="rgb(0,0,0)" stop-opacity="0.1567"/>
-        <stop offset="57.01%" stop-color="rgb(0,0,0)" stop-opacity="0.2196"/>
-        <stop offset="57.98%" stop-color="rgb(0,0,0)" stop-opacity="0.2941"/>
-        <stop offset="58.94%" stop-color="rgb(0,0,0)" stop-opacity="0.3805"/>
-        <stop offset="59.91%" stop-color="rgb(0,0,0)" stop-opacity="0.4791"/>
-        <stop offset="60.88%" stop-color="rgb(0,0,0)" stop-opacity="0.5901"/>
-        <stop offset="61.84%" stop-color="rgb(0,0,0)" stop-opacity="0.7138"/>
-        <stop offset="62.81%" stop-color="rgb(0,0,0)" stop-opacity="0.8504"/>
-        <stop offset="63.77%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
-        <stop offset="70.03%" stop-color="rgb(113,42,23)" stop-opacity="1.0000"/>
-        <stop offset="74.46%" stop-color="rgb(227,84,45)" stop-opacity="1.0000"/>
-        <stop offset="76.78%" stop-color="rgb(241,169,23)" stop-opacity="1.0000"/>
-        <stop offset="78.63%" stop-color="rgb(255,255,0)" stop-opacity="1.0000"/>
-        <stop offset="82.99%" stop-color="rgb(244,201,0)" stop-opacity="1.0000"/>
-        <stop offset="89.15%" stop-color="rgb(232,146,0)" stop-opacity="1.0000"/>
-        <stop offset="94.49%" stop-color="rgb(209,90,19)" stop-opacity="0.5000"/>
-        <stop offset="100.00%" stop-color="rgb(185,33,38)" stop-opacity="0.0000"/>
-      </linearGradient>
-    </defs>
-    <rect fill="url(#Burning Transparency)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
-  </g>
-  <metadata>
-    <creator name="cptutils" version="1.46"/>
-    <created date="Wed Aug 15 23:33:22 2012"/>
-  </metadata>
+<svg width="300px" height="45px" version="1.1" viewBox="0 0 300 45" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="Burning Transparency">
+   <stop stop-opacity="0" offset="0"/>
+   <stop stop-opacity="0" offset=".2646"/>
+   <stop stop-opacity="0" offset=".5025"/>
+   <stop stop-opacity=".0031" offset=".5122"/>
+   <stop stop-opacity=".0142" offset=".5218"/>
+   <stop stop-opacity=".0344" offset=".5315"/>
+   <stop stop-opacity=".0646" offset=".5411"/>
+   <stop stop-opacity=".1052" offset=".5508"/>
+   <stop stop-opacity=".1567" offset=".5605"/>
+   <stop stop-opacity=".2196" offset=".5701"/>
+   <stop stop-opacity=".2941" offset=".5798"/>
+   <stop stop-opacity=".3805" offset=".5894"/>
+   <stop stop-opacity=".4791" offset=".5991"/>
+   <stop stop-opacity=".5901" offset=".6088"/>
+   <stop stop-opacity=".7138" offset=".6184"/>
+   <stop stop-opacity=".8504" offset=".6281"/>
+   <stop offset=".6377"/>
+   <stop stop-color="#712a17" offset=".7003"/>
+   <stop stop-color="#e3542d" offset=".7446"/>
+   <stop stop-color="#f1a917" offset=".7678"/>
+   <stop stop-color="#ff0" offset=".7863"/>
+   <stop stop-color="#f4c900" offset=".8299"/>
+   <stop stop-color="#e89200" offset=".8915"/>
+   <stop stop-color="#d15a13" stop-opacity=".5" offset=".9449"/>
+   <stop stop-color="#b92126" stop-opacity="0" offset="1"/>
+  </linearGradient>
+ </defs>
+ <rect x="4" y="4" width="292" height="37" fill="url(#Burning Transparency)" stroke="#000"/>
+ <metadata>
+  <creator name="cptutils" version="1.46"/>
+  <created date="Wed Aug 15 23:33:22 2012"/>
+ </metadata>
 </svg>

@@ -1,1 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16"><text x=".346" y="10.715" font-weight="700" font-size="8.62" letter-spacing="0" word-spacing="0" font-family="DejaVu Sans Mono" fill="#555" stroke="#555" stroke-width=".395"><tspan x=".346" y="10.715">abc</tspan></text></svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+ <text x=".346" y="10.715" fill="#555" font-family="DejaVu Sans Mono" font-size="8.62" font-weight="700" letter-spacing="0" stroke="#555" stroke-width=".395" word-spacing="0"><tspan x=".346" y="10.715">abc</tspan></text>
+</svg>

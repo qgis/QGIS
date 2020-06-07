@@ -1,3 +1,4 @@
-<svg height="109.5pt" viewBox="0 0 109.5 109.5" width="109.5pt" xmlns="http://www.w3.org/2000/svg">
-<path d="m62.1875.625v43.892578c-9.101589 2.192429-16.227983 9.439559-18.246094 18.607422h-43.316406v11.25h43.460938c2.198458 8.87187 9.207233 15.839971 18.101562 17.982422v43.892578h11.5625v-43.890625c8.895517-2.141636 15.904962-9.111184 18.103516-17.984375h44.396484v-11.25h-44.253906c-2.0184-9.167996-9.144049-16.415169-18.246094-18.607422v-43.892578z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" transform="scale(.8)"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="109.5pt" height="109.5pt" viewBox="0 0 109.5 109.5" xmlns="http://www.w3.org/2000/svg">
+ <path transform="scale(.8)" d="m62.188 0.625v43.893c-9.1016 2.1924-16.228 9.4396-18.246 18.607h-43.316v11.25h43.461c2.1985 8.8719 9.2072 15.84 18.102 17.982v43.893h11.562v-43.891c8.8955-2.1416 15.905-9.1112 18.104-17.984h44.396v-11.25h-44.254c-2.0184-9.168-9.144-16.415-18.246-18.607v-43.893z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)"/>
 </svg>

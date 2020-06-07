@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
-  <g>
-    <defs>
-      <linearGradient id="Red Analogous 12a" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
-        <stop offset="0.00%" stop-color="rgb(255,140,178)" stop-opacity="1.0000"/>
-        <stop offset="16.67%" stop-color="rgb(255,140,178)" stop-opacity="1.0000"/>
-        <stop offset="33.33%" stop-color="rgb(255,140,178)" stop-opacity="1.0000"/>
-        <stop offset="33.33%" stop-color="rgb(217,22,43)" stop-opacity="1.0000"/>
-        <stop offset="50.00%" stop-color="rgb(217,22,43)" stop-opacity="1.0000"/>
-        <stop offset="66.67%" stop-color="rgb(217,22,43)" stop-opacity="1.0000"/>
-        <stop offset="66.67%" stop-color="rgb(255,153,102)" stop-opacity="1.0000"/>
-        <stop offset="83.33%" stop-color="rgb(255,153,102)" stop-opacity="1.0000"/>
-        <stop offset="100.00%" stop-color="rgb(255,153,102)" stop-opacity="1.0000"/>
-      </linearGradient>
-    </defs>
-    <rect fill="url(#Red Analogous 12a)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
-  </g>
-  <metadata>
-    <creator name="cptutils" version="1.46"/>
-    <created date="Wed Aug 15 23:34:18 2012"/>
-  </metadata>
+<svg width="300px" height="45px" version="1.1" viewBox="0 0 300 45" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="Red Analogous 12a">
+   <stop stop-color="#ff8cb2" offset="0"/>
+   <stop stop-color="#ff8cb2" offset=".1667"/>
+   <stop stop-color="#ff8cb2" offset=".3333"/>
+   <stop stop-color="#d9162b" offset=".3333"/>
+   <stop stop-color="#d9162b" offset=".5"/>
+   <stop stop-color="#d9162b" offset=".6667"/>
+   <stop stop-color="#f96" offset=".6667"/>
+   <stop stop-color="#f96" offset=".8333"/>
+   <stop stop-color="#f96" offset="1"/>
+  </linearGradient>
+ </defs>
+ <rect x="4" y="4" width="292" height="37" fill="url(#Red Analogous 12a)" stroke="#000"/>
+ <metadata>
+  <creator name="cptutils" version="1.46"/>
+  <created date="Wed Aug 15 23:34:18 2012"/>
+ </metadata>
 </svg>

@@ -1,14 +1,15 @@
-<svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
-<g transform="translate(0 -8)">
-<path d="m2.496207 17.496208h19.007586v5.007586h-19.007586z" fill="#fce94f" overflow="visible" stroke="#c4a000" stroke-linecap="round" stroke-width=".99241388"/>
-<path d="m2.5384619 10.538462h18.923077v4.9230766h-18.923077z" fill="#fce94f" overflow="visible" stroke="#c4a000" stroke-linecap="round" stroke-width="1.07692313"/>
-<path d="m2.5384619 24.538462h18.923077v4.9230766h-18.923077z" fill="#fce94f" overflow="visible" stroke="#c4a000" stroke-linecap="round" stroke-width="1.07692313"/>
-<path d="m9.2102138 23.865618l4.9930182 2.894382-5.9592838 4.333749.9662656-7.228131z" style="overflow:visible;fill:#505050;stroke:#2a2a2a;stroke-width:.74999988;stroke-linecap:round;stroke-linejoin:round;stroke-dashoffset:.5"/>
-<path d="m17.37792 9.6615045l4.993023 2.8943805-8.167711 14.204115-4.9930182-2.894382 8.1677062-14.2041135" style="overflow:visible;fill:#fb7123;stroke:#474747;stroke-width:.74999982;stroke-linecap:round;stroke-linejoin:round;stroke-dashoffset:.5"/>
-<path d="m18.977893 11.703032l-7.206802 12.533043" style="overflow:visible;opacity:.5;fill:none;stroke:#fcffff;stroke-width:1.99999964;stroke-linejoin:round;stroke-dashoffset:.5"/>
-<path d="m20.642234 12.667825l-7.206801 12.533045" style="overflow:visible;opacity:.363;fill-opacity:.70646769;stroke:#000;stroke-width:1.99999964;stroke-linejoin:round;stroke-dashoffset:.5"/>
-<path d="m9.5136663 29.835188l4.0370637-3.167381-1.661807-.963326-2.3752567 4.130708z" style="overflow:visible;fill:#969696;stroke:#969696;stroke-width:.49999991;stroke-linecap:square;stroke-linejoin:round;stroke-dashoffset:.5"/>
-<path d="m19.659159-1.4319731h6.2152262v2.1002984h-6.2152262z" style="overflow:visible;fill:#e6e6e6;stroke:#969696;stroke-width:.50000149;stroke-linecap:round;stroke-linejoin:round;stroke-dashoffset:.5" transform="matrix(.86514924 .50151449 -.49848688 .86689724 0 0)"/>
-<path d="m8.8264755 29.613199l.7895102-5.226305 1.6618073.963325-2.4513175 4.26298z" style="overflow:visible;fill:#e6e6e6;stroke:#e6e6e6;stroke-width:.49999991;stroke-linecap:square;stroke-linejoin:round;stroke-dashoffset:.5"/>
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0 -8)">
+  <path d="m2.4962 17.496h19.008v5.0076h-19.008z" fill="#fce94f" overflow="visible" stroke="#c4a000" stroke-linecap="round" stroke-width=".99241"/>
+  <path d="m2.5385 10.538h18.923v4.9231h-18.923z" fill="#fce94f" overflow="visible" stroke="#c4a000" stroke-linecap="round" stroke-width="1.0769"/>
+  <path d="m2.5385 24.538h18.923v4.9231h-18.923z" fill="#fce94f" overflow="visible" stroke="#c4a000" stroke-linecap="round" stroke-width="1.0769"/>
+  <path d="m9.2102 23.866 4.993 2.8944-5.9593 4.3337 0.96627-7.2281z" fill="#505050" stroke="#2a2a2a" stroke-dashoffset=".5" stroke-linecap="round" stroke-linejoin="round" stroke-width=".75"/>
+  <path d="m17.378 9.6615 4.993 2.8944-8.1677 14.204-4.993-2.8944 8.1677-14.204" fill="#fb7123" stroke="#474747" stroke-dashoffset=".5" stroke-linecap="round" stroke-linejoin="round" stroke-width=".75"/>
+  <path d="m18.978 11.703-7.2068 12.533" fill="none" opacity=".5" stroke="#fcffff" stroke-dashoffset=".5" stroke-linejoin="round" stroke-width="2"/>
+  <path d="m20.642 12.668-7.2068 12.533" fill-opacity=".70647" opacity=".363" stroke="#000" stroke-dashoffset=".5" stroke-linejoin="round" stroke-width="2"/>
+  <path d="m9.5137 29.835 4.0371-3.1674-1.6618-0.96333-2.3753 4.1307z" fill="#969696" stroke="#969696" stroke-dashoffset=".5" stroke-linecap="square" stroke-linejoin="round" stroke-width=".5"/>
+  <path transform="matrix(.86515 .50151 -.49849 .8669 0 0)" d="m19.659-1.432h6.2152v2.1003h-6.2152z" fill="#e6e6e6" stroke="#969696" stroke-dashoffset=".5" stroke-linecap="round" stroke-linejoin="round" stroke-width=".5"/>
+  <path d="m8.8265 29.613 0.78951-5.2263 1.6618 0.96332-2.4513 4.263z" fill="#e6e6e6" stroke="#e6e6e6" stroke-dashoffset=".5" stroke-linecap="square" stroke-linejoin="round" stroke-width=".5"/>
+ </g>
 </svg>

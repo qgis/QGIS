@@ -1,38 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
-  <g>
-    <defs>
-      <linearGradient id="cbacBrBG08" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
-        <stop offset="0.00%" stop-color="rgb(140,81,10)" stop-opacity="1.0000"/>
-        <stop offset="6.25%" stop-color="rgb(140,81,10)" stop-opacity="1.0000"/>
-        <stop offset="12.50%" stop-color="rgb(159,99,23)" stop-opacity="1.0000"/>
-        <stop offset="12.50%" stop-color="rgb(172,111,32)" stop-opacity="1.0000"/>
-        <stop offset="18.75%" stop-color="rgb(191,129,45)" stop-opacity="1.0000"/>
-        <stop offset="25.00%" stop-color="rgb(203,153,75)" stop-opacity="1.0000"/>
-        <stop offset="25.00%" stop-color="rgb(211,170,95)" stop-opacity="1.0000"/>
-        <stop offset="31.25%" stop-color="rgb(223,194,125)" stop-opacity="1.0000"/>
-        <stop offset="37.50%" stop-color="rgb(232,208,151)" stop-opacity="1.0000"/>
-        <stop offset="37.50%" stop-color="rgb(237,218,169)" stop-opacity="1.0000"/>
-        <stop offset="43.75%" stop-color="rgb(246,232,195)" stop-opacity="1.0000"/>
-        <stop offset="50.00%" stop-color="rgb(228,233,208)" stop-opacity="1.0000"/>
-        <stop offset="50.00%" stop-color="rgb(217,233,216)" stop-opacity="1.0000"/>
-        <stop offset="56.25%" stop-color="rgb(199,234,229)" stop-opacity="1.0000"/>
-        <stop offset="62.50%" stop-color="rgb(172,223,216)" stop-opacity="1.0000"/>
-        <stop offset="62.50%" stop-color="rgb(155,216,206)" stop-opacity="1.0000"/>
-        <stop offset="68.75%" stop-color="rgb(128,205,193)" stop-opacity="1.0000"/>
-        <stop offset="75.00%" stop-color="rgb(100,185,174)" stop-opacity="1.0000"/>
-        <stop offset="75.00%" stop-color="rgb(81,171,162)" stop-opacity="1.0000"/>
-        <stop offset="81.25%" stop-color="rgb(53,151,143)" stop-opacity="1.0000"/>
-        <stop offset="87.50%" stop-color="rgb(34,133,125)" stop-opacity="1.0000"/>
-        <stop offset="87.50%" stop-color="rgb(20,120,112)" stop-opacity="1.0000"/>
-        <stop offset="93.75%" stop-color="rgb(1,102,94)" stop-opacity="1.0000"/>
-        <stop offset="100.00%" stop-color="rgb(1,102,94)" stop-opacity="1.0000"/>
-      </linearGradient>
-    </defs>
-    <rect fill="url(#cbacBrBG08)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
-  </g>
-  <metadata>
-    <creator name="cptutils" version="1.46"/>
-    <created date="Wed Aug 15 23:32:10 2012"/>
-  </metadata>
+<svg width="300px" height="45px" version="1.1" viewBox="0 0 300 45" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="cbacBrBG08">
+   <stop stop-color="#8c510a" offset="0"/>
+   <stop stop-color="#8c510a" offset=".0625"/>
+   <stop stop-color="#9f6317" offset=".125"/>
+   <stop stop-color="#ac6f20" offset=".125"/>
+   <stop stop-color="#bf812d" offset=".1875"/>
+   <stop stop-color="#cb994b" offset=".25"/>
+   <stop stop-color="#d3aa5f" offset=".25"/>
+   <stop stop-color="#dfc27d" offset=".3125"/>
+   <stop stop-color="#e8d097" offset=".375"/>
+   <stop stop-color="#eddaa9" offset=".375"/>
+   <stop stop-color="#f6e8c3" offset=".4375"/>
+   <stop stop-color="#e4e9d0" offset=".5"/>
+   <stop stop-color="#d9e9d8" offset=".5"/>
+   <stop stop-color="#c7eae5" offset=".5625"/>
+   <stop stop-color="#acdfd8" offset=".625"/>
+   <stop stop-color="#9bd8ce" offset=".625"/>
+   <stop stop-color="#80cdc1" offset=".6875"/>
+   <stop stop-color="#64b9ae" offset=".75"/>
+   <stop stop-color="#51aba2" offset=".75"/>
+   <stop stop-color="#35978f" offset=".8125"/>
+   <stop stop-color="#22857d" offset=".875"/>
+   <stop stop-color="#147870" offset=".875"/>
+   <stop stop-color="#01665e" offset=".9375"/>
+   <stop stop-color="#01665e" offset="1"/>
+  </linearGradient>
+ </defs>
+ <rect x="4" y="4" width="292" height="37" fill="url(#cbacBrBG08)" stroke="#000"/>
+ <metadata>
+  <creator name="cptutils" version="1.46"/>
+  <created date="Wed Aug 15 23:32:10 2012"/>
+ </metadata>
 </svg>

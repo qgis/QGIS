@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
-  <g>
-    <defs>
-      <linearGradient id="RdBu_04" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
-        <stop offset="0.00%" stop-color="rgb(202,0,32)" stop-opacity="1.0000"/>
-        <stop offset="25.00%" stop-color="rgb(202,0,32)" stop-opacity="1.0000"/>
-        <stop offset="25.00%" stop-color="rgb(244,165,130)" stop-opacity="1.0000"/>
-        <stop offset="50.00%" stop-color="rgb(244,165,130)" stop-opacity="1.0000"/>
-        <stop offset="50.00%" stop-color="rgb(146,197,222)" stop-opacity="1.0000"/>
-        <stop offset="75.00%" stop-color="rgb(146,197,222)" stop-opacity="1.0000"/>
-        <stop offset="75.00%" stop-color="rgb(5,113,176)" stop-opacity="1.0000"/>
-        <stop offset="100.00%" stop-color="rgb(5,113,176)" stop-opacity="1.0000"/>
-      </linearGradient>
-    </defs>
-    <rect fill="url(#RdBu_04)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
-  </g>
-  <metadata>
-    <creator name="cptutils" version="1.46"/>
-    <created date="Wed Aug 15 23:29:06 2012"/>
-  </metadata>
+<svg width="300px" height="45px" version="1.1" viewBox="0 0 300 45" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="RdBu_04">
+   <stop stop-color="#ca0020" offset="0"/>
+   <stop stop-color="#ca0020" offset=".25"/>
+   <stop stop-color="#f4a582" offset=".25"/>
+   <stop stop-color="#f4a582" offset=".5"/>
+   <stop stop-color="#92c5de" offset=".5"/>
+   <stop stop-color="#92c5de" offset=".75"/>
+   <stop stop-color="#0571b0" offset=".75"/>
+   <stop stop-color="#0571b0" offset="1"/>
+  </linearGradient>
+ </defs>
+ <rect x="4" y="4" width="292" height="37" fill="url(#RdBu_04)" stroke="#000"/>
+ <metadata>
+  <creator name="cptutils" version="1.46"/>
+  <created date="Wed Aug 15 23:29:06 2012"/>
+ </metadata>
 </svg>

@@ -1,35 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
-  <g>
-    <defs>
-      <linearGradient id="evi" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
-        <stop offset="0.00%" stop-color="rgb(5,24,82)" stop-opacity="1.0000"/>
-        <stop offset="35.00%" stop-color="rgb(5,24,82)" stop-opacity="1.0000"/>
-        <stop offset="41.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
-        <stop offset="50.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
-        <stop offset="51.25%" stop-color="rgb(206,197,180)" stop-opacity="1.0000"/>
-        <stop offset="53.75%" stop-color="rgb(191,163,124)" stop-opacity="1.0000"/>
-        <stop offset="56.25%" stop-color="rgb(160,134,80)" stop-opacity="1.0000"/>
-        <stop offset="57.50%" stop-color="rgb(143,172,56)" stop-opacity="1.0000"/>
-        <stop offset="58.75%" stop-color="rgb(164,194,36)" stop-opacity="1.0000"/>
-        <stop offset="61.65%" stop-color="rgb(137,182,4)" stop-opacity="1.0000"/>
-        <stop offset="63.30%" stop-color="rgb(119,176,1)" stop-opacity="1.0000"/>
-        <stop offset="66.65%" stop-color="rgb(99,164,2)" stop-opacity="1.0000"/>
-        <stop offset="68.30%" stop-color="rgb(74,151,13)" stop-opacity="1.0000"/>
-        <stop offset="71.65%" stop-color="rgb(41,133,9)" stop-opacity="1.0000"/>
-        <stop offset="73.30%" stop-color="rgb(0,114,0)" stop-opacity="1.0000"/>
-        <stop offset="77.50%" stop-color="rgb(0,90,0)" stop-opacity="1.0000"/>
-        <stop offset="82.50%" stop-color="rgb(0,76,0)" stop-opacity="1.0000"/>
-        <stop offset="87.50%" stop-color="rgb(0,57,0)" stop-opacity="1.0000"/>
-        <stop offset="92.50%" stop-color="rgb(0,32,0)" stop-opacity="1.0000"/>
-        <stop offset="97.50%" stop-color="rgb(1,15,2)" stop-opacity="1.0000"/>
-        <stop offset="100.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
-      </linearGradient>
-    </defs>
-    <rect fill="url(#evi)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
-  </g>
-  <metadata>
-    <creator name="cptutils" version="1.46"/>
-    <created date="Wed Aug 15 23:30:56 2012"/>
-  </metadata>
+<svg width="300px" height="45px" version="1.1" viewBox="0 0 300 45" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="evi">
+   <stop stop-color="#051852" offset="0"/>
+   <stop stop-color="#051852" offset=".35"/>
+   <stop stop-color="#fff" offset=".41"/>
+   <stop stop-color="#fff" offset=".5"/>
+   <stop stop-color="#cec5b4" offset=".5125"/>
+   <stop stop-color="#bfa37c" offset=".5375"/>
+   <stop stop-color="#a08650" offset=".5625"/>
+   <stop stop-color="#8fac38" offset=".575"/>
+   <stop stop-color="#a4c224" offset=".5875"/>
+   <stop stop-color="#89b604" offset=".6165"/>
+   <stop stop-color="#77b001" offset=".633"/>
+   <stop stop-color="#63a402" offset=".6665"/>
+   <stop stop-color="#4a970d" offset=".683"/>
+   <stop stop-color="#298509" offset=".7165"/>
+   <stop stop-color="#007200" offset=".733"/>
+   <stop stop-color="#005a00" offset=".775"/>
+   <stop stop-color="#004c00" offset=".825"/>
+   <stop stop-color="#003900" offset=".875"/>
+   <stop stop-color="#002000" offset=".925"/>
+   <stop stop-color="#010f02" offset=".975"/>
+   <stop offset="1"/>
+  </linearGradient>
+ </defs>
+ <rect x="4" y="4" width="292" height="37" fill="url(#evi)" stroke="#000"/>
+ <metadata>
+  <creator name="cptutils" version="1.46"/>
+  <created date="Wed Aug 15 23:30:56 2012"/>
+ </metadata>
 </svg>

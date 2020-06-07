@@ -1,116 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
-  <g>
-    <defs>
-      <linearGradient id="Pastel Rainbow" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
-        <stop offset="0.00%" stop-color="rgb(255,191,191)" stop-opacity="1.0000"/>
-        <stop offset="0.99%" stop-color="rgb(255,195,191)" stop-opacity="1.0000"/>
-        <stop offset="1.98%" stop-color="rgb(255,199,191)" stop-opacity="1.0000"/>
-        <stop offset="2.97%" stop-color="rgb(255,202,191)" stop-opacity="1.0000"/>
-        <stop offset="3.96%" stop-color="rgb(255,206,191)" stop-opacity="1.0000"/>
-        <stop offset="4.95%" stop-color="rgb(255,210,191)" stop-opacity="1.0000"/>
-        <stop offset="5.94%" stop-color="rgb(255,214,191)" stop-opacity="1.0000"/>
-        <stop offset="6.93%" stop-color="rgb(255,218,191)" stop-opacity="1.0000"/>
-        <stop offset="7.92%" stop-color="rgb(255,221,191)" stop-opacity="1.0000"/>
-        <stop offset="8.91%" stop-color="rgb(255,225,191)" stop-opacity="1.0000"/>
-        <stop offset="9.90%" stop-color="rgb(255,229,191)" stop-opacity="1.0000"/>
-        <stop offset="10.89%" stop-color="rgb(255,233,191)" stop-opacity="1.0000"/>
-        <stop offset="11.88%" stop-color="rgb(255,237,191)" stop-opacity="1.0000"/>
-        <stop offset="12.87%" stop-color="rgb(255,240,191)" stop-opacity="1.0000"/>
-        <stop offset="13.86%" stop-color="rgb(255,244,191)" stop-opacity="1.0000"/>
-        <stop offset="14.85%" stop-color="rgb(255,248,191)" stop-opacity="1.0000"/>
-        <stop offset="15.84%" stop-color="rgb(255,252,191)" stop-opacity="1.0000"/>
-        <stop offset="16.83%" stop-color="rgb(254,255,191)" stop-opacity="1.0000"/>
-        <stop offset="17.82%" stop-color="rgb(251,255,191)" stop-opacity="1.0000"/>
-        <stop offset="18.81%" stop-color="rgb(247,255,191)" stop-opacity="1.0000"/>
-        <stop offset="19.80%" stop-color="rgb(243,255,191)" stop-opacity="1.0000"/>
-        <stop offset="20.79%" stop-color="rgb(239,255,191)" stop-opacity="1.0000"/>
-        <stop offset="21.78%" stop-color="rgb(235,255,191)" stop-opacity="1.0000"/>
-        <stop offset="22.77%" stop-color="rgb(232,255,191)" stop-opacity="1.0000"/>
-        <stop offset="23.76%" stop-color="rgb(228,255,191)" stop-opacity="1.0000"/>
-        <stop offset="24.75%" stop-color="rgb(224,255,191)" stop-opacity="1.0000"/>
-        <stop offset="25.74%" stop-color="rgb(220,255,191)" stop-opacity="1.0000"/>
-        <stop offset="26.73%" stop-color="rgb(216,255,191)" stop-opacity="1.0000"/>
-        <stop offset="27.72%" stop-color="rgb(213,255,191)" stop-opacity="1.0000"/>
-        <stop offset="28.71%" stop-color="rgb(209,255,191)" stop-opacity="1.0000"/>
-        <stop offset="29.70%" stop-color="rgb(205,255,191)" stop-opacity="1.0000"/>
-        <stop offset="30.69%" stop-color="rgb(201,255,191)" stop-opacity="1.0000"/>
-        <stop offset="31.68%" stop-color="rgb(197,255,191)" stop-opacity="1.0000"/>
-        <stop offset="32.67%" stop-color="rgb(194,255,191)" stop-opacity="1.0000"/>
-        <stop offset="33.66%" stop-color="rgb(191,255,192)" stop-opacity="1.0000"/>
-        <stop offset="34.65%" stop-color="rgb(191,255,196)" stop-opacity="1.0000"/>
-        <stop offset="35.64%" stop-color="rgb(191,255,200)" stop-opacity="1.0000"/>
-        <stop offset="36.63%" stop-color="rgb(191,255,204)" stop-opacity="1.0000"/>
-        <stop offset="37.62%" stop-color="rgb(191,255,207)" stop-opacity="1.0000"/>
-        <stop offset="38.61%" stop-color="rgb(191,255,211)" stop-opacity="1.0000"/>
-        <stop offset="39.60%" stop-color="rgb(191,255,215)" stop-opacity="1.0000"/>
-        <stop offset="40.59%" stop-color="rgb(191,255,219)" stop-opacity="1.0000"/>
-        <stop offset="41.58%" stop-color="rgb(191,255,223)" stop-opacity="1.0000"/>
-        <stop offset="42.57%" stop-color="rgb(191,255,226)" stop-opacity="1.0000"/>
-        <stop offset="43.56%" stop-color="rgb(191,255,230)" stop-opacity="1.0000"/>
-        <stop offset="44.55%" stop-color="rgb(191,255,234)" stop-opacity="1.0000"/>
-        <stop offset="45.54%" stop-color="rgb(191,255,238)" stop-opacity="1.0000"/>
-        <stop offset="46.53%" stop-color="rgb(191,255,242)" stop-opacity="1.0000"/>
-        <stop offset="47.52%" stop-color="rgb(191,255,245)" stop-opacity="1.0000"/>
-        <stop offset="48.51%" stop-color="rgb(191,255,249)" stop-opacity="1.0000"/>
-        <stop offset="49.50%" stop-color="rgb(191,255,253)" stop-opacity="1.0000"/>
-        <stop offset="50.50%" stop-color="rgb(191,253,255)" stop-opacity="1.0000"/>
-        <stop offset="51.49%" stop-color="rgb(191,249,255)" stop-opacity="1.0000"/>
-        <stop offset="52.48%" stop-color="rgb(191,245,255)" stop-opacity="1.0000"/>
-        <stop offset="53.47%" stop-color="rgb(191,242,255)" stop-opacity="1.0000"/>
-        <stop offset="54.46%" stop-color="rgb(191,238,255)" stop-opacity="1.0000"/>
-        <stop offset="55.45%" stop-color="rgb(191,234,255)" stop-opacity="1.0000"/>
-        <stop offset="56.44%" stop-color="rgb(191,230,255)" stop-opacity="1.0000"/>
-        <stop offset="57.43%" stop-color="rgb(191,226,255)" stop-opacity="1.0000"/>
-        <stop offset="58.42%" stop-color="rgb(191,223,255)" stop-opacity="1.0000"/>
-        <stop offset="59.41%" stop-color="rgb(191,219,255)" stop-opacity="1.0000"/>
-        <stop offset="60.40%" stop-color="rgb(191,215,255)" stop-opacity="1.0000"/>
-        <stop offset="61.39%" stop-color="rgb(191,211,255)" stop-opacity="1.0000"/>
-        <stop offset="62.38%" stop-color="rgb(191,207,255)" stop-opacity="1.0000"/>
-        <stop offset="63.37%" stop-color="rgb(191,204,255)" stop-opacity="1.0000"/>
-        <stop offset="64.36%" stop-color="rgb(191,200,255)" stop-opacity="1.0000"/>
-        <stop offset="65.35%" stop-color="rgb(191,196,255)" stop-opacity="1.0000"/>
-        <stop offset="66.34%" stop-color="rgb(191,192,255)" stop-opacity="1.0000"/>
-        <stop offset="67.33%" stop-color="rgb(194,191,255)" stop-opacity="1.0000"/>
-        <stop offset="68.32%" stop-color="rgb(197,191,255)" stop-opacity="1.0000"/>
-        <stop offset="69.31%" stop-color="rgb(201,191,255)" stop-opacity="1.0000"/>
-        <stop offset="70.30%" stop-color="rgb(205,191,255)" stop-opacity="1.0000"/>
-        <stop offset="71.29%" stop-color="rgb(209,191,255)" stop-opacity="1.0000"/>
-        <stop offset="72.28%" stop-color="rgb(213,191,255)" stop-opacity="1.0000"/>
-        <stop offset="73.27%" stop-color="rgb(216,191,255)" stop-opacity="1.0000"/>
-        <stop offset="74.26%" stop-color="rgb(220,191,255)" stop-opacity="1.0000"/>
-        <stop offset="75.25%" stop-color="rgb(224,191,255)" stop-opacity="1.0000"/>
-        <stop offset="76.24%" stop-color="rgb(228,191,255)" stop-opacity="1.0000"/>
-        <stop offset="77.23%" stop-color="rgb(232,191,255)" stop-opacity="1.0000"/>
-        <stop offset="78.22%" stop-color="rgb(235,191,255)" stop-opacity="1.0000"/>
-        <stop offset="79.21%" stop-color="rgb(239,191,255)" stop-opacity="1.0000"/>
-        <stop offset="80.20%" stop-color="rgb(243,191,255)" stop-opacity="1.0000"/>
-        <stop offset="81.19%" stop-color="rgb(247,191,255)" stop-opacity="1.0000"/>
-        <stop offset="82.18%" stop-color="rgb(251,191,255)" stop-opacity="1.0000"/>
-        <stop offset="83.17%" stop-color="rgb(254,191,255)" stop-opacity="1.0000"/>
-        <stop offset="84.16%" stop-color="rgb(255,191,252)" stop-opacity="1.0000"/>
-        <stop offset="85.15%" stop-color="rgb(255,191,248)" stop-opacity="1.0000"/>
-        <stop offset="86.14%" stop-color="rgb(255,191,244)" stop-opacity="1.0000"/>
-        <stop offset="87.13%" stop-color="rgb(255,191,240)" stop-opacity="1.0000"/>
-        <stop offset="88.12%" stop-color="rgb(255,191,237)" stop-opacity="1.0000"/>
-        <stop offset="89.11%" stop-color="rgb(255,191,233)" stop-opacity="1.0000"/>
-        <stop offset="90.10%" stop-color="rgb(255,191,229)" stop-opacity="1.0000"/>
-        <stop offset="91.09%" stop-color="rgb(255,191,225)" stop-opacity="1.0000"/>
-        <stop offset="92.08%" stop-color="rgb(255,191,221)" stop-opacity="1.0000"/>
-        <stop offset="93.07%" stop-color="rgb(255,191,218)" stop-opacity="1.0000"/>
-        <stop offset="94.06%" stop-color="rgb(255,191,214)" stop-opacity="1.0000"/>
-        <stop offset="95.05%" stop-color="rgb(255,191,210)" stop-opacity="1.0000"/>
-        <stop offset="96.04%" stop-color="rgb(255,191,206)" stop-opacity="1.0000"/>
-        <stop offset="97.03%" stop-color="rgb(255,191,202)" stop-opacity="1.0000"/>
-        <stop offset="98.02%" stop-color="rgb(255,191,199)" stop-opacity="1.0000"/>
-        <stop offset="99.01%" stop-color="rgb(255,191,195)" stop-opacity="1.0000"/>
-        <stop offset="100.00%" stop-color="rgb(255,191,191)" stop-opacity="1.0000"/>
-      </linearGradient>
-    </defs>
-    <rect fill="url(#Pastel Rainbow)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
-  </g>
-  <metadata>
-    <creator name="cptutils" version="1.46"/>
-    <created date="Wed Aug 15 23:33:18 2012"/>
-  </metadata>
+<svg width="300px" height="45px" version="1.1" viewBox="0 0 300 45" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="Pastel Rainbow">
+   <stop stop-color="#ffbfbf" offset="0"/>
+   <stop stop-color="#ffc3bf" offset=".0099"/>
+   <stop stop-color="#ffc7bf" offset=".0198"/>
+   <stop stop-color="#ffcabf" offset=".0297"/>
+   <stop stop-color="#ffcebf" offset=".0396"/>
+   <stop stop-color="#ffd2bf" offset=".0495"/>
+   <stop stop-color="#ffd6bf" offset=".0594"/>
+   <stop stop-color="#ffdabf" offset=".0693"/>
+   <stop stop-color="#ffddbf" offset=".0792"/>
+   <stop stop-color="#ffe1bf" offset=".0891"/>
+   <stop stop-color="#ffe5bf" offset=".099"/>
+   <stop stop-color="#ffe9bf" offset=".1089"/>
+   <stop stop-color="#ffedbf" offset=".1188"/>
+   <stop stop-color="#fff0bf" offset=".1287"/>
+   <stop stop-color="#fff4bf" offset=".1386"/>
+   <stop stop-color="#fff8bf" offset=".1485"/>
+   <stop stop-color="#fffcbf" offset=".1584"/>
+   <stop stop-color="#feffbf" offset=".1683"/>
+   <stop stop-color="#fbffbf" offset=".1782"/>
+   <stop stop-color="#f7ffbf" offset=".1881"/>
+   <stop stop-color="#f3ffbf" offset=".198"/>
+   <stop stop-color="#efffbf" offset=".2079"/>
+   <stop stop-color="#ebffbf" offset=".2178"/>
+   <stop stop-color="#e8ffbf" offset=".2277"/>
+   <stop stop-color="#e4ffbf" offset=".2376"/>
+   <stop stop-color="#e0ffbf" offset=".2475"/>
+   <stop stop-color="#dcffbf" offset=".2574"/>
+   <stop stop-color="#d8ffbf" offset=".2673"/>
+   <stop stop-color="#d5ffbf" offset=".2772"/>
+   <stop stop-color="#d1ffbf" offset=".2871"/>
+   <stop stop-color="#cdffbf" offset=".297"/>
+   <stop stop-color="#c9ffbf" offset=".3069"/>
+   <stop stop-color="#c5ffbf" offset=".3168"/>
+   <stop stop-color="#c2ffbf" offset=".3267"/>
+   <stop stop-color="#bfffc0" offset=".3366"/>
+   <stop stop-color="#bfffc4" offset=".3465"/>
+   <stop stop-color="#bfffc8" offset=".3564"/>
+   <stop stop-color="#bfffcc" offset=".3663"/>
+   <stop stop-color="#bfffcf" offset=".3762"/>
+   <stop stop-color="#bfffd3" offset=".3861"/>
+   <stop stop-color="#bfffd7" offset=".396"/>
+   <stop stop-color="#bfffdb" offset=".4059"/>
+   <stop stop-color="#bfffdf" offset=".4158"/>
+   <stop stop-color="#bfffe2" offset=".4257"/>
+   <stop stop-color="#bfffe6" offset=".4356"/>
+   <stop stop-color="#bfffea" offset=".4455"/>
+   <stop stop-color="#bfffee" offset=".4554"/>
+   <stop stop-color="#bffff2" offset=".4653"/>
+   <stop stop-color="#bffff5" offset=".4752"/>
+   <stop stop-color="#bffff9" offset=".4851"/>
+   <stop stop-color="#bffffd" offset=".495"/>
+   <stop stop-color="#bffdff" offset=".505"/>
+   <stop stop-color="#bff9ff" offset=".5149"/>
+   <stop stop-color="#bff5ff" offset=".5248"/>
+   <stop stop-color="#bff2ff" offset=".5347"/>
+   <stop stop-color="#bfeeff" offset=".5446"/>
+   <stop stop-color="#bfeaff" offset=".5545"/>
+   <stop stop-color="#bfe6ff" offset=".5644"/>
+   <stop stop-color="#bfe2ff" offset=".5743"/>
+   <stop stop-color="#bfdfff" offset=".5842"/>
+   <stop stop-color="#bfdbff" offset=".5941"/>
+   <stop stop-color="#bfd7ff" offset=".604"/>
+   <stop stop-color="#bfd3ff" offset=".6139"/>
+   <stop stop-color="#bfcfff" offset=".6238"/>
+   <stop stop-color="#bfccff" offset=".6337"/>
+   <stop stop-color="#bfc8ff" offset=".6436"/>
+   <stop stop-color="#bfc4ff" offset=".6535"/>
+   <stop stop-color="#bfc0ff" offset=".6634"/>
+   <stop stop-color="#c2bfff" offset=".6733"/>
+   <stop stop-color="#c5bfff" offset=".6832"/>
+   <stop stop-color="#c9bfff" offset=".6931"/>
+   <stop stop-color="#cdbfff" offset=".703"/>
+   <stop stop-color="#d1bfff" offset=".7129"/>
+   <stop stop-color="#d5bfff" offset=".7228"/>
+   <stop stop-color="#d8bfff" offset=".7327"/>
+   <stop stop-color="#dcbfff" offset=".7426"/>
+   <stop stop-color="#e0bfff" offset=".7525"/>
+   <stop stop-color="#e4bfff" offset=".7624"/>
+   <stop stop-color="#e8bfff" offset=".7723"/>
+   <stop stop-color="#ebbfff" offset=".7822"/>
+   <stop stop-color="#efbfff" offset=".7921"/>
+   <stop stop-color="#f3bfff" offset=".802"/>
+   <stop stop-color="#f7bfff" offset=".8119"/>
+   <stop stop-color="#fbbfff" offset=".8218"/>
+   <stop stop-color="#febfff" offset=".8317"/>
+   <stop stop-color="#ffbffc" offset=".8416"/>
+   <stop stop-color="#ffbff8" offset=".8515"/>
+   <stop stop-color="#ffbff4" offset=".8614"/>
+   <stop stop-color="#ffbff0" offset=".8713"/>
+   <stop stop-color="#ffbfed" offset=".8812"/>
+   <stop stop-color="#ffbfe9" offset=".8911"/>
+   <stop stop-color="#ffbfe5" offset=".901"/>
+   <stop stop-color="#ffbfe1" offset=".9109"/>
+   <stop stop-color="#ffbfdd" offset=".9208"/>
+   <stop stop-color="#ffbfda" offset=".9307"/>
+   <stop stop-color="#ffbfd6" offset=".9406"/>
+   <stop stop-color="#ffbfd2" offset=".9505"/>
+   <stop stop-color="#ffbfce" offset=".9604"/>
+   <stop stop-color="#ffbfca" offset=".9703"/>
+   <stop stop-color="#ffbfc7" offset=".9802"/>
+   <stop stop-color="#ffbfc3" offset=".9901"/>
+   <stop stop-color="#ffbfbf" offset="1"/>
+  </linearGradient>
+ </defs>
+ <rect x="4" y="4" width="292" height="37" fill="url(#Pastel Rainbow)" stroke="#000"/>
+ <metadata>
+  <creator name="cptutils" version="1.46"/>
+  <created date="Wed Aug 15 23:33:18 2012"/>
+ </metadata>
 </svg>

@@ -1,9 +1,10 @@
-<svg height="109.13385" width="109.13385" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g transform="translate(.00001907 1.15625)">
-<rect fill="#ff8000" height="86.771385" rx="4.6036596" width="7.9182968" x="50.982937" y="6.1554475"/>
-<path d="m54.942086 37.82865l-43.798961 27.714051h87.597925z" fill="#ff8000" fill-rule="evenodd" stroke="#ff8000" stroke-linejoin="round" stroke-width="6.09166908"/>
-<path d="m54.942086 79.491147l-19.239934 12.174182h38.479871z" fill="#ff8000" fill-rule="evenodd" stroke="#ff8000" stroke-linejoin="round" stroke-width="2.67593813"/>
-<rect id="a" fill="#ff8000" height="18.258076" rx="4.6036596" stroke="#ff8000" width="7.9182968" x="25.527399" y="45.42197"/>
-<use fill="#ff8000" height="109.13385" stroke="#ff8000" transform="translate(50.64027 -.0000004)" width="109.13385" xlink:href="#a"/>
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="109.13" height="109.13" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <g transform="translate(1.907e-5 1.1562)" fill="#ff8000">
+  <rect x="50.983" y="6.1554" width="7.9183" height="86.771" rx="4.6037"/>
+  <path d="m54.942 37.829-43.799 27.714h87.598z" fill-rule="evenodd" stroke="#ff8000" stroke-linejoin="round" stroke-width="6.0917"/>
+  <path d="m54.942 79.491-19.24 12.174h38.48z" fill-rule="evenodd" stroke="#ff8000" stroke-linejoin="round" stroke-width="2.6759"/>
+  <rect id="a" x="25.527" y="45.422" width="7.9183" height="18.258" rx="4.6037" fill="#ff8000" stroke="#ff8000"/>
+  <use transform="translate(50.64 -4e-7)" width="109.13385" height="109.13385" stroke="#ff8000" xlink:href="#a"/>
+ </g>
 </svg>

@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
-  <g>
-    <defs>
-      <linearGradient id="RdBu" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
-        <stop offset="0.00%" stop-color="rgb(103,0,31)" stop-opacity="1.0000"/>
-        <stop offset="12.50%" stop-color="rgb(178,24,43)" stop-opacity="1.0000"/>
-        <stop offset="25.00%" stop-color="rgb(214,96,77)" stop-opacity="1.0000"/>
-        <stop offset="37.50%" stop-color="rgb(244,165,130)" stop-opacity="1.0000"/>
-        <stop offset="50.00%" stop-color="rgb(253,219,199)" stop-opacity="1.0000"/>
-        <stop offset="50.00%" stop-color="rgb(209,229,240)" stop-opacity="1.0000"/>
-        <stop offset="62.50%" stop-color="rgb(146,197,222)" stop-opacity="1.0000"/>
-        <stop offset="75.00%" stop-color="rgb(67,147,195)" stop-opacity="1.0000"/>
-        <stop offset="87.50%" stop-color="rgb(33,102,172)" stop-opacity="1.0000"/>
-        <stop offset="100.00%" stop-color="rgb(5,48,97)" stop-opacity="1.0000"/>
-      </linearGradient>
-    </defs>
-    <rect fill="url(#RdBu)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
-  </g>
-  <metadata>
-    <creator name="cptutils" version="1.46"/>
-    <created date="Wed Aug 15 23:32:24 2012"/>
-  </metadata>
+<svg width="300px" height="45px" version="1.1" viewBox="0 0 300 45" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="RdBu">
+   <stop stop-color="#67001f" offset="0"/>
+   <stop stop-color="#b2182b" offset=".125"/>
+   <stop stop-color="#d6604d" offset=".25"/>
+   <stop stop-color="#f4a582" offset=".375"/>
+   <stop stop-color="#fddbc7" offset=".5"/>
+   <stop stop-color="#d1e5f0" offset=".5"/>
+   <stop stop-color="#92c5de" offset=".625"/>
+   <stop stop-color="#4393c3" offset=".75"/>
+   <stop stop-color="#2166ac" offset=".875"/>
+   <stop stop-color="#053061" offset="1"/>
+  </linearGradient>
+ </defs>
+ <rect x="4" y="4" width="292" height="37" fill="url(#RdBu)" stroke="#000"/>
+ <metadata>
+  <creator name="cptutils" version="1.46"/>
+  <created date="Wed Aug 15 23:32:24 2012"/>
+ </metadata>
 </svg>

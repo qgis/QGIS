@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
-  <g>
-    <defs>
-      <linearGradient id="BrBG_06" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
-        <stop offset="0.00%" stop-color="rgb(140,81,10)" stop-opacity="1.0000"/>
-        <stop offset="16.67%" stop-color="rgb(140,81,10)" stop-opacity="1.0000"/>
-        <stop offset="16.67%" stop-color="rgb(216,179,101)" stop-opacity="1.0000"/>
-        <stop offset="33.33%" stop-color="rgb(216,179,101)" stop-opacity="1.0000"/>
-        <stop offset="33.33%" stop-color="rgb(246,232,195)" stop-opacity="1.0000"/>
-        <stop offset="50.00%" stop-color="rgb(246,232,195)" stop-opacity="1.0000"/>
-        <stop offset="50.00%" stop-color="rgb(199,234,229)" stop-opacity="1.0000"/>
-        <stop offset="66.67%" stop-color="rgb(199,234,229)" stop-opacity="1.0000"/>
-        <stop offset="66.67%" stop-color="rgb(90,180,172)" stop-opacity="1.0000"/>
-        <stop offset="83.33%" stop-color="rgb(90,180,172)" stop-opacity="1.0000"/>
-        <stop offset="83.33%" stop-color="rgb(1,102,94)" stop-opacity="1.0000"/>
-        <stop offset="100.00%" stop-color="rgb(1,102,94)" stop-opacity="1.0000"/>
-      </linearGradient>
-    </defs>
-    <rect fill="url(#BrBG_06)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
-  </g>
-  <metadata>
-    <creator name="cptutils" version="1.46"/>
-    <created date="Wed Aug 15 23:29:08 2012"/>
-  </metadata>
+<svg width="300px" height="45px" version="1.1" viewBox="0 0 300 45" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="BrBG_06">
+   <stop stop-color="#8c510a" offset="0"/>
+   <stop stop-color="#8c510a" offset=".1667"/>
+   <stop stop-color="#d8b365" offset=".1667"/>
+   <stop stop-color="#d8b365" offset=".3333"/>
+   <stop stop-color="#f6e8c3" offset=".3333"/>
+   <stop stop-color="#f6e8c3" offset=".5"/>
+   <stop stop-color="#c7eae5" offset=".5"/>
+   <stop stop-color="#c7eae5" offset=".6667"/>
+   <stop stop-color="#5ab4ac" offset=".6667"/>
+   <stop stop-color="#5ab4ac" offset=".8333"/>
+   <stop stop-color="#01665e" offset=".8333"/>
+   <stop stop-color="#01665e" offset="1"/>
+  </linearGradient>
+ </defs>
+ <rect x="4" y="4" width="292" height="37" fill="url(#BrBG_06)" stroke="#000"/>
+ <metadata>
+  <creator name="cptutils" version="1.46"/>
+  <created date="Wed Aug 15 23:29:08 2012"/>
+ </metadata>
 </svg>

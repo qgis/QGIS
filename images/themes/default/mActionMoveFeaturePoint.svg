@@ -1,16 +1,17 @@
-<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-<linearGradient gradientUnits="userSpaceOnUse" x1="50.5" x2="50.5" y1="16.9999985" y2="22.9999985">
-<stop offset="0" stop-color="#555753"/>
-<stop offset="1" stop-color="#555753" stop-opacity="0"/>
-</linearGradient>
-<g transform="translate(0 -8)">
-<rect fill="#8cbe8c" height="5" rx="3.125" stroke="#4c4d4c" stroke-linecap="round" stroke-opacity=".93333333" stroke-width=".99999994" width="5" x="1.5" y="17.5"/>
-<rect fill="#8cbe8c" height="5" rx="3.125" stroke="#4b4c4b" stroke-linecap="round" stroke-opacity=".95686275" stroke-width=".99999994" width="5" x="8.5" y="9.5"/>
-<rect fill="#8cbe8c" height="5" rx="3.125" stroke="#4c4d4c" stroke-linecap="round" stroke-opacity=".93333333" stroke-width=".99999994" width="5" x="17.5" y="11.5"/>
-<g transform="translate(-27.5 6.0000005)">
-<rect fill="#3c5a6e" height="11" rx="2.0114901" width="11" x="40.5" y="14.999999"/>
-<path d="m41.500001 20.999999l8.999999-.009599c0 0 0 0 0-2 0-2.990401-1-2.990401-4.5-2.990401-3.5 0-4.5 0-4.5 3 0 2 0 2 .000001 2z" fill="#fcffff" fill-rule="evenodd" opacity=".3"/>
-<path d="m45.5 15.999999v3.000001h-4v3h4v2.999999l5-4z" fill="#fff" fill-rule="evenodd"/>
-</g>
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+ <linearGradient x1="50.5" x2="50.5" y1="17" y2="23" gradientUnits="userSpaceOnUse">
+  <stop stop-color="#555753" offset="0"/>
+  <stop stop-color="#555753" stop-opacity="0" offset="1"/>
+ </linearGradient>
+ <g transform="translate(0 -8)">
+  <rect x="1.5" y="17.5" width="5" height="5" rx="3.125" fill="#8cbe8c" stroke="#4c4d4c" stroke-linecap="round" stroke-opacity=".93333"/>
+  <rect x="8.5" y="9.5" width="5" height="5" rx="3.125" fill="#8cbe8c" stroke="#4b4c4b" stroke-linecap="round" stroke-opacity=".95686"/>
+  <rect x="17.5" y="11.5" width="5" height="5" rx="3.125" fill="#8cbe8c" stroke="#4c4d4c" stroke-linecap="round" stroke-opacity=".93333"/>
+  <g transform="translate(-27.5 6)">
+   <rect x="40.5" y="15" width="11" height="11" rx="2.0115" fill="#3c5a6e"/>
+   <path d="m41.5 21 9-0.009599v-2c0-2.9904-1-2.9904-4.5-2.9904s-4.5 0-4.5 3c0 2 0 2 1e-6 2z" fill="#fcffff" fill-rule="evenodd" opacity=".3"/>
+   <path d="m45.5 16v3h-4v3h4v3l5-4z" fill="#fff" fill-rule="evenodd"/>
+  </g>
+ </g>
 </svg>

@@ -1,8 +1,9 @@
-<svg height="492.18411" width="489.33719" xmlns="http://www.w3.org/2000/svg">
-<g fill="none" stroke-linecap="round" stroke-linejoin="round" transform="translate(-86.767507 -101.99995)">
-<path d="m105.71429 120.93361l451.42857 454.28572" stroke="#e1270a" stroke-width="37.5"/>
-<path d="m557.14286 126.6479l-451.42857 448.57143" stroke="#e1270a" stroke-width="37.5"/>
-<path d="m105.71429 120.93361l451.42857 454.28572" stroke="#fff" stroke-width="19.60000038"/>
-<path d="m557.14286 126.6479l-451.42857 448.57143" stroke="#fff" stroke-width="19.60000038"/>
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="489.34" height="492.18" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(-86.768 -102)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path d="m105.71 120.93 451.43 454.29" stroke="#e1270a" stroke-width="37.5"/>
+  <path d="m557.14 126.65-451.43 448.57" stroke="#e1270a" stroke-width="37.5"/>
+  <path d="m105.71 120.93 451.43 454.29" stroke="#fff" stroke-width="19.6"/>
+  <path d="m557.14 126.65-451.43 448.57" stroke="#fff" stroke-width="19.6"/>
+ </g>
 </svg>

@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
-  <g>
-    <defs>
-      <linearGradient id="ES Rosa 24" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
-        <stop offset="0.00%" stop-color="rgb(136,81,103)" stop-opacity="1.0000"/>
-        <stop offset="25.00%" stop-color="rgb(180,118,149)" stop-opacity="1.0000"/>
-        <stop offset="50.00%" stop-color="rgb(226,185,206)" stop-opacity="1.0000"/>
-        <stop offset="80.00%" stop-color="rgb(239,214,225)" stop-opacity="1.0000"/>
-        <stop offset="100.00%" stop-color="rgb(242,222,230)" stop-opacity="1.0000"/>
-      </linearGradient>
-    </defs>
-    <rect fill="url(#ES Rosa 24)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
-  </g>
-  <metadata>
-    <creator name="cptutils" version="1.46"/>
-    <created date="Wed Aug 15 23:38:40 2012"/>
-  </metadata>
+<svg width="300px" height="45px" version="1.1" viewBox="0 0 300 45" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="ES Rosa 24">
+   <stop stop-color="#885167" offset="0"/>
+   <stop stop-color="#b47695" offset=".25"/>
+   <stop stop-color="#e2b9ce" offset=".5"/>
+   <stop stop-color="#efd6e1" offset=".8"/>
+   <stop stop-color="#f2dee6" offset="1"/>
+  </linearGradient>
+ </defs>
+ <rect x="4" y="4" width="292" height="37" fill="url(#ES Rosa 24)" stroke="#000"/>
+ <metadata>
+  <creator name="cptutils" version="1.46"/>
+  <created date="Wed Aug 15 23:38:40 2012"/>
+ </metadata>
 </svg>

@@ -1,7 +1,8 @@
-<svg height="12" width="12" xmlns="http://www.w3.org/2000/svg">
-<g stroke-linejoin="round" transform="translate(0 -20)">
-<rect fill="#f05050" height="11.799762" rx="1.0727056" stroke="#000" stroke-width=".2" width="11.799762" x=".10011911" y="20.100119"/>
-<path d="m9.5 22.5l-7 7" style="fill:#fcffff;fill-rule:evenodd;stroke:#fff;stroke-width:2;stroke-linecap:round;overflow:visible"/>
-<path d="m9.5 29.5l-7-7" style="fill:#fcffff;fill-rule:evenodd;stroke:#fff;stroke-width:2;stroke-linecap:round;overflow:visible"/>
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0 -20)" stroke-linejoin="round">
+  <rect x=".10012" y="20.1" width="11.8" height="11.8" rx="1.0727" fill="#f05050" stroke="#000" stroke-width=".2"/>
+  <path d="m9.5 22.5-7 7" fill="#fcffff" fill-rule="evenodd" stroke="#fff" stroke-linecap="round" stroke-width="2"/>
+  <path d="m9.5 29.5-7-7" fill="#fcffff" fill-rule="evenodd" stroke="#fff" stroke-linecap="round" stroke-width="2"/>
+ </g>
 </svg>

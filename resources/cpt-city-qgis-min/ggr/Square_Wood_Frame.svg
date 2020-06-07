@@ -1,30 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
-  <g>
-    <defs>
-      <linearGradient id="Square Wood Frame" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
-        <stop offset="0.00%" stop-color="rgb(89,48,7)" stop-opacity="0.0000"/>
-        <stop offset="39.43%" stop-color="rgb(89,48,7)" stop-opacity="0.0000"/>
-        <stop offset="79.72%" stop-color="rgb(89,48,7)" stop-opacity="0.0000"/>
-        <stop offset="79.72%" stop-color="rgb(89,48,7)" stop-opacity="1.0000"/>
-        <stop offset="81.39%" stop-color="rgb(121,65,9)" stop-opacity="1.0000"/>
-        <stop offset="83.06%" stop-color="rgb(153,82,12)" stop-opacity="1.0000"/>
-        <stop offset="83.06%" stop-color="rgb(193,110,21)" stop-opacity="1.0000"/>
-        <stop offset="88.02%" stop-color="rgb(193,110,21)" stop-opacity="1.0000"/>
-        <stop offset="92.99%" stop-color="rgb(193,110,21)" stop-opacity="1.0000"/>
-        <stop offset="93.98%" stop-color="rgb(226,143,66)" stop-opacity="1.0000"/>
-        <stop offset="94.96%" stop-color="rgb(255,174,107)" stop-opacity="1.0000"/>
-        <stop offset="95.85%" stop-color="rgb(234,152,77)" stop-opacity="1.0000"/>
-        <stop offset="96.73%" stop-color="rgb(214,130,47)" stop-opacity="1.0000"/>
-        <stop offset="97.62%" stop-color="rgb(193,108,17)" stop-opacity="1.0000"/>
-        <stop offset="98.81%" stop-color="rgb(158,88,14)" stop-opacity="1.0000"/>
-        <stop offset="100.00%" stop-color="rgb(123,68,11)" stop-opacity="1.0000"/>
-      </linearGradient>
-    </defs>
-    <rect fill="url(#Square Wood Frame)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
-  </g>
-  <metadata>
-    <creator name="cptutils" version="1.46"/>
-    <created date="Wed Aug 15 23:33:15 2012"/>
-  </metadata>
+<svg width="300px" height="45px" version="1.1" viewBox="0 0 300 45" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="Square Wood Frame">
+   <stop stop-color="#593007" stop-opacity="0" offset="0"/>
+   <stop stop-color="#593007" stop-opacity="0" offset=".3943"/>
+   <stop stop-color="#593007" stop-opacity="0" offset=".7972"/>
+   <stop stop-color="#593007" offset=".7972"/>
+   <stop stop-color="#794109" offset=".8139"/>
+   <stop stop-color="#99520c" offset=".8306"/>
+   <stop stop-color="#c16e15" offset=".8306"/>
+   <stop stop-color="#c16e15" offset=".8802"/>
+   <stop stop-color="#c16e15" offset=".9299"/>
+   <stop stop-color="#e28f42" offset=".9398"/>
+   <stop stop-color="#ffae6b" offset=".9496"/>
+   <stop stop-color="#ea984d" offset=".9585"/>
+   <stop stop-color="#d6822f" offset=".9673"/>
+   <stop stop-color="#c16c11" offset=".9762"/>
+   <stop stop-color="#9e580e" offset=".9881"/>
+   <stop stop-color="#7b440b" offset="1"/>
+  </linearGradient>
+ </defs>
+ <rect x="4" y="4" width="292" height="37" fill="url(#Square Wood Frame)" stroke="#000"/>
+ <metadata>
+  <creator name="cptutils" version="1.46"/>
+  <created date="Wed Aug 15 23:33:15 2012"/>
+ </metadata>
 </svg>

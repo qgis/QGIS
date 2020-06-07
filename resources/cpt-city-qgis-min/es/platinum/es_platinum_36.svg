@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
-  <g>
-    <defs>
-      <linearGradient id="ES Platinum 36" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
-        <stop offset="0.00%" stop-color="rgb(8,16,19)" stop-opacity="1.0000"/>
-        <stop offset="30.00%" stop-color="rgb(143,145,146)" stop-opacity="1.0000"/>
-        <stop offset="39.99%" stop-color="rgb(200,202,203)" stop-opacity="1.0000"/>
-        <stop offset="50.00%" stop-color="rgb(225,222,227)" stop-opacity="1.0000"/>
-        <stop offset="60.01%" stop-color="rgb(200,202,203)" stop-opacity="1.0000"/>
-        <stop offset="70.00%" stop-color="rgb(143,145,146)" stop-opacity="1.0000"/>
-        <stop offset="100.00%" stop-color="rgb(8,16,19)" stop-opacity="1.0000"/>
-      </linearGradient>
-    </defs>
-    <rect fill="url(#ES Platinum 36)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
-  </g>
-  <metadata>
-    <creator name="cptutils" version="1.46"/>
-    <created date="Wed Aug 15 23:38:57 2012"/>
-  </metadata>
+<svg width="300px" height="45px" version="1.1" viewBox="0 0 300 45" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="ES Platinum 36">
+   <stop stop-color="#081013" offset="0"/>
+   <stop stop-color="#8f9192" offset=".3"/>
+   <stop stop-color="#c8cacb" offset=".3999"/>
+   <stop stop-color="#e1dee3" offset=".5"/>
+   <stop stop-color="#c8cacb" offset=".6001"/>
+   <stop stop-color="#8f9192" offset=".7"/>
+   <stop stop-color="#081013" offset="1"/>
+  </linearGradient>
+ </defs>
+ <rect x="4" y="4" width="292" height="37" fill="url(#ES Platinum 36)" stroke="#000"/>
+ <metadata>
+  <creator name="cptutils" version="1.46"/>
+  <created date="Wed Aug 15 23:38:57 2012"/>
+ </metadata>
 </svg>
