@@ -311,6 +311,14 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
      */
     QString generateTemporaryFilepath( const QString &filename ) const;
 
+    /**
+     * Returns TRUE if the specified composition \a mode is supported for layers
+     * during GeoPDF exports.
+     *
+     * \since QGIS 3.14
+     */
+    static bool compositionModeSupported( QPainter::CompositionMode mode );
+
   protected:
 
     /**
@@ -357,6 +365,11 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
     bool saveTemporaryLayers();
 
     QString createCompositionXml( const QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > &components, const ExportDetails &details );
+
+    /**
+     * Returns the GDAL string representation of the specified QPainter composition \a mode.
+     */
+    static QString compositionModeToString( QPainter::CompositionMode mode );
 
     friend class TestQgsLayoutGeoPdfExport;
     friend class TestQgsGeoPdfExport;
