@@ -22,7 +22,7 @@ int QgisEvent = QEvent::User + 1;
 class Qgis
 {
 %Docstring
-The QGIS class provides global constants for use throughout the application.
+The Qgis class provides global constants for use throughout the application.
 %End
 
 %TypeHeaderCode
