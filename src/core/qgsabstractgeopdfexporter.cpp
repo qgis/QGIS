@@ -136,6 +136,29 @@ QString QgsAbstractGeoPdfExporter::generateTemporaryFilepath( const QString &fil
   return mTemporaryDir.filePath( filename );
 }
 
+bool QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode mode )
+{
+  switch ( mode )
+  {
+    case QPainter::CompositionMode_SourceOver:
+    case QPainter::CompositionMode_Multiply:
+    case QPainter::CompositionMode_Screen:
+    case QPainter::CompositionMode_Overlay:
+    case QPainter::CompositionMode_Darken:
+    case QPainter::CompositionMode_Lighten:
+    case QPainter::CompositionMode_ColorDodge:
+    case QPainter::CompositionMode_ColorBurn:
+    case QPainter::CompositionMode_HardLight:
+    case QPainter::CompositionMode_SoftLight:
+    case QPainter::CompositionMode_Difference:
+    case  QPainter::CompositionMode_Exclusion:
+      return true;
+
+    default:
+      return false;
+  }
+  return false;
+}
 
 void QgsAbstractGeoPdfExporter::pushRenderedFeature( const QString &layerId, const QgsAbstractGeoPdfExporter::RenderedFeature &feature, const QString &group )
 {
@@ -479,52 +502,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
     {
       QDomElement blendingElement = doc.createElement( QStringLiteral( "Blending" ) );
       blendingElement.setAttribute( QStringLiteral( "opacity" ), component.opacity );
-      QString function;
-      switch ( component.compositionMode )
-      {
-        case QPainter::CompositionMode_SourceOver:
-          function = QStringLiteral( "Normal" );
-          break;
-        case QPainter::CompositionMode_Multiply:
-          function = QStringLiteral( "Multiply" );
-          break;
-        case QPainter::CompositionMode_Screen:
-          function = QStringLiteral( "Screen" );
-          break;
-        case QPainter::CompositionMode_Overlay:
-          function = QStringLiteral( "Overlay" );
-          break;
-        case QPainter::CompositionMode_Darken:
-          function = QStringLiteral( "Darken" );
-          break;
-        case QPainter::CompositionMode_Lighten:
-          function = QStringLiteral( "Lighten" );
-          break;
-        case QPainter::CompositionMode_ColorDodge:
-          function = QStringLiteral( "ColorDodge" );
-          break;
-        case QPainter::CompositionMode_ColorBurn:
-          function = QStringLiteral( "ColorBurn" );
-          break;
-        case QPainter::CompositionMode_HardLight:
-          function = QStringLiteral( "HardLight" );
-          break;
-        case QPainter::CompositionMode_SoftLight:
-          function = QStringLiteral( "SoftLight" );
-          break;
-        case QPainter::CompositionMode_Difference:
-          function = QStringLiteral( "Difference" );
-          break;
-        case  QPainter::CompositionMode_Exclusion:
-          function = QStringLiteral( "Exclusion" );
-          break;
-
-        default:
-          QgsDebugMsg( QStringLiteral( "Unsupported PDF blend mode %1" ).arg( component.compositionMode ) );
-          function = QStringLiteral( "Normal" );
-          break;
-      }
-      blendingElement.setAttribute( QStringLiteral( "function" ), function );
+      blendingElement.setAttribute( QStringLiteral( "function" ), compositionModeToString( component.compositionMode ) );
 
       pdfDataset.appendChild( blendingElement );
     }
@@ -606,5 +584,53 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   doc.save( stream, -1 );
 
   return composition;
+}
+
+QString QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode mode )
+{
+  switch ( mode )
+  {
+    case QPainter::CompositionMode_SourceOver:
+      return QStringLiteral( "Normal" );
+
+    case QPainter::CompositionMode_Multiply:
+      return QStringLiteral( "Multiply" );
+
+    case QPainter::CompositionMode_Screen:
+      return QStringLiteral( "Screen" );
+
+    case QPainter::CompositionMode_Overlay:
+      return QStringLiteral( "Overlay" );
+
+    case QPainter::CompositionMode_Darken:
+      return QStringLiteral( "Darken" );
+
+    case QPainter::CompositionMode_Lighten:
+      return QStringLiteral( "Lighten" );
+
+    case QPainter::CompositionMode_ColorDodge:
+      return QStringLiteral( "ColorDodge" );
+
+    case QPainter::CompositionMode_ColorBurn:
+      return QStringLiteral( "ColorBurn" );
+
+    case QPainter::CompositionMode_HardLight:
+      return QStringLiteral( "HardLight" );
+
+    case QPainter::CompositionMode_SoftLight:
+      return QStringLiteral( "SoftLight" );
+
+    case QPainter::CompositionMode_Difference:
+      return QStringLiteral( "Difference" );
+
+    case  QPainter::CompositionMode_Exclusion:
+      return QStringLiteral( "Exclusion" );
+
+    default:
+      QgsDebugMsg( QStringLiteral( "Unsupported PDF blend mode %1" ).arg( mode ) );
+      return QStringLiteral( "Normal" );
+
+  }
+  return QString();
 }
 
