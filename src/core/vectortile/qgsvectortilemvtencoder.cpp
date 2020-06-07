@@ -233,6 +233,21 @@ void QgsVectorTileMVTEncoder::addLayer( QgsVectorLayer *layer, QgsFeedback *feed
 
 void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, const QgsFeature &f )
 {
+  QgsGeometry g = f.geometry();
+  QgsWkbTypes::GeometryType geomType = g.type();
+  double onePixel = mTileExtent.width() / mResolution;
+
+  if ( geomType == QgsWkbTypes::LineGeometry )
+  {
+    if ( g.length() < onePixel )
+      return; // too short
+  }
+  else if ( geomType == QgsWkbTypes::PolygonGeometry )
+  {
+    if ( g.area() < onePixel * onePixel )
+      return; // too small
+  }
+
   vector_tile::Tile_Feature *feature = tileLayer->add_features();
 
   feature->set_id( static_cast<quint64>( f.id() ) );
@@ -277,8 +292,6 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
   // encode geometry
   //
 
-  QgsGeometry g = f.geometry();
-  QgsWkbTypes::GeometryType geomType = g.type();
   vector_tile::Tile_GeomType mvtGeomType = vector_tile::Tile_GeomType_UNKNOWN;
   if ( geomType == QgsWkbTypes::PointGeometry )
     mvtGeomType = vector_tile::Tile_GeomType_POINT;
