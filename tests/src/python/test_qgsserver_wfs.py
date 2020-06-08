@@ -268,7 +268,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         <PropertyName>geometry</PropertyName>
         <Polygon xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
           <exterior>
-            <LinearRing srsName="EPSG:4326">
+            <LinearRing>
               <posList srsDimension="2">
                 8 44
                 9 44
@@ -296,7 +296,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         <PropertyName>geometry</PropertyName>
         <Polygon xmlns="http://www.opengis.net/gml" srsName="EPSG:3857">
           <exterior>
-            <LinearRing srsName="EPSG:3857">
+            <LinearRing>
               <posList srsDimension="2">
                 890555.93 5465442.18
                 1001875.42 5465442.18
