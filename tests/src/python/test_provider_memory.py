@@ -692,6 +692,22 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(parse_qs(vl2.publicSource())['uid']), 1)
         self.assertNotEqual(parse_qs(vl2.publicSource())['uid'][0], parse_qs(vl.publicSource())['uid'][0])
 
+    def testTypeValidation(self):
+        """Test that incompatible types in attributes raise errors"""
+
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=int:integer',
+            'test', 'memory')
+
+        self.assertTrue(vl.isValid())
+        f = QgsFeature(vl.fields())
+        f.setAttribute('int', 'A string')
+        f.setGeometry(QgsGeometry.fromWkt('point(9 45)'))
+        self.assertTrue(vl.startEditing())
+        # Validation happens on commit
+        self.assertTrue(vl.addFeatures([f]))
+        self.assertFalse(vl.commitChanges())
+
 
 class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
     """Runs the provider test suite against an indexed memory layer"""

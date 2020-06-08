@@ -15,7 +15,7 @@ import qgis  # NOQA
 import shutil
 import tempfile
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, QDate
 from qgis.core import (QgsProject,
                        QgsVectorLayer,
                        QgsVectorLayerUtils,
@@ -689,6 +689,49 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         self.assertTrue(vl.startEditing())
         vl.addFeatures(features)
         self.assertTrue(vl.commitChanges())
+
+    def test_check_attribute_type(self):
+        """Test checkAttributeType"""
+
+        vl = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer', 'test', 'memory')
+
+        # Valid values
+        self.assertTrue(QgsVectorLayerUtils.canConvert(123.0, vl.fields()[0].type()))
+        self.assertTrue(QgsVectorLayerUtils.canConvert(123, vl.fields()[0].type()))
+        # Check NULL/invalid
+        self.assertTrue(QgsVectorLayerUtils.canConvert(None, vl.fields()[0].type()))
+        self.assertTrue(QgsVectorLayerUtils.canConvert(QVariant(QVariant.Int), vl.fields()[0].type()))
+        # Not valid
+        self.assertFalse(QgsVectorLayerUtils.canConvert('QGIS Rocks!', vl.fields()[0].type()))
+        self.assertFalse(QgsVectorLayerUtils.canConvert(QDate(2020, 6, 30), vl.fields()[0].type()))
+        # Not valid: overflow and narrow cast!
+        self.assertFalse(QgsVectorLayerUtils.canConvert(2147483647 + 1, vl.fields()[0].type()))
+        self.assertFalse(QgsVectorLayerUtils.canConvert(123.123, vl.fields()[0].type()))
+
+        vl = QgsVectorLayer('Point?crs=epsg:4326&field=date:date', 'test', 'memory')
+        self.assertTrue(QgsVectorLayerUtils.canConvert(QDate(2020, 6, 30), vl.fields()[0].type()))
+        # Not valid
+        self.assertFalse(QgsVectorLayerUtils.canConvert('QGIS Rocks!', vl.fields()[0].type()))
+        self.assertFalse(QgsVectorLayerUtils.canConvert(123, vl.fields()[0].type()))
+
+        # Strings can store almost anything
+        vl = QgsVectorLayer('Point?crs=epsg:4326&field=text:text', 'test', 'memory')
+        self.assertTrue(QgsVectorLayerUtils.canConvert(QDate(2020, 6, 30), vl.fields()[0].type()))
+        self.assertTrue(QgsVectorLayerUtils.canConvert('QGIS Rocks!', vl.fields()[0].type()))
+        self.assertTrue(QgsVectorLayerUtils.canConvert(123, vl.fields()[0].type()))
+        self.assertTrue(QgsVectorLayerUtils.canConvert(123.456, vl.fields()[0].type()))
+
+        vl = QgsVectorLayer('Point?crs=epsg:4326&field=double:double', 'test', 'memory')
+
+        # Valid values
+        self.assertTrue(QgsVectorLayerUtils.canConvert(123.0, vl.fields()[0].type()))
+        self.assertTrue(QgsVectorLayerUtils.canConvert(123, vl.fields()[0].type()))
+        # Check NULL/invalid
+        self.assertTrue(QgsVectorLayerUtils.canConvert(None, vl.fields()[0].type()))
+        self.assertTrue(QgsVectorLayerUtils.canConvert(QVariant.Double, vl.fields()[0].type()))
+        # Not valid
+        self.assertFalse(QgsVectorLayerUtils.canConvert('QGIS Rocks!', vl.fields()[0].type()))
+        self.assertFalse(QgsVectorLayerUtils.canConvert(QDate(2020, 6, 30), vl.fields()[0].type()))
 
 
 if __name__ == '__main__':
