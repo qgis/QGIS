@@ -437,13 +437,18 @@ QMimeData *QgsMapLayerModel::mimeData( const QModelIndexList &indexes ) const
 
   QByteArray encodedData;
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
+  QSet< QString > addedLayers;
 
   for ( const QModelIndex &i : indexes )
   {
     if ( i.isValid() )
     {
-      QString text = data( index( i.row(), 0, i.parent() ), LayerIdRole ).toString();
-      stream << text;
+      const QString id = data( index( i.row(), 0, i.parent() ), LayerIdRole ).toString();
+      if ( !addedLayers.contains( id ) )
+      {
+        addedLayers.insert( id );
+        stream << id;
+      }
     }
   }
   mimeData->setData( QStringLiteral( "application/qgis.layermodeldata" ), encodedData );
