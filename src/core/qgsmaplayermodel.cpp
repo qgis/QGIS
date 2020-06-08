@@ -438,11 +438,11 @@ QMimeData *QgsMapLayerModel::mimeData( const QModelIndexList &indexes ) const
   QByteArray encodedData;
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
-  for ( const QModelIndex &index : indexes )
+  for ( const QModelIndex &i : indexes )
   {
-    if ( index.isValid() )
+    if ( i.isValid() )
     {
-      QString text = data( index, LayerIdRole ).toString();
+      QString text = data( index( i.row(), 0, i.parent() ), LayerIdRole ).toString();
       stream << text;
     }
   }
