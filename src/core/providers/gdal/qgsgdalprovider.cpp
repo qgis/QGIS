@@ -44,6 +44,10 @@
 #include "qgssettings.h"
 #include "qgsogrutils.h"
 
+#include "qgsrasterresamplefilter.h"
+#include "qgsbilinearrasterresampler.h"
+#include "qgscubicrasterresampler.h"
+
 #include <QImage>
 #include <QColor>
 #include <QProcess>
@@ -649,7 +653,6 @@ QString QgsGdalProvider::htmlMetadata()
   return myMetadata;
 }
 
-
 QgsRasterBlock *QgsGdalProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   std::unique_ptr< QgsRasterBlock > block = qgis::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
@@ -715,7 +718,82 @@ bool QgsGdalProvider::readBlock( int bandNo, int xBlock, int yBlock, void *data 
   return true;
 }
 
-bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle const &reqExtent, int bufferWidthPix, int bufferHeightPix, void *data, QgsRasterBlockFeedback *feedback )
+bool QgsGdalProvider::canHandleBlockRequestWithResampling(
+  int bandNo,
+  const QgsRectangle &reqExtent,
+  int bufferWidthPix,
+  int bufferHeightPix,
+  const QgsRasterResampleFilter *filter )
+{
+  QMutexLocker locker( mpMutex );
+  if ( !initIfNeeded() )
+    return false;
+
+  // Hidden property, just/mostly for the needs of test_qgsrasterresampler.py
+  if ( property( "skip_gdal_resampling" ).isValid() )
+    return false;
+
+  GDALRasterBandH gdalBand = getBand( bandNo );
+  if ( GDALGetRasterColorTable( gdalBand ) )
+    return false;
+
+  const double reqXRes = reqExtent.width() / bufferWidthPix;
+  const double reqYRes = reqExtent.height() / bufferHeightPix;
+  const double srcXRes = mGeoTransform[1];
+  const double srcYRes = fabs( mGeoTransform[5] );
+  // Compute the resampling factor :
+  // < 1 means upsampling / zoom-in
+  // > 1 means downsampling / zoom-out
+  const double resamplingFactor = std::max( reqXRes / srcXRes, reqYRes / srcYRes );
+
+  if ( resamplingFactor < 1 )
+  {
+    // upsampling ==> check compatibility of zoom-in resampler with what GDAL can do
+    return dynamic_cast<const QgsBilinearRasterResampler *>( filter->zoomedInResampler() ) != nullptr ||
+           dynamic_cast<const QgsCubicRasterResampler *>( filter->zoomedInResampler() ) != nullptr;
+  }
+
+  if ( resamplingFactor < 1.1 )
+  {
+    // very close to nominal resolution ==> check compatibility of zoom-in or zoom-out resampler with what GDAL can do
+    return dynamic_cast<const QgsBilinearRasterResampler *>( filter->zoomedInResampler() ) != nullptr ||
+           dynamic_cast<const QgsCubicRasterResampler *>( filter->zoomedInResampler() ) != nullptr ||
+           dynamic_cast<const QgsBilinearRasterResampler *>( filter->zoomedOutResampler() ) != nullptr ||
+           dynamic_cast<const QgsCubicRasterResampler *>( filter->zoomedOutResampler() ) != nullptr;
+  }
+
+  // if zoomedOutResampler is not compatible of GDAL, exit now
+  if ( dynamic_cast<const QgsBilinearRasterResampler *>( filter->zoomedOutResampler() ) == nullptr &&
+       dynamic_cast<const QgsCubicRasterResampler *>( filter->zoomedOutResampler() ) == nullptr )
+  {
+    return false;
+  }
+
+  // if the resampling factor is not too large, we can do the downsampling
+  // from the full resolution with acceptable performance
+  if ( resamplingFactor <= ( filter->maxOversampling() + .1 ) )
+  {
+    return true;
+  }
+
+  // otherwise, we have to check that we have an overview band that satisfies
+  // that criterion
+  const int nOvrCount = GDALGetOverviewCount( gdalBand );
+  for ( int i = 0; i < nOvrCount; i++ )
+  {
+    GDALRasterBandH hOvrBand = GDALGetOverview( gdalBand, i );
+    const double ovrResamplingFactor = xSize() / static_cast<double>( GDALGetRasterBandXSize( hOvrBand ) );
+    if ( resamplingFactor <= ( filter->maxOversampling() + .1 ) * ovrResamplingFactor )
+    {
+      return true;
+    }
+  }
+
+  // too much zoomed out
+  return false;
+}
+
+bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int bufferWidthPix, int bufferHeightPix, void *data, QgsRasterBlockFeedback *feedback )
 {
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
@@ -748,17 +826,16 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle const &reqExtent, int 
   const double srcYRes = mGeoTransform[5]; // may be negative?
   QgsDebugMsgLevel( QStringLiteral( "reqXRes = %1 reqYRes = %2 srcXRes = %3 srcYRes = %4" ).arg( reqXRes ).arg( reqYRes ).arg( srcXRes ).arg( srcYRes ), 5 );
 
+  GDALRasterBandH gdalBand = getBand( bandNo );
+  const GDALDataType type = static_cast<GDALDataType>( mGdalDataType.at( bandNo - 1 ) );
+
   // Find top, bottom rows and left, right column the raster extent covers
   // These are limits in target grid space
   QRect subRect = QgsRasterBlock::subRect( reqExtent, bufferWidthPix, bufferHeightPix, intersectExtent );
-  int tgtTop = subRect.top();
-  int tgtBottom = subRect.bottom();
-  int tgtLeft = subRect.left();
-  int tgtRight = subRect.right();
-  QgsDebugMsgLevel( QStringLiteral( "tgtTop = %1 tgtBottom = %2 tgtLeft = %3 tgtRight = %4" ).arg( tgtTop ).arg( tgtBottom ).arg( tgtLeft ).arg( tgtRight ), 5 );
-  // target size in pizels
-  int tgtWidth = tgtRight - tgtLeft + 1;
-  int tgtHeight = tgtBottom - tgtTop + 1;
+  const int tgtTopOri = subRect.top();
+  const int tgtBottomOri = subRect.bottom();
+  const int tgtLeftOri = subRect.left();
+  const int tgtRightOri = subRect.right();
 
   // Calculate rows/cols limits in source raster grid space
   int srcLeft = 0;
@@ -790,6 +867,129 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle const &reqExtent, int 
 
   const int srcWidth = srcRight - srcLeft + 1;
   const int srcHeight = srcBottom - srcTop + 1;
+
+  // Use GDAL cubic/bilinear resampling if asked
+  const QgsRasterResampleFilter *filter = feedback != nullptr ? feedback->resampleFilter() : nullptr;
+  if ( filter )
+  {
+    int tgtTop = tgtTopOri;
+    int tgtBottom = tgtBottomOri;
+    int tgtLeft = tgtLeftOri;
+    int tgtRight = tgtRightOri;
+
+    // Deal with situations that requires adjusting tgt coordinates.
+    // This is due rounding in QgsRasterBlock::subRect() and
+    // when the difference between the raster extent and the
+    // request extent is less than half of the request resolution.
+    // This is to avoid to send dfXOff, dfYOff, dfXSize, dfYSize values that
+    // would be outside of the raster extent, as GDAL (at least currently)
+    // rejects them
+    if ( reqExtent.xMinimum() + tgtLeft * reqXRes < mExtent.xMinimum() )
+    {
+      if ( GDALRasterIO( gdalBand, GF_Read, 0, srcTop, 1, srcHeight,
+                         static_cast<char *>( data ) + tgtTopOri * bufferWidthPix * dataSize,
+                         1, tgtBottomOri - tgtTopOri + 1, type,
+                         dataSize, dataSize * bufferWidthPix ) != CE_None )
+      {
+        return false;
+      }
+      tgtLeft ++;
+    }
+    if ( reqExtent.yMaximum() - tgtTop * reqYRes > mExtent.yMaximum() )
+    {
+      if ( GDALRasterIO( gdalBand, GF_Read, srcLeft, 0, srcWidth, 1,
+                         static_cast<char *>( data ) + tgtLeftOri * dataSize,
+                         tgtRightOri - tgtLeftOri + 1, 1, type,
+                         dataSize, dataSize * bufferWidthPix ) != CE_None )
+      {
+        return false;
+      }
+      tgtTop ++;
+    }
+    if ( reqExtent.xMinimum() + ( tgtRight + 1 ) * reqXRes > mExtent.xMaximum() )
+    {
+      if ( GDALRasterIO( gdalBand, GF_Read, xSize() - 1, srcTop, 1, srcHeight,
+                         static_cast<char *>( data ) + ( tgtTopOri * bufferWidthPix + tgtRightOri ) * dataSize,
+                         1, tgtBottomOri - tgtTopOri + 1, type,
+                         dataSize, dataSize * bufferWidthPix ) != CE_None )
+      {
+        return false;
+      }
+      tgtRight --;
+    }
+    if ( reqExtent.yMaximum() - ( tgtBottom + 1 ) * reqYRes < mExtent.yMinimum() )
+    {
+      if ( GDALRasterIO( gdalBand, GF_Read, srcLeft, ySize() - 1, srcWidth, 1,
+                         static_cast<char *>( data ) + ( tgtBottomOri * bufferWidthPix + tgtLeftOri ) * dataSize,
+                         tgtRightOri - tgtLeftOri + 1, 1, type,
+                         dataSize, dataSize * bufferWidthPix ) != CE_None )
+      {
+        return false;
+      }
+      tgtBottom --;
+    }
+
+    int tgtWidth = tgtRight - tgtLeft + 1;
+    int tgtHeight = tgtBottom - tgtTop + 1;
+    if ( tgtWidth > 0 && tgtHeight > 0 )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "using GDAL resampling path" ), 5 );
+      GDALRasterIOExtraArg sExtraArg;
+      INIT_RASTERIO_EXTRA_ARG( sExtraArg );
+
+      const double resamplingFactor = std::max( reqXRes / srcXRes, reqYRes / std::fabs( srcYRes ) );
+      const QgsRasterResampler *resampler = nullptr;
+      if ( resamplingFactor < 1 )
+      {
+        resampler = filter->zoomedInResampler();
+      }
+      else if ( resamplingFactor < 1.1 )
+      {
+        // very close to nominal resolution ==> use either zoomed out resampler or zoomed in resampler
+        if ( filter->zoomedOutResampler() )
+          resampler = filter->zoomedOutResampler();
+        else
+          resampler = filter->zoomedInResampler();
+      }
+      else
+      {
+        resampler = filter->zoomedOutResampler();
+      }
+      if ( dynamic_cast<const QgsCubicRasterResampler *>( resampler ) != nullptr )
+        sExtraArg.eResampleAlg = GRIORA_Cubic;
+      else
+        sExtraArg.eResampleAlg = GRIORA_Bilinear;
+
+      sExtraArg.bFloatingPointWindowValidity = true;
+      sExtraArg.dfXOff = ( reqExtent.xMinimum() + tgtLeft * reqXRes - mExtent.xMinimum() ) / srcXRes;
+      sExtraArg.dfYOff = ( mExtent.yMaximum() - ( reqExtent.yMaximum() - tgtTop * reqYRes ) ) / -srcYRes;
+      sExtraArg.dfXSize = tgtWidth * reqXRes / srcXRes;
+      sExtraArg.dfYSize = tgtHeight * reqYRes / -srcYRes;
+      return GDALRasterIOEx( gdalBand, GF_Read,
+                             std::floor( sExtraArg.dfXOff ),
+                             std::floor( sExtraArg.dfYOff ),
+                             std::floor( sExtraArg.dfXSize ),
+                             std::floor( sExtraArg.dfYSize ),
+                             static_cast<char *>( data ) +
+                             ( tgtTop * bufferWidthPix + tgtLeft ) * dataSize,
+                             tgtWidth,
+                             tgtHeight,
+                             type,
+                             dataSize,
+                             dataSize * bufferWidthPix,
+                             &sExtraArg ) == CE_None;
+    }
+  }
+
+  const int tgtTop = tgtTopOri;
+  const int tgtBottom = tgtBottomOri;
+  const int tgtLeft = tgtLeftOri;
+  const int tgtRight = tgtRightOri;
+  QgsDebugMsgLevel( QStringLiteral( "tgtTop = %1 tgtBottom = %2 tgtLeft = %3 tgtRight = %4" ).arg( tgtTop ).arg( tgtBottom ).arg( tgtLeft ).arg( tgtRight ), 5 );
+  // target size in pizels
+  const int tgtWidth = tgtRight - tgtLeft + 1;
+  const int tgtHeight = tgtBottom - tgtTop + 1;
+
   QgsDebugMsgLevel( QStringLiteral( "srcTop = %1 srcBottom = %2 srcWidth = %3 srcHeight = %4" ).arg( srcTop ).arg( srcBottom ).arg( srcWidth ).arg( srcHeight ), 5 );
 
   // Determine the dimensions of the buffer into which we will ask GDAL to write
@@ -831,8 +1031,6 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle const &reqExtent, int 
     QgsDebugMsgLevel( QStringLiteral( "Couldn't allocate temporary buffer of %1 bytes" ).arg( dataSize * tmpWidth * tmpHeight ), 5 );
     return false;
   }
-  GDALRasterBandH gdalBand = getBand( bandNo );
-  GDALDataType type = static_cast<GDALDataType>( mGdalDataType.at( bandNo - 1 ) );
   CPLErrorReset();
 
   CPLErr err = gdalRasterIO( gdalBand, GF_Read,

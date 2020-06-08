@@ -12,6 +12,11 @@ __author__ = 'Nyall Dawson'
 __date__ = '14/11/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
+from osgeo import gdal
+import struct
+from contextlib import contextmanager
+import tempfile
+
 import qgis  # NOQA
 
 import os
@@ -45,6 +50,11 @@ class TestQgsRasterResampler(unittest.TestCase):
         path = os.path.join(unitTestDataPath(), 'landsat.tif')
         raster_layer = QgsRasterLayer(path, 'test')
         self.assertTrue(raster_layer.isValid())
+
+        # We set this hidden property so that GDAL provider own resampling
+        # is not used, as we want to test generic QgsRasterResampleFilter
+        # mechanisms
+        raster_layer.dataProvider().setProperty("skip_gdal_resampling", True)
 
         extent = QgsRectangle(785994.37761193525511771,
                               3346249.2209800467826426,
@@ -178,6 +188,11 @@ class TestQgsRasterResampler(unittest.TestCase):
         raster_layer = QgsRasterLayer(path, 'test')
         self.assertTrue(raster_layer.isValid())
 
+        # We set this hidden property so that GDAL provider own resampling
+        # is not used, as we want to test generic QgsRasterResampleFilter
+        # mechanisms
+        raster_layer.dataProvider().setProperty("skip_gdal_resampling", True)
+
         extent = QgsRectangle(785994.37761193525511771,
                               3346249.2209800467826426,
                               786108.49096253968309611,
@@ -304,6 +319,254 @@ class TestQgsRasterResampler(unittest.TestCase):
                                  [126, 125, 127, 125, 125, 127, 128, 126],
                                  [126, 125, 127, 127, 126, 125, 125, 126]]
                                 )
+
+    @contextmanager
+    def setupGDALResampling(self):
+
+        temp_folder = tempfile.mkdtemp()
+        tmpfilename = os.path.join(temp_folder, 'test.tif')
+
+        ds = gdal.GetDriverByName('GTiff').Create(tmpfilename, 5, 5)
+        xmin = 100
+        ymax = 1000
+        xres = 5
+        yres = 5
+        ds.SetGeoTransform([xmin, xres, 0, ymax, 0, -yres])
+        ds.WriteRaster(0, 0, 5, 5,
+                       struct.pack('B' * 5 * 5,
+                                   10, 20, 30, 40, 150,
+                                   20, 30, 40, 50, 160,
+                                   30, 40, 50, 60, 170,
+                                   40, 50, 60, 70, 180,
+                                   50, 60, 70, 80, 190))
+        ds = None
+
+        raster_layer = QgsRasterLayer(tmpfilename, 'test')
+        self.assertTrue(raster_layer.isValid())
+
+        renderer = QgsSingleBandGrayRenderer(raster_layer.dataProvider(), 1)
+        filter = QgsRasterResampleFilter(renderer)
+
+        try:
+            yield filter
+        finally:
+            gdal.Unlink(tmpfilename)
+
+    # Return an extent, fully inside raster, intersecting 2x2 pixels,
+    # with a shift of 25% of a cell
+    def _getExtentRequestInside(self):
+        xmin = 100
+        ymax = 1000
+        xres = 5
+        yres = 5
+
+        extent = QgsRectangle(xmin + 2.25 * xres,
+                              ymax - 4.25 * yres,
+                              xmin + 4.25 * xres,
+                              ymax - 2.25 * yres)
+        return extent
+
+    def testGDALResampling_nearest(self):
+
+        with self.setupGDALResampling() as filter:
+            # default (nearest neighbour) resampling
+            block = filter.block(1, self._getExtentRequestInside(), 2, 2)
+            self.checkBlockContents(block, [[50, 60], [60, 70]])
+
+    def testGDALResampling_nominal_resolution_zoomed_in_bilinear(self):
+
+        with self.setupGDALResampling() as filter:
+            filter.setZoomedInResampler(QgsBilinearRasterResampler())
+            block = filter.block(1, self._getExtentRequestInside(), 2, 2)
+            self.checkBlockContents(block, [[55, 90], [65, 100]])
+
+    def testGDALResampling_nominal_resolution_zoomed_in_cubic(self):
+
+        with self.setupGDALResampling() as filter:
+            filter.setZoomedInResampler(QgsCubicRasterResampler())
+            block = filter.block(1, self._getExtentRequestInside(), 2, 2)
+            self.checkBlockContents(block, [[53, 88], [63, 98]])
+
+    def testGDALResampling_nominal_resolution_zoomed_out_bilinear(self):
+
+        with self.setupGDALResampling() as filter:
+            filter.setZoomedOutResampler(QgsBilinearRasterResampler())
+            block = filter.block(1, self._getExtentRequestInside(), 2, 2)
+            self.checkBlockContents(block, [[55, 90], [65, 100]])
+
+    def testGDALResampling_nominal_resolution_zoomed_out_cubic(self):
+
+        with self.setupGDALResampling() as filter:
+            filter.setZoomedOutResampler(QgsCubicRasterResampler())
+            block = filter.block(1, self._getExtentRequestInside(), 2, 2)
+            self.checkBlockContents(block, [[53, 88], [63, 98]])
+
+    def testGDALResampling_oversampling_bilinear(self):
+
+        with self.setupGDALResampling() as filter:
+            filter.setZoomedInResampler(QgsBilinearRasterResampler())
+            filter.setZoomedOutResampler(QgsCubicRasterResampler())  # ignored
+            block = filter.block(1, self._getExtentRequestInside(), 4, 4)
+            self.checkBlockContents(block, [[50, 55, 60, 115], [55, 60, 65, 120], [60, 65, 70, 125], [65, 70, 75, 130]])
+
+    def testGDALResampling_oversampling_cubic(self):
+
+        with self.setupGDALResampling() as filter:
+            filter.setZoomedInResampler(QgsCubicRasterResampler())
+            filter.setZoomedOutResampler(QgsBilinearRasterResampler())  # ignored
+            block = filter.block(1, self._getExtentRequestInside(), 4, 4)
+            self.checkBlockContents(block, [[50, 49, 60, 119], [55, 54, 65, 124], [60, 59, 70, 129], [66, 65, 76, 135]])
+
+    def testGDALResampling_downsampling_bilinear(self):
+
+        with self.setupGDALResampling() as filter:
+            filter.setZoomedOutResampler(QgsBilinearRasterResampler())
+            filter.setZoomedInResampler(QgsCubicRasterResampler())  # ignored
+            block = filter.block(1, self._getExtentRequestInside(), 1, 1)
+            self.checkBlockContents(block, [[84]])
+
+    def testGDALResampling_downsampling_cubic(self):
+
+        with self.setupGDALResampling() as filter:
+            filter.setZoomedOutResampler(QgsCubicRasterResampler())
+            filter.setZoomedInResampler(QgsBilinearRasterResampler())  # ignored
+            block = filter.block(1, self._getExtentRequestInside(), 1, 1)
+            self.checkBlockContents(block, [[86]])
+
+    def testGDALResampling_downsampling_bilinear_ignored(self):
+
+        with self.setupGDALResampling() as filter:
+            filter.setMaxOversampling(1.5)
+            filter.setZoomedOutResampler(QgsBilinearRasterResampler())
+            filter.setZoomedInResampler(QgsCubicRasterResampler())  # ignored
+            block = filter.block(1, self._getExtentRequestInside(), 1, 1)
+            # as we request at a x2 oversampling factor and the limit is 1.5
+            # fallback to nearest neighbour
+            self.checkBlockContents(block, [[60]])
+
+    def testGDALResampling_nominal_resolution_containing_raster_extent(self):
+
+        xmin = 100
+        ymax = 1000
+        xres = 5
+        yres = 5
+
+        extent = QgsRectangle(xmin - 2.25 * xres,
+                              ymax - (5 + 2.75) * yres,
+                              xmin + (5 + 2.75) * xres,
+                              ymax + 2.25 * yres)
+
+        with self.setupGDALResampling() as filter:
+            filter.setZoomedInResampler(QgsBilinearRasterResampler())
+            block = filter.block(1, extent, 10, 10)
+            self.checkBlockContents(block, [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                            [0, 0, 0, 25, 35, 45, 130, 0, 0, 0],
+                                            [0, 0, 0, 35, 45, 55, 140, 0, 0, 0],
+                                            [0, 0, 0, 45, 55, 65, 150, 0, 0, 0],
+                                            [0, 0, 0, 55, 65, 75, 160, 0, 0, 0],
+                                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
+
+    def testGDALResampling_nominal_resolution_aligned_containing_raster_extent(self):
+
+        xmin = 100
+        ymax = 1000
+        xres = 5
+        yres = 5
+
+        extent = QgsRectangle(xmin - 2 * xres,
+                              ymax - (5 + 3) * yres,
+                              xmin + (5 + 3) * xres,
+                              ymax + 2 * yres)
+
+        with self.setupGDALResampling() as filter:
+            filter.setZoomedInResampler(QgsBilinearRasterResampler())
+            block = filter.block(1, extent, 10, 10)
+            self.checkBlockContents(block, [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                            [0, 0, 10, 20, 30, 40, 150, 0, 0, 0],
+                                            [0, 0, 20, 30, 40, 50, 160, 0, 0, 0],
+                                            [0, 0, 30, 40, 50, 60, 170, 0, 0, 0],
+                                            [0, 0, 40, 50, 60, 70, 180, 0, 0, 0],
+                                            [0, 0, 50, 60, 70, 80, 190, 0, 0, 0],
+                                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
+
+    def testGDALResampling_nominal_resolution_slightly_overlapping_left_edge(self):
+
+        xmin = 100
+        ymax = 1000
+        xres = 5
+        yres = 5
+
+        extent = QgsRectangle(xmin - 0.2 * xres,
+                              ymax - 4.25 * yres,
+                              xmin + 1.8 * xres,
+                              ymax - 2.25 * yres)
+
+        with self.setupGDALResampling() as filter:
+            filter.setZoomedInResampler(QgsBilinearRasterResampler())
+            block = filter.block(1, extent, 2, 2)
+            # The values in the left column are not subject to resampling currently
+            self.checkBlockContents(block, [[30, 41], [50, 51]])
+
+    def testGDALResampling_nominal_resolution_slightly_overlapping_top_edge(self):
+
+        xmin = 100
+        ymax = 1000
+        xres = 5
+        yres = 5
+
+        extent = QgsRectangle(xmin + 2.25 * xres,
+                              ymax - 1.8 * yres,
+                              xmin + 4.25 * xres,
+                              ymax + 0.2 * yres)
+
+        with self.setupGDALResampling() as filter:
+            filter.setZoomedInResampler(QgsBilinearRasterResampler())
+            block = filter.block(1, extent, 2, 2)
+            # The values in the top line are not subject to resampling currently
+            self.checkBlockContents(block, [[30, 150], [41, 76]])
+
+    def testGDALResampling_nominal_resolution_slightly_overlapping_right_edge(self):
+
+        xmin = 100
+        ymax = 1000
+        xres = 5
+        yres = 5
+
+        extent = QgsRectangle(xmin + (5 - 2 + 0.2) * xres,
+                              ymax - 4.25 * yres,
+                              xmin + (5 + 0.2) * xres,
+                              ymax - 2.25 * yres)
+
+        with self.setupGDALResampling() as filter:
+            filter.setZoomedInResampler(QgsBilinearRasterResampler())
+            block = filter.block(1, extent, 2, 2)
+            # The values in the right column are not subject to resampling currently
+            self.checkBlockContents(block, [[85, 170], [95, 190]])
+
+    def testGDALResampling_nominal_resolution_slightly_overlapping_bottom_edge(self):
+
+        xmin = 100
+        ymax = 1000
+        xres = 5
+        yres = 5
+
+        extent = QgsRectangle(xmin + 2.25 * xres,
+                              ymax - (5 + 0.2) * yres,
+                              xmin + 4.25 * xres,
+                              ymax - (5 - 2 + 0.2) * yres)
+
+        with self.setupGDALResampling() as filter:
+            filter.setZoomedInResampler(QgsBilinearRasterResampler())
+            block = filter.block(1, extent, 2, 2)
+            # The values in the bottom line are not subject to resampling currently
+            self.checkBlockContents(block, [[65, 100], [70, 190]])
 
 
 if __name__ == '__main__':
