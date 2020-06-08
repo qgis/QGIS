@@ -241,8 +241,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Basic5")
         img = QImage.fromData(r, "PNG")
-        self.assertEqual(img.dotsPerMeterX(), 4409)
-        self.assertEqual(img.dotsPerMeterY(), 4409)
+        self.assertEqual(round(img.dotsPerMeterX() / 39.37, 1), 112.5)
+        self.assertEqual(round(img.dotsPerMeterY() / 39.37, 1), 112.5)
 
     def test_wms_getmap_dpi_png_8bit(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -252,7 +252,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "REQUEST": "GetMap",
             "LAYERS": "Country",
             "STYLES": "",
-            "FORMAT": "image/png",
+            "FORMAT": "image/png; mode=8bit",
             "BBOX": "-16817707,-4710778,5696513,14587125",
             "HEIGHT": "500",
             "WIDTH": "500",
@@ -262,8 +262,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         img = QImage.fromData(r, "PNG")
-        self.assertEqual(img.dotsPerMeterX(), 4409)
-        self.assertEqual(img.dotsPerMeterY(), 4409)
+        self.assertEqual(round(img.dotsPerMeterX() / 39.37, 1), 112.5)
+        self.assertEqual(round(img.dotsPerMeterY() / 39.37, 1), 112.5)
 
     def test_wms_getmap_invalid_parameters(self):
         # invalid format
