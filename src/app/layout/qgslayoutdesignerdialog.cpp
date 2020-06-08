@@ -3082,7 +3082,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
     showForceVectorWarning();
   }
 
-  bool singleFile = mLayout->customProperty( QStringLiteral( "singleFile" ), true ).toBool();
+  const bool singleFile = mLayout->customProperty( QStringLiteral( "singleFile" ), true ).toBool();
 
   QString outputFileName;
   QString dir;
@@ -3170,8 +3170,16 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
     outputFileName = QDir( dir ).filePath( QStringLiteral( "atlas" ) ); // filename is overridden by atlas
   }
 
+  bool allowGeoPdfExport = true;
+  QString geoPdfReason;
+  if ( singleFile )
+  {
+    allowGeoPdfExport = false;
+    geoPdfReason = tr( "GeoPDF export is not available when exporting an atlas to a single PDF file." );
+  }
+
   QgsLayoutExporter::PdfExportSettings pdfSettings;
-  if ( !getPdfExportSettings( pdfSettings ) )
+  if ( !getPdfExportSettings( pdfSettings, allowGeoPdfExport, geoPdfReason ) )
     return;
 
   mView->setPaintingEnabled( false );
@@ -4320,7 +4328,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   return true;
 }
 
-bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExportSettings &settings )
+bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExportSettings &settings, bool allowGeoPdfExport, const QString &geoPdfReason )
 {
   QgsRenderContext::TextRenderFormat prevTextRenderFormat = mMasterLayout->layoutProject()->labelingEngineSettings().defaultTextRenderFormat();
   bool forceVector = false;
@@ -4353,30 +4361,29 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   }
 
   // open options dialog
-
+  QString dialogGeoPdfReason = geoPdfReason;
   QList< QgsLayoutItemMap * > maps;
   if ( mLayout )
     mLayout->layoutItems( maps );
-  bool allowGeoPdfExport = true;
-  QString geoPdfReason;
+
   for ( const QgsLayoutItemMap *map : maps )
   {
     if ( !map->crs().isValid() )
     {
       allowGeoPdfExport = false;
-      geoPdfReason = tr( "One or more map items do not have a valid CRS set. This is required for GeoPDF export." );
+      dialogGeoPdfReason = tr( "One or more map items do not have a valid CRS set. This is required for GeoPDF export." );
       break;
     }
 
-    if ( map->mapRotation() != 0 || map->itemRotation() != 0 )
+    if ( map->mapRotation() != 0 || map->itemRotation() != 0 || map->dataDefinedProperties().isActive( QgsLayoutObject::MapRotation ) )
     {
       allowGeoPdfExport = false;
-      geoPdfReason = tr( "One or more map items are rotated. This is not supported for GeoPDF export." );
+      dialogGeoPdfReason = tr( "One or more map items are rotated. This is not supported for GeoPDF export." );
       break;
     }
   }
 
-  QgsLayoutPdfExportOptionsDialog dialog( this, allowGeoPdfExport, geoPdfReason );
+  QgsLayoutPdfExportOptionsDialog dialog( this, allowGeoPdfExport, dialogGeoPdfReason );
 
   dialog.setTextRenderFormat( prevTextRenderFormat );
   dialog.setForceVector( forceVector );
