@@ -5,7 +5,7 @@ Building QGIS from source - step by step
    2. [Overview](#2-overview)
    3. [Building on GNU/Linux](#3-building-on-gnulinux)
    4. [Building on Windows](#4-building-on-windows)
-   5. [Building on MacOS X](#4-building-on-macos-x)
+   5. [Building on MacOS X](#5-building-on-macos-x)
    6. [Setting up the WCS test server on GNU/Linux](#6-setting-up-the-wcs-test-server-on-gnulinux)
    7. [Setting up a Jenkins Build Server](#7-setting-up-a-jenkins-build-server)
    8. [Debug output and running tests](#8-debug-output-and-running-tests)
