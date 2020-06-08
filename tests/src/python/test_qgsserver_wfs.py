@@ -212,11 +212,11 @@ class TestQgsServerWFS(QgsServerTestBase):
 
         self.result_compare(
             'wfs_getfeature_{}.txt'.format(requestid),
-            "GetFeature in POST for '{}' failed.\n\n {}".format(requestid, body.decode('utf-8')),
+            "GetFeature in POST for '{}' failed.".format(requestid),
             header, body,
         )
 
-    # @unittest.expectedFailure("Issue #36398: QGIS Server: WFS Request does not use SrsName on the geometry")
+    @unittest.expectedFailure("Issue #36398: QGIS Server: WFS Request does not use SrsName on the geometry")
     def test_getfeature_post(self):
         tests = []
 
@@ -298,11 +298,11 @@ class TestQgsServerWFS(QgsServerTestBase):
           <exterior>
             <LinearRing>
               <posList srsDimension="2">
-                890555.93 5465442.18
-                1001875.42 5465442.18
-                1001875.42 5621521.49
-                890555.93 5621521.49
-                890555.93 5465442.18
+              913202.90938171 5606008.98136456
+              913206.93580769 5606008.98136456
+              913206.93580769 5606013.84701639
+              913202.90938171 5606013.84701639
+              913202.90938171 5606008.98136456
               </posList>
             </LinearRing>
           </exterior>
@@ -312,7 +312,7 @@ class TestQgsServerWFS(QgsServerTestBase):
   </wfs:Query>
 </wfs:GetFeature>
 """
-        # tests.append(('within3857FilterTemplate_post', within3857FilterTemplate.format("")))
+        tests.append(('within3857FilterTemplate_post', within3857FilterTemplate.format("")))
 
         srsTwoLayersTemplate = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
