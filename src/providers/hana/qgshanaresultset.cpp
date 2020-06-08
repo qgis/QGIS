@@ -21,12 +21,14 @@
 #include <QString>
 
 #include "odbc/Exception.h"
+#include "odbc/PreparedStatement.h"
+#include "odbc/Statement.h"
 
 using namespace odbc;
 
 QgsHanaResultSet::QgsHanaResultSet( ResultSetRef &&resultSet )
   : mResultSet( std::move( resultSet ) )
-  , mMetadata( mResultSet->getMetaData() )
+  , mMetadata( mResultSet->getMetaDataUnicode() )
 {
 }
 
@@ -34,7 +36,7 @@ QgsHanaResultSetRef QgsHanaResultSet::create( StatementRef &stmt, const QString 
 {
   try
   {
-    QgsHanaResultSetRef ret( new QgsHanaResultSet( stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) ) ) );
+    QgsHanaResultSetRef ret( new QgsHanaResultSet( stmt->executeQuery( QgsHanaUtils::toUtf16( sql ) ) ) );
     return ret;
   }
   catch ( const Exception &ex )
@@ -165,7 +167,7 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
     case SQLDataTypes::LongVarBinary:
       return QgsHanaUtils::toVariant( mResultSet->getBinary( columnIndex ) );
     default:
-      QgsDebugMsg( QStringLiteral( "Unhandled HANA type %1" ).arg( QString::fromStdString( mMetadata->getColumnTypeName( columnIndex ) ) ) );
+      QgsDebugMsg( QStringLiteral( "Unhandled HANA type %1" ).arg( QString::fromStdU16String( mMetadata->getColumnTypeName( columnIndex ) ) ) );
       return QVariant();
   }
 }

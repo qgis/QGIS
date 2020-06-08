@@ -32,11 +32,12 @@
 #include "qexception.h"
 
 #include "odbc/Connection.h"
-#include "odbc/DatabaseMetaData.h"
+#include "odbc/DatabaseMetaDataUnicode.h"
 #include "odbc/Environment.h"
 #include "odbc/Exception.h"
 #include "odbc/PreparedStatement.h"
 #include "odbc/ResultSet.h"
+#include "odbc/ResultSetMetaDataUnicode.h"
 #include "odbc/Statement.h"
 
 using namespace odbc;
@@ -187,7 +188,7 @@ void QgsHanaConnection::execute( const QString &sql )
   try
   {
     StatementRef stmt = mConnection->createStatement();
-    stmt->execute( QgsHanaUtils::toQueryString( sql ) );
+    stmt->execute( QgsHanaUtils::toUtf16( sql ) );
   }
   catch ( const Exception &ex )
   {
@@ -200,7 +201,7 @@ bool QgsHanaConnection::execute( const QString &sql, QString *errorMessage )
   try
   {
     StatementRef stmt = mConnection->createStatement();
-    stmt->execute( QgsHanaUtils::toQueryString( sql ) );
+    stmt->execute( QgsHanaUtils::toUtf16( sql ) );
     mConnection->commit();
     return true;
   }
@@ -244,7 +245,7 @@ size_t QgsHanaConnection::executeCountQuery( const QString &sql )
   try
   {
     StatementRef stmt = mConnection->createStatement();
-    ResultSetRef rs = stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) );
+    ResultSetRef rs = stmt->executeQuery( QgsHanaUtils::toUtf16( sql ) );
     rs->next();
     size_t ret = static_cast<size_t>( *rs->getLong( 1 ) );
     rs->close();
@@ -313,7 +314,7 @@ odbc::PreparedStatementRef QgsHanaConnection::prepareStatement( const QString &s
 {
   try
   {
-    return mConnection->prepareStatement( QgsHanaUtils::toQueryString( sql ) );
+    return mConnection->prepareStatement( QgsHanaUtils::toUtf16( sql ) );
   }
   catch ( const Exception &ex )
   {
@@ -351,8 +352,8 @@ const QString &QgsHanaConnection::getDatabaseVersion()
   {
     try
     {
-      DatabaseMetaDataRef dbmd = mConnection->getDatabaseMetaData();
-      mDatabaseVersion = dbmd->getDBMSVersion().c_str();
+      DatabaseMetaDataUnicodeRef dbmd = mConnection->getDatabaseMetaDataUnicode();
+      mDatabaseVersion = QString::fromStdU16String( dbmd->getDBMSVersion() );
     }
     catch ( const Exception &ex )
     {
@@ -455,7 +456,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
 
   auto addLayers = [&]( const QString & sql, bool isView )
   {
-    PreparedStatementRef stmt = mConnection->prepareStatement( QgsHanaUtils::toQueryString( sql ) );
+    PreparedStatementRef stmt = mConnection->prepareStatement( QgsHanaUtils::toUtf16( sql ) );
     stmt->setNString( 1, NString( schema.isEmpty() ? u"%" : schema.toStdU16String() ) );
     QgsHanaResultSetRef rsLayers = QgsHanaResultSet::create( stmt );
 
@@ -539,7 +540,7 @@ QVector<QgsHanaSchemaProperty> QgsHanaConnection::getSchemas( const QString &own
 
   try
   {
-    PreparedStatementRef stmt = mConnection->prepareStatement( QgsHanaUtils::toQueryString( sql ) );
+    PreparedStatementRef stmt = mConnection->prepareStatement( QgsHanaUtils::toUtf16( sql ) );
     if ( !ownerName.isEmpty() )
       stmt->setNString( 1, NString( ownerName.toStdU16String() ) );
     QgsHanaResultSetRef rsSchemas = QgsHanaResultSet::create( stmt );
@@ -586,7 +587,7 @@ int QgsHanaConnection::getLayerSRID( const QgsHanaLayerProperty &layerProperty )
                           QgsHanaUtils::quotedIdentifier( layerProperty.schemaName ),
                           QgsHanaUtils::quotedIdentifier( layerProperty.tableName ),
                           QString::number( GEOM_TYPE_SELECT_LIMIT ) );
-      stmt = mConnection->prepareStatement( QgsHanaUtils::toQueryString( sql ) );
+      stmt = mConnection->prepareStatement( QgsHanaUtils::toUtf16( sql ) );
     }
 
     int prevSrid = -1;
@@ -618,19 +619,19 @@ QStringList QgsHanaConnection::getLayerPrimaryeKeys( const QgsHanaLayerProperty 
 
   try
   {
-    DatabaseMetaDataRef dbmd = mConnection->getDatabaseMetaData();
+    DatabaseMetaDataUnicodeRef dbmd = mConnection->getDatabaseMetaDataUnicode();
     ResultSetRef rsPrimaryKeys = dbmd->getPrimaryKeys( nullptr,
-                                 layerProperty.schemaName.toStdString().c_str(),
-                                 layerProperty.tableName.toStdString().c_str() );
+                                 QgsHanaUtils::toUtf16( layerProperty.schemaName ),
+                                 QgsHanaUtils::toUtf16( layerProperty.tableName ) );
 
     while ( rsPrimaryKeys->next() )
     {
       auto keyName = rsPrimaryKeys->getNString( 4 );
       QString clmName = QgsHanaUtils::toQString( keyName );
       ResultSetRef rsColumns = dbmd->getColumns( nullptr,
-                               layerProperty.schemaName.toStdString().c_str(),
-                               layerProperty.tableName.toStdString().c_str(),
-                               clmName.toStdString().c_str() );
+                               QgsHanaUtils::toUtf16( layerProperty.schemaName ),
+                               QgsHanaUtils::toUtf16( layerProperty.tableName ),
+                               QgsHanaUtils::toUtf16( clmName ) );
 
       if ( rsColumns->next() )
       {
@@ -669,7 +670,7 @@ QgsWkbTypes::Type QgsHanaConnection::getLayerGeometryType( const QgsHanaLayerPro
   try
   {
     StatementRef stmt = mConnection->createStatement();
-    ResultSetRef rsGeomInfo = stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) );
+    ResultSetRef rsGeomInfo = stmt->executeQuery( QgsHanaUtils::toUtf16( sql ) );
     QgsWkbTypes::Type geomType = QgsWkbTypes::Unknown, prevGeomType = QgsWkbTypes::Unknown;
     while ( rsGeomInfo->next() )
     {
@@ -723,9 +724,9 @@ QgsHanaResultSetRef QgsHanaConnection::getColumns( const QString &schemaName, co
 {
   try
   {
-    DatabaseMetaDataRef metadata = mConnection->getDatabaseMetaData();
+    DatabaseMetaDataUnicodeRef metadata = mConnection->getDatabaseMetaDataUnicode();
     QgsHanaResultSetRef ret( new QgsHanaResultSet( metadata->getColumns( nullptr,
-                             schemaName.toStdString().c_str(), tableName.toStdString().c_str(), fieldName.toStdString().c_str() ) ) );
+                             QgsHanaUtils::toUtf16( schemaName ), QgsHanaUtils::toUtf16( tableName ), QgsHanaUtils::toUtf16( fieldName ) ) ) );
     return ret;
   }
   catch ( const Exception &ex )
@@ -736,7 +737,7 @@ QgsHanaResultSetRef QgsHanaConnection::getColumns( const QString &schemaName, co
 
 PreparedStatementRef QgsHanaConnection::createPreparedStatement( const QString &sql, const QVariantList &args )
 {
-  PreparedStatementRef stmt = mConnection->prepareStatement( QgsHanaUtils::toQueryString( sql ) );
+  PreparedStatementRef stmt = mConnection->prepareStatement( QgsHanaUtils::toUtf16( sql ) );
   if ( !args.isEmpty() )
   {
     for ( unsigned short i = 1; i <= args.size(); ++i )

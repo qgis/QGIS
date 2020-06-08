@@ -25,11 +25,9 @@
 #include <QString>
 #include <QVariant>
 
-#include "odbc/DatabaseMetaData.h"
-#include "odbc/PreparedStatement.h"
+#include "odbc/Forwards.h"
 #include "odbc/ResultSet.h"
-#include "odbc/ResultSetMetaData.h"
-#include "odbc/Statement.h"
+#include "odbc/ResultSetMetaDataUnicode.h"
 
 using namespace odbc;
 
@@ -56,11 +54,11 @@ class QgsHanaResultSet
     QVariant getValue( unsigned short columnIndex );
     QgsGeometry getGeometry( unsigned short columnIndex );
 
-    ResultSetMetaData &getMetadata() { return *mMetadata; }
+    ResultSetMetaDataUnicode &getMetadata() { return *mMetadata; }
 
   private:
     ResultSetRef mResultSet;
-    ResultSetMetaDataRef mMetadata;
+    ResultSetMetaDataUnicodeRef mMetadata;
     std::vector<char> mBuffer;
 };
 

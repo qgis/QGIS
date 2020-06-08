@@ -43,7 +43,8 @@
 #include <ctype.h>
 
 #include "odbc/PreparedStatement.h"
-#include "odbc/ResultSetMetaData.h"
+#include "odbc/ResultSet.h"
+#include "odbc/ResultSetMetaDataUnicode.h"
 
 using namespace odbc;
 using namespace std;
@@ -56,7 +57,6 @@ namespace
       return query;
     return query + QStringLiteral( " WHERE " ) + whereClause;
   }
-
 
   void createCoordinateSystem( QgsHanaConnectionRef &conn, const QgsCoordinateReferenceSystem &srs )
   {
@@ -1187,16 +1187,16 @@ void QgsHanaProvider::readAttributeFields()
 
   QString sql = QStringLiteral( "SELECT * FROM (%1) LIMIT 0" ).arg( mQuery );
   QgsHanaResultSetRef rsAttributes = conn->executeQuery( sql );
-  ResultSetMetaData &rsmd = rsAttributes->getMetadata();
+  ResultSetMetaDataUnicode &rsmd = rsAttributes->getMetadata();
   for ( unsigned short i = 1; i <= rsmd.getColumnCount(); ++i )
   {
-    const QString fieldName( rsmd.getColumnName( i ).c_str() );
+    const QString fieldName = QString::fromStdU16String( rsmd.getColumnName( i ) );
     if ( fieldName == mGeometryColumn )
       continue;
 
     QVariant::Type fieldType = QVariant::Invalid;
     const short sqlType = rsmd.getColumnType( i );
-    const QString fieldTypeName( rsmd.getColumnTypeName( i ).c_str() );
+    const QString fieldTypeName = QString::fromStdU16String( rsmd.getColumnTypeName( i ) );
     const bool isSigned = rsmd.isSigned( i );
     int fieldSize = static_cast<int>( rsmd.getColumnLength( i ) );
     int fieldPrec = -1;
@@ -1280,10 +1280,10 @@ void QgsHanaProvider::readAttributeFields()
       mAttributeFields.append( newField );
       mFieldInfos.append( { sqlType, isAutoIncrement, isNullable, isSigned } );
 
-      QString schemaName( rsmd.getSchemaName( i ).c_str() );
+      QString schemaName = QString::fromStdU16String( rsmd.getSchemaName( i ) );
       if ( schemaName.isEmpty() )
         schemaName = mSchemaName;
-      QString tableName( rsmd.getTableName( i ).c_str() );
+      QString tableName = QString::fromStdU16String( rsmd.getTableName( i ) );
       if ( tableName.isEmpty() )
         tableName = mTableName;
       QgsHanaResultSetRef rsColumns = conn->getColumns( schemaName, tableName, fieldName );
@@ -1390,7 +1390,6 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
 )
 {
   QgsDataSourceUri dsUri( uri );
-
   QgsHanaConnectionRef conn( dsUri );
   if ( conn.isNull() )
   {

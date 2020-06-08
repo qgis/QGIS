@@ -25,6 +25,8 @@
 #include "qgsexception.h"
 #include "qgssettings.h"
 
+#include "odbc/PreparedStatement.h"
+
 QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
@@ -196,7 +198,7 @@ QList<QVariantList> QgsHanaProviderConnection::executeSql( const QString &sql ) 
   try
   {
     PreparedStatementRef stmt = conn->prepareStatement( sql );
-    isQuery = stmt->getMetaData()->getColumnCount() > 0;
+    isQuery = stmt->getMetaDataUnicode()->getColumnCount() > 0;
   }
   catch ( const QgsHanaException &ex )
   {

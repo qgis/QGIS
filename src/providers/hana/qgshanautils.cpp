@@ -266,7 +266,7 @@ QVariant QgsHanaUtils::toVariant( const Binary &value )
   return QByteArray( value->data(), static_cast<int>( value->size() ) );
 }
 
-const char16_t *QgsHanaUtils::toQueryString( const QString &sql )
+const char16_t *QgsHanaUtils::toUtf16( const QString &sql )
 {
   return reinterpret_cast<const char16_t *>( sql.utf16() );
 }
