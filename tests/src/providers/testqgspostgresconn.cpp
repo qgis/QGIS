@@ -52,7 +52,7 @@ class TestQgsPostgresConn: public QObject
       fields.append( f );
       QgsField f2;
       f2.setName( "pk" );
-      f2.setType( QVariant::ULongLong );
+      f2.setType( QVariant::LongLong );
       f2.setTypeName( "serial8" );
       fields.append( f2 );
 
