@@ -4367,6 +4367,13 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
       geoPdfReason = tr( "One or more map items do not have a valid CRS set. This is required for GeoPDF export." );
       break;
     }
+
+    if ( map->mapRotation() != 0 || map->itemRotation() != 0 )
+    {
+      allowGeoPdfExport = false;
+      geoPdfReason = tr( "One or more map items are rotated. This is not supported for GeoPDF export." );
+      break;
+    }
   }
 
   QgsLayoutPdfExportOptionsDialog dialog( this, allowGeoPdfExport, geoPdfReason );
