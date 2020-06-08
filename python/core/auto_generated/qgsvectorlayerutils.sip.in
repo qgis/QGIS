@@ -181,7 +181,7 @@ If the strength or origin parameter is set then only constraints with a matching
 %Docstring
 Tests an attribute ``value`` for type compatibility, i.e. checks whether it can be converted
 to the ``destinationType``.
-NULL values (and QVariant invalid values because they are usually converted to NULLs) are considered valid.
+Will always return ``True`` for NULL and invalid QVariants.
 
 .. seealso:: :py:func:`validateAttribute`
 
