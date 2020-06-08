@@ -298,9 +298,9 @@ class TestQgsServerWFS(QgsServerTestBase):
             <LinearRing srsName="EPSG:3857">
               <posList srsDimension="2">
                 890555.93 5465442.18
-                1001875.42, 5465442.18
-                1001875.42, 5621521.49
-                890555.93, 5621521.49
+                1001875.42 5465442.18
+                1001875.42 5621521.49
+                890555.93 5621521.49
                 890555.93 5465442.18
               </posList>
             </LinearRing>
