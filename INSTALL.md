@@ -621,7 +621,7 @@ and 'bzip2') is available at:
 
 > http://cygwin.com
 
-### 4.1.6. Packaging your own build of QGIS
+### 4.1.7. Packaging your own build of QGIS
 
 Assuming you have completed the above packaging step, if you want to include
 your own hand built QGIS executables, you need to copy them in from your
