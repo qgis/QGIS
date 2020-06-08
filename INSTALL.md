@@ -516,7 +516,7 @@ And, to avoid Git in Windows reporting changes to files not actually modified:
     git config core.filemode false
 ```
 
-### 4.1.4. Setting up the Visual Studio project with CMake
+### 4.1.4. Configure and build with CMake from command line
 
 **Note:** Consider this section as example.  It tends to outdate, when OSGeo4W and
 SDKs move on.  `ms-windows/osgeo4w/package-nightly.cmd` is used for the
