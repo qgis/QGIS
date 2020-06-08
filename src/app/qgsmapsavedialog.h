@@ -86,6 +86,8 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
   private slots:
     void onAccepted();
 
+    void updatePdfExportWarning();
+
   private:
 
     void lockChanged( bool locked );
