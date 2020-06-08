@@ -558,7 +558,7 @@ Save the batch file as `C:\OSGeo4W64\OSGeo4W-dev.bat` and run it.
 
 Running QGIS from within MSVC:
   Edit the properties of the project ALL_BUILD:
-  Debugging -> Command -> `C:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\output\bin\RelWithDebInfo\qgis.exe`
+  Debugging -> Command -> `C:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\output\bin\RelWithDebInfo\qgis.exe`.
   To run, use the menu commands: Debug -> Start Debugging (F5) or Start Without Debugging (Ctrl+F5).
   Ignore the "These projects are out of date" message, it appears even if no files were changed.
 
