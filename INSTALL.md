@@ -552,7 +552,7 @@ Save the batch file as `C:\OSGeo4W64\OSGeo4W-dev.bat` and run it.
   On the command prompt run `call gdal-dev-env.bat` to add the release gdal and proj libraries to your PATH.
   On the command prompt run `devenv` to open MSVC.
   From MSVC, open the solution file
-  `C:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\qgis.sln`
+  `C:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\qgis.sln`.
   Try to build the solution (go grab a cup of tea, it may take a while).
   If it fails, run it again and again until there are (hopefully) no errors.
 
