@@ -643,7 +643,7 @@ Now create a package.
 After this you should now have a nsis installer containing your own build
 of QGIS and all dependencies needed to run it on a windows machine.
 
-### 4.1.7. Osgeo4w packaging
+### 4.1.8. Osgeo4w packaging
 
 The actual packaging process is currently not documented, for now please take a
 look at:
