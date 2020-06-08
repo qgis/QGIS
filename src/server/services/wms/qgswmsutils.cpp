@@ -152,6 +152,10 @@ namespace QgsWms
         break;
     }
 
+    // Preserve DPI, some conversions, in particular the one for 8bit will drop this information
+    result.setDotsPerMeterX( img.dotsPerMeterX() );
+    result.setDotsPerMeterY( img.dotsPerMeterY() );
+
     if ( outputFormat != UNKN )
     {
       response.setHeader( "Content-Type", contentType );
