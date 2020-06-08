@@ -22,10 +22,11 @@
 #include <QItemDelegate>
 
 #include "qgis_gui.h"
-#include "qgslayertreemodel.h"
+#include "qgsmaplayermodel.h"
 
 class QgsMapCanvas;
 class QgsProject;
+class QgsVectorLayer;
 
 
 /**
@@ -35,7 +36,7 @@ class QgsProject;
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsGeoPdfLayerTreeModel : public QgsLayerTreeModel
+class GUI_EXPORT QgsGeoPdfLayerTreeModel : public QgsMapLayerModel
 {
     Q_OBJECT
 
@@ -51,7 +52,7 @@ class GUI_EXPORT QgsGeoPdfLayerTreeModel : public QgsLayerTreeModel
     };
 
     //! constructor
-    QgsGeoPdfLayerTreeModel( QgsLayerTree *rootNode, QObject *parent = nullptr );
+    QgsGeoPdfLayerTreeModel( const QList< QgsMapLayer * > &layers, QObject *parent = nullptr );
 
     int columnCount( const QModelIndex &parent ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;

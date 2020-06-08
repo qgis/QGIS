@@ -145,7 +145,25 @@ QgsLayoutGeoPdfExporter::QgsLayoutGeoPdfExporter( QgsLayout *layout )
     map->addRenderedFeatureHandler( handler );
   }
 
-  const QList< QgsMapLayer * > layerOrder = mLayout->project()->layerTreeRoot()->layerOrder();
+  // start with project layer order, and then apply custom layer order if set
+  QStringList geoPdfLayerOrder;
+  const QString presetLayerOrder = mLayout->customProperty( QStringLiteral( "pdfLayerOrder" ) ).toString();
+  if ( !presetLayerOrder.isEmpty() )
+    geoPdfLayerOrder = presetLayerOrder.split( QStringLiteral( "~~~" ) );
+
+  QList< QgsMapLayer * > layerOrder = mLayout->project()->layerTreeRoot()->layerOrder();
+  for ( auto it = geoPdfLayerOrder.rbegin(); it != geoPdfLayerOrder.rend(); ++it )
+  {
+    for ( int i = 0; i < layerOrder.size(); ++i )
+    {
+      if ( layerOrder.at( i )->id() == *it )
+      {
+        layerOrder.move( i, 0 );
+        break;
+      }
+    }
+  }
+
   for ( const QgsMapLayer *layer : layerOrder )
     mLayerOrder << layer->id();
 }

@@ -48,11 +48,14 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
      * \param parent parent widget
      * \param allowGeoPdfExport set to FALSE if geoPdf export is blocked
      * \param geoPdfReason set to a descriptive translated string explaining why geopdf export is not available if applicable
+     * \param geoPdfLayerOrder optional layer ID order list for layers in the geopdf file. Any layers not present in this list
+     * will instead be appended to the end of the geopdf layer list
      * \param flags window flags
      */
     QgsLayoutPdfExportOptionsDialog( QWidget *parent = nullptr,
                                      bool allowGeoPdfExport = true,
                                      const QString &geoPdfReason = QString(),
+                                     const QStringList &geoPdfLayerOrder = QStringList(),
                                      Qt::WindowFlags flags = nullptr );
 
     //! Sets the text render format
@@ -96,6 +99,9 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
     void setExportThemes( const QStringList &themes );
     //! Returns the list of export themes
     QStringList exportThemes() const;
+
+    //! Returns a list of map layer IDs in the desired order they should appear in a generated GeoPDF file
+    QStringList geoPdfLayerOrder() const;
 
   private slots:
 

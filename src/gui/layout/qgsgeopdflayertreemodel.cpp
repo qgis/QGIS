@@ -22,10 +22,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 
-QgsGeoPdfLayerTreeModel::QgsGeoPdfLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
-  : QgsLayerTreeModel( rootNode, parent )
+QgsGeoPdfLayerTreeModel::QgsGeoPdfLayerTreeModel( const QList<QgsMapLayer *> &layers, QObject *parent )
+  : QgsMapLayerModel( layers, parent )
 {
-  setFlags( nullptr ); // ideally we'd just show embedded legend nodes - but the api doesn't exist for this
+  setItemsCanBeReordered( true );
 }
 
 int QgsGeoPdfLayerTreeModel::columnCount( const QModelIndex &parent ) const
@@ -36,37 +36,36 @@ int QgsGeoPdfLayerTreeModel::columnCount( const QModelIndex &parent ) const
 
 Qt::ItemFlags QgsGeoPdfLayerTreeModel::flags( const QModelIndex &idx ) const
 {
+  if ( !idx.isValid() )
+    return Qt::ItemIsDropEnabled;
+
   if ( idx.column() == IncludeVectorAttributes )
   {
     if ( vectorLayer( idx ) )
-      return QgsLayerTreeModel::flags( idx ) | Qt::ItemIsUserCheckable;
+      return QgsMapLayerModel::flags( idx ) | Qt::ItemIsUserCheckable;
     else
-      return QgsLayerTreeModel::flags( idx );
+      return QgsMapLayerModel::flags( idx );
   }
 
   if ( idx.column() == InitiallyVisible )
   {
-    return QgsLayerTreeModel::flags( idx ) | Qt::ItemIsUserCheckable;
+    return QgsMapLayerModel::flags( idx ) | Qt::ItemIsUserCheckable;
   }
 
   if ( !mapLayer( idx ) )
   {
-    return Qt::NoItemFlags;
+    return nullptr;
   }
   else
   {
-    return Qt::ItemIsEnabled | Qt::ItemIsEditable;
+    return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
   }
   return Qt::NoItemFlags;
 }
 
 QgsMapLayer *QgsGeoPdfLayerTreeModel::mapLayer( const QModelIndex &idx ) const
 {
-  QgsLayerTreeNode *node = index2node( index( idx.row(), LayerColumn, idx.parent() ) );
-  if ( !node || !QgsLayerTree::isLayer( node ) )
-    return nullptr;
-
-  return QgsLayerTree::toLayer( node )->layer();
+  return layerFromIndex( index( idx.row(), LayerColumn, idx.parent() ) );
 }
 
 QgsVectorLayer *QgsGeoPdfLayerTreeModel::vectorLayer( const QModelIndex &idx ) const
@@ -95,7 +94,7 @@ QVariant QgsGeoPdfLayerTreeModel::headerData( int section, Qt::Orientation orien
       }
     }
   }
-  return QgsLayerTreeModel::headerData( section, orientation, role );
+  return QgsMapLayerModel::headerData( section, orientation, role );
 }
 
 QVariant QgsGeoPdfLayerTreeModel::data( const QModelIndex &idx, int role ) const
@@ -106,7 +105,7 @@ QVariant QgsGeoPdfLayerTreeModel::data( const QModelIndex &idx, int role ) const
       if ( role == Qt::CheckStateRole )
         return QVariant();
 
-      return QgsLayerTreeModel::data( idx, role );
+      return QgsMapLayerModel::data( idx, role );
 
     case GroupColumn:
     {
@@ -145,14 +144,13 @@ QVariant QgsGeoPdfLayerTreeModel::data( const QModelIndex &idx, int role ) const
         }
         return QVariant();
       }
-      return QgsLayerTreeModel::data( idx, role );
+      return QVariant();
     }
 
     case IncludeVectorAttributes:
     {
       if ( role == Qt::CheckStateRole )
       {
-        QgsLayerTreeNode *node = index2node( index( idx.row(), LayerColumn, idx.parent() ) );
         if ( QgsVectorLayer *vl = vectorLayer( idx ) )
         {
           const QVariant v = vl->customProperty( QStringLiteral( "geopdf/includeFeatures" ) );
@@ -162,8 +160,8 @@ QVariant QgsGeoPdfLayerTreeModel::data( const QModelIndex &idx, int role ) const
           }
           else
           {
-            // otherwise, we default to the layer's visibility
-            return node->itemVisibilityChecked() ? Qt::Checked : Qt::Unchecked;
+            // otherwise, we default to true
+            return Qt::Checked;
           }
         }
         return QVariant();
@@ -219,6 +217,9 @@ bool QgsGeoPdfLayerTreeModel::setData( const QModelIndex &index, const QVariant 
       }
       break;
     }
+
+    case LayerColumn:
+      return QgsMapLayerModel::setData( index, value, role );
   }
   return false;
 }
@@ -244,10 +245,10 @@ QgsGeoPdfLayerFilteredTreeModel::QgsGeoPdfLayerFilteredTreeModel( QgsGeoPdfLayer
 
 bool QgsGeoPdfLayerFilteredTreeModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  if ( QgsLayerTreeNode *node = mLayerTreeModel->index2node( sourceModel()->index( source_row, 0, source_parent ) ) )
+  if ( QgsMapLayer *layer = mLayerTreeModel->layerFromIndex( sourceModel()->index( source_row, 0, source_parent ) ) )
   {
     // filter out non-spatial layers
-    if ( QgsLayerTree::isLayer( node ) && QgsLayerTree::toLayer( node ) && QgsLayerTree::toLayer( node )->layer() && !QgsLayerTree::toLayer( node )->layer()->isSpatial() )
+    if ( !layer->isSpatial() )
       return false;
 
   }

@@ -23,12 +23,13 @@
 #include "qgsproject.h"
 #include "qgsmapthemecollection.h"
 #include "qgsgeopdflayertreemodel.h"
+#include "qgslayertree.h"
 
 #include <QCheckBox>
 #include <QPushButton>
 #include <QMenu>
 
-QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *parent, bool allowGeoPdfExport, const QString &geoPdfReason, Qt::WindowFlags flags )
+QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *parent, bool allowGeoPdfExport, const QString &geoPdfReason, const QStringList &geoPdfLayerOrder, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
   setupUi( this );
@@ -67,12 +68,30 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
     mThemesList->addItem( item );
   }
 
-  mGeoPdfStructureModel = new QgsGeoPdfLayerTreeModel( QgsProject::instance()->layerTreeRoot(), this );
+  QList< QgsMapLayer * > order = QgsProject::instance()->layerTreeRoot()->layerOrder();
+  for ( auto it = geoPdfLayerOrder.rbegin(); it != geoPdfLayerOrder.rend(); ++it )
+  {
+    for ( int i = 0; i < order.size(); ++i )
+    {
+      if ( order.at( i )->id() == *it )
+      {
+        order.move( i, 0 );
+        break;
+      }
+    }
+  }
+  mGeoPdfStructureModel = new QgsGeoPdfLayerTreeModel( order, this );
   mGeoPdfStructureProxyModel = new QgsGeoPdfLayerFilteredTreeModel( mGeoPdfStructureModel, this );
   mGeoPdfStructureTree->setModel( mGeoPdfStructureProxyModel );
   mGeoPdfStructureTree->resizeColumnToContents( 0 );
   mGeoPdfStructureTree->header()->show();
-  mGeoPdfStructureTree->setSelectionMode( QAbstractItemView::NoSelection );
+  mGeoPdfStructureTree->setSelectionMode( QAbstractItemView::SingleSelection );
+  mGeoPdfStructureTree->setSelectionBehavior( QAbstractItemView::SelectRows );
+
+  mGeoPdfStructureTree->setDragEnabled( true );
+  mGeoPdfStructureTree->setAcceptDrops( true );
+  mGeoPdfStructureTree->setDragDropMode( QAbstractItemView::InternalMove );
+  mGeoPdfStructureTree->setDefaultDropAction( Qt::MoveAction );
 
   mGeoPdfStructureTree->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( mGeoPdfStructureTree, &QTreeView::customContextMenuRequested, this, [ = ]( const QPoint & point )
@@ -217,6 +236,16 @@ QStringList QgsLayoutPdfExportOptionsDialog::exportThemes() const
       res << item->text();
   }
   return res;
+}
+
+QStringList QgsLayoutPdfExportOptionsDialog::geoPdfLayerOrder() const
+{
+  QStringList order;
+  for ( int row = 0; row < mGeoPdfStructureProxyModel->rowCount(); ++row )
+  {
+    order << mGeoPdfStructureProxyModel->data( mGeoPdfStructureProxyModel->index( row, 0 ), QgsGeoPdfLayerTreeModel::LayerIdRole ).toString();
+  }
+  return order;
 }
 
 void QgsLayoutPdfExportOptionsDialog::showHelp()
