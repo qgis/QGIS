@@ -35,6 +35,7 @@
 #include "qgsgeometryengine.h"
 #include "qgsproviderregistry.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -2411,6 +2412,19 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
     {
       field = mFieldValueConverter->fieldDefinition( field );
       attrValue = mFieldValueConverter->convert( fldIdx, attrValue );
+    }
+
+    // Check for QVariant conversion before passing attribute value to OGR
+    if ( ! QgsVectorLayerUtils::canConvert( attrValue, field.type() ) )
+    {
+      mErrorMessage = QObject::tr( "Invalid variant type for field %1[%2]: received %3 with type %4" )
+                      .arg( mFields.at( fldIdx ).name() )
+                      .arg( ogrField )
+                      .arg( attrValue.typeName(),
+                            attrValue.toString() );
+      QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
+      mError = ErrFeatureWriteFailed;
+      return nullptr;
     }
 
     switch ( field.type() )

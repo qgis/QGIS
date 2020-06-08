@@ -177,6 +177,16 @@ class CORE_EXPORT QgsVectorLayerUtils
                                    QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet );
 
     /**
+     * Tests an attribute \a value for type compatibility, i.e. checks whether it can be converted
+     * to the \a destinationType.
+     * NULL values (and QVariant invalid values because they are usually converted to NULLs) are considered valid.
+     *
+     * \see validateAttribute()
+     * \since QGIS 3.14
+     */
+    static bool canConvert( const QVariant &value, const QVariant::Type destinationType );
+
+    /**
      * Creates a new feature ready for insertion into a layer. Default values and constraints
      * (e.g., unique constraints) will automatically be handled. An optional attribute map can be
      * passed for the new feature to copy as many attribute values as possible from the map,

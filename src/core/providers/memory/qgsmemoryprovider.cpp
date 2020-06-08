@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsspatialindex.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -381,7 +382,6 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
 
   int fieldCount = mFields.count();
 
-  // TODO: sanity checks of fields
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
     it->setId( mNextFeatureId );
@@ -416,6 +416,23 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
       pushError( tr( "Could not add feature with geometry type %1 to layer of type %2" ).arg( QgsWkbTypes::displayString( it->geometry().wkbType() ),
                  QgsWkbTypes::displayString( mWkbType ) ) );
       result = false;
+      continue;
+    }
+
+    // Check attribute types
+    bool conversionError { false };
+    for ( int i = 0; i < mFields.count() && ! conversionError; ++i )
+    {
+      if ( ! QgsVectorLayerUtils::canConvert( it->attribute( i ), mFields.at( i ).type() ) )
+      {
+        pushError( tr( "Could not add feature with attribute %1 having type %2, cannot convert to type %3" )
+                   .arg( mFields.at( i ).name(), it->attribute( i ).typeName(), mFields.at( i ).typeName() ) );
+        result = false;
+      }
+    }
+
+    if ( conversionError )
+    {
       continue;
     }
 
