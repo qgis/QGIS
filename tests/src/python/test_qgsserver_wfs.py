@@ -286,7 +286,7 @@ class TestQgsServerWFS(QgsServerTestBase):
 """
         tests.append(('within4326FilterTemplate_post', within4326FilterTemplate.format("")))
 
-        # Check get feature within linear ring with srsName=EPSG:3857 (different from the project/layer)
+        # Check get feature within polygon having srsName=EPSG:3857 (different from the project/layer)
         # The coordinates are converted from the one in 4326
         within3857FilterTemplate = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
