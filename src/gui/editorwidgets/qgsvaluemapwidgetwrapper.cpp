@@ -32,7 +32,9 @@ QVariant QgsValueMapWidgetWrapper::value() const
   QVariant v;
 
   if ( mComboBox )
+  {
     v = mComboBox->currentData();
+  }
 
   if ( v == QgsValueMapFieldFormatter::NULL_VALUE )
     v = QVariant( field().type() );
@@ -80,7 +82,7 @@ void QgsValueMapWidgetWrapper::updateValues( const QVariant &value, const QVaria
 
   if ( mComboBox )
   {
-    if ( mComboBox->findData( v ) == -1 && !( v.startsWith( '(' ) && v.endsWith( ')' ) ) )
+    if ( mComboBox->findData( v ) == -1 )
     {
       if ( value.isNull( ) )
       {
@@ -88,7 +90,7 @@ void QgsValueMapWidgetWrapper::updateValues( const QVariant &value, const QVaria
       }
       else
       {
-        mComboBox->addItem( v.prepend( '(' ).append( ')' ), v );
+        mComboBox->addItem( QString( v ).prepend( '(' ).append( ')' ), v );
       }
     }
     mComboBox->setCurrentIndex( mComboBox->findData( v ) );
