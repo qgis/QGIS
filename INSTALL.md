@@ -602,7 +602,7 @@ Running QGIS from within MSVC:
   You will also either need to add all the dependency DLLs to the QGIS install
   directory or add their respective directories to your PATH.
 
-### 4.1.5. Packaging
+### 4.1.6. Packaging
 
 To create a standalone installer there is a perl script named 'creatensis.pl'
 in 'qgis/ms-windows/osgeo4w'.  It downloads all required packages from OSGeo4W
