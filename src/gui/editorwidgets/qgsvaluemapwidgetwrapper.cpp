@@ -16,6 +16,7 @@
 #include "qgsvaluemapwidgetwrapper.h"
 #include "qgsvaluemapconfigdlg.h"
 #include "qgsvaluemapfieldformatter.h"
+#include "qgsapplication.h"
 
 #include <QSettings>
 
@@ -81,7 +82,14 @@ void QgsValueMapWidgetWrapper::updateValues( const QVariant &value, const QVaria
   {
     if ( mComboBox->findData( v ) == -1 && !( v.startsWith( '(' ) && v.endsWith( ')' ) ) )
     {
-      mComboBox->addItem( v.prepend( '(' ).append( ')' ), v );
+      if ( value.isNull( ) )
+      {
+        mComboBox->addItem( QgsApplication::nullRepresentation().prepend( '(' ).append( ')' ), v );
+      }
+      else
+      {
+        mComboBox->addItem( v.prepend( '(' ).append( ')' ), v );
+      }
     }
     mComboBox->setCurrentIndex( mComboBox->findData( v ) );
   }
