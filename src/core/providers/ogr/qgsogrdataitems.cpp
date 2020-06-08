@@ -244,7 +244,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
     // the message to give the user a hint about this possiblity.
     if ( QFile::exists( path ) )
     {
-      errorMessage = tr( "Error opening file, check file and directory permissions on\n%1" ).arg( path );
+      errorMessage = tr( "Error opening file, check file and directory permissions on\n%1" ).arg( QDir::toNativeSeparators( path ) );
     }
     else
     {
