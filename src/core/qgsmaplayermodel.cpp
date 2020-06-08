@@ -115,7 +115,7 @@ QModelIndex QgsMapLayerModel::indexFromLayer( QgsMapLayer *layer ) const
 
 QgsMapLayer *QgsMapLayerModel::layerFromIndex( const QModelIndex &index ) const
 {
-  return static_cast<QgsMapLayer *>( index.internalPointer() );
+  return mProject->mapLayer( index.data( LayerIdRole ).toString() );
 }
 
 void QgsMapLayerModel::setAdditionalItems( const QStringList &items )
@@ -243,7 +243,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       if ( additionalIndex >= 0 )
         return mAdditionalItems.at( additionalIndex );
 
-      QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
+      QgsMapLayer *layer = mLayers.value( index.row() - ( mAllowEmpty ? 1 : 0 ) );
       if ( !layer )
         return QVariant();
 
@@ -262,7 +262,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       if ( isEmpty || additionalIndex >= 0 )
         return QVariant();
 
-      QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
+      QgsMapLayer *layer = mLayers.value( index.row() - ( mAllowEmpty ? 1 : 0 ) );
       return layer ? layer->id() : QVariant();
     }
 
@@ -271,7 +271,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       if ( isEmpty || additionalIndex >= 0 )
         return QVariant();
 
-      return QVariant::fromValue<QgsMapLayer *>( static_cast<QgsMapLayer *>( index.internalPointer() ) );
+      return QVariant::fromValue<QgsMapLayer *>( mLayers.value( index.row() - ( mAllowEmpty ? 1 : 0 ) ) );
     }
 
     case EmptyRole:
@@ -287,7 +287,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
         if ( isEmpty || additionalIndex >= 0 )
           return QVariant();
 
-        QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
+        QgsMapLayer *layer = mLayers.value( index.row() - ( mAllowEmpty ? 1 : 0 ) );
         return layer ? mLayersChecked[layer->id()] : QVariant();
       }
 
@@ -296,7 +296,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
 
     case Qt::ToolTipRole:
     {
-      QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
+      QgsMapLayer *layer = mLayers.value( index.row() - ( mAllowEmpty ? 1 : 0 ) );
       if ( layer )
       {
         QStringList parts;
@@ -326,7 +326,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       if ( isEmpty || additionalIndex >= 0 )
         return QVariant();
 
-      QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
+      QgsMapLayer *layer = mLayers.value( index.row() - ( mAllowEmpty ? 1 : 0 ) );
       if ( !layer )
         return QVariant();
 
