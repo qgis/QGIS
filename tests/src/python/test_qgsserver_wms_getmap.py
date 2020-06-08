@@ -26,6 +26,7 @@ import urllib.error
 
 from qgis.testing import unittest
 from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import QImage
 
 import osgeo.gdal  # NOQA
 
@@ -239,6 +240,30 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Basic5")
+        img = QImage.fromData(r, "PNG")
+        self.assertEqual(img.dotsPerMeterX(), 4409)
+        self.assertEqual(img.dotsPerMeterY(), 4409)
+
+    def test_wms_getmap_dpi_png_8bit(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "DPI": "112.5"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        img = QImage.fromData(r, "PNG")
+        self.assertEqual(img.dotsPerMeterX(), 4409)
+        self.assertEqual(img.dotsPerMeterY(), 4409)
 
     def test_wms_getmap_invalid_parameters(self):
         # invalid format
