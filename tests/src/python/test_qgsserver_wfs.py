@@ -259,7 +259,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         tests.append(('srsname_post', srsTemplate.format("")))
 
         # Issue https://github.com/qgis/QGIS/issues/36398
-        # Check get feature within linear ring with srsName=EPSG:4326 (same as the project/layer)
+        # Check get feature within polygon having srsName=EPSG:4326 (same as the project/layer)
         within4326FilterTemplate = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
   <wfs:Query typeName="testlayer" srsName="EPSG:4326" xmlns:feature="http://www.qgis.org/gml">
