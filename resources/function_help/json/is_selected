@@ -1,23 +1,29 @@
 {
   "name": "is_selected",
   "type": "function",
-  "description": "Returns True if a feature is selected. If called with no parameters checks the current feature.",
-  "arguments": [
+  "description": "Returns True if a feature is selected. Can be used with zero, one or two parameters, see below for different variants.",
+  "variants": [
         {
-          "arg": "layer",
-          "optional": true,
-          "default": "current layer",
-          "description": "The layer (or its id or name) on which the selection will be checked."
+            "variant": "No parameters",
+            "variant_description": "If called with no parameters, it checks if current feature in current layer is selected.",
+            "arguments": [ { "arg": "", "description": "No parameters" } ],
+            "examples": [ { "expression": "is_selected()", "returns" : "True if the current feature in current layer is selected." } ]
         },
         {
-          "arg":"feature",
-          "optional": true,
-          "default": "current feature",
-          "description":"The feature which should be checked for selection."
+            "variant": "One 'feature' parameter",
+            "variant_description": "If called with a 'feature' parameter, it returns True if that feature is selected.",
+            "arguments": [ { "arg": "feature", "description": "The feature which should be checked for selection." } ],
+            "examples": [ { "expression": "is_selected( get_feature('streets', 'name', \"street_name\")) )", "returns": "True if that feature is selected." } ]
+        },
+        {
+            "variant" : "Two parameters",
+            "variant_description": "If called with a layer and a feature, it checks if that feature in that layer is selected.",
+            "arguments": [ { "arg": "layer", "description": "The layer (or its id or name) on which the selection will be checked." }, { "arg": "feature", "description": "The feature which should be checked for selection." } ],
+            "examples": [ { "expression": "is_selected( 'streets', get_feature('streets', 'name', \"street_name\"))", "returns": "True if the current building's street is selected." } ]
         }
-  ],
-  "examples": [
-        { "expression":"is_selected()", "returns" : "True if the current feature is selected."},
-        { "expression":"is_selected('streets', get_feature('streets', 'name', \"street_name\"))", "returns":"True if the current building's street is selected."}
   ]
-}
+ }
+
+
+
+
