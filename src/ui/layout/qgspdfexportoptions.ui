@@ -101,7 +101,7 @@
            <x>0</x>
            <y>0</y>
            <width>451</width>
-           <height>630</height>
+           <height>612</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -193,7 +193,7 @@
                  <item>
                   <widget class="QLabel" name="label_2">
                    <property name="text">
-                    <string>Uncheck layers to avoid exporting vector feature information for those layers, and optionally set the group name to allow multiple layers to be joined into a single logical PDF group</string>
+                    <string>Uncheck layers to avoid exporting vector feature information for those layers, and optionally set the group name to allow multiple layers to be joined into a single logical PDF group. Layers can be dragged and dropped to rearrange their order in the generated GeoPDF table of contents.</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
