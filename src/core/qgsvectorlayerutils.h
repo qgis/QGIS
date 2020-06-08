@@ -179,7 +179,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     /**
      * Tests an attribute \a value for type compatibility, i.e. checks whether it can be converted
      * to the \a destinationType.
-     * NULL values (and QVariant invalid values because they are usually converted to NULLs) are considered valid.
+     * Will always return TRUE for NULL and invalid QVariants.
      *
      * \see validateAttribute()
      * \since QGIS 3.14
