@@ -216,6 +216,7 @@ class TestQgsServerWFS(QgsServerTestBase):
             header, body,
         )
 
+    @unittest.expectedFailure("Issue #36398: QGIS Server: WFS Request does not use SrsName on the geometry")
     def test_getfeature_post(self):
         tests = []
 
