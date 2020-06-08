@@ -404,7 +404,9 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
   else
     path = settings.value( QStringLiteral( "/Processing/Configuration/OUTPUTS_FOLDER" ) ).toString();
 
-  QString filename = QFileDialog::getSaveFileName( this, tr( "Save file" ), path, fileFilter, &lastFilter );
+  const bool dontConfirmOverwrite = mParameter->metadata().value( QStringLiteral( "widget_wrapper" ) ).toMap().value( QStringLiteral( "dontconfirmoverwrite" ), false ).toBool();
+
+  QString filename = QFileDialog::getSaveFileName( this, tr( "Save file" ), path, fileFilter, &lastFilter, dontConfirmOverwrite ? QFileDialog::Options( QFileDialog::DontConfirmOverwrite ) : nullptr );
   if ( !filename.isEmpty() )
   {
     mUseTemporary = false;

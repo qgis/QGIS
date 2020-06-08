@@ -2986,7 +2986,21 @@ class CORE_EXPORT QgsProcessingParameterRasterDestination : public QgsProcessing
  * \ingroup core
  * A generic file based destination parameter, for specifying the destination path for a file (non-map layer)
  * created by the algorithm.
-  * \since QGIS 3.0
+ *
+ * In some circumstances it is desirable to avoid the usual file overwriting confirmation prompt when
+ * users select an existing destination file for this parameter type (e.g., for algorithms which
+ * append to an existing destination file instead of overwriting them.). This can be done by setting
+ * the widget wrapper metadata "dontconfirmoverwrite" option:
+ *
+ * * \code{.py}
+ *   param = QgsProcessingParameterFileDestination( 'OUTPUT', 'Destination file')
+ *   # don't show the file overwrite warning when users select a destination file:
+ *   param.setMetadata( {'widget_wrapper':
+ *     { 'dontconfirmoverwrite': True }
+ *   })
+ * \endcode
+ *
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingParameterFileDestination : public QgsProcessingDestinationParameter
 {
