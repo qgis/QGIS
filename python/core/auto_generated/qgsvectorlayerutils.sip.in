@@ -177,17 +177,6 @@ Returns ``True`` if the attribute value is valid for the field. Any constraint f
 If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
 %End
 
-    static bool canConvert( const QVariant &value, const QVariant::Type destinationType );
-%Docstring
-Tests an attribute ``value`` for type compatibility, i.e. checks whether it can be converted
-to the ``destinationType``.
-Will always return ``True`` for NULL and invalid QVariants.
-
-.. seealso:: :py:func:`validateAttribute`
-
-.. versionadded:: 3.14
-%End
-
     static QgsFeature createFeature( const QgsVectorLayer *layer,
                                      const QgsGeometry &geometry = QgsGeometry(),
                                      const QgsAttributeMap &attributes = QgsAttributeMap(),

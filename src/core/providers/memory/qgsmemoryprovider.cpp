@@ -423,7 +423,8 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
     bool conversionError { false };
     for ( int i = 0; i < mFields.count() && ! conversionError; ++i )
     {
-      if ( ! QgsVectorLayerUtils::canConvert( it->attribute( i ), mFields.at( i ).type() ) )
+      QVariant attrValue { it->attribute( i ) };
+      if ( ! mFields.at( i ).convertCompatible( attrValue ) )
       {
         pushError( tr( "Could not add feature with attribute %1 having type %2, cannot convert to type %3" )
                    .arg( mFields.at( i ).name(), it->attribute( i ).typeName(), mFields.at( i ).typeName() ) );
