@@ -2414,14 +2414,14 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
       attrValue = mFieldValueConverter->convert( fldIdx, attrValue );
     }
 
-    // Check for conversion before passing attribute value to OGR
+    // Check type compatibility before passing attribute value to OGR
     if ( ! field.convertCompatible( attrValue ) )
     {
-      mErrorMessage = QObject::tr( "Invalid variant type for field %1[%2]: received %3 with type %4" )
-                      .arg( mFields.at( fldIdx ).name() )
-                      .arg( ogrField )
-                      .arg( attrValue.typeName(),
-                            attrValue.toString() );
+      mErrorMessage = QObject::tr( "Error converting value (%1) from %2 to %3 for attribute field %4" )
+                      .arg( feature.attribute( fldIdx ).toString(),
+                            mFields.at( fldIdx ).typeName(),
+                            attrValue.typeName(),
+                            mFields.at( fldIdx ).name() );
       QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
       mError = ErrFeatureWriteFailed;
       return nullptr;
