@@ -211,10 +211,30 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       }
       else
       {
-        // features with no candidates are recorded in the unlabeled feature list
+        // no candidates, so generate a default "point on surface" one
         std::unique_ptr< LabelPosition > unplacedPosition = featurePart->createCandidatePointOnSurface( featurePart );
-        if ( unplacedPosition )
+        if ( !unplacedPosition )
+          continue;
+
+        if ( layer->displayAll() )
+        {
+          // if we are displaying all labels, we throw the default candidate in too
+          unplacedPosition->insertIntoIndex( allCandidatesFirstRound );
+          candidates.emplace_back( std::move( unplacedPosition ) );
+
+          // valid features are added to fFeats
+          std::unique_ptr< Feats > ft = qgis::make_unique< Feats >();
+          ft->feature = featurePart;
+          ft->shape = nullptr;
+          ft->candidates = std::move( candidates );
+          ft->priority = featurePart->calculatePriority();
+          features.emplace_back( std::move( ft ) );
+        }
+        else
+        {
+          // not displaying all labels for this layer, so it goes into the unlabeled feature list
           prob->positionsWithNoCandidates()->emplace_back( std::move( unplacedPosition ) );
+        }
       }
     }
     if ( isCanceled() )
