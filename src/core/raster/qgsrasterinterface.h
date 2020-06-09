@@ -31,8 +31,6 @@
 #include "qgsrasterhistogram.h"
 #include "qgsrectangle.h"
 
-class QgsRasterResampleFilter;
-
 /**
  * \ingroup core
  * Feedback object tailored for raster block reading.
@@ -95,26 +93,6 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
      */
     QStringList errors() const { return mErrors; }
 
-    /**
-     * Set resampling filter to apply.
-     *
-     * This is aimed for now at being set by QgsRasterResampleFilter only, and not for wider use.
-     * For example when the underlying provider is GDAL which can apply resampling
-     * settings directly, which improves the quality.
-     *
-     * \see QgsRasterInterface::canHandleBlockRequestWithResampling()
-     */
-    void setResampleFilter( const QgsRasterResampleFilter *filter ) SIP_SKIP { mResampleFilter = filter; }
-
-    /**
-     * Returns the resampling filter to apply.
-     *
-     * This is aimed at being used by a provider that must directly apply resampling.
-     *
-     * \see QgsRasterInterface::canHandleBlockRequestWithResampling()
-     */
-    const QgsRasterResampleFilter *resampleFilter() const SIP_SKIP { return mResampleFilter; }
-
   private:
 
     /**
@@ -128,8 +106,6 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 
     //! List of errors encountered while retrieving block
     QStringList mErrors;
-
-    const QgsRasterResampleFilter *mResampleFilter = nullptr;
 };
 
 
@@ -282,28 +258,6 @@ class CORE_EXPORT QgsRasterInterface
      * \param feedback optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
      */
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) = 0 SIP_FACTORY;
-
-    /**
-     * Returns whether the interface can deal with a block request while applying resampling settings.
-     *
-     * This is aimed for now at being used by QgsRasterResampleFilter only, and not for wider use.
-     * For example when the underlying provider is GDAL which can apply resampling
-     * settings directly, which improves the quality.
-     *
-     * \param bandNo band number
-     * \param extent extent of block
-     * \param width pixel width of block
-     * \param height pixel height of block
-     * \param filter resampling filter
-     * \return true if the interface can deal with a block request while applying resampling settings.
-     */
-    virtual bool canHandleBlockRequestWithResampling( int bandNo,
-        const QgsRectangle &extent,
-        int width, int height,
-        const QgsRasterResampleFilter *filter ) SIP_SKIP
-    {
-      return mInput ? mInput->canHandleBlockRequestWithResampling( bandNo, extent, width, height, filter ) : false;
-    }
 
     /**
      * Set input.
