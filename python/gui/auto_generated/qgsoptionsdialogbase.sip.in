@@ -66,6 +66,13 @@ Sometimes useful to do at end of subclass's constructor.
 :param title: the window title (it does not need to be defined if previously given to initOptionsBase();
 %End
 
+    void restoreLastPage();
+%Docstring
+Refocus the active tab from the last time the dialog was shown.
+
+.. versionadded:: 3.14
+%End
+
     void resizeAlltabs( int index );
 %Docstring
 Resizes all tabs when the dialog is resized

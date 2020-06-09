@@ -182,6 +182,15 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
   mOptListWidget->setMaximumWidth(
     mSettings->value( QStringLiteral( "/Windows/%1/splitState" ).arg( mOptsKey ) ).isNull() ? 150 : 16777215 );
   mOptSplitter->restoreState( mSettings->value( QStringLiteral( "/Windows/%1/splitState" ).arg( mOptsKey ) ).toByteArray() );
+
+  restoreLastPage();
+
+  // get rid of annoying outer focus rect on Mac
+  mOptListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
+}
+
+void QgsOptionsDialogBase::restoreLastPage()
+{
   int curIndx = mSettings->value( QStringLiteral( "/Windows/%1/tab" ).arg( mOptsKey ), 0 ).toInt();
 
   // if the last used tab is out of range or not enabled display the first enabled one
@@ -204,9 +213,6 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
     mOptStackedWidget->setCurrentIndex( curIndx );
     mOptListWidget->setCurrentRow( curIndx );
   }
-
-  // get rid of annoying outer focus rect on Mac
-  mOptListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
 }
 
 void QgsOptionsDialogBase::resizeAlltabs( int index )
