@@ -16,6 +16,8 @@
  ***************************************************************************/
 #include "qgshanaconnection.h"
 #include "qgshanaconnectionpool.h"
+#include "qgshanasettings.h"
+#include "qgshanautils.h"
 
 QgsHanaConnectionPoolGroup::QgsHanaConnectionPoolGroup( const QString &name )
   : QgsConnectionPoolGroup<QgsHanaConnection*>( name )
@@ -52,4 +54,23 @@ QgsHanaConnectionPool::QgsHanaConnectionPool()
 QgsHanaConnectionPool::~QgsHanaConnectionPool()
 {
   QgsDebugCall;
+}
+
+QgsHanaConnectionRef::QgsHanaConnectionRef( const QgsDataSourceUri &uri )
+{
+  mConnection = std::unique_ptr<QgsHanaConnection>(
+                  QgsHanaConnectionPool::instance()->acquireConnection( QgsHanaUtils::connectionInfo( uri ) ) );
+}
+
+QgsHanaConnectionRef::QgsHanaConnectionRef( const QString &name )
+{
+  QgsHanaSettings settings( name, true );
+  mConnection = std::unique_ptr<QgsHanaConnection>(
+                  QgsHanaConnectionPool::instance()->acquireConnection( QgsHanaUtils::connectionInfo( settings.toDataSourceUri() ) ) );
+}
+
+QgsHanaConnectionRef::~QgsHanaConnectionRef()
+{
+  if ( mConnection && QgsHanaConnectionPool::hasInstance() )
+    QgsHanaConnectionPool::instance()->releaseConnection( mConnection.release() );
 }

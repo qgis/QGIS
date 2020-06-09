@@ -23,7 +23,6 @@
 #include "qgshanadriver.h"
 #include "qgshanaexception.h"
 #include "qgshanaresultset.h"
-#include "qgshanasettings.h"
 #include "qgshanatablemodel.h"
 #include "qgshanautils.h"
 #include "qgsmessagelog.h"
@@ -769,23 +768,4 @@ PreparedStatementRef QgsHanaConnection::createPreparedStatement( const QString &
     }
   }
   return stmt;
-}
-
-QgsHanaConnectionRef::QgsHanaConnectionRef( const QgsDataSourceUri &uri )
-{
-  mConnection = std::unique_ptr<QgsHanaConnection>(
-                  QgsHanaConnectionPool::instance()->acquireConnection( QgsHanaUtils::connectionInfo( uri ) ) );
-}
-
-QgsHanaConnectionRef::QgsHanaConnectionRef( const QString &name )
-{
-  QgsHanaSettings settings( name, true );
-  mConnection = std::unique_ptr<QgsHanaConnection>(
-                  QgsHanaConnectionPool::instance()->acquireConnection( QgsHanaUtils::connectionInfo( settings.toDataSourceUri() ) ) );
-}
-
-QgsHanaConnectionRef::~QgsHanaConnectionRef()
-{
-  if ( mConnection && QgsHanaConnectionPool::hasInstance() )
-    QgsHanaConnectionPool::instance()->releaseConnection( mConnection.release() );
 }

@@ -17,6 +17,7 @@
 #include "qgsexception.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryfactory.h"
+#include "qgshanaconnection.h"
 #include "qgshanaexception.h"
 #include "qgshanaexpressioncompiler.h"
 #include "qgshanafeatureiterator.h"

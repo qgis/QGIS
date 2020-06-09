@@ -18,7 +18,7 @@
 #define QGSHANAFEATUREITERATOR_H
 
 #include "qgsfeatureiterator.h"
-#include "qgshanaconnection.h"
+#include "qgshanaconnectionpool.h"
 #include "qgshanaprovider.h"
 #include "qgshanaresultset.h"
 

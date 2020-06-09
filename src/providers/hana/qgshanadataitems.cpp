@@ -17,6 +17,7 @@
 #include "qgsapplication.h"
 #include "qgsdatasourceuri.h"
 #include "qgshanaconnection.h"
+#include "qgshanaconnectionpool.h"
 #include "qgshanaexception.h"
 #include "qgshananewconnection.h"
 #include "qgshanadataitems.h"

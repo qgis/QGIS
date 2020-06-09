@@ -81,4 +81,20 @@ class QgsHanaConnectionPool
     static QgsHanaConnectionPool *sInstance;
 };
 
+class QgsHanaConnectionRef
+{
+  public:
+    QgsHanaConnectionRef() = default;
+    QgsHanaConnectionRef( const QString &name );
+    QgsHanaConnectionRef( const QgsDataSourceUri &uri );
+    ~QgsHanaConnectionRef();
+
+    bool isNull() const { return mConnection.get() == nullptr; }
+    QgsHanaConnection &operator*() { return *mConnection; }
+    QgsHanaConnection *operator->() { return mConnection.get(); }
+
+  private:
+    std::unique_ptr<QgsHanaConnection> mConnection;
+};
+
 #endif // QGSHANACONNECTIONPOOL_H

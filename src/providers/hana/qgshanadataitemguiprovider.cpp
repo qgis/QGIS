@@ -15,6 +15,7 @@
  *
  ***************************************************************************/
 #include "qgshanaconnection.h"
+#include "qgshanaconnectionpool.h"
 #include "qgshanadataitems.h"
 #include "qgshanadataitemguiprovider.h"
 #include "qgshananewconnection.h"
