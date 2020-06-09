@@ -15461,6 +15461,8 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
 
       if ( !page.isEmpty() )
         vectorLayerPropertiesDialog->setCurrentPage( page );
+      else
+        vectorLayerPropertiesDialog->restoreLastPage();
 
       mMapStyleWidget->blockUpdates( true );
       if ( vectorLayerPropertiesDialog->exec() )

@@ -92,6 +92,13 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     void restoreOptionsBaseUi( const QString &title = QString() );
 
     /**
+     * Refocus the active tab from the last time the dialog was shown.
+     *
+     * \since QGIS 3.14
+     */
+    void restoreLastPage();
+
+    /**
      * Resizes all tabs when the dialog is resized
      * \param index current tab index
      * \since QGIS 3.10
