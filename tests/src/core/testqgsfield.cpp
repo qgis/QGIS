@@ -706,6 +706,10 @@ void TestQgsField::convertCompatible()
   QCOMPARE( stringDouble.type(), QVariant::Double );
   QCOMPARE( stringDouble, QVariant( 1223456.012345 ) );
 
+  // Test 0 on int fields
+  intField = QgsField( QStringLiteral( "int" ), QVariant::Int, QStringLiteral( "Integer" ), 10 );
+  QVariant vZero { 0 };
+  QVERIFY( intField.convertCompatible( vZero ) );
 }
 
 void TestQgsField::dataStream()
