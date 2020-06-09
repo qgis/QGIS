@@ -254,6 +254,42 @@ void QgsOptionsDialogBase::setCurrentPage( const QString &page )
   }
 }
 
+void QgsOptionsDialogBase::addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget )
+{
+  QListWidgetItem *item = new QListWidgetItem();
+  item->setIcon( icon );
+  item->setText( title );
+  item->setToolTip( tooltip );
+
+  mOptListWidget->addItem( item );
+  mOptStackedWidget->addWidget( widget );
+}
+
+void QgsOptionsDialogBase::insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget, const QString &before )
+{
+  //find the page with a matching widget name
+  for ( int idx = 0; idx < mOptStackedWidget->count(); ++idx )
+  {
+    QWidget *currentPage = mOptStackedWidget->widget( idx );
+    if ( currentPage->objectName() == before )
+    {
+      //found the "before" page
+
+      QListWidgetItem *item = new QListWidgetItem();
+      item->setIcon( icon );
+      item->setText( title );
+      item->setToolTip( tooltip );
+
+      mOptListWidget->insertItem( idx, item );
+      mOptStackedWidget->insertWidget( idx, widget );
+      return;
+    }
+  }
+
+  // no matching pages, so just add the page
+  addPage( title, tooltip, icon, widget );
+}
+
 void QgsOptionsDialogBase::searchText( const QString &text )
 {
   const int minimumTextLength = 3;

@@ -117,6 +117,33 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      */
     void setCurrentPage( const QString &page );
 
+    /**
+     * Adds a new page to the dialog pages.
+     *
+     * The \a title, \a tooltip and \a icon arguments dictate the page list item title, tooltip and icon respectively.
+     *
+     * The page content is specified via the \a widget argument. Ownership of \a widget is transferred to the dialog.
+     *
+     * \see insertPage()
+     * \since QGIS 3.14
+     */
+    void addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget SIP_TRANSFER );
+
+    /**
+     * Inserts a new page into the dialog pages.
+     *
+     * The \a title, \a tooltip and \a icon arguments dictate the page list item title, tooltip and icon respectively.
+     *
+     * The page content is specified via the \a widget argument. Ownership of \a widget is transferred to the dialog.
+     *
+     * The \a before argument specifies the object name of an existing page. The new page will be inserted directly
+     * before the matching page.
+     *
+     * \see addPage()
+     * \since QGIS 3.14
+     */
+    void insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget SIP_TRANSFER, const QString &before );
+
   public slots:
 
     /**
