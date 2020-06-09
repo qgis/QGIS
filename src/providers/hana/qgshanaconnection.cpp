@@ -43,7 +43,7 @@ using namespace odbc;
 using namespace std;
 
 static const uint8_t CREDENTIALS_INPUT_MAX_ATTEMPTS = 5;
-static const int GEOM_TYPE_SELECT_LIMIT = 10;
+static const int GEOMETRIES_SELECT_LIMIT = 10;
 
 QgsHanaConnection::QgsHanaConnection( odbc::ConnectionRef connection,  const QgsDataSourceUri &uri )
   : mConnection( connection )
@@ -101,7 +101,7 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
   {
     ConnectionRef conn = QgsHanaDriver::instance()->createConnection();
     conn->setAutoCommit( false );
-    QString errorMessage = "";
+    QString message = "";
 
     auto connect = []( odbc::ConnectionRef & conn,
                        const QgsDataSourceUri & uri,
@@ -122,7 +122,7 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
       return conn->connected();
     };
 
-    if ( !connect( conn, uri, errorMessage ) )
+    if ( !connect( conn, uri, message ) )
     {
       QString conninfo = uri.uri( false );
       QString username = uri.username();
@@ -135,7 +135,7 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
       while ( i < CREDENTIALS_INPUT_MAX_ATTEMPTS )
       {
         ++i;
-        bool ok = QgsCredentials::instance()->get( conninfo, username, password, errorMessage );
+        bool ok = QgsCredentials::instance()->get( conninfo, username, password, message );
         if ( !ok )
         {
           if ( cancelled != nullptr )
@@ -148,7 +148,7 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
         if ( !password.isEmpty() )
           tmpUri.setPassword( password );
 
-        if ( connect( conn, tmpUri, errorMessage ) )
+        if ( connect( conn, tmpUri, message ) )
           break;
       }
 
@@ -159,7 +159,7 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
     if ( conn->connected() )
       return new QgsHanaConnection( conn, uri );
     else
-      throw QgsHanaException( errorMessage.toStdString().c_str() );
+      throw QgsHanaException( message.toStdString().c_str() );
   }
   catch ( const QgsHanaException &ex )
   {
@@ -423,6 +423,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
   const QString schema = mUri.schema().isEmpty() ? schemaName : mUri.schema();
   const QString sqlSchemaFilter = QStringLiteral(
                                     "SELECT DISTINCT(SCHEMA_NAME) FROM SYS.EFFECTIVE_PRIVILEGES WHERE "
+                                    "OBJECT_TYPE IN ('SCHEMA', 'TABLE', 'VIEW') AND "
                                     "SCHEMA_NAME LIKE ? AND "
                                     "SCHEMA_NAME NOT LIKE_REGEXPR 'SYS|_SYS.*|UIS|SAP_XS|SAP_REST|HANA_XS' AND "
                                     "PRIVILEGE IN ('SELECT', 'CREATE ANY') AND "
@@ -480,12 +481,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
         {
           QgsHanaLayerProperty firstLayer = layers.values( layerKey )[0];
           if ( firstLayer.geometryColName.isEmpty() )
-          {
-            if ( isGeometryColumn )
-              layers.remove( layerKey );
-            else
-              continue;
-          }
+            layers.remove( layerKey );
         }
       }
 
@@ -508,13 +504,13 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
   }
 
   QVector<QgsHanaLayerProperty> list;
-  for ( QPair<QString, QString> key : layers.uniqueKeys() )
+  for ( const QPair<QString, QString> &key : layers.uniqueKeys() )
   {
     QList<QgsHanaLayerProperty> values = layers.values( key );
     if ( values.size() == 1 )
-      values[0].isUnique = values.size() == 1;
+      values[0].isUnique = true;
 
-    for ( auto lp : values )
+    for ( const auto &lp : values )
       list << lp;
   }
 
@@ -585,23 +581,24 @@ int QgsHanaConnection::getLayerSRID( const QgsHanaLayerProperty &layerProperty )
                     .arg( QgsHanaUtils::quotedIdentifier( layerProperty.geometryColName ),
                           QgsHanaUtils::quotedIdentifier( layerProperty.schemaName ),
                           QgsHanaUtils::quotedIdentifier( layerProperty.tableName ),
-                          QString::number( GEOM_TYPE_SELECT_LIMIT ) );
+                          QString::number( GEOMETRIES_SELECT_LIMIT ) );
       stmt = mConnection->prepareStatement( QgsHanaUtils::toUtf16( sql ) );
     }
 
-    int prevSrid = -1;
     ResultSetRef rsSrid = stmt->executeQuery( );
     while ( rsSrid->next() )
     {
-      srid = *rsSrid->getInt( 1 );
-      if ( prevSrid != -1 && srid != prevSrid )
+      Int value = rsSrid->getInt( 1 );
+      if ( value.isNull() )
+        continue;
+      if ( srid == -1 )
+        srid = *value;
+      else if ( srid != *value )
       {
         srid = -1;
         break;
       }
-      prevSrid = srid;
     }
-
     rsSrid->close();
   }
   catch ( const Exception &ex )
@@ -622,27 +619,44 @@ QStringList QgsHanaConnection::getLayerPrimaryeKeys( const QgsHanaLayerProperty 
     ResultSetRef rsPrimaryKeys = dbmd->getPrimaryKeys( nullptr,
                                  QgsHanaUtils::toUtf16( layerProperty.schemaName ),
                                  QgsHanaUtils::toUtf16( layerProperty.tableName ) );
-
+    size_t numColumns = 0;
+    QStringList intColumns;
+    QString keyName;
     while ( rsPrimaryKeys->next() )
     {
-      auto keyName = rsPrimaryKeys->getNString( 4 );
-      QString clmName = QgsHanaUtils::toQString( keyName );
+      QString clmName = QgsHanaUtils::toQString( rsPrimaryKeys->getNString( 4 /*COLUMN_NAME*/ ) );
+      if ( keyName.isEmpty() )
+        keyName = QgsHanaUtils::toQString( rsPrimaryKeys->getNString( 6 /*PK_NAME*/ ) );
       ResultSetRef rsColumns = dbmd->getColumns( nullptr,
                                QgsHanaUtils::toUtf16( layerProperty.schemaName ),
                                QgsHanaUtils::toUtf16( layerProperty.tableName ),
                                QgsHanaUtils::toUtf16( clmName ) );
-
-      if ( rsColumns->next() )
+      while ( rsColumns->next() )
       {
         Short dataType = rsColumns->getShort( 5 );
         short dt = *dataType;
         if ( dt == SQLDataTypes::TinyInt || dt == SQLDataTypes::SmallInt ||
              dt == SQLDataTypes::Integer || dt == SQLDataTypes::BigInt )
-          ret << clmName;
+          intColumns << clmName;
+        ++numColumns;
       }
       rsColumns->close();
     }
     rsPrimaryKeys->close();
+
+    if ( numColumns == 1 )
+    {
+      if ( !intColumns.empty() )
+        ret << intColumns[0];
+    }
+    else if ( numColumns > 0 )
+    {
+      QgsDebugMsg( QStringLiteral( "Table %1.%2 has %3 columns in its primary key %4" ).arg(
+                     layerProperty.schemaName,
+                     layerProperty.tableName,
+                     QString::number( numColumns ),
+                     keyName ) );
+    }
   }
   catch ( const Exception &ex )
   {
@@ -657,38 +671,39 @@ QgsWkbTypes::Type QgsHanaConnection::getLayerGeometryType( const QgsHanaLayerPro
   if ( layerProperty.geometryColName.isEmpty() )
     return QgsWkbTypes::NoGeometry;
 
-  QgsWkbTypes::Type ret;
-
+  QgsWkbTypes::Type ret = QgsWkbTypes::Unknown;
   QString sql = QStringLiteral( "SELECT upper(%1.ST_GeometryType()), %1.ST_Is3D(), %1.ST_IsMeasured() FROM %2.%3 "
                                 "WHERE %1 IS NOT NULL LIMIT %4" ).arg(
                   QgsHanaUtils::quotedIdentifier( layerProperty.geometryColName ),
                   QgsHanaUtils::quotedIdentifier( layerProperty.schemaName ),
                   QgsHanaUtils::quotedIdentifier( layerProperty.tableName ),
-                  QString::number( GEOM_TYPE_SELECT_LIMIT ) );
+                  QString::number( GEOMETRIES_SELECT_LIMIT ) );
 
   try
   {
     StatementRef stmt = mConnection->createStatement();
     ResultSetRef rsGeomInfo = stmt->executeQuery( QgsHanaUtils::toUtf16( sql ) );
-    QgsWkbTypes::Type geomType = QgsWkbTypes::Unknown, prevGeomType = QgsWkbTypes::Unknown;
     while ( rsGeomInfo->next() )
     {
-      geomType = QgsWkbTypes::singleType( QgsHanaUtils::toWkbType(
-                                            rsGeomInfo->getString( 1 ), rsGeomInfo->getInt( 2 ), rsGeomInfo->getInt( 3 ) ) );
-      if ( prevGeomType != QgsWkbTypes::Unknown && geomType != prevGeomType )
+      QgsWkbTypes::Type geomType = QgsWkbTypes::singleType( QgsHanaUtils::toWkbType(
+                                     rsGeomInfo->getString( 1 ), rsGeomInfo->getInt( 2 ), rsGeomInfo->getInt( 3 ) ) );
+      if ( geomType == QgsWkbTypes::Unknown )
+        continue;
+      if ( ret == QgsWkbTypes::Unknown )
+        ret = geomType;
+      else if ( ret != geomType )
       {
-        geomType = QgsWkbTypes::Unknown;
+        ret = QgsWkbTypes::Unknown;
         break;
       }
-      prevGeomType = geomType;
     }
-    ret = geomType;
     rsGeomInfo->close();
   }
   catch ( const Exception &ex )
   {
     throw QgsHanaException( ex.what() );
   }
+
   return ret;
 }
 
