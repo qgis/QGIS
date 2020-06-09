@@ -214,13 +214,13 @@ void QgsGeoPackageCollectionItem::addConnection()
   QgsOgrDbConnection connection( mName, QStringLiteral( "GPKG" ) );
   connection.setPath( mPath );
   connection.save();
-  mParent->refreshConnections();
+  mParent->refreshConnections( QStringLiteral( "GPKG" ) );
 }
 
 void QgsGeoPackageCollectionItem::deleteConnection()
 {
   QgsOgrDbConnection::deleteConnection( name(), QStringLiteral( "GPKG" ) );
-  mParent->refreshConnections();
+  mParent->refreshConnections( QStringLiteral( "GPKG" ) );
 }
 
 bool QgsGeoPackageCollectionItem::vacuumGeoPackageDb( const QString &name, const QString &path, QString &errCause )

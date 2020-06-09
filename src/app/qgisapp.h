@@ -2531,6 +2531,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! True if we are blocking the activeLayerChanged signal from being emitted
     bool mBlockActiveLayerChanged = false;
 
+    int mBlockBrowser1Refresh = 0;
+    int mBlockBrowser2Refresh = 0;
+    int mDataSourceManagerRefresh = 0;
+
     std::unique_ptr<QgsGeometryValidationService> mGeometryValidationService;
     QgsGeometryValidationModel *mGeometryValidationModel = nullptr;
     QgsGeometryValidationDock *mGeometryValidationDock = nullptr;
