@@ -25,6 +25,17 @@ Currently supported standards:
 %End
   public:
 
+    struct Context
+    {
+
+      Context( const QgsMapLayer *layer = 0, const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() );
+%Docstring
+Constructs a Context from ``layer`` and ``transformContext``
+%End
+      const QgsMapLayer *layer;
+      QgsCoordinateTransformContext transformContext;
+    };
+
     enum GMLVersion
     {
       GML_2_1_2,
@@ -32,16 +43,17 @@ Currently supported standards:
       GML_3_2_1,
     };
 
-    static QgsGeometry geometryFromGML( const QString &xmlString );
+    static QgsGeometry geometryFromGML( const QString &xmlString, const Context &context = Context() );
 %Docstring
 Static method that creates geometry from GML
 
 :param xmlString: xml representation of the geometry. GML elements are expected to be
                   in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
                   "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
+:param context: QgsOgcUtils context
 %End
 
-    static QgsGeometry geometryFromGML( const QDomNode &geometryNode );
+    static QgsGeometry geometryFromGML( const QDomNode &geometryNode, const Context &context = Context() );
 %Docstring
 Static method that creates geometry from GML
 %End

@@ -100,14 +100,14 @@ namespace QgsWfs
     return nullptr;
   }
 
-  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, const QgsProject *project )
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, QgsProject *project )
   {
     // Get the server feature ids in filter element
     QStringList collectedServerFids;
     return parseFilterElement( typeName, filterElem, collectedServerFids, project );
   }
 
-  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, QStringList &serverFids, const QgsProject *project )
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, QStringList &serverFids, const QgsProject *project, const QgsMapLayer *layer )
   {
     QgsFeatureRequest request;
 
@@ -147,7 +147,7 @@ namespace QgsWfs
     }
     else if ( !goidNodes.isEmpty() )
     {
-      // Get the server feature idsin filter element
+      // Get the server feature ids in filter element
       QStringList collectedServerFids;
       QDomElement goidElem;
       for ( int f = 0; f < goidNodes.size(); f++ )
@@ -192,7 +192,8 @@ namespace QgsWfs
         }
         else if ( childElem.tagName() != QLatin1String( "PropertyName" ) )
         {
-          QgsGeometry geom = QgsOgcUtils::geometryFromGML( childElem );
+          QgsOgcUtils::Context ctx { layer, project ? project->transformContext() : QgsCoordinateTransformContext() };
+          QgsGeometry geom = QgsOgcUtils::geometryFromGML( childElem, ctx );
           request.setFilterRect( geom.boundingBox() );
         }
         childElem = childElem.nextSiblingElement();
