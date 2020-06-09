@@ -13,7 +13,7 @@
             "variant": "One 'feature' parameter",
             "variant_description": "If called with a 'feature' parameter, it returns True if that feature is selected.",
             "arguments": [ { "arg": "feature", "description": "The feature which should be checked for selection." } ],
-            "examples": [ { "expression": "is_selected( get_feature('streets', 'name', \"street_name\")) )", "returns": "True if that feature is selected." } ]
+            "examples": [ { "expression": "is_selected(@atlas_feature)", "returns": "True if the current atlas feature is selected." } ]
         },
         {
             "variant" : "Two parameters",
@@ -23,4 +23,3 @@
         }
   ]
  }
-
