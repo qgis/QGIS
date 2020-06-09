@@ -7,7 +7,7 @@
             "variant": "No parameters",
             "variant_description": "If called with no parameters, the function will return true if the current feature in the current layer is selected.",
             "arguments": [ { "arg": "", "description": "No parameters" } ],
-            "examples": [ { "expression": "is_selected()", "returns" : "True if the current feature in current layer is selected." } ]
+            "examples": [ { "expression": "is_selected()", "returns" : "True if the current feature in the current layer is selected." } ]
         },
         {
             "variant": "One 'feature' parameter",
@@ -23,5 +23,4 @@
         }
   ]
  }
-
 
