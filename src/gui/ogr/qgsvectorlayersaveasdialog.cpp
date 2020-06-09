@@ -357,7 +357,7 @@ void QgsVectorLayerSaveAsDialog::accept()
       }
     }
   }
-  else if ( mActionOnExistingFile == QgsVectorFileWriter::CreateOrOverwriteFile )
+  else if ( mActionOnExistingFile == QgsVectorFileWriter::CreateOrOverwriteFile && QFile::exists( filename() ) )
   {
     try
     {
