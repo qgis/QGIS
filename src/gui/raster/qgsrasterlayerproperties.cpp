@@ -367,40 +367,73 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mZoomedOutResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ) );
   mZoomedOutResamplingComboBox->insertItem( 1, tr( "Average" ) );
 
-  const QgsRasterResampleFilter *resampleFilter = mRasterLayer->resampleFilter();
-  //set combo boxes to current resampling types
-  if ( resampleFilter )
+  mCbEarlyResampling->setVisible(
+    provider && ( provider->providerCapabilities() & QgsRasterDataProvider::ProviderHintCanPerformProviderResampling ) );
+  mCbEarlyResampling->setChecked( mRasterLayer->resamplingStage() == QgsRasterPipe::ResamplingStage::Provider );
+
+  if ( provider && mRasterLayer->resamplingStage() == QgsRasterPipe::ResamplingStage::Provider )
   {
-    const QgsRasterResampler *zoomedInResampler = resampleFilter->zoomedInResampler();
-    if ( zoomedInResampler )
+    if ( provider->zoomedInResamplingMethod() == QgsRasterDataProvider::ResamplingMethod::Bilinear )
     {
-      if ( zoomedInResampler->type() == QLatin1String( "bilinear" ) )
-      {
-        mZoomedInResamplingComboBox->setCurrentIndex( 1 );
-      }
-      else if ( zoomedInResampler->type() == QLatin1String( "cubic" ) )
-      {
-        mZoomedInResamplingComboBox->setCurrentIndex( 2 );
-      }
+      mZoomedInResamplingComboBox->setCurrentIndex( 1 );
+    }
+    else if ( provider->zoomedInResamplingMethod() == QgsRasterDataProvider::ResamplingMethod::Cubic )
+    {
+      mZoomedInResamplingComboBox->setCurrentIndex( 2 );
     }
     else
     {
       mZoomedInResamplingComboBox->setCurrentIndex( 0 );
     }
 
-    const QgsRasterResampler *zoomedOutResampler = resampleFilter->zoomedOutResampler();
-    if ( zoomedOutResampler )
+    if ( provider->zoomedOutResamplingMethod() == QgsRasterDataProvider::ResamplingMethod::Bilinear )
     {
-      if ( zoomedOutResampler->type() == QLatin1String( "bilinear" ) ) //bilinear resampler does averaging when zooming out
-      {
-        mZoomedOutResamplingComboBox->setCurrentIndex( 1 );
-      }
+      mZoomedOutResamplingComboBox->setCurrentIndex( 1 );
     }
     else
     {
       mZoomedOutResamplingComboBox->setCurrentIndex( 0 );
     }
-    mMaximumOversamplingSpinBox->setValue( resampleFilter->maxOversampling() );
+
+    mMaximumOversamplingSpinBox->setValue( provider->maxOversampling() );
+  }
+  else
+  {
+    const QgsRasterResampleFilter *resampleFilter = mRasterLayer->resampleFilter();
+    //set combo boxes to current resampling types
+    if ( resampleFilter )
+    {
+      const QgsRasterResampler *zoomedInResampler = resampleFilter->zoomedInResampler();
+      if ( zoomedInResampler )
+      {
+        if ( zoomedInResampler->type() == QLatin1String( "bilinear" ) )
+        {
+          mZoomedInResamplingComboBox->setCurrentIndex( 1 );
+        }
+        else if ( zoomedInResampler->type() == QLatin1String( "cubic" ) )
+        {
+          mZoomedInResamplingComboBox->setCurrentIndex( 2 );
+        }
+      }
+      else
+      {
+        mZoomedInResamplingComboBox->setCurrentIndex( 0 );
+      }
+
+      const QgsRasterResampler *zoomedOutResampler = resampleFilter->zoomedOutResampler();
+      if ( zoomedOutResampler )
+      {
+        if ( zoomedOutResampler->type() == QLatin1String( "bilinear" ) ) //bilinear resampler does averaging when zooming out
+        {
+          mZoomedOutResamplingComboBox->setCurrentIndex( 1 );
+        }
+      }
+      else
+      {
+        mZoomedOutResamplingComboBox->setCurrentIndex( 0 );
+      }
+      mMaximumOversamplingSpinBox->setValue( resampleFilter->maxOversampling() );
+    }
   }
 
   btnColorizeColor->setColorDialogTitle( tr( "Select Color" ) );
@@ -1066,11 +1099,42 @@ void QgsRasterLayerProperties::apply()
   // pixmapLegend->setScaledContents( true );
   // pixmapLegend->repaint();
 
+  const QString zoomedInResamplingMethod = mZoomedInResamplingComboBox->currentText();
+  const QString zoomedOutResamplingMethod = mZoomedOutResamplingComboBox->currentText();
+
+  mRasterLayer->setResamplingStage( mCbEarlyResampling->isChecked() ? QgsRasterPipe::ResamplingStage::Provider : QgsRasterPipe::ResamplingStage::ResampleFilter );
+  QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
+  if ( provider )
+  {
+    if ( zoomedInResamplingMethod == tr( "Bilinear" ) )
+    {
+      provider->setZoomedInResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Bilinear );
+    }
+    else if ( zoomedInResamplingMethod == tr( "Cubic" ) )
+    {
+      provider->setZoomedInResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Cubic );
+    }
+    else
+    {
+      provider->setZoomedInResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Nearest );
+    }
+
+    if ( zoomedOutResamplingMethod == tr( "Average" ) )
+    {
+      provider->setZoomedOutResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Bilinear );
+    }
+    else
+    {
+      provider->setZoomedOutResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Nearest );
+    }
+
+    provider->setMaxOversampling( mMaximumOversamplingSpinBox->value() );
+  }
+
   QgsRasterResampleFilter *resampleFilter = mRasterLayer->resampleFilter();
   if ( resampleFilter )
   {
     QgsRasterResampler *zoomedInResampler = nullptr;
-    QString zoomedInResamplingMethod = mZoomedInResamplingComboBox->currentText();
     if ( zoomedInResamplingMethod == tr( "Bilinear" ) )
     {
       zoomedInResampler = new QgsBilinearRasterResampler();
@@ -1084,7 +1148,6 @@ void QgsRasterLayerProperties::apply()
 
     //raster resampling
     QgsRasterResampler *zoomedOutResampler = nullptr;
-    QString zoomedOutResamplingMethod = mZoomedOutResamplingComboBox->currentText();
     if ( zoomedOutResamplingMethod == tr( "Average" ) )
     {
       zoomedOutResampler = new QgsBilinearRasterResampler();

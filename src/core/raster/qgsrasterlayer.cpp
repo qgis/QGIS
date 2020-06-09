@@ -765,17 +765,33 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
     if ( resampling == QStringLiteral( "bilinear" ) )
     {
       resampleFilter->setZoomedInResampler( new QgsBilinearRasterResampler() );
+      mDataProvider->setZoomedInResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Bilinear );
     }
     else if ( resampling == QStringLiteral( "cubic" ) )
     {
       resampleFilter->setZoomedInResampler( new QgsCubicRasterResampler() );
+      mDataProvider->setZoomedInResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Cubic );
     }
     resampling = settings.value( QStringLiteral( "/Raster/defaultZoomedOutResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
     if ( resampling == QStringLiteral( "bilinear" ) )
     {
       resampleFilter->setZoomedOutResampler( new QgsBilinearRasterResampler() );
+      mDataProvider->setZoomedOutResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Bilinear );
     }
-    resampleFilter->setMaxOversampling( settings.value( QStringLiteral( "/Raster/defaultOversampling" ), 2.0 ).toDouble() );
+
+    const double maxOversampling = settings.value( QStringLiteral( "/Raster/defaultOversampling" ), 2.0 ).toDouble();
+    resampleFilter->setMaxOversampling( maxOversampling );
+    mDataProvider->setMaxOversampling( maxOversampling );
+
+    if ( ( mDataProvider->providerCapabilities() & QgsRasterDataProvider::ProviderHintCanPerformProviderResampling ) &&
+         settings.value( QStringLiteral( "/Raster/defaultEarlyResampling" ), false ).toBool() )
+    {
+      setResamplingStage( QgsRasterPipe::ResamplingStage::Provider );
+    }
+    else
+    {
+      setResamplingStage( QgsRasterPipe::ResamplingStage::ResampleFilter );
+    }
   }
 
   // projector (may be anywhere in pipe)
@@ -1801,6 +1817,27 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
     resampleFilter->readXml( resampleElem );
   }
 
+  //provider
+  if ( mDataProvider )
+  {
+    QDomElement providerElem = pipeNode.firstChildElement( QStringLiteral( "provider" ) );
+    if ( !providerElem.isNull() )
+    {
+      mDataProvider->readXml( providerElem );
+    }
+  }
+
+  // Resampling stage
+  QDomNode resamplingStageElement = pipeNode.namedItem( QStringLiteral( "resamplingStage" ) );
+  if ( !resamplingStageElement.isNull() )
+  {
+    QDomElement e = resamplingStageElement.toElement();
+    if ( e.text() == QLatin1String( "provider" ) )
+      setResamplingStage( QgsRasterPipe::ResamplingStage::Provider );
+    else if ( e.text() == QLatin1String( "resamplingFilter" ) )
+      setResamplingStage( QgsRasterPipe::ResamplingStage::ResampleFilter );
+  }
+
   // get and set the blend mode if it exists
   QDomNode blendModeNode = layer_node.namedItem( QStringLiteral( "blendMode" ) );
   if ( !blendModeNode.isNull() )
@@ -1979,16 +2016,21 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
   QDomElement layerElement = layer_node.toElement();
   writeCommonStyle( layerElement, document, context, categories );
 
-  // Store pipe members (except provider) into pipe element, in future, it will be
+  // Store pipe members into pipe element, in future, it will be
   // possible to add custom filters into the pipe
   QDomElement pipeElement  = document.createElement( QStringLiteral( "pipe" ) );
 
-  for ( int i = 1; i < mPipe.size(); i++ )
+  for ( int i = 0; i < mPipe.size(); i++ )
   {
     QgsRasterInterface *interface = mPipe.at( i );
     if ( !interface ) continue;
     interface->writeXml( document, pipeElement );
   }
+
+  QDomElement resamplingStageElement = document.createElement( QStringLiteral( "resamplingStage" ) );
+  QDomText resamplingStageText = document.createTextNode( resamplingStage() == QgsRasterPipe::ResamplingStage::Provider ? QStringLiteral( "provider" ) : QStringLiteral( "resamplingFilter" ) );
+  resamplingStageElement.appendChild( resamplingStageText );
+  pipeElement.appendChild( resamplingStageElement );
 
   layer_node.appendChild( pipeElement );
 
@@ -2004,6 +2046,7 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
   QDomText blendModeText = document.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
   blendModeElement.appendChild( blendModeText );
   layer_node.appendChild( blendModeElement );
+
   return true;
 }
 
@@ -2380,6 +2423,11 @@ int QgsRasterLayer::height() const
 {
   if ( !mDataProvider ) return 0;
   return mDataProvider->ySize();
+}
+
+void QgsRasterLayer::setResamplingStage( QgsRasterPipe::ResamplingStage stage )
+{
+  mPipe.setResamplingStage( stage );
 }
 
 //////////////////////////////////////////////////////////

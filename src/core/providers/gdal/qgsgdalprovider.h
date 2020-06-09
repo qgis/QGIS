@@ -147,7 +147,6 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 
     // Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
-    bool canHandleBlockRequestWithResampling( int bandNo, const QgsRectangle &extent, int width, int height, const QgsRasterResampleFilter *filter ) override;
 
     bool readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
     bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
@@ -206,6 +205,11 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
                                            const QStringList &configOptions, const QString &fileFormat ) override;
 
     QgsPoint transformCoordinates( const QgsPoint &point, TransformType type ) override;
+
+    bool enableProviderResampling( bool enable ) override { mProviderResamplingEnabled = enable; return true; }
+    bool setZoomedInResamplingMethod( ResamplingMethod method ) override { mZoomedInResamplingMethod = method; return true; }
+    bool setZoomedOutResamplingMethod( ResamplingMethod method ) override { mZoomedOutResamplingMethod = method; return true; }
+    bool setMaxOversampling( double factor ) override { mMaxOversampling = factor; return true; }
 
   private:
     QgsGdalProvider( const QgsGdalProvider &other );
@@ -346,6 +350,12 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 
     //! Instance of GDAL transformer function used in transformCoordinates() for conversion between image and layer coordinates
     void *mGdalTransformerArg = nullptr;
+
+    bool canDoResampling(
+      int bandNo,
+      const QgsRectangle &reqExtent,
+      int bufferWidthPix,
+      int bufferHeightPix );
 };
 
 /**

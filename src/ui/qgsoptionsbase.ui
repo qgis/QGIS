@@ -2699,6 +2699,13 @@
                        </item>
                       </layout>
                      </item>
+                     <item row="4" column="0">
+                      <widget class="QCheckBox" name="mCbEarlyResampling">
+                       <property name="text">
+                        <string>Early resampling</string>
+                       </property>
+                      </widget>
+                     </item>
                     </layout>
                    </widget>
                   </item>
