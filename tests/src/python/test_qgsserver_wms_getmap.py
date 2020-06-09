@@ -115,7 +115,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetMap_Mode_16bit", 20000)
+        self._img_diff_error(r, h, "WMS_GetMap_Mode_16bit", 20000, outputFormat='WEBP')
 
     def test_wms_getmap_basic(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
