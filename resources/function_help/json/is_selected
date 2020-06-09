@@ -19,7 +19,7 @@
             "variant" : "Two parameters",
             "variant_description": "If the function is called with both a layer and a feature, it will return true if the specified feature from the specified layer is selected.",
             "arguments": [ { "arg": "layer", "description": "The layer (or its ID or name) on which the selection will be checked." }, { "arg": "feature", "description": "The feature which should be checked for selection." } ],
-            "examples": [ { "expression": "is_selected( 'streets', get_feature('streets', 'name', \"street_name\"))", "returns": "True if the current building's street is selected." } ]
+            "examples": [ { "expression": "is_selected( 'streets', get_feature('streets', 'name', \"street_name\"))", "returns": "True if the current building's street is selected (assuming the building layer has a field named 'street_name' and the 'streets' layer has a field called 'name')." } ]
         }
   ]
  }
