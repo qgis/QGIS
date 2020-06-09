@@ -74,7 +74,7 @@ class QgsHanaConnection : public QObject
     int getLayerSRID( const QgsHanaLayerProperty &layerProperty );
     QStringList getLayerPrimaryeKeys( const QgsHanaLayerProperty &layerProperty );
 
-    PreparedStatementRef createPreparedStatement( const QString &sql, const QVariantList &args );
+    odbc::PreparedStatementRef createPreparedStatement( const QString &sql, const QVariantList &args );
 
   private:
     odbc::ConnectionRef mConnection;

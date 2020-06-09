@@ -29,8 +29,6 @@
 #include "odbc/ResultSet.h"
 #include "odbc/ResultSetMetaDataUnicode.h"
 
-using namespace odbc;
-
 class QgsHanaResultSet;
 typedef std::unique_ptr<QgsHanaResultSet> QgsHanaResultSetRef;
 
@@ -40,11 +38,11 @@ class QgsHanaResultSet
     friend class QgsHanaConnection;
 
   private:
-    QgsHanaResultSet( ResultSetRef &&resultSet );
+    QgsHanaResultSet( odbc::ResultSetRef &&resultSet );
 
   public:
-    static QgsHanaResultSetRef create( PreparedStatementRef &stmt );
-    static QgsHanaResultSetRef create( StatementRef &stmt, const QString &sql );
+    static QgsHanaResultSetRef create( odbc::PreparedStatementRef &stmt );
+    static QgsHanaResultSetRef create( odbc::StatementRef &stmt, const QString &sql );
 
     void close();
     bool next();
@@ -54,11 +52,11 @@ class QgsHanaResultSet
     QVariant getValue( unsigned short columnIndex );
     QgsGeometry getGeometry( unsigned short columnIndex );
 
-    ResultSetMetaDataUnicode &getMetadata() { return *mMetadata; }
+    odbc::ResultSetMetaDataUnicode &getMetadata() { return *mMetadata; }
 
   private:
-    ResultSetRef mResultSet;
-    ResultSetMetaDataUnicodeRef mMetadata;
+    odbc::ResultSetRef mResultSet;
+    odbc::ResultSetMetaDataUnicodeRef mMetadata;
     std::vector<char> mBuffer;
 };
 

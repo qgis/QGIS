@@ -189,7 +189,6 @@ QList<QVariantList> QgsHanaProviderConnection::executeSql( const QString &sql ) 
 
   const QgsDataSourceUri dsUri { uri() };
   QgsHanaConnectionRef conn( dsUri );
-
   if ( conn.isNull() )
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
 
@@ -197,7 +196,7 @@ QList<QVariantList> QgsHanaProviderConnection::executeSql( const QString &sql ) 
 
   try
   {
-    PreparedStatementRef stmt = conn->prepareStatement( sql );
+    odbc::PreparedStatementRef stmt = conn->prepareStatement( sql );
     isQuery = stmt->getMetaDataUnicode()->getColumnCount() > 0;
   }
   catch ( const QgsHanaException &ex )
@@ -265,18 +264,17 @@ void QgsHanaProviderConnection::executeSqlStatement( const QString &sql ) const
 QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
 {
   checkCapability( Capability::Tables );
-  QList<QgsHanaProviderConnection::TableProperty> tables;
 
   const QgsDataSourceUri dsUri { uri() };
   QgsHanaConnectionRef conn( dsUri );
   if ( conn.isNull() )
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
 
-  QVector<QgsHanaLayerProperty> layers;
+  QList<QgsHanaProviderConnection::TableProperty> tables;
+
   try
   {
-    layers = conn->getLayers( schema, flags.testFlag( TableFlag::Aspatial ), false );
-
+    QVector<QgsHanaLayerProperty> layers = conn->getLayers( schema, flags.testFlag( TableFlag::Aspatial ), false );
     for ( auto &layerInfo : layers )
       conn->readLayerInfo( layerInfo );
 
@@ -324,7 +322,6 @@ QStringList QgsHanaProviderConnection::schemas( ) const
 
   const QgsDataSourceUri dsUri { uri() };
   QgsHanaConnectionRef conn( dsUri );
-
   if ( conn.isNull() )
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
 
@@ -347,10 +344,8 @@ void QgsHanaProviderConnection::store( const QString &name ) const
   // delete the original entry first
   remove( name );
 
-  const QgsDataSourceUri dsUri { uri() };
-
   QgsHanaSettings settings( name );
-  settings.setFromDataSourceUri( dsUri );
+  settings.setFromDataSourceUri( uri() );
   settings.setSaveUserName( true );
   settings.setSavePassword( true );
   settings.save();
