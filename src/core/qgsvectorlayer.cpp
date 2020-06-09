@@ -2621,7 +2621,10 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
 
   emit writeCustomSymbology( mapLayerNode, doc, errorMessage );
 
-  if ( isSpatial() )
+  // we must try to write the renderer if our geometry type is unknown
+  // as this allows the renderer to be correctly restored even for layers
+  // with broken sources
+  if ( isSpatial() || mWkbType == QgsWkbTypes::Unknown )
   {
     if ( categories.testFlag( Symbology ) )
     {
