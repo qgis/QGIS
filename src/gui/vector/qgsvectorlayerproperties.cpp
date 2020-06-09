@@ -462,16 +462,14 @@ void QgsVectorLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidget
     return;
   }
 
-  QListWidgetItem *item = new QListWidgetItem();
-  item->setIcon( factory->icon() );
-  item->setText( factory->title() );
-  item->setToolTip( factory->title() );
-
-  mOptionsListWidget->addItem( item );
-
   QgsMapLayerConfigWidget *page = factory->createWidget( mLayer, nullptr, false, this );
   mLayerPropertiesPages << page;
-  mOptionsStackedWidget->addWidget( page );
+
+  const QString beforePage = factory->layerPropertiesPagePositionHint();
+  if ( beforePage.isEmpty() )
+    addPage( factory->title(), factory->title(), factory->icon(), page );
+  else
+    insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
 }
 
 void QgsVectorLayerProperties::insertFieldOrExpression()
