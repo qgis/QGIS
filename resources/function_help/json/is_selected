@@ -1,7 +1,7 @@
 {
   "name": "is_selected",
   "type": "function",
-  "description": "Returns True if a feature is selected. Can be used with zero, one or two parameters, see below for different variants.",
+  "description": "Returns True if a feature is selected. Can be used with zero, one or two arguments, see below for details.",
   "variants": [
         {
             "variant": "No parameters",
@@ -23,7 +23,6 @@
         }
   ]
  }
-
 
 
 
