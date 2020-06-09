@@ -512,11 +512,19 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
     return false;
   }
 
-  QgsAttributes attributes = f.attributes();
-  if ( !attributes.at( xCol ).isNull() )
-    x = attributes.at( xCol ).toDouble( &xSuccess );
-  if ( !attributes.at( yCol ).isNull() )
-    y = attributes.at( yCol ).toDouble( &ySuccess );
+  if ( mCurrentLabel.pos.isUnplaced )
+  {
+    xSuccess = false;
+    ySuccess = false;
+  }
+  else
+  {
+    QgsAttributes attributes = f.attributes();
+    if ( !attributes.at( xCol ).isNull() )
+      x = attributes.at( xCol ).toDouble( &xSuccess );
+    if ( !attributes.at( yCol ).isNull() )
+      y = attributes.at( yCol ).toDouble( &ySuccess );
+  }
 
   return true;
 }
