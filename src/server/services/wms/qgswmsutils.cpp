@@ -154,6 +154,7 @@ namespace QgsWms
       case WEBP:
         contentType = QStringLiteral( "image/webp" );
         saveFormat = QStringLiteral( "WEBP" );
+        break;
       default:
         QgsMessageLog::logMessage( QString( "Unsupported format string %1" ).arg( formatStr ) );
         saveFormat = UNKN;
