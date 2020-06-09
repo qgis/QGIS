@@ -239,14 +239,27 @@ class CORE_EXPORT QgsAbstractGeometry
     //export
 
     /**
+     * WKB export flags.
+     * \since QGIS 3.14
+     */
+    enum WkbFlag
+    {
+      FlagExportTrianglesAsPolygons = 1 << 0, //!< Triangles should be exported as polygon geometries
+    };
+    Q_DECLARE_FLAGS( WkbFlags, WkbFlag )
+
+    /**
      * Returns a WKB representation of the geometry.
+     *
+     * The optional \a flags argument specifies flags controlling WKB export behavior (since QGIS 3.14).
+     *
      * \see asWkt
      * \see asGml2
      * \see asGml3
      * \see asJson()
      * \since QGIS 3.0
      */
-    virtual QByteArray asWkb() const = 0;
+    virtual QByteArray asWkb( WkbFlags flags = nullptr ) const = 0;
 
     /**
      * Returns a WKT representation of the geometry.
@@ -1233,5 +1246,7 @@ class CORE_EXPORT QgsGeometryConstPartIterator
     QgsAbstractGeometry::const_part_iterator i, n;
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractGeometry::WkbFlags )
 
 #endif //QGSABSTRACTGEOMETRYV2

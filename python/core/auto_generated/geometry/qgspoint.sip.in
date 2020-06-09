@@ -367,7 +367,7 @@ M value is preserved.
 
     virtual bool fromWkt( const QString &wkt );
 
-    virtual QByteArray asWkb() const;
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags = 0 ) const;
 
     virtual QString asWkt( int precision = 17 ) const;
 

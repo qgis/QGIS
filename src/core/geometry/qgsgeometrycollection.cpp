@@ -357,7 +357,7 @@ bool QgsGeometryCollection::fromWkt( const QString &wkt )
                             << new QgsMultiCurve << new QgsMultiSurface, QStringLiteral( "GeometryCollection" ) );
 }
 
-QByteArray QgsGeometryCollection::asWkb() const
+QByteArray QgsGeometryCollection::asWkb( WkbFlags flags ) const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
   QVector<QByteArray> wkbForGeometries;
@@ -365,7 +365,7 @@ QByteArray QgsGeometryCollection::asWkb() const
   {
     if ( geom )
     {
-      QByteArray wkb( geom->asWkb() );
+      QByteArray wkb( geom->asWkb( flags ) );
       binarySize += wkb.length();
       wkbForGeometries << wkb;
     }

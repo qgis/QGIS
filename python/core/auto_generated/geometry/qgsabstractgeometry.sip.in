@@ -189,9 +189,18 @@ Sets the geometry from a WKT string.
 %End
 
 
-    virtual QByteArray asWkb() const = 0;
+    enum WkbFlag
+    {
+      FlagExportTrianglesAsPolygons,
+    };
+    typedef QFlags<QgsAbstractGeometry::WkbFlag> WkbFlags;
+
+
+    virtual QByteArray asWkb( WkbFlags flags = 0 ) const = 0;
 %Docstring
 Returns a WKB representation of the geometry.
+
+The optional ``flags`` argument specifies flags controlling WKB export behavior (since QGIS 3.14).
 
 .. seealso:: :py:func:`asWkt`
 
@@ -990,6 +999,9 @@ Returns next part of the geometry (undefined behavior if hasNext() returns ``Fal
 %End
 
 };
+
+QFlags<QgsAbstractGeometry::WkbFlag> operator|(QgsAbstractGeometry::WkbFlag f1, QFlags<QgsAbstractGeometry::WkbFlag> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

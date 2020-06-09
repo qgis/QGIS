@@ -1522,9 +1522,11 @@ is null, a ValueError will be raised.
 
 
 
-    QByteArray asWkb() const;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = 0 ) const;
 %Docstring
 Export the geometry to WKB
+
+The optional ``flags`` argument specifies flags controlling WKB export behavior (since QGIS 3.14).
 
 .. versionadded:: 3.0
 %End
