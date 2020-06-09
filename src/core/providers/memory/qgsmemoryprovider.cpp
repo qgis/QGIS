@@ -419,12 +419,12 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
       continue;
     }
 
-    // Check attribute types
+    // Check attribute conversion
     bool conversionError { false };
     for ( int i = 0; i < mFields.count() && ! conversionError; ++i )
     {
       QVariant attrValue { it->attribute( i ) };
-      if ( ! mFields.at( i ).convertCompatible( attrValue ) )
+      if ( ! attrValue.isNull() && ! mFields.at( i ).convertCompatible( attrValue ) )
       {
         pushError( tr( "Could not add feature with attribute %1 having type %2, cannot convert to type %3" )
                    .arg( mFields.at( i ).name(), it->attribute( i ).typeName(), mFields.at( i ).typeName() ) );
