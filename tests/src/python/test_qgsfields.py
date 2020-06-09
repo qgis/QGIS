@@ -12,8 +12,9 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import QgsVectorLayer
+from qgis.core import QgsVectorLayer, NULL
 from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QVariant, QDate, QDateTime, QTime
 
 start_app()
 
@@ -103,10 +104,62 @@ class TestQgsFields(unittest.TestCase):
 
         expected_fields = ['id', 'value', 'crazy']
 
-        self.assertEquals(fields.names(), expected_fields)
+        self.assertEqual(fields.names(), expected_fields)
         fields.remove(1)
         expected_fields = ['id', 'crazy']
-        self.assertEquals(fields.names(), expected_fields)
+        self.assertEqual(fields.names(), expected_fields)
+
+    def test_convert_compatible(self):
+        """Test convertCompatible"""
+
+        vl = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer', 'test', 'memory')
+
+        # Valid values
+        self.assertTrue(vl.fields()[0].convertCompatible(123.0))
+        self.assertTrue(vl.fields()[0].convertCompatible(123))
+        # Check NULL/invalid
+        self.assertIsNone(vl.fields()[0].convertCompatible(None))
+        self.assertEqual(vl.fields()[0].convertCompatible(QVariant(QVariant.Int)), NULL)
+        # Not valid
+        with self.assertRaises(Exception):
+            vl.fields()[0].convertCompatible('QGIS Rocks!')
+        with self.assertRaises(Exception):
+            self.assertFalse(vl.fields()[0].convertCompatible(QDate(2020, 6, 30)))
+        # Not valid: overflow
+        with self.assertRaises(Exception):
+            self.assertFalse(vl.fields()[0].convertCompatible(2147483647 + 1))
+        # Valid: narrow cast with loss of precision (!)
+        self.assertTrue(vl.fields()[0].convertCompatible(123.123))
+
+        vl = QgsVectorLayer('Point?crs=epsg:4326&field=date:date', 'test', 'memory')
+        self.assertTrue(vl.fields()[0].convertCompatible(QDate(2020, 6, 30)))
+        # Not valid
+        with self.assertRaises(Exception):
+            self.assertFalse(vl.fields()[0].convertCompatible('QGIS Rocks!'))
+        with self.assertRaises(Exception):
+            self.assertFalse(vl.fields()[0].convertCompatible(123))
+
+        # Strings can store almost anything
+        vl = QgsVectorLayer('Point?crs=epsg:4326&field=text:text', 'test', 'memory')
+        self.assertTrue(vl.fields()[0].convertCompatible(QDate(2020, 6, 30)))
+        self.assertTrue(vl.fields()[0].convertCompatible('QGIS Rocks!'))
+        self.assertTrue(vl.fields()[0].convertCompatible(123))
+        self.assertTrue(vl.fields()[0].convertCompatible(123.456))
+
+        vl = QgsVectorLayer('Point?crs=epsg:4326&field=double:double', 'test', 'memory')
+
+        # Valid values
+        self.assertTrue(vl.fields()[0].convertCompatible(123.0))
+        self.assertTrue(vl.fields()[0].convertCompatible(123))
+        # Check NULL/invalid
+        self.assertIsNone(vl.fields()[0].convertCompatible(None))
+        self.assertEqual(vl.fields()[0].convertCompatible(NULL), NULL)
+        self.assertTrue(vl.fields()[0].convertCompatible(QVariant.Double))
+        # Not valid
+        with self.assertRaises(Exception):
+            self.assertFalse(vl.fields()[0].convertCompatible('QGIS Rocks!'))
+        with self.assertRaises(Exception):
+            self.assertFalse(vl.fields()[0].convertCompatible(QDate(2020, 6, 30)))
 
 
 if __name__ == '__main__':

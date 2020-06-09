@@ -2414,8 +2414,8 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
       attrValue = mFieldValueConverter->convert( fldIdx, attrValue );
     }
 
-    // Check for QVariant conversion before passing attribute value to OGR
-    if ( ! QgsVectorLayerUtils::canConvert( attrValue, field.type() ) )
+    // Check for conversion before passing attribute value to OGR
+    if ( ! field.convertCompatible( attrValue ) )
     {
       mErrorMessage = QObject::tr( "Invalid variant type for field %1[%2]: received %3 with type %4" )
                       .arg( mFields.at( fldIdx ).name() )

@@ -472,18 +472,6 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
   return valid;
 }
 
-bool QgsVectorLayerUtils::canConvert( const QVariant &value, const QVariant::Type destinationType )
-{
-  if ( value.isNull() )
-  {
-    return true;
-  }
-
-  QVariant converted { value };
-  const bool ok { converted.canConvert( destinationType ) &&converted.convert( destinationType ) };
-  return ok && ( converted.toString() == value.toString() );
-}
-
 QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, const QgsGeometry &geometry,
     const QgsAttributeMap &attributes, QgsExpressionContext *context )
 {
