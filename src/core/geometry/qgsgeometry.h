@@ -1544,9 +1544,12 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Export the geometry to WKB
+     *
+     * The optional \a flags argument specifies flags controlling WKB export behavior (since QGIS 3.14).
+     *
      * \since QGIS 3.0
      */
-    QByteArray asWkb() const;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = nullptr ) const;
 
     /**
      * Exports the geometry to WKT

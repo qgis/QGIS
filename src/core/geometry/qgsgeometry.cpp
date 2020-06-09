@@ -2507,9 +2507,9 @@ QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, unsigned long
 }
 ///@endcond
 
-QByteArray QgsGeometry::asWkb() const
+QByteArray QgsGeometry::asWkb( QgsAbstractGeometry::WkbFlags flags ) const
 {
-  return d->geometry ? d->geometry->asWkb() : QByteArray();
+  return d->geometry ? d->geometry->asWkb( flags ) : QByteArray();
 }
 
 QVector<QgsGeometry> QgsGeometry::asGeometryCollection() const
