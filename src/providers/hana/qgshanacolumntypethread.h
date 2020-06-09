@@ -36,7 +36,7 @@ class QgsHanaColumnTypeThread : public QThread
 
   signals:
     void setLayerType( QgsHanaLayerProperty layerProperty );
-    void progress( int, int );
+    void progress( int layerIndex, int layersCount );
     void progressMessage( const QString & );
 
   private:

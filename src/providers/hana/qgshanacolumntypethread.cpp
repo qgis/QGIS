@@ -35,11 +35,11 @@ void QgsHanaColumnTypeThread::run()
   QgsHanaConnectionRef conn( mUri );
   if ( conn.isNull() )
   {
-    QgsDebugMsg( "Connection failed - " + conn->connInfo() );
+    QgsDebugMsg( "Connection failed: " + mUri.connectionInfo( false ) );
     return;
   }
 
-  emit progressMessage( tr( "Retrieving tables of %1 ." ).arg( mConnectionName ) );
+  emit progressMessage( tr( "Retrieving tables of %1." ).arg( mConnectionName ) );
   QVector<QgsHanaLayerProperty> layerProperties = conn->getLayers(
         mUri.schema(),
         mAllowGeometrylessTables,
@@ -48,7 +48,7 @@ void QgsHanaColumnTypeThread::run()
   if ( layerProperties.isEmpty() )
   {
     QgsMessageLog::logMessage(
-      QObject::tr( "Unable to get list of spatially enabled tables from the database" ), tr( "HANA" ) );
+      tr( "Unable to get list of spatially enabled tables from the database" ), tr( "HANA" ) );
     return;
   }
 
