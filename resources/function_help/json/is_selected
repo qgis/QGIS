@@ -11,7 +11,7 @@
         },
         {
             "variant": "One 'feature' parameter",
-            "variant_description": "If called with a 'feature' parameter, it returns True if that feature is selected.",
+            "variant_description": "If called with a 'feature' parameter only, the function returns true if the specified feature from the current layer is selected.",
             "arguments": [ { "arg": "feature", "description": "The feature which should be checked for selection." } ],
             "examples": [ { "expression": "is_selected(@atlas_feature)", "returns": "True if the current atlas feature is selected." } ]
         },
