@@ -1392,7 +1392,15 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
     return;
   }
 
-  QString connectionName;
+  QDomAttr version = root.attributeNode( "version" );
+  if ( version.value() != QLatin1String( "1.0" ) )
+  {
+    QMessageBox::information( this,
+                              tr( "Loading Connections" ),
+                              tr( "The file version '%1' is not supported." ).arg( version.value() ) );
+    return;
+  }
+
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/HANA/connections" ) );
   QStringList keys = settings.childGroups();
@@ -1403,7 +1411,7 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
 
   while ( !child.isNull() )
   {
-    connectionName = child.attribute( QStringLiteral( "name" ) );
+    QString connectionName = child.attribute( QStringLiteral( "name" ) );
     if ( !items.contains( connectionName ) )
     {
       child = child.nextSiblingElement();
