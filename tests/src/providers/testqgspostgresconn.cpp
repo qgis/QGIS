@@ -63,7 +63,7 @@ class TestQgsPostgresConn: public QObject
       QgsPostgresSharedData *shared = new QgsPostgresSharedData;
       QVariantList qvlist;
       qvlist.append( QDateTime::fromString( "2020-05-07 17:56:00", "yyyy-MM-dd HH:mm:ss" ) );
-      qvlist.append( 123ULL );
+      qvlist.append( 123LL );
       shared->insertFid( 1LL, qvlist );
 
       QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( shared ) ), QString( "\"ts\"='2020-05-07T17:56:00.000' AND \"pk\"=123" ) );
