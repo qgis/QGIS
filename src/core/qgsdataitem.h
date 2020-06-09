@@ -443,8 +443,13 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     virtual void refresh();
 
-    //! Refresh connections: update GUI and emit signal
-    virtual void refreshConnections();
+    /**
+     * Causes a data item provider to refresh all registered connections.
+     *
+     * If \a provider is specified then only the matching provider will be refreshed. Otherwise,
+     * all providers will be refreshed (which is potentially very expensive!).
+     */
+    virtual void refreshConnections( const QString &providerKey = QString() );
 
     virtual void childrenCreated();
 
@@ -457,12 +462,13 @@ class CORE_EXPORT QgsDataItem : public QObject
     void stateChanged( QgsDataItem *item, QgsDataItem::State oldState );
 
     /**
-     * Emitted when the provider's connections of the child items have changed
+     * Emitted when the connections of the provider with the specified key have changed.
+     *
      * This signal is normally forwarded to the app in order to refresh the connection
      * item in the provider dialogs and to refresh the connection items in the other
-     * open browsers
+     * open browsers.
      */
-    void connectionsChanged();
+    void connectionsChanged( const QString &providerKey = QString() );
 
   protected slots:
 

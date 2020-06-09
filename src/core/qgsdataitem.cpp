@@ -384,17 +384,18 @@ void QgsDataItem::refresh()
   }
 }
 
-void QgsDataItem::refreshConnections()
+void QgsDataItem::refreshConnections( const QString &key )
 {
   // Walk up until the root node is reached
   if ( mParent )
   {
-    mParent->refreshConnections();
+    mParent->refreshConnections( key );
   }
   else
   {
-    refresh();
-    emit connectionsChanged();
+    // if a specific key was specified then we use that -- otherwise we assume the connections
+    // changed belong to the same provider as this item
+    emit connectionsChanged( key.isEmpty() ? providerKey() : key );
   }
 }
 

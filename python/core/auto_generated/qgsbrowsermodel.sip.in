@@ -170,10 +170,11 @@ and on Linux the "/" root directory.
 Emitted when item children fetch was finished
 %End
 
-    void connectionsChanged();
+    void connectionsChanged( const QString &providerKey );
 %Docstring
-Connections changed in the browser, forwarded to the widget and used to
-notify the provider dialogs of a changed connection
+Emitted when connections for the specified ``providerKey`` have changed in the browser.
+
+Forwarded to the widget and used to notify the provider dialogs of a changed connection.
 %End
 
   public slots:
