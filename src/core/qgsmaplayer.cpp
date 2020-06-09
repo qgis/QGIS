@@ -1056,7 +1056,7 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( this );
       QgsWkbTypes::GeometryType importLayerGeometryType = static_cast<QgsWkbTypes::GeometryType>( myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).text().toInt() );
-      if ( vl->geometryType() != importLayerGeometryType )
+      if ( importLayerGeometryType != QgsWkbTypes::GeometryType::UnknownGeometry && vl->geometryType() != importLayerGeometryType )
       {
         myErrorMessage = tr( "Cannot apply style with symbology to layer with a different geometry type" );
         return false;
