@@ -44,10 +44,6 @@
 #include "qgssettings.h"
 #include "qgsogrutils.h"
 
-#include "qgsrasterresamplefilter.h"
-#include "qgsbilinearrasterresampler.h"
-#include "qgscubicrasterresampler.h"
-
 #include <QImage>
 #include <QColor>
 #include <QProcess>
@@ -718,19 +714,17 @@ bool QgsGdalProvider::readBlock( int bandNo, int xBlock, int yBlock, void *data 
   return true;
 }
 
-bool QgsGdalProvider::canHandleBlockRequestWithResampling(
+bool QgsGdalProvider::canDoResampling(
   int bandNo,
   const QgsRectangle &reqExtent,
   int bufferWidthPix,
-  int bufferHeightPix,
-  const QgsRasterResampleFilter *filter )
+  int bufferHeightPix )
 {
-  QMutexLocker locker( mpMutex );
-  if ( !initIfNeeded() )
+  if ( !mProviderResamplingEnabled )
     return false;
 
-  // Hidden property, just/mostly for the needs of test_qgsrasterresampler.py
-  if ( property( "skip_gdal_resampling" ).isValid() )
+  QMutexLocker locker( mpMutex );
+  if ( !initIfNeeded() )
     return false;
 
   GDALRasterBandH gdalBand = getBand( bandNo );
@@ -748,30 +742,26 @@ bool QgsGdalProvider::canHandleBlockRequestWithResampling(
 
   if ( resamplingFactor < 1 )
   {
-    // upsampling ==> check compatibility of zoom-in resampler with what GDAL can do
-    return dynamic_cast<const QgsBilinearRasterResampler *>( filter->zoomedInResampler() ) != nullptr ||
-           dynamic_cast<const QgsCubicRasterResampler *>( filter->zoomedInResampler() ) != nullptr;
+    // upsampling
+    return mZoomedInResamplingMethod != QgsRasterDataProvider::ResamplingMethod::Nearest;
   }
 
   if ( resamplingFactor < 1.1 )
   {
     // very close to nominal resolution ==> check compatibility of zoom-in or zoom-out resampler with what GDAL can do
-    return dynamic_cast<const QgsBilinearRasterResampler *>( filter->zoomedInResampler() ) != nullptr ||
-           dynamic_cast<const QgsCubicRasterResampler *>( filter->zoomedInResampler() ) != nullptr ||
-           dynamic_cast<const QgsBilinearRasterResampler *>( filter->zoomedOutResampler() ) != nullptr ||
-           dynamic_cast<const QgsCubicRasterResampler *>( filter->zoomedOutResampler() ) != nullptr;
+    return mZoomedInResamplingMethod != QgsRasterDataProvider::ResamplingMethod::Nearest ||
+           mZoomedOutResamplingMethod != QgsRasterDataProvider::ResamplingMethod::Nearest;
   }
 
-  // if zoomedOutResampler is not compatible of GDAL, exit now
-  if ( dynamic_cast<const QgsBilinearRasterResampler *>( filter->zoomedOutResampler() ) == nullptr &&
-       dynamic_cast<const QgsCubicRasterResampler *>( filter->zoomedOutResampler() ) == nullptr )
+  // if no zoom out resampling, exit now
+  if ( mZoomedOutResamplingMethod == QgsRasterDataProvider::ResamplingMethod::Nearest )
   {
     return false;
   }
 
   // if the resampling factor is not too large, we can do the downsampling
   // from the full resolution with acceptable performance
-  if ( resamplingFactor <= ( filter->maxOversampling() + .1 ) )
+  if ( resamplingFactor <= ( mMaxOversampling + .1 ) )
   {
     return true;
   }
@@ -783,7 +773,7 @@ bool QgsGdalProvider::canHandleBlockRequestWithResampling(
   {
     GDALRasterBandH hOvrBand = GDALGetOverview( gdalBand, i );
     const double ovrResamplingFactor = xSize() / static_cast<double>( GDALGetRasterBandXSize( hOvrBand ) );
-    if ( resamplingFactor <= ( filter->maxOversampling() + .1 ) * ovrResamplingFactor )
+    if ( resamplingFactor <= ( mMaxOversampling + .1 ) * ovrResamplingFactor )
     {
       return true;
     }
@@ -792,6 +782,7 @@ bool QgsGdalProvider::canHandleBlockRequestWithResampling(
   // too much zoomed out
   return false;
 }
+
 
 bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int bufferWidthPix, int bufferHeightPix, void *data, QgsRasterBlockFeedback *feedback )
 {
@@ -868,9 +859,8 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
   const int srcWidth = srcRight - srcLeft + 1;
   const int srcHeight = srcBottom - srcTop + 1;
 
-  // Use GDAL cubic/bilinear resampling if asked
-  const QgsRasterResampleFilter *filter = feedback != nullptr ? feedback->resampleFilter() : nullptr;
-  if ( filter )
+  // Use GDAL resampling if asked and possible
+  if ( canDoResampling( bandNo, reqExtent, bufferWidthPix, bufferHeightPix ) )
   {
     int tgtTop = tgtTopOri;
     int tgtBottom = tgtBottomOri;
@@ -938,27 +928,29 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
       INIT_RASTERIO_EXTRA_ARG( sExtraArg );
 
       const double resamplingFactor = std::max( reqXRes / srcXRes, reqYRes / std::fabs( srcYRes ) );
-      const QgsRasterResampler *resampler = nullptr;
+      ResamplingMethod method;
       if ( resamplingFactor < 1 )
       {
-        resampler = filter->zoomedInResampler();
+        method = mZoomedInResamplingMethod;
       }
       else if ( resamplingFactor < 1.1 )
       {
         // very close to nominal resolution ==> use either zoomed out resampler or zoomed in resampler
-        if ( filter->zoomedOutResampler() )
-          resampler = filter->zoomedOutResampler();
+        if ( mZoomedOutResamplingMethod != ResamplingMethod::Nearest )
+          method = mZoomedOutResamplingMethod;
         else
-          resampler = filter->zoomedInResampler();
+          method = mZoomedInResamplingMethod;
       }
       else
       {
-        resampler = filter->zoomedOutResampler();
+        method = mZoomedOutResamplingMethod;
       }
-      if ( dynamic_cast<const QgsCubicRasterResampler *>( resampler ) != nullptr )
+      if ( method == ResamplingMethod::Bilinear )
+        sExtraArg.eResampleAlg = GRIORA_Bilinear;
+      else if ( method == ResamplingMethod::Cubic )
         sExtraArg.eResampleAlg = GRIORA_Cubic;
       else
-        sExtraArg.eResampleAlg = GRIORA_Bilinear;
+        sExtraArg.eResampleAlg = GRIORA_NearestNeighbour;
 
       sExtraArg.bFloatingPointWindowValidity = true;
       sExtraArg.dfXOff = ( reqExtent.xMinimum() + tgtLeft * reqXRes - mExtent.xMinimum() ) / srcXRes;
@@ -1521,7 +1513,8 @@ QString QgsGdalProvider::description() const
 
 QgsRasterDataProvider::ProviderCapabilities QgsGdalProvider::providerCapabilities() const
 {
-  return QgsRasterDataProvider::ProviderHintBenefitsFromResampling;
+  return QgsRasterDataProvider::ProviderHintBenefitsFromResampling |
+         QgsRasterDataProvider::ProviderHintCanPerformProviderResampling;
 }
 
 // This is used also by global isValidRasterFileName

@@ -11,7 +11,6 @@
 
 
 
-
 class QgsRasterBlockFeedback : QgsFeedback
 {
 %Docstring
@@ -82,8 +81,6 @@ Returns a list of any errors encountered while retrieving the raster block.
 
 .. versionadded:: 3.8.0
 %End
-
-
 
 };
 
@@ -240,7 +237,6 @@ Caller is responsible to free the memory returned.
 :param height: pixel height of block
 :param feedback: optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
 %End
-
 
     virtual bool setInput( QgsRasterInterface *input );
 %Docstring

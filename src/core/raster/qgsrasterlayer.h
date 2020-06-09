@@ -271,6 +271,24 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QgsHueSaturationFilter *hueSaturationFilter() const { return mPipe.hueSaturationFilter(); }
 
     /**
+     * Select which stage of the pipe should apply resampling.
+     *
+     * \see QgsRasterPipe::setResamplingStage()
+     *
+     * \since QGIS 3.16
+     */
+    void setResamplingStage( QgsRasterPipe::ResamplingStage stage );
+
+    /**
+     * Returns which stage of the pipe should apply resampling.
+     *
+     * \see QgsRasterPipe::resamplingStage()
+     *
+     * \since QGIS 3.16
+     */
+    QgsRasterPipe::ResamplingStage resamplingStage() const { return mPipe.resamplingStage(); }
+
+    /**
      * Returns the raster pipe.
      */
     QgsRasterPipe *pipe() { return &mPipe; }
