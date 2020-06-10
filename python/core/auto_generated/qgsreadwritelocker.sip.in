@@ -58,6 +58,8 @@ Equivalent to doing ``changeMode( QgsReadWriteLocker.Unlock );``
 
     ~QgsReadWriteLocker();
 
+  private:
+    QgsReadWriteLocker &operator=( const QgsReadWriteLocker & );
 };
 
 /************************************************************************
