@@ -958,10 +958,10 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
       sExtraArg.dfXSize = tgtWidth * reqXRes / srcXRes;
       sExtraArg.dfYSize = tgtHeight * reqYRes / -srcYRes;
       return GDALRasterIOEx( gdalBand, GF_Read,
-                             std::floor( sExtraArg.dfXOff ),
-                             std::floor( sExtraArg.dfYOff ),
-                             std::floor( sExtraArg.dfXSize ),
-                             std::floor( sExtraArg.dfYSize ),
+                             static_cast<int>( std::floor( sExtraArg.dfXOff ) ),
+                             static_cast<int>( std::floor( sExtraArg.dfYOff ) ),
+                             std::max( 1, static_cast<int>( std::floor( sExtraArg.dfXSize ) ) ),
+                             std::max( 1, static_cast<int>( std::floor( sExtraArg.dfYSize ) ) ),
                              static_cast<char *>( data ) +
                              ( tgtTop * bufferWidthPix + tgtLeft ) * dataSize,
                              tgtWidth,

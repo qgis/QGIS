@@ -564,6 +564,24 @@ class TestQgsRasterResampler(unittest.TestCase):
             # The values in the bottom line are not subject to resampling currently
             self.checkRawBlockContents(block, [[65, 100], [70, 190]])
 
+    def testGDALResampling_less_than_one_pixel(self):
+
+        xmin = 100
+        ymax = 1000
+        xres = 5
+        yres = 5
+
+        # Extent is less than one pixel. Simulates pixel identification
+        extent = QgsRectangle(xmin + 2.25 * xres,
+                              ymax - 4.25 * yres,
+                              xmin + 2.5 * xres,
+                              ymax - 4.5 * yres)
+
+        with self.setupGDALResampling() as provider:
+            provider.setZoomedInResamplingMethod(QgsRasterDataProvider.ResamplingMethod.Bilinear)
+            block = provider.block(1, extent, 1, 1)
+            self.checkRawBlockContents(block, [[68]])
+
 
 if __name__ == '__main__':
     unittest.main()
