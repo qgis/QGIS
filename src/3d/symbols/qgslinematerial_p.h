@@ -41,6 +41,7 @@ namespace Qt3DRender
  * Implementation of material that renders 3D linestrings.
  *
  * Supports:
+ *
  * - arbitrary line width (in pixels)
  * - bevel and miter line joins (including limit for miter join to avoid very long miters on sharp angles)
  * - flat line caps

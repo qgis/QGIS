@@ -36,11 +36,12 @@ class QgsThreadedFeatureDownloader;
  *  database.
  *
  *  The structure of the table in the database is the following one :
- *  - attribute fields of the DescribeFeatureType response
- *  - __qgis_gen_counter: generation counter
- *  - __qgis_unique_id: typically feature 'fid' or 'gml:id'
- *  - __qgis_hexwkb_geom: feature geometry as a hexadecimal encoded WKB string.
- *  - geometry: polygon with the bounding box of the geometry.
+ *
+ * - attribute fields of the DescribeFeatureType response
+ * - __qgis_gen_counter: generation counter
+ * - __qgis_unique_id: typically feature 'fid' or 'gml:id'
+ * - __qgis_hexwkb_geom: feature geometry as a hexadecimal encoded WKB string.
+ * - geometry: polygon with the bounding box of the geometry.
  *
  *  The generation counter is a synchronization mechanism between the iterator
  *  that will try to return cached features first and then downloaded features.

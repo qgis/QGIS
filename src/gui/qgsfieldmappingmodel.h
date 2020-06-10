@@ -182,8 +182,10 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
     /**
      * Try to find the best expression for a destination \a field by searching in the
      * source fields for fields with:
+     *
      * - the same name
      * - the same type
+     *
      * Returns an expression containing a reference to the field that matches first.
      */
     QString findExpressionForDestinationField( const QgsFieldMappingModel::Field &field, QStringList &excludedFieldNames );

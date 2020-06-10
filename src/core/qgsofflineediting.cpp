@@ -73,15 +73,16 @@ QgsOfflineEditing::QgsOfflineEditing()
  * returns offline project file path
  *
  * Workflow:
- *  - copy layers to SpatiaLite
- *  - create SpatiaLite db at offlineDataPath
- *  - create table for each layer
- *  - add new SpatiaLite layer
- *  - copy features
- *  - save as offline project
- *  - mark offline layers
- *  - remove remote layers
- *  - mark as offline project
+ *
+ * - copy layers to SpatiaLite
+ * - create SpatiaLite db at offlineDataPath
+ * - create table for each layer
+ * - add new SpatiaLite layer
+ * - copy features
+ * - save as offline project
+ * - mark offline layers
+ * - remove remote layers
+ * - mark as offline project
  */
 bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected, ContainerType containerType )
 {

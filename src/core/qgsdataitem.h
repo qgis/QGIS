@@ -426,11 +426,12 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     /**
      * Safely delete the item:
-     *   - disconnects parent
-     *   - unsets parent (but does not remove itself)
-     *   - deletes all its descendants recursively
-     *   - waits until Populating state (createChildren() in thread) finished without blocking main thread
-     *   - calls QObject::deleteLater()
+     *
+     * - disconnects parent
+     * - unsets parent (but does not remove itself)
+     * - deletes all its descendants recursively
+     * - waits until Populating state (createChildren() in thread) finished without blocking main thread
+     * - calls QObject::deleteLater()
      */
     virtual void deleteLater();
 

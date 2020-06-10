@@ -64,15 +64,18 @@ class QgsTileXYZ;
  *
  * To construct a vector tile layer, it is best to use QgsDataSourceUri class and set
  * the following parameters to get a valid encoded URI:
+ *
  * - "type" - what kind of data source will be used
  * - "url" - URL or path of the data source (specific to each data source type, see below)
  *
  * Currently supported data source types:
+ *
  * - "xyz" - the "url" should be a template like http://example.com/{z}/{x}/{y}.pbf where
- *           {x},{y},{z} will be replaced by tile coordinates
+ *   {x},{y},{z} will be replaced by tile coordinates
  * - "mbtiles" - tiles read from a MBTiles file (a SQLite database)
  *
  * Currently supported decoders:
+ *
  * - MVT - following Mapbox Vector Tiles specification
  *
  * \since QGIS 3.14

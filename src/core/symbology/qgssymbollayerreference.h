@@ -29,10 +29,12 @@ class QgsVectorLayer;
  * (when a symbol or a feature renderer is cloned for example).
  *
  * A symbol layer identifier consists of:
+ *
  * - an identifier to its symbol (given by the QgsFeatureRenderer)
  * - a path of indexes inside its symbol and subsymbols.
  *
  * For a symbol in a QgsSingleSymbolRenderer that has two symbol layers, it will give:
+ *
  * - "" for the symbol key
  * - [0] and [1] for the two symbol layer indexes
  *
@@ -40,6 +42,7 @@ class QgsVectorLayer;
  *
  * For a symbol with a symbol layer that has a sub symbol (say a QgsArrowSymbolLayer),
  * path to symbol layers of the sub symbol are given by a list of indexes:
+ *
  * - [0, 0] : first symbol layer of the sub symbol of the first symbol layer
  * - [0, 1] : second symbol layer of the sub symbol of the first symbol layer
  * - [2, 0] : first symbol layer of the sub symbol of the third symbol layer, etc.

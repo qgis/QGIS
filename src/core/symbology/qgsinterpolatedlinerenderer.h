@@ -75,11 +75,12 @@ class CORE_EXPORT QgsInterpolatedLineColor
 
     /**
      *  Returns the break values, graduated colors and the associated gradients between two values
-     *  - If the color is fixed or only one color for the interval (value1, value2), returns only one color in \a breakColors
-     *    and void lists for  \a breakValues, \a gradients
-     *  - If the color ramp is classified with 'exact', returns void \a gradients
-     *  - If the color ramp is classified with 'discrete', return \a gradients with uniform colors
-     *  - if nothing to render (out of range), return all lists void
+     *
+     * - If the color is fixed or only one color for the interval (value1, value2), returns only one color in \a breakColors
+     *   and void lists for  \a breakValues, \a gradients
+     * - If the color ramp is classified with 'exact', returns void \a gradients
+     * - If the color ramp is classified with 'discrete', return \a gradients with uniform colors
+     * - if nothing to render (out of range), return all lists void
      */
     void graduatedColors( double value1, double value2, QList<double> &breakValues, QList<QColor> &breakColors, QList<QLinearGradient> &gradients ) const;
 

@@ -916,6 +916,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * TODO: deprecate when decorations are reimplemented as map canvas items
+     *
      * - anything related to rendering progress is not visible outside of map canvas
      * - additional drawing shall be done directly within the renderer job or independently as a map canvas item
      */

@@ -21,6 +21,7 @@
  * implement several required methods in order to be registered with
  * QGis. These methods include:
  * name:
+ *
  * - version
  * - description
  *
