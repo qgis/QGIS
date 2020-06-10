@@ -37,17 +37,20 @@ of all features rendered on a map.
     struct RenderedFeatureContext
     {
 
-      RenderedFeatureContext( const QgsRenderContext &renderContext );
+        RenderedFeatureContext( const QgsRenderContext &renderContext );
 %Docstring
 Constructor for RenderedFeatureContext.
 
 :param renderContext: The render context which was used while rendering feature.
 %End
 
-      const QgsRenderContext &renderContext;
+        const QgsRenderContext &renderContext;
 %Docstring
 The render context which was used while rendering feature.
 %End
+
+      private:
+        RenderedFeatureContext &operator=( const RenderedFeatureContext & );
     };
 
     virtual void handleRenderedFeature( const QgsFeature &feature, const QgsGeometry &renderedBounds, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext &context ) = 0;
