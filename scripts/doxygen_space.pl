@@ -90,6 +90,10 @@ while ($LINE_IDX < $LINE_COUNT){
         print $out_handle "$1* - $2\n";
         $INSIDE_DOX_LIST = 1;
       }
+      elsif ($INSIDE_DOX_LIST && $new_line =~ m/^(\s*)\*\s{2,}(.*)$/ ){
+        # print $out_handle "list continuation\n";
+        print $out_handle "$1*   $2\n";
+      }
       elsif ($INSIDE_DOX_LIST && $new_line =~ m/^(\s*)\*(?!\/)/ ){
         $INSIDE_DOX_LIST = 0;
         # print $out_handle "end list without line break\n";
