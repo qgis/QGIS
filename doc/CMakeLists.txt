@@ -5,8 +5,6 @@ SET (WITH_APIDOC FALSE CACHE BOOL "Determines whether the QGIS API doxygen docum
 SET (QT_DOC_URL "https://doc.qt.io/qt-5/" CACHE STRING "URL for Qt docs")
 
 SET(QGIS_DOC_FILES
-  ../INSTALL
-  ../NEWS
   index.html
   developersmap.html
   nohelp.html
