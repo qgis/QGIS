@@ -2006,6 +2006,10 @@ tests:
       OUTPUT:
         name: expected/service_area_from_layer_nodes_bounds.gml
         type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
 
   - algorithm: native:serviceareafromlayer
     name: Service area from layer (shortest, lines)
