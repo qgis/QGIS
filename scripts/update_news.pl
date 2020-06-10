@@ -22,16 +22,16 @@ my ($version,$releasename) = @ARGV;
 
 my ($news,$tempfile) = tempfile();
 
-open my $in, "doc/NEWS.t2t";
+open my $in, "NEWS.md";
 while(<$in>) {
 	print $news $_;
-	last if /^Last Change/;
+	last if /^Change history for the QGIS Project/;
 }
 
 my $content = `curl -A Mozilla -s https://changelog.qgis.org/en/qgis/version/$version/gnu/`;
 die "Couldn't get it!" unless defined $content;
 
-print $news "\n= What's new in Version $version '$releasename'? =\n\n";
+print $news "\n# What's new in Version $version '$releasename'?\n\n";
 print $news "This release has following new features:\n\n";
 
 die "Invalid changelog" unless $content =~ /^Changelog for QGIS/;
@@ -59,10 +59,9 @@ while(<$in>) {
 close $news;
 close $in;
 
-copy($tempfile, "doc/NEWS.t2t");
+copy($tempfile, "doc/NEWS.md");
 
-system "txt2tags -odoc/NEWS.html -t html doc/NEWS.t2t";
-system "txt2tags -oNEWS -t txt doc/NEWS.t2t";
+system "pandoc --table-of-contents --toc-depth=1 -s -o doc/NEWS.html NEWS.md --metadata title=\"QGIS News\"";
 
 =head1 NAME
 
