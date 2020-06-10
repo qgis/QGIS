@@ -214,8 +214,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * - path_append( path ): appends a directory path to the current url
      * - path_chomp( n ):removes the specified number "n" of directory components from the current url path
      * - json_dump( ): prints current JSON data passed to the template
-     * - static( path ): returns the full URL to the specified static path, for example:
-     *   static( "/style/black.css" ) will return something like "/wfs3/static/style/black.css".
+     * - static( path ): returns the full URL to the specified static path, for example: static( "/style/black.css" ) will return something like "/wfs3/static/style/black.css".
      * - links_filter( links, key, value ): Returns filtered links from a link list
      * - content_type_name( content_type ): Returns a short name from a content type for example "text/html" will return "HTML"
      * - nl2br( text ): Returns the input text with all newlines replaced by "<br>" tags
@@ -302,8 +301,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * - path_append( path ): appends a directory path to the current url
      * - path_chomp( n ): removes the specified number "n" of directory components from the current url path
      * - json_dump(): prints current JSON data passed to the template
-     * - static( path): returns the full URL to the specified static path, for example:
-     *   static("/style/black.css") will return something like "/wfs3/static/style/black.css".
+     * - static( path): returns the full URL to the specified static path, for example: static("/style/black.css") will return something like "/wfs3/static/style/black.css".
      * - links_filter( links, key, value ): returns filtered links from a link list
      * - content_type_name( content_type ): returns a short name from a content type for example "text/html" will return "HTML"
      *
