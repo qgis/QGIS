@@ -2911,6 +2911,11 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiPoint25D), QgsWkbTypes.MultiPoint25D)
         self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiLineString25D), QgsWkbTypes.MultiLineString25D)
         self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiPolygon25D), QgsWkbTypes.MultiPolygon25D)
+        # until we have tin types, these should return multipolygons
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Triangle), QgsWkbTypes.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.TriangleZ), QgsWkbTypes.MultiPolygonZ)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.TriangleM), QgsWkbTypes.MultiPolygonM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.TriangleZM), QgsWkbTypes.MultiPolygonZM)
 
         # test curveType method
         self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Unknown), QgsWkbTypes.Unknown)
