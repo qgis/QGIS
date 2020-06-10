@@ -1303,6 +1303,8 @@ Can be used to extend the context menu.
 
     virtual void dragEnterEvent( QDragEnterEvent *e );
 
+    virtual bool viewportEvent( QEvent *event );
+
 
     void moveCanvasContents( bool reset = false );
 %Docstring

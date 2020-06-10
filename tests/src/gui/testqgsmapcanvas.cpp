@@ -42,6 +42,20 @@ class QgsMapToolTest : public QgsMapTool // clazy:exclude=missing-qobject-macro
   public:
     QgsMapToolTest( QgsMapCanvas *canvas ) : QgsMapTool( canvas ) {}
 
+    bool canvasToolTipEvent( QHelpEvent *e ) override
+    {
+      Q_UNUSED( e );
+      mGotTooltipEvent = true;
+      return true;
+    }
+    bool gotTooltipEvent() const
+    {
+      return mGotTooltipEvent;
+    }
+
+  private:
+    bool mGotTooltipEvent = false;
+
 };
 
 class TestQgsMapCanvas : public QObject
@@ -64,6 +78,7 @@ class TestQgsMapCanvas : public QObject
     void testShiftZoom();
     void testDragDrop();
     void testZoomResolutions();
+    void testTooltipEvent();
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
@@ -536,6 +551,18 @@ void TestQgsMapCanvas::testZoomResolutions()
   QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions[0], 0.0001 );
 
   QCOMPARE( mCanvas->zoomResolutions(), resolutions );
+}
+
+void TestQgsMapCanvas::testTooltipEvent()
+{
+  QgsMapToolTest mapTool( mCanvas );
+  mCanvas->setMapTool( &mapTool );
+
+  QHelpEvent helpEvent( QEvent::ToolTip, QPoint( 10, 10 ), QPoint( 10, 10 ) );
+
+  QApplication::sendEvent( mCanvas->viewport(), &helpEvent );
+
+  QVERIFY( mapTool.gotTooltipEvent() );
 }
 
 QGSTEST_MAIN( TestQgsMapCanvas )
