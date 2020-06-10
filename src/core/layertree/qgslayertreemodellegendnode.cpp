@@ -1219,6 +1219,8 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
   {
     context->painter()->save();
     context->painter()->translate( ctx->columnLeft, ctx->top );
+
+    // scale to pixels
     context->painter()->scale( 1 / context->scaleFactor(), 1 / context->scaleFactor() );
   }
 
