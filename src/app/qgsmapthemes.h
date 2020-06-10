@@ -71,6 +71,9 @@ class APP_EXPORT QgsMapThemes : public QObject
     //! Handles creation of preset menu
     void menuAboutToShow();
 
+  private slots:
+    void showHelp();
+
   protected:
     QgsMapThemes(); // singleton
 

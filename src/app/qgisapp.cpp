@@ -14566,6 +14566,12 @@ void QgisApp::renameView()
   //renameDlg.setHintString( tr( "Name of the new view" ) );
   renameDlg.setOverwriteEnabled( false );
   renameDlg.setConflictingNameWarning( tr( "A view with this name already exists" ) );
+  renameDlg.buttonBox()->addButton( QDialogButtonBox::Help );
+  connect( renameDlg.buttonBox(), &QDialogButtonBox::helpRequested, this, [ = ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#map-view" ) );
+  } );
+
   if ( renameDlg.exec() || renameDlg.name().isEmpty() )
   {
     QString newName = renameDlg.name();
