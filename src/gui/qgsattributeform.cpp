@@ -1485,13 +1485,17 @@ void QgsAttributeForm::init()
         if ( widgDef->type() == QgsAttributeEditorElement::AttributeEditorType::AeTypeField )
         {
           const QgsAttributeEditorField *fieldElement { static_cast<QgsAttributeEditorField *>( widgDef ) };
-          const QString fieldName { mLayer->fields().at( fieldElement->idx() ).name() };
-          if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
+          const int fieldIdx = fieldElement->idx();
+          if ( fieldIdx >= 0 && fieldIdx < mLayer->fields().count() )
           {
-            const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
-            if ( property.isActive() && ! property.expressionString().isEmpty() )
+            const QString fieldName { mLayer->fields().at( fieldIdx ).name() };
+            if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
             {
-              mLabelDataDefinedProperties[ label ] = property;
+              const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
+              if ( property.isActive() && ! property.expressionString().isEmpty() )
+              {
+                mLabelDataDefinedProperties[ label ] = property;
+              }
             }
           }
         }
