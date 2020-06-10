@@ -1769,7 +1769,11 @@ tests:
       VALUE_FORWARD: ''
     results:
       OUTPUT:
+<<<<<<< HEAD
         name: expected/service_area_from_layer_no_bounds.shp
+=======
+        name: expected/service_area_from_layer_nodes_bounds.shp
+>>>>>>> 954ab15276... Merge pull request #37074 from alexbruy/fix-servicearea
         type: vector
         compare:
           ignore_crs_check: true
