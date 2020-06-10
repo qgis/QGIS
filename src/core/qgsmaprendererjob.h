@@ -82,7 +82,6 @@ struct LayerRenderJob
    * - One of its symbol layer masks a symbol layer of another layer.
    *   In this case we need to compute a mask image during the regular
    *   rendering pass that will be stored here;
-   *
    * - Some of its symbol layers are masked by a symbol layer of another layer (or by a label mask)
    *   In this case we need to render the layer once again in a second pass, but with some symbol
    *   layers disabled.

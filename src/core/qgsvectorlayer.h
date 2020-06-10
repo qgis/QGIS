@@ -121,10 +121,8 @@ typedef QSet<int> QgsAttributeIds;
  * - crs=definition
  *   Defines the coordinate reference system to use for the layer.
  *   definition is any string accepted by QgsCoordinateReferenceSystem::createFromString()
- *
  * - index=yes
  *   Specifies that the layer will be constructed with a spatial index
- *
  * - field=name:type(length,precision)
  *   Defines an attribute of the layer. Multiple field parameters can be added
  *   to the data provider definition. type is one of "integer", "double", "string".
@@ -220,7 +218,6 @@ typedef QSet<int> QgsAttributeIds;
  *
  * - You can use various functions available in the QGIS Expression list,
  *   however the function must exist server side and have the same name and arguments to work.
- *
  * - Use the special $geometry parameter to provide the layer geometry column as input
  *   into the spatial binary operators e.g intersects($geometry, geomFromWKT('POINT (5 6)'))
  *
@@ -271,7 +268,6 @@ typedef QSet<int> QgsAttributeIds;
  * - "plain" is provided for backwards compatibility.  It is equivalent to
  *   CSV except that the default quote characters are single and double quotes,
  *   and there is no escape characters.
- *
  * - delimiter=characters
  *
  *   Defines the delimiter characters used for csv and plain type files, or the
@@ -2317,7 +2313,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * - the user is visibly informed that his changes were not saved and what he needs
      *   to do in order to be able to save the changes.
-     *
      * - to set the property back to TRUE, once the user has fixed his data.
      *
      * When calling \see commitChanges(), this flag is checked just after the
@@ -2337,7 +2332,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * - the user is visibly informed that his changes were not saved and what he needs
      *   to do in order to be able to save the changes.
-     *
      * - to set the property back to TRUE, once the user has fixed his data.
      *
      * When calling \see commitChanges(), this flag is checked just after the

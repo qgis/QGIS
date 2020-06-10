@@ -78,13 +78,9 @@ This is the constructor for the RasterLayer class.
 The main tasks carried out by the constructor are:
 
 - Load the rasters default style (.qml) file if it exists
-
 - Populate the RasterStatsVector with initial values for each band.
-
 - Calculate the layer extents
-
 - Determine whether the layer is gray, paletted or multiband.
-
 - Assign sensible defaults for the red, green, blue and gray bands.
 %End
 

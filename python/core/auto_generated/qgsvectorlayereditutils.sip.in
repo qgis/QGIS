@@ -108,10 +108,11 @@ Adds a ring to polygon/multipolygon features
 Adds a new part polygon to a multipart feature
 
 :return: - QgsGeometry.Success
-         - QgsGeometry.AddPartSelectedGeometryNotFound
-         - QgsGeometry.AddPartNotMultiGeometry
-         - QgsGeometry.InvalidBaseGeometry
-         - QgsGeometry.InvalidInput
+
+- QgsGeometry.AddPartSelectedGeometryNotFound
+- QgsGeometry.AddPartNotMultiGeometry
+- QgsGeometry.InvalidBaseGeometry
+- QgsGeometry.InvalidInput
 
 .. deprecated:: QGIS 3.12
    - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
@@ -122,10 +123,11 @@ Adds a new part polygon to a multipart feature
 Adds a new part polygon to a multipart feature
 
 :return: - QgsGeometry.Success
-         - QgsGeometry.AddPartSelectedGeometryNotFound
-         - QgsGeometry.AddPartNotMultiGeometry
-         - QgsGeometry.InvalidBaseGeometry
-         - QgsGeometry.InvalidInput
+
+- QgsGeometry.AddPartSelectedGeometryNotFound
+- QgsGeometry.AddPartNotMultiGeometry
+- QgsGeometry.InvalidBaseGeometry
+- QgsGeometry.InvalidInput
 
 .. note::
 
@@ -137,10 +139,11 @@ Adds a new part polygon to a multipart feature
 Adds a new part polygon to a multipart feature
 
 :return: - QgsGeometry.Success
-         - QgsGeometry.AddPartSelectedGeometryNotFound
-         - QgsGeometry.AddPartNotMultiGeometry
-         - QgsGeometry.InvalidBaseGeometry
-         - QgsGeometry.InvalidInput
+
+- QgsGeometry.AddPartSelectedGeometryNotFound
+- QgsGeometry.AddPartNotMultiGeometry
+- QgsGeometry.InvalidBaseGeometry
+- QgsGeometry.InvalidInput
 
 .. note::
 
@@ -166,12 +169,13 @@ Splits parts cut by the given line
 :param topologicalEditing: ``True`` if topological editing is enabled
 
 :return: - QgsGeometry.InvalidBaseGeometry
-         - QgsGeometry.Success
-         - QgsGeometry.InvalidInput
-         - QgsGeometry.NothingHappened if a selection is present but no feature has been split
-         - QgsGeometry.InvalidBaseGeometry
-         - QgsGeometry.GeometryEngineError
-         - QgsGeometry.SplitCannotSplitPoint
+
+- QgsGeometry.Success
+- QgsGeometry.InvalidInput
+- QgsGeometry.NothingHappened if a selection is present but no feature has been split
+- QgsGeometry.InvalidBaseGeometry
+- QgsGeometry.GeometryEngineError
+- QgsGeometry.SplitCannotSplitPoint
 
 .. deprecated:: QGIS 3.12
    - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
@@ -185,12 +189,13 @@ Splits parts cut by the given line
 :param topologicalEditing: ``True`` if topological editing is enabled
 
 :return: - QgsGeometry.InvalidBaseGeometry
-         - QgsGeometry.Success
-         - QgsGeometry.InvalidInput
-         - QgsGeometry.NothingHappened if a selection is present but no feature has been split
-         - QgsGeometry.InvalidBaseGeometry
-         - QgsGeometry.GeometryEngineError
-         - QgsGeometry.SplitCannotSplitPoint
+
+- QgsGeometry.Success
+- QgsGeometry.InvalidInput
+- QgsGeometry.NothingHappened if a selection is present but no feature has been split
+- QgsGeometry.InvalidBaseGeometry
+- QgsGeometry.GeometryEngineError
+- QgsGeometry.SplitCannotSplitPoint
 %End
 
  QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) /Deprecated/;

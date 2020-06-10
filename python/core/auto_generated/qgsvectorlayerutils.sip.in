@@ -246,6 +246,7 @@ layer, note that the number of features returned might be greater than one when
 converting a multi part geometry to single part
 
 The following operations will be performed to convert the input features:
+
 - convert single geometries to multi part
 - drop additional attributes
 - drop geometry if layer is geometry-less
@@ -266,6 +267,7 @@ layer, note that the number of features returned might be greater than the numbe
 of input features.
 
 The following operations will be performed to convert the input features:
+
 - convert single geometries to multi part
 - drop additional attributes
 - drop geometry if layer is geometry-less
