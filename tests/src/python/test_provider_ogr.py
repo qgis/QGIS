@@ -705,6 +705,31 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(feature.attribute(4), 123)
         self.assertEqual(feature.attribute(5), 'My default')
 
+    def testMixOfFilterExpressionAndSubsetStringWhenFilterExpressionCompilationFails(self):
+        datasource = os.path.join(unitTestDataPath(), 'filter_test.shp')
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        self.assertCountEqual([f.attributes() for f in vl.getFeatures()], [['circle', '1'],
+                                                                           ['circle', '2'],
+                                                                           ['rectangle', '1'],
+                                                                           ['rectangle', '2']])
+
+        # note - request uses wrong type for match (string vs int). This is OK for QGIS expressions,
+        # but will be rejected after we try to compile the expression for OGR to use.
+        request = QgsFeatureRequest().setFilterExpression('"color" = 1')
+        self.assertCountEqual([f.attributes() for f in vl.getFeatures(request)], [['circle', '1'],
+                                                                                  ['rectangle', '1']])
+        request = QgsFeatureRequest().setFilterExpression('"color" = 1')
+        self.assertCountEqual([f.attributes() for f in vl.getFeatures(request)], [['circle', '1'],
+                                                                                  ['rectangle', '1']])
+
+        vl.setSubsetString("\"shape\" = 'rectangle'")
+        self.assertCountEqual([f.attributes() for f in vl.getFeatures()], [['rectangle', '1'],
+                                                                           ['rectangle', '2']])
+
+        self.assertCountEqual([f.attributes() for f in vl.getFeatures(request)], [['rectangle', '1']])
+
 
 if __name__ == '__main__':
     unittest.main()
