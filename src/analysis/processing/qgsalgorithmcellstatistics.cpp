@@ -107,11 +107,11 @@ void QgsCellStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
              << QObject::tr( "Variety" );
 
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "STATISTIC" ), QObject::tr( "Statistic" ),  statistics, false, 0, false ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "IGNORE_NODATA" ), QObject::tr( "Ignore NoData values" ), true) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "IGNORE_NODATA" ), QObject::tr( "Ignore NoData values" ), true ) );
 
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REF_LAYER" ), QObject::tr( "Reference layer" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > output_nodata_parameter = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999, true);
+  std::unique_ptr< QgsProcessingParameterNumber > output_nodata_parameter = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999, true );
   output_nodata_parameter->setFlags( output_nodata_parameter->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( output_nodata_parameter.release() );
 
@@ -125,14 +125,14 @@ void QgsCellStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TOTAL_PIXEL_COUNT" ), QObject::tr( "Total pixel count" ) ) );
 }
 
-bool QgsCellStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * feedback )
+bool QgsCellStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsRasterLayer *referenceLayer = parameterAsRasterLayer( parameters, QStringLiteral( "REF_LAYER" ), context );
   if ( !referenceLayer )
     throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "REF_LAYER" ) ) );
 
-  mIgnoreNoData = parameterAsBool( parameters, QStringLiteral( "IGNORE_NODATA" ), context);
-  mNoDataValue = parameterAsDouble( parameters, QStringLiteral( "OUTPUT_NODATA_VALUE" ), context);
+  mIgnoreNoData = parameterAsBool( parameters, QStringLiteral( "IGNORE_NODATA" ), context );
+  mNoDataValue = parameterAsDouble( parameters, QStringLiteral( "OUTPUT_NODATA_VALUE" ), context );
   mCrs = referenceLayer->crs();
   mRasterUnitsPerPixelX = referenceLayer->rasterUnitsPerPixelX();
   mRasterUnitsPerPixelY = referenceLayer->rasterUnitsPerPixelY();
@@ -145,7 +145,7 @@ bool QgsCellStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameters
   rasterLayers.reserve( layers.count() );
   for ( QgsMapLayer *l : layers )
   {
-    if(feedback->isCanceled())
+    if ( feedback->isCanceled() )
       break; //in case some slow data sources are loaded
 
     if ( l->type() == QgsMapLayerType::RasterLayer )
@@ -184,20 +184,20 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
     for ( int band : i.bands )
     {
       Qgis::DataType inputDataType = i.interface->dataType( band );
-      if( static_cast<int>(mDataType) < static_cast<int>(inputDataType) )
+      if ( static_cast<int>( mDataType ) < static_cast<int>( inputDataType ) )
         mDataType = inputDataType; //if raster data type is more potent, set it as new data type
     }
   }
 
   //force data types on specific functions if input data types don't match
-  if( method == QgsRasterAnalysisUtils::Mean || method == QgsRasterAnalysisUtils::StandardDeviation )
+  if ( method == QgsRasterAnalysisUtils::Mean || method == QgsRasterAnalysisUtils::StandardDeviation )
   {
-    if( static_cast<int>(mDataType) < 6 )
+    if ( static_cast<int>( mDataType ) < 6 )
       mDataType = Qgis::Float32; //force float on mean and stddev if all inputs are integer
   }
   else if ( method == QgsRasterAnalysisUtils::Count || method == QgsRasterAnalysisUtils::Variety ) //count, variety
   {
-    if( static_cast<int>(mDataType) > 5 ) //if is floating point type
+    if ( static_cast<int>( mDataType ) > 5 ) //if is floating point type
       mDataType = Qgis::Int32; //force integer on variety if all inputs are float or complex
   }
 
@@ -237,7 +237,7 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
     std::vector< std::unique_ptr< QgsRasterBlock > > inputBlocks;
     for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : mInputs )
     {
-      if(feedback->isCanceled())
+      if ( feedback->isCanceled() )
         break; //in case some slow data sources are loaded
       for ( int band : i.bands )
       {
@@ -263,14 +263,14 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
         {
           //output cell will always be NoData if NoData occurs in cellValueStack and NoData is not ignored
           //this saves unnecessary iterations on the cellValueStack
-          if( method == QgsRasterAnalysisUtils::Count)
-            outputBlock->setValue( row, col,  cellValueStackSize);
+          if ( method == QgsRasterAnalysisUtils::Count )
+            outputBlock->setValue( row, col,  cellValueStackSize );
           else
           {
             outputBlock->setValue( row, col, mNoDataValue );
           }
         }
-        else if ( !noDataInStack || (noDataInStack && mIgnoreNoData) )
+        else if ( !noDataInStack || ( noDataInStack && mIgnoreNoData ) )
         {
           switch ( method )
           {
