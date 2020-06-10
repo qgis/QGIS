@@ -271,6 +271,9 @@ bool QgsCoordinateReferenceSystem::createFromId( const long id, CrsType type )
 
 bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
 {
+  if ( definition.isEmpty() )
+    return false;
+
   QgsReadWriteLocker locker( *sCrsStringLock(), QgsReadWriteLocker::Read );
   if ( !sDisableStringCache )
   {
@@ -336,6 +339,9 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
 
 bool QgsCoordinateReferenceSystem::createFromUserInput( const QString &definition )
 {
+  if ( definition.isEmpty() )
+    return false;
+
   QString userWkt;
   OGRSpatialReferenceH crs = OSRNewSpatialReference( nullptr );
 
@@ -381,6 +387,9 @@ void QgsCoordinateReferenceSystem::setupESRIWktFix()
 
 bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
 {
+  if ( crs.isEmpty() )
+    return false;
+
   QgsReadWriteLocker locker( *sOgcLock(), QgsReadWriteLocker::Read );
   if ( !sDisableOgcCache )
   {
@@ -829,6 +838,9 @@ bool QgsCoordinateReferenceSystem::hasAxisInverted() const
 
 bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
 {
+  if ( wkt.isEmpty() )
+    return false;
+
   d.detach();
 
   QgsReadWriteLocker locker( *sCRSWktLock(), QgsReadWriteLocker::Read );
@@ -899,6 +911,9 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
 
 bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, const bool identify )
 {
+  if ( projString.isEmpty() )
+    return false;
+
   d.detach();
 
   if ( projString.trimmed().isEmpty() )
