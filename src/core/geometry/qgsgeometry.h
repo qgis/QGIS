@@ -588,8 +588,7 @@ class CORE_EXPORT QgsGeometry
      * subset of useful cases. Examples of these are:
      *
      * - computing distance between Linestrings that are roughly parallel to each other,
-     *
-     * and roughly equal in length. This occurs in matching linear networks.
+     *   and roughly equal in length. This occurs in matching linear networks.
      * - Testing similarity of geometries.
      *
      * If the default approximate provided by this method is insufficient, use hausdorffDistanceDensify() instead.
@@ -1594,13 +1593,9 @@ class CORE_EXPORT QgsGeometry
      * This method will do anything possible to force the current geometry into the specified type. E.g.
      *
      * - lines or polygons will be converted to points by return either a single multipoint geometry or multiple
-     *
-     * single point geometries.
-     *
+     *   single point geometries.
      * - polygons will be converted to lines by extracting their exterior and interior rings, returning
-     *
-     * either a multilinestring or multiple single line strings as dictated by \a type.
-     *
+     *   either a multilinestring or multiple single line strings as dictated by \a type.
      * - lines will be converted to polygon rings if \a type is a polygon type
      * - curved geometries will be segmented if \a type is non-curved.
      * - multi geometries will be converted to a list of single geometries
@@ -2272,9 +2267,8 @@ class CORE_EXPORT QgsGeometry
      *   points are equal within the specified tolerance
      * - multipolygons and  have the same number of polygons, the polygons have the same number
      *   of rings, and each ring has the same number of points and all points are equal
-     *   within the specified
+     *   within the specified tolerance
      *
-     * tolerance
      * \since QGIS 2.9
      */
     static bool compare( PyObject *obj1, PyObject *obj2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );

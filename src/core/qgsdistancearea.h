@@ -293,9 +293,9 @@ class CORE_EXPORT QgsDistanceArea
      *
      * - spheroid_project.spheroid_project(...)
      * - Valid bounds checking for degrees (latitude=+- 85.05115) is based values used for
+     *   -> 'WGS84 Web Mercator (Auxiliary Sphere)' calculations
+     *   --> latitudes outside these bounds cause the calculations to become unstable and can return invalid results
      *
-     * -> 'WGS84 Web Mercator (Auxiliary Sphere)' calculations
-     * --> latitudes outside these bounds cause the calculations to become unstable and can return invalid results
      * \since QGIS 3.0
      */
     QgsPointXY computeSpheroidProject( const QgsPointXY &p1, double distance = 1, double azimuth = M_PI_2 ) const;
