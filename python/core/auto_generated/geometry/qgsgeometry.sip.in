@@ -1568,6 +1568,7 @@ Exports the geometry to a GeoJSON string.
 Attempts to coerce this geometry into the specified destination ``type``.
 
 This method will do anything possible to force the current geometry into the specified type. E.g.
+
 - lines or polygons will be converted to points by return either a single multipoint geometry or multiple
 single point geometries.
 - polygons will be converted to lines by extracting their exterior and interior rings, returning
@@ -2122,14 +2123,14 @@ The 2 types should match.
 :param epsilon: maximum difference for coordinates between the objects
 
 :return: ``True`` if objects are
-         - polylines and have the same number of points and all
-         points are equal within the specified tolerance
-         - polygons and have the same number of points and all
-         points are equal within the specified tolerance
-         - multipolygons and  have the same number of polygons, the polygons have the same number
-         of rings, and each ring has the same number of points and all points are equal
-         within the specified
-         tolerance
+
+- polylines and have the same number of points and all
+points are equal within the specified tolerance
+- polygons and have the same number of points and all
+points are equal within the specified tolerance
+- multipolygons and  have the same number of polygons, the polygons have the same number
+of rings, and each ring has the same number of points and all points are equal
+within the specified tolerance
 
 .. versionadded:: 2.9
 %End

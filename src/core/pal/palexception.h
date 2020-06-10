@@ -111,7 +111,6 @@ namespace pal
        *  It can be thrown by :
        *
        * - pal::Layer::setFeatureLabelSize if either the height or the width of the label is < 0
-       *
        * - pal::Layer::setFeatureDistlabel is distlable < 0
        */
       class ValueNotInRange : public std::exception

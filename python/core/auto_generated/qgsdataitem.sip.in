@@ -404,6 +404,7 @@ createChildren() immediately because result will be useless. *
     virtual void deleteLater();
 %Docstring
 Safely delete the item:
+
 - disconnects parent
 - unsets parent (but does not remove itself)
 - deletes all its descendants recursively

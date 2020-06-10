@@ -17,6 +17,7 @@ The QgsOgcUtils class provides various utility functions for conversion between
 OGC (Open Geospatial Consortium) standards and QGIS internal representations.
 
 Currently supported standards:
+
 - GML2 - Geography Markup Language (import, export)
 %End
 
