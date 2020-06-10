@@ -382,7 +382,7 @@ Sets list of point lights defined in the scene
 .. versionadded:: 3.6
 %End
 
-    void setDirectionalLights( const QList<QgsDirectionalLightSettings> &pointLights );
+    void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
 %Docstring
 Sets list of directional lights defined in the scene
 
