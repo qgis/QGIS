@@ -70,6 +70,13 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         , symbol( _s )
       {}
 
+      QgsRuleBasedRenderer::RenderJob &operator=( const QgsRuleBasedRenderer::RenderJob &rj )
+      {
+        symbol = rj.symbol;
+        ftr = rj.ftr;
+        return *this;
+      }
+
       //! Feature to render
       QgsRuleBasedRenderer::FeatureToRender &ftr;
 

@@ -40,6 +40,7 @@ the rules and draws features with symbols from rules that match.
     {
       RenderJob( QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s );
 
+
       QgsRuleBasedRenderer::FeatureToRender &ftr;
 %Docstring
 Feature to render
