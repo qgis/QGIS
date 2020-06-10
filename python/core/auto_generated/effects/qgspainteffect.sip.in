@@ -448,6 +448,8 @@ Sets the effect to be painted
 
 
 
+  private:
+    const QgsEffectPainter &operator=( const QgsEffectPainter & );
 };
 
 

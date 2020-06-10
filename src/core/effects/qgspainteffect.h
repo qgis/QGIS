@@ -433,6 +433,10 @@ class CORE_EXPORT QgsEffectPainter
     ///@endcond
 
   private:
+#ifdef SIP_RUN
+    const QgsEffectPainter &operator=( const QgsEffectPainter & );
+#endif
+
     QgsRenderContext &mRenderContext;
     QPainter *mPainter = nullptr;
     QgsPaintEffect *mEffect = nullptr;
