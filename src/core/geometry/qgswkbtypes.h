@@ -303,11 +303,20 @@ class CORE_EXPORT QgsWkbTypes
       switch ( type )
       {
         case Unknown:
-        case Triangle:
-        case TriangleZ:
-        case TriangleM:
-        case TriangleZM:
           return Unknown;
+
+        // until we support TIN types, use multipolygon
+        case Triangle:
+          return MultiPolygon;
+
+        case TriangleZ:
+          return MultiPolygonZ;
+
+        case TriangleM:
+          return MultiPolygonM;
+
+        case TriangleZM:
+          return MultiPolygonZM;
 
         case GeometryCollection:
           return GeometryCollection;
