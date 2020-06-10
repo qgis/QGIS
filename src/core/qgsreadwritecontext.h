@@ -162,6 +162,10 @@ class CORE_EXPORT QgsReadWriteContextCategoryPopper
     QgsReadWriteContextCategoryPopper( QgsReadWriteContext &context ) : mContext( context ) {}
     ~QgsReadWriteContextCategoryPopper() {mContext.leaveCategory();}
   private:
+#ifdef SIP_RUN
+    QgsReadWriteContextCategoryPopper &operator=( const QgsReadWriteContextCategoryPopper & );
+#endif
+
     QgsReadWriteContext &mContext;
 };
 

@@ -153,6 +153,8 @@ This would happen when it gets out of scope.
 Creates a popper
 %End
     ~QgsReadWriteContextCategoryPopper();
+  private:
+    QgsReadWriteContextCategoryPopper &operator=( const QgsReadWriteContextCategoryPopper & );
 };
 
 /************************************************************************
