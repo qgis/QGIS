@@ -2004,7 +2004,7 @@ tests:
       VALUE_FORWARD: ''
     results:
       OUTPUT:
-        name: expected/service_area_from_layer_nodes_bounds.gml
+        name: expected/service_area_from_layer_nodes_bounds.shp
         type: vector
 
   - algorithm: native:serviceareafromlayer
