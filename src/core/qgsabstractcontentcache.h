@@ -402,7 +402,12 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
         if ( ok )
         {
           // read the content data
-          mRemoteContentCache.insert( path, new QByteArray( reply->readAll() ) );
+          const QByteArray ba = reply->readAll();
+
+          // because of the fragility listed below in waitForTaskFinished, this slot may get called twice. In that case
+          // the second time will have an empty reply (we've already read it all...)
+          if ( !ba.isEmpty() )
+            mRemoteContentCache.insert( path, new QByteArray( ba ) );
         }
         QMetaObject::invokeMethod( const_cast< QgsAbstractContentCacheBase * >( qobject_cast< const QgsAbstractContentCacheBase * >( this ) ), "onRemoteContentFetched", Qt::QueuedConnection, Q_ARG( QString, path ), Q_ARG( bool, true ) );
       } );
@@ -447,7 +452,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
     }
 
     /**
-     * Blocks the current thread until the \a task finishes or an arbitrary setting maximum wait to 5 seconds
+     * Blocks the current thread until the \a task finishes (or user's preset network timeout expires)
      *
      * \warning this method must NEVER be used from GUI based applications (like the main QGIS application)
      * or crashes will result. Only for use in external scripts or QGIS server.
@@ -459,22 +464,28 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
     bool waitForTaskFinished( QgsNetworkContentFetcherTask *task ) const
     {
       // First step, waiting for task running
-      if ( task->status() != QgsTask::Running )
+      bool waitForTaskBegun = ( task->status() != QgsTask::Running
+                                && task->status() != QgsTask::Complete
+                                && task->status() != QgsTask::Terminated );
+      if ( waitForTaskBegun )
       {
         QEventLoop loop;
         connect( task, &QgsNetworkContentFetcherTask::begun, &loop, &QEventLoop::quit );
-        if ( task->status() != QgsTask::Running )
+        if ( waitForTaskBegun )
           loop.exec();
       }
 
-      // Second step, wait 5 seconds for task finished
-      if ( task->waitForFinished( 5000 ) )
+      // Second step, wait for task finished
+      // Wait up to timeout seconds for task finished
+      if ( task->waitForFinished( QgsNetworkAccessManager::timeout() ) )
       {
         // The wait did not time out
         // Third step, check status as complete
         if ( task->status() == QgsTask::Complete )
         {
           // Fourth step, force the signal fetched to be sure reply has been checked
+
+          // ARGH this is BAD BAD BAD. The connection will get called twice as a result!!!
           task->fetched();
           return true;
         }
