@@ -86,12 +86,12 @@ class CORE_EXPORT QgsOgcUtils
      *  "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
      * \param context QgsOgcUtils context
      */
-    static QgsGeometry geometryFromGML( const QString &xmlString, const Context &context = Context() );
+    static QgsGeometry geometryFromGML( const QString &xmlString, const QgsOgcUtils::Context &context = QgsOgcUtils::Context() );
 
     /**
      * Static method that creates geometry from GML
       */
-    static QgsGeometry geometryFromGML( const QDomNode &geometryNode, const Context &context = Context() );
+    static QgsGeometry geometryFromGML( const QDomNode &geometryNode, const QgsOgcUtils::Context &context = QgsOgcUtils::Context() );
 
     //! Read rectangle from GML2 Box
     static QgsRectangle rectangleFromGMLBox( const QDomNode &boxNode );

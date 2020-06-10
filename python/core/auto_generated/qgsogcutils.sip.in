@@ -43,7 +43,7 @@ Constructs a Context from ``layer`` and ``transformContext``
       GML_3_2_1,
     };
 
-    static QgsGeometry geometryFromGML( const QString &xmlString, const Context &context = Context() );
+    static QgsGeometry geometryFromGML( const QString &xmlString, const QgsOgcUtils::Context &context = QgsOgcUtils::Context() );
 %Docstring
 Static method that creates geometry from GML
 
@@ -53,7 +53,7 @@ Static method that creates geometry from GML
 :param context: QgsOgcUtils context
 %End
 
-    static QgsGeometry geometryFromGML( const QDomNode &geometryNode, const Context &context = Context() );
+    static QgsGeometry geometryFromGML( const QDomNode &geometryNode, const QgsOgcUtils::Context &context = QgsOgcUtils::Context() );
 %Docstring
 Static method that creates geometry from GML
 %End
