@@ -1775,6 +1775,7 @@ tests:
           ignore_crs_check: true
           geometry:
             precision: 2
+<<<<<<< HEAD
           fields:
             cost:
               precision: 2
@@ -1783,6 +1784,8 @@ tests:
         pk:
           - d
           - type
+=======
+>>>>>>> 7d58502b3b... Merge pull request #37097 from alexbruy/processing-tests
 
   - algorithm: qgis:serviceareafromlayer
     name: Service area from layer (lines)
