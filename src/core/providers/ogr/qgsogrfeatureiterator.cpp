@@ -207,6 +207,11 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
         mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
         mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
       }
+      else if ( !mSource->mSubsetString.isEmpty() )
+      {
+        // OGR rejected the compiled expression. Make sure we restore the original subset string if set (and do the filtering on QGIS' side)
+        OGR_L_SetAttributeFilter( mOgrLayer, mSource->mEncoding->fromUnicode( mSource->mSubsetString ).constData() );
+      }
     }
     else if ( mSource->mSubsetString.isEmpty() )
     {
