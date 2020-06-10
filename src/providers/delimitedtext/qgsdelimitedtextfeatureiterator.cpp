@@ -501,6 +501,21 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature &feature, int f
       }
       break;
     }
+    case QVariant::DateTime:
+    {
+      val = QVariant( QDateTime::fromString( value, Qt::ISODate ) );
+      break;
+    }
+    case QVariant::Date:
+    {
+      val = QVariant( QDate::fromString( value, Qt::ISODate ) );
+      break;
+    }
+    case QVariant::Time:
+    {
+      val = QVariant( QTime::fromString( value ) );
+      break;
+    }
     default:
       val = QVariant( value );
       break;

@@ -33,7 +33,7 @@ import collections
 
 rebuildTests = 'REBUILD_DELIMITED_TEXT_TESTS' in os.environ
 
-from qgis.PyQt.QtCore import QCoreApplication, QUrl, QObject
+from qgis.PyQt.QtCore import QCoreApplication, QVariant, QUrl, QObject
 
 from qgis.core import (
     QgsProviderRegistry,
@@ -156,13 +156,13 @@ class TestQgsDelimitedTextProviderXY(unittest.TestCase, ProviderTestCase):
         """Run after all tests"""
 
     def treat_time_as_string(self):
-        return True
+        return False
 
     def treat_date_as_string(self):
-        return True
+        return False
 
     def treat_datetime_as_string(self):
-        return True
+        return False
 
 
 class TestQgsDelimitedTextProviderWKT(unittest.TestCase, ProviderTestCase):
@@ -205,13 +205,13 @@ class TestQgsDelimitedTextProviderWKT(unittest.TestCase, ProviderTestCase):
         """Run after all tests"""
 
     def treat_time_as_string(self):
-        return True
+        return False
 
     def treat_date_as_string(self):
-        return True
+        return False
 
     def treat_datetime_as_string(self):
-        return True
+        return False
 
 
 class TestQgsDelimitedTextProviderOther(unittest.TestCase):
@@ -906,6 +906,26 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         assert vl.isValid(), "{} is invalid".format(basetestfile)
         assert vl.wkbType() == QgsWkbTypes.PointM, "wrong wkb type, should be PointM"
         assert vl.getFeature(2).geometry().asWkt() == "PointM (-71.12300000000000466 78.23000000000000398 2)", "wrong PointM geometry"
+
+    def test_047_datetime(self):
+        # Create test layer
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        basetestfile = os.path.join(srcpath, 'delimited_datetime.csv')
+
+        url = MyUrl.fromLocalFile(basetestfile)
+        url.addQueryItem("crs", "epsg:4326")
+        url.addQueryItem("type", "csv")
+        url.addQueryItem("xField", "X")
+        url.addQueryItem("yField", "Y")
+        url.addQueryItem("spatialIndex", "no")
+        url.addQueryItem("subsetIndex", "no")
+        url.addQueryItem("watchFile", "no")
+
+        vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
+        assert vl.isValid(), "{} is invalid".format(basetestfile)
+        assert vl.fields().at(4).type() == QVariant.DateTime
+        assert vl.fields().at(5).type() == QVariant.Date
+        assert vl.fields().at(6).type() == QVariant.Time
 
     def testSpatialIndex(self):
         srcpath = os.path.join(TEST_DATA_DIR, 'provider')
