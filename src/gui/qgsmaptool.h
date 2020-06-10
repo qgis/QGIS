@@ -134,6 +134,13 @@ class GUI_EXPORT QgsMapTool : public QObject
     virtual bool gestureEvent( QGestureEvent *e );
 
     /**
+     * Tooltip event for overriding. Default implementation does nothing.
+     * Returns whether the event was handled by the tool and should not be propagated further.
+     * \since QGIS 3.22
+     */
+    virtual bool canvasToolTipEvent( QHelpEvent *e );
+
+    /**
      * Use this to associate a QAction to this maptool. Then when the setMapTool
      * method of mapcanvas is called the action state will be set to on.
      * Usually this will cause e.g. a toolbutton to appear pressed in and

@@ -2796,6 +2796,15 @@ void QgsMapCanvas::dragEnterEvent( QDragEnterEvent *event )
   }
 }
 
+bool QgsMapCanvas::viewportEvent( QEvent *event )
+{
+  if ( event->type() == QEvent::ToolTip && mMapTool && mMapTool->canvasToolTipEvent( qgis::down_cast<QHelpEvent *>( event ) ) )
+  {
+    return true;
+  }
+  return QGraphicsView::viewportEvent( event );
+}
+
 void QgsMapCanvas::mapToolDestroyed()
 {
   QgsDebugMsgLevel( QStringLiteral( "maptool destroyed" ), 2 );

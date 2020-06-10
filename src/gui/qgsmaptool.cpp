@@ -192,6 +192,12 @@ bool QgsMapTool::gestureEvent( QGestureEvent *e )
   return true;
 }
 
+bool QgsMapTool::canvasToolTipEvent( QHelpEvent *e )
+{
+  Q_UNUSED( e )
+  return false;
+}
+
 QgsMapCanvas *QgsMapTool::canvas() const
 {
   return mCanvas;

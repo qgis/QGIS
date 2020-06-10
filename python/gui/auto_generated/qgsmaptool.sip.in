@@ -110,6 +110,14 @@ Key event for overriding. Default implementation does nothing.
 gesture event for overriding. Default implementation does nothing.
 %End
 
+    virtual bool canvasToolTipEvent( QHelpEvent *e );
+%Docstring
+Tooltip event for overriding. Default implementation does nothing.
+Returns whether the event was handled by the tool and should not be propagated further.
+
+.. versionadded:: 3.22
+%End
+
     void setAction( QAction *action );
 %Docstring
 Use this to associate a QAction to this maptool. Then when the setMapTool

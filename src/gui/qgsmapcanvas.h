@@ -1174,6 +1174,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void resizeEvent( QResizeEvent *e ) override;
     void paintEvent( QPaintEvent *e ) override;
     void dragEnterEvent( QDragEnterEvent *e ) override;
+    bool viewportEvent( QEvent *event ) override;
 
     //! called when panning is in action, reset indicates end of panning
     void moveCanvasContents( bool reset = false );
