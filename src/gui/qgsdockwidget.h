@@ -84,13 +84,9 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
      * When setting as hidden, the following logic is used:
      *
      * - hiding a dock which is open but not raised (ie hidden by another tab) will have no
-     *
-     * effect, and the dock will still be opened and hidden by the other tab
-     *
+     *   effect, and the dock will still be opened and hidden by the other tab
      * - hiding a dock which is open and raised (ie, user visible) will cause the dock to
-     *
-     * be closed
-     *
+     *   be closed
      * - hiding a dock which is closed has no effect and raises no signals
      *
      * \see isUserVisible()
