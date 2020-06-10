@@ -94,7 +94,9 @@ class CORE_EXPORT QgsContrastEnhancementFunction
     double mMinimumValuePossible = std::numeric_limits< double >::lowest() SIP_SKIP;
 
   private:
-    QgsContrastEnhancementFunction &operator=( const QgsContrastEnhancementFunction & ) = delete;
+#ifdef SIP_RUN
+    QgsContrastEnhancementFunction &operator=( const QgsContrastEnhancementFunction & );
+#endif
 };
 
 #endif
