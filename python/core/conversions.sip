@@ -1435,6 +1435,7 @@ template <TYPE>
 %End
 };
 
+%If (VECTOR_MAPPED_TYPE)
 template <TYPE>
 %MappedType QVector< TYPE* >
 {
@@ -1507,6 +1508,7 @@ template <TYPE>
     return sipGetState(sipTransferObj);
 %End
 };
+%End
 
 %MappedType QMap<qint64, QgsFeature*>
 {
