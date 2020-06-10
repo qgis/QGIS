@@ -268,7 +268,7 @@ inline double _round_coord( double x )
 }
 
 
-static QgsCurve *_transform_ring_to_new_base( const QgsLineString &curve, const QgsPoint &pt0, const QMatrix4x4 *toNewBase, float scaleX, float scaleY )
+static QgsCurve *_transform_ring_to_new_base( const QgsLineString &curve, const QgsPoint &pt0, const QMatrix4x4 *toNewBase, const float scale )
 {
   int count = curve.numPoints();
   QVector<double> x;
@@ -295,8 +295,8 @@ static QgsCurve *_transform_ring_to_new_base( const QgsLineString &curve, const 
       v = toNewBase->map( v );
 
     // scale coordinates
-    v.setX( v.x() * scaleX );
-    v.setY( v.y() * scaleY );
+    v.setX( v.x() * scale );
+    v.setY( v.y() * scale );
 
     // we also round coordinates before passing them to poly2tri triangulation in order to fix possible numerical
     // stability issues. We had crashes with nearly collinear points where one of the points was off by a tiny bit (e.g. by 1e-20).
@@ -316,12 +316,12 @@ static QgsCurve *_transform_ring_to_new_base( const QgsLineString &curve, const 
 }
 
 
-static QgsPolygon *_transform_polygon_to_new_base( const QgsPolygon &polygon, const QgsPoint &pt0, const QMatrix4x4 *toNewBase, float scaleX, float scaleY )
+static QgsPolygon *_transform_polygon_to_new_base( const QgsPolygon &polygon, const QgsPoint &pt0, const QMatrix4x4 *toNewBase, const float scale )
 {
   QgsPolygon *p = new QgsPolygon;
-  p->setExteriorRing( _transform_ring_to_new_base( *qgsgeometry_cast< const QgsLineString * >( polygon.exteriorRing() ), pt0, toNewBase, scaleX, scaleY ) );
+  p->setExteriorRing( _transform_ring_to_new_base( *qgsgeometry_cast< const QgsLineString * >( polygon.exteriorRing() ), pt0, toNewBase, scale ) );
   for ( int i = 0; i < polygon.numInteriorRings(); ++i )
-    p->addInteriorRing( _transform_ring_to_new_base( *qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ), pt0, toNewBase, scaleX, scaleY ) );
+    p->addInteriorRing( _transform_ring_to_new_base( *qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ), pt0, toNewBase, scale ) );
   return p;
 }
 
@@ -494,13 +494,12 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     const QgsPoint ptStart( exterior->startPoint() );
     const QgsPoint pt0( QgsWkbTypes::PointZ, ptStart.x(), ptStart.y(), std::isnan( ptStart.z() ) ? 0 : ptStart.z() );
 
-    const float scaleX = !mBounds.isNull() ? 10000.0 / mBounds.width() : 1.0;
-    const float scaleY = !mBounds.isNull() ? 10000.0 / mBounds.height() : 1.0;
+    const float scale = mBounds.isNull() ? 1.0 : std::max( 10000.0 / mBounds.width(), 10000.0 / mBounds.height() );
 
     // subtract ptFirst from geometry for better numerical stability in triangulation
     // and apply new 3D vector base if the polygon is not horizontal
 
-    std::unique_ptr<QgsPolygon> polygonNew( _transform_polygon_to_new_base( polygon, pt0, toNewBase.get(), scaleX, scaleY ) );
+    std::unique_ptr<QgsPolygon> polygonNew( _transform_polygon_to_new_base( polygon, pt0, toNewBase.get(), scale ) );
 
     if ( _minimum_distance_between_coordinates( *polygonNew ) < 0.001 )
     {
@@ -574,8 +573,8 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           QVector4D pt( p->x, p->y, mNoZ ? 0 : z[p], 0 );
           if ( toOldBase )
             pt = *toOldBase * pt;
-          const double fx = ( pt.x() / scaleX ) - mOriginX + pt0.x();
-          const double fy = ( pt.y() / scaleY ) - mOriginY + pt0.y();
+          const double fx = ( pt.x() / scale ) - mOriginX + pt0.x();
+          const double fy = ( pt.y() / scale ) - mOriginY + pt0.y();
           const double fz = mNoZ ? 0 : ( pt.z() + extrusionHeight + pt0.z() );
           if ( fz < zMin )
             zMin = fz;
@@ -596,8 +595,8 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
             QVector4D pt( p->x, p->y, mNoZ ? 0 : z[p], 0 );
             if ( toOldBase )
               pt = *toOldBase * pt;
-            const double fx = ( pt.x() / scaleX ) - mOriginX + pt0.x();
-            const double fy = ( pt.y() / scaleY ) - mOriginY + pt0.y();
+            const double fx = ( pt.x() / scale ) - mOriginX + pt0.x();
+            const double fy = ( pt.y() / scale ) - mOriginY + pt0.y();
             const double fz = mNoZ ? 0 : ( pt.z() + extrusionHeight + pt0.z() );
             mData << fx << fz << -fy;
             if ( mAddNormals )
