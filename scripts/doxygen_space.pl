@@ -39,6 +39,9 @@ my $LINE_COUNT = @INPUT_LINES;
 open(my $out_handle, ">", $file) || die "Couldn't open '".$file."' for writing because: ".$!;
 
 my $PREVIOUS_WAS_BLANKLINE = 0;
+my $INSIDE_DOX_BLOCK = 0;
+my $INSIDE_DOX_LIST = 0;
+my $PREVIOUS_WAS_DOX_BLANKLINE = 0;
 
 while ($LINE_IDX < $LINE_COUNT){
     my $new_line = $INPUT_LINES[$LINE_IDX];
@@ -71,23 +74,57 @@ while ($LINE_IDX < $LINE_COUNT){
           print $out_handle $new_line."\n";
        }
     }
-    else {
-        if ( $new_line =~ m/^(\s*)\/\*\*(?!\*)\s*(.*)$/ ){
+    elsif ( $INSIDE_DOX_BLOCK ){
+      if ( $new_line =~ m/^\s*\*\s*$/ ){
+        print $out_handle $new_line."\n";
+        $PREVIOUS_WAS_DOX_BLANKLINE = 1;
+        if ( $INSIDE_DOX_LIST ) {
+          $INSIDE_DOX_LIST = 0;
+          # print $out_handle "end list\n";
+        }
+      }
+      elsif ( $new_line =~ m/^(\s*)\*\s*\-(?![-\d>])(?: )*(.*)/ ){
+        if ( !$INSIDE_DOX_LIST && !$PREVIOUS_WAS_DOX_BLANKLINE ){
+          print $out_handle "$1*\n";
+        }
+        print $out_handle "$1* - $2\n";
+        $INSIDE_DOX_LIST = 1;
+      }
+      elsif ($INSIDE_DOX_LIST && $new_line =~ m/^(\s*)\*(?!\/)/ ){
+        $INSIDE_DOX_LIST = 0;
+        # print $out_handle "end list without line break\n";
+        print $out_handle "$1*\n";
+        print $out_handle $new_line."\n";
+      }
+      elsif ( $new_line =~ m/^(\s*)\*\/\s*$/ ){
+        $INSIDE_DOX_BLOCK = 0;
+        $INSIDE_DOX_LIST = 0;
+        print $out_handle $new_line."\n";
+        # print $out_handle "end_block\n";
+      }
+      else {
+        print $out_handle $new_line."\n";
+        # print $out_handle "normal dox\n";
+        $PREVIOUS_WAS_DOX_BLANKLINE = 0;
+      }
+    }
+    elsif ( $new_line =~ m/^(\s*)\/\*\*(?!\*)\s*(.*)$/ ){
           # Space around doxygen start blocks (force blank line before /**)
-          if ( !$PREVIOUS_WAS_BLANKLINE ){
-              print $out_handle "\n";
-          }
-          if ( $2 ne '' ){
-              # new line after /** begin block
-              print $out_handle "$1\/**\n$1 * $2\n";
-          }
-          else {
-              print $out_handle $new_line."\n";
-          }
-        }
-        else {
-            print $out_handle $new_line."\n";
-        }
+      if ( !$PREVIOUS_WAS_BLANKLINE ){
+          print $out_handle "\n";
+      }
+      if ( $2 ne '' ){
+          # new line after /** begin block
+          print $out_handle "$1\/**\n$1 * $2\n";
+      }
+      else {
+          print $out_handle $new_line."\n";
+      }
+      $INSIDE_DOX_BLOCK = 1;
+      # print $out_handle "start_block\n";
+    }
+    else {
+        print $out_handle $new_line."\n";
     }
     $LINE_IDX++;
     $PREVIOUS_WAS_BLANKLINE = $is_blank_line;
