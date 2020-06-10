@@ -2200,7 +2200,7 @@ void TestQgsProcessingAlgs::cellStatistics()
   std::unique_ptr<QgsRasterLayer> outputRaster = qgis::make_unique< QgsRasterLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
   std::unique_ptr< QgsRasterInterface > outputInterface( outputRaster->dataProvider()->clone() );
 
-  QCOMPARE( outputInterface->dataType(1), expectedDataType );
+  QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
   QCOMPARE( outputRaster->width(), expectedRasterLayer->width() );
   QCOMPARE( outputRaster->height(), expectedRasterLayer->height() );
 
