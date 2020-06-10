@@ -469,7 +469,7 @@ QString QgsPostgresProvider::pkParamWhereClause( int offset, const char *alias )
         int idx = mPrimaryKeyAttrs[i];
         QgsField fld = field( idx );
 
-        whereClause += delim + QStringLiteral( "%3%1=$%2" ).arg( connectionRO()->fieldExpression( fld ) ).arg( offset++ ).arg( aliased );
+        whereClause += delim + QStringLiteral( "%3%1=$%2" ).arg( connectionRO()->fieldExpressionForWhereClause( fld ) ).arg( offset++ ).arg( aliased );
         delim = QStringLiteral( " AND " );
       }
     }
@@ -604,11 +604,11 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields &
           int idx = pkAttrs[i];
           QgsField fld = fields.at( idx );
 
-          whereClause += delim + conn->fieldExpression( fld );
+          whereClause += delim + conn->fieldExpressionForWhereClause( fld, pkVals[i].type() );
           if ( pkVals[i].isNull() )
             whereClause += QLatin1String( " IS NULL" );
           else
-            whereClause += '=' + QgsPostgresConn::quotedValue( pkVals[i].toString() );
+            whereClause += '=' + QgsPostgresConn::quotedValue( pkVals[i] ); // remove toString as it must be handled by quotedValue function
 
           delim = QStringLiteral( " AND " );
         }

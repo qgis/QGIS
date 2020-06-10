@@ -16,6 +16,8 @@
 #include <QObject>
 
 #include <qgspostgresconn.h>
+#include <qgsfields.h>
+#include <qgspostgresprovider.h>
 
 class TestQgsPostgresConn: public QObject
 {
@@ -36,6 +38,35 @@ class TestQgsPostgresConn: public QObject
       QCOMPARE( QgsPostgresConn::quotedValue( "b" ), QString( "'b'" ) );
       QCOMPARE( QgsPostgresConn::quotedValue( "b's" ), QString( "'b''s'" ) );
       QCOMPARE( QgsPostgresConn::quotedValue( "b \"c' \\x" ), QString( "E'b \"c'' \\\\x'" ) );
+    }
+
+    void quotedValueDatetime()
+    {
+      QCOMPARE( QgsPostgresConn::quotedValue( QDateTime::fromString( "2020-05-07 17:56:00", "yyyy-MM-dd HH:mm:ss" ) ), QString( "'2020-05-07T17:56:00.000'" ) );
+
+      QgsFields fields;
+      QgsField f;
+      f.setName( "ts" );
+      f.setType( QVariant::DateTime );
+      f.setTypeName( "timestamp" );
+      fields.append( f );
+      QgsField f2;
+      f2.setName( "pk" );
+      f2.setType( QVariant::LongLong );
+      f2.setTypeName( "serial8" );
+      fields.append( f2 );
+
+      QList<int> pkAttrs;
+      pkAttrs.append( 0 );
+      pkAttrs.append( 1 );
+
+      QgsPostgresSharedData *shared = new QgsPostgresSharedData;
+      QVariantList qvlist;
+      qvlist.append( QDateTime::fromString( "2020-05-07 17:56:00", "yyyy-MM-dd HH:mm:ss" ) );
+      qvlist.append( 123LL );
+      shared->insertFid( 1LL, qvlist );
+
+      QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( shared ) ), QString( "\"ts\"='2020-05-07T17:56:00.000' AND \"pk\"=123" ) );
     }
 
     void quotedValueStringArray()
