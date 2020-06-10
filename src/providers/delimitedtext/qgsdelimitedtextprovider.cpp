@@ -635,8 +635,12 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
       if ( couldBeDateTime[i] )
       {
-        QDateTime dt = QDateTime::fromString( value, Qt::ISODate );
-        couldBeDateTime[i] = ( dt.isValid() && value.length() > 10 );
+        QDateTime dt;
+        if ( value.length() > 10 )
+        {
+          dt = QDateTime::fromString( value, Qt::ISODate );
+        }
+        couldBeDateTime[i] = ( dt.isValid() );
       }
 
       if ( couldBeDate[i] && !couldBeDateTime[i] )

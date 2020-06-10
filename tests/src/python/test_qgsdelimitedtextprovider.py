@@ -925,6 +925,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         assert vl.isValid(), "{} is invalid".format(basetestfile)
         assert vl.fields().at(4).type() == QVariant.DateTime
         assert vl.fields().at(5).type() == QVariant.Date
+        assert vl.fields().at(6).type() == QVariant.Time
 
     def testSpatialIndex(self):
         srcpath = os.path.join(TEST_DATA_DIR, 'provider')
