@@ -34,6 +34,7 @@ from qgis.core import (
     QgsCoordinateTransform,
     QgsRectangle,
     QgsWkbTypes,
+    QgsTriangle,
     QgsRenderChecker,
     QgsCoordinateReferenceSystem,
     QgsProject
@@ -2104,6 +2105,13 @@ class TestQgsGeometry(unittest.TestCase):
                       QgsGeometry.fromWkt('Polygon((100 100, 101 100, 101 101, 100 100))')]
         geometry = QgsGeometry.collectGeometry(geometries)
         expwkt = "MultiPolygon (((0 0, 1 0, 1 1, 0 1, 0 0)),((2 0, 3 0, 3 1, 2 1, 2 0)),((100 100, 101 100, 101 101, 100 100)))"
+        wkt = geometry.asWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        geometries = [QgsGeometry(QgsTriangle(QgsPoint(0, 0, 5), QgsPoint(1, 0, 6), QgsPoint(1, 1, 7))),
+                      QgsGeometry(QgsTriangle(QgsPoint(100, 100, 9), QgsPoint(101, 100, -1), QgsPoint(101, 101, 4)))]
+        geometry = QgsGeometry.collectGeometry(geometries)
+        expwkt = "MultiPolygonZ (((0 0 5, 1 0 6, 1 1 7, 0 0 5)),((100 100 9, 101 100 -1, 101 101 4, 100 100 9)))"
         wkt = geometry.asWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
