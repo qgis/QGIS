@@ -146,6 +146,7 @@ The ``attrName`` argument specifies the layer's field name, or expression, which
 A list of renderer ``categories`` can optionally be specified. If no categories are specified in the constructor, they
 can be added later by calling addCategory().
 %End
+    ~QgsCategorizedSymbolRenderer();
 
     virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
