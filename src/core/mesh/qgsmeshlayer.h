@@ -437,6 +437,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     /**
       * Sets the root items of the dataset group tree item.
       * Changes active dataset groups if those one are not enabled anymore :
+      *
       * - new active scalar dataset group is the first root item enabled child
       * - new active vector dataset group is none
       *

@@ -113,9 +113,10 @@ struct CORE_EXPORT QgsMesh
  * Interface for mesh data sources
  *
  * Mesh is a collection of vertices, edges and faces in 2D or 3D space
- *  - vertex - XY(Z) point (in the mesh's coordinate reference system)
- *  - edge   - two XY(Z) points (in the mesh's coordinate reference system) representing straight seqment
- *  - faces  - sets of vertices forming a closed shape - typically triangles or quadrilaterals
+ *
+ * - vertex - XY(Z) point (in the mesh's coordinate reference system)
+ * - edge   - two XY(Z) points (in the mesh's coordinate reference system) representing straight seqment
+ * - faces  - sets of vertices forming a closed shape - typically triangles or quadrilaterals
  *
  * Base on the underlying data provider/format, whole mesh is either stored in memory or
  * read on demand

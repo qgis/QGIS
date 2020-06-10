@@ -73,16 +73,16 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     /**
      * The display expression will be used for
      *
-     *  - displaying values in the combobox
-     *  - filtering based on filterValue
+     * - displaying values in the combobox
+     * - filtering based on filterValue
      */
     QString displayExpression() const;
 
     /**
      * The display expression will be used for
      *
-     *  - displaying values in the combobox
-     *  - filtering based on filterValue
+     * - displaying values in the combobox
+     * - filtering based on filterValue
      */
     void setDisplayExpression( const QString &displayExpression );
 
@@ -184,8 +184,8 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     /**
      * The display expression will be used for
      *
-     *  - displaying values in the combobox
-     *  - filtering based on filterValue
+     * - displaying values in the combobox
+     * - filtering based on filterValue
      */
     void displayExpressionChanged();
 

@@ -471,6 +471,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Set up this CRS from a string definition.
      *
      * It supports the following formats:
+     *
      * - "EPSG:<code>" - handled with createFromOgcWms()
      * - "POSTGIS:<srid>" - handled with createFromSrid()
      * - "INTERNAL:<srsid>" - handled with createFromSrsId()

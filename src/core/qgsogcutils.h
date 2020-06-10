@@ -44,6 +44,7 @@ class QgsVectorLayer;
  *   OGC (Open Geospatial Consortium) standards and QGIS internal representations.
  *
  * Currently supported standards:
+ *
  * - GML2 - Geography Markup Language (import, export)
  */
 class CORE_EXPORT QgsOgcUtils

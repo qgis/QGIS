@@ -32,6 +32,7 @@ class QgsMapLayer;
  * \ingroup core
  * This class is a base class for nodes in a layer tree.
  * Layer tree is a hierarchical structure consisting of group and layer nodes:
+ *
  * - group nodes are containers and may contain children (layer and group nodes)
  * - layer nodes point to map layers, they do not contain further children
  *
@@ -58,6 +59,7 @@ class QgsMapLayer;
  * file. The storage is not efficient for large amount of data.
  *
  * Custom properties that have already been used within QGIS:
+ *
  * - "loading" - whether the project is being currently loaded (root node only)
  * - "overview" - whether to show a layer in overview
  * - "showFeatureCount" - whether to show feature counts in layer tree (vector only)

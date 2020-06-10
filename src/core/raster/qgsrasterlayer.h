@@ -154,6 +154,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * - Determine whether the layer is gray, paletted or multiband.
      *
      * - Assign sensible defaults for the red, green, blue and gray bands.
+     *
      * */
     explicit QgsRasterLayer( const QString &uri,
                              const QString &baseName = QString(),

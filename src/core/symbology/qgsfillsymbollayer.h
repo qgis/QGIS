@@ -993,6 +993,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
      * Sets the path to the SVG file to render in the fill.
      *
      * This is usually an absolute file path. Other supported options include
+     *
      * - relative paths to folders from the user's SVG search paths
      * - base64 encoded content, prefixed with a 'base64:' string
      * - http(s) paths

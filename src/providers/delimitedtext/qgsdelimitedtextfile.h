@@ -38,6 +38,7 @@ class QTextStream;
 * The delimited text parser is used by the QgsDelimitedTextProvider to parse
 * a QTextStream into records of QStringList.  It provides a number of variants
 * for parsing each record.  The following options are supported:
+*
 * - Basic whitespace parsing.  Each line in the file is treated as a record.
 *   Extracts all contiguous sequences of non-whitespace
 *   characters.  Leading and trailing whitespace are ignored.
@@ -57,6 +58,7 @@ class QTextStream;
 *
 * The delimiters can be encode in and decoded from a QUrl as query items.  The
 * items used are:
+*
 * - delimiterType, one of plain (delimiter is any of a set of characters),
 *   regexp, csv, whitespace
 * - delimiter, interpreted according to the type.  For plain characters this is

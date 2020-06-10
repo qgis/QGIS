@@ -42,6 +42,7 @@
  * \ingroup core
  * \class QgsOpenClUtils
  * \brief The QgsOpenClUtils class is responsible for common OpenCL operations such as
+ *
  * - enable/disable opencl
  * - store and retrieve preferences for the default device
  * - check opencl device availability and automatically choose the first GPU device

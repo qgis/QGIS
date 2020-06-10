@@ -78,6 +78,7 @@ struct LayerRenderJob
    * Selective masking handling.
    *
    * A layer can be involved in selective masking in two ways:
+   *
    * - One of its symbol layer masks a symbol layer of another layer.
    *   In this case we need to compute a mask image during the regular
    *   rendering pass that will be stored here;
