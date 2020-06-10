@@ -30,7 +30,6 @@
 #include "qgssymbol.h"
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
-#include "qgsdatadefinedsizelegend.h"
 
 #include "diagram/qgsdiagram.h"
 #include "qgsreadwritecontext.h"
@@ -45,6 +44,7 @@ class QgsVectorLayer;
 class QgsLayerTreeModelLegendNode;
 class QgsLayerTreeLayer;
 class QgsPaintEffect;
+class QgsDataDefinedSizeLegend;
 
 namespace pal { class Layer; } SIP_SKIP
 

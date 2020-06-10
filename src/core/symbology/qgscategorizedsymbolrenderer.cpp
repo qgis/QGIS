@@ -179,6 +179,8 @@ QgsCategorizedSymbolRenderer::QgsCategorizedSymbolRenderer( const QString &attrN
   }
 }
 
+QgsCategorizedSymbolRenderer::~QgsCategorizedSymbolRenderer() = default;
+
 void QgsCategorizedSymbolRenderer::rebuildHash()
 {
   mSymbolHash.clear();
