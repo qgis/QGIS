@@ -1,5 +1,3 @@
-#ifndef QGSDIRECTIONALLIGHTSETTINGS_H
-#define QGSDIRECTIONALLIGHTSETTINGS_H
 /***************************************************************************
   qgsdirectionallightsettings.h
   --------------------------------------
@@ -15,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSDIRECTIONALLIGHTSETTINGS_H
+#define QGSDIRECTIONALLIGHTSETTINGS_H
 #include "qgis_3d.h"
 
 #include "qgsvector3d.h"
