@@ -185,6 +185,14 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
     {
       mQgsWidget->fileWidget()->setFilter( cfg.value( QStringLiteral( "FileWidgetFilter" ) ).toString() );
     }
+    if ( cfg.contains( QStringLiteral( "DocumentViewerHeight" ) ) )
+    {
+      mQgsWidget->setDocumentViewerHeight( cfg.value( QStringLiteral( "DocumentViewerHeight" ) ).toInt( ) );
+    }
+    if ( cfg.contains( QStringLiteral( "DocumentViewerWidth" ) ) )
+    {
+      mQgsWidget->setDocumentViewerWidth( cfg.value( QStringLiteral( "DocumentViewerWidth" ) ).toInt( ) );
+    }
   }
 
   if ( mLineEdit )
