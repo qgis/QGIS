@@ -475,15 +475,15 @@ void Qgs3DMapScene::updateLights()
   }
 
   const auto newDirectionalLights = mMap.directionalLights();
-  for ( const QgsDirectionalLightSettings &pointLightSettings : newDirectionalLights )
+  for ( const QgsDirectionalLightSettings &directionalLightSettings : newDirectionalLights )
   {
     Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
     Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
 
     Qt3DRender::QDirectionalLight *light = new Qt3DRender::QDirectionalLight;
-    light->setColor( pointLightSettings.color() );
-    light->setIntensity( pointLightSettings.intensity() );
-    QgsVector3D direction = pointLightSettings.direction();
+    light->setColor( directionalLightSettings.color() );
+    light->setIntensity( directionalLightSettings.intensity() );
+    QgsVector3D direction = directionalLightSettings.direction();
     light->setWorldDirection( QVector3D( direction.x(), direction.y(), direction.z() ) );
 
     lightEntity->addComponent( light );
