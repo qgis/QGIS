@@ -48,6 +48,11 @@ class CORE_EXPORT QgsVectorTileRendererData
     //! Returns polygon (made out of four corners of the tile) in screen coordinates calculated from render context
     QPolygon tilePolygon() const { return mTilePolygon; }
 
+    //! Sets per-layer fields
+    void setFields( const QMap<QString, QgsFields> &fields ) { mFields = fields; }
+    //! Returns per-layer fields
+    QMap<QString, QgsFields> fields() const { return mFields; }
+
     //! Sets features of the tile
     void setFeatures( const QgsVectorTileFeatures &features ) SIP_SKIP { mFeatures = features; }
     //! Returns features of the tile grouped by sub-layer names
@@ -60,6 +65,8 @@ class CORE_EXPORT QgsVectorTileRendererData
   private:
     //! Position of the tile in the tile matrix set
     QgsTileXYZ mId;
+    //! Per-layer fields
+    QMap<QString, QgsFields> mFields;
     //! Features of the tile grouped into sub-layers
     QgsVectorTileFeatures mFeatures;
     //! Polygon (made out of four corners of the tile) in screen coordinates calculated from render context

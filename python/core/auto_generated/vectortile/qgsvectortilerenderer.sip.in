@@ -44,6 +44,15 @@ Sets polygon of the tile
 Returns polygon (made out of four corners of the tile) in screen coordinates calculated from render context
 %End
 
+    void setFields( const QMap<QString, QgsFields> &fields );
+%Docstring
+Sets per-layer fields
+%End
+    QMap<QString, QgsFields> fields() const;
+%Docstring
+Returns per-layer fields
+%End
+
     QStringList layers() const;
 %Docstring
 Returns list of layer names present in the tile
