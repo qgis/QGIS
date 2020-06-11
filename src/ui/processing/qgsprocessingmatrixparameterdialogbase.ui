@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsProcessingMatrixParameterDialogBase</class>
- <widget class="QDialog" name="QgsProcessingMatrixParameterDialogBase">
+ <widget class="QgsPanelWidget" name="QgsProcessingMatrixParameterDialogBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -48,39 +48,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsPanelWidget</class>
+   <extends>QWidget</extends>
+   <header>qgspanelwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>mButtonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>QgsProcessingMatrixParameterDialogBase</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mButtonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>QgsProcessingMatrixParameterDialogBase</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

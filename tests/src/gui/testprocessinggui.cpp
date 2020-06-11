@@ -2367,7 +2367,7 @@ void TestProcessingGui::testRangeWrapper()
 void TestProcessingGui::testMatrixDialog()
 {
   QgsProcessingParameterMatrix matrixParam( QString(), QString(), 3, false, QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
-  std::unique_ptr< QgsProcessingMatrixParameterDialog > dlg = qgis::make_unique< QgsProcessingMatrixParameterDialog>( nullptr, nullptr, &matrixParam );
+  std::unique_ptr< QgsProcessingMatrixParameterPanelWidget > dlg = qgis::make_unique< QgsProcessingMatrixParameterPanelWidget>( nullptr, &matrixParam );
   // variable length table
   QVERIFY( dlg->mButtonAdd->isEnabled() );
   QVERIFY( dlg->mButtonRemove->isEnabled() );
@@ -2375,7 +2375,7 @@ void TestProcessingGui::testMatrixDialog()
 
   QCOMPARE( dlg->table(), QVariantList() );
 
-  dlg = qgis::make_unique< QgsProcessingMatrixParameterDialog >( nullptr, nullptr, &matrixParam, QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) << QStringLiteral( "e" ) << QStringLiteral( "f" ) );
+  dlg = qgis::make_unique< QgsProcessingMatrixParameterPanelWidget >( nullptr, &matrixParam, QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) << QStringLiteral( "e" ) << QStringLiteral( "f" ) );
   QCOMPARE( dlg->table(), QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) << QStringLiteral( "e" ) << QStringLiteral( "f" ) );
   dlg->addRow();
   QCOMPARE( dlg->table(), QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) << QStringLiteral( "e" ) << QStringLiteral( "f" ) << QString() << QString() );
@@ -2383,7 +2383,7 @@ void TestProcessingGui::testMatrixDialog()
   QCOMPARE( dlg->table(), QVariantList() );
 
   QgsProcessingParameterMatrix matrixParam2( QString(), QString(), 3, true, QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
-  dlg = qgis::make_unique< QgsProcessingMatrixParameterDialog >( nullptr, nullptr, &matrixParam2, QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) << QStringLiteral( "e" ) << QStringLiteral( "f" ) );
+  dlg = qgis::make_unique< QgsProcessingMatrixParameterPanelWidget >( nullptr, &matrixParam2, QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) << QStringLiteral( "e" ) << QStringLiteral( "f" ) );
   QVERIFY( !dlg->mButtonAdd->isEnabled() );
   QVERIFY( !dlg->mButtonRemove->isEnabled() );
   QVERIFY( !dlg->mButtonRemoveAll->isEnabled() );
