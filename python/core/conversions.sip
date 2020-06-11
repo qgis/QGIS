@@ -22,6 +22,8 @@ which are not wrapped by PyQt:
 - NULL QVariant which is missing in PyQt5 with sip.enableautoconversion
 */
 
+%Feature QPTRVECTOR_CONVERSION
+
 %ModuleHeaderCode
 
 %End
@@ -1435,6 +1437,7 @@ template <TYPE>
 %End
 };
 
+%If (QPTRVECTOR_CONVERSION)
 template <TYPE>
 %MappedType QVector< TYPE* >
 {
@@ -1507,6 +1510,7 @@ template <TYPE>
     return sipGetState(sipTransferObj);
 %End
 };
+%End
 
 %MappedType QMap<qint64, QgsFeature*>
 {
