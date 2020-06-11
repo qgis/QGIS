@@ -28,6 +28,7 @@
 #include "qgscustomdrophandler.h"
 #include "qgstemporalrangeobject.h"
 #include "qgsmapcanvasinteractionblocker.h"
+#include "qgsproject.h"
 
 #include <QDomDocument>
 #include <QGraphicsView>
@@ -354,6 +355,21 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Returns the currently active tool
     QgsMapTool *mapTool();
+
+    /**
+     * Sets the \a project linked to this canvas.
+     *
+     * \since QGIS 3.14
+     */
+    void setProject( QgsProject *project );
+
+    /**
+     * Returns the project linked to this canvas.
+     * The returned value may be NULLPTR.
+     *
+     * \since QGIS 3.14
+     */
+    QgsProject *project();
 
     //! Write property of QColor bgColor.
     void setCanvasColor( const QColor &_newVal );
@@ -1111,6 +1127,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! previous tool if current is for zooming/panning
     QgsMapTool *mLastNonZoomMapTool = nullptr;
+
+    //! Pointer to project linked to this canvas
+    QgsProject *mProject = nullptr;
 
     //! Context menu
     QMenu *mMenu = nullptr;
