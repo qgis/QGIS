@@ -628,7 +628,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
           QgsVectorLayerUtils::matchAttributesToFields( featuresToAdd[i], provider->fields() );
         }
 
-        if ( provider->addFeatures( featuresToAdd ) )
+        if ( provider->addFeatures( featuresToAdd, QgsFeatureSink::Flag::RollBackOnErrors ) )
         {
           commitErrors << tr( "SUCCESS: %n feature(s) added.", "added features count", featuresToAdd.size() );
 

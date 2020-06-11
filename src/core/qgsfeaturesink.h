@@ -68,6 +68,14 @@ class CORE_EXPORT QgsFeatureSink
         * skipping this update represents a significant speed boost for the operation.
         */
       FastInsert = 1 << 1,
+
+      /**
+       * Roll back the whole transaction if a single add feature operation fails.
+       * Individual sink subclasses may choose to ignore this flag and always roll back
+       * while other providers will respect the flag and accept partial additions if
+       * this flag is not set.
+       */
+      RollBackOnErrors = 1 << 2,
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

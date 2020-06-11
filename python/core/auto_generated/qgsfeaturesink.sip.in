@@ -34,6 +34,8 @@ An interface for objects which accept features via addFeature(s) methods.
     {
 
       FastInsert,
+
+      RollBackOnErrors,
     };
     typedef QFlags<QgsFeatureSink::Flag> Flags;
 
