@@ -27,7 +27,7 @@ QgsFeaturePickerModel::QgsFeaturePickerModel( QObject *parent )
   setFetchGeometry( true );
   setExtraIdentifierValueUnguarded( nullIentifier() );
 
-  connect( this, &QgsFeaturePickerModelBase::extraIdentifierValueIndexChanged, this, [ = ]() {emit featureChanged( feature() );} );
+  connect( this, &QgsFeaturePickerModelBase::extraIdentifierValueIndexChanged, this, [ = ]() {emit featureChanged( QgsFeature( sourceLayer()->fields() ) );} );
 }
 
 void QgsFeaturePickerModel::requestToReloadCurrentFeature( QgsFeatureRequest &request )
@@ -43,7 +43,7 @@ QVariant QgsFeaturePickerModel::entryIdentifier( const QgsFeatureExpressionValue
 QgsFeatureExpressionValuesGatherer::Entry QgsFeaturePickerModel::createEntry( const QVariant &identifier ) const
 {
   QgsFeatureId fid = identifier.value<QgsFeatureId>();
-  return QgsFeatureExpressionValuesGatherer::Entry( fid, QStringLiteral( "(%1)" ).arg( fid ) );
+  return QgsFeatureExpressionValuesGatherer::Entry( fid, QStringLiteral( "(%1)" ).arg( fid ), sourceLayer() );
 }
 
 bool QgsFeaturePickerModel::compareEntries( const QgsFeatureExpressionValuesGatherer::Entry &a, const QgsFeatureExpressionValuesGatherer::Entry &b ) const
