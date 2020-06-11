@@ -339,6 +339,21 @@ You don't have to call it manually, QgsMapTool takes care of it.
 Returns the currently active tool
 %End
 
+    void setProject( QgsProject *project );
+%Docstring
+Sets the ``project`` linked to this canvas.
+
+.. versionadded:: 3.14
+%End
+
+    QgsProject *project();
+%Docstring
+Returns the project linked to this canvas.
+The returned value may be ``None``.
+
+.. versionadded:: 3.14
+%End
+
     void setCanvasColor( const QColor &_newVal );
 %Docstring
 Write property of QColor bgColor.
