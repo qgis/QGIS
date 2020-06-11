@@ -12,8 +12,8 @@ QWindow, QMainWindow, QMdiSubWindow, QDialog, QAbstractScrollArea, QFocusFrame, 
 
 QWidget:item:hover
 {
-    background-color: @selection;
-    color: @text;
+    background-color: @hover;
+    color: @itembackground;
 }
 
 QWidget:item:selected
@@ -779,7 +779,7 @@ QTreeView::item:hover, QTreeView::branch:hover {
     color: @textlight;
 }
 
-QTreeView::item:selected, QTreeView::branch:selected {
+QTreeView::item:selected, QTreeView::item:selected:hover, QTreeView::branch:selected, QTreeView::branch:selected:hover {
     background-color: @selection;
     color: @textlight;
 }
@@ -828,8 +828,17 @@ QTreeView#viewGraduated::item:hover, QTreeView#viewGraduated::branch:hover,
 QTreeView#viewCategories::item:hover, QTreeView#viewCategories::branch:hover,
 QTreeView#viewRules::item:hover, QTreeView#viewRules::branch:hover
 {
-    background-color: @toggleoff;
+    background-color: @hover;
     color: @itembackground;
+}
+
+QgsLayerTreeView::item:selected:hover, QgsLayerTreeView::branch:selected:hover,
+QTreeView#viewGraduated::item:selected:hover, QTreeView#viewGraduated::branch:selected:hover,
+QTreeView#viewCategories::item:selected:hover, QTreeView#viewCategories::branch:selected:hover,
+QTreeView#viewRules::item:selected:hover, QTreeView#viewRules::branch:selected:hover
+{
+    background-color: @selection;
+    color: @textlight;
 }
 
 QgsLayerTreeView::indicator:unchecked,
@@ -1025,6 +1034,16 @@ QListWidget#mOptionsListWidget {
 
 QListWidget#mOptionsListWidget::item {
     padding: 0.1em;
+}
+
+QListWidget#mOptionsListWidget::item:hover
+{
+    background-color: @hover;
+    color: @itembackground;
+}
+
+QListWidget#mOptionsListWidget::item:selected:hover {
+    background-color: @selection;
 }
 
 QWidget#QgsTextFormatWidgetBase QTabWidget#mOptionsTab QTabBar::tab,

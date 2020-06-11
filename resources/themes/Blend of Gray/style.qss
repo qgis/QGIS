@@ -776,7 +776,7 @@ QTreeView::item:hover, QTreeView::branch:hover {
     color: @text;
 }
 
-QTreeView::item:selected, QTreeView::branch:selected {
+QTreeView::item:selected, QTreeView::item:selected:hover, QTreeView::branch:selected, QTreeView::branch:selected:hover {
     background-color: @selection;
     color: @text;
 }
