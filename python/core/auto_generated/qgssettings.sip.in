@@ -18,7 +18,7 @@ This class is a composition of two QSettings instances:
 
 - the main QSettings instance is the standard User Settings and
 - the second one (Global Settings) is meant to provide read-only
-pre-configuration and defaults to the first one.
+  pre-configuration and defaults to the first one.
 
 For a given settings key, the function call to value(key, default) will return
 the first existing setting in the order specified below:
@@ -123,10 +123,10 @@ If format is QSettings.IniFormat, fileName is the name of an INI file.
    other programs. In particular, be aware of the following limitations:
 
 - QgsSettings provides no way of reading INI "path" entries, i.e., entries with unescaped slash characters.
-(This is because these entries are ambiguous and cannot be resolved automatically.)
+  (This is because these entries are ambiguous and cannot be resolved automatically.)
 - In INI files, QSettings uses the @ character as a metacharacter in some contexts, to encode
-Qt-specific data types (e.g., \@Rect), and might therefore misinterpret it when it occurs
-in pure INI files.
+  Qt-specific data types (e.g., \@Rect), and might therefore misinterpret it when it occurs
+  in pure INI files.
 %End
 
     explicit QgsSettings( QObject *parent = 0 );
