@@ -520,11 +520,15 @@ QTabWidget::pane {
     top:-1px;
 }
 
+QTabWidget[tabPosition="0"] QTabBar {
+    border-bottom: 1px solid @itemdarkbackground;
+}
+
 QTabBar::tab {
     color: @text;
     border: 1px solid @itemdarkbackground;
     border-bottom: none;
-    background-color: @background;
+    background-color: transparent;
     padding-left: 0.8em;
     padding-right: 0.8em;
     padding-top: 0.1em;
@@ -559,6 +563,7 @@ QTabBar::tab:!selected
 QTabBar::tab:selected
 {
     margin-bottom: 0px;
+    background-color: @background;
 }
 
 QTabBar::tab:bottom:!selected
@@ -570,6 +575,7 @@ QTabBar::tab:bottom:!selected
 QTabBar::tab:bottom:selected
 {
     margin-top: 0px;
+    background-color: @background;
 }
 
 QGroupBox::indicator:hover,
