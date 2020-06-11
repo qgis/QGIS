@@ -49,14 +49,14 @@ class APP_EXPORT QgsDecorationTitle : public QgsDecorationItem
     void render( const QgsMapSettings &mapSettings, QgsRenderContext &context ) override;
 
     /**
-     * Returns the text format for extent labels.
+     * Returns the title text format.
      * \see setTextFormat()
      * \see labelExtents()
      */
     QgsTextFormat textFormat() const { return mTextFormat; }
 
     /**
-     * Sets the text \a format for extent labels.
+     * Sets the title text \a format.
      * \see textFormat()
      * \see setLabelExtents()
      */
