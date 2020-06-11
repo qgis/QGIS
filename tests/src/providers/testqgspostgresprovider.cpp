@@ -199,7 +199,8 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   QgsFields fields;
   QList<int> pkAttrs;
   QVariantList vlst;
-  QgsPostgresSharedData *sdata;
+
+  std::shared_ptr< QgsPostgresSharedData > sdata( new QgsPostgresSharedData() );
 
   QgsField f0, f1, f2, f3;
 
@@ -208,15 +209,10 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   f0.setType( QVariant::Int );
   f0.setTypeName( "int" );
 
-  fields.clear();
-  pkAttrs.clear();
-  vlst.clear();
-
   fields.append( f0 );
   pkAttrs.append( 0 );
   vlst.append( 42 );
 
-  sdata = new QgsPostgresSharedData;
   // for positive integers, fid  == the value, there is no map.
   sdata->insertFid( 42, vlst );
 
@@ -235,7 +231,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   pkAttrs.append( 0 );
   vlst.append( -9223372036854775800LL ); // way outside int4 range
 
-  sdata = new QgsPostgresSharedData;
+  sdata->clear();
   sdata->insertFid( 1LL, vlst );
 
   QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktInt64, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_bigint\"=-9223372036854775800" ) );
@@ -253,7 +249,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   pkAttrs.append( 0 );
   vlst.append( 3.141592741 );
 
-  sdata = new QgsPostgresSharedData;
+  sdata->clear();
   sdata->insertFid( 1LL, vlst );
 
   QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_double\"=3.141592741" ) );
@@ -271,7 +267,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   pkAttrs.append( 0 );
   vlst.append( QString( "QGIS 'Rocks'!" ) );
 
-  sdata = new QgsPostgresSharedData;
+  sdata->clear();
   sdata->insertFid( 1LL, vlst );
 
   QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_text\"::text='QGIS ''Rocks''!'" ) );
@@ -293,7 +289,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   fields.append( f3 );
   fields.append( f0 );
 
-  sdata = new QgsPostgresSharedData;
+  sdata->clear();
   sdata->insertFid( 1LL, vlst );
 
   // TODO: FIXME: in tables with composite PKs, integer fields are cast to text, but their values are not.
