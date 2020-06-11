@@ -10,5 +10,6 @@
 @toggleoff: #535353
 @toggleon: #0f6e00
 @selection: #0f6e00
+@hover: #535353
 @focusdark: rgba(215,128,26,100)
 @focus: #d7801a
