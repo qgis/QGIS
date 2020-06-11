@@ -39,6 +39,7 @@
 #include "qgsvertexeditor.h"
 #include "qgsmapmouseevent.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmessagebar.h"
 
 #include <QMenu>
 #include <QRubberBand>
@@ -515,6 +516,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     // only handling of selection rect being dragged
     QList<Vertex> vertices;
     QList<Vertex> selectedVertices;
+    bool invisibleVertexSelected = false;
 
     QgsGeometry rubberBandGeometry = mSelectionRubberBand->asGeometry();
 
@@ -576,7 +578,8 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
         context.expressionContext().setFeature( f );
         // make sure to only use features that are visible
-        if ( r && !r->willRenderFeature( f, context ) )
+        bool isFeatureInvisible = ( r && !r->willRenderFeature( f, context ) );
+        if ( isFeatureInvisible && invisibleVertexSelected )
           continue;
 
         bool isFeatureSelected = vlayer->selectedFeatureIds().contains( f.id() );
@@ -586,6 +589,13 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           QgsPoint pt = g.vertexAt( i );
           if ( layerRubberBandEngine->contains( &pt ) )
           {
+            // we don't want to select invisible features,
+            // but if the user tried to selected one we want to warn him
+            if ( isFeatureInvisible )
+            {
+              invisibleVertexSelected = true;
+              break;
+            }
             vertices << Vertex( vlayer, f.id(), i );
 
             if ( isFeatureSelected )
@@ -595,6 +605,14 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
       if ( r )
         r->stopRender( context );
+    }
+    if ( invisibleVertexSelected )
+    {
+      QgisApp::instance()->messageBar()->pushMessage(
+        tr( "Invisible vertices were not selected" ),
+        tr( "Vertices belonging to features that are not displayed on the map canvas were not selected." ),
+        Qgis::Warning,
+        QgisApp::instance()->messageTimeout() );
     }
 
     // here's where we give precedence to vertices of selected features in case there's no bound (locked) feature
