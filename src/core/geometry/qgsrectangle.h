@@ -227,7 +227,7 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns the center point of the rectangle.
      */
-    QgsPointXY center() const { return QgsPointXY( mXmin + width() / 2, mYmin + height() / 2 ); }
+    QgsPointXY center() const { return QgsPointXY( mXmax * 0.5 + mXmin * 0.5, mYmin * 0.5 + mYmax * 0.5 ); }
 
     /**
      * Scale the rectangle around its center point.
