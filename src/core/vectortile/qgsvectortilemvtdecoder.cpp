@@ -111,7 +111,21 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
     {
       const ::vector_tile::Tile_Feature &feature = layer.features( featureNum );
 
-      QgsFeature f( layerFields, static_cast<QgsFeatureId>( feature.id() ) );
+      QgsFeatureId fid;
+      if ( feature.has_id() )
+        fid = static_cast<QgsFeatureId>( feature.id() );
+      else
+      {
+        // There is no assigned ID, but some parts of QGIS do not work correctly if all IDs are zero
+        // (e.g. labeling will not register two features with the same FID within a single layer),
+        // so let's generate some pseudo-unique FIDs to keep those bits happy
+        fid = featureNum;
+        fid |= ( layerNum & 0xff ) << 24;
+        fid |= ( static_cast<QgsFeatureId>( mTileID.row() ) & 0xff ) << 32;
+        fid |= ( static_cast<QgsFeatureId>( mTileID.column() ) & 0xff ) << 40;
+      }
+
+      QgsFeature f( layerFields, fid );
 
       //
       // parse attributes
