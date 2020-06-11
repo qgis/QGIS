@@ -22,7 +22,6 @@
 #include "qgslogger.h"
 #include "qgsspatialindex.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvectorlayerutils.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -373,8 +372,8 @@ void QgsMemoryProvider::handlePostCloneOperations( QgsVectorDataProvider *source
   }
 }
 
-
-bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
+// returns TRUE if all features were added successfully, or FALSE if any feature could not be added
+bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   bool result = true;
   // whether or not to update the layer extent on the fly as we add features
@@ -382,7 +381,12 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
 
   int fieldCount = mFields.count();
 
-  for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
+  // For rollback
+  const auto oldExtent { mExtent };
+  const auto oldNextFeatureId { mNextFeatureId };
+  QgsFeatureIds addedFids ;
+
+  for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end() && result ; ++it )
   {
     it->setId( mNextFeatureId );
     it->setValid( true );
@@ -421,23 +425,31 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
 
     // Check attribute conversion
     bool conversionError { false };
-    for ( int i = 0; i < mFields.count() && ! conversionError; ++i )
+    for ( int i = 0; i < mFields.count(); ++i )
     {
       QVariant attrValue { it->attribute( i ) };
       if ( ! attrValue.isNull() && ! mFields.at( i ).convertCompatible( attrValue ) )
       {
-        pushError( tr( "Could not add feature with attribute %1 having type %2, cannot convert to type %3" )
-                   .arg( mFields.at( i ).name(), it->attribute( i ).typeName(), mFields.at( i ).typeName() ) );
+        // Push first conversion error only
+        if ( result )
+        {
+          pushError( tr( "Could not add feature with attribute %1 having type %2, cannot convert to type %3" )
+                     .arg( mFields.at( i ).name(), it->attribute( i ).typeName(), mFields.at( i ).typeName() ) );
+        }
         result = false;
+        conversionError = true;
+        continue;
       }
     }
 
+    // Skip the feature if there is at least one conversion error
     if ( conversionError )
     {
       continue;
     }
 
     mFeatures.insert( mNextFeatureId, *it );
+    addedFids.insert( mNextFeatureId );
 
     if ( it->hasGeometry() )
     {
@@ -452,7 +464,21 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
     mNextFeatureId++;
   }
 
-  clearMinMaxCache();
+  // Roll back
+  if ( ! result && flags.testFlag( QgsFeatureSink::Flag::RollBackOnErrors ) )
+  {
+    for ( const QgsFeatureId &addedFid : addedFids )
+    {
+      mFeatures.remove( addedFid );
+    }
+    mExtent = oldExtent;
+    mNextFeatureId = oldNextFeatureId;
+  }
+  else
+  {
+    clearMinMaxCache();
+  }
+
   return result;
 }
 
@@ -564,6 +590,10 @@ bool QgsMemoryProvider::deleteAttributes( const QgsAttributeIds &attributes )
 
 bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
+  bool result { true };
+
+  QgsChangedAttributesMap rollBackMap;
+
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
     QgsFeatureMap::iterator fit = mFeatures.find( it.key() );
@@ -571,11 +601,43 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
       continue;
 
     const QgsAttributeMap &attrs = it.value();
+    QgsAttributeMap rollBackAttrs;
+
+    // Break on errors
     for ( QgsAttributeMap::const_iterator it2 = attrs.constBegin(); it2 != attrs.constEnd(); ++it2 )
+    {
+      QVariant attrValue { it2.value() };
+      // Check attribute conversion
+      const bool conversionError { ! attrValue.isNull()
+                                   && ! mFields.at( it2.key() ).convertCompatible( attrValue ) };
+      if ( conversionError )
+      {
+        // Push first conversion error only
+        if ( result )
+        {
+          pushError( tr( "Could not change attribute %1 having type %2 for feature %4, cannot convert to type %3" )
+                     .arg( mFields.at( it2.key() ).name(), it2.value( ).typeName(),
+                           mFields.at( it2.key() ).typeName() ).arg( it.key() ) );
+        }
+        result = false;
+        break;
+      }
+      rollBackAttrs.insert( it2.key(), fit->attribute( it2.key() ) );
       fit->setAttribute( it2.key(), it2.value() );
+    }
+    rollBackMap.insert( it.key(), rollBackAttrs );
   }
-  clearMinMaxCache();
-  return true;
+
+  // Roll back
+  if ( ! result )
+  {
+    changeAttributeValues( rollBackMap );
+  }
+  else
+  {
+    clearMinMaxCache();
+  }
+  return result;
 }
 
 bool QgsMemoryProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
