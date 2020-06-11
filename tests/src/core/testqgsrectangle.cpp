@@ -42,6 +42,11 @@ class TestQgsRectangle: public QObject
     void dataStream();
     void scale();
     void snappedToGrid();
+<<<<<<< HEAD
+=======
+    void distanceToPoint();
+    void center();
+>>>>>>> 47fba106dd... Improve method for calculation of rectangle centers (#37092)
 };
 
 void TestQgsRectangle::isEmpty()
@@ -382,5 +387,46 @@ void TestQgsRectangle::snappedToGrid()
   QCOMPARE( QgsRectangle().snappedToGrid( 0.1 ), QgsRectangle() );
 }
 
+<<<<<<< HEAD
+=======
+void TestQgsRectangle::distanceToPoint()
+{
+  QgsRectangle rect( 10, 100, 20, 110 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 10, 100 ) ), 0.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 20, 100 ) ), 0.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 15, 100 ) ), 0.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 10, 110 ) ), 0.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 20, 110 ) ), 0.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 15, 110 ) ), 0.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 10, 105 ) ), 0.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 20, 100 ) ), 0.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 0, 100 ) ), 10.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 35, 100 ) ), 15.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 15, 95 ) ), 5.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 15, 120 ) ), 10.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 5, 95 ) ), 7.071068, 0.00001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 25, 95 ) ), 7.071068, 0.00001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 5, 115 ) ), 7.071068, 0.00001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 25, 115 ) ), 7.071068, 0.00001 );
+}
+
+void TestQgsRectangle::center()
+{
+  QgsRectangle rect( 10, 100, 20, 110 );
+  QCOMPARE( rect.center().x(), 15.0 );
+  QCOMPARE( rect.center().y(), 105.0 );
+  rect = QgsRectangle( 10, 100, 10, 100 );
+  QCOMPARE( rect.center().x(), 10.0 );
+  QCOMPARE( rect.center().y(), 100.0 );
+  rect = QgsRectangle( -10, -100, 10, 100 );
+  QCOMPARE( rect.center().x(), 0.0 );
+  QCOMPARE( rect.center().y(), 0.0 );
+  // a "maximal" rect
+  rect = QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
+  QCOMPARE( rect.center().x(), 0.0 );
+  QCOMPARE( rect.center().y(), 0.0 );
+}
+
+>>>>>>> 47fba106dd... Improve method for calculation of rectangle centers (#37092)
 QGSTEST_MAIN( TestQgsRectangle )
 #include "testqgsrectangle.moc"
