@@ -445,6 +445,10 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     // Skip the feature if there is at least one conversion error
     if ( conversionError )
     {
+      if ( flags.testFlag( QgsFeatureSink::Flag::RollBackOnErrors ) )
+      {
+        break;
+      }
       continue;
     }
 
