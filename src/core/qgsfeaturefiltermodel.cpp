@@ -83,7 +83,7 @@ QgsFeatureExpressionValuesGatherer::Entry QgsFeatureFilterModel::createEntry( co
   for ( const QVariant &v : constValues )
     values << QStringLiteral( "(%1)" ).arg( v.toString() );
 
-  return QgsFeatureExpressionValuesGatherer::Entry( constValues, values.join( QStringLiteral( " " ) ), QgsFeature() );
+  return QgsFeatureExpressionValuesGatherer::Entry( constValues, values.join( QStringLiteral( " " ) ), QgsFeature( sourceLayer()->fields() ) );
 }
 
 bool QgsFeatureFilterModel::compareEntries( const QgsFeatureExpressionValuesGatherer::Entry &a, const QgsFeatureExpressionValuesGatherer::Entry &b ) const
