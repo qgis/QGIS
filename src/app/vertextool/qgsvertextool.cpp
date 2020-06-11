@@ -516,7 +516,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     // only handling of selection rect being dragged
     QList<Vertex> vertices;
     QList<Vertex> selectedVertices;
-    bool invisibleVertexSelected = false;
+    bool showInvisibleFeatureWarning = false;
 
     QgsGeometry rubberBandGeometry = mSelectionRubberBand->asGeometry();
 
@@ -577,9 +577,11 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           continue;  // with locked feature we only allow selection of its vertices
 
         context.expressionContext().setFeature( f );
-        // make sure to only use features that are visible
         bool isFeatureInvisible = ( r && !r->willRenderFeature( f, context ) );
-        if ( isFeatureInvisible && invisibleVertexSelected )
+        // If we've already determined that we have to show users a warning about selecting invisible vertices,
+        // then we don't need to check through the vertices for other invisible features.
+        // We'll be showing the warning anyway regardless of the outcome!
+        if ( isFeatureInvisible && showInvisibleFeatureWarning )
           continue;
 
         bool isFeatureSelected = vlayer->selectedFeatureIds().contains( f.id() );
@@ -593,7 +595,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
             // but if the user tried to selected one we want to warn him
             if ( isFeatureInvisible )
             {
-              invisibleVertexSelected = true;
+              showInvisibleFeatureWarning = true;
               break;
             }
             vertices << Vertex( vlayer, f.id(), i );
@@ -606,7 +608,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       if ( r )
         r->stopRender( context );
     }
-    if ( invisibleVertexSelected )
+    if ( showInvisibleFeatureWarning )
     {
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "Invisible vertices were not selected" ),
