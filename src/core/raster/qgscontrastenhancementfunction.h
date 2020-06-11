@@ -35,6 +35,7 @@ class CORE_EXPORT QgsContrastEnhancementFunction
   public:
     QgsContrastEnhancementFunction( Qgis::DataType, double, double );
     QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction &f );
+    QgsContrastEnhancementFunction &operator=( const QgsContrastEnhancementFunction & ) = delete;
     virtual ~QgsContrastEnhancementFunction() = default;
 
     /**
