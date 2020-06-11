@@ -184,6 +184,120 @@ QString QgsCallout::encodeAnchorPoint( AnchorPoint anchor )
   return QString();
 }
 
+<<<<<<< HEAD
+=======
+QString QgsCallout::encodeLabelAnchorPoint( QgsCallout::LabelAnchorPoint anchor )
+{
+  switch ( anchor )
+  {
+    case LabelPointOnExterior:
+      return QStringLiteral( "point_on_exterior" );
+    case LabelCentroid:
+      return QStringLiteral( "centroid" );
+    case LabelTopLeft:
+      return QStringLiteral( "tl" );
+    case LabelTopMiddle:
+      return QStringLiteral( "t" );
+    case LabelTopRight:
+      return QStringLiteral( "tr" );
+    case LabelMiddleLeft:
+      return QStringLiteral( "l" );
+    case LabelMiddleRight:
+      return QStringLiteral( "r" );
+    case LabelBottomLeft:
+      return QStringLiteral( "bl" );
+    case LabelBottomMiddle:
+      return QStringLiteral( "b" );
+    case LabelBottomRight:
+      return QStringLiteral( "br" );
+  }
+
+  return QString();
+}
+
+QgsCallout::LabelAnchorPoint QgsCallout::decodeLabelAnchorPoint( const QString &name, bool *ok )
+{
+  if ( ok )
+    *ok = true;
+  QString cleaned = name.toLower().trimmed();
+
+  if ( cleaned == QLatin1String( "point_on_exterior" ) )
+    return LabelPointOnExterior;
+  else if ( cleaned == QLatin1String( "centroid" ) )
+    return LabelCentroid;
+  else if ( cleaned == QLatin1String( "tl" ) )
+    return LabelTopLeft;
+  else if ( cleaned == QLatin1String( "t" ) )
+    return LabelTopMiddle;
+  else if ( cleaned == QLatin1String( "tr" ) )
+    return LabelTopRight;
+  else if ( cleaned == QLatin1String( "l" ) )
+    return LabelMiddleLeft;
+  else if ( cleaned == QLatin1String( "r" ) )
+    return LabelMiddleRight;
+  else if ( cleaned == QLatin1String( "bl" ) )
+    return LabelBottomLeft;
+  else if ( cleaned == QLatin1String( "b" ) )
+    return LabelBottomMiddle;
+  else if ( cleaned == QLatin1String( "br" ) )
+    return LabelBottomRight;
+
+  if ( ok )
+    *ok = false;
+  return LabelPointOnExterior;
+}
+
+QgsGeometry QgsCallout::labelAnchorGeometry( QRectF rect, const double angle, LabelAnchorPoint anchor ) const
+{
+  QgsGeometry label;
+  switch ( anchor )
+  {
+    case LabelPointOnExterior:
+      label = QgsGeometry::fromRect( rect );
+      break;
+
+    case LabelCentroid:
+      label = QgsGeometry::fromRect( rect ).centroid();
+      break;
+
+    case LabelTopLeft:
+      label = QgsGeometry::fromPointXY( QgsPointXY( rect.bottomLeft() ) );
+      break;
+
+    case LabelTopMiddle:
+      label = QgsGeometry::fromPointXY( QgsPointXY( ( rect.left() + rect.right() ) / 2.0, rect.bottom() ) );
+      break;
+
+    case LabelTopRight:
+      label = QgsGeometry::fromPointXY( QgsPointXY( rect.bottomRight() ) );
+      break;
+
+    case LabelMiddleLeft:
+      label = QgsGeometry::fromPointXY( QgsPointXY( rect.left(), ( rect.top() + rect.bottom() ) / 2.0 ) );
+      break;
+
+    case LabelMiddleRight:
+      label = QgsGeometry::fromPointXY( QgsPointXY( rect.right(), ( rect.top() + rect.bottom() ) / 2.0 ) );
+      break;
+
+    case LabelBottomLeft:
+      label = QgsGeometry::fromPointXY( QgsPointXY( rect.topLeft() ) );
+      break;
+
+    case LabelBottomMiddle:
+      label = QgsGeometry::fromPointXY( QgsPointXY( ( rect.left() + rect.right() ) / 2.0, rect.top() ) );
+      break;
+
+    case LabelBottomRight:
+      label = QgsGeometry::fromPointXY( QgsPointXY( rect.topRight() ) );
+      break;
+  }
+
+  label.rotate( angle, rect.topLeft() );
+  return label;
+}
+
+>>>>>>> 2bb4aad8c9... Fix callout rendering to rotated labels
 //
 // QgsSimpleLineCallout
 //
