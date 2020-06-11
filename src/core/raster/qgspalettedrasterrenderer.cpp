@@ -499,7 +499,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
     int count = histogram.histogramVector.at( idx );
     if ( count > 0 )
     {
-      data << Class( currentValue, QColor(), QString::number( currentValue ) );
+      data << Class( currentValue, QColor(), QLocale().toString( currentValue ) );
       presentValues++;
     }
     currentValue += interval;

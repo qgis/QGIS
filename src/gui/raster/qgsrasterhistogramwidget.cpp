@@ -22,6 +22,7 @@
 #include "qgsrasterhistogramwidget.h"
 #include "qgsrasterminmaxwidget.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsdoublevalidator.h"
 #include "qgssettings.h"
 
 #include <QMenu>
@@ -104,8 +105,8 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget
     }
 
     // histo min/max selectors
-    leHistoMin->setValidator( new QDoubleValidator( this ) );
-    leHistoMax->setValidator( new QDoubleValidator( this ) );
+    leHistoMin->setValidator( new QgsDoubleValidator( this ) );
+    leHistoMax->setValidator( new QgsDoubleValidator( this ) );
     // this might generate many refresh events! test..
     // connect( leHistoMin, SIGNAL( textChanged( const QString & ) ), this, SLOT( updateHistoMarkers() ) );
     // connect( leHistoMax, SIGNAL( textChanged( const QString & ) ), this, SLOT( updateHistoMarkers() ) );

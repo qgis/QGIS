@@ -20,6 +20,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterminmaxwidget.h"
+#include "qgsdoublevalidator.h"
 
 QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )
@@ -32,8 +33,8 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
   mGradientComboBox->insertItem( 0, tr( "Black to white" ), QgsSingleBandGrayRenderer::BlackToWhite );
   mGradientComboBox->insertItem( 1, tr( "White to black" ), QgsSingleBandGrayRenderer::WhiteToBlack );
 
-  mMinLineEdit->setValidator( new QDoubleValidator( mMinLineEdit ) );
-  mMaxLineEdit->setValidator( new QDoubleValidator( mMaxLineEdit ) );
+  mMinLineEdit->setValidator( new QgsDoubleValidator( mMinLineEdit ) );
+  mMaxLineEdit->setValidator( new QgsDoubleValidator( mMaxLineEdit ) );
 
   if ( mRasterLayer )
   {
@@ -89,8 +90,8 @@ QgsRasterRenderer *QgsSingleBandGrayRendererWidget::renderer()
 
   QgsContrastEnhancement *e = new QgsContrastEnhancement( ( Qgis::DataType )(
         provider->dataType( band ) ) );
-  e->setMinimumValue( mMinLineEdit->text().toDouble() );
-  e->setMaximumValue( mMaxLineEdit->text().toDouble() );
+  e->setMinimumValue( QgsDoubleValidator::toDouble( mMinLineEdit->text() ) );
+  e->setMaximumValue( QgsDoubleValidator::toDouble( mMaxLineEdit->text() ) );
   e->setContrastEnhancementAlgorithm( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementComboBox->currentData().toInt() ) );
 
   QgsSingleBandGrayRenderer *renderer = new QgsSingleBandGrayRenderer( provider, band );
@@ -151,7 +152,7 @@ void QgsSingleBandGrayRendererWidget::loadMinMax( int bandNo, double min, double
   }
   else
   {
-    mMinLineEdit->setText( QString::number( min ) );
+    mMinLineEdit->setText( QLocale().toString( min ) );
   }
 
   if ( std::isnan( max ) )
@@ -160,7 +161,7 @@ void QgsSingleBandGrayRendererWidget::loadMinMax( int bandNo, double min, double
   }
   else
   {
-    mMaxLineEdit->setText( QString::number( max ) );
+    mMaxLineEdit->setText( QLocale().toString( max ) );
   }
   mDisableMinMaxWidgetRefresh = false;
 }
@@ -188,8 +189,8 @@ void QgsSingleBandGrayRendererWidget::setFromRenderer( const QgsRasterRenderer *
     {
       //minmax
       mDisableMinMaxWidgetRefresh = true;
-      mMinLineEdit->setText( QString::number( ce->minimumValue() ) );
-      mMaxLineEdit->setText( QString::number( ce->maximumValue() ) );
+      mMinLineEdit->setText( QLocale().toString( ce->minimumValue() ) );
+      mMaxLineEdit->setText( QLocale().toString( ce->maximumValue() ) );
       mDisableMinMaxWidgetRefresh = false;
       //contrast enhancement algorithm
       mContrastEnhancementComboBox->setCurrentIndex(
