@@ -18,7 +18,7 @@ Map tool for identifying features in layers
 after selecting a point, performs the identification:
 - for raster layers shows value of underlying pixel
 - for vector layers shows feature attributes within search radius
-(allows editing values when vector layer is in editing mode)
+  (allows editing values when vector layer is in editing mode)
 %End
 
 %TypeHeaderCode

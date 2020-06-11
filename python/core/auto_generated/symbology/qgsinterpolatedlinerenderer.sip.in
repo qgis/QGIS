@@ -83,7 +83,7 @@ Reads configuration from the given DOM element
 Returns the break values, graduated colors and the associated gradients between two values
 
 - If the color is fixed or only one color for the interval (value1, value2), returns only one color in ``breakColors``
-and void lists for  ``breakValues``, ``gradients``
+  and void lists for  ``breakValues``, ``gradients``
 - If the color ramp is classified with 'exact', returns void ``gradients``
 - If the color ramp is classified with 'discrete', return ``gradients`` with uniform colors
 - if nothing to render (out of range), return all lists void

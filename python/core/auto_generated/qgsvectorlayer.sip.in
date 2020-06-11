@@ -53,13 +53,13 @@ url specifies the geometry type ("point", "linestring", "polygon",
 as follows:
 
 - crs=definition
-Defines the coordinate reference system to use for the layer.
-definition is any string accepted by :py:func:`QgsCoordinateReferenceSystem.createFromString()`
+  Defines the coordinate reference system to use for the layer.
+  definition is any string accepted by :py:func:`QgsCoordinateReferenceSystem.createFromString()`
 - index=yes
-Specifies that the layer will be constructed with a spatial index
+  Specifies that the layer will be constructed with a spatial index
 - field=name:type(length,precision)
-Defines an attribute of the layer. Multiple field parameters can be added
-to the data provider definition. type is one of "integer", "double", "string".
+  Defines an attribute of the layer. Multiple field parameters can be added
+  to the data provider definition. type is one of "integer", "double", "string".
 
 An example url is "Point?crs=epsg:4326&field=id:integer&field=name:string(20)&index=yes"
 
@@ -113,7 +113,7 @@ starting with QGIS 2.16, a URI constructed using the QgsDataSourceUri class with
 - sql=string: full SELECT SQL statement with optional WHERE, ORDER BY and possibly with JOIN if supported on server
 - filter=string: QGIS expression or OGC/FES filter
 - restrictToRequestBBOX=1: to download only features in the view extent (or more generally
-in the bounding box of the feature iterator)
+  in the bounding box of the feature iterator)
 - pageSize=number: number of features to retrieve in a single request (WFS 2)
 - maxNumFeatures=number: maximum number of features to retrieve (possibly across several multiple paging requests)
 - IgnoreAxisOrientation=1: to ignore EPSG axis order for WFS 1.1 or 2.0
@@ -142,7 +142,7 @@ The URI should be constructed using the QgsDataSourceUri class with the followin
 - authcfg=string
 - filter=string: QGIS expression (only datetime filtering is forwarded to the server)
 - restrictToRequestBBOX=1: to download only features in the view extent (or more generally
-in the bounding box of the feature iterator)
+  in the bounding box of the feature iterator)
 - pageSize=number: number of features to retrieve in a single request
 - maxNumFeatures=number: maximum number of features to retrieve (possibly across several multiple paging requests)
 - hideDownloadProgressDialog=1: to hide the download progress dialog.
@@ -150,9 +150,9 @@ in the bounding box of the feature iterator)
 Also note:
 
 - You can use various functions available in the QGIS Expression list,
-however the function must exist server side and have the same name and arguments to work.
+  however the function must exist server side and have the same name and arguments to work.
 - Use the special $geometry parameter to provide the layer geometry column as input
-into the spatial binary operators e.g intersects($geometry, geomFromWKT('POINT (5 6)'))
+  into the spatial binary operators e.g intersects($geometry, geomFromWKT('POINT (5 6)'))
 
 \subsection delimitedtext Delimited text file data provider (delimitedtext)
 
@@ -183,24 +183,24 @@ defined by new lines, except for csv format files for which quoted fields
 may span multiple records.  The default type is csv.
 
 - "csv" splits the file based on three sets of characters:
-delimiter characters, quote characters,
-and escape characters.  Delimiter characters mark the end
-of a field. Quote characters enclose a field which can contain
-delimiter characters, and newlines.  Escape characters cause the
-following character to be treated literally (including delimiter,
-quote, and newline characters).  Escape and quote characters must
-be different from delimiter characters. Escape characters that are
-also quote characters are treated specially - they can only
-escape themselves within quotes.  Elsewhere they are treated as
-quote characters.  The defaults for delimiter, quote, and escape
-are ',', '"', '"'.
+  delimiter characters, quote characters,
+  and escape characters.  Delimiter characters mark the end
+  of a field. Quote characters enclose a field which can contain
+  delimiter characters, and newlines.  Escape characters cause the
+  following character to be treated literally (including delimiter,
+  quote, and newline characters).  Escape and quote characters must
+  be different from delimiter characters. Escape characters that are
+  also quote characters are treated specially - they can only
+  escape themselves within quotes.  Elsewhere they are treated as
+  quote characters.  The defaults for delimiter, quote, and escape
+  are ',', '"', '"'.
 - "regexp" splits each record using a regular expression (see QRegExp
-documentation for details).
+  documentation for details).
 - "whitespace" splits each record based on whitespace (on or more whitespace
-characters.  Leading whitespace in the record is ignored.
+  characters.  Leading whitespace in the record is ignored.
 - "plain" is provided for backwards compatibility.  It is equivalent to
-CSV except that the default quote characters are single and double quotes,
-and there is no escape characters.
+  CSV except that the default quote characters are single and double quotes,
+  and there is no escape characters.
 - delimiter=characters
 
 Defines the delimiter characters used for csv and plain type files, or the
@@ -1297,13 +1297,13 @@ Adds a ring to polygon/multipolygon features
 
 :return: QgsGeometry.OperationResult
 
-- Success
-- LayerNotEditable
-- AddRingNotInExistingFeature
-- InvalidInputGeometryType
-- AddRingNotClosed
-- AddRingNotValid
-- AddRingCrossesExistingRings
+         - Success
+         - LayerNotEditable
+         - AddRingNotInExistingFeature
+         - InvalidInputGeometryType
+         - AddRingNotClosed
+         - AddRingNotValid
+         - AddRingCrossesExistingRings
 
 .. note::
 
@@ -1326,13 +1326,13 @@ Adds a ring to polygon/multipolygon features
 
 :return: QgsGeometry.OperationResult
 
-- Success
-- LayerNotEditable
-- AddRingNotInExistingFeature
-- InvalidInputGeometryType
-- AddRingNotClosed
-- AddRingNotValid
-- AddRingCrossesExistingRings
+         - Success
+         - LayerNotEditable
+         - AddRingNotInExistingFeature
+         - InvalidInputGeometryType
+         - AddRingNotClosed
+         - AddRingNotValid
+         - AddRingCrossesExistingRings
 
 .. note::
 
@@ -1351,13 +1351,13 @@ Adds a ring to polygon/multipolygon features (takes ownership)
 
 :return: QgsGeometry.OperationResult
 
-- Success
-- LayerNotEditable
-- AddRingNotInExistingFeature
-- InvalidInputGeometryType
-- AddRingNotClosed
-- AddRingNotValid
-- AddRingCrossesExistingRings
+         - Success
+         - LayerNotEditable
+         - AddRingNotInExistingFeature
+         - InvalidInputGeometryType
+         - AddRingNotClosed
+         - AddRingNotValid
+         - AddRingCrossesExistingRings
 
 .. note::
 
@@ -1377,14 +1377,14 @@ Adds a new part polygon to a multipart feature
 
 :return: QgsGeometry.OperationResult
 
-- Success
-- LayerNotEditable
-- SelectionIsEmpty
-- SelectionIsGreaterThanOne
-- AddPartSelectedGeometryNotFound
-- AddPartNotMultiGeometry
-- InvalidBaseGeometry
-- InvalidInputGeometryType
+         - Success
+         - LayerNotEditable
+         - SelectionIsEmpty
+         - SelectionIsGreaterThanOne
+         - AddPartSelectedGeometryNotFound
+         - AddPartNotMultiGeometry
+         - InvalidBaseGeometry
+         - InvalidInputGeometryType
 
 .. note::
 
@@ -1403,14 +1403,14 @@ Adds a new part polygon to a multipart feature
 
 :return: QgsGeometry.OperationResult
 
-- Success
-- LayerNotEditable
-- SelectionIsEmpty
-- SelectionIsGreaterThanOne
-- AddPartSelectedGeometryNotFound
-- AddPartNotMultiGeometry
-- InvalidBaseGeometry
-- InvalidInputGeometryType
+         - Success
+         - LayerNotEditable
+         - SelectionIsEmpty
+         - SelectionIsGreaterThanOne
+         - AddPartSelectedGeometryNotFound
+         - AddPartNotMultiGeometry
+         - InvalidBaseGeometry
+         - InvalidInputGeometryType
 
 .. note::
 
@@ -1433,14 +1433,14 @@ Adds a new part polygon to a multipart feature
 
 :return: QgsGeometry.OperationResult
 
-- Success
-- LayerNotEditable
-- SelectionIsEmpty
-- SelectionIsGreaterThanOne
-- AddPartSelectedGeometryNotFound
-- AddPartNotMultiGeometry
-- InvalidBaseGeometry
-- InvalidInputGeometryType
+         - Success
+         - LayerNotEditable
+         - SelectionIsEmpty
+         - SelectionIsGreaterThanOne
+         - AddPartSelectedGeometryNotFound
+         - AddPartNotMultiGeometry
+         - InvalidBaseGeometry
+         - InvalidInputGeometryType
 
 .. note::
 
@@ -1496,13 +1496,13 @@ Splits parts cut by the given line
 
 :return: QgsGeometry.OperationResult
 
-- Success
-- NothingHappened
-- LayerNotEditable
-- InvalidInputGeometryType
-- InvalidBaseGeometry
-- GeometryEngineError
-- SplitCannotSplitPoint
+         - Success
+         - NothingHappened
+         - LayerNotEditable
+         - InvalidInputGeometryType
+         - InvalidBaseGeometry
+         - GeometryEngineError
+         - SplitCannotSplitPoint
 
 .. note::
 
@@ -1524,13 +1524,13 @@ Splits parts cut by the given line
 
 :return: QgsGeometry.OperationResult
 
-- Success
-- NothingHappened
-- LayerNotEditable
-- InvalidInputGeometryType
-- InvalidBaseGeometry
-- GeometryEngineError
-- SplitCannotSplitPoint
+         - Success
+         - NothingHappened
+         - LayerNotEditable
+         - InvalidInputGeometryType
+         - InvalidBaseGeometry
+         - GeometryEngineError
+         - SplitCannotSplitPoint
 
 .. note::
 
@@ -1549,13 +1549,13 @@ Splits features cut by the given line
 
 :return: QgsGeometry.OperationResult
 
-- Success
-- NothingHappened
-- LayerNotEditable
-- InvalidInputGeometryType
-- InvalidBaseGeometry
-- GeometryEngineError
-- SplitCannotSplitPoint
+         - Success
+         - NothingHappened
+         - LayerNotEditable
+         - InvalidInputGeometryType
+         - InvalidBaseGeometry
+         - GeometryEngineError
+         - SplitCannotSplitPoint
 
 .. note::
 
@@ -1577,13 +1577,13 @@ Splits features cut by the given line
 
 :return: QgsGeometry.OperationResult
 
-- Success
-- NothingHappened
-- LayerNotEditable
-- InvalidInputGeometryType
-- InvalidBaseGeometry
-- GeometryEngineError
-- SplitCannotSplitPoint
+         - Success
+         - NothingHappened
+         - LayerNotEditable
+         - InvalidInputGeometryType
+         - InvalidBaseGeometry
+         - GeometryEngineError
+         - SplitCannotSplitPoint
 
 .. note::
 

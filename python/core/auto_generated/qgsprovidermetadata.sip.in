@@ -230,14 +230,14 @@ Breaks a provider data source URI into its component paths (e.g. file path, laye
 
 :return: map containing components. Standard components may include:
 
-- "path": file path
-- "layerName"
-- "url": base URL, for online services
-- "referer": referrer string, for HTTP requests
-- "host": hostname, for database services
-- "bounds": hardcoded layer bounds (as a QgsRectangle)
-- "crs": CRS definition
-- "authcfg": authentication configuration ID
+         - "path": file path
+         - "layerName"
+         - "url": base URL, for online services
+         - "referer": referrer string, for HTTP requests
+         - "host": hostname, for database services
+         - "bounds": hardcoded layer bounds (as a QgsRectangle)
+         - "crs": CRS definition
+         - "authcfg": authentication configuration ID
 
 .. note::
 
