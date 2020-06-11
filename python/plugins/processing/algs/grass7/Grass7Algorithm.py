@@ -772,6 +772,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         metaOpt = self.parameterAsString(parameters, self.GRASS_RASTER_FORMAT_META, context)
         self.exportRasterLayer(grassName, fileName, colorTable, outFormat, createOpt, metaOpt)
 
+        self.fileOutputs[name] = fileName
+
     def exportRasterLayer(self, grassName, fileName,
                           colorTable=True, outFormat='GTiff',
                           createOpt=None,
@@ -946,6 +948,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         lco = self.parameterAsString(parameters, self.GRASS_VECTOR_LCO, context)
         exportnocat = self.parameterAsBoolean(parameters, self.GRASS_VECTOR_EXPORT_NOCAT, context)
         self.exportVectorLayer(grassName, fileName, layer, nocats, dataType, outFormat, dsco, lco, exportnocat)
+
+        self.fileOutputs[name] = fileName
 
     def exportVectorLayer(self, grassName, fileName, layer=None, nocats=False, dataType='auto',
                           outFormat=None, dsco=None, lco=None, exportnocat=False):
