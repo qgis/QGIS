@@ -35,7 +35,7 @@ import base64
 import subprocess
 
 from test_qgsserver import QgsServerTestBase
-from qgis.core import QgsProject, QgsRenderChecker, QgsMultiRenderChecker, Qt
+from qgis.core import QgsProject, QgsRenderChecker, QgsMultiRenderChecker
 from qgis.server import QgsServerRequest
 from utilities import getExecutablePath, unitTestDataPath
 
