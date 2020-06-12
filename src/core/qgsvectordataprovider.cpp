@@ -33,6 +33,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgsogrproxytextcodec.h"
 #include <mutex>
 
 QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options,
@@ -199,16 +200,27 @@ QgsVectorDataProvider::Capabilities QgsVectorDataProvider::capabilities() const
   return QgsVectorDataProvider::NoCapabilities;
 }
 
-
 void QgsVectorDataProvider::setEncoding( const QString &e )
 {
   mEncoding = QTextCodec::codecForName( e.toLocal8Bit().constData() );
-
   if ( !mEncoding && e != QLatin1String( "System" ) )
   {
     if ( !e.isEmpty() )
-      QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
-    mEncoding = QTextCodec::codecForName( "System" );
+    {
+      // can we use the OGR proxy codec?
+      if ( QgsOgrProxyTextCodec::supportedCodecs().contains( e, Qt::CaseInsensitive ) )
+      {
+        //from the Qt docs (https://doc.qt.io/qt-5/qtextcodec.html#QTextCodec-1)
+        // "The QTextCodec should always be constructed on the heap (i.e. with new).
+        // Qt takes ownership and will delete it when the application terminates."
+        mEncoding = new QgsOgrProxyTextCodec( e.toLocal8Bit() );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
+        mEncoding = QTextCodec::codecForName( "System" );
+      }
+    }
   }
 
   if ( !mEncoding )

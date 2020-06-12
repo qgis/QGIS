@@ -362,6 +362,7 @@ SET(QGIS_CORE_SRCS
   qgsobjectcustomproperties.cpp
   qgsofflineediting.cpp
   qgsogcutils.cpp
+  qgsogrproxytextcodec.cpp
   qgsogrutils.cpp
   qgsoptionalexpression.cpp
   qgsowsconnection.cpp
@@ -933,6 +934,7 @@ SET(QGIS_CORE_HDRS
   qgsobjectcustomproperties.h
   qgsofflineediting.h
   qgsogcutils.h
+  qgsogrproxytextcodec.h
   qgsogrutils.h
   qgsoptional.h
   qgsoptionalexpression.h
