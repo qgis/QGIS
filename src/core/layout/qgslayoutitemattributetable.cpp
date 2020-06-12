@@ -398,6 +398,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   context.setFields( layer->fields() );
 
   QgsFeatureRequest req;
+  req.setExpressionContext( context );
 
   //prepare filter expression
   std::unique_ptr<QgsExpression> filterExpression;
@@ -409,7 +410,6 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     {
       activeFilter = true;
       req.setFilterExpression( mFeatureFilter );
-      req.setExpressionContext( context );
     }
   }
 
@@ -478,7 +478,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 
   for ( const QgsLayoutTableColumn &column : qgis::as_const( mSortColumns ) )
   {
-    req = req.addOrderBy( column.attribute(), column.sortOrder() == Qt::AscendingOrder );
+    req.addOrderBy( column.attribute(), column.sortOrder() == Qt::AscendingOrder );
   }
 
   QgsFeature f;
