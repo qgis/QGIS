@@ -409,7 +409,10 @@ void QgsOptionsDialogBase::updateWindowTitle()
   QListWidgetItem *curitem = mOptListWidget->currentItem();
   if ( curitem )
   {
-    setWindowTitle( QStringLiteral( "%1 — %2" ).arg( mDialogTitle, curitem->text() ) );
+    setWindowTitle( QStringLiteral( "%1 %2 %3" )
+                    .arg( mDialogTitle )
+                    .arg( QChar( 0x2014 ) ) // em-dash unicode
+                    .arg( curitem->text() ) );
   }
   else
   {

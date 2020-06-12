@@ -38,7 +38,7 @@ const QgsProcessingAlgorithm *QgsProcessingParametersWidget::algorithm() const
 
 void QgsProcessingParametersWidget::initWidgets()
 {
-  // if there are advanced parameters — show corresponding groupbox
+  // if there are advanced parameters - show corresponding groupbox
   const QgsProcessingParameterDefinitions defs = mAlgorithm->parameterDefinitions();
   for ( const QgsProcessingParameterDefinition *param : defs )
   {
