@@ -1927,8 +1927,6 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
       QgsRelationWidgetWrapper *rww = setupRelationWidgetWrapper( relDef->relation(), context );
 
-      rww->setShowLabel( relDef->showLabel() );
-
       QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
       formWidget->createSearchWidgetWrappers( mContext );
 
@@ -1938,6 +1936,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       rww->setShowLinkButton( relDef->showLinkButton() );
       rww->setShowUnlinkButton( relDef->showUnlinkButton() );
       rww->setShowSaveChildEditsButton( relDef->showSaveChildEditsButton() );
+      rww->setShowLabel( relDef->showLabel() );
 
       mWidgets.append( rww );
       mFormWidgets.append( formWidget );
