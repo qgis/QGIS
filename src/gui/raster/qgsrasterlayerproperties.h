@@ -28,6 +28,7 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaptoolemitpoint.h"
 #include "qgis_gui.h"
+#include "qgsresamplingutils.h"
 
 class QgsPointXY;
 class QgsMapLayer;
@@ -280,6 +281,8 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     //! Synchronize state with associated raster layer
     void sync();
+
+    QgsResamplingUtils mResamplingUtils;
 
     friend class QgsAppScreenShots;
 };

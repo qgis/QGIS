@@ -27,9 +27,6 @@
 #include "qgsmultibandcolorrendererwidget.h"
 #include "qgspalettedrendererwidget.h"
 #include "qgshillshaderendererwidget.h"
-#include "qgsrasterresamplefilter.h"
-#include "qgsbilinearrasterresampler.h"
-#include "qgscubicrasterresampler.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgsapplication.h"
@@ -57,10 +54,8 @@ static void _initRendererWidgetFunctions()
 
 QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
-
+  , mRasterLayer( qobject_cast<QgsRasterLayer *>( layer ) )
 {
-  mRasterLayer = qobject_cast<QgsRasterLayer *>( layer );
-
   if ( !mRasterLayer )
     return;
 
@@ -69,11 +64,7 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
 
   _initRendererWidgetFunctions();
 
-  mZoomedInResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ) );
-  mZoomedInResamplingComboBox->insertItem( 1, tr( "Bilinear" ) );
-  mZoomedInResamplingComboBox->insertItem( 2, tr( "Cubic" ) );
-  mZoomedOutResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ) );
-  mZoomedOutResamplingComboBox->insertItem( 1, tr( "Average" ) );
+  mResamplingUtils.initWidgets( mRasterLayer, mZoomedInResamplingComboBox, mZoomedOutResamplingComboBox, mMaximumOversamplingSpinBox, mCbEarlyResampling );
 
   connect( cboRenderers, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRendererRasterPropertiesWidget::rendererChanged );
 
@@ -108,6 +99,7 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
   connect( mZoomedInResamplingComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( mZoomedOutResamplingComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( mMaximumOversamplingSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( mCbEarlyResampling,  &QAbstractButton::toggled, this, &QgsPanelWidget::widgetChanged );
 
   // finally sync to the layer - even though some actions may emit widgetChanged signal,
   // this is not a problem - nobody is listening to our signals yet
@@ -160,33 +152,7 @@ void QgsRendererRasterPropertiesWidget::apply()
     hueSaturationFilter->setColorizeStrength( sliderColorizeStrength->value() );
   }
 
-  if ( QgsRasterResampleFilter *resampleFilter = mRasterLayer->resampleFilter() )
-  {
-    QgsRasterResampler *zoomedInResampler = nullptr;
-    QString zoomedInResamplingMethod = mZoomedInResamplingComboBox->currentText();
-    if ( zoomedInResamplingMethod == tr( "Bilinear" ) )
-    {
-      zoomedInResampler = new QgsBilinearRasterResampler();
-    }
-    else if ( zoomedInResamplingMethod == tr( "Cubic" ) )
-    {
-      zoomedInResampler = new QgsCubicRasterResampler();
-    }
-
-    resampleFilter->setZoomedInResampler( zoomedInResampler );
-
-    //raster resampling
-    QgsRasterResampler *zoomedOutResampler = nullptr;
-    QString zoomedOutResamplingMethod = mZoomedOutResamplingComboBox->currentText();
-    if ( zoomedOutResamplingMethod == tr( "Average" ) )
-    {
-      zoomedOutResampler = new QgsBilinearRasterResampler();
-    }
-
-    resampleFilter->setZoomedOutResampler( zoomedOutResampler );
-
-    resampleFilter->setMaxOversampling( mMaximumOversamplingSpinBox->value() );
-  }
+  mResamplingUtils.refreshLayerFromWidgets();
 
   mRasterLayer->setBlendMode( mBlendModeComboBox->blendMode() );
 }
@@ -248,39 +214,7 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer *layer )
   mBlendModeComboBox->setBlendMode( mRasterLayer->blendMode() );
 
   //set combo boxes to current resampling types
-  if ( const QgsRasterResampleFilter *resampleFilter = mRasterLayer->resampleFilter() )
-  {
-    const QgsRasterResampler *zoomedInResampler = resampleFilter->zoomedInResampler();
-    if ( zoomedInResampler )
-    {
-      if ( zoomedInResampler->type() == QLatin1String( "bilinear" ) )
-      {
-        mZoomedInResamplingComboBox->setCurrentIndex( 1 );
-      }
-      else if ( zoomedInResampler->type() == QLatin1String( "cubic" ) )
-      {
-        mZoomedInResamplingComboBox->setCurrentIndex( 2 );
-      }
-    }
-    else
-    {
-      mZoomedInResamplingComboBox->setCurrentIndex( 0 );
-    }
-
-    const QgsRasterResampler *zoomedOutResampler = resampleFilter->zoomedOutResampler();
-    if ( zoomedOutResampler )
-    {
-      if ( zoomedOutResampler->type() == QLatin1String( "bilinear" ) ) //bilinear resampler does averaging when zooming out
-      {
-        mZoomedOutResamplingComboBox->setCurrentIndex( 1 );
-      }
-    }
-    else
-    {
-      mZoomedOutResamplingComboBox->setCurrentIndex( 0 );
-    }
-    mMaximumOversamplingSpinBox->setValue( resampleFilter->maxOversampling() );
-  }
+  mResamplingUtils.refreshWidgetsFromLayer();
 }
 
 void QgsRendererRasterPropertiesWidget::mResetColorRenderingBtn_clicked()
