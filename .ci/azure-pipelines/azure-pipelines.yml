@@ -25,13 +25,13 @@ jobs:
   strategy:
     maxParallel: 4
     matrix:
-#      x86:
-#         OSGEO4W_ROOT: C:\OSGeo4W
-#         OSGEO4W_ARCH: x86
-#         CLCACHE_DIR: c:\clcache-x86
-#         PLATFORM: x86
-#         CC: C:\OSGeo4W\bin\clcache.bat
-#         CXX: C:\OSGeo4W\bin\clcache.bat
+      x86:
+         OSGEO4W_ROOT: C:\OSGeo4W
+         OSGEO4W_ARCH: x86
+         CLCACHE_DIR: c:\clcache-x86
+         PLATFORM: x86
+         CC: C:\OSGeo4W\bin\clcache.bat
+         CXX: C:\OSGeo4W\bin\clcache.bat
 
       x86_64:
          OSGEO4W_ROOT: C:\OSGeo4W64
