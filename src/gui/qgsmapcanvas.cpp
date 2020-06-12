@@ -889,7 +889,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
     }
   }
   copyCoordinateMenu->addSeparator();
-  QAction *setCustomCrsAction = new QAction( QStringLiteral( "Set Custom CRS…" ), mMenu );
+  QAction *setCustomCrsAction = new QAction( tr( "Set Custom CRS…" ), mMenu );
   connect( setCustomCrsAction, &QAction::triggered, this, [ = ]
   {
     QgsProjectionSelectionDialog selector( this );
