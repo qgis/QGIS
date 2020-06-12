@@ -772,6 +772,133 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                 statuses[3] = 1
         self.assertTrue(all(x == 1 for x in statuses))
 
+    def testPktComposite(self):
+        """
+        Check that tables with PKs composed of many fields of different types are correctly read and written to
+        """
+        vl = QgsVectorLayer('{} sslmode=disable srid=4326 key=\'"pk1","pk2","pk3"\' table="qgis_test"."tb_test_compound_pk" (geom)'.format(self.dbconn), "test_compound", "postgres")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.fields()
+
+        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 3.1415927')))
+        # first of all: we must be able to fetch a valid feature
+        self.assertTrue(f.isValid())
+        self.assertEqual(f['pk1'], 1)
+        self.assertEqual(f['pk2'], 2)
+        self.assertEqual(f['pk3'], 3.1415927)
+        self.assertEqual(f['value'], 'test 2')
+
+        # can we edit a field?
+        vl.startEditing()
+        vl.changeAttributeValue(f.id(), fields.indexOf('value'), 'Edited Test 2')
+        self.assertTrue(vl.commitChanges())
+
+        # Did we get it right? Let's create a new QgsVectorLayer and try to read back our changes:
+        vl2 = QgsVectorLayer('{} sslmode=disable srid=4326 table="qgis_test"."tb_test_compound_pk" (geom) key=\'"pk1","pk2","pk3"\' '.format(self.dbconn), "test_compound2", "postgres")
+        self.assertTrue(vl2.isValid())
+        f2 = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 3.1415927')))
+        self.assertTrue(f2.isValid())
+
+        # just making sure we have the correct feature
+        self.assertEqual(f2['pk3'], 3.1415927)
+
+        # Then, making sure we really did change our value.
+        self.assertEqual(f2['value'], 'Edited Test 2')
+
+        # How about inserting a new field?
+        f3 = QgsFeature(vl2.fields())
+        f3['pk1'] = 4
+        f3['pk2'] = -9223372036854775800
+        f3['pk3'] = 7.29154
+        f3['value'] = 'other test'
+        vl.startEditing()
+        res, f3 = vl.dataProvider().addFeatures([f3])
+        self.assertTrue(res)
+        self.assertTrue(vl.commitChanges())
+
+        # can we catch it on another layer?
+        f4 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk2 = -9223372036854775800')))
+
+        self.assertTrue(f4.isValid())
+        expected_attrs = [4, -9223372036854775800, 7.29154, 'other test']
+        self.assertEqual(f4.attributes(), expected_attrs)
+
+        # Finally, let's delete one of the features.
+        f5 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 7.29154')))
+        vl2.startEditing()
+        vl2.deleteFeatures([f5.id()])
+        self.assertTrue(vl2.commitChanges())
+
+        # did we really delete?
+        f_iterator = vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 7.29154'))
+        got_feature = True
+
+        try:
+            f6 = next(f_iterator)
+            got_feature = f6.isValid()
+        except StopIteration:
+            got_feature = False
+
+        self.assertFalse(got_feature)
+
+    def testPktFloat(self):
+        """
+        Verify that we handle tables with floating point PKs well.
+        """
+        vl = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test"."tb_test_float_pk" (geom)'.format(self.dbconn), "test_floatpk", "postgres")
+        self.assertTrue(vl.isValid())
+        fields = vl.fields()
+        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 3.141592741')))
+        self.assertTrue(f.isValid())
+        self.assertEqual(f['pk'], 3.1415927)
+        self.assertEqual(f['value'], 'first test')
+
+        # editing
+        vl.startEditing()
+        vl.changeAttributeValue(f.id(), fields.indexOf('value'), 'first check')
+        self.assertTrue(vl.commitChanges())
+
+        # checking out if we really wrote to the table
+        vl2 = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test"."tb_test_float_pk" (geom)'.format(self.dbconn), "test_floatpk2", "postgres")
+        self.assertTrue(vl2.isValid())
+        f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 3.141592741')))
+
+        self.assertEqual(f2['value'], 'first check')
+
+        # inserting new...
+        f3 = QgsFeature(vl2.fields())
+        f3['pk'] = 7.29154
+        f3['value'] = 'newly inserted'
+        vl2.startEditing()
+        res, f3 = vl.dataProvider().addFeatures([f3])
+        self.assertTrue(res)
+        self.assertTrue(vl2.commitChanges())
+
+        # checking if correctly inserted...
+        f4 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 7.29154')))
+        self.assertTrue(f4.isValid())
+        self.assertEqual(f4['value'], 'newly inserted')
+
+        # Checking deletion
+        f5 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 2.7182817')))
+        self.assertTrue(f5.isValid())
+        vl2.startEditing()
+        vl2.deleteFeatures([f5.id()])
+        self.assertTrue(vl2.commitChanges())
+
+        # did we really delete?
+        f_iterator = vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 2.7182817'))
+        got_feature = True
+
+        try:
+            f6 = next(f_iterator)
+            got_feature = f6.isValid()
+        except StopIteration:
+            got_feature = False
+
+        self.assertFalse(got_feature)
+
     def testPktMapInsert(self):
         vl = QgsVectorLayer('{} table="qgis_test"."{}" key="obj_id" sql='.format(self.dbconn, 'oid_serial_table'),
                             "oid_serial", "postgres")

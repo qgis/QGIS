@@ -1212,7 +1212,6 @@ QString QgsPostgresConn::quotedValue( const QVariant &value )
   {
     case QVariant::Int:
     case QVariant::LongLong:
-    case QVariant::Double:
       return value.toString();
 
     case QVariant::DateTime:
@@ -1228,6 +1227,8 @@ QString QgsPostgresConn::quotedValue( const QVariant &value )
     case QVariant::List:
       return quotedList( value.toList() );
 
+    // we need to pass floating point values quoted to the DBMS
+    case QVariant::Double:
     case QVariant::String:
     default:
       return quotedString( value.toString() );

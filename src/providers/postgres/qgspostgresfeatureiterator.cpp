@@ -783,8 +783,16 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
       Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
       {
         QgsField fld = mSource->mFields.at( idx );
+        QVariant v;
 
-        QVariant v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ), fld.typeName() );
+        if ( fld.type() == QVariant::LongLong )
+        {
+          v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), QString::number( mConn->getBinaryInt( queryResult, row, col ) ), fld.typeName() );
+        }
+        else
+        {
+          v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ), fld.typeName() );
+        }
         primaryKeyVals << v;
 
         if ( !subsetOfAttributes || fetchAttributes.contains( idx ) )
