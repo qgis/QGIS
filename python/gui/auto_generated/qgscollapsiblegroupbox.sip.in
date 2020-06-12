@@ -181,8 +181,9 @@ Returns the name of the setting group in which the collapsed state will be saved
 Will load the collapsed and checked state
 
 The configuration path from which it is loaded is defined by
-* The object name
-* The settingGroup
+
+- The object name
+- The settingGroup
 %End
 
     void saveState() const;
@@ -190,8 +191,9 @@ The configuration path from which it is loaded is defined by
 Will save the collapsed and checked state
 
 The configuration path to which it is saved is defined by
-* The object name
-* The settingGroup
+
+- The object name
+- The settingGroup
 %End
 
   protected:

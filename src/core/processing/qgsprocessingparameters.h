@@ -1825,7 +1825,7 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
  * For numeric parameters with a dataType() of Double, the number of decimals places
  * shown in the parameter's widget can be specified by setting the parameter's metadata. For example:
  *
- * * \code{.py}
+ * \code{.py}
  *   param = QgsProcessingParameterNumber( 'VAL', 'Threshold', type=QgsProcessingParameter.Double)
  *   # only show two decimal places in parameter's widgets, not 6:
  *   param.setMetadata( {'widget_wrapper':
@@ -1928,7 +1928,7 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
  * The number of decimals places shown in a distance parameter's widget can be specified by
  * setting the parameter's metadata. For example:
  *
- * * \code{.py}
+ * \code{.py}
  *   param = QgsProcessingParameterDistance( 'VAL', 'Threshold')
  *   # only show two decimal places in parameter's widgets, not 6:
  *   param.setMetadata( {'widget_wrapper':
@@ -2992,7 +2992,7 @@ class CORE_EXPORT QgsProcessingParameterRasterDestination : public QgsProcessing
  * append to an existing destination file instead of overwriting them.). This can be done by setting
  * the widget wrapper metadata "dontconfirmoverwrite" option:
  *
- * * \code{.py}
+ * \code{.py}
  *   param = QgsProcessingParameterFileDestination( 'OUTPUT', 'Destination file')
  *   # don't show the file overwrite warning when users select a destination file:
  *   param.setMetadata( {'widget_wrapper':
@@ -3498,7 +3498,7 @@ class CORE_EXPORT QgsProcessingParameterMapTheme : public QgsProcessingParameter
  * QgsProcessingParameterDateTime should be evaluated by calling QgsProcessingAlgorithm::parameterAsDateTime(),
  * which will return a date time value.
  *
- * * \since QGIS 3.14
+ * \since QGIS 3.14
  */
 class CORE_EXPORT QgsProcessingParameterDateTime : public QgsProcessingParameterDefinition
 {

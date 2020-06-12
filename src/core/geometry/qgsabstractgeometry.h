@@ -534,10 +534,13 @@ class CORE_EXPORT QgsAbstractGeometry
      * If the gridified geometry could not be calculated NULLPTR will be returned.
      * It may generate an invalid geometry (in some corner cases).
      * It can also be thought as rounding the edges and it may be useful for removing errors.
-     * Example:
+     *
+     * ### Example:
+     *
      * \code{.cpp}
      * geometry->snappedToGrid(1, 1);
      * \endcode
+     *
      * In this case we use a 2D grid of 1x1 to gridify.
      * In this case, it can be thought like rounding the x and y of all the points/vertices to full units (remove all decimals).
      * \param hSpacing Horizontal spacing of the grid (x axis). 0 to disable.
@@ -903,7 +906,8 @@ class CORE_EXPORT QgsAbstractGeometry
      * Returns Java-style iterator for traversal of parts of the geometry. This iterator
      * can safely be used to modify parts of the geometry.
      *
-     * * Example:
+     * ### Example:
+     *
      * \code{.py}
      *   # print the WKT representation of each part in a multi-point geometry
      *   geometry = QgsMultiPoint.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
@@ -940,7 +944,8 @@ class CORE_EXPORT QgsAbstractGeometry
      * \warning The iterator returns a copy of individual vertices, and accordingly geometries cannot be
      * modified using the iterator. See transformVertices() for a safe method to modify vertices "in-place".
      *
-     * * Example:
+     * ### Example:
+     *
      * \code{.py}
      *   # print the x and y coordinate for each vertex in a LineString
      *   geometry = QgsLineString.fromWkt( 'LineString( 0 0, 1 1, 2 2)' )

@@ -449,7 +449,8 @@ class CORE_EXPORT QgsGeometry
      * \warning The iterator returns a copy of individual vertices, and accordingly geometries cannot be
      * modified using the iterator. See transformVertices() for a safe method to modify vertices "in-place".
      *
-     * * Example:
+     * ### Example:
+     *
      * \code{.py}
      *   # print the x and y coordinate for each vertex in a LineString
      *   geometry = QgsGeometry.fromWkt( 'LineString( 0 0, 1 1, 2 2)' )
@@ -517,7 +518,8 @@ class CORE_EXPORT QgsGeometry
      * This method forces a detach. Use constParts() to avoid the detach
      * if the parts are not going to be modified.
      *
-     * * Example:
+     * ### Example:
+     *
      * \code{.py}
      *   # print the WKT representation of each part in a multi-point geometry
      *   geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
@@ -555,7 +557,8 @@ class CORE_EXPORT QgsGeometry
      * Unlike parts(), this method does not force a detach and is more efficient if read-only
      * iteration only is required.
      *
-     * * Example:
+     * ### Example:
+     *
      * \code{.py}
      *   # print the WKT representation of each part in a multi-point geometry
      *   geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )

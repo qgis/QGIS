@@ -220,8 +220,9 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
      * Will load the collapsed and checked state
      *
      * The configuration path from which it is loaded is defined by
-     *  * The object name
-     *  * The settingGroup
+     *
+     * - The object name
+     * - The settingGroup
      */
     void loadState();
 
@@ -229,8 +230,9 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
      * Will save the collapsed and checked state
      *
      * The configuration path to which it is saved is defined by
-     *  * The object name
-     *  * The settingGroup
+     *
+     * - The object name
+     * - The settingGroup
      */
     void saveState() const;
 

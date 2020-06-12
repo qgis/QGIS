@@ -427,7 +427,9 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \param inclination angle to project in Z (3D). If the point is 2D, the Z value is assumed to be 0.
      * \returns The point projected. If a 2D point is projected a 3D point will be returned except if
      *  inclination is 90. A 3D point is always returned if a 3D point is projected.
-     * Example:
+     *
+     * ### Example:
+     *
      * \code{.py}
      *   p = QgsPoint( 1, 2 ) # 2D point
      *   pr = p.project ( 1, 0 )

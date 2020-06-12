@@ -311,7 +311,11 @@ class CORE_EXPORT QgsTextFormat
      * the rendered text.
      *
      * \warning Only a small subset of HTML formatting is supported. Currently this is restricted to:
-     * * text color formatting
+     *
+     * - text color formatting
+     * - strikethrough
+     * - underline
+     * - overline
      *
      * \see setAllowHtmlFormatting()
      * \since QGIS 3.14
@@ -323,7 +327,11 @@ class CORE_EXPORT QgsTextFormat
      * the rendered text.
      *
      * \warning Only a small subset of HTML formatting is supported. Currently this is restricted to:
-     * * text color formatting
+     *
+     * - text color formatting
+     * - strikethrough
+     * - underline
+     * - overline
      *
      * \see allowHtmlFormatting()
      * \since QGIS 3.14

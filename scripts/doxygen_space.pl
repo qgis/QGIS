@@ -77,6 +77,9 @@ while ($LINE_IDX < $LINE_COUNT){
        }
     }
     elsif ( $INSIDE_DOX_BLOCK ){
+      # replace "* abc" style doxygen lists with correct "- abc" formatting
+      $new_line =~ s/^(\s+)\*\s{1,10}\*/$1\* \-/;
+
       if ( $new_line =~ m/^\s*\*\s*$/ ){
         # print $out_handle "blank line!\n";
         $PREVIOUS_WAS_DOX_BLANKLINE = 1;

@@ -341,7 +341,11 @@ the rendered text.
 .. warning::
 
    Only a small subset of HTML formatting is supported. Currently this is restricted to:
-   * text color formatting
+
+- text color formatting
+- strikethrough
+- underline
+- overline
 
 .. seealso:: :py:func:`setAllowHtmlFormatting`
 
@@ -356,7 +360,11 @@ the rendered text.
 .. warning::
 
    Only a small subset of HTML formatting is supported. Currently this is restricted to:
-   * text color formatting
+
+- text color formatting
+- strikethrough
+- underline
+- overline
 
 .. seealso:: :py:func:`allowHtmlFormatting`
 
