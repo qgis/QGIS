@@ -27,6 +27,7 @@
 #include "qgsogrutils.h"
 #include "qgsapplication.h"
 #include "qgspoint.h"
+#include "qgsogrproxytextcodec.h"
 
 class TestQgsOgrUtils: public QObject
 {
@@ -47,6 +48,7 @@ class TestQgsOgrUtils: public QObject
     void readOgrFields();
     void stringToFeatureList();
     void stringToFields();
+    void textCodec();
 
   private:
 
@@ -498,7 +500,17 @@ void TestQgsOgrUtils::stringToFields()
   QCOMPARE( fields.at( 1 ).type(), QVariant::Double );
 }
 
+void TestQgsOgrUtils::textCodec()
+{
+  QVERIFY( QgsOgrProxyTextCodec::supportedCodecs().contains( QStringLiteral( "CP852" ) ) );
+  QVERIFY( !QgsOgrProxyTextCodec::supportedCodecs().contains( QStringLiteral( "xxx" ) ) );
 
+  // The QTextCodec should always be constructed on the heap. Qt takes ownership and will delete it when the application terminates.
+  QgsOgrProxyTextCodec *codec = new QgsOgrProxyTextCodec( "CP852" );
+  QCOMPARE( codec->toUnicode( codec->fromUnicode( "abcŐ" ) ), QStringLiteral( "abcŐ" ) );
+  QCOMPARE( codec->toUnicode( codec->fromUnicode( "" ) ), QString() );
+  // cppcheck-suppress memleak
+}
 
 QGSTEST_MAIN( TestQgsOgrUtils )
 #include "testqgsogrutils.moc"
