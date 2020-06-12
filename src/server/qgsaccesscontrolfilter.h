@@ -39,12 +39,13 @@ class QgsFeature;
  * \brief Class defining access control interface for QGIS Server plugins.
  *
  * Security can define any (or none) of the following method:
- *  * layerFilterExpression() - To set an additional QGIS expression filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature)
- *  * layerFilterSubsetString() - To set an additional SQL subset string filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature) for layer that support SQL
- *  * layerPermissions() - To set the general layer permissins (read / update / insert / delete)
- *  * authorizedLayerAttributes() - To filter the attributes (WMS/GetFeatureInfo, WFS/GetFeature)
- *  * allowToEdit() - (all WFS-T requests)
- *  * cacheKey()
+ *
+ * - layerFilterExpression() - To set an additional QGIS expression filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature)
+ * - layerFilterSubsetString() - To set an additional SQL subset string filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature) for layer that support SQL
+ * - layerPermissions() - To set the general layer permissins (read / update / insert / delete)
+ * - authorizedLayerAttributes() - To filter the attributes (WMS/GetFeatureInfo, WFS/GetFeature)
+ * - allowToEdit() - (all WFS-T requests)
+ * - cacheKey()
  */
 class SERVER_EXPORT QgsAccessControlFilter
 {

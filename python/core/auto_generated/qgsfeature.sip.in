@@ -338,7 +338,8 @@ This method is a shortcut for calling:
 
        feature.setGeometry( QgsGeometry( geometry ) )
 
-* Example:
+### Example:
+
 .. code-block:: python
 
        # Sets a feature's geometry to a point geometry
