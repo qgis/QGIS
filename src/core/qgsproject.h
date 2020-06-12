@@ -967,7 +967,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Returns a list of registered map layers with a specified layer type.
      *
-     * ### Example:
+     * ### Example
      *
      *     QVector<QgsVectorLayer*> vectorLayers = QgsProject::instance()->layers<QgsVectorLayer*>();
      *

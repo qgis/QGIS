@@ -410,7 +410,8 @@ Returns a read-only, Java-style iterator for traversal of vertices of all the ge
    The iterator returns a copy of individual vertices, and accordingly geometries cannot be
    modified using the iterator. See transformVertices() for a safe method to modify vertices "in-place".
 
-### Example:
+Example
+-------
 
 .. code-block:: python
 
@@ -438,7 +439,8 @@ can safely be used to modify parts of the geometry.
 This method forces a detach. Use constParts() to avoid the detach
 if the parts are not going to be modified.
 
-### Example:
+Example
+-------
 
 .. code-block:: python
 
@@ -478,7 +480,8 @@ returns read-only references to parts and cannot be used to modify the parts.
 Unlike parts(), this method does not force a detach and is more efficient if read-only
 iteration only is required.
 
-### Example:
+Example
+-------
 
 .. code-block:: python
 
