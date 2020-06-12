@@ -2048,8 +2048,7 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     }
     else if ( u.layerType == QLatin1String( "mesh" ) )
     {
-      QgsMeshLayer *layer = new QgsMeshLayer( uri, u.name, u.providerKey );
-      addMapLayer( layer );
+      addMeshLayer( uri, u.name, u.providerKey );
     }
     else if ( u.layerType == QLatin1String( "vector-tile" ) )
     {
