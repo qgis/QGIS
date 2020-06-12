@@ -116,7 +116,7 @@ CREATE TABLE qgis_test.tb_test_compound_pk
 
 INSERT INTO qgis_test.tb_test_compound_pk (pk1, pk2, pk3, value, geom) VALUES
     (1, 1, 1.0, 'test 1', ST_SetSRID(ST_Point(-47.930, -15.818), 4326)),
-    (1, 2, 3.141592741, 'test 2', ST_SetSRID(ST_Point(-47.887, -15.864), 4326)),
+    (1, 2, 3.14159, 'test 2', ST_SetSRID(ST_Point(-47.887, -15.864), 4326)),
     (2, 2, 2.718281828, 'test 3', ST_SetSRID(ST_Point(-47.902, -15.763), 4326)),
     (2, 2, 1.0, 'test 4', ST_SetSRID(ST_Point(-47.952, -15.781), 4326));
 
@@ -128,5 +128,5 @@ CREATE TABLE qgis_test.tb_test_float_pk
 );
 
 INSERT INTO qgis_test.tb_test_float_pk (pk, value, geom) VALUES
-    (3.141592741, 'first test', ST_SetSRID(ST_Point(-47.887, -15.864), 4326)),
-    (2.718281828, 'second test', ST_SetSRID(ST_Point(-47.902, -15.763), 4326));
+    (3.14159, 'first test', ST_SetSRID(ST_Point(-47.887, -15.864), 4326)),
+    (2.71828, 'second test', ST_SetSRID(ST_Point(-47.902, -15.763), 4326));
