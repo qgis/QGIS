@@ -847,7 +847,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   mSymbolRenderContext->setGeometryPartCount( segmentizedGeometry.constGet()->partCount() );
   mSymbolRenderContext->setGeometryPartNum( 1 );
 
-  bool needsExpressionContext = hasDataDefinedProperties();
+  const bool needsExpressionContext = hasDataDefinedProperties();
   ExpressionContextScopePopper scopePopper;
   if ( mSymbolRenderContext->expressionContextScope() )
   {

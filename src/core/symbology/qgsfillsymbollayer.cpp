@@ -33,6 +33,7 @@
 #include "qgsimageoperation.h"
 #include "qgspolygon.h"
 #include "qgslinestring.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QPainter>
 #include <QFile>
@@ -3400,11 +3401,21 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
   const double right = points.boundingRect().right();
   const double bottom = points.boundingRect().bottom();
 
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  QgsExpressionContextScopePopper scopePopper( context.renderContext().expressionContext(), scope );
+  int pointNum = 0;
+  const bool needsExpressionContext = hasDataDefinedProperties();
+
   bool alternateColumn = false;
+  int currentCol = -3; // because we actually render a few rows/cols outside the bounds, try to align the col/row numbers to start at 1 for the first visible row/col
   for ( double currentX = ( std::floor( left / width ) - 2 ) * width; currentX <= right + 2 * width; currentX += width, alternateColumn = !alternateColumn )
   {
+    if ( needsExpressionContext )
+      scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_marker_column" ), ++currentCol, true ) );
+
     bool alternateRow = false;
     const double columnX = currentX + widthOffset;
+    int currentRow = -3;
     for ( double currentY = ( std::floor( top / height ) - 2 ) * height; currentY <= bottom + 2 * height; currentY += height, alternateRow = !alternateRow )
     {
       double y = currentY + heightOffset;
@@ -3414,6 +3425,12 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
 
       if ( !alternateColumn )
         y -= displacementPixelY;
+
+      if ( needsExpressionContext )
+      {
+        scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
+        scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_marker_row" ), ++currentRow, true ) );
+      }
 
       mMarkerSymbol->renderPoint( QPointF( x, y ), context.feature(), context.renderContext() );
     }
@@ -4368,8 +4385,15 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
     return a.y() < b.y();
   } );
 #endif
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  QgsExpressionContextScopePopper scopePopper( context.expressionContext(), scope );
+  int pointNum = 0;
+  const bool needsExpressionContext = hasDataDefinedProperties();
+
   for ( const QgsPointXY &p : qgis::as_const( randomPoints ) )
   {
+    if ( needsExpressionContext )
+      scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
     mMarker->renderPoint( QPointF( p.x(), p.y() ), feature.isValid() ? &feature : nullptr, context, -1, selected );
   }
 
