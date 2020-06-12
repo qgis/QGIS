@@ -720,9 +720,6 @@ bool QgsGdalProvider::canDoResampling(
   int bufferWidthPix,
   int bufferHeightPix )
 {
-  if ( !mProviderResamplingEnabled )
-    return false;
-
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
     return false;
@@ -816,6 +813,7 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
   const double srcXRes = mGeoTransform[1];
   const double srcYRes = mGeoTransform[5]; // may be negative?
   QgsDebugMsgLevel( QStringLiteral( "reqXRes = %1 reqYRes = %2 srcXRes = %3 srcYRes = %4" ).arg( reqXRes ).arg( reqYRes ).arg( srcXRes ).arg( srcYRes ), 5 );
+  const double resamplingFactor = std::max( reqXRes / srcXRes, reqYRes / srcYRes );
 
   GDALRasterBandH gdalBand = getBand( bandNo );
   const GDALDataType type = static_cast<GDALDataType>( mGdalDataType.at( bandNo - 1 ) );
@@ -860,7 +858,8 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
   const int srcHeight = srcBottom - srcTop + 1;
 
   // Use GDAL resampling if asked and possible
-  if ( canDoResampling( bandNo, reqExtent, bufferWidthPix, bufferHeightPix ) )
+  if ( mProviderResamplingEnabled &&
+       canDoResampling( bandNo, reqExtent, bufferWidthPix, bufferHeightPix ) )
   {
     int tgtTop = tgtTopOri;
     int tgtBottom = tgtBottomOri;
@@ -927,7 +926,6 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
       GDALRasterIOExtraArg sExtraArg;
       INIT_RASTERIO_EXTRA_ARG( sExtraArg );
 
-      const double resamplingFactor = std::max( reqXRes / srcXRes, reqYRes / std::fabs( srcYRes ) );
       ResamplingMethod method;
       if ( resamplingFactor < 1 )
       {
@@ -971,6 +969,100 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
                              dataSize * bufferWidthPix,
                              &sExtraArg ) == CE_None;
     }
+  }
+  // Provider resampling was asked but we cannot do it in a performant way
+  // (too much downsampling compared to the allowed maximum resampling factor),
+  // so fallback to something replicating QgsRasterResampleFilter behaviour
+  else if ( mProviderResamplingEnabled &&
+            mZoomedOutResamplingMethod != QgsRasterDataProvider::ResamplingMethod::Nearest &&
+            resamplingFactor > 1 )
+  {
+    // Do the resampling in two steps:
+    // - downsample with nearest neighbour down to tgtWidth * mMaxOversampling, tgtHeight * mMaxOversampling
+    // - then downsample with mZoomedOutResamplingMethod down to tgtWidth, tgtHeight
+    const int tgtWidth = tgtRightOri - tgtLeftOri + 1;
+    const int tgtHeight = tgtBottomOri - tgtTopOri + 1;
+
+    const int tmpWidth = static_cast<int>( tgtWidth  * mMaxOversampling + 0.5 );
+    const int tmpHeight = static_cast<int>( tgtHeight * mMaxOversampling + 0.5 );
+
+    // Allocate temporary block
+    size_t bufferSize = dataSize * static_cast<size_t>( tmpWidth ) * static_cast<size_t>( tmpHeight );
+#ifdef Q_PROCESSOR_X86_32
+    // Safety check for 32 bit systems
+    qint64 _buffer_size = dataSize * static_cast<qint64>( tmpWidth ) * static_cast<qint64>( tmpHeight );
+    if ( _buffer_size != static_cast<qint64>( bufferSize ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Integer overflow calculating buffer size on a 32 bit system." ) );
+      return false;
+    }
+#endif
+    char *tmpBlock = static_cast<char *>( qgsMalloc( bufferSize ) );
+    if ( ! tmpBlock )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Couldn't allocate temporary buffer of %1 bytes" ).arg( dataSize * tmpWidth * tmpHeight ), 5 );
+      return false;
+    }
+    CPLErrorReset();
+
+
+    CPLErr err = gdalRasterIO( gdalBand, GF_Read,
+                               srcLeft, srcTop, srcWidth, srcHeight,
+                               static_cast<void *>( tmpBlock ),
+                               tmpWidth, tmpHeight, type,
+                               0, 0, feedback );
+
+    if ( err != CPLE_None )
+    {
+      const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() ) ;
+      if ( feedback )
+        feedback->appendError( lastError );
+
+      QgsLogger::warning( "RasterIO error: " + lastError );
+      qgsFree( tmpBlock );
+      return false;
+    }
+
+    GDALDriverH hDriverMem = GDALGetDriverByName( "MEM" );
+    if ( !hDriverMem )
+    {
+      qgsFree( tmpBlock );
+      return false;
+    }
+    gdal::dataset_unique_ptr hSrcDS( GDALCreate(
+                                       hDriverMem, "", tmpWidth, tmpHeight, 0, GDALGetRasterDataType( gdalBand ), nullptr ) );
+
+    char **papszOptions = QgsGdalUtils::papszFromStringList( QStringList()
+                          << QStringLiteral( "PIXELOFFSET=%1" ).arg( dataSize )
+                          << QStringLiteral( "LINEOFFSET=%1" ).arg( dataSize * tmpWidth )
+                          << QStringLiteral( "DATAPOINTER=%1" ).arg( reinterpret_cast< qulonglong >( tmpBlock ) ) );
+    GDALAddBand( hSrcDS.get(),  GDALGetRasterDataType( gdalBand ), papszOptions );
+    CSLDestroy( papszOptions );
+
+    GDALRasterIOExtraArg sExtraArg;
+    INIT_RASTERIO_EXTRA_ARG( sExtraArg );
+
+    if ( mZoomedOutResamplingMethod == ResamplingMethod::Bilinear )
+      sExtraArg.eResampleAlg = GRIORA_Bilinear;
+    else if ( mZoomedOutResamplingMethod == ResamplingMethod::Cubic )
+      sExtraArg.eResampleAlg = GRIORA_Cubic;
+    else
+      sExtraArg.eResampleAlg = GRIORA_NearestNeighbour;
+    CPLErr eErr = GDALRasterIOEx( GDALGetRasterBand( hSrcDS.get(), 1 ),
+                                  GF_Read,
+                                  0, 0, tmpWidth, tmpHeight,
+                                  static_cast<char *>( data ) +
+                                  ( tgtTopOri * bufferWidthPix + tgtLeftOri ) * dataSize,
+                                  tgtWidth,
+                                  tgtHeight,
+                                  type,
+                                  dataSize,
+                                  dataSize * bufferWidthPix,
+                                  &sExtraArg );
+
+    qgsFree( tmpBlock );
+
+    return eErr == CE_None;
   }
 
   const int tgtTop = tgtTopOri;

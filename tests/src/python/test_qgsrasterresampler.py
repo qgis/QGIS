@@ -429,7 +429,7 @@ class TestQgsRasterResampler(unittest.TestCase):
             block = provider.block(1, self._getExtentRequestInside(), 1, 1)
             self.checkRawBlockContents(block, [[86]])
 
-    def testGDALResampling_downsampling_bilinear_ignored(self):
+    def testGDALResampling_downsampling_bilinear_beyond_max_oversampling_factor(self):
 
         with self.setupGDALResampling() as provider:
             provider.setMaxOversampling(1.5)
@@ -437,8 +437,27 @@ class TestQgsRasterResampler(unittest.TestCase):
             provider.setZoomedInResamplingMethod(QgsRasterDataProvider.ResamplingMethod.Cubic)  # ignored
             block = provider.block(1, self._getExtentRequestInside(), 1, 1)
             # as we request at a x2 oversampling factor and the limit is 1.5
-            # fallback to nearest neighbour
-            self.checkRawBlockContents(block, [[50]])
+            # fallback to an alternate method using first nearest resampling
+            # and then bilinear
+            self.checkRawBlockContents(block, [[120]])
+
+    def testGDALResampling_downsampling_bilinear_beyond_max_oversampling_factor_containing_raster_extent(self):
+
+        xmin = 100
+        ymax = 1000
+        xres = 5
+        yres = 5
+
+        extent = QgsRectangle(xmin - 10 * xres,
+                              ymax - (5 + 10) * yres,
+                              xmin + (5 + 10) * xres,
+                              ymax + 10 * yres)
+
+        with self.setupGDALResampling() as provider:
+            provider.setZoomedInResamplingMethod(QgsRasterDataProvider.ResamplingMethod.Bilinear)
+            provider.setMaxOversampling(1)
+            block = provider.block(1, extent, 3, 3)
+            self.checkRawBlockContents(block, [[0, 0, 0], [0, 50.0, 0], [0, 0, 0]])
 
     def testGDALResampling_nominal_resolution_containing_raster_extent(self):
 
