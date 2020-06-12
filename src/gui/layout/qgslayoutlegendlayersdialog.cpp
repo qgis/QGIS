@@ -71,7 +71,7 @@ QList< QgsMapLayer *> QgsLayoutLegendLayersDialog::selectedLayers() const
 void QgsLayoutLegendLayersDialog::filterVisible( bool enabled )
 {
   if ( enabled )
-    mModel->setLayerWhitelist( mVisibleLayers );
+    mModel->setLayerAllowlist( mVisibleLayers );
   else
-    mModel->setLayerWhitelist( QList< QgsMapLayer * >() );
+    mModel->setLayerAllowlist( QList< QgsMapLayer * >() );
 }

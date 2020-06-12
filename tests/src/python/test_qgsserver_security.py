@@ -52,10 +52,10 @@ class TestQgsServerSecurity(QgsServerTestBase):
     def test_wms_getfeatureinfo_filter_and_based_blind(self):
         """
         And-based blind attack to check the kind of database currently used (if
-        the result is valid for the point nammed 'b', then sqlite_version()
+        the result is valid for the point named 'b', then sqlite_version()
         function exist).
 
-        But does not work because of the whitelist.
+        But does not work because of the allowlist.
 
         If you remove the safety check, this is a valid injection.
         """
@@ -73,7 +73,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
         Time-based blind to check the current version of database. If the
         server is too long to respond, then we have the answer!
 
-        But it does not work because of the whitelist.
+        But it does not work because of the allowlist.
 
         If you remove the safety check, this is a valid injection.
         """
@@ -133,7 +133,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
         The aim is to retrieve name of tables within the database (like
         'SpatialIndex').
 
-        But the whitelist blocks this request because of invalid tokens.
+        But the allowlist blocks this request because of invalid tokens.
 
         If you remove the safety check, this is a valid injection.
         """
@@ -150,7 +150,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
         """
         The aim is to retrieve data from an excluded layer.
 
-        But the whitelist blocks this request because of invalid tokens.
+        But the allowlist blocks this request because of invalid tokens.
 
         If you remove the safety check, this is a valid injection.
         """
@@ -166,7 +166,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
     def test_wms_getfeatureinfo_filter_unicode(self):
         """
         The aim is to send some invalid token in unicode to bypass the
-        whitelist.
+        allowlist.
 
         But unicode is interpreted and checked by the safety function.
         """
@@ -208,7 +208,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
         # self.assertTrue(b"name = 'a'" in d) #true if sanity check deactivated
         self.assertTrue(self.check_service_exception_report(d))
 
-    def test_wms_getfeatureinfo_filter_whitelist(self):
+    def test_wms_getfeatureinfo_filter_allowlist(self):
         """
         The aim is to check that some tokens cannot pass the safety check
         whatever their positions in the filter string.
