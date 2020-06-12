@@ -317,7 +317,9 @@ bool QgsVirtualLayerProvider::createIt()
       provider.replace( QLatin1String( "'" ), QLatin1String( "''" ) );
       QString source = mLayers.at( i ).source;
       source.replace( QLatin1String( "'" ), QLatin1String( "''" ) );
-      QString encoding = mLayers.at( i ).encoding;
+      QString encoding = mLayers.at( i ).encoding.isEmpty()
+                         ? QStringLiteral( "System" )
+                         : mLayers.at( i ).encoding;
       QString createStr = QStringLiteral( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer('%2','%4',%3)" )
                           .arg( vname,
                                 provider,
@@ -555,7 +557,10 @@ QgsRectangle QgsVirtualLayerProvider::extent() const
 void QgsVirtualLayerProvider::updateStatistics() const
 {
   bool hasGeometry = mDefinition.geometryWkbType() != QgsWkbTypes::NoGeometry;
-  QString subset = mSubset.isEmpty() ? QString() : " WHERE " + mSubset;
+  QString subset = mSubset.isEmpty() ? QString() : QStringLiteral( " WHERE %1" ).arg( mSubset );
+
+  Q_ASSERT( ! mTableName.isNull() );
+
   QString sql = QStringLiteral( "SELECT Count(*)%1 FROM %2%3" )
                 .arg( hasGeometry ? QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : QString(),
                       mTableName,
