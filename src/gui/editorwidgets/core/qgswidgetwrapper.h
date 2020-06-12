@@ -104,7 +104,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     /**
      * \brief Access the widget managed by this wrapper and cast it to a given type
      *
-     * ### Example:
+     * ### Example
      *
      * QPushButton* pb = wrapper->widget<QPushButton*>();
      *

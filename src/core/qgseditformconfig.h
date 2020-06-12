@@ -173,7 +173,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Set the editor widget config for a widget which is not for a simple field.
      *
-     * ### Example:
+     * ### Example
      *
      * \code{.py}
      *   editFormConfig = layer.editFormConfig()

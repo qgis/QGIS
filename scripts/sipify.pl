@@ -185,6 +185,18 @@ sub processDoxygenLine {
     # replace nullptr with None (nullptr means nothing to Python devs)
     $line =~ s/\bnullptr\b/None/g;
 
+    # convert ### style headings
+    if ( $line =~ m/^###\s+(.*)$/) {
+      $line = "$1\n".('-' x length($1));
+    }
+    if ( $line =~ m/^##\s+(.*)$/) {
+      $line = "$1\n".('=' x length($1));
+    }
+    if ( $line =~ m/^#\s+(.*)$/) {
+      $line = "$1\n".('*' x length($1));
+    }
+
+
     if ( $line eq '*' ) {
         $line = '';
     }
