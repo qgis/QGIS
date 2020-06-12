@@ -222,104 +222,60 @@ void QgsDecorationGrid::render( const QgsMapSettings &mapSettings, QgsRenderCont
   QList< QPair< qreal, QLineF > >::const_iterator vIt = verticalLines.constBegin();
   QList< QPair< qreal, QLineF > >::const_iterator hIt = horizontalLines.constBegin();
 
-  //simpler approach: draw vertical lines first, then horizontal ones
-  if ( mGridStyle == QgsDecorationGrid::Line )
+  switch ( mGridStyle )
   {
-    if ( ! mLineSymbol )
-      return;
-
-    mLineSymbol->startRender( context );
-
-    for ( ; vIt != verticalLines.constEnd(); ++vIt )
+    case Line:
     {
-      // context.painter()->drawLine( vIt->second );
-      // need to convert QLineF to QPolygonF ...
-      QVector<QPointF> poly;
-      poly << vIt->second.p1() << vIt->second.p2();
-      mLineSymbol->renderPolyline( QPolygonF( poly ), nullptr, context );
-    }
+      if ( ! mLineSymbol )
+        return;
 
-    for ( ; hIt != horizontalLines.constEnd(); ++hIt )
-    {
-      // context.painter()->drawLine( hIt->second );
-      // need to convert QLineF to QPolygonF ...
-      QVector<QPointF> poly;
-      poly << hIt->second.p1() << hIt->second.p2();
-      mLineSymbol->renderPolyline( QPolygonF( poly ), nullptr, context );
-    }
+      mLineSymbol->startRender( context );
 
-    mLineSymbol->stopRender( context );
-  }
-#if 0
-  else if ( mGridStyle == QgsDecorationGrid::Cross )
-  {
-    QPointF intersectionPoint, crossEnd1, crossEnd2;
-    for ( ; vIt != verticalLines.constEnd(); ++vIt )
-    {
-      //start mark
-      crossEnd1 = QgsSymbolLayerUtils::pointOnLineWithDistance( vIt->second.p1(), vIt->second.p2(), mCrossLength );
-      context.painter()->drawLine( vIt->second.p1(), crossEnd1 );
-
-      //test for intersection with every horizontal line
-      hIt = horizontalLines.constBegin();
-      for ( ; hIt != horizontalLines.constEnd(); ++hIt )
-      {
-        if ( hIt->second.intersect( vIt->second, &intersectionPoint ) == QLineF::BoundedIntersection )
-        {
-          crossEnd1 = QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, vIt->second.p1(), mCrossLength );
-          crossEnd2 = QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, vIt->second.p2(), mCrossLength );
-          context.painter()->drawLine( crossEnd1, crossEnd2 );
-        }
-      }
-      //end mark
-      QPointF crossEnd2 = QgsSymbolLayerUtils::pointOnLineWithDistance( vIt->second.p2(), vIt->second.p1(), mCrossLength );
-      context.painter()->drawLine( vIt->second.p2(), crossEnd2 );
-    }
-
-    hIt = horizontalLines.constBegin();
-    for ( ; hIt != horizontalLines.constEnd(); ++hIt )
-    {
-      //start mark
-      crossEnd1 = QgsSymbolLayerUtils::pointOnLineWithDistance( hIt->second.p1(), hIt->second.p2(), mCrossLength );
-      context.painter()->drawLine( hIt->second.p1(), crossEnd1 );
-
-      vIt = verticalLines.constBegin();
       for ( ; vIt != verticalLines.constEnd(); ++vIt )
       {
-        if ( vIt->second.intersect( hIt->second, &intersectionPoint ) == QLineF::BoundedIntersection )
-        {
-          crossEnd1 = QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, hIt->second.p1(), mCrossLength );
-          crossEnd2 = QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, hIt->second.p2(), mCrossLength );
-          context.painter()->drawLine( crossEnd1, crossEnd2 );
-        }
+        // context.painter()->drawLine( vIt->second );
+        // need to convert QLineF to QPolygonF ...
+        QVector<QPointF> poly;
+        poly << vIt->second.p1() << vIt->second.p2();
+        mLineSymbol->renderPolyline( QPolygonF( poly ), nullptr, context );
       }
-      //end mark
-      crossEnd1 = QgsSymbolLayerUtils::pointOnLineWithDistance( hIt->second.p2(), hIt->second.p1(), mCrossLength );
-      context.painter()->drawLine( hIt->second.p2(), crossEnd1 );
-    }
-  }
-#endif
-  else //marker
-  {
-    if ( ! mMarkerSymbol )
-      return;
 
-    mMarkerSymbol->startRender( context );
-
-    QPointF intersectionPoint;
-    for ( ; vIt != verticalLines.constEnd(); ++vIt )
-    {
-      //test for intersection with every horizontal line
-      hIt = horizontalLines.constBegin();
       for ( ; hIt != horizontalLines.constEnd(); ++hIt )
       {
-        if ( hIt->second.intersect( vIt->second, &intersectionPoint ) == QLineF::BoundedIntersection )
+        // context.painter()->drawLine( hIt->second );
+        // need to convert QLineF to QPolygonF ...
+        QVector<QPointF> poly;
+        poly << hIt->second.p1() << hIt->second.p2();
+        mLineSymbol->renderPolyline( QPolygonF( poly ), nullptr, context );
+      }
+
+      mLineSymbol->stopRender( context );
+      break;
+    }
+
+    case Marker:
+    {
+      if ( ! mMarkerSymbol )
+        return;
+
+      mMarkerSymbol->startRender( context );
+
+      QPointF intersectionPoint;
+      for ( ; vIt != verticalLines.constEnd(); ++vIt )
+      {
+        //test for intersection with every horizontal line
+        hIt = horizontalLines.constBegin();
+        for ( ; hIt != horizontalLines.constEnd(); ++hIt )
         {
-          mMarkerSymbol->renderPoint( intersectionPoint, nullptr, context );
+          if ( hIt->second.intersect( vIt->second, &intersectionPoint ) == QLineF::BoundedIntersection )
+          {
+            mMarkerSymbol->renderPoint( intersectionPoint, nullptr, context );
+          }
         }
       }
+      mMarkerSymbol->stopRender( context );
+      break;
     }
-    mMarkerSymbol->stopRender( context );
   }
 
   if ( mShowGridAnnotation )
