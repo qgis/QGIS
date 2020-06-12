@@ -161,6 +161,8 @@ Returns the requested format string
 Returns ``True`` if the HTTP headers were already sent to the client
 %End
 
+  private:
+    QgsRequestHandler &operator=( const QgsRequestHandler & );
 };
 
 /************************************************************************

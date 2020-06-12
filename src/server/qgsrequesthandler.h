@@ -137,6 +137,9 @@ class SERVER_EXPORT QgsRequestHandler
     bool headersSent() const;
 
   private:
+#ifdef SIP_RUN
+    QgsRequestHandler &operator=( const QgsRequestHandler & );
+#endif
 
     void setupParameters();
 
