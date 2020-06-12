@@ -21,6 +21,7 @@
 #include "ui_qgsrendererrasterpropswidgetbase.h"
 
 #include "qgsmaplayerconfigwidget.h"
+#include "qgsresamplingutils.h"
 #include "qgis_gui.h"
 
 
@@ -89,6 +90,8 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
 
     QgsRasterLayer *mRasterLayer = nullptr;
     QgsRasterRendererWidget *mRendererWidget = nullptr;
+
+    QgsResamplingUtils mResamplingUtils;
 };
 
 #endif // QGSRENDERERRASTERPROPERTIESDIALOG_H
