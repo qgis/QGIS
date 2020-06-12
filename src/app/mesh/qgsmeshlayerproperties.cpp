@@ -113,7 +113,7 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
                        mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
-  QString title = QString( tr( "Layer Properties — %1" ) ).arg( lyr->name() );
+  QString title = tr( "Layer Properties — %1" ).arg( lyr->name() );
 
   if ( !mMeshLayer->styleManager()->isDefault( mMeshLayer->styleManager()->currentStyle() ) )
     title += QStringLiteral( " (%1)" ).arg( mMeshLayer->styleManager()->currentStyle() );

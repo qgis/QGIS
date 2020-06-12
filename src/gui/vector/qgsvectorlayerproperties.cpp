@@ -374,7 +374,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
                        mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
-  QString title = QString( tr( "Layer Properties — %1" ) ).arg( mLayer->name() );
+  QString title = tr( "Layer Properties — %1" ).arg( mLayer->name() );
   if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
     title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
   restoreOptionsBaseUi( title );
