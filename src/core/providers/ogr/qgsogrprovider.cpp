@@ -2516,7 +2516,7 @@ bool QgsOgrProvider::createSpatialIndex()
   return false;
 }
 
-QString createIndexName( QString tableName, QString field )
+QString QgsOgrProvider::createIndexName( QString tableName, QString field )
 {
   QRegularExpression safeExp( QStringLiteral( "[^a-zA-Z0-9]" ) );
   tableName.replace( safeExp, QStringLiteral( "_" ) );

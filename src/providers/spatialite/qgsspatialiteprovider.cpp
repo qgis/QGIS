@@ -4341,7 +4341,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   return ret == SQLITE_OK;
 }
 
-QString createIndexName( QString tableName, QString field )
+QString QgsSpatiaLiteProvider::createIndexName( QString tableName, QString field )
 {
   QRegularExpression safeExp( QStringLiteral( "[^a-zA-Z0-9]" ) );
   tableName.replace( safeExp, QStringLiteral( "_" ) );
