@@ -266,6 +266,9 @@ QgsExpressionContext &QgsExpressionContext::operator=( QgsExpressionContext &&ot
 
 QgsExpressionContext &QgsExpressionContext::operator=( const QgsExpressionContext &other )
 {
+  if ( &other == this )
+    return *this;
+
   qDeleteAll( mStack );
   mStack.clear();
   for ( const QgsExpressionContextScope *scope : qgis::as_const( other.mStack ) )
