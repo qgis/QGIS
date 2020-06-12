@@ -786,7 +786,9 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(f.isValid())
         self.assertEqual(f['pk1'], 1)
         self.assertEqual(f['pk2'], 2)
-        self.assertEqual(f['pk3'], 3.1415927)
+
+        # round() needed to make sure Python older than 3.8 do the right thing.
+        self.assertEqual(round(f['pk3'], 5), round(3.1415927, 5))
         self.assertEqual(f['value'], 'test 2')
 
         # can we edit a field?
@@ -801,7 +803,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(f2.isValid())
 
         # just making sure we have the correct feature
-        self.assertEqual(f2['pk3'], 3.1415927)
+        # round() needed to make sure Python older than 3.8 do the right thing.
+        self.assertEqual(round(f2['pk3'], 5), round(3.1415927, 5))
 
         # Then, making sure we really did change our value.
         self.assertEqual(f2['value'], 'Edited Test 2')
@@ -821,7 +824,9 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         f4 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk2 = -9223372036854775800')))
 
         self.assertTrue(f4.isValid())
-        expected_attrs = [4, -9223372036854775800, 7.29154, 'other test']
+        # round() needed to make sure Python older than 3.8 do the right thing.
+        expected_attrs = [4, -9223372036854775800, round(7.29154, 5), 'other test']
+        gotten_attrs = [f4['pk1'], f4['pk2'], round(f4['pk3'], 5), f4['value']]
         self.assertEqual(f4.attributes(), expected_attrs)
 
         # Finally, let's delete one of the features.
@@ -851,7 +856,9 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         fields = vl.fields()
         f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 3.141592741')))
         self.assertTrue(f.isValid())
-        self.assertEqual(f['pk'], 3.1415927)
+
+        # round() needed to make sure Python older than 3.8 do the right thing.
+        self.assertEqual(round(f['pk'], 5), round(3.1415927, 5))
         self.assertEqual(f['value'], 'first test')
 
         # editing
