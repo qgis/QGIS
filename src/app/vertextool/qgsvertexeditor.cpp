@@ -504,6 +504,6 @@ void CoordinateItemDelegate::setEditorData( QWidget *editor, const QModelIndex &
   QLineEdit *lineEdit = qobject_cast<QLineEdit *>( editor );
   if ( lineEdit && index.isValid() )
   {
-    lineEdit->setText( QLocale().toString( index.data( ).toDouble( ) ) );
+    lineEdit->setText( QLocale().toString( index.data( ).toDouble( ), 'f', 4 ) );
   }
 }
