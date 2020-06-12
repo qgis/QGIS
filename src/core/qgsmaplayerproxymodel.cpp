@@ -84,10 +84,15 @@ bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const
 
 void QgsMapLayerProxyModel::setLayerWhitelist( const QList<QgsMapLayer *> &layers )
 {
-  if ( mLayerWhitelist == layers )
+  setLayerAllowlist( layers );
+}
+
+void QgsMapLayerProxyModel::setLayerAllowlist( const QList<QgsMapLayer *> &layers )
+{
+  if ( mLayerAllowlist == layers )
     return;
 
-  mLayerWhitelist = layers;
+  mLayerAllowlist = layers;
   invalidateFilter();
 }
 
@@ -136,7 +141,7 @@ bool QgsMapLayerProxyModel::acceptsLayer( QgsMapLayer *layer ) const
   if ( !layer )
     return false;
 
-  if ( !mLayerWhitelist.isEmpty() && !mLayerWhitelist.contains( layer ) )
+  if ( !mLayerAllowlist.isEmpty() && !mLayerAllowlist.contains( layer ) )
     return false;
 
   if ( mExceptList.contains( layer ) )
@@ -162,7 +167,7 @@ void QgsMapLayerProxyModel::setFilterString( const QString &filter )
 
 bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  if ( mFilters.testFlag( All ) && mExceptList.isEmpty() && mLayerWhitelist.isEmpty() && mExcludedProviders.isEmpty() && mFilterString.isEmpty() )
+  if ( mFilters.testFlag( All ) && mExceptList.isEmpty() && mLayerAllowlist.isEmpty() && mExcludedProviders.isEmpty() && mFilterString.isEmpty() )
     return true;
 
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );

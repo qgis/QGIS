@@ -1700,8 +1700,8 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
 
   // If we deal with a NULL QVariant (and it's not a QByteArray which properly
   // maps NULL values)
-  // If there are more cases like QByteArray, we should consider using a whitelist
-  // instead of a blacklist.
+  // If there are more cases like QByteArray, we should consider using a allowlist
+  // instead of a blocklist.
   if ( varp->isNull() && varp->type() != QVariant::ByteArray )
   {
     sWatchDog = true;

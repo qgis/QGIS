@@ -1837,7 +1837,7 @@ namespace QgsWms
 
     for ( auto tokenIt = tokens.constBegin() ; tokenIt != tokens.constEnd(); ++tokenIt )
     {
-      //whitelist of allowed characters and keywords
+      //allowlist of allowed characters and keywords
       if ( tokenIt->compare( QLatin1String( "," ) ) == 0
            || tokenIt->compare( QLatin1String( "(" ) ) == 0
            || tokenIt->compare( QLatin1String( ")" ) ) == 0
