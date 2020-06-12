@@ -562,9 +562,11 @@ void QgsVirtualLayerProvider::updateStatistics() const
   Q_ASSERT( ! mTableName.isNull() );
 
   QString sql = QStringLiteral( "SELECT Count(*)%1 FROM %2%3" )
-                .arg( hasGeometry ? QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : QString(),
-                      mTableName,
-                      subset );
+                .arg(
+                  hasGeometry ? QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : QString(),
+                  mTableName,
+                  subset
+                );
   Sqlite::Query q( mSqlite.get(), sql );
   if ( q.step() == SQLITE_ROW )
   {
