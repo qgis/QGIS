@@ -140,7 +140,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     struct ANALYSIS_EXPORT LayerFeatureIds
     {
       LayerFeatureIds() = default;
-      LayerFeatureIds( const QMap<QString, QgsFeatureIds> &ids ) SIP_SKIP;
+      LayerFeatureIds( const QMap<QString, QgsFeatureIds> &idsIn ) SIP_SKIP;
 
       QMap<QString, QgsFeatureIds> ids SIP_SKIP;
 
