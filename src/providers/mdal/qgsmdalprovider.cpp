@@ -550,7 +550,7 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
 
   bool isScalar = MDAL_G_hasScalarData( group );
   MDAL_DataLocation location = MDAL_G_dataLocation( group );
-  QgsMeshDatasetGroupMetadata::DataType type;
+  QgsMeshDatasetGroupMetadata::DataType type = QgsMeshDatasetGroupMetadata::DataOnFaces;
   switch ( location )
   {
     case MDAL_DataLocation::DataOnFaces:
