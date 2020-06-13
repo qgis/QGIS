@@ -2747,7 +2747,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
     else
     {
       if ( isCurved )
-        *ptr.iPtr++ = nDims == 2 ? WKBMultiCurve : WKBMultiCurve;
+        *ptr.iPtr++ = nDims == 2 ? WKBMultiCurve : WKBMultiCurveZ;
       else
         *ptr.iPtr++ = nDims == 2 ? WKBMultiLineString : WKBMultiLineString25D;
       *ptr.iPtr++ = lines.size();
