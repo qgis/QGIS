@@ -162,6 +162,9 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
     // it _somehow_ works even when frustum culling is enabled with some camera positions,
     // but then when zoomed in more it would disappear - so let's keep frustum culling disabled
     mEngine->setFrustumCullingEnabled( false );
+
+    // cppcheck wrongly believes skyBox will leak
+    // cppcheck-suppress memleak
   }
 
   // force initial update of chunked entities
