@@ -1015,7 +1015,7 @@ void QgsSpatiaLiteProvider::insertDefaultValue( int fieldIndex, QString defaultV
   {
     QVariant defaultVariant = defaultVal;
 
-    if ( mAttributeFields.at( fieldIndex ).name() != mPrimaryKey || ( mAttributeFields.at( fieldIndex ).name() == mPrimaryKey && !mPrimaryKeyAutoIncrement ) )
+    if ( mAttributeFields.at( fieldIndex ).name() != mPrimaryKey || !mPrimaryKeyAutoIncrement )
     {
       bool ok;
       switch ( mAttributeFields.at( fieldIndex ).type() )
