@@ -27,7 +27,7 @@
 #include <QSettings>
 
 QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WCS" ) )
   , mUri( uri )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
@@ -179,7 +179,7 @@ QString QgsWCSLayerItem::createUri()
 // ---------------------------------------------------------------------------
 
 QgsWCSRootItem::QgsWCSRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WCS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconWcs.svg" );
@@ -218,6 +218,11 @@ void QgsWCSRootItem::onConnectionsChanged()
 QString QgsWcsDataItemProvider::name()
 {
   return QStringLiteral( "WCS" );
+}
+
+QString QgsWcsDataItemProvider::dataProviderKey() const
+{
+  return QStringLiteral( "wcs" );
 }
 
 int QgsWcsDataItemProvider::capabilities() const

@@ -27,6 +27,7 @@
 #include "qgsrasteriterator.h"
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
+#include "qgsinterval.h"
 
 
 class QNetworkReply;
@@ -186,6 +187,23 @@ struct QgsWmsDimensionProperty
   //! Optional, valid only for temporal exents, determines whether data are normally kept current.
   bool      current = false;
 
+  //! Parse the dimension extent to QgsDateTimeRange instance
+  QgsDateTimeRange parseExtent() const
+  {
+    if ( extent.contains( '/' ) )
+    {
+      QStringList extentContent = extent.split( '/' );
+      int extentSize = extentContent.size();
+
+      QDateTime start = QDateTime::fromString( extentContent.at( 0 ), Qt::ISODateWithMs );
+      QDateTime end = QDateTime::fromString( extentContent.at( extentSize - 2 ), Qt::ISODateWithMs );
+
+      if ( start.isValid() & end.isValid() )
+        return QgsDateTimeRange( start, end );
+    }
+
+    return QgsDateTimeRange();
+  }
 };
 
 //! Logo URL Property structure
@@ -300,7 +318,6 @@ struct QgsWmsLayerProperty
   QStringList                             crs;        // coord ref sys
   QgsRectangle                            ex_GeographicBoundingBox;
   QVector<QgsWmsBoundingBoxProperty>      boundingBoxes;
-  QVector<QgsWmsDimensionProperty>        dimension;
   QgsWmsAttributionProperty               attribution;
   QVector<QgsWmsAuthorityUrlProperty>     authorityUrl;
   QVector<QgsWmsIdentifierProperty>       identifier;
@@ -334,6 +351,174 @@ struct QgsWmsLayerProperty
     return true;
   }
 
+  /**
+   * Returns true if it the struct has the dimension with the passed name
+   */
+  bool hasDimension( QString dimensionName ) const
+  {
+    if ( dimensions.isEmpty() )
+      return false;
+
+    for ( const QgsWmsDimensionProperty &dimension : qgis::as_const( dimensions ) )
+    {
+      if ( dimension.name == dimensionName )
+        return true;
+    }
+
+    return false;
+  }
+};
+
+/**
+ * Stores the dates parts from the WMS-T dimension extent.
+ *
+ */
+struct QgsWmstDates
+{
+  QgsWmstDates( QList< QDateTime > dates )
+  {
+    dateTimes = dates;
+  }
+  QgsWmstDates()
+  {
+
+  }
+
+  bool operator== ( const QgsWmstDates &other )
+  {
+    return dateTimes == other.dateTimes;
+  }
+
+  QList< QDateTime > dateTimes;
+};
+
+/**
+ * Stores resolution part of the WMS-T dimension extent.
+ *
+ * If resolution does not exist, active() will return false;
+ */
+struct QgsWmstResolution
+{
+  int year = -1;
+  int month = -1;
+  int day = -1;
+
+  int hour = -1;
+  int minutes = -1;
+  int seconds = -1;
+
+  long long interval()
+  {
+    long long secs = 0.0;
+
+    if ( year != -1 )
+      secs += year * QgsInterval::YEARS ;
+    if ( month != -1 )
+      secs += month * QgsInterval::MONTHS;
+    if ( day != -1 )
+      secs += day * QgsInterval::DAY;
+    if ( hour != -1 )
+      secs += hour * QgsInterval::HOUR;
+    if ( minutes != -1 )
+      secs += minutes * QgsInterval::MINUTE;
+    if ( seconds != -1 )
+      secs += seconds;
+
+    return secs;
+  }
+
+  bool active()
+  {
+    return year != -1 || month != -1 || day != -1 ||
+           hour != -1 || minutes != -1 || seconds != -1;
+  }
+
+  QString text()
+  {
+    QString text( "P" );
+
+    if ( year != -1 )
+    {
+      text.append( QString::number( year ) );
+      text.append( 'Y' );
+    }
+    if ( month != -1 )
+    {
+      text.append( QString::number( month ) );
+      text.append( 'M' );
+    }
+    if ( day != -1 )
+    {
+      text.append( QString::number( day ) );
+      text.append( 'D' );
+    }
+
+    if ( hour != -1 )
+    {
+      if ( !text.contains( 'T' ) )
+        text.append( 'T' );
+      text.append( QString::number( hour ) );
+      text.append( 'H' );
+    }
+    if ( minutes != -1 )
+    {
+      if ( !text.contains( 'T' ) )
+        text.append( 'T' );
+      text.append( QString::number( minutes ) );
+      text.append( 'M' );
+    }
+    if ( seconds != -1 )
+    {
+      if ( !text.contains( 'T' ) )
+        text.append( 'T' );
+      text.append( QString::number( seconds ) );
+      text.append( 'S' );
+    }
+    return text;
+  }
+
+  bool operator== ( const QgsWmstResolution &other )
+  {
+    return year == other.year && month == other.month &&
+           day == other.day && hour == other.hour &&
+           minutes == other.minutes && seconds == other.seconds;
+  }
+
+};
+
+
+/**
+ * Stores dates and resolution structure pair.
+ */
+struct QgsWmstExtentPair
+{
+  QgsWmstExtentPair()
+  {
+  }
+
+  QgsWmstExtentPair( QgsWmstDates otherDates, QgsWmstResolution otherResolution )
+  {
+    dates = otherDates;
+    resolution = otherResolution;
+  }
+
+  bool operator ==( const QgsWmstExtentPair &other )
+  {
+    return dates == other.dates &&
+           resolution == other.resolution;
+  }
+
+  QgsWmstDates dates;
+  QgsWmstResolution resolution;
+};
+
+
+/**
+ * Stores  the WMS-T dimension extent.
+ */
+struct QgsWmstDimensionExtent
+{
+  QList <QgsWmstExtentPair> datesResolutionList;
 };
 
 struct QgsWmtsTheme
@@ -595,6 +780,61 @@ class QgsWmsSettings
 
     QgsWmsParserSettings parserSettings() const { return mParserSettings; }
 
+    /**
+     * Parse the given string extent into a well defined dates and resolution structures.
+     * The string extent comes from WMS-T dimension capabilities.
+     *
+     * \since QGIS 3.14
+     */
+    QgsWmstDimensionExtent parseTemporalExtent( QString extent );
+
+    /**
+     * Sets the dimension extent property
+     *
+     * \see timeDimensionExtent()
+     * \since QGIS 3.14
+     */
+    void setTimeDimensionExtent( QgsWmstDimensionExtent timeDimensionExtent );
+
+    /**
+     * Returns the dimension extent property.
+     *
+     * \see setTimeDimensionExtent()
+     * \since QGIS 3.14
+     */
+    QgsWmstDimensionExtent timeDimensionExtent() const;
+
+    /**
+     * Parse the given string item into a resolution structure.
+     *
+     * \since QGIS 3.14
+     */
+    QgsWmstResolution parseWmstResolution( QString item );
+
+    /**
+     * Parse the given string item into QDateTime instant.
+     *
+     * \since QGIS 3.14
+     */
+    QDateTime parseWmstDateTimes( QString item );
+
+    /**
+     * Returns the datetime with the sum of passed \a dateTime and the \a resolution time.
+     *
+     * \since QGIS 3.14
+     */
+    QDateTime addTime( QDateTime dateTime, QgsWmstResolution resolution );
+
+    /**
+     * Finds the least closest datetime from list of available dimension temporal ranges
+     * with the given \a dateTime.
+     *
+     * \note It works with wms-t capabilities that provide time dimension with temporal ranges only.
+     *
+     * \since QGIS 3.14
+     */
+    QDateTime findLeastClosestDateTime( QDateTime dateTime, bool dateOnly = false ) const;
+
   protected:
     QgsWmsParserSettings    mParserSettings;
 
@@ -602,6 +842,28 @@ class QgsWmsSettings
     bool                    mTiled;
     //! whether we actually work with XYZ tiles instead of WMS / WMTS
     bool mXyz;
+
+    //! Whether we are dealing with WMS-T
+    bool mIsTemporal = false;
+
+    //! Whether we are dealing bi-temporal dimensional WMS-T
+    bool mIsBiTemporal = false;
+
+    //! Temporal extent from dimension property in WMS-T
+    QString mTemporalExtent;
+
+    //! Fixed temporal range for the data provider
+    QgsDateTimeRange mFixedRange;
+
+    //! Fixed reference temporal range for the data provider
+    QgsDateTimeRange mFixedReferenceRange;
+
+    //! Stores WMS-T time dimension extent dates
+    QgsWmstDimensionExtent mTimeDimensionExtent;
+
+    //! Stores WMS-T reference dimension extent dates
+    QgsWmstDimensionExtent mReferenceTimeDimensionExtent;
+
     //! whether we are dealing with MBTiles file rather than using network-based tiles
     bool mIsMBTiles = false;
     //! chosen values for dimensions in case of multi-dimensional data (key=dim id, value=dim value)
@@ -730,6 +992,7 @@ class QgsWmsCapabilities
     void parseCapability( const QDomElement &element, QgsWmsCapabilityProperty &capabilityProperty );
     void parseRequest( const QDomElement &element, QgsWmsRequestProperty &requestProperty );
     void parseDimension( const QDomElement &element, QgsWmsDimensionProperty &dimensionProperty );
+    void parseExtent( const QDomElement &element, QVector<QgsWmsDimensionProperty> &dimensionProperties );
     void parseLegendUrl( const QDomElement &element, QgsWmsLegendUrlProperty &legendUrlProperty );
     void parseMetadataUrl( const QDomElement &element, QgsWmsMetadataUrlProperty &metadataUrlProperty );
     void parseLayer( const QDomElement &element, QgsWmsLayerProperty &layerProperty, QgsWmsLayerProperty *parentProperty = nullptr );
@@ -811,6 +1074,7 @@ class QgsWmsCapabilities
     QgsCoordinateTransformContext mCoordinateTransformContext;
 
     friend class QgsWmsProvider;
+    friend class TestQgsWmsCapabilities;
 };
 
 

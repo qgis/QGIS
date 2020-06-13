@@ -21,7 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'April 2016'
 __copyright__ = '(C) 2016, Victor Olaya'
 
-
 import os
 import json
 
@@ -33,7 +32,7 @@ from processing.tools import dataobjects
 from qgis.PyQt.QtWidgets import QMessageBox, QVBoxLayout, QLabel, QLineEdit, QWidget
 from qgis.PyQt.QtGui import QPalette, QColor
 
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, Qgis
 from qgis.gui import QgsMessageBar
 
 
@@ -50,7 +49,7 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
     def accept(self):
         context = dataobjects.createContext()
         try:
-            parameters = self.getParameterValues()
+            parameters = self.createProcessingParameters()
             self.setOutputValues()
             ok, msg = self.algorithm().checkParameterValues(parameters, context)
             if not ok:
@@ -71,7 +70,7 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
             QgsApplication.processingRegistry().providerById('preconfigured').refreshAlgorithms()
         except AlgorithmDialogBase.InvalidParameterValue as e:
             try:
-                self.buttonBox().accepted.connect(lambda: e.widget.setPalette(QPalette()))
+                self.buttonBox().accepted.connect(lambda: e.widget.setPalette(QPalette()))  # noqa do not ask me why
                 palette = e.widget.palette()
                 palette.setColor(QPalette.Base, QColor(255, 255, 0))
                 e.widget.setPalette(palette)

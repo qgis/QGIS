@@ -49,12 +49,14 @@ bool MDAL::Driver::hasWriteDatasetCapability( MDAL_DataLocation location ) const
 {
   switch ( location )
   {
-    case MDAL_DataLocation::DataOnVertices2D:
-      return hasCapability( MDAL::Capability::WriteDatasetsOnVertices2D );
-    case MDAL_DataLocation::DataOnFaces2D:
-      return hasCapability( MDAL::Capability::WriteDatasetsOnFaces2D );
-    case MDAL_DataLocation::DataOnVolumes3D:
-      return hasCapability( MDAL::Capability::WriteDatasetsOnVolumes3D );
+    case MDAL_DataLocation::DataOnVertices:
+      return hasCapability( MDAL::Capability::WriteDatasetsOnVertices );
+    case MDAL_DataLocation::DataOnFaces:
+      return hasCapability( MDAL::Capability::WriteDatasetsOnFaces );
+    case MDAL_DataLocation::DataOnVolumes:
+      return hasCapability( MDAL::Capability::WriteDatasetsOnVolumes );
+    case MDAL_DataLocation::DataOnEdges:
+      return hasCapability( MDAL::Capability::WriteDatasetsOnEdges );
     default:
       return false;
   }
@@ -62,11 +64,16 @@ bool MDAL::Driver::hasWriteDatasetCapability( MDAL_DataLocation location ) const
 
 int MDAL::Driver::faceVerticesMaximumCount() const { return -1; }
 
-std::unique_ptr< MDAL::Mesh > MDAL::Driver::load( const std::string &, MDAL_Status * ) { return std::unique_ptr< MDAL::Mesh >(); }
+std::string MDAL::Driver::buildUri( const std::string &meshFile )
+{
+  return MDAL::buildMeshUri( meshFile, "", this->name() );
+}
 
-void MDAL::Driver::load( const std::string &, Mesh *, MDAL_Status * ) {}
+std::unique_ptr< MDAL::Mesh > MDAL::Driver::load( const std::string &, const std::string & ) { return std::unique_ptr< MDAL::Mesh >(); }
 
-void MDAL::Driver::save( const std::string &, MDAL::Mesh *, MDAL_Status * ) {}
+void MDAL::Driver::load( const std::string &, Mesh * ) {}
+
+void MDAL::Driver::save( const std::string &, MDAL::Mesh * ) {}
 
 void MDAL::Driver::createDatasetGroup( MDAL::Mesh *mesh, const std::string &groupName, MDAL_DataLocation dataLocation, bool hasScalarData, const std::string &datasetGroupFile )
 {

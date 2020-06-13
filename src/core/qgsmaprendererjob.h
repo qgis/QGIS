@@ -78,10 +78,10 @@ struct LayerRenderJob
    * Selective masking handling.
    *
    * A layer can be involved in selective masking in two ways:
+   *
    * - One of its symbol layer masks a symbol layer of another layer.
    *   In this case we need to compute a mask image during the regular
    *   rendering pass that will be stored here;
-   *
    * - Some of its symbol layers are masked by a symbol layer of another layer (or by a label mask)
    *   In this case we need to render the layer once again in a second pass, but with some symbol
    *   layers disabled.
@@ -129,7 +129,7 @@ struct LabelRenderJob
    * There is only one label job, with labels coming from different layers or rules (for rule-based labeling).
    * So we may have different labels with different label masks. We then need one different mask image for each configuration of label masks.
    * Labels that share the same kind of label masks, i.e. having the same set of symbol layers that are to be masked, should share the same mask image.
-   * Labels that have different label masks, i.e. having different set of symbol layers that are to be masked, should have differnent mask images.
+   * Labels that have different label masks, i.e. having different set of symbol layers that are to be masked, should have different mask images.
    * The index in the vector corresponds to the mask identifier.
    * \see maskIdProvider
    */

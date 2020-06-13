@@ -138,5 +138,5 @@ void QgsDecorationTitleDialog::apply()
 
 void QgsDecorationTitleDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#copyright-and-title-labels" ) );
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#title_label_decoration" ) );
 }

@@ -205,12 +205,6 @@ int main( int argc, char *argv[] )
   else
   {
     const int port { tcpServer.serverPort() };
-    std::cout << QObject::tr( "QGIS Development Server listening on http://%1:%2" )
-              .arg( ipAddress ).arg( port ).toStdString() << std::endl;
-
-#ifndef Q_OS_WIN
-    std::cout << QObject::tr( "CTRL+C to exit" ).toStdString() << std::endl;
-#endif
 
     QAtomicInt connCounter { 0 };
 
@@ -239,6 +233,12 @@ int main( int argc, char *argv[] )
     server.initPython();
 #endif
 
+    std::cout << QObject::tr( "QGIS Development Server listening on http://%1:%2" )
+              .arg( ipAddress ).arg( port ).toStdString() << std::endl;
+#ifndef Q_OS_WIN
+    std::cout << QObject::tr( "CTRL+C to exit" ).toStdString() << std::endl;
+#endif
+
     // Starts HTTP loop with a poor man's HTTP parser
     tcpServer.connect( &tcpServer, &QTcpServer::newConnection, [ & ]
     {
@@ -259,7 +259,7 @@ int main( int argc, char *argv[] )
       };
 
       // This will delete the connection when disconnected before ready read is called
-      clientConnection->connect( clientConnection, &QAbstractSocket::disconnected, context, connectionDeleter );
+      clientConnection->connect( clientConnection, &QAbstractSocket::disconnected, context, connectionDeleter, Qt::QueuedConnection );
 
       // Incoming connection parser
       clientConnection->connect( clientConnection, &QIODevice::readyRead, context, [ =, &server, &connCounter ] {
@@ -322,15 +322,6 @@ int main( int argc, char *argv[] )
             throw HttpException( QStringLiteral( "HTTP error unsupported method: %1" ).arg( methodString ) );
           }
 
-          // Build URL from env ...
-          QString url { qgetenv( "REQUEST_URI" ) };
-          // ... or from server ip/port and request path
-          if ( url.isEmpty() )
-          {
-            const QString path { firstLinePieces.at( 1 )};
-            url = QStringLiteral( "http://%1:%2%3" ).arg( ipAddress ).arg( port ).arg( path );
-          }
-
           const QString protocol { firstLinePieces.at( 2 )};
           if ( protocol != QStringLiteral( "HTTP/1.0" ) && protocol != QStringLiteral( "HTTP/1.1" ) )
           {
@@ -353,7 +344,24 @@ int main( int argc, char *argv[] )
             const int headerColonPos { headerLine.indexOf( ':' ) };
             if ( headerColonPos > 0 )
             {
-              headers.insert( headerLine.left( headerColonPos ), headerLine.mid( headerColonPos + 1 ) );
+              headers.insert( headerLine.left( headerColonPos ), headerLine.mid( headerColonPos + 2 ) );
+            }
+          }
+
+          // Build URL from env ...
+          QString url { qgetenv( "REQUEST_URI" ) };
+          // ... or from server ip/port and request path
+          if ( url.isEmpty() )
+          {
+            const QString path { firstLinePieces.at( 1 )};
+            // Take Host header if defined
+            if ( headers.contains( QStringLiteral( "Host" ) ) )
+            {
+              url = QStringLiteral( "http://%1%2" ).arg( headers.value( QStringLiteral( "Host" ) ) ).arg( path );
+            }
+            else
+            {
+              url = QStringLiteral( "http://%1:%2%3" ).arg( ipAddress ).arg( port ).arg( path );
             }
           }
 
@@ -372,7 +380,7 @@ int main( int argc, char *argv[] )
           if ( clientConnection->state() == QAbstractSocket::SocketState::ConnectedState )
           {
             clientConnection->connect( clientConnection, &QAbstractSocket::disconnected,
-                                       clientConnection, connectionDeleter );
+                                       clientConnection, connectionDeleter, Qt::QueuedConnection );
           }
           else
           {
@@ -402,12 +410,14 @@ int main( int argc, char *argv[] )
 
           // 10.185.248.71 [09/Jan/2015:19:12:06 +0000] 808840 <time> "GET / HTTP/1.1" 500"
           std::cout << QStringLiteral( "%1 [%2] %3 %4ms \"%5\" %6" )
-                    .arg( clientConnection->peerAddress().toString() )
-                    .arg( QDateTime::currentDateTime().toString() )
-                    .arg( body.size() )
-                    .arg( std::chrono::duration_cast<std::chrono::milliseconds>( elapsedTime ).count() )
-                    .arg( firstLinePieces.join( ' ' ) )
-                    .arg( response.statusCode() ).toStdString() << std::endl;
+                    .arg( clientConnection->peerAddress().toString(),
+                          QDateTime::currentDateTime().toString(),
+                          QString::number( body.size() ),
+                          QString::number( std::chrono::duration_cast<std::chrono::milliseconds>( elapsedTime ).count() ),
+                          firstLinePieces.join( ' ' ),
+                          QString::number( response.statusCode() ) )
+                    .toStdString()
+                    << std::endl;
 
           clientConnection->disconnectFromHost();
         }
@@ -440,7 +450,7 @@ int main( int argc, char *argv[] )
           clientConnection->disconnectFromHost();
         }
 
-      } );
+      }, Qt::QueuedConnection );
 
     } );
 

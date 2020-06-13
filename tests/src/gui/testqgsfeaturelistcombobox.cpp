@@ -26,6 +26,7 @@
 #include <memory>
 
 #include <QLineEdit>
+#include <QSignalSpy>
 
 class QgsFilterLineEdit;
 
@@ -46,10 +47,11 @@ class TestQgsFeatureListComboBox : public QObject
     void testMultipleForeignKeys();
     void testAllowNull();
     void testValuesAndSelection();
+    void testValuesAndSelection_data();
     void nullRepresentation();
+    void testNotExistingYetFeature();
 
   private:
-    void waitForLoaded( QgsFeatureListComboBox *cb );
 
     std::unique_ptr<QgsVectorLayer> mLayer;
 
@@ -120,23 +122,23 @@ void TestQgsFeatureListComboBox::testSetGetLayer()
 
 void TestQgsFeatureListComboBox::testSetGetForeignKey()
 {
-  std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
+  QgsFeatureListComboBox cb;
 
   Q_NOWARN_DEPRECATED_PUSH
-  QVERIFY( cb->identifierValue().isNull() );
+  QVERIFY( cb.identifierValue().isNull() );
 
-  cb->setSourceLayer( mLayer.get() );
-  cb->setDisplayExpression( "\"material\"" );
-  cb->lineEdit()->setText( "ro" );
-  emit cb->lineEdit()->textChanged( "ro" );
-  QVERIFY( cb->identifierValue().isNull() );
+  cb.setSourceLayer( mLayer.get() );
+  cb.setDisplayExpression( "\"material\"" );
+  cb.setIdentifierField( "material" );
 
-  waitForLoaded( cb.get() );
+  QSignalSpy spy( &cb, &QgsFeatureListComboBox::identifierValueChanged );
+  QTest::keyClicks( cb.lineEdit(), "ro" );
+  QTest::keyClick( cb.lineEdit(), Qt::Key_Enter );
 
-  QVERIFY( cb->identifierValue().isNull() );
+  spy.wait();
 
-  cb->setIdentifierValue( 20 );
-  QCOMPARE( cb->identifierValue(), QVariant( 20 ) );
+  QCOMPARE( cb.identifierValue().toString(), QStringLiteral( "iron" ) );
+
   Q_NOWARN_DEPRECATED_POP
 }
 
@@ -158,14 +160,14 @@ void TestQgsFeatureListComboBox::testMultipleForeignKeys()
 
   cb->setIdentifierValuesToNull();
   QCOMPARE( cb->identifierValues().count(), 3 );
-  QCOMPARE( cb->identifierValues(), QVariantList() << QVariant() << QVariant() << QVariant() );
+  QCOMPARE( cb->identifierValues(), QVariantList() << QVariant( QVariant::Int ) << QVariant( QVariant::Int ) << QVariant( QVariant::Int ) );
 
   cb->setIdentifierValues( QVariantList() << "silver" << 888 << "fish" );
   QCOMPARE( cb->identifierValues(), QVariantList() << "silver" << 888 << "fish" );
 
   cb->setIdentifierValuesToNull();
   QCOMPARE( cb->identifierValues().count(), 3 );
-  QCOMPARE( cb->identifierValues(), QVariantList() << QVariant() << QVariant() << QVariant() );
+  QCOMPARE( cb->identifierValues(), QVariantList() << QVariant( QVariant::Int ) << QVariant( QVariant::Int ) << QVariant( QVariant::Int ) );
 
   cb->setIdentifierFields( QStringList() << "material" << "raccord" );
   cb->setDisplayExpression( "\"material\" || ' ' || \"raccord\"" );
@@ -177,7 +179,7 @@ void TestQgsFeatureListComboBox::testMultipleForeignKeys()
 
   cb->setIdentifierValuesToNull();
   QCOMPARE( cb->identifierValues().count(), 2 );
-  QCOMPARE( cb->identifierValues(), QVariantList() << QVariant() << QVariant() );
+  QCOMPARE( cb->identifierValues(), QVariantList() << QVariant( QVariant::Int ) << QVariant( QVariant::Int ) );
 }
 
 void TestQgsFeatureListComboBox::testAllowNull()
@@ -186,65 +188,95 @@ void TestQgsFeatureListComboBox::testAllowNull()
   // Note to self: implement this!
 }
 
+void TestQgsFeatureListComboBox::testValuesAndSelection_data()
+{
+  QTest::addColumn<bool>( "allowNull" );
+
+  QTest::newRow( "allowNull=true" ) << true;
+  QTest::newRow( "allowNull=false" ) << false;
+}
+
 void TestQgsFeatureListComboBox::testValuesAndSelection()
 {
+  QFETCH( bool, allowNull );
+
+
   QgsApplication::setNullRepresentation( QStringLiteral( "nope" ) );
   std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
 
+  QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
+  QEventLoop loop;
+  connect( model, &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+
   cb->setSourceLayer( mLayer.get() );
   cb->setDisplayExpression( QStringLiteral( "\"raccord\"" ) );
-  cb->setAllowNull( true );
+  cb->setAllowNull( allowNull );
 
   //check if everything is fine:
-  waitForLoaded( cb.get() );
-  QCOMPARE( cb->currentIndex(), cb->nullIndex() );
-  QCOMPARE( cb->currentText(), QStringLiteral( "nope" ) );
+  loop.exec();
+  QCOMPARE( cb->currentIndex(), allowNull ? cb->nullIndex() : 0 );
+  QCOMPARE( cb->currentText(), allowNull ? QStringLiteral( "nope" ) : QStringLiteral( "brides" ) );
 
   //check if text correct, selected and if the clear button disappeared:
   cb->mLineEdit->clearValue();
-  waitForLoaded( cb.get() );
-  QCOMPARE( cb->currentIndex(), cb->nullIndex() );
-  QCOMPARE( cb->currentText(), QStringLiteral( "nope" ) );
-  QCOMPARE( cb->lineEdit()->selectedText(), QStringLiteral( "nope" ) );
+  QCOMPARE( cb->currentIndex(), allowNull ? cb->nullIndex() : 0 );
+  QCOMPARE( cb->currentText(), allowNull ? QStringLiteral( "nope" ) : QString() );
+  QCOMPARE( cb->lineEdit()->selectedText(), allowNull ? QStringLiteral( "nope" ) : QString() );
   QVERIFY( ! cb->mLineEdit->mClearAction );
 
   //check if text is selected after receiving focus
   cb->setFocus();
-  waitForLoaded( cb.get() );
-  QCOMPARE( cb->currentIndex(), cb->nullIndex() );
-  QCOMPARE( cb->currentText(), QStringLiteral( "nope" ) );
-  QCOMPARE( cb->lineEdit()->selectedText(), QStringLiteral( "nope" ) );
+  QCOMPARE( cb->currentIndex(), allowNull ? cb->nullIndex() : 0 );
+  QCOMPARE( cb->currentText(), allowNull ? QStringLiteral( "nope" ) : QString() );
+  QCOMPARE( cb->lineEdit()->selectedText(), allowNull ? QStringLiteral( "nope" ) : QString() );
   QVERIFY( ! cb->mLineEdit->mClearAction );
 
   //check with another entry, clear button needs to be there then:
   QTest::keyClicks( cb.get(), QStringLiteral( "sleeve" ) );
-  //QTest::keyClick(cb.get(), Qt::Key_Enter );
-  waitForLoaded( cb.get() );
+  loop.exec();
   QCOMPARE( cb->currentText(), QStringLiteral( "sleeve" ) );
   QVERIFY( cb->mLineEdit->mClearAction );
-  //QVERIFY( cb->currentIndex() != cb->nullIndex());
-  //QCOMPARE( cb->model()->data( cb->currentModelIndex() ).toString(), QStringLiteral( "sleeve" )  );
 }
 
 void TestQgsFeatureListComboBox::nullRepresentation()
 {
-
   QgsApplication::setNullRepresentation( QStringLiteral( "nope" ) );
   std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
-  cb->setAllowNull( true );
 
+  QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
+  QEventLoop loop;
+  connect( model, &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+
+  cb->setAllowNull( true );
+  cb->setSourceLayer( mLayer.get() );
+
+  loop.exec();
   QCOMPARE( cb->lineEdit()->text(), QStringLiteral( "nope" ) );
   QCOMPARE( cb->nullIndex(), 0 );
-
 }
 
-void TestQgsFeatureListComboBox::waitForLoaded( QgsFeatureListComboBox *cb )
-{
-  QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
 
-  // Wait
-  while ( model->isLoading() )
-  {}
+void TestQgsFeatureListComboBox::testNotExistingYetFeature()
+{
+  // test behavior when feature list combo box identifier values references a
+  // not existing yet feature (created but not saved for instance)
+
+  std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
+  QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
+  QEventLoop loop;
+  connect( model, &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+
+  QgsApplication::setNullRepresentation( QStringLiteral( "nope" ) );
+
+  QVERIFY( cb->identifierValues().isEmpty() );
+
+  cb->setSourceLayer( mLayer.get() );
+  cb->setAllowNull( true );
+
+  cb->setIdentifierValues( QVariantList() << 42 );
+
+  loop.exec();
+  QCOMPARE( cb->currentText(), QStringLiteral( "(42)" ) );
 }
 
 QGSTEST_MAIN( TestQgsFeatureListComboBox )

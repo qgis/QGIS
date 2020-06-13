@@ -62,12 +62,14 @@ class APP_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
     void minMaxChanged();
     void minMaxEdited();
     void recalculateMinMaxButtonClicked();
+    void onEdgeStrokeWidthMethodChanged();
 
   private:
     double lineEditValue( const QLineEdit *lineEdit ) const;
-    QgsMeshRendererScalarSettings::DataInterpolationMethod dataIntepolationMethod() const;
+    QgsMeshRendererScalarSettings::DataResamplingMethod dataIntepolationMethod() const;
 
     bool dataIsDefinedOnFaces() const;
+    bool dataIsDefinedOnEdges() const;
 
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
     int mActiveDatasetGroup = -1;

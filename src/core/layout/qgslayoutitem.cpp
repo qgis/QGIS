@@ -1216,6 +1216,10 @@ void QgsLayoutItem::drawFrame( QgsRenderContext &context )
   p->save();
   p->setPen( pen() );
   p->setBrush( Qt::NoBrush );
+
+  if ( context.flags() & QgsRenderContext::Antialiasing )
+    p->setRenderHint( QPainter::Antialiasing, true );
+
   p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
   p->restore();
 }
@@ -1229,6 +1233,10 @@ void QgsLayoutItem::drawBackground( QgsRenderContext &context )
   p->save();
   p->setBrush( brush() );
   p->setPen( Qt::NoPen );
+
+  if ( context.flags() & QgsRenderContext::Antialiasing )
+    p->setRenderHint( QPainter::Antialiasing, true );
+
   p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
   p->restore();
 }

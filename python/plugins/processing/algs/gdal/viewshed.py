@@ -44,7 +44,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class viewshed(GdalAlgorithm):
-
     INPUT = 'INPUT'
     BAND = 'BAND'
     OBSERVER = 'OBSERVER'

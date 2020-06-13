@@ -25,6 +25,7 @@
 #include "qgsgpsmarker.h"
 #include "qgsmaptoolcapture.h"
 #include "qgspanelwidget.h"
+#include "qgsmapcanvasinteractionblocker.h"
 #include <qwt_plot_curve.h>
 #ifdef WITH_QWTPOLAR
 #include <qwt_polar_plot.h>
@@ -48,12 +49,14 @@ class QColor;
  * A dock widget that displays information from a GPS device and
  * allows the user to capture features using gps readings to
  * specify the geometry.*/
-class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::QgsGpsInformationWidgetBase
+class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCanvasInteractionBlocker, private Ui::QgsGpsInformationWidgetBase
 {
     Q_OBJECT
   public:
     QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr );
     ~QgsGpsInformationWidget() override;
+
+    bool blockCanvasInteraction( Interaction interaction ) const override;
 
   public slots:
     void tapAndHold( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
@@ -111,7 +114,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
     void updateTimeZones();
     QVariant timestamp( QgsVectorLayer *vlayer, int idx );
     QgsGpsConnection *mNmea = nullptr;
-    QgsMapCanvas *mMapCanvas = nullptr;
+    QPointer< QgsMapCanvas > mMapCanvas;
     QgsGpsMarker *mMapMarker = nullptr;
     QgsGpsBearingItem *mMapBearingItem = nullptr;
 
@@ -133,7 +136,8 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
 // not used    QPointF gpsToPixelPosition( const QgsPoint& point );
     QgsRubberBand *mRubberBand = nullptr;
     QgsPointXY mLastGpsPosition;
-    QVector<QgsPointXY> mCaptureList;
+    QVector<QgsPoint> mCaptureList;
+    double mLastElevation = 0.0;
     FixStatus mLastFixStatus;
     QString mDateTimeFormat; // user specified format string in registry (no UI presented)
     QPointer< QgsVectorLayer > mLastLayer;

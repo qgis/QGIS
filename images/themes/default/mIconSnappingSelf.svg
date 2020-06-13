@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   sodipodi:docname="mIconSnappingSelf.svg"
+   id="svg68"
+   version="1.1"
+   width="24"
+   viewBox="0 0 24 24"
+   height="24">
+  <metadata
+     id="metadata74">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs72" />
+  <sodipodi:namedview
+     inkscape:current-layer="svg68"
+     inkscape:window-maximized="0"
+     inkscape:window-y="120"
+     inkscape:window-x="351"
+     inkscape:cy="15.032678"
+     inkscape:cx="21.715662"
+     inkscape:zoom="14.849242"
+     showgrid="false"
+     id="namedview70"
+     inkscape:window-height="1163"
+     inkscape:window-width="1445"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     guidetolerance="10"
+     gridtolerance="10"
+     objecttolerance="10"
+     borderopacity="1"
+     bordercolor="#666666"
+     pagecolor="#ffffff" />
+  <g
+     id="g66"
+     transform="translate(0.04085775,-7.9316355)"
+     stroke-linecap="round">
+    <path
+       sodipodi:nodetypes="cccc"
+       id="path60"
+       stroke-width="2"
+       stroke-linejoin="round"
+       stroke="#8cbe8c"
+       fill="none"
+       d="M 20.566062,23.218131 4.4877133,14.977485 9.0817013,27.060272 2,30" />
+    <ellipse
+       id="ellipse62"
+       stroke-width="2"
+       stroke="#ffffff"
+       ry="2.5"
+       rx="0.75"
+       fill="#322825"
+       cy="14"
+       cx="-14.75" />
+    <circle
+       id="circle64"
+       stroke-width="1.031"
+       stroke="#8c8c8c"
+       r="2.034729"
+       fill="#bebebe"
+       cy="26.858242"
+       cx="8.6102972" />
+    <circle
+       cx="4.4877133"
+       cy="15.179515"
+       fill="#bebebe"
+       r="2.034729"
+       stroke="#8c8c8c"
+       stroke-width="1.031"
+       id="circle64-5" />
+  </g>
+  <g
+     transform="matrix(1.2651778,0,0,1.2651778,-4.6265242,-0.70591315)"
+     id="g1921">
+    <path
+       sodipodi:nodetypes="cccc"
+       id="path1853"
+       stroke-width="0.35534"
+       stroke-linecap="round"
+       stroke="#505050"
+       overflow="visible"
+       fill="#505050"
+       d="m 19.461512,9.2175166 -2.259422,1.3635194 2.663548,1.925751 z" />
+    <path
+       id="path1855"
+       stroke-width="0.35534"
+       stroke-linecap="round"
+       stroke="#8b7617"
+       overflow="visible"
+       fill="#fce94f"
+       d="M 15.362026,1.9819405 12.900159,3.4032995 16.927342,10.37859 19.38921,8.9572295 15.362026,1.9819405" />
+    <path
+       id="path1861"
+       style="overflow:visible;opacity:0.5;fill:#fce94f;stroke:#8b7617;stroke-width:0.35534;stroke-linecap:round"
+       d="m 13.957675,3.3398245 3.79029,6.564978" />
+    <path
+       id="path1863"
+       stroke-width="0.236893"
+       stroke-linecap="square"
+       stroke="#969696"
+       overflow="visible"
+       fill="#969696"
+       d="M 19.369733,12.033342 17.379211,10.47792 18.198585,10.004853 Z" />
+    <path
+       id="path1865"
+       style="overflow:visible;opacity:0.5;fill:#fce94f;stroke:#8b7617;stroke-width:0.35534;stroke-linecap:round"
+       d="m 14.983453,2.7475915 3.790289,6.564978" />
+    <path
+       id="path1867"
+       stroke-width="0.236893"
+       stroke-linecap="round"
+       stroke="#969696"
+       overflow="visible"
+       fill="#e6e6e6"
+       d="m 15.192412,1.4694895 -2.651241,1.530695 0.516222,0.894122 2.65124,-1.530695 z" />
+    <path
+       id="path1869"
+       stroke-width="0.236893"
+       stroke-linecap="square"
+       stroke="#e6e6e6"
+       overflow="visible"
+       fill="#e6e6e6"
+       d="M 19.70856,11.92433 19.319283,9.3578195 18.499909,9.8308845 Z" />
+  </g>
+</svg>

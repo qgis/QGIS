@@ -42,7 +42,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class contour(GdalAlgorithm):
-
     INPUT = 'INPUT'
     BAND = 'BAND'
     INTERVAL = 'INTERVAL'
@@ -139,7 +138,7 @@ class contour(GdalAlgorithm):
     def commandName(self):
         return 'gdal_contour'
 
-    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+    def _buildArgsList(self, parameters, context, feedback, executing):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
@@ -192,5 +191,60 @@ class contour(GdalAlgorithm):
 
         arguments.append(inLayer.source())
         arguments.append(output)
+        return arguments
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+        arguments = self._buildArgsList(parameters, context, feedback, executing)
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
+
+
+class contour_polygon(contour):
+    FIELD_NAME_MIN = 'FIELD_NAME_MIN'
+    FIELD_NAME_MAX = 'FIELD_NAME_MAX'
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
+        # FIELD_NAME isn't used in polygon mode
+        self.removeParameter(contour.FIELD_NAME)
+
+        self.addParameter(QgsProcessingParameterString(self.FIELD_NAME_MIN,
+                                                       self.tr('Attribute name for minimum elevation of contour polygon'),
+                                                       defaultValue='ELEV_MIN',
+                                                       optional=True))
+
+        self.addParameter(QgsProcessingParameterString(self.FIELD_NAME_MAX,
+                                                       self.tr('Attribute name for maximum elevation of contour polygon'),
+                                                       defaultValue='ELEV_MAX',
+                                                       optional=True))
+
+        # Need to replace the output parameter, as we are producing a different type of output
+        self.removeParameter(contour.OUTPUT)
+        self.addParameter(QgsProcessingParameterVectorDestination(
+            contour.OUTPUT, self.tr('Contours'), QgsProcessing.TypeVectorPolygon))
+
+    def name(self):
+        return 'contour_polygon'
+
+    def displayName(self):
+        return self.tr('Contour Polygons')
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+        arguments = self._buildArgsList(parameters, context, feedback, executing)
+
+        fieldNameMin = self.parameterAsString(parameters, self.FIELD_NAME_MIN, context)
+        fieldNameMax = self.parameterAsString(parameters, self.FIELD_NAME_MAX, context)
+
+        if fieldNameMin:
+            arguments.insert(0, fieldNameMin)
+            arguments.insert(0, '-amin')
+
+        if fieldNameMax:
+            arguments.insert(0, fieldNameMax)
+            arguments.insert(0, '-amax')
+
+        arguments.insert(0, "-p")
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

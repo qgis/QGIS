@@ -509,8 +509,9 @@ class CORE_EXPORT QgsFeatureRenderer
     /**
      * Clones generic renderer data to another renderer.
      * Currently clones
-     *  * Order By
-     *  * Paint Effect
+     *
+     * - Order By
+     * - Paint Effect
      *
      * \param destRenderer destination renderer for copied effect
      */

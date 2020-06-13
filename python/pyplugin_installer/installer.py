@@ -119,7 +119,7 @@ class QgsPluginInstaller(QObject):
 
         for key in repositories.allEnabled():
             if reloadMode or repositories.all()[key]["state"] == 3:  # if state = 3 (error or not fetched yet), try to fetch once again
-                repositories.requestFetching(key)
+                repositories.requestFetching(key, force_reload=reloadMode)
 
         if repositories.fetchingInProgress():
             fetchDlg = QgsPluginInstallerFetchingDialog(iface.mainWindow())
@@ -220,14 +220,25 @@ class QgsPluginInstaller(QObject):
                 "installed": plugin["installed"] and "true" or "false",
                 "available": plugin["available"] and "true" or "false",
                 "status": plugin["status"],
+                "status_exp": plugin["status_exp"],
                 "error": plugin["error"],
                 "error_details": plugin["error_details"],
+                "create_date": plugin["create_date"],
+                "update_date": plugin["update_date"],
+                "create_date_stable": plugin["create_date_stable"],
+                "update_date_stable": plugin["update_date_stable"],
+                "create_date_experimental": plugin["create_date_experimental"],
+                "update_date_experimental": plugin["update_date_experimental"],
                 "experimental": plugin["experimental"] and "true" or "false",
                 "deprecated": plugin["deprecated"] and "true" or "false",
                 "trusted": plugin["trusted"] and "true" or "false",
                 "version_available": plugin["version_available"],
+                "version_available_stable": plugin["version_available_stable"] or "",
+                "version_available_experimental": plugin["version_available_experimental"] or "",
                 "zip_repository": plugin["zip_repository"],
                 "download_url": plugin["download_url"],
+                "download_url_stable": plugin["download_url_stable"],
+                "download_url_experimental": plugin["download_url_experimental"],
                 "filename": plugin["filename"],
                 "downloads": plugin["downloads"],
                 "average_vote": plugin["average_vote"],
@@ -282,19 +293,20 @@ class QgsPluginInstaller(QObject):
             self.installPlugin(key, quiet=True)
 
     # ----------------------------------------- #
-    def installPlugin(self, key, quiet=False):
+    def installPlugin(self, key, quiet=False, stable=True):
         """ Install given plugin """
         error = False
+        status_key = 'status' if stable else 'status_exp'
         infoString = ('', '')
         plugin = plugins.all()[key]
-        previousStatus = plugin["status"]
+        previousStatus = plugin[status_key]
         if not plugin:
             return
-        if plugin["status"] == "newer" and not plugin["error"]:  # ask for confirmation if user downgrades an usable plugin
+        if plugin[status_key] == "newer" and not plugin["error"]:  # ask for confirmation if user downgrades an usable plugin
             if QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), self.tr("Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!"), QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
                 return
 
-        dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin)
+        dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin, stable=stable)
         dlg.exec_()
 
         if dlg.result():

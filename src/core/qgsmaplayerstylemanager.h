@@ -136,6 +136,14 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
      */
     bool isDefault( const QString &styleName ) const;
 
+    /**
+     * Copies all styles from \a other.
+     * In case there is already a style with the same name it will be overwritten.
+     *
+     * \since QGIS 3.14
+     */
+    void copyStylesFrom( QgsMapLayerStyleManager *other );
+
   signals:
     //! Emitted when a new style has been added
     void styleAdded( const QString &name );

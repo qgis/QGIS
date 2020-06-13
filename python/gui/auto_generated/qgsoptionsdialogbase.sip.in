@@ -66,6 +66,13 @@ Sometimes useful to do at end of subclass's constructor.
 :param title: the window title (it does not need to be defined if previously given to initOptionsBase();
 %End
 
+    void restoreLastPage();
+%Docstring
+Refocus the active tab from the last time the dialog was shown.
+
+.. versionadded:: 3.14
+%End
+
     void resizeAlltabs( int index );
 %Docstring
 Resizes all tabs when the dialog is resized
@@ -78,6 +85,42 @@ Resizes all tabs when the dialog is resized
     bool iconOnly();
 %Docstring
 Determine if the options list is in icon only mode
+%End
+
+    void setCurrentPage( const QString &page );
+%Docstring
+Sets the dialog ``page`` (by object name) to show.
+
+.. versionadded:: 3.14
+%End
+
+    void addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget /Transfer/ );
+%Docstring
+Adds a new page to the dialog pages.
+
+The ``title``, ``tooltip`` and ``icon`` arguments dictate the page list item title, tooltip and icon respectively.
+
+The page content is specified via the ``widget`` argument. Ownership of ``widget`` is transferred to the dialog.
+
+.. seealso:: :py:func:`insertPage`
+
+.. versionadded:: 3.14
+%End
+
+    void insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget /Transfer/, const QString &before );
+%Docstring
+Inserts a new page into the dialog pages.
+
+The ``title``, ``tooltip`` and ``icon`` arguments dictate the page list item title, tooltip and icon respectively.
+
+The page content is specified via the ``widget`` argument. Ownership of ``widget`` is transferred to the dialog.
+
+The ``before`` argument specifies the object name of an existing page. The new page will be inserted directly
+before the matching page.
+
+.. seealso:: :py:func:`addPage`
+
+.. versionadded:: 3.14
 %End
 
   public slots:

@@ -27,7 +27,6 @@ from qgis.gui import QgsMapToolEmitPoint
 
 
 class PointMapTool(QgsMapToolEmitPoint):
-
     complete = pyqtSignal()
 
     def __init__(self, canvas):

@@ -66,7 +66,6 @@ from ..db_plugins import createDbPlugin
 
 
 class BaseError(Exception):
-
     """Base class for exceptions in the plugin."""
 
     def __init__(self, e):
@@ -204,7 +203,7 @@ class DBPlugin(QObject):
         # First try with the new core API, if that fails, proceed with legacy code
         try:
             md = QgsProviderRegistry.instance().providerMetadata(self.providerName())
-            for name in md.dbConnections().keys():
+            for name in md.dbConnections(False).keys():
                 conn_list.append(createDbPlugin(self.typeName(), name))
         except (AttributeError, QgsProviderConnectionException):
             settings = QgsSettings()
@@ -532,6 +531,7 @@ class Database(DbItemObject):
 
     def prepareMenuMoveTableToSchemaActionSlot(self, item, menu, mainWindow):
         """ populate menu with schemas """
+
         def slot(x):
             return lambda: mainWindow.invokeCallback(self.moveTableToSchemaActionSlot, x)
 
@@ -771,8 +771,8 @@ class Table(DbItemObject):
         return QgsVectorLayer(uri, self.name, provider)
 
     def getValidQgisUniqueFields(self, onlyOne=False):
-        """ list of fields valid to load the table as layer in Qgis canvas.
-                Qgis automatically search for a valid unique field, so it's
+        """ list of fields valid to load the table as layer in QGIS canvas.
+                QGIS automatically search for a valid unique field, so it's
                 needed only for queries and views """
 
         ret = []
@@ -1277,7 +1277,6 @@ class TableField(TableSubItemObject):
 
 
 class TableConstraint(TableSubItemObject):
-
     """ class that represents a constraint of a table (relation) """
 
     TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique, TypeExclusion, TypeUnknown = list(range(6))
@@ -1346,7 +1345,6 @@ class TableIndex(TableSubItemObject):
 
 
 class TableTrigger(TableSubItemObject):
-
     """ class that represents a trigger """
 
     # Bits within tgtype (pg_trigger.h)

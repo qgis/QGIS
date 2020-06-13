@@ -163,6 +163,9 @@ A base class for objects which belong to a layout.
       ScalebarLineWidth,
       //table item
       AttributeTableSourceLayer,
+      MapCrs,
+      StartDateTime,
+      EndDateTime,
     };
 
     enum PropertyValueType

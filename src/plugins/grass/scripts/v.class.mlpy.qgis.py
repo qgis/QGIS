@@ -125,7 +125,7 @@ class Classifier:
                           " Please install it or ensure that it is on path"
                           " (use PYTHONPATH variable)."))
         # Pytlit has a problem with this mlpy and v.class.mlpy.py
-        # thus, warinings for objects from mlpy has to be disabled
+        # thus, warnings for objects from mlpy has to be disabled
         self.mlclassifier = mlpy.DLDA(delta=0.01)  # pylint: disable=E1101
 
     def learn(self, values, classes):

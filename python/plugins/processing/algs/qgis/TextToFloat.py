@@ -30,7 +30,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
 class TextToFloat(QgisFeatureBasedAlgorithm):
-
     FIELD = 'FIELD'
 
     def group(self):

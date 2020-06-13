@@ -24,7 +24,7 @@
 #include "qgsrendercontext.h"
 #include "qgsproject.h"
 #include "qgsexception.h"
-
+#include "qgsrasterlayertemporalproperties.h"
 
 ///@cond PRIVATE
 
@@ -64,6 +64,7 @@ void QgsRasterLayerRendererFeedback::onNewData()
 ///
 QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext )
   : QgsMapLayerRenderer( layer->id(), &rendererContext )
+  , mProviderCapabilities( static_cast<QgsRasterDataProvider::Capability>( layer->dataProvider()->capabilities() ) )
   , mFeedback( new QgsRasterLayerRendererFeedback( this ) )
 {
   QgsMapToPixel mapToPixel = rendererContext.mapToPixel();
@@ -224,9 +225,34 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 
   // copy the whole raster pipe!
   mPipe = new QgsRasterPipe( *layer->pipe() );
+  QObject::connect( mPipe->provider(), &QgsRasterDataProvider::statusChanged, layer, &QgsRasterLayer::statusChanged );
   QgsRasterRenderer *rasterRenderer = mPipe->renderer();
   if ( rasterRenderer && !( rendererContext.flags() & QgsRenderContext::RenderPreviewJob ) )
     layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
+
+  const QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< const QgsRasterLayerTemporalProperties * >( layer->temporalProperties() );
+  if ( temporalProperties->isActive() && renderContext()->isTemporal() )
+  {
+    switch ( temporalProperties->mode() )
+    {
+      case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
+        break;
+
+      case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
+        // in this mode we need to pass on the desired render temporal range to the data provider
+        if ( mPipe->provider()->temporalCapabilities() )
+        {
+          mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( rendererContext.temporalRange() );
+          mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( temporalProperties->intervalHandlingMethod() );
+        }
+        break;
+    }
+  }
+  else if ( mPipe->provider()->temporalCapabilities() )
+  {
+    mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( QgsDateTimeRange() );
+    mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( temporalProperties->intervalHandlingMethod() );
+  }
 }
 
 QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
@@ -239,10 +265,11 @@ QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
 
 bool QgsRasterLayerRenderer::render()
 {
-  if ( !mRasterViewPort )
-    return true; // outside of layer extent - nothing to do
-
-  //R->draw( mPainter, mRasterViewPort, &mMapToPixel );
+  // Skip rendering of out of view tiles (xyz)
+  if ( !mRasterViewPort || ( renderContext()->testFlag( QgsRenderContext::Flag::RenderPreviewJob ) &&
+                             !( mProviderCapabilities &
+                                QgsRasterInterface::Capability::Prefetch ) ) )
+    return true;
 
   QElapsedTimer time;
   time.start();

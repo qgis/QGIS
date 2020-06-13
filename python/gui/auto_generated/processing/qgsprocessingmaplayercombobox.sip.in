@@ -10,7 +10,6 @@
 
 
 
-
 class QgsProcessingMapLayerComboBox : QWidget
 {
 %Docstring
@@ -28,7 +27,7 @@ Processing map layer combo box.
 %End
   public:
 
-    QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QWidget *parent = 0 );
+    QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = 0 );
 %Docstring
 Constructor for QgsProcessingMapLayerComboBox, with the specified ``parameter`` definition.
 %End
@@ -80,17 +79,36 @@ Returns the current value of the widget.
 .. seealso:: :py:func:`setValue`
 %End
 
+    void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the widget is shown.
+
+.. versionadded:: 3.14
+%End
+
+    void setEditable( bool editable );
+%Docstring
+Sets whether the combo box value can be freely edited.
+
+.. seealso:: :py:func:`isEditable`
+
+.. versionadded:: 3.14
+%End
+
+    bool isEditable() const;
+%Docstring
+Returns whether the combo box value can be freely edited.
+
+.. seealso:: :py:func:`setEditable`
+
+.. versionadded:: 3.14
+%End
+
   signals:
 
     void valueChanged();
 %Docstring
 Emitted whenever the value is changed in the widget.
-%End
-
-    void triggerFileSelection();
-%Docstring
-Emitted when the widget has triggered a file selection operation (to be
-handled in Python for now).
 %End
 
   protected:

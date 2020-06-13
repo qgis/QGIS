@@ -561,6 +561,19 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     void extend( double startDistance, double endDistance );
 
+#ifndef SIP_RUN
+
+    /**
+     * Visits regular points along the linestring, spaced by \a distance.
+     *
+     * The \a visitPoint function should return FALSE to abort further traversal.
+     */
+    void visitPointsByRegularDistance( double distance, const std::function< bool( double x, double y, double z, double m,
+                                       double startSegmentX, double startSegmentY, double startSegmentZ, double startSegmentM,
+                                       double endSegmentX, double endSegmentY, double endSegmentZ, double endSegmentM
+                                                                                 ) > &visitPoint ) const;
+#endif
+
     //reimplemented methods
 
     QString geometryType() const override;
@@ -575,7 +588,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
 
-    QByteArray asWkb() const override;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = nullptr ) const override;
     QString asWkt( int precision = 17 ) const override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;

@@ -41,6 +41,32 @@ tests:
         name: expected/removed_duplicated_nodes_line.gml
         type: vector
 
+  - algorithm: native:removeduplicatevertices
+    name: Remove duplicate vertices from all parts
+    params:
+      INPUT:
+        name: custom/multi_polygons_with_duplicate_nodes_per_part.gml
+        type: vector
+      TOLERANCE: 0.001
+      USE_Z_VALUE: false
+    results:
+      OUTPUT:
+        name: expected/multi_polygons_without_duplicate_nodes.gml
+        type: vector
+
+  - algorithm: native:removeduplicatevertices
+    name: Remove duplicate vertices from all interior rings
+    params:
+      INPUT:
+        name: custom/polygons_with_duplicate_nodes_in_several_holes.gml
+        type: vector
+      TOLERANCE: 0.001
+      USE_Z_VALUE: false
+    results:
+      OUTPUT:
+        name: expected/polygons_without_duplicate_nodes_in_holes.gml
+        type: vector
+
   - algorithm: qgis:keepnbiggestparts
     name: Keep N biggest parts
     params:
@@ -2144,6 +2170,21 @@ tests:
         type: directory
         name: expected/xyztiles
 
+  - algorithm: native:writevectortiles_xyz
+    name: Generate vector tiles (Directory)
+    params:
+      LAYERS:
+      - layer: ../../../../../tests/testdata/lines.shp
+      - layer: ../../../../../tests/testdata/points.shp
+      - layer: ../../../../../tests/testdata/polys.shp
+      MAX_ZOOM: 3
+      MIN_ZOOM: 1
+      XYZ_TEMPLATE: '{z}/{x}/{y}.pbf'
+    results:
+      OUTPUT_DIRECTORY:
+        type: directory
+        name: expected/xyztiles_vector
+
   - algorithm: native:calculatevectoroverlaps
     name: Overlap analysis 1
     ellipsoid: GRS80
@@ -2337,6 +2378,66 @@ tests:
     results:
       OUTPUT:
         name: expected/renamed_field.gml
+        type: vector
+
+  - algorithm: native:filterbygeometry
+    name: Filter by geometry type polygon input
+    params:
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+    results:
+      LINES:
+        name: expected/filter_geom_polys_line.gml
+        type: vector
+      NO_GEOMETRY:
+        name: expected/filter_geom_polys_null.gml
+        type: vector
+      POINTS:
+        name: expected/filter_geom_polys_point.gml
+        type: vector
+      POLYGONS:
+        name: expected/filter_geom_polys_poly.gml
+        type: vector
+
+  - algorithm: native:filterbygeometry
+    name: Filter by geometry type point input
+    params:
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+    results:
+      LINES:
+        name: expected/filter_geom_points_line.gml
+        type: vector
+      NO_GEOMETRY:
+        name: expected/filter_geom_points_null.gml
+        type: vector
+      POINTS:
+        name: expected/filter_geom_points_point.gml
+        type: vector
+      POLYGONS:
+        name: expected/filter_geom_points_poly.gml
+        type: vector
+
+  - algorithm: native:filterbygeometry
+    name: Filter by geometry type line input
+    params:
+      INPUT:
+        name: lines.gml|layername=lines
+        type: vector
+    results:
+      LINES:
+        name: expected/filter_geom_lines_line.gml
+        type: vector
+      NO_GEOMETRY:
+        name: expected/filter_geom_lines_null.gml
+        type: vector
+      POINTS:
+        name: expected/filter_geom_lines_point.gml
+        type: vector
+      POLYGONS:
+        name: expected/filter_geom_lines_poly.gml
         type: vector
 
 

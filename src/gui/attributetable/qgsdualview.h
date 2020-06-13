@@ -157,8 +157,17 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      *
      * \param filteredFeatures  A list of feature ids
      *
+     * \deprecated since filterFeatures is handled in the attribute filter model itself
+    */
+    Q_DECL_DEPRECATED void setFilteredFeatures( const QgsFeatureIds &filteredFeatures );
+
+    /**
+     * Sets the expression and Updates the filtered features in the filter model.
+     * It is called when the filter expression changed.
+     *
+     * \since QGIS 3.10.3
      */
-    void setFilteredFeatures( const QgsFeatureIds &filteredFeatures );
+    void filterFeatures( const QgsExpression &filterExpression, const QgsExpressionContext &context );
 
     /**
      * Gets a list of currently visible feature ids.
@@ -259,6 +268,16 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void cancelProgress( );
 
+    /**
+     * Called in embedded forms when an \a attribute \a value in the parent form has changed.
+     *
+     * Notify the form widgets that something has changed in case they
+     * have filter expression that depend on the parent form scope.
+     *
+     * \since QGIS 3.14
+     */
+    void parentFormValueChanged( const QString &attribute, const QVariant &value );
+
   signals:
 
     /**
@@ -327,13 +346,9 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void autosizeColumn();
 
-    void modifySort();
-
     void previewExpressionChanged( const QString &expression );
 
     void onSortColumnChanged();
-
-    void sortByPreviewExpression();
 
     void updateSelectedFeatures();
 
@@ -390,6 +405,10 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     //! disable/enable the buttons of the browsing toolbar (feature list view)
     void setBrowsingAutoPanScaleAllowed( bool allowed );
 
+    //! Returns TRUE if the expression dialog has been accepted
+    bool modifySort();
+
+
     QgsFieldConditionalFormatWidget *mConditionalFormatWidget = nullptr;
     QgsAttributeEditorContext mEditorContext;
     QgsAttributeTableModel *mMasterModel = nullptr;
@@ -412,6 +431,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QgsFeature mTempAttributeFormFeature;
     QgsFeatureIds mLastFeatureSet;
     bool mBrowsingAutoPanScaleAllowed = true;
+    ViewMode mPreviousView = AttributeTable;
 
     friend class TestQgsDualView;
     friend class TestQgsAttributeTable;

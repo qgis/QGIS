@@ -410,7 +410,9 @@ Returns a read-only, Java-style iterator for traversal of vertices of all the ge
    The iterator returns a copy of individual vertices, and accordingly geometries cannot be
    modified using the iterator. See transformVertices() for a safe method to modify vertices "in-place".
 
-* Example:
+Example
+-------
+
 .. code-block:: python
 
        # print the x and y coordinate for each vertex in a LineString
@@ -437,7 +439,9 @@ can safely be used to modify parts of the geometry.
 This method forces a detach. Use constParts() to avoid the detach
 if the parts are not going to be modified.
 
-* Example:
+Example
+-------
+
 .. code-block:: python
 
        # print the WKT representation of each part in a multi-point geometry
@@ -476,22 +480,24 @@ returns read-only references to parts and cannot be used to modify the parts.
 Unlike parts(), this method does not force a detach and is more efficient if read-only
 iteration only is required.
 
-* Example:
+Example
+-------
+
 .. code-block:: python
 
        # print the WKT representation of each part in a multi-point geometry
        geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
-       for part in geometry.parts():
+       for part in geometry.constParts():
            print(part.asWkt())
 
        # single part geometries only have one part - this loop will iterate once only
        geometry = QgsGeometry.fromWkt( 'LineString( 0 0, 10 10 )' )
-       for part in geometry.parts():
+       for part in geometry.constParts():
            print(part.asWkt())
 
        # part iteration can also be combined with vertex iteration
        geometry = QgsGeometry.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
-       for part in geometry.parts():
+       for part in geometry.constParts():
            for v in part.vertices():
                print(v.x(), v.y())
 
@@ -510,7 +516,7 @@ This algorithm is an approximation to the standard Hausdorff distance. This appr
 subset of useful cases. Examples of these are:
 
 - computing distance between Linestrings that are roughly parallel to each other,
-and roughly equal in length. This occurs in matching linear networks.
+  and roughly equal in length. This occurs in matching linear networks.
 - Testing similarity of geometries.
 
 If the default approximate provided by this method is insufficient, use hausdorffDistanceDensify() instead.
@@ -556,7 +562,7 @@ and the indices of the vertices before and after the closest vertex.
                     not present.
 :param sqrDist: will be set to the square distance between the closest vertex and the specified point
 
-:return: - closest point in geometry. If not found (empty geometry), returns null point nad sqrDist is negative.
+:return: - closest point in geometry. If not found (empty geometry), returns null point and sqrDist is negative.
          - atVertex: will be set to the vertex index of the closest found vertex
 %End
 
@@ -669,7 +675,7 @@ Returns coordinates of a vertex.
 
 :param atVertex: index of the vertex
 
-:return: Coordinates of the vertex or QgsPoint(0,0) on error
+:return: Coordinates of the vertex or empty :py:class:`QgsPoint`() on error
 %End
 
     double sqrDistToVertexAt( QgsPointXY &point /In/, int atVertex ) const;
@@ -839,7 +845,7 @@ Rotate this geometry around the Z axis
 :return: OperationResult a result code: success or reason of failure
 %End
 
- OperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QVector<QgsPointXY> &topologyTestPoints /Out/ ) /Deprecated/;
+ OperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QVector<QgsPointXY> &topologyTestPoints /Out/, bool splitFeature = true ) /Deprecated/;
 %Docstring
 Splits this geometry according to a given line.
 
@@ -847,6 +853,7 @@ Splits this geometry according to a given line.
 \param[out] newGeometries list of new geometries that have been created with the split
 :param topological: ``True`` if topological editing is enabled
 \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+:param splitFeature: Set to True if you want to split a feature, otherwise set to False to split parts
 
 :return: OperationResult a result code: success or reason of failure
 
@@ -854,7 +861,7 @@ Splits this geometry according to a given line.
    - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
-    OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QgsPointSequence &topologyTestPoints /Out/ );
+    OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QgsPointSequence &topologyTestPoints /Out/, bool splitFeature = true );
 %Docstring
 Splits this geometry according to a given line.
 
@@ -862,6 +869,8 @@ Splits this geometry according to a given line.
 \param[out] newGeometries list of new geometries that have been created with the split
 :param topological: ``True`` if topological editing is enabled
 \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+:param splitFeature: Set to True if you want to split a feature, otherwise set to False to split parts
+                     fix this bug?
 
 :return: OperationResult a result code: success or reason of failure
 %End
@@ -1228,6 +1237,25 @@ Curved geometry types are automatically segmentized by this routine.
 .. versionadded:: 3.0
 %End
 
+    QgsGeometry convertToCurves( double distanceTolerance = 1e-8, double angleTolerance = 1e-8 ) const;
+%Docstring
+Attempts to convert a non-curved geometry into a curved geometry type (e.g.
+LineString to CompoundCurve, Polygon to CurvePolygon).
+
+The ``distanceTolerance`` specifies the maximum deviation allowed between the original location
+of vertices and where they would fall on the candidate curved geometry.
+
+This method only consider a segments as suitable for replacing with an arc if the points are all
+regularly spaced on the candidate arc. The ``pointSpacingAngleTolerance`` parameter specifies the maximum
+angular deviation (in radians) allowed when testing for regular point spacing.
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.14
+%End
+
     QgsGeometry centroid() const;
 %Docstring
 Returns the center of mass of a geometry.
@@ -1500,9 +1528,11 @@ is null, a ValueError will be raised.
 
 
 
-    QByteArray asWkb() const;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = 0 ) const;
 %Docstring
 Export the geometry to WKB
+
+The optional ``flags`` argument specifies flags controlling WKB export behavior (since QGIS 3.14).
 
 .. versionadded:: 3.0
 %End
@@ -1539,7 +1569,33 @@ Exports the geometry to a GeoJSON string.
 %End
 
 
-    QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const /Factory/;
+    QVector< QgsGeometry > coerceToType( QgsWkbTypes::Type type ) const;
+%Docstring
+Attempts to coerce this geometry into the specified destination ``type``.
+
+This method will do anything possible to force the current geometry into the specified type. E.g.
+
+- lines or polygons will be converted to points by return either a single multipoint geometry or multiple
+  single point geometries.
+- polygons will be converted to lines by extracting their exterior and interior rings, returning
+  either a multilinestring or multiple single line strings as dictated by ``type``.
+- lines will be converted to polygon rings if ``type`` is a polygon type
+- curved geometries will be segmented if ``type`` is non-curved.
+- multi geometries will be converted to a list of single geometries
+- single geometries will be upgraded to multi geometries
+- z or m values will be added or dropped as required.
+
+.. note::
+
+   This method is much stricter than convertToType(), as it considers the exact WKB type
+   of geometries instead of the geometry family (point/line/polygon), and tries more exhaustively
+   to coerce geometries to the desired ``type``. It also correctly maintains curves and z/m values
+   wherever appropriate.
+
+.. versionadded:: 3.14
+%End
+
+    QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const;
 %Docstring
 Try to convert the geometry to the requested type
 
@@ -1547,6 +1603,12 @@ Try to convert the geometry to the requested type
 :param destMultipart: determines if the output geometry will be multipart or not
 
 :return: the converted geometry or ``None`` if the conversion fails.
+
+.. note::
+
+   The coerceToType() method applies much stricter and more exhaustive attempts to convert
+   between geometry types, and is recommended instead of this method. This method force drops
+   curves and any z or m values present in the geometry.
 
 .. versionadded:: 2.2
 %End
@@ -2067,14 +2129,14 @@ The 2 types should match.
 :param epsilon: maximum difference for coordinates between the objects
 
 :return: ``True`` if objects are
+
          - polylines and have the same number of points and all
-         points are equal within the specified tolerance
+           points are equal within the specified tolerance
          - polygons and have the same number of points and all
-         points are equal within the specified tolerance
+           points are equal within the specified tolerance
          - multipolygons and  have the same number of polygons, the polygons have the same number
-         of rings, and each ring has the same number of points and all points are equal
-         within the specified
-         tolerance
+           of rings, and each ring has the same number of points and all points are equal
+           within the specified tolerance
 
 .. versionadded:: 2.9
 %End

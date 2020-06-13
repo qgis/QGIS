@@ -256,6 +256,7 @@ of this model.
       RoleAlgorithmName,
       RoleAlgorithmShortDescription,
       RoleAlgorithmTags,
+      RoleProviderFlags,
     };
 
     QgsProcessingToolboxModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0,
@@ -405,6 +406,7 @@ level group containing recently used algorithms.
 Returns the underlying source Processing toolbox model.
 %End
 
+
     void setFilters( QgsProcessingToolboxProxyModel::Filters filters );
 %Docstring
 Set ``filters`` that affect how toolbox content is filtered.
@@ -445,6 +447,8 @@ Returns the current filter string, if set.
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 
     virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
 
 
 };

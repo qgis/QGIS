@@ -103,6 +103,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
     ProjData threadLocalProjData();
 
 #if PROJ_VERSION_MAJOR>=6
+    int mAvailableOpCount = -1;
     ProjData threadLocalFallbackProjData();
 
     // Only meant to be called by QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread()
@@ -234,6 +235,8 @@ class QgsCoordinateTransformPrivate : public QSharedData
     static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
                                 const QgsCoordinateReferenceSystem &destinationCrs,
                                 const QgsDatumTransform::TransformDetails &desiredOperation )> sMissingGridUsedByContextHandler;
+
+    QgsCoordinateTransformPrivate &operator= ( const QgsCoordinateTransformPrivate & ) = delete;
 };
 
 /// @endcond

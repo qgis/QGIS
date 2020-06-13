@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgspathresolver.h"
+#include "qgslocalizeddatapathregistry.h"
 
 #include "qgis.h"
 #include "qgsapplication.h"
 #include <QFileInfo>
 #include <QUrl>
 #include <QUuid>
+
 
 typedef std::vector< std::pair< QString, std::function< QString( const QString & ) > > > CustomResolvers;
 Q_GLOBAL_STATIC( CustomResolvers, sCustomResolvers )
@@ -46,6 +48,12 @@ QString QgsPathResolver::readPath( const QString &f ) const
   {
     // strip away "inbuilt:" prefix, replace with actual  inbuilt data folder path
     return QgsApplication::pkgDataPath() + QStringLiteral( "/resources" ) + src.mid( 8 );
+  }
+
+  if ( src.startsWith( QLatin1String( "localized:" ) ) )
+  {
+    // strip away "localized:" prefix, replace with actual  inbuilt data folder path
+    return QgsApplication::localizedDataPathRegistry()->globalPath( src.mid( 10 ) ) ;
   }
 
   if ( mBaseFileName.isNull() )
@@ -182,6 +190,10 @@ QString QgsPathResolver::writePath( const QString &src ) const
   {
     return src;
   }
+
+  QString localizedPath = QgsApplication::localizedDataPathRegistry()->localizedPath( src );
+  if ( !localizedPath.isEmpty() )
+    return QStringLiteral( "localized:" ) + localizedPath;
 
   if ( src.startsWith( QgsApplication::pkgDataPath() + QStringLiteral( "/resources" ) ) )
   {

@@ -55,17 +55,6 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
 
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsExternalResourceWidget::loadDocument );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsExternalResourceWidget::valueChanged );
-  connect( mFileWidget, &QgsFileWidget::blockEvents, this, [this]( bool block )
-  {
-    if ( block )
-    {
-      installEventFilter( this );
-    }
-    else
-    {
-      removeEventFilter( this );
-    }
-  } );
 }
 
 QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const
@@ -203,15 +192,6 @@ void QgsExternalResourceWidget::setDefaultRoot( const QString &defaultRoot )
 {
   mFileWidget->setDefaultRoot( defaultRoot );
   mDefaultRoot = defaultRoot;
-}
-
-bool QgsExternalResourceWidget::eventFilter( QObject *watched, QEvent *event )
-{
-  if ( watched == this && event && ( event->type() == QEvent::FocusOut ||  event->type() == QEvent::FocusAboutToChange ) )
-  {
-    return true;
-  }
-  return QWidget::eventFilter( watched, event );
 }
 
 QgsFileWidget::RelativeStorage QgsExternalResourceWidget::relativeStorage() const

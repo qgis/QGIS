@@ -18,16 +18,15 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgis.h"
-#include "qgssymbol.h"
 #include "qgsrenderer.h"
 #include "qgsrendererrange.h"
-#include "qgsexpression.h"
-#include "qgsdatadefinedsizelegend.h"
 #include "qgsclassificationmethod.h"
-
 
 class QgsVectorLayer;
 class QgsColorRamp;
+class QgsDataDefinedSizeLegend;
+class QgsSymbol;
+class QgsExpression;
 
 /**
  * \ingroup core

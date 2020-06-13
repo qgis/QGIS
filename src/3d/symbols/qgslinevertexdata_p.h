@@ -30,6 +30,8 @@
 #include <QVector>
 #include <QVector3D>
 
+#define SIP_NO_FILE
+
 #include "qgs3dtypes.h"
 
 namespace Qt3DCore
@@ -79,7 +81,7 @@ struct QgsLineVertexData
   Qt3DRender::QGeometry *createGeometry( Qt3DCore::QNode *parent );
 
   void addLineString( const QgsLineString &lineString, float extraHeightOffset = 0 );
-  void addVerticalLines( const QgsLineString &lineString, float verticalLength );
+  void addVerticalLines( const QgsLineString &lineString, float verticalLength, float extraHeightOffset = 0 );
 };
 
 /// @endcond

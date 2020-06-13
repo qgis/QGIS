@@ -67,7 +67,7 @@ QgsMimeDataUtils::Uri::Uri( const QString &encData )
 QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
   : providerKey( layer->providerType() )
   , name( layer->name() )
-  , uri( layer->dataProvider()->dataSourceUri() )
+  , uri( layer->dataProvider() ? layer->dataProvider()->dataSourceUri() : layer->source() )
   , layerId( layer->id() )
   , pId( QString::number( QCoreApplication::applicationPid() ) )
 {
@@ -88,6 +88,12 @@ QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
     case QgsMapLayerType::MeshLayer:
     {
       layerType = QStringLiteral( "mesh" );
+      break;
+    }
+
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      layerType = QStringLiteral( "vector-tile" );
       break;
     }
 

@@ -18,6 +18,9 @@
 #define SIP_NO_FILE
 
 #include "qgslabelfeature.h"
+#include "qgstextdocument.h"
+
+class QgsTextCharacterFormat;
 
 /**
  * \ingroup core
@@ -42,8 +45,25 @@ class QgsTextLabelFeature : public QgsLabelFeature
      */
     QString text( int partId ) const;
 
+    /**
+     * Returns the character format corresponding to the specified label part
+     * \param partId Set to the required part index for labels which are broken into parts (curved labels)
+     *
+     * This only returns valid formats for curved label placements.
+     *
+     * \since QGIS 3.14
+     */
+    QgsTextCharacterFormat characterFormat( int partId ) const;
+
+    /**
+     * Returns TRUE if the feature contains specific character formatting for the part with matching ID.
+     *
+     * \since QGIS 3.14
+     */
+    bool hasCharacterFormat( int partId ) const;
+
     //! calculate data for info(). setDefinedFont() must have been called already.
-    void calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, double maxinangle, double maxoutangle );
+    void calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, double maxinangle, double maxoutangle, QgsTextDocument *document = nullptr );
 
     //! Gets data-defined values
     const QMap< QgsPalLayerSettings::Property, QVariant > &dataDefinedValues() const { return mDataDefinedValues; }
@@ -58,15 +78,34 @@ class QgsTextLabelFeature : public QgsLabelFeature
     //! Metrics of the font for rendering
     QFontMetricsF *labelFontMetrics() { return mFontMetrics; }
 
+    /**
+     * Returns the document for the label.
+     * \see setDocument()
+     * \since QGIS 3.14
+     */
+    QgsTextDocument document() const;
+
+    /**
+     * Sets the \a document for the label.
+     * \see document()
+     * \since QGIS 3.14
+     */
+    void setDocument( const QgsTextDocument &document );
+
   protected:
     //! List of graphemes (used for curved labels)
     QStringList mClusters;
+
+    QList< QgsTextCharacterFormat > mCharacterFormats;
+
     //! Font for rendering
     QFont mDefinedFont;
     //! Metrics of the font for rendering
     QFontMetricsF *mFontMetrics = nullptr;
     //! Stores attribute values for data defined properties
     QMap< QgsPalLayerSettings::Property, QVariant > mDataDefinedValues;
+
+    QgsTextDocument mDocument;
 
 };
 

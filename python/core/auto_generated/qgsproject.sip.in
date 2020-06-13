@@ -48,6 +48,20 @@ open within the main QGIS application.
       Qgs,
     };
 
+    enum class AvoidIntersectionsMode
+    {
+      AllowIntersections,
+      AvoidIntersectionsCurrentLayer,
+      AvoidIntersectionsLayers,
+    };
+
+    enum DataDefinedServerProperty
+    {
+      NoProperty,
+      AllProperties,
+      WMSOnlineResource,
+    };
+
     static QgsProject *instance();
 %Docstring
 Returns the QgsProject singleton instance
@@ -106,6 +120,13 @@ Returns the full user name that did the last save.
 .. versionadded:: 3.12
 %End
 
+    QDateTime lastSaveDateTime() const;
+%Docstring
+Returns the date and time when the project was last saved.
+
+.. versionadded:: 3.14
+%End
+
     bool isDirty() const;
 %Docstring
 Returns ``True`` if the project has been modified since the last write()
@@ -129,6 +150,34 @@ representation.
 .. seealso:: :py:func:`setFileName`
 
 .. seealso:: :py:func:`fileInfo`
+%End
+
+    void setOriginalPath( const QString &path );
+%Docstring
+Sets the original ``path`` associated with the project.
+
+This is intended for use with non-qgs/qgz project files (see :py:class:`QgsCustomProjectOpenHandler`) in order to allow
+custom project open handlers to specify the original file name of the project. For custom project formats,
+it is NOT appropriate to call setFileName() with the original project path, as this causes the original (non
+QGIS) project file to be overwritten when the project is next saved.
+
+.. seealso:: :py:func:`originalPath`
+
+.. versionadded:: 3.14
+%End
+
+    QString originalPath() const;
+%Docstring
+Returns the original path associated with the project.
+
+This is intended for use with non-qgs/qgz project files (see :py:class:`QgsCustomProjectOpenHandler`) in order to allow
+custom project open handlers to specify the original file name of the project. For custom project formats,
+it is NOT appropriate to call setFileName() with the original project path, as this causes the original (non
+QGIS) project file to be overwritten when the project is next saved.
+
+.. seealso:: :py:func:`setOriginalPath`
+
+.. versionadded:: 3.14
 %End
 
  QFileInfo fileInfo() const /Deprecated/;
@@ -412,7 +461,6 @@ implying a hierarchy of keys and corresponding values
     double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = 0 ) const;
     bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = 0 ) const;
 
-
     bool removeEntry( const QString &scope, const QString &key );
 %Docstring
 Remove the given key
@@ -601,6 +649,15 @@ relating to how a QgsProject should be viewed and behave inside a map canvas
 %End
 
 
+    QgsProjectTimeSettings *timeSettings();
+%Docstring
+Returns the project's time settings, which contains the project's temporal range and other
+time based settings.
+
+.. versionadded:: 3.14
+%End
+
+
     QgsProjectDisplaySettings *displaySettings();
 %Docstring
 Returns the project's display settings, which settings and properties relating
@@ -731,9 +788,24 @@ A list of layers with which intersections should be avoided.
 
     void setAvoidIntersectionsLayers( const QList<QgsVectorLayer *> &layers );
 %Docstring
-A list of layers with which intersections should be avoided.
+Sets the list of layers with which intersections should be avoided.
+Only used if the avoid intersection mode is set to advanced.
 
 .. versionadded:: 3.0
+%End
+
+    void setAvoidIntersectionsMode( const AvoidIntersectionsMode mode );
+%Docstring
+Sets the avoid intersections mode.
+
+.. versionadded:: 3.14
+%End
+
+    AvoidIntersectionsMode avoidIntersectionsMode() const;
+%Docstring
+Returns the current avoid intersections mode.
+
+.. versionadded:: 3.14
 %End
 
     QVariantMap customVariables() const;
@@ -1362,6 +1434,13 @@ Emitted when the home path of the project changes.
 Emitted whenever the configuration for snapping has changed.
 %End
 
+    void avoidIntersectionsModeChanged();
+%Docstring
+Emitted whenever the avoid intersections mode has changed.
+
+.. versionadded:: 3.14
+%End
+
     void customVariablesChanged();
 %Docstring
 Emitted whenever the expression variables stored in the project have been changed.
@@ -1678,6 +1757,22 @@ Registers the objects that require translation into the ``translationContext``.
 So there can be created a ts file with these values.
 
 .. versionadded:: 3.4
+%End
+
+    void setDataDefinedServerProperties( const QgsPropertyCollection &properties );
+%Docstring
+Sets the data defined properties used for overrides in user defined server
+parameters to ``properties``
+
+.. versionadded:: 3.14
+%End
+
+    QgsPropertyCollection dataDefinedServerProperties() const;
+%Docstring
+Returns the data defined properties used for overrides in user defined server
+parameters
+
+.. versionadded:: 3.14
 %End
 
 };

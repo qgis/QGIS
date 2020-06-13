@@ -25,7 +25,7 @@
 #include "qgsapplication.h"
 
 const QString QgsAfsProvider::AFS_PROVIDER_KEY = QStringLiteral( "arcgisfeatureserver" );
-const QString QgsAfsProvider::AFS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Server data provider" );
+const QString QgsAfsProvider::AFS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Service data provider" );
 
 
 QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &options )
@@ -190,6 +190,29 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     }
   }
   mSharedData->mGeometryType = QgsWkbTypes::zmType( mSharedData->mGeometryType, hasZ, hasM );
+
+  // read temporal properties
+  if ( layerData.contains( QStringLiteral( "timeInfo" ) ) )
+  {
+    const QVariantMap timeInfo = layerData.value( QStringLiteral( "timeInfo" ) ).toMap();
+
+    temporalCapabilities()->setHasTemporalCapabilities( true );
+    temporalCapabilities()->setStartField( timeInfo.value( QStringLiteral( "startTimeField" ) ).toString() );
+    temporalCapabilities()->setEndField( timeInfo.value( QStringLiteral( "endTimeField" ) ).toString() );
+    if ( !temporalCapabilities()->endField().isEmpty() )
+      temporalCapabilities()->setMode( QgsVectorDataProviderTemporalCapabilities::ProviderStoresFeatureDateTimeStartAndEndInSeparateFields );
+    else if ( !temporalCapabilities()->startField().isEmpty() )
+      temporalCapabilities()->setMode( QgsVectorDataProviderTemporalCapabilities::ProviderStoresFeatureDateTimeInstantInField );
+    else
+      temporalCapabilities()->setMode( QgsVectorDataProviderTemporalCapabilities::ProviderHasFixedTemporalRange );
+
+    const QVariantList extent = timeInfo.value( QStringLiteral( "timeExtent" ) ).toList();
+    if ( extent.size() == 2 )
+    {
+      temporalCapabilities()->setAvailableTemporalRange( QgsDateTimeRange( QgsArcGisRestUtils::parseDateTime( extent.at( 0 ) ),
+          QgsArcGisRestUtils::parseDateTime( extent.at( 1 ) ) ) );
+    }
+  }
 
   // Read OBJECTIDs of all features: these may not be a continuous sequence,
   // and we need to store these to iterate through the features. This query
@@ -372,6 +395,33 @@ QVariantMap QgsAfsProviderMetadata::decodeUri( const QString &uri )
 
   QVariantMap components;
   components.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
+  const QStringList bbox = dsUri.param( QStringLiteral( "bbox" ) ).split( ',' );
+  if ( bbox.size() == 4 )
+  {
+    QgsRectangle r;
+    bool xminOk = false;
+    bool yminOk = false;
+    bool xmaxOk = false;
+    bool ymaxOk = false;
+    r.setXMinimum( bbox[0].toDouble( &xminOk ) );
+    r.setYMinimum( bbox[1].toDouble( &yminOk ) );
+    r.setXMaximum( bbox[2].toDouble( &xmaxOk ) );
+    r.setYMaximum( bbox[3].toDouble( &ymaxOk ) );
+    if ( xminOk && yminOk && xmaxOk && ymaxOk )
+      components.insert( QStringLiteral( "bounds" ), r );
+  }
+  if ( !dsUri.param( QStringLiteral( "referer" ) ).isEmpty() )
+  {
+    components.insert( QStringLiteral( "referer" ), dsUri.param( QStringLiteral( "referer" ) ) );
+  }
+  if ( !dsUri.param( QStringLiteral( "crs" ) ).isEmpty() )
+  {
+    components.insert( QStringLiteral( "crs" ), dsUri.param( QStringLiteral( "crs" ) ) );
+  }
+  if ( !dsUri.authConfigId().isEmpty() )
+  {
+    components.insert( QStringLiteral( "authcfg" ), dsUri.authConfigId() );
+  }
   return components;
 }
 
@@ -379,6 +429,25 @@ QString QgsAfsProviderMetadata::encodeUri( const QVariantMap &parts )
 {
   QgsDataSourceUri dsUri;
   dsUri.setParam( QStringLiteral( "url" ), parts.value( QStringLiteral( "url" ) ).toString() );
+
+  if ( parts.contains( QStringLiteral( "bounds" ) ) && parts.value( QStringLiteral( "bounds" ) ).canConvert< QgsRectangle >() )
+  {
+    const QgsRectangle bBox = parts.value( QStringLiteral( "bounds" ) ).value< QgsRectangle >();
+    dsUri.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( bBox.xMinimum() ).arg( bBox.yMinimum() ).arg( bBox.xMaximum() ).arg( bBox.yMaximum() ) );
+  }
+
+  if ( !parts.value( QStringLiteral( "crs" ) ).toString().isEmpty() )
+  {
+    dsUri.setParam( QStringLiteral( "crs" ), parts.value( QStringLiteral( "crs" ) ).toString() );
+  }
+  if ( !parts.value( QStringLiteral( "referer" ) ).toString().isEmpty() )
+  {
+    dsUri.setParam( QStringLiteral( "referer" ), parts.value( QStringLiteral( "referer" ) ).toString() );
+  }
+  if ( !parts.value( QStringLiteral( "authcfg" ) ).toString().isEmpty() )
+  {
+    dsUri.setAuthConfigId( parts.value( QStringLiteral( "authcfg" ) ).toString() );
+  }
   return dsUri.uri();
 }
 

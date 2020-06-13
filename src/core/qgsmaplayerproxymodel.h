@@ -51,7 +51,8 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
       PluginLayer = 32,
       WritableLayer = 64,
       MeshLayer = 128, //!< QgsMeshLayer \since QGIS 3.6
-      All = RasterLayer | VectorLayer | PluginLayer | MeshLayer
+      VectorTileLayer = 256, //!< QgsVectorTileLayer \since QGIS 3.14
+      All = RasterLayer | VectorLayer | PluginLayer | MeshLayer | VectorTileLayer
     };
     Q_DECLARE_FLAGS( Filters, Filter )
     Q_FLAG( Filters )
@@ -86,69 +87,100 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
     const Filters &filters() const { return mFilters; }
 
     /**
-     * Sets a whitelist of \a layers to include within the model. Only layers
+     * Returns if the \a layer matches the given \a filters
+     * \since QGIS 3.14
+     */
+    static bool layerMatchesFilters( const QgsMapLayer *layer, const Filters &filters );
+
+    /**
+     * Sets an allowlist of \a layers to include within the model. Only layers
      * from this list will be shown.
      *
-     * An empty list indicates that no whitelisting should be performed.
+     * An empty list indicates that no filter by allowlist should be performed.
      *
-     * \see layerWhitelist()
+     * \see layerAllowlist()
      * \see setExceptedLayerList()
      *
-     * \since QGIS 3.4
+     * \deprecated use setLayerAllowList()
      */
-    void setLayerWhitelist( const QList<QgsMapLayer *> &layers );
+    Q_DECL_DEPRECATED void setLayerWhitelist( const QList<QgsMapLayer *> &layers ) SIP_DEPRECATED;
+
+    /**
+     * Sets an allowlist of \a layers to include within the model. Only layers
+     * from this list will be shown.
+     *
+     * An empty list indicates that no filter by allowlist should be performed.
+     *
+     * \see layerAllowlist()
+     * \see setExceptedLayerList()
+     *
+     * \since QGIS 3.14
+     */
+    void setLayerAllowlist( const QList<QgsMapLayer *> &layers );
 
     /**
      * Returns the list of layers which are excluded from the model.
      *
-     * An empty list indicates that no whitelisting should be performed.
+     * An empty list indicates that no filtering by allowlist should be performed.
      *
-     * \see setLayerWhitelist()
+     * \see setLayerAllowlist()
      * \see exceptedLayerList()
      *
-     * \since QGIS 3.4
+     * \deprecated use layerAllowlist() instead
      */
-    QList<QgsMapLayer *> layerWhitelist() {return mLayerWhitelist;}
+    Q_DECL_DEPRECATED QList<QgsMapLayer *> layerWhitelist() SIP_DEPRECATED {return mLayerAllowlist;}
 
     /**
-     * Sets a blacklist of layers to exclude from the model.
+     * Returns the list of layers which are excluded from the model.
+     *
+     * An empty list indicates that no filtering by allowlist should be performed.
+     *
+     * \see setLayerAllowlist()
+     * \see exceptedLayerList()
+     *
+     * \since QGIS 3.14
+     */
+    QList<QgsMapLayer *> layerAllowlist() {return mLayerAllowlist;}
+
+    /**
+     * Sets a blocklist of layers to exclude from the model.
      * \see exceptedLayerList()
      * \see setExceptedLayerIds()
-     * \see setLayerWhitelist()
+     * \see setLayerAllowlist()
      */
     void setExceptedLayerList( const QList<QgsMapLayer *> &exceptList );
 
     /**
-     * Returns the blacklist of layers which are excluded from the model.
+     * Returns the blocklist of layers which are excluded from the model.
      * \see setExceptedLayerList()
      * \see exceptedLayerIds()
-     * \see layerWhitelist()
+     * \see layerAllowlist()
      */
     QList<QgsMapLayer *> exceptedLayerList() {return mExceptList;}
 
     /**
-     * Sets a blacklist of layers (by layer ID) to exclude from the model.
+     * Sets a blocklist of layers (by layer ID) to exclude from the model.
      * \see exceptedLayerIds()
      * \see setExceptedLayerList()
      */
     void setExceptedLayerIds( const QStringList &ids );
 
     /**
-     * Returns the blacklist of layer IDs which are excluded from the model.
+     * Returns the blocklist of layer IDs which are excluded from the model.
      * \see setExceptedLayerIds()
      * \see exceptedLayerList()
      */
     QStringList exceptedLayerIds() const;
 
     /**
-     * Sets a blacklist of data providers which should be excluded from the model.
+     * Sets a blocklist of data providers which should be excluded from the model.
      * \see excludedProviders()
      * \since QGIS 3.0
      */
     void setExcludedProviders( const QStringList &providers );
 
     /**
-     * Returns the blacklist of data providers which are excluded from the model.
+     * Returns the blocklist of data providers which are excluded from the model.
      * \see setExcludedProviders()
      * \since QGIS 3.0
      */
@@ -186,7 +218,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
   private:
     Filters mFilters;
     QList<QgsMapLayer *> mExceptList;
-    QList<QgsMapLayer *> mLayerWhitelist;
+    QList<QgsMapLayer *> mLayerAllowlist;
     QgsMapLayerModel *mModel = nullptr;
     QStringList mExcludedProviders;
     QString mFilterString;

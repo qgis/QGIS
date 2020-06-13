@@ -39,6 +39,13 @@ void QgsCallout::initPropertyDefinitions()
     { QgsCallout::OffsetFromLabel, QgsPropertyDefinition( "OffsetFromLabel", QObject::tr( "Offset from label" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { QgsCallout::DrawCalloutToAllParts, QgsPropertyDefinition( "DrawCalloutToAllParts", QObject::tr( "Draw lines to all feature parts" ), QgsPropertyDefinition::Boolean, origin ) },
     { QgsCallout::AnchorPointPosition, QgsPropertyDefinition( "AnchorPointPosition", QgsPropertyDefinition::DataTypeString, QObject::tr( "Feature's anchor point position" ), QObject::tr( "string " ) + "[<b>pole_of_inaccessibility</b>|<b>point_on_exterior</b>|<b>point_on_surface</b>|<b>centroid</b>]", origin ) },
+    {
+      QgsCallout::LabelAnchorPointPosition, QgsPropertyDefinition( "LabelAnchorPointPosition", QgsPropertyDefinition::DataTypeString, QObject::tr( "Label's anchor point position" ), QObject::tr( "string " ) + "[<b>point_on_exterior</b>|<b>centroid</b>|<b>TL</b>=Top left|<b>T</b>=Top middle|"
+          "<b>TR</b>=Top right|<br>"
+          "<b>L</b>=Left|<b>R</b>=Right|<br>"
+          "<b>BL</b>=Bottom left|<b>B</b>=Bottom middle|"
+          "<b>BR</b>=Bottom right]", origin )
+    },
   };
 }
 
@@ -52,6 +59,7 @@ QVariantMap QgsCallout::properties( const QgsReadWriteContext & ) const
   QVariantMap props;
   props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
   props.insert( QStringLiteral( "anchorPoint" ), encodeAnchorPoint( mAnchorPoint ) );
+  props.insert( QStringLiteral( "labelAnchorPoint" ), encodeLabelAnchorPoint( mLabelAnchorPoint ) );
   props.insert( QStringLiteral( "ddProperties" ), mDataDefinedProperties.toVariant( propertyDefinitions() ) );
   return props;
 }
@@ -59,7 +67,8 @@ QVariantMap QgsCallout::properties( const QgsReadWriteContext & ) const
 void QgsCallout::readProperties( const QVariantMap &props, const QgsReadWriteContext & )
 {
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
-  mAnchorPoint = decodeAnchorPoint( props.value( QStringLiteral( "anchorPoint" ), QString( "" ) ).toString() );
+  mAnchorPoint = decodeAnchorPoint( props.value( QStringLiteral( "anchorPoint" ), QString() ).toString() );
+  mLabelAnchorPoint = decodeLabelAnchorPoint( props.value( QStringLiteral( "labelAnchorPoint" ), QString() ).toString() );
   mDataDefinedProperties.loadVariant( props.value( QStringLiteral( "ddProperties" ) ), propertyDefinitions() );
 }
 
@@ -182,6 +191,117 @@ QString QgsCallout::encodeAnchorPoint( AnchorPoint anchor )
       return QStringLiteral( "centroid" );
   }
   return QString();
+}
+
+QString QgsCallout::encodeLabelAnchorPoint( QgsCallout::LabelAnchorPoint anchor )
+{
+  switch ( anchor )
+  {
+    case LabelPointOnExterior:
+      return QStringLiteral( "point_on_exterior" );
+    case LabelCentroid:
+      return QStringLiteral( "centroid" );
+    case LabelTopLeft:
+      return QStringLiteral( "tl" );
+    case LabelTopMiddle:
+      return QStringLiteral( "t" );
+    case LabelTopRight:
+      return QStringLiteral( "tr" );
+    case LabelMiddleLeft:
+      return QStringLiteral( "l" );
+    case LabelMiddleRight:
+      return QStringLiteral( "r" );
+    case LabelBottomLeft:
+      return QStringLiteral( "bl" );
+    case LabelBottomMiddle:
+      return QStringLiteral( "b" );
+    case LabelBottomRight:
+      return QStringLiteral( "br" );
+  }
+
+  return QString();
+}
+
+QgsCallout::LabelAnchorPoint QgsCallout::decodeLabelAnchorPoint( const QString &name, bool *ok )
+{
+  if ( ok )
+    *ok = true;
+  QString cleaned = name.toLower().trimmed();
+
+  if ( cleaned == QLatin1String( "point_on_exterior" ) )
+    return LabelPointOnExterior;
+  else if ( cleaned == QLatin1String( "centroid" ) )
+    return LabelCentroid;
+  else if ( cleaned == QLatin1String( "tl" ) )
+    return LabelTopLeft;
+  else if ( cleaned == QLatin1String( "t" ) )
+    return LabelTopMiddle;
+  else if ( cleaned == QLatin1String( "tr" ) )
+    return LabelTopRight;
+  else if ( cleaned == QLatin1String( "l" ) )
+    return LabelMiddleLeft;
+  else if ( cleaned == QLatin1String( "r" ) )
+    return LabelMiddleRight;
+  else if ( cleaned == QLatin1String( "bl" ) )
+    return LabelBottomLeft;
+  else if ( cleaned == QLatin1String( "b" ) )
+    return LabelBottomMiddle;
+  else if ( cleaned == QLatin1String( "br" ) )
+    return LabelBottomRight;
+
+  if ( ok )
+    *ok = false;
+  return LabelPointOnExterior;
+}
+
+QgsGeometry QgsCallout::labelAnchorGeometry( QRectF rect, const double angle, LabelAnchorPoint anchor ) const
+{
+  QgsGeometry label;
+  switch ( anchor )
+  {
+    case LabelPointOnExterior:
+      label = QgsGeometry::fromRect( rect );
+      break;
+
+    case LabelCentroid:
+      label = QgsGeometry::fromRect( rect ).centroid();
+      break;
+
+    case LabelTopLeft:
+      label = QgsGeometry::fromPointXY( QgsPointXY( rect.bottomLeft() ) );
+      break;
+
+    case LabelTopMiddle:
+      label = QgsGeometry::fromPointXY( QgsPointXY( ( rect.left() + rect.right() ) / 2.0, rect.bottom() ) );
+      break;
+
+    case LabelTopRight:
+      label = QgsGeometry::fromPointXY( QgsPointXY( rect.bottomRight() ) );
+      break;
+
+    case LabelMiddleLeft:
+      label = QgsGeometry::fromPointXY( QgsPointXY( rect.left(), ( rect.top() + rect.bottom() ) / 2.0 ) );
+      break;
+
+    case LabelMiddleRight:
+      label = QgsGeometry::fromPointXY( QgsPointXY( rect.right(), ( rect.top() + rect.bottom() ) / 2.0 ) );
+      break;
+
+    case LabelBottomLeft:
+      label = QgsGeometry::fromPointXY( QgsPointXY( rect.topLeft() ) );
+      break;
+
+    case LabelBottomMiddle:
+      label = QgsGeometry::fromPointXY( QgsPointXY( ( rect.left() + rect.right() ) / 2.0, rect.top() ) );
+      break;
+
+    case LabelBottomRight:
+      label = QgsGeometry::fromPointXY( QgsPointXY( rect.topRight() ) );
+      break;
+  }
+
+  label.rotate( angle, rect.topLeft() );
+  return label;
 }
 
 //
@@ -312,9 +432,17 @@ void QgsSimpleLineCallout::setLineSymbol( QgsLineSymbol *symbol )
   mLineSymbol.reset( symbol );
 }
 
-void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const double, const QgsGeometry &anchor, QgsCalloutContext &calloutContext )
+void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext )
 {
-  QgsGeometry label( QgsGeometry::fromRect( rect ) );
+  LabelAnchorPoint labelAnchor = labelAnchorPoint();
+  if ( dataDefinedProperties().isActive( QgsCallout::LabelAnchorPointPosition ) )
+  {
+    QString encodedAnchor = encodeLabelAnchorPoint( labelAnchor );
+    context.expressionContext().setOriginalValueVariable( encodedAnchor );
+    labelAnchor = decodeLabelAnchorPoint( dataDefinedProperties().valueAsString( QgsCallout::LabelAnchorPointPosition, context.expressionContext(), encodedAnchor ) );
+  }
+  QgsGeometry label = labelAnchorGeometry( rect, angle, labelAnchor );
+
   auto drawCalloutLine = [this, &context, &label]( const QgsGeometry & partAnchor )
   {
     QgsGeometry line;
@@ -451,9 +579,17 @@ QgsManhattanLineCallout *QgsManhattanLineCallout::clone() const
   return new QgsManhattanLineCallout( *this );
 }
 
-void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, const double, const QgsGeometry &anchor, QgsCalloutContext &calloutContext )
+void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext )
 {
-  QgsGeometry label( QgsGeometry::fromRect( rect ) );
+  LabelAnchorPoint labelAnchor = labelAnchorPoint();
+  if ( dataDefinedProperties().isActive( QgsCallout::LabelAnchorPointPosition ) )
+  {
+    QString encodedAnchor = encodeLabelAnchorPoint( labelAnchor );
+    context.expressionContext().setOriginalValueVariable( encodedAnchor );
+    labelAnchor = decodeLabelAnchorPoint( dataDefinedProperties().valueAsString( QgsCallout::LabelAnchorPointPosition, context.expressionContext(), encodedAnchor ) );
+  }
+  QgsGeometry label = labelAnchorGeometry( rect, angle, labelAnchor );
+
   auto drawCalloutLine = [this, &context, &label]( const QgsGeometry & partAnchor )
   {
     QgsGeometry line;

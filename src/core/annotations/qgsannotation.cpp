@@ -358,7 +358,7 @@ void QgsAnnotation::drawFrame( QgsRenderContext &context ) const
 
   QPolygonF poly;
   poly.reserve( 9 + ( mHasFixedMapPosition ? 3 : 0 ) );
-  QList<QPolygonF> rings; //empty list
+  QVector<QPolygonF> rings; //empty list
   for ( int i = 0; i < 4; ++i )
   {
     QLineF currentSegment = segment( i, &context );

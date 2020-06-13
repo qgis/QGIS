@@ -320,6 +320,9 @@ class QgsBackgroundCachedFeatureIterator final: public QObject,
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
 
+    //! typically to save a FilterFid/FilterFids request that will not be captured by mRequest
+    QgsFeatureRequest mAdditionalRequest;
+
     ///////////////// METHODS
 
     //! Translate mRequest to a request compatible of the Spatialite cache

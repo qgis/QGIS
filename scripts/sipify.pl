@@ -53,6 +53,7 @@ my $ACTUAL_CLASS = '';
 my $PYTHON_SIGNATURE = '';
 
 my $INDENT = '';
+my $PREV_INDENT = '';
 my $COMMENT = '';
 my $COMMENT_PARAM_LIST = 0;
 my $COMMENT_LAST_LINE_NOTE_WARNING = 0;
@@ -184,18 +185,37 @@ sub processDoxygenLine {
     # replace nullptr with None (nullptr means nothing to Python devs)
     $line =~ s/\bnullptr\b/None/g;
 
+    # convert ### style headings
+    if ( $line =~ m/^###\s+(.*)$/) {
+      $line = "$1\n".('-' x length($1));
+    }
+    if ( $line =~ m/^##\s+(.*)$/) {
+      $line = "$1\n".('=' x length($1));
+    }
+    if ( $line =~ m/^#\s+(.*)$/) {
+      $line = "$1\n".('*' x length($1));
+    }
+
+
     if ( $line eq '*' ) {
         $line = '';
     }
 
-    # if inside multi-line parameter, ensure additional lines are indented
+    # handle multi-line parameters/returns/lists
     if ($line ne '') {
-        if ( $line !~ m/^\s*[\\:]+(param|note|since|return|deprecated|warning|throws)/ ) {
+        if ( $line =~ m/^\s*\-/ ){
+            # start of a list item, ensure following lines are correctly indented
+            $line = "$PREV_INDENT$line";
+            $INDENT = $PREV_INDENT."  ";
+        }
+        elsif ( $line !~ m/^\s*[\\:]+(param|note|since|return|deprecated|warning|throws)/ ) {
+            # if inside multi-line parameter, ensure additional lines are indented
             $line = "$INDENT$line";
         }
     }
     else
     {
+        $PREV_INDENT = $INDENT;
         $INDENT = '';
     }
     # replace \returns with :return:
@@ -234,15 +254,18 @@ sub processDoxygenLine {
     }
 
     if ( $line =~ m/[\\@](ingroup|class)/ ) {
+        $PREV_INDENT = $INDENT;
         $INDENT = '';
         return "";
     }
     if ( $line =~ m/\\since .*?([\d\.]+)/i ) {
+        $PREV_INDENT = $INDENT;
         $INDENT = '';
         $FOUND_SINCE = 1;
         return "\n.. versionadded:: $1\n";
     }
     if ( $line =~ m/\\deprecated(?:\s+since\s+(?:QGIS\s+)(?<DEPR_VERSION>[0-9.]+)(,\s*)?)?(?<DEPR_MESSAGE>.*)?/i ) {
+        $PREV_INDENT = $INDENT;
         $INDENT = '';
         my $depr_line = "\n.. deprecated::";
         $depr_line .= " QGIS $+{DEPR_VERSION}" if (defined $+{DEPR_VERSION});
@@ -294,15 +317,18 @@ sub processDoxygenLine {
 
     if ( $line =~ m/[\\@]note (.*)/ ) {
         $COMMENT_LAST_LINE_NOTE_WARNING = 1;
+        $PREV_INDENT = $INDENT;
         $INDENT = '';
         return "\n.. note::\n\n   $1\n";
     }
     if ( $line =~ m/[\\@]warning (.*)/ ) {
+        $PREV_INDENT = $INDENT;
         $INDENT = '';
         $COMMENT_LAST_LINE_NOTE_WARNING = 1;
         return "\n.. warning::\n\n   $1\n";
     }
     if ( $line =~ m/[\\@]throws (.+?)\b\s*(.*)/ ) {
+        $PREV_INDENT = $INDENT;
         $INDENT = '';
         $COMMENT_LAST_LINE_NOTE_WARNING = 1;
         return "\n:raises $1: $2\n";
@@ -481,6 +507,7 @@ sub detect_comment_block{
     # dbg_info("detect comment strict:" . $args{strict_mode} );
     $COMMENT_PARAM_LIST = 0;
     $INDENT = '';
+    $PREV_INDENT = '';
     $COMMENT_CODE_SNIPPET = 0;
     $COMMENT_LAST_LINE_NOTE_WARNING = 0;
     $FOUND_SINCE = 0;
@@ -950,6 +977,7 @@ while ($LINE_IDX < $LINE_COUNT){
         if ( $LINE =~ m/^\s*\/\// ){
             if ($LINE =~ m/^\s*\/\/\!\s*(.*?)\n?$/){
                 $COMMENT_PARAM_LIST = 0;
+                $PREV_INDENT = $INDENT;
                 $INDENT = '';
                 $COMMENT_LAST_LINE_NOTE_WARNING = 0;
                 $COMMENT = processDoxygenLine( $1 );
@@ -1210,8 +1238,8 @@ while ($LINE_IDX < $LINE_COUNT){
     # multiline definition (parenthesis left open)
     if ( $MULTILINE_DEFINITION != MULTILINE_NO ){
         dbg_info("on multiline");
-        # https://regex101.com/r/DN01iM/2
-        if ( $LINE =~ m/^([^()]+(\((?:[^()]++|(?1))*\)))*[^()]*\)[^()]*$/){
+        # https://regex101.com/r/DN01iM/4
+        if ( $LINE =~ m/^([^()]+(\((?:[^()]++|(?1))*\)))*[^()]*\)([^()](throw\([^()]+\))?)*$/){
             dbg_info("ending multiline");
             # remove potential following body
             if ( $MULTILINE_DEFINITION != MULTILINE_CONDITIONAL_STATEMENT && $LINE !~ m/(\{.*\}|;)\s*(\/\/.*)?$/ ){

@@ -86,7 +86,7 @@ void QgsAmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 void QgsAmsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
   QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgismapserver/" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
-  nc.setWindowTitle( tr( "Create a New ArcGIS Map Server Connection" ) );
+  nc.setWindowTitle( tr( "Create a New ArcGIS Map Service Connection" ) );
 
   if ( nc.exec() )
   {
@@ -97,7 +97,7 @@ void QgsAmsDataItemGuiProvider::newConnection( QgsDataItem *item )
 void QgsAmsDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
   QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgismapserver/" ), item->name(), QgsNewHttpConnection::FlagShowHttpSettings );
-  nc.setWindowTitle( tr( "Modify ArcGIS Map Server Connection" ) );
+  nc.setWindowTitle( tr( "Modify ArcGIS Map Service Connection" ) );
 
   if ( nc.exec() )
   {

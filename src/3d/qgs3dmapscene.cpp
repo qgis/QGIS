@@ -30,6 +30,8 @@
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DLogic/QFrameAction>
 
+#include <QOpenGLContext>
+#include <QOpenGLFunctions>
 #include <QTimer>
 
 #include "qgsaabb.h"
@@ -51,6 +53,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgspoint3dbillboardmaterial.h"
+#include "qgsmaplayertemporalproperties.h"
 
 #include "qgslinematerial_p.h"
 
@@ -536,6 +539,18 @@ void Qgs3DMapScene::onLayersChanged()
   }
 }
 
+void Qgs3DMapScene::updateTemporal()
+{
+  for ( auto layer : mLayerEntities.keys() )
+  {
+    if ( layer->temporalProperties()->isActive() )
+    {
+      removeLayerEntity( layer );
+      addLayerEntity( layer );
+    }
+  }
+}
+
 void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 {
   bool needsSceneUpdate = false;
@@ -553,7 +568,14 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     }
     else if ( layer->type() == QgsMapLayerType::MeshLayer && renderer->type() == QLatin1String( "mesh" ) )
     {
-      static_cast<QgsMeshLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsMeshLayer *>( layer ) );
+      QgsMeshLayer3DRenderer *meshRenderer = static_cast<QgsMeshLayer3DRenderer *>( renderer );
+      meshRenderer->setLayer( static_cast<QgsMeshLayer *>( layer ) );
+
+      // Before entity creation, set the maximum texture size
+      // Not very clean, but for now, only place found in the workflow to do that simple
+      QgsMesh3DSymbol *sym = new QgsMesh3DSymbol( *meshRenderer->symbol() );
+      sym->setMaximumTextureSize( maximumTextureSize() );
+      meshRenderer->setSymbol( sym );
     }
 
     Qt3DCore::QEntity *newEntity = renderer->createEntity( mMap );
@@ -592,6 +614,12 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     connect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
+
+  if ( layer->type() == QgsMapLayerType::MeshLayer )
+  {
+    connect( layer, &QgsMapLayer::rendererChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+  }
+
 }
 
 void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
@@ -612,6 +640,11 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+  }
+
+  if ( layer->type() == QgsMapLayerType::MeshLayer )
+  {
+    disconnect( layer, &QgsMapLayer::rendererChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
 }
 
@@ -638,6 +671,18 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
 
     bm->setViewportSize( mCameraController->viewport().size() );
   }
+}
+
+int Qgs3DMapScene::maximumTextureSize() const
+{
+  QSurface *surface = mEngine->surface();
+  QOpenGLContext context;
+  context.create();
+  context.makeCurrent( surface );
+  QOpenGLFunctions openglFunctions( &context );
+  GLint size;
+  openglFunctions.glGetIntegerv( GL_MAX_TEXTURE_SIZE, &size );
+  return int( size );
 }
 
 void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )

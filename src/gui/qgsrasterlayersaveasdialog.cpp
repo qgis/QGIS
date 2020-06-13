@@ -852,7 +852,7 @@ double QgsRasterLayerSaveAsDialog::noDataCellValue( int row, int column ) const
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( mNoDataTableWidget->cellWidget( row, column ) );
   if ( !lineEdit || lineEdit->text().isEmpty() )
   {
-    std::numeric_limits<double>::quiet_NaN();
+    return std::numeric_limits<double>::quiet_NaN();
   }
   return lineEdit->text().toDouble();
 }

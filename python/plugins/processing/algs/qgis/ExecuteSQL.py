@@ -57,7 +57,6 @@ class ParameterExecuteSql(QgsProcessingParameterDefinition):
 
 
 class ExecuteSQL(QgisAlgorithm):
-
     """ This algorithm allows executing an SQL query on a set of input
     vector layers thanks to the virtual layer provider
     """

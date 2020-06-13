@@ -27,7 +27,7 @@ for file in $*; do
   f=${f%.*}
   header="src/$d/$f.h"
 
-  if ! grep -Fxq "$d/$f.sip" python/auto_sip.blacklist; then
+  if ! grep -Fxq "$d/$f.sip" python/auto_sip.blocklist; then
     echo -e "\033[0;31m$d/$f.sip is an automatically generated SIP file\033[0m"
     echo -e "  g) \x1B[4mg\x1B[0menerate the SIP file \033[0;32m./scripts/sipify.pl $header > python/$d/$f.sip\033[0m"
     echo -e "  s) \x1B[4ms\x1B[0mhow the diff"

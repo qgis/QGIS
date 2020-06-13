@@ -40,6 +40,14 @@ Alternative constructor.
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
 
+
+    void clearCachedData( QgsLayerTreeNode *node ) const;
+%Docstring
+Clears any previously cached data for the specified ``node``.
+
+.. versionadded:: 3.14
+%End
+
   signals:
 
     void refreshLegend();
@@ -504,6 +512,15 @@ Returns the associated map.
 .. seealso:: :py:func:`setLinkedMap`
 %End
 
+    QString themeName() const;
+%Docstring
+Returns the name of the theme currently linked to the legend.
+
+This usually equates to the theme rendered in the linkedMap().
+
+.. versionadded:: 3.14
+%End
+
     void updateLegend();
 %Docstring
 Updates the model and all legend entries.
@@ -528,6 +545,8 @@ Returns the legend's renderer settings object.
     virtual QgsExpressionContext createExpressionContext() const;
 
     virtual ExportLayerBehavior exportLayerBehavior() const;
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
   public slots:

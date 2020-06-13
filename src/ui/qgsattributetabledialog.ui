@@ -71,7 +71,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText">
+       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -208,6 +208,7 @@
      <addaction name="separator"/>
      <addaction name="mActionAddAttribute"/>
      <addaction name="mActionRemoveAttribute"/>
+     <addaction name="mActionOrganizeColumns"/>
      <addaction name="mActionOpenFieldCalculator"/>
      <addaction name="separator"/>
      <addaction name="mActionSetStyles"/>
@@ -338,9 +339,6 @@
    <property name="toolTip">
     <string>Select all (Ctrl+A)</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+A</string>
-   </property>
   </action>
   <action name="mActionInvertSelection">
    <property name="icon">
@@ -360,13 +358,13 @@
   <action name="mActionRemoveSelection">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDeselectAll.svg</normaloff>:/images/themes/default/mActionDeselectAll.svg</iconset>
+     <normaloff>:/images/themes/default/mActionDeselectActiveLayer.svg</normaloff>:/images/themes/default/mActionDeselectActiveLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Deselect all</string>
+    <string>Deselect all features from the layer</string>
    </property>
    <property name="toolTip">
-    <string>Deselect all (Ctrl+Shift+A)</string>
+    <string>Deselect all features from the layer (Ctrl+Shift+A)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+A</string>
@@ -428,9 +426,6 @@
    <property name="toolTip">
     <string>Cut selected rows to clipboard (Ctrl+X)</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+X</string>
-   </property>
   </action>
   <action name="mActionCopySelectedRows">
    <property name="icon">
@@ -443,9 +438,6 @@
    <property name="toolTip">
     <string>Copy selected rows to clipboard (Ctrl+C)</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+C</string>
-   </property>
   </action>
   <action name="mActionPasteFeatures">
    <property name="icon">
@@ -457,9 +449,6 @@
    </property>
    <property name="toolTip">
     <string>Paste features from clipboard (Ctrl+V)</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+V</string>
    </property>
   </action>
   <action name="mActionRemoveAttribute">
@@ -532,6 +521,15 @@
    </property>
    <property name="toolTip">
     <string>Dock Attribute Table</string>
+   </property>
+  </action>
+  <action name="mActionOrganizeColumns">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditTable.svg</normaloff>:/images/themes/default/mActionEditTable.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Organize Columns</string>
    </property>
   </action>
  </widget>

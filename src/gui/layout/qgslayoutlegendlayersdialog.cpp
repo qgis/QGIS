@@ -39,6 +39,8 @@ QgsLayoutLegendLayersDialog::QgsLayoutLegendLayersDialog( QWidget *parent )
 
   connect( mFilterLineEdit, &QLineEdit::textChanged, mModel, &QgsMapLayerProxyModel::setFilterString );
   connect( mCheckBoxVisibleLayers, &QCheckBox::toggled, this, &QgsLayoutLegendLayersDialog::filterVisible );
+
+  mFilterLineEdit->setFocus();
 }
 
 void QgsLayoutLegendLayersDialog::setVisibleLayers( const QList<QgsMapLayer *> &layers )
@@ -69,7 +71,7 @@ QList< QgsMapLayer *> QgsLayoutLegendLayersDialog::selectedLayers() const
 void QgsLayoutLegendLayersDialog::filterVisible( bool enabled )
 {
   if ( enabled )
-    mModel->setLayerWhitelist( mVisibleLayers );
+    mModel->setLayerAllowlist( mVisibleLayers );
   else
-    mModel->setLayerWhitelist( QList< QgsMapLayer * >() );
+    mModel->setLayerAllowlist( QList< QgsMapLayer * >() );
 }

@@ -33,6 +33,26 @@ QgsInterval::QgsInterval( double seconds )
   , mValid( true )
 { }
 
+QgsInterval::QgsInterval( double duration, QgsUnitTypes::TemporalUnit unit )
+  : mSeconds( duration * QgsUnitTypes::fromUnitToUnitFactor( unit, QgsUnitTypes::TemporalSeconds ) )
+  , mValid( true )
+{
+
+}
+
+QgsInterval::QgsInterval( double years, double months, double weeks, double days, double hours, double minutes, double seconds )
+  : mSeconds( years * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalYears, QgsUnitTypes::TemporalSeconds )
+              + months * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalMonths, QgsUnitTypes::TemporalSeconds )
+              + weeks * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalWeeks, QgsUnitTypes::TemporalSeconds )
+              + days * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalDays, QgsUnitTypes::TemporalSeconds )
+              + hours * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalHours, QgsUnitTypes::TemporalSeconds )
+              + minutes * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalMinutes, QgsUnitTypes::TemporalSeconds )
+              + seconds )
+  , mValid( true )
+{
+
+}
+
 bool QgsInterval::operator==( QgsInterval other ) const
 {
   if ( !mValid && !other.mValid )
@@ -121,7 +141,7 @@ QgsInterval operator-( const QDateTime &dt1, const QDateTime &dt2 )
   return QgsInterval( mSeconds / 1000.0 );
 }
 
-QDateTime operator+( const QDateTime &start, QgsInterval interval )
+QDateTime operator+( const QDateTime &start, const QgsInterval &interval )
 {
   return start.addMSecs( static_cast<qint64>( interval.seconds() * 1000.0 ) );
 }

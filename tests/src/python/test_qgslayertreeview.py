@@ -211,6 +211,148 @@ class TestQgsLayerTreeView(unittest.TestCase):
             groupname + '-' + self.layer4.name(),
         ])
 
+    def testMoveToTopActionLayerAndGroup(self):
+        """Test move to top action for a group and it's layer simultaneously"""
+        view = QgsLayerTreeView()
+        group = self.project.layerTreeRoot().addGroup("embeddedgroup")
+        group.addLayer(self.layer4)
+        group.addLayer(self.layer5)
+        groupname = group.name()
+        view.setModel(self.model)
+        actions = QgsLayerTreeViewDefaultActions(view)
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+        ])
+
+        selectionMode = view.selectionMode()
+        view.setSelectionMode(QgsLayerTreeView.MultiSelection)
+        nodeLayerIndex = self.model.node2index(group)
+        view.setCurrentIndex(nodeLayerIndex)
+        view.setCurrentLayer(self.layer5)
+        view.setSelectionMode(selectionMode)
+        movetotop = actions.actionMoveToTop()
+        movetotop.trigger()
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            groupname,
+            groupname + '-' + self.layer5.name(),
+            groupname + '-' + self.layer4.name(),
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+        ])
+
+    def testMoveToBottomActionLayer(self):
+        """Test move to bottom action on layer"""
+        view = QgsLayerTreeView()
+        view.setModel(self.model)
+        actions = QgsLayerTreeViewDefaultActions(view)
+        self.assertEqual(self.project.layerTreeRoot().layerOrder(), [self.layer, self.layer2, self.layer3])
+        view.setCurrentLayer(self.layer)
+        movetobottom = actions.actionMoveToBottom()
+        movetobottom.trigger()
+        self.assertEqual(self.project.layerTreeRoot().layerOrder(), [self.layer2, self.layer3, self.layer])
+
+    def testMoveToBottomActionGroup(self):
+        """Test move to bottom action on group"""
+        view = QgsLayerTreeView()
+        group = self.project.layerTreeRoot().insertGroup(0, "embeddedgroup")
+        group.addLayer(self.layer4)
+        group.addLayer(self.layer5)
+        groupname = group.name()
+        view.setModel(self.model)
+        actions = QgsLayerTreeViewDefaultActions(view)
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+        ])
+
+        nodeLayerIndex = self.model.node2index(group)
+        view.setCurrentIndex(nodeLayerIndex)
+        movetobottom = actions.actionMoveToBottom()
+        movetobottom.trigger()
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+        ])
+
+    def testMoveToBottomActionEmbeddedGroup(self):
+        """Test move to bottom action on embeddedgroup layer"""
+        view = QgsLayerTreeView()
+        group = self.project.layerTreeRoot().addGroup("embeddedgroup")
+        group.addLayer(self.layer4)
+        group.addLayer(self.layer5)
+        groupname = group.name()
+        view.setModel(self.model)
+        actions = QgsLayerTreeViewDefaultActions(view)
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+        ])
+
+        view.setCurrentLayer(self.layer4)
+        movetobottom = actions.actionMoveToBottom()
+        movetobottom.trigger()
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+            groupname,
+            groupname + '-' + self.layer5.name(),
+            groupname + '-' + self.layer4.name(),
+        ])
+
+    def testMoveToBottomActionLayerAndGroup(self):
+        """Test move to top action for a group and it's layer simultaneously"""
+        view = QgsLayerTreeView()
+        group = self.project.layerTreeRoot().insertGroup(0, "embeddedgroup")
+        group.addLayer(self.layer4)
+        group.addLayer(self.layer5)
+        groupname = group.name()
+        view.setModel(self.model)
+        actions = QgsLayerTreeViewDefaultActions(view)
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+        ])
+
+        selectionMode = view.selectionMode()
+        view.setSelectionMode(QgsLayerTreeView.MultiSelection)
+        nodeLayerIndex = self.model.node2index(group)
+        view.setCurrentIndex(nodeLayerIndex)
+        view.setCurrentLayer(self.layer4)
+        view.setSelectionMode(selectionMode)
+        movetobottom = actions.actionMoveToBottom()
+        movetobottom.trigger()
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+            groupname,
+            groupname + '-' + self.layer5.name(),
+            groupname + '-' + self.layer4.name(),
+        ])
+
     def testSetLayerVisible(self):
         view = QgsLayerTreeView()
         view.setModel(self.model)

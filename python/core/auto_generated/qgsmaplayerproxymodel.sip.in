@@ -34,6 +34,7 @@ The QgsMapLayerProxyModel class provides an easy to use model to display the lis
       PluginLayer,
       WritableLayer,
       MeshLayer,
+      VectorTileLayer,
       All
     };
     typedef QFlags<QgsMapLayerProxyModel::Filter> Filters;
@@ -68,58 +69,94 @@ Returns the filter flags which affect how layers are filtered within the model.
 .. versionadded:: 2.3
 %End
 
-    void setLayerWhitelist( const QList<QgsMapLayer *> &layers );
+    static bool layerMatchesFilters( const QgsMapLayer *layer, const Filters &filters );
 %Docstring
-Sets a whitelist of ``layers`` to include within the model. Only layers
+Returns if the ``layer`` matches the given ``filters``
+
+.. versionadded:: 3.14
+%End
+
+ void setLayerWhitelist( const QList<QgsMapLayer *> &layers ) /Deprecated/;
+%Docstring
+Sets an allowlist of ``layers`` to include within the model. Only layers
 from this list will be shown.
 
-An empty list indicates that no whitelisting should be performed.
+An empty list indicates that no filter by allowlist should be performed.
 
-.. seealso:: :py:func:`layerWhitelist`
+.. seealso:: :py:func:`layerAllowlist`
 
 .. seealso:: :py:func:`setExceptedLayerList`
 
-.. versionadded:: 3.4
+.. deprecated::
+   use setLayerAllowList()
 %End
 
-    QList<QgsMapLayer *> layerWhitelist();
+    void setLayerAllowlist( const QList<QgsMapLayer *> &layers );
+%Docstring
+Sets an allowlist of ``layers`` to include within the model. Only layers
+from this list will be shown.
+
+An empty list indicates that no filter by allowlist should be performed.
+
+.. seealso:: :py:func:`layerAllowlist`
+
+.. seealso:: :py:func:`setExceptedLayerList`
+
+.. versionadded:: 3.14
+%End
+
+ QList<QgsMapLayer *> layerWhitelist() /Deprecated/;
 %Docstring
 Returns the list of layers which are excluded from the model.
 
-An empty list indicates that no whitelisting should be performed.
+An empty list indicates that no filtering by allowlist should be performed.
 
-.. seealso:: :py:func:`setLayerWhitelist`
+.. seealso:: :py:func:`setLayerAllowlist`
 
 .. seealso:: :py:func:`exceptedLayerList`
 
-.. versionadded:: 3.4
+.. deprecated::
+   use layerAllowlist() instead
+%End
+
+    QList<QgsMapLayer *> layerAllowlist();
+%Docstring
+Returns the list of layers which are excluded from the model.
+
+An empty list indicates that no filtering by allowlist should be performed.
+
+.. seealso:: :py:func:`setLayerAllowlist`
+
+.. seealso:: :py:func:`exceptedLayerList`
+
+.. versionadded:: 3.14
 %End
 
     void setExceptedLayerList( const QList<QgsMapLayer *> &exceptList );
 %Docstring
-Sets a blacklist of layers to exclude from the model.
+Sets a blocklist of layers to exclude from the model.
 
 .. seealso:: :py:func:`exceptedLayerList`
 
 .. seealso:: :py:func:`setExceptedLayerIds`
 
-.. seealso:: :py:func:`setLayerWhitelist`
+.. seealso:: :py:func:`setLayerAllowlist`
 %End
 
     QList<QgsMapLayer *> exceptedLayerList();
 %Docstring
-Returns the blacklist of layers which are excluded from the model.
+Returns the blocklist of layers which are excluded from the model.
 
 .. seealso:: :py:func:`setExceptedLayerList`
 
 .. seealso:: :py:func:`exceptedLayerIds`
 
-.. seealso:: :py:func:`layerWhitelist`
+.. seealso:: :py:func:`layerAllowlist`
 %End
 
     void setExceptedLayerIds( const QStringList &ids );
 %Docstring
-Sets a blacklist of layers (by layer ID) to exclude from the model.
+Sets a blocklist of layers (by layer ID) to exclude from the model.
 
 .. seealso:: :py:func:`exceptedLayerIds`
 
@@ -128,7 +165,7 @@ Sets a blacklist of layers (by layer ID) to exclude from the model.
 
     QStringList exceptedLayerIds() const;
 %Docstring
-Returns the blacklist of layer IDs which are excluded from the model.
+Returns the blocklist of layer IDs which are excluded from the model.
 
 .. seealso:: :py:func:`setExceptedLayerIds`
 
@@ -137,7 +174,7 @@ Returns the blacklist of layer IDs which are excluded from the model.
 
     void setExcludedProviders( const QStringList &providers );
 %Docstring
-Sets a blacklist of data providers which should be excluded from the model.
+Sets a blocklist of data providers which should be excluded from the model.
 
 .. seealso:: :py:func:`excludedProviders`
 
@@ -146,7 +183,7 @@ Sets a blacklist of data providers which should be excluded from the model.
 
     QStringList excludedProviders() const;
 %Docstring
-Returns the blacklist of data providers which are excluded from the model.
+Returns the blocklist of data providers which are excluded from the model.
 
 .. seealso:: :py:func:`setExcludedProviders`
 

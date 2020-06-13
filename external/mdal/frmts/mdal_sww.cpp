@@ -12,6 +12,7 @@
 
 #include "mdal_sww.hpp"
 #include "mdal_utils.hpp"
+#include "mdal_logger.hpp"
 
 MDAL::DriverSWW::DriverSWW()
   : Driver( "SWW",
@@ -45,6 +46,10 @@ bool MDAL::DriverSWW::canReadMesh( const std::string &uri )
     getVertexCount( ncFile );
   }
   catch ( MDAL_Status )
+  {
+    return false;
+  }
+  catch ( MDAL::Error )
   {
     return false;
   }
@@ -122,8 +127,12 @@ MDAL::Vertices MDAL::DriverSWW::readVertices( const NetCDFFile &ncFile ) const
   std::vector<double> pz = readZCoords( ncFile );
 
   // we may need to apply a shift to the X,Y coordinates
-  double xLLcorner = ncFile.getAttrDouble( NC_GLOBAL, "xllcorner" );
-  double yLLcorner = ncFile.getAttrDouble( NC_GLOBAL, "yllcorner" );
+  double xLLcorner = 0.0;
+  if ( ncFile.hasAttrDouble( NC_GLOBAL, "xllcorner" ) )
+    xLLcorner = ncFile.getAttrDouble( NC_GLOBAL, "xllcorner" );
+  double yLLcorner = 0.0;
+  if ( ncFile.hasAttrDouble( NC_GLOBAL, "yllcorner" ) )
+    yLLcorner = ncFile.getAttrDouble( NC_GLOBAL, "yllcorner" );
 
   MDAL::Vertices vertices( nPoints );
   Vertex *vertexPtr = vertices.data();
@@ -144,7 +153,7 @@ MDAL::Faces MDAL::DriverSWW::readFaces( const NetCDFFile &ncFile ) const
   size_t nVolumes, nVertices;
   ncFile.getDimension( "number_of_volumes", &nVolumes, &nVolumesId );
   ncFile.getDimension( "number_of_vertices", &nVertices, &nVerticesId );
-  if ( nVertices != 3 ) throw MDAL_Status::Err_UnknownFormat;
+  if ( nVertices != 3 ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Number of vertices is not allowed" );
 
   std::vector<int> pvolumes = ncFile.readIntArr( "volumes", nVertices * nVolumes );
 
@@ -288,12 +297,12 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readScalarGroup(
             mesh,
             mFileName,
             groupName );
-    mds->setDataLocation( MDAL_DataLocation::DataOnVertices2D );
+    mds->setDataLocation( MDAL_DataLocation::DataOnVertices );
     mds->setIsScalar( true );
 
     int zDimsX = 0;
     if ( nc_inq_varndims( ncFile.handle(), varxid, &zDimsX ) != NC_NOERR )
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Fail while reading scalar group: invalid variable id or bad ncid" );
 
     if ( zDimsX == 1 )
     {
@@ -356,19 +365,19 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readVectorGroup(
             mesh,
             mFileName,
             groupName );
-    mds->setDataLocation( MDAL_DataLocation::DataOnVertices2D );
+    mds->setDataLocation( MDAL_DataLocation::DataOnVertices );
     mds->setIsScalar( false );
 
     int zDimsX = 0;
     int zDimsY = 0;
     if ( nc_inq_varndims( ncFile.handle(), varxid, &zDimsX ) != NC_NOERR )
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Fail while reading vector group: invalid variable id or bad ncid" );
 
     if ( nc_inq_varndims( ncFile.handle(), varyid, &zDimsY ) != NC_NOERR )
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Fail while reading vector group: invalid variable id or bad ncid" );
 
     if ( zDimsX != zDimsY )
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Fail while reading vector group: dimensions do not match" );
 
     if ( zDimsX == 1 )
     {
@@ -420,10 +429,10 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readVectorGroup(
 
 std::unique_ptr<MDAL::Mesh> MDAL::DriverSWW::load(
   const std::string &resultsFile,
-  MDAL_Status *status )
+  const std::string & )
 {
   mFileName = resultsFile;
-  if ( status ) *status = MDAL_Status::None;
+  MDAL::Log::resetLastStatus();
 
   NetCDFFile ncFile;
 
@@ -439,6 +448,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSWW::load(
       new MemoryMesh(
         name(),
         vertices.size(),
+        0,
         faces.size(),
         3, // triangles
         computeExtent( vertices ),
@@ -459,7 +469,12 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSWW::load(
   }
   catch ( MDAL_Status err )
   {
-    if ( status ) *status = err;
+    MDAL::Log::error( err, "Error while loading file " + resultsFile );
+    return std::unique_ptr< MDAL::Mesh >();
+  }
+  catch ( MDAL::Error err )
+  {
+    MDAL::Log::error( err, name() );
     return std::unique_ptr< MDAL::Mesh >();
   }
 }

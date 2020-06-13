@@ -123,6 +123,9 @@ QgsChunkedEntity::~QgsChunkedEntity()
 
 void QgsChunkedEntity::update( const SceneState &state )
 {
+  if ( !mIsValid )
+    return;
+
   QElapsedTimer t;
   t.start();
 

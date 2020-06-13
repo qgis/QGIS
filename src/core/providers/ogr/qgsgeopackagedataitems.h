@@ -61,6 +61,10 @@ class CORE_EXPORT QgsGeoPackageCollectionItem : public QgsDataCollectionItem
     void addConnection();
     void deleteConnection();
 
+
+    // QgsDataItem interface
+  public:
+    bool layerCollection() const override;
 };
 
 
@@ -160,6 +164,7 @@ class QgsGeoPackageDataItemProvider final: public QgsDataItemProvider
 {
   public:
     QString name() override;
+    QString dataProviderKey() const override;
     int capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };

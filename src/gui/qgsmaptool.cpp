@@ -227,3 +227,8 @@ double QgsMapTool::searchRadiusMU( QgsMapCanvas *canvas )
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   return searchRadiusMU( context );
 }
+
+void QgsMapTool::populateContextMenu( QMenu * )
+{
+
+}

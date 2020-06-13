@@ -174,15 +174,21 @@ IF (UNIX)
 ENDIF (UNIX)
 
 IF (APPLE)
-  IF (GRASS_FIND_VERSION EQUAL 7)
-    LIST(APPEND GRASS_PATHS
-      /Applications/GRASS-7.6.app/Contents/MacOS
-      /Applications/GRASS-7.4.app/Contents/MacOS
-      /Applications/GRASS-7.2.app/Contents/MacOS
-      /Applications/GRASS-7.0.app/Contents/MacOS
-    )
-  ENDIF ()
-  LIST(APPEND GRASS_PATHS /Applications/GRASS.app/Contents/Resources)
+  IF (QGIS_MAC_DEPS_DIR)
+    FOREACH (VERSION_MINOR 9 8 7 6 5 4 3 2 1 0)
+      LIST (APPEND GRASS_PATHS $ENV{LIB_DIR}/grass${GRASS_FIND_VERSION}${VERSION_MINOR})
+    ENDFOREACH(VERSION_MINOR)
+  ELSE (QGIS_MAC_DEPS_DIR)
+    IF (GRASS_FIND_VERSION EQUAL 7)
+      LIST(APPEND GRASS_PATHS
+        /Applications/GRASS-7.6.app/Contents/MacOS
+        /Applications/GRASS-7.4.app/Contents/MacOS
+        /Applications/GRASS-7.2.app/Contents/MacOS
+        /Applications/GRASS-7.0.app/Contents/MacOS
+      )
+    ENDIF ()
+    LIST(APPEND GRASS_PATHS /Applications/GRASS.app/Contents/Resources)
+  ENDIF (QGIS_MAC_DEPS_DIR)
 ENDIF (APPLE)
 
 IF (WITH_GRASS${GRASS_CACHE_VERSION})

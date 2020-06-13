@@ -33,7 +33,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class SetRasterStyle(QgisAlgorithm):
-
     INPUT = 'INPUT'
     STYLE = 'STYLE'
     OUTPUT = 'OUTPUT'

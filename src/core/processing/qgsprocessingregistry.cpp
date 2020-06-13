@@ -18,6 +18,9 @@
 #include "qgsprocessingregistry.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsprocessingparametertypeimpl.h"
+#include "qgsprocessingparametervectortilewriterlayers.h"
+#include "qgsprocessingparameterfieldmap.h"
+#include "qgsprocessingparameteraggregate.h"
 
 QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
@@ -56,6 +59,13 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeCoordinateOperation() );
 #endif
   addParameterType( new QgsProcessingParameterTypeMapTheme() );
+  addParameterType( new QgsProcessingParameterTypeDateTime() );
+  addParameterType( new QgsProcessingParameterTypeProviderConnection() );
+  addParameterType( new QgsProcessingParameterTypeDatabaseSchema() );
+  addParameterType( new QgsProcessingParameterTypeDatabaseTable() );
+  addParameterType( new QgsProcessingParameterTypeVectorTileWriterLayers() );
+  addParameterType( new QgsProcessingParameterTypeFieldMapping() );
+  addParameterType( new QgsProcessingParameterTypeAggregate() );
 }
 
 QgsProcessingRegistry::~QgsProcessingRegistry()

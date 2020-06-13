@@ -46,7 +46,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class VoronoiPolygons(QgisAlgorithm):
-
     INPUT = 'INPUT'
     BUFFER = 'BUFFER'
     OUTPUT = 'OUTPUT'
@@ -281,12 +280,12 @@ class VoronoiPolygons(QgisAlgorithm):
                 # Only one (left) vertex
                 if c.lines[edge[0]][1] == 0:
                     # Vertical line
-                    #xtemp = c.lines[edge[0]][2] / c.lines[edge[0]][0]
+                    # xtemp = c.lines[edge[0]][2] / c.lines[edge[0]][0]
                     xtemp = c.vertices[edge[1]][0]
                     ytemp = 0 - 1
-                    #if c.vertices[edge[1]][1] > height / 2:
+                    # if c.vertices[edge[1]][1] > height / 2:
                     #    ytemp = height
-                    #else:
+                    # else:
                     #    ytemp = 0
                 else:
                     # Create an end of the line at the right edge - OK
@@ -305,12 +304,12 @@ class VoronoiPolygons(QgisAlgorithm):
                 # Only one (right) vertex
                 if c.lines[edge[0]][1] == 0:
                     # Vertical line
-                    #xtemp = c.lines[edge[0]][2] / c.lines[edge[0]][0]
+                    # xtemp = c.lines[edge[0]][2] / c.lines[edge[0]][0]
                     xtemp = c.vertices[edge[2]][0]
                     ytemp = height + 1
-                    #if c.vertices[edge[2]][1] > height / 2:
+                    # if c.vertices[edge[2]][1] > height / 2:
                     #    ytemp = height
-                    #else:
+                    # else:
                     #    ytemp = 0.0
                 else:
                     # End the line at the left edge - OK
@@ -377,7 +376,7 @@ class VoronoiPolygons(QgisAlgorithm):
         # points is not a problem - will be ignored later).
         # a) Extreme input points (lowest, leftmost, rightmost, highest)
         #    A point can be extreme on both axis
-        if pt_x == xmin:   # leftmost point
+        if pt_x == xmin:  # leftmost point
             if XMinNumber == 0:
                 bndpoints.append(QgsPointXY(extent.xMinimum(),
                                             extent.yMinimum()))
@@ -390,7 +389,7 @@ class VoronoiPolygons(QgisAlgorithm):
                 elif hasYMax:
                     bndpoints.append(QgsPointXY(extent.xMinimum(),
                                                 height + extent.yMinimum()))
-        elif pt_x == xmax:   # rightmost point
+        elif pt_x == xmax:  # rightmost point
             if XMaxNumber == 0:
                 bndpoints.append(QgsPointXY(width + extent.xMinimum(),
                                             extent.yMinimum()))
@@ -403,7 +402,7 @@ class VoronoiPolygons(QgisAlgorithm):
                 elif hasYMax:
                     bndpoints.append(QgsPointXY(width + extent.xMinimum(),
                                                 height + extent.yMinimum()))
-        if pt_y == ymin:    # lowest point
+        if pt_y == ymin:  # lowest point
             if YMinNumber == 0:
                 bndpoints.append(QgsPointXY(extent.xMinimum(),
                                             extent.yMinimum()))

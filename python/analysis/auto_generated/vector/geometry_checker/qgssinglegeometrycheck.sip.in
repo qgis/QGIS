@@ -109,6 +109,8 @@ The underlying single error.
 %End
 
 
+  private:
+    const QgsGeometryCheckErrorSingle &operator=( const QgsGeometryCheckErrorSingle & );
 };
 
 class QgsSingleGeometryCheck : QgsGeometryCheck

@@ -210,11 +210,12 @@ Sets the string to use for the "no color" option in the button's drop-down menu.
    dialog
 %End
 
-    void setShowNull( bool showNull );
+    void setShowNull( bool showNull, const QString &nullString = QString() );
 %Docstring
 Sets whether a set to null (clear) option is shown in the button's drop-down menu.
 
 :param showNull: set to ``True`` to show a null option
+:param nullString: translated string to use for the null option. If not set, a default "Clear Color" string will be used.
 
 .. seealso:: :py:func:`showNull`
 

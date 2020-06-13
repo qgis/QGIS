@@ -32,7 +32,7 @@
 static const QString PROVIDER_KEY = QStringLiteral( "DB2" );
 
 QgsDb2ConnectionItem::QgsDb2ConnectionItem( QgsDataItem *parent, const QString name, const QString path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "DB2" ) )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
   mCapabilities |= Collapse;
@@ -334,7 +334,7 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
 }
 
 QgsDb2RootItem::QgsDb2RootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "DB2" ) )
 {
   mIconName = QStringLiteral( "mIconDb2.svg" );
   populate();
@@ -389,7 +389,7 @@ QString QgsDb2LayerItem::createUri()
 }
 // ---------------------------------------------------------------------------
 QgsDb2SchemaItem::QgsDb2SchemaItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "DB2" ) )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
 }
@@ -479,6 +479,11 @@ QString QgsDb2DataItemProvider::name()
   return QStringLiteral( "DB2" );
 }
 
+QString QgsDb2DataItemProvider::dataProviderKey() const
+{
+  return QStringLiteral( "DB2" );
+}
+
 int QgsDb2DataItemProvider::capabilities() const
 {
   return QgsDataProvider::Database;
@@ -489,4 +494,10 @@ QgsDataItem *QgsDb2DataItemProvider::createDataItem( const QString &pathIn, QgsD
   Q_UNUSED( pathIn );
   QgsDebugMsgLevel( QStringLiteral( "DB2: Browser Panel; data item detected." ), 2 );
   return new QgsDb2RootItem( parentItem, PROVIDER_KEY, QStringLiteral( "DB2:" ) );
+}
+
+
+bool QgsDb2SchemaItem::layerCollection() const
+{
+  return true;
 }

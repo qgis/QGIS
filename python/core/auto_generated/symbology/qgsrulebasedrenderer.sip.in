@@ -38,14 +38,17 @@ the rules and draws features with symbols from rules that match.
 
     struct RenderJob
     {
-      RenderJob( QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s );
+        RenderJob( QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s );
 
-      QgsRuleBasedRenderer::FeatureToRender &ftr;
+        QgsRuleBasedRenderer::FeatureToRender &ftr;
 %Docstring
 Feature to render
 %End
 
-      QgsSymbol *symbol;
+        QgsSymbol *symbol;
+
+      private:
+        RenderJob &operator=( const RenderJob & );
     };
 
     struct RenderLevel
@@ -113,7 +116,7 @@ Returns the attributes used to evaluate the expression of this rule
 
         bool needsGeometry() const;
 %Docstring
-Returns ``True`` if this rule or one of its chilren needs the geometry to be applied.
+Returns ``True`` if this rule or one of its children needs the geometry to be applied.
 %End
 
         QgsSymbolList symbols( const QgsRenderContext &context = QgsRenderContext() ) const;

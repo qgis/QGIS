@@ -116,7 +116,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
       return block.release();
     }
 
-    // If lower source resolution is used, the extent must beS aligned to original
+    // If lower source resolution is used, the extent must be aligned to original
     // resolution to avoid possible shift due to resampling
     if ( tmpXRes > xRes )
     {
@@ -216,12 +216,15 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 QgsRasterDataProvider::QgsRasterDataProvider()
   : QgsDataProvider( QString(), QgsDataProvider::ProviderOptions() )
   , QgsRasterInterface( nullptr )
+  , mTemporalCapabilities( qgis::make_unique< QgsRasterDataProviderTemporalCapabilities >() )
 {
+
 }
 
 QgsRasterDataProvider::QgsRasterDataProvider( const QString &uri, const ProviderOptions &options )
   : QgsDataProvider( uri, options )
   , QgsRasterInterface( nullptr )
+  , mTemporalCapabilities( qgis::make_unique< QgsRasterDataProviderTemporalCapabilities >() )
 {
 }
 
@@ -405,6 +408,15 @@ void QgsRasterDataProvider::setUserNoDataValue( int bandNo, const QgsRasterRange
   }
 }
 
+QgsRasterDataProviderTemporalCapabilities *QgsRasterDataProvider::temporalCapabilities()
+{
+  return mTemporalCapabilities.get();
+}
+
+const QgsRasterDataProviderTemporalCapabilities *QgsRasterDataProvider::temporalCapabilities() const
+{
+  return mTemporalCapabilities.get();
+}
 
 QgsRasterDataProvider *QgsRasterDataProvider::create( const QString &providerKey,
     const QString &uri,
@@ -500,6 +512,13 @@ bool QgsRasterDataProvider::ignoreExtents() const
   return false;
 }
 
+QgsPoint QgsRasterDataProvider::transformCoordinates( const QgsPoint &point, QgsRasterDataProvider::TransformType type )
+{
+  Q_UNUSED( point )
+  Q_UNUSED( type )
+  return QgsPoint();
+}
+
 bool QgsRasterDataProvider::userNoDataValuesContains( int bandNo, double value ) const
 {
   QgsRasterRangeList rangeList = mUserNoDataValue.value( bandNo - 1 );
@@ -514,6 +533,12 @@ void QgsRasterDataProvider::copyBaseSettings( const QgsRasterDataProvider &other
   mUseSrcNoDataValue = other.mUseSrcNoDataValue;
   mUserNoDataValue = other.mUserNoDataValue;
   mExtent = other.mExtent;
+
+  // copy temporal properties
+  if ( mTemporalCapabilities && other.mTemporalCapabilities )
+  {
+    *mTemporalCapabilities = *other.mTemporalCapabilities;
+  }
 }
 
 // ENDS

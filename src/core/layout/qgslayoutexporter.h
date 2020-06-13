@@ -324,6 +324,21 @@ class CORE_EXPORT QgsLayoutExporter
       bool writeGeoPdf = false;
 
       /**
+       * TRUE if individual layers from the layout should be rendered to separate PDF files.
+       *
+       * This option allows for separation of logic layout layers to individual PDF files. For instance,
+       * if this option is TRUE, then a separate PDF file will be created per layer per map item in the
+       * layout. Additionally, separate PDF files may be created for other complex layout items, resulting
+       * in a set of PDF files which contain logical atomic components of the layout.
+       *
+       * This option is designed to allow the PDF files to be composited back together in an external
+       * application (e.g. Adobe Illustrator) as a non-QGIS, post-production step.
+       *
+       * \since QGIS 3.14
+       */
+      bool exportLayersAsSeperateFiles = false;
+
+      /**
        * TRUE if ISO3200 extension format georeferencing should be used.
        *
        * This is a recommended setting which results in Geospatial PDF files compatible

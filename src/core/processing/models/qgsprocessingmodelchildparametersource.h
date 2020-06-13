@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgsprocessing.h"
 class QgsProcessingParameterDefinition;
+class QgsProcessingModelAlgorithm;
 
 ///@cond NOT_STABLE
 
@@ -42,6 +43,7 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
       StaticValue, //!< Parameter value is a static value
       Expression, //!< Parameter value is taken from an expression, evaluated just before the algorithm runs
       ExpressionText, //!< Parameter value is taken from a text with expressions, evaluated just before the algorithm runs
+      ModelOutput, //!< Parameter value is linked to an output parameter for the model
     };
 
     /**
@@ -114,6 +116,13 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
      * Returns the parameter value's source.
      */
     Source source() const;
+
+    /**
+     * Sets the parameter's source.
+     *
+     * \since QGIS 3.14
+     */
+    void setSource( Source source );
 
     /**
      * Returns the source's static value. This is only used when the source() is StaticValue.
@@ -220,6 +229,12 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
      */
     QString asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsProcessingParameterDefinition *definition, const QMap< QString, QString > &friendlydChildNames ) const;
 
+    /**
+     * Returns a user-friendly identifier for this source, given the context of the specified \a model.
+     * \since QGIS 3.14
+     */
+    QString friendlyIdentifier( QgsProcessingModelAlgorithm *model ) const;
+
   private:
 
     Source mSource = StaticValue;
@@ -231,6 +246,10 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
     QString mExpressionText;
 
 };
+
+Q_DECLARE_METATYPE( QgsProcessingModelChildParameterSource );
+CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsProcessingModelChildParameterSource &source );
+CORE_EXPORT QDataStream &operator>>( QDataStream &in, QgsProcessingModelChildParameterSource &source );
 
 #ifndef SIP_RUN
 //! List of child parameter sources

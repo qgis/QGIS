@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMESHENTITY_H
-#define QGSMESHENTITY_H
+#ifndef QGSMESH3DENTITY_H
+#define QGSMESH3DENTITY_H
 
 #include <Qt3DCore/QEntity>
 
@@ -36,6 +36,8 @@
 // version without notice, or even be removed.
 //
 
+#define SIP_NO_FILE
+
 class Qgs3DMapSettings;
 class QgsTessellatedPolygonGeometry;
 class QgsMesh3DSymbol;
@@ -43,60 +45,61 @@ class QgsMesh3DSymbol;
 class QgsMeshLayer;
 class QgsMesh3dMaterial;
 
-//! Entity that handles rendering of mesh
-class QgsMesh3dEntity: public Qt3DCore::QEntity
+//! Abstract class that handles rendering of mesh
+class QgsMesh3dEntity
+{
+  public:
+    //! Builds the geometry and the material
+    void build();
+  protected:
+    //! Constructor
+    QgsMesh3dEntity( const Qgs3DMapSettings &map,
+                     QgsMeshLayer *meshLayer,
+                     const QgsMesh3DSymbol &symbol );
+
+    virtual ~QgsMesh3dEntity() = default;
+
+    QgsMeshLayer *layer() const;
+
+    Qgs3DMapSettings mMapSettings;
+    QgsMapLayerRef mLayerRef;
+    QgsMesh3DSymbol mSymbol;
+
+  private:
+    virtual void buildGeometry() = 0;
+    virtual void applyMaterial() = 0;
+};
+
+//! Entity that handles rendering of dataset
+class QgsMeshDataset3dEntity: public QgsMesh3dEntity, public Qt3DCore::QEntity
 {
   public:
     //! Constructor
-    QgsMesh3dEntity( const Qgs3DMapSettings &map,
-                     const QgsTriangularMesh triangularMesh,
-                     const QgsRectangle &extent,
-                     const QgsMesh3DSymbol &symbol );
-
-    //! Builds the geometry and the material
-    void build();
+    QgsMeshDataset3dEntity( const Qgs3DMapSettings &map,
+                            QgsMeshLayer *meshLayer,
+                            const QgsMesh3DSymbol &symbol );
 
   private:
     virtual void buildGeometry();
     virtual void applyMaterial();
 
-    QgsRectangle mExtent;
-    QgsMesh3DSymbol mSymbol;
-    Qgs3DMapSettings mMapSettings;
-    QgsTriangularMesh mTriangularMesh;
-    QgsMesh3dMaterial *mMaterial = nullptr;
-
-    static int mMesh3DEntityCount;
-    QString name;
 };
 
 //! Entity that handles rendering of terrain mesh
-class QgsMesh3dTerrainTileEntity: public QgsTerrainTileEntity
+class QgsMesh3dTerrainTileEntity: public QgsMesh3dEntity, public QgsTerrainTileEntity
 {
   public:
     QgsMesh3dTerrainTileEntity( const Qgs3DMapSettings &map,
-                                const QgsTriangularMesh triangularMesh,
-                                const QgsRectangle &extent,
+                                QgsMeshLayer *meshLayer,
                                 const QgsMesh3DSymbol &symbol,
                                 QgsChunkNodeId nodeId,
                                 Qt3DCore::QNode *parent = nullptr );
 
-    void build();
-
   private:
     virtual void buildGeometry();
     virtual void applyMaterial();
-
-    QgsRectangle mExtent;
-    QgsMesh3DSymbol mSymbol;
-    Qgs3DMapSettings mMapSettings;
-    QgsTriangularMesh mTriangularMesh;
-    QgsMesh3dMaterial *mMaterial = nullptr;
-
-    static int mMesh3DEntityCount;
-    QString name;
 };
 
 ///@endcond
 
-#endif // QGSMESHENTITY_H
+#endif // QGSMESH3DENTITY_H

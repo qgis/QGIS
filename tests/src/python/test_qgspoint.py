@@ -86,6 +86,23 @@ class TestQgsPointXY(unittest.TestCase):
         p = QgsPoint(1, 2, m=4, z=3)
         assert p.wkbType() == QgsWkbTypes.PointZM and p.x() == 1 and p.y() == 2 and p.z() == 3 and p.m() == 4
 
+    def test_empty_QgsPointXY(self):
+        p = QgsPoint(QgsPointXY())
+        assert p.isEmpty()
+
+
+class TestQgsPoint(unittest.TestCase):
+
+    def testInvalidConstructorArguments(self):
+        """Test GH #34557"""
+
+        with self.assertRaises(TypeError):
+            point_0 = QgsPoint('a string')
+
+        with self.assertRaises(TypeError):
+            point_a = QgsPoint(10, 20)
+            point_b = QgsPoint(point_a)
+
 
 if __name__ == '__main__':
     unittest.main()

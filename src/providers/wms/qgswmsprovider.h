@@ -261,6 +261,8 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     } TilePosition;
     typedef QList<TilePosition> TilePositions;
 
+    static bool isUrlForWMTS( const QString &url );
+
   private slots:
     void identifyReplyFinished();
     void getLegendGraphicReplyFinished( const QImage & );
@@ -340,6 +342,13 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     void createTileRequestsWMSC( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests );
     void createTileRequestsWMTS( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests );
     void createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests );
+
+    /**
+      * Add WMS-T parameters to the \a query, if provider has temporal properties
+      *
+      * \since QGIS 3.14
+      */
+    void addWmstParameters( QUrlQuery &query );
 
     //! Helper structure to store a cached tile image with its rectangle
     typedef struct TileImage
@@ -471,6 +480,9 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     //! User's settings (URI, authorization, layer, style, ...)
     QgsWmsSettings mSettings;
 
+    //! Temporal range member
+    QgsDateTimeRange mRange;
+
     QList< double > mNativeResolutions;
 
     friend class TestQgsWmsProvider;
@@ -581,6 +593,8 @@ class QgsWmsProviderMetadata final: public QgsProviderMetadata
     QgsWmsProviderMetadata();
     QgsWmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
+    QVariantMap decodeUri( const QString &uri ) override;
+    QString encodeUri( const QVariantMap &parts ) override;
 };
 
 #endif

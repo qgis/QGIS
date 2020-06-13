@@ -107,6 +107,12 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     void addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey );
 
     /**
+     * Emitted when a vector tile layer has been selected for addition.
+     * \since QGIS 3.14
+     */
+    void addVectorTileLayer( const QString &url, const QString &baseName );
+
+    /**
      * Emitted when one or more OGR supported layers are selected for addition
      * \param layerList list of layers protocol URIs
      * \param encoding encoding
@@ -135,6 +141,12 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
 
     //! Emitted when the ok/add buttons should be enabled/disabled
     void enableButtons( bool enable );
+
+    /**
+     * Emitted when a \a message with \a title and \a level must be shown to the user using the parent visible message bar
+     * \since QGIS 3.14
+     */
+    void pushMessage( const QString &title, const QString &message, const Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 
 
   protected:

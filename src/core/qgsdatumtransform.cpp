@@ -46,12 +46,9 @@ QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const 
   // See https://lists.osgeo.org/pipermail/proj/2019-May/008604.html
   proj_operation_factory_context_set_spatial_criterion( pjContext, operationContext,  PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION );
 
-#if PROJ_VERSION_MAJOR>6 || (PROJ_VERSION_MAJOR==6 && PROJ_VERSION_MINOR>=2)
   if ( includeSuperseded )
     proj_operation_factory_context_set_discard_superseded( pjContext, operationContext, false );
-#else
-  Q_UNUSED( includeSuperseded )
-#endif
+
   if ( PJ_OBJ_LIST *ops = proj_create_operations( pjContext, source.projObject(), destination.projObject(), operationContext ) )
   {
     int count = proj_list_get_count( ops );
@@ -355,10 +352,8 @@ QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( P
     details.bounds.setYMaximum( northLat );
   }
 
-#if PROJ_VERSION_MAJOR>6 || (PROJ_VERSION_MAJOR==6 && PROJ_VERSION_MINOR>=2)
   details.remarks = QString( proj_get_remarks( op ) );
   details.scope = QString( proj_get_scope( op ) );
-#endif
 
   for ( int j = 0; j < proj_coordoperation_get_grid_used_count( pjContext, op ); ++j )
   {
@@ -382,27 +377,43 @@ QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( P
     details.grids.append( gridDetails );
   }
 
-#if PROJ_VERSION_MAJOR>6 || (PROJ_VERSION_MAJOR==6 && PROJ_VERSION_MINOR>=2)
-  for ( int j = 0; j < proj_concatoperation_get_step_count( pjContext, op ); ++j )
+  if ( proj_get_type( op ) == PJ_TYPE_CONCATENATED_OPERATION )
   {
-    QgsProjUtils::proj_pj_unique_ptr step( proj_concatoperation_get_step( pjContext, op, j ) );
-    if ( step )
+    for ( int j = 0; j < proj_concatoperation_get_step_count( pjContext, op ); ++j )
     {
-      SingleOperationDetails singleOpDetails;
-      singleOpDetails.remarks = QString( proj_get_remarks( step.get() ) );
-      singleOpDetails.scope = QString( proj_get_scope( step.get() ) );
-      singleOpDetails.authority = QString( proj_get_id_auth_name( step.get(), 0 ) );
-      singleOpDetails.code = QString( proj_get_id_code( step.get(), 0 ) );
-
-      const char *areaOfUseName = nullptr;
-      if ( proj_get_area_of_use( pjContext, step.get(), nullptr, nullptr, nullptr, nullptr, &areaOfUseName ) )
+      QgsProjUtils::proj_pj_unique_ptr step( proj_concatoperation_get_step( pjContext, op, j ) );
+      if ( step )
       {
-        singleOpDetails.areaOfUse = QString( areaOfUseName );
+        SingleOperationDetails singleOpDetails;
+        singleOpDetails.remarks = QString( proj_get_remarks( step.get() ) );
+        singleOpDetails.scope = QString( proj_get_scope( step.get() ) );
+        singleOpDetails.authority = QString( proj_get_id_auth_name( step.get(), 0 ) );
+        singleOpDetails.code = QString( proj_get_id_code( step.get(), 0 ) );
+
+        const char *areaOfUseName = nullptr;
+        if ( proj_get_area_of_use( pjContext, step.get(), nullptr, nullptr, nullptr, nullptr, &areaOfUseName ) )
+        {
+          singleOpDetails.areaOfUse = QString( areaOfUseName );
+        }
+        details.operationDetails.append( singleOpDetails );
       }
-      details.operationDetails.append( singleOpDetails );
     }
   }
-#endif
+  else
+  {
+    SingleOperationDetails singleOpDetails;
+    singleOpDetails.remarks = QString( proj_get_remarks( op ) );
+    singleOpDetails.scope = QString( proj_get_scope( op ) );
+    singleOpDetails.authority = QString( proj_get_id_auth_name( op, 0 ) );
+    singleOpDetails.code = QString( proj_get_id_code( op, 0 ) );
+
+    const char *areaOfUseName = nullptr;
+    if ( proj_get_area_of_use( pjContext, op, nullptr, nullptr, nullptr, nullptr, &areaOfUseName ) )
+    {
+      singleOpDetails.areaOfUse = QString( areaOfUseName );
+    }
+    details.operationDetails.append( singleOpDetails );
+  }
 
   return details;
 }

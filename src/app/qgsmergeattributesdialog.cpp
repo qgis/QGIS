@@ -186,6 +186,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
       if ( v.isValid() )
       {
         mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, v );
+        mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::UserRole, v );
         setToManual = true;
       }
     }
@@ -240,8 +241,8 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
       break;
   }
 
-  newComboBox->addItem( tr( "Skip attribute" ), QStringLiteral( "skip" ) );
-  newComboBox->addItem( tr( "Manual value" ), QStringLiteral( "manual" ) );
+  newComboBox->addItem( tr( "Skip Attribute" ), QStringLiteral( "skip" ) );
+  newComboBox->addItem( tr( "Manual Value" ), QStringLiteral( "manual" ) );
 
   connect( newComboBox, &QComboBox::currentTextChanged,
            this, &QgsMergeAttributesDialog::comboValueChanged );

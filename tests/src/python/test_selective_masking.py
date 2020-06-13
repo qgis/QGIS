@@ -68,6 +68,7 @@ from qgis.core import (
     QgsLayoutSize,
     QgsLayoutItemMap,
     QgsLayoutExporter,
+    QgsWkbTypes,
 )
 
 
@@ -136,6 +137,8 @@ class TestSelectiveMasking(unittest.TestCase):
                 fmt.setSize(32)
                 fmt.setSizeUnit(QgsUnitTypes.RenderPoints)
                 settings.setFormat(fmt)
+                if (layer.geometryType == QgsWkbTypes.PolygonGeometry):
+                    settings.placement = QgsPalLayerSettings.OverPoint
                 layer.labeling().setSettings(settings, provider)
 
         # order layers for rendering

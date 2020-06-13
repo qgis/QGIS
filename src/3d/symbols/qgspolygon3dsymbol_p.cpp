@@ -93,21 +93,21 @@ void QgsPolygon3DSymbolHandler::processPolygon( QgsPolygon *polyClone, QgsFeatur
   if ( mSymbol.edgesEnabled() )
   {
     // add edges before the polygon gets the Z values modified because addLineString() does its own altitude handling
-    outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->exteriorRing() ) );
+    outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->exteriorRing() ), height );
     for ( int i = 0; i < polyClone->numInteriorRings(); ++i )
-      outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->interiorRing( i ) ) );
+      outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->interiorRing( i ) ), height );
 
     if ( extrusionHeight )
     {
       // add roof and wall edges
       const QgsLineString *exterior = static_cast<const QgsLineString *>( polyClone->exteriorRing() );
-      outEdges.addLineString( *exterior, extrusionHeight );
-      outEdges.addVerticalLines( *exterior, extrusionHeight );
+      outEdges.addLineString( *exterior, extrusionHeight + height );
+      outEdges.addVerticalLines( *exterior, extrusionHeight, height );
       for ( int i = 0; i < polyClone->numInteriorRings(); ++i )
       {
         const QgsLineString *interior = static_cast<const QgsLineString *>( polyClone->interiorRing( i ) );
-        outEdges.addLineString( *interior, extrusionHeight );
-        outEdges.addVerticalLines( *interior, extrusionHeight );
+        outEdges.addLineString( *interior, extrusionHeight + height );
+        outEdges.addVerticalLines( *interior, extrusionHeight, height );
       }
     }
   }

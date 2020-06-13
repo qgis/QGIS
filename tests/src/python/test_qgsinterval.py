@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import QgsInterval
+from qgis.core import QgsInterval, QgsUnitTypes
 from qgis.testing import unittest
 
 
@@ -36,6 +36,11 @@ class TestQgsInterval(unittest.TestCase):
         i = QgsInterval(56)
         self.assertTrue(i.isValid())
         self.assertEqual(i.seconds(), 56)
+
+        # constructor with unit type
+        i = QgsInterval(56, QgsUnitTypes.TemporalMilliseconds)
+        self.assertTrue(i.isValid())
+        self.assertEqual(i.seconds(), 0.056)
 
     def testSettersGetters(self):
         # setters and getters
@@ -160,6 +165,24 @@ class TestQgsInterval(unittest.TestCase):
         self.assertEqual(i.seconds(), 5)
         i = QgsInterval.fromString('bad')
         self.assertFalse(i.isValid())
+
+    def testFromUnits(self):
+        i = QgsInterval(2, 0, 0, 0, 0, 0, 0)
+        self.assertEqual(i.seconds(), 63115200.0)
+        i = QgsInterval(0, 2, 0, 0, 0, 0, 0)
+        self.assertEqual(i.seconds(), 5184000.0)
+        i = QgsInterval(0, 0, 2, 0, 0, 0, 0)
+        self.assertEqual(i.seconds(), 1209600.0)
+        i = QgsInterval(0, 0, 0, 2, 0, 0, 0)
+        self.assertEqual(i.seconds(), 172800.0)
+        i = QgsInterval(0, 0, 0, 0, 2, 0, 0)
+        self.assertEqual(i.seconds(), 7200.0)
+        i = QgsInterval(0, 0, 0, 0, 0, 2, 0)
+        self.assertEqual(i.seconds(), 120.0)
+        i = QgsInterval(0, 0, 0, 0, 0, 0, 2)
+        self.assertEqual(i.seconds(), 2)
+        i = QgsInterval(1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 2)
+        self.assertEqual(i.seconds(), 56342192.0)
 
 
 if __name__ == '__main__':

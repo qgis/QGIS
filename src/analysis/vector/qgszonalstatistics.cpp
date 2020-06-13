@@ -173,31 +173,31 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
   vectorProvider->addAttributes( newFieldList );
 
   //index of the new fields
-  int countIndex = mStatistics & QgsZonalStatistics::Count ? vectorProvider->fieldNameIndex( countFieldName ) : -1;
-  int sumIndex = mStatistics & QgsZonalStatistics::Sum ? vectorProvider->fieldNameIndex( sumFieldName ) : -1;
-  int meanIndex = mStatistics & QgsZonalStatistics::Mean ? vectorProvider->fieldNameIndex( meanFieldName ) : -1;
-  int medianIndex = mStatistics & QgsZonalStatistics::Median ? vectorProvider->fieldNameIndex( medianFieldName ) : -1;
-  int stdevIndex = mStatistics & QgsZonalStatistics::StDev ? vectorProvider->fieldNameIndex( stdevFieldName ) : -1;
-  int minIndex = mStatistics & QgsZonalStatistics::Min ? vectorProvider->fieldNameIndex( minFieldName ) : -1;
-  int maxIndex = mStatistics & QgsZonalStatistics::Max ? vectorProvider->fieldNameIndex( maxFieldName ) : -1;
-  int rangeIndex = mStatistics & QgsZonalStatistics::Range ? vectorProvider->fieldNameIndex( rangeFieldName ) : -1;
-  int minorityIndex = mStatistics & QgsZonalStatistics::Minority ? vectorProvider->fieldNameIndex( minorityFieldName ) : -1;
-  int majorityIndex = mStatistics & QgsZonalStatistics::Majority ? vectorProvider->fieldNameIndex( majorityFieldName ) : -1;
-  int varietyIndex = mStatistics & QgsZonalStatistics::Variety ? vectorProvider->fieldNameIndex( varietyFieldName ) : -1;
-  int varianceIndex = mStatistics & QgsZonalStatistics::Variance ? vectorProvider->fieldNameIndex( varianceFieldName ) : -1;
+  int countIndex = ( mStatistics & QgsZonalStatistics::Count ) ? vectorProvider->fieldNameIndex( countFieldName ) : -1;
+  int sumIndex = ( mStatistics & QgsZonalStatistics::Sum ) ? vectorProvider->fieldNameIndex( sumFieldName ) : -1;
+  int meanIndex = ( mStatistics & QgsZonalStatistics::Mean ) ? vectorProvider->fieldNameIndex( meanFieldName ) : -1;
+  int medianIndex = ( mStatistics & QgsZonalStatistics::Median ) ? vectorProvider->fieldNameIndex( medianFieldName ) : -1;
+  int stdevIndex = ( mStatistics & QgsZonalStatistics::StDev ) ? vectorProvider->fieldNameIndex( stdevFieldName ) : -1;
+  int minIndex = ( mStatistics & QgsZonalStatistics::Min ) ? vectorProvider->fieldNameIndex( minFieldName ) : -1;
+  int maxIndex = ( mStatistics & QgsZonalStatistics::Max ) ? vectorProvider->fieldNameIndex( maxFieldName ) : -1;
+  int rangeIndex = ( mStatistics & QgsZonalStatistics::Range ) ? vectorProvider->fieldNameIndex( rangeFieldName ) : -1;
+  int minorityIndex = ( mStatistics & QgsZonalStatistics::Minority ) ? vectorProvider->fieldNameIndex( minorityFieldName ) : -1;
+  int majorityIndex = ( mStatistics & QgsZonalStatistics::Majority ) ? vectorProvider->fieldNameIndex( majorityFieldName ) : -1;
+  int varietyIndex = ( mStatistics & QgsZonalStatistics::Variety ) ? vectorProvider->fieldNameIndex( varietyFieldName ) : -1;
+  int varianceIndex = ( mStatistics & QgsZonalStatistics::Variance ) ? vectorProvider->fieldNameIndex( varianceFieldName ) : -1;
 
-  if ( ( mStatistics & QgsZonalStatistics::Count && countIndex == -1 )
-       || ( mStatistics & QgsZonalStatistics::Sum && sumIndex == -1 )
-       || ( mStatistics & QgsZonalStatistics::Mean && meanIndex == -1 )
-       || ( mStatistics & QgsZonalStatistics::Median && medianIndex == -1 )
-       || ( mStatistics & QgsZonalStatistics::StDev && stdevIndex == -1 )
-       || ( mStatistics & QgsZonalStatistics::Min && minIndex == -1 )
-       || ( mStatistics & QgsZonalStatistics::Max && maxIndex == -1 )
-       || ( mStatistics & QgsZonalStatistics::Range && rangeIndex == -1 )
-       || ( mStatistics & QgsZonalStatistics::Minority && minorityIndex == -1 )
-       || ( mStatistics & QgsZonalStatistics::Majority && majorityIndex == -1 )
-       || ( mStatistics & QgsZonalStatistics::Variety && varietyIndex == -1 )
-       || ( mStatistics & QgsZonalStatistics::Variance && varianceIndex == -1 )
+  if ( ( ( mStatistics & QgsZonalStatistics::Count ) && countIndex == -1 )
+       || ( ( mStatistics & QgsZonalStatistics::Sum ) && sumIndex == -1 )
+       || ( ( mStatistics & QgsZonalStatistics::Mean ) && meanIndex == -1 )
+       || ( ( mStatistics & QgsZonalStatistics::Median ) && medianIndex == -1 )
+       || ( ( mStatistics & QgsZonalStatistics::StDev ) && stdevIndex == -1 )
+       || ( ( mStatistics & QgsZonalStatistics::Min ) && minIndex == -1 )
+       || ( ( mStatistics & QgsZonalStatistics::Max ) && maxIndex == -1 )
+       || ( ( mStatistics & QgsZonalStatistics::Range ) && rangeIndex == -1 )
+       || ( ( mStatistics & QgsZonalStatistics::Minority ) && minorityIndex == -1 )
+       || ( ( mStatistics & QgsZonalStatistics::Majority ) && majorityIndex == -1 )
+       || ( ( mStatistics & QgsZonalStatistics::Variety ) && varietyIndex == -1 )
+       || ( ( mStatistics & QgsZonalStatistics::Variance ) && varianceIndex == -1 )
      )
   {
     //failed to create a required field

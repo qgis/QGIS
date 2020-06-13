@@ -110,7 +110,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, i
 
 QVariant QgsValueRelationFieldFormatter::sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
-  return representValue( layer, fieldIndex, config, cache, value );
+  return value.isNull() ? QString() : representValue( layer, fieldIndex, config, cache, value );
 }
 
 QVariant QgsValueRelationFieldFormatter::createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const
@@ -121,7 +121,10 @@ QVariant QgsValueRelationFieldFormatter::createCache( QgsVectorLayer *layer, int
 
 }
 
-QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatter::createCache( const QVariantMap &config, const QgsFeature &formFeature )
+QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatter::createCache(
+  const QVariantMap &config,
+  const QgsFeature &formFeature,
+  const QgsFeature &parentFormFeature )
 {
   ValueRelationCache cache;
 
@@ -137,20 +140,32 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
   QgsFeatureRequest request;
 
   request.setFlags( QgsFeatureRequest::NoGeometry );
-  request.setSubsetOfAttributes( QgsAttributeList() << ki << vi );
+  QgsAttributeIds subsetOfAttributes { ki, vi };
 
-  const QString expression = config.value( QStringLiteral( "FilterExpression" ) ).toString();
+  const QString descriptionExpressionString = config.value( "Description" ).toString();
+  QgsExpression descriptionExpression( descriptionExpressionString );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  descriptionExpression.prepare( &context );
+  subsetOfAttributes += descriptionExpression.referencedAttributeIndexes( layer->fields() );
+  request.setSubsetOfAttributes( subsetOfAttributes.toList() );
+
+  const QString filterExpression = config.value( QStringLiteral( "FilterExpression" ) ).toString();
 
   // Skip the filter and build a full cache if the form scope is required and the feature
   // is not valid or the attributes required for the filter have no valid value
-  if ( ! expression.isEmpty() && ( ! expressionRequiresFormScope( expression )
-                                   || expressionIsUsable( expression, formFeature ) ) )
+  // Note: parent form scope is not checked for usability because it's supposed to
+  //       be used into a coalesce that retrieve the current value of the parent
+  //       from the parent layer when used outside of an embedded form
+  if ( ! filterExpression.isEmpty() && ( !( expressionRequiresFormScope( filterExpression ) )
+                                         || expressionIsUsable( filterExpression, formFeature ) ) )
   {
-    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-    if ( formFeature.isValid( ) )
-      context.appendScope( QgsExpressionContextUtils::formScope( formFeature ) );
-    request.setExpressionContext( context );
-    request.setFilterExpression( expression );
+    QgsExpressionContext filterContext = context;
+    if ( formFeature.isValid( ) && QgsValueRelationFieldFormatter::expressionRequiresFormScope( filterExpression ) )
+      filterContext.appendScope( QgsExpressionContextUtils::formScope( formFeature ) );
+    if ( parentFormFeature.isValid() && QgsValueRelationFieldFormatter::expressionRequiresParentFormScope( filterExpression ) )
+      filterContext.appendScope( QgsExpressionContextUtils::parentFormScope( parentFormFeature ) );
+    request.setExpressionContext( filterContext );
+    request.setFilterExpression( filterExpression );
   }
 
   QgsFeatureIterator fit = layer->getFeatures( request );
@@ -158,7 +173,13 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    cache.append( ValueRelationItem( f.attribute( ki ), f.attribute( vi ).toString() ) );
+    QString description;
+    if ( descriptionExpression.isValid() )
+    {
+      context.setFeature( f );
+      description = descriptionExpression.evaluate( &context ).toString();
+    }
+    cache.append( ValueRelationItem( f.attribute( ki ), f.attribute( vi ).toString(), description ) );
   }
 
   if ( config.value( QStringLiteral( "OrderByValue" ) ).toBool() )
@@ -276,9 +297,48 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionFormVariables( const QSt
   return formVariables;
 }
 
+QSet<QString> QgsValueRelationFieldFormatter::expressionParentFormVariables( const QString &expression )
+{
+  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::parentFormScope() );
+  QSet< QString > formVariables = scope->variableNames().toSet();
+  const QSet< QString > usedVariables = QgsExpression( expression ).referencedVariables();
+  formVariables.intersect( usedVariables );
+  return formVariables;
+}
+
 bool QgsValueRelationFieldFormatter::expressionRequiresFormScope( const QString &expression )
 {
   return !( expressionFormAttributes( expression ).isEmpty() && expressionFormVariables( expression ).isEmpty() );
+}
+
+bool QgsValueRelationFieldFormatter::expressionRequiresParentFormScope( const QString &expression )
+{
+  return !( expressionParentFormAttributes( expression ).isEmpty() && expressionParentFormVariables( expression ).isEmpty() );
+}
+
+QSet<QString> QgsValueRelationFieldFormatter::expressionParentFormAttributes( const QString &expression )
+{
+  QSet<QString> attributes;
+  QgsExpression exp( expression );
+  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::parentFormScope() );
+  // List of form function names used in the expression
+  const QSet<QString> formFunctions( scope->functionNames()
+                                     .toSet()
+                                     .intersect( exp.referencedFunctions( ) ) );
+  const QList<const QgsExpressionNodeFunction *> expFunctions( exp.findNodes<QgsExpressionNodeFunction>() );
+  QgsExpressionContext context;
+  for ( const auto &f : expFunctions )
+  {
+    QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+    if ( formFunctions.contains( fd->name( ) ) )
+    {
+      for ( const auto &param : f->args( )->list() )
+      {
+        attributes.insert( param->eval( &exp, &context ).toString() );
+      }
+    }
+  }
+  return attributes;
 }
 
 QSet<QString> QgsValueRelationFieldFormatter::expressionFormAttributes( const QString &expression )
@@ -306,7 +366,9 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionFormAttributes( const QS
   return attributes;
 }
 
-bool QgsValueRelationFieldFormatter::expressionIsUsable( const QString &expression, const QgsFeature &feature )
+bool QgsValueRelationFieldFormatter::expressionIsUsable( const QString &expression,
+    const QgsFeature &feature,
+    const QgsFeature &parentFeature )
 {
   const QSet<QString> attrs = expressionFormAttributes( expression );
   for ( auto it = attrs.constBegin() ; it != attrs.constEnd(); it++ )
@@ -314,8 +376,21 @@ bool QgsValueRelationFieldFormatter::expressionIsUsable( const QString &expressi
     if ( ! feature.attribute( *it ).isValid() )
       return false;
   }
+
   if ( ! expressionFormVariables( expression ).isEmpty() && feature.geometry().isEmpty( ) )
     return false;
+
+  if ( parentFeature.isValid() )
+  {
+    const QSet<QString> parentAttrs = expressionParentFormAttributes( expression );
+    for ( auto it = parentAttrs.constBegin() ; it != parentAttrs.constEnd(); it++ )
+    {
+      if ( ! parentFeature.attribute( *it ).isValid() )
+        return false;
+    }
+    if ( ! expressionParentFormVariables( expression ).isEmpty() && parentFeature.geometry().isEmpty( ) )
+      return false;
+  }
   return true;
 }
 

@@ -20,14 +20,15 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsunittypes.h"
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 #include <QColor>
 #include <QFont>
 #include <QPen>
 #include <QBrush>
 
 class QgsNumericFormat;
-
+class QgsLineSymbol;
+class QgsFillSymbol;
 
 /**
  * \class QgsScaleBarSettings
@@ -118,6 +119,42 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see setNumberOfSegments()
      */
     void setNumberOfSegmentsLeft( int segments ) { mNumSegmentsLeft = segments; }
+
+    /**
+     * Returns the number of subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
+     *
+     * \note The number of subdivisions represents the number of subdivision segments, not the number of subdivision lines. E.g.
+     * if the number is 1 then NO subdivision lines will be shown.
+     *
+     * \see setNumberOfSubdivisions()
+     * \since QGIS 3.14
+     */
+    int numberOfSubdivisions() const { return mNumSubdivisions; }
+
+    /**
+     * Sets the number of \a subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
+     *
+     * \note The number of subdivisions represents the number of subdivision segments, not the number of subdivision lines. E.g.
+     * if the number is 1 then NO subdivision lines will be shown.
+     *
+     * \see numberOfSubdivisions()
+     * \since QGIS 3.14
+     */
+    void setNumberOfSubdivisions( int subdivisions ) { mNumSubdivisions = subdivisions; }
+
+    /**
+     * Returns the scalebar subdivisions height (in millimeters) for segments included in the right part of the scalebar (only used for some scalebar types).
+     * \see setSubdivisionsHeight()
+     * \since QGIS 3.14
+     */
+    double subdivisionsHeight() const { return mSubdivisionsHeight; }
+
+    /**
+     * Sets the scalebar subdivisions \a height (in millimeters) for segments included in the right part of the scalebar (only used for some scalebar types).
+     * \see subdivisionsHeight()
+     * \since QGIS 3.14
+     */
+    void setSubdivisionsHeight( double height ) { mSubdivisionsHeight = height; }
 
     /**
      * Returns the number of scalebar units per segment.
@@ -291,94 +328,220 @@ class CORE_EXPORT QgsScaleBarSettings
      * Returns the color used for fills in the scalebar.
      * \see setFillColor()
      * \see fillColor2()
+     * \deprecated use fillSymbol() instead.
      */
-    QColor fillColor() const { return mFillColor; }
+    Q_DECL_DEPRECATED QColor fillColor() const SIP_DEPRECATED;
 
     /**
      * Sets the \a color used for fills in the scalebar.
      * \see fillColor()
      * \see setFillColor2()
+     * \deprecated use setFillSymbol() instead.
      */
-    void setFillColor( const QColor &color ) { mFillColor = color; mBrush.setColor( color ); }
+    Q_DECL_DEPRECATED void setFillColor( const QColor &color ) SIP_DEPRECATED;
 
     /**
      * Returns the secondary color used for fills in the scalebar.
      * \see setFillColor2()
      * \see fillColor()
+     * \deprecated use alternateFillSymbol() instead
      */
-    QColor fillColor2() const {return mFillColor2;}
+    Q_DECL_DEPRECATED QColor fillColor2() const SIP_DEPRECATED;
 
     /**
      * Sets the secondary \a color used for fills in the scalebar.
      * \see fillColor2()
      * \see setFillColor2()
+     * \deprecated use setAlternateFillSymbol() instead.
      */
-    void setFillColor2( const QColor &color ) { mFillColor2 = color; mBrush2.setColor( color ); }
+    Q_DECL_DEPRECATED void setFillColor2( const QColor &color ) SIP_DEPRECATED;
 
     /**
      * Returns the color used for lines in the scalebar.
      * \see setLineColor()
+     * \deprecated use lineSymbol() instead.
      */
-    QColor lineColor() const { return mLineColor; }
+    Q_DECL_DEPRECATED QColor lineColor() const SIP_DEPRECATED;
 
     /**
      * Sets the \a color used for lines in the scalebar.
      * \see lineColor()
+     * \deprecated use setLineSymbol() instead.
      */
-    void setLineColor( const QColor &color ) { mLineColor = color; mPen.setColor( mLineColor ); }
+    Q_DECL_DEPRECATED void setLineColor( const QColor &color ) SIP_DEPRECATED;
 
     /**
      * Returns the line width in millimeters for lines in the scalebar.
      * \see setLineWidth()
+     * \deprecated use lineSymbol() instead.
      */
-    double lineWidth() const { return mLineWidth; }
+    Q_DECL_DEPRECATED double lineWidth() const SIP_DEPRECATED;
 
     /**
      * Sets the line \a width in millimeters for lines in the scalebar.
      * \see lineWidth()
+     * \deprecated use setLineSymbol() instead.
      */
-    void setLineWidth( double width ) { mLineWidth = width; mPen.setWidthF( width ); }
+    Q_DECL_DEPRECATED void setLineWidth( double width ) SIP_DEPRECATED;
 
     /**
      * Returns the pen used for drawing outlines in the scalebar.
      * \see setPen()
      * \see brush()
+     * \deprecated use lineSymbol() instead.
      */
-    QPen pen() const { return mPen; }
+    Q_DECL_DEPRECATED QPen pen() const SIP_DEPRECATED;
 
     /**
      * Sets the pen used for drawing outlines in the scalebar.
      * \see pen()
+     * \deprecated use setLineSymbol() instead.
      */
-    void setPen( const QPen &pen ) { mPen = pen; }
+    Q_DECL_DEPRECATED void setPen( const QPen &pen ) SIP_DEPRECATED;
+
+    /**
+     * Returns the line symbol used to render the scalebar (only used for some scalebar types).
+     *
+     * Ownership is not transferred.
+     *
+     * \see setLineSymbol()
+     * \see divisionLineSymbol()
+     * \see subdivisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    QgsLineSymbol *lineSymbol() const;
+
+    /**
+     * Sets the line \a symbol used to render the scalebar (only used for some scalebar types). Ownership of \a symbol is
+     * transferred to the scalebar.
+     *
+     * \see lineSymbol()
+     * \see setDivisionLineSymbol()
+     * \see setSubdivisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    void setLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the line symbol used to render the scalebar divisions (only used for some scalebar types).
+     *
+     * Ownership is not transferred.
+     *
+     * \see setDivisionLineSymbol()
+     * \see lineSymbol()
+     * \see subdivisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    QgsLineSymbol *divisionLineSymbol() const;
+
+    /**
+     * Sets the line \a symbol used to render the scalebar divisions (only used for some scalebar types). Ownership of \a symbol is
+     * transferred to the scalebar.
+     *
+     * \see divisionLineSymbol()
+     * \see setLineSymbol()
+     * \see setSubdivisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    void setDivisionLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the line symbol used to render the scalebar subdivisions (only used for some scalebar types).
+     *
+     * Ownership is not transferred.
+     *
+     * \see setSubdivisionLineSymbol()
+     * \see lineSymbol()
+     * \see divisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    QgsLineSymbol *subdivisionLineSymbol() const;
+
+    /**
+     * Sets the line \a symbol used to render the scalebar subdivisions (only used for some scalebar types). Ownership of \a symbol is
+     * transferred to the scalebar.
+     *
+     * \see subdivisionLineSymbol()
+     * \see setLineSymbol()
+     * \see setDivisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    void setSubdivisionLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the primary fill symbol used to render the scalebar (only used for some scalebar types).
+     *
+     * Ownership is not transferred.
+     *
+     * \see setFillSymbol()
+     * \see alternateFillSymbol()
+     * \since QGIS 3.14
+     */
+    QgsFillSymbol *fillSymbol() const;
+
+    /**
+     * Sets the primary fill \a symbol used to render the scalebar (only used for some scalebar types). Ownership of \a symbol is
+     * transferred to the scalebar.
+     *
+     * \see fillSymbol()
+     * \see setAlternateFillSymbol()
+     * \since QGIS 3.14
+     */
+    void setFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
+
+
+    /**
+     * Returns the secondary fill symbol used to render the scalebar (only used for some scalebar types).
+     *
+     * Ownership is not transferred.
+     *
+     * \see setAlternateFillSymbol()
+     * \see fillSymbol()
+     * \since QGIS 3.14
+     */
+    QgsFillSymbol *alternateFillSymbol() const;
+
+    /**
+     * Sets the secondary fill \a symbol used to render the scalebar (only used for some scalebar types). Ownership of \a symbol is
+     * transferred to the scalebar.
+     *
+     * \see alternateFillSymbol()
+     * \see setFillSymbol()
+     * \since QGIS 3.14
+     */
+    void setAlternateFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
     /**
      * Returns the primary brush used for filling the scalebar.
      * \see setBrush()
      * \see brush2()
      * \see pen()
+     * \deprecated use fillSymbol() instead
      */
-    QBrush brush() const { return mBrush; }
+    Q_DECL_DEPRECATED QBrush brush() const SIP_DEPRECATED;
 
     /**
      * Sets the primary brush used for filling the scalebar.
      * \see brush()
+     * \deprecated use setFillSymbol() instead
      */
-    void setBrush( const QBrush &brush ) { mBrush = brush; }
+    Q_DECL_DEPRECATED void setBrush( const QBrush &brush ) SIP_DEPRECATED;
 
     /**
      * Returns the secondary brush for the scalebar. This is used for alternating color style scalebars, such
      * as single and double box styles.
      * \see setBrush2()
      * \see brush()
+     * \deprecated use alternateFillSymbol() instead
      */
-    QBrush brush2() const { return mBrush2; }
+    Q_DECL_DEPRECATED QBrush brush2() const SIP_DEPRECATED;
 
     /**
      * Sets the secondary brush used for filling the scalebar.
      * \see brush()
+     * \deprecated use setAlternateFillSymbol() instead
      */
-    void setBrush2( const QBrush &brush ) { mBrush2 = brush; }
+    Q_DECL_DEPRECATED void setBrush2( const QBrush &brush ) SIP_DEPRECATED;
 
     /**
      * Returns the scalebar height (in millimeters).
@@ -459,26 +622,30 @@ class CORE_EXPORT QgsScaleBarSettings
     /**
      * Returns the join style used for drawing lines in the scalebar.
      * \see setLineJoinStyle()
+     * \deprecated use lineSymbol() instead
      */
-    Qt::PenJoinStyle lineJoinStyle() const { return mLineJoinStyle; }
+    Q_DECL_DEPRECATED Qt::PenJoinStyle lineJoinStyle() const SIP_DEPRECATED;
 
     /**
      * Sets the join \a style used when drawing the lines in the scalebar
      * \see lineJoinStyle()
+     * \deprecated use setLineSymbol() instead
      */
-    void setLineJoinStyle( Qt::PenJoinStyle style ) { mLineJoinStyle = style; mPen.setJoinStyle( style ); }
+    Q_DECL_DEPRECATED void setLineJoinStyle( Qt::PenJoinStyle style ) SIP_DEPRECATED;
 
     /**
      * Returns the cap style used for drawing lines in the scalebar.
      * \see setLineCapStyle()
+     * \deprecated use lineSymbol() instead
      */
-    Qt::PenCapStyle lineCapStyle() const { return mLineCapStyle; }
+    Q_DECL_DEPRECATED Qt::PenCapStyle lineCapStyle() const SIP_DEPRECATED;
 
     /**
      * Sets the cap \a style used when drawing the lines in the scalebar.
      * \see lineCapStyle()
+     * \deprecated use setLineSymbol() instead
      */
-    void setLineCapStyle( Qt::PenCapStyle style ) { mLineCapStyle = style; mPen.setCapStyle( style ); }
+    Q_DECL_DEPRECATED void setLineCapStyle( Qt::PenCapStyle style ) SIP_DEPRECATED;
 
     /**
      * Returns the numeric format used for numbers in the scalebar.
@@ -504,6 +671,10 @@ class CORE_EXPORT QgsScaleBarSettings
     int mNumSegments = 2;
     //! Number of segments on left side
     int mNumSegmentsLeft = 0;
+    //! Number of subdivisions on right side
+    int mNumSubdivisions = 1;
+    //! Height of subdivisions on right side
+    double mSubdivisionsHeight = 1.5;
     //! Size of a segment (in map units)
     double mNumUnitsPerSegment = 0;
     //! Number of map units per scale bar units (e.g. 1000 to have km for a map with m units)
@@ -521,22 +692,14 @@ class CORE_EXPORT QgsScaleBarSettings
     //! Text format
     QgsTextFormat mTextFormat;
 
-    //! Fill color
-    QColor mFillColor = QColor( 0, 0, 0 );
-    //! Secondary fill color
-    QColor mFillColor2 = QColor( 255, 255, 255 );
-    //! Line color
-    QColor mLineColor = QColor( 0, 0, 0 );
-    //! Line width
-    double mLineWidth = 0.3;
-    //! Stroke
-    QPen mPen;
-    //! Fill
-    QBrush mBrush;
-    //! Secondary fill
-    QBrush mBrush2;
     //! Height of bars/lines
     double mHeight = 3.0;
+
+    std::unique_ptr< QgsLineSymbol > mLineSymbol;
+    std::unique_ptr< QgsLineSymbol > mDivisionLineSymbol;
+    std::unique_ptr< QgsLineSymbol > mSubdivisionLineSymbol;
+    std::unique_ptr< QgsFillSymbol > mFillSymbol;
+    std::unique_ptr< QgsFillSymbol > mAlternateFillSymbol;
 
     //! Space between bar and Text labels
     double mLabelBarSpace = 3.0;
@@ -552,8 +715,6 @@ class CORE_EXPORT QgsScaleBarSettings
 
     QgsUnitTypes::DistanceUnit mUnits = QgsUnitTypes::DistanceMeters;
 
-    Qt::PenJoinStyle mLineJoinStyle = Qt::MiterJoin;
-    Qt::PenCapStyle mLineCapStyle = Qt::SquareCap;
 
     std::unique_ptr< QgsNumericFormat > mNumericFormat;
 

@@ -24,6 +24,7 @@
 #include "qgslogger.h"
 #include "qgsgdalguiprovider.h"
 #include "qgsogrguiprovider.h"
+#include "qgsvectortileproviderguimetadata.h"
 
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgswmsprovidergui.h"
@@ -66,6 +67,9 @@ void QgsProviderGuiRegistry::loadStaticProviders( )
   QgsProviderGuiMetadata *ogr = new QgsOgrGuiProviderMetadata();
   mProviders[ ogr->key() ] = ogr;
 
+  QgsProviderGuiMetadata *vt = new QgsVectorTileProviderGuiMetadata();
+  mProviders[ vt->key() ] = vt;
+
 #ifdef HAVE_STATIC_PROVIDERS
   QgsProviderGuiMetadata *wms = new QgsWmsProviderGuiMetadata();
   mProviders[ wms->key() ] = wms;
@@ -95,7 +99,7 @@ void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
   mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*.so" ) ) );
 #endif
 
-  QgsDebugMsg( QStringLiteral( "Checking %1 for GUI provider plugins" ).arg( mLibraryDirectory.path() ) );
+  QgsDebugMsgLevel( QStringLiteral( "Checking %1 for GUI provider plugins" ).arg( mLibraryDirectory.path() ), 2 );
 
   if ( mLibraryDirectory.count() == 0 )
   {

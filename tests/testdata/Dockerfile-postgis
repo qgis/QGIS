@@ -16,7 +16,6 @@ RUN apt-get -y update; apt-get -y install \
   postgresql-client-11 \
   postgresql-server-dev-11 \
   zlib1g-dev
-RUN dpkg -L postgresql-server-dev-11
 RUN wget -O- \
   https://github.com/pgpointcloud/pointcloud/archive/v1.2.1.tar.gz \
   | tar xz && \

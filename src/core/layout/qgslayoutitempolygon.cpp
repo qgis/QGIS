@@ -117,7 +117,7 @@ void QgsLayoutItemPolygon::_draw( QgsLayoutItemRenderContext &context, const QSt
   double scale = context.renderContext().convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
   QTransform t = QTransform::fromScale( scale, scale );
 
-  QList<QPolygonF> rings; //empty
+  QVector<QPolygonF> rings; //empty
   QPainterPath polygonPath;
   polygonPath.addPolygon( mPolygon );
 

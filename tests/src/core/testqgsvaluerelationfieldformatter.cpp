@@ -37,6 +37,7 @@ class TestQgsValueRelationFieldFormatter: public QObject
     void init(); // will be called before each testfunction is executed.
     void cleanup(); // will be called after every testfunction.
     void testDependencies();
+    void testSortValueNull();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -146,9 +147,22 @@ void TestQgsValueRelationFieldFormatter::testDependencies()
   QCOMPARE( dependency.source, mLayer2->publicSource() );
 }
 
+void TestQgsValueRelationFieldFormatter::testSortValueNull()
+{
+  QgsValueRelationFieldFormatter formatter;
+  QVariantMap config;
+  config.insert( QStringLiteral( "Layer" ), mLayer2->id() );
+  config.insert( QStringLiteral( "Key" ), QStringLiteral( "pk" ) );
+  config.insert( QStringLiteral( "Value" ), QStringLiteral( "material" ) );
+
+  // when sorting, a null value is represented with a null QString, not "NULL" string
+  // if not, the NULL values will take place between M and O (see https://github.com/qgis/QGIS/issues/36114)
+  QVariant value = formatter.sortValue( mLayer2.get(), 1, config, QVariant(), QVariant() );
+  QCOMPARE( value, QVariant( QString() ) );
+
+  value = formatter.sortValue( mLayer2.get(), 1, config, QVariant(), QVariant( 10 ) );
+  QCOMPARE( value, QVariant( QString( "iron" ) ) );
+}
+
 QGSTEST_MAIN( TestQgsValueRelationFieldFormatter )
 #include "testqgsvaluerelationfieldformatter.moc"
-
-
-
-

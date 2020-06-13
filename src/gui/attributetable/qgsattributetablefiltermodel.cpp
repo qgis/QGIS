@@ -26,6 +26,7 @@
 #include "qgsrenderer.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsapplication.h"
 
 //////////////////
 // Filter Model //
@@ -39,6 +40,11 @@ QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsMapCanvas *canvas
   setDynamicSortFilter( true );
   setSortRole( QgsAttributeTableModel::SortRole );
   connect( layer(), &QgsVectorLayer::selectionChanged, this, &QgsAttributeTableFilterModel::selectionChanged );
+
+  mReloadVisibleTimer.setSingleShot( true );
+  connect( &mReloadVisibleTimer, &QTimer::timeout, this, &QgsAttributeTableFilterModel::reloadVisible );
+  mFilterFeaturesTimer.setSingleShot( true );
+  connect( &mFilterFeaturesTimer, &QTimer::timeout, this, &QgsAttributeTableFilterModel::filterFeatures );
 }
 
 bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
@@ -226,6 +232,12 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
     sort( config.sortExpression(), config.sortOrder() );
 }
 
+void QgsAttributeTableFilterModel::setFilterExpression( const QgsExpression &expression, const QgsExpressionContext &context )
+{
+  mFilterExpression = expression;
+  mFilterExpressionContext = context;
+}
+
 void QgsAttributeTableFilterModel::sort( const QString &expression, Qt::SortOrder order )
 {
   if ( order != Qt::AscendingOrder && order != Qt::DescendingOrder )
@@ -311,18 +323,55 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
 {
   if ( filterMode != mFilterMode )
   {
-    if ( filterMode == ShowVisible )
-    {
-      connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::extentsChanged );
-      generateListOfVisibleFeatures();
-    }
-    else
-    {
-      disconnect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::extentsChanged );
-    }
-
+    disconnectFilterModeConnections();
+    connectFilterModeConnections( filterMode );
     mFilterMode = filterMode;
     invalidateFilter();
+  }
+}
+
+void QgsAttributeTableFilterModel::disconnectFilterModeConnections()
+{
+  // cleanup existing connections
+  switch ( mFilterMode )
+  {
+    case ShowVisible:
+      disconnect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+      disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+      disconnect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+      break;
+    case ShowAll:
+    case ShowEdited:
+    case ShowSelected:
+      break;
+    case ShowFilteredList:
+      disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedFilterFeatures );
+      disconnect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::onAttributeValueChanged );
+      disconnect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::onGeometryChanged );
+      break;
+  }
+}
+
+void QgsAttributeTableFilterModel::connectFilterModeConnections( QgsAttributeTableFilterModel::FilterMode filterMode )
+{
+  // setup new connections
+  switch ( filterMode )
+  {
+    case ShowVisible:
+      connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+      connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+      connect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+      generateListOfVisibleFeatures();
+      break;
+    case ShowAll:
+    case ShowEdited:
+    case ShowSelected:
+      break;
+    case ShowFilteredList:
+      connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedFilterFeatures );
+      connect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::onAttributeValueChanged );
+      connect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::onGeometryChanged );
+      break;
   }
 }
 
@@ -373,9 +422,98 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
 
 void QgsAttributeTableFilterModel::extentsChanged()
 {
+  reloadVisible();
+}
+
+void QgsAttributeTableFilterModel::reloadVisible()
+{
   generateListOfVisibleFeatures();
   invalidateFilter();
+  emit visibleReloaded();
 }
+
+void QgsAttributeTableFilterModel::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
+{
+  Q_UNUSED( fid );
+  Q_UNUSED( value );
+
+  if ( mFilterExpression.referencedAttributeIndexes( layer()->fields() ).contains( idx ) )
+  {
+    startTimedFilterFeatures();
+  }
+}
+
+void QgsAttributeTableFilterModel::onGeometryChanged()
+{
+  if ( mFilterExpression.needsGeometry() )
+  {
+    startTimedFilterFeatures();
+  }
+}
+
+void QgsAttributeTableFilterModel::startTimedReloadVisible()
+{
+  mReloadVisibleTimer.start( 10 );
+}
+
+void QgsAttributeTableFilterModel::startTimedFilterFeatures()
+{
+  mFilterFeaturesTimer.start( 10 );
+}
+
+void QgsAttributeTableFilterModel::filterFeatures()
+{
+  if ( !mFilterExpression.isValid() )
+    return;
+
+  QgsFeatureIds filteredFeatures;
+  QgsDistanceArea distanceArea;
+
+  distanceArea.setSourceCrs( mTableModel->layer()->crs(), QgsProject::instance()->transformContext() );
+  distanceArea.setEllipsoid( QgsProject::instance()->ellipsoid() );
+
+  const bool fetchGeom = mFilterExpression.needsGeometry();
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
+  mFilterExpression.setGeomCalculator( &distanceArea );
+  mFilterExpression.setDistanceUnits( QgsProject::instance()->distanceUnits() );
+  mFilterExpression.setAreaUnits( QgsProject::instance()->areaUnits() );
+  QgsFeatureRequest request( mTableModel->request() );
+  request.setSubsetOfAttributes( mFilterExpression.referencedColumns(), mTableModel->layer()->fields() );
+  if ( !fetchGeom )
+  {
+    request.setFlags( QgsFeatureRequest::NoGeometry );
+  }
+  else
+  {
+    // force geometry extraction if the filter requests it
+    request.setFlags( request.flags() & ~QgsFeatureRequest::NoGeometry );
+  }
+  QgsFeatureIterator featIt = mTableModel->layer()->getFeatures( request );
+
+  QgsFeature f;
+
+  while ( featIt.nextFeature( f ) )
+  {
+    mFilterExpressionContext.setFeature( f );
+    if ( mFilterExpression.evaluate( &mFilterExpressionContext ).toInt() != 0 )
+      filteredFeatures << f.id();
+
+    // check if there were errors during evaluating
+    if ( mFilterExpression.hasEvalError() )
+      break;
+  }
+
+  featIt.close();
+
+  setFilteredFeatures( filteredFeatures );
+
+  QApplication::restoreOverrideCursor();
+
+  emit featuresFiltered();
+}
+
 
 void QgsAttributeTableFilterModel::selectionChanged()
 {

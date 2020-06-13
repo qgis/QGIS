@@ -1,14 +1,22 @@
 name: Windows cross build with MXE
 
-on: [push]
+on: [push, pull_request]
+
+#on:
+# push:
+#   branches-ignore:
+#     - '**'
+# pull_request:
+#   branches-ignore:
+#     - '**'
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Cross build with MXE
       run: cd $GITHUB_WORKSPACE && ms-windows/mxe/build.sh
     - name: Rename artifact
@@ -18,4 +26,4 @@ jobs:
       with:
         name: QGIS for Windows 64bit
         path: qgis-mxe-release.zip
-      
+

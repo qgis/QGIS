@@ -33,12 +33,16 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_datetime.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_memory_data_model.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_driver_manager.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/mdal_logger.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/mdal_logger.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_driver.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_2dm.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ascii_dat.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_binary_dat.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_selafin.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_esri_tin.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xms_tin.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xms_tin.hpp
   )
 
   SET(MDAL_LIB_HDRS
@@ -73,6 +77,21 @@ IF (WITH_INTERNAL_MDAL)
     SET (HAVE_HDF5 TRUE)
   ENDIF(HDF5_FOUND)
 
+  IF(SQLITE3_FOUND)
+     SET(HAVE_SQLITE3 TRUE)
+  ENDIF(SQLITE3_FOUND)
+
+  IF(SQLITE3_FOUND AND NETCDF_FOUND)
+     SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sqlite3.cpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_3di.cpp
+    )
+    SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sqlite3.hpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_3di.hpp
+    )
+  ENDIF(SQLITE3_FOUND AND NETCDF_FOUND)
+
   IF(GDAL_FOUND)
     SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal.cpp
@@ -88,7 +107,6 @@ IF (WITH_INTERNAL_MDAL)
   IF(NETCDF_FOUND)
     SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_cf.cpp
-      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_3di.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_netcdf.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sww.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ugrid.cpp
@@ -96,7 +114,6 @@ IF (WITH_INTERNAL_MDAL)
     )
     SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_cf.hpp
-      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_3di.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_netcdf.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sww.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ugrid.hpp

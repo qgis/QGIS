@@ -45,7 +45,7 @@ QgsMapSettings::QgsMapSettings()
   updateDerived();
 }
 
-void QgsMapSettings::setMagnificationFactor( double factor )
+void QgsMapSettings::setMagnificationFactor( double factor, const QgsPointXY *center )
 {
   double ratio = mMagnificationFactor / factor;
 
@@ -55,7 +55,7 @@ void QgsMapSettings::setMagnificationFactor( double factor )
   setRotation( 0.0 );
 
   QgsRectangle ext = visibleExtent();
-  ext.scale( ratio );
+  ext.scale( ratio, center );
 
   mRotation = rot;
   mExtent = ext;
@@ -459,6 +459,7 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( const QgsMapLayer *layer
   try
   {
     QgsCoordinateTransform ct = layerTransform( layer );
+    ct.setBallparkTransformsAreAppropriate( true );
     if ( ct.isValid() )
     {
       QgsDebugMsgLevel( QStringLiteral( "sourceCrs = %1" ).arg( ct.sourceCrs().authid() ), 3 );

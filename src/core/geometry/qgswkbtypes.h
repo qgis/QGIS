@@ -45,16 +45,16 @@ class CORE_EXPORT QgsWkbTypes
     /**
      * The WKB type describes the number of dimensions a geometry has
      *
-     *  - Point
-     *  - LineString
-     *  - Polygon
+     * - Point
+     * - LineString
+     * - Polygon
      *
      * as well as the number of dimensions for each individual vertex
      *
-     *  - X (always)
-     *  - Y (always)
-     *  - Z (optional)
-     *  - M (measurement value, optional)
+     * - X (always)
+     * - Y (always)
+     * - Z (optional)
+     * - M (measurement value, optional)
      *
      * it also has values for multi types, collections, unknown geometry,
      * null geometry, no geometry and curve support.
@@ -303,11 +303,20 @@ class CORE_EXPORT QgsWkbTypes
       switch ( type )
       {
         case Unknown:
-        case Triangle:
-        case TriangleZ:
-        case TriangleM:
-        case TriangleZM:
           return Unknown;
+
+        // until we support TIN types, use multipolygon
+        case Triangle:
+          return MultiPolygon;
+
+        case TriangleZ:
+          return MultiPolygonZ;
+
+        case TriangleM:
+          return MultiPolygonM;
+
+        case TriangleZM:
+          return MultiPolygonZM;
 
         case GeometryCollection:
           return GeometryCollection;
@@ -429,6 +438,7 @@ class CORE_EXPORT QgsWkbTypes
      *
      * \note Returns `CompoundCurve` for `CircularString` (and its Z/M variants)
      *
+     * \see linearType()
      * \see isMultiType()
      * \see isCurvedType()
      * \see singleType()
@@ -562,6 +572,121 @@ class CORE_EXPORT QgsWkbTypes
         case Point25D:
         case MultiPoint25D:
           return MultiPoint25D;
+      }
+      return Unknown;
+    }
+
+    /**
+     * Returns the linear type for a WKB type. For example, for a CompoundCurve, the linear type would be LineString.
+     *
+     * \see curveType()
+     * \see isMultiType()
+     * \see isCurvedType()
+     * \see singleType()
+     * \see flatType()
+     * \see multiType()
+     *
+     * \since QGIS 3.14
+     */
+    static Type linearType( Type type )
+    {
+      switch ( type )
+      {
+
+        case CircularString:
+        case CompoundCurve:
+          return LineString;
+
+        case CircularStringM:
+        case CompoundCurveM:
+          return LineStringM;
+
+        case CircularStringZ:
+        case CompoundCurveZ:
+          return LineStringZ;
+
+        case CircularStringZM:
+        case CompoundCurveZM:
+          return LineStringZM;
+
+        case MultiCurve:
+          return MultiLineString;
+
+        case MultiCurveM:
+          return MultiLineStringM;
+
+        case MultiCurveZ:
+          return MultiLineStringZ;
+
+        case MultiCurveZM:
+          return MultiLineStringZM;
+
+        case CurvePolygon:
+          return Polygon;
+
+        case CurvePolygonM:
+          return PolygonM;
+
+        case CurvePolygonZ:
+          return PolygonZ;
+
+        case CurvePolygonZM:
+          return PolygonZM;
+
+        case MultiSurface:
+          return MultiPolygon;
+
+        case MultiSurfaceM:
+          return MultiPolygonM;
+
+        case MultiSurfaceZ:
+          return MultiPolygonZ;
+
+        case MultiSurfaceZM:
+          return MultiPolygonZM;
+
+        case GeometryCollection:
+        case GeometryCollectionM:
+        case GeometryCollectionZ:
+        case GeometryCollectionZM:
+        case LineString:
+        case LineString25D:
+        case LineStringM:
+        case LineStringZ:
+        case LineStringZM:
+        case MultiLineString:
+        case MultiLineString25D:
+        case MultiLineStringM:
+        case MultiLineStringZ:
+        case MultiLineStringZM:
+        case MultiPoint:
+        case MultiPoint25D:
+        case MultiPointM:
+        case MultiPointZ:
+        case MultiPointZM:
+        case MultiPolygon:
+        case MultiPolygon25D:
+        case MultiPolygonM:
+        case MultiPolygonZ:
+        case MultiPolygonZM:
+        case NoGeometry:
+        case Point:
+        case Point25D:
+        case PointM:
+        case PointZ:
+        case PointZM:
+        case Polygon:
+        case Polygon25D:
+        case PolygonM:
+        case PolygonZ:
+        case PolygonZM:
+        case Triangle:
+        case TriangleM:
+        case TriangleZ:
+        case TriangleZM:
+        case Unknown:
+          return type;
+
       }
       return Unknown;
     }
@@ -1105,7 +1230,7 @@ class CORE_EXPORT QgsWkbTypes
       QgsWkbTypes::Type flat = flatType( type );
 
       if ( flat >= Point && flat <= MultiPolygon )
-        return static_cast< QgsWkbTypes::Type >( flat + 0x80000000 );
+        return static_cast< QgsWkbTypes::Type >( static_cast<unsigned>( flat ) + 0x80000000U );
       else if ( type == QgsWkbTypes::NoGeometry )
         return QgsWkbTypes::NoGeometry;
       else

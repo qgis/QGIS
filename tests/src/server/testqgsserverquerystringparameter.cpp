@@ -118,6 +118,7 @@ void TestQgsServerQueryStringParameter::testArguments()
   QCOMPARE( p.value( ctx ).type(), QVariant::Double );
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=a%20string" ) );
   QVERIFY_EXCEPTION_THROWN( p.value( ctx ), QgsServerApiBadRequestException );
+  QCOMPARE( QString::fromStdString( p.data()["schema"]["type"] ), QString( "number" ) );
 
   // Test list
   p.mType = QgsServerQueryStringParameter::Type::List;

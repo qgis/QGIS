@@ -96,6 +96,12 @@ void QgsEditorWidgetWrapper::emitValueChanged()
   emit valuesChanged( value(), additionalFieldValues() );
 }
 
+void QgsEditorWidgetWrapper::parentFormValueChanged( const QString &attribute, const QVariant &value )
+{
+  Q_UNUSED( attribute )
+  Q_UNUSED( value )
+}
+
 void QgsEditorWidgetWrapper::updateConstraintWidgetStatus()
 {
   if ( !mConstraintResultVisible )

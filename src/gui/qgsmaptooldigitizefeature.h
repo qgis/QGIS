@@ -42,7 +42,8 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
      */
     QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode = QgsMapToolCapture::CaptureNone );
 
-    void keyPressEvent( QKeyEvent *e ) override;
+    QgsMapToolCapture::Capabilities capabilities() const override;
+
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     /**

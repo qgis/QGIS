@@ -47,27 +47,27 @@ class QgsFeaturePool;
  * A new subclass of QgsGeometryCheck needs to be written and at least the following
  * abstract methods need to be implemented:
  *
- *  - `compatibleGeometryTypes()`
+ * - `compatibleGeometryTypes()`
  *
  *    A list of geometry types to which this check applies
  *
- *  - `resolutionMethods()`
+ * - `resolutionMethods()`
  *
  *    A list of names for (automated) resolution methods that can be used to fix errors of this type
  *
- *  - `description()`
+ * - `description()`
  *
  *    A description for the geometry check.
  *
- *  - `id()`
+ * - `id()`
  *
  *    A unique id for this check.
  *
- *  - `checkType()`
+ * - `checkType()`
  *
  *    One of QgsGeometryCheck.LayerCheck, QgsGeometryCheck.FeatureCheck,QgsGeometryCheck.FeatureNodeCheck
  *
- *  - \link collectErrors() `collectErrors(featurePools, errors, messages, feedback, ids)`\endlink
+ * - \link collectErrors() `collectErrors(featurePools, errors, messages, feedback, ids)`\endlink
  *
  *    This method will be called to validate geometries. All geometries which should be validated are passed
  *    into this method with the parameter ids and should be retrieved from the available featurePools to make
@@ -84,28 +84,28 @@ class QgsFeaturePool;
  * A new subclass of QgsGeometryCheckFactory needs to be written and at least the following
  * abstract methods need to be implemented:
  *
- *  - \link QgsGeometryCheckFactory::createGeometryCheck() `createGeometryCheck(context, configuration)`\endlink
+ * - \link QgsGeometryCheckFactory::createGeometryCheck() `createGeometryCheck(context, configuration)`\endlink
  *
  *    Needs to return a new subclassed QgsGeometryCheck object that has been written in the previous step.
  *
- *  - \link QgsGeometryCheckFactory::id() `id()\endlink
+ * - \link QgsGeometryCheckFactory::id() `id()\endlink
  *
  *    A unique id for this geometry check.
  *
- *  - \link QgsGeometryCheckFactory::description() `description()\endlink
+ * - \link QgsGeometryCheckFactory::description() `description()\endlink
  *
  *    A description for this geometry check that can be presented to the user for more explanation.
  *
- *  - \link QgsGeometryCheckFactory::isCompatible() `QgsGeometryCheckFactory::isCompatible(layer)`\endlink
+ * - \link QgsGeometryCheckFactory::isCompatible() `QgsGeometryCheckFactory::isCompatible(layer)`\endlink
  *
  *    Returns a boolean that determines if this check is available for a given layer. This often
  *    checks for the geometry type of the layer.
  *
- *  - \link QgsGeometryCheckFactory::flags() `flags()`\endlink
+ * - \link QgsGeometryCheckFactory::flags() `flags()`\endlink
  *
  *    Returns additional flags for a geometry check. If unsure return QgsGeometryCheck.AvailableInValidation.
  *
- *  - \link QgsGeometryCheckFactory::checkType() `checkType()`\endlink
+ * - \link QgsGeometryCheckFactory::checkType() `checkType()`\endlink
  *
  *    Returns the type of this geometry check.
  *

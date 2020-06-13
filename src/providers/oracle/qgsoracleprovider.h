@@ -313,6 +313,8 @@ class QgsOracleProvider final: public QgsVectorDataProvider
 
       private:
         QString mWhat;
+
+        OracleException &operator= ( const OracleException & ) = delete;
     };
 
     // A function that determines if the given schema.table.column

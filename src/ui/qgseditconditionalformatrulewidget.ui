@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="5" column="0" colspan="2">
@@ -317,11 +317,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QFontComboBox" name="mFontFamilyCmbBx">
-          <property name="editable">
-           <bool>false</bool>
-          </property>
-         </widget>
+         <widget class="QFontComboBox" name="mFontFamilyCmbBx" />
         </item>
        </layout>
       </item>

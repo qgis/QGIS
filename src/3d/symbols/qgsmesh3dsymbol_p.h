@@ -31,6 +31,8 @@
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QGeometryRenderer>
 
+#define SIP_NO_FILE
+
 class Qgs3DMapSettings;
 class QgsTessellatedPolygonGeometry;
 class QgsMesh3DSymbol;

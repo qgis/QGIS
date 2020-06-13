@@ -175,6 +175,17 @@ variable QGIS_SERVER_API_WFS3_MAX_LIMIT.
 .. versionadded:: 3.10
 %End
 
+    bool ignoreBadLayers() const;
+%Docstring
+Returns ``True`` if the bad layers are ignored and ``False`` when the presence of a
+bad layers invalidates the whole project making it unavailable.
+
+The default value is ``True``, this value can be changed by setting the environment
+variable QGIS_SERVER_IGNORE_BAD_LAYERS.
+
+.. versionadded:: 3.10.5
+%End
+
 };
 
 /************************************************************************

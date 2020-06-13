@@ -33,7 +33,7 @@ class QgsMssqlExpressionCompiler : public QgsSqlExpressionCompiler
     QString castToReal( const QString &value ) const override;
     QString castToInt( const QString &value ) const override;
     QString sqlFunctionFromFunctionName( const QString &fnName ) const override;
-
+    QStringList sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const override;
 };
 
 #endif // QGSMSSQLEXPRESSIONCOMPILER_H

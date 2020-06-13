@@ -65,16 +65,21 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
      */
     struct RenderJob
     {
-      RenderJob( QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s )
-        : ftr( _ftr )
-        , symbol( _s )
-      {}
+        RenderJob( QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s )
+          : ftr( _ftr )
+          , symbol( _s )
+        {}
 
-      //! Feature to render
-      QgsRuleBasedRenderer::FeatureToRender &ftr;
+        //! Feature to render
+        QgsRuleBasedRenderer::FeatureToRender &ftr;
 
-      //! Symbol to render feature with (not owned by this object).
-      QgsSymbol *symbol = nullptr;
+        //! Symbol to render feature with (not owned by this object).
+        QgsSymbol *symbol = nullptr;
+
+      private:
+#ifdef SIP_RUN
+        RenderJob &operator=( const RenderJob & );
+#endif
     };
 
     /**
@@ -103,7 +108,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
       }
 
       RenderLevel( const QgsRuleBasedRenderer::RenderLevel &other )
-        : zIndex( other.zIndex )
+        : zIndex( other.zIndex ), jobs()
       {
         for ( RenderJob *job : qgis::as_const( other.jobs ) )
         {
@@ -163,7 +168,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
         /**
-         * Returns TRUE if this rule or one of its chilren needs the geometry to be applied.
+         * Returns TRUE if this rule or one of its children needs the geometry to be applied.
          */
         bool needsGeometry() const;
 

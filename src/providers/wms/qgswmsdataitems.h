@@ -42,20 +42,33 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
 };
 
 /**
- * \brief WMS Layer Collection.
+ * Base class which contains similar basic attributes and functions needed by the
+ * wms collection layers and child layers.
  *
- *  This collection contains a WMS Layer element that can enclose other layers
  */
-class QgsWMSLayerCollectionItem : public QgsDataCollectionItem
+class QgsWMSItemBase
 {
-    Q_OBJECT
   public:
-    QgsWMSLayerCollectionItem( QgsDataItem *parent, QString name, QString path,
-                               const QgsWmsCapabilitiesProperty &capabilitiesProperty,
-                               const QgsDataSourceUri &dataSourceUri,
-                               const QgsWmsLayerProperty &layerProperty );
+    QgsWMSItemBase( const QgsWmsCapabilitiesProperty &capabilitiesProperty,
+                    const QgsDataSourceUri &dataSourceUri,
+                    const QgsWmsLayerProperty &layerProperty );
 
-    bool equal( const QgsDataItem *other ) override;
+    /**
+     * Returns the uri for the wms dataitem.
+     *
+     * The WMS temporal layers can contain the following parameters uri.
+     *
+     * - "type": the type of the wms provider e.g WMS-T
+     * - "timeDimensionExtent": the layer's time dimension extent it is available
+     * - "referencetimeDimensionExtent": reference time extent for the bi-temporal dimension layers
+     * - "time": time value of the current layer data from the provider
+     * - "referenceTime": reference time value of the current of the layer data, this is applicable for the
+     *   bi-temporal dimension layers
+     * - "allowTemporalUpdates": whether to allow updates on temporal parameters on this uri
+     * - "temporalSource": the source of the layer's temporal range, can be either "provider" or "project"
+     * - "enableTime": if the provider using time part in the temporal range datetime instances
+     */
+    QString createUri();
 
     //! Stores GetCapabilities response
     QgsWmsCapabilitiesProperty mCapabilitiesProperty;
@@ -67,9 +80,38 @@ class QgsWMSLayerCollectionItem : public QgsDataCollectionItem
     QgsWmsLayerProperty mLayerProperty;
 };
 
+/**
+ * \brief WMS Layer Collection.
+ *
+ *  This collection contains a WMS Layer element that can enclose other layers.
+ */
+class QgsWMSLayerCollectionItem : public QgsDataCollectionItem, public QgsWMSItemBase
+{
+    Q_OBJECT
+  public:
+    QgsWMSLayerCollectionItem( QgsDataItem *parent, QString name, QString path,
+                               const QgsWmsCapabilitiesProperty &capabilitiesProperty,
+                               const QgsDataSourceUri &dataSourceUri,
+                               const QgsWmsLayerProperty &layerProperty );
+
+    bool equal( const QgsDataItem *other ) override;
+
+    bool hasDragEnabled() const override;
+
+    QgsMimeDataUtils::Uri mimeUri() const override;
+
+  protected:
+    //! The URI
+    QString mUri;
+
+    // QgsDataItem interface
+  public:
+    bool layerCollection() const override;
+};
+
 // WMS Layers may be nested, so that they may be both QgsDataCollectionItem and QgsLayerItem
 // We have to use QgsDataCollectionItem and support layer methods if necessary
-class QgsWMSLayerItem : public QgsLayerItem
+class QgsWMSLayerItem : public QgsLayerItem, public QgsWMSItemBase
 {
     Q_OBJECT
   public:
@@ -79,11 +121,7 @@ class QgsWMSLayerItem : public QgsLayerItem
                      const QgsWmsLayerProperty &layerProperty );
 
     bool equal( const QgsDataItem *other ) override;
-    QString createUri();
 
-    QgsWmsCapabilitiesProperty mCapabilitiesProperty;
-    QgsDataSourceUri mDataSourceUri;
-    QgsWmsLayerProperty mLayerProperty;
 };
 
 class QgsWMTSLayerItem : public QgsLayerItem
@@ -137,7 +175,7 @@ class QgsWmsDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override { return QStringLiteral( "WMS" ); }
-
+    QString dataProviderKey() const override;
     int capabilities() const override { return QgsDataProvider::Net; }
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
@@ -174,7 +212,7 @@ class QgsXyzTileDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-
+    QString dataProviderKey() const override;
     int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;

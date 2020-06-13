@@ -23,9 +23,10 @@ size_t MDAL::Dataset::valuesCount() const
 
   switch ( location )
   {
-    case MDAL_DataLocation::DataOnVertices2D: return mesh()->verticesCount();
-    case MDAL_DataLocation::DataOnFaces2D: return mesh()->facesCount();
-    case MDAL_DataLocation::DataOnVolumes3D: return volumesCount();
+    case MDAL_DataLocation::DataOnVertices: return mesh()->verticesCount();
+    case MDAL_DataLocation::DataOnFaces: return mesh()->facesCount();
+    case MDAL_DataLocation::DataOnVolumes: return volumesCount();
+    case MDAL_DataLocation::DataOnEdges: return mesh()->edgesCount();
     default: return 0;
   }
 }
@@ -186,6 +187,12 @@ void MDAL::DatasetGroup::setMetadata( const std::string &key, const std::string 
     metadata.push_back( std::make_pair( key, val ) );
 }
 
+void MDAL::DatasetGroup::setMetadata( const MDAL::Metadata &metadata )
+{
+  for ( const auto &meta : metadata )
+    setMetadata( meta.first, meta.second );
+}
+
 std::string MDAL::DatasetGroup::name()
 {
   return getMetadata( "name" );
@@ -253,6 +260,26 @@ void MDAL::DatasetGroup::stopEditing()
   mInEditMode = false;
 }
 
+void MDAL::DatasetGroup::setReferenceAngles( const std::pair<double, double> &referenceAngle )
+{
+  mReferenceAngles = referenceAngle;
+}
+
+bool MDAL::DatasetGroup::isPolar() const
+{
+  return mIsPolar;
+}
+
+void MDAL::DatasetGroup::setIsPolar( bool isPolar )
+{
+  mIsPolar = isPolar;
+}
+
+std::pair<double, double> MDAL::DatasetGroup::referenceAngles() const
+{
+  return mReferenceAngles;
+}
+
 MDAL_DataLocation MDAL::DatasetGroup::dataLocation() const
 {
   return mDataLocation;
@@ -279,15 +306,16 @@ void MDAL::DatasetGroup::setIsScalar( bool isScalar )
   mIsScalar = isScalar;
 }
 
-MDAL::Mesh::Mesh(
-  const std::string &driverName,
-  size_t verticesCount,
-  size_t facesCount,
-  size_t faceVerticesMaximumCount,
-  MDAL::BBox extent,
-  const std::string &uri )
+MDAL::Mesh::Mesh( const std::string &driverName,
+                  size_t verticesCount,
+                  size_t edgesCount,
+                  size_t facesCount,
+                  size_t faceVerticesMaximumCount,
+                  MDAL::BBox extent,
+                  const std::string &uri )
   : mDriverName( driverName )
   , mVerticesCount( verticesCount )
+  , mEdgesCount( edgesCount )
   , mFacesCount( facesCount )
   , mFaceVerticesMaximumCount( faceVerticesMaximumCount )
   , mExtent( extent )
@@ -338,6 +366,11 @@ size_t MDAL::Mesh::verticesCount() const
   return mVerticesCount;
 }
 
+size_t MDAL::Mesh::edgesCount() const
+{
+  return mEdgesCount;
+}
+
 size_t MDAL::Mesh::facesCount() const
 {
   return mFacesCount;
@@ -366,3 +399,5 @@ size_t MDAL::Mesh::faceVerticesMaximumCount() const
 MDAL::MeshVertexIterator::~MeshVertexIterator() = default;
 
 MDAL::MeshFaceIterator::~MeshFaceIterator() = default;
+
+MDAL::MeshEdgeIterator::~MeshEdgeIterator() = default;

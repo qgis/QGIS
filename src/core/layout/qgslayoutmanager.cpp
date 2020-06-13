@@ -210,11 +210,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
       continue;
     }
     l->undoStack()->blockCommands( false );
-    if ( addLayout( l.get() ) )
-    {
-      ( void )l.release(); // ownership was transferred successfully
-    }
-    else
+    if ( !addLayout( l.release() ) )
     {
       result = false;
     }
@@ -229,11 +225,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
       result = false;
       continue;
     }
-    if ( addLayout( r.get() ) )
-    {
-      ( void )r.release(); // ownership was transferred successfully
-    }
-    else
+    if ( !addLayout( r.release() ) )
     {
       result = false;
     }

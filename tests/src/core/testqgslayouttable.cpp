@@ -79,6 +79,8 @@ class TestQgsLayoutTable : public QObject
     void conditionalFormatting(); //test rendering with conditional formatting
     void dataDefinedSource();
     void wrappedText();
+    void testBaseSort();
+    void testExpressionSort();
 
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
@@ -467,7 +469,7 @@ void TestQgsLayoutTable::manualColumnWidth()
   table->setBackgroundColor( Qt::yellow );
 
   table->setMaximumNumberOfFeatures( 20 );
-  table->columns().at( 0 )->setWidth( 5 );
+  table->columns()[0].setWidth( 5 );
   QgsLayoutChecker checker( QStringLiteral( "composerattributetable_columnwidth" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_table" ) );
   bool result = checker.testLayout( mReport, 0 );
@@ -698,8 +700,8 @@ void TestQgsLayoutTable::attributeTableRestoreAtlasSource()
   QVERIFY( l->atlas()->coverageLayer()->isValid() );
   QCOMPARE( table->sourceLayer(), l->atlas()->coverageLayer() );
   QCOMPARE( table->columns().count(), 2 );
-  QCOMPARE( table->columns().at( 0 )->attribute(), QStringLiteral( "Heading" ) );
-  QCOMPARE( table->columns().at( 1 )->attribute(), QStringLiteral( "Staff" ) );
+  QCOMPARE( table->columns()[0].attribute(), QStringLiteral( "Heading" ) );
+  QCOMPARE( table->columns()[1].attribute(), QStringLiteral( "Staff" ) );
 }
 
 
@@ -868,10 +870,10 @@ void TestQgsLayoutTable::removeDuplicates()
 
   //check if removing attributes in unique mode works correctly (should result in duplicate rows,
   //which will be stripped out)
-  delete table->columns().takeLast();
+  table->columns().takeLast();
   table->refreshAttributes();
   QCOMPARE( table->contents().length(), 2 );
-  delete table->columns().takeLast();
+  table->columns().takeLast();
   table->refreshAttributes();
   QCOMPARE( table->contents().length(), 1 );
   table->setUniqueRowsOnly( false );
@@ -1091,12 +1093,12 @@ void TestQgsLayoutTable::align()
   table->setMaximumNumberOfFeatures( 20 );
   table->setVectorLayer( multiLineLayer );
 
-  table->columns().at( 0 )->setHAlignment( Qt::AlignLeft );
-  table->columns().at( 0 )->setVAlignment( Qt::AlignTop );
-  table->columns().at( 1 )->setHAlignment( Qt::AlignHCenter );
-  table->columns().at( 1 )->setVAlignment( Qt::AlignVCenter );
-  table->columns().at( 2 )->setHAlignment( Qt::AlignRight );
-  table->columns(). at( 2 )->setVAlignment( Qt::AlignBottom );
+  table->columns()[0].setHAlignment( Qt::AlignLeft );
+  table->columns()[0].setVAlignment( Qt::AlignTop );
+  table->columns()[1].setHAlignment( Qt::AlignHCenter );
+  table->columns()[1].setVAlignment( Qt::AlignVCenter );
+  table->columns()[2].setHAlignment( Qt::AlignRight );
+  table->columns()[2].setVAlignment( Qt::AlignBottom );
   QgsLayoutChecker checker( QStringLiteral( "composerattributetable_align" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_table" ) );
   bool result = checker.testLayout( mReport );
@@ -1184,8 +1186,8 @@ void TestQgsLayoutTable::autoWrap()
   table->setVectorLayer( multiLineLayer.get() );
   table->setWrapBehavior( QgsLayoutTable::WrapText );
 
-  table->columns().at( 0 )->setWidth( 25 );
-  table->columns().at( 1 )->setWidth( 25 );
+  table->columns()[0].setWidth( 25 );
+  table->columns()[1].setWidth( 25 );
   QgsLayoutChecker checker( QStringLiteral( "composerattributetable_autowrap" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_table" ) );
   bool result = checker.testLayout( mReport, 0 );
@@ -1580,6 +1582,57 @@ void TestQgsLayoutTable::wrappedText()
   QString wrapText = t->wrappedText( sourceText, 101 /*columnWidth*/, f );
   //there should be no line break before the last word (bug #20546)
   QVERIFY( !wrapText.endsWith( "\naliqua" ) );
+}
+
+
+void TestQgsLayoutTable::testBaseSort()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemAttributeTable *table = new QgsLayoutItemAttributeTable( &l );
+  table->setVectorLayer( mVectorLayer );
+  table->setDisplayOnlyVisibleFeatures( false );
+  table->setMaximumNumberOfFeatures( 1 );
+  QgsLayoutTableColumn col;
+  col.setAttribute( table->columns()[2].attribute() );
+  col.setSortOrder( Qt::DescendingOrder );
+  table->sortColumns() = {col};
+  table->refresh();
+
+  QVector<QStringList> expectedRows;
+  QStringList row;
+  row << QStringLiteral( "Jet" ) << QStringLiteral( "100" ) << QStringLiteral( "20" ) << QStringLiteral( "3" ) << QStringLiteral( "0" ) << QStringLiteral( "3" );
+  expectedRows.append( row );
+  row.clear();
+
+  //retrieve rows and check
+  compareTable( table, expectedRows );
+}
+
+void TestQgsLayoutTable::testExpressionSort()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemAttributeTable *table = new QgsLayoutItemAttributeTable( &l );
+  table->setVectorLayer( mVectorLayer );
+  table->setDisplayOnlyVisibleFeatures( false );
+  table->setMaximumNumberOfFeatures( 1 );
+  QgsLayoutTableColumn col;
+  col.setAttribute( "Heading * -1" );
+  col.setHeading( "exp" );
+  col.setSortOrder( Qt::AscendingOrder );
+  table->sortColumns() = {col};
+  table->columns()[0] = col;
+  table->refresh();
+
+  QVector<QStringList> expectedRows;
+  QStringList row;
+  row << QStringLiteral( "-340" ) << QStringLiteral( "340" ) << QStringLiteral( "1" ) << QStringLiteral( "3" ) << QStringLiteral( "3" ) << QStringLiteral( "6" );
+  expectedRows.append( row );
+  row.clear();
+
+  //retrieve rows and check
+  compareTable( table, expectedRows );
 }
 
 QGSTEST_MAIN( TestQgsLayoutTable )

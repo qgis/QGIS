@@ -338,6 +338,13 @@ class CORE_EXPORT QgsProcessingContext
     SIP_SKIP std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; }
 
     /**
+     * Returns the default callback function to use for a particular invalid geometry \a check
+     * \note not available in Python bindings
+     * \since QGIS 3.14
+     */
+    SIP_SKIP std::function< void( const QgsFeature & ) > defaultInvalidGeometryCallbackForCheck( QgsFeatureRequest::InvalidGeometryCheck check ) const;
+
+    /**
      * Sets a callback function to use when encountering a transform error when iterating
      * features. This function will be
      * called using the feature which encountered the transform error as a parameter.
@@ -413,6 +420,7 @@ class CORE_EXPORT QgsProcessingContext
      */
     void pushToThread( QThread *thread )
     {
+      // cppcheck-suppress assertWithSideEffect
       Q_ASSERT_X( QThread::currentThread() == QgsProcessingContext::thread(), "QgsProcessingContext::pushToThread", "Cannot push context to another thread unless the current thread matches the existing context thread affinity" );
       tempLayerStore.moveToThread( thread );
     }

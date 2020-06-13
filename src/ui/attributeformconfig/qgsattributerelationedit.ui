@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -19,21 +19,35 @@
      <property name="title">
       <string>Relation</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Cardinality</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Cardinality</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="coCardinality"/>
+        </item>
+       </layout>
       </item>
       <item>
-       <widget class="QComboBox" name="coCardinality"/>
+       <widget class="QCheckBox" name="cbForceSuppressFormPopup">
+        <property name="statusTip">
+         <string>Do not open a new attribute form after digitizing a new feature, overrides all other options</string>
+        </property>
+        <property name="text">
+         <string>Force hide form on add feature</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>

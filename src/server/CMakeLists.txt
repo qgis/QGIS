@@ -108,8 +108,8 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
-  ${CMAKE_SOURCE_DIR}/src/plugins/diagram_overlay
   ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
@@ -138,13 +138,16 @@ ENDIF (NOT ANDROID)
 
 TARGET_LINK_LIBRARIES(qgis_server
   qgis_core
-  qgis_analysis
   ${PROJ_LIBRARY}
   ${FCGI_LIBRARY}
   ${POSTGRES_LIBRARY}
   ${GDAL_LIBRARY}
   ${QCA_LIBRARY}
 )
+
+IF (WITH_ANALYSIS)
+  TARGET_LINK_LIBRARIES(qgis_server qgis_analysis)
+ENDIF(WITH_ANALYSIS)
 
 IF (WITH_BINDINGS)
   TARGET_LINK_LIBRARIES(qgis_server qgispython)
@@ -167,16 +170,11 @@ INSTALL(TARGETS qgis_server
 
 # end qgis_server library
 
-# add image resources
-SET(QGIS_SERVER_IMAGERCCS ../../images/images.qrc)
-QT5_ADD_RESOURCES(QGIS_SERVER_IMAGERCC_SRCS ${QGIS_SERVER_IMAGERCCS})
-
 # add test resources, e.g. standard test font
 SET(QGIS_SERVER_TESTRCCS ../../tests/testdata/testdata.qrc)
-QT5_ADD_RESOURCES(QGIS_SERVER_TESTRCC_SRCS ${QGIS_SERVER_TESTRCCS})
 
-ADD_EXECUTABLE(qgis_mapserv.fcgi qgis_map_serv.cpp ${QGIS_SERVER_TESTRCC_SRCS} ${QGIS_SERVER_IMAGERCC_SRCS})
-ADD_EXECUTABLE(qgis_mapserver qgis_mapserver.cpp ${QGIS_SERVER_TESTRCC_SRCS} ${QGIS_SERVER_IMAGERCC_SRCS})
+ADD_EXECUTABLE(qgis_mapserv.fcgi qgis_map_serv.cpp ${QGIS_SERVER_TESTRCCS})
+ADD_EXECUTABLE(qgis_mapserver qgis_mapserver.cpp ${QGIS_SERVER_TESTRCCS})
 
 TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi qgis_server)
 TARGET_LINK_LIBRARIES(qgis_mapserver qgis_server)

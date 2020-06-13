@@ -25,7 +25,7 @@ import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtCore import QSize, QDir
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     QgsVectorLayer,
@@ -79,8 +79,13 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         self.mapsettings.setOutputDpi(96)
         self.mapsettings.setExtent(QgsRectangle(-133, 22, -70, 52))
 
+        self.report = "<h1>Python QgsGeometryGeneratorSymbolLayer Tests</h1>\n"
+
     def tearDown(self):
         QgsProject.instance().removeAllMapLayers()
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
 
     def test_marker(self):
         sym = self.polys_layer.renderer().symbol()
@@ -95,7 +100,9 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlName('expected_geometrygenerator_marker')
-        self.assertTrue(renderchecker.runTest('geometrygenerator_marker'))
+        res = renderchecker.runTest('geometrygenerator_marker')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
 
     def test_mixed(self):
         sym = self.polys_layer.renderer().symbol()
@@ -116,7 +123,9 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlName('expected_geometrygenerator_mixed')
-        self.assertTrue(renderchecker.runTest('geometrygenerator_mixed'))
+        res = renderchecker.runTest('geometrygenerator_mixed')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
 
     def test_buffer_lines(self):
         sym = self.lines_layer.renderer().symbol()
@@ -132,7 +141,9 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlName('expected_geometrygenerator_buffer_lines')
-        self.assertTrue(renderchecker.runTest('geometrygenerator_buffer_lines'))
+        res = renderchecker.runTest('geometrygenerator_buffer_lines')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
 
     def test_buffer_points(self):
         sym = self.points_layer.renderer().symbol()
@@ -148,7 +159,9 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlName('expected_geometrygenerator_buffer_points')
-        self.assertTrue(renderchecker.runTest('geometrygenerator_buffer_points'))
+        res = renderchecker.runTest('geometrygenerator_buffer_points')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
 
 
 if __name__ == '__main__':

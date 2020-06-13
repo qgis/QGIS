@@ -26,7 +26,6 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '05/15/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-
 import os
 import sys
 import re
@@ -47,7 +46,6 @@ from qgis.testing import (
 
 from offlineditingtestbase import OfflineTestBase
 
-
 try:
     QGIS_SERVER_OFFLINE_PORT = os.environ['QGIS_SERVER_OFFLINE_PORT']
 except:
@@ -57,7 +55,6 @@ qgis_app = start_app()
 
 
 class TestWFST(unittest.TestCase, OfflineTestBase):
-
     # To fake the WFS cache!
     counter = 0
 
@@ -97,7 +94,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
         self.server = subprocess.Popen([sys.executable, self.server_path],
                                        env=os.environ, stdout=subprocess.PIPE)
         line = self.server.stdout.readline()
-        self.port = int(re.findall(b':(\d+)', line)[0])
+        self.port = int(re.findall(br':(\d+)', line)[0])
         assert self.port != 0
         # Wait for the server process to start
         assert waitServer('http://127.0.0.1:%s' % self.port), "Server is not responding!"
@@ -129,7 +126,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
                                                        self.project_path),
             'version': 'auto',
             'table': '',
-            #'sql': '',
+            # 'sql': '',
         }
         self.counter += 1
         uri = ' '.join([("%s='%s'" % (k, v)) for k, v in list(parms.items())])

@@ -38,12 +38,12 @@ class DeleteModelAction(ContextAction):
         self.name = QCoreApplication.translate('DeleteModelAction', 'Delete Model…')
 
     def isEnabled(self):
-        return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() == "model"
+        return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() in ("model", "project")
 
     def execute(self):
         model = self.itemData
         if model is None:
-            return # shouldn't happen, but let's be safe
+            return  # shouldn't happen, but let's be safe
 
         project_provider = model.provider().id() == PROJECT_PROVIDER_ID
 

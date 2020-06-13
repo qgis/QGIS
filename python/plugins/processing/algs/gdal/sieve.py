@@ -41,7 +41,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class sieve(GdalAlgorithm):
-
     INPUT = 'INPUT'
     THRESHOLD = 'THRESHOLD'
     EIGHT_CONNECTEDNESS = 'EIGHT_CONNECTEDNESS'

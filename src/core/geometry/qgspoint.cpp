@@ -67,6 +67,11 @@ QgsPoint::QgsPoint( const QgsPointXY &p )
   , mM( std::numeric_limits<double>::quiet_NaN() )
 {
   mWkbType = QgsWkbTypes::Point;
+  if ( p.isEmpty() )
+  {
+    mX = std::numeric_limits<double>::quiet_NaN();
+    mY = std::numeric_limits<double>::quiet_NaN();
+  }
 }
 
 QgsPoint::QgsPoint( QPointF p )
@@ -204,7 +209,7 @@ bool QgsPoint::fromWkt( const QString &wkt )
  * See details in QEP #17
  ****************************************************************************/
 
-QByteArray QgsPoint::asWkb() const
+QByteArray QgsPoint::asWkb( WkbFlags ) const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 );
   binarySize += ( 2 + is3D() + isMeasure() ) * sizeof( double );

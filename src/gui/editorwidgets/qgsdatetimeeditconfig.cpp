@@ -26,8 +26,8 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
   mFieldFormatComboBox->clear();
   mFieldFormatComboBox->addItem( tr( "Date" ), QgsDateTimeFieldFormatter::DATE_FORMAT );
   mFieldFormatComboBox->addItem( tr( "Time" ), QgsDateTimeFieldFormatter::TIME_FORMAT );
-  mFieldFormatComboBox->addItem( tr( "Date time" ), QgsDateTimeFieldFormatter::DATETIME_FORMAT );
-  mFieldFormatComboBox->addItem( tr( "ISO date time" ), QgsDateTimeFieldFormatter::QT_ISO_FORMAT );
+  mFieldFormatComboBox->addItem( tr( "Date Time" ), QgsDateTimeFieldFormatter::DATETIME_FORMAT );
+  mFieldFormatComboBox->addItem( tr( "ISO Date Time" ), QgsDateTimeFieldFormatter::QT_ISO_FORMAT );
   mFieldFormatComboBox->addItem( tr( "Custom" ), QString() );
 
   mHelpLabel->setTextFormat( Qt::RichText );
@@ -318,7 +318,7 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
                       "</td>"
                       "<td bgcolor=\"#f6f6f6\" style=\"vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;\">"
                       "<p><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e; background-color:#f6f6f6;\">" )
-    + tr( "the milliseconds without leading zeroes (0 to 999)" )
+    + tr( "the milliseconds without trailing zeroes (0 to 999)" )
     + QStringLiteral( "</span></p>"
                       "</td>"
                       "</tr>"
@@ -328,7 +328,7 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
                       "</td>"
                       "<td bgcolor=\"#ffffff\" style=\"vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;\">"
                       "<p><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e; background-color:#ffffff;\">" )
-    + tr( "the milliseconds with leading zeroes (000 to 999)" )
+    + tr( "the milliseconds with trailing zeroes (000 to 999)" )
     + QStringLiteral( "</span></p>"
                       "</td>"
                       "</tr><tr>"
@@ -415,6 +415,10 @@ void QgsDateTimeEditConfig::updateFieldFormat( int idx )
   {
     mFieldFormatEdit->setText( format );
   }
+  else if ( mFieldFormatEdit->text() == QgsDateTimeFieldFormatter::QT_ISO_FORMAT )
+  {
+    mFieldFormatEdit->setText( QgsDateTimeFieldFormatter::DISPLAY_FOR_ISO_FORMAT );
+  }
 
   mFieldFormatEdit->setEnabled( custom );
   mFieldHelpToolButton->setVisible( custom );
@@ -453,7 +457,14 @@ void QgsDateTimeEditConfig::displayFormatChanged( int idx )
   }
   if ( !custom )
   {
-    mDisplayFormatEdit->setText( mFieldFormatEdit->text() );
+    if ( mFieldFormatComboBox->currentData() == QgsDateTimeFieldFormatter::QT_ISO_FORMAT )
+    {
+      mDisplayFormatEdit->setText( QgsDateTimeFieldFormatter::DISPLAY_FOR_ISO_FORMAT );
+    }
+    else
+    {
+      mDisplayFormatEdit->setText( mFieldFormatEdit->text() );
+    }
   }
 }
 

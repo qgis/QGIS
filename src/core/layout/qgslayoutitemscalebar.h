@@ -83,6 +83,42 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     void setNumberOfSegmentsLeft( int segments );
 
     /**
+     * Returns the number of subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
+     *
+     * \note The number of subdivisions represents the number of subdivision segments, not the number of subdivision lines. E.g.
+     * if the number is 1 then NO subdivision lines will be shown.
+     *
+     * \see setNumberOfSubdivisions()
+     * \since QGIS 3.14
+     */
+    int numberOfSubdivisions()  const { return mSettings.numberOfSubdivisions(); }
+
+    /**
+     * Sets the number of \a subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
+     *
+     * \note The number of subdivisions represents the number of subdivision segments, not the number of subdivision lines. E.g.
+     * if the number is 1 then NO subdivision lines will be shown.
+     *
+     * \see numberOfSubdivisions()
+     * \since QGIS 3.14
+     */
+    void setNumberOfSubdivisions( int subdivisions ) { mSettings.setNumberOfSubdivisions( subdivisions ); }
+
+    /**
+     * Returns the scalebar subdivisions height (in millimeters) for segments included in the right part of the scalebar (only used for some scalebar types).
+     * \see setSubdivisionsHeight()
+     * \since QGIS 3.14
+     */
+    double subdivisionsHeight() const { return mSettings.subdivisionsHeight(); }
+
+    /**
+     * Sets the scalebar subdivisions \a height (in millimeters) for segments included in the right part of the scalebar (only used for some scalebar types).
+     * \see subdivisionsHeight()
+     * \since QGIS 3.14
+     */
+    void setSubdivisionsHeight( double height ) { mSettings.setSubdivisionsHeight( height ); }
+
+    /**
      * Returns the number of scalebar units per segment.
      * \see setUnitsPerSegment()
      */
@@ -188,6 +224,118 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      */
     void setTextFormat( const QgsTextFormat &format );
 
+
+    /**
+     * Returns the line symbol used to render the scalebar (only used for some scalebar types).
+     *
+     * Ownership is not transferred.
+     *
+     * \see setLineSymbol()
+     * \see divisionLineSymbol()
+     * \see subdivisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    QgsLineSymbol *lineSymbol() const;
+
+    /**
+     * Sets the line \a symbol used to render the scalebar (only used for some scalebar types). Ownership of \a symbol is
+     * transferred to the scalebar.
+     *
+     * \see lineSymbol()
+     * \see setDivisionLineSymbol()
+     * \see setSubdivisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    void setLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the line symbol used to render the scalebar divisions (only used for some scalebar types).
+     *
+     * Ownership is not transferred.
+     *
+     * \see setDivisionLineSymbol()
+     * \see lineSymbol()
+     * \see subdivisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    QgsLineSymbol *divisionLineSymbol() const;
+
+    /**
+     * Sets the line \a symbol used to render the scalebar divisions (only used for some scalebar types). Ownership of \a symbol is
+     * transferred to the scalebar.
+     *
+     * \see divisionLineSymbol()
+     * \see setLineSymbol()
+     * \see setSubdivisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    void setDivisionLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the line symbol used to render the scalebar subdivisions (only used for some scalebar types).
+     *
+     * Ownership is not transferred.
+     *
+     * \see setSubdivisionLineSymbol()
+     * \see lineSymbol()
+     * \see divisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    QgsLineSymbol *subdivisionLineSymbol() const;
+
+    /**
+     * Sets the line \a symbol used to render the scalebar subdivisions (only used for some scalebar types). Ownership of \a symbol is
+     * transferred to the scalebar.
+     *
+     * \see subdivisionLineSymbol()
+     * \see setLineSymbol()
+     * \see setDivisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    void setSubdivisionLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the primary fill symbol used to render the scalebar (only used for some scalebar types).
+     *
+     * Ownership is not transferred.
+     *
+     * \see setFillSymbol()
+     * \see alternateFillSymbol()
+     * \since QGIS 3.14
+     */
+    QgsFillSymbol *fillSymbol() const;
+
+    /**
+     * Sets the primary fill \a symbol used to render the scalebar (only used for some scalebar types). Ownership of \a symbol is
+     * transferred to the scalebar.
+     *
+     * \see fillSymbol()
+     * \see setAlternateFillSymbol()
+     * \since QGIS 3.14
+     */
+    void setFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the secondary fill symbol used to render the scalebar (only used for some scalebar types).
+     *
+     * Ownership is not transferred.
+     *
+     * \see setAlternateFillSymbol()
+     * \see fillSymbol()
+     * \since QGIS 3.14
+     */
+    QgsFillSymbol *alternateFillSymbol() const;
+
+    /**
+     * Sets the secondary fill \a symbol used to render the scalebar (only used for some scalebar types). Ownership of \a symbol is
+     * transferred to the scalebar.
+     *
+     * \see alternateFillSymbol()
+     * \see setFillSymbol()
+     * \since QGIS 3.14
+     */
+    void setAlternateFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
+
     /**
      * Returns the font used for drawing text in the scalebar.
      * \see setFont()
@@ -222,75 +370,86 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * Returns the color used for fills in the scalebar.
      * \see setFillColor()
      * \see fillColor2()
+     * \deprecated use fillSymbol() instead
      */
-    QColor fillColor() const { return mSettings.fillColor(); }
+    Q_DECL_DEPRECATED QColor fillColor() const SIP_DEPRECATED;
 
     /**
      * Sets the \a color used for fills in the scalebar.
      * \see fillColor()
      * \see setFillColor2()
+     * \deprecated use setFillSymbol() instead
      */
-    void setFillColor( const QColor &color ) { mSettings.setFillColor( color ); }
+    Q_DECL_DEPRECATED void setFillColor( const QColor &color ) SIP_DEPRECATED;
 
     /**
      * Returns the secondary color used for fills in the scalebar.
      * \see setFillColor2()
      * \see fillColor()
+     * \deprecated use alternateFillSymbol() instead
      */
-    QColor fillColor2() const { return mSettings.fillColor2(); }
+    Q_DECL_DEPRECATED QColor fillColor2() const SIP_DEPRECATED;
 
     /**
      * Sets the secondary \a color used for fills in the scalebar.
      * \see fillColor2()
      * \see setFillColor2()
+     * \deprecated use setAlternateFillSymbol() instead
      */
-    void setFillColor2( const QColor &color ) { mSettings.setFillColor2( color ); }
+    Q_DECL_DEPRECATED void setFillColor2( const QColor &color ) SIP_DEPRECATED;
 
     /**
      * Returns the color used for lines in the scalebar.
      * \see setLineColor()
+     * \deprecated use lineSymbol() instead
      */
-    QColor lineColor() const { return mSettings.lineColor(); }
+    Q_DECL_DEPRECATED QColor lineColor() const SIP_DEPRECATED;
 
     /**
      * Sets the \a color used for lines in the scalebar.
      * \see lineColor()
+     * \deprecated use setLineSymbol() instead
      */
-    void setLineColor( const QColor &color ) { mSettings.setLineColor( color ); }
+    Q_DECL_DEPRECATED void setLineColor( const QColor &color ) SIP_DEPRECATED;
 
     /**
      * Returns the line width in millimeters for lines in the scalebar.
      * \see setLineWidth()
+     * \deprecated use lineSymbol() instead
      */
-    double lineWidth() const { return mSettings.lineWidth(); }
+    Q_DECL_DEPRECATED double lineWidth() const SIP_DEPRECATED;
 
     /**
      * Sets the line \a width in millimeters for lines in the scalebar.
      * \see lineWidth()
+     * \deprecated use setLineSymbol() instead
      */
-    void setLineWidth( double width ) { mSettings.setLineWidth( width ); }
+    Q_DECL_DEPRECATED void setLineWidth( double width ) SIP_DEPRECATED;
 
     /**
      * Returns the pen used for drawing outlines in the scalebar.
      * \see brush()
+     * \deprecated use lineSymbol() instead
      */
-    QPen pen() const { return mSettings.pen(); }
+    Q_DECL_DEPRECATED QPen pen() const SIP_DEPRECATED;
 
     /**
      * Returns the primary brush for the scalebar.
      * \returns QBrush used for filling the scalebar
      * \see brush2
      * \see pen
+     * \deprecated use fillSymbol() instead
      */
-    QBrush brush() const {return mSettings.brush();}
+    Q_DECL_DEPRECATED QBrush brush() const SIP_DEPRECATED;
 
     /**
      * Returns the secondary brush for the scalebar. This is used for alternating color style scalebars, such
      * as single and double box styles.
      * \returns QBrush used for secondary color areas
      * \see brush
+     * \deprecated use alternateFillSymbol() instead
      */
-    QBrush brush2() const {return mSettings.brush2(); }
+    Q_DECL_DEPRECATED QBrush brush2() const SIP_DEPRECATED;
 
     /**
      * Returns the scalebar height (in millimeters).
@@ -395,32 +554,45 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     /**
      * Returns the join style used for drawing lines in the scalebar.
      * \see setLineJoinStyle()
+     * \deprecated use lineSymbol() instead
      */
-    Qt::PenJoinStyle lineJoinStyle() const { return mSettings.lineJoinStyle(); }
+    Q_DECL_DEPRECATED Qt::PenJoinStyle lineJoinStyle() const SIP_DEPRECATED;
 
     /**
      * Sets the join \a style used when drawing the lines in the scalebar
      * \see lineJoinStyle()
+     * \deprecated use setLineSymbol() instead
      */
-    void setLineJoinStyle( Qt::PenJoinStyle style );
+    Q_DECL_DEPRECATED void setLineJoinStyle( Qt::PenJoinStyle style ) SIP_DEPRECATED;
 
     /**
      * Returns the cap style used for drawing lines in the scalebar.
      * \see setLineCapStyle()
+     * \deprecated use lineSymbol() instead
      */
-    Qt::PenCapStyle lineCapStyle() const { return mSettings.lineCapStyle(); }
+    Q_DECL_DEPRECATED Qt::PenCapStyle lineCapStyle() const SIP_DEPRECATED;
 
     /**
      * Sets the cap \a style used when drawing the lines in the scalebar.
      * \see lineCapStyle()
+     * \deprecated use setLineSymbol() instead
      */
-    void setLineCapStyle( Qt::PenCapStyle style );
+    Q_DECL_DEPRECATED void setLineCapStyle( Qt::PenCapStyle style ) SIP_DEPRECATED;
 
     /**
      * Applies the default scalebar settings to the scale bar.
      * \see applyDefaultSize()
      */
     void applyDefaultSettings();
+
+    /**
+     * Applies any default settings relating to the specified \a renderer to the item.
+     *
+     * Returns TRUE if settings were applied.
+     *
+     * \since QGIS 3.14
+     */
+    bool applyDefaultRendererSettings( QgsScaleBarRenderer *renderer );
 
     /**
      * Attempts to guess the most reasonable unit choice for the scalebar, given

@@ -486,6 +486,7 @@ void QgsMeshCalculatorDialog::getMeshDrivers()
     for ( const QgsMeshDriverMetadata &meta : allDrivers )
     {
       if ( meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets ) ||
+           meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteEdgeDatasets ) ||
            meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets ) )
         mMeshDrivers[meta.name()] = meta;
     }

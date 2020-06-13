@@ -47,6 +47,10 @@ QgsMapToolZoom::~QgsMapToolZoom()
   delete mRubberBand;
 }
 
+QgsMapTool::Flags QgsMapToolZoom::flags() const
+{
+  return QgsMapTool::Transient | QgsMapTool::ShowContextMenu;
+}
 
 void QgsMapToolZoom::canvasMoveEvent( QgsMapMouseEvent *e )
 {

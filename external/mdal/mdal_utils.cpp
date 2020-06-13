@@ -11,7 +11,6 @@
 #include <sstream>
 #include <math.h>
 #include <assert.h>
-#include <cmath>
 #include <string.h>
 #include <stdio.h>
 #include <ctime>
@@ -36,7 +35,7 @@ std::string MDAL::readFileToString( const std::string &filename )
 
 bool MDAL::startsWith( const std::string &str, const std::string &substr, ContainsBehaviour behaviour )
 {
-  if ( str.size() < substr.size() )
+  if ( ( str.size() < substr.size() ) || substr.empty() )
     return false;
 
   if ( behaviour == ContainsBehaviour::CaseSensitive )
@@ -47,7 +46,7 @@ bool MDAL::startsWith( const std::string &str, const std::string &substr, Contai
 
 bool MDAL::endsWith( const std::string &str, const std::string &substr, ContainsBehaviour behaviour )
 {
-  if ( str.size() < substr.size() )
+  if ( ( str.size() < substr.size() ) || substr.empty() )
     return false;
 
   if ( behaviour == ContainsBehaviour::CaseSensitive )
@@ -130,7 +129,7 @@ int MDAL::toInt( const std::string &str )
   return atoi( str.c_str() );
 }
 
-std::string MDAL::baseName( const std::string &filename )
+std::string MDAL::baseName( const std::string &filename, bool keepExtension )
 {
   // https://stackoverflow.com/a/8520815/2838364
   std::string fname( filename );
@@ -143,13 +142,31 @@ std::string MDAL::baseName( const std::string &filename )
     fname.erase( 0, last_slash_idx + 1 );
   }
 
-  // Remove extension if present.
-  const size_t period_idx = fname.rfind( '.' );
-  if ( std::string::npos != period_idx )
+  if ( !keepExtension )
   {
-    fname.erase( period_idx );
+    // Remove extension if present.
+    const size_t period_idx = fname.rfind( '.' );
+    if ( std::string::npos != period_idx )
+    {
+      fname.erase( period_idx );
+    }
   }
   return fname;
+}
+
+std::string MDAL::fileExtension( const std::string &path )
+{
+  std::string filename = MDAL::baseName( path, true );
+
+  const size_t lastDotIx = filename.find_last_of( "." );
+  if ( std::string::npos == lastDotIx )
+  {
+    return std::string();
+  }
+
+  std::string extension = filename.substr( lastDotIx );
+
+  return extension;
 }
 
 std::string MDAL::pathJoin( const std::string &path1, const std::string &path2 )
@@ -193,15 +210,6 @@ bool MDAL::contains( const std::string &str, const std::string &substr, Contains
               );
     return ( it != str.end() );
   }
-}
-
-void MDAL::debug( const std::string &message )
-{
-#ifdef NDEBUG
-  MDAL_UNUSED( message );
-#else
-  std::cout << message << std::endl;
-#endif
 }
 
 bool MDAL::toBool( const std::string &str )
@@ -348,11 +356,6 @@ MDAL::BBox MDAL::computeExtent( const MDAL::Vertices &vertices )
   return b;
 }
 
-bool MDAL::equals( double val1, double val2, double eps )
-{
-  return fabs( val1 - val2 ) < eps;
-}
-
 double MDAL::safeValue( double val, double nodata, double eps )
 {
   if ( std::isnan( val ) )
@@ -492,7 +495,7 @@ MDAL::Statistics MDAL::calculateStatistics( std::shared_ptr<Dataset> dataset )
     return ret;
 
   bool isVector = !dataset->group()->isScalar();
-  bool is3D = dataset->group()->dataLocation() == MDAL_DataLocation::DataOnVolumes3D;
+  bool is3D = dataset->group()->dataLocation() == MDAL_DataLocation::DataOnVolumes;
   size_t bufLen = 2000;
   std::vector<double> buffer( isVector ? bufLen * 2 : bufLen );
 
@@ -553,7 +556,7 @@ void MDAL::addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertic
   if ( !mesh )
     return;
 
-  if ( 0 == mesh->facesCount() )
+  if ( 0 == mesh->verticesCount() )
     return;
 
   std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(
@@ -562,7 +565,7 @@ void MDAL::addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertic
                                           mesh->uri(),
                                           "Bed Elevation"
                                         );
-  group->setDataLocation( MDAL_DataLocation::DataOnVertices2D );
+  group->setDataLocation( MDAL_DataLocation::DataOnVertices );
   group->setIsScalar( true );
 
   std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group.get() );
@@ -598,7 +601,7 @@ void MDAL::addFaceScalarDatasetGroup( MDAL::Mesh *mesh,
                                           mesh->uri(),
                                           name
                                         );
-  group->setDataLocation( MDAL_DataLocation::DataOnFaces2D );
+  group->setDataLocation( MDAL_DataLocation::DataOnFaces );
   group->setIsScalar( true );
 
   std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group.get() );
@@ -797,4 +800,111 @@ bool MDAL::getHeaderLine( std::ifstream &stream, std::string &line )
   if ( ! stream.get( b, sizeof( b ) - 1, '\n' ) ) return false;
   line = std::string( b );
   return true;
+}
+
+MDAL::Error::Error( MDAL_Status status, std::string message, std::string driverName ): status( status ), mssg( message ), driver( driverName ) {}
+
+void MDAL::Error::setDriver( std::string driverName )
+{
+  driver = driverName;
+}
+
+void MDAL::parseDriverFromUri( const std::string &uri, std::string &driver )
+{
+  bool hasDriverSet = ( uri.find( ":\"" ) != std::string::npos );
+  driver = "";
+
+  if ( !hasDriverSet )
+    return;
+
+  driver = MDAL::split( uri, ":\"" )[0];
+}
+
+void MDAL::parseMeshFileFromUri( const std::string &uri, std::string &meshFile )
+{
+  bool hasDriverSet = ( uri.find( ":\"" ) != std::string::npos );
+  bool hasSpecificMeshSet = ( uri.find( "\":" ) != std::string::npos );
+  meshFile = "";
+
+  if ( !hasDriverSet && !hasSpecificMeshSet )
+    meshFile = MDAL::trim( uri, "\"" );
+  else if ( hasDriverSet && hasSpecificMeshSet )
+  {
+    std::string token = MDAL::split( uri, ":\"" )[1]; // split from driver
+    token = MDAL::split( token, "\":" )[0]; // split from specific mesh
+    meshFile = MDAL::trim( token, "\"" );
+  }
+  else if ( hasDriverSet )
+  {
+    std::string token = MDAL::split( uri, ":\"" )[1]; // split from driver
+    meshFile = MDAL::trim( token, "\"" );
+  }
+  else if ( hasSpecificMeshSet )
+  {
+    std::string token = MDAL::split( uri, "\":" )[0]; // split from specific mesh
+    meshFile = MDAL::trim( token, "\"" );
+  }
+}
+
+void parseSpecificMeshFromUri( const std::string &uri, std::string &meshName )
+{
+  bool hasSpecificMeshSet = ( uri.find( "\":" ) != std::string::npos );
+  meshName = "";
+
+  if ( !hasSpecificMeshSet )
+    return;
+
+  std::vector<std::string> tokens = MDAL::split( uri, "\":" );
+  if ( tokens.size() > 1 )
+  {
+    meshName = MDAL::trim( tokens.at( 1 ), "\"" );
+  }
+}
+
+void MDAL::parseDriverAndMeshFromUri( const std::string &uri, std::string &driver, std::string &meshFile, std::string &meshName )
+{
+  parseDriverFromUri( uri, driver );
+  parseMeshFileFromUri( uri, meshFile );
+  parseSpecificMeshFromUri( uri, meshName );
+}
+
+std::string MDAL::buildMeshUri( const std::string &meshFile, const std::string &meshName, const std::string &driver )
+{
+  if ( meshFile.empty() )
+    return std::string();
+
+  std::string uri( "" );
+
+  bool hasDriverName = !driver.empty();
+  bool hasMeshName = !meshName.empty();
+
+  if ( hasDriverName && hasMeshName )
+    uri = driver + ":\"" + meshFile + "\":" + meshName;
+  else if ( !hasDriverName && !hasMeshName )
+    uri = meshFile;
+  else if ( hasDriverName ) // only driver
+    uri = driver + ":\"" + meshFile + "\"";
+  else if ( hasMeshName ) // only mesh name
+    uri = "\"" + meshFile + "\":" + meshName;
+
+  return uri;
+}
+
+std::string MDAL::buildAndMergeMeshUris( const std::string &meshFile, const std::vector<std::string> &meshNames, const std::string &driver )
+{
+  std::string mergedUris;
+  size_t meshNamesCount = meshNames.size();
+
+  for ( size_t i = 0; i < meshNamesCount; ++i )
+  {
+    mergedUris += buildMeshUri( meshFile, meshNames.at( i ), driver );
+
+    if ( ( i + 1 ) < meshNamesCount ) // If this is not the last mesh in array, add separator
+      mergedUris += ";;";
+  }
+
+  if ( meshNamesCount == 0 )
+    mergedUris = buildMeshUri( meshFile, "", driver );
+
+  return mergedUris;
 }

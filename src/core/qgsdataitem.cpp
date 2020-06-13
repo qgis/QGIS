@@ -80,6 +80,11 @@ QIcon QgsLayerItem::iconMesh()
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconMeshLayer.svg" ) );
 }
 
+QIcon QgsLayerItem::iconVectorTile()
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconVectorTileLayer.svg" ) );
+}
+
 QIcon QgsLayerItem::iconDefault()
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
@@ -379,17 +384,18 @@ void QgsDataItem::refresh()
   }
 }
 
-void QgsDataItem::refreshConnections()
+void QgsDataItem::refreshConnections( const QString &key )
 {
   // Walk up until the root node is reached
   if ( mParent )
   {
-    mParent->refreshConnections();
+    mParent->refreshConnections( key );
   }
   else
   {
-    refresh();
-    emit connectionsChanged();
+    // if a specific key was specified then we use that -- otherwise we assume the connections
+    // changed belong to the same provider as this item
+    emit connectionsChanged( key.isEmpty() ? providerKey() : key );
   }
 }
 
@@ -457,6 +463,11 @@ int QgsDataItem::rowCount()
 bool QgsDataItem::hasChildren()
 {
   return ( state() == Populated ? !mChildren.isEmpty() : true );
+}
+
+bool QgsDataItem::layerCollection() const
+{
+  return false;
 }
 
 void QgsDataItem::setParent( QgsDataItem *parent )
@@ -638,6 +649,9 @@ QgsMapLayerType QgsLayerItem::mapLayerType() const
     case QgsLayerItem::Mesh:
       return QgsMapLayerType::MeshLayer;
 
+    case QgsLayerItem::VectorTile:
+      return QgsMapLayerType::VectorTileLayer;
+
     case QgsLayerItem::Plugin:
       return QgsMapLayerType::PluginLayer;
 
@@ -688,6 +702,8 @@ QgsLayerItem::LayerType QgsLayerItem::typeFromMapLayer( QgsMapLayer *layer )
       return Plugin;
     case QgsMapLayerType::MeshLayer:
       return Mesh;
+    case QgsMapLayerType::VectorTileLayer:
+      return VectorTile;
   }
   return Vector; // no warnings
 }
@@ -773,6 +789,7 @@ QgsMimeDataUtils::Uri QgsLayerItem::mimeUri() const
         case Raster:
         case Plugin:
         case Mesh:
+        case VectorTile:
           break;
       }
       break;
@@ -781,6 +798,9 @@ QgsMimeDataUtils::Uri QgsLayerItem::mimeUri() const
       break;
     case QgsMapLayerType::MeshLayer:
       u.layerType = QStringLiteral( "mesh" );
+      break;
+    case QgsMapLayerType::VectorTileLayer:
+      u.layerType = QStringLiteral( "vector-tile" );
       break;
     case QgsMapLayerType::PluginLayer:
       u.layerType = QStringLiteral( "plugin" );

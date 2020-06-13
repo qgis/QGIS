@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 
+
 //! C++ Wrapper around netcdf C library
 class NetCDFFile
 {
@@ -59,6 +60,7 @@ class NetCDFFile
 
     bool hasAttrInt( const std::string &name, const std::string &attr_name ) const;
     int getAttrInt( const std::string &name, const std::string &attr_name ) const;
+    bool hasAttrDouble( int varid, const std::string &attr_name ) const;
     double getAttrDouble( int varid, const std::string &attr_name ) const;
     /**
      * Get string attribute
@@ -84,8 +86,11 @@ class NetCDFFile
     void putDataDouble( int varId, const size_t index, const double value );
     void putDataArrayInt( int varId, size_t line, size_t faceVerticesMax, int *values );
 
+    std::string getFileName() const;
+
   private:
     int mNcid; // C handle to the file
+    std::string mFileName;
 };
 
 #endif // MDAL_NETCDF_HPP

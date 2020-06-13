@@ -18,10 +18,12 @@
 #include "mdal_2dm.hpp"
 #include "mdal.h"
 #include "mdal_utils.hpp"
+#include "mdal_logger.hpp"
 
 #define DRIVER_NAME "2DM"
 
 MDAL::Mesh2dm::Mesh2dm( size_t verticesCount,
+                        size_t edgesCount,
                         size_t facesCount,
                         size_t faceVerticesMaximumCount,
                         MDAL::BBox extent,
@@ -29,6 +31,7 @@ MDAL::Mesh2dm::Mesh2dm( size_t verticesCount,
                         const std::map<size_t, size_t> vertexIDtoIndex )
   : MemoryMesh( DRIVER_NAME,
                 verticesCount,
+                edgesCount,
                 facesCount,
                 faceVerticesMaximumCount,
                 extent,
@@ -39,7 +42,7 @@ MDAL::Mesh2dm::Mesh2dm( size_t verticesCount,
 
 MDAL::Mesh2dm::~Mesh2dm() = default;
 
-bool _parse_vertex_id_gaps( std::map<size_t, size_t> &vertexIDtoIndex, size_t vertexIndex, size_t vertexID, MDAL_Status *status )
+bool _parse_vertex_id_gaps( std::map<size_t, size_t> &vertexIDtoIndex, size_t vertexIndex, size_t vertexID )
 {
   if ( vertexIndex == vertexID )
     return false;
@@ -47,7 +50,7 @@ bool _parse_vertex_id_gaps( std::map<size_t, size_t> &vertexIDtoIndex, size_t ve
   std::map<size_t, size_t>::iterator search = vertexIDtoIndex.find( vertexID );
   if ( search != vertexIDtoIndex.end() )
   {
-    if ( status ) *status = MDAL_Status::Warn_ElementNotUnique;
+    MDAL::Log::warning( Warn_ElementNotUnique, DRIVER_NAME, "could not find vertex" );
     return true;
   }
 
@@ -105,22 +108,23 @@ bool MDAL::Driver2dm::canReadMesh( const std::string &uri )
   return true;
 }
 
-std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, MDAL_Status *status )
+std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, const std::string & )
 {
   mMeshFile = meshFile;
 
-  if ( status ) *status = MDAL_Status::None;
+  MDAL::Log::resetLastStatus();
 
   std::ifstream in( mMeshFile, std::ifstream::in );
   std::string line;
   if ( !std::getline( in, line ) || !startsWith( line, "MESH2D" ) )
   {
-    if ( status ) *status = MDAL_Status::Err_UnknownFormat;
+    MDAL::Log::error( MDAL_Status::Err_UnknownFormat, name(), meshFile + " could not be opened" );
     return nullptr;
   }
 
   size_t faceCount = 0;
   size_t vertexCount = 0;
+  size_t edgesCount = 0;
 
   // Find out how many nodes and elements are contained in the .2dm mesh file
   while ( std::getline( in, line ) )
@@ -134,20 +138,24 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
     {
       vertexCount++;
     }
-    else if ( startsWith( line, "E2L" ) ||
-              startsWith( line, "E3L" ) ||
+    else if ( startsWith( line, "E2L" ) )
+    {
+      edgesCount++;
+    }
+    else if ( startsWith( line, "E3L" ) ||
               startsWith( line, "E6T" ) ||
               startsWith( line, "E8Q" ) ||
               startsWith( line, "E9Q" ) )
     {
-      if ( status ) *status = MDAL_Status::Warn_UnsupportedElement;
-      faceCount += 1; // We still count them as elements
+      MDAL::Log::warning( MDAL_Status::Err_UnsupportedElement, name(),  "found unsupported element" );
+      return nullptr;
     }
   }
 
   // Allocate memory
-  std::vector<Vertex> vertices( vertexCount );
-  std::vector<Face> faces( faceCount );
+  Vertices vertices( vertexCount );
+  Edges edges( edgesCount );
+  Faces faces( faceCount );
 
   // Basement 3.x supports definition of elevation for cell centers
   std::vector<double> elementCenteredElevation;
@@ -159,6 +167,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
 
   size_t faceIndex = 0;
   size_t vertexIndex = 0;
+  size_t edgeIndex = 0;
   std::map<size_t, size_t> vertexIDtoIndex;
   size_t lastVertexID = 0;
 
@@ -202,20 +211,18 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
 
       faceIndex++;
     }
-    else if ( startsWith( line, "E2L" ) ||
-              startsWith( line, "E3L" ) ||
-              startsWith( line, "E6T" ) ||
-              startsWith( line, "E8Q" ) ||
-              startsWith( line, "E9Q" ) )
+    else if ( startsWith( line, "E2L" ) )
     {
-      // We do not yet support these elements
+      // format: E2L id n1 n2 matid
       chunks = split( line,  ' ' );
-      assert( faceIndex < faceCount );
-
-      //size_t elemID = toSizeT( chunks[1] );
-      assert( false ); //TODO mark element as unusable
-
-      faceIndex++;
+      assert( edgeIndex < edgesCount );
+      assert( chunks.size() > 4 );
+      size_t startVertexIndex = MDAL::toSizeT( chunks[2] ) - 1; // 2dm is numbered from 1
+      size_t endVertexIndex = MDAL::toSizeT( chunks[3] ) - 1; // 2dm is numbered from 1
+      Edge &edge = edges[edgeIndex];
+      edge.startVertex = startVertexIndex;
+      edge.endVertex = endVertexIndex;
+      edgeIndex++;
     }
     else if ( startsWith( line, "ND" ) )
     {
@@ -229,14 +236,14 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
         if ( ( lastVertexID != 0 ) && ( nodeID <= lastVertexID ) )
         {
           // the algorithm requires that the file has NDs orderer by index
-          if ( status ) *status = MDAL_Status::Err_InvalidData;
+          MDAL::Log::error( MDAL_Status::Err_InvalidData, name(), "nodes are not ordered by index" );
           return nullptr;
         }
         lastVertexID = nodeID;
       }
       nodeID -= 1; // 2dm is numbered from 1
 
-      _parse_vertex_id_gaps( vertexIDtoIndex, vertexIndex, nodeID, status );
+      _parse_vertex_id_gaps( vertexIDtoIndex, vertexIndex, nodeID );
       assert( vertexIndex < vertexCount );
       Vertex &vertex = vertices[vertexIndex];
       vertex.x = toDouble( chunks[2] );
@@ -260,7 +267,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
       }
       else if ( vertices.size() < nodeID )
       {
-        if ( status ) *status = MDAL_Status::Warn_ElementWithInvalidNode;
+        MDAL::Log::warning( MDAL_Status::Warn_ElementWithInvalidNode, name(), "found invalid node" );
       }
     }
     //TODO check validity of the face
@@ -270,6 +277,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
   std::unique_ptr< Mesh2dm > mesh(
     new Mesh2dm(
       vertices.size(),
+      edges.size(),
       faces.size(),
       MAX_VERTICES_PER_FACE_2DM,
       computeExtent( vertices ),
@@ -279,6 +287,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
   );
   mesh->faces = faces;
   mesh->vertices = vertices;
+  mesh->edges = edges;
 
   // Add Bed Elevations
   MDAL::addFaceScalarDatasetGroup( mesh.get(), elementCenteredElevation, "Bed Elevation (Face)" );
@@ -287,21 +296,21 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
   return std::unique_ptr<Mesh>( mesh.release() );
 }
 
-void MDAL::Driver2dm::save( const std::string &uri, MDAL::Mesh *mesh, MDAL_Status *status )
+void MDAL::Driver2dm::save( const std::string &uri, MDAL::Mesh *mesh )
 {
-  if ( status ) *status = MDAL_Status::None;
+  MDAL::Log::resetLastStatus();
 
   std::ofstream file( uri, std::ofstream::out );
 
   if ( !file.is_open() )
   {
-    if ( status ) *status = MDAL_Status::Err_FailToWriteToDisk;
+    MDAL::Log::error( MDAL_Status::Err_FailToWriteToDisk, name(), "Could not open file " + uri );
   }
 
   std::string line = "MESH2D";
   file << line << std::endl;
 
-  //write vertices
+  // write vertices
   std::unique_ptr<MDAL::MeshVertexIterator> vertexIterator = mesh->readVertices();
   double vertex[3];
   for ( size_t i = 0; i < mesh->verticesCount(); ++i )
@@ -320,12 +329,12 @@ void MDAL::Driver2dm::save( const std::string &uri, MDAL::Mesh *mesh, MDAL_Statu
     file << line << std::endl;
   }
 
-  //write faces
+  // write faces
   std::unique_ptr<MDAL::MeshFaceIterator> faceIterator = mesh->readFaces();
   for ( size_t i = 0; i < mesh->facesCount(); ++i )
   {
     int faceOffsets[1];
-    int vertexIndices[4]; //max 4 vertices for a face
+    int vertexIndices[MAX_VERTICES_PER_FACE_2DM];
     faceIterator->next( 1, faceOffsets, 4, vertexIndices );
 
     if ( faceOffsets[0] > 2 && faceOffsets[0] < 5 )
@@ -343,9 +352,19 @@ void MDAL::Driver2dm::save( const std::string &uri, MDAL::Mesh *mesh, MDAL_Statu
         line.append( std::to_string( vertexIndices[j] + 1 ) );
       }
     }
-
     file << line << std::endl;
-
   }
+
+  // write edges
+  std::unique_ptr<MDAL::MeshEdgeIterator> edgeIterator = mesh->readEdges();
+  for ( size_t i = 0; i < mesh->edgesCount(); ++i )
+  {
+    int startIndex;
+    int endIndex;
+    edgeIterator->next( 1, &startIndex, &endIndex );
+    line = "E2L " + std::to_string( mesh->facesCount() + i + 1 ) + " " + std::to_string( startIndex + 1 ) + " " + std::to_string( endIndex + 1 ) + " 1";
+    file << line << std::endl;
+  }
+
   file.close();
 }

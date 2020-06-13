@@ -113,7 +113,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
     /**
      * Returns a list of registered map layers with a specified layer type.
      *
-     * Example:
+     * ### Example
      *
      *     QVector<QgsVectorLayer*> vectorLayers = store->layers<QgsVectorLayer*>();
      *

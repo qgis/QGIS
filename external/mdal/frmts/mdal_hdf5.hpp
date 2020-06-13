@@ -13,6 +13,7 @@
 #define H5Gopen_vers 1
 
 #include "mdal_utils.hpp"
+#include "mdal_logger.hpp"
 #include "hdf5.h"
 typedef unsigned char uchar;
 
@@ -150,6 +151,7 @@ class HdfAttribute
     hid_t id() const;
 
     std::string readString() const;
+    double readDouble() const;
 
     void write( const std::string &value );
     void write( int value );
@@ -235,7 +237,7 @@ class HdfDataset
       herr_t status = H5Dread( d->id, mem_type_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, data.data() );
       if ( status < 0 )
       {
-        MDAL::debug( "Failed to read data!" );
+        MDAL::Log::debug( "Failed to read data!" );
         return std::vector<T>();
       }
       return data;
@@ -260,7 +262,7 @@ class HdfDataset
       herr_t status = H5Dread( d->id, mem_type_id, memspace.id(), dataspace.id(), H5P_DEFAULT, data.data() );
       if ( status < 0 )
       {
-        MDAL::debug( "Failed to read data!" );
+        MDAL::Log::debug( "Failed to read data!" );
         return std::vector<T>();
       }
       return data;

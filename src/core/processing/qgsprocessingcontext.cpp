@@ -61,8 +61,12 @@ void QgsProcessingContext::addLayerToLoadOnCompletion( const QString &layer, con
 void QgsProcessingContext::setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck check )
 {
   mInvalidGeometryCheck = check;
+  mInvalidGeometryCallback = defaultInvalidGeometryCallbackForCheck( check );
+}
 
-  switch ( mInvalidGeometryCheck )
+std::function<void ( const QgsFeature & )> QgsProcessingContext::defaultInvalidGeometryCallbackForCheck( QgsFeatureRequest::InvalidGeometryCheck check ) const
+{
+  switch ( check )
   {
     case  QgsFeatureRequest::GeometryAbortOnInvalid:
     {
@@ -70,8 +74,7 @@ void QgsProcessingContext::setInvalidGeometryCheck( QgsFeatureRequest::InvalidGe
       {
         throw QgsProcessingException( QObject::tr( "Feature (%1) has invalid geometry. Please fix the geometry or change the Processing setting to the \"Ignore invalid input features\" option." ).arg( feature.id() ) );
       };
-      mInvalidGeometryCallback = callback;
-      break;
+      return callback;
     }
 
     case QgsFeatureRequest::GeometrySkipInvalid:
@@ -81,13 +84,13 @@ void QgsProcessingContext::setInvalidGeometryCheck( QgsFeatureRequest::InvalidGe
         if ( mFeedback )
           mFeedback->reportError( QObject::tr( "Feature (%1) has invalid geometry and has been skipped. Please fix the geometry or change the Processing setting to the \"Ignore invalid input features\" option." ).arg( feature.id() ) );
       };
-      mInvalidGeometryCallback = callback;
-      break;
+      return callback;
     }
 
-    default:
-      break;
+    case QgsFeatureRequest::GeometryNoCheck:
+      return nullptr;
   }
+  return nullptr;
 }
 
 void QgsProcessingContext::takeResultsFrom( QgsProcessingContext &context )

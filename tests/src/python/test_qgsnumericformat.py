@@ -21,6 +21,7 @@ from qgis.core import (QgsFallbackNumericFormat,
                        QgsCurrencyNumericFormat,
                        QgsNumericFormatRegistry,
                        QgsNumericFormat,
+                       QgsFractionNumericFormat,
                        QgsReadWriteContext)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument
@@ -320,12 +321,12 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f.formatDouble(-5.5, context), '5.5°W')
         self.assertEqual(f.formatDouble(180, context), '180°')
         f.setShowTrailingZeros(True)
-        self.assertEqual(f.formatDouble(0, context), '0.000°E') # todo - fix and avoid E
+        self.assertEqual(f.formatDouble(0, context), '0.000°E')  # todo - fix and avoid E
         self.assertEqual(f.formatDouble(5, context), '5.000°E')
         self.assertEqual(f.formatDouble(-5, context), '5.000°W')
         self.assertEqual(f.formatDouble(5.5, context), '5.500°E')
         self.assertEqual(f.formatDouble(-5.5, context), '5.500°W')
-        self.assertEqual(f.formatDouble(180, context), '180.000°E') # todo fix and avoid E
+        self.assertEqual(f.formatDouble(180, context), '180.000°E')  # todo fix and avoid E
 
         f = QgsBearingNumericFormat()
         f.setDirectionFormat(QgsBearingNumericFormat.UseRangeNegative180ToPositive180)
@@ -618,6 +619,155 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f3.showPlusSign(), f.showPlusSign())
         self.assertEqual(f3.numberDecimalPlaces(), f.numberDecimalPlaces())
         self.assertEqual(f3.showThousandsSeparator(), f.showThousandsSeparator())
+
+    def testDoubleToFraction(self):
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(1), (True, 1, 1, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(2), (True, 2, 1, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-1), (True, 1, 1, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-2), (True, 2, 1, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(0), (True, 0, 1, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(1000000), (True, 1000000, 1, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-1000000), (True, 1000000, 1, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(0.5), (True, 1, 2, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(0.25), (True, 1, 4, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(0.75), (True, 3, 4, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-0.5), (True, 1, 2, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-0.25), (True, 1, 4, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-0.75), (True, 3, 4, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(1.5), (True, 3, 2, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(1.25), (True, 5, 4, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(1.75), (True, 7, 4, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-0.5), (True, 1, 2, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-0.25), (True, 1, 4, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-0.1), (True, 1, 10, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-1.5), (True, 3, 2, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-1.25), (True, 5, 4, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-1.75), (True, 7, 4, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(0.3333333333333333333333), (True, 1, 3, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(0.333333333), (True, 333333355, 1000000066, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(0.333333333, 0.0000000001),
+                         (True, 333333355, 1000000066, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(0.333333333, 0.000000001), (True, 1, 3, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(0.333333333, 0.1), (True, 1, 3, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-0.3333333333333333333333), (True, 1, 3, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-0.333333333),
+                         (True, 333333355, 1000000066, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-0.333333333, 0.0000000001),
+                         (True, 333333355, 1000000066, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-0.333333333, 0.000000001), (True, 1, 3, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-0.333333333, 0.1), (True, 1, 3, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(0.000000123123), (True, 1, 8121959, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(3.14159265358979), (True, 312689, 99532, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(3.14159265358979, 0.0000001),
+                         (True, 103993, 33102, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(3.14159265358979, 0.00001),
+                         (True, 355, 113, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(3.14159265358979, 0.001), (True, 333, 106, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(3.14159265358979, 0.1), (True, 22, 7, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(3.14159265358979, 1), (True, 3, 1, 1))
+
+    def testToUnicodeSuperscript(self):
+        self.assertEqual(QgsFractionNumericFormat.toUnicodeSuperscript(''), '')
+        self.assertEqual(QgsFractionNumericFormat.toUnicodeSuperscript('asd'), 'asd')
+        self.assertEqual(QgsFractionNumericFormat.toUnicodeSuperscript('1234567890'), '¹²³⁴⁵⁶⁷⁸⁹⁰')
+        self.assertEqual(QgsFractionNumericFormat.toUnicodeSuperscript('aa112233bbcc'), 'aa¹¹²²³³bbcc')
+
+    def testToUnicodeSubcript(self):
+        self.assertEqual(QgsFractionNumericFormat.toUnicodeSubscript(''), '')
+        self.assertEqual(QgsFractionNumericFormat.toUnicodeSubscript('asd'), 'asd')
+        self.assertEqual(QgsFractionNumericFormat.toUnicodeSubscript('1234567890'), '₁₂₃₄₅₆₇₈₉₀')
+        self.assertEqual(QgsFractionNumericFormat.toUnicodeSubscript('aa112233bbcc'), 'aa₁₁₂₂₃₃bbcc')
+
+    def testFractionFormat(self):
+        """ test fraction formatter """
+        f = QgsFractionNumericFormat()
+        f.setUseUnicodeSuperSubscript(False)
+        context = QgsNumericFormatContext()
+        self.assertEqual(f.formatDouble(0, context), '0')
+        self.assertEqual(f.formatDouble(5, context), '5')
+        self.assertEqual(f.formatDouble(5.5, context), '5 1/2')
+        self.assertEqual(f.formatDouble(-5, context), '-5')
+        self.assertEqual(f.formatDouble(-5.5, context), '-5 1/2')
+        self.assertEqual(f.formatDouble(-55555555.5, context), '-55,555,555 1/2')
+        context.setThousandsSeparator('⚡')
+        self.assertEqual(f.formatDouble(-55555555.5, context), '-55⚡555⚡555 1/2')
+        f.setShowThousandsSeparator(False)
+        self.assertEqual(f.formatDouble(-55555555.5, context), '-55555555 1/2')
+        f.setShowPlusSign(True)
+        self.assertEqual(f.formatDouble(0, context), '0')
+        self.assertEqual(f.formatDouble(5, context), '+5')
+        self.assertEqual(f.formatDouble(-5, context), '-5')
+        self.assertEqual(f.formatDouble(5.5, context), '+5 1/2')
+        self.assertEqual(f.formatDouble(-5.5, context), '-5 1/2')
+        self.assertEqual(f.formatDouble(55555555.5, context), '+55555555 1/2')
+        self.assertEqual(f.formatDouble(55555555.123456, context), '+55555555 5797/46956')
+        self.assertEqual(f.formatDouble(-5.5, context), '-5 1/2')
+        self.assertEqual(f.formatDouble(-55555555.5, context), '-55555555 1/2')
+        context.setPositiveSign('w')
+        self.assertEqual(f.formatDouble(5, context), 'w5')
+        self.assertEqual(f.formatDouble(-5, context), '-5')
+        self.assertEqual(f.formatDouble(5.5, context), 'w5 1/2')
+
+        f.setShowPlusSign(False)
+        f.setUseDedicatedUnicodeCharacters(True)
+        self.assertEqual(f.formatDouble(0, context), '0')
+        self.assertEqual(f.formatDouble(5, context), '5')
+        self.assertEqual(f.formatDouble(5.5, context), '5 ½')
+        self.assertEqual(f.formatDouble(-5, context), '-5')
+        self.assertEqual(f.formatDouble(-5.5, context), '-5 ½')
+        self.assertEqual(f.formatDouble(5.333333333333333333333333333, context), '5 ⅓')
+        self.assertEqual(f.formatDouble(5.666666666666666666666666666, context), '5 ⅔')
+        self.assertEqual(f.formatDouble(5.25, context), '5 ¼')
+        self.assertEqual(f.formatDouble(5.75, context), '5 ¾')
+        self.assertEqual(f.formatDouble(5.2, context), '5 ⅕')
+        self.assertEqual(f.formatDouble(5.4, context), '5 ⅖')
+        self.assertEqual(f.formatDouble(5.6, context), '5 ⅗')
+        self.assertEqual(f.formatDouble(5.8, context), '5 ⅘')
+        self.assertEqual(f.formatDouble(5.1666666666666666666666666666666666, context), '5 ⅙')
+        self.assertEqual(f.formatDouble(5.8333333333333333333333333333333333, context), '5 ⅚')
+        self.assertEqual(f.formatDouble(5.14285714285714285, context), '5 ⅐')
+        self.assertEqual(f.formatDouble(5.125, context), '5 ⅛')
+        self.assertEqual(f.formatDouble(5.375, context), '5 ⅜')
+        self.assertEqual(f.formatDouble(5.625, context), '5 ⅝')
+        self.assertEqual(f.formatDouble(5.875, context), '5 ⅞')
+        self.assertEqual(f.formatDouble(5.1111111111111111, context), '5 ⅑')
+        self.assertEqual(f.formatDouble(5.1, context), '5 ⅒')
+        self.assertEqual(f.formatDouble(5.13131313133, context), '5 13/99')
+
+        f.setUseUnicodeSuperSubscript(True)
+        self.assertEqual(f.formatDouble(0, context), '0')
+        self.assertEqual(f.formatDouble(5, context), '5')
+        self.assertEqual(f.formatDouble(5.5, context), '5 ½')
+        self.assertEqual(f.formatDouble(-5, context), '-5')
+        self.assertEqual(f.formatDouble(-5.5, context), '-5 ½')
+        self.assertEqual(f.formatDouble(5.55555555, context), '5 ¹¹¹¹¹¹¹¹/₂₀₀₀₀₀₀₀')
+        self.assertEqual(f.formatDouble(-5.55555555, context), '-5 ¹¹¹¹¹¹¹¹/₂₀₀₀₀₀₀₀')
+        self.assertEqual(f.formatDouble(0.555, context), '¹¹¹/₂₀₀')
+
+        f.setShowPlusSign(True)
+        f.setUseUnicodeSuperSubscript(False)
+
+        f2 = f.clone()
+        self.assertIsInstance(f2, QgsFractionNumericFormat)
+
+        self.assertEqual(f2.showPlusSign(), f.showPlusSign())
+        self.assertEqual(f2.showThousandsSeparator(), f.showThousandsSeparator())
+        self.assertEqual(f2.thousandsSeparator(), f.thousandsSeparator())
+        self.assertEqual(f2.useDedicatedUnicodeCharacters(), f.useDedicatedUnicodeCharacters())
+        self.assertEqual(f2.useUnicodeSuperSubscript(), f.useUnicodeSuperSubscript())
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        f2.writeXml(elem, doc, QgsReadWriteContext())
+
+        f3 = QgsNumericFormatRegistry().createFromXml(elem, QgsReadWriteContext())
+        self.assertIsInstance(f3, QgsFractionNumericFormat)
+
+        self.assertEqual(f3.showPlusSign(), f.showPlusSign())
+        self.assertEqual(f3.showThousandsSeparator(), f.showThousandsSeparator())
+        self.assertEqual(f3.thousandsSeparator(), f.thousandsSeparator())
+        self.assertEqual(f3.useDedicatedUnicodeCharacters(), f.useDedicatedUnicodeCharacters())
+        self.assertEqual(f3.useUnicodeSuperSubscript(), f.useUnicodeSuperSubscript())
 
     def testRegistry(self):
         registry = QgsNumericFormatRegistry()

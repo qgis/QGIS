@@ -202,11 +202,12 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /**
      * Sets whether a set to null (clear) option is shown in the button's drop-down menu.
      * \param showNull set to TRUE to show a null option
+     * \param nullString translated string to use for the null option. If not set, a default "Clear Color" string will be used.
      * \see showNull()
      * \see isNull()
      * \since QGIS 2.16
      */
-    void setShowNull( bool showNull );
+    void setShowNull( bool showNull, const QString &nullString = QString() );
 
     /**
      * Returns whether the set to null (clear) option is shown in the button's drop-down menu.
@@ -481,6 +482,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     bool mShowNoColorOption = false;
     QString mNoColorString;
     bool mShowNull = false;
+    QString mNullColorString;
 
     QPoint mDragStartPosition;
     bool mPickingColor = false;

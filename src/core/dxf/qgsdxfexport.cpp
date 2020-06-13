@@ -27,7 +27,6 @@
 // AutoCAD 2014: http://images.autodesk.com/adsk/files/autocad_2014_pdf_dxf_reference_enu.pdf
 
 #include "qgsdxfexport.h"
-#include "qgsdxfpallabeling.h"
 #include "qgsgeometrygeneratorsymbollayer.h"
 #include "qgsgeometrycollection.h"
 #include "qgscurvepolygon.h"
@@ -718,11 +717,17 @@ void QgsDxfExport::writeEntities()
 
         if ( job->labelProvider )
         {
-          job->labelProvider->registerDxfFeature( fet, mRenderContext, lName );
+          job->labelProvider->registerFeature( fet, mRenderContext );
+          Q_NOWARN_DEPRECATED_PUSH
+          registerDxfLayer( job->featureSource.id(), fet.id(), lName );
+          Q_NOWARN_DEPRECATED_POP
         }
         else if ( job->ruleBasedLabelProvider )
         {
-          job->ruleBasedLabelProvider->registerDxfFeature( fet, mRenderContext, lName );
+          job->ruleBasedLabelProvider->registerFeature( fet, mRenderContext );
+          Q_NOWARN_DEPRECATED_PUSH
+          registerDxfLayer( job->featureSource.id(), fet.id(), lName );
+          Q_NOWARN_DEPRECATED_POP
         }
       }
     }
@@ -2314,10 +2319,14 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
 
   if ( mFlags & FlagNoMText )
   {
+    txt.replace( QChar( QChar::LineFeed ), ' ' );
+    txt.replace( QChar( QChar::CarriageReturn ), ' ' );
     writeText( dxfLayer, txt, label, tmpLyr, context.expressionContext() );
   }
   else
   {
+    txt.replace( QString( QChar( QChar::CarriageReturn ) ) + QString( QChar( QChar::LineFeed ) ), QStringLiteral( "\\P" ) );
+    txt.replace( QChar( QChar::CarriageReturn ), QStringLiteral( "\\P" ) );
     txt = txt.replace( wrapchr, QLatin1String( "\\P" ) );
     txt.replace( " ", "\\~" );
 

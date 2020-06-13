@@ -87,6 +87,9 @@ BuildRequires:  sqlite-devel
 BuildRequires:  hdf5-devel
 BuildRequires:  netcdf-devel
 BuildRequires:  fcgi-devel
+BuildRequires:  protobuf-compiler
+BuildRequires:  protobuf-devel
+BuildRequires:  protobuf-lite-devel
 
 # OpenCL
 BuildRequires:  opencl-headers
@@ -99,7 +102,6 @@ BuildRequires:  python3-OWSLib
 BuildRequires:  python3-psycopg2
 BuildRequires:  python3-pygments
 BuildRequires:  python3-PyYAML
-BuildRequires:  python3-qscintilla-devel
 BuildRequires:  python3-qscintilla-qt5
 BuildRequires:  python3-qscintilla-qt5-devel
 BuildRequires:  python3-qt5-devel
@@ -197,7 +199,6 @@ Requires:       python3-OWSLib
 Requires:       python3-psycopg2
 Requires:       python3-pygments
 Requires:       python3-PyYAML
-Requires:       python3-qscintilla
 Requires:       python3-qscintilla-qt5
 Requires:       python3-qt5
 %{?_sip_api:Requires: python3-pyqt5-sip-api(%{_sip_api_major}) >= %{_sip_api}}
@@ -319,6 +320,7 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 %{_libdir}/%{name}/
 %{?_qt5_plugindir}/sqldrivers/libqsqlspatialite.so
 %{_bindir}/%{name}
+%{_bindir}/%{name}_process
 %{_mandir}/man1/%{name}.1*
 %dir %{_datadir}/%{name}/
 %{_datadir}/mime/packages/qgis.xml

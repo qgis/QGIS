@@ -38,10 +38,10 @@ Item {
   QgsQuick.EditorWidgetComboBox {
     // Reversed to model's key-value map. It is used to find index according current value
     property var reverseConfig: ({})
-    property var currentValue: value
+    property var currentEditorValue: value
 
     comboStyle: customStyle.fields
-    textRole: 'text'
+    textRole: 'display'
     height: parent.height
     model: ListModel {
       id: listModel
@@ -57,7 +57,7 @@ Item {
           {
             var currentMap = config['map'][i]
             var currentKey = Object.keys(currentMap)[0]
-            listModel.append( { text: currentKey } )
+            listModel.append( { display: currentKey } )
             reverseConfig[currentMap[currentKey]] = currentKey;
           }
         }
@@ -67,7 +67,7 @@ Item {
           var currentMap = config['map'].length ? config['map'][currentIndex] : config['map']
           var currentKey = Object.keys(currentMap)[0]
           for(var key in config['map']) {
-            listModel.append( { text: key } )
+            listModel.append( { display: key } )
             reverseConfig[config['map'][key]] = key;
           }
         }
@@ -81,7 +81,7 @@ Item {
     }
 
     // Workaround to get a signal when the value has changed
-    onCurrentValueChanged: {
+    onCurrentEditorValueChanged: {
       currentIndex = find(reverseConfig[value])
     }
 

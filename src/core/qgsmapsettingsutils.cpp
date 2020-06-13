@@ -18,12 +18,13 @@
 #include "qgsmapsettings.h"
 #include "qgsmapsettingsutils.h"
 #include "qgspallabeling.h"
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 #include "qgsvectorlayer.h"
+#include "qgsabstractgeopdfexporter.h"
 
 #include <QString>
 
-const QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSettings &mapSettings )
+QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSettings &mapSettings, EffectsCheckFlags flags )
 {
   QSet< QString > layers;
 
@@ -31,9 +32,22 @@ const QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSett
   const auto constLayers = mapSettings.layers();
   for ( QgsMapLayer *layer : constLayers )
   {
-    if ( layer )
+    if ( layer && layer->isInScaleRange( mapSettings.scale() ) )
     {
+      bool layerHasAdvancedBlendMode = false;
       if ( layer->blendMode() != QPainter::CompositionMode_SourceOver )
+      {
+        if ( flags & EffectsCheckFlag::IgnoreGeoPdfSupportedEffects )
+        {
+          layerHasAdvancedBlendMode = !QgsAbstractGeoPdfExporter::compositionModeSupported( layer->blendMode() );
+        }
+        else
+        {
+          layerHasAdvancedBlendMode = true;
+        }
+      }
+
+      if ( layerHasAdvancedBlendMode )
       {
         layers << layer->name();
       }
@@ -41,7 +55,7 @@ const QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSett
       QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( currentVectorLayer )
       {
-        if ( !qgsDoubleNear( currentVectorLayer->opacity(), 1.0 ) )
+        if ( !qgsDoubleNear( currentVectorLayer->opacity(), 1.0 ) && !( flags & EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ) )
         {
           layers << layer->name();
         }

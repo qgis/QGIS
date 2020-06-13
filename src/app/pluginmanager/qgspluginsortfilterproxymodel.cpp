@@ -66,10 +66,11 @@ bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
   }
 
   QString status = sourceModel()->data( index, PLUGIN_STATUS_ROLE ).toString();
+  QString statusexp = sourceModel()->data( index, PLUGIN_STATUSEXP_ROLE ).toString();
   if ( status.endsWith( 'Z' ) ) status.chop( 1 );
   if ( ! mAcceptedStatuses.isEmpty()
        && ! mAcceptedStatuses.contains( QStringLiteral( "invalid" ) )
-       && ! mAcceptedStatuses.contains( status ) )
+       && !( mAcceptedStatuses.contains( status ) || mAcceptedStatuses.contains( statusexp ) ) )
   {
     // Don't accept if the status doesn't match
     return false;
@@ -152,6 +153,22 @@ void QgsPluginSortFilterProxyModel::sortPluginsByStatus()
   setSortRole( PLUGIN_STATUS_ROLE );
 }
 
+
+
+void QgsPluginSortFilterProxyModel::sortPluginsByDateCreated()
+{
+  setAcceptedSpacers();
+  sort( 0, Qt::DescendingOrder );
+  setSortRole( PLUGIN_CREATE_DATE );
+}
+
+
+void QgsPluginSortFilterProxyModel::sortPluginsByDateUpdated()
+{
+  setAcceptedSpacers();
+  sort( 0, Qt::DescendingOrder );
+  setSortRole( PLUGIN_UPDATE_DATE );
+}
 
 
 bool QgsPluginSortFilterProxyModel::lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const

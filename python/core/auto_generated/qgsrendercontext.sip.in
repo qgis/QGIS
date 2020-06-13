@@ -13,7 +13,7 @@
 
 
 
-class QgsRenderContext
+class QgsRenderContext : QgsTemporalRangeObject
 {
 %Docstring
 Contains information about the context of a rendering operation.
@@ -791,6 +791,7 @@ Clears the specified custom rendering flag.
 };
 
 QFlags<QgsRenderContext::Flag> operator|(QgsRenderContext::Flag f1, QFlags<QgsRenderContext::Flag> f2);
+
 
 
 /************************************************************************

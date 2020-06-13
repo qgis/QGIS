@@ -2042,7 +2042,9 @@ QgsGrassVectorMapLayer *QgsGrassProvider::openLayer() const
 struct Map_info *QgsGrassProvider::map() const
 {
   Q_ASSERT( mLayer );
+  // cppcheck-suppress assertWithSideEffect
   Q_ASSERT( mLayer->map() );
+  // cppcheck-suppress assertWithSideEffect
   Q_ASSERT( mLayer->map()->map() );
   return mLayer->map()->map();
 }

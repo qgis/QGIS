@@ -60,7 +60,7 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     {
       TypeRole = Qt::UserRole + 1, //!< Style entity type, see QgsStyle::StyleEntity
       TagRole, //!< String list of tags
-      SymbolTypeRole, //!< Symbol type (for symbol entities)
+      SymbolTypeRole, //!< Symbol type (for symbol or legend patch shape entities)
       IsFavoriteRole, //!< Whether entity is flagged as a favorite
       LayerTypeRole, //!< Layer type (for label settings entities)
     };
@@ -100,44 +100,27 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
 
   private slots:
 
-    void onSymbolAdded( const QString &name, QgsSymbol *symbol );
-    void onSymbolRemoved( const QString &name );
-    void onSymbolChanged( const QString &name );
-    void onSymbolRename( const QString &oldName, const QString &newName );
-    void onRampAdded( const QString &name );
-    void onRampRemoved( const QString &name );
-    void onRampChanged( const QString &name );
-    void onRampRename( const QString &oldName, const QString &newName );
-
-    void onTextFormatAdded( const QString &name );
-    void onTextFormatRemoved( const QString &name );
-    void onTextFormatChanged( const QString &name );
-    void onTextFormatRename( const QString &oldName, const QString &newName );
-
-    void onLabelSettingsAdded( const QString &name );
-    void onLabelSettingsRemoved( const QString &name );
-    void onLabelSettingsChanged( const QString &name );
-    void onLabelSettingsRename( const QString &oldName, const QString &newName );
-
+    void onEntityAdded( QgsStyle::StyleEntity type, const QString &name );
+    void onEntityRemoved( QgsStyle::StyleEntity type, const QString &name );
+    void onEntityChanged( QgsStyle::StyleEntity type, const QString &name );
+    void onEntityRename( QgsStyle::StyleEntity type, const QString &oldName, const QString &newName );
     void onTagsChanged( int entity, const QString &name, const QStringList &tags );
     void rebuildSymbolIcons();
 
   private:
 
     QgsStyle *mStyle = nullptr;
-    QStringList mSymbolNames;
-    QStringList mRampNames;
-    QStringList mTextFormatNames;
-    QStringList mLabelSettingsNames;
+
+    QHash< QgsStyle::StyleEntity, QStringList > mEntityNames;
+
     QList< QSize > mAdditionalSizes;
     mutable std::unique_ptr< QgsExpressionContext > mExpressionContext;
 
-    mutable QHash< QString, QIcon > mSymbolIconCache;
-    mutable QHash< QString, QIcon > mColorRampIconCache;
-    mutable QHash< QString, QIcon > mTextFormatIconCache;
-    mutable QHash< QString, QIcon > mLabelSettingsIconCache;
+    mutable QHash< QgsStyle::StyleEntity, QHash< QString, QIcon > > mIconCache;
 
     QgsStyle::StyleEntity entityTypeFromRow( int row ) const;
+
+    int offsetForEntity( QgsStyle::StyleEntity entity ) const;
 
 };
 

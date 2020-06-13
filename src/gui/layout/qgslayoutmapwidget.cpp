@@ -38,7 +38,7 @@
 #include <QMenu>
 #include <QMessageBox>
 
-QgsLayoutMapWidget::QgsLayoutMapWidget(QgsLayoutItemMap *item , QgsMapCanvas *mapCanvas)
+QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *mapCanvas )
   : QgsLayoutItemBaseWidget( nullptr, item )
   , mMapItem( item )
   , mMapCanvas( mapCanvas )
@@ -85,6 +85,12 @@ QgsLayoutMapWidget::QgsLayoutMapWidget(QgsLayoutItemMap *item , QgsMapCanvas *ma
   connect( mOverviewListWidget, &QListWidget::currentItemChanged, this, &QgsLayoutMapWidget::mOverviewListWidget_currentItemChanged );
   connect( mOverviewListWidget, &QListWidget::itemChanged, this, &QgsLayoutMapWidget::mOverviewListWidget_itemChanged );
   connect( mActionLabelSettings, &QAction::triggered, this, &QgsLayoutMapWidget::showLabelSettings );
+  connect( mTemporalCheckBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutMapWidget::mTemporalCheckBox_toggled );
+  connect( mStartDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsLayoutMapWidget::updateTemporalExtent );
+  connect( mEndDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsLayoutMapWidget::updateTemporalExtent );
+
+  mStartDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+  mEndDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 
   connect( mActionMoveContent, &QAction::triggered, this, &QgsLayoutMapWidget::switchToMoveContentTool );
   setPanelTitle( tr( "Map Properties" ) );
@@ -176,6 +182,9 @@ QgsLayoutMapWidget::QgsLayoutMapWidget(QgsLayoutItemMap *item , QgsMapCanvas *ma
   registerDataDefinedButton( mAtlasMarginDDBtn, QgsLayoutObject::MapAtlasMargin );
   registerDataDefinedButton( mStylePresetsDDBtn, QgsLayoutObject::MapStylePreset );
   registerDataDefinedButton( mLayersDDBtn, QgsLayoutObject::MapLayers );
+  registerDataDefinedButton( mCRSDDBtn, QgsLayoutObject::MapCrs );
+  registerDataDefinedButton( mStartDateTimeDDBtn, QgsLayoutObject::StartDateTime );
+  registerDataDefinedButton( mEndDateTimeDDBtn, QgsLayoutObject::EndDateTime );
 
   updateGuiElements();
   loadGridEntries();
@@ -247,6 +256,9 @@ void QgsLayoutMapWidget::populateDataDefinedButtons()
   updateDataDefinedButton( mAtlasMarginDDBtn );
   updateDataDefinedButton( mStylePresetsDDBtn );
   updateDataDefinedButton( mLayersDDBtn );
+  updateDataDefinedButton( mCRSDDBtn );
+  updateDataDefinedButton( mStartDateTimeDDBtn );
+  updateDataDefinedButton( mEndDateTimeDDBtn );
 }
 
 void QgsLayoutMapWidget::compositionAtlasToggled( bool atlasEnabled )
@@ -473,6 +485,45 @@ void QgsLayoutMapWidget::aboutToShowBookmarkMenu()
     else
       mBookmarkMenu->addMenu( groupMenus.value( groupKeys.at( i ) ) );
   }
+}
+
+void QgsLayoutMapWidget::mTemporalCheckBox_toggled( bool checked )
+{
+  if ( !mMapItem )
+  {
+    return;
+  }
+
+  mStartDateTime->setEnabled( checked );
+  mEndDateTime->setEnabled( checked );
+
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Toggle Temporal Range" ) );
+  mMapItem->setIsTemporal( checked );
+  mMapItem->layout()->undoStack()->endCommand();
+
+  if ( checked )
+  {
+    whileBlocking( mStartDateTime )->setDateTime( mMapItem->temporalRange().begin() );
+    whileBlocking( mEndDateTime )->setDateTime( mMapItem->temporalRange().end() );
+  }
+
+  updatePreview();
+}
+
+void QgsLayoutMapWidget::updateTemporalExtent()
+{
+  if ( !mMapItem )
+  {
+    return;
+  }
+
+  QgsDateTimeRange range = QgsDateTimeRange( mStartDateTime->dateTime(), mEndDateTime->dateTime() );
+
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Set Temporal Range" ) );
+  mMapItem->setTemporalRange( range );
+  mMapItem->layout()->undoStack()->endCommand();
+
+  updatePreview();
 }
 
 void QgsLayoutMapWidget::mAtlasCheckBox_toggled( bool checked )
@@ -712,7 +763,7 @@ void QgsLayoutMapWidget::viewScaleInCanvas()
   }
 
   const double currentScale = mMapItem->scale();
-  mMapCanvas->zoomScale( currentScale );
+  mMapCanvas->zoomScale( currentScale, true );
 }
 
 void QgsLayoutMapWidget::mXMinLineEdit_editingFinished()
@@ -831,6 +882,16 @@ void QgsLayoutMapWidget::updateGuiElements()
     mAtlasPredefinedScaleRadio->setEnabled( false );
   }
 
+  mTemporalCheckBox->setChecked( mMapItem->isTemporal() );
+  mTemporalCheckBox->setCollapsed( !mMapItem->isTemporal() );
+  mStartDateTime->setEnabled( mMapItem->isTemporal() );
+  mEndDateTime->setEnabled( mMapItem->isTemporal() );
+  if ( mMapItem->isTemporal() )
+  {
+    mStartDateTime->setDateTime( mMapItem->temporalRange().begin() );
+    mEndDateTime->setDateTime( mMapItem->temporalRange().end() );
+  }
+
   populateDataDefinedButtons();
   loadGridEntries();
   loadOverviewEntries();
@@ -920,6 +981,9 @@ void QgsLayoutMapWidget::blockAllSignals( bool b )
   mKeepLayerStylesCheckBox->blockSignals( b );
   mActionSetToCanvasExtent->blockSignals( b );
   mActionUpdatePreview->blockSignals( b );
+  mTemporalCheckBox->blockSignals( b );
+  mStartDateTime->blockSignals( b );
+  mEndDateTime->blockSignals( b );
 
   blockOverviewItemsSignals( b );
 }

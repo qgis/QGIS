@@ -26,6 +26,8 @@
 #include "qgsprocessing.h"
 #include "qgsfeaturesink.h"
 #include "qgsfeaturesource.h"
+#include "qgsproxyfeaturesink.h"
+#include "qgsremappingproxyfeaturesink.h"
 
 class QgsMeshLayer;
 class QgsProject;
@@ -34,6 +36,7 @@ class QgsMapLayerStore;
 class QgsProcessingFeedback;
 class QgsProcessingFeatureSource;
 class QgsProcessingAlgorithm;
+class QgsVectorTileLayer;
 
 #include <QString>
 #include <QVariant>
@@ -104,6 +107,27 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleVectorLayers()
      */
     static QList< QgsMapLayer * > compatibleLayers( QgsProject *project, bool sort = true );
+
+    /**
+     * Encodes a provider key and layer \a uri to a single string, for use with
+     * decodeProviderKeyAndUri()
+     *
+     * \since QGIS 3.14
+     */
+    static QString encodeProviderKeyAndUri( const QString &providerKey, const QString &uri );
+
+    /**
+     * Decodes a provider key and layer \a uri from an encoded string, for use with
+     * encodeProviderKeyAndUri()
+     *
+     * \param string encoded string, as returned by encodeProviderKeyAndUri()
+     * \param providerKey ID key for corresponding data provider
+     * \param uri decoded layer uri
+     * \returns TRUE if \a string was successfully decoded
+     *
+     * \since QGIS 3.14
+     */
+    static bool decodeProviderKeyAndUri( const QString &string, QString &providerKey SIP_OUT, QString &uri SIP_OUT );
 
     /**
      * Layer type hints.
@@ -199,7 +223,8 @@ class CORE_EXPORT QgsProcessingUtils
         QgsWkbTypes::Type geometryType,
         const QgsCoordinateReferenceSystem &crs,
         const QVariantMap &createOptions = QVariantMap(),
-        QgsFeatureSink::SinkFlags sinkFlags = nullptr ) SIP_FACTORY;
+        QgsFeatureSink::SinkFlags sinkFlags = nullptr,
+        QgsRemappingSinkDefinition *remappingDefinition = nullptr ) SIP_FACTORY;
 #endif
 
     /**
@@ -279,6 +304,8 @@ class CORE_EXPORT QgsProcessingUtils
      * The \a preferredFormat argument is used to specify to desired file extension to use when a temporary
      * layer export is required. This defaults to shapefiles.
      *
+     * The \a featureLimit argument can be used to specify a limit on the number of features read from the layer.
+     *
      * When an algorithm is capable of handling multi-layer input files (such as Geopackage), it is preferable
      * to use convertToCompatibleFormatAndLayerName() which may avoid conversion in more situations.
      *
@@ -290,7 +317,7 @@ class CORE_EXPORT QgsProcessingUtils
         const QStringList &compatibleFormats,
         const QString &preferredFormat,
         QgsProcessingContext &context,
-        QgsProcessingFeedback *feedback );
+        QgsProcessingFeedback *feedback, long long featureLimit = -1 );
 
     /**
      * Converts a source vector \a layer to a file path and layer name of a vector layer of compatible format.
@@ -300,6 +327,8 @@ class CORE_EXPORT QgsProcessingUtils
      * in a temporary location using \a baseName. The function will then return the path to that temporary file.
      *
      * \a compatibleFormats should consist entirely of lowercase file extensions, e.g. 'shp'.
+     *
+     * The \a featureLimit argument can be used to specify a limit on the number of features read from the layer.
      *
      * The \a preferredFormat argument is used to specify to desired file extension to use when a temporary
      * layer export is required. This defaults to shapefiles.
@@ -316,6 +345,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \param context processing context
      * \param feedback feedback object
      * \param layerName will be set to the target layer name for multi-layer sources (e.g. Geopackage)
+     * \param featureLimit can be used to place a limit on the maximum number of features read from the layer
      *
      * \returns path to source layer, or nearly converted compatible layer
      *
@@ -329,7 +359,7 @@ class CORE_EXPORT QgsProcessingUtils
         const QString &preferredFormat,
         QgsProcessingContext &context,
         QgsProcessingFeedback *feedback,
-        QString &layerName SIP_OUT );
+        QString &layerName SIP_OUT, long long featureLimit = -1 );
 
     /**
      * Combines two field lists, avoiding duplicate field names (in a case-insensitive manner).
@@ -383,6 +413,7 @@ class CORE_EXPORT QgsProcessingUtils
   private:
     static bool canUseLayer( const QgsRasterLayer *layer );
     static bool canUseLayer( const QgsMeshLayer *layer );
+    static bool canUseLayer( const QgsVectorTileLayer *layer );
     static bool canUseLayer( const QgsVectorLayer *layer,
                              const QList< int > &sourceTypes = QList< int >() );
 
@@ -451,8 +482,12 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
      * Ownership of \a originalSource is dictated by \a ownsOriginalSource. If \a ownsOriginalSource is FALSE,
      * ownership is not transferred, and callers must ensure that \a originalSource exists for the lifetime of this object.
      * If \a ownsOriginalSource is TRUE, then this object will take ownership of \a originalSource.
+     *
+     * If \a featureLimit is set to a value > 0, then a limit is placed on the maximum number of features which will be
+     * read from the source.
      */
-    QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false );
+    QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false,
+                                long long featureLimit = -1 );
 
     ~QgsProcessingFeatureSource() override;
 
@@ -483,6 +518,13 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
      */
     QgsExpressionContextScope *createExpressionContextScope() const SIP_FACTORY;
 
+    /**
+     * Overrides the default geometry check method for the source.
+     *
+     * \since QGIS 3.14
+     */
+    void setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck method );
+
   private:
 
     QgsFeatureSource *mSource = nullptr;
@@ -490,6 +532,11 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;
+
+    std::function< void( const QgsFeature & ) > mInvalidGeometryCallbackSkip;
+    std::function< void( const QgsFeature & ) > mInvalidGeometryCallbackAbort;
+
+    long long mFeatureLimit = -1;
 
 };
 

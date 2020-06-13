@@ -43,12 +43,56 @@ QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( Filters filters )
   return this;
 }
 
+bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const Filters &filters )
+{
+  if ( filters.testFlag( All ) )
+    return true;
+
+  // layer type
+  if ( ( filters.testFlag( RasterLayer ) && layer->type() == QgsMapLayerType::RasterLayer ) ||
+       ( filters.testFlag( VectorLayer ) && layer->type() == QgsMapLayerType::VectorLayer ) ||
+       ( filters.testFlag( MeshLayer ) && layer->type() == QgsMapLayerType::MeshLayer ) ||
+       ( filters.testFlag( VectorTileLayer ) && layer->type() == QgsMapLayerType::VectorTileLayer ) ||
+       ( filters.testFlag( PluginLayer ) && layer->type() == QgsMapLayerType::PluginLayer ) )
+    return true;
+
+  // geometry type
+  bool detectGeometry = filters.testFlag( NoGeometry ) ||
+                        filters.testFlag( PointLayer ) ||
+                        filters.testFlag( LineLayer ) ||
+                        filters.testFlag( PolygonLayer ) ||
+                        filters.testFlag( HasGeometry );
+  if ( detectGeometry && layer->type() == QgsMapLayerType::VectorLayer )
+  {
+    if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
+    {
+      if ( filters.testFlag( HasGeometry ) && vl->isSpatial() )
+        return true;
+      if ( filters.testFlag( NoGeometry ) && vl->geometryType() == QgsWkbTypes::NullGeometry )
+        return true;
+      if ( filters.testFlag( PointLayer ) && vl->geometryType() == QgsWkbTypes::PointGeometry )
+        return true;
+      if ( filters.testFlag( LineLayer ) && vl->geometryType() == QgsWkbTypes::LineGeometry )
+        return true;
+      if ( filters.testFlag( PolygonLayer ) && vl->geometryType() == QgsWkbTypes::PolygonGeometry )
+        return true;
+    }
+  }
+
+  return false;
+}
+
 void QgsMapLayerProxyModel::setLayerWhitelist( const QList<QgsMapLayer *> &layers )
 {
-  if ( mLayerWhitelist == layers )
+  setLayerAllowlist( layers );
+}
+
+void QgsMapLayerProxyModel::setLayerAllowlist( const QList<QgsMapLayer *> &layers )
+{
+  if ( mLayerAllowlist == layers )
     return;
 
-  mLayerWhitelist = layers;
+  mLayerAllowlist = layers;
   invalidateFilter();
 }
 
@@ -97,7 +141,7 @@ bool QgsMapLayerProxyModel::acceptsLayer( QgsMapLayer *layer ) const
   if ( !layer )
     return false;
 
-  if ( !mLayerWhitelist.isEmpty() && !mLayerWhitelist.contains( layer ) )
+  if ( !mLayerAllowlist.isEmpty() && !mLayerAllowlist.contains( layer ) )
     return false;
 
   if ( mExceptList.contains( layer ) )
@@ -112,37 +156,7 @@ bool QgsMapLayerProxyModel::acceptsLayer( QgsMapLayer *layer ) const
   if ( !layer->name().contains( mFilterString, Qt::CaseInsensitive ) )
     return false;
 
-  // layer type
-  if ( ( mFilters.testFlag( RasterLayer ) && layer->type() == QgsMapLayerType::RasterLayer ) ||
-       ( mFilters.testFlag( VectorLayer ) && layer->type() == QgsMapLayerType::VectorLayer ) ||
-       ( mFilters.testFlag( MeshLayer ) && layer->type() == QgsMapLayerType::MeshLayer ) ||
-       ( mFilters.testFlag( PluginLayer ) && layer->type() == QgsMapLayerType::PluginLayer ) )
-    return true;
-
-  // geometry type
-  bool detectGeometry = mFilters.testFlag( NoGeometry ) ||
-                        mFilters.testFlag( PointLayer ) ||
-                        mFilters.testFlag( LineLayer ) ||
-                        mFilters.testFlag( PolygonLayer ) ||
-                        mFilters.testFlag( HasGeometry );
-  if ( detectGeometry && layer->type() == QgsMapLayerType::VectorLayer )
-  {
-    if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( layer ) )
-    {
-      if ( mFilters.testFlag( HasGeometry ) && vl->isSpatial() )
-        return true;
-      if ( mFilters.testFlag( NoGeometry ) && vl->geometryType() == QgsWkbTypes::NullGeometry )
-        return true;
-      if ( mFilters.testFlag( PointLayer ) && vl->geometryType() == QgsWkbTypes::PointGeometry )
-        return true;
-      if ( mFilters.testFlag( LineLayer ) && vl->geometryType() == QgsWkbTypes::LineGeometry )
-        return true;
-      if ( mFilters.testFlag( PolygonLayer ) && vl->geometryType() == QgsWkbTypes::PolygonGeometry )
-        return true;
-    }
-  }
-
-  return false;
+  return layerMatchesFilters( layer, mFilters );
 }
 
 void QgsMapLayerProxyModel::setFilterString( const QString &filter )
@@ -153,7 +167,7 @@ void QgsMapLayerProxyModel::setFilterString( const QString &filter )
 
 bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  if ( mFilters.testFlag( All ) && mExceptList.isEmpty() && mLayerWhitelist.isEmpty() && mExcludedProviders.isEmpty() && mFilterString.isEmpty() )
+  if ( mFilters.testFlag( All ) && mExceptList.isEmpty() && mLayerAllowlist.isEmpty() && mExcludedProviders.isEmpty() && mFilterString.isEmpty() )
     return true;
 
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );

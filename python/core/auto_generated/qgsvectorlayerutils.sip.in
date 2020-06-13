@@ -246,6 +246,7 @@ layer, note that the number of features returned might be greater than one when
 converting a multi part geometry to single part
 
 The following operations will be performed to convert the input features:
+
 - convert single geometries to multi part
 - drop additional attributes
 - drop geometry if layer is geometry-less
@@ -266,6 +267,7 @@ layer, note that the number of features returned might be greater than the numbe
 of input features.
 
 The following operations will be performed to convert the input features:
+
 - convert single geometries to multi part
 - drop additional attributes
 - drop geometry if layer is geometry-less
@@ -296,6 +298,17 @@ The following operations will be performed to convert the input features:
 
 .. versionadded:: 3.12
 %End
+
+    static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context /Out/ );
+%Docstring
+
+:return: ``True`` if at least one feature of the ``fids`` on ``layer`` is connected as parent in at
+         least one composition relation of the ``project`` or contains joins, where cascade delete is set.
+         Details about cascading effects will be written to ``context``.
+
+.. versionadded:: 3.14
+%End
+
 };
 
 

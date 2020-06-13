@@ -152,7 +152,7 @@ static QString qOraWarn( OCIError *err, int *errorCode = nullptr );
 #ifndef Q_CC_SUN
 static // for some reason, Sun CC can't use qOraWarning when it's declared static
 #endif
-void qOraWarningAt( const char *msg, OCIError *err, const char *file, const char *function, int line );
+void qOraWarningAt( const char *msg, OCIError *err, const char *function, const char *file, int line );
 static QSqlError qMakeError( const QString &errString, QSqlError::ErrorType type, OCIError *err );
 
 #ifndef _MSC_VER
@@ -309,6 +309,7 @@ class QOCISpatialRowId: public QSharedData
 
   private:
     QOCISpatialRowId( const QOCISpatialRowId &other ): QSharedData( other ) { Q_ASSERT( false ); }
+    QOCISpatialRowId &operator= ( const QOCISpatialRowId & ) = delete;
 };
 
 QOCISpatialRowId::QOCISpatialRowId( OCIEnv *env )
@@ -3432,7 +3433,10 @@ bool QOCISpatialResult::gotoNext( QSqlCachedResult::ValueCache &values, int inde
 
   // need to read piecewise before assigning values
   if ( r == OCI_SUCCESS && piecewise )
+  {
+    values.clear();
     r = d->cols->readPiecewise( values, index );
+  }
 
   if ( r == OCI_SUCCESS )
     d->cols->getValues( values, index );

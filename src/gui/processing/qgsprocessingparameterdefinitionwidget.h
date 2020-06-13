@@ -29,6 +29,9 @@
 class QgsProcessingParameterWidgetContext;
 class QLineEdit;
 class QCheckBox;
+class QTabWidget;
+class QTextEdit;
+class QgsColorButton;
 
 /**
  * Abstract base class for widgets which allow users to specify the properties of a
@@ -167,11 +170,47 @@ class GUI_EXPORT QgsProcessingParameterDefinitionDialog: public QDialog
      */
     QgsProcessingParameterDefinition *createParameter( const QString &name = QString() ) const SIP_FACTORY;
 
+    /**
+     * Sets the comments for the parameter.
+     * \see comments()
+     * \since QGIS 3.14
+     */
+    void setComments( const QString &comments );
+
+    /**
+     * Returns the comments for the parameter.
+     * \see setComments()
+     * \since QGIS 3.14
+     */
+    QString comments() const;
+
+    /**
+     * Sets the color for the comments for the parameter.
+     * \see commentColor()
+     * \since QGIS 3.14
+     */
+    void setCommentColor( const QColor &color );
+
+    /**
+     * Returns the color for the comments for the parameter.
+     * \see setCommentColor()
+     * \since QGIS 3.14
+     */
+    QColor commentColor() const;
+
+    /**
+     * Switches the dialog to the comments tab.
+     */
+    void switchToCommentTab();
+
   public slots:
     void accept() override;
 
   private:
 
+    QTabWidget *mTabWidget = nullptr;
+    QTextEdit *mCommentEdit = nullptr;
+    QgsColorButton *mCommentColorButton = nullptr;
     QgsProcessingParameterDefinitionWidget *mWidget = nullptr;
 
 };

@@ -24,6 +24,7 @@
 #include "qgs3dutils.h"
 #include "qgscameracontroller.h"
 #include "qgsspinbox.h"
+#include "qgshelp.h"
 
 #include <QtGlobal>
 
@@ -77,6 +78,11 @@ Qgs3DAnimationExportDialog::Qgs3DAnimationExportDialog(): QDialog( nullptr )
   {
     QgsSettings settings;
     settings.setValue( QStringLiteral( "Export3DAnimation/height" ), mHeightSpinBox->value() );
+  } );
+
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [ = ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#creating-an-animation" ) );
   } );
 
   QgsGui::enableAutoGeometryRestore( this );

@@ -44,6 +44,27 @@ Constructor for QgsInterval.
 :param seconds: duration of interval in seconds
 %End
 
+    QgsInterval( double duration, QgsUnitTypes::TemporalUnit unit );
+%Docstring
+Constructor for QgsInterval, using the specified ``duration`` and ``units``.
+%End
+
+    QgsInterval( double years, double months, double weeks, double days, double hours, double minutes, double seconds );
+%Docstring
+Constructor for QgsInterval, using the specified ``years``, ``months``,
+``weeks``, ``days``, ``hours``, ``minutes`` and ``seconds``.
+
+.. note::
+
+   Month units assumes a 30 day month length.
+
+.. note::
+
+   Year units assumes a 365.25 day year length.
+
+.. versionadded:: 3.14
+%End
+
     double years() const;
 %Docstring
 Returns the interval duration in years (based on an average year length)

@@ -22,11 +22,14 @@
 #include "qgslayertreeutils.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayer.h"
+#include "qgsmessagebar.h"
+
 #include "qgsgui.h"
 
 #include <QMenu>
 #include <QContextMenuEvent>
 #include <QHeaderView>
+#include <QScrollBar>
 
 #include "qgslayertreeviewindicator.h"
 #include "qgslayertreeviewitemdelegate.h"
@@ -62,6 +65,8 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
 
   connect( this, &QTreeView::collapsed, this, &QgsLayerTreeView::updateExpandedStateToNode );
   connect( this, &QTreeView::expanded, this, &QgsLayerTreeView::updateExpandedStateToNode );
+
+  connect( horizontalScrollBar(), &QScrollBar::valueChanged, this, &QgsLayerTreeView::onHorizontalScroll );
 }
 
 QgsLayerTreeView::~QgsLayerTreeView()
@@ -76,6 +81,12 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
 
   connect( model, &QAbstractItemModel::rowsInserted, this, &QgsLayerTreeView::modelRowsInserted );
   connect( model, &QAbstractItemModel::rowsRemoved, this, &QgsLayerTreeView::modelRowsRemoved );
+
+  if ( mMessageBar )
+    connect( layerTreeModel(), &QgsLayerTreeModel::messageEmitted,
+             [ = ]( const QString & message, Qgis::MessageLevel level = Qgis::Info, int duration = 5 )
+  {mMessageBar->pushMessage( message, level, duration );}
+         );
 
   QTreeView::setModel( model );
 
@@ -490,6 +501,20 @@ void QgsLayerTreeView::collapseAllNodes()
   collapseAll();
 }
 
+void QgsLayerTreeView::setMessageBar( QgsMessageBar *messageBar )
+{
+  if ( mMessageBar == messageBar )
+    return;
+
+  mMessageBar = messageBar;
+
+  if ( mMessageBar )
+    connect( layerTreeModel(), &QgsLayerTreeModel::messageEmitted,
+             [ = ]( const QString & message, Qgis::MessageLevel level = Qgis::Info, int duration = 5 )
+  {mMessageBar->pushMessage( message, level, duration );}
+         );
+}
+
 void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
   // we need to keep last mouse position in order to know whether to emit an indicator's clicked() signal
@@ -507,6 +532,23 @@ void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
 
 void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
 {
+  if ( event->key() == Qt::Key_Space )
+  {
+    const auto constSelectedNodes = selectedNodes();
+
+    if ( ! constSelectedNodes.isEmpty() )
+    {
+      bool isFirstNodeChecked = constSelectedNodes[0]->itemVisibilityChecked();
+      for ( QgsLayerTreeNode *node : constSelectedNodes )
+      {
+        node->setItemVisibilityChecked( ! isFirstNodeChecked );
+      }
+
+      // if we call the original keyPress handler, the current item will be checked to the original state yet again
+      return;
+    }
+  }
+
   const QgsLayerTreeModel::Flags oldFlags = layerTreeModel()->flags();
   if ( event->modifiers() & Qt::ControlModifier )
     layerTreeModel()->setFlags( oldFlags | QgsLayerTreeModel::ActionHierarchical );
@@ -537,4 +579,10 @@ void QgsLayerTreeView::resizeEvent( QResizeEvent *event )
   // viewport, which allows indicators to become active again.
   header()->setMinimumSectionSize( viewport()->width() );
   QTreeView::resizeEvent( event );
+}
+
+void QgsLayerTreeView::onHorizontalScroll( int value )
+{
+  Q_UNUSED( value )
+  viewport()->update();
 }

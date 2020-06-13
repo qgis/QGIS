@@ -71,6 +71,9 @@ QgsPoint QgsGeometryUtils::closestVertex( const QgsAbstractGeometry &geom, const
   QgsPoint minDistPoint;
   id = QgsVertexId(); // set as invalid
 
+  if ( geom.isEmpty() || pt.isEmpty() )
+    return minDistPoint;
+
   QgsVertexId vertexId;
   QgsPoint vertex;
   while ( geom.nextVertex( vertexId, vertex ) )
@@ -369,23 +372,23 @@ bool QgsGeometryUtils::lineCircleIntersection( const QgsPointXY &center, const d
 
 // based on public domain work by 3/26/2005 Tim Voght
 // see http://paulbourke.net/geometry/circlesphere/tvoght.c
-int QgsGeometryUtils::circleCircleIntersections( QgsPointXY center0, const double r0, QgsPointXY center1, const double r1, QgsPointXY &intersection1, QgsPointXY &intersection2 )
+int QgsGeometryUtils::circleCircleIntersections( QgsPointXY center1, const double r1, QgsPointXY center2, const double r2, QgsPointXY &intersection1, QgsPointXY &intersection2 )
 {
   // determine the straight-line distance between the centers
-  const double d = center0.distance( center1 );
+  const double d = center1.distance( center2 );
 
   // check for solvability
-  if ( d > ( r0 + r1 ) )
+  if ( d > ( r1 + r2 ) )
   {
     // no solution. circles do not intersect.
     return 0;
   }
-  else if ( d < std::fabs( r0 - r1 ) )
+  else if ( d < std::fabs( r1 - r2 ) )
   {
     // no solution. one circle is contained in the other
     return 0;
   }
-  else if ( qgsDoubleNear( d, 0 ) && ( qgsDoubleNear( r0, r1 ) ) )
+  else if ( qgsDoubleNear( d, 0 ) && ( qgsDoubleNear( r1, r2 ) ) )
   {
     // no solutions, the circles coincide
     return 0;
@@ -397,22 +400,22 @@ int QgsGeometryUtils::circleCircleIntersections( QgsPointXY center0, const doubl
   */
 
   // Determine the distance from point 0 to point 2.
-  const double a = ( ( r0 * r0 ) - ( r1 * r1 ) + ( d * d ) ) / ( 2.0 * d ) ;
+  const double a = ( ( r1 * r1 ) - ( r2 * r2 ) + ( d * d ) ) / ( 2.0 * d ) ;
 
   /* dx and dy are the vertical and horizontal distances between
    * the circle centers.
    */
-  const double dx = center1.x() - center0.x();
-  const double dy = center1.y() - center0.y();
+  const double dx = center2.x() - center1.x();
+  const double dy = center2.y() - center1.y();
 
   // Determine the coordinates of point 2.
-  const double x2 = center0.x() + ( dx * a / d );
-  const double y2 = center0.y() + ( dy * a / d );
+  const double x2 = center1.x() + ( dx * a / d );
+  const double y2 = center1.y() + ( dy * a / d );
 
   /* Determine the distance from point 2 to either of the
    * intersection points.
    */
-  const double h = std::sqrt( ( r0 * r0 ) - ( a * a ) );
+  const double h = std::sqrt( ( r1 * r1 ) - ( a * a ) );
 
   /* Now determine the offsets of the intersection points from
    * point 2.
@@ -425,7 +428,7 @@ int QgsGeometryUtils::circleCircleIntersections( QgsPointXY center0, const doubl
   intersection2 = QgsPointXY( x2 - rx, y2 +  ry );
 
   // see if we have 1 or 2 solutions
-  if ( qgsDoubleNear( d, r0 + r1 ) )
+  if ( qgsDoubleNear( d, r1 + r2 ) )
     return 1;
 
   return 2;
@@ -869,6 +872,66 @@ double QgsGeometryUtils::circleTangentDirection( const QgsPoint &tangentPoint, c
   if ( angle < 0 )
     angle += 2 * M_PI;
   return angle;
+}
+
+// Ported from PostGIS' pt_continues_arc
+bool QgsGeometryUtils::pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2, const QgsPoint &a3, const QgsPoint &b, double distanceTolerance, double pointSpacingAngleTolerance )
+{
+  double centerX = 0;
+  double centerY = 0;
+  double radius = 0;
+  circleCenterRadius( a1, a2, a3, radius, centerX, centerY );
+
+  // Co-linear a1/a2/a3
+  if ( radius < 0.0 )
+    return false;
+
+  // distance of candidate point to center of arc a1-a2-a3
+  double bDistance = std::sqrt( ( b.x() - centerX ) * ( b.x() - centerX ) +
+                                ( b.y() - centerY ) * ( b.y() - centerY ) );
+
+  double diff = std::fabs( radius - bDistance );
+
+  auto arcAngle = []( const QgsPoint & a, const QgsPoint & b, const QgsPoint & c )->double
+  {
+    double abX = b.x() - a.x();
+    double abY = b.y() - a.y();
+
+    double cbX = b.x() - c.x();
+    double cbY = b.y() - c.y();
+
+    double dot = ( abX * cbX + abY * cbY ); /* dot product */
+    double cross = ( abX * cbY - abY * cbX ); /* cross product */
+
+    double alpha = std::atan2( cross, dot );
+
+    return alpha;
+  };
+
+  // Is the point b on the circle?
+  if ( diff < distanceTolerance )
+  {
+    double angle1 = arcAngle( a1, a2, a3 );
+    double angle2 = arcAngle( a2, a3, b );
+
+    // Is the sweep angle similar to the previous one?
+    // We only consider a segment replacable by an arc if the points within
+    // it are regularly spaced
+    diff = std::fabs( angle1 - angle2 );
+    if ( diff > pointSpacingAngleTolerance )
+    {
+      return false;
+    }
+
+    int a2Side = leftOfLine( a2.x(), a2.y(), a1.x(), a1.y(), a3.x(), a3.y() );
+    int bSide  = leftOfLine( b.x(), b.y(), a1.x(), a1.y(), a3.x(), a3.y() );
+
+    // Is the point b on the same side of a1/a3 as the mid-point a2 is?
+    // If not, it's in the unbounded part of the circle, so it continues the arc, return true.
+    if ( bSide != a2Side )
+      return true;
+  }
+  return false;
 }
 
 void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, QgsPointSequence &points, double tolerance, QgsAbstractGeometry::SegmentationToleranceType toleranceType, bool hasZ, bool hasM )

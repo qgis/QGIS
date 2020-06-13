@@ -38,6 +38,7 @@ namespace MDAL
   } Statistics;
 
   typedef std::vector< std::pair< std::string, std::string > > Metadata;
+  typedef std::vector<std::pair<double, double>> Classification;
 
   class Dataset
   {
@@ -47,22 +48,22 @@ namespace MDAL
 
       size_t valuesCount() const;
 
-      //! For DataOnVertices2D or DataOnFaces2D
+      //! For DataOnVertices or DataOnFaces
       virtual size_t scalarData( size_t indexStart, size_t count, double *buffer ) = 0;
-      //! For DataOnVertices2D or DataOnFaces2D
+      //! For DataOnVertices or DataOnFaces
       virtual size_t vectorData( size_t indexStart, size_t count, double *buffer ) = 0;
       //! For drivers that supports it, see supportsActiveFlag()
       virtual size_t activeData( size_t indexStart, size_t count, int *buffer );
 
-      //! For DataOnVolumes3D
+      //! For DataOnVolumes
       virtual size_t verticalLevelCountData( size_t indexStart, size_t count, int *buffer ) = 0;
-      //! For DataOnVolumes3D
+      //! For DataOnVolumes
       virtual size_t verticalLevelData( size_t indexStart, size_t count, double *buffer ) = 0;
-      //! For DataOnVolumes3D
+      //! For DataOnVolumes
       virtual size_t faceToVolumeData( size_t indexStart, size_t count, int *buffer ) = 0;
-      //! For DataOnVolumes3D
+      //! For DataOnVolumes
       virtual size_t scalarVolumesData( size_t indexStart, size_t count, double *buffer ) = 0;
-      //! For DataOnVolumes3D
+      //! For DataOnVolumes
       virtual size_t vectorVolumesData( size_t indexStart, size_t count, double *buffer ) = 0;
 
       virtual size_t volumesCount() const = 0;
@@ -150,6 +151,7 @@ namespace MDAL
 
       std::string getMetadata( const std::string &key );
       void setMetadata( const std::string &key, const std::string &val );
+      void setMetadata( const Metadata &metadata );
 
       std::string name();
       void setName( const std::string &name );
@@ -179,13 +181,21 @@ namespace MDAL
       void startEditing();
       void stopEditing();
 
+      //! First value is the angle for full rotation and second value is the start angle
+      void setReferenceAngles( const std::pair<double, double> &referenceAngle );
+      std::pair<double, double> referenceAngles() const;
+
+      bool isPolar() const;
+      void setIsPolar( bool isPolar );
     private:
       bool mInEditMode = false;
 
       const std::string mDriverName;
       Mesh *mParent = nullptr;
       bool mIsScalar = true;
-      MDAL_DataLocation mDataLocation = MDAL_DataLocation::DataOnVertices2D;
+      bool mIsPolar = true;
+      std::pair<double, double> mReferenceAngles = {360, 0};
+      MDAL_DataLocation mDataLocation = MDAL_DataLocation::DataOnVertices;
       std::string mUri; // file/uri from where it came
       Statistics mStatistics;
       DateTime mReferenceTime;
@@ -199,6 +209,16 @@ namespace MDAL
       virtual ~MeshVertexIterator();
 
       virtual size_t next( size_t vertexCount, double *coordinates ) = 0;
+  };
+
+  class MeshEdgeIterator
+  {
+    public:
+      virtual ~MeshEdgeIterator();
+
+      virtual size_t next( size_t edgeCount,
+                           int *startVertexIndices,
+                           int *endVertexIndices ) = 0;
   };
 
   class MeshFaceIterator
@@ -215,9 +235,9 @@ namespace MDAL
   class Mesh
   {
     public:
-      //! Constructs 2D Mesh
       Mesh( const std::string &driverName,
             size_t verticesCount,
+            size_t edgesCount,
             size_t facesCount,
             size_t faceVerticesMaximumCount,
             BBox extent,
@@ -233,6 +253,7 @@ namespace MDAL
       void setSourceCrsFromPrjFile( const std::string &filename );
 
       virtual std::unique_ptr<MDAL::MeshVertexIterator> readVertices() = 0;
+      virtual std::unique_ptr<MDAL::MeshEdgeIterator> readEdges() = 0;
       virtual std::unique_ptr<MDAL::MeshFaceIterator> readFaces() = 0;
 
       DatasetGroups datasetGroups;
@@ -241,6 +262,7 @@ namespace MDAL
       std::shared_ptr<DatasetGroup> group( const std::string &name );
 
       size_t verticesCount() const;
+      size_t edgesCount() const;
       size_t facesCount() const;
       std::string uri() const;
       BBox extent() const;
@@ -249,8 +271,9 @@ namespace MDAL
 
     private:
       const std::string mDriverName;
-      size_t mVerticesCount = 0;
-      size_t mFacesCount = 0;
+      size_t mVerticesCount = 0; // non-zero for any mesh types
+      size_t mEdgesCount = 0; // usually 0 for 2D meshes/3D meshes
+      size_t mFacesCount = 0; // usually 0 for 1D meshes
       size_t mFaceVerticesMaximumCount = 0; //typically 3 or 4, sometimes up to 9
       BBox mExtent;
       const std::string mUri; // file/uri from where it came

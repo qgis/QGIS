@@ -40,6 +40,7 @@ class TestQgsDateTimeEdit: public QObject
     std::unique_ptr<QgsDateTimeEditWrapper> widget3; // For field 2
     std::unique_ptr<QgsDateTimeEditWrapper> widget4; // For field 3
     std::unique_ptr<QgsDateTimeEditWrapper> widget5; // For field 4
+    std::unique_ptr<QgsDateTimeEditWrapper> widget6; // For field 5
     std::unique_ptr<QgsVectorLayer> vl;
 
 };
@@ -57,7 +58,7 @@ void TestQgsDateTimeEdit::init()
 
   vl = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326" ),
                                           QStringLiteral( "myvl" ),
-                                          QLatin1Literal( "memory" ) );
+                                          QLatin1String( "memory" ) );
 
   // add fields
   QList<QgsField> fields;
@@ -65,7 +66,8 @@ void TestQgsDateTimeEdit::init()
   fields.append( QgsField( "date2", QVariant::Date ) );
   fields.append( QgsField( "date3", QVariant::Date ) );
   fields.append( QgsField( "time", QVariant::Time ) );
-  fields.append( QgsField( "datetime", QVariant::DateTime ) );
+  fields.append( QgsField( "datetime1", QVariant::DateTime ) );
+  fields.append( QgsField( "datetime2", QVariant::DateTime ) );
   vl->dataProvider()->addAttributes( fields );
   vl->updateFields();
   QVERIFY( vl.get() );
@@ -76,11 +78,13 @@ void TestQgsDateTimeEdit::init()
   widget3 = qgis::make_unique<QgsDateTimeEditWrapper>( vl.get(), 2, nullptr, nullptr );
   widget4 = qgis::make_unique<QgsDateTimeEditWrapper>( vl.get(), 3, nullptr, nullptr );
   widget5 = qgis::make_unique<QgsDateTimeEditWrapper>( vl.get(), 4, nullptr, nullptr );
+  widget6 = qgis::make_unique<QgsDateTimeEditWrapper>( vl.get(), 5, nullptr, nullptr );
   QVERIFY( widget1.get() );
   QVERIFY( widget2.get() );
   QVERIFY( widget3.get() );
   QVERIFY( widget4.get() );
   QVERIFY( widget5.get() );
+  QVERIFY( widget6.get() );
 }
 
 void TestQgsDateTimeEdit::cleanup()
@@ -116,6 +120,54 @@ void TestQgsDateTimeEdit::nullValues()
   QCOMPARE( timeEdit->date(), date.date() );
 
   delete timeEdit;
+
+  // QgsDateEdit
+
+  QgsDateEdit *dateEdit = new QgsDateEdit();
+
+  // Allow null with a null datetime
+  QVERIFY( dateEdit->allowNull() );
+  dateEdit->setDate( QDate() );
+  QCOMPARE( dateEdit->date(), QDate() );
+
+  // Not null with not null datetime
+  QDate dt( 2019, 7, 6 );
+  dateEdit->setAllowNull( false );
+  QVERIFY( !dateEdit->allowNull() );
+  dateEdit->setDate( dt );
+  QCOMPARE( dateEdit->date(), dt );
+
+  // Not null with null date
+  dateEdit->setAllowNull( false );
+  QVERIFY( !dateEdit->allowNull() );
+  dateEdit->setDate( QDate() );
+  QCOMPARE( dateEdit->date(), dt );
+
+  delete dateEdit;
+
+  // QgsTimeEdit
+
+  QgsTimeEdit *tEdit = new QgsTimeEdit();
+
+  // Allow null with a null datetime
+  QVERIFY( tEdit->allowNull() );
+  tEdit->setTime( QTime() );
+  QCOMPARE( tEdit->time(), QTime() );
+
+  // Not null with not null datetime
+  QTime t( 8, 30, 0 );
+  tEdit->setAllowNull( false );
+  QVERIFY( !tEdit->allowNull() );
+  tEdit->setTime( t );
+  QCOMPARE( tEdit->time(), t );
+
+  // Not null with null date
+  tEdit->setAllowNull( false );
+  QVERIFY( !tEdit->allowNull() );
+  tEdit->setTime( QTime() );
+  QCOMPARE( tEdit->time(), t );
+
+  delete tEdit;
 }
 
 void TestQgsDateTimeEdit::focus()
@@ -259,6 +311,14 @@ void TestQgsDateTimeEdit::testDateTime()
   widget5->setValue( QDate( 1966, 11, 25 ) );
   QDate value5 { widget5->value().toDate() };
   QCOMPARE( value5, QDate( 1966, 11, 25 ) );
+
+  widget6->setConfig( cfg );
+  QgsDateTimeEdit *dateedit6 = qobject_cast<QgsDateTimeEdit *>( widget6->createWidget( &w ) );
+  QVERIFY( dateedit6 );
+  widget6->initWidget( dateedit6 );
+  widget6->setValue( QDate( 1, 1, 1 ) );
+  QDate value6 { widget6->value().toDate() };
+  QCOMPARE( value6, QDate( 1, 1, 1 ) );
 }
 
 QGSTEST_MAIN( TestQgsDateTimeEdit )

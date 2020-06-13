@@ -41,7 +41,9 @@ from qgis.core import (Qgis,
                        QgsMessageLog,
                        QgsSettings,
                        QgsCredentials,
-                       QgsDataSourceUri)
+                       QgsDataSourceUri,
+                       QgsProjUtils,
+                       QgsCoordinateReferenceSystem)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows, isMac
 
@@ -296,7 +298,7 @@ class GdalUtils:
             ogrstr = "PG:%s" % dsUri.connectionInfo()
             format = 'PostgreSQL'
         elif provider == 'mssql':
-            #'dbname=\'db_name\' host=myHost estimatedmetadata=true
+            # 'dbname=\'db_name\' host=myHost estimatedmetadata=true
             # srid=27700 type=MultiPolygon table="dbo"."my_table"
             # #(Shape) sql='
             dsUri = layer.dataProvider().uri()
@@ -432,8 +434,12 @@ class GdalUtils:
         :param crs: crs to convert
         :return: gdal friendly string
         """
-        if crs.authid().upper().startswith('EPSG:'):
+        if crs.authid().upper().startswith('EPSG:') or crs.authid().upper().startswith('IGNF:') or crs.authid().upper().startswith('ESRI:'):
             return crs.authid()
+
+        if QgsProjUtils.projVersionMajor() >= 6:
+            # use WKT
+            return crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL)
 
         # fallback to proj4 string, stripping out newline characters
         return crs.toProj().replace('\n', ' ').replace('\r', ' ')

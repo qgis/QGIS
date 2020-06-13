@@ -62,6 +62,7 @@ class CORE_EXPORT QgsMeshDriverMetadata
     {
       CanWriteFaceDatasets = 1 << 0, //!< If the driver can persist datasets defined on faces
       CanWriteVertexDatasets = 1 << 1, //!< If the driver can persist datasets defined on vertices
+      CanWriteEdgeDatasets = 1 << 2, //!< If the driver can persist datasets defined on edges \since QGIS 3.14
     };
 
     Q_ENUM( MeshDriverCapability )
@@ -122,8 +123,10 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMeshDriverMetadata::MeshDriverCapabilities )
  * library object.
  *
  */
-class CORE_EXPORT QgsProviderMetadata
+class CORE_EXPORT QgsProviderMetadata : public QObject
 {
+    Q_OBJECT
+
   public:
 
     /**
@@ -229,6 +232,23 @@ class CORE_EXPORT QgsProviderMetadata
      */
     virtual QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) SIP_FACTORY;
 
+    /**
+     * Sets the \a value into the \a uri \a parameter as a bool.
+     * eg. "yes" value will be saved as true, 0 will be saved as false
+     *
+     * \since QGIS 3.14
+     */
+    static void setBoolParameter( QVariantMap &uri, const QString &parameter, const QVariant &value );
+
+    /**
+     * Returns the \a parameter value in the \a uri as a bool.
+     * eg. "yes" value will be returned as true, 0 will be returned as false
+     *
+     * \since QGIS 3.14
+     */
+    static bool boolParameter( const QVariantMap &uri, const QString &parameter, bool defaultValue = false );
+
+
 #ifndef SIP_RUN
 
     /**
@@ -270,7 +290,17 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Breaks a provider data source URI into its component paths (e.g. file path, layer name).
      * \param uri uri string
-     * \returns map containing components. Standard components include "path", "layerName", "url".
+     * \returns map containing components. Standard components may include:
+     *
+     * - "path": file path
+     * - "layerName"
+     * - "url": base URL, for online services
+     * - "referer": referrer string, for HTTP requests
+     * - "host": hostname, for database services
+     * - "bounds": hardcoded layer bounds (as a QgsRectangle)
+     * - "crs": CRS definition
+     * - "authcfg": authentication configuration ID
+     *
      * \note this function may not be supported by all providers, an empty map will be returned in such case
      * \since QGIS 3.10
      */
@@ -392,17 +422,19 @@ class CORE_EXPORT QgsProviderMetadata
      * the newly created connection is not automatically stored in the settings, call
      * saveConnection() to save it.
      * Ownership is transferred to the caller.
+     * \throws QgsProviderConnectionException
      * \see saveConnection()
      * \since QGIS 3.10
      */
-    virtual QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) SIP_FACTORY;
+    virtual QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) SIP_THROW( QgsProviderConnectionException ) SIP_FACTORY;
 
     /**
      * Creates a new connection by loading the connection with the given \a name from the settings.
      * Ownership is transferred to the caller.
+     * \throws QgsProviderConnectionException
      * \see findConnection()
      */
-    virtual QgsAbstractProviderConnection *createConnection( const QString &name );
+    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Removes the connection with the given \a name from the settings.
@@ -416,9 +448,37 @@ class CORE_EXPORT QgsProviderMetadata
      * Stores the connection in the settings
      * \param connection the connection to be stored in the settings
      * \param name the name under which the connection will be stored
+     * \throws QgsProviderConnectionException
      * \since QGIS 3.10
      */
-    virtual void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name );
+    virtual void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) SIP_THROW( QgsProviderConnectionException );
+
+  signals:
+
+    /**
+     * Emitted when a connection with the specified \a name is created.
+     *
+     * \note Only providers which implement the connection handling API will emit this signal.
+     * \since QGIS 3.14
+     */
+    void connectionCreated( const QString &name );
+
+    /**
+     * Emitted when the connection with the specified \a name was deleted.
+     *
+     * \note Only providers which implement the connection handling API will emit this signal.
+     * \since QGIS 3.14
+     */
+    void connectionDeleted( const QString &name );
+
+    /**
+     * Emitted when the connection with the specified \a name is changed, e.g. the settings
+     * relating to the connection have been updated.
+     *
+     * \note Only providers which implement the connection handling API will emit this signal.
+     * \since QGIS 3.14
+     */
+    void connectionChanged( const QString &name );
 
   protected:
 
@@ -450,6 +510,7 @@ class CORE_EXPORT QgsProviderMetadata
       T_provider_conn conn( name );
       conn.remove( name );
       mProviderConnections.clear();
+      emit connectionDeleted( name );
     }
     virtual void saveConnectionProtected( const QgsAbstractProviderConnection *connection, const QString &name );
     //! Provider connections cache

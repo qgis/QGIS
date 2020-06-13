@@ -30,7 +30,6 @@
 #include "qgssymbol.h"
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
-#include "qgsdatadefinedsizelegend.h"
 
 #include "diagram/qgsdiagram.h"
 #include "qgsreadwritecontext.h"
@@ -45,6 +44,7 @@ class QgsVectorLayer;
 class QgsLayerTreeModelLegendNode;
 class QgsLayerTreeLayer;
 class QgsPaintEffect;
+class QgsDataDefinedSizeLegend;
 
 namespace pal { class Layer; } SIP_SKIP
 
@@ -932,6 +932,8 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     //! Stores more settings about how legend for varying size of symbols should be rendered
     QgsDataDefinedSizeLegend *mDataDefinedSizeLegend = nullptr;
+
+    QgsLinearlyInterpolatedDiagramRenderer &operator=( const QgsLinearlyInterpolatedDiagramRenderer & ) = delete;
 };
 
 #endif // QGSDIAGRAMRENDERER_H

@@ -42,6 +42,7 @@
 #include "qgssymbollayer.h"
 #include "qgsvectorlayerutils.h"
 #include "qgssymbollayerutils.h"
+#include "qgsmaplayertemporalproperties.h"
 
 ///@cond PRIVATE
 
@@ -125,6 +126,11 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
 {
   bool split = false;
 
+  // we can safely use ballpark transforms without bothering the user here -- at the likely scale of layer extents there
+  // won't be an appreciable difference, and we aren't actually transforming any rendered points here anyway (just the layer extent)
+  QgsCoordinateTransform approxTransform = ct;
+  approxTransform.setBallparkTransformsAreAppropriate( true );
+
   try
   {
 #ifdef QGISDEBUG
@@ -139,13 +145,13 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
 
     if ( ml->crs().isGeographic() )
     {
-      if ( ml->type() == QgsMapLayerType::VectorLayer && !ct.destinationCrs().isGeographic() )
+      if ( ml->type() == QgsMapLayerType::VectorLayer && !approxTransform.destinationCrs().isGeographic() )
       {
         // if we transform from a projected coordinate system check
         // check if transforming back roughly returns the input
         // extend - otherwise render the world.
-        QgsRectangle extent1 = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
-        QgsRectangle extent2 = ct.transformBoundingBox( extent1, QgsCoordinateTransform::ForwardTransform );
+        QgsRectangle extent1 = approxTransform.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        QgsRectangle extent2 = approxTransform.transformBoundingBox( extent1, QgsCoordinateTransform::ForwardTransform );
 
         QgsDebugMsgLevel( QStringLiteral( "\n0:%1 %2x%3\n1:%4\n2:%5 %6x%7 (w:%8 h:%9)" )
                           .arg( extent.toString() ).arg( extent.width() ).arg( extent.height() )
@@ -171,16 +177,16 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
       else
       {
         // Note: ll = lower left point
-        QgsPointXY ll = ct.transform( extent.xMinimum(), extent.yMinimum(),
-                                      QgsCoordinateTransform::ReverseTransform );
+        QgsPointXY ll = approxTransform.transform( extent.xMinimum(), extent.yMinimum(),
+                        QgsCoordinateTransform::ReverseTransform );
 
         //   and ur = upper right point
-        QgsPointXY ur = ct.transform( extent.xMaximum(), extent.yMaximum(),
-                                      QgsCoordinateTransform::ReverseTransform );
+        QgsPointXY ur = approxTransform.transform( extent.xMaximum(), extent.yMaximum(),
+                        QgsCoordinateTransform::ReverseTransform );
 
         QgsDebugMsgLevel( QStringLiteral( "in:%1 (ll:%2 ur:%3)" ).arg( extent.toString(), ll.toString(), ur.toString() ), 4 );
 
-        extent = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        extent = approxTransform.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
 
         QgsDebugMsgLevel( QStringLiteral( "out:%1 (w:%2 h:%3)" ).arg( extent.toString() ).arg( extent.width() ).arg( extent.height() ), 4 );
 
@@ -204,7 +210,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
     }
     else // can't cross 180
     {
-      if ( ct.destinationCrs().isGeographic() &&
+      if ( approxTransform.destinationCrs().isGeographic() &&
            ( extent.xMinimum() <= -180 || extent.xMaximum() >= 180 ||
              extent.yMinimum() <= -90 || extent.yMaximum() >= 90 ) )
         // Use unlimited rectangle because otherwise we may end up transforming wrong coordinates.
@@ -213,7 +219,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
         // but this seems like a safer choice.
         extent = QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
       else
-        extent = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        extent = approxTransform.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
     }
   }
   catch ( QgsCsException &cse )
@@ -292,6 +298,12 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     if ( !ml->isInScaleRange( mSettings.scale() ) ) //|| mOverview )
     {
       QgsDebugMsgLevel( QStringLiteral( "Layer not rendered because it is not within the defined visibility scale range" ), 3 );
+      continue;
+    }
+
+    if ( mSettings.isTemporal() && ml->temporalProperties() && !ml->temporalProperties()->isVisibleInTemporalRange( mSettings.temporalRange() ) )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Layer not rendered because it is not visible within the map's time range" ), 3 );
       continue;
     }
 
@@ -691,6 +703,8 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings, const La
 {
   QImage image( settings.deviceOutputSize(), settings.outputImageFormat() );
   image.setDevicePixelRatio( settings.devicePixelRatio() );
+  image.setDotsPerMeterX( static_cast<int>( settings.outputDpi() * 39.37 ) );
+  image.setDotsPerMeterY( static_cast<int>( settings.outputDpi() * 39.37 ) );
   image.fill( settings.backgroundColor().rgba() );
 
   QPainter painter( &image );
@@ -803,7 +817,16 @@ void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, Labe
       // Only retain parts of the second rendering that are "inside" the mask image
       QPainter *painter = job.context.painter();
       painter->setCompositionMode( QPainter::CompositionMode_DestinationIn );
-      painter->drawImage( 0, 0, *maskImage );
+
+      //Create an "alpha binarized" image of the maskImage to :
+      //* Eliminate antialiasing artefact
+      //* Avoid applying mask opacity to elements under the mask but not masked
+      QImage maskBinAlpha = maskImage->createMaskFromColor( 0 );
+      QVector<QRgb> mswTable;
+      mswTable.push_back( qRgba( 0, 0, 0, 255 ) );
+      mswTable.push_back( qRgba( 0, 0, 0, 0 ) );
+      maskBinAlpha.setColorTable( mswTable );
+      painter->drawImage( 0, 0, maskBinAlpha );
 #if DEBUG_RENDERING
       job.img->save( QString( "/tmp/second_%1_a.png" ).arg( i ) );
 #endif
@@ -812,7 +835,7 @@ void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, Labe
       {
         QPainter tempPainter;
 
-        // resue the first pass painter, if available
+        // reuse the first pass painter, if available
         QPainter *painter1 = job.firstPassJob->context.painter();
         if ( ! painter1 )
         {
@@ -830,7 +853,7 @@ void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, Labe
         job.firstPassJob->img->save( QString( "/tmp/second_%1_first_pass_2.png" ).arg( i ) );
 #endif
         // ... and overpaint the second pass' image on it
-        painter1->setCompositionMode( QPainter::CompositionMode_SourceOver );
+        painter1->setCompositionMode( QPainter::CompositionMode_DestinationOver );
         painter1->drawImage( 0, 0, *job.img );
 #if DEBUG_RENDERING
         job.img->save( QString( "/tmp/second_%1_b.png" ).arg( i ) );
@@ -899,6 +922,7 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
     }
 
     case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::PluginLayer:
       break;
   }

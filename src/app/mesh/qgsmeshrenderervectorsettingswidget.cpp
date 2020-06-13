@@ -26,7 +26,19 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
 
   mShaftLengthComboBox->setCurrentIndex( -1 );
 
+  mColoringMethodComboBox->addItem( tr( "Single Color" ), QgsInterpolatedLineColor::SingleColor );
+  mColoringMethodComboBox->addItem( tr( "Color Ramp Shader" ), QgsInterpolatedLineColor::ColorRamp );
+
   connect( mColorWidget, &QgsColorButton::colorChanged, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+  connect( mColoringMethodComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+           this, &QgsMeshRendererVectorSettingsWidget::onColoringMethodChanged );
+  connect( mColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged,
+           this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+  connect( mColorRampShaderMinimumEditLine, &QLineEdit::textEdited,
+           this, &QgsMeshRendererVectorSettingsWidget::onColorRampMinMaxChanged );
+  connect( mColorRampShaderMaximumEditLine, &QLineEdit::textEdited,
+           this, &QgsMeshRendererVectorSettingsWidget::onColorRampMinMaxChanged );
+
   connect( mLineWidthSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
@@ -37,6 +49,10 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
            mShaftOptionsStackedWidget, &QStackedWidget::setCurrentIndex );
 
   connect( mDisplayVectorsOnGridGroupBox, &QGroupBox::toggled, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+
+  connect( mColorRampShaderLoadButton, &QPushButton::clicked, this, &QgsMeshRendererVectorSettingsWidget::loadColorRampShader );
+
+  onColoringMethodChanged();
 
   QVector<QLineEdit *> widgets;
   widgets << mMinMagLineEdit << mMaxMagLineEdit
@@ -102,6 +118,9 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
   // basic
   settings.setColor( mColorWidget->color() );
   settings.setLineWidth( mLineWidthSpinBox->value() );
+  settings.setColoringMethod( static_cast<QgsInterpolatedLineColor::ColoringMethod>
+                              ( mColoringMethodComboBox->currentData().toInt() ) );
+  settings.setColorRampShader( mColorRampShaderWidget->shader() );
 
   // filter by magnitude
   double val = filterValue( mMinMagLineEdit->text(), -1 );
@@ -162,16 +181,20 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
 
 void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
 {
-  if ( !mMeshLayer )
+  if ( !mMeshLayer && !mMeshLayer->dataProvider() )
     return;
 
   if ( mActiveDatasetGroup < 0 )
     return;
 
+  bool hasFaces = ( mMeshLayer->dataProvider() &&
+                    mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Face ) );
+
   const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
   const QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( mActiveDatasetGroup );
 
-  mSymbologyVectorComboBox->setCurrentIndex( settings.symbology() );
+  mSymbologyGroupBox->setVisible( hasFaces );
+  mSymbologyVectorComboBox->setCurrentIndex( hasFaces ? settings.symbology() : 0 );
 
   // Arrow settings
   const QgsMeshRendererVectorArrowSettings arrowSettings = settings.arrowSettings();
@@ -179,6 +202,10 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
   // basic
   mColorWidget->setColor( settings.color() );
   mLineWidthSpinBox->setValue( settings.lineWidth() );
+  mColoringMethodComboBox->setCurrentIndex( mColoringMethodComboBox->findData( settings.coloringMethod() ) );
+  mColorRampShaderWidget->setFromShader( settings.colorRampShader() );
+  mColorRampShaderMinimumEditLine->setText( QString::number( settings.colorRampShader().minimumValue() ) );
+  mColorRampShaderMaximumEditLine->setText( QString::number( settings.colorRampShader().maximumValue() ) );
 
   // filter by magnitude
   if ( settings.filterMin() > 0 )
@@ -195,7 +222,8 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
   mHeadLengthLineEdit->setText( QString::number( arrowSettings.arrowHeadLengthRatio() * 100.0 ) );
 
   // user grid
-  mDisplayVectorsOnGridGroupBox->setChecked( settings.isOnUserDefinedGrid() );
+  mDisplayVectorsOnGridGroupBox->setVisible( hasFaces );
+  mDisplayVectorsOnGridGroupBox->setChecked( settings.isOnUserDefinedGrid() && hasFaces );
   mXSpacingSpinBox->setValue( settings.userGridCellWidth() );
   mYSpacingSpinBox->setValue( settings.userGridCellHeight() );
 
@@ -244,6 +272,46 @@ void QgsMeshRendererVectorSettingsWidget::onStreamLineSeedingMethodChanged( int 
   mStreamlinesDensitySpinBox->setEnabled( enabled );
 
   mDisplayVectorsOnGridGroupBox->setEnabled( !enabled );
+}
+
+void QgsMeshRendererVectorSettingsWidget::onColoringMethodChanged()
+{
+  mColorRampShaderGroupBox->setVisible( mColoringMethodComboBox->currentData() == QgsInterpolatedLineColor::ColorRamp );
+  mColorWidget->setVisible( mColoringMethodComboBox->currentData() == QgsInterpolatedLineColor::SingleColor );
+  mSimgleColorLabel->setVisible( mColoringMethodComboBox->currentData() == QgsInterpolatedLineColor::SingleColor );
+
+  if ( mColorRampShaderWidget->shader().colorRampItemList().isEmpty() )
+    loadColorRampShader();
+
+  emit widgetChanged();
+}
+
+void QgsMeshRendererVectorSettingsWidget::onColorRampMinMaxChanged()
+{
+  mColorRampShaderWidget->setMinimumMaximumAndClassify(
+    filterValue( mColorRampShaderMinimumEditLine->text(), 0 ),
+    filterValue( mColorRampShaderMaximumEditLine->text(), 0 ) );
+}
+
+void QgsMeshRendererVectorSettingsWidget::loadColorRampShader()
+{
+  if ( !mMeshLayer )
+    return;
+
+  QgsMeshDataProvider *provider = mMeshLayer->dataProvider();
+  int currentVectorDataSetGroupIndex = mMeshLayer->rendererSettings().activeVectorDatasetGroup();
+  if ( !provider ||
+       currentVectorDataSetGroupIndex < 0 ||
+       !provider->datasetGroupMetadata( currentVectorDataSetGroupIndex ).isVector() )
+    return;
+
+  const QgsMeshDatasetGroupMetadata meta = provider->datasetGroupMetadata( currentVectorDataSetGroupIndex );
+  double min = meta.minimum();
+  double max = meta.maximum();
+
+  mColorRampShaderWidget->setMinimumMaximumAndClassify( min, max );
+  whileBlocking( mColorRampShaderMinimumEditLine )->setText( QString::number( min ) );
+  whileBlocking( mColorRampShaderMaximumEditLine )->setText( QString::number( max ) );
 }
 
 double QgsMeshRendererVectorSettingsWidget::filterValue( const QString &text, double errVal ) const

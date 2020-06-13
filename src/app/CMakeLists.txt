@@ -7,11 +7,6 @@ SET(QGIS_APP_SRCS
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
   ${CMAKE_SOURCE_DIR}/external/nmea/time.c
 
-  attributeformconfig/qgsattributeformcontaineredit.cpp
-  attributeformconfig/qgsattributerelationedit.cpp
-  attributeformconfig/qgsattributetypedialog.cpp
-  attributeformconfig/qgsattributewidgetedit.cpp
-
   qgisapp.cpp
   qgisappinterface.cpp
   qgisappstylesheet.cpp
@@ -22,16 +17,10 @@ SET(QGIS_APP_SRCS
   qgsappcoordinateoperationhandlers.cpp
   qgsapplayertreeviewmenuprovider.cpp
   qgsappwindowmanager.cpp
-  qgsaddattrdialog.cpp
-  qgsaddtaborgroup.cpp
   qgsappscreenshots.cpp
-  qgsjoindialog.cpp
-  qgswmsdimensiondialog.cpp
+  qgsanimationexportdialog.cpp
   qgsannotationwidget.cpp
   qgsappsslerrorhandler.cpp
-  qgsattributeactiondialog.cpp
-  qgsattributeactionpropertiesdialog.cpp
-  qgsattributesforminitcode.cpp
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
   qgsbookmarkeditordialog.cpp
@@ -39,22 +28,19 @@ SET(QGIS_APP_SRCS
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
   qgsdatumtransformtablewidget.cpp
+  qgsdevtoolspanelwidget.cpp
   qgsdiscoverrelationsdialog.cpp
   qgsdxfexportdialog.cpp
   qgsformannotationdialog.cpp
   qgsguivectorlayertools.cpp
   qgshtmlannotationdialog.cpp
   qgsdelattrdialog.cpp
-  qgsdiagramproperties.cpp
   qgsdisplayangle.cpp
-  qgsfieldcalculator.cpp
   qgsfirstrundialog.cpp
   qgsfixattributedialog.cpp
   qgsgeometryvalidationservice.cpp
   qgsgeometryvalidationdock.cpp
   qgsgeometryvalidationmodel.cpp
-  qgssourcefieldsproperties.cpp
-  qgsattributesformproperties.cpp
   qgsidentifyresultsdialog.cpp
   qgsfeatureaction.cpp
   qgslayercapabilitiesmodel.cpp
@@ -65,10 +51,8 @@ SET(QGIS_APP_SRCS
   qgslayertreeviewnocrsindicator.cpp
   qgslayertreeviewnonremovableindicator.cpp
   qgslayertreeviewbadlayerindicator.cpp
-  qgsmaskingwidget.cpp
-  qgsmasksourceselectionwidget.cpp
+  qgslayertreeviewtemporalindicator.cpp
   qgsmapcanvasdockwidget.cpp
-  qgsmaplayerstylecategoriesmodel.cpp
   qgsmapsavedialog.cpp
   qgsprojectlistitemdelegate.cpp
   qgspuzzlewidget.cpp
@@ -78,11 +62,11 @@ SET(QGIS_APP_SRCS
   qgsstatusbarcoordinateswidget.cpp
   qgsstatusbarmagnifierwidget.cpp
   qgsstatusbarscalewidget.cpp
-  qgssymbollayerselectionwidget.cpp
   qgstemplateprojectsmodel.cpp
-  qgsvectorlayerloadstyledialog.cpp
+  qgstemporalcontrollerdockwidget.cpp
   qgsversioninfo.cpp
   qgsrecentprojectsitemsmodel.cpp
+  qgsvectorlayerdigitizingproperties.cpp
   qgswelcomepage.cpp
 
   qgsmaptooladdfeature.cpp
@@ -131,6 +115,8 @@ SET(QGIS_APP_SRCS
   decorations/qgsdecorationgrid.cpp
   decorations/qgsdecorationgriddialog.cpp
 
+  vectortile/qgsvectortilelayerproperties.cpp
+
   vertextool/qgslockedfeature.cpp
   vertextool/qgsvertexeditor.cpp
   vertextool/qgsvertextool.cpp
@@ -154,9 +140,6 @@ SET(QGIS_APP_SRCS
   qgstextannotationdialog.cpp
   qgssvgannotationdialog.cpp
   qgsundowidget.cpp
-  qgsvectorlayerlegendwidget.cpp
-  qgsvectorlayersavestyledialog.cpp
-  qgsvectorlayerproperties.cpp
   qgsmapthemes.cpp
   qgshandlebadlayers.cpp
   qgsmaptooladdcircularstring.cpp
@@ -184,16 +167,23 @@ SET(QGIS_APP_SRCS
 
   browser/qgsinbuiltdataitemproviders.cpp
 
+  devtools/qgsappdevtoolutils.cpp
+  devtools/networklogger/qgsnetworklogger.cpp
+  devtools/networklogger/qgsnetworkloggernode.cpp
+  devtools/networklogger/qgsnetworkloggerpanelwidget.cpp
+  devtools/networklogger/qgsnetworkloggerwidgetfactory.cpp
+  devtools/profiler/qgsprofilerpanelwidget.cpp
+  devtools/profiler/qgsprofilerwidgetfactory.cpp
+
+  georeferencer/qgsvalidateddoublespinbox.cpp
+
   labeling/qgslabelpropertydialog.cpp
-  labeling/qgslabelengineconfigdialog.cpp
-  labeling/qgslabelingwidget.cpp
   labeling/qgsmaptoolchangelabelproperties.cpp
   labeling/qgsmaptoolpinlabels.cpp
   labeling/qgsmaptoolshowhidelabels.cpp
   labeling/qgsmaptoollabel.cpp
   labeling/qgsmaptoolmovelabel.cpp
   labeling/qgsmaptoolrotatelabel.cpp
-  labeling/qgsrulebasedlabelingwidget.cpp
 
   layout/qgslayoutappmenuprovider.cpp
   layout/qgslayoutdesignerdialog.cpp
@@ -229,6 +219,7 @@ SET(QGIS_APP_SRCS
 
   mesh/qgsmeshlayerproperties.cpp
   mesh/qgsrenderermeshpropertieswidget.cpp
+  mesh/qgsmeshdatasetgrouptreewidget.cpp
   mesh/qgsmeshrenderer3daveragingwidget.cpp
   mesh/qgsmeshrenderermeshsettingswidget.cpp
   mesh/qgsmeshrendererscalarsettingswidget.cpp
@@ -236,8 +227,34 @@ SET(QGIS_APP_SRCS
   mesh/qgsmeshrendereractivedatasetwidget.cpp
   mesh/qgsmeshdatasetgrouptreeview.cpp
   mesh/qgsmeshcalculatordialog.cpp
-  mesh/qgsmeshtimeformatdialog.cpp
+  mesh/qgsmeshstaticdatasetwidget.cpp
+  mesh/qgsmeshvariablestrokewidthwidget.cpp
 )
+
+IF (WITH_GEOREFERENCER)
+  SET(QGIS_APP_SRCS
+    ${QGIS_APP_SRCS}
+    georeferencer/qgsgcpcanvasitem.cpp
+    georeferencer/qgsgeorefconfigdialog.cpp
+    georeferencer/qgsgeorefdatapoint.cpp
+    georeferencer/qgsgeorefdelegates.cpp
+    georeferencer/qgsgeorefmainwindow.cpp
+    georeferencer/qgsgeoreftooladdpoint.cpp
+    georeferencer/qgsgeoreftooldeletepoint.cpp
+    georeferencer/qgsgeoreftoolmovepoint.cpp
+    georeferencer/qgsgeorefvalidators.cpp
+    georeferencer/qgsleastsquares.cpp
+    georeferencer/qgsmapcoordsdialog.cpp
+    georeferencer/qgsresidualplotitem.cpp
+    georeferencer/qgstransformsettingsdialog.cpp
+    georeferencer/qgsgcplist.cpp
+    georeferencer/qgsgcplistmodel.cpp
+    georeferencer/qgsimagewarper.cpp
+    georeferencer/qgsgeoreftransform.cpp
+    georeferencer/qgsgcplistwidget.cpp
+    georeferencer/qgsrasterchangecoords.cpp
+  )
+ENDIF (WITH_GEOREFERENCER)
 
 IF (WITH_3D)
   SET(QGIS_APP_SRCS
@@ -320,17 +337,11 @@ ENDIF (POSTGRES_FOUND)
 # Test data dir for QgsAppScreenShots
 ADD_DEFINITIONS(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
 
-
-SET(IMAGE_RCCS ../../images/images.qrc)
-
-QT5_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
-
 # add test resources, e.g. standard test font
 SET(TEST_RCCS ../../tests/testdata/testdata.qrc)
-QT5_ADD_RESOURCES(TEST_RCC_SRCS ${TEST_RCCS})
 
 IF (WIN32)
-  SET (QGIS_APP_SRCS ${QGIS_APP_SRCS} main.cpp ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
+  SET (QGIS_APP_SRCS ${QGIS_APP_SRCS} main.cpp ${TEST_RCCS})
   SET (QGIS_APPMAIN_SRCS mainwin.cpp)
 
   IF (MSVC)
@@ -360,7 +371,7 @@ IF (WIN32)
     ENDIF (WINDRES)
   ENDIF (MSVC)
 ELSE(WIN32)
-  SET (QGIS_APPMAIN_SRCS main.cpp ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
+  SET (QGIS_APPMAIN_SRCS main.cpp ${TEST_RCCS})
 ENDIF (WIN32)
 
 IF(PEDANTIC)
@@ -395,8 +406,8 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_SOURCE_DIR}/src/app
-  ${CMAKE_SOURCE_DIR}/src/app/attributeformconfig
   ${CMAKE_SOURCE_DIR}/src/app/decorations
+  ${CMAKE_SOURCE_DIR}/src/app/devtools/networklogger
   ${CMAKE_SOURCE_DIR}/src/app/labeling
   ${CMAKE_SOURCE_DIR}/src/app/layout
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
@@ -404,6 +415,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app/dwg
   ${CMAKE_SOURCE_DIR}/src/app/mesh
   ${CMAKE_SOURCE_DIR}/src/app/locator
+  ${CMAKE_SOURCE_DIR}/src/app/vectortile
   ${CMAKE_SOURCE_DIR}/src/analysis
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
   ${CMAKE_SOURCE_DIR}/src/analysis/mesh
@@ -429,10 +441,13 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/validity
+  ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/devtools
   ${CMAKE_SOURCE_DIR}/src/gui/labeling
   ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
@@ -443,6 +458,8 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
   ${CMAKE_SOURCE_DIR}/src/gui/locator
+  ${CMAKE_SOURCE_DIR}/src/gui/vector
+  ${CMAKE_SOURCE_DIR}/src/gui/vectortile
   ${CMAKE_SOURCE_DIR}/src/plugins
   ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_SOURCE_DIR}/src/native
@@ -498,6 +515,7 @@ INCLUDE_DIRECTORIES(
   ../core/mesh
   ../core/scalebar
   ../core/symbology
+  ../core/textrenderer
   ../gui
   ../gui/symbology
   ../gui/attributetable
@@ -589,6 +607,15 @@ IF (WITH_3D)
     qgis_3d
   )
 ENDIF (WITH_3D)
+
+IF (WITH_GEOREFERENCER)
+  INCLUDE_DIRECTORIES(SYSTEM
+    ${GSL_INCLUDE_DIR}
+  )
+  TARGET_LINK_LIBRARIES(qgis_app
+    ${GSL_LIBRARIES}
+  )
+ENDIF (WITH_GEOREFERENCER)
 
 GENERATE_EXPORT_HEADER(
    qgis_app

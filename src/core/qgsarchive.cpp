@@ -43,7 +43,10 @@ QgsArchive::QgsArchive( const QgsArchive &other )
 QgsArchive &QgsArchive::operator=( const QgsArchive &other )
 {
   if ( this != &other )
+  {
     mFiles = other.mFiles;
+    mDir.reset( new QTemporaryDir() );
+  }
 
   return *this;
 }

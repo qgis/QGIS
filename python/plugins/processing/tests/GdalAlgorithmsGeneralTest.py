@@ -36,6 +36,7 @@ from qgis.core import (QgsProcessingContext,
                        QgsProject,
                        QgsVectorLayer,
                        QgsRectangle,
+                       QgsProjUtils,
                        QgsProcessingException,
                        QgsProcessingFeatureSourceDefinition)
 
@@ -162,6 +163,18 @@ class TestGdalAlgorithms(unittest.TestCase):
         parameters = {'INPUT': QgsProcessingFeatureSourceDefinition(vl.id(), True)}
         path, layer = alg.getOgrCompatibleSource('INPUT', parameters, context, feedback, False)
         self.assertEqual(path, source)
+
+        # with subset string
+        vl.setSubsetString('x')
+        path, layer = alg.getOgrCompatibleSource('INPUT', parameters, context, feedback, False)
+        self.assertEqual(path, source)
+        # subset of layer must be exported
+        path, layer = alg.getOgrCompatibleSource('INPUT', parameters, context, feedback, True)
+        self.assertNotEqual(path, source)
+        self.assertTrue(path)
+        self.assertTrue(path.endswith('.gpkg'))
+        self.assertTrue(os.path.exists(path))
+        self.assertTrue(layer)
 
         # geopackage with layer
         source = os.path.join(testDataPath, 'custom', 'circular_strings.gpkg')
@@ -318,15 +331,22 @@ class TestGdalAlgorithms(unittest.TestCase):
         crs.createFromProj(
             '+proj=utm +zone=36 +south +a=600000 +b=70000 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
         self.assertTrue(crs.isValid())
-        self.assertEqual(GdalUtils.gdal_crs_string(crs),
-                         '+proj=utm +zone=36 +south +a=600000 +b=70000 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
-        # check that newlines are stripped
-        crs = QgsCoordinateReferenceSystem()
-        crs.createFromProj(
-            '+proj=utm +zone=36 +south\n     +a=600000 +b=70000 \r\n    +towgs84=-143,-90,-294,0,0,0,0 +units=m\n+no_defs')
-        self.assertTrue(crs.isValid())
-        self.assertEqual(GdalUtils.gdal_crs_string(crs),
-                         '+proj=utm +zone=36 +south      +a=600000 +b=70000       +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
+
+        if QgsProjUtils.projVersionMajor() >= 6:
+            # proj 6, WKT should be used
+            self.assertEqual(GdalUtils.gdal_crs_string(crs)[:40], 'BOUNDCRS[SOURCECRS[PROJCRS["unknown",BAS')
+
+            self.assertEqual(GdalUtils.gdal_crs_string(QgsCoordinateReferenceSystem('ESRI:102003')), 'ESRI:102003')
+        else:
+            self.assertEqual(GdalUtils.gdal_crs_string(crs),
+                             '+proj=utm +zone=36 +south +a=600000 +b=70000 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
+            # check that newlines are stripped
+            crs = QgsCoordinateReferenceSystem()
+            crs.createFromProj(
+                '+proj=utm +zone=36 +south\n     +a=600000 +b=70000 \r\n    +towgs84=-143,-90,-294,0,0,0,0 +units=m\n+no_defs')
+            self.assertTrue(crs.isValid())
+            self.assertEqual(GdalUtils.gdal_crs_string(crs),
+                             '+proj=utm +zone=36 +south      +a=600000 +b=70000       +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
 
 
 if __name__ == '__main__':

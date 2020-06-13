@@ -23,15 +23,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsProcessingProvider,
                        QgsMessageLog,
                        QgsProcessingModelAlgorithm,
-                       QgsProcessingUtils,
-                       QgsXmlUtils)
+                       QgsRuntimeProfiler)
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 
@@ -45,7 +42,6 @@ from processing.modeler.DeleteModelAction import DeleteModelAction
 from processing.modeler.EditModelAction import EditModelAction
 from processing.modeler.ExportModelAsPythonScriptAction import ExportModelAsPythonScriptAction
 from processing.modeler.OpenModelFromFileAction import OpenModelFromFileAction
-from processing.modeler.exceptions import WrongModelException
 from processing.modeler.ModelerUtils import ModelerUtils
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -70,14 +66,16 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
         self.refreshAlgorithms()
 
     def load(self):
-        ProcessingConfig.settingIcons[self.name()] = self.icon()
-        ProcessingConfig.addSetting(Setting(self.name(),
-                                            ModelerUtils.MODELS_FOLDER, self.tr('Models folder', 'ModelerAlgorithmProvider'),
-                                            ModelerUtils.defaultModelsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
-        ProviderActions.registerProviderActions(self, self.actions)
-        ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
-        ProcessingConfig.readSettings()
-        self.refreshAlgorithms()
+        with QgsRuntimeProfiler.profile('Model Provider'):
+            ProcessingConfig.settingIcons[self.name()] = self.icon()
+            ProcessingConfig.addSetting(Setting(self.name(),
+                                                ModelerUtils.MODELS_FOLDER, self.tr('Models folder', 'ModelerAlgorithmProvider'),
+                                                ModelerUtils.defaultModelsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
+            ProviderActions.registerProviderActions(self, self.actions)
+            ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
+            ProcessingConfig.readSettings()
+            self.refreshAlgorithms()
+
         return True
 
     def unload(self):
@@ -103,16 +101,17 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
         return True
 
     def loadAlgorithms(self):
-        if self.isLoading:
-            return
-        self.isLoading = True
-        self.algs = []
-        folders = ModelerUtils.modelsFolders()
-        for f in folders:
-            self.loadFromFolder(f)
-        for a in self.algs:
-            self.addAlgorithm(a)
-        self.isLoading = False
+        with QgsRuntimeProfiler.profile('Load model algorithms'):
+            if self.isLoading:
+                return
+            self.isLoading = True
+            self.algs = []
+            folders = ModelerUtils.modelsFolders()
+            for f in folders:
+                self.loadFromFolder(f)
+            for a in self.algs:
+                self.addAlgorithm(a)
+            self.isLoading = False
 
     def loadFromFolder(self, folder):
         if not os.path.exists(folder):
@@ -120,17 +119,13 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
         for path, subdirs, files in os.walk(folder):
             for descriptionFile in files:
                 if descriptionFile.endswith('model3'):
-                    try:
-                        fullpath = os.path.join(path, descriptionFile)
+                    fullpath = os.path.join(path, descriptionFile)
 
-                        alg = QgsProcessingModelAlgorithm()
-                        if alg.fromFile(fullpath):
-                            if alg.name():
-                                alg.setSourceFilePath(fullpath)
-                                self.algs.append(alg)
-                        else:
-                            QgsMessageLog.logMessage(self.tr('Could not load model {0}', 'ModelerAlgorithmProvider').format(descriptionFile),
-                                                     self.tr('Processing'), Qgis.Critical)
-                    except WrongModelException as e:
-                        QgsMessageLog.logMessage(self.tr('Could not load model {0}\n{1}', 'ModelerAlgorithmProvider').format(descriptionFile, str(e)),
+                    alg = QgsProcessingModelAlgorithm()
+                    if alg.fromFile(fullpath):
+                        if alg.name():
+                            alg.setSourceFilePath(fullpath)
+                            self.algs.append(alg)
+                    else:
+                        QgsMessageLog.logMessage(self.tr('Could not load model {0}', 'ModelerAlgorithmProvider').format(descriptionFile),
                                                  self.tr('Processing'), Qgis.Critical)

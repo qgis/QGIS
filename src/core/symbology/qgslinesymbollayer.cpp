@@ -238,7 +238,7 @@ void QgsSimpleLineSymbolLayer::stopRender( QgsSymbolRenderContext &context )
   Q_UNUSED( context )
 }
 
-void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
+void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   QPainter *p = context.renderContext().painter();
   if ( !p )
@@ -263,8 +263,7 @@ void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, QLi
         if ( rings )
         {
           //add polygon rings
-          QList<QPolygonF>::const_iterator it = rings->constBegin();
-          for ( ; it != rings->constEnd(); ++it )
+          for ( auto it = rings->constBegin(); it != rings->constEnd(); ++it )
           {
             QPolygonF ring = *it;
             clipPath.addPolygon( ring );
@@ -867,7 +866,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
   context.renderContext().painter()->restore();
 }
 
-void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
+void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   const QgsCurvePolygon *curvePolygon = dynamic_cast<const QgsCurvePolygon *>( context.renderContext().geometry() );
 

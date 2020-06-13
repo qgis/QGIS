@@ -42,7 +42,7 @@
 #include "qgsmaplayerstylecategoriesmodel.h"
 #include "qgssymbollayerutils.h"
 #include "qgsxmlutils.h"
-
+#include "qgsmessagebar.h"
 
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
@@ -50,7 +50,6 @@ QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeVi
   , mCanvas( canvas )
 {
 }
-
 
 QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 {
@@ -115,6 +114,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == 0 ) )
       {
         menu->addAction( actions->actionMoveToTop( menu ) );
+      }
+
+      if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == idx.model()->rowCount() - 1 ) )
+      {
+        menu->addAction( actions->actionMoveToBottom( menu ) );
       }
 
       menu->addSeparator();
@@ -204,6 +208,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( actions->actionMoveToTop( menu ) );
       }
 
+      if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == idx.model()->rowCount() - 1 ) )
+      {
+        menu->addAction( actions->actionMoveToBottom( menu ) );
+      }
+
       QAction *checkAll = actions->actionCheckAndAllParents( menu );
       if ( checkAll )
         menu->addAction( checkAll );
@@ -222,9 +231,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         // attribute table
         QgsSettings settings;
         QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( QStringLiteral( "qgis/attributeTableBehavior" ),  QgsAttributeTableFilterModel::ShowAll );
-        QAction *attributeTable = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "&Open Attribute Table" ),
-                                  QgisApp::instance(), [ = ] { QgisApp::instance()->attributeTable( initialMode ); } );
-        attributeTable->setEnabled( vlayer->isValid() );
+        QAction *attributeTableAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "&Open Attribute Table" ),
+                                        QgisApp::instance(), [ = ] { QgisApp::instance()->attributeTable( initialMode ); } );
+        attributeTableAction->setEnabled( vlayer->isValid() );
 
         // allow editing
         const QgsVectorDataProvider *provider = vlayer->dataProvider();
@@ -248,9 +257,16 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         if ( provider && provider->supportsSubsetString() )
         {
-          QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), &QgisApp::layerSubsetString );
+          QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qgis::overload<>::of( &QgisApp::layerSubsetString ) );
           action->setEnabled( !vlayer->isEditable() );
         }
+      }
+
+      if ( rlayer &&
+           rlayer->dataProvider() &&
+           rlayer->dataProvider()->supportsSubsetString() )
+      {
+        menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qgis::overload<>::of( &QgisApp::layerSubsetString ) );
       }
 
       // change data source is only supported for vectors and rasters
@@ -880,7 +896,10 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol( const QString 
 
   const QgsSymbol *originalSymbol = node->symbol();
   if ( !originalSymbol )
+  {
+    QgisApp::instance()->messageBar()->pushWarning( tr( "No Symbol" ), tr( "There is no symbol associated with the rule." ) );
     return;
+  }
 
   std::unique_ptr< QgsSymbol > symbol( originalSymbol->clone() );
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() );

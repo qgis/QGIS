@@ -35,6 +35,7 @@
 #include "qgschunknode_p.h"
 #include "qgsdemterraingenerator.h"
 #include "qgsflatterraingenerator.h"
+#include "qgsmeshterraingenerator.h"
 #include "qgsline3dsymbol.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspolygon3dsymbol.h"
@@ -45,6 +46,7 @@
 #include "qgspoint3dsymbol.h"
 #include "qgssymbollayer.h"
 #include "qgsmarkersymbollayer.h"
+#include "qgsmaplayertemporalproperties.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -59,6 +61,7 @@ class TestQgs3DRendering : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void testFlatTerrain();
     void testDemTerrain();
+    void testMeshTerrain();
     void testExtrudedPolygons();
     void testLineRendering();
     void testMapTheme();
@@ -76,7 +79,8 @@ class TestQgs3DRendering : public QObject
     QgsRasterLayer *mLayerDtm;
     QgsRasterLayer *mLayerRgb;
     QgsVectorLayer *mLayerBuildings;
-    QgsMeshLayer *mLayerMesh;
+    QgsMeshLayer *mLayerMeshTerrain;
+    QgsMeshLayer *mLayerMeshDataset;
 };
 
 //runs before all tests
@@ -115,21 +119,29 @@ void TestQgs3DRendering::initTestCase()
   QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
   mLayerBuildings->setRenderer3D( renderer3d );
 
-  mLayerMesh = new QgsMeshLayer( dataDir + "/mesh/quad_flower.2dm", "mesh", "mdal" );
-  QVERIFY( mLayerMesh->isValid() );
-  mLayerMesh->setCrs( mLayerDtm->crs() );  // this testing mesh does not have any CRS defined originally
-  // disable rendering of scalar 2d datasets for now
-  QgsMeshRendererSettings settings = mLayerMesh->rendererSettings();
-  settings.setActiveScalarDataset();
-  settings.setActiveVectorDataset();
-  mLayerMesh->setRendererSettings( settings );
-  mProject->addMapLayer( mLayerMesh );
+  mLayerMeshTerrain = new QgsMeshLayer( dataDir + "/mesh/quad_flower.2dm", "mesh", "mdal" );
+  QVERIFY( mLayerMeshTerrain->isValid() );
+  mLayerMeshTerrain->setCrs( mLayerDtm->crs() );  // this testing mesh does not have any CRS defined originally
+  mProject->addMapLayer( mLayerMeshTerrain );
 
-  QgsPhongMaterialSettings meshMaterial;
+  mLayerMeshDataset = new QgsMeshLayer( dataDir + "/mesh/quad_and_triangle.2dm", "mesh", "mdal" );
+  mLayerMeshDataset->dataProvider()->addDataset( dataDir + "/mesh/quad_and_triangle_vertex_scalar.dat" );
+  mLayerMeshDataset->dataProvider()->addDataset( dataDir + "/mesh/quad_and_triangle_vertex_vector.dat" );
+  QVERIFY( mLayerMeshDataset->isValid() );
+  mLayerMeshDataset->setCrs( mLayerDtm->crs() ); // this testing mesh does not have any CRS defined originally
+  mLayerMeshDataset->temporalProperties()->setIsActive( false );
+  mLayerMeshDataset->setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 0, 0 ) );
+  mLayerMeshDataset->setStaticVectorDatasetIndex( QgsMeshDatasetIndex( 2, 0 ) );
+  mProject->addMapLayer( mLayerMeshDataset );
+  mProject->addMapLayer( mLayerMeshDataset );
+
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
-  symbolMesh3d->setMaterial( meshMaterial );
-  QgsMeshLayer3DRenderer *meshRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
-  mLayerMesh->setRenderer3D( meshRenderer3d );
+  symbolMesh3d->setVerticalDatasetGroupIndex( 0 );
+  symbolMesh3d->setVerticalScale( 10 );
+  symbolMesh3d->setArrowsEnabled( true );
+  symbolMesh3d->setArrowsSpacing( 300 );
+  QgsMeshLayer3DRenderer *meshDatasetRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
+  mLayerMeshDataset->setRenderer3D( meshDatasetRenderer3d );
 
   mProject->setCrs( mLayerDtm->crs() );
 
@@ -260,6 +272,34 @@ void TestQgs3DRendering::testDemTerrain()
   QVERIFY( renderCheck( "dem_terrain_1", img3, 40 ) );
 }
 
+void TestQgs3DRendering::testMeshTerrain()
+{
+  QgsRectangle fullExtent = mLayerMeshTerrain->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+
+  QgsMeshTerrainGenerator *meshTerrain = new QgsMeshTerrainGenerator;
+  meshTerrain->setLayer( mLayerMeshTerrain );
+  map->setTerrainGenerator( meshTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  // look from the top
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 3000, 25, 45 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "mesh_terrain_1", img, 40 ) );
+}
+
 void TestQgs3DRendering::testExtrudedPolygons()
 {
   QgsRectangle fullExtent = mLayerDtm->extent();
@@ -282,6 +322,11 @@ void TestQgs3DRendering::testExtrudedPolygons()
   engine.setRootEntity( scene );
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 250 ), 500, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QVERIFY( renderCheck( "polygon3d_extrusion", img, 40 ) );
@@ -380,17 +425,12 @@ void TestQgs3DRendering::testMapTheme()
 
 void TestQgs3DRendering::testMesh()
 {
-  // Disabled on travic ci. This test is flaky
-  // See https://travis-ci.org/qgis/QGIS/jobs/505456689#L1351
-  if ( QgsTest::isTravis() )
-    QSKIP( "This test is disabled on Travis CI environment" );
-
-  QgsRectangle fullExtent = mLayerMesh->extent();
+  QgsRectangle fullExtent = mLayerMeshDataset->extent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map->setLayers( QList<QgsMapLayer *>() << mLayerMesh );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
@@ -404,6 +444,10 @@ void TestQgs3DRendering::testMesh()
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
   engine.setRootEntity( scene );
 
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 3000, 25, 45 );
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 

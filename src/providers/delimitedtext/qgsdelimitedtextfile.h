@@ -38,6 +38,7 @@ class QTextStream;
 * The delimited text parser is used by the QgsDelimitedTextProvider to parse
 * a QTextStream into records of QStringList.  It provides a number of variants
 * for parsing each record.  The following options are supported:
+*
 * - Basic whitespace parsing.  Each line in the file is treated as a record.
 *   Extracts all contiguous sequences of non-whitespace
 *   characters.  Leading and trailing whitespace are ignored.
@@ -57,6 +58,7 @@ class QTextStream;
 *
 * The delimiters can be encode in and decoded from a QUrl as query items.  The
 * items used are:
+*
 * - delimiterType, one of plain (delimiter is any of a set of characters),
 *   regexp, csv, whitespace
 * - delimiter, interpreted according to the type.  For plain characters this is
@@ -194,7 +196,7 @@ class QgsDelimitedTextFile : public QObject
     }
 
     /**
-     * Set the option for dicarding empty fields
+     * Set the option for discarding empty fields
      * \param useheaders Empty fields will be discarded if true
      */
     void setDiscardEmptyFields( bool discardEmptyFields = true );
@@ -428,6 +430,9 @@ class QgsDelimitedTextFile : public QObject
     long mLineNumber = -1;
     long mRecordLineNumber = -1;
     long mRecordNumber = -1;
+    QString mBuffer;
+    int mPosInBuffer = 0;
+    int mMaxBufferSize = 0;
     QStringList mCurrentRecord;
     bool mHoldCurrentRecord = false;
     // Maximum number of record (ie maximum record number visited)

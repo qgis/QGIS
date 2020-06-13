@@ -149,6 +149,22 @@ tests:
         type: file
         name: expected/grass7/r.what.points.txt
 
+  - algorithm: grass7:r.what.color
+    name: GRASS 7 r.what.color
+    params:
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      format: '%d:%d:%d'
+      input:
+        name: custom/grass7/float_raster.tif
+        type: raster
+      value: '100'
+    results:
+      html:
+        name: expected/grass7/r_what_color.html
+        type: regex
+        rules:
+          - '100: 70:10:93'
+
   - algorithm: grass7:r.what.coords
     name: GRASS7 r.what.coords
     params:
@@ -1518,3 +1534,83 @@ tests:
       output:
         hash: b07a8fd2a3ff63851d0eb123cafd8024986d22ea453f89c808765c83
         type: rasterhash
+
+  - algorithm: grass7:r.transect
+    name: GRASS 7 r.transect
+    params:
+      -g: false
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      line: 2077686.512558,5744286.456837,45,1500
+      map:
+        name: custom/dem_crs.tif
+        type: raster
+      null_value: '*'
+    results:
+      html:
+        name: expected/grass7/r_transect.html
+        type: regex
+        rules:
+          - '556.586901 205.821854'
+          - '1191.095967 206.328064'
+          - '1435.994204 212.717163'
+
+  - algorithm: grass7:r.category.out
+    name: GRASS 7 r.category.out
+    params:
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      cats: 1,3
+      map:
+        name: custom/grass7/raster_6class.tif
+        type: raster
+      separator: pipe
+      values: ''
+    results:
+      html:
+        name: expected/grass7/r_category_out.html
+        type: regex
+        rules:
+          - '1|'
+          - '3|'
+
+  - algorithm: grass7:r.distance
+    name: GRASS 7 r.distance
+    params:
+      -l: false
+      -n: false
+      -o: false
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      map:
+        params:
+        - name: custom/grass7/raster_1class.tif
+          type: raster
+        - name: custom/grass7/raster_4class.tif
+          type: raster
+        type: multi
+      separator: pipe
+      sort: 0
+    results:
+      html:
+        name: expected/grass7/r_distance.html
+        type: regex
+        rules:
+          - '1|1|0|344550|6693650|344550|6693650'
+          - '1|3|100|352650|6693650|352750|6693650'
+
+  - algorithm: grass7:r.tileset
+    name: GRASS 7 r.tileset
+    params:
+      -g: false
+      -w: false
+      destscale: 1.0
+      maxcols: 1024
+      maxrows: 2048
+      overlap: 0
+      separator: pipe
+      sourceproj: EPSG:4326
+      sourcescale: 1.0
+    results:
+      html:
+        name: expected/grass7/r_tileset.html
+        type: regex
+        rules:
+          - '1.0|0.0|1.0|1.0|1|2'

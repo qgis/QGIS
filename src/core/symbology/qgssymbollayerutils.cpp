@@ -761,19 +761,20 @@ QPainter::CompositionMode QgsSymbolLayerUtils::decodeBlendMode( const QString &s
   return QPainter::CompositionMode_SourceOver; // "Normal"
 }
 
-QIcon QgsSymbolLayerUtils::symbolPreviewIcon( const QgsSymbol *symbol, QSize size, int padding )
+QIcon QgsSymbolLayerUtils::symbolPreviewIcon( const QgsSymbol *symbol, QSize size, int padding, QgsLegendPatchShape *shape )
 {
-  return QIcon( symbolPreviewPixmap( symbol, size, padding ) );
+  return QIcon( symbolPreviewPixmap( symbol, size, padding, nullptr, false, nullptr, shape ) );
 }
 
-QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding, QgsRenderContext *customContext, bool selected, const QgsExpressionContext *expressionContext )
+QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding, QgsRenderContext *customContext, bool selected, const QgsExpressionContext *expressionContext, const QgsLegendPatchShape *shape )
 {
   Q_ASSERT( symbol );
   QPixmap pixmap( size );
   pixmap.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &pixmap );
-  painter.setRenderHint( QPainter::Antialiasing );
+  if ( !customContext || customContext->flags() & QgsRenderContext::Antialiasing )
+    painter.setRenderHint( QPainter::Antialiasing );
 
   if ( customContext )
   {
@@ -806,12 +807,12 @@ QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( const QgsSymbol *symbol, QSize
           prop.setActive( false );
       }
     }
-    symbol_noDD->drawPreviewIcon( &painter, size, customContext, selected, expressionContext );
+    symbol_noDD->drawPreviewIcon( &painter, size, customContext, selected, expressionContext, shape );
   }
   else
   {
     std::unique_ptr<QgsSymbol> symbolClone( symbol->clone( ) );
-    symbolClone->drawPreviewIcon( &painter, size, customContext, selected, expressionContext );
+    symbolClone->drawPreviewIcon( &painter, size, customContext, selected, expressionContext, shape );
   }
 
   painter.end();
@@ -2767,7 +2768,7 @@ bool QgsSymbolLayerUtils::createFunctionElement( QDomDocument &doc, QDomElement 
 
 bool QgsSymbolLayerUtils::functionFromSldElement( QDomElement &element, QString &function )
 {
-  // check if ogc:Filter or containe ogc:Filters
+  // check if ogc:Filter or contains ogc:Filters
   QDomElement elem = element;
   if ( element.tagName() != QLatin1String( "Filter" ) )
   {
@@ -4008,7 +4009,7 @@ QPointF QgsSymbolLayerUtils::polygonCentroid( const QPolygonF &points )
   return QPointF( cx, cy );
 }
 
-QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF &points, QList<QPolygonF> *rings )
+QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF &points, const QVector<QPolygonF> *rings )
 {
   QPointF centroid = QgsSymbolLayerUtils::polygonCentroid( points );
 
@@ -4022,8 +4023,7 @@ QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF &points, QLi
     {
       if ( rings )
       {
-        QList<QPolygonF>::const_iterator ringIt = rings->constBegin();
-        for ( ; ringIt != rings->constEnd(); ++ringIt )
+        for ( auto ringIt = rings->constBegin(); ringIt != rings->constEnd(); ++ringIt )
         {
           pointCount = ( *ringIt ).count();
           QgsPolylineXY polyline( pointCount );

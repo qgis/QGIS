@@ -70,7 +70,7 @@ namespace QgsWfs
       QDomDocument doc;
       QString errorMsg;
 
-      if ( doc.setContent( parameters.value( QStringLiteral( "REQUEST_BODY" ) ), true, &errorMsg ) )
+      if ( doc.setContent( request.data(), true, &errorMsg ) )
       {
         QDomElement docElem = doc.documentElement();
         aRequest = parseTransactionRequestBody( docElem, project );
@@ -498,11 +498,11 @@ namespace QgsWfs
             }
           }
         }
-#endif
         if ( action.error )
         {
           continue;
         }
+#endif
 
         // Commit the changes of the update elements
         if ( !vlayer->commitChanges() )

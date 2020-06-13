@@ -223,6 +223,8 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       UndoScaleBarSegmentsLeft,
       UndoScaleBarSegments,
       UndoScaleBarHeight,
+      UndoScaleBarSubdivisions,
+      UndoScaleBarSubdivisionsHeight,
       UndoScaleBarFontColor,
       UndoScaleBarFillColor,
       UndoScaleBarFillColor2,
@@ -461,6 +463,10 @@ Moves to the next export part for a multi-layered export item, during a multi-la
       QString name;
 
       QString mapLayerId;
+
+      QPainter::CompositionMode compositionMode;
+
+      double opacity;
 
       QString mapTheme;
     };

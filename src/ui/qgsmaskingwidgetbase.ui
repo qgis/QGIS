@@ -6,29 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>637</width>
-    <height>409</height>
+    <width>812</width>
+    <height>538</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>0</number>
-   </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QgsMessageBar" name="mMessageBar">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+    </widget>
+   </item>
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
@@ -47,11 +42,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QgsMaskSourceSelectionWidget" name="mMaskSourcesWidget" native="true">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-    </widget>
+    <widget class="QgsMaskSourceSelectionWidget" name="mMaskSourcesWidget" native="true"/>
    </item>
   </layout>
  </widget>
@@ -66,6 +57,12 @@
    <class>QgsSymbolLayerSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgssymbollayerselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMessageBar</class>
+   <extends>QFrame</extends>
+   <header>qgsmessagebar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

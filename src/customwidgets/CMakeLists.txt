@@ -22,6 +22,8 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgsexpressionbuilderwidgetplugin.cpp
   qgsextentgroupboxplugin.cpp
   qgsexternalresourcewidgetplugin.cpp
+  qgsfeaturelistcomboboxplugin.cpp
+  qgsfeaturepickerwidgetplugin.cpp
   qgsfieldcomboboxplugin.cpp
   qgsfieldexpressionwidgetplugin.cpp
   qgsfilewidgetplugin.cpp
@@ -54,6 +56,8 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgsexpressionbuilderwidgetplugin.h
   qgsextentgroupboxplugin.h
   qgsexternalresourcewidgetplugin.h
+  qgsfeaturelistcomboboxplugin.h
+  qgsfeaturepickerwidgetplugin.h
   qgsfieldcomboboxplugin.h
   qgsfieldexpressionwidgetplugin.h
   qgsfilewidgetplugin.h
@@ -95,6 +99,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/effects
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
@@ -122,10 +127,7 @@ QT5_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
 #############################################################
 # qgis_customwidgets library
 
-SET(IMAGE_RCCS ../../images/images.qrc)
-QT5_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
-
-ADD_LIBRARY(qgis_customwidgets SHARED ${QGIS_CUSTOMWIDGETS_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_HDRS} ${IMAGE_RCC_SRCS})
+ADD_LIBRARY(qgis_customwidgets SHARED ${QGIS_CUSTOMWIDGETS_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
 
 SET_TARGET_PROPERTIES(qgis_customwidgets PROPERTIES
   VERSION ${COMPLETE_VERSION}

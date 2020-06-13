@@ -1,0 +1,75 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/textrenderer/qgstextrendererutils.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsTextRendererUtils
+{
+%Docstring
+Utility functions for text rendering.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgstextrendererutils.h"
+%End
+  public:
+
+    static QgsTextBackgroundSettings::ShapeType decodeShapeType( const QString &string );
+%Docstring
+Decodes a string representation of a background shape type to a type.
+%End
+
+    static QgsTextBackgroundSettings::SizeType decodeBackgroundSizeType( const QString &string );
+%Docstring
+Decodes a string representation of a background size type to a type.
+%End
+
+    static QgsTextBackgroundSettings::RotationType decodeBackgroundRotationType( const QString &string );
+%Docstring
+Decodes a string representation of a background rotation type to a type.
+%End
+
+    static QgsTextShadowSettings::ShadowPlacement decodeShadowPlacementType( const QString &string );
+%Docstring
+Decodes a string representation of a shadow placement type to a type.
+%End
+
+    static QString encodeTextOrientation( QgsTextFormat::TextOrientation orientation );
+%Docstring
+Encodes a text ``orientation``.
+
+:return: encoded string
+
+.. seealso:: :py:func:`decodeTextOrientation`
+%End
+
+    static QgsTextFormat::TextOrientation decodeTextOrientation( const QString &name, bool *ok = 0 );
+%Docstring
+Attempts to decode a string representation of a text orientation.
+
+:param name: encoded text orientation name
+:param ok: if specified, will be set to ``True`` if the name was successfully decoded
+
+:return: decoded text orientation
+
+.. seealso:: :py:func:`encodeTextOrientation`
+%End
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/textrenderer/qgstextrendererutils.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

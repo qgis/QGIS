@@ -18,6 +18,7 @@
 
 #include "mdal_utils.hpp"
 #include "mdal_hdf5.hpp"
+#include "mdal_logger.hpp"
 
 #define FLO2D_NAN 0.0
 
@@ -84,7 +85,7 @@ void MDAL::DriverFlo2D::addStaticDataset(
                                           datFileName,
                                           groupName
                                         );
-  group->setDataLocation( MDAL_DataLocation::DataOnFaces2D );
+  group->setDataLocation( MDAL_DataLocation::DataOnFaces );
   group->setIsScalar( true );
 
   std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group.get() );
@@ -103,7 +104,7 @@ void MDAL::DriverFlo2D::parseCADPTSFile( const std::string &datFileName, std::ve
   std::string cadptsFile( fileNameFromDir( datFileName, "CADPTS.DAT" ) );
   if ( !MDAL::fileExists( cadptsFile ) )
   {
-    throw MDAL_Status::Err_FileNotFound;
+    throw MDAL::Error( MDAL_Status::Err_FileNotFound, "Could not find file " + cadptsFile );
   }
 
   std::ifstream cadptsStream( cadptsFile, std::ifstream::in );
@@ -115,7 +116,7 @@ void MDAL::DriverFlo2D::parseCADPTSFile( const std::string &datFileName, std::ve
     std::vector<std::string> lineParts = MDAL::split( line, ' ' );
     if ( lineParts.size() != 3 )
     {
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Error while loading CADPTS file, wrong lineparts count (3)" );
     }
     CellCenter cc;
     cc.id = MDAL::toSizeT( lineParts[1] ) - 1; //numbered from 1
@@ -135,7 +136,7 @@ void MDAL::DriverFlo2D::parseFPLAINFile( std::vector<double> &elevations,
   std::string fplainFile( fileNameFromDir( datFileName, "FPLAIN.DAT" ) );
   if ( !MDAL::fileExists( fplainFile ) )
   {
-    throw MDAL_Status::Err_FileNotFound;
+    throw MDAL::Error( MDAL_Status::Err_FileNotFound, "Could not find file " + fplainFile );
   }
 
   std::ifstream fplainStream( fplainFile, std::ifstream::in );
@@ -147,7 +148,7 @@ void MDAL::DriverFlo2D::parseFPLAINFile( std::vector<double> &elevations,
     std::vector<std::string> lineParts = MDAL::split( line, ' ' );
     if ( lineParts.size() != 7 )
     {
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Error while loading Fplain file, wrong lineparts count (7)" );
     }
     size_t cc_i = MDAL::toSizeT( lineParts[0] ) - 1; //numbered from 1
     for ( size_t j = 0; j < 4; ++j )
@@ -196,7 +197,7 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
         datFileName,
         "Depth"
       );
-  depthDsGroup->setDataLocation( MDAL_DataLocation::DataOnFaces2D );
+  depthDsGroup->setDataLocation( MDAL_DataLocation::DataOnFaces );
   depthDsGroup->setIsScalar( true );
 
 
@@ -206,7 +207,7 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
         datFileName,
         "Water Level"
       );
-  waterLevelDsGroup->setDataLocation( MDAL_DataLocation::DataOnFaces2D );
+  waterLevelDsGroup->setDataLocation( MDAL_DataLocation::DataOnFaces );
   waterLevelDsGroup->setIsScalar( true );
 
   std::shared_ptr<DatasetGroup> flowDsGroup = std::make_shared< DatasetGroup >(
@@ -215,7 +216,7 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
         datFileName,
         "Velocity"
       );
-  flowDsGroup->setDataLocation( MDAL_DataLocation::DataOnFaces2D );
+  flowDsGroup->setDataLocation( MDAL_DataLocation::DataOnFaces );
   flowDsGroup->setIsScalar( false );
 
   std::shared_ptr<MDAL::MemoryDataset2D> flowDataset;
@@ -249,8 +250,8 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
     else if ( ( lineParts.size() == 5 ) || ( lineParts.size() == 6 ) )
     {
       // new Vertex for time
-      if ( !depthDataset || !flowDataset || !waterLevelDataset ) throw MDAL_Status::Err_UnknownFormat;
-      if ( face_idx == nVertexs ) throw MDAL_Status::Err_IncompatibleMesh;
+      if ( !depthDataset || !flowDataset || !waterLevelDataset ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Depth, flow or water level dataset is not valid (null)" );
+      if ( face_idx == nVertexs ) throw MDAL::Error( MDAL_Status::Err_IncompatibleMesh, "Invalid face id" );
 
       // this is magnitude: getDouble(lineParts[2]);
       flowDataset->setVectorValue( face_idx, getDouble( lineParts[3] ),  getDouble( lineParts[4] ) );
@@ -265,7 +266,7 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
     }
     else
     {
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to load TIMDEP file, found unknown format" );
     }
   }
 
@@ -305,12 +306,12 @@ void MDAL::DriverFlo2D::parseDEPTHFile( const std::string &datFileName, const st
   while ( std::getline( depthStream, line ) )
   {
     line = MDAL::rtrim( line );
-    if ( vertex_idx == nFaces ) throw MDAL_Status::Err_IncompatibleMesh;
+    if ( vertex_idx == nFaces ) throw MDAL::Error( MDAL_Status::Err_IncompatibleMesh, "Error while loading DEPTH file, invalid vertex index" );
 
     std::vector<std::string> lineParts = MDAL::split( line, ' ' );
     if ( lineParts.size() != 4 )
     {
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Error while loading DEPTH file, wrong lineparts count (4)" );
     }
 
     double val = getDouble( lineParts[3] );
@@ -350,13 +351,13 @@ void MDAL::DriverFlo2D::parseVELFPVELOCFile( const std::string &datFileName )
     // VELFP.OUT - COORDINATES (ELEM NUM, X, Y, MAX VEL) - Maximum floodplain flow velocity;
     while ( std::getline( velocityStream, line ) )
     {
-      if ( vertex_idx == nFaces ) throw MDAL_Status::Err_IncompatibleMesh;
+      if ( vertex_idx == nFaces ) throw MDAL::Error( MDAL_Status::Err_IncompatibleMesh, "Error while loading VELFP file, invalid vertex index" );
 
       line = MDAL::rtrim( line );
       std::vector<std::string> lineParts = MDAL::split( line, ' ' );
       if ( lineParts.size() != 4 )
       {
-        throw MDAL_Status::Err_UnknownFormat;
+        throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Error while loading VELFP file, wrong lineparts count (4)" );
       }
 
       double val = getDouble( lineParts[3] );
@@ -381,13 +382,13 @@ void MDAL::DriverFlo2D::parseVELFPVELOCFile( const std::string &datFileName )
     // VELOC.OUT - COORDINATES (ELEM NUM, X, Y, MAX VEL)  - Maximum channel flow velocity
     while ( std::getline( velocityStream, line ) )
     {
-      if ( vertex_idx == nFaces ) throw MDAL_Status::Err_IncompatibleMesh;
+      if ( vertex_idx == nFaces ) throw MDAL::Error( MDAL_Status::Err_IncompatibleMesh, "Error while loading VELOC file, invalid vertex index" );
 
       line = MDAL::rtrim( line );
       std::vector<std::string> lineParts = MDAL::split( line, ' ' );
       if ( lineParts.size() != 4 )
       {
-        throw MDAL_Status::Err_UnknownFormat;
+        throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Error while loading VELOC file, wrong lineparts count (4)" );
       }
 
       double val = getDouble( lineParts[3] );
@@ -425,7 +426,7 @@ double MDAL::DriverFlo2D::calcCellSize( const std::vector<CellCenter> &cells )
       }
     }
   }
-  throw MDAL_Status::Err_IncompatibleMesh;
+  throw MDAL::Error( MDAL_Status::Err_IncompatibleMesh, "Did not find izolated cell" );
 }
 
 MDAL::Vertex MDAL::DriverFlo2D::createVertex( size_t position, double half_cell_size, const CellCenter &cell )
@@ -498,6 +499,7 @@ void MDAL::DriverFlo2D::createMesh( const std::vector<CellCenter> &cells, double
     new MemoryMesh(
       name(),
       vertices.size(),
+      0,
       faces.size(),
       4, //maximum quads
       computeExtent( vertices ),
@@ -567,7 +569,7 @@ bool MDAL::DriverFlo2D::parseHDF5Datasets( MemoryMesh *mesh, const std::string &
                                          timedepFileName,
                                          grpName
                                        );
-    ds->setDataLocation( MDAL_DataLocation::DataOnFaces2D );
+    ds->setDataLocation( MDAL_DataLocation::DataOnFaces );
     ds->setIsScalar( !isVector );
 
     for ( size_t ts = 0; ts < timesteps; ++ts )
@@ -625,7 +627,7 @@ MDAL::DriverFlo2D::DriverFlo2D()
       "FLO2D",
       "Flo2D",
       "*.nc",
-      Capability::ReadMesh | Capability::ReadDatasets | Capability::WriteDatasetsOnFaces2D )
+      Capability::ReadMesh | Capability::ReadDatasets | Capability::WriteDatasetsOnFaces )
 {
 
 }
@@ -665,35 +667,34 @@ bool MDAL::DriverFlo2D::canReadDatasets( const std::string &uri )
   return true;
 }
 
-void MDAL::DriverFlo2D::load( const std::string &uri, MDAL::Mesh *mesh, MDAL_Status *status )
+void MDAL::DriverFlo2D::load( const std::string &uri, MDAL::Mesh *mesh )
 {
-  if ( status ) *status = MDAL_Status::None;
+  MDAL::Log::resetLastStatus();
 
   MDAL::MemoryMesh *memoryMesh = dynamic_cast<MDAL::MemoryMesh *>( mesh );
   if ( !memoryMesh )
   {
-    if ( status ) *status = MDAL_Status::Err_IncompatibleMesh;
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, name(), "Mesh is not valid (null)" );
     return;
   }
 
   if ( !MDAL::fileExists( uri ) )
   {
-    if ( status ) *status = MDAL_Status::Err_FileNotFound;
+    MDAL::Log::error( MDAL_Status::Err_FileNotFound, name(), "Could not find file " + uri );
     return;
   }
 
   bool err = parseHDF5Datasets( memoryMesh, uri );
   if ( err )
   {
-    // TODO better error message?
-    if ( status ) *status = MDAL_Status::Err_InvalidData;
+    MDAL::Log::error( MDAL_Status::Err_InvalidData, name(), "Could not parse HDF5 datasets" );
   }
 }
 
-std::unique_ptr< MDAL::Mesh > MDAL::DriverFlo2D::load( const std::string &resultsFile, MDAL_Status *status )
+std::unique_ptr< MDAL::Mesh > MDAL::DriverFlo2D::load( const std::string &resultsFile, const std::string & )
 {
   mDatFileName = resultsFile;
-  if ( status ) *status = MDAL_Status::None;
+  MDAL::Log::resetLastStatus();
   mMesh.reset();
   std::vector<CellCenter> cells;
 
@@ -722,8 +723,12 @@ std::unique_ptr< MDAL::Mesh > MDAL::DriverFlo2D::load( const std::string &result
 
   catch ( MDAL_Status error )
   {
-    if ( status ) *status = ( error );
+    MDAL::Log::error( error, name(), "error occurred while loading file " + resultsFile );
     mMesh.reset();
+  }
+  catch ( MDAL::Error err )
+  {
+    MDAL::Log::error( err, name() );
   }
 
   return std::unique_ptr<Mesh>( mMesh.release() );
@@ -770,7 +775,7 @@ bool MDAL::DriverFlo2D::saveNewHDF5File( DatasetGroup *dsGroup )
 
 bool MDAL::DriverFlo2D::appendGroup( HdfFile &file, MDAL::DatasetGroup *dsGroup, HdfGroup &groupTNOR )
 {
-  assert( dsGroup->dataLocation() == MDAL_DataLocation::DataOnFaces2D );
+  assert( dsGroup->dataLocation() == MDAL_DataLocation::DataOnFaces );
 
   HdfDataType dtMaxString = HdfDataType::createString();
   std::string dsGroupName = dsGroup->name();
@@ -871,9 +876,9 @@ bool MDAL::DriverFlo2D::appendGroup( HdfFile &file, MDAL::DatasetGroup *dsGroup,
 
 bool MDAL::DriverFlo2D::persist( DatasetGroup *group )
 {
-  if ( !group || ( group->dataLocation() != MDAL_DataLocation::DataOnFaces2D ) )
+  if ( !group || ( group->dataLocation() != MDAL_DataLocation::DataOnFaces ) )
   {
-    MDAL::debug( "flo-2d can store only 2D face datasets" );
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleDataset, name(), "flo-2d can store only 2D face datasets" );
     return true;
   }
 
@@ -893,7 +898,12 @@ bool MDAL::DriverFlo2D::persist( DatasetGroup *group )
   }
   catch ( MDAL_Status error )
   {
-    MDAL::debug( "Error status: " + std::to_string( error ) );
+    MDAL::Log::error( error, name(), "error occurred" );
+    return true;
+  }
+  catch ( MDAL::Error err )
+  {
+    MDAL::Log::error( err, name() );
     return true;
   }
 }

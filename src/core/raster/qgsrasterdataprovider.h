@@ -33,13 +33,14 @@
 
 #include "qgscolorrampshader.h"
 #include "qgsdataprovider.h"
-#include "qgsfields.h"
 #include "qgsraster.h"
+#include "qgsfields.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterpyramid.h"
 #include "qgsrasterrange.h"
 #include "qgsrectangle.h"
 #include "qgsrasteriterator.h"
+#include "qgsrasterdataprovidertemporalcapabilities.h"
 
 class QImage;
 class QByteArray;
@@ -132,6 +133,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     //! Returns data type for the band specified by number
     Qgis::DataType dataType( int bandNo ) const override = 0;
+
+    /**
+     * Returns the fields of the raster layer for data providers that expose them,
+     * the default implementation returns an empty list.
+     * \since QGIS 3.14
+     */
+    virtual QgsFields fields() const { return QgsFields(); };
 
     /**
      * Returns source data type for the band specified by number,
@@ -259,6 +267,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     {
       return QStringList();
     }
+
+    QgsRasterDataProviderTemporalCapabilities *temporalCapabilities() override;
+    const QgsRasterDataProviderTemporalCapabilities *temporalCapabilities() const override SIP_SKIP;
 
     //! \brief Returns whether the provider supplies a legend graphic
     virtual bool supportsLegendGraphic() const { return false; }
@@ -546,6 +557,30 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual bool ignoreExtents() const;
 
+    /**
+     * Types of transformation in transformCoordinates() function.
+     * \since QGIS 3.14
+     */
+    enum TransformType
+    {
+      TransformImageToLayer,  //!< Transforms image coordinates to layer (georeferenced) coordinates
+      TransformLayerToImage,  //!< Transforms layer (georeferenced) coordinates to image coordinates
+    };
+
+    /**
+     * Transforms coordinates between source image coordinate space [0..width]x[0..height] and
+     * layer coordinate space (georeferenced coordinates). Often this transformation is a simple
+     * 2D affine transformation (offset and scaling), but rasters with different georeferencing
+     * methods like GCPs (ground control points) or RPCs (rational polynomial coefficients) may
+     * require a more complex transform.
+     *
+     * If the transform fails (input coordinates are outside of the valid range or data provider
+     * does not support this functionality), an empty point is returned.
+     *
+     * \since QGIS 3.14
+     */
+    virtual QgsPoint transformCoordinates( const QgsPoint &point, TransformType type );
+
   signals:
 
     /**
@@ -610,6 +645,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     QList< QgsRasterRangeList > mUserNoDataValue;
 
     mutable QgsRectangle mExtent;
+
+  private:
+
+    /**
+     * Data provider temporal properties
+     */
+    std::unique_ptr< QgsRasterDataProviderTemporalCapabilities > mTemporalCapabilities;
 
 };
 

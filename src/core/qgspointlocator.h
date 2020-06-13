@@ -34,9 +34,48 @@ class QgsVectorLayerFeatureSource;
 #include "qgspointlocatorinittask.h"
 #include <memory>
 
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for vertices - builds a list of matches.
+ * \note not available in Python bindings
+*/
 class QgsPointLocator_VisitorNearestVertex;
+
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for centroid - builds a list of matches.
+ * \note not available in Python bindings
+ * \since QGIS 3.12
+*/
+class QgsPointLocator_VisitorNearestCentroid;
+
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for middle segment - builds a list of matches.
+ * \note not available in Python bindings
+ * \since QGIS 3.12
+*/
+class QgsPointLocator_VisitorNearestMiddleOfSegment;
+
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for edges - builds a list of matches.
+ * \note not available in Python bindings
+*/
 class QgsPointLocator_VisitorNearestEdge;
+
+/**
+ * \ingroup core
+ * Helper class used when traversing the index with areas - builds a list of matches.
+ * \note not available in Python bindings
+*/
 class QgsPointLocator_VisitorArea;
+
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for edges - builds a list of matches.
+ * \note not available in Python bindings
+*/
 class QgsPointLocator_VisitorEdgesInRect;
 
 namespace SpatialIndex SIP_SKIP
@@ -48,9 +87,10 @@ namespace SpatialIndex SIP_SKIP
 /**
  * \ingroup core
  * \brief The class defines interface for querying point location:
- *  - query nearest vertices / edges to a point
- *  - query vertices / edges in rectangle
- *  - query areas covering a point
+ *
+ * - query nearest vertices / edges to a point
+ * - query vertices / edges in rectangle
+ * - query areas covering a point
  *
  * Works with one layer.
  *
@@ -116,7 +156,9 @@ class CORE_EXPORT QgsPointLocator : public QObject
       Vertex  = 1, //!< Snapped to a vertex. Can be a vertex of the geometry or an intersection.
       Edge    = 2, //!< Snapped to an edge
       Area    = 4, //!< Snapped to an area
-      All = Vertex | Edge | Area //!< Combination of vertex, edge and area
+      Centroid = 8, //!< Snapped to a centroid
+      MiddleOfSegment = 16, //!< Snapped to the middle of a segment
+      All = Vertex | Edge | Area | Centroid | MiddleOfSegment //!< Combination of all types
     };
 
     Q_DECLARE_FLAGS( Types, Type )
@@ -162,9 +204,16 @@ class CORE_EXPORT QgsPointLocator : public QObject
         QgsPointLocator::Type type() const { return mType; }
 
         bool isValid() const { return mType != Invalid; }
+        //! Returns true if the Match is a vertex
         bool hasVertex() const { return mType == Vertex; }
+        //! Returns true if the Match is an edge
         bool hasEdge() const { return mType == Edge; }
+        //! Returns true if the Match is a centroid
+        bool hasCentroid() const { return mType == Centroid; }
+        //! Returns true if the Match is an area
         bool hasArea() const { return mType == Area; }
+        //! Returns true if the Match is the middle of a segment
+        bool hasMiddleSegment() const { return mType == MiddleOfSegment; }
 
         /**
          * for vertex / edge match
@@ -225,7 +274,9 @@ class CORE_EXPORT QgsPointLocator : public QObject
                  mLayer == other.mLayer &&
                  mFid == other.mFid &&
                  mVertexIndex == other.mVertexIndex &&
-                 mEdgePoints == other.mEdgePoints;
+                 mEdgePoints == other.mEdgePoints &&
+                 mCentroid == other.mCentroid &&
+                 mMiddleOfSegment == other.mMiddleOfSegment;
         }
 
       protected:
@@ -236,6 +287,8 @@ class CORE_EXPORT QgsPointLocator : public QObject
         QgsFeatureId mFid = 0;
         int mVertexIndex = 0; // e.g. vertex index
         QgsPointXY mEdgePoints[2];
+        QgsPointXY mCentroid;
+        QgsPointXY mMiddleOfSegment;
     };
 
 #ifndef SIP_RUN
@@ -265,6 +318,22 @@ class CORE_EXPORT QgsPointLocator : public QObject
     Match nearestVertex( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
     /**
+     * Find nearest centroid to the specified point - up to distance specified by tolerance
+     * Optional filter may discard unwanted matches.
+     * This method is either blocking or non blocking according to \a relaxed parameter passed
+     * \since 3.12
+     */
+    Match nearestCentroid( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
+
+    /**
+     * Find nearest middle of segment to the specified point - up to distance specified by tolerance
+     * Optional filter may discard unwanted matches.
+     * This method is either blocking or non blocking according to \a relaxed parameter passed
+     * \since 3.12
+     */
+    Match nearestMiddleOfSegment( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
+
+    /**
      * Find nearest edge to the specified point - up to distance specified by tolerance
      * Optional filter may discard unwanted matches.
      * This method is either blocking or non blocking according to \a relaxed parameter passed
@@ -282,7 +351,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     Match nearestArea( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
     /**
-     * Find edges within a specified recangle
+     * Find edges within a specified rectangle
      * Optional filter may discard unwanted matches.
      * This method is either blocking or non blocking according to \a relaxed parameter passed
      */
@@ -295,7 +364,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     MatchList edgesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
     /**
-     * Find vertices within a specified recangle
+     * Find vertices within a specified rectangle
      * This method is either blocking or non blocking according to \a relaxed parameter passed
      * Optional filter may discard unwanted matches.
      * \since QGIS 3.6
@@ -395,12 +464,16 @@ class CORE_EXPORT QgsPointLocator : public QObject
     QPointer<QgsPointLocatorInitTask> mInitTask;
 
     friend class QgsPointLocator_VisitorNearestVertex;
+    friend class QgsPointLocator_VisitorNearestCentroid;
+    friend class QgsPointLocator_VisitorNearestMiddleOfSegment;
     friend class QgsPointLocator_VisitorNearestEdge;
     friend class QgsPointLocator_VisitorArea;
     friend class QgsPointLocator_VisitorEdgesInRect;
     friend class QgsPointLocator_VisitorVerticesInRect;
     friend class QgsPointLocatorInitTask;
     friend class TestQgsPointLocator;
+    friend class QgsPointLocator_VisitorCentroidsInRect;
+    friend class QgsPointLocator_VisitorMiddlesInRect;
 };
 
 

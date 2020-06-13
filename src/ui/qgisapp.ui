@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1033</width>
+    <width>1064</width>
     <height>506</height>
    </rect>
   </property>
@@ -16,7 +16,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1033</width>
+     <width>1064</width>
      <height>24</height>
     </rect>
    </property>
@@ -151,6 +151,8 @@
     <addaction name="mActionHideAllLayers"/>
     <addaction name="mActionShowSelectedLayers"/>
     <addaction name="mActionHideSelectedLayers"/>
+    <addaction name="mActionToggleSelectedLayers"/>
+    <addaction name="mActionToggleSelectedLayersIndependently"/>
     <addaction name="mActionHideDeselectedLayers"/>
     <addaction name="separator"/>
    </widget>
@@ -184,11 +186,13 @@
      <addaction name="mActionAddOracleLayer"/>
      <addaction name="mActionAddVirtualLayer"/>
      <addaction name="mActionAddWmsLayer"/>
+     <addaction name="mActionAddXyzLayer"/>
      <addaction name="mActionAddAmsLayer"/>
      <addaction name="mActionAddLayerSeparator"/>
      <addaction name="mActionAddWcsLayer"/>
      <addaction name="mActionAddWfsLayer"/>
      <addaction name="mActionAddAfsLayer"/>
+     <addaction name="mActionAddVectorTileLayer"/>
     </widget>
     <addaction name="mActionDataSourceManager"/>
     <addaction name="mNewLayerMenu"/>
@@ -271,6 +275,7 @@
     </property>
     <addaction name="mActionShowRasterCalculator"/>
     <addaction name="mActionShowAlignRasterTool"/>
+    <addaction name="mActionShowGeoreferencer"/>
    </widget>
    <widget class="QMenu" name="mVectorMenu">
     <property name="title">
@@ -292,6 +297,7 @@
      <addaction name="mActionSelectByForm"/>
      <addaction name="mActionSelectByExpression"/>
      <addaction name="mActionDeselectAll"/>
+     <addaction name="mActionDeselectActiveLayer"/>
      <addaction name="mActionReselect"/>
      <addaction name="mActionSelectAll"/>
      <addaction name="mActionInvertSelection"/>
@@ -525,6 +531,7 @@
    <addaction name="mActionNewMapCanvas"/>
    <addaction name="mActionNewBookmark"/>
    <addaction name="mActionShowBookmarks"/>
+   <addaction name="mActionTemporalController"/>
    <addaction name="mActionDraw"/>
   </widget>
   <widget class="QToolBar" name="mAttributesToolBar">
@@ -541,7 +548,6 @@
     <bool>true</bool>
    </attribute>
    <addaction name="mActionIdentify"/>
-   <addaction name="mActionDeselectAll"/>
    <addaction name="mActionOpenTable"/>
    <addaction name="mActionOpenFieldCalc"/>
    <addaction name="mActionStatisticalSummary"/>
@@ -700,6 +706,7 @@
    <addaction name="mActionNewMemoryLayer"/>
    <addaction name="separator"/>
    <addaction name="mActionNewVirtualLayer"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QToolBar" name="mShapeDigitizeToolBar">
    <property name="windowTitle">
@@ -707,6 +714,20 @@
    </property>
    <property name="toolTip">
     <string>Shape Digitizing Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QToolBar" name="mSelectionToolBar">
+   <property name="windowTitle">
+    <string>Selection Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Selection Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -861,9 +882,6 @@
    <property name="text">
     <string>Cut Features</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+X</string>
-   </property>
   </action>
   <action name="mActionCopyFeatures">
    <property name="icon">
@@ -873,9 +891,6 @@
    <property name="text">
     <string>Copy Features</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+C</string>
-   </property>
   </action>
   <action name="mActionPasteFeatures">
    <property name="icon">
@@ -884,9 +899,6 @@
    </property>
    <property name="text">
     <string>Paste Features</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+V</string>
    </property>
   </action>
   <action name="mActionAddFeature">
@@ -1209,6 +1221,18 @@
     <string>Deselect Features from All Layers</string>
    </property>
    <property name="shortcut">
+    <string>Ctrl+Alt+A</string>
+   </property>
+  </action>
+  <action name="mActionDeselectActiveLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeselectActiveLayer.svg</normaloff>:/images/themes/default/mActionDeselectActiveLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Deselect Features from the Current Active Layer</string>
+   </property>
+   <property name="shortcut">
     <string>Ctrl+Shift+A</string>
    </property>
   </action>
@@ -1222,9 +1246,6 @@
    </property>
    <property name="toolTip">
     <string>Select All Features</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+A</string>
    </property>
   </action>
   <action name="mActionInvertSelection">
@@ -2663,6 +2684,20 @@ Acts on the currently active layer only.</string>
     <string>Hide Selected Layers</string>
    </property>
   </action>
+  <action name="mActionToggleSelectedLayers">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionToggleSelectedLayers.svg</normaloff>:/images/themes/default/mActionToggleSelectedLayers.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Toggle Selected Layers</string>
+   </property>
+  </action>
+  <action name="mActionToggleSelectedLayersIndependently">
+   <property name="text">
+    <string>Toggle Selected Layers Independently</string>
+   </property>
+  </action>
   <action name="mActionHideDeselectedLayers">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -2781,10 +2816,10 @@ Acts on the currently active layer only.</string>
      <normaloff>:/images/themes/default/mActionAddAmsLayer.svg</normaloff>:/images/themes/default/mActionAddAmsLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Arc&amp;GIS MapServer Layer…</string>
+    <string>Add Arc&amp;GIS Map Service Layer…</string>
    </property>
    <property name="toolTip">
-    <string>Add ArcGIS MapServer Layer</string>
+    <string>Add ArcGIS Map Service Layer</string>
    </property>
   </action>
   <action name="mActionAddAfsLayer">
@@ -2793,10 +2828,10 @@ Acts on the currently active layer only.</string>
      <normaloff>:/images/themes/default/mActionAddAfsLayer.svg</normaloff>:/images/themes/default/mActionAddAfsLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Ar&amp;cGIS FeatureServer Layer…</string>
+    <string>Add Ar&amp;cGIS Feature Service Layer…</string>
    </property>
    <property name="toolTip">
-    <string>Add ArcGIS FeatureServer Layer</string>
+    <string>Add ArcGIS Feature Service Layer</string>
    </property>
   </action>
   <action name="mActionSelectByForm">
@@ -3254,6 +3289,52 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="toolTip">
     <string>Reselect Features from Current Layer</string>
+   </property>
+  </action>
+  <action name="mActionTemporalController">
+   <property name="icon">
+    <iconset>
+     <normalon>:/images/themes/default/propertyicons/temporal.svg</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Temporal Controller</string>
+   </property>
+   <property name="toolTip">
+    <string>Temporal Controller Panel</string>
+   </property>
+  </action>
+  <action name="mActionAddXyzLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddXyzLayer.svg</normaloff>:/images/themes/default/mActionAddXyzLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add XYZ Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>Add XYZ Layer…</string>
+   </property>
+  </action>
+  <action name="mActionAddVectorTileLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddVectorTileLayer.svg</normaloff>:/images/themes/default/mActionAddVectorTileLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Vector Tile Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Vector Tile Layer…</string>
+   </property>
+  </action>
+  <action name="mActionShowGeoreferencer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/georeferencer/mGeorefRun.png</normaloff>:/images/themes/default/georeferencer/mGeorefRun.png</iconset>
+   </property>
+   <property name="text">
+    <string>Georeferencer…</string>
    </property>
   </action>
  </widget>

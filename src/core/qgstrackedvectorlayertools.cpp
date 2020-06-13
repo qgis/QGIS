@@ -23,6 +23,8 @@ bool QgsTrackedVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAtt
   if ( !feature )
     f = new QgsFeature();
 
+  const_cast<QgsVectorLayerTools *>( mBackend )->setForceSuppressFormPopup( forceSuppressFormPopup() );
+
   if ( mBackend->addFeature( layer, defaultValues, defaultGeometry, f ) )
   {
     mAddedFeatures[layer].insert( f->id() );

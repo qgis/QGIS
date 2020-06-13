@@ -1,0 +1,128 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodelgraphicitem.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsModelDesignerFlatButtonGraphicItem : QGraphicsObject
+{
+%Docstring
+A flat button graphic item for use in the Processing model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelgraphicitem.h"
+%End
+  public:
+
+    QgsModelDesignerFlatButtonGraphicItem( QGraphicsItem *parent /TransferThis/, const QPicture &picture, const QPointF &position,
+                                           const QSizeF &size = QSizeF( 16, 16 ) );
+%Docstring
+Constructor for QgsModelDesignerFlatButtonGraphicItem, with the specified ``parent`` item.
+
+The ``picture`` argument specifies a QPicture object containing the graphic to render
+for the button. The button will be rendered at the specified ``position`` and ``size``.
+%End
+
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+
+    virtual QRectF boundingRect() const;
+
+    virtual void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
+
+    virtual void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
+
+    virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
+
+
+
+    void setPosition( const QPointF &position );
+%Docstring
+Sets the button's ``position``.
+%End
+
+    QgsModelGraphicsView *view();
+%Docstring
+Returns the associated model view.
+%End
+
+  signals:
+
+    void clicked();
+%Docstring
+Emitted when the button is clicked.
+%End
+
+  protected:
+
+    void setPicture( const QPicture &picture );
+%Docstring
+Sets the ``picture`` to render for the button graphics.
+%End
+
+};
+
+
+class QgsModelDesignerFoldButtonGraphicItem : QgsModelDesignerFlatButtonGraphicItem
+{
+%Docstring
+A button allowing folding or expanding component graphics in the Processing model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelgraphicitem.h"
+%End
+  public:
+
+    QgsModelDesignerFoldButtonGraphicItem( QGraphicsItem *parent /TransferThis/, bool folded, const QPointF &position,
+                                           const QSizeF &size = QSizeF( 11, 11 ) );
+%Docstring
+Constructor for QgsModelDesignerFoldButtonGraphicItem, with the specified ``parent`` item.
+
+The ``folded`` argument specifies whether the button should initially indicate the folded (collapsed)
+state.
+
+The button will be rendered at the specified ``position`` and ``size``.
+%End
+
+    virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
+
+
+  signals:
+
+    void folded( bool folded );
+%Docstring
+Emitted when the button ``folded`` state changes.
+
+If ``folded`` is ``True``, the button represents the collapsed state for the item.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodelgraphicitem.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

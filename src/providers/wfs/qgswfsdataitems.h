@@ -56,6 +56,10 @@ class QgsWfsConnectionItem : public QgsDataCollectionItem
     QString mUri;
 
     QVector<QgsDataItem *> createChildrenOapif();
+
+    // QgsDataItem interface
+  public:
+    bool layerCollection() const override;
 };
 
 
@@ -90,7 +94,7 @@ class QgsWfsDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-
+    QString dataProviderKey() const override;
     int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;

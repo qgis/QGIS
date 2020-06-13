@@ -41,7 +41,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class PointsFromLines(QgisAlgorithm):
-
     INPUT_RASTER = 'INPUT_RASTER'
     RASTER_BAND = 'RASTER_BAND'
     INPUT_VECTOR = 'INPUT_VECTOR'

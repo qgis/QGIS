@@ -51,6 +51,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * If \a wkbType is set to `QgsWkbTypes::Point`, `QgsWkbTypes::PointZ`, `QgsWkbTypes::PointM` or `QgsWkbTypes::PointZM`
      * the type will be set accordingly. If it is left to the default `QgsWkbTypes::Unknown`, the type will be set
      * based on the following rules:
+     *
      * - If only x and y are specified, the type will be a 2D point.
      * - If any or both of the Z and M are specified, the appropriate type will be created.
      *
@@ -78,7 +79,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     if ( sipCanConvertToType( a0, sipType_QgsPointXY, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
     {
       int state;
-      int sipIsErr = 0;
+      sipIsErr = 0;
 
       QgsPointXY *p = reinterpret_cast<QgsPointXY *>( sipConvertToType( a0, sipType_QgsPointXY, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
       if ( sipIsErr )
@@ -93,7 +94,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     else if ( sipCanConvertToType( a0, sipType_QPointF, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
     {
       int state;
-      int sipIsErr = 0;
+      sipIsErr = 0;
 
       QPointF *p = reinterpret_cast<QPointF *>( sipConvertToType( a0, sipType_QPointF, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
       if ( sipIsErr )
@@ -118,6 +119,11 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       double m = a3 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a3 );
       QgsWkbTypes::Type wkbType = a4 == Py_None ? QgsWkbTypes::Unknown : static_cast<QgsWkbTypes::Type>( sipConvertToEnum( a4, sipType_QgsWkbTypes_Type ) );
       sipCpp = new sipQgsPoint( QgsPoint( x, y, z, m, wkbType ) );
+    }
+    else // Invalid ctor arguments
+    {
+      PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type in constructor arguments." ).toUtf8().constData() );
+      sipIsErr = 1;
     }
     % End
 #endif
@@ -382,7 +388,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     double distance3D( const QgsPoint &other ) const;
 
     /**
-     * Returns the Cartesian 3D squared distance between this point a specified x, y, z coordinate. Calling
+     * Returns the Cartesian 3D squared distance between this point and a specified x, y, z coordinate. Calling
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
      * \see distance()
@@ -391,7 +397,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     double distanceSquared3D( double x, double y, double z ) const;
 
     /**
-     * Returns the Cartesian 3D squared distance between this point another point. Calling
+     * Returns the Cartesian 3D squared distance between this point and another point. Calling
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
      * \see distance()
@@ -421,7 +427,9 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \param inclination angle to project in Z (3D). If the point is 2D, the Z value is assumed to be 0.
      * \returns The point projected. If a 2D point is projected a 3D point will be returned except if
      *  inclination is 90. A 3D point is always returned if a 3D point is projected.
-     * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   p = QgsPoint( 1, 2 ) # 2D point
      *   pr = p.project ( 1, 0 )
@@ -483,7 +491,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     void clear() override;
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
-    QByteArray asWkb() const override;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags = nullptr ) const override;
     QString asWkt( int precision = 17 ) const override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;

@@ -35,6 +35,7 @@ RUN  apt-get update \
     libgsl-dev \
     libpq-dev \
     libproj-dev \
+    libprotobuf-dev \
     libqca-qt5-2-dev \
     libqca-qt5-2-plugins \
     libqt53drender5 \
@@ -63,6 +64,7 @@ RUN  apt-get update \
     pkg-config \
     poppler-utils \
     postgresql-client \
+    protobuf-compiler \
     pyqt5-dev \
     pyqt5-dev-tools \
     pyqt5.qsci-dev \
@@ -99,7 +101,6 @@ RUN  apt-get update \
     qtbase5-private-dev \
     saga \
     spawn-fcgi \
-    txt2tags \
     unzip \
     xauth \
     xfonts-100dpi \
@@ -157,7 +158,7 @@ RUN locale-gen
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
 # OTB: download and install otb packages for QGIS tests
-RUN curl -k https://www.orfeo-toolbox.org/packages/OTB-7.0.0-Linux64.run -o /tmp/OTB-Linux64.run && sh /tmp/OTB-Linux64.run --target /opt/otb
+RUN curl -k https://www.orfeo-toolbox.org/packages/OTB-7.1.0-Linux64.run -o /tmp/OTB-Linux64.run && sh /tmp/OTB-Linux64.run --target /opt/otb
 ENV OTB_INSTALL_DIR=/opt/otb
 
 # Clazy

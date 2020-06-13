@@ -270,6 +270,7 @@ class TestPyQgsDBManagerPostgis(unittest.TestCase):
         Check that no temporary cert remain after connection with
         db_manager postgis plugin
         """
+
         def cleanTempPki():
             pkies = glob.glob(os.path.join(tempfile.gettempdir(), 'tmp*_{*}.pem'))
             for fn in pkies:

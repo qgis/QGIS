@@ -167,6 +167,16 @@ namespace pal
       std::size_t createCandidatesOverPoint( double x, double y, std::vector<std::unique_ptr<LabelPosition> > &lPos, double angle );
 
       /**
+       * Generate one candidate centered over the specified point.
+       * \param x x coordinate of the point
+       * \param y y coordinate of the point
+       * \param lPos pointer to an array of candidates, will be filled by generated candidate
+       * \param angle orientation of the label
+       * \returns the number of generated candidates (always 1)
+       */
+      std::size_t createCandidateCenteredOverPoint( double x, double y, std::vector<std::unique_ptr<LabelPosition> > &lPos, double angle );
+
+      /**
        * Creates a single candidate using the "point on sruface" algorithm.
        *
        * \note Unlike the other create candidates methods, this method
@@ -193,6 +203,15 @@ namespace pal
        * \returns the number of generated candidates
        */
       std::size_t createCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, bool allowOverrun, Pal *pal );
+
+      /**
+       * Generate horizontal candidates for line feature.
+       * \param lPos pointer to an array of candidates, will be filled by generated candidates
+       * \param mapShape a pointer to the line
+       * \param pal point to pal settings object, for cancellation support
+       * \returns the number of generated candidates
+       */
+      std::size_t createHorizontalCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, Pal *pal );
 
       /**
        * Generate candidates for line feature, by trying to place candidates towards the middle of the longest
@@ -249,21 +268,20 @@ namespace pal
       std::size_t createCandidatesForPolygon( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, Pal *pal );
 
       /**
+       * Generate candidates outside of polygon features.
+       * \param lPos pointer to an array of candidates, will be filled by generated candidates
+       * \param pal point to pal settings object, for cancellation support
+       * \returns the number of generated candidates
+       */
+      std::size_t createCandidatesOutsidePolygon( std::vector<std::unique_ptr<LabelPosition> > &lPos, Pal *pal );
+
+      /**
        * Tests whether this feature part belongs to the same QgsLabelFeature as another
        * feature part.
        * \param part part to compare to
        * \returns TRUE if both parts belong to same QgsLabelFeature
        */
       bool hasSameLabelFeatureAs( FeaturePart *part ) const;
-
-#if 0
-
-      /**
-       * \brief Print feature information
-       * Print feature unique id, geometry type, points, and holes on screen
-       */
-      void print();
-#endif
 
       /**
        * Returns the width of the label, optionally taking an \a angle into account.
@@ -367,6 +385,8 @@ namespace pal
 
       mutable std::size_t mCachedMaxLineCandidates = 0;
       mutable std::size_t mCachedMaxPolygonCandidates = 0;
+
+      FeaturePart &operator= ( const FeaturePart & ) = delete;
   };
 
 } // end namespace pal

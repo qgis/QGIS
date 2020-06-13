@@ -28,7 +28,8 @@ from qgis.core import (Qgis,
                        QgsProcessingProvider,
                        QgsVectorFileWriter,
                        QgsMessageLog,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsRuntimeProfiler)
 from processing.core.ProcessingConfig import (ProcessingConfig, Setting)
 from .Grass7Utils import Grass7Utils
 from .Grass7Algorithm import Grass7Algorithm
@@ -39,7 +40,6 @@ pluginPath = os.path.normpath(os.path.join(
 
 
 class Grass7AlgorithmProvider(QgsProcessingProvider):
-
     descriptionFolder = Grass7Utils.grassDescriptionPath()
     activateSetting = "ACTIVATE_GRASS7"
 
@@ -48,45 +48,47 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         self.algs = []
 
     def load(self):
-        ProcessingConfig.settingIcons[self.name()] = self.icon()
-        if self.activateSetting:
-            ProcessingConfig.addSetting(Setting(self.name(), self.activateSetting,
-                                                self.tr('Activate'), True))
-        if isMac():
+        with QgsRuntimeProfiler.profile('Grass Provider'):
+            ProcessingConfig.settingIcons[self.name()] = self.icon()
+            if self.activateSetting:
+                ProcessingConfig.addSetting(Setting(self.name(), self.activateSetting,
+                                                    self.tr('Activate'), True))
+            if isMac():
+                ProcessingConfig.addSetting(Setting(
+                    self.name(),
+                    Grass7Utils.GRASS_FOLDER, self.tr('GRASS7 folder'),
+                    Grass7Utils.grassPath(), valuetype=Setting.FOLDER))
             ProcessingConfig.addSetting(Setting(
                 self.name(),
-                Grass7Utils.GRASS_FOLDER, self.tr('GRASS7 folder'),
-                Grass7Utils.grassPath(), valuetype=Setting.FOLDER))
-        ProcessingConfig.addSetting(Setting(
-            self.name(),
-            Grass7Utils.GRASS_LOG_COMMANDS,
-            self.tr('Log execution commands'), False))
-        ProcessingConfig.addSetting(Setting(
-            self.name(),
-            Grass7Utils.GRASS_LOG_CONSOLE,
-            self.tr('Log console output'), False))
-        ProcessingConfig.addSetting(Setting(
-            self.name(),
-            Grass7Utils.GRASS_HELP_PATH,
-            self.tr('Location of GRASS docs'),
-            Grass7Utils.grassHelpPath()))
-        # Add settings for using r.external/v.external instead of r.in.gdal/v.in.ogr
-        # but set them to False by default because the {r,v}.external implementations
-        # have some bugs on windows + there are algorithms that can't be used with
-        # external data (need a solid r.in.gdal/v.in.ogr).
-        # For more info have a look at e.g. https://trac.osgeo.org/grass/ticket/3927
-        ProcessingConfig.addSetting(Setting(
-            self.name(),
-            Grass7Utils.GRASS_USE_REXTERNAL,
-            self.tr('For raster layers, use r.external (faster) instead of r.in.gdal'),
-            False))
-        ProcessingConfig.addSetting(Setting(
-            self.name(),
-            Grass7Utils.GRASS_USE_VEXTERNAL,
-            self.tr('For vector layers, use v.external (faster) instead of v.in.ogr'),
-            False))
-        ProcessingConfig.readSettings()
-        self.refreshAlgorithms()
+                Grass7Utils.GRASS_LOG_COMMANDS,
+                self.tr('Log execution commands'), False))
+            ProcessingConfig.addSetting(Setting(
+                self.name(),
+                Grass7Utils.GRASS_LOG_CONSOLE,
+                self.tr('Log console output'), False))
+            ProcessingConfig.addSetting(Setting(
+                self.name(),
+                Grass7Utils.GRASS_HELP_PATH,
+                self.tr('Location of GRASS docs'),
+                Grass7Utils.grassHelpPath()))
+            # Add settings for using r.external/v.external instead of r.in.gdal/v.in.ogr
+            # but set them to False by default because the {r,v}.external implementations
+            # have some bugs on windows + there are algorithms that can't be used with
+            # external data (need a solid r.in.gdal/v.in.ogr).
+            # For more info have a look at e.g. https://trac.osgeo.org/grass/ticket/3927
+            ProcessingConfig.addSetting(Setting(
+                self.name(),
+                Grass7Utils.GRASS_USE_REXTERNAL,
+                self.tr('For raster layers, use r.external (faster) instead of r.in.gdal'),
+                False))
+            ProcessingConfig.addSetting(Setting(
+                self.name(),
+                Grass7Utils.GRASS_USE_VEXTERNAL,
+                self.tr('For vector layers, use v.external (faster) instead of v.in.ogr'),
+                False))
+            ProcessingConfig.readSettings()
+            self.refreshAlgorithms()
+
         return True
 
     def unload(self):

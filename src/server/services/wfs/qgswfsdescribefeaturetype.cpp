@@ -111,7 +111,7 @@ namespace QgsWfs
     QStringList typeNameList;
     QDomDocument queryDoc;
     QString errorMsg;
-    if ( queryDoc.setContent( parameters.value( QStringLiteral( "REQUEST_BODY" ) ), true, &errorMsg ) )
+    if ( queryDoc.setContent( request.data(), true, &errorMsg ) )
     {
       //read doc
       QDomElement queryDocElem = queryDoc.documentElement();
@@ -236,9 +236,15 @@ namespace QgsWfs
         case QgsWkbTypes::MultiPoint:
           geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiPointPropertyType" ) );
           break;
+        case QgsWkbTypes::MultiCurve:
+          geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiCurveType" ) );
+          break;
         case QgsWkbTypes::MultiLineString25D:
         case QgsWkbTypes::MultiLineString:
           geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiLineStringPropertyType" ) );
+          break;
+        case QgsWkbTypes::MultiSurface:
+          geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiSurfaceType" ) );
           break;
         case QgsWkbTypes::MultiPolygon25D:
         case QgsWkbTypes::MultiPolygon:

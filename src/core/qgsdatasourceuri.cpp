@@ -58,7 +58,7 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
 
     if ( i == uri.length() || uri[i] != '=' )
     {
-      QgsDebugMsg( QStringLiteral( "= expected after parameter name, skipping text '%1'" ).arg( pname ) );
+      // no "=", so likely not a parameter name
       continue;
     }
 
@@ -86,7 +86,6 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
         }
         else
         {
-          mSchema.clear();
           mTable = pval;
         }
 
@@ -117,6 +116,10 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
         {
           mGeometryColumn = QString();
         }
+      }
+      else if ( pname == QLatin1String( "schema" ) )
+      {
+        mSchema = pval;
       }
       else if ( pname == QLatin1String( "key" ) )
       {
@@ -582,6 +585,10 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
     uri += QStringLiteral( " table=%1%2" )
            .arg( quotedTablename(),
                  mGeometryColumn.isNull() ? QString() : QStringLiteral( " (%1)" ).arg( columnName ) );
+  }
+  else if ( !mSchema.isEmpty() )
+  {
+    uri += QStringLiteral( " schema='%1'" ).arg( escape( mSchema ) );
   }
 
   if ( !mSql.isEmpty() )

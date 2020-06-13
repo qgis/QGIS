@@ -74,6 +74,7 @@ class QgsMapLayer;
 class QgsBookmarkManager;
 class QgsProjectViewSettings;
 class QgsProjectDisplaySettings;
+class QgsProjectTimeSettings;
 
 /**
  * \ingroup core
@@ -100,10 +101,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QgsMapThemeCollection *mapThemeCollection READ mapThemeCollection NOTIFY mapThemeCollectionChanged )
     Q_PROPERTY( QgsSnappingConfig snappingConfig READ snappingConfig WRITE setSnappingConfig NOTIFY snappingConfigChanged )
     Q_PROPERTY( QgsRelationManager *relationManager READ relationManager )
+    Q_PROPERTY( AvoidIntersectionsMode avoidIntersectionsMode READ avoidIntersectionsMode WRITE setAvoidIntersectionsMode NOTIFY avoidIntersectionsModeChanged )
     Q_PROPERTY( QList<QgsVectorLayer *> avoidIntersectionsLayers READ avoidIntersectionsLayers WRITE setAvoidIntersectionsLayers NOTIFY avoidIntersectionsLayersChanged )
     Q_PROPERTY( QgsProjectMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
     Q_PROPERTY( QColor backgroundColor READ backgroundColor WRITE setBackgroundColor NOTIFY backgroundColorChanged )
     Q_PROPERTY( QColor selectionColor READ selectionColor WRITE setSelectionColor NOTIFY selectionColorChanged )
+    Q_PROPERTY( bool topologicalEditing READ topologicalEditing WRITE setTopologicalEditing NOTIFY topologicalEditingChanged )
 
   public:
 
@@ -128,6 +131,33 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
       Qgs, //!< Project saved in a clear text, does not support auxiliary data
     };
     Q_ENUM( FileFormat )
+
+    /**
+     * Flags which control how intersections of pre-existing feature are handled when digitizing new features.
+     * \since QGIS 3.14
+     */
+    enum class AvoidIntersectionsMode
+    {
+      AllowIntersections, //!< Overlap with any feature allowed when digitizing new features
+      AvoidIntersectionsCurrentLayer, //!< Overlap with features from the active layer when digitizing new features not allowed
+      AvoidIntersectionsLayers, //!< Overlap with features from a specified list of layers when digitizing new features not allowed
+    };
+    Q_ENUM( AvoidIntersectionsMode )
+
+    /**
+     * Data defined properties.
+     * Overrides of user defined server parameters are stored in a
+     * property collection and they can be retrieved using the
+     * indexes specified in this enum.
+     *
+     * \since QGIS 3.14
+     */
+    enum DataDefinedServerProperty
+    {
+      NoProperty = 0, //!< No property
+      AllProperties = 1, //!< All properties for item
+      WMSOnlineResource = 2, //!< Alias
+    };
 
     //! Returns the QgsProject singleton instance
     static QgsProject *instance();
@@ -179,6 +209,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString saveUserFullName() const;
 
     /**
+     * Returns the date and time when the project was last saved.
+     *
+     * \since QGIS 3.14
+     */
+    QDateTime lastSaveDateTime() const;
+
+    /**
      * Returns TRUE if the project has been modified since the last write()
      */
     bool isDirty() const;
@@ -198,6 +235,32 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see fileInfo()
     */
     QString fileName() const;
+
+    /**
+     * Sets the original \a path associated with the project.
+     *
+     * This is intended for use with non-qgs/qgz project files (see QgsCustomProjectOpenHandler) in order to allow
+     * custom project open handlers to specify the original file name of the project. For custom project formats,
+     * it is NOT appropriate to call setFileName() with the original project path, as this causes the original (non
+     * QGIS) project file to be overwritten when the project is next saved.
+     *
+     * \see originalPath()
+     * \since QGIS 3.14
+     */
+    void setOriginalPath( const QString &path );
+
+    /**
+     * Returns the original path associated with the project.
+     *
+     * This is intended for use with non-qgs/qgz project files (see QgsCustomProjectOpenHandler) in order to allow
+     * custom project open handlers to specify the original file name of the project. For custom project formats,
+     * it is NOT appropriate to call setFileName() with the original project path, as this causes the original (non
+     * QGIS) project file to be overwritten when the project is next saved.
+
+     * \see setOriginalPath()
+     * \since QGIS 3.14
+    */
+    QString originalPath() const;
 
     /**
      * Returns QFileInfo object for the project's associated file.
@@ -421,7 +484,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = nullptr ) const;
     bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = nullptr ) const;
 
-
     //! Remove the given key
     bool removeEntry( const QString &scope, const QString &key );
 
@@ -612,6 +674,23 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsProjectViewSettings *viewSettings();
 
     /**
+     * Returns the project's time settings, which contains the project's temporal range and other
+     * time based settings.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.14
+     */
+    const QgsProjectTimeSettings *timeSettings() const SIP_SKIP;
+
+    /**
+     * Returns the project's time settings, which contains the project's temporal range and other
+     * time based settings.
+     *
+     * \since QGIS 3.14
+     */
+    QgsProjectTimeSettings *timeSettings();
+
+    /**
      * Returns the project's display settings, which settings and properties relating
      * to how a QgsProject should display values such as map coordinates and bearings.
      * \note not available in Python bindings
@@ -746,11 +825,26 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QList<QgsVectorLayer *> avoidIntersectionsLayers() const;
 
     /**
-     * A list of layers with which intersections should be avoided.
+     * Sets the list of layers with which intersections should be avoided.
+     * Only used if the avoid intersection mode is set to advanced.
      *
      * \since QGIS 3.0
      */
     void setAvoidIntersectionsLayers( const QList<QgsVectorLayer *> &layers );
+
+    /**
+     * Sets the avoid intersections mode.
+     *
+     * \since QGIS 3.14
+     */
+    void setAvoidIntersectionsMode( const AvoidIntersectionsMode mode );
+
+    /**
+     * Returns the current avoid intersections mode.
+     *
+     * \since QGIS 3.14
+     */
+    AvoidIntersectionsMode avoidIntersectionsMode() const { return mAvoidIntersectionsMode; }
 
     /**
      * A map of custom project variables.
@@ -873,7 +967,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Returns a list of registered map layers with a specified layer type.
      *
-     * Example:
+     * ### Example
      *
      *     QVector<QgsVectorLayer*> vectorLayers = QgsProject::instance()->layers<QgsVectorLayer*>();
      *
@@ -1394,6 +1488,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void snappingConfigChanged( const QgsSnappingConfig &config );
 
     /**
+     * Emitted whenever the avoid intersections mode has changed.
+     *
+     * \since QGIS 3.14
+     */
+    void avoidIntersectionsModeChanged();
+
+    /**
      * Emitted whenever the expression variables stored in the project have been changed.
      * \since QGIS 3.0
      */
@@ -1688,6 +1789,22 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     */
     void registerTranslatableObjects( QgsTranslationContext *translationContext );
 
+    /**
+     * Sets the data defined properties used for overrides in user defined server
+     * parameters to \a properties
+     *
+     * \since QGIS 3.14
+     */
+    void setDataDefinedServerProperties( const QgsPropertyCollection &properties );
+
+    /**
+     * Returns the data defined properties used for overrides in user defined server
+     * parameters
+     *
+     * \since QGIS 3.14
+     */
+    QgsPropertyCollection dataDefinedServerProperties() const;
+
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer *> &layers );
     void onMapLayersRemoved( const QList<QgsMapLayer *> &layers );
@@ -1766,6 +1883,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! Save auxiliary storage to database
     bool saveAuxiliaryStorage( const QString &filename = QString() );
 
+    //! Returns the property definition used for a data defined server property
+    static QgsPropertiesDefinition &dataDefinedServerPropertyDefinitions();
+
     std::unique_ptr< QgsMapLayerStore > mLayerStore;
 
     QString mErrorMessage;
@@ -1780,6 +1900,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QHash< QString, QPair< QString, bool> > mEmbeddedLayers;
 
     QgsSnappingConfig mSnappingConfig;
+    AvoidIntersectionsMode mAvoidIntersectionsMode = AvoidIntersectionsMode::AllowIntersections;
 
     QgsRelationManager *mRelationManager = nullptr;
 
@@ -1789,6 +1910,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsBookmarkManager *mBookmarkManager = nullptr;
 
     QgsProjectViewSettings *mViewSettings = nullptr;
+
+    QgsProjectTimeSettings *mTimeSettings = nullptr;
 
     QgsProjectDisplaySettings *mDisplaySettings = nullptr;
 
@@ -1811,8 +1934,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QFile mFile;                 // current physical project file
 
+    QString mOriginalPath;
+
     QString mSaveUser;              // last saved user.
     QString mSaveUserFull;          // last saved user full name.
+    QDateTime mSaveDateTime;
 
     /**
      * Manual override for project home path - if empty, home path is automatically
@@ -1831,6 +1957,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool mDirty = false;                 // project has been modified since it has been read or saved
     int mDirtyBlockCount = 0;
     bool mTrustLayerMetadata = false;
+
+    QgsPropertyCollection mDataDefinedServerProperties;
 
     QgsCoordinateTransformContext mTransformContext;
 

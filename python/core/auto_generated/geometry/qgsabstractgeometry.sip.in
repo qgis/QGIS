@@ -189,9 +189,18 @@ Sets the geometry from a WKT string.
 %End
 
 
-    virtual QByteArray asWkb() const = 0;
+    enum WkbFlag
+    {
+      FlagExportTrianglesAsPolygons,
+    };
+    typedef QFlags<QgsAbstractGeometry::WkbFlag> WkbFlags;
+
+
+    virtual QByteArray asWkb( WkbFlags flags = 0 ) const = 0;
 %Docstring
 Returns a WKB representation of the geometry.
+
+The optional ``flags`` argument specifies flags controlling WKB export behavior (since QGIS 3.14).
 
 .. seealso:: :py:func:`asWkt`
 
@@ -519,7 +528,9 @@ Ownership is transferred to the caller.
 If the gridified geometry could not be calculated ``None`` will be returned.
 It may generate an invalid geometry (in some corner cases).
 It can also be thought as rounding the edges and it may be useful for removing errors.
-Example:
+
+Example
+-------
 
 In this case we use a 2D grid of 1x1 to gridify.
 In this case, it can be thought like rounding the x and y of all the points/vertices to full units (remove all decimals).
@@ -678,7 +689,9 @@ Checks validity of the geometry, and returns ``True`` if the geometry is valid.
 Returns Java-style iterator for traversal of parts of the geometry. This iterator
 can safely be used to modify parts of the geometry.
 
-* Example:
+Example
+-------
+
 .. code-block:: python
 
        # print the WKT representation of each part in a multi-point geometry
@@ -717,7 +730,9 @@ Returns a read-only, Java-style iterator for traversal of vertices of all the ge
    The iterator returns a copy of individual vertices, and accordingly geometries cannot be
    modified using the iterator. See transformVertices() for a safe method to modify vertices "in-place".
 
-* Example:
+Example
+-------
+
 .. code-block:: python
 
        # print the x and y coordinate for each vertex in a LineString
@@ -838,6 +853,13 @@ Returns ``True`` if the vertex id is valid
   int ring;
   int vertex;
   VertexType type;
+
+  SIP_PYOBJECT __repr__();
+%MethodCode
+  QString str = QStringLiteral( "<QgsVertexId: %1,%2,%3%4>" ).arg( sipCpp->part ).arg( sipCpp->ring ).arg( sipCpp->vertex ).arg( sipCpp->type == QgsVertexId::CurveVertex ? QStringLiteral( " CurveVertex" ) : QString() );
+  sipRes = PyUnicode_FromString( str.toUtf8().data() );
+%End
+
 };
 
 
@@ -983,6 +1005,9 @@ Returns next part of the geometry (undefined behavior if hasNext() returns ``Fal
 %End
 
 };
+
+QFlags<QgsAbstractGeometry::WkbFlag> operator|(QgsAbstractGeometry::WkbFlag f1, QFlags<QgsAbstractGeometry::WkbFlag> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

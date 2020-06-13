@@ -69,6 +69,7 @@ Returns the selected features in the attribute table in table sorted order.
 .. versionadded:: 3.4
 %End
 
+
   protected:
 
     virtual void mousePressEvent( QMouseEvent *event );

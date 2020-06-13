@@ -19,8 +19,8 @@
 
 
 %CLASSMIXEDCASE%Plugin::%CLASSMIXEDCASE%Plugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 
@@ -61,7 +61,7 @@ bool %CLASSMIXEDCASE%Plugin::isInitialized() const
 
 void %CLASSMIXEDCASE%Plugin::initialize( QDesignerFormEditorInterface *core )
 {
-  Q_UNUSED( core );
+  Q_UNUSED( core )
   if ( mInitialized )
     return;
   mInitialized = true;
@@ -81,7 +81,7 @@ QString %CLASSMIXEDCASE%Plugin::whatsThis() const
 QString %CLASSMIXEDCASE%Plugin::domXml() const
 {
   return QString( "<ui language=\"c++\">\n"
-                  " <widget class=\"%1\" name=\"m%CLASSMIXEDCASE%\">\n"
+                  " <widget class=\"%1\" name=\"m%CLASSWITHOUTQGS%\">\n"
                   "  <property name=\"geometry\">\n"
                   "   <rect>\n"
                   "    <x>0</x>\n"

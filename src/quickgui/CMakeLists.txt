@@ -18,6 +18,7 @@ SET(QGIS_QUICK_GUI_MOC_HDRS
   qgsquickscalebarkit.h
   qgsquicksimulatedpositionsource.h
   qgsquickutils.h
+  qgsquickvaluerelationlistmodel.h
 )
 
 SET(QGIS_QUICK_GUI_HDRS
@@ -43,6 +44,7 @@ SET(QGIS_QUICK_GUI_SRC
   qgsquickscalebarkit.cpp
   qgsquicksimulatedpositionsource.cpp
   qgsquickutils.cpp
+  qgsquickvaluerelationlistmodel.cpp
 )
 
 INCLUDE_DIRECTORIES(
@@ -65,6 +67,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression
@@ -88,7 +91,6 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 SET(QGIS_QUICK_GUI_IMAGE_RCCS ./images/images.qrc)
-QT5_ADD_RESOURCES(QGIS_QUICK_GUI_IMAGE_RCC_SRCS ${QGIS_QUICK_GUI_IMAGE_RCCS})
 
 ############################################################
 # qgis_quick shared library
@@ -100,7 +102,7 @@ ELSE(MSVC)
 ENDIF(MSVC)
 
 ADD_LIBRARY(qgis_quick ${LIBRARY_TYPE}
-    ${QGIS_QUICK_GUI_IMAGE_RCC_SRCS}
+    ${QGIS_QUICK_GUI_IMAGE_RCCS}
     ${QGIS_QUICK_GUI_SRC}
     ${QGIS_QUICK_GUI_MOC_HDRS}
     ${QGIS_QUICK_GUI_MOC_SRCS}
@@ -118,13 +120,6 @@ GENERATE_EXPORT_HEADER(
 )
 
 # Installation
-INSTALL(TARGETS qgis_quick
-  RUNTIME DESTINATION ${QGIS_BIN_DIR}
-  LIBRARY DESTINATION ${QGIS_LIB_DIR}
-  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
-  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
-  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
-
 IF(NOT APPLE)
   INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/qgis_quick.h ${QGIS_QUICK_GUI_HDRS} ${QGIS_QUICK_GUI_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
 ELSE(NOT APPLE)
@@ -148,6 +143,13 @@ ELSE(NOT APPLE)
     DEPENDS qgis_quick.h
   )
 ENDIF(NOT APPLE)
+
+INSTALL(TARGETS qgis_quick
+  RUNTIME DESTINATION ${QGIS_BIN_DIR}
+  LIBRARY DESTINATION ${QGIS_LIB_DIR}
+  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
+  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
+  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
 
 ############################################################
 # qgis_quick_plugin module (QML) library

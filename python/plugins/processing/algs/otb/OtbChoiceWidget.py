@@ -31,6 +31,7 @@ from processing.gui.wrappers import (WidgetWrapper,
                                      DIALOG_BATCH,
                                      DIALOG_MODELER)
 
+
 # TODO: QGIS 3.8 move this class to processing/gui/
 # OtbChoiceWidget is a crucial parameter type in otb provider
 # It is the one that can handles required parameters are run-time depending on user input!.
@@ -49,7 +50,7 @@ class OtbChoiceWidgetWrapper(WidgetWrapper):
     def createWidget(self):
         widget = QComboBox()
         widget.addItems(self.param.options)
-        if self.dialogType in(DIALOG_MODELER, DIALOG_STANDARD):
+        if self.dialogType in (DIALOG_MODELER, DIALOG_STANDARD):
             widget.currentIndexChanged.connect(self.updateAllParameters)
         return widget
 
@@ -68,12 +69,15 @@ class OtbChoiceWidgetWrapper(WidgetWrapper):
             if name in self.dialog.mainWidget().wrappers:
                 self.__setWrapperVisibility(self.dialog.mainWidget().wrappers[name], visible)
 
-        #Fur Qgis modeler
+        # For QGIS modeler
         else:
-            if name in self.dialog.wrappers:
-                self.__setWrapperVisibility(self.dialog.wrappers[name], visible)
-            if name in self.dialog.widget_labels:
-                self.dialog.widget_labels[name].setVisible(visible)
+            try:
+                if name in self.dialog.widget.widget.wrappers:
+                    self.__setWrapperVisibility(self.dialog.widget.widget.wrappers[name], visible)
+                if name in self.dialog.widget.widget.widget_labels:
+                    self.dialog.widget.widget.widget_labels[name].setVisible(visible)
+            except AttributeError:
+                pass
 
     def __setWrapperVisibility(self, wrapper, v):
         # For compatibility with 3.x API, we need to check whether the wrapper is
@@ -93,7 +97,7 @@ class OtbChoiceWidgetWrapper(WidgetWrapper):
 
     def updateAllParameters(self, current_value):
         for parameter in self.get_algorithm().parameterDefinitions():
-            if not 'group_key' in parameter.metadata() or parameter.metadata()['group_key'] != self.param.name():
+            if 'group_key' not in parameter.metadata() or parameter.metadata()['group_key'] != self.param.name():
                 continue
             name = parameter.name()
             choice_key = parameter.metadata()['group_key']
@@ -102,7 +106,7 @@ class OtbChoiceWidgetWrapper(WidgetWrapper):
                 if current_value is None:
                     current_value = choice_param.defaultValue()
                 pattern = "{}.{}.".format(choice_key, choice_param.getValueAsText(current_value))
-                if not pattern in name:
+                if pattern not in name:
                     flags = self.get_algorithm().parameterDefinition(name).flags()
                     if not flags & QgsProcessingParameterDefinition.FlagOptional:
                         self.flagsModified[name] = True
@@ -128,7 +132,7 @@ class OtbChoiceWidgetWrapper(WidgetWrapper):
         #     return
         self.updateAllParameters(current_value=None)
         for parameter in self.get_algorithm().parameterDefinitions():
-            if not 'group_key' in parameter.metadata() or parameter.metadata()['group_key'] != self.param.name():
+            if 'group_key' not in parameter.metadata() or parameter.metadata()['group_key'] != self.param.name():
                 continue
             for wrapper in wrappers:
                 if wrapper.param.name() == parameter.name():
@@ -159,7 +163,7 @@ class OtbParameterChoice(QgsProcessingParameterDefinition):
             self.value = self.default
 
     def getValueAsText(self, value):
-        if not value in self.options:
+        if value not in self.options:
             value = self.options[int(value)]
         return value
 
@@ -171,5 +175,5 @@ class OtbParameterChoice(QgsProcessingParameterDefinition):
             return True
 
     def type(self):
-        #This value is written by otbQgisDescriptor.
+        # This value is written by otbQgisDescriptor.
         return 'OTBParameterChoice'

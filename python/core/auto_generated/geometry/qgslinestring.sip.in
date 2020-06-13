@@ -401,6 +401,7 @@ segment in the line.
 %End
 
 
+
     virtual QString geometryType() const;
 
     virtual int dimension() const;
@@ -423,7 +424,7 @@ segment in the line.
     virtual bool fromWkt( const QString &wkt );
 
 
-    virtual QByteArray asWkb() const;
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = 0 ) const;
 
     virtual QString asWkt( int precision = 17 ) const;
 

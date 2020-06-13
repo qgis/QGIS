@@ -23,7 +23,7 @@
 # fi
 
 # extensions or files that should be excluded from file list if :% is appended in the spelling.dat file
-EXCLUDE_SCRIPT_LIST='(\.(xml|svg|sip|t2t|pl|sh|qgs|badquote|cmake(\.in)?)|^(debian/copyright|cmake_templates/.*|INSTALL|NEWS|tests/testdata/labeling/README.rst|tests/testdata/font/QGIS-Vera/COPYRIGHT.TXT|doc/(news|INSTALL)\.html|debian/build/))$'
+EXCLUDE_SCRIPT_LIST='(\.(xml|svg|sip|pl|sh|qgs|badquote|cmake(\.in)?)|^(debian/copyright|cmake_templates/.*|tests/testdata/labeling/README.rst|tests/testdata/font/QGIS-Vera/COPYRIGHT.TXT|doc/NEWS\.html|debian/build/))$'
 
 DIR=$(git rev-parse --show-toplevel)/scripts/spell_check
 

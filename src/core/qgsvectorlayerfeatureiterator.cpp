@@ -1014,6 +1014,12 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesCached( Qg
 
 void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( QgsFeature &f, const QVariant &joinValue ) const
 {
+  // Shortcut
+  if ( joinLayer && ! joinLayer->hasFeatures() )
+  {
+    return;
+  }
+
   // no memory cache, query the joined values by setting substring
   QString subsetString;
 

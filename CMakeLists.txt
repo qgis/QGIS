@@ -2,6 +2,7 @@
 # CMake settings
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
 SET(CMAKE_COLOR_MAKEFILE ON)
+SET(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # POLICIES
@@ -15,7 +16,7 @@ SET(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 #############################################################
 # Project and version
 SET(CPACK_PACKAGE_VERSION_MAJOR "3")
-SET(CPACK_PACKAGE_VERSION_MINOR "11")
+SET(CPACK_PACKAGE_VERSION_MINOR "13")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 SET(RELEASE_NAME "Master")
@@ -31,6 +32,20 @@ ENDIF (APPLE)
 MATH(EXPR QGIS_VERSION_INT "${CPACK_PACKAGE_VERSION_MAJOR}*10000+${CPACK_PACKAGE_VERSION_MINOR}*100+${CPACK_PACKAGE_VERSION_PATCH}")
 MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSION_INT})")
 
+#############################################################
+IF (APPLE)
+  # QGIS custom dependencies package from qgis/QGIS-Mac-Packager
+  # they can be downloaded from https://qgis.org/downloads/macos/qgis-deps
+  # and extracted to /opt/QGIS/qgis-deps-<deps-version>/stage
+  SET (QGIS_MAC_DEPS_DIR "" CACHE PATH "Path to QGIS Mac custom dependencies directory")
+
+  # Setup LIB_DIR and CMAKE_PREFIX_PATH to help CMake's
+  # find_packages to look for these libraries instead of system libraries
+  IF ( QGIS_MAC_DEPS_DIR )
+    SET(ENV{LIB_DIR} ${QGIS_MAC_DEPS_DIR})
+    LIST(APPEND CMAKE_PREFIX_PATH ${QGIS_MAC_DEPS_DIR})
+  ENDIF ( QGIS_MAC_DEPS_DIR )
+ENDIF (APPLE)
 
 #############################################################
 # Configure OpenCL if available
@@ -133,6 +148,8 @@ IF(WITH_CORE)
 
   SET (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
 
+  SET (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
+
   # try to configure and build python bindings by default
   SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
   IF (WITH_BINDINGS)
@@ -187,6 +204,10 @@ IF(WITH_CORE)
     MESSAGE(FATAL_ERROR "Desktop cannot be built without analysis")
   ENDIF()
 
+  IF ( WITH_QGIS_PROCESS AND NOT WITH_ANALYSIS )
+    MESSAGE(FATAL_ERROR "Process tool cannot be built without analysis")
+  ENDIF()
+
   IF ( WITH_DESKTOP )
     # The qgis_desktop target is meant to build a minimal but complete running QGIS during development
     # This should help to reduce compile time while still having a "complete enough" QGIS for most of the development
@@ -225,16 +246,6 @@ IF(WITH_CORE)
   SET (WITH_QTMOBILITY ${DEFAULT_WITH_QTMOBILITY} CACHE BOOL "Determines if QtMobility related code should be build (for example internal GPS)")
 
   SET (WITH_GEOREFERENCER TRUE CACHE BOOL "Determines whether GeoReferencer plugin should be built")
-
-  SET (WITH_GLOBE FALSE CACHE BOOL "Determines whether Globe plugin should be built")
-  IF (WITH_GLOBE)
-    SET(QT_USE_QTOPENGL 1)
-    FIND_PACKAGE(OSGEARTH REQUIRED)
-    IF (OSGEARTHQT_LIBRARY)
-      # following variable is used in qgsconfig.h
-      SET(HAVE_OSGEARTHQT TRUE)
-    ENDIF (OSGEARTHQT_LIBRARY)
-  ENDIF (WITH_GLOBE)
 
   SET (WITH_THREAD_LOCAL TRUE CACHE BOOL "Determines whether std::thread_local should be used")
   MARK_AS_ADVANCED(WITH_THREAD_LOCAL)
@@ -330,6 +341,14 @@ IF(WITH_CORE)
   IF (NOT SQLITE3_FOUND)
     MESSAGE (SEND_ERROR "sqlite3 dependency was not found!")
   ENDIF (NOT SQLITE3_FOUND)
+
+  FIND_PACKAGE(Protobuf REQUIRED)   # for decoding of vector tiles in MVT format
+  MESSAGE(STATUS "Found Protobuf: ${Protobuf_LIBRARIES}")
+  IF (NOT Protobuf_PROTOC_EXECUTABLE)
+    MESSAGE (SEND_ERROR "Protobuf library's 'protoc' tool was not found!")
+  ENDIF ()
+  FIND_PACKAGE(ZLIB REQUIRED)       # for decompression of vector tiles in MBTiles file
+  MESSAGE(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
 
   # optional
   IF (WITH_POSTGRESQL)
@@ -464,7 +483,7 @@ ENDIF(WITH_CORE)
 SET(CMAKE_AUTOMOC ON)
 
 # build our version of astyle
-SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare-commit.sh (using 'our' astyle)")
+SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare_commit.sh (using 'our' astyle)")
 
 # QML
 SET(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML directory for QML autocomplete")
@@ -605,6 +624,8 @@ ELSE (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 
 IF(MSVC)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8")
   SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
   SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
   # disable macros that offend std::numeric_limits<T>::min()/max()
@@ -615,6 +636,11 @@ ENDIF(MSVC)
 ADD_DEFINITIONS(-DQT_DEPRECATED_WARNINGS)
 # Unfortunately Qwt uses deprecated QString::null in headers, preventing this being raised above 5.8
 ADD_DEFINITIONS(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
+
+IF (WITH_GEOREFERENCER)
+  FIND_PACKAGE(GSL REQUIRED)
+  SET(HAVE_GEOREFERENCER TRUE)
+ENDIF (WITH_GEOREFERENCER)
 
 IF(ENABLE_COVERAGE)
   INCLUDE("cmake/modules/coverage/CodeCoverage.cmake")
@@ -675,8 +701,9 @@ IF (WITH_CORE)
       SET (QGIS_MACAPP_PREFIX ${CMAKE_INSTALL_PREFIX}/${QGIS_APP_NAME}.app/Contents)
       # common prefix for components, let cmake handle it
       SET (CMAKE_INSTALL_PREFIX ${QGIS_MACAPP_PREFIX}/MacOS)
-      # 4 bundling levels, each includes previous
-      #   0  nothing
+      # 5 bundling levels, each includes previous
+      #  -1  nothing
+      #   0  fixup the library paths for all QGIS libraries with @loader_path
       #   1  Qt frameworks
       #   2  non-system libraries, "standard"
       #   3  non-system frameworks, "standalone"
@@ -714,9 +741,6 @@ IF (WITH_CORE)
       # path for framework references when running from build directory
       # changed later to reference in-app resources upon install
       SET (CMAKE_INSTALL_NAME_DIR ${CMAKE_BINARY_DIR}/output/lib)
-      IF (WITH_GLOBE)
-        SET (OSG_PLUGINS_PATH "" CACHE PATH "Path to OSG plugins for bundling")
-      ENDIF (WITH_GLOBE)
       # recent cmakes force SDKs, recent SDKs don't have user symlinks
       # need to find non-system frameworks
       # cmake bug #0007250 - CMAKE_SHARED_LINKER_FLAGS ignored when creating
@@ -838,7 +862,7 @@ ENDIF (DISABLE_DEPRECATED)
 #############################################################
 # Python build dependency
 
-FIND_PACKAGE(PythonInterp 3 REQUIRED)
+FIND_PACKAGE(PythonLibrary REQUIRED)
 
 #############################################################
 # Python bindings
@@ -860,7 +884,7 @@ IF (WITH_CORE AND WITH_BINDINGS)
   INCLUDE(SIPMacros)
 
   SET(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
-  SET(SIP_CONCAT_PARTS 4)
+  SET(SIP_CONCAT_PARTS 6)
 
   IF (NOT BINDINGS_GLOBAL_INSTALL)
     SET(PYTHON_SITE_PACKAGES_DIR ${QGIS_DATA_DIR}/python)

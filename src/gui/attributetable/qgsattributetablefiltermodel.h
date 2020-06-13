@@ -128,6 +128,16 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     void setFilterMode( FilterMode filterMode );
 
     /**
+     * Disconnect the connections set for the current filterMode
+     */
+    void disconnectFilterModeConnections();
+
+    /**
+     * Disconnect the connections set for the new \a filterMode
+     */
+    void connectFilterModeConnections( FilterMode filterMode );
+
+    /**
      * The current filterModel
      */
     FilterMode filterMode() { return mFilterMode; }
@@ -221,6 +231,14 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
 
+    /**
+     * Set the \a expression and the \a context to be stored in case of the features
+     * need to be filtered again (like on filter or on main model data change).
+     *
+     * \since QGIS 3.10.3
+     */
+    void setFilterExpression( const QgsExpression &expression, const QgsExpressionContext &context );
+
   signals:
 
     /**
@@ -229,6 +247,16 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * \param order The sort order
      */
     void sortColumnChanged( int column, Qt::SortOrder order );
+
+    /**
+     * Emitted when the filtering of the features has been done
+     */
+    void featuresFiltered();
+
+    /**
+     * Emitted when the the visible features on extend are reloaded (the list is created)
+     */
+    void visibleReloaded();
 
   protected:
 
@@ -257,12 +285,25 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     /**
      * Is called upon every change of the visible extents on the map canvas.
      * When a change is signalled, the filter is updated and invalidated if needed.
+     *
+     * \deprecated since QGIS 3.10.3 - made private as reloadVisible()
      */
-    void extentsChanged();
+    Q_DECL_DEPRECATED void extentsChanged();
+
+    /**
+     * Updates the filtered features in the filter model. It is called when the data of the
+     * main table or the filter expression changed.
+     *
+     * \since QGIS 3.10.3
+     */
+    void filterFeatures();
 
   private slots:
     void selectionChanged();
     void onColumnsChanged();
+    void reloadVisible();
+    void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
+    void onGeometryChanged();
 
   private:
     QgsFeatureIds mFilteredFeatures;
@@ -273,9 +314,16 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
     QgsAttributeTableConfig mConfig;
     QVector<int> mColumnMapping;
+    QgsExpression mFilterExpression;
+    QgsExpressionContext mFilterExpressionContext;
+
     int mapColumnToSource( int column ) const;
     int mapColumnFromSource( int column ) const;
 
+    QTimer mReloadVisibleTimer;
+    QTimer mFilterFeaturesTimer;
+    void startTimedReloadVisible();
+    void startTimedFilterFeatures();
 };
 
 #endif

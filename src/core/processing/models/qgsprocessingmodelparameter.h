@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsprocessingmodelcomponent.h"
+#include "qgsprocessingmodelcomment.h"
 
 ///@cond NOT_STABLE
 
@@ -39,6 +40,8 @@ class CORE_EXPORT QgsProcessingModelParameter : public QgsProcessingModelCompone
      * parameters from the parent model.
      */
     QgsProcessingModelParameter( const QString &parameterName = QString() );
+
+    QgsProcessingModelParameter *clone() const override SIP_FACTORY;
 
     /**
      * Returns the associated parameter name. The parameter name should match one of the
@@ -66,9 +69,15 @@ class CORE_EXPORT QgsProcessingModelParameter : public QgsProcessingModelCompone
      */
     bool loadVariant( const QVariantMap &map );
 
+    SIP_SKIP const QgsProcessingModelComment *comment() const override { return &mComment; }
+    QgsProcessingModelComment *comment() override { return &mComment; }
+    void setComment( const QgsProcessingModelComment &comment ) override { mComment = comment; }
+
   private:
 
     QString mParameterName;
+
+    QgsProcessingModelComment mComment;
 
 };
 

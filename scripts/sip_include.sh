@@ -34,7 +34,7 @@ fi
 if [[ -n $1 ]]; then
   modules=("$1")
 else
-  modules=(core gui analysis server)
+  modules=(core gui analysis server 3d)
 fi
 sources=(HDRS MOC_HDRS SRCS)
 

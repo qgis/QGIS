@@ -39,6 +39,7 @@ class QWidget;
 class QgsAdvancedDigitizingDockWidget;
 class QgsAttributeDialog;
 class QgsCustomDropHandler;
+class QgsCustomProjectOpenHandler;
 class QgsLayoutCustomDropHandler;
 class QgsFeature;
 class QgsLayerTreeMapCanvasBridge;
@@ -56,11 +57,13 @@ class QgsPluginManagerInterface;
 class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
+class QgsVectorTileLayer;
 class QgsOptionsWidgetFactory;
 class QgsLocatorFilter;
 class QgsStatusBar;
 class QgsMeshLayer;
 class QgsBrowserGuiModel;
+class QgsDevToolWidgetFactory;
 
 
 /**
@@ -330,6 +333,12 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QToolBar *attributesToolBar() = 0;
 
     /**
+     * Returns a reference to the main window "Selection" toolbar.
+     * \since QGIS 3.14
+     */
+    virtual QToolBar *selectionToolBar() = 0;
+
+    /**
      * Returns a reference to the main window "Plugin" toolbar.
      */
     virtual QToolBar *pluginToolBar() = 0;
@@ -477,6 +486,18 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionAddRasterLayer() = 0;
     virtual QAction *actionAddPgLayer() = 0;
     virtual QAction *actionAddWmsLayer() = 0;
+
+    /**
+     * Returns the native Add XYZ Layer action.
+     * \since QGIS 3.14
+     */
+    virtual QAction *actionAddXyzLayer() = 0;
+
+    /**
+     * Returns the native Add Vector Tile Layer action.
+     * \since QGIS 3.14
+     */
+    virtual QAction *actionAddVectorTileLayer() = 0;
     //! Returns the native Add ArcGIS FeatureServer action.
     virtual QAction *actionAddAfsLayer() = 0;
     //! Returns the native Add ArcGIS MapServer action.
@@ -510,6 +531,18 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionHideAllLayers() = 0;
     virtual QAction *actionShowAllLayers() = 0;
     virtual QAction *actionHideSelectedLayers() = 0;
+
+    /**
+     * Returns the Toggle Selected Layers action.
+     * \since QGIS 3.14
+     */
+    virtual QAction *actionToggleSelectedLayers() = 0;
+
+    /**
+     * Returns the Toggle Selected Layers Independently action.
+     * \since QGIS 3.14
+     */
+    virtual QAction *actionToggleSelectedLayersIndependently() = 0;
 
     /**
      * Returns the Hide Deselected Layers action.
@@ -647,6 +680,12 @@ class GUI_EXPORT QgisInterface : public QObject
      * Adds a mesh layer to the current project.
      */
     virtual QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
+
+    /**
+     * Adds a vector tile layer to the current project.
+     * \since QGIS 3.14
+     */
+    virtual QgsVectorTileLayer *addVectorTileLayer( const QString &url, const QString &baseName ) = 0;
 
     //! Adds (opens) a project
     virtual bool addProject( const QString &project ) = 0;
@@ -856,9 +895,26 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Adds a \a dock widget to the main window, in the specified dock \a area.
      *
+     * \see addTabifiedDockWidget()
      * \see removeDockWidget()
      */
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
+
+    /**
+     * Add a dock widget to the given area and tabify it (if other dock widgets
+     * exist in the same \a area). The new tab will be below other tabs unless
+     * \a raiseTab is passed as true.
+     *
+     * \a tabifyWith is a list of dock widget object names, ordered by
+     * priority, with which the new dock widget should be tabified. Only the
+     * first matching object name will be picked. If none of the given object
+     * names is found in that \a area (or if \a tabifyWith is not given at
+     * all), the new dock widget will be created anyways, but its location
+     * within that \a area will be unpredictable.
+     *
+     * \since QGIS 3.14
+     */
+    virtual void addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget, const QStringList &tabifyWith = QStringList(), bool raiseTab = false ) = 0;
 
     /**
      * Removes the specified \a dock widget from main window (without deleting it).
@@ -928,8 +984,24 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
     /**
-     * Register a new custom drop handler.
+     * Register a new tool in the development/debugging tools dock.
      * \note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * \see unregisterDevToolWidgetFactory()
+     * \since QGIS 3.14
+     */
+    virtual void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
+
+    /**
+     * Unregister a previously registered tool factory from the development/debugging tools dock.
+     * \see registerDevToolWidgetFactory()
+     * \since QGIS 3.14
+    */
+    virtual void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
+
+    /**
+     * Register a new custom drop \a handler.
+     * \note Ownership of \a handler is not transferred, and the handler must
      *       be unregistered when plugin is unloaded.
      * \see QgsCustomDropHandler
      * \see unregisterCustomDropHandler()
@@ -938,7 +1010,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
     /**
-     * Unregister a previously registered custom drop handler.
+     * Unregister a previously registered custom drop \a handler.
      * \see QgsCustomDropHandler
      * \see registerCustomDropHandler()
      * \since QGIS 3.0
@@ -946,8 +1018,26 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
     /**
+     * Register a new custom project open \a handler.
+     * \note Ownership of \a handler is not transferred, and the handler must
+     *       be unregistered when plugin is unloaded.
+     * \see QgsCustomProjectOpenHandler
+     * \see unregisterCustomProjectOpenHandler()
+     * \since QGIS 3.14
+     */
+    virtual void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;
+
+    /**
+     * Unregister a previously registered custom project open \a handler.
+     * \see QgsCustomDropHandler
+     * \see registerCustomProjectOpenHandler()
+     * \since QGIS 3.14
+     */
+    virtual void unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;
+
+    /**
      * Register a new custom drop \a handler for layout windows.
-     * \note Ownership of the factory is not transferred, and the factory must
+     * \note Ownership of \a handler is not transferred, and the handler must
      *       be unregistered when plugin is unloaded.
      * \see QgsLayoutCustomDropHandler
      * \see unregisterCustomLayoutDropHandler()

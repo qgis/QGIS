@@ -16,15 +16,16 @@
 /**
  * QGIS - Plugin API
  *
- *  \section about  About QGis Plugins
+ *  \section about  About QGIS Plugins
  * Plugins provide additional functionality to QGis. Plugins must
  * implement several required methods in order to be registered with
  * QGis. These methods include:
  * name:
+ *
  * - version
  * - description
  *
- * All QGis plugins must inherit from the abstract base class QgisPlugin.
+ * All QGIS plugins must inherit from the abstract base class QgisPlugin.
  * This list will grow as the API is expanded.
  *
  * In addition, a plugin must implement the classFactory and unload
@@ -213,5 +214,11 @@ typedef QString icon_t();
 
 //! Typedef for getting the experimental status without instantiating the plugin
 typedef QString experimental_t();
+
+//! Typedef for getting the create date without instantiating the plugin
+typedef QString create_date_t();
+
+//! Typedef for getting the update date status without instantiating the plugin
+typedef QString update_date_t();
 
 #endif // QGISPLUGIN_H

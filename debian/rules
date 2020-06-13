@@ -73,6 +73,12 @@ else
 TESTMAKE=ninja $(NINJA_OPTS)
 endif
 
+ifeq (,$(findstring $(DISTRIBUTION),"focal sid"))
+PYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's,-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$,\1/lib\2.so,')
+else
+PYTHON_LIBRARY=$(shell python3-config --ldflags --embed | sed -e 's,-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$,\1/lib\2.so,')
+endif
+
 CMAKE_OPTS := \
 	-G Ninja \
 	-DBUILDNAME=$(DEB_BUILD_NAME) \
@@ -86,12 +92,11 @@ CMAKE_OPTS := \
 	-DWITH_APIDOC=TRUE \
 	-DGENERATE_QHP=TRUE \
 	-DWITH_CUSTOM_WIDGETS=TRUE \
-	-DWITH_GLOBE=FALSE \
 	-DWITH_SERVER=TRUE \
 	-DWITH_SERVER_PLUGINS=TRUE \
 	-DWITH_QWTPOLAR=FALSE \
 	-DQT_PLUGINS_DIR=$(QT_PLUGINS_DIR) \
-	-DPYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's\#-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$\#\1/lib\2.so\#') \
+	-DPYTHON_LIBRARY=$(PYTHON_LIBRARY) \
 	-DDOXYGEN_ON_DEMAND=TRUE \
 	-DWITH_QSPATIALITE=TRUE
 
@@ -116,12 +121,16 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid buster bionic eoan focal"))
 		-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
 
 ifneq (,$(findstring $(DISTRIBUTION),"sid buster eoan focal"))
+$(shell test -f /usr/include/$(DEB_BUILD_MULTIARCH)/qt5/Qt3DExtras/qt3dextrasversion.h)
+ifneq (0,$(.SHELLSTATUS))
 # Qt3DExtras intentionally removed from debian (#895386) and in turn ubuntu
 	CMAKE_OPTS += \
 		-DCMAKE_PREFIX_PATH=$(realpath external/qt3dextra-headers/cmake) \
 		-DQT5_3DEXTRA_INCLUDE_DIR=$(realpath external/qt3dextra-headers) \
 		-DQT5_3DEXTRA_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libQt53DExtras.so
 endif
+endif
+
 endif
 
 ifneq (,$(WITH_ORACLE))
@@ -310,8 +319,9 @@ override_dh_auto_install:
 	# qgis binaries
 	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis/usr/bin
 	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/qgis/usr/bin/qgis.bin
+	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis_process $(CURDIR)/debian/qgis/usr/bin/qgis_process.bin
 
-	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis
+	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/tmp/usr/bin/qgis_process
 
 	# qgis binary wrappers
 	sed -r \
@@ -320,6 +330,7 @@ override_dh_auto_install:
 		$(CURDIR)/debian/qgis.sh.in >$(CURDIR)/debian/qgis.sh
 
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis
+	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis_process
 
 override_dh_missing:
 	dh_missing --fail-missing

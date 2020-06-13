@@ -22,7 +22,6 @@ __author__ = 'Håvard Tveite'
 __date__ = '2019-03-01'
 __copyright__ = '(C) 2019 by Håvard Tveite'
 
-
 import os
 import math
 
@@ -45,7 +44,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class Climb(QgisAlgorithm):
-
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 

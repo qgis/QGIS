@@ -43,12 +43,10 @@ from qgis.core import (QgsMapLayer,
 
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 
-from processing.gui.ParameterGuiUtils import getFileFilter
 from processing.tools import dataobjects
 
 
 class BatchInputSelectionPanel(QWidget):
-
     valueChanged = pyqtSignal()
 
     def __init__(self, param, row, col, dialog):
@@ -174,7 +172,7 @@ class BatchInputSelectionPanel(QWidget):
 
         if not seldir:
             ret, selected_filter = QFileDialog.getOpenFileNames(
-                self, self.tr('Select Files'), path, getFileFilter(self.param)
+                self, self.tr('Select Files'), path, self.param.createFileFilter()
             )
         else:
             ret = QFileDialog.getExistingDirectory(self, self.tr('Select Directory'), path)

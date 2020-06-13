@@ -133,19 +133,19 @@ class GeometryConvert(QgisAlgorithm):
     def convertGeometry(self, geom, target_type):
         # returns an array of output geometries for the input geometry
         if target_type == 0:
-            #centroid
+            # centroid
             return self.convertToCentroid(geom)
         elif target_type == 1:
-            #nodes
+            # nodes
             return self.convertToNodes(geom)
         elif target_type == 2:
-            #linestrings
+            # linestrings
             return self.convertToLineStrings(geom)
         elif target_type == 3:
-            #multilinestrings
+            # multilinestrings
             return self.convertToMultiLineStrings(geom)
         elif target_type == 4:
-            #polygon
+            # polygon
             return self.convertToPolygon(geom)
 
     def convertToCentroid(self, geom):
@@ -169,7 +169,7 @@ class GeometryConvert(QgisAlgorithm):
             if QgsWkbTypes.isMultiType(geom.wkbType()):
                 return geom.asGeometryCollection()
             else:
-                #line to line
+                # line to line
                 return [geom]
         else:
             # polygons to lines
@@ -214,7 +214,7 @@ class GeometryConvert(QgisAlgorithm):
             p.setExteriorRing(linestring)
             return [QgsGeometry(p)]
         elif QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.LineGeometry:
-            if QgsWkbTypes.isMultiType(geom):
+            if QgsWkbTypes.isMultiType(geom.wkbType()):
                 parts = []
                 for i in range(geom.constGet().numGeometries()):
                     p = QgsPolygon()
@@ -231,8 +231,8 @@ class GeometryConvert(QgisAlgorithm):
                 p.setExteriorRing(linestring)
                 return [QgsGeometry(p)]
         else:
-            #polygon
-            if QgsWkbTypes.isMultiType(geom):
+            # polygon
+            if QgsWkbTypes.isMultiType(geom.wkbType()):
                 return geom.asGeometryCollection()
             else:
                 return [geom]

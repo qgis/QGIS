@@ -45,7 +45,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
 
     /* Inherited from QgsVectorDataProvider */
     QgsAbstractFeatureSource *featureSource() const override;
-    QString storageType() const override { return QStringLiteral( "ESRI ArcGIS Feature Server" ); }
+    QString storageType() const override { return QStringLiteral( "ArcGIS Feature Service" ); }
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
     QgsWkbTypes::Type wkbType() const override;
     long featureCount() const override;
