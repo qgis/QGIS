@@ -342,7 +342,6 @@ void MDAL::DriverUgrid::populateFaces( MDAL::Faces &faces )
 
   for ( size_t i = 0; i < faceCount; ++i )
   {
-    size_t nVertices = verticesInFace;
     std::vector<size_t> idxs;
 
     for ( size_t j = 0; j < verticesInFace; ++j )
@@ -353,8 +352,6 @@ void MDAL::DriverUgrid::populateFaces( MDAL::Faces &faces )
       if ( fillVal == val )
       {
         // found fill val
-        nVertices = j;
-        assert( nVertices > 1 );
         break;
       }
       else
