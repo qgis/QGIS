@@ -787,7 +787,7 @@ QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures( bool storeSym
     return mFeatureCounter;
   }
 
-  if ( !mFeatureCounter || ( mFeatureCounter && ( storeSymbolFids && mSymbolFeatureIdMap.isEmpty() ) ) )
+  if ( !mFeatureCounter || ( storeSymbolFids && mSymbolFeatureIdMap.isEmpty() ) )
   {
     mFeatureCounter = new QgsVectorLayerFeatureCounter( this, QgsExpressionContext(), storeSymbolFids );
     connect( mFeatureCounter, &QgsTask::taskCompleted, this, &QgsVectorLayer::onFeatureCounterCompleted, Qt::UniqueConnection );
