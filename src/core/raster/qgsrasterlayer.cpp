@@ -269,11 +269,22 @@ void QgsRasterLayer::draw( QPainter *theQPainter,
   //
 
   QgsRasterProjector *projector = mPipe.projector();
-
+  bool restoreOldResamplingStage = false;
+  QgsRasterPipe::ResamplingStage oldResamplingState = resamplingStage();
   // TODO add a method to interface to get provider and get provider
   // params in QgsRasterProjector
+
   if ( projector )
   {
+    // Force provider resampling if reprojection is needed
+    if ( mDataProvider != nullptr &&
+         ( mDataProvider->providerCapabilities() & QgsRasterDataProvider::ProviderHintCanPerformProviderResampling ) &&
+         rasterViewPort->mSrcCRS != rasterViewPort->mDestCRS &&
+         oldResamplingState != QgsRasterPipe::ResamplingStage::Provider )
+    {
+      restoreOldResamplingStage = true;
+      setResamplingStage( QgsRasterPipe::ResamplingStage::Provider );
+    }
     projector->setCrs( rasterViewPort->mSrcCRS, rasterViewPort->mDestCRS, rasterViewPort->mTransformContext );
   }
 
@@ -281,6 +292,11 @@ void QgsRasterLayer::draw( QPainter *theQPainter,
   QgsRasterIterator iterator( mPipe.last() );
   QgsRasterDrawer drawer( &iterator );
   drawer.draw( theQPainter, rasterViewPort, qgsMapToPixel );
+
+  if ( restoreOldResamplingStage )
+  {
+    setResamplingStage( oldResamplingState );
+  }
 
   QgsDebugMsgLevel( QStringLiteral( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ), 4 );
 } //end of draw method
