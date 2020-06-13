@@ -52,12 +52,12 @@ mv ${LOG_FILE}.tmp ${LOG_FILE}
 for category in "style" "performance" "portability"; do
     if grep "${category}," ${LOG_FILE} >/dev/null; then
         echo "INFO: Issues in '${category}' category found, but not considered as making script to fail:"
-        grep "${category}," ${LOG_FILE} | grep -v -e "clarifyCalculation," -e "duplicateExpressionTernary,"
+        grep "${category}," ${LOG_FILE} | grep -v -e "clarifyCalculation," -e "duplicateExpressionTernary," -e "redundantCondition,"
         echo ""
     fi
 done
 
-for category in "error" "warning" "clarifyCalculation" "duplicateExpressionTernary"; do
+for category in "error" "warning" "clarifyCalculation" "duplicateExpressionTernary" "redundantCondition"; do
     if grep "${category}," ${LOG_FILE}  >/dev/null; then
         echo "ERROR: Issues in '${category}' category found:"
         grep "${category}," ${LOG_FILE}
