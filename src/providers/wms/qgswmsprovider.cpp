@@ -2914,6 +2914,14 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
       {
         setQueryItem( query, QStringLiteral( "FEATURE_COUNT" ), QString::number( mSettings.mFeatureCount ) );
       }
+
+      // For WMS-T layers
+      if ( temporalCapabilities() &&
+           temporalCapabilities()->hasTemporalCapabilities() )
+      {
+        addWmstParameters( query );
+      }
+
       requestUrl.setQuery( query );
 
       layerList << *layers;
