@@ -231,8 +231,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         // attribute table
         QgsSettings settings;
         QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( QStringLiteral( "qgis/attributeTableBehavior" ),  QgsAttributeTableFilterModel::ShowAll );
+        const auto lambdaOpenAttributeTable = [ = ] { QgisApp::instance()->attributeTable( initialMode ); };
         QAction *attributeTableAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "&Open Attribute Table" ),
-                                        QgisApp::instance(), [ = ] { QgisApp::instance()->attributeTable( initialMode ); } );
+                                        QgisApp::instance(), lambdaOpenAttributeTable );
         attributeTableAction->setEnabled( vlayer->isValid() );
 
         // allow editing
