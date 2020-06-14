@@ -55,6 +55,7 @@ class Qgs3DMapSettings;
  * Index zero is used for primitive restart (to separate two linestrings).
  *
  * It is expected that client code:
+ *
  * # calls init()
  * # calls addLineString() many times
  * # calls createGeometry()

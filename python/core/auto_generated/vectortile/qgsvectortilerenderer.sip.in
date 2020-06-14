@@ -70,9 +70,10 @@ class QgsVectorTileRenderer
 Abstract base class for all vector tile renderer implementations.
 
 For rendering it is expected that client code calls:
-1. :py:func:`~QgsVectorTileRendererData.startRender` to prepare renderer
-2. :py:func:`~QgsVectorTileRendererData.renderTile` for each tile
-3. :py:func:`~QgsVectorTileRendererData.stopRender` to clean up renderer and free resources
+
+# :py:func:`~QgsVectorTileRendererData.startRender` to prepare renderer
+# :py:func:`~QgsVectorTileRendererData.renderTile` for each tile
+# :py:func:`~QgsVectorTileRendererData.stopRender` to clean up renderer and free resources
 
 .. versionadded:: 3.14
 %End

@@ -28,21 +28,19 @@ class QgsMapCanvas;
  * Implementations have three approaches they can use to handle drops.
  *
  * # The simplest approach is to implement handeFileDrop() when they need to handle
- * dropped files (i.e. with mime type "text/uri-list").
- *
+ *   dropped files (i.e. with mime type "text/uri-list").
  * # Reimplement handleCustomUriDrop() when they want to handle dropped custom
- * QgsMimeDataUtils::Uri entries, for instance handling dropping custom entries
- * from the browser tree (with mime type "application/x-vnd.qgis.qgis.uri"). In
- * this case the implementation's customUriProviderKey() must match the uri
- * entry's providerKey.
- *
+ *   QgsMimeDataUtils::Uri entries, for instance handling dropping custom entries
+ *   from the browser tree (with mime type "application/x-vnd.qgis.qgis.uri"). In
+ *   this case the implementation's customUriProviderKey() must match the uri
+ *   entry's providerKey.
  * # Reimplement handleMimeData() to directly handle dropped QMimeData.
- * Subclasses should take care when overriding this method. When a drop event
- * occurs, Qt will lock the source application of the drag for the duration
- * of the drop event handling via handleMimeData() (e.g. dragging files from
- * explorer to QGIS will lock the explorer window until the drop handling has
- * been complete). Accordingly handleMimeData() implementations must return
- * quickly and defer any intensive or slow processing.
+ *   Subclasses should take care when overriding this method. When a drop event
+ *   occurs, Qt will lock the source application of the drag for the duration
+ *   of the drop event handling via handleMimeData() (e.g. dragging files from
+ *   explorer to QGIS will lock the explorer window until the drop handling has
+ *   been complete). Accordingly handleMimeData() implementations must return
+ *   quickly and defer any intensive or slow processing.
  *
  * \since QGIS 3.0
  */

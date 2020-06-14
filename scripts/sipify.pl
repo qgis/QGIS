@@ -192,10 +192,6 @@ sub processDoxygenLine {
     if ( $line =~ m/^##\s+(.*)$/) {
       $line = "$1\n".('=' x length($1));
     }
-    if ( $line =~ m/^#\s+(.*)$/) {
-      $line = "$1\n".('*' x length($1));
-    }
-
 
     if ( $line eq '*' ) {
         $line = '';
@@ -203,7 +199,7 @@ sub processDoxygenLine {
 
     # handle multi-line parameters/returns/lists
     if ($line ne '') {
-        if ( $line =~ m/^\s*\-/ ){
+        if ( $line =~ m/^\s*[\-#]/ ){
             # start of a list item, ensure following lines are correctly indented
             $line = "$PREV_INDENT$line";
             $INDENT = $PREV_INDENT."  ";
