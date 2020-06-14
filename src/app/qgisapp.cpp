@@ -9238,7 +9238,9 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
     } );
 
     if ( dlg.exec() != QDialog::Accepted )
+    {
       return false;
+    }
 
     newTitle = dlg.name();
     if ( newTitle.isEmpty() )
