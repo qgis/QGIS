@@ -430,7 +430,7 @@ border-radius: 2px;</string>
                       <widget class="QgsDateTimeEdit" name="mReferenceDateTimeEdit">
                        <property name="dateTime">
                         <datetime>
-                         <hour>13</hour>
+                         <hour>12</hour>
                          <minute>20</minute>
                          <second>36</second>
                          <year>2020</year>
@@ -560,7 +560,7 @@ border-radius: 2px;</string>
                          <widget class="QgsDateTimeEdit" name="mStartStaticDateTimeEdit">
                           <property name="dateTime">
                            <datetime>
-                            <hour>20</hour>
+                            <hour>18</hour>
                             <minute>3</minute>
                             <second>57</second>
                             <year>2020</year>
@@ -589,6 +589,16 @@ border-radius: 2px;</string>
                       <widget class="QLabel" name="label_10">
                        <property name="text">
                         <string>Note:  If the capabilities of this layer move out of this time range, the range will be reset to layer's advertised  default layer time range.</string>
+                       </property>
+                       <property name="wordWrap">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="mProjectTemporalRangeLabel">
+                       <property name="text">
+                        <string/>
                        </property>
                        <property name="wordWrap">
                         <bool>true</bool>
