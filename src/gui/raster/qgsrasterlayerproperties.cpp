@@ -1374,6 +1374,17 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
       mWmstOptionsLabel->setText( tr( "The static temporal options below are disabled because the layer "
                                       "temporal properties are active, to enable them disable temporal properties "
                                       "in the temporal tab. " ) );
+    QgsDateTimeRange range;
+    if ( QgsProject::instance()->timeSettings() )
+      range = QgsProject::instance()->timeSettings()->temporalRange();
+
+    if ( !range.begin().isValid() || !range.end().isValid() )
+    {
+      mProjectTemporalRange->setEnabled( false );
+      mProjectTemporalRangeLabel->setText( tr( "The option below is disabled because the project temporal range "
+                                           "is not valid, update the project temporal range in the project properties "
+                                           "with valid values in order to use it here." ) );
+    }
 
     mWmstGroup->setChecked( uri.contains( QStringLiteral( "allowTemporalUpdates" ) ) &&
                             uri.value( QStringLiteral( "allowTemporalUpdates" ), true ).toBool() );
