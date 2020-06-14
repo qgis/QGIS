@@ -50,14 +50,15 @@
  * that can be viewed anywhere.
  *
  * Currently we recognize these kinds of events:
+ *
  * # Duration events - they provide a way to mark a duration of work within a thread.
- *    Their duration is specified by begin and end timestamps. They can be nested
- *    and the viewer will stack them. If you need durations that do not nest properly
- *    (i.e. they only partially overlap), you should use Async events instead.
+ *   Their duration is specified by begin and end timestamps. They can be nested
+ *   and the viewer will stack them. If you need durations that do not nest properly
+ *   (i.e. they only partially overlap), you should use Async events instead.
  * # Instant events - they correspond to something that happens but has no duration
- *    associated with it.
+ *   associated with it.
  * # Async events - they are used to specify asynchronous operations. They also require
- *    additional "id" parameter to group them into the same event tree.
+ *   additional "id" parameter to group them into the same event tree.
  *
  * Duration events are for example to record run of a single function. Async events
  * are useful for cases where e.g. main thread starts some work in background and there
@@ -70,6 +71,7 @@
  * https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU/preview
  *
  * The intended usage:
+ *
  * # call startTracing()
  * # repeatedly call addEvent()
  * # call stopTracing() and writeTrace() to export the data to JSON

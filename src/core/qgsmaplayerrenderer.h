@@ -36,10 +36,11 @@ class QgsRenderContext;
  * Qt containers and various Qt classes use implicit sharing.
  *
  * The scenario will be:
+ *
  * # renderer job (doing preparation in the GUI thread) calls
- *    QgsMapLayer::createMapRenderer() and gets instance of this class.
- *    The instance is initialized at that point and should not need
- *    additional calls to QgsVectorLayer.
+ *   QgsMapLayer::createMapRenderer() and gets instance of this class.
+ *   The instance is initialized at that point and should not need
+ *   additional calls to QgsVectorLayer.
  * # renderer job (still in GUI thread) stores the renderer for later use.
  * # renderer job (in worker thread) calls QgsMapLayerRenderer::render()
  * # renderer job (again in GUI thread) will check errors() and report them
