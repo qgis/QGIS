@@ -2610,7 +2610,7 @@ bool DualEdgeTriangulation::readFromTAFF( QString filename )
 
   //import all the DualEdges
   QProgressBar *edgebar = new QProgressBar();//use a progress dialog so that it is not boring for the user
-  edgebar->setCaption( "Reading edges…" );
+  edgebar->setCaption( tr( "Reading edges…" ) );
   edgebar->setTotalSteps( numberofhalfedges / 2 );
   edgebar->setMinimumWidth( 400 );
   edgebar->move( 500, 500 );
