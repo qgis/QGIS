@@ -16,8 +16,8 @@ class QgsStyleModel: QAbstractItemModel
 A QAbstractItemModel subclass for showing symbol and color ramp entities contained
 within a QgsStyle database.
 
-If you are creating a style model for the default application style (see QgsStyle.defaultStyle()),
-consider using the shared style model available at QgsApplication.defaultStyleModel() for performance
+If you are creating a style model for the default application style (see :py:func:`QgsStyle.defaultStyle()`),
+consider using the shared style model available at :py:func:`QgsApplication.defaultStyleModel()` for performance
 instead.
 
 .. seealso:: :py:class:`QgsStyleProxyModel`
@@ -129,7 +129,7 @@ Returns the style entity type filter.
 
 .. note::
 
-   This filter is only active if entityFilterEnabled() is ``True``.
+   This filter is only active if :py:func:`~QgsStyleProxyModel.entityFilterEnabled` is ``True``.
 
 .. seealso:: :py:func:`setEntityFilter`
 %End
@@ -140,7 +140,7 @@ Sets the style entity type ``filter``.
 
 .. note::
 
-   This filter is only active if entityFilterEnabled() is ``True``.
+   This filter is only active if :py:func:`~QgsStyleProxyModel.entityFilterEnabled` is ``True``.
 
 .. seealso:: :py:func:`entityFilter`
 %End
@@ -159,7 +159,7 @@ Returns ``True`` if filtering by entity type is enabled.
 %Docstring
 Sets whether filtering by entity type is ``enabled``.
 
-If ``enabled`` is ``False``, then the value of entityFilter() will have no
+If ``enabled`` is ``False``, then the value of :py:func:`~QgsStyleProxyModel.entityFilter` will have no
 effect on the model filtering.
 
 .. seealso:: :py:func:`entityFilterEnabled`
@@ -173,7 +173,7 @@ Returns the symbol type filter.
 
 .. note::
 
-   This filter is only active if symbolTypeFilterEnabled() is ``True``, and has
+   This filter is only active if :py:func:`~QgsStyleProxyModel.symbolTypeFilterEnabled` is ``True``, and has
    no effect on non-symbol entities (i.e. color ramps).
 
 .. seealso:: :py:func:`setSymbolType`
@@ -185,7 +185,7 @@ Sets the symbol ``type`` filter.
 
 .. note::
 
-   This filter is only active if symbolTypeFilterEnabled() is ``True``.
+   This filter is only active if :py:func:`~QgsStyleProxyModel.symbolTypeFilterEnabled` is ``True``.
 
 .. seealso:: :py:func:`symbolType`
 %End
@@ -203,7 +203,7 @@ Returns ``True`` if filtering by symbol type is enabled.
 %Docstring
 Sets whether filtering by symbol type is ``enabled``.
 
-If ``enabled`` is ``False``, then the value of symbolType() will have no
+If ``enabled`` is ``False``, then the value of :py:func:`~QgsStyleProxyModel.symbolType` will have no
 effect on the model filtering. This has
 no effect on non-symbol entities (i.e. color ramps).
 

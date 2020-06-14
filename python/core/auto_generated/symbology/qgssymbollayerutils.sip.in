@@ -737,7 +737,7 @@ This is useful when accepting input which could be either a non-quoted field nam
 %Docstring
 Returns a field name if the whole expression is just a name of the field .
 Returns full expression string if the expression is more complex than just one field.
-Using just expression->expression() method may return quoted field name, but that is not
+Using just expression->:py:func:`~QgsSymbolLayerUtils.expression` method may return quoted field name, but that is not
 wanted for saving (due to backward compatibility) or display in GUI.
 
 .. versionadded:: 2.2

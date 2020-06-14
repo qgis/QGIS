@@ -312,7 +312,13 @@ sub processDoxygenLine {
                 $line =~ s/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/:py:class:`$1`$2/g;
             }
         }
-        $line =~ s/\b(Qgs[A-Z]\w+\.[a-z]\w+\(\))(\.|\b|$)/:py:func:`$1`/g;
+        $line =~ s/\b(Qgs[A-Z]\w+\.[a-z]\w+\(\))(?!\w)/:py:func:`$1`/g;
+        if ( defined $ACTUAL_CLASS && $ACTUAL_CLASS) {
+          $line =~ s/(?<!\.)\b(?:([a-z]\w+)\(\))(?!\w)/:py:func:`~$ACTUAL_CLASS.$1`/g;
+        }
+        else {
+          $line =~ s/(?<!\.)\b(?:([a-z]\w+)\(\))(?!\w)/:py:func:`~$1`/g;
+        }
     }
 
     if ( $line =~ m/[\\@]note (.*)/ ) {

@@ -182,7 +182,7 @@ This is useful when the identification is triggered by some other piece of GUI l
 and some properties like search radius need to be adjusted so that identification returns correct
 results. Currently only search radius may be overridden.
 
-When the custom identification has finished, restoreCanvasPropertiesOverrides() should
+When the custom identification has finished, :py:func:`~QgsMapToolIdentify.restoreCanvasPropertiesOverrides` should
 be called to erase any overrides.
 
 .. seealso:: :py:func:`restoreCanvasPropertiesOverrides`
@@ -192,7 +192,7 @@ be called to erase any overrides.
 
     void restoreCanvasPropertiesOverrides();
 %Docstring
-Clears canvas properties overrides previously set with setCanvasPropertiesOverrides()
+Clears canvas properties overrides previously set with :py:func:`~QgsMapToolIdentify.setCanvasPropertiesOverrides`
 
 .. seealso:: :py:func:`setCanvasPropertiesOverrides`
 

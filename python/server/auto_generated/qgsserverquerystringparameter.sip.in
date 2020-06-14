@@ -20,7 +20,7 @@ The QgsServerQueryStringParameter class holds the information regarding
 a query string input parameter and its validation.
 
 The class is extendable through custom validators (C++ only) and/or by
-subclassing and overriding the value() method.
+subclassing and overriding the :py:func:`~value` method.
 
 .. versionadded:: 3.10
 %End

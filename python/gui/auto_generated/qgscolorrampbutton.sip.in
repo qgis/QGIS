@@ -233,7 +233,7 @@ Returns the name of the current color ramp when it's available in the style mana
 
     void setColorRamp( QgsColorRamp *colorramp );
 %Docstring
-Sets the current color ramp for the button. Will emit a colorRampChanged() signal if the color ramp is different
+Sets the current color ramp for the button. Will emit a :py:func:`~QgsColorRampButton.colorRampChanged` signal if the color ramp is different
 to the previous color ramp.
 
 :param colorramp: New color ramp for the button. The ramp will be cloned and ownership is not transferred.
@@ -243,7 +243,7 @@ to the previous color ramp.
 
     void setRandomColorRamp();
 %Docstring
-Sets the current color ramp for the button to random colors. Will emit a colorRampChanged() signal
+Sets the current color ramp for the button to random colors. Will emit a :py:func:`~QgsColorRampButton.colorRampChanged` signal
 if the color ramp is different to the previous color ramp.
 
 .. seealso:: :py:func:`setColorRamp`
@@ -251,7 +251,7 @@ if the color ramp is different to the previous color ramp.
 
     void setColorRampFromName( const QString &name = QString() );
 %Docstring
-Sets the current color ramp for the button using a saved color ramp name. Will emit a colorRampChanged() signal
+Sets the current color ramp for the button using a saved color ramp name. Will emit a :py:func:`~QgsColorRampButton.colorRampChanged` signal
 if the color ramp is different to the previous color ramp.
 
 :param name: Name of saved color ramp

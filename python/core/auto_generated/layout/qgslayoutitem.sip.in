@@ -414,7 +414,7 @@ Returns the number of layers that this item requires for exporting during layere
 Returns 0 if this item is to be placed on the same layer as the previous item,
 1 if it should be placed on its own layer, and >1 if it requires multiple export layers.
 
-Items which require multiply layers should check QgsLayoutContext.currentExportLayer() during
+Items which require multiply layers should check :py:func:`QgsLayoutContext.currentExportLayer()` during
 their rendering to determine which layer should be drawn.
 
 .. seealso:: :py:func:`exportLayerBehavior`
@@ -475,7 +475,7 @@ Moves to the next export part for a multi-layered export item, during a multi-la
 %Docstring
 Returns the details for the specified current export layer.
 
-Only valid between calls to startLayeredExport() and stopLayeredExport()
+Only valid between calls to :py:func:`~QgsLayoutItem.startLayeredExport` and :py:func:`~QgsLayoutItem.stopLayeredExport`
 
 .. versionadded:: 3.10
 %End
@@ -692,9 +692,9 @@ Sets the item state from a DOM element.
 
 Note that item subclasses should not rely on all other items being present in the
 layout at the time this method is called. Instead, any connections and links to
-other items must be made in the finalizeRestoreFromXml() method. E.g. when restoring
+other items must be made in the :py:func:`~QgsLayoutItem.finalizeRestoreFromXml` method. E.g. when restoring
 a scalebar, the connection to the linked map's signals should be implemented
-in finalizeRestoreFromXml(), not readXml().
+in :py:func:`~QgsLayoutItem.finalizeRestoreFromXml`, not :py:func:`~QgsLayoutItem.readXml`.
 
 .. seealso:: :py:func:`writeXml`
 
@@ -706,7 +706,7 @@ in finalizeRestoreFromXml(), not readXml().
 Called after all pending items have been restored from XML. Items can use
 this method to run steps which must take place after all items have been restored to the layout,
 such as connecting to signals emitted by other items, which may not have existed in the layout
-at the time readXml() was called. E.g. a scalebar can use this to connect to its linked
+at the time :py:func:`~QgsLayoutItem.readXml` was called. E.g. a scalebar can use this to connect to its linked
 map item after restoration from XML.
 
 .. seealso:: :py:func:`readXml`
@@ -756,7 +756,7 @@ Sets the frame stroke ``color``.
 
     QColor frameStrokeColor() const;
 %Docstring
-Returns the frame's stroke color. This is only used if frameEnabled() returns ``True``.
+Returns the frame's stroke color. This is only used if :py:func:`~QgsLayoutItem.frameEnabled` returns ``True``.
 
 .. seealso:: :py:func:`frameEnabled`
 
@@ -782,7 +782,7 @@ Sets the frame stroke ``width``.
 
     QgsLayoutMeasurement frameStrokeWidth() const;
 %Docstring
-Returns the frame's stroke width. This is only used if frameEnabled() returns ``True``.
+Returns the frame's stroke width. This is only used if :py:func:`~QgsLayoutItem.frameEnabled` returns ``True``.
 
 .. seealso:: :py:func:`frameEnabled`
 
@@ -839,7 +839,7 @@ Sets whether this item has a background drawn under it or not.
 
     QColor backgroundColor() const;
 %Docstring
-Returns the background color for this item. This is only used if hasBackground()
+Returns the background color for this item. This is only used if :py:func:`~QgsLayoutItem.hasBackground`
 returns ``True``.
 
 .. seealso:: :py:func:`setBackgroundColor`
@@ -941,8 +941,8 @@ Returned values are in layout units.
 %Docstring
 Returns the item's rectangular bounds, including any bleed caused by the item's frame.
 The bounds are returned in the item's coordinate system (see Qt's QGraphicsItem docs for
-more details about QGraphicsItem coordinate systems). The results differ from Qt's rect()
-function, as rect() makes no allowances for the portion of outlines which are drawn
+more details about QGraphicsItem coordinate systems). The results differ from Qt's :py:func:`~QgsLayoutItem.rect`
+function, as :py:func:`~QgsLayoutItem.rect` makes no allowances for the portion of outlines which are drawn
 outside of the item.
 
 .. seealso:: :py:func:`estimatedFrameBleed`
@@ -1159,7 +1159,7 @@ resized.
 %Docstring
 Applies any item-specific size constraint handling to a given ``targetSize`` in layout units.
 Subclasses can override this method if they need to apply advanced logic regarding item
-sizes, which cannot be covered by setFixedSize() or setMinimumSize().
+sizes, which cannot be covered by :py:func:`~QgsLayoutItem.setFixedSize` or :py:func:`~QgsLayoutItem.setMinimumSize`.
 Item size constraints are applied after fixed, minimum and data defined size constraints.
 
 .. seealso:: :py:func:`setFixedSize`
@@ -1204,21 +1204,21 @@ around which the rotation should be applied.
 %Docstring
 Refresh item's opacity, considering data defined opacity.
 If ``updateItem`` is set to ``False`` the item will not be automatically
-updated after the opacity is set and a later call to update() must be made.
+updated after the opacity is set and a later call to :py:func:`~QgsLayoutItem.update` must be made.
 %End
 
     void refreshFrame( bool updateItem = true );
 %Docstring
 Refresh item's frame, considering data defined colors and frame size.
 If ``updateItem`` is set to ``False``, the item will not be automatically updated
-after the frame is set and a later call to update() must be made.
+after the frame is set and a later call to :py:func:`~QgsLayoutItem.update` must be made.
 %End
 
     void refreshBackgroundColor( bool updateItem = true );
 %Docstring
 Refresh item's background color, considering data defined colors.
 If ``updateItem`` is set to ``False``, the item will not be automatically updated
-after the frame color is set and a later call to update() must be made.
+after the frame color is set and a later call to :py:func:`~QgsLayoutItem.update` must be made.
 %End
 
     void refreshBlendMode();
@@ -1266,9 +1266,9 @@ Sets item state from a DOM element.
 
 Note that item subclasses should not rely on all other items being present in the
 layout at the time this method is called. Instead, any connections and links to
-other items must be made in the finalizeRestoreFromXml() method. E.g. when restoring
+other items must be made in the :py:func:`~QgsLayoutItem.finalizeRestoreFromXml` method. E.g. when restoring
 a scalebar, the connection to the linked map's signals should be implemented
-in finalizeRestoreFromXml(), not readPropertiesFromElement().
+in :py:func:`~QgsLayoutItem.finalizeRestoreFromXml`, not :py:func:`~QgsLayoutItem.readPropertiesFromElement`.
 
 .. seealso:: :py:func:`writePropertiesToElement`
 

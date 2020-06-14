@@ -453,7 +453,7 @@ Sets whether a stroke will be drawn around raster symbol items.
     QColor rasterStrokeColor() const;
 %Docstring
 Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is ``True``.
+only drawn if :py:func:`~QgsLayoutItemLegend.drawRasterStroke` is ``True``.
 
 .. seealso:: :py:func:`setRasterStrokeColor`
 
@@ -465,7 +465,7 @@ only drawn if drawRasterStroke() is ``True``.
     void setRasterStrokeColor( const QColor &color );
 %Docstring
 Sets the stroke ``color`` for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is ``True``.
+only drawn if :py:func:`~QgsLayoutItemLegend.drawRasterStroke` is ``True``.
 
 .. seealso:: :py:func:`rasterStrokeColor`
 
@@ -477,7 +477,7 @@ only drawn if drawRasterStroke() is ``True``.
     double rasterStrokeWidth() const;
 %Docstring
 Returns the stroke width (in layout units) for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is ``True``.
+only drawn if :py:func:`~QgsLayoutItemLegend.drawRasterStroke` is ``True``.
 
 .. seealso:: :py:func:`setRasterStrokeWidth`
 
@@ -489,7 +489,7 @@ only drawn if drawRasterStroke() is ``True``.
     void setRasterStrokeWidth( double width );
 %Docstring
 Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is ``True``.
+only drawn if :py:func:`~QgsLayoutItemLegend.drawRasterStroke` is ``True``.
 
 .. seealso:: :py:func:`rasterStrokeWidth`
 
@@ -516,7 +516,7 @@ Returns the associated map.
 %Docstring
 Returns the name of the theme currently linked to the legend.
 
-This usually equates to the theme rendered in the linkedMap().
+This usually equates to the theme rendered in the :py:func:`~QgsLayoutItemLegend.linkedMap`.
 
 .. versionadded:: 3.14
 %End

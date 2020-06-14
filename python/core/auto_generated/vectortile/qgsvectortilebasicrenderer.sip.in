@@ -20,7 +20,7 @@ Definition of map rendering of a subset of vector tile data. The subset of data 
 3. filter expression
 
 Renering is determined by the associated symbol (QgsSymbol). Symbol has to be of the same
-type as the chosen geometryType() - i.e. QgsMarkerSymbol for points, QgsLineSymbol for linestrings
+type as the chosen :py:func:`~geometryType` - i.e. QgsMarkerSymbol for points, QgsLineSymbol for linestrings
 and QgsFillSymbol for polygons.
 
 It is possible to further constrain when this style is applied by setting a range of allowed

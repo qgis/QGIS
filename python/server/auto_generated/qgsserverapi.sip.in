@@ -52,7 +52,7 @@ After the API has been registered to the server API registry:
        server.serverInterface().serviceRegistry().registerApi(api)
 
 the incoming calls with an URL path starting with the API root path
-will be routed to the first matching API and executeRequest() method
+will be routed to the first matching API and :py:func:`~executeRequest` method
 of the API will be invoked.
 
 

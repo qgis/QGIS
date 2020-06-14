@@ -222,7 +222,7 @@ use in a standard algorithm dialog, a batch processing dialog, or a modeler dial
 
 Individual widget wrappers are not usually created directly, instead they are
 constructed through the central registry, via calls to
-QgsGui.processingGuiRegistry()->createParameterWidgetWrapper().
+:py:func:`QgsGui.processingGuiRegistry()`->:py:func:`~QgsProcessingParameterWidgetContext.createParameterWidgetWrapper`.
 
 .. versionadded:: 3.4
 %End
@@ -269,7 +269,7 @@ to fine-tune its behavior.
 Creates and return a new wrapped widget which allows customization of the parameter's value.
 
 The caller takes ownership of the returned widget. The wrapped widget can be retrieved at a later
-stage by calling wrappedWidget().
+stage by calling :py:func:`~QgsAbstractProcessingParameterWidgetWrapper.wrappedWidget`.
 
 The supplied ``context`` is used while initializing the widget to the parameter's default value.
 
@@ -285,7 +285,7 @@ combinations will return ``None`` for this method. If ``None`` is returned, then
 label should be shown for the parameter's widget (i.e. the label is embedded inside the
 widget itself).
 
-The wrapped label can be retrieved at a later stage by calling wrappedLabel().
+The wrapped label can be retrieved at a later stage by calling :py:func:`~QgsAbstractProcessingParameterWidgetWrapper.wrappedLabel`.
 
 .. seealso:: :py:func:`createWrappedWidget`
 %End
@@ -446,7 +446,7 @@ An interface for Processing widget wrapper factories.
 
 Widget wrapper factories allow creation of QgsAbstractProcessingParameterWidgetWrapper objects.
 They are centrally managed by :py:class:`QgsProcessingGuiRegistry`. Usually, individual factories
-are not directly utilized, rather the QgsGui.processingGuiRegistry()->createParameterWidgetWrapper()
+are not directly utilized, rather the :py:func:`QgsGui.processingGuiRegistry()`->:py:func:`~QgsAbstractProcessingParameterWidgetWrapper.createParameterWidgetWrapper`
 method is used to create widget wrappers.
 
 .. versionadded:: 3.4
@@ -533,7 +533,7 @@ for this parameter.
 
 In order to determine the available sources for the parameter in a model
 the types returned by this method are checked. The returned list corresponds to the
-various available values for :py:func:`QgsProcessingParameterDefinition.type()`
+various available values for :py:func:`QgsProcessingParameterDefinition.type()`.
 
 Subclasses should return a list of all :py:func:`QgsProcessingParameterDefinition.type()`
 values which can be used as input values for the parameter.
@@ -550,7 +550,7 @@ for this parameter.
 
 In order to determine the available sources for the parameter in a model
 the types returned by this method are checked. The returned list corresponds to the
-various available values for :py:func:`QgsProcessingOutputDefinition.type()`
+various available values for :py:func:`QgsProcessingOutputDefinition.type()`.
 
 Subclasses should return a list of all :py:func:`QgsProcessingOutputDefinition.type()`
 values which can be used as values for the parameter.

@@ -116,7 +116,7 @@ Sets whether the model is filtered by map layer type.
     QgsMapLayerType layerType() const;
 %Docstring
 Returns the layer type to filter the model by. This is only used if
-filterByLayerType() is ``True``.
+:py:func:`~QgsBrowserProxyModel.filterByLayerType` is ``True``.
 
 .. seealso:: :py:func:`setLayerType`
 
@@ -126,7 +126,7 @@ filterByLayerType() is ``True``.
     void setLayerType( QgsMapLayerType type );
 %Docstring
 Sets the layer ``type`` to filter the model by. This is only used if
-filterByLayerType() is ``True``.
+:py:func:`~QgsBrowserProxyModel.filterByLayerType` is ``True``.
 
 .. seealso:: :py:func:`layerType`
 

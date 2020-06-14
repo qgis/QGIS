@@ -226,7 +226,7 @@ Should match with the string used to register this symbol layer in the registry.
 %Docstring
 Called before a set of rendering operations commences on the supplied render ``context``.
 
-This is always followed by a call to stopRender() after all rendering operations
+This is always followed by a call to :py:func:`~QgsSymbolLayer.stopRender` after all rendering operations
 have been completed.
 
 Subclasses can use this method to prepare for a set of rendering operations, e.g. by
@@ -241,7 +241,7 @@ pre-evaluating paths or images to render, and performing other one-time optimisa
 %Docstring
 Called after a set of rendering operations has finished on the supplied render ``context``.
 
-This is always preceded by a call to startRender() before all rendering operations
+This is always preceded by a call to :py:func:`~QgsSymbolLayer.startRender` before all rendering operations
 are commenced.
 
 Subclasses can use this method to cleanup after a set of rendering operations.
@@ -255,14 +255,14 @@ Subclasses can use this method to cleanup after a set of rendering operations.
 %Docstring
 Called before the layer will be rendered for a particular ``feature``.
 
-This is always followed by a call to stopFeatureRender() after the feature
+This is always followed by a call to :py:func:`~QgsSymbolLayer.stopFeatureRender` after the feature
 has been completely rendered (i.e. all parts have been rendered).
 
 The default implementation does nothing.
 
 .. note::
 
-   In some circumstances, startFeatureRender() and stopFeatureRender() may not be called
+   In some circumstances, :py:func:`~QgsSymbolLayer.startFeatureRender` and :py:func:`~QgsSymbolLayer.stopFeatureRender` may not be called
    before a symbol layer is rendered. E.g., when a symbol layer is being rendered in isolation
    and not as a result of rendering a feature (for instance, when rendering a legend patch or other
    non-feature based shape).
@@ -279,14 +279,14 @@ The default implementation does nothing.
 %Docstring
 Called after the layer has been rendered for a particular ``feature``.
 
-This is always preceded by a call to startFeatureRender() just before the feature
+This is always preceded by a call to :py:func:`~QgsSymbolLayer.startFeatureRender` just before the feature
 will be rendered.
 
 The default implementation does nothing.
 
 .. note::
 
-   In some circumstances, startFeatureRender() and stopFeatureRender() may not be called
+   In some circumstances, :py:func:`~QgsSymbolLayer.startFeatureRender` and :py:func:`~QgsSymbolLayer.stopFeatureRender` may not be called
    before a symbol layer is rendered. E.g., when a symbol layer is being rendered in isolation
    and not as a result of rendering a feature (for instance, when rendering a legend patch or other
    non-feature based shape).
@@ -645,7 +645,7 @@ is usually used for orienting symbols to match a line's angle.
 %Docstring
 Sets the symbol size.
 
-:param size: symbol size. Units are specified by sizeUnit().
+:param size: symbol size. Units are specified by :py:func:`~QgsMarkerSymbolLayer.sizeUnit`.
 
 .. seealso:: :py:func:`size`
 
@@ -656,7 +656,7 @@ Sets the symbol size.
 
     double size() const;
 %Docstring
-Returns the symbol size. Units are specified by sizeUnit().
+Returns the symbol size. Units are specified by :py:func:`~QgsMarkerSymbolLayer.sizeUnit`.
 
 .. seealso:: :py:func:`setSize`
 
@@ -734,7 +734,7 @@ Returns the method to use for scaling the marker's size.
 Sets the marker's offset, which is the horizontal and vertical displacement which the rendered marker
 should have from the original feature's geometry.
 
-:param offset: marker offset. Units are specified by offsetUnit()
+:param offset: marker offset. Units are specified by :py:func:`~QgsMarkerSymbolLayer.offsetUnit`
 
 .. seealso:: :py:func:`offset`
 
@@ -746,7 +746,7 @@ should have from the original feature's geometry.
     QPointF offset() const;
 %Docstring
 Returns the marker's offset, which is the horizontal and vertical displacement which the rendered marker
-will have from the original feature's geometry. Units are specified by offsetUnit().
+will have from the original feature's geometry. Units are specified by :py:func:`~QgsMarkerSymbolLayer.offsetUnit`.
 
 .. seealso:: :py:func:`setOffset`
 
@@ -856,7 +856,7 @@ Writes the symbol layer definition as a SLD XML element.
 
 :param doc: XML document
 :param element: parent XML element
-:param props: symbol layer definition (see properties())
+:param props: symbol layer definition (see :py:func:`~QgsMarkerSymbolLayer.properties`)
 %End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
@@ -1036,7 +1036,7 @@ width of the symbol layer using the provided render ``context``.
 %Docstring
 Returns the line's offset.
 
-Offset units can be retrieved by calling offsetUnit().
+Offset units can be retrieved by calling :py:func:`~QgsLineSymbolLayer.offsetUnit`.
 
 .. seealso:: :py:func:`setOffset`
 
@@ -1049,7 +1049,7 @@ Offset units can be retrieved by calling offsetUnit().
 %Docstring
 Sets the line's ``offset``.
 
-Offset units are set via setOffsetUnit().
+Offset units are set via :py:func:`~QgsLineSymbolLayer.setOffsetUnit`.
 
 .. seealso:: :py:func:`offset`
 

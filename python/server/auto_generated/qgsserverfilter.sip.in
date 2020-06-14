@@ -20,9 +20,9 @@ implemented in plugins.
 
 Filters can define any (or none) of the following hooks:
 
-- requestReady() - called when request is ready
-- responseComplete() - called when the response is complete after core services have returned to main loop
-- sendResponse() - called just before sending output to FGCI
+- :py:func:`~requestReady` - called when request is ready
+- :py:func:`~responseComplete` - called when the response is complete after core services have returned to main loop
+- :py:func:`~sendResponse` - called just before sending output to FGCI
 %End
 
 %TypeHeaderCode
@@ -61,10 +61,10 @@ and before final sending response to FCGI stdout.
 %Docstring
 Method called when the QgsRequestHandler sends its data to FCGI stdout.
 This normally occurs at the end of core services processing just after
-the responseComplete() plugin hook. For streaming services (like WFS on
-getFeature requests, sendResponse() might have been called several times
-before the response is complete: in this particular case, sendResponse()
-is called once for each feature before hitting responseComplete()
+the :py:func:`~QgsServerFilter.responseComplete` plugin hook. For streaming services (like WFS on
+getFeature requests, :py:func:`~QgsServerFilter.sendResponse` might have been called several times
+before the response is complete: in this particular case, :py:func:`~QgsServerFilter.sendResponse`
+is called once for each feature before hitting :py:func:`~QgsServerFilter.responseComplete`
 %End
 
 };

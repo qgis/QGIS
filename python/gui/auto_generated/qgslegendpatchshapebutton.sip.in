@@ -53,7 +53,7 @@ Returns the symbol type which the button requires.
 Sets the symbol to use for previewing the legend patch shape.
 
 Ownership is transferred to the button. It is the caller's responsibility
-to ensure that the symbol type matches the button's symbolType()
+to ensure that the symbol type matches the button's :py:func:`~QgsLegendPatchShapeButton.symbolType`
 %End
 
     void setDialogTitle( const QString &title );

@@ -106,7 +106,7 @@ Sets the angle for offsetting the position of the shadow from the text.
     double offsetDistance() const;
 %Docstring
 Returns the distance for offsetting the position of the shadow from the text. Offset units
-are retrieved via offsetUnit().
+are retrieved via :py:func:`~QgsTextShadowSettings.offsetUnit`.
 
 .. seealso:: :py:func:`setOffsetDistance`
 
@@ -116,7 +116,7 @@ are retrieved via offsetUnit().
     void setOffsetDistance( double distance );
 %Docstring
 Sets the distance for offsetting the position of the shadow from the text. Offset units
-are specified via setOffsetUnit().
+are specified via :py:func:`~QgsTextShadowSettings.setOffsetUnit`.
 
 :param distance: offset distance
 
@@ -148,7 +148,7 @@ Sets the units used for the shadow's offset.
     QgsMapUnitScale offsetMapUnitScale() const;
 %Docstring
 Returns the map unit scale object for the shadow offset distance. This is only used if the
-offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextShadowSettings.offsetUnit` is set to QgsUnitTypes.RenderMapUnit.
 
 .. seealso:: :py:func:`setOffsetMapUnitScale`
 
@@ -158,7 +158,7 @@ offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale object for the shadow offset distance. This is only used if the
-offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextShadowSettings.offsetUnit` is set to QgsUnitTypes.RenderMapUnit.
 
 :param scale: scale for shadow offset
 
@@ -183,7 +183,7 @@ Sets whether the global shadow offset should be used.
 
     double blurRadius() const;
 %Docstring
-Returns the blur radius for the shadow. Radius units are retrieved via blurRadiusUnits().
+Returns the blur radius for the shadow. Radius units are retrieved via :py:func:`~QgsTextShadowSettings.blurRadiusUnits`.
 
 .. seealso:: :py:func:`setBlurRadius`
 
@@ -192,7 +192,7 @@ Returns the blur radius for the shadow. Radius units are retrieved via blurRadiu
 
     void setBlurRadius( double blurRadius );
 %Docstring
-Sets the blur radius for the shadow. Radius units are specified via setBlurRadiusUnits().
+Sets the blur radius for the shadow. Radius units are specified via :py:func:`~QgsTextShadowSettings.setBlurRadiusUnits`.
 
 :param blurRadius: blur radius
 
@@ -224,7 +224,7 @@ Sets the units used for the shadow's blur radius.
     QgsMapUnitScale blurRadiusMapUnitScale() const;
 %Docstring
 Returns the map unit scale object for the shadow blur radius. This is only used if the
-blurRadiusUnit() is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextShadowSettings.blurRadiusUnit` is set to QgsUnitTypes.RenderMapUnit.
 
 .. seealso:: :py:func:`setBlurRadiusMapUnitScale`
 
@@ -234,7 +234,7 @@ blurRadiusUnit() is set to QgsUnitTypes.RenderMapUnit.
     void setBlurRadiusMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale object for the shadow blur radius. This is only used if the
-blurRadiusUnit() is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextShadowSettings.blurRadiusUnit` is set to QgsUnitTypes.RenderMapUnit.
 
 :param scale: scale for shadow blur radius
 

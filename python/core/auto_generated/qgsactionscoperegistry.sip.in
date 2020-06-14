@@ -33,7 +33,7 @@ To get access use the QgsApplication:
 %Docstring
 Create a new QgsActionScopeRegistry.
 QGIS already creates a central registry. You will normally
-want to use QgsApplication.actionScopeRegistry() to get access
+want to use :py:func:`QgsApplication.actionScopeRegistry()` to get access
 to that one instead.
 
 .. versionadded:: 3.0

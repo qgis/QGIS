@@ -83,7 +83,7 @@ Returns the size of the buffer.
 
     void setSize( double size );
 %Docstring
-Sets the size of the buffer. The size units are specified using setSizeUnit().
+Sets the size of the buffer. The size units are specified using :py:func:`~QgsTextMaskSettings.setSizeUnit`.
 
 :param size: buffer size
 

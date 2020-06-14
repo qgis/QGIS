@@ -15,8 +15,8 @@ class QgsVectorTileWriter
 %Docstring
 Takes care of writing vector tiles. The intended use is to set up the class
 by setting the destination URI, extent, zoom level range and input vector
-layers. Then with a call to writeTiles() the data gets written. In case
-of a failure, errorMessage() returns the cause of the problem during writing.
+layers. Then with a call to :py:func:`~writeTiles` the data gets written. In case
+of a failure, :py:func:`~errorMessage` returns the cause of the problem during writing.
 
 The syntax of destination URIs is the same like the data source string
 used by vector tile layers: parameters are encoded as a HTTP query string,
@@ -93,11 +93,11 @@ Sets filter expression. If not empty, only features matching the expression will
 
         QString layerName() const;
 %Docstring
-Returns layer name in the output. If not set, layer()->name() will be used.
+Returns layer name in the output. If not set, :py:func:`~Layer.layer`->:py:func:`~Layer.name` will be used.
 %End
         void setLayerName( const QString &name );
 %Docstring
-Sets layer name in the output. If not set, layer()->name() will be used.
+Sets layer name in the output. If not set, :py:func:`~Layer.layer`->:py:func:`~Layer.name` will be used.
 %End
 
         int minZoom() const;
@@ -159,7 +159,7 @@ Sets coordinate transform context for transforms between layers and tile matrix 
     bool writeTiles( QgsFeedback *feedback = 0 );
 %Docstring
 Writes vector tiles according to the configuration.
-Returns true on success (upon failure one can get error cause using errorMessage())
+Returns true on success (upon failure one can get error cause using :py:func:`~QgsVectorTileWriter.errorMessage`)
 
 If a pointer to a feedback object is provided, it can be used to track progress or
 provide cancellation functionality.
@@ -167,7 +167,7 @@ provide cancellation functionality.
 
     QString errorMessage() const;
 %Docstring
-Returns error message related to the previous call to writeTiles(). Will return
+Returns error message related to the previous call to :py:func:`~QgsVectorTileWriter.writeTiles`. Will return
 an empty string if writing was successful.
 %End
 

@@ -480,7 +480,7 @@ select the most appropriate encoding.
 .. warning::
 
    Support for setting the provider encoding depends on the underlying data
-   provider. Check dataProvider().capabilities() for the QgsVectorDataProvider.SelectEncoding
+   provider. Check :py:func:`~QgsVectorLayer.dataProvider`.capabilities() for the QgsVectorDataProvider.SelectEncoding
    capability in order to determine if the provider supports this ability.
 %End
 
@@ -642,7 +642,7 @@ Selects matching features using an expression.
     void selectByIds( const QgsFeatureIds &ids, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 %Docstring
 Selects matching features using a list of feature IDs. Will emit the
-selectionChanged() signal with the clearAndSelect flag set.
+:py:func:`~QgsVectorLayer.selectionChanged` signal with the clearAndSelect flag set.
 
 :param ids: feature IDs to select
 :param behavior: selection type, allows adding to current selection, removing
@@ -697,7 +697,7 @@ Returns a copy of the user-selected features.
 .. warning::
 
    Calling this method triggers a request for all attributes and geometry for the selected features.
-   Consider using the much more efficient selectedFeatureIds() or selectedFeatureCount() if you do not
+   Consider using the much more efficient :py:func:`~QgsVectorLayer.selectedFeatureIds` or :py:func:`~QgsVectorLayer.selectedFeatureCount` if you do not
    require access to the feature attributes or geometry.
 
 :return: A list of :py:class:`QgsFeature`
@@ -721,7 +721,7 @@ Returns an iterator of the selected features.
 .. warning::
 
    Calling this method returns an iterator for all attributes and geometry for the selected features.
-   Consider using the much more efficient selectedFeatureIds() or selectedFeatureCount() if you do not
+   Consider using the much more efficient :py:func:`~QgsVectorLayer.selectedFeatureIds` or :py:func:`~QgsVectorLayer.selectedFeatureCount` if you do not
    require access to the feature attributes or geometry.
 
 
@@ -763,8 +763,8 @@ Sets whether labels should be ``enabled`` for the layer.
 
 .. note::
 
-   Labels will only be rendered if labelsEnabled() is ``True`` and a labeling
-   object is returned by labeling().
+   Labels will only be rendered if :py:func:`~QgsVectorLayer.labelsEnabled` is ``True`` and a labeling
+   object is returned by :py:func:`~QgsVectorLayer.labeling`.
 
 .. seealso:: :py:func:`labelsEnabled`
 
@@ -824,7 +824,7 @@ Reads vector layer specific state from project file Dom node.
 
 .. note::
 
-   Called by :py:func:`QgsMapLayer.readXml()`
+   Called by :py:func:`QgsMapLayer.readXml()`.
 %End
 
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const ${SIP_FINAL};
@@ -834,7 +834,7 @@ Writes vector layer specific state to project file Dom node.
 
 .. note::
 
-   Called by :py:func:`QgsMapLayer.writeXml()`
+   Called by :py:func:`QgsMapLayer.writeXml()`.
 %End
 
     virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const ${SIP_FINAL};
@@ -1020,7 +1020,7 @@ Writes the symbology of the layer into the document provided in SLD 1.1 format
     long featureCount( const QString &legendKey ) const;
 %Docstring
 Number of features rendered with specified legend key. Features must be first
-calculated by countSymbolFeatures()
+calculated by :py:func:`~QgsVectorLayer.countSymbolFeatures`
 
 :return: number of features rendered by symbol or -1 if failed or counts are not available
 %End
@@ -1028,7 +1028,7 @@ calculated by countSymbolFeatures()
     QgsFeatureIds symbolFeatureIds( const QString &legendKey ) const;
 %Docstring
 Ids of features rendered with specified legend key. Features must be first
-calculated by countSymbolFeatures()
+calculated by :py:func:`~QgsVectorLayer.countSymbolFeatures`
 
 :return: Ids of features rendered by symbol or -1 if failed or Ids are not available
 
@@ -1092,7 +1092,7 @@ if the geometry type of the new data source matches the current geometry type of
 %Docstring
 Count features for symbols.
 The method will return the feature counter task. You will need to
-connect to the symbolFeatureCountMapChanged() signal to be
+connect to the :py:func:`~QgsVectorLayer.symbolFeatureCountMapChanged` signal to be
 notified when the freshly updated feature counts are ready.
 
 :param storeSymbolFids: If ``True`` will gather the feature ids (fids) per symbol, otherwise only the count. Default ``False``.
@@ -1101,7 +1101,7 @@ notified when the freshly updated feature counts are ready.
 
    If the count features for symbols has been already done a
    ``None`` is returned. If you need to wait for the results,
-   you can call waitForFinished() on the feature counter.
+   you can call :py:func:`~QgsVectorLayer.waitForFinished` on the feature counter.
 
 .. versionadded:: 3.0
 %End
@@ -1167,7 +1167,7 @@ Queries the layer for the features which intersect the specified rectangle.
     bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
 %Docstring
 Updates an existing ``feature`` in the layer, replacing the attributes and geometry for the feature
-with matching QgsFeature.id() with the attributes and geometry from ``feature``.
+with matching :py:func:`QgsFeature.id()` with the attributes and geometry from ``feature``.
 Changes are not immediately committed to the layer.
 
 If ``skipDefaultValue`` is set to ``True``, default field values will not
@@ -1177,17 +1177,17 @@ Returns ``True`` if the feature's attribute was successfully changed.
 
 .. note::
 
-   Calls to updateFeature() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.updateFeature` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 .. warning::
 
    This method needs to query the underlying data provider to fetch the feature
-   with matching QgsFeature.id() on every call. Depending on the underlying data source this
-   can be slow to execute. Consider using the more efficient changeAttributeValue() or
-   changeGeometry() methods instead.
+   with matching :py:func:`QgsFeature.id()` on every call. Depending on the underlying data source this
+   can be slow to execute. Consider using the more efficient :py:func:`~QgsVectorLayer.changeAttributeValue` or
+   :py:func:`~QgsVectorLayer.changeGeometry` methods instead.
 
 
 .. seealso:: :py:func:`startEditing`
@@ -1208,10 +1208,10 @@ Not meaningful for Point geometries
 
 .. note::
 
-   Calls to insertVertex() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.insertVertex` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
     bool insertVertex( const QgsPoint &point, QgsFeatureId atFeatureId, int beforeVertex );
@@ -1223,10 +1223,10 @@ Not meaningful for Point geometries
 
 .. note::
 
-   Calls to insertVertex() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.insertVertex` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
     bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
@@ -1237,10 +1237,10 @@ to the given coordinates.
 
 .. note::
 
-   Calls to moveVertex() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.moveVertex` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
     bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexV2/;
@@ -1255,10 +1255,10 @@ to the given coordinates.
 
 .. note::
 
-   Calls to moveVertex() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.moveVertex` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
     EditResult deleteVertex( QgsFeatureId featureId, int vertex );
@@ -1270,10 +1270,10 @@ Deletes a vertex from a feature.
 
 .. note::
 
-   Calls to deleteVertex() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.deleteVertex` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 .. versionadded:: 2.14
 %End
@@ -1307,10 +1307,10 @@ Adds a ring to polygon/multipolygon features
 
 .. note::
 
-   Calls to addRing() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.addRing` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 .. deprecated:: QGIS 3.12
    - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
@@ -1336,10 +1336,10 @@ Adds a ring to polygon/multipolygon features
 
 .. note::
 
-   Calls to addRing() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.addRing` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
     QgsGeometry::OperationResult addRing( QgsCurve *ring /Transfer/, QgsFeatureId *featureId = 0 ) /PyName=addCurvedRing/;
@@ -1365,10 +1365,10 @@ Adds a ring to polygon/multipolygon features (takes ownership)
 
 .. note::
 
-   Calls to addRing() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.addRing` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
  QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring ) /Deprecated/;
@@ -1388,10 +1388,10 @@ Adds a new part polygon to a multipart feature
 
 .. note::
 
-   Calls to addPart() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.addPart` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 .. deprecated:: QGIS 3.12
    - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
@@ -1418,10 +1418,10 @@ Adds a new part polygon to a multipart feature
 
 .. note::
 
-   Calls to addPart() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.addPart` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 .. deprecated:: QGIS 3.12
    - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
@@ -1448,10 +1448,10 @@ Adds a new part polygon to a multipart feature
 
 .. note::
 
-   Calls to addPart() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.addPart` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
     QgsGeometry::OperationResult addPart( QgsCurve *ring /Transfer/ ) /PyName=addCurvedPart/;
@@ -1463,10 +1463,10 @@ Adds a new part polygon to a multipart feature
 
 .. note::
 
-   Calls to addPart() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.addPart` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
@@ -1481,10 +1481,10 @@ Translates feature by dx, dy
 
 .. note::
 
-   Calls to translateFeature() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.translateFeature` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
  QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) /Deprecated/;
@@ -1506,10 +1506,10 @@ Splits parts cut by the given line
 
 .. note::
 
-   Calls to splitParts() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.splitParts` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 .. deprecated:: QGIS 3.12
    - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
@@ -1534,10 +1534,10 @@ Splits parts cut by the given line
 
 .. note::
 
-   Calls to splitParts() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.splitParts` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
  QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) /Deprecated/;
@@ -1559,10 +1559,10 @@ Splits features cut by the given line
 
 .. note::
 
-   Calls to splitFeatures() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.splitFeatures` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 .. deprecated:: QGIS 3.12
    - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
@@ -1587,10 +1587,10 @@ Splits features cut by the given line
 
 .. note::
 
-   Calls to splitFeatures() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.splitFeatures` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
     int addTopologicalPoints( const QgsGeometry &geom );
@@ -1607,10 +1607,10 @@ Adds topological points for every vertex of the geometry.
 
 .. note::
 
-   Calls to addTopologicalPoints() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.addTopologicalPoints` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
  int addTopologicalPoints( const QgsPointXY &p )  /Deprecated/;
@@ -1626,10 +1626,10 @@ editing.
 
 .. note::
 
-   Calls to addTopologicalPoints() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.addTopologicalPoints` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 .. deprecated:: QGIS 3.12
    - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
@@ -1648,10 +1648,10 @@ editing.
 
 .. note::
 
-   Calls to addTopologicalPoints() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.addTopologicalPoints` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 .. versionadded:: 3.10
 %End
@@ -1663,7 +1663,7 @@ Access to labeling configuration. May be ``None`` if labeling is not used.
 
 .. note::
 
-   Labels will only be rendered if labelsEnabled() returns ``True``.
+   Labels will only be rendered if :py:func:`~QgsVectorLayer.labelsEnabled` returns ``True``.
 
 .. seealso:: :py:func:`labelsEnabled`
 
@@ -1732,7 +1732,7 @@ This also includes fields which have not yet been saved to the provider.
 
     QgsAttributeList attributeList() const;
 %Docstring
-Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
+Returns list of attribute indexes. i.e. a list from 0 ... :py:func:`~QgsVectorLayer.fieldCount`
 %End
 
     QgsAttributeList primaryKeyAttributes() const;
@@ -1769,10 +1769,10 @@ be updated. This can be used to override default field value expressions.
 
 .. note::
 
-   Calls to changeGeometry() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.changeGeometry` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 
 .. seealso:: :py:func:`startEditing`
@@ -1807,10 +1807,10 @@ be updated. This can be used to override default field value expressions.
 
 .. note::
 
-   Calls to changeAttributeValue() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.changeAttributeValue` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 
 .. seealso:: :py:func:`startEditing`
@@ -1846,11 +1846,11 @@ expressions.
 
 .. note::
 
-   Calls to changeAttributeValues() are only valid for layers in
-   which edits have been enabled by a call to startEditing(). Changes made
+   Calls to :py:func:`~QgsVectorLayer.changeAttributeValues` are only valid for layers in
+   which edits have been enabled by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made
    to features using this method are not committed to the underlying data
-   provider until a commitChanges() call is made. Any uncommitted changes
-   can be discarded by calling rollBack().
+   provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted changes
+   can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 
 .. seealso:: :py:func:`startEditing`
@@ -1874,10 +1874,10 @@ returns ``True`` if the field was added
 
 .. note::
 
-   Calls to addAttribute() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.addAttribute` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
     void setFieldAlias( int index, const QString &aliasString );
@@ -1903,10 +1903,10 @@ Renames an attribute field  (but does not commit it).
 
 .. note::
 
-   Calls to renameAttribute() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.renameAttribute` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 .. versionadded:: 2.16
 %End
@@ -1955,10 +1955,10 @@ Deletes an attribute field (but does not commit it).
 
 .. note::
 
-   Calls to deleteAttribute() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.deleteAttribute` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
     bool deleteAttributes( const QList<int> &attrs );
@@ -1982,10 +1982,10 @@ Deletes a feature from the layer (but does not commit it).
 
 .. note::
 
-   Calls to deleteFeature() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.deleteFeature` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
     bool deleteFeatures( const QgsFeatureIds &fids, DeleteContext *context = 0 );
@@ -2000,16 +2000,16 @@ Deletes a set of features from the layer (but does not commit it)
 
 .. note::
 
-   Calls to deleteFeatures() are only valid for layers in which edits have been enabled
-   by a call to startEditing(). Changes made to features using this method are not committed
-   to the underlying data provider until a commitChanges() call is made. Any uncommitted
-   changes can be discarded by calling rollBack().
+   Calls to :py:func:`~QgsVectorLayer.deleteFeatures` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
     bool commitChanges();
 %Docstring
 Attempts to commit to the underlying data provider any buffered changes made since the
-last to call to startEditing().
+last to call to :py:func:`~QgsVectorLayer.startEditing`.
 
 Returns the result of the attempt. If a commit fails (i.e. ``False`` is returned), the
 in-memory changes are left untouched and are not discarded. This allows editing to
@@ -2020,7 +2020,7 @@ The commits occur in distinct stages,
 (add attributes, add features, change attribute values, change
 geometries, delete features, delete attributes)
 so if a stage fails, it can be difficult to roll back cleanly.
-Therefore any error message returned by commitErrors() also includes which stage failed so
+Therefore any error message returned by :py:func:`~QgsVectorLayer.commitErrors` also includes which stage failed so
 that the user has some chance of repairing the damage cleanly.
 
 .. seealso:: :py:func:`startEditing`
@@ -2115,7 +2115,7 @@ take any changes made to default values into consideration.
                            QgsExpressionContext *context = 0 ) const;
 %Docstring
 Returns the calculated default value for the specified field index. The default
-value may be taken from a client side default value expression (see setDefaultValueDefinition())
+value may be taken from a client side default value expression (see :py:func:`~QgsVectorLayer.setDefaultValueDefinition`)
 or taken from the underlying data provider.
 
 :param index: field index
@@ -2563,10 +2563,10 @@ Clear selection
     void reselect();
 %Docstring
 Reselects the previous set of selected features. This is only applicable
-after a prior call to removeSelection().
+after a prior call to :py:func:`~QgsVectorLayer.removeSelection`.
 
-Any other modifications to the selection following a call to removeSelection() clears
-memory of the previous selection and consequently calling reselect() has no impact.
+Any other modifications to the selection following a call to :py:func:`~QgsVectorLayer.removeSelection` clears
+memory of the previous selection and consequently calling :py:func:`~QgsVectorLayer.reselect` has no impact.
 
 .. seealso:: :py:func:`removeSelection`
 
@@ -2586,8 +2586,8 @@ added/deleted or the layer has been subsetted.
 Makes the layer editable.
 
 This starts an edit session on this layer. Changes made in this edit session will not
-be made persistent until commitChanges() is called, and can be reverted by calling
-rollBack().
+be made persistent until :py:func:`~QgsVectorLayer.commitChanges` is called, and can be reverted by calling
+:py:func:`~QgsVectorLayer.rollBack`.
 
 :return: ``True`` if the layer was successfully made editable, or ``False`` if the operation
          failed (e.g. due to an underlying read-only data source, or lack of edit support
@@ -2629,7 +2629,7 @@ Emitted when modifications has been done on layer
 
     void allowCommitChanged();
 %Docstring
-Emitted whenever the allowCommitChanged() property of this layer changes.
+Emitted whenever the :py:func:`~QgsVectorLayer.allowCommitChanged` property of this layer changes.
 
 .. versionadded:: 3.4
 %End
@@ -2799,7 +2799,7 @@ Emitted when the font family defined for labeling layer is not found on system
 
     void featureBlendModeChanged( QPainter::CompositionMode blendMode );
 %Docstring
-Signal emitted when setFeatureBlendMode() is called
+Signal emitted when :py:func:`~QgsVectorLayer.setFeatureBlendMode` is called
 %End
 
     void opacityChanged( double opacity );
@@ -2828,7 +2828,7 @@ Signal emitted, when an edit command successfully ended
 .. note::
 
    This does not mean it is also committed, only that it is written
-   to the edit buffer. See beforeCommitChanges()
+   to the edit buffer. See :py:func:`~QgsVectorLayer.beforeCommitChanges`
 %End
 
     void editCommandDestroyed();
@@ -2838,7 +2838,7 @@ Signal emitted, when an edit command is destroyed
 .. note::
 
    This is not a rollback, it is only related to the current edit command.
-   See beforeRollBack()
+   See :py:func:`~QgsVectorLayer.beforeRollBack`
 %End
 
     void readCustomSymbology( const QDomElement &element, QString &errorMessage );

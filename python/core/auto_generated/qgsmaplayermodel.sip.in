@@ -39,7 +39,7 @@ The QgsMapLayerModel class is a model to display layers in widgets.
 %Docstring
 QgsMapLayerModel creates a model to display layers in widgets.
 
-If a specific ``project`` is not specified then the QgsProject.instance() project will be used to
+If a specific ``project`` is not specified then the :py:func:`QgsProject.instance()` project will be used to
 populate the model.
 %End
 
@@ -47,7 +47,7 @@ populate the model.
 %Docstring
 QgsMapLayerModel creates a model to display a specific list of layers in a widget.
 
-If a specific ``project`` is not specified then the QgsProject.instance() project will be used to
+If a specific ``project`` is not specified then the :py:func:`QgsProject.instance()` project will be used to
 populate the model.
 %End
 
