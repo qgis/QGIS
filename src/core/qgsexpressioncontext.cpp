@@ -116,11 +116,6 @@ QStringList QgsExpressionContextScope::variableNames() const
   return names;
 }
 
-bool QgsExpressionContextScope::variableNameSort( const QString &a, const QString &b )
-{
-  return QString::localeAwareCompare( a, b ) < 0;
-}
-
 /// @cond PRIVATE
 class QgsExpressionContextVariableCompare
 {
