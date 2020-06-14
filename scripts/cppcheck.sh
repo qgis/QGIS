@@ -28,6 +28,7 @@ cppcheck --library=qt.cfg --inline-suppr \
          -DSIP_TRANSFERTHIS= \
          -DSIP_INOUT= \
          -DSIP_OUT= \
+         -DSIP_FACTORY= \
          -DCMAKE_SOURCE_DIR="/foo/bar" \
          -j $(nproc) \
          ${SCRIPT_DIR}/../src \
@@ -52,18 +53,27 @@ mv ${LOG_FILE}.tmp ${LOG_FILE}
 for category in "style" "performance" "portability"; do
     if grep "${category}," ${LOG_FILE} >/dev/null; then
         echo "INFO: Issues in '${category}' category found, but not considered as making script to fail:"
-        grep "${category}," ${LOG_FILE} | grep -v -e "clarifyCalculation," -e "duplicateExpressionTernary," -e "redundantCondition,"
+        grep "${category}," ${LOG_FILE} | grep -v -e "clarifyCalculation," -e "duplicateExpressionTernary," -e "redundantCondition," -e "unusedPrivateFunction,"
         echo ""
     fi
 done
 
-for category in "error" "warning" "clarifyCalculation" "duplicateExpressionTernary" "redundantCondition"; do
-    if grep "${category}," ${LOG_FILE}  >/dev/null; then
-        echo "ERROR: Issues in '${category}' category found:"
-        grep "${category}," ${LOG_FILE}
-        echo ""
-        echo "${category} check failed !"
-        ret_code=1
+# unusedPrivateFunction not reliable enough in cppcheck 1.72 of Ubuntu 16.04
+if test "$(cppcheck --version)" = "Cppcheck 1.72"; then
+    UNUSED_PRIVATE_FUNCTION=""
+else
+    UNUSED_PRIVATE_FUNCTION="unusedPrivateFunction"
+fi
+
+for category in "error" "warning" "clarifyCalculation" "duplicateExpressionTernary" "redundantCondition" "${UNUSED_PRIVATE_FUNCTION}"; do
+    if test "${category}" != ""; then
+        if grep "${category}," ${LOG_FILE}  >/dev/null; then
+            echo "ERROR: Issues in '${category}' category found:"
+            grep "${category}," ${LOG_FILE}
+            echo ""
+            echo "${category} check failed !"
+            ret_code=1
+        fi
     fi
 done
 
