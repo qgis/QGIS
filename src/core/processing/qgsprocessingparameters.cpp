@@ -598,7 +598,7 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
   }
 
   QString dest;
-  if ( val.canConvert<QgsProperty>() )
+  if ( definition && val.canConvert<QgsProperty>() )
   {
     dest = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
   }
