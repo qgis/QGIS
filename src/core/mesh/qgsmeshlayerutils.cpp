@@ -136,7 +136,7 @@ QVector<QgsVector> QgsMeshLayerUtils::griddedVectorValues( const QgsMeshLayer *m
   }
   catch ( ... )
   {
-    QgsDebugMsgLevel( "Unable to store the arrow grid in memmory", 1 );
+    QgsDebugMsgLevel( "Unable to store the arrow grid in memory", 1 );
     return QVector<QgsVector>();
   }
 
