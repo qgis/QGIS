@@ -557,7 +557,6 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     {
       // this is not a horizontal plane - need to reproject the polygon to a new base so that
       // we can do the triangulation in a plane
-
       QVector3D pXVector, pYVector;
       _normalVectorToXYVectors( pNormal, pXVector, pYVector );
 
