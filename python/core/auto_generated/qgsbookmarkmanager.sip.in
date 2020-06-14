@@ -124,8 +124,8 @@ Manages storage of a set of bookmarks.
 
 QgsBookmarkManager handles the storage, serializing and deserializing
 of geographic bookmarks. Usually this class is not constructed directly, but
-rather accessed through a QgsProject via QgsProject.bookmarkManager(), or via
-the application-wide bookmark store at :py:func:`QgsApplication.bookmarkManager()`
+rather accessed through a QgsProject via :py:func:`QgsProject.bookmarkManager()`, or via
+the application-wide bookmark store at :py:func:`QgsApplication.bookmarkManager()`.
 
 .. versionadded:: 3.10
 %End
@@ -147,7 +147,7 @@ The returned object is parented to the ``project``.
 Constructor for QgsBookmarkManager, with the specified ``parent`` object.
 
 This constructor creates a bookmark manager which stores bookmarks in an XML file. A call to
-initialize() is required to initialize the manager and set the corresponding file path.
+:py:func:`~QgsBookmarkManager.initialize` is required to initialize the manager and set the corresponding file path.
 %End
 
     ~QgsBookmarkManager();

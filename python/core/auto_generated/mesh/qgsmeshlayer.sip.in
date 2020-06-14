@@ -214,8 +214,8 @@ Returns (date) time in hours formatted to human readable form
     QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius = 0 ) const;
 %Docstring
 Interpolates the value on the given point from given dataset.
-For 3D datasets, it uses dataset3dValue(), \n
-For 1D datasets, it uses dataset1dValue() with ``searchRadius``
+For 3D datasets, it uses :py:func:`~QgsMeshLayer.dataset3dValue`, \n
+For 1D datasets, it uses :py:func:`~QgsMeshLayer.dataset1dValue` with ``searchRadius``
 
 .. note::
 
@@ -294,7 +294,7 @@ If the temporal properties is not active, return the static dataset
 
 .. note::
 
-   the returned dataset index depends on the matching method, see setTemporalMatchingMethod()
+   the returned dataset index depends on the matching method, see :py:func:`~QgsMeshLayer.setTemporalMatchingMethod`
 
 
 .. versionadded:: 3.14
@@ -311,7 +311,7 @@ If the temporal properties is not active, return the static dataset
 
 .. note::
 
-   the returned dataset index depends on the matching method, see setTemporalMatchingMethod()
+   the returned dataset index depends on the matching method, see :py:func:`~QgsMeshLayer.setTemporalMatchingMethod`
 
 
 .. versionadded:: 3.14
@@ -344,7 +344,7 @@ Sets the reference time of the layer
 
     void setTemporalMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod );
 %Docstring
-Sets the method used to match the temporal dataset from a requested time, see activeVectorDatasetAtTime()
+Sets the method used to match the temporal dataset from a requested time, see :py:func:`~QgsMeshLayer.activeVectorDatasetAtTime`
 
 :param matchingMethod: the matching method
 

@@ -34,7 +34,7 @@ Constructor
 %Docstring
 Add an action with the given name and action details.
 Will happily have duplicate names and actions. If
-capture is ``True``, when running the action using doAction(),
+capture is ``True``, when running the action using :py:func:`~QgsActionManager.doAction`,
 any stdout from the process will be captured and displayed in a
 dialog box.
 %End
@@ -43,7 +43,7 @@ dialog box.
 %Docstring
 Add an action with the given name and action details.
 Will happily have duplicate names and actions. If
-capture is ``True``, when running the action using doAction(),
+capture is ``True``, when running the action using :py:func:`~QgsActionManager.doAction`,
 any stdout from the process will be captured and displayed in a
 dialog box.
 %End

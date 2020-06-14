@@ -38,7 +38,7 @@ A panel widget that can be shown in the map style dock
 
     virtual bool shouldTriggerLayerRepaint() const;
 %Docstring
-Whether this config widget changes map layer properties in a way that triggerRepaint() should
+Whether this config widget changes map layer properties in a way that :py:func:`~QgsMapLayerConfigWidget.triggerRepaint` should
 be called for the layer after applying changes. This is true by default, but some config widgets
 (for example 3D rendering config) do not need layer repaint as they do not modify 2D map rendering.
 

@@ -25,7 +25,7 @@ A valid value for this parameter is a list (QVariantList), where each item is a 
 'maxZoom': int
 }
 
-Static functions parametersAsLayers(), variantMapAsLayer(), layerAsVariantMap() provide conversion between
+Static functions :py:func:`~parametersAsLayers`, :py:func:`~variantMapAsLayer`, :py:func:`~layerAsVariantMap` provide conversion between
 QgsVectorTileWriter.Layer representation and QVariant representation.
 
 .. note::

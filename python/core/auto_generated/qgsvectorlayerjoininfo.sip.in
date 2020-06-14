@@ -39,7 +39,7 @@ Returns joined layer (may be ``None`` if the reference was set by layer ID and n
 
     void setJoinLayerId( const QString &layerId );
 %Docstring
-Sets ID of the joined layer. It will need to be overwritten by setJoinLayer() to a reference to real layer
+Sets ID of the joined layer. It will need to be overwritten by :py:func:`~QgsVectorLayerJoinInfo.setJoinLayer` to a reference to real layer
 %End
     QString joinLayerId() const;
 %Docstring

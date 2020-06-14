@@ -45,7 +45,7 @@ Metadata associated with a project
 
     virtual QString type() = 0;
 %Docstring
-Unique identifier of the project storage type. If type() returns "memory", all project file names
+Unique identifier of the project storage type. If :py:func:`~QgsProjectStorage.type` returns "memory", all project file names
 starting with "memory:" will have read/write redirected through that storage implementation.
 %End
 
@@ -58,7 +58,7 @@ Returns list of all projects for given URI (specific to each storage backend)
 %Docstring
 Reads project file content stored in the backend at the specified URI to the given device
 (could be e.g. a temporary file or a memory buffer). The device is expected to be empty
-when passed to readProject() so that the method can write all data to it and then rewind
+when passed to :py:func:`~QgsProjectStorage.readProject` so that the method can write all data to it and then rewind
 it using seek(0) to make it ready for reading in :py:class:`QgsProject`.
 %End
 
@@ -66,7 +66,7 @@ it using seek(0) to make it ready for reading in :py:class:`QgsProject`.
 %Docstring
 Writes project file content stored in given device (could be e.g. a temporary file or a memory buffer)
 using the backend to the specified URI. The device is expected to contain all project file data
-and having position at the start of the content when passed to writeProject() so that the method
+and having position at the start of the content when passed to :py:func:`~QgsProjectStorage.writeProject` so that the method
 can read all data from it until it reaches its end.
 %End
 
@@ -100,7 +100,7 @@ The default implementation returns an empty string.
  virtual QString visibleName() /Deprecated/;
 %Docstring
 Returns human-readable name of the storage. Used as the menu item text in QGIS. Empty name
-indicates that the storage does not implement GUI support (showLoadGui() and showSaveGui()).
+indicates that the storage does not implement GUI support (:py:func:`~QgsProjectStorage.showLoadGui` and :py:func:`~QgsProjectStorage.showSaveGui`).
 The name may be translatable and ideally unique as well.
 
 .. deprecated:: QGIS 3.10

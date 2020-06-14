@@ -18,7 +18,7 @@ as part of a map render job.
 
 QgsRenderedFeatureHandlerInterface objects are registered in the QgsMapSettings
 objects used to construct map render jobs. During the rendering operation,
-the handleRenderedFeature() method will be called once for every rendered feature,
+the :py:func:`~handleRenderedFeature` method will be called once for every rendered feature,
 allowing the handler to perform some custom task based on the provided information.
 
 They can be used for custom tasks which operate on a set of rendered features,
@@ -65,7 +65,7 @@ map units).
 .. warning::
 
    This method may be called from many different threads (for multi-threaded map render operations),
-   and accordingly care must be taken to ensure that handleRenderedFeature() implementations are
+   and accordingly care must be taken to ensure that :py:func:`~QgsRenderedFeatureHandlerInterface.handleRenderedFeature` implementations are
    appropriately thread safe.
 
 The ``context`` argument is used to provide additional context relating to the rendering of a feature.

@@ -28,7 +28,7 @@ a matching type from a layout.
 QgsLayoutItemComboBox creates a combo box to display a list of items in a
 ``layout``. The items can optionally be filtered by type.
 If ``layout`` is not set, no items will be shown
-until setCurrentLayout() is called
+until :py:func:`~QgsLayoutItemComboBox.setCurrentLayout` is called
 %End
 
     void setCurrentLayout( QgsLayout *layout );

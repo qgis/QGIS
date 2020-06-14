@@ -65,7 +65,7 @@ ratio shall be set accordingly.
 Returns geographical coordinates of the rectangle that should be rendered.
 The actual visible extent used for rendering could be slightly different
 since the given extent may be expanded in order to fit the aspect ratio
-of output size. Use visibleExtent() to get the resulting extent.
+of output size. Use :py:func:`~QgsMapSettings.visibleExtent` to get the resulting extent.
 %End
 
     void setExtent( const QgsRectangle &rect, bool magnified = true );
@@ -73,7 +73,7 @@ of output size. Use visibleExtent() to get the resulting extent.
 Set coordinates of the rectangle which should be rendered.
 The actual visible extent used for rendering could be slightly different
 since the given extent may be expanded in order to fit the aspect ratio
-of output size. Use visibleExtent() to get the resulting extent.
+of output size. Use :py:func:`~QgsMapSettings.visibleExtent` to get the resulting extent.
 %End
 
     double extentBuffer() const;
@@ -293,7 +293,7 @@ Gets units of map's geographical coordinates - used for scale calculation
     bool setEllipsoid( const QString &ellipsoid );
 %Docstring
 Sets the ``ellipsoid`` by its acronym. Known ellipsoid acronyms can be
-retrieved using :py:func:`QgsEllipsoidUtils.acronyms()`
+retrieved using :py:func:`QgsEllipsoidUtils.acronyms()`.
 Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 
 :return: ``True`` if ellipsoid was successfully set
@@ -382,7 +382,7 @@ Sets the text render ``format``, which dictates how text is rendered (e.g. as pa
 
 .. warning::
 
-   Calling the setLabelingEngineSettings() method will reset the text render format to match the default
+   Calling the :py:func:`~QgsMapSettings.setLabelingEngineSettings` method will reset the text render format to match the default
    text render format from the label engine settings.
 
 .. seealso:: :py:func:`textRenderFormat`
@@ -597,7 +597,7 @@ Sets the global configuration of the labeling engine.
 
 .. note::
 
-   Calling this method will reset the textRenderFormat() to match the default
+   Calling this method will reset the :py:func:`~QgsMapSettings.textRenderFormat` to match the default
    text render format from the label engine ``settings``.
 
 .. seealso:: :py:func:`labelingEngineSettings`
@@ -619,9 +619,9 @@ Returns the global configuration of the labeling engine.
 %Docstring
 Returns the label boundary geometry, which restricts where in the rendered map labels are permitted to be
 placed. By default this is a null geometry, which indicates that labels can be placed anywhere within
-the map's visiblePolygon().
+the map's :py:func:`~QgsMapSettings.visiblePolygon`.
 
-The geometry is specified using the map's destinationCrs().
+The geometry is specified using the map's :py:func:`~QgsMapSettings.destinationCrs`.
 
 .. seealso:: :py:func:`setLabelBoundaryGeometry`
 
@@ -636,9 +636,9 @@ Sets the label ``boundary`` geometry, which restricts where in the rendered map 
 placed.
 
 A null ``boundary`` geometry (the default) indicates that labels can be placed anywhere within
-the map's visiblePolygon().
+the map's :py:func:`~QgsMapSettings.visiblePolygon`.
 
-The geometry is specified using the map's destinationCrs().
+The geometry is specified using the map's :py:func:`~QgsMapSettings.destinationCrs`.
 
 .. seealso:: :py:func:`labelBoundaryGeometry`
 

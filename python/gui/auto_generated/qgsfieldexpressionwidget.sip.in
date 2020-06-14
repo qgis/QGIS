@@ -125,7 +125,7 @@ Returns the currently selected field or expression. If a field is currently sele
 value will be converted to a valid expression referencing this field (ie enclosing the field name with
 appropriate quotations).
 
-Alias for asExpression()
+Alias for :py:func:`~QgsFieldExpressionWidget.asExpression`
 
 .. versionadded:: 3.0
 %End

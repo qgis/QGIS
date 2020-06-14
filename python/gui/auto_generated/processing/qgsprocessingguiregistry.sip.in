@@ -17,7 +17,7 @@ The QgsProcessingGuiRegistry is a home for widgets for processing
 configuration widgets.
 
 QgsProcessingGuiRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsGui.processingGuiRegistry()`
+:py:func:`QgsGui.processingGuiRegistry()`.
 
 .. versionadded:: 3.2
 %End
@@ -62,12 +62,12 @@ and in this case, ``None`` will be returned.
     bool addParameterWidgetFactory( QgsProcessingParameterWidgetFactoryInterface *factory /Transfer/ );
 %Docstring
 Adds a parameter widget ``factory`` to the registry, allowing widget creation for parameters of the matching
-type via createParameterWidgetWrapper() and createModelerParameterWidget().
+type via :py:func:`~QgsProcessingGuiRegistry.createParameterWidgetWrapper` and :py:func:`~QgsProcessingGuiRegistry.createModelerParameterWidget`.
 
 Ownership of ``factory`` is transferred to the registry.
 
 Returns ``True`` if the factory was successfully added, or ``False`` if the factory could not be added. Each
-factory must return a unique value for QgsProcessingParameterWidgetFactoryInterface.parameterType(),
+factory must return a unique value for :py:func:`QgsProcessingParameterWidgetFactoryInterface.parameterType()`,
 and attempting to add a new factory with a duplicate type will result in failure.
 
 .. seealso:: :py:func:`removeParameterWidgetFactory`

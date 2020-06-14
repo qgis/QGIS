@@ -21,7 +21,7 @@ Url redirects are automatically handled.
 
 After constructing a QgsNetworkContentFetcherTask, callers should
 connect to the QgsNetworkContentFetcherTask.fetched signal. They can
-then safely access the network reply() from the connected slot
+then safely access the network :py:func:`~reply` from the connected slot
 without danger of the task being first removed by the QgsTaskManager.
 
 .. seealso:: :py:class:`QgsNetworkContentFetcher`
@@ -66,7 +66,7 @@ May return ``None`` if the request has not yet completed.
 .. warning::
 
    This should only be accessed from a slot connected directly to
-   the QgsNetworkContentFetcherTask.fetched() signal.
+   the :py:func:`QgsNetworkContentFetcherTask.fetched()` signal.
 %End
 
     QString contentAsString() const;
@@ -76,7 +76,7 @@ Returns the fetched content as a string
 .. warning::
 
    This should only be accessed from a slot connected directly to
-   the QgsNetworkContentFetcherTask.fetched() signal.
+   the :py:func:`QgsNetworkContentFetcherTask.fetched()` signal.
 
 .. versionadded:: 3.10
 %End
@@ -89,7 +89,7 @@ Emitted when the network content has been fetched, regardless
 of whether the fetch was successful or not.
 
 Users of QgsNetworkContentFetcherTask should connect to this signal,
-and from the associated slot they can then safely access the network reply()
+and from the associated slot they can then safely access the network :py:func:`~QgsNetworkContentFetcherTask.reply`
 without danger of the task being first removed by the :py:class:`QgsTaskManager`.
 %End
 

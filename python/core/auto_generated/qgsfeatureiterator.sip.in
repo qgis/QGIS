@@ -62,7 +62,7 @@ An invalid feature iterator is not able to provide a reliable source for data.
 If an iterator is invalid, either give up or try to send the request again (preferably
 after a timeout to give the system some time to stay responsive).
 
-If you want to check if the iterator successfully completed, better use :py:func:`QgsFeatureIterator.isClosed()`
+If you want to check if the iterator successfully completed, better use :py:func:`QgsFeatureIterator.isClosed()`.
 
 .. versionadded:: 3.0
 %End
@@ -120,7 +120,7 @@ Transforms ``feature``'s geometry according to the specified coordinate ``transf
 If ``feature`` has no geometry or ``transform`` is invalid then calling this method
 has no effect and will be shortcut.
 Iterators should call this method before returning features to ensure that any
-QgsFeatureRequest.destinationCrs() set on the request is respected.
+:py:func:`QgsFeatureRequest.destinationCrs()` set on the request is respected.
 
 .. versionadded:: 3.0
 %End
@@ -128,11 +128,11 @@ QgsFeatureRequest.destinationCrs() set on the request is respected.
 
     QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const throw( QgsCsException );
 %Docstring
-Returns a rectangle representing the original request's :py:func:`QgsFeatureRequest.filterRect()`
+Returns a rectangle representing the original request's :py:func:`QgsFeatureRequest.filterRect()`.
 If ``transform`` is a valid coordinate transform, the return rectangle will represent
-the requested filterRect() transformed to the source's coordinate reference system.
+the requested :py:func:`~QgsAbstractFeatureIterator.filterRect` transformed to the source's coordinate reference system.
 Iterators should call this method and use the returned rectangle for filtering
-features to ensure that any QgsFeatureRequest.destinationCrs() set on the request is respected.
+features to ensure that any :py:func:`QgsFeatureRequest.destinationCrs()` set on the request is respected.
 Will throw a QgsCsException if the rect cannot be transformed from the destination CRS.
 
 .. versionadded:: 3.0
@@ -184,7 +184,7 @@ Helper template that cares of two things: 1. automatic deletion of source if own
   protected:
     void iteratorClosed();
 %Docstring
-to be called by from subclass in close()
+to be called by from subclass in :py:func:`~QgsAbstractFeatureIteratorFromSource.close`
 %End
 
 };

@@ -29,7 +29,7 @@ To use:
 setupUi( this ); // set up .ui file objects
 initOptionsBase( ``False`` ); // set up this class to use .ui objects, optionally restoring base ui
 ...
-restoreOptionsBaseUi(); // restore the base ui with initOptionsBase or use this later on
+:py:func:`~restoreOptionsBaseUi`; // restore the base ui with initOptionsBase or use this later on
 %End
 
 %TypeHeaderCode
@@ -63,7 +63,7 @@ Set up the base ui connections for vertical tabs.
 Restore the base ui.
 Sometimes useful to do at end of subclass's constructor.
 
-:param title: the window title (it does not need to be defined if previously given to initOptionsBase();
+:param title: the window title (it does not need to be defined if previously given to :py:func:`~QgsOptionsDialogBase.initOptionsBase`;
 %End
 
     void restoreLastPage();

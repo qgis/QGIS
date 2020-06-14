@@ -36,7 +36,7 @@ and ``penStyle``.
 %Docstring
 Creates a new QgsSimpleLineSymbolLayer, using the settings
 serialized in the ``properties`` map (corresponding to the output from
-QgsSimpleLineSymbolLayer.properties() ).
+:py:func:`QgsSimpleLineSymbolLayer.properties()` ).
 %End
 
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
@@ -180,9 +180,9 @@ Sets the map unit ``scale`` for lengths used in the custom dash pattern.
 Returns the custom dash vector, which is the pattern of alternating drawn/skipped lengths
 used while rendering a custom dash pattern.
 
-Units for the vector are specified by customDashPatternUnit()
+Units for the vector are specified by :py:func:`~QgsSimpleLineSymbolLayer.customDashPatternUnit`
 
-This setting is only used when useCustomDashPattern() returns ``True``.
+This setting is only used when :py:func:`~QgsSimpleLineSymbolLayer.useCustomDashPattern` returns ``True``.
 
 .. seealso:: :py:func:`setCustomDashVector`
 
@@ -196,9 +196,9 @@ This setting is only used when useCustomDashPattern() returns ``True``.
 Sets the custom dash ``vector``, which is the pattern of alternating drawn/skipped lengths
 used while rendering a custom dash pattern.
 
-Units for the vector are specified by customDashPatternUnit()
+Units for the vector are specified by :py:func:`~QgsSimpleLineSymbolLayer.customDashPatternUnit`
 
-This setting is only used when useCustomDashPattern() returns ``True``.
+This setting is only used when :py:func:`~QgsSimpleLineSymbolLayer.useCustomDashPattern` returns ``True``.
 
 .. seealso:: :py:func:`customDashVector`
 
@@ -285,7 +285,7 @@ Sets whether the repeating symbols should be rotated to match their line segment
 
     double interval() const;
 %Docstring
-Returns the interval between individual symbols. Units are specified through intervalUnits().
+Returns the interval between individual symbols. Units are specified through :py:func:`~QgsTemplatedLineSymbolLayerBase.intervalUnits`.
 
 .. seealso:: :py:func:`setInterval`
 
@@ -296,7 +296,7 @@ Returns the interval between individual symbols. Units are specified through int
 %Docstring
 Sets the interval between individual symbols.
 
-:param interval: interval size. Units are specified through setIntervalUnit()
+:param interval: interval size. Units are specified through :py:func:`~QgsTemplatedLineSymbolLayerBase.setIntervalUnit`
 
 .. seealso:: :py:func:`interval`
 
@@ -433,7 +433,7 @@ Sets the map unit ``scale`` used for calculating the offset in map units along l
 Returns the length of line over which the line's direction is averaged when
 calculating individual symbol angles. Longer lengths smooth out angles from jagged lines to a greater extent.
 
-Units are retrieved through averageAngleUnit()
+Units are retrieved through :py:func:`~QgsTemplatedLineSymbolLayerBase.averageAngleUnit`
 
 .. seealso:: :py:func:`setAverageAngleLength`
 
@@ -447,7 +447,7 @@ Units are retrieved through averageAngleUnit()
 Sets the ``length`` of line over which the line's direction is averaged when
 calculating individual symbol angles. Longer lengths smooth out angles from jagged lines to a greater extent.
 
-Units are set through setAverageAngleUnit()
+Units are set through :py:func:`~QgsTemplatedLineSymbolLayerBase.setAverageAngleUnit`
 
 .. seealso:: :py:func:`averageAngleLength`
 
@@ -591,7 +591,7 @@ should be rotated to match the line segment alignment.
 %Docstring
 Creates a new QgsMarkerLineSymbolLayer, using the settings
 serialized in the ``properties`` map (corresponding to the output from
-QgsMarkerLineSymbolLayer.properties() ).
+:py:func:`QgsMarkerLineSymbolLayer.properties()` ).
 %End
 
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
@@ -698,7 +698,7 @@ should be rotated to match the line segment alignment.
 %Docstring
 Creates a new QgsHashedLineSymbolLayer, using the settings
 serialized in the ``properties`` map (corresponding to the output from
-QgsHashedLineSymbolLayer.properties() ).
+:py:func:`QgsHashedLineSymbolLayer.properties()` ).
 %End
 
     virtual QString layerType() const;
@@ -752,7 +752,7 @@ Sets the ``angle`` to use when drawing the hashed lines sections, in degrees clo
 
     double hashLength() const;
 %Docstring
-Returns the length of hash symbols. Units are specified through hashLengthUnits().
+Returns the length of hash symbols. Units are specified through :py:func:`~QgsHashedLineSymbolLayer.hashLengthUnits`.
 
 .. seealso:: :py:func:`setHashLength`
 
@@ -761,7 +761,7 @@ Returns the length of hash symbols. Units are specified through hashLengthUnits(
 
     void setHashLength( double length );
 %Docstring
-Sets the ``length`` of hash symbols. Units are specified through setHashLengthUnit()
+Sets the ``length`` of hash symbols. Units are specified through :py:func:`~QgsHashedLineSymbolLayer.setHashLengthUnit`
 
 .. seealso:: :py:func:`hashLength`
 

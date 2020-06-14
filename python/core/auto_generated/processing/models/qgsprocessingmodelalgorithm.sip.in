@@ -267,7 +267,7 @@ is the parent layer parameter).
     QMap<QString, QgsProcessingModelParameter> parameterComponents() const;
 %Docstring
 Returns the map of parameter components used by the model. The keys
-should match the algorithm's parameter names (see parameterDefinitions() ).
+should match the algorithm's parameter names (see :py:func:`~QgsProcessingModelAlgorithm.parameterDefinitions` ).
 
 .. seealso:: :py:func:`setParameterComponent`
 
@@ -277,7 +277,7 @@ should match the algorithm's parameter names (see parameterDefinitions() ).
     void setParameterComponents( const QMap<QString, QgsProcessingModelParameter> &parameterComponents );
 %Docstring
 Sets the map of parameter components used by the model. The keys
-should match the algorithm's parameter names (see parameterDefinitions() ).
+should match the algorithm's parameter names (see :py:func:`~QgsProcessingModelAlgorithm.parameterDefinitions` ).
 All existing parameter components will be replaced.
 
 .. seealso:: :py:func:`parameterComponents`
@@ -325,7 +325,7 @@ Returns an ordered list of parameters for the model.
 Sets the ``order`` for showing parameters for the model.
 
 The ``order`` list should consist of parameter names corresponding to existing
-model parameterComponents().
+model :py:func:`~QgsProcessingModelAlgorithm.parameterComponents`.
 
 .. seealso:: :py:func:`orderedParameters`
 
@@ -449,8 +449,8 @@ The ``indentSize`` arguments specifies the size of indented lines.
 %Docstring
 Returns a list of possible sources which can be used for the parameters for a child
 algorithm in the model. Returned sources are those which match either one of the
-specified ``parameterTypes`` (see QgsProcessingParameterDefinition.type() ) or
-one of the specified ``outputTypes`` (see QgsProcessingOutputDefinition.type() ).
+specified ``parameterTypes`` (see :py:func:`QgsProcessingParameterDefinition.type()` ) or
+one of the specified ``outputTypes`` (see :py:func:`QgsProcessingOutputDefinition.type()` ).
 If specified, an optional list of ``dataTypes`` can be used to filter the returned
 sources to those with compatible data types for the parameter/outputs.
 %End

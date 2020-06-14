@@ -38,13 +38,13 @@ Constructor for QgsScrollArea.
     void scrollOccurred();
 %Docstring
 Should be called when a scroll occurs on with the
-QScrollArea itself or its child viewport().
+QScrollArea itself or its child :py:func:`~QgsScrollArea.viewport`.
 %End
 
     bool hasScrolled() const;
 %Docstring
 Returns ``True`` if a scroll recently occurred within
-the QScrollArea or its child viewport()
+the QScrollArea or its child :py:func:`~QgsScrollArea.viewport`
 %End
 
     void setVerticalOnly( bool verticalOnly );

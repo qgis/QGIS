@@ -109,7 +109,7 @@ Python scripts should not use QgsScopedRuntimeProfile directly. Instead, use :py
 %Docstring
 Constructor for QgsScopedRuntimeProfile.
 
-Automatically registers the operation in the QgsApplication.profiler() instance
+Automatically registers the operation in the :py:func:`QgsApplication.profiler()` instance
 and starts recording the run time of the operation.
 %End
 

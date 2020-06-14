@@ -63,7 +63,7 @@ Gets an md5 hash that uniquely identifies an image
     QString renderedImage();
 %Docstring
 The path of the rendered image can be retrieved through that method.
-Will return the path set with setRenderedImage() or generated in runTest()
+Will return the path set with :py:func:`~QgsRenderChecker.setRenderedImage` or generated in :py:func:`~QgsRenderChecker.runTest`
 
 :return: The path to the rendered image
 %End
@@ -76,7 +76,7 @@ Will return the path set with setRenderedImage() or generated in runTest()
 
     void setColorTolerance( unsigned int colorTolerance );
 %Docstring
-Set tolerance for color components used by runTest() and compareImages().
+Set tolerance for color components used by :py:func:`~QgsRenderChecker.runTest` and :py:func:`~QgsRenderChecker.compareImages`.
 Default value is 0.
 
 :param colorTolerance: is maximum difference for each color component
@@ -152,7 +152,7 @@ Returns the path to the expected image file
     void enableDashBuffering( bool enable );
 %Docstring
 Call this to enable internal buffering of dash messages. You may later call
-dashMessages() to get access to the buffered messages. If disabled (default)
+:py:func:`~QgsRenderChecker.dashMessages` to get access to the buffered messages. If disabled (default)
 dash messages will be sent immediately.
 
 :param enable: Enable or disable buffering

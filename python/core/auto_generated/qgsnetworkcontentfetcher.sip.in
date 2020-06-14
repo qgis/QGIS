@@ -37,7 +37,7 @@ Constructor for QgsNetworkContentFetcher.
 
     void fetchContent( const QUrl &url, const QString &authcfg = QString() );
 %Docstring
-Fetches content from a remote URL and handles redirects. The finished()
+Fetches content from a remote URL and handles redirects. The :py:func:`~QgsNetworkContentFetcher.finished`
 signal will be emitted when content has been fetched.
 
 :param url: URL to fetch
@@ -46,7 +46,7 @@ signal will be emitted when content has been fetched.
 
     void fetchContent( const QNetworkRequest &request, const QString &authcfg = QString() );
 %Docstring
-Fetches content using a network ``request`` and handles redirects. The finished()
+Fetches content using a network ``request`` and handles redirects. The :py:func:`~QgsNetworkContentFetcher.finished`
 signal will be emitted when content has been fetched.
 
 Optionally, authentication configuration can be set via the ``authcfg`` argument.

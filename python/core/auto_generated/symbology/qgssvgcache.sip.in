@@ -20,7 +20,7 @@ according to the svg params specification (http://www.w3.org/TR/2009/WD-SVGParam
 the parameters 'fill-color', 'pen-color', 'outline-width', 'stroke-width'. E.g. <circle fill="param(fill-color red)" stroke="param(pen-color black)" stroke-width="param(outline-width 1)"
 
 QgsSvgCache is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.svgCache()`
+:py:func:`QgsApplication.svgCache()`.
 %End
 
 %TypeHeaderCode

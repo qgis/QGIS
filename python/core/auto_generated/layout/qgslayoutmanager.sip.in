@@ -17,7 +17,7 @@ Manages storage of a set of layouts.
 
 QgsLayoutManager handles the storage, serializing and deserializing
 of print layouts and reports. Usually this class is not constructed directly, but
-rather accessed through a QgsProject via :py:func:`QgsProject.layoutManager()`
+rather accessed through a QgsProject via :py:func:`QgsProject.layoutManager()`.
 
 QgsLayoutManager retains ownership of all the layouts contained
 in the manager.
