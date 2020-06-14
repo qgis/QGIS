@@ -44,6 +44,43 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
   vn = -vn;
   vn.normalize();
 
+  QVector<double> textureCoordinates;
+  textureCoordinates.reserve( 12 );
+  // select which side of the coordinates to use (x, z or y, z) depending on which side is smaller
+  if ( fabsf( dy ) <= fabsf( dx ) )
+  {
+    // consider x and z as the texture coordinates
+    textureCoordinates.push_back( x0 );
+    textureCoordinates.push_back( z0 + height );
+    textureCoordinates.push_back( x1 );
+    textureCoordinates.push_back( z1 + height );
+    textureCoordinates.push_back( x0 );
+    textureCoordinates.push_back( z0 );
+
+    textureCoordinates.push_back( x0 );
+    textureCoordinates.push_back( z0 );
+    textureCoordinates.push_back( x1 );
+    textureCoordinates.push_back( z1 + height );
+    textureCoordinates.push_back( x1 );
+    textureCoordinates.push_back( z1 );
+  }
+  else
+  {
+    // consider y and z as the texture coordinates
+    textureCoordinates.push_back( -y0 );
+    textureCoordinates.push_back( z0 + height );
+    textureCoordinates.push_back( -y1 );
+    textureCoordinates.push_back( z1 + height );
+    textureCoordinates.push_back( -y0 );
+    textureCoordinates.push_back( z0 );
+
+    textureCoordinates.push_back( -y0 );
+    textureCoordinates.push_back( z0 );
+    textureCoordinates.push_back( -y1 );
+    textureCoordinates.push_back( z1 + height );
+    textureCoordinates.push_back( -y1 );
+    textureCoordinates.push_back( z1 );
+  }
 
   // triangle 1
   // vertice 1
@@ -51,19 +88,19 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
   if ( addTextureCoords )
-    data << x0 << z0 + height;
+    data << textureCoordinates[0] << textureCoordinates[1];
   // vertice 2
   data << x1 << z1 + height << -y1;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
   if ( addTextureCoords )
-    data << x1 << z1 + height;
+    data << textureCoordinates[2] << textureCoordinates[3];
   // verice 3
   data << x0 << z0 << -y0;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
   if ( addTextureCoords )
-    data << x0 << z0;
+    data << textureCoordinates[4] << textureCoordinates[5];
 
   // triangle 2
   // vertice 1
@@ -71,19 +108,19 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
   if ( addTextureCoords )
-    data << x0 << z0;
+    data << textureCoordinates[6] << textureCoordinates[7];
   // vertice 2
   data << x1 << z1 + height << -y1;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
   if ( addTextureCoords )
-    data << x1 << z1 + height;
+    data << textureCoordinates[8] << textureCoordinates[9];
   // vertice 3
   data << x1 << z1 << -y1;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
   if ( addTextureCoords )
-    data << x1 << z1;
+    data << textureCoordinates[10] << textureCoordinates[11];
 }
 
 
