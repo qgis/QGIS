@@ -366,10 +366,10 @@ void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
                 ySpacing,
                 gridSize,
                 minCorner );
-  }
 
-  if ( vectors.isEmpty() )
-    return;
+    if ( vectors.isEmpty() )
+      return;
+  }
 
   mTechnique->addParameter( arrowsEnabledParameter )  ;
 
