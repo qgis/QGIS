@@ -639,15 +639,17 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
     {
       QString expr;
 
-      //simple primary key, so prefer to use an "IN (...)" query. These are much faster then multiple chained ...OR... clauses
+      // simple primary key, so prefer to use an "IN (...)" query. These are much faster then multiple chained ...OR... clauses
+      // The VALUES clause causes PostgreSQL to generate a virtual table against which the original table is joined, allowing
+      // the DBMS to run faster query plans.
       if ( !featureIds.isEmpty() )
       {
         QString delim;
-        expr = QStringLiteral( "%1 IN (" ).arg( ( pkType == PktOid ? QStringLiteral( "oid" ) : QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) ) );
+        expr = QStringLiteral( "%1 IN ( VALUES " ).arg( ( pkType == PktOid ? QStringLiteral( "oid" ) : QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) ) );
 
         for ( const QgsFeatureId featureId : qgis::as_const( featureIds ) )
         {
-          expr += delim + FID_TO_STRING( ( pkType == PktOid ? featureId : FID2PKINT( featureId ) ) );
+          expr += delim + QStringLiteral( "(%1)" ).arg( FID_TO_STRING( ( pkType == PktOid ? featureId : FID2PKINT( featureId ) ) ) );
           delim = ',';
         }
         expr += ')';
@@ -660,11 +662,13 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
     {
       QString expr;
 
-      //simple primary key, so prefer to use an "IN (...)" query. These are much faster then multiple chained ...OR... clauses
+      // simple primary key, so prefer to use an "IN (...)" query. These are much faster then multiple chained ...OR... clauses
+      // The VALUES clause causes PostgreSQL to generate a virtual table against which the original table is joined, allowing
+      // the DBMS to run faster query plans.
       if ( !featureIds.isEmpty() )
       {
         QString delim;
-        expr = QStringLiteral( "%1 IN (" ).arg( QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) );
+        expr = QStringLiteral( "%1 IN ( VALUES " ).arg( QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) );
 
         for ( const QgsFeatureId featureId : qgis::as_const( featureIds ) )
         {
@@ -672,7 +676,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
           if ( !pkVals.isEmpty() )
           {
             QgsField fld = fields.at( pkAttrs[0] );
-            expr += delim + pkVals[0].toString();
+            expr += delim + QStringLiteral( "(%1)" ).arg( pkVals[0].toString() );
             delim = ',';
           }
         }

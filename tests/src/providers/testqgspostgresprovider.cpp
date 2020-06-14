@@ -38,6 +38,7 @@ class TestQgsPostgresProvider: public QObject
     void decodeJsonbMap();
     void testDecodeDateTimes();
     void testQuotedValueBigInt();
+    void testWhereClauseWithInValues();
 };
 
 
@@ -295,6 +296,47 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   // TODO: FIXME: in tables with composite PKs, integer fields are cast to text, but their values are not.
   // It hurts the database performance badly.
   QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_bigint\"=-9223372036854775800 AND \"fld_text\"::text='QGIS ''Rocks''!' AND \"fld_integer\"::text=42" ) );
+}
+
+void TestQgsPostgresProvider::testWhereClauseWithInValues()
+{
+  QgsFields fields;
+  QList<int> pkAttrs;
+  QVariantList vlist;
+  QgsFeatureIds fids;
+
+  std::shared_ptr< QgsPostgresSharedData > sdata( new QgsPostgresSharedData() );
+
+  QgsField field;
+
+  field.setName( "pk" );
+  field.setType( QVariant::Int );
+  field.setTypeName( "int4" );
+
+  fields.append( field );
+  pkAttrs.append( 0 );
+
+  vlist.append( 21 );
+  vlist.append( 42 );
+  vlist.append( 84 );
+
+  fids.insert( 21 );
+  fids.insert( 42 );
+  fids.insert( 84 );
+
+
+  sdata->insertFid( 21, vlist );
+  sdata->insertFid( 42, vlist );
+  sdata->insertFid( 84, vlist );
+
+  QString generated_where = QgsPostgresUtils::whereClause( fids, fields, NULL, QgsPostgresPrimaryKeyType::PktInt, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) );
+
+  qDebug() << "actual: " << generated_where;
+  // since QgsFeatureIds is a QSet, and QSet doesn't guarantee order, and we don't want to check all permutations,
+  // we just replace the numeric values in the generated query with a fixed, known string; what we want is to check
+  // the construct, not the actual values.
+  generated_where.replace( QRegularExpression( "[0-9]+" ), "xx" );
+  QCOMPARE( generated_where, QString( "\"pk\" IN ( VALUES (xx),(xx),(xx))" ) );
 }
 
 QGSTEST_MAIN( TestQgsPostgresProvider )
