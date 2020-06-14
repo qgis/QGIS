@@ -22,6 +22,7 @@
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshtimesettings.h"
 #include "qgstriangularmesh.h"
+#include "qgslogger.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmesh3daveraging.h"
 #include "qgsmeshlayer.h"
@@ -129,7 +130,16 @@ QVector<QgsVector> QgsMeshLayerUtils::griddedVectorValues( const QgsMeshLayer *m
   if ( dataType == QgsMeshDatasetGroupMetadata::DataOnEdges )
     return vectors;
 
-  vectors.reserve( size.height()*size.width() );
+  try
+  {
+    vectors.reserve( size.height()*size.width() );
+  }
+  catch ( ... )
+  {
+    QgsDebugMsgLevel( "Unable to store the arrow grid in memmory", 1 );
+    return QVector<QgsVector>();
+  }
+
   for ( int iy = 0; iy < size.height(); ++iy )
   {
     double y = minCorner.y() + iy * ySpacing;

@@ -368,6 +368,9 @@ void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
                 minCorner );
   }
 
+  if ( vectors.isEmpty() )
+    return;
+
   mTechnique->addParameter( arrowsEnabledParameter )  ;
 
   Qt3DRender::QTexture2D *arrowsGridTexture = new Qt3DRender::QTexture2D( this );
