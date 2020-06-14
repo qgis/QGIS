@@ -663,9 +663,9 @@ class CORE_EXPORT QgsGeometry
      *
      * This function takes into account the following factors:
      *
-     * 1. If the given vertex index is at the end of a linestring,
+     * # If the given vertex index is at the end of a linestring,
      *    the adjacent index will be -1 (for "no adjacent vertex")
-     * 2. If the given vertex index is at the end of a linear ring
+     * # If the given vertex index is at the end of a linear ring
      *    (such as in a polygon), the adjacent index will take into
      *    account the first vertex is equal to the last vertex (and will
      *    skip equal vertex positions).

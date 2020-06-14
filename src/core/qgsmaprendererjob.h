@@ -167,11 +167,11 @@ struct LabelRenderJob
  *
  * Common use case:
  *
- * 0. prepare QgsMapSettings with rendering configuration (extent, layer, map size, ...)
- * 1. create QgsMapRendererJob subclass with QgsMapSettings instance
- * 2. connect to job's finished() signal
- * 3. call start(). Map rendering will start in background, the function immediately returns
- * 4. at some point, slot connected to finished() signal is called, map rendering is done
+ * # prepare QgsMapSettings with rendering configuration (extent, layer, map size, ...)
+ * # create QgsMapRendererJob subclass with QgsMapSettings instance
+ * # connect to job's finished() signal
+ * # call start(). Map rendering will start in background, the function immediately returns
+ * # at some point, slot connected to finished() signal is called, map rendering is done
  *
  * It is possible to cancel the rendering job while it is active by calling cancel() function.
  *
