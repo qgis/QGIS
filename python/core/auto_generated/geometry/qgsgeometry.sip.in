@@ -1263,7 +1263,7 @@ Returns the center of mass of a geometry.
 If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
-by calling `error()` on the returned geometry.
+by calling lastError() on the returned geometry.
 
 .. note::
 
@@ -1284,7 +1284,7 @@ the point on surface will always be inside the geometry.
 If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
-by calling `error()` on the returned geometry.
+by calling lastError() on the returned geometry.
 
 .. seealso:: :py:func:`centroid`
 
@@ -1315,7 +1315,7 @@ Returns the smallest convex polygon that contains all the points in the geometry
 If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
-by calling `error()` on the returned geometry.
+by calling lastError() on the returned geometry.
 %End
 
     QgsGeometry voronoiDiagram( const QgsGeometry &extent = QgsGeometry(), double tolerance = 0.0, bool edgesOnly = false ) const;
@@ -1364,7 +1364,7 @@ Curved geometries will be segmentized before subdivision.
 If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
-by calling `error()` on the returned geometry.
+by calling lastError() on the returned geometry.
 
 .. versionadded:: 3.0
 %End
@@ -1428,7 +1428,7 @@ Returns a geometry representing the points shared by this geometry and other.
 If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
-by calling `error()` on the returned geometry.
+by calling lastError() on the returned geometry.
 %End
 
     QgsGeometry clipped( const QgsRectangle &rectangle );
@@ -1449,7 +1449,7 @@ union geometry operation).
 If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
-by calling `error()` on the returned geometry.
+by calling lastError() on the returned geometry.
 
 .. note::
 
@@ -1475,7 +1475,7 @@ Returns a geometry representing the points making up this geometry that do not m
 If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
-by calling `error()` on the returned geometry.
+by calling lastError() on the returned geometry.
 %End
 
     QgsGeometry symDifference( const QgsGeometry &geometry ) const;
@@ -1485,7 +1485,7 @@ Returns a geometry representing the points making up this geometry that do not m
 If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
-by calling `error()` on the returned geometry.
+by calling lastError() on the returned geometry.
 %End
 
     QgsGeometry extrude( double x, double y );
@@ -1899,7 +1899,7 @@ Single polygons may become multi-geometries in case of self-intersections.
 It preserves Z values, but M values will be dropped.
 
 If an error was encountered during the process, more information can be retrieved
-by calling `error()` on the returned geometry.
+by calling lastError() on the returned geometry.
 
 :return: new valid QgsGeometry or null geometry on error
 
