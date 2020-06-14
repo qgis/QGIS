@@ -267,7 +267,16 @@ QgsMeshRendererSettings QgsMeshLayer::rendererSettings() const
 
 void QgsMeshLayer::setRendererSettings( const QgsMeshRendererSettings &settings )
 {
+  int oldActiveScalar = mRendererSettings.activeScalarDatasetGroup();
+  int oldActiveVector = mRendererSettings.activeVectorDatasetGroup();
   mRendererSettings = settings;
+
+  if ( oldActiveScalar != mRendererSettings.activeScalarDatasetGroup() )
+    emit activeScalarDatasetGroupChanged( mRendererSettings.activeScalarDatasetGroup() );
+
+  if ( oldActiveVector != mRendererSettings.activeVectorDatasetGroup() )
+    emit activeVectorDatasetGroupChanged( mRendererSettings.activeScalarDatasetGroup() );
+
   emit rendererChanged();
   triggerRepaint();
 }
@@ -817,14 +826,24 @@ QgsMeshDatasetIndex QgsMeshLayer::staticScalarDatasetIndex() const
 
 void QgsMeshLayer::setStaticVectorDatasetIndex( const QgsMeshDatasetIndex &staticVectorDatasetIndex )
 {
+  int oldActiveVector = mRendererSettings.activeVectorDatasetGroup();
+
   mStaticVectorDatasetIndex = staticVectorDatasetIndex.dataset();
   mRendererSettings.setActiveVectorDatasetGroup( staticVectorDatasetIndex.group() );
+
+  if ( oldActiveVector != mRendererSettings.activeVectorDatasetGroup() )
+    emit activeVectorDatasetGroupChanged( mRendererSettings.activeScalarDatasetGroup() );
 }
 
 void QgsMeshLayer::setStaticScalarDatasetIndex( const QgsMeshDatasetIndex &staticScalarDatasetIndex )
 {
+  int oldActiveScalar = mRendererSettings.activeScalarDatasetGroup();
+
   mStaticScalarDatasetIndex = staticScalarDatasetIndex.dataset();
   mRendererSettings.setActiveScalarDatasetGroup( staticScalarDatasetIndex.group() );
+
+  if ( oldActiveScalar != mRendererSettings.activeScalarDatasetGroup() )
+    emit activeScalarDatasetGroupChanged( mRendererSettings.activeScalarDatasetGroup() );
 }
 
 QgsMeshSimplificationSettings QgsMeshLayer::meshSimplificationSettings() const
