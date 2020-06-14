@@ -329,6 +329,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     /**
       * Returns dataset index from datasets group depending on the time range.
+      * If the temporal properties is not active, returns invalid dataset index
       *
       * \param timeRange the time range
       * \returns dataset index
