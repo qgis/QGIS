@@ -51,7 +51,11 @@ with warnings.catch_warnings():
 
 from owslib.fes import BBox, PropertyIsLike
 from owslib.ows import ExceptionReport
-from owslib.util import Authentication
+
+try:
+    from owslib.util import Authentication
+except ImportError:
+    pass
 
 from MetaSearch import link_types
 from MetaSearch.dialogs.manageconnectionsdialog import ManageConnectionsDialog
@@ -829,12 +833,16 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         identifier = get_item_data(item, 'identifier')
 
         self.disable_ssl_verification = self.disableSSLVerification.isChecked()
+        auth = None
+
+        if self.disable_ssl_verification:
+            try:
+                auth = Authentication(verify=False)
+            except NameError:
+                pass
 
         try:
             with OverrideCursor(Qt.WaitCursor):
-                auth = None
-                if self.disable_ssl_verification:
-                    auth = Authentication(verify=False)
                 cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout,  # spellok
                                           username=self.catalog_username,
                                           password=self.catalog_password,
@@ -914,12 +922,16 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         """convenience function to init owslib.csw.CatalogueServiceWeb"""  # spellok
 
         self.disable_ssl_verification = self.disableSSLVerification.isChecked()
+        auth = None
+
+        if self.disable_ssl_verification:
+            try:
+                auth = Authentication(verify=False)
+            except NameError:
+                pass
 
         # connect to the server
         with OverrideCursor(Qt.WaitCursor):
-            auth = None
-            if self.disable_ssl_verification:
-                auth = Authentication(verify=False)
             try:
                 self.catalog = CatalogueServiceWeb(self.catalog_url,  # spellok
                                                    timeout=self.timeout,
