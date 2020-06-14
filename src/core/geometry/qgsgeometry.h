@@ -1269,7 +1269,7 @@ class CORE_EXPORT QgsGeometry
      * If the input is a NULL geometry, the output will also be a NULL geometry.
      *
      * If an error was encountered while creating the result, more information can be retrieved
-     * by calling `error()` on the returned geometry.
+     * by calling lastError() on the returned geometry.
      *
      * \note for line based geometries, the center point of the line is returned,
      * and for point based geometries, the point itself is returned
@@ -1286,7 +1286,7 @@ class CORE_EXPORT QgsGeometry
      * If the input is a NULL geometry, the output will also be a NULL geometry.
      *
      * If an error was encountered while creating the result, more information can be retrieved
-     * by calling `error()` on the returned geometry.
+     * by calling lastError() on the returned geometry.
      *
      * \see centroid()
      * \see poleOfInaccessibility()
@@ -1313,7 +1313,7 @@ class CORE_EXPORT QgsGeometry
      * If the input is a NULL geometry, the output will also be a NULL geometry.
      *
      * If an error was encountered while creating the result, more information can be retrieved
-     * by calling `error()` on the returned geometry.
+     * by calling lastError() on the returned geometry.
      */
     QgsGeometry convexHull() const;
 
@@ -1360,7 +1360,7 @@ class CORE_EXPORT QgsGeometry
      * If the input is a NULL geometry, the output will also be a NULL geometry.
      *
      * If an error was encountered while creating the result, more information can be retrieved
-     * by calling `error()` on the returned geometry.
+     * by calling lastError() on the returned geometry.
      *
      * \since QGIS 3.0
      */
@@ -1413,7 +1413,7 @@ class CORE_EXPORT QgsGeometry
      * If the input is a NULL geometry, the output will also be a NULL geometry.
      *
      * If an error was encountered while creating the result, more information can be retrieved
-     * by calling `error()` on the returned geometry.
+     * by calling lastError() on the returned geometry.
      */
     QgsGeometry intersection( const QgsGeometry &geometry ) const;
 
@@ -1433,7 +1433,7 @@ class CORE_EXPORT QgsGeometry
      * If the input is a NULL geometry, the output will also be a NULL geometry.
      *
      * If an error was encountered while creating the result, more information can be retrieved
-     * by calling `error()` on the returned geometry.
+     * by calling lastError() on the returned geometry.
      *
      * \note this operation is not called union since its a reserved word in C++.
      */
@@ -1455,7 +1455,7 @@ class CORE_EXPORT QgsGeometry
      * If the input is a NULL geometry, the output will also be a NULL geometry.
      *
      * If an error was encountered while creating the result, more information can be retrieved
-     * by calling `error()` on the returned geometry.
+     * by calling lastError() on the returned geometry.
      */
     QgsGeometry difference( const QgsGeometry &geometry ) const;
 
@@ -1465,7 +1465,7 @@ class CORE_EXPORT QgsGeometry
      * If the input is a NULL geometry, the output will also be a NULL geometry.
      *
      * If an error was encountered while creating the result, more information can be retrieved
-     * by calling `error()` on the returned geometry.
+     * by calling lastError() on the returned geometry.
      */
     QgsGeometry symDifference( const QgsGeometry &geometry ) const;
 
@@ -1980,7 +1980,7 @@ class CORE_EXPORT QgsGeometry
      * It preserves Z values, but M values will be dropped.
      *
      * If an error was encountered during the process, more information can be retrieved
-     * by calling `error()` on the returned geometry.
+     * by calling lastError() on the returned geometry.
      *
      * \returns new valid QgsGeometry or null geometry on error
      *
