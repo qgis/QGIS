@@ -106,7 +106,7 @@ Returns a DOM element representing the state of the manager.
 %Docstring
 Duplicates an existing ``layout`` from the manager. The new
 layout will automatically be stored in the manager.
-Returns new the layout if duplication was successful.
+Returns the new layout if duplication was successful.
 %End
 
     QString generateUniqueTitle( QgsMasterLayoutInterface::Type type = QgsMasterLayoutInterface::PrintLayout ) const;
