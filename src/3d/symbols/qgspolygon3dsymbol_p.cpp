@@ -260,6 +260,22 @@ static Qt3DRender::QCullFace::CullingMode _qt3DcullingMode( Qgs3DTypes::CullingM
   return Qt3DRender::QCullFace::NoCulling;
 }
 
+// front/back side culling
+static void applyCullingMode( Qgs3DTypes::CullingMode cullingMode, Qt3DRender::QMaterial *material )
+{
+  auto techniques = material->effect()->techniques();
+  for ( auto tit = techniques.constBegin(); tit != techniques.constEnd(); ++tit )
+  {
+    auto renderPasses = ( *tit )->renderPasses();
+    for ( auto rpit = renderPasses.begin(); rpit != renderPasses.end(); ++rpit )
+    {
+      Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
+      cullFace->setMode( _qt3DcullingMode( cullingMode ) );
+      ( *rpit )->addRenderState( cullFace );
+    }
+  }
+}
+
 Qt3DRender::QMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSymbol &symbol, bool isSelected, const Qgs3DRenderContext &context ) const
 {
   Qt3DRender::QMaterial *retMaterial = nullptr;
@@ -268,18 +284,8 @@ Qt3DRender::QMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSy
     QString textureFilePath = symbol.material().texturePath();
     Qt3DExtras::QDiffuseMapMaterial *material = new Qt3DExtras::QDiffuseMapMaterial;
 
-    // front/back side culling
-    auto techniques = material->effect()->techniques();
-    for ( auto tit = techniques.constBegin(); tit != techniques.constEnd(); ++tit )
-    {
-      auto renderPasses = ( *tit )->renderPasses();
-      for ( auto rpit = renderPasses.begin(); rpit != renderPasses.end(); ++rpit )
-      {
-        Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
-        cullFace->setMode( _qt3DcullingMode( symbol.cullingMode() ) );
-        ( *rpit )->addRenderState( cullFace );
-      }
-    }
+    applyCullingMode( symbol.cullingMode(), material );
+
     Qt3DRender::QTextureImage *textureImage = new Qt3DRender::QTextureImage;
     textureImage->setSource( QUrl::fromLocalFile( textureFilePath ) );
     material->diffuse()->addTextureImage( textureImage );
@@ -307,18 +313,7 @@ Qt3DRender::QMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSy
 
     Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial;
 
-    // front/back side culling
-    auto techniques = material->effect()->techniques();
-    for ( auto tit = techniques.constBegin(); tit != techniques.constEnd(); ++tit )
-    {
-      auto renderPasses = ( *tit )->renderPasses();
-      for ( auto rpit = renderPasses.begin(); rpit != renderPasses.end(); ++rpit )
-      {
-        Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
-        cullFace->setMode( _qt3DcullingMode( symbol.cullingMode() ) );
-        ( *rpit )->addRenderState( cullFace );
-      }
-    }
+    applyCullingMode( symbol.cullingMode(), material );
 
     material->setAmbient( symbol.material().ambient() );
     material->setDiffuse( symbol.material().diffuse() );

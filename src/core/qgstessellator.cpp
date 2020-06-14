@@ -44,6 +44,7 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
   vn = -vn;
   vn.normalize();
 
+
   // triangle 1
   // vertice 1
   data << x0 << z0 + height << -y0;
@@ -442,7 +443,6 @@ double _minimum_distance_between_coordinates( const QgsPolygon &polygon )
   return min_d != 1e20 ? std::sqrt( min_d ) : 1e20;
 }
 
-
 void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeight )
 {
   const QgsLineString *exterior = qgsgeometry_cast< const QgsLineString * >( polygon.exteriorRing() );
@@ -457,89 +457,14 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   float zMin = std::numeric_limits<float>::max();
   float zMax = std::numeric_limits<float>::min();
 
-  if ( pCount == 4 && polygon.numInteriorRings() == 0 )
+  const float scaleX = !mBounds.isNull() ? 10000.0 / mBounds.width() : 1.0;
+  const float scaleY = !mBounds.isNull() ? 10000.0 / mBounds.height() : 1.0;
+
+  std::unique_ptr<QMatrix4x4> toNewBase, toOldBase;
+  QgsPoint ptStart, pt0;
+  std::unique_ptr<QgsPolygon> polygonNew;
+  auto rotatePolygonToXYPlane = [&]()
   {
-    std::vector<p2t::Point *> polyline;
-    if ( mAddTextureCoords )
-    {
-      std::unique_ptr<QMatrix4x4> toNewBase, toOldBase;
-      if ( !mNoZ && pNormal != QVector3D( 0, 0, 1 ) )
-      {
-        // this is not a horizontal plane - need to reproject the polygon to a new base so that
-        // we can do the triangulation in a plane
-
-        QVector3D pXVector, pYVector;
-        _normalVectorToXYVectors( pNormal, pXVector, pYVector );
-
-        // so now we have three orthogonal unit vectors defining new base
-        // let's build transform matrix. We actually need just a 3x3 matrix,
-        // but Qt does not have good support for it, so using 4x4 matrix instead.
-        toNewBase.reset( new QMatrix4x4(
-                           pXVector.x(), pXVector.y(), pXVector.z(), 0,
-                           pYVector.x(), pYVector.y(), pYVector.z(), 0,
-                           pNormal.x(), pNormal.y(), pNormal.z(), 0,
-                           0, 0, 0, 0 ) );
-
-        // our 3x3 matrix is orthogonal, so for inverse we only need to transpose it
-        toOldBase.reset( new QMatrix4x4( toNewBase->transposed() ) );
-      }
-
-      const QgsPoint ptStart( exterior->startPoint() );
-      const QgsPoint pt0( QgsWkbTypes::PointZ, ptStart.x(), ptStart.y(), std::isnan( ptStart.z() ) ? 0 : ptStart.z() );
-
-      const float scaleX = !mBounds.isNull() ? 10000.0 / mBounds.width() : 1.0;
-      const float scaleY = !mBounds.isNull() ? 10000.0 / mBounds.height() : 1.0;
-
-      // subtract ptFirst from geometry for better numerical stability in triangulation
-      // and apply new 3D vector base if the polygon is not horizontal
-
-      std::unique_ptr<QgsPolygon> polygonNew( _transform_polygon_to_new_base( polygon, pt0, toNewBase.get(), scaleX, scaleY ) );
-      QList< std::vector<p2t::Point *> > polylinesToDelete;
-      QHash<p2t::Point *, float> z;
-
-      _ringToPoly2tri( qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() ), polyline, mNoZ ? nullptr : &z );
-      Q_ASSERT( polyline.size() >= 3 );
-    }
-
-    // polygon is a triangle - write vertices to the output data array without triangulation
-    const double *xData = exterior->xData();
-    const double *yData = exterior->yData();
-    const double *zData = !mNoZ ? exterior->zData() : nullptr;
-    for ( int i = 0; i < 3; i++ )
-    {
-      float z = mNoZ ? 0 : *zData;
-      if ( z < zMin )
-        zMin = z;
-      if ( z > zMax )
-        zMax = z;
-
-      mData << *xData - mOriginX << z << - *yData + mOriginY;
-      if ( mAddNormals )
-        mData << pNormal.x() << pNormal.z() << - pNormal.y();
-      if ( mAddTextureCoords )
-        mData << polyline[i]->x << polyline[i]->y;
-      xData++; yData++; zData++;
-    }
-
-    if ( mAddBackFaces )
-    {
-      // the same triangle with reversed order of coordinates and inverted normal
-      for ( int i = 2; i >= 0; i-- )
-      {
-        mData << exterior->xAt( i ) - mOriginX << ( mNoZ ? 0 : exterior->zAt( i ) ) << - exterior->yAt( i ) + mOriginY;
-        if ( mAddNormals )
-          mData << -pNormal.x() << -pNormal.z() << pNormal.y();
-        if ( mAddTextureCoords )
-          mData << polyline[i]->x << polyline[i]->y;
-      }
-    }
-  }
-  else
-  {
-    if ( !mNoZ && !qgsDoubleNear( pNormal.length(), 1, 0.001 ) )
-      return;  // this should not happen - pNormal should be normalized to unit length
-
-    std::unique_ptr<QMatrix4x4> toNewBase, toOldBase;
     if ( !mNoZ && pNormal != QVector3D( 0, 0, 1 ) )
     {
       // this is not a horizontal plane - need to reproject the polygon to a new base so that
@@ -561,16 +486,65 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       toOldBase.reset( new QMatrix4x4( toNewBase->transposed() ) );
     }
 
-    const QgsPoint ptStart( exterior->startPoint() );
-    const QgsPoint pt0( QgsWkbTypes::PointZ, ptStart.x(), ptStart.y(), std::isnan( ptStart.z() ) ? 0 : ptStart.z() );
-
-    const float scaleX = !mBounds.isNull() ? 10000.0 / mBounds.width() : 1.0;
-    const float scaleY = !mBounds.isNull() ? 10000.0 / mBounds.height() : 1.0;
+    ptStart = QgsPoint( exterior->startPoint() );
+    pt0 = QgsPoint( QgsWkbTypes::PointZ, ptStart.x(), ptStart.y(), std::isnan( ptStart.z() ) ? 0 : ptStart.z() );
 
     // subtract ptFirst from geometry for better numerical stability in triangulation
     // and apply new 3D vector base if the polygon is not horizontal
 
-    std::unique_ptr<QgsPolygon> polygonNew( _transform_polygon_to_new_base( polygon, pt0, toNewBase.get(), scaleX, scaleY ) );
+    polygonNew.reset( _transform_polygon_to_new_base( polygon, pt0, toNewBase.get(), scaleX, scaleY ) );
+  };
+
+  if ( !mNoZ && !qgsDoubleNear( pNormal.length(), 1, 0.001 ) )
+    return;  // this should not happen - pNormal should be normalized to unit length
+
+  if ( pCount == 4 && polygon.numInteriorRings() == 0 )
+  {
+    if ( mAddTextureCoords )
+    {
+      rotatePolygonToXYPlane();
+      Q_ASSERT( polygonNew->exteriorRing()->numPoints() >= 3 );
+    }
+
+    const QgsLineString *triangle = qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() );
+
+    // polygon is a triangle - write vertices to the output data array without triangulation
+    const double *xData = exterior->xData();
+    const double *yData = exterior->yData();
+    const double *zData = !mNoZ ? exterior->zData() : nullptr;
+    for ( int i = 0; i < 3; i++ )
+    {
+      float z = mNoZ ? 0 : *zData;
+      if ( z < zMin )
+        zMin = z;
+      if ( z > zMax )
+        zMax = z;
+
+      mData << *xData - mOriginX << z << - *yData + mOriginY;
+      if ( mAddNormals )
+        mData << pNormal.x() << pNormal.z() << - pNormal.y();
+      if ( mAddTextureCoords )
+        mData << triangle->xAt( i ) << triangle->yAt( i );
+      xData++; yData++; zData++;
+    }
+
+    if ( mAddBackFaces )
+    {
+      // the same triangle with reversed order of coordinates and inverted normal
+      for ( int i = 2; i >= 0; i-- )
+      {
+        mData << exterior->xAt( i ) - mOriginX << ( mNoZ ? 0 : exterior->zAt( i ) ) << - exterior->yAt( i ) + mOriginY;
+        if ( mAddNormals )
+          mData << -pNormal.x() << -pNormal.z() << pNormal.y();
+        if ( mAddTextureCoords )
+          mData << triangle->xAt( i ) << triangle->yAt( i );
+      }
+    }
+  }
+  else
+  {
+
+    rotatePolygonToXYPlane();
 
     if ( _minimum_distance_between_coordinates( *polygonNew ) < 0.001 )
     {

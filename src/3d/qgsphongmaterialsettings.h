@@ -40,7 +40,7 @@ class _3D_EXPORT QgsPhongMaterialSettings
       , mDiffuse( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) )
       , mSpecular( QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) )
       , mIsUsingDiffuseTexture( false )
-      , mTexturePath( "" )
+      , mTexturePath( QString() )
       , mTextureScale( 1.0f )
     {
     }
@@ -53,11 +53,16 @@ class _3D_EXPORT QgsPhongMaterialSettings
     QColor specular() const { return mSpecular; }
     //! Returns shininess of the surface
     float shininess() const { return mShininess; }
-    //! Returns wether the diffuse texture is used
+    //! Returns whether the diffuse texture is used
     bool isUsingDiffuseTexture() const { return mIsUsingDiffuseTexture; }
     //! Returns the diffuse texture path
     QString texturePath() const { return mTexturePath; }
-    //! Returns the texture scale
+
+    /**
+     * Returns the texture scale
+     * The texture scale changes the size of the displayed texture in the 3D scene
+     * If the texture scale is less than 1 the texture will be stretched
+     */
     float textureScale() const { return mTextureScale; }
 
     //! Sets ambient color component
@@ -68,11 +73,16 @@ class _3D_EXPORT QgsPhongMaterialSettings
     void setSpecular( const QColor &specular ) { mSpecular = specular; }
     //! Sets shininess of the surface
     void setShininess( float shininess ) { mShininess = shininess; }
-    //! Sets wether the diffuse texture will be used
+    //! Sets whether the diffuse texture will be used
     void useTexture( bool used ) { mIsUsingDiffuseTexture = used; }
     //! Sets the path of the texture
     void setTexturePath( QString texturePath ) { mTexturePath = texturePath; }
-    //! sets the texture scale
+
+    /**
+     * sets the texture scale
+     * The texture scale changes the size of the displayed texture in the 3D scene
+     * If the texture scale is less than 1 the texture will be stretched
+     */
     void setTextureScale( float scale ) { mTextureScale = scale; }
 
     //! Reads settings from a DOM element
