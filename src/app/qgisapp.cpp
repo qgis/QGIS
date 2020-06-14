@@ -9214,24 +9214,25 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
   QStringList layoutNames;
   const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
   layoutNames.reserve( layouts.size() + 1 );
-  layoutNames << newTitle;
   for ( QgsMasterLayoutInterface *l : layouts )
   {
     layoutNames << l->name();
   }
   while ( !titleValid )
   {
-    newTitle = QInputDialog::getText( parent,
-                                      tr( "Create %1 Title" ).arg( typeString ),
-                                      titleMsg,
-                                      QLineEdit::Normal,
-                                      newTitle,
-                                      &ok );
-    if ( !ok )
-    {
-      return false;
-    }
 
+    QgsNewNameDialog dlg( typeString, newTitle, QStringList(), layoutNames, QRegExp(), Qt::CaseSensitive, parent );
+    dlg.setWindowTitle( tr( "Create %1 Title" ).arg( typeString ) );
+    dlg.setHintString( titleMsg );
+    dlg.setOverwriteEnabled( false );
+    dlg.setAllowEmptyName( true );
+    dlg.setConflictingNameWarning( tr( "Title already exists!" ) ) );
+    {
+
+    if ( dlg.exec() != QDialog::Accepted )
+      return false;
+
+    newTitle = dlg.name();
     if ( newTitle.isEmpty() )
     {
       if ( !acceptEmpty )
