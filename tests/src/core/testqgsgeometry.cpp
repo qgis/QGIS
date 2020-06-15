@@ -17660,6 +17660,14 @@ void TestQgsGeometry::splitGeometry()
   QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 493825.46541286131832749, 7082214.02779923938214779 ) << QgsPoint( 492955.04876351181883365, 7082338.06309300474822521 ),
                               newGeoms, false, testPoints ), QgsGeometry::NothingHappened );
   QVERIFY( newGeoms.isEmpty() );
+
+  // Bug https://github.com/qgis/QGIS/issues/33489
+  QgsGeometry g2 = QgsGeometry::fromWkt( "CompoundCurveZ ((2749546.2003820720128715 1262904.45356595050543547 100, 2749557.82053794478997588 1262920.05570670193992555 200))" );
+  testPoints.clear();
+  newGeoms.clear();
+  QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( 2749544.19, 1262914.79, 0 ) << QgsPoint( 2749557.64, 1262897.30, 0 ), newGeoms, false, testPoints ), QgsGeometry::Success );
+  QVERIFY( newGeoms.count() == 1 );
+  QCOMPARE( newGeoms[0].asWkt( 2 ), QStringLiteral( "LineStringZ (2749549.12 1262908.38 125.14, 2749557.82 1262920.06 200)" ) );
 }
 
 void TestQgsGeometry::snappedToGrid()

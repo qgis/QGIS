@@ -893,12 +893,21 @@ class CORE_EXPORT QgsGeometry
     /**
      * Splits this geometry according to a given line.
      * \param splitLine the line that splits the geometry
-     * \param[out] newGeometries list of new geometries that have been created with the split
+     * \param[out] newGeometries list of new geometries that have been created with the ``splitLine``. If the geometry is 3D, a linear interpolation of the z value is performed on the geometry at split points, see example.
      * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \param splitFeature Set to True if you want to split a feature, otherwise set to False to split parts
      * fix this bug?
      * \returns OperationResult a result code: success or reason of failure
+     *
+     * * Example:
+     * \code{.py}
+     *  geometry = QgsGeometry.fromWkt('CompoundCurveZ ((2749546.2003820720128715 1262904.45356595050543547 100, 2749557.82053794478997588 1262920.05570670193992555 200))')
+     *  split_line = [QgsPoint(2749544.19, 1262914.79), QgsPoint(2749557.64, 1262897.30)]
+     *  result, new_geometries, point_xy = geometry.splitGeometry(split_line, False)
+     *  print(geometry.asWkt(2))
+     *  > LineStringZ (2749549.12 1262908.38 125.14, 2749557.82 1262920.06 200)
+     * \endcode
      */
     OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, bool splitFeature = true );
 
