@@ -78,10 +78,16 @@ void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
 {
   if ( order != Qt::AscendingOrder && order != Qt::DescendingOrder )
     order = Qt::AscendingOrder;
-
-  int myColumn = mColumnMapping.at( column );
-  masterModel()->prefetchColumnData( myColumn );
-  QSortFilterProxyModel::sort( myColumn, order );
+  if ( column < 0 || column >= mColumnMapping.size() )
+  {
+    sort( QString() );
+  }
+  else
+  {
+    int myColumn = mColumnMapping.at( column );
+    masterModel()->prefetchColumnData( myColumn );
+    QSortFilterProxyModel::sort( myColumn, order );
+  }
   emit sortColumnChanged( column, order );
 }
 
