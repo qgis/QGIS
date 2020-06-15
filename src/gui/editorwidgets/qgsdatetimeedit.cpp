@@ -192,8 +192,12 @@ void QgsDateTimeEdit::showEvent( QShowEvent *event )
 
 void QgsDateTimeEdit::changed( const QDateTime &dateTime )
 {
-  mIsEmpty = false;
   bool isNull = dateTime.isNull();
+
+  if ( mIsNull == isNull && QgsDateTimeEdit::dateTime() == dateTime )
+    return;
+
+  mIsEmpty = false;
   if ( isNull != mIsNull )
   {
     mIsNull = isNull;
