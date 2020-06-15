@@ -1274,17 +1274,17 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
           uri[ QStringLiteral( "temporalSource" ) ] = QLatin1String( "project" );
         }
       }
+    }
 
-      if ( mReferenceTime->isChecked() )
-      {
-        QString referenceTime = mReferenceDateTimeEdit->dateTime().toString( Qt::ISODateWithMs );
-        uri[ QStringLiteral( "referenceTime" ) ] = referenceTime;
-      }
-      else
-      {
-        if ( uri.contains( QStringLiteral( "referenceTime" ) ) )
-          uri.remove( QStringLiteral( "referenceTime" ) );
-      }
+    if ( mReferenceTime->isChecked() )
+    {
+      QString referenceTime = mReferenceDateTimeEdit->dateTime().toString( Qt::ISODateWithMs );
+      uri[ QStringLiteral( "referenceTime" ) ] = referenceTime;
+    }
+    else
+    {
+      if ( uri.contains( QStringLiteral( "referenceTime" ) ) )
+        uri.remove( QStringLiteral( "referenceTime" ) );
     }
   }
 
