@@ -3170,7 +3170,7 @@ bool QgsVectorLayer::deleteAttributes( const QList<int> &attrs )
   bool deleted = false;
 
   // Remove multiple occurrences of same attribute
-  QList<int> attrList = attrs.toSet().toList();
+  QList<int> attrList = qgis::setToList( qgis::listToSet( attrs ) );
 
   std::sort( attrList.begin(), attrList.end(), std::greater<int>() );
 
@@ -4045,7 +4045,7 @@ QSet<QVariant> QgsVectorLayer::uniqueValues( int index, int limit ) const
         }
       }
 
-      return val.values().toSet();
+      return qgis::listToSet( val.values() );
     }
   }
 

@@ -149,8 +149,8 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     {
       //ensure that all fields required for filter expressions are prepared
       QSet<int> attributeIndexes = mRequest.filterExpression()->referencedAttributeIndexes( mSource->mFields );
-      attributeIndexes += mRequest.subsetOfAttributes().toSet();
-      mRequest.setSubsetOfAttributes( attributeIndexes.toList() );
+      attributeIndexes += qgis::listToSet( mRequest.subsetOfAttributes() );
+      mRequest.setSubsetOfAttributes( qgis::setToList( attributeIndexes ) );
     }
   }
 
@@ -196,7 +196,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
       }
     }
 
-    mProviderRequest.setSubsetOfAttributes( providerSubset.toList() );
+    mProviderRequest.setSubsetOfAttributes( qgis::setToList( providerSubset ) );
   }
 
   if ( mProviderRequest.filterType() == QgsFeatureRequest::FilterExpression )
@@ -723,7 +723,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   exp->prepare( mExpressionContext.get() );
   const QSet<int> referencedColumns = exp->referencedAttributeIndexes( mSource->fields() );
 
-  QSet<int> requestedAttributes = mRequest.subsetOfAttributes().toSet();
+  QSet<int> requestedAttributes = qgis::listToSet( mRequest.subsetOfAttributes() );
 
   for ( int dependentFieldIdx : referencedColumns )
   {
@@ -738,7 +738,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
 
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
-    mRequest.setSubsetOfAttributes( requestedAttributes.toList() );
+    mRequest.setSubsetOfAttributes( qgis::setToList( requestedAttributes ) );
   }
 
   if ( exp->needsGeometry() )

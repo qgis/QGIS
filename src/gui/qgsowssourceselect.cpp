@@ -421,7 +421,7 @@ void QgsOWSSourceSelect::mLayersTreeWidget_itemSelectionChanged()
 void QgsOWSSourceSelect::populateCrs()
 {
   clearCrs();
-  mSelectedLayersCRSs = selectedLayersCrses().toSet();
+  mSelectedLayersCRSs = qgis::listToSet( selectedLayersCrses() );
   mCRSLabel->setText( tr( "Coordinate Reference System (%n available)", "crs count", mSelectedLayersCRSs.count() ) + ':' );
 
   mChangeCRSButton->setDisabled( mSelectedLayersCRSs.isEmpty() );

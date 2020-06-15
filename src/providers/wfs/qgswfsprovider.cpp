@@ -1078,9 +1078,7 @@ QString QgsWFSProvider::convertToXML( const QVariant &value )
     QDateTime dt = value.toDateTime().toUTC();
     if ( !dt.isNull() )
     {
-      valueStr.sprintf( "%04d-%02d-%02dT%02d:%02d:%02d.%03dZ",
-                        dt.date().year(), dt.date().month(), dt.date().day(),
-                        dt.time().hour(), dt.time().minute(), dt.time().second(), dt.time().msec() );
+      valueStr = dt.toString( QStringLiteral( "yyyy-MM-ddThh:mm:ss.zzzZ" ) );
     }
     else
     {

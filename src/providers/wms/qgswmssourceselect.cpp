@@ -786,9 +786,9 @@ void QgsWMSSourceSelect::collectNamedLayers( QTreeWidgetItem *item, QStringList 
     titles << titleName;
 
     if ( mCRSs.isEmpty() )
-      mCRSs = item->data( 0, Qt::UserRole + 2 ).toStringList().toSet();
+      mCRSs = qgis::listToSet( item->data( 0, Qt::UserRole + 2 ).toStringList() );
     else
-      mCRSs.intersect( item->data( 0, Qt::UserRole + 2 ).toStringList().toSet() );
+      mCRSs.intersect( qgis::listToSet( item->data( 0, Qt::UserRole + 2 ).toStringList() ) );
   }
 }
 
@@ -832,9 +832,9 @@ void QgsWMSSourceSelect::lstLayers_itemSelectionChanged()
       styles << QString();
       titles << titleName;
       if ( mCRSs.isEmpty() )
-        mCRSs = item->data( 0, Qt::UserRole + 2 ).toStringList().toSet();
+        mCRSs = qgis::listToSet( item->data( 0, Qt::UserRole + 2 ).toStringList() );
       else
-        mCRSs.intersect( item->data( 0, Qt::UserRole + 2 ).toStringList().toSet() );
+        mCRSs.intersect( qgis::listToSet( item->data( 0, Qt::UserRole + 2 ).toStringList() ) );
     }
     else
     {
@@ -843,9 +843,9 @@ void QgsWMSSourceSelect::lstLayers_itemSelectionChanged()
       styles << styleName;
       titles << titleName;
       if ( mCRSs.isEmpty() )
-        mCRSs = item->parent()->data( 0, Qt::UserRole + 2 ).toStringList().toSet();
+        mCRSs = qgis::listToSet( item->parent()->data( 0, Qt::UserRole + 2 ).toStringList() );
       else
-        mCRSs.intersect( item->parent()->data( 0, Qt::UserRole + 2 ).toStringList().toSet() );
+        mCRSs.intersect( qgis::listToSet( item->parent()->data( 0, Qt::UserRole + 2 ).toStringList() ) );
     }
   }
 
@@ -1149,13 +1149,13 @@ void QgsWMSSourceSelect::filterLayers( const QString &searchText )
     // hide all
     setChildrenVisible( lstLayers->invisibleRootItem(), false );
     // find and show matching items in name and title columns
-    QSet<QTreeWidgetItem *> items = lstLayers->findItems( searchText, Qt::MatchContains | Qt::MatchRecursive, 1 ).toSet();
-    items.unite( lstLayers->findItems( searchText, Qt::MatchContains | Qt::MatchRecursive, 2 ).toSet() );
+    QSet<QTreeWidgetItem *> items = qgis::listToSet( lstLayers->findItems( searchText, Qt::MatchContains | Qt::MatchRecursive, 1 ) );
+    items.unite( qgis::listToSet( lstLayers->findItems( searchText, Qt::MatchContains | Qt::MatchRecursive, 2 ) ) );
 
     // if nothing found, search in abstract too
     if ( items.isEmpty() )
     {
-      items = lstLayers->findItems( searchText, Qt::MatchContains | Qt::MatchRecursive, 3 ).toSet();
+      items = qgis::listToSet( lstLayers->findItems( searchText, Qt::MatchContains | Qt::MatchRecursive, 3 ) );
     }
 
     mTreeInitialExpand.clear();

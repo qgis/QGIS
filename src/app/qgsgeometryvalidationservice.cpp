@@ -414,8 +414,8 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
   QgsFeatureIds affectedFeatureIds;
   if ( layer->editBuffer() )
   {
-    affectedFeatureIds = layer->editBuffer()->changedGeometries().keys().toSet();
-    affectedFeatureIds.unite( layer->editBuffer()->addedFeatures().keys().toSet() );
+    affectedFeatureIds = qgis::listToSet( layer->editBuffer()->changedGeometries().keys() );
+    affectedFeatureIds.unite( qgis::listToSet( layer->editBuffer()->addedFeatures().keys() ) );
   }
 
   const QString layerId = layer->id();

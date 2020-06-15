@@ -111,7 +111,7 @@ bool QgsMapRendererJob::prepareLabelCache() const
     // we may need to clear label cache and re-register labeled features - check for that here
 
     // can we reuse the cached label solution?
-    bool canUseCache = canCache && mCache->dependentLayers( LABEL_CACHE_ID ).toSet() == labeledLayers;
+    bool canUseCache = canCache && qgis::listToSet( mCache->dependentLayers( LABEL_CACHE_ID ) ) == labeledLayers;
     if ( !canUseCache )
     {
       // no - participating layers have changed

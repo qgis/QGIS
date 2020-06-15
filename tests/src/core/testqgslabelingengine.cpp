@@ -752,7 +752,7 @@ void TestQgsLabelingEngine::testParticipatingLayers()
   QgsPalLayerSettings settings2;
   QgsVectorLayerLabelProvider *provider2 = new QgsVectorLayerLabelProvider( layer2, QStringLiteral( "test2" ), true, &settings2 );
   engine.addProvider( provider2 );
-  QCOMPARE( engine.participatingLayers().toSet(), QSet< QgsMapLayer * >() << vl << layer2 );
+  QCOMPARE( qgis::listToSet( engine.participatingLayers() ), QSet< QgsMapLayer * >() << vl << layer2 );
 
   // add a rule-based labeling node
   QgsRuleBasedLabeling::Rule *root = new QgsRuleBasedLabeling::Rule( nullptr );
@@ -764,7 +764,7 @@ void TestQgsLabelingEngine::testParticipatingLayers()
   QgsVectorLayer *layer3 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "layer3" ), QStringLiteral( "memory" ) );
   QgsRuleBasedLabelProvider *ruleProvider = new QgsRuleBasedLabelProvider( QgsRuleBasedLabeling( root ), layer3 );
   engine.addProvider( ruleProvider );
-  QCOMPARE( engine.participatingLayers().toSet(), QSet< QgsMapLayer * >() << vl << layer2 << layer3 );
+  QCOMPARE( qgis::listToSet( engine.participatingLayers() ), QSet< QgsMapLayer * >() << vl << layer2 << layer3 );
 }
 
 bool TestQgsLabelingEngine::imageCheck( const QString &testName, QImage &image, int mismatchCount )

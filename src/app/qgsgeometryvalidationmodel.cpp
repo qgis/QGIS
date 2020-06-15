@@ -246,7 +246,7 @@ void QgsGeometryValidationModel::setCurrentLayer( QgsVectorLayer *currentLayer )
     mDisplayExpression = mCurrentLayer ? mCurrentLayer->displayExpression() : QString();
     mExpressionContext = QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( mCurrentLayer ) );
     mDisplayExpression.prepare( &mExpressionContext );
-    mRequiredAttributes = mDisplayExpression.referencedColumns().toList();
+    mRequiredAttributes = qgis::setToList( mDisplayExpression.referencedColumns() );
   }
   else
   {

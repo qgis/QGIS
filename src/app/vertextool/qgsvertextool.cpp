@@ -1005,7 +1005,7 @@ void QgsVertexTool::tryToSelectFeature( QgsMapMouseEvent *e )
         mLockedFeatureAlternatives->alternatives.append( firstChoice );
         alternatives.remove( firstChoice );
       }
-      mLockedFeatureAlternatives->alternatives.append( alternatives.toList() );
+      mLockedFeatureAlternatives->alternatives.append( qgis::setToList( alternatives ) );
 
       if ( mLockedFeature )
       {
@@ -2222,13 +2222,13 @@ void QgsVertexTool::deleteVertex()
   QSet<Vertex> toDelete;
   if ( !mSelectedVertices.isEmpty() )
   {
-    toDelete = QSet<Vertex>::fromList( mSelectedVertices );
+    toDelete = qgis::listToSet( mSelectedVertices );
   }
   else
   {
     bool addingVertex = mDraggingVertexType == AddingVertex || mDraggingVertexType == AddingEndpoint;
     toDelete << *mDraggingVertex;
-    toDelete += QSet<Vertex>::fromList( mDraggingExtraVertices );
+    toDelete += qgis::listToSet( mDraggingExtraVertices );
 
     if ( addingVertex )
     {

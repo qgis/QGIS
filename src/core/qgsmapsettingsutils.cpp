@@ -77,7 +77,7 @@ QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSettings &
     }
   }
 
-  return layers.toList();
+  return qgis::setToList( layers );
 }
 
 void QgsMapSettingsUtils::worldFileParameters( const QgsMapSettings &mapSettings, double &a, double &b, double &c, double &d, double &e, double &f )

@@ -1133,11 +1133,11 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *
     QString size;
     if ( fi.size() > 1024 )
     {
-      size = size.sprintf( "%.1f KiB", fi.size() / 1024.0 );
+      size = QStringLiteral( "%1 KiB" ).arg( QString::number( fi.size() / 1024.0, 'f', 1 ) );
     }
     else if ( fi.size() > 1.048576e6 )
     {
-      size = size.sprintf( "%.1f MiB", fi.size() / 1.048576e6 );
+      size = QStringLiteral( "%1 MiB" ).arg( QString::number( fi.size() / 1.048576e6, 'f', 1 ) );
     }
     else
     {

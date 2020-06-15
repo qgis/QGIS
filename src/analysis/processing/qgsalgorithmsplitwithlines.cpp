@@ -146,7 +146,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
 
     QVector< QgsGeometry > inGeoms = inGeom.asGeometryCollection();
 
-    const QgsFeatureIds lines = spatialIndex.intersects( inGeom.boundingBox() ).toSet();
+    const QgsFeatureIds lines = qgis::listToSet( spatialIndex.intersects( inGeom.boundingBox() ) );
     if ( !lines.empty() ) // has intersection of bounding boxes
     {
       QVector< QgsGeometry > splittingLines;

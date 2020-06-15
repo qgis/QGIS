@@ -636,7 +636,7 @@ void QgsAttributeTableDialog::mActionCopySelectedRows_triggered()
     }
     featureStore.setFields( fields );
 
-    QgsFeatureIterator it = mLayer->getFeatures( QgsFeatureRequest( featureIds.toSet() )
+    QgsFeatureIterator it = mLayer->getFeatures( QgsFeatureRequest( qgis::listToSet( featureIds ) )
                             .setSubsetOfAttributes( fieldNames, mLayer->fields() ) );
     QgsFeatureMap featureMap;
     QgsFeature feature;
