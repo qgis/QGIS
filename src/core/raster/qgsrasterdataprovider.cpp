@@ -245,7 +245,9 @@ QString QgsRasterDataProvider::htmlMetadata()
   return s;
 }
 
-// Default implementation for values
+// TODO
+// (WMS) IdentifyFormatFeature is not consistent with QgsRaster::IdentifyFormatValue.
+// IdentifyFormatHtml: better error reporting
 QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );

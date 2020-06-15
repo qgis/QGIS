@@ -41,6 +41,8 @@ Removes and deletes all the entries.
 
 
 
+
+
     void setMapSettings( const QgsMapSettings &settings );
 %Docstring
 Sets the map ``settings`` associated with the labeling run.

@@ -84,6 +84,7 @@ class QgsVectorLayerTemporalProperties;
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
+// TODO QGIS4: Remove virtual from non-inherited methods (like isModified)
 
 /**
  * \ingroup core
@@ -379,7 +380,6 @@ typedef QSet<int> QgsAttributeIds;
  *
  * Provider to display vector data in a GRASS GIS layer.
  *
- * TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
  * \see QgsVectorLayerUtils()
  */
 class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator, public QgsExpressionContextScopeGenerator, public QgsFeatureSink, public QgsFeatureSource
