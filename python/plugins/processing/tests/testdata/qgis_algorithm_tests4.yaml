@@ -1417,6 +1417,11 @@ tests:
         type: vector
         pk:
         - zone
+        compare:
+          fields:
+            sum:
+              cast: float
+              precision: 5
 
   - algorithm: native:rasterlayerzonalstats
     name: Raster layer zonal stats, reprojected
@@ -1458,6 +1463,10 @@ tests:
         type: vector
         pk:
         - zone
+        compare:
+          fields:
+            sum:
+              precision: 0
 
   - algorithm: native:rasterlayerzonalstats
     name: Raster layer zonal stats reprojected, zones ref
@@ -1477,6 +1486,10 @@ tests:
         type: vector
         pk:
         - zone
+        compare:
+          fields:
+            sum:
+              precision: 0
 
   - algorithm: native:antimeridiansplit
     name: Antimeridian split, lines
@@ -1618,6 +1631,11 @@ tests:
       OUTPUT_TABLE:
         name: expected/surface_vol_above_crs.gml
         type: vector
+        compare:
+          fields:
+            volume:
+              cast: float
+              precision: 5
 
   - algorithm: native:rastersurfacevolume
     name: Surface volume below (meters)
@@ -1639,6 +1657,11 @@ tests:
       OUTPUT_TABLE:
         name: expected/surface_vol_below_crs.gml
         type: vector
+        compare:
+          fields:
+            volume:
+              cast: float
+              precision: 5
 
   - algorithm: native:rastersurfacevolume
     name: Surface volume subtract below (meters)
@@ -1681,6 +1704,11 @@ tests:
       OUTPUT_TABLE:
         name: expected/surface_vol_add_crs.gml
         type: vector
+        compare:
+          fields:
+            volume:
+              cast: float
+              precision: 5
 
   - algorithm: native:rastersurfacevolume
     name: Surface volume with gaps
@@ -1965,6 +1993,8 @@ tests:
         compare:
           fields:
             p_x:
+              precision: 6
+            p_y:
               precision: 6
 
   - algorithm: native:joinbynearest
