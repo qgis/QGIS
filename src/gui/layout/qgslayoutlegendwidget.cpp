@@ -1012,25 +1012,24 @@ void QgsLayoutLegendWidget::resetLayerNodeToDefaults()
 
 void QgsLayoutLegendWidget::mCountToolButton_clicked( bool checked )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
   if ( !mLegend )
   {
     return;
   }
 
-  //get current item
-  QModelIndex currentIndex = mItemTreeView->currentIndex();
-  if ( !currentIndex.isValid() )
-  {
-    return;
-  }
-
-  QgsLayerTreeNode *currentNode = mItemTreeView->currentNode();
-  if ( !QgsLayerTree::isLayer( currentNode ) )
+  const QList< QModelIndex > selectedIndexes = mItemTreeView->selectionModel()->selectedIndexes();
+  if ( selectedIndexes.empty() )
     return;
 
   mLegend->beginCommand( tr( "Update Legend" ) );
-  currentNode->setCustomProperty( QStringLiteral( "showFeatureCount" ), checked ? 1 : 0 );
+  for ( const QModelIndex &index : selectedIndexes )
+  {
+    QgsLayerTreeNode *currentNode = mItemTreeView->layerTreeModel()->index2node( index );
+    if ( !QgsLayerTree::isLayer( currentNode ) )
+      continue;
+
+    currentNode->setCustomProperty( QStringLiteral( "showFeatureCount" ), checked ? 1 : 0 );
+  }
   mLegend->updateFilterByMap();
   mLegend->adjustBoxSize();
   mLegend->endCommand();
