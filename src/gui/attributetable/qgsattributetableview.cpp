@@ -108,6 +108,8 @@ void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConf
     i++;
   }
   mConfig = config;
+  if ( config.sortExpression().isEmpty() )
+    horizontalHeader()->setSortIndicatorShown( false );
 }
 
 QList<QgsFeatureId> QgsAttributeTableView::selectedFeaturesIds() const
