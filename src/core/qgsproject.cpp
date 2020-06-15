@@ -910,10 +910,10 @@ void _getProperties( const QDomDocument &doc, QgsProjectPropertyKey &project_pro
 }
 
 /**
-  Returns the data defined server properties collection found in "doc" to "dataDefinedServerProperties".
-  \param doc xml document
-  \param dataDefinedServerProperties property collection of the server overrides
-  \since QGIS 3.14
+ * Returns the data defined server properties collection found in "doc" to "dataDefinedServerProperties".
+ * \param doc xml document
+ * \param dataDefinedServerPropertyDefinitions property collection of the server overrides
+ * \since QGIS 3.14
 **/
 QgsPropertyCollection getDataDefinedServerProperties( const QDomDocument &doc, const QgsPropertiesDefinition &dataDefinedServerPropertyDefinitions )
 {
