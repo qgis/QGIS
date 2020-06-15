@@ -283,6 +283,24 @@ Returns the value of 1D mesh dataset defined on edge that are in the search area
 .. versionadded:: 3.14
 %End
 
+
+    QgsMeshDatasetIndex datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const;
+%Docstring
+Returns dataset index from datasets group depending on the time range.
+If the temporal properties is not active, returns invalid dataset index
+
+:param timeRange: the time range
+
+:return: dataset index
+
+.. note::
+
+   the returned dataset index depends on the matching method, see setTemporalMatchingMethod()
+
+
+.. versionadded:: 3.14
+%End
+
     QgsMeshDatasetIndex activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange ) const;
 %Docstring
 Returns dataset index from active scalar group depending on the time range.

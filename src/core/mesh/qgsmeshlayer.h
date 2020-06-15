@@ -326,6 +326,20 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       */
     QgsMeshDatasetValue dataset1dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius ) const;
 
+
+    /**
+      * Returns dataset index from datasets group depending on the time range.
+      * If the temporal properties is not active, returns invalid dataset index
+      *
+      * \param timeRange the time range
+      * \returns dataset index
+      *
+      * \note the returned dataset index depends on the matching method, see setTemporalMatchingMethod()
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetIndex datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const;
+
     /**
       * Returns dataset index from active scalar group depending on the time range.
       * If the temporal properties is not active, return the static dataset
@@ -521,8 +535,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     int levelsOfDetailsIndex( double partOfMeshInView ) const;
 
     bool hasSimplifiedMeshes() const;
-
-    QgsMeshDatasetIndex datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const;
 
     //! Changes scalar settings for classified scalar value (information about is in the metadata
     void applyClassificationOnScalarSettings( const QgsMeshDatasetGroupMetadata &meta, QgsMeshRendererScalarSettings &scalarSettings ) const;

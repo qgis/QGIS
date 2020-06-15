@@ -428,6 +428,9 @@ void QgsMeshLayer::setTransformContext( const QgsCoordinateTransformContext &tra
 
 QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const
 {
+  if ( ! mTemporalProperties->isActive() )
+    return QgsMeshDatasetIndex( datasetGroupIndex, -1 );
+
   const QDateTime layerReferenceTime = mTemporalProperties->referenceTime();
   qint64 startTime = layerReferenceTime.msecsTo( timeRange.begin() );
 

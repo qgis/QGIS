@@ -410,11 +410,15 @@ int QgsMeshDataset3dGeometry::extractDataset( QVector<double> &verticalMagnitude
 
   //extract the scalar dataset used to render vertical magnitude of geometry
   //define the vertical magnitude datasetIndex
-  int verticalDataSetIndexNumber = 0;
-  verticalDataSetIndexNumber = scalarDatasetIndex.dataset();
-  verticalDataSetIndexNumber = std::min( verticalDataSetIndexNumber, layer->dataProvider()->datasetCount( mVerticalGroupDatasetIndex ) - 1 );
-  QgsMeshDatasetIndex verticalMagDatasetIndex( mVerticalGroupDatasetIndex, verticalDataSetIndexNumber );
-
+  QgsMeshDatasetIndex verticalMagDatasetIndex;
+  verticalMagDatasetIndex = layer->datasetIndexAtTime( mTimeRange, mVerticalGroupDatasetIndex );
+  if ( !verticalMagDatasetIndex.isValid() )
+  {
+    //if invalid (for example, static mode) use the scalar dataset index
+    int vertDataSetIndex = scalarDatasetIndex.dataset();
+    vertDataSetIndex = std::min( vertDataSetIndex, layer->dataProvider()->datasetCount( mVerticalGroupDatasetIndex ) - 1 );
+    verticalMagDatasetIndex = QgsMeshDatasetIndex( vertDataSetIndex, mVerticalGroupDatasetIndex );
+  }
   //define the active face for vertical magnitude, the inactive faces will not be rendered
   // The active face flag values are defined based on the vertival magnitude dataset
   activeFaceFlagValues = layer->dataProvider()->areFacesActive( verticalMagDatasetIndex, 0, nativeMesh.faces.count() );
