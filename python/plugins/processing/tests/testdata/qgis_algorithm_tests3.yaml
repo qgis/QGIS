@@ -12,6 +12,10 @@ tests:
       OUTPUT:
         name: expected/mean_coordinates.gml
         type: vector
+        compare:
+          fields:
+            __all__:
+              precision: 5
 
   - algorithm: native:meancoordinates
     name: Mean coordinates, multiple grouped
