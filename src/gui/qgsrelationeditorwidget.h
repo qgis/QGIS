@@ -160,6 +160,13 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
 
   private:
     void updateUi();
+<<<<<<< HEAD
+=======
+    void initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request );
+    void setMapTool( QgsMapTool *mapTool );
+    void unsetMapTool();
+    void updateTitle();
+>>>>>>> d8b3adab94... Fix option "show label" on relation editor
 
     QgsDualView *mDualView = nullptr;
     QgsDualView::ViewMode mViewMode = QgsDualView::AttributeEditor;

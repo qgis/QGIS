@@ -1837,6 +1837,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
       QgsRelationWidgetWrapper *rww = setupRelationWidgetWrapper( relDef->relation(), context );
 
+<<<<<<< HEAD
       rww->setShowLabel( relDef->showLabel() );
       rww->setShowLinkButton( relDef->showLinkButton() );
       rww->setShowUnlinkButton( relDef->showUnlinkButton() );
@@ -1844,6 +1845,19 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
       formWidget->createSearchWidgetWrappers( mContext );
 
+=======
+      QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
+      formWidget->createSearchWidgetWrappers( mContext );
+
+      // This needs to be after QgsAttributeFormRelationEditorWidget creation, because the widget
+      // does not exists yet until QgsAttributeFormRelationEditorWidget is created and the setters
+      // below directly alter the widget and check for it.
+      rww->setShowLinkButton( relDef->showLinkButton() );
+      rww->setShowUnlinkButton( relDef->showUnlinkButton() );
+      rww->setShowSaveChildEditsButton( relDef->showSaveChildEditsButton() );
+      rww->setShowLabel( relDef->showLabel() );
+
+>>>>>>> d8b3adab94... Fix option "show label" on relation editor
       mWidgets.append( rww );
       mFormWidgets.append( formWidget );
 

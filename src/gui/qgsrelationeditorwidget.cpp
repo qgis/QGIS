@@ -173,8 +173,7 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation &relation, c
   connect( mRelation.referencingLayer(), &QgsVectorLayer::editingStarted, this, &QgsRelationEditorWidget::updateButtons );
   connect( mRelation.referencingLayer(), &QgsVectorLayer::editingStopped, this, &QgsRelationEditorWidget::updateButtons );
 
-  if ( mShowLabel )
-    setTitle( relation.name() );
+  updateTitle();
 
   QgsVectorLayer *lyr = relation.referencingLayer();
 
@@ -243,7 +242,7 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const Q
     connect( mNmRelation.referencedLayer(), &QgsVectorLayer::editingStopped, this, &QgsRelationEditorWidget::updateButtons );
   }
 
-  setTitle( relation.name() );
+  updateTitle();
 
   QgsVectorLayer *lyr = relation.referencingLayer();
 
@@ -768,10 +767,7 @@ void QgsRelationEditorWidget::setShowLabel( bool showLabel )
 {
   mShowLabel = showLabel;
 
-  if ( mShowLabel && mRelation.isValid() )
-    setTitle( mRelation.name() );
-  else
-    setTitle( QString() );
+  updateTitle();
 }
 
 void QgsRelationEditorWidget::showContextMenu( QgsActionMenu *menu, const QgsFeatureId fid )
@@ -787,3 +783,62 @@ void QgsRelationEditorWidget::showContextMenu( QgsActionMenu *menu, const QgsFea
     connect( qAction, &QAction::triggered, this, [this, fid]() { unlinkFeature( fid ); } );
   }
 }
+<<<<<<< HEAD
+=======
+
+void QgsRelationEditorWidget::setMapTool( QgsMapTool *mapTool )
+{
+  QgsMapCanvas *mapCanvas = mEditorContext.mapCanvas();
+
+  mapCanvas->setMapTool( mapTool );
+  mapCanvas->window()->raise();
+  mapCanvas->activateWindow();
+  mapCanvas->setFocus();
+  connect( mapTool, &QgsMapTool::deactivated, this, &QgsRelationEditorWidget::mapToolDeactivated );
+}
+
+void QgsRelationEditorWidget::unsetMapTool()
+{
+  QgsMapCanvas *mapCanvas = mEditorContext.mapCanvas();
+
+  // this will call mapToolDeactivated
+  mapCanvas->unsetMapTool( mMapToolDigitize );
+
+  disconnect( mapCanvas, &QgsMapCanvas::keyPressed, this, &QgsRelationEditorWidget::onKeyPressed );
+  disconnect( mMapToolDigitize, &QgsMapToolDigitizeFeature::digitizingCompleted, this, &QgsRelationEditorWidget::onDigitizingCompleted );
+}
+
+void QgsRelationEditorWidget::updateTitle()
+{
+  if ( mShowLabel && mRelation.isValid() )
+    setTitle( mRelation.name() );
+  else
+    setTitle( QString() );
+}
+
+QgsFeature QgsRelationEditorWidget::feature() const
+{
+  return mFeature;
+}
+
+void QgsRelationEditorWidget::onKeyPressed( QKeyEvent *e )
+{
+  if ( e->key() == Qt::Key_Escape )
+  {
+    unsetMapTool();
+  }
+}
+
+void QgsRelationEditorWidget::mapToolDeactivated()
+{
+  window()->setVisible( true );
+  window()->raise();
+  window()->activateWindow();
+
+  if ( mEditorContext.mainMessageBar() && mMessageBarItem )
+  {
+    mEditorContext.mainMessageBar()->popWidget( mMessageBarItem );
+  }
+  mMessageBarItem = nullptr;
+}
+>>>>>>> d8b3adab94... Fix option "show label" on relation editor
