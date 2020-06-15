@@ -794,8 +794,7 @@ Returns the QgsSmartConditionMap for the given id
 
     QString smartgroupOperator( int id );
 %Docstring
-Returns the operator for the smartgroup
-clumsy implementation TODO create a class for smartgroups
+Returns the operator for the smartgroup.
 %End
 
     QStringList symbolsOfSmartgroup( StyleEntity type, int id );

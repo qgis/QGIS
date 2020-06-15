@@ -778,11 +778,13 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
 
 // ---------
 
+// TODO: move to qgis_gui for QGIS 4
+
 /**
  * \ingroup core
  * \class QgsDirectoryParamWidget
  *
- * TODO: move to qgis_gui for QGIS 4
+ * Browser parameter widget implementation for directory items.
  */
 class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
 {

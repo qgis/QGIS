@@ -775,11 +775,12 @@ Data item that can be used to report problems (e.g. network error)
 };
 
 
+
 class QgsDirectoryParamWidget : QTreeWidget
 {
 %Docstring
 
-TODO: move to qgis_gui for QGIS 4
+Browser parameter widget implementation for directory items.
 %End
 
 %TypeHeaderCode

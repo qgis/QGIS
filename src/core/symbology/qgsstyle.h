@@ -786,8 +786,7 @@ class CORE_EXPORT QgsStyle : public QObject
     QgsSmartConditionMap smartgroup( int id );
 
     /**
-     * Returns the operator for the smartgroup
-     * clumsy implementation TODO create a class for smartgroups
+     * Returns the operator for the smartgroup.
      */
     QString smartgroupOperator( int id );
 
