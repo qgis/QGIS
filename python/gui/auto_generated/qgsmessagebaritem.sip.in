@@ -47,7 +47,7 @@ is set to 0, then the message must be manually dismissed by the user.
 
     QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, Qgis::MessageLevel level = Qgis::Info, int duration = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsMessageBarItem, containing a \title, message with the specified ``text``, and a custom ``widget`` to be displayed on the bar.
+Constructor for QgsMessageBarItem, containing a ``title``, message with the specified ``text``, and a custom ``widget`` to be displayed on the bar.
 
 The ``level`` argument specifies the desired message level (severity) of the message, which controls
 how the message bar is styled when the item is displayed.
