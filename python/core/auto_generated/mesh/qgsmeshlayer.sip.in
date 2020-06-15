@@ -295,7 +295,7 @@ If the temporal properties is not active, returns invalid dataset index
 
 .. note::
 
-   the returned dataset index depends on the matching method, see setTemporalMatchingMethod()
+   the returned dataset index depends on the matching method, see :py:func:`~QgsMeshLayer.setTemporalMatchingMethod`
 
 
 .. versionadded:: 3.14
