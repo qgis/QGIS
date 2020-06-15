@@ -1371,9 +1371,9 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
     mWmstOptions->setEnabled( !mRasterLayer->temporalProperties()->isActive() );
 
     if ( mRasterLayer->temporalProperties()->isActive() )
-      mWmstOptionsLabel->setText( "The static temporal options below are disabled because the layer "
-                                  "temporal properties are active, to enable them disable temporal properties "
-                                  "in the temporal tab. " );
+      mWmstOptionsLabel->setText( tr( "The static temporal options below are disabled because the layer "
+                                      "temporal properties are active, to enable them disable temporal properties "
+                                      "in the temporal tab. " ) );
 
     mWmstGroup->setChecked( uri.contains( QStringLiteral( "allowTemporalUpdates" ) ) &&
                             uri.value( QStringLiteral( "allowTemporalUpdates" ), true ).toBool() );
@@ -1411,9 +1411,9 @@ void QgsRasterLayerProperties::temporalPropertiesChange()
   mWmstOptions->setEnabled( !mRasterLayer->temporalProperties()->isActive() );
 
   if ( mRasterLayer->temporalProperties()->isActive() )
-    mWmstOptionsLabel->setText( "The static temporal options below are disabled because the layer "
-                                "temporal properties are active, to enable them disable temporal properties "
-                                "in the temporal tab. " );
+    mWmstOptionsLabel->setText( tr( "The static temporal options below are disabled because the layer "
+                                    "temporal properties are active, to enable them disable temporal properties "
+                                    "in the temporal tab. " ) );
   else
     mWmstOptionsLabel->clear();
 }
