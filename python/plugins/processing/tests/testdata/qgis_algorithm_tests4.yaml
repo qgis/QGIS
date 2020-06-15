@@ -1443,7 +1443,7 @@ tests:
         compare:
           fields:
             sum:
-              precision: 0
+              precision: 5
 
   - algorithm: native:rasterlayerzonalstats
     name: Raster layer zonal stats, zones ref
@@ -1466,7 +1466,7 @@ tests:
         compare:
           fields:
             sum:
-              precision: 0
+              precision: 5
 
   - algorithm: native:rasterlayerzonalstats
     name: Raster layer zonal stats reprojected, zones ref
@@ -1489,7 +1489,7 @@ tests:
         compare:
           fields:
             sum:
-              precision: 0
+              precision: 5
 
   - algorithm: native:antimeridiansplit
     name: Antimeridian split, lines
