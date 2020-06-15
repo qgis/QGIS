@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>368</width>
+    <width>382</width>
     <height>242</height>
    </rect>
   </property>
@@ -30,7 +30,7 @@
    <item>
     <widget class="QCheckBox" name="mDrawAllPartsCheckBox">
      <property name="toolTip">
-      <string>When unchecked, a single point will be drawn on the biggest part of multi-part features</string>
+      <string>When unchecked, a single marker will be drawn on the biggest part of multi-part features</string>
      </property>
      <property name="text">
       <string>Draw markers on every part of multi-part features</string>
