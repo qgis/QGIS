@@ -154,8 +154,8 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     QgsAttributeList attrs = request.subsetOfAttributes();
     //ensure that all fields required for filter expressions are prepared
     QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
-    attributeIndexes += attrs.toSet();
-    mRequest.setSubsetOfAttributes( attributeIndexes.toList() );
+    attributeIndexes += qgis::listToSet( attrs );
+    mRequest.setSubsetOfAttributes( qgis::setToList( attributeIndexes ) );
   }
   // also need attributes required by order by
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )

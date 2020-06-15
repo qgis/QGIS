@@ -408,7 +408,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
         const QStringList layerNames = decoder.layers();
         for ( const QString &layerName : layerNames )
         {
-          QSet<QString> fieldNames = QSet<QString>::fromList( decoder.layerFieldNames( layerName ) );
+          QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
           perLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( fieldNames );
         }
 

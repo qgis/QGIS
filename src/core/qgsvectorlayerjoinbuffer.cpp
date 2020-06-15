@@ -221,7 +221,7 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields &fields )
     if ( joinIt->hasSubset() )
     {
       const QStringList subsetNames = QgsVectorLayerJoinInfo::joinFieldNamesSubset( *joinIt );
-      subset = QSet<QString>::fromList( subsetNames );
+      subset = qgis::listToSet( subsetNames );
     }
 
     if ( joinIt->prefix().isNull() )

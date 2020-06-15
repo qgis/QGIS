@@ -397,7 +397,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   bool attributesChanged = false;
   if ( !mDeletedAttributeIds.isEmpty() )
   {
-    if ( ( cap & QgsVectorDataProvider::DeleteAttributes ) && provider->deleteAttributes( mDeletedAttributeIds.toSet() ) )
+    if ( ( cap & QgsVectorDataProvider::DeleteAttributes ) && provider->deleteAttributes( qgis::listToSet( mDeletedAttributeIds ) ) )
     {
       commitErrors << tr( "SUCCESS: %n attribute(s) deleted.", "deleted attributes count", mDeletedAttributeIds.size() );
 

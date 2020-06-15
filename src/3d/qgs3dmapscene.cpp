@@ -516,7 +516,7 @@ void Qgs3DMapScene::onLayerRenderer3DChanged()
 
 void Qgs3DMapScene::onLayersChanged()
 {
-  QSet<QgsMapLayer *> layersBefore = QSet<QgsMapLayer *>::fromList( mLayerEntities.keys() );
+  QSet<QgsMapLayer *> layersBefore = qgis::listToSet( mLayerEntities.keys() );
   QList<QgsMapLayer *> layersAdded;
   Q_FOREACH ( QgsMapLayer *layer, mMap.layers() )
   {

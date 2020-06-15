@@ -691,20 +691,20 @@ void TestQgsProcessing::addProvider()
   //try adding another provider
   DummyProvider *p2 = new DummyProvider( "p2" );
   QVERIFY( r.addProvider( p2 ) );
-  QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider * >() << p << p2 );
+  QCOMPARE( qgis::listToSet( r.providers() ), QSet< QgsProcessingProvider * >() << p << p2 );
   QCOMPARE( spyProviderAdded.count(), 2 );
   QCOMPARE( spyProviderAdded.last().at( 0 ).toString(), QString( "p2" ) );
 
   //try adding a provider with duplicate id
   DummyProvider *p3 = new DummyProvider( "p2" );
   QVERIFY( !r.addProvider( p3 ) );
-  QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider * >() << p << p2 );
+  QCOMPARE( qgis::listToSet( r.providers() ), QSet< QgsProcessingProvider * >() << p << p2 );
   QCOMPARE( spyProviderAdded.count(), 2 );
 
   // test that adding a provider which does not load means it is not added to registry
   DummyProviderNoLoad *p4 = new DummyProviderNoLoad( "p4" );
   QVERIFY( !r.addProvider( p4 ) );
-  QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider * >() << p << p2 );
+  QCOMPARE( qgis::listToSet( r.providers() ), QSet< QgsProcessingProvider * >() << p << p2 );
   QCOMPARE( spyProviderAdded.count(), 2 );
 }
 

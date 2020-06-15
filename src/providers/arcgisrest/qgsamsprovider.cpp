@@ -883,7 +883,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
       params[QStringLiteral( "featureType" )] = attributesMap[resultMap[QStringLiteral( "displayFieldName" )].toString()].toString();
       store.setParams( params );
       store.addFeature( feature );
-      entries.insert( entries.size(), qVariantFromValue( QList<QgsFeatureStore>() << store ) );
+      entries.insert( entries.size(), QVariant::fromValue( QList<QgsFeatureStore>() << store ) );
     }
   }
   return QgsRasterIdentifyResult( format, entries );

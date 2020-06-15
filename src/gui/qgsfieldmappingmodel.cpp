@@ -359,9 +359,9 @@ void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFie
       const QgsExpression exp { f.expression };
       // if it's source field
       if ( exp.isField() &&
-           mSourceFields.names().contains( exp.referencedColumns().toList().first() ) )
+           mSourceFields.names().contains( qgis::setToList( exp.referencedColumns() ).first() ) )
       {
-        usedFields.push_back( exp.referencedColumns().toList().first() );
+        usedFields.push_back( qgis::setToList( exp.referencedColumns() ).first() );
       }
     }
     else

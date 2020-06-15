@@ -75,9 +75,7 @@ QColor QgsSymbolLayerUtils::decodeColor( const QString &str )
 
 QString QgsSymbolLayerUtils::encodeSldAlpha( int alpha )
 {
-  QString result;
-  result.sprintf( "%.2g", alpha / 255.0 );
-  return result;
+  return QString::number( alpha / 255.0, 'g', 2 );
 }
 
 int QgsSymbolLayerUtils::decodeSldAlpha( const QString &str )

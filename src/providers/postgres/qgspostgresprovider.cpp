@@ -3284,8 +3284,8 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
   {
     conn->begin();
 
-    QgsFeatureIds ids( attr_map.keys().toSet() );
-    ids |= geometry_map.keys().toSet();
+    QgsFeatureIds ids( qgis::listToSet( attr_map.keys() ) );
+    ids |= qgis::listToSet( geometry_map.keys() );
 
     // cycle through the features
     const auto constIds = ids;

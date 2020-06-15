@@ -204,7 +204,7 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
     uniqueVals << value;
   }
 
-  QVariantList sortedUniqueVals = uniqueVals.toList();
+  QVariantList sortedUniqueVals = qgis::setToList( uniqueVals );
   std::sort( sortedUniqueVals.begin(), sortedUniqueVals.end() );
 
   QgsCategoryList cats;

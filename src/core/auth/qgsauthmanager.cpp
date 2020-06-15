@@ -2266,7 +2266,7 @@ bool QgsAuthManager::updateIgnoredSslErrorsCacheFromConfig( const QgsAuthConfigS
   QList<QSslError::SslError> errenums( config.sslIgnoredErrorEnums() );
   if ( !errenums.isEmpty() )
   {
-    mIgnoredSslErrorsCache.insert( shahostport, QSet<QSslError::SslError>::fromList( errenums ) );
+    mIgnoredSslErrorsCache.insert( shahostport, qgis::listToSet( errenums ) );
     QgsDebugMsg( QStringLiteral( "Update of ignored SSL errors cache SUCCEEDED for sha:host:port = %1" ).arg( shahostport ) );
     dumpIgnoredSslErrorsCache_();
     return true;
@@ -2347,7 +2347,7 @@ bool QgsAuthManager::rebuildIgnoredSslErrorCache()
       QList<QSslError::SslError> errenums( config.sslIgnoredErrorEnums() );
       if ( !errenums.isEmpty() )
       {
-        nextcache.insert( shahostport, QSet<QSslError::SslError>::fromList( errenums ) );
+        nextcache.insert( shahostport, qgis::listToSet( errenums ) );
       }
       if ( prevcache.contains( shahostport ) )
       {

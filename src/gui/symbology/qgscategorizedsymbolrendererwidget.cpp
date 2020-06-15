@@ -786,7 +786,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   }
   else
   {
-    uniqueValues = mLayer->uniqueValues( idx ).toList();
+    uniqueValues = qgis::setToList( mLayer->uniqueValues( idx ) );
   }
 
   // ask to abort if too many classes

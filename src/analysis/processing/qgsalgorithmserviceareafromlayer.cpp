@@ -199,7 +199,7 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
     } // costs
 
     // convert to list and sort to maintain same order of points between algorithm runs
-    QList< int > verticesList = vertices.toList();
+    QList< int > verticesList = qgis::setToList( vertices );
     areaPoints.reserve( verticesList.size() );
     std::sort( verticesList.begin(), verticesList.end() );
     for ( int v : verticesList )

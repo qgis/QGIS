@@ -131,7 +131,7 @@ void QgsChunkedEntity::update( const SceneState &state )
 
   int oldJobsCount = pendingJobsCount();
 
-  QSet<QgsChunkNode *> activeBefore = QSet<QgsChunkNode *>::fromList( mActiveNodes );
+  QSet<QgsChunkNode *> activeBefore = qgis::listToSet( mActiveNodes );
   mActiveNodes.clear();
   mFrustumCulled = 0;
   mCurrentTime = QTime::currentTime();

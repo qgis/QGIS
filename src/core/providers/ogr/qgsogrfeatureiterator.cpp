@@ -130,8 +130,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   {
     //ensure that all fields required for filter expressions are prepared
     QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
-    attributeIndexes += attrs.toSet();
-    attrs = attributeIndexes.toList();
+    attributeIndexes += qgis::listToSet( attrs );
+    attrs = qgis::setToList( attributeIndexes );
     mRequest.setSubsetOfAttributes( attrs );
   }
   // also need attributes required by order by
@@ -143,8 +143,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
     {
       attributeIndexes << attrIdx;
     }
-    attributeIndexes += attrs.toSet();
-    attrs = attributeIndexes.toList();
+    attributeIndexes += qgis::listToSet( attrs );
+    attrs = qgis::setToList( attributeIndexes );
     mRequest.setSubsetOfAttributes( attrs );
   }
 
