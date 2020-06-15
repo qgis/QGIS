@@ -925,6 +925,8 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   std::function< void ( const QgsAbstractGeometry * )> getPartGeometry;
   getPartGeometry = [&pointsToRender, &linesToRender, &polygonsToRender, &getPartGeometry, &context, &tileMapRendering, &markers, &feature, this]( const QgsAbstractGeometry * part )
   {
+    Q_UNUSED( feature )
+
     if ( !part )
       return;
 
