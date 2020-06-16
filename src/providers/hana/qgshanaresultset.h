@@ -20,7 +20,6 @@
 #include "qgsgeometry.h"
 
 #include <memory>
-#include <vector>
 
 #include <QString>
 #include <QVariant>
@@ -57,7 +56,6 @@ class QgsHanaResultSet
   private:
     odbc::ResultSetRef mResultSet;
     odbc::ResultSetMetaDataUnicodeRef mMetadata;
-    std::vector<char> mBuffer;
 };
 
 #endif // QGSHANARESULTSET_H

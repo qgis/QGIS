@@ -101,30 +101,35 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
       return QgsHanaUtils::toVariant( mResultSet->getBoolean( columnIndex ), QVariant::Bool );
     case SQLDataTypes::Char:
     {
+      String str = mResultSet->getString( columnIndex );
       if ( mMetadata->getColumnLength( columnIndex ) == 1 )
       {
-        Byte value = mResultSet->getByte( columnIndex );
-        if ( value.isNull() )
+        if ( str.isNull() || str->empty() )
           return QVariant( QVariant::Char );
         else
-          return QVariant( QChar( *value ) );
+          return QVariant( QChar( str->at( 0 ) ) );
       }
       else
-        return QgsHanaUtils::toVariant( mResultSet->getString( columnIndex ) );
+        return QgsHanaUtils::toVariant( str );
     }
     case SQLDataTypes::WChar:
+    {
+      NString str = mResultSet->getNString( columnIndex );
       if ( mMetadata->getColumnLength( columnIndex ) == 1 )
       {
-        UByte value = mResultSet->getUByte( columnIndex );
-        if ( value.isNull() )
+        if ( str.isNull() || str->empty() )
           return QVariant( QVariant::Char );
         else
-          return QVariant( QChar( *value ) );
+          return QVariant( QChar( str->at( 0 ) ) );
       }
       else
-        return QgsHanaUtils::toVariant( mResultSet->getNString( columnIndex ) );
+        return QgsHanaUtils::toVariant( str );
+    }
     case SQLDataTypes::TinyInt:
-      return QgsHanaUtils::toVariant( mResultSet->getUByte( columnIndex ) );
+      if ( mMetadata ->isSigned( columnIndex ) )
+        return QgsHanaUtils::toVariant( mResultSet->getByte( columnIndex ) );
+      else
+        return QgsHanaUtils::toVariant( mResultSet->getUByte( columnIndex ) );
     case SQLDataTypes::SmallInt:
       if ( mMetadata ->isSigned( columnIndex ) )
         return QgsHanaUtils::toVariant( mResultSet->getShort( columnIndex ) );
@@ -174,34 +179,32 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
 
 QgsGeometry QgsHanaResultSet::getGeometry( unsigned short columnIndex )
 {
-  auto createGeometry = []( const char *data, size_t size )
+  auto toWkbSize = []( size_t size )
   {
-    if ( size == 0 || data == nullptr )
-      return QgsGeometry();
-
     if ( size > static_cast<size_t>( std::numeric_limits<int>::max() ) )
       throw QgsHanaException( "Geometry size is larger than maximum integer value" );
-
-    QByteArray wkbBytes( data, static_cast<int>( size ) );
-    QgsGeometry geom;
-    geom.fromWkb( wkbBytes );
-    return geom;
+    return  static_cast<int>( size );
   };
 
   size_t bufLength = mResultSet->getBinaryLength( columnIndex );
   if ( bufLength == ResultSet::UNKNOWN_LENGTH )
   {
     Binary wkb = mResultSet->getBinary( columnIndex );
-    if ( wkb.isNull() || wkb->size() == 0 )
-      return QgsGeometry();
-    else
-      return createGeometry( wkb->data(), wkb->size() );
+    if ( !wkb.isNull() && wkb->size() > 0 )
+    {
+      QByteArray wkbBytes( wkb->data(), toWkbSize( wkb->size() ) );
+      QgsGeometry geom;
+      geom.fromWkb( wkbBytes );
+      return geom;
+    }
   }
   else if ( bufLength != 0 && bufLength != odbc::ResultSet::NULL_DATA )
   {
-    mBuffer.resize( bufLength );
-    mResultSet->getBinaryData( columnIndex, mBuffer.data(), bufLength );
-    return createGeometry( mBuffer.data(), bufLength );
+    QByteArray wkbBytes( toWkbSize( bufLength ), '0' );
+    mResultSet->getBinaryData( columnIndex, wkbBytes.data(), bufLength );
+    QgsGeometry geom;
+    geom.fromWkb( wkbBytes );
+    return geom;
   }
 
   return QgsGeometry();
