@@ -305,4 +305,8 @@ void QgsRasterResampleFilter::readXml( const QDomElement &filterElem )
   {
     mZoomedOutResampler.reset( new QgsBilinearRasterResampler() );
   }
+  else if ( zoomedOutResamplerType == QLatin1String( "cubic" ) )
+  {
+    mZoomedOutResampler.reset( new QgsCubicRasterResampler() );
+  }
 }
