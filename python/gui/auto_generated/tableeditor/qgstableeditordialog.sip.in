@@ -75,7 +75,7 @@ should be used for the column.
 Sets the configured row ``height`` for the specified ``row``. Set ``height`` to 0
 if an automatic height should be used for the row.
 
-This should be called after a call to setTableContents().
+This should be called after a call to :py:func:`~QgsTableEditorDialog.setTableContents`.
 
 .. seealso:: :py:func:`tableRowHeight`
 %End
@@ -85,7 +85,7 @@ This should be called after a call to setTableContents().
 Sets the configured column ``width`` for the specified ``column``. Set ``width`` to 0
 if an automatic width should be used for the column.
 
-This should be called after a call to setTableContents().
+This should be called after a call to :py:func:`~QgsTableEditorDialog.setTableContents`.
 
 .. seealso:: :py:func:`tableColumnWidth`
 %End

@@ -44,6 +44,7 @@ class QgsMesh3dSymbolWidget : public QWidget, private Ui::QgsMesh3dPropsWidget
   public slots:
     void reloadColorRampShaderMinMax();
     void enableVerticalSetting( bool isEnable );
+    void enableArrowSettings( bool isEnable );
 
   signals:
     void changed();

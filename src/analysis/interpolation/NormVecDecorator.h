@@ -80,6 +80,10 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     QVector<PointState> *mPointState;
     //! Sets the state (BreakLine, Normal, EndPoint) of a point
     void setState( int pointno, PointState s );
+
+  private:
+    NormVecDecorator( const NormVecDecorator & ) = delete;
+    NormVecDecorator &operator=( const NormVecDecorator & ) = delete;
 };
 
 #ifndef SIP_RUN

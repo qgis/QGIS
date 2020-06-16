@@ -199,6 +199,8 @@ its ``value`` Type for additional information.
 %End
 
 
+  private:
+    const QgsGeometryCheckError &operator=( const QgsGeometryCheckError & );
 };
 
 

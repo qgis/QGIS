@@ -540,7 +540,7 @@ class CORE_EXPORT QgsLabelFeature
 
     bool mLabelAllParts = false;
 
-    QgsLabelObstacleSettings mObstacleSettings;
+    QgsLabelObstacleSettings mObstacleSettings{};
 
     QgsPointXY mAnchorPosition;
 };

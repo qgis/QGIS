@@ -60,7 +60,7 @@ in the histogram.
     void setPen( const QPen &pen );
 %Docstring
 Sets the pen to use when drawing histogram bars. If set to Qt.NoPen then the
-pen will be automatically calculated. If ranges have been set using setGraduatedRanges()
+pen will be automatically calculated. If ranges have been set using :py:func:`~QgsHistogramWidget.setGraduatedRanges`
 then the pen and brush will have no effect.
 
 :param pen: histogram pen
@@ -81,7 +81,7 @@ Returns the pen used when drawing histogram bars.
 
     void setBrush( const QBrush &brush );
 %Docstring
-Sets the brush used for drawing histogram bars. If ranges have been set using setGraduatedRanges()
+Sets the brush used for drawing histogram bars. If ranges have been set using :py:func:`~QgsHistogramWidget.setGraduatedRanges`
 then the pen and brush will have no effect.
 
 :param brush: histogram brush
@@ -170,7 +170,7 @@ Refreshes the values for the histogram by fetching them from the layer.
     void refresh();
 %Docstring
 Redraws the histogram. Calling this slot does not update the values
-for the histogram, use refreshValues() to do this.
+for the histogram, use :py:func:`~QgsHistogramWidget.refreshValues` to do this.
 %End
 
     void setLayer( QgsVectorLayer *layer );

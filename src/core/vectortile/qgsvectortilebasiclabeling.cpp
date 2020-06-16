@@ -143,9 +143,9 @@ QMap<QString, QSet<QString> > QgsVectorTileBasicLabelProvider::usedAttributes( c
   return requiredFields;
 }
 
-void QgsVectorTileBasicLabelProvider::setFields( const QMap<QString, QSet<QString> > &requiredFields )
+void QgsVectorTileBasicLabelProvider::setFields( const QMap<QString, QgsFields> &perLayerFields )
 {
-  mRequiredFields = requiredFields;
+  mPerLayerFields = perLayerFields;
 }
 
 QList<QgsAbstractLabelProvider *> QgsVectorTileBasicLabelProvider::subProviders()
@@ -167,7 +167,7 @@ bool QgsVectorTileBasicLabelProvider::prepare( QgsRenderContext &context, QSet<Q
   // populate sub-providers
   for ( int i = 0; i < mSubProviders.count(); ++i )
   {
-    QgsFields fields = QgsVectorTileUtils::makeQgisFields( mRequiredFields[mStyles[i].layerName()] );
+    QgsFields fields = mPerLayerFields[mStyles[i].layerName()];
 
     QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Layer" ) ); // will be deleted by popper
     scope->setFields( fields );
@@ -194,7 +194,7 @@ void QgsVectorTileBasicLabelProvider::registerTileFeatures( const QgsVectorTileR
     if ( !layerStyle.isActive( zoomLevel ) )
       continue;
 
-    QgsFields fields = QgsVectorTileUtils::makeQgisFields( mRequiredFields[layerStyle.layerName()] );
+    QgsFields fields = mPerLayerFields[layerStyle.layerName()];
 
     QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Layer" ) ); // will be deleted by popper
     scope->setFields( fields );

@@ -48,7 +48,7 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
     QgsPolygon *clone() const override SIP_FACTORY;
     void clear() override;
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
-    QByteArray asWkb() const override;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = nullptr ) const override;
     QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
 
     /**

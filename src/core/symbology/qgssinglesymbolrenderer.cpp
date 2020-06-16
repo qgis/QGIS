@@ -41,6 +41,8 @@ QgsSingleSymbolRenderer::QgsSingleSymbolRenderer( QgsSymbol *symbol )
   Q_ASSERT( symbol );
 }
 
+QgsSingleSymbolRenderer::~QgsSingleSymbolRenderer() = default;
+
 QgsSymbol *QgsSingleSymbolRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const
 {
   return mSymbol.get();

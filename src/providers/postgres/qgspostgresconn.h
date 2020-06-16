@@ -339,6 +339,8 @@ class QgsPostgresConn : public QObject
 
     qint64 getBinaryInt( QgsPostgresResult &queryResult, int row, int col );
 
+    QString fieldExpressionForWhereClause( const QgsField &fld, QVariant::Type valueType = QVariant::LastType, QString expr = "%1" );
+
     QString fieldExpression( const QgsField &fld, QString expr = "%1" );
 
     QString connInfo() const { return mConnInfo; }

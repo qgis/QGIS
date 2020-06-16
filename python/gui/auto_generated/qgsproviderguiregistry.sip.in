@@ -18,9 +18,9 @@ class QgsProviderGuiRegistry
 A registry / canonical manager of GUI parts of data providers.
 
 QgsProviderGuiRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsGui.providerGuiRegistry()`
+:py:func:`QgsGui.providerGuiRegistry()`.
 
-setPluginPath() should be called (once) to load dynamic providers. Static providers are
+:py:func:`~setPluginPath` should be called (once) to load dynamic providers. Static providers are
 loaded in constructor.
 
 .. versionadded:: 3.10

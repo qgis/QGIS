@@ -266,6 +266,7 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject *project, QgsMa
 {
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
   connect( project, &QgsProject::avoidIntersectionsLayersChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
+  connect( project, &QgsProject::readProject, this, [ = ] {resetLayerTreeModel();} );
 }
 
 int QgsSnappingLayerTreeModel::columnCount( const QModelIndex &parent ) const
@@ -477,7 +478,7 @@ QVariant QgsSnappingLayerTreeModel::headerData( int section, Qt::Orientation ori
         case 3:
           return tr( "Units" );
         case 4:
-          return tr( "Avoid overlap" );
+          return tr( "Avoid Overlap" );
         case 5:
           return tr( "Min Scale" );
         case 6:

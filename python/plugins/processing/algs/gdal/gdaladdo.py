@@ -51,7 +51,7 @@ class gdaladdo(GdalAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.methods = ((self.tr('Nearest Neighbour'), 'nearest'),
+        self.methods = ((self.tr('Nearest Neighbour (default)'), 'nearest'),
                         (self.tr('Average'), 'average'),
                         (self.tr('Gaussian'), 'gauss'),
                         (self.tr('Cubic Convolution'), 'cubic'),
@@ -67,19 +67,26 @@ class gdaladdo(GdalAlgorithm):
 
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
                                                             self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterString(self.LEVELS,
-                                                       self.tr('Overview levels'),
-                                                       defaultValue='2 4 8 16'))
         self.addParameter(QgsProcessingParameterBoolean(self.CLEAN,
                                                         self.tr('Remove all existing overviews'),
                                                         defaultValue=False))
 
+        if GdalUtils.version() < 230000:
+            self.addParameter(QgsProcessingParameterString(self.LEVELS,
+                                                           self.tr('Overview levels'),
+                                                           defaultValue='2 4 8 16'))
+
         params = []
+        if GdalUtils.version() >= 230000:
+            params.append(QgsProcessingParameterString(self.LEVELS,
+                                                       self.tr('Overview levels (e.g. 2 4 8 16)'),
+                                                       defaultValue=None,
+                                                       optional=True))
         params.append(QgsProcessingParameterEnum(self.RESAMPLING,
                                                  self.tr('Resampling method'),
                                                  options=[i[0] for i in self.methods],
                                                  allowMultiple=False,
-                                                 defaultValue=0,
+                                                 defaultValue=None,
                                                  optional=True))
         params.append(QgsProcessingParameterEnum(self.FORMAT,
                                                  self.tr('Overviews format'),
@@ -125,8 +132,9 @@ class gdaladdo(GdalAlgorithm):
         arguments = []
         arguments.append(fileName)
 
-        arguments.append('-r')
-        arguments.append(self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1])
+        if self.RESAMPLING in parameters and parameters[self.RESAMPLING] is not None:
+            arguments.append('-r')
+            arguments.append(self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1])
 
         ovrFormat = self.parameterAsEnum(parameters, self.FORMAT, context)
         if ovrFormat == 1:

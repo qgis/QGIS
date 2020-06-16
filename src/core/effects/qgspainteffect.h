@@ -50,7 +50,7 @@ class QgsRenderContext;
  * \since QGIS 2.9
  */
 
-class CORE_EXPORT QgsPaintEffect
+class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
 {
 
 #ifdef SIP_RUN
@@ -308,6 +308,8 @@ class CORE_EXPORT QgsPaintEffect
 
     friend class QgsEffectStack;
 
+    QgsPaintEffect &operator= ( const QgsPaintEffect & ) = delete;
+
 };
 
 /**
@@ -323,7 +325,7 @@ class CORE_EXPORT QgsPaintEffect
  * \since QGIS 2.9
  */
 
-class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
+class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 {
   public:
 
@@ -431,6 +433,10 @@ class CORE_EXPORT QgsEffectPainter
     ///@endcond
 
   private:
+#ifdef SIP_RUN
+    const QgsEffectPainter &operator=( const QgsEffectPainter & );
+#endif
+
     QgsRenderContext &mRenderContext;
     QPainter *mPainter = nullptr;
     QgsPaintEffect *mEffect = nullptr;

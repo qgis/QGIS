@@ -63,7 +63,7 @@ Sets the ``size`` of the page.
 %Docstring
 Sets the page size to a known page ``size``, e.g. "A4" and ``orientation``.
 The known page sizes are managed by :py:class:`QgsPageSizeRegistry`. Valid page sizes
-can be retrieved via :py:func:`QgsPageSizeRegistry.entries()`
+can be retrieved via :py:func:`QgsPageSizeRegistry.entries()`.
 The function returns ``True`` if ``size`` was a valid page size and the page
 size was changed. If ``False`` is returned then ``size`` could not be matched
 to a known page size.
@@ -84,7 +84,7 @@ Returns the page orientation.
 
 .. note::
 
-   There is no direct setter for page orientation - use setPageSize() instead.
+   There is no direct setter for page orientation - use :py:func:`~QgsLayoutItemPage.setPageSize` instead.
 %End
 
     void setPageStyleSymbol( QgsFillSymbol *symbol /Transfer/ );

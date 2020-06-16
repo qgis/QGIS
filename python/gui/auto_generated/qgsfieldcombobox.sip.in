@@ -78,9 +78,9 @@ Returns the layer currently associated with the combobox.
 %Docstring
 Manually sets the ``fields`` to use for the combo box.
 
-This method should only be used when the combo box ISN'T associated with a layer()
+This method should only be used when the combo box ISN'T associated with a :py:func:`~QgsFieldComboBox.layer`
 and needs to show the fields from an arbitrary field collection instead. Calling
-setFields() will automatically clear any existing layer().
+:py:func:`~QgsFieldComboBox.setFields` will automatically clear any existing :py:func:`~QgsFieldComboBox.layer`.
 
 .. seealso:: :py:func:`fields`
 
@@ -91,8 +91,8 @@ setFields() will automatically clear any existing layer().
 %Docstring
 Returns the fields currently shown in the combobox.
 
-This will either be fields from the associated layer() or the fields
-manually set by a call to setFields().
+This will either be fields from the associated :py:func:`~QgsFieldComboBox.layer` or the fields
+manually set by a call to :py:func:`~QgsFieldComboBox.setFields`.
 
 .. versionadded:: 3.14
 %End

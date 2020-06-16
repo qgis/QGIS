@@ -49,6 +49,20 @@ all deselected
 all selected
 %End
 
+    void favoritesDeselected();
+%Docstring
+Favorites has been deselected
+
+.. versionadded:: 3.14
+%End
+
+    void favoritesSelected();
+%Docstring
+Favorites has need selected
+
+.. versionadded:: 3.14
+%End
+
 };
 
 /************************************************************************

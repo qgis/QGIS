@@ -12,8 +12,8 @@ QWindow, QMainWindow, QMdiSubWindow, QDialog, QAbstractScrollArea, QFocusFrame, 
 
 QWidget:item:hover
 {
-    background-color: @selection;
-    color: @text;
+    background-color: @hover;
+    color: @itembackground;
 }
 
 QWidget:item:selected
@@ -530,11 +530,15 @@ QTabWidget::pane {
     top:-1px;
 }
 
+QTabWidget[tabPosition="0"] QTabBar {
+    border-bottom: 1px solid @itemdarkbackground;
+}
+
 QTabBar::tab {
     color: @text;
     border: 1px solid @itemdarkbackground;
     border-bottom: none;
-    background-color: @background;
+    background-color: transparent;
     padding-left: 0.8em;
     padding-right: 0.8em;
     padding-top: 0.1em;
@@ -569,6 +573,7 @@ QTabBar::tab:!selected
 QTabBar::tab:selected
 {
     margin-bottom: 0px;
+    background-color: @background;
 }
 
 QTabBar::tab:bottom:!selected
@@ -580,6 +585,7 @@ QTabBar::tab:bottom:!selected
 QTabBar::tab:bottom:selected
 {
     margin-top: 0px;
+    background-color: @background;
 }
 
 QGroupBox::indicator:hover,
@@ -756,7 +762,6 @@ QAbstractItemView::selected, QListView::selected {
     outline: none;
 }
 
-
 /* ==================================================================================== */
 /* TREE VIEW                                                                            */
 /* ==================================================================================== */
@@ -776,11 +781,11 @@ QTreeView::item:disabled {
 }
 
 QTreeView::item:hover, QTreeView::branch:hover {
-    background-color: @toggleoff;
-    color: @itembackground;
+    background-color: transparent;
+    color: @textlight;
 }
 
-QTreeView::item:selected, QTreeView::branch:selected {
+QTreeView::item:selected, QTreeView::item:selected:hover, QTreeView::branch:selected, QTreeView::branch:selected:hover {
     background-color: @selection;
     color: @textlight;
 }
@@ -797,6 +802,23 @@ QTreeView::branch:open:has-children:has-siblings {
      image: url(@theme_path/icons/caret-down.svg);
 }
 
+QTreeView::indicator {
+    width:0.8em;
+    height:0.8em;
+}
+QTreeView::indicator:intermediary {
+    border: 1px solid @background;
+    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+}
+QTreeView::indicator:checked {
+    border: 1px solid @background;
+    image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
+}
+QTreeView::indicator:unchecked {
+    border: 1px solid @background;
+    image: url(@theme_path/icons/qcheckbox-unchecked.svg);
+}
+
 QgsLayerTreeView::item,
 QTreeView#viewGraduated::item,
 QTreeView#viewCategories::item,
@@ -805,6 +827,24 @@ QTreeView#viewRules::item
     border-top: 0.5px solid rgba(108,108,108,50);
     border-bottom: 0.5px solid rgba(108,108,108,50);
     padding: 0.1em 0em 0.1em 0em;
+}
+
+QgsLayerTreeView::item:hover, QgsLayerTreeView::branch:hover,
+QTreeView#viewGraduated::item:hover, QTreeView#viewGraduated::branch:hover,
+QTreeView#viewCategories::item:hover, QTreeView#viewCategories::branch:hover,
+QTreeView#viewRules::item:hover, QTreeView#viewRules::branch:hover
+{
+    background-color: @hover;
+    color: @itembackground;
+}
+
+QgsLayerTreeView::item:selected:hover, QgsLayerTreeView::branch:selected:hover,
+QTreeView#viewGraduated::item:selected:hover, QTreeView#viewGraduated::branch:selected:hover,
+QTreeView#viewCategories::item:selected:hover, QTreeView#viewCategories::branch:selected:hover,
+QTreeView#viewRules::item:selected:hover, QTreeView#viewRules::branch:selected:hover
+{
+    background-color: @selection;
+    color: @textlight;
 }
 
 QgsLayerTreeView::indicator:unchecked,
@@ -835,6 +875,23 @@ QTableView {
 
 QTableView:disabled {
     color: @itemdarkbackground;
+}
+
+QTableView::indicator {
+    width:0.8em;
+    height:0.8em;
+}
+QTableView::indicator:intermediary {
+    border: 1px solid @background;
+    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+}
+QTableView::indicator:checked {
+    border: 1px solid @background;
+    image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
+}
+QTableView::indicator:unchecked {
+    border: 1px solid @background;
+    image: url(@theme_path/icons/qcheckbox-unchecked.svg);
 }
 
 QTableView QTableCornerButton::section {
@@ -983,6 +1040,16 @@ QListWidget#mOptionsListWidget {
 
 QListWidget#mOptionsListWidget::item {
     padding: 0.1em;
+}
+
+QListWidget#mOptionsListWidget::item:hover
+{
+    background-color: @hover;
+    color: @itembackground;
+}
+
+QListWidget#mOptionsListWidget::item:selected:hover {
+    background-color: @selection;
 }
 
 QWidget#QgsTextFormatWidgetBase QTabWidget#mOptionsTab QTabBar::tab,

@@ -60,8 +60,8 @@ namespace Sqlite
 
       int step();
 
-      Query &bind( const QString &str, int idx );
-      Query &bind( const QString &str );
+      Query &bind( const QVariant &value, int idx );
+      Query &bind( const QVariant &value );
 
       static void exec( sqlite3 *db, const QString &sql );
 

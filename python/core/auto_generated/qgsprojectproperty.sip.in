@@ -69,7 +69,7 @@ Returns ``True`` if property is a leaf node.
 A leaf node is a key node that has either no value or only a single value.
 A non-leaf node would be a key node with key sub-nodes.
 
-This is used for entryList() and subkeyList() implementation.
+This is used for :py:func:`~QgsProjectProperty.entryList` and :py:func:`~QgsProjectProperty.subkeyList` implementation.
 %End
 
     virtual bool readXml( const QDomNode &keyNode ) = 0;

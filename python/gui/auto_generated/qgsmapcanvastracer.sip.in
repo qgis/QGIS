@@ -12,6 +12,7 @@ class QgsMapCanvasTracer : QgsTracer
 {
 %Docstring
 Extension of QgsTracer that provides extra functionality:
+
 - automatic updates of own configuration based on canvas settings
 - reporting of issues to the user via message bar
 - determines whether tracing is currently enabled by the user

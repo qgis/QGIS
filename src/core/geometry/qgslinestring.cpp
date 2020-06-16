@@ -441,7 +441,7 @@ bool QgsLineString::fromWkt( const QString &wkt )
   return true;
 }
 
-QByteArray QgsLineString::asWkb() const
+QByteArray QgsLineString::asWkb( WkbFlags ) const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
   binarySize += numPoints() * ( 2 + is3D() + isMeasure() ) * sizeof( double );

@@ -238,6 +238,9 @@
               <property name="text">
                <string/>
               </property>
+              <property name="toolTip">
+               <string>Move item down</string>
+              </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
                 <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
@@ -254,6 +257,9 @@
              <widget class="QToolButton" name="mMoveUpToolButton">
               <property name="text">
                <string/>
+              </property>
+              <property name="toolTip">
+               <string>Move item up</string>
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
@@ -292,6 +298,9 @@
               <property name="text">
                <string/>
               </property>
+              <property name="toolTip">
+               <string>Add layer(s) to legend</string>
+              </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
                 <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
@@ -309,6 +318,9 @@
               <property name="text">
                <string/>
               </property>
+              <property name="toolTip">
+               <string>Remove selected item(s) from legend</string>
+              </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
                 <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
@@ -325,6 +337,9 @@
              <widget class="QToolButton" name="mEditPushButton">
               <property name="text">
                <string/>
+              </property>
+              <property name="toolTip">
+               <string>Edit selected item properties</string>
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
@@ -398,6 +413,9 @@
              <widget class="QgsLegendFilterButton" name="mExpressionFilterButton">
               <property name="text">
                <string/>
+              </property>
+              <property name="toolTip">
+               <string>Filter expression</string>
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
@@ -1391,8 +1409,6 @@
   <tabstop>mLayerExpressionButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

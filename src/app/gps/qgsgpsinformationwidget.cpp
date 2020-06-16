@@ -1002,18 +1002,23 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   if ( !std::isnan( info.direction ) )
   {
     double trueNorth = 0;
-    try
+    QgsSettings settings;
+    if ( settings.value( QStringLiteral( "gps/correctForTrueNorth" ), false, QgsSettings::App ).toBool() )
     {
-      trueNorth = QgsBearingUtils::bearingTrueNorth( mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext(), mMapCanvas->mapSettings().visibleExtent().center() );
-    }
-    catch ( QgsException & )
-    {
+      try
+      {
+        trueNorth = QgsBearingUtils::bearingTrueNorth( mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext(), mMapCanvas->mapSettings().visibleExtent().center() );
+      }
+      catch ( QgsException & )
+      {
 
+      }
     }
+    const double adjustment = settings.value( QStringLiteral( "gps/bearingAdjustment" ), 0.0, QgsSettings::App ).toDouble();
 
     if ( mRotateMapCheckBox->isChecked() && ( !mLastRotateTimer.isValid() || mLastRotateTimer.hasExpired( mSpinMapRotateInterval->value() * 1000 ) ) )
     {
-      mMapCanvas->setRotation( trueNorth - info.direction );
+      mMapCanvas->setRotation( trueNorth - info.direction - adjustment );
       mLastRotateTimer.restart();
     }
 
@@ -1026,7 +1031,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       }
 
       mMapBearingItem->setGpsPosition( myNewCenter );
-      mMapBearingItem->setGpsBearing( info.direction - trueNorth );
+      mMapBearingItem->setGpsBearing( info.direction - trueNorth + adjustment );
     }
     else if ( mMapBearingItem )
     {

@@ -473,6 +473,10 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
 
     QHash<int, QString> mDefaultValues;
 
+    // for handling generated columns, available in PostgreSQL 12+
+    // See https://www.postgresql.org/docs/12/ddl-generated-columns.html
+    QHash<int, QString> mGeneratedValues;
+
     bool mCheckPrimaryKeyUnicity = true;
 
     QgsLayerMetadata mLayerMetadata;

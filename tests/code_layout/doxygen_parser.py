@@ -261,6 +261,10 @@ class DoxygenParser():
         has_brief_description = False
         if d:
             has_brief_description = True
+            for para in d.iter('para'):
+                if para.text and re.search(r'\btodo\b', para.text.lower()) is not None:
+                    noncompliant_members.append({'Brief description': 'Don\'t add TODO comments to public doxygen documentation. Leave these as c++ code comments only.'})
+                    break
 
         # test for "added in QGIS xxx" string
         d = e.find('detaileddescription')
@@ -272,8 +276,10 @@ class DoxygenParser():
                         if self.version_regex.match(p.text):
                             found_version_added = True
                             break
-            if found_version_added:
-                break
+
+            if para.text and re.search(r'\btodo\b', para.text.lower()) is not None:
+                noncompliant_members.append({
+                    'Detailed description': 'Don\'t add TODO comments to public doxygen documentation. Leave these as c++ code comments only.'})
 
         return documentable_members, documented_members, undocumented_members, noncompliant_members, bindable_members, has_brief_description, found_version_added, broken_links
 
@@ -567,26 +573,39 @@ class DoxygenParser():
         """ Tests whether an member's documentation is non-compliant
             :param member_elem: XML element for a class member
         """
-        for doc_type in ['briefdescription']:
+
+        def _check_compliance(elem):
+            for para in elem.iter('para'):
+                for sect in para.iter('simplesect'):
+                    res = _check_compliance(sect)
+                    if res:
+                        return res
+
+                for t in para.itertext():
+                    if doc_type == 'briefdescription':
+                        if t.strip().lower().startswith('getter'):
+                            return 'Use "Returns the..." instead of "getter"'
+                        if t.strip().lower().startswith('get '):
+                            return 'Use "Gets..." (or better, "Returns ...") instead of "get ..."'
+                        elif t.strip().lower().startswith('setter'):
+                            return 'Use "Sets the..." instead of "setter"'
+                        elif t.strip().lower().startswith('mutator'):
+                            return 'Use "Sets the..." instead of "mutator for..."'
+                        elif t.strip().lower().startswith('accessor'):
+                            return 'Use "Returns the..." instead of "accessor for..."'
+                        elif t.strip().lower().startswith('return '):
+                            return 'Use "Returns the..." instead of "return ..."'
+
+                    if re.search(r'\btodo\b', t.lower()) is not None:
+                        return 'Don\'t add TODO comments to public doxygen documentation. Leave these as c++ code comments only.'
+
+        for doc_type in ['briefdescription', 'detaileddescription']:
             doc = member_elem.find(doc_type)
             if doc is not None:
-                for para in doc.iter('para'):
-                    if not para.text:
-                        continue
-                    if para.text.strip().lower().startswith('getter'):
-                        return 'Use "Returns the..." instead of "getter"'
-                    if para.text.strip().lower().startswith('get '):
-                        return 'Use "Gets..." (or better, "Returns ...") instead of "get ..."'
-                    elif para.text.strip().lower().startswith('setter'):
-                        return 'Use "Sets the..." instead of "setter"'
-                    elif para.text.strip().lower().startswith('mutator'):
-                        return 'Use "Sets the..." instead of "mutator for..."'
-                    elif para.text.strip().lower().startswith('accessor'):
-                        return 'Use "Returns the..." instead of "accessor for..."'
-                    elif para.text.strip().lower().startswith('return '):
-                        return 'Use "Returns the..." instead of "return ..."'
-                    # elif para.text.strip().lower().startswith('set '):
-                    #    return 'Use "Sets the..." instead of "set ..."'
+                res = _check_compliance(doc)
+                if res:
+                    return res
+
         return False
 
     def checkForBrokenSeeAlsoLinks(self, elem):

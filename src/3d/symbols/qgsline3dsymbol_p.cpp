@@ -196,6 +196,9 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
 
   if ( !selected )
     entity->findChild<Qt3DRender::QGeometryRenderer *>()->setObjectName( QStringLiteral( "main" ) ); // temporary measure to distinguish between "selected" and "main"
+
+  // cppcheck wrongly believes entity will leak
+  // cppcheck-suppress memleak
 }
 
 

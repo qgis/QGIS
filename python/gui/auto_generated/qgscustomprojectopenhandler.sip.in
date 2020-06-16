@@ -18,8 +18,8 @@ This interface allows extending the QGIS interface by adding support for opening
 (non QGS/QGZ) project files, e.g. allowing plugins to add support for opening other
 vendor project formats (such as ArcGIS MXD documents or MapInfo WOR workspaces).
 
-Handler implementations should indicate the file types they support via their filters()
-implementation, and then implement handleProjectOpen() to open the associated files.
+Handler implementations should indicate the file types they support via their :py:func:`~filters`
+implementation, and then implement :py:func:`~handleProjectOpen` to open the associated files.
 
 .. versionadded:: 3.14
 %End

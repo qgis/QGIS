@@ -581,7 +581,7 @@ void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangl
   }
 
   // get URLs of tiles because their URLs are used as keys in the tile cache
-  TilePositions tiles = tilesSet.toList();
+  TilePositions tiles = qgis::setToList( tilesSet );
   TileRequests requests;
   switch ( tileMode )
   {
@@ -2005,64 +2005,64 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
     tr( "Title" ) %
     QStringLiteral( "</td>"
                     "<td>" ) %
-    layer.title;
-  QStringLiteral( "</td></tr>"
+    layer.title %
+    QStringLiteral( "</td></tr>"
 
-                  // Layer Abstract
-                  "<tr><td>" ) %
-  tr( "Abstract" ) %
-  QStringLiteral( "</td>"
-                  "<td>" ) %
-  layer.abstract;
-  QStringLiteral( "</td></tr>"
+                    // Layer Abstract
+                    "<tr><td>" ) %
+    tr( "Abstract" ) %
+    QStringLiteral( "</td>"
+                    "<td>" ) %
+    layer.abstract %
+    QStringLiteral( "</td></tr>"
 
-                  // Layer Queryability
-                  "<tr><td>" ) %
-  tr( "Can Identify" ) %
-  QStringLiteral( "</td>"
-                  "<td>" ) %
-  ( layer.queryable ? tr( "Yes" ) : tr( "No" ) ) %
-  QStringLiteral( "</td></tr>"
+                    // Layer Queryability
+                    "<tr><td>" ) %
+    tr( "Can Identify" ) %
+    QStringLiteral( "</td>"
+                    "<td>" ) %
+    ( layer.queryable ? tr( "Yes" ) : tr( "No" ) ) %
+    QStringLiteral( "</td></tr>"
 
-                  // Layer Opacity
-                  "<tr><td>" ) %
-  tr( "Can be Transparent" ) %
-  QStringLiteral( "</td>"
-                  "<td>" ) %
-  ( layer.opaque ? tr( "No" ) : tr( "Yes" ) ) %
-  QStringLiteral( "</td></tr>"
+                    // Layer Opacity
+                    "<tr><td>" ) %
+    tr( "Can be Transparent" ) %
+    QStringLiteral( "</td>"
+                    "<td>" ) %
+    ( layer.opaque ? tr( "No" ) : tr( "Yes" ) ) %
+    QStringLiteral( "</td></tr>"
 
-                  // Layer Subsetability
-                  "<tr><td>" ) %
-  tr( "Can Zoom In" ) %
-  QStringLiteral( "</td>"
-                  "<td>" ) %
-  ( layer.noSubsets ? tr( "No" ) : tr( "Yes" ) ) %
-  QStringLiteral( "</td></tr>"
+                    // Layer Subsetability
+                    "<tr><td>" ) %
+    tr( "Can Zoom In" ) %
+    QStringLiteral( "</td>"
+                    "<td>" ) %
+    ( layer.noSubsets ? tr( "No" ) : tr( "Yes" ) ) %
+    QStringLiteral( "</td></tr>"
 
-                  // Layer Server Cascade Count
-                  "<tr><td>" ) %
-  tr( "Cascade Count" ) %
-  QStringLiteral( "</td>"
-                  "<td>" ) %
-  QString::number( layer.cascaded );
-  QStringLiteral( "</td></tr>"
+                    // Layer Server Cascade Count
+                    "<tr><td>" ) %
+    tr( "Cascade Count" ) %
+    QStringLiteral( "</td>"
+                    "<td>" ) %
+    QString::number( layer.cascaded ) %
+    QStringLiteral( "</td></tr>"
 
-                  // Layer Fixed Width
-                  "<tr><td>" ) %
-  tr( "Fixed Width" ) %
-  QStringLiteral( "</td>"
-                  "<td>" ) %
-  QString::number( layer.fixedWidth );
-  QStringLiteral( "</td></tr>"
+                    // Layer Fixed Width
+                    "<tr><td>" ) %
+    tr( "Fixed Width" ) %
+    QStringLiteral( "</td>"
+                    "<td>" ) %
+    QString::number( layer.fixedWidth ) %
+    QStringLiteral( "</td></tr>"
 
-                  // Layer Fixed Height
-                  "<tr><td>" ) %
-  tr( "Fixed Height" ) %
-  QStringLiteral( "</td>"
-                  "<td>" ) %
-  QString::number( layer.fixedHeight ) %
-  QStringLiteral( "</td></tr>" );
+                    // Layer Fixed Height
+                    "<tr><td>" ) %
+    tr( "Fixed Height" ) %
+    QStringLiteral( "</td>"
+                    "<td>" ) %
+    QString::number( layer.fixedHeight ) %
+    QStringLiteral( "</td></tr>" );
 
   // Dimensions
   if ( !layer.dimensions.isEmpty() )
@@ -3296,7 +3296,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
           QgsDebugMsg( "parsing GML error: " + err.message() );
           return QgsRasterIdentifyResult( err );
         }
-        results.insert( results.size(), qVariantFromValue( featureStoreList ) );
+        results.insert( results.size(), QVariant::fromValue( featureStoreList ) );
       }
       else if ( jsonPart != -1 )
       {
@@ -3423,7 +3423,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
           results.insert( results.size(), err );  // string returned for format type "feature" means error
         }
 
-        results.insert( results.size(), qVariantFromValue( featureStoreList ) );
+        results.insert( results.size(), QVariant::fromValue( featureStoreList ) );
       }
     }
   }

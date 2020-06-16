@@ -321,7 +321,7 @@ QString QgsProcessingToolboxModel::toolTipForAlgorithm( const QgsProcessingAlgor
            algorithm->displayName(),
            !algorithm->shortDescription().isEmpty() ? QStringLiteral( "<p>%1</p>" ).arg( algorithm->shortDescription() ) : QString(),
            QObject::tr( "Algorithm ID: ‘%1’" ).arg( QStringLiteral( "<i>%1</i>" ).arg( algorithm->id() ) ),
-           algorithm->flags() & QgsProcessingAlgorithm::FlagKnownIssues ? QStringLiteral( "<b style=\"color:red\">%1</b>" ).arg( QObject::tr( "Warning: Algorithm has known issues" ) ) : QString()
+           ( algorithm->flags() & QgsProcessingAlgorithm::FlagKnownIssues ) ? QStringLiteral( "<b style=\"color:red\">%1</b>" ).arg( QObject::tr( "Warning: Algorithm has known issues" ) ) : QString()
          );
 }
 

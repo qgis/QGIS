@@ -94,7 +94,7 @@ Returns the combination of render context flags matched to the layout context's 
     void setDpi( double dpi );
 %Docstring
 Sets the ``dpi`` for outputting the layout. This also sets the
-corresponding DPI for the context's measurementConverter().
+corresponding DPI for the context's :py:func:`~QgsLayoutRenderContext.measurementConverter`.
 
 .. seealso:: :py:func:`dpi`
 %End
@@ -187,7 +187,7 @@ whether they will be rendered in layout exports.
  void setCurrentExportLayer( int layer = -1 ) /Deprecated/;
 %Docstring
 Sets the current item ``layer`` to draw while exporting. QgsLayoutItem subclasses
-which support multi-layer SVG exports must check the currentExportLayer()
+which support multi-layer SVG exports must check the :py:func:`~QgsLayoutRenderContext.currentExportLayer`
 and customize their rendering based on the layer.
 
 If ``layer`` is -1, all item layers will be rendered.

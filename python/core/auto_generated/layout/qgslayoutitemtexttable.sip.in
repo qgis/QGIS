@@ -53,7 +53,7 @@ Adds a row to the table
 
 .. note::
 
-   if adding many rows, setContents() is much faster
+   if adding many rows, :py:func:`~QgsLayoutItemTextTable.setContents` is much faster
 %End
 
     void setContents( const QVector< QStringList > &contents );

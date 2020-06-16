@@ -124,9 +124,6 @@ class SERVER_EXPORT QgsServer
      */
     static void setupNetworkAccessManager();
 
-    // Return the server name
-    static QString &serverName();
-
     // Status
     static QString *sConfigFilePath;
     static QgsCapabilitiesCache *sCapabilitiesCache;

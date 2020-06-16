@@ -79,6 +79,11 @@ namespace QgsWms
     {
       return JPEG;
     }
+    else if ( format.compare( QLatin1String( "webp" ), Qt::CaseInsensitive ) == 0  ||
+              format.compare( QLatin1String( "image/webp" ), Qt::CaseInsensitive ) == 0 )
+    {
+      return WEBP;
+    }
     else
     {
       // lookup for png with mode
@@ -146,16 +151,24 @@ namespace QgsWms
         contentType = "image/jpeg";
         saveFormat = "JPEG";
         break;
+      case WEBP:
+        contentType = QStringLiteral( "image/webp" );
+        saveFormat = QStringLiteral( "WEBP" );
+        break;
       default:
         QgsMessageLog::logMessage( QString( "Unsupported format string %1" ).arg( formatStr ) );
         saveFormat = UNKN;
         break;
     }
 
+    // Preserve DPI, some conversions, in particular the one for 8bit will drop this information
+    result.setDotsPerMeterX( img.dotsPerMeterX() );
+    result.setDotsPerMeterY( img.dotsPerMeterY() );
+
     if ( outputFormat != UNKN )
     {
       response.setHeader( "Content-Type", contentType );
-      if ( saveFormat == "JPEG" )
+      if ( saveFormat == QLatin1String( "JPEG" ) || saveFormat == QLatin1String( "WEBP" ) )
       {
         result.save( response.io(), qPrintable( saveFormat ), imageQuality );
       }

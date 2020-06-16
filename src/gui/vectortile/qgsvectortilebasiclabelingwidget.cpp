@@ -102,7 +102,7 @@ QVariant QgsVectorTileBasicLabelingListModel::headerData( int section, Qt::Orien
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 5 )
   {
     QStringList lst;
-    lst << tr( "Label" ) << tr( "Layer" ) << tr( "Min. zoom" ) << tr( "Max. zoom" ) << tr( "Filter" );
+    lst << tr( "Label" ) << tr( "Layer" ) << tr( "Min. Zoom" ) << tr( "Max. Zoom" ) << tr( "Filter" );
     return lst[section];
   }
 

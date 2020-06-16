@@ -90,6 +90,8 @@ class APP_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
      * was loaded but dialog is canceled */
     QgsMapLayerStyle mOldStyle;
 
+    bool mIsMapSettingsTemporal = false;
+
     friend class TestQgsMeshLayerPropertiesDialog;
 
     void showHelp();

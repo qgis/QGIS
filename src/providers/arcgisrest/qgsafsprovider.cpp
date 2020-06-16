@@ -25,7 +25,7 @@
 #include "qgsapplication.h"
 
 const QString QgsAfsProvider::AFS_PROVIDER_KEY = QStringLiteral( "arcgisfeatureserver" );
-const QString QgsAfsProvider::AFS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Server data provider" );
+const QString QgsAfsProvider::AFS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Service data provider" );
 
 
 QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &options )

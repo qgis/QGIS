@@ -41,7 +41,7 @@ Returns a group index
 %End
     int dataset() const;
 %Docstring
-Returns a dataset index within group()
+Returns a dataset index within :py:func:`~QgsMeshDatasetIndex.group`
 %End
     bool isValid() const;
 %Docstring
@@ -135,8 +135,8 @@ vectors (e.g. vector dataset doubles x,y values)
 data are implicitly shared, so the class can be quickly copied
 std.numeric_limits<double>.quiet_NaN() represents NODATA value
 
-Data can be accessed all at once with values() (faster) or
-value by value (slower) with active() or value()
+Data can be accessed all at once with :py:func:`~QgsMeshDatasetValue.values` (faster) or
+value by value (slower) with :py:func:`~QgsMeshDatasetValue.active` or :py:func:`~QgsMeshDatasetValue.value`
 
 .. versionadded:: 3.6
 %End
@@ -197,7 +197,7 @@ If the data provider/datasets does not have active
 flag capability (== all values are valid), just
 set block validity by setValid( true )
 
-:param vals: value vector with size count()
+:param vals: value vector with size :py:func:`~QgsMeshDataBlock.count`
 
 For scalar and vector 2d the behavior is undefined
 
@@ -229,8 +229,8 @@ For vector it is pairs (x1, y1, x2, y2, ... )
 %Docstring
 Sets values
 
-For scalar datasets, it must have size count()
-For vector datasets, it must have size 2 * count()
+For scalar datasets, it must have size :py:func:`~QgsMeshDataBlock.count`
+For vector datasets, it must have size 2 * :py:func:`~QgsMeshDataBlock.count`
 For active flag the behavior is undefined
 
 .. versionadded:: 3.12
@@ -352,7 +352,7 @@ For vector datasets the number of values is doubled (x1, y1, x2, y2, ... )
 %Docstring
 Returns the value at volume centers
 
-:param volumeIndex: volume index relative to firstVolumeIndex()
+:param volumeIndex: volume index relative to :py:func:`~QgsMesh3dDataBlock.firstVolumeIndex`
 
 :return: value (scalar or vector)
 %End

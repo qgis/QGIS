@@ -384,17 +384,18 @@ void QgsDataItem::refresh()
   }
 }
 
-void QgsDataItem::refreshConnections()
+void QgsDataItem::refreshConnections( const QString &key )
 {
   // Walk up until the root node is reached
   if ( mParent )
   {
-    mParent->refreshConnections();
+    mParent->refreshConnections( key );
   }
   else
   {
-    refresh();
-    emit connectionsChanged();
+    // if a specific key was specified then we use that -- otherwise we assume the connections
+    // changed belong to the same provider as this item
+    emit connectionsChanged( key.isEmpty() ? providerKey() : key );
   }
 }
 
@@ -1132,11 +1133,11 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *
     QString size;
     if ( fi.size() > 1024 )
     {
-      size = size.sprintf( "%.1f KiB", fi.size() / 1024.0 );
+      size = QStringLiteral( "%1 KiB" ).arg( QString::number( fi.size() / 1024.0, 'f', 1 ) );
     }
     else if ( fi.size() > 1.048576e6 )
     {
-      size = size.sprintf( "%.1f MiB", fi.size() / 1.048576e6 );
+      size = QStringLiteral( "%1 MiB" ).arg( QString::number( fi.size() / 1.048576e6, 'f', 1 ) );
     }
     else
     {

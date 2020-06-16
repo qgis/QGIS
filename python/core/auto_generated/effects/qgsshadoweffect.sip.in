@@ -9,7 +9,7 @@
 
 
 
-class QgsShadowEffect : QgsPaintEffect
+class QgsShadowEffect : QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring
 Base class for paint effects which offset, blurred shadows
@@ -143,7 +143,7 @@ Returns the angle used for offsetting the shadow.
 %Docstring
 Sets the distance for offsetting the shadow.
 
-:param distance: offset distance. Units are specified via setOffsetUnit()
+:param distance: offset distance. Units are specified via :py:func:`~QgsShadowEffect.setOffsetUnit`
 
 .. seealso:: :py:func:`offsetDistance`
 
@@ -156,7 +156,7 @@ Sets the distance for offsetting the shadow.
 %Docstring
 Returns the distance used for offsetting the shadow.
 
-:return: offset distance. Distance units are retrieved via offsetUnit()
+:return: offset distance. Distance units are retrieved via :py:func:`~QgsShadowEffect.offsetUnit`
 
 .. seealso:: :py:func:`setOffsetDistance`
 
@@ -295,7 +295,7 @@ the picture.
 };
 
 
-class QgsDropShadowEffect : QgsShadowEffect
+class QgsDropShadowEffect : QgsShadowEffect /NoDefaultCtors/
 {
 %Docstring
 A paint effect which draws an offset and optionally blurred drop shadow
@@ -331,7 +331,7 @@ Creates a new QgsDropShadowEffect effect from a properties string map.
 
 };
 
-class QgsInnerShadowEffect : QgsShadowEffect
+class QgsInnerShadowEffect : QgsShadowEffect /NoDefaultCtors/
 {
 %Docstring
 A paint effect which draws an offset and optionally blurred drop shadow

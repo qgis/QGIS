@@ -45,16 +45,16 @@ class CORE_EXPORT QgsWkbTypes
     /**
      * The WKB type describes the number of dimensions a geometry has
      *
-     *  - Point
-     *  - LineString
-     *  - Polygon
+     * - Point
+     * - LineString
+     * - Polygon
      *
      * as well as the number of dimensions for each individual vertex
      *
-     *  - X (always)
-     *  - Y (always)
-     *  - Z (optional)
-     *  - M (measurement value, optional)
+     * - X (always)
+     * - Y (always)
+     * - Z (optional)
+     * - M (measurement value, optional)
      *
      * it also has values for multi types, collections, unknown geometry,
      * null geometry, no geometry and curve support.
@@ -303,11 +303,20 @@ class CORE_EXPORT QgsWkbTypes
       switch ( type )
       {
         case Unknown:
-        case Triangle:
-        case TriangleZ:
-        case TriangleM:
-        case TriangleZM:
           return Unknown;
+
+        // until we support TIN types, use multipolygon
+        case Triangle:
+          return MultiPolygon;
+
+        case TriangleZ:
+          return MultiPolygonZ;
+
+        case TriangleM:
+          return MultiPolygonM;
+
+        case TriangleZM:
+          return MultiPolygonZM;
 
         case GeometryCollection:
           return GeometryCollection;
@@ -1221,7 +1230,7 @@ class CORE_EXPORT QgsWkbTypes
       QgsWkbTypes::Type flat = flatType( type );
 
       if ( flat >= Point && flat <= MultiPolygon )
-        return static_cast< QgsWkbTypes::Type >( flat + 0x80000000 );
+        return static_cast< QgsWkbTypes::Type >( static_cast<unsigned>( flat ) + 0x80000000U );
       else if ( type == QgsWkbTypes::NoGeometry )
         return QgsWkbTypes::NoGeometry;
       else

@@ -380,7 +380,7 @@ QgsPropertyCollectionStack::~QgsPropertyCollectionStack()
 }
 
 QgsPropertyCollectionStack::QgsPropertyCollectionStack( const QgsPropertyCollectionStack &other )
-  : QgsAbstractPropertyCollection( other )
+  : QgsAbstractPropertyCollection( other ), mStack()
 {
   clear();
 

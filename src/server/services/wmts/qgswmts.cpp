@@ -48,11 +48,6 @@ namespace QgsWmts
       QString name()    const override { return QStringLiteral( "WMTS" ); }
       QString version() const override { return implementationVersion(); }
 
-      bool allowMethod( QgsServerRequest::Method method ) const override
-      {
-        return method == QgsServerRequest::GetMethod || method == QgsServerRequest::PostMethod;
-      }
-
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
                            const QgsProject *project ) override
       {

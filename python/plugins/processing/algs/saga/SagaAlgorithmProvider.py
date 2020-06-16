@@ -41,7 +41,7 @@ pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 REQUIRED_VERSION = '2.3.'
-BETA_SUPPORT_VERSION = '7.3.'
+BETA_SUPPORT_VERSION = '7.'
 
 
 class SagaAlgorithmProvider(QgsProcessingProvider):

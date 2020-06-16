@@ -17,7 +17,7 @@ A model containing schemas from a database connection.
 
 This class does not automatically subscribe to database updates. Schemas are queried
 from the database initially upon model construction. In order
-to update the listed schemas, QgsDatabaseSchemaModel.refresh() must be manually
+to update the listed schemas, :py:func:`QgsDatabaseSchemaModel.refresh()` must be manually
 called.
 
 .. versionadded:: 3.14

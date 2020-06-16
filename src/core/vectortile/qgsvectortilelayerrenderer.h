@@ -30,9 +30,10 @@ class QgsVectorTileLabelProvider;
  * \ingroup core
  * This class provides map rendering functionality for vector tile layers.
  * In render() function (assumed to be run in a worker thread) it will:
- * 1. fetch vector tiles using QgsVectorTileLoader
- * 2. decode raw tiles into QgsFeature objects using QgsVectorTileDecoder
- * 3. render tiles using a class derived from QgsVectorTileRenderer
+ *
+ * # fetch vector tiles using QgsVectorTileLoader
+ * # decode raw tiles into QgsFeature objects using QgsVectorTileDecoder
+ * # render tiles using a class derived from QgsVectorTileRenderer
  *
  * \since QGIS 3.14
  */

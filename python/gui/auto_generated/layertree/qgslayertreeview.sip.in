@@ -49,7 +49,7 @@ Constructor for QgsLayerTreeView
     virtual void setModel( QAbstractItemModel *model );
 
 %Docstring
-Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable model.
+Overridden :py:func:`~QgsLayerTreeView.setModel` from base class. Only QgsLayerTreeModel is an acceptable model.
 %End
 
     QgsLayerTreeModel *layerTreeModel() const;
@@ -132,7 +132,7 @@ Gets list of selected layers
 %Docstring
 Gets list of selected layers, including those that are not directly selected, but their
 ancestor groups is selected. If we have a group with two layers L1, L2 and just the group
-node is selected, this method returns L1 and L2, while selectedLayers() returns an empty list.
+node is selected, this method returns L1 and L2, while :py:func:`~QgsLayerTreeView.selectedLayers` returns an empty list.
 
 .. versionadded:: 3.4
 %End

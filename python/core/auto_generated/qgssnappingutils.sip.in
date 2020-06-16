@@ -17,9 +17,11 @@ This class has all the configuration of snapping and can return answers to snapp
 Internally, it keeps a cache of QgsPointLocator instances for multiple layers.
 
 Currently it supports the following queries:
-- snapToMap() - has multiple modes of operation
-- snapToCurrentLayer()
-For more complex queries it is possible to use locatorForLayer() method that returns
+
+- :py:func:`~snapToMap` - has multiple modes of operation
+- :py:func:`~snapToCurrentLayer`
+
+For more complex queries it is possible to use :py:func:`~locatorForLayer` method that returns
 point locator instance with layer's indexed data.
 
 Indexing strategy determines how fast the queries will be and how much memory will be used.

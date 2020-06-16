@@ -361,12 +361,12 @@ QVariant::Type QgsVariantDelegate::type( const QVariant &value )
 
     // is this an int?
     // perhaps we should treat as double for more flexibility
-    str.toInt( &ok );
+    ( void ) str.toInt( &ok );
     if ( ok )
       return QVariant::Int;
 
     // is this a double?
-    str.toDouble( &ok );
+    ( void ) str.toDouble( &ok );
     if ( ok )
       return QVariant::Double;
 

@@ -198,6 +198,21 @@ void QgsBrowserModel::dataItemProviderWillBeRemoved( QgsDataItemProvider *provid
   }
 }
 
+void QgsBrowserModel::onConnectionsChanged( const QString &providerKey )
+{
+  // refresh the matching provider
+  for ( QgsDataItem *item : qgis::as_const( mRootItems ) )
+  {
+    if ( item->providerKey() == providerKey )
+    {
+      item->refresh();
+      break;  // assuming there is max. 1 root item per provider
+    }
+  }
+
+  emit connectionsChanged( providerKey );
+}
+
 QMap<QString, QgsDirectoryItem *> QgsBrowserModel::driveItems() const
 {
   return mDriveItems;
@@ -596,7 +611,7 @@ void QgsBrowserModel::setupItemConnections( QgsDataItem *item )
   // if it's a collection item, also forwards connectionsChanged
   QgsDataCollectionItem *collectionItem = qobject_cast<QgsDataCollectionItem *>( item );
   if ( collectionItem )
-    connect( collectionItem, &QgsDataCollectionItem::connectionsChanged, this, &QgsBrowserModel::connectionsChanged );
+    connect( collectionItem, &QgsDataCollectionItem::connectionsChanged, this, &QgsBrowserModel::onConnectionsChanged );
 }
 
 QStringList QgsBrowserModel::mimeTypes() const
@@ -764,7 +779,7 @@ QgsDataItem *QgsBrowserModel::addProviderRootItem( QgsDataItemProvider *pr )
     // make sure the top level key is set always
     item->setProviderKey( pr->name() );
     // Forward the signal from the root items to the model (and then to the app)
-    connect( item, &QgsDataItem::connectionsChanged, this, &QgsBrowserModel::connectionsChanged );
+    connect( item, &QgsDataItem::connectionsChanged, this, &QgsBrowserModel::onConnectionsChanged );
     QgsDebugMsgLevel( "Add new top level item : " + item->name(), 4 );
     setupItemConnections( item );
   }

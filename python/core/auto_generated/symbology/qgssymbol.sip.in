@@ -200,7 +200,7 @@ Appends a symbol ``layer`` at the end of the current symbol layer list.
 Ownership of ``layer`` is transferred to the symbol.
 
 :return: ``True`` if the layer was successfully added, ``False`` if the layer is not compatible with the
-         symbol's type().
+         symbol's :py:func:`~QgsSymbol.type`.
 %End
 
     bool deleteSymbolLayer( int index );
@@ -223,14 +223,14 @@ Ownership of the layer is handed to the caller.
 Deletes the current layer at the specified ``index`` and replaces it with ``layer``.
 Ownership of ``layer`` is transferred to the symbol.
 
-Returns ``False`` if ``layer`` is not compatible with the symbol's type(), or
+Returns ``False`` if ``layer`` is not compatible with the symbol's :py:func:`~QgsSymbol.type`, or
 ``True`` if the layer was successfully replaced.
 %End
 
     void startRender( QgsRenderContext &context, const QgsFields &fields = QgsFields() );
 %Docstring
-Begins the rendering process for the symbol. This must be called before renderFeature(),
-and should be followed by a call to stopRender().
+Begins the rendering process for the symbol. This must be called before :py:func:`~QgsSymbol.renderFeature`,
+and should be followed by a call to :py:func:`~QgsSymbol.stopRender`.
 
 :param context: render context which symbol will be drawn using
 :param fields: fields for features to be rendered (usually the associated
@@ -244,7 +244,7 @@ and should be followed by a call to stopRender().
 %Docstring
 Ends the rendering process. This should be called after rendering all desired features.
 
-:param context: render context, must match the context specified when startRender()
+:param context: render context, must match the context specified when :py:func:`~QgsSymbol.startRender`
                 was called.
 
 .. seealso:: :py:func:`startRender`
@@ -516,8 +516,8 @@ Returns whether the symbol utilizes any data defined properties.
 
     void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, double currentVertexMarkerSize = 0.0 ) throw( QgsCsException );
 %Docstring
-Render a feature. Before calling this the startRender() method should be called to initialize
-the rendering process. After rendering all features stopRender() must be called.
+Render a feature. Before calling this the :py:func:`~QgsSymbol.startRender` method should be called to initialize
+the rendering process. After rendering all features :py:func:`~QgsSymbol.stopRender` must be called.
 %End
 
     QgsSymbolRenderContext *symbolRenderContext();
@@ -740,9 +740,9 @@ simple line style will look different if the simple line is rendering a polygon 
 
     QgsFields fields() const;
 %Docstring
-Fields of the layer. Currently only available in startRender() calls
+Fields of the layer. Currently only available in :py:func:`~QgsSymbolRenderContext.startRender` calls
 to allow symbols with data-defined properties prepare the expressions
-(other times fields() returns an empty QgsFields object).
+(other times :py:func:`~QgsSymbolRenderContext.fields` returns an empty QgsFields object).
 
 .. versionadded:: 2.4
 %End
@@ -1060,8 +1060,8 @@ style and colors instead of the symbol's normal style.
     QRectF bounds( QPointF point, QgsRenderContext &context, const QgsFeature &feature = QgsFeature() ) const;
 %Docstring
 Returns the approximate bounding box of the marker symbol, which includes the bounding box
-of all symbol layers for the symbol. It is recommended to use this method only between startRender()
-and stopRender() calls, or data defined rotation and offset will not be correctly calculated.
+of all symbol layers for the symbol. It is recommended to use this method only between :py:func:`~QgsMarkerSymbol.startRender`
+and :py:func:`~QgsMarkerSymbol.stopRender` calls, or data defined rotation and offset will not be correctly calculated.
 
 :param point: location of rendered point in painter units
 :param context: render context

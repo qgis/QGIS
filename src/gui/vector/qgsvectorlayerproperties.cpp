@@ -374,33 +374,25 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
                        mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
-  QString title = QString( tr( "Layer Properties - %1" ) ).arg( mLayer->name() );
+  QString title = tr( "Layer Properties — %1" ).arg( mLayer->name() );
   if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
     title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
   restoreOptionsBaseUi( title );
 
-  mLayersDependenciesTreeGroup.reset( QgsProject::instance()->layerTreeRoot()->clone() );
-  mLayersDependenciesTreeModel.reset( new QgsLayerTreeModel( mLayersDependenciesTreeGroup.get() ) );
-  // use visibility as selection
-  mLayersDependenciesTreeModel->setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility );
-
-  mLayersDependenciesTreeGroup->setItemVisibilityChecked( false );
-
-  QSet<QString> dependencySources;
+  QList<QgsMapLayer *> dependencySources;
   const QSet<QgsMapLayerDependency> constDependencies = mLayer->dependencies();
   for ( const QgsMapLayerDependency &dep : constDependencies )
   {
-    dependencySources << dep.layerId();
-  }
-  const QList<QgsLayerTreeLayer *> constFindLayers = mLayersDependenciesTreeGroup->findLayers();
-  for ( QgsLayerTreeLayer *layer : constFindLayers )
-  {
-    layer->setItemVisibilityChecked( dependencySources.contains( layer->layerId() ) );
+    QgsMapLayer *layer = QgsProject::instance()->mapLayer( dep.layerId() );
+    if ( layer )
+      dependencySources << layer;
   }
 
-  QgsMapSettings ms = mCanvas->mapSettings();
-  mLayersDependenciesTreeModel->setLegendMapViewData( mCanvas->mapUnitsPerPixel(), ms.outputDpi(), ms.scale() );
-  mLayersDependenciesTreeView->setModel( mLayersDependenciesTreeModel.get() );
+  mLayersDependenciesTreeModel = new DependenciesLayerTreeModel( mLayer, this );
+  mLayersDependenciesTreeModel->setLayerTreeModel( new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), mLayersDependenciesTreeModel ) );
+  mLayersDependenciesTreeModel->setCheckedLayers( dependencySources );
+  connect( QgsProject::instance(), &QObject::destroyed, this, [ = ] {mLayersDependenciesTreeView->setModel( nullptr );} );
+  mLayersDependenciesTreeView->setModel( mLayersDependenciesTreeModel );
 
   connect( mRefreshLayerCheckBox, &QCheckBox::toggled, mRefreshLayerIntervalSpinBox, &QDoubleSpinBox::setEnabled );
 
@@ -470,16 +462,14 @@ void QgsVectorLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidget
     return;
   }
 
-  QListWidgetItem *item = new QListWidgetItem();
-  item->setIcon( factory->icon() );
-  item->setText( factory->title() );
-  item->setToolTip( factory->title() );
-
-  mOptionsListWidget->addItem( item );
-
   QgsMapLayerConfigWidget *page = factory->createWidget( mLayer, nullptr, false, this );
   mLayerPropertiesPages << page;
-  mOptionsStackedWidget->addWidget( page );
+
+  const QString beforePage = factory->layerPropertiesPagePositionHint();
+  if ( beforePage.isEmpty() )
+    addPage( factory->title(), factory->title(), factory->icon(), page );
+  else
+    insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
 }
 
 void QgsVectorLayerProperties::insertFieldOrExpression()
@@ -784,12 +774,9 @@ void QgsVectorLayerProperties::apply()
 
   // save dependencies
   QSet<QgsMapLayerDependency> deps;
-  const auto constFindLayers = mLayersDependenciesTreeGroup->findLayers();
-  for ( const QgsLayerTreeLayer *layer : constFindLayers )
-  {
-    if ( layer->isVisible() )
-      deps << QgsMapLayerDependency( layer->layerId() );
-  }
+  const auto checkedLayers = mLayersDependenciesTreeModel->checkedLayers();
+  for ( const QgsMapLayer *layer : checkedLayers )
+    deps << QgsMapLayerDependency( layer->id() );
   if ( ! mLayer->setDependencies( deps ) )
   {
     QMessageBox::warning( nullptr, tr( "Save Dependency" ), tr( "This configuration introduces a cycle in data dependencies and will be ignored." ) );

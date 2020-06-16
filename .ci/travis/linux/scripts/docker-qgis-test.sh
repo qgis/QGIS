@@ -97,7 +97,7 @@ echo "travis_fold:end:oracle"
 CURRENT_TIME=$(date +%s)
 TIMEOUT=$((( TRAVIS_AVAILABLE_TIME - TRAVIS_UPLOAD_TIME) * 60 - CURRENT_TIME + TRAVIS_TIMESTAMP))
 echo "Timeout: ${TIMEOUT}s (started at ${TRAVIS_TIMESTAMP}, current: ${CURRENT_TIME})"
-EXCLUDE_TESTS=$(cat /root/QGIS/.ci/travis/linux/scripts/test_blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)
+EXCLUDE_TESTS=$(cat /root/QGIS/.ci/travis/linux/scripts/test_blocklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)
 if ! [[ ${RUN_FLAKY_TESTS} =~ ^true$ ]]; then
   echo "Flaky tests are skipped!"
   EXCLUDE_TESTS=${EXCLUDE_TESTS}"|"$(cat /root/QGIS/.ci/travis/linux/scripts/test_flaky.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)

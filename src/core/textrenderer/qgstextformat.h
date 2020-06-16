@@ -311,7 +311,11 @@ class CORE_EXPORT QgsTextFormat
      * the rendered text.
      *
      * \warning Only a small subset of HTML formatting is supported. Currently this is restricted to:
-     * * text color formatting
+     *
+     * - text color formatting
+     * - strikethrough
+     * - underline
+     * - overline
      *
      * \see setAllowHtmlFormatting()
      * \since QGIS 3.14
@@ -323,7 +327,11 @@ class CORE_EXPORT QgsTextFormat
      * the rendered text.
      *
      * \warning Only a small subset of HTML formatting is supported. Currently this is restricted to:
-     * * text color formatting
+     *
+     * - text color formatting
+     * - strikethrough
+     * - underline
+     * - overline
      *
      * \see allowHtmlFormatting()
      * \since QGIS 3.14
@@ -429,6 +437,12 @@ class CORE_EXPORT QgsTextFormat
      * \since QGIS 3.10
      */
     const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP;
+
+    /**
+     * Returns all field names referenced by the configuration (e.g. from data defined properties).
+     * \since QGIS 3.14
+     */
+    QSet<QString> referencedFields( const QgsRenderContext &context ) const;
 
     /**
      * Sets the format's property collection, used for data defined overrides.

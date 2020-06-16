@@ -186,7 +186,7 @@ Default constructor
 %Docstring
 Returns a unique id for this numeric format.
 
-This id is used to identify this numeric format in the registry with :py:func:`QgsNumericFormatRegistry.format()`
+This id is used to identify this numeric format in the registry with :py:func:`QgsNumericFormatRegistry.format()`.
 %End
 
     virtual QString visibleName() const = 0;
@@ -198,7 +198,7 @@ Returns the translated, user-visible name for this format.
 %Docstring
 Returns a sorting key value, where formats with a lower sort key will be shown earlier in lists.
 
-Generally, subclasses should return QgsNumericFormat.sortKey() as their sorting key.
+Generally, subclasses should return :py:func:`QgsNumericFormat.sortKey()` as their sorting key.
 %End
 
     virtual double suggestSampleValue() const;
@@ -227,7 +227,7 @@ The caller takes ownership of the returned object.
 
     virtual QVariantMap configuration( const QgsReadWriteContext &context ) const = 0;
 %Docstring
-Returns the current configuration of the formatter. This value can be used in a call to create()
+Returns the current configuration of the formatter. This value can be used in a call to :py:func:`~QgsNumericFormat.create`
 in order to recreate this formatter in its current state.
 %End
 

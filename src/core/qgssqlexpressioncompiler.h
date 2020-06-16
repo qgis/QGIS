@@ -154,7 +154,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      * to get equal behavior to the QGIS expression engine when string comparison operators are applied
      * on non-string data.
      *
-     * Example:
+     * ### Example
      *
      *     579 LIKE '5%'
      *

@@ -37,10 +37,9 @@ class QgsFields;
  *
  * QgsVectorLayerExporter can be used in two ways:
  *
- * 1. Using a static call to QgsVectorLayerExporter::exportLayer(...) which exports the
- * entire layer to the destination provider.
- *
- * 2. Create an instance of the class and issue calls to addFeature(...)
+ * # Using a static call to QgsVectorLayerExporter::exportLayer(...) which exports the
+ *   entire layer to the destination provider.
+ * # Create an instance of the class and issue calls to addFeature(...)
  *
  * \since QGIS 3.0
  */

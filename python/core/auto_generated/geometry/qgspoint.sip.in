@@ -176,7 +176,7 @@ Sets the point's z-coordinate.
 
 .. note::
 
-   calling this will have no effect if the point does not contain a z-dimension. Use addZValue() to
+   calling this will have no effect if the point does not contain a z-dimension. Use :py:func:`~QgsPoint.addZValue` to
    add a z value and force the point to have a z dimension.
 
 .. seealso:: z
@@ -190,7 +190,7 @@ Sets the point's m-value.
 
 .. note::
 
-   calling this will have no effect if the point does not contain a m-dimension. Use addMValue() to
+   calling this will have no effect if the point does not contain a m-dimension. Use :py:func:`~QgsPoint.addMValue` to
    add a m value and force the point to have an m dimension.
 
 .. seealso:: m
@@ -208,7 +208,7 @@ Returns the point as a QPointF.
     double distance( double x, double y ) const;
 %Docstring
 Returns the Cartesian 2D distance between this point and a specified x, y coordinate. In certain
-cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+cases it may be more appropriate to call the faster :py:func:`~QgsPoint.distanceSquared` method, e.g.,
 when comparing distances.
 
 .. seealso:: :py:func:`distanceSquared`
@@ -219,7 +219,7 @@ when comparing distances.
     double distance( const QgsPoint &other ) const;
 %Docstring
 Returns the Cartesian 2D distance between this point and another point. In certain
-cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+cases it may be more appropriate to call the faster :py:func:`~QgsPoint.distanceSquared` method, e.g.,
 when comparing distances.
 
 .. versionadded:: 3.0
@@ -228,8 +228,8 @@ when comparing distances.
     double distanceSquared( double x, double y ) const;
 %Docstring
 Returns the Cartesian 2D squared distance between this point a specified x, y coordinate. Calling
-this is faster than calling distance(), and may be useful in use cases such as comparing
-distances where the extra expense of calling distance() is not required.
+this is faster than calling :py:func:`~QgsPoint.distance`, and may be useful in use cases such as comparing
+distances where the extra expense of calling :py:func:`~QgsPoint.distance` is not required.
 
 .. seealso:: :py:func:`distance`
 
@@ -239,8 +239,8 @@ distances where the extra expense of calling distance() is not required.
     double distanceSquared( const QgsPoint &other ) const;
 %Docstring
 Returns the Cartesian 2D squared distance between this point another point. Calling
-this is faster than calling distance(), and may be useful in use cases such as comparing
-distances where the extra expense of calling distance() is not required.
+this is faster than calling :py:func:`~QgsPoint.distance`, and may be useful in use cases such as comparing
+distances where the extra expense of calling :py:func:`~QgsPoint.distance` is not required.
 
 .. seealso:: :py:func:`distance`
 
@@ -250,7 +250,7 @@ distances where the extra expense of calling distance() is not required.
     double distance3D( double x, double y, double z ) const;
 %Docstring
 Returns the Cartesian 3D distance between this point and a specified x, y, z coordinate. In certain
-cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+cases it may be more appropriate to call the faster :py:func:`~QgsPoint.distanceSquared` method, e.g.,
 when comparing distances.
 
 .. seealso:: :py:func:`distanceSquared`
@@ -261,7 +261,7 @@ when comparing distances.
     double distance3D( const QgsPoint &other ) const;
 %Docstring
 Returns the Cartesian 3D distance between this point and another point. In certain
-cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+cases it may be more appropriate to call the faster :py:func:`~QgsPoint.distanceSquared` method, e.g.,
 when comparing distances.
 
 .. versionadded:: 3.0
@@ -270,8 +270,8 @@ when comparing distances.
     double distanceSquared3D( double x, double y, double z ) const;
 %Docstring
 Returns the Cartesian 3D squared distance between this point and a specified x, y, z coordinate. Calling
-this is faster than calling distance(), and may be useful in use cases such as comparing
-distances where the extra expense of calling distance() is not required.
+this is faster than calling :py:func:`~QgsPoint.distance`, and may be useful in use cases such as comparing
+distances where the extra expense of calling :py:func:`~QgsPoint.distance` is not required.
 
 .. seealso:: :py:func:`distance`
 
@@ -281,8 +281,8 @@ distances where the extra expense of calling distance() is not required.
     double distanceSquared3D( const QgsPoint &other ) const;
 %Docstring
 Returns the Cartesian 3D squared distance between this point and another point. Calling
-this is faster than calling distance(), and may be useful in use cases such as comparing
-distances where the extra expense of calling distance() is not required.
+this is faster than calling :py:func:`~QgsPoint.distance`, and may be useful in use cases such as comparing
+distances where the extra expense of calling :py:func:`~QgsPoint.distance` is not required.
 
 .. seealso:: :py:func:`distance`
 
@@ -316,7 +316,10 @@ M value is preserved.
 
 :return: The point projected. If a 2D point is projected a 3D point will be returned except if
          inclination is 90. A 3D point is always returned if a 3D point is projected.
-         Example:
+
+Example
+-------
+
 .. code-block:: python
 
        p = QgsPoint( 1, 2 ) # 2D point
@@ -367,7 +370,7 @@ M value is preserved.
 
     virtual bool fromWkt( const QString &wkt );
 
-    virtual QByteArray asWkb() const;
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags = 0 ) const;
 
     virtual QString asWkt( int precision = 17 ) const;
 

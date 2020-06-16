@@ -406,6 +406,8 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
      */
     sqlite3 *sqliteHandle( ) const;
 
+    static QString createIndexName( QString tableName, QString field );
+
     friend class QgsSpatiaLiteFeatureSource;
 
     // QgsVectorDataProvider interface

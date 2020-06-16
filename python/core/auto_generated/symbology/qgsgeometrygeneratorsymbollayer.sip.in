@@ -40,8 +40,11 @@ that is created by this generator.
 
     virtual void startRender( QgsSymbolRenderContext &context );
 
-
     virtual void stopRender( QgsSymbolRenderContext &context );
+
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
 
 
     virtual QgsSymbolLayer *clone() const /Factory/;

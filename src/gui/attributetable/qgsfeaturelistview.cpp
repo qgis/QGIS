@@ -212,6 +212,7 @@ void QgsFeatureListView::setEditSelection( const QModelIndex &index, QItemSelect
   bool ok = true;
   emit aboutToChangeEditSelection( ok );
 
+  // cppcheck-suppress assertWithSideEffect
   Q_ASSERT( index.model() == mModel->masterModel() || !index.isValid() );
 
   if ( ok )

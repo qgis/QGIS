@@ -3122,10 +3122,20 @@ static QVariant fcnGeomFromWKB( const QVariantList &values, const QgsExpressionC
   return !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
 }
 
-static QVariant fcnGeomFromGML( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnGeomFromGML( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString gml = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  QgsGeometry geom = QgsOgcUtils::geometryFromGML( gml );
+  QgsOgcUtils::Context ogcContext;
+  if ( context )
+  {
+    QgsWeakMapLayerPointer mapLayerPtr {context->variable( QStringLiteral( "layer" ) ).value<QgsWeakMapLayerPointer>() };
+    if ( mapLayerPtr )
+    {
+      ogcContext.layer = mapLayerPtr.data();
+      ogcContext.transformContext = context->variable( QStringLiteral( "_project_transform_context" ) ).value<QgsCoordinateTransformContext>();
+    }
+  }
+  QgsGeometry geom = QgsOgcUtils::geometryFromGML( gml, ogcContext );
   QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
@@ -4364,29 +4374,27 @@ static QVariant fcnPi( const QVariantList &values, const QgsExpressionContext *,
 
 static QVariant fcnFormatNumber( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  double value = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  int places = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  const double value = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
+  const int places = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  const QString language = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
   if ( places < 0 )
   {
     parent->setEvalErrorString( QObject::tr( "Number of places must be positive" ) );
     return QVariant();
   }
-  QLocale locale = QLocale();
+
+  QLocale locale = !language.isEmpty() ? QLocale( language ) : QLocale();
   locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
   return locale.toString( value, 'f', places );
 }
 
 static QVariant fcnFormatDate( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QDateTime datetime = QgsExpressionUtils::getDateTimeValue( values.at( 0 ), parent );
-  QString format = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
-  QString language = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  const QDateTime datetime = QgsExpressionUtils::getDateTimeValue( values.at( 0 ), parent );
+  const QString format = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+  const QString language = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
 
-  QLocale locale = QLocale();
-  if ( !language.isEmpty() )
-  {
-    locale = QLocale( language );
-  }
+  QLocale locale = !language.isEmpty() ? QLocale( language ) : QLocale();
   return locale.toString( datetime, format );
 }
 
@@ -5879,7 +5887,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "rpad" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "width" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "fill" ) ), fcnRPad, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "lpad" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "width" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "fill" ) ), fcnLPad, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "format" ), -1, fcnFormatString, QStringLiteral( "String" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "format_number" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "number" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "places" ) ), fcnFormatNumber, QStringLiteral( "String" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "format_number" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "number" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "places" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ), fcnFormatNumber, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "format_date" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "format" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ), fcnFormatDate, QStringList() << QStringLiteral( "String" ) << QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_grayscale_average" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color" ) ), fcnColorGrayscaleAverage, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_mix_rgb" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color1" ) )

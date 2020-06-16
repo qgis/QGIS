@@ -316,7 +316,7 @@ expression context.
 .. note::
 
    The optional argument ignoreContext has been added in QGIS 3.14. When set to true,
-   even fields not set in context's fields() will be reported - this is useful e.g. with vector tiles
+   even fields not set in context's :py:func:`~QgsProperty.fields` will be reported - this is useful e.g. with vector tiles
    where the actual available field names may not be known beforehand.
 %End
 

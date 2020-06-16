@@ -111,7 +111,7 @@ widget.
 %Docstring
 Returns the (translated) tooltip text to use for the menu button for this panel.
 
-This is only used when the panel returns a menuButtonMenu().
+This is only used when the panel returns a :py:func:`~QgsPanelWidget.menuButtonMenu`.
 
 .. versionadded:: 3.12
 %End

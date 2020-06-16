@@ -68,6 +68,8 @@ class QgsGeorefDataPoint : public QObject
     int mId;
     bool mEnabled;
     QPointF mResidual;
+
+    QgsGeorefDataPoint &operator=( const QgsGeorefDataPoint & ) = delete;
 };
 
 #endif //QGSGEOREFDATAPOINT_H

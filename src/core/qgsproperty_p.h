@@ -83,6 +83,8 @@ class QgsPropertyPrivate : public QSharedData
     //! Cached set of referenced columns
     mutable QSet< QString > expressionReferencedCols;
 
+  private:
+    QgsPropertyPrivate &operator=( const QgsPropertyPrivate & ) = delete;
 };
 
 ///@endcond PRIVATE

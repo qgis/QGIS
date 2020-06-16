@@ -26,7 +26,10 @@ from qgis.core import (QgsVectorLayer,
                        QgsProject,
                        QgsWkbTypes,
                        QgsRectangle,
-                       QgsCoordinateTransform
+                       QgsCoordinateTransform,
+                       QgsMultiPolygon,
+                       QgsTriangle,
+                       QgsPoint
                        )
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QByteArray
 import os
@@ -1201,6 +1204,38 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertEqual(f.geometry().asWkt(), 'Point (2 49)')
         self.assertEqual(f.attributes(), [123, 'text1'])
         self.assertEqual(f.id(), 123)
+
+    def testWriteTriangle(self):
+        """Check we can write geometries with triangle types."""
+        layer = QgsVectorLayer(
+            ('MultiPolygonZ?crs=epsg:4326&field=name:string(20)'),
+            'test',
+            'memory')
+
+        ft = QgsFeature()
+        geom = QgsMultiPolygon()
+        geom.addGeometry(QgsTriangle(QgsPoint(1, 2, 3), QgsPoint(2, 2, 4), QgsPoint(2, 3, 4)))
+        ft.setGeometry(geom)
+        ft.setAttributes(['Johny'])
+        myResult, myFeatures = layer.dataProvider().addFeatures([ft])
+        self.assertTrue(myResult)
+        self.assertTrue(myFeatures)
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'testWriteTriangle.gpkg')
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
+            layer,
+            dest_file_name,
+            'utf-8',
+            layer.crs(),
+            'GPKG')
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
+
+        # Open result and check
+        created_layer = QgsVectorLayer(dest_file_name, 'test', 'ogr')
+        self.assertTrue(created_layer.isValid())
+        f = next(created_layer.getFeatures(QgsFeatureRequest()))
+        self.assertEqual(f.geometry().asWkt(), 'MultiPolygonZ (((1 2 3, 2 2 4, 2 3 4, 1 2 3)))')
+        self.assertEqual(f.attributes(), [1, 'Johny'])
 
 
 if __name__ == '__main__':

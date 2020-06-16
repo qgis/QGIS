@@ -79,7 +79,7 @@ and latest date time possible in the animation.
 
 .. note::
 
-   Calling this will reset the currentFrameNumber() to the first frame.
+   Calling this will reset the :py:func:`~QgsTemporalNavigationObject.currentFrameNumber` to the first frame.
 
 .. seealso:: :py:func:`temporalExtents`
 %End
@@ -97,7 +97,7 @@ and latest date time possible in the animation.
 Sets the current animation ``frame`` number.
 
 Caling this method will change the controllers current datetime range to match, based on the
-temporalExtents() and frameDuration() values.
+:py:func:`~QgsTemporalNavigationObject.temporalExtents` and :py:func:`~QgsTemporalNavigationObject.frameDuration` values.
 
 .. seealso:: :py:func:`currentFrameNumber`
 %End
@@ -115,7 +115,7 @@ Sets the frame ``duration``, which dictates the temporal length of each frame in
 
 .. note::
 
-   Calling this will reset the currentFrameNumber() to the first frame.
+   Calling this will reset the :py:func:`~QgsTemporalNavigationObject.currentFrameNumber` to the first frame.
 
 .. seealso:: :py:func:`frameDuration`
 %End
@@ -131,8 +131,8 @@ Returns the current set frame duration, which dictates the temporal length of ea
 %Docstring
 Calculates the temporal range associated with a particular animation ``frame``.
 
-This is calculated from the navigation start time (taken from temporalExtents()),
-the specified ``frame`` number, and the frame duration (see frameDuration()).
+This is calculated from the navigation start time (taken from :py:func:`~QgsTemporalNavigationObject.temporalExtents`),
+the specified ``frame`` number, and the frame duration (see :py:func:`~QgsTemporalNavigationObject.frameDuration`).
 %End
 
     void setFramesPerSecond( double rate );
@@ -208,7 +208,7 @@ Emitted whenever the navigation ``mode`` changes.
     void play();
 %Docstring
 Starts playing the temporal navigation from its current frame,
-using the direction specified by animationState()
+using the direction specified by :py:func:`~QgsTemporalNavigationObject.animationState`
 %End
 
     void pause();

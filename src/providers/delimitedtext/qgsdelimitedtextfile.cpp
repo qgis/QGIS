@@ -39,6 +39,10 @@ QgsDelimitedTextFile::QgsDelimitedTextFile( const QString &url )
   // The default type is CSV
   setTypeCSV();
   if ( ! url.isNull() ) setFromUrl( url );
+
+  // For tests
+  QString bufferSizeStr( getenv( "QGIS_DELIMITED_TEXT_FILE_BUFFER_SIZE" ) );
+  mMaxBufferSize = bufferSizeStr.isEmpty() ? 1024 * 1024 : bufferSizeStr.toInt();
 }
 
 
@@ -533,7 +537,6 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextRecord( QStringList &reco
   return status;
 }
 
-
 QgsDelimitedTextFile::Status  QgsDelimitedTextFile::reset()
 {
   // Make sure the file is valid open
@@ -544,12 +547,14 @@ QgsDelimitedTextFile::Status  QgsDelimitedTextFile::reset()
   mLineNumber = 0;
   mRecordNumber = -1;
   mRecordLineNumber = -1;
+  mBuffer = QString();
+  mPosInBuffer = 0;
 
   // Skip header lines
   for ( int i = mSkipLines; i-- > 0; )
   {
-    if ( mStream->readLine().isNull() ) return RecordEOF;
-    mLineNumber++;
+    QString ignoredContent;
+    if ( nextLine( ignoredContent ) == RecordEOF ) return RecordEOF;
   }
   // Read the column names
   Status result = RecordOk;
@@ -570,11 +575,79 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
     Status status = reset();
     if ( status != RecordOk ) return status;
   }
-
-  while ( ! mStream->atEnd() )
+  if ( mLineNumber == 0 )
   {
-    buffer = mStream->readLine();
-    if ( buffer.isNull() ) break;
+    mPosInBuffer = 0;
+    mBuffer = mStream->read( mMaxBufferSize );
+  }
+
+  while ( !mBuffer.isEmpty() )
+  {
+    // Identify position of \r , \n or \r\n
+    // We should rather use mStream->readLine(), but it fails to detect \r
+    // line endings.
+    int eolPos = mBuffer.indexOf( '\r', mPosInBuffer );
+    int nextPos = 0;
+    if ( eolPos >= 0 )
+    {
+      nextPos = eolPos + 1;
+      // Check if there is a \n just afterwards
+      if ( eolPos + 1 < mBuffer.size() )
+      {
+        if ( mBuffer[eolPos + 1] == '\n' )
+        {
+          nextPos = eolPos + 2;
+        }
+      }
+      else
+      {
+        // If we are just at the end of the buffer, read an extra character
+        // from the stream
+        QString newChar = mStream->read( 1 );
+        mBuffer += newChar;
+        if ( newChar == '\n' )
+        {
+          nextPos = eolPos + 2;
+        }
+      }
+    }
+    else
+    {
+      eolPos = mBuffer.indexOf( '\n', mPosInBuffer );
+      if ( eolPos >= 0 )
+      {
+        nextPos = eolPos + 1;
+      }
+    }
+    if ( eolPos < 0 )
+    {
+      if ( mPosInBuffer == 0 )
+      {
+        // If our current position was the beginning of the buffer and we
+        // didn't find any end of line character, then return the whole buffer
+        // (to avoid unbounded line sizes)
+        // and set the buffer to null so that we don't iterate any more.
+        buffer = mBuffer;
+        mBuffer = QString();
+      }
+      else
+      {
+        // Read more bytes from file to have up to mMaxBufferSize characters
+        // in our buffer (after having subset it from mPosInBuffer)
+        mBuffer = mBuffer.mid( mPosInBuffer );
+        mBuffer += mStream->read( mMaxBufferSize - mBuffer.size() );
+        mPosInBuffer = 0;
+        continue;
+      }
+    }
+    else
+    {
+      // Extract the current line from the buffer
+      buffer = mBuffer.mid( mPosInBuffer, eolPos - mPosInBuffer );
+      // Update current position in buffer to be the one next to the end of
+      // line character(s)
+      mPosInBuffer = nextPos;
+    }
     mLineNumber++;
     if ( skipBlank && buffer.isEmpty() ) continue;
     return RecordOk;

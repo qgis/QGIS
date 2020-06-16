@@ -200,8 +200,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   r = mapCanvas->mapSettings().mapToLayerCoordinates( layer, r );
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vlayer ) );
-  if ( mapCanvas )
-    context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
+  context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
 
   QString mapTip = vlayer->mapTipTemplate();
   QString tipString;

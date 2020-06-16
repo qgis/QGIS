@@ -32,8 +32,10 @@ class QgsSnappingConfig;
  * Internally, it keeps a cache of QgsPointLocator instances for multiple layers.
  *
  * Currently it supports the following queries:
+ *
  * - snapToMap() - has multiple modes of operation
  * - snapToCurrentLayer()
+ *
  * For more complex queries it is possible to use locatorForLayer() method that returns
  * point locator instance with layer's indexed data.
  *
@@ -304,8 +306,10 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     /**
      * a record for each layer seen:
+     *
      * - value -1  == it is small layer -> fully indexed
      * - value > 0 == maximum area (in map units) for which it may make sense to build index.
+     *
      * This means that index is built in area around the point with this total area, because
      * for a larger area the number of features will likely exceed the limit. When the limit
      * is exceeded, the maximum area is lowered to prevent that from happening.

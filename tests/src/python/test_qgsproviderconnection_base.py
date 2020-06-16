@@ -222,13 +222,9 @@ class TestPyQgsProviderConnectionBase():
                 self.assertEqual(res, [])
                 sql = "SELECT string_t, long_t, double_t, integer_t, date_t, datetime_t FROM %s" % table
                 res = conn.executeSql(sql)
-                # GPKG has no type for time and spatialite has no support for dates and time ...
-                if self.providerKey == 'spatialite':
-                    self.assertEqual(res, [
-                        ['QGIS Rocks - \U0001f604', 666, 1.234, 1234, '2019-07-08', '2019-07-08T12:00:12']])
-                else:
-                    self.assertEqual(res, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, QtCore.QDate(2019, 7, 8),
-                                            QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
+                # GPKG and spatialite have no type for time
+                self.assertEqual(res, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, QtCore.QDate(2019, 7, 8),
+                                        QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
                 sql = "SELECT time_t FROM %s" % table
                 res = conn.executeSql(sql)
 

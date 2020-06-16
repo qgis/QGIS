@@ -138,6 +138,13 @@ Emitted when a progress dialog is shown by the provider dialog
 Emitted when the ok/add buttons should be enabled/disabled
 %End
 
+    void pushMessage( const QString &title, const QString &message, const Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+%Docstring
+Emitted when a ``message`` with ``title`` and ``level`` must be shown to the user using the parent visible message bar
+
+.. versionadded:: 3.14
+%End
+
 
   protected:
 

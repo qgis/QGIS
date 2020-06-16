@@ -69,7 +69,7 @@ Sets layer in order to get the fields and values
 
 .. note::
 
-   this needs to be called before calling loadFieldNames().
+   this needs to be called before calling :py:func:`~QgsExpressionBuilderWidget.loadFieldNames`.
 %End
 
     QgsVectorLayer *layer() const;

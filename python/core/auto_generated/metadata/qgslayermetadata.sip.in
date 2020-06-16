@@ -72,9 +72,9 @@ Sets the spatial ``extents`` of the resource.
 
         QList< QgsDateTimeRange > temporalExtents() const;
 %Docstring
-Temporal extents of the resource. Use QgsDateTimeRange.isInstant() to determine
+Temporal extents of the resource. Use :py:func:`QgsDateTimeRange.isInstant()` to determine
 whether the temporal extent is a range or a single point in time.
-If QgsDateTimeRange.isInfinite() returns ``True`` then the temporal extent
+If :py:func:`QgsDateTimeRange.isInfinite()` returns ``True`` then the temporal extent
 is considered to be indeterminate and continuous.
 
 .. seealso:: :py:func:`setTemporalExtents`
@@ -219,7 +219,7 @@ Sets the spatial and temporal extents associated with the resource.
 %Docstring
 Returns the coordinate reference system described by the layer's metadata.
 
-Note that this has no link to :py:func:`QgsMapLayer.crs()` While in most cases these
+Note that this has no link to :py:func:`QgsMapLayer.crs()`. While in most cases these
 two systems are likely to be identical, it is possible to have a layer
 with a different CRS described by it's accompanying metadata versus the
 CRS which is actually used to display and manipulate the layer within QGIS.
@@ -238,8 +238,8 @@ This property should also match the CRS property used in the spatial extent.
 %Docstring
 Sets the coordinate reference system for the layer's metadata.
 
-Note that this has no link to :py:func:`QgsMapLayer.setCrs()` Setting the layer's
-CRS via QgsMapLayer.setCrs() does not affect the layer's metadata CRS,
+Note that this has no link to :py:func:`QgsMapLayer.setCrs()`. Setting the layer's
+CRS via :py:func:`QgsMapLayer.setCrs()` does not affect the layer's metadata CRS,
 and changing the CRS from the metadata will not change the layer's
 CRS or how it is projected within QGIS.
 
@@ -259,14 +259,14 @@ This property should also match the CRS property used in the spatial extent.
 
     void saveToLayer( QgsMapLayer *layer ) const;
 %Docstring
-Saves the metadata to a ``layer``'s custom properties (see QgsMapLayer.setCustomProperty() ).
+Saves the metadata to a ``layer``'s custom properties (see :py:func:`QgsMapLayer.setCustomProperty()` ).
 
 .. seealso:: :py:func:`readFromLayer`
 %End
 
     void readFromLayer( const QgsMapLayer *layer );
 %Docstring
-Reads the metadata state from a ``layer``'s custom properties (see QgsMapLayer.customProperty() ).
+Reads the metadata state from a ``layer``'s custom properties (see :py:func:`QgsMapLayer.customProperty()` ).
 
 .. seealso:: :py:func:`saveToLayer`
 %End

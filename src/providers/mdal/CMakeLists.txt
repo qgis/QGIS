@@ -77,6 +77,10 @@ IF (WITH_INTERNAL_MDAL)
     SET (HAVE_HDF5 TRUE)
   ENDIF(HDF5_FOUND)
 
+  IF(SQLITE3_FOUND)
+     SET(HAVE_SQLITE3 TRUE)
+  ENDIF(SQLITE3_FOUND)
+
   IF(SQLITE3_FOUND AND NETCDF_FOUND)
      SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sqlite3.cpp
@@ -103,7 +107,6 @@ IF (WITH_INTERNAL_MDAL)
   IF(NETCDF_FOUND)
     SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_cf.cpp
-      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_3di.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_netcdf.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sww.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ugrid.cpp
@@ -111,7 +114,6 @@ IF (WITH_INTERNAL_MDAL)
     )
     SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_cf.hpp
-      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_3di.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_netcdf.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sww.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ugrid.hpp

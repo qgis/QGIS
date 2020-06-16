@@ -228,6 +228,8 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     void addMissingLayers();
     QgsWeakMapLayerPointerList mCustomLayerOrder;
     bool mHasCustomLayerOrder = false;
+
+    QgsLayerTree &operator= ( const QgsLayerTree & ) = delete;
 };
 
 #endif // QGSLAYERTREE_H

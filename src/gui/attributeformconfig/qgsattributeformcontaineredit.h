@@ -36,7 +36,7 @@ class GUI_EXPORT QgsAttributeFormContainerEdit: public QWidget, private Ui_QgsAt
     Q_OBJECT
 
   public:
-    explicit QgsAttributeFormContainerEdit( QTreeWidgetItem *item, QWidget *parent = nullptr );
+    explicit QgsAttributeFormContainerEdit( QTreeWidgetItem *item, QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     /**
      * Register an expression context generator class that will be used to retrieve

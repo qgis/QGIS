@@ -139,7 +139,7 @@ need to be handled on the main thread. See in-depth discussion below.
                        local event loop in a helper thread and freeze the main thread for the duration of the
                        download. In this case, if an authentication request is sent from the background thread
                        network access manager, the background thread should be blocked, the main thread be woken
-                       up, processEvents() executed once, the main thread frozen again and the background thread
+                       up, :py:func:`~QgsNetworkAccessManager.processEvents` executed once, the main thread frozen again and the background thread
                        continued.
 %End
 

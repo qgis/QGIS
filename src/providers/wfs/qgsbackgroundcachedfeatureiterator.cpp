@@ -524,8 +524,7 @@ void QgsBackgroundCachedFeatureIterator::featureReceivedSynchronous( const QVect
   }
   if ( !mWriterFile && mWriterByteArray.size() > mWriteTransferThreshold )
   {
-    QString thisStr;
-    thisStr.sprintf( "%p", this );
+    const QString thisStr = QStringLiteral( "%1" ).arg( reinterpret_cast< quintptr >( this ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
     ++ mCounter;
     mWriterFilename = QDir( mShared->acquireCacheDirectory() ).filePath( QStringLiteral( "iterator_%1_%2.bin" ).arg( thisStr ).arg( mCounter ) );
     QgsDebugMsgLevel( QStringLiteral( "Transferring feature iterator cache to %1" ).arg( mWriterFilename ), 4 );

@@ -398,6 +398,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   context.setFields( layer->fields() );
 
   QgsFeatureRequest req;
+  req.setExpressionContext( context );
 
   //prepare filter expression
   std::unique_ptr<QgsExpression> filterExpression;
@@ -409,7 +410,6 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     {
       activeFilter = true;
       req.setFilterExpression( mFeatureFilter );
-      req.setExpressionContext( context );
     }
   }
 
@@ -420,20 +420,17 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   {
     visibleRegion = QgsGeometry::fromQPolygonF( mMap->visibleExtentPolygon() );
     selectionRect = visibleRegion.boundingBox();
-    if ( layer )
+    //transform back to layer CRS
+    QgsCoordinateTransform coordTransform( layer->crs(), mMap->crs(), mLayout->project() );
+    try
     {
-      //transform back to layer CRS
-      QgsCoordinateTransform coordTransform( layer->crs(), mMap->crs(), mLayout->project() );
-      try
-      {
-        selectionRect = coordTransform.transformBoundingBox( selectionRect, QgsCoordinateTransform::ReverseTransform );
-        visibleRegion.transform( coordTransform, QgsCoordinateTransform::ReverseTransform );
-      }
-      catch ( QgsCsException &cse )
-      {
-        Q_UNUSED( cse )
-        return false;
-      }
+      selectionRect = coordTransform.transformBoundingBox( selectionRect, QgsCoordinateTransform::ReverseTransform );
+      visibleRegion.transform( coordTransform, QgsCoordinateTransform::ReverseTransform );
+    }
+    catch ( QgsCsException &cse )
+    {
+      Q_UNUSED( cse )
+      return false;
     }
     visibleMapEngine.reset( QgsGeometry::createGeometryEngine( visibleRegion.constGet() ) );
     visibleMapEngine->prepareGeometry();
@@ -481,7 +478,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 
   for ( const QgsLayoutTableColumn &column : qgis::as_const( mSortColumns ) )
   {
-    req = req.addOrderBy( column.attribute(), column.sortOrder() == Qt::AscendingOrder );
+    req.addOrderBy( column.attribute(), column.sortOrder() == Qt::AscendingOrder );
   }
 
   QgsFeature f;

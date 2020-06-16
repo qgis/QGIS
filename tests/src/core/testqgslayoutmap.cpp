@@ -424,32 +424,32 @@ void TestQgsLayoutMap::dataDefinedStyles()
   // test following of preset
   map->setFollowVisibilityPreset( true );
   map->setFollowVisibilityPresetName( QStringLiteral( "test preset" ) );
-  QSet<QgsMapLayer *> result = map->layersToRender().toSet();
+  QSet<QgsMapLayer *> result = qgis::listToSet( map->layersToRender() );
   QCOMPARE( result.count(), 2 );
   map->setFollowVisibilityPresetName( QString() );
 
   //test malformed style string
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "5" ) ) );
-  result = map->layersToRender().toSet();
-  QCOMPARE( result, layers.toSet() );
+  result = qgis::listToSet( map->layersToRender() );
+  QCOMPARE( result, qgis::listToSet( layers ) );
 
   //test valid preset
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "'test preset'" ) ) );
-  result = map->layersToRender().toSet();
+  result = qgis::listToSet( map->layersToRender() );
   QCOMPARE( result.count(), 2 );
   QVERIFY( result.contains( mLinesLayer ) );
   QVERIFY( result.contains( mPointsLayer ) );
 
   //test non-existent preset
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "'bad preset'" ) ) );
-  result = map->layersToRender().toSet();
-  QCOMPARE( result, layers.toSet() );
+  result = qgis::listToSet( map->layersToRender() );
+  QCOMPARE( result, qgis::listToSet( layers ) );
 
   //test that dd layer set overrides style layers
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "'test preset'" ) ) );
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapLayers, QgsProperty::fromExpression(
         QStringLiteral( "'%1'" ).arg( mPolysLayer->name() ) ) );
-  result = map->layersToRender().toSet();
+  result = qgis::listToSet( map->layersToRender() );
   QCOMPARE( result.count(), 1 );
   QVERIFY( result.contains( mPolysLayer ) );
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapLayers, QgsProperty() );

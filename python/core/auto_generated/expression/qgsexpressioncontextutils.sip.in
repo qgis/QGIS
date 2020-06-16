@@ -52,7 +52,7 @@ The ``formMode`` (SingleEditMode etc.) is passed as text
     static void setGlobalVariable( const QString &name, const QVariant &value );
 %Docstring
 Sets a global context variable. This variable will be contained within scopes retrieved via
-globalScope().
+:py:func:`~QgsExpressionContextUtils.globalScope`.
 
 :param name: variable name
 :param value: variable value
@@ -104,7 +104,7 @@ For instance, project path and title, and variables specified through the projec
     static void setProjectVariable( QgsProject *project, const QString &name, const QVariant &value );
 %Docstring
 Sets a project context variable. This variable will be contained within scopes retrieved via
-projectScope().
+:py:func:`~QgsExpressionContextUtils.projectScope`.
 
 :param project: Project to apply changes to
 :param name: variable name
@@ -162,7 +162,7 @@ Creates a list of three scopes: global, layer's project and layer.
     static void setLayerVariable( QgsMapLayer *layer, const QString &name, const QVariant &value );
 %Docstring
 Sets a layer context variable. This variable will be contained within scopes retrieved via
-layerScope().
+:py:func:`~QgsExpressionContextUtils.layerScope`.
 
 :param layer: map layer
 :param name: variable name
@@ -221,7 +221,7 @@ For instance, number of pages and page sizes.
     static void setLayoutVariable( QgsLayout *layout, const QString &name, const QVariant &value );
 %Docstring
 Sets a layout context variable. This variable will be contained within scopes retrieved via
-layoutScope().
+:py:func:`~QgsExpressionContextUtils.layoutScope`.
 
 :param layout: target layout
 :param name: variable name
@@ -273,7 +273,7 @@ For instance, item size and position.
 %Docstring
 Sets a layout ``item`` context variable, with the given ``name`` and ``value``.
 This variable will be contained within scopes retrieved via
-layoutItemScope().
+:py:func:`~QgsExpressionContextUtils.layoutItemScope`.
 
 .. seealso:: :py:func:`setLayoutItemVariables`
 
@@ -309,7 +309,7 @@ Creates a new scope which contains variables and functions relating to a :py:cla
 %Docstring
 Sets a layout multi ``frame`` context variable, with the given ``name`` and ``value``.
 This variable will be contained within scopes retrieved via
-multiFrameScope().
+:py:func:`~QgsExpressionContextUtils.multiFrameScope`.
 
 .. seealso:: :py:func:`setLayoutItemVariables`
 

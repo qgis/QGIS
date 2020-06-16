@@ -36,6 +36,8 @@
 // version without notice, or even be removed.
 //
 
+#define SIP_NO_FILE
+
 class Qgs3DMapSettings;
 class QgsTessellatedPolygonGeometry;
 class QgsMesh3DSymbol;

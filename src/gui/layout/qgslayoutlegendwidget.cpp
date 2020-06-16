@@ -1012,25 +1012,24 @@ void QgsLayoutLegendWidget::resetLayerNodeToDefaults()
 
 void QgsLayoutLegendWidget::mCountToolButton_clicked( bool checked )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
   if ( !mLegend )
   {
     return;
   }
 
-  //get current item
-  QModelIndex currentIndex = mItemTreeView->currentIndex();
-  if ( !currentIndex.isValid() )
-  {
-    return;
-  }
-
-  QgsLayerTreeNode *currentNode = mItemTreeView->currentNode();
-  if ( !QgsLayerTree::isLayer( currentNode ) )
+  const QList< QModelIndex > selectedIndexes = mItemTreeView->selectionModel()->selectedIndexes();
+  if ( selectedIndexes.empty() )
     return;
 
   mLegend->beginCommand( tr( "Update Legend" ) );
-  currentNode->setCustomProperty( QStringLiteral( "showFeatureCount" ), checked ? 1 : 0 );
+  for ( const QModelIndex &index : selectedIndexes )
+  {
+    QgsLayerTreeNode *currentNode = mItemTreeView->layerTreeModel()->index2node( index );
+    if ( !QgsLayerTree::isLayer( currentNode ) )
+      continue;
+
+    currentNode->setCustomProperty( QStringLiteral( "showFeatureCount" ), checked ? 1 : 0 );
+  }
   mLegend->updateFilterByMap();
   mLegend->adjustBoxSize();
   mLegend->endCommand();
@@ -1118,11 +1117,8 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
       symbolLegendScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), legendNode.symbolLabel().remove( QStringLiteral( "[%" ) ).remove( QStringLiteral( "%]" ) ), true ) );
       symbolLegendScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), legendSymbols.first().ruleKey(), true ) );
       highlighted << QStringLiteral( "symbol_label" ) << QStringLiteral( "symbol_id" );
-      if ( vl )
-      {
-        symbolLegendScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( vl->featureCount( legendSymbols.first().ruleKey() ) ), true ) );
-        highlighted << QStringLiteral( "symbol_count" );
-      }
+      symbolLegendScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( vl->featureCount( legendSymbols.first().ruleKey() ) ), true ) );
+      highlighted << QStringLiteral( "symbol_count" );
     }
   }
 

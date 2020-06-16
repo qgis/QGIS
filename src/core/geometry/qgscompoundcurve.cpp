@@ -224,14 +224,14 @@ bool QgsCompoundCurve::fromWkt( const QString &wkt )
   return true;
 }
 
-QByteArray QgsCompoundCurve::asWkb() const
+QByteArray QgsCompoundCurve::asWkb( WkbFlags flags ) const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
   QVector<QByteArray> wkbForCurves;
   wkbForCurves.reserve( mCurves.size() );
   for ( const QgsCurve *curve : mCurves )
   {
-    QByteArray wkbForCurve = curve->asWkb();
+    QByteArray wkbForCurve = curve->asWkb( flags );
     binarySize += wkbForCurve.length();
     wkbForCurves << wkbForCurve;
   }

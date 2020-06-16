@@ -132,7 +132,7 @@ double-click, and to prevent the default double-click behavior for items.
 
     virtual bool acceptDrop( QgsDataItem *item, QgsDataItemGuiContext context );
 %Docstring
-Providers should return ``True`` if the drops are allowed (handleDrop() should be
+Providers should return ``True`` if the drops are allowed (:py:func:`~QgsDataItemGuiProvider.handleDrop` should be
 implemented in that case as well).
 
 .. versionadded:: 3.10

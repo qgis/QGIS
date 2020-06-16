@@ -39,7 +39,7 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint
   mPointFromCanvasPushButton->setCheckable( true );
   buttonBox->addButton( mPointFromCanvasPushButton, QDialogButtonBox::ActionRole );
 
-  // User can input either DD or DMS coords (from QGis mapcanvas we take DD coords)
+  // User can input either DD or DMS coords (from QGIS mapcanvas we take DD coords)
   QgsDMSAndDDValidator *validator = new QgsDMSAndDDValidator( this );
   leXCoord->setValidator( validator );
   leYCoord->setValidator( validator );

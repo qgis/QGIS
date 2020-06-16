@@ -29,6 +29,7 @@
  *
  *
  * The time in a mesh layer is defined by :
+ *
  * - a reference time provided by the data, the project or the user
  * - each dataset is associated with a relative times
  * - time extent is defined by the first time and the last time of all dataset

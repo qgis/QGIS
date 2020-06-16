@@ -33,6 +33,7 @@
 #include "qgsimageoperation.h"
 #include "qgspolygon.h"
 #include "qgslinestring.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QPainter>
 #include <QFile>
@@ -3276,7 +3277,19 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext 
 
 void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  applyPattern( context, mBrush, mDistanceX, mDistanceY, mDisplacementX, mDisplacementY, mOffsetX, mOffsetY );
+  // if we are using a vector based output, we need to render points as vectors
+  // (OR if the marker has data defined symbology, in which case we need to evaluate this point-by-point)
+  mRenderUsingMarkers = context.renderContext().forceVectorOutput() || mMarkerSymbol->hasDataDefinedProperties();
+
+  if ( mRenderUsingMarkers )
+  {
+    mMarkerSymbol->startRender( context.renderContext() );
+  }
+  else
+  {
+    // optimised render for screen only, use image based brush
+    applyPattern( context, mBrush, mDistanceX, mDistanceY, mDisplacementX, mDisplacementY, mOffsetX, mOffsetY );
+  }
 
   if ( mStroke )
   {
@@ -3286,9 +3299,155 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolRenderContext &contex
 
 void QgsPointPatternFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
+  if ( mRenderUsingMarkers )
+  {
+    mMarkerSymbol->stopRender( context.renderContext() );
+  }
+
   if ( mStroke )
   {
     mStroke->stopRender( context.renderContext() );
+  }
+}
+
+void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
+{
+  if ( !mRenderUsingMarkers )
+  {
+    // use image based brush for speed
+    QgsImageFillSymbolLayer::renderPolygon( points, rings, context );
+    return;
+  }
+
+  // vector based output - so draw dot by dot!
+  QPainter *p = context.renderContext().painter();
+  if ( !p )
+  {
+    return;
+  }
+
+  double distanceX = mDistanceX;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDistanceX ) )
+  {
+    context.setOriginalValueVariable( mDistanceX );
+    distanceX = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyDistanceX, context.renderContext().expressionContext(), mDistanceX );
+  }
+  const double width = context.renderContext().convertToPainterUnits( distanceX, mDistanceXUnit, mDistanceXMapUnitScale );
+
+  double distanceY = mDistanceY;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDistanceY ) )
+  {
+    context.setOriginalValueVariable( mDistanceY );
+    distanceY = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyDistanceY, context.renderContext().expressionContext(), mDistanceY );
+  }
+  const double height = context.renderContext().convertToPainterUnits( distanceY, mDistanceYUnit, mDistanceYMapUnitScale );
+
+  double offsetX = mOffsetX;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffsetX ) )
+  {
+    context.setOriginalValueVariable( mOffsetX );
+    offsetX = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffsetX, context.renderContext().expressionContext(), mOffsetX );
+  }
+  const double widthOffset = std::fmod( context.renderContext().convertToPainterUnits( offsetX, mOffsetXUnit, mOffsetXMapUnitScale ), width );
+
+  double offsetY = mOffsetY;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffsetY ) )
+  {
+    context.setOriginalValueVariable( mOffsetY );
+    offsetY = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffsetY, context.renderContext().expressionContext(), mOffsetY );
+  }
+  const double heightOffset = std::fmod( context.renderContext().convertToPainterUnits( offsetY, mOffsetYUnit, mOffsetYMapUnitScale ), height );
+
+  double displacementX = mDisplacementX;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDisplacementX ) )
+  {
+    context.setOriginalValueVariable( mDisplacementX );
+    displacementX = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyDisplacementX, context.renderContext().expressionContext(), mDisplacementX );
+  }
+  const double displacementPixelX = context.renderContext().convertToPainterUnits( displacementX, mDisplacementXUnit, mDisplacementXMapUnitScale );
+
+  double displacementY = mDisplacementY;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDisplacementY ) )
+  {
+    context.setOriginalValueVariable( mDisplacementY );
+    displacementY = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyDisplacementY, context.renderContext().expressionContext(), mDisplacementY );
+  }
+  const double displacementPixelY = context.renderContext().convertToPainterUnits( displacementY, mDisplacementYUnit, mDisplacementYMapUnitScale );
+
+  p->setPen( QPen( Qt::NoPen ) );
+
+  if ( context.selected() )
+  {
+    QColor selColor = context.renderContext().selectionColor();
+    p->setBrush( QBrush( selColor ) );
+    _renderPolygon( p, points, rings, context );
+  }
+
+  p->save();
+
+  QPainterPath path;
+  path.addPolygon( points );
+  if ( rings )
+  {
+    for ( const QPolygonF &ring : *rings )
+    {
+      path.addPolygon( ring );
+    }
+  }
+  p->setClipPath( path, Qt::IntersectClip );
+
+  const double left = points.boundingRect().left();
+  const double top = points.boundingRect().top();
+  const double right = points.boundingRect().right();
+  const double bottom = points.boundingRect().bottom();
+
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  QgsExpressionContextScopePopper scopePopper( context.renderContext().expressionContext(), scope );
+  int pointNum = 0;
+  const bool needsExpressionContext = hasDataDefinedProperties();
+
+  bool alternateColumn = false;
+  int currentCol = -3; // because we actually render a few rows/cols outside the bounds, try to align the col/row numbers to start at 1 for the first visible row/col
+  for ( double currentX = ( std::floor( left / width ) - 2 ) * width; currentX <= right + 2 * width; currentX += width, alternateColumn = !alternateColumn )
+  {
+    if ( needsExpressionContext )
+      scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_marker_column" ), ++currentCol, true ) );
+
+    bool alternateRow = false;
+    const double columnX = currentX + widthOffset;
+    int currentRow = -3;
+    for ( double currentY = ( std::floor( top / height ) - 2 ) * height; currentY <= bottom + 2 * height; currentY += height, alternateRow = !alternateRow )
+    {
+      double y = currentY + heightOffset;
+      double x = columnX;
+      if ( alternateRow )
+        x += displacementPixelX;
+
+      if ( !alternateColumn )
+        y -= displacementPixelY;
+
+      if ( needsExpressionContext )
+      {
+        scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
+        scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_marker_row" ), ++currentRow, true ) );
+      }
+
+      mMarkerSymbol->renderPoint( QPointF( x, y ), context.feature(), context.renderContext() );
+    }
+  }
+
+  p->restore();
+
+  if ( mStroke )
+  {
+    mStroke->renderPolyline( points, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
+    if ( rings )
+    {
+      for ( auto ringIt = rings->constBegin(); ringIt != rings->constEnd(); ++ringIt )
+      {
+        mStroke->renderPolyline( *ringIt, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
+      }
+    }
   }
 }
 
@@ -3395,6 +3554,7 @@ void QgsPointPatternFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderCo
 {
   if ( !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDistanceX ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDistanceY )
        && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDisplacementX ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDisplacementY )
+       && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffsetX ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffsetY )
        && ( !mMarkerSymbol || !mMarkerSymbol->hasDataDefinedProperties() ) )
   {
     return;
@@ -3427,13 +3587,13 @@ void QgsPointPatternFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderCo
   double offsetX = mOffsetX;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffsetX ) )
   {
-    context.setOriginalValueVariable( mDisplacementX );
+    context.setOriginalValueVariable( mOffsetX );
     offsetX = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffsetX, context.renderContext().expressionContext(), mOffsetX );
   }
   double offsetY = mOffsetY;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffsetY ) )
   {
-    context.setOriginalValueVariable( mDisplacementY );
+    context.setOriginalValueVariable( mOffsetY );
     offsetY = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffsetY, context.renderContext().expressionContext(), mOffsetY );
   }
   applyPattern( context, mBrush, distanceX, distanceY, displacementX, displacementY, offsetX, offsetY );
@@ -4225,8 +4385,15 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
     return a.y() < b.y();
   } );
 #endif
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  QgsExpressionContextScopePopper scopePopper( context.expressionContext(), scope );
+  int pointNum = 0;
+  const bool needsExpressionContext = hasDataDefinedProperties();
+
   for ( const QgsPointXY &p : qgis::as_const( randomPoints ) )
   {
+    if ( needsExpressionContext )
+      scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
     mMarker->renderPoint( QPointF( p.x(), p.y() ), feature.isValid() ? &feature : nullptr, context, -1, selected );
   }
 

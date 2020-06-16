@@ -26,6 +26,7 @@
 #include <QSet>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QPainterPath>
 
 #include "qgssymbol.h"
 #include "qgsfields.h"

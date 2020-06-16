@@ -507,7 +507,7 @@ QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsPointXY &point, c
   Point p( pt, 2 );
 
   QMutexLocker locker( &d->mMutex );
-  QgsNearestNeighborComparator nnc( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries ? &d->mGeometries : nullptr,
+  QgsNearestNeighborComparator nnc( ( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries ) ? &d->mGeometries : nullptr,
                                     point, maxDistance );
   d->mRTree->nearestNeighborQuery( neighbors, p, visitor, nnc );
 
@@ -532,7 +532,7 @@ QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsGeometry &geometr
   SpatialIndex::Region r = QgsSpatialIndexUtils::rectangleToRegion( geometry.boundingBox() );
 
   QMutexLocker locker( &d->mMutex );
-  QgsNearestNeighborComparator nnc( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries ? &d->mGeometries : nullptr,
+  QgsNearestNeighborComparator nnc( ( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries ) ? &d->mGeometries : nullptr,
                                     geometry, maxDistance );
   d->mRTree->nearestNeighborQuery( neighbors, r, visitor, nnc );
 

@@ -1,33 +1,13 @@
 # include doxygen documentation
 SET (WITH_APIDOC FALSE CACHE BOOL "Determines whether the QGIS API doxygen documentation should be built")
 
-# include doxygen documentation
-SET (WITH_TXT2TAGS_PDF FALSE CACHE BOOL "Determines whether PDF should be generate for the txt2tags documentation")
-
 # include Qt documentation
 SET (QT_DOC_URL "https://doc.qt.io/qt-5/" CACHE STRING "URL for Qt docs")
 
-INCLUDE(Txt2Tags)
-FIND_TXT2TAGS()
-
-IF(TXT2TAGS_EXECUTABLE)
-  ADD_TXT2TAGS_FILES(QGIS_DOC_FILES INSTALL.t2t NEWS.t2t)
-  IF(WITH_TXT2TAGS_PDF)
-    ADD_TXT2TAGS_PDFS(QGIS_DOC_FILES INSTALL.t2t NEWS.t2t)
-  ENDIF(WITH_TXT2TAGS_PDF)
-  FILE(GLOB t2tfiles doc/*.t2t)
-  ADD_CUSTOM_TARGET (t2tdoc ALL DEPENDS ${QGIS_DOC_FILES} ${t2tfiles})
-ELSE(TXT2TAGS_EXECUTABLE)
-  SET(QGIS_DOC_FILES
-    ../INSTALL
-    ../NEWS
-    INSTALL.html
-    NEWS.html
-  )
-ENDIF(TXT2TAGS_EXECUTABLE)
-
 SET(QGIS_DOC_FILES
-  ${QGIS_DOC_FILES}
+  ../INSTALL.md
+  ../NEWS.md
+  NEWS.html
   index.html
   developersmap.html
   nohelp.html

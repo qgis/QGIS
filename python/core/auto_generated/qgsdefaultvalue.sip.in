@@ -21,9 +21,9 @@ on the client when a default field value needs to be generated.
 
 Usual values for such an expression are
 
-- `now()` for a timestamp for a record
+- `:py:func:`~now`` for a timestamp for a record
 - `@some_variable` to insert a project or application level variable like
-the username of the one digitizing a feature
+  the username of the one digitizing a feature
 - `$length` to insert a derived attribute of a geometry
 
 QgsDefaultValue also has a `applyOnUpdate` flag which will indicate that a

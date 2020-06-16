@@ -336,7 +336,7 @@ Returns all field names referenced by the configuration (e.g. field name or expr
 Prepares the label settings for rendering.
 
 This should be called before rendering any labels, and must be
-followed by a call to stopRender() in order to gracefully clean up symbols.
+followed by a call to :py:func:`~QgsPalLayerSettings.stopRender` in order to gracefully clean up symbols.
 
 .. versionadded:: 3.10
 %End
@@ -345,7 +345,7 @@ followed by a call to stopRender() in order to gracefully clean up symbols.
 %Docstring
 Finalises the label settings after use.
 
-This must be called after a call to startRender(), in order to gracefully clean up symbols.
+This must be called after a call to :py:func:`~QgsPalLayerSettings.startRender`, in order to gracefully clean up symbols.
 
 .. versionadded:: 3.10
 %End

@@ -17,7 +17,7 @@ Stores metadata about one renderer class.
 
 .. note::
 
-   It's necessary to implement createRenderer() function.
+   It's necessary to implement :py:func:`~createRenderer` function.
    In C++ you can use QgsRendererMetadata convenience class.
 %End
 
@@ -93,7 +93,7 @@ Returns new instance of settings widget for the renderer. Returns ``None`` on er
 
 The ``oldRenderer`` argument may refer to previously used renderer (or it is ``None``).
 If not ``None``, it may be used to initialize GUI of the widget from the previous settings.
-The old renderer does not have to be of the same type as returned by createRenderer().
+The old renderer does not have to be of the same type as returned by :py:func:`~QgsRendererAbstractMetadata.createRenderer`.
 %End
 
     virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) /Factory/;
@@ -142,7 +142,7 @@ class QgsRendererRegistry
 Registry of renderers.
 
 QgsRendererRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.rendererRegistry()`
+:py:func:`QgsApplication.rendererRegistry()`.
 %End
 
 %TypeHeaderCode

@@ -565,6 +565,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       QgsLayoutGeoPdfExporter::ComponentLayerDetail component;
       component.name = layerDetail.name;
       component.mapLayerId = layerDetail.mapLayerId;
+      component.opacity = layerDetail.opacity;
+      component.compositionMode = layerDetail.compositionMode;
       component.group = layerDetail.mapTheme;
       component.sourcePdfPath = settings.writeGeoPdf ? geoPdfExporter->generateTemporaryFilepath( QStringLiteral( "layer_%1.pdf" ).arg( layerId ) ) : baseDir.filePath( QStringLiteral( "%1_%2.pdf" ).arg( baseFileName ).arg( layerId, 4, 10, QChar( '0' ) ) );
       pdfComponents << component;
@@ -604,6 +606,12 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
         details.subject = mLayout->project()->metadata().abstract();
         details.title = mLayout->project()->metadata().title();
         details.keywords = mLayout->project()->metadata().keywords();
+      }
+
+      const QList< QgsMapLayer * > layers = mLayout->project()->mapLayers().values();
+      for ( const QgsMapLayer *layer : layers )
+      {
+        details.layerIdToPdfLayerTreeNameMap.insert( layer->id(), layer->name() );
       }
 
       if ( settings.appendGeoreference )
@@ -647,6 +655,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       }
 
       details.customLayerTreeGroups = geoPdfExporter->customLayerTreeGroups();
+      details.initialLayerVisibility = geoPdfExporter->initialLayerVisibility();
+      details.layerOrder = geoPdfExporter->layerOrder();
       details.includeFeatures = settings.includeGeoPdfFeatures;
       details.useOgcBestPracticeFormatGeoreferencing = settings.useOgcBestPracticeFormatGeoreferencing;
       details.useIso32000ExtensionFormatGeoreferencing = settings.useIso32000ExtensionFormatGeoreferencing;

@@ -25,13 +25,13 @@ amount of time.
 
 Common use case:
 
-0. prepare QgsMapSettings with rendering configuration (extent, layer, map size, ...)
-1. create QgsMapRendererJob subclass with QgsMapSettings instance
-2. connect to job's finished() signal
-3. call start(). Map rendering will start in background, the function immediately returns
-4. at some point, slot connected to finished() signal is called, map rendering is done
+# prepare QgsMapSettings with rendering configuration (extent, layer, map size, ...)
+# create QgsMapRendererJob subclass with QgsMapSettings instance
+# connect to job's :py:func:`~finished` signal
+# call :py:func:`~start`. Map rendering will start in background, the function immediately returns
+# at some point, slot connected to :py:func:`~finished` signal is called, map rendering is done
 
-It is possible to cancel the rendering job while it is active by calling cancel() function.
+It is possible to cancel the rendering job while it is active by calling :py:func:`~cancel` function.
 
 The following subclasses are available:
 
@@ -64,7 +64,7 @@ Does nothing if the rendering is not active.
     virtual void cancelWithoutBlocking() = 0;
 %Docstring
 Triggers cancellation of the rendering job without blocking. The render job will continue
-to operate until it is able to cancel, at which stage the finished() signal will be emitted.
+to operate until it is able to cancel, at which stage the :py:func:`~QgsMapRendererJob.finished` signal will be emitted.
 Does nothing if the rendering is not active.
 %End
 
@@ -81,7 +81,7 @@ Tell whether the rendering job is currently running in background.
     virtual bool usedCachedLabels() const = 0;
 %Docstring
 Returns ``True`` if the render job was able to use a cached labeling solution.
-If so, any previously stored labeling results (see takeLabelingResults())
+If so, any previously stored labeling results (see :py:func:`~QgsMapRendererJob.takeLabelingResults`)
 should be retained.
 
 .. seealso:: :py:func:`takeLabelingResults`
@@ -92,7 +92,7 @@ should be retained.
     virtual QgsLabelingResults *takeLabelingResults() = 0 /Transfer/;
 %Docstring
 Gets pointer to internal labeling engine (in order to get access to the results).
-This should not be used if cached labeling was redrawn - see usedCachedLabels().
+This should not be used if cached labeling was redrawn - see :py:func:`~QgsMapRendererJob.usedCachedLabels`.
 
 .. seealso:: :py:func:`usedCachedLabels`
 %End
@@ -161,7 +161,7 @@ Returns map settings with which this job was started.
 %Docstring
 Emitted when the layers are rendered.
 Rendering labels is not yet done. If the fully rendered layer including labels is required use
-finished() instead.
+:py:func:`~QgsMapRendererJob.finished` instead.
 
 .. versionadded:: 3.0
 %End

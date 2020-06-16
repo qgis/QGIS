@@ -188,7 +188,7 @@ Sets the font color used for legend items.
 
     QColor layerFontColor() const;
 %Docstring
-Returns layer font color, defaults to fontColor()
+Returns layer font color, defaults to :py:func:`~QgsLegendSettings.fontColor`
 
 .. seealso:: :py:func:`setLayerFontColor`
 
@@ -200,7 +200,7 @@ Returns layer font color, defaults to fontColor()
     void setLayerFontColor( const QColor &fontColor );
 %Docstring
 Sets layer font color to ``fontColor``
-Overrides fontColor()
+Overrides :py:func:`~QgsLegendSettings.fontColor`
 
 .. seealso:: :py:func:`layerFontColor`
 
@@ -276,7 +276,7 @@ Sets whether a stroke will be drawn around raster symbol items.
     QColor rasterStrokeColor() const;
 %Docstring
 Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is ``True``.
+only drawn if :py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
 
 .. seealso:: :py:func:`setRasterStrokeColor`
 
@@ -290,7 +290,7 @@ only drawn if drawRasterStroke() is ``True``.
     void setRasterStrokeColor( const QColor &color );
 %Docstring
 Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is ``True``.
+only drawn if :py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
 
 :param color: stroke color
 
@@ -306,7 +306,7 @@ only drawn if drawRasterStroke() is ``True``.
     double rasterStrokeWidth() const;
 %Docstring
 Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is ``True``.
+only drawn if :py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
 
 .. seealso:: :py:func:`setRasterStrokeWidth`
 
@@ -320,7 +320,7 @@ only drawn if drawRasterStroke() is ``True``.
     void setRasterStrokeWidth( double width );
 %Docstring
 Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is ``True``.
+only drawn if :py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
 
 :param width: stroke width in millimeters
 

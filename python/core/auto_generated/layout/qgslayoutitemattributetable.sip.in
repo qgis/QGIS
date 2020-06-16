@@ -75,7 +75,7 @@ the source layer will be the user specified vector layer.
 %Docstring
 Sets the vector ``layer`` from which to display feature attributes.
 
-This is only considered if the table source() is LayerAttributes.
+This is only considered if the table :py:func:`~QgsLayoutItemAttributeTable.source` is LayerAttributes.
 
 .. seealso:: :py:func:`vectorLayer`
 %End
@@ -84,7 +84,7 @@ This is only considered if the table source() is LayerAttributes.
 %Docstring
 Returns the vector layer the attribute table is currently using.
 
-This is only considered if the table source() is LayerAttributes.
+This is only considered if the table :py:func:`~QgsLayoutItemAttributeTable.source` is LayerAttributes.
 
 .. seealso:: :py:func:`setVectorLayer`
 
@@ -101,7 +101,7 @@ Sets the relation ``id`` from which to display child features
 
 .. note::
 
-   Only used if table source() is set to RelationChildren.
+   Only used if table :py:func:`~QgsLayoutItemAttributeTable.source` is set to RelationChildren.
 %End
 
     QString relationId() const;
@@ -114,7 +114,7 @@ Returns the relation id which the table displays child features from.
 
 .. note::
 
-   Only used if table source() is set to RelationChildren.
+   Only used if table :py:func:`~QgsLayoutItemAttributeTable.source` is set to RelationChildren.
 %End
 
     void resetColumns();
@@ -140,7 +140,7 @@ feature attributes.
     QgsLayoutItemMap *map() const;
 %Docstring
 Returns the layout map whose extents are controlling the features shown in the
-table. The extents of the map are only used if displayOnlyVisibleFeatures() is ``True``.
+table. The extents of the map are only used if :py:func:`~QgsLayoutItemAttributeTable.displayOnlyVisibleFeatures` is ``True``.
 
 .. seealso:: :py:func:`setMap`
 
@@ -240,7 +240,7 @@ the table changing size to accommodate the new displayed feature attributes.
     QString featureFilter() const;
 %Docstring
 Returns the current expression used to filter features for the table. The filter is only
-active if filterFeatures() is ``True``.
+active if :py:func:`~QgsLayoutItemAttributeTable.filterFeatures` is ``True``.
 
 .. seealso:: :py:func:`setFeatureFilter`
 
@@ -250,7 +250,7 @@ active if filterFeatures() is ``True``.
     void setFeatureFilter( const QString &expression );
 %Docstring
 Sets the ``expression`` used for filtering features in the table. The filter is only
-active if filterFeatures() is set to ``True``. Changing this setting forces the table
+active if :py:func:`~QgsLayoutItemAttributeTable.filterFeatures` is set to ``True``. Changing this setting forces the table
 to refetch features from its vector layer, and may result in
 the table changing size to accommodate the new displayed feature attributes.
 

@@ -116,7 +116,10 @@ Compute the intersection between two segments
 
 :return: - Whether the segments intersect
          - intersectionPoint: Output parameter, the intersection point
-         * Example:
+
+Example
+-------
+
 .. code-block:: python
 
        ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ) )
@@ -474,7 +477,10 @@ M value is computed if one of this point have M.
 :param pt2: second point.
 
 :return: New point at middle between points pt1 and pt2.
-         * Example:
+
+Example
+-------
+
 .. code-block:: python
 
        p = QgsPoint( 4, 6 ) # 2D point
@@ -620,7 +626,10 @@ An algorithm to calculate an (approximate) intersection of two lines in 3D.
 
 :return: - ``True`` if the intersection can be found, ``False`` - otherwise.
          - intersection: is the result intersection, of it can be found.
-         example:
+
+Example
+-------
+
 .. code-block:: python
 
        QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,3,0))

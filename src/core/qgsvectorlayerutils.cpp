@@ -165,6 +165,24 @@ bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer *layer, int fieldInd
   if ( fieldIndex < 0 || fieldIndex >= fields.count() )
     return false;
 
+  // If it's a joined field search the value in the source layer
+  if ( fields.fieldOrigin( fieldIndex ) == QgsFields::FieldOrigin::OriginJoin )
+  {
+    int srcFieldIndex;
+    const QgsVectorLayerJoinInfo *joinInfo { layer->joinBuffer()->joinForFieldIndex( fieldIndex, fields, srcFieldIndex ) };
+    if ( ! joinInfo )
+    {
+      return false;
+    }
+    fieldIndex = srcFieldIndex;
+    layer = joinInfo->joinLayer();
+    if ( ! layer )
+    {
+      return false;
+    }
+    fields = layer->fields();
+  }
+
   QString fieldName = fields.at( fieldIndex ).name();
 
   // build up an optimised feature request
@@ -395,6 +413,8 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
     }
   }
 
+  bool notNullConstraintViolated { false };
+
   if ( constraints.constraints() & QgsFieldConstraints::ConstraintNotNull
        && ( strength == QgsFieldConstraints::ConstraintStrengthNotSet || strength == constraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) )
        && ( origin == QgsFieldConstraints::ConstraintOriginNotSet || origin == constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) ) )
@@ -414,30 +434,37 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
       if ( value.isNull() )
       {
         errors << QObject::tr( "value is NULL" );
+        notNullConstraintViolated = true;
       }
     }
   }
 
-  if ( constraints.constraints() & QgsFieldConstraints::ConstraintUnique
-       && ( strength == QgsFieldConstraints::ConstraintStrengthNotSet || strength == constraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) )
-       && ( origin == QgsFieldConstraints::ConstraintOriginNotSet || origin == constraints.constraintOrigin( QgsFieldConstraints::ConstraintUnique ) ) )
+  // if a NOT NULL constraint is violated we don't need to check for UNIQUE
+  if ( ! notNullConstraintViolated )
   {
-    bool exempt = false;
-    if ( fields.fieldOrigin( attributeIndex ) == QgsFields::OriginProvider
-         && constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
-    {
-      int providerIdx = fields.fieldOriginIndex( attributeIndex );
-      exempt = layer->dataProvider()->skipConstraintCheck( providerIdx, QgsFieldConstraints::ConstraintUnique, value );
-    }
 
-    if ( !exempt )
+    if ( constraints.constraints() & QgsFieldConstraints::ConstraintUnique
+         && ( strength == QgsFieldConstraints::ConstraintStrengthNotSet || strength == constraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) )
+         && ( origin == QgsFieldConstraints::ConstraintOriginNotSet || origin == constraints.constraintOrigin( QgsFieldConstraints::ConstraintUnique ) ) )
     {
-      bool alreadyExists = QgsVectorLayerUtils::valueExists( layer, attributeIndex, value, QgsFeatureIds() << feature.id() );
-      valid = valid && !alreadyExists;
-
-      if ( alreadyExists )
+      bool exempt = false;
+      if ( fields.fieldOrigin( attributeIndex ) == QgsFields::OriginProvider
+           && constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
       {
-        errors << QObject::tr( "value is not unique" );
+        int providerIdx = fields.fieldOriginIndex( attributeIndex );
+        exempt = layer->dataProvider()->skipConstraintCheck( providerIdx, QgsFieldConstraints::ConstraintUnique, value );
+      }
+
+      if ( !exempt )
+      {
+
+        bool alreadyExists = QgsVectorLayerUtils::valueExists( layer, attributeIndex, value, QgsFeatureIds() << feature.id() );
+        valid = valid && !alreadyExists;
+
+        if ( alreadyExists )
+        {
+          errors << QObject::tr( "value is not unique" );
+        }
       }
     }
   }
@@ -472,7 +499,26 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
   QgsFields fields = layer->fields();
 
   // Cache unique values
-  QMap<int, QSet<QVariant>> uniqueValueCaches;
+  QMap<int, QSet<QVariant>> uniqueValueCache;
+
+  auto checkUniqueValue = [ & ]( const int fieldIdx, const QVariant & value )
+  {
+    if ( ! uniqueValueCache.contains( fieldIdx ) )
+    {
+      // If the layer is filtered, get unique values from an unfiltered clone
+      if ( ! layer->subsetString().isEmpty() )
+      {
+        std::unique_ptr<QgsVectorLayer> unfilteredClone { layer->clone( ) };
+        unfilteredClone->setSubsetString( QString( ) );
+        uniqueValueCache[ fieldIdx ] = unfilteredClone->uniqueValues( fieldIdx );
+      }
+      else
+      {
+        uniqueValueCache[ fieldIdx ] = layer->uniqueValues( fieldIdx );
+      }
+    }
+    return uniqueValueCache[ fieldIdx ].contains( value );
+  };
 
   for ( const auto &fd : qgis::as_const( featuresData ) )
   {
@@ -496,27 +542,11 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
         v = fd.attributes().value( idx );
       }
 
-      // Cache unique values
-      if ( hasUniqueConstraint && ! uniqueValueCaches.contains( idx ) )
-      {
-        // If the layer is filtered, get unique values from an unfiltered clone
-        if ( ! layer->subsetString().isEmpty() )
-        {
-          std::unique_ptr<QgsVectorLayer> unfilteredClone { layer->clone( ) };
-          unfilteredClone->setSubsetString( QString( ) );
-          uniqueValueCaches[ idx ] = unfilteredClone->uniqueValues( idx );
-        }
-        else
-        {
-          uniqueValueCaches[ idx ] = layer->uniqueValues( idx );
-        }
-      }
-
       // 2. client side default expression
       // note - deliberately not using else if!
       QgsDefaultValue defaultValueDefinition = layer->defaultValueDefinition( idx );
       if ( ( v.isNull() || ( hasUniqueConstraint
-                             && uniqueValueCaches[ idx ].contains( v ) )
+                             && checkUniqueValue( idx, v ) )
              || defaultValueDefinition.applyOnUpdate() )
            && defaultValueDefinition.isValid() )
       {
@@ -529,7 +559,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
       // 3. provider side default value clause
       // note - not an else if deliberately. Users may return null from a default value expression to fallback to provider defaults
       if ( ( v.isNull() || ( hasUniqueConstraint
-                             && uniqueValueCaches[ idx ].contains( v ) ) )
+                             && checkUniqueValue( idx, v ) ) )
            && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
       {
         int providerIndex = fields.fieldOriginIndex( idx );
@@ -544,7 +574,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
       // 4. provider side default literal
       // note - deliberately not using else if!
       if ( ( v.isNull() || ( checkUnique && hasUniqueConstraint
-                             && uniqueValueCaches[ idx ].contains( v ) ) )
+                             && checkUniqueValue( idx, v ) ) )
            && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
       {
         int providerIndex = fields.fieldOriginIndex( idx );
@@ -563,21 +593,26 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
         v = fd.attributes().value( idx );
       }
 
-      // last of all... check that unique constraints are respected
-      // we can't handle not null or expression constraints here, since there's no way to pick a sensible
-      // value if the constraint is violated
-      if ( checkUnique && hasUniqueConstraint )
+      // last of all... check that unique constraints are respected if the value is valid
+      if ( v.isValid() )
       {
-        if ( uniqueValueCaches[ idx ].contains( v ) )
+        // we can't handle not null or expression constraints here, since there's no way to pick a sensible
+        // value if the constraint is violated
+        if ( checkUnique && hasUniqueConstraint )
         {
-          // unique constraint violated
-          QVariant uniqueValue = QgsVectorLayerUtils::createUniqueValueFromCache( layer, idx, uniqueValueCaches[ idx ], v );
-          if ( uniqueValue.isValid() )
-            v = uniqueValue;
+          if ( checkUniqueValue( idx,  v ) )
+          {
+            // unique constraint violated
+            QVariant uniqueValue = QgsVectorLayerUtils::createUniqueValueFromCache( layer, idx, uniqueValueCache[ idx ], v );
+            if ( uniqueValue.isValid() )
+              v = uniqueValue;
+          }
+        }
+        if ( hasUniqueConstraint )
+        {
+          uniqueValueCache[ idx ].insert( v );
         }
       }
-      if ( hasUniqueConstraint )
-        uniqueValueCaches[ idx ].insert( v );
       newFeature.setAttribute( idx, v );
     }
     result.append( newFeature );

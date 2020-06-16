@@ -29,19 +29,18 @@ allows lookups of CRS and seamless conversions between the various definitions.
 
 Most commonly one comes across two types of coordinate systems:
 
-1. **Geographic coordinate systems** - based on a geodetic datum, normally with coordinates being
-latitude/longitude in degrees. The most common one is World Geodetic System 84 (WGS84).
-
-2. **Projected coordinate systems** - based on a geodetic datum with coordinates projected to a plane,
-typically using meters or feet as units. Common projected coordinate systems are Universal
-Transverse Mercator or Albers Equal Area.
+# Geographic coordinate systems: based on a geodetic datum, normally with coordinates being
+  latitude/longitude in degrees. The most common one is World Geodetic System 84 (WGS84).
+# Projected coordinate systems: based on a geodetic datum with coordinates projected to a plane,
+  typically using meters or feet as units. Common projected coordinate systems are Universal
+  Transverse Mercator or Albers Equal Area.
 
 Internally QGIS uses proj library for all the math behind coordinate transformations, so in case
 of any troubles with projections it is best to examine the PROJ representation within the object,
 as that is the representation that will be ultimately used.
 
-Methods that allow inspection of CRS instances include isValid(), authid(), description(),
-toWkt(), toProj(), mapUnits() and others.
+Methods that allow inspection of CRS instances include :py:func:`~isValid`, :py:func:`~authid`, :py:func:`~description`,
+:py:func:`~toWkt`, :py:func:`~toProj`, :py:func:`~mapUnits` and others.
 Creation of CRS instances is further described in \ref crs_construct_and_copy section below.
 Transformations between coordinate reference systems are done using QgsCoordinateTransform class.
 
@@ -68,10 +67,10 @@ CRS Definition Formats
 
 This section gives an overview of various supported CRS definition formats:
 
-1. **Authority and Code.** Also referred to as OGC WMS format within QGIS as they have been widely
-used in OGC standards. These are encoded as `<auth>:<code>`, for example `EPSG:4326` refers
-to WGS84 system. EPSG is the most commonly used authority that covers a wide range
-of coordinate systems around the world.
+# Authority and Code: Also referred to as OGC WMS format within QGIS as they have been widely
+  used in OGC standards. These are encoded as `<auth>:<code>`, for example `EPSG:4326` refers
+  to WGS84 system. EPSG is the most commonly used authority that covers a wide range
+  of coordinate systems around the world.
 
 An extended variant of this format is OGC URN. Syntax of URN for CRS definition is
 `urn:ogc:def:crs:<auth>:[<version>]:<code>`. This class can also parse URNs (versions
@@ -85,23 +84,21 @@ on different machines or user profiles.
 .. seealso:: :py:func:`authid`
 
 .. seealso:: :py:func:`createFromOgcWmsCrs`
-
-2. **PROJ string.** This is a string consisting of a series of key/value pairs in the following
-format: `+param1=value1 +param2=value2 [...]`. This is the format natively used by the
-underlying proj library. For example, the definition of WGS84 looks like this:
+# PROJ string: This is a string consisting of a series of key/value pairs in the following
+  format: `+param1=value1 +param2=value2 [...]`. This is the format natively used by the
+  underlying proj library. For example, the definition of WGS84 looks like this:
 
 .. code-block::
 
-        +proj=longlat +datum=WGS84 +no_defs
+       +proj=longlat +datum=WGS84 +no_defs
 
 
 
 .. seealso:: :py:func:`toProj`
 
 .. seealso:: :py:func:`createFromProj`
-
-3. **Well-known text (WKT).** Defined by Open Geospatial Consortium (OGC), this is another common
-format to define CRS. For WGS84 the OGC WKT definition is the following:
+# Well-known text (WKT): Defined by Open Geospatial Consortium (OGC), this is another common
+  format to define CRS. For WGS84 the OGC WKT definition is the following:
 
 GEOGCS["WGS 84",
 DATUM["WGS_1984",
@@ -119,17 +116,17 @@ AUTHORITY["EPSG","4326"]]
 CRS Database and Custom CRS
 ===========================
 
-The database of CRS shipped with QGIS is stored in a SQLite database (see QgsApplication.srsDatabaseFilePath())
+The database of CRS shipped with QGIS is stored in a SQLite database (see :py:func:`QgsApplication.srsDatabaseFilePath()`)
 and it is based on the data files maintained by GDAL project (a variety of .csv and .wkt files).
 
 Sometimes it happens that users need to use a CRS definition that is not well known
 or that has been only created with a specific purpose (and thus its definition is not
 available in our database of CRS). Whenever a new CRS definition is seen, it will
-be added to the local database (in user's home directory, see QgsApplication.qgisUserDatabaseFilePath()).
+be added to the local database (in user's home directory, see :py:func:`QgsApplication.qgisUserDatabaseFilePath()`).
 QGIS also features a GUI for management of local custom CRS definitions.
 
 There are therefore two databases: one for shipped CRS definitions and one for custom CRS definitions.
-Custom CRS have internal IDs (accessible with srsid()) greater or equal to \ref USER_CRS_START_ID.
+Custom CRS have internal IDs (accessible with :py:func:`~srsid`) greater or equal to \ref USER_CRS_START_ID.
 The local CRS databases should never be accessed directly with SQLite functions, instead
 you should use QgsCoordinateReferenceSystem API for CRS lookups and for managements of custom CRS.
 
@@ -137,9 +134,9 @@ Validation
 ==========
 
 In some cases (most prominently when loading a map layer), QGIS will try to ensure
-that the given map layer CRS is valid using validate() call. If not, a custom
+that the given map layer CRS is valid using :py:func:`~validate` call. If not, a custom
 validation function will be called - such function may for example show a GUI
-for manual CRS selection. The validation function is configured using setCustomCrsValidation().
+for manual CRS selection. The validation function is configured using :py:func:`~setCustomCrsValidation`.
 If validation fails or no validation function is set, the default CRS is assigned
 (WGS84). QGIS application registers its validation function that will act according
 to user's settings (either show CRS selector dialog or use project/custom CRS).
@@ -153,7 +150,7 @@ constructor that automatically recognizes definition format from the given strin
 Creation of CRS object involves some queries in a local SQLite database, which may
 be potentially expensive. Consequently, CRS creation methods use an internal cache to avoid
 unnecessary database lookups. If the CRS database is modified, then it is necessary to call
-invalidateCache() to ensure that outdated records are not being returned from the cache.
+:py:func:`~invalidateCache` to ensure that outdated records are not being returned from the cache.
 
 Since QGIS 2.16 QgsCoordinateReferenceSystem objects are implicitly shared.
 
@@ -199,15 +196,15 @@ Constructs an invalid CRS object
 
     explicit QgsCoordinateReferenceSystem( const QString &definition );
 %Docstring
-Constructs a CRS object from a string definition using createFromString()
+Constructs a CRS object from a string definition using :py:func:`~QgsCoordinateReferenceSystem.createFromString`
 
 It supports the following formats:
 
-- "EPSG:<code>" - handled with createFromOgcWms()
-- "POSTGIS:<srid>" - handled with createFromSrid()
-- "INTERNAL:<srsid>" - handled with createFromSrsId()
-- "PROJ:<proj>" - handled with createFromProj()
-- "WKT:<wkt>" - handled with createFromWkt()
+- "EPSG:<code>" - handled with :py:func:`~QgsCoordinateReferenceSystem.createFromOgcWms`
+- "POSTGIS:<srid>" - handled with :py:func:`~QgsCoordinateReferenceSystem.createFromSrid`
+- "INTERNAL:<srsid>" - handled with :py:func:`~QgsCoordinateReferenceSystem.createFromSrsId`
+- "PROJ:<proj>" - handled with :py:func:`~QgsCoordinateReferenceSystem.createFromProj`
+- "WKT:<wkt>" - handled with :py:func:`~QgsCoordinateReferenceSystem.createFromWkt`
 
 If no prefix is specified, WKT definition is assumed.
 
@@ -247,7 +244,7 @@ Copy constructor
     static QList< long > validSrsIds();
 %Docstring
 Returns a list of all valid SRS IDs present in the CRS database. Any of the
-returned values can be safely passed to fromSrsId() to create a new, valid
+returned values can be safely passed to :py:func:`~QgsCoordinateReferenceSystem.fromSrsId` to create a new, valid
 QgsCoordinateReferenceSystem object.
 
 .. seealso:: :py:func:`fromSrsId`
@@ -358,7 +355,7 @@ and refer to QGIS internal CRS IDs.
 
 .. note::
 
-   this method uses an internal cache. Call invalidateCache() to clear the cache.
+   this method uses an internal cache. Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 .. seealso:: :py:func:`fromOgcWmsCrs`
 %End
@@ -381,7 +378,7 @@ Sets this CRS by lookup of the given PostGIS SRID in the CRS database.
 Sets this CRS using a WKT definition.
 
 If EPSG code of the WKT definition can be determined, it is extracted
-and createFromOgcWmsCrs() is used to initialize the object.
+and :py:func:`~QgsCoordinateReferenceSystem.createFromOgcWmsCrs` is used to initialize the object.
 
 :param wkt: The WKT for the desired spatial reference system.
 
@@ -393,7 +390,7 @@ and createFromOgcWmsCrs() is used to initialize the object.
 
 .. note::
 
-   this method uses an internal cache. Call invalidateCache() to clear the cache.
+   this method uses an internal cache. Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 .. seealso:: :py:func:`fromWkt`
 %End
@@ -411,7 +408,7 @@ user's local CRS database from home directory is used.
 
 .. note::
 
-   this method uses an internal cache. Call invalidateCache() to clear the cache.
+   this method uses an internal cache. Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 .. seealso:: :py:func:`fromSrsId`
 
@@ -448,7 +445,7 @@ We try to match the Proj string to internal QGIS CRS ID using the following logi
 
 .. note::
 
-   This method uses an internal cache. Call invalidateCache() to clear the cache.
+   This method uses an internal cache. Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 .. seealso:: :py:func:`fromProj`
 
@@ -486,7 +483,7 @@ We try to match the Proj string to internal QGIS CRS ID using the following logi
 
 .. note::
 
-   This method uses an internal cache. Call invalidateCache() to clear the cache.
+   This method uses an internal cache. Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 .. seealso:: :py:func:`fromProj`
 
@@ -498,11 +495,12 @@ We try to match the Proj string to internal QGIS CRS ID using the following logi
 Set up this CRS from a string definition.
 
 It supports the following formats:
-- "EPSG:<code>" - handled with createFromOgcWms()
-- "POSTGIS:<srid>" - handled with createFromSrid()
-- "INTERNAL:<srsid>" - handled with createFromSrsId()
-- "PROJ:<proj>" - handled with createFromProj()
-- "WKT:<wkt>" - handled with createFromWkt()
+
+- "EPSG:<code>" - handled with :py:func:`~QgsCoordinateReferenceSystem.createFromOgcWms`
+- "POSTGIS:<srid>" - handled with :py:func:`~QgsCoordinateReferenceSystem.createFromSrid`
+- "INTERNAL:<srsid>" - handled with :py:func:`~QgsCoordinateReferenceSystem.createFromSrsId`
+- "PROJ:<proj>" - handled with :py:func:`~QgsCoordinateReferenceSystem.createFromProj`
+- "WKT:<wkt>" - handled with :py:func:`~QgsCoordinateReferenceSystem.createFromWkt`
 
 If no prefix is specified, WKT definition is assumed.
 
@@ -530,7 +528,7 @@ For more details on supported formats see OGRSpatialReference.SetFromUserInput()
 .. note::
 
    this function generates a WKT string using OSRSetFromUserInput() and
-   passes it to createFromWkt() function.
+   passes it to :py:func:`~QgsCoordinateReferenceSystem.createFromWkt` function.
    /    // TODO QGIS3: rename to createFromStringOGR so it is clear it's similar to createFromString, just different backend
 %End
 
@@ -541,7 +539,7 @@ This is required for proper shapefile CRS import when using gdal>= 1.9.
 
 .. note::
 
-   This function is called by createFromUserInput() and QgsOgrProvider.crs(), there is usually
+   This function is called by :py:func:`~QgsCoordinateReferenceSystem.createFromUserInput` and :py:func:`QgsOgrProvider.crs()`, there is usually
    no need to call it from elsewhere.
 
 .. note::
@@ -839,7 +837,7 @@ Update proj.4 parameters in our database from proj.4
 %Docstring
 Saves the CRS as a custom ("USER") CRS.
 
-Returns the new CRS srsid(), or -1 if the CRS could not be saved.
+Returns the new CRS :py:func:`~QgsCoordinateReferenceSystem.srsid`, or -1 if the CRS could not be saved.
 
 The ``nativeFormat`` argument specifies the format to use when saving the CRS
 definition. FormatWkt is recommended as it is a lossless format.

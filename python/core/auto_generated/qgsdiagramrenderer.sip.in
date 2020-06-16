@@ -424,7 +424,7 @@ Copy constructor
 %Docstring
 Returns the spacing between diagram contents.
 
-Spacing units can be retrieved by calling spacingUnit().
+Spacing units can be retrieved by calling :py:func:`~QgsDiagramSettings.spacingUnit`.
 
 .. seealso:: :py:func:`setSpacing`
 
@@ -439,7 +439,7 @@ Spacing units can be retrieved by calling spacingUnit().
 %Docstring
 Sets the ``spacing`` between diagram contents.
 
-Spacing units are set via setSpacingUnit().
+Spacing units are set via :py:func:`~QgsDiagramSettings.setSpacingUnit`.
 
 .. seealso:: :py:func:`spacing`
 
@@ -749,7 +749,7 @@ Sets whether the renderer will show legend items for diagram attributes.
 
     virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const = 0;
 %Docstring
-Returns diagram settings for a feature (or ``False`` if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
+Returns diagram settings for a feature (or ``False`` if the diagram for the feature is not to be rendered). Used internally within :py:func:`~QgsDiagramRenderer.renderDiagram`
 
 :param feature: the feature
 :param c: render context

@@ -39,6 +39,7 @@
  * Template that stores data related to a connection to a single server or datasource.
  *
  * It is assumed that following functions exist:
+ *
  * - void qgsConnectionPool_ConnectionCreate(QString name, T& c)  ... create a new connection
  * - void qgsConnectionPool_ConnectionDestroy(T c)                ... destroy the connection
  * - QString qgsConnectionPool_ConnectionToName(T c)              ... lookup connection's name (path)
@@ -47,6 +48,7 @@
  *
  * Because of issues with templates and QObject's signals and slots, this class only provides helper functions for QObject-related
  * functionality - the place which uses the template is resonsible for:
+ *
  * - being derived from QObject
  * - calling initTimer( this ) in constructor
  * - having handleConnectionExpired() slot that calls onConnectionExpired()

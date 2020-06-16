@@ -22,22 +22,26 @@ Content-Type: text/xml; charset=utf-8
        <gml:high>3600 3600</gml:high>
       </gml:GridEnvelope>
      </gml:limits>
+     <gml:axisName>x</gml:axisName>
+     <gml:axisName>y</gml:axisName>
+     <gml:origin>
+      <gml:pos>-30 29.999999</gml:pos>
+     </gml:origin>
+     <gml:offsetVector>0.00833333 0</gml:offsetVector>
+     <gml:offsetVector>0 0.00833333</gml:offsetVector>
     </gml:RectifiedGrid>
-    <gml:axisName>x</gml:axisName>
-    <gml:axisName>y</gml:axisName>
-    <gml:origin/>
-    <gml:offsetVector>0.00833333 0</gml:offsetVector>
-    <gml:offsetVector>0 0.00833333</gml:offsetVector>
    </spatialDomain>
   </domainSet>
   <rangeSet>
    <RangeSet>
     <name>Bands</name>
+    <label>Bands</label>
     <axisDescription>
      <AxisDescription>
       <name>bands</name>
+      <label>bands</label>
       <values>
-       <value>1</value>
+       <singleValue>1</singleValue>
       </values>
      </AxisDescription>
     </axisDescription>

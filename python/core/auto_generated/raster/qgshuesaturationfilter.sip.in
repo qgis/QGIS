@@ -65,7 +65,7 @@ Color and saturation filter pipe for rasters.
     virtual void readXml( const QDomElement &filterElem );
 
 %Docstring
-Sets base class members from xml. Usually called from create() methods of subclasses
+Sets base class members from xml. Usually called from :py:func:`~QgsHueSaturationFilter.create` methods of subclasses
 %End
 
 };

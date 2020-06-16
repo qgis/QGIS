@@ -81,7 +81,7 @@ void QgsColorSchemeList::removeSelection()
     rows << index.row();
   }
   //remove duplicates
-  QList<int> rowsToRemove = QList<int>::fromSet( rows.toSet() );
+  QList<int> rowsToRemove = qgis::setToList( qgis::listToSet( rows ) );
 
   //remove rows in descending order
   std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );
@@ -124,7 +124,7 @@ void QgsColorSchemeList::copyColors()
     rows << index.row();
   }
   //remove duplicates
-  QList<int> rowsToCopy = QList<int>::fromSet( rows.toSet() );
+  QList<int> rowsToCopy = qgis::setToList( qgis::listToSet( rows ) );
 
   QgsNamedColorList colorsToCopy;
   const auto constRowsToCopy = rowsToCopy;
@@ -208,7 +208,7 @@ void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
       rows << index.row();
     }
     //remove duplicates
-    QList<int> rowsToRemove = QList<int>::fromSet( rows.toSet() );
+    QList<int> rowsToRemove = qgis::setToList( qgis::listToSet( rows ) );
 
     //remove rows in descending order
     std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );

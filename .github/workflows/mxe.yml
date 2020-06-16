@@ -1,12 +1,14 @@
 name: Windows cross build with MXE
 
-on: 
- push:
-   branches-ignore:
-     - '**'
- pull_request:
-   branches-ignore:
-     - '**' 
+on: [push, pull_request]
+
+#on:
+# push:
+#   branches-ignore:
+#     - '**'
+# pull_request:
+#   branches-ignore:
+#     - '**'
 
 jobs:
   build:

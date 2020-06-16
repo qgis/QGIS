@@ -66,7 +66,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
   leNameList->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
   mFormatComboBox->addItem( tr( "WKT (Recommended)" ), static_cast< int >( QgsCoordinateReferenceSystem::FormatWkt ) );
-  mFormatComboBox->addItem( tr( "Proj String" ), static_cast< int >( QgsCoordinateReferenceSystem::FormatProj ) );
+  mFormatComboBox->addItem( tr( "Proj String (Legacy — Not Recommended)" ), static_cast< int >( QgsCoordinateReferenceSystem::FormatProj ) );
   mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( QgsCoordinateReferenceSystem::FormatWkt ) ) );
 
   // user database is created at QGIS startup in QgisApp::createDB

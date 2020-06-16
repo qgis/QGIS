@@ -116,7 +116,9 @@ class CORE_EXPORT QgsGeometryUtils
      * \param tolerance The tolerance to use
      * \param acceptImproperIntersection By default, this method returns true only if segments have proper intersection. If set true, returns also TRUE if segments have improper intersection (end of one segment on other segment ; continuous segments).
      * \returns  Whether the segments intersect
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ) )
      *   ret[0], ret[1].asWkt(), ret[2]
@@ -523,7 +525,9 @@ class CORE_EXPORT QgsGeometryUtils
      * \param pt1 first point.
      * \param pt2 second point.
      * \returns New point at middle between points pt1 and pt2.
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   p = QgsPoint( 4, 6 ) # 2D point
      *   pr = midpoint ( p, QgsPoint( 2, 2 ) )
@@ -651,7 +655,9 @@ class CORE_EXPORT QgsGeometryUtils
      * \param Lb2 is the second point on the second line,
      * \param intersection is the result intersection, of it can be found.
      * \return TRUE if the intersection can be found, FALSE - otherwise.
-     * example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,3,0))
      *   # (True, PyQt5.QtGui.QgsVector3D(2.0, 0.0, 0.0))

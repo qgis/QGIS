@@ -75,11 +75,12 @@ class CORE_EXPORT QgsInterpolatedLineColor
 
     /**
      *  Returns the break values, graduated colors and the associated gradients between two values
-     *  - If the color is fixed or only one color for the interval (value1, value2), returns only one color in \a breakColors
-     *    and void lists for  \a breakValues, \a gradients
-     *  - If the color ramp is classified with 'exact', returns void \a gradients
-     *  - If the color ramp is classified with 'discrete', return \a gradients with uniform colors
-     *  - if nothing to render (out of range), return all lists void
+     *
+     * - If the color is fixed or only one color for the interval (value1, value2), returns only one color in \a breakColors
+     *   and void lists for  \a breakValues, \a gradients
+     * - If the color ramp is classified with 'exact', returns void \a gradients
+     * - If the color ramp is classified with 'discrete', return \a gradients with uniform colors
+     * - if nothing to render (out of range), return all lists void
      */
     void graduatedColors( double value1, double value2, QList<double> &breakValues, QList<QColor> &breakColors, QList<QLinearGradient> &gradients ) const;
 
@@ -134,6 +135,11 @@ class CORE_EXPORT QgsInterpolatedLineWidth
     //! Sets whether the variable width ignores out of range value
     void setIgnoreOutOfRange( bool ignoreOutOfRange );
 
+    //! Returns whether absolute value are used as input
+    bool useAbsoluteValue() const;
+    //! Sets whether absolute value are used as input
+    void setUseAbsoluteValue( bool useAbsoluteValue );
+
     //! Returns whether the width is variable
     bool isVariableWidth() const;
     //! Returns whether the width is variable
@@ -162,6 +168,7 @@ class CORE_EXPORT QgsInterpolatedLineWidth
     double mMinimumWidth = DEFAULT_LINE_WIDTH;
     double mMaximumWidth = 3;
     bool mIgnoreOutOfRange = false;
+    bool mUseAbsoluteValue = false;
 
     mutable double mLinearCoef = 1;
     mutable bool mNeedUpdateFormula = true;

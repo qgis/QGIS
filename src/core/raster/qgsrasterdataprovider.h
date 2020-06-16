@@ -365,9 +365,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \return QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers
      *         (from 1).
      *         QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
-     *         (WMS) - TODO: it is not consistent with QgsRaster::IdentifyFormatValue.
      *         QgsRaster::IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
-     *         Empty if failed or there are no results (TODO: better error reporting).
+     *         Empty if failed or there are no results.
      * \note The arbitraryness of the returned document is enforced by WMS standards
      *       up to at least v1.3.0
      * \see sample(), which is much more efficient for simple "value at point" queries.
