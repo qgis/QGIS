@@ -67,21 +67,19 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     {
       RenderJob( QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s )
         : ftr( _ftr )
-        , symbol( _s )
+          , symbol( _s )
       {}
-
-      QgsRuleBasedRenderer::RenderJob &operator=( const QgsRuleBasedRenderer::RenderJob &rj )
-      {
-        symbol = rj.symbol;
-        ftr = rj.ftr;
-        return *this;
-      }
 
       //! Feature to render
       QgsRuleBasedRenderer::FeatureToRender &ftr;
 
       //! Symbol to render feature with (not owned by this object).
       QgsSymbol *symbol = nullptr;
+
+      private:
+#ifdef SIP_RUN
+      RenderJob &operator=( const RenderJob & );
+#endif
     };
 
     /**
