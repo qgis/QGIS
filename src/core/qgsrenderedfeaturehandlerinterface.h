@@ -63,6 +63,11 @@ class CORE_EXPORT QgsRenderedFeatureHandlerInterface
        * The render context which was used while rendering feature.
        */
       const QgsRenderContext &renderContext;
+
+      private:
+#ifdef SIP_RUN
+      RenderedFeatureContext &operator=( const RenderedFeatureContext & );
+#endif
     };
 
     /**
