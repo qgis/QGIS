@@ -34,8 +34,19 @@
 #include <algorithm>
 #include <unordered_set>
 
+static std::pair<float, float> rotateCoords( float x, float y, float origin_x, float origin_y, float r )
+{
+  r = qDegreesToRadians( r );
+  float x0 = x - origin_x, y0 = y - origin_y;
+  // p0 = x0 + i * y0
+  // rot = cos(r) + i * sin(r)
+  // p0 * rot = x0 * cos(r) - y0 * sin(r) + i * [ x0 * sin(r) + y0 * cos(r) ]
+  float x1 = origin_x + x0 * qCos( r ) - y0 * qSin( r );
+  float y1 = origin_y + x0 * qSin( r ) + y0 * qCos( r );
+  return std::make_pair( x1, y1 );
+}
 
-static void make_quad( float x0, float y0, float z0, float x1, float y1, float z1, float height, QVector<float> &data, bool addNormals, bool addTextureCoords )
+static void make_quad( float x0, float y0, float z0, float x1, float y1, float z1, float height, QVector<float> &data, bool addNormals, bool addTextureCoords, float textureRotation )
 {
   float dx = x1 - x0;
   float dy = -( y1 - y0 );
@@ -45,42 +56,75 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
   vn = -vn;
   vn.normalize();
 
+  float u0, v0;
+  float u1, v1;
+  float u2, v2;
+  float u3, v3;
+
+  float ox, oy;
+
   QVector<double> textureCoordinates;
   textureCoordinates.reserve( 12 );
   // select which side of the coordinates to use (x, z or y, z) depending on which side is smaller
   if ( fabsf( dy ) <= fabsf( dx ) )
   {
     // consider x and z as the texture coordinates
-    textureCoordinates.push_back( x0 );
-    textureCoordinates.push_back( z0 + height );
-    textureCoordinates.push_back( x1 );
-    textureCoordinates.push_back( z1 + height );
-    textureCoordinates.push_back( x0 );
-    textureCoordinates.push_back( z0 );
+    u0 = x0;
+    v0 = z0 + height;
 
-    textureCoordinates.push_back( x0 );
-    textureCoordinates.push_back( z0 );
-    textureCoordinates.push_back( x1 );
-    textureCoordinates.push_back( z1 + height );
-    textureCoordinates.push_back( x1 );
-    textureCoordinates.push_back( z1 );
+    u1 = x1;
+    v1 = z1 + height;
+
+    u2 = x0;
+    v2 = z0;
+
+    u3 = x1;
+    v3 = z1;
+
+    ox = ( x0 + x1 ) / 2.0f;
+    oy = ( z0 + z1 ) / 2.0f;
   }
   else
   {
-    // consider y and z as the texture coordinates
-    textureCoordinates.push_back( -y0 );
-    textureCoordinates.push_back( z0 + height );
-    textureCoordinates.push_back( -y1 );
-    textureCoordinates.push_back( z1 + height );
-    textureCoordinates.push_back( -y0 );
-    textureCoordinates.push_back( z0 );
+    // consider y and z as the texture coowallsTextureRotationrdinates
+    u0 = -y0;
+    v0 = z0 + height;
 
-    textureCoordinates.push_back( -y0 );
-    textureCoordinates.push_back( z0 );
-    textureCoordinates.push_back( -y1 );
-    textureCoordinates.push_back( z1 + height );
-    textureCoordinates.push_back( -y1 );
-    textureCoordinates.push_back( z1 );
+    u1 = -y1;
+    v1 = z1 + height;
+
+    u2 = -y0;
+    v2 = z0;
+
+    u3 = -y1;
+    v3 = z1;
+    ox = ( -y0 - y1 ) / 2.0f;
+    oy = ( z0 + z1 ) / 2.0f;
+  }
+
+  textureCoordinates.push_back( u0 );
+  textureCoordinates.push_back( v0 );
+
+  textureCoordinates.push_back( u1 );
+  textureCoordinates.push_back( v1 );
+
+  textureCoordinates.push_back( u2 );
+  textureCoordinates.push_back( v2 );
+
+  textureCoordinates.push_back( u2 );
+  textureCoordinates.push_back( v2 );
+
+  textureCoordinates.push_back( u1 );
+  textureCoordinates.push_back( v1 );
+
+  textureCoordinates.push_back( u3 );
+  textureCoordinates.push_back( v3 );
+
+  for ( int i = 0; i < textureCoordinates.size(); i += 2 )
+  {
+    std::pair<float, float> rotated = rotateCoords( textureCoordinates[i], textureCoordinates[i + 1], 0, 0, textureRotation );
+    textureCoordinates[i] = rotated.first;
+    textureCoordinates[i + 1] = rotated.second;
   }
 
   // triangle 1
@@ -125,7 +169,8 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
 }
 
 
-QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ, bool addTextureCoords, int facade )
+QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ,
+                                bool addTextureCoords, int facade, float wallsTextureRotation, float roofsTextureRotation )
   : mOriginX( originX )
   , mOriginY( originY )
   , mAddNormals( addNormals )
@@ -134,11 +179,14 @@ QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals,
   , mAddTextureCoords( addTextureCoords )
   , mNoZ( noZ )
   , mTessellatedFacade( facade )
+  , mWallsTextureRotation( wallsTextureRotation )
+  , mRoofsTextureRotation( roofsTextureRotation )
 {
   init();
 }
 
-QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ, bool addTextureCoords, int facade )
+QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ,
+                                bool addTextureCoords, int facade, float wallsTextureRotation, float roofsTextureRotation )
   : mBounds( bounds )
   , mOriginX( mBounds.xMinimum() )
   , mOriginY( mBounds.yMinimum() )
@@ -148,6 +196,8 @@ QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, boo
   , mAddTextureCoords( addTextureCoords )
   , mNoZ( noZ )
   , mTessellatedFacade( facade )
+  , mWallsTextureRotation( wallsTextureRotation )
+  , mRoofsTextureRotation( roofsTextureRotation )
 {
   init();
 }
@@ -177,7 +227,8 @@ static bool _isRingCounterClockWise( const QgsCurve &ring )
   return a > 0; // clockwise if a is negative
 }
 
-static void _makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeight, QVector<float> &data, bool addNormals, bool addTextureCoords, double originX, double originY )
+static void _makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeight, QVector<float> &data,
+                        bool addNormals, bool addTextureCoords, double originX, double originY, float textureRotation )
 {
   // we need to find out orientation of the ring so that the triangles we generate
   // face the right direction
@@ -195,7 +246,7 @@ static void _makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeig
     float z1 = std::isnan( pt.z() ) ? 0 : pt.z();
 
     // make a quad
-    make_quad( x0, y0, z0, x1, y1, z1, extrusionHeight, data, addNormals, addTextureCoords );
+    make_quad( x0, y0, z0, x1, y1, z1, extrusionHeight, data, addNormals, addTextureCoords, textureRotation );
     ptPrev = pt;
   }
 }
@@ -573,7 +624,18 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       if ( mAddNormals )
         mData << pNormal.x() << pNormal.z() << - pNormal.y();
       if ( mAddTextureCoords )
-        mData << triangle->xAt( i ) << triangle->yAt( i );
+      {
+        std::pair<float, float> p( triangle->xAt( i ), triangle->yAt( i ) );
+        if ( facade & 1 )
+        {
+          p = rotateCoords( p.first, p.second, 0.0f, 0.0f, mWallsTextureRotation );
+        }
+        else if ( facade & 2 )
+        {
+          p = rotateCoords( p.first, p.second, 0.0f, 0.0f, mRoofsTextureRotation );
+        }
+        mData << p.first << p.second;
+      }
       xData++; yData++; zData++;
     }
 
@@ -586,7 +648,18 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
         if ( mAddNormals )
           mData << -pNormal.x() << -pNormal.z() << pNormal.y();
         if ( mAddTextureCoords )
-          mData << triangle->xAt( i ) << triangle->yAt( i );
+        {
+          std::pair<float, float> p( triangle->xAt( i ), triangle->yAt( i ) );
+          if ( facade & 1 )
+          {
+            p = rotateCoords( p.first, p.second, 0.0f, 0.0f, mWallsTextureRotation );
+          }
+          else if ( facade & 2 )
+          {
+            p = rotateCoords( p.first, p.second, 0.0f, 0.0f, mRoofsTextureRotation );
+          }
+          mData << p.first << p.second;
+        }
       }
     }
   }
@@ -679,7 +752,18 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           if ( mAddNormals )
             mData << pNormal.x() << pNormal.z() << - pNormal.y();
           if ( mAddTextureCoords )
-            mData << p->x << p->y;
+          {
+            std::pair<float, float> pr( p->x, p->y );
+            if ( facade & 1 )
+            {
+              pr = rotateCoords( pr.first, pr.second, 0.0f, 0.0f, mWallsTextureRotation );
+            }
+            else if ( facade & 2 )
+            {
+              pr = rotateCoords( pr.first, pr.second, 0.0f, 0.0f, mRoofsTextureRotation );
+            }
+            mData << pr.first << pr.second;
+          }
         }
 
         if ( mAddBackFaces )
@@ -698,7 +782,18 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
             if ( mAddNormals )
               mData << -pNormal.x() << -pNormal.z() << pNormal.y();
             if ( mAddTextureCoords )
-              mData << p->x << p->y;
+            {
+              std::pair<float, float> pr( p->x, p->y );
+              if ( facade & 1 )
+              {
+                pr = rotateCoords( pr.first, pr.second, 0.0f, 0.0f, mWallsTextureRotation );
+              }
+              else if ( facade & 2 )
+              {
+                pr = rotateCoords( pr.first, pr.second, 0.0f, 0.0f, mRoofsTextureRotation );
+              }
+              mData << pr.first << pr.second;
+            }
           }
         }
       }
@@ -715,10 +810,10 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   // add walls if extrusion is enabled
   if ( extrusionHeight != 0 && ( mTessellatedFacade & 1 ) )
   {
-    _makeWalls( *exterior, false, extrusionHeight, mData, mAddNormals, mAddTextureCoords, mOriginX, mOriginY );
+    _makeWalls( *exterior, false, extrusionHeight, mData, mAddNormals, mAddTextureCoords, mOriginX, mOriginY, mWallsTextureRotation );
 
     for ( int i = 0; i < polygon.numInteriorRings(); ++i )
-      _makeWalls( *qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ), true, extrusionHeight, mData, mAddNormals, mAddTextureCoords, mOriginX, mOriginY );
+      _makeWalls( *qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ), true, extrusionHeight, mData, mAddNormals, mAddTextureCoords, mOriginX, mOriginY, mWallsTextureRotation );
 
     zMax += extrusionHeight;
   }

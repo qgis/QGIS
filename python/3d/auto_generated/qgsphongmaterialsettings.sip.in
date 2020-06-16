@@ -62,6 +62,9 @@ The texture scale changes the size of the displayed texture in the 3D scene
 If the texture scale is less than 1 the texture will be stretched
 %End
 
+    float wallsTextureRotation() const;
+    float roofsTextureRotation() const;
+
     void setAmbient( const QColor &ambient );
 %Docstring
 Sets ambient color component
@@ -86,6 +89,9 @@ Sets whether the diffuse texture will be used
 %Docstring
 Sets the path of the texture
 %End
+
+    void setWallsTextureRotation( float rotation );
+    void setRoofsTextureRotation( float rotation );
 
     void setTextureScale( float scale );
 %Docstring

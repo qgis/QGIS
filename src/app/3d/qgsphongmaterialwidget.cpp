@@ -34,6 +34,9 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent )
   connect( useDiffuseCheckBox, &QCheckBox::stateChanged, this, &QgsPhongMaterialWidget::changed );
   connect( textureFile, &QgsFileWidget::fileChanged, this, &QgsPhongMaterialWidget::changed );
   connect( textureScaleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongMaterialWidget::changed );
+  connect( wallsTextureRotationSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongMaterialWidget::changed );
+  connect( roofsTextureRotationSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongMaterialWidget::changed );
+
 }
 
 void QgsPhongMaterialWidget::setDiffuseVisible( bool visible )
@@ -56,6 +59,8 @@ void QgsPhongMaterialWidget::setMaterial( const QgsPhongMaterialSettings &materi
   useDiffuseCheckBox->setCheckState( material.isUsingDiffuseTexture() ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
   textureFile->setFilePath( material.texturePath() );
   textureScaleSpinBox->setValue( material.textureScale() );
+  wallsTextureRotationSpinBox->setValue( material.wallsTextureRotation() );
+  roofsTextureRotationSpinBox->setValue( material.roofsTextureRotation() );
 }
 
 QgsPhongMaterialSettings QgsPhongMaterialWidget::material() const
@@ -68,5 +73,7 @@ QgsPhongMaterialSettings QgsPhongMaterialWidget::material() const
   m.useTexture( useDiffuseCheckBox->checkState() == Qt::CheckState::Checked );
   m.setTexturePath( textureFile->filePath() );
   m.setTextureScale( textureScaleSpinBox->value() );
+  m.setWallsTextureRotation( wallsTextureRotationSpinBox->value() );
+  m.setRoofsTextureRotation( roofsTextureRotationSpinBox->value() );
   return m;
 }

@@ -42,6 +42,8 @@ class _3D_EXPORT QgsPhongMaterialSettings
       , mIsUsingDiffuseTexture( false )
       , mTexturePath( QString() )
       , mTextureScale( 1.0f )
+      , mWallsTextureRotation( 0.0f )
+      , mRoofsTextureRotation( 0.0f )
     {
     }
 
@@ -65,6 +67,9 @@ class _3D_EXPORT QgsPhongMaterialSettings
      */
     float textureScale() const { return mTextureScale; }
 
+    float wallsTextureRotation() const { return mWallsTextureRotation; }
+    float roofsTextureRotation() const { return mRoofsTextureRotation; }
+
     //! Sets ambient color component
     void setAmbient( const QColor &ambient ) { mAmbient = ambient; }
     //! Sets diffuse color component
@@ -77,6 +82,9 @@ class _3D_EXPORT QgsPhongMaterialSettings
     void useTexture( bool used ) { mIsUsingDiffuseTexture = used; }
     //! Sets the path of the texture
     void setTexturePath( QString texturePath ) { mTexturePath = texturePath; }
+
+    void setWallsTextureRotation( float rotation ) { mWallsTextureRotation = rotation; }
+    void setRoofsTextureRotation( float rotation ) { mRoofsTextureRotation = rotation; }
 
     /**
      * sets the texture scale
@@ -109,6 +117,8 @@ class _3D_EXPORT QgsPhongMaterialSettings
     bool mIsUsingDiffuseTexture;
     QString mTexturePath;
     float mTextureScale;
+    float mWallsTextureRotation;
+    float mRoofsTextureRotation;
 };
 
 

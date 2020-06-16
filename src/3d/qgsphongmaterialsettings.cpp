@@ -26,7 +26,9 @@ void QgsPhongMaterialSettings::readXml( const QDomElement &elem )
   mShininess = elem.attribute( QStringLiteral( "shininess" ) ).toFloat();
   mIsUsingDiffuseTexture = elem.attribute( QStringLiteral( "is_using_diffuse_texture" ), QStringLiteral( "0" ) ).toInt();
   mTexturePath = elem.attribute( QStringLiteral( "diffuse_texture_path" ), QString() );
-  mTextureScale = elem.attribute( QStringLiteral( "texture_scale" ), QString( "%1" ).arg( 1.0 ) ).toFloat();
+  mTextureScale = elem.attribute( QStringLiteral( "texture_scale" ), QString( "1.0" ) ).toFloat();
+  mWallsTextureRotation = elem.attribute( QStringLiteral( "walls-texture-rotation" ), QString( "0.0" ) ).toFloat();
+  mRoofsTextureRotation = elem.attribute( QStringLiteral( "roofs-texture-rotation" ), QString( "0.0" ) ).toFloat();
 }
 
 void QgsPhongMaterialSettings::writeXml( QDomElement &elem ) const
@@ -38,4 +40,6 @@ void QgsPhongMaterialSettings::writeXml( QDomElement &elem ) const
   elem.setAttribute( QStringLiteral( "is_using_diffuse_texture" ), mIsUsingDiffuseTexture );
   elem.setAttribute( QStringLiteral( "diffuse_texture_path" ), mTexturePath );
   elem.setAttribute( QStringLiteral( "texture_scale" ), mTextureScale );
+  elem.setAttribute( QStringLiteral( "walls-texture-rotation" ), mWallsTextureRotation );
+  elem.setAttribute( QStringLiteral( "roofs-texture-rotation" ), mRoofsTextureRotation );
 }
