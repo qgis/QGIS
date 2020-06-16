@@ -132,7 +132,7 @@
             <string>Show information for certificate chain</string>
            </property>
            <property name="text">
-            <string>Connection certificates</string>
+            <string>Connection Certificates</string>
            </property>
            <property name="icon">
             <iconset resource="../../../images/images.qrc">
@@ -149,7 +149,7 @@
             <string>Show information for certificate chain</string>
            </property>
            <property name="text">
-            <string>Connection trusted CAs</string>
+            <string>Connection Trusted CAs</string>
            </property>
            <property name="icon">
             <iconset resource="../../../images/images.qrc">
@@ -172,7 +172,7 @@
        </sizepolicy>
       </property>
       <property name="title">
-       <string>Save SSL server e&amp;xception</string>
+       <string>Save SSL Server E&amp;xception</string>
       </property>
       <property name="checkable">
        <bool>true</bool>

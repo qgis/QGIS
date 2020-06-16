@@ -14,7 +14,7 @@
    <string>gsCollapsibleGroupBox</string>
   </property>
   <property name="title">
-   <string>Widget display</string>
+   <string>Widget Display</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
