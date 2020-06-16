@@ -136,6 +136,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
 // not used    QPointF gpsToPixelPosition( const QgsPoint& point );
     QgsRubberBand *mRubberBand = nullptr;
     QgsPointXY mLastGpsPosition;
+    QgsPointXY mSecondLastGpsPosition;
     QVector<QgsPoint> mCaptureList;
     double mLastElevation = 0.0;
     FixStatus mLastFixStatus;
