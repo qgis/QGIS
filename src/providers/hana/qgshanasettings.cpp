@@ -40,12 +40,7 @@ QString QgsHanaSettings::getPort() const
   if ( QgsHanaIdentifierType::fromInt( mIdentifierType ) == QgsHanaIdentifierType::INSTANCE_NUMBER )
   {
     if ( mMultitenant )
-    {
-      if ( mDatabase == QStringLiteral( "SYSTEMDB" ) )
-        return QString( "3" + mIdentifier + "13" );
-      else
-        return QString( "3" + mIdentifier + "41" );
-    }
+      return QString( "3" + mIdentifier + "13" );
     else
       return QString( "3" + mIdentifier + "15" );
   }
