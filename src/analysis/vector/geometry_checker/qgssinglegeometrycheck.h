@@ -129,6 +129,10 @@ class ANALYSIS_EXPORT QgsGeometryCheckErrorSingle : public QgsGeometryCheckError
     bool handleChanges( const QgsGeometryCheck::Changes &changes ) override SIP_SKIP;
 
   private:
+#ifdef SIP_RUN
+    const QgsGeometryCheckErrorSingle &operator=( const QgsGeometryCheckErrorSingle & );
+#endif
+
     QgsSingleGeometryCheckError *mError = nullptr;
 };
 
