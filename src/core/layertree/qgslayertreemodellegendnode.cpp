@@ -405,6 +405,7 @@ QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() co
   context->setRendererScale( scale );
   context->setMapToPixel( QgsMapToPixel( mupp ) );
   context->setFlag( QgsRenderContext::Antialiasing, true );
+  context->setFlag( QgsRenderContext::RenderSymbolPreview, true );
   return context.release();
 }
 
