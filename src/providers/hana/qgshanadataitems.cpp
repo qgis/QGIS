@@ -32,9 +32,6 @@
 #include <QMessageBox>
 #include <climits>
 
-using namespace std;
-
-// ---------------------------------------------------------------------------
 QgsHanaConnectionItem::QgsHanaConnectionItem(
   QgsDataItem *parent,
   const QString &name,
@@ -55,7 +52,6 @@ QVector<QgsDataItem *> QgsHanaConnectionItem::createChildren()
   if ( conn.isNull() )
   {
     items.append( new QgsErrorItem( this, tr( "Connection failed" ), mPath + "/error" ) );
-    QgsDebugMsg( "Connection failed - " + mName );
     return items;
   }
 
@@ -73,7 +69,7 @@ QVector<QgsDataItem *> QgsHanaConnectionItem::createChildren()
     }
     else
     {
-      Q_FOREACH ( const QgsHanaSchemaProperty &schema, schemas )
+      for ( const QgsHanaSchemaProperty &schema : schemas )
       {
         QgsHanaSchemaItem *schemaItem = new QgsHanaSchemaItem( this, mName, schema.name,
             mPath + '/' + schema.name );
@@ -81,7 +77,7 @@ QVector<QgsDataItem *> QgsHanaConnectionItem::createChildren()
       }
     }
   }
-  catch ( const QException &ex )
+  catch ( const QgsHanaException &ex )
   {
     QgsErrorItem *itemError = new QgsErrorItem( this, tr( "Server error occurred" ), mPath + "/error" );
     itemError->setToolTip( ex.what() );
@@ -102,7 +98,7 @@ bool QgsHanaConnectionItem::equal( const QgsDataItem *other )
 
 void QgsHanaConnectionItem::refreshSchema( const QString &schema )
 {
-  Q_FOREACH ( QgsDataItem *child, mChildren )
+  for ( QgsDataItem *child : mChildren )
   {
     if ( child->name() == schema || schema.isEmpty() )
       child->refresh();
@@ -122,17 +118,10 @@ void QgsHanaConnectionItem::updateToolTip( const QString &userName, const QStrin
     tip += settings.getIdentifier();
   else
     tip += settings.getPort();
-  if ( !tip.isEmpty() )
-    tip += '\n';
+  tip += '\n';
   if ( !dbmsVersion.isEmpty() )
-  {
-    tip += QStringLiteral( "DB Version: " ) + dbmsVersion;
-    if ( !tip.isEmpty() )
-      tip += '\n';
-  }
-  tip += QStringLiteral( "User: " ) + userName;
-  if ( !tip.isEmpty() )
-    tip += '\n';
+    tip += QStringLiteral( "DB Version: " ) + dbmsVersion + '\n';
+  tip += QStringLiteral( "User: " ) + userName + '\n';
   tip += QStringLiteral( "Encrypted: " ) + QString( settings.getEnableSsl() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
   setToolTip( tip );
 }
@@ -151,7 +140,7 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
   if ( !conn.isNull() )
   {
     QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-    Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
+    for ( const QgsMimeDataUtils::Uri &u : lst )
     {
       if ( u.layerType != QLatin1String( "vector" ) )
       {
@@ -165,12 +154,15 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
 
       if ( srcLayer->isValid() )
       {
-        bool fieldsInUpperCase = QgsHanaUtils::countFieldsWithFirstLetterInUppercase( srcLayer->fields() ) > srcLayer->fields().size() / 2;
+        QgsDataSourceUri dsUri( u. uri );
+        QString geomColumn = dsUri.geometryColumn();
+        if ( geomColumn.isEmpty() )
+        {
+          bool fieldsInUpperCase = QgsHanaUtils::countFieldsWithFirstLetterInUppercase( srcLayer->fields() ) > srcLayer->fields().size() / 2;
+          geomColumn = ( srcLayer->geometryType() != QgsWkbTypes::NullGeometry ) ? ( fieldsInUpperCase ? QStringLiteral( "GEOM" ) : QStringLiteral( "geom" ) ) : nullptr;
+        }
 
-        uri.setDataSource( !toSchema.isNull() ? toSchema : nullptr,
-                           u.name,
-                           ( srcLayer->geometryType() != QgsWkbTypes::NullGeometry ) ? ( fieldsInUpperCase ? QStringLiteral( "GEOM" ) : QStringLiteral( "geom" ) ) : nullptr );
-        uri.setKeyColumn( QgsDataSourceUri( u.uri ).keyColumn() );
+        uri.setDataSource( toSchema, u.name, geomColumn, QString(), dsUri.keyColumn() );
         uri.setWkbType( srcLayer->wkbType() );
 
         std::unique_ptr< QgsVectorLayerExporterTask > exportTask(
@@ -294,26 +286,13 @@ QVector<QgsDataItem *> QgsHanaSchemaItem::createChildren()
   }
 
   QgsHanaSettings settings( mConnectionName, true );
-  QVector<QgsHanaLayerProperty> layerProperties = conn->getLayers( mSchemaName,
-      settings.getAllowGeometrylessTables(), settings.getUserTablesOnly() );
+  QVector<QgsHanaLayerProperty> layers = conn->getLayers( mSchemaName,
+                                         settings.getAllowGeometrylessTables(), settings.getUserTablesOnly() );
 
-  if ( !layerProperties.isEmpty() )
+  for ( auto &layerProperty : layers )
   {
-    size_t numLayersWithGeom = 0;
-    Q_FOREACH ( QgsHanaLayerProperty layerProperty, layerProperties )
-    {
-      if ( layerProperty.schemaName != mSchemaName )
-        continue;
-
-      conn->readLayerInfo( layerProperty );
-
-      QgsHanaLayerItem *layerItem = createLayer( layerProperty );
-      if ( layerItem )
-        items.append( layerItem );
-
-      if ( !layerProperty.geometryColName.isEmpty() )
-        ++numLayersWithGeom;
-    }
+    conn->readLayerInfo( layerProperty );
+    items.append( createLayer( layerProperty ) );
   }
 
   this->setName( mSchemaName );
@@ -335,7 +314,7 @@ QgsHanaLayerItem *QgsHanaSchemaItem::createLayer( const QgsHanaLayerProperty &la
     }
     else
     {
-      tip += QStringLiteral( "\n%1 as %2 in SRID %3" )
+      tip += QStringLiteral( "\n%1 as %2 (srid %3)" )
              .arg( layerProperty.geometryColName, QgsWkbTypes::displayString( layerProperty.type ) )
              .arg( layerProperty.srid );
     }
@@ -381,7 +360,7 @@ QgsHanaRootItem::QgsHanaRootItem( QgsDataItem *parent, const QString &name, cons
 QVector<QgsDataItem *> QgsHanaRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
-  Q_FOREACH ( const QString &connName, QgsHanaSettings::getConnectionNames() )
+  for ( const QString &connName : QgsHanaSettings::getConnectionNames() )
   {
     connections << new QgsHanaConnectionItem( this, connName, mPath + '/' + connName );
   }

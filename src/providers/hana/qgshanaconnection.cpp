@@ -15,7 +15,6 @@
  *
  ***************************************************************************/
 #include "qgsexception.h"
-#include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgshanaconnection.h"
 #include "qgshanaconnectionpool.h"
@@ -25,6 +24,7 @@
 #include "qgshanaresultset.h"
 #include "qgshanatablemodel.h"
 #include "qgshanautils.h"
+#include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgscredentials.h"
 #include "qgssettings.h"
