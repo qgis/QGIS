@@ -9189,7 +9189,6 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
   {
     parent = this;
   }
-  bool ok = false;
   bool titleValid = false;
   QString newTitle = QString( currentTitle );
 
