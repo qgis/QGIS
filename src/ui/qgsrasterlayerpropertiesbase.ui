@@ -2089,7 +2089,7 @@ p, li { white-space: pre-wrap; }
            <item>
             <widget class="QGroupBox" name="groupBox">
              <property name="title">
-              <string>Embedded widgets in legend</string>
+              <string>Embedded Widgets in Legend</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_17">
               <item>

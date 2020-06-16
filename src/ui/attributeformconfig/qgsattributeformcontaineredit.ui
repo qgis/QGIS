@@ -51,7 +51,7 @@
    <item row="4" column="0" colspan="3">
     <widget class="QgsCollapsibleGroupBox" name="mControlVisibilityGroupBox">
      <property name="title">
-      <string>Control visibility by expression</string>
+      <string>Control Visibility by Expression</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
