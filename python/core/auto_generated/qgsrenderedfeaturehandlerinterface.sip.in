@@ -48,6 +48,9 @@ Constructor for RenderedFeatureContext.
 %Docstring
 The render context which was used while rendering feature.
 %End
+
+      private:
+      RenderedFeatureContext &operator=( const RenderedFeatureContext & );
     };
 
     virtual void handleRenderedFeature( const QgsFeature &feature, const QgsGeometry &renderedBounds, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext &context ) = 0;
