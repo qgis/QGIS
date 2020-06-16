@@ -361,6 +361,7 @@ SET(QGIS_GUI_SRCS
   qgscodeeditor.cpp
   qgscodeeditorcss.cpp
   qgscodeeditorhtml.cpp
+  qgscodeeditorjs.cpp
   qgscodeeditorpython.cpp
   qgscodeeditorsql.cpp
   qgscodeeditorexpression.cpp
@@ -591,6 +592,7 @@ SET(QGIS_GUI_HDRS
   qgscodeeditorcss.h
   qgscodeeditorexpression.h
   qgscodeeditorhtml.h
+  qgscodeeditorjs.h
   qgscodeeditorpython.h
   qgscodeeditorsql.h
   qgscollapsiblegroupbox.h

@@ -34,6 +34,9 @@
 %Include auto_generated/qgscodeeditorhtml.sip
 %End
 %If ( HAVE_QSCI_SIP )
+%Include auto_generated/qgscodeeditorjs.sip
+%End
+%If ( HAVE_QSCI_SIP )
 %Include auto_generated/qgscodeeditorpython.sip
 %End
 %If ( HAVE_QSCI_SIP )
