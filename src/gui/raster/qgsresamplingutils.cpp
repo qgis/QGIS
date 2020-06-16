@@ -48,6 +48,7 @@ void QgsResamplingUtils::initWidgets( QgsRasterLayer *rasterLayer,
 
   mZoomedOutResamplingComboBox->addItem( QObject::tr( "Nearest neighbour" ), static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Nearest ) );
   mZoomedOutResamplingComboBox->addItem( QObject::tr( "Average" ), static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Bilinear ) );
+  mZoomedOutResamplingComboBox->addItem( QObject::tr( "Cubic" ), static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Cubic ) );
 }
 
 void QgsResamplingUtils::refreshWidgetsFromLayer()
@@ -93,6 +94,10 @@ void QgsResamplingUtils::refreshWidgetsFromLayer()
         if ( zoomedOutResampler->type() == QLatin1String( "bilinear" ) )
         {
           mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Bilinear ) ) );
+        }
+        else if ( zoomedOutResampler->type() == QLatin1String( "cubic" ) )
+        {
+          mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Cubic ) ) );
         }
       }
       else
