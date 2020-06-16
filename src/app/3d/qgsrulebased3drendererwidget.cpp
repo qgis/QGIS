@@ -303,7 +303,7 @@ QVariant QgsRuleBased3DRendererModel::headerData( int section, Qt::Orientation o
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 2 )
   {
     QStringList lst;
-    lst << tr( "Label" ) << tr( "Rule" ); // << tr( "Count" ) << tr( "Duplicate count" );
+    lst << tr( "Label" ) << tr( "Rule" ); // << tr( "Count" ) << tr( "Duplicate Count" );
     return lst[section];
   }
 

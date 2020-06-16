@@ -137,7 +137,7 @@ bool QgsVectorTileLayerRenderer::render()
 
   if ( mLabelProvider )
   {
-    mLabelProvider->setFields( requiredFields );
+    mLabelProvider->setFields( mPerLayerFields );
     QSet<QString> attributeNames;  // we don't need this - already got referenced columns in provider constructor
     if ( !mLabelProvider->prepare( ctx, attributeNames ) )
     {
@@ -197,6 +197,7 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
   QgsCoordinateTransform ct = ctx.coordinateTransform();
 
   QgsVectorTileRendererData tile( rawTile.id );
+  tile.setFields( mPerLayerFields );
   tile.setFeatures( decoder.layerFeatures( mPerLayerFields, ct ) );
   tile.setTilePolygon( QgsVectorTileUtils::tilePolygon( rawTile.id, ct, mTileMatrix, ctx.mapToPixel() ) );
 

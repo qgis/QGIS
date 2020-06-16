@@ -49,13 +49,14 @@ class QgsOptionsDialogHighlightWidget;
  * and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
  *
  * To use:
- * 1) Start with copy of qgsoptionsdialog_template.ui and build options/properties dialog.
- * 2) In source file for dialog, inherit this class instead of QDialog, then in constructor:
- *    ...
- *    setupUi( this ); // set up .ui file objects
- *    initOptionsBase( FALSE ); // set up this class to use .ui objects, optionally restoring base ui
- *    ...
- *    restoreOptionsBaseUi(); // restore the base ui with initOptionsBase or use this later on
+ *
+ * # Start with copy of qgsoptionsdialog_template.ui and build options/properties dialog.
+ * # In source file for dialog, inherit this class instead of QDialog, then in constructor:
+ *   ...
+ *   setupUi( this ); // set up .ui file objects
+ *   initOptionsBase( FALSE ); // set up this class to use .ui objects, optionally restoring base ui
+ *   ...
+ *   restoreOptionsBaseUi(); // restore the base ui with initOptionsBase or use this later on
  */
 
 class GUI_EXPORT QgsOptionsDialogBase : public QDialog
@@ -92,6 +93,13 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     void restoreOptionsBaseUi( const QString &title = QString() );
 
     /**
+     * Refocus the active tab from the last time the dialog was shown.
+     *
+     * \since QGIS 3.14
+     */
+    void restoreLastPage();
+
+    /**
      * Resizes all tabs when the dialog is resized
      * \param index current tab index
      * \since QGIS 3.10
@@ -109,6 +117,33 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * \since QGIS 3.14
      */
     void setCurrentPage( const QString &page );
+
+    /**
+     * Adds a new page to the dialog pages.
+     *
+     * The \a title, \a tooltip and \a icon arguments dictate the page list item title, tooltip and icon respectively.
+     *
+     * The page content is specified via the \a widget argument. Ownership of \a widget is transferred to the dialog.
+     *
+     * \see insertPage()
+     * \since QGIS 3.14
+     */
+    void addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget SIP_TRANSFER );
+
+    /**
+     * Inserts a new page into the dialog pages.
+     *
+     * The \a title, \a tooltip and \a icon arguments dictate the page list item title, tooltip and icon respectively.
+     *
+     * The page content is specified via the \a widget argument. Ownership of \a widget is transferred to the dialog.
+     *
+     * The \a before argument specifies the object name of an existing page. The new page will be inserted directly
+     * before the matching page.
+     *
+     * \see addPage()
+     * \since QGIS 3.14
+     */
+    void insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget SIP_TRANSFER, const QString &before );
 
   public slots:
 

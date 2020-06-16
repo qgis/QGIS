@@ -165,20 +165,20 @@ Constructs single level averaging method
 %Docstring
 Returns starting vertical level.
 
-Numbered from 1. If countedFromTop(), 1 represents the top (surface) level,
+Numbered from 1. If :py:func:`~QgsMeshMultiLevelsAveragingMethod.countedFromTop`, 1 represents the top (surface) level,
 otherwise 1 represents the bottom (bed) level
 
-Always lower or equal than endVerticalLevel()
+Always lower or equal than :py:func:`~QgsMeshMultiLevelsAveragingMethod.endVerticalLevel`
 %End
 
     int endVerticalLevel() const;
 %Docstring
 Returns ending vertical level.
 
-Numbered from 1. If countedFromTop(), 1 represents the top (surface) level,
+Numbered from 1. If :py:func:`~QgsMeshMultiLevelsAveragingMethod.countedFromTop`, 1 represents the top (surface) level,
 otherwise 1 represents the bottom (bed) level
 
-Always lower or equal than endVerticalLevel()
+Always lower or equal than :py:func:`~QgsMeshMultiLevelsAveragingMethod.endVerticalLevel`
 %End
 
     bool countedFromTop() const;
@@ -237,7 +237,7 @@ Constructs the sigma method
 Returns starting fraction.
 
 In range 0-1, where 1 means the surface level and 0 bed level.
-Always lower or equal than endFraction()
+Always lower or equal than :py:func:`~QgsMeshSigmaAveragingMethod.endFraction`
 %End
 
     double endFraction() const;
@@ -245,7 +245,7 @@ Always lower or equal than endFraction()
 Returns ending fraction.
 
 In range 0-1, where 1 means the surface level and 0 bed level.
-Always higher or equal than startFraction()
+Always higher or equal than :py:func:`~QgsMeshSigmaAveragingMethod.startFraction`
 %End
 
 };
@@ -254,14 +254,14 @@ class QgsMeshRelativeHeightAveragingMethod: QgsMesh3dAveragingMethod
 {
 %Docstring
 
-Relative height averaging method averages the values based on range defined relative to bed elevation or surface (when countedFromTop())
+Relative height averaging method averages the values based on range defined relative to bed elevation or surface (when :py:func:`~QgsMeshSigmaAveragingMethod.countedFromTop`)
 The range is defined in the same length units as defined by model (e.g. meters)
 
-if countedFromTop(), the method represents averaging based on depth below surface.
+if :py:func:`~QgsMeshSigmaAveragingMethod.countedFromTop`, the method represents averaging based on depth below surface.
 For example one can pull out results for between 6 to 12 meters below the water surface - depth from 6m to 12m.
 The depth will be truncated at the bed level.
 
-if not countedFromTop(), the method represents averaging based on height above bed level.
+if not :py:func:`~QgsMeshSigmaAveragingMethod.countedFromTop`, the method represents averaging based on height above bed level.
 For example one can pull out results for between 6 to 12 meters above the bed - height from 6m to 12m.
 The height will be truncated at the bed level.
 
@@ -302,14 +302,14 @@ Constructs the depth/height averaging method
 %Docstring
 Returns starting depth/height.
 
-Always lower or equal than endLength()
+Always lower or equal than :py:func:`~QgsMeshRelativeHeightAveragingMethod.endLength`
 %End
 
     double endHeight() const;
 %Docstring
 Returns ending depth/height.
 
-Always higher or equal than startLength()
+Always higher or equal than :py:func:`~QgsMeshRelativeHeightAveragingMethod.startLength`
 %End
 
     bool countedFromTop() const;

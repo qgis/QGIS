@@ -18,7 +18,7 @@ This class is a composition of two QSettings instances:
 
 - the main QSettings instance is the standard User Settings and
 - the second one (Global Settings) is meant to provide read-only
-pre-configuration and defaults to the first one.
+  pre-configuration and defaults to the first one.
 
 For a given settings key, the function call to value(key, default) will return
 the first existing setting in the order specified below:
@@ -81,7 +81,7 @@ If scope is QSettings.UserScope, the QSettings object searches user-specific set
 before it searches system-wide settings as a fallback. If scope is QSettings.SystemScope,
 the QSettings object ignores user-specific settings and provides access to system-wide settings.
 
-The storage format is set to QSettings.NativeFormat (i.e. calling setDefaultFormat() before
+The storage format is set to QSettings.NativeFormat (i.e. calling :py:func:`~QgsSettings.setDefaultFormat` before
 calling this constructor has no effect).
 
 If no application name is given, the QSettings object will only access the organization-wide
@@ -123,10 +123,10 @@ If format is QSettings.IniFormat, fileName is the name of an INI file.
    other programs. In particular, be aware of the following limitations:
 
 - QgsSettings provides no way of reading INI "path" entries, i.e., entries with unescaped slash characters.
-(This is because these entries are ambiguous and cannot be resolved automatically.)
+  (This is because these entries are ambiguous and cannot be resolved automatically.)
 - In INI files, QSettings uses the @ character as a metacharacter in some contexts, to encode
-Qt-specific data types (e.g., \@Rect), and might therefore misinterpret it when it occurs
-in pure INI files.
+  Qt-specific data types (e.g., \@Rect), and might therefore misinterpret it when it occurs
+  in pure INI files.
 %End
 
     explicit QgsSettings( QObject *parent = 0 );
@@ -135,8 +135,8 @@ Constructs a QgsSettings object for accessing settings of the application and or
 set previously with a call to QCoreApplication.setOrganizationName(),
 QCoreApplication.setOrganizationDomain(), and QCoreApplication.setApplicationName().
 
-The scope is QSettings.UserScope and the format is defaultFormat() (QSettings.NativeFormat
-by default). Use setDefaultFormat() before calling this constructor to change the default
+The scope is QSettings.UserScope and the format is :py:func:`~QgsSettings.defaultFormat` (QSettings.NativeFormat
+by default). Use :py:func:`~QgsSettings.setDefaultFormat` before calling this constructor to change the default
 format used by this constructor.
 %End
     ~QgsSettings();
@@ -145,12 +145,12 @@ format used by this constructor.
 %Docstring
 Appends prefix to the current group.
 The current group is automatically prepended to all keys specified to QSettings.
-In addition, query functions such as childGroups(), childKeys(), and allKeys()
+In addition, query functions such as :py:func:`~QgsSettings.childGroups`, :py:func:`~QgsSettings.childKeys`, and :py:func:`~QgsSettings.allKeys`
 are based on the group. By default, no group is set.
 %End
     void endGroup();
 %Docstring
-Resets the group to what it was before the corresponding beginGroup() call.
+Resets the group to what it was before the corresponding :py:func:`~QgsSettings.beginGroup` call.
 %End
 
     QString group() const;
@@ -204,13 +204,13 @@ If size is -1 (the default), it is automatically determined based on the indexes
 %End
     void endArray();
 %Docstring
-Closes the array that was started using beginReadArray() or beginWriteArray().
+Closes the array that was started using :py:func:`~QgsSettings.beginReadArray` or :py:func:`~QgsSettings.beginWriteArray`.
 %End
 
     void setArrayIndex( int i );
 %Docstring
-Sets the current array index to i. Calls to functions such as setValue(), value(),
-remove(), and contains() will operate on the array entry at that index.
+Sets the current array index to i. Calls to functions such as :py:func:`~QgsSettings.setValue`, :py:func:`~QgsSettings.value`,
+:py:func:`~QgsSettings.remove`, and :py:func:`~QgsSettings.contains` will operate on the array entry at that index.
 %End
 
     void setValue( const QString &key, const QVariant &value, QgsSettings::Section section = QgsSettings::NoSection );
@@ -247,7 +247,7 @@ An optional Section argument can be used to get a value from a specific Section.
     bool contains( const QString &key, QgsSettings::Section section = QgsSettings::NoSection ) const;
 %Docstring
 Returns ``True`` if there exists a setting called key; returns ``False`` otherwise.
-If a group is set using beginGroup(), key is taken to be relative to that group.
+If a group is set using :py:func:`~QgsSettings.beginGroup`, key is taken to be relative to that group.
 %End
     QString fileName() const;
 %Docstring

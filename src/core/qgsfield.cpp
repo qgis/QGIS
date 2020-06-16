@@ -114,11 +114,11 @@ QString QgsField::displayType( const bool showConstraints ) const
 
   if ( showConstraints )
   {
-    typeStr += constraints().constraints() & QgsFieldConstraints::ConstraintNotNull
+    typeStr += ( constraints().constraints() & QgsFieldConstraints::ConstraintNotNull )
                ? QStringLiteral( " NOT NULL" )
                : QStringLiteral( " NULL" );
 
-    typeStr += constraints().constraints() & QgsFieldConstraints::ConstraintUnique
+    typeStr += ( constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
                ? QStringLiteral( " UNIQUE" )
                : QString();
   }

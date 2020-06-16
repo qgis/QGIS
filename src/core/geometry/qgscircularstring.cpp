@@ -321,7 +321,7 @@ bool QgsCircularString::fromWkt( const QString &wkt )
   return true;
 }
 
-QByteArray QgsCircularString::asWkb() const
+QByteArray QgsCircularString::asWkb( WkbFlags ) const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
   binarySize += numPoints() * ( 2 + is3D() + isMeasure() ) * sizeof( double );

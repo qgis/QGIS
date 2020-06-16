@@ -39,8 +39,8 @@ class QgsVectorTileLabelProvider : public QgsVectorLayerLabelProvider
     //! Returns field names for each sub-layer that are required for labeling
     virtual QMap<QString, QSet<QString> > usedAttributes( const QgsRenderContext &context, int tileZoom ) const = 0;
 
-    //! Sets required fields
-    virtual void setFields( const QMap<QString, QSet<QString>> &requiredFields ) = 0;
+    //! Sets fields for each sub-layer
+    virtual void setFields( const QMap<QString, QgsFields> &perLayerFields ) = 0;
 
     //! Registers label features for given tile to the labeling engine
     virtual void registerTileFeatures( const QgsVectorTileRendererData &tile, QgsRenderContext &context ) = 0;

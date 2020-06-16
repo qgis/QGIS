@@ -408,7 +408,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
         const QStringList layerNames = decoder.layers();
         for ( const QString &layerName : layerNames )
         {
-          QSet<QString> fieldNames = QSet<QString>::fromList( decoder.layerFieldNames( layerName ) );
+          QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
           perLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( fieldNames );
         }
 
@@ -578,6 +578,13 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
 void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString > &derivedAttributes )
 {
+  if ( ! vId.isValid( ) )
+  {
+    // We should not get here ...
+    QgsDebugMsg( "Invalid vertex id!" );
+    return;
+  }
+
   QString str = QLocale().toString( vId.vertex + 1 );
   derivedAttributes.insert( tr( "Closest vertex number" ), str );
 
@@ -672,6 +679,8 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
     //find closest vertex to clicked point
     closestPoint = QgsGeometryUtils::closestVertex( *feature.geometry().constGet(), QgsPoint( layerPoint ), vId );
   }
+
+
 
   if ( QgsWkbTypes::isMultiType( wkbType ) )
   {
@@ -982,7 +991,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
             }
 
             QMap< QString, QString > derAttributes = derivedAttributes;
-            derAttributes.unite( featureDerivedAttributes( feature, layer ) );
+            derAttributes.unite( featureDerivedAttributes( feature, layer, toLayerCoordinates( layer, point ) ) );
 
             IdentifyResult identifyResult( qobject_cast<QgsMapLayer *>( layer ), labels.join( QStringLiteral( " / " ) ), featureStore.fields(), feature, derAttributes );
 

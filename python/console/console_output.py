@@ -152,7 +152,6 @@ class ShellOutputScintilla(QsciScintilla):
         self.setMarginWidth(0, 0)
         self.setMarginWidth(1, 0)
         self.setMarginWidth(2, 0)
-        # fm = QFontMetrics(font)
         self.setMarginsFont(font)
         self.setMarginWidth(1, "00000")
         self.setMarginLineNumbers(1, True)
@@ -169,8 +168,10 @@ class ShellOutputScintilla(QsciScintilla):
         self.runScut.activated.connect(self.enteredSelected)
         # Reimplemented copy action to prevent paste prompt (>>>,...) in command view
         self.copyShortcut = QShortcut(QKeySequence.Copy, self)
+        self.copyShortcut.setContext(Qt.WidgetWithChildrenShortcut)
         self.copyShortcut.activated.connect(self.copy)
         self.selectAllShortcut = QShortcut(QKeySequence.SelectAll, self)
+        self.selectAllShortcut.setContext(Qt.WidgetWithChildrenShortcut)
         self.selectAllShortcut.activated.connect(self.selectAll)
 
     def insertInitText(self):

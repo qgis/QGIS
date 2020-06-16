@@ -84,8 +84,7 @@ void QgsOapifItemsRequest::processReply()
     return;
   }
 
-  QString vsimemFilename;
-  vsimemFilename.sprintf( "/vsimem/oaipf_%p.json", &buffer );
+  const QString vsimemFilename = QStringLiteral( "/vsimem/oaipf_%1.json" ).arg( reinterpret_cast< quintptr >( &buffer ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
   VSIFCloseL( VSIFileFromMemBuffer( vsimemFilename.toUtf8().constData(),
                                     const_cast<GByte *>( reinterpret_cast<const GByte *>( buffer.constData() ) ),
                                     buffer.size(),

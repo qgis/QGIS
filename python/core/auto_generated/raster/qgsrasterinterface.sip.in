@@ -286,7 +286,7 @@ Returns the band statistics.
                                 const QgsRectangle &extent = QgsRectangle(),
                                 int sampleSize = 0 );
 %Docstring
-Returns ``True`` if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
+Returns ``True`` if histogram is available (cached, already calculated).     *   The parameters are the same as in :py:func:`~QgsRasterInterface.bandStatistics`
 
 :return: ``True`` if statistics are available (ready to use)
 %End
@@ -423,7 +423,7 @@ Write base class members to xml.
 %End
     virtual void readXml( const QDomElement &filterElem );
 %Docstring
-Sets base class members from xml. Usually called from create() methods of subclasses
+Sets base class members from xml. Usually called from :py:func:`~QgsRasterInterface.create` methods of subclasses
 %End
 
   protected:

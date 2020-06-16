@@ -68,10 +68,10 @@ class QgsFeatureExpressionValuesGatherer: public QThread
         , feature( _feature )
       {}
 
-      Entry( const QgsFeatureId &_featureId, const QString &_value )
+      Entry( const QgsFeatureId &_featureId, const QString &_value, const QgsVectorLayer *layer )
         : featureId( _featureId )
         , value( _value )
-        , feature( QgsFeature() )
+        , feature( QgsFeature( layer->fields() ) )
       {}
 
       QVariantList identifierFields;
@@ -82,9 +82,9 @@ class QgsFeatureExpressionValuesGatherer: public QThread
       bool operator()( const Entry &lhs, const Entry &rhs ) const;
     };
 
-    static Entry nullEntry()
+    static Entry nullEntry( QgsVectorLayer *layer )
     {
-      return Entry( QVariantList(), QgsApplication::nullRepresentation(), QgsFeature() );
+      return Entry( QVariantList(), QgsApplication::nullRepresentation(), QgsFeature( layer->fields() ) );
     }
 
     void run() override

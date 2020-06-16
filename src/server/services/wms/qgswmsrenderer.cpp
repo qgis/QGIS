@@ -1837,7 +1837,7 @@ namespace QgsWms
 
     for ( auto tokenIt = tokens.constBegin() ; tokenIt != tokens.constEnd(); ++tokenIt )
     {
-      //whitelist of allowed characters and keywords
+      //allowlist of allowed characters and keywords
       if ( tokenIt->compare( QLatin1String( "," ) ) == 0
            || tokenIt->compare( QLatin1String( "(" ) ) == 0
            || tokenIt->compare( QLatin1String( ")" ) ) == 0
@@ -2885,7 +2885,7 @@ namespace QgsWms
             uniqueValues.unite( layer->uniqueValues( endFieldIndex ) );
           }
           // sort unique values
-          QList<QVariant> values = uniqueValues.toList();
+          QList<QVariant> values = qgis::setToList( uniqueValues );
           std::sort( values.begin(), values.end() );
           if ( dim.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::MinValue )
           {

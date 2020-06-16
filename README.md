@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/qgis/QGIS.svg?branch=master)](https://travis-ci.org/qgis/QGIS)
 [![Docker Status](https://img.shields.io/docker/automated/qgis/qgis.svg)](https://cloud.docker.com/app/qgis/repository/docker/qgis/qgis/general)
 [![Build Status](https://dev.azure.com/qgis/QGIS/_apis/build/status/qgis.QGIS?branchName=master)](https://dev.azure.com/qgis/QGIS/_build/latest?definitionId=1&branchName=master)
+![Windows cross build with MXE](https://github.com/qgis/QGIS/workflows/Windows%20cross%20build%20with%20MXE/badge.svg)
 
 QGIS is an Open Source Geographic Information System. The project was born in
 May of 2002 and was established as a project on SourceForge in June of the same
@@ -60,9 +61,8 @@ modified.
 ## Note
 
 Please follow the installation instructions carefully.
-After extracting the distribution, you can find the HTML version of the
-installation document in `qgis/doc/index.html`. The installation document is
-also available as PDF in the same directory.
+After extracting the distribution, please check the
+[documentation](https://qgis.org/en/docs/index.html)
 
 ## Help us
 Please submit bug reports using the [QGIS bug tracker](https://github.com/qgis/QGIS/issues/).
@@ -93,4 +93,4 @@ If you are not a developer, there are many other possibilities which do not requ
 
 ### Building from source
 
-The [building guide](http://htmlpreview.github.io/?https://raw.github.com/qgis/QGIS/master/doc/INSTALL.html) can be used to get started with building QGIS from source.
+The [building guide](INSTALL.md) can be used to get started with building QGIS from source.

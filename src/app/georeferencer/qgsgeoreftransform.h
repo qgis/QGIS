@@ -155,6 +155,7 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
   private:
     // shallow copy constructor
     QgsGeorefTransform( const QgsGeorefTransform &other );
+    QgsGeorefTransform &operator= ( const QgsGeorefTransform & ) = delete;
 
     //! Factory function which creates an implementation for the given parametrisation.
     static QgsGeorefTransformInterface *createImplementation( TransformParametrisation parametrisation );

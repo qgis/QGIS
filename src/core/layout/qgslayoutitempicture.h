@@ -367,6 +367,9 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
 
     void loadPictureUsingCache( const QString &path );
 
+    QgsLayoutItemPicture( const QgsLayoutItemPicture & ) = delete;
+    QgsLayoutItemPicture &operator=( const QgsLayoutItemPicture & ) = delete;
+
   private slots:
 
     void updateNorthArrowRotation( double rotation );

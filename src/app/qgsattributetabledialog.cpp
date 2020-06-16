@@ -79,7 +79,7 @@ void QgsAttributeTableDialog::updateMultiEditButtonState()
 
   mActionToggleMultiEdit->setEnabled( mLayer->isEditable() );
 
-  if ( !mLayer->isEditable() || ( mLayer->isEditable() && mMainView->view() != QgsDualView::AttributeEditor ) )
+  if ( !mLayer->isEditable() || mMainView->view() != QgsDualView::AttributeEditor )
   {
     mActionToggleMultiEdit->setChecked( false );
   }
@@ -113,6 +113,15 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mActionAddFeature, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddFeature_triggered );
   connect( mActionExpressionSelect, &QAction::triggered, this, &QgsAttributeTableDialog::mActionExpressionSelect_triggered );
   connect( mMainView, &QgsDualView::showContextMenuExternally, this, &QgsAttributeTableDialog::showContextMenu );
+
+  mActionSelectAll->setShortcuts( QKeySequence::SelectAll );
+  mActionSelectAll->setShortcutContext( Qt::WidgetWithChildrenShortcut );
+  mActionCopySelectedRows->setShortcuts( QKeySequence::Copy );
+  mActionCopySelectedRows->setShortcutContext( Qt::WidgetWithChildrenShortcut );
+  mActionCutSelectedRows->setShortcuts( QKeySequence::Cut );
+  mActionCutSelectedRows->setShortcutContext( Qt::WidgetWithChildrenShortcut );
+  mActionPasteFeatures->setShortcuts( QKeySequence::Paste );
+  mActionPasteFeatures->setShortcutContext( Qt::WidgetWithChildrenShortcut );
 
   const QgsFields fields = mLayer->fields();
   for ( const QgsField &field : fields )
@@ -348,7 +357,7 @@ void QgsAttributeTableDialog::updateTitle()
   QWidget *w = mDock ? qobject_cast<QWidget *>( mDock )
                : mDialog ? qobject_cast<QWidget *>( mDialog )
                : qobject_cast<QWidget *>( this );
-  w->setWindowTitle( tr( " %1 :: Features Total: %2, Filtered: %3, Selected: %4" )
+  w->setWindowTitle( tr( " %1 — Features Total: %2, Filtered: %3, Selected: %4" )
                      .arg( mLayer->name() )
                      .arg( std::max( static_cast< long >( mMainView->featureCount() ), mLayer->featureCount() ) ) // layer count may be estimated, so use larger of the two
                      .arg( mMainView->filteredFeatureCount() )
@@ -627,7 +636,7 @@ void QgsAttributeTableDialog::mActionCopySelectedRows_triggered()
     }
     featureStore.setFields( fields );
 
-    QgsFeatureIterator it = mLayer->getFeatures( QgsFeatureRequest( featureIds.toSet() )
+    QgsFeatureIterator it = mLayer->getFeatures( QgsFeatureRequest( qgis::listToSet( featureIds ) )
                             .setSubsetOfAttributes( fieldNames, mLayer->fields() ) );
     QgsFeatureMap featureMap;
     QgsFeature feature;
@@ -933,12 +942,8 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
 
     // To prevent "QAction::event: Ambiguous shortcut overload"
     QgsDebugMsgLevel( QStringLiteral( "Remove shortcuts from attribute table already defined in main window" ), 2 );
-    mActionCopySelectedRows->setShortcut( QKeySequence() );
-    mActionPasteFeatures->setShortcut( QKeySequence() );
-    mActionCutSelectedRows->setShortcut( QKeySequence() );
     mActionZoomMapToSelectedRows->setShortcut( QKeySequence() );
     mActionRemoveSelection->setShortcut( QKeySequence() );
-    mActionSelectAll->setShortcut( QKeySequence() );
     // duplicated on Main Window, with different semantics
     mActionPanMapToSelectedRows->setShortcut( QKeySequence() );
     mActionSearchForm->setShortcut( QKeySequence() );
@@ -974,12 +979,8 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
     // restore attribute table shortcuts in window mode
     QgsDebugMsgLevel( QStringLiteral( "Restore attribute table dialog shortcuts in window mode" ), 2 );
     // duplicated on Main Window
-    mActionCopySelectedRows->setShortcut( QKeySequence( QKeySequence::Copy ) );
-    mActionPasteFeatures->setShortcut( QKeySequence( QKeySequence::Paste ) );
-    mActionCutSelectedRows->setShortcut( QKeySequence( QKeySequence::Cut ) );
     mActionZoomMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+J" ) );
     mActionRemoveSelection->setShortcut( QStringLiteral( "Ctrl+Shift+A" ) );
-    mActionSelectAll->setShortcut( QStringLiteral( "Ctrl+A" ) );
     // duplicated on Main Window, with different semantics
     mActionPanMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+P" ) );
     mActionSearchForm->setShortcut( QStringLiteral( "Ctrl+F" ) );

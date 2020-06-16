@@ -74,13 +74,13 @@ and help text for the associated property.
     void changed();
 %Docstring
 Should be emitted whenever configuration changes happened on this symbol layer configuration.
-If the subsymbol is changed, symbolChanged() should be emitted instead.
+If the subsymbol is changed, :py:func:`~QgsSymbolLayerWidget.symbolChanged` should be emitted instead.
 %End
 
     void symbolChanged();
 %Docstring
 Should be emitted whenever the sub symbol changed on this symbol layer configuration.
-Normally changed() should be preferred.
+Normally :py:func:`~QgsSymbolLayerWidget.changed` should be preferred.
 
 .. seealso:: :py:func:`changed`
 %End

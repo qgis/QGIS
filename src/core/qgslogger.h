@@ -34,9 +34,9 @@ class QFile;
 #define QgsDebugMsgLevel(str, level) if ( level <= QgsLogger::debugLevel() ) { QgsLogger::debug(QString(str), (level), __FILE__, __FUNCTION__, __LINE__); }(void)(0)
 #define QgsDebugCall QgsScopeLogger _qgsScopeLogger(__FILE__, __FUNCTION__, __LINE__)
 #else
-#define QgsDebugCall
-#define QgsDebugMsg(str)
-#define QgsDebugMsgLevel(str, level)
+#define QgsDebugCall do {} while(false)
+#define QgsDebugMsg(str) do {} while(false)
+#define QgsDebugMsgLevel(str, level) do {} while(false)
 #endif
 
 /**

@@ -26,6 +26,7 @@
 #include "qgstest.h"
 #include "qgsvectorlayerref.h"
 #include "qgslayertree.h"
+#include "qgsmaplayerstylemanager.h"
 
 /**
  * \ingroup UnitTests
@@ -164,6 +165,10 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   QgsLayerTreeLayer *layerTreelayer = QgsProject::instance()->layerTreeRoot()->findLayer( mpLayer->id() );
   layerTreelayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), 1 );
   layerTreelayer->setItemVisibilityChecked( false );
+  QgsMapLayerStyle style;
+  style.readFromLayer( mpLayer );
+
+  mpLayer->styleManager()->addStyle( QStringLiteral( "testStyle" ), style );
 
   //convert
   mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::GPKG );
@@ -177,6 +182,7 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   layerTreelayer = QgsProject::instance()->layerTreeRoot()->findLayer( mpLayer->id() );
   QCOMPARE( layerTreelayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt(), 1 );
   QCOMPARE( layerTreelayer->isVisible(), false );
+  QVERIFY( mpLayer->styleManager()->styles().contains( QStringLiteral( "testStyle" ) ) );
 
   QgsFeature firstFeatureInAction;
   it = mpLayer->getFeatures();

@@ -30,7 +30,11 @@ from qgis.PyQt.QtCore import (
     QRegExp,
     QFile,
     QCoreApplication,
-    QVariant
+    QVariant,
+    QDateTime,
+    QTime,
+    QDate,
+    Qt,
 )
 from qgis.core import (
     Qgis,
@@ -84,6 +88,8 @@ class CursorAdapter():
                         col = None
                     else:
                         col = str(col)  # force to string
+                if isinstance(col, QDateTime) or isinstance(col, QDate) or isinstance(col, QTime):
+                    col = col.toString(Qt.ISODate)
                 newrec.append(col)
             newres.append(newrec)
         return newres

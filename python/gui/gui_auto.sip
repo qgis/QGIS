@@ -34,6 +34,9 @@
 %Include auto_generated/qgscodeeditorhtml.sip
 %End
 %If ( HAVE_QSCI_SIP )
+%Include auto_generated/qgscodeeditorjs.sip
+%End
+%If ( HAVE_QSCI_SIP )
 %Include auto_generated/qgscodeeditorpython.sip
 %End
 %If ( HAVE_QSCI_SIP )
@@ -123,6 +126,7 @@
 %Include auto_generated/qgsmapcanvasitem.sip
 %Include auto_generated/qgsmapcanvassnappingutils.sip
 %Include auto_generated/qgsmapcanvastracer.sip
+%Include auto_generated/qgsmapcanvasutils.sip
 %Include auto_generated/qgsmaplayeractionregistry.sip
 %Include auto_generated/qgsmaplayercombobox.sip
 %Include auto_generated/qgsmaplayerconfigwidget.sip
@@ -316,6 +320,7 @@
 %Include auto_generated/numericformats/qgsnumericformatselectorwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatguiregistry.sip
+%Include auto_generated/processing/qgsprocessingaggregatewidgets.sip
 %Include auto_generated/processing/qgsprocessingalgorithmconfigurationwidget.sip
 %Include auto_generated/processing/qgsprocessingalgorithmdialogbase.sip
 %Include auto_generated/processing/qgsprocessinggui.sip

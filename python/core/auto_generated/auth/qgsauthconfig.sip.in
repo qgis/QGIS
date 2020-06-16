@@ -175,7 +175,7 @@ Clear all configs
     static bool uriToResource( const QString &accessurl, QString *resource, bool withpath = false );
 %Docstring
 A utility function for generating a resource from a URL to be compared
-against the config's uri() for auto-selecting authentication configs to use
+against the config's :py:func:`~QgsAuthMethodConfig.uri` for auto-selecting authentication configs to use
 
 .. note::
 

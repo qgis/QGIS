@@ -34,6 +34,7 @@ from qgis.core import (
     QgsCoordinateTransform,
     QgsRectangle,
     QgsWkbTypes,
+    QgsTriangle,
     QgsRenderChecker,
     QgsCoordinateReferenceSystem,
     QgsProject
@@ -2107,6 +2108,13 @@ class TestQgsGeometry(unittest.TestCase):
         wkt = geometry.asWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
+        geometries = [QgsGeometry(QgsTriangle(QgsPoint(0, 0, 5), QgsPoint(1, 0, 6), QgsPoint(1, 1, 7))),
+                      QgsGeometry(QgsTriangle(QgsPoint(100, 100, 9), QgsPoint(101, 100, -1), QgsPoint(101, 101, 4)))]
+        geometry = QgsGeometry.collectGeometry(geometries)
+        expwkt = "MultiPolygonZ (((0 0 5, 1 0 6, 1 1 7, 0 0 5)),((100 100 9, 101 100 -1, 101 101 4, 100 100 9)))"
+        wkt = geometry.asWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
         # test empty list
         geometries = []
         geometry = QgsGeometry.collectGeometry(geometries)
@@ -2911,6 +2919,11 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiPoint25D), QgsWkbTypes.MultiPoint25D)
         self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiLineString25D), QgsWkbTypes.MultiLineString25D)
         self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiPolygon25D), QgsWkbTypes.MultiPolygon25D)
+        # until we have tin types, these should return multipolygons
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Triangle), QgsWkbTypes.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.TriangleZ), QgsWkbTypes.MultiPolygonZ)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.TriangleM), QgsWkbTypes.MultiPolygonM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.TriangleZM), QgsWkbTypes.MultiPolygonZM)
 
         # test curveType method
         self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Unknown), QgsWkbTypes.Unknown)

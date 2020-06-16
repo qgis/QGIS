@@ -91,7 +91,7 @@ Returns a matching property from the collection, if one exists.
 %Docstring
 Returns the calculated value of the property with the specified key from within the collection.
 If you need the validity of the value (like ok provided from the
-valueAs* variants) refer to the property() and :py:func:`QgsProperty.value()`
+valueAs* variants) refer to the :py:func:`~QgsAbstractPropertyCollection.property` and :py:func:`QgsProperty.value()`
 
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
             int and used for the key value.
@@ -277,7 +277,7 @@ Returns the set of any fields referenced by the active properties from the colle
 
 :param context: expression context the properties will be evaluated against.
 :param ignoreContext: This parameter has been added in QGIS 3.14. When set to true, even fields not set
-                      in context's fields() will be reported - this is useful e.g. with vector tiles
+                      in context's :py:func:`~QgsAbstractPropertyCollection.fields` will be reported - this is useful e.g. with vector tiles
                       where the actual available field names may not be known beforehand.
 %End
 
@@ -586,7 +586,7 @@ Returns the set of any fields referenced by the active properties from the stack
 
 :param context: expression context the properties will be evaluated against.
 :param ignoreContext: This parameter has been added in QGIS 3.14. When set to true, even fields not set
-                      in context's fields() will be reported - this is useful e.g. with vector tiles
+                      in context's :py:func:`~QgsPropertyCollectionStack.fields` will be reported - this is useful e.g. with vector tiles
                       where the actual available field names may not be known beforehand.
 %End
     virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;

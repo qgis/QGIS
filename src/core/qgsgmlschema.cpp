@@ -514,7 +514,7 @@ void QgsGmlSchema::addAttribute( const QString &name, const QString &value )
 {
   // It is not geometry attribute -> analyze value
   bool ok;
-  value.toInt( &ok );
+  ( void ) value.toInt( &ok );
   QVariant::Type type = QVariant::String;
   if ( ok )
   {
@@ -522,7 +522,7 @@ void QgsGmlSchema::addAttribute( const QString &name, const QString &value )
   }
   else
   {
-    value.toDouble( &ok );
+    ( void ) value.toDouble( &ok );
     if ( ok )
     {
       type = QVariant::Double;

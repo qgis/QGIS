@@ -351,6 +351,7 @@ namespace pal
       bool isInConflictSinglePart( const LabelPosition *lp ) const;
       bool isInConflictMultiPart( const LabelPosition *lp ) const;
 
+      LabelPosition &operator=( const LabelPosition & ) = delete;
   };
 
 } // end namespace

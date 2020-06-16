@@ -266,6 +266,8 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     QgsLegendPatchShape mPatchShape;
     QSizeF mPatchSize;
     LegendNodesSplitBehavior mSplitBehavior = UseDefaultLegendSetting;
+
+    QgsLayerTreeLayer &operator=( const QgsLayerTreeLayer & ) = delete;
 };
 
 

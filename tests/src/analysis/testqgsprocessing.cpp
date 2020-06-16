@@ -48,6 +48,8 @@
 #include "qgslayoutitemlabel.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsrasterfilewriter.h"
+#include "qgsprocessingparameterfieldmap.h"
+#include "qgsprocessingparameteraggregate.h"
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
@@ -596,6 +598,8 @@ class TestQgsProcessing: public QObject
     void parameterProviderConnection();
     void parameterDatabaseSchema();
     void parameterDatabaseTable();
+    void parameterFieldMapping();
+    void parameterAggregate();
     void checkParamValues();
     void combineLayerExtent();
     void processingFeatureSource();
@@ -687,20 +691,20 @@ void TestQgsProcessing::addProvider()
   //try adding another provider
   DummyProvider *p2 = new DummyProvider( "p2" );
   QVERIFY( r.addProvider( p2 ) );
-  QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider * >() << p << p2 );
+  QCOMPARE( qgis::listToSet( r.providers() ), QSet< QgsProcessingProvider * >() << p << p2 );
   QCOMPARE( spyProviderAdded.count(), 2 );
   QCOMPARE( spyProviderAdded.last().at( 0 ).toString(), QString( "p2" ) );
 
   //try adding a provider with duplicate id
   DummyProvider *p3 = new DummyProvider( "p2" );
   QVERIFY( !r.addProvider( p3 ) );
-  QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider * >() << p << p2 );
+  QCOMPARE( qgis::listToSet( r.providers() ), QSet< QgsProcessingProvider * >() << p << p2 );
   QCOMPARE( spyProviderAdded.count(), 2 );
 
   // test that adding a provider which does not load means it is not added to registry
   DummyProviderNoLoad *p4 = new DummyProviderNoLoad( "p4" );
   QVERIFY( !r.addProvider( p4 ) );
-  QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider * >() << p << p2 );
+  QCOMPARE( qgis::listToSet( r.providers() ), QSet< QgsProcessingProvider * >() << p << p2 );
   QCOMPARE( spyProviderAdded.count(), 2 );
 }
 
@@ -7592,6 +7596,143 @@ void TestQgsProcessing::parameterDatabaseTable()
   QVERIFY( def->allowNewTableNames() );
 }
 
+void TestQgsProcessing::parameterFieldMapping()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  std::unique_ptr< QgsProcessingParameterFieldMapping > def( new QgsProcessingParameterFieldMapping( "non_optional", QString(), QStringLiteral( "parent" ), false ) );
+  QVERIFY( !def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() ) );
+  QVariantMap map;
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << map ) );
+  map.insert( QStringLiteral( "name" ), QStringLiteral( "n" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << map ) );
+  map.insert( QStringLiteral( "type" ), QStringLiteral( "t" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << map ) );
+  map.insert( QStringLiteral( "expression" ), QStringLiteral( "e" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << map ) );
+  QVariantMap map2;
+  map2.insert( QStringLiteral( "name" ), QStringLiteral( "n2" ) );
+  map2.insert( QStringLiteral( "type" ), QStringLiteral( "t2" ) );
+  map2.insert( QStringLiteral( "expression" ), QStringLiteral( "e2" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << map << map2 ) );
+
+  QVariantMap params;
+  params.insert( "non_optional", QVariantList() << map << map2 );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
+  QCOMPARE( def->valueAsPythonString( 5, context ), QStringLiteral( "5" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc" ), context ), QStringLiteral( "'abc'" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc\ndef" ), context ), QStringLiteral( "'abc\\ndef'" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant( QVariantList() << map << map2 ), context ), QStringLiteral( "[{'expression': 'e','name': 'n','type': 't'},{'expression': 'e2','name': 'n2','type': 't2'}]" ) );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterFieldMapping('non_optional', '', parentLayerParameterName='parent')" ) );
+
+  QVariantMap mapDef = def->toVariantMap();
+  QgsProcessingParameterFieldMapping fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( mapDef ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.parentLayerParameterName(), def->parentLayerParameterName() );
+  def.reset( dynamic_cast< QgsProcessingParameterFieldMapping *>( QgsProcessingParameters::parameterFromVariantMap( mapDef ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterFieldMapping *>( def.get() ) );
+
+  def->setParentLayerParameterName( QString() );
+  QVERIFY( def->dependsOnOtherParameters().isEmpty() );
+  def->setParentLayerParameterName( QStringLiteral( "test_layer" ) );
+  QCOMPARE( def->dependsOnOtherParameters(), QStringList() << QStringLiteral( "test_layer" ) );
+
+
+  // optional
+  def.reset( new QgsProcessingParameterFieldMapping( "non_optional", QString(), QStringLiteral( "parent" ), true ) );
+  QVERIFY( !def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << map << map2 ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterFieldMapping('non_optional', '', parentLayerParameterName='parent', optional=True)" ) );
+}
+
+void TestQgsProcessing::parameterAggregate()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  std::unique_ptr< QgsProcessingParameterAggregate > def( new QgsProcessingParameterAggregate( "non_optional", QString(), QStringLiteral( "parent" ), false ) );
+  QVERIFY( !def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() ) );
+  QVariantMap map;
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << map ) );
+  map.insert( QStringLiteral( "name" ), QStringLiteral( "n" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << map ) );
+  map.insert( QStringLiteral( "type" ), QStringLiteral( "t" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << map ) );
+  map.insert( QStringLiteral( "aggregate" ), QStringLiteral( "e" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << map ) );
+  map.insert( QStringLiteral( "input" ), QStringLiteral( "i" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << map ) );
+  QVariantMap map2;
+  map2.insert( QStringLiteral( "name" ), QStringLiteral( "n2" ) );
+  map2.insert( QStringLiteral( "type" ), QStringLiteral( "t2" ) );
+  map2.insert( QStringLiteral( "aggregate" ), QStringLiteral( "e2" ) );
+  map2.insert( QStringLiteral( "input" ), QStringLiteral( "i2" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << map << map2 ) );
+
+  QVariantMap params;
+  params.insert( "non_optional", QVariantList() << map << map2 );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
+  QCOMPARE( def->valueAsPythonString( 5, context ), QStringLiteral( "5" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc" ), context ), QStringLiteral( "'abc'" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc\ndef" ), context ), QStringLiteral( "'abc\\ndef'" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant( QVariantList() << map << map2 ), context ), QStringLiteral( "[{'aggregate': 'e','input': 'i','name': 'n','type': 't'},{'aggregate': 'e2','input': 'i2','name': 'n2','type': 't2'}]" ) );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterAggregate('non_optional', '', parentLayerParameterName='parent')" ) );
+
+  QVariantMap mapDef = def->toVariantMap();
+  QgsProcessingParameterAggregate fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( mapDef ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.parentLayerParameterName(), def->parentLayerParameterName() );
+  def.reset( dynamic_cast< QgsProcessingParameterAggregate *>( QgsProcessingParameters::parameterFromVariantMap( mapDef ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterAggregate *>( def.get() ) );
+
+  def->setParentLayerParameterName( QString() );
+  QVERIFY( def->dependsOnOtherParameters().isEmpty() );
+  def->setParentLayerParameterName( QStringLiteral( "test_layer" ) );
+  QCOMPARE( def->dependsOnOtherParameters(), QStringList() << QStringLiteral( "test_layer" ) );
+
+
+  // optional
+  def.reset( new QgsProcessingParameterAggregate( "non_optional", QString(), QStringLiteral( "parent" ), true ) );
+  QVERIFY( !def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << map << map2 ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterAggregate('non_optional', '', parentLayerParameterName='parent', optional=True)" ) );
+}
+
 void TestQgsProcessing::parameterDateTime()
 {
   QgsProcessingContext context;
@@ -9291,8 +9432,9 @@ void TestQgsProcessing::modelExecution()
   // Check variables for child algorithm
   // without values
   QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> variables = model2.variablesForChildAlgorithm( "cx1", context );
-  QCOMPARE( variables.count(), 6 );
+  QCOMPARE( variables.count(), 7 );
   QCOMPARE( variables.value( "DIST" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "CRS" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( variables.value( "SOURCE_LAYER" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( variables.value( "SOURCE_LAYER_minx" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( variables.value( "SOURCE_LAYER_miny" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
@@ -9301,7 +9443,7 @@ void TestQgsProcessing::modelExecution()
 
   // with values
   variables = model2.variablesForChildAlgorithm( "cx1", context, modelInputs, childResults );
-  QCOMPARE( variables.count(), 6 );
+  QCOMPARE( variables.count(), 7 );
   QCOMPARE( variables.value( "DIST" ).value.toInt(), 271 );
   QCOMPARE( variables.value( "SOURCE_LAYER" ).source.parameterName(), QString( "SOURCE_LAYER" ) );
   QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_minx" ).value.toDouble(), -118.8888, 0.001 );
@@ -9311,7 +9453,7 @@ void TestQgsProcessing::modelExecution()
 
   std::unique_ptr< QgsExpressionContextScope > childScope( model2.createExpressionContextScopeForChildAlgorithm( "cx1", context, modelInputs, childResults ) );
   QCOMPARE( childScope->name(), QStringLiteral( "algorithm_inputs" ) );
-  QCOMPARE( childScope->variableCount(), 6 );
+  QCOMPARE( childScope->variableCount(), 7 );
   QCOMPARE( childScope->variable( "DIST" ).toInt(), 271 );
   QCOMPARE( variables.value( "SOURCE_LAYER" ).source.parameterName(), QString( "SOURCE_LAYER" ) );
   QGSCOMPARENEAR( childScope->variable( "SOURCE_LAYER_minx" ).toDouble(), -118.8888, 0.001 );
@@ -9336,7 +9478,7 @@ void TestQgsProcessing::modelExecution()
   QCOMPARE( params.count(), 2 );
 
   variables = model2.variablesForChildAlgorithm( "cx2", context );
-  QCOMPARE( variables.count(), 11 );
+  QCOMPARE( variables.count(), 12 );
   QCOMPARE( variables.value( "DIST" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( variables.value( "SOURCE_LAYER" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( variables.value( "SOURCE_LAYER_minx" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
@@ -9356,7 +9498,7 @@ void TestQgsProcessing::modelExecution()
 
   // with values
   variables = model2.variablesForChildAlgorithm( "cx2", context, modelInputs, childResults );
-  QCOMPARE( variables.count(), 11 );
+  QCOMPARE( variables.count(), 12 );
   QCOMPARE( variables.value( "DIST" ).value.toInt(), 271 );
   QCOMPARE( variables.value( "SOURCE_LAYER" ).source.parameterName(), QString( "SOURCE_LAYER" ) );
   QCOMPARE( variables.value( "cx1_OUTPUT" ).source.outputChildId(), QString( "cx1" ) );
@@ -9408,7 +9550,7 @@ void TestQgsProcessing::modelExecution()
 
 
   variables = model2.variablesForChildAlgorithm( "cx3", context );
-  QCOMPARE( variables.count(), 16 );
+  QCOMPARE( variables.count(), 17 );
   QCOMPARE( variables.value( "DIST" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( variables.value( "SOURCE_LAYER" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( variables.value( "SOURCE_LAYER_minx" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
@@ -9437,7 +9579,7 @@ void TestQgsProcessing::modelExecution()
   QCOMPARE( variables.value( "cx2_OUTPUT_maxy" ).source.outputChildId(), QStringLiteral( "cx2" ) );
   // with values
   variables = model2.variablesForChildAlgorithm( "cx3", context, modelInputs, childResults );
-  QCOMPARE( variables.count(), 16 );
+  QCOMPARE( variables.count(), 17 );
   QCOMPARE( variables.value( "DIST" ).value.toInt(), 271 );
   QCOMPARE( variables.value( "SOURCE_LAYER" ).source.parameterName(), QString( "SOURCE_LAYER" ) );
   QCOMPARE( variables.value( "cx1_OUTPUT" ).source.outputChildId(), QString( "cx1" ) );
@@ -9449,6 +9591,20 @@ void TestQgsProcessing::modelExecution()
   QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_maxx" ).value.toDouble(), -83.3333, 0.001 );
   QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_maxy" ).value.toDouble(), 46.8719, 0.001 );
 
+  // test safe name of the child alg parameter as source to another algoritmn
+  // parameter name should have [\s ' ( ) : .] chars changed to "_" (regexp [\\s'\"\\(\\):\.])
+  // this case is esecially important in case of grass algs where name algorithm contains "."
+  // name of the variable is get from childDescription or childId. Refs https://github.com/qgis/QGIS/issues/36377
+  QgsProcessingModelChildAlgorithm &cx1 = model2.childAlgorithm( "cx1" );
+  QString oldDescription = cx1.description();
+  cx1.setDescription( "cx '():.1" );
+  variables = model2.variablesForChildAlgorithm( "cx3", context );
+  QVERIFY( !variables.contains( "cx1_OUTPUT" ) );
+  QVERIFY( !variables.contains( "cx '():.1_OUTPUT" ) );
+  QVERIFY( variables.contains( "cx______1_OUTPUT" ) );
+  cx1.setDescription( oldDescription ); // set descrin back to avoid fail of following tests
+
+  // test model to python conversion
   model2.setName( QStringLiteral( "2my model" ) );
   model2.childAlgorithm( "cx1" ).modelOutput( QStringLiteral( "MODEL_OUT_LAYER" ) ).setDescription( "my model output" );
   model2.updateDestinationParameters();
@@ -10660,6 +10816,11 @@ void TestQgsProcessing::variantToPythonLiteral()
   QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QStringLiteral( "a 'string'" ) ), QStringLiteral( "'a \\'string\\''" ) );
   QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QStringLiteral( "a \"string\"" ) ), QStringLiteral( "'a \\\"string\\\"'" ) );
   QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QStringLiteral( "a \n str\tin\\g" ) ), QStringLiteral( "'a \\n str\\tin\\\\g'" ) );
+  QVariantMap map;
+  map.insert( QStringLiteral( "list" ), QVariantList() << 1 << 2 << "a" );
+  map.insert( QStringLiteral( "another" ), 4 );
+  map.insert( QStringLiteral( "another2" ), QStringLiteral( "test" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( map ), QStringLiteral( "{'another': 4,'another2': 'test','list': [1,2,'a']}" ) );
 }
 
 void TestQgsProcessing::stringToPythonLiteral()

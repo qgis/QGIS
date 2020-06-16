@@ -66,7 +66,7 @@ for f in $MODIFIED; do
 		cmd=astyle.sh
                 ;;
 
-	*.ui|*.qgm|*.txt|*.t2t|*.py|*.sip|resources/context_help/*)
+	*.ui|*.qgm|*.txt|*.py|*.sip|resources/context_help/*)
 		cmd="flip -ub"
 		;;
 

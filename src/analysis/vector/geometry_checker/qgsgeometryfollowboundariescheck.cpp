@@ -62,7 +62,7 @@ void QgsGeometryFollowBoundariesCheck::collectErrors( const QMap<QString, QgsFea
     // Get potential reference features
     QgsRectangle searchBounds = geomt.constGet()->boundingBox();
     searchBounds.grow( mContext->tolerance );
-    QgsFeatureIds refFeatureIds = mIndex->intersects( searchBounds ).toSet();
+    QgsFeatureIds refFeatureIds = qgis::listToSet( mIndex->intersects( searchBounds ) );
 
     QgsFeatureRequest refFeatureRequest = QgsFeatureRequest().setFilterFids( refFeatureIds ).setNoAttributes();
     QgsFeatureIterator refFeatureIt = mCheckLayer->getFeatures( refFeatureRequest );

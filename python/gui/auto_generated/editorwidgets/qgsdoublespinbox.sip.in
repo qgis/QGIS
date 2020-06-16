@@ -114,7 +114,7 @@ Defines if the clear value should be the minimum or maximum values of the widget
 
     double clearValue() const;
 %Docstring
-Returns the value used when clear() is called.
+Returns the value used when :py:func:`~QgsDoubleSpinBox.clear` is called.
 
 .. seealso:: :py:func:`setClearValue`
 %End
@@ -130,7 +130,7 @@ Set alignment in the embedded line edit widget
 %Docstring
 Set the special-value text to be ``txt``
 If set, the spin box will display this text instead of a numeric value whenever the current value
-is equal to minimum(). Typical use is to indicate that this choice has a special (default) meaning.
+is equal to :py:func:`~QgsDoubleSpinBox.minimum`. Typical use is to indicate that this choice has a special (default) meaning.
 %End
 
     virtual double valueFromText( const QString &text ) const;

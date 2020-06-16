@@ -43,7 +43,7 @@ data itself, rather it calculates and iterates over the details of the raster al
 It's useful for iterating over several layers using a target "reference" layer. E.g. summing
 the pixels in n rasters whilst aligning the result to a reference layer which is not being summed.
 
-Note that calling this method also advances the iterator, just like calling readNextRasterPart().
+Note that calling this method also advances the iterator, just like calling :py:func:`~QgsRasterIterator.readNextRasterPart`.
 
 :param bandNumber: band to read
 :param rows: number of rows on output device

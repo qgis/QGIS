@@ -214,8 +214,8 @@ Returns (date) time in hours formatted to human readable form
     QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius = 0 ) const;
 %Docstring
 Interpolates the value on the given point from given dataset.
-For 3D datasets, it uses dataset3dValue(), \n
-For 1D datasets, it uses dataset1dValue() with ``searchRadius``
+For 3D datasets, it uses :py:func:`~QgsMeshLayer.dataset3dValue`, \n
+For 1D datasets, it uses :py:func:`~QgsMeshLayer.dataset1dValue` with ``searchRadius``
 
 .. note::
 
@@ -283,6 +283,24 @@ Returns the value of 1D mesh dataset defined on edge that are in the search area
 .. versionadded:: 3.14
 %End
 
+
+    QgsMeshDatasetIndex datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const;
+%Docstring
+Returns dataset index from datasets group depending on the time range.
+If the temporal properties is not active, returns invalid dataset index
+
+:param timeRange: the time range
+
+:return: dataset index
+
+.. note::
+
+   the returned dataset index depends on the matching method, see :py:func:`~QgsMeshLayer.setTemporalMatchingMethod`
+
+
+.. versionadded:: 3.14
+%End
+
     QgsMeshDatasetIndex activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange ) const;
 %Docstring
 Returns dataset index from active scalar group depending on the time range.
@@ -294,7 +312,7 @@ If the temporal properties is not active, return the static dataset
 
 .. note::
 
-   the returned dataset index depends on the matching method, see setTemporalMatchingMethod()
+   the returned dataset index depends on the matching method, see :py:func:`~QgsMeshLayer.setTemporalMatchingMethod`
 
 
 .. versionadded:: 3.14
@@ -311,7 +329,7 @@ If the temporal properties is not active, return the static dataset
 
 .. note::
 
-   the returned dataset index depends on the matching method, see setTemporalMatchingMethod()
+   the returned dataset index depends on the matching method, see :py:func:`~QgsMeshLayer.setTemporalMatchingMethod`
 
 
 .. versionadded:: 3.14
@@ -344,7 +362,7 @@ Sets the reference time of the layer
 
     void setTemporalMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod );
 %Docstring
-Sets the method used to match the temporal dataset from a requested time, see activeVectorDatasetAtTime()
+Sets the method used to match the temporal dataset from a requested time, see :py:func:`~QgsMeshLayer.activeVectorDatasetAtTime`
 
 :param matchingMethod: the matching method
 
@@ -392,6 +410,7 @@ Returns the root items of the dataset group tree item
 %Docstring
 Sets the root items of the dataset group tree item.
 Changes active dataset groups if those one are not enabled anymore :
+
 - new active scalar dataset group is the first root item enabled child
 - new active vector dataset group is none
 
@@ -405,6 +424,13 @@ Doesn't take ownership of the pointed item, the root item is cloned.
     void resetDatasetGroupTreeItem();
 %Docstring
 Reset the dataset group tree item to default from provider
+
+.. versionadded:: 3.14
+%End
+
+    QgsInterval firstValidTimeStep() const;
+%Docstring
+Returns the first valid time step of the dataset groups, invalid QgInterval if no time step is present
 
 .. versionadded:: 3.14
 %End

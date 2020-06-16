@@ -144,8 +144,8 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
     {
       QgsFields fields = mLayer ? mLayer->fields() : feature.fields();
       // List of formatters through we want to pass the values
-      QStringList formattersWhiteList;
-      formattersWhiteList << QStringLiteral( "KeyValue" )
+      QStringList formattersAllowList;
+      formattersAllowList << QStringLiteral( "KeyValue" )
                           << QStringLiteral( "List" )
                           << QStringLiteral( "ValueRelation" )
                           << QStringLiteral( "ValueMap" );
@@ -161,7 +161,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
         {
           const QgsEditorWidgetSetup setup = fields.at( i ).editorWidgetSetup();
           const QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
-          if ( formattersWhiteList.contains( fieldFormatter->id() ) )
+          if ( formattersAllowList.contains( fieldFormatter->id() ) )
             val = fieldFormatter->representValue( mLayer.data(), i, setup.config(), QVariant(), val );
         }
 

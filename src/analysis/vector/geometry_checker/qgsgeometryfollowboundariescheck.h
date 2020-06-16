@@ -47,6 +47,9 @@ class ANALYSIS_EXPORT QgsGeometryFollowBoundariesCheck : public QgsGeometryCheck
     enum ResolutionMethod { NoChange };
     QgsVectorLayer *mCheckLayer;
     QgsSpatialIndex *mIndex = nullptr;
+
+    QgsGeometryFollowBoundariesCheck( const QgsGeometryFollowBoundariesCheck & ) = delete;
+    QgsGeometryFollowBoundariesCheck &operator=( const QgsGeometryFollowBoundariesCheck & ) = delete;
 };
 
 #endif // QGSGEOMETRYFOLLOWBOUNDARIESCHECK_H

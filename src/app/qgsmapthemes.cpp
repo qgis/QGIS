@@ -27,8 +27,8 @@
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
 #include "qgsnewnamedialog.h"
+#include "qgshelp.h"
 
-#include <QInputDialog>
 #include <QMessageBox>
 
 QgsMapThemes *QgsMapThemes::sInstance;
@@ -98,6 +98,8 @@ void QgsMapThemes::addPreset()
   dlg.setHintString( tr( "Name of the new theme" ) );
   dlg.setOverwriteEnabled( false );
   dlg.setConflictingNameWarning( tr( "A theme with this name already exists." ) );
+  dlg.buttonBox()->addButton( QDialogButtonBox::Help );
+  connect( dlg.buttonBox(), &QDialogButtonBox::helpRequested, this, &QgsMapThemes::showHelp );
   if ( dlg.exec() != QDialog::Accepted || dlg.name().isEmpty() )
     return;
 
@@ -159,6 +161,8 @@ void QgsMapThemes::renameCurrentPreset()
       dlg.setHintString( tr( "Enter the new name of the map theme" ) );
       dlg.setOverwriteEnabled( false );
       dlg.setConflictingNameWarning( tr( "A theme with this name already exists." ) );
+      dlg.buttonBox()->addButton( QDialogButtonBox::Help );
+      connect( dlg.buttonBox(), &QDialogButtonBox::helpRequested, this, &QgsMapThemes::showHelp );
       if ( dlg.exec() != QDialog::Accepted || dlg.name().isEmpty() )
         return;
 
@@ -217,4 +221,9 @@ void QgsMapThemes::menuAboutToShow()
   mActionAddPreset->setEnabled( !hasCurrent );
   mActionRemoveCurrentPreset->setEnabled( hasCurrent );
   mActionRenameCurrentPreset->setEnabled( hasCurrent );
+}
+
+void QgsMapThemes::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#configuring-map-themes" ) );
 }

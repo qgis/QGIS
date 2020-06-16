@@ -69,7 +69,15 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
       break;
 
     case QVariant::DateTime:
+      fieldType = QStringLiteral( "TIMESTAMP" );
+      fieldSize = -1;
+      break;
+
     case QVariant::Date:
+      fieldType = QStringLiteral( "DATE" );
+      fieldSize = -1;
+      break;
+
     case QVariant::Time:
     case QVariant::String:
       fieldType = QStringLiteral( "TEXT" );
@@ -107,6 +115,12 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
       fieldPrec = subField.precision();
       break;
     }
+
+    case QVariant::ByteArray:
+      fieldType = QStringLiteral( "BLOB" );
+      fieldSize = -1;
+      fieldPrec = -1;
+      break;
 
     default:
       return false;
@@ -611,6 +625,8 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
                   << QgsVectorDataProvider::NativeType( tr( "Text" ), QStringLiteral( "TEXT" ), QVariant::String )
                   << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "FLOAT" ), QVariant::Double )
                   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "INTEGER" ), QVariant::LongLong )
+                  << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "DATE" ), QVariant::Date )
+                  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "TIMESTAMP" ), QVariant::DateTime )
 
                   << QgsVectorDataProvider::NativeType( tr( "Array of text" ), SPATIALITE_ARRAY_PREFIX.toUpper() + "TEXT" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::StringList, 0, 0, 0, 0, QVariant::String )
                   << QgsVectorDataProvider::NativeType( tr( "Array of decimal numbers (double)" ), SPATIALITE_ARRAY_PREFIX.toUpper() + "REAL" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::Double )
@@ -678,6 +694,19 @@ static TypeSubType getVariantType( const QString &type )
   {
     return TypeSubType( QVariant::List, QVariant::Invalid );
   }
+  else if ( type == QLatin1String( "blob" ) )
+  {
+    return TypeSubType( QVariant::ByteArray, QVariant::Invalid );
+  }
+  else if ( type == QLatin1String( "timestamp" ) ||
+            type == QLatin1String( "datetime" ) )
+  {
+    return  TypeSubType( QVariant::DateTime, QVariant::Invalid );
+  }
+  else if ( type == QLatin1String( "date" ) )
+  {
+    return  TypeSubType( QVariant::Date, QVariant::Invalid );
+  }
   else
     // for sure any SQLite value can be represented as SQLITE_TEXT
     return TypeSubType( QVariant::String, QVariant::Invalid );
@@ -719,6 +748,11 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
       {
         fieldType = QVariant::Double;
         type = "DOUBLE";
+      }
+      if ( fld->BlobValuesCount != 0 )
+      {
+        fieldType = QVariant::ByteArray;
+        type = "BLOB";
       }
       mAttributeFields.append( QgsField( name, fieldType, type, 0, 0, QString() ) );
     }
@@ -874,7 +908,7 @@ void QgsSpatiaLiteProvider::fetchConstraints()
   char **results = nullptr;
   char *errMsg = nullptr;
 
-  // this is not particularly robust but unfortunately sqlite offers no way to check directly
+  // this is not robust but unfortunately sqlite offers no way to check directly
   // for the presence of constraints on a field (only indexes, but not all constraints are indexes)
   QString sql = QStringLiteral( "SELECT sql FROM sqlite_master WHERE type='table' AND name=%1" ).arg( QgsSqliteUtils::quotedIdentifier( mTableName ) );
   int columns = 0;
@@ -891,9 +925,20 @@ void QgsSpatiaLiteProvider::fetchConstraints()
     ;
   else
   {
+    // Use the same logic implemented in GDAL for GPKG
+    QSet<QString> uniqueFieldNames;
+    {
+      QString errMsg;
+      uniqueFieldNames = QgsSqliteUtils::uniqueFields( mSqliteHandle, mTableName, errMsg );
+      if ( ! errMsg.isEmpty() )
+      {
+        QgsMessageLog::logMessage( tr( "Error searching for unique constraints on fields for table %1" ).arg( mTableName ), tr( "spatialite" ) );
+      }
+    }
+
     QString sqlDef = QString::fromUtf8( results[ 1 ] );
     // extract definition
-    QRegularExpression re( QStringLiteral( "\\((.*)\\)" ) );
+    QRegularExpression re( QStringLiteral( R"raw(\((.*)\))raw" ) );
     QRegularExpressionMatch match = re.match( sqlDef );
     if ( match.hasMatch() )
     {
@@ -901,13 +946,26 @@ void QgsSpatiaLiteProvider::fetchConstraints()
       for ( auto &field : matched.split( ',' ) )
       {
         field = field.trimmed();
-        QString fieldName = field.left( field.indexOf( ' ' ) );
-        QString definition = field.mid( field.indexOf( ' ' ) + 1 );
+        QString fieldName;
+        QString definition;
+        const QChar delimiter { field.at( 0 ) };
+        if ( delimiter == '"' || delimiter == '`' )
+        {
+          const int start {  field.indexOf( delimiter ) + 1};
+          const int end { field.indexOf( delimiter, start ) };
+          fieldName = field.mid( start, end - start );
+          definition = field.mid( end + 1 );
+        }
+        else
+        {
+          fieldName = field.left( field.indexOf( ' ' ) );
+          definition = field.mid( field.indexOf( ' ' ) + 1 );
+        }
         int fieldIdx = mAttributeFields.lookupField( fieldName );
         if ( fieldIdx >= 0 )
         {
           QgsFieldConstraints constraints = mAttributeFields.at( fieldIdx ).constraints();
-          if ( definition.contains( QLatin1String( "unique" ), Qt::CaseInsensitive ) || definition.contains( QLatin1String( "primary key" ), Qt::CaseInsensitive ) )
+          if ( uniqueFieldNames.contains( fieldName ) || definition.contains( QLatin1String( "primary key" ), Qt::CaseInsensitive ) )
             constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
           if ( definition.contains( QLatin1String( "not null" ), Qt::CaseInsensitive ) || definition.contains( QLatin1String( "primary key" ), Qt::CaseInsensitive ) )
             constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
@@ -957,7 +1015,7 @@ void QgsSpatiaLiteProvider::insertDefaultValue( int fieldIndex, QString defaultV
   {
     QVariant defaultVariant = defaultVal;
 
-    if ( mAttributeFields.at( fieldIndex ).name() != mPrimaryKey || ( mAttributeFields.at( fieldIndex ).name() == mPrimaryKey && !mPrimaryKeyAutoIncrement ) )
+    if ( mAttributeFields.at( fieldIndex ).name() != mPrimaryKey || !mPrimaryKeyAutoIncrement )
     {
       bool ok;
       switch ( mAttributeFields.at( fieldIndex ).type() )
@@ -1105,7 +1163,6 @@ void QgsSpatiaLiteProvider::loadFields()
         QString name = QString::fromUtf8( results[( i * columns ) + 1] );
         if ( name.compare( mGeometryColumn, Qt::CaseInsensitive ) == 0 )
           continue;
-
         QString type = QString::fromUtf8( results[( i * columns ) + 2] ).toLower();
         QString pk = results[( i * columns ) + 5];
         if ( pk.toInt() != 0 && ( type.compare( QLatin1String( "integer" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 ||
@@ -3896,8 +3953,28 @@ QSet<QVariant> QgsSpatiaLiteProvider::uniqueValues( int index, int limit ) const
             uniqueValues.insert( QVariant( sqlite3_column_double( stmt, 0 ) ) );
             break;
           case SQLITE_TEXT:
-            uniqueValues.insert( QVariant( QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 0 ) ) ) );
+          {
+            const QString txt = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 0 ) );
+            if ( mAttributeFields.at( index ).type() == QVariant::DateTime )
+            {
+              QDateTime dt = QDateTime::fromString( txt, QStringLiteral( "yyyy-MM-ddThh:mm:ss" ) );
+              if ( !dt.isValid() )
+              {
+                // if that fails, try SQLite's default date format
+                dt = QDateTime::fromString( txt, QStringLiteral( "yyyy-MM-dd hh:mm:ss" ) );
+              }
+              uniqueValues.insert( QVariant( dt ) );
+            }
+            else if ( mAttributeFields.at( index ).type() == QVariant::Date )
+            {
+              uniqueValues.insert( QVariant( QDate::fromString( txt, QStringLiteral( "yyyy-MM-dd" ) ) ) );
+            }
+            else
+            {
+              uniqueValues.insert( QVariant( txt ) );
+            }
             break;
+          }
           default:
             uniqueValues.insert( QVariant( mAttributeFields.at( index ).type() ) );
             break;
@@ -4179,9 +4256,27 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
             QByteArray ba = stringVal.toUtf8();
             sqlite3_bind_text( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
           }
+          else if ( type == QVariant::ByteArray )
+          {
+            // binding a BLOB value
+            const QByteArray ba = v.toByteArray();
+            sqlite3_bind_blob( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
+          }
           else if ( type == QVariant::StringList || type == QVariant::List )
           {
             const QByteArray ba = QgsJsonUtils::encodeValue( v ).toUtf8();
+            sqlite3_bind_text( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
+          }
+          else if ( type == QVariant::DateTime )
+          {
+            QDateTime dt = v.toDateTime();
+            QByteArray ba = dt.toString( QStringLiteral( "yyyy-MM-ddThh:mm:ss" ) ).toUtf8();
+            sqlite3_bind_text( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
+          }
+          else if ( type == QVariant::Date )
+          {
+            QDate d = v.toDate();
+            QByteArray ba = d.toString( QStringLiteral( "yyyy-MM-dd" ) ).toUtf8();
             sqlite3_bind_text( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
           }
           else
@@ -4246,7 +4341,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   return ret == SQLITE_OK;
 }
 
-QString createIndexName( QString tableName, QString field )
+QString QgsSpatiaLiteProvider::createIndexName( QString tableName, QString field )
 {
   QRegularExpression safeExp( QStringLiteral( "[^a-zA-Z0-9]" ) );
   tableName.replace( safeExp, QStringLiteral( "_" ) );
@@ -4488,6 +4583,10 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
   for ( QgsChangedAttributesMap::const_iterator iter = attr_map.begin(); iter != attr_map.end(); ++iter )
   {
     // Loop over all changed features
+    //
+    // For each changed feature, create an update string like
+    // "UPDATE table SET simple_column=23.5, complex_column=? WHERE primary_key=fid"
+    // On any update failure, changes to all features will be rolled back
 
     QgsFeatureId fid = iter.key();
 
@@ -4502,10 +4601,13 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
     QString sql = QStringLiteral( "UPDATE %1 SET " ).arg( QgsSqliteUtils::quotedIdentifier( mTableName ) );
     bool first = true;
 
+    // keep track of map of parameter index to value
+    QMap<int, QVariant> bindings;
+    int bind_parameter_idx = 1;
+
     // cycle through the changed attributes of the feature
     for ( QgsAttributeMap::const_iterator siter = attrs.begin(); siter != attrs.end(); ++siter )
     {
-      // Loop over all changed attributes
       try
       {
         QgsField fld = field( siter.key() );
@@ -4552,6 +4654,20 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
             return false;
           }
         }
+        else if ( type == QVariant::ByteArray )
+        {
+          // binding a BLOB value
+          sql += QStringLiteral( "%1=?" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ) );
+          bindings[ bind_parameter_idx++ ] = val;
+        }
+        else if ( type == QVariant::DateTime )
+        {
+          sql += QStringLiteral( "%1=%2" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ), QgsSqliteUtils::quotedString( val.toDateTime().toString( QStringLiteral( "yyyy-MM-ddThh:mm:ss" ) ) ) );
+        }
+        else if ( type == QVariant::Date )
+        {
+          sql += QStringLiteral( "%1=%2" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ), QgsSqliteUtils::quotedString( val.toDateTime().toString( QStringLiteral( "yyyy-MM-dd" ) ) ) );
+        }
         else
         {
           // binding a TEXT value
@@ -4565,9 +4681,60 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
     }
     sql += QStringLiteral( " WHERE %1=%2" ).arg( QgsSqliteUtils::quotedIdentifier( mPrimaryKey ) ).arg( fid );
 
-    ret = exec_sql( sql.toUtf8(), errMsg );
+    // prepare SQLite statement
+    sqlite3_stmt *stmt = nullptr;
+    ret = sqlite3_prepare_v2( sqliteHandle( ), sql.toUtf8().constData(), -1, &stmt, nullptr );
     if ( ret != SQLITE_OK )
     {
+      // some unexpected error occurred during preparation
+      const char *err = sqlite3_errmsg( sqliteHandle( ) );
+      errMsg = static_cast<char *>( sqlite3_malloc( strlen( err ) + 1 ) );
+      strcpy( errMsg, err );
+      handleError( sql, errMsg, savepointId );
+      return false;
+    }
+
+    // bind variables not handled directly in the string
+    for ( auto i = bindings.cbegin(); i != bindings.cend(); ++i )
+    {
+      int parameter_idx = i.key();
+      const QVariant val = i.value();
+      switch ( val.type() )
+      {
+        case QVariant::ByteArray:
+        {
+          const QByteArray ba = val.toByteArray();
+          sqlite3_bind_blob( stmt, parameter_idx, ba.constData(), ba.size(), SQLITE_TRANSIENT );
+          break;
+        }
+
+        default:
+          // This will only happen if the above code is changed to bind more types,
+          // but the programmer has forgotten to handle the type here. Fatal error.
+          sqlite3_finalize( stmt );
+          Q_ASSERT( false );
+      }
+
+      if ( ret != SQLITE_OK )
+      {
+        // some unexpected error occurred during binding
+        const char *err = sqlite3_errmsg( sqliteHandle( ) );
+        errMsg = static_cast<char *>( sqlite3_malloc( strlen( err ) + 1 ) );
+        strcpy( errMsg, err );
+        handleError( sql, errMsg, savepointId );
+        sqlite3_finalize( stmt );
+        return false;
+      }
+    }
+
+    ret = sqlite3_step( stmt );
+    sqlite3_finalize( stmt );
+    if ( ret != SQLITE_DONE )
+    {
+      // some unexpected error occurred during execution of update query
+      const char *err = sqlite3_errmsg( sqliteHandle( ) );
+      errMsg = static_cast<char *>( sqlite3_malloc( strlen( err ) + 1 ) );
+      strcpy( errMsg, err );
       handleError( sql, errMsg, savepointId );
       return false;
     }

@@ -111,7 +111,7 @@ bool QgsMapRendererJob::prepareLabelCache() const
     // we may need to clear label cache and re-register labeled features - check for that here
 
     // can we reuse the cached label solution?
-    bool canUseCache = canCache && mCache->dependentLayers( LABEL_CACHE_ID ).toSet() == labeledLayers;
+    bool canUseCache = canCache && qgis::listToSet( mCache->dependentLayers( LABEL_CACHE_ID ) ) == labeledLayers;
     if ( !canUseCache )
     {
       // no - participating layers have changed
@@ -817,7 +817,16 @@ void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, Labe
       // Only retain parts of the second rendering that are "inside" the mask image
       QPainter *painter = job.context.painter();
       painter->setCompositionMode( QPainter::CompositionMode_DestinationIn );
-      painter->drawImage( 0, 0, *maskImage );
+
+      //Create an "alpha binarized" image of the maskImage to :
+      //* Eliminate antialiasing artefact
+      //* Avoid applying mask opacity to elements under the mask but not masked
+      QImage maskBinAlpha = maskImage->createMaskFromColor( 0 );
+      QVector<QRgb> mswTable;
+      mswTable.push_back( qRgba( 0, 0, 0, 255 ) );
+      mswTable.push_back( qRgba( 0, 0, 0, 0 ) );
+      maskBinAlpha.setColorTable( mswTable );
+      painter->drawImage( 0, 0, maskBinAlpha );
 #if DEBUG_RENDERING
       job.img->save( QString( "/tmp/second_%1_a.png" ).arg( i ) );
 #endif
@@ -844,7 +853,7 @@ void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, Labe
         job.firstPassJob->img->save( QString( "/tmp/second_%1_first_pass_2.png" ).arg( i ) );
 #endif
         // ... and overpaint the second pass' image on it
-        painter1->setCompositionMode( QPainter::CompositionMode_SourceOver );
+        painter1->setCompositionMode( QPainter::CompositionMode_DestinationOver );
         painter1->drawImage( 0, 0, *job.img );
 #if DEBUG_RENDERING
         job.img->save( QString( "/tmp/second_%1_b.png" ).arg( i ) );

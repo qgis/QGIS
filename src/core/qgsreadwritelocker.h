@@ -71,6 +71,10 @@ class CORE_EXPORT QgsReadWriteLocker
     ~QgsReadWriteLocker();
 
   private:
+#ifdef SIP_RUN
+    QgsReadWriteLocker &operator=( const QgsReadWriteLocker & );
+#endif
+
     QReadWriteLock &mLock;
     Mode mMode = Unlocked;
 };

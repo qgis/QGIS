@@ -436,3 +436,8 @@ void QgsTextShadowSettings::updateDataDefinedProperties( QgsRenderContext &conte
       d->blendMode = QgsSymbolLayerUtils::decodeBlendMode( blendstr );
   }
 }
+
+QSet<QString> QgsTextShadowSettings::referencedFields( const QgsRenderContext & ) const
+{
+  return QSet< QString >(); // nothing for now
+}

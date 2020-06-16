@@ -199,7 +199,7 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
     } // costs
 
     // convert to list and sort to maintain same order of points between algorithm runs
-    QList< int > verticesList = vertices.toList();
+    QList< int > verticesList = qgis::setToList( vertices );
     areaPoints.reserve( verticesList.size() );
     std::sort( verticesList.begin(), verticesList.end() );
     for ( int v : verticesList )
@@ -245,13 +245,13 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
         QgsGeometry geomLower = QgsGeometry::fromMultiPointXY( lowerBoundary );
 
         feat.setGeometry( geomUpper );
-        attributes = sourceAttributes.value( i );
+        attributes = sourceAttributes.value( i + 1 );
         attributes << QStringLiteral( "upper" ) << origPoint;
         feat.setAttributes( attributes );
         pointsSink->addFeature( feat, QgsFeatureSink::FastInsert );
 
         feat.setGeometry( geomLower );
-        attributes = sourceAttributes.value( i );
+        attributes = sourceAttributes.value( i + 1 );
         attributes << QStringLiteral( "lower" ) << origPoint;
         feat.setAttributes( attributes );
         pointsSink->addFeature( feat, QgsFeatureSink::FastInsert );
@@ -262,7 +262,7 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
     {
       QgsGeometry geomLines = QgsGeometry::fromMultiPolylineXY( lines );
       feat.setGeometry( geomLines );
-      attributes = sourceAttributes.value( i );
+      attributes = sourceAttributes.value( i + 1 );
       attributes << QStringLiteral( "lines" ) << origPoint;
       feat.setAttributes( attributes );
       linesSink->addFeature( feat, QgsFeatureSink::FastInsert );

@@ -587,6 +587,18 @@ QString QgsProcessingUtils::variantToPythonLiteral( const QVariant &value )
       return parts.join( ',' ).prepend( '[' ).append( ']' );
     }
 
+    case QVariant::Map:
+    {
+      const QVariantMap map = value.toMap();
+      QStringList parts;
+      parts.reserve( map.size() );
+      for ( auto it = map.constBegin(); it != map.constEnd(); ++it )
+      {
+        parts << QStringLiteral( "%1: %2" ).arg( stringToPythonLiteral( it.key() ), variantToPythonLiteral( it.value() ) );
+      }
+      return parts.join( ',' ).prepend( '{' ).append( '}' );
+    }
+
     default:
       break;
   }

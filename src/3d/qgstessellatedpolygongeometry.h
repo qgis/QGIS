@@ -26,12 +26,16 @@ namespace Qt3DRender
   class QBuffer;
 }
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup 3d
  * Class derived from Qt3DRender::QGeometry that represents polygons tessellated into 3D geometry.
  *
  * Takes a list of polygons as input, internally it does tessellation and writes output to the internal
  * vertex buffer. Optionally it can add "walls" if the extrusion height is non-zero.
+ *
+ * \note Not available in Python bindings
  *
  * \since QGIS 3.0
  */

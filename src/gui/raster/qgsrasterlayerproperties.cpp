@@ -128,6 +128,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   connect( mStaticTemporalRange, &QRadioButton::toggled, mStaticWmstFrame, &QWidget::setEnabled );
   connect( mReferenceTime, &QCheckBox::toggled, mWmstReferenceTimeFrame, &QWidget::setEnabled );
 
+  if ( mRasterLayer && mRasterLayer->temporalProperties() )
+    connect( mRasterLayer->temporalProperties(), &QgsRasterLayerTemporalProperties::changed, this, &QgsRasterLayerProperties::temporalPropertiesChange );
+
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
   menuStyle->addAction( tr( "Load Style…" ), this, &QgsRasterLayerProperties::loadStyle_clicked );
@@ -543,7 +546,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   mResetColorRenderingBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUndo.svg" ) ) );
 
-  QString title = QString( tr( "Layer Properties - %1" ) ).arg( lyr->name() );
+  QString title = tr( "Layer Properties — %1" ).arg( lyr->name() );
 
   if ( !mRasterLayer->styleManager()->isDefault( mRasterLayer->styleManager()->currentStyle() ) )
     title += QStringLiteral( " (%1)" ).arg( mRasterLayer->styleManager()->currentStyle() );
@@ -1234,31 +1237,42 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
   if ( mWmstGroup->isVisibleTo( this ) )
     uri[ QStringLiteral( "allowTemporalUpdates" ) ] = mWmstGroup->isChecked();
 
+
   if ( mWmstGroup->isEnabled() &&
        mRasterLayer->dataProvider() &&
        mRasterLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
   {
-    if ( mStaticTemporalRange->isChecked() )
-    {
-      QString time = mStartStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs ) + '/' +
-                     mEndStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs );
-      uri[ QStringLiteral( "time" ) ] = time;
-      uri[ QStringLiteral( "temporalSource" ) ] = QLatin1String( "provider" );
-    }
+    bool enableTime = !mDisableTime->isChecked();
 
-    if ( mProjectTemporalRange->isChecked() )
-    {
-      QgsDateTimeRange range;
+    uri[ QStringLiteral( "enableTime" ) ] = enableTime;
+    qobject_cast< QgsRasterLayerTemporalProperties * >( mRasterLayer->temporalProperties() )->setIntervalHandlingMethod( static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >(
+          mFetchModeComboBox->currentData().toInt() ) );
 
-      if ( QgsProject::instance()->timeSettings() )
-        range = QgsProject::instance()->timeSettings()->temporalRange();
-      if ( range.begin().isValid() && range.end().isValid() )
+    // Don't do static temporal updates if temporal properties are active
+    if ( !mRasterLayer->temporalProperties()->isActive() )
+    {
+      if ( mStaticTemporalRange->isChecked() )
       {
-        QString time = range.begin().toString( Qt::ISODateWithMs ) + '/' +
-                       range.end().toString( Qt::ISODateWithMs );
-
+        QString time = mStartStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs ) + '/' +
+                       mEndStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs );
         uri[ QStringLiteral( "time" ) ] = time;
-        uri[ QStringLiteral( "temporalSource" ) ] = QLatin1String( "project" );
+        uri[ QStringLiteral( "temporalSource" ) ] = QLatin1String( "provider" );
+      }
+
+      if ( mProjectTemporalRange->isChecked() )
+      {
+        QgsDateTimeRange range;
+
+        if ( QgsProject::instance()->timeSettings() )
+          range = QgsProject::instance()->timeSettings()->temporalRange();
+        if ( range.begin().isValid() && range.end().isValid() )
+        {
+          QString time = range.begin().toString( Qt::ISODateWithMs ) + '/' +
+                         range.end().toString( Qt::ISODateWithMs );
+
+          uri[ QStringLiteral( "time" ) ] = time;
+          uri[ QStringLiteral( "temporalSource" ) ] = QLatin1String( "project" );
+        }
       }
     }
 
@@ -1272,11 +1286,6 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
       if ( uri.contains( QStringLiteral( "referenceTime" ) ) )
         uri.remove( QStringLiteral( "referenceTime" ) );
     }
-    bool enableTime = !mDisableTime->isChecked();
-
-    uri[ QStringLiteral( "enableTime" ) ] = enableTime;
-    qobject_cast< QgsRasterLayerTemporalProperties * >( mRasterLayer->temporalProperties() )->setIntervalHandlingMethod( static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >(
-          mFetchModeComboBox->currentData().toInt() ) );
   }
 
   if ( currentUri != uri )
@@ -1359,6 +1368,24 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
 
     mDisableTime->setChecked( !enableTime );
 
+    mWmstOptions->setEnabled( !mRasterLayer->temporalProperties()->isActive() );
+
+    if ( mRasterLayer->temporalProperties()->isActive() )
+      mWmstOptionsLabel->setText( tr( "The static temporal options below are disabled because the layer "
+                                      "temporal properties are active, to enable them disable temporal properties "
+                                      "in the temporal tab. " ) );
+    QgsDateTimeRange range;
+    if ( QgsProject::instance()->timeSettings() )
+      range = QgsProject::instance()->timeSettings()->temporalRange();
+
+    if ( !range.begin().isValid() || !range.end().isValid() )
+    {
+      mProjectTemporalRange->setEnabled( false );
+      mProjectTemporalRangeLabel->setText( tr( "The option below is disabled because the project temporal range "
+                                           "is not valid, update the project temporal range in the project properties "
+                                           "with valid values in order to use it here." ) );
+    }
+
     mWmstGroup->setChecked( uri.contains( QStringLiteral( "allowTemporalUpdates" ) ) &&
                             uri.value( QStringLiteral( "allowTemporalUpdates" ), true ).toBool() );
   }
@@ -1388,6 +1415,18 @@ void QgsRasterLayerProperties::passProjectTemporalRange_toggled( bool checked )
     else
       mLabel->setText( tr( "Project temporal range is not valid, can't use it here" ) );
   }
+}
+
+void QgsRasterLayerProperties::temporalPropertiesChange()
+{
+  mWmstOptions->setEnabled( !mRasterLayer->temporalProperties()->isActive() );
+
+  if ( mRasterLayer->temporalProperties()->isActive() )
+    mWmstOptionsLabel->setText( tr( "The static temporal options below are disabled because the layer "
+                                    "temporal properties are active, to enable them disable temporal properties "
+                                    "in the temporal tab. " ) );
+  else
+    mWmstOptionsLabel->clear();
 }
 
 void QgsRasterLayerProperties::mLayerOrigNameLineEd_textEdited( const QString &text )
@@ -1669,7 +1708,7 @@ double QgsRasterLayerProperties::transparencyCellValue( int row, int column )
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( tableTransparency->cellWidget( row, column ) );
   if ( !lineEdit || lineEdit->text().isEmpty() )
   {
-    std::numeric_limits<double>::quiet_NaN();
+    return std::numeric_limits<double>::quiet_NaN();
   }
   return lineEdit->text().toDouble();
 }
@@ -2169,21 +2208,28 @@ void QgsRasterLayerProperties::saveStyleAs_clicked()
   QgsSettings settings;
   QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
+  QString selectedFilter;
   QString outputFileName = QFileDialog::getSaveFileName(
                              this,
                              tr( "Save layer properties as style file" ),
                              lastUsedDir,
-                             tr( "QGIS Layer Style File" ) + " (*.qml)" + ";;" + tr( "Styled Layer Descriptor" ) + " (*.sld)" );
+                             tr( "QGIS Layer Style File" ) + " (*.qml)" + ";;" + tr( "Styled Layer Descriptor" ) + " (*.sld)",
+                             &selectedFilter );
   if ( outputFileName.isEmpty() )
     return;
 
-  // set style type depending on extension
-  StyleType type = StyleType::QML;
-  if ( outputFileName.endsWith( QLatin1String( ".sld" ), Qt::CaseInsensitive ) )
-    type = StyleType::SLD;
-  else
-    // ensure the user never omits the extension from the file name
+  StyleType type;
+  // use selectedFilter to set style type
+  if ( selectedFilter.contains( QStringLiteral( ".qml" ), Qt::CaseInsensitive ) )
+  {
     outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << QStringLiteral( "qml" ) );
+    type = StyleType::QML;
+  }
+  else
+  {
+    outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << QStringLiteral( "sld" ) );
+    type = StyleType::SLD;
+  }
 
   apply(); // make sure the style to save is up-to-date
 

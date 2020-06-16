@@ -23,7 +23,7 @@ message output creator function.
 QGIS application uses QgsMessageView class for displaying a dialog to the user.
 
 Object deletes itself when it's not needed anymore. Children should use
-signal destroyed() to notify the deletion
+signal :py:func:`~destroyed` to notify the deletion
 %End
 
 %TypeHeaderCode

@@ -1050,7 +1050,7 @@
                     <item row="0" column="1">
                      <widget class="QRadioButton" name="mFileFormatQgzButton">
                       <property name="text">
-                       <string>QGZ Archive file format, supports auxiliary data</string>
+                       <string>QGZ Archive file format, embeds auxiliary data</string>
                       </property>
                       <attribute name="buttonGroup">
                        <string notr="true">mDefaultProjectFileFormatButtonGroup</string>
@@ -1060,7 +1060,10 @@
                     <item row="1" column="1">
                      <widget class="QRadioButton" name="mFileFormatQgsButton">
                       <property name="text">
-                       <string>QGS Project saved in a clear text, does not support auxiliary data</string>
+                       <string>QGS Project saved in a clear text, does not embed auxiliary data</string>
+                      </property>
+                      <property name="toolTip">
+                       <string>The auxiliary data will be kept in a separate .qgd data file which must be distributed along with the .qgs project file.</string>
                       </property>
                       <attribute name="buttonGroup">
                        <string notr="true">mDefaultProjectFileFormatButtonGroup</string>

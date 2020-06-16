@@ -784,6 +784,7 @@ QgsMeshStreamField &QgsMeshStreamField::operator=( const QgsMeshStreamField &oth
   mPen = other.mPen;
   mTraceImage = other.mTraceImage ;
   mMapToFieldPixel = other.mMapToFieldPixel ;
+  mVectorColoring = other.mVectorColoring;
   mPixelFillingCount = other.mPixelFillingCount ;
   mMaxPixelFillingCount = other.mMaxPixelFillingCount ;
   mLayerExtent = other.mLayerExtent ;

@@ -106,7 +106,8 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
     return;
 
   context.painter()->save();
-  context.painter()->setRenderHint( QPainter::Antialiasing, true );
+  if ( context.flags() & QgsRenderContext::Antialiasing )
+    context.painter()->setRenderHint( QPainter::Antialiasing, true );
 
   QString displayString = QgsExpression::replaceExpressionText( mLabelText, &context.expressionContext() );
   QStringList displayStringList = displayString.split( '\n' );

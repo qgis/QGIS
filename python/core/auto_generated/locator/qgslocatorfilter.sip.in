@@ -177,21 +177,21 @@ Retrieves the filter results for a specified search ``string``. The ``context``
 argument encapsulates the context relating to the search (such as a map
 extent to prioritize).
 
-Implementations of fetchResults() should emit the resultFetched()
+Implementations of :py:func:`~QgsLocatorFilter.fetchResults` should emit the :py:func:`~QgsLocatorFilter.resultFetched`
 signal whenever they encounter a matching result.
 
 Subclasses should periodically check the ``feedback`` object to determine
 whether the query has been canceled. If so, the subclass should return
 from this method as soon as possible.
 
-This will be called from a background thread unless flags() returns the
+This will be called from a background thread unless :py:func:`~QgsLocatorFilter.flags` returns the
 QgsLocatorFilter.FlagFast flag.
 %End
 
     virtual void triggerResult( const QgsLocatorResult &result ) = 0;
 %Docstring
 Triggers a filter ``result`` from this filter. This is called when
-one of the results obtained by a call to fetchResults() is triggered
+one of the results obtained by a call to :py:func:`~QgsLocatorFilter.fetchResults` is triggered
 by a user. The filter subclass must implement logic here
 to perform the desired operation for the search result.
 E.g. a file search filter would open file associated with the triggered
@@ -291,7 +291,7 @@ custom configuration widget.
 
 .. note::
 
-   hasConfigWidget() must return ``True`` to indicate that the filter supports configuration.
+   :py:func:`~QgsLocatorFilter.hasConfigWidget` must return ``True`` to indicate that the filter supports configuration.
 %End
 
     void logMessage( const QString &message, Qgis::MessageLevel level = Qgis::Info );
@@ -300,7 +300,7 @@ Logs a ``message`` to the log panel
 
 .. warning::
 
-   in Python, do not use print() method as it might result in crashes
+   in Python, do not use :py:func:`~QgsLocatorFilter.print` method as it might result in crashes
    since fetching results does not happen in the main thread.
 
 .. versionadded:: 3.2
@@ -317,7 +317,7 @@ Emitted when the filter finishes fetching results.
     void resultFetched( const QgsLocatorResult &result );
 %Docstring
 Should be emitted by filters whenever they encounter a matching result
-during within their fetchResults() implementation.
+during within their :py:func:`~QgsLocatorFilter.fetchResults` implementation.
 %End
 
 };

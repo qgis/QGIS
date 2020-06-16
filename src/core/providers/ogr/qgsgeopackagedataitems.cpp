@@ -112,28 +112,35 @@ QgsGeoPackageCollectionItem::QgsGeoPackageCollectionItem( QgsDataItem *parent, c
 QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
-  const auto layers = QgsOgrLayerItem::subLayers( mPath.remove( QLatin1String( "gpkg:/" ) ), QStringLiteral( "GPKG" ) );
-  for ( const QgsOgrDbLayerInfo *info : layers )
+  try
   {
-    if ( info->layerType() == QgsLayerItem::LayerType::Raster )
+    const auto layers = QgsOgrLayerItem::subLayers( mPath.remove( QLatin1String( "gpkg:/" ) ), QStringLiteral( "GPKG" ) );
+    for ( const QgsOgrDbLayerInfo *info : layers )
     {
-      children.append( new QgsGeoPackageRasterLayerItem( this, info->name(), info->path(), info->uri() ) );
+      if ( info->layerType() == QgsLayerItem::LayerType::Raster )
+      {
+        children.append( new QgsGeoPackageRasterLayerItem( this, info->name(), info->path(), info->uri() ) );
+      }
+      else
+      {
+        children.append( new QgsGeoPackageVectorLayerItem( this, info->name(), info->path(), info->uri(), info->layerType( ) ) );
+      }
     }
-    else
+    qDeleteAll( layers );
+    QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( "geopackage" );
+    if ( storage )
     {
-      children.append( new QgsGeoPackageVectorLayerItem( this, info->name(), info->path(), info->uri(), info->layerType( ) ) );
+      const QStringList projectNames = storage->listProjects( mPath );
+      for ( const QString &projectName : projectNames )
+      {
+        QgsGeoPackageProjectUri projectUri { true, mPath, projectName };
+        children.append( new QgsProjectItem( this, projectName, QgsGeoPackageProjectStorage::encodeUri( projectUri ) ) );
+      }
     }
   }
-  qDeleteAll( layers );
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( "geopackage" );
-  if ( storage )
+  catch ( QgsOgrLayerNotValidException &ex )
   {
-    const QStringList projectNames = storage->listProjects( mPath );
-    for ( const QString &projectName : projectNames )
-    {
-      QgsGeoPackageProjectUri projectUri { true, mPath, projectName };
-      children.append( new QgsProjectItem( this, projectName, QgsGeoPackageProjectStorage::encodeUri( projectUri ) ) );
-    }
+    children.append( new QgsErrorItem( this, ex.what(), mPath + "/error" ) );
   }
   return children;
 }
@@ -207,13 +214,13 @@ void QgsGeoPackageCollectionItem::addConnection()
   QgsOgrDbConnection connection( mName, QStringLiteral( "GPKG" ) );
   connection.setPath( mPath );
   connection.save();
-  mParent->refreshConnections();
+  mParent->refreshConnections( QStringLiteral( "GPKG" ) );
 }
 
 void QgsGeoPackageCollectionItem::deleteConnection()
 {
   QgsOgrDbConnection::deleteConnection( name(), QStringLiteral( "GPKG" ) );
-  mParent->refreshConnections();
+  mParent->refreshConnections( QStringLiteral( "GPKG" ) );
 }
 
 bool QgsGeoPackageCollectionItem::vacuumGeoPackageDb( const QString &name, const QString &path, QString &errCause )

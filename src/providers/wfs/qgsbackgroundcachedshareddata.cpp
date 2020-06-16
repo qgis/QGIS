@@ -212,8 +212,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     logMessageWithReason( QStringLiteral( "GDAL SQLite driver not available" ) );
     return false;
   }
-  QString vsimemFilename;
-  vsimemFilename.sprintf( "/vsimem/qgis_cache_template_%p/features.sqlite", this );
+  const QString vsimemFilename = QStringLiteral( "/vsimem/qgis_cache_template_%1/features.sqlite" ).arg( reinterpret_cast< quintptr >( this ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
   mCacheTablename = CPLGetBasename( vsimemFilename.toStdString().c_str() );
   VSIUnlink( vsimemFilename.toStdString().c_str() );
   const char *apszOptions[] = { "INIT_WITH_EPSG=NO", "SPATIALITE=YES", nullptr };

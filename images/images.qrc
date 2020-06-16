@@ -864,7 +864,7 @@
         <file>themes/default/georeferencer/mGeorefRun.png</file>
         <file>themes/default/georeferencer/mPushButtonPencil.png</file>
         <file>themes/default/georeferencer/mActionGDALScript.png</file>
-        <file>themes/default/georeferencer/mActionLinkGeorefToQGis.png</file>
+        <file>themes/default/georeferencer/mActionLinkGeorefToQgis.png</file>
         <file>themes/default/georeferencer/mActionLinkQGisToGeoref.png</file>
         <file>themes/default/georeferencer/mActionLoadGCPpoints.png</file>
         <file>themes/default/georeferencer/mActionAddGCPPoint.png</file>

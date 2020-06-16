@@ -224,7 +224,7 @@ This causes the attributes contained within the given ``feature`` to be rearrang
 some cases dropped) in order to match the fields and order indicated by ``fields``.
 
 The exact behavior depends on whether or not ``feature`` has a valid fields container
-set (see QgsFeature.fields()). If a fields container is set, then the names of the
+set (see :py:func:`QgsFeature.fields()`). If a fields container is set, then the names of the
 feature's fields are matched to ``fields``. In this case attributes from ``feature``
 will be rearranged or dropped in order to match the field names from ``fields``.
 
@@ -246,6 +246,7 @@ layer, note that the number of features returned might be greater than one when
 converting a multi part geometry to single part
 
 The following operations will be performed to convert the input features:
+
 - convert single geometries to multi part
 - drop additional attributes
 - drop geometry if layer is geometry-less
@@ -266,6 +267,7 @@ layer, note that the number of features returned might be greater than the numbe
 of input features.
 
 The following operations will be performed to convert the input features:
+
 - convert single geometries to multi part
 - drop additional attributes
 - drop geometry if layer is geometry-less

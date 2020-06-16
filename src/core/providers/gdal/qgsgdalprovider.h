@@ -207,6 +207,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 
   private:
     QgsGdalProvider( const QgsGdalProvider &other );
+    QgsGdalProvider &operator=( const QgsGdalProvider & ) = delete;
 
     //! Whether mGdalDataset and mGdalBaseDataset have been attempted to be set
     bool mHasInit = false;

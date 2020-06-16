@@ -94,7 +94,7 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
     // Add table to existing DB
     QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table…" ), collectionItem->parent() );
     QPointer<QgsGeoPackageCollectionItem>collectionItemPtr { collectionItem };
-    const QString itemPath = collectionItem->path();
+    const QString itemPath = collectionItem->path().remove( QStringLiteral( "gpkg:/" ) );
     connect( actionAddTable, &QAction::triggered, actionAddTable, [ collectionItemPtr, itemPath ]
     {
       QgsNewGeoPackageLayerDialog dialog( nullptr );
@@ -119,6 +119,7 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
     QAction *actionDelete = new QAction( message, collectionItem->parent() );
     QVariantMap dataDelete;
     dataDelete.insert( QStringLiteral( "path" ), collectionItem->path() );
+    dataDelete.insert( QStringLiteral( "name" ), collectionItem->name() );
     dataDelete.insert( QStringLiteral( "parent" ), QVariant::fromValue( QPointer< QgsDataItem >( collectionItem->parent() ) ) );
     actionDelete->setData( dataDelete );
     connect( actionDelete, &QAction::triggered, this, &QgsGeoPackageItemGuiProvider::deleteGpkg );
@@ -139,7 +140,8 @@ void QgsGeoPackageItemGuiProvider::deleteGpkg()
 {
   QAction *s = qobject_cast<QAction *>( sender() );
   QVariantMap data = s->data().toMap();
-  const QString path = data[QStringLiteral( "path" )].toString();
+  const QString path = data[QStringLiteral( "path" )].toString().remove( QStringLiteral( "gpkg:/" ) );
+  const QString name = data[QStringLiteral( "name" )].toString();
   QPointer< QgsDataItem > parent = data[QStringLiteral( "parent" )].value<QPointer< QgsDataItem >>();
   if ( parent )
   {
@@ -171,6 +173,19 @@ void QgsGeoPackageItemGuiProvider::deleteGpkg()
       else
       {
         QMessageBox::information( nullptr, title, tr( "GeoPackage deleted successfully." ) );
+        // If the deleted file was a stored connection, remove it too
+        if ( ! name.isEmpty() )
+        {
+          QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+          try
+          {
+            md->deleteConnection( name );
+          }
+          catch ( QgsProviderConnectionException &ex )
+          {
+            QgsDebugMsg( QStringLiteral( "Could not remove GPKG connection %1: %2" ).arg( name, ex.what() ) );
+          }
+        }
         if ( parent )
           parent->refresh();
       }
@@ -363,7 +378,7 @@ void QgsGeoPackageItemGuiProvider::vacuum()
 {
   QAction *s = qobject_cast<QAction *>( sender() );
   QVariantMap data = s->data().toMap();
-  const QString path = data[QStringLiteral( "path" )].toString();
+  const QString path = data[QStringLiteral( "path" )].toString().remove( QStringLiteral( "gpkg:/" ) );
   const QString name = data[QStringLiteral( "name" )].toString();
   vacuumGeoPackageDbAction( path, name );
 }
@@ -379,7 +394,8 @@ void QgsGeoPackageItemGuiProvider::createDatabase()
     dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
     if ( dialog.exec() == QDialog::Accepted )
     {
-      if ( QgsOgrDataCollectionItem::saveConnection( dialog.databasePath(), QStringLiteral( "GPKG" ) ) )
+      // Call QFileInfo to normalize paths, see: https://github.com/qgis/QGIS/issues/36832
+      if ( QgsOgrDataCollectionItem::saveConnection( QFileInfo( dialog.databasePath() ).filePath(), QStringLiteral( "GPKG" ) ) )
       {
         item->refreshConnections();
       }
@@ -463,7 +479,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
 
       if ( srcLayer->isValid() )
       {
-        uri = item->path();
+        uri = item->path().remove( QStringLiteral( "gpkg:/" ) );
         QgsDebugMsgLevel( "URI " + uri, 3 );
 
         // check if the destination layer already exists

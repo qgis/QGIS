@@ -10,7 +10,7 @@
 
 
 
-class QgsPaintEffect
+class QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring
 Base class for visual effects which can be applied to QPicture drawings
@@ -20,13 +20,13 @@ them with a QPainter operation. There are two methods for drawing using an effec
 either drawing a picture directly, or by intercepting drawing operations to a
 render context.
 
-To directly draw a picture, use the render() method with a source
+To directly draw a picture, use the :py:func:`~render` method with a source
 QPicture and destination render context.
 
 Intercepting drawing operations to a render context is achieved by first calling
-the begin() method, passing a render context. Any drawing operations
+the :py:func:`~begin` method, passing a render context. Any drawing operations
 performed on the render context will not directly affect the context's paint
-device. When the drawing operations have been completed, call the end()
+device. When the drawing operations have been completed, call the :py:func:`~end`
 method. This will perform the paint effect on the intercepted drawing operations
 and render the result to the render context's paint device.
 
@@ -133,7 +133,7 @@ to the state described by the properties map.
 %Docstring
 Saves the current state of the effect to a DOM element. The default
 behavior is to save the properties string map returned by
-properties().
+:py:func:`~QgsPaintEffect.properties`.
 
 :param doc: destination DOM document
 :param element: destination DOM element
@@ -167,7 +167,7 @@ Renders a picture using the effect.
     virtual void begin( QgsRenderContext &context );
 %Docstring
 Begins intercepting paint operations to a render context. When the corresponding
-end() member is called all intercepted paint operations will be
+:py:func:`~QgsPaintEffect.end` member is called all intercepted paint operations will be
 drawn to the render context after being modified by the effect.
 
 :param context: destination render context
@@ -253,7 +253,7 @@ to account for the destination painter's DPI.
 
     const QPicture *source() const;
 %Docstring
-Returns the source QPicture. The draw() member can utilize this when
+Returns the source QPicture. The :py:func:`~QgsPaintEffect.draw` member can utilize this when
 drawing the effect.
 
 :return: source QPicture
@@ -265,9 +265,9 @@ drawing the effect.
 
     QImage *sourceAsImage( QgsRenderContext &context );
 %Docstring
-Returns the source QPicture rendered to a new QImage. The draw() member can
+Returns the source QPicture rendered to a new QImage. The :py:func:`~QgsPaintEffect.draw` member can
 utilize this when drawing the effect. The image will be padded or cropped from the original
-source QPicture by the results of the boundingRect() method.
+source QPicture by the results of the :py:func:`~QgsPaintEffect.boundingRect` method.
 The result is cached to speed up subsequent calls to sourceAsImage.
 
 :return: source QPicture rendered to an image
@@ -319,7 +319,7 @@ to rendering results onto a painter.
 };
 
 
-class QgsDrawSourceEffect : QgsPaintEffect
+class QgsDrawSourceEffect : QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring
 A paint effect which draws the source picture with minor or no alterations
@@ -448,6 +448,8 @@ Sets the effect to be painted
 
 
 
+  private:
+    const QgsEffectPainter &operator=( const QgsEffectPainter & );
 };
 
 

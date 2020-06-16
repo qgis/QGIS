@@ -48,9 +48,13 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   , mRendererSettings( layer->rendererSettings() )
 {
   // make copies for mesh data
+  // cppcheck-suppress assertWithSideEffect
   Q_ASSERT( layer->nativeMesh() );
+  // cppcheck-suppress assertWithSideEffect
   Q_ASSERT( layer->triangularMesh() );
+  // cppcheck-suppress assertWithSideEffect
   Q_ASSERT( layer->rendererCache() );
+  // cppcheck-suppress assertWithSideEffect
   Q_ASSERT( layer->dataProvider() );
 
   // copy native mesh

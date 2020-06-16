@@ -524,7 +524,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   }
   else
   {
-    values = mLayer->uniqueValues( fieldIndex, countLimit ).toList();
+    values = qgis::setToList( mLayer->uniqueValues( fieldIndex, countLimit ) );
   }
   std::sort( values.begin(), values.end() );
 

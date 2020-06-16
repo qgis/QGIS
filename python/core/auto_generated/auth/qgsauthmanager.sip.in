@@ -20,7 +20,7 @@ Singleton offering an interface to manage the authentication configuration datab
 and to utilize configurations through various authentication method plugins
 
 QgsAuthManager should not usually be directly created, but rather accessed through
-:py:func:`QgsApplication.authManager()`
+:py:func:`QgsApplication.authManager()`.
 %End
 
 %TypeHeaderCode

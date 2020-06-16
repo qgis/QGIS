@@ -1122,7 +1122,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
   }
   if ( !authids.isEmpty() )
   {
-    coverage->supportedCrs = authids.toList();
+    coverage->supportedCrs = qgis::setToList( authids );
   }
 
   coverage->described = true;

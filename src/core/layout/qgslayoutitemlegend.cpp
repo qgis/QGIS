@@ -168,6 +168,7 @@ void QgsLayoutItemLegend::finalizeRestoreFromXml()
 void QgsLayoutItemLegend::refresh()
 {
   QgsLayoutItem::refresh();
+  clearLegendCachedData();
   onAtlasFeature();
 }
 
@@ -258,8 +259,11 @@ void QgsLayoutItemLegend::setAutoUpdateModel( bool autoUpdate )
   updateFilterByMap( false );
 }
 
-void QgsLayoutItemLegend::nodeCustomPropertyChanged( QgsLayerTreeNode *, const QString & )
+void QgsLayoutItemLegend::nodeCustomPropertyChanged( QgsLayerTreeNode *, const QString &key )
 {
+  if ( key == QLatin1String( "cached_name" ) )
+    return;
+
   if ( autoUpdateModel() )
   {
     // in "auto update" mode, some parameters on the main app legend may have been changed (expression filtering)
@@ -694,6 +698,7 @@ void QgsLayoutItemLegend::setupMapConnections( QgsLayoutItemMap *map, bool conne
     disconnect( map, &QObject::destroyed, this, &QgsLayoutItemLegend::invalidateCurrentMap );
     disconnect( map, &QgsLayoutObject::changed, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     disconnect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
+    disconnect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     disconnect( map, &QgsLayoutItemMap::layerStyleOverridesChanged, this, &QgsLayoutItemLegend::mapLayerStyleOverridesChanged );
     disconnect( map, &QgsLayoutItemMap::themeChanged, this, &QgsLayoutItemLegend::mapThemeChanged );
   }
@@ -702,6 +707,7 @@ void QgsLayoutItemLegend::setupMapConnections( QgsLayoutItemMap *map, bool conne
     connect( map, &QObject::destroyed, this, &QgsLayoutItemLegend::invalidateCurrentMap );
     connect( map, &QgsLayoutObject::changed, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     connect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
+    connect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     connect( map, &QgsLayoutItemMap::layerStyleOverridesChanged, this, &QgsLayoutItemLegend::mapLayerStyleOverridesChanged );
     connect( map, &QgsLayoutItemMap::themeChanged, this, &QgsLayoutItemLegend::mapThemeChanged );
   }
@@ -780,6 +786,26 @@ void QgsLayoutItemLegend::setModelStyleOverrides( const QMap<QString, QString> &
 
 }
 
+void QgsLayoutItemLegend::clearLegendCachedData()
+{
+  std::function< void( QgsLayerTreeNode * ) > clearNodeCache;
+  clearNodeCache = [&]( QgsLayerTreeNode * node )
+  {
+    mLegendModel->clearCachedData( node );
+    if ( QgsLayerTree::isGroup( node ) )
+    {
+      QgsLayerTreeGroup *group = QgsLayerTree::toGroup( node );
+      const QList< QgsLayerTreeNode * > children = group->children();
+      for ( QgsLayerTreeNode *child : children )
+      {
+        clearNodeCache( child );
+      }
+    }
+  };
+
+  clearNodeCache( mLegendModel->rootGroup() );
+}
+
 void QgsLayoutItemLegend::mapLayerStyleOverridesChanged()
 {
   if ( !mMap )
@@ -841,6 +867,7 @@ void QgsLayoutItemLegend::updateFilterByMap( bool redraw )
   // the actual update will take place before the redraw.
   // This is to avoid multiple calls to the filter
   mFilterAskedForUpdate = true;
+  clearLegendCachedData();
 
   if ( redraw )
     update();
@@ -1022,7 +1049,10 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   QgsLayerTreeLayer *nodeLayer = QgsLayerTree::isLayer( node ) ? QgsLayerTree::toLayer( node ) : nullptr;
   if ( nodeLayer && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
   {
-    QString name;
+    QString name = node->customProperty( QStringLiteral( "cached_name" ) ).toString();
+    if ( !name.isEmpty() )
+      return name;
+
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
 
     //finding the first label that is stored
@@ -1038,13 +1068,13 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       if ( vlayer && vlayer->featureCount() >= 0 )
       {
         name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
+        node->setCustomProperty( QStringLiteral( "cached_name" ), name );
         return name;
       }
     }
 
-    bool evaluate = vlayer ? !nodeLayer->labelExpression().isEmpty() : false;
-
-    if ( evaluate || name.contains( "[%" ) )
+    const bool evaluate = ( vlayer && !nodeLayer->labelExpression().isEmpty() ) || name.contains( "[%" );
+    if ( evaluate )
     {
       QgsExpressionContext expressionContext;
       if ( vlayer )
@@ -1069,6 +1099,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       else if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
         name = symnode->evaluateLabel( expressionContext );
     }
+    node->setCustomProperty( QStringLiteral( "cached_name" ), name );
     return name;
   }
   return QgsLayerTreeModel::data( index, role );
@@ -1093,6 +1124,11 @@ QList<QgsLayerTreeModelLegendNode *> QgsLegendModel::layerLegendNodes( QgsLayerT
   if ( !skipNodeEmbeddedInParent && data.embeddedNodeInParent )
     lst.prepend( data.embeddedNodeInParent );
   return lst;
+}
+
+void QgsLegendModel::clearCachedData( QgsLayerTreeNode *node ) const
+{
+  node->removeCustomProperty( QStringLiteral( "cached_name" ) );
 }
 
 void QgsLegendModel::forceRefresh()

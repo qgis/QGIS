@@ -370,6 +370,7 @@ void MDAL::DriverTuflowFV::populateFaces( MDAL::Faces &faces )
   assert( faces.empty() );
   size_t faceCount = mDimensions.size( CFDimensions::Face );
   size_t vertexCount = mDimensions.size( CFDimensions::Vertex );
+  ( void )vertexCount;
   faces.resize( faceCount );
 
   // Parse 2D Mesh

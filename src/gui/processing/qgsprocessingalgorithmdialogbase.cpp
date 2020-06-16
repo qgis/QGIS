@@ -196,9 +196,10 @@ void QgsProcessingAlgorithmDialogBase::setMainWidget( QgsPanelWidget *widget )
   widget->setDockMode( true );
 
   mMainWidget = widget;
+  connect( mMainWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
 }
 
-QWidget *QgsProcessingAlgorithmDialogBase::mainWidget()
+QgsPanelWidget *QgsProcessingAlgorithmDialogBase::mainWidget()
 {
   return mMainWidget;
 }

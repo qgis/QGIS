@@ -99,9 +99,9 @@
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>-214</y>
+           <y>0</y>
            <width>451</width>
-           <height>616</height>
+           <height>612</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -140,7 +140,7 @@
              </layout>
             </widget>
             <widget class="QWidget" name="page_2">
-             <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,0">
+             <layout class="QGridLayout" name="gridLayout_3" rowstretch="0,0,2,5" columnstretch="0,0">
               <property name="leftMargin">
                <number>0</number>
               </property>
@@ -171,19 +171,29 @@
                 </layout>
                </widget>
               </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>Format</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QComboBox" name="mGeoPdfFormatComboBox"/>
+              </item>
               <item row="3" column="0" colspan="2">
-               <widget class="QgsCollapsibleGroupBoxBasic" name="mExportGeoPdfFeaturesCheckBox">
+               <widget class="QGroupBox" name="mExportGeoPdfFeaturesCheckBox">
                 <property name="title">
-                 <string>Include vector feature information</string>
+                 <string>Layer Structure</string>
                 </property>
                 <property name="checkable">
-                 <bool>true</bool>
+                 <bool>false</bool>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_5">
                  <item>
                   <widget class="QLabel" name="label_2">
                    <property name="text">
-                    <string>Uncheck layers to avoid exporting vector feature information for those layers, and optionally set the group name to allow multiple layers to be joined into a single logical PDF group</string>
+                    <string>Uncheck layers to avoid exporting vector feature information for those layers, and optionally set the group name to allow multiple layers to be joined into a single logical PDF group. Layers can be dragged and dropped to rearrange their order in the generated GeoPDF table of contents.</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
@@ -200,35 +210,9 @@
                 </layout>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label">
-                <property name="text">
-                 <string>Format</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QComboBox" name="mGeoPdfFormatComboBox"/>
-              </item>
              </layout>
             </widget>
            </widget>
-          </item>
-          <item>
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </widget>

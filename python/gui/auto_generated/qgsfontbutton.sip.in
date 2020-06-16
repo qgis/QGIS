@@ -18,7 +18,7 @@ The button will open a detailed text format settings dialog when clicked. An att
 menu allows for copying and pasting text styles, picking colors for the text, and for dropping
 colors from other color widgets.
 
-The button can be used in two different modes(). The default behavior is to include
+The button can be used in two different :py:func:`~modes`. The default behavior is to include
 all settings used for configuring QgsTextFormat/QgsTextRenderer classes. A cut down
 mode (without settings for color) is also available when the resultant font is
 used only in a QFont object.
@@ -118,7 +118,7 @@ Returns the message bar associated with the widget.
     QgsTextFormat textFormat() const;
 %Docstring
 Returns the current text formatting set by the widget.
-This is only used when mode() is ModeTextRenderer.
+This is only used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
 
 .. seealso:: :py:func:`setTextFormat`
 %End
@@ -126,7 +126,7 @@ This is only used when mode() is ModeTextRenderer.
     QFont currentFont() const;
 %Docstring
 Returns the current QFont set by the widget.
-This is only used when mode() is ModeQFont.
+This is only used when :py:func:`~QgsFontButton.mode` is ModeQFont.
 
 .. seealso:: :py:func:`setCurrentFont`
 %End
@@ -164,7 +164,7 @@ an expression context for the button when required.
     void setTextFormat( const QgsTextFormat &format );
 %Docstring
 Sets the current text ``format`` to show in the widget.
-This is only used when mode() is ModeTextRenderer.
+This is only used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
 
 .. seealso:: :py:func:`textFormat`
 %End
@@ -172,7 +172,7 @@ This is only used when mode() is ModeTextRenderer.
     void setCurrentFont( const QFont &font );
 %Docstring
 Sets the current text ``font`` to show in the widget.
-This is only used when mode() is ModeQFont.
+This is only used when :py:func:`~QgsFontButton.mode` is ModeQFont.
 
 .. seealso:: :py:func:`currentFont`
 %End
@@ -181,7 +181,7 @@ This is only used when mode() is ModeQFont.
 %Docstring
 Sets the current ``color`` for the text. Will emit a changed signal if the color is different
 to the previous text color.
-This is only used when mode() is ModeTextRenderer.
+This is only used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
 %End
 
     void copyFormat();
@@ -202,7 +202,7 @@ format then no change is applied.
     void copyColor();
 %Docstring
 Copies the current text color to the clipboard.
-This is only used when mode() is ModeTextRenderer.
+This is only used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
 
 .. seealso:: :py:func:`pasteColor`
 %End
@@ -211,7 +211,7 @@ This is only used when mode() is ModeTextRenderer.
 %Docstring
 Pastes a color from the clipboard to the text format. If clipboard does not contain a valid
 color or string representation of a color, then no change is applied.
-This is only used when mode() is ModeTextRenderer.
+This is only used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
 
 .. seealso:: :py:func:`copyColor`
 %End

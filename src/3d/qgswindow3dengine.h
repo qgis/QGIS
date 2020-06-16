@@ -32,10 +32,14 @@ namespace Qt3DExtras
 class QWindow;
 
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup 3d
  * On-screen 3D engine: it creates OpenGL window (QWindow) and displays rendered 3D scene there.
  * The window can be embedded into a QWidget-based application with QWidget::createWindowContainer().
+ *
+ * \note Not available in Python bindings
  *
  * \since QGIS 3.4
  */

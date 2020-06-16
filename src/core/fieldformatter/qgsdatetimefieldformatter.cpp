@@ -51,13 +51,20 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer *layer, int fi
   const QString displayFormat = config.value( QStringLiteral( "display_format" ), defaultFormat( field.type() ) ).toString();
 
   QDateTime date;
-  if ( fieldIsoFormat )
+  if ( static_cast<QMetaType::Type>( value.type() ) == QMetaType::QDate || static_cast<QMetaType::Type>( value.type() ) == QMetaType::QDateTime )
   {
-    date = QDateTime::fromString( value.toString(), Qt::ISODate );
+    date = value.toDateTime();
   }
   else
   {
-    date = QDateTime::fromString( value.toString(), fieldFormat );
+    if ( fieldIsoFormat )
+    {
+      date = QDateTime::fromString( value.toString(), Qt::ISODate );
+    }
+    else
+    {
+      date = QDateTime::fromString( value.toString(), fieldFormat );
+    }
   }
 
   if ( date.isValid() )

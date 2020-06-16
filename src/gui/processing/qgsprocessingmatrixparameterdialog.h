@@ -30,11 +30,11 @@ class QToolButton;
 
 /**
  * \ingroup gui
- * \brief Dialog for configuration of a matrix (fixed table) parameter.
+ * \brief Panel widget for configuration of a matrix (fixed table) parameter.
  * \note Not stable API
  * \since QGIS 3.6
  */
-class GUI_EXPORT QgsProcessingMatrixParameterDialog : public QDialog, private Ui::QgsProcessingMatrixParameterDialogBase
+class GUI_EXPORT QgsProcessingMatrixParameterPanelWidget : public QgsPanelWidget, private Ui::QgsProcessingMatrixParameterDialogBase
 {
     Q_OBJECT
 
@@ -43,8 +43,8 @@ class GUI_EXPORT QgsProcessingMatrixParameterDialog : public QDialog, private Ui
     /**
      * Constructor for QgsProcessingMatrixParameterDialog.
      */
-    QgsProcessingMatrixParameterDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr, const QgsProcessingParameterMatrix *param = nullptr,
-                                        const QVariantList &initialTable = QVariantList() );
+    QgsProcessingMatrixParameterPanelWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QgsProcessingParameterMatrix *param = nullptr,
+        const QVariantList &initialTable = QVariantList() );
 
     /**
      * Returns the table's contents as a 1 dimensional array.

@@ -77,6 +77,9 @@ class QgsTextBufferSettingsPrivate : public QSharedData
     Qt::PenJoinStyle joinStyle = Qt::RoundJoin;
     QPainter::CompositionMode blendMode = QPainter::CompositionMode_SourceOver;
     std::unique_ptr< QgsPaintEffect > paintEffect;
+
+  private:
+    QgsTextBufferSettingsPrivate &operator=( const QgsTextBufferSettingsPrivate & ) = delete;
 };
 
 
@@ -148,6 +151,9 @@ class QgsTextBackgroundSettingsPrivate : public QSharedData
     Qt::PenJoinStyle joinStyle = Qt::BevelJoin;
     std::unique_ptr< QgsPaintEffect > paintEffect;
     std::unique_ptr< QgsMarkerSymbol > markerSymbol;
+
+  private:
+    QgsTextBackgroundSettingsPrivate &operator=( const QgsTextBackgroundSettingsPrivate & ) = delete;
 };
 
 
@@ -197,6 +203,9 @@ class QgsTextShadowSettingsPrivate : public QSharedData
     QColor color;
     double opacity = 0.7;
     QPainter::CompositionMode blendMode = QPainter::CompositionMode_Multiply;
+
+  private:
+    QgsTextShadowSettingsPrivate &operator=( const QgsTextShadowSettingsPrivate & ) = delete;
 };
 
 
@@ -232,6 +241,9 @@ class QgsTextMaskSettingsPrivate : public QSharedData
     double opacity = 1.0;
     std::unique_ptr< QgsPaintEffect > paintEffect;
     QgsSymbolLayerReferenceList maskedSymbolLayers;
+
+  private:
+    QgsTextMaskSettingsPrivate &operator=( const QgsTextMaskSettingsPrivate & ) = delete;
 };
 
 
@@ -279,7 +291,8 @@ class QgsTextSettingsPrivate : public QSharedData
     //! Property collection for data defined settings
     QgsPropertyCollection mDataDefinedProperties;
 
-
+  private:
+    QgsTextSettingsPrivate &operator=( const QgsTextSettingsPrivate & ) = delete;
 };
 
 

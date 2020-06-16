@@ -22,9 +22,12 @@
 #include <QList>
 #include <QVector3D>
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup 3d
  * Axis-aligned bounding box - in world coords.
+ * \note Not available in Python bindings
  * \since QGIS 3.0
  */
 class _3D_EXPORT QgsAABB

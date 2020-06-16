@@ -84,6 +84,7 @@ class QgsMeshDataSourceInterface /Abstract/
 Interface for mesh data sources
 
 Mesh is a collection of vertices, edges and faces in 2D or 3D space
+
 - vertex - XY(Z) point (in the mesh's coordinate reference system)
 - edge   - two XY(Z) points (in the mesh's coordinate reference system) representing straight seqment
 - faces  - sets of vertices forming a closed shape - typically triangles or quadrilaterals
@@ -176,7 +177,7 @@ emits dataChanged when successful
 
     virtual QStringList extraDatasets() const = 0;
 %Docstring
-Returns list of additional dataset file URIs added using addDataset() calls.
+Returns list of additional dataset file URIs added using :py:func:`~QgsMeshDatasetSourceInterface.addDataset` calls.
 %End
 
     virtual int datasetGroupCount( ) const = 0;
@@ -212,9 +213,9 @@ Returns dataset metadata
     virtual QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const = 0;
 %Docstring
 Returns vector/scalar value associated with the index from the dataset
-To read multiple continuous values, use datasetValues()
+To read multiple continuous values, use :py:func:`~QgsMeshDatasetSourceInterface.datasetValues`
 
-See QgsMeshDatasetMetadata.isVector() or :py:func:`QgsMeshDataBlock.type()`
+See :py:func:`QgsMeshDatasetMetadata.isVector()` or :py:func:`QgsMeshDataBlock.type()`
 to check if the returned value is vector or scalar
 
 Returns invalid value for DataOnVolumes
@@ -226,10 +227,10 @@ Returns invalid value for DataOnVolumes
 %Docstring
 Returns N vector/scalar values from the index from the dataset
 
-See QgsMeshDatasetMetadata.isVector() or :py:func:`QgsMeshDataBlock.type()`
+See :py:func:`QgsMeshDatasetMetadata.isVector()` or :py:func:`QgsMeshDataBlock.type()`
 to check if the returned value is vector or scalar
 
-Returns invalid block for DataOnVolumes. Use QgsMeshLayerUtils.datasetValues() if you
+Returns invalid block for DataOnVolumes. Use :py:func:`QgsMeshLayerUtils.datasetValues()` if you
 need block for any type of data type
 
 .. versionadded:: 3.6
@@ -239,7 +240,7 @@ need block for any type of data type
 %Docstring
 Returns N vector/scalar values from the face index from the dataset for 3d stacked meshes
 
-See QgsMeshDatasetMetadata.isVector() to check if the returned value is vector or scalar
+See :py:func:`QgsMeshDatasetMetadata.isVector()` to check if the returned value is vector or scalar
 
 returns invalid block for DataOnFaces and DataOnVertices.
 

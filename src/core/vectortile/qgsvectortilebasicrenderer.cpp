@@ -151,10 +151,8 @@ void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &ti
     if ( !layerStyle.isActive( zoomLevel ) )
       continue;
 
-    QgsFields fields = QgsVectorTileUtils::makeQgisFields( mRequiredFields[layerStyle.layerName()] );
-
     QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Layer" ) ); // will be deleted by popper
-    scope->setFields( fields );
+    scope->setFields( tile.fields()[layerStyle.layerName()] );
     QgsExpressionContextScopePopper popper( context.expressionContext(), scope );
 
     QgsExpression filterExpression( layerStyle.filterExpression() );

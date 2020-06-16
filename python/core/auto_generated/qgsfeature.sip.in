@@ -338,7 +338,9 @@ This method is a shortcut for calling:
 
        feature.setGeometry( QgsGeometry( geometry ) )
 
-* Example:
+Example
+-------
+
 .. code-block:: python
 
        # Sets a feature's geometry to a point geometry
@@ -396,7 +398,7 @@ Returns the field map associated with the feature.
     void setAttribute( const QString &name, const QVariant &value /GetWrapper/ );
 %Docstring
 Insert a value into attribute. Returns ``False`` if attribute name could not be converted to index.
-Field map must be associated using setFields() before this method can be used.
+Field map must be associated using :py:func:`~QgsFeature.setFields` before this method can be used.
 The feature will be valid if it was successful
 
 :param name: The name of the field to set
@@ -436,7 +438,7 @@ The feature will be valid if it was successful
 
     bool deleteAttribute( const QString &name );
 %Docstring
-Removes an attribute value by field name. Field map must be associated using setFields()
+Removes an attribute value by field name. Field map must be associated using :py:func:`~QgsFeature.setFields`
 before this method can be used.
 
 :param name: The name of the field to delete
@@ -470,7 +472,7 @@ before this method can be used.
 
     SIP_PYOBJECT attribute( const QString &name ) const;
 %Docstring
-Lookup attribute value from attribute name. Field map must be associated using setFields()
+Lookup attribute value from attribute name. Field map must be associated using :py:func:`~QgsFeature.setFields`
 before this method can be used.
 
 :param name: The name of the attribute to get
@@ -503,7 +505,7 @@ before this method can be used.
 
     SIP_PYOBJECT attribute( int fieldIdx ) const;
 %Docstring
-Lookup attribute value from its index. Field map must be associated using setFields()
+Lookup attribute value from its index. Field map must be associated using :py:func:`~QgsFeature.setFields`
 before this method can be used.
 
 :param fieldIdx: The index of the attribute to get
@@ -537,7 +539,7 @@ before this method can be used.
 
     int fieldNameIndex( const QString &fieldName ) const;
 %Docstring
-Utility method to get attribute index from name. Field map must be associated using setFields()
+Utility method to get attribute index from name. Field map must be associated using :py:func:`~QgsFeature.setFields`
 before this method can be used.
 
 :param fieldName: name of field to get attribute index of

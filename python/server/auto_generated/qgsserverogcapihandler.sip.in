@@ -16,7 +16,7 @@ The QgsServerOgcApiHandler abstract class represents a OGC API handler to be reg
 in QgsServerOgcApi class.
 
 Subclasses must override operational and informative methods and define
-the core functionality in handleRequest() method.
+the core functionality in :py:func:`~handleRequest` method.
 
 The following methods MUST be implemented:
 
@@ -81,7 +81,7 @@ Optionally, override:
     virtual QRegularExpression path() const = 0;
 %Docstring
 URL pattern for this handler, named capture group are automatically
-extracted and returned by values()
+extracted and returned by :py:func:`~QgsServerOgcApiHandler.values`
 
 Example: "/handlername/(?P<code1>\d{2})/items" will capture "code1" as a
 named parameter.
@@ -134,7 +134,7 @@ Tags
 Returns the default response content type in case the client did not specifically
 ask for any particular content type.
 The default implementation returns the first content type returned by
-contentTypes() or JSON if that list is empty.
+:py:func:`~QgsServerOgcApiHandler.contentTypes` or JSON if that list is empty.
 %End
 
 
@@ -142,7 +142,7 @@ contentTypes() or JSON if that list is empty.
 %Docstring
 Handles the request within its ``context``
 
-Subclasses must implement this methods, and call validate() to
+Subclasses must implement this methods, and call :py:func:`~QgsServerOgcApiHandler.validate` to
 extract validated parameters from the request.
 
 :raises QgsServerApiBadRequestError: if the method encounters any error
@@ -153,7 +153,7 @@ extract validated parameters from the request.
 Analyzes the incoming request ``context`` and returns the validated
 parameter map, throws QgsServerApiBadRequestError in case of errors.
 
-Path fragments from the named groups in the path() regular expression
+Path fragments from the named groups in the :py:func:`~QgsServerOgcApiHandler.path` regular expression
 are also added to the map.
 
 Your handleRequest method should call this function to retrieve
@@ -194,9 +194,9 @@ Available custom template functions:
 
 - path_append( path ): appends a directory path to the current url
 - path_chomp( n ): removes the specified number "n" of directory components from the current url path
-- json_dump(): prints current JSON data passed to the template
+- :py:func:`~QgsServerOgcApiHandler.json_dump`: prints current JSON data passed to the template
 - static( path): returns the full URL to the specified static path, for example:
-static("/style/black.css") will return something like "/wfs3/static/style/black.css".
+  static("/style/black.css") will return something like "/wfs3/static/style/black.css".
 - links_filter( links, key, value ): returns filtered links from a link list
 - content_type_name( content_type ): returns a short name from a content type for example "text/html" will return "HTML"
 %End
@@ -214,10 +214,10 @@ Returns an URL to self, to be used for links to the current resources and as a b
 %Docstring
 Returns the HTML template path for the handler in the given ``context``
 
-The template path is calculated from QgsServerSettings's apiResourcesDirectory() as follow:
-apiResourcesDirectory() + "/ogc/templates/" + context.apiRootPath + operationId + ".html"
+The template path is calculated from QgsServerSettings's :py:func:`~QgsServerOgcApiHandler.apiResourcesDirectory` as follow:
+:py:func:`~QgsServerOgcApiHandler.apiResourcesDirectory` + "/ogc/templates/" + context.apiRootPath + operationId + ".html"
 e.g. for an API with root path "/wfs3" and an handler with operationId "collectionItems", the path
-will be apiResourcesDirectory() + "/ogc/templates/wfs3/collectionItems.html"
+will be :py:func:`~QgsServerOgcApiHandler.apiResourcesDirectory` + "/ogc/templates/wfs3/collectionItems.html"
 %End
 
     virtual const QString staticPath( const QgsServerApiContext &context ) const;

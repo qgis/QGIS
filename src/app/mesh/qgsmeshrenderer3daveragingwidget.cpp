@@ -209,7 +209,7 @@ void QgsMeshRenderer3dAveragingWidget::syncToLayer( )
   if ( method )
   {
     const QgsMesh3dAveragingMethod::Method type = method->method();
-    int pageIndex;
+    int pageIndex = 0;
 
     switch ( type )
     {

@@ -73,7 +73,7 @@ Returns the line/stroke color
     void setColor( const QColor &color );
 %Docstring
 Set line/stroke to color, polygon fill to color with alpha = 63.
-This is legacy function, use setFillColor() after setColor() if different fill color is required. *
+This is legacy function, use :py:func:`~QgsHighlight.setFillColor` after :py:func:`~QgsHighlight.setColor` if different fill color is required. *
 %End
 
     QColor fillColor( ) const;

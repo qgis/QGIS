@@ -21,6 +21,11 @@ QgsMapLayerConfigWidgetFactory::QgsMapLayerConfigWidgetFactory( const QString &t
 {
 }
 
+QString QgsMapLayerConfigWidgetFactory::layerPropertiesPagePositionHint() const
+{
+  return QString();
+}
+
 bool QgsMapLayerConfigWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
 {
   Q_UNUSED( layer )

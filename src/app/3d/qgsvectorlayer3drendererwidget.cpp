@@ -208,7 +208,17 @@ QgsMapLayerConfigWidget *QgsVectorLayer3DRendererWidgetFactory::createWidget( Qg
   return new QgsVectorLayer3DRendererWidget( layer, canvas, parent );
 }
 
+bool QgsVectorLayer3DRendererWidgetFactory::supportLayerPropertiesDialog() const
+{
+  return true;
+}
+
 bool QgsVectorLayer3DRendererWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
 {
   return layer->type() == QgsMapLayerType::VectorLayer;
+}
+
+QString QgsVectorLayer3DRendererWidgetFactory::layerPropertiesPagePositionHint() const
+{
+  return QStringLiteral( "mOptsPage_Diagrams" );
 }

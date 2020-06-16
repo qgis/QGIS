@@ -128,13 +128,19 @@ bool QgsVectorTileLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
   mValid = loadDataSource();
 
   QString errorMsg;
-  return readSymbology( layerNode, errorMsg, context );
+  if ( !readSymbology( layerNode, errorMsg, context ) )
+    return false;
+
+  readStyleManager( layerNode );
+  return true;
 }
 
 bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement mapLayerNode = layerNode.toElement();
   mapLayerNode.setAttribute( QStringLiteral( "type" ), QStringLiteral( "vector-tile" ) );
+
+  writeStyleManager( layerNode, doc );
 
   QString errorMsg;
   return writeSymbology( layerNode, doc, errorMsg, context );

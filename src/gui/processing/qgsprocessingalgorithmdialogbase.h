@@ -126,7 +126,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      * Returns the main widget for the dialog, usually a panel for configuring algorithm parameters.
      * \see setMainWidget()
      */
-    QWidget *mainWidget();
+    QgsPanelWidget *mainWidget();
 
     /**
      * Switches the dialog to the log page.
@@ -386,7 +386,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     bool mExecuted = false;
     bool mExecutedAnyResult = false;
     QVariantMap mResults;
-    QWidget *mMainWidget = nullptr;
+    QgsPanelWidget *mMainWidget = nullptr;
     std::unique_ptr< QgsProcessingAlgorithm > mAlgorithm;
     QgsProcessingAlgRunnerTask *mAlgorithmTask = nullptr;
 

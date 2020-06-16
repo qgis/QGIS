@@ -51,6 +51,7 @@ class QgsVectorLayer;
  * of metadata. The key-value pairs will be written to the "metadata" table
  * in the MBTiles file. Some useful metadata keys listed here, but see MBTiles spec
  * for more details:
+ *
  * - "name" - human-readable name of the tileset
  * - "bounds" - extent in WGS 84: "minlon,minlat,maxlon,maxlat"
  * - "center" - default view of the map: "longitude,latitude,zoomlevel"
@@ -60,6 +61,7 @@ class QgsVectorLayer;
  * - "description" - descriptions of the content
  * - "type" - whether this is an overlay or a basemap
  * - "version" - version of the tileset
+ *
  * Vector tile writer always writes "format" and "json" metadata. If not specified
  * in metadata by the client, tile writer also writes "name", "bounds", "minzoom"
  * and "maxzoom".

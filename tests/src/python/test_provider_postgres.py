@@ -504,6 +504,113 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertNotEqual(f[0]['pk'], NULL, f[0].attributes())
         vl.deleteFeatures([f[0].id()])
 
+    def testGeneratedFields(self):
+        """Test if GENERATED geometry/geography columns are correctly handled by the provider."""
+        cur = self.con.cursor()
+        cur.execute("SHOW server_version_num")
+        pgversion = int(cur.fetchone()[0])
+
+        # GENERATED columns are unsupported by PostgreSQL versions earlier than 12.
+        if pgversion < 120000:
+            return
+
+        # Geometry columns
+        vl = QgsVectorLayer('{} table="qgis_test"."{}" (geom) srid=4326 type=POLYGON key="id" sql='.format(self.dbconn, "test_gen_col"), "test_gen_col", "postgres")
+        self.assertTrue(vl.isValid())
+
+        # writing geometry...
+        f = QgsFeature(vl.fields())
+
+        ix_name = f.fieldNameIndex('name')
+
+        f.setGeometry(QgsGeometry.fromWkt('Polygon ((-67 -2, -67 0, -68 0, -70 -1, -67 -2))'))
+        f.setAttribute(ix_name, 'QGIS-3')
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeatures([f]))
+        self.assertTrue(vl.commitChanges())
+
+        # reading back to see if we saved the centroid correctly.
+        vl2 = QgsVectorLayer('{} table="qgis_test"."{}" (cent) srid=4326 type=POINT key="id" sql='.format(self.dbconn, "test_gen_col"), "test_gen_col", "postgres")
+        f2 = next(vl2.getFeatures(QgsFeatureRequest()))
+        generated_geometry = f2.geometry().asWkt()
+        expected_geometry = 'Point (-68.047619047619051 -0.90476190476190477)'
+        expected_area = 43069568296.34387
+
+        assert compareWkt(generated_geometry, expected_geometry), "Geometry mismatch! Expected:\n{}\nGot:\n{}\n".format(expected_geometry, generated_geometry)
+        self.assertEqual(f2['poly_area'], expected_area)
+        self.assertEqual(f2['name'], 'QGIS-3')
+
+        # Checking if we can correctly change values of an existing feature.
+        self.assertTrue(vl2.startEditing())
+        ix2_name = f2.fieldNameIndex('name')
+        fid2 = f2.id()
+        vl2.changeAttributeValue(fid2, ix2_name, 'New')
+        self.assertTrue(vl2.commitChanges())
+
+        # getting a brand new QgsVectorLayer
+        vl = QgsVectorLayer('{} table="qgis_test"."{}" (geom) srid=4326 type=POLYGON key="id" sql='.format(self.dbconn, "test_gen_col"), "test_gen_col", "postgres")
+        self.assertTrue(vl.isValid())
+
+        # checking if the name field was correctly updated
+        f = next(vl.getFeatures(QgsFeatureRequest()))
+        self.assertEqual(f['name'], 'New')
+
+        # Now, check if we can change the value of a GENERATED field (we shouldn't)
+        self.assertTrue(vl.startEditing())
+        ix_area = f.fieldNameIndex('poly_area')
+        fid = f.id()
+        vl.changeAttributeValue(fid, ix_area, 42)
+        self.assertTrue(vl.commitChanges())
+
+        # reading back
+        vl2 = QgsVectorLayer('{} table="qgis_test"."{}" (geom) srid=4326 type=POLYGON key="id" sql='.format(self.dbconn, "test_gen_col"), "test_gen_col", "postgres")
+        f2 = next(vl2.getFeatures(QgsFeatureRequest()))
+        self.assertEqual(f2['poly_area'], expected_area)
+
+        # now, getting a brand new QgsVectorLayer to check if changes (UPDATE) in the geometry are reflected in the generated fields
+        vl = QgsVectorLayer('{} table="qgis_test"."{}" (geom) srid=4326 type=POLYGON key="id" sql='.format(self.dbconn, "test_gen_col"), "test_gen_col", "postgres")
+        self.assertTrue(vl.isValid())
+        f = next(vl.getFeatures(QgsFeatureRequest()))
+        vl.startEditing()
+        fid = f.id()
+        vl.changeGeometry(fid, QgsGeometry.fromWkt('Polygon ((-67 -2, -65 0, -68 0, -70 -1, -67 -2))'))
+        vl.commitChanges()
+
+        # reading back...
+        vl2 = QgsVectorLayer('{} table="qgis_test"."{}" (cent) srid=4326 type=POINT key="id" sql='.format(self.dbconn, "test_gen_col"), "test_gen_col", "postgres")
+        f2 = next(vl2.getFeatures(QgsFeatureRequest()))
+        generated_geometry = f2.geometry().asWkt()
+
+        generated_geometry = f2.geometry().asWkt()
+        expected_geometry = 'Point (-67.42424242424242209 -0.81818181818181823)'
+        expected_area = 67718478405.28429
+
+        assert compareWkt(generated_geometry, expected_geometry), "Geometry mismatch! Expected:\n{}\nGot:\n{}\n".format(expected_geometry, generated_geometry)
+        self.assertEqual(f2['poly_area'], expected_area)
+        self.assertEqual(f2['name'], 'New')
+
+        # Geography columns
+        vl3 = QgsVectorLayer('{} table="qgis_test"."{}" (geog) srid=4326 type=POLYGON key="id" sql='.format(self.dbconn, "test_gen_geog_col"), "test_gen_geog_col", "postgres")
+        self.assertTrue(vl3.isValid())
+
+        # writing geography...
+        f3 = QgsFeature(vl3.fields())
+        f3.setGeometry(QgsGeometry.fromWkt('Polygon ((-67 -2, -67 0, -68 0, -70 -1, -67 -2))'))
+        self.assertTrue(vl3.startEditing())
+        self.assertTrue(vl3.addFeatures([f3]))
+        self.assertTrue(vl3.commitChanges())
+
+        # reading back geography and checking values
+        vl4 = QgsVectorLayer('{} table="qgis_test"."{}" (cent) srid=4326 type=POINT key="id" sql='.format(self.dbconn, "test_gen_geog_col"), "test_gen_geog_col", "postgres")
+        f4 = next(vl4.getFeatures(QgsFeatureRequest()))
+        generated_geometry = f4.geometry().asWkt()
+        expected_geometry = 'Point (-68.0477406158202 -0.904960604589168)'
+        expected_area = 43088884296.69713
+
+        assert compareWkt(generated_geometry, expected_geometry), "Geometry mismatch! Expected:\n{}\nGot:\n{}\n".format(expected_geometry, generated_geometry)
+        self.assertEqual(f4['poly_area'], expected_area)
+
     def testNonPkBigintField(self):
         """Test if we can correctly insert, read and change attributes(fields) of type bigint and which are not PKs."""
         vl = QgsVectorLayer(
@@ -2386,6 +2493,19 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
             # expect fail
             self.assertFalse(l.dataProvider().addFeatures([f1, f2]),
                              'Provider reported no AddFeatures capability, but returned true to addFeatures')
+
+    def testDuplicatedFieldNamesInQueryLayers(self):
+        """Test regresssion GH #36205"""
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'__rid__\' table="(SELECT row_number() OVER () AS __rid__, * FROM (SELECT *  from qgis_test.some_poly_data a, qgis_test.some_poly_data b  where  ST_Intersects(a.geom,b.geom)) as foo)" sql=', 'test_36205', 'postgres')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 3)
+
+        # This fails because the "geom" field and "pk" fields are ambiguous
+        # There is no easy fix: all duplicated fields should be explicitly aliased
+        # and the query internally rewritten
+        # feature = next(vl.getFeatures())
+        # self.assertTrue(vl.isValid())
 
 
 if __name__ == '__main__':

@@ -376,7 +376,7 @@ void QgsFontButton::wheelEvent( QWheelEvent *event )
       break;
   }
 
-  double increment = event->modifiers() & Qt::ControlModifier ? 0.1 : 1;
+  double increment = ( event->modifiers() & Qt::ControlModifier ) ? 0.1 : 1;
   if ( event->delta() > 0 )
   {
     size += increment;

@@ -374,8 +374,10 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     /**
      * Structure that stores tree representation of map layer's legend.
      * This structure is used only when the following requirements are met:
-     * 1. tree legend representation is enabled in model (ShowLegendAsTree flag)
-     * 2. some legend nodes have non-null parent rule key (accessible via data(ParentRuleKeyRole) method)
+     *
+     * # tree legend representation is enabled in model (ShowLegendAsTree flag)
+     * # some legend nodes have non-null parent rule key (accessible via data(ParentRuleKeyRole) method)
+     *
      * The tree structure (parents and children of each node) is extracted by analyzing nodes' parent rules.
      * \note not available in Python bindings
      */

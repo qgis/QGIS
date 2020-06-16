@@ -176,7 +176,7 @@ Calculates the marker offset and rotation.
   private:
     virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) = 0;
 %Docstring
-Derived classes must implement draw() to handle drawing the generated shape onto the painter surface.
+Derived classes must implement :py:func:`~QgsSimpleMarkerSymbolLayerBase.draw` to handle drawing the generated shape onto the painter surface.
 
 :param context: symbol render context
 :param shape: shape to draw
@@ -221,7 +221,7 @@ Constructor for QgsSimpleMarkerSymbolLayer.
 %Docstring
 Creates a new QgsSimpleMarkerSymbolLayer.
 
-:param properties: a property map containing symbol properties (see properties())
+:param properties: a property map containing symbol properties (see :py:func:`~QgsSimpleMarkerSymbolLayer.properties`)
 
 :return: new QgsSimpleMarkerSymbolLayer
 %End
@@ -365,7 +365,7 @@ Returns the width of the marker's stroke.
 %Docstring
 Sets the width of the marker's stroke.
 
-:param w: stroke width. See strokeWidthUnit() for units.
+:param w: stroke width. See :py:func:`~QgsSimpleMarkerSymbolLayer.strokeWidthUnit` for units.
 
 .. seealso:: :py:func:`strokeWidth`
 
@@ -482,7 +482,7 @@ Constructor for QgsFilledMarkerSymbolLayer.
 %Docstring
 Creates a new QgsFilledMarkerSymbolLayer.
 
-:param properties: a property map containing symbol properties (see properties())
+:param properties: a property map containing symbol properties (see :py:func:`~QgsFilledMarkerSymbolLayer.properties`)
 
 :return: new QgsFilledMarkerSymbolLayer
 %End
@@ -880,7 +880,7 @@ Constructs a font marker symbol layer.
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
-Creates a new QgsFontMarkerSymbolLayer from a property map (see properties())
+Creates a new QgsFontMarkerSymbolLayer from a property map (see :py:func:`~QgsFontMarkerSymbolLayer.properties`)
 %End
 
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
@@ -962,7 +962,7 @@ Sets the character(s) used when rendering points.
 
     double strokeWidth() const;
 %Docstring
-Returns the marker's stroke width. Units are retrieved by strokeWidthUnit()
+Returns the marker's stroke width. Units are retrieved by :py:func:`~QgsFontMarkerSymbolLayer.strokeWidthUnit`
 
 .. seealso:: :py:func:`setStrokeWidth`
 
@@ -975,7 +975,7 @@ Returns the marker's stroke width. Units are retrieved by strokeWidthUnit()
 
     void setStrokeWidth( double width );
 %Docstring
-Set's the marker's stroke ``width``. Units are set by setStrokeWidthUnit().
+Set's the marker's stroke ``width``. Units are set by :py:func:`~QgsFontMarkerSymbolLayer.setStrokeWidthUnit`.
 
 .. seealso:: :py:func:`strokeWidth`
 

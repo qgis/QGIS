@@ -99,25 +99,13 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   {
     case Pdf:
     {
-      QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mMapCanvas->mapSettings() );
-      if ( !layers.isEmpty() )
+      connect( mInfo, &QLabel::linkActivated, this, [this]( const QString & )
       {
-        mInfoDetails = tr( "The following layer(s) use advanced effects:\n\n%1\n\nRasterizing map is recommended for proper rendering." ).arg(
-                         QChar( 0x2022 ) + QStringLiteral( " " ) + layers.join( QStringLiteral( "\n" ) + QChar( 0x2022 ) + QStringLiteral( " " ) ) );
-        connect( mInfo, &QLabel::linkActivated, this, [this]( const QString & )
-        {
-          QgsMessageViewer *viewer = new QgsMessageViewer( this );
-          viewer->setWindowTitle( tr( "Advanced effects warning" ) );
-          viewer->setMessageAsPlainText( mInfoDetails );
-          viewer->exec();
-        } );
-        mInfo->setText( tr( "%1A number of layers%2 use advanced effects, rasterizing map is recommended for proper rendering." ).arg( QStringLiteral( "<a href='#'>" ), QStringLiteral( "</a>" ) ) );
-        mSaveAsRaster->setChecked( true );
-      }
-      else
-      {
-        mSaveAsRaster->setChecked( false );
-      }
+        QgsMessageViewer *viewer = new QgsMessageViewer( this );
+        viewer->setWindowTitle( tr( "Advanced effects warning" ) );
+        viewer->setMessageAsPlainText( mInfoDetails );
+        viewer->exec();
+      } );
 
       this->setWindowTitle( tr( "Save Map as PDF" ) );
 
@@ -143,6 +131,9 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
         mGeoPdfFormatComboBox->addItem( tr( "ISO 32000 Extension (recommended)" ) );
         mGeoPdfFormatComboBox->addItem( tr( "OGC Best Practice" ) );
       }
+
+      connect( mGeoPDFGroupBox, &QGroupBox::toggled, this, &QgsMapSaveDialog::updatePdfExportWarning );
+      updatePdfExportWarning();
       break;
     }
 
@@ -571,6 +562,23 @@ void QgsMapSaveDialog::onAccepted()
       }
       break;
     }
+  }
+}
+
+void QgsMapSaveDialog::updatePdfExportWarning()
+{
+  QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mMapCanvas->mapSettings(), mGeoPDFGroupBox->isChecked() ? QgsMapSettingsUtils::EffectsCheckFlags( QgsMapSettingsUtils::EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ) : nullptr );
+  if ( !layers.isEmpty() )
+  {
+    mInfoDetails = tr( "The following layer(s) use advanced effects:\n\n%1\n\nRasterizing map is recommended for proper rendering." ).arg(
+                     QChar( 0x2022 ) + QStringLiteral( " " ) + layers.join( QStringLiteral( "\n" ) + QChar( 0x2022 ) + QStringLiteral( " " ) ) );
+    mInfo->setText( tr( "%1A number of layers%2 use advanced effects, rasterizing map is recommended for proper rendering." ).arg( QStringLiteral( "<a href='#'>" ), QStringLiteral( "</a>" ) ) );
+    mSaveAsRaster->setChecked( true );
+  }
+  else
+  {
+    mSaveAsRaster->setChecked( false );
+    mInfo->clear();
   }
 }
 

@@ -16,7 +16,7 @@ Layer tree node points to a map layer.
 
 The node can exist also without a valid instance of a layer (just ID). That
 means the referenced layer does not need to be loaded in order to use it
-in layer tree. In such case, resolveReferences() method can be called
+in layer tree. In such case, :py:func:`~resolveReferences` method can be called
 once the layer is loaded.
 
 A map layer is supposed to be present in one layer tree just once. It is
@@ -96,13 +96,13 @@ Returns whether the layer's name is used, or the name manually set.
     static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Read layer node from XML. Returns new instance.
-Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
+Does not resolve textual references to layers. Call :py:func:`~QgsLayerTreeLayer.resolveReferences` afterwards to do it.
 %End
 
     static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Read layer node from XML. Returns new instance.
-Also resolves textual references to layers from the project (calls resolveReferences() internally).
+Also resolves textual references to layers from the project (calls :py:func:`~QgsLayerTreeLayer.resolveReferences` internally).
 
 .. versionadded:: 3.0
 %End

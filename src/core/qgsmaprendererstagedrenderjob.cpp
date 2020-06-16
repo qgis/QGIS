@@ -217,12 +217,12 @@ bool QgsMapRendererStagedRenderJob::nextPart()
   return false;
 }
 
-bool QgsMapRendererStagedRenderJob::isFinished()
+bool QgsMapRendererStagedRenderJob::isFinished() const
 {
   return currentStage() == Finished;
 }
 
-QString QgsMapRendererStagedRenderJob::currentLayerId()
+QString QgsMapRendererStagedRenderJob::currentLayerId() const
 {
   if ( mJobIt != mLayerJobs.end() )
   {
@@ -235,6 +235,26 @@ QString QgsMapRendererStagedRenderJob::currentLayerId()
       return *mLabelLayerIt;
   }
   return QString();
+}
+
+double QgsMapRendererStagedRenderJob::currentLayerOpacity() const
+{
+  if ( mJobIt != mLayerJobs.end() )
+  {
+    LayerRenderJob &job = *mJobIt;
+    return job.opacity;
+  }
+  return 1.0;
+}
+
+QPainter::CompositionMode QgsMapRendererStagedRenderJob::currentLayerCompositionMode() const
+{
+  if ( mJobIt != mLayerJobs.end() )
+  {
+    LayerRenderJob &job = *mJobIt;
+    return job.blendMode;
+  }
+  return QPainter::CompositionMode_SourceOver;
 }
 
 QgsMapRendererStagedRenderJob::RenderStage QgsMapRendererStagedRenderJob::currentStage() const

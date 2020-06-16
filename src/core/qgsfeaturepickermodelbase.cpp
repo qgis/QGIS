@@ -263,7 +263,7 @@ void QgsFeaturePickerModelBase::updateCompleter()
 
     if ( mAllowNull )
     {
-      entries.prepend( QgsFeatureExpressionValuesGatherer::nullEntry() );
+      entries.prepend( QgsFeatureExpressionValuesGatherer::nullEntry( mSourceLayer ) );
     }
 
     const int newEntriesSize = entries.size();
@@ -497,7 +497,7 @@ void QgsFeaturePickerModelBase::setExtraIdentifierValueUnguarded( const QVariant
       }
       else
       {
-        mEntries.prepend( QgsFeatureExpressionValuesGatherer::nullEntry() );
+        mEntries.prepend( QgsFeatureExpressionValuesGatherer::nullEntry( mSourceLayer ) );
       }
       endInsertRows();
 

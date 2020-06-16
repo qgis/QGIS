@@ -38,27 +38,27 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case Integer:
       mTypes = DataTypeNumeric;
-      mHelpText = QObject::tr( "int [&lt;= 0 =&gt;]" );
+      mHelpText = QObject::tr( "int [≤ 0 ≥]" );
       break;
 
     case IntegerPositive:
       mTypes = DataTypeNumeric;
-      mHelpText = QObject::tr( "int [&gt;= 0]" );
+      mHelpText = QObject::tr( "int [≥ 0]" );
       break;
 
     case IntegerPositiveGreaterZero:
       mTypes = DataTypeNumeric;
-      mHelpText = QObject::tr( "int [&gt;= 1]" );
+      mHelpText = QObject::tr( "int [≥ 1]" );
       break;
 
     case Double:
       mTypes = DataTypeNumeric;
-      mHelpText = QObject::tr( "double [&lt;= 0.0 =&gt;]" );
+      mHelpText = QObject::tr( "double [≤ 0.0 ≥]" );
       break;
 
     case DoublePositive:
       mTypes = DataTypeNumeric;
-      mHelpText = QObject::tr( "double [&gt;= 0.0]" );
+      mHelpText = QObject::tr( "double [≥ 0.0]" );
       break;
 
     case Double0To1:
@@ -115,7 +115,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case Size:
       mTypes = DataTypeNumeric;
-      mHelpText = QObject::tr( "double [&gt;= 0.0]" );
+      mHelpText = QObject::tr( "double [≥ 0.0]" );
       break;
 
     case Size2D:
@@ -130,7 +130,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case StrokeWidth:
       mTypes = DataTypeNumeric;
-      mHelpText = QObject::tr( "double [&gt;= 0.0]" );
+      mHelpText = QObject::tr( "double [≥ 0.0]" );
       break;
 
     case FillStyle:

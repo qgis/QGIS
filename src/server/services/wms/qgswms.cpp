@@ -62,11 +62,6 @@ namespace QgsWms
       QString name()    const override { return QStringLiteral( "WMS" ); }
       QString version() const override { return mVersion; }
 
-      bool allowMethod( QgsServerRequest::Method method ) const override
-      {
-        return method == QgsServerRequest::GetMethod;
-      }
-
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
                            const QgsProject *project ) override
       {

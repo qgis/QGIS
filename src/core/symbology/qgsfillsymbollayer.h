@@ -993,6 +993,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
      * Sets the path to the SVG file to render in the fill.
      *
      * This is usually an absolute file path. Other supported options include
+     *
      * - relative paths to folders from the user's SVG search paths
      * - base64 encoded content, prefixed with a 'base64:' string
      * - http(s) paths
@@ -1478,8 +1479,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QString layerType() const override;
 
     void startRender( QgsSymbolRenderContext &context ) override;
-
     void stopRender( QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
     QgsStringMap properties() const override;
 
@@ -1720,6 +1721,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     void applyPattern( const QgsSymbolRenderContext &context, QBrush &brush, double distanceX, double distanceY,
                        double displacementX, double displacementY, double offsetX, double offsetY );
+
+    bool mRenderUsingMarkers = false;
 };
 
 /**

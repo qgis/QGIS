@@ -113,6 +113,9 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! \brief slot executed when user "Static time range" radio button on time options in source page.
     void staticTemporalRange_toggled( bool checked );
 
+    //! \brief slot executed when temporal properties status change.
+    void temporalPropertiesChange();
+
     /**
      * \brief slot executed when the single band radio button is pressed.
      * \brief slot executed when the reset null value to file default icon is selected

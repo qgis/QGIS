@@ -40,7 +40,7 @@ from qgis.core import (QgsProviderRegistry,
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
-from qgis.PyQt.QtCore import QObject, QVariant
+from qgis.PyQt.QtCore import QObject, QVariant, QByteArray
 
 from qgis.utils import spatialite_connect
 
@@ -264,6 +264,23 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         """
         cur.execute(sql)
 
+        # Unique and not null constraints
+        sql = "CREATE TABLE \"unique_not_null_constraints\"(pkuid integer primary key autoincrement, \"unique\" TEXT UNIQUE, \"not_null\" TEXT NOT NULL)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('unique_not_null_constraints', 'geometry', 4326, 'POINT', 'XY')"
+        cur.execute(sql)
+
+        # blob test table
+        sql = "CREATE TABLE blob_table ( id INTEGER NOT NULL PRIMARY KEY, fld1 BLOB )"
+        cur.execute(sql)
+        sql = """
+        INSERT INTO blob_table VALUES
+        (1, X'0053514C697465'),
+        (2, NULL),
+        (3, X'53514C697465')
+        """
+        cur.execute(sql)
+
         # Commit all test data
         cur.execute("COMMIT")
         con.close()
@@ -303,13 +320,16 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
             'spatialite')
         return vl
 
+    def getEditableLayerWithUniqueNotNullConstraints(self):
+        """Returns the layer for UNIQUE and NOT NULL constraints detection"""
+
+        vl = QgsVectorLayer(
+            'dbname=\'{}\' table="unique_not_null_constraints" (geometry) sql='.format(
+                self.dbname), 'unique_not_null_constraints',
+            'spatialite')
+        return vl
+
     def treat_time_as_string(self):
-        return True
-
-    def treat_datetime_as_string(self):
-        return True
-
-    def treat_date_as_string(self):
         return True
 
     def getEditableLayer(self):
@@ -381,6 +401,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
                     'overlaps(buffer($geometry,1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
                     'intersects(centroid($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
                     'intersects(point_on_surface($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
+                    '"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')',
                     '"dt" <= format_date(make_datetime(2020, 5, 4, 12, 13, 14), \'yyyy-MM-dd hh:mm:ss\')',
                     '"dt" < format_date(make_date(2020, 5, 4), \'yyyy-MM-dd hh:mm:ss\')',
                     '"dt" = format_date(to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\'),\'yyyy-MM-dd hh:mm:ss\')',
@@ -954,7 +975,9 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
     def testPKNotInt(self):
         """ Check when primary key is not an integer """
         # create test db
-        dbname = os.path.join(tempfile.mkdtemp(), "test_pknotint.sqlite")
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        dbname = os.path.join(tmpdir, "test_pknotint.sqlite")
         con = spatialite_connect(dbname, isolation_level=None)
         cur = con.cursor()
 
@@ -999,9 +1022,6 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
             self.assertEqual(point.y(), 2)
 
         con.close()
-
-        basepath, filename = os.path.split(dbname)
-        shutil.rmtree(basepath)
 
     def testLoadStyle(self):
         """Check that we can store and load a style"""
@@ -1440,6 +1460,46 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.featureCount(), 1)
         self.assertEqual(vl.getFeature(
             1).geometry().asWkt().upper(), 'POINT (9 45)')
+
+    def testBLOBType(self):
+        """Test binary field"""
+        vl = QgsVectorLayer('dbname=%s table="blob_table" sql=' % self.dbname, "testBLOBType", "spatialite")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(fields.at(fields.indexFromName('fld1')).type(), QVariant.ByteArray)
+
+        values = {feat['id']: feat['fld1'] for feat in vl.getFeatures()}
+        expected = {
+            1: QByteArray(b'\x00SQLite'),
+            2: QByteArray(),
+            3: QByteArray(b'SQLite')
+        }
+        self.assertEqual(values, expected)
+
+        # change attribute value
+        self.assertTrue(vl.dataProvider().changeAttributeValues(
+            {1: {1: QByteArray(b'bbbvx')}}))
+        values = {feat['id']: feat['fld1'] for feat in vl.getFeatures()}
+        expected = {
+            1: QByteArray(b'bbbvx'),
+            2: QByteArray(),
+            3: QByteArray(b'SQLite')
+        }
+        self.assertEqual(values, expected)
+
+        # add feature
+        f = QgsFeature()
+        f.setAttributes([4, QByteArray(b'cccc')])
+        self.assertTrue(vl.dataProvider().addFeature(f))
+        values = {feat['id']: feat['fld1'] for feat in vl.getFeatures()}
+        expected = {
+            1: QByteArray(b'bbbvx'),
+            2: QByteArray(),
+            3: QByteArray(b'SQLite'),
+            4: QByteArray(b'cccc')
+        }
+        self.assertEqual(values, expected)
 
     def testTransaction(self):
         """Test spatialite transactions"""

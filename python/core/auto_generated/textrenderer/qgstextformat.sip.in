@@ -120,7 +120,7 @@ Masks may be defined in contexts where the text is rendered over some map layers
     QFont font() const;
 %Docstring
 Returns the font used for rendering text. Note that the size of the font
-is not used, and size() should be called instead to determine the size
+is not used, and :py:func:`~QgsTextFormat.size` should be called instead to determine the size
 of rendered text.
 
 .. seealso:: :py:func:`scaledFont`
@@ -149,7 +149,7 @@ units and map unit scale) for a specified render context.
     void setFont( const QFont &font );
 %Docstring
 Sets the font used for rendering text. Note that the size of the font
-is not used, and setSize() should be called instead to explicitly set the size
+is not used, and :py:func:`~QgsTextFormat.setSize` should be called instead to explicitly set the size
 of rendered text.
 
 :param font: desired font
@@ -183,7 +183,7 @@ Sets the named style for the font used for rendering text.
 
     double size() const;
 %Docstring
-Returns the size for rendered text. Units are retrieved using sizeUnit().
+Returns the size for rendered text. Units are retrieved using :py:func:`~QgsTextFormat.sizeUnit`.
 
 .. seealso:: :py:func:`setSize`
 
@@ -194,7 +194,7 @@ Returns the size for rendered text. Units are retrieved using sizeUnit().
 %Docstring
 Sets the size for rendered text.
 
-:param size: size of rendered text. Units are set using setSizeUnit()
+:param size: size of rendered text. Units are set using :py:func:`~QgsTextFormat.setSizeUnit`
 
 .. seealso:: :py:func:`size`
 
@@ -228,7 +228,7 @@ Sets the units for the size of rendered text.
     QgsMapUnitScale sizeMapUnitScale() const;
 %Docstring
 Returns the map unit scale object for the size. This is only used if the
-sizeUnit() is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextFormat.sizeUnit` is set to QgsUnitTypes.RenderMapUnit.
 
 .. seealso:: :py:func:`setSizeMapUnitScale`
 
@@ -238,7 +238,7 @@ sizeUnit() is set to QgsUnitTypes.RenderMapUnit.
     void setSizeMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale object for the size. This is only used if the
-sizeUnit() is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextFormat.sizeUnit` is set to QgsUnitTypes.RenderMapUnit.
 
 .. seealso:: :py:func:`sizeMapUnitScale`
 
@@ -341,7 +341,11 @@ the rendered text.
 .. warning::
 
    Only a small subset of HTML formatting is supported. Currently this is restricted to:
-   * text color formatting
+
+- text color formatting
+- strikethrough
+- underline
+- overline
 
 .. seealso:: :py:func:`setAllowHtmlFormatting`
 
@@ -356,7 +360,11 @@ the rendered text.
 .. warning::
 
    Only a small subset of HTML formatting is supported. Currently this is restricted to:
-   * text color formatting
+
+- text color formatting
+- strikethrough
+- underline
+- overline
 
 .. seealso:: :py:func:`allowHtmlFormatting`
 
@@ -413,7 +421,7 @@ Caller takes responsibility for deleting the returned object.
     static QgsTextFormat fromQFont( const QFont &font );
 %Docstring
 Returns a text format matching the settings from an input ``font``.
-Unlike setFont(), this method also handles the size and size units
+Unlike :py:func:`~QgsTextFormat.setFont`, this method also handles the size and size units
 from ``font``.
 
 .. seealso:: :py:func:`toQFont`
@@ -424,7 +432,7 @@ from ``font``.
     QFont toQFont() const;
 %Docstring
 Returns a QFont matching the relevant settings from this text format.
-Unlike font(), this method also handles the size and size units
+Unlike :py:func:`~QgsTextFormat.font`, this method also handles the size and size units
 from the text format.
 
 .. seealso:: :py:func:`fromQFont`
@@ -472,6 +480,13 @@ Returns a reference to the format's property collection, used for data defined o
 .. versionadded:: 3.10
 %End
 
+
+    QSet<QString> referencedFields( const QgsRenderContext &context ) const;
+%Docstring
+Returns all field names referenced by the configuration (e.g. from data defined properties).
+
+.. versionadded:: 3.14
+%End
 
     void setDataDefinedProperties( const QgsPropertyCollection &collection );
 %Docstring

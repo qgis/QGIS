@@ -211,10 +211,30 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       }
       else
       {
-        // features with no candidates are recorded in the unlabeled feature list
+        // no candidates, so generate a default "point on surface" one
         std::unique_ptr< LabelPosition > unplacedPosition = featurePart->createCandidatePointOnSurface( featurePart );
-        if ( unplacedPosition )
+        if ( !unplacedPosition )
+          continue;
+
+        if ( layer->displayAll() )
+        {
+          // if we are displaying all labels, we throw the default candidate in too
+          unplacedPosition->insertIntoIndex( allCandidatesFirstRound );
+          candidates.emplace_back( std::move( unplacedPosition ) );
+
+          // valid features are added to fFeats
+          std::unique_ptr< Feats > ft = qgis::make_unique< Feats >();
+          ft->feature = featurePart;
+          ft->shape = nullptr;
+          ft->candidates = std::move( candidates );
+          ft->priority = featurePart->calculatePriority();
+          features.emplace_back( std::move( ft ) );
+        }
+        else
+        {
+          // not displaying all labels for this layer, so it goes into the unlabeled feature list
           prob->positionsWithNoCandidates()->emplace_back( std::move( unplacedPosition ) );
+        }
       }
     }
     if ( isCanceled() )
@@ -319,34 +339,44 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       if ( isCanceled() )
         return nullptr;
 
-      switch ( mPlacementVersion )
+      auto pruneHardConflicts = [&]
       {
-        case QgsLabelingEngineSettings::PlacementEngineVersion1:
-          break;
-
-        case QgsLabelingEngineSettings::PlacementEngineVersion2:
+        switch ( mPlacementVersion )
         {
-          // v2 placement rips out candidates where the candidate cost is too high when compared to
-          // their inactive cost
+          case QgsLabelingEngineSettings::PlacementEngineVersion1:
+            break;
 
-          // note, we start this at the SECOND candidate (you'll see why after this loop)
-          feat->candidates.erase( std::remove_if( feat->candidates.begin() + 1, feat->candidates.end(), [ & ]( std::unique_ptr< LabelPosition > &candidate )
+          case QgsLabelingEngineSettings::PlacementEngineVersion2:
           {
-            if ( candidate->hasHardObstacleConflict() )
+            // v2 placement rips out candidates where the candidate cost is too high when compared to
+            // their inactive cost
+
+            // note, we start this at the SECOND candidate (you'll see why after this loop)
+            feat->candidates.erase( std::remove_if( feat->candidates.begin() + 1, feat->candidates.end(), [ & ]( std::unique_ptr< LabelPosition > &candidate )
             {
-              return true;
-            }
-            return false;
-          } ), feat->candidates.end() );
+              if ( candidate->hasHardObstacleConflict() )
+              {
+                return true;
+              }
+              return false;
+            } ), feat->candidates.end() );
 
-          if ( feat->candidates.size() == 1 && feat->candidates[ 0 ]->hasHardObstacleConflict() )
-          {
-            // we've ended up removing ALL candidates for this label. Oh well, that's allowed. We just need to
-            // make sure we move this last candidate to the unplaced labels list
-            prob->positionsWithNoCandidates()->emplace_back( std::move( feat->candidates.front() ) );
-            feat->candidates.clear();
+            if ( feat->candidates.size() == 1 && feat->candidates[ 0 ]->hasHardObstacleConflict() && !feat->feature->layer()->displayAll() )
+            {
+              // we've going to end up removing ALL candidates for this label. Oh well, that's allowed. We just need to
+              // make sure we move this last candidate to the unplaced labels list
+              prob->positionsWithNoCandidates()->emplace_back( std::move( feat->candidates.front() ) );
+              feat->candidates.clear();
+            }
           }
         }
+      };
+
+      // if we're not showing all labels (including conflicts) for this layer, then we prune the candidates
+      // upfront to avoid extra work...
+      if ( !feat->feature->layer()->displayAll() )
+      {
+        pruneHardConflicts();
       }
 
       if ( feat->candidates.empty() )
@@ -357,6 +387,16 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
       // sort candidates list, best label to worst
       std::sort( feat->candidates.begin(), feat->candidates.end(), CostCalculator::candidateSortGrow );
+
+      // but if we ARE showing all labels (including conflicts), let's go ahead and prune them now.
+      // Since we've calculated all their costs and sorted them, if we've hit the situation that ALL
+      // candidates have conflicts, then at least when we pick the first candidate to display it will be
+      // the lowest cost (i.e. best possible) overlapping candidate...
+      if ( feat->feature->layer()->displayAll() )
+      {
+        pruneHardConflicts();
+      }
+
 
       // only keep the 'maxCandidates' best candidates
       if ( maxCandidates > 0 && feat->candidates.size() > maxCandidates )

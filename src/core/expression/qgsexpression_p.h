@@ -46,6 +46,9 @@ class QgsExpressionPrivate
       , mEvalErrorString( other.mEvalErrorString )
       , mParserErrors( other.mParserErrors )
       , mExp( other.mExp )
+      , mDaEllipsoid( other.mDaEllipsoid )
+      , mDaCrs( other.mDaCrs )
+      , mDaTransformContext( other.mDaTransformContext )
       , mCalc( other.mCalc )
       , mDistanceUnit( other.mDistanceUnit )
       , mAreaUnit( other.mAreaUnit )
@@ -77,6 +80,8 @@ class QgsExpressionPrivate
 
     //! Whether prepare() has been called before evaluate()
     bool mIsPrepared = false;
+
+    QgsExpressionPrivate &operator= ( const QgsExpressionPrivate & ) = delete;
 };
 
 

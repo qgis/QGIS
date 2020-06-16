@@ -91,6 +91,9 @@ class QgsGrassLocationItem : public QgsDirectoryItem, public QgsGrassObjectItemB
 
   private:
     QgsGrassItemActions *mActions = nullptr;
+
+    QgsGrassLocationItem( const QgsGrassLocationItem & ) = delete;
+    QgsGrassLocationItem &operator=( const QgsGrassLocationItem & ) = delete;
 };
 
 class QgsGrassMapsetItem : public QgsDirectoryItem, public QgsGrassObjectItemBase
@@ -123,6 +126,9 @@ class QgsGrassMapsetItem : public QgsDirectoryItem, public QgsGrassObjectItemBas
     bool mRefreshLater;
     // running imports
     static QList<QgsGrassImport *> sImports;
+
+    QgsGrassMapsetItem( const QgsGrassMapsetItem & ) = delete;
+    QgsGrassMapsetItem &operator=( const QgsGrassMapsetItem & ) = delete;
 };
 
 class QgsGrassObjectItem : public QgsLayerItem, public QgsGrassObjectItemBase
@@ -141,6 +147,8 @@ class QgsGrassObjectItem : public QgsLayerItem, public QgsGrassObjectItemBase
   protected:
     QgsGrassItemActions *mActions = nullptr;
 
+    QgsGrassObjectItem( const QgsGrassObjectItem & ) = delete;
+    QgsGrassObjectItem &operator=( const QgsGrassObjectItem & ) = delete;
 };
 
 // Vector is collection of layers
@@ -164,6 +172,9 @@ class QgsGrassVectorItem : public QgsDataCollectionItem, public QgsGrassObjectIt
     bool mValid;
     QgsGrassItemActions *mActions = nullptr;
     QFileSystemWatcher *mWatcher = nullptr;
+
+    QgsGrassVectorItem( const QgsGrassVectorItem & ) = delete;
+    QgsGrassVectorItem &operator= ( const QgsGrassVectorItem & ) = delete;
 };
 
 class QgsGrassVectorLayerItem : public QgsGrassObjectItem

@@ -141,7 +141,7 @@ QVariant QgsVectorLayerAndAttributeModel::headerData( int section, Qt::Orientati
       if ( section == 0 )
         return tr( "Layer" );
       else if ( section == 1 )
-        return tr( "Output layer attribute" );
+        return tr( "Output Layer Attribute" );
     }
     else if ( role == Qt::ToolTipRole )
     {
@@ -350,7 +350,7 @@ void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name
   }
   else
   {
-    visibleLayers = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayerIds( name ).toSet();
+    visibleLayers = qgis::listToSet( QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayerIds( name ) );
   }
 
   if ( visibleLayers.isEmpty() )
