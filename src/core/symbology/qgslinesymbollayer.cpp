@@ -353,6 +353,13 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
   else
   {
     double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
+    if ( mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & QgsRenderContext::RenderSymbolPreview )
+    {
+      // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
+      // and clamp it to a reasonable range. It's the best we can do in this situation!
+      scaledOffset = std::min( std::max( context.renderContext().convertToPainterUnits( offset, QgsUnitTypes::RenderMillimeters ), 3.0 ), 100.0 );
+    }
+
     QList<QPolygonF> mline = ::offsetLine( points, scaledOffset, context.originalGeometryType() != QgsWkbTypes::UnknownGeometry ? context.originalGeometryType() : QgsWkbTypes::LineGeometry );
     for ( int part = 0; part < mline.count(); ++part )
     {
@@ -1109,12 +1116,25 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
     offsetAlongLine = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffsetAlongLine, context.renderContext().expressionContext(), mOffsetAlongLine );
   }
 
-  const double painterUnitInterval = rc.convertToPainterUnits( interval, intervalUnit(), intervalMapUnitScale() );
+  double painterUnitInterval = rc.convertToPainterUnits( interval, intervalUnit(), intervalMapUnitScale() );
+  if ( intervalUnit() == QgsUnitTypes::RenderMetersInMapUnits && rc.flags() & QgsRenderContext::RenderSymbolPreview )
+  {
+    // rendering for symbol previews -- an interval in meters in map units can't be calculated, so treat the size as millimeters
+    // and clamp it to a reasonable range. It's the best we can do in this situation!
+    painterUnitInterval = std::min( std::max( rc.convertToPainterUnits( interval, QgsUnitTypes::RenderMillimeters ), 10.0 ), 100.0 );
+  }
 
   if ( painterUnitInterval < 0 )
     return;
 
-  const double painterUnitOffsetAlongLine = rc.convertToPainterUnits( offsetAlongLine, offsetAlongLineUnit(), offsetAlongLineMapUnitScale() );
+  double painterUnitOffsetAlongLine = rc.convertToPainterUnits( offsetAlongLine, offsetAlongLineUnit(), offsetAlongLineMapUnitScale() );
+  if ( offsetAlongLineUnit() == QgsUnitTypes::RenderMetersInMapUnits && rc.flags() & QgsRenderContext::RenderSymbolPreview )
+  {
+    // rendering for symbol previews -- an offset in meters in map units can't be calculated, so treat the size as millimeters
+    // and clamp it to a reasonable range. It's the best we can do in this situation!
+    painterUnitOffsetAlongLine = std::min( std::max( rc.convertToPainterUnits( offsetAlongLine, QgsUnitTypes::RenderMillimeters ), 3.0 ), 100.0 );
+  }
+
   lengthLeft = painterUnitInterval - painterUnitOffsetAlongLine;
 
   if ( averageOver > 0 && !qgsDoubleNear( averageOver, 0.0 ) )
