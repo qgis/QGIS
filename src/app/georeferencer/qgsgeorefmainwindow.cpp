@@ -515,19 +515,27 @@ void QgsGeoreferencerMainWindow::addPoint( const QgsPointXY &pixelCoords, const 
 
 void QgsGeoreferencerMainWindow::deleteDataPoint( QPoint coords )
 {
+  QgsGeorefDataPoint *pt = nullptr;
+  // This is the manhattan length from mouse cursor point to GCP
+  // We will use this distance to pick the closest GCP to the cursor
+  // GCPs farther than the initial minDistance are too far and are ignored
+  qreal minDistance = 10;
   for ( QgsGCPList::iterator it = mPoints.begin(); it != mPoints.end(); ++it )
   {
-    QgsGeorefDataPoint *pt = *it;
-    if ( /*pt->pixelCoords() == coords ||*/ pt->contains( coords, true ) ) // first operand for removing from GCP table
+    qreal distance = ( *it )->distance( coords, true );
+    if ( distance < minDistance )
     {
-      delete *it;
-      mPoints.erase( it );
-      mGCPListWidget->updateGCPList();
-
-      mCanvas->refresh();
-      break;
+      pt = *it;
+      minDistance = distance;
     }
   }
+  if ( !pt )
+    return;
+  mPoints.removeOne( pt );
+  delete pt;
+  mGCPListWidget->updateGCPList();
+
+  mCanvas->refresh();
   updateGeorefTransform();
 }
 
@@ -544,13 +552,17 @@ void QgsGeoreferencerMainWindow::selectPoint( QPoint p )
   // Get Map Sender
   bool isMapPlugin = sender() == mToolMovePoint;
   QgsGeorefDataPoint *&mvPoint = isMapPlugin ? mMovingPoint : mMovingPointQgis;
-
+  // This is the manhattan length from mouse cursor point to GCP
+  // We will use this distance to pick the closest GCP to the cursor
+  // GCPs farther than the initial minDistance are too far and are ignored
+  qreal minDistance = 10;
   for ( QgsGCPList::const_iterator it = mPoints.constBegin(); it != mPoints.constEnd(); ++it )
   {
-    if ( ( *it )->contains( p, isMapPlugin ) )
+    qreal distance = ( *it )->distance( p, isMapPlugin );
+    if ( distance < minDistance )
     {
       mvPoint = *it;
-      break;
+      minDistance = distance;
     }
   }
 }

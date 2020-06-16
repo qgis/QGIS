@@ -46,6 +46,7 @@ class QgsGeorefDataPoint : public QObject
     void setId( int id );
 
     bool contains( QPoint p, bool isMapPlugin );
+    qreal distance( QPoint p, bool isMapPlugin );
 
     QgsMapCanvas *srcCanvas() const { return mSrcCanvas; }
     QgsMapCanvas *dstCanvas() const { return mDstCanvas; }

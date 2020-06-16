@@ -136,6 +136,12 @@ bool QgsGeorefDataPoint::contains( QPoint p, bool isMapPlugin )
   }
 }
 
+qreal QgsGeorefDataPoint::distance( QPoint p, bool isMapPlugin )
+{
+  QPointF pnt = isMapPlugin ? mGCPSourceItem->mapFromScene( p ) : mGCPDestinationItem->mapFromScene( p );
+  return pnt.manhattanLength();
+}
+
 void QgsGeorefDataPoint::moveTo( QPoint p, bool isMapPlugin )
 {
   if ( isMapPlugin )
