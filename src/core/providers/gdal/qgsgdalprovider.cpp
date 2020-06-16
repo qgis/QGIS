@@ -780,6 +780,26 @@ bool QgsGdalProvider::canDoResampling(
   return false;
 }
 
+static GDALRIOResampleAlg getGDALResamplingAlg( QgsGdalProvider::ResamplingMethod method )
+{
+  GDALRIOResampleAlg eResampleAlg = GRIORA_NearestNeighbour;
+  switch ( method )
+  {
+    case QgsGdalProvider::ResamplingMethod::Nearest:
+      eResampleAlg = GRIORA_NearestNeighbour;
+      break;
+
+    case QgsGdalProvider::ResamplingMethod::Bilinear:
+      eResampleAlg = GRIORA_Bilinear;
+      break;
+
+    case QgsGdalProvider::ResamplingMethod::Cubic:
+      eResampleAlg = GRIORA_Cubic;
+      break;
+  }
+
+  return eResampleAlg;
+}
 
 bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int bufferWidthPix, int bufferHeightPix, void *data, QgsRasterBlockFeedback *feedback )
 {
@@ -943,13 +963,7 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
       {
         method = mZoomedOutResamplingMethod;
       }
-      if ( method == ResamplingMethod::Bilinear )
-        sExtraArg.eResampleAlg = GRIORA_Bilinear;
-      else if ( method == ResamplingMethod::Cubic )
-        sExtraArg.eResampleAlg = GRIORA_Cubic;
-      else
-        sExtraArg.eResampleAlg = GRIORA_NearestNeighbour;
-
+      sExtraArg.eResampleAlg = getGDALResamplingAlg( method );
       sExtraArg.bFloatingPointWindowValidity = true;
       sExtraArg.dfXOff = ( reqExtent.xMinimum() + tgtLeft * reqXRes - mExtent.xMinimum() ) / srcXRes;
       sExtraArg.dfYOff = ( mExtent.yMaximum() - ( reqExtent.yMaximum() - tgtTop * reqYRes ) ) / -srcYRes;
@@ -1042,12 +1056,8 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
     GDALRasterIOExtraArg sExtraArg;
     INIT_RASTERIO_EXTRA_ARG( sExtraArg );
 
-    if ( mZoomedOutResamplingMethod == ResamplingMethod::Bilinear )
-      sExtraArg.eResampleAlg = GRIORA_Bilinear;
-    else if ( mZoomedOutResamplingMethod == ResamplingMethod::Cubic )
-      sExtraArg.eResampleAlg = GRIORA_Cubic;
-    else
-      sExtraArg.eResampleAlg = GRIORA_NearestNeighbour;
+    sExtraArg.eResampleAlg = getGDALResamplingAlg( mZoomedOutResamplingMethod );
+
     CPLErr eErr = GDALRasterIOEx( GDALGetRasterBand( hSrcDS.get(), 1 ),
                                   GF_Read,
                                   0, 0, tmpWidth, tmpHeight,
