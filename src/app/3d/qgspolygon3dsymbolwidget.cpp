@@ -32,6 +32,7 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( cboAltBinding, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( cboCullingMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
+  connect( cboRenderedFacade, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( chkAddBackFaces, &QCheckBox::clicked, this, &QgsPolygon3DSymbolWidget::changed );
   connect( chkInvertNormals, &QCheckBox::clicked, this, &QgsPolygon3DSymbolWidget::changed );
   connect( widgetMaterial, &QgsPhongMaterialWidget::changed, this, &QgsPolygon3DSymbolWidget::changed );
@@ -49,6 +50,8 @@ void QgsPolygon3DSymbolWidget::setSymbol( const QgsPolygon3DSymbol &symbol, QgsV
   cboAltClamping->setCurrentIndex( static_cast<int>( symbol.altitudeClamping() ) );
   cboAltBinding->setCurrentIndex( static_cast<int>( symbol.altitudeBinding() ) );
   cboCullingMode->setCurrentIndex( static_cast<int>( symbol.cullingMode() ) );
+  cboRenderedFacade->setCurrentIndex( symbol.renderedFacade() );
+
   chkAddBackFaces->setChecked( symbol.addBackFaces() );
   chkInvertNormals->setChecked( symbol.invertNormals() );
   widgetMaterial->setMaterial( symbol.material() );
@@ -69,6 +72,7 @@ QgsPolygon3DSymbol QgsPolygon3DSymbolWidget::symbol() const
   sym.setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );
   sym.setAltitudeBinding( static_cast<Qgs3DTypes::AltitudeBinding>( cboAltBinding->currentIndex() ) );
   sym.setCullingMode( static_cast<Qgs3DTypes::CullingMode>( cboCullingMode->currentIndex() ) );
+  sym.setRenderedFacade( cboRenderedFacade->currentIndex() );
   sym.setAddBackFaces( chkAddBackFaces->isChecked() );
   sym.setInvertNormals( chkInvertNormals->isChecked() );
   sym.setMaterial( widgetMaterial->material() );

@@ -88,6 +88,7 @@ void Qgs3DMapToolMeasureLine::activate()
     // Initialize the line layer
     QString mapCRS = mCanvas->map()->crs().authid();
     mMeasurementLayer = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=" ) + mapCRS, QStringLiteral( "Measurement" ), QStringLiteral( "memory" ) );
+    QgsProject::instance()->addMapLayer( mMeasurementLayer );
 
     // Add feature to layer
     mMeasurementLayer->startEditing();
@@ -206,6 +207,7 @@ void Qgs3DMapToolMeasureLine::updateMeasurementLayer()
   QgsGeometryMap geometryMap;
   geometryMap.insert( 1, lineGeometry );
   mMeasurementLayer->dataProvider()->changeGeometryValues( geometryMap );
+  mMeasurementLayer->reload();
   mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
 }
 

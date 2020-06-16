@@ -30,6 +30,7 @@
 #include <QtDebug>
 #include <QMatrix4x4>
 #include <QVector3D>
+#include <QtMath>
 #include <algorithm>
 #include <unordered_set>
 
@@ -124,7 +125,7 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
 }
 
 
-QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ, bool addTextureCoords )
+QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ, bool addTextureCoords, int facade )
   : mOriginX( originX )
   , mOriginY( originY )
   , mAddNormals( addNormals )
@@ -132,11 +133,12 @@ QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals,
   , mAddBackFaces( addBackFaces )
   , mAddTextureCoords( addTextureCoords )
   , mNoZ( noZ )
+  , mTessellatedFacade( facade )
 {
   init();
 }
 
-QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ, bool addTextureCoords )
+QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ, bool addTextureCoords, int facade )
   : mBounds( bounds )
   , mOriginX( mBounds.xMinimum() )
   , mOriginY( mBounds.yMinimum() )
@@ -145,6 +147,7 @@ QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, boo
   , mAddBackFaces( addBackFaces )
   , mAddTextureCoords( addTextureCoords )
   , mNoZ( noZ )
+  , mTessellatedFacade( facade )
 {
   init();
 }
@@ -329,7 +332,7 @@ inline double _round_coord( double x )
 }
 
 
-static QgsCurve *_transform_ring_to_new_base( const QgsLineString &curve, const QgsPoint &pt0, const QMatrix4x4 *toNewBase, float scaleX, float scaleY )
+static QgsCurve *_transform_ring_to_new_base( const QgsLineString &curve, const QgsPoint &pt0, const QMatrix4x4 *toNewBase, const float scale )
 {
   int count = curve.numPoints();
   QVector<double> x;
@@ -356,8 +359,8 @@ static QgsCurve *_transform_ring_to_new_base( const QgsLineString &curve, const 
       v = toNewBase->map( v );
 
     // scale coordinates
-    v.setX( v.x() * scaleX );
-    v.setY( v.y() * scaleY );
+    v.setX( v.x() * scale );
+    v.setY( v.y() * scale );
 
     // we also round coordinates before passing them to poly2tri triangulation in order to fix possible numerical
     // stability issues. We had crashes with nearly collinear points where one of the points was off by a tiny bit (e.g. by 1e-20).
@@ -377,12 +380,12 @@ static QgsCurve *_transform_ring_to_new_base( const QgsLineString &curve, const 
 }
 
 
-static QgsPolygon *_transform_polygon_to_new_base( const QgsPolygon &polygon, const QgsPoint &pt0, const QMatrix4x4 *toNewBase, float scaleX, float scaleY )
+static QgsPolygon *_transform_polygon_to_new_base( const QgsPolygon &polygon, const QgsPoint &pt0, const QMatrix4x4 *toNewBase, const float scale )
 {
   QgsPolygon *p = new QgsPolygon;
-  p->setExteriorRing( _transform_ring_to_new_base( *qgsgeometry_cast< const QgsLineString * >( polygon.exteriorRing() ), pt0, toNewBase, scaleX, scaleY ) );
+  p->setExteriorRing( _transform_ring_to_new_base( *qgsgeometry_cast< const QgsLineString * >( polygon.exteriorRing() ), pt0, toNewBase, scale ) );
   for ( int i = 0; i < polygon.numInteriorRings(); ++i )
-    p->addInteriorRing( _transform_ring_to_new_base( *qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ), pt0, toNewBase, scaleX, scaleY ) );
+    p->addInteriorRing( _transform_ring_to_new_base( *qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ), pt0, toNewBase, scale ) );
   return p;
 }
 
@@ -494,8 +497,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   float zMin = std::numeric_limits<float>::max();
   float zMax = std::numeric_limits<float>::min();
 
-  const float scaleX = !mBounds.isNull() ? 10000.0 / mBounds.width() : 1.0;
-  const float scaleY = !mBounds.isNull() ? 10000.0 / mBounds.height() : 1.0;
+  const float scale = mBounds.isNull() ? 1.0 : std::max( 10000.0 / mBounds.width(), 10000.0 / mBounds.height() );
 
   std::unique_ptr<QMatrix4x4> toNewBase, toOldBase;
   QgsPoint ptStart, pt0;
@@ -529,21 +531,31 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     // subtract ptFirst from geometry for better numerical stability in triangulation
     // and apply new 3D vector base if the polygon is not horizontal
 
-    polygonNew.reset( _transform_polygon_to_new_base( polygon, pt0, toNewBase.get(), scaleX, scaleY ) );
+    polygonNew.reset( _transform_polygon_to_new_base( polygon, pt0, toNewBase.get(), scale ) );
   };
 
   if ( !mNoZ && !qgsDoubleNear( pNormal.length(), 1, 0.001 ) )
     return;  // this should not happen - pNormal should be normalized to unit length
 
-  if ( pCount == 4 && polygon.numInteriorRings() == 0 )
+  QVector3D upVector( 0, 0, 1 );
+  float pNormalUpVectorDotProduct = QVector3D::dotProduct( upVector, pNormal );
+  float radsBetwwenUpNormal = qAcos( pNormalUpVectorDotProduct );
+
+  float detectionDelta = qDegreesToRadians( 10.0f );
+  int facade = 0;
+  if ( radsBetwwenUpNormal > M_PI_2 - detectionDelta && radsBetwwenUpNormal < M_PI_2 + detectionDelta ) facade = 1;
+  else if ( radsBetwwenUpNormal > - M_PI_2 - detectionDelta && radsBetwwenUpNormal < -M_PI_2 + detectionDelta ) facade = 1;
+  else facade = 2;
+
+  if ( pCount == 4 && polygon.numInteriorRings() == 0 && ( mTessellatedFacade & facade ) )
   {
+    QgsLineString *triangle = nullptr;
     if ( mAddTextureCoords )
     {
       rotatePolygonToXYPlane();
+      triangle = qgsgeometry_cast< QgsLineString * >( polygonNew->exteriorRing() );
       Q_ASSERT( polygonNew->exteriorRing()->numPoints() >= 3 );
     }
-
-    const QgsLineString *triangle = qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() );
 
     // polygon is a triangle - write vertices to the output data array without triangulation
     const double *xData = exterior->xData();
@@ -578,7 +590,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       }
     }
   }
-  else
+  else if ( mTessellatedFacade & facade )
   {
 
     rotatePolygonToXYPlane();
@@ -655,8 +667,8 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           QVector4D pt( p->x, p->y, mNoZ ? 0 : z[p], 0 );
           if ( toOldBase )
             pt = *toOldBase * pt;
-          const double fx = ( pt.x() / scaleX ) - mOriginX + pt0.x();
-          const double fy = ( pt.y() / scaleY ) - mOriginY + pt0.y();
+          const double fx = ( pt.x() / scale ) - mOriginX + pt0.x();
+          const double fy = ( pt.y() / scale ) - mOriginY + pt0.y();
           const double fz = mNoZ ? 0 : ( pt.z() + extrusionHeight + pt0.z() );
           if ( fz < zMin )
             zMin = fz;
@@ -679,8 +691,8 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
             QVector4D pt( p->x, p->y, mNoZ ? 0 : z[p], 0 );
             if ( toOldBase )
               pt = *toOldBase * pt;
-            const double fx = ( pt.x() / scaleX ) - mOriginX + pt0.x();
-            const double fy = ( pt.y() / scaleY ) - mOriginY + pt0.y();
+            const double fx = ( pt.x() / scale ) - mOriginX + pt0.x();
+            const double fy = ( pt.y() / scale ) - mOriginY + pt0.y();
             const double fz = mNoZ ? 0 : ( pt.z() + extrusionHeight + pt0.z() );
             mData << fx << fz << -fy;
             if ( mAddNormals )
@@ -701,7 +713,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   }
 
   // add walls if extrusion is enabled
-  if ( extrusionHeight != 0 )
+  if ( extrusionHeight != 0 && ( mTessellatedFacade & 1 ) )
   {
     _makeWalls( *exterior, false, extrusionHeight, mData, mAddNormals, mAddTextureCoords, mOriginX, mOriginY );
 
