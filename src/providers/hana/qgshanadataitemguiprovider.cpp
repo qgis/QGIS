@@ -66,15 +66,15 @@ bool QgsHanaDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGui
   if ( QgsHanaLayerItem *layerItem = qobject_cast<QgsHanaLayerItem *>( item ) )
   {
     const QgsHanaLayerProperty &layerInfo = layerItem->layerInfo();
+    QString objectName = QStringLiteral("%1.%2").arg( layerInfo.schemaName, layerInfo.tableName );
     QString typeName = layerInfo.isView ? tr( "View" ) : tr( "Table" );
 
     if ( QMessageBox::question( nullptr, tr( "Delete %1" ).arg( typeName ),
-                                tr( "Are you sure you want to delete %1.%2?" ).arg( layerInfo.schemaName, layerInfo.tableName ),
+                                tr( "Are you sure you want to delete %1?" ).arg( objectName ),
                                 QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
       return true;
 
     QgsHanaConnectionItem *connItem = qobject_cast<QgsHanaConnectionItem *>( layerItem->parent()->parent() );
-
     QgsHanaConnectionRef conn( connItem->name() );
     if ( conn.isNull() )
       return false;
@@ -92,7 +92,7 @@ bool QgsHanaDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGui
     {
       QMessageBox::information( nullptr,
                                 tr( "Delete %1" ).arg( typeName ),
-                                tr( "%1 deleted successfully." ).arg( typeName ) );
+                                tr( "%1 %2 deleted successfully." ).arg( typeName, objectName ) );
       if ( layerItem->parent() )
         layerItem->parent()->refresh();
     }
