@@ -317,6 +317,7 @@ bool QgsVirtualLayerProvider::createIt()
       provider.replace( QLatin1String( "'" ), QLatin1String( "''" ) );
       QString source = mLayers.at( i ).source;
       source.replace( QLatin1String( "'" ), QLatin1String( "''" ) );
+      // the encoding might be an empty string, which breaks the SQL query below
       QString encoding = mLayers.at( i ).encoding.isEmpty()
                          ? QStringLiteral( "System" )
                          : mLayers.at( i ).encoding;
@@ -559,6 +560,7 @@ void QgsVirtualLayerProvider::updateStatistics() const
   bool hasGeometry = mDefinition.geometryWkbType() != QgsWkbTypes::NoGeometry;
   QString subset = mSubset.isEmpty() ? QString() : QStringLiteral( " WHERE %1" ).arg( mSubset );
 
+  // `mTableName` might be a null string if the layer creation failed. Assert such situations at least during development.
   Q_ASSERT( ! mTableName.isNull() );
 
   QString sql = QStringLiteral( "SELECT Count(*)%1 FROM %2%3" )
