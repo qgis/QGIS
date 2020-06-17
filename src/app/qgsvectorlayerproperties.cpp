@@ -715,7 +715,7 @@ void QgsVectorLayerProperties::apply()
     }
   }
 
-  mLayer->setDisplayExpression( mDisplayExpressionWidget->currentField() );
+  mLayer->setDisplayExpression( mDisplayExpressionWidget->asExpression() );
   mLayer->setMapTipTemplate( mMapTipWidget->text() );
 
   mLayer->actions()->clearActions();
