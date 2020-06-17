@@ -342,6 +342,8 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     bool mExtraValueDoesNotExist = false;
     bool mAllowNull = false;
     bool mIsSettingExtraIdentifierValue = false;
+
+    friend class TestQgsFeatureListComboBox;
 };
 
 #endif // QGSFEATUREFILTERMODELBASE_H

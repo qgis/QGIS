@@ -290,16 +290,24 @@ void TestQgsFeatureListComboBox::testNotExistingYetFeature()
 
 void TestQgsFeatureListComboBox::testFeatureFurtherThanFetchLimit()
 {
+  int fetchLimit = 20;
+  QVERIFY( fetchLimit < mLayer->featureCount() );
   std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
   QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
+  QSignalSpy spy( cb.get(), &QgsFeatureListComboBox::identifierValueChanged );
   model->setFetchLimit( 20 );
   model->setAllowNull( false );
   cb->setSourceLayer( mLayer.get() );
   cb->setIdentifierFields( {QStringLiteral( "pk" )} );
-  QSignalSpy spy( cb.get(), &QgsFeatureListComboBox::identifierValueChanged );
+  spy.wait();
+  QCOMPARE( model->mEntries.count(), 20 );
+  for ( int i = 0; i < 20; i++ )
+    QCOMPARE( model->mEntries.at( i ).identifierFields.at( 0 ), i + 10 );
   cb->setIdentifierValues( {33} );
   spy.wait();
   QCOMPARE( cb->lineEdit()->text(), QStringLiteral( "33" ) );
+  QCOMPARE( model->mEntries.count(), 21 );
+  QCOMPARE( model->mEntries.at( 0 ).identifierFields.at( 0 ), 33 );
 }
 
 QGSTEST_MAIN( TestQgsFeatureListComboBox )
