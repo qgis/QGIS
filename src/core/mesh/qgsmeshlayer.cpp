@@ -835,7 +835,7 @@ void QgsMeshLayer::setStaticVectorDatasetIndex( const QgsMeshDatasetIndex &stati
   mRendererSettings.setActiveVectorDatasetGroup( staticVectorDatasetIndex.group() );
 
   if ( oldActiveVector != mRendererSettings.activeVectorDatasetGroup() )
-    emit activeVectorDatasetGroupChanged( mRendererSettings.activeScalarDatasetGroup() );
+    emit activeVectorDatasetGroupChanged( mRendererSettings.activeVectorDatasetGroup() );
 }
 
 void QgsMeshLayer::setStaticScalarDatasetIndex( const QgsMeshDatasetIndex &staticScalarDatasetIndex )
