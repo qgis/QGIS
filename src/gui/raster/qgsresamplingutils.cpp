@@ -47,7 +47,7 @@ void QgsResamplingUtils::initWidgets( QgsRasterLayer *rasterLayer,
   mZoomedInResamplingComboBox->addItem( QObject::tr( "Cubic" ), static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Cubic ) );
 
   mZoomedOutResamplingComboBox->addItem( QObject::tr( "Nearest neighbour" ), static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Nearest ) );
-  mZoomedOutResamplingComboBox->addItem( QObject::tr( "Average" ), static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Bilinear ) );
+  mZoomedOutResamplingComboBox->addItem( QObject::tr( "Bilinear" ), static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Bilinear ) );
   mZoomedOutResamplingComboBox->addItem( QObject::tr( "Cubic" ), static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Cubic ) );
 }
 
