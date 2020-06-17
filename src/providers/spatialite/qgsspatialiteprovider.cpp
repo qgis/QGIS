@@ -642,6 +642,14 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
 
 QgsSpatiaLiteProvider::~QgsSpatiaLiteProvider()
 {
+  if ( mTransaction )
+  {
+    QString errorMessage;
+    if ( ! mTransaction->rollback( errorMessage ) )
+    {
+      QgsMessageLog::logMessage( tr( "Error closing transaction for %1" ).arg( mTableName ), tr( "SpatiaLite" ) );
+    }
+  }
   closeDb();
   invalidateConnections( mSqlitePath );
 }
@@ -1053,7 +1061,6 @@ void QgsSpatiaLiteProvider::insertDefaultValue( int fieldIndex, QString defaultV
   }
 }
 
-
 QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
 {
   // TODO: backend-side evaluation
@@ -1079,6 +1086,24 @@ QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
     resultVar = defaultVal;
   }
 
+  if ( mTransaction &&
+       mAttributeFields.at( fieldId ).name() == mPrimaryKey &&
+       mPrimaryKeyAutoIncrement &&
+       mDefaultValues.value( fieldId, QString() ) == tr( "Autogenerate" ) &&
+       providerProperty( EvaluateDefaultValues, false ).toBool() )
+  {
+    QString errorMessage;
+    QVariant nextVal { QgsSqliteUtils::nextSequenceValue( sqliteHandle(), mTableName, errorMessage ) };
+    if ( errorMessage.isEmpty() && nextVal != -1 )
+    {
+      resultVar = nextVal;
+    }
+    else
+    {
+      QgsMessageLog::logMessage( errorMessage, tr( "SpatiaLite" ) );
+    }
+  }
+
   ( void )mAttributeFields.at( fieldId ).convertCompatible( resultVar );
   return resultVar;
 }
@@ -1092,7 +1117,15 @@ QString QgsSpatiaLiteProvider::defaultValueClause( int fieldIndex ) const
 
   if ( mAttributeFields.at( fieldIndex ).name() == mPrimaryKey && mPrimaryKeyAutoIncrement )
   {
-    return tr( "Autogenerate" );
+    if ( mTransaction &&
+         providerProperty( EvaluateDefaultValues, false ).toBool() )
+    {
+      return QString();
+    }
+    else
+    {
+      return tr( "Autogenerate" );
+    }
   }
   return mDefaultValueClause.value( fieldIndex, QString() );
 }
@@ -1265,7 +1298,6 @@ void QgsSpatiaLiteProvider::loadFields()
   updatePrimaryKeyCapabilities();
 }
 
-
 void QgsSpatiaLiteProvider::determineViewPrimaryKey()
 {
   QString sql = QString( "SELECT view_rowid"
@@ -1332,7 +1364,6 @@ QStringList QgsSpatiaLiteProvider::tablePrimaryKeys( const QString &tableName ) 
   sqlite3_finalize( stmt );
   return result;
 }
-
 
 bool QgsSpatiaLiteProvider::hasTriggers()
 {
