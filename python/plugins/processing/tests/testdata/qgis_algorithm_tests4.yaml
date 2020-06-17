@@ -1466,6 +1466,7 @@ tests:
         compare:
           fields:
             sum:
+              cast: float
               precision: 5
 
   - algorithm: native:rasterlayerzonalstats
@@ -1489,6 +1490,7 @@ tests:
         compare:
           fields:
             sum:
+              cast: float
               precision: 5
 
   - algorithm: native:antimeridiansplit
