@@ -1886,7 +1886,8 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
 
   gdal::ogr_field_def_unique_ptr fielddefn( OGR_Fld_Create( textEncoding()->fromUnicode( field.name() ).constData(), type ) );
   int width = field.length();
-  if ( field.precision() )
+  // precision is only meaningful for OFTReal, don't alter the specified width for other types
+  if ( type == OFTReal && field.precision() )
     width += 1;
   OGR_Fld_SetWidth( fielddefn.get(), width );
   OGR_Fld_SetPrecision( fielddefn.get(), field.precision() );
