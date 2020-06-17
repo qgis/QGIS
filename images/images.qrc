@@ -274,6 +274,7 @@
         <file>themes/default/mActionCustomProjection.svg</file>
         <file>themes/default/mActionDecreaseBrightness.svg</file>
         <file>themes/default/mActionDecreaseContrast.svg</file>
+        <file>themes/default/mActionDecreaseGamma.svg</file>
         <file>themes/default/mActionDeleteAttribute.svg</file>
         <file>themes/default/mActionDeletePart.svg</file>
         <file>themes/default/mActionDeleteRing.svg</file>
@@ -318,6 +319,7 @@
         <file>themes/default/mActionIdentify.svg</file>
         <file>themes/default/mActionIncreaseBrightness.svg</file>
         <file>themes/default/mActionIncreaseContrast.svg</file>
+        <file>themes/default/mActionIncreaseGamma.svg</file>
         <file>themes/default/mActionInOverview.svg</file>
         <file>themes/default/mActionInvertSelection.svg</file>
         <file>themes/default/mActionKeyboardShortcuts.svg</file>
