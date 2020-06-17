@@ -38,6 +38,7 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint
   mPointFromCanvasPushButton = new QPushButton( QgsApplication::getThemeIcon( "georeferencer/mPushButtonPencil.png" ), tr( "From Map Canvas" ) );
   mPointFromCanvasPushButton->setCheckable( true );
   buttonBox->addButton( mPointFromCanvasPushButton, QDialogButtonBox::ActionRole );
+  mPointFromCanvasPushButton->setFocus();
 
   // User can input either DD or DMS coords (from QGIS mapcanvas we take DD coords)
   QgsDMSAndDDValidator *validator = new QgsDMSAndDDValidator( this );
