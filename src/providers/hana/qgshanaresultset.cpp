@@ -98,7 +98,7 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
   {
     case SQLDataTypes::Bit:
     case SQLDataTypes::Boolean:
-      return QgsHanaUtils::toVariant( mResultSet->getBoolean( columnIndex ), QVariant::Bool );
+      return QgsHanaUtils::toVariant( mResultSet->getBoolean( columnIndex ) );
     case SQLDataTypes::Char:
     {
       String str = mResultSet->getString( columnIndex );

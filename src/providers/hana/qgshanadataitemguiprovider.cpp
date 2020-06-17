@@ -66,7 +66,7 @@ bool QgsHanaDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGui
   if ( QgsHanaLayerItem *layerItem = qobject_cast<QgsHanaLayerItem *>( item ) )
   {
     const QgsHanaLayerProperty &layerInfo = layerItem->layerInfo();
-    QString objectName = QStringLiteral("%1.%2").arg( layerInfo.schemaName, layerInfo.tableName );
+    QString objectName = QStringLiteral( "%1.%2" ).arg( layerInfo.schemaName, layerInfo.tableName );
     QString typeName = layerInfo.isView ? tr( "View" ) : tr( "Table" );
 
     if ( QMessageBox::question( nullptr, tr( "Delete %1" ).arg( typeName ),

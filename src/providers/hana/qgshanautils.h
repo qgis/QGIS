@@ -39,6 +39,7 @@ class QgsHanaUtils
 
     static QString toQString( const odbc::NString &str );
     static QString toQString( const odbc::String &str );
+    static QVariant toVariant( const odbc::Boolean &value );
     static QVariant toVariant( const odbc::Byte &value );
     static QVariant toVariant( const odbc::UByte &value );
     static QVariant toVariant( const odbc::Short &value );
@@ -55,14 +56,6 @@ class QgsHanaUtils
     static QVariant toVariant( const odbc::String &value );
     static QVariant toVariant( const odbc::NString &value );
     static QVariant toVariant( const odbc::Binary &value );
-    template<typename T>
-    static QVariant toVariant( const odbc::Nullable<T> &value, QVariant::Type nullType )
-    {
-      if ( value.isNull() )
-        return QVariant( nullType );
-      else
-        return QVariant( *value );
-    }
 
     static const char16_t *toUtf16( const QString &sql );
     static QgsWkbTypes::Type toWkbType( const odbc::String &type, const odbc::Int &hasZ, const odbc::Int &hasM );

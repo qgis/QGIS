@@ -134,6 +134,14 @@ QString QgsHanaUtils::toQString( const String &str )
     return QString::fromUtf8( str->c_str() );
 }
 
+QVariant QgsHanaUtils::toVariant( const odbc::Boolean &value )
+{
+  if ( value.isNull() )
+    return QVariant( QVariant::Bool );
+  else
+    return QVariant( *value );
+}
+
 QVariant QgsHanaUtils::toVariant( const Byte &value )
 {
   if ( value.isNull() )
@@ -280,87 +288,22 @@ QgsWkbTypes::Type QgsHanaUtils::toWkbType( const odbc::String &type, const odbc:
   bool hasMValue = hasM.isNull() ? false : *hasM == 1;
   QString hanaType( type->c_str() );
 
-  if ( hanaType == QStringLiteral( "ST_POINT" ) )
-  {
-    if ( hasZValue && hasMValue )
-      return QgsWkbTypes::PointZM;
-    if ( hasZValue )
-      return QgsWkbTypes::PointZ;
-    if ( hasMValue )
-      return QgsWkbTypes::PointM;
-    return QgsWkbTypes::Point;
-  }
-  else if ( hanaType == QStringLiteral( "ST_MULTIPOINT" ) )
-  {
-    if ( hasZValue && hasMValue )
-      return QgsWkbTypes::MultiPointZM;
-    if ( hasZValue )
-      return QgsWkbTypes::MultiPointZ;
-    if ( hasMValue )
-      return QgsWkbTypes::MultiPointM;
-    return QgsWkbTypes::MultiPoint;
-  }
-  else if ( hanaType == QStringLiteral( "ST_LINESTRING" ) )
-  {
-    if ( hasZValue && hasMValue )
-      return QgsWkbTypes::LineStringZM;
-    if ( hasZValue )
-      return QgsWkbTypes::LineStringZ;
-    if ( hasMValue )
-      return QgsWkbTypes::LineStringM;
-    return QgsWkbTypes::LineString;
-  }
-  else if ( hanaType == QStringLiteral( "ST_MULTILINESTRING" ) )
-  {
-    if ( hasZValue && hasMValue )
-      return QgsWkbTypes::MultiLineStringZM;
-    if ( hasZValue )
-      return QgsWkbTypes::MultiLineStringZ;
-    if ( hasMValue )
-      return QgsWkbTypes::MultiLineStringM;
-    return QgsWkbTypes::MultiLineString;
-  }
-  else if ( hanaType == QStringLiteral( "ST_POLYGON" ) )
-  {
-    if ( hasZValue && hasMValue )
-      return QgsWkbTypes::PolygonZM;
-    if ( hasZValue )
-      return QgsWkbTypes::PolygonZ;
-    if ( hasMValue )
-      return QgsWkbTypes::PolygonM;
-    return QgsWkbTypes::Polygon;
-  }
-  else if ( hanaType == QStringLiteral( "ST_MULTIPOLYGON" ) )
-  {
-    if ( hasZValue && hasMValue )
-      return QgsWkbTypes::MultiPolygonZM;
-    if ( hasZValue )
-      return QgsWkbTypes::MultiPolygonZ;
-    if ( hasMValue )
-      return QgsWkbTypes::MultiPolygonM;
-    return QgsWkbTypes::MultiPolygon;
-  }
-  else if ( hanaType == QStringLiteral( "ST_GEOMETRYCOLLECTION" ) )
-  {
-    if ( hasZValue && hasMValue )
-      return QgsWkbTypes::GeometryCollectionZM;
-    if ( hasZValue )
-      return QgsWkbTypes::GeometryCollectionZ;
-    if ( hasMValue )
-      return QgsWkbTypes::GeometryCollectionM;
-    return QgsWkbTypes::Type::GeometryCollection;
-  }
-  else if ( hanaType == QStringLiteral( "ST_CIRCULARSTRING" ) )
-  {
-    if ( hasZValue && hasMValue )
-      return QgsWkbTypes::CircularStringZM;
-    if ( hasZValue )
-      return QgsWkbTypes::CircularStringZ;
-    if ( hasMValue )
-      return QgsWkbTypes::CircularStringM;
-    return QgsWkbTypes::Type::CircularString;
-  }
-
+  if ( hanaType == QLatin1String( "ST_POINT" ) )
+    return QgsWkbTypes::zmType( QgsWkbTypes::Point, hasZValue, hasMValue );
+  else if ( hanaType == QLatin1String( "ST_MULTIPOINT" ) )
+    return QgsWkbTypes::zmType( QgsWkbTypes::MultiPoint, hasZValue, hasMValue );
+  else if ( hanaType == QLatin1String( "ST_LINESTRING" ) )
+    return QgsWkbTypes::zmType( QgsWkbTypes::LineString, hasZValue, hasMValue );
+  else if ( hanaType == QLatin1String( "ST_MULTILINESTRING" ) )
+    return QgsWkbTypes::zmType( QgsWkbTypes::MultiLineString, hasZValue, hasMValue );
+  else if ( hanaType == QLatin1String( "ST_POLYGON" ) )
+    return QgsWkbTypes::zmType( QgsWkbTypes::Polygon, hasZValue, hasMValue );
+  else if ( hanaType == QLatin1String( "ST_MULTIPOLYGON" ) )
+    return QgsWkbTypes::zmType( QgsWkbTypes::MultiPolygon, hasZValue, hasMValue );
+  else if ( hanaType == QLatin1String( "ST_GEOMETRYCOLLECTION" ) )
+    return QgsWkbTypes::zmType( QgsWkbTypes::GeometryCollection, hasZValue, hasMValue );
+  else if ( hanaType == QLatin1String( "ST_CIRCULARSTRING" ) )
+    return QgsWkbTypes::zmType( QgsWkbTypes::CircularString, hasZValue, hasMValue );
   return QgsWkbTypes::Type::Unknown;
 }
 
@@ -398,14 +341,24 @@ bool QgsHanaUtils::convertField( QgsField &field )
       fieldSize = -1;
       fieldPrec = 0;
       break;
-    case QVariant::Char:
-      fieldType = QStringLiteral( "TINYINT" );
+    case QVariant::Int:
+      fieldType = QStringLiteral( "INTEGER" );
       fieldSize = -1;
+      fieldPrec = 0;
+      break;
+    case QVariant::UInt:
+      fieldType = QStringLiteral( "DECIMAL" );
+      fieldSize = 10;
       fieldPrec = 0;
       break;
     case QVariant::LongLong:
       fieldType = QStringLiteral( "BIGINT" );
       fieldSize = -1;
+      fieldPrec = 0;
+      break;
+    case QVariant::ULongLong:
+      fieldType = QStringLiteral( "DECIMAL" );
+      fieldSize = 20;
       fieldPrec = 0;
       break;
     case QVariant::Date:
@@ -420,6 +373,23 @@ bool QgsHanaUtils::convertField( QgsField &field )
       fieldType = QStringLiteral( "TIMESTAMP" );
       fieldPrec = -1;
       break;
+    case QVariant::Double:
+      if ( fieldSize <= 0 || fieldPrec <= 0 )
+      {
+        fieldType = QStringLiteral( "DOUBLE" );
+        fieldSize = -1;
+        fieldPrec = -1;
+      }
+      else
+      {
+        fieldType = QStringLiteral( "DECIMAL(%1,%2)" ).arg( fieldSize, fieldPrec );
+      }
+      break;
+    case QVariant::Char:
+      fieldType = QStringLiteral( "NCHAR(1)" );
+      fieldSize = 1;
+      fieldPrec = 0;
+      break;
     case QVariant::String:
       if ( fieldSize > 0 )
       {
@@ -432,28 +402,8 @@ bool QgsHanaUtils::convertField( QgsField &field )
         fieldType = QStringLiteral( "NVARCHAR(5000)" );
       fieldPrec = -1;
       break;
-    case QVariant::Int:
-      fieldType = QStringLiteral( "INTEGER" );
-      fieldSize = -1;
-      fieldPrec = 0;
-      break;
-    case QVariant::Double:
-      if ( fieldSize <= 0 || fieldPrec <= 0 )
-      {
-        fieldType = QStringLiteral( "DOUBLE" );
-        fieldSize = -1;
-        fieldPrec = -1;
-      }
-      else
-      {
-        if ( fieldPrec > 0 )
-          fieldType = QStringLiteral( "DECIMAL(%1,%2)" ).arg( fieldSize, fieldPrec );
-        else
-          fieldType = QStringLiteral( "DECIMAL" );
-      }
-      break;
     case QVariant::ByteArray:
-      if ( fieldSize > 1 && fieldSize <= 5000 )
+      if ( fieldSize >= 1 && fieldSize <= 5000 )
         fieldType = QStringLiteral( "VARBINARY(%1)" ).arg( QString::number( fieldSize ) );
       else
         fieldType = QStringLiteral( "BLOB" );
@@ -465,6 +415,7 @@ bool QgsHanaUtils::convertField( QgsField &field )
   field.setTypeName( fieldType );
   field.setLength( fieldSize );
   field.setPrecision( fieldPrec );
+
   return true;
 }
 
