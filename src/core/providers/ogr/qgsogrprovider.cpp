@@ -1485,7 +1485,7 @@ QVariant QgsOgrProvider::defaultValue( int fieldId ) const
 
         if ( ! ok )
         {
-          QgsMessageLog::logMessage( tr( "Error retrieving next sequence value for %1" ).arg( QString( mOgrOrigLayer->name() ) ), tr( "OGR" ) );
+          QgsMessageLog::logMessage( tr( "Error retrieving next sequence value for %1" ).arg( QString::fromUtf8( mOgrOrigLayer->name() ) ), tr( "OGR" ) );
         }
       }
       else  // no sequence!
@@ -6914,4 +6914,3 @@ void QgsOgrProviderMetadata::saveConnection( const QgsAbstractProviderConnection
 }
 
 ///@endcond
-
