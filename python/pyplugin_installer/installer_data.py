@@ -102,8 +102,7 @@ translatableAttributes = ["name", "description", "about", "tags"]
 settingsGroup = "app/plugin_installer"
 reposGroup = "app/plugin_repositories"
 
-officialRepo = (QCoreApplication.translate("QgsPluginInstaller", "QGIS Official Plugin Repository"), "https://plugins.qgis.org/plugins/plugins.xml")
-
+officialRepo = (QCoreApplication.translate("QgsPluginInstaller", "QGIS Official Plugin Repository"), QgsSettings().value("qgis/officialpluginrepo", "https://plugins.qgis.org/plugins/plugins.xml"))
 
 # --- common functions ------------------------------------------------------------------- #
 def removeDir(path):
