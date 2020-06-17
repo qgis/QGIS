@@ -572,6 +572,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsbilinearrasterresampler.cpp
   raster/qgsbrightnesscontrastfilter.cpp
   raster/qgscubicrasterresampler.cpp
+  raster/qgsgammacorrectionfilter.cpp
   raster/qgshuesaturationfilter.cpp
   raster/qgsmultibandcolorrenderer.cpp
   raster/qgspalettedrasterrenderer.cpp
@@ -1306,6 +1307,7 @@ SET(QGIS_CORE_HDRS
   raster/qgscontrastenhancement.h
   raster/qgscontrastenhancementfunction.h
   raster/qgscubicrasterresampler.h
+  raster/qgsgammacorrectionfilter.h
   raster/qgshillshaderenderer.h
   raster/qgshuesaturationfilter.h
   raster/qgslinearminmaxenhancement.h

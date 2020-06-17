@@ -25,6 +25,7 @@
 #include "qgsrasterrenderer.h"
 #include "qgsrasterresamplefilter.h"
 #include "qgsbrightnesscontrastfilter.h"
+#include "qgsgammacorrectionfilter.h"
 #include "qgshuesaturationfilter.h"
 #include "qgsrasterprojector.h"
 #include "qgsrasternuller.h"
@@ -139,6 +140,7 @@ QgsRasterPipe::Role QgsRasterPipe::interfaceRole( QgsRasterInterface *interface 
   else if ( dynamic_cast<QgsRasterResampleFilter *>( interface ) ) role = ResamplerRole;
   else if ( dynamic_cast<QgsBrightnessContrastFilter *>( interface ) ) role = BrightnessRole;
   else if ( dynamic_cast<QgsHueSaturationFilter *>( interface ) ) role = HueSaturationRole;
+  else if ( dynamic_cast<QgsGammaCorrectionFilter *>( interface ) ) role = GammaCorrectionRole;
   else if ( dynamic_cast<QgsRasterProjector *>( interface ) ) role = ProjectorRole;
   else if ( dynamic_cast<QgsRasterNuller *>( interface ) ) role = NullerRole;
 
@@ -191,6 +193,7 @@ bool QgsRasterPipe::set( QgsRasterInterface *interface )
   int resamplerIdx = mRoleMap.value( ResamplerRole, -1 );
   int brightnessIdx = mRoleMap.value( BrightnessRole, -1 );
   int hueSaturationIdx = mRoleMap.value( HueSaturationRole, -1 );
+  int gammaCorrectionIdx = mRoleMap.value( GammaCorrectionRole, -1 );
 
   if ( role == ProviderRole )
   {
@@ -208,13 +211,17 @@ bool QgsRasterPipe::set( QgsRasterInterface *interface )
   {
     idx = std::max( std::max( providerIdx, rendererIdx ), brightnessIdx ) + 1;
   }
-  else if ( role == ResamplerRole )
+  else if ( role == GammaCorrectionRole )
   {
     idx = std::max( std::max( std::max( providerIdx, rendererIdx ), brightnessIdx ), hueSaturationIdx ) + 1;
   }
+  else if ( role == ResamplerRole )
+  {
+    idx = std::max( std::max( std::max( std::max( providerIdx, rendererIdx ), brightnessIdx ), hueSaturationIdx ), gammaCorrectionIdx ) + 1;
+  }
   else if ( role == ProjectorRole )
   {
-    idx = std::max( std::max( std::max( std::max( providerIdx, rendererIdx ), brightnessIdx ), hueSaturationIdx ), resamplerIdx )  + 1;
+    idx = std::max( std::max( std::max( std::max( std::max( providerIdx, rendererIdx ), brightnessIdx ), hueSaturationIdx ), gammaCorrectionIdx ), resamplerIdx )  + 1;
   }
 
   return insert( idx, interface );  // insert may still fail and return false
@@ -248,6 +255,11 @@ QgsRasterResampleFilter *QgsRasterPipe::resampleFilter() const
 QgsBrightnessContrastFilter *QgsRasterPipe::brightnessFilter() const
 {
   return dynamic_cast<QgsBrightnessContrastFilter *>( interface( BrightnessRole ) );
+}
+
+QgsGammaCorrectionFilter *QgsRasterPipe::gammaCorrectionFilter() const
+{
+  return dynamic_cast<QgsGammaCorrectionFilter *>( interface( GammaCorrectionRole ) );
 }
 
 QgsHueSaturationFilter *QgsRasterPipe::hueSaturationFilter() const

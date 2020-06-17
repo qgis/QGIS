@@ -1,0 +1,62 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsgammacorrectionfilter.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsGammaCorrectionFilter : QgsRasterInterface
+{
+%Docstring
+Gamma correction filter pipe for rasters.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsgammacorrectionfilter.h"
+%End
+  public:
+    QgsGammaCorrectionFilter( QgsRasterInterface *input = 0 );
+
+    virtual QgsGammaCorrectionFilter *clone() const /Factory/;
+
+
+    virtual int bandCount() const;
+
+
+    virtual Qgis::DataType dataType( int bandNo ) const;
+
+
+    virtual bool setInput( QgsRasterInterface *input );
+
+
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
+
+
+    void setGamma( double gamma );
+    double gamma() const;
+
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
+
+
+    virtual void readXml( const QDomElement &filterElem );
+
+%Docstring
+Sets base class members from xml. Usually called from :py:func:`~QgsGammaCorrectionFilter.create` methods of subclasses
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsgammacorrectionfilter.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

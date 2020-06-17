@@ -95,6 +95,7 @@ Base class for processing filters like renderers, reprojector, resampler etc.
 #include "qgsrasterinterface.h"
 // QgsRasterInterface subclasses
 #include <qgsbrightnesscontrastfilter.h>
+#include <qgsgammacorrectionfilter.h>
 #include <qgshuesaturationfilter.h>
 #include <qgsrasterdataprovider.h>
 #include <qgsrasternuller.h>
@@ -115,6 +116,8 @@ Base class for processing filters like renderers, reprojector, resampler etc.
       sipType = sipType_QgsBrightnessContrastFilter;
     else if ( dynamic_cast<QgsHueSaturationFilter *>( sipCpp ) )
       sipType = sipType_QgsHueSaturationFilter;
+    else if ( dynamic_cast<QgsGammaCorrectionFilter *>( sipCpp ) )
+      sipType = sipType_QgsGammaCorrectionFilter;
     else if ( dynamic_cast<QgsRasterDataProvider *>( sipCpp ) )
     {
       sipType = sipType_QgsRasterDataProvider;
