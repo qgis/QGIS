@@ -964,6 +964,20 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
         method = mZoomedOutResamplingMethod;
       }
       sExtraArg.eResampleAlg = getGDALResamplingAlg( method );
+
+      if ( mMaskBandExposedAsAlpha &&
+           bandNo == GDALGetRasterCount( mGdalDataset ) + 1 &&
+           sExtraArg.eResampleAlg != GRIORA_NearestNeighbour &&
+           sExtraArg.eResampleAlg != GRIORA_Bilinear )
+      {
+        // As time of writing in GDAL up to 3.1, there's a difference of behaviour
+        // when using non-nearest resampling on mask bands.
+        // With bilinear, values are returned in [0,255] range
+        // whereas with cubic (and other convolution-based methods), there are in [0,1] range.
+        // As we want [0,255] range, fallback to Bilinear for the mask band
+        sExtraArg.eResampleAlg = GRIORA_Bilinear;
+      }
+
       sExtraArg.bFloatingPointWindowValidity = true;
       sExtraArg.dfXOff = ( reqExtent.xMinimum() + tgtLeft * reqXRes - mExtent.xMinimum() ) / srcXRes;
       sExtraArg.dfYOff = ( mExtent.yMaximum() - ( reqExtent.yMaximum() - tgtTop * reqYRes ) ) / -srcYRes;
