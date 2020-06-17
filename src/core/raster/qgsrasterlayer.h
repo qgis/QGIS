@@ -250,6 +250,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * Returns the raster's resample filter.
      *
      * \see brightnessFilter()
+     * \see gammaCorrectionFilter()
      * \see hueSaturationFilter()
      */
     QgsRasterResampleFilter *resampleFilter() const { return mPipe.resampleFilter(); }
@@ -258,15 +259,28 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * Returns the raster's brightness/contrast filter.
      *
      * \see resampleFilter()
+     * \see gammaCorrectionFilter()
      * \see hueSaturationFilter()
      */
     QgsBrightnessContrastFilter *brightnessFilter() const { return mPipe.brightnessFilter(); }
+
+    /**
+     * Returns the raster's gamma correction filter.
+     *
+     * \see resampleFilter()
+     * \see brightnessFilter()
+     * \see hueSaturationFilter()
+     *
+     * \since QGIS 3.16
+     */
+    QgsGammaCorrectionFilter *gammaCorrectionFilter() const { return mPipe.gammaCorrectionFilter(); }
 
     /**
      * Returns the raster's hue/saturation filter.
      *
      * \see resampleFilter()
      * \see brightnessFilter()
+     * \see gammaCorrectionFilter()
      */
     QgsHueSaturationFilter *hueSaturationFilter() const { return mPipe.hueSaturationFilter(); }
 

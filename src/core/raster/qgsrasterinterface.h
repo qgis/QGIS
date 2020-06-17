@@ -118,6 +118,7 @@ class CORE_EXPORT QgsRasterInterface
 #ifdef SIP_RUN
 // QgsRasterInterface subclasses
 #include <qgsbrightnesscontrastfilter.h>
+#include <qgsgammacorrectionfilter.h>
 #include <qgshuesaturationfilter.h>
 #include <qgsrasterdataprovider.h>
 #include <qgsrasternuller.h>
@@ -141,6 +142,8 @@ class CORE_EXPORT QgsRasterInterface
       sipType = sipType_QgsBrightnessContrastFilter;
     else if ( dynamic_cast<QgsHueSaturationFilter *>( sipCpp ) )
       sipType = sipType_QgsHueSaturationFilter;
+    else if ( dynamic_cast<QgsGammaCorrectionFilter *>( sipCpp ) )
+      sipType = sipType_QgsGammaCorrectionFilter;
     else if ( dynamic_cast<QgsRasterDataProvider *>( sipCpp ) )
     {
       sipType = sipType_QgsRasterDataProvider;

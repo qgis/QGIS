@@ -28,6 +28,7 @@ class QgsRasterInterface;
 class QgsRasterRenderer;
 class QgsRasterResampleFilter;
 class QgsBrightnessContrastFilter;
+class QgsGammaCorrectionFilter;
 class QgsHueSaturationFilter;
 class QgsRasterProjector;
 class QgsRasterNuller;
@@ -56,7 +57,8 @@ class CORE_EXPORT QgsRasterPipe
       ResamplerRole = 4,
       ProjectorRole = 5,
       NullerRole = 6,
-      HueSaturationRole = 7
+      HueSaturationRole = 7,
+      GammaCorrectionRole = 8
     };
 
     /**
@@ -127,6 +129,12 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterRenderer *renderer() const;
     QgsRasterResampleFilter *resampleFilter() const;
     QgsBrightnessContrastFilter *brightnessFilter() const;
+
+    /**
+     * Getter for gamma correction filter pipe
+     * \since QGIS 3.16
+    */
+    QgsGammaCorrectionFilter *gammaCorrectionFilter() const;
     QgsHueSaturationFilter *hueSaturationFilter() const;
     QgsRasterProjector *projector() const;
     QgsRasterNuller *nuller() const;

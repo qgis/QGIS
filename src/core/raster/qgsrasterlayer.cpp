@@ -20,6 +20,7 @@ email                : tim at linfiniti.com
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
+#include "qgsgammacorrectionfilter.h"
 #include "qgshuesaturationfilter.h"
 #include "qgslayermetadataformatter.h"
 #include "qgslogger.h"
@@ -774,6 +775,10 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   // hue/saturation filter
   QgsHueSaturationFilter *hueSaturationFilter = new QgsHueSaturationFilter();
   mPipe.set( hueSaturationFilter );
+
+  // gamma correction filter
+  QgsGammaCorrectionFilter *gammaFilter = new QgsGammaCorrectionFilter();
+  mPipe.set( gammaFilter );
 
   // resampler (must be after renderer)
   QgsRasterResampleFilter *resampleFilter = new QgsRasterResampleFilter();
@@ -1825,6 +1830,17 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
   if ( !hueSaturationElem.isNull() )
   {
     hueSaturationFilter->readXml( hueSaturationElem );
+  }
+
+  //gamma correction
+  QgsGammaCorrectionFilter *gammaFilter = new QgsGammaCorrectionFilter();
+  mPipe.set( gammaFilter );
+
+  //saturation coefficient
+  QDomElement gammaElem = pipeNode.firstChildElement( QStringLiteral( "gammacorrection" ) );
+  if ( !gammaElem.isNull() )
+  {
+    gammaFilter->readXml( gammaElem );
   }
 
   //resampler
