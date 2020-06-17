@@ -249,17 +249,6 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
   }
   else
   {
-    // If the layer is inside a transaction group we need to add
-    // the feature first to get the provider-evaluated defaults
-    const bool inTransaction {  mLayer->dataProvider() &&
-                                mLayer->dataProvider()->transaction() };
-    if ( inTransaction )
-    {
-      if ( mLayer->addFeature( *mFeature ) )
-      {
-        mLayer->deleteFeature( mFeature->id() );
-      }
-    }
 
     QgsAttributeDialog *dialog = newDialog( false );
     // delete the dialog when it is closed

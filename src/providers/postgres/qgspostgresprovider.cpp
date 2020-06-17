@@ -2084,7 +2084,7 @@ QString QgsPostgresProvider::defaultValueClause( int fieldId ) const
   // Here, we return the expression used to generate the field value, so the
   // user can see what is happening when inserting a new feature.
   // On inserting a new feature or updating a generated field, this is
-  // ommited from the generated queries.
+  // omitted from the generated queries.
   // See https://www.postgresql.org/docs/12/ddl-generated-columns.html
   if ( !genVal.isEmpty() )
   {

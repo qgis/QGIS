@@ -1452,13 +1452,72 @@ QVariant QgsOgrProvider::defaultValue( int fieldId ) const
   else if ( defaultVal == QStringLiteral( "CURRENT_TIME" ) )
     resultVar = QTime::currentTime();
 
+  // Get next sequence value for sqlite in case we are inside a transaction
+  if ( mOgrOrigLayer &&
+       mTransaction &&
+       mDefaultValues.value( fieldId, QString() ) == tr( "Autogenerate" ) &&
+       providerProperty( EvaluateDefaultValues, false ).toBool() &&
+       ( mGDALDriverName == QLatin1String( "GPKG" ) ||
+         mGDALDriverName == QLatin1String( "SQLite" ) ) &&
+       mFirstFieldIsFid &&
+       fieldId == 0 )
+  {
+    QgsOgrLayerUniquePtr resultLayer = mOgrOrigLayer->ExecuteSQL( QByteArray( "SELECT seq FROM sqlite_sequence WHERE name = " ) +  QgsSqliteUtils::quotedValue( mOgrOrigLayer->name() ).toUtf8() );
+    if ( resultLayer )
+    {
+      gdal::ogr_feature_unique_ptr f;
+      if ( f.reset( resultLayer->GetNextFeature() ), f )
+      {
+        bool ok { true };
+        const QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(),
+                             fields().at( 0 ),
+                             0, textEncoding(), &ok );
+        if ( ok )
+        {
+          long long nextVal { res.toLongLong( &ok ) };
+          if ( ok )
+          {
+            // Increment
+            resultVar = ++nextVal;
+            mOgrOrigLayer->ExecuteSQLNoReturn( QByteArray( "UPDATE sqlite_sequence SET seq = seq + 1 WHERE name = " ) +  QgsSqliteUtils::quotedValue( mOgrOrigLayer->name() ).toUtf8() );
+          }
+        }
+
+        if ( ! ok )
+        {
+          QgsMessageLog::logMessage( tr( "Error retrieving next sequence value for %1" ).arg( QString( mOgrOrigLayer->name() ) ), tr( "OGR" ) );
+        }
+      }
+      else  // no sequence!
+      {
+        resultVar = 1;
+        mOgrOrigLayer->ExecuteSQLNoReturn( QByteArray( "INSERT INTO sqlite_sequence (name, seq) VALUES( " +
+                                           QgsSqliteUtils::quotedValue( mOgrOrigLayer->name() ).toUtf8() ) + ", 1)" );
+      }
+    }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "Error retrieving default value for %1" ).arg( mLayerName ), tr( "OGR" ) );
+    }
+  }
+
   ( void )mAttributeFields.at( fieldId ).convertCompatible( resultVar );
   return resultVar;
 }
 
 QString QgsOgrProvider::defaultValueClause( int fieldIndex ) const
 {
-  return mDefaultValues.value( fieldIndex, QString() );
+  // Return empty clause to force defaultValue calls for sqlite in case we are inside a transaction
+  if ( mTransaction &&
+       mDefaultValues.value( fieldIndex, QString() ) == tr( "Autogenerate" ) &&
+       providerProperty( EvaluateDefaultValues, false ).toBool() &&
+       ( mGDALDriverName == QLatin1String( "GPKG" ) ||
+         mGDALDriverName == QLatin1String( "SQLite" ) ) &&
+       mFirstFieldIsFid &&
+       fieldIndex == 0 )
+    return QString();
+  else
+    return mDefaultValues.value( fieldIndex, QString() );
 }
 
 bool QgsOgrProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value ) const
