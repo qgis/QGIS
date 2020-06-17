@@ -50,6 +50,7 @@ class TestQgsFeatureListComboBox : public QObject
     void testValuesAndSelection_data();
     void nullRepresentation();
     void testNotExistingYetFeature();
+    void testFeatureFurtherThanFetchLimit();
 
   private:
 
@@ -103,6 +104,15 @@ void TestQgsFeatureListComboBox::init()
   ft3.setAttribute( QStringLiteral( "diameter" ), 120 );
   ft3.setAttribute( QStringLiteral( "raccord" ), "collar" );
   mLayer->addFeature( ft3 );
+
+  QgsFeatureList flist;
+  for ( int i = 13; i < 40; i++ )
+  {
+    QgsFeature f( mLayer->fields() );
+    f.setAttribute( QStringLiteral( "pk" ), i );
+    flist << f;
+  }
+  mLayer->addFeatures( flist );
 
   mLayer->commitChanges();
 }
@@ -200,7 +210,6 @@ void TestQgsFeatureListComboBox::testValuesAndSelection()
 {
   QFETCH( bool, allowNull );
 
-
   QgsApplication::setNullRepresentation( QStringLiteral( "nope" ) );
   std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
 
@@ -277,6 +286,20 @@ void TestQgsFeatureListComboBox::testNotExistingYetFeature()
 
   loop.exec();
   QCOMPARE( cb->currentText(), QStringLiteral( "(42)" ) );
+}
+
+void TestQgsFeatureListComboBox::testFeatureFurtherThanFetchLimit()
+{
+  std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
+  QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
+  model->setFetchLimit( 20 );
+  model->setAllowNull( false );
+  cb->setSourceLayer( mLayer.get() );
+  cb->setIdentifierFields( {QStringLiteral( "pk" )} );
+  QSignalSpy spy( cb.get(), &QgsFeatureListComboBox::identifierValueChanged );
+  cb->setIdentifierValues( {33} );
+  spy.wait();
+  QCOMPARE( cb->lineEdit()->text(), QStringLiteral( "33" ) );
 }
 
 QGSTEST_MAIN( TestQgsFeatureListComboBox )
