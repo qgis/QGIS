@@ -1131,7 +1131,7 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
     layerNode->setLabelExpression( expressiondialog.expressionText() );
 
   mLegend->beginCommand( tr( "Update Legend" ) );
-  mLegend->updateLegend();
+  mLegend->refresh();
   mLegend->adjustBoxSize();
   mLegend->endCommand();
 }

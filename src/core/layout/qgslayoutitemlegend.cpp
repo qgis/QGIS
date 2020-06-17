@@ -867,7 +867,6 @@ void QgsLayoutItemLegend::updateFilterByMap( bool redraw )
   // the actual update will take place before the redraw.
   // This is to avoid multiple calls to the filter
   mFilterAskedForUpdate = true;
-  clearLegendCachedData();
 
   if ( redraw )
     update();
@@ -915,6 +914,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
   else
     mLegendModel->setLegendFilterByMap( nullptr );
 
+  clearLegendCachedData();
   mForceResize = true;
 }
 
