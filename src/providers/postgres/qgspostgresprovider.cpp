@@ -3013,9 +3013,14 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
         if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
           throw PGException( result );
       }
+      else // let the user know that no field was actually changed
+      {
+        QgsLogger::warning( tr( "No fields were updated on the database." ) );
+      }
 
       // update feature id map if key was changed
-      if ( pkChanged && mPrimaryKeyType == PktFidMap )
+      // PktInt64 also uses a fid map even if it is a stand alone field.
+      if ( pkChanged && ( mPrimaryKeyType == PktFidMap || mPrimaryKeyType == PktInt64 ) )
       {
         QVariantList k = mShared->removeFid( fid );
 
@@ -3305,6 +3310,8 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
 
       // cycle through the changed attributes of the feature
       QString delim;
+      int numChangedFields = 0;
+
       for ( QgsAttributeMap::const_iterator siter = attrs.constBegin(); siter != attrs.constEnd(); ++siter )
       {
         try
@@ -3312,6 +3319,14 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
           QgsField fld = field( siter.key() );
 
           pkChanged = pkChanged || mPrimaryKeyAttrs.contains( siter.key() );
+
+          if ( mGeneratedValues.contains( siter.key() ) && !mGeneratedValues.value( siter.key(), QString() ).isEmpty() )
+          {
+            QgsLogger::warning( tr( "Changing the value of GENERATED field %1 is not allowed." ).arg( fld.name() ) );
+            continue;
+          }
+
+          numChangedFields++;
 
           sql += delim + QStringLiteral( "%1=" ).arg( quotedIdentifier( fld.name() ) );
           delim = ',';
@@ -3326,6 +3341,16 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
           {
             sql += QStringLiteral( "st_geographyfromewkt(%1)" )
                    .arg( quotedValue( siter->toString() ) );
+          }
+          else if ( fld.typeName() == QLatin1String( "jsonb" ) )
+          {
+            sql += QStringLiteral( "%1::jsonb" )
+                   .arg( quotedJsonValue( siter.value() ) );
+          }
+          else if ( fld.typeName() == QLatin1String( "json" ) )
+          {
+            sql += QStringLiteral( "%1::json" )
+                   .arg( quotedJsonValue( siter.value() ) );
           }
           else if ( fld.typeName() == QLatin1String( "bytea" ) )
           {
@@ -3344,11 +3369,20 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
 
       if ( !geometry_map.contains( fid ) )
       {
-        sql += QStringLiteral( " WHERE %1" ).arg( whereClause( fid ) );
+        // Don't try to UPDATE an empty set of values (might happen if the table only has GENERATED fields,
+        // or if the user only changed GENERATED fields in the form/attribute table.
+        if ( numChangedFields > 0 )
+        {
+          sql += QStringLiteral( " WHERE %1" ).arg( whereClause( fid ) );
 
-        QgsPostgresResult result( conn->PQexec( sql ) );
-        if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
-          throw PGException( result );
+          QgsPostgresResult result( conn->PQexec( sql ) );
+          if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
+            throw PGException( result );
+        }
+        else // let the user know that nothing has actually changed
+        {
+          QgsLogger::warning( tr( "No fields/geometries were updated on the database." ) );
+        }
       }
       else
       {
@@ -3375,7 +3409,8 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
       }
 
       // update feature id map if key was changed
-      if ( pkChanged && mPrimaryKeyType == PktFidMap )
+      // PktInt64 also uses a fid map even though it is a single field.
+      if ( pkChanged && ( mPrimaryKeyType == PktFidMap || mPrimaryKeyType == PktInt64 ) )
       {
         QVariantList k = mShared->removeFid( fid );
 
