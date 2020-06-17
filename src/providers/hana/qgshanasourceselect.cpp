@@ -56,17 +56,17 @@ QWidget *QgsHanaSourceSelectDelegate::createEditor(
   if ( index.column() == QgsHanaTableModel::DbtmGeomType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    Q_FOREACH ( QgsWkbTypes::Type type,
-                QList<QgsWkbTypes::Type>()
-                << QgsWkbTypes::Point
-                << QgsWkbTypes::LineString
-                << QgsWkbTypes::Polygon
-                << QgsWkbTypes::MultiPoint
-                << QgsWkbTypes::MultiLineString
-                << QgsWkbTypes::MultiPolygon
-                << QgsWkbTypes::CircularString
-                << QgsWkbTypes::GeometryCollection
-                << QgsWkbTypes::NoGeometry )
+    for ( QgsWkbTypes::Type type :
+          QList<QgsWkbTypes::Type>()
+          << QgsWkbTypes::Point
+          << QgsWkbTypes::LineString
+          << QgsWkbTypes::Polygon
+          << QgsWkbTypes::MultiPoint
+          << QgsWkbTypes::MultiLineString
+          << QgsWkbTypes::MultiPolygon
+          << QgsWkbTypes::CircularString
+          << QgsWkbTypes::GeometryCollection
+          << QgsWkbTypes::NoGeometry )
     {
       cb->addItem( QgsHanaTableModel::iconForWkbType( type ), QgsWkbTypes::displayString( type ), type );
     }
@@ -85,7 +85,7 @@ QWidget *QgsHanaSourceSelectDelegate::createEditor(
       QStandardItemModel *model = new QStandardItemModel( values.size(), 1, cb );
 
       int row = 0;
-      Q_FOREACH ( const QString &value, values )
+      for ( const QString &value : values )
       {
         QStandardItem *item = new QStandardItem( value );
         item->setFlags( Qt::ItemIsUserCheckable | Qt::ItemIsEnabled );
@@ -165,15 +165,14 @@ void QgsHanaSourceSelectDelegate::setEditorData( QWidget *editor, const QModelIn
     if ( index.column() == QgsHanaTableModel::DbtmPkCol &&
          !index.data( Qt::UserRole + 2 ).toStringList().isEmpty() )
     {
-      QStringList cols = index.data( Qt::UserRole + 2 ).toStringList();
-
-      Q_FOREACH ( const QString &col, cols )
+      QStringList columns = index.data( Qt::UserRole + 2 ).toStringList();
+      for ( const QString &colName : columns )
       {
         QStandardItemModel *cbm = qobject_cast<QStandardItemModel *>( cb->model() );
-        for ( int idx = 0; idx < cbm->rowCount(); idx++ )
+        for ( int idx = 0; idx < cbm->rowCount(); ++idx )
         {
           QStandardItem *item = cbm->item( idx, 0 );
-          if ( item->text() != col )
+          if ( item->text() != colName )
             continue;
 
           item->setData( Qt::Checked, Qt::CheckStateRole );
@@ -503,7 +502,7 @@ void QgsHanaSourceSelect::addButtonClicked()
 {
   mSelectedTables.clear();
 
-  Q_FOREACH ( const QModelIndex &idx, mTablesTreeView->selectionModel()->selection().indexes() )
+  for ( const QModelIndex &idx : mTablesTreeView->selectionModel()->selection().indexes() )
   {
     if ( idx.column() != QgsHanaTableModel::DbtmTable )
       continue;

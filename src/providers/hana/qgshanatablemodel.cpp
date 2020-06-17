@@ -111,7 +111,7 @@ void QgsHanaTableModel::addTableEntry( const QgsHanaLayerProperty &layerProperty
   childItemList << selItem;
   childItemList << sqlItem;
 
-  Q_FOREACH ( QStandardItem *item, childItemList )
+  for ( QStandardItem *item : childItemList )
   {
     if ( tip.isEmpty() )
     {

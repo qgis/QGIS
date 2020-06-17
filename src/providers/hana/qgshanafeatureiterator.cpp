@@ -145,7 +145,7 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
   // Read attributes
   if ( mHasAttributes )
   {
-    Q_FOREACH ( int idx, mAttributesToFetch )
+    for ( int idx : mAttributesToFetch )
     {
       feature.setAttribute( idx, mResultSet->getValue( paramIndex ) );
       ++paramIndex;
@@ -275,7 +275,7 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
     }
   }
 
-  Q_FOREACH ( int i, attrs )
+  for ( int i : attrs )
   {
     QString fieldname = mSource->mFields.at( i ).name();
     if ( mFidColumn == fieldname )
@@ -289,7 +289,7 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
   if ( !mFidColumn.isEmpty() )
     sqlFields += QgsHanaUtils::quotedIdentifier( mFidColumn ) + ",";
 
-  Q_FOREACH ( int i, mAttributesToFetch )
+  for ( int i : mAttributesToFetch )
   {
     QString fieldname = mSource->mFields.at( i ).name();
     sqlFields += QStringLiteral( "%1," ).arg( QgsHanaUtils::quotedIdentifier( fieldname ) );
@@ -341,7 +341,7 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
     {
       QString delim;
       QString inClause = QStringLiteral( "%1 IN (" ).arg( QgsHanaUtils::quotedIdentifier( mFidColumn ) );
-      Q_FOREACH ( QgsFeatureId featureId, mRequest.filterFids() )
+      for ( QgsFeatureId featureId : mRequest.filterFids() )
       {
         inClause += delim + FID_TO_STRING( featureId );
         delim = ',';
