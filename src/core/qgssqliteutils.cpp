@@ -233,8 +233,8 @@ long long QgsSqliteUtils::nextSequenceValue( sqlite3 *connection, const QString 
     else // increment
     {
       if ( dsPtr.exec( QStringLiteral( "UPDATE sqlite_sequence SET seq = %1 WHERE name = %2" )
-                       .arg( QString::number( ++result ),
-                       quotedTableName ), errorMessage ) != SQLITE_OK )
+                       .arg( QString::number( ++result ), quotedTableName ),
+                       errorMessage ) != SQLITE_OK )
       {
         errorMessage = QObject::tr( "Error retrieving default value for %1" ).arg( tableName );
         result = -1;
