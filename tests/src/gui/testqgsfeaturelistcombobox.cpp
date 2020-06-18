@@ -110,6 +110,9 @@ void TestQgsFeatureListComboBox::init()
   {
     QgsFeature f( mLayer->fields() );
     f.setAttribute( QStringLiteral( "pk" ), i );
+    f.setAttribute( QStringLiteral( "material" ), QStringLiteral( "material_%1" ).arg( i ) );
+    f.setAttribute( QStringLiteral( "diameter" ), i );
+    f.setAttribute( QStringLiteral( "raccord" ), QStringLiteral( "raccord_%1" ).arg( i ) );
     flist << f;
   }
   mLayer->addFeatures( flist );
@@ -213,16 +216,15 @@ void TestQgsFeatureListComboBox::testValuesAndSelection()
   QgsApplication::setNullRepresentation( QStringLiteral( "nope" ) );
   std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
 
-  QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
-  QEventLoop loop;
-  connect( model, &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+  QSignalSpy spy( cb.get(), &QgsFeatureListComboBox::identifierValueChanged );
 
   cb->setSourceLayer( mLayer.get() );
-  cb->setDisplayExpression( QStringLiteral( "\"raccord\"" ) );
   cb->setAllowNull( allowNull );
+  cb->setIdentifierFields( {QStringLiteral( "raccord" )} );
+  cb->setDisplayExpression( QStringLiteral( "\"raccord\"" ) );
 
   //check if everything is fine:
-  loop.exec();
+  spy.wait();
   QCOMPARE( cb->currentIndex(), allowNull ? cb->nullIndex() : 0 );
   QCOMPARE( cb->currentText(), allowNull ? QStringLiteral( "nope" ) : QStringLiteral( "brides" ) );
 
@@ -242,7 +244,7 @@ void TestQgsFeatureListComboBox::testValuesAndSelection()
 
   //check with another entry, clear button needs to be there then:
   QTest::keyClicks( cb.get(), QStringLiteral( "sleeve" ) );
-  loop.exec();
+  spy.wait();
   QCOMPARE( cb->currentText(), QStringLiteral( "sleeve" ) );
   QVERIFY( cb->mLineEdit->mClearAction );
 }
