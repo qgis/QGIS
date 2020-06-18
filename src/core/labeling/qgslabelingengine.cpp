@@ -754,7 +754,7 @@ QString QgsLabelingUtils::encodeLinePlacementFlags( QgsLabeling::LinePlacementFl
 
 QgsLabeling::LinePlacementFlags QgsLabelingUtils::decodeLinePlacementFlags( const QString &string )
 {
-  QgsLabeling::LinePlacementFlags flags = nullptr;
+  QgsLabeling::LinePlacementFlags flags = QgsLabeling::LinePlacementFlags();
   const QStringList flagList = string.split( ',' );
   bool foundLineOrientationFlag = false;
   for ( const QString &flag : flagList )

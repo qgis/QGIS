@@ -1494,7 +1494,7 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
   }
 
   QgsCoordinateFormatter::Format format = QgsCoordinateFormatter::FormatDecimalDegrees;
-  QgsCoordinateFormatter::FormatFlags flags = nullptr;
+  QgsCoordinateFormatter::FormatFlags flags = QgsCoordinateFormatter::FormatFlags();
   switch ( mGridAnnotationFormat )
   {
     case Decimal:

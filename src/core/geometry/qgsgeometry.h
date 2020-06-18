@@ -376,7 +376,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 1.5
      */
-    bool isGeosValid( QgsGeometry::ValidityFlags flags = nullptr ) const;
+    bool isGeosValid( QgsGeometry::ValidityFlags flags = QgsGeometry::ValidityFlags() ) const;
 
     /**
      * Determines whether the geometry is simple (according to OGC definition),
@@ -1561,7 +1561,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.0
      */
-    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = nullptr ) const;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 
     /**
      * Exports the geometry to WKT
@@ -2079,7 +2079,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 1.5
      */
-    void validateGeometry( QVector<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal, QgsGeometry::ValidityFlags flags = nullptr ) const;
+    void validateGeometry( QVector<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal, QgsGeometry::ValidityFlags flags = QgsGeometry::ValidityFlags() ) const;
 
     /**
      * Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.
