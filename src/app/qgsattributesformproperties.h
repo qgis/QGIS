@@ -52,7 +52,7 @@ class QgsAttributeRelationEdit;
 class QgsAttributeWidgetEdit;
 class DnDTree;
 
-class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAttributesFormProperties
+class APP_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpressionContextGenerator,private Ui_QgsAttributesFormProperties
 {
     Q_OBJECT
 
@@ -207,6 +207,8 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     void initLayoutConfig();
     void initInitPython();
     void initSuppressCombo();
+
+    QgsExpressionContext createExpressionContext() const override;
 
   protected:
     void updateButtons();
