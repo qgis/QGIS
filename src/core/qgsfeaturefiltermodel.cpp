@@ -275,7 +275,7 @@ void QgsFeatureFilterModel::updateCompleter()
     const int newEntriesSize = entries.size();
 
     // fixed entry is either NULL or extra value
-    const int nbFixedEntry = ( mExtraValueDoesNotExist ? 1 : 0 ) + ( mAllowNull ? 1 : 0 );
+    const int nbFixedEntry = ( mExtraValueDoesNotExist ? 0 : 1 ) + ( mAllowNull ? 1 : 0 );
 
     // Find the index of the current entry in the new list
     int currentEntryInNewList = -1;

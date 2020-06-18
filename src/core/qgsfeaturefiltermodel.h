@@ -346,6 +346,7 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     int mExtraIdentifierValueIndex = -1;
 
     friend class QgsFieldExpressionValuesGatherer;
+    friend class TestQgsFeatureListComboBox;
 };
 
 #endif // QGSFEATUREFILTERMODEL_H
