@@ -5744,7 +5744,6 @@ bool QgsSpatiaLiteProvider::getTableSummaryAbstractInterface( gaiaVectorLayerPtr
                       lyr->ExtentInfos->MaxX, lyr->ExtentInfos->MaxY );
     // This can be wrong! see: GH #29264
     // mNumberFeatures = lyr->ExtentInfos->Count;
-    
     // Note: the unique ptr here does not own the handle, it is just used for the convenience
     //       methods available within the class.
     sqlite3_database_unique_ptr slPtr;
@@ -5756,7 +5755,7 @@ bool QgsSpatiaLiteProvider::getTableSummaryAbstractInterface( gaiaVectorLayerPtr
       stmt.step();
       mNumberFeatures = sqlite3_column_int64( stmt.get(), 0 );
     }
-    // Note: the pointer handle is ownd by the provider, releasing it 
+    // Note: the pointer handle is owned by the provider, releasing it
     slPtr.release();
   }
   else
