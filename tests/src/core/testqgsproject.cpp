@@ -517,6 +517,7 @@ void TestQgsProject::projectSaveUser()
   QCOMPARE( p.saveUser(), QgsApplication::userLoginName() );
   QCOMPARE( p.saveUserFullName(), QgsApplication::userFullName() );
   QCOMPARE( p.lastSaveDateTime().date(), QDateTime::currentDateTime().date() );
+  QCOMPARE( p.lastSaveVersion().text(), QgsProjectVersion( Qgis::version() ).text() );
 
   QgsSettings s;
   s.setValue( QStringLiteral( "projects/anonymize_saved_projects" ), true, QgsSettings::Core );
@@ -533,6 +534,12 @@ void TestQgsProject::projectSaveUser()
   QCOMPARE( p.saveUser(), QgsApplication::userLoginName() );
   QCOMPARE( p.saveUserFullName(), QgsApplication::userFullName() );
   QCOMPARE( p.lastSaveDateTime().date(), QDateTime::currentDateTime().date() );
+
+  QgsProject p2;
+  QVERIFY( p2.read( QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project1.qgs" ) ) );
+  QCOMPARE( p2.lastSaveVersion().text(), QStringLiteral( "2.99.0-Master" ) );
+  p2.clear();
+  QVERIFY( p2.lastSaveVersion().isNull() );
 }
 
 void TestQgsProject::testSetGetCrs()

@@ -22,32 +22,28 @@
 #include "qgsprojectversion.h"
 
 QgsProjectVersion::QgsProjectVersion( int major, int minor, int sub, const QString &name )
+  : mMajor( major )
+  , mMinor( minor )
+  , mSub( sub )
+  , mName( name )
 {
-  mMajor = major;
-  mMinor = minor;
-  mSub   = sub;
-  mName  = name;
 }
 
 QgsProjectVersion::QgsProjectVersion( const QString &string )
 {
-  QString pre = string.section( '-', 0, 0 );
+  const QString pre = string.section( '-', 0, 0 );
+  const QStringList fileVersionParts = pre.section( '-', 0 ).split( '.' );
 
-  QStringList fileVersionParts = pre.section( '-', 0 ).split( '.' );
-
-  mMinor = 0;
-  mSub   = 0;
   mMajor = fileVersionParts.at( 0 ).toInt();
-
   if ( fileVersionParts.size() > 1 )
   {
     mMinor = fileVersionParts.at( 1 ).toInt();
   }
   if ( fileVersionParts.size() > 2 )
   {
-    mSub   = fileVersionParts.at( 2 ).toInt();
+    mSub = fileVersionParts.at( 2 ).toInt();
   }
-  mName  = string.section( '-', 1 );
+  mName = string.section( '-', 1 );
 
   QgsDebugMsgLevel( QStringLiteral( "Version is set to " ) + text(), 4 );
 }
@@ -78,7 +74,7 @@ bool QgsProjectVersion::operator>( const QgsProjectVersion &other ) const
            ( ( mMajor == other.mMajor ) && ( mMinor == other.mMinor ) && ( mSub > other.mSub ) ) );
 }
 
-QString QgsProjectVersion::text()
+QString QgsProjectVersion::text() const
 {
   if ( mName.isEmpty() )
   {
