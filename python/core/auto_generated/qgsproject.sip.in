@@ -127,6 +127,13 @@ Returns the date and time when the project was last saved.
 .. versionadded:: 3.14
 %End
 
+    QgsProjectVersion lastSaveVersion() const;
+%Docstring
+Returns the QGIS version which the project was last saved using.
+
+.. versionadded:: 3.14
+%End
+
     bool isDirty() const;
 %Docstring
 Returns ``True`` if the project has been modified since the last :py:func:`~QgsProject.write`

@@ -496,6 +496,11 @@ QDateTime QgsProject::lastSaveDateTime() const
   return mSaveDateTime;
 }
 
+QgsProjectVersion QgsProject::lastSaveVersion() const
+{
+  return mSaveVersion;
+}
+
 bool QgsProject::isDirty() const
 {
   return mDirty;
@@ -771,6 +776,7 @@ void QgsProject::clear()
   mSaveUser.clear();
   mSaveUserFull.clear();
   mSaveDateTime = QDateTime();
+  mSaveVersion = QgsProjectVersion();
   mHomePath.clear();
   mCachedHomePath.clear();
   mAutoTransaction = false;
@@ -1296,7 +1302,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 
   // get project version string, if any
   QgsProjectVersion fileVersion = getVersion( *doc );
-  QgsProjectVersion thisVersion( Qgis::version() );
+  const QgsProjectVersion thisVersion( Qgis::version() );
 
   if ( thisVersion > fileVersion )
   {
@@ -1321,6 +1327,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   mFile.setFileName( fileName );
   mCachedHomePath.clear();
   mProjectScope.reset();
+  mSaveVersion = fileVersion;
 
   // now get any properties
   _getProperties( *doc, mProperties );
@@ -1542,7 +1549,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   }
 
   // Convert pre 3.4 to create layers flags
-  if ( QgsProjectVersion( 3, 4, 0 ) > fileVersion )
+  if ( QgsProjectVersion( 3, 4, 0 ) > mSaveVersion )
   {
     const QStringList requiredLayerIds = readListEntry( QStringLiteral( "RequiredLayers" ), QStringLiteral( "Layers" ) );
     for ( const QString &layerId : requiredLayerIds )
@@ -2114,6 +2121,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
     mSaveDateTime = QDateTime();
   }
   doc->appendChild( qgisNode );
+  mSaveVersion = QgsProjectVersion( Qgis::version() );
 
   QDomElement homePathNode = doc->createElement( QStringLiteral( "homePath" ) );
   homePathNode.setAttribute( QStringLiteral( "path" ), mHomePath );
