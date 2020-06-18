@@ -90,7 +90,7 @@ class QgsDb2Provider final: public QgsVectorDataProvider
 
     QgsVectorDataProvider::Capabilities capabilities() const override;
 
-    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
     bool deleteFeatures( const QgsFeatureIds &id ) override;
 
