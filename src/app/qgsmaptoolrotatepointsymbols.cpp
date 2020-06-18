@@ -77,7 +77,7 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QgsMapMouseEvent *e )
 void QgsMapToolRotatePointSymbols::canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint )
 {
   //find out initial arrow direction
-  QVariant attrVal = feature.attribute( mCurrentRotationAttributes.toList().at( 0 ) );
+  QVariant attrVal = feature.attribute( qgis::setToList( mCurrentRotationAttributes ).at( 0 ) );
 
   mCurrentRotationFeature = attrVal.toDouble();
   createPixmapItem( mMarkerSymbol.get() );

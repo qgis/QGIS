@@ -35,6 +35,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mOrigin( other.mOrigin )
   , mCrs( other.mCrs )
   , mBackgroundColor( other.mBackgroundColor )
+  , mSelectionColor( other.mSelectionColor )
   , mTerrainVerticalScale( other.mTerrainVerticalScale )
   , mTerrainGenerator( other.mTerrainGenerator ? other.mTerrainGenerator->clone() : nullptr )
   , mMapTileResolution( other.mMapTileResolution )
@@ -50,6 +51,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mPointLights( other.mPointLights )
   , mFieldOfView( other.mFieldOfView )
   , mLayers( other.mLayers )
+  , mRenderers() // initialized in body
   , mSkyboxEnabled( other.mSkyboxEnabled )
   , mSkyboxFileBase( other.mSkyboxFileBase )
   , mSkyboxFileExtension( other.mSkyboxFileExtension )
@@ -542,3 +544,9 @@ void Qgs3DMapSettings::setFieldOfView( const float fieldOfView )
   emit fieldOfViewChanged();
 }
 
+void Qgs3DMapSettings::setSkybox( bool enabled, const QString &fileBase, const QString &fileExtension )
+{
+  mSkyboxEnabled = enabled;
+  mSkyboxFileBase = fileBase;
+  mSkyboxFileExtension = fileExtension;
+}

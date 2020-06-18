@@ -75,7 +75,7 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
   else if ( mRequest.filterType() == QgsFeatureRequest::FilterFids )
   {
     mUsingFeatureIdList = true;
-    mFeatureIdList = mRequest.filterFids().toList();
+    mFeatureIdList = qgis::setToList( mRequest.filterFids() );
   }
   else
   {

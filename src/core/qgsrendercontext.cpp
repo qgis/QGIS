@@ -64,6 +64,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mRenderedFeatureHandlers( rh.mRenderedFeatureHandlers )
   , mHasRenderedFeatureHandlers( rh.mHasRenderedFeatureHandlers )
   , mCustomRenderingFlags( rh.mCustomRenderingFlags )
+  , mDisabledSymbolLayers()
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
@@ -98,7 +99,8 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mHasRenderedFeatureHandlers = rh.mHasRenderedFeatureHandlers;
   mCustomRenderingFlags = rh.mCustomRenderingFlags;
   setIsTemporal( rh.isTemporal() );
-  setTemporalRange( rh.temporalRange() );
+  if ( isTemporal() )
+    setTemporalRange( rh.temporalRange() );
 #ifdef QGISDEBUG
   mHasTransformContext = rh.mHasTransformContext;
 #endif
@@ -455,6 +457,12 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
       return meters;
     case QgsUnitTypes::DistanceDegrees:
     {
+      if ( mExtent.isNull() )
+      {
+        // we don't have an extent to calculate exactly -- so just use a very rough approximation
+        return meters * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, QgsUnitTypes::DistanceDegrees );
+      }
+
       QgsPointXY pointCenter = mExtent.center();
       // The Extent is in the sourceCrs(), when different from destinationCrs()
       // - the point must be transformed, since DistanceArea uses the destinationCrs()

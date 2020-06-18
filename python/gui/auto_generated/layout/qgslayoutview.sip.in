@@ -113,7 +113,7 @@ Returns ``True`` if a preview effect is being used to alter the view's appearanc
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 %Docstring
 Sets the preview ``mode`` which should be used to modify the view's appearance. Preview modes are only used
-if previewModeEnabled() is ``True``.
+if :py:func:`~QgsLayoutView.previewModeEnabled` is ``True``.
 
 .. seealso:: :py:func:`setPreviewModeEnabled`
 
@@ -123,7 +123,7 @@ if previewModeEnabled() is ``True``.
     QgsPreviewEffect::PreviewMode previewMode() const;
 %Docstring
 Returns the preview mode which may be used to modify the view's appearance. Preview modes are only used
-if previewModeEnabled() is ``True``.
+if :py:func:`~QgsLayoutView.previewModeEnabled` is ``True``.
 
 .. seealso:: :py:func:`setPreviewMode`
 
@@ -490,7 +490,7 @@ i.e. QGraphicsView.fitInView().
 
     void pushStatusMessage( const QString &message );
 %Docstring
-Pushes a new status bar ``message`` to the view. This causes statusMessage()
+Pushes a new status bar ``message`` to the view. This causes :py:func:`~QgsLayoutView.statusMessage`
 to be emitted, which should cause the message to appear in the status bar
 for the parent window.
 

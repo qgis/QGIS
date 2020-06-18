@@ -449,7 +449,8 @@ class CORE_EXPORT QgsGeometry
      * \warning The iterator returns a copy of individual vertices, and accordingly geometries cannot be
      * modified using the iterator. See transformVertices() for a safe method to modify vertices "in-place".
      *
-     * * Example:
+     * ### Example
+     *
      * \code{.py}
      *   # print the x and y coordinate for each vertex in a LineString
      *   geometry = QgsGeometry.fromWkt( 'LineString( 0 0, 1 1, 2 2)' )
@@ -517,7 +518,8 @@ class CORE_EXPORT QgsGeometry
      * This method forces a detach. Use constParts() to avoid the detach
      * if the parts are not going to be modified.
      *
-     * * Example:
+     * ### Example
+     *
      * \code{.py}
      *   # print the WKT representation of each part in a multi-point geometry
      *   geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
@@ -555,21 +557,22 @@ class CORE_EXPORT QgsGeometry
      * Unlike parts(), this method does not force a detach and is more efficient if read-only
      * iteration only is required.
      *
-     * * Example:
+     * ### Example
+     *
      * \code{.py}
      *   # print the WKT representation of each part in a multi-point geometry
      *   geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
-     *   for part in geometry.parts():
+     *   for part in geometry.constParts():
      *       print(part.asWkt())
      *
      *   # single part geometries only have one part - this loop will iterate once only
      *   geometry = QgsGeometry.fromWkt( 'LineString( 0 0, 10 10 )' )
-     *   for part in geometry.parts():
+     *   for part in geometry.constParts():
      *       print(part.asWkt())
      *
      *   # part iteration can also be combined with vertex iteration
      *   geometry = QgsGeometry.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
-     *   for part in geometry.parts():
+     *   for part in geometry.constParts():
      *       for v in part.vertices():
      *           print(v.x(), v.y())
      *
@@ -588,7 +591,7 @@ class CORE_EXPORT QgsGeometry
      * subset of useful cases. Examples of these are:
      *
      * - computing distance between Linestrings that are roughly parallel to each other,
-     * and roughly equal in length. This occurs in matching linear networks.
+     *   and roughly equal in length. This occurs in matching linear networks.
      * - Testing similarity of geometries.
      *
      * If the default approximate provided by this method is insufficient, use hausdorffDistanceDensify() instead.
@@ -632,7 +635,7 @@ class CORE_EXPORT QgsGeometry
      * \param afterVertex will be set to the vertex index of the next vertex after the closest one. Will be set to -1 if
      * not present.
      * \param sqrDist will be set to the square distance between the closest vertex and the specified point
-     * \returns closest point in geometry. If not found (empty geometry), returns null point nad sqrDist is negative.
+     * \returns closest point in geometry. If not found (empty geometry), returns null point and sqrDist is negative.
      */
     QgsPointXY closestVertex( const QgsPointXY &point, int &atVertex SIP_OUT, int &beforeVertex SIP_OUT, int &afterVertex SIP_OUT, double &sqrDist SIP_OUT ) const;
 
@@ -660,9 +663,9 @@ class CORE_EXPORT QgsGeometry
      *
      * This function takes into account the following factors:
      *
-     * 1. If the given vertex index is at the end of a linestring,
+     * # If the given vertex index is at the end of a linestring,
      *    the adjacent index will be -1 (for "no adjacent vertex")
-     * 2. If the given vertex index is at the end of a linear ring
+     * # If the given vertex index is at the end of a linear ring
      *    (such as in a polygon), the adjacent index will take into
      *    account the first vertex is equal to the last vertex (and will
      *    skip equal vertex positions).
@@ -731,7 +734,7 @@ class CORE_EXPORT QgsGeometry
     /**
      * Returns coordinates of a vertex.
      * \param atVertex index of the vertex
-     * \returns Coordinates of the vertex or QgsPoint(0,0) on error
+     * \returns Coordinates of the vertex or empty QgsPoint() on error
      */
     QgsPoint vertexAt( int atVertex ) const;
 
@@ -890,12 +893,21 @@ class CORE_EXPORT QgsGeometry
     /**
      * Splits this geometry according to a given line.
      * \param splitLine the line that splits the geometry
-     * \param[out] newGeometries list of new geometries that have been created with the split
+     * \param[out] newGeometries list of new geometries that have been created with the ``splitLine``. If the geometry is 3D, a linear interpolation of the z value is performed on the geometry at split points, see example.
      * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \param splitFeature Set to True if you want to split a feature, otherwise set to False to split parts
      * fix this bug?
      * \returns OperationResult a result code: success or reason of failure
+     *
+     * * Example:
+     * \code{.py}
+     *  geometry = QgsGeometry.fromWkt('CompoundCurveZ ((2749546.2003820720128715 1262904.45356595050543547 100, 2749557.82053794478997588 1262920.05570670193992555 200))')
+     *  split_line = [QgsPoint(2749544.19, 1262914.79), QgsPoint(2749557.64, 1262897.30)]
+     *  result, new_geometries, point_xy = geometry.splitGeometry(split_line, False)
+     *  print(geometry.asWkt(2))
+     *  > LineStringZ (2749549.12 1262908.38 125.14, 2749557.82 1262920.06 200)
+     * \endcode
      */
     OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, bool splitFeature = true );
 
@@ -1244,12 +1256,29 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry densifyByDistance( double distance ) const;
 
     /**
+     * Attempts to convert a non-curved geometry into a curved geometry type (e.g.
+     * LineString to CompoundCurve, Polygon to CurvePolygon).
+     *
+     * The \a distanceTolerance specifies the maximum deviation allowed between the original location
+     * of vertices and where they would fall on the candidate curved geometry.
+     *
+     * This method only consider a segments as suitable for replacing with an arc if the points are all
+     * regularly spaced on the candidate arc. The \a pointSpacingAngleTolerance parameter specifies the maximum
+     * angular deviation (in radians) allowed when testing for regular point spacing.
+     *
+     * \note The API is considered EXPERIMENTAL and can be changed without a notice
+     *
+     * \since QGIS 3.14
+     */
+    QgsGeometry convertToCurves( double distanceTolerance = 1e-8, double angleTolerance = 1e-8 ) const;
+
+    /**
      * Returns the center of mass of a geometry.
      *
      * If the input is a NULL geometry, the output will also be a NULL geometry.
      *
      * If an error was encountered while creating the result, more information can be retrieved
-     * by calling `error()` on the returned geometry.
+     * by calling lastError() on the returned geometry.
      *
      * \note for line based geometries, the center point of the line is returned,
      * and for point based geometries, the point itself is returned
@@ -1266,7 +1295,7 @@ class CORE_EXPORT QgsGeometry
      * If the input is a NULL geometry, the output will also be a NULL geometry.
      *
      * If an error was encountered while creating the result, more information can be retrieved
-     * by calling `error()` on the returned geometry.
+     * by calling lastError() on the returned geometry.
      *
      * \see centroid()
      * \see poleOfInaccessibility()
@@ -1293,7 +1322,7 @@ class CORE_EXPORT QgsGeometry
      * If the input is a NULL geometry, the output will also be a NULL geometry.
      *
      * If an error was encountered while creating the result, more information can be retrieved
-     * by calling `error()` on the returned geometry.
+     * by calling lastError() on the returned geometry.
      */
     QgsGeometry convexHull() const;
 
@@ -1340,7 +1369,7 @@ class CORE_EXPORT QgsGeometry
      * If the input is a NULL geometry, the output will also be a NULL geometry.
      *
      * If an error was encountered while creating the result, more information can be retrieved
-     * by calling `error()` on the returned geometry.
+     * by calling lastError() on the returned geometry.
      *
      * \since QGIS 3.0
      */
@@ -1393,7 +1422,7 @@ class CORE_EXPORT QgsGeometry
      * If the input is a NULL geometry, the output will also be a NULL geometry.
      *
      * If an error was encountered while creating the result, more information can be retrieved
-     * by calling `error()` on the returned geometry.
+     * by calling lastError() on the returned geometry.
      */
     QgsGeometry intersection( const QgsGeometry &geometry ) const;
 
@@ -1413,7 +1442,7 @@ class CORE_EXPORT QgsGeometry
      * If the input is a NULL geometry, the output will also be a NULL geometry.
      *
      * If an error was encountered while creating the result, more information can be retrieved
-     * by calling `error()` on the returned geometry.
+     * by calling lastError() on the returned geometry.
      *
      * \note this operation is not called union since its a reserved word in C++.
      */
@@ -1435,7 +1464,7 @@ class CORE_EXPORT QgsGeometry
      * If the input is a NULL geometry, the output will also be a NULL geometry.
      *
      * If an error was encountered while creating the result, more information can be retrieved
-     * by calling `error()` on the returned geometry.
+     * by calling lastError() on the returned geometry.
      */
     QgsGeometry difference( const QgsGeometry &geometry ) const;
 
@@ -1445,7 +1474,7 @@ class CORE_EXPORT QgsGeometry
      * If the input is a NULL geometry, the output will also be a NULL geometry.
      *
      * If an error was encountered while creating the result, more information can be retrieved
-     * by calling `error()` on the returned geometry.
+     * by calling lastError() on the returned geometry.
      */
     QgsGeometry symDifference( const QgsGeometry &geometry ) const;
 
@@ -1527,9 +1556,12 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Export the geometry to WKB
+     *
+     * The optional \a flags argument specifies flags controlling WKB export behavior (since QGIS 3.14).
+     *
      * \since QGIS 3.0
      */
-    QByteArray asWkb() const;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = nullptr ) const;
 
     /**
      * Exports the geometry to WKT
@@ -1571,10 +1603,11 @@ class CORE_EXPORT QgsGeometry
      * Attempts to coerce this geometry into the specified destination \a type.
      *
      * This method will do anything possible to force the current geometry into the specified type. E.g.
+     *
      * - lines or polygons will be converted to points by return either a single multipoint geometry or multiple
-     * single point geometries.
+     *   single point geometries.
      * - polygons will be converted to lines by extracting their exterior and interior rings, returning
-     * either a multilinestring or multiple single line strings as dictated by \a type.
+     *   either a multilinestring or multiple single line strings as dictated by \a type.
      * - lines will be converted to polygon rings if \a type is a polygon type
      * - curved geometries will be segmented if \a type is non-curved.
      * - multi geometries will be converted to a list of single geometries
@@ -1613,7 +1646,7 @@ class CORE_EXPORT QgsGeometry
      *
      * Any z or m values present in the geometry will be discarded.
      *
-     * \warning If the geometry is not a single-point type, a QgsPoint( 0, 0 ) will be returned.
+     * \warning If the geometry is not a single-point type, an empty QgsPointXY() will be returned.
      */
     QgsPointXY asPoint() const;
 #else
@@ -1956,7 +1989,7 @@ class CORE_EXPORT QgsGeometry
      * It preserves Z values, but M values will be dropped.
      *
      * If an error was encountered during the process, more information can be retrieved
-     * by calling `error()` on the returned geometry.
+     * by calling lastError() on the returned geometry.
      *
      * \returns new valid QgsGeometry or null geometry on error
      *
@@ -2239,14 +2272,15 @@ class CORE_EXPORT QgsGeometry
      * \param p2 second geometry object
      * \param epsilon maximum difference for coordinates between the objects
      * \returns TRUE if objects are
-     *   - polylines and have the same number of points and all
-     *     points are equal within the specified tolerance
-     *   - polygons and have the same number of points and all
-     *     points are equal within the specified tolerance
-     *   - multipolygons and  have the same number of polygons, the polygons have the same number
-     *     of rings, and each ring has the same number of points and all points are equal
-     *     within the specified
-     * tolerance
+     *
+     * - polylines and have the same number of points and all
+     *   points are equal within the specified tolerance
+     * - polygons and have the same number of points and all
+     *   points are equal within the specified tolerance
+     * - multipolygons and  have the same number of polygons, the polygons have the same number
+     *   of rings, and each ring has the same number of points and all points are equal
+     *   within the specified tolerance
+     *
      * \since QGIS 2.9
      */
     static bool compare( PyObject *obj1, PyObject *obj2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );

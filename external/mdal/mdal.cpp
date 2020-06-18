@@ -21,7 +21,7 @@ static const char *EMPTY_STR = "";
 
 const char *MDAL_Version()
 {
-  return "0.5.91";
+  return "0.6.1";
 }
 
 MDAL_Status MDAL_LastStatus()
@@ -858,7 +858,7 @@ void MDAL_G_closeEditMode( MDAL_DatasetGroupH group )
   bool error = dr->persist( g );
   if ( error )
   {
-    MDAL::Log::error( MDAL_Status::Err_InvalidData, "Persist error occured in driver" );
+    MDAL::Log::error( MDAL_Status::Err_InvalidData, "Persist error occurred in driver" );
   }
 }
 

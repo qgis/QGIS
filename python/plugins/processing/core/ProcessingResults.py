@@ -25,7 +25,6 @@ from qgis.PyQt.QtCore import QObject, pyqtSignal
 
 
 class ProcessingResults(QObject):
-
     resultAdded = pyqtSignal()
 
     results = []

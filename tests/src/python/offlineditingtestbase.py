@@ -37,7 +37,6 @@ from qgis.core import (
     QgsOfflineEditing,
 )
 
-
 # Tet features, fields: [id, name, geometry]
 # "id" is used as a pk to retrieve features by attribute
 TEST_FEATURES = [
@@ -55,7 +54,6 @@ TEST_FEATURES_INSERT = [
 
 
 class OfflineTestBase(object):
-
     """Generic test methods for all online providers"""
 
     def _setUp(self):
@@ -80,7 +78,7 @@ class OfflineTestBase(object):
     def _tearDown(self):
         """Called by tearDown: run after each test."""
         # Delete the sqlite db
-        #os.unlink(os.path.join(self.temp_path, 'offlineDbFile.sqlite'))
+        # os.unlink(os.path.join(self.temp_path, 'offlineDbFile.sqlite'))
         pass
 
     @classmethod

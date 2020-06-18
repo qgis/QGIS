@@ -46,12 +46,12 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
      */
     void saveTemporalProperties();
 
-  private:
-
     /**
-     * Initialize the widget with default state.
+     * Updates the widget state to match the current layer state.
      */
-    void init();
+    void syncToLayer();
+
+  private:
 
     /**
      * The corresponding map layer with temporal attributes

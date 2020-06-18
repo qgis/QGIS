@@ -22,7 +22,7 @@ Content-Type: application/json
       "interval": [
         [
           "2010-01-01T00:00:00",
-          "2022-01-01T01:01:01Z"
+          "2022-01-01T01:01:01"
         ]
       ],
       "trs": "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"

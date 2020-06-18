@@ -185,6 +185,7 @@ void QgsPostgresDataItemGuiProvider::newConnection( QgsDataItem *item )
 void QgsPostgresDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
   QgsPgNewConnection nc( nullptr, item->name() );
+  nc.setWindowTitle( tr( "Edit PostGIS Connection" ) );
   if ( nc.exec() )
   {
     // the parent should be updated

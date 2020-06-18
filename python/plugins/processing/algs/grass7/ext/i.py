@@ -39,7 +39,7 @@ def orderedInput(alg, parameters, context, src, tgt, numSeq=None):
     :param numSeq: List of a sequence for naming layers.
     """
     rootFilename = 'rast_{}.'.format(os.path.basename(getTempFilename()))
-    #parameters[tgt] = rootFilename
+    # parameters[tgt] = rootFilename
     param = QgsProcessingParameterString(tgt, 'virtual input',
                                          rootFilename, False, False)
     alg.addParameter(param)

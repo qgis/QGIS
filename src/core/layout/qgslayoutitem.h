@@ -274,6 +274,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoScaleBarSegmentsLeft, //!< Scalebar segments left
       UndoScaleBarSegments, //!< Scalebar number of segments
       UndoScaleBarHeight, //!< Scalebar height
+      UndoScaleBarSubdivisions, //!< Scalebar number of subdivisions
+      UndoScaleBarSubdivisionsHeight, //!< Scalebar subdivisions height
       UndoScaleBarFontColor, //!< Scalebar font color
       UndoScaleBarFillColor, //!< Scalebar fill color
       UndoScaleBarFillColor2, //!< Scalebar secondary fill color
@@ -489,6 +491,18 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
       //! Associated map layer ID, or an empty string if this export layer is not associated with a map layer
       QString mapLayerId;
+
+      /**
+       * Associated composition mode if this layer is associated with a map layer
+       * \since QGIS 3.14
+       */
+      QPainter::CompositionMode compositionMode = QPainter::CompositionMode_SourceOver;
+
+      /**
+       * Associated opacity, if this layer is associated with a map layer
+       * \since QGIS 3.14
+       */
+      double opacity = 1.0;
 
       //! Associated map theme, or an empty string if this export layer does not need to be associated with a map theme
       QString mapTheme;

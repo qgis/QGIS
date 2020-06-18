@@ -45,7 +45,7 @@ This method should/will be called, whenever a new feature will be added to the l
 %Docstring
 This will be called, whenever a vector layer should be switched to edit mode. Check the providers
 capability to edit in here.
-If successful layer->startEditing() will be called and ``True`` returned.
+If successful layer->:py:func:`~QgsVectorLayerTools.startEditing` will be called and ``True`` returned.
 
 :param layer: The layer on which to start an edit session
 

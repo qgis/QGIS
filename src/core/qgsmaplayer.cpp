@@ -53,6 +53,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsxmlutils.h"
 #include "qgsstringutils.h"
+#include "qgsmaplayertemporalproperties.h"
 
 QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
 {
@@ -579,6 +580,11 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
     layerElement.appendChild( layerFlagsElem );
   }
 
+  if ( categories.testFlag( Temporal ) && const_cast< QgsMapLayer * >( this )->temporalProperties() )
+  {
+    const_cast< QgsMapLayer * >( this )->temporalProperties()->writeXml( layerElement, document, context );
+  }
+
   // custom properties
   if ( categories.testFlag( CustomProperties ) )
   {
@@ -1055,7 +1061,7 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( this );
       QgsWkbTypes::GeometryType importLayerGeometryType = static_cast<QgsWkbTypes::GeometryType>( myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).text().toInt() );
-      if ( vl->geometryType() != importLayerGeometryType )
+      if ( importLayerGeometryType != QgsWkbTypes::GeometryType::UnknownGeometry && vl->geometryType() != importLayerGeometryType )
       {
         myErrorMessage = tr( "Cannot apply style with symbology to layer with a different geometry type" );
         return false;
@@ -1671,6 +1677,11 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
         flags |= it.key();
     }
     setFlags( flags );
+  }
+
+  if ( categories.testFlag( Temporal ) && temporalProperties() )
+  {
+    temporalProperties()->readXml( layerElement.toElement(), context );
   }
 }
 

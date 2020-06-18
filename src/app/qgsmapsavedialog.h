@@ -52,7 +52,7 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
      * Constructor for QgsMapSaveDialog
      */
     QgsMapSaveDialog( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr,
-                      const QList< QgsDecorationItem * > &decorations = QList< QgsDecorationItem * >(),
+                      const QList< QgsMapDecoration * > &decorations = QList< QgsMapDecoration * >(),
                       const QList<QgsAnnotation *> &annotations = QList< QgsAnnotation * >(),
                       DialogType type = Image );
 
@@ -85,6 +85,8 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
 
   private slots:
     void onAccepted();
+
+    void updatePdfExportWarning();
 
   private:
 

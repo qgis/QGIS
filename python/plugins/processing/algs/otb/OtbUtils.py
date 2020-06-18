@@ -137,9 +137,9 @@ class OtbUtils:
                                 continue
                             if 'GDAL_DATA=' in line:
                                 gdal_data_dir = line.split("GDAL_DATA=")[1]
-                            if 'GEOTIFF_CSV='in line:
+                            if 'GEOTIFF_CSV=' in line:
                                 gtiff_csv_dir = line.split("GEOTIFF_CSV=")[1]
-                            if 'PROJ_LIB='in line:
+                            if 'PROJ_LIB=' in line:
                                 proj_dir = line.split("PROJ_LIB=")[1]
             except BaseException as exc:
                 errmsg = "Cannot find gdal and geotiff data directory." + str(exc)
@@ -186,7 +186,7 @@ class OtbUtils:
 
             for line in iter(proc.stdout.readline, ''):
                 line = line.strip()
-                #'* ]' and '  ]' says its some progress update
+                # '* ]' and '  ]' says its some progress update
                 if '% [' in line:
                     part = line.split(':')[1]
                     percent = part.split('%')[0]

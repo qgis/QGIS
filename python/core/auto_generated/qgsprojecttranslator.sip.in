@@ -24,7 +24,7 @@ Wherever an object of this class is available, the derived translate function ca
 
     virtual QString translate( const QString &context, const QString &sourceText, const char *disambiguation = 0, int n = -1 ) const = 0;
 %Docstring
-The derived translate() translates with QTranslator and qm file the sourceText.
+The derived :py:func:`~QgsProjectTranslator.translate` translates with QTranslator and qm file the sourceText.
 It
 :return: the result string and in case there is no QTranslator loaded, the sourceText.
            This function can be called from wherever the QgsReadWriteContext is available.

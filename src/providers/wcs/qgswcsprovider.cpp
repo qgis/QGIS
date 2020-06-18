@@ -882,7 +882,7 @@ bool QgsWcsProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block 
 // This could be shared with GDAL provider
 Qgis::DataType QgsWcsProvider::sourceDataType( int bandNo ) const
 {
-  if ( bandNo < 0 || bandNo > mSrcGdalDataType.size() )
+  if ( bandNo <= 0 || bandNo > mSrcGdalDataType.size() )
   {
     return Qgis::UnknownDataType;
   }
@@ -892,7 +892,7 @@ Qgis::DataType QgsWcsProvider::sourceDataType( int bandNo ) const
 
 Qgis::DataType QgsWcsProvider::dataType( int bandNo ) const
 {
-  if ( bandNo < 0 || bandNo > mGdalDataType.size() )
+  if ( bandNo <= 0 || bandNo > mGdalDataType.size() )
   {
     return Qgis::UnknownDataType;
   }
@@ -1220,6 +1220,7 @@ int QgsWcsProvider::capabilities() const
   int capability = NoCapabilities;
   capability |= QgsRasterDataProvider::Identify;
   capability |= QgsRasterDataProvider::IdentifyValue;
+  capability |= QgsRasterDataProvider::Prefetch;
 
   if ( mHasSize )
   {

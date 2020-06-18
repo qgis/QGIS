@@ -234,6 +234,11 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     Status mStatus;
     QString mResolutionMessage;
 
+  private:
+
+#ifdef SIP_RUN
+    const QgsGeometryCheckError &operator=( const QgsGeometryCheckError & );
+#endif
 };
 
 Q_DECLARE_METATYPE( QgsGeometryCheckError * )

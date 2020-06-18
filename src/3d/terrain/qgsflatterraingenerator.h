@@ -23,6 +23,8 @@
 #include "qgsrectangle.h"
 #include <Qt3DExtras/QPlaneGeometry>
 
+#define SIP_NO_FILE
+
 ///@cond PRIVATE
 
 //! Chunk loader for flat terrain implementation

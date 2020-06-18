@@ -416,12 +416,13 @@ void QgsDb2SourceSelect::populateConnectionList()
     ++it;
   }
 
-  setConnectionListPosition();
-
+  btnConnect->setDisabled( cmbConnections->count() == 0 );
   btnEdit->setDisabled( cmbConnections->count() == 0 );
   btnDelete->setDisabled( cmbConnections->count() == 0 );
-  btnConnect->setDisabled( cmbConnections->count() == 0 );
+  btnSave->setDisabled( cmbConnections->count() == 0 );
   cmbConnections->setDisabled( cmbConnections->count() == 0 );
+
+  setConnectionListPosition();
 }
 
 // Slot for performing action when the Add button is clicked

@@ -91,6 +91,7 @@ void QgsQueryBuilder::showEvent( QShowEvent *event )
 void QgsQueryBuilder::populateFields()
 {
   const QgsFields &fields = mLayer->fields();
+  txtSQL->setFields( fields );
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     if ( fields.fieldOrigin( idx ) != QgsFields::OriginProvider )
@@ -140,7 +141,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
   mModelValues->clear();
 
   // determine the field type
-  QList<QVariant> values = mLayer->uniqueValues( idx, limit ).toList();
+  QList<QVariant> values = qgis::setToList( mLayer->uniqueValues( idx, limit ) );
   std::sort( values.begin(), values.end() );
 
   QString nullValue = QgsApplication::nullRepresentation();

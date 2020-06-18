@@ -69,21 +69,21 @@ def getOutputFromString(s):
                 out = QgsProcessingOutputMapLayer(name, description)
             elif token.lower().strip() == 'outputmultilayers':
                 out = QgsProcessingOutputMultipleLayers(name, description)
-#            elif token.lower().strip() == 'vector point':
-#                out = OutputVector(datatype=[dataobjects.TYPE_VECTOR_POINT])
-#            elif token.lower().strip() == 'vector line':
-#                out = OutputVector(datatype=[OutputVector.TYPE_VECTOR_LINE])
-#            elif token.lower().strip() == 'vector polygon':
-#                out = OutputVector(datatype=[OutputVector.TYPE_VECTOR_POLYGON])
-#            elif token.lower().strip().startswith('table'):
-#                out = OutputTable()
+            #            elif token.lower().strip() == 'vector point':
+            #                out = OutputVector(datatype=[dataobjects.TYPE_VECTOR_POINT])
+            #            elif token.lower().strip() == 'vector line':
+            #                out = OutputVector(datatype=[OutputVector.TYPE_VECTOR_LINE])
+            #            elif token.lower().strip() == 'vector polygon':
+            #                out = OutputVector(datatype=[OutputVector.TYPE_VECTOR_POLYGON])
+            #            elif token.lower().strip().startswith('table'):
+            #                out = OutputTable()
             elif token.lower().strip().startswith('outputhtml'):
                 out = QgsProcessingOutputHtml(name, description)
-#            elif token.lower().strip().startswith('file'):
-#                out = OutputFile()
-#                ext = token.strip()[len('file') + 1:]
-#                if ext:
-#                    out.ext = ext
+            #            elif token.lower().strip().startswith('file'):
+            #                out = OutputFile()
+            #                ext = token.strip()[len('file') + 1:]
+            #                if ext:
+            #                    out.ext = ext
             elif token.lower().strip().startswith('outputfolder'):
                 out = QgsProcessingOutputFolder(name, description)
             elif token.lower().strip().startswith('outputnumber'):
@@ -92,8 +92,8 @@ def getOutputFromString(s):
                 out = QgsProcessingOutputString(name, description)
             elif token.lower().strip().startswith('outputboolean'):
                 out = QgsProcessingOutputBoolean(name, description)
-#            elif token.lower().strip().startswith('extent'):
-#                out = OutputExtent()
+            #            elif token.lower().strip().startswith('extent'):
+            #                out = OutputExtent()
 
             return out
     except:

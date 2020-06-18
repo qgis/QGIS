@@ -534,6 +534,7 @@ inline Chain *Problem::chain( int seed )
 
 
       tmpsol[seed] = retainedLabel;
+      // cppcheck-suppress invalidFunctionArg
       delta += mLabelPositions.at( retainedLabel )->cost();
       seed = next_seed;
     }
@@ -672,8 +673,10 @@ QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPos
     }
     else if ( unlabeled )
     {
-      if ( mFeatStartId[i] < static_cast< int >( mLabelPositions.size() ) )
-        unlabeled->push_back( mLabelPositions[ mFeatStartId[i] ].get() );
+      const int startPos = mFeatStartId[i];
+      // need to be careful here -- if the next feature's start id is the same as this one, then this feature had no candidates!
+      if ( startPos < static_cast< int >( mLabelPositions.size() ) && ( i == mFeatureCount - 1 || startPos != mFeatStartId[i + 1] ) )
+        unlabeled->push_back( mLabelPositions[ startPos ].get() );
     }
   }
 

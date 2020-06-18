@@ -136,6 +136,11 @@ class GUI_EXPORT QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private 
     void spaceBelowSubGroupHeadingChanged( double space );
     void spaceBelowGroupHeadingChanged( double space );
 
+    void spaceGroupSideChanged( double space );
+    void spaceSubGroupSideChanged( double space );
+
+    void spaceSymbolSideChanged( double space );
+
   private:
     QgsLayoutLegendWidget() = delete;
     void blockAllSignals( bool b );
@@ -185,8 +190,13 @@ class GUI_EXPORT QgsLayoutLegendNodeWidget: public QgsPanelWidget, private Ui::Q
 
   private slots:
 
-    void labelChanged( const QString &label );
-    void patchChanged( int index );
+    void labelChanged();
+    void patchChanged();
+    void insertExpression();
+    void sizeChanged( double );
+    void customSymbolChanged();
+    void columnBreakToggled( bool checked );
+    void columnSplitChanged();
 
   private:
 

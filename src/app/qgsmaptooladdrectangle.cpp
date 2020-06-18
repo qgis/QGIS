@@ -93,6 +93,7 @@ void QgsMapToolAddRectangle::deactivate( )
   }
 
   mParentTool->clearCurve( );
+
   // keep z value from the first snapped point
   std::unique_ptr<QgsLineString> lineString( mRectangle.toLineString() );
   for ( const QgsPoint &point : qgis::as_const( mPoints ) )

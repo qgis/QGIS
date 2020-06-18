@@ -824,7 +824,9 @@ void TestQgsGrassProvider::rasterImport()
     if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs != mapsetCrs )
     {
       QgsRasterProjector *projector = new QgsRasterProjector;
+      Q_NOWARN_DEPRECATED_PUSH
       projector->setCrs( providerCrs, mapsetCrs );
+      Q_NOWARN_DEPRECATED_POP
       projector->destExtentSize( provider->extent(), provider->xSize(), provider->ySize(),
                                  newExtent, newXSize, newYSize );
 

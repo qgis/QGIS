@@ -146,6 +146,14 @@ Sets list of styles of the renderer
 %Docstring
 Returns list of styles of the renderer
 %End
+    void setStyle( int index, const QgsVectorTileBasicLabelingStyle &style );
+%Docstring
+Updates style definition at the paricular index of the list (the index must be in interval [0,N-1] otherwise this function does nothing)
+%End
+    QgsVectorTileBasicLabelingStyle style( int index ) const;
+%Docstring
+Returns style definition at the particular index
+%End
 
 };
 

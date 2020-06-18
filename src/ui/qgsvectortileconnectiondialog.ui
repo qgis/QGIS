@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>659</width>
-    <height>506</height>
+    <height>208</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -73,7 +73,7 @@
          <string>URL of the connection, {x}, {y}, and {z} will be replaced with actual values. Use {-y} for inverted y axis.</string>
         </property>
         <property name="placeholderText">
-         <string>http://example.com/{z}/{x}/{y}.png</string>
+         <string>http://example.com/{z}/{x}/{y}.pbf</string>
         </property>
        </widget>
       </item>

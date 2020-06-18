@@ -75,16 +75,3 @@ bool QgsLayoutTableColumn::readXml( const QDomElement &columnElem )
 
   return true;
 }
-
-QgsLayoutTableColumn *QgsLayoutTableColumn::clone()
-{
-  std::unique_ptr< QgsLayoutTableColumn > newColumn = qgis::make_unique< QgsLayoutTableColumn >();
-  newColumn->setAttribute( mAttribute );
-  newColumn->setHeading( mHeading );
-  newColumn->setHAlignment( mHAlignment );
-  newColumn->setVAlignment( mVAlignment );
-  newColumn->setSortByRank( mSortByRank );
-  newColumn->setSortOrder( mSortOrder );
-  newColumn->setWidth( mWidth );
-  return newColumn.release();
-}

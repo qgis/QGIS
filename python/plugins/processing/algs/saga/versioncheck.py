@@ -21,7 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'December 2014'
 __copyright__ = '(C) 2014, Victor Olaya'
 
-
 import os
 import subprocess
 

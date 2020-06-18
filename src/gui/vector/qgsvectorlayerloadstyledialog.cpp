@@ -63,10 +63,10 @@ QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *la
     mStyleCategoriesListView->setEnabled( currentStyleType() != QgsVectorLayerProperties::StyleType::SLD );
     updateLoadButtonState();
   } );
-  mStyleTypeComboBox->addItem( tr( "from file" ), QgsVectorLayerProperties::QML ); // QML is used as entry, but works for SLD too, see currentStyleType()
+  mStyleTypeComboBox->addItem( tr( "From File" ), QgsVectorLayerProperties::QML ); // QML is used as entry, but works for SLD too, see currentStyleType()
   if ( mLayer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
   {
-    mStyleTypeComboBox->addItem( tr( "from database (%1)" ).arg( providerName ), QgsVectorLayerProperties::StyleType::DB );
+    mStyleTypeComboBox->addItem( tr( "From Database (%1)" ).arg( providerName ), QgsVectorLayerProperties::StyleType::DB );
     if ( settings.value( QStringLiteral( "style/lastLoadStyleTypeSelection" ) ) == QgsVectorLayerProperties::StyleType::DB )
     {
       mStyleTypeComboBox->setCurrentIndex( mStyleTypeComboBox->findData( QgsVectorLayerProperties::StyleType::DB ) );

@@ -21,7 +21,6 @@ __author__ = 'Nyall Dawson'
 __date__ = 'May 2017'
 __copyright__ = '(C) 2017, Nyall Dawson'
 
-
 from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm,
                        QgsProcessingFeatureBasedAlgorithm,

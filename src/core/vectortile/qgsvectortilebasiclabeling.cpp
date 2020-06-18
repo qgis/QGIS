@@ -16,6 +16,7 @@
 #include "qgsvectortilebasiclabeling.h"
 
 #include "qgsexpressioncontextutils.h"
+#include "qgslogger.h"
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilerenderer.h"
 #include "qgsvectortileutils.h"
@@ -142,16 +143,19 @@ QMap<QString, QSet<QString> > QgsVectorTileBasicLabelProvider::usedAttributes( c
   return requiredFields;
 }
 
-void QgsVectorTileBasicLabelProvider::setFields( const QMap<QString, QSet<QString> > &requiredFields )
+void QgsVectorTileBasicLabelProvider::setFields( const QMap<QString, QgsFields> &perLayerFields )
 {
-  mRequiredFields = requiredFields;
+  mPerLayerFields = perLayerFields;
 }
 
 QList<QgsAbstractLabelProvider *> QgsVectorTileBasicLabelProvider::subProviders()
 {
   QList<QgsAbstractLabelProvider *> lst;
   for ( QgsVectorLayerLabelProvider *subprovider : qgis::as_const( mSubProviders ) )
-    lst << subprovider;
+  {
+    if ( subprovider )  // sub-providers that failed to initialize are set to null
+      lst << subprovider;
+  }
   return lst;
 }
 
@@ -163,14 +167,18 @@ bool QgsVectorTileBasicLabelProvider::prepare( QgsRenderContext &context, QSet<Q
   // populate sub-providers
   for ( int i = 0; i < mSubProviders.count(); ++i )
   {
-    QgsFields fields = QgsVectorTileUtils::makeQgisFields( mRequiredFields[mStyles[i].layerName()] );
+    QgsFields fields = mPerLayerFields[mStyles[i].layerName()];
 
     QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Layer" ) ); // will be deleted by popper
     scope->setFields( fields );
     QgsExpressionContextScopePopper popper( context.expressionContext(), scope );
 
     mSubProviders[i]->setFields( fields );
-    mSubProviders[i]->prepare( context, attributeNames );
+    if ( !mSubProviders[i]->prepare( context, attributeNames ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Failed to prepare labeling for style index" ) + QString::number( i ) );
+      mSubProviders[i] = nullptr;
+    }
   }
   return true;
 }
@@ -186,7 +194,7 @@ void QgsVectorTileBasicLabelProvider::registerTileFeatures( const QgsVectorTileR
     if ( !layerStyle.isActive( zoomLevel ) )
       continue;
 
-    QgsFields fields = QgsVectorTileUtils::makeQgisFields( mRequiredFields[layerStyle.layerName()] );
+    QgsFields fields = mPerLayerFields[layerStyle.layerName()];
 
     QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Layer" ) ); // will be deleted by popper
     scope->setFields( fields );
@@ -196,6 +204,8 @@ void QgsVectorTileBasicLabelProvider::registerTileFeatures( const QgsVectorTileR
     filterExpression.prepare( &context.expressionContext() );
 
     QgsVectorLayerLabelProvider *subProvider = mSubProviders[i];
+    if ( !subProvider )
+      continue;  // sub-providers that failed to initialize are set to null
 
     if ( layerStyle.layerName().isEmpty() )
     {

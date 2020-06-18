@@ -15,16 +15,15 @@
 #ifndef QGSCOLORRAMPBUTTON_H
 #define QGSCOLORRAMPBUTTON_H
 
-#include "qgscolorrampbutton.h"
-
-#include "qgscolorramp.h"
-#include "qgsstyle.h"
-
-#include <QToolButton>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
+#include <QToolButton>
+#include <memory>
+
 class QgsPanelWidget;
+class QgsColorRamp;
+class QgsStyle;
 
 /**
  * \ingroup gui
@@ -104,7 +103,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * \returns TRUE if drop-down menu is shown
      * \see setShowMenu
      */
-    bool showMenu() const { return menu() ? true : false; }
+    bool showMenu() const;
 
     /**
      * Sets the default color ramp for the button, which is shown in the button's drop-down menu for the
@@ -119,10 +118,10 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * Returns a copy of the default color ramp for the button, which is shown in the button's drop-down menu for the
      * "default color ramp" option.
      * \returns default color ramp for the button. Returns NULLPTR if the default color ramp
-     * option is disabled.
+     * option is disabled. Caller takes ownership of the returned object.
      * \see setDefaultColorRamp
      */
-    QgsColorRamp *defaultColorRamp() const SIP_FACTORY { return mDefaultColorRamp ? mDefaultColorRamp->clone() : nullptr ; }
+    QgsColorRamp *defaultColorRamp() const SIP_FACTORY;
 
     /**
      * Sets whether a random colors option is shown in the button's drop-down menu.
@@ -284,14 +283,13 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
 
     QString mColorRampDialogTitle;
     bool mShowGradientOnly = false;
-    QgsColorRamp *mColorRamp = nullptr;
+    std::unique_ptr< QgsColorRamp > mColorRamp;
     QString mColorRampName;
     QgsStyle *mStyle = nullptr;
 
-    QgsColorRamp *mDefaultColorRamp = nullptr;
+    std::unique_ptr< QgsColorRamp > mDefaultColorRamp;
     QString mContext;
     bool mAcceptLiveUpdates = true;
-    bool mColorRampSet = false;
     bool mShowRandomColorRamp = false;
     bool mShowNull = false;
 

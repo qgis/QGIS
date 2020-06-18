@@ -34,17 +34,16 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 
 class PolarPlot(QgisAlgorithm):
-
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NAME_FIELD = 'NAME_FIELD'
     VALUE_FIELD = 'VALUE_FIELD'
 
     def group(self):
-        return self.tr('Graphics')
+        return self.tr('Plots')
 
     def groupId(self):
-        return 'graphics'
+        return 'plots'
 
     def __init__(self):
         super().__init__()

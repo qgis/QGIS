@@ -51,6 +51,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * If \a wkbType is set to `QgsWkbTypes::Point`, `QgsWkbTypes::PointZ`, `QgsWkbTypes::PointM` or `QgsWkbTypes::PointZM`
      * the type will be set accordingly. If it is left to the default `QgsWkbTypes::Unknown`, the type will be set
      * based on the following rules:
+     *
      * - If only x and y are specified, the type will be a 2D point.
      * - If any or both of the Z and M are specified, the appropriate type will be created.
      *
@@ -387,7 +388,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     double distance3D( const QgsPoint &other ) const;
 
     /**
-     * Returns the Cartesian 3D squared distance between this point a specified x, y, z coordinate. Calling
+     * Returns the Cartesian 3D squared distance between this point and a specified x, y, z coordinate. Calling
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
      * \see distance()
@@ -396,7 +397,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     double distanceSquared3D( double x, double y, double z ) const;
 
     /**
-     * Returns the Cartesian 3D squared distance between this point another point. Calling
+     * Returns the Cartesian 3D squared distance between this point and another point. Calling
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
      * \see distance()
@@ -426,7 +427,9 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \param inclination angle to project in Z (3D). If the point is 2D, the Z value is assumed to be 0.
      * \returns The point projected. If a 2D point is projected a 3D point will be returned except if
      *  inclination is 90. A 3D point is always returned if a 3D point is projected.
-     * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   p = QgsPoint( 1, 2 ) # 2D point
      *   pr = p.project ( 1, 0 )
@@ -488,7 +491,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     void clear() override;
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
-    QByteArray asWkb() const override;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags = nullptr ) const override;
     QString asWkt( int precision = 17 ) const override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;

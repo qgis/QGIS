@@ -522,11 +522,11 @@ namespace QgsWfs
           }
         }
       }
-#endif
       if ( action.error )
       {
         continue;
       }
+#endif
 
       // Commit the changes of the update elements
       if ( !vlayer->commitChanges() )

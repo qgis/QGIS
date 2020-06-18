@@ -598,7 +598,7 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
   }
 
   QString dest;
-  if ( val.canConvert<QgsProperty>() )
+  if ( definition && val.canConvert<QgsProperty>() )
   {
     dest = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
   }
@@ -858,7 +858,7 @@ QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingPara
   }
 
   QString dest;
-  if ( val.canConvert<QgsProperty>() )
+  if ( definition && val.canConvert<QgsProperty>() )
   {
     dest = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
   }
@@ -888,9 +888,9 @@ QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingPara
       outputName = definition->name();
 
     QgsProcessingUtils::LayerHint layerTypeHint = QgsProcessingUtils::LayerHint::UnknownType;
-    if ( definition->type() == QgsProcessingParameterVectorDestination::typeName() )
+    if ( definition && definition->type() == QgsProcessingParameterVectorDestination::typeName() )
       layerTypeHint = QgsProcessingUtils::LayerHint::Vector;
-    else if ( definition->type() == QgsProcessingParameterRasterDestination::typeName() )
+    else if ( definition && definition->type() == QgsProcessingParameterRasterDestination::typeName() )
       layerTypeHint = QgsProcessingUtils::LayerHint::Raster;
 
     context.addLayerToLoadOnCompletion( dest, QgsProcessingContext::LayerDetails( destName, destinationProject, outputName, layerTypeHint ) );
@@ -921,11 +921,11 @@ QString QgsProcessingParameters::parameterAsFileOutput( const QgsProcessingParam
   }
 
   QString dest;
-  if ( val.canConvert<QgsProperty>() )
+  if ( definition && val.canConvert<QgsProperty>() )
   {
     dest = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
   }
-  else if ( !val.isValid() || val.toString().isEmpty() )
+  else if ( definition && ( !val.isValid() || val.toString().isEmpty() ) )
   {
     // fall back to default
     dest = definition->defaultValue().toString();
@@ -1959,6 +1959,7 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterColor( name ) );
   else if ( type == QgsProcessingParameterCoordinateOperation::typeName() )
     def.reset( new QgsProcessingParameterCoordinateOperation( name ) );
+  else
   {
     QgsProcessingParameterType *paramType = QgsApplication::instance()->processingRegistry()->parameterType( type );
     if ( paramType )
@@ -5568,14 +5569,30 @@ QString QgsProcessingDestinationParameter::createFileFilter() const
 
 QString QgsProcessingDestinationParameter::generateTemporaryDestination() const
 {
+  // sanitize name to avoid multiple . in the filename. E.g. when name() contain
+  // backend command name having a "." inside as in case of grass commands
+  QRegularExpression rx( QStringLiteral( "[.]" ) );
+  QString sanitizedName = name();
+  sanitizedName.replace( rx, QStringLiteral( "_" ) );
+
   if ( defaultFileExtension().isEmpty() )
   {
-    return QgsProcessingUtils::generateTempFilename( name() );
+    return QgsProcessingUtils::generateTempFilename( sanitizedName );
   }
   else
   {
-    return QgsProcessingUtils::generateTempFilename( name() + '.' + defaultFileExtension() );
+    return QgsProcessingUtils::generateTempFilename( sanitizedName + '.' + defaultFileExtension() );
   }
+}
+
+bool QgsProcessingDestinationParameter::isSupportedOutputValue( const QVariant &value, QgsProcessingContext &context, QString &error ) const
+{
+  if ( originalProvider() )
+    return originalProvider()->isSupportedOutputValue( value, this, context, error );
+  else if ( provider() )
+    return provider()->isSupportedOutputValue( value, this, context, error );
+
+  return true;
 }
 
 bool QgsProcessingDestinationParameter::createByDefault() const

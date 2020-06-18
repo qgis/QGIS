@@ -27,7 +27,7 @@ Implementation of map layer temporal properties for raster layers.
 %Docstring
 Constructor for QgsRasterLayerTemporalProperties, with the specified ``parent`` object.
 
-The ``enabled`` argument specifies whether the temporal properties are initially enabled or not (see isActive()).
+The ``enabled`` argument specifies whether the temporal properties are initially enabled or not (see :py:func:`~QgsRasterLayerTemporalProperties.isActive`).
 %End
 
     virtual bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const;
@@ -51,6 +51,12 @@ Returns the temporal properties mode.
 Sets the temporal properties ``mode``.
 
 .. seealso:: :py:func:`mode`
+%End
+
+    virtual QgsTemporalProperty::Flags flags() const;
+
+%Docstring
+Returns flags associated to the temporal property.
 %End
 
     QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod intervalHandlingMethod() const;
@@ -77,7 +83,7 @@ a render context intersects the specified ``range``.
 
 .. warning::
 
-   This setting is only effective when mode() is
+   This setting is only effective when :py:func:`~QgsRasterLayerTemporalProperties.mode` is
    QgsRasterLayerTemporalProperties.ModeFixedTemporalRange
 
 .. seealso:: :py:func:`fixedTemporalRange`
@@ -89,7 +95,7 @@ Returns the fixed temporal range for the layer.
 
 .. warning::
 
-   To be used only when mode() is
+   To be used only when :py:func:`~QgsRasterLayerTemporalProperties.mode` is
    QgsRasterLayerTemporalProperties.ModeFixedTemporalRange
 
 .. seealso:: :py:func:`setFixedTemporalRange`

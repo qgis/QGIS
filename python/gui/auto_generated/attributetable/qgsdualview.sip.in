@@ -64,7 +64,7 @@ Has to be called to initialize the dual view.
 :param request: Use a modified request to limit the shown features
 :param context: The context in which this view is shown
 :param loadFeatures: whether to initially load all features into the view. If set to
-                     ``False``, limited features can later be loaded using setFilterMode()
+                     ``False``, limited features can later be loaded using :py:func:`~QgsDualView.setFilterMode`
 %End
 
     void setView( ViewMode view );

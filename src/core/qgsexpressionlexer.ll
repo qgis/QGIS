@@ -209,6 +209,10 @@ string      "'"{str_char}*"'"
 	if( ok )
 		return NUMBER_INT;
 
+  yylval->numberInt64 = cLocale()->toLongLong( QString::fromLatin1(yytext), &ok );
+  if( ok )
+    return NUMBER_INT64;
+
 	yylval->numberFloat = cLocale()->toDouble( QString::fromLatin1(yytext), &ok );
 	if( ok )
 		return NUMBER_FLOAT;

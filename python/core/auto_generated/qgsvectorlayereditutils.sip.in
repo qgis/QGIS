@@ -108,6 +108,7 @@ Adds a ring to polygon/multipolygon features
 Adds a new part polygon to a multipart feature
 
 :return: - QgsGeometry.Success
+
          - QgsGeometry.AddPartSelectedGeometryNotFound
          - QgsGeometry.AddPartNotMultiGeometry
          - QgsGeometry.InvalidBaseGeometry
@@ -122,6 +123,7 @@ Adds a new part polygon to a multipart feature
 Adds a new part polygon to a multipart feature
 
 :return: - QgsGeometry.Success
+
          - QgsGeometry.AddPartSelectedGeometryNotFound
          - QgsGeometry.AddPartNotMultiGeometry
          - QgsGeometry.InvalidBaseGeometry
@@ -137,6 +139,7 @@ Adds a new part polygon to a multipart feature
 Adds a new part polygon to a multipart feature
 
 :return: - QgsGeometry.Success
+
          - QgsGeometry.AddPartSelectedGeometryNotFound
          - QgsGeometry.AddPartNotMultiGeometry
          - QgsGeometry.InvalidBaseGeometry
@@ -166,6 +169,7 @@ Splits parts cut by the given line
 :param topologicalEditing: ``True`` if topological editing is enabled
 
 :return: - QgsGeometry.InvalidBaseGeometry
+
          - QgsGeometry.Success
          - QgsGeometry.InvalidInput
          - QgsGeometry.NothingHappened if a selection is present but no feature has been split
@@ -185,6 +189,7 @@ Splits parts cut by the given line
 :param topologicalEditing: ``True`` if topological editing is enabled
 
 :return: - QgsGeometry.InvalidBaseGeometry
+
          - QgsGeometry.Success
          - QgsGeometry.InvalidInput
          - QgsGeometry.NothingHappened if a selection is present but no feature has been split

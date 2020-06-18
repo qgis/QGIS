@@ -39,7 +39,6 @@ with warnings.catch_warnings():
 
 
 class RangePanel(BASE, WIDGET):
-
     hasChanged = pyqtSignal()
 
     def __init__(self, param):

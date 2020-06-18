@@ -18,6 +18,9 @@
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingalgorithmconfigurationwidget.h"
 #include "qgsprocessingconfigurationwidgets.h"
+#include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
+#include "qgsprocessingfieldmapwidgetwrapper.h"
+#include "qgsprocessingaggregatewidgetwrapper.h"
 #include "qgsprocessingwidgetwrapperimpl.h"
 #include "qgsprocessingparameters.h"
 #include "qgis.h"
@@ -59,11 +62,14 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingMeshLayerWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingBandWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingMultipleLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingVectorTileWriterLayersWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingFeatureSinkWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingVectorDestinationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingRasterDestinationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingFileDestinationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingFolderDestinationWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFieldMapWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingAggregateWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()

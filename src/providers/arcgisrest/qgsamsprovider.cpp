@@ -42,7 +42,7 @@
 #include <QNetworkCacheMetaData>
 
 const QString QgsAmsProvider::AMS_PROVIDER_KEY = QStringLiteral( "arcgismapserver" );
-const QString QgsAmsProvider::AMS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS MapServer data provider" );
+const QString QgsAmsProvider::AMS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Map Service data provider" );
 
 
 //! a helper class for ordering tile requests according to the distance from view center
@@ -883,7 +883,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
       params[QStringLiteral( "featureType" )] = attributesMap[resultMap[QStringLiteral( "displayFieldName" )].toString()].toString();
       store.setParams( params );
       store.addFeature( feature );
-      entries.insert( entries.size(), qVariantFromValue( QList<QgsFeatureStore>() << store ) );
+      entries.insert( entries.size(), QVariant::fromValue( QList<QgsFeatureStore>() << store ) );
     }
   }
   return QgsRasterIdentifyResult( format, entries );

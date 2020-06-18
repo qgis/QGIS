@@ -198,24 +198,28 @@ bool QgsBackgroundCachedSharedData::createCache()
   if ( mDistinctSelect )
     cacheFields.append( QgsField( QgsBackgroundCachedFeatureIteratorConstants::FIELD_MD5, QVariant::String, QStringLiteral( "string" ) ) );
 
+  const auto logMessageWithReason = [this]( const QString & reason )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( QObject::tr( "Cannot create temporary SpatiaLite cache." ) ).arg( reason ), mComponentTranslated );
+  };
+
   // Creating a SpatiaLite database can be quite slow on some file systems
   // so we create a GDAL in-memory file, and then copy it on
   // the file system.
   GDALDriverH hDrv = GDALGetDriverByName( "SQLite" );
   if ( !hDrv )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Cannot create temporary SpatiaLite cache." ), mComponentTranslated );
+    logMessageWithReason( QStringLiteral( "GDAL SQLite driver not available" ) );
     return false;
   }
-  QString vsimemFilename;
-  vsimemFilename.sprintf( "/vsimem/qgis_cache_template_%p/features.sqlite", this );
+  const QString vsimemFilename = QStringLiteral( "/vsimem/qgis_cache_template_%1/features.sqlite" ).arg( reinterpret_cast< quintptr >( this ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
   mCacheTablename = CPLGetBasename( vsimemFilename.toStdString().c_str() );
   VSIUnlink( vsimemFilename.toStdString().c_str() );
   const char *apszOptions[] = { "INIT_WITH_EPSG=NO", "SPATIALITE=YES", nullptr };
   GDALDatasetH hDS = GDALCreate( hDrv, vsimemFilename.toUtf8().constData(), 0, 0, 0, GDT_Unknown, const_cast<char **>( apszOptions ) );
   if ( !hDS )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Cannot create temporary SpatiaLite cache." ), mComponentTranslated );
+    logMessageWithReason( QStringLiteral( "GDALCreate() failed: %1" ).arg( CPLGetLastErrorMsg() ) );
     return false;
   }
   GDALClose( hDS );
@@ -224,7 +228,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   vsi_l_offset nLength = 0;
   GByte *pabyData = VSIGetMemFileBuffer( vsimemFilename.toStdString().c_str(), &nLength, TRUE );
   Q_ASSERT( !QFile::exists( mCacheDbname ) );
-  VSILFILE *fp = VSIFOpenL( mCacheDbname.toStdString().c_str(), "wb " );
+  VSILFILE *fp = VSIFOpenL( mCacheDbname.toStdString().c_str(), "wb" );
   if ( fp )
   {
     VSIFWriteL( pabyData, 1, nLength, fp );
@@ -234,7 +238,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   else
   {
     CPLFree( pabyData );
-    QgsMessageLog::logMessage( QObject::tr( "Cannot create temporary SpatiaLite cache" ), mComponentTranslated );
+    logMessageWithReason( QStringLiteral( "Cannot copy file to %1: %2" ).arg( mCacheDbname ).arg( CPLGetLastErrorMsg() ) );
     return false;
   }
 
@@ -245,6 +249,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   spatialite_database_unique_ptr database;
   bool ret = true;
   int rc = database.open( mCacheDbname );
+  QString failedSql;
   if ( rc == SQLITE_OK )
   {
     QString sql;
@@ -277,6 +282,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     if ( rc != SQLITE_OK )
     {
       QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
+      if ( failedSql.isEmpty() ) failedSql = sql;
       ret = false;
     }
 
@@ -285,6 +291,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     if ( rc != SQLITE_OK )
     {
       QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
+      if ( failedSql.isEmpty() ) failedSql = sql;
       ret = false;
     }
 
@@ -293,6 +300,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     if ( rc != SQLITE_OK )
     {
       QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
+      if ( failedSql.isEmpty() ) failedSql = sql;
       ret = false;
     }
 
@@ -304,6 +312,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     if ( rc != SQLITE_OK )
     {
       QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
+      if ( failedSql.isEmpty() ) failedSql = sql;
       ret = false;
     }
 
@@ -314,6 +323,7 @@ bool QgsBackgroundCachedSharedData::createCache()
       if ( rc != SQLITE_OK )
       {
         QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
+        if ( failedSql.isEmpty() ) failedSql = sql;
         ret = false;
       }
     }
@@ -326,7 +336,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   }
   if ( !ret )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Cannot create temporary SpatiaLite cache" ), mComponentTranslated );
+    logMessageWithReason( QStringLiteral( "SQL request %1 failed" ).arg( failedSql ) );
     return false;
   }
 

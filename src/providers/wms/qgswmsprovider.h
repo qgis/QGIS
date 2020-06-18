@@ -261,6 +261,8 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     } TilePosition;
     typedef QList<TilePosition> TilePositions;
 
+    static bool isUrlForWMTS( const QString &url );
+
   private slots:
     void identifyReplyFinished();
     void getLegendGraphicReplyFinished( const QImage & );
@@ -591,6 +593,8 @@ class QgsWmsProviderMetadata final: public QgsProviderMetadata
     QgsWmsProviderMetadata();
     QgsWmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
+    QVariantMap decodeUri( const QString &uri ) override;
+    QString encodeUri( const QVariantMap &parts ) override;
 };
 
 #endif

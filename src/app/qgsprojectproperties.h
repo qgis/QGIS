@@ -42,7 +42,7 @@ class QgsBearingNumericFormat;
   \note actual state is stored in QgsProject singleton instance
 
  */
-class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui::QgsProjectPropertiesBase
+class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui::QgsProjectPropertiesBase, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -65,6 +65,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      */
     void setSelectedCrs( const QgsCoordinateReferenceSystem &crs );
 
+    QgsExpressionContext createExpressionContext() const override;
   public slots:
 
     /**
@@ -251,8 +252,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void populateWmtsTree( const QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem );
     //! add WMTS Grid definition based on CRS
     void addWmtsGrid( const QString &crsStr );
-    //! Check OWS configuration
-    void checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages );
 
     //! Populates list with ellipsoids from Sqlite3 db
     void populateEllipsoidList();

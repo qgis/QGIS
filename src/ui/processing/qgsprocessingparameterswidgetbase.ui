@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -62,7 +62,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBox" name="grpAdvanced">
          <property name="title">
-          <string>Advanced parameters</string>
+          <string>Advanced Parameters</string>
          </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>

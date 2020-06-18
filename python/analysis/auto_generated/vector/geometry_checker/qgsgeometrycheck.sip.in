@@ -21,39 +21,24 @@ help a user to create valid geometries.
 
 Implementing a custom geometry check consists of the following parts
 
-### Writing the check
+Writing the check
+-----------------
 
 A new subclass of QgsGeometryCheck needs to be written and at least the following
 abstract methods need to be implemented:
 
-- `compatibleGeometryTypes()`
+- :py:func:`~compatibleGeometryTypes`: A list of geometry types to which this check applies
+- :py:func:`~resolutionMethods`: A list of names for (automated) resolution methods that can be used to fix errors of this type
+- :py:func:`~description`: A description for the geometry check.
+- :py:func:`~id`: A unique id for this check.
+- :py:func:`~checkType`: One of QgsGeometryCheck.LayerCheck, QgsGeometryCheck.FeatureCheck,QgsGeometryCheck.FeatureNodeCheck
+- :py:func:`~collectErrors`: This method will be called to validate geometries. All geometries which should be validated are passed
+  into this method with the parameter ids and should be retrieved from the available featurePools to make
+  use of caching. New errors should be appended to the error list and other message strings to messages.
+  The method needs to return a tuple (errors, messages).
 
-A list of geometry types to which this check applies
-
-- `resolutionMethods()`
-
-A list of names for (automated) resolution methods that can be used to fix errors of this type
-
-- `description()`
-
-A description for the geometry check.
-
-- `id()`
-
-A unique id for this check.
-
-- `checkType()`
-
-One of QgsGeometryCheck.LayerCheck, QgsGeometryCheck.FeatureCheck,QgsGeometryCheck.FeatureNodeCheck
-
-- \link collectErrors() `collectErrors(featurePools, errors, messages, feedback, ids)`\endlink
-
-This method will be called to validate geometries. All geometries which should be validated are passed
-into this method with the parameter ids and should be retrieved from the available featurePools to make
-use of caching. New errors should be appended to the error list and other message strings to messages.
-The method needs to return a tuple (errors, messages).
-
-### Creating a geometry check factory
+Creating a geometry check factory
+---------------------------------
 
 A Geometry check factory manages meta information for checks. There will always be one single
 geometry check factory created per check type, but it's possible that multiple QgsGeometryCheck
@@ -62,32 +47,16 @@ instances are created and used in parallel.
 A new subclass of QgsGeometryCheckFactory needs to be written and at least the following
 abstract methods need to be implemented:
 
-- \link QgsGeometryCheckFactory.createGeometryCheck() `createGeometryCheck(context, configuration)`\endlink
+- :py:func:`QgsGeometryCheckFactory.createGeometryCheck()`: Needs to return a new subclassed QgsGeometryCheck object that has been written in the previous step.
+- :py:func:`QgsGeometryCheckFactory.id()`: A unique id for this geometry check.
+- :py:func:`QgsGeometryCheckFactory.description()`: A description for this geometry check that can be presented to the user for more explanation.
+- :py:func:`QgsGeometryCheckFactory.isCompatible()`: Returns a boolean that determines if this check is available for a given layer. This often
+  checks for the geometry type of the layer.
+- :py:func:`QgsGeometryCheckFactory.flags()`: Returns additional flags for a geometry check. If unsure return QgsGeometryCheck.AvailableInValidation.
+- :py:func:`QgsGeometryCheckFactory.checkType()`: Returns the type of this geometry check.
 
-Needs to return a new subclassed QgsGeometryCheck object that has been written in the previous step.
-
-- \link QgsGeometryCheckFactory.id() `id()\endlink
-
-A unique id for this geometry check.
-
-- \link QgsGeometryCheckFactory.description() `description()\endlink
-
-A description for this geometry check that can be presented to the user for more explanation.
-
-- \link QgsGeometryCheckFactory.isCompatible() `QgsGeometryCheckFactory.isCompatible(layer)`\endlink
-
-Returns a boolean that determines if this check is available for a given layer. This often
-checks for the geometry type of the layer.
-
-- \link QgsGeometryCheckFactory.flags() `flags()`\endlink
-
-Returns additional flags for a geometry check. If unsure return QgsGeometryCheck.AvailableInValidation.
-
-- \link QgsGeometryCheckFactory.checkType() `checkType()`\endlink
-
-Returns the type of this geometry check.
-
-### Registering the geometry check
+Registering the geometry check
+------------------------------
 
 Finally the geometry check factory needs to be registered in QGIS, so the system
 is aware of the available geometry checks.

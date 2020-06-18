@@ -29,7 +29,6 @@ from qgis.core import (QgsFeature,
 
 def buffering(feedback, context, sink, distance, field, useField, source, dissolve, segments, endCapStyle=1,
               joinStyle=1, miterLimit=2):
-
     if useField:
         field = source.fields().lookupField(field)
 

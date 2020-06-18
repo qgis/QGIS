@@ -21,6 +21,7 @@ __author__ = 'Nyall Dawson'
 __date__ = 'August 2017'
 __copyright__ = '(C) 2017, Nyall Dawson'
 
+import os
 from qgis.testing import start_app, unittest
 from qgis.core import (QgsApplication,
                        QgsCoordinateReferenceSystem,
@@ -41,7 +42,50 @@ from qgis.analysis import QgsNativeAlgorithms
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
-from processing.gui.wrappers import *
+from processing.gui.wrappers import (
+    BandWidgetWrapper,
+    BooleanWidgetWrapper,
+    CrsWidgetWrapper,
+    DistanceWidgetWrapper,
+    EnumWidgetWrapper,
+    ExpressionWidgetWrapper,
+    ExtentWidgetWrapper,
+    FeatureSourceWidgetWrapper,
+    FileWidgetWrapper,
+    FixedTableWidgetWrapper,
+    MapLayerWidgetWrapper,
+    MeshWidgetWrapper,
+    MultipleLayerWidgetWrapper,
+    NumberWidgetWrapper,
+    PointWidgetWrapper,
+    ProcessingConfig,
+    QgsProcessingFeatureSourceDefinition,
+    QgsProcessingParameterBand,
+    QgsProcessingParameterBoolean,
+    QgsProcessingParameterCrs,
+    QgsProcessingParameterDistance,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterExpression,
+    QgsProcessingParameterExtent,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterField,
+    QgsProcessingParameterFile,
+    QgsProcessingParameterMapLayer,
+    QgsProcessingParameterMeshLayer,
+    QgsProcessingParameterMultipleLayers,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterPoint,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterString,
+    QgsProcessingParameterVectorLayer,
+    QgsVectorLayer,
+    RangeWidgetWrapper,
+    RasterWidgetWrapper,
+    StringWidgetWrapper,
+    TableFieldWidgetWrapper,
+    VectorLayerWidgetWrapper,
+    WidgetWrapperFactory,
+)
 
 start_app()
 QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())

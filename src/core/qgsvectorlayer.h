@@ -79,10 +79,12 @@ class QgsAuxiliaryStorage;
 class QgsAuxiliaryLayer;
 class QgsGeometryOptions;
 class QgsStyleEntityVisitorInterface;
+class QgsVectorLayerTemporalProperties;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
+// TODO QGIS4: Remove virtual from non-inherited methods (like isModified)
 
 /**
  * \ingroup core
@@ -120,10 +122,8 @@ typedef QSet<int> QgsAttributeIds;
  * - crs=definition
  *   Defines the coordinate reference system to use for the layer.
  *   definition is any string accepted by QgsCoordinateReferenceSystem::createFromString()
- *
  * - index=yes
  *   Specifies that the layer will be constructed with a spatial index
- *
  * - field=name:type(length,precision)
  *   Defines an attribute of the layer. Multiple field parameters can be added
  *   to the data provider definition. type is one of "integer", "double", "string".
@@ -170,6 +170,7 @@ typedef QSet<int> QgsAttributeIds;
  *
  * The url can be a HTTP url to a WFS server (legacy, e.g. http://foobar/wfs?TYPENAME=xxx&SRSNAME=yyy[&FILTER=zzz]), or,
  * starting with QGIS 2.16, a URI constructed using the QgsDataSourceUri class with the following parameters :
+ *
  * - url=string (mandatory): HTTP url to a WFS server endpoint. e.g http://foobar/wfs
  * - typename=string (mandatory): WFS typename
  * - srsname=string (recommended): SRS like 'EPSG:XXXX'
@@ -177,7 +178,7 @@ typedef QSet<int> QgsAttributeIds;
  * - password=string
  * - authcfg=string
  * - version=auto/1.0.0/1.1.0/2.0.0
- *  -sql=string: full SELECT SQL statement with optional WHERE, ORDER BY and possibly with JOIN if supported on server
+ * - sql=string: full SELECT SQL statement with optional WHERE, ORDER BY and possibly with JOIN if supported on server
  * - filter=string: QGIS expression or OGC/FES filter
  * - restrictToRequestBBOX=1: to download only features in the view extent (or more generally
  *   in the bounding box of the feature iterator)
@@ -201,6 +202,7 @@ typedef QSet<int> QgsAttributeIds;
  * Used to access data provided by a OGC API - Features server.
  *
  * The URI should be constructed using the QgsDataSourceUri class with the following parameters:
+ *
  * - url=string (mandatory): HTTP url to a OGC API - Features landing page.
  * - typename=string (mandatory): Collection id
  * - username=string
@@ -217,7 +219,6 @@ typedef QSet<int> QgsAttributeIds;
  *
  * - You can use various functions available in the QGIS Expression list,
  *   however the function must exist server side and have the same name and arguments to work.
- *
  * - Use the special $geometry parameter to provide the layer geometry column as input
  *   into the spatial binary operators e.g intersects($geometry, geomFromWKT('POINT (5 6)'))
  *
@@ -249,26 +250,25 @@ typedef QSet<int> QgsAttributeIds;
  *   defined by new lines, except for csv format files for which quoted fields
  *   may span multiple records.  The default type is csv.
  *
- *   -  "csv" splits the file based on three sets of characters:
- *      delimiter characters, quote characters,
- *      and escape characters.  Delimiter characters mark the end
- *      of a field. Quote characters enclose a field which can contain
- *      delimiter characters, and newlines.  Escape characters cause the
- *      following character to be treated literally (including delimiter,
- *      quote, and newline characters).  Escape and quote characters must
- *      be different from delimiter characters. Escape characters that are
- *      also quote characters are treated specially - they can only
- *      escape themselves within quotes.  Elsewhere they are treated as
- *      quote characters.  The defaults for delimiter, quote, and escape
- *      are ',', '"', '"'.
- *   -  "regexp" splits each record using a regular expression (see QRegExp
- *      documentation for details).
- *   -  "whitespace" splits each record based on whitespace (on or more whitespace
- *      characters.  Leading whitespace in the record is ignored.
- *   -  "plain" is provided for backwards compatibility.  It is equivalent to
- *      CSV except that the default quote characters are single and double quotes,
- *      and there is no escape characters.
- *
+ * - "csv" splits the file based on three sets of characters:
+ *   delimiter characters, quote characters,
+ *   and escape characters.  Delimiter characters mark the end
+ *   of a field. Quote characters enclose a field which can contain
+ *   delimiter characters, and newlines.  Escape characters cause the
+ *   following character to be treated literally (including delimiter,
+ *   quote, and newline characters).  Escape and quote characters must
+ *   be different from delimiter characters. Escape characters that are
+ *   also quote characters are treated specially - they can only
+ *   escape themselves within quotes.  Elsewhere they are treated as
+ *   quote characters.  The defaults for delimiter, quote, and escape
+ *   are ',', '"', '"'.
+ * - "regexp" splits each record using a regular expression (see QRegExp
+ *   documentation for details).
+ * - "whitespace" splits each record based on whitespace (on or more whitespace
+ *   characters.  Leading whitespace in the record is ignored.
+ * - "plain" is provided for backwards compatibility.  It is equivalent to
+ *   CSV except that the default quote characters are single and double quotes,
+ *   and there is no escape characters.
  * - delimiter=characters
  *
  *   Defines the delimiter characters used for csv and plain type files, or the
@@ -349,16 +349,16 @@ typedef QSet<int> QgsAttributeIds;
  *   Defines the coordinate reference system used for the layer.  This can be
  *   any string accepted by QgsCoordinateReferenceSystem::createFromString()
  *
- * -subsetIndex=(yes|no)
+ * - subsetIndex=(yes|no)
  *
  *   Determines whether the provider generates an index to improve the efficiency
  *   of subsets.  The default is yes
  *
- * -spatialIndex=(yes|no)
+ * - spatialIndex=(yes|no)
  *
  *   Determines whether the provider generates a spatial index.  The default is no.
  *
- * -watchFile=(yes|no)
+ * - watchFile=(yes|no)
  *
  *   Defines whether the file will be monitored for changes. The default is
  *   to monitor for changes.
@@ -380,7 +380,6 @@ typedef QSet<int> QgsAttributeIds;
  *
  * Provider to display vector data in a GRASS GIS layer.
  *
- * TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
  * \see QgsVectorLayerUtils()
  */
 class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator, public QgsExpressionContextScopeGenerator, public QgsFeatureSink, public QgsFeatureSource
@@ -505,6 +504,26 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     };
 
     /**
+     * Context for cascade delete features
+     * \since QGIS 3.14
+     */
+    struct CORE_EXPORT DeleteContext
+    {
+
+      /**
+       * Constructor for DeleteContext.
+       */
+      explicit DeleteContext( bool cascade = false, QgsProject *project = nullptr ): cascade( cascade ), project( project ) {}
+
+      QList<QgsVectorLayer *> handledLayers() const;
+      QgsFeatureIds handledFeatures( QgsVectorLayer *layer ) const;
+
+      QMap<QgsVectorLayer *, QgsFeatureIds> mHandledFeatures SIP_SKIP;
+      bool cascade;
+      QgsProject *project;
+    };
+
+    /**
      * Constructor - creates a vector layer
      *
      * The QgsVectorLayer is constructed by instantiating a data provider.  The provider
@@ -581,6 +600,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     QgsVectorDataProvider *dataProvider() FINAL;
     const QgsVectorDataProvider *dataProvider() const FINAL SIP_SKIP;
+
+    /**
+     * Returns temporal properties associated with the vector layer.
+     */
+    QgsMapLayerTemporalProperties *temporalProperties() override;
 
     /**
      * Sets the text \a encoding of the data provider.
@@ -1278,15 +1302,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Deletes the selected features
-     *  \returns TRUE in case of success and FALSE otherwise
+     * \param deletedCount The number of successfully deleted features
+     * \param context The chain of features who will be deleted for feedback and to avoid endless recursions
+     *
+     * \returns TRUE in case of success and FALSE otherwise
      */
-    Q_INVOKABLE bool deleteSelectedFeatures( int *deletedCount = nullptr );
+    Q_INVOKABLE bool deleteSelectedFeatures( int *deletedCount = nullptr, DeleteContext *context = nullptr );
 
     /**
      * Adds a ring to polygon/multipolygon features
      * \param ring ring to add
      * \param featureId if specified, feature ID for feature ring was added to will be stored in this parameter
      * \returns QgsGeometry::OperationResult
+     *
      * - Success
      * - LayerNotEditable
      * - AddRingNotInExistingFeature
@@ -1309,6 +1337,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param ring ring to add
      * \param featureId if specified, feature ID for feature ring was added to will be stored in this parameter
      * \returns QgsGeometry::OperationResult
+     *
      * - Success
      * - LayerNotEditable
      * - AddRingNotInExistingFeature
@@ -1329,6 +1358,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param ring ring to add
      * \param featureId if specified, feature ID for feature ring was added to will be stored in this parameter
      * \returns QgsGeometry::OperationResult
+     *
      * - Success
      * - LayerNotEditable
      * - AddRingNotInExistingFeature
@@ -1336,6 +1366,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * - AddRingNotClosed
      * - AddRingNotValid
      * - AddRingCrossesExistingRings
+     *
      * \note available in Python as addCurvedRing
      * \note Calls to addRing() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
@@ -1347,6 +1378,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Adds a new part polygon to a multipart feature
      * \returns QgsGeometry::OperationResult
+     *
      * - Success
      * - LayerNotEditable
      * - SelectionIsEmpty
@@ -1367,6 +1399,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Adds a new part polygon to a multipart feature
      * \returns QgsGeometry::OperationResult
+     *
      * - Success
      * - LayerNotEditable
      * - SelectionIsEmpty
@@ -1375,6 +1408,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * - AddPartNotMultiGeometry
      * - InvalidBaseGeometry
      * - InvalidInputGeometryType
+     *
      * \note available in Python bindings as addPartV2
      * \note Calls to addPart() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
@@ -1387,6 +1421,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Adds a new part polygon to a multipart feature
      * \returns QgsGeometry::OperationResult
+     *
      * - Success
      * - LayerNotEditable
      * - SelectionIsEmpty
@@ -1395,6 +1430,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * - AddPartNotMultiGeometry
      * - InvalidBaseGeometry
      * - InvalidInputGeometryType
+     *
      * \note available in Python bindings as addPartV2
      * \note Calls to addPart() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
@@ -1430,6 +1466,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param splitLine line that splits the layer features
      * \param topologicalEditing TRUE if topological editing is enabled
      * \returns QgsGeometry::OperationResult
+     *
      * - Success
      * - NothingHappened
      * - LayerNotEditable
@@ -1437,6 +1474,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * - InvalidBaseGeometry
      * - GeometryEngineError
      * - SplitCannotSplitPoint
+     *
      * \note Calls to splitParts() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
@@ -1450,6 +1488,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param splitLine line that splits the layer features
      * \param topologicalEditing TRUE if topological editing is enabled
      * \returns QgsGeometry::OperationResult
+     *
      * - Success
      * - NothingHappened
      * - LayerNotEditable
@@ -1457,6 +1496,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * - InvalidBaseGeometry
      * - GeometryEngineError
      * - SplitCannotSplitPoint
+     *
      * \note Calls to splitParts() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
@@ -1469,6 +1509,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param splitLine line that splits the layer features
      * \param topologicalEditing TRUE if topological editing is enabled
      * \returns QgsGeometry::OperationResult
+     *
      * - Success
      * - NothingHappened
      * - LayerNotEditable
@@ -1476,6 +1517,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * - InvalidBaseGeometry
      * - GeometryEngineError
      * - SplitCannotSplitPoint
+     *
      * \note Calls to splitFeatures() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
@@ -1489,6 +1531,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param splitLine line that splits the layer features
      * \param topologicalEditing TRUE if topological editing is enabled
      * \returns QgsGeometry::OperationResult
+     *
      * - Success
      * - NothingHappened
      * - LayerNotEditable
@@ -1496,6 +1539,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * - InvalidBaseGeometry
      * - GeometryEngineError
      * - SplitCannotSplitPoint
+     *
      * \note Calls to splitFeatures() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
@@ -1812,17 +1856,20 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Deletes a feature from the layer (but does not commit it).
+     * \param fid The feature id to delete
+     * \param context The chain of features who will be deleted for feedback and to avoid endless recursions
      *
      * \note Calls to deleteFeature() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
      */
-    bool deleteFeature( QgsFeatureId fid );
+    bool deleteFeature( QgsFeatureId fid, DeleteContext *context = nullptr );
 
     /**
      * Deletes a set of features from the layer (but does not commit it)
      * \param fids The feature ids to delete
+     * \param context The chain of features who will be deleted for feedback and to avoid endless recursions
      *
      * \returns FALSE if the layer is not in edit mode or does not support deleting
      *         in case of an active transaction depends on the provider implementation
@@ -1832,7 +1879,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
      */
-    bool deleteFeatures( const QgsFeatureIds &fids );
+    bool deleteFeatures( const QgsFeatureIds &fids, DeleteContext *context = nullptr );
 
     /**
      * Attempts to commit to the underlying data provider any buffered changes made since the
@@ -2264,10 +2311,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * define checks on a layer that need to be pass before the layer can be saved.
      * If you use this API, make sure that:
      *
-     *  - the user is visibly informed that his changes were not saved and what he needs
-     *    to do in order to be able to save the changes.
-     *
-     *  - to set the property back to TRUE, once the user has fixed his data.
+     * - the user is visibly informed that his changes were not saved and what he needs
+     *   to do in order to be able to save the changes.
+     * - to set the property back to TRUE, once the user has fixed his data.
      *
      * When calling \see commitChanges(), this flag is checked just after the
      * \see beforeCommitChanges() signal is emitted, so it's possible to adjust it from there.
@@ -2284,10 +2330,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * define checks on a layer that need to be pass before the layer can be saved.
      * If you use this API, make sure that:
      *
-     *  - the user is visibly informed that his changes were not saved and what he needs
-     *    to do in order to be able to save the changes.
-     *
-     *  - to set the property back to TRUE, once the user has fixed his data.
+     * - the user is visibly informed that his changes were not saved and what he needs
+     *   to do in order to be able to save the changes.
+     * - to set the property back to TRUE, once the user has fixed his data.
      *
      * When calling \see commitChanges(), this flag is checked just after the
      * \see beforeCommitChanges() signal is emitted, so it's possible to adjust it from there.
@@ -2689,6 +2734,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Read simple labeling from layer's custom properties (QGIS 2.x projects)
     QgsAbstractVectorLayerLabeling *readLabelingFromCustomProperties();
 
+    bool deleteFeatureCascade( QgsFeatureId fid, DeleteContext *context = nullptr );
+
 #ifdef SIP_RUN
     QgsVectorLayer( const QgsVectorLayer &rhs );
 #endif
@@ -2700,6 +2747,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Pointer to data provider derived from the abastract base class QgsDataProvider
     QgsVectorDataProvider *mDataProvider = nullptr;
+
+    //! Pointer to temporal properties
+    QgsVectorLayerTemporalProperties *mTemporalProperties = nullptr;
 
     //! The preview expression used to generate a human readable preview string for features
     QString mDisplayExpression;

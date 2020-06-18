@@ -34,6 +34,7 @@ from qgis.testing import (start_app,
                           unittest)
 
 import AlgorithmsTestBase
+from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.AssignProjection import AssignProjection
 from processing.algs.gdal.ClipRasterByExtent import ClipRasterByExtent
 from processing.algs.gdal.ClipRasterByMask import ClipRasterByMask
@@ -70,7 +71,6 @@ from processing.algs.gdal.slope import slope
 from processing.algs.gdal.rasterize_over import rasterize_over
 from processing.algs.gdal.rasterize_over_fixed_value import rasterize_over_fixed_value
 from processing.algs.gdal.viewshed import viewshed
-
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
@@ -596,7 +596,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             output = outdir + '/check.jpg'
 
             # default execution
-            formula = 'A*2' # default formula
+            formula = 'A*2'  # default formula
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT_A': source,
                                         'BAND_A': 1,
@@ -2146,7 +2146,15 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'CLEAN': False,
                                         'EXTRA': '--config COMPRESS_OVERVIEW JPEG'}, context, feedback),
                 ['gdaladdo',
-                 source + ' ' + '-r nearest --config COMPRESS_OVERVIEW JPEG 2 4 8 16'])
+                 source + ' ' + '--config COMPRESS_OVERVIEW JPEG 2 4 8 16'])
+
+            if GdalUtils.version() >= 230000:
+                # without levels
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT': source,
+                                            'CLEAN': False}, context, feedback),
+                    ['gdaladdo',
+                     source])
 
             # without advanced params
             self.assertEqual(
@@ -2154,7 +2162,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'LEVELS': '2 4 8 16',
                                         'CLEAN': False}, context, feedback),
                 ['gdaladdo',
-                 source + ' ' + '-r nearest 2 4 8 16'])
+                 source + ' ' + '2 4 8 16'])
 
     def testSieve(self):
         context = QgsProcessingContext()

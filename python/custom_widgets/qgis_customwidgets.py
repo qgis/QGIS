@@ -44,7 +44,7 @@ It is copied on installation in /pythonX/dist-packages/PyQt5/uic/widget-plugins/
 #       return _QGISfilter
 
 
-pluginType = MODULE
+pluginType = MODULE  # noqa
 
 
 def moduleInformation():

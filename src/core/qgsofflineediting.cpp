@@ -40,6 +40,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
+#include "qgsmaplayerstylemanager.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -72,15 +73,16 @@ QgsOfflineEditing::QgsOfflineEditing()
  * returns offline project file path
  *
  * Workflow:
- *  - copy layers to SpatiaLite
- *  - create SpatiaLite db at offlineDataPath
- *  - create table for each layer
- *  - add new SpatiaLite layer
- *  - copy features
- *  - save as offline project
- *  - mark offline layers
- *  - remove remote layers
- *  - mark as offline project
+ *
+ * - copy layers to SpatiaLite
+ * - create SpatiaLite db at offlineDataPath
+ * - create table for each layer
+ * - add new SpatiaLite layer
+ * - copy features
+ * - save as offline project
+ * - mark offline layers
+ * - remove remote layers
+ * - mark as offline project
  */
 bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected, ContainerType containerType )
 {
@@ -689,7 +691,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       }
 
       OGRSFDriverH hDriver = nullptr;
-      OGRSpatialReferenceH hSRS = OSRNewSpatialReference( layer->crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLocal8Bit().data() );
+      OGRSpatialReferenceH hSRS = OSRNewSpatialReference( layer->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLocal8Bit().data() );
       gdal::ogr_datasource_unique_ptr hDS( OGROpen( offlineDbPath.toUtf8().constData(), true, &hDriver ) );
       OGRLayerH hLayer = OGR_DS_CreateLayer( hDS.get(), tableName.toUtf8().constData(), hSRS, static_cast<OGRwkbGeometryType>( layer->wkbType() ), options );
       CSLDestroy( options );
@@ -1096,6 +1098,8 @@ void QgsOfflineEditing::updateFidLookup( QgsVectorLayer *remoteLayer, sqlite3 *d
 
 void QgsOfflineEditing::copySymbology( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer )
 {
+  targetLayer->styleManager()->copyStylesFrom( sourceLayer->styleManager() );
+
   QString error;
   QDomDocument doc;
   QgsReadWriteContext context;

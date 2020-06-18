@@ -29,8 +29,10 @@ from qgis.core import (
     QgsFeatureSink,
     QgsTestUtils,
     QgsFeatureSource,
+    QgsFieldConstraints,
     NULL
 )
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime
 from qgis.PyQt.QtTest import QSignalSpy
 
 from utilities import compareWkt
@@ -47,6 +49,11 @@ class ProviderTestCase(FeatureSourceTestCase):
         To test expression compilation, add the methods `enableCompiler()` and `disableCompiler()` to your subclass.
         If these methods are present, the tests will ensure that the result of server side and client side expression
         evaluation are equal.
+
+        To enable constraints checks for a data provider, please see the comment to the specific tests:
+        - testChangeAttributesConstraintViolation
+        - testUniqueNotNullConstraints
+
     '''
 
     def uncompiledFilters(self):
@@ -64,6 +71,11 @@ class ProviderTestCase(FeatureSourceTestCase):
         should be partially compiled """
         return set()
 
+    @property
+    def pk_name(self):
+        """Return the primary key name, override if different than the default 'pk'"""
+        return 'pk'
+
     def assert_query(self, source, expression, expected):
         FeatureSourceTestCase.assert_query(self, source, expression, expected)
 
@@ -76,7 +88,7 @@ class ProviderTestCase(FeatureSourceTestCase):
             elif expression in self.partiallyCompiledFilters():
                 self.assertEqual(it.compileStatus(), QgsAbstractFeatureIterator.PartiallyCompiled)
             else:
-                self.assertEqual(it.compileStatus(), QgsAbstractFeatureIterator.Compiled)
+                self.assertEqual(it.compileStatus(), QgsAbstractFeatureIterator.Compiled, expression)
 
     def runGetFeatureTests(self, source):
         FeatureSourceTestCase.runGetFeatureTests(self, source)
@@ -93,7 +105,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         request.setFilterExpression('"pk" = attribute(@parent, \'pk\')')
         request.setLimit(1)
 
-        values = [f['pk'] for f in self.vl.getFeatures(request)]
+        values = [f[self.pk_name] for f in self.vl.getFeatures(request)]
         self.assertEqual(values, [4])
 
     def runPolyGetFeatureTests(self, provider):
@@ -169,7 +181,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.source.setSubsetString(subset)
         self.assertEqual(len(changed_spy), 1)
 
-        result = set([f['pk'] for f in self.source.getFeatures()])
+        result = set([f[self.pk_name] for f in self.source.getFeatures()])
         all_valid = (all(f.isValid() for f in self.source.getFeatures()))
         self.source.setSubsetString(None)
 
@@ -182,7 +194,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.source.setSubsetString(subset)
         extent = QgsRectangle(-70, 70, -60, 75)
         request = QgsFeatureRequest().setFilterRect(extent)
-        result = set([f['pk'] for f in self.source.getFeatures(request)])
+        result = set([f[self.pk_name] for f in self.source.getFeatures(request)])
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         self.source.setSubsetString(None)
         expected = set([2])
@@ -193,7 +205,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         # Subset string AND filter rect, version 2
         self.source.setSubsetString(subset)
         extent = QgsRectangle(-71, 65, -60, 80)
-        result = set([f['pk'] for f in self.source.getFeatures(QgsFeatureRequest().setFilterRect(extent))])
+        result = set([f[self.pk_name] for f in self.source.getFeatures(QgsFeatureRequest().setFilterRect(extent))])
         self.source.setSubsetString(None)
         expected = set([2, 4])
         assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected),
@@ -202,7 +214,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         # Subset string AND expression
         self.source.setSubsetString(subset)
         request = QgsFeatureRequest().setFilterExpression('length("name")=5')
-        result = set([f['pk'] for f in self.source.getFeatures(request)])
+        result = set([f[self.pk_name] for f in self.source.getFeatures(request)])
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         self.source.setSubsetString(None)
         expected = set([2, 4])
@@ -211,7 +223,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertTrue(all_valid)
 
         # Subset string AND filter fid
-        ids = {f['pk']: f.id() for f in self.source.getFeatures()}
+        ids = {f[self.pk_name]: f.id() for f in self.source.getFeatures()}
         self.source.setSubsetString(subset)
         request = QgsFeatureRequest().setFilterFid(4)
         result = set([f.id() for f in self.source.getFeatures(request)])
@@ -273,8 +285,8 @@ class ProviderTestCase(FeatureSourceTestCase):
         FeatureSourceTestCase.runOrderByTests(self)
 
         # Combination with subset of attributes
-        request = QgsFeatureRequest().addOrderBy('num_char', False).setSubsetOfAttributes(['pk'], self.vl.fields())
-        values = [f['pk'] for f in self.vl.getFeatures(request)]
+        request = QgsFeatureRequest().addOrderBy('num_char', False).setSubsetOfAttributes([self.pk_name], self.vl.fields())
+        values = [f[self.pk_name] for f in self.vl.getFeatures(request)]
         self.assertEqual(values, [5, 4, 3, 2, 1])
 
     def testOpenIteratorAfterLayerRemoval(self):
@@ -298,7 +310,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         # get the features
         pks = []
         for f in source.getFeatures():
-            pks.append(f['pk'])
+            pks.append(f[self.pk_name])
         self.assertEqual(set(pks), {1, 2, 3, 4, 5})
 
     def testCloneLayer(self):
@@ -309,7 +321,7 @@ class ProviderTestCase(FeatureSourceTestCase):
 
         pks = []
         for f in l.getFeatures():
-            pks.append(f['pk'])
+            pks.append(f[self.pk_name])
         self.assertEqual(set(pks), {1, 2, 3, 4, 5})
 
     def testGetFeaturesPolyFilterRectTests(self):
@@ -322,7 +334,7 @@ class ProviderTestCase(FeatureSourceTestCase):
 
         extent = QgsRectangle(-73, 70, -63, 80)
         request = QgsFeatureRequest().setFilterRect(extent)
-        features = [f['pk'] for f in self.poly_provider.getFeatures(request)]
+        features = [f[self.pk_name] for f in self.poly_provider.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         # Some providers may return the exact intersection matches (2, 3) even without the ExactIntersect flag, so we accept that too
         assert set(features) == set([2, 3]) or set(features) == set([1, 2, 3]), 'Got {} instead'.format(features)
@@ -330,14 +342,14 @@ class ProviderTestCase(FeatureSourceTestCase):
 
         # Test with exact intersection
         request = QgsFeatureRequest().setFilterRect(extent).setFlags(QgsFeatureRequest.ExactIntersect)
-        features = [f['pk'] for f in self.poly_provider.getFeatures(request)]
+        features = [f[self.pk_name] for f in self.poly_provider.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         assert set(features) == set([2, 3]), 'Got {} instead'.format(features)
         self.assertTrue(all_valid)
 
         # test with an empty rectangle
         extent = QgsRectangle()
-        features = [f['pk'] for f in self.source.getFeatures(QgsFeatureRequest().setFilterRect(extent))]
+        features = [f[self.pk_name] for f in self.source.getFeatures(QgsFeatureRequest().setFilterRect(extent))]
         assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
 
     def testMinValue(self):
@@ -346,6 +358,25 @@ class ProviderTestCase(FeatureSourceTestCase):
 
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('cnt')), -200)
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('name')), 'Apple')
+
+        if self.treat_datetime_as_string():
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('dt')), '2020-05-03 12:13:14')
+        else:
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('dt')),
+                             QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)))
+
+        if self.treat_date_as_string():
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('date')), '2020-05-02')
+        elif not self.treat_date_as_datetime():
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('date')), QDate(2020, 5, 2))
+        else:
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('date')),
+                             QDateTime(2020, 5, 2, 0, 0, 0))
+
+        if not self.treat_time_as_string():
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('time')), QTime(12, 13, 1))
+        else:
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('time')), '12:13:01')
 
         if self.source.supportsSubsetString():
             subset = self.getSubsetString()
@@ -359,6 +390,25 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertFalse(self.source.maximumValue(1000))
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('cnt')), 400)
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('name')), 'Pear')
+
+        if not self.treat_datetime_as_string():
+            self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('dt')),
+                             QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)))
+        else:
+            self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('dt')), '2021-05-04 13:13:14')
+
+        if self.treat_date_as_string():
+            self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('date')), '2021-05-04')
+        elif not self.treat_date_as_datetime():
+            self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('date')), QDate(2021, 5, 4))
+        else:
+            self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('date')),
+                             QDateTime(2021, 5, 4, 0, 0, 0))
+
+        if not self.treat_time_as_string():
+            self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('time')), QTime(13, 13, 14))
+        else:
+            self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('time')), '13:13:14')
 
         if self.source.supportsSubsetString():
             subset = self.getSubsetString2()
@@ -409,6 +459,32 @@ class ProviderTestCase(FeatureSourceTestCase):
         assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(
             self.source.uniqueValues(self.source.fields().lookupField('name'))), 'Got {}'.format(
             set(self.source.uniqueValues(self.source.fields().lookupField('name'))))
+
+        if self.treat_datetime_as_string():
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
+                             set(['2021-05-04 13:13:14', '2020-05-04 12:14:14', '2020-05-04 12:13:14',
+                                  '2020-05-03 12:13:14', NULL]))
+        else:
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
+                             set([QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14),
+                                  QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL]))
+
+        if self.treat_date_as_string():
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
+                             set(['2020-05-03', '2020-05-04', '2021-05-04', '2020-05-02', NULL]))
+        elif self.treat_date_as_datetime():
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
+                             set([QDateTime(2020, 5, 3, 0, 0, 0), QDateTime(2020, 5, 4, 0, 0, 0),
+                                  QDateTime(2021, 5, 4, 0, 0, 0), QDateTime(2020, 5, 2, 0, 0, 0), NULL]))
+        else:
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
+                             set([QDate(2020, 5, 3), QDate(2020, 5, 4), QDate(2021, 5, 4), QDate(2020, 5, 2), NULL]))
+        if self.treat_time_as_string():
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('time'))),
+                             set(['12:14:14', '13:13:14', '12:13:14', '12:13:01', NULL]))
+        else:
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('time'))),
+                             set([QTime(12, 14, 14), QTime(13, 13, 14), QTime(12, 13, 14), QTime(12, 13, 1), NULL]))
 
         if self.source.supportsSubsetString():
             subset = self.getSubsetString2()
@@ -525,11 +601,21 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertTrue(l.isValid())
 
         f1 = QgsFeature()
-        f1.setAttributes([6, -220, NULL, 'String', '15'])
+        f1.setAttributes([6, -220, NULL, 'String', '15',
+                          '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(2019, 1, 2, 3, 4, 5),
+                          '2019-01-02' if self.treat_date_as_string() else QDateTime(2019, 1, 2, 0, 0,
+                                                                                     0) if self.treat_date_as_datetime() else QDate(
+                              2019, 1, 2),
+                          '03:04:05' if self.treat_time_as_string() else QTime(3, 4, 5)])
         f1.setGeometry(QgsGeometry.fromWkt('Point (-72.345 71.987)'))
 
         f2 = QgsFeature()
-        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13'])
+        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13',
+                          '2018-05-06 07:08:09' if self.treat_datetime_as_string() else QDateTime(2018, 5, 6, 7, 8, 9),
+                          '2018-05-06' if self.treat_date_as_string() else QDateTime(2018, 5, 6, 0, 0,
+                                                                                     0) if self.treat_date_as_datetime() else QDate(
+                              2018, 5, 6),
+                          '07:08:09' if self.treat_time_as_string() else QTime(7, 8, 9)])
 
         if l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
             # expect success
@@ -565,11 +651,18 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertTrue(l.isValid())
 
         f1 = QgsFeature()
-        f1.setAttributes([6, -220, NULL, 'String', '15'])
+        f1.setAttributes(
+            [6, -220, NULL, 'String', '15',
+             '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(2019, 1, 2, 3, 4, 5),
+             '2019-01-02' if self.treat_date_as_string() else QDateTime(2019, 1, 2, 0, 0, 0) if self.treat_date_as_datetime() else QDate(2019, 1, 2),
+             '03:04:05' if self.treat_time_as_string() else QTime(3, 4, 5)])
         f1.setGeometry(QgsGeometry.fromWkt('Point (-72.345 71.987)'))
 
         f2 = QgsFeature()
-        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13'])
+        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13',
+                          '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(2019, 1, 2, 3, 4, 5),
+                          '2019-01-02' if self.treat_date_as_string() else QDateTime(2019, 1, 2, 0, 0, 0) if self.treat_date_as_datetime() else QDate(2019, 1, 2),
+                          '03:04:05' if self.treat_time_as_string() else QTime(3, 4, 5)])
 
         if l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
             # expect success
@@ -601,8 +694,8 @@ class ProviderTestCase(FeatureSourceTestCase):
         f2.setId(added[1].id())
 
         # check result - feature attributes MUST be padded out to required number of fields
-        f1.setAttributes([6, -220, NULL, 'String', 'NULL'])
-        f2.setAttributes([7, 330, NULL, NULL, 'NULL'])
+        f1.setAttributes([6, -220, NULL, 'String', 'NULL', NULL, NULL, NULL])
+        f2.setAttributes([7, 330, NULL, NULL, 'NULL', NULL, NULL, NULL])
         self.testGetFeatures(l.dataProvider(), [f1, f2])
 
     def testAddFeatureExtraAttributes(self):
@@ -618,17 +711,27 @@ class ProviderTestCase(FeatureSourceTestCase):
         # test that adding features with too many attributes drops these attributes
         # we be more tricky and also add a valid feature to stress test the provider
         f1 = QgsFeature()
-        f1.setAttributes([6, -220, NULL, 'String', '15'])
+        f1.setAttributes([6, -220, NULL, 'String', '15',
+                          '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(2019, 1, 2, 3, 4, 5),
+                          '2019-01-02' if self.treat_date_as_string() else QDateTime(2019, 1, 2, 0, 0, 0) if self.treat_date_as_datetime() else QDate(2019, 1, 2),
+                          '03:04:05' if self.treat_time_as_string() else QTime(3, 4, 5)])
         f2 = QgsFeature()
-        f2.setAttributes([7, -230, NULL, 'String', '15', 15, 16, 17])
+        f2.setAttributes([7, -230, NULL, 'String', '15',
+                          '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(2019, 1, 2, 3, 4, 5),
+                          '2019-01-02' if self.treat_date_as_string() else QDateTime(2019, 1, 2, 0, 0, 0) if self.treat_date_as_datetime() else QDate(2019, 1, 2),
+                          '03:04:05' if self.treat_time_as_string() else QTime(3, 4, 5), 15, 16, 17])
 
         result, added = l.dataProvider().addFeatures([f1, f2])
         self.assertTrue(result,
                         'Provider returned False to addFeatures with extra attributes. Providers should accept these features but truncate the extra attributes.')
 
         # make sure feature was added correctly
-        added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 7][0]
-        self.assertEqual(added.attributes(), [7, -230, NULL, 'String', '15'])
+        added = [f for f in l.dataProvider().getFeatures() if f[self.pk_name] == 7][0]
+        self.assertEqual(added.attributes(), [7, -230, NULL, 'String', '15',
+                                              '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(
+                                                  2019, 1, 2, 3, 4, 5),
+                                              '2019-01-02' if self.treat_date_as_string() else QDateTime(2019, 1, 2, 0, 0, 0) if self.treat_date_as_datetime() else QDate(2019, 1, 2),
+                                              '03:04:05' if self.treat_time_as_string() else QTime(3, 4, 5)])
 
     def testAddFeatureWrongGeomType(self):
         if not getattr(self, 'getEditableLayer', None):
@@ -654,7 +757,7 @@ class ProviderTestCase(FeatureSourceTestCase):
                          'Provider returned True to addFeatures with incorrect geometry type. Providers should reject these features.')
 
         # make sure feature was not added
-        added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 7]
+        added = [f for f in l.dataProvider().getFeatures() if f[self.pk_name] == 7]
         self.assertFalse(added)
 
         # yet providers MUST always accept null geometries
@@ -665,7 +768,7 @@ class ProviderTestCase(FeatureSourceTestCase):
                         'Provider returned False to addFeatures with null geometry. Providers should always accept these features.')
 
         # make sure feature was added correctly
-        added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 9][0]
+        added = [f for f in l.dataProvider().getFeatures() if f[self.pk_name] == 9][0]
         self.assertFalse(added.hasGeometry())
 
     def testAddFeaturesUpdateExtent(self):
@@ -737,7 +840,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         l = self.getEditableLayer()
         self.assertTrue(l.isValid())
 
-        features = [f['pk'] for f in l.dataProvider().getFeatures()]
+        features = [f[self.pk_name] for f in l.dataProvider().getFeatures()]
 
         if l.dataProvider().capabilities() & QgsVectorDataProvider.FastTruncate or l.dataProvider().capabilities() & QgsVectorDataProvider.DeleteFeatures:
             # expect success
@@ -746,7 +849,7 @@ class ProviderTestCase(FeatureSourceTestCase):
                             'Provider reported FastTruncate or DeleteFeatures capability, but returned False to truncate()')
 
             # check result
-            features = [f['pk'] for f in l.dataProvider().getFeatures()]
+            features = [f[self.pk_name] for f in l.dataProvider().getFeatures()]
             self.assertEqual(len(features), 0)
         else:
             # expect fail
@@ -786,6 +889,63 @@ class ProviderTestCase(FeatureSourceTestCase):
             # expect fail
             self.assertFalse(l.dataProvider().changeAttributeValues(changes),
                              'Provider reported no ChangeAttributeValues capability, but returned true to changeAttributeValues')
+
+    def testChangeAttributesConstraintViolation(self):
+        """Checks that changing attributes violating a DB-level CHECK constraint returns false
+        the provider test case must provide an editable layer with a text field
+        "i_will_fail_on_no_name" having a CHECK constraint that will fail when value is "no name".
+        The layer must contain at least 2 features, that will be used to test the attibute change.
+        """
+
+        if not getattr(self, 'getEditableLayerWithCheckConstraint', None):
+            return
+
+        l = self.getEditableLayerWithCheckConstraint()
+        self.assertTrue(l.isValid())
+
+        assert l.dataProvider().capabilities() & QgsVectorDataProvider.ChangeAttributeValues
+
+        # find the featurea to change
+        feature0 = [f for f in l.dataProvider().getFeatures()][0]
+        feature1 = [f for f in l.dataProvider().getFeatures()][1]
+        field_idx = l.fields().indexFromName('i_will_fail_on_no_name')
+        self.assertTrue(field_idx >= 0)
+        # changes by feature id, for changeAttributeValues call
+        changes = {
+            feature0.id(): {field_idx: 'no name'},
+            feature1.id(): {field_idx: 'I have a valid name'}
+        }
+        # expect failure
+        result = l.dataProvider().changeAttributeValues(changes)
+        self.assertFalse(
+            result, 'Provider reported success when changing an attribute value that violates a DB level CHECK constraint')
+
+    def testUniqueNotNullConstraints(self):
+        """Test provider-level NOT NULL and UNIQUE constraints, to enable
+        this test, implement getEditableLayerWithUniqueNotNullConstraints
+        to return an editable POINT layer with the following fields:
+
+            "unique" TEXT UNIQUE,
+            "not_null" TEXT NOT NULL
+
+        """
+
+        if not getattr(self, 'getEditableLayerWithUniqueNotNullConstraints', None):
+            return
+
+        vl = self.getEditableLayerWithUniqueNotNullConstraints()
+
+        self.assertTrue(vl.isValid())
+        unique_field_idx = vl.fields().indexFromName('unique')
+        not_null_field_idx = vl.fields().indexFromName('not_null')
+        self.assertTrue(unique_field_idx > 0)
+        self.assertTrue(not_null_field_idx > 0)
+        # Not null
+        self.assertFalse(bool(vl.fieldConstraints(unique_field_idx) & QgsFieldConstraints.ConstraintNotNull))
+        self.assertTrue(bool(vl.fieldConstraints(not_null_field_idx) & QgsFieldConstraints.ConstraintNotNull))
+        # Unique
+        self.assertTrue(bool(vl.fieldConstraints(unique_field_idx) & QgsFieldConstraints.ConstraintUnique))
+        self.assertFalse(bool(vl.fieldConstraints(not_null_field_idx) & QgsFieldConstraints.ConstraintUnique))
 
     def testChangeGeometries(self):
         if not getattr(self, 'getEditableLayer', None):
@@ -907,8 +1067,8 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertEqual(vl.dataProvider().maximumValue(1), 400)
 
         # delete features
-        f1 = [f for f in vl.getFeatures() if f['pk'] == 5][0]
-        f3 = [f for f in vl.getFeatures() if f['pk'] == 3][0]
+        f1 = [f for f in vl.getFeatures() if f[self.pk_name] == 5][0]
+        f3 = [f for f in vl.getFeatures() if f[self.pk_name] == 3][0]
         self.assertTrue(vl.dataProvider().deleteFeatures([f6.id(), f7.id()]))
         self.assertEqual(vl.dataProvider().minimumValue(0), 1)
         self.assertEqual(vl.dataProvider().minimumValue(1), -200)

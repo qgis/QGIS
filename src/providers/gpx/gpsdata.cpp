@@ -288,7 +288,7 @@ QgsGpsData::TrackIterator QgsGpsData::addTrack( const QgsTrack &trk )
 
 void QgsGpsData::removeWaypoints( const QgsFeatureIds &ids )
 {
-  QList<QgsFeatureId> ids2 = ids.toList();
+  QList<QgsFeatureId> ids2 = qgis::setToList( ids );
   std::sort( ids2.begin(), ids2.end() );
   QList<QgsFeatureId>::const_iterator iter = ids2.constBegin();
   WaypointIterator wIter;
@@ -309,7 +309,7 @@ void QgsGpsData::removeWaypoints( const QgsFeatureIds &ids )
 
 void QgsGpsData::removeRoutes( const QgsFeatureIds &ids )
 {
-  QList<QgsFeatureId> ids2 = ids.toList();
+  QList<QgsFeatureId> ids2 = qgis::setToList( ids );
   std::sort( ids2.begin(), ids2.end() );
   QList<QgsFeatureId>::const_iterator iter = ids2.constBegin();
   RouteIterator rIter;
@@ -329,7 +329,7 @@ void QgsGpsData::removeRoutes( const QgsFeatureIds &ids )
 
 void QgsGpsData::removeTracks( const QgsFeatureIds &ids )
 {
-  QList<QgsFeatureId> ids2 = ids.toList();
+  QList<QgsFeatureId> ids2 = qgis::setToList( ids );
   std::sort( ids2.begin(), ids2.end() );
   QList<QgsFeatureId>::const_iterator iter = ids2.constBegin();
   TrackIterator tIter;

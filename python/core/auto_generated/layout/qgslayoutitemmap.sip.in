@@ -72,7 +72,7 @@ Sets the map item's ``flags``, which control how the map content is drawn.
 
     void assignFreeId();
 %Docstring
-Sets the map id() to a number not yet used in the layout. The existing id() is kept if it is not in use.
+Sets the map :py:func:`~QgsLayoutItemMap.id` to a number not yet used in the layout. The existing :py:func:`~QgsLayoutItemMap.id` is kept if it is not in use.
 %End
 
     virtual QString displayName() const;
@@ -164,7 +164,7 @@ If the map rotation is 0, the result is the same as currentMapExtent
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
 Returns coordinate reference system used for rendering the map.
-This will match the presetCrs() if that is set, or if a preset
+This will match the :py:func:`~QgsLayoutItemMap.presetCrs` if that is set, or if a preset
 CRS is not set then the map's CRS will follow the composition's
 project's CRS.
 
@@ -201,7 +201,7 @@ setting. If the CRS is not valid then the project CRS will be used to render the
 Returns whether a stored layer set should be used
 or the current layer set from the project associated with the layout. This is just a GUI flag,
 and itself does not change which layers are rendered in the map.
-Instead, use setLayers() to control which layers are rendered.
+Instead, use :py:func:`~QgsLayoutItemMap.setLayers` to control which layers are rendered.
 
 .. seealso:: :py:func:`setKeepLayerSet`
 
@@ -213,7 +213,7 @@ Instead, use setLayers() to control which layers are rendered.
 Sets whether the stored layer set should be used
 or the current layer set of the associated project. This is just a GUI flag,
 and itself does not change which layers are rendered in the map.
-Instead, use setLayers() to control which layers are rendered.
+Instead, use :py:func:`~QgsLayoutItemMap.setLayers` to control which layers are rendered.
 
 .. seealso:: :py:func:`keepLayerSet`
 
@@ -276,10 +276,10 @@ Stores the current project layer styles into style overrides.
     bool followVisibilityPreset() const;
 %Docstring
 Returns whether the map should follow a map theme. If ``True``, the layers and layer styles
-will be used from given preset name (configured with setFollowVisibilityPresetName() method).
+will be used from given preset name (configured with :py:func:`~QgsLayoutItemMap.setFollowVisibilityPresetName` method).
 This means when preset's settings are changed, the new settings are automatically
 picked up next time when rendering, without having to explicitly update them.
-At most one of the flags keepLayerSet() and followVisibilityPreset() should be enabled
+At most one of the flags :py:func:`~QgsLayoutItemMap.keepLayerSet` and :py:func:`~QgsLayoutItemMap.followVisibilityPreset` should be enabled
 at any time since they are alternative approaches - if both are enabled,
 following map theme has higher priority. If neither is enabled (or if preset name is not set),
 map will use the same configuration as the map canvas uses.
@@ -287,13 +287,13 @@ map will use the same configuration as the map canvas uses.
 
     void setFollowVisibilityPreset( bool follow );
 %Docstring
-Sets whether the map should follow a map theme. See followVisibilityPreset() for more details.
+Sets whether the map should follow a map theme. See :py:func:`~QgsLayoutItemMap.followVisibilityPreset` for more details.
 %End
 
     QString followVisibilityPresetName() const;
 %Docstring
 Preset name that decides which layers and layer styles are used for map rendering. It is only
-used when followVisibilityPreset() returns ``True``.
+used when :py:func:`~QgsLayoutItemMap.followVisibilityPreset` returns ``True``.
 
 .. seealso:: :py:func:`setFollowVisibilityPresetName`
 
@@ -302,7 +302,7 @@ used when followVisibilityPreset() returns ``True``.
 
     void setFollowVisibilityPresetName( const QString &name );
 %Docstring
-Sets preset name for map rendering. See followVisibilityPresetName() for more details.
+Sets preset name for map rendering. See :py:func:`~QgsLayoutItemMap.followVisibilityPresetName` for more details.
 
 .. seealso:: :py:func:`followVisibilityPresetName`
 
@@ -398,7 +398,7 @@ is enabled.
 
 .. note::
 
-   this parameter is only used if atlasDriven() is ``True``
+   this parameter is only used if :py:func:`~QgsLayoutItemMap.atlasDriven` is ``True``
 
 .. seealso:: :py:func:`setAtlasScalingMode`
 
@@ -415,7 +415,7 @@ is enabled.
 
 .. note::
 
-   this parameter is only used if atlasDriven() is ``True``
+   this parameter is only used if :py:func:`~QgsLayoutItemMap.atlasDriven` is ``True``
 
 .. seealso:: :py:func:`atlasScalingMode`
 
@@ -434,7 +434,7 @@ Returns the margin size (percentage) used when the map is in atlas mode.
 
 .. note::
 
-   this is only used if atlasScalingMode() is Auto.
+   this is only used if :py:func:`~QgsLayoutItemMap.atlasScalingMode` is Auto.
 
 .. seealso:: :py:func:`atlasScalingMode`
 
@@ -449,7 +449,7 @@ Sets the margin size (percentage) used when the map is in atlas mode.
 
 .. note::
 
-   this is only used if atlasScalingMode() is Auto.
+   this is only used if :py:func:`~QgsLayoutItemMap.atlasScalingMode` is Auto.
 
 .. seealso:: :py:func:`atlasScalingMode`
 
@@ -601,7 +601,7 @@ Adds a rendered feature ``handler`` to use while rendering the map.
 Ownership of ``handler`` is NOT transferred, and it is the caller's responsibility to ensure
 that the handler exists for as long as it is registered with the map item.
 
-Callers should call removeRenderedFeatureHandler() to remove the handler before
+Callers should call :py:func:`~QgsLayoutItemMap.removeRenderedFeatureHandler` to remove the handler before
 destroying the ``handler``.
 
 .. seealso:: :py:func:`removeRenderedFeatureHandler`

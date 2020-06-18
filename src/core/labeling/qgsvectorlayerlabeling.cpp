@@ -353,6 +353,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
     break;
     case QgsPalLayerSettings::Horizontal:
     case QgsPalLayerSettings::Free:
+    case QgsPalLayerSettings::OutsidePolygons:
     {
       // still a point placement (for "free" it's a fallback, there is no SLD equivalent)
       QDomElement pointPlacement = doc.createElement( "se:PointPlacement" );

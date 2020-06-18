@@ -33,10 +33,15 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   , mScalebar( scaleBar )
 {
   setupUi( this );
+
+  mNumberOfSubdivisionsSpinBox->setClearValue( 1 );
+
   connect( mHeightSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mHeightSpinBox_valueChanged );
   connect( mSegmentSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mSegmentSizeSpinBox_valueChanged );
   connect( mSegmentsLeftSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mSegmentsLeftSpinBox_valueChanged );
   connect( mNumberOfSegmentsSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mNumberOfSegmentsSpinBox_valueChanged );
+  connect( mNumberOfSubdivisionsSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mNumberOfSubdivisionsSpinBox_valueChanged );
+  connect( mSubdivisionsHeightSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mSubdivisionsHeightSpinBox_valueChanged );
   connect( mUnitLabelLineEdit, &QLineEdit::textChanged, this, &QgsLayoutScaleBarWidget::mUnitLabelLineEdit_textChanged );
   connect( mMapUnitsPerBarUnitSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMapUnitsPerBarUnitSpinBox_valueChanged );
   connect( mStyleComboBox, &QComboBox::currentTextChanged, this, &QgsLayoutScaleBarWidget::mStyleComboBox_currentIndexChanged );
@@ -95,6 +100,12 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   mLineStyleButton->setSymbolType( QgsSymbol::Line );
   connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::lineSymbolChanged );
 
+  mDivisionStyleButton->setSymbolType( QgsSymbol::Line );
+  connect( mDivisionStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::divisionSymbolChanged );
+
+  mSubdivisionStyleButton->setSymbolType( QgsSymbol::Line );
+  connect( mSubdivisionStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::subdivisionSymbolChanged );
+
   mFillSymbol1Button->setSymbolType( QgsSymbol::Fill );
   connect( mFillSymbol1Button, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::fillSymbol1Changed );
 
@@ -121,6 +132,10 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
 
   mLineStyleButton->registerExpressionContextGenerator( mScalebar );
   mLineStyleButton->setLayer( coverageLayer() );
+  mDivisionStyleButton->registerExpressionContextGenerator( mScalebar );
+  mDivisionStyleButton->setLayer( coverageLayer() );
+  mSubdivisionStyleButton->registerExpressionContextGenerator( mScalebar );
+  mSubdivisionStyleButton->setLayer( coverageLayer() );
   mFillSymbol1Button->registerExpressionContextGenerator( mScalebar );
   mFillSymbol1Button->setLayer( coverageLayer() );
   mFillSymbol2Button->registerExpressionContextGenerator( mScalebar );
@@ -132,6 +147,8 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   {
     connect( &mScalebar->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mFontButton, &QgsFontButton::setLayer );
     connect( &mScalebar->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mLineStyleButton, &QgsSymbolButton::setLayer );
+    connect( &mScalebar->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mDivisionStyleButton, &QgsSymbolButton::setLayer );
+    connect( &mScalebar->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mSubdivisionStyleButton, &QgsSymbolButton::setLayer );
     connect( &mScalebar->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mFillSymbol1Button, &QgsSymbolButton::setLayer );
     connect( &mScalebar->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mFillSymbol2Button, &QgsSymbolButton::setLayer );
   }
@@ -169,6 +186,8 @@ bool QgsLayoutScaleBarWidget::setNewItem( QgsLayoutItem *item )
     mFillSymbol1Button->registerExpressionContextGenerator( mScalebar );
     mFillSymbol2Button->registerExpressionContextGenerator( mScalebar );
     mLineStyleButton->registerExpressionContextGenerator( mScalebar );
+    mDivisionStyleButton->registerExpressionContextGenerator( mScalebar );
+    mSubdivisionStyleButton->registerExpressionContextGenerator( mScalebar );
   }
 
   setGuiElements();
@@ -183,6 +202,28 @@ void QgsLayoutScaleBarWidget::lineSymbolChanged()
 
   mScalebar->layout()->undoStack()->beginCommand( mScalebar, tr( "Change Scalebar Line Style" ), QgsLayoutItem::UndoShapeStyle );
   mScalebar->setLineSymbol( mLineStyleButton->clonedSymbol<QgsLineSymbol>() );
+  mScalebar->update();
+  mScalebar->layout()->undoStack()->endCommand();
+}
+
+void QgsLayoutScaleBarWidget::divisionSymbolChanged()
+{
+  if ( !mScalebar )
+    return;
+
+  mScalebar->layout()->undoStack()->beginCommand( mScalebar, tr( "Change Scalebar Division Style" ), QgsLayoutItem::UndoShapeStyle );
+  mScalebar->setDivisionLineSymbol( mDivisionStyleButton->clonedSymbol<QgsLineSymbol>() );
+  mScalebar->update();
+  mScalebar->layout()->undoStack()->endCommand();
+}
+
+void QgsLayoutScaleBarWidget::subdivisionSymbolChanged()
+{
+  if ( !mScalebar )
+    return;
+
+  mScalebar->layout()->undoStack()->beginCommand( mScalebar, tr( "Change Scalebar Subdivision Style" ), QgsLayoutItem::UndoShapeStyle );
+  mScalebar->setSubdivisionLineSymbol( mSubdivisionStyleButton->clonedSymbol<QgsLineSymbol>() );
   mScalebar->update();
   mScalebar->layout()->undoStack()->endCommand();
 }
@@ -221,6 +262,8 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   mSegmentsLeftSpinBox->setValue( mScalebar->numberOfSegmentsLeft() );
   mSegmentSizeSpinBox->setValue( mScalebar->unitsPerSegment() );
   mHeightSpinBox->setValue( mScalebar->height() );
+  mNumberOfSubdivisionsSpinBox->setValue( mScalebar->numberOfSubdivisions() );
+  mSubdivisionsHeightSpinBox->setValue( mScalebar->subdivisionsHeight() );
   mMapUnitsPerBarUnitSpinBox->setValue( mScalebar->mapUnitsPerScaleBarUnit() );
   mLabelBarSpaceSpinBox->setValue( mScalebar->labelBarSpace() );
   mBoxSizeSpinBox->setValue( mScalebar->boxContentSpace() );
@@ -228,6 +271,8 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   mFontButton->setTextFormat( mScalebar->textFormat() );
 
   whileBlocking( mLineStyleButton )->setSymbol( mScalebar->lineSymbol()->clone() );
+  whileBlocking( mDivisionStyleButton )->setSymbol( mScalebar->divisionLineSymbol()->clone() );
+  whileBlocking( mSubdivisionStyleButton )->setSymbol( mScalebar->subdivisionLineSymbol()->clone() );
   whileBlocking( mFillSymbol1Button )->setSymbol( mScalebar->fillSymbol()->clone() );
   whileBlocking( mFillSymbol2Button )->setSymbol( mScalebar->alternateFillSymbol()->clone() );
 
@@ -343,6 +388,35 @@ void QgsLayoutScaleBarWidget::mHeightSpinBox_valueChanged( double d )
   mScalebar->endCommand();
 }
 
+void QgsLayoutScaleBarWidget::mNumberOfSubdivisionsSpinBox_valueChanged( int i )
+{
+  if ( !mScalebar )
+  {
+    return;
+  }
+
+  mScalebar->beginCommand( tr( "Set Scalebar Subdivisions" ), QgsLayoutItem::UndoScaleBarSubdivisions );
+  disconnectUpdateSignal();
+  mScalebar->setNumberOfSubdivisions( i );
+  mScalebar->update();
+  connectUpdateSignal();
+  mScalebar->endCommand();
+}
+
+void QgsLayoutScaleBarWidget::mSubdivisionsHeightSpinBox_valueChanged( double d )
+{
+  if ( !mScalebar )
+  {
+    return;
+  }
+  mScalebar->beginCommand( tr( "Set Subdivisions Height" ), QgsLayoutItem::UndoScaleBarSubdivisionsHeight );
+  disconnectUpdateSignal();
+  mScalebar->setSubdivisionsHeight( d );
+  mScalebar->update();
+  connectUpdateSignal();
+  mScalebar->endCommand();
+}
+
 void QgsLayoutScaleBarWidget::textFormatChanged()
 {
   if ( !mScalebar )
@@ -453,16 +527,31 @@ void QgsLayoutScaleBarWidget::toggleStyleSpecificControls( const QString &style 
   mMapUnitsPerBarUnitLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagRespectsMapUnitsPerScaleBarUnit : true );
   mUnitLabelLineEdit->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesUnitLabel : true );
   mUnitLabelLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesUnitLabel : true );
+  mSubdivisionsLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesSubdivisions : true );
+  mNumberOfSubdivisionsSpinBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesSubdivisions : true );
+  mSubdivisionsHeightLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesSubdivisionsHeight : true );
+  mSubdivisionsHeightSpinBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesSubdivisionsHeight : true );
   mGroupBoxSegments->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesSegments : true );
   if ( !mGroupBoxUnits->isEnabled() )
     mGroupBoxSegments->setCollapsed( true );
   mLabelBarSpaceSpinBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelBarSpace : true );
+  mLabelBarSpaceLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelBarSpace : true );
   mLabelVerticalPlacementComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelVerticalPlacement : true );
+  mLabelVerticalPlacementLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelVerticalPlacement : true );
   mLabelHorizontalPlacementComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelHorizontalPlacement : true );
+  mLabelHorizontalPlacementLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelHorizontalPlacement : true );
   mAlignmentComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesAlignment : true );
+  mAlignmentLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesAlignment : true );
   mFillSymbol1Button->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesFillSymbol : true );
+  mFillSymbol1Label->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesFillSymbol : true );
   mFillSymbol2Button->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesAlternateFillSymbol : true );
+  mFillSymbol2Label->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesAlternateFillSymbol : true );
   mLineStyleButton->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLineSymbol : true );
+  mLineStyleLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLineSymbol : true );
+  mDivisionStyleButton->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesDivisionSymbol : true );
+  mDivisionStyleLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesDivisionSymbol : true );
+  mSubdivisionStyleButton->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesSubdivisionSymbol : true );
+  mSubdivisionStyleLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesSubdivisionSymbol : true );
 }
 
 void QgsLayoutScaleBarWidget::mLabelBarSpaceSpinBox_valueChanged( double d )
@@ -574,11 +663,15 @@ void QgsLayoutScaleBarWidget::blockMemberSignals( bool block )
   mSegmentSizeSpinBox->blockSignals( block );
   mNumberOfSegmentsSpinBox->blockSignals( block );
   mSegmentsLeftSpinBox->blockSignals( block );
+  mNumberOfSubdivisionsSpinBox->blockSignals( block );
+  mSubdivisionsHeightSpinBox->blockSignals( block );
   mStyleComboBox->blockSignals( block );
   mUnitLabelLineEdit->blockSignals( block );
   mMapUnitsPerBarUnitSpinBox->blockSignals( block );
   mHeightSpinBox->blockSignals( block );
   mLineStyleButton->blockSignals( block );
+  mDivisionStyleButton->blockSignals( block );
+  mSubdivisionStyleButton->blockSignals( block );
   mLabelBarSpaceSpinBox->blockSignals( block );
   mBoxSizeSpinBox->blockSignals( block );
   mLabelVerticalPlacementComboBox->blockSignals( block );

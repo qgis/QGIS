@@ -80,12 +80,22 @@ void TestQgsMapSettingsUtils::containsAdvancedEffects()
   mapSettings.setLayers( layers );
 
   QCOMPARE( QgsMapSettingsUtils::containsAdvancedEffects( mapSettings ).size(), 1 );
+  QCOMPARE( QgsMapSettingsUtils::containsAdvancedEffects( mapSettings, QgsMapSettingsUtils::EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ).size(), 0 );
 
   // set the layer scale-based visibility so it falls outside of the map settings scale
   layer->setScaleBasedVisibility( true );
   layer->setMaximumScale( 10 );
 
   QCOMPARE( QgsMapSettingsUtils::containsAdvancedEffects( mapSettings ).size(), 0 );
+
+  layer->setScaleBasedVisibility( false );
+  layer->setBlendMode( QPainter::CompositionMode_SourceOver );
+  QCOMPARE( QgsMapSettingsUtils::containsAdvancedEffects( mapSettings ).size(), 0 );
+  QCOMPARE( QgsMapSettingsUtils::containsAdvancedEffects( mapSettings, QgsMapSettingsUtils::EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ).size(), 0 );
+
+  layer->setOpacity( 0.5 );
+  QCOMPARE( QgsMapSettingsUtils::containsAdvancedEffects( mapSettings ).size(), 1 );
+  QCOMPARE( QgsMapSettingsUtils::containsAdvancedEffects( mapSettings, QgsMapSettingsUtils::EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ).size(), 0 );
 }
 
 QGSTEST_MAIN( TestQgsMapSettingsUtils )

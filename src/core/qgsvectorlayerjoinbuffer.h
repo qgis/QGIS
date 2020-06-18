@@ -197,24 +197,26 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      * parameter is the one coming from the target layer.
      *
      * \param fid The feature id from the target layer to delete
+     * \param context The chain of features which will be deleted for feedback and to avoid infinite recursions. Can be NULLPTR.
      *
      * \returns FALSE if an error happened, TRUE otherwise
      *
      * \since QGIS 3.0
      */
-    bool deleteFeature( QgsFeatureId fid ) const;
+    bool deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteContext *context = nullptr ) const;
 
     /**
      * Deletes a list of features from joined layers. Feature ids given
      * in a parameter are those coming from the target layer.
      *
      * \param fids Feature ids from the target layer to delete
+     * \param context The chain of features who will be deleted for feedback and to avoid infinite recursions. Can be NULLPTR.
      *
      * \returns FALSE if an error happened, TRUE otherwise
      *
      * \since QGIS 3.0
      */
-    bool deleteFeatures( const QgsFeatureIds &fids ) const;
+    bool deleteFeatures( const QgsFeatureIds &fids, QgsVectorLayer::DeleteContext *context = nullptr ) const;
 
   signals:
 

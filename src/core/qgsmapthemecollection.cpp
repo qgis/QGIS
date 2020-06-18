@@ -39,7 +39,7 @@ QgsMapThemeCollection::MapThemeLayerRecord QgsMapThemeCollection::createThemeLay
   layerRec.usingCurrentStyle = true;
   layerRec.currentStyle = nodeLayer->layer()->styleManager()->currentStyle();
   layerRec.expandedLayerNode = nodeLayer->isExpanded();
-  layerRec.expandedLegendItems = nodeLayer->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList().toSet();
+  layerRec.expandedLegendItems = qgis::listToSet( nodeLayer->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList() );
 
   // get checked legend items
   bool hasCheckableItems = false;
@@ -176,7 +176,7 @@ void QgsMapThemeCollection::applyThemeToLayer( QgsLayerTreeLayer *nodeLayer, Qgs
   if ( rec.hasExpandedStateInfo() )
   {
     nodeLayer->setExpanded( layerRec.expandedLayerNode );
-    nodeLayer->setCustomProperty( QStringLiteral( "expandedLegendNodes" ), QStringList( layerRec.expandedLegendItems.toList() ) );
+    nodeLayer->setCustomProperty( QStringLiteral( "expandedLegendNodes" ), QStringList( qgis::setToList( layerRec.expandedLegendItems ) ) );
   }
 }
 
@@ -279,6 +279,19 @@ void QgsMapThemeCollection::update( const QString &name, const MapThemeRecord &s
   reconnectToLayersStyleManager();
   emit mapThemeChanged( name );
   emit mapThemesChanged();
+}
+
+bool QgsMapThemeCollection::renameMapTheme( const QString &name,  const QString &newName )
+{
+  if ( !mMapThemes.contains( name ) || mMapThemes.contains( newName ) )
+    return false;
+
+  const MapThemeRecord state = mMapThemes[name];
+  const MapThemeRecord newState = state;
+  insert( newName, newState );
+  emit mapThemeRenamed( name, newName );
+  removeMapTheme( name );
+  return true;
 }
 
 void QgsMapThemeCollection::removeMapTheme( const QString &name )

@@ -17,6 +17,7 @@
 
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgsrasterdataprovidertemporalcapabilities.h"
+#include "qgsrasterlayer.h"
 
 QgsRasterLayerTemporalProperties::QgsRasterLayerTemporalProperties( QObject *parent, bool enabled )
   :  QgsMapLayerTemporalProperties( parent, enabled )
@@ -39,6 +40,24 @@ bool QgsRasterLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTi
   return true;
 }
 
+QgsDateTimeRange QgsRasterLayerTemporalProperties::calculateTemporalExtent( QgsMapLayer *layer ) const
+{
+  QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer *>( layer );
+  if ( !rasterLayer )
+    return QgsDateTimeRange();
+
+  switch ( mMode )
+  {
+    case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
+      return mFixedRange;
+
+    case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
+      return rasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange();
+  }
+
+  return QgsDateTimeRange();
+}
+
 QgsRasterLayerTemporalProperties::TemporalMode QgsRasterLayerTemporalProperties::mode() const
 {
   return mMode;
@@ -49,6 +68,11 @@ void QgsRasterLayerTemporalProperties::setMode( QgsRasterLayerTemporalProperties
   if ( mMode == mode )
     return;
   mMode = mode;
+}
+
+QgsTemporalProperty::Flags QgsRasterLayerTemporalProperties::flags() const
+{
+  return mode() == ModeFixedTemporalRange ? QgsTemporalProperty::FlagDontInvalidateCachedRendersWhenRangeChanges : QgsTemporalProperty::Flags( nullptr );
 }
 
 QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod QgsRasterLayerTemporalProperties::intervalHandlingMethod() const

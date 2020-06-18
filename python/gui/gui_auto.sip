@@ -34,6 +34,9 @@
 %Include auto_generated/qgscodeeditorhtml.sip
 %End
 %If ( HAVE_QSCI_SIP )
+%Include auto_generated/qgscodeeditorjs.sip
+%End
+%If ( HAVE_QSCI_SIP )
 %Include auto_generated/qgscodeeditorpython.sip
 %End
 %If ( HAVE_QSCI_SIP )
@@ -74,11 +77,13 @@
 %Include auto_generated/qgsexpressionbuilderwidget.sip
 %Include auto_generated/qgsexpressionhighlighter.sip
 %Include auto_generated/qgsexpressionlineedit.sip
+%Include auto_generated/qgsexpressionpreviewwidget.sip
 %Include auto_generated/qgsexpressionselectiondialog.sip
 %Include auto_generated/qgsexpressiontreeview.sip
 %Include auto_generated/qgsextentgroupbox.sip
 %Include auto_generated/qgsextentwidget.sip
 %Include auto_generated/qgsexternalresourcewidget.sip
+%Include auto_generated/qgsfeaturepickerwidget.sip
 %Include auto_generated/qgsfeaturelistcombobox.sip
 %Include auto_generated/qgsfeatureselectiondlg.sip
 %Include auto_generated/qgsfieldcombobox.sip
@@ -108,6 +113,8 @@
 %Include auto_generated/qgsidentifymenu.sip
 %Include auto_generated/qgskeyvaluewidget.sip
 %Include auto_generated/qgslegendfilterbutton.sip
+%Include auto_generated/qgslegendpatchshapebutton.sip
+%Include auto_generated/qgslegendpatchshapewidget.sip
 %Include auto_generated/qgslimitedrandomcolorrampdialog.sip
 %Include auto_generated/qgslistwidget.sip
 %Include auto_generated/qgslonglongvalidator.sip
@@ -115,9 +122,11 @@
 %Include auto_generated/qgsmanageconnectionsdialog.sip
 %Include auto_generated/qgsmapcanvas.sip
 %Include auto_generated/qgsmapcanvasannotationitem.sip
+%Include auto_generated/qgsmapcanvasinteractionblocker.sip
 %Include auto_generated/qgsmapcanvasitem.sip
 %Include auto_generated/qgsmapcanvassnappingutils.sip
 %Include auto_generated/qgsmapcanvastracer.sip
+%Include auto_generated/qgsmapcanvasutils.sip
 %Include auto_generated/qgsmaplayeractionregistry.sip
 %Include auto_generated/qgsmaplayercombobox.sip
 %Include auto_generated/qgsmaplayerconfigwidget.sip
@@ -211,6 +220,7 @@
 %Include auto_generated/qgsuserinputwidget.sip
 %Include auto_generated/qgsvaliditycheckresultswidget.sip
 %Include auto_generated/qgsvariableeditorwidget.sip
+%Include auto_generated/qgsvectorlayertemporalpropertieswidget.sip
 %Include auto_generated/qgsvertexmarker.sip
 %Include auto_generated/qgsvscrollarea.sip
 %Include auto_generated/qgswindowmanagerinterface.sip
@@ -310,6 +320,7 @@
 %Include auto_generated/numericformats/qgsnumericformatselectorwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatguiregistry.sip
+%Include auto_generated/processing/qgsprocessingaggregatewidgets.sip
 %Include auto_generated/processing/qgsprocessingalgorithmconfigurationwidget.sip
 %Include auto_generated/processing/qgsprocessingalgorithmdialogbase.sip
 %Include auto_generated/processing/qgsprocessinggui.sip

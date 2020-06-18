@@ -12,6 +12,7 @@
 #include <limits>
 #include <sstream>
 #include <fstream>
+#include <cmath>
 
 #include <algorithm>
 
@@ -23,13 +24,20 @@
 #define MDAL_UNUSED(x) (void)x;
 #define MDAL_NAN std::numeric_limits<double>::quiet_NaN()
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846264338327
+#endif
+
 namespace MDAL
 {
   // endianness
   bool isNativeLittleEndian();
 
   // numbers
-  bool equals( double val1, double val2, double eps = std::numeric_limits<double>::epsilon() );
+  inline bool equals( double val1, double val2, double eps = std::numeric_limits<double>::epsilon() )
+  {
+    return fabs( val1 - val2 ) < eps;
+  }
 
   //! returns quiet_NaN if value equals nodata value, otherwise returns val itself
   double safeValue( double val, double nodata, double eps = std::numeric_limits<double>::epsilon() );

@@ -818,7 +818,7 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
   if ( isTemporal() )
   {
     QDateTime begin = QDateTime::fromString( itemElem.attribute( QStringLiteral( "temporalRangeBegin" ) ), Qt::ISODate );
-    QDateTime end = QDateTime::fromString( itemElem.attribute( QStringLiteral( "temporalRangeBegin" ) ), Qt::ISODate );
+    QDateTime end = QDateTime::fromString( itemElem.attribute( QStringLiteral( "temporalRangeEnd" ) ), Qt::ISODate );
     setTemporalRange( QgsDateTimeRange( begin, end ) );
   }
 
@@ -1165,7 +1165,9 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
         {
           case QgsMapRendererStagedRenderJob::Symbology:
           {
-            detail.mapLayerId  = mStagedRendererJob->currentLayerId();
+            detail.mapLayerId = mStagedRendererJob->currentLayerId();
+            detail.compositionMode = mStagedRendererJob->currentLayerCompositionMode();
+            detail.opacity = mStagedRendererJob->currentLayerOpacity();
             if ( const QgsMapLayer *layer = mLayout->project()->mapLayer( detail.mapLayerId ) )
             {
               if ( !detail.mapTheme.isEmpty() )
@@ -1535,7 +1537,7 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_acronym" ), mapCrs.projectionAcronym(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_ellipsoid" ), mapCrs.ellipsoidAcronym(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_proj4" ), mapCrs.toProj(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_wkt" ), mapCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_wkt" ), mapCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ), true ) );
 
   QVariantList layersIds;
   QVariantList layers;
@@ -1561,10 +1563,9 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
 
   scope->addFunction( QStringLiteral( "is_layer_visible" ), new QgsExpressionContextUtils::GetLayerVisibility( layersInMap, scale() ) );
 
-  // maybe one day we'll populate these with real values!
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_start_time" ), QVariant(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_end_time" ), QVariant(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_interval" ), QVariant(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_start_time" ), isTemporal() ? temporalRange().begin() : QVariant(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_end_time" ), isTemporal() ? temporalRange().end() : QVariant(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_interval" ), isTemporal() ? ( temporalRange().end() - temporalRange().begin() ) : QVariant(), true ) );
 
   return context;
 }
@@ -1766,6 +1767,19 @@ void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDe
       emit themeChanged( mLastEvaluatedThemeName );
   }
 
+  if ( isTemporal() && ( property == QgsLayoutObject::StartDateTime || property == QgsLayoutObject::EndDateTime || property == QgsLayoutObject::AllProperties ) )
+  {
+    QDateTime begin = temporalRange().begin();
+    QDateTime end = temporalRange().end();
+
+    if ( property == QgsLayoutObject::StartDateTime || property == QgsLayoutObject::AllProperties )
+      begin = mDataDefinedProperties.valueAsDateTime( QgsLayoutObject::StartDateTime, context, temporalRange().begin() );
+    if ( property == QgsLayoutObject::EndDateTime || property == QgsLayoutObject::AllProperties )
+      end = mDataDefinedProperties.valueAsDateTime( QgsLayoutObject::EndDateTime, context, temporalRange().end() );
+
+    setTemporalRange( QgsDateTimeRange( begin, end ) );
+  }
+
   //force redraw
   mCacheInvalidated = true;
 
@@ -1825,6 +1839,14 @@ void QgsLayoutItemMap::mapThemeChanged( const QString &theme )
     mCachedLayerStyleOverridesPresetName.clear(); // force cache regeneration at next redraw
 }
 
+void QgsLayoutItemMap::currentMapThemeRenamed( const QString &theme, const QString &newTheme )
+{
+  if ( theme == mFollowVisibilityPresetName )
+  {
+    mFollowVisibilityPresetName = newTheme;
+  }
+}
+
 void QgsLayoutItemMap::connectUpdateSlot()
 {
   //connect signal from layer registry to update in case of new or deleted layers
@@ -1858,6 +1880,9 @@ void QgsLayoutItemMap::connectUpdateSlot()
     {
       invalidateCache();
     } );
+
+    connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsLayoutItemMap::mapThemeChanged );
+    connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsLayoutItemMap::currentMapThemeRenamed );
   }
   connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutItemMap::invalidateCache );
   connect( &mLayout->renderContext(), &QgsLayoutRenderContext::predefinedScalesChanged, this, [ = ]
@@ -1865,8 +1890,6 @@ void QgsLayoutItemMap::connectUpdateSlot()
     if ( mAtlasScalingMode == Predefined )
       updateAtlasFeature();
   } );
-
-  connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsLayoutItemMap::mapThemeChanged );
 }
 
 QTransform QgsLayoutItemMap::layoutToMapCoordsTransform() const
@@ -2216,12 +2239,10 @@ void QgsLayoutItemMap::drawMapFrame( QPainter *p )
 {
   if ( frameEnabled() && p )
   {
-    p->save();
-    p->setPen( pen() );
-    p->setBrush( Qt::NoBrush );
-    p->setRenderHint( QPainter::Antialiasing, true );
-    p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
-    p->restore();
+    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForMap( this, p );
+    rc.setExpressionContext( createExpressionContext() );
+
+    QgsLayoutItem::drawFrame( rc );
   }
 }
 
@@ -2229,12 +2250,10 @@ void QgsLayoutItemMap::drawMapBackground( QPainter *p )
 {
   if ( hasBackground() && p )
   {
-    p->save();
-    p->setBrush( brush() );//this causes a problem in atlas generation
-    p->setPen( Qt::NoPen );
-    p->setRenderHint( QPainter::Antialiasing, true );
-    p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
-    p->restore();
+    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForMap( this, p );
+    rc.setExpressionContext( createExpressionContext() );
+
+    QgsLayoutItem::drawBackground( rc );
   }
 }
 

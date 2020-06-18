@@ -19,6 +19,7 @@ email                : sherman at mrcc.com
 ///@cond PRIVATE
 
 #include "qgscplerrorhandler.h"
+#include "qgsgdalutils.h"
 #include "qgsogrfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -45,7 +46,6 @@ email                : sherman at mrcc.com
 #include "qgsprovidermetadata.h"
 #include "qgsogrdbconnection.h"
 #include "qgsgeopackageproviderconnection.h"
-
 #include "qgis.h"
 
 
@@ -54,6 +54,11 @@ email                : sherman at mrcc.com
 #include <ogr_api.h>
 #include <ogr_srs_api.h>
 #include <cpl_string.h>
+
+// Temporary solution until GDAL Unique suppport is available
+#include "qgssqliteutils.h"
+#include <sqlite3.h>
+// end temporary
 
 #include <limits>
 #include <memory>
@@ -493,7 +498,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   CPLSetConfigOption( "SHAPE_ENCODING", "" );
 
 #ifndef QT_NO_NETWORKPROXY
-  setupProxy();
+  QgsGdalUtils::setupProxy();
 #endif
 
   // make connection to the data source
@@ -1098,6 +1103,24 @@ void QgsOgrProvider::loadFields()
   mFirstFieldIsFid = !fidColumn.isEmpty() &&
                      fdef.GetFieldIndex( fidColumn ) < 0;
 
+  // This is a temporary solution until GDAL Unique support is available
+  QSet<QString> uniqueFieldNames;
+
+
+  if ( mGDALDriverName == QLatin1String( "GPKG" ) )
+  {
+    sqlite3_database_unique_ptr dsPtr;
+    if ( dsPtr.open_v2( mFilePath, SQLITE_OPEN_READONLY, nullptr ) == SQLITE_OK )
+    {
+      QString errMsg;
+      uniqueFieldNames = QgsSqliteUtils::uniqueFields( dsPtr.get(), mOgrLayer->name(), errMsg );
+      if ( ! errMsg.isEmpty() )
+      {
+        QgsMessageLog::logMessage( tr( "GPKG error searching for unique constraints on fields for table %1" ).arg( QString( mOgrLayer->name() ) ), tr( "OGR" ) );
+      }
+    }
+  }
+
   int createdFields = 0;
   if ( mFirstFieldIsFid )
   {
@@ -1229,6 +1252,13 @@ void QgsOgrProvider::loadFields()
     {
       QgsFieldConstraints constraints;
       constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+      newField.setConstraints( constraints );
+    }
+
+    if ( uniqueFieldNames.contains( OGR_Fld_GetNameRef( fldDef ) ) )
+    {
+      QgsFieldConstraints constraints = newField.constraints();
+      constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
       newField.setConstraints( constraints );
     }
 
@@ -1968,7 +1998,7 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
     return false;
 
   bool res = true;
-  QList<int> attrsLst = attributes.toList();
+  QList<int> attrsLst = qgis::setToList( attributes );
   // sort in descending order
   std::sort( attrsLst.begin(), attrsLst.end(), std::greater<int>() );
   const auto constAttrsLst = attrsLst;
@@ -2191,6 +2221,8 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   if ( attr_map.isEmpty() )
     return true;
 
+  bool returnValue = true;
+
   clearMinMaxCache();
 
   setRelevantFields( true, attributeIndexes() );
@@ -2351,6 +2383,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     if ( mOgrLayer->SetFeature( of.get() ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error setting feature %1: %2" ).arg( fid ).arg( CPLGetLastErrorMsg() ) );
+      returnValue = false;
     }
   }
 
@@ -2367,7 +2400,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
   QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
-  return true;
+  return returnValue;
 }
 
 bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
@@ -2483,7 +2516,7 @@ bool QgsOgrProvider::createSpatialIndex()
   return false;
 }
 
-QString createIndexName( QString tableName, QString field )
+QString QgsOgrProvider::createIndexName( QString tableName, QString field )
 {
   QRegularExpression safeExp( QStringLiteral( "[^a-zA-Z0-9]" ) );
   tableName.replace( safeExp, QStringLiteral( "_" ) );
@@ -2601,56 +2634,6 @@ bool QgsOgrProvider::doInitialActionsForEdition()
 
   return true;
 }
-
-#ifndef QT_NO_NETWORKPROXY
-void QgsOgrProvider::setupProxy()
-{
-  // Check proxy configuration, they are application level but
-  // instead of adding an API and complex signal/slot connections
-  // given the limited cost of checking them on every provider instantiation
-  // we can do it here so that new settings are applied whenever a new layer
-  // is created.
-  QgsSettings settings;
-  // Check that proxy is enabled
-  if ( settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool() )
-  {
-    // Get the first configured proxy
-    QList<QNetworkProxy> proxyes( QgsNetworkAccessManager::instance()->proxyFactory()->queryProxy( ) );
-    if ( ! proxyes.isEmpty() )
-    {
-      QNetworkProxy proxy( proxyes.first() );
-      // TODO/FIXME: check excludes (the GDAL config options are global, we need a per-connection config option)
-      //QStringList excludes;
-      //excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toStringList();
-
-      QString proxyHost( proxy.hostName() );
-      qint16 proxyPort( proxy.port() );
-
-      QString proxyUser( proxy.user() );
-      QString proxyPassword( proxy.password() );
-
-      if ( ! proxyHost.isEmpty() )
-      {
-        QString connection( proxyHost );
-        if ( proxyPort )
-        {
-          connection += ':' +  QString::number( proxyPort );
-        }
-        CPLSetConfigOption( "GDAL_HTTP_PROXY", connection.toUtf8() );
-        if ( !  proxyUser.isEmpty( ) )
-        {
-          QString credentials( proxyUser );
-          if ( !  proxyPassword.isEmpty( ) )
-          {
-            credentials += ':' + proxyPassword;
-          }
-          CPLSetConfigOption( "GDAL_HTTP_PROXYUSERPWD", credentials.toUtf8() );
-        }
-      }
-    }
-  }
-}
-#endif
 
 QgsVectorDataProvider::Capabilities QgsOgrProvider::capabilities() const
 {
@@ -3284,7 +3267,7 @@ QString createFilters( const QString &type )
         {
           // NOP, we don't know anything about the current driver
           // with regards to a proper file filter string
-          QgsDebugMsg( QStringLiteral( "Unknown driver %1 for file filters." ).arg( driverName ) );
+          QgsDebugMsgLevel( QStringLiteral( "Unknown driver %1 for file filters." ).arg( driverName ), 2 );
         }
       }
 
@@ -3306,11 +3289,17 @@ QString createFilters( const QString &type )
     {
       sFileFilters.prepend( createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), QStringLiteral( "*.zip *.gz *.tar *.tar.gz *.tgz" ) ) );
       sExtensions << QStringLiteral( "zip" ) << QStringLiteral( "gz" ) << QStringLiteral( "tar" ) << QStringLiteral( "tar.gz" ) << QStringLiteral( "tgz" );
-
     }
+
+    // can't forget the all supported case
+    QStringList exts;
+    for ( const QString &ext : qgis::as_const( sExtensions ) )
+      exts << QStringLiteral( "*.%1 *.%2" ).arg( ext, ext.toUpper() );
+    sFileFilters.prepend( QObject::tr( "All supported files" ) + QStringLiteral( " (%1);;" ).arg( exts.join( QStringLiteral( " " ) ) ) );
 
     // can't forget the default case - first
     sFileFilters.prepend( QObject::tr( "All files" ) + " (*);;" );
+
 
     // cleanup
     if ( sFileFilters.endsWith( QLatin1String( ";;" ) ) ) sFileFilters.chop( 2 );
@@ -3492,9 +3481,10 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
   if ( driverName == QLatin1String( "ESRI Shapefile" ) )
   {
     if ( !uri.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) &&
-         !uri.endsWith( QLatin1String( ".shz" ), Qt::CaseInsensitive ) )
+         !uri.endsWith( QLatin1String( ".shz" ), Qt::CaseInsensitive ) &&
+         !uri.endsWith( QLatin1String( ".dbf" ), Qt::CaseInsensitive ) )
     {
-      errorMessage = QObject::tr( "URI %1 doesn't end with .shp" ).arg( uri );
+      errorMessage = QObject::tr( "URI %1 doesn't end with .shp or .dbf" ).arg( uri );
       QgsDebugMsg( errorMessage );
       return false;
     }
@@ -3543,7 +3533,7 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
     mySpatialRefSys.validate();
   }
 
-  QString myWkt = mySpatialRefSys.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 );
+  QString myWkt = mySpatialRefSys.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
 
   if ( !myWkt.isNull()  &&  myWkt.length() != 0 )
   {
@@ -3856,6 +3846,16 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
   return results;
 }
 
+QgsFeatureSource::SpatialIndexPresence QgsOgrProvider::hasSpatialIndex() const
+{
+  if ( mOgrLayer && mOgrLayer->TestCapability( OLCFastSpatialFilter ) )
+    return QgsFeatureSource::SpatialIndexPresent;
+  else if ( mOgrLayer )
+    return QgsFeatureSource::SpatialIndexNotPresent;
+  else
+    return QgsFeatureSource::SpatialIndexUnknown;
+}
+
 QVariant QgsOgrProvider::minimumValue( int index ) const
 {
   if ( !mValid || index < 0 || index >= mAttributeFields.count() )
@@ -3900,6 +3900,14 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
 
   if ( res.type() != originalField.type() )
     res = convertValue( originalField.type(), res.toString() );
+
+  if ( originalField.type() == QVariant::DateTime )
+  {
+    // ensure that we treat times as local time, to match behaviour when iterating features
+    QDateTime temp = res.toDateTime();
+    temp.setTimeSpec( Qt::LocalTime );
+    res = temp;
+  }
 
   return res;
 }
@@ -3948,6 +3956,14 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
 
   if ( res.type() != originalField.type() )
     res = convertValue( originalField.type(), res.toString() );
+
+  if ( originalField.type() == QVariant::DateTime )
+  {
+    // ensure that we treat times as local time, to match behaviour when iterating features
+    QDateTime temp = res.toDateTime();
+    temp.setTimeSpec( Qt::LocalTime );
+    res = temp;
+  }
 
   return res;
 }
@@ -4004,8 +4020,10 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
   }
 
   QString filePath( QString::fromUtf8( pszPath ) );
+
+  bool bIsGpkg = QFileInfo( filePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0;
   bool bIsLocalGpkg = false;
-  if ( QFileInfo( filePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 &&
+  if ( bIsGpkg &&
        IsLocalFile( filePath ) &&
        !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", nullptr ) &&
        QgsSettings().value( QStringLiteral( "qgis/walForSqlite3" ), true ).toBool() )
@@ -4017,6 +4035,12 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
     // on network shares
     CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "WAL" );
     bIsLocalGpkg = true;
+  }
+  else if ( bIsGpkg )
+  {
+    // If WAL isn't set, we explicitely disable it, as it is persistent and it
+    // may have been set on a previous connection.
+    CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "DELETE" );
   }
 
   bool modify_OGR_GPKG_FOREIGN_KEY_CHECK = !CPLGetConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
@@ -4060,7 +4084,7 @@ static bool IsLocalFile( const QString &path )
   // Start with the OS specific methods since the QT >= 5.4 method just
   // return a string and not an enumerated type.
 #if defined(Q_OS_WIN)
-  if ( dirName.startsWith( "\\\\" ) )
+  if ( dirName.startsWith( "\\\\" ) || dirName.startsWith( "//" ) )
     return false;
   if ( dirName.length() >= 3 && dirName[1] == ':' &&
        ( dirName[2] == '\\' || dirName[2] == '/' ) )

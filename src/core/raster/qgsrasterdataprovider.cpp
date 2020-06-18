@@ -245,7 +245,9 @@ QString QgsRasterDataProvider::htmlMetadata()
   return s;
 }
 
-// Default implementation for values
+// TODO
+// (WMS) IdentifyFormatFeature is not consistent with QgsRaster::IdentifyFormatValue.
+// IdentifyFormatHtml: better error reporting
 QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
@@ -510,6 +512,13 @@ QList<double> QgsRasterDataProvider::nativeResolutions() const
 bool QgsRasterDataProvider::ignoreExtents() const
 {
   return false;
+}
+
+QgsPoint QgsRasterDataProvider::transformCoordinates( const QgsPoint &point, QgsRasterDataProvider::TransformType type )
+{
+  Q_UNUSED( point )
+  Q_UNUSED( type )
+  return QgsPoint();
 }
 
 bool QgsRasterDataProvider::userNoDataValuesContains( int bandNo, double value ) const

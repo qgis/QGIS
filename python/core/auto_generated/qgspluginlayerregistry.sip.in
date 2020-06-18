@@ -54,7 +54,7 @@ class QgsPluginLayerRegistry
 A registry of plugin layers types.
 
 QgsPluginLayerRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.pluginLayerRegistry()`
+:py:func:`QgsApplication.pluginLayerRegistry()`.
 %End
 
 %TypeHeaderCode

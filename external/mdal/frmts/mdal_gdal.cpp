@@ -612,7 +612,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverGdal::load( const std::string &fileName,
   }
   catch ( MDAL_Status error )
   {
-    MDAL::Log::error( error, name(), "error occured while loading " + fileName );
+    MDAL::Log::error( error, name(), "error occurred while loading " + fileName );
     mMesh.reset();
   }
   catch ( MDAL::Error err )

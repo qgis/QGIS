@@ -59,8 +59,6 @@ class APP_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     void syncAndRepaint();
     //! Changes layer coordinate reference system
     void changeCrs( const QgsCoordinateReferenceSystem &crs );
-    //! Associates dataset to the mesh layer
-    void addDataset();
     //! Loads the default style when appropriate button is pressed
     void loadDefaultStyle();
     //! Saves the default style when appropriate button is pressed
@@ -91,6 +89,8 @@ class APP_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
      * Previous layer style. Used to reset style to previous state if new style
      * was loaded but dialog is canceled */
     QgsMapLayerStyle mOldStyle;
+
+    bool mIsMapSettingsTemporal = false;
 
     friend class TestQgsMeshLayerPropertiesDialog;
 

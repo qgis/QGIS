@@ -25,6 +25,8 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsbrowsermodel.h"
+#include "qgsdataitemprovider.h"
+#include "qgsdataitemproviderregistry.h"
 
 class TestQgsBrowserModel : public QObject
 {
@@ -38,6 +40,7 @@ class TestQgsBrowserModel : public QObject
 
     void testModel();
     void driveItems();
+    void updatesToDataItemProviderRegistry();
 
 };
 
@@ -177,6 +180,50 @@ void TestQgsBrowserModel::driveItems()
   QgsDirectoryItem *rootItem = model.driveItems().value( QStringLiteral( "/" ) );
   QVERIFY( rootItem );
   QCOMPARE( rootItem->path(), QStringLiteral( "/" ) );
+}
+
+
+class TestDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override { return QStringLiteral( "test" ); }
+    int capabilities() const override { return QgsDataProvider::Net; }
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override
+    {
+      if ( path.isEmpty() )
+        return new QgsDataItem( QgsDataItem::Custom, parentItem, QStringLiteral( "test-root-item" ), path );
+      return nullptr;
+    }
+};
+
+static int testRootItemCount( QgsBrowserModel &model )
+{
+  int count = 0;
+  for ( int i = 0; i < model.rowCount(); ++i )
+  {
+    if ( model.data( model.index( i, 0 ) ).toString() == QStringLiteral( "test-root-item" ) )
+      ++count;
+  }
+  return count;
+}
+
+void TestQgsBrowserModel::updatesToDataItemProviderRegistry()
+{
+  QgsBrowserModel model;
+  model.initialize();
+
+  QCOMPARE( testRootItemCount( model ), 0 );
+
+  QgsDataItemProvider *provider = new TestDataItemProvider;
+  QgsApplication::dataItemProviderRegistry()->addProvider( provider );
+
+  // browser should react to providerAdded() signal from the registry
+  QCOMPARE( testRootItemCount( model ), 1 );
+
+  QgsApplication::dataItemProviderRegistry()->removeProvider( provider );
+
+  // browser should react to providerWillBeRemoved() signal from the registry
+  QCOMPARE( testRootItemCount( model ), 0 );
 }
 
 QGSTEST_MAIN( TestQgsBrowserModel )

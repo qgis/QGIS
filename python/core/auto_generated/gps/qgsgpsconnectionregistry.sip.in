@@ -18,7 +18,7 @@ A class to register / unregister existing GPS connections such that the informat
 is available to all classes and plugins.
 
 QgsGpsConnectionRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.gpsConnectionRegistry()`
+:py:func:`QgsApplication.gpsConnectionRegistry()`.
 %End
 
 %TypeHeaderCode

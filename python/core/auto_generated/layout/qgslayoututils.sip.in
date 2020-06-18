@@ -59,7 +59,7 @@ painter device.
 %Docstring
 Creates a render context suitable for the specified ``layout`` and ``painter`` destination.
 This method returns a new QgsRenderContext which matches the scale and settings from the layout's
-:py:func:`QgsLayout.referenceMap()`
+:py:func:`QgsLayout.referenceMap()`.
 If the ``dpi`` argument is not specified then the dpi will be taken from the destination
 painter device.
 

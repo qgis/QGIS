@@ -116,7 +116,7 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "HUBS" ) ) );
 
   std::unique_ptr< QgsProcessingFeatureSource > spokeSource( parameterAsSource( parameters, QStringLiteral( "SPOKES" ), context ) );
-  if ( !hubSource || !spokeSource )
+  if ( !spokeSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "SPOKES" ) ) );
 
   QString fieldHubName = parameterAsString( parameters, QStringLiteral( "HUB_FIELD" ), context );

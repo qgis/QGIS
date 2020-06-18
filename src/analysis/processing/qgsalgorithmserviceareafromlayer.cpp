@@ -39,7 +39,11 @@ QStringList QgsServiceAreaFromLayerAlgorithm::tags() const
 
 QString QgsServiceAreaFromLayerAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a new vector with all the edges or parts of edges of a network line layer that can be reached within a distance or a time, starting from features of a point layer. The distance and the time (both referred to as \"travel cost\") must be specified respectively in the network layer units or in seconds." );
+  return QObject::tr( "This algorithm creates a new vector with all the edges or parts of "
+                      "edges of a network line layer that can be reached within a distance "
+                      "or a time, starting from features of a point layer. The distance and "
+                      "the time (both referred to as \"travel cost\") must be specified "
+                      "respectively in the network layer units or in hours." );
 }
 
 QgsServiceAreaFromLayerAlgorithm *QgsServiceAreaFromLayerAlgorithm::createInstance() const
@@ -51,7 +55,12 @@ void QgsServiceAreaFromLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addCommonParams();
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "START_POINTS" ), QObject::tr( "Vector layer with start points" ), QList< int >() << QgsProcessing::TypeVectorPoint ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TRAVEL_COST" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ),
+
+  std::unique_ptr< QgsProcessingParameterNumber > travelCost = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "TRAVEL_COST" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), QgsProcessingParameterNumber::Double, 0, true, 0 );
+  travelCost->setFlags( travelCost->flags() | QgsProcessingParameterDefinition::FlagHidden );
+  addParameter( travelCost.release() );
+
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TRAVEL_COST2" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ),
                 QgsProcessingParameterNumber::Double, 0, false, 0 ) );
 
   std::unique_ptr< QgsProcessingParameterBoolean > includeBounds = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "INCLUDE_BOUNDS" ), QObject::tr( "Include upper/lower bound points" ), false, true );
@@ -77,7 +86,13 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
   if ( !startPoints )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "START_POINTS" ) ) );
 
-  double travelCost = parameterAsDouble( parameters, QStringLiteral( "TRAVEL_COST" ), context );
+  // use older deprecated travel cost style if specified, to maintain old api
+  const bool useOldTravelCost = parameters.value( QStringLiteral( "TRAVEL_COST" ) ).isValid();
+  double travelCost = parameterAsDouble( parameters, useOldTravelCost ? QStringLiteral( "TRAVEL_COST" ) : QStringLiteral( "TRAVEL_COST2" ), context );
+
+  int strategy = parameterAsInt( parameters, QStringLiteral( "STRATEGY" ), context );
+  if ( strategy && !useOldTravelCost )
+    travelCost *= mMultiplier;
 
   bool includeBounds = true;  // default to true to maintain 3.0 API
   if ( parameters.contains( QStringLiteral( "INCLUDE_BOUNDS" ) ) )
@@ -184,7 +199,7 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
     } // costs
 
     // convert to list and sort to maintain same order of points between algorithm runs
-    QList< int > verticesList = vertices.toList();
+    QList< int > verticesList = qgis::setToList( vertices );
     areaPoints.reserve( verticesList.size() );
     std::sort( verticesList.begin(), verticesList.end() );
     for ( int v : verticesList )
@@ -230,13 +245,13 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
         QgsGeometry geomLower = QgsGeometry::fromMultiPointXY( lowerBoundary );
 
         feat.setGeometry( geomUpper );
-        attributes = sourceAttributes.value( i );
+        attributes = sourceAttributes.value( i + 1 );
         attributes << QStringLiteral( "upper" ) << origPoint;
         feat.setAttributes( attributes );
         pointsSink->addFeature( feat, QgsFeatureSink::FastInsert );
 
         feat.setGeometry( geomLower );
-        attributes = sourceAttributes.value( i );
+        attributes = sourceAttributes.value( i + 1 );
         attributes << QStringLiteral( "lower" ) << origPoint;
         feat.setAttributes( attributes );
         pointsSink->addFeature( feat, QgsFeatureSink::FastInsert );
@@ -247,7 +262,7 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
     {
       QgsGeometry geomLines = QgsGeometry::fromMultiPolylineXY( lines );
       feat.setGeometry( geomLines );
-      attributes = sourceAttributes.value( i );
+      attributes = sourceAttributes.value( i + 1 );
       attributes << QStringLiteral( "lines" ) << origPoint;
       feat.setAttributes( attributes );
       linesSink->addFeature( feat, QgsFeatureSink::FastInsert );

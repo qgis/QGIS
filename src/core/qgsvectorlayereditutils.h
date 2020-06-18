@@ -105,10 +105,12 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     /**
      * Adds a new part polygon to a multipart feature
      * \returns - QgsGeometry::Success
+     *
      * - QgsGeometry::AddPartSelectedGeometryNotFound
      * - QgsGeometry::AddPartNotMultiGeometry
      * - QgsGeometry::InvalidBaseGeometry
      * - QgsGeometry::InvalidInput
+     *
      * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED QgsGeometry::OperationResult addPart( const QVector<QgsPointXY> &ring, QgsFeatureId featureId ) SIP_DEPRECATED;
@@ -117,10 +119,12 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * Adds a new part polygon to a multipart feature
      *
      * \returns - QgsGeometry::Success
+     *
      * - QgsGeometry::AddPartSelectedGeometryNotFound
      * - QgsGeometry::AddPartNotMultiGeometry
      * - QgsGeometry::InvalidBaseGeometry
      * - QgsGeometry::InvalidInput
+     *
      * \note available in python bindings as addPartV2
      */
     QgsGeometry::OperationResult addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
@@ -129,6 +133,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * Adds a new part polygon to a multipart feature
      *
      * \returns - QgsGeometry::Success
+     *
      * - QgsGeometry::AddPartSelectedGeometryNotFound
      * - QgsGeometry::AddPartNotMultiGeometry
      * - QgsGeometry::InvalidBaseGeometry
@@ -152,12 +157,14 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * \param splitLine line that splits the layer feature parts
      * \param topologicalEditing TRUE if topological editing is enabled
      * \returns  - QgsGeometry::InvalidBaseGeometry
-     *  - QgsGeometry::Success
-     *  - QgsGeometry::InvalidInput
-     *  - QgsGeometry::NothingHappened if a selection is present but no feature has been split
-     *  - QgsGeometry::InvalidBaseGeometry
-     *  - QgsGeometry::GeometryEngineError
-     *  - QgsGeometry::SplitCannotSplitPoint
+     *
+     * - QgsGeometry::Success
+     * - QgsGeometry::InvalidInput
+     * - QgsGeometry::NothingHappened if a selection is present but no feature has been split
+     * - QgsGeometry::InvalidBaseGeometry
+     * - QgsGeometry::GeometryEngineError
+     * - QgsGeometry::SplitCannotSplitPoint
+     *
      * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) SIP_DEPRECATED;
@@ -167,12 +174,13 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * \param splitLine line that splits the layer feature parts
      * \param topologicalEditing TRUE if topological editing is enabled
      * \returns  - QgsGeometry::InvalidBaseGeometry
-     *  - QgsGeometry::Success
-     *  - QgsGeometry::InvalidInput
-     *  - QgsGeometry::NothingHappened if a selection is present but no feature has been split
-     *  - QgsGeometry::InvalidBaseGeometry
-     *  - QgsGeometry::GeometryEngineError
-     *  - QgsGeometry::SplitCannotSplitPoint
+     *
+     * - QgsGeometry::Success
+     * - QgsGeometry::InvalidInput
+     * - QgsGeometry::NothingHappened if a selection is present but no feature has been split
+     * - QgsGeometry::InvalidBaseGeometry
+     * - QgsGeometry::GeometryEngineError
+     * - QgsGeometry::SplitCannotSplitPoint
      */
     QgsGeometry::OperationResult splitParts( const QgsPointSequence &splitLine, bool topologicalEditing = false );
 

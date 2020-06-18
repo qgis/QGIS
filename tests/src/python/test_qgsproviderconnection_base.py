@@ -37,7 +37,6 @@ from qgis.PyQt.QtTest import QSignalSpy
 
 
 class TestPyQgsProviderConnectionBase():
-
     # Provider test cases must define the string URI for the test
     uri = ''
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")
@@ -88,9 +87,9 @@ class TestPyQgsProviderConnectionBase():
         capabilities = conn.capabilities()
 
         # Schema operations
-        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateSchema and
-                capabilities & QgsAbstractDatabaseProviderConnection.Schemas and
-                capabilities & QgsAbstractDatabaseProviderConnection.DropSchema):
+        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateSchema
+            and capabilities & QgsAbstractDatabaseProviderConnection.Schemas
+                and capabilities & QgsAbstractDatabaseProviderConnection.DropSchema):
 
             # Start clean
             if 'myNewSchema' in conn.schemas():
@@ -122,7 +121,7 @@ class TestPyQgsProviderConnectionBase():
             schemas = conn.schemas()
             self.assertFalse('myNewSchema' in schemas)
 
-            #UTF8 schema
+            # UTF8 schema
             conn.createSchema('myUtf8\U0001f604NewSchema')
             schemas = conn.schemas()
             conn.dropSchema('myUtf8\U0001f604NewSchema')
@@ -130,9 +129,9 @@ class TestPyQgsProviderConnectionBase():
             self.assertFalse('myUtf8\U0001f604NewSchema' in schemas)
 
         # Table operations
-        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable and
-                capabilities & QgsAbstractDatabaseProviderConnection.Tables and
-                capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable):
+        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable
+            and capabilities & QgsAbstractDatabaseProviderConnection.Tables
+                and capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable):
 
             if capabilities & QgsAbstractDatabaseProviderConnection.CreateSchema:
                 schema = 'myNewSchema'
@@ -217,16 +216,15 @@ class TestPyQgsProviderConnectionBase():
                     table = 'myNewAspatialTable'
 
                 # MSSQL literal syntax for UTF8 requires 'N' prefix
-                sql = "INSERT INTO %s (string_t, long_t, double_t, integer_t, date_t, datetime_t, time_t) VALUES (%s'QGIS Rocks - \U0001f604', 666, 1.234, 1234, '2019-07-08', '2019-07-08T12:00:12', '12:00:13.00')" % (table, 'N' if self.providerKey == 'mssql' else '')
+                sql = "INSERT INTO %s (string_t, long_t, double_t, integer_t, date_t, datetime_t, time_t) VALUES (%s'QGIS Rocks - \U0001f604', 666, 1.234, 1234, '2019-07-08', '2019-07-08T12:00:12', '12:00:13.00')" % (
+                    table, 'N' if self.providerKey == 'mssql' else '')
                 res = conn.executeSql(sql)
                 self.assertEqual(res, [])
                 sql = "SELECT string_t, long_t, double_t, integer_t, date_t, datetime_t FROM %s" % table
                 res = conn.executeSql(sql)
-                # GPKG has no type for time and spatialite has no support for dates and time ...
-                if self.providerKey == 'spatialite':
-                    self.assertEqual(res, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, '2019-07-08', '2019-07-08T12:00:12']])
-                else:
-                    self.assertEqual(res, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, QtCore.QDate(2019, 7, 8), QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
+                # GPKG and spatialite have no type for time
+                self.assertEqual(res, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, QtCore.QDate(2019, 7, 8),
+                                        QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
                 sql = "SELECT time_t FROM %s" % table
                 res = conn.executeSql(sql)
 
@@ -235,7 +233,8 @@ class TestPyQgsProviderConnectionBase():
                 if self.providerKey != 'mssql':
                     self.assertIn(res, ([[QtCore.QTime(12, 0, 13)]], [['12:00:13.00']]))
 
-                sql = "DELETE FROM %s WHERE string_t = %s'QGIS Rocks - \U0001f604'" % (table, 'N' if self.providerKey == 'mssql' else '')
+                sql = "DELETE FROM %s WHERE string_t = %s'QGIS Rocks - \U0001f604'" % (
+                    table, 'N' if self.providerKey == 'mssql' else '')
                 res = conn.executeSql(sql)
                 self.assertEqual(res, [])
                 sql = "SELECT string_t, integer_t FROM %s" % table
@@ -353,7 +352,8 @@ class TestPyQgsProviderConnectionBase():
 
         if conn.capabilities() & QgsAbstractDatabaseProviderConnection.Schemas:
             with self.assertRaises(QgsProviderConnectionException) as ex:
-                conn.createVectorTable('notExists', 'notReally', QgsFields(), QgsWkbTypes.Point, QgsCoordinateReferenceSystem(), False, {})
+                conn.createVectorTable('notExists', 'notReally', QgsFields(), QgsWkbTypes.Point,
+                                       QgsCoordinateReferenceSystem(), False, {})
 
         if conn.capabilities() & QgsAbstractDatabaseProviderConnection.DropVectorTable:
             with self.assertRaises(QgsProviderConnectionException) as ex:

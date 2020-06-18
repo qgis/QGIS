@@ -45,7 +45,6 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
         bool direct = true;
         Description() = default;
         Description( QString lab, bool dir = false ): label( lab ), direct( dir ) { }
-        Description( const Description &desc ) { label = desc.label; direct = desc.direct; }
     };
 
     //! Constructor

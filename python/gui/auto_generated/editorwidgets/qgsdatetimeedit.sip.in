@@ -17,7 +17,7 @@ The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/read
 
    You should use the signal valueChanged of this subclass
    rather than QDateTimeEdit.dateTimeChanged. (If you consequently connect parent's
-   dateTimeChanged signal and call dateTime() afterwards there is no guarantee that
+   dateTimeChanged signal and call :py:func:`~dateTime` afterwards there is no guarantee that
    NULL values will be correctly handled).
 
 .. seealso:: :py:class:`QgsDateEdit`
@@ -67,7 +67,7 @@ Returns the date time which can be a null date/time.
 
 .. note::
 
-   Before QGIS 3.10, you mustn't call date() or time() because they can't return a NULL value.
+   Before QGIS 3.10, you mustn't call :py:func:`~QgsDateTimeEdit.date` or :py:func:`~QgsDateTimeEdit.time` because they can't return a NULL value.
 
 .. note::
 
@@ -108,7 +108,7 @@ Resets the widget to show no value (ie, an "unknown" state).
     QString nullRepresentation() const;
 %Docstring
 Returns the widget's NULL representation, which defaults
-to :py:func:`QgsApplication.nullRepresentation()`
+to :py:func:`QgsApplication.nullRepresentation()`.
 
 .. seealso:: :py:func:`setNullRepresentation`
 
@@ -118,7 +118,7 @@ to :py:func:`QgsApplication.nullRepresentation()`
     void setNullRepresentation( const QString &null );
 %Docstring
 Sets the widget's ``null`` representation, which defaults
-to :py:func:`QgsApplication.nullRepresentation()`
+to :py:func:`QgsApplication.nullRepresentation()`.
 
 .. seealso:: :py:func:`nullRepresentation`
 
@@ -181,7 +181,7 @@ The QgsTimeEdit class is a QTimeEdit widget with the capability of setting/readi
 
    You should use the signal valueChanged of this subclass
    rather than QDateTimeEdit.timeChanged. (If you consequently connect parent's
-   timeChanged signal and call time() afterwards there is no guarantee that
+   timeChanged signal and call :py:func:`~QgsDateTimeEdit.time` afterwards there is no guarantee that
    NULL values will be correctly handled).
 
 .. seealso:: :py:class:`QgsDateTimeEdit`
@@ -236,7 +236,7 @@ The QgsDateEdit class is a QDateEdit widget with the capability of setting/readi
 
    You should use the signal valueChanged of this subclass
    rather than QDateTimeEdit.dateChanged. (If you consequently connect parent's
-   dateChanged signal and call date() afterwards there is no guarantee that
+   dateChanged signal and call :py:func:`~QgsTimeEdit.date` afterwards there is no guarantee that
    NULL values will be correctly handled).
 
 .. seealso:: :py:class:`QgsDateTimeEdit`

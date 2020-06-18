@@ -341,7 +341,7 @@ QVariant QgsRuleBasedLabelingModel::headerData( int section, Qt::Orientation ori
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 5 )
   {
     QStringList lst;
-    lst << tr( "Label" ) << tr( "Rule" ) << tr( "Min. scale" ) << tr( "Max. scale" ) << tr( "Text" ); // << tr( "Count" ) << tr( "Duplicate count" );
+    lst << tr( "Label" ) << tr( "Rule" ) << tr( "Min. Scale" ) << tr( "Max. Scale" ) << tr( "Text" ); // << tr( "Count" ) << tr( "Duplicate Count" );
     return lst[section];
   }
 

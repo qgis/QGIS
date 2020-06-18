@@ -58,10 +58,11 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
 
 Qgs3DMapCanvas::~Qgs3DMapCanvas()
 {
+  if ( mMapTool )
+    mMapTool->deactivate();
   // make sure the scene is deleted while map settings object is still alive
   delete mScene;
   mScene = nullptr;
-
   delete mMap;
   mMap = nullptr;
 }

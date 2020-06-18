@@ -2,6 +2,7 @@
 # CMake settings
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
 SET(CMAKE_COLOR_MAKEFILE ON)
+SET(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # POLICIES
@@ -203,6 +204,10 @@ IF(WITH_CORE)
     MESSAGE(FATAL_ERROR "Desktop cannot be built without analysis")
   ENDIF()
 
+  IF ( WITH_QGIS_PROCESS AND NOT WITH_ANALYSIS )
+    MESSAGE(FATAL_ERROR "Process tool cannot be built without analysis")
+  ENDIF()
+
   IF ( WITH_DESKTOP )
     # The qgis_desktop target is meant to build a minimal but complete running QGIS during development
     # This should help to reduce compile time while still having a "complete enough" QGIS for most of the development
@@ -241,16 +246,6 @@ IF(WITH_CORE)
   SET (WITH_QTMOBILITY ${DEFAULT_WITH_QTMOBILITY} CACHE BOOL "Determines if QtMobility related code should be build (for example internal GPS)")
 
   SET (WITH_GEOREFERENCER TRUE CACHE BOOL "Determines whether GeoReferencer plugin should be built")
-
-  SET (WITH_GLOBE FALSE CACHE BOOL "Determines whether Globe plugin should be built")
-  IF (WITH_GLOBE)
-    SET(QT_USE_QTOPENGL 1)
-    FIND_PACKAGE(OSGEARTH REQUIRED)
-    IF (OSGEARTHQT_LIBRARY)
-      # following variable is used in qgsconfig.h
-      SET(HAVE_OSGEARTHQT TRUE)
-    ENDIF (OSGEARTHQT_LIBRARY)
-  ENDIF (WITH_GLOBE)
 
   SET (WITH_THREAD_LOCAL TRUE CACHE BOOL "Determines whether std::thread_local should be used")
   MARK_AS_ADVANCED(WITH_THREAD_LOCAL)
@@ -488,7 +483,7 @@ ENDIF(WITH_CORE)
 SET(CMAKE_AUTOMOC ON)
 
 # build our version of astyle
-SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare-commit.sh (using 'our' astyle)")
+SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare_commit.sh (using 'our' astyle)")
 
 # QML
 SET(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML directory for QML autocomplete")
@@ -642,6 +637,11 @@ ADD_DEFINITIONS(-DQT_DEPRECATED_WARNINGS)
 # Unfortunately Qwt uses deprecated QString::null in headers, preventing this being raised above 5.8
 ADD_DEFINITIONS(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
 
+IF (WITH_GEOREFERENCER)
+  FIND_PACKAGE(GSL REQUIRED)
+  SET(HAVE_GEOREFERENCER TRUE)
+ENDIF (WITH_GEOREFERENCER)
+
 IF(ENABLE_COVERAGE)
   INCLUDE("cmake/modules/coverage/CodeCoverage.cmake")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
@@ -741,9 +741,6 @@ IF (WITH_CORE)
       # path for framework references when running from build directory
       # changed later to reference in-app resources upon install
       SET (CMAKE_INSTALL_NAME_DIR ${CMAKE_BINARY_DIR}/output/lib)
-      IF (WITH_GLOBE)
-        SET (OSG_PLUGINS_PATH "" CACHE PATH "Path to OSG plugins for bundling")
-      ENDIF (WITH_GLOBE)
       # recent cmakes force SDKs, recent SDKs don't have user symlinks
       # need to find non-system frameworks
       # cmake bug #0007250 - CMAKE_SHARED_LINKER_FLAGS ignored when creating
@@ -887,7 +884,7 @@ IF (WITH_CORE AND WITH_BINDINGS)
   INCLUDE(SIPMacros)
 
   SET(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
-  SET(SIP_CONCAT_PARTS 4)
+  SET(SIP_CONCAT_PARTS 6)
 
   IF (NOT BINDINGS_GLOBAL_INSTALL)
     SET(PYTHON_SITE_PACKAGES_DIR ${QGIS_DATA_DIR}/python)

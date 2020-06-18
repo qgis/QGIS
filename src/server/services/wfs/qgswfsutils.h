@@ -60,12 +60,12 @@ namespace QgsWfs
   /**
    * Transform a Filter element to a feature request
    */
-  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, const QgsProject *project = nullptr );
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, QgsProject *project = nullptr );
 
   /**
    * Transform a Filter element to a feature request and update server feature ids
    */
-  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, QStringList &serverFids, const QgsProject *project = nullptr );
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, QStringList &serverFids, const QgsProject *project = nullptr, const QgsMapLayer *layer = nullptr );
 
   // Define namespaces used in WFS documents
   const QString WFS_NAMESPACE = QStringLiteral( "http://www.opengis.net/wfs" );

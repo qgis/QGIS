@@ -232,6 +232,23 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      */
     virtual QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) SIP_FACTORY;
 
+    /**
+     * Sets the \a value into the \a uri \a parameter as a bool.
+     * eg. "yes" value will be saved as true, 0 will be saved as false
+     *
+     * \since QGIS 3.14
+     */
+    static void setBoolParameter( QVariantMap &uri, const QString &parameter, const QVariant &value );
+
+    /**
+     * Returns the \a parameter value in the \a uri as a bool.
+     * eg. "yes" value will be returned as true, 0 will be returned as false
+     *
+     * \since QGIS 3.14
+     */
+    static bool boolParameter( const QVariantMap &uri, const QString &parameter, bool defaultValue = false );
+
+
 #ifndef SIP_RUN
 
     /**
@@ -274,6 +291,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * Breaks a provider data source URI into its component paths (e.g. file path, layer name).
      * \param uri uri string
      * \returns map containing components. Standard components may include:
+     *
      * - "path": file path
      * - "layerName"
      * - "url": base URL, for online services
@@ -282,6 +300,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * - "bounds": hardcoded layer bounds (as a QgsRectangle)
      * - "crs": CRS definition
      * - "authcfg": authentication configuration ID
+     *
      * \note this function may not be supported by all providers, an empty map will be returned in such case
      * \since QGIS 3.10
      */

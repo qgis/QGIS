@@ -28,6 +28,7 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsvectorlayer.h"
+#include "qgstextrenderer.h"
 #include <QMenu>
 #include <QClipboard>
 #include <QDrag>
@@ -375,7 +376,7 @@ void QgsFontButton::wheelEvent( QWheelEvent *event )
       break;
   }
 
-  double increment = event->modifiers() & Qt::ControlModifier ? 0.1 : 1;
+  double increment = ( event->modifiers() & Qt::ControlModifier ) ? 0.1 : 1;
   if ( event->delta() > 0 )
   {
     size += increment;

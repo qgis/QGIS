@@ -34,7 +34,7 @@ Unique name of the provider (among other providers)
 
     virtual QString name() const = 0;
 %Docstring
-Human readable name - may be translatable with tr()
+Human readable name - may be translatable with :py:func:`~QgsLayerTreeEmbeddedWidgetProvider.tr`
 %End
 
     virtual QWidget *createWidget( QgsMapLayer *layer, int widgetIndex ) = 0 /Factory/;
@@ -58,7 +58,7 @@ Embedded widgets are assigned per individual map layers and they are shown befor
 Layer tree must have UseEmbeddedWidgets flag enabled in order to show assigned widgets.
 
 QgsLayerTreeEmbeddedWidgetRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsGui.layerTreeEmbeddedWidgetRegistry()`
+:py:func:`QgsGui.layerTreeEmbeddedWidgetRegistry()`.
 
 .. seealso:: :py:class:`QgsLayerTreeEmbeddedWidgetRegistry`
 
@@ -75,7 +75,7 @@ QgsLayerTreeEmbeddedWidgetRegistry is not usually directly created, but rather a
 Constructor for QgsLayerTreeEmbeddedWidgetRegistry
 
 QgsLayerTreeEmbeddedWidgetRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsGui.layerTreeEmbeddedWidgetRegistry()`
+:py:func:`QgsGui.layerTreeEmbeddedWidgetRegistry()`.
 %End
 
     ~QgsLayerTreeEmbeddedWidgetRegistry();

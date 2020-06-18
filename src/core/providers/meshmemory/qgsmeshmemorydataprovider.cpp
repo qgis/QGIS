@@ -611,13 +611,10 @@ QgsMeshDataBlock QgsMeshMemoryDataset::areFacesActive( int faceIndex, int count 
   return ret;
 }
 
-bool QgsMeshMemoryDataProvider::persistDatasetGroup( const QString &path,
-    const QgsMeshDatasetGroupMetadata &meta,
-    const QVector<QgsMeshDataBlock> &datasetValues,
-    const QVector<QgsMeshDataBlock> &datasetActive,
-    const QVector<double> &times )
+bool QgsMeshMemoryDataProvider::persistDatasetGroup( const QString &outputFilePath, const QString &outputDriver, const QgsMeshDatasetGroupMetadata &meta, const QVector<QgsMeshDataBlock> &datasetValues, const QVector<QgsMeshDataBlock> &datasetActive, const QVector<double> &times )
 {
-  Q_UNUSED( path )
+  Q_UNUSED( outputFilePath )
+  Q_UNUSED( outputDriver )
   Q_UNUSED( meta )
   Q_UNUSED( datasetValues )
   Q_UNUSED( datasetActive )

@@ -38,11 +38,11 @@
 #include "qgsrasterviewport.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
-#include "qgsrasterlayertemporalproperties.h"
 
 class QgsMapToPixel;
 class QgsRasterRenderer;
 class QgsRectangle;
+class QgsRasterLayerTemporalProperties;
 
 class QImage;
 class QPixmap;
@@ -146,15 +146,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * The main tasks carried out by the constructor are:
      *
      * - Load the rasters default style (.qml) file if it exists
-     *
      * - Populate the RasterStatsVector with initial values for each band.
-     *
      * - Calculate the layer extents
-     *
      * - Determine whether the layer is gray, paletted or multiband.
-     *
      * - Assign sensible defaults for the red, green, blue and gray bands.
-     * */
+     *
+     */
     explicit QgsRasterLayer( const QString &uri,
                              const QString &baseName = QString(),
                              const QString &providerType = "gdal",
@@ -446,10 +443,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     bool ignoreExtents() const;
 
-    /**
-     * Returns temporal properties associated with the raster layer.
-     */
-    QgsRasterLayerTemporalProperties *temporalProperties() override;
+    QgsMapLayerTemporalProperties *temporalProperties() override;
 
   public slots:
     void showStatusMessage( const QString &message );

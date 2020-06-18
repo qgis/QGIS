@@ -35,7 +35,6 @@ QgsLayoutItemManualTable::QgsLayoutItemManualTable( QgsLayout *layout )
 
 QgsLayoutItemManualTable::~QgsLayoutItemManualTable()
 {
-  qDeleteAll( mHeaders );
 }
 
 int QgsLayoutItemManualTable::type() const
@@ -160,7 +159,6 @@ QgsLayoutTableColumns &QgsLayoutItemManualTable::headers()
 
 void QgsLayoutItemManualTable::setHeaders( const QgsLayoutTableColumns &headers )
 {
-  qDeleteAll( mHeaders );
   mHeaders.clear();
 
   mHeaders.append( headers );
@@ -177,10 +175,10 @@ bool QgsLayoutItemManualTable::writePropertiesToElement( QDomElement &tableElem,
 
   //headers
   QDomElement headersElem = doc.createElement( QStringLiteral( "headers" ) );
-  for ( QgsLayoutTableColumn *header : mHeaders )
+  for ( const QgsLayoutTableColumn &header : qgis::as_const( mHeaders ) )
   {
     QDomElement headerElem = doc.createElement( QStringLiteral( "header" ) );
-    header->writeXml( headerElem, doc );
+    header.writeXml( headerElem, doc );
     headersElem.appendChild( headerElem );
   }
   tableElem.appendChild( headersElem );
@@ -228,7 +226,6 @@ bool QgsLayoutItemManualTable::readPropertiesFromElement( const QDomElement &ite
 
   mIncludeHeader = itemElem.attribute( QStringLiteral( "includeHeader" ) ).toInt();
   //restore header specifications
-  qDeleteAll( mHeaders );
   mHeaders.clear();
   QDomNodeList headersList = itemElem.elementsByTagName( QStringLiteral( "headers" ) );
   if ( !headersList.isEmpty() )
@@ -238,8 +235,8 @@ bool QgsLayoutItemManualTable::readPropertiesFromElement( const QDomElement &ite
     for ( int i = 0; i < headerEntryList.size(); ++i )
     {
       QDomElement headerElem = headerEntryList.at( i ).toElement();
-      QgsLayoutTableColumn *header = new QgsLayoutTableColumn;
-      header->readXml( headerElem );
+      QgsLayoutTableColumn header;
+      header.readXml( headerElem );
       mHeaders.append( header );
     }
   }
@@ -319,9 +316,9 @@ void QgsLayoutItemManualTable::refreshColumns()
     for ( const QgsTableCell &cell : firstRow )
     {
       ( void )cell;
-      std::unique_ptr< QgsLayoutTableColumn > newCol = qgis::make_unique< QgsLayoutTableColumn >( mHeaders.value( colIndex ) ? mHeaders.value( colIndex )->heading() : QString() );
-      newCol->setWidth( mColumnWidths.value( colIndex ) );
-      columns << newCol.release();
+      QgsLayoutTableColumn newCol( mHeaders.value( colIndex ).heading() );
+      newCol.setWidth( mColumnWidths.value( colIndex ) );
+      columns << newCol;
       colIndex++;
     }
   }

@@ -43,7 +43,7 @@ Constructor for QgsSearchWidgetToolButton.
     void setAvailableFlags( QgsSearchWidgetWrapper::FilterFlags flags );
 %Docstring
 Sets the available filter flags to show in the widget. Any active flags
-(see activeFlags()) which are not present in the new available filter
+(see :py:func:`~QgsSearchWidgetToolButton.activeFlags`) which are not present in the new available filter
 flags will be cleared;
 
 :param flags: available flags to show in widget
@@ -78,7 +78,7 @@ Returns the available filter flags shown in the widget.
     void setActiveFlags( QgsSearchWidgetWrapper::FilterFlags flags );
 %Docstring
 Sets the current active filter flags for the widget. Any flags
-which are not present in the available filter flags (see availableFlags())
+which are not present in the available filter flags (see :py:func:`~QgsSearchWidgetToolButton.availableFlags`)
 will not be set.
 
 :param flags: active flags to show in widget
@@ -93,7 +93,7 @@ will not be set.
     void toggleFlag( QgsSearchWidgetWrapper::FilterFlag flag );
 %Docstring
 Toggles an individual active filter flag for the widget. Any flags
-which are not present in the available filter flags (see availableFlags())
+which are not present in the available filter flags (see :py:func:`~QgsSearchWidgetToolButton.availableFlags`)
 will be ignore. Other flags may be cleared if they conflict with the newly
 toggled flag.
 

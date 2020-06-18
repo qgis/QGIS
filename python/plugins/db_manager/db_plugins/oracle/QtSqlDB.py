@@ -117,12 +117,12 @@ class QtSqlDBCursor(object):
                 continue
 
             self.description.append([
-                f.name(),                                 # name
-                t,                                        # type_code
-                f.length(),                               # display_size
-                f.length(),                               # internal_size
-                f.precision(),                            # precision
-                None,                                     # scale
+                f.name(),  # name
+                t,  # type_code
+                f.length(),  # display_size
+                f.length(),  # internal_size
+                f.precision(),  # precision
+                None,  # scale
                 f.requiredStatus() != QSqlField.Required  # null_ok
             ])
 

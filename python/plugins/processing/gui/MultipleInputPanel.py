@@ -17,7 +17,6 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -28,6 +27,7 @@ import warnings
 from qgis.core import QgsProcessing
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
+
 ''
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 from processing.gui.MultipleFileInputDialog import MultipleFileInputDialog
@@ -41,7 +41,6 @@ with warnings.catch_warnings():
 
 
 class MultipleInputPanel(BASE, WIDGET):
-
     selectionChanged = pyqtSignal()
 
     def __init__(self, options=None, datatype=None):

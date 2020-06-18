@@ -42,7 +42,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class contour(GdalAlgorithm):
-
     INPUT = 'INPUT'
     BAND = 'BAND'
     INTERVAL = 'INTERVAL'
@@ -200,7 +199,6 @@ class contour(GdalAlgorithm):
 
 
 class contour_polygon(contour):
-
     FIELD_NAME_MIN = 'FIELD_NAME_MIN'
     FIELD_NAME_MAX = 'FIELD_NAME_MAX'
 

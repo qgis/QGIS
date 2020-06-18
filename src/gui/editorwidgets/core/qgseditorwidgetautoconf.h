@@ -37,9 +37,10 @@ class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
 
     /**
      * Typical scores are:
-     *   * 0: no matching type found.
-     *   * 10: a widget has been guessed from the type of field.
-     *   * 20: a widget has been determined from an external configuration (for example a database table)
+     *
+     * - 0: no matching type found.
+     * - 10: a widget has been guessed from the type of field.
+     * - 20: a widget has been determined from an external configuration (for example a database table)
      *
      * \param vl        The vector layer for which this widget will be created
      * \param fieldName The field name on the specified layer for which this widget will be created

@@ -11,6 +11,7 @@
 
 
 
+
 class QgsLabelPosition
 {
 
@@ -99,6 +100,7 @@ class QgsPalLayerSettings
       Free,
       OrderedPositionsAroundPoint,
       PerimeterCurved,
+      OutsidePolygons,
     };
 
     enum PredefinedPointPosition
@@ -287,6 +289,7 @@ class QgsPalLayerSettings
       LinePlacementOptions,
       OverrunDistance,
       LabelAllParts,
+      PolygonLabelOutside,
 
       // rendering
       ScaleVisibility,
@@ -333,7 +336,7 @@ Returns all field names referenced by the configuration (e.g. field name or expr
 Prepares the label settings for rendering.
 
 This should be called before rendering any labels, and must be
-followed by a call to stopRender() in order to gracefully clean up symbols.
+followed by a call to :py:func:`~QgsPalLayerSettings.stopRender` in order to gracefully clean up symbols.
 
 .. versionadded:: 3.10
 %End
@@ -342,7 +345,7 @@ followed by a call to stopRender() in order to gracefully clean up symbols.
 %Docstring
 Finalises the label settings after use.
 
-This must be called after a call to startRender(), in order to gracefully clean up symbols.
+This must be called after a call to :py:func:`~QgsPalLayerSettings.startRender`, in order to gracefully clean up symbols.
 
 .. versionadded:: 3.10
 %End
@@ -400,6 +403,24 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
     Placement placement;
 
     unsigned int placementFlags;
+
+    QgsLabeling::PolygonPlacementFlags polygonPlacementFlags() const;
+%Docstring
+Returns the polygon placement flags, which dictate how polygon labels can be placed.
+
+.. seealso:: :py:func:`setPolygonPlacementFlags`
+
+.. versionadded:: 3.14
+%End
+
+    void setPolygonPlacementFlags( QgsLabeling::PolygonPlacementFlags flags );
+%Docstring
+Sets the polygon placement ``flags``, which dictate how polygon labels can be placed.
+
+.. seealso:: :py:func:`polygonPlacementFlags`
+
+.. versionadded:: 3.14
+%End
 
     bool centroidWhole;
 

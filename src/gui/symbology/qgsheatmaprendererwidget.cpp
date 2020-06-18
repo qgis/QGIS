@@ -16,6 +16,7 @@
 #include "qgsheatmaprenderer.h"
 #include "qgsrendererregistry.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgstemporalcontroller.h"
 
 #include "qgssymbol.h"
 
@@ -45,6 +46,10 @@ QgsExpressionContext QgsHeatmapRendererWidget::createExpressionContext() const
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
                << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( mContext.mapCanvas()->temporalController() ) )
+    {
+      expContext << generator->createExpressionContextScope();
+    }
   }
   else
   {
@@ -96,6 +101,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
   mRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mWeightExpressionWidget->registerExpressionContextGenerator( this );
+  mWeightExpressionWidget->setAllowEmptyFieldName( true );
 
   if ( renderer )
   {

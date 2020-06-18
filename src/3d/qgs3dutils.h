@@ -38,11 +38,12 @@ namespace Qt3DExtras
 
 #include <memory>
 
-#ifndef SIP_RUN
+#define SIP_NO_FILE
 
 /**
  * \ingroup 3d
  * Miscellaneous utility functions used from 3D code.
+ * \note Not available in Python bindings
  * \since QGIS 3.0
  */
 class _3D_EXPORT Qgs3DUtils
@@ -177,7 +178,5 @@ class _3D_EXPORT Qgs3DUtils
     //! Returns phong material object based on the material settings
     static Qt3DExtras::QPhongMaterial *phongMaterial( const QgsPhongMaterialSettings &settings );
 };
-
-#endif
 
 #endif // QGS3DUTILS_H

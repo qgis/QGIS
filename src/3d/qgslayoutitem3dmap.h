@@ -22,6 +22,13 @@
 #include "qgstemporalrangeobject.h"
 #include "qgscamerapose.h"
 
+#ifdef SIP_RUN
+// this is needed for the "convert to subclass" code below to compile
+% ModuleHeaderCode
+#include "qgslayoutitem3dmap.h"
+% End
+#endif
+
 
 class Qgs3DMapScene;
 class Qgs3DMapSettings;

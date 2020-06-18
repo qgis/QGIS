@@ -328,13 +328,13 @@ Returns the action used to enable/disable the tools
 %Docstring
 Enables the tool (call this when an appropriate map tool is set and in the condition to make use of
 cad digitizing)
-Normally done automatically from QgsMapToolAdvancedDigitizing.activate() but may need to be fine tuned
+Normally done automatically from :py:func:`QgsMapToolAdvancedDigitizing.activate()` but may need to be fine tuned
 if the map tool depends on preconditions like a feature selection.
 %End
 
     void disable();
 %Docstring
-Disable the widget. Normally done automatically from :py:func:`QgsMapToolAdvancedDigitizing.deactivate()`
+Disable the widget. Normally done automatically from :py:func:`QgsMapToolAdvancedDigitizing.deactivate()`.
 %End
 
     void updateCadPaintItem();

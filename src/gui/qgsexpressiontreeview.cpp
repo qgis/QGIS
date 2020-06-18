@@ -426,10 +426,14 @@ void QgsExpressionTreeView::loadFieldNames( const QgsFields &fields )
 
 void QgsExpressionTreeView::loadFieldNames()
 {
+  // Cleanup
   if ( mExpressionGroups.contains( QStringLiteral( "Fields and Values" ) ) )
   {
     QgsExpressionItem *node = mExpressionGroups.value( QStringLiteral( "Fields and Values" ) );
     node->removeRows( 0, node->rowCount() );
+    // Re-add NULL
+    // use -1 as sort order here -- NULL should always show before the field list
+    registerItem( QStringLiteral( "Fields and Values" ), QStringLiteral( "NULL" ), QStringLiteral( "NULL" ), QString(), QgsExpressionItem::ExpressionNode, false, -1 );
   }
 
   // this can happen if fields are manually set

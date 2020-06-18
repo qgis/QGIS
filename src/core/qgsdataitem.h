@@ -426,11 +426,12 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     /**
      * Safely delete the item:
-     *   - disconnects parent
-     *   - unsets parent (but does not remove itself)
-     *   - deletes all its descendants recursively
-     *   - waits until Populating state (createChildren() in thread) finished without blocking main thread
-     *   - calls QObject::deleteLater()
+     *
+     * - disconnects parent
+     * - unsets parent (but does not remove itself)
+     * - deletes all its descendants recursively
+     * - waits until Populating state (createChildren() in thread) finished without blocking main thread
+     * - calls QObject::deleteLater()
      */
     virtual void deleteLater();
 
@@ -443,8 +444,13 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     virtual void refresh();
 
-    //! Refresh connections: update GUI and emit signal
-    virtual void refreshConnections();
+    /**
+     * Causes a data item provider to refresh all registered connections.
+     *
+     * If \a providerKey is specified then only the matching provider will be refreshed. Otherwise,
+     * all providers will be refreshed (which is potentially very expensive!).
+     */
+    virtual void refreshConnections( const QString &providerKey = QString() );
 
     virtual void childrenCreated();
 
@@ -457,12 +463,13 @@ class CORE_EXPORT QgsDataItem : public QObject
     void stateChanged( QgsDataItem *item, QgsDataItem::State oldState );
 
     /**
-     * Emitted when the provider's connections of the child items have changed
+     * Emitted when the connections of the provider with the specified \a providerKey have changed.
+     *
      * This signal is normally forwarded to the app in order to refresh the connection
      * item in the provider dialogs and to refresh the connection items in the other
-     * open browsers
+     * open browsers.
      */
-    void connectionsChanged();
+    void connectionsChanged( const QString &providerKey = QString() );
 
   protected slots:
 
@@ -771,11 +778,13 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
 
 // ---------
 
+// TODO: move to qgis_gui for QGIS 4
+
 /**
  * \ingroup core
  * \class QgsDirectoryParamWidget
  *
- * TODO: move to qgis_gui for QGIS 4
+ * Browser parameter widget implementation for directory items.
  */
 class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
 {

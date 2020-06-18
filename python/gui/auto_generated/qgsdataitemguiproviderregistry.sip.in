@@ -16,7 +16,7 @@ This class keeps a list of data item GUI providers that may affect how QgsDataIt
 behave within the application GUI.
 
 QgsDataItemGuiProviderRegistry is not usually directly created, but rather accessed through
-QgsGui.instance()->dataItemGuiProviderRegistry().
+:py:func:`QgsGui.instance()`->:py:func:`~dataItemGuiProviderRegistry`.
 
 .. versionadded:: 3.6
 %End

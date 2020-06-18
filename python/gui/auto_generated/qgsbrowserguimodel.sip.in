@@ -34,7 +34,7 @@ Constructor for QgsBrowserGuiModel, with the specified ``parent`` object.
 
    QgsBrowserModel models are not initially populated and use a deferred initialization
    approach. After constructing a :py:class:`QgsBrowserModel`, a call must be made
-   to initialize() in order to populate the model.
+   to :py:func:`~QgsBrowserGuiModel.initialize` in order to populate the model.
 %End
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;

@@ -86,8 +86,11 @@ class NetCDFFile
     void putDataDouble( int varId, const size_t index, const double value );
     void putDataArrayInt( int varId, size_t line, size_t faceVerticesMax, int *values );
 
+    std::string getFileName() const;
+
   private:
     int mNcid; // C handle to the file
+    std::string mFileName;
 };
 
 #endif // MDAL_NETCDF_HPP

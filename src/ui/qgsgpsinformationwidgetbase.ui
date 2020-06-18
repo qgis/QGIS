@@ -613,7 +613,7 @@ gray = no data
               <string>save GPS data (NMEA sentences) to a file</string>
              </property>
              <property name="title">
-              <string>Log file</string>
+              <string>Log File</string>
              </property>
              <property name="checkable">
               <bool>true</bool>
@@ -970,7 +970,7 @@ gray = no data
               <item row="1" column="0">
                <widget class="QGroupBox" name="mGboxTimestamp">
                 <property name="title">
-                 <string>Timestamp properties</string>
+                 <string>Timestamp Properties</string>
                 </property>
                 <layout class="QFormLayout" name="formLayout">
                  <item row="0" column="0">

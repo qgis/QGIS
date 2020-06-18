@@ -228,8 +228,7 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation &relation, c
   connect( mRelation.referencingLayer(), &QgsVectorLayer::editingStarted, this, &QgsRelationEditorWidget::updateButtons );
   connect( mRelation.referencingLayer(), &QgsVectorLayer::editingStopped, this, &QgsRelationEditorWidget::updateButtons );
 
-  if ( mShowLabel )
-    setTitle( relation.name() );
+  updateTitle();
 
   QgsVectorLayer *lyr = relation.referencingLayer();
 
@@ -340,7 +339,7 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const Q
     connect( mNmRelation.referencedLayer(), &QgsVectorLayer::editingStopped, this, &QgsRelationEditorWidget::updateButtons );
   }
 
-  setTitle( relation.name() );
+  updateTitle();
 
   QgsVectorLayer *lyr = relation.referencingLayer();
 
@@ -652,7 +651,8 @@ void QgsRelationEditorWidget::deleteFeature( const QgsFeatureId featureid )
 
 void QgsRelationEditorWidget::deleteSelectedFeatures()
 {
-  deleteFeatures( mFeatureSelectionMgr->selectedFeatureIds() );
+  QgsFeatureIds selectedFids = mFeatureSelectionMgr->selectedFeatureIds();
+  deleteFeatures( selectedFids );
 }
 
 void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
@@ -667,10 +667,8 @@ void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
     // When deleting a linked feature within an N:M relation,
     // check if the feature is linked to more than just one feature.
     // In case it is linked more than just once, ask the user for confirmation
-    // as it is likely he was not aware of the implications and might either
-    // leave the dataset in a corrupted state (referential integrity) or if
-    // the fk constraint is ON CASCADE DELETE, there may be several linking
-    // entries deleted along.
+    // as it is likely he was not aware of the implications and might delete
+    // there may be several linking entries deleted along.
 
     QgsFeatureRequest deletedFeaturesRequest;
     deletedFeaturesRequest.setFilterFids( featureids );
@@ -730,9 +728,43 @@ void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
     layer = mRelation.referencingLayer();
   }
 
+  QgsVectorLayerUtils::QgsDuplicateFeatureContext infoContext;
+  if ( QgsVectorLayerUtils::impactsCascadeFeatures( layer, featureids, QgsProject::instance(), infoContext ) )
+  {
+    QString childrenInfo;
+    int childrenCount = 0;
+    const auto infoContextLayers = infoContext.layers();
+    for ( QgsVectorLayer *chl : infoContextLayers )
+    {
+      childrenCount += infoContext.duplicatedFeatures( chl ).size();
+      childrenInfo += ( tr( "%1 feature(s) on layer \"%2\", " ).arg( infoContext.duplicatedFeatures( chl ).size() ).arg( chl->name() ) );
+    }
+
+    // for extra safety to make sure we know that the delete can have impact on children and joins
+    int res = QMessageBox::question( this, tr( "Delete at least %1 feature(s) on other layer(s)" ).arg( childrenCount ),
+                                     tr( "Delete %1 feature(s) on layer \"%2\", %3 as well\nand all of its other descendants.\nDelete these features?" ).arg( featureids.count() ).arg( layer->name() ).arg( childrenInfo ),
+                                     QMessageBox::Yes | QMessageBox::No );
+    if ( res != QMessageBox::Yes )
+      deleteFeatures = false;
+  }
+
   if ( deleteFeatures )
   {
-    layer->deleteFeatures( featureids );
+    QgsVectorLayer::DeleteContext context( true, QgsProject::instance() );
+    layer->deleteFeatures( featureids, &context );
+    const auto contextLayers = context.handledLayers();
+    if ( contextLayers.size() > 1 )
+    {
+      int deletedCount = 0;
+      QString feedbackMessage;
+      for ( QgsVectorLayer *contextLayer : contextLayers )
+      {
+        feedbackMessage += tr( "%1 on layer %2. " ).arg( context.handledFeatures( contextLayer ).size() ).arg( contextLayer->name() );
+        deletedCount += context.handledFeatures( contextLayer ).size();
+      }
+      mEditorContext.mainMessageBar()->pushMessage( tr( "%1 features deleted: %2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::Success );
+    }
+
     updateUi();
   }
 }
@@ -939,10 +971,7 @@ void QgsRelationEditorWidget::setShowLabel( bool showLabel )
 {
   mShowLabel = showLabel;
 
-  if ( mShowLabel && mRelation.isValid() )
-    setTitle( mRelation.name() );
-  else
-    setTitle( QString() );
+  updateTitle();
 }
 
 void QgsRelationEditorWidget::showContextMenu( QgsActionMenu *menu, const QgsFeatureId fid )
@@ -979,6 +1008,14 @@ void QgsRelationEditorWidget::unsetMapTool()
 
   disconnect( mapCanvas, &QgsMapCanvas::keyPressed, this, &QgsRelationEditorWidget::onKeyPressed );
   disconnect( mMapToolDigitize, &QgsMapToolDigitizeFeature::digitizingCompleted, this, &QgsRelationEditorWidget::onDigitizingCompleted );
+}
+
+void QgsRelationEditorWidget::updateTitle()
+{
+  if ( mShowLabel && mRelation.isValid() )
+    setTitle( mRelation.name() );
+  else
+    setTitle( QString() );
 }
 
 QgsFeature QgsRelationEditorWidget::feature() const

@@ -181,6 +181,23 @@ Class factory to return a pointer to a newly created QgsDataProvider object
 .. versionadded:: 3.10
 %End
 
+    static void setBoolParameter( QVariantMap &uri, const QString &parameter, const QVariant &value );
+%Docstring
+Sets the ``value`` into the ``uri`` ``parameter`` as a bool.
+eg. "yes" value will be saved as true, 0 will be saved as false
+
+.. versionadded:: 3.14
+%End
+
+    static bool boolParameter( const QVariantMap &uri, const QString &parameter, bool defaultValue = false );
+%Docstring
+Returns the ``parameter`` value in the ``uri`` as a bool.
+eg. "yes" value will be returned as true, 0 will be returned as false
+
+.. versionadded:: 3.14
+%End
+
+
 
     virtual QgsRasterDataProvider *createRasterDataProvider(
       const QString &uri,
@@ -212,6 +229,7 @@ Breaks a provider data source URI into its component paths (e.g. file path, laye
 :param uri: uri string
 
 :return: map containing components. Standard components may include:
+
          - "path": file path
          - "layerName"
          - "url": base URL, for online services
@@ -359,7 +377,7 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 %Docstring
 Creates a new connection from ``uri`` and ``configuration``,
 the newly created connection is not automatically stored in the settings, call
-saveConnection() to save it.
+:py:func:`~QgsProviderMetadata.saveConnection` to save it.
 Ownership is transferred to the caller.
 
 :raises :: py:class:`QgsProviderConnectionException`

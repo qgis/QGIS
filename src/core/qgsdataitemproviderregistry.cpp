@@ -66,13 +66,17 @@ void QgsDataItemProviderRegistry::addProvider( QgsDataItemProvider *provider )
     mDataItemProviderOrigin[ provider->name() ] = provider->dataProviderKey();
   }
   mProviders.append( provider );
+  emit providerAdded( provider );
 }
 
 void QgsDataItemProviderRegistry::removeProvider( QgsDataItemProvider *provider )
 {
   int index = mProviders.indexOf( provider );
   if ( index >= 0 )
+  {
+    emit providerWillBeRemoved( provider );
     delete mProviders.takeAt( index );
+  }
 }
 
 QString QgsDataItemProviderRegistry::dataProviderKey( const QString &dataItemProviderName )

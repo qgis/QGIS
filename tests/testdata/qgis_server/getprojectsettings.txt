@@ -123,8 +123,12 @@ Content-Type: text/xml; charset=utf-8
    <WFSLayer name="testlayer èé"/>
   </WFSLayers>
   <Layer>
+   <Name>QGIS Test Project</Name>
    <Title>QGIS Test Project</Title>
    <Abstract>QGIS Test Project</Abstract>
+   <KeywordList>
+    <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
+   </KeywordList>
    <CRS>CRS:84</CRS>
    <CRS>EPSG:4326</CRS>
    <CRS>EPSG:3857</CRS>
@@ -136,10 +140,6 @@ Content-Type: text/xml; charset=utf-8
    </EX_GeographicBoundingBox>
    <BoundingBox maxy="5606043.446" maxx="913283.462" miny="5605986.581" CRS="EPSG:3857" minx="913170.942"/>
    <BoundingBox maxy="8.204165" maxx="44.901599" miny="8.203154" CRS="EPSG:4326" minx="44.901236"/>
-   <Name>QGIS Test Project</Name>
-   <KeywordList>
-    <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
-   </KeywordList>
    <TreeName>QGIS Test Project</TreeName>
    <Layer geometryType="Point" queryable="1" displayField="id" visible="1" opacity="1" expanded="1">
     <Name>layer_with_short_name</Name>

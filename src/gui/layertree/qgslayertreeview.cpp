@@ -22,11 +22,14 @@
 #include "qgslayertreeutils.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayer.h"
+#include "qgsmessagebar.h"
+
 #include "qgsgui.h"
 
 #include <QMenu>
 #include <QContextMenuEvent>
 #include <QHeaderView>
+#include <QScrollBar>
 
 #include "qgslayertreeviewindicator.h"
 #include "qgslayertreeviewitemdelegate.h"
@@ -62,6 +65,8 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
 
   connect( this, &QTreeView::collapsed, this, &QgsLayerTreeView::updateExpandedStateToNode );
   connect( this, &QTreeView::expanded, this, &QgsLayerTreeView::updateExpandedStateToNode );
+
+  connect( horizontalScrollBar(), &QScrollBar::valueChanged, this, &QgsLayerTreeView::onHorizontalScroll );
 }
 
 QgsLayerTreeView::~QgsLayerTreeView()
@@ -76,6 +81,12 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
 
   connect( model, &QAbstractItemModel::rowsInserted, this, &QgsLayerTreeView::modelRowsInserted );
   connect( model, &QAbstractItemModel::rowsRemoved, this, &QgsLayerTreeView::modelRowsRemoved );
+
+  if ( mMessageBar )
+    connect( layerTreeModel(), &QgsLayerTreeModel::messageEmitted,
+             [ = ]( const QString & message, Qgis::MessageLevel level = Qgis::Info, int duration = 5 )
+  {mMessageBar->pushMessage( message, level, duration );}
+         );
 
   QTreeView::setModel( model );
 
@@ -288,7 +299,7 @@ void QgsLayerTreeView::onCustomPropertyChanged( QgsLayerTreeNode *node, const QS
   if ( key != QStringLiteral( "expandedLegendNodes" ) || !QgsLayerTree::isLayer( node ) )
     return;
 
-  QSet<QString> expandedLegendNodes = node->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList().toSet();
+  QSet<QString> expandedLegendNodes = qgis::listToSet( node->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList() );
 
   const QList<QgsLayerTreeModelLegendNode *> legendNodes = layerTreeModel()->layerLegendNodes( QgsLayerTree::toLayer( node ), true );
   for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
@@ -401,7 +412,7 @@ QList<QgsMapLayer *> QgsLayerTreeView::selectedLayersRecursive() const
 {
   const QList<QgsLayerTreeNode *> nodes = layerTreeModel()->indexes2nodes( selectionModel()->selectedIndexes(), false );
   QSet<QgsMapLayer *> layersSet = QgsLayerTreeUtils::collectMapLayersRecursive( nodes );
-  return layersSet.toList();
+  return qgis::setToList( layersSet );
 }
 
 void QgsLayerTreeView::addIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator )
@@ -490,6 +501,20 @@ void QgsLayerTreeView::collapseAllNodes()
   collapseAll();
 }
 
+void QgsLayerTreeView::setMessageBar( QgsMessageBar *messageBar )
+{
+  if ( mMessageBar == messageBar )
+    return;
+
+  mMessageBar = messageBar;
+
+  if ( mMessageBar )
+    connect( layerTreeModel(), &QgsLayerTreeModel::messageEmitted,
+             [ = ]( const QString & message, Qgis::MessageLevel level = Qgis::Info, int duration = 5 )
+  {mMessageBar->pushMessage( message, level, duration );}
+         );
+}
+
 void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
   // we need to keep last mouse position in order to know whether to emit an indicator's clicked() signal
@@ -554,4 +579,10 @@ void QgsLayerTreeView::resizeEvent( QResizeEvent *event )
   // viewport, which allows indicators to become active again.
   header()->setMinimumSectionSize( viewport()->width() );
   QTreeView::resizeEvent( event );
+}
+
+void QgsLayerTreeView::onHorizontalScroll( int value )
+{
+  Q_UNUSED( value )
+  viewport()->update();
 }

@@ -34,6 +34,11 @@ Constructor for QgsRasterLayerTemporalPropertiesWidget.
 Save widget temporal properties inputs.
 %End
 
+    void syncToLayer();
+%Docstring
+Updates the widget state to match the current layer state.
+%End
+
 };
 /************************************************************************
  * This file has been generated automatically from                      *

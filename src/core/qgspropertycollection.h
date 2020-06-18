@@ -17,11 +17,13 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsexpressioncontext.h"
+#include "qgsproperty.h"
+
 #include <QString>
 #include <QVariant>
 #include <QColor>
-#include "qgsexpressioncontext.h"
-#include "qgsproperty.h"
+#include <QDateTime>
 
 class QDomElement;
 class QDomDocument;
@@ -118,6 +120,24 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const = 0;
 
     /**
+     * Calculates the current value of the property with the specified key and interprets it as a datetime.
+     * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
+     * int and used for the key value.
+     * \param context QgsExpressionContext to evaluate the property for.
+     * \param defaultDateTime default datetime to return if the property cannot be calculated as a datetime
+     * \param ok if specified, will be set to TRUE if conversion was successful
+     * \returns value parsed to datetime
+     * \see value()
+     * \see valueAsString()
+     * \see valueAsColor()
+     * \see valueAsDouble()
+     * \see valueAsInt()
+     * \see valueAsBool()
+     * \since QGIS 3.14
+     */
+    QDateTime valueAsDateTime( int key, const QgsExpressionContext &context, const QDateTime &defaultDateTime = QDateTime(), bool *ok SIP_OUT = nullptr ) const;
+
+    /**
      * Calculates the current value of the property with the specified key and interprets it as a string.
      * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
@@ -126,6 +146,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to string
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsColor()
      * \see valueAsDouble()
      * \see valueAsInt()
@@ -142,6 +163,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to color
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsString()
      * \see valueAsDouble()
      * \see valueAsInt()
@@ -158,6 +180,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to double
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsString()
      * \see valueAsColor()
      * \see valueAsInt()
@@ -174,6 +197,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to integer
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsString()
      * \see valueAsColor()
      * \see valueAsDouble()
@@ -190,6 +214,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to bool
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsString()
      * \see valueAsColor()
      * \see valueAsDouble()

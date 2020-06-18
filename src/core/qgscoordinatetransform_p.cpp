@@ -113,6 +113,9 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mShouldReverseCoordinateOperation( other.mShouldReverseCoordinateOperation )
   , mAllowFallbackTransforms( other.mAllowFallbackTransforms )
   , mIsReversed( other.mIsReversed )
+  , mProjLock()
+  , mProjProjections()
+  , mProjFallbackProjections()
 {
 #if PROJ_VERSION_MAJOR < 6
   //must reinitialize to setup mSourceProjection and mDestinationProjection

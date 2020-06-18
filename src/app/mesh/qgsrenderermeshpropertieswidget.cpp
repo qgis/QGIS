@@ -116,6 +116,11 @@ void QgsRendererMeshPropertiesWidget::apply()
   if ( activeVectorDatasetGroupIndex > -1 )
     settings.setVectorSettings( activeVectorDatasetGroupIndex, mMeshRendererVectorSettingsWidget->settings() );
 
+  QgsMeshDatasetIndex staticScalarDatasetIndex( activeScalarDatasetGroupIndex, mMeshLayer->staticScalarDatasetIndex().dataset() );
+  QgsMeshDatasetIndex staticVectorDatasetIndex( activeVectorDatasetGroupIndex, mMeshLayer->staticVectorDatasetIndex().dataset() );
+  mMeshLayer->setStaticScalarDatasetIndex( staticScalarDatasetIndex );
+  mMeshLayer->setStaticVectorDatasetIndex( staticVectorDatasetIndex );
+
   //set the blend mode for the layer
   mMeshLayer->setBlendMode( mBlendModeComboBox->blendMode() );
   //set the averaging method for the layer
@@ -164,16 +169,15 @@ void QgsRendererMeshPropertiesWidget::onActiveScalarGroupChanged( int groupIndex
   mMeshRendererScalarSettingsWidget->syncToLayer();
   mContoursGroupBox->setChecked( groupIndex >= 0 );
   mContoursGroupBox->setEnabled( groupIndex >= 0 );
-  emit mMeshLayer->activeScalarDatasetGroupChanged( groupIndex );
 }
 
 void QgsRendererMeshPropertiesWidget::onActiveVectorGroupChanged( int groupIndex )
 {
-  if ( groupIndex >= 0 && !mMeshLayer->dataProvider()->datasetGroupMetadata( groupIndex ).isVector() )
+  if ( !mMeshLayer->dataProvider() ||
+       ( groupIndex >= 0 && !mMeshLayer->dataProvider()->datasetGroupMetadata( groupIndex ).isVector() ) )
     groupIndex = -1;
   mMeshRendererVectorSettingsWidget->setActiveDatasetGroup( groupIndex );
   mMeshRendererVectorSettingsWidget->syncToLayer();
   mVectorsGroupBox->setChecked( groupIndex >= 0 );
   mVectorsGroupBox->setEnabled( groupIndex >= 0 );
-  emit mMeshLayer->activeVectorDatasetGroupChanged( groupIndex );
 }

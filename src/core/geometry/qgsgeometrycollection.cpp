@@ -36,7 +36,11 @@ QgsGeometryCollection::QgsGeometryCollection()
   mWkbType = QgsWkbTypes::GeometryCollection;
 }
 
-QgsGeometryCollection::QgsGeometryCollection( const QgsGeometryCollection &c ): QgsAbstractGeometry( c )
+QgsGeometryCollection::QgsGeometryCollection( const QgsGeometryCollection &c ):
+  QgsAbstractGeometry( c ),
+  mBoundingBox( c.mBoundingBox ),
+  mHasCachedValidity( c.mHasCachedValidity ),
+  mValidityFailureReason( c.mValidityFailureReason )
 {
   int nGeoms = c.mGeometries.size();
   mGeometries.resize( nGeoms );
@@ -353,7 +357,7 @@ bool QgsGeometryCollection::fromWkt( const QString &wkt )
                             << new QgsMultiCurve << new QgsMultiSurface, QStringLiteral( "GeometryCollection" ) );
 }
 
-QByteArray QgsGeometryCollection::asWkb() const
+QByteArray QgsGeometryCollection::asWkb( WkbFlags flags ) const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
   QVector<QByteArray> wkbForGeometries;
@@ -361,7 +365,7 @@ QByteArray QgsGeometryCollection::asWkb() const
   {
     if ( geom )
     {
-      QByteArray wkb( geom->asWkb() );
+      QByteArray wkb( geom->asWkb( flags ) );
       binarySize += wkb.length();
       wkbForGeometries << wkb;
     }
@@ -748,7 +752,7 @@ bool QgsGeometryCollection::hasCurvedSegments() const
 
 QgsAbstractGeometry *QgsGeometryCollection::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
-  std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::geomFromWkbType( mWkbType ) );
+  std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::linearType( mWkbType ) ) );
   QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom.get() );
   if ( !geomCollection )
   {

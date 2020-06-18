@@ -160,6 +160,10 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &opt
 
   QgsGdalProviderBase::registerGdalDrivers();
 
+#ifndef QT_NO_NETWORKPROXY
+  QgsGdalUtils::setupProxy();
+#endif
+
   if ( !CPLGetConfigOption( "AAIGRID_DATATYPE", nullptr ) )
   {
     // GDAL tends to open AAIGrid as Float32 which results in lost precision
@@ -212,6 +216,7 @@ QgsGdalProvider::QgsGdalProvider( const QgsGdalProvider &other )
   if ( forceUseSameDataset )
   {
     ++ ( *other.mpRefCounter );
+    // cppcheck-suppress copyCtorPointerCopying
     mpRefCounter = other.mpRefCounter;
     mpMutex = other.mpMutex;
     mpLightRefCounter = new QAtomicInt( 1 );
@@ -456,6 +461,9 @@ void QgsGdalProvider::closeCachedGdalHandlesFor( QgsGdalProvider *provider )
 QgsGdalProvider::~QgsGdalProvider()
 {
   QMutexLocker locker( sGdalProviderMutex() );
+
+  if ( mGdalTransformerArg )
+    GDALDestroyTransformer( mGdalTransformerArg );
 
   int lightRefCounter = -- ( *mpLightRefCounter );
   int refCounter = -- ( *mpRefCounter );
@@ -1233,7 +1241,8 @@ int QgsGdalProvider::capabilities() const
                    | QgsRasterDataProvider::Size
                    | QgsRasterDataProvider::BuildPyramids
                    | QgsRasterDataProvider::Create
-                   | QgsRasterDataProvider::Remove;
+                   | QgsRasterDataProvider::Remove
+                   | QgsRasterDataProvider::Prefetch;
   if ( mDriverName != QLatin1String( "WMS" ) )
   {
     capability |= QgsRasterDataProvider::Size;
@@ -2286,6 +2295,12 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
     extensions << QStringLiteral( "zip" ) << QStringLiteral( "gz" ) << QStringLiteral( "tar" ) << QStringLiteral( "tar.gz" ) << QStringLiteral( "tgz" );
   }
 
+  // can't forget the all supported case
+  QStringList exts;
+  for ( const QString &ext : qgis::as_const( extensions ) )
+    exts << QStringLiteral( "*.%1 *.%2" ).arg( ext, ext.toUpper() );
+  fileFiltersString.prepend( QObject::tr( "All supported files" ) + QStringLiteral( " (%1);;" ).arg( exts.join( QStringLiteral( " " ) ) ) );
+
   // can't forget the default case - first
   fileFiltersString.prepend( QObject::tr( "All files" ) + " (*);;" );
 
@@ -2660,9 +2675,18 @@ void QgsGdalProvider::initBaseDataset()
   {
     QgsLogger::warning( QStringLiteral( "Creating Warped VRT." ) );
 
-    mGdalDataset =
-      GDALAutoCreateWarpedVRT( mGdalBaseDataset, nullptr, nullptr,
-                               GRA_NearestNeighbour, 0.2, nullptr );
+    if ( GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
+    {
+      mGdalDataset =
+        QgsGdalUtils::rpcAwareAutoCreateWarpedVrt( mGdalBaseDataset, nullptr, nullptr,
+            GRA_NearestNeighbour, 0.2, nullptr );
+    }
+    else
+    {
+      mGdalDataset =
+        GDALAutoCreateWarpedVRT( mGdalBaseDataset, nullptr, nullptr,
+                                 GRA_NearestNeighbour, 0.2, nullptr );
+    }
 
     if ( !mGdalDataset )
     {
@@ -2678,6 +2702,8 @@ void QgsGdalProvider::initBaseDataset()
   {
     mGdalDataset = mGdalBaseDataset;
   }
+
+  mGdalTransformerArg = GDALCreateGenImgProjTransformer( mGdalBaseDataset, nullptr, nullptr, nullptr, TRUE, 1.0, 0 );
 
   if ( !hasGeoTransform )
   {
@@ -2951,7 +2977,7 @@ QgsGdalProvider *QgsGdalProviderMetadata::createRasterDataProvider(
   }
 
   GDALSetGeoTransform( dataset.get(), geoTransform );
-  GDALSetProjection( dataset.get(), crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLocal8Bit().data() );
+  GDALSetProjection( dataset.get(), crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLocal8Bit().data() );
 
   QgsDataProvider::ProviderOptions providerOptions;
   return new QgsGdalProvider( uri, providerOptions, true, dataset.release() );
@@ -3147,6 +3173,20 @@ QString QgsGdalProvider::validatePyramidsConfigOptions( QgsRaster::RasterPyramid
   }
 
   return QString();
+}
+
+QgsPoint QgsGdalProvider::transformCoordinates( const QgsPoint &point, QgsRasterDataProvider::TransformType type )
+{
+  if ( !mGdalTransformerArg )
+    return QgsPoint();
+
+  int success;
+  double x = point.x(), y = point.y(), z = point.is3D() ? point.z() : 0;
+  GDALUseTransformer( mGdalTransformerArg, type == TransformLayerToImage, 1, &x, &y, &z, &success );
+  if ( !success )
+    return QgsPoint();
+
+  return QgsPoint( x, y, z );
 }
 
 bool QgsGdalProvider::isEditable() const

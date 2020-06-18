@@ -270,7 +270,7 @@ class TestQgsLayoutPolygon(unittest.TestCase, LayoutItemTestCase):
         style = QgsFillSymbol.createSimple(props)
         shape.setSymbol(style)
 
-        #save original item to xml
+        # save original item to xml
         doc = QDomDocument("testdoc")
         elem = doc.createElement("test")
         self.assertTrue(shape.writeXml(elem, doc, QgsReadWriteContext()))

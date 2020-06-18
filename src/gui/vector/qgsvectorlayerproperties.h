@@ -28,6 +28,7 @@
 #include "qgsvectorlayerserverproperties.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreefilterproxymodel.h"
 
 class QgsMapLayer;
 
@@ -48,6 +49,7 @@ class QgsVectorLayer3DRendererWidget;
 class QgsMapLayerComboBox;
 class QgsDoubleSpinBox;
 class QgsMaskingWidget;
+class QgsVectorLayerTemporalPropertiesWidget;
 
 class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
 {
@@ -158,6 +160,19 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
   private:
 
+    class DependenciesLayerTreeModel : public QgsLayerTreeFilterProxyModel
+    {
+      public:
+        DependenciesLayerTreeModel( QgsVectorLayer *mainLayer, QObject *parent = nullptr )
+          : QgsLayerTreeFilterProxyModel( parent )
+          , mMainLayer( mainLayer )
+        {}
+
+      private:
+        QgsVectorLayer *mMainLayer = nullptr;
+        bool layerShown( QgsMapLayer *layer ) const override {return layer != mMainLayer;}
+    };
+
     enum PropertyType
     {
       Style = 0,
@@ -226,8 +241,7 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QgsExpressionContext createExpressionContext() const override;
 
-    std::unique_ptr<QgsLayerTree> mLayersDependenciesTreeGroup;
-    std::unique_ptr<QgsLayerTreeModel> mLayersDependenciesTreeModel;
+    DependenciesLayerTreeModel *mLayersDependenciesTreeModel;
 
     void showHelp();
 
@@ -241,6 +255,8 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QAction *mAuxiliaryLayerActionAddField = nullptr;
 
     QgsVectorLayer3DRendererWidget *mVector3DWidget = nullptr;
+
+    QgsVectorLayerTemporalPropertiesWidget *mTemporalWidget = nullptr;
 
   private slots:
     void openPanel( QgsPanelWidget *panel );

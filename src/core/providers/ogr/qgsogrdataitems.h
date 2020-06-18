@@ -55,6 +55,20 @@ class CORE_EXPORT QgsOgrDbLayerInfo
     QgsLayerItem::LayerType mLayerType = QgsLayerItem::LayerType::NoType;
 };
 
+/**
+ * The QgsOgrLayerException class is thrown by QgsOgrLayerItem when the layer is not valid
+ */
+class CORE_EXPORT QgsOgrLayerNotValidException: public QgsException
+{
+  public:
+
+    /**
+     * Constructor for QgsOgrLayerNotValidException, with the specified error \a message.
+     */
+    QgsOgrLayerNotValidException( const QString &message )
+      : QgsException( message )
+    {}
+};
 
 class CORE_EXPORT QgsOgrLayerItem final: public QgsLayerItem
 {
@@ -63,7 +77,11 @@ class CORE_EXPORT QgsOgrLayerItem final: public QgsLayerItem
     QgsOgrLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, bool isSubLayer = false );
 
     QString layerName() const override;
-    //! Retrieve sub layers from a DB ogr layer \a path with the specified \a driver
+
+    /**
+     * Retrieve sub layers from a DB ogr layer \a path with the specified \a driver
+     * If the layer is not valid, throw a std::exception
+     */
     static QList<QgsOgrDbLayerInfo *> subLayers( const QString &path, const QString &driver );
     //! Returns a LayerType from a geometry type string
     static QgsLayerItem::LayerType layerTypeFromDb( const QString &geometryType );

@@ -27,6 +27,8 @@
 // version without notice, or even be removed.
 //
 
+#define SIP_NO_FILE
+
 #include <QtConcurrent/QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QElapsedTimer>
@@ -125,7 +127,6 @@ class QgsDemHeightMapGenerator : public QObject
       QgsChunkNodeId tileId;
       QgsRectangle extent;
       QFuture<QByteArray> future;
-      QFutureWatcher<QByteArray> *fw;
       QElapsedTimer timer;
     };
 

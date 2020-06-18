@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 """
 Tests for WFS-T provider using QGIS Server through qgis_wrapped_server.py.
@@ -32,7 +31,6 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '05/15/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-
 import os
 import sys
 import re
@@ -57,7 +55,6 @@ from qgis.testing import (
 # 0 = auto
 QGIS_SERVER_PORT = os.environ.get('QGIS_SERVER_PORT', '0')
 
-
 qgis_app = start_app()
 
 
@@ -75,7 +72,7 @@ class TestWFST(unittest.TestCase):
         cls.project_path = cls.temp_path + '/' + 'wfs_transactional' + '/' + \
             'wfs_transactional.qgs'
         assert os.path.exists(cls.project_path), "Project not found: %s" % \
-            cls.project_path
+                                                 cls.project_path
         # Clean env just to be sure
         env_vars = ['QUERY_STRING', 'QGIS_PROJECT_FILE']
         for ev in env_vars:
@@ -92,7 +89,7 @@ class TestWFST(unittest.TestCase):
         cls.server = subprocess.Popen([sys.executable, server_path],
                                       env=os.environ, stdout=subprocess.PIPE)
         line = cls.server.stdout.readline()
-        cls.port = int(re.findall(b':(\d+)', line)[0])
+        cls.port = int(re.findall(br':(\d+)', line)[0])
         assert cls.port != 0
         # Wait for the server process to start
         assert waitServer('http://127.0.0.1:%s' % cls.port), "Server is not responding!"
@@ -151,7 +148,7 @@ class TestWFST(unittest.TestCase):
                                                     cls.project_path),
             'version': 'auto',
             'table': '',
-            #'sql': '',
+            # 'sql': '',
         }
         uri = ' '.join([("%s='%s'" % (k, v)) for k, v in list(parms.items())])
         wfs_layer = QgsVectorLayer(uri, layer_name, 'WFS')

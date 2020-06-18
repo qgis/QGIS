@@ -76,8 +76,8 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
   layout->setContentsMargins( 0, 0, 0, 0 );
 
   cboRendererType = new QComboBox( this );
-  cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererNullSymbol.svg" ) ), tr( "No symbols" ) );
-  cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererSingleSymbol.svg" ) ), tr( "Single symbol" ) );
+  cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererNullSymbol.svg" ) ), tr( "No Symbols" ) );
+  cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererSingleSymbol.svg" ) ), tr( "Single Symbol" ) );
   cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererRuleBasedSymbol.svg" ) ), tr( "Rule-based" ) );
 
   widgetBaseProperties = new QgsVectorLayer3DPropertiesWidget( this );
@@ -100,6 +100,8 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
   connect( widgetBaseProperties, &QgsVectorLayer3DPropertiesWidget::changed, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
+
+  syncToLayer( layer );
 }
 
 
@@ -206,7 +208,17 @@ QgsMapLayerConfigWidget *QgsVectorLayer3DRendererWidgetFactory::createWidget( Qg
   return new QgsVectorLayer3DRendererWidget( layer, canvas, parent );
 }
 
+bool QgsVectorLayer3DRendererWidgetFactory::supportLayerPropertiesDialog() const
+{
+  return true;
+}
+
 bool QgsVectorLayer3DRendererWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
 {
   return layer->type() == QgsMapLayerType::VectorLayer;
+}
+
+QString QgsVectorLayer3DRendererWidgetFactory::layerPropertiesPagePositionHint() const
+{
+  return QStringLiteral( "mOptsPage_Diagrams" );
 }

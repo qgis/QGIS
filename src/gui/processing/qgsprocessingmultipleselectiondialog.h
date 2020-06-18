@@ -117,6 +117,9 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
      */
     void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false );
 
+    //! Returns pointer to the list view
+    QListView *listView() const { return mSelectionList; }
+
     //! Dialog list model
     QStandardItemModel *mModel = nullptr;
     //! Value formatter

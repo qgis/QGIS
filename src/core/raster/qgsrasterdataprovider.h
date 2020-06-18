@@ -365,9 +365,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \return QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers
      *         (from 1).
      *         QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
-     *         (WMS) - TODO: it is not consistent with QgsRaster::IdentifyFormatValue.
      *         QgsRaster::IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
-     *         Empty if failed or there are no results (TODO: better error reporting).
+     *         Empty if failed or there are no results.
      * \note The arbitraryness of the returned document is enforced by WMS standards
      *       up to at least v1.3.0
      * \see sample(), which is much more efficient for simple "value at point" queries.
@@ -556,6 +555,30 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \since QGIS 3.10.0
      */
     virtual bool ignoreExtents() const;
+
+    /**
+     * Types of transformation in transformCoordinates() function.
+     * \since QGIS 3.14
+     */
+    enum TransformType
+    {
+      TransformImageToLayer,  //!< Transforms image coordinates to layer (georeferenced) coordinates
+      TransformLayerToImage,  //!< Transforms layer (georeferenced) coordinates to image coordinates
+    };
+
+    /**
+     * Transforms coordinates between source image coordinate space [0..width]x[0..height] and
+     * layer coordinate space (georeferenced coordinates). Often this transformation is a simple
+     * 2D affine transformation (offset and scaling), but rasters with different georeferencing
+     * methods like GCPs (ground control points) or RPCs (rational polynomial coefficients) may
+     * require a more complex transform.
+     *
+     * If the transform fails (input coordinates are outside of the valid range or data provider
+     * does not support this functionality), an empty point is returned.
+     *
+     * \since QGIS 3.14
+     */
+    virtual QgsPoint transformCoordinates( const QgsPoint &point, TransformType type );
 
   signals:
 

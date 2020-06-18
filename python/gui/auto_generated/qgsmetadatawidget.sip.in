@@ -34,7 +34,7 @@ A wizard to edit metadata on a map layer.
 %Docstring
 Constructor for the wizard.
 
-If ``layer`` is set, then this constructor automatically sets the widget's metadata() to match
+If ``layer`` is set, then this constructor automatically sets the widget's :py:func:`~QgsMetadataWidget.metadata` to match
 the layer's metadata..
 
 .. seealso:: :py:func:`setMetadata`
@@ -65,7 +65,7 @@ Sets the ``metadata`` to display in the widget.
 This method can be called after constructing a QgsMetadataWidget in order
 to set the displayed metadata to custom, non-layer based metadata.
 
-Calling this method will automatically setMode() to the correct mode corresponding
+Calling this method will automatically :py:func:`~QgsMetadataWidget.setMode` to the correct mode corresponding
 to the specified ``metadata`` object.
 
 .. seealso:: :py:func:`metadata`

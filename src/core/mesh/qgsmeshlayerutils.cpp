@@ -22,6 +22,7 @@
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshtimesettings.h"
 #include "qgstriangularmesh.h"
+#include "qgslogger.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmesh3daveraging.h"
 #include "qgsmeshlayer.h"
@@ -129,7 +130,16 @@ QVector<QgsVector> QgsMeshLayerUtils::griddedVectorValues( const QgsMeshLayer *m
   if ( dataType == QgsMeshDatasetGroupMetadata::DataOnEdges )
     return vectors;
 
-  vectors.reserve( size.height()*size.width() );
+  try
+  {
+    vectors.reserve( size.height()*size.width() );
+  }
+  catch ( ... )
+  {
+    QgsDebugMsgLevel( "Unable to store the arrow grid in memory", 1 );
+    return QVector<QgsVector>();
+  }
+
   for ( int iy = 0; iy < size.height(); ++iy )
   {
     double y = minCorner.y() + iy * ySpacing;
@@ -269,6 +279,12 @@ double QgsMeshLayerUtils::interpolateFromVerticesData( double fraction, double v
   return val1 + ( val2 - val1 ) * fraction;
 }
 
+QgsMeshDatasetValue QgsMeshLayerUtils::interpolateFromVerticesData( double fraction, const QgsMeshDatasetValue &val1, const QgsMeshDatasetValue &val2 )
+{
+  return QgsMeshDatasetValue( interpolateFromVerticesData( fraction, val1.x(), val2.x() ),
+                              interpolateFromVerticesData( fraction, val1.y(), val2.y() ) );
+}
+
 
 QgsVector QgsMeshLayerUtils::interpolateVectorFromVerticesData( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, QgsVector vect1, QgsVector vect2, QgsVector vect3, const QgsPointXY &pt )
 {
@@ -308,6 +324,7 @@ QVector<double> QgsMeshLayerUtils::interpolateFromFacesData(
   QgsMeshRendererScalarSettings::DataResamplingMethod method )
 {
   assert( nativeMesh );
+  Q_UNUSED( method );
   assert( method == QgsMeshRendererScalarSettings::NeighbourAverage );
 
   // assuming that native vertex count = triangular vertex count
@@ -360,9 +377,11 @@ QVector<double> QgsMeshLayerUtils::resampleFromVerticesToFaces(
   QgsMeshRendererScalarSettings::DataResamplingMethod method )
 {
   assert( nativeMesh );
+  Q_UNUSED( method );
   assert( method == QgsMeshRendererScalarSettings::NeighbourAverage );
 
   // assuming that native vertex count = triangular vertex count
+  Q_UNUSED( triangularMesh );
   assert( nativeMesh->vertices.size() == triangularMesh->vertices().size() );
 
   QVector<double> ret( nativeMesh->faceCount(), std::numeric_limits<double>::quiet_NaN() );
@@ -580,6 +599,5 @@ QVector<QVector3D> QgsMeshLayerUtils::calculateNormals( const QgsTriangularMesh 
 
   return normals;
 }
-
 
 ///@endcond

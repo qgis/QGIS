@@ -212,6 +212,7 @@ void QgsFeatureListView::setEditSelection( const QModelIndex &index, QItemSelect
   bool ok = true;
   emit aboutToChangeEditSelection( ok );
 
+  // cppcheck-suppress assertWithSideEffect
   Q_ASSERT( index.model() == mModel->masterModel() || !index.isValid() );
 
   if ( ok )
@@ -477,7 +478,7 @@ void QgsFeatureListView::setFeatureSelectionManager( QgsIFeatureSelectionManager
   if ( mFeatureSelectionModel )
     mFeatureSelectionModel->setFeatureSelectionManager( mFeatureSelectionManager );
 
-  // only delete the owner selection manager and not one created from outside
+  // only delete the owned selection manager and not one created from outside
   if ( mOwnedFeatureSelectionManager )
   {
     mOwnedFeatureSelectionManager->deleteLater();

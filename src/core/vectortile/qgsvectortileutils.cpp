@@ -51,7 +51,7 @@ QPolygon QgsVectorTileUtils::tilePolygon( QgsTileXYZ id, const QgsCoordinateTran
 QgsFields QgsVectorTileUtils::makeQgisFields( QSet<QString> flds )
 {
   QgsFields fields;
-  QStringList fieldsSorted = flds.toList();
+  QStringList fieldsSorted = qgis::setToList( flds );
   std::sort( fieldsSorted.begin(), fieldsSorted.end() );
   for ( const QString &fieldName : qgis::as_const( fieldsSorted ) )
   {
@@ -80,7 +80,7 @@ QgsVectorLayer *QgsVectorTileUtils::makeVectorLayerForTile( QgsVectorTileLayer *
 {
   QgsVectorTileMVTDecoder decoder;
   decoder.decode( tileID, mvt->getRawTile( tileID ) );
-  QSet<QString> fieldNames = QSet<QString>::fromList( decoder.layerFieldNames( layerName ) );
+  QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
   fieldNames << QStringLiteral( "_geom_type" );
   QMap<QString, QgsFields> perLayerFields;
   QgsFields fields = QgsVectorTileUtils::makeQgisFields( fieldNames );
@@ -116,22 +116,28 @@ QgsVectorLayer *QgsVectorTileUtils::makeVectorLayerForTile( QgsVectorTileLayer *
 }
 
 
-QString QgsVectorTileUtils::formatXYZUrlTemplate( const QString &url, QgsTileXYZ tile )
+QString QgsVectorTileUtils::formatXYZUrlTemplate( const QString &url, QgsTileXYZ tile, const QgsTileMatrix &tileMatrix )
 {
   QString turl( url );
 
   turl.replace( QLatin1String( "{x}" ), QString::number( tile.column() ), Qt::CaseInsensitive );
-  // TODO: inverted Y axis
-//  if ( turl.contains( QLatin1String( "{-y}" ) ) )
-//  {
-//    turl.replace( QLatin1String( "{-y}" ), QString::number( tm.matrixHeight - tile.tileRow - 1 ), Qt::CaseInsensitive );
-//  }
-//  else
+  if ( turl.contains( QLatin1String( "{-y}" ) ) )
+  {
+    turl.replace( QLatin1String( "{-y}" ), QString::number( tileMatrix.matrixHeight() - tile.row() - 1 ), Qt::CaseInsensitive );
+  }
+  else
   {
     turl.replace( QLatin1String( "{y}" ), QString::number( tile.row() ), Qt::CaseInsensitive );
   }
   turl.replace( QLatin1String( "{z}" ), QString::number( tile.zoomLevel() ), Qt::CaseInsensitive );
   return turl;
+}
+
+bool QgsVectorTileUtils::checkXYZUrlTemplate( const QString &url )
+{
+  return url.contains( QStringLiteral( "{x}" ) ) &&
+         ( url.contains( QStringLiteral( "{y}" ) ) || url.contains( QStringLiteral( "{-y}" ) ) ) &&
+         url.contains( QStringLiteral( "{z}" ) );
 }
 
 //! a helper class for ordering tile requests according to the distance from view center

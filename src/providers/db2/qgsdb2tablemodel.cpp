@@ -371,7 +371,7 @@ QString QgsDb2TableModel::layerURI( const QModelIndex &index, const QString &con
 
     srid = index.sibling( index.row(), DbtmSrid ).data( Qt::DisplayRole ).toString();
     bool ok;
-    srid.toInt( &ok );
+    ( void )srid.toInt( &ok );
     if ( !ok )
       return QString();
   }

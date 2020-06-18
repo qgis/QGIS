@@ -31,6 +31,7 @@ class QgsOracleExpressionCompiler : public QgsSqlExpressionCompiler
     QString quotedIdentifier( const QString &identifier ) override;
     QString quotedValue( const QVariant &value, bool &ok ) override;
     QString sqlFunctionFromFunctionName( const QString &fnName ) const override;
+    QStringList sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const override;
 };
 
 #endif // QGSORACLEEXPRESSIONCOMPILER_H

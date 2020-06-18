@@ -114,6 +114,8 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     void enableIntersectionSnapping( bool enabled );
 
+    void enableSelfSnapping( bool enabled );
+
     void modeButtonTriggered( QAction *action );
     void avoidIntersectionsModeButtonTriggered( QAction *action );
     void typeButtonTriggered( QAction *action );
@@ -172,6 +174,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *mIntersectionSnappingAction = nullptr;
     QAction *mEnableTracingAction = nullptr;
     QgsDoubleSpinBox *mTracingOffsetSpinBox = nullptr;
+    QAction *mSelfSnappingAction = nullptr;
     QTreeView *mLayerTreeView = nullptr;
     QWidget *mAdvancedConfigWidget = nullptr;
     QgsFloatingWidget *mAdvancedConfigContainer = nullptr;

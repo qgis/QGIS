@@ -38,6 +38,7 @@ class Test:
     def unload(self):
         pass
 
+
 def classFactory(iface):
     # load Test class from file Test
     return Test(iface)

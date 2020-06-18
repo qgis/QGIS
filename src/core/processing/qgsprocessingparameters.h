@@ -404,6 +404,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterDatabaseSchema;
     else if ( sipCpp->type() == QgsProcessingParameterDatabaseTable::typeName() )
       sipType = sipType_QgsProcessingParameterDatabaseTable;
+    else if ( sipCpp->type() == QgsProcessingParameterFieldMapping::typeName() )
+      sipType = sipType_QgsProcessingParameterFieldMapping;
     else
       sipType = nullptr;
     SIP_END
@@ -1823,7 +1825,7 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
  * For numeric parameters with a dataType() of Double, the number of decimals places
  * shown in the parameter's widget can be specified by setting the parameter's metadata. For example:
  *
- * * \code{.py}
+ * \code{.py}
  *   param = QgsProcessingParameterNumber( 'VAL', 'Threshold', type=QgsProcessingParameter.Double)
  *   # only show two decimal places in parameter's widgets, not 6:
  *   param.setMetadata( {'widget_wrapper':
@@ -1926,7 +1928,7 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
  * The number of decimals places shown in a distance parameter's widget can be specified by
  * setting the parameter's metadata. For example:
  *
- * * \code{.py}
+ * \code{.py}
  *   param = QgsProcessingParameterDistance( 'VAL', 'Threshold')
  *   # only show two decimal places in parameter's widgets, not 6:
  *   param.setMetadata( {'widget_wrapper':
@@ -2700,6 +2702,22 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
     virtual QString generateTemporaryDestination() const;
 
     /**
+     * Tests whether a \a value is a supported value for this parameter.
+     *
+     * Will return FALSE when a \a value with an unsupported file extension is specified. The default implementation
+     * calls QgsProcessingProvider::isSupportedOutputValue() to test compatibility.
+     *
+     * \param value value to test
+     * \param context Processing context
+     * \param error will be set to a descriptive error string
+     *
+     * \returns TRUE if \a value is supported.
+     *
+     * \since QGIS 3.14
+     */
+    virtual bool isSupportedOutputValue( const QVariant &value, QgsProcessingContext &context, QString &error SIP_OUT ) const;
+
+    /**
      * Returns TRUE if the destination should be created by default. For optional parameters,
      * a return value of FALSE indicates that the destination should not be created by default.
      * \see setCreateByDefault()
@@ -2968,7 +2986,21 @@ class CORE_EXPORT QgsProcessingParameterRasterDestination : public QgsProcessing
  * \ingroup core
  * A generic file based destination parameter, for specifying the destination path for a file (non-map layer)
  * created by the algorithm.
-  * \since QGIS 3.0
+ *
+ * In some circumstances it is desirable to avoid the usual file overwriting confirmation prompt when
+ * users select an existing destination file for this parameter type (e.g., for algorithms which
+ * append to an existing destination file instead of overwriting them.). This can be done by setting
+ * the widget wrapper metadata "dontconfirmoverwrite" option:
+ *
+ * \code{.py}
+ *   param = QgsProcessingParameterFileDestination( 'OUTPUT', 'Destination file')
+ *   # don't show the file overwrite warning when users select a destination file:
+ *   param.setMetadata( {'widget_wrapper':
+ *     { 'dontconfirmoverwrite': True }
+ *   })
+ * \endcode
+ *
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingParameterFileDestination : public QgsProcessingDestinationParameter
 {
@@ -3466,7 +3498,7 @@ class CORE_EXPORT QgsProcessingParameterMapTheme : public QgsProcessingParameter
  * QgsProcessingParameterDateTime should be evaluated by calling QgsProcessingAlgorithm::parameterAsDateTime(),
  * which will return a date time value.
  *
- * * \since QGIS 3.14
+ * \since QGIS 3.14
  */
 class CORE_EXPORT QgsProcessingParameterDateTime : public QgsProcessingParameterDefinition
 {

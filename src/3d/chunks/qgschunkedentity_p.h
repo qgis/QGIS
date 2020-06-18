@@ -29,6 +29,8 @@
 
 #include <Qt3DCore/QEntity>
 
+#define SIP_NO_FILE
+
 class QgsAABB;
 class QgsChunkNode;
 class QgsChunkList;
@@ -170,6 +172,8 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
 
     //! If picking is enabled, QObjectPicker objects will be assigned to chunks and pickedObject() signals fired on mouse click
     bool mPickingEnabled = false;
+
+    bool mIsValid = true;
 };
 
 /// @endcond

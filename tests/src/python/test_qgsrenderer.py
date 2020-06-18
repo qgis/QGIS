@@ -17,7 +17,8 @@ from qgis.core import (QgsRendererAbstractMetadata,
                        QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint
+                       QgsPoint,
+                       QgsPointXY
                        )
 from qgis.testing import start_app, unittest
 

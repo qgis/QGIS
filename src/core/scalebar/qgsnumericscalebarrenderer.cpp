@@ -18,6 +18,7 @@
 #include "qgsscalebarsettings.h"
 #include "qgslayoututils.h"
 #include "qgsnumericformat.h"
+#include "qgstextrenderer.h"
 #include <QList>
 #include <QPainter>
 
@@ -83,13 +84,13 @@ void QgsNumericScaleBarRenderer::draw( QgsRenderContext &context, const QgsScale
   painter->restore();
 }
 
-QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( QgsRenderContext &, const QgsScaleBarSettings &settings,
+QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const QgsScaleBarSettings &settings,
     const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
 {
-  QFont font = settings.textFormat().toQFont();
+  const double painterToMm = 1.0 / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
 
-  double textWidth = QgsLayoutUtils::textWidthMM( font, scaleText( scaleContext.scale, settings ) );
-  double textHeight = QgsLayoutUtils::fontAscentMM( font );
+  double textWidth = QgsTextRenderer::textWidth( context, settings.textFormat(), QStringList() << scaleText( scaleContext.scale, settings ) ) * painterToMm;
+  double textHeight = QgsTextRenderer::textHeight( context, settings.textFormat(), QStringList() << scaleText( scaleContext.scale, settings ) ) * painterToMm;
 
   return QSizeF( 2 * settings.boxContentSpace() + textWidth,
                  textHeight + 2 * settings.boxContentSpace() );

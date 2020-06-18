@@ -25,7 +25,7 @@
 
 /**
  * \class QgisAppStyleSheet
- * \brief Adjustable stylesheet for the Qgis application
+ * \brief Adjustable stylesheet for the QGIS application
  */
 class APP_EXPORT QgisAppStyleSheet: public QObject
 {

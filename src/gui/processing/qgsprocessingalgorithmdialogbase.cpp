@@ -196,9 +196,10 @@ void QgsProcessingAlgorithmDialogBase::setMainWidget( QgsPanelWidget *widget )
   widget->setDockMode( true );
 
   mMainWidget = widget;
+  connect( mMainWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
 }
 
-QWidget *QgsProcessingAlgorithmDialogBase::mainWidget()
+QgsPanelWidget *QgsProcessingAlgorithmDialogBase::mainWidget()
 {
   return mMainWidget;
 }
@@ -660,6 +661,15 @@ void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isE
     txtLog->append( formatStringForLog( message ) );
   scrollToBottomOfLog();
   processEvents();
+}
+
+void QgsProcessingAlgorithmDialogBase::reject()
+{
+  if ( !mAlgorithmTask )
+  {
+    setAttribute( Qt::WA_DeleteOnClose );
+  }
+  QDialog::reject();
 }
 
 //

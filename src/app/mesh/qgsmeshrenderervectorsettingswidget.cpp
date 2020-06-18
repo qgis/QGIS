@@ -26,8 +26,8 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
 
   mShaftLengthComboBox->setCurrentIndex( -1 );
 
-  mColoringMethodComboBox->addItem( tr( "Single Color" ), QgsMeshRendererVectorSettings::SingleColor );
-  mColoringMethodComboBox->addItem( tr( "Color Ramp Shader" ), QgsMeshRendererVectorSettings::ColorRamp );
+  mColoringMethodComboBox->addItem( tr( "Single Color" ), QgsInterpolatedLineColor::SingleColor );
+  mColoringMethodComboBox->addItem( tr( "Color Ramp Shader" ), QgsInterpolatedLineColor::ColorRamp );
 
   connect( mColorWidget, &QgsColorButton::colorChanged, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
   connect( mColoringMethodComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
@@ -118,7 +118,7 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
   // basic
   settings.setColor( mColorWidget->color() );
   settings.setLineWidth( mLineWidthSpinBox->value() );
-  settings.setColoringMethod( static_cast<QgsMeshRendererVectorSettings::ColoringMethod>
+  settings.setColoringMethod( static_cast<QgsInterpolatedLineColor::ColoringMethod>
                               ( mColoringMethodComboBox->currentData().toInt() ) );
   settings.setColorRampShader( mColorRampShaderWidget->shader() );
 
@@ -181,16 +181,20 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
 
 void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
 {
-  if ( !mMeshLayer )
+  if ( !mMeshLayer && !mMeshLayer->dataProvider() )
     return;
 
   if ( mActiveDatasetGroup < 0 )
     return;
 
+  bool hasFaces = ( mMeshLayer->dataProvider() &&
+                    mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Face ) );
+
   const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
   const QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( mActiveDatasetGroup );
 
-  mSymbologyVectorComboBox->setCurrentIndex( settings.symbology() );
+  mSymbologyGroupBox->setVisible( hasFaces );
+  mSymbologyVectorComboBox->setCurrentIndex( hasFaces ? settings.symbology() : 0 );
 
   // Arrow settings
   const QgsMeshRendererVectorArrowSettings arrowSettings = settings.arrowSettings();
@@ -218,7 +222,8 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
   mHeadLengthLineEdit->setText( QString::number( arrowSettings.arrowHeadLengthRatio() * 100.0 ) );
 
   // user grid
-  mDisplayVectorsOnGridGroupBox->setChecked( settings.isOnUserDefinedGrid() );
+  mDisplayVectorsOnGridGroupBox->setVisible( hasFaces );
+  mDisplayVectorsOnGridGroupBox->setChecked( settings.isOnUserDefinedGrid() && hasFaces );
   mXSpacingSpinBox->setValue( settings.userGridCellWidth() );
   mYSpacingSpinBox->setValue( settings.userGridCellHeight() );
 
@@ -271,9 +276,9 @@ void QgsMeshRendererVectorSettingsWidget::onStreamLineSeedingMethodChanged( int 
 
 void QgsMeshRendererVectorSettingsWidget::onColoringMethodChanged()
 {
-  mColorRampShaderGroupBox->setVisible( mColoringMethodComboBox->currentData() == QgsMeshRendererVectorSettings::ColorRamp );
-  mColorWidget->setVisible( mColoringMethodComboBox->currentData() == QgsMeshRendererVectorSettings::SingleColor );
-  mSimgleColorLabel->setVisible( mColoringMethodComboBox->currentData() == QgsMeshRendererVectorSettings::SingleColor );
+  mColorRampShaderGroupBox->setVisible( mColoringMethodComboBox->currentData() == QgsInterpolatedLineColor::ColorRamp );
+  mColorWidget->setVisible( mColoringMethodComboBox->currentData() == QgsInterpolatedLineColor::SingleColor );
+  mSimgleColorLabel->setVisible( mColoringMethodComboBox->currentData() == QgsInterpolatedLineColor::SingleColor );
 
   if ( mColorRampShaderWidget->shader().colorRampItemList().isEmpty() )
     loadColorRampShader();

@@ -210,7 +210,7 @@ Gets rectangle enlarged by buffer.
 
 .. note::
 
-   In earlier QGIS releases this method was named buffer().
+   In earlier QGIS releases this method was named :py:func:`~QgsRectangle.buffer`.
 
 .. seealso:: :py:func:`grow`
 
@@ -277,7 +277,7 @@ An empty rectangle may still be non-null if it contains valid information (e.g. 
 
     bool isNull() const;
 %Docstring
-Test if the rectangle is null (all coordinates zero or after call to setMinimal()).
+Test if the rectangle is null (all coordinates zero or after call to :py:func:`~QgsRectangle.setMinimal`).
 A null rectangle is also an empty rectangle.
 
 .. versionadded:: 2.4

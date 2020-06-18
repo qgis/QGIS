@@ -637,6 +637,9 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
 
     void mapThemeChanged( const QString &theme );
 
+    //! Renames the active map theme called \a theme to \a newTheme
+    void currentMapThemeRenamed( const QString &theme, const QString &newTheme );
+
     //! Create cache image
     void recreateCachedImageInBackground();
 

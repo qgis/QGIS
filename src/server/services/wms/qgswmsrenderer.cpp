@@ -58,7 +58,7 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerfeaturecounter.h"
 #include "qgspallabeling.h"
-#include "qgslayerrestorer.h"
+#include "qgswmsrestorer.h"
 #include "qgsdxfexport.h"
 #include "qgssymbollayerutils.h"
 #include "qgsserverexception.h"
@@ -112,8 +112,8 @@ namespace QgsWms
   QImage *QgsRenderer::getLegendGraphics( QgsLayerTreeModel &model )
   {
     // get layers
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( mContext ) );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -131,14 +131,19 @@ namespace QgsWms
     image.reset( createImage( size ) );
 
     // configure painter
-    std::unique_ptr<QPainter> painter;
-    painter.reset( new QPainter( image.get() ) );
-    painter->setRenderHint( QPainter::Antialiasing, true );
-    painter->scale( dpmm, dpmm );
+    QPainter painter( image.get() );
+    QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
+    context.setFlag( QgsRenderContext::Antialiasing, true );
+    QgsScopedRenderContextScaleToMm scaleContext( context );
+    // QGIS 4.0 -- take from real render context instead
+    Q_NOWARN_DEPRECATED_PUSH
+    context.setRendererScale( settings.mapScale() );
+    context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
+    Q_NOWARN_DEPRECATED_POP
 
     // rendering
-    renderer.drawLegend( painter.get() );
-    painter->end();
+    renderer.drawLegend( context );
+    painter.end();
 
     return image.release();
   }
@@ -146,8 +151,8 @@ namespace QgsWms
   QImage *QgsRenderer::getLegendGraphics( QgsLayerTreeModelLegendNode &nodeModel )
   {
     // get layers
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( mContext ) );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -177,8 +182,8 @@ namespace QgsWms
   QJsonObject QgsRenderer::getLegendGraphicsAsJson( QgsLayerTreeModel &model )
   {
     // get layers
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( mContext ) );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -189,11 +194,8 @@ namespace QgsWms
     QgsLegendRenderer renderer( &model, settings );
 
     // rendering
-    QJsonObject json;
     QgsRenderContext renderContext;
-    renderer.exportLegendToJson( renderContext, json );
-
-    return json;
+    return renderer.exportLegendToJson( renderContext );
   }
 
   void QgsRenderer::runHitTest( const QgsMapSettings &mapSettings, HitTest &hitTest ) const
@@ -254,8 +256,8 @@ namespace QgsWms
     }
 
     // init layer restorer before doing anything
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( mContext ) );
 
     // configure layers
     QgsMapSettings mapSettings;
@@ -283,8 +285,8 @@ namespace QgsWms
   QByteArray QgsRenderer::getPrint()
   {
     // init layer restorer before doing anything
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( mContext ) );
 
     // GetPrint request needs a template parameter
     const QString templateName = mWmsParameters.composerTemplate();
@@ -611,15 +613,39 @@ namespace QgsWms
           QList<QgsMapLayer *> layerSet;
           for ( auto layer : cMapParams.mLayers )
           {
-            QgsMapLayer *mlayer = mContext.layer( layer.mNickname );
-
-            if ( ! mlayer )
+            if ( mContext.isValidGroup( layer.mNickname ) )
             {
-              continue;
-            }
+              QList<QgsMapLayer *> layersFromGroup;
 
-            setLayerStyle( mlayer, layer.mStyle );
-            layerSet << mlayer;
+              const QList<QgsMapLayer *> cLayersFromGroup = mContext.layersFromGroup( layer.mNickname );
+              for ( QgsMapLayer *layerFromGroup : cLayersFromGroup )
+              {
+
+                if ( ! layerFromGroup )
+                {
+                  continue;
+                }
+
+                layersFromGroup.push_front( layerFromGroup );
+              }
+
+              if ( !layersFromGroup.isEmpty() )
+              {
+                layerSet.append( layersFromGroup );
+              }
+            }
+            else
+            {
+              QgsMapLayer *mlayer = mContext.layer( layer.mNickname );
+
+              if ( ! mlayer )
+              {
+                continue;
+              }
+
+              setLayerStyle( mlayer, layer.mStyle );
+              layerSet << mlayer;
+            }
           }
 
           layerSet << externalLayers( cMapParams.mExternalLayers );
@@ -766,8 +792,8 @@ namespace QgsWms
     }
 
     // init layer restorer before doing anything
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( mContext ) );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -807,8 +833,8 @@ namespace QgsWms
   std::unique_ptr<QgsDxfExport> QgsRenderer::getDxf()
   {
     // init layer restorer before doing anything
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( mContext ) );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -920,8 +946,8 @@ namespace QgsWms
     std::unique_ptr<QImage> outputImage( createImage( mContext.mapSize() ) );
 
     // init layer restorer before doing anything
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( mContext ) );
 
     // The CRS parameter is considered as mandatory in configureMapSettings
     // but in the case of filter parameter, CRS parameter has not to be mandatory
@@ -1811,7 +1837,7 @@ namespace QgsWms
 
     for ( auto tokenIt = tokens.constBegin() ; tokenIt != tokens.constEnd(); ++tokenIt )
     {
-      //whitelist of allowed characters and keywords
+      //allowlist of allowed characters and keywords
       if ( tokenIt->compare( QLatin1String( "," ) ) == 0
            || tokenIt->compare( QLatin1String( "(" ) ) == 0
            || tokenIt->compare( QLatin1String( ")" ) ) == 0
@@ -2253,7 +2279,7 @@ namespace QgsWms
 
         for ( const auto &feature : qgis::as_const( features ) )
         {
-          const QString id = QStringLiteral( "%1.%2" ).arg( layer->name(), QgsJsonUtils::encodeValue( feature.id() ) );
+          const QString id = QStringLiteral( "%1.%2" ).arg( layerName ).arg( feature.id() );
           json["features"].push_back( exporter.exportFeatureToJsonObject( feature, QVariantMap(), id ) );
         }
       }
@@ -2272,7 +2298,7 @@ namespace QgsWms
         json["features"].push_back(
         {
           {"type", "Feature" },
-          {"id", layer->name().toStdString() },
+          {"id", layerName.toStdString() },
           {"properties", properties }
         } );
       }
@@ -2859,7 +2885,7 @@ namespace QgsWms
             uniqueValues.unite( layer->uniqueValues( endFieldIndex ) );
           }
           // sort unique values
-          QList<QVariant> values = uniqueValues.toList();
+          QList<QVariant> values = qgis::setToList( uniqueValues );
           std::sort( values.begin(), values.end() );
           if ( dim.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::MinValue )
           {
@@ -3170,13 +3196,19 @@ namespace QgsWms
       mapSettings.setFlag( QgsMapSettings::RenderBlocking );
       std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
       configureMapSettings( tmp.get(), mapSettings );
+      // QGIS 4.0 - require correct use of QgsRenderContext instead of these
+      Q_NOWARN_DEPRECATED_PUSH
       settings.setMapScale( mapSettings.scale() );
       settings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
+      Q_NOWARN_DEPRECATED_POP
     }
     else
     {
+      // QGIS 4.0 - require correct use of QgsRenderContext instead of these
+      Q_NOWARN_DEPRECATED_PUSH
       const double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
       settings.setMapUnitsPerPixel( defaultMapUnitsPerPixel );
+      Q_NOWARN_DEPRECATED_POP
     }
 
     return settings;

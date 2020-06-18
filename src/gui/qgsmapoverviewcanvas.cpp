@@ -24,6 +24,7 @@
 #include "qgsmaptopixel.h"
 
 #include <QPainter>
+#include <QPainterPath>
 #include <QPaintEvent>
 #include <QResizeEvent>
 #include <QMouseEvent>

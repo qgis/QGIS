@@ -122,6 +122,8 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QgsFeatureIds mSelectedFeatureIds;
 
+    QString mTemporalFilter;
+
     QgsVectorLayerFeatureSource *mSource = nullptr;
 
     QgsFeatureRenderer *mRenderer = nullptr;

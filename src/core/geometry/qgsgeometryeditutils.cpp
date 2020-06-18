@@ -138,6 +138,7 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry 
       added = geomCollection->addGeometry( poly.release() );
     }
     else if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::Polygon
+              || QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::Triangle
               || QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::CurvePolygon )
     {
       added = geomCollection->addGeometry( part.release() );

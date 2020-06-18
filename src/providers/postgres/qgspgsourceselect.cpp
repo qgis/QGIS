@@ -145,7 +145,7 @@ void QgsPgSourceSelectDelegate::setEditorData( QWidget *editor, const QModelInde
   if ( le )
   {
     bool ok;
-    value.toInt( &ok );
+    ( void )value.toInt( &ok );
     if ( index.column() == QgsPgTableModel::DbtmSrid && !ok )
       value.clear();
 
@@ -345,6 +345,7 @@ void QgsPgSourceSelect::btnLoad_clicked()
 void QgsPgSourceSelect::btnEdit_clicked()
 {
   QgsPgNewConnection *nc = new QgsPgNewConnection( this, cmbConnections->currentText() );
+  nc->setWindowTitle( tr( "Edit PostGIS Connection" ) );
   if ( nc->exec() )
   {
     populateConnectionList();
@@ -482,12 +483,13 @@ void QgsPgSourceSelect::populateConnectionList()
   cmbConnections->addItems( QgsPostgresConn::connectionList() );
   cmbConnections->blockSignals( false );
 
-  setConnectionListPosition();
-
+  btnConnect->setDisabled( cmbConnections->count() == 0 );
   btnEdit->setDisabled( cmbConnections->count() == 0 );
   btnDelete->setDisabled( cmbConnections->count() == 0 );
-  btnConnect->setDisabled( cmbConnections->count() == 0 );
+  btnSave->setDisabled( cmbConnections->count() == 0 );
   cmbConnections->setDisabled( cmbConnections->count() == 0 );
+
+  setConnectionListPosition();
 }
 
 // Slot for performing action when the Add button is clicked

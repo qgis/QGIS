@@ -203,8 +203,11 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
                                            const QStringList &configOptions, const QString &fileFormat ) override;
 
+    QgsPoint transformCoordinates( const QgsPoint &point, TransformType type ) override;
+
   private:
     QgsGdalProvider( const QgsGdalProvider &other );
+    QgsGdalProvider &operator=( const QgsGdalProvider & ) = delete;
 
     //! Whether mGdalDataset and mGdalBaseDataset have been attempted to be set
     bool mHasInit = false;
@@ -338,6 +341,9 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
      * Closes and reinits dataset
     */
     void reloadProviderData() override;
+
+    //! Instance of GDAL transformer function used in transformCoordinates() for conversion between image and layer coordinates
+    void *mGdalTransformerArg = nullptr;
 };
 
 /**

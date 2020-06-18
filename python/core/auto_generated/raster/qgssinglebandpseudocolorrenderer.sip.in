@@ -30,7 +30,7 @@ Note: takes ownership of :py:class:`QgsRasterShader`
     virtual QgsSingleBandPseudoColorRenderer *clone() const /Factory/;
 
 %Docstring
-QgsSingleBandPseudoColorRenderer cannot be copied. Use clone() instead.
+QgsSingleBandPseudoColorRenderer cannot be copied. Use :py:func:`~QgsSingleBandPseudoColorRenderer.clone` instead.
 %End
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;

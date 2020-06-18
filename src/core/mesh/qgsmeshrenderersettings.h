@@ -27,6 +27,7 @@
 #include "qgscolorrampshader.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmesh3daveraging.h"
+#include "qgsinterpolatedlinerenderer.h"
 
 /**
  * \ingroup core
@@ -148,38 +149,38 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
      */
     void setDataResamplingMethod( const DataResamplingMethod &dataResamplingMethod );
 
+    /**
+     * Returns the stroke width used to render edges scalar dataset
+     *
+     * \since QGIS 3.14
+     */
+    QgsInterpolatedLineWidth edgeStrokeWidth() const;
+
+    /**
+     * Sets the stroke width used to render edges scalar dataset
+     *
+     * \since QGIS 3.14
+     */
+    void setEdgeStrokeWidth( const QgsInterpolatedLineWidth &strokeWidth );
+
+    /**
+    *Returns the stroke width unit used to render edges scalar dataset
+    *
+    * \since QGIS 3.14
+    */
+    QgsUnitTypes::RenderUnit edgeStrokeWidthUnit() const;
+
+    /**
+     * Sets the stroke width unit used to render edges scalar dataset
+     *
+     * \since QGIS 3.14
+     */
+    void setEdgeStrokeWidthUnit( const QgsUnitTypes::RenderUnit &edgeStrokeWidthUnit );
+
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc ) const;
     //! Reads configuration from the given DOM element
     void readXml( const QDomElement &elem );
-
-    /**
-     * Returns width of the edge
-     *
-     * \since QGIS 3.14
-     */
-    double edgeWidth() const;
-
-    /**
-     * Sets width of the edge
-     *
-     * \since QGIS 3.14
-     */
-    void setEdgeWidth( double edgeWidth );
-
-    /**
-     * Returns length units of the width of the edge
-     *
-     * \since QGIS 3.14
-     */
-    QgsUnitTypes::RenderUnit edgeWidthUnit() const;
-
-    /**
-     * Sets length units of the width of the edge
-     *
-     * \since QGIS 3.14
-     */
-    void setEdgeWidthUnit( const QgsUnitTypes::RenderUnit &edgeWidthUnit );
 
   private:
     QgsColorRampShader mColorRampShader;
@@ -188,8 +189,8 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
     double mClassificationMaximum = 0;
     double mOpacity = 1;
 
-    double mEdgeWidth = 2;
-    QgsUnitTypes::RenderUnit mEdgeWidthUnit = QgsUnitTypes::RenderMillimeters;
+    QgsInterpolatedLineWidth mEdgeStrokeWidth;
+    QgsUnitTypes::RenderUnit mEdgeStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
 };
 
 /**
@@ -424,19 +425,6 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
       Traces
     };
 
-    /**
-     * Defines the how the color of vector is defined
-     * \since QGIS 3.14
-     */
-    enum ColoringMethod
-    {
-      //! Render the vector with a single color
-      SingleColor = 0,
-      //! Render the vector with a color ramp
-      ColorRamp
-    };
-
-
     //! Returns line width of the arrow (in millimeters)
     double lineWidth() const;
     //! Sets line width of the arrow in pixels (in millimeters)
@@ -504,13 +492,13 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
      * Returns the coloring method used to render vector datasets
      * \since QGIS 3.14
      */
-    ColoringMethod coloringMethod() const;
+    QgsInterpolatedLineColor::ColoringMethod coloringMethod() const;
 
     /**
      * Sets the coloring method used to render vector datasets
      * \since QGIS 3.14
      */
-    void setColoringMethod( const ColoringMethod &coloringMethod );
+    void setColoringMethod( const QgsInterpolatedLineColor::ColoringMethod &coloringMethod );
 
     /**
      * Sets the color ramp shader used to render vector datasets
@@ -523,6 +511,12 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
      * \since QGIS 3.14
      */
     void setColorRampShader( const QgsColorRampShader &colorRampShader );
+
+    /**
+     * Returns the stroke coloring used to render vector datasets
+     * \since QGIS 3.14
+     */
+    QgsInterpolatedLineColor vectorStrokeColoring() const;
 
     /**
     * Returns settings for vector rendered with arrows
@@ -572,7 +566,7 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     double mLineWidth = DEFAULT_LINE_WIDTH; //in millimeters
     QgsColorRampShader mColorRampShader;
     QColor mColor = Qt::black;
-    ColoringMethod mColoringMethod = SingleColor;
+    QgsInterpolatedLineColor::ColoringMethod mColoringMethod = QgsInterpolatedLineColor::SingleColor;
     double mFilterMin = -1; //disabled
     double mFilterMax = -1; //disabled
     int mUserGridCellWidth = 10; // in pixels

@@ -218,12 +218,14 @@ QgsRectangle QgsMdalProvider::extent() const
   return ret;
 }
 
-bool QgsMdalProvider::persistDatasetGroup( const QString &path,
-    const QgsMeshDatasetGroupMetadata &meta,
-    const QVector<QgsMeshDataBlock> &datasetValues,
-    const QVector<QgsMeshDataBlock> &datasetActive,
-    const QVector<double> &times
-                                         )
+bool QgsMdalProvider::persistDatasetGroup(
+  const QString &outputFilePath,
+  const QString &outputDriver,
+  const QgsMeshDatasetGroupMetadata &meta,
+  const QVector<QgsMeshDataBlock> &datasetValues,
+  const QVector<QgsMeshDataBlock> &datasetActive,
+  const QVector<double> &times
+)
 {
   if ( !mMeshH )
     return true;
@@ -246,22 +248,10 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
       return true;
   }
 
-  if ( path.isEmpty() )
+  if ( outputFilePath.isEmpty() )
     return true;
 
-  // Form DRIVER:filename
-  QString filename = path;
-  // ASCII dat supports face, edge and vertex datasets
-  QString driverName = QStringLiteral( "DAT" );
-  QStringList parts = path.split( ':' );
-  if ( parts.size() > 1 )
-  {
-    driverName = parts[0];
-    parts.removeFirst();
-    filename = parts.join( QString() );
-  }
-
-  MDAL_DriverH driver = MDAL_driverFromName( driverName.toStdString().c_str() );
+  MDAL_DriverH driver = MDAL_driverFromName( outputDriver.toStdString().c_str() );
   if ( !driver )
     return true;
 
@@ -288,7 +278,7 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
                            location,
                            meta.isScalar(),
                            driver,
-                           filename.toStdString().c_str()
+                           outputFilePath.toStdString().c_str()
                          );
   if ( !g )
     return true;
@@ -316,8 +306,13 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
 
   MDAL_G_closeEditMode( g );
 
-  emit datasetGroupsAdded( 1 );
-  emit dataChanged();
+  if ( MDAL_LastStatus() == 0 )
+  {
+    mExtraDatasetUris << outputFilePath;
+    addGroupToTemporalCapabilities( datasetGroupCount() - 1 );
+    emit datasetGroupsAdded( 1 );
+    emit dataChanged();
+  }
 
   return false;
 }
@@ -346,8 +341,6 @@ void QgsMdalProvider::addGroupToTemporalCapabilities( int indexGroup )
   if ( !mMeshH )
     return;
   QgsMeshDataProviderTemporalCapabilities *tempCap = temporalCapabilities();
-  tempCap->setHasTemporalCapabilities( true );
-  tempCap->setHasTemporalCapabilities( true );
   QgsMeshDatasetGroupMetadata dsgMetadata = datasetGroupMetadata( indexGroup );
   QDateTime refTime = dsgMetadata.referenceTime();
   refTime.setTimeSpec( Qt::UTC ); //For now provider don't support time zone and return always in local time, force UTC
@@ -356,6 +349,7 @@ void QgsMdalProvider::addGroupToTemporalCapabilities( int indexGroup )
 
   if ( dsgMetadata.isTemporal() )
   {
+    tempCap->setHasTemporalCapabilities( true );
     for ( int dsi = 0; dsi < dsCount; ++dsi )
     {
       QgsMeshDatasetMetadata dsMeta = datasetMetadata( QgsMeshDatasetIndex( indexGroup, dsi ) );
@@ -561,7 +555,7 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
 
   bool isScalar = MDAL_G_hasScalarData( group );
   MDAL_DataLocation location = MDAL_G_dataLocation( group );
-  QgsMeshDatasetGroupMetadata::DataType type;
+  QgsMeshDatasetGroupMetadata::DataType type = QgsMeshDatasetGroupMetadata::DataOnFaces;
   switch ( location )
   {
     case MDAL_DataLocation::DataOnFaces:
@@ -598,7 +592,7 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
   QString referenceTimeString( MDAL_G_referenceTime( group ) );
   QDateTime referenceTime = QDateTime::fromString( referenceTimeString, Qt::ISODate );
 
-  bool isTemporal = MDAL_G_datasetCount( group ) > 1;
+  bool isTemporal = MDAL_G_isTemporal( group );
 
   QgsMeshDatasetGroupMetadata meta(
     name,

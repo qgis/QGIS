@@ -18,6 +18,7 @@ SET(QGIS_APP_SRCS
   qgsapplayertreeviewmenuprovider.cpp
   qgsappwindowmanager.cpp
   qgsappscreenshots.cpp
+  qgsanimationexportdialog.cpp
   qgsannotationwidget.cpp
   qgsappsslerrorhandler.cpp
   qgsattributetabledialog.cpp
@@ -114,6 +115,8 @@ SET(QGIS_APP_SRCS
   decorations/qgsdecorationgrid.cpp
   decorations/qgsdecorationgriddialog.cpp
 
+  vectortile/qgsvectortilelayerproperties.cpp
+
   vertextool/qgslockedfeature.cpp
   vertextool/qgsvertexeditor.cpp
   vertextool/qgsvertextool.cpp
@@ -169,6 +172,10 @@ SET(QGIS_APP_SRCS
   devtools/networklogger/qgsnetworkloggernode.cpp
   devtools/networklogger/qgsnetworkloggerpanelwidget.cpp
   devtools/networklogger/qgsnetworkloggerwidgetfactory.cpp
+  devtools/profiler/qgsprofilerpanelwidget.cpp
+  devtools/profiler/qgsprofilerwidgetfactory.cpp
+
+  georeferencer/qgsvalidateddoublespinbox.cpp
 
   labeling/qgslabelpropertydialog.cpp
   labeling/qgsmaptoolchangelabelproperties.cpp
@@ -212,6 +219,7 @@ SET(QGIS_APP_SRCS
 
   mesh/qgsmeshlayerproperties.cpp
   mesh/qgsrenderermeshpropertieswidget.cpp
+  mesh/qgsmeshdatasetgrouptreewidget.cpp
   mesh/qgsmeshrenderer3daveragingwidget.cpp
   mesh/qgsmeshrenderermeshsettingswidget.cpp
   mesh/qgsmeshrendererscalarsettingswidget.cpp
@@ -220,7 +228,33 @@ SET(QGIS_APP_SRCS
   mesh/qgsmeshdatasetgrouptreeview.cpp
   mesh/qgsmeshcalculatordialog.cpp
   mesh/qgsmeshstaticdatasetwidget.cpp
+  mesh/qgsmeshvariablestrokewidthwidget.cpp
 )
+
+IF (WITH_GEOREFERENCER)
+  SET(QGIS_APP_SRCS
+    ${QGIS_APP_SRCS}
+    georeferencer/qgsgcpcanvasitem.cpp
+    georeferencer/qgsgeorefconfigdialog.cpp
+    georeferencer/qgsgeorefdatapoint.cpp
+    georeferencer/qgsgeorefdelegates.cpp
+    georeferencer/qgsgeorefmainwindow.cpp
+    georeferencer/qgsgeoreftooladdpoint.cpp
+    georeferencer/qgsgeoreftooldeletepoint.cpp
+    georeferencer/qgsgeoreftoolmovepoint.cpp
+    georeferencer/qgsgeorefvalidators.cpp
+    georeferencer/qgsleastsquares.cpp
+    georeferencer/qgsmapcoordsdialog.cpp
+    georeferencer/qgsresidualplotitem.cpp
+    georeferencer/qgstransformsettingsdialog.cpp
+    georeferencer/qgsgcplist.cpp
+    georeferencer/qgsgcplistmodel.cpp
+    georeferencer/qgsimagewarper.cpp
+    georeferencer/qgsgeoreftransform.cpp
+    georeferencer/qgsgcplistwidget.cpp
+    georeferencer/qgsrasterchangecoords.cpp
+  )
+ENDIF (WITH_GEOREFERENCER)
 
 IF (WITH_3D)
   SET(QGIS_APP_SRCS
@@ -303,17 +337,11 @@ ENDIF (POSTGRES_FOUND)
 # Test data dir for QgsAppScreenShots
 ADD_DEFINITIONS(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
 
-
-SET(IMAGE_RCCS ../../images/images.qrc)
-
-QT5_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
-
 # add test resources, e.g. standard test font
 SET(TEST_RCCS ../../tests/testdata/testdata.qrc)
-QT5_ADD_RESOURCES(TEST_RCC_SRCS ${TEST_RCCS})
 
 IF (WIN32)
-  SET (QGIS_APP_SRCS ${QGIS_APP_SRCS} main.cpp ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
+  SET (QGIS_APP_SRCS ${QGIS_APP_SRCS} main.cpp ${TEST_RCCS})
   SET (QGIS_APPMAIN_SRCS mainwin.cpp)
 
   IF (MSVC)
@@ -343,7 +371,7 @@ IF (WIN32)
     ENDIF (WINDRES)
   ENDIF (MSVC)
 ELSE(WIN32)
-  SET (QGIS_APPMAIN_SRCS main.cpp ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
+  SET (QGIS_APPMAIN_SRCS main.cpp ${TEST_RCCS})
 ENDIF (WIN32)
 
 IF(PEDANTIC)
@@ -387,6 +415,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app/dwg
   ${CMAKE_SOURCE_DIR}/src/app/mesh
   ${CMAKE_SOURCE_DIR}/src/app/locator
+  ${CMAKE_SOURCE_DIR}/src/app/vectortile
   ${CMAKE_SOURCE_DIR}/src/analysis
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
   ${CMAKE_SOURCE_DIR}/src/analysis/mesh
@@ -486,6 +515,7 @@ INCLUDE_DIRECTORIES(
   ../core/mesh
   ../core/scalebar
   ../core/symbology
+  ../core/textrenderer
   ../gui
   ../gui/symbology
   ../gui/attributetable
@@ -577,6 +607,15 @@ IF (WITH_3D)
     qgis_3d
   )
 ENDIF (WITH_3D)
+
+IF (WITH_GEOREFERENCER)
+  INCLUDE_DIRECTORIES(SYSTEM
+    ${GSL_INCLUDE_DIR}
+  )
+  TARGET_LINK_LIBRARIES(qgis_app
+    ${GSL_LIBRARIES}
+  )
+ENDIF (WITH_GEOREFERENCER)
 
 GENERATE_EXPORT_HEADER(
    qgis_app

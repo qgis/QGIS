@@ -256,6 +256,26 @@ void TestQgsProperty::conversions()
   collection.property( 4 ).setStaticValue( "s" );
   QCOMPARE( s1.valueAsString( context, "n" ), QStringLiteral( "s" ) );
   QCOMPARE( collection.valueAsString( 4, context, "y" ), QStringLiteral( "s" ) );
+
+  // test datetime conversions
+  QDateTime dt = QDateTime( QDate( 2020, 1, 1 ) );
+  QDateTime dt2 = QDateTime( QDate( 2010, 1, 1 ) );
+  QgsProperty dt1 = QgsProperty::fromValue( QVariant(), true );
+  collection.setProperty( 5, dt1 );
+  QCOMPARE( d1.valueAsDateTime( context, dt ), dt );
+  QCOMPARE( collection.valueAsDateTime( 5, context, dt ), dt );
+  d1.setStaticValue( dt2 ); //datetime in qvariant
+  collection.property( 5 ).setStaticValue( dt2 ); //datetime in qvariant
+  QCOMPARE( d1.valueAsDateTime( context, dt ), dt2 );
+  QCOMPARE( collection.valueAsDateTime( 5, context,  dt ), dt2 );
+  d1.setStaticValue( "2010-01-01" ); //datetime as string
+  collection.property( 5 ).setStaticValue( "2010-01-01" ); //datetime as string
+  QCOMPARE( d1.valueAsDateTime( context, dt ), dt2 );
+  QCOMPARE( collection.valueAsDateTime( 5, context, dt ), dt2 );
+  d1.setStaticValue( "i am not a datetime" ); //not a datetime, should return default value
+  collection.property( 5 ).setStaticValue( "i am not a datetime" ); //not a double, should return default value
+  QCOMPARE( d1.valueAsDateTime( context, dt ), dt );
+  QCOMPARE( collection.valueAsDateTime( 5, context, dt ), dt );
 }
 
 void TestQgsProperty::invalid()

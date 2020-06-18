@@ -109,7 +109,8 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
   painter->setCompositionMode( mBlendMode );
   painter->translate( mMap->mXOffset, mMap->mYOffset );
   painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
-  painter->setRenderHint( QPainter::Antialiasing );
+  if ( context.flags() & QgsRenderContext::Antialiasing )
+    painter->setRenderHint( QPainter::Antialiasing );
 
   mFrameSymbol->startRender( context );
 
@@ -127,7 +128,7 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
   QPolygonF intersectPolygon;
   intersectPolygon = mapTransform.map( intersectExtent );
 
-  QList<QPolygonF> rings; //empty list
+  QVector<QPolygonF> rings; //empty list
   if ( !mInverted )
   {
     //Render the intersecting map extent

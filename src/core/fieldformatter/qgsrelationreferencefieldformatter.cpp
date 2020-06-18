@@ -147,7 +147,7 @@ QVariant QgsRelationReferenceFieldFormatter::createCache( QgsVectorLayer *layer,
 
   QgsFeatureRequest request;
   request.setFlags( QgsFeatureRequest::NoGeometry );
-  QgsAttributeList requiredAttributes = expr.referencedAttributeIndexes( referencedLayer->fields() ).toList();
+  QgsAttributeList requiredAttributes = qgis::setToList( expr.referencedAttributeIndexes( referencedLayer->fields() ) );
   requiredAttributes << referencedFieldIdx;
   request.setSubsetOfAttributes( requiredAttributes );
   QgsFeature feature;
@@ -196,7 +196,7 @@ QVariantList QgsRelationReferenceFieldFormatter::availableValues( const QVariant
     if ( referencedLayer )
     {
       int fieldIndex =  context.project()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() ).referencedFields().first();
-      values = referencedLayer->uniqueValues( fieldIndex, countLimit ).toList();
+      values = qgis::setToList( referencedLayer->uniqueValues( fieldIndex, countLimit ) );
     }
   }
   return values;

@@ -42,6 +42,9 @@ QgsProcessingModelAlgorithm::QgsProcessingModelAlgorithm( const QString &name, c
 
 void QgsProcessingModelAlgorithm::initAlgorithm( const QVariantMap & )
 {
+  std::unique_ptr< QgsProcessingParameterBoolean > verboseLog = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "VERBOSE_LOG" ), QObject::tr( "Verbose logging" ), false, true );
+  verboseLog->setFlags( verboseLog->flags() | QgsProcessingParameterDefinition::FlagHidden );
+  addParameter( verboseLog.release() );
 }
 
 QString QgsProcessingModelAlgorithm::name() const
@@ -276,6 +279,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QVariantMap childResults;
   QVariantMap childInputs;
 
+  const bool verboseLog = parameterAsBool( parameters, QStringLiteral( "VERBOSE_LOG" ), context );
+
   QVariantMap finalResults;
   QSet< QString > executed;
   bool executedAlg = true;
@@ -309,7 +314,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       const QgsProcessingModelChildAlgorithm &child = mChildAlgorithms[ childId ];
       std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create( child.configuration() ) );
 
-      const bool skipGenericLogging = childAlg->flags() & QgsProcessingAlgorithm::FlagSkipGenericModelLogging;
+      const bool skipGenericLogging = !verboseLog || childAlg->flags() & QgsProcessingAlgorithm::FlagSkipGenericModelLogging;
       if ( feedback && !skipGenericLogging )
         feedback->pushDebugInfo( QObject::tr( "Prepare algorithm: %1" ).arg( childId ) );
 
@@ -343,7 +348,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       QVariantMap results = childAlg->run( childParams, context, &modelFeedback, &ok, child.configuration() );
       if ( !ok )
       {
-        const QString error = childAlg->flags() & QgsProcessingAlgorithm::FlagCustomException ? QString() : QObject::tr( "Error encountered while running %1" ).arg( child.description() );
+        const QString error = ( childAlg->flags() & QgsProcessingAlgorithm::FlagCustomException ) ? QString() : QObject::tr( "Error encountered while running %1" ).arg( child.description() );
         throw QgsProcessingException( error );
       }
       childResults.insert( childId, results );
@@ -821,7 +826,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
   auto safeName = []( const QString & name )->QString
   {
     QString s = name;
-    return s.replace( QRegularExpression( QStringLiteral( "[\\s'\"\\(\\):]" ) ), QStringLiteral( "_" ) );
+    return s.replace( QRegularExpression( QStringLiteral( "[\\s'\"\\(\\):\\.]" ) ), QStringLiteral( "_" ) );
   };
 
   // "static"/single value sources
@@ -833,7 +838,22 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       << QgsProcessingParameterExpression::typeName()
       << QgsProcessingParameterField::typeName()
       << QgsProcessingParameterString::typeName()
-      << QgsProcessingParameterAuthConfig::typeName(),
+      << QgsProcessingParameterAuthConfig::typeName()
+      << QgsProcessingParameterCrs::typeName()
+      << QgsProcessingParameterRange::typeName()
+      << QgsProcessingParameterPoint::typeName()
+      << QgsProcessingParameterFile::typeName()
+      << QgsProcessingParameterFolderDestination::typeName()
+      << QgsProcessingParameterBand::typeName()
+      << QgsProcessingParameterLayout::typeName()
+      << QgsProcessingParameterLayoutItem::typeName()
+      << QgsProcessingParameterColor::typeName()
+      << QgsProcessingParameterCoordinateOperation::typeName()
+      << QgsProcessingParameterMapTheme::typeName()
+      << QgsProcessingParameterDateTime::typeName()
+      << QgsProcessingParameterProviderConnection::typeName()
+      << QgsProcessingParameterDatabaseSchema::typeName()
+      << QgsProcessingParameterDatabaseTable::typeName(),
       QStringList() << QgsProcessingOutputNumber::typeName()
       << QgsProcessingOutputString::typeName()
       << QgsProcessingOutputBoolean::typeName() );
@@ -1902,6 +1922,14 @@ QVariantMap QgsProcessingModelAlgorithm::variables() const
 void QgsProcessingModelAlgorithm::setVariables( const QVariantMap &variables )
 {
   mVariables = variables;
+}
+
+QVariantMap QgsProcessingModelAlgorithm::designerParameterValues() const
+{
+  QVariantMap res = mDesignerParameterValues;
+  // when running through the designer, we show a detailed verbose log to aid in model debugging
+  res.insert( QStringLiteral( "VERBOSE_LOG" ), true );
+  return res;
 }
 
 ///@endcond

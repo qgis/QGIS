@@ -37,7 +37,7 @@ Path to a movie, e.g. animated GIF
     QIcon icon() const;
 %Docstring
 Gets the icons representation in the current frame.
-This will need to be called repeatedly, whenever a frameChanged()
+This will need to be called repeatedly, whenever a :py:func:`~QgsAnimatedIcon.frameChanged`
 signal is emitted.
 %End
 

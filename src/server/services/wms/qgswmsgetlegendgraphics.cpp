@@ -266,6 +266,7 @@ namespace QgsWms
     if ( parameters.rule().isEmpty() )
     {
       QList<QgsLayerTreeNode *> children = tree.children();
+      QString ruleLabel = parameters.ruleLabel();
       for ( QgsLayerTreeNode *node : children )
       {
         if ( ! QgsLayerTree::isLayer( node ) )
@@ -284,10 +285,11 @@ namespace QgsWms
             legendNode->setUserLabel( QStringLiteral( " " ) );
           }
         }
-        else if ( !parameters.layerTitleAsBool() && model->layerLegendNodes( nodeLayer, true ).count() )
+        else if ( ruleLabel.compare( QStringLiteral( "AUTO" ), Qt::CaseInsensitive ) == 0 )
         {
           for ( QgsLayerTreeModelLegendNode *legendNode : model->layerLegendNodes( nodeLayer ) )
           {
+            //clearing label for single symbol
             if ( legendNode->isEmbeddedInParent() )
               legendNode->setEmbeddedInParent( false );
           }
@@ -349,4 +351,3 @@ namespace QgsWms
     return nullptr;
   }
 } // namespace QgsWms
-

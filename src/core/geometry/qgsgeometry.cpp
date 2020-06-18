@@ -81,22 +81,25 @@ QgsGeometry::QgsGeometry( std::unique_ptr<QgsAbstractGeometry> geom )
 }
 
 QgsGeometry::QgsGeometry( const QgsGeometry &other )
+  : d( other.d )
 {
-  d = other.d;
   mLastError = other.mLastError;
   d->ref.ref();
 }
 
 QgsGeometry &QgsGeometry::operator=( QgsGeometry const &other )
 {
-  if ( !d->ref.deref() )
+  if ( this != &other )
   {
-    delete d;
-  }
+    if ( !d->ref.deref() )
+    {
+      delete d;
+    }
 
-  mLastError = other.mLastError;
-  d = other.d;
-  d->ref.ref();
+    mLastError = other.mLastError;
+    d = other.d;
+    d->ref.ref();
+  }
   return *this;
 }
 
@@ -385,17 +388,17 @@ QgsPointXY QgsGeometry::closestVertex( const QgsPointXY &point, int &atVertex, i
   if ( !d->geometry )
   {
     sqrDist = -1;
-    return QgsPointXY( 0, 0 );
+    return QgsPointXY();
   }
 
-  QgsPoint pt( point.x(), point.y() );
+  QgsPoint pt( point );
   QgsVertexId id;
 
   QgsPoint vp = QgsGeometryUtils::closestVertex( *( d->geometry ), pt, id );
   if ( !id.isValid() )
   {
     sqrDist = -1;
-    return QgsPointXY( 0, 0 );
+    return QgsPointXY();
   }
   sqrDist = QgsGeometryUtils::sqrDistance2D( pt, vp );
 
@@ -630,7 +633,7 @@ double QgsGeometry::closestVertexWithContext( const QgsPointXY &point, int &atVe
   }
 
   QgsVertexId vId;
-  QgsPoint pt( point.x(), point.y() );
+  QgsPoint pt( point );
   QgsPoint closestPoint = QgsGeometryUtils::closestVertex( *( d->geometry ), pt, vId );
   if ( !vId.isValid() )
     return -1;
@@ -830,6 +833,17 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsPointSequence 
   QVector<QgsGeometry > newGeoms;
   QgsLineString splitLineString( splitLine );
 
+  /**
+   * QGIS uses GEOS algorithm to split geometries.
+   * Using 3D points in GEOS will returns an interpolation value which is the
+   * mean between geometries.
+   * On the contrary, in our logic, the interpolation is a linear interpolation
+   * on the split point. By dropping Z/M value, GEOS will returns the expected
+   * result. See https://github.com/qgis/QGIS/issues/33489
+   */
+  splitLineString.dropZValue();
+  splitLineString.dropMValue();
+
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
   QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( splitLineString, newGeoms, topological, topologyTestPoints, &mLastError );
@@ -976,12 +990,12 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle
   // get first point
   hull.constGet()->nextVertex( vertexId, pt0 );
   pt1 = pt0;
-  double prevAngle = 0.0;
+  double totalRotation = 0;
   while ( hull.constGet()->nextVertex( vertexId, pt2 ) )
   {
     double currentAngle = QgsGeometryUtils::lineAngle( pt1.x(), pt1.y(), pt2.x(), pt2.y() );
-    double rotateAngle = 180.0 / M_PI * ( currentAngle - prevAngle );
-    prevAngle = currentAngle;
+    double rotateAngle = 180.0 / M_PI * currentAngle;
+    totalRotation += rotateAngle;
 
     QTransform t = QTransform::fromTranslate( pt0.x(), pt0.y() );
     t.rotate( rotateAngle );
@@ -995,12 +1009,12 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle
     {
       minRect = bounds;
       area = currentArea;
-      angle = 180.0 / M_PI * currentAngle;
+      angle = totalRotation;
       width = bounds.width();
       height = bounds.height();
     }
 
-    pt1 = pt2;
+    pt1 = hull.constGet()->vertexAt( vertexId );
   }
 
   QgsGeometry minBounds = QgsGeometry::fromRect( minRect );
@@ -1072,7 +1086,7 @@ QgsGeometry QgsGeometry::minimalEnclosingCircle( QgsPointXY &center, double &rad
   center = QgsPointXY();
   radius = 0;
 
-  if ( !d->geometry )
+  if ( isEmpty() )
   {
     return QgsGeometry();
   }
@@ -2129,6 +2143,13 @@ QgsGeometry QgsGeometry::densifyByDistance( double distance ) const
   return engine.densifyByDistance( distance );
 }
 
+QgsGeometry QgsGeometry::convertToCurves( double distanceTolerance, double angleTolerance ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+
+  return engine.convertToCurves( distanceTolerance, angleTolerance );
+}
+
 QgsGeometry QgsGeometry::centroid() const
 {
   if ( !d->geometry )
@@ -2497,9 +2518,9 @@ QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, unsigned long
 }
 ///@endcond
 
-QByteArray QgsGeometry::asWkb() const
+QByteArray QgsGeometry::asWkb( QgsAbstractGeometry::WkbFlags flags ) const
 {
-  return d->geometry ? d->geometry->asWkb() : QByteArray();
+  return d->geometry ? d->geometry->asWkb( flags ) : QByteArray();
 }
 
 QVector<QgsGeometry> QgsGeometry::asGeometryCollection() const

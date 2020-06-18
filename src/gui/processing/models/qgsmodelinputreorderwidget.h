@@ -24,7 +24,8 @@
 #include "processing/models/qgsprocessingmodelparameter.h"
 #include <QDialog>
 
-class QStringListModel;
+class QStandardItemModel;
+class QgsProcessingModelAlgorithm;
 
 ///@cond PRIVATE
 
@@ -46,9 +47,9 @@ class GUI_EXPORT QgsModelInputReorderWidget : public QWidget, private Ui::QgsMod
     QgsModelInputReorderWidget( QWidget *parent = nullptr );
 
     /**
-     * Sets the list of \a inputs to show, in their initial order.
+     * Sets the source \a model from which to obtain the list of inputs.
      */
-    void setInputs( const QList< QgsProcessingModelParameter > &inputs );
+    void setModel( QgsProcessingModelAlgorithm *model );
 
     /**
      * Returns the ordered list of inputs (by name).
@@ -57,8 +58,9 @@ class GUI_EXPORT QgsModelInputReorderWidget : public QWidget, private Ui::QgsMod
 
   private:
 
+    QgsProcessingModelAlgorithm *mModel;
     QList< QgsProcessingModelParameter > mParameters;
-    QStringListModel *mModel = nullptr;
+    QStandardItemModel *mItemModel = nullptr;
 };
 
 
@@ -79,9 +81,9 @@ class GUI_EXPORT QgsModelInputReorderDialog : public QDialog
     QgsModelInputReorderDialog( QWidget *parent = nullptr );
 
     /**
-     * Sets the list of \a inputs to show, in their initial order.
+     * Sets the source \a model from which to obtain the list of inputs.
      */
-    void setInputs( const QList< QgsProcessingModelParameter > &inputs );
+    void setModel( QgsProcessingModelAlgorithm *model );
 
     /**
      * Returns the ordered list of inputs (by name).

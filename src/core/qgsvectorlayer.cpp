@@ -70,6 +70,7 @@
 #include "qgsweakrelation.h"
 #include "qgsrendercontext.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayertemporalproperties.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayereditpassthrough.h"
 #include "qgsvectorlayereditutils.h"
@@ -147,6 +148,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 const QString &providerKey,
                                 const QgsVectorLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::VectorLayer, baseName, vectorLayerPath )
+  , mTemporalProperties( new QgsVectorLayerTemporalProperties( this ) )
   , mServerProperties( new QgsVectorLayerServerProperties( this ) )
   , mAuxiliaryLayer( nullptr )
   , mAuxiliaryLayerKey( QString() )
@@ -178,6 +180,22 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
     setDataSource( vectorLayerPath, baseName, providerKey, providerOptions, options.loadDefaultStyle );
   }
 
+  for ( const QgsField &field : qgis::as_const( mFields ) )
+  {
+    mAttributeAliasMap.insert( field.name(), QString() );
+  }
+
+  if ( mValid )
+  {
+    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
+    if ( !mTemporalProperties->isActive() )
+    {
+      // didn't populate temporal properties from provider metadata, so at least try to setup some initially nice
+      // selections
+      mTemporalProperties->guessDefaultsFromFields( mFields );
+    }
+  }
+
   connect( this, &QgsVectorLayer::selectionChanged, this, [ = ] { triggerRepaint(); } );
   connect( QgsProject::instance()->relationManager(), &QgsRelationManager::relationsLoaded, this, &QgsVectorLayer::onRelationsLoaded );
 
@@ -190,7 +208,6 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   mSimplifyMethod.setThreshold( settings.value( QStringLiteral( "qgis/simplifyDrawingTol" ), mSimplifyMethod.threshold() ).toFloat() );
   mSimplifyMethod.setForceLocalOptimization( settings.value( QStringLiteral( "qgis/simplifyLocal" ), mSimplifyMethod.forceLocalOptimization() ).toBool() );
   mSimplifyMethod.setMaximumScale( settings.value( QStringLiteral( "qgis/simplifyMaxScale" ), mSimplifyMethod.maximumScale() ).toFloat() );
-
 } // QgsVectorLayer ctor
 
 
@@ -617,6 +634,11 @@ const QgsVectorDataProvider *QgsVectorLayer::dataProvider() const
   return mDataProvider;
 }
 
+QgsMapLayerTemporalProperties *QgsVectorLayer::temporalProperties()
+{
+  return mTemporalProperties;
+}
+
 void QgsVectorLayer::setProviderEncoding( const QString &encoding )
 {
   if ( mValid && mDataProvider && mDataProvider->encoding() != encoding )
@@ -765,7 +787,7 @@ QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures( bool storeSym
     return mFeatureCounter;
   }
 
-  if ( !mFeatureCounter || ( mFeatureCounter && ( storeSymbolFids && mSymbolFeatureIdMap.isEmpty() ) ) )
+  if ( !mFeatureCounter || ( storeSymbolFids && mSymbolFeatureIdMap.isEmpty() ) )
   {
     mFeatureCounter = new QgsVectorLayerFeatureCounter( this, QgsExpressionContext(), storeSymbolFids );
     connect( mFeatureCounter, &QgsTask::taskCompleted, this, &QgsVectorLayer::onFeatureCounterCompleted, Qt::UniqueConnection );
@@ -1136,7 +1158,7 @@ QgsVectorLayer::EditResult QgsVectorLayer::deleteVertex( QgsFeatureId featureId,
 }
 
 
-bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount )
+bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount, QgsVectorLayer::DeleteContext *context )
 {
   if ( !mValid || !mDataProvider || !( mDataProvider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
   {
@@ -1155,7 +1177,7 @@ bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount )
   const auto constSelectedFeatures = selectedFeatures;
   for ( QgsFeatureId fid : constSelectedFeatures )
   {
-    deleted += deleteFeature( fid );  // removes from selection
+    deleted += deleteFeature( fid, context );  // removes from selection
   }
 
   triggerRepaint();
@@ -2623,7 +2645,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     node.appendChild( fieldConfigurationElement );
 
     int index = 0;
-    for ( const QgsField &field : mFields )
+    for ( const QgsField &field : qgis::as_const( mFields ) )
     {
       QDomElement fieldElement = doc.createElement( QStringLiteral( "field" ) );
       fieldElement.setAttribute( QStringLiteral( "name" ), field.name() );
@@ -2647,7 +2669,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
     //attribute aliases
     QDomElement aliasElem = doc.createElement( QStringLiteral( "aliases" ) );
-    for ( const QgsField &field : mFields )
+    for ( const QgsField &field : qgis::as_const( mFields ) )
     {
       QDomElement aliasEntryElem = doc.createElement( QStringLiteral( "alias" ) );
       aliasEntryElem.setAttribute( QStringLiteral( "field" ), field.name() );
@@ -2683,7 +2705,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
     //default expressions
     QDomElement defaultsElem = doc.createElement( QStringLiteral( "defaults" ) );
-    for ( const QgsField &field : mFields )
+    for ( const QgsField &field : qgis::as_const( mFields ) )
     {
       QDomElement defaultElem = doc.createElement( QStringLiteral( "default" ) );
       defaultElem.setAttribute( QStringLiteral( "field" ), field.name() );
@@ -2695,7 +2717,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
     // constraints
     QDomElement constraintsElem = doc.createElement( QStringLiteral( "constraints" ) );
-    for ( const QgsField &field : mFields )
+    for ( const QgsField &field : qgis::as_const( mFields ) )
     {
       QDomElement constraintElem = doc.createElement( QStringLiteral( "constraint" ) );
       constraintElem.setAttribute( QStringLiteral( "field" ), field.name() );
@@ -2709,7 +2731,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
     // constraint expressions
     QDomElement constraintExpressionsElem = doc.createElement( QStringLiteral( "constraintExpressions" ) );
-    for ( const QgsField &field : mFields )
+    for ( const QgsField &field : qgis::as_const( mFields ) )
     {
       QDomElement constraintExpressionElem = doc.createElement( QStringLiteral( "constraint" ) );
       constraintExpressionElem.setAttribute( QStringLiteral( "field" ), field.name() );
@@ -2778,7 +2800,10 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
 
   emit writeCustomSymbology( mapLayerNode, doc, errorMessage );
 
-  if ( isSpatial() )
+  // we must try to write the renderer if our geometry type is unknown
+  // as this allows the renderer to be correctly restored even for layers
+  // with broken sources
+  if ( isSpatial() || mWkbType == QgsWkbTypes::Unknown )
   {
     if ( categories.testFlag( Symbology ) )
     {
@@ -3145,7 +3170,7 @@ bool QgsVectorLayer::deleteAttributes( const QList<int> &attrs )
   bool deleted = false;
 
   // Remove multiple occurrences of same attribute
-  QList<int> attrList = attrs.toSet().toList();
+  QList<int> attrList = qgis::setToList( qgis::listToSet( attrs ) );
 
   std::sort( attrList.begin(), attrList.end(), std::greater<int>() );
 
@@ -3160,15 +3185,73 @@ bool QgsVectorLayer::deleteAttributes( const QList<int> &attrs )
   return deleted;
 }
 
-bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
+bool QgsVectorLayer::deleteFeatureCascade( QgsFeatureId fid, QgsVectorLayer::DeleteContext *context )
 {
   if ( !mEditBuffer )
     return false;
 
+  if ( context && context->cascade )
+  {
+    if ( context->mHandledFeatures.contains( this ) )
+    {
+      QgsFeatureIds handledFeatureIds = context->mHandledFeatures.value( this );
+      if ( handledFeatureIds.contains( fid ) )
+      {
+        // avoid endless recursion
+        return false;
+      }
+      else
+      {
+        // add feature id
+        handledFeatureIds << fid;
+        context->mHandledFeatures.insert( this, handledFeatureIds );
+      }
+    }
+    else
+    {
+      // add layer and feature id
+      context->mHandledFeatures.insert( this, QgsFeatureIds() << fid );
+    }
+
+    const QList<QgsRelation> relations = context->project->relationManager()->referencedRelations( this );
+
+    for ( const QgsRelation &relation : relations )
+    {
+      //check if composition (and not association)
+      if ( relation.strength() == QgsRelation::Composition )
+      {
+        //get features connected over this relation
+        QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( getFeature( fid ) );
+        QgsFeatureIds childFeatureIds;
+        QgsFeature childFeature;
+        while ( relatedFeaturesIt.nextFeature( childFeature ) )
+        {
+          childFeatureIds.insert( childFeature.id() );
+        }
+        if ( childFeatureIds.count() > 0 )
+        {
+          relation.referencingLayer()->startEditing();
+          relation.referencingLayer()->deleteFeatures( childFeatureIds, context );
+        }
+      }
+    }
+  }
+
   if ( mJoinBuffer->containsJoins() )
-    mJoinBuffer->deleteFeature( fid );
+    mJoinBuffer->deleteFeature( fid, context );
 
   bool res = mEditBuffer->deleteFeature( fid );
+
+  return res;
+}
+
+bool QgsVectorLayer::deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteContext *context )
+{
+  if ( !mEditBuffer )
+    return false;
+
+  bool res = deleteFeatureCascade( fid, context );
+
   if ( res )
   {
     mSelectedFeatureIds.remove( fid ); // remove it from selection
@@ -3178,18 +3261,12 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
   return res;
 }
 
-bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids )
+bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids, QgsVectorLayer::DeleteContext *context )
 {
-  if ( !mEditBuffer )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "Cannot delete features (mEditBuffer==NULL)" ), 1 );
-    return false;
-  }
-
-  if ( mJoinBuffer->containsJoins() )
-    mJoinBuffer->deleteFeatures( fids );
-
-  bool res = mEditBuffer->deleteFeatures( fids );
+  bool res = true;
+  const auto constFids = fids;
+  for ( QgsFeatureId fid : constFids )
+    res = deleteFeatureCascade( fid, context ) && res;
 
   if ( res )
   {
@@ -3481,7 +3558,7 @@ QString QgsVectorLayer::displayExpression() const
                                     QStringLiteral( "id" )};
     for ( const QString &candidate : sCandidates )
     {
-      for ( const QgsField &field : mFields )
+      for ( const QgsField &field : qgis::as_const( mFields ) )
       {
         QString fldName = field.name();
         if ( fldName.indexOf( candidate, 0, Qt::CaseInsensitive ) > -1 )
@@ -3968,7 +4045,7 @@ QSet<QVariant> QgsVectorLayer::uniqueValues( int index, int limit ) const
         }
       }
 
-      return val.values().toSet();
+      return qgis::listToSet( val.values() );
     }
   }
 
@@ -4159,21 +4236,32 @@ QVariant QgsVectorLayer::minimumOrMaximumValue( int index, bool minimum ) const
                                             .setSubsetOfAttributes( attList ) );
 
       QgsFeature f;
-      double value = minimum ? std::numeric_limits<double>::max() : -std::numeric_limits<double>::max();
-      double currentValue = 0;
+      QVariant value;
+      QVariant currentValue;
+      bool firstValue = true;
       while ( fit.nextFeature( f ) )
       {
-        currentValue = f.attribute( index ).toDouble();
-        if ( ( minimum && currentValue < value ) || ( !minimum && currentValue > value ) )
+        currentValue = f.attribute( index );
+        if ( currentValue.isNull() )
+          continue;
+        if ( firstValue )
         {
           value = currentValue;
+          firstValue = false;
+        }
+        else
+        {
+          if ( ( minimum && qgsVariantLessThan( currentValue, value ) ) || ( !minimum && qgsVariantGreaterThan( currentValue, value ) ) )
+          {
+            value = currentValue;
+          }
         }
       }
-      return QVariant( value );
+      return value;
     }
   }
 
-  Q_ASSERT_X( false, "QgsVectorLayer::minOrMax()", "Unknown source of the field!" );
+  Q_ASSERT_X( false, "QgsVectorLayer::minimumOrMaximum()", "Unknown source of the field!" );
   return QVariant();
 }
 
@@ -5472,4 +5560,18 @@ void QgsVectorLayer::onDirtyTransaction( const QString &sql, const QString &name
   {
     qobject_cast<QgsVectorLayerEditPassthrough *>( mEditBuffer )->update( tr, sql, name );
   }
+}
+
+QList<QgsVectorLayer *> QgsVectorLayer::DeleteContext::handledLayers() const
+{
+  QList<QgsVectorLayer *> layers;
+  QMap<QgsVectorLayer *, QgsFeatureIds>::const_iterator i;
+  for ( i = mHandledFeatures.begin(); i != mHandledFeatures.end(); ++i )
+    layers.append( i.key() );
+  return layers;
+}
+
+QgsFeatureIds QgsVectorLayer::DeleteContext::handledFeatures( QgsVectorLayer *layer ) const
+{
+  return mHandledFeatures[layer];
 }

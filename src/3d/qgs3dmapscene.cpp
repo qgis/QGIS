@@ -53,6 +53,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgspoint3dbillboardmaterial.h"
+#include "qgsmaplayertemporalproperties.h"
 
 #include "qgslinematerial_p.h"
 
@@ -161,6 +162,9 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
     // it _somehow_ works even when frustum culling is enabled with some camera positions,
     // but then when zoomed in more it would disappear - so let's keep frustum culling disabled
     mEngine->setFrustumCullingEnabled( false );
+
+    // cppcheck wrongly believes skyBox will leak
+    // cppcheck-suppress memleak
   }
 
   // force initial update of chunked entities
@@ -512,7 +516,7 @@ void Qgs3DMapScene::onLayerRenderer3DChanged()
 
 void Qgs3DMapScene::onLayersChanged()
 {
-  QSet<QgsMapLayer *> layersBefore = QSet<QgsMapLayer *>::fromList( mLayerEntities.keys() );
+  QSet<QgsMapLayer *> layersBefore = qgis::listToSet( mLayerEntities.keys() );
   QList<QgsMapLayer *> layersAdded;
   Q_FOREACH ( QgsMapLayer *layer, mMap.layers() )
   {

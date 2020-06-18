@@ -10,6 +10,7 @@
 #include <string>
 #include <stddef.h>
 
+#include "mdal_config.hpp"
 #include "mdal_cf.hpp"
 #include "mdal_driver.hpp"
 
@@ -42,21 +43,33 @@ namespace MDAL
       Driver3Di();
       ~Driver3Di() override = default;
       Driver3Di *create() override;
-
+      std::string buildUri( const std::string &meshFile ) override;
     private:
       CFDimensions populateDimensions( ) override;
+      void populate2DMeshDimensions( MDAL::CFDimensions &dims );
       void populateElements( Vertices &vertices, Edges &edges, Faces &faces ) override;
+      void populateMesh2DElements( Vertices &vertices, Faces &faces );
       void addBedElevation( MemoryMesh *mesh ) override;
       std::string getCoordinateSystemVariableName() override;
       std::string getTimeVariableName() const override;
       std::set<std::string> ignoreNetCDFVariables() override;
-      void parseNetCDFVariableMetadata( int varid, const std::string &variableName,
-                                        std::string &name, bool *is_vector, bool *is_x ) override;
+      void parseNetCDFVariableMetadata( int varid,
+                                        std::string &variableName,
+                                        std::string &name,
+                                        bool *is_vector,
+                                        bool *isPolar,
+                                        bool *is_x ) override;
+      std::vector<std::pair<double, double>> parseClassification( int varid ) const override;
 
       //! Returns number of vertices
       size_t parse2DMesh();
 
       void addBedElevationDatasetOnFaces();
+
+      void populate1DMeshDimensions( MDAL::CFDimensions &dims );
+      void populateMesh1DElements( Vertices &vertices, Edges &edges );
+      bool check1DConnection( std::string fileName );
+      void parse1DConnection( const std::vector<int> &nodesId, const std::vector<int> &edgesId, Edges &edges );
   };
 
 } // namespace MDAL

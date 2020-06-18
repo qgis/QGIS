@@ -1,0 +1,117 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingparametervectortilewriterlayers.h   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsProcessingParameterVectorTileWriterLayers : QgsProcessingParameterDefinition
+{
+%Docstring
+A parameter for processing algorithms that need a list of input vector layers for writing
+of vector tiles - this parameter provides processing framework's adapter for QList<QgsVectorTileWriter.Layer>.
+
+A valid value for this parameter is a list (QVariantList), where each item is a map (QVariantMap) in this form:
+{
+'layer':  string or QgsMapLayer,
+// key-value pairs below are optional
+'layerName': string,
+'filterExpression': string,
+'minZoom': int,
+'maxZoom': int
+}
+
+Static functions :py:func:`~parametersAsLayers`, :py:func:`~variantMapAsLayer`, :py:func:`~layerAsVariantMap` provide conversion between
+QgsVectorTileWriter.Layer representation and QVariant representation.
+
+.. note::
+
+   This class is not a part of public API.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparametervectortilewriterlayers.h"
+%End
+  public:
+    QgsProcessingParameterVectorTileWriterLayers( const QString &name, const QString &description = QString() );
+%Docstring
+Constructor for QgsProcessingParameterVectorTileWriterLayers.
+%End
+
+    virtual QgsProcessingParameterDefinition *clone() const;
+
+    virtual QString type() const;
+
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+
+    static QList<QgsVectorTileWriter::Layer> parameterAsLayers( const QVariant &layersVariant, QgsProcessingContext &context );
+%Docstring
+Converts a QVariant value (a QVariantList) to a list of input layers
+%End
+    static QgsVectorTileWriter::Layer variantMapAsLayer( const QVariantMap &layerVariantMap, QgsProcessingContext &context );
+%Docstring
+Converts a QVariant value (a QVariantMap) to a single input layer
+%End
+    static QVariantMap layerAsVariantMap( const QgsVectorTileWriter::Layer &layer );
+%Docstring
+Converts a single input layer to QVariant representation (a QVariantMap)
+%End
+
+};
+
+
+class QgsProcessingParameterTypeVectorTileWriterLayers : QgsProcessingParameterType
+{
+%Docstring
+Parameter type definition for QgsProcessingParameterVectorTileWriterLayers.
+
+.. note::
+
+   This class is not a part of public API.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparametervectortilewriterlayers.h"
+%End
+  public:
+    virtual QgsProcessingParameterDefinition *create( const QString &name ) const /Factory/;
+
+    virtual QString description() const;
+
+    virtual QString name() const;
+
+    virtual QString id() const;
+
+    virtual QString pythonImportString() const;
+
+    virtual QString className() const;
+
+    virtual QStringList acceptedPythonTypes() const;
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingparametervectortilewriterlayers.h   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

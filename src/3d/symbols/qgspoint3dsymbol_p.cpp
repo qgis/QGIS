@@ -148,6 +148,9 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   entity->addComponent( renderer( mSymbol, out.positions ) );
   entity->addComponent( mat );
   entity->setParent( parent );
+
+// cppcheck wrongly believes entity will leak
+// cppcheck-suppress memleak
 }
 
 
@@ -446,6 +449,9 @@ void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DMapSettings &map
     entity->addComponent( modelLoader );
     entity->addComponent( transform( position, symbol ) );
     entity->setParent( parent );
+
+// cppcheck wrongly believes entity will leak
+// cppcheck-suppress memleak
   }
 }
 
@@ -474,6 +480,9 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DMapSettings &map,
     entity->addComponent( mat );
     entity->addComponent( transform( position, symbol ) );
     entity->setParent( parent );
+
+// cppcheck wrongly believes entity will leak
+// cppcheck-suppress memleak
   }
 }
 
@@ -586,6 +595,9 @@ void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   entity->addComponent( billboardTransform );
   entity->addComponent( billboardGeometryRenderer );
   entity->setParent( parent );
+
+// cppcheck wrongly believes entity will leak
+// cppcheck-suppress memleak
 }
 
 

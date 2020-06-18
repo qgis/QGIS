@@ -26,6 +26,7 @@
 #include <QSet>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QPainterPath>
 
 #include "qgssymbol.h"
 #include "qgsfields.h"
@@ -929,7 +930,7 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
      *
      * \see renderPolyline()
      */
-    virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     /**
      * Sets the \a width of the line symbol layer.
@@ -1098,7 +1099,12 @@ class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
     //! QgsFillSymbolLayer cannot be copied
     QgsFillSymbolLayer &operator=( const QgsFillSymbolLayer &other ) = delete;
 
-    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) = 0;
+    /**
+     * Renders the fill symbol layer for the polygon whose outer ring is defined by \a points, using the given render \a context.
+     *
+     * The \a rings argument optionally specifies a list of polygon rings to render as holes.
+     */
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) = 0;
 
     void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 
@@ -1108,7 +1114,7 @@ class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
   protected:
     QgsFillSymbolLayer( bool locked = false );
     //! Default method to render polygon
-    void _renderPolygon( QPainter *p, const QPolygonF &points, const QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    void _renderPolygon( QPainter *p, const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     double mAngle = 0.0;
 

@@ -492,8 +492,8 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m1.hasVertex() );
 
       snappingConfig.setScaleDependencyMode( QgsSnappingConfig::Global );
-      snappingConfig.setMinimumScale( 1000.0 );
-      snappingConfig.setMaximumScale( 10000.0 );
+      snappingConfig.setMinimumScale( 10000.0 );// 1/10000 scale
+      snappingConfig.setMaximumScale( 1000.0 );// 1/1000 scale
       u.setConfig( snappingConfig );
 
       //Global settings for scale limit, but scale outside min max range -> no snapping
@@ -502,8 +502,8 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m2.hasVertex() == false );
 
       snappingConfig.setScaleDependencyMode( QgsSnappingConfig::Global );
-      snappingConfig.setMinimumScale( 1000.0 );
-      snappingConfig.setMaximumScale( 100000.0 );
+      snappingConfig.setMinimumScale( 100000.0 );
+      snappingConfig.setMaximumScale( 1000.0 );
       u.setConfig( snappingConfig );
 
       //Global settings for scale limit, scale inside min max range -> snapping enabled
@@ -512,7 +512,7 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m3.hasVertex() );
 
       snappingConfig.setScaleDependencyMode( QgsSnappingConfig::PerLayer );
-      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels, 1000.0, 10000.0 ) );
+      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels, 10000.0, 1000.0 ) );
       u.setConfig( snappingConfig );
 
       //Per layer settings, but scale outside min max range of layer -> no snapping
@@ -521,13 +521,68 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m4.hasVertex() == false );
 
       snappingConfig.setScaleDependencyMode( QgsSnappingConfig::PerLayer );
-      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels, 1000.0, 100000.0 ) );
+      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels, 100000.0, 1000.0 ) );
       u.setConfig( snappingConfig );
 
       //Per layer settings, scale inside min max range of layer -> snapping enabled
       QgsPointLocator::Match m5 = u.snapToMap( QPoint( 100, 100 ) );
       QVERIFY( m5.isValid() );
       QVERIFY( m5.hasVertex() );
+    }
+
+    void testExtraSnapLayers()
+    {
+      // START COPYPASTE
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setExtent( QgsRectangle( 0, 0, 1, 1 ) );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u;
+      QgsSnappingConfig snappingConfig = u.config();
+      u.setMapSettings( mapSettings );
+      snappingConfig.setEnabled( true );
+      snappingConfig.setTypeFlag( QgsSnappingConfig::VertexFlag );
+      snappingConfig.setMode( QgsSnappingConfig::AllLayers );
+      snappingConfig.setTolerance( 5 );
+      snappingConfig.setUnits( QgsTolerance::Pixels );
+      u.setConfig( snappingConfig );
+
+      // additional vector layer
+      QgsVectorLayer *extraVL = new QgsVectorLayer( QStringLiteral( "Point?field=fId:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      extraVL->startEditing();
+
+      // we start with one point: (5, 5) (at 50, 50 on screen)
+      QgsFeature f3( extraVL->fields() );
+      f3.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 0.50, 0.50 ) ) );
+      extraVL->addFeature( f3 );
+      QVERIFY( extraVL->featureCount() == 1 );
+
+      // Without the extra snapping layer, we have no snap
+      QgsPointLocator::Match m1 = u.snapToMap( QgsPointXY( 0.50, 0.50 ) );
+      QVERIFY( !m1.isValid() );
+
+      // We add the snapping layer, we have snap
+      u.addExtraSnapLayer( extraVL );
+      QgsPointLocator::Match m2 = u.snapToMap( QgsPointXY( 0.50, 0.50 ) );
+      QVERIFY( m2.isValid() );
+
+      // We add to the snapping layer, the snap changed
+      QgsFeature f4( extraVL->fields() );
+      f4.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 0.75, 0.75 ) ) );
+      extraVL->addFeature( f4 );
+      QVERIFY( extraVL->featureCount() == 2 );
+      QgsPointLocator::Match m3 = u.snapToMap( QgsPointXY( 0.50, 0.50 ) );
+      QgsPointLocator::Match m4 = u.snapToMap( QgsPointXY( 0.75, 0.75 ) );
+      QVERIFY( m3.isValid() );
+      QVERIFY( m4.isValid() );
+
+      // We remove the snapping layer, we have no snap
+      u.removeExtraSnapLayer( extraVL );
+      QgsPointLocator::Match m5 = u.snapToMap( QgsPointXY( 0.50, 0.50 ) );
+      QgsPointLocator::Match m6 = u.snapToMap( QgsPointXY( 0.75, 0.75 ) );
+      QVERIFY( !m5.isValid() );
+      QVERIFY( !m6.isValid() );
     }
 };
 

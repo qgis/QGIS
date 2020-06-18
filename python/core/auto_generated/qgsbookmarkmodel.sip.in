@@ -18,7 +18,7 @@ Implements a model for the contents of QgsBookmarkManager objects.
 QgsBookmarkModel provides a Qt table model for displaying and manipulating
 the bookmarks managed by a QgsBookmarkManager object. The model requires
 both a main manager (usually the application bookmark manager, accessed
-via QgsApplication.bookmarkManager()) and a project-based manager. The resultant
+via :py:func:`QgsApplication.bookmarkManager()`) and a project-based manager. The resultant
 model data is a merge of the bookmarks stored in both managers.
 
 .. versionadded:: 3.10
@@ -52,7 +52,7 @@ model data is a merge of the bookmarks stored in both managers.
     QgsBookmarkManagerModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager = 0, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBookmarkManagerModel, associated with a main ``manager``
-(usually the application bookmark manager, accessed via QgsApplication.bookmarkManager())
+(usually the application bookmark manager, accessed via :py:func:`QgsApplication.bookmarkManager()`)
 and a secondary ``projectManager`` (a project based bookmark manager).
 %End
 
@@ -92,7 +92,7 @@ A QSortFilterProxyModel subclass for sorting the entries in a QgsBookmarkManager
     QgsBookmarkManagerProxyModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager = 0, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBookmarkManagerProxyModel, associated with a main ``manager``
-(usually the application bookmark manager, accessed via QgsApplication.bookmarkManager())
+(usually the application bookmark manager, accessed via :py:func:`QgsApplication.bookmarkManager()`)
 and a secondary ``projectManager`` (a project based bookmark manager).
 %End
 
