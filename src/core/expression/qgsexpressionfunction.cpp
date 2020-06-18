@@ -2064,7 +2064,7 @@ static QVariant floatToDegreeFormat( const QgsCoordinateFormatter::Format format
   if ( values.count() > 3 )
     formatString = QgsExpressionUtils::getStringValue( values.at( 3 ), parent );
 
-  QgsCoordinateFormatter::FormatFlags flags = nullptr;
+  QgsCoordinateFormatter::FormatFlags flags = QgsCoordinateFormatter::FormatFlags();
   if ( formatString.compare( QLatin1String( "suffix" ), Qt::CaseInsensitive ) == 0 )
   {
     flags = QgsCoordinateFormatter::FlagDegreesUseStringSuffix;

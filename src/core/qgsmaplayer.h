@@ -566,7 +566,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * \returns TRUE if successful
      */
-    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = nullptr );
+    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = QgsMapLayer::ReadFlags() );
 
     /**
      * Stores state in DOM node

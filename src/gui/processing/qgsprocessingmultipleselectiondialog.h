@@ -167,7 +167,7 @@ class GUI_EXPORT QgsProcessingMultipleSelectionDialog : public QDialog
      */
     QgsProcessingMultipleSelectionDialog( const QVariantList &availableOptions = QVariantList(),
                                           const QVariantList &selectedOptions = QVariantList(),
-                                          QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr );
+                                          QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 
 
     /**
@@ -276,7 +276,7 @@ class GUI_EXPORT QgsProcessingMultipleInputDialog : public QDialog
                                       const QVariantList &selectedOptions,
                                       const QList< QgsProcessingModelChildParameterSource > &modelSources,
                                       QgsProcessingModelAlgorithm *model = nullptr,
-                                      QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr );
+                                      QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 
     /**
      * Returns the ordered list of selected options.

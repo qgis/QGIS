@@ -7195,7 +7195,7 @@ void QgisApp::dxfExport()
     dxfExport.setDestinationCrs( d.crs() );
     dxfExport.setForce2d( d.force2d() );
 
-    QgsDxfExport::Flags flags = nullptr;
+    QgsDxfExport::Flags flags = QgsDxfExport::Flags();
     if ( !d.useMText() )
       flags = flags | QgsDxfExport::FlagNoMText;
     dxfExport.setFlags( flags );

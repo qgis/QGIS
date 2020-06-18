@@ -112,7 +112,7 @@ class QgsWFSProvider final: public QgsVectorDataProvider
 
     //Editing operations
 
-    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
