@@ -4,7 +4,7 @@ services:
     build:
       dockerfile: Dockerfile-postgis
       args:
-        PG_VERSION:${PG_TEST_VERSION}
+        - PG_VERSION:${PG_TEST_VERSION}
       context: ../../../tests/testdata
       cache_from: qgis/qgis-postgis-test:${PG_TEST_VERSION}
     environment:
