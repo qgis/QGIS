@@ -48,6 +48,8 @@ matrix:
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
         # Label ID can be found here https://api.github.com/repos/qgis/QGIS/labels
         - RUN_FLAKY_TESTS=$(.ci/travis/scripts/pr_has_label.py $TRAVIS_PULL_REQUEST 1271248184)
+        # as kartoza/postgis tag
+        - PG_TEST_VERSION=11.0-2.5
 
 
 ##########################################################

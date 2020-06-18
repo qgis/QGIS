@@ -1,4 +1,7 @@
-FROM kartoza/postgis:11.0-2.5
+
+ARG PG_VERSION=11.0-2.5
+
+FROM kartoza/postgis:${PG_VERSION}
 
 ADD auth_system/certs_keys/postgres.crt /etc/ssl/certs/postgres_cert.crt
 ADD auth_system/certs_keys/postgres.key /etc/ssl/private/postgres_key.key
