@@ -22,7 +22,7 @@ QgsDockWidget subclass with more fine-grained control over how the widget is clo
 %End
   public:
 
-    explicit QgsDockWidget( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = 0 );
+    explicit QgsDockWidget( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsDockWidget.
 
@@ -30,7 +30,7 @@ Constructor for QgsDockWidget.
 :param flags: window flags
 %End
 
-    explicit QgsDockWidget( const QString &title, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = 0 );
+    explicit QgsDockWidget( const QString &title, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsDockWidget.
 

@@ -232,7 +232,7 @@ or if the given attribute is not an enum type.
 :param index: the index of the attribute
 %End
 
-    virtual bool addFeatures( QgsFeatureList &flist /In,Out/, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeatures( QgsFeatureList &flist /In,Out/, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
 
     virtual bool deleteFeatures( const QgsFeatureIds &id );
