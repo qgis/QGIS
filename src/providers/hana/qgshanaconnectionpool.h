@@ -20,8 +20,8 @@
 #include "qgshanaconnection.h"
 #include "qgsconnectionpool.h"
 
+#include <memory>
 #include <QMutex>
-#include <QSharedPointer>
 
 inline QString qgsConnectionPool_ConnectionToName( QgsHanaConnection *c )
 {
@@ -85,7 +85,7 @@ class QgsHanaConnectionPool
 
   private:
     static QBasicMutex sMutex;
-    static QSharedPointer<QgsHanaConnectionPool> sInstance;
+    static std::shared_ptr<QgsHanaConnectionPool> sInstance;
 };
 
 class QgsHanaConnectionRef

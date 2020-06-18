@@ -26,15 +26,15 @@ QgsHanaConnectionPoolGroup::QgsHanaConnectionPoolGroup( const QString &name )
 }
 
 QBasicMutex QgsHanaConnectionPool::sMutex;
-QSharedPointer<QgsHanaConnectionPool> QgsHanaConnectionPool::sInstance;
+std::shared_ptr<QgsHanaConnectionPool> QgsHanaConnectionPool::sInstance;
 
 QgsHanaConnection *QgsHanaConnectionPool::getConnection( const QString &connInfo )
 {
-  QSharedPointer<QgsConnectionPool> instance;
+  std::shared_ptr<QgsConnectionPool> instance;
   {
     QMutexLocker lock( &sMutex );
     if ( !sInstance )
-      sInstance = QSharedPointer<QgsHanaConnectionPool>( new QgsHanaConnectionPool() );
+      sInstance = std::shared_ptr<QgsHanaConnectionPool>( new QgsHanaConnectionPool() );
     instance = sInstance;
   }
   return instance->acquireConnection( connInfo );
@@ -53,7 +53,7 @@ void QgsHanaConnectionPool::cleanupInstance()
 {
   QMutexLocker lock( &sMutex );
   if ( sInstance )
-    sInstance.clear();
+    sInstance.reset();
 }
 
 QgsHanaConnectionPool::QgsHanaConnectionPool()
