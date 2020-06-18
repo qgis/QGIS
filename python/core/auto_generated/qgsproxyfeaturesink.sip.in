@@ -33,9 +33,9 @@ proxy sink can be safely deleted without affecting the destination sink.
 %Docstring
 Constructs a new QgsProxyFeatureSink which forwards features onto a destination ``sink``.
 %End
-    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
-    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
-    virtual bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
+    virtual bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
     QgsFeatureSink *destinationSink();
 %Docstring
