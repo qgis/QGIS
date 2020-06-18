@@ -896,32 +896,24 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeom
     return InvalidBaseGeometry;
   }
 
+  // we will need prepared geometry for intersection tests
+  const_cast<QgsGeos *>( this )->prepareGeometry();
+  if ( !mGeosPrepared )
+    return EngineError;
+
   //test every polygon if contained in original geometry
   //include in result if yes
   QVector<GEOSGeometry *> testedGeometries;
-  geos::unique_ptr intersectGeometry;
 
-  //ratio intersect geometry / geometry. This should be close to 1
-  //if the polygon belongs to the input geometry
-
+  // test whether the polygon parts returned from polygonize algorithm actually
+  // belong to the source polygon geometry (if the source polygon contains some holes,
+  // those would be also returned by polygonize and we need to skip them)
   for ( int i = 0; i < numberOfGeometries( polygons.get() ); i++ )
   {
     const GEOSGeometry *polygon = GEOSGetGeometryN_r( geosinit.ctxt, polygons.get(), i );
-    intersectGeometry.reset( GEOSIntersection_r( geosinit.ctxt, mGeos.get(), polygon ) );
-    if ( !intersectGeometry )
-    {
-      QgsDebugMsg( QStringLiteral( "intersectGeometry is nullptr" ) );
-      continue;
-    }
 
-    double intersectionArea;
-    GEOSArea_r( geosinit.ctxt, intersectGeometry.get(), &intersectionArea );
-
-    double polygonArea;
-    GEOSArea_r( geosinit.ctxt, polygon, &polygonArea );
-
-    const double areaRatio = intersectionArea / polygonArea;
-    if ( areaRatio > 0.99 && areaRatio < 1.01 )
+    geos::unique_ptr pointOnSurface( GEOSPointOnSurface_r( geosinit.ctxt, polygon ) );
+    if ( pointOnSurface && GEOSPreparedIntersects_r( geosinit.ctxt, mGeosPrepared.get(), pointOnSurface.get() ) )
       testedGeometries << GEOSGeom_clone_r( geosinit.ctxt, polygon );
   }
 
