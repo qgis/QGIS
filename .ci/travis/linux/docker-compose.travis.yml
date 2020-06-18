@@ -6,7 +6,8 @@ services:
       args:
         - PG_VERSION:${PG_TEST_VERSION}
       context: ../../../tests/testdata
-      cache_from: qgis/qgis-postgis-test:${PG_TEST_VERSION}
+      cache_from: 
+        - qgis/qgis-postgis-test:${PG_TEST_VERSION}
     environment:
       - ALLOW_IP_RANGE="172.18.0.0/16"
 # The following files are added in Dockerfile-postgis
