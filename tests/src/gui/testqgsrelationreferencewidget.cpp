@@ -33,6 +33,7 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsmaptooldigitizefeature.h"
 
+
 QStringList getComboBoxItems( const QComboBox *cb )
 {
   QStringList items;
