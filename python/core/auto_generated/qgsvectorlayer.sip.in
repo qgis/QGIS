@@ -1160,7 +1160,7 @@ Queries the layer for the features with the given ids.
 Queries the layer for the features which intersect the specified rectangle.
 %End
 
-    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 ) ${SIP_FINAL};
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) ${SIP_FINAL};
 
 
     bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
@@ -1969,7 +1969,7 @@ Deletes a list of attribute fields (but does not commit it)
 :return: ``True`` if at least one attribute has been deleted
 %End
 
-    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) ${SIP_FINAL};
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) ${SIP_FINAL};
 
 
     bool deleteFeature( QgsFeatureId fid, DeleteContext *context = 0 );

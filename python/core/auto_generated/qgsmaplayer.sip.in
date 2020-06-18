@@ -536,7 +536,7 @@ stored inside a local temporary folder (such as the "/tmp" folder on Linux).
     typedef QFlags<QgsMapLayer::ReadFlag> ReadFlags;
 
 
-    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = 0 );
+    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = QgsMapLayer::ReadFlags() );
 %Docstring
 Sets state from DOM document
 
