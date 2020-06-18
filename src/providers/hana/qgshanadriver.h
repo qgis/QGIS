@@ -29,10 +29,9 @@ class QgsHanaDriver
 
   public:
     odbc::ConnectionRef createConnection();
-    QString getDriver() const;
+    const QString &getDriver() const;
 
     static QgsHanaDriver *instance();
-    static void cleanupInstance();
 
   protected:
     Q_DISABLE_COPY( QgsHanaDriver )
@@ -40,8 +39,6 @@ class QgsHanaDriver
   private:
     odbc::EnvironmentRef mEnv;
     QString mDriver;
-
-    static QgsHanaDriver *sInstance;
 };
 
 #endif  // QGSHANADRIVER_H

@@ -25,24 +25,35 @@ QgsHanaConnectionPoolGroup::QgsHanaConnectionPoolGroup( const QString &name )
   initTimer( this );
 }
 
-QgsHanaConnectionPool *QgsHanaConnectionPool::sInstance = nullptr;
+QBasicMutex QgsHanaConnectionPool::sMutex;
+QSharedPointer<QgsHanaConnectionPool> QgsHanaConnectionPool::sInstance;
 
-QgsHanaConnectionPool *QgsHanaConnectionPool::instance()
+QgsHanaConnection *QgsHanaConnectionPool::getConnection( const QString &connInfo )
 {
-  if ( !sInstance )
-    sInstance = new QgsHanaConnectionPool();
-  return sInstance;
+  QSharedPointer<QgsConnectionPool> instance;
+  {
+    QMutexLocker lock( &sMutex );
+    if ( !sInstance )
+      sInstance = QSharedPointer<QgsHanaConnectionPool>( new QgsHanaConnectionPool() );
+    instance = sInstance;
+  }
+  return instance->acquireConnection( connInfo );
 }
 
-bool QgsHanaConnectionPool::hasInstance()
+void QgsHanaConnectionPool::returnConnection( QgsHanaConnection *conn )
 {
-  return sInstance != nullptr;
+  QMutexLocker lock( &sMutex );
+  if ( sInstance )
+    sInstance->releaseConnection( conn );
+  else
+    qgsConnectionPool_ConnectionDestroy( conn );
 }
 
 void QgsHanaConnectionPool::cleanupInstance()
 {
-  delete sInstance;
-  sInstance = nullptr;
+  QMutexLocker lock( &sMutex );
+  if ( sInstance )
+    sInstance.clear();
 }
 
 QgsHanaConnectionPool::QgsHanaConnectionPool()
@@ -59,18 +70,18 @@ QgsHanaConnectionPool::~QgsHanaConnectionPool()
 QgsHanaConnectionRef::QgsHanaConnectionRef( const QgsDataSourceUri &uri )
 {
   mConnection = std::unique_ptr<QgsHanaConnection>(
-                  QgsHanaConnectionPool::instance()->acquireConnection( QgsHanaUtils::connectionInfo( uri ) ) );
+                  QgsHanaConnectionPool::getConnection( QgsHanaUtils::connectionInfo( uri ) ) );
 }
 
 QgsHanaConnectionRef::QgsHanaConnectionRef( const QString &name )
 {
   QgsHanaSettings settings( name, true );
   mConnection = std::unique_ptr<QgsHanaConnection>(
-                  QgsHanaConnectionPool::instance()->acquireConnection( QgsHanaUtils::connectionInfo( settings.toDataSourceUri() ) ) );
+                  QgsHanaConnectionPool::getConnection( QgsHanaUtils::connectionInfo( settings.toDataSourceUri() ) ) );
 }
 
 QgsHanaConnectionRef::~QgsHanaConnectionRef()
 {
-  if ( mConnection && QgsHanaConnectionPool::hasInstance() )
-    QgsHanaConnectionPool::instance()->releaseConnection( mConnection.release() );
+  if ( mConnection )
+    QgsHanaConnectionPool::returnConnection( mConnection.release() );
 }

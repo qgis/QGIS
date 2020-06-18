@@ -25,8 +25,6 @@
 
 using namespace odbc;
 
-QgsHanaDriver *QgsHanaDriver::sInstance = nullptr;
-
 static QString detectDriverPath( EnvironmentRef &env, const QString &libName, const QString &defaultPath )
 {
   QString path = defaultPath + QDir::separator() + libName;
@@ -73,15 +71,8 @@ QgsHanaDriver::~QgsHanaDriver()
 
 QgsHanaDriver *QgsHanaDriver::instance()
 {
-  if ( !sInstance )
-    sInstance = new QgsHanaDriver();
-  return sInstance;
-}
-
-void QgsHanaDriver::cleanupInstance()
-{
-  delete sInstance;
-  sInstance = nullptr;
+  static QgsHanaDriver instance;
+  return &instance;
 }
 
 ConnectionRef QgsHanaDriver::createConnection()
@@ -89,7 +80,7 @@ ConnectionRef QgsHanaDriver::createConnection()
   return mEnv->createConnection();
 }
 
-QString QgsHanaDriver::getDriver() const
+const QString &QgsHanaDriver::getDriver() const
 {
   return mDriver;
 }

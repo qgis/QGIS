@@ -20,6 +20,9 @@
 #include "qgshanaconnection.h"
 #include "qgsconnectionpool.h"
 
+#include <QMutex>
+#include <QSharedPointer>
+
 inline QString qgsConnectionPool_ConnectionToName( QgsHanaConnection *c )
 {
   return c->connInfo();
@@ -67,8 +70,8 @@ class QgsHanaConnectionPool
   : public QgsConnectionPool<QgsHanaConnection *, QgsHanaConnectionPoolGroup>
 {
   public:
-    static QgsHanaConnectionPool *instance();
-    static bool hasInstance();
+    static QgsHanaConnection *getConnection( const QString &connInfo );
+    static void returnConnection( QgsHanaConnection *conn );
     static void cleanupInstance();
 
   protected:
@@ -76,9 +79,13 @@ class QgsHanaConnectionPool
 
   private:
     QgsHanaConnectionPool();
+
+  public:
     ~QgsHanaConnectionPool() override;
 
-    static QgsHanaConnectionPool *sInstance;
+  private:
+    static QBasicMutex sMutex;
+    static QSharedPointer<QgsHanaConnectionPool> sInstance;
 };
 
 class QgsHanaConnectionRef

@@ -1589,7 +1589,6 @@ QgsHanaProviderMetadata::QgsHanaProviderMetadata()
 void QgsHanaProviderMetadata::cleanupProvider()
 {
   QgsHanaConnectionPool::cleanupInstance();
-  QgsHanaDriver::cleanupInstance();
 }
 
 QgsHanaProvider *QgsHanaProviderMetadata::createProvider(
