@@ -251,6 +251,7 @@ void QgsFeaturePickerModelBase::updateCompleter()
       setExtraValueDoesNotExist( true );
     }
 
+    mKeepCurrentEntry = true;
     mShouldReloadCurrentFeature = false;
 
     if ( mFilterValue.isEmpty() )
@@ -268,14 +269,12 @@ void QgsFeaturePickerModelBase::updateCompleter()
 
     const int newEntriesSize = entries.size();
 
-    bool keepCurrentEntry = mExtraValueIndex != -1 && mExtraValueIndex < mEntries.count();
-
     // fixed entry is either NULL or extra value
-    const int nbFixedEntry = ( keepCurrentEntry ? 1 : 0 ) + ( mAllowNull ? 1 : 0 );
+    const int nbFixedEntry = ( mKeepCurrentEntry ? 1 : 0 ) + ( mAllowNull ? 1 : 0 );
 
     // Find the index of the current entry in the new list
     int currentEntryInNewList = -1;
-    if ( keepCurrentEntry )
+    if ( mExtraValueIndex != -1 && mExtraValueIndex < mEntries.count() )
     {
       for ( int i = 0; i < newEntriesSize; ++i )
       {
@@ -293,7 +292,7 @@ void QgsFeaturePickerModelBase::updateCompleter()
 
     // Move current entry to the first position if this is a fixed entry or because
     // the entry exists in the new list
-    if ( keepCurrentEntry && ( mExtraValueIndex < nbFixedEntry || currentEntryInNewList != -1 ) )
+    if ( mExtraValueIndex > -1 && ( mExtraValueIndex < nbFixedEntry || currentEntryInNewList != -1 ) )
     {
       if ( mExtraValueIndex != 0 )
       {
@@ -352,6 +351,8 @@ void QgsFeaturePickerModelBase::updateCompleter()
     }
 
     emit filterJobCompleted();
+
+    mKeepCurrentEntry = false;
   }
   emit endUpdate();
 
