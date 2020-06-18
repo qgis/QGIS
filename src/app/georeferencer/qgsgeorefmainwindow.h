@@ -101,9 +101,6 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     void showRasterPropertiesDialog();
     void showGeorefConfigDialog();
 
-    // plugin info
-    void showHelp();
-
     // comfort
     void jumpToGCP( uint theGCPIndex );
     void extentsChangedGeorefCanvas();
@@ -204,8 +201,6 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QgsMessageBar *mMessageBar = nullptr;
     QMenu *mPanelMenu = nullptr;
     QMenu *mToolbarMenu = nullptr;
-
-    QAction *mActionHelp = nullptr;
 
     QgsGCPListWidget *mGCPListWidget = nullptr;
     QLineEdit *mScaleEdit = nullptr;
