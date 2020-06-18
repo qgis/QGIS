@@ -900,7 +900,7 @@ class CORE_EXPORT QgsGeometry
      * fix this bug?
      * \returns OperationResult a result code: success or reason of failure
      *
-     * * Example:
+     * Example:
      * \code{.py}
      *  geometry = QgsGeometry.fromWkt('CompoundCurveZ ((2749546.2003820720128715 1262904.45356595050543547 100, 2749557.82053794478997588 1262920.05570670193992555 200))')
      *  split_line = [QgsPoint(2749544.19, 1262914.79), QgsPoint(2749557.64, 1262897.30)]
