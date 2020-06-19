@@ -695,7 +695,7 @@ void QgsWmsCapabilities::parseOnlineResource( const QDomElement &element, QgsWms
   QUrl url = QUrl::fromEncoded( element.attribute( QStringLiteral( "xlink:href" ) ).toUtf8() );
   if ( url.isRelative() )
   {
-    QUrl baseUrl = QUrl( mBaseUrl );
+    const QUrl baseUrl = QUrl( mBaseUrl );
     url = baseUrl.resolved( url );
   }
   onlineResourceAttribute.xlinkHref = url.toString();
