@@ -418,7 +418,7 @@ Writes a layer out to a vector file.
                                            const QStringList &layerOptions = QStringList(),
                                            QString *newFilename = 0,
                                            QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
-                                           QgsFeatureSink::SinkFlags sinkFlags = 0
+                                           QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags()
                                          ) /Deprecated/;
 
 
@@ -429,7 +429,7 @@ Writes a layer out to a vector file.
                                         const QgsCoordinateReferenceSystem &srs,
                                         const QgsCoordinateTransformContext &transformContext,
                                         const QgsVectorFileWriter::SaveVectorOptions &options,
-                                        QgsFeatureSink::SinkFlags sinkFlags = 0,
+                                        QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
                                         QString *newFilename = 0,
                                         QString *newLayer = 0 );
 %Docstring
