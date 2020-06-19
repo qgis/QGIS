@@ -222,7 +222,11 @@ double QgsLayoutUtils::textWidthMM( const QFont &font, const QString &text )
   //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetricsF fontMetrics( metricsFont );
-  return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  return ( fontMetrics.width( text ).width() / FONT_WORKAROUND_SCALE );
+#else
+  return ( fontMetrics.horizontalAdvance( text ) / FONT_WORKAROUND_SCALE );
+#endif
 }
 
 double QgsLayoutUtils::textHeightMM( const QFont &font, const QString &text, double multiLineHeight )
