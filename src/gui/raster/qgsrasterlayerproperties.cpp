@@ -21,6 +21,7 @@
 #include "qgsgui.h"
 #include "qgsapplication.h"
 #include "qgsbrightnesscontrastfilter.h"
+#include "qgsgammacorrectionfilter.h"
 #include "qgscontrastenhancement.h"
 #include "qgscoordinatetransform.h"
 #include "qgsprojectionselectiondialog.h"
@@ -162,6 +163,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   connect( mSliderContrast, &QAbstractSlider::valueChanged, mContrastSpinBox, &QSpinBox::setValue );
   connect( mContrastSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mSliderContrast, &QAbstractSlider::setValue );
+
+  // gamma correction controls
+  connect( mSliderGamma, &QAbstractSlider::valueChanged, this, &QgsRasterLayerProperties::updateGammaSpinBox );
+  connect( mGammaSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterLayerProperties::updateGammaSlider );
 
   // Connect saturation slider and spin box
   connect( sliderSaturation, &QAbstractSlider::valueChanged, spinBoxSaturation, &QSpinBox::setValue );
@@ -753,9 +758,10 @@ void QgsRasterLayerProperties::sync()
   QgsDebugMsg( QStringLiteral( "populate transparency tab" ) );
 
   /*
-   * Style tab (brightness and contrast)
+   * Style tab
    */
 
+  //set brightness and contrast
   QgsBrightnessContrastFilter *brightnessFilter = mRasterLayer->brightnessFilter();
   if ( brightnessFilter )
   {
@@ -763,7 +769,12 @@ void QgsRasterLayerProperties::sync()
     mSliderContrast->setValue( brightnessFilter->contrast() );
   }
 
-  //set the transparency slider
+  //set gamma
+  QgsGammaCorrectionFilter *gammaFilter = mRasterLayer->gammaCorrectionFilter();
+  if ( gammaFilter )
+  {
+    mGammaSpinBox->setValue( gammaFilter->gamma() );
+  }
 
   /*
    * Transparent Pixel Tab
@@ -927,6 +938,7 @@ void QgsRasterLayerProperties::apply()
 
   mRasterLayer->brightnessFilter()->setBrightness( mSliderBrightness->value() );
   mRasterLayer->brightnessFilter()->setContrast( mSliderContrast->value() );
+  mRasterLayer->gammaCorrectionFilter()->setGamma( mGammaSpinBox->value() );
 
   QgsDebugMsg( QStringLiteral( "processing transparency tab" ) );
   /*
@@ -2312,6 +2324,7 @@ void QgsRasterLayerProperties::mResetColorRenderingBtn_clicked()
   mBlendModeComboBox->setBlendMode( QPainter::CompositionMode_SourceOver );
   mSliderBrightness->setValue( 0 );
   mSliderContrast->setValue( 0 );
+  mGammaSpinBox->setValue( 1 );
   sliderSaturation->setValue( 0 );
   comboGrayscale->setCurrentIndex( ( int ) QgsHueSaturationFilter::GrayscaleOff );
   mColorizeCheck->setChecked( false );
@@ -2358,4 +2371,14 @@ void QgsRasterLayerProperties::showHelp()
   {
     QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_properties.html" ) );
   }
+}
+
+void QgsRasterLayerProperties::updateGammaSpinBox( int value )
+{
+  whileBlocking( mGammaSpinBox )->setValue( value / 100.0 );
+}
+
+void QgsRasterLayerProperties::updateGammaSlider( double value )
+{
+  whileBlocking( mSliderGamma )->setValue( value * 100 );
 }
