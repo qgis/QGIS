@@ -452,8 +452,9 @@ QDateTime QgsWmsSettings::parseWmstDateTimes( QString item )
 // ----------------------
 
 
-QgsWmsCapabilities::QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext ):
-  mCoordinateTransformContext( coordinateTransformContext )
+QgsWmsCapabilities::QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext, const QString &baseUrl ):
+  mCoordinateTransformContext( coordinateTransformContext ),
+  mBaseUrl( baseUrl )
 {
 
 }
@@ -691,8 +692,13 @@ void QgsWmsCapabilities::parseService( const QDomElement &element, QgsWmsService
 
 void QgsWmsCapabilities::parseOnlineResource( const QDomElement &element, QgsWmsOnlineResourceAttribute &onlineResourceAttribute )
 {
-
-  onlineResourceAttribute.xlinkHref = QUrl::fromEncoded( element.attribute( QStringLiteral( "xlink:href" ) ).toUtf8() ).toString();
+  QUrl url = QUrl::fromEncoded( element.attribute( QStringLiteral( "xlink:href" ) ).toUtf8() );
+  if ( url.isRelative() )
+  {
+    const QUrl baseUrl = QUrl( mBaseUrl );
+    url = baseUrl.resolved( url );
+  }
+  onlineResourceAttribute.xlinkHref = url.toString();
 }
 
 
