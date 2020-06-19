@@ -161,8 +161,9 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
 // ----------------------
 
 
-QgsWmsCapabilities::QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext ):
-  mCoordinateTransformContext( coordinateTransformContext )
+QgsWmsCapabilities::QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext, const QString &baseUrl ):
+  mCoordinateTransformContext( coordinateTransformContext ),
+  mBaseUrl( baseUrl )
 {
 
 }
@@ -406,10 +407,13 @@ void QgsWmsCapabilities::parseService( QDomElement const &e, QgsWmsServiceProper
 
 void QgsWmsCapabilities::parseOnlineResource( QDomElement const &e, QgsWmsOnlineResourceAttribute &onlineResourceAttribute )
 {
-
-  onlineResourceAttribute.xlinkHref = QUrl::fromEncoded( e.attribute( QStringLiteral( "xlink:href" ) ).toUtf8() ).toString();
-
-  QgsDebugMsg( QStringLiteral( "exiting." ) );
+  QUrl url = QUrl::fromEncoded( e.attribute( QStringLiteral( "xlink:href" ) ).toUtf8() );
+  if ( url.isRelative() )
+  {
+    const QUrl baseUrl = QUrl( mBaseUrl );
+    url = baseUrl.resolved( url );
+  }
+  onlineResourceAttribute.xlinkHref = url.toString();
 }
 
 
