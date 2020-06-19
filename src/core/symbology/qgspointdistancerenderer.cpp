@@ -428,7 +428,7 @@ void QgsPointDistanceRenderer::drawLabels( QPointF centerPoint, QgsSymbolRenderC
     currentLabelShift = *labelPosIt;
     if ( currentLabelShift.x() < 0 )
     {
-      currentLabelShift.setX( currentLabelShift.x() - fontMetrics.width( groupIt->label ) );
+      currentLabelShift.setX( currentLabelShift.x() - fontMetrics.boundingRect( groupIt->label ).width() );
     }
     if ( currentLabelShift.y() > 0 )
     {
