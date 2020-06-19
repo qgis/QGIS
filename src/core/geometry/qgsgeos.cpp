@@ -880,8 +880,13 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeom
   if ( !mGeos )
     return InvalidBaseGeometry;
 
+  // we will need prepared geometry for intersection tests
+  const_cast<QgsGeos *>( this )->prepareGeometry();
+  if ( !mGeosPrepared )
+    return EngineError;
+
   //first test if linestring intersects geometry. If not, return straight away
-  if ( !GEOSIntersects_r( geosinit.ctxt, splitLine, mGeos.get() ) )
+  if ( !GEOSPreparedIntersects_r( geosinit.ctxt, mGeosPrepared.get(), splitLine ) )
     return NothingHappened;
 
   //first union all the polygon rings together (to get them noded, see JTS developer guide)
@@ -896,12 +901,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeom
     return InvalidBaseGeometry;
   }
 
-  // we will need prepared geometry for intersection tests
-  const_cast<QgsGeos *>( this )->prepareGeometry();
-  if ( !mGeosPrepared )
-    return EngineError;
-
-  //test every polygon if contained in original geometry
+  //test every polygon is contained in original geometry
   //include in result if yes
   QVector<GEOSGeometry *> testedGeometries;
 
@@ -928,6 +928,10 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeom
     return NothingHappened;
   }
 
+  // For multi-part geometries, try to identify parts that have been unchanged and try to merge them back
+  // to a single multi-part geometry. For example, if there's a multi-polygon with three parts, but only
+  // one part is being split, this function makes sure that the other two parts will be kept in a multi-part
+  // geometry rather than being separated into two single-part geometries.
   mergeGeometriesMultiTypeSplit( testedGeometries );
 
   int i;
