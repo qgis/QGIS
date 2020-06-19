@@ -2,7 +2,7 @@ version: '3.2'
 services:
   postgres:
     build:
-      dockerfile: Dockerfile-postgis
+      dockerfile: qgis-postgis-test
       args:
         - PG_VERSION:${PG_TEST_VERSION}
       context: ../../../tests/testdata
