@@ -1835,7 +1835,12 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
 
   gdal::ogr_field_def_unique_ptr fielddefn( OGR_Fld_Create( textEncoding()->fromUnicode( field.name() ).constData(), type ) );
   int width = field.length();
+<<<<<<< HEAD
   if ( field.precision() )
+=======
+  // Increase width by 1 for OFTReal to make room for the decimal point
+  if ( type == OFTReal && field.precision() )
+>>>>>>> 1dc05957ad... Explain rationale for increasing field width for reals
     width += 1;
   OGR_Fld_SetWidth( fielddefn.get(), width );
   OGR_Fld_SetPrecision( fielddefn.get(), field.precision() );
