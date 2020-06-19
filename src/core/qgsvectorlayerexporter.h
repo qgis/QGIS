@@ -106,7 +106,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
                             const QgsCoordinateReferenceSystem &crs,
                             bool overwrite = false,
                             const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
-                            QgsFeatureSink::SinkFlags sinkFlags = nullptr );
+                            QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 
     //! QgsVectorLayerExporter cannot be copied
     QgsVectorLayerExporter( const QgsVectorLayerExporter &rh ) = delete;

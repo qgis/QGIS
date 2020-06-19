@@ -134,7 +134,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      *
      * \since QGIS 3.14
      */
-    Flags flags = nullptr;
+    Flags flags = Flags();
 
     /**
      * Geometry check method to apply to this source. This setting is only
@@ -937,7 +937,7 @@ class CORE_EXPORT QgsProcessingParameters
      */
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
                                             const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
-                                            QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT, QgsFeatureSink::SinkFlags sinkFlags = nullptr ) SIP_FACTORY;
+                                            QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a definition and \a value to a feature sink.
@@ -956,7 +956,7 @@ class CORE_EXPORT QgsProcessingParameters
      */
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariant &value,
                                             const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
-                                            QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT, QgsFeatureSink::SinkFlags sinkFlags = nullptr ) SIP_THROW( QgsProcessingException ) SIP_FACTORY;
+                                            QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() ) SIP_THROW( QgsProcessingException ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a definition to a feature source.

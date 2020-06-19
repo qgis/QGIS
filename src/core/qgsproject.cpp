@@ -1145,7 +1145,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   const bool layerWasStored { layerStore()->mapLayer( layerId ) != nullptr };
 
   // have the layer restore state that is stored in Dom node
-  QgsMapLayer::ReadFlags layerFlags = nullptr;
+  QgsMapLayer::ReadFlags layerFlags = QgsMapLayer::ReadFlags();
   if ( flags & QgsProject::ReadFlag::FlagDontResolveLayers )
     layerFlags |= QgsMapLayer::FlagDontResolveLayers;
   bool layerIsValid = mapLayer->readLayerXml( layerElem, context, layerFlags ) && mapLayer->isValid();
