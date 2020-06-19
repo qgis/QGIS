@@ -1057,7 +1057,7 @@ bool QgsHanaProvider::checkPermissionsAndSetCapabilities()
       QString objType = rsPrivileges->getString( 2 );
       QString privType = rsPrivileges->getString( 3 );
 
-      if ( privType == QStringLiteral( "ALL PRIVILEGES" ) || privType == QStringLiteral( "CREATE ANY" ) )
+      if ( privType == QLatin1String( "ALL PRIVILEGES" ) || privType == QLatin1String( "CREATE ANY" ) )
       {
         mCapabilities |= QgsVectorDataProvider::AddAttributes
                          | QgsVectorDataProvider::RenameAttributes
@@ -1071,16 +1071,16 @@ bool QgsHanaProvider::checkPermissionsAndSetCapabilities()
       }
       else
       {
-        if ( privType == QStringLiteral( "ALTER" ) )
+        if ( privType == QLatin1String( "ALTER" ) )
           mCapabilities |= QgsVectorDataProvider::DeleteAttributes
                            | QgsVectorDataProvider::RenameAttributes;
-        else if ( privType == QStringLiteral( "DELETE" ) )
+        else if ( privType == QLatin1String( "DELETE" ) )
           mCapabilities |= QgsVectorDataProvider::DeleteFeatures
                            | QgsVectorDataProvider::FastTruncate;
-        else if ( privType == QStringLiteral( "INSERT" ) )
+        else if ( privType == QLatin1String( "INSERT" ) )
           mCapabilities |= QgsVectorDataProvider::AddAttributes
                            | QgsVectorDataProvider::AddFeatures;
-        else if ( privType == QStringLiteral( "UPDATE" ) )
+        else if ( privType == QLatin1String( "UPDATE" ) )
           mCapabilities |= QgsVectorDataProvider::ChangeAttributeValues
                            | QgsVectorDataProvider::ChangeFeatures
                            | QgsVectorDataProvider::ChangeGeometries;

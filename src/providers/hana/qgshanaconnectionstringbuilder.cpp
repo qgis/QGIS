@@ -28,9 +28,9 @@ QgsHanaConnectionStringBuilder::QgsHanaConnectionStringBuilder( const QgsDataSou
   if ( !uri.hasParam( QStringLiteral( "sslEnabled" ) ) )
     return;
 
-  mSslEnabled = ( uri.param( QStringLiteral( "sslEnabled" ) ) == QStringLiteral( "true" ) ) ? true : false;
+  mSslEnabled = ( uri.param( QLatin1String( "sslEnabled" ) ) == QLatin1String( "true" ) ) ? true : false;
   mSslCryptoProvider = uri.param( QStringLiteral( "sslCryptoProvider" ) );
-  mSslValidateCertificate = uri.param( QStringLiteral( "sslValidateCertificate" ) ) == QStringLiteral( "true" ) ? true : false;
+  mSslValidateCertificate = uri.param( QLatin1String( "sslValidateCertificate" ) ) == QLatin1String( "true" ) ? true : false;
   if ( mSslValidateCertificate )
     mSslHostNameInCertificate = uri.param( QStringLiteral( "sslHostNameInCertificate" ) );
   mSslKeyStore = uri.param( QStringLiteral( "sslKeyStore" ) );

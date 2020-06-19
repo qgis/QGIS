@@ -78,9 +78,9 @@ void QgsHanaProviderConnection::setCapabilities()
   while ( rsPrivileges->next() )
   {
     QString privType = rsPrivileges->getString( 1 );
-    if ( privType == QStringLiteral( "CREATE SCHEMA" ) )
+    if ( privType == QLatin1String( "CREATE SCHEMA" ) )
       mCapabilities |= Capability::CreateSchema | Capability::DropSchema | Capability::RenameSchema;
-    else if ( privType == QStringLiteral( "CATALOG READ" ) || privType == QStringLiteral( "DATA ADMIN" ) )
+    else if ( privType == QLatin1String( "CATALOG READ" ) || privType == QLatin1String( "DATA ADMIN" ) )
       mCapabilities |= Capability::Schemas | Capability::Tables | Capability::TableExists;
   }
   rsPrivileges->close();

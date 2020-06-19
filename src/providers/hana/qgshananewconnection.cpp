@@ -257,7 +257,7 @@ void QgsHanaNewConnection::updateControlsFromSettings( const QgsHanaSettings &se
   else
   {
     rbtnMultipleContainers->setChecked( true );
-    if ( settings.getDatabase() == QStringLiteral( "SYSTEMDB" ) )
+    if ( settings.getDatabase() == QLatin1String( "SYSTEMDB" ) )
       rbtnSystemDatabase->setChecked( true );
     else
       txtTenantDatabaseName->setText( settings.getDatabase() );
