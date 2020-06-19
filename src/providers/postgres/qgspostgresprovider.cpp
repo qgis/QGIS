@@ -828,14 +828,8 @@ bool QgsPostgresProvider::loadFields()
     }
   }
 
-  // Populate the field vector for this layer. The field vector contains
-  // field name, type, length, and precision (if numeric)
-  QString sql = QStringLiteral( "SELECT * FROM %1 LIMIT 0" ).arg( mQuery );
-
-  QgsPostgresResult result( connectionRO()->PQexec( sql ) );
-
   // Collect type info
-  sql = QStringLiteral( "SELECT oid,typname,typtype,typelem,typlen FROM pg_type" );
+  QString sql = QStringLiteral( "SELECT oid,typname,typtype,typelem,typlen FROM pg_type" );
   QgsPostgresResult typeResult( connectionRO()->PQexec( sql ) );
 
   QMap<Oid, PGTypeInfo> typeMap;
@@ -851,6 +845,11 @@ bool QgsPostgresProvider::loadFields()
     typeMap.insert( typeResult.PQgetvalue( i, 0 ).toUInt(), typeInfo );
   }
 
+  // Populate the field vector for this layer. The field vector contains
+  // field name, type, length, and precision (if numeric)
+  sql = QStringLiteral( "SELECT * FROM %1 LIMIT 0" ).arg( mQuery );
+
+  QgsPostgresResult result( connectionRO()->PQexec( sql ) );
 
   QMap<Oid, QMap<int, QString> > fmtFieldTypeMap, descrMap, defValMap, identityMap, generatedMap;
   QMap<Oid, QMap<int, Oid> > attTypeIdMap;
@@ -1119,6 +1118,13 @@ bool QgsPostgresProvider::loadFields()
         // enum
         fieldType = QVariant::Bool;
         fieldSize = -1;
+      }
+      // PG 12 returns "name" type for some system table fields (e.g. information_schema.tables)
+      else if ( fieldTypeName == QLatin1String( "name" ) )
+      {
+        fieldSubType = QVariant::String;
+        // "name" type lenght is 64 according to: SELECT typlen FROM pg_type WHERE typname = 'name';
+        fieldSize = 64;
       }
       else
       {

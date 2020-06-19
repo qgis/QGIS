@@ -271,7 +271,8 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
             }
             else
             {
-              QgsDebugMsg( QStringLiteral( "Unhandled PostgreSQL type %1" ).arg( typName ) );
+              // Just a warning, usually ok
+              QgsDebugMsgLevel( QStringLiteral( "Unhandled PostgreSQL type %1, assuming string" ).arg( typName ), 2 );
             }
           }
           typeMap[ rowIdx ] = vType;
