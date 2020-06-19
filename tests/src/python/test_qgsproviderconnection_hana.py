@@ -110,7 +110,7 @@ class TestPyQgsProviderConnectionHana(unittest.TestCase, TestPyQgsProviderConnec
         self.assertEqual(conn.executeSql('SELECT TRUE FROM DUMMY'), [[True]])
 
     def testPrimaryKeys(self):
-        """Test that PKs"""
+        """Test returned primary keys"""
 
         md = self.createProviderMetadata()
         conn = md.createConnection(self.uri, {})

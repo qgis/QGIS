@@ -252,7 +252,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                      '"id" INTEGER NOT NULL PRIMARY KEY,' \
                      '"blob" VARBINARY(114))'
         insert_sql = 'INSERT INTO "qgis_test"."binary_type" ("id", "blob") VALUES (?, ?)'
-        insert_args = [[1, base64.b64encode(b'binvalue')], [2, None]]
+        insert_args = [[1, QByteArray(b'YmludmFsdWU=')], [2, None]]
         self.prepareTestTable('binary_type', create_sql, insert_sql, insert_args)
 
         vl = self.createVectorLayer('table="qgis_test"."binary_type" sql=', 'testbinary')
@@ -271,7 +271,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                      '"id" INTEGER NOT NULL PRIMARY KEY,' \
                      '"blob" VARBINARY(1000))'
         insert_sql = 'INSERT INTO "qgis_test"."binary_type_edit" ("id", "blob") VALUES (?, ?)'
-        insert_args = [[1, base64.b64encode(b'bbb')]]
+        insert_args = [[1, QByteArray(b'YmJi')]]
         self.prepareTestTable('binary_type_edit', create_sql, insert_sql, insert_args)
 
         vl = self.createVectorLayer('key=\'id\' table="qgis_test"."binary_type_edit" sql=', 'testbinaryedit')
