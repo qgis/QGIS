@@ -65,7 +65,7 @@ namespace
     int errcode = OSRImportFromProj4( hCRS, srs.toProj().toUtf8() );
 
     if ( errcode != OGRERR_NONE )
-      throw exception();
+      throw QgsHanaException( "Unable to parse a spatial reference system" );
 
     QgsCoordinateReferenceSystem srsWGS84;
     srsWGS84.createFromString( "EPSG:4326" );
@@ -80,27 +80,37 @@ namespace
     OSRGetLinearUnits( hCRS, &linearUnits );
     OSRGetAngularUnits( hCRS, &angularUnits );
 
+    QString xRange = QStringLiteral( "%1 BETWEEN %2 AND %3" )
+                     .arg( ( srs.isGeographic() ? "LONGITUDE" : "X" ),
+                           QString::number( bounds.xMinimum() ), QString::number( bounds.xMaximum() ) );
+    QString yRange = QStringLiteral( "%1 BETWEEN %2 AND %3" )
+                     .arg( ( srs.isGeographic() ? "LATITUDE" : "Y" ),
+                           QString::number( bounds.yMinimum() ), QString::number( bounds.yMaximum() ) );
+
     // create new spatial reference system
-    QString sql = QStringLiteral( "CREATE SPATIAL REFERENCE SYSTEM \"%1\" "
+    QString sql = QStringLiteral( "CREATE SPATIAL REFERENCE SYSTEM %1 "
                                   "IDENTIFIED BY %2 "
-                                  "LINEAR UNIT OF MEASURE \"%3\" "
-                                  "ANGULAR UNIT OF MEASURE \"%4\" "
+                                  "LINEAR UNIT OF MEASURE %3 "
+                                  "ANGULAR UNIT OF MEASURE %4 "
                                   "TYPE %5 "
-                                  "COORDINATE X BETWEEN %6 "
-                                  "COORDINATE Y BETWEEN %7 "
-                                  "DEFINITION '%8' "
-                                  "TRANSFORM DEFINITION '%9'" )
-                  .arg( srs.description(), QString::number( srs.postgisSrid() ), QString( linearUnits ).toLower(), QString( angularUnits ).toLower(),
+                                  "COORDINATE %6 "
+                                  "COORDINATE %7 "
+                                  "DEFINITION %8 "
+                                  "TRANSFORM DEFINITION %9" )
+                  .arg( QgsHanaUtils::quotedIdentifier( srs.description() ),
+                        QString::number( srs.srsid() ),
+                        QgsHanaUtils::quotedIdentifier( QString( linearUnits ).toLower() ),
+                        QgsHanaUtils::quotedIdentifier( QString( angularUnits ).toLower() ),
                         srs.isGeographic() ? QStringLiteral( "ROUND EARTH" ) : QStringLiteral( "PLANAR" ),
-                        QStringLiteral( "%1 AND %2" ).arg( QString::number( bounds.xMinimum() ), QString::number( bounds.xMaximum() ) ),
-                        QStringLiteral( "%1 AND %2" ).arg( QString::number( bounds.yMinimum() ), QString::number( bounds.yMaximum() ) ),
-                        srs.toWkt(), srs.toProj() );
+                        xRange, yRange,
+                        QgsHanaUtils::quotedString( srs.toWkt() ),
+                        QgsHanaUtils::quotedString( srs.toProj() ) );
 
     QString errorMessage;
     conn->execute( sql, &errorMessage );
 
-    if ( errorMessage.isEmpty() )
-      QgsDebugMsg( errorMessage );
+    if ( !errorMessage.isEmpty() )
+      throw QgsHanaException( errorMessage.toStdString().c_str() );
   }
 
   void setStatementValue(
@@ -205,8 +215,7 @@ namespace
         else
         {
           QByteArray arr = value.toByteArray();
-          vector<char> buffer( arr.begin(), arr.end() );
-          stmt->setBinary( paramIndex, Binary( buffer ) );
+          stmt->setBinary( paramIndex, Binary( vector<char>( arr.begin(), arr.end() ) ) );
         }
         break;
       default:
@@ -256,13 +265,10 @@ QgsHanaProvider::QgsHanaProvider(
 
   QgsHanaConnectionRef conn( mUri );
   if ( conn.isNull() )
-    return;
+    throw QgsHanaException( tr( "Failed to connect to database" ).toStdString().c_str() );
 
   if ( !checkPermissionsAndSetCapabilities() )
-  {
-    QgsMessageLog::logMessage( tr( "Provider does not have enough permissions" ), QObject::tr( "HANA" ) );
-    return;
-  }
+    throw QgsHanaException( tr( "Provider does not have enough permissions" ).toStdString().c_str() );
 
   if ( mSrid < 0 )
     mSrid = readSrid();
@@ -278,10 +284,10 @@ QgsHanaProvider::QgsHanaProvider(
                   // boolean
                   << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "BOOLEAN" ), QVariant::Bool, -1, -1, -1, -1 )
                   // integer types
-                  << QgsVectorDataProvider::NativeType( tr( "8 bytes integer" ), QStringLiteral( "BIGINT" ), QVariant::Int )
-                  << QgsVectorDataProvider::NativeType( tr( "4 bytes integer" ), QStringLiteral( "INTEGER" ), QVariant::Int )
-                  << QgsVectorDataProvider::NativeType( tr( "2 bytes integer" ), QStringLiteral( "SMALLINT" ), QVariant::Int )
-                  << QgsVectorDataProvider::NativeType( tr( "1 byte integer" ), QStringLiteral( "TINYINT" ), QVariant::Int )
+                  << QgsVectorDataProvider::NativeType( tr( "8 bytes integer" ), QStringLiteral( "BIGINT" ), QVariant::LongLong, -1, -1, 0, 0 )
+                  << QgsVectorDataProvider::NativeType( tr( "4 bytes integer" ), QStringLiteral( "INTEGER" ), QVariant::Int, -1, -1, 0, 0 )
+                  << QgsVectorDataProvider::NativeType( tr( "2 bytes integer" ), QStringLiteral( "SMALLINT" ), QVariant::Int, -1, -1, 0, 0 )
+                  << QgsVectorDataProvider::NativeType( tr( "1 byte integer" ), QStringLiteral( "TINYINT" ), QVariant::Int, -1, -1, 0, 0 )
                   << QgsVectorDataProvider::NativeType( tr( "Decimal number (DECIMAL)" ), QStringLiteral( "DECIMAL" ), QVariant::Double, 1, 31, 0, 31 )
                   // floating point
                   << QgsVectorDataProvider::NativeType( tr( "Decimal number (REAL)" ), QStringLiteral( "REAL" ), QVariant::Double )
@@ -295,9 +301,10 @@ QgsHanaProvider::QgsHanaProvider(
                   << QgsVectorDataProvider::NativeType( tr( "Unicode text, variable length (NVARCHAR)" ), QStringLiteral( "NVARCHAR" ), QVariant::String, 1, 5000 )
                   << QgsVectorDataProvider::NativeType( tr( "Text, variable length large object (CLOB)" ), QStringLiteral( "CLOB" ), QVariant::String )
                   << QgsVectorDataProvider::NativeType( tr( "Unicode text, variable length large object (NCLOB)" ), QStringLiteral( "NCLOB" ), QVariant::String )
+                  // binary types
+                  << QgsVectorDataProvider::NativeType( tr( "Binary object (VARBINARY)" ), QStringLiteral( "VARBINARY" ), QVariant::ByteArray, 1, 5000 )
+                  << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "BLOB" ), QVariant::ByteArray )
                 );
-
-  mValid = true;
 
   QgsDebugMsgLevel( QStringLiteral( "Connection info is %1" ).arg( QgsHanaUtils::connectionInfo( mUri ) ), 4 );
   QgsDebugMsgLevel( QStringLiteral( "Schema is: %1" ).arg( mSchemaName ), 4 );
@@ -468,17 +475,12 @@ bool QgsHanaProvider::setSubsetString( const QString &subset, bool )
 
 bool QgsHanaProvider::isValid() const
 {
-  return mValid;
+  // We don't allow creation of an invalid instance
+  return true;
 }
 
 QgsFeatureIterator QgsHanaProvider::getFeatures( const QgsFeatureRequest &request ) const
 {
-  if ( !mValid )
-  {
-    QgsDebugMsg( QStringLiteral( "Read attempt on an invalid HANA data source" ) );
-    return QgsFeatureIterator();
-  }
-
   return QgsFeatureIterator( new QgsHanaFeatureIterator( new QgsHanaFeatureSource( this ), true, request ) );
 }
 
@@ -495,9 +497,8 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     return false;
 
   // Build insert statement
-  QString columnNames;
-  QString values;
-  bool first = true;
+  QStringList columnNames;
+  QStringList values;
   bool isPointDataType = false;
 
   if ( !mGeometryColumn.isEmpty() )
@@ -506,12 +507,11 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     isPointDataType = QString::compare( geometryDataType, "ST_POINT", Qt::CaseInsensitive ) == 0;
 
     columnNames += QgsHanaUtils::quotedIdentifier( mGeometryColumn );
-    values += QStringLiteral( "ST_GeomFromWKB(?, %1)" ).arg( QString::number( mSrid ) );
-    first = false;
+    values << QStringLiteral( "ST_GeomFromWKB(?, %1)" ).arg( QString::number( mSrid ) );
   }
 
   const QgsAttributes attrs = flist[0].attributes();
-  const bool hasSkippedFieldds = attrs.count() != mAttributeFields.size();
+  const bool hasSkippedFields = attrs.count() != mAttributeFields.size();
   QList<int> fieldIds;
   int idFieldIndex = -1;
 
@@ -529,15 +529,8 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         continue;
     }
 
-    if ( !first )
-    {
-      columnNames += QStringLiteral( "," );
-      values += QStringLiteral( "," );
-    }
-
-    columnNames += QgsHanaUtils::quotedIdentifier( field.name() );
-    values += QStringLiteral( "?" );
-    first = false;
+    columnNames << QgsHanaUtils::quotedIdentifier( field.name() );
+    values << QStringLiteral( "?" );
 
     fieldIds.append( idx );
   }
@@ -545,7 +538,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   const bool allowBatchInserts = ( flags & QgsFeatureSink::FastInsert );
   const QString sql = QStringLiteral( "INSERT INTO %1.%2(%3) VALUES (%4)" ).arg(
                         QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ),
-                        columnNames, values );
+                        columnNames.join( QStringLiteral( "," ) ), values.join( QStringLiteral( "," ) ) );
 
   size_t batchSize = 0;
 
@@ -594,7 +587,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         const QgsField &field = mAttributeFields.at( fieldIndex );
         const FieldInfo &fieldInfo = mFieldInfos.at( fieldIndex );
 
-        const int attrIndex = ( hasSkippedFieldds ) ? i : fieldIndex;
+        const int attrIndex = ( hasSkippedFields ) ? i : fieldIndex;
         QVariant attrValue = attrIndex < attrs.length() ? attrs.at( attrIndex ) : QVariant( QVariant::LongLong );
         if ( fieldIndex == idFieldIndex )
         {
@@ -1460,13 +1453,13 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
   long srid = 0;
   if ( srs.isValid() )
   {
-    srid = srs.postgisSrid();
+    srid = srs.srsid();
     QString authSrid = QStringLiteral( "null" );
     QString authName = QStringLiteral( "null" );
     QStringList sl = srs.authid().split( ':' );
     if ( sl.length() == 2 )
     {
-      authName = '\'' + sl[0] + '\'';
+      authName = sl[0];
       authSrid = sl[1];
     }
 
@@ -1594,7 +1587,16 @@ void QgsHanaProviderMetadata::cleanupProvider()
 QgsHanaProvider *QgsHanaProviderMetadata::createProvider(
   const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsHanaProvider( uri, options );
+  try
+  {
+    return new QgsHanaProvider( uri, options );
+  }
+  catch ( const QgsHanaException &ex )
+  {
+    QgsMessageLog::logMessage( ex.what(), QObject::tr( "HANA" ) );
+  }
+
+  return nullptr;
 }
 
 QList< QgsDataItemProvider *> QgsHanaProviderMetadata::dataItemProviders() const

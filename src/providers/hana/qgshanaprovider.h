@@ -154,8 +154,6 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     QString mQueryWhereClause;
     // Disable support for SelectAtId
     bool mSelectAtIdDisabled;
-    // Flag indicating whether the layer is a valid HANA layer
-    bool mValid = false;
     // Attributes of nongeometry fields
     QgsFields mAttributeFields;
     // Additional information about HANA fields
