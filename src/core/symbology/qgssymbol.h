@@ -620,7 +620,7 @@ class CORE_EXPORT QgsSymbol
     //! Symbol opacity (in the range 0 - 1)
     qreal mOpacity = 1.0;
 
-    RenderHints mRenderHints = nullptr;
+    RenderHints mRenderHints;
     bool mClipFeaturesToExtent = true;
     bool mForceRHR = false;
 

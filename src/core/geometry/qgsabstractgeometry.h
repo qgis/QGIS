@@ -259,7 +259,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see asJson()
      * \since QGIS 3.0
      */
-    virtual QByteArray asWkb( WkbFlags flags = nullptr ) const = 0;
+    virtual QByteArray asWkb( WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const = 0;
 
     /**
      * Returns a WKT representation of the geometry.

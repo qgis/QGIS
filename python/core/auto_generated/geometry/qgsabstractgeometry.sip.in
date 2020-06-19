@@ -196,7 +196,7 @@ Sets the geometry from a WKT string.
     typedef QFlags<QgsAbstractGeometry::WkbFlag> WkbFlags;
 
 
-    virtual QByteArray asWkb( WkbFlags flags = 0 ) const = 0;
+    virtual QByteArray asWkb( WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const = 0;
 %Docstring
 Returns a WKB representation of the geometry.
 

@@ -1569,7 +1569,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //TODO QGIS 4 - move to readXml as a new argument (breaks API)
 
     //! Read flags. It's up to the subclass to respect these when restoring state from XML
-    QgsMapLayer::ReadFlags mReadFlags = nullptr;
+    QgsMapLayer::ReadFlags mReadFlags = QgsMapLayer::ReadFlags();
 
     /**
      * TRUE if the layer's CRS should be validated and invalid CRSes are not permitted.

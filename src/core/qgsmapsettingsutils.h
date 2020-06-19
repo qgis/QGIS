@@ -48,7 +48,7 @@ class CORE_EXPORT QgsMapSettingsUtils
      *
      * The optional \a flags argument can be used to fine-tune the check behavior.
      */
-    static QStringList containsAdvancedEffects( const QgsMapSettings &mapSettings, EffectsCheckFlags flags = nullptr );
+    static QStringList containsAdvancedEffects( const QgsMapSettings &mapSettings, EffectsCheckFlags flags = QgsMapSettingsUtils::EffectsCheckFlags() );
 
     /**
      * Computes the six parameters of a world file.

@@ -261,7 +261,7 @@ namespace QgsWms
       const QgsProject *mProject = nullptr;
       QgsServerInterface *mInterface = nullptr;
       QgsWmsParameters mParameters;
-      Flags mFlags = nullptr;
+      Flags mFlags = Flags();
       double mScaleDenominator = -1.0;
 
       // nickname of all layers defined within the project

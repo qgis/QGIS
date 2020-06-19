@@ -232,7 +232,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
 
     void addCommentItemForComponent( QgsProcessingModelAlgorithm *model, const QgsProcessingModelComponent &component, QgsModelComponentGraphicItem *parentItem );
 
-    Flags mFlags = nullptr;
+    Flags mFlags = Flags();
 
     QgsProcessingModelAlgorithm *mModel = nullptr;
 
