@@ -103,6 +103,12 @@ void QgsNewNameDialog::setOverwriteEnabled( bool enabled )
   nameChanged(); //update UI
 }
 
+void QgsNewNameDialog::setAllowEmptyName( bool allowed )
+{
+  mAllowEmptyName = allowed;
+  nameChanged(); //update UI
+}
+
 void QgsNewNameDialog::setConflictingNameWarning( const QString &string )
 {
   mConflictingNameWarning = string;
@@ -132,7 +138,7 @@ void QgsNewNameDialog::nameChanged()
   if ( newName.length() == 0 || ( !mRegexp.isEmpty() && !mRegexp.exactMatch( newName ) ) )
   {
     //mErrorLabel->setText( highlightText( tr( "Enter new name" ) );
-    okButton->setEnabled( false );
+    okButton->setEnabled( mAllowEmptyName );
     return;
   }
 
