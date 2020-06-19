@@ -5,23 +5,18 @@
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>QGIS News</title>
-  <style>
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
   </style>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
 </head>
 <body>
 <header id="title-block-header">
 <h1 class="title">QGIS News</h1>
 </header>
-<nav id="TOC" role="doc-toc">
+<nav id="TOC">
 <ul>
 <li><a href="#whats-new-in-version-3.12-bucurești">What’s new in Version 3.12 ‘București’?</a></li>
 <li><a href="#whats-new-in-version-3.10-a-coruña">What’s new in Version 3.10 ‘A Coruña’?</a></li>
@@ -1027,7 +1022,7 @@
 <li>The full power of normal label and rule expressions can now be used for label properties. Nearly every property can be defined with an expression or field value giving you more control over the label result. Expressions can refer to a field (e.g. set the font size to the value of the field ‘font’) or can include more complex logic. Examples of bindable properties include: Font, Size, Style and Buffer size.</li>
 <li>With the expression engine being used more and more though out QGIS to allow for things like expression based labels and symbol, many more functions have been added to the expression builder and are all accessible though the expression builder. All functions include comprehensive help and usage guides for ease of use.</li>
 <li>If the expression engine doesn’t have the function that you need. Not to worry. New functions can be added via a plugin using a simple Python API.</li>
-<li>The Python API has been revamped to allow for a more cleaner, more pythonic, programming experience. The QGIS 2.0 API uses SIP V2 which removes the messy toString(), toInt() logic that was needed when working with values. Types are now converted into native Python types making for a much nicer API. Attributes access is now done on the feature itself using a simple key lookup, no more index lookup and attribute maps. <strong>Note:</strong> Most plugins written for QGIS &lt; 1.x will need to be ported to work correctly in QGIS 2.x. Please consult https://github.com/qgis/QGIS/wiki/Python_plugin_API_changes_from_18_to_20 for more details.</li>
+<li>The Python API has been revamped to allow for a more cleaner, more pythonic, programming experience. The QGIS 2.0 API uses SIP V2 which removes the messy toString(), toInt() logic that was needed when working with values. Types are now converted into native Python types making for a much nicer API. Attributes access is now done on the feature itself using a simple key lookup, no more index lookup and attribute maps. **Note:*- Most plugins written for QGIS &lt; 1.x will need to be ported to work correctly in QGIS 2.x. Please consult https://github.com/qgis/QGIS/wiki/Python_plugin_API_changes_from_18_to_20 for more details.</li>
 <li>The raster data provider system has been completely overhauled. One of the best new features stemming from this work is the ability to ‘Layer -&gt; Save As…’ to save any raster layer as a new layer. In the process you can clip, resample, and reproject the layer to a new Coordinate Reference System. You can also save a raster layer as a rendered image so if you for example have single band raster that you have applied a color palette to, you can save the rendered layer out to a georeferenced RGB layer.</li>
 <li>There are many, many more new features in QGIS 2.0 - we invite you to explore the software and discover them all!</li>
 </ul>
@@ -1232,22 +1227,22 @@
 </ul>
 <h2 id="providers-and-data-handling">Providers and Data Handling</h2>
 <ul>
-<li><p>New SQLAnywhere vector provider.</p></li>
-<li><p>Table join support.</p></li>
-<li><p>Feature form updates:</p></li>
-<li><p>Make NULL value string representation configurable.</p></li>
-<li><p>Fix feature updates in feature form from attribute table.</p></li>
-<li><p>Add support for NULL values in value maps (comboboxes).</p></li>
-<li><p>Use layer names instead of ids in drop-down list when loading value maps from layers.</p></li>
-<li><p>Support feature form expression fields: line edits on the form which name prefix “expr_” are evaluated. Their value is interpreted as field calculator string and replaced with the calculated value.</p></li>
-<li><p>Support searching for NULL in attribute table.</p></li>
+<li>New SQLAnywhere vector provider.</li>
+<li>Table join support.</li>
+<li>Feature form updates:</li>
+<li>Make NULL value string representation configurable.</li>
+<li>Fix feature updates in feature form from attribute table.</li>
+<li>Add support for NULL values in value maps (comboboxes).</li>
+<li>Use layer names instead of ids in drop-down list when loading value maps from layers.</li>
+<li>Support feature form expression fields: line edits on the form which name prefix “expr_” are evaluated. Their value is interpreted as field calculator string and replaced with the calculated value.</li>
+<li>Support searching for NULL in attribute table.</li>
 <li><p>Attribute editing improvements:</p></li>
-<li><p>Improved interactive attribute editing in table (adding/deleting features, attribute update).</p></li>
-<li><p>Allow adding of geometryless features.</p></li>
-<li><p>Fixed attribute undo/redo.</p></li>
+<li>Improved interactive attribute editing in table (adding/deleting features, attribute update).</li>
+<li>Allow adding of geometryless features.</li>
+<li>Fixed attribute undo/redo.</li>
 <li><p>Improved attribute handling:</p></li>
-<li><p>Optionally re-use entered attribute values for next digitized feature.</p></li>
-<li><p>Allow merging/assigning attribute values to a set of features.-</p></li>
+<li>Optionally re-use entered attribute values for next digitized feature.</li>
+<li>Allow merging/assigning attribute values to a set of features.-</li>
 <li><p>Allow OGR ‘save as’ without attributes (e.g., DGN/DXF).</p></li>
 </ul>
 <h2 id="api-and-developer-centric">Api and Developer Centric</h2>
@@ -1380,13 +1375,13 @@
 </ul>
 <h2 id="api-updates">API Updates</h2>
 <ul>
-<li><p>QgsDataProvider &amp; QgsMapLayer: add dataChanged() signal, so that a provider can signal that the datasource changed</p></li>
+<li>QgsDataProvider &amp; QgsMapLayer: add dataChanged() signal, so that a provider can signal that the datasource changed</li>
 <li><p>Use QNetworkAccessManager instead of QgsHttpTransaction (including caching and dynamic authentication to website and proxies)</p></li>
-<li><p>Allow opening layer properties from plugins</p></li>
-<li><p>Support for custom plugin layers.</p></li>
-<li><p>Allow refreshing of plugins programmatically</p></li>
-<li><p>Support for custom plugin directories using QGIS_PLUGINPATH environment variables. More paths can be passed, separated by semicolon.</p></li>
-<li><p>Legend interface added to retrieve layers in legend order</p></li>
+<li>Allow opening layer properties from plugins</li>
+<li>Support for custom plugin layers.</li>
+<li>Allow refreshing of plugins programmatically</li>
+<li>Support for custom plugin directories using QGIS_PLUGINPATH environment variables. More paths can be passed, separated by semicolon.</li>
+<li>Legend interface added to retrieve layers in legend order</li>
 <li><p>Support more GEOS operators</p></li>
 </ul>
 <h1 id="whats-new-in-version-1.4.0-enceladus">What’s new in Version 1.4.0 ‘Enceladus’?</h1>
@@ -1658,19 +1653,19 @@
 <p>2004-10-31 [timlinux] 0.5.0devel18 Fix bug #1047002 (label buffer enabled / disabled checkbox not working)</p>
 <p>2004-10-30 [larsl] 0.5.0devel17 qgsfeature.h is needed in qgsvectordataprovider.cpp since it’s deleting a QgsFeature, fixed it</p>
 <p>2004-10-29 [larsl] 0.5.0devel16 Added defaultValue() in QgsVectorLayer and QgsVectorDataProvider, implemented it in the GPX provider</p>
-<p>2004-10-29 [stevehalasz] 0.5.0devel15 * Write layers to projects files in the proper order by iterating over the zOrder in the map canvas. Fixes bug #1054332.</p>
+<p>2004-10-29 [stevehalasz] 0.5.0devel15 - Write layers to projects files in the proper order by iterating over the zOrder in the map canvas. Fixes bug #1054332.</p>
 <ul>
 <li>Remove the <zorder> tag from the dtd. It is superfluous.</li>
 </ul>
 <p>2004-10-26 [mcoletti] 0.5.0devel13 regarding saving and restoring units in project files. made many minor bug fixes and tidying up</p>
 <p>2004-10-22 [larsl] 0.5.0devel12 Removed more unused code in the GPS plugin, changed the GPS plugin source to follow the coding standards better</p>
-<p>2004-10-22 [larsl] 0.5.0devel11 Some changes in the GPS plugin: * Changed the tooltip of the action from “GPS Importer” to “GPS Tools” * Removed some old unused code * Made the upload/download tools much more flexible by letting users specifying “devices” with upload and download commands * Remember the last used device and port for uploads and downloads * Remember the last directory that a GPX file was loaded from</p>
+<p>2004-10-22 [larsl] 0.5.0devel11 Some changes in the GPS plugin: - Changed the tooltip of the action from “GPS Importer” to “GPS Tools” - Removed some old unused code - Made the upload/download tools much more flexible by letting users specifying “devices” with upload and download commands - Remember the last used device and port for uploads and downloads - Remember the last directory that a GPX file was loaded from</p>
 <p>2004-10-20 [mcoletti] 0.5.0devel10 merged in qgsproject-branch</p>
 <p>2004-10-19 [larsl] 0.5.0devel9 Changed GPX attribute names from three letter abbreviations to more userfriendly whole words</p>
 <p>2004-10-19 [larsl] 0.5.0devel8 Changed mFeatureType in qgsgpxprovider.cpp from a QString to an enum to avoid unnecessary string comparisons</p>
 <p>2004-10-18 [gsherman] 0.5.0devel7 Added test for GEOS to acinclude.m4 and configure.in Added members/methods in preparation for support of scale dependent rendering Added Display tab to the vector dialog to allow setting of min and max scales for rendering</p>
 <p>2004-10-18 [larsl] 0.5.0devel6 Removed duplicate code, added bounds calculation for digitized features in the GPX provider</p>
-<p>2004-10-18 [larsl] 0.5.0devel5 Changes to the GPX provider: * Implemented isEditable(), isModified(), commitChanges(), and rollBack() * Removed the useless lat and lon attributes in waypoint features * Cleaned up the attribute parsing in addFeature() GPX editing should now work again.</p>
+<p>2004-10-18 [larsl] 0.5.0devel5 Changes to the GPX provider: - Implemented isEditable(), isModified(), commitChanges(), and rollBack() - Removed the useless lat and lon attributes in waypoint features - Cleaned up the attribute parsing in addFeature() GPX editing should now work again.</p>
 <p>2004-10-17 [gsherman] 0.5.0devel4 OGR provider now uses GEOS to select features when doing identify and select operations.</p>
 <p>2004-10-16 [gsherman] 0.5.0devel3 Fixed OGR filters in the add layer dialog box using fix in qgsproject-branch Reverted images in qgisappbase.ui to XPM so QGIS will compile on Qt &lt; 3.x</p>
 <p>2004-10-11 [gsherman] 0.5.0devel2 Added man page (qgis.man) that gets installed in man1 as qgis.1</p>
@@ -1685,7 +1680,7 @@
 <p>2004-09-13 [larsl] 0.4.0devel31 Added the unique value marker renderer</p>
 <p>2004-09-12 [larsl] 0.4.0devel30 Scale down SVG symbols Display rasters without geotransform info as “1 pixel = 1 unit”</p>
 <p>2004-09-12 [larsl] 0.4.0devel29 Fixed bug in scale_bar plugin that would cause QGIS to freeze when a layer with one point was loaded</p>
-<p>2004-09-12 [larsl] 0.4.0devel28 The device lists in the GPS plugin should show /dev/ttyUSB* devices too now (for serial USB adapters) on Linux</p>
+<p>2004-09-12 [larsl] 0.4.0devel28 The device lists in the GPS plugin should show /dev/ttyUSB- devices too now (for serial USB adapters) on Linux</p>
 <p>2004-09-08 [larsl] 0.4.0devel27 Fixed bug that crashed QGIS when the user selected records in the attribute table for a layer that used the single marker renderer</p>
 <p>2004-09-01 [mcoletti] 0.4.0devel26 Start of new qgs project file class. Obviously work-in-progress.</p>
 <p>Committed for back-up sanity and to elicit comments from the bored.</p>
@@ -1713,7 +1708,7 @@
 <p>2004-08-14 [gsherman] 0.4.0devel13 Moved common toobar icons to drop-down tool menus. This includes the overview, hide/show all, and capture tools</p>
 <p>2004-08-18 [jobi] 0.4.0devel12 added Italian translation thanx to Maurizio Napolitano updated all translations</p>
 <p>2004-08-17 [larsl] 0.4.0devel11 Implemented GPX file writing - GPX layers are now written back to file when features are added</p>
-<p>2004-08-17 [larsl] 0.4.0devel10 * More digitizing support for the GPX provider. Routes and tracks can now be created. Nothing is written to file yet.</p>
+<p>2004-08-17 [larsl] 0.4.0devel10 - More digitizing support for the GPX provider. Routes and tracks can now be created. Nothing is written to file yet.</p>
 <p>2004-08-14 [gsherman] 0.4.0devel9 Added mouse wheel zoom. Moving wheel forward zooms in by a factor of 2.</p>
 <p>2004-08-12 [gsherman] 0.4.0devel8 Rearranged capture icons and added them to the MapNavigation action group so that the icons remain depressed while the tool is active. (bugs 994274 and 994272) Fixed preferences bug (992458) that caused themes to disappear when setting options.</p>
 <p>2004-07-19 [gsherman] 0.4.0devel7 Fixed broken setDisplayField function in qgsvectorlayer Added display/label field handling. Field is now set when the layer is added by examining the fields and attempting to make a “smart” choice. The user can later change this field from the layer properties dialog. This field is used as the item name in the identify box (top of the tree for each feature and its attributes) and will eventually be used in labeling features. Cleanup of postgres add layer dialog Removed excessive debug output from qgsfeature</p>
@@ -1723,14 +1718,14 @@
 <p>2004-07-09 [gsherman] 0.4.0devel3 First pass at defining PostgreSQL layers using a where clause in the data provider. UI may need some work. When adding a PG layer, double- click on the layer name to define the where clause. Do not include the where keyword 2004-07-05 [ts] 0.4.0devel2 Added option for forcing redraw when adding a raster - intended for use by plugins.</p>
 <p>2004-07-05 [larsl] 0.4.0devel1 Moved lots of code from PluginGui to Plugin in the GPS plugin, use signals and slots for communication</p>
 <p>2004-06-30 [jobi] 0.3.0devel58 made ready for release added interface version for libqgis</p>
-<p>2004-06-28 [gsherman] 0.3.0devel57 Overview extent rectangle bug fix Patch (from strk) for PG layer extent calculation QgsActetate* documentation updates</p>
+<p>2004-06-28 [gsherman] 0.3.0devel57 Overview extent rectangle bug fix Patch (from strk) for PG layer extent calculation QgsActetate- documentation updates</p>
 <p>2004-06-28 [jobi] 0.3.0devel56 fix bug #981159 cleaned warnings</p>
 <p>2004-06-28 [ts] 0.3.0devel55 Added show/hide all layers buttons and menu items</p>
 <p>2004-06-27 [larsl] 0.3.0devel54 Enabled GPS upload code again</p>
 <p>2004-06-27 [ts] 0.3.0devel53 Numerous bug fixes and cleanups. Added remove all layers from overview button.</p>
 <p>2004-06-26 [ts] 0.3.0devel52 Extents are now correctly restored when project is loaded</p>
 <p>2004-06-24 [ts] 0.3.0devel51 Completion of projection fixes to freeze canvas and restore zorder correctly. Small issue with restoring extents properly needs to be resolved still.</p>
-<p>2004-06-23 [mcoletti] 0.3.0devel50 Fixed bug whereby one couldn’t downcast from QgsMapLayer* to a QgsVectorLayer*. Apparently this was because dlopen()’d files didn’t have full access to global variables. Now plug-ins can use global variable by linking with -rdynamic and using dlopen()’s RTLD_GLOBAL flag.</p>
+<p>2004-06-23 [mcoletti] 0.3.0devel50 Fixed bug whereby one couldn’t downcast from QgsMapLayer- to a QgsVectorLayer*. Apparently this was because dlopen()’d files didn’t have full access to global variables. Now plug-ins can use global variable by linking with -rdynamic and using dlopen()’s RTLD_GLOBAL flag.</p>
 <p>2004-06-21 [ts] 0.3.0devel49</p>
 <p>Revised raster stats emitting of progress update to not do it when stats are fetched from cache. QGisApp progress bar now updates as each layer is rendered in the mapCanvas.</p>
 <p>Some minor updates to projection</p>
@@ -1848,7 +1843,7 @@ myFileWriter.writePoint(&amp;theQgsPoint);
 <p>2004-05-13 [larsl] 0.2.0devel12 Changing std::string to QString in GPSData::getData() and GPSData::releaseData() to support Qt libraries built without STL support</p>
 <p>2004-05-13 [ts] 0.2.0devel11 Fixes for segfaults on grid_make and gps_importer dbf creation</p>
 <p>2004-05-12 [gsherman] 0.2.0devel10 Fixes for OS X endian bug (needs further testing)</p>
-<p>2004-05-12 [jobi] 0.2.0devel9 Added endian checks in configure decreased versions in the auto* checks</p>
+<p>2004-05-12 [jobi] 0.2.0devel9 Added endian checks in configure decreased versions in the auto- checks</p>
 <p>2004-05-12 [ts] 0.2.0devel8 Added addProject(QString) to plugin interface.</p>
 <p>2004-05-05 [jobi] 0.2.0devel7 Extended qgis-config to expose version</p>
 <p>2004-05-04 [ts] 0.2.0devel6 Added two new internal plugins - North Arrow and Copyright message overlay</p>
@@ -1903,11 +1898,11 @@ myFileWriter.writePoint(&amp;theQgsPoint);
 <p>Fixed bug #920070 Made plugin-libdir 64bit compatible (e.g. /usr/lib64/qgis) for AMD64 and PPC64 systems</p>
 <p>2004-03-22 [mac] 0.1.0devel9</p>
 <p>Added gps_importer plugin (still a work in progress)</p>
-<p>2004-03-22 [mac] 0.1.0devel8 s/config.h/qgsconfig.h/ qgsconfig.h now has header sentinels now will install headers in $(prefix)/qgis/include and libqis.* library in $(prefix)/lib “src/Makefile” no longer relies on explicit dependencies and uses better naming scheme for created source files</p>
+<p>2004-03-22 [mac] 0.1.0devel8 s/config.h/qgsconfig.h/ qgsconfig.h now has header sentinels now will install headers in $(prefix)/qgis/include and libqis.- library in $(prefix)/lib “src/Makefile” no longer relies on explicit dependencies and uses better naming scheme for created source files</p>
 <p>2004-03-21 [ts] 0.1.0devel7</p>
 <p>Added thumbnail preview of raster to raster props dialog. Added drawThumbnail method to rasterlayer.cpp Split (overloaded) draw method in rasterlayer.cpp so that some parts of the original draw method could be used by drawThumbnail method too.</p>
 <p>Fixed a bug in the drawing of pseudocolor single band grayscale images that prevented all class breaks being displayed.</p>
-<p>2004-03-10 [gs] 0.1.0devel7 Added delimited text plugin which provides gui to add delimited text layers using the delimited_text data provider Changes to delimited_text data provider to support zooming, display of attributes, and identifying features. Selecting features does not work at this time. Auto* changes to support building the delimited text provider and plugin Minor changes to QgsFeature</p>
+<p>2004-03-10 [gs] 0.1.0devel7 Added delimited text plugin which provides gui to add delimited text layers using the delimited_text data provider Changes to delimited_text data provider to support zooming, display of attributes, and identifying features. Selecting features does not work at this time. Auto- changes to support building the delimited text provider and plugin Minor changes to QgsFeature</p>
 <p>2004-03-06 [ts] 0.1.0devel6 Completed session management of plugins (so active plugins are remembered when qgis closes and reloaded in the next session).</p>
 <p>2004-03-06 [ts] 0.1.0devel6 Save state of plugins in ~/.qt/qtrc file (in progress). State is saved, just need to implement code to load plugins marked as active during application startup.</p>
 <p>2004-03-06 [ts] 0.1.0devel6 Added QgsRasterLayer::filterLayer which gets called near the end of each of the 8 renderers. This is the place to inline filters. Note that eventually filters will be hived out to a filter plugin mechanism.</p>
