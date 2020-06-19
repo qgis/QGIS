@@ -72,6 +72,11 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
     error = QObject::tr( "Filename template must contain all # placeholders in one continuous group." );
     return false;
   }
+  if ( !QDir().mkpath( settings.outputDirectory ) )
+  {
+    error = QObject::tr( "Output directory creation failure." );
+    return false;
+  }
 
   QgsTemporalNavigationObject navigator;
   navigator.setTemporalExtents( settings.animationRange );
