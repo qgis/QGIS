@@ -251,6 +251,7 @@ void QgsFeaturePickerModelBase::updateCompleter()
       setExtraValueDoesNotExist( true );
     }
 
+    mKeepCurrentEntry = true;
     mShouldReloadCurrentFeature = false;
 
     if ( mFilterValue.isEmpty() )
@@ -269,7 +270,7 @@ void QgsFeaturePickerModelBase::updateCompleter()
     const int newEntriesSize = entries.size();
 
     // fixed entry is either NULL or extra value
-    const int nbFixedEntry = ( mExtraValueDoesNotExist ? 1 : 0 ) + ( mAllowNull ? 1 : 0 );
+    const int nbFixedEntry = ( mKeepCurrentEntry ? 1 : 0 ) + ( mAllowNull ? 1 : 0 );
 
     // Find the index of the current entry in the new list
     int currentEntryInNewList = -1;
@@ -313,7 +314,6 @@ void QgsFeaturePickerModelBase::updateCompleter()
     endRemoveRows();
     mIsSettingExtraIdentifierValue = false;
 
-
     if ( currentEntryInNewList == -1 )
     {
       beginInsertRows( QModelIndex(), firstRow, entries.size() + 1 );
@@ -351,9 +351,10 @@ void QgsFeaturePickerModelBase::updateCompleter()
     }
 
     emit filterJobCompleted();
+
+    mKeepCurrentEntry = false;
   }
   emit endUpdate();
-
 
   // scheduleReload and updateCompleter lives in the same thread so if the gatherer hasn't been stopped
   // (checked before), mGatherer still references the current gatherer
@@ -415,7 +416,6 @@ void QgsFeaturePickerModelBase::scheduledReload()
   mGatherer = createValuesGatherer( request );
   mGatherer->setData( mShouldReloadCurrentFeature );
   connect( mGatherer, &QgsFeatureExpressionValuesGatherer::finished, this, &QgsFeaturePickerModelBase::updateCompleter );
-
 
   mGatherer->start();
   if ( !wasLoading )

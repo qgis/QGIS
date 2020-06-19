@@ -339,9 +339,12 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
 
     QTimer mReloadTimer;
     bool mShouldReloadCurrentFeature = false;
+    bool mKeepCurrentEntry = false; // need to keep the current value after a reload or if the value does not exist
     bool mExtraValueDoesNotExist = false;
     bool mAllowNull = false;
     bool mIsSettingExtraIdentifierValue = false;
+
+    friend class TestQgsFeatureListComboBox;
 };
 
 #endif // QGSFEATUREFILTERMODELBASE_H
