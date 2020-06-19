@@ -161,8 +161,9 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
 // ----------------------
 
 
-QgsWmsCapabilities::QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext ):
-  mCoordinateTransformContext( coordinateTransformContext )
+QgsWmsCapabilities::QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext, const QString &baseUrl ):
+  mCoordinateTransformContext( coordinateTransformContext ),
+  mBaseUrl( baseUrl )
 {
 
 }
@@ -406,10 +407,20 @@ void QgsWmsCapabilities::parseService( QDomElement const &e, QgsWmsServiceProper
 
 void QgsWmsCapabilities::parseOnlineResource( QDomElement const &e, QgsWmsOnlineResourceAttribute &onlineResourceAttribute )
 {
+<<<<<<< HEAD
 
   onlineResourceAttribute.xlinkHref = QUrl::fromEncoded( e.attribute( QStringLiteral( "xlink:href" ) ).toUtf8() ).toString();
 
   QgsDebugMsg( QStringLiteral( "exiting." ) );
+=======
+  QUrl url = QUrl::fromEncoded( element.attribute( QStringLiteral( "xlink:href" ) ).toUtf8() );
+  if ( url.isRelative() )
+  {
+    const QUrl baseUrl = QUrl( mBaseUrl );
+    url = baseUrl.resolved( url );
+  }
+  onlineResourceAttribute.xlinkHref = url.toString();
+>>>>>>> 714b2ef9f2... [wms] Fix broken WMS layers from servers using relative OnlineResource paths
 }
 
 
