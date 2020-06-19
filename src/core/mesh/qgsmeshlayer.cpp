@@ -275,7 +275,7 @@ void QgsMeshLayer::setRendererSettings( const QgsMeshRendererSettings &settings 
     emit activeScalarDatasetGroupChanged( mRendererSettings.activeScalarDatasetGroup() );
 
   if ( oldActiveVector != mRendererSettings.activeVectorDatasetGroup() )
-    emit activeVectorDatasetGroupChanged( mRendererSettings.activeScalarDatasetGroup() );
+    emit activeVectorDatasetGroupChanged( mRendererSettings.activeVectorDatasetGroup() );
 
   emit rendererChanged();
   triggerRepaint();
