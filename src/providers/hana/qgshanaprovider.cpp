@@ -271,7 +271,7 @@ QgsHanaProvider::QgsHanaProvider(
     throw QgsHanaException( tr( "Provider does not have enough permissions" ).toStdString().c_str() );
 
   if ( mSrid < 0 )
-    mSrid = readSrid();
+    mSrid = conn->getColumnSrid( mSchemaName, mTableName, mGeometryColumn );
 
   mDatabaseVersion = QgsHanaUtils::toHANAVersion( conn->getDatabaseVersion() );
   readGeometryType();
@@ -1153,23 +1153,6 @@ bool QgsHanaProvider::isSrsRoundEarth( int srsId ) const
   return roundEarth.toString() == QLatin1String( "TRUE" );
 }
 
-int QgsHanaProvider::readSrid()
-{
-  if ( mGeometryColumn.isEmpty() )
-    return -1;
-
-  QString sql = QStringLiteral( "SELECT SRS_ID FROM SYS.ST_GEOMETRY_COLUMNS WHERE SCHEMA_NAME = ? AND TABLE_NAME = ?" );
-  QVariantList args = { mSchemaName, mTableName};
-  if ( !mGeometryColumn.isEmpty() )
-  {
-    sql += QStringLiteral( " AND COLUMN_NAME = ?" );
-    args.append( mGeometryColumn );
-  }
-  QgsHanaConnectionRef conn( mUri );
-  QVariant srid = conn->executeScalar( sql, args );
-  return srid.isNull() ? -1 : srid.toInt();
-}
-
 void QgsHanaProvider::readAttributeFields()
 {
   mAttributeFields.clear();
@@ -1293,12 +1276,8 @@ void QgsHanaProvider::readGeometryType()
   if ( mGeometryColumn.isNull() || mGeometryColumn.isEmpty() )
     mDetectedGeometryType = QgsWkbTypes::NoGeometry;
 
-  QgsHanaLayerProperty layerProperty;
-  layerProperty.tableName = mTableName;
-  layerProperty.schemaName = mSchemaName;
-  layerProperty.geometryColName = mGeometryColumn;
   QgsHanaConnectionRef conn( mUri );
-  mDetectedGeometryType = conn->getLayerGeometryType( layerProperty );
+  mDetectedGeometryType = conn->getColumnGeometryType( mSchemaName, mTableName, mGeometryColumn );
 }
 
 void QgsHanaProvider::readMetadata()

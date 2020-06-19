@@ -519,8 +519,8 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
 
 void QgsHanaConnection::readLayerInfo( QgsHanaLayerProperty &layerProperty )
 {
-  layerProperty.srid = getLayerSRID( layerProperty );
-  layerProperty.type = getLayerGeometryType( layerProperty );
+  layerProperty.srid = getColumnSrid( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName );
+  layerProperty.type = getColumnGeometryType( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName );
   layerProperty.pkCols = getLayerPrimaryeKeys( layerProperty );
 }
 
@@ -554,59 +554,6 @@ QVector<QgsHanaSchemaProperty> QgsHanaConnection::getSchemas( const QString &own
   }
 
   return list;
-}
-
-int QgsHanaConnection::getLayerSRID( const QgsHanaLayerProperty &layerProperty )
-{
-  if ( layerProperty.geometryColName.isEmpty() )
-    return -1;
-
-  int srid = -1;
-
-  try
-  {
-    PreparedStatementRef stmt;
-    if ( !layerProperty.isView )
-    {
-      const char *sql = "SELECT SRS_ID FROM SYS.ST_GEOMETRY_COLUMNS "
-                        "WHERE SCHEMA_NAME = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?";
-      stmt = mConnection->prepareStatement( sql );
-      stmt->setNString( 1, NString( layerProperty.schemaName.toStdU16String() ) );
-      stmt->setNString( 2, NString( layerProperty.tableName.toStdU16String() ) );
-      stmt->setNString( 3, NString( layerProperty.geometryColName.toStdU16String() ) );
-    }
-    else
-    {
-      QString sql = QStringLiteral( "SELECT %1.ST_SRID() FROM %2.%3 WHERE %1 IS NOT NULL LIMIT %4" )
-                    .arg( QgsHanaUtils::quotedIdentifier( layerProperty.geometryColName ),
-                          QgsHanaUtils::quotedIdentifier( layerProperty.schemaName ),
-                          QgsHanaUtils::quotedIdentifier( layerProperty.tableName ),
-                          QString::number( GEOMETRIES_SELECT_LIMIT ) );
-      stmt = mConnection->prepareStatement( QgsHanaUtils::toUtf16( sql ) );
-    }
-
-    ResultSetRef rsSrid = stmt->executeQuery( );
-    while ( rsSrid->next() )
-    {
-      Int value = rsSrid->getInt( 1 );
-      if ( value.isNull() )
-        continue;
-      if ( srid == -1 )
-        srid = *value;
-      else if ( srid != *value )
-      {
-        srid = -1;
-        break;
-      }
-    }
-    rsSrid->close();
-  }
-  catch ( const Exception &ex )
-  {
-    throw QgsHanaException( ex.what() );
-  }
-
-  return srid;
 }
 
 QStringList QgsHanaConnection::getLayerPrimaryeKeys( const QgsHanaLayerProperty &layerProperty )
@@ -666,17 +613,17 @@ QStringList QgsHanaConnection::getLayerPrimaryeKeys( const QgsHanaLayerProperty 
   return ret;
 }
 
-QgsWkbTypes::Type QgsHanaConnection::getLayerGeometryType( const QgsHanaLayerProperty &layerProperty )
+QgsWkbTypes::Type QgsHanaConnection::getColumnGeometryType( const QString &schemaName, const QString &tableName, const QString &columnName )
 {
-  if ( layerProperty.geometryColName.isEmpty() )
+  if ( columnName.isEmpty() )
     return QgsWkbTypes::NoGeometry;
 
   QgsWkbTypes::Type ret = QgsWkbTypes::Unknown;
   QString sql = QStringLiteral( "SELECT upper(%1.ST_GeometryType()), %1.ST_Is3D(), %1.ST_IsMeasured() FROM %2.%3 "
                                 "WHERE %1 IS NOT NULL LIMIT %4" ).arg(
-                  QgsHanaUtils::quotedIdentifier( layerProperty.geometryColName ),
-                  QgsHanaUtils::quotedIdentifier( layerProperty.schemaName ),
-                  QgsHanaUtils::quotedIdentifier( layerProperty.tableName ),
+                  QgsHanaUtils::quotedIdentifier( columnName ),
+                  QgsHanaUtils::quotedIdentifier( schemaName ),
+                  QgsHanaUtils::quotedIdentifier( tableName ),
                   QString::number( GEOMETRIES_SELECT_LIMIT ) );
 
   try
@@ -732,6 +679,60 @@ QString QgsHanaConnection::getColumnDataType( const QString &schemaName, const Q
   }
 
   return ret;
+}
+
+int QgsHanaConnection::getColumnSrid( const QString &schemaName, const QString &tableName, const QString &columnName )
+{
+  if ( columnName.isEmpty() )
+    return -1;
+
+  auto getSrid = []( PreparedStatementRef & stmt )
+  {
+    int srid = -1;
+    ResultSetRef rsSrid = stmt->executeQuery( );
+    while ( rsSrid->next() )
+    {
+      Int value = rsSrid->getInt( 1 );
+      if ( value.isNull() )
+        continue;
+      if ( srid == -1 )
+        srid = *value;
+      else if ( srid != *value )
+      {
+        srid = -1;
+        break;
+      }
+    }
+    rsSrid->close();
+    return srid;
+  };
+
+  try
+  {
+    PreparedStatementRef stmt = mConnection->prepareStatement( "SELECT SRS_ID FROM SYS.ST_GEOMETRY_COLUMNS "
+                                "WHERE SCHEMA_NAME = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?" );
+    stmt->setNString( 1, NString( schemaName.toStdU16String() ) );
+    stmt->setNString( 2, NString( tableName.toStdU16String() ) );
+    stmt->setNString( 3, NString( columnName.toStdU16String() ) );
+    int srid = getSrid( stmt );
+
+    if ( srid == -1 )
+    {
+      QString sql = QStringLiteral( "SELECT %1.ST_SRID() FROM %2.%3 WHERE %1 IS NOT NULL LIMIT %4" )
+                    .arg( QgsHanaUtils::quotedIdentifier( columnName ),
+                          QgsHanaUtils::quotedIdentifier( schemaName ),
+                          QgsHanaUtils::quotedIdentifier( tableName ),
+                          QString::number( GEOMETRIES_SELECT_LIMIT ) );
+      stmt = mConnection->prepareStatement( QgsHanaUtils::toUtf16( sql ) );
+      srid = getSrid( stmt );
+    }
+
+    return srid;
+  }
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
+  }
 }
 
 QgsHanaResultSetRef QgsHanaConnection::getColumns( const QString &schemaName, const QString &tableName, const QString &fieldName )

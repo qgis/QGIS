@@ -58,8 +58,9 @@ class QgsHanaConnection : public QObject
       bool userTablesOnly = true );
     void readLayerInfo( QgsHanaLayerProperty &layerProperty );
     QVector<QgsHanaSchemaProperty> getSchemas( const QString &ownerName );
-    QgsWkbTypes::Type getLayerGeometryType( const QgsHanaLayerProperty &layerProperty );
+    QgsWkbTypes::Type getColumnGeometryType( const QString &schemaName, const QString &tableName, const QString &columnName );
     QString getColumnDataType( const QString &schemaName, const QString &tableName, const QString &columnName );
+    int getColumnSrid( const QString &schemaName, const QString &tableName, const QString &columnName );
     QgsHanaResultSetRef getColumns( const QString &schemaName, const QString &tableName, const QString &fieldName );
 
     static QgsHanaConnection *createConnection( const QgsDataSourceUri &uri );
@@ -71,7 +72,6 @@ class QgsHanaConnection : public QObject
   private:
     QgsHanaConnection( odbc::ConnectionRef connection, const QgsDataSourceUri &uri );
 
-    int getLayerSRID( const QgsHanaLayerProperty &layerProperty );
     QStringList getLayerPrimaryeKeys( const QgsHanaLayerProperty &layerProperty );
 
     odbc::PreparedStatementRef createPreparedStatement( const QString &sql, const QVariantList &args );
