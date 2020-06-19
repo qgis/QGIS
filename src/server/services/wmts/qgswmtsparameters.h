@@ -52,6 +52,7 @@ namespace QgsWmts
         FORMAT,
         TRANSPARENT,
         DPI,
+        TILED,
         QUERY_LAYERS,
         I,
         J,
