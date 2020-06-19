@@ -1373,7 +1373,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
       return false;
     }
 
-    QgsWmsCapabilities caps( transformContext() );
+    QgsWmsCapabilities caps( transformContext(), mSettings.baseUrl() );
     if ( !caps.parseResponse( downloadCaps.response(), mSettings.parserSettings() ) )
     {
       mErrorFormat = caps.lastErrorFormat();
