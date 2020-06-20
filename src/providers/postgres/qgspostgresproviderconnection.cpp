@@ -255,8 +255,6 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
             {
               vType = QVariant::Bool;
             }
-<<<<<<< HEAD
-=======
             else if ( typName == QStringLiteral( "char" ) )
             {
               vType = QVariant::Char;
@@ -266,7 +264,6 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
               // Just a warning, usually ok
               QgsDebugMsgLevel( QStringLiteral( "Unhandled PostgreSQL type %1, assuming string" ).arg( typName ), 2 );
             }
->>>>>>> e4718d7471... Accept fields of type "name" in PG 12
           }
           typeMap[ rowIdx ] = vType;
         }
@@ -484,4 +481,3 @@ void QgsPostgresProviderConnection::remove( const QString &name ) const
 {
   QgsPostgresConn::deleteConnection( name );
 }
-
