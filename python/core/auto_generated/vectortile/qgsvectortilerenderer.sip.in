@@ -44,6 +44,15 @@ Sets polygon of the tile
 Returns polygon (made out of four corners of the tile) in screen coordinates calculated from render context
 %End
 
+    void setFields( const QMap<QString, QgsFields> &fields );
+%Docstring
+Sets per-layer fields
+%End
+    QMap<QString, QgsFields> fields() const;
+%Docstring
+Returns per-layer fields
+%End
+
     QStringList layers() const;
 %Docstring
 Returns list of layer names present in the tile
@@ -61,9 +70,10 @@ class QgsVectorTileRenderer
 Abstract base class for all vector tile renderer implementations.
 
 For rendering it is expected that client code calls:
-1. startRender() to prepare renderer
-2. renderTile() for each tile
-3. stopRender() to clean up renderer and free resources
+
+# :py:func:`~QgsVectorTileRendererData.startRender` to prepare renderer
+# :py:func:`~QgsVectorTileRendererData.renderTile` for each tile
+# :py:func:`~QgsVectorTileRendererData.stopRender` to clean up renderer and free resources
 
 .. versionadded:: 3.14
 %End
@@ -95,7 +105,7 @@ Returns a clone of the renderer
 
     virtual void startRender( QgsRenderContext &context, int tileZoom, const QgsTileRange &tileRange ) = 0;
 %Docstring
-Initializes rendering. It should be paired with a stopRender() call.
+Initializes rendering. It should be paired with a :py:func:`~QgsVectorTileRenderer.stopRender` call.
 %End
 
 
@@ -119,7 +129,7 @@ Reads renderer's properties from given XML element
 %End
     virtual void resolveReferences( const QgsProject &project );
 %Docstring
-Resolves references to other objects - second phase of loading - after readXml()
+Resolves references to other objects - second phase of loading - after :py:func:`~QgsVectorTileRenderer.readXml`
 %End
 
 };

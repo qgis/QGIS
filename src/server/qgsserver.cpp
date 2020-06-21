@@ -76,13 +76,6 @@ QgsServer::QgsServer()
   mConfigCache = QgsConfigCache::instance();
 }
 
-QString &QgsServer::serverName()
-{
-  static QString *name = new QString( QStringLiteral( "qgis_server" ) );
-  return *name;
-}
-
-
 QFileInfo QgsServer::defaultAdminSLD()
 {
   return QFileInfo( QStringLiteral( "admin.sld" ) );

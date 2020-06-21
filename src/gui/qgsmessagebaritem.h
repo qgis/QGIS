@@ -63,7 +63,7 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     QgsMessageBarItem( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
-     * Constructor for QgsMessageBarItem, containing a \title, message with the specified \a text, and a custom \a widget to be displayed on the bar.
+     * Constructor for QgsMessageBarItem, containing a \a title, message with the specified \a text, and a custom \a widget to be displayed on the bar.
      *
      * The \a level argument specifies the desired message level (severity) of the message, which controls
      * how the message bar is styled when the item is displayed.

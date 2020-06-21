@@ -1,17 +1,6 @@
 qgis:advancedpythonfieldcalculator: >
   This algorithm adds a new attribute to a vector layer, with values resulting from applying an expression to each feature. The expression is defined as a Python function.
 
-qgis:aggregate: >
-  This algorithm take a vector or table layer and aggregate features based on a group by expression. Features for which group by expression return the same value are grouped together.
-
-  It is possible to group all source features together using constant value in group by parameter, example: NULL.
-
-  It is also possible to group features using multiple fields using Array function, example: Array("Field1", "Field2").
-
-  Geometries (if present) are combined into one multipart geometry for each group.
-
-  Output attributes are computed depending on each given aggregate definition.
-
 qgis:barplot: >
   This algorithm creates a bar plot from a category and a layer field.
 
@@ -315,13 +304,6 @@ qgis:rastersampling: >
   This algorithm creates a new vector layer with the same attributes of the input layer and the raster values corresponding on the point location.
 
   If the raster layer has more than one band, all the band values are sampled.
-
-qgis:refactorfields: >
-  This algorithm allows editing the structure of the attributes table of a vector layer. Fields can be modified in their type and name, using a fields mapping.
-
-  The original layer is not modified. A new layer is generated, which contains a modified attribute table, according to the provided fields mapping.
-
-  Rows in orange have constraints in the template layer from which these fields were loaded. Treat this information as a hint during configuration. No constraints will be added on an output layer nor will they be checked or enforced by the algorithm.
 
 qgis:regularpoints: >
   This algorithm creates a point layer with a given number of regular points, all of them within a given extent.

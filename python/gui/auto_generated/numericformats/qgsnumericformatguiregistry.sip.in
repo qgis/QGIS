@@ -36,7 +36,7 @@ class QgsNumericFormatGuiRegistry
 The QgsNumericFormatGuiRegistry is a home for widgets for configuring QgsNumericFormat objects.
 
 QgsNumericFormatGuiRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsGui.numericFormatGuiRegistry()`
+:py:func:`QgsGui.numericFormatGuiRegistry()`.
 
 .. versionadded:: 3.12
 %End

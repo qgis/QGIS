@@ -275,6 +275,7 @@ QgsProcessingCrsWidgetWrapper::QgsProcessingCrsWidgetWrapper( const QgsProcessin
 
 QWidget *QgsProcessingCrsWidgetWrapper::createWidget()
 {
+  Q_ASSERT( mProjectionSelectionWidget == nullptr );
   mProjectionSelectionWidget = new QgsProjectionSelectionWidget();
   mProjectionSelectionWidget->setToolTip( parameterDefinition()->toolTip() );
 
@@ -6509,15 +6510,24 @@ QVariant QgsProcessingMultipleLayerWidgetWrapper::widgetValue() const
 QStringList QgsProcessingMultipleLayerWidgetWrapper::compatibleParameterTypes() const
 {
   return QStringList()
-         << QgsProcessingParameterBand::typeName()
-         << QgsProcessingParameterNumber::typeName()
-         << QgsProcessingOutputFolder::typeName();
+         << QgsProcessingParameterMultipleLayers::typeName()
+         << QgsProcessingParameterMapLayer::typeName()
+         << QgsProcessingParameterVectorLayer::typeName()
+         << QgsProcessingParameterMeshLayer::typeName()
+         << QgsProcessingParameterRasterLayer::typeName()
+         << QgsProcessingParameterFile::typeName()
+         << QgsProcessingParameterString::typeName();
 }
 
 QStringList QgsProcessingMultipleLayerWidgetWrapper::compatibleOutputTypes() const
 {
   return QStringList()
-         << QgsProcessingOutputNumber::typeName();
+         << QgsProcessingOutputMapLayer::typeName()
+         << QgsProcessingOutputRasterLayer::typeName()
+         << QgsProcessingOutputVectorLayer::typeName()
+         << QgsProcessingOutputMultipleLayers::typeName()
+         << QgsProcessingOutputFile::typeName()
+         << QgsProcessingOutputString::typeName();
 }
 
 QString QgsProcessingMultipleLayerWidgetWrapper::modelerExpressionFormatString() const

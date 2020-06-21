@@ -69,7 +69,7 @@ class OtbChoiceWidgetWrapper(WidgetWrapper):
             if name in self.dialog.mainWidget().wrappers:
                 self.__setWrapperVisibility(self.dialog.mainWidget().wrappers[name], visible)
 
-        # Fur Qgis modeler
+        # For QGIS modeler
         else:
             try:
                 if name in self.dialog.widget.widget.wrappers:

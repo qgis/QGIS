@@ -206,6 +206,32 @@ void QgsDecorationScaleBar::setupScaleBar()
   }
   mSettings.setLabelBarSpace( 1.8 );
 }
+
+double QgsDecorationScaleBar::mapWidth( const QgsMapSettings &settings ) const
+{
+  const QgsRectangle mapExtent = settings.extent();
+  if ( mSettings.units() == QgsUnitTypes::DistanceUnknownUnit )
+  {
+    return mapExtent.width();
+  }
+  else
+  {
+    QgsDistanceArea da;
+    da.setSourceCrs( settings.destinationCrs(), QgsProject::instance()->transformContext() );
+    da.setEllipsoid( QgsProject::instance()->ellipsoid() );
+
+    QgsUnitTypes::DistanceUnit units = da.lengthUnits();
+
+    // we measure the horizontal distance across the vertical center of the map
+    const double yPosition = 0.5 * ( mapExtent.yMinimum() + mapExtent.yMaximum() );
+    double measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), yPosition ),
+                                     QgsPointXY( mapExtent.xMaximum(), yPosition ) );
+
+    measure /= QgsUnitTypes::fromUnitToUnitFactor( mSettings.units(), units );
+    return measure;
+  }
+}
+
 void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRenderContext &context )
 {
   if ( !enabled() )
@@ -213,20 +239,8 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
 
   //Get canvas dimensions
   QPaintDevice *device = context.painter()->device();
-  int deviceHeight = device->height() / device->devicePixelRatioF();
-  int deviceWidth = device->width() / device->devicePixelRatioF();
-
-  //Get map units per pixel. This can be negative at times (to do with
-  //projections) and that just confuses the rest of the code in this
-  //function, so force to a positive number.
-  double scaleBarUnitsPerPixel = std::fabs( context.mapToPixel().mapUnitsPerPixel() );
-
-  // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
-  if ( mapSettings.layers().isEmpty() || !deviceWidth || !scaleBarUnitsPerPixel )
-    return;
-
-  double unitsPerSegment = mPreferredSize;
-
+  const int deviceHeight = device->height() / device->devicePixelRatioF();
+  const int deviceWidth = device->width() / device->devicePixelRatioF();
   QgsSettings settings;
   bool ok = false;
   QgsUnitTypes::DistanceUnit preferredUnits = QgsUnitTypes::decodeDistanceUnit( settings.value( QStringLiteral( "qgis/measure/displayunits" ) ).toString(), &ok );
@@ -235,9 +249,15 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
 
   QgsUnitTypes::DistanceUnit scaleBarUnits = mapSettings.mapUnits();
 
-  // Adjust units meter/feet/... or vice versa
-  scaleBarUnitsPerPixel *= QgsUnitTypes::fromUnitToUnitFactor( scaleBarUnits, preferredUnits );
+  //Get map units per pixel
+  const double scaleBarUnitsPerPixel = ( mapWidth( mapSettings ) / mapSettings.outputSize().width() ) * QgsUnitTypes::fromUnitToUnitFactor( mSettings.units(), preferredUnits );
   scaleBarUnits = preferredUnits;
+
+  // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
+  if ( mapSettings.layers().isEmpty() || !deviceWidth || !scaleBarUnitsPerPixel )
+    return;
+
+  double unitsPerSegment = mPreferredSize;
 
   //Calculate size of scale bar for preferred number of map units
   double scaleBarWidth = mPreferredSize / scaleBarUnitsPerPixel;
@@ -258,19 +278,17 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
 
   // Work out the exponent for the number - e.g, 1234 will give 3,
   // and .001234 will give -3
-  double powerOf10 = std::floor( std::log10( unitsPerSegment ) );
+  const double powerOf10 = std::floor( std::log10( unitsPerSegment ) );
 
   // snap to integer < 10 times power of 10
   if ( mSnapping )
   {
-    double scaler = std::pow( 10.0, powerOf10 );
+    const double scaler = std::pow( 10.0, powerOf10 );
     unitsPerSegment = std::round( unitsPerSegment / scaler ) * scaler;
     scaleBarWidth = unitsPerSegment / scaleBarUnitsPerPixel;
   }
 
-  //Get type of map units and set scale bar unit label text
-  double mapSize = unitsPerSegment * QgsUnitTypes::fromUnitToUnitFactor( scaleBarUnits, mapSettings.mapUnits() );
-  double segmentSize = context.convertFromMapUnits( mapSize, QgsUnitTypes::RenderMillimeters );
+  const double segmentSizeInMm = scaleBarWidth / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
 
   QString scaleBarUnitLabel;
   switch ( scaleBarUnits )
@@ -348,7 +366,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   mSettings.setLabelHorizontalPlacement( mPlacement == TopCenter || mPlacement == BottomCenter ? QgsScaleBarSettings::LabelCenteredSegment : QgsScaleBarSettings::LabelCenteredEdge );
 
   QgsScaleBarRenderer::ScaleBarContext scaleContext;
-  scaleContext.segmentWidth = mStyleIndex == 3 ? segmentSize / 2 : segmentSize;
+  scaleContext.segmentWidth = mStyleIndex == 3 ? segmentSizeInMm / 2 : segmentSizeInMm;
   scaleContext.scale = mapSettings.scale();
 
   //Calculate total width of scale bar and label

@@ -22,48 +22,55 @@
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 
-QgsGeoPdfLayerTreeModel::QgsGeoPdfLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
-  : QgsLayerTreeModel( rootNode, parent )
+QgsGeoPdfLayerTreeModel::QgsGeoPdfLayerTreeModel( const QList<QgsMapLayer *> &layers, QObject *parent )
+  : QgsMapLayerModel( layers, parent )
 {
-  setFlags( nullptr ); // ideally we'd just show embedded legend nodes - but the api doesn't exist for this
+  setItemsCanBeReordered( true );
 }
 
 int QgsGeoPdfLayerTreeModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
-  return 2;
+  return 4;
 }
 
 Qt::ItemFlags QgsGeoPdfLayerTreeModel::flags( const QModelIndex &idx ) const
 {
-  if ( idx.column() == LayerColumn )
+  if ( !idx.isValid() )
+    return Qt::ItemIsDropEnabled;
+
+  if ( idx.column() == IncludeVectorAttributes )
   {
-    return QgsLayerTreeModel::flags( idx ) | Qt::ItemIsUserCheckable;
+    if ( vectorLayer( idx ) )
+      return QgsMapLayerModel::flags( idx ) | Qt::ItemIsUserCheckable;
+    else
+      return QgsMapLayerModel::flags( idx );
   }
 
-  QgsVectorLayer *vl = vectorLayer( idx );
-  if ( !vl )
+  if ( idx.column() == InitiallyVisible )
   {
-    return Qt::NoItemFlags;
+    return QgsMapLayerModel::flags( idx ) | Qt::ItemIsUserCheckable;
+  }
+
+  if ( !mapLayer( idx ) )
+  {
+    return nullptr;
   }
   else
   {
-    const QModelIndex layerIndex = sibling( idx.row(), LayerColumn, idx );
-    if ( data( layerIndex, Qt::CheckStateRole ) == Qt::Checked )
-    {
-      return Qt::ItemIsEnabled | Qt::ItemIsEditable;
-    }
+    return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
   }
   return Qt::NoItemFlags;
 }
 
+QgsMapLayer *QgsGeoPdfLayerTreeModel::mapLayer( const QModelIndex &idx ) const
+{
+  return layerFromIndex( index( idx.row(), LayerColumn, idx.parent() ) );
+}
+
 QgsVectorLayer *QgsGeoPdfLayerTreeModel::vectorLayer( const QModelIndex &idx ) const
 {
-  QgsLayerTreeNode *node = index2node( index( idx.row(), LayerColumn, idx.parent() ) );
-  if ( !node || !QgsLayerTree::isLayer( node ) )
-    return nullptr;
-
-  return qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
+  return qobject_cast<QgsVectorLayer *>( mapLayer( idx ) );
 }
 
 QVariant QgsGeoPdfLayerTreeModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -74,16 +81,20 @@ QVariant QgsGeoPdfLayerTreeModel::headerData( int section, Qt::Orientation orien
     {
       switch ( section )
       {
-        case 0:
+        case LayerColumn:
           return tr( "Layer" );
-        case 1:
+        case GroupColumn:
           return tr( "PDF Group" );
+        case InitiallyVisible:
+          return tr( "Initially Visible" );
+        case IncludeVectorAttributes:
+          return tr( "Include Attributes" );
         default:
           return QVariant();
       }
     }
   }
-  return QgsLayerTreeModel::headerData( section, orientation, role );
+  return QgsMapLayerModel::headerData( section, orientation, role );
 }
 
 QVariant QgsGeoPdfLayerTreeModel::data( const QModelIndex &idx, int role ) const
@@ -91,12 +102,56 @@ QVariant QgsGeoPdfLayerTreeModel::data( const QModelIndex &idx, int role ) const
   switch ( idx.column() )
   {
     case LayerColumn:
+      if ( role == Qt::CheckStateRole )
+        return QVariant();
+
+      return QgsMapLayerModel::data( idx, role );
+
+    case GroupColumn:
+    {
+      switch ( role )
+      {
+        case Qt::DisplayRole:
+        case Qt::EditRole:
+        {
+          if ( QgsMapLayer *ml = mapLayer( idx ) )
+          {
+            return ml->customProperty( QStringLiteral( "geopdf/groupName" ) ).toString();
+          }
+          break;
+        }
+      }
+
+      return QVariant();
+    }
+
+    case InitiallyVisible:
     {
       if ( role == Qt::CheckStateRole )
       {
-        QgsLayerTreeNode *node = index2node( index( idx.row(), LayerColumn, idx.parent() ) );
-        QgsVectorLayer *vl = vectorLayer( idx );
-        if ( vl )
+        if ( QgsMapLayer *ml = mapLayer( idx ) )
+        {
+          const QVariant v = ml->customProperty( QStringLiteral( "geopdf/initiallyVisible" ) );
+          if ( v.isValid() )
+          {
+            return v.toBool() ? Qt::Checked : Qt::Unchecked;
+          }
+          else
+          {
+            // otherwise, we default to showing by default
+            return Qt::Checked;
+          }
+        }
+        return QVariant();
+      }
+      return QVariant();
+    }
+
+    case IncludeVectorAttributes:
+    {
+      if ( role == Qt::CheckStateRole )
+      {
+        if ( QgsVectorLayer *vl = vectorLayer( idx ) )
         {
           const QVariant v = vl->customProperty( QStringLiteral( "geopdf/includeFeatures" ) );
           if ( v.isValid() )
@@ -105,30 +160,12 @@ QVariant QgsGeoPdfLayerTreeModel::data( const QModelIndex &idx, int role ) const
           }
           else
           {
-            // otherwise, we default to the layer's visibility
-            return node->itemVisibilityChecked() ? Qt::Checked : Qt::Unchecked;
+            // otherwise, we default to true
+            return Qt::Checked;
           }
         }
         return QVariant();
       }
-      return QgsLayerTreeModel::data( idx, role );
-    }
-    case GroupColumn:
-    {
-      switch ( role )
-      {
-        case Qt::DisplayRole:
-        case Qt::EditRole:
-        {
-          if ( QgsVectorLayer *vl = vectorLayer( idx ) )
-          {
-            return vl->customProperty( QStringLiteral( "geopdf/groupName" ) ).toString();
-          }
-          break;
-        }
-      }
-
-      return QVariant();
     }
   }
 
@@ -139,7 +176,7 @@ bool QgsGeoPdfLayerTreeModel::setData( const QModelIndex &index, const QVariant 
 {
   switch ( index.column() )
   {
-    case LayerColumn:
+    case IncludeVectorAttributes:
     {
       if ( role == Qt::CheckStateRole )
       {
@@ -157,28 +194,46 @@ bool QgsGeoPdfLayerTreeModel::setData( const QModelIndex &index, const QVariant 
     {
       if ( role == Qt::EditRole )
       {
-        if ( QgsVectorLayer *vl = vectorLayer( index ) )
+        if ( QgsMapLayer *ml = mapLayer( index ) )
         {
-          vl->setCustomProperty( QStringLiteral( "geopdf/groupName" ), value.toString() );
+          ml->setCustomProperty( QStringLiteral( "geopdf/groupName" ), value.toString() );
           emit dataChanged( index, index );
           return true;
         }
       }
       break;
     }
+
+    case InitiallyVisible:
+    {
+      if ( role == Qt::CheckStateRole )
+      {
+        if ( QgsMapLayer *ml = mapLayer( index ) )
+        {
+          ml->setCustomProperty( QStringLiteral( "geopdf/initiallyVisible" ), value.toInt() == Qt::Checked );
+          emit dataChanged( index, index );
+          return true;
+        }
+      }
+      break;
+    }
+
+    case LayerColumn:
+      return QgsMapLayerModel::setData( index, value, role );
   }
   return false;
 }
 
-void QgsGeoPdfLayerTreeModel::checkAll( bool checked, const QModelIndex &parent )
+void QgsGeoPdfLayerTreeModel::checkAll( bool checked, const QModelIndex &parent, int column )
 {
   for ( int row = 0; row < rowCount( parent ); ++row )
   {
-    const QModelIndex childIndex = index( row, LayerColumn, parent );
+    const QModelIndex childIndex = index( row, column, parent );
     setData( childIndex, checked ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole );
     checkAll( checked, childIndex );
   }
 }
+
 
 ///@cond PRIVATE
 QgsGeoPdfLayerFilteredTreeModel::QgsGeoPdfLayerFilteredTreeModel( QgsGeoPdfLayerTreeModel *sourceModel, QObject *parent )
@@ -190,11 +245,12 @@ QgsGeoPdfLayerFilteredTreeModel::QgsGeoPdfLayerFilteredTreeModel( QgsGeoPdfLayer
 
 bool QgsGeoPdfLayerFilteredTreeModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  if ( QgsLayerTreeNode *node = mLayerTreeModel->index2node( sourceModel()->index( source_row, 0, source_parent ) ) )
+  if ( QgsMapLayer *layer = mLayerTreeModel->layerFromIndex( sourceModel()->index( source_row, 0, source_parent ) ) )
   {
-    // filter out non-vector layers
-    if ( QgsLayerTree::isLayer( node ) && QgsLayerTree::toLayer( node ) && QgsLayerTree::toLayer( node )->layer() && QgsLayerTree::toLayer( node )->layer()->type() != QgsMapLayerType::VectorLayer )
+    // filter out non-spatial layers
+    if ( !layer->isSpatial() )
       return false;
+
   }
   return true;
 }

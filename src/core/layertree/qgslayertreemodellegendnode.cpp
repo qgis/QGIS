@@ -294,9 +294,6 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext *context ) const
     if ( hInt > minSz.height() ) minSz.setHeight( hInt );
   }
 
-  if ( mItem.level() != 0 && !( model() && model()->testFlag( QgsLayerTreeModel::ShowLegendAsTree ) ) )
-    minSz.setWidth( mItem.level() * INDENT_SIZE + minSz.width() );
-
   return minSz;
 }
 
@@ -407,6 +404,8 @@ QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() co
   context->setScaleFactor( dpi / 25.4 );
   context->setRendererScale( scale );
   context->setMapToPixel( QgsMapToPixel( mupp ) );
+  context->setFlag( QgsRenderContext::Antialiasing, true );
+  context->setFlag( QgsRenderContext::RenderSymbolPreview, true );
   return context.release();
 }
 
@@ -463,18 +462,7 @@ QVariant QgsSymbolLegendNode::data( int role ) const
         pix.fill( Qt::transparent );
       }
 
-      if ( mItem.level() == 0 || ( model() && model()->testFlag( QgsLayerTreeModel::ShowLegendAsTree ) ) )
-        mPixmap = pix;
-      else
-      {
-        // ident the symbol icon to make it look like a tree structure
-        QPixmap pix2( pix.width() + mItem.level() * INDENT_SIZE, pix.height() );
-        pix2.fill( Qt::transparent );
-        QPainter p( &pix2 );
-        p.drawPixmap( mItem.level() * INDENT_SIZE, 0, pix );
-        p.end();
-        mPixmap = pix2;
-      }
+      mPixmap = pix;
     }
     return mPixmap;
   }
@@ -598,7 +586,8 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       opacity = static_cast<int >( std::round( 255 * vectorLayer->opacity() ) );
 
     p->save();
-    p->setRenderHint( QPainter::Antialiasing );
+    if ( context->flags() & QgsRenderContext::Antialiasing )
+      p->setRenderHint( QPainter::Antialiasing );
 
     switch ( settings.symbolAlignment() )
     {
@@ -627,7 +616,8 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       QImage tempImage = QImage( tempImageSize, QImage::Format_ARGB32 );
       tempImage.fill( Qt::transparent );
       QPainter imagePainter( &tempImage );
-      imagePainter.setRenderHint( QPainter::Antialiasing );
+      if ( context->flags() & QgsRenderContext::Antialiasing )
+        imagePainter.setRenderHint( QPainter::Antialiasing );
       context->setPainter( &imagePainter );
       imagePainter.translate( maxBleed, maxBleed );
       s->drawPreviewIcon( &imagePainter, symbolSize, context, false, nullptr, &patchShape );
@@ -676,6 +666,7 @@ QJsonObject QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &se
   ctx.setRendererScale( settings.mapScale() );
   ctx.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * ctx.scaleFactor() ) ) );
   ctx.setForceVectorOutput( true );
+  ctx.setFlag( QgsRenderContext::Antialiasing, context.flags() & QgsRenderContext::Antialiasing );
   Q_NOWARN_DEPRECATED_POP
 
   // ensure that a minimal expression context is available
@@ -1229,6 +1220,8 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
   {
     context->painter()->save();
     context->painter()->translate( ctx->columnLeft, ctx->top );
+
+    // scale to pixels
     context->painter()->scale( 1 / context->scaleFactor(), 1 / context->scaleFactor() );
   }
 

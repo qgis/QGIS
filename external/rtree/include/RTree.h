@@ -969,6 +969,7 @@ protected:
 
             // It is assured that AddBranch here will not cause a node split. 
             bool nodeWasSplit = AddBranch(&a_parVars->m_branchBuf[index], targetNodes[targetNodeIndex], nullptr);
+            (void)nodeWasSplit;
             RTreeAssert(!nodeWasSplit);
         }
     }

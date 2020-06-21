@@ -58,7 +58,7 @@ Implementation of map layer temporal properties for vector layers.
 %Docstring
 Constructor for QgsVectorLayerTemporalProperties, with the specified ``parent`` object.
 
-The ``enabled`` argument specifies whether the temporal properties are initially enabled or not (see isActive()).
+The ``enabled`` argument specifies whether the temporal properties are initially enabled or not (see :py:func:`~QgsVectorLayerTemporalProperties.isActive`).
 %End
 
     virtual bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const;
@@ -102,7 +102,7 @@ a render context intersects the specified ``range``.
 
 .. warning::
 
-   This setting is only effective when mode() is
+   This setting is only effective when :py:func:`~QgsVectorLayerTemporalProperties.mode` is
    QgsVectorLayerTemporalProperties.ModeFixedTemporalRange
 
 .. seealso:: :py:func:`fixedTemporalRange`
@@ -114,7 +114,7 @@ Returns the fixed temporal range for the layer.
 
 .. warning::
 
-   To be used only when mode() is
+   To be used only when :py:func:`~QgsVectorLayerTemporalProperties.mode` is
    QgsVectorLayerTemporalProperties.ModeFixedTemporalRange
 
 .. seealso:: :py:func:`setFixedTemporalRange`
@@ -125,7 +125,7 @@ Returns the fixed temporal range for the layer.
 Returns the name of the start datetime field, which
 contains the start time for the feature's time spans.
 
-If mode() is ModeFeatureDateTimeInstantFromField, then this field
+If :py:func:`~QgsVectorLayerTemporalProperties.mode` is ModeFeatureDateTimeInstantFromField, then this field
 represents both the start AND end times.
 
 .. seealso:: :py:func:`setStartField`
@@ -138,7 +138,7 @@ represents both the start AND end times.
 Sets the name of the start datetime ``field``, which
 contains the start time for the feature's time spans.
 
-If mode() is ModeFeatureDateTimeInstantFromField, then this field
+If :py:func:`~QgsVectorLayerTemporalProperties.mode` is ModeFeatureDateTimeInstantFromField, then this field
 represents both the start AND end times.
 
 .. seealso:: :py:func:`startField`
@@ -172,7 +172,7 @@ Returns the expression for the start time for the feature's time spans.
 
 .. warning::
 
-   This setting is only effective when mode() is
+   This setting is only effective when :py:func:`~QgsVectorLayerTemporalProperties.mode` is
    QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromExpressions
 
 .. seealso:: :py:func:`setStartExpression`
@@ -186,7 +186,7 @@ Sets the ``expression`` to use for the start time for the feature's time spans.
 
 .. warning::
 
-   This setting is only effective when mode() is
+   This setting is only effective when :py:func:`~QgsVectorLayerTemporalProperties.mode` is
    QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromExpressions
 
 .. seealso:: :py:func:`startExpression`
@@ -200,7 +200,7 @@ Returns the expression for the end time for the feature's time spans.
 
 .. warning::
 
-   This setting is only effective when mode() is
+   This setting is only effective when :py:func:`~QgsVectorLayerTemporalProperties.mode` is
    QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromExpressions
 
 .. seealso:: :py:func:`setEndExpression`
@@ -214,7 +214,7 @@ Sets the ``expression`` to use for the end time for the feature's time spans.
 
 .. warning::
 
-   This setting is only effective when mode() is
+   This setting is only effective when :py:func:`~QgsVectorLayerTemporalProperties.mode` is
    QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromExpressions
 
 .. seealso:: :py:func:`endExpression`
@@ -227,11 +227,11 @@ Sets the ``expression`` to use for the end time for the feature's time spans.
 Returns the name of the duration field, which
 contains the duration of the event.
 
-Units are specified by durationUnits()
+Units are specified by :py:func:`~QgsVectorLayerTemporalProperties.durationUnits`
 
 .. warning::
 
-   This setting is only effective when mode() is
+   This setting is only effective when :py:func:`~QgsVectorLayerTemporalProperties.mode` is
    QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndDurationFromFields
 
 .. seealso:: :py:func:`setDurationField`
@@ -244,11 +244,11 @@ Units are specified by durationUnits()
 Sets the name of the duration ``field``, which
 contains the duration of the event.
 
-Units are specified by setDurationUnits()
+Units are specified by :py:func:`~QgsVectorLayerTemporalProperties.setDurationUnits`
 
 .. warning::
 
-   This setting is only effective when mode() is
+   This setting is only effective when :py:func:`~QgsVectorLayerTemporalProperties.mode` is
    QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndDurationFromFields
 
 .. seealso:: :py:func:`durationField`
@@ -274,11 +274,11 @@ Sets the ``units`` of the event's duration.
 %Docstring
 Returns the fixed duration length, which contains the duration of the event.
 
-Units are specified by durationUnits()
+Units are specified by :py:func:`~QgsVectorLayerTemporalProperties.durationUnits`
 
 .. warning::
 
-   This setting is only effective when mode() is
+   This setting is only effective when :py:func:`~QgsVectorLayerTemporalProperties.mode` is
    QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField
 
 .. seealso:: :py:func:`setFixedDuration`
@@ -290,11 +290,11 @@ Units are specified by durationUnits()
 %Docstring
 Sets the fixed event ``duration``, which contains the duration of the event.
 
-Units are specified by setDurationUnits()
+Units are specified by :py:func:`~QgsVectorLayerTemporalProperties.setDurationUnits`
 
 .. warning::
 
-   This setting is only effective when mode() is
+   This setting is only effective when :py:func:`~QgsVectorLayerTemporalProperties.mode` is
    QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField
 
 .. seealso:: :py:func:`fixedDuration`
@@ -309,7 +309,7 @@ occur before or within the map's temporal range should be rendered).
 
 .. warning::
 
-   This setting is only effective when mode() is
+   This setting is only effective when :py:func:`~QgsVectorLayerTemporalProperties.mode` is
    QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField
 
 .. seealso:: :py:func:`setAccumulateFeatures`
@@ -322,7 +322,7 @@ occur before or within the map's temporal range should be rendered).
 
 .. warning::
 
-   This setting is only effective when mode() is
+   This setting is only effective when :py:func:`~QgsVectorLayerTemporalProperties.mode` is
    QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField
 
 .. seealso:: :py:func:`accumulateFeatures`
@@ -333,14 +333,14 @@ occur before or within the map's temporal range should be rendered).
 Creates a QGIS expression filter string for filtering features within
 the specified ``context`` to those within the specified time ``range``.
 
-The returned expression string considers the mode() and other related
-settings (such as startField()) when building the filter string.
+The returned expression string considers the :py:func:`~QgsVectorLayerTemporalProperties.mode` and other related
+settings (such as :py:func:`~QgsVectorLayerTemporalProperties.startField`) when building the filter string.
 
 .. warning::
 
    Note that ModeFixedTemporalRange is intentional NOT handled by this method
-   and if mode() is ModeFixedTemporalRange then an empty string will be returned. Use
-   isVisibleInTemporalRange() when testing whether features from a layer set to the
+   and if :py:func:`~QgsVectorLayerTemporalProperties.mode` is ModeFixedTemporalRange then an empty string will be returned. Use
+   :py:func:`~QgsVectorLayerTemporalProperties.isVisibleInTemporalRange` when testing whether features from a layer set to the
    ModeFixedTemporalRange should ALL be filtered out.
 %End
 

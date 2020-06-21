@@ -139,7 +139,7 @@ Sets the FileOpen event receiver
 Set the active theme to the specified theme.
 The theme name should be a single word e.g. 'default','classic'.
 The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
-but plugin writers etc can use themeName() as a basis for searching
+but plugin writers etc can use :py:func:`~QgsApplication.themeName` as a basis for searching
 for resources in their own datastores e.g. a Qt4 resource bundle.
 
 .. note::
@@ -167,7 +167,7 @@ for resources in their own datastores e.g. a Qt4 resource bundle.
 
     static void setUITheme( const QString &themeName );
 %Docstring
-Set the current UI theme used to style the interface.  Use uiThemes() to
+Set the current UI theme used to style the interface.  Use :py:func:`~QgsApplication.uiThemes` to
 find valid themes to use. Variables found in variables.qss will be added to the stylesheet
 on load.
 
@@ -515,8 +515,8 @@ Returns a css style sheet for reports, the ``styleSheetType`` argument
 determines what type of stylesheet is supported by the widget.
 
 Typically you will use this method by doing:
-QString myStyle = QgsApplication.reportStyleSheet();
-textBrowserReport->document()->setDefaultStyleSheet(myStyle);
+QString myStyle = :py:func:`QgsApplication.reportStyleSheet()`;
+textBrowserReport->:py:func:`~QgsApplication.document`->setDefaultStyleSheet(myStyle);
 if you are using a QgsWebView you will need to manually inject
 the CSS into a head -> script tag instead.
 
@@ -762,7 +762,7 @@ Returns the application's bookmark manager, used for storing installation-wide b
 
     static QgsStyleModel *defaultStyleModel();
 %Docstring
-Returns a shared QgsStyleModel containing the default style library (see QgsStyle.defaultStyle()).
+Returns a shared QgsStyleModel containing the default style library (see :py:func:`QgsStyle.defaultStyle()`).
 
 Using this shared model instead of creating a new QgsStyleModel improves performance.
 
@@ -882,7 +882,7 @@ in a widget or sending it to a web browser.
 
     static void setNullRepresentation( const QString &nullRepresentation );
 %Docstring
-\copydoc nullRepresentation()
+\copydoc :py:func:`~QgsApplication.nullRepresentation`
 %End
 
     static QVariantMap customVariables();
@@ -955,7 +955,7 @@ Emitted whenever a custom global variable changes.
 
     void nullRepresentationChanged();
 %Docstring
-\copydoc nullRepresentation()
+\copydoc :py:func:`~QgsApplication.nullRepresentation`
 %End
 
     void requestForTranslatableObjects( QgsTranslationContext *translationContext );

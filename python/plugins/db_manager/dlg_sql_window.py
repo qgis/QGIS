@@ -77,7 +77,7 @@ import re
 
 def check_comments_in_sql(raw_sql_input):
     lines = []
-    for line in raw_sql_input.split('\n'):
+    for line in raw_sql_input.splitlines():
         if not line.strip().startswith('--'):
             if '--' in line:
                 comment_positions = []
@@ -654,10 +654,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
     def _getExecutableSqlQuery(self):
         sql = self._getSqlQuery().strip()
-        if sql.endswith(';'):
-            sql = sql[:-1]
 
         uncommented_sql = check_comments_in_sql(sql)
+        uncommented_sql = uncommented_sql.rstrip(';')
         return uncommented_sql
 
     def uniqueChanged(self):

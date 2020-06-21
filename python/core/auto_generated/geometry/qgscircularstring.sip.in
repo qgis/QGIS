@@ -71,7 +71,7 @@ to ``p2`` will be used (i.e. winding the other way around the circle).
     virtual bool fromWkt( const QString &wkt );
 
 
-    virtual QByteArray asWkb() const;
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 
     virtual QString asWkt( int precision = 17 ) const;
 

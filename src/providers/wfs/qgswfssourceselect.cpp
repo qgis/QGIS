@@ -837,7 +837,7 @@ void QgsWFSSourceSelect::changeCRSFilter()
     QMap<QString, QStringList >::const_iterator crsIterator = mAvailableCRS.constFind( currentTypename );
     if ( crsIterator != mAvailableCRS.constEnd() )
     {
-      QSet<QString> crsNames( crsIterator->toSet() );
+      QSet<QString> crsNames( qgis::listToSet( *crsIterator ) );
 
       if ( mProjectionSelector )
       {

@@ -149,7 +149,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
     QVariant defaultValue( int fieldId ) const override;
     QString defaultValueClause( int fieldId ) const override;
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
-    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
     bool deleteAttributes( const QgsAttributeIds &ids ) override;
@@ -313,6 +313,8 @@ class QgsOracleProvider final: public QgsVectorDataProvider
 
       private:
         QString mWhat;
+
+        OracleException &operator= ( const OracleException & ) = delete;
     };
 
     // A function that determines if the given schema.table.column

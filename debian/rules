@@ -74,9 +74,9 @@ TESTMAKE=ninja $(NINJA_OPTS)
 endif
 
 ifeq (,$(findstring $(DISTRIBUTION),"focal sid"))
-PYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's\#-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$\#\1/lib\2.so\#')
+PYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's,-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$,\1/lib\2.so,')
 else
-PYTHON_LIBRARY=$(shell python3-config --ldflags --embed | sed -e 's\#-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$\#\1/lib\2.so\#')
+PYTHON_LIBRARY=$(shell python3-config --ldflags --embed | sed -e 's,-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$,\1/lib\2.so,')
 endif
 
 CMAKE_OPTS := \

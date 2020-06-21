@@ -330,7 +330,7 @@ void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
   QVector<QgsVector> vectors;
   QSize gridSize;
   QgsPointXY minCorner;
-  Qt3DRender::QParameter *arrowsEnabledParameter = new Qt3DRender::QParameter( "arrowsEnabled", nullptr );
+  std::unique_ptr< Qt3DRender::QParameter > arrowsEnabledParameter = qgis::make_unique< Qt3DRender::QParameter >( "arrowsEnabled", nullptr );
   if ( mMagnitudeType != MagnitudeType::ScalarDataSet || !mSymbol.arrowsEnabled() || meta.isScalar() || !datasetIndex.isValid() )
     arrowsEnabledParameter->setValue( false );
   else
@@ -366,9 +366,12 @@ void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
                 ySpacing,
                 gridSize,
                 minCorner );
+
+    if ( vectors.isEmpty() )
+      return;
   }
 
-  mTechnique->addParameter( arrowsEnabledParameter )  ;
+  mTechnique->addParameter( arrowsEnabledParameter.release() )  ;
 
   Qt3DRender::QTexture2D *arrowsGridTexture = new Qt3DRender::QTexture2D( this );
   arrowsGridTexture->addTextureImage( new ArrowsGridTexture( vectors, gridSize, mSymbol.arrowsFixedSize(), meta.maximum() ) );

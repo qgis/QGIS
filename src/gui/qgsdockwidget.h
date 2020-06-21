@@ -39,7 +39,7 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
      * \param parent parent widget
      * \param flags window flags
      */
-    explicit QgsDockWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr );
+    explicit QgsDockWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 
     /**
      * Constructor for QgsDockWidget.
@@ -47,7 +47,7 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
      * \param parent parent widget
      * \param flags window flags
      */
-    explicit QgsDockWidget( const QString &title, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr );
+    explicit QgsDockWidget( const QString &title, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 
     /**
      * Returns TRUE if the dock is both opened and raised to the front (ie not hidden by
@@ -82,11 +82,13 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
      * When setting a dock as user visible, the dock will be opened (if it is not already
      * opened) and raised to the front.
      * When setting as hidden, the following logic is used:
+     *
      * - hiding a dock which is open but not raised (ie hidden by another tab) will have no
-     * effect, and the dock will still be opened and hidden by the other tab
+     *   effect, and the dock will still be opened and hidden by the other tab
      * - hiding a dock which is open and raised (ie, user visible) will cause the dock to
-     * be closed
+     *   be closed
      * - hiding a dock which is closed has no effect and raises no signals
+     *
      * \see isUserVisible()
      * \see toggleUserVisible()
      */

@@ -125,6 +125,14 @@ Constructor for QgsLabelSettingsWidgetDialog.
 :param parent: parent widget
 %End
 
+
+    QDialogButtonBox *buttonBox();
+%Docstring
+Returns the dialog's button box.
+
+.. versionadded:: 3.14
+%End
+
 };
 
 /************************************************************************

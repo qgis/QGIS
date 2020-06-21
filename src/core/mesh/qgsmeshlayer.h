@@ -21,6 +21,7 @@
 #include <memory>
 
 #include "qgis_core.h"
+#include "qgsinterval.h"
 #include "qgsmaplayer.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshrenderersettings.h"
@@ -325,6 +326,20 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       */
     QgsMeshDatasetValue dataset1dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius ) const;
 
+
+    /**
+      * Returns dataset index from datasets group depending on the time range.
+      * If the temporal properties is not active, returns invalid dataset index
+      *
+      * \param timeRange the time range
+      * \returns dataset index
+      *
+      * \note the returned dataset index depends on the matching method, see setTemporalMatchingMethod()
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetIndex datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const;
+
     /**
       * Returns dataset index from active scalar group depending on the time range.
       * If the temporal properties is not active, return the static dataset
@@ -436,6 +451,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     /**
       * Sets the root items of the dataset group tree item.
       * Changes active dataset groups if those one are not enabled anymore :
+      *
       * - new active scalar dataset group is the first root item enabled child
       * - new active vector dataset group is none
       *
@@ -453,6 +469,13 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * \since QGIS 3.14
      */
     void resetDatasetGroupTreeItem();
+
+    /**
+     * Returns the first valid time step of the dataset groups, invalid QgInterval if no time step is present
+     *
+     * \since QGIS 3.14
+     */
+    QgsInterval firstValidTimeStep() const;
 
   public slots:
 
@@ -513,8 +536,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     bool hasSimplifiedMeshes() const;
 
-    QgsMeshDatasetIndex datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const;
-
     //! Changes scalar settings for classified scalar value (information about is in the metadata
     void applyClassificationOnScalarSettings( const QgsMeshDatasetGroupMetadata &meta, QgsMeshRendererScalarSettings &scalarSettings ) const;
 
@@ -545,8 +566,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     QgsMeshLayerTemporalProperties *mTemporalProperties;
 
-    QgsMeshDatasetIndex mStaticScalarDatasetIndex;
-    QgsMeshDatasetIndex mStaticVectorDatasetIndex;
+    int mStaticScalarDatasetIndex = 0;
+    int mStaticVectorDatasetIndex = 0;
 
     std::unique_ptr<QgsMeshDatasetGroupTreeItem> mDatasetGroupTreeRootItem;
 

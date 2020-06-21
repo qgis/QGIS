@@ -154,7 +154,7 @@ An IndexError will be raised if no geometry with the specified index exists.
 
     virtual bool fromWkt( const QString &wkt );
 
-    virtual QByteArray asWkb() const;
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 
     virtual QString asWkt( int precision = 17 ) const;
 

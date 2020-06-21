@@ -70,7 +70,7 @@ Insert a new known interface in default place or replace interface of the same
 role if it already exists. Known interfaces are: QgsRasterDataProvider,
 :py:class:`QgsRasterRenderer`, :py:class:`QgsRasterResampleFilter`, QgsRasterProjector and their
 subclasses. For unknown interfaces it mus be explicitly specified position
-where it should be inserted using insert() method.
+where it should be inserted using :py:func:`~QgsRasterPipe.insert` method.
 %End
 
     bool remove( int idx );
@@ -105,6 +105,31 @@ Test if interface at index may be switched on/off
     QgsHueSaturationFilter *hueSaturationFilter() const;
     QgsRasterProjector *projector() const;
     QgsRasterNuller *nuller() const;
+
+    enum class ResamplingStage
+    {
+      //! Resampling occurs in ResamplingFilter
+      ResampleFilter,
+      //! Resampling occurs in Provider
+      Provider
+    };
+
+    void setResamplingStage( ResamplingStage stage );
+%Docstring
+Select which stage of the pipe should apply resampling.
+
+Provider resampling is only supported if provider sets
+ProviderHintCanPerformProviderResampling in :py:func:`~QgsRasterPipe.providerCapabilities`.
+
+.. versionadded:: 3.16
+%End
+
+    ResamplingStage resamplingStage() const;
+%Docstring
+Returns which stage of the pipe should apply resampling
+
+.. versionadded:: 3.16
+%End
 
   private:
     QgsRasterPipe( const QgsRasterPipe &pipe );

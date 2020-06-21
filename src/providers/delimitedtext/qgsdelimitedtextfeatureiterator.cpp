@@ -154,8 +154,8 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     QgsAttributeList attrs = request.subsetOfAttributes();
     //ensure that all fields required for filter expressions are prepared
     QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
-    attributeIndexes += attrs.toSet();
-    mRequest.setSubsetOfAttributes( attributeIndexes.toList() );
+    attributeIndexes += qgis::listToSet( attrs );
+    mRequest.setSubsetOfAttributes( qgis::setToList( attributeIndexes ) );
   }
   // also need attributes required by order by
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
@@ -499,6 +499,21 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature &feature, int f
       {
         val = QVariant( mSource->mFields.at( fieldIdx ).type() );
       }
+      break;
+    }
+    case QVariant::DateTime:
+    {
+      val = QVariant( QDateTime::fromString( value, Qt::ISODate ) );
+      break;
+    }
+    case QVariant::Date:
+    {
+      val = QVariant( QDate::fromString( value, Qt::ISODate ) );
+      break;
+    }
+    case QVariant::Time:
+    {
+      val = QVariant( QTime::fromString( value ) );
       break;
     }
     default:

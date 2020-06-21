@@ -540,7 +540,6 @@ class CORE_EXPORT QgsMeshDatasetMetadata
  *     Minimum
  *     Maximum
  *
- * *
  * \since QGIS 3.14 in core API
  */
 

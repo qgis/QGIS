@@ -20,7 +20,7 @@ thread safe and can be used on either the main thread or background threads with
 
 Redirects are automatically handled by the class.
 
-After completion of a request, the reply content should be retrieved by calling getReplyContent().
+After completion of a request, the reply content should be retrieved by calling :py:func:`~getReplyContent`.
 This method returns a QgsNetworkReplyContent container, which is safe and cheap to copy and pass
 between threads without issue.
 
@@ -54,17 +54,17 @@ Performs a "get" operation on the specified ``request``.
 If ``forceRefresh`` is ``False`` then previously cached replies may be used for the request. If
 it is set to ``True`` then a new query is always performed.
 
-If an authCfg() has been set, then any authentication configuration required will automatically be applied to
+If an :py:func:`~QgsBlockingNetworkRequest.authCfg` has been set, then any authentication configuration required will automatically be applied to
 ``request``. There is no need to manually apply the authentication to the request prior to calling
 this method.
 
 The optional ``feedback`` argument can be used to abort ongoing requests.
 
 The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
-by calling reply().
+by calling :py:func:`~QgsBlockingNetworkRequest.reply`.
 
 If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
-can be retrieved by calling errorMessage().
+can be retrieved by calling :py:func:`~QgsBlockingNetworkRequest.errorMessage`.
 
 .. seealso:: :py:func:`post`
 %End
@@ -76,29 +76,29 @@ Performs a "post" operation on the specified ``request``, using the given ``data
 If ``forceRefresh`` is ``False`` then previously cached replies may be used for the request. If
 it is set to ``True`` then a new query is always performed.
 
-If an authCfg() has been set, then any authentication configuration required will automatically be applied to
+If an :py:func:`~QgsBlockingNetworkRequest.authCfg` has been set, then any authentication configuration required will automatically be applied to
 ``request``. There is no need to manually apply the authentication to the request prior to calling
 this method.
 
 The optional ``feedback`` argument can be used to abort ongoing requests.
 
 The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
-by calling reply().
+by calling :py:func:`~QgsBlockingNetworkRequest.reply`.
 
 If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
-can be retrieved by calling errorMessage().
+can be retrieved by calling :py:func:`~QgsBlockingNetworkRequest.errorMessage`.
 
 .. seealso:: :py:func:`get`
 %End
 
     QString errorMessage() const;
 %Docstring
-Returns the error message string, after a get() or post() request has been made.\
+Returns the error message string, after a :py:func:`~QgsBlockingNetworkRequest.get` or :py:func:`~QgsBlockingNetworkRequest.post` request has been made.\
 %End
 
     QgsNetworkReplyContent reply() const;
 %Docstring
-Returns the content of the network reply, after a get() or post() request has been made.
+Returns the content of the network reply, after a :py:func:`~QgsBlockingNetworkRequest.get` or :py:func:`~QgsBlockingNetworkRequest.post` request has been made.
 %End
 
     QString authCfg() const;

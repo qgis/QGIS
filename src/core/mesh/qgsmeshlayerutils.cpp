@@ -22,6 +22,7 @@
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshtimesettings.h"
 #include "qgstriangularmesh.h"
+#include "qgslogger.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmesh3daveraging.h"
 #include "qgsmeshlayer.h"
@@ -129,7 +130,16 @@ QVector<QgsVector> QgsMeshLayerUtils::griddedVectorValues( const QgsMeshLayer *m
   if ( dataType == QgsMeshDatasetGroupMetadata::DataOnEdges )
     return vectors;
 
-  vectors.reserve( size.height()*size.width() );
+  try
+  {
+    vectors.reserve( size.height()*size.width() );
+  }
+  catch ( ... )
+  {
+    QgsDebugMsgLevel( "Unable to store the arrow grid in memory", 1 );
+    return QVector<QgsVector>();
+  }
+
   for ( int iy = 0; iy < size.height(); ++iy )
   {
     double y = minCorner.y() + iy * ySpacing;
@@ -314,6 +324,7 @@ QVector<double> QgsMeshLayerUtils::interpolateFromFacesData(
   QgsMeshRendererScalarSettings::DataResamplingMethod method )
 {
   assert( nativeMesh );
+  Q_UNUSED( method );
   assert( method == QgsMeshRendererScalarSettings::NeighbourAverage );
 
   // assuming that native vertex count = triangular vertex count
@@ -366,9 +377,11 @@ QVector<double> QgsMeshLayerUtils::resampleFromVerticesToFaces(
   QgsMeshRendererScalarSettings::DataResamplingMethod method )
 {
   assert( nativeMesh );
+  Q_UNUSED( method );
   assert( method == QgsMeshRendererScalarSettings::NeighbourAverage );
 
   // assuming that native vertex count = triangular vertex count
+  Q_UNUSED( triangularMesh );
   assert( nativeMesh->vertices.size() == triangularMesh->vertices().size() );
 
   QVector<double> ret( nativeMesh->faceCount(), std::numeric_limits<double>::quiet_NaN() );

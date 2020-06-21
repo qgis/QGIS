@@ -16,6 +16,7 @@ class QgsAlignRaster
 %Docstring
 QgsAlignRaster takes one or more raster layers and warps (resamples) them
 so they have the same:
+
 - coordinate reference system
 - cell size and raster size
 - offset of the raster grid
@@ -219,7 +220,7 @@ See the other variant for details.
 %Docstring
 Determine destination extent from the input rasters and calculate derived values
 
-:return: ``True`` on success, sets error on error (see errorMessage())
+:return: ``True`` on success, sets error on error (see :py:func:`~QgsAlignRaster.errorMessage`)
 %End
 
     QSize alignedRasterSize() const;
@@ -228,7 +229,7 @@ Returns the expected size of the resulting aligned raster
 
 .. note::
 
-   first need to run checkInputParameters() which returns with success
+   first need to run :py:func:`~QgsAlignRaster.checkInputParameters` which returns with success
 %End
 
     QgsRectangle alignedRasterExtent() const;
@@ -237,20 +238,20 @@ Returns the expected extent of the resulting aligned raster
 
 .. note::
 
-   first need to run checkInputParameters() which returns with success
+   first need to run :py:func:`~QgsAlignRaster.checkInputParameters` which returns with success
 %End
 
     bool run();
 %Docstring
 Run the alignment process
 
-:return: ``True`` on success, sets error on error (see errorMessage())
+:return: ``True`` on success, sets error on error (see :py:func:`~QgsAlignRaster.errorMessage`)
 %End
 
     QString errorMessage() const;
 %Docstring
-Returns the error from a previous run() call.
-Error message is empty if run() succeeded (returned ``True``)
+Returns the error from a previous :py:func:`~QgsAlignRaster.run` call.
+Error message is empty if :py:func:`~QgsAlignRaster.run` succeeded (returned ``True``)
 %End
 
     void dump() const;

@@ -32,7 +32,7 @@
  *   DO: Use mixed case variable names - myVariableName
  *   DON'T: separate variable names using underscores: my_variable_name (NO!)
  *
- * **************************************************************************/
+ **************************************************************************/
 #ifndef TOPOL_H
 #define TOPOL_H
 

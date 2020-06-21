@@ -28,6 +28,7 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaptoolemitpoint.h"
 #include "qgis_gui.h"
+#include "qgsresamplingutils.h"
 
 class QgsPointXY;
 class QgsMapLayer;
@@ -112,6 +113,9 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     //! \brief slot executed when user "Static time range" radio button on time options in source page.
     void staticTemporalRange_toggled( bool checked );
+
+    //! \brief slot executed when temporal properties status change.
+    void temporalPropertiesChange();
 
     /**
      * \brief slot executed when the single band radio button is pressed.
@@ -277,6 +281,8 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     //! Synchronize state with associated raster layer
     void sync();
+
+    QgsResamplingUtils mResamplingUtils;
 
     friend class QgsAppScreenShots;
 };

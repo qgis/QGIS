@@ -303,7 +303,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>629</width>
-                <height>814</height>
+                <height>843</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -377,95 +377,24 @@ border-radius: 2px;</string>
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_15">
-                  <item row="6" column="0" colspan="3">
-                   <widget class="QLabel" name="label_10">
+                  <item row="0" column="0" colspan="3">
+                   <widget class="QLabel" name="mLabel">
                     <property name="text">
-                     <string>Note:  If the capabilities of this layer move out of this time range, the range will be reset to layer's advertised  default layer time range.</string>
+                     <string/>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="0" colspan="3">
-                   <widget class="QFrame" name="mStaticWmstFrame">
-                    <property name="enabled">
-                     <bool>false</bool>
+                  <item row="1" column="1" rowspan="2" colspan="2">
+                   <widget class="QComboBox" name="mFetchModeComboBox"/>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QCheckBox" name="mDisableTime">
+                    <property name="text">
+                     <string>Use dates only</string>
                     </property>
-                    <property name="frameShape">
-                     <enum>QFrame::NoFrame</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_16">
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>0</number>
-                     </property>
-                     <item row="2" column="1" colspan="2">
-                      <widget class="QPushButton" name="mSetEndAsStartStaticButton">
-                       <property name="text">
-                        <string>Set end same as start</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label_13">
-                       <property name="text">
-                        <string>Start date</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1" colspan="2">
-                      <widget class="QgsDateTimeEdit" name="mEndStaticDateTimeEdit">
-                       <property name="displayFormat">
-                        <string>M/d/yyyy H:mm:ss AP</string>
-                       </property>
-                       <property name="timeSpec">
-                        <enum>Qt::UTC</enum>
-                       </property>
-                       <property name="allowNull" stdset="0">
-                        <bool>false</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="label_4">
-                       <property name="text">
-                        <string>End date</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1" colspan="2">
-                      <widget class="QgsDateTimeEdit" name="mStartStaticDateTimeEdit">
-                       <property name="dateTime">
-                        <datetime>
-                         <hour>0</hour>
-                         <minute>3</minute>
-                         <second>57</second>
-                         <year>2020</year>
-                         <month>4</month>
-                         <day>30</day>
-                        </datetime>
-                       </property>
-                       <property name="currentSection">
-                        <enum>QDateTimeEdit::MonthSection</enum>
-                       </property>
-                       <property name="displayFormat">
-                        <string>M/d/yyyy H:mm:ss AP</string>
-                       </property>
-                       <property name="timeSpec">
-                        <enum>Qt::UTC</enum>
-                       </property>
-                       <property name="allowNull" stdset="0">
-                        <bool>false</bool>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
                    </widget>
                   </item>
                   <item row="1" column="0">
@@ -475,7 +404,7 @@ border-radius: 2px;</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="10" column="0">
+                  <item row="8" column="0">
                    <widget class="QFrame" name="mWmstReferenceTimeFrame">
                     <property name="enabled">
                      <bool>false</bool>
@@ -490,11 +419,18 @@ border-radius: 2px;</string>
                      <property name="topMargin">
                       <number>0</number>
                      </property>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="mReferenceTimeLabel">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
                      <item row="0" column="0">
                       <widget class="QgsDateTimeEdit" name="mReferenceDateTimeEdit">
                        <property name="dateTime">
                         <datetime>
-                         <hour>15</hour>
+                         <hour>12</hour>
                          <minute>20</minute>
                          <second>36</second>
                          <year>2020</year>
@@ -526,18 +462,11 @@ border-radius: 2px;</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="mReferenceTimeLabel">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
                     </layout>
                    </widget>
                   </item>
-                  <item row="0" column="0" colspan="3">
-                   <widget class="QLabel" name="mLabel">
+                  <item row="4" column="0" colspan="3">
+                   <widget class="QLabel" name="mWmstOptionsLabel">
                     <property name="text">
                      <string/>
                     </property>
@@ -546,35 +475,144 @@ border-radius: 2px;</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="1" rowspan="2" colspan="2">
-                   <widget class="QComboBox" name="mFetchModeComboBox"/>
-                  </item>
-                  <item row="4" column="0" colspan="3">
-                   <widget class="QRadioButton" name="mStaticTemporalRange">
-                    <property name="text">
-                     <string>Use static WMS-T temporal range</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="7" column="0" colspan="3">
-                   <widget class="QRadioButton" name="mProjectTemporalRange">
-                    <property name="text">
-                     <string>Pass project temporal range to provider</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="9" column="0" colspan="3">
+                  <item row="7" column="0">
                    <widget class="QCheckBox" name="mReferenceTime">
                     <property name="text">
                      <string>Reference time</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="8" column="0">
-                   <widget class="QCheckBox" name="mDisableTime">
-                    <property name="text">
-                     <string>Use dates only</string>
+                  <item row="5" column="0" colspan="3">
+                   <widget class="QFrame" name="mWmstOptions">
+                    <property name="frameShape">
+                     <enum>QFrame::NoFrame</enum>
                     </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_22">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QRadioButton" name="mStaticTemporalRange">
+                       <property name="text">
+                        <string>Use static WMS-T temporal range</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QFrame" name="mStaticWmstFrame">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="frameShape">
+                        <enum>QFrame::NoFrame</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Raised</enum>
+                       </property>
+                       <layout class="QGridLayout" name="gridLayout_16">
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="bottomMargin">
+                         <number>0</number>
+                        </property>
+                        <item row="2" column="1" colspan="2">
+                         <widget class="QPushButton" name="mSetEndAsStartStaticButton">
+                          <property name="text">
+                           <string>Set end same as start</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="0">
+                         <widget class="QLabel" name="label_13">
+                          <property name="text">
+                           <string>Start date</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="1" colspan="2">
+                         <widget class="QgsDateTimeEdit" name="mEndStaticDateTimeEdit">
+                          <property name="displayFormat">
+                           <string>M/d/yyyy H:mm:ss AP</string>
+                          </property>
+                          <property name="timeSpec">
+                           <enum>Qt::UTC</enum>
+                          </property>
+                          <property name="allowNull" stdset="0">
+                           <bool>false</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="0">
+                         <widget class="QLabel" name="label_4">
+                          <property name="text">
+                           <string>End date</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="1" colspan="2">
+                         <widget class="QgsDateTimeEdit" name="mStartStaticDateTimeEdit">
+                          <property name="dateTime">
+                           <datetime>
+                            <hour>18</hour>
+                            <minute>3</minute>
+                            <second>57</second>
+                            <year>2020</year>
+                            <month>4</month>
+                            <day>29</day>
+                           </datetime>
+                          </property>
+                          <property name="currentSection">
+                           <enum>QDateTimeEdit::MonthSection</enum>
+                          </property>
+                          <property name="displayFormat">
+                           <string>M/d/yyyy H:mm:ss AP</string>
+                          </property>
+                          <property name="timeSpec">
+                           <enum>Qt::UTC</enum>
+                          </property>
+                          <property name="allowNull" stdset="0">
+                           <bool>false</bool>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_10">
+                       <property name="text">
+                        <string>Note:  If the capabilities of this layer move out of this time range, the range will be reset to layer's advertised  default layer time range.</string>
+                       </property>
+                       <property name="wordWrap">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="mProjectTemporalRangeLabel">
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="wordWrap">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QRadioButton" name="mProjectTemporalRange">
+                       <property name="text">
+                        <string>Pass project temporal range to provider</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
                  </layout>
@@ -1102,6 +1140,13 @@ border-radius: 2px;</string>
                   </item>
                   <item>
                    <widget class="QDoubleSpinBox" name="mMaximumOversamplingSpinBox"/>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="mCbEarlyResampling">
+                    <property name="text">
+                     <string>Early resampling</string>
+                    </property>
+                   </widget>
                   </item>
                   <item>
                    <spacer name="horizontalSpacer">
@@ -2051,7 +2096,7 @@ p, li { white-space: pre-wrap; }
            <item>
             <widget class="QGroupBox" name="groupBox">
              <property name="title">
-              <string>Embedded widgets in legend</string>
+              <string>Embedded Widgets in Legend</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_17">
               <item>

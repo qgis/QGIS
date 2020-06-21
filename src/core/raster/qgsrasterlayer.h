@@ -146,15 +146,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * The main tasks carried out by the constructor are:
      *
      * - Load the rasters default style (.qml) file if it exists
-     *
      * - Populate the RasterStatsVector with initial values for each band.
-     *
      * - Calculate the layer extents
-     *
      * - Determine whether the layer is gray, paletted or multiband.
-     *
      * - Assign sensible defaults for the red, green, blue and gray bands.
-     * */
+     *
+     */
     explicit QgsRasterLayer( const QString &uri,
                              const QString &baseName = QString(),
                              const QString &providerType = "gdal",
@@ -272,6 +269,24 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \see brightnessFilter()
      */
     QgsHueSaturationFilter *hueSaturationFilter() const { return mPipe.hueSaturationFilter(); }
+
+    /**
+     * Select which stage of the pipe should apply resampling.
+     *
+     * \see QgsRasterPipe::setResamplingStage()
+     *
+     * \since QGIS 3.16
+     */
+    void setResamplingStage( QgsRasterPipe::ResamplingStage stage );
+
+    /**
+     * Returns which stage of the pipe should apply resampling.
+     *
+     * \see QgsRasterPipe::resamplingStage()
+     *
+     * \since QGIS 3.16
+     */
+    QgsRasterPipe::ResamplingStage resamplingStage() const { return mPipe.resamplingStage(); }
 
     /**
      * Returns the raster pipe.

@@ -53,7 +53,7 @@ is specified in the layer units for the reference layer.
     QgsFeatureList snapFeatures( const QgsFeatureList &features, double snapTolerance, SnapMode mode = PreferNodes );
 %Docstring
 Snaps a set of features to the reference layer and returns the result. This operation is
-multithreaded for performance. The featureSnapped() signal will be emitted each time a feature
+multithreaded for performance. The :py:func:`~QgsGeometrySnapper.featureSnapped` signal will be emitted each time a feature
 is processed. The snap tolerance is specified in the layer units for the reference layer.
 %End
 
@@ -66,7 +66,7 @@ Snaps a single geometry against a list of reference geometries.
 
     void featureSnapped();
 %Docstring
-Emitted each time a feature has been processed when calling snapFeatures()
+Emitted each time a feature has been processed when calling :py:func:`~QgsGeometrySnapper.snapFeatures`
 %End
 
 };
@@ -78,11 +78,11 @@ class QgsInternalGeometrySnapper
 QgsInternalGeometrySnapper allows a set of geometries to be snapped to each other. It can be used to close gaps in layers.
 
 To use :py:class:`QgsInternalGeometrySnapper`, first construct the snapper using the desired snap parameters. Then,
-features are fed to to the snapper one-by-one by calling snapFeature(). Each feature passed by calling
-snapFeature() will be snapped to any features which have already been processed by the snapper.
+features are fed to to the snapper one-by-one by calling :py:func:`~QgsGeometrySnapper.snapFeature`. Each feature passed by calling
+:py:func:`~QgsGeometrySnapper.snapFeature` will be snapped to any features which have already been processed by the snapper.
 
-After processing all desired features, the results can be fetched by calling snappedGeometries().
-The returned QgsGeometryMap can be passed to QgsVectorDataProvider.changeGeometryValues() to save
+After processing all desired features, the results can be fetched by calling :py:func:`~QgsGeometrySnapper.snappedGeometries`.
+The returned QgsGeometryMap can be passed to :py:func:`QgsVectorDataProvider.changeGeometryValues()` to save
 the snapped geometries back to the source layer.
 
 .. versionadded:: 3.0
@@ -102,7 +102,7 @@ how geometries will be snapped by the snapper.
     QgsGeometry snapFeature( const QgsFeature &feature );
 %Docstring
 Snaps a single feature's geometry against all feature geometries already processed by
-calls to snapFeature() in this object, and returns the snapped geometry.
+calls to :py:func:`~QgsInternalGeometrySnapper.snapFeature` in this object, and returns the snapped geometry.
 %End
 
     QgsGeometryMap snappedGeometries() const;

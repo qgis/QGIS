@@ -38,7 +38,7 @@ of tiles.
 
     void setZoomLevelsCount( int count );
 %Docstring
-Sets number of zoom levels. See zoomLevelsCount() documentation for more details.
+Sets number of zoom levels. See :py:func:`~QgsVectorLayer3DTilingSettings.zoomLevelsCount` documentation for more details.
 %End
 
     void setShowBoundingBoxes( bool enabled );

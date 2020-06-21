@@ -14,6 +14,7 @@ SET(QGIS_GUI_SRCS
   raster/qgsrendererrasterpropertieswidget.cpp
   raster/qgsrastertransparencywidget.cpp
   raster/qgshillshaderendererwidget.cpp
+  raster/qgsresamplingutils.cpp
 
   vector/qgsattributeactiondialog.cpp
   vector/qgsattributeactionpropertiesdialog.cpp
@@ -265,11 +266,14 @@ SET(QGIS_GUI_SRCS
   ogr/qgsnewogrconnection.cpp
   ogr/qgsvectorlayersaveasdialog.cpp
 
+  processing/qgsprocessingaggregatewidgets.cpp
+  processing/qgsprocessingaggregatewidgetwrapper.cpp
   processing/qgsprocessingalgorithmconfigurationwidget.cpp
   processing/qgsprocessingalgorithmdialogbase.cpp
   processing/qgsprocessingconfigurationwidgets.cpp
   processing/qgsprocessingenummodelerwidget.cpp
   processing/qgsprocessingfeaturesourceoptionswidget.cpp
+  processing/qgsprocessingfieldmapwidgetwrapper.cpp
   processing/qgsprocessingguiregistry.cpp
   processing/qgsprocessingmaplayercombobox.cpp
   processing/qgsprocessingmatrixmodelerwidget.cpp
@@ -358,6 +362,7 @@ SET(QGIS_GUI_SRCS
   qgscodeeditor.cpp
   qgscodeeditorcss.cpp
   qgscodeeditorhtml.cpp
+  qgscodeeditorjs.cpp
   qgscodeeditorpython.cpp
   qgscodeeditorsql.cpp
   qgscodeeditorexpression.cpp
@@ -449,6 +454,7 @@ SET(QGIS_GUI_SRCS
   qgsmapcanvasmap.cpp
   qgsmapcanvassnappingutils.cpp
   qgsmapcanvastracer.cpp
+  qgsmapcanvasutils.cpp
   qgsmaplayeractionregistry.cpp
   qgsmaplayercombobox.cpp
   qgsmaplayerconfigwidgetfactory.cpp
@@ -587,6 +593,7 @@ SET(QGIS_GUI_HDRS
   qgscodeeditorcss.h
   qgscodeeditorexpression.h
   qgscodeeditorhtml.h
+  qgscodeeditorjs.h
   qgscodeeditorpython.h
   qgscodeeditorsql.h
   qgscollapsiblegroupbox.h
@@ -680,6 +687,7 @@ SET(QGIS_GUI_HDRS
   qgsmapcanvasmap.h
   qgsmapcanvassnappingutils.h
   qgsmapcanvastracer.h
+  qgsmapcanvasutils.h
   qgsmaplayeractionregistry.h
   qgsmaplayercombobox.h
   qgsmaplayerconfigwidget.h
@@ -986,11 +994,14 @@ SET(QGIS_GUI_HDRS
   ogr/qgsogrhelperfunctions.h
   ogr/qgsvectorlayersaveasdialog.h
 
+  processing/qgsprocessingaggregatewidgets.h
+  processing/qgsprocessingaggregatewidgetwrapper.h
   processing/qgsprocessingalgorithmconfigurationwidget.h
   processing/qgsprocessingalgorithmdialogbase.h
   processing/qgsprocessingconfigurationwidgets.h
   processing/qgsprocessingenummodelerwidget.h
   processing/qgsprocessingfeaturesourceoptionswidget.h
+  processing/qgsprocessingfieldmapwidgetwrapper.h
   processing/qgsprocessinggui.h
   processing/qgsprocessingguiregistry.h
   processing/qgsprocessingmaplayercombobox.h
@@ -1055,6 +1066,7 @@ SET(QGIS_GUI_HDRS
   raster/qgssinglebandpseudocolorrendererwidget.h
   raster/qgsrasterlayerproperties.h
   raster/qgsrasterlayertemporalpropertieswidget.h
+  raster/qgsresamplingutils.h
 
   vector/qgsattributeactiondialog.h
   vector/qgsattributeactionpropertiesdialog.h

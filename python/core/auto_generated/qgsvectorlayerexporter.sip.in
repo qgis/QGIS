@@ -17,10 +17,9 @@ A convenience class for exporting vector layers to a destination data provider.
 
 QgsVectorLayerExporter can be used in two ways:
 
-1. Using a static call to QgsVectorLayerExporter.exportLayer(...) which exports the
-entire layer to the destination provider.
-
-2. Create an instance of the class and issue calls to addFeature(...)
+# Using a static call to QgsVectorLayerExporter.exportLayer(...) which exports the
+  entire layer to the destination provider.
+# Create an instance of the class and issue calls to addFeature(...)
 
 .. versionadded:: 3.0
 %End
@@ -78,7 +77,7 @@ Writes the contents of vector layer to a different datasource.
                             const QgsCoordinateReferenceSystem &crs,
                             bool overwrite = false,
                             const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
-                            QgsFeatureSink::SinkFlags sinkFlags = 0 );
+                            QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 %Docstring
 Constructor for QgsVectorLayerExporter.
 
@@ -121,9 +120,9 @@ Returns the number of error messages encountered during the export.
 .. seealso:: :py:func:`errorCode`
 %End
 
-    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
-    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
 
     ~QgsVectorLayerExporter();

@@ -155,7 +155,7 @@ Default implementation does nothing. *
     virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
 %Docstring
 Entry point called from QgsLegendRenderer to do the rendering.
-Default implementation calls drawSymbol() and drawSymbolText() methods.
+Default implementation calls :py:func:`~QgsLayerTreeModelLegendNode.drawSymbol` and :py:func:`~QgsLayerTreeModelLegendNode.drawSymbolText` methods.
 
 If ctx is ``None``, this is just first stage when preparing layout - without actual rendering.
 %End
@@ -296,7 +296,7 @@ argument.
 %Docstring
 Calculates the minimum icon size to prevent cropping. When evaluating
 the size for multiple icons it is more efficient to create a single
-render context in advance and call this method instead of minimumIconSize().
+render context in advance and call this method instead of :py:func:`~QgsSymbolLegendNode.minimumIconSize`.
 
 .. versionadded:: 2.18
 %End
@@ -380,7 +380,7 @@ Sets the symbol patch ``shape`` to use when rendering the legend node symbol.
 Returns the node's custom symbol.
 
 If a non-``None`` value is returned, then this symbol will be used for rendering
-the legend node instead of the default symbol().
+the legend node instead of the default :py:func:`~QgsSymbolLegendNode.symbol`.
 
 .. seealso:: :py:func:`setCustomSymbol`
 
@@ -392,7 +392,7 @@ the legend node instead of the default symbol().
 Sets the node's custom ``symbol``.
 
 If a non-``None`` value is set, then this symbol will be used for rendering
-the legend node instead of the default symbol().
+the legend node instead of the default :py:func:`~QgsSymbolLegendNode.symbol`.
 
 Ownership of ``symbol`` is transferred.
 

@@ -22,10 +22,11 @@
 #include <QItemDelegate>
 
 #include "qgis_gui.h"
-#include "qgslayertreemodel.h"
+#include "qgsmaplayermodel.h"
 
 class QgsMapCanvas;
 class QgsProject;
+class QgsVectorLayer;
 
 
 /**
@@ -35,13 +36,23 @@ class QgsProject;
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsGeoPdfLayerTreeModel : public QgsLayerTreeModel
+class GUI_EXPORT QgsGeoPdfLayerTreeModel : public QgsMapLayerModel
 {
     Q_OBJECT
 
   public:
+
+    //! Model columns
+    enum Columns
+    {
+      LayerColumn = 0, //!< Layer name
+      GroupColumn, //!< PDF group
+      InitiallyVisible, //!< Initial visiblity state
+      IncludeVectorAttributes //!< Vector attribute
+    };
+
     //! constructor
-    QgsGeoPdfLayerTreeModel( QgsLayerTree *rootNode, QObject *parent = nullptr );
+    QgsGeoPdfLayerTreeModel( const QList< QgsMapLayer * > &layers, QObject *parent = nullptr );
 
     int columnCount( const QModelIndex &parent ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
@@ -52,15 +63,11 @@ class GUI_EXPORT QgsGeoPdfLayerTreeModel : public QgsLayerTreeModel
     /**
      * Checks (or unchecks) all rows and children from the specified \a parent index.
      */
-    void checkAll( bool checked, const QModelIndex &parent = QModelIndex() );
+    void checkAll( bool checked, const QModelIndex &parent = QModelIndex(), int column = IncludeVectorAttributes );
 
   private:
-    enum Columns
-    {
-      LayerColumn = 0,
-      GroupColumn
-    };
 
+    QgsMapLayer *mapLayer( const QModelIndex &idx ) const;
     QgsVectorLayer *vectorLayer( const QModelIndex &idx ) const;
 };
 

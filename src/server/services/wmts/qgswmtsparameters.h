@@ -52,6 +52,7 @@ namespace QgsWmts
         FORMAT,
         TRANSPARENT,
         DPI,
+        TILED,
         QUERY_LAYERS,
         I,
         J,
@@ -313,7 +314,7 @@ namespace QgsWmts
       int jAsInt() const;
 
     private:
-      bool loadParameter( const QString &name, const QString &key ) override;
+      bool loadParameter( const QString &key, const QString &value ) override;
       void save( const QgsWmtsParameter &parameter );
 
       void log( const QString &msg ) const;

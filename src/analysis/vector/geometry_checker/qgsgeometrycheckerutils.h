@@ -180,6 +180,8 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
             QgsFeatureIds::const_iterator mFeatureIt;
             const LayerFeatures *mParent = nullptr;
             std::unique_ptr<QgsGeometryCheckerUtils::LayerFeature> mCurrentFeature;
+
+            iterator &operator= ( const iterator & ) = delete;
         };
 
         /**

@@ -20,6 +20,7 @@
 
 #include <QDir>
 #include <QList>
+#include <QReadWriteLock>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -30,8 +31,8 @@
  * Paths are meant to be absolute paths and are stored by order of preference.
  *
  * If a layer from one of the paths is loaded, it will be saved as localized in the project file.
- * For instance, if you have C:\my_maps in your localized paths,
- * C:\my_maps\my_country\ortho.tif will be save in your project as localized:my_country\ortho.tif
+ * For instance, if you have `C:/my_maps` in your localized paths,
+ * `C:/my_maps/my_country/ortho.tif` will be save in your project as `localized:my_country/ortho.tif`.
  *
  * The resolving of the file paths happens in QgsPathResolver.
  *
@@ -65,10 +66,16 @@ class CORE_EXPORT QgsLocalizedDataPathRegistry
     void unregisterPath( const QString &path );
 
   private:
+#ifdef SIP_RUN
+    QgsLocalizedDataPathRegistry( const QgsLocalizedDataPathRegistry &other )
+    {}
+#endif
+
     void readFromSettings();
     void writeToSettings();
 
     QList<QDir> mPaths;
+    mutable QReadWriteLock mLock;
 };
 
 #endif // QGSLOCALIZEDDATAPATHREGISTRY_H

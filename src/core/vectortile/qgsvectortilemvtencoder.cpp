@@ -67,8 +67,10 @@ struct MVTGeometryWriter
     qint32 vx = pt.x() - cursor.x();
     qint32 vy = pt.y() - cursor.y();
 
-    feature->add_geometry( ( vx << 1 ) ^ ( vx >> 31 ) );
-    feature->add_geometry( ( vy << 1 ) ^ ( vy >> 31 ) );
+    // (quint32)(-(qint32)((quint32)vx >> 31)) is a C/C++ compliant way
+    // of doing vx >> 31, which is undefined behaviour since vx is signed
+    feature->add_geometry( ( ( quint32 )vx << 1 ) ^ ( ( quint32 )( -( qint32 )( ( quint32 )vx >> 31 ) ) ) );
+    feature->add_geometry( ( ( quint32 )vy << 1 ) ^ ( ( quint32 )( -( qint32 )( ( quint32 )vy >> 31 ) ) ) );
 
     cursor = pt;
   }
@@ -231,6 +233,21 @@ void QgsVectorTileMVTEncoder::addLayer( QgsVectorLayer *layer, QgsFeedback *feed
 
 void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, const QgsFeature &f )
 {
+  QgsGeometry g = f.geometry();
+  QgsWkbTypes::GeometryType geomType = g.type();
+  double onePixel = mTileExtent.width() / mResolution;
+
+  if ( geomType == QgsWkbTypes::LineGeometry )
+  {
+    if ( g.length() < onePixel )
+      return; // too short
+  }
+  else if ( geomType == QgsWkbTypes::PolygonGeometry )
+  {
+    if ( g.area() < onePixel * onePixel )
+      return; // too small
+  }
+
   vector_tile::Tile_Feature *feature = tileLayer->add_features();
 
   feature->set_id( static_cast<quint64>( f.id() ) );
@@ -275,8 +292,6 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
   // encode geometry
   //
 
-  QgsGeometry g = f.geometry();
-  QgsWkbTypes::GeometryType geomType = g.type();
   vector_tile::Tile_GeomType mvtGeomType = vector_tile::Tile_GeomType_UNKNOWN;
   if ( geomType == QgsWkbTypes::PointGeometry )
     mvtGeomType = vector_tile::Tile_GeomType_POINT;

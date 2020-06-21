@@ -41,6 +41,7 @@ class TestQgsScaleComboBox : public QObject
     void toString();
     void toDouble();
     void allowNull();
+    void testLocale();
 
   private:
     void enterScale( const QString &scale );
@@ -254,6 +255,34 @@ void TestQgsScaleComboBox::enterScale( double scale )
 void TestQgsScaleComboBox::cleanup()
 {
   delete s;
+}
+
+void TestQgsScaleComboBox::testLocale()
+{
+  QLocale::setDefault( QLocale::English );
+  QCOMPARE( s->toString( 1e8 ), QString( "1:100,000,000" ) );
+  QLocale customEnglish( QLocale::English );
+  customEnglish.setNumberOptions( QLocale::NumberOption::OmitGroupSeparator );
+  QLocale::setDefault( customEnglish );
+  QCOMPARE( s->toString( 1e8 ), QString( "1:100000000" ) );
+
+  QLocale::setDefault( QLocale::French );
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 12, 0 )
+  QCOMPARE( s->toString( 1e8 ), QString( "1:100 000 000" ) );
+#else
+  QCOMPARE( s->toString( 1e8 ), QString( "1:100\u00A0000\u00A0000" ) );
+#endif
+  QLocale customFrench( QLocale::French );
+  customFrench.setNumberOptions( QLocale::NumberOption::OmitGroupSeparator );
+  QLocale::setDefault( customFrench );
+  QCOMPARE( s->toString( 1e8 ), QString( "1:100000000" ) );
+
+  QLocale::setDefault( QLocale::German );
+  QCOMPARE( s->toString( 1e8 ), QString( "1:100.000.000" ) );
+  QLocale customGerman( QLocale::German );
+  customFrench.setNumberOptions( QLocale::NumberOption::OmitGroupSeparator );
+  QLocale::setDefault( customFrench );
+  QCOMPARE( s->toString( 1e8 ), QString( "1:100000000" ) );
 }
 
 QGSTEST_MAIN( TestQgsScaleComboBox )

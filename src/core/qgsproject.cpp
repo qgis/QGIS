@@ -491,6 +491,16 @@ QString QgsProject::saveUserFullName() const
   return mSaveUserFull;
 }
 
+QDateTime QgsProject::lastSaveDateTime() const
+{
+  return mSaveDateTime;
+}
+
+QgsProjectVersion QgsProject::lastSaveVersion() const
+{
+  return mSaveVersion;
+}
+
 bool QgsProject::isDirty() const
 {
   return mDirty;
@@ -628,6 +638,16 @@ QString QgsProject::fileName() const
   return mFile.fileName();
 }
 
+void QgsProject::setOriginalPath( const QString &path )
+{
+  mOriginalPath = path;
+}
+
+QString QgsProject::originalPath() const
+{
+  return mOriginalPath;
+}
+
 QFileInfo QgsProject::fileInfo() const
 {
   return QFileInfo( mFile );
@@ -755,6 +775,8 @@ void QgsProject::clear()
   mProperties.clearKeys();
   mSaveUser.clear();
   mSaveUserFull.clear();
+  mSaveDateTime = QDateTime();
+  mSaveVersion = QgsProjectVersion();
   mHomePath.clear();
   mCachedHomePath.clear();
   mAutoTransaction = false;
@@ -894,10 +916,10 @@ void _getProperties( const QDomDocument &doc, QgsProjectPropertyKey &project_pro
 }
 
 /**
-  Returns the data defined server properties collection found in "doc" to "dataDefinedServerProperties".
-  \param doc xml document
-  \param dataDefinedServerProperties property collection of the server overrides
-  \since QGIS 3.14
+ * Returns the data defined server properties collection found in "doc" to "dataDefinedServerProperties".
+ * \param doc xml document
+ * \param dataDefinedServerPropertyDefinitions property collection of the server overrides
+ * \since QGIS 3.14
 **/
 QgsPropertyCollection getDataDefinedServerProperties( const QDomDocument &doc, const QgsPropertiesDefinition &dataDefinedServerPropertyDefinitions )
 {
@@ -952,7 +974,7 @@ static void _getTitle( const QDomDocument &doc, QString &title )
 
 }
 
-static void readProjectFileMetadata( const QDomDocument &doc, QString &lastUser, QString &lastUserFull )
+static void readProjectFileMetadata( const QDomDocument &doc, QString &lastUser, QString &lastUserFull, QDateTime &lastSaveDateTime )
 {
   QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
 
@@ -967,6 +989,7 @@ static void readProjectFileMetadata( const QDomDocument &doc, QString &lastUser,
   QDomElement qgisElement = qgisNode.toElement(); // qgis node should be element
   lastUser = qgisElement.attribute( QStringLiteral( "saveUser" ), QString() );
   lastUserFull = qgisElement.attribute( QStringLiteral( "saveUserFull" ), QString() );
+  lastSaveDateTime = QDateTime::fromString( qgisElement.attribute( QStringLiteral( "saveDateTime" ), QString() ), Qt::ISODate );
 }
 
 
@@ -1128,7 +1151,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   const bool layerWasStored { layerStore()->mapLayer( layerId ) != nullptr };
 
   // have the layer restore state that is stored in Dom node
-  QgsMapLayer::ReadFlags layerFlags = nullptr;
+  QgsMapLayer::ReadFlags layerFlags = QgsMapLayer::ReadFlags();
   if ( flags & QgsProject::ReadFlag::FlagDontResolveLayers )
     layerFlags |= QgsMapLayer::FlagDontResolveLayers;
   bool layerIsValid = mapLayer->readLayerXml( layerElem, context, layerFlags ) && mapLayer->isValid();
@@ -1279,7 +1302,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 
   // get project version string, if any
   QgsProjectVersion fileVersion = getVersion( *doc );
-  QgsProjectVersion thisVersion( Qgis::version() );
+  const QgsProjectVersion thisVersion( Qgis::version() );
 
   if ( thisVersion > fileVersion )
   {
@@ -1304,6 +1327,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   mFile.setFileName( fileName );
   mCachedHomePath.clear();
   mProjectScope.reset();
+  mSaveVersion = fileVersion;
 
   // now get any properties
   _getProperties( *doc, mProperties );
@@ -1321,7 +1345,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   QString oldTitle;
   _getTitle( *doc, oldTitle );
 
-  readProjectFileMetadata( *doc, mSaveUser, mSaveUserFull );
+  readProjectFileMetadata( *doc, mSaveUser, mSaveUserFull, mSaveDateTime );
 
   QDomNodeList homePathNl = doc->elementsByTagName( QStringLiteral( "homePath" ) );
   if ( homePathNl.count() > 0 )
@@ -1525,7 +1549,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   }
 
   // Convert pre 3.4 to create layers flags
-  if ( QgsProjectVersion( 3, 4, 0 ) > fileVersion )
+  if ( QgsProjectVersion( 3, 4, 0 ) > mSaveVersion )
   {
     const QStringList requiredLayerIds = readListEntry( QStringLiteral( "RequiredLayers" ), QStringLiteral( "Layers" ) );
     for ( const QString &layerId : requiredLayerIds )
@@ -1805,6 +1829,8 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
   }
 
   QString projectPath = projectStorage() ? fileName() : absoluteFilePath();
+  if ( projectPath.isEmpty() )
+    projectPath = mOriginalPath;
   QString projectFolder = QFileInfo( projectPath ).path();
   QString projectFilename = QFileInfo( projectPath ).fileName();
   QString projectBasename = baseName();
@@ -1816,6 +1842,7 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_filename" ), projectFilename, true, true ) );
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_basename" ), projectBasename, true, true ) );
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_home" ), QDir::toNativeSeparators( homePath() ), true, true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_last_saved" ), mSaveDateTime.isNull() ? QVariant() : QVariant( mSaveDateTime ), true, true ) );
   QgsCoordinateReferenceSystem projectCrs = crs();
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs" ), projectCrs.authid(), true, true ) );
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_definition" ), projectCrs.toProj(), true, true ) );
@@ -1973,13 +2000,12 @@ bool QgsProject::write( const QString &filename )
 {
   mFile.setFileName( filename );
   mCachedHomePath.clear();
-  mProjectScope.reset();
-
   return write();
 }
 
 bool QgsProject::write()
 {
+  mProjectScope.reset();
   if ( QgsProjectStorage *storage = projectStorage() )
   {
     QgsReadWriteContext context;
@@ -2085,13 +2111,17 @@ bool QgsProject::writeProjectFile( const QString &filename )
     qgisNode.setAttribute( QStringLiteral( "saveUserFull" ), newSaveUserFull );
     mSaveUser = newSaveUser;
     mSaveUserFull = newSaveUserFull;
+    mSaveDateTime = QDateTime::currentDateTime();
+    qgisNode.setAttribute( QStringLiteral( "saveDateTime" ), mSaveDateTime.toString( Qt::ISODate ) );
   }
   else
   {
     mSaveUser.clear();
     mSaveUserFull.clear();
+    mSaveDateTime = QDateTime();
   }
   doc->appendChild( qgisNode );
+  mSaveVersion = QgsProjectVersion( Qgis::version() );
 
   QDomElement homePathNode = doc->createElement( QStringLiteral( "homePath" ) );
   homePathNode.setAttribute( QStringLiteral( "path" ), mHomePath );

@@ -46,7 +46,7 @@ class QgsGeorefDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
-    QgsGeorefDockWidget( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsGeorefDockWidget( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 };
 
 class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPluginGuiBase
@@ -80,7 +80,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     void zoomToLast();
     void zoomToNext();
     void setPanTool();
-    void linkGeorefToQGis( bool link );
+    void linkGeorefToQgis( bool link );
     void linkQGisToGeoref( bool link );
 
     // gcps
@@ -100,9 +100,6 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     // settings
     void showRasterPropertiesDialog();
     void showGeorefConfigDialog();
-
-    // plugin info
-    void showHelp();
 
     // comfort
     void jumpToGCP( uint theGCPIndex );
@@ -204,8 +201,6 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QgsMessageBar *mMessageBar = nullptr;
     QMenu *mPanelMenu = nullptr;
     QMenu *mToolbarMenu = nullptr;
-
-    QAction *mActionHelp = nullptr;
 
     QgsGCPListWidget *mGCPListWidget = nullptr;
     QLineEdit *mScaleEdit = nullptr;

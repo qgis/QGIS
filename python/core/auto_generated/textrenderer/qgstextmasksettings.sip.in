@@ -83,7 +83,7 @@ Returns the size of the buffer.
 
     void setSize( double size );
 %Docstring
-Sets the size of the buffer. The size units are specified using setSizeUnit().
+Sets the size of the buffer. The size units are specified using :py:func:`~QgsTextMaskSettings.setSizeUnit`.
 
 :param size: buffer size
 
@@ -221,6 +221,13 @@ Sets the symbol layers that will be masked by this buffer.
     void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
 %Docstring
 Updates the format by evaluating current values of data defined properties.
+%End
+
+    QSet<QString> referencedFields( const QgsRenderContext &context ) const;
+%Docstring
+Returns all field names referenced by the configuration (e.g. from data defined properties).
+
+.. versionadded:: 3.14
 %End
 
 };

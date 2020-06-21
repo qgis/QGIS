@@ -51,7 +51,7 @@ QPolygon QgsVectorTileUtils::tilePolygon( QgsTileXYZ id, const QgsCoordinateTran
 QgsFields QgsVectorTileUtils::makeQgisFields( QSet<QString> flds )
 {
   QgsFields fields;
-  QStringList fieldsSorted = flds.toList();
+  QStringList fieldsSorted = qgis::setToList( flds );
   std::sort( fieldsSorted.begin(), fieldsSorted.end() );
   for ( const QString &fieldName : qgis::as_const( fieldsSorted ) )
   {
@@ -80,7 +80,7 @@ QgsVectorLayer *QgsVectorTileUtils::makeVectorLayerForTile( QgsVectorTileLayer *
 {
   QgsVectorTileMVTDecoder decoder;
   decoder.decode( tileID, mvt->getRawTile( tileID ) );
-  QSet<QString> fieldNames = QSet<QString>::fromList( decoder.layerFieldNames( layerName ) );
+  QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
   fieldNames << QStringLiteral( "_geom_type" );
   QMap<QString, QgsFields> perLayerFields;
   QgsFields fields = QgsVectorTileUtils::makeQgisFields( fieldNames );

@@ -208,7 +208,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutRenderContext::Flags flags = nullptr;
+      QgsLayoutRenderContext::Flags flags = QgsLayoutRenderContext::Flags();
 
       /**
        * A list of predefined scales to use with the layout. This is used
@@ -292,7 +292,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutRenderContext::Flags flags = nullptr;
+      QgsLayoutRenderContext::Flags flags = QgsLayoutRenderContext::Flags();
 
       /**
        * Text rendering format, which controls how text should be rendered in the export (e.g.
@@ -446,7 +446,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutRenderContext::Flags flags = nullptr;
+      QgsLayoutRenderContext::Flags flags = QgsLayoutRenderContext::Flags();
 
       /**
        * A list of predefined scales to use with the layout. This is used
@@ -537,7 +537,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutRenderContext::Flags flags = nullptr;
+      QgsLayoutRenderContext::Flags flags = QgsLayoutRenderContext::Flags();
 
       /**
        * Text rendering format, which controls how text should be rendered in the export (e.g.

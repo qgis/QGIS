@@ -81,8 +81,8 @@ QgsGeometry::QgsGeometry( std::unique_ptr<QgsAbstractGeometry> geom )
 }
 
 QgsGeometry::QgsGeometry( const QgsGeometry &other )
+  : d( other.d )
 {
-  d = other.d;
   mLastError = other.mLastError;
   d->ref.ref();
 }
@@ -832,6 +832,17 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsPointSequence 
 
   QVector<QgsGeometry > newGeoms;
   QgsLineString splitLineString( splitLine );
+
+  /**
+   * QGIS uses GEOS algorithm to split geometries.
+   * Using 3D points in GEOS will returns an interpolation value which is the
+   * mean between geometries.
+   * On the contrary, in our logic, the interpolation is a linear interpolation
+   * on the split point. By dropping Z/M value, GEOS will returns the expected
+   * result. See https://github.com/qgis/QGIS/issues/33489
+   */
+  splitLineString.dropZValue();
+  splitLineString.dropMValue();
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
@@ -2507,9 +2518,9 @@ QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, unsigned long
 }
 ///@endcond
 
-QByteArray QgsGeometry::asWkb() const
+QByteArray QgsGeometry::asWkb( QgsAbstractGeometry::WkbFlags flags ) const
 {
-  return d->geometry ? d->geometry->asWkb() : QByteArray();
+  return d->geometry ? d->geometry->asWkb( flags ) : QByteArray();
 }
 
 QVector<QgsGeometry> QgsGeometry::asGeometryCollection() const

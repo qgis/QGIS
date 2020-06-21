@@ -385,6 +385,8 @@ namespace pal
 
       mutable std::size_t mCachedMaxLineCandidates = 0;
       mutable std::size_t mCachedMaxPolygonCandidates = 0;
+
+      FeaturePart &operator= ( const FeaturePart & ) = delete;
   };
 
 } // end namespace pal

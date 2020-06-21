@@ -277,6 +277,9 @@ double QgsInterpolatedLineWidth::strokeWidth( double value ) const
     if ( mNeedUpdateFormula )
       updateLinearFormula();
 
+    if ( mUseAbsoluteValue )
+      value = std::fabs( value );
+
     if ( value > mMaximumValue )
     {
       if ( mIgnoreOutOfRange )
@@ -312,6 +315,7 @@ QDomElement QgsInterpolatedLineWidth::writeXml( QDomDocument &doc, const QgsRead
   elem.setAttribute( QStringLiteral( "minimum-width" ), mMinimumWidth );
   elem.setAttribute( QStringLiteral( "maximum-width" ), mMaximumWidth );
   elem.setAttribute( QStringLiteral( "ignore-out-of-range" ), mIgnoreOutOfRange ? 1 : 0 );
+  elem.setAttribute( QStringLiteral( "use-absolute-value" ), mUseAbsoluteValue ? 1 : 0 );
 
   return elem;
 }
@@ -327,6 +331,17 @@ void QgsInterpolatedLineWidth::readXml( const QDomElement &elem, const QgsReadWr
   mMinimumWidth = elem.attribute( QStringLiteral( "minimum-width" ) ).toDouble();
   mMaximumWidth = elem.attribute( QStringLiteral( "maximum-width" ) ).toDouble();
   mIgnoreOutOfRange = elem.attribute( QStringLiteral( "ignore-out-of-range" ) ).toInt();
+  mUseAbsoluteValue = elem.attribute( QStringLiteral( "use-absolute-value" ) ).toInt();
+}
+
+bool QgsInterpolatedLineWidth::useAbsoluteValue() const
+{
+  return mUseAbsoluteValue;
+}
+
+void QgsInterpolatedLineWidth::setUseAbsoluteValue( bool useAbsoluteValue )
+{
+  mUseAbsoluteValue = useAbsoluteValue;
 }
 
 double QgsInterpolatedLineWidth::fixedStrokeWidth() const

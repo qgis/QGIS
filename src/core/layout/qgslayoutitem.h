@@ -492,6 +492,18 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       //! Associated map layer ID, or an empty string if this export layer is not associated with a map layer
       QString mapLayerId;
 
+      /**
+       * Associated composition mode if this layer is associated with a map layer
+       * \since QGIS 3.14
+       */
+      QPainter::CompositionMode compositionMode = QPainter::CompositionMode_SourceOver;
+
+      /**
+       * Associated opacity, if this layer is associated with a map layer
+       * \since QGIS 3.14
+       */
+      double opacity = 1.0;
+
       //! Associated map theme, or an empty string if this export layer does not need to be associated with a map theme
       QString mapTheme;
     };

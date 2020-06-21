@@ -116,6 +116,12 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
       break;
     }
 
+    case QVariant::ByteArray:
+      fieldType = QStringLiteral( "BLOB" );
+      fieldSize = -1;
+      fieldPrec = -1;
+      break;
+
     default:
       return false;
   }
@@ -636,6 +642,14 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
 
 QgsSpatiaLiteProvider::~QgsSpatiaLiteProvider()
 {
+  if ( mTransaction )
+  {
+    QString errorMessage;
+    if ( ! mTransaction->rollback( errorMessage ) )
+    {
+      QgsMessageLog::logMessage( tr( "Error closing transaction for %1" ).arg( mTableName ), tr( "SpatiaLite" ) );
+    }
+  }
   closeDb();
   invalidateConnections( mSqlitePath );
 }
@@ -688,6 +702,10 @@ static TypeSubType getVariantType( const QString &type )
   {
     return TypeSubType( QVariant::List, QVariant::Invalid );
   }
+  else if ( type == QLatin1String( "blob" ) )
+  {
+    return TypeSubType( QVariant::ByteArray, QVariant::Invalid );
+  }
   else if ( type == QLatin1String( "timestamp" ) ||
             type == QLatin1String( "datetime" ) )
   {
@@ -738,6 +756,11 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
       {
         fieldType = QVariant::Double;
         type = "DOUBLE";
+      }
+      if ( fld->BlobValuesCount != 0 )
+      {
+        fieldType = QVariant::ByteArray;
+        type = "BLOB";
       }
       mAttributeFields.append( QgsField( name, fieldType, type, 0, 0, QString() ) );
     }
@@ -1000,7 +1023,7 @@ void QgsSpatiaLiteProvider::insertDefaultValue( int fieldIndex, QString defaultV
   {
     QVariant defaultVariant = defaultVal;
 
-    if ( mAttributeFields.at( fieldIndex ).name() != mPrimaryKey || ( mAttributeFields.at( fieldIndex ).name() == mPrimaryKey && !mPrimaryKeyAutoIncrement ) )
+    if ( mAttributeFields.at( fieldIndex ).name() != mPrimaryKey || !mPrimaryKeyAutoIncrement )
     {
       bool ok;
       switch ( mAttributeFields.at( fieldIndex ).type() )
@@ -1038,7 +1061,6 @@ void QgsSpatiaLiteProvider::insertDefaultValue( int fieldIndex, QString defaultV
   }
 }
 
-
 QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
 {
   // TODO: backend-side evaluation
@@ -1064,6 +1086,24 @@ QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
     resultVar = defaultVal;
   }
 
+  if ( mTransaction &&
+       mAttributeFields.at( fieldId ).name() == mPrimaryKey &&
+       mPrimaryKeyAutoIncrement &&
+       mDefaultValues.value( fieldId, QString() ) == tr( "Autogenerate" ) &&
+       providerProperty( EvaluateDefaultValues, false ).toBool() )
+  {
+    QString errorMessage;
+    QVariant nextVal { QgsSqliteUtils::nextSequenceValue( sqliteHandle(), mTableName, errorMessage ) };
+    if ( errorMessage.isEmpty() && nextVal != -1 )
+    {
+      resultVar = nextVal;
+    }
+    else
+    {
+      QgsMessageLog::logMessage( errorMessage, tr( "SpatiaLite" ) );
+    }
+  }
+
   ( void )mAttributeFields.at( fieldId ).convertCompatible( resultVar );
   return resultVar;
 }
@@ -1077,7 +1117,15 @@ QString QgsSpatiaLiteProvider::defaultValueClause( int fieldIndex ) const
 
   if ( mAttributeFields.at( fieldIndex ).name() == mPrimaryKey && mPrimaryKeyAutoIncrement )
   {
-    return tr( "Autogenerate" );
+    if ( mTransaction &&
+         providerProperty( EvaluateDefaultValues, false ).toBool() )
+    {
+      return QString();
+    }
+    else
+    {
+      return tr( "Autogenerate" );
+    }
   }
   return mDefaultValueClause.value( fieldIndex, QString() );
 }
@@ -1250,7 +1298,6 @@ void QgsSpatiaLiteProvider::loadFields()
   updatePrimaryKeyCapabilities();
 }
 
-
 void QgsSpatiaLiteProvider::determineViewPrimaryKey()
 {
   QString sql = QString( "SELECT view_rowid"
@@ -1317,7 +1364,6 @@ QStringList QgsSpatiaLiteProvider::tablePrimaryKeys( const QString &tableName ) 
   sqlite3_finalize( stmt );
   return result;
 }
-
 
 bool QgsSpatiaLiteProvider::hasTriggers()
 {
@@ -4241,6 +4287,12 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
             QByteArray ba = stringVal.toUtf8();
             sqlite3_bind_text( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
           }
+          else if ( type == QVariant::ByteArray )
+          {
+            // binding a BLOB value
+            const QByteArray ba = v.toByteArray();
+            sqlite3_bind_blob( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
+          }
           else if ( type == QVariant::StringList || type == QVariant::List )
           {
             const QByteArray ba = QgsJsonUtils::encodeValue( v ).toUtf8();
@@ -4320,7 +4372,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   return ret == SQLITE_OK;
 }
 
-QString createIndexName( QString tableName, QString field )
+QString QgsSpatiaLiteProvider::createIndexName( QString tableName, QString field )
 {
   QRegularExpression safeExp( QStringLiteral( "[^a-zA-Z0-9]" ) );
   tableName.replace( safeExp, QStringLiteral( "_" ) );
@@ -4562,6 +4614,10 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
   for ( QgsChangedAttributesMap::const_iterator iter = attr_map.begin(); iter != attr_map.end(); ++iter )
   {
     // Loop over all changed features
+    //
+    // For each changed feature, create an update string like
+    // "UPDATE table SET simple_column=23.5, complex_column=? WHERE primary_key=fid"
+    // On any update failure, changes to all features will be rolled back
 
     QgsFeatureId fid = iter.key();
 
@@ -4576,10 +4632,13 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
     QString sql = QStringLiteral( "UPDATE %1 SET " ).arg( QgsSqliteUtils::quotedIdentifier( mTableName ) );
     bool first = true;
 
+    // keep track of map of parameter index to value
+    QMap<int, QVariant> bindings;
+    int bind_parameter_idx = 1;
+
     // cycle through the changed attributes of the feature
     for ( QgsAttributeMap::const_iterator siter = attrs.begin(); siter != attrs.end(); ++siter )
     {
-      // Loop over all changed attributes
       try
       {
         QgsField fld = field( siter.key() );
@@ -4626,6 +4685,12 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
             return false;
           }
         }
+        else if ( type == QVariant::ByteArray )
+        {
+          // binding a BLOB value
+          sql += QStringLiteral( "%1=?" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ) );
+          bindings[ bind_parameter_idx++ ] = val;
+        }
         else if ( type == QVariant::DateTime )
         {
           sql += QStringLiteral( "%1=%2" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ), QgsSqliteUtils::quotedString( val.toDateTime().toString( QStringLiteral( "yyyy-MM-ddThh:mm:ss" ) ) ) );
@@ -4647,9 +4712,60 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
     }
     sql += QStringLiteral( " WHERE %1=%2" ).arg( QgsSqliteUtils::quotedIdentifier( mPrimaryKey ) ).arg( fid );
 
-    ret = exec_sql( sql.toUtf8(), errMsg );
+    // prepare SQLite statement
+    sqlite3_stmt *stmt = nullptr;
+    ret = sqlite3_prepare_v2( sqliteHandle( ), sql.toUtf8().constData(), -1, &stmt, nullptr );
     if ( ret != SQLITE_OK )
     {
+      // some unexpected error occurred during preparation
+      const char *err = sqlite3_errmsg( sqliteHandle( ) );
+      errMsg = static_cast<char *>( sqlite3_malloc( strlen( err ) + 1 ) );
+      strcpy( errMsg, err );
+      handleError( sql, errMsg, savepointId );
+      return false;
+    }
+
+    // bind variables not handled directly in the string
+    for ( auto i = bindings.cbegin(); i != bindings.cend(); ++i )
+    {
+      int parameter_idx = i.key();
+      const QVariant val = i.value();
+      switch ( val.type() )
+      {
+        case QVariant::ByteArray:
+        {
+          const QByteArray ba = val.toByteArray();
+          sqlite3_bind_blob( stmt, parameter_idx, ba.constData(), ba.size(), SQLITE_TRANSIENT );
+          break;
+        }
+
+        default:
+          // This will only happen if the above code is changed to bind more types,
+          // but the programmer has forgotten to handle the type here. Fatal error.
+          sqlite3_finalize( stmt );
+          Q_ASSERT( false );
+      }
+
+      if ( ret != SQLITE_OK )
+      {
+        // some unexpected error occurred during binding
+        const char *err = sqlite3_errmsg( sqliteHandle( ) );
+        errMsg = static_cast<char *>( sqlite3_malloc( strlen( err ) + 1 ) );
+        strcpy( errMsg, err );
+        handleError( sql, errMsg, savepointId );
+        sqlite3_finalize( stmt );
+        return false;
+      }
+    }
+
+    ret = sqlite3_step( stmt );
+    sqlite3_finalize( stmt );
+    if ( ret != SQLITE_DONE )
+    {
+      // some unexpected error occurred during execution of update query
+      const char *err = sqlite3_errmsg( sqliteHandle( ) );
+      errMsg = static_cast<char *>( sqlite3_malloc( strlen( err ) + 1 ) );
+      strcpy( errMsg, err );
       handleError( sql, errMsg, savepointId );
       return false;
     }
@@ -5657,7 +5773,21 @@ bool QgsSpatiaLiteProvider::getTableSummaryAbstractInterface( gaiaVectorLayerPtr
   {
     mLayerExtent.set( lyr->ExtentInfos->MinX, lyr->ExtentInfos->MinY,
                       lyr->ExtentInfos->MaxX, lyr->ExtentInfos->MaxY );
-    mNumberFeatures = lyr->ExtentInfos->Count;
+    // This can be wrong! see: GH #29264
+    // mNumberFeatures = lyr->ExtentInfos->Count;
+    // Note: the unique ptr here does not own the handle, it is just used for the convenience
+    //       methods available within the class.
+    sqlite3_database_unique_ptr slPtr;
+    slPtr.reset( sqliteHandle() );
+    int resultCode;
+    sqlite3_statement_unique_ptr stmt { slPtr.prepare( QStringLiteral( "SELECT COUNT(1) FROM %2" ).arg( mQuery ), resultCode )};
+    if ( resultCode == SQLITE_OK )
+    {
+      stmt.step();
+      mNumberFeatures = sqlite3_column_int64( stmt.get(), 0 );
+    }
+    // Note: the pointer handle is owned by the provider, releasing it
+    slPtr.release();
   }
   else
   {
@@ -5677,7 +5807,7 @@ bool QgsSpatiaLiteProvider::getTableSummary()
   int columns;
   char *errMsg = nullptr;
 
-  QString sql = QStringLiteral( "SELECT Count(*)%1 FROM %2" )
+  QString sql = QStringLiteral( "SELECT Count(1)%1 FROM %2" )
                 .arg( mGeometryColumn.isEmpty() ? QString() : QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( QgsSqliteUtils::quotedIdentifier( mGeometryColumn ) ),
                       mQuery );
 

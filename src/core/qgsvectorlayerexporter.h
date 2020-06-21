@@ -37,10 +37,9 @@ class QgsFields;
  *
  * QgsVectorLayerExporter can be used in two ways:
  *
- * 1. Using a static call to QgsVectorLayerExporter::exportLayer(...) which exports the
- * entire layer to the destination provider.
- *
- * 2. Create an instance of the class and issue calls to addFeature(...)
+ * # Using a static call to QgsVectorLayerExporter::exportLayer(...) which exports the
+ *   entire layer to the destination provider.
+ * # Create an instance of the class and issue calls to addFeature(...)
  *
  * \since QGIS 3.0
  */
@@ -107,7 +106,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
                             const QgsCoordinateReferenceSystem &crs,
                             bool overwrite = false,
                             const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
-                            QgsFeatureSink::SinkFlags sinkFlags = nullptr );
+                            QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 
     //! QgsVectorLayerExporter cannot be copied
     QgsVectorLayerExporter( const QgsVectorLayerExporter &rh ) = delete;
@@ -135,8 +134,8 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      */
     int errorCount() const { return mErrorCount; }
 
-    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
-    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
     /**
      * Finalizes the export and closes the new created layer.

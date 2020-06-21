@@ -43,6 +43,7 @@ to be rendered etc.
       RenderPartialOutput,
       RenderPreviewJob,
       RenderBlocking,
+      RenderSymbolPreview,
     };
     typedef QFlags<QgsRenderContext::Flag> Flags;
 
@@ -237,7 +238,7 @@ than the actual visible portion of that layer.
 %Docstring
 Returns the original extent of the map being rendered.
 
-Unlike extent(), this extent is always in the final destination CRS for the map
+Unlike :py:func:`~QgsRenderContext.extent`, this extent is always in the final destination CRS for the map
 render and represents the exact bounds of the map being rendered.
 
 .. seealso:: :py:func:`extent`
@@ -368,7 +369,7 @@ entire visible area.
 %Docstring
 Sets the original ``extent`` of the map being rendered.
 
-Unlike setExtent(), this extent is always in the final destination CRS for the map
+Unlike :py:func:`~QgsRenderContext.setExtent`, this extent is always in the final destination CRS for the map
 render and represents the exact bounds of the map being rendered.
 
 .. seealso:: :py:func:`mapExtent`
@@ -642,7 +643,7 @@ Converts a size from map units to the specified units.
 %Docstring
 Convert meter distances to active MapUnit values for QgsUnitTypes.RenderMetersInMapUnits
 \note
-When the sourceCrs() is geographic, the center of the Extent will be used
+When the :py:func:`~QgsRenderContext.sourceCrs` is geographic, the center of the Extent will be used
 
 .. versionadded:: 3.0
 %End
@@ -717,7 +718,7 @@ Stores a mask id as the "current" one.
 
     int currentMaskId() const;
 %Docstring
-Returns the current mask id, which can be used with maskPainter()
+Returns the current mask id, which can be used with :py:func:`~QgsRenderContext.maskPainter`
 
 .. seealso:: :py:func:`setCurrentMaskId`
 

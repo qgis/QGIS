@@ -66,7 +66,7 @@ Returns the size of the buffer.
 
     void setSize( double size );
 %Docstring
-Sets the size of the buffer. The size units are specified using setSizeUnit().
+Sets the size of the buffer. The size units are specified using :py:func:`~QgsTextBufferSettings.setSizeUnit`.
 
 :param size: buffer size
 
@@ -246,6 +246,13 @@ Sets the current paint ``effect`` for the buffer.
 Updates the format by evaluating current values of data defined properties.
 
 .. versionadded:: 3.10
+%End
+
+    QSet<QString> referencedFields( const QgsRenderContext &context ) const;
+%Docstring
+Returns all field names referenced by the configuration (e.g. from data defined properties).
+
+.. versionadded:: 3.14
 %End
 
 };

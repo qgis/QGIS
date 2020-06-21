@@ -38,7 +38,7 @@ to :py:class:`QgsMessageLog`.
     virtual void setProgressText( const QString &text );
 %Docstring
 Sets a progress report text string. This can be used in conjunction with
-setProgress() to provide detailed progress reports, such as "Transformed
+:py:func:`~QgsProcessingFeedback.setProgress` to provide detailed progress reports, such as "Transformed
 4 of 5 layers".
 
 .. seealso:: :py:func:`setProgress`

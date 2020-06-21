@@ -121,7 +121,7 @@ bool QgsPolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
   return true;
 }
 
-QByteArray QgsPolygon::asWkb() const
+QByteArray QgsPolygon::asWkb( QgsAbstractGeometry::WkbFlags flags ) const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
 
@@ -139,7 +139,30 @@ QByteArray QgsPolygon::asWkb() const
   wkbArray.resize( binarySize );
   QgsWkbPtr wkb( wkbArray );
   wkb << static_cast<char>( QgsApplication::endian() );
-  wkb << static_cast<quint32>( wkbType() );
+
+  QgsWkbTypes::Type type = wkbType();
+  if ( flags & FlagExportTrianglesAsPolygons )
+  {
+    switch ( type )
+    {
+      case QgsWkbTypes::Triangle:
+        type = QgsWkbTypes::Polygon;
+        break;
+      case QgsWkbTypes::TriangleZ:
+        type = QgsWkbTypes::PolygonZ;
+        break;
+      case QgsWkbTypes::TriangleM:
+        type = QgsWkbTypes::PolygonM;
+        break;
+      case QgsWkbTypes::TriangleZM:
+        type = QgsWkbTypes::PolygonZM;
+        break;
+      default:
+        break;
+    }
+  }
+  wkb << static_cast<quint32>( type );
+
   wkb << static_cast<quint32>( ( nullptr != mExteriorRing ) + mInteriorRings.size() );
   if ( mExteriorRing )
   {

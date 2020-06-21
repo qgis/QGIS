@@ -90,7 +90,7 @@ The scales list consists of a list of scale denominator values, e.g.
 
     void setUseProjectScales( bool enabled );
 %Docstring
-Sets whether project mapScales() are ``enabled``.
+Sets whether project :py:func:`~QgsProjectViewSettings.mapScales` are ``enabled``.
 
 When project map scales are enabled these scales will replace the default QGIS map scales list
 while working with this project.
@@ -102,7 +102,7 @@ while working with this project.
 
     bool useProjectScales() const;
 %Docstring
-Returns ``True`` if project mapScales() are enabled.
+Returns ``True`` if project :py:func:`~QgsProjectViewSettings.mapScales` are enabled.
 
 When project map scales are enabled these scales will replace the default QGIS map scales list
 while working with this project.

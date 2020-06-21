@@ -27,6 +27,7 @@
 #include "qgsmesh3dsymbol.h"
 #include "qgsphongmaterialsettings.h"
 #include "qgspointlightsettings.h"
+#include "qgsdirectionallightsettings.h"
 #include "qgsterraingenerator.h"
 #include "qgsvector3d.h"
 
@@ -326,10 +327,22 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QList<QgsPointLightSettings> pointLights() const { return mPointLights; }
 
     /**
+     * Returns list of directional lights defined in the scene
+     * \since QGIS 3.16
+     */
+    QList<QgsDirectionalLightSettings> directionalLights() const { return mDirectionalLights; }
+
+    /**
      * Sets list of point lights defined in the scene
      * \since QGIS 3.6
      */
     void setPointLights( const QList<QgsPointLightSettings> &pointLights );
+
+    /**
+     * Sets list of directional lights defined in the scene
+     * \since QGIS 3.16
+     */
+    void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
 
     /**
      * Returns the camera lens' field of view
@@ -414,6 +427,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void pointLightsChanged();
 
     /**
+     * Emitted when the list of directional lights changes
+     * \since QGIS 3.16
+     */
+    void directionalLightsChanged();
+
+    /**
      * Emitted when the camera lens field of view changes
      * \since QGIS 3.8
      */
@@ -442,7 +461,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mShowTerrainTileInfo = false;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
     bool mShowCameraViewCenter = false;  //!< Whether to show camera view center as a sphere - useful for debugging
     bool mShowLabels = false; //!< Whether to display labels on terrain tiles
-    QList<QgsPointLightSettings> mPointLights;  //!< List of lights defined for the scene
+    QList<QgsPointLightSettings> mPointLights;  //!< List of point lights defined for the scene
+    QList<QgsDirectionalLightSettings> mDirectionalLights;  //!< List of directional lights defined for the scene
     float mFieldOfView = 45.0f; //<! Camera lens field of view value
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object

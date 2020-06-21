@@ -116,7 +116,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
 
     bool isValid() const override;
     bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
-    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool truncate() override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
@@ -405,6 +405,8 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
      * Returns the sqlite handle to be used, if we are inside a transaction it will be the transaction's handle
      */
     sqlite3 *sqliteHandle( ) const;
+
+    static QString createIndexName( QString tableName, QString field );
 
     friend class QgsSpatiaLiteFeatureSource;
 

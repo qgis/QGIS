@@ -26,7 +26,7 @@ Abstract base class for all geometries
 
    QgsAbstractGeometry objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
    of the methods or properties exposed from the QgsAbstractGeometry API (or QgsGeometry API) utilize
-   geodesic calculations. Accordingly, properties like length() and area() and spatial operations like centroid()
+   geodesic calculations. Accordingly, properties like :py:func:`~length` and :py:func:`~area` and spatial operations like :py:func:`~centroid`
    are always calculated using strictly Cartesian mathematics. In contrast, the QgsDistanceArea class exposes
    methods for working with geodesic calculations and spatial operations on geometries,
    and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
@@ -189,9 +189,18 @@ Sets the geometry from a WKT string.
 %End
 
 
-    virtual QByteArray asWkb() const = 0;
+    enum WkbFlag
+    {
+      FlagExportTrianglesAsPolygons,
+    };
+    typedef QFlags<QgsAbstractGeometry::WkbFlag> WkbFlags;
+
+
+    virtual QByteArray asWkb( WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const = 0;
 %Docstring
 Returns a WKB representation of the geometry.
+
+The optional ``flags`` argument specifies flags controlling WKB export behavior (since QGIS 3.14).
 
 .. seealso:: :py:func:`asWkt`
 
@@ -519,7 +528,9 @@ Ownership is transferred to the caller.
 If the gridified geometry could not be calculated ``None`` will be returned.
 It may generate an invalid geometry (in some corner cases).
 It can also be thought as rounding the edges and it may be useful for removing errors.
-Example:
+
+Example
+-------
 
 In this case we use a 2D grid of 1x1 to gridify.
 In this case, it can be thought like rounding the x and y of all the points/vertices to full units (remove all decimals).
@@ -678,7 +689,9 @@ Checks validity of the geometry, and returns ``True`` if the geometry is valid.
 Returns Java-style iterator for traversal of parts of the geometry. This iterator
 can safely be used to modify parts of the geometry.
 
-* Example:
+Example
+-------
+
 .. code-block:: python
 
        # print the WKT representation of each part in a multi-point geometry
@@ -715,9 +728,11 @@ Returns a read-only, Java-style iterator for traversal of vertices of all the ge
 .. warning::
 
    The iterator returns a copy of individual vertices, and accordingly geometries cannot be
-   modified using the iterator. See transformVertices() for a safe method to modify vertices "in-place".
+   modified using the iterator. See :py:func:`~QgsAbstractGeometry.transformVertices` for a safe method to modify vertices "in-place".
 
-* Example:
+Example
+-------
+
 .. code-block:: python
 
        # print the x and y coordinate for each vertex in a LineString
@@ -878,7 +893,7 @@ Find out whether there are more vertices
 
     QgsPoint next();
 %Docstring
-Returns next vertex of the geometry (undefined behavior if hasNext() returns ``False`` before calling next())
+Returns next vertex of the geometry (undefined behavior if :py:func:`~QgsVertexIterator.hasNext` returns ``False`` before calling :py:func:`~QgsVertexIterator.next`)
 %End
 
     QgsVertexIterator *__iter__();
@@ -925,7 +940,7 @@ Find out whether there are more parts
 
     QgsAbstractGeometry *next();
 %Docstring
-Returns next part of the geometry (undefined behavior if hasNext() returns ``False`` before calling next())
+Returns next part of the geometry (undefined behavior if :py:func:`~QgsGeometryPartIterator.hasNext` returns ``False`` before calling :py:func:`~QgsGeometryPartIterator.next`)
 %End
 
     QgsGeometryPartIterator *__iter__();
@@ -973,7 +988,7 @@ Find out whether there are more parts
 
     const QgsAbstractGeometry *next();
 %Docstring
-Returns next part of the geometry (undefined behavior if hasNext() returns ``False`` before calling next())
+Returns next part of the geometry (undefined behavior if :py:func:`~QgsGeometryConstPartIterator.hasNext` returns ``False`` before calling :py:func:`~QgsGeometryConstPartIterator.next`)
 %End
 
     QgsGeometryConstPartIterator *__iter__();
@@ -990,6 +1005,9 @@ Returns next part of the geometry (undefined behavior if hasNext() returns ``Fal
 %End
 
 };
+
+QFlags<QgsAbstractGeometry::WkbFlag> operator|(QgsAbstractGeometry::WkbFlag f1, QFlags<QgsAbstractGeometry::WkbFlag> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

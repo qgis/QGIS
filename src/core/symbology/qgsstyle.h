@@ -743,7 +743,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param type is either SymbolEntity or ColorrampEntity
      *  \param qword is the query string to search the symbols or colorramps.
      *  \returns A QStringList of the matched symbols or colorramps
-     * */
+     */
     QStringList findSymbols( StyleEntity type, const QString &qword );
 
     /**
@@ -786,8 +786,7 @@ class CORE_EXPORT QgsStyle : public QObject
     QgsSmartConditionMap smartgroup( int id );
 
     /**
-     * Returns the operator for the smartgroup
-     * clumsy implementation TODO create a class for smartgroups
+     * Returns the operator for the smartgroup.
      */
     QString smartgroupOperator( int id );
 

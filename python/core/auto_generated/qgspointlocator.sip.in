@@ -20,6 +20,7 @@ class QgsPointLocator : QObject
 {
 %Docstring
 The class defines interface for querying point location:
+
 - query nearest vertices / edges to a point
 - query vertices / edges in rectangle
 - query areas covering a point
@@ -43,7 +44,7 @@ Construct point locator for a ``layer``.
 If a valid QgsCoordinateReferenceSystem is passed for ``destinationCrs`` then the locator will
 do the searches on data reprojected to the given CRS. For accurate reprojection it is important
 to set the correct ``transformContext`` if a ``destinationCrs`` is specified. This is usually taken
-from the current :py:func:`QgsProject.transformContext()`
+from the current :py:func:`QgsProject.transformContext()`.
 
 If ``extent`` is not ``None``, the locator will index only a subset of the layer which falls within that extent.
 %End
@@ -106,8 +107,8 @@ If the number of features is greater than the value of maxFeaturesToIndex, creat
 to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used.
 
 This method is either blocking or non blocking according to ``relaxed`` parameter passed
-in the constructor. if ``True``, index building will be done in another thread and init() method returns
-immediately. initFinished() signal will be emitted once the initialization is over.
+in the constructor. if ``True``, index building will be done in another thread and :py:func:`~QgsPointLocator.init` method returns
+immediately. :py:func:`~QgsPointLocator.initFinished` signal will be emitted once the initialization is over.
 
 Returns false if the creation of index is blocking and has been prematurely stopped due to the limit of features, otherwise true
 

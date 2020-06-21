@@ -1,7 +1,7 @@
 /***************************************************************************
                           qgsservercachefilter.cpp
                           ------------------------
- Cache interface for Qgis Server plugins
+ Cache interface for QGIS Server plugins
 
   begin                : 2018-07-05
   copyright            : (C) 2018 by René-Luc D'Hont

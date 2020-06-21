@@ -129,7 +129,7 @@ Returns if the current map tool active on the map canvas
     void setButton( QAbstractButton *button );
 %Docstring
 Use this to associate a button to this maptool. It has the same meaning
-as setAction() function except it works with a button instead of an QAction. *
+as :py:func:`~QgsMapTool.setAction` function except it works with a button instead of an QAction. *
 %End
 
     QAbstractButton *button();
@@ -181,7 +181,7 @@ and defaults to Qgis.DEFAULT_SEARCH_RADIUS_MM.
     static double searchRadiusMU( const QgsRenderContext &context );
 %Docstring
 Gets search radius in map units for given context. Used by identify, tip etc.
-The values is calculated from searchRadiusMM().
+The values is calculated from :py:func:`~QgsMapTool.searchRadiusMM`.
 
 .. versionadded:: 2.3
 %End
@@ -189,7 +189,7 @@ The values is calculated from searchRadiusMM().
     static double searchRadiusMU( QgsMapCanvas *canvas );
 %Docstring
 Gets search radius in map units for given canvas. Used by identify, tip etc.
-The values is calculated from searchRadiusMM().
+The values is calculated from :py:func:`~QgsMapTool.searchRadiusMM`.
 
 .. versionadded:: 2.3
 %End
@@ -207,7 +207,7 @@ The default implementation does nothing.
 .. note::
 
    The context menu is only shown when the ShowContextMenu flag
-   is present in flags().
+   is present in :py:func:`~QgsMapTool.flags`.
 
 .. versionadded:: 3.14
 %End

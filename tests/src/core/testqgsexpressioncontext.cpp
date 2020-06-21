@@ -939,7 +939,7 @@ void TestQgsExpressionContext::readWriteScope()
   // valid element
   s2.readXml( e, QgsReadWriteContext() );
   QCOMPARE( s2.variableCount(), 2 );
-  QCOMPARE( s2.variableNames().toSet(), QSet< QString >() << QStringLiteral( "v1" ) << QStringLiteral( "v2" ) );
+  QCOMPARE( qgis::listToSet( s2.variableNames() ), QSet< QString >() << QStringLiteral( "v1" ) << QStringLiteral( "v2" ) );
   QCOMPARE( s2.variable( QStringLiteral( "v1" ) ).toString(), QStringLiteral( "t1" ) );
   QCOMPARE( s2.variable( QStringLiteral( "v2" ) ).toInt(), 55 );
 }

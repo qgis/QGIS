@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>847</width>
+    <width>1064</width>
     <height>506</height>
    </rect>
   </property>
@@ -16,7 +16,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>847</width>
+     <width>1064</width>
      <height>24</height>
     </rect>
    </property>
@@ -882,9 +882,6 @@
    <property name="text">
     <string>Cut Features</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+X</string>
-   </property>
   </action>
   <action name="mActionCopyFeatures">
    <property name="icon">
@@ -894,9 +891,6 @@
    <property name="text">
     <string>Copy Features</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+C</string>
-   </property>
   </action>
   <action name="mActionPasteFeatures">
    <property name="icon">
@@ -905,9 +899,6 @@
    </property>
    <property name="text">
     <string>Paste Features</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+V</string>
    </property>
   </action>
   <action name="mActionAddFeature">
@@ -1255,9 +1246,6 @@
    </property>
    <property name="toolTip">
     <string>Select All Features</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+A</string>
    </property>
   </action>
   <action name="mActionInvertSelection">
@@ -2828,10 +2816,10 @@ Acts on the currently active layer only.</string>
      <normaloff>:/images/themes/default/mActionAddAmsLayer.svg</normaloff>:/images/themes/default/mActionAddAmsLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Arc&amp;GIS MapServer Layer…</string>
+    <string>Add Arc&amp;GIS Map Service Layer…</string>
    </property>
    <property name="toolTip">
-    <string>Add ArcGIS MapServer Layer</string>
+    <string>Add ArcGIS Map Service Layer</string>
    </property>
   </action>
   <action name="mActionAddAfsLayer">
@@ -2840,10 +2828,10 @@ Acts on the currently active layer only.</string>
      <normaloff>:/images/themes/default/mActionAddAfsLayer.svg</normaloff>:/images/themes/default/mActionAddAfsLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Ar&amp;cGIS FeatureServer Layer…</string>
+    <string>Add Ar&amp;cGIS Feature Service Layer…</string>
    </property>
    <property name="toolTip">
-    <string>Add ArcGIS FeatureServer Layer</string>
+    <string>Add ArcGIS Feature Service Layer</string>
    </property>
   </action>
   <action name="mActionSelectByForm">

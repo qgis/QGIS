@@ -63,6 +63,9 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh )
 
 QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
 {
+  if ( &rh == this )
+    return *this;
+
   mFlags = rh.mFlags;
   mFilter = rh.mFilter;
   mFilterRect = rh.mFilterRect;

@@ -933,7 +933,7 @@ class QgsWmsCapabilities
     /**
      * Constructs a QgsWmsCapabilities object with the given \a coordinateTransformContext
      */
-    QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext = QgsCoordinateTransformContext() );
+    QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext = QgsCoordinateTransformContext(), const QString &baseUrl = QString() );
 
     bool isValid() const { return mValid; }
 
@@ -1072,6 +1072,7 @@ class QgsWmsCapabilities
   private:
 
     QgsCoordinateTransformContext mCoordinateTransformContext;
+    QString mBaseUrl;
 
     friend class QgsWmsProvider;
     friend class TestQgsWmsCapabilities;

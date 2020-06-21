@@ -78,13 +78,9 @@ This is the constructor for the RasterLayer class.
 The main tasks carried out by the constructor are:
 
 - Load the rasters default style (.qml) file if it exists
-
 - Populate the RasterStatsVector with initial values for each band.
-
 - Calculate the layer extents
-
 - Determine whether the layer is gray, paletted or multiband.
-
 - Assign sensible defaults for the red, green, blue and gray bands.
 %End
 
@@ -215,6 +211,24 @@ Returns the raster's hue/saturation filter.
 .. seealso:: :py:func:`brightnessFilter`
 %End
 
+    void setResamplingStage( QgsRasterPipe::ResamplingStage stage );
+%Docstring
+Select which stage of the pipe should apply resampling.
+
+.. seealso:: :py:func:`QgsRasterPipe.setResamplingStage`
+
+.. versionadded:: 3.16
+%End
+
+    QgsRasterPipe::ResamplingStage resamplingStage() const;
+%Docstring
+Returns which stage of the pipe should apply resampling.
+
+.. seealso:: :py:func:`QgsRasterPipe.resamplingStage`
+
+.. versionadded:: 3.16
+%End
+
     QgsRasterPipe *pipe();
 %Docstring
 Returns the raster pipe.
@@ -269,7 +283,7 @@ This will be ``None`` if the layer is invalid.
                QgsRasterViewPort *myRasterViewPort,
                const QgsMapToPixel *qgsMapToPixel = 0 );
 %Docstring
-This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap
+This is an overloaded version of the :py:func:`~QgsRasterLayer.draw` function that is called by both :py:func:`~QgsRasterLayer.draw` and thumbnailAsPixmap
 %End
 
     QgsLegendColorList legendSymbologyItems() const;

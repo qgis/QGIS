@@ -108,8 +108,8 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     {
       //ensure that all fields required for filter expressions are prepared
       QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
-      attributeIndexes += attrs.toSet();
-      attrs = attributeIndexes.toList();
+      attributeIndexes += qgis::listToSet( attrs );
+      attrs = qgis::setToList( attributeIndexes );
     }
 
     // ensure that all attributes required for order by are fetched

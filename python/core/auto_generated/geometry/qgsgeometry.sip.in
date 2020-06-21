@@ -39,14 +39,14 @@ so making copies of geometries is inexpensive. The geometry container class can 
 a QVariant object.
 
 The actual geometry representation is stored as a QgsAbstractGeometry within the container, and
-can be accessed via the get() method or set using the set() method. This gives access to the underlying
+can be accessed via the :py:func:`~get` method or set using the :py:func:`~set` method. This gives access to the underlying
 raw geometry primitive, such as the point, line, polygon, curve or other geometry subclasses.
 
 .. note::
 
    QgsGeometry objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
    of the methods or properties exposed from the QgsGeometry API (or QgsAbstractGeometry subclasses) utilize
-   geodesic calculations. Accordingly, properties like length() and area() or spatial operations like buffer()
+   geodesic calculations. Accordingly, properties like :py:func:`~length` and :py:func:`~area` or spatial operations like :py:func:`~buffer`
    are always calculated using strictly Cartesian mathematics. In contrast, the QgsDistanceArea class exposes
    methods for working with geodesic calculations and spatial operations on geometries,
    and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
@@ -106,11 +106,11 @@ geom is transferred.
 %Docstring
 Returns a non-modifiable (const) reference to the underlying abstract geometry primitive.
 
-This is much faster then calling the non-const get() method.
+This is much faster then calling the non-const :py:func:`~QgsGeometry.get` method.
 
 .. note::
 
-   In QGIS 2.x this method was named geometry().
+   In QGIS 2.x this method was named :py:func:`~QgsGeometry.geometry`.
 
 .. seealso:: :py:func:`set`
 
@@ -124,11 +124,11 @@ This is much faster then calling the non-const get() method.
 Returns a modifiable (non-const) reference to the underlying abstract geometry primitive.
 
 This method can be slow to call, as it may trigger a detachment of the geometry
-and a deep copy. Where possible, use constGet() instead.
+and a deep copy. Where possible, use :py:func:`~QgsGeometry.constGet` instead.
 
 .. note::
 
-   In QGIS 2.x this method was named geometry().
+   In QGIS 2.x this method was named :py:func:`~QgsGeometry.geometry`.
 
 .. seealso:: :py:func:`constGet`
 
@@ -143,7 +143,7 @@ Sets the underlying geometry store. Ownership of geometry is transferred.
 
 .. note::
 
-   In QGIS 2.x this method was named setGeometry().
+   In QGIS 2.x this method was named :py:func:`~QgsGeometry.setGeometry`.
 
 .. note::
 
@@ -161,7 +161,7 @@ Sets the underlying geometry store. Ownership of geometry is transferred.
     bool isNull() const;
 %Docstring
 Returns ``True`` if the geometry is null (ie, contains no underlying geometry
-accessible via geometry() ).
+accessible via :py:func:`~QgsGeometry.geometry` ).
 
 .. seealso:: :py:func:`get`
 
@@ -187,12 +187,12 @@ Creates a new geometry from a QgsMultiPointXY object
 %Docstring
 Creates a new LineString geometry from a list of QgsPointXY points.
 
-Using fromPolyline() is preferred, as fromPolyline() is more efficient
+Using :py:func:`~QgsGeometry.fromPolyline` is preferred, as :py:func:`~QgsGeometry.fromPolyline` is more efficient
 and will respect any Z or M dimensions present in the input points.
 
 .. note::
 
-   In QGIS 2.x this method was available as fromPolyline().
+   In QGIS 2.x this method was available as :py:func:`~QgsGeometry.fromPolyline`.
 
 .. seealso:: :py:func:`fromPolyline`
 
@@ -275,7 +275,7 @@ Returns type of the geometry as a QgsWkbTypes.GeometryType
 %Docstring
 Returns ``True`` if the geometry is empty (eg a linestring with no vertices,
 or a collection with no geometries). A null geometry will always
-return ``True`` for isEmpty().
+return ``True`` for :py:func:`~QgsGeometry.isEmpty`.
 
 .. seealso:: :py:func:`isNull`
 %End
@@ -293,7 +293,7 @@ This is a strict equality check, where the underlying geometries must
 have exactly the same type, component vertices and vertex order.
 
 Calling this method is dramatically faster than the topological
-equality test performed by isGeosEqual().
+equality test performed by :py:func:`~QgsGeometry.isGeosEqual`.
 
 .. note::
 
@@ -314,7 +314,7 @@ lines with the same vertex locations but opposite direction will be
 considered equal by this method.
 
 Consider using the much faster, stricter equality test performed
-by equals() instead.
+by :py:func:`~QgsGeometry.equals` instead.
 
 .. note::
 
@@ -332,7 +332,7 @@ by equals() instead.
     typedef QFlags<QgsGeometry::ValidityFlag> ValidityFlags;
 
 
-    bool isGeosValid( QgsGeometry::ValidityFlags flags = 0 ) const;
+    bool isGeosValid( QgsGeometry::ValidityFlags flags = QgsGeometry::ValidityFlags() ) const;
 %Docstring
 Checks validity of the geometry using GEOS.
 
@@ -350,7 +350,7 @@ Uses GEOS library for the test.
 .. note::
 
    This is useful mainly for linestrings and linear rings. Polygons are simple by definition,
-   for checking anomalies in polygon geometries one can use isGeosValid().
+   for checking anomalies in polygon geometries one can use :py:func:`~QgsGeometry.isGeosValid`.
 
 .. versionadded:: 3.0
 %End
@@ -408,9 +408,11 @@ Returns a read-only, Java-style iterator for traversal of vertices of all the ge
 .. warning::
 
    The iterator returns a copy of individual vertices, and accordingly geometries cannot be
-   modified using the iterator. See transformVertices() for a safe method to modify vertices "in-place".
+   modified using the iterator. See :py:func:`~QgsGeometry.transformVertices` for a safe method to modify vertices "in-place".
 
-* Example:
+Example
+-------
+
 .. code-block:: python
 
        # print the x and y coordinate for each vertex in a LineString
@@ -434,10 +436,12 @@ Returns a read-only, Java-style iterator for traversal of vertices of all the ge
 Returns Java-style iterator for traversal of parts of the geometry. This iterator
 can safely be used to modify parts of the geometry.
 
-This method forces a detach. Use constParts() to avoid the detach
+This method forces a detach. Use :py:func:`~QgsGeometry.constParts` to avoid the detach
 if the parts are not going to be modified.
 
-* Example:
+Example
+-------
+
 .. code-block:: python
 
        # print the WKT representation of each part in a multi-point geometry
@@ -473,10 +477,12 @@ if the parts are not going to be modified.
 Returns Java-style iterator for traversal of parts of the geometry. This iterator
 returns read-only references to parts and cannot be used to modify the parts.
 
-Unlike parts(), this method does not force a detach and is more efficient if read-only
+Unlike :py:func:`~QgsGeometry.parts`, this method does not force a detach and is more efficient if read-only
 iteration only is required.
 
-* Example:
+Example
+-------
+
 .. code-block:: python
 
        # print the WKT representation of each part in a multi-point geometry
@@ -510,10 +516,10 @@ This algorithm is an approximation to the standard Hausdorff distance. This appr
 subset of useful cases. Examples of these are:
 
 - computing distance between Linestrings that are roughly parallel to each other,
-and roughly equal in length. This occurs in matching linear networks.
+  and roughly equal in length. This occurs in matching linear networks.
 - Testing similarity of geometries.
 
-If the default approximate provided by this method is insufficient, use hausdorffDistanceDensify() instead.
+If the default approximate provided by this method is insufficient, use :py:func:`~QgsGeometry.hausdorffDistanceDensify` instead.
 
 In case of error -1 will be returned.
 
@@ -532,7 +538,7 @@ sets the fraction by which to densify each segment. Each segment will be split i
 number of equal-length subsegments, whose fraction of the total length is
 closest to the given fraction.
 
-This method can be used when the default approximation provided by hausdorffDistance()
+This method can be used when the default approximation provided by :py:func:`~QgsGeometry.hausdorffDistance`
 is not sufficient. Decreasing the ``densifyFraction`` parameter will make the
 distance returned approach the true Hausdorff distance for the geometries.
 
@@ -595,12 +601,12 @@ Returns the indexes of the vertices before and after the given vertex index.
 
 This function takes into account the following factors:
 
-1. If the given vertex index is at the end of a linestring,
-the adjacent index will be -1 (for "no adjacent vertex")
-2. If the given vertex index is at the end of a linear ring
-(such as in a polygon), the adjacent index will take into
-account the first vertex is equal to the last vertex (and will
-skip equal vertex positions).
+# If the given vertex index is at the end of a linestring,
+  the adjacent index will be -1 (for "no adjacent vertex")
+# If the given vertex index is at the end of a linear ring
+  (such as in a polygon), the adjacent index will take into
+  account the first vertex is equal to the last vertex (and will
+  skip equal vertex positions).
 %End
 
     bool insertVertex( double x, double y, int beforeVertex );
@@ -860,13 +866,22 @@ Splits this geometry according to a given line.
 Splits this geometry according to a given line.
 
 :param splitLine: the line that splits the geometry
-\param[out] newGeometries list of new geometries that have been created with the split
+\param[out] newGeometries list of new geometries that have been created with the ``splitLine``. If the geometry is 3D, a linear interpolation of the z value is performed on the geometry at split points, see example.
 :param topological: ``True`` if topological editing is enabled
 \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
 :param splitFeature: Set to True if you want to split a feature, otherwise set to False to split parts
                      fix this bug?
 
 :return: OperationResult a result code: success or reason of failure
+
+Example:
+.. code-block:: python
+
+      geometry = QgsGeometry.fromWkt('CompoundCurveZ ((2749546.2003820720128715 1262904.45356595050543547 100, 2749557.82053794478997588 1262920.05570670193992555 200))')
+      split_line = [QgsPoint(2749544.19, 1262914.79), QgsPoint(2749557.64, 1262897.30)]
+      result, new_geometries, point_xy = geometry.splitGeometry(split_line, False)
+      print(geometry.asWkt(2))
+      > LineStringZ (2749549.12 1262908.38 125.14, 2749557.82 1262920.06 200)
 %End
 
     OperationResult reshapeGeometry( const QgsLineString &reshapeLineString );
@@ -1150,7 +1165,7 @@ applied to one side of the line.
 Calculates a variable width buffer ("tapered buffer") for a (multi)curve geometry.
 
 The buffer begins at a width of ``startWidth`` at the start of each curve, and
-ends at a width of ``endWidth``. Note that unlike buffer() methods, ``startWidth``
+ends at a width of ``endWidth``. Note that unlike :py:func:`~QgsGeometry.buffer` methods, ``startWidth``
 and ``endWidth`` are the diameter of the buffer at these points, not the radius.
 
 The ``segments`` argument specifies the number of segments to approximate quarter-circle
@@ -1257,7 +1272,7 @@ Returns the center of mass of a geometry.
 If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
-by calling `error()` on the returned geometry.
+by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 
 .. note::
 
@@ -1271,14 +1286,14 @@ by calling `error()` on the returned geometry.
 
     QgsGeometry pointOnSurface() const;
 %Docstring
-Returns a point guaranteed to lie on the surface of a geometry. While the centroid()
+Returns a point guaranteed to lie on the surface of a geometry. While the :py:func:`~QgsGeometry.centroid`
 of a geometry may be located outside of the geometry itself (e.g., for concave shapes),
 the point on surface will always be inside the geometry.
 
 If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
-by calling `error()` on the returned geometry.
+by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 
 .. seealso:: :py:func:`centroid`
 
@@ -1309,7 +1324,7 @@ Returns the smallest convex polygon that contains all the points in the geometry
 If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
-by calling `error()` on the returned geometry.
+by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 %End
 
     QgsGeometry voronoiDiagram( const QgsGeometry &extent = QgsGeometry(), double tolerance = 0.0, bool edgesOnly = false ) const;
@@ -1358,7 +1373,7 @@ Curved geometries will be segmentized before subdivision.
 If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
-by calling `error()` on the returned geometry.
+by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 
 .. versionadded:: 3.0
 %End
@@ -1422,7 +1437,7 @@ Returns a geometry representing the points shared by this geometry and other.
 If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
-by calling `error()` on the returned geometry.
+by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 %End
 
     QgsGeometry clipped( const QgsRectangle &rectangle );
@@ -1443,7 +1458,7 @@ union geometry operation).
 If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
-by calling `error()` on the returned geometry.
+by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 
 .. note::
 
@@ -1469,7 +1484,7 @@ Returns a geometry representing the points making up this geometry that do not m
 If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
-by calling `error()` on the returned geometry.
+by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 %End
 
     QgsGeometry symDifference( const QgsGeometry &geometry ) const;
@@ -1479,7 +1494,7 @@ Returns a geometry representing the points making up this geometry that do not m
 If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
-by calling `error()` on the returned geometry.
+by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 %End
 
     QgsGeometry extrude( double x, double y );
@@ -1522,9 +1537,11 @@ is null, a ValueError will be raised.
 
 
 
-    QByteArray asWkb() const;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 %Docstring
 Export the geometry to WKB
+
+The optional ``flags`` argument specifies flags controlling WKB export behavior (since QGIS 3.14).
 
 .. versionadded:: 3.0
 %End
@@ -1566,10 +1583,11 @@ Exports the geometry to a GeoJSON string.
 Attempts to coerce this geometry into the specified destination ``type``.
 
 This method will do anything possible to force the current geometry into the specified type. E.g.
+
 - lines or polygons will be converted to points by return either a single multipoint geometry or multiple
-single point geometries.
+  single point geometries.
 - polygons will be converted to lines by extracting their exterior and interior rings, returning
-either a multilinestring or multiple single line strings as dictated by ``type``.
+  either a multilinestring or multiple single line strings as dictated by ``type``.
 - lines will be converted to polygon rings if ``type`` is a polygon type
 - curved geometries will be segmented if ``type`` is non-curved.
 - multi geometries will be converted to a list of single geometries
@@ -1578,7 +1596,7 @@ either a multilinestring or multiple single line strings as dictated by ``type``
 
 .. note::
 
-   This method is much stricter than convertToType(), as it considers the exact WKB type
+   This method is much stricter than :py:func:`~QgsGeometry.convertToType`, as it considers the exact WKB type
    of geometries instead of the geometry family (point/line/polygon), and tries more exhaustively
    to coerce geometries to the desired ``type``. It also correctly maintains curves and z/m values
    wherever appropriate.
@@ -1597,7 +1615,7 @@ Try to convert the geometry to the requested type
 
 .. note::
 
-   The coerceToType() method applies much stricter and more exhaustive attempts to convert
+   The :py:func:`~QgsGeometry.coerceToType` method applies much stricter and more exhaustive attempts to convert
    between geometry types, and is recommended instead of this method. This method force drops
    curves and any z or m values present in the geometry.
 
@@ -1890,7 +1908,7 @@ Single polygons may become multi-geometries in case of self-intersections.
 It preserves Z values, but M values will be dropped.
 
 If an error was encountered during the process, more information can be retrieved
-by calling `error()` on the returned geometry.
+by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 
 :return: new valid QgsGeometry or null geometry on error
 
@@ -1954,7 +1972,7 @@ The coordinates at which the error is located and should be visualized.
       ValidatorGeos,
     };
 
-    void validateGeometry( QVector<QgsGeometry::Error> &errors /Out/, ValidationMethod method = ValidatorQgisInternal, QgsGeometry::ValidityFlags flags = 0 ) const;
+    void validateGeometry( QVector<QgsGeometry::Error> &errors /Out/, ValidationMethod method = ValidatorQgisInternal, QgsGeometry::ValidityFlags flags = QgsGeometry::ValidityFlags() ) const;
 %Docstring
 Validates geometry and produces a list of geometry errors.
 The ``method`` argument dictates which validator to utilize.
@@ -1976,7 +1994,7 @@ input geometries. An empty geometry will be returned in the case of errors.
 Creates a GeometryCollection geometry containing possible polygons formed from the constituent
 linework of a set of ``geometries``. The input geometries must be fully noded (i.e. nodes exist
 at every common intersection of the geometries). The easiest way to ensure this is to first
-call unaryUnion() on the set of input geometries and then pass the result to polygonize().
+call :py:func:`~QgsGeometry.unaryUnion` on the set of input geometries and then pass the result to :py:func:`~QgsGeometry.polygonize`.
 An empty geometry will be returned in the case of errors.
 
 .. versionadded:: 3.0
@@ -2120,14 +2138,14 @@ The 2 types should match.
 :param epsilon: maximum difference for coordinates between the objects
 
 :return: ``True`` if objects are
+
          - polylines and have the same number of points and all
-         points are equal within the specified tolerance
+           points are equal within the specified tolerance
          - polygons and have the same number of points and all
-         points are equal within the specified tolerance
+           points are equal within the specified tolerance
          - multipolygons and  have the same number of polygons, the polygons have the same number
-         of rings, and each ring has the same number of points and all points are equal
-         within the specified
-         tolerance
+           of rings, and each ring has the same number of points and all points are equal
+           within the specified tolerance
 
 .. versionadded:: 2.9
 %End

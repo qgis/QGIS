@@ -115,7 +115,7 @@ Qt3DRender::QGeometryRenderer *QgsMesh3DSymbolEntityNode::renderer( const Qgs3DM
   }
 
   const QgsTriangularMesh *mesh = layer->triangularMesh();
-  if ( layer && mesh )
+  if ( mesh )
   {
     const QVector<QgsMeshFace> &triangles = mesh->triangles();
     const QVector<QgsMeshVertex> &vertices = mesh->vertices();

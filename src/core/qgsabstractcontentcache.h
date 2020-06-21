@@ -524,6 +524,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
       {
         delete entryTemplate;
         entryTemplate = nullptr;
+        ( void )entryTemplate;
         takeEntryFromList( currentEntry );
         if ( !mMostRecentEntry ) //list is empty
         {

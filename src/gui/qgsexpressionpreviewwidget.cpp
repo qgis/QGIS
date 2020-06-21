@@ -48,7 +48,18 @@ void QgsExpressionPreviewWidget::setExpressionText( const QString &expression )
 void QgsExpressionPreviewWidget::setCurrentFeature( const QgsFeature &feature )
 {
   // todo: update the combo box if it has been set externaly?
-  mExpressionContext.setFeature( feature );
+
+  // force the feature to be valid, so it can evaluate an invalid feature but having its fields set
+  if ( !feature.isValid() )
+  {
+    QgsFeature validFeature( feature );
+    validFeature.setValid( true );
+    mExpressionContext.setFeature( validFeature );
+  }
+  else
+  {
+    mExpressionContext.setFeature( feature );
+  }
   refreshPreview();
 }
 

@@ -57,6 +57,7 @@ class QgsWMSItemBase
      * Returns the uri for the wms dataitem.
      *
      * The WMS temporal layers can contain the following parameters uri.
+     *
      * - "type": the type of the wms provider e.g WMS-T
      * - "timeDimensionExtent": the layer's time dimension extent it is available
      * - "referencetimeDimensionExtent": reference time extent for the bi-temporal dimension layers

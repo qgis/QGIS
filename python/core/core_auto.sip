@@ -348,6 +348,7 @@
 %Include auto_generated/layertree/qgslayertreemodellegendnode.sip
 %Include auto_generated/layertree/qgslayertreenode.sip
 %Include auto_generated/layertree/qgslayertreeregistrybridge.sip
+%Include auto_generated/layertree/qgslayertreefilterproxymodel.sip
 %Include auto_generated/layertree/qgslayertreeutils.sip
 %Include auto_generated/layertree/qgslegendpatchshape.sip
 %Include auto_generated/layout/qgsabstractlayoutiterator.sip
@@ -451,6 +452,8 @@
 %Include auto_generated/processing/qgsprocessingcontext.sip
 %Include auto_generated/processing/qgsprocessingfeedback.sip
 %Include auto_generated/processing/qgsprocessingoutputs.sip
+%Include auto_generated/processing/qgsprocessingparameteraggregate.sip
+%Include auto_generated/processing/qgsprocessingparameterfieldmap.sip
 %Include auto_generated/processing/qgsprocessingparameters.sip
 %Include auto_generated/processing/qgsprocessingparametertype.sip
 %Include auto_generated/processing/qgsprocessingparametervectortilewriterlayers.sip

@@ -49,7 +49,7 @@
     <addaction name="mActionZoomLast"/>
     <addaction name="mActionZoomNext"/>
     <addaction name="separator"/>
-    <addaction name="mActionLinkGeorefToQGis"/>
+    <addaction name="mActionLinkGeorefToQgis"/>
     <addaction name="mActionLinkQGisToGeoref"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -143,7 +143,7 @@
    <addaction name="mActionZoomLast"/>
    <addaction name="mActionZoomNext"/>
    <addaction name="separator"/>
-   <addaction name="mActionLinkGeorefToQGis"/>
+   <addaction name="mActionLinkGeorefToQgis"/>
    <addaction name="mActionLinkQGisToGeoref"/>
   </widget>
   <widget class="QgsDockWidget" name="dockWidgetGCPpoints">
@@ -291,7 +291,7 @@
     <string>Ctrl+C</string>
    </property>
   </action>
-  <action name="mActionLinkGeorefToQGis">
+  <action name="mActionLinkGeorefToQgis">
    <property name="checkable">
     <bool>true</bool>
    </property>

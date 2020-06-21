@@ -51,7 +51,7 @@ Updates field map with joined attributes
 
     void createJoinCaches();
 %Docstring
-Calls cacheJoinLayer() for all vector joins
+Calls :py:func:`~QgsVectorLayerJoinBuffer.cacheJoinLayer` for all vector joins
 %End
 
     void writeXml( QDomNode &layer_node, QDomDocument &document ) const;
@@ -62,7 +62,7 @@ Saves mVectorJoins to xml under the layer node
     void readXml( const QDomNode &layer_node );
 %Docstring
 Reads joins from project file.
-Does not resolve layer IDs to layers - call resolveReferences() afterwards
+Does not resolve layer IDs to layers - call :py:func:`~QgsVectorLayerJoinBuffer.resolveReferences` afterwards
 %End
 
     void resolveReferences( QgsProject *project );
@@ -154,7 +154,7 @@ Create a copy of the join buffer
 .. versionadded:: 2.6
 %End
 
-    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
 %Docstring
 Adds a list of features in joined layers. Features given in parameter

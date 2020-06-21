@@ -46,7 +46,7 @@ Constructor
 %Docstring
 Add action to context menu for layers in the layer tree.
 If allLayers is ``True``, then the action will be available for all layers of given type,
-otherwise the action will be available only for specific layers added with addCustomActionForLayer()
+otherwise the action will be available only for specific layers added with :py:func:`~QgisInterface.addCustomActionForLayer`
 after this call.
 
 If menu argument is not empty, the action will be also added to a menu within the main window,
@@ -60,7 +60,7 @@ creating menu with the given name if it does not exist yet.
     virtual void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) = 0;
 %Docstring
 Add action to context menu for a specific layer in the layer tree.
-It is necessary to first call addCustomActionForLayerType() with allLayers=false
+It is necessary to first call :py:func:`~QgisInterface.addCustomActionForLayerType` with allLayers=false
 in order for this method to have any effect.
 
 .. seealso:: :py:func:`addCustomActionForLayerType`
@@ -68,7 +68,7 @@ in order for this method to have any effect.
 
     virtual bool removeCustomActionForLayerType( QAction *action ) = 0;
 %Docstring
-Remove action for layers in the layer tree previously added with addCustomActionForLayerType()
+Remove action for layers in the layer tree previously added with :py:func:`~QgisInterface.addCustomActionForLayerType`
 
 .. seealso:: :py:func:`addCustomActionForLayerType`
 %End
@@ -213,7 +213,7 @@ Returns a reference to the main window "Plugin" menu.
 Returns a reference to the main window "Plugin Help" sub-menu.
 
 Plugins are encouraged to insert help and about actions in this submenu instead of creating
-a submenu under the pluginMenu() which solely contains Plugin Help or About actions.
+a submenu under the :py:func:`~QgisInterface.pluginMenu` which solely contains Plugin Help or About actions.
 
 .. versionadded:: 3.10
 %End
@@ -450,91 +450,91 @@ Returns the native "Vertex Tool for Active Layer" action.
 
     virtual QAction *actionPan() = 0;
 %Docstring
-Returns the native pan action. Call trigger() on it to set the default pan map tool.
+Returns the native pan action. Call :py:func:`~QgisInterface.trigger` on it to set the default pan map tool.
 %End
     virtual QAction *actionPanToSelected() = 0;
 %Docstring
-Returns the native pan to selected action. Call trigger() on it to pan the map canvas to the selection.
+Returns the native pan to selected action. Call :py:func:`~QgisInterface.trigger` on it to pan the map canvas to the selection.
 %End
     virtual QAction *actionZoomIn() = 0;
 %Docstring
-Returns the native zoom in action. Call trigger() on it to set the default zoom in map tool.
+Returns the native zoom in action. Call :py:func:`~QgisInterface.trigger` on it to set the default zoom in map tool.
 %End
     virtual QAction *actionZoomOut() = 0;
 %Docstring
-Returns the native zoom out action. Call trigger() on it to set the default zoom out map tool.
+Returns the native zoom out action. Call :py:func:`~QgisInterface.trigger` on it to set the default zoom out map tool.
 %End
     virtual QAction *actionSelect() = 0;
 %Docstring
-Returns the native select action. Call trigger() on it to set the default select map tool.
+Returns the native select action. Call :py:func:`~QgisInterface.trigger` on it to set the default select map tool.
 %End
     virtual QAction *actionSelectRectangle() = 0;
 %Docstring
-Returns the native select rectangle action. Call trigger() on it to set the default select rectangle map tool.
+Returns the native select rectangle action. Call :py:func:`~QgisInterface.trigger` on it to set the default select rectangle map tool.
 %End
     virtual QAction *actionSelectPolygon() = 0;
 %Docstring
-Returns the native select polygon action. Call trigger() on it to set the default select polygon map tool.
+Returns the native select polygon action. Call :py:func:`~QgisInterface.trigger` on it to set the default select polygon map tool.
 %End
     virtual QAction *actionSelectFreehand() = 0;
 %Docstring
-Returns the native select freehand action. Call trigger() on it to set the default select freehand map tool.
+Returns the native select freehand action. Call :py:func:`~QgisInterface.trigger` on it to set the default select freehand map tool.
 %End
     virtual QAction *actionSelectRadius() = 0;
 %Docstring
-Returns the native select radius action. Call trigger() on it to set the default select radius map tool.
+Returns the native select radius action. Call :py:func:`~QgisInterface.trigger` on it to set the default select radius map tool.
 %End
     virtual QAction *actionIdentify() = 0;
 %Docstring
-Returns the native identify action. Call trigger() on it to set the default identify map tool.
+Returns the native identify action. Call :py:func:`~QgisInterface.trigger` on it to set the default identify map tool.
 %End
     virtual QAction *actionFeatureAction() = 0;
 %Docstring
-Returns the native run action feature action. Call trigger() on it to set the default run feature action map tool.
+Returns the native run action feature action. Call :py:func:`~QgisInterface.trigger` on it to set the default run feature action map tool.
 %End
     virtual QAction *actionMeasure() = 0;
 %Docstring
-Returns the native measure action. Call trigger() on it to set the default measure map tool.
+Returns the native measure action. Call :py:func:`~QgisInterface.trigger` on it to set the default measure map tool.
 %End
     virtual QAction *actionMeasureArea() = 0;
 %Docstring
-Returns the native measure area action. Call trigger() on it to set the default measure area map tool.
+Returns the native measure area action. Call :py:func:`~QgisInterface.trigger` on it to set the default measure area map tool.
 %End
     virtual QAction *actionZoomFullExtent() = 0;
 %Docstring
-Returns the native zoom full extent action. Call trigger() on it to zoom to the full extent.
+Returns the native zoom full extent action. Call :py:func:`~QgisInterface.trigger` on it to zoom to the full extent.
 %End
     virtual QAction *actionZoomToLayer() = 0;
 %Docstring
-Returns the native zoom to layer action. Call trigger() on it to zoom to the active layer.
+Returns the native zoom to layer action. Call :py:func:`~QgisInterface.trigger` on it to zoom to the active layer.
 %End
     virtual QAction *actionZoomToSelected() = 0;
 %Docstring
-Returns the native zoom to selected action. Call trigger() on it to zoom to the current selection.
+Returns the native zoom to selected action. Call :py:func:`~QgisInterface.trigger` on it to zoom to the current selection.
 %End
     virtual QAction *actionZoomLast() = 0;
 %Docstring
-Returns the native zoom last action. Call trigger() on it to zoom to last.
+Returns the native zoom last action. Call :py:func:`~QgisInterface.trigger` on it to zoom to last.
 %End
     virtual QAction *actionZoomNext() = 0;
 %Docstring
-Returns the native zoom next action. Call trigger() on it to zoom to next.
+Returns the native zoom next action. Call :py:func:`~QgisInterface.trigger` on it to zoom to next.
 %End
     virtual QAction *actionZoomActualSize() = 0;
 %Docstring
-Returns the native zoom resolution (100%) action. Call trigger() on it to zoom to actual size.
+Returns the native zoom resolution (100%) action. Call :py:func:`~QgisInterface.trigger` on it to zoom to actual size.
 %End
     virtual QAction *actionMapTips() = 0;
 %Docstring
-Returns the native map tips action. Call trigger() on it to toggle map tips.
+Returns the native map tips action. Call :py:func:`~QgisInterface.trigger` on it to toggle map tips.
 %End
     virtual QAction *actionNewBookmark() = 0;
 %Docstring
-Returns the native new bookmark action. Call trigger() on it to open the new bookmark dialog.
+Returns the native new bookmark action. Call :py:func:`~QgisInterface.trigger` on it to open the new bookmark dialog.
 %End
     virtual QAction *actionShowBookmarks() = 0;
 %Docstring
-Returns the native show bookmarks action. Call trigger() on it to open the bookmarks dialog.
+Returns the native show bookmarks action. Call :py:func:`~QgisInterface.trigger` on it to open the bookmarks dialog.
 %End
     virtual QAction *actionDraw() = 0;
 %Docstring
@@ -636,67 +636,67 @@ Returns the Hide Deselected Layers action.
 
     virtual QAction *actionCircle2Points()  = 0;
 %Docstring
-Returns the native add circle from 2 points action. Call trigger() on it to set the map tool.
+Returns the native add circle from 2 points action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 %End
     virtual QAction *actionCircle3Points()  = 0;
 %Docstring
-Returns the native add circle from 3 points action. Call trigger() on it to set the map tool.
+Returns the native add circle from 3 points action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 %End
     virtual QAction *actionCircle3Tangents()  = 0;
 %Docstring
-Returns the native add circle from 3 tangents action. Call trigger() on it to set the map tool.
+Returns the native add circle from 3 tangents action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 %End
     virtual QAction *actionCircle2TangentsPoint()  = 0;
 %Docstring
-Returns the native add circle from 2 tangents and a point action. Call trigger() on it to set the map tool.
+Returns the native add circle from 2 tangents and a point action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 %End
     virtual QAction *actionCircleCenterPoint()  = 0;
 %Docstring
-Returns the native add circle from center action. Call trigger() on it to set the map tool.
+Returns the native add circle from center action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 %End
     virtual QAction *actionEllipseCenter2Points()  = 0;
 %Docstring
-Returns the native add ellipse from center and 2 points action. Call trigger() on it to set the map tool.
+Returns the native add ellipse from center and 2 points action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 %End
     virtual QAction *actionEllipseCenterPoint()  = 0;
 %Docstring
-Returns the native add ellipse from center and a point action. Call trigger() on it to set the map tool.
+Returns the native add ellipse from center and a point action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 %End
     virtual QAction *actionEllipseExtent()  = 0;
 %Docstring
-Returns the native add ellipse from an extent action. Call trigger() on it to set the map tool.
+Returns the native add ellipse from an extent action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 %End
     virtual QAction *actionEllipseFoci()  = 0;
 %Docstring
-Returns the native add ellipse from foci action. Call trigger() on it to set the map tool.
+Returns the native add ellipse from foci action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 %End
     virtual QAction *actionRectangleCenterPoint()  = 0;
 %Docstring
-Returns the native add rectangle from center and a point action. Call trigger() on it to set the map tool.
+Returns the native add rectangle from center and a point action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 %End
     virtual QAction *actionRectangleExtent()  = 0;
 %Docstring
-Returns the native add rectangle from extent action. Call trigger() on it to set the map tool.
+Returns the native add rectangle from extent action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 %End
     virtual QAction *actionRectangle3PointsDistance()  = 0;
 %Docstring
-Returns the native add rectangle from 3 points (distance from 2nd and 3rd points) action. Call trigger() on it to set the map tool.
+Returns the native add rectangle from 3 points (distance from 2nd and 3rd points) action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 %End
     virtual QAction *actionRectangle3PointsProjected()  = 0;
 %Docstring
-Returns the native add rectangle from 3 points (distance from projected 3rd point on segment p1 and p2) action. Call trigger() on it to set the map tool.
+Returns the native add rectangle from 3 points (distance from projected 3rd point on segment p1 and p2) action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 %End
     virtual QAction *actionRegularPolygon2Points()  = 0;
 %Docstring
-Returns the native add regular polygon from 2 points action. Call trigger() on it to set the map tool.
+Returns the native add regular polygon from 2 points action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 %End
     virtual QAction *actionRegularPolygonCenterPoint()  = 0;
 %Docstring
-Returns the native add regular polygon from center and a point action. Call trigger() on it to set the map tool.
+Returns the native add regular polygon from center and a point action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 %End
     virtual QAction *actionRegularPolygonCenterCorner()  = 0;
 %Docstring
-Returns the native add regular polygon from center and a corner action. Call trigger() on it to set the map tool.
+Returns the native add regular polygon from center and a corner action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 %End
 
     virtual QgsVectorLayerTools *vectorLayerTools() = 0;
@@ -717,7 +717,7 @@ Returns the timeout for timed messages: default of 5 seconds
 %Docstring
 Returns a pointer to the app's status bar interface. This should be
 used for interacting and adding widgets and messages to the app's
-status bar (do not use the native Qt statusBar() method).
+status bar (do not use the native Qt :py:func:`~QgisInterface.statusBar` method).
 
 .. versionadded:: 3.0
 %End
@@ -845,7 +845,7 @@ Add an icon to the plugins toolbar
     virtual QAction *addToolBarWidget( QWidget *widget /Transfer/ ) = 0;
 %Docstring
 Add a widget to the plugins toolbar.
-To remove this widget again, call removeToolBarIcon()
+To remove this widget again, call :py:func:`~QgisInterface.removeToolBarIcon`
 with the returned QAction.
 
 :param widget: widget to add. The toolbar will take ownership of this widget
@@ -861,7 +861,7 @@ Remove an action (icon) from the plugin toolbar
     virtual QAction *addRasterToolBarWidget( QWidget *widget /Transfer/ ) = 0;
 %Docstring
 Add a widget to the raster toolbar.
-To remove this widget again, call removeRasterToolBarIcon()
+To remove this widget again, call :py:func:`~QgisInterface.removeRasterToolBarIcon`
 with the returned QAction.
 
 :param widget: widget to add. The toolbar will take ownership of this widget
@@ -887,7 +887,7 @@ Add an icon to the Vector toolbar
     virtual QAction *addVectorToolBarWidget( QWidget *widget /Transfer/ ) = 0;
 %Docstring
 Add a widget to the vector toolbar.
-To remove this widget again, call removeVectorToolBarIcon()
+To remove this widget again, call :py:func:`~QgisInterface.removeVectorToolBarIcon`
 with the returned QAction.
 
 :param widget: widget to add. The toolbar will take ownership of this widget
@@ -908,7 +908,7 @@ Add an icon to the Database toolbar
     virtual QAction *addDatabaseToolBarWidget( QWidget *widget /Transfer/ ) = 0;
 %Docstring
 Add a widget to the database toolbar.
-To remove this widget again, call removeDatabaseToolBarIcon()
+To remove this widget again, call :py:func:`~QgisInterface.removeDatabaseToolBarIcon`
 with the returned QAction.
 
 :param widget: widget to add. The toolbar will take ownership of this widget
@@ -929,7 +929,7 @@ Add an icon to the Web toolbar
     virtual QAction *addWebToolBarWidget( QWidget *widget /Transfer/ ) = 0;
 %Docstring
 Add a widget to the web toolbar.
-To remove this widget again, call removeWebToolBarIcon()
+To remove this widget again, call :py:func:`~QgisInterface.removeWebToolBarIcon`
 with the returned QAction.
 
 :param widget: widget to add. The toolbar will take ownership of this widget
@@ -1126,7 +1126,7 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
 
     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 %Docstring
-Register a new tab in the vector layer properties dialog.
+Register a new tab in the map layer properties dialog.
 
 .. note::
 
@@ -1142,7 +1142,7 @@ Register a new tab in the vector layer properties dialog.
 
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 %Docstring
-Unregister a previously registered tab in the vector layer properties dialog.
+Unregister a previously registered tab in the map layer properties dialog.
 
 .. seealso:: :py:class:`QgsMapLayerConfigWidgetFactory`
 
@@ -1350,7 +1350,7 @@ locator.
 .. warning::
 
    Plugins which register filters to the locator bar must take care to correctly call
-   deregisterLocatorFilter() and deregister their filters upon plugin unload to avoid crashes.
+   :py:func:`~QgisInterface.deregisterLocatorFilter` and deregister their filters upon plugin unload to avoid crashes.
 
 .. seealso:: :py:func:`deregisterLocatorFilter`
 
@@ -1363,7 +1363,7 @@ Deregisters a locator ``filter`` from the app's locator bar and deletes it. Call
 any currently running query is terminated.
 
 Plugins which register filters to the locator bar must take care to correctly call
-deregisterLocatorFilter() to deregister their filters upon plugin unload to avoid crashes.
+:py:func:`~QgisInterface.deregisterLocatorFilter` to deregister their filters upon plugin unload to avoid crashes.
 
 .. seealso:: :py:func:`registerLocatorFilter`
 
@@ -1467,8 +1467,8 @@ Emitted when starting an entirely new project.
 
 .. note::
 
-   This is similar to projectRead(); plugins might want to be notified
-   that they're in a new project. Yes, projectRead() could have been
+   This is similar to :py:func:`~QgisInterface.projectRead`; plugins might want to be notified
+   that they're in a new project. Yes, :py:func:`~QgisInterface.projectRead` could have been
    overloaded to be used in the case of new projects instead. However,
    it's probably more semantically correct to have an entirely separate
    signal for when this happens.

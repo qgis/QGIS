@@ -1452,13 +1452,72 @@ QVariant QgsOgrProvider::defaultValue( int fieldId ) const
   else if ( defaultVal == QStringLiteral( "CURRENT_TIME" ) )
     resultVar = QTime::currentTime();
 
+  // Get next sequence value for sqlite in case we are inside a transaction
+  if ( mOgrOrigLayer &&
+       mTransaction &&
+       mDefaultValues.value( fieldId, QString() ) == tr( "Autogenerate" ) &&
+       providerProperty( EvaluateDefaultValues, false ).toBool() &&
+       ( mGDALDriverName == QLatin1String( "GPKG" ) ||
+         mGDALDriverName == QLatin1String( "SQLite" ) ) &&
+       mFirstFieldIsFid &&
+       fieldId == 0 )
+  {
+    QgsOgrLayerUniquePtr resultLayer = mOgrOrigLayer->ExecuteSQL( QByteArray( "SELECT seq FROM sqlite_sequence WHERE name = " ) +  QgsSqliteUtils::quotedValue( mOgrOrigLayer->name() ).toUtf8() );
+    if ( resultLayer )
+    {
+      gdal::ogr_feature_unique_ptr f;
+      if ( f.reset( resultLayer->GetNextFeature() ), f )
+      {
+        bool ok { true };
+        const QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(),
+                             fields().at( 0 ),
+                             0, textEncoding(), &ok );
+        if ( ok )
+        {
+          long long nextVal { res.toLongLong( &ok ) };
+          if ( ok )
+          {
+            // Increment
+            resultVar = ++nextVal;
+            mOgrOrigLayer->ExecuteSQLNoReturn( QByteArray( "UPDATE sqlite_sequence SET seq = seq + 1 WHERE name = " ) +  QgsSqliteUtils::quotedValue( mOgrOrigLayer->name() ).toUtf8() );
+          }
+        }
+
+        if ( ! ok )
+        {
+          QgsMessageLog::logMessage( tr( "Error retrieving next sequence value for %1" ).arg( QString::fromUtf8( mOgrOrigLayer->name() ) ), tr( "OGR" ) );
+        }
+      }
+      else  // no sequence!
+      {
+        resultVar = 1;
+        mOgrOrigLayer->ExecuteSQLNoReturn( QByteArray( "INSERT INTO sqlite_sequence (name, seq) VALUES( " +
+                                           QgsSqliteUtils::quotedValue( mOgrOrigLayer->name() ).toUtf8() ) + ", 1)" );
+      }
+    }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "Error retrieving default value for %1" ).arg( mLayerName ), tr( "OGR" ) );
+    }
+  }
+
   ( void )mAttributeFields.at( fieldId ).convertCompatible( resultVar );
   return resultVar;
 }
 
 QString QgsOgrProvider::defaultValueClause( int fieldIndex ) const
 {
-  return mDefaultValues.value( fieldIndex, QString() );
+  // Return empty clause to force defaultValue calls for sqlite in case we are inside a transaction
+  if ( mTransaction &&
+       mDefaultValues.value( fieldIndex, QString() ) == tr( "Autogenerate" ) &&
+       providerProperty( EvaluateDefaultValues, false ).toBool() &&
+       ( mGDALDriverName == QLatin1String( "GPKG" ) ||
+         mGDALDriverName == QLatin1String( "SQLite" ) ) &&
+       mFirstFieldIsFid &&
+       fieldIndex == 0 )
+    return QString();
+  else
+    return mDefaultValues.value( fieldIndex, QString() );
 }
 
 bool QgsOgrProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value ) const
@@ -1886,7 +1945,8 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
 
   gdal::ogr_field_def_unique_ptr fielddefn( OGR_Fld_Create( textEncoding()->fromUnicode( field.name() ).constData(), type ) );
   int width = field.length();
-  if ( field.precision() )
+  // Increase width by 1 for OFTReal to make room for the decimal point
+  if ( type == OFTReal && field.precision() )
     width += 1;
   OGR_Fld_SetWidth( fielddefn.get(), width );
   OGR_Fld_SetPrecision( fielddefn.get(), field.precision() );
@@ -1998,7 +2058,7 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
     return false;
 
   bool res = true;
-  QList<int> attrsLst = attributes.toList();
+  QList<int> attrsLst = qgis::setToList( attributes );
   // sort in descending order
   std::sort( attrsLst.begin(), attrsLst.end(), std::greater<int>() );
   const auto constAttrsLst = attrsLst;
@@ -2516,7 +2576,7 @@ bool QgsOgrProvider::createSpatialIndex()
   return false;
 }
 
-QString createIndexName( QString tableName, QString field )
+QString QgsOgrProvider::createIndexName( QString tableName, QString field )
 {
   QRegularExpression safeExp( QStringLiteral( "[^a-zA-Z0-9]" ) );
   tableName.replace( safeExp, QStringLiteral( "_" ) );
@@ -4020,8 +4080,10 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
   }
 
   QString filePath( QString::fromUtf8( pszPath ) );
+
+  bool bIsGpkg = QFileInfo( filePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0;
   bool bIsLocalGpkg = false;
-  if ( QFileInfo( filePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 &&
+  if ( bIsGpkg &&
        IsLocalFile( filePath ) &&
        !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", nullptr ) &&
        QgsSettings().value( QStringLiteral( "qgis/walForSqlite3" ), true ).toBool() )
@@ -4033,6 +4095,12 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
     // on network shares
     CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "WAL" );
     bIsLocalGpkg = true;
+  }
+  else if ( bIsGpkg )
+  {
+    // If WAL isn't set, we explicitely disable it, as it is persistent and it
+    // may have been set on a previous connection.
+    CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "DELETE" );
   }
 
   bool modify_OGR_GPKG_FOREIGN_KEY_CHECK = !CPLGetConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
@@ -4076,7 +4144,7 @@ static bool IsLocalFile( const QString &path )
   // Start with the OS specific methods since the QT >= 5.4 method just
   // return a string and not an enumerated type.
 #if defined(Q_OS_WIN)
-  if ( dirName.startsWith( "\\\\" ) )
+  if ( dirName.startsWith( "\\\\" ) || dirName.startsWith( "//" ) )
     return false;
   if ( dirName.length() >= 3 && dirName[1] == ':' &&
        ( dirName[2] == '\\' || dirName[2] == '/' ) )
@@ -6855,4 +6923,3 @@ void QgsOgrProviderMetadata::saveConnection( const QgsAbstractProviderConnection
 }
 
 ///@endcond
-

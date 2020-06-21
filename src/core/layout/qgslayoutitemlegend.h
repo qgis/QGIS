@@ -65,6 +65,12 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      */
     QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false ) const SIP_SKIP;
 
+    /**
+     * Clears any previously cached data for the specified \a node.
+     * \since QGIS 3.14
+     */
+    void clearCachedData( QgsLayerTreeNode *node ) const;
+
   signals:
 
     /**
@@ -88,6 +94,12 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      * \since QGIS 3.10
      */
     QgsLayoutItemLegend *mLayoutLegend = nullptr;
+
+    /**
+     * Evaluate the expression or symbol expressions of a given layer node.
+     * \since QGIS 3.14
+     */
+    QString evaluateLayerExpressions( QgsLayerTreeLayer *nodeLayer ) const;
 
 };
 
@@ -538,6 +550,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
 
+    //! Clears any data cached for the legend model
+    void clearLegendCachedData();
 
   private:
     QgsLayoutItemLegend() = delete;

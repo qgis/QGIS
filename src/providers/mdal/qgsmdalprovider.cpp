@@ -306,8 +306,13 @@ bool QgsMdalProvider::persistDatasetGroup(
 
   MDAL_G_closeEditMode( g );
 
-  emit datasetGroupsAdded( 1 );
-  emit dataChanged();
+  if ( MDAL_LastStatus() == 0 )
+  {
+    mExtraDatasetUris << outputFilePath;
+    addGroupToTemporalCapabilities( datasetGroupCount() - 1 );
+    emit datasetGroupsAdded( 1 );
+    emit dataChanged();
+  }
 
   return false;
 }
@@ -550,7 +555,7 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
 
   bool isScalar = MDAL_G_hasScalarData( group );
   MDAL_DataLocation location = MDAL_G_dataLocation( group );
-  QgsMeshDatasetGroupMetadata::DataType type;
+  QgsMeshDatasetGroupMetadata::DataType type = QgsMeshDatasetGroupMetadata::DataOnFaces;
   switch ( location )
   {
     case MDAL_DataLocation::DataOnFaces:
@@ -587,7 +592,7 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
   QString referenceTimeString( MDAL_G_referenceTime( group ) );
   QDateTime referenceTime = QDateTime::fromString( referenceTimeString, Qt::ISODate );
 
-  bool isTemporal = MDAL_G_datasetCount( group ) > 1;
+  bool isTemporal = MDAL_G_isTemporal( group );
 
   QgsMeshDatasetGroupMetadata meta(
     name,

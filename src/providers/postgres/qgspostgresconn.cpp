@@ -1215,6 +1215,9 @@ QString QgsPostgresConn::quotedValue( const QVariant &value )
     case QVariant::Double:
       return value.toString();
 
+    case QVariant::DateTime:
+      return quotedString( value.toDateTime().toString( Qt::ISODateWithMs ) );
+
     case QVariant::Bool:
       return value.toBool() ? "TRUE" : "FALSE";
 
@@ -1598,6 +1601,42 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
   return oid;
 }
 
+QString QgsPostgresConn::fieldExpressionForWhereClause( const QgsField &fld, QVariant::Type valueType, QString expr )
+{
+  QString out;
+  const QString &type = fld.typeName();
+
+  if ( type == QLatin1String( "timestamp" ) || type == QLatin1String( "time" ) || type == QLatin1String( "date" ) )
+  {
+    out = expr.arg( quotedIdentifier( fld.name() ) );
+    // if field and value havev incompatible types, rollback to text cast
+    if ( valueType !=  QVariant::LastType && valueType != QVariant::DateTime && valueType != QVariant::Date && valueType != QVariant::Time )
+    {
+      out = out + "::text";
+    }
+  }
+
+  else if ( type == QLatin1String( "int8" ) || type == QLatin1String( "serial8" ) //
+            || type == QLatin1String( "int2" ) || type == QLatin1String( "int4" ) || type == QLatin1String( "oid" ) || type == QLatin1String( "serial" ) //
+            || type == QLatin1String( "real" ) || type == QLatin1String( "double precision" ) || type == QLatin1String( "float4" ) || type == QLatin1String( "float8" ) //
+            || type == QLatin1String( "numeric" ) )
+  {
+    out = expr.arg( quotedIdentifier( fld.name() ) );
+    // if field and value havev incompatible types, rollback to text cast
+    if ( valueType !=  QVariant::LastType && valueType != QVariant::Int && valueType != QVariant::LongLong && valueType != QVariant::Double )
+    {
+      out = out + "::text";
+    }
+  }
+
+  else
+  {
+    out = fieldExpression( fld, expr ); // same as fieldExpression by default
+  }
+
+  return out;
+}
+
 QString QgsPostgresConn::fieldExpression( const QgsField &fld, QString expr )
 {
   const QString &type = fld.typeName();
@@ -1758,10 +1797,10 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
       // our estimatation ignores that a where clause might restrict the feature type or srid
       if ( useEstimatedMetadata )
       {
-        table = QStringLiteral( "(SELECT %1 FROM %2%3 WHERE %1 IS NOT NULL LIMIT %4) AS t" )
+        table = QStringLiteral( "(SELECT %1 FROM %2 WHERE %3%1 IS NOT NULL LIMIT %4) AS t" )
                 .arg( quotedIdentifier( layerProperty.geometryColName ),
                       table,
-                      layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " WHERE %1" ).arg( layerProperty.sql ) )
+                      layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " (%1) AND " ).arg( layerProperty.sql ) )
                 .arg( GEOM_TYPE_SELECT_LIMIT );
       }
       else if ( !layerProperty.sql.isEmpty() )

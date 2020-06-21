@@ -59,7 +59,7 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
      *
      * The optional \a flags argument can be used to control the staged render job behavior.
      */
-    QgsMapRendererStagedRenderJob( const QgsMapSettings &settings, Flags flags = nullptr );
+    QgsMapRendererStagedRenderJob( const QgsMapSettings &settings, Flags flags = Flags() );
     ~QgsMapRendererStagedRenderJob() override;
 
     void start() override;
@@ -88,12 +88,26 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
     /**
      * Returns TRUE if the job is finished, and nothing remains to render.
      */
-    bool isFinished();
+    bool isFinished() const;
 
     /**
      * Returns the ID of the current layer about to be rendered in the next render operation.
      */
-    QString currentLayerId();
+    QString currentLayerId() const;
+
+    /**
+     * Returns the opacity for the current layer about to be rendered in the next render operation.
+     *
+     * \since QGIS 3.14
+     */
+    double currentLayerOpacity() const;
+
+    /**
+     * Returns the composition mode for the current layer about to be rendered in the next render operation.
+     *
+     * \since QGIS 3.14
+     */
+    QPainter::CompositionMode currentLayerCompositionMode() const;
 
     /**
      * Returns the current stage which will be rendered in the next render operation.
@@ -110,7 +124,7 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
 
     bool mNextIsLabel = false;
     bool mExportedLabels = false;
-    Flags mFlags = nullptr;
+    Flags mFlags = Flags();
     bool mPreparedStagedLabelJob = false;
     QStringList mLabelingLayers;
     QStringList::iterator mLabelLayerIt;

@@ -32,7 +32,7 @@ Sets the current ``feature`` for evaluating the layout. This feature may
 be used for altering an item's content and appearance for a report
 or atlas layout.
 
-Emits the changed() signal.
+Emits the :py:func:`~QgsLayoutReportContext.changed` signal.
 
 .. seealso:: :py:func:`feature`
 %End
@@ -50,10 +50,10 @@ or atlas layout.
 
     QgsGeometry currentGeometry( const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) const;
 %Docstring
-Returns the current feature() geometry in the given ``crs``.
+Returns the current :py:func:`~QgsLayoutReportContext.feature` geometry in the given ``crs``.
 If no CRS is specified, the original feature geometry is returned.
 
-Reprojection only works if a valid layer is set for layer().
+Reprojection only works if a valid layer is set for :py:func:`~QgsLayoutReportContext.layer`.
 
 .. seealso:: :py:func:`feature`
 
@@ -71,7 +71,7 @@ Returns the vector layer associated with the layout's context.
 %Docstring
 Sets the vector ``layer`` associated with the layout's context.
 
-Emits the changed() signal.
+Emits the :py:func:`~QgsLayoutReportContext.changed` signal.
 
 .. seealso:: :py:func:`layer`
 %End

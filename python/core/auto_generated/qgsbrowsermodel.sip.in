@@ -22,7 +22,7 @@ items for the different data providers and folders accessible to users.
 
 QgsBrowserModel models are not initially populated and use a deferred initialization
 approach. After constructing a QgsBrowserModel, a call must be made
-to initialize() in order to populate the model.
+to :py:func:`~initialize` in order to populate the model.
 
 .. note::
 
@@ -46,7 +46,7 @@ Constructor for QgsBrowserModel, with the specified ``parent`` object.
 
    QgsBrowserModel models are not initially populated and use a deferred initialization
    approach. After constructing a QgsBrowserModel, a call must be made
-   to initialize() in order to populate the model.
+   to :py:func:`~QgsBrowserModel.initialize` in order to populate the model.
 %End
 
     ~QgsBrowserModel();
@@ -170,10 +170,11 @@ and on Linux the "/" root directory.
 Emitted when item children fetch was finished
 %End
 
-    void connectionsChanged();
+    void connectionsChanged( const QString &providerKey );
 %Docstring
-Connections changed in the browser, forwarded to the widget and used to
-notify the provider dialogs of a changed connection
+Emitted when connections for the specified ``providerKey`` have changed in the browser.
+
+Forwarded to the widget and used to notify the provider dialogs of a changed connection.
 %End
 
   public slots:

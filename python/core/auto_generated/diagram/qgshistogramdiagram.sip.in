@@ -11,7 +11,7 @@
 
 
 
-class QgsHistogramDiagram: QgsDiagram
+class QgsHistogramDiagram: QgsDiagram /NoDefaultCtors/
 {
 
 %TypeHeaderCode

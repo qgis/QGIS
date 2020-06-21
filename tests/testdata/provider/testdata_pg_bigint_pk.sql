@@ -104,20 +104,28 @@ INSERT INTO qgis_test.provider_bigint_nonfirst_pk  (zeroth_field, key1, key2, pr
 (1, 2, 3, 4,  400, 'Honey', 'Honey', '4', TIMESTAMP '2021-05-04 13:13:14', '2021-05-04', '13:13:14', '0101000020E610000014AE47E17A5450C03333333333935340')
 ;
 
-/* -- PostgreSQL 12 or later
+CREATE TABLE qgis_test.tb_test_compound_pk
+(
+    pk1 INTEGER,
+    pk2 BIGINT,
+    value VARCHAR(16),
+    geom geometry(Point, 4326),
+    PRIMARY KEY (pk1, pk2)
+);
 
-DROP TABLE IF EXISTS qgis_test.bigint_partitioned;
+INSERT INTO qgis_test.tb_test_compound_pk (pk1, pk2, value, geom) VALUES
+    (1, 1, 'test 1', ST_SetSRID(ST_Point(-47.930, -15.818), 4326)),
+    (1, 2, 'test 2', ST_SetSRID(ST_Point(-47.887, -15.864), 4326)),
+    (2, 1, 'test 3', ST_SetSRID(ST_Point(-47.902, -15.763), 4326)),
+    (2, 2, 'test 4', ST_SetSRID(ST_Point(-47.952, -15.781), 4326));
 
-CREATE TABLE qgis_test.bigint_partitioned (
-  pk BIGSERIAL NOT NULL,
-  value varchar(8),
-  geom geometry(Point, 4326)
-) PARTITION BY RANGE(pk);
+CREATE TABLE qgis_test.tb_test_float_pk
+(
+    pk REAL PRIMARY KEY,
+    value VARCHAR(16),
+    geom geometry(Point, 4326)
+);
 
-CREATE TABLE qgis_test.bigint_partitioned_positive PARTITION OF qgis_test.bigint_partitioned
-  FOR VALUES FROM 1 TO 1000;
-CREATE TABLE qgis_test.bigint_partitioned_nonpositive PARTITION OF qgis_test.bigint_partitioned
-  FOR VALUES FROM -1 TO 0;
-
-ALTER TABLE qgis_test.bigint_partitioned ADD PRIMARY KEY(pk);
-*/
+INSERT INTO qgis_test.tb_test_float_pk (pk, value, geom) VALUES
+    (3.14159, 'first test',  ST_SetSRID(ST_Point(-47.887, -15.864), 4326)),
+    (2.71828, 'second test', ST_SetSRID(ST_Point(-47.902, -15.763), 4326));

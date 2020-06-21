@@ -89,6 +89,9 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
     std::unique_ptr< QMenu > mRangeLayersSubMenu;
     QgsMapLayerModel *mMapLayerModel = nullptr;
 
+    void firstTemporalLayerLoaded( QgsMapLayer *layer );
+    void setTimeStep( const QgsInterval &timeStep );
+
   private slots:
 
     /**

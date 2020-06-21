@@ -133,6 +133,13 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
     */
     void clear();
 
+    /**
+    * Returns the duration of the first time step of the dataset group with index \a group
+    *
+    * The value is -1 if the dataset group is not present or if it contains only one dataset (non temporal dataset)
+    */
+    qint64 firstTimeStepDuration( int group ) const;
+
   private:
 
     //! Holds the global reference date/time value if exists (min of all groups), otherwise it is invalid

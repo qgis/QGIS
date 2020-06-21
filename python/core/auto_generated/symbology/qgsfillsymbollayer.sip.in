@@ -29,7 +29,7 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
-Creates a new QgsSimpleFillSymbolLayer using the specified ``properties`` map containing symbol properties (see properties()).
+Creates a new QgsSimpleFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsSimpleFillSymbolLayer.properties`).
 
 Caller takes ownership of the returned symbol layer.
 %End
@@ -199,7 +199,7 @@ class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
-Creates a new QgsGradientFillSymbolLayer using the specified ``properties`` map containing symbol properties (see properties()).
+Creates a new QgsGradientFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsGradientFillSymbolLayer.properties`).
 
 Caller takes ownership of the returned symbol layer.
 %End
@@ -359,7 +359,7 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
-Creates a new QgsShapeburstFillSymbolLayer using the specified ``properties`` map containing symbol properties (see properties()).
+Creates a new QgsShapeburstFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsShapeburstFillSymbolLayer.properties`).
 
 Caller takes ownership of the returned symbol layer.
 %End
@@ -1104,6 +1104,7 @@ Used internally when reading/writing symbols.
 Sets the path to the SVG file to render in the fill.
 
 This is usually an absolute file path. Other supported options include
+
 - relative paths to folders from the user's SVG search paths
 - base64 encoded content, prefixed with a 'base64:' string
 - http(s) paths
@@ -1122,7 +1123,7 @@ Returns the path to the SVG file used to render the fill.
 %Docstring
 Sets the ``width`` to render the SVG content as within the fill (i.e. the pattern repeat/tile size).
 
-Units are specified by setPatternWidthUnit()
+Units are specified by :py:func:`~QgsSVGFillSymbolLayer.setPatternWidthUnit`
 
 .. seealso:: :py:func:`patternWidth`
 
@@ -1135,7 +1136,7 @@ Units are specified by setPatternWidthUnit()
 %Docstring
 Returns the width of the rendered SVG content within the fill (i.e. the pattern repeat/tile size).
 
-Units are retrieved by patternWidthUnit()
+Units are retrieved by :py:func:`~QgsSVGFillSymbolLayer.patternWidthUnit`
 
 .. seealso:: :py:func:`setPatternWidth`
 
@@ -1195,7 +1196,7 @@ Stroke color is only supported for parametrized SVG files.
 Sets the stroke width used for rendering the SVG content.
 
 Stroke width is only supported for parametrized SVG files. Units are
-specified via setSvgStrokeWidthUnit()
+specified via :py:func:`~QgsSVGFillSymbolLayer.setSvgStrokeWidthUnit`
 
 .. seealso:: :py:func:`svgStrokeWidth`
 
@@ -1209,7 +1210,7 @@ specified via setSvgStrokeWidthUnit()
 Returns the stroke width used for rendering the SVG content.
 
 Stroke width is only supported for parametrized SVG files. Units are
-retrieved via setSvgStrokeWidthUnit()
+retrieved via :py:func:`~QgsSVGFillSymbolLayer.setSvgStrokeWidthUnit`
 
 .. seealso:: :py:func:`setSvgStrokeWidth`
 
@@ -1387,7 +1388,7 @@ Angles are in degrees, clockwise from North.
 %Docstring
 Sets the distance between lines in the fill pattern.
 
-:param d: distance. Units are specified by setDistanceUnit()
+:param d: distance. Units are specified by :py:func:`~QgsLinePatternFillSymbolLayer.setDistanceUnit`
 
 .. seealso:: :py:func:`distance`
 
@@ -1396,7 +1397,7 @@ Sets the distance between lines in the fill pattern.
 
     double distance() const;
 %Docstring
-Returns the distance between lines in the fill pattern. Units are retrieved by distanceUnit().
+Returns the distance between lines in the fill pattern. Units are retrieved by :py:func:`~QgsLinePatternFillSymbolLayer.distanceUnit`.
 
 .. seealso:: :py:func:`setDistance`
 
@@ -1430,7 +1431,7 @@ Sets the ``offset`` distance for lines within the fill, which is
 the distance to offset the parallel lines from their normal
 position.
 
-Units are specified via setOffsetUnit().
+Units are specified via :py:func:`~QgsLinePatternFillSymbolLayer.setOffsetUnit`.
 
 .. seealso:: :py:func:`offset`
 
@@ -1445,7 +1446,7 @@ Returns the offset distance for lines within the fill, which is
 the distance to offset the parallel lines from their normal
 position.
 
-Units are retrieved via offsetUnit().
+Units are retrieved via :py:func:`~QgsLinePatternFillSymbolLayer.offsetUnit`.
 
 .. seealso:: :py:func:`setOffset`
 
@@ -1604,7 +1605,7 @@ class QgsPointPatternFillSymbolLayer: QgsImageFillSymbolLayer
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
-Creates a new QgsPointPatternFillSymbolLayer using the specified ``properties`` map containing symbol properties (see properties()).
+Creates a new QgsPointPatternFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsPointPatternFillSymbolLayer.properties`).
 
 Caller takes ownership of the returned symbol layer.
 %End
@@ -1942,7 +1943,7 @@ a truly random sequence will be used on every rendering, causing points to appea
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
-Creates a new QgsRandomMarkerFillSymbolLayer using the specified ``properties`` map containing symbol properties (see properties()).
+Creates a new QgsRandomMarkerFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsRandomMarkerFillSymbolLayer.properties`).
 
 Caller takes ownership of the returned symbol layer.
 %End
@@ -2050,7 +2051,7 @@ Returns the density area used to count the number of points to randomly fill the
 
 Only used when the count method is set to QgsRandomMarkerFillSymbolLayer.DensityBasedCount.
 
-Units are specified by setDensityAreaUnit().
+Units are specified by :py:func:`~QgsRandomMarkerFillSymbolLayer.setDensityAreaUnit`.
 
 .. seealso:: :py:func:`setDensityArea`
 %End
@@ -2124,7 +2125,7 @@ class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
-Creates a new QgsCentroidFillSymbolLayer using the specified ``properties`` map containing symbol properties (see properties()).
+Creates a new QgsCentroidFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsCentroidFillSymbolLayer.properties`).
 
 Caller takes ownership of the returned symbol layer.
 %End

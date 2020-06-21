@@ -112,8 +112,10 @@ class ParametersPanel(QgsProcessingParametersWidget):
                 # QgsAbstractProcessingParameterWidgetWrapper class
                 # TODO QGIS 4.0 - remove
                 is_python_wrapper = issubclass(wrapper.__class__, WidgetWrapper)
+                stretch = 0
                 if not is_python_wrapper:
                     widget = wrapper.createWrappedWidget(self.processing_context)
+                    stretch = wrapper.stretch()
                 else:
                     widget = wrapper.widget
 
@@ -144,7 +146,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
                             desc += self.tr(' [optional]')
                         widget.setText(desc)
 
-                    self.addParameterWidget(param, widget)
+                    self.addParameterWidget(param, widget, stretch)
 
         for output in self.algorithm().destinationParameterDefinitions():
             if output.flags() & QgsProcessingParameterDefinition.FlagHidden:
@@ -164,7 +166,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
                 self.addOutputLabel(label)
 
             widget = wrapper.createWrappedWidget(self.processing_context)
-            self.addOutputWidget(widget)
+            self.addOutputWidget(widget, wrapper.stretch())
 
             #    def skipOutputChanged(widget, checkbox, skipped):
             # TODO

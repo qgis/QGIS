@@ -75,7 +75,8 @@ Base class for raster data providers.
       NoProviderCapabilities,
       ReadLayerMetadata,
       WriteLayerMetadata,
-      ProviderHintBenefitsFromResampling
+      ProviderHintBenefitsFromResampling,
+      ProviderHintCanPerformProviderResampling
     };
 
     typedef QFlags<QgsRasterDataProvider::ProviderCapability> ProviderCapabilities;
@@ -262,7 +263,7 @@ Identify raster value(s) found on the point position. The context
 parameters extent, width and height are important to identify
 on the same zoom level as a displayed map and to do effective
 caching (WCS). If context params are not specified the highest
-resolution is used. capabilities() may be used to test if format
+resolution is used. :py:func:`~QgsRasterDataProvider.capabilities` may be used to test if format
 is supported by provider. Values are set to 'no data' or empty string
 if point is outside data source extent.
 
@@ -276,9 +277,8 @@ if point is outside data source extent.
 :return: QgsRaster.IdentifyFormatValue: map of values for each band, keys are band numbers
          (from 1).
          QgsRaster.IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
-         (WMS) - TODO: it is not consistent with QgsRaster.IdentifyFormatValue.
          QgsRaster.IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
-         Empty if failed or there are no results (TODO: better error reporting).
+         Empty if failed or there are no results.
 
 .. note::
 
@@ -311,7 +311,7 @@ a NaN value.
 %Docstring
 Returns the caption error text for the last error in this provider
 
-If an operation returns 0 (e.g. draw()), this function
+If an operation returns 0 (e.g. :py:func:`~QgsRasterDataProvider.draw`), this function
 returns the text of the error associated with the failure.
 Interactive users of this provider can then, for example,
 call a QMessageBox to display the contents.
@@ -321,7 +321,7 @@ call a QMessageBox to display the contents.
 %Docstring
 Returns the verbose error text for the last error in this provider
 
-If an operation returns 0 (e.g. draw()), this function
+If an operation returns 0 (e.g. :py:func:`~QgsRasterDataProvider.draw`), this function
 returns the text of the error associated with the failure.
 Interactive users of this provider can then, for example,
 call a QMessageBox to display the contents.
@@ -355,7 +355,7 @@ Current time stamp of data source
     virtual bool isEditable() const;
 %Docstring
 Checks whether the provider is in editing mode, i.e. raster write operations will be accepted.
-By default providers are not editable. Use setEditable() method to enable/disable editing.
+By default providers are not editable. Use :py:func:`~QgsRasterDataProvider.setEditable` method to enable/disable editing.
 
 .. seealso:: :py:func:`setEditable`
 
@@ -365,7 +365,7 @@ By default providers are not editable. Use setEditable() method to enable/disabl
     virtual bool setEditable( bool enabled );
 %Docstring
 Turns on/off editing mode of the provider. When in editing mode, it is possible
-to overwrite data of the provider using writeBlock() calls.
+to overwrite data of the provider using :py:func:`~QgsRasterDataProvider.writeBlock` calls.
 
 :return: ``True`` if the switch to/from editing mode was successful
 
@@ -443,7 +443,7 @@ Validates creation options for a specific dataset and destination format.
 
 .. note::
 
-   see also validateCreationOptionsFormat() in gdal provider for validating options based on format only
+   see also :py:func:`~QgsRasterDataProvider.validateCreationOptionsFormat` in gdal provider for validating options based on format only
 %End
 
     virtual QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
@@ -484,7 +484,7 @@ Step height for raster iterations.
 Returns a list of native resolutions if available, i.e. map units per pixel at which the raster source
 was originally created.
 
-Resolutions are calculated in the provider's crs().
+Resolutions are calculated in the provider's :py:func:`~QgsRasterDataProvider.crs`.
 
 .. versionadded:: 3.8.0
 %End
@@ -517,6 +517,96 @@ does not support this functionality), an empty point is returned.
 .. versionadded:: 3.14
 %End
 
+
+    virtual bool enableProviderResampling( bool enable );
+%Docstring
+Enable or disable provider-level resampling.
+
+:return: true if success
+
+.. versionadded:: 3.16
+%End
+
+    bool isProviderResamplingEnabled() const;
+%Docstring
+Returns whether provider-level resampling is enabled.
+
+.. note::
+
+   Resampling is effective only if :py:func:`~QgsRasterDataProvider.zoomedInResamplingMethod` and/or
+   :py:func:`~QgsRasterDataProvider.zoomedOutResamplingMethod` return non-nearest resampling.
+
+.. seealso:: :py:func:`zoomedInResamplingMethod`
+
+.. seealso:: :py:func:`zoomedOutResamplingMethod`
+
+.. seealso:: :py:func:`maxOversampling`
+
+
+.. versionadded:: 3.16
+%End
+
+    enum class ResamplingMethod
+    {
+      Nearest,
+      Bilinear,
+      Cubic,
+    };
+
+    virtual bool setZoomedInResamplingMethod( ResamplingMethod method );
+%Docstring
+Set resampling method to apply for zoomed-in operations.
+
+:return: true if success
+
+.. versionadded:: 3.16
+%End
+
+    ResamplingMethod zoomedInResamplingMethod() const;
+%Docstring
+Returns resampling method for zoomed-in operations.
+
+.. versionadded:: 3.16
+%End
+
+    virtual bool setZoomedOutResamplingMethod( ResamplingMethod method );
+%Docstring
+Set resampling method to apply for zoomed-out operations.
+
+:return: true if success
+
+.. versionadded:: 3.16
+%End
+
+    ResamplingMethod zoomedOutResamplingMethod() const;
+%Docstring
+Returns resampling method for zoomed-out operations.
+
+.. versionadded:: 3.16
+%End
+
+    virtual bool setMaxOversampling( double factor );
+%Docstring
+Sets maximum oversampling factor for zoomed-out operations.
+
+:return: true if success
+
+.. versionadded:: 3.16
+%End
+
+    double maxOversampling() const;
+%Docstring
+Returns maximum oversampling factor for zoomed-out operations.
+
+.. versionadded:: 3.16
+%End
+
+    virtual void readXml( const QDomElement &filterElem );
+
+
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
+
+
   signals:
 
     void statusChanged( const QString & ) const;
@@ -537,8 +627,12 @@ Returns ``True`` if user no data contains value
 
     void copyBaseSettings( const QgsRasterDataProvider &other );
 %Docstring
-Copy member variables from other raster data provider. Useful for implementation of clone() method in subclasses
+Copy member variables from other raster data provider. Useful for implementation of :py:func:`~QgsRasterDataProvider.clone` method in subclasses
 %End
+
+
+
+
 
 
 

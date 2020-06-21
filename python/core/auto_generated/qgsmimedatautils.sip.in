@@ -76,7 +76,7 @@ Gets mesh layer from uri if possible, otherwise returns ``None`` and error is se
 Returns the layer from the active project corresponding to this uri (if possible),
 otherwise returns ``None``.
 
-Unlike vectorLayer(), rasterLayer(), or meshLayer(), this method will not attempt
+Unlike :py:func:`~QgsMimeDataUtils.vectorLayer`, :py:func:`~QgsMimeDataUtils.rasterLayer`, or :py:func:`~QgsMimeDataUtils.meshLayer`, this method will not attempt
 to create a new layer corresponding to the URI.
 
 .. versionadded:: 3.8

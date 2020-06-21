@@ -2413,6 +2413,19 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
       attrValue = mFieldValueConverter->convert( fldIdx, attrValue );
     }
 
+    // Check type compatibility before passing attribute value to OGR
+    if ( ! field.convertCompatible( attrValue ) )
+    {
+      mErrorMessage = QObject::tr( "Error converting value (%1) from %2 to %3 for attribute field %4" )
+                      .arg( feature.attribute( fldIdx ).toString(),
+                            mFields.at( fldIdx ).typeName(),
+                            attrValue.typeName(),
+                            mFields.at( fldIdx ).name() );
+      QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
+      mError = ErrFeatureWriteFailed;
+      return nullptr;
+    }
+
     switch ( field.type() )
     {
       case QVariant::Int:
@@ -2622,7 +2635,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
       }
       else // wkb type matches
       {
-        QByteArray wkb( geom.asWkb() );
+        QByteArray wkb( geom.asWkb( QgsAbstractGeometry::FlagExportTrianglesAsPolygons ) );
         OGRGeometryH ogrGeom = createEmptyGeometry( mWkbType );
         OGRErr err = OGR_G_ImportFromWkb( ogrGeom, reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) ), wkb.length() );
         if ( err != OGRERR_NONE )
@@ -3294,7 +3307,7 @@ QStringList QgsVectorFileWriter::supportedFormatExtensions( const VectorFormatOp
     }
   }
 
-  QStringList extensionList = extensions.toList();
+  QStringList extensionList = qgis::setToList( extensions );
 
   std::sort( extensionList.begin(), extensionList.end(), [options]( const QString & a, const QString & b ) -> bool
   {
@@ -3480,7 +3493,7 @@ QString QgsVectorFileWriter::convertCodecNameForEncodingOption( const QString &c
   {
     QString c = re.cap( 2 ).remove( '-' );
     bool isNumber;
-    c.toInt( &isNumber );
+    ( void ) c.toInt( &isNumber );
     if ( isNumber )
       return c;
   }

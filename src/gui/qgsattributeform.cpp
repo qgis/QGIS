@@ -1485,13 +1485,17 @@ void QgsAttributeForm::init()
         if ( widgDef->type() == QgsAttributeEditorElement::AttributeEditorType::AeTypeField )
         {
           const QgsAttributeEditorField *fieldElement { static_cast<QgsAttributeEditorField *>( widgDef ) };
-          const QString fieldName { mLayer->fields().at( fieldElement->idx() ).name() };
-          if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
+          const int fieldIdx = fieldElement->idx();
+          if ( fieldIdx >= 0 && fieldIdx < mLayer->fields().count() )
           {
-            const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
-            if ( property.isActive() && ! property.expressionString().isEmpty() )
+            const QString fieldName { mLayer->fields().at( fieldIdx ).name() };
+            if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
             {
-              mLabelDataDefinedProperties[ label ] = property;
+              const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
+              if ( property.isActive() && ! property.expressionString().isEmpty() )
+              {
+                mLabelDataDefinedProperties[ label ] = property;
+              }
             }
           }
         }
@@ -1923,8 +1927,6 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
       QgsRelationWidgetWrapper *rww = setupRelationWidgetWrapper( relDef->relation(), context );
 
-      rww->setShowLabel( relDef->showLabel() );
-
       QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
       formWidget->createSearchWidgetWrappers( mContext );
 
@@ -1934,6 +1936,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       rww->setShowLinkButton( relDef->showLinkButton() );
       rww->setShowUnlinkButton( relDef->showUnlinkButton() );
       rww->setShowSaveChildEditsButton( relDef->showSaveChildEditsButton() );
+      rww->setShowLabel( relDef->showLabel() );
 
       mWidgets.append( rww );
       mFormWidgets.append( formWidget );

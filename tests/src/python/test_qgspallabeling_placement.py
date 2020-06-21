@@ -144,6 +144,19 @@ class TestPointPlacement(TestPlacementBase):
         self.removeMapLayer(self.layer)
         self.layer = None
 
+    def test_line_with_no_candidate_show_all(self):
+        # A line too short to have any candidates, yet we need to show all labels for the layer
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line_short')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.layer.setLabelsEnabled(True)
+        self.lyr.displayAll = True
+        f = self.lyr.format()
+        f.setSize(60)
+        self.lyr.setFormat(f)
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
     def test_polygon_placement_with_hole(self):
         # Horizontal label placement for polygon with hole
         # Note for this test, the mask is used to check only pixels outside of the polygon.
@@ -246,6 +259,29 @@ class TestPointPlacement(TestPlacementBase):
         self.lyr.placement = QgsPalLayerSettings.OverPoint
         self.lyr.quadOffset = QgsPalLayerSettings.QuadrantBelowLeft
         self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_obstacle_collision_but_showing_all(self):
+        # Test the when a collision occurs and the Show All labels setting is active, Show All wins
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('line')
+        obstacle_label_settings = QgsPalLayerSettings()
+        obstacle_label_settings.obstacle = True
+        obstacle_label_settings.drawLabels = False
+        obstacle_label_settings.obstacleFactor = 8
+        obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+        obstacleLayer.setLabelsEnabled(True)
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OverPoint
+        self.lyr.quadOffset = QgsPalLayerSettings.QuadrantAboveLeft
+        self.lyr.priority = 4
+        self.lyr.displayAll = True
+        self.checkTest()
+
+        self.removeMapLayer(obstacleLayer)
         self.removeMapLayer(self.layer)
         self.layer = None
 

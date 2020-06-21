@@ -41,7 +41,7 @@ above any existing map overviews already present in the stack.
 
 .. note::
 
-   After adding a overview to the stack, update()
+   After adding a overview to the stack, :py:func:`~QgsLayoutItemMapOverviewStack.update`
    should be called for the QgsLayoutItemMap to prevent rendering artifacts.
 
 .. seealso:: :py:func:`removeOverview`
@@ -53,7 +53,7 @@ Removes an overview with matching overviewId from the stack and deletes the corr
 
 .. note::
 
-   After removing an overview from the stack, update()
+   After removing an overview from the stack, :py:func:`~QgsLayoutItemMapOverviewStack.update`
    should be called for the QgsLayoutItemMap to prevent rendering artifacts.
 
 .. seealso:: :py:func:`addOverview`
@@ -65,7 +65,7 @@ Moves an overview with matching overviewId up the stack, causing it to be render
 
 .. note::
 
-   After moving an overview within the stack, update() should be
+   After moving an overview within the stack, :py:func:`~QgsLayoutItemMapOverviewStack.update` should be
    called for the QgsLayoutItemMap to redraw the map with the new overview stack order.
 
 .. seealso:: :py:func:`moveOverviewDown`
@@ -77,7 +77,7 @@ Moves an overview with matching overviewId down the stack, causing it to be rend
 
 .. note::
 
-   After moving an overview within the stack, update() should be
+   After moving an overview within the stack, :py:func:`~QgsLayoutItemMapOverviewStack.update` should be
    called for the QgsLayoutItemMap to redraw the map with the new overview stack order.
 
 .. seealso:: :py:func:`moveOverviewUp`
@@ -231,7 +231,7 @@ map's extent.
 %Docstring
 Returns a vector layer to render as part of the QgsLayoutItemMap render, containing
 a feature representing the overview extent (and with an appropriate renderer set matching
-the overview's frameSymbol() ).
+the overview's :py:func:`~QgsLayoutItemMapOverview.frameSymbol` ).
 
 Ownership of the layer remain with the overview item.
 

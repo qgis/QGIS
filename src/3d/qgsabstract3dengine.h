@@ -41,10 +41,12 @@ namespace Qt3DRender
  * \ingroup 3d
  * Base class for 3D engine implementation. A 3D engine is responsible for setting up
  * rendering with Qt3D. This means mainly:
+ *
  * - creating Qt3D aspect engine and registering rendering aspect
  * - setting up a camera, render settings and frame graph
  *
  * We have two implementations:
+ *
  * - QgsWindow3DEngine - used for rendering on display (has a QWindow that can be embedded into QWidget)
  * - QgsOffscreen3DEngine - renders scene to images
  *

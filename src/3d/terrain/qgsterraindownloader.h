@@ -36,6 +36,7 @@ class QgsCoordinateTransformContext;
  * Takes care of downloading terrain data from a publicly available data source.
  *
  * Currently using terrain tiles in Terrarium format hosted on AWS. More info:
+ *
  * - data format: https://github.com/tilezen/joerd/blob/master/docs/formats.md
  * - data sources: https://github.com/tilezen/joerd/blob/master/docs/data-sources.md
  * - hosting: https://registry.opendata.aws/terrain-tiles/

@@ -77,7 +77,6 @@ Build-Depends:
  git,
  doxygen,
  graphviz,
- txt2tags,
  xvfb,
  xauth,
  xfonts-base,

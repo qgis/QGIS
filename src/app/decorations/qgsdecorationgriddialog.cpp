@@ -46,8 +46,6 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
   mMarkerSymbolButton->setSymbolType( QgsSymbol::Marker );
   mLineSymbolButton->setSymbolType( QgsSymbol::Line );
 
-  mAnnotationFontButton->setMode( QgsFontButton::ModeQFont );
-
   grpEnable->setChecked( mDeco.enabled() );
   connect( grpEnable, &QGroupBox::toggled, this, [ = ] { updateSymbolButtons(); } );
 
@@ -71,7 +69,11 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
   updateGuiElements();
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsDecorationGridDialog::apply );
-  connect( mAnnotationFontButton, &QgsFontButton::changed, this, &QgsDecorationGridDialog::annotationFontChanged );
+
+  // font settings
+  mAnnotationFontButton->setDialogTitle( tr( "Annotation Text Format" ) );
+  mAnnotationFontButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mAnnotationFontButton->setTextFormat( mDeco.textFormat() );
 
   mMarkerSymbolButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
   mMarkerSymbolButton->setMessageBar( QgisApp::instance()->messageBar() );
@@ -100,6 +102,8 @@ void QgsDecorationGridDialog::updateGuiElements()
   // mLineWidthSpinBox->setValue( gridPen.widthF() );
   // mLineColorButton->setColor( gridPen.color() );
 
+  mAnnotationFontButton->setTextFormat( mDeco.textFormat() );
+
   mLineSymbolButton->setSymbol( mDeco.lineSymbol()->clone() );
   mMarkerSymbolButton->setSymbol( mDeco.markerSymbol()->clone() );
 
@@ -120,17 +124,9 @@ void QgsDecorationGridDialog::updateDecoFromGui()
   mDeco.setGridOffsetX( mOffsetXEdit->text().toDouble() );
   mDeco.setGridOffsetY( mOffsetYEdit->text().toDouble() );
   mDeco.setGridStyle( static_cast< QgsDecorationGrid::GridStyle >( mGridTypeComboBox->currentData().toInt() ) );
+
+  mDeco.setTextFormat( mAnnotationFontButton->textFormat() );
   mDeco.setAnnotationFrameDistance( mDistanceToMapFrameSpinBox->value() );
-
-  // if ( mAnnotationPositionComboBox->currentText() == tr( "Inside frame" ) )
-  // {
-  //   mDeco.setGridAnnotationPosition( QgsDecorationGrid::InsideMapFrame );
-  // }
-  // else
-  // {
-  //   mDeco.setGridAnnotationPosition( QgsDecorationGrid::OutsideMapFrame );
-  // }
-
   mDeco.setShowGridAnnotation( mDrawAnnotationCheckBox->isChecked() );
   QString text = mAnnotationDirectionComboBox->currentText();
   if ( text == tr( "Horizontal" ) )
@@ -224,11 +220,6 @@ void QgsDecorationGridDialog::mPbtnUpdateFromLayer_clicked()
     else
       mCoordinatePrecisionSpinBox->setValue( 3 );
   }
-}
-
-void QgsDecorationGridDialog::annotationFontChanged()
-{
-  mDeco.setGridAnnotationFont( mAnnotationFontButton->currentFont() );
 }
 
 void QgsDecorationGridDialog::updateInterval( bool force )

@@ -150,9 +150,9 @@ like the field name, alias, type and expression.
 %Docstring
 Manually sets the ``fields`` to use for the model.
 
-This method should only be used when the model ISN'T associated with a layer()
+This method should only be used when the model ISN'T associated with a :py:func:`~QgsFieldModel.layer`
 and needs to show the fields from an arbitrary field collection instead. Calling
-setFields() will automatically clear any existing layer().
+:py:func:`~QgsFieldModel.setFields` will automatically clear any existing :py:func:`~QgsFieldModel.layer`.
 
 .. seealso:: :py:func:`fields`
 
@@ -163,8 +163,8 @@ setFields() will automatically clear any existing layer().
 %Docstring
 Returns the fields currently shown in the model.
 
-This will either be fields from the associated layer() or the fields
-manually set by a call to setFields().
+This will either be fields from the associated :py:func:`~QgsFieldModel.layer` or the fields
+manually set by a call to :py:func:`~QgsFieldModel.setFields`.
 
 .. versionadded:: 3.14
 %End

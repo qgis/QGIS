@@ -141,7 +141,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
   mModelValues->clear();
 
   // determine the field type
-  QList<QVariant> values = mLayer->uniqueValues( idx, limit ).toList();
+  QList<QVariant> values = qgis::setToList( mLayer->uniqueValues( idx, limit ) );
   std::sort( values.begin(), values.end() );
 
   QString nullValue = QgsApplication::nullRepresentation();

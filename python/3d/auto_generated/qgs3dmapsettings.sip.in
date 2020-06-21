@@ -42,15 +42,15 @@ Copy constructor
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
-Reads configuration from a DOM element previously written by writeXml()
+Reads configuration from a DOM element previously written by :py:func:`~Qgs3DMapSettings.writeXml`
 %End
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
-Writes configuration to a DOM element, to be used later with readXml()
+Writes configuration to a DOM element, to be used later with :py:func:`~Qgs3DMapSettings.readXml`
 %End
     void resolveReferences( const QgsProject &project );
 %Docstring
-Resolves references to other objects (map layers) after the call to readXml()
+Resolves references to other objects (map layers) after the call to :py:func:`~Qgs3DMapSettings.readXml`
 %End
 
     void setOrigin( const QgsVector3D &origin );
@@ -201,7 +201,7 @@ Sets resolution (in pixels) of the texture of a terrain tile
     int mapTileResolution() const;
 %Docstring
 Returns resolution (in pixels) of the texture of a terrain tile. This parameter influences
-how many zoom levels for terrain tiles there will be (together with maxTerrainGroundError())
+how many zoom levels for terrain tiles there will be (together with :py:func:`~Qgs3DMapSettings.maxTerrainGroundError`)
 %End
 
     void setMaxTerrainScreenError( float error );
@@ -230,7 +230,7 @@ Returns maximum ground error of terrain tiles in world units.
     float maxTerrainGroundError() const;
 %Docstring
 Returns maximum ground error of terrain tiles in world units. This parameter influences
-how many zoom levels there will be (together with mapTileResolution()).
+how many zoom levels there will be (together with :py:func:`~Qgs3DMapSettings.mapTileResolution`).
 This value tells that when the given ground error is reached (e.g. 10 meters), it makes no sense
 to further split terrain tiles into finer ones because they will not add extra details anymore.
 %End
@@ -266,7 +266,7 @@ Sets terrain shading material.
     QgsPhongMaterialSettings terrainShadingMaterial() const;
 %Docstring
 Returns terrain shading material. Diffuse color component is ignored since the diffuse component
-is provided by 2D rendered map texture. Only used when isTerrainShadingEnabled() is ``True``.
+is provided by 2D rendered map texture. Only used when :py:func:`~Qgs3DMapSettings.isTerrainShadingEnabled` is ``True``.
 
 .. versionadded:: 3.6
 %End
@@ -287,7 +287,7 @@ Empty map theme name means that the map theme is not overridden and the current 
 
 .. note::
 
-   Support for map themes only works if mapThemeCollection() is a valid object (otherwise it is not possible to resolve map themes from names)
+   Support for map themes only works if :py:func:`~Qgs3DMapSettings.mapThemeCollection` is a valid object (otherwise it is not possible to resolve map themes from names)
 
 .. versionadded:: 3.6
 %End
@@ -315,11 +315,11 @@ Returns whether skybox is enabled
 %End
     QString skyboxFileBase() const;
 %Docstring
-Returns base part of filenames of skybox (see setSkybox())
+Returns base part of filenames of skybox (see :py:func:`~Qgs3DMapSettings.setSkybox`)
 %End
     QString skyboxFileExtension() const;
 %Docstring
-Returns extension part of filenames of skybox (see setSkybox())
+Returns extension part of filenames of skybox (see :py:func:`~Qgs3DMapSettings.setSkybox`)
 %End
 
     void setShowTerrainBoundingBoxes( bool enabled );
@@ -368,11 +368,25 @@ Returns list of point lights defined in the scene
 .. versionadded:: 3.6
 %End
 
+    QList<QgsDirectionalLightSettings> directionalLights() const;
+%Docstring
+Returns list of directional lights defined in the scene
+
+.. versionadded:: 3.16
+%End
+
     void setPointLights( const QList<QgsPointLightSettings> &pointLights );
 %Docstring
 Sets list of point lights defined in the scene
 
 .. versionadded:: 3.6
+%End
+
+    void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
+%Docstring
+Sets list of directional lights defined in the scene
+
+.. versionadded:: 3.16
 %End
 
     float fieldOfView() const;
@@ -487,6 +501,13 @@ Emitted when the flag whether labels are displayed on terrain tiles has changed
 Emitted when the list of point lights changes
 
 .. versionadded:: 3.6
+%End
+
+    void directionalLightsChanged();
+%Docstring
+Emitted when the list of directional lights changes
+
+.. versionadded:: 3.16
 %End
 
     void fieldOfViewChanged();

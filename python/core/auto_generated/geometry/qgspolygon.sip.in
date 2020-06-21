@@ -41,7 +41,7 @@ Ownership of ``exterior`` and ``rings`` is transferred to the polygon.
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
 
-    virtual QByteArray asWkb() const;
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 
     virtual QgsPolygon *surfaceToPolygon() const /Factory/;
 

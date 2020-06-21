@@ -23,13 +23,14 @@ switching vertical tabs between icon/text to icon-only modes (splitter collapsed
 and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
 
 To use:
-1) Start with copy of qgsoptionsdialog_template.ui and build options/properties dialog.
-2) In source file for dialog, inherit this class instead of QDialog, then in constructor:
-...
-setupUi( this ); // set up .ui file objects
-initOptionsBase( ``False`` ); // set up this class to use .ui objects, optionally restoring base ui
-...
-restoreOptionsBaseUi(); // restore the base ui with initOptionsBase or use this later on
+
+# Start with copy of qgsoptionsdialog_template.ui and build options/properties dialog.
+# In source file for dialog, inherit this class instead of QDialog, then in constructor:
+  ...
+  setupUi( this ); // set up .ui file objects
+  initOptionsBase( ``False`` ); // set up this class to use .ui objects, optionally restoring base ui
+  ...
+  :py:func:`~restoreOptionsBaseUi`; // restore the base ui with initOptionsBase or use this later on
 %End
 
 %TypeHeaderCode
@@ -63,7 +64,14 @@ Set up the base ui connections for vertical tabs.
 Restore the base ui.
 Sometimes useful to do at end of subclass's constructor.
 
-:param title: the window title (it does not need to be defined if previously given to initOptionsBase();
+:param title: the window title (it does not need to be defined if previously given to :py:func:`~QgsOptionsDialogBase.initOptionsBase`;
+%End
+
+    void restoreLastPage();
+%Docstring
+Refocus the active tab from the last time the dialog was shown.
+
+.. versionadded:: 3.14
 %End
 
     void resizeAlltabs( int index );
@@ -83,6 +91,35 @@ Determine if the options list is in icon only mode
     void setCurrentPage( const QString &page );
 %Docstring
 Sets the dialog ``page`` (by object name) to show.
+
+.. versionadded:: 3.14
+%End
+
+    void addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget /Transfer/ );
+%Docstring
+Adds a new page to the dialog pages.
+
+The ``title``, ``tooltip`` and ``icon`` arguments dictate the page list item title, tooltip and icon respectively.
+
+The page content is specified via the ``widget`` argument. Ownership of ``widget`` is transferred to the dialog.
+
+.. seealso:: :py:func:`insertPage`
+
+.. versionadded:: 3.14
+%End
+
+    void insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget /Transfer/, const QString &before );
+%Docstring
+Inserts a new page into the dialog pages.
+
+The ``title``, ``tooltip`` and ``icon`` arguments dictate the page list item title, tooltip and icon respectively.
+
+The page content is specified via the ``widget`` argument. Ownership of ``widget`` is transferred to the dialog.
+
+The ``before`` argument specifies the object name of an existing page. The new page will be inserted directly
+before the matching page.
+
+.. seealso:: :py:func:`addPage`
 
 .. versionadded:: 3.14
 %End

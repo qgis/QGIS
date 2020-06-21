@@ -68,6 +68,14 @@ class CORE_EXPORT QgsFeatureSink
         * skipping this update represents a significant speed boost for the operation.
         */
       FastInsert = 1 << 1,
+
+      /**
+       * Roll back the whole transaction if a single add feature operation fails.
+       * Individual sink subclasses may choose to ignore this flag and always roll back
+       * while other providers will respect the flag and accept partial additions if
+       * this flag is not set.
+       */
+      RollBackOnErrors = 1 << 2,
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -78,20 +86,20 @@ class CORE_EXPORT QgsFeatureSink
      * \see addFeatures()
      * \returns TRUE in case of success and FALSE in case of failure
      */
-    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
     /**
      * Adds a list of \a features to the sink. Feature addition behavior is controlled by the specified \a flags.
      * \see addFeature()
      * \returns TRUE in case of success and FALSE in case of failure
      */
-    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) = 0;
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) = 0;
 
     /**
      * Adds all features from the specified \a iterator to the sink. Feature addition behavior is controlled by the specified \a flags.
      * \returns TRUE if all features were added successfully, or FALSE if any feature could not be added
      */
-    virtual bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = nullptr );
+    virtual bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
     /**
      * Flushes any internal buffer which may exist in the sink, causing any buffered features to be added to the sink's destination.

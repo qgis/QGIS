@@ -209,6 +209,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString saveUserFullName() const;
 
     /**
+     * Returns the date and time when the project was last saved.
+     *
+     * \since QGIS 3.14
+     */
+    QDateTime lastSaveDateTime() const;
+
+    /**
+     * Returns the QGIS version which the project was last saved using.
+     *
+     * \since QGIS 3.14
+     */
+    QgsProjectVersion lastSaveVersion() const;
+
+    /**
      * Returns TRUE if the project has been modified since the last write()
      */
     bool isDirty() const;
@@ -228,6 +242,32 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see fileInfo()
     */
     QString fileName() const;
+
+    /**
+     * Sets the original \a path associated with the project.
+     *
+     * This is intended for use with non-qgs/qgz project files (see QgsCustomProjectOpenHandler) in order to allow
+     * custom project open handlers to specify the original file name of the project. For custom project formats,
+     * it is NOT appropriate to call setFileName() with the original project path, as this causes the original (non
+     * QGIS) project file to be overwritten when the project is next saved.
+     *
+     * \see originalPath()
+     * \since QGIS 3.14
+     */
+    void setOriginalPath( const QString &path );
+
+    /**
+     * Returns the original path associated with the project.
+     *
+     * This is intended for use with non-qgs/qgz project files (see QgsCustomProjectOpenHandler) in order to allow
+     * custom project open handlers to specify the original file name of the project. For custom project formats,
+     * it is NOT appropriate to call setFileName() with the original project path, as this causes the original (non
+     * QGIS) project file to be overwritten when the project is next saved.
+
+     * \see setOriginalPath()
+     * \since QGIS 3.14
+    */
+    QString originalPath() const;
 
     /**
      * Returns QFileInfo object for the project's associated file.
@@ -346,7 +386,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \param flags optional flags which control the read behavior of projects
      * \returns TRUE if project file has been read successfully
      */
-    bool read( const QString &filename, QgsProject::ReadFlags flags = nullptr );
+    bool read( const QString &filename, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 
     /**
      * Reads the project from its currently associated file (see fileName() ).
@@ -356,7 +396,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \returns TRUE if project file has been read successfully
      */
-    bool read( QgsProject::ReadFlags flags = nullptr );
+    bool read( QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 
     /**
      * Reads the layer described in the associated DOM node.
@@ -515,7 +555,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note not available in Python bindings
      */
     bool createEmbeddedLayer( const QString &layerId, const QString &projectFilePath, QList<QDomNode> &brokenNodes,
-                              bool saveFlag = true, QgsProject::ReadFlags flags = nullptr ) SIP_SKIP;
+                              bool saveFlag = true, QgsProject::ReadFlags flags = QgsProject::ReadFlags() ) SIP_SKIP;
 
     /**
      * Create layer group instance defined in an arbitrary project file.
@@ -524,7 +564,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \since QGIS 2.4
      */
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = nullptr );
+    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 
     //! Convenience function to set topological editing
     void setTopologicalEditing( bool enabled );
@@ -934,7 +974,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Returns a list of registered map layers with a specified layer type.
      *
-     * Example:
+     * ### Example
      *
      *     QVector<QgsVectorLayer*> vectorLayers = QgsProject::instance()->layers<QgsVectorLayer*>();
      *
@@ -1799,7 +1839,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \param flags optional project reading flags
      * \returns TRUE if function worked; else is FALSE
     */
-    bool _getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes, QgsProject::ReadFlags flags = nullptr );
+    bool _getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 
     /**
      * Set error message from read/write operation
@@ -1820,29 +1860,29 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \note not available in Python bindings
      */
-    bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, QgsReadWriteContext &context, QgsProject::ReadFlags flags = nullptr ) SIP_SKIP;
+    bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, QgsReadWriteContext &context, QgsProject::ReadFlags flags = QgsProject::ReadFlags() ) SIP_SKIP;
 
     /**
      * The optional \a flags argument can be used to control layer reading behavior.
      *
      * \note not available in Python bindings
     */
-    void initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group, QgsProject::ReadFlags flags = nullptr ) SIP_SKIP;
+    void initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group, QgsProject::ReadFlags flags = QgsProject::ReadFlags() ) SIP_SKIP;
 
     /**
      * The optional \a flags argument can be used to control layer reading behavior.
      * \note not available in Python bindings
      */
-    bool loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFlags flags = nullptr ) SIP_SKIP;
+    bool loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFlags flags = QgsProject::ReadFlags() ) SIP_SKIP;
 
     //! Read .qgs file
-    bool readProjectFile( const QString &filename, QgsProject::ReadFlags flags = nullptr );
+    bool readProjectFile( const QString &filename, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 
     //! Write .qgs file
     bool writeProjectFile( const QString &filename );
 
     //! Unzip .qgz file then read embedded .qgs file
-    bool unzip( const QString &filename, QgsProject::ReadFlags flags = nullptr );
+    bool unzip( const QString &filename, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 
     //! Zip project
     bool zip( const QString &filename );
@@ -1901,8 +1941,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QFile mFile;                 // current physical project file
 
+    QString mOriginalPath;
+
     QString mSaveUser;              // last saved user.
     QString mSaveUserFull;          // last saved user full name.
+    QDateTime mSaveDateTime;
+    QgsProjectVersion mSaveVersion;
 
     /**
      * Manual override for project home path - if empty, home path is automatically

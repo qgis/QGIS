@@ -720,7 +720,7 @@ void QgsLayoutItemMapGrid::drawGridFrame( QPainter *p, const QList< QPair< doubl
   if ( p )
   {
     p->save();
-    p->setRenderHint( QPainter::Antialiasing );
+    p->setRenderHint( QPainter::Antialiasing, mMap->layout()->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
   }
 
   //Sort the coordinate positions for each side
@@ -1494,7 +1494,7 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
   }
 
   QgsCoordinateFormatter::Format format = QgsCoordinateFormatter::FormatDecimalDegrees;
-  QgsCoordinateFormatter::FormatFlags flags = nullptr;
+  QgsCoordinateFormatter::FormatFlags flags = QgsCoordinateFormatter::FormatFlags();
   switch ( mGridAnnotationFormat )
   {
     case Decimal:

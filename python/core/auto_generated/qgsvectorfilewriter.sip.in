@@ -333,7 +333,7 @@ Writes a layer out to a vector file.
     class SaveVectorOptions
 {
 %Docstring
-Options to pass to writeAsVectorFormat()
+Options to pass to :py:func:`~QgsVectorFileWriter.writeAsVectorFormat`
 
 .. versionadded:: 3.0
 %End
@@ -418,7 +418,7 @@ Writes a layer out to a vector file.
                                            const QStringList &layerOptions = QStringList(),
                                            QString *newFilename = 0,
                                            QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
-                                           QgsFeatureSink::SinkFlags sinkFlags = 0
+                                           QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags()
                                          ) /Deprecated/;
 
 
@@ -429,7 +429,7 @@ Writes a layer out to a vector file.
                                         const QgsCoordinateReferenceSystem &srs,
                                         const QgsCoordinateTransformContext &transformContext,
                                         const QgsVectorFileWriter::SaveVectorOptions &options,
-                                        QgsFeatureSink::SinkFlags sinkFlags = 0,
+                                        QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
                                         QString *newFilename = 0,
                                         QString *newLayer = 0 );
 %Docstring
@@ -568,9 +568,9 @@ Checks whether there were any errors in constructor
 Retrieves error message
 %End
 
-    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
-    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
 
     bool addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );

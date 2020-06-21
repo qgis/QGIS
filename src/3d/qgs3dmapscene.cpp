@@ -22,6 +22,7 @@
 #include <Qt3DRender/QPickingSettings>
 #include <Qt3DRender/QPickTriangleEvent>
 #include <Qt3DRender/QPointLight>
+#include <Qt3DRender/QDirectionalLight>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DExtras/QForwardRenderer>
@@ -103,6 +104,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::maxTerrainGroundErrorChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::terrainShadingChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::pointLightsChanged, this, &Qgs3DMapScene::updateLights );
+  connect( &map, &Qgs3DMapSettings::directionalLightsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::renderersChanged, this, &Qgs3DMapScene::onRenderersChanged );
 
@@ -162,6 +164,9 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
     // it _somehow_ works even when frustum culling is enabled with some camera positions,
     // but then when zoomed in more it would disappear - so let's keep frustum culling disabled
     mEngine->setFrustumCullingEnabled( false );
+
+    // cppcheck wrongly believes skyBox will leak
+    // cppcheck-suppress memleak
   }
 
   // force initial update of chunked entities
@@ -471,6 +476,24 @@ void Qgs3DMapScene::updateLights()
     lightEntity->setParent( this );
     mLightEntities << lightEntity;
   }
+
+  const auto newDirectionalLights = mMap.directionalLights();
+  for ( const QgsDirectionalLightSettings &directionalLightSettings : newDirectionalLights )
+  {
+    Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
+    Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
+
+    Qt3DRender::QDirectionalLight *light = new Qt3DRender::QDirectionalLight;
+    light->setColor( directionalLightSettings.color() );
+    light->setIntensity( directionalLightSettings.intensity() );
+    QgsVector3D direction = directionalLightSettings.direction();
+    light->setWorldDirection( QVector3D( direction.x(), direction.y(), direction.z() ) );
+
+    lightEntity->addComponent( light );
+    lightEntity->addComponent( lightTransform );
+    lightEntity->setParent( this );
+    mLightEntities << lightEntity;
+  }
 }
 
 void Qgs3DMapScene::updateCameraLens()
@@ -513,7 +536,7 @@ void Qgs3DMapScene::onLayerRenderer3DChanged()
 
 void Qgs3DMapScene::onLayersChanged()
 {
-  QSet<QgsMapLayer *> layersBefore = QSet<QgsMapLayer *>::fromList( mLayerEntities.keys() );
+  QSet<QgsMapLayer *> layersBefore = qgis::listToSet( mLayerEntities.keys() );
   QList<QgsMapLayer *> layersAdded;
   Q_FOREACH ( QgsMapLayer *layer, mMap.layers() )
   {

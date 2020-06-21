@@ -138,7 +138,7 @@ Returns ``True`` if the layer does not contain any feature.
 Will always return FeatureAvailability.FeaturesAvailable or
 FeatureAvailability.NoFeaturesAvailable.
 
-Calls empty() internally. Providers should override empty()
+Calls :py:func:`~QgsVectorDataProvider.empty` internally. Providers should override :py:func:`~QgsVectorDataProvider.empty`
 instead if they provide an optimized version of this call.
 
 .. seealso:: :py:func:`empty`
@@ -232,7 +232,7 @@ or if the given attribute is not an enum type.
 :param index: the index of the attribute
 %End
 
-    virtual bool addFeatures( QgsFeatureList &flist /In,Out/, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeatures( QgsFeatureList &flist /In,Out/, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
 
     virtual bool deleteFeatures( const QgsFeatureIds &id );
@@ -272,14 +272,14 @@ Cancels the current reloading of data.
     virtual bool addAttributes( const QList<QgsField> &attributes );
 %Docstring
 Adds new ``attributes`` to the provider. Returns ``True`` in case of success and ``False`` in case of failure.
-If attributes are added using this method then QgsVectorLayer.updateFields() must be called
+If attributes are added using this method then :py:func:`QgsVectorLayer.updateFields()` must be called
 manually to ensure that the layer's field are correctly reported.
 %End
 
     virtual bool deleteAttributes( const QgsAttributeIds &attributes );
 %Docstring
 Deletes existing ``attributes`` from the provider.
-If attributes are deleted using this method then QgsVectorLayer.updateFields() must be called
+If attributes are deleted using this method then :py:func:`QgsVectorLayer.updateFields()` must be called
 manually to ensure that the layer's field are correctly reported.
 
 :param attributes: a set containing indices of attributes
@@ -290,7 +290,7 @@ manually to ensure that the layer's field are correctly reported.
     virtual bool renameAttributes( const QgsFieldNameMap &renamedAttributes );
 %Docstring
 Renames existing attributes.
-If attributes are renamed using this method then QgsVectorLayer.updateFields() must be called
+If attributes are renamed using this method then :py:func:`QgsVectorLayer.updateFields()` must be called
 manually to ensure that the layer's field are correctly reported.
 
 :param renamedAttributes: map of attribute index to new attribute name
@@ -366,7 +366,7 @@ field index.
     virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const;
 %Docstring
 Returns ``True`` if a constraint check should be skipped for a specified field (e.g., if
-the value returned by defaultValue() is trusted implicitly. An optional attribute value can be
+the value returned by :py:func:`~QgsVectorDataProvider.defaultValue` is trusted implicitly. An optional attribute value can be
 passed which can help refine the skip constraint check.
 
 .. seealso:: :py:func:`fieldConstraints`
@@ -420,7 +420,7 @@ select the most appropriate encoding for the data source.
 .. warning::
 
    Support for setting the provider encoding depends on the underlying data
-   provider. Check capabilities() for the QgsVectorDataProvider.SelectEncoding
+   provider. Check :py:func:`~QgsVectorDataProvider.capabilities` for the QgsVectorDataProvider.SelectEncoding
    capability in order to determine if the provider supports this ability.
 
 .. seealso:: :py:func:`encoding`
@@ -445,7 +445,7 @@ Returns a map where the key is the name of the field and the value is its index
 
     virtual QgsAttributeList attributeIndexes() const;
 %Docstring
-Returns list of indexes to fetch all attributes in nextFeature()
+Returns list of indexes to fetch all attributes in :py:func:`~QgsVectorDataProvider.nextFeature`
 %End
 
     virtual QgsAttributeList pkAttributeIndexes() const;
@@ -659,7 +659,7 @@ Push a notification about errors that happened in this providers scope.
 Errors should be translated strings that require the users immediate
 attention.
 
-For general debug information use QgsMessageLog.logMessage() instead.
+For general debug information use :py:func:`QgsMessageLog.logMessage()` instead.
 
 .. versionadded:: 3.0
 %End

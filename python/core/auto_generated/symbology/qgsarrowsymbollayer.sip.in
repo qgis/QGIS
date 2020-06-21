@@ -31,7 +31,7 @@ Simple constructor
 %Docstring
 Create a new QgsArrowSymbolLayer
 
-:param properties: A property map to deserialize saved information from properties()
+:param properties: A property map to deserialize saved information from :py:func:`~QgsArrowSymbolLayer.properties`
 
 :return: A new QgsArrowSymbolLayer
 %End

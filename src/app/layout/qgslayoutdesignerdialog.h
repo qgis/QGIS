@@ -102,7 +102,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
   public:
 
-    QgsLayoutDesignerDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsLayoutDesignerDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 
     /**
      * Returns the designer interface for the dialog.
@@ -524,7 +524,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     bool showFileSizeWarning();
     bool getRasterExportSettings( QgsLayoutExporter::ImageExportSettings &settings, QSize &imageSize );
     bool getSvgExportSettings( QgsLayoutExporter::SvgExportSettings &settings );
-    bool getPdfExportSettings( QgsLayoutExporter::PdfExportSettings &settings );
+    bool getPdfExportSettings( QgsLayoutExporter::PdfExportSettings &settings, bool allowGeoPdfExport = true, const QString &geoPdfReason = QString() );
 
     void toggleAtlasActions( bool enabled );
 

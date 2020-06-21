@@ -536,7 +536,7 @@ stored inside a local temporary folder (such as the "/tmp" folder on Linux).
     typedef QFlags<QgsMapLayer::ReadFlag> ReadFlags;
 
 
-    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = 0 );
+    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = QgsMapLayer::ReadFlags() );
 %Docstring
 Sets state from DOM document
 
@@ -548,10 +548,10 @@ Sets state from DOM document
 The DOM node corresponds to a DOM document project file XML element read
 by :py:class:`QgsProject`.
 
-This, in turn, calls readXml() (and then readSymbology()), which is overridable
+This, in turn, calls :py:func:`~QgsMapLayer.readXml` (and then :py:func:`~QgsMapLayer.readSymbology`), which is overridable
 by sub-classes so that they can read their own specific state from the given DOM node.
 
-Invoked by :py:func:`QgsProject.read()`
+Invoked by :py:func:`QgsProject.read()`.
 
 :return: ``True`` if successful
 %End
@@ -568,10 +568,10 @@ Stores state in DOM node
 The DOM node corresponds to a DOM document project file XML element to be
 written by :py:class:`QgsProject`.
 
-This, in turn, calls writeXml() (and then writeSymbology), which is over-rideable
+This, in turn, calls :py:func:`~QgsMapLayer.writeXml` (and then writeSymbology), which is over-rideable
 by sub-classes so that they can write their own specific state to the given DOM node.
 
-Invoked by :py:func:`QgsProject.write()`
+Invoked by :py:func:`QgsProject.write()`.
 
 :return: ``True`` if successful
 %End
@@ -635,7 +635,7 @@ Remove a custom property from layer. Properties are stored in a map and saved in
 %Docstring
 Gets current status error. This error describes some principal problem
 for which layer cannot work and thus is not valid. It is not last error
-after accessing data by draw() etc.
+after accessing data by :py:func:`~QgsMapLayer.draw` etc.
 %End
 
     QgsCoordinateReferenceSystem crs() const;
@@ -1121,7 +1121,7 @@ A scale of 0 indicates no minimum scale visibility.
 
 .. note::
 
-   Scale based visibility is only used if setScaleBasedVisibility() is set to ``True``.
+   Scale based visibility is only used if :py:func:`~QgsMapLayer.setScaleBasedVisibility` is set to ``True``.
 
 .. seealso:: :py:func:`setMinimumScale`
 
@@ -1140,7 +1140,7 @@ A scale of 0 indicates no maximum scale visibility.
 
 .. note::
 
-   Scale based visibility is only used if setScaleBasedVisibility() is set to ``True``.
+   Scale based visibility is only used if :py:func:`~QgsMapLayer.setScaleBasedVisibility` is set to ``True``.
 
 .. seealso:: :py:func:`setMaximumScale`
 
@@ -1180,7 +1180,7 @@ Returns ``True`` if auto refresh is enabled for the layer.
     int autoRefreshInterval() const;
 %Docstring
 Returns the auto refresh interval (in milliseconds). Note that
-auto refresh is only active when hasAutoRefreshEnabled() is ``True``.
+auto refresh is only active when :py:func:`~QgsMapLayer.hasAutoRefreshEnabled` is ``True``.
 
 .. seealso:: :py:func:`hasAutoRefreshEnabled`
 
@@ -1193,7 +1193,7 @@ auto refresh is only active when hasAutoRefreshEnabled() is ``True``.
 %Docstring
 Sets the auto refresh interval (in milliseconds) for the layer. This
 will cause the layer to be automatically redrawn on a matching interval.
-Note that auto refresh must be enabled by calling setAutoRefreshEnabled().
+Note that auto refresh must be enabled by calling :py:func:`~QgsMapLayer.setAutoRefreshEnabled`.
 
 Note that auto refresh triggers deferred repaints of the layer. Any map
 canvas must be refreshed separately in order to view the refreshed layer.
@@ -1328,7 +1328,7 @@ A ``scale`` of 0 indicates no minimum scale visibility.
 
 .. note::
 
-   Scale based visibility is only used if setScaleBasedVisibility() is set to ``True``.
+   Scale based visibility is only used if :py:func:`~QgsMapLayer.setScaleBasedVisibility` is set to ``True``.
 
 .. seealso:: :py:func:`minimumScale`
 
@@ -1345,7 +1345,7 @@ A ``scale`` of 0 indicates no maximum scale visibility.
 
 .. note::
 
-   Scale based visibility is only used if setScaleBasedVisibility() is set to ``True``.
+   Scale based visibility is only used if :py:func:`~QgsMapLayer.setScaleBasedVisibility` is set to ``True``.
 
 .. seealso:: :py:func:`maximumScale`
 
@@ -1370,7 +1370,7 @@ Sets whether scale based visibility is enabled for the layer.
     void triggerRepaint( bool deferredUpdate = false );
 %Docstring
 Will advise the map canvas (and any other interested party) that this layer requires to be repainted.
-Will emit a repaintRequested() signal.
+Will emit a :py:func:`~QgsMapLayer.repaintRequested` signal.
 If ``deferredUpdate`` is ``True`` then the layer will only be repainted when the canvas is next
 re-rendered, and will not trigger any canvas redraws itself.
 
@@ -1381,7 +1381,7 @@ re-rendered, and will not trigger any canvas redraws itself.
 
     void emitStyleChanged();
 %Docstring
-Triggers an emission of the styleChanged() signal.
+Triggers an emission of the :py:func:`~QgsMapLayer.styleChanged` signal.
 
 .. versionadded:: 2.16
 %End
@@ -1603,19 +1603,19 @@ Sets whether layer is valid or not - should be used in constructor.
 
     virtual bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context );
 %Docstring
-Called by readLayerXML(), used by children to read state specific to them from
+Called by :py:func:`~QgsMapLayer.readLayerXML`, used by children to read state specific to them from
 project files.
 %End
 
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
-Called by writeLayerXML(), used by children to write state specific to them to
+Called by :py:func:`~QgsMapLayer.writeLayerXML`, used by children to write state specific to them to
 project files.
 %End
 
     virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const;
 %Docstring
-Called by writeLayerXML(), used by derived classes to encode provider's specific data
+Called by :py:func:`~QgsMapLayer.writeLayerXML`, used by derived classes to encode provider's specific data
 source to project files. Typically resolving absolute or relative paths, usernames and
 passwords or drivers prefixes ("HDF5:")
 
@@ -1629,7 +1629,7 @@ passwords or drivers prefixes ("HDF5:")
 
     virtual QString decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const;
 %Docstring
-Called by readLayerXML(), used by derived classes to decode provider's specific data
+Called by :py:func:`~QgsMapLayer.readLayerXML`, used by derived classes to decode provider's specific data
 source from project files. Typically resolving absolute or relative paths, usernames and
 passwords or drivers prefixes ("HDF5:")
 

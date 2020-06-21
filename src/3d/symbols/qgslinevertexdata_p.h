@@ -55,9 +55,10 @@ class Qgs3DMapSettings;
  * Index zero is used for primitive restart (to separate two linestrings).
  *
  * It is expected that client code:
- * 1. calls init()
- * 2. calls addLineString() many times
- * 3. calls createGeometry()
+ *
+ * # calls init()
+ * # calls addLineString() many times
+ * # calls createGeometry()
  */
 struct QgsLineVertexData
 {
@@ -81,7 +82,7 @@ struct QgsLineVertexData
   Qt3DRender::QGeometry *createGeometry( Qt3DCore::QNode *parent );
 
   void addLineString( const QgsLineString &lineString, float extraHeightOffset = 0 );
-  void addVerticalLines( const QgsLineString &lineString, float verticalLength );
+  void addVerticalLines( const QgsLineString &lineString, float verticalLength, float extraHeightOffset = 0 );
 };
 
 /// @endcond

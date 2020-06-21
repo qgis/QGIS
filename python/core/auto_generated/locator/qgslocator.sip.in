@@ -19,18 +19,18 @@ Handles the management of QgsLocatorFilter objects and async collection of searc
 QgsLocator acts as both a registry for QgsLocatorFilter objects and a means of firing up
 asynchronous queries against these filter objects.
 
-Filters are first registered to the locator by calling registerFilter(). Registering filters
+Filters are first registered to the locator by calling :py:func:`~registerFilter`. Registering filters
 transfers their ownership to the locator object. Plugins which register filters to the locator
-must take care to correctly call deregisterFilter() and deregister their filter upon plugin
+must take care to correctly call :py:func:`~deregisterFilter` and deregister their filter upon plugin
 unload to avoid crashes.
 
-In order to trigger a search across registered filters, the fetchResults() method is called.
-This triggers threaded calls to QgsLocatorFilter.fetchResults() for all registered filters.
-As individual filters find matching results, the foundResult() signal will be triggered
+In order to trigger a search across registered filters, the :py:func:`~fetchResults` method is called.
+This triggers threaded calls to :py:func:`QgsLocatorFilter.fetchResults()` for all registered filters.
+As individual filters find matching results, the :py:func:`~foundResult` signal will be triggered
 for each result. Callers should connect this signal to an appropriate slot designed
-to collect and handle these results. Since foundResult() is triggered whenever a filter
+to collect and handle these results. Since :py:func:`~foundResult` is triggered whenever a filter
 encounters an individual result, it will usually be triggered many times for a single
-call to fetchResults().
+call to :py:func:`~fetchResults`.
 
 .. versionadded:: 3.0
 %End
@@ -57,7 +57,7 @@ locator.
 .. warning::
 
    Plugins which register filters to the locator must take care to correctly call
-   deregisterFilter() and deregister their filters upon plugin unload to avoid crashes.
+   :py:func:`~QgsLocator.deregisterFilter` and deregister their filters upon plugin unload to avoid crashes.
 
 .. seealso:: :py:func:`deregisterFilter`
 %End
@@ -68,7 +68,7 @@ Deregisters a ``filter`` from the locator and deletes it. Calling this will bloc
 any currently running query is terminated.
 
 Plugins which register filters to the locator must take care to correctly call
-deregisterFilter() to deregister their filters upon plugin unload to avoid crashes.
+:py:func:`~QgsLocator.deregisterFilter` to deregister their filters upon plugin unload to avoid crashes.
 
 .. seealso:: :py:func:`registerFilter`
 %End
@@ -101,7 +101,7 @@ extent to prioritize).
 
 If specified, the ``feedback`` object must exist for the lifetime of this query.
 
-The foundResult() signal will be emitted for each individual result encountered
+The :py:func:`~QgsLocator.foundResult` signal will be emitted for each individual result encountered
 by the registered filters.
 %End
 
@@ -137,7 +137,7 @@ Will call clearPreviousResults on all filters
 
     void foundResult( const QgsLocatorResult &result );
 %Docstring
-Emitted whenever a filter encounters a matching ``result`` after the fetchResults() method
+Emitted whenever a filter encounters a matching ``result`` after the :py:func:`~QgsLocator.fetchResults` method
 is called.
 %End
 

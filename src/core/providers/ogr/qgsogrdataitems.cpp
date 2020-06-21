@@ -107,11 +107,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
   // Vector layers
   const QgsVectorLayer::LayerOptions layerOptions { QgsProject::instance()->transformContext() };
   QgsVectorLayer layer( path, QStringLiteral( "ogr_tmp" ), QStringLiteral( "ogr" ), layerOptions );
-  if ( ! layer.isValid( ) )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "Layer is not a valid %1 Vector layer %2" ).arg( path ), 3 );
-  }
-  else
+  if ( layer.isValid( ) )
   {
     // Collect mixed-geom layers
     QMultiMap<int, QStringList> subLayersMap;
@@ -188,6 +184,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
       }
     }
   }
+
   // Raster layers
   QgsRasterLayer::LayerOptions options;
   options.loadDefaultStyle = false;
@@ -200,7 +197,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
       // Split on ':' since this is what comes out from the provider
       QStringList pieces = uri.split( ':' );
       QString name = pieces.value( pieces.length() - 1 );
-      QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2 %3" ).arg( name, uri ), 3 );
+      QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2" ).arg( name, uri ), 3 );
       children.append( new QgsOgrDbLayerInfo( path, uri, name, QString(), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster ) );
     }
   }
@@ -238,6 +235,24 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
       children.append( new QgsOgrDbLayerInfo( path, uri, name, QString(), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster ) );
     }
   }
+
+  // There were problems in reading the file: throw
+  if ( ! layer.isValid() && ! rlayer.isValid() )
+  {
+    QString errorMessage;
+    // If it is file based and the file exists, there might be a permission error, let's change
+    // the message to give the user a hint about this possiblity.
+    if ( QFile::exists( path ) )
+    {
+      errorMessage = tr( "Error opening file, check file and directory permissions on\n%1" ).arg( QDir::toNativeSeparators( path ) );
+    }
+    else
+    {
+      errorMessage = tr( "Layer is not valid (%1)" ).arg( path );
+    }
+    throw QgsOgrLayerNotValidException( errorMessage );
+  }
+
   return children;
 }
 

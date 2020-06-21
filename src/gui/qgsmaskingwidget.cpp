@@ -143,6 +143,7 @@ class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
  * Indeed, we need here to know both mask sources and targets for all masks
  *
  * Returns a list of pairs of:
+ *
  * - mask source symbol layer id
  * - list of target mask symbol layer references
  */

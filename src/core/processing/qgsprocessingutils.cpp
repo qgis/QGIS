@@ -587,6 +587,18 @@ QString QgsProcessingUtils::variantToPythonLiteral( const QVariant &value )
       return parts.join( ',' ).prepend( '[' ).append( ']' );
     }
 
+    case QVariant::Map:
+    {
+      const QVariantMap map = value.toMap();
+      QStringList parts;
+      parts.reserve( map.size() );
+      for ( auto it = map.constBegin(); it != map.constEnd(); ++it )
+      {
+        parts << QStringLiteral( "%1: %2" ).arg( stringToPythonLiteral( it.key() ), variantToPythonLiteral( it.value() ) );
+      }
+      return parts.join( ',' ).prepend( '{' ).append( '}' );
+    }
+
     default:
       break;
   }
@@ -1364,7 +1376,7 @@ QgsProcessingFeatureSink::~QgsProcessingFeatureSink()
 bool QgsProcessingFeatureSink::addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags )
 {
   bool result = QgsProxyFeatureSink::addFeature( feature, flags );
-  if ( !result )
+  if ( !result && mContext.feedback() )
     mContext.feedback()->reportError( QObject::tr( "Feature could not be written to %1" ).arg( mSinkName ) );
   return result;
 }
@@ -1372,7 +1384,7 @@ bool QgsProcessingFeatureSink::addFeature( QgsFeature &feature, QgsFeatureSink::
 bool QgsProcessingFeatureSink::addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags )
 {
   bool result = QgsProxyFeatureSink::addFeatures( features, flags );
-  if ( !result )
+  if ( !result && mContext.feedback() )
     mContext.feedback()->reportError( QObject::tr( "%1 feature(s) could not be written to %2" ).arg( features.count() ).arg( mSinkName ) );
   return result;
 }
@@ -1380,7 +1392,7 @@ bool QgsProcessingFeatureSink::addFeatures( QgsFeatureList &features, QgsFeature
 bool QgsProcessingFeatureSink::addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags )
 {
   bool result = QgsProxyFeatureSink::addFeatures( iterator, flags );
-  if ( !result )
+  if ( !result && mContext.feedback() )
     mContext.feedback()->reportError( QObject::tr( "Features could not be written to %1" ).arg( mSinkName ) );
   return result;
 }

@@ -23,16 +23,17 @@
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgspathresolver.h"
 #include "qgspointxy.h"
 #include "qgsproject.h"
-#include "qgssymbollayerutils.h" //for pointOnLineWithDistance
-#include "qgssymbol.h" //for symbology
+#include "qgssymbollayerutils.h"
+#include "qgssymbol.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrendercontext.h"
-#include "qgsmapcanvas.h"
+#include "qgstextrenderer.h"
 
 #include <QPainter>
 #include <QAction>
@@ -50,9 +51,6 @@
 
 //non qt includes
 #include <cmath>
-
-
-#define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
 
 
 QgsDecorationGrid::QgsDecorationGrid( QObject *parent )
@@ -101,30 +99,26 @@ void QgsDecorationGrid::projectRead()
   mGridIntervalY = QgsProject::instance()->readDoubleEntry( mConfigurationName, QStringLiteral( "/IntervalY" ), 10 );
   mGridOffsetX = QgsProject::instance()->readDoubleEntry( mConfigurationName, QStringLiteral( "/OffsetX" ), 0 );
   mGridOffsetY = QgsProject::instance()->readDoubleEntry( mConfigurationName, QStringLiteral( "/OffsetY" ), 0 );
-  // mCrossLength = QgsProject::instance()->readDoubleEntry( mConfigurationName, "/CrossLength", 3 );
   mShowGridAnnotation = QgsProject::instance()->readBoolEntry( mConfigurationName, QStringLiteral( "/ShowAnnotation" ), false );
-  // mGridAnnotationPosition = ( GridAnnotationPosition ) QgsProject::instance()->readNumEntry( mConfigurationName,
-  //                           "/AnnotationPosition", 0 );
-  mGridAnnotationPosition = InsideMapFrame; // don't allow outside frame, doesn't make sense
   mGridAnnotationDirection = static_cast< GridAnnotationDirection >( QgsProject::instance()->readNumEntry( mConfigurationName,
                              QStringLiteral( "/AnnotationDirection" ), 0 ) );
-  QString fontStr = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/AnnotationFont" ), QString() );
-  if ( !fontStr.isEmpty() )
+
+  QDomDocument doc;
+  QDomElement elem;
+  QString textXml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Font" ) );
+  if ( !textXml.isEmpty() )
   {
-    mGridAnnotationFont.fromString( fontStr );
+    doc.setContent( textXml );
+    elem = doc.documentElement();
+    QgsReadWriteContext rwContext;
+    rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+    mTextFormat.readXml( elem, rwContext );
   }
-  else
-  {
-    mGridAnnotationFont = QFont();
-    // TODO fix font scaling problem - put a slightly large font for now
-    mGridAnnotationFont.setPointSize( 16 );
-  }
+
   mAnnotationFrameDistance = QgsProject::instance()->readDoubleEntry( mConfigurationName, QStringLiteral( "/AnnotationFrameDistance" ), 0 );
   mGridAnnotationPrecision = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/AnnotationPrecision" ), 0 );
 
   // read symbol info from xml
-  QDomDocument doc;
-  QDomElement elem;
   QString xml;
   QgsReadWriteContext rwContext;
   rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
@@ -170,19 +164,22 @@ void QgsDecorationGrid::saveToProject()
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/IntervalY" ), mGridIntervalY );
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/OffsetX" ), mGridOffsetX );
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/OffsetY" ), mGridOffsetY );
-  // QgsProject::instance()->writeEntry( mConfigurationName, "/CrossLength", mCrossLength );
-  // missing mGridPen, but should use styles anyway
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/ShowAnnotation" ), mShowGridAnnotation );
-  // QgsProject::instance()->writeEntry( mConfigurationName, "/AnnotationPosition", ( int ) mGridAnnotationPosition );
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/AnnotationDirection" ), static_cast< int >( mGridAnnotationDirection ) );
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/AnnotationFont" ), mGridAnnotationFont.toString() );
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/AnnotationFrameDistance" ), mAnnotationFrameDistance );
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/AnnotationPrecision" ), mGridAnnotationPrecision );
 
+  QDomDocument textDoc;
+  QgsReadWriteContext rwContext;
+  rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+  QDomElement textElem = mTextFormat.writeXml( textDoc, rwContext );
+  textDoc.appendChild( textElem );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Font" ), textDoc.toString() );
+
   // write symbol info to xml
   QDomDocument doc;
   QDomElement elem;
-  QgsReadWriteContext rwContext;
   rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
   if ( mLineSymbol )
   {
@@ -217,298 +214,169 @@ void QgsDecorationGrid::render( const QgsMapSettings &mapSettings, QgsRenderCont
   if ( ! mEnabled )
     return;
 
-  // p->setPen( mGridPen );
-
   QList< QPair< qreal, QLineF > > verticalLines;
   yGridLines( mapSettings, verticalLines );
   QList< QPair< qreal, QLineF > > horizontalLines;
   xGridLines( mapSettings, horizontalLines );
-  //QgsDebugMsg( QStringLiteral("grid has %1 vertical and %2 horizontal lines").arg( verticalLines.size() ).arg( horizontalLines.size() ) );
 
   QList< QPair< qreal, QLineF > >::const_iterator vIt = verticalLines.constBegin();
   QList< QPair< qreal, QLineF > >::const_iterator hIt = horizontalLines.constBegin();
 
-  //simpler approach: draw vertical lines first, then horizontal ones
-  if ( mGridStyle == QgsDecorationGrid::Line )
+  switch ( mGridStyle )
   {
-    if ( ! mLineSymbol )
-      return;
-
-    mLineSymbol->startRender( context );
-
-    for ( ; vIt != verticalLines.constEnd(); ++vIt )
+    case Line:
     {
-      // context.painter()->drawLine( vIt->second );
-      // need to convert QLineF to QPolygonF ...
-      QVector<QPointF> poly;
-      poly << vIt->second.p1() << vIt->second.p2();
-      mLineSymbol->renderPolyline( QPolygonF( poly ), nullptr, context );
-    }
+      if ( ! mLineSymbol )
+        return;
 
-    for ( ; hIt != horizontalLines.constEnd(); ++hIt )
-    {
-      // context.painter()->drawLine( hIt->second );
-      // need to convert QLineF to QPolygonF ...
-      QVector<QPointF> poly;
-      poly << hIt->second.p1() << hIt->second.p2();
-      mLineSymbol->renderPolyline( QPolygonF( poly ), nullptr, context );
-    }
+      mLineSymbol->startRender( context );
 
-    mLineSymbol->stopRender( context );
-  }
-#if 0
-  else if ( mGridStyle == QgsDecorationGrid::Cross )
-  {
-    QPointF intersectionPoint, crossEnd1, crossEnd2;
-    for ( ; vIt != verticalLines.constEnd(); ++vIt )
-    {
-      //start mark
-      crossEnd1 = QgsSymbolLayerUtils::pointOnLineWithDistance( vIt->second.p1(), vIt->second.p2(), mCrossLength );
-      context.painter()->drawLine( vIt->second.p1(), crossEnd1 );
-
-      //test for intersection with every horizontal line
-      hIt = horizontalLines.constBegin();
-      for ( ; hIt != horizontalLines.constEnd(); ++hIt )
-      {
-        if ( hIt->second.intersect( vIt->second, &intersectionPoint ) == QLineF::BoundedIntersection )
-        {
-          crossEnd1 = QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, vIt->second.p1(), mCrossLength );
-          crossEnd2 = QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, vIt->second.p2(), mCrossLength );
-          context.painter()->drawLine( crossEnd1, crossEnd2 );
-        }
-      }
-      //end mark
-      QPointF crossEnd2 = QgsSymbolLayerUtils::pointOnLineWithDistance( vIt->second.p2(), vIt->second.p1(), mCrossLength );
-      context.painter()->drawLine( vIt->second.p2(), crossEnd2 );
-    }
-
-    hIt = horizontalLines.constBegin();
-    for ( ; hIt != horizontalLines.constEnd(); ++hIt )
-    {
-      //start mark
-      crossEnd1 = QgsSymbolLayerUtils::pointOnLineWithDistance( hIt->second.p1(), hIt->second.p2(), mCrossLength );
-      context.painter()->drawLine( hIt->second.p1(), crossEnd1 );
-
-      vIt = verticalLines.constBegin();
       for ( ; vIt != verticalLines.constEnd(); ++vIt )
       {
-        if ( vIt->second.intersect( hIt->second, &intersectionPoint ) == QLineF::BoundedIntersection )
-        {
-          crossEnd1 = QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, hIt->second.p1(), mCrossLength );
-          crossEnd2 = QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, hIt->second.p2(), mCrossLength );
-          context.painter()->drawLine( crossEnd1, crossEnd2 );
-        }
+        // context.painter()->drawLine( vIt->second );
+        // need to convert QLineF to QPolygonF ...
+        QVector<QPointF> poly;
+        poly << vIt->second.p1() << vIt->second.p2();
+        mLineSymbol->renderPolyline( QPolygonF( poly ), nullptr, context );
       }
-      //end mark
-      crossEnd1 = QgsSymbolLayerUtils::pointOnLineWithDistance( hIt->second.p2(), hIt->second.p1(), mCrossLength );
-      context.painter()->drawLine( hIt->second.p2(), crossEnd1 );
-    }
-  }
-#endif
-  else //marker
-  {
-    if ( ! mMarkerSymbol )
-      return;
 
-    mMarkerSymbol->startRender( context );
-
-    QPointF intersectionPoint;
-    for ( ; vIt != verticalLines.constEnd(); ++vIt )
-    {
-      //test for intersection with every horizontal line
-      hIt = horizontalLines.constBegin();
       for ( ; hIt != horizontalLines.constEnd(); ++hIt )
       {
-        if ( hIt->second.intersect( vIt->second, &intersectionPoint ) == QLineF::BoundedIntersection )
+        // context.painter()->drawLine( hIt->second );
+        // need to convert QLineF to QPolygonF ...
+        QVector<QPointF> poly;
+        poly << hIt->second.p1() << hIt->second.p2();
+        mLineSymbol->renderPolyline( QPolygonF( poly ), nullptr, context );
+      }
+
+      mLineSymbol->stopRender( context );
+      break;
+    }
+
+    case Marker:
+    {
+      if ( ! mMarkerSymbol )
+        return;
+
+      mMarkerSymbol->startRender( context );
+
+      QPointF intersectionPoint;
+      for ( ; vIt != verticalLines.constEnd(); ++vIt )
+      {
+        //test for intersection with every horizontal line
+        hIt = horizontalLines.constBegin();
+        for ( ; hIt != horizontalLines.constEnd(); ++hIt )
         {
-          mMarkerSymbol->renderPoint( intersectionPoint, nullptr, context );
+          if ( hIt->second.intersect( vIt->second, &intersectionPoint ) == QLineF::BoundedIntersection )
+          {
+            mMarkerSymbol->renderPoint( intersectionPoint, nullptr, context );
+          }
         }
       }
+      mMarkerSymbol->stopRender( context );
+      break;
     }
-    mMarkerSymbol->stopRender( context );
   }
-
-  // p->setClipRect( thisPaintRect, Qt::NoClip );
 
   if ( mShowGridAnnotation )
   {
-    drawCoordinateAnnotations( context.painter(), horizontalLines, verticalLines );
+    drawCoordinateAnnotations( context, horizontalLines, verticalLines );
   }
 }
 
-void QgsDecorationGrid::drawCoordinateAnnotations( QPainter *p, const QList< QPair< qreal, QLineF > > &hLines, const QList< QPair< qreal, QLineF > > &vLines )
+void QgsDecorationGrid::drawCoordinateAnnotations( QgsRenderContext &context, const QList< QPair< qreal, QLineF > > &hLines, const QList< QPair< qreal, QLineF > > &vLines )
 {
-  if ( !p )
-  {
-    return;
-  }
-
   QString currentAnnotationString;
   QList< QPair< qreal, QLineF > >::const_iterator it = hLines.constBegin();
   for ( ; it != hLines.constEnd(); ++it )
   {
     currentAnnotationString = QString::number( it->first, 'f', mGridAnnotationPrecision );
-    drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString );
-    drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString );
+    drawCoordinateAnnotation( context, it->second.p1(), currentAnnotationString );
+    drawCoordinateAnnotation( context, it->second.p2(), currentAnnotationString );
   }
 
   it = vLines.constBegin();
   for ( ; it != vLines.constEnd(); ++it )
   {
     currentAnnotationString = QString::number( it->first, 'f', mGridAnnotationPrecision );
-    drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString );
-    drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString );
+    drawCoordinateAnnotation( context, it->second.p1(), currentAnnotationString );
+    drawCoordinateAnnotation( context, it->second.p2(), currentAnnotationString );
   }
 }
 
-void QgsDecorationGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, const QString &annotationString )
+void QgsDecorationGrid::drawCoordinateAnnotation( QgsRenderContext &context, QPointF pos, const QString &annotationString )
 {
-  Border frameBorder = borderForLineCoord( pos, p );
-  double textWidth = textWidthMillimeters( mGridAnnotationFont, annotationString );
-  //relevant for annotations is the height of digits
-  double textHeight = fontHeightCharacterMM( mGridAnnotationFont, QChar( '0' ) );
+  Border frameBorder = borderForLineCoord( pos, context.painter() );
+  const QStringList annotationStringList = QStringList() << annotationString;
+
+  QFontMetricsF textMetrics = QgsTextRenderer::fontMetrics( context, mTextFormat );
+  double textDescent = textMetrics.descent();
+  double textWidth = QgsTextRenderer::textWidth( context, mTextFormat, annotationStringList );
+  double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, annotationStringList, QgsTextRenderer::Point );
+
   double xpos = pos.x();
   double ypos = pos.y();
-  int rotation = 0;
+  double rotation = 0;
 
-  if ( frameBorder == Left )
+  switch ( frameBorder )
   {
-
-    if ( mGridAnnotationPosition == InsideMapFrame )
-    {
+    case Left:
       if ( mGridAnnotationDirection == Vertical || mGridAnnotationDirection == BoundaryDirection )
       {
-        xpos += textHeight + mAnnotationFrameDistance;
-        ypos += textWidth / 2.0;
-        rotation = 270;
-      }
-      else
-      {
-        xpos += mAnnotationFrameDistance;
-        ypos += textHeight / 2.0;
-      }
-    }
-    else //Outside map frame
-    {
-      if ( mGridAnnotationDirection == Vertical || mGridAnnotationDirection == BoundaryDirection )
-      {
-        xpos -= mAnnotationFrameDistance;
-        ypos += textWidth / 2.0;
-        rotation = 270;
-      }
-      else
-      {
-        xpos -= textWidth + mAnnotationFrameDistance;
-        ypos += textHeight / 2.0;
-      }
-    }
-
-  }
-  else if ( frameBorder == Right )
-  {
-    if ( mGridAnnotationPosition == InsideMapFrame )
-    {
-      if ( mGridAnnotationDirection == Vertical || mGridAnnotationDirection == BoundaryDirection )
-      {
-        xpos -= mAnnotationFrameDistance;
-        ypos += textWidth / 2.0;
-        rotation = 270;
-      }
-      else //Horizontal
-      {
-        xpos -= textWidth + mAnnotationFrameDistance;
-        ypos += textHeight / 2.0;
-      }
-    }
-    else //OutsideMapFrame
-    {
-      if ( mGridAnnotationDirection == Vertical || mGridAnnotationDirection == BoundaryDirection )
-      {
-        xpos += textHeight + mAnnotationFrameDistance;
-        ypos += textWidth / 2.0;
-        rotation = 270;
+        xpos += mAnnotationFrameDistance + textDescent;
+        ypos -= textWidth / 2;
+        rotation = 4.71239;
       }
       else //Horizontal
       {
         xpos += mAnnotationFrameDistance;
-        ypos += textHeight / 2.0;
+        ypos += textHeight / 2.0 - textDescent;
       }
-    }
-  }
-  else if ( frameBorder == Bottom )
-  {
-    if ( mGridAnnotationPosition == InsideMapFrame )
-    {
+      break;
+
+    case Right:
+      if ( mGridAnnotationDirection == Vertical || mGridAnnotationDirection == BoundaryDirection )
+      {
+        xpos -= textHeight - textDescent + mAnnotationFrameDistance;
+        ypos -= textWidth / 2;
+        rotation = 4.71239;
+      }
+      else //Horizontal
+      {
+        xpos -= textWidth + mAnnotationFrameDistance;
+        ypos += textHeight / 2.0 - textDescent;
+      }
+      break;
+
+    case Bottom:
       if ( mGridAnnotationDirection == Horizontal || mGridAnnotationDirection == BoundaryDirection )
       {
-        ypos -= mAnnotationFrameDistance;
+        ypos -= mAnnotationFrameDistance + textDescent;
         xpos -= textWidth / 2.0;
       }
       else //Vertical
       {
-        xpos += textHeight / 2.0;
-        ypos -= mAnnotationFrameDistance;
-        rotation = 270;
+        xpos -= textDescent;
+        ypos -= textWidth - mAnnotationFrameDistance;
+        rotation = 4.71239;
       }
-    }
-    else //OutsideMapFrame
-    {
-      if ( mGridAnnotationDirection == Horizontal || mGridAnnotationDirection == BoundaryDirection )
-      {
-        ypos += mAnnotationFrameDistance + textHeight;
-        xpos -= textWidth / 2.0;
-      }
-      else //Vertical
-      {
-        xpos += textHeight / 2.0;
-        ypos += textWidth + mAnnotationFrameDistance;
-        rotation = 270;
-      }
-    }
-  }
-  else //Top
-  {
-    if ( mGridAnnotationPosition == InsideMapFrame )
-    {
+      break;
+
+    case Top:
       if ( mGridAnnotationDirection == Horizontal || mGridAnnotationDirection == BoundaryDirection )
       {
         xpos -= textWidth / 2.0;
-        ypos += textHeight + mAnnotationFrameDistance;
+        ypos += textHeight - textDescent + mAnnotationFrameDistance;
       }
       else //Vertical
       {
-        xpos += textHeight / 2.0;
-        ypos += textWidth + mAnnotationFrameDistance;
-        rotation = 270;
+        xpos -= textDescent;
+        ypos += mAnnotationFrameDistance;
+        rotation = 4.71239;
       }
-    }
-    else //OutsideMapFrame
-    {
-      if ( mGridAnnotationDirection == Horizontal || mGridAnnotationDirection == BoundaryDirection )
-      {
-        xpos -= textWidth / 2.0;
-        ypos -= mAnnotationFrameDistance;
-      }
-      else //Vertical
-      {
-        xpos += textHeight / 2.0;
-        ypos -= mAnnotationFrameDistance;
-        rotation = 270;
-      }
-    }
   }
 
-  drawAnnotation( p, QPointF( xpos, ypos ), rotation, annotationString );
-}
-
-void QgsDecorationGrid::drawAnnotation( QPainter *p, QPointF pos, int rotation, const QString &annotationText )
-{
-  p->save();
-  p->translate( pos );
-  p->rotate( rotation );
-  p->setPen( QColor( 0, 0, 0 ) );
-  drawText( p, 0, 0, annotationText, mGridAnnotationFont );
-  p->restore();
+  QgsTextRenderer::drawText( QPointF( xpos, ypos ), rotation, QgsTextRenderer::AlignLeft, annotationStringList, context, mTextFormat );
 }
 
 QPolygonF canvasPolygon( const QgsMapSettings &mapSettings )
@@ -663,70 +531,6 @@ QgsDecorationGrid::Border QgsDecorationGrid::borderForLineCoord( QPointF point, 
   {
     return Bottom;
   }
-}
-
-void QgsDecorationGrid::drawText( QPainter *p, double x, double y, const QString &text, const QFont &font ) const
-{
-  QFont textFont = scaledFontPixelSize( font );
-
-  p->save();
-  p->setFont( textFont );
-  p->setPen( QColor( 0, 0, 0 ) ); //draw text always in black
-  double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
-  p->scale( scaleFactor, scaleFactor );
-  p->drawText( QPointF( x * FONT_WORKAROUND_SCALE, y * FONT_WORKAROUND_SCALE ), text );
-  p->restore();
-}
-
-void QgsDecorationGrid::drawText( QPainter *p, const QRectF &rect, const QString &text, const QFont &font, Qt::AlignmentFlag halignment, Qt::AlignmentFlag valignment ) const
-{
-  QFont textFont = scaledFontPixelSize( font );
-
-  QRectF scaledRect( rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE,
-                     rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE );
-
-  p->save();
-  p->setFont( textFont );
-  double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
-  p->scale( scaleFactor, scaleFactor );
-  p->drawText( scaledRect, halignment | valignment | Qt::TextWordWrap, text );
-  p->restore();
-}
-
-double QgsDecorationGrid::textWidthMillimeters( const QFont &font, const QString &text ) const
-{
-  QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetrics fontMetrics( metricsFont );
-  return ( fontMetrics.boundingRect( text ).width() / FONT_WORKAROUND_SCALE );
-}
-
-double QgsDecorationGrid::fontHeightCharacterMM( const QFont &font, QChar c ) const
-{
-  QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetricsF fontMetrics( metricsFont );
-  return ( fontMetrics.boundingRect( c ).height() / FONT_WORKAROUND_SCALE );
-}
-
-double QgsDecorationGrid::fontAscentMillimeters( const QFont &font ) const
-{
-  QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetricsF fontMetrics( metricsFont );
-  return ( fontMetrics.ascent() / FONT_WORKAROUND_SCALE );
-}
-
-double QgsDecorationGrid::pixelFontSize( double pointSize ) const
-{
-  // return ( pointSize * 0.3527 );
-  // TODO fix font scaling problem - this seems to help, but text seems still a bit too small (about 5/6)
-  return pointSize;
-}
-
-QFont QgsDecorationGrid::scaledFontPixelSize( const QFont &font ) const
-{
-  QFont scaledFont = font;
-  double pixelSize = pixelFontSize( font.pointSizeF() ) * FONT_WORKAROUND_SCALE + 0.5;
-  scaledFont.setPixelSize( pixelSize );
-  return scaledFont;
 }
 
 void QgsDecorationGrid::checkMapUnitsChanged()

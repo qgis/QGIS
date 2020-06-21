@@ -49,11 +49,10 @@ void QgsMesh3dEntity::build()
 
 void QgsMeshDataset3dEntity::buildGeometry()
 {
-  Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-
   if ( !layer() )
     return;
 
+  Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
   mesh->setGeometry( new QgsMeshDataset3dGeometry( layer(), mMapSettings.temporalRange(), mMapSettings.origin(), mSymbol, mesh ) );
   addComponent( mesh );
 }
@@ -82,11 +81,10 @@ QgsMesh3dTerrainTileEntity::QgsMesh3dTerrainTileEntity( const Qgs3DMapSettings &
 
 void QgsMesh3dTerrainTileEntity::buildGeometry()
 {
-  Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-
   if ( !layer() )
     return;
 
+  Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
   mesh->setGeometry( new QgsMeshTerrain3dGeometry( layer(), mMapSettings.origin(), mSymbol, mesh ) );
   addComponent( mesh );
 }

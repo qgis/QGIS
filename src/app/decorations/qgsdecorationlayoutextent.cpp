@@ -121,7 +121,8 @@ void QgsDecorationLayoutExtent::render( const QgsMapSettings &mapSettings, QgsRe
     return;
 
   context.painter()->save();
-  context.painter()->setRenderHint( QPainter::Antialiasing, true );
+  if ( context.flags() & QgsRenderContext::Antialiasing )
+    context.painter()->setRenderHint( QPainter::Antialiasing, true );
   mSymbol->startRender( context );
 
   const QgsMapToPixel &m2p = mapSettings.mapToPixel();

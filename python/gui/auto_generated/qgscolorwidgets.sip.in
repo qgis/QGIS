@@ -170,7 +170,7 @@ handles hue values when the color has an ambiguous hue (e.g., black or white sha
 
     int hue() const;
 %Docstring
-Returns the hue for the widget. This may differ from the hue for the QColor returned by color(),
+Returns the hue for the widget. This may differ from the hue for the QColor returned by :py:func:`~QgsColorWidget.color`,
 as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the saturation is zero).
 
 :return: explicitly set hue for widget

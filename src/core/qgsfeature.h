@@ -355,7 +355,8 @@ class CORE_EXPORT QgsFeature
      *   feature.setGeometry( QgsGeometry( geometry ) )
      * \endcode
      *
-     * * Example:
+     * ### Example
+     *
      * \code{.py}
      *   # Sets a feature's geometry to a point geometry
      *   feature.setGeometry( QgsPoint( 210, 41 ) )

@@ -228,6 +228,9 @@ class QgsGrassModuleMultiParam : public QgsGrassModuleGroupBoxItem
 
     // Parameters layout
     QVBoxLayout *mButtonsLayout = nullptr;
+
+    QgsGrassModuleMultiParam( const QgsGrassModuleMultiParam & ) = delete;
+    QgsGrassModuleMultiParam &operator=( const QgsGrassModuleMultiParam & ) = delete;
 };
 
 /****************** QgsGrassModuleOption ************************/
@@ -572,6 +575,9 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
 
     // selection mode
     QComboBox *mModeComboBox = nullptr;
+
+    QgsGrassModuleSelection( const QgsGrassModuleSelection & ) = delete;
+    QgsGrassModuleSelection &operator = ( const QgsGrassModuleSelection & ) = delete;
 };
 
 /*********************** QgsGrassModuleFile **********************/
@@ -623,6 +629,9 @@ class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
 
     //! File filters
     QString mFilters;
+
+    QgsGrassModuleFile( const QgsGrassModuleFile & ) = delete;
+    QgsGrassModuleFile &operator = ( const QgsGrassModuleFile & ) = delete;
 };
 
 #endif // QGSGRASSMODULEPARAM_H

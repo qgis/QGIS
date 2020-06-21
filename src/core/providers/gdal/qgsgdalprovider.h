@@ -150,6 +150,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 
     bool readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
     bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
+
     double bandScale( int bandNo ) const override;
     double bandOffset( int bandNo ) const override;
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
@@ -205,8 +206,14 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 
     QgsPoint transformCoordinates( const QgsPoint &point, TransformType type ) override;
 
+    bool enableProviderResampling( bool enable ) override { mProviderResamplingEnabled = enable; return true; }
+    bool setZoomedInResamplingMethod( ResamplingMethod method ) override { mZoomedInResamplingMethod = method; return true; }
+    bool setZoomedOutResamplingMethod( ResamplingMethod method ) override { mZoomedOutResamplingMethod = method; return true; }
+    bool setMaxOversampling( double factor ) override { mMaxOversampling = factor; return true; }
+
   private:
     QgsGdalProvider( const QgsGdalProvider &other );
+    QgsGdalProvider &operator=( const QgsGdalProvider & ) = delete;
 
     //! Whether mGdalDataset and mGdalBaseDataset have been attempted to be set
     bool mHasInit = false;
@@ -343,6 +350,12 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 
     //! Instance of GDAL transformer function used in transformCoordinates() for conversion between image and layer coordinates
     void *mGdalTransformerArg = nullptr;
+
+    bool canDoResampling(
+      int bandNo,
+      const QgsRectangle &reqExtent,
+      int bufferWidthPix,
+      int bufferHeightPix );
 };
 
 /**

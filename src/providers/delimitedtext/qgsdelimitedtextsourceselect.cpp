@@ -509,7 +509,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
           }
           else
           {
-            value.toDouble( &ok );
+            ( void )value.toDouble( &ok );
           }
           isValidCoordinate[i] = ok;
         }

@@ -42,7 +42,7 @@
 #include "qgsmaplayerstylecategoriesmodel.h"
 #include "qgssymbollayerutils.h"
 #include "qgsxmlutils.h"
-
+#include "qgsmessagebar.h"
 
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
@@ -50,7 +50,6 @@ QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeVi
   , mCanvas( canvas )
 {
 }
-
 
 QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 {
@@ -232,9 +231,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         // attribute table
         QgsSettings settings;
         QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( QStringLiteral( "qgis/attributeTableBehavior" ),  QgsAttributeTableFilterModel::ShowAll );
-        QAction *attributeTable = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "&Open Attribute Table" ),
-                                  QgisApp::instance(), [ = ] { QgisApp::instance()->attributeTable( initialMode ); } );
-        attributeTable->setEnabled( vlayer->isValid() );
+        const auto lambdaOpenAttributeTable = [ = ] { QgisApp::instance()->attributeTable( initialMode ); };
+        QAction *attributeTableAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "&Open Attribute Table" ),
+                                        QgisApp::instance(), lambdaOpenAttributeTable );
+        attributeTableAction->setEnabled( vlayer->isValid() );
 
         // allow editing
         const QgsVectorDataProvider *provider = vlayer->dataProvider();
@@ -897,7 +897,10 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol( const QString 
 
   const QgsSymbol *originalSymbol = node->symbol();
   if ( !originalSymbol )
+  {
+    QgisApp::instance()->messageBar()->pushWarning( tr( "No Symbol" ), tr( "There is no symbol associated with the rule." ) );
     return;
+  }
 
   std::unique_ptr< QgsSymbol > symbol( originalSymbol->clone() );
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() );

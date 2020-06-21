@@ -379,7 +379,7 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
     expression.prepare( &context );
 
     QgsFeatureRequest req;
-    req.setSubsetOfAttributes( expression.referencedAttributeIndexes( layer->fields() ).toList() );
+    req.setSubsetOfAttributes( qgis::setToList( expression.referencedAttributeIndexes( layer->fields() ) ) );
     if ( !expression.needsGeometry() )
       req.setFlags( QgsFeatureRequest::NoGeometry );
     QString enhancedSearch = string;

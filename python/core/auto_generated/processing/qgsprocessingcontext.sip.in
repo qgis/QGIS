@@ -73,7 +73,7 @@ Returns the project in which the algorithm is being executed.
 %Docstring
 Sets the ``project`` in which the algorithm will be executed.
 
-This also automatically sets the transformContext() to match
+This also automatically sets the :py:func:`~QgsProcessingContext.transformContext` to match
 the project's transform context.
 
 .. seealso:: :py:func:`project`
@@ -236,7 +236,7 @@ algorithm or model.
 
 .. warning::
 
-   First check willLoadLayerOnCompletion(), or calling this method will incorrectly
+   First check :py:func:`~QgsProcessingContext.willLoadLayerOnCompletion`, or calling this method will incorrectly
    add ``layer`` as a layer to load on completion.
 
 .. seealso:: :py:func:`willLoadLayerOnCompletion`
@@ -261,7 +261,7 @@ Returns the behavior used for checking invalid geometries in input layers.
 %Docstring
 Sets the behavior used for checking invalid geometries in input layers.
 Settings this to anything but QgsFeatureRequest.GeometryNoCheck will also
-reset the invalidGeometryCallback() to a default implementation.
+reset the :py:func:`~QgsProcessingContext.invalidGeometryCallback` to a default implementation.
 
 .. seealso:: :py:func:`invalidGeometryCheck`
 %End
@@ -269,7 +269,7 @@ reset the invalidGeometryCallback() to a default implementation.
     void setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
 %Docstring
 Sets a callback function to use when encountering an invalid geometry and
-invalidGeometryCheck() is set to GeometryAbortOnInvalid. This function will be
+:py:func:`~QgsProcessingContext.invalidGeometryCheck` is set to GeometryAbortOnInvalid. This function will be
 called using the feature with invalid geometry as a parameter.
 
 .. seealso:: :py:func:`invalidGeometryCallback`
@@ -356,9 +356,9 @@ Returns the thread in which the context lives.
 
     void pushToThread( QThread *thread );
 %Docstring
-Pushes the thread affinity for the context (including all layers contained in the temporaryLayerStore()) into
+Pushes the thread affinity for the context (including all layers contained in the :py:func:`~QgsProcessingContext.temporaryLayerStore`) into
 another ``thread``. This method is only safe to call when the current thread matches the existing thread
-affinity for the context (see thread()).
+affinity for the context (see :py:func:`~QgsProcessingContext.thread`).
 
 .. seealso:: :py:func:`thread`
 %End
@@ -366,10 +366,10 @@ affinity for the context (see thread()).
     void takeResultsFrom( QgsProcessingContext &context );
 %Docstring
 Takes the results from another ``context`` and merges them with the results currently
-stored in this context. This includes settings like any layers loaded in the temporaryLayerStore()
-and layersToLoadOnCompletion().
+stored in this context. This includes settings like any layers loaded in the :py:func:`~QgsProcessingContext.temporaryLayerStore`
+and :py:func:`~QgsProcessingContext.layersToLoadOnCompletion`.
 This is only safe to call when both this context and the other ``context`` share the same
-thread() affinity, and that thread is the current thread.
+:py:func:`~QgsProcessingContext.thread` affinity, and that thread is the current thread.
 %End
 
     QgsMapLayer *getMapLayer( const QString &identifier );
@@ -400,7 +400,7 @@ Returns the preferred vector format to use for vector outputs.
 
 This method returns a file extension to use when creating vector outputs (e.g. "shp"). Generally,
 it is preferable to use the extension associated with a particular parameter, which can be retrieved through
-:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()` However, in some cases, a specific parameter
+:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()`. However, in some cases, a specific parameter
 may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
 and which creates multiple output layers in that folder). In this case, the format returned by this
 function should be used when creating these outputs.
@@ -421,7 +421,7 @@ Sets the preferred vector ``format`` to use for vector outputs.
 
 This method sets a file extension to use when creating vector outputs (e.g. "shp"). Generally,
 it is preferable to use the extension associated with a particular parameter, which can be retrieved through
-:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()` However, in some cases, a specific parameter
+:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()`. However, in some cases, a specific parameter
 may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
 and which creates multiple output layers in that folder). In this case, the format set by this
 function will be used when creating these outputs.
@@ -439,7 +439,7 @@ Returns the preferred raster format to use for vector outputs.
 
 This method returns a file extension to use when creating raster outputs (e.g. "tif"). Generally,
 it is preferable to use the extension associated with a particular parameter, which can be retrieved through
-:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()` However, in some cases, a specific parameter
+:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()`. However, in some cases, a specific parameter
 may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
 and which creates multiple output layers in that folder). In this case, the format returned by this
 function should be used when creating these outputs.
@@ -460,7 +460,7 @@ Sets the preferred raster ``format`` to use for vector outputs.
 
 This method sets a file extension to use when creating raster outputs (e.g. "tif"). Generally,
 it is preferable to use the extension associated with a particular parameter, which can be retrieved through
-:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()` However, in some cases, a specific parameter
+:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()`. However, in some cases, a specific parameter
 may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
 and which creates multiple output layers in that folder). In this case, the format set by this
 function will be used when creating these outputs.
@@ -486,7 +486,7 @@ class QgsProcessingLayerPostProcessorInterface
 An interface for layer post-processing handlers for execution following a processing algorithm operation.
 
 Note that post-processing of a layer will ONLY occur if that layer is set to be loaded into a QGIS project
-on algorithm completion. See :py:func:`QgsProcessingContext.layersToLoadOnCompletion()`
+on algorithm completion. See :py:func:`QgsProcessingContext.layersToLoadOnCompletion()`.
 
 Algorithms that wish to set post-processing steps for generated layers should implement this interface
 in a separate class (NOT the algorithm class itself!).
@@ -514,7 +514,7 @@ In the case of an algorithm run as part of a larger model, the post-processing o
 execution of the entire model.
 
 Note that post-processing of a layer will ONLY occur if that layer is set to be loaded into a QGIS project
-on algorithm completion. See :py:func:`QgsProcessingContext.layersToLoadOnCompletion()`
+on algorithm completion. See :py:func:`QgsProcessingContext.layersToLoadOnCompletion()`.
 %End
 
 };

@@ -520,11 +520,15 @@ QTabWidget::pane {
     top:-1px;
 }
 
+QTabWidget[tabPosition="0"] QTabBar {
+    border-bottom: 1px solid @itemdarkbackground;
+}
+
 QTabBar::tab {
     color: @text;
     border: 1px solid @itemdarkbackground;
     border-bottom: none;
-    background-color: @background;
+    background-color: transparent;
     padding-left: 0.8em;
     padding-right: 0.8em;
     padding-top: 0.1em;
@@ -559,6 +563,7 @@ QTabBar::tab:!selected
 QTabBar::tab:selected
 {
     margin-bottom: 0px;
+    background-color: @background;
 }
 
 QTabBar::tab:bottom:!selected
@@ -570,6 +575,7 @@ QTabBar::tab:bottom:!selected
 QTabBar::tab:bottom:selected
 {
     margin-top: 0px;
+    background-color: @background;
 }
 
 QGroupBox::indicator:hover,
@@ -772,11 +778,11 @@ QTreeView::item:disabled {
 }
 
 QTreeView::item:hover, QTreeView::branch:hover {
-    background-color: @c7c7c7;
+    background-color: transparent;
     color: @text;
 }
 
-QTreeView::item:selected, QTreeView::branch:selected {
+QTreeView::item:selected, QTreeView::item:selected:hover, QTreeView::branch:selected, QTreeView::branch:selected:hover {
     background-color: @selection;
     color: @text;
 }
@@ -791,6 +797,22 @@ QTreeView::branch:open:has-children:!has-siblings,
 QTreeView::branch:open:has-children:has-siblings {
      border-image: none;
      image: url(@theme_path/icons/caret-down.svg);
+}
+
+QTreeView::indicator
+{
+    border: 1px solid transparent;
+    width:0.8em;
+    height:0.8em;
+}
+QTreeView::indicator:intermediary {
+    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+}
+QTreeView::indicator:checked {
+    image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
+}
+QTreeView::indicator:unchecked {
+    image: url(@theme_path/icons/qcheckbox-unchecked.svg);
 }
 
 QgsLayerTreeView::item,
@@ -829,6 +851,22 @@ QTableView {
 
 QTableView:disabled {
     color: @itemalternativebackground;
+}
+
+QTableView::indicator
+{
+    border: 1px solid transparent;
+    width:0.8em;
+    height:0.8em;
+}
+QTableView::indicator:intermediary {
+    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+}
+QTableView::indicator:checked {
+    image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
+}
+QTableView::indicator:unchecked {
+    image: url(@theme_path/icons/qcheckbox-unchecked.svg);
 }
 
 QTableView QTableCornerButton::section {

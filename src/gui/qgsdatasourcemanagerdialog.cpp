@@ -166,10 +166,10 @@ void QgsDataSourceManagerDialog::addProviderDialog( QgsAbstractDataSourceWidget 
 void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *dlg, const QString &providerKey )
 {
   // DB
-  connect( dlg, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
-           this, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ) );
-  connect( dlg, SIGNAL( progressMessage( QString ) ),
-           this, SIGNAL( showStatusMessage( QString ) ) );
+  connect( dlg, &QgsAbstractDataSourceWidget::addDatabaseLayers,
+           this, &QgsDataSourceManagerDialog::addDatabaseLayers );
+  connect( dlg, &QgsAbstractDataSourceWidget::progressMessage,
+           this, &QgsDataSourceManagerDialog::showStatusMessage );
   // Vector
   connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayer, this, [ = ]( const QString & vectorLayerPath, const QString & baseName, const QString & specifiedProvider )
   {
@@ -179,20 +179,29 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
          );
   connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayers,
            this, &QgsDataSourceManagerDialog::vectorLayersAdded );
-  connect( dlg, SIGNAL( connectionsChanged() ), this, SIGNAL( connectionsChanged() ) );
+  connect( dlg, &QgsAbstractDataSourceWidget::connectionsChanged, this, &QgsDataSourceManagerDialog::connectionsChanged );
   // Raster
-  connect( dlg, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
-           this, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ) );
+  connect( dlg, &QgsAbstractDataSourceWidget::addRasterLayer,
+           this, [ = ]( const QString & uri, const QString & baseName, const QString & providerKey )
+  {
+    addRasterLayer( uri, baseName, providerKey );
+  } );
   // Mesh
   connect( dlg, &QgsAbstractDataSourceWidget::addMeshLayer, this, &QgsDataSourceManagerDialog::addMeshLayer );
   // Vector tile
   connect( dlg, &QgsAbstractDataSourceWidget::addVectorTileLayer, this, &QgsDataSourceManagerDialog::addVectorTileLayer );
   // Virtual
-  connect( dlg, SIGNAL( replaceVectorLayer( QString, QString, QString, QString ) ),
-           this, SIGNAL( replaceSelectedVectorLayer( QString, QString, QString, QString ) ) );
+  connect( dlg, &QgsAbstractDataSourceWidget::replaceVectorLayer,
+           this, &QgsDataSourceManagerDialog::replaceSelectedVectorLayer );
   // Common
-  connect( dlg, SIGNAL( connectionsChanged() ), this, SIGNAL( connectionsChanged() ) );
-  connect( this, SIGNAL( providerDialogsRefreshRequested() ), dlg, SLOT( refresh() ) );
+  connect( dlg, &QgsAbstractDataSourceWidget::connectionsChanged, this, &QgsDataSourceManagerDialog::connectionsChanged );
+  connect( this, &QgsDataSourceManagerDialog::providerDialogsRefreshRequested, dlg, &QgsAbstractDataSourceWidget::refresh );
+
+  // Message
+  connect( dlg, &QgsAbstractDataSourceWidget::pushMessage, this, [ = ]( const QString & title, const QString & message, const Qgis::MessageLevel level )
+  {
+    mMessageBar->pushMessage( title, message, level );
+  } );
 }
 
 void QgsDataSourceManagerDialog::showEvent( QShowEvent *e )

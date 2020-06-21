@@ -51,7 +51,7 @@ Returns the CRS currently selected in the widget.
     void setShowNoProjection( bool show );
 %Docstring
 Sets whether a "no/invalid" projection option should be shown. If this
-option is selected, calling crs() will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
+option is selected, calling :py:func:`~QgsProjectionSelectionTreeWidget.crs` will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
 
 .. seealso:: :py:func:`showNoProjection`
 
@@ -70,7 +70,7 @@ Sets whether to show the bounnds preview map.
     bool showNoProjection() const;
 %Docstring
 Returns whether the "no/invalid" projection option is shown. If this
-option is selected, calling crs() will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
+option is selected, calling :py:func:`~QgsProjectionSelectionTreeWidget.crs` will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
 
 .. seealso:: :py:func:`setShowNoProjection`
 
@@ -90,7 +90,7 @@ Returns whether the bounds preview map is shown.
 %Docstring
 Returns ``True`` if the current selection in the widget is a valid choice. Valid
 selections include any projection and also the "no/invalid projection" option
-(if setShowNoProjection() was called). Invalid selections are the group
+(if :py:func:`~QgsProjectionSelectionTreeWidget.setShowNoProjection` was called). Invalid selections are the group
 headers (such as "Geographic Coordinate Systems")
 %End
 

@@ -53,7 +53,7 @@ Implicit sharing
 This class is implicitly shared, copying has a very low overhead.
 It is normally preferable to call `QgsExpression( otherExpression )` instead of
 `QgsExpression( otherExpression.expression() )`. A deep copy will only be made
-when prepare() is called. For usage this means mainly, that you should
+when :py:func:`~prepare` is called. For usage this means mainly, that you should
 normally keep an unprepared master copy of a QgsExpression and whenever using it
 with a particular QgsFeatureIterator copy it just before and prepare it using the
 same context as the iterator.
@@ -94,7 +94,7 @@ Implicit sharing was added in 2.14
 %Docstring
 Creates a new expression based on the provided string.
 The string will immediately be parsed. For optimization
-prepare() should always be called before every
+:py:func:`~QgsExpression.prepare` should always be called before every
 loop in which this expression is used.
 %End
 
@@ -207,7 +207,7 @@ Evaluate the feature and return the result.
 
 .. note::
 
-   this method does not expect that prepare() has been called on this instance
+   this method does not expect that :py:func:`~QgsExpression.prepare` has been called on this instance
 
 .. versionadded:: 2.12
 %End
@@ -220,7 +220,7 @@ Evaluate the expression against the specified context and return the result.
 
 .. note::
 
-   prepare() should be called before calling this method.
+   :py:func:`~QgsExpression.prepare` should be called before calling this method.
 
 .. versionadded:: 2.12
 %End
@@ -269,7 +269,7 @@ Set the expression string, will reset the whole internal structure.
 %Docstring
 Returns the original, unmodified expression string.
 If there was none supplied because it was constructed by sole
-API calls, dump() will be used to create one instead.
+API calls, :py:func:`~QgsExpression.dump` will be used to create one instead.
 %End
 
     QString dump() const;
@@ -277,7 +277,7 @@ API calls, dump() will be used to create one instead.
 Returns an expression string, constructed from the internal
 abstract syntax tree. This does not contain any nice whitespace
 formatting or comments. In general it is preferable to use
-expression() instead.
+:py:func:`~QgsExpression.expression` instead.
 %End
 
     QgsDistanceArea *geomCalculator();
@@ -296,10 +296,10 @@ Returns calculator used for distance and area calculations
 %Docstring
 Sets the geometry calculator used for distance and area calculations in expressions.
 (used by $length, $area and $perimeter functions only).
-If the geometry calculator is set to ``None`` (default), prepare() will read variables
+If the geometry calculator is set to ``None`` (default), :py:func:`~QgsExpression.prepare` will read variables
 from the expression context ("project_ellipsoid", "_project_transform_context" and
 "_layer_crs") to build a geometry calculator.
-If these variables does not exist and if setGeomCalculator() is not called,
+If these variables does not exist and if :py:func:`~QgsExpression.setGeomCalculator` is not called,
 all distance and area calculations are performed using simple
 Cartesian methods (ie no ellipsoidal calculations).
 
@@ -311,11 +311,11 @@ Cartesian methods (ie no ellipsoidal calculations).
 
     QgsUnitTypes::DistanceUnit distanceUnits() const;
 %Docstring
-Returns the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
+Returns the desired distance units for calculations involving :py:func:`~QgsExpression.geomCalculator`, e.g., "$length" and "$perimeter".
 
 .. note::
 
-   distances are only converted when a geomCalculator() has been set
+   distances are only converted when a :py:func:`~QgsExpression.geomCalculator` has been set
 
 .. seealso:: :py:func:`setDistanceUnits`
 
@@ -326,13 +326,13 @@ Returns the desired distance units for calculations involving geomCalculator(), 
 
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 %Docstring
-Sets the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
-If distance units are set to QgsUnitTypes.DistanceUnknownUnit (default), prepare() will read
+Sets the desired distance units for calculations involving :py:func:`~QgsExpression.geomCalculator`, e.g., "$length" and "$perimeter".
+If distance units are set to QgsUnitTypes.DistanceUnknownUnit (default), :py:func:`~QgsExpression.prepare` will read
 variables from the expression context ("project_distance_units") to determine distance units.
 
 .. note::
 
-   distances are only converted when a geomCalculator() has been set
+   distances are only converted when a :py:func:`~QgsExpression.geomCalculator` has been set
 
 .. seealso:: :py:func:`distanceUnits`
 
@@ -343,11 +343,11 @@ variables from the expression context ("project_distance_units") to determine di
 
     QgsUnitTypes::AreaUnit areaUnits() const;
 %Docstring
-Returns the desired areal units for calculations involving geomCalculator(), e.g., "$area".
+Returns the desired areal units for calculations involving :py:func:`~QgsExpression.geomCalculator`, e.g., "$area".
 
 .. note::
 
-   areas are only converted when a geomCalculator() has been set
+   areas are only converted when a :py:func:`~QgsExpression.geomCalculator` has been set
 
 .. seealso:: :py:func:`setAreaUnits`
 
@@ -358,13 +358,13 @@ Returns the desired areal units for calculations involving geomCalculator(), e.g
 
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 %Docstring
-Sets the desired areal units for calculations involving geomCalculator(), e.g., "$area".
-If distance units are set to QgsUnitTypes.AreaUnknownUnit (default), prepare() will read
+Sets the desired areal units for calculations involving :py:func:`~QgsExpression.geomCalculator`, e.g., "$area".
+If distance units are set to QgsUnitTypes.AreaUnknownUnit (default), :py:func:`~QgsExpression.prepare` will read
 variables from the expression context ("project_distance_units") to determine distance units.
 
 .. note::
 
-   areas are only converted when a geomCalculator() has been set
+   areas are only converted when a :py:func:`~QgsExpression.geomCalculator` has been set
 
 .. seealso:: :py:func:`areaUnits`
 

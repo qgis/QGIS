@@ -392,6 +392,15 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
      */
     virtual void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers );
 
+    /**
+     * Returns the Qt layout "stretch" factor to use when adding this widget to a layout.
+     *
+     * The default implementation returns 0.
+     *
+     * \since QGIS 3.14
+     */
+    virtual int stretch() const;
+
     QgsExpressionContext createExpressionContext() const override;
 
     /**

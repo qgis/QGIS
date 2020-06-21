@@ -79,8 +79,8 @@ void QgsTextFormatWidget::initWidget()
   connect( mFontMaxPixelSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsTextFormatWidget::mFontMaxPixelSpinBox_valueChanged );
   connect( mBufferUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsTextFormatWidget::mBufferUnitWidget_changed );
   connect( mMaskBufferUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsTextFormatWidget::mMaskBufferUnitWidget_changed );
-  connect( mCoordXDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mCoordXDDBtn_activated );
-  connect( mCoordYDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mCoordYDDBtn_activated );
+  connect( mCoordXDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::mCoordXDDBtn_changed );
+  connect( mCoordYDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::mCoordYDDBtn_changed );
   connect( mShapeTypeCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged );
   connect( mShapeRotationCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mShapeRotationCmbBx_currentIndexChanged );
   connect( mShapeSVGParamsBtn, &QPushButton::clicked, this, &QgsTextFormatWidget::mShapeSVGParamsBtn_clicked );
@@ -1496,9 +1496,9 @@ void QgsTextFormatWidget::mMaskBufferUnitWidget_changed()
   updateFont( mRefFont );
 }
 
-void QgsTextFormatWidget::mCoordXDDBtn_activated( bool active )
+void QgsTextFormatWidget::mCoordXDDBtn_changed( )
 {
-  if ( !active ) //no data defined alignment without data defined position
+  if ( !mCoordXDDBtn->isActive() ) //no data defined alignment without data defined position
   {
     enableDataDefinedAlignment( false );
   }
@@ -1508,9 +1508,9 @@ void QgsTextFormatWidget::mCoordXDDBtn_activated( bool active )
   }
 }
 
-void QgsTextFormatWidget::mCoordYDDBtn_activated( bool active )
+void QgsTextFormatWidget::mCoordYDDBtn_changed( )
 {
-  if ( !active ) //no data defined alignment without data defined position
+  if ( !mCoordYDDBtn->isActive() ) //no data defined alignment without data defined position
   {
     enableDataDefinedAlignment( false );
   }

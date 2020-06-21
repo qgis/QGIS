@@ -283,19 +283,28 @@ int nmea_parse_GPGST( const char *buff, int buff_sz, nmeaGPGST *pack )
 
   nmea_trace_buff( buff, buff_sz );
 
-  if ( 8 != nmea_scanf( buff, buff_sz,
-                        "$GPGST,%s,%f,%f,%f,%f,%f,%f,%f*",
+  char type;
+
+  if ( 9 != nmea_scanf( buff, buff_sz,
+                        "$G%CGST,%s,%f,%f,%f,%f,%f,%f,%f*",
+                        &( type ),
                         &( time_buff[0] ),
                         &( pack->rms_pr ), &( pack->err_major ), &( pack->err_minor ), &( pack->err_ori ),
                         &( pack->sig_lat ), &( pack->sig_lon ), &( pack->sig_alt ) ) )
   {
-    nmea_error( "GPGST parse error!" );
+    nmea_error( "G?GST parse error!" );
+    return 0;
+  }
+
+  if ( type != 'P' && type != 'N' )
+  {
+    nmea_error( "G?GST invalid type " );
     return 0;
   }
 
   if ( 0 != _nmea_parse_time( &time_buff[0], ( int )strlen( &time_buff[0] ), &( pack->utc ) ) )
   {
-    nmea_error( "GPGST time parse error!" );
+    nmea_error( "G?GST time parse error!" );
     return 0;
   }
 
@@ -458,18 +467,26 @@ int nmea_parse_GPHDT( const char *buff, int buff_sz, nmeaGPHDT *pack )
   nmea_trace_buff( buff, buff_sz );
 
   char type;
+  char talker_id;
 
-  if ( 2 != nmea_scanf( buff, buff_sz,
-                        "$GPHDT,%f,%C*",
+  if ( 3 != nmea_scanf( buff, buff_sz,
+                        "$G%CHDT,%f,%C*",
+                        &( talker_id ),
                         &( pack->heading ), &( type ) ) )
   {
-    nmea_error( "GPHDT parse error!" );
+    nmea_error( "G?HDT parse error!" );
+    return 0;
+  }
+
+  if ( talker_id != 'P' && talker_id != 'N' )
+  {
+    nmea_error( "G?HDT invalid type " );
     return 0;
   }
 
   if ( type != 'T' )
   {
-    nmea_error( "GPHDT invalid type " );
+    nmea_error( "G?HDT invalid type " );
     return 0;
   }
 
@@ -491,14 +508,23 @@ int nmea_parse_GPVTG( const char *buff, int buff_sz, nmeaGPVTG *pack )
 
   nmea_trace_buff( buff, buff_sz );
 
-  if ( 8 != nmea_scanf( buff, buff_sz,
-                        "$GPVTG,%f,%C,%f,%C,%f,%C,%f,%C*",
+  char type;
+
+  if ( 9 != nmea_scanf( buff, buff_sz,
+                        "$G%CVTG,%f,%C,%f,%C,%f,%C,%f,%C*",
+                        &type,
                         &( pack->dir ), &( pack->dir_t ),
                         &( pack->dec ), &( pack->dec_m ),
                         &( pack->spn ), &( pack->spn_n ),
                         &( pack->spk ), &( pack->spk_k ) ) )
   {
-    nmea_error( "GPVTG parse error!" );
+    nmea_error( "G?VTG parse error!" );
+    return 0;
+  }
+
+  if ( type != 'P' && type != 'N' )
+  {
+    nmea_error( "G?VTG invalid type " );
     return 0;
   }
 
@@ -507,7 +533,7 @@ int nmea_parse_GPVTG( const char *buff, int buff_sz, nmeaGPVTG *pack )
        pack->spn_n != 'N' ||
        pack->spk_k != 'K' )
   {
-    nmea_error( "GPVTG parse error (format error)!" );
+    nmea_error( "G?VTG parse error (format error)!" );
     return 0;
   }
 

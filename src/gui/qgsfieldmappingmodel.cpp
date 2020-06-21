@@ -41,7 +41,7 @@ QVariant QgsFieldMappingModel::headerData( int section, Qt::Orientation orientat
         {
           case ColumnDataIndex::SourceExpression:
           {
-            return tr( "Source expression" );
+            return tr( "Source Expression" );
           }
           case ColumnDataIndex::DestinationName:
           {
@@ -336,6 +336,11 @@ QgsExpressionContextGenerator *QgsFieldMappingModel::contextGenerator() const
   return mExpressionContextGenerator.get();
 }
 
+void QgsFieldMappingModel::setBaseExpressionContextGenerator( const QgsExpressionContextGenerator *generator )
+{
+  mExpressionContextGenerator->setBaseExpressionContextGenerator( generator );
+}
+
 void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFields,
     const QMap<QString, QString> &expressions )
 {
@@ -354,9 +359,9 @@ void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFie
       const QgsExpression exp { f.expression };
       // if it's source field
       if ( exp.isField() &&
-           mSourceFields.names().contains( exp.referencedColumns().toList().first() ) )
+           mSourceFields.names().contains( qgis::setToList( exp.referencedColumns() ).first() ) )
       {
-        usedFields.push_back( exp.referencedColumns().toList().first() );
+        usedFields.push_back( qgis::setToList( exp.referencedColumns() ).first() );
       }
     }
     else
@@ -380,7 +385,7 @@ void QgsFieldMappingModel::setDestinationEditable( bool destinationEditable )
   mDestinationEditable = destinationEditable;
 }
 
-const QMap<QVariant::Type, QString> QgsFieldMappingModel::dataTypes() const
+const QMap<QVariant::Type, QString> QgsFieldMappingModel::dataTypes()
 {
   static const QMap<QVariant::Type, QString> sDataTypes
   {
@@ -496,11 +501,27 @@ QgsFieldMappingModel::ExpressionContextGenerator::ExpressionContextGenerator( co
 
 QgsExpressionContext QgsFieldMappingModel::ExpressionContextGenerator::createExpressionContext() const
 {
-  QgsExpressionContext ctx;
-  ctx.appendScope( QgsExpressionContextUtils::globalScope() );
-  ctx.setFields( *mSourceFields );
-  QgsFeature feature { *mSourceFields };
-  feature.setValid( true );
-  ctx.setFeature( feature );
-  return ctx;
+  if ( mBaseGenerator )
+  {
+    QgsExpressionContext ctx = mBaseGenerator->createExpressionContext();
+    std::unique_ptr< QgsExpressionContextScope > fieldMappingScope = qgis::make_unique< QgsExpressionContextScope >( tr( "Field Mapping" ) );
+    fieldMappingScope->setFields( *mSourceFields );
+    ctx.appendScope( fieldMappingScope.release() );
+    return ctx;
+  }
+  else
+  {
+    QgsExpressionContext ctx;
+    ctx.appendScope( QgsExpressionContextUtils::globalScope() );
+    ctx.setFields( *mSourceFields );
+    QgsFeature feature { *mSourceFields };
+    feature.setValid( true );
+    ctx.setFeature( feature );
+    return ctx;
+  }
+}
+
+void QgsFieldMappingModel::ExpressionContextGenerator::setBaseExpressionContextGenerator( const QgsExpressionContextGenerator *generator )
+{
+  mBaseGenerator = generator;
 }

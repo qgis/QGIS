@@ -43,8 +43,8 @@ in the vector.
 Construct a linestring from arrays of coordinates. If the z or m
 arrays are non-empty then the resultant linestring will have
 z and m types accordingly.
-This constructor is more efficient then calling setPoints()
-or repeatedly calling addVertex()
+This constructor is more efficient then calling :py:func:`~QgsLineString.setPoints`
+or repeatedly calling :py:func:`~QgsLineString.addVertex`
 
 If the ``z`` vector is filled, then the geometry type will either
 be a LineStringZ(M) or LineString25D depending on the ``is25DType``
@@ -65,8 +65,8 @@ Constructs a linestring with a single segment from ``p1`` to ``p2``.
     QgsLineString( const QVector<QgsPointXY> &points );
 %Docstring
 Construct a linestring from list of points.
-This constructor is more efficient then calling setPoints()
-or repeatedly calling addVertex()
+This constructor is more efficient then calling :py:func:`~QgsLineString.setPoints`
+or repeatedly calling :py:func:`~QgsLineString.addVertex`
 
 .. versionadded:: 3.0
 %End
@@ -424,7 +424,7 @@ segment in the line.
     virtual bool fromWkt( const QString &wkt );
 
 
-    virtual QByteArray asWkb() const;
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 
     virtual QString asWkt( int precision = 17 ) const;
 

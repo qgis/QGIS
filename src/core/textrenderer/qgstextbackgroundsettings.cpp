@@ -767,3 +767,13 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
     }
   }
 }
+
+QSet<QString> QgsTextBackgroundSettings::referencedFields( const QgsRenderContext &context ) const
+{
+  QSet< QString > fields;
+  if ( d->markerSymbol )
+  {
+    fields.unite( d->markerSymbol->usedAttributes( context ) );
+  }
+  return fields;
+}

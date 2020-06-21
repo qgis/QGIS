@@ -7,6 +7,7 @@
 %Include auto_generated/qgslayoutitem3dmap.sip
 %Include auto_generated/qgsphongmaterialsettings.sip
 %Include auto_generated/qgspointlightsettings.sip
+%Include auto_generated/qgsdirectionallightsettings.sip
 %Include auto_generated/qgsrulebased3drenderer.sip
 %Include auto_generated/qgsvectorlayer3drenderer.sip
 %Include auto_generated/symbols/qgsabstract3dsymbol.sip
