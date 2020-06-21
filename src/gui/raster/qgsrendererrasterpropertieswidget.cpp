@@ -18,6 +18,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsbrightnesscontrastfilter.h"
 #include "qgshuesaturationfilter.h"
+#include "qgsgammacorrectionfilter.h"
 #include "qgsrastercontourrendererwidget.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrendererwidget.h"
@@ -74,6 +75,9 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
   connect( mSliderContrast, &QAbstractSlider::valueChanged, mContrastSpinBox, &QSpinBox::setValue );
   connect( mContrastSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mSliderContrast, &QAbstractSlider::setValue );
 
+  connect( mSliderGamma, &QAbstractSlider::valueChanged, this, &QgsRendererRasterPropertiesWidget::updateGammaSpinBox );
+  connect( mGammaSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRendererRasterPropertiesWidget::updateGammaSlider );
+
   // Connect saturation slider and spin box
   connect( sliderSaturation, &QAbstractSlider::valueChanged, spinBoxSaturation, &QSpinBox::setValue );
   connect( spinBoxSaturation, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), sliderSaturation, &QAbstractSlider::setValue );
@@ -91,6 +95,7 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
   // Just connect the spin boxes because the sliders update the spinners
   connect( mBrightnessSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( mContrastSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( mGammaSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( spinBoxSaturation, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( spinColorizeStrength, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( btnColorizeColor, &QgsColorButton::colorChanged, this, &QgsPanelWidget::widgetChanged );
@@ -126,6 +131,11 @@ void QgsRendererRasterPropertiesWidget::apply()
   {
     brightnessFilter->setBrightness( mSliderBrightness->value() );
     brightnessFilter->setContrast( mSliderContrast->value() );
+  }
+
+  if ( QgsGammaCorrectionFilter *gammaFilter = mRasterLayer->gammaCorrectionFilter() )
+  {
+    gammaFilter->setGamma( mGammaSpinBox->value() );
   }
 
   if ( QgsRasterRendererWidget *rendererWidget = dynamic_cast<QgsRasterRendererWidget *>( stackedWidget->currentWidget() ) )
@@ -190,6 +200,11 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer *layer )
     mSliderContrast->setValue( brightnessFilter->contrast() );
   }
 
+  if ( QgsGammaCorrectionFilter *gammaFilter = mRasterLayer->gammaCorrectionFilter() )
+  {
+    mGammaSpinBox->setValue( gammaFilter->gamma() );
+  }
+
   btnColorizeColor->setColorDialogTitle( tr( "Select Color" ) );
   btnColorizeColor->setContext( QStringLiteral( "symbology" ) );
 
@@ -222,6 +237,7 @@ void QgsRendererRasterPropertiesWidget::mResetColorRenderingBtn_clicked()
   mBlendModeComboBox->setBlendMode( QPainter::CompositionMode_SourceOver );
   mSliderBrightness->setValue( 0 );
   mSliderContrast->setValue( 0 );
+  mGammaSpinBox->setValue( 1.0 );
   sliderSaturation->setValue( 0 );
   comboGrayscale->setCurrentIndex( ( int ) QgsHueSaturationFilter::GrayscaleOff );
   mColorizeCheck->setChecked( false );
@@ -366,4 +382,14 @@ void QgsRendererRasterPropertiesWidget::refreshAfterStyleChanged()
       }
     }
   }
+}
+
+void QgsRendererRasterPropertiesWidget::updateGammaSpinBox( int value )
+{
+  mGammaSpinBox->setValue( value / 100.0 );
+}
+
+void QgsRendererRasterPropertiesWidget::updateGammaSlider( double value )
+{
+  mSliderGamma->setValue( value * 100 );
 }
