@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>386</width>
+    <width>382</width>
     <height>593</height>
    </rect>
   </property>
@@ -14,12 +14,18 @@
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QComboBox" name="cboRenderers"/>
-     </item>
-    </layout>
+   <item row="7" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item row="1" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
@@ -86,234 +92,34 @@
         <property name="title">
          <string>Layer Rendering</string>
         </property>
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0" colspan="2">
-          <widget class="QLabel" name="mBlendTypeLabel">
-           <property name="text">
-            <string>Blending mode</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2" colspan="3">
-          <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" colspan="2">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Brightness</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2" colspan="3">
-          <layout class="QHBoxLayout" name="horizontalLayout_11">
-           <item>
-            <widget class="QSlider" name="mSliderBrightness">
-             <property name="minimumSize">
-              <size>
-               <width>75</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="minimum">
-              <number>-255</number>
-             </property>
-             <property name="maximum">
-              <number>255</number>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="tickPosition">
-              <enum>QSlider::NoTicks</enum>
-             </property>
-             <property name="tickInterval">
-              <number>0</number>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QSpinBox" name="mBrightnessSpinBox">
-             <property name="minimum">
-              <number>-255</number>
-             </property>
-             <property name="maximum">
-              <number>255</number>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="2" column="0" colspan="2">
-          <widget class="QLabel" name="labelSaturation">
-           <property name="text">
-            <string>Saturation</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="2" colspan="3">
-          <layout class="QHBoxLayout" name="horizontalLayout_10">
-           <item>
-            <widget class="QSlider" name="sliderSaturation">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>75</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="minimum">
-              <number>-100</number>
-             </property>
-             <property name="maximum">
-              <number>100</number>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QSpinBox" name="spinBoxSaturation">
-             <property name="minimum">
-              <number>-100</number>
-             </property>
-             <property name="maximum">
-              <number>100</number>
-             </property>
-             <property name="value">
-              <number>0</number>
-             </property>
-             <property name="decimals" stdset="0">
-              <number>0</number>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="3" column="0" colspan="2">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Contrast</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="2" colspan="3">
-          <layout class="QHBoxLayout" name="horizontalLayout_12">
-           <item>
-            <widget class="QSlider" name="mSliderContrast">
-             <property name="minimumSize">
-              <size>
-               <width>75</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="minimum">
-              <number>-100</number>
-             </property>
-             <property name="maximum">
-              <number>100</number>
-             </property>
-             <property name="singleStep">
-              <number>1</number>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QSpinBox" name="mContrastSpinBox">
-             <property name="minimum">
-              <number>-100</number>
-             </property>
-             <property name="maximum">
-              <number>100</number>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="4" column="0" colspan="2">
-          <widget class="QLabel" name="labelGrayscale">
-           <property name="text">
-            <string>Grayscale</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="2" colspan="3">
-          <widget class="QComboBox" name="comboGrayscale">
-           <item>
-            <property name="text">
-             <string>Off</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>By lightness</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>By luminosity</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>By average</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Hue</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="2" colspan="3">
-          <layout class="QFormLayout" name="formLayout_2">
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="6" column="1" colspan="2">
+          <layout class="QGridLayout" name="gridLayout">
            <item row="0" column="0" colspan="2">
-            <layout class="QHBoxLayout" name="horizontalLayout_8">
-             <item>
-              <widget class="QCheckBox" name="mColorizeCheck">
-               <property name="text">
-                <string>Colorize</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QgsColorButton" name="btnColorizeColor">
-               <property name="minimumSize">
-                <size>
-                 <width>100</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>100</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-            </layout>
+            <widget class="QCheckBox" name="mColorizeCheck">
+             <property name="text">
+              <string>Colorize</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QgsColorButton" name="btnColorizeColor">
+             <property name="minimumSize">
+              <size>
+               <width>100</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
            </item>
            <item row="1" column="0">
             <widget class="QLabel" name="labelColorizeStrength">
@@ -322,8 +128,8 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
-            <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <item row="1" column="1" colspan="2">
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
              <item>
               <widget class="QSlider" name="sliderColorizeStrength">
                <property name="maximum">
@@ -357,26 +163,251 @@
            </item>
           </layout>
          </item>
-         <item row="6" column="2" colspan="3">
-          <layout class="QHBoxLayout" name="horizontalLayout_13">
+         <item row="6" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Hue</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QSlider" name="mSliderContrast">
+           <property name="minimumSize">
+            <size>
+             <width>75</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="minimum">
+            <number>-100</number>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="singleStep">
+            <number>1</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="mBlendTypeLabel">
+           <property name="text">
+            <string>Blending mode</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="labelGrayscale">
+           <property name="text">
+            <string>Grayscale</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" colspan="2">
+          <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2">
+          <widget class="QSpinBox" name="mContrastSpinBox">
+           <property name="minimum">
+            <number>-100</number>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1" colspan="2">
+          <widget class="QComboBox" name="comboGrayscale">
            <item>
-            <widget class="QToolButton" name="mResetColorRenderingBtn">
-             <property name="toolTip">
-              <string>Reset all color rendering options to default</string>
-             </property>
-             <property name="text">
-              <string>Reset</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
-             </property>
-             <property name="toolButtonStyle">
-              <enum>Qt::ToolButtonTextBesideIcon</enum>
-             </property>
-            </widget>
+            <property name="text">
+             <string>Off</string>
+            </property>
            </item>
-          </layout>
+           <item>
+            <property name="text">
+             <string>By lightness</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>By luminosity</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>By average</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QSlider" name="mSliderBrightness">
+           <property name="minimumSize">
+            <size>
+             <width>75</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="minimum">
+            <number>-255</number>
+           </property>
+           <property name="maximum">
+            <number>255</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="tickPosition">
+            <enum>QSlider::NoTicks</enum>
+           </property>
+           <property name="tickInterval">
+            <number>0</number>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QSlider" name="sliderSaturation">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>75</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="minimum">
+            <number>-100</number>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QSpinBox" name="spinBoxSaturation">
+           <property name="minimum">
+            <number>-100</number>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="value">
+            <number>0</number>
+           </property>
+           <property name="decimals" stdset="0">
+            <number>0</number>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QSpinBox" name="mBrightnessSpinBox">
+           <property name="minimum">
+            <number>-255</number>
+           </property>
+           <property name="maximum">
+            <number>255</number>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Brightness</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1">
+          <widget class="QToolButton" name="mResetColorRenderingBtn">
+           <property name="toolTip">
+            <string>Reset all color rendering options to default</string>
+           </property>
+           <property name="text">
+            <string>Reset</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextBesideIcon</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Contrast</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="labelSaturation">
+           <property name="text">
+            <string>Saturation</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Gamma</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QSlider" name="mSliderGamma">
+           <property name="minimum">
+            <number>10</number>
+           </property>
+           <property name="maximum">
+            <number>1000</number>
+           </property>
+           <property name="singleStep">
+            <number>10</number>
+           </property>
+           <property name="pageStep">
+            <number>100</number>
+           </property>
+           <property name="value">
+            <number>100</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="2">
+          <widget class="QDoubleSpinBox" name="mGammaSpinBox">
+           <property name="minimum">
+            <double>0.100000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>10.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.100000000000000</double>
+           </property>
+           <property name="value">
+            <double>1.000000000000000</double>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -430,18 +461,8 @@
      </layout>
     </widget>
    </item>
-   <item row="7" column="0">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-    </spacer>
+   <item row="0" column="0">
+    <widget class="QComboBox" name="cboRenderers"/>
    </item>
   </layout>
  </widget>
@@ -459,7 +480,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>cboRenderers</tabstop>
   <tabstop>mBlendModeComboBox</tabstop>
   <tabstop>mSliderBrightness</tabstop>
   <tabstop>mBrightnessSpinBox</tabstop>
@@ -472,7 +492,6 @@
   <tabstop>btnColorizeColor</tabstop>
   <tabstop>sliderColorizeStrength</tabstop>
   <tabstop>spinColorizeStrength</tabstop>
-  <tabstop>mResetColorRenderingBtn</tabstop>
   <tabstop>mZoomedInResamplingComboBox</tabstop>
   <tabstop>mZoomedOutResamplingComboBox</tabstop>
   <tabstop>mMaximumOversamplingSpinBox</tabstop>
