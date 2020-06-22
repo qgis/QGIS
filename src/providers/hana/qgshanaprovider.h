@@ -112,6 +112,9 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     );
 
   private:
+    QString buildQuery( const QString &columns, const QString &where, const QString &orderBy, int limit ) const;
+    QString buildQuery( const QString &columns, const QString &where ) const;
+    QString buildQuery( const QString &columns ) const;
     bool checkPermissionsAndSetCapabilities();
     QgsRectangle estimateExtent() const;
     bool isSrsRoundEarth( int srsID ) const;
@@ -123,6 +126,8 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     long getFeatureCount( const QString &whereClause ) const;
 
   private:
+    // Flag indicating whether the layer is a valid or not
+    bool mValid = false;
     // Database version
     QVersionNumber mDatabaseVersion;
     // Data source URI
@@ -146,8 +151,8 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     QgsWkbTypes::Type mDetectedGeometryType = QgsWkbTypes::Unknown;
     // Layer extent
     mutable QgsRectangle mLayerExtent;
-    // Full sql query
-    QString mQuery;
+    // Source for sql query
+    QString mQuerySource;
     // Provider references query (instead of a table)
     bool mIsQuery;
     // Where clause of the SQL statement
