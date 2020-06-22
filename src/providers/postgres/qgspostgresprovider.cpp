@@ -1123,8 +1123,8 @@ bool QgsPostgresProvider::loadFields()
       else if ( fieldTypeName == QLatin1String( "name" ) )
       {
         fieldSubType = QVariant::String;
-        // "name" type lenght is 64 according to: SELECT typlen FROM pg_type WHERE typname = 'name';
-        fieldSize = 64;
+        // "name" type lenght is 63
+        fieldSize = 63;
       }
       else
       {
