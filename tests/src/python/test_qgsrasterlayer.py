@@ -1306,9 +1306,9 @@ class TestQgsRasterLayerTransformContext(unittest.TestCase):
         """Prepare tc"""
         super(TestQgsRasterLayerTransformContext, self).setUp()
         self.ctx = QgsCoordinateTransformContext()
-        self.ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326),
-                                                    QgsCoordinateReferenceSystem(3857), 1234, 1235)
-        self.ctx.addCoordinateOperation(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 'test')
+        self.ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:4326'),
+                                                    QgsCoordinateReferenceSystem('EPSG:3857'), 1234, 1235)
+        self.ctx.addCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857'), 'test')
         self.rpath = os.path.join(unitTestDataPath(), 'landsat.tif')
 
     def testTransformContextIsSetInCtor(self):
@@ -1316,61 +1316,61 @@ class TestQgsRasterLayerTransformContext(unittest.TestCase):
 
         rl = QgsRasterLayer(self.rpath, 'raster')
         self.assertFalse(
-            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857')))
 
         options = QgsRasterLayer.LayerOptions(transformContext=self.ctx)
         rl = QgsRasterLayer(self.rpath, 'raster', 'gdal', options)
         self.assertTrue(
-            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857')))
 
     def testTransformContextInheritsFromProject(self):
         """Test that when a layer is added to a project it inherits its context"""
 
         rl = QgsRasterLayer(self.rpath, 'raster')
         self.assertFalse(
-            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857')))
 
         p = QgsProject()
         self.assertFalse(
-            p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+            p.transformContext().hasTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857')))
         p.setTransformContext(self.ctx)
         self.assertTrue(
-            p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+            p.transformContext().hasTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857')))
 
         p.addMapLayers([rl])
         self.assertTrue(
-            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857')))
 
     def testTransformContextIsSyncedFromProject(self):
         """Test that when a layer is synced when project context changes"""
 
         rl = QgsRasterLayer(self.rpath, 'raster')
         self.assertFalse(
-            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857')))
 
         p = QgsProject()
         self.assertFalse(
-            p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+            p.transformContext().hasTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857')))
         p.setTransformContext(self.ctx)
         self.assertTrue(
-            p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+            p.transformContext().hasTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857')))
 
         p.addMapLayers([rl])
         self.assertTrue(
-            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857')))
 
         # Now change the project context
         tc2 = QgsCoordinateTransformContext()
         p.setTransformContext(tc2)
         self.assertFalse(
-            p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+            p.transformContext().hasTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857')))
         self.assertFalse(
-            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857')))
         p.setTransformContext(self.ctx)
         self.assertTrue(
-            p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+            p.transformContext().hasTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857')))
         self.assertTrue(
-            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857')))
 
 
 if __name__ == '__main__':
