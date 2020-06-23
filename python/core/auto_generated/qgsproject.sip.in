@@ -1582,7 +1582,7 @@ Emitted when one or more layers are about to be removed from the registry.
 .. seealso:: :py:func:`layersRemoved`
 %End
 
-    void layersWillBeRemoved( const QList<QgsMapLayer *> &layers );
+    void layersWillBeRemoved( const QList<QgsMapLayer *> &layers ) /PyName=layersWillRemovedLayers/;
 %Docstring
 Emitted when one or more layers are about to be removed from the registry.
 
@@ -1608,7 +1608,7 @@ Emitted when a layer is about to be removed from the registry.
 .. seealso:: :py:func:`layerRemoved`
 %End
 
-    void layerWillBeRemoved( QgsMapLayer *layer );
+    void layerWillBeRemoved( QgsMapLayer *layer ) /PyName=layerWillRemovedLayer/;
 %Docstring
 Emitted when a layer is about to be removed from the registry.
 

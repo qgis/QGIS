@@ -1631,7 +1631,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see layerWillBeRemoved()
      * \see layersRemoved()
      */
-    void layersWillBeRemoved( const QList<QgsMapLayer *> &layers );
+    void layersWillBeRemoved( const QList<QgsMapLayer *> &layers ) SIP_PYNAME( layersWillRemovedLayers );
 
     /**
      * Emitted when a layer is about to be removed from the registry.
@@ -1653,7 +1653,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see layersWillBeRemoved()
      * \see layerRemoved()
      */
-    void layerWillBeRemoved( QgsMapLayer *layer );
+    void layerWillBeRemoved( QgsMapLayer *layer ) SIP_PYNAME( layerWillRemovedLayer );
 
     /**
      * Emitted after one or more layers were removed from the registry.
