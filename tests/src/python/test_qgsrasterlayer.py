@@ -481,6 +481,64 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         self.assertTrue(checker.runTest("expected_raster_gamma222"), "Gamma correction (gamma = 2.22) rendering test failed")
 
+    def testBrightnessContrast(self):
+        """ test raster brightness/contrast filter"""
+        path = os.path.join(unitTestDataPath(),
+                            'landsat_4326.tif')
+        info = QFileInfo(path)
+        base_name = info.baseName()
+        layer = QgsRasterLayer(path, base_name)
+        self.assertTrue(layer.isValid(), 'Raster not loaded: {}'.format(path))
+
+        layer.brightnessFilter().setContrast(100)
+
+        ms = QgsMapSettings()
+        ms.setLayers([layer])
+        ms.setExtent(layer.extent())
+
+        checker = QgsRenderChecker()
+        checker.setControlName("expected_raster_contrast100")
+        checker.setMapSettings(ms)
+
+        self.assertTrue(checker.runTest("expected_raster_contrast100"), "Contrast (c = 100) rendering test failed")
+
+        layer.brightnessFilter().setContrast(-30)
+
+        ms = QgsMapSettings()
+        ms.setLayers([layer])
+        ms.setExtent(layer.extent())
+
+        checker = QgsRenderChecker()
+        checker.setControlName("expected_raster_contrast30")
+        checker.setMapSettings(ms)
+
+        self.assertTrue(checker.runTest("expected_raster_contrast30"), "Contrast (c = -30) rendering test failed")
+
+        layer.brightnessFilter().setContrast(0)
+        layer.brightnessFilter().setBrightness(50)
+
+        ms = QgsMapSettings()
+        ms.setLayers([layer])
+        ms.setExtent(layer.extent())
+
+        checker = QgsRenderChecker()
+        checker.setControlName("expected_raster_brightness50")
+        checker.setMapSettings(ms)
+
+        self.assertTrue(checker.runTest("expected_raster_brightness50"), "Brightness (b = 50) rendering test failed")
+
+        layer.brightnessFilter().setBrightness(-20)
+
+        ms = QgsMapSettings()
+        ms.setLayers([layer])
+        ms.setExtent(layer.extent())
+
+        checker = QgsRenderChecker()
+        checker.setControlName("expected_raster_brightness20")
+        checker.setMapSettings(ms)
+
+        self.assertTrue(checker.runTest("expected_raster_brightness20"), "Brightness (b = -20) rendering test failed")
+
     def testPalettedColorTableToClassData(self):
         entries = [QgsColorRampShader.ColorRampItem(5, QColor(255, 0, 0), 'item1'),
                    QgsColorRampShader.ColorRampItem(3, QColor(0, 255, 0), 'item2'),
