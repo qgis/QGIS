@@ -345,6 +345,7 @@ void QgsFeatureFilterWidget::saveAsStoredFilterExpression()
   QLineEdit *nameEdit = new QLineEdit( dlg );
   layout->addWidget( nameLabel );
   layout->addWidget( nameEdit );
+  nameEdit->setFocus();
 
   if ( dlg->exec() == QDialog::Accepted )
   {
@@ -372,6 +373,7 @@ void QgsFeatureFilterWidget::editStoredFilterExpression()
   layout->addWidget( nameEdit );
   layout->addWidget( expressionLabel );
   layout->addWidget( expressionEdit );
+  nameEdit->setFocus();
 
   if ( dlg->exec() == QDialog::Accepted )
   {
