@@ -1308,7 +1308,7 @@ QVariant QgsExpressionNodeColumnRef::evalNode( QgsExpression *parent, const QgsE
         return feature.attribute( mName );
     }
   }
-  parent->setEvalErrorString( tr( "Column '%1' not found" ).arg( mName ) );
+  parent->setEvalErrorString( tr( "Field '%1' not found" ).arg( mName ) );
   return QVariant();
 }
 
@@ -1333,7 +1333,7 @@ bool QgsExpressionNodeColumnRef::prepareNode( QgsExpression *parent, const QgsEx
 
   if ( mIndex == -1 )
   {
-    parent->setEvalErrorString( tr( "Column '%1' not found" ).arg( mName ) );
+    parent->setEvalErrorString( tr( "Field '%1' not found" ).arg( mName ) );
     return false;
   }
   return true;
