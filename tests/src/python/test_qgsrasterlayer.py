@@ -448,6 +448,39 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         self.assertTrue(checker.runTest("expected_paletted_renderer_band3"), "Paletted rendering test failed")
 
+    def testGammaCorrection(self):
+        """ test raster gamma correction"""
+        path = os.path.join(unitTestDataPath(),
+                            'landsat-int16-b1.tif')
+        info = QFileInfo(path)
+        base_name = info.baseName()
+        layer = QgsRasterLayer(path, base_name)
+        self.assertTrue(layer.isValid(), 'Raster not loaded: {}'.format(path))
+
+        layer.gammaCorrectionFilter().setGamma(0.22)
+
+        ms = QgsMapSettings()
+        ms.setLayers([layer])
+        ms.setExtent(layer.extent())
+
+        checker = QgsRenderChecker()
+        checker.setControlName("expected_raster_gamma022")
+        checker.setMapSettings(ms)
+
+        self.assertTrue(checker.runTest("expected_raster_gamma022"), "Gamma correction (gamma = 0.22) rendering test failed")
+
+        layer.gammaCorrectionFilter().setGamma(2.22)
+
+        ms = QgsMapSettings()
+        ms.setLayers([layer])
+        ms.setExtent(layer.extent())
+
+        checker = QgsRenderChecker()
+        checker.setControlName("expected_raster_gamma222")
+        checker.setMapSettings(ms)
+
+        self.assertTrue(checker.runTest("expected_raster_gamma222"), "Gamma correction (gamma = 2.22) rendering test failed")
+
     def testPalettedColorTableToClassData(self):
         entries = [QgsColorRampShader.ColorRampItem(5, QColor(255, 0, 0), 'item1'),
                    QgsColorRampShader.ColorRampItem(3, QColor(0, 255, 0), 'item2'),
