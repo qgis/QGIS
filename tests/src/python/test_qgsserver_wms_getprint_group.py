@@ -23,6 +23,8 @@ import urllib.parse
 
 from qgis.testing import unittest
 
+from test_qgsserver import QgsServerTestBase
+
 class TestQgsServerWMSGetPrintGroup(QgsServerTestBase):
     """QGIS Server WMS Tests for GetPrint group request"""
 
