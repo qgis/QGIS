@@ -449,7 +449,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertTrue(checker.runTest("expected_paletted_renderer_band3"), "Paletted rendering test failed")
 
     def testGammaCorrection(self):
-        """ test raster gamma correction"""
+        """ test raster gamma correction filter"""
         path = os.path.join(unitTestDataPath(),
                             'landsat-int16-b1.tif')
         info = QFileInfo(path)
