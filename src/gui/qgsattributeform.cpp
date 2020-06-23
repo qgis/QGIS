@@ -2483,22 +2483,26 @@ void QgsAttributeForm::updateDefaultValueDependencies()
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
     {
-      QgsExpression exp( eww->field().defaultValueDefinition().expression() );
-      const QSet<QString> referencedColumns = exp.referencedColumns();
-      for ( const QString &referencedColumn : referencedColumns )
+      const QgsDefaultValue defaultValueDefinition = eww->field().defaultValueDefinition();
+      if ( defaultValueDefinition.applyOnUpdate() )
       {
-        if ( referencedColumn == QgsFeatureRequest::ALL_ATTRIBUTES )
+        QgsExpression exp( defaultValueDefinition.expression() );
+        const QSet<QString> referencedColumns = exp.referencedColumns();
+        for ( const QString &referencedColumn : referencedColumns )
         {
-          const QList<int> allAttributeIds( mLayer->fields().allAttributesList() );
-
-          for ( const int id : allAttributeIds )
+          if ( referencedColumn == QgsFeatureRequest::ALL_ATTRIBUTES )
           {
-            mDefaultValueDependencies.insertMulti( id, eww );
+            const QList<int> allAttributeIds( mLayer->fields().allAttributesList() );
+
+            for ( const int id : allAttributeIds )
+            {
+              mDefaultValueDependencies.insertMulti( id, eww );
+            }
           }
-        }
-        else
-        {
-          mDefaultValueDependencies.insertMulti( mLayer->fields().lookupField( referencedColumn ), eww );
+          else
+          {
+            mDefaultValueDependencies.insertMulti( mLayer->fields().lookupField( referencedColumn ), eww );
+          }
         }
       }
     }
