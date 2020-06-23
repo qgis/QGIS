@@ -659,7 +659,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         r_individual, h = self._result(self._execute_request(qs))
 
         # test reference image
-        # self._img_diff_error(r_individual, h, "WMS_GetPrint_Group")
+        self._img_diff_error(r_individual, h, "WMS_GetPrint_Group")
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectGroupsPath),
@@ -688,7 +688,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         #"""
 
         # This test is too strict, it can fail
-        self.assertEqual(r_individual, r_group, 'Individual layers query and group layers query results should be identical')
+        # self.assertEqual(r_individual, r_group, 'Individual layers query and group layers query results should be identical')
 
 
 if __name__ == '__main__':
