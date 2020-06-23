@@ -965,7 +965,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         assert compareWkt(f2.geometry().asWkt(), newpointwkt), "Geometry mismatch. Expected: {} Got: {} \n".format(f2.geometry().asWkt(), newpointwkt)
         # One more check: can we retrieve the same row with the value that we got from this layer?
         floatpk = f2['pk']
-        f3 = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = {}'.format(floatpk) )))
+        f3 = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = {}'.format(floatpk))))
         self.assertTrue(f3.isValid())
         self.assertEqual(f3['value'], 'newly inserted')
         self.assertEqual(f3['pk'], floatpk)
@@ -1021,7 +1021,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         assert compareWkt(f2.geometry().asWkt(), newpointwkt), "Geometry mismatch. Expected: {} Got: {} \n".format(f2.geometry().asWkt(), newpointwkt)
         # One more check: can we retrieve the same row with the value that we got from this layer?
         doublepk = f2['pk']
-        f3 = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = {}'.format(doublepk) )))
+        f3 = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = {}'.format(doublepk))))
         self.assertTrue(f3.isValid())
         self.assertEqual(f3['value'], 'newly inserted')
         self.assertEqual(f3['pk'], doublepk)
