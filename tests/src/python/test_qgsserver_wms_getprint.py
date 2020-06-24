@@ -592,7 +592,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_TwoMaps")
 
-    def test_wms_getprint_atlas(self):
+    def _test_wms_getprint_atlas(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
@@ -607,7 +607,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_Atlas")
 
-    def test_wms_getprint_atlas_getProjectSettings(self):
+    def _test_wms_getprint_atlas_getProjectSettings(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
