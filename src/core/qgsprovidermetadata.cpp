@@ -291,8 +291,8 @@ QMap<QString, T *> QgsProviderMetadata::connections( bool cached )
 
 QgsMeshDriverMetadata::QgsMeshDriverMetadata() = default;
 
-QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name, const QString &description, const MeshDriverCapabilities &capabilities )
-  : mName( name ), mDescription( description ), mCapabilities( capabilities )
+QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name, const QString &description, const MeshDriverCapabilities &capabilities, const QString &writeDatasetOnfileSuffix )
+  : mName( name ), mDescription( description ), mCapabilities( capabilities ), mWriteDatasetOnFileSuffix( writeDatasetOnfileSuffix )
 {
 }
 
@@ -309,4 +309,9 @@ QString QgsMeshDriverMetadata::name() const
 QString QgsMeshDriverMetadata::description() const
 {
   return mDescription;
+}
+
+QString QgsMeshDriverMetadata::writeDatasetOnFileSuffix() const
+{
+  return mWriteDatasetOnFileSuffix;
 }

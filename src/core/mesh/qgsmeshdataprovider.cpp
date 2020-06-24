@@ -21,7 +21,7 @@
 #include "qgsrectangle.h"
 
 QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
-  : QgsDataProvider( uri, options ), mTemporalCapabilities( qgis::make_unique<QgsMeshDataProviderTemporalCapabilities>() )
+  : QgsDataProvider( uri, options )
 {
 }
 
@@ -42,6 +42,35 @@ void QgsMeshDataProvider::setTemporalUnit( QgsUnitTypes::TemporalUnit unit )
   if ( oldUnit != unit )
     reloadData();
 }
+
+QgsMeshDatasetIndex QgsMeshDatasetSourceInterface::datasetIndexAtTime(
+  const QDateTime &referenceTime,
+  int groupIndex, quint64 time,
+  QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const
+{
+  QDateTime requestDateTime = referenceTime.addMSecs( time );
+  quint64 providerTime;
+  QDateTime providerReferenceTime = mTemporalCapabilities->referenceTime();
+  if ( mTemporalCapabilities->referenceTime().isValid() )
+    providerTime = referenceTime.msecsTo( requestDateTime );
+  else
+    providerTime = time;
+
+  switch ( method )
+  {
+    case QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime:
+      return mTemporalCapabilities->datasetIndexClosestBeforeRelativeTime( groupIndex, providerTime );
+      break;
+    case QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetFromStartRangeTime:
+      return mTemporalCapabilities->datasetIndexClosestFromRelativeTime( groupIndex, providerTime );
+      break;
+  }
+
+  return QgsMeshDatasetIndex();
+}
+
+QgsMeshDatasetSourceInterface::QgsMeshDatasetSourceInterface():
+  mTemporalCapabilities( qgis::make_unique<QgsMeshDataProviderTemporalCapabilities>() ) {}
 
 int QgsMeshDatasetSourceInterface::datasetCount( QgsMeshDatasetIndex index ) const
 {

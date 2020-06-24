@@ -166,6 +166,7 @@ Datasets are grouped in the dataset groups. A dataset group represents a measure
 #include "qgsmeshdataprovider.h"
 %End
   public:
+    QgsMeshDatasetSourceInterface();
     virtual ~QgsMeshDatasetSourceInterface();
 
     virtual bool addDataset( const QString &uri ) = 0;
@@ -325,6 +326,19 @@ On success, the mesh's dataset group count is changed
 
 .. versionadded:: 3.12.3
 %End
+
+    virtual bool persistDatasetGroup( const QString &outputFilePath,
+                                      const QString &outputDriver,
+                                      QgsMeshDatasetSourceInterface *source,
+                                      int datasetGroupIndex
+                                    ) = 0;
+
+    QgsMeshDatasetIndex datasetIndexAtTime( const QDateTime &referenceTime,
+                                            int groupIndex,
+                                            quint64 time,
+                                            QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const;
+
+  protected:
 };
 
 

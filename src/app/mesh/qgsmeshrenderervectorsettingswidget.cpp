@@ -298,14 +298,12 @@ void QgsMeshRendererVectorSettingsWidget::loadColorRampShader()
   if ( !mMeshLayer )
     return;
 
-  QgsMeshDataProvider *provider = mMeshLayer->dataProvider();
   int currentVectorDataSetGroupIndex = mMeshLayer->rendererSettings().activeVectorDatasetGroup();
-  if ( !provider ||
-       currentVectorDataSetGroupIndex < 0 ||
-       !provider->datasetGroupMetadata( currentVectorDataSetGroupIndex ).isVector() )
+  if ( currentVectorDataSetGroupIndex < 0 ||
+       !mMeshLayer->datasetGroupMetadata( currentVectorDataSetGroupIndex ).isVector() )
     return;
 
-  const QgsMeshDatasetGroupMetadata meta = provider->datasetGroupMetadata( currentVectorDataSetGroupIndex );
+  const QgsMeshDatasetGroupMetadata meta = mMeshLayer->datasetGroupMetadata( currentVectorDataSetGroupIndex );
   double min = meta.minimum();
   double max = meta.maximum();
 

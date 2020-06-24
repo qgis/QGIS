@@ -27,6 +27,7 @@
 #include "qgsmaplayerproxymodel.h"
 #include "qgswkbtypes.h"
 #include "qgsfeatureiterator.h"
+#include "qgsmeshdatasetgrouptreeview.h"
 
 #include "cpl_string.h"
 #include "gdal.h"
@@ -45,14 +46,18 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidg
   QgsGui::enableAutoGeometryRestore( this );
 
   cboLayerMask->setFilters( QgsMapLayerProxyModel::PolygonLayer );
-  getDatasetGroupNames();
+  QgsMeshDatasetGroupListModel *model = new QgsMeshDatasetGroupListModel( this );
+  model->syncToLayer( meshLayer );
+  model->setDisplayProviderName( true );
+  mDatasetsListWidget->setModel( model );
 
   getMeshDrivers();
   populateDriversComboBox( );
   connect( mOutputFormatComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshCalculatorDialog::updateInfoMessage );
+  connect( mOutputFormatComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshCalculatorDialog::onOutputFormatChange );
   connect( mOutputGroupNameLineEdit, &QLineEdit::textChanged, this, &QgsMeshCalculatorDialog::updateInfoMessage );
 
-  connect( mDatasetsListWidget, &QListWidget::itemDoubleClicked, this, &QgsMeshCalculatorDialog::mDatasetsListWidget_doubleClicked );
+  connect( mDatasetsListWidget, &QListView::doubleClicked, this, &QgsMeshCalculatorDialog::datasetGroupEntry );
   connect( mCurrentLayerExtentButton, &QPushButton::clicked, this, &QgsMeshCalculatorDialog::mCurrentLayerExtentButton_clicked );
   connect( mAllTimesButton, &QPushButton::clicked, this, &QgsMeshCalculatorDialog::mAllTimesButton_clicked );
   connect( mExpressionTextEdit, &QTextEdit::textChanged, this, &QgsMeshCalculatorDialog::updateInfoMessage );
@@ -102,7 +107,11 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidg
   mOutputDatasetFileWidget->setStorageMode( QgsFileWidget::SaveFile );
   mOutputDatasetFileWidget->setDialogTitle( tr( "Enter mesh dataset file" ) );
   mOutputDatasetFileWidget->setDefaultRoot( settings.value( QStringLiteral( "/MeshCalculator/lastOutputDir" ), QDir::homePath() ).toString() );
+  onOutputFormatChange();
   connect( mOutputDatasetFileWidget, &QgsFileWidget::fileChanged, this, &QgsMeshCalculatorDialog::updateInfoMessage );
+
+  connect( mOutputOnFileRadioButton, &QRadioButton::toggled, this, &QgsMeshCalculatorDialog::onOutputRadioButtonChange );
+  onOutputRadioButtonChange();
 }
 
 QgsMeshCalculatorDialog::~QgsMeshCalculatorDialog() = default;
@@ -121,7 +130,7 @@ QgsMeshLayer *QgsMeshCalculatorDialog::meshLayer() const
 QString QgsMeshCalculatorDialog::outputFile() const
 {
   QString ret = mOutputDatasetFileWidget->filePath();
-  return addSuffix( ret );
+  return controlSuffix( ret );
 }
 
 QgsRectangle QgsMeshCalculatorDialog::outputExtent() const
@@ -187,7 +196,7 @@ double QgsMeshCalculatorDialog::endTime() const
 std::unique_ptr<QgsMeshCalculator> QgsMeshCalculatorDialog::calculator() const
 {
   std::unique_ptr<QgsMeshCalculator> calc;
-  if ( useExtentCb->isChecked() )
+  if ( useExtentCb->isChecked() && mOutputOnFileRadioButton->isChecked() )
   {
     calc.reset(
       new QgsMeshCalculator(
@@ -202,7 +211,7 @@ std::unique_ptr<QgsMeshCalculator> QgsMeshCalculatorDialog::calculator() const
       )
     );
   }
-  else
+  else if ( mOutputOnFileRadioButton->isChecked() )
   {
     calc.reset(
       new QgsMeshCalculator(
@@ -217,7 +226,39 @@ std::unique_ptr<QgsMeshCalculator> QgsMeshCalculatorDialog::calculator() const
       )
     );
   }
+  else if ( useExtentCb->isChecked() )
+  {
+    calc.reset(
+      new QgsMeshCalculator(
+        formulaString(),
+        groupName(),
+        startTime(),
+        endTime(),
+        outputExtent(),
+        meshLayer()
+      )
+    );
+  }
+  else
+  {
+    calc.reset(
+      new QgsMeshCalculator(
+        formulaString(),
+        groupName(),
+        startTime(),
+        endTime(),
+        maskGeometry(),
+        meshLayer()
+      )
+    );
+  }
   return calc;
+}
+
+void QgsMeshCalculatorDialog::datasetGroupEntry( const QModelIndex &index )
+{
+  const QString group = quoteDatasetGroupEntry( datasetGroupName( index ) );
+  mExpressionTextEdit->insertPlainText( QStringLiteral( " %1 " ).arg( group ) );
 }
 
 void QgsMeshCalculatorDialog::toggleExtendMask( int state )
@@ -248,6 +289,7 @@ void QgsMeshCalculatorDialog::updateInfoMessage()
   bool expressionValid = result == QgsMeshCalculator::Success;
 
   // selected driver is appropriate
+  bool useInMemory = mOutputOnMemoryRadioButton->isChecked();
   bool driverValid = false;
   if ( expressionValid )
   {
@@ -276,7 +318,9 @@ void QgsMeshCalculatorDialog::updateInfoMessage()
   // group name
   bool groupNameValid = !groupName().isEmpty();
 
-  if ( expressionValid && driverValid && filePathValid && groupNameValid )
+  if ( expressionValid &&
+       ( useInMemory || ( driverValid && filePathValid ) )  &&
+       groupNameValid )
   {
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
     mExpressionValidLabel->setText( tr( "Expression valid" ) );
@@ -286,22 +330,38 @@ void QgsMeshCalculatorDialog::updateInfoMessage()
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
     if ( !expressionValid )
       mExpressionValidLabel->setText( tr( "Expression invalid" ) );
-    else if ( !filePathValid )
+    else if ( !filePathValid && !useInMemory )
       mExpressionValidLabel->setText( tr( "Invalid file path" ) );
-    else if ( !driverValid )
+    else if ( !driverValid && !useInMemory )
       mExpressionValidLabel->setText( tr( "Selected driver cannot store data defined on %1" ).arg( requiredCapability == QgsMeshDriverMetadata::CanWriteFaceDatasets ? tr( " faces " ) : tr( " vertices " ) ) );
     else if ( !groupNameValid )
       mExpressionValidLabel->setText( tr( "Invalid group name" ) );
   }
 }
 
-void QgsMeshCalculatorDialog::mDatasetsListWidget_doubleClicked( QListWidgetItem *item )
+void QgsMeshCalculatorDialog::onOutputRadioButtonChange()
 {
-  if ( !item )
-    return;
+  mOutputDatasetFileWidget->setEnabled( mOutputOnFileRadioButton->isChecked() );
+  mOutputFormatComboBox->setEnabled( mOutputOnFileRadioButton->isChecked() );
+}
 
-  const QString group = quoteDatasetGroupEntry( item->text() );
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " %1 " ).arg( group ) );
+void QgsMeshCalculatorDialog::onOutputFormatChange()
+{
+  QString suffix = currentOutputSuffix();
+  if ( !suffix.isEmpty() )
+  {
+    QString filter = mOutputFormatComboBox->currentText();
+    filter.append( QStringLiteral( " (*.%1)" ).arg( suffix ) );
+    mOutputDatasetFileWidget->setFilter( filter );
+  }
+}
+
+QString QgsMeshCalculatorDialog::datasetGroupName( const QModelIndex &index ) const
+{
+  if ( !index.isValid() )
+    return QString();
+
+  return index.data( Qt::DisplayRole ).toString();
 }
 
 void QgsMeshCalculatorDialog::mCurrentLayerExtentButton_clicked()
@@ -446,35 +506,37 @@ QString QgsMeshCalculatorDialog::quoteDatasetGroupEntry( const QString group )
   return ret;
 }
 
-void QgsMeshCalculatorDialog::getDatasetGroupNames()
-{
-  if ( !meshLayer() || !meshLayer()->dataProvider() )
-    return;
-
-  const QgsMeshDataProvider *dp = meshLayer()->dataProvider();
-  Q_ASSERT( dp );
-
-  for ( int i = 0; i < dp->datasetGroupCount(); ++i )
-  {
-    const QgsMeshDatasetGroupMetadata meta = dp->datasetGroupMetadata( i );
-    mDatasetsListWidget->addItem( meta.name() );
-  }
-}
-
-QString QgsMeshCalculatorDialog::addSuffix( const QString fileName ) const
+QString QgsMeshCalculatorDialog::controlSuffix( const QString &fileName ) const
 {
   if ( fileName.isEmpty() )
     return fileName;
 
-  // TODO construct list from MDAL and drivers
-  // that can be used to write data
-  // for now, MDAL only supports dat files
-  const QString allowedSuffix = QStringLiteral( ".dat" );
+  QFileInfo fileInfo( fileName );
 
-  if ( fileName.endsWith( allowedSuffix ) )
-    return fileName;
+  QString appropriateSuffix = currentOutputSuffix();
 
-  return fileName + allowedSuffix;
+  QString existingSuffix = fileInfo.suffix();
+  if ( !( existingSuffix.isEmpty() && appropriateSuffix.isEmpty() )
+       && existingSuffix != appropriateSuffix )
+  {
+    int pos = fileName.lastIndexOf( '.' );
+    QString ret = fileName.left( pos + 1 );
+    ret.append( appropriateSuffix );
+
+    return ret;
+  }
+
+  return fileName;
+}
+
+QString QgsMeshCalculatorDialog::currentOutputSuffix() const
+{
+  QString currentDriver = mOutputFormatComboBox->currentData().toString();
+  QString suffix;
+  if ( mMeshDrivers.contains( currentDriver ) )
+    suffix = mMeshDrivers[currentDriver].writeDatasetOnFileSuffix();
+
+  return suffix;
 }
 
 void QgsMeshCalculatorDialog::getMeshDrivers()
@@ -527,14 +589,12 @@ void QgsMeshCalculatorDialog::useAllTimesFromLayer()
 
 QString QgsMeshCalculatorDialog::currentDatasetGroup() const
 {
-  if ( mDatasetsListWidget->count() == 0 )
+  QModelIndex index = mDatasetsListWidget->currentIndex();
+
+  if ( !index.isValid() )
     return QString();
 
-  const QList<QListWidgetItem *> items = mDatasetsListWidget->selectedItems();
-  if ( !items.empty() )
-    return items[0]->text();
-  else
-    return mDatasetsListWidget->item( 0 )->text();
+  return datasetGroupName( index );
 }
 
 void QgsMeshCalculatorDialog::setTimesByDatasetGroupName( const QString group )

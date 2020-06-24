@@ -316,7 +316,7 @@ void QgsMesh3dMaterial::configure()
 
 void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeRange &timeRange )
 {
-  if ( !layer || !layer->dataProvider() )
+  if ( !layer )
     return;
 
   QgsMeshDatasetIndex datasetIndex = layer->activeVectorDatasetAtTime( timeRange );
@@ -325,7 +325,7 @@ void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
   QColor arrowsColor = layer->rendererSettings().vectorSettings( datasetIndex.group() ).color();
   mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsColor", QVector4D( arrowsColor.redF(), arrowsColor.greenF(), arrowsColor.blueF(), 1.0f ) ) ) ;
 
-  QgsMeshDatasetGroupMetadata meta = layer->dataProvider()->datasetGroupMetadata( datasetIndex );
+  QgsMeshDatasetGroupMetadata meta = layer->datasetGroupMetadata( datasetIndex );
 
   QVector<QgsVector> vectors;
   QSize gridSize;

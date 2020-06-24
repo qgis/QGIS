@@ -182,6 +182,7 @@ class CORE_EXPORT QgsMeshDataSourceInterface SIP_ABSTRACT
 class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
 {
   public:
+    QgsMeshDatasetSourceInterface();
     //! Dtor
     virtual ~QgsMeshDatasetSourceInterface() = default;
 
@@ -335,6 +336,20 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
                                       const QVector<QgsMeshDataBlock> &datasetActive,
                                       const QVector<double> &times
                                     ) = 0;
+
+    virtual bool persistDatasetGroup( const QString &outputFilePath,
+                                      const QString &outputDriver,
+                                      QgsMeshDatasetSourceInterface *source,
+                                      int datasetGroupIndex
+                                    ) = 0;
+
+    QgsMeshDatasetIndex datasetIndexAtTime( const QDateTime &referenceTime,
+                                            int groupIndex,
+                                            quint64 time,
+                                            QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const;
+
+  protected:
+    std::unique_ptr<QgsMeshDataProviderTemporalCapabilities> mTemporalCapabilities;
 };
 
 
@@ -351,7 +366,6 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
 class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDataSourceInterface, public QgsMeshDatasetSourceInterface
 {
     Q_OBJECT
-
   public:
     //! Ctor
     QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
@@ -372,8 +386,6 @@ class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDat
     //! Emitted when some new dataset groups have been added
     void datasetGroupsAdded( int count );
 
-  private:
-    std::unique_ptr<QgsMeshDataProviderTemporalCapabilities> mTemporalCapabilities;
 };
 
 #endif // QGSMESHDATAPROVIDER_H
