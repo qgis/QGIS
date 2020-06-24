@@ -170,6 +170,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsMapLayerTemporalProperties *temporalProperties() override;
     void reload() override;
     QStringList subLayers() const override;
+    bool isTemporary() const;
 
     //! Returns the provider type for this layer
     QString providerType() const;

@@ -532,8 +532,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Returns TRUE if the layer is considered a temporary layer.
      *
-     * These include memory-only layers such as those created by the "memory" data provider, or layers
-     * stored inside a local temporary folder (such as the "/tmp" folder on Linux).
+     * These include memory-only layers such as those created by the "memory" data provider, layers
+     * stored inside a local temporary folder (such as the "/tmp" folder on Linux)
+     * or layer with temporary data (as temporary mesh layer dataset)
      *
      * \since QGIS 3.10.1
      */

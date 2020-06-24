@@ -1222,6 +1222,14 @@ QStringList QgsMeshLayer::subLayers() const
     return QStringList();
 }
 
+bool QgsMeshLayer::isTemporary() const
+{
+  if ( mDatasetGroupStore && mDatasetGroupStore->extraDatasetGroupCount() > 0 )
+    return true;
+
+  return false;
+}
+
 bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
 {
   delete mDataProvider;

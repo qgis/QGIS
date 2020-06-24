@@ -12856,14 +12856,11 @@ bool QgisApp::checkMemoryLayers()
       }
     }
     else if ( it.value() && it.value()->isTemporary() )
-      hasTemporaryLayers = true;
-    else if ( it.value() && it.value()->type() == QgsMapLayerType::MeshLayer )
     {
-      QgsMeshLayer *meshLayer = qobject_cast< QgsMeshLayer * >( it.value() );
-      if ( meshLayer && meshLayer->extraDatasetGroupCount() > 0 )
-      {
+      if ( it.value()->type() == QgsMapLayerType::MeshLayer )
         hasMemoryMeshLayerDatasetGroup = true;
-      }
+      else
+        hasTemporaryLayers = true;
     }
   }
 

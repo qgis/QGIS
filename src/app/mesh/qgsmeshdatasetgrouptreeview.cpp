@@ -627,7 +627,7 @@ QMenu *QgsMeshDatasetGroupTreeView::createContextMenu()
       break;
     case QgsMeshDatasetGroupTreeItem::Memory:
     case QgsMeshDatasetGroupTreeItem::OnTheFly:
-      contextMenu->addAction( tr( "Remove dataset group" ), this, &QgsMeshDatasetGroupTreeView::removeCurrentItem );
+      contextMenu->addAction( tr( "Remove Dataset Group" ), this, &QgsMeshDatasetGroupTreeView::removeCurrentItem );
       mSaveMenu->createSaveMenu( groupIndex, contextMenu );
       break;
   }
@@ -655,7 +655,7 @@ QMenu *QgsMeshDatasetGroupSaveMenu::createSaveMenu( int groupIndex, QMenu *paren
     return  nullptr;
 
   QMenu *menu = new QMenu( parentMenu );
-  menu->setTitle( QObject::tr( "Save Datasets group as..." ) );
+  menu->setTitle( QObject::tr( "Save Datasets Group as..." ) );
   QgsMeshDatasetGroupMetadata groupMeta = mMeshLayer->datasetGroupMetadata( groupIndex );
 
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( mMeshLayer->dataProvider()->name() );
@@ -683,7 +683,7 @@ QMenu *QgsMeshDatasetGroupSaveMenu::createSaveMenu( int groupIndex, QMenu *paren
 
   if ( menu->actions().isEmpty() )
   {
-    menu->addAction( QObject::tr( "No driver available to write this dataset group" ) );
+    menu->addAction( QObject::tr( "No Driver Available to Write this Dataset Group" ) );
     menu->actions().last()->setDisabled( true );
   }
 
@@ -709,7 +709,7 @@ void QgsMeshDatasetGroupSaveMenu::saveDatasetGroup( int datasetGroup, const QStr
     filter = QStringLiteral( "%1 (*.%2)" ).arg( driver ).arg( fileSuffix );
   QString exportFileDir = settings.value( QStringLiteral( "lastMeshDatasetDir" ), QDir::homePath(), QgsSettings::App ).toString();
   QString saveFileName = QFileDialog::getSaveFileName( nullptr,
-                         QObject::tr( "Save mesh datasets" ),
+                         QObject::tr( "Save Mesh Datasets" ),
                          exportFileDir,
                          filter );
 
@@ -722,12 +722,12 @@ void QgsMeshDatasetGroupSaveMenu::saveDatasetGroup( int datasetGroup, const QStr
 
   if ( mMeshLayer->saveDataset( saveFileName, datasetGroup, driver ) )
   {
-    QMessageBox::warning( nullptr, QObject::tr( "Save mesh datasets" ), QObject::tr( "Saving datasets fails" ) );
+    QMessageBox::warning( nullptr, QObject::tr( "Save Mesh Datasets" ), QObject::tr( "Saving datasets fails" ) );
   }
   else
   {
     emit datasetGroupSaved();
-    QMessageBox::information( nullptr, QObject::tr( "Save mesh datasets" ), QObject::tr( "Datasets successfully saved on file" ) );
+    QMessageBox::information( nullptr, QObject::tr( "Save Mesh Datasets" ), QObject::tr( "Datasets successfully saved on file" ) );
   }
 
 }

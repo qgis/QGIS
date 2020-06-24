@@ -30,9 +30,6 @@
 #include "qgsprovidermetadata.h"
 #include "qgsfeedback.h"
 
-struct QgsMeshMemoryDatasetGroup;
-struct QgsMeshMemoryDataset;
-
 /**
  * \ingroup analysis
  * \class QgsMeshCalculator
