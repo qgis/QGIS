@@ -357,6 +357,22 @@ void QgsPostgresProvider::reloadProviderData()
   mLayerExtent.setMinimal();
 }
 
+bool QgsPostgresProviderMetadata::ensureTypeColumn( QgsPostgresConn *conn, const QgsDataSourceUri &uri, QString &errCause ) const
+{
+  if ( !columnExists( *conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+  {
+    QgsPostgresResult res( conn->PQexec( "ALTER TABLE layer_styles ADD COLUMN type varchar NULL" ) );
+    if ( res.PQresultStatus() != PGRES_COMMAND_OK )
+    {
+      errCause = QObject::tr( "Unable to add column type to layer_styles table. "
+                              "Maybe this is due to table permissions (user=%1). "
+                              "Please contact your database admin" ).arg( uri.username() );
+      return false;
+    }
+  }
+  return true;
+}
+
 
 QgsPostgresConn *QgsPostgresProvider::connectionRW()
 {
@@ -5022,19 +5038,11 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
       return false;
     }
   }
-  else
+  else if ( ! ensureTypeColumn( conn, dsUri, errCause ) )
   {
-    if ( !columnExists( *conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
-    {
-      QgsPostgresResult res( conn->PQexec( "ALTER TABLE layer_styles ADD COLUMN type varchar NULL" ) );
-      if ( res.PQresultStatus() != PGRES_COMMAND_OK )
-      {
-        errCause = QObject::tr( "Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
-        conn->unref();
-        return false;
-      }
-    }
+    return false;
   }
+
 
   if ( dsUri.database().isEmpty() ) // typically when a service file is used
   {
@@ -5176,7 +5184,8 @@ QString QgsPostgresProviderMetadata::loadStyle( const QString &uri, QString &err
     dsUri.setDatabase( conn->currentDatabase() );
   }
 
-  if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
+  if ( ! tableExists( *conn, QStringLiteral( "layer_styles" ) ) ||
+       ! ensureTypeColumn( conn, uri, errCause ) )
   {
     conn->unref();
     return QString();
@@ -5200,7 +5209,7 @@ QString QgsPostgresProviderMetadata::loadStyle( const QString &uri, QString &err
                                     " AND f_table_schema=%2"
                                     " AND f_table_name=%3"
                                     " AND f_geometry_column %4"
-                                    " AND type=%5"
+                                    " AND (type=%5 OR type IS NULL)"
                                     " ORDER BY CASE WHEN useAsDefault THEN 1 ELSE 2 END"
                                     ",update_time DESC LIMIT 1" )
                            .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
@@ -5242,7 +5251,7 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
                                         " AND f_table_schema=%2"
                                         " AND f_table_name=%3"
                                         " AND f_geometry_column=%4"
-                                        " AND type=%5"
+                                        " AND (type=%5 OR type IS NULL)"
                                         " ORDER BY useasdefault DESC, update_time DESC" )
                                .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                                .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
@@ -5269,7 +5278,8 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
 
   QString selectOthersQuery = QString( "SELECT id,styleName,description"
                                        " FROM layer_styles"
-                                       " WHERE NOT (f_table_catalog=%1 AND f_table_schema=%2 AND f_table_name=%3 AND f_geometry_column=%4 AND type=%5)"
+                                       " WHERE NOT (f_table_catalog=%1 AND f_table_schema=%2 AND f_table_name=%3 AND f_geometry_column=%4 "
+                                       "AND (type=%5 OR type IS NULL))"
                                        " ORDER BY update_time DESC" )
                               .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                               .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )

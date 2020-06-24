@@ -241,7 +241,6 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
      */
     void setListening( bool isListening ) override;
 
-
   private:
     Relkind relkind() const;
 
@@ -589,6 +588,13 @@ class QgsPostgresProviderMetadata final: public QgsProviderMetadata
     void cleanupProvider() override;
     QVariantMap decodeUri( const QString &uri ) override;
     QString encodeUri( const QVariantMap &parts ) override;
+
+  private:
+
+    // Create "type" column in layer_styles table
+    bool ensureTypeColumn( QgsPostgresConn *conn, const QgsDataSourceUri &uri, QString &errCause ) const;
+
+
 };
 
 // clazy:excludeall=qstring-allocations
