@@ -217,8 +217,8 @@ MDAL_EXPORT MDAL_MeshH MDAL_LoadMesh( const char *uri );
  *
  * Parameter uri can be in format:
  *
- *  - <drivername>:"meshfile" - function then returns uris with provided driver and meshfile
- *  - "meshfile" or meshfile  - function then finds proper driver and returns uris with it
+ * - <drivername>:"meshfile" - function then returns uris with provided driver and meshfile
+ * - "meshfile" or meshfile  - function then finds proper driver and returns uris with it
  *
  * The uris can be used directly in MDAL_LoadMesh to load particular meshes
  *

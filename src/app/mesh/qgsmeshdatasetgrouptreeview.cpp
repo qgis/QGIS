@@ -596,7 +596,8 @@ void QgsMeshDatasetGroupTreeView::contextMenuEvent( QContextMenuEvent *event )
 
 void QgsMeshDatasetGroupTreeView::removeCurrentItem()
 {
-  mModel->removeItem( currentIndex() );
+  if ( QMessageBox::question( this, tr( "Remove Dataset Group" ), tr( "Remove dataset group?" ) ) == QMessageBox::Ok )
+    mModel->removeItem( currentIndex() );
 }
 
 void QgsMeshDatasetGroupTreeView::onDatasetGroupSaved()
