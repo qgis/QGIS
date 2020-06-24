@@ -337,12 +337,37 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
                                       const QVector<double> &times
                                     ) = 0;
 
+
+    /**
+     * Saves a an existing dataset group provided by \a source to a file with a specified driver
+     *
+     * On success, the mesh's dataset group count is changed
+     *
+     * \param outputFilePath destination path of the stored file
+     * \param outputDriver output driver name
+     * \param source source of the dataset group
+     * \param datasetGroupIndex index of the dataset group in the \a source
+     *
+     * \returns TRUE on failure, FALSE on success
+     *
+     * \since QGIS 3.16
+     */
     virtual bool persistDatasetGroup( const QString &outputFilePath,
                                       const QString &outputDriver,
                                       QgsMeshDatasetSourceInterface *source,
                                       int datasetGroupIndex
                                     ) = 0;
 
+    /**
+     * Returns the dataset index of the dataset in a specific dataet group at \a time from the \a reference time
+     *
+     * \param referenceTime the reference time from where to find the dataset
+     * \param groupIndex the index of the dataset group
+     * \param time the relative time from reference time
+     * \param method the method used to check the time
+     *
+     * \return the dataset index
+     */
     QgsMeshDatasetIndex datasetIndexAtTime( const QDateTime &referenceTime,
                                             int groupIndex,
                                             quint64 time,

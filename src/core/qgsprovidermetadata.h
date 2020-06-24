@@ -82,7 +82,7 @@ class CORE_EXPORT QgsMeshDriverMetadata
     QgsMeshDriverMetadata( const QString &name,
                            const QString &description,
                            const MeshDriverCapabilities &capabilities,
-                           const QString &writeDatasetOnFileSuffix);
+                           const QString &writeDatasetOnFileSuffix );
 
     /**
      * Returns the capabilities for this driver.
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsMeshDriverMetadata
      */
     QString writeDatasetOnFileSuffix() const;
 
-private:
+  private:
     QString mName;
     QString mDescription;
     MeshDriverCapabilities mCapabilities;

@@ -46,7 +46,7 @@ class QgsMeshDatasetGroupSaveMenu: public QObject
     void datasetGroupSaved();
 
   private:
-    QgsMeshLayer *mMeshLayer;
+    QgsMeshLayer *mMeshLayer = nullptr;
 
     void saveDatasetGroup( int datasetGroup, const QString &driver, const QString &fileSuffix );
 };

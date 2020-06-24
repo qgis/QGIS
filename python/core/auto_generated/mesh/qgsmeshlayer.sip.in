@@ -11,7 +11,6 @@
 
 
 
-
 class QgsMeshLayer : QgsMapLayer
 {
 %Docstring
@@ -368,6 +367,7 @@ See :py:func:`QgsMeshDatasetMetadata.isVector()` to check if the returned value 
 
 returns invalid block for DataOnFaces and DataOnVertices.
 %End
+
     QgsMeshDataBlock areFacesActive( const QgsMeshDatasetIndex &index, int faceIndex, int count ) const;
 %Docstring
 Returns whether the faces are active for particular dataset

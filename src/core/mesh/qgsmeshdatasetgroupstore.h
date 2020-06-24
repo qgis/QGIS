@@ -88,6 +88,7 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
  * Class used to register and access all the dataset groups related to a mesh layer
  *
  * The registered dataset group are :
+ *
  * - the ones from the data provider of the mesh layer
  * - extra dataset group that can be added, for example by the mesh calculator
  *

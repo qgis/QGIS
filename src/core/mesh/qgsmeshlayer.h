@@ -38,8 +38,6 @@ class QgsMesh3dAveragingMethod;
 class QgsMeshLayerTemporalProperties;
 class QgsMeshDatasetGroupStore;
 
-struct QgsMeshMemoryDatasetGroup;
-
 /**
  * \ingroup core
  *
@@ -417,6 +415,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * returns invalid block for DataOnFaces and DataOnVertices.
      */
     bool isFaceActive( const QgsMeshDatasetIndex &index, int faceIndex ) const;
+
     /**
      * Returns whether the faces are active for particular dataset
      *

@@ -765,7 +765,10 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
 class CORE_EXPORT QgsMeshDataset
 {
   public:
+    //! Constructor
     QgsMeshDataset() = default;
+
+    //! Destructor
     virtual ~QgsMeshDataset() = default;
 
     //! Returns the value with index \a valueIndex
@@ -801,6 +804,7 @@ class CORE_EXPORT QgsMeshDataset
 class CORE_EXPORT QgsMeshMemoryDataset: public QgsMeshDataset
 {
   public:
+    //! Constructor
     QgsMeshMemoryDataset() = default;
 
     QgsMeshDatasetValue datasetValue( int valueIndex ) const override;
@@ -906,9 +910,12 @@ class CORE_EXPORT QgsMeshDatasetGroup
 class CORE_EXPORT QgsMeshMemoryDatasetGroup: public QgsMeshDatasetGroup
 {
   public:
+    //! Constructor
     QgsMeshMemoryDatasetGroup() = default;
-    QgsMeshMemoryDatasetGroup( const QString &nm );
-    QgsMeshMemoryDatasetGroup( const QString &nm, QgsMeshDatasetGroupMetadata::DataType dataType );
+    //! Constructor with the \a name of the group
+    QgsMeshMemoryDatasetGroup( const QString &name );
+    //! Constructor with the \a name of the group and the type of data \a dataType
+    QgsMeshMemoryDatasetGroup( const QString &name, QgsMeshDatasetGroupMetadata::DataType dataType );
 
     int datasetCount() const override;
     QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) override;

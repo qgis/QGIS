@@ -47,7 +47,7 @@ Constructs default metadata without any capabilities
     QgsMeshDriverMetadata( const QString &name,
                            const QString &description,
                            const MeshDriverCapabilities &capabilities,
-                           const QString &writeDatasetOnFileSuffix);
+                           const QString &writeDatasetOnFileSuffix );
 %Docstring
 Constructs driver metadata with selected capabilities
 
