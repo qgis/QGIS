@@ -14,12 +14,15 @@ import qgis  # NOQA
 
 import os
 
-from qgis.core import (QgsVectorLayer,
+from qgis.core import (QgsAuxiliaryStorage,
+                       QgsAuxiliaryLayer,
+                       QgsVectorLayer,
                        QgsFeatureRequest,
                        QgsFeature,
                        QgsField,
                        NULL,
                        QgsProject,
+                       QgsPropertyDefinition,
                        QgsVectorLayerJoinInfo,
                        QgsGeometry)
 from qgis.testing import start_app, unittest
@@ -292,6 +295,129 @@ class TestQgsFeatureIterator(unittest.TestCase):
         self.assertEqual(f['joinlayer_z'], 654)
 
         QgsProject.instance().removeMapLayers([layer.id(), joinLayer.id()])
+
+    def test_FeatureRequestSortByVirtualField(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                               "addfeat", "memory")
+        pr = layer.dataProvider()
+        f1 = QgsFeature()
+        f1.setAttributes(["test", 123])
+        f2 = QgsFeature()
+        f2.setAttributes(["test", 124])
+        self.assertTrue(pr.addFeatures([f1, f2]))
+
+        idx = layer.addExpressionField('if("fldint"=123,3,2)', QgsField('exp1', QVariant.LongLong))  # NOQA
+
+        QgsProject.instance().addMapLayers([layer])
+
+        request = QgsFeatureRequest()
+        request.setOrderBy(QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('exp1', True)]))
+        ids = []
+        for feat in layer.getFeatures(request):
+            ids.append(feat.id())
+        self.assertEqual(ids, [2, 1])
+
+        request.setOrderBy(QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('exp1', False)]))
+        ids = []
+        for feat in layer.getFeatures(request):
+            ids.append(feat.id())
+        self.assertEqual(ids, [1, 2])
+
+        QgsProject.instance().removeMapLayers([layer.id()])
+
+    def test_FeatureRequestSortByJoinField(self):
+        """ test sorting requested features using a joined columns """
+        joinLayer = QgsVectorLayer(
+            "Point?field=x:string&field=y:integer&field=z:integer",
+            "joinlayer", "memory")
+        pr = joinLayer.dataProvider()
+        f1 = QgsFeature()
+        f1.setAttributes(["foo", 123, 321])
+        f2 = QgsFeature()
+        f2.setAttributes(["bar", 124, 654])
+        self.assertTrue(pr.addFeatures([f1, f2]))
+
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                               "addfeat", "memory")
+        pr = layer.dataProvider()
+        f1 = QgsFeature()
+        f1.setAttributes(["test", 123])
+        f2 = QgsFeature()
+        f2.setAttributes(["test", 124])
+        self.assertTrue(pr.addFeatures([f1, f2]))
+
+        QgsProject.instance().addMapLayers([layer, joinLayer])
+
+        join = QgsVectorLayerJoinInfo()
+        join.setTargetFieldName("fldint")
+        join.setJoinLayer(joinLayer)
+        join.setJoinFieldName("y")
+        join.setUsingMemoryCache(True)
+        layer.addJoin(join)
+
+        request = QgsFeatureRequest()
+        request.setOrderBy(QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('joinlayer_z', True)]))
+        ids = []
+        for feat in layer.getFeatures(request):
+            ids.append(feat.id())
+        self.assertEqual(ids, [1, 2])
+
+        request.setOrderBy(QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('joinlayer_z', False)]))
+        ids = []
+        for feat in layer.getFeatures(request):
+            ids.append(feat.id())
+        self.assertEqual(ids, [2, 1])
+
+        QgsProject.instance().removeMapLayers([layer.id(), joinLayer.id()])
+
+    def test_ZFeatureRequestSortByAuxiliaryField(self):
+        s = QgsAuxiliaryStorage()
+        self.assertTrue(s.isValid())
+
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                               "addfeat", "memory")
+        pr = layer.dataProvider()
+        f1 = QgsFeature()
+        f1.setAttributes(["test", 123])
+        f2 = QgsFeature()
+        f2.setAttributes(["test", 124])
+        self.assertTrue(pr.addFeatures([f1, f2]))
+
+        # Create a new auxiliary layer with 'pk' as key
+        pkf = layer.fields().field(layer.fields().indexOf('fldint'))
+        al = s.createAuxiliaryLayer(pkf, layer)
+        self.assertTrue(al.isValid())
+        layer.setAuxiliaryLayer(al)
+
+        prop = QgsPropertyDefinition()
+        prop.setComment('test_field')
+        prop.setDataType(QgsPropertyDefinition.DataTypeNumeric)
+        prop.setOrigin('user')
+        prop.setName('custom')
+        self.assertTrue(al.addAuxiliaryField(prop))
+
+        layer.startEditing()
+        i = 2
+        for feat in layer.getFeatures():
+            feat.setAttribute(2, i)
+            layer.updateFeature(feat)
+            i -= 1
+        layer.commitChanges()
+
+        request = QgsFeatureRequest()
+        request.setOrderBy(QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause(layer.fields()[2].name(), True)]))
+        ids = []
+        for feat in layer.getFeatures(request):
+            ids.append(feat.id())
+        self.assertEqual(ids, [2, 1])
+
+        request.setOrderBy(QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause(layer.fields()[2].name(), False)]))
+        ids = []
+        for feat in layer.getFeatures(request):
+            ids.append(feat.id())
+        self.assertEqual(ids, [1, 2])
+
+        QgsProject.instance().removeMapLayers([layer.id()])
 
     def test_invalidGeometryFilter(self):
         layer = QgsVectorLayer(
