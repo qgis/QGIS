@@ -235,7 +235,12 @@ my $topush = join(" ", @topush);
 
 print "Push dry-run...\n";
 run( "git push -n --follow-tags origin $topush", "push dry run failed" );
-print "Now manually push and upload the tar balls:\n\tgit push --follow-tags origin $topush\n\trsync qgis-$version.tar.bz2* ssh.qgis.org:/var/www/downloads/\n\n";
+print "Now manually push and upload the tar balls:\n\tgit push --follow-tags origin $topush\n\trsync qgis-$version.tar.bz2* ssh.qgis.org:/var/www/downloads/\n";
+unless($dopoint) {
+	print "Create new transifex branch and push the translations.\n";
+	print "Update the versions and release name in release spreadsheet.\n";
+	print "Package and update the website afterwards.\n";
+}
 print "WARNING: TRANSIFEX UPDATE SKIPPED!\n" if $skipts;
 
 
