@@ -526,12 +526,13 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     QString geometryDataType = conn->getColumnDataType( mSchemaName, mTableName, mGeometryColumn );
     isPointDataType = QString::compare( geometryDataType, "ST_POINT", Qt::CaseInsensitive ) == 0;
 
-    columnNames += QgsHanaUtils::quotedIdentifier( mGeometryColumn );
+    columnNames << QgsHanaUtils::quotedIdentifier( mGeometryColumn );
     values << QStringLiteral( "ST_GeomFromWKB(?, %1)" ).arg( QString::number( mSrid ) );
   }
 
   const QgsAttributes attrs = flist[0].attributes();
   const bool hasSkippedFields = attrs.count() != mAttributeFields.size();
+  QgsDebugMsg( "hasSkippedFields: " + QString::number( hasSkippedFields ) );
   QList<int> fieldIds;
   int idFieldIndex = -1;
 
@@ -551,8 +552,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
     columnNames << QgsHanaUtils::quotedIdentifier( field.name() );
     values << QStringLiteral( "?" );
-
-    fieldIds.append( idx );
+    fieldIds << idx;
   }
 
   const bool allowBatchInserts = ( flags & QgsFeatureSink::FastInsert );
@@ -843,27 +843,66 @@ bool QgsHanaProvider::renameAttributes( const QgsFieldNameMap &fieldMap )
   if ( conn.isNull() )
     return false;
 
+  QSet<QPair<QString, QString>> renameCandidates;
+  for ( QgsFieldNameMap::const_iterator it = fieldMap.begin(); it != fieldMap.end(); ++it )
+  {
+    int fieldIndex = it.key();
+    if ( fieldIndex < 0 || fieldIndex >= mAttributeFields.count() )
+    {
+      pushError( tr( "Invalid attribute index: %1" ).arg( fieldIndex ) );
+      return false;
+    }
+
+    QString fromName = mAttributeFields.at( fieldIndex ).name();
+    QString toName = it.value();
+    if ( fromName == toName )
+      continue;
+
+    renameCandidates.insert( {fromName, toName} );
+  }
+
+  if ( renameCandidates.empty() )
+    return true;
+
+  QSet<QString> resultFieldNames;
+  for ( int i = 0; i < mAttributeFields.count(); ++i )
+    resultFieldNames.insert( mAttributeFields[i].name() );
+
+  // Ordered list of renaming pairs
+  QList<QPair<QString, QString>> fieldsToRename;
+
+  while ( !renameCandidates.empty() )
+  {
+    bool found = false;
+    for ( const QPair<QString, QString> &candidate : renameCandidates )
+    {
+      if ( resultFieldNames.contains( candidate.first ) && !resultFieldNames.contains( candidate.second ) )
+      {
+        resultFieldNames.remove( candidate.first );
+        resultFieldNames.insert( candidate.second );
+        fieldsToRename.append( candidate );
+        renameCandidates.remove( candidate );
+        found = true;
+        break;
+      }
+    }
+
+    if ( !found )
+    {
+      QPair<QString, QString> candidate = *renameCandidates.begin();
+      pushError( tr( "Error renaming field '%1' to '%2'. Field with the same name already exists" ).arg( candidate.first, candidate.second ) );
+      return false;
+    }
+  }
+
   try
   {
-    for ( QgsFieldNameMap::const_iterator it = fieldMap.begin(); it != fieldMap.end(); ++it )
+    for ( const QPair<QString, QString> &kv : fieldsToRename )
     {
-      int fieldIndex = it.key();
-      if ( fieldIndex < 0 || fieldIndex >= mAttributeFields.count() )
-      {
-        pushError( tr( "Invalid attribute index: %1" ).arg( fieldIndex ) );
-        return false;
-      }
-
-      if ( mAttributeFields.indexFromName( it.value() ) >= 0 )
-      {
-        pushError( tr( "Error renaming field %1: name '%2' already exists" ).arg( fieldIndex ).arg( it.value() ) );
-        return false;
-      }
-
       QString sql = QStringLiteral( "RENAME COLUMN %1.%2.%3 TO %4" ).arg(
                       QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ),
-                      QgsHanaUtils::quotedIdentifier( mAttributeFields.at( fieldIndex ).name() ),
-                      QgsHanaUtils::quotedIdentifier( it.value() ) );
+                      QgsHanaUtils::quotedIdentifier( kv.first ),
+                      QgsHanaUtils::quotedIdentifier( kv.second ) );
       conn->execute( sql );
     }
 
