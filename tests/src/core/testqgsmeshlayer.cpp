@@ -1363,7 +1363,7 @@ void TestQgsMeshLayer::test_memory_dataset_group()
 
   std::unique_ptr<QgsMeshMemoryDatasetGroup> goodDatasetGroupVertices( new QgsMeshMemoryDatasetGroup );
   std::unique_ptr<QgsMeshMemoryDatasetGroup>  badDatasetGroupVertices( new QgsMeshMemoryDatasetGroup );
-  goodDatasetGroupVertices->setName( "good vertices datasets" );
+  goodDatasetGroupVertices->setName( QStringLiteral( "good vertices datasets" ) );
   goodDatasetGroupVertices->setDataType( QgsMeshDatasetGroupMetadata::DataOnVertices );
   badDatasetGroupVertices->setDataType( QgsMeshDatasetGroupMetadata::DataOnVertices );
   for ( int i = 1; i < 10; i++ )
@@ -1385,7 +1385,8 @@ void TestQgsMeshLayer::test_memory_dataset_group()
   QCOMPARE( mMdalLayer->datasetGroupCount(), 6 );
   QCOMPARE( mMdalLayer->extraDatasetGroupCount(), 1 );
 
-  std::unique_ptr<QgsMeshMemoryDatasetGroup> goodDatasetGroupFaces( new QgsMeshMemoryDatasetGroup( "good faces datasets", QgsMeshDatasetGroupMetadata::DataOnFaces ) );
+  std::unique_ptr<QgsMeshMemoryDatasetGroup> goodDatasetGroupFaces(
+    new QgsMeshMemoryDatasetGroup( QStringLiteral( "good faces datasets" ), QgsMeshDatasetGroupMetadata::DataOnFaces ) );
   std::unique_ptr<QgsMeshMemoryDatasetGroup> badDatasetGroupFaces( new QgsMeshMemoryDatasetGroup );
   badDatasetGroupFaces->setDataType( QgsMeshDatasetGroupMetadata::DataOnFaces );
   for ( int i = 1; i < 10; i++ )
@@ -1407,8 +1408,8 @@ void TestQgsMeshLayer::test_memory_dataset_group()
   QCOMPARE( mMdalLayer->datasetGroupCount(), 7 );
   QCOMPARE( mMdalLayer->extraDatasetGroupCount(), 2 );
 
-  QCOMPARE( mMdalLayer->datasetGroupMetadata( 5 ).name(), "good vertices datasets" );
-  QCOMPARE( mMdalLayer->datasetGroupMetadata( 6 ).name(), "good faces datasets" );
+  QCOMPARE( mMdalLayer->datasetGroupMetadata( 5 ).name(), QStringLiteral( "good vertices datasets" ) );
+  QCOMPARE( mMdalLayer->datasetGroupMetadata( 6 ).name(), QStringLiteral( "good faces datasets" ) );
 
   QTemporaryFile file;
   QVERIFY( file.open() );
@@ -1418,8 +1419,8 @@ void TestQgsMeshLayer::test_memory_dataset_group()
   QCOMPARE( mMdalLayer->datasetGroupCount(), 7 );
   QCOMPARE( mMdalLayer->extraDatasetGroupCount(), 1 );
 
-  QCOMPARE( mMdalLayer->datasetGroupMetadata( 5 ).name(), "good vertices datasets" );
-  QCOMPARE( mMdalLayer->datasetGroupMetadata( 6 ).name(), "good faces datasets" );
+  QCOMPARE( mMdalLayer->datasetGroupMetadata( 5 ).name(), QStringLiteral( "good vertices datasets" ) );
+  QCOMPARE( mMdalLayer->datasetGroupMetadata( 6 ).name(), QStringLiteral( "good faces datasets" ) );
 
 }
 
