@@ -531,8 +531,6 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   }
 
   const QgsAttributes attrs = flist[0].attributes();
-  const bool hasSkippedFields = attrs.count() != mAttributeFields.size();
-  QgsDebugMsg( "hasSkippedFields: " + QString::number( hasSkippedFields ) );
   QList<int> fieldIds;
   int idFieldIndex = -1;
 
@@ -606,9 +604,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         const int fieldIndex = fieldIds[i];
         const QgsField &field = mAttributeFields.at( fieldIndex );
         const FieldInfo &fieldInfo = mFieldInfos.at( fieldIndex );
-
-        const int attrIndex = ( hasSkippedFields ) ? i : fieldIndex;
-        QVariant attrValue = attrIndex < attrs.length() ? attrs.at( attrIndex ) : QVariant( QVariant::LongLong );
+        QVariant attrValue = fieldIndex < attrs.length() ? attrs.at( fieldIndex ) : QVariant( QVariant::LongLong );
         if ( fieldIndex == idFieldIndex )
         {
           hasIdValue = !attrValue.isNull();
