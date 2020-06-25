@@ -1,10 +1,11 @@
-FROM kartoza/postgis:11.0-2.5
+FROM kartoza/postgis:11.5-2.8
 
 ADD auth_system/certs_keys/postgres.crt /etc/ssl/certs/postgres_cert.crt
 ADD auth_system/certs_keys/postgres.key /etc/ssl/private/postgres_key.key
 ADD auth_system/certs_keys/issuer_ca_cert.pem /etc/ssl/certs/issuer_ca_cert.pem
 
 RUN chmod 400 /etc/ssl/private/postgres_key.key
+<<<<<<< HEAD
 
 # Compile and install PointCloud.
 # NOTE: release 1.2.0 would not build against PostgreSQL-11:
@@ -24,3 +25,5 @@ RUN wget -O- \
   ./configure && \
   make && make install && \
   cd .. && rm -Rf pointcloud-1.2.1
+=======
+>>>>>>> 0ead32b571... remove pointcloud installation in postgis Docker image (#37293)
