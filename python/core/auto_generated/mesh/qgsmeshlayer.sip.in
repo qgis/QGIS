@@ -144,7 +144,8 @@ QgsMeshLayer cannot be copied.
 
     virtual QStringList subLayers() const;
 
-    bool isTemporary() const;
+    virtual bool isTemporary() const;
+
 
     QString providerType() const;
 %Docstring
