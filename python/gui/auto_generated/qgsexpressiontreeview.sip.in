@@ -67,6 +67,7 @@ Gets the type of expression item, e.g., header, field, ExpressionNode.
     static const int CUSTOM_SORT_ROLE;
     static const int ITEM_TYPE_ROLE;
     static const int SEARCH_TAGS_ROLE;
+    static const int ITEM_NAME_ROLE;
 
 };
 

@@ -309,7 +309,7 @@ void QgsExpressionBuilderWidget::expressionTreeItemChanged( QgsExpressionItem *i
   {
     mValuesModel->clear();
 
-    cbxValuesInUse->setVisible( formatterCanProvideAvailableValues( mLayer, item->text() ) );
+    cbxValuesInUse->setVisible( formatterCanProvideAvailableValues( mLayer, item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString() ) );
     cbxValuesInUse->setChecked( false );
   }
   mValueGroupBox->setVisible( isField );
@@ -827,7 +827,7 @@ void QgsExpressionBuilderWidget::loadSampleValues()
     return;
 
   mValueGroupBox->show();
-  fillFieldValues( item->text(), 10 );
+  fillFieldValues( item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString(), 10 );
 }
 
 void QgsExpressionBuilderWidget::loadAllValues()
@@ -839,7 +839,7 @@ void QgsExpressionBuilderWidget::loadAllValues()
     return;
 
   mValueGroupBox->show();
-  fillFieldValues( item->text(), -1 );
+  fillFieldValues( item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString(), -1 );
 }
 
 void QgsExpressionBuilderWidget::loadSampleUsedValues()
@@ -851,7 +851,7 @@ void QgsExpressionBuilderWidget::loadSampleUsedValues()
     return;
 
   mValueGroupBox->show();
-  fillFieldValues( item->text(), 10, true );
+  fillFieldValues( item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString(), 10, true );
 }
 
 void QgsExpressionBuilderWidget::loadAllUsedValues()
@@ -863,7 +863,7 @@ void QgsExpressionBuilderWidget::loadAllUsedValues()
     return;
 
   mValueGroupBox->show();
-  fillFieldValues( item->text(), -1, true );
+  fillFieldValues( item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString(), -1, true );
 }
 
 void QgsExpressionBuilderWidget::txtPython_textChanged()
@@ -1113,7 +1113,7 @@ QMenu *QgsExpressionBuilderWidget::ExpressionTreeMenuProvider::createContextMenu
     menu->addAction( tr( "Load First 10 Unique Values" ), mExpressionBuilderWidget, &QgsExpressionBuilderWidget::loadSampleValues );
     menu->addAction( tr( "Load All Unique Values" ), mExpressionBuilderWidget, &QgsExpressionBuilderWidget::loadAllValues );
 
-    if ( formatterCanProvideAvailableValues( layer, item->text() ) )
+    if ( formatterCanProvideAvailableValues( layer, item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString() ) )
     {
       menu->addAction( tr( "Load First 10 Unique Used Values" ), mExpressionBuilderWidget, SLOT( loadSampleUsedValues() ) );
       menu->addAction( tr( "Load All Unique Used Values" ), mExpressionBuilderWidget, &QgsExpressionBuilderWidget::loadAllUsedValues );
