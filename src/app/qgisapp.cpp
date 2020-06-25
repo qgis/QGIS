@@ -7330,7 +7330,8 @@ void QgisApp::runScript( const QString &filePath )
   QMessageBox msgbox;
   if ( showScriptWarning )
   {
-    msgbox.setText( tr( "Security warning: executing a script from an untrusted source can lead to data loss and/or leak. Continue?" ) );
+    msgbox.setWindowTitle( tr( "Security warning" ) );
+    msgbox.setText( tr( "Executing a script from an untrusted source can harm your computer. Only continue if you trust the source of the script. Continue?" ) );
     msgbox.setIcon( QMessageBox::Icon::Warning );
     msgbox.addButton( QMessageBox::Yes );
     msgbox.addButton( QMessageBox::No );
