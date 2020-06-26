@@ -113,6 +113,12 @@ void QgsRuntimeProfilerNode::clear()
   mChildren.clear();
 }
 
+void QgsRuntimeProfilerNode::removeChildAt( int index )
+{
+  Q_ASSERT( static_cast< std::size_t >( index ) < mChildren.size() );
+  mChildren.erase( mChildren.begin() + index );
+}
+
 void QgsRuntimeProfilerNode::start()
 {
   mProfileTime.restart();
@@ -263,13 +269,14 @@ double QgsRuntimeProfiler::profileTime( const QString &name, const QString &grou
 
 void QgsRuntimeProfiler::clear( const QString &group )
 {
-  if ( QgsRuntimeProfilerNode *node = pathToNode( group, QString() ) )
+  for ( int row = mRootNode->childCount() - 1; row >= 0; row-- )
   {
-    // FIX!!!
-    const QModelIndex index = node2index( node );
-    beginRemoveRows( index, 0, node->childCount() - 1 );
-    node->clear();
-    endRemoveRows();
+    if ( mRootNode->childAt( row )->data( QgsRuntimeProfilerNode::Group ).toString() == group )
+    {
+      beginRemoveRows( QModelIndex(), row, row );
+      mRootNode->removeChildAt( row );
+      endRemoveRows();
+    }
   }
 }
 
@@ -562,9 +569,9 @@ QgsRuntimeProfilerNode *QgsRuntimeProfiler::index2node( const QModelIndex &index
 // QgsScopedRuntimeProfile
 //
 
-QgsScopedRuntimeProfile::QgsScopedRuntimeProfile( const QString &name )
+QgsScopedRuntimeProfile::QgsScopedRuntimeProfile( const QString &name, const QString &group )
 {
-  QgsApplication::profiler()->start( name );
+  QgsApplication::profiler()->start( name, group );
 }
 
 QgsScopedRuntimeProfile::~QgsScopedRuntimeProfile()
