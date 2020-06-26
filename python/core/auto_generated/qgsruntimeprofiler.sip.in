@@ -161,6 +161,16 @@ and starts recording the run time of the operation.
 
     ~QgsScopedRuntimeProfile();
 
+    void switchTask( const QString &name );
+%Docstring
+Switches the current task managed by the scoped profile to a new task with the given ``name``.
+The current task will be finalised before switching.
+
+This is useful for reusing an existing scoped runtime profiler with multi-step processes.
+
+.. versionadded:: 3.14
+%End
+
 };
 
 

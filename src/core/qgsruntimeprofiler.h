@@ -323,6 +323,20 @@ class CORE_EXPORT QgsScopedRuntimeProfile
      */
     ~QgsScopedRuntimeProfile();
 
+    /**
+     * Switches the current task managed by the scoped profile to a new task with the given \a name.
+     * The current task will be finalised before switching.
+     *
+     * This is useful for reusing an existing scoped runtime profiler with multi-step processes.
+     *
+     * \since QGIS 3.14
+     */
+    void switchTask( const QString &name );
+
+  private:
+
+    QString mGroup;
+
 };
 
 
