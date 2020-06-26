@@ -66,7 +66,7 @@ class _3D_EXPORT QgsPhongMaterialSettings
      */
     float textureScale() const { return mTextureScale; }
 
-    //! Return the texture's rotation in degrees
+    //! Returns the texture's rotation in degrees
     float textureRotation() const { return mTextureRotation; }
 
     //! Sets ambient color component
