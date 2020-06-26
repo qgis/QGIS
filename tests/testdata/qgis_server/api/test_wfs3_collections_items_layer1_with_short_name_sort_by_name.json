@@ -1,0 +1,72 @@
+Content-Type: application/geo+json
+
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          8.203496,
+          44.901483
+        ],
+        "type": "Point"
+      },
+      "id": 0,
+      "properties": {
+        "id": 1,
+        "name": "one",
+        "utf8nameè": "one èé"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          8.203459,
+          44.901395
+        ],
+        "type": "Point"
+      },
+      "id": 2,
+      "properties": {
+        "id": 3,
+        "name": "three",
+        "utf8nameè": "three èé↓"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          8.203547,
+          44.901436
+        ],
+        "type": "Point"
+      },
+      "id": 1,
+      "properties": {
+        "id": 2,
+        "name": "two",
+        "utf8nameè": "two àò"
+      },
+      "type": "Feature"
+    }
+  ],
+  "links": [
+    {
+      "href": "http://server.qgis.org/wfs3/collections/layer1_with_short_name/items.geojson?sortby=name",
+      "rel": "self",
+      "title": "Retrieve the features of the collection as GEOJSON",
+      "type": "application/geo+json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/layer1_with_short_name/items.html?sortby=name",
+      "rel": "alternate",
+      "title": "Retrieve the features of the collection as HTML",
+      "type": "text/html"
+    }
+  ],
+  "numberMatched": 3,
+  "numberReturned": 3,
+  "timeStamp": "2020-06-26T11:47:36Z",
+  "type": "FeatureCollection"
+}
