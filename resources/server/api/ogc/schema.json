@@ -374,7 +374,7 @@
           "type" : "string"
         }
       },
-      "sortBy" : {
+      "sortby" : {
         "name" : "sortby",
         "in" : "path",
         "description" : "Sort results by the specified field name",
@@ -383,7 +383,7 @@
           "type" : "string"
         }
       },
-      "sortDesc" : {
+      "sortdesc" : {
         "name" : "sortdesc",
         "in" : "path",
         "description" : "Sort results in descending order, field name must be specified with 'sortby' parameter",
