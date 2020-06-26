@@ -90,7 +90,11 @@ class CORE_EXPORT QgsRuntimeProfilerNode
      */
     int indexOf( QgsRuntimeProfilerNode *child ) const;
 
-    QgsRuntimeProfilerNode *child( const QString &group, const QString &path );
+    /**
+     * Finds the child with matching \a group and \a name. Returns NULLPTR if
+     * a matching child was not found.
+     */
+    QgsRuntimeProfilerNode *child( const QString &group, const QString &name );
 
     /**
      * Returns the child at the specified \a index.
