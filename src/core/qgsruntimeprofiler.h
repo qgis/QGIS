@@ -103,6 +103,11 @@ class CORE_EXPORT QgsRuntimeProfilerNode
     void clear();
 
     /**
+     * Removes and deletes the child at the specified \a index.
+     */
+    void removeChildAt( int index );
+
+    /**
      * Starts the node timer.
      * \see stop()
      */
@@ -311,7 +316,7 @@ class CORE_EXPORT QgsScopedRuntimeProfile
      * Automatically registers the operation in the QgsApplication::profiler() instance
      * and starts recording the run time of the operation.
      */
-    QgsScopedRuntimeProfile( const QString &name );
+    QgsScopedRuntimeProfile( const QString &name, const QString &group = "startup" );
 
     /**
      * Records the final runtime of the operation in the profiler instance.
