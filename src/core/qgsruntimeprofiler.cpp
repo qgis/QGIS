@@ -570,11 +570,18 @@ QgsRuntimeProfilerNode *QgsRuntimeProfiler::index2node( const QModelIndex &index
 //
 
 QgsScopedRuntimeProfile::QgsScopedRuntimeProfile( const QString &name, const QString &group )
+  : mGroup( group )
 {
-  QgsApplication::profiler()->start( name, group );
+  QgsApplication::profiler()->start( name, mGroup );
 }
 
 QgsScopedRuntimeProfile::~QgsScopedRuntimeProfile()
 {
-  QgsApplication::profiler()->end();
+  QgsApplication::profiler()->end( mGroup );
+}
+
+void QgsScopedRuntimeProfile::switchTask( const QString &name )
+{
+  QgsApplication::profiler()->end( mGroup );
+  QgsApplication::profiler()->start( name, mGroup );
 }
