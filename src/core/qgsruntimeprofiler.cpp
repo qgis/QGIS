@@ -33,6 +33,8 @@ QgsRuntimeProfilerNode::QgsRuntimeProfilerNode( const QString &group, const QStr
 
 }
 
+QgsRuntimeProfilerNode::~QgsRuntimeProfilerNode() = default;
+
 QStringList QgsRuntimeProfilerNode::fullParentPath() const
 {
   QStringList res;
@@ -45,8 +47,6 @@ QStringList QgsRuntimeProfilerNode::fullParentPath() const
   }
   return res;
 }
-
-QgsRuntimeProfilerNode::~QgsRuntimeProfilerNode() = default;
 
 QVariant QgsRuntimeProfilerNode::data( int role ) const
 {
@@ -159,6 +159,8 @@ QgsRuntimeProfiler::QgsRuntimeProfiler()
 {
 
 }
+
+QgsRuntimeProfiler::~QgsRuntimeProfiler() = default;
 
 QgsRuntimeProfiler *QgsRuntimeProfiler::threadLocalInstance()
 {
