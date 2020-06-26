@@ -92,11 +92,11 @@ int QgsRuntimeProfilerNode::indexOf( QgsRuntimeProfilerNode *child ) const
   return -1;
 }
 
-QgsRuntimeProfilerNode *QgsRuntimeProfilerNode::child( const QString &group, const QString &path )
+QgsRuntimeProfilerNode *QgsRuntimeProfilerNode::child( const QString &group, const QString &name )
 {
   for ( auto &it : mChildren )
   {
-    if ( it->data( Group ).toString() == group &&  it->data( Name ).toString() == path )
+    if ( it->data( Group ).toString() == group &&  it->data( Name ).toString() == name )
       return it.get();
   }
   return nullptr;
@@ -507,10 +507,13 @@ void QgsRuntimeProfiler::setupConnections()
 
 QgsRuntimeProfilerNode *QgsRuntimeProfiler::pathToNode( const QString &group, const QString &path ) const
 {
-  QStringList parts = path.split( '/', Qt::SkipEmptyParts );
+  QStringList parts = path.split( '/' );
   QgsRuntimeProfilerNode *res = mRootNode.get();
   for ( const QString &part : parts )
   {
+    if ( part.isEmpty() )
+      continue;
+
     res = res->child( group, part );
     if ( !res )
       break;
