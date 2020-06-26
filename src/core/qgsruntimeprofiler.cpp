@@ -288,6 +288,11 @@ double QgsRuntimeProfiler::totalTime( const QString &group )
   return 0;
 }
 
+bool QgsRuntimeProfiler::groupIsActive( const QString &group ) const
+{
+  return !mCurrentStack.value( group ).empty();
+}
+
 QString QgsRuntimeProfiler::translateGroupName( const QString &group )
 {
   if ( group == QLatin1String( "startup" ) )

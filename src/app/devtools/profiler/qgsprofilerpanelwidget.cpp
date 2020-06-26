@@ -35,8 +35,8 @@ QgsProfilerPanelWidget::QgsProfilerPanelWidget( QgsRuntimeProfiler *profiler, QW
   mTreeView->setModel( mProxyModel );
   mTreeView->setSortingEnabled( true );
 
-  mTreeView->resizeColumnToContents( 0 );
-  mTreeView->resizeColumnToContents( 1 );
+  //mTreeView->resizeColumnToContents( 0 );
+  //mTreeView->resizeColumnToContents( 1 );
 
   mTreeView->setItemDelegateForColumn( 1, new CostDelegate( QgsRuntimeProfilerNode::Elapsed, QgsRuntimeProfilerNode::ParentElapsed ) );
 

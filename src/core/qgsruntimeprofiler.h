@@ -236,6 +236,14 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
     QSet< QString > groups() const { return mGroups; }
 
     /**
+     * Returns TRUE if the specified \a group is currently being logged,
+     * i.e. it has a entry which has started and not yet stopped.
+     *
+     * \since QGIS 3.14
+     */
+    bool groupIsActive( const QString &group ) const;
+
+    /**
      * Returns the translated name of a standard profile \a group.
      */
     static QString translateGroupName( const QString &group );
