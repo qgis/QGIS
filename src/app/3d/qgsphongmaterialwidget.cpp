@@ -76,7 +76,7 @@ QgsPhongMaterialSettings QgsPhongMaterialWidget::material() const
   return m;
 }
 
-bool QgsPhongMaterialWidget::activateTexturingUI( bool activated )
+void QgsPhongMaterialWidget::activateTexturingUI( bool activated )
 {
   lblTextureScale->setVisible( activated );
   lblTextureRotation->setVisible( activated );
