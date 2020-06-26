@@ -178,6 +178,7 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
      * through QgsApplication::profiler().
      */
     QgsRuntimeProfiler();
+    ~QgsRuntimeProfiler() override;
 
     /**
      * \brief Begin the group for the profiler. Groups will append {GroupName}/ to the

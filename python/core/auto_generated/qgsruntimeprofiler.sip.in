@@ -36,6 +36,7 @@ Constructor to create a new runtime profiler.
    QgsRuntimeProfiler is not usually instantied manually, but rather accessed
    through :py:func:`QgsApplication.profiler()`.
 %End
+    ~QgsRuntimeProfiler();
 
  void beginGroup( const QString &name ) /Deprecated/;
 %Docstring
