@@ -27,13 +27,24 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QTreeWidget" name="mTreeWidget">
-     <column>
-      <property name="text">
-       <string notr="true">1</string>
-      </property>
-     </column>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Category</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mCategoryComboBox"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTreeView" name="mTreeView"/>
    </item>
   </layout>
   <action name="mActionClear">

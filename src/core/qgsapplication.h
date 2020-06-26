@@ -940,7 +940,6 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsPageSizeRegistry *mPageSizeRegistry = nullptr;
       QgsRasterRendererRegistry *mRasterRendererRegistry = nullptr;
       QgsRendererRegistry *mRendererRegistry = nullptr;
-      QgsRuntimeProfiler *mProfiler = nullptr;
       QgsSvgCache *mSvgCache = nullptr;
       QgsImageCache *mImageCache = nullptr;
       QgsSymbolLayerRegistry *mSymbolLayerRegistry = nullptr;
