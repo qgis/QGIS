@@ -42,7 +42,7 @@ class CORE_EXPORT QgsTessellator
   public:
     //! Creates tessellator with a specified origin point of the world (in map coordinates)
     QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
-                    bool addTextureCoords = false, int facade = 3, float wallsTextureRotation = 0.0f, float roofsTextureRotation = 0.0f );
+                    bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f );
 
     /**
      * Creates tessellator with a specified \a bounds of input geometry coordinates.
@@ -54,7 +54,7 @@ class CORE_EXPORT QgsTessellator
      * \since QGIS 3.10
      */
     QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
-                    bool addTextureCoords = false, int facade = 3, float wallsTextureRotation = 0.0f, float roofsTextureRotation = 0.0f );
+                    bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f );
 
     //! Tessellates a triangle and adds its vertex entries to the output data array
     void addPolygon( const QgsPolygon &polygon, float extrusionHeight );
@@ -102,8 +102,7 @@ class CORE_EXPORT QgsTessellator
     int mStride;
     bool mNoZ = false;
     int mTessellatedFacade = 3;
-    float mWallsTextureRotation = 0.0f;
-    float mRoofsTextureRotation = 0.0f;
+    float mTextureRotation = 0.0f;
 
     float mZMin = std::numeric_limits<float>::max();
     float mZMax = std::numeric_limits<float>::min();

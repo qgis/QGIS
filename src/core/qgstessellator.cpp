@@ -170,7 +170,7 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
 
 
 QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ,
-                                bool addTextureCoords, int facade, float wallsTextureRotation, float roofsTextureRotation )
+                                bool addTextureCoords, int facade, float textureRotation )
   : mOriginX( originX )
   , mOriginY( originY )
   , mAddNormals( addNormals )
@@ -179,14 +179,13 @@ QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals,
   , mAddTextureCoords( addTextureCoords )
   , mNoZ( noZ )
   , mTessellatedFacade( facade )
-  , mWallsTextureRotation( wallsTextureRotation )
-  , mRoofsTextureRotation( roofsTextureRotation )
+  , mTextureRotation( textureRotation )
 {
   init();
 }
 
 QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ,
-                                bool addTextureCoords, int facade, float wallsTextureRotation, float roofsTextureRotation )
+                                bool addTextureCoords, int facade, float textureRotation )
   : mBounds( bounds )
   , mOriginX( mBounds.xMinimum() )
   , mOriginY( mBounds.yMinimum() )
@@ -196,8 +195,7 @@ QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, boo
   , mAddTextureCoords( addTextureCoords )
   , mNoZ( noZ )
   , mTessellatedFacade( facade )
-  , mWallsTextureRotation( wallsTextureRotation )
-  , mRoofsTextureRotation( roofsTextureRotation )
+  , mTextureRotation( textureRotation )
 {
   init();
 }
@@ -628,11 +626,11 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
         std::pair<float, float> p( triangle->xAt( i ), triangle->yAt( i ) );
         if ( facade & 1 )
         {
-          p = rotateCoords( p.first, p.second, 0.0f, 0.0f, mWallsTextureRotation );
+          p = rotateCoords( p.first, p.second, 0.0f, 0.0f, mTextureRotation );
         }
         else if ( facade & 2 )
         {
-          p = rotateCoords( p.first, p.second, 0.0f, 0.0f, mRoofsTextureRotation );
+          p = rotateCoords( p.first, p.second, 0.0f, 0.0f, mTextureRotation );
         }
         mData << p.first << p.second;
       }
@@ -652,11 +650,11 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           std::pair<float, float> p( triangle->xAt( i ), triangle->yAt( i ) );
           if ( facade & 1 )
           {
-            p = rotateCoords( p.first, p.second, 0.0f, 0.0f, mWallsTextureRotation );
+            p = rotateCoords( p.first, p.second, 0.0f, 0.0f, mTextureRotation );
           }
           else if ( facade & 2 )
           {
-            p = rotateCoords( p.first, p.second, 0.0f, 0.0f, mRoofsTextureRotation );
+            p = rotateCoords( p.first, p.second, 0.0f, 0.0f, mTextureRotation );
           }
           mData << p.first << p.second;
         }
@@ -753,15 +751,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
             mData << pNormal.x() << pNormal.z() << - pNormal.y();
           if ( mAddTextureCoords )
           {
-            std::pair<float, float> pr( p->x, p->y );
-            if ( facade & 1 )
-            {
-              pr = rotateCoords( pr.first, pr.second, 0.0f, 0.0f, mWallsTextureRotation );
-            }
-            else if ( facade & 2 )
-            {
-              pr = rotateCoords( pr.first, pr.second, 0.0f, 0.0f, mRoofsTextureRotation );
-            }
+            std::pair<float, float> pr = rotateCoords( p->x, p->y, 0.0f, 0.0f, mTextureRotation );
             mData << pr.first << pr.second;
           }
         }
@@ -783,15 +773,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
               mData << -pNormal.x() << -pNormal.z() << pNormal.y();
             if ( mAddTextureCoords )
             {
-              std::pair<float, float> pr( p->x, p->y );
-              if ( facade & 1 )
-              {
-                pr = rotateCoords( pr.first, pr.second, 0.0f, 0.0f, mWallsTextureRotation );
-              }
-              else if ( facade & 2 )
-              {
-                pr = rotateCoords( pr.first, pr.second, 0.0f, 0.0f, mRoofsTextureRotation );
-              }
+              std::pair<float, float> pr = rotateCoords( p->x, p->y, 0.0f, 0.0f, mTextureRotation );
               mData << pr.first << pr.second;
             }
           }
@@ -810,10 +792,10 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   // add walls if extrusion is enabled
   if ( extrusionHeight != 0 && ( mTessellatedFacade & 1 ) )
   {
-    _makeWalls( *exterior, false, extrusionHeight, mData, mAddNormals, mAddTextureCoords, mOriginX, mOriginY, mWallsTextureRotation );
+    _makeWalls( *exterior, false, extrusionHeight, mData, mAddNormals, mAddTextureCoords, mOriginX, mOriginY, mTextureRotation );
 
     for ( int i = 0; i < polygon.numInteriorRings(); ++i )
-      _makeWalls( *qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ), true, extrusionHeight, mData, mAddNormals, mAddTextureCoords, mOriginX, mOriginY, mWallsTextureRotation );
+      _makeWalls( *qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ), true, extrusionHeight, mData, mAddNormals, mAddTextureCoords, mOriginX, mOriginY, mTextureRotation );
 
     zMax += extrusionHeight;
   }

@@ -42,8 +42,7 @@ class _3D_EXPORT QgsPhongMaterialSettings
       , mIsUsingDiffuseTexture( false )
       , mTexturePath( QString() )
       , mTextureScale( 1.0f )
-      , mWallsTextureRotation( 0.0f )
-      , mRoofsTextureRotation( 0.0f )
+      , mTextureRotation( 0.0f )
     {
     }
 
@@ -67,8 +66,8 @@ class _3D_EXPORT QgsPhongMaterialSettings
      */
     float textureScale() const { return mTextureScale; }
 
-    float wallsTextureRotation() const { return mWallsTextureRotation; }
-    float roofsTextureRotation() const { return mRoofsTextureRotation; }
+    //! Return the texture's rotation in degrees
+    float textureRotation() const { return mTextureRotation; }
 
     //! Sets ambient color component
     void setAmbient( const QColor &ambient ) { mAmbient = ambient; }
@@ -83,15 +82,15 @@ class _3D_EXPORT QgsPhongMaterialSettings
     //! Sets the path of the texture
     void setTexturePath( QString texturePath ) { mTexturePath = texturePath; }
 
-    void setWallsTextureRotation( float rotation ) { mWallsTextureRotation = rotation; }
-    void setRoofsTextureRotation( float rotation ) { mRoofsTextureRotation = rotation; }
-
     /**
-     * sets the texture scale
+     * Sets the texture scale
      * The texture scale changes the size of the displayed texture in the 3D scene
      * If the texture scale is less than 1 the texture will be stretched
      */
     void setTextureScale( float scale ) { mTextureScale = scale; }
+
+    //! Sets the texture rotation in degrees
+    void setTextureRotation( float rotation ) { mTextureRotation = rotation; }
 
     //! Reads settings from a DOM element
     void readXml( const QDomElement &elem );
@@ -106,7 +105,8 @@ class _3D_EXPORT QgsPhongMaterialSettings
              mShininess == other.mShininess &&
              mIsUsingDiffuseTexture == other.mIsUsingDiffuseTexture &&
              mTexturePath == other.mTexturePath &&
-             mTextureScale == other.mTextureScale;
+             mTextureScale == other.mTextureScale &&
+             mTextureRotation == other.mTextureRotation;
     }
 
   private:
@@ -117,8 +117,7 @@ class _3D_EXPORT QgsPhongMaterialSettings
     bool mIsUsingDiffuseTexture;
     QString mTexturePath;
     float mTextureScale;
-    float mWallsTextureRotation;
-    float mRoofsTextureRotation;
+    float mTextureRotation;
 };
 
 

@@ -41,6 +41,8 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   connect( groupEdges, &QGroupBox::clicked, this, &QgsPolygon3DSymbolWidget::changed );
   connect( btnEdgeColor, &QgsColorButton::colorChanged, this, &QgsPolygon3DSymbolWidget::changed );
   connect( spinEdgeWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::changed );
+
+  widgetMaterial->activateTexturingUI( true );
 }
 
 void QgsPolygon3DSymbolWidget::setSymbol( const QgsPolygon3DSymbol &symbol, QgsVectorLayer *layer )

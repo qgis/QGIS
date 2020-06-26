@@ -86,8 +86,8 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   outEdges.withAdjacency = true;
   outEdges.init( mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), mSymbol.height(), &context.map() );
 
-  outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(), mSymbol.addBackFaces(), false, mSymbol.material().isUsingDiffuseTexture(), mSymbol.renderedFacade(), mSymbol.material().wallsTextureRotation(), mSymbol.material().roofsTextureRotation() ) );
-  outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(), mSymbol.addBackFaces(), false, mSymbol.material().isUsingDiffuseTexture(), mSymbol.renderedFacade(), mSymbol.material().wallsTextureRotation(), mSymbol.material().roofsTextureRotation() ) );
+  outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(), mSymbol.addBackFaces(), false, mSymbol.material().isUsingDiffuseTexture(), mSymbol.renderedFacade(), mSymbol.material().textureRotation() ) );
+  outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(), mSymbol.addBackFaces(), false, mSymbol.material().isUsingDiffuseTexture(), mSymbol.renderedFacade(), mSymbol.material().textureRotation() ) );
 
   QSet<QString> attrs = mSymbol.dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );
