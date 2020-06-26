@@ -306,6 +306,8 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
     time.start();
   }
 
+  response.clear();
+
   // Pass the filters to the requestHandler, this is needed for the following reasons:
   // Allow server request to call sendResponse plugin hook if enabled
   QgsFilterResponseDecorator responseDecorator( sServerInterface->filters(), response );
