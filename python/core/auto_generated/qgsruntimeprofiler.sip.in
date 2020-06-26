@@ -100,6 +100,14 @@ The current total time collected in the profiler.
 Returns the set of known groups.
 %End
 
+    bool groupIsActive( const QString &group ) const;
+%Docstring
+Returns ``True`` if the specified ``group`` is currently being logged,
+i.e. it has a entry which has started and not yet stopped.
+
+.. versionadded:: 3.14
+%End
+
     static QString translateGroupName( const QString &group );
 %Docstring
 Returns the translated name of a standard profile ``group``.

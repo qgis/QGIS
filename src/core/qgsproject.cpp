@@ -1162,6 +1162,8 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
   profile.switchTask( tr( "Load layer source" ) );
   bool layerIsValid = mapLayer->readLayerXml( layerElem, context, layerFlags ) && mapLayer->isValid();
+
+  profile.switchTask( tr( "Add layer to project" ) );
   QList<QgsMapLayer *> newLayers;
   newLayers << mapLayer.get();
   if ( layerIsValid || flags & QgsProject::ReadFlag::FlagDontResolveLayers )
