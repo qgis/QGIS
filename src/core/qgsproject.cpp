@@ -1522,7 +1522,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   // Resolve references to other layers
   // Needs to be done here once all dependent layers are loaded
   QMap<QString, QgsMapLayer *> layers = mLayerStore->mapLayers();
-  for ( QMap<QString, QgsMapLayer *>::iterator it = layers.begin(); it != layers.end(); it++ )
+  for ( QMap<QString, QgsMapLayer *>::iterator it = layers.begin(); it != layers.end(); ++it )
   {
     it.value()->resolveReferences( this );
   }
@@ -1590,7 +1590,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 
   // reassign change dependencies now that all layers are loaded
   QMap<QString, QgsMapLayer *> existingMaps = mapLayers();
-  for ( QMap<QString, QgsMapLayer *>::iterator it = existingMaps.begin(); it != existingMaps.end(); it++ )
+  for ( QMap<QString, QgsMapLayer *>::iterator it = existingMaps.begin(); it != existingMaps.end(); ++it )
   {
     it.value()->setDependencies( it.value()->dependencies() );
   }
@@ -1930,7 +1930,7 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
       connect( layer, &QgsMapLayer::configChanged, this, [ = ] { setDirty(); } );
 
       // check if we have to update connections for layers with dependencies
-      for ( QMap<QString, QgsMapLayer *>::iterator it = existingMaps.begin(); it != existingMaps.end(); it++ )
+      for ( QMap<QString, QgsMapLayer *>::iterator it = existingMaps.begin(); it != existingMaps.end(); ++it )
       {
         QSet<QgsMapLayerDependency> deps = it.value()->dependencies();
         if ( deps.contains( layer->id() ) )

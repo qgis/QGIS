@@ -447,7 +447,7 @@ bool QgsTriangle::isRight( double angleTolerance ) const
   {
     if ( qgsDoubleNear( *ita, M_PI_2, angleTolerance ) )
       return true;
-    ita++;
+    ++ita;
   }
   return false;
 }

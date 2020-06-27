@@ -1199,7 +1199,7 @@ static const QgsPointSequence vectorPointXY2pointSequence( const QVector<QgsPoin
   while ( it != points.constEnd() )
   {
     pts.append( QgsPoint( *it ) );
-    it++;
+    ++it;
   }
   return pts;
 }
