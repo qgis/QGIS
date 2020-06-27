@@ -64,7 +64,7 @@ If the texture scale is less than 1 the texture will be stretched
 
     float textureRotation() const;
 %Docstring
-Return the texture's rotation in degrees
+Returns the texture's rotation in degrees
 %End
 
     void setAmbient( const QColor &ambient );
