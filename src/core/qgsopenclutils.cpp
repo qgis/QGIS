@@ -657,13 +657,13 @@ cl::Program QgsOpenClUtils::buildProgram( const QString &source, QgsOpenClUtils:
     float version( QgsOpenClUtils::activePlatformVersion().toFloat( &ok ) );
     if ( ok && version < 2.0f )
     {
-      program.build( QStringLiteral( "-cl-std=CL%1 -I%2" )
+      program.build( QStringLiteral( "-cl-std=CL%1 -I\"%2\"" )
                      .arg( QgsOpenClUtils::activePlatformVersion( ) )
                      .arg( sourcePath() ).toStdString().c_str() );
     }
     else
     {
-      program.build( QStringLiteral( "-I%1" )
+      program.build( QStringLiteral( "-I\"%1\"" )
                      .arg( sourcePath() ).toStdString().c_str() );
     }
   }

@@ -215,6 +215,11 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertEqual(QgsDistanceArea.formatDistance(result_test_meters, 1, QgsUnitTypes.DistanceMeters, True),
                          QgsDistanceArea.formatDistance(meters_test, 1, QgsUnitTypes.DistanceMeters, True))
 
+        # attempting to convert to meters in map units when no extent is available should fallback to a very
+        # approximate degrees -> meters conversion
+        r.setExtent(QgsRectangle())
+        self.assertAlmostEqual(r.convertToPainterUnits(5555, QgsUnitTypes.RenderMetersInMapUnits), 0.0499, 3)
+
     def testConvertSingleUnit(self):
         ms = QgsMapSettings()
         ms.setExtent(QgsRectangle(0, 0, 100, 100))

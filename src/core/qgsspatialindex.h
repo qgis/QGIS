@@ -81,7 +81,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     /**
      * Constructor for QgsSpatialIndex. Creates an empty R-tree index.
      */
-    QgsSpatialIndex( QgsSpatialIndex::Flags flags = nullptr );
+    QgsSpatialIndex( QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags() );
 
     /**
      * Constructor - creates R-tree and bulk loads it with features from the iterator.
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      *
      * \since QGIS 2.8
      */
-    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = nullptr );
+    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags() );
 
 #ifndef SIP_RUN
 
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      * \note Not available in Python bindings
      * \since QGIS 2.12
      */
-    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, const std::function< bool( const QgsFeature & ) > &callback, QgsSpatialIndex::Flags flags = nullptr );
+    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, const std::function< bool( const QgsFeature & ) > &callback, QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags() );
 #endif
 
     /**
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      *
      * \since QGIS 3.0
      */
-    explicit QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = nullptr );
+    explicit QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags() );
 
     //! Copy constructor
     QgsSpatialIndex( const QgsSpatialIndex &other );
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      *
      * \since QGIS 3.4
      */
-    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
     /**
      * Adds a list of \a features to the index.
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      *
      * \see addFeature()
      */
-    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
     /**
      * Add a feature \a id to the index with a specified bounding box.

@@ -681,12 +681,6 @@ void QgsGeoreferencerMainWindow::localHistogramStretch()
   mCanvas->refresh();
 }
 
-// Info slots
-void QgsGeoreferencerMainWindow::showHelp()
-{
-  QgsHelp::openHelp( QStringLiteral( "plugins/core_plugins/plugins_georeferencer.html#defining-the-transformation-settings" ) );
-}
-
 // Comfort slots
 void QgsGeoreferencerMainWindow::jumpToGCP( uint theGCPIndex )
 {
@@ -904,10 +898,6 @@ void QgsGeoreferencerMainWindow::createActions()
   mActionFullHistogramStretch->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFullHistogramStretch.svg" ) ) );
   connect( mActionFullHistogramStretch, &QAction::triggered, this, &QgsGeoreferencerMainWindow::fullHistogramStretch );
   mActionFullHistogramStretch->setEnabled( false );
-
-  // Help actions
-  mActionHelp = new QAction( tr( "Help" ), this );
-  connect( mActionHelp, &QAction::triggered, this, &QgsGeoreferencerMainWindow::showHelp );
 
   mActionQuit->setShortcuts( QList<QKeySequence>() << QKeySequence( Qt::CTRL + Qt::Key_Q )
                              << QKeySequence( Qt::Key_Escape ) );

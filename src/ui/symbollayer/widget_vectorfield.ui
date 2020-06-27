@@ -148,7 +148,7 @@
      <item>
       <widget class="QGroupBox" name="mFieldTypeGroupBox">
        <property name="title">
-        <string>Vector field type</string>
+        <string>Vector Field Type</string>
        </property>
        <layout class="QGridLayout" name="gridLayout">
         <item row="2" column="0">
@@ -178,7 +178,7 @@
      <item>
       <widget class="QGroupBox" name="mAngleUnitsGroupBox">
        <property name="title">
-        <string>Angle units</string>
+        <string>Angle Units</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
@@ -203,7 +203,7 @@
    <item>
     <widget class="QGroupBox" name="mAngleOrientationGroupBox">
      <property name="title">
-      <string>Angle orientation</string>
+      <string>Angle Orientation</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>

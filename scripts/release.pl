@@ -187,6 +187,7 @@ unless( defined $dopoint ) {
 	run( "convert -resize 164x314 ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.png BMP3:ms-windows/Installer-Files/WelcomeFinishPage.bmp", "installer bitmap switch failed" );
 	run( "git commit -n -a -m 'Release of $release ($newreleasename)'", "release commit failed" );
 	run( "git tag $reltag -m 'Version $release'", "release tag failed" );
+	run( "for i in \$(seq 20); do tx push -s -b $relbranch && exit 0; echo \"Retry \$i/20...\"; done; exit 1", "push translation for $relbranch branch" );
 } else {
 	run( "git commit -n -a -m 'Release of $version'", "release commit failed" );
 	run( "git tag $reltag -m 'Version $version'", "tag failed" );
@@ -234,7 +235,12 @@ my $topush = join(" ", @topush);
 
 print "Push dry-run...\n";
 run( "git push -n --follow-tags origin $topush", "push dry run failed" );
-print "Now manually push and upload the tar balls:\n\tgit push --follow-tags origin $topush\n\trsync qgis-$version.tar.bz2* ssh.qgis.org:/var/www/downloads/\n\n";
+print "Now manually push and upload the tar balls:\n\tgit push --follow-tags origin $topush\n\trsync qgis-$version.tar.bz2* ssh.qgis.org:/var/www/downloads/\n";
+unless($dopoint) {
+	print "Create new transifex branch and push the translations.\n";
+	print "Update the versions and release name in release spreadsheet.\n";
+	print "Package and update the website afterwards.\n";
+}
 print "WARNING: TRANSIFEX UPDATE SKIPPED!\n" if $skipts;
 
 

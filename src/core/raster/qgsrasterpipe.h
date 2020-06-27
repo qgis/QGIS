@@ -131,6 +131,34 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterProjector *projector() const;
     QgsRasterNuller *nuller() const;
 
+    /**
+     * Stage at which resampling occurs.
+     * @since QGIS 3.16
+     */
+    enum class ResamplingStage
+    {
+      //! Resampling occurs in ResamplingFilter
+      ResampleFilter,
+      //! Resampling occurs in Provider
+      Provider
+    };
+
+    /**
+     * Select which stage of the pipe should apply resampling.
+     *
+     * Provider resampling is only supported if provider sets
+     * ProviderHintCanPerformProviderResampling in providerCapabilities().
+     *
+     * \since QGIS 3.16
+     */
+    void setResamplingStage( ResamplingStage stage );
+
+    /**
+     * Returns which stage of the pipe should apply resampling
+     * \since QGIS 3.16
+     */
+    ResamplingStage resamplingStage() const { return mResamplingStage; }
+
   private:
 #ifdef SIP_RUN
     QgsRasterPipe( const QgsRasterPipe &pipe );
@@ -162,6 +190,7 @@ class CORE_EXPORT QgsRasterPipe
     */
     bool connect( QVector<QgsRasterInterface *> interfaces );
 
+    ResamplingStage mResamplingStage = ResamplingStage::ResampleFilter;
 };
 
 #endif

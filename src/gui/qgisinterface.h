@@ -948,7 +948,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual bool unregisterMainWindowAction( QAction *action ) = 0;
 
     /**
-     * Register a new tab in the vector layer properties dialog.
+     * Register a new tab in the map layer properties dialog.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * \see QgsMapLayerConfigWidgetFactory
@@ -958,7 +958,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 
     /**
-     * Unregister a previously registered tab in the vector layer properties dialog.
+     * Unregister a previously registered tab in the map layer properties dialog.
      * \see QgsMapLayerConfigWidgetFactory
      * \see registerMapLayerConfigWidgetFactory()
      * \since QGIS 2.16

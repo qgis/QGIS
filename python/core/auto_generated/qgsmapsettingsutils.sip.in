@@ -30,7 +30,7 @@ Utilities for map settings.
     typedef QFlags<QgsMapSettingsUtils::EffectsCheckFlag> EffectsCheckFlags;
 
 
-    static QStringList containsAdvancedEffects( const QgsMapSettings &mapSettings, EffectsCheckFlags flags = 0 );
+    static QStringList containsAdvancedEffects( const QgsMapSettings &mapSettings, EffectsCheckFlags flags = QgsMapSettingsUtils::EffectsCheckFlags() );
 %Docstring
 Checks whether any of the layers attached to a map settings object contain advanced effects.
 

@@ -532,7 +532,7 @@ class CORE_EXPORT QgsProcessingContext
 
   private:
 
-    QgsProcessingContext::Flags mFlags = nullptr;
+    QgsProcessingContext::Flags mFlags = QgsProcessingContext::Flags();
     QPointer< QgsProject > mProject;
     QgsCoordinateTransformContext mTransformContext;
     //! Temporary project owned by the context, used for storing temporarily loaded map layers

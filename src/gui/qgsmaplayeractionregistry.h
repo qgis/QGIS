@@ -66,13 +66,13 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
      * Creates a map layer action which can run on any layer
      * \note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.
      */
-    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, Targets targets = AllActions, const QIcon &icon = QIcon(), QgsMapLayerAction::Flags flags = nullptr );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, Targets targets = AllActions, const QIcon &icon = QIcon(), QgsMapLayerAction::Flags flags = QgsMapLayerAction::Flags() );
 
     //! Creates a map layer action which can run only on a specific layer
-    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayer *layer, Targets targets = AllActions, const QIcon &icon = QIcon(), QgsMapLayerAction::Flags flags = nullptr );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayer *layer, Targets targets = AllActions, const QIcon &icon = QIcon(), QgsMapLayerAction::Flags flags = QgsMapLayerAction::Flags() );
 
     //! Creates a map layer action which can run on a specific type of layer
-    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayerType layerType, Targets targets = AllActions, const QIcon &icon = QIcon(), QgsMapLayerAction::Flags flags = nullptr );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayerType layerType, Targets targets = AllActions, const QIcon &icon = QIcon(), QgsMapLayerAction::Flags flags = QgsMapLayerAction::Flags() );
 
     ~QgsMapLayerAction() override;
 

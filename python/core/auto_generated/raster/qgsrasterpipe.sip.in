@@ -106,6 +106,31 @@ Test if interface at index may be switched on/off
     QgsRasterProjector *projector() const;
     QgsRasterNuller *nuller() const;
 
+    enum class ResamplingStage
+    {
+      //! Resampling occurs in ResamplingFilter
+      ResampleFilter,
+      //! Resampling occurs in Provider
+      Provider
+    };
+
+    void setResamplingStage( ResamplingStage stage );
+%Docstring
+Select which stage of the pipe should apply resampling.
+
+Provider resampling is only supported if provider sets
+ProviderHintCanPerformProviderResampling in :py:func:`~QgsRasterPipe.providerCapabilities`.
+
+.. versionadded:: 3.16
+%End
+
+    ResamplingStage resamplingStage() const;
+%Docstring
+Returns which stage of the pipe should apply resampling
+
+.. versionadded:: 3.16
+%End
+
   private:
     QgsRasterPipe( const QgsRasterPipe &pipe );
 };

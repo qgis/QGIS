@@ -1142,6 +1142,13 @@ border-radius: 2px;</string>
                    <widget class="QDoubleSpinBox" name="mMaximumOversamplingSpinBox"/>
                   </item>
                   <item>
+                   <widget class="QCheckBox" name="mCbEarlyResampling">
+                    <property name="text">
+                     <string>Early resampling</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
                    <spacer name="horizontalSpacer">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
@@ -2089,7 +2096,7 @@ p, li { white-space: pre-wrap; }
            <item>
             <widget class="QGroupBox" name="groupBox">
              <property name="title">
-              <string>Embedded widgets in legend</string>
+              <string>Embedded Widgets in Legend</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_17">
               <item>

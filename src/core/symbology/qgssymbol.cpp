@@ -511,6 +511,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
   {
     tempContext.reset( new QgsRenderContext( QgsRenderContext::fromQPainter( painter ) ) );
     context = tempContext.get();
+    context->setFlag( QgsRenderContext::RenderSymbolPreview, true );
   }
 
   const bool prevForceVector = context->forceVectorOutput();
@@ -631,6 +632,7 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext
   }
 
   QgsRenderContext context = QgsRenderContext::fromQPainter( &p );
+  context.setFlag( QgsRenderContext::RenderSymbolPreview );
   if ( expressionContext )
     context.setExpressionContext( *expressionContext );
 

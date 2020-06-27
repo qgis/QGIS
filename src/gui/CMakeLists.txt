@@ -14,6 +14,7 @@ SET(QGIS_GUI_SRCS
   raster/qgsrendererrasterpropertieswidget.cpp
   raster/qgsrastertransparencywidget.cpp
   raster/qgshillshaderendererwidget.cpp
+  raster/qgsresamplingutils.cpp
 
   vector/qgsattributeactiondialog.cpp
   vector/qgsattributeactionpropertiesdialog.cpp
@@ -1065,6 +1066,7 @@ SET(QGIS_GUI_HDRS
   raster/qgssinglebandpseudocolorrendererwidget.h
   raster/qgsrasterlayerproperties.h
   raster/qgsrasterlayertemporalpropertieswidget.h
+  raster/qgsresamplingutils.h
 
   vector/qgsattributeactiondialog.h
   vector/qgsattributeactionpropertiesdialog.h
@@ -1136,8 +1138,8 @@ SET(QGIS_GUI_PRIVATE_HDRS
   attributetable/qgsfeaturefilterwidget_p.h
 )
 
-FIND_PACKAGE(Qt5Qml REQUIRED)
-FIND_PACKAGE(Qt5QuickWidgets REQUIRED)
+FIND_PACKAGE(Qt5 COMPONENTS Qml REQUIRED)
+FIND_PACKAGE(Qt5 COMPONENTS QuickWidgets REQUIRED)
 
 IF(Qt5Qml_FOUND)
 ADD_DEFINITIONS(-DWITH_QML)

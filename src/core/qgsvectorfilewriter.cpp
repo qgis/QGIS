@@ -2413,6 +2413,19 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
       attrValue = mFieldValueConverter->convert( fldIdx, attrValue );
     }
 
+    // Check type compatibility before passing attribute value to OGR
+    if ( ! field.convertCompatible( attrValue ) )
+    {
+      mErrorMessage = QObject::tr( "Error converting value (%1) from %2 to %3 for attribute field %4" )
+                      .arg( feature.attribute( fldIdx ).toString(),
+                            mFields.at( fldIdx ).typeName(),
+                            attrValue.typeName(),
+                            mFields.at( fldIdx ).name() );
+      QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
+      mError = ErrFeatureWriteFailed;
+      return nullptr;
+    }
+
     switch ( field.type() )
     {
       case QVariant::Int:

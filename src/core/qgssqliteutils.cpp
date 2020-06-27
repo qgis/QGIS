@@ -203,6 +203,49 @@ QSet<QString> QgsSqliteUtils::uniqueFields( sqlite3 *connection, const QString &
   return uniqueFieldsResults;
 }
 
+long long QgsSqliteUtils::nextSequenceValue( sqlite3 *connection, const QString &tableName, QString errorMessage )
+{
+  long long result { -1 };
+  sqlite3_database_unique_ptr dsPtr;
+  dsPtr.reset( connection );
+  const QString quotedTableName { QgsSqliteUtils::quotedValue( tableName ) };
+
+  int resultCode;
+  sqlite3_statement_unique_ptr stmt { dsPtr.prepare( QStringLiteral( "SELECT seq FROM sqlite_sequence WHERE name = %1" )
+                                      .arg( quotedTableName ), resultCode )};
+  if ( resultCode == SQLITE_OK )
+  {
+    stmt.step();
+    result = sqlite3_column_int64( stmt.get(), 0 );
+    // Try to create the sequence in case this is an empty layer
+    if ( sqlite3_column_count( stmt.get() ) == 0 )
+    {
+      dsPtr.exec( QStringLiteral( "INSERT INTO sqlite_sequence (name, seq) VALUES (%1, 1)" ).arg( quotedTableName ), errorMessage );
+      if ( errorMessage.isEmpty() )
+      {
+        result = 1;
+      }
+      else
+      {
+        errorMessage = QObject::tr( "Error retrieving default value for %1" ).arg( tableName );
+      }
+    }
+    else // increment
+    {
+      if ( dsPtr.exec( QStringLiteral( "UPDATE sqlite_sequence SET seq = %1 WHERE name = %2" )
+                       .arg( QString::number( ++result ), quotedTableName ),
+                       errorMessage ) != SQLITE_OK )
+      {
+        errorMessage = QObject::tr( "Error retrieving default value for %1" ).arg( tableName );
+        result = -1;
+      }
+    }
+  }
+
+  dsPtr.release();
+  return result;
+}
+
 QString QgsSqliteUtils::quotedString( const QString &value )
 {
   if ( value.isNull() )

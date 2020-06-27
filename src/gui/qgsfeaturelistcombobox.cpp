@@ -31,6 +31,7 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
 {
   mCompleter->setCaseSensitivity( Qt::CaseInsensitive );
   mCompleter->setFilterMode( Qt::MatchContains );
+  setEditable( true );
   setCompleter( mCompleter );
   mCompleter->setWidget( this );
   connect( mModel, &QgsFeatureFilterModel::sourceLayerChanged, this, &QgsFeatureListComboBox::sourceLayerChanged );
@@ -55,7 +56,6 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
   mLineEdit->setSelectOnFocus( true );
   mLineEdit->setShowClearButton( true );
 
-  setEditable( true );
   setLineEdit( mLineEdit );
   setModel( mModel );
 

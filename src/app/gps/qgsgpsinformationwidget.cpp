@@ -254,6 +254,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   // Restore state
 
   mGroupShowMarker->setChecked( mySettings.value( QStringLiteral( "gps/showMarker" ), "true" ).toBool() );
+  mTravelBearingCheckBox->setChecked( mySettings.value( QStringLiteral( "gps/calculateBearingFromTravel" ), "false" ).toBool() );
   mSliderMarkerSize->setValue( mySettings.value( QStringLiteral( "gps/markerSize" ), "12" ).toInt() );
   mSpinTrackWidth->setValue( mySettings.value( QStringLiteral( "gps/trackWidth" ), "2" ).toInt() );
   mBtnTrackColor->setColor( mySettings.value( QStringLiteral( "gps/trackColor" ), QColor( Qt::red ) ).value<QColor>() );
@@ -452,6 +453,7 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
   mySettings.setValue( QStringLiteral( "gps/trackColor" ), mBtnTrackColor->color() );
   mySettings.setValue( QStringLiteral( "gps/markerSize" ), mSliderMarkerSize->value() );
   mySettings.setValue( QStringLiteral( "gps/showMarker" ), mGroupShowMarker->isChecked() );
+  mySettings.setValue( QStringLiteral( "gps/calculateBearingFromTravel" ), mTravelBearingCheckBox->isChecked() );
   mySettings.setValue( QStringLiteral( "gps/autoAddVertices" ), mCbxAutoAddVertices->isChecked() );
   mySettings.setValue( QStringLiteral( "gps/autoCommit" ), mCbxAutoCommit->isChecked() );
   mySettings.setValue( QStringLiteral( "gps/acquisitionInterval" ), mCboAcquisitionInterval->currentText() );
@@ -959,6 +961,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   // Avoid refreshing / panning if we haven't moved
   if ( mLastGpsPosition != myNewCenter )
   {
+    mSecondLastGpsPosition = mLastGpsPosition;
     mLastGpsPosition = myNewCenter;
     mLastNmeaPosition = newNmeaPosition;
     mLastNmeaTime = newNmeaTime;
@@ -999,26 +1002,36 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     updateGpsDistanceStatusMessage();
   }
 
-  if ( !std::isnan( info.direction ) )
+  if ( !std::isnan( info.direction ) || ( mTravelBearingCheckBox->isChecked() && !mSecondLastGpsPosition.isEmpty() ) )
   {
-    double trueNorth = 0;
     QgsSettings settings;
-    if ( settings.value( QStringLiteral( "gps/correctForTrueNorth" ), false, QgsSettings::App ).toBool() )
+    double bearing = 0;
+    double trueNorth = 0;
+    if ( !mTravelBearingCheckBox->isChecked() )
     {
-      try
+      bearing = info.direction;
+      if ( settings.value( QStringLiteral( "gps/correctForTrueNorth" ), false, QgsSettings::App ).toBool() )
       {
-        trueNorth = QgsBearingUtils::bearingTrueNorth( mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext(), mMapCanvas->mapSettings().visibleExtent().center() );
-      }
-      catch ( QgsException & )
-      {
+        try
+        {
+          trueNorth = QgsBearingUtils::bearingTrueNorth( mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext(), mMapCanvas->mapSettings().visibleExtent().center() );
+        }
+        catch ( QgsException & )
+        {
 
+        }
       }
     }
+    else
+    {
+      bearing = 180 * mDistanceCalculator.bearing( mSecondLastGpsPosition, mLastGpsPosition ) / M_PI;
+    }
+
     const double adjustment = settings.value( QStringLiteral( "gps/bearingAdjustment" ), 0.0, QgsSettings::App ).toDouble();
 
     if ( mRotateMapCheckBox->isChecked() && ( !mLastRotateTimer.isValid() || mLastRotateTimer.hasExpired( mSpinMapRotateInterval->value() * 1000 ) ) )
     {
-      mMapCanvas->setRotation( trueNorth - info.direction - adjustment );
+      mMapCanvas->setRotation( trueNorth - bearing - adjustment );
       mLastRotateTimer.restart();
     }
 
@@ -1031,7 +1044,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       }
 
       mMapBearingItem->setGpsPosition( myNewCenter );
-      mMapBearingItem->setGpsBearing( info.direction - trueNorth + adjustment );
+      mMapBearingItem->setGpsBearing( bearing - trueNorth + adjustment );
     }
     else if ( mMapBearingItem )
     {

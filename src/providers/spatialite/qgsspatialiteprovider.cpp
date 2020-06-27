@@ -642,6 +642,14 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
 
 QgsSpatiaLiteProvider::~QgsSpatiaLiteProvider()
 {
+  if ( mTransaction )
+  {
+    QString errorMessage;
+    if ( ! mTransaction->rollback( errorMessage ) )
+    {
+      QgsMessageLog::logMessage( tr( "Error closing transaction for %1" ).arg( mTableName ), tr( "SpatiaLite" ) );
+    }
+  }
   closeDb();
   invalidateConnections( mSqlitePath );
 }
@@ -1053,7 +1061,6 @@ void QgsSpatiaLiteProvider::insertDefaultValue( int fieldIndex, QString defaultV
   }
 }
 
-
 QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
 {
   // TODO: backend-side evaluation
@@ -1079,6 +1086,24 @@ QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
     resultVar = defaultVal;
   }
 
+  if ( mTransaction &&
+       mAttributeFields.at( fieldId ).name() == mPrimaryKey &&
+       mPrimaryKeyAutoIncrement &&
+       mDefaultValues.value( fieldId, QString() ) == tr( "Autogenerate" ) &&
+       providerProperty( EvaluateDefaultValues, false ).toBool() )
+  {
+    QString errorMessage;
+    QVariant nextVal { QgsSqliteUtils::nextSequenceValue( sqliteHandle(), mTableName, errorMessage ) };
+    if ( errorMessage.isEmpty() && nextVal != -1 )
+    {
+      resultVar = nextVal;
+    }
+    else
+    {
+      QgsMessageLog::logMessage( errorMessage, tr( "SpatiaLite" ) );
+    }
+  }
+
   ( void )mAttributeFields.at( fieldId ).convertCompatible( resultVar );
   return resultVar;
 }
@@ -1092,7 +1117,15 @@ QString QgsSpatiaLiteProvider::defaultValueClause( int fieldIndex ) const
 
   if ( mAttributeFields.at( fieldIndex ).name() == mPrimaryKey && mPrimaryKeyAutoIncrement )
   {
-    return tr( "Autogenerate" );
+    if ( mTransaction &&
+         providerProperty( EvaluateDefaultValues, false ).toBool() )
+    {
+      return QString();
+    }
+    else
+    {
+      return tr( "Autogenerate" );
+    }
   }
   return mDefaultValueClause.value( fieldIndex, QString() );
 }
@@ -1265,7 +1298,6 @@ void QgsSpatiaLiteProvider::loadFields()
   updatePrimaryKeyCapabilities();
 }
 
-
 void QgsSpatiaLiteProvider::determineViewPrimaryKey()
 {
   QString sql = QString( "SELECT view_rowid"
@@ -1332,7 +1364,6 @@ QStringList QgsSpatiaLiteProvider::tablePrimaryKeys( const QString &tableName ) 
   sqlite3_finalize( stmt );
   return result;
 }
-
 
 bool QgsSpatiaLiteProvider::hasTriggers()
 {
@@ -5742,7 +5773,21 @@ bool QgsSpatiaLiteProvider::getTableSummaryAbstractInterface( gaiaVectorLayerPtr
   {
     mLayerExtent.set( lyr->ExtentInfos->MinX, lyr->ExtentInfos->MinY,
                       lyr->ExtentInfos->MaxX, lyr->ExtentInfos->MaxY );
-    mNumberFeatures = lyr->ExtentInfos->Count;
+    // This can be wrong! see: GH #29264
+    // mNumberFeatures = lyr->ExtentInfos->Count;
+    // Note: the unique ptr here does not own the handle, it is just used for the convenience
+    //       methods available within the class.
+    sqlite3_database_unique_ptr slPtr;
+    slPtr.reset( sqliteHandle() );
+    int resultCode;
+    sqlite3_statement_unique_ptr stmt { slPtr.prepare( QStringLiteral( "SELECT COUNT(1) FROM %2" ).arg( mQuery ), resultCode )};
+    if ( resultCode == SQLITE_OK )
+    {
+      stmt.step();
+      mNumberFeatures = sqlite3_column_int64( stmt.get(), 0 );
+    }
+    // Note: the pointer handle is owned by the provider, releasing it
+    slPtr.release();
   }
   else
   {
@@ -5762,7 +5807,7 @@ bool QgsSpatiaLiteProvider::getTableSummary()
   int columns;
   char *errMsg = nullptr;
 
-  QString sql = QStringLiteral( "SELECT Count(*)%1 FROM %2" )
+  QString sql = QStringLiteral( "SELECT Count(1)%1 FROM %2" )
                 .arg( mGeometryColumn.isEmpty() ? QString() : QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( QgsSqliteUtils::quotedIdentifier( mGeometryColumn ) ),
                       mQuery );
 

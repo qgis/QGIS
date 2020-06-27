@@ -49,6 +49,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mShowCameraViewCenter( other.mShowCameraViewCenter )
   , mShowLabels( other.mShowLabels )
   , mPointLights( other.mPointLights )
+  , mDirectionalLights( other.mDirectionalLights )
   , mFieldOfView( other.mFieldOfView )
   , mLayers( other.mLayers )
   , mRenderers() // initialized in body
@@ -125,6 +126,20 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     QgsPointLightSettings defaultLight;
     defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
     mPointLights << defaultLight;
+  }
+
+  mDirectionalLights.clear();
+  QDomElement elemDirectionalLights = elem.firstChildElement( QStringLiteral( "directional-lights" ) );
+  if ( !elemDirectionalLights.isNull() )
+  {
+    QDomElement elemDirectionalLight = elemDirectionalLights.firstChildElement( QStringLiteral( "directional-light" ) );
+    while ( !elemDirectionalLight.isNull() )
+    {
+      QgsDirectionalLightSettings directionalLight;
+      directionalLight.readXml( elemDirectionalLight );
+      mDirectionalLights << directionalLight;
+      elemDirectionalLight = elemDirectionalLight.nextSiblingElement( QStringLiteral( "directional-light" ) );
+    }
   }
 
   QDomElement elemMapLayers = elemTerrain.firstChildElement( QStringLiteral( "layers" ) );
@@ -249,6 +264,14 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
     elemPointLights.appendChild( elemPointLight );
   }
   elem.appendChild( elemPointLights );
+
+  QDomElement elemDirectionalLights = doc.createElement( QStringLiteral( "directional-lights" ) );
+  for ( const QgsDirectionalLightSettings &directionalLight : qgis::as_const( mDirectionalLights ) )
+  {
+    QDomElement elemDirectionalLight = directionalLight.writeXml( doc );
+    elemDirectionalLights.appendChild( elemDirectionalLight );
+  }
+  elem.appendChild( elemDirectionalLights );
 
   QDomElement elemMapLayers = doc.createElement( QStringLiteral( "layers" ) );
   Q_FOREACH ( const QgsMapLayerRef &layerRef, mLayers )
@@ -533,6 +556,15 @@ void Qgs3DMapSettings::setPointLights( const QList<QgsPointLightSettings> &point
 
   mPointLights = pointLights;
   emit pointLightsChanged();
+}
+
+void Qgs3DMapSettings::setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights )
+{
+  if ( mDirectionalLights == directionalLights )
+    return;
+
+  mDirectionalLights = directionalLights;
+  emit directionalLightsChanged();
 }
 
 void Qgs3DMapSettings::setFieldOfView( const float fieldOfView )

@@ -2030,6 +2030,11 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool *tool )
   }
 }
 
+void QgsMapCanvas::setProject( QgsProject *project )
+{
+  mProject = project;
+}
+
 void QgsMapCanvas::setCanvasColor( const QColor &color )
 {
   if ( canvasColor() == color )
@@ -2245,6 +2250,11 @@ void QgsMapCanvas::projectThemesChanged()
 QgsMapTool *QgsMapCanvas::mapTool()
 {
   return mMapTool;
+}
+
+QgsProject *QgsMapCanvas::project()
+{
+  return mProject;
 }
 
 void QgsMapCanvas::panActionEnd( QPoint releasePoint )

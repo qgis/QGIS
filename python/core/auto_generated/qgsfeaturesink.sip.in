@@ -34,13 +34,15 @@ An interface for objects which accept features via addFeature(s) methods.
     {
 
       FastInsert,
+
+      RollBackOnErrors,
     };
     typedef QFlags<QgsFeatureSink::Flag> Flags;
 
 
     virtual ~QgsFeatureSink();
 
-    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 %Docstring
 Adds a single ``feature`` to the sink. Feature addition behavior is controlled by the specified ``flags``.
 
@@ -49,7 +51,7 @@ Adds a single ``feature`` to the sink. Feature addition behavior is controlled b
 :return: ``True`` in case of success and ``False`` in case of failure
 %End
 
-    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) = 0;
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) = 0;
 %Docstring
 Adds a list of ``features`` to the sink. Feature addition behavior is controlled by the specified ``flags``.
 
@@ -58,7 +60,7 @@ Adds a list of ``features`` to the sink. Feature addition behavior is controlled
 :return: ``True`` in case of success and ``False`` in case of failure
 %End
 
-    virtual bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 %Docstring
 Adds all features from the specified ``iterator`` to the sink. Feature addition behavior is controlled by the specified ``flags``.
 

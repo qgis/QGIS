@@ -29,6 +29,8 @@ QgsMapToolAddRegularPolygon::QgsMapToolAddRegularPolygon( QgsMapToolCapture *par
   , mParentTool( parentTool )
   , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
 {
+  mToolName = tr( "Add regular polygon" );
+
   clean();
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddRegularPolygon::stopCapturing );
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddRegularPolygon::stopCapturing );

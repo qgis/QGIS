@@ -36,7 +36,9 @@
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
   , mSnapIndicator( qgis::make_unique< QgsSnapIndicator >( canvas ) )
-{}
+{
+  mToolName = tr( "Map tool offset curve" );
+}
 
 QgsMapToolOffsetCurve::~QgsMapToolOffsetCurve()
 {

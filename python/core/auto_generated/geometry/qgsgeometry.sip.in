@@ -332,7 +332,7 @@ by :py:func:`~QgsGeometry.equals` instead.
     typedef QFlags<QgsGeometry::ValidityFlag> ValidityFlags;
 
 
-    bool isGeosValid( QgsGeometry::ValidityFlags flags = 0 ) const;
+    bool isGeosValid( QgsGeometry::ValidityFlags flags = QgsGeometry::ValidityFlags() ) const;
 %Docstring
 Checks validity of the geometry using GEOS.
 
@@ -874,7 +874,7 @@ Splits this geometry according to a given line.
 
 :return: OperationResult a result code: success or reason of failure
 
-* Example:
+Example:
 .. code-block:: python
 
       geometry = QgsGeometry.fromWkt('CompoundCurveZ ((2749546.2003820720128715 1262904.45356595050543547 100, 2749557.82053794478997588 1262920.05570670193992555 200))')
@@ -1537,7 +1537,7 @@ is null, a ValueError will be raised.
 
 
 
-    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = 0 ) const;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 %Docstring
 Export the geometry to WKB
 
@@ -1972,7 +1972,7 @@ The coordinates at which the error is located and should be visualized.
       ValidatorGeos,
     };
 
-    void validateGeometry( QVector<QgsGeometry::Error> &errors /Out/, ValidationMethod method = ValidatorQgisInternal, QgsGeometry::ValidityFlags flags = 0 ) const;
+    void validateGeometry( QVector<QgsGeometry::Error> &errors /Out/, ValidationMethod method = ValidatorQgisInternal, QgsGeometry::ValidityFlags flags = QgsGeometry::ValidityFlags() ) const;
 %Docstring
 Validates geometry and produces a list of geometry errors.
 The ``method`` argument dictates which validator to utilize.

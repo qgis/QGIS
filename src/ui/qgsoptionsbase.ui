@@ -369,7 +369,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="grpLocale">
                  <property name="title">
-                  <string>Override system &amp;locale</string>
+                  <string>Override System &amp;Locale</string>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -400,7 +400,7 @@
                     <item row="0" column="0">
                      <widget class="QLabel" name="label_5">
                       <property name="text">
-                       <string>User Interface Translation</string>
+                       <string>User interface translation</string>
                       </property>
                      </widget>
                     </item>
@@ -483,7 +483,7 @@
                     <item>
                      <widget class="QLabel" name="lblUITheme">
                       <property name="text">
-                       <string>UI Theme</string>
+                       <string>UI theme</string>
                       </property>
                      </widget>
                     </item>
@@ -758,7 +758,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_11">
                  <property name="title">
-                  <string>Project files</string>
+                  <string>Project Files</string>
                  </property>
                  <layout class="QVBoxLayout">
                   <item>
@@ -898,14 +898,14 @@
                     <item>
                      <widget class="QPushButton" name="pbnProjectDefaultSetCurrent">
                       <property name="text">
-                       <string>Set current project as default</string>
+                       <string>Set Current Project as Default</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QPushButton" name="pbnProjectDefaultReset">
                       <property name="text">
-                       <string>Reset default</string>
+                       <string>Reset Default</string>
                       </property>
                      </widget>
                     </item>
@@ -1129,7 +1129,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
                  <property name="title">
-                  <string>SVG paths</string>
+                  <string>SVG Paths</string>
                  </property>
                  <layout class="QGridLayout" name="_6">
                   <item row="0" column="0">
@@ -1196,7 +1196,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_4">
                  <property name="title">
-                  <string>Plugin paths</string>
+                  <string>Plugin Paths</string>
                  </property>
                  <layout class="QGridLayout" name="_3">
                   <item row="0" column="0">
@@ -1263,7 +1263,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_29">
                  <property name="title">
-                  <string>Documentation paths</string>
+                  <string>Documentation Paths</string>
                  </property>
                  <layout class="QGridLayout" name="_4">
                   <item row="0" column="5">
@@ -1869,7 +1869,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_18">
                  <property name="title">
-                  <string>Feature attributes and table</string>
+                  <string>Feature Attributes and Table</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_19">
                   <item row="0" column="0" colspan="2">
@@ -1983,7 +1983,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_19">
                  <property name="title">
-                  <string>Data source handling</string>
+                  <string>Data Source Handling</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_23" columnstretch="0,0,0,0">
                   <item row="0" column="2">
@@ -2064,7 +2064,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_301">
                  <property name="title">
-                  <string>Localized data paths</string>
+                  <string>Localized Data Paths</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_34">
                   <item row="0" column="0">
@@ -2159,7 +2159,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_28">
                  <property name="title">
-                  <string>Hidden browser paths</string>
+                  <string>Hidden Browser Paths</string>
                  </property>
                  <layout class="QGridLayout" name="_15">
                   <item row="0" column="2">
@@ -2266,7 +2266,7 @@
                <item row="0" column="0">
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_5">
                  <property name="title">
-                  <string>Rendering behavior</string>
+                  <string>Rendering Behavior</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_9">
                   <item>
@@ -2523,7 +2523,7 @@
                <item row="1" column="0">
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_8">
                  <property name="title">
-                  <string>Rendering quality</string>
+                  <string>Rendering Quality</string>
                  </property>
                  <layout class="QVBoxLayout" name="_5">
                   <property name="leftMargin">
@@ -2551,7 +2551,7 @@
                <item row="2" column="0">
                 <widget class="QgsCollapsibleGroupBox" name="mSegmentationGroupBox">
                  <property name="title">
-                  <string>Curve segmentation</string>
+                  <string>Curve Segmentation</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_20">
                   <item row="0" column="0">
@@ -2698,6 +2698,13 @@
                         </spacer>
                        </item>
                       </layout>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QCheckBox" name="mCbEarlyResampling">
+                       <property name="text">
+                        <string>Early resampling</string>
+                       </property>
+                      </widget>
                      </item>
                     </layout>
                    </widget>
@@ -3052,7 +3059,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_9">
                  <property name="title">
-                  <string>Default map appearance (overridden by project properties)</string>
+                  <string>Default Map Appearance (overridden by project properties)</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_7">
                   <item row="0" column="4">
@@ -3156,7 +3163,7 @@
                   </size>
                  </property>
                  <property name="title">
-                  <string>Layer legend</string>
+                  <string>Layer Legend</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_21">
                   <item>
@@ -3504,7 +3511,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_6">
                  <property name="title">
-                  <string>Measure tool</string>
+                  <string>Measure Tool</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_21">
                   <item row="3" column="0">
@@ -3718,7 +3725,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_15">
                  <property name="title">
-                  <string>Predefined scales</string>
+                  <string>Predefined Scales</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_26">
                   <item row="0" column="0">
@@ -3860,15 +3867,15 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>181</width>
-                <height>318</height>
+                <width>857</width>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_7">
                  <property name="title">
-                  <string>Color schemes</string>
+                  <string>Color Schemes</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_12">
                   <item row="7" column="1">
@@ -4039,7 +4046,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="mEnterAttributeValuesGroupBox">
                  <property name="title">
-                  <string>Feature creation</string>
+                  <string>Feature Creation</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_28">
                   <item row="2" column="0">
@@ -4430,7 +4437,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="mVertexMarkerGroupBox">
                  <property name="title">
-                  <string>Vertex markers</string>
+                  <string>Vertex Markers</string>
                  </property>
                  <layout class="QGridLayout" name="_11">
                   <item row="1" column="0">
@@ -4509,7 +4516,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_21">
                  <property name="title">
-                  <string>Curve offset tool</string>
+                  <string>Curve Offset Tool</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout">
                   <item row="1" column="2">
@@ -4664,7 +4671,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   <bool>true</bool>
                  </property>
                  <property name="title">
-                  <string>Layout defaults</string>
+                  <string>Layout Defaults</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_8">
                   <item row="1" column="0">
@@ -4687,7 +4694,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_23">
                  <property name="title">
-                  <string>Grid appearance</string>
+                  <string>Grid Appearance</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_9">
                   <item row="0" column="0">
@@ -4732,7 +4739,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_24">
                  <property name="title">
-                  <string>Grid and guide defaults</string>
+                  <string>Grid and Guide Defaults</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_11">
                   <item row="0" column="0">
@@ -4930,7 +4937,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <item>
                 <widget class="QGroupBox" name="groupBox_16">
                  <property name="title">
-                  <string>GDAL driver options</string>
+                  <string>GDAL Driver Options</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_29">
                   <item row="0" column="1">
@@ -4982,7 +4989,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <item>
                 <widget class="QGroupBox" name="groupBox_13">
                  <property name="title">
-                  <string>GDAL drivers</string>
+                  <string>GDAL Drivers</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_24">
                   <item row="0" column="0">
@@ -5194,7 +5201,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <item>
                 <widget class="QGroupBox" name="grpCache">
                  <property name="title">
-                  <string>Cache settings</string>
+                  <string>Cache Settings</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_19">
                   <item>
@@ -5289,7 +5296,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="grpProxy">
                  <property name="title">
-                  <string>Use pro&amp;xy for web access</string>
+                  <string>Use Pro&amp;xy for Web Access</string>
                  </property>
                  <property name="flat">
                   <bool>false</bool>

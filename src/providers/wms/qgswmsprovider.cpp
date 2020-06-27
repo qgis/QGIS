@@ -1373,7 +1373,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
       return false;
     }
 
-    QgsWmsCapabilities caps( transformContext() );
+    QgsWmsCapabilities caps( transformContext(), mSettings.baseUrl() );
     if ( !caps.parseResponse( downloadCaps.response(), mSettings.parserSettings() ) )
     {
       mErrorFormat = caps.lastErrorFormat();
@@ -2914,6 +2914,14 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
       {
         setQueryItem( query, QStringLiteral( "FEATURE_COUNT" ), QString::number( mSettings.mFeatureCount ) );
       }
+
+      // For WMS-T layers
+      if ( temporalCapabilities() &&
+           temporalCapabilities()->hasTemporalCapabilities() )
+      {
+        addWmstParameters( query );
+      }
+
       requestUrl.setQuery( query );
 
       layerList << *layers;

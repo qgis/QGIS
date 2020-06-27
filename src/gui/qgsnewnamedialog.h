@@ -84,6 +84,21 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     bool overwriteEnabled() const { return mOverwriteEnabled; }
 
     /**
+     * Sets whether users are permitted to leave the widget empty.
+     * If TRUE, the dialog will accept an empty name value.
+     * \see allowEmptyName()
+     * \since QGIS 3.14
+     */
+    void setAllowEmptyName( bool allowed );
+
+    /**
+     * Returns TRUE if the widget can be left empty (no name filled).
+     * \see setAllowEmptyName()
+     * \since QGIS 3.14
+     */
+    bool allowEmptyName() const { return mAllowEmptyName; }
+
+    /**
      * Sets the string used for warning users if a conflicting name exists.
      * \param string warning string. If empty a default warning string will be used.
      * \see conflictingNameWarning()
@@ -141,6 +156,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     QString mOkString;
     QRegExp mRegexp;
     bool mOverwriteEnabled = true;
+    bool mAllowEmptyName = false;
     QString mConflictingNameWarning;
 
     QString highlightText( const QString &text );

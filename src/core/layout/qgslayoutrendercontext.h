@@ -318,7 +318,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
 
   private:
 
-    Flags mFlags = nullptr;
+    Flags mFlags = Flags();
 
     QgsLayout *mLayout = nullptr;
 

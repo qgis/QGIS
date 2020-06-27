@@ -1388,6 +1388,7 @@ QgsRenderContext *QgsLayerTreeModel::createTemporaryRenderContext() const
   context->setScaleFactor( dpi / 25.4 );
   context->setRendererScale( scale );
   context->setMapToPixel( QgsMapToPixel( mupp ) );
+  context->setFlag( QgsRenderContext::RenderSymbolPreview );
   return validData ? context.release() : nullptr;
 }
 

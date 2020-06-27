@@ -563,7 +563,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                            const QStringList &layerOptions = QStringList(),
                                            QString *newFilename = nullptr,
                                            QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
-                                           QgsFeatureSink::SinkFlags sinkFlags = nullptr
+                                           QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags()
 #ifndef SIP_RUN
                                                , QString *newLayer = nullptr,
                                            QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext()
@@ -606,7 +606,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                            QgsVectorFileWriter::ActionOnExistingFile action,
                                            QString *newLayer = nullptr,
                                            QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext(),
-                                           QgsFeatureSink::SinkFlags sinkFlags = nullptr
+                                           QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags()
                                          ) SIP_SKIP;
 
     //! QgsVectorFileWriter cannot be copied.
@@ -633,7 +633,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                         const QgsCoordinateReferenceSystem &srs,
                                         const QgsCoordinateTransformContext &transformContext,
                                         const QgsVectorFileWriter::SaveVectorOptions &options,
-                                        QgsFeatureSink::SinkFlags sinkFlags = nullptr,
+                                        QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
                                         QString *newFilename = nullptr,
                                         QString *newLayer = nullptr );
 
@@ -760,8 +760,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     //! Retrieves error message
     QString errorMessage();
 
-    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
-    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
     /**
      * Adds a \a feature to the currently opened data source, using the style from a specified \a renderer.

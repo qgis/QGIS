@@ -20,11 +20,9 @@
 
 #include "qgsgui.h"
 #include "qgsapplication.h"
-#include "qgsbilinearrasterresampler.h"
 #include "qgsbrightnesscontrastfilter.h"
 #include "qgscontrastenhancement.h"
 #include "qgscoordinatetransform.h"
-#include "qgscubicrasterresampler.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -48,7 +46,6 @@
 #include "qgsrasterrange.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrasterrendererregistry.h"
-#include "qgsrasterresamplefilter.h"
 #include "qgsrastertransparency.h"
 #include "qgssinglebandgrayrendererwidget.h"
 #include "qgssinglebandpseudocolorrendererwidget.h"
@@ -360,48 +357,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   //resampling
   mResamplingGroupBox->setSaveCheckedState( true );
+  mResamplingUtils.initWidgets( mRasterLayer, mZoomedInResamplingComboBox, mZoomedOutResamplingComboBox, mMaximumOversamplingSpinBox, mCbEarlyResampling );
+  mResamplingUtils.refreshWidgetsFromLayer();
+
   const QgsRasterRenderer *renderer = mRasterLayer->renderer();
-  mZoomedInResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ) );
-  mZoomedInResamplingComboBox->insertItem( 1, tr( "Bilinear" ) );
-  mZoomedInResamplingComboBox->insertItem( 2, tr( "Cubic" ) );
-  mZoomedOutResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ) );
-  mZoomedOutResamplingComboBox->insertItem( 1, tr( "Average" ) );
-
-  const QgsRasterResampleFilter *resampleFilter = mRasterLayer->resampleFilter();
-  //set combo boxes to current resampling types
-  if ( resampleFilter )
-  {
-    const QgsRasterResampler *zoomedInResampler = resampleFilter->zoomedInResampler();
-    if ( zoomedInResampler )
-    {
-      if ( zoomedInResampler->type() == QLatin1String( "bilinear" ) )
-      {
-        mZoomedInResamplingComboBox->setCurrentIndex( 1 );
-      }
-      else if ( zoomedInResampler->type() == QLatin1String( "cubic" ) )
-      {
-        mZoomedInResamplingComboBox->setCurrentIndex( 2 );
-      }
-    }
-    else
-    {
-      mZoomedInResamplingComboBox->setCurrentIndex( 0 );
-    }
-
-    const QgsRasterResampler *zoomedOutResampler = resampleFilter->zoomedOutResampler();
-    if ( zoomedOutResampler )
-    {
-      if ( zoomedOutResampler->type() == QLatin1String( "bilinear" ) ) //bilinear resampler does averaging when zooming out
-      {
-        mZoomedOutResamplingComboBox->setCurrentIndex( 1 );
-      }
-    }
-    else
-    {
-      mZoomedOutResamplingComboBox->setCurrentIndex( 0 );
-    }
-    mMaximumOversamplingSpinBox->setValue( resampleFilter->maxOversampling() );
-  }
 
   btnColorizeColor->setColorDialogTitle( tr( "Select Color" ) );
   btnColorizeColor->setContext( QStringLiteral( "symbology" ) );
@@ -1066,34 +1025,7 @@ void QgsRasterLayerProperties::apply()
   // pixmapLegend->setScaledContents( true );
   // pixmapLegend->repaint();
 
-  QgsRasterResampleFilter *resampleFilter = mRasterLayer->resampleFilter();
-  if ( resampleFilter )
-  {
-    QgsRasterResampler *zoomedInResampler = nullptr;
-    QString zoomedInResamplingMethod = mZoomedInResamplingComboBox->currentText();
-    if ( zoomedInResamplingMethod == tr( "Bilinear" ) )
-    {
-      zoomedInResampler = new QgsBilinearRasterResampler();
-    }
-    else if ( zoomedInResamplingMethod == tr( "Cubic" ) )
-    {
-      zoomedInResampler = new QgsCubicRasterResampler();
-    }
-
-    resampleFilter->setZoomedInResampler( zoomedInResampler );
-
-    //raster resampling
-    QgsRasterResampler *zoomedOutResampler = nullptr;
-    QString zoomedOutResamplingMethod = mZoomedOutResamplingComboBox->currentText();
-    if ( zoomedOutResamplingMethod == tr( "Average" ) )
-    {
-      zoomedOutResampler = new QgsBilinearRasterResampler();
-    }
-
-    resampleFilter->setZoomedOutResampler( zoomedOutResampler );
-
-    resampleFilter->setMaxOversampling( mMaximumOversamplingSpinBox->value() );
-  }
+  mResamplingUtils.refreshLayerFromWidgets();
 
   // Hue and saturation controls
   QgsHueSaturationFilter *hueSaturationFilter = mRasterLayer->hueSaturationFilter();

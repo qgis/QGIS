@@ -36,7 +36,7 @@ the components related to the GUI behavior of a layout item.
     typedef QFlags<QgsLayoutItemAbstractGuiMetadata::Flag> Flags;
 
 
-    QgsLayoutItemAbstractGuiMetadata( int type, const QString &visibleName, const QString &groupId = QString(), bool isNodeBased = false, Flags flags = 0 );
+    QgsLayoutItemAbstractGuiMetadata( int type, const QString &visibleName, const QString &groupId = QString(), bool isNodeBased = false, Flags flags = QgsLayoutItemAbstractGuiMetadata::Flags() );
 %Docstring
 Constructor for QgsLayoutItemAbstractGuiMetadata with the specified class ``type``.
 

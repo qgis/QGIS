@@ -940,6 +940,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   int myGreen = settings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
   int myBlue = settings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
   mMapCanvas->setCanvasColor( QColor( myRed, myGreen, myBlue ) );
+
+  // set project linked to main canvas
+  mMapCanvas->setProject( QgsProject::instance() );
   endProfile();
 
   // what type of project to auto-open
@@ -4481,6 +4484,7 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name )
   QgsMapCanvas *mapCanvas = mapCanvasWidget->mapCanvas();
   mapCanvas->freeze( true );
   mapCanvas->setObjectName( name );
+  mapCanvas->setProject( QgsProject::instance() );
   connect( mapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
   connect( mLayerTreeCanvasBridge, &QgsLayerTreeMapCanvasBridge::canvasLayersChanged, mapCanvas, &QgsMapCanvas::setLayers );
 
@@ -7195,7 +7199,7 @@ void QgisApp::dxfExport()
     dxfExport.setDestinationCrs( d.crs() );
     dxfExport.setForce2d( d.force2d() );
 
-    QgsDxfExport::Flags flags = nullptr;
+    QgsDxfExport::Flags flags = QgsDxfExport::Flags();
     if ( !d.useMText() )
       flags = flags | QgsDxfExport::FlagNoMText;
     dxfExport.setFlags( flags );
@@ -9189,18 +9193,20 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
   {
     parent = this;
   }
-  bool ok = false;
   bool titleValid = false;
   QString newTitle = QString( currentTitle );
 
   QString typeString;
+  QString helpPage;
   switch ( type )
   {
     case QgsMasterLayoutInterface::PrintLayout:
       typeString = tr( "print layout" );
+      helpPage = QStringLiteral( "print_composer/index.html" );
       break;
     case QgsMasterLayoutInterface::Report:
       typeString = tr( "report" );
+      helpPage = QStringLiteral( "print_composer/create_reports.html" );
       break;
   }
 
@@ -9214,24 +9220,32 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
   QStringList layoutNames;
   const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
   layoutNames.reserve( layouts.size() + 1 );
-  layoutNames << newTitle;
   for ( QgsMasterLayoutInterface *l : layouts )
   {
     layoutNames << l->name();
   }
   while ( !titleValid )
   {
-    newTitle = QInputDialog::getText( parent,
-                                      tr( "Create %1 Title" ).arg( typeString ),
-                                      titleMsg,
-                                      QLineEdit::Normal,
-                                      newTitle,
-                                      &ok );
-    if ( !ok )
+
+    QgsNewNameDialog dlg( typeString, newTitle, QStringList(), layoutNames, QRegExp(), Qt::CaseSensitive, parent );
+    dlg.setWindowTitle( tr( "Create %1 Title" ).arg( typeString ) );
+    dlg.setHintString( titleMsg );
+    dlg.setOverwriteEnabled( false );
+    dlg.setAllowEmptyName( true );
+    dlg.setConflictingNameWarning( tr( "Title already exists!" ) );
+
+    dlg.buttonBox()->addButton( QDialogButtonBox::Help );
+    connect( dlg.buttonBox(), &QDialogButtonBox::helpRequested, this, [ = ]
+    {
+      QgsHelp::openHelp( helpPage );
+    } );
+
+    if ( dlg.exec() != QDialog::Accepted )
     {
       return false;
     }
 
+    newTitle = dlg.name();
     if ( newTitle.isEmpty() )
     {
       if ( !acceptEmpty )

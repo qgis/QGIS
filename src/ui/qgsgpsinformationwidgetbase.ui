@@ -157,8 +157,8 @@ gray = no data
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>121</width>
-            <height>488</height>
+            <width>114</width>
+            <height>504</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
@@ -577,9 +577,9 @@ gray = no data
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>306</width>
-            <height>1000</height>
+            <y>-425</y>
+            <width>315</width>
+            <height>1183</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
@@ -613,7 +613,7 @@ gray = no data
               <string>save GPS data (NMEA sentences) to a file</string>
              </property>
              <property name="title">
-              <string>Log file</string>
+              <string>Log File</string>
              </property>
              <property name="checkable">
               <bool>true</bool>
@@ -631,7 +631,7 @@ gray = no data
               <item row="0" column="0">
                <widget class="QLineEdit" name="mTxtLogFile">
                 <property name="enabled">
-                 <bool>true</bool>
+                 <bool>false</bool>
                 </property>
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -650,7 +650,7 @@ gray = no data
               <item row="0" column="1">
                <widget class="QPushButton" name="mBtnLogFile">
                 <property name="enabled">
-                 <bool>true</bool>
+                 <bool>false</bool>
                 </property>
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -727,20 +727,10 @@ gray = no data
               <property name="spacing">
                <number>2</number>
               </property>
-              <item row="0" column="0">
-               <widget class="QRadioButton" name="mRadAutodetect">
+              <item row="1" column="0">
+               <widget class="QRadioButton" name="mRadInternal">
                 <property name="text">
-                 <string>Autodetect</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QRadioButton" name="mRadUserPath">
-                <property name="text">
-                 <string>Serial device</string>
+                 <string>Internal</string>
                 </property>
                </widget>
               </item>
@@ -777,6 +767,16 @@ gray = no data
                  </widget>
                 </item>
                </layout>
+              </item>
+              <item row="0" column="0">
+               <widget class="QRadioButton" name="mRadAutodetect">
+                <property name="text">
+                 <string>Autodetect</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item row="5" column="0">
                <layout class="QGridLayout" name="gridLayout_12">
@@ -870,10 +870,10 @@ gray = no data
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QRadioButton" name="mRadInternal">
+              <item row="2" column="0">
+               <widget class="QRadioButton" name="mRadUserPath">
                 <property name="text">
-                 <string>Internal</string>
+                 <string>Serial device</string>
                 </property>
                </widget>
               </item>
@@ -939,7 +939,7 @@ gray = no data
                   </widget>
                  </item>
                  <item row="2" column="1">
-                  <widget class="QgsColorButton" name="mBtnTrackColor">
+                  <widget class="QgsColorButton" name="mBtnTrackColor" native="true">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -949,7 +949,7 @@ gray = no data
                    <property name="styleSheet">
                     <string/>
                    </property>
-                   <property name="text">
+                   <property name="text" stdset="0">
                     <string/>
                    </property>
                   </widget>
@@ -970,7 +970,7 @@ gray = no data
               <item row="1" column="0">
                <widget class="QGroupBox" name="mGboxTimestamp">
                 <property name="title">
-                 <string>Timestamp properties</string>
+                 <string>Timestamp Properties</string>
                 </property>
                 <layout class="QFormLayout" name="formLayout">
                  <item row="0" column="0">
@@ -986,30 +986,30 @@ gray = no data
                  <item row="0" column="1">
                   <widget class="QgsFieldComboBox" name="mCboTimestampField"/>
                  </item>
-                 <item row="1" column="0">
+                 <item row="2" column="0">
                   <widget class="QLabel" name="mLblTimestampFormat">
                    <property name="text">
                     <string>Format</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="1">
+                 <item row="2" column="1">
                   <widget class="QComboBox" name="mCboTimestampFormat"/>
                  </item>
-                 <item row="2" column="0">
+                 <item row="3" column="0">
                   <widget class="QLabel" name="mLblTimeZone">
                    <property name="text">
                     <string>Timezone</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="1">
+                 <item row="3" column="1">
                   <widget class="QComboBox" name="mCboTimeZones"/>
                  </item>
-                 <item row="3" column="1">
+                 <item row="4" column="1">
                   <widget class="QSpinBox" name="mLeapSeconds"/>
                  </item>
-                 <item row="3" column="0">
+                 <item row="4" column="0">
                   <widget class="QCheckBox" name="mCbxLeapSeconds">
                    <property name="toolTip">
                     <string>Apply leap seconds correction by adding the seconds to GPS timestamp</string>
@@ -1020,6 +1020,16 @@ gray = no data
                   </widget>
                  </item>
                 </layout>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QCheckBox" name="mTravelBearingCheckBox">
+                <property name="toolTip">
+                 <string>If checked, the bearing reported by the GPS device will be ignored and the bearing will instead be calculated by the angle between the previous two GPS locations</string>
+                </property>
+                <property name="text">
+                 <string>Calculate bearing from travel direction</string>
+                </property>
                </widget>
               </item>
              </layout>
@@ -1119,7 +1129,7 @@ gray = no data
                  </widget>
                 </item>
                 <item>
-                 <widget class="QgsSpinBox" name="mSpinMapRotateInterval">
+                 <widget class="QgsSpinBox" name="mSpinMapRotateInterval" native="true">
                   <property name="enabled">
                    <bool>false</bool>
                   </property>
@@ -1129,22 +1139,22 @@ gray = no data
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
-                  <property name="specialValueText">
+                  <property name="specialValueText" stdset="0">
                    <string>On GPS signal</string>
                   </property>
-                  <property name="suffix">
+                  <property name="suffix" stdset="0">
                    <string> s</string>
                   </property>
-                  <property name="minimum">
+                  <property name="minimum" stdset="0">
                    <number>0</number>
                   </property>
-                  <property name="maximum">
+                  <property name="maximum" stdset="0">
                    <number>1000</number>
                   </property>
-                  <property name="singleStep">
+                  <property name="singleStep" stdset="0">
                    <number>1</number>
                   </property>
-                  <property name="value">
+                  <property name="value" stdset="0">
                    <number>0</number>
                   </property>
                  </widget>
@@ -1483,6 +1493,17 @@ gray = no data
    <class>QgsPanelWidget</class>
    <extends>QWidget</extends>
    <header>qgspanelwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QWidget</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QWidget</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

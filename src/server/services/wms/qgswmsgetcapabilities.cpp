@@ -988,7 +988,7 @@ namespace QgsWms
         {
           QgsLayerTreeLayer *treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
           QgsMapLayer *l = treeLayer->layer();
-          if ( restrictedLayers.contains( l->name() ) ) //unpublished layer
+          if ( !l || restrictedLayers.contains( l->name() ) ) //unpublished layer
           {
             continue;
           }

@@ -1417,6 +1417,11 @@ tests:
         type: vector
         pk:
         - zone
+        compare:
+          fields:
+            sum:
+              cast: float
+              precision: 5
 
   - algorithm: native:rasterlayerzonalstats
     name: Raster layer zonal stats, reprojected
@@ -1438,7 +1443,7 @@ tests:
         compare:
           fields:
             sum:
-              precision: 0
+              precision: 5
 
   - algorithm: native:rasterlayerzonalstats
     name: Raster layer zonal stats, zones ref
@@ -1458,6 +1463,11 @@ tests:
         type: vector
         pk:
         - zone
+        compare:
+          fields:
+            sum:
+              cast: float
+              precision: 5
 
   - algorithm: native:rasterlayerzonalstats
     name: Raster layer zonal stats reprojected, zones ref
@@ -1477,6 +1487,11 @@ tests:
         type: vector
         pk:
         - zone
+        compare:
+          fields:
+            sum:
+              cast: float
+              precision: 5
 
   - algorithm: native:antimeridiansplit
     name: Antimeridian split, lines
@@ -1618,6 +1633,11 @@ tests:
       OUTPUT_TABLE:
         name: expected/surface_vol_above_crs.gml
         type: vector
+        compare:
+          fields:
+            volume:
+              cast: float
+              precision: 5
 
   - algorithm: native:rastersurfacevolume
     name: Surface volume below (meters)
@@ -1639,6 +1659,11 @@ tests:
       OUTPUT_TABLE:
         name: expected/surface_vol_below_crs.gml
         type: vector
+        compare:
+          fields:
+            volume:
+              cast: float
+              precision: 5
 
   - algorithm: native:rastersurfacevolume
     name: Surface volume subtract below (meters)
@@ -1681,6 +1706,11 @@ tests:
       OUTPUT_TABLE:
         name: expected/surface_vol_add_crs.gml
         type: vector
+        compare:
+          fields:
+            volume:
+              cast: float
+              precision: 5
 
   - algorithm: native:rastersurfacevolume
     name: Surface volume with gaps
@@ -1773,7 +1803,7 @@ tests:
         type: raster
     results:
       OUTPUT:
-        hash: cdf6edb6afcefc5e80d60fa213df17aae59423019240807f5a49b72d
+        hash: 9c7f3070ad53b98ad9f42c3f758546268000043e990fbb38495d3c86
         type: rasterhash
 
   - algorithm: native:rasterbooleanand
@@ -1819,7 +1849,7 @@ tests:
         type: raster
     results:
       OUTPUT:
-        hash: dfe0bfc934a9d2a8ab865ad77db4278067830ac8e6f0470a730ad434
+        hash: eb41f92cb1198f1e4bed71e4a78d4fe2d3b35462a3949588d85cc818
         type: rasterhash
 
   - algorithm: native:rasterlogicalor
@@ -1888,7 +1918,7 @@ tests:
         type: raster
     results:
       OUTPUT:
-        hash: 56c4396468098a6f421e14682e22bb9cbb14027ed97f99cb8f85f953
+        hash: 2cd2f073cf337264140c1e5e3f162d5d134a731a094f1e1109e3ce12
         type: rasterhash
 
   - algorithm: native:rasterlogicalor
@@ -1911,7 +1941,7 @@ tests:
         type: raster
     results:
       OUTPUT:
-        hash: f8f7a412274c3133aee7fc24e3e6df2ddb52c6bc82663dd25154d3be
+        hash: d344a9306b7453c3faaef4558a9187da5525b0c90c6a04502bf15f1b
         type: rasterhash
 
   - algorithm: native:rasterlogicalor
@@ -1934,7 +1964,7 @@ tests:
         type: raster
     results:
       OUTPUT:
-        hash: 6c09e13126e16a267e36c79b0eeba7761422da7bd0387125f4c823e6
+        hash: 4e395a2151aba7558efedd43a33c85bbaae451ebcccef9a6dac86de4
         type: rasterhash
 
   - algorithm: native:addxyfields
@@ -1965,6 +1995,8 @@ tests:
         compare:
           fields:
             p_x:
+              precision: 6
+            p_y:
               precision: 6
 
   - algorithm: native:joinbynearest

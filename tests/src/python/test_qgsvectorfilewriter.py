@@ -1237,6 +1237,36 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertEqual(f.geometry().asWkt(), 'MultiPolygonZ (((1 2 3, 2 2 4, 2 3 4, 1 2 3)))')
         self.assertEqual(f.attributes(), [1, 'Johny'])
 
+    def testWriteConversionErrors(self):
+        """Test writing features with attribute values that cannot be
+        converted to the destination fields.
+        See: GH #36715"""
+
+        vl = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer', 'test', 'memory')
+        self.assertTrue(vl.startEditing())
+        f = QgsFeature(vl.fields())
+        f.setGeometry(QgsGeometry.fromWkt('point(9 45)'))
+        f.setAttribute(0, 'QGIS Rocks!')  # not valid!
+        self.assertTrue(vl.addFeatures([f]))
+        f.setAttribute(0, 12345)  # valid!
+        self.assertTrue(vl.addFeatures([f]))
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'writer_conversion_errors.shp')
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
+            vl,
+            dest_file_name,
+            'utf-8',
+            QgsCoordinateReferenceSystem(),
+            'ESRI Shapefile')
+        self.assertEqual(write_result, QgsVectorFileWriter.ErrFeatureWriteFailed, error_message)
+
+        # Open result and check
+        created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
+        self.assertEqual(created_layer.fields().count(), 1)
+        self.assertEqual(created_layer.featureCount(), 1)
+        f = next(created_layer.getFeatures(QgsFeatureRequest()))
+        self.assertEqual(f['int'], 12345)
+
 
 if __name__ == '__main__':
     unittest.main()

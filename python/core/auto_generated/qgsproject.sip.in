@@ -127,6 +127,13 @@ Returns the date and time when the project was last saved.
 .. versionadded:: 3.14
 %End
 
+    QgsProjectVersion lastSaveVersion() const;
+%Docstring
+Returns the QGIS version which the project was last saved using.
+
+.. versionadded:: 3.14
+%End
+
     bool isDirty() const;
 %Docstring
 Returns ``True`` if the project has been modified since the last :py:func:`~QgsProject.write`
@@ -317,7 +324,7 @@ Clears the project, removing all settings and resetting it back to an empty, def
 .. versionadded:: 2.4
 %End
 
-    bool read( const QString &filename, QgsProject::ReadFlags flags = 0 );
+    bool read( const QString &filename, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 %Docstring
 Reads given project file from the given file.
 
@@ -327,7 +334,7 @@ Reads given project file from the given file.
 :return: ``True`` if project file has been read successfully
 %End
 
-    bool read( QgsProject::ReadFlags flags = 0 );
+    bool read( QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 %Docstring
 Reads the project from its currently associated file (see :py:func:`~QgsProject.fileName` ).
 
@@ -525,7 +532,7 @@ Returns project file path if layer is embedded from other project file. Returns 
 %End
 
 
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = 0 );
+    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 %Docstring
 Create layer group instance defined in an arbitrary project file.
 

@@ -15,7 +15,7 @@ import qgis  # NOQA
 import shutil
 import tempfile
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, QDate
 from qgis.core import (QgsProject,
                        QgsVectorLayer,
                        QgsVectorLayerUtils,

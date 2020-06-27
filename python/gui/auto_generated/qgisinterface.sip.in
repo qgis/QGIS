@@ -1126,7 +1126,7 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
 
     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 %Docstring
-Register a new tab in the vector layer properties dialog.
+Register a new tab in the map layer properties dialog.
 
 .. note::
 
@@ -1142,7 +1142,7 @@ Register a new tab in the vector layer properties dialog.
 
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 %Docstring
-Unregister a previously registered tab in the vector layer properties dialog.
+Unregister a previously registered tab in the map layer properties dialog.
 
 .. seealso:: :py:class:`QgsMapLayerConfigWidgetFactory`
 

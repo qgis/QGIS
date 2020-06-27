@@ -211,6 +211,24 @@ Returns the raster's hue/saturation filter.
 .. seealso:: :py:func:`brightnessFilter`
 %End
 
+    void setResamplingStage( QgsRasterPipe::ResamplingStage stage );
+%Docstring
+Select which stage of the pipe should apply resampling.
+
+.. seealso:: :py:func:`QgsRasterPipe.setResamplingStage`
+
+.. versionadded:: 3.16
+%End
+
+    QgsRasterPipe::ResamplingStage resamplingStage() const;
+%Docstring
+Returns which stage of the pipe should apply resampling.
+
+.. seealso:: :py:func:`QgsRasterPipe.resamplingStage`
+
+.. versionadded:: 3.16
+%End
+
     QgsRasterPipe *pipe();
 %Docstring
 Returns the raster pipe.

@@ -368,11 +368,25 @@ Returns list of point lights defined in the scene
 .. versionadded:: 3.6
 %End
 
+    QList<QgsDirectionalLightSettings> directionalLights() const;
+%Docstring
+Returns list of directional lights defined in the scene
+
+.. versionadded:: 3.16
+%End
+
     void setPointLights( const QList<QgsPointLightSettings> &pointLights );
 %Docstring
 Sets list of point lights defined in the scene
 
 .. versionadded:: 3.6
+%End
+
+    void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
+%Docstring
+Sets list of directional lights defined in the scene
+
+.. versionadded:: 3.16
 %End
 
     float fieldOfView() const;
@@ -487,6 +501,13 @@ Emitted when the flag whether labels are displayed on terrain tiles has changed
 Emitted when the list of point lights changes
 
 .. versionadded:: 3.6
+%End
+
+    void directionalLightsChanged();
+%Docstring
+Emitted when the list of directional lights changes
+
+.. versionadded:: 3.16
 %End
 
     void fieldOfViewChanged();
