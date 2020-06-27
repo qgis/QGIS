@@ -253,9 +253,9 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QToolButton" name="btnPlayPause">
+      <widget class="QPushButton" name="btnPlayPause">
        <property name="text">
-        <string>&gt;</string>
+        <string/>
        </property>
       </widget>
      </item>
