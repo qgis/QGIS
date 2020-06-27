@@ -39,10 +39,8 @@
      </property>
      <addaction name="mActionRecord"/>
      <addaction name="mActionClear"/>
-     <addaction name="mActionShowSuccessful"/>
-     <addaction name="mActionShowTimeouts"/>
-     <addaction name="separator"/>
      <addaction name="mActionSaveLog"/>
+     <addaction name="separator"/>
     </widget>
    </item>
    <item>
