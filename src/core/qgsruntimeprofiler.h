@@ -54,6 +54,9 @@ class CORE_EXPORT QgsRuntimeProfilerNode
      */
     QgsRuntimeProfilerNode( const QString &group, const QString &name );
 
+    QgsRuntimeProfilerNode( const QgsRuntimeProfilerNode &other ) = delete;
+    QgsRuntimeProfilerNode &operator=( const QgsRuntimeProfilerNode &other ) = delete;
+
     ~QgsRuntimeProfilerNode();
 
     /**
