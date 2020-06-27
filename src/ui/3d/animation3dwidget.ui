@@ -276,12 +276,12 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="btnRepeat">
+      <widget class="QCheckBox" name="mLoopingCheckBox">
        <property name="toolTip">
-        <string>Repeat</string>
+        <string>Automatically reset and repeat the animation endlessly</string>
        </property>
        <property name="text">
-        <string>…</string>
+        <string>Loop</string>
        </property>
       </widget>
      </item>
