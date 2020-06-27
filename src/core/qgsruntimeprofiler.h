@@ -54,7 +54,9 @@ class CORE_EXPORT QgsRuntimeProfilerNode
      */
     QgsRuntimeProfilerNode( const QString &group, const QString &name );
 
+    //! QgsRuntimeProfilerNode cannot be copied
     QgsRuntimeProfilerNode( const QgsRuntimeProfilerNode &other ) = delete;
+    //! QgsRuntimeProfilerNode cannot be copied
     QgsRuntimeProfilerNode &operator=( const QgsRuntimeProfilerNode &other ) = delete;
 
     ~QgsRuntimeProfilerNode();

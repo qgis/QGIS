@@ -218,6 +218,7 @@ SET(TESTS
  testqgsrelationreferencefieldformatter.cpp
  testqgsrenderers.cpp
  testqgsrulebasedrenderer.cpp
+ testqgsruntimeprofiler.cpp
  testqgssettings.cpp
  testqgsshapeburst.cpp
  testqgssimplemarker.cpp

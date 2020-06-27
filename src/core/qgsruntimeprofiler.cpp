@@ -197,7 +197,8 @@ QStringList QgsRuntimeProfiler::childGroups( const QString &parent, const QStrin
   for ( int i = 0; i < parentNode->childCount(); ++i )
   {
     QgsRuntimeProfilerNode *child = parentNode->childAt( i );
-    res << child->data( QgsRuntimeProfilerNode::Name ).toString();
+    if ( child->data( QgsRuntimeProfilerNode::Group ).toString() == group )
+      res << child->data( QgsRuntimeProfilerNode::Name ).toString();
   }
   return res;
 }
