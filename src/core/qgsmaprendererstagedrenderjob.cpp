@@ -167,7 +167,7 @@ bool QgsMapRendererStagedRenderJob::nextPart()
 
   if ( mJobIt != mLayerJobs.end() )
   {
-    mJobIt++;
+    ++mJobIt;
     if ( mJobIt != mLayerJobs.end() )
       return true;
   }
@@ -194,7 +194,7 @@ bool QgsMapRendererStagedRenderJob::nextPart()
       {
         if ( mLabelLayerIt != mLabelingLayers.end() )
         {
-          mLabelLayerIt++;
+          ++mLabelLayerIt;
           if ( mLabelLayerIt != mLabelingLayers.end() )
             return true;
         }
