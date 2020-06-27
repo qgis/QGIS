@@ -132,6 +132,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   {
     const QVariantMap fieldDataMap = fieldData.toMap();
     const QString fieldName = fieldDataMap[QStringLiteral( "name" )].toString();
+    const QString fieldAlias = fieldDataMap[QStringLiteral( "alias" )].toString();
     const QString fieldTypeString = fieldDataMap[QStringLiteral( "type" )].toString();
     QVariant::Type type = QgsArcGisRestUtils::mapEsriFieldType( fieldTypeString );
     if ( fieldName == QLatin1String( "geometry" ) || fieldTypeString == QLatin1String( "esriFieldTypeGeometry" ) )
@@ -149,6 +150,8 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
       continue;
     }
     QgsField field( fieldName, type, fieldDataMap[QStringLiteral( "type" )].toString(), fieldDataMap[QStringLiteral( "length" )].toInt() );
+    if ( !fieldAlias.isEmpty() && fieldAlias != fieldName )
+      field.setAlias( fieldAlias );
 
     if ( fieldDataMap.contains( QStringLiteral( "domain" ) ) && fieldDataMap.value( QStringLiteral( "domain" ) ).toMap().value( QStringLiteral( "type" ) ).toString() == QStringLiteral( "codedValue" ) )
     {
