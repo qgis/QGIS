@@ -36,7 +36,7 @@ void QgsDatumTransformTableModel::removeTransform( const QModelIndexList &indexe
 {
   QgsCoordinateReferenceSystem sourceCrs;
   QgsCoordinateReferenceSystem destinationCrs;
-  for ( QModelIndexList::const_iterator it = indexes.constBegin(); it != indexes.constEnd(); it ++ )
+  for ( QModelIndexList::const_iterator it = indexes.constBegin(); it != indexes.constEnd(); ++it )
   {
     if ( it->column() == SourceCrsColumn )
     {
