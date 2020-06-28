@@ -106,7 +106,7 @@ Test if interface at index may be switched on/off
 
     QgsGammaCorrectionFilter *gammaCorrectionFilter() const;
 %Docstring
-Getter for gamma correction filter pipe
+Returns gamma correction filter pipe
 
 .. versionadded:: 3.16
 %End

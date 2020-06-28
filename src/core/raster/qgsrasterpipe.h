@@ -131,7 +131,7 @@ class CORE_EXPORT QgsRasterPipe
     QgsBrightnessContrastFilter *brightnessFilter() const;
 
     /**
-     * Getter for gamma correction filter pipe
+     * Returns gamma correction filter pipe
      * \since QGIS 3.16
     */
     QgsGammaCorrectionFilter *gammaCorrectionFilter() const;
