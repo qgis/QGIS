@@ -131,6 +131,8 @@ class TestQgsProcessingAlgs: public QObject
 
     void saveLog();
     void setProjectVariable();
+    void exportLayoutPdf();
+    void exportLayoutPng();
 
   private:
 
@@ -3689,6 +3691,78 @@ void TestQgsProcessingAlgs::setProjectVariable()
   QVERIFY( ok );
   scope.reset( QgsExpressionContextUtils::projectScope( &p ) );
   QCOMPARE( scope->variable( QStringLiteral( "my_var" ) ).toInt(), 13 );
+}
+
+void TestQgsProcessingAlgs::exportLayoutPdf()
+{
+  QgsProject p;
+  QgsPrintLayout *layout = new QgsPrintLayout( &p );
+  layout->initializeDefaults();
+  layout->setName( QStringLiteral( "my layout" ) );
+  p.layoutManager()->addLayout( layout );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:printlayouttopdf" ) ) );
+  QVERIFY( alg != nullptr );
+
+  const QString outputPdf = QDir::tempPath() + "/my_layout.pdf";
+  if ( QFile::exists( outputPdf ) )
+    QFile::remove( outputPdf );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "missing" ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputPdf );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // invalid layout name
+  QVERIFY( !ok );
+  QVERIFY( !QFile::exists( outputPdf ) );
+
+  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "my layout" ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( QFile::exists( outputPdf ) );
+}
+
+void TestQgsProcessingAlgs::exportLayoutPng()
+{
+  QgsProject p;
+  QgsPrintLayout *layout = new QgsPrintLayout( &p );
+  layout->initializeDefaults();
+  layout->setName( QStringLiteral( "my layout" ) );
+  p.layoutManager()->addLayout( layout );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:printlayouttoimage" ) ) );
+  QVERIFY( alg != nullptr );
+
+  const QString outputPdf = QDir::tempPath() + "/my_layout.png";
+  if ( QFile::exists( outputPdf ) )
+    QFile::remove( outputPdf );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "missing" ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputPdf );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // invalid layout name
+  QVERIFY( !ok );
+  QVERIFY( !QFile::exists( outputPdf ) );
+
+  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "my layout" ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( QFile::exists( outputPdf ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )
