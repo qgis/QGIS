@@ -76,6 +76,7 @@ class GUI_EXPORT QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private 
     void mEqualColumnWidthCheckBox_toggled( bool checked );
     void mSymbolWidthSpinBox_valueChanged( double d );
     void mSymbolHeightSpinBox_valueChanged( double d );
+    void mMaxMarkerSizeSpinBox_valueChanged( double d );
     void mWmsLegendWidthSpinBox_valueChanged( double d );
     void mWmsLegendHeightSpinBox_valueChanged( double d );
     void mTitleSpaceBottomSpinBox_valueChanged( double d );
