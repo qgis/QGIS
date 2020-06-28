@@ -26,6 +26,7 @@ class TestQgsRuntimeProfiler: public QObject
     void initTestCase();
     void cleanupTestCase();
     void testGroups();
+    void threading();
 
 };
 
@@ -87,6 +88,56 @@ void TestQgsRuntimeProfiler::testGroups()
   QCOMPARE( profiler.childGroups( QStringLiteral( "task 1" ), QStringLiteral( "group 1" ) ), QStringList() << QStringLiteral( "task 1a" ) );
   QCOMPARE( profiler.childGroups( QString(), QStringLiteral( "group 2" ) ), QStringList() << QStringLiteral( "task 2" ) );
 }
+
+
+
+class ProfileInThread : public QThread
+{
+
+  public :
+    ProfileInThread( QgsRuntimeProfiler *mainProfiler )
+      : mMainProfiler( mainProfiler )
+    {}
+
+    void run() override
+    {
+      QgsScopedRuntimeProfile profile( QStringLiteral( "in thread" ), QStringLiteral( "bg" ) );
+      QVERIFY( mMainProfiler != QgsApplication::profiler() );
+    }
+
+  private:
+    QgsRuntimeProfiler *mMainProfiler = nullptr;
+
+
+};
+
+void TestQgsRuntimeProfiler::threading()
+{
+  // test that profiling which occurs in a background thread is bubbled up to the main thread runtime profiler
+  QgsApplication::profiler()->clear();
+  QCOMPARE( QgsApplication::profiler()->rowCount(), 0 );
+
+  QThread *thread = new ProfileInThread( QgsApplication::profiler() );
+  {
+    QgsScopedRuntimeProfile profile( QStringLiteral( "launch thread" ), QStringLiteral( "main" ) );
+
+    QSignalSpy  spy( QgsApplication::profiler(), &QgsRuntimeProfiler::groupAdded );
+    thread->start();
+    thread->exit();
+
+    spy.wait();
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( spy.at( 0 ).at( 0 ).toString(), QStringLiteral( "bg" ) );
+  }
+
+  QCOMPARE( QgsApplication::profiler()->rowCount(), 2 );
+  int row1 = QgsApplication::profiler()->data( QgsApplication::profiler()->index( 0, 0 ) ).toString() == QLatin1String( "launch thread" ) ? 0 : 1;
+  QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1, 0 ) ).toString(), QStringLiteral( "launch thread" ) );
+  QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1, 0 ), QgsRuntimeProfilerNode::Group ).toString(), QStringLiteral( "main" ) );
+  QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1 == 0 ? 1 : 0, 0 ) ).toString(), QStringLiteral( "in thread" ) );
+  QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1 == 0 ? 1 : 0, 0 ), QgsRuntimeProfilerNode::Group ).toString(), QStringLiteral( "bg" ) );
+}
+
 
 QGSTEST_MAIN( TestQgsRuntimeProfiler )
 #include "testqgsruntimeprofiler.moc"
