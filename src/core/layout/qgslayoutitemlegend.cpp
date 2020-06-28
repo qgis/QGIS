@@ -394,6 +394,16 @@ void QgsLayoutItemLegend::setSymbolWidth( double w )
   mSettings.setSymbolSize( QSizeF( w, mSettings.symbolSize().height() ) );
 }
 
+double QgsLayoutItemLegend::maxMarkerSymbolSize() const
+{
+  return mSettings.maxMarkerSymbolSize();
+}
+
+void QgsLayoutItemLegend::setMaxMarkerSymbolSize( double size )
+{
+  mSettings.setMaxMarkerSymbolSize( size );
+}
+
 void QgsLayoutItemLegend::setSymbolAlignment( Qt::AlignmentFlag alignment )
 {
   mSettings.setSymbolAlignment( alignment );
@@ -526,6 +536,7 @@ bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &legendElem, QDo
 
   legendElem.setAttribute( QStringLiteral( "symbolWidth" ), QString::number( mSettings.symbolSize().width() ) );
   legendElem.setAttribute( QStringLiteral( "symbolHeight" ), QString::number( mSettings.symbolSize().height() ) );
+  legendElem.setAttribute( QStringLiteral( "maxMarkerSymbolSize" ), QString::number( mSettings.maxMarkerSymbolSize() ) );
 
   legendElem.setAttribute( QStringLiteral( "symbolAlignment" ), mSettings.symbolAlignment() );
 
@@ -620,6 +631,8 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
 
   mSettings.setSymbolSize( QSizeF( itemElem.attribute( QStringLiteral( "symbolWidth" ), QStringLiteral( "7.0" ) ).toDouble(), itemElem.attribute( QStringLiteral( "symbolHeight" ), QStringLiteral( "14.0" ) ).toDouble() ) );
   mSettings.setSymbolAlignment( static_cast< Qt::AlignmentFlag >( itemElem.attribute( QStringLiteral( "symbolAlignment" ), QString::number( Qt::AlignLeft ) ).toInt() ) );
+
+  mSettings.setMaxMarkerSymbolSize( itemElem.attribute( QStringLiteral( "maxMarkerSymbolSize" ), QStringLiteral( "0.0" ) ).toDouble() );
 
   mSettings.setWmsLegendSize( QSizeF( itemElem.attribute( QStringLiteral( "wmsLegendWidth" ), QStringLiteral( "50" ) ).toDouble(), itemElem.attribute( QStringLiteral( "wmsLegendHeight" ), QStringLiteral( "25" ) ).toDouble() ) );
   mSettings.setLineSpacing( itemElem.attribute( QStringLiteral( "lineSpacing" ), QStringLiteral( "1.0" ) ).toDouble() );

@@ -319,6 +319,18 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void setSymbolWidth( double width );
 
     /**
+     * Returns the legend maximum marker symbol size (in mm). 0.0 means there is no maximum set
+     */
+    double maxMarkerSymbolSize() const;
+
+    /**
+     * @brief set maximum symbol size for point markers
+     * @param size maximum marker size (in mm) or 0.0 if no maximum
+     */
+    void setMaxMarkerSymbolSize( double size );
+
+
+    /**
      * Sets the \a alignment for placement of legend symbols.
      *
      * Only Qt::AlignLeft or Qt::AlignRight are supported values.

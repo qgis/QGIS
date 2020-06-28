@@ -557,10 +557,23 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   double widthOffset = 0;
   double heightOffset = 0;
 
+  std::unique_ptr<QgsMarkerSymbol> maxSizeMarkerSymbol;
   if ( QgsMarkerSymbol *markerSymbol = dynamic_cast<QgsMarkerSymbol *>( s ) )
   {
     // allow marker symbol to occupy bigger area if necessary
     double size = markerSymbol->size( *context ) / context->scaleFactor();
+
+    //If marker size exceeds max marker size, clone symbol and set max size in mm
+    double maxMarkerSymbolSize = settings.maxMarkerSymbolSize();
+    if ( maxMarkerSymbolSize > 0 && size > maxMarkerSymbolSize )
+    {
+      maxSizeMarkerSymbol.reset( dynamic_cast<QgsMarkerSymbol *>( s->clone() ) );
+      maxSizeMarkerSymbol->setSize( maxMarkerSymbolSize );
+      maxSizeMarkerSymbol->setSizeUnit( QgsUnitTypes::RenderMillimeters );
+      s = maxSizeMarkerSymbol.get();
+      size = maxMarkerSymbolSize;
+    }
+
     height = size;
     width = size;
     if ( width < desiredWidth )
