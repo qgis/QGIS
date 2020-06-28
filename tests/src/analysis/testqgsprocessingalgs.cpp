@@ -52,6 +52,7 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsstyle.h"
 #include "qgsbookmarkmanager.h"
+#include "qgsexpressioncontextutils.h"
 
 class TestQgsProcessingAlgs: public QObject
 {
@@ -129,6 +130,7 @@ class TestQgsProcessingAlgs: public QObject
     void conditionalBranch();
 
     void saveLog();
+    void setProjectVariable();
 
   private:
 
@@ -3658,6 +3660,35 @@ void TestQgsProcessingAlgs::saveLog()
   QFile file2( results.value( QStringLiteral( "OUTPUT" ) ).toString() );
   QVERIFY( file2.open( QFile::ReadOnly  | QIODevice::Text ) );
   QCOMPARE( QString( file2.readAll() ), QStringLiteral( "<span style=\"color:red\">test</span><br/>" ) );
+}
+
+void TestQgsProcessingAlgs::setProjectVariable()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:setprojectvariable" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "NAME" ), QStringLiteral( "my_var" ) );
+  parameters.insert( QStringLiteral( "VALUE" ), 11 );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  QgsProject p;
+  context->setProject( &p );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::projectScope( &p ) );
+  QCOMPARE( scope->variable( QStringLiteral( "my_var" ) ).toInt(), 11 );
+
+  //overwrite existing
+  parameters.insert( QStringLiteral( "VALUE" ), 13 );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  scope.reset( QgsExpressionContextUtils::projectScope( &p ) );
+  QCOMPARE( scope->variable( QStringLiteral( "my_var" ) ).toInt(), 13 );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )
