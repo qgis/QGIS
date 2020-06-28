@@ -16,6 +16,7 @@
 #include "qgsprofilerpanelwidget.h"
 #include "qgsruntimeprofiler.h"
 #include "qgslogger.h"
+#include "qgis.h"
 #include <QPainter>
 #include <cmath>
 
@@ -29,35 +30,64 @@ QgsProfilerPanelWidget::QgsProfilerPanelWidget( QgsRuntimeProfiler *profiler, QW
 {
   setupUi( this );
 
-  mTreeWidget->setColumnCount( 2 );
-  mTreeWidget->setHeaderLabels( QStringList() << tr( "Task" ) << tr( "Time (seconds)" ) );
-  mTreeWidget->setSortingEnabled( true );
+  mProxyModel = new QgsProfilerProxyModel( profiler, this );
 
-  std::function< void( const QString &topLevel, QTreeWidgetItem *parentItem, double parentCost ) > addGroup;
-  addGroup = [&]( const QString & topLevel, QTreeWidgetItem * parentItem, double parentCost )
+  mTreeView->setModel( mProxyModel );
+  mTreeView->setSortingEnabled( true );
+
+  //mTreeView->resizeColumnToContents( 0 );
+  //mTreeView->resizeColumnToContents( 1 );
+
+  mTreeView->setItemDelegateForColumn( 1, new CostDelegate( QgsRuntimeProfilerNode::Elapsed, QgsRuntimeProfilerNode::ParentElapsed ) );
+
+  connect( mProfiler, &QgsRuntimeProfiler::groupAdded, this, [ = ]( const QString & group )
   {
-    const QStringList children = mProfiler->childGroups( topLevel );
-    for ( const QString &child : children )
+    mCategoryComboBox->addItem( QgsRuntimeProfiler::translateGroupName( group ).isEmpty() ? group : QgsRuntimeProfiler::translateGroupName( group ), group );
+    if ( mCategoryComboBox->count() == 1 )
     {
-      double profileTime = mProfiler->profileTime( topLevel.isEmpty() ? child : topLevel + '/' + child );
-      QTreeWidgetItem *item = new QTreeWidgetItem( QStringList() << child << QString::number( profileTime ) );
-      item->setData( 1, Qt::UserRole + 1, parentCost * 1000 );
-      item->setData( 1, Qt::InitialSortOrderRole, profileTime * 1000 );
-      if ( !parentItem )
-        mTreeWidget->addTopLevelItem( item );
-      else
-        parentItem->addChild( item );
-
-      addGroup( topLevel.isEmpty() ? child : topLevel + '/' + child, item, profileTime );
+      mCategoryComboBox->setCurrentIndex( 0 );
+      mProxyModel->setGroup( mCategoryComboBox->currentData().toString() );
     }
-  };
-  const double totalTime = mProfiler->profileTime( QString() );
-  addGroup( QString(), nullptr, totalTime );
+  } );
 
-  mTreeWidget->resizeColumnToContents( 0 );
-  mTreeWidget->resizeColumnToContents( 1 );
+  connect( mCategoryComboBox, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
+    mProxyModel->setGroup( mCategoryComboBox->currentData().toString() );
+  } );
 
-  mTreeWidget->setItemDelegateForColumn( 1, new CostDelegate( Qt::InitialSortOrderRole, Qt::UserRole + 1 ) );
+  const QSet<QString> groups = mProfiler->groups();
+  for ( const QString &group : groups )
+  {
+    mCategoryComboBox->addItem( QgsRuntimeProfiler::translateGroupName( group ).isEmpty() ? group : QgsRuntimeProfiler::translateGroupName( group ), group );
+  }
+
+  if ( mCategoryComboBox->count() > 0 )
+  {
+    mCategoryComboBox->setCurrentIndex( 0 );
+    mProxyModel->setGroup( mCategoryComboBox->currentData().toString() );
+  }
+}
+
+//
+// QgsProfilerProxyModel
+//
+
+QgsProfilerProxyModel::QgsProfilerProxyModel( QgsRuntimeProfiler *profiler, QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+  setSourceModel( profiler );
+}
+
+void QgsProfilerProxyModel::setGroup( const QString &group )
+{
+  mGroup = group;
+  invalidateFilter();
+}
+
+bool QgsProfilerProxyModel::filterAcceptsRow( int row, const QModelIndex &source_parent ) const
+{
+  QModelIndex index = sourceModel()->index( row, 0, source_parent );
+  return sourceModel()->data( index, QgsRuntimeProfilerNode::Group ).toString() == mGroup;
 }
 
 
@@ -79,14 +109,14 @@ CostDelegate::~CostDelegate() = default;
 void CostDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   // TODO: handle negative values
-  const auto cost = index.data( m_sortRole ).toULongLong();
+  const auto cost = index.data( m_sortRole ).toDouble();
   if ( cost == 0 )
   {
     QStyledItemDelegate::paint( painter, option, index );
     return;
   }
 
-  const auto totalCost = index.data( m_totalCostRole ).toULongLong();
+  const auto totalCost = index.data( m_totalCostRole ).toDouble();
   const auto fraction = std::abs( float( cost ) / totalCost );
 
   auto rect = option.rect;
@@ -123,3 +153,4 @@ void CostDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
     QStyledItemDelegate::paint( painter, option, index );
   }
 }
+

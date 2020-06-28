@@ -8,8 +8,19 @@
 
 
 
-class QgsRuntimeProfiler
+class QgsRuntimeProfiler : QAbstractItemModel
 {
+%Docstring
+
+Provides a method of recording run time profiles of operations, allowing
+easy recording of their overall run time.
+
+QgsRuntimeProfiler is not usually instantied manually, but rather accessed
+through :py:func:`QgsApplication.profiler()`.
+
+This class is thread-safe only if accessed through :py:func:`QgsApplication.profiler()`.
+If accessed in this way, operations can be profiled from non-main threads.
+%End
 
 %TypeHeaderCode
 #include "qgsruntimeprofiler.h"
@@ -19,7 +30,13 @@ class QgsRuntimeProfiler
     QgsRuntimeProfiler();
 %Docstring
 Constructor to create a new runtime profiler.
+
+.. warning::
+
+   QgsRuntimeProfiler is not usually instantied manually, but rather accessed
+   through :py:func:`QgsApplication.profiler()`.
 %End
+    ~QgsRuntimeProfiler();
 
  void beginGroup( const QString &name ) /Deprecated/;
 %Docstring
@@ -40,14 +57,14 @@ End the current active group.
    use end() instead
 %End
 
-    QStringList childGroups( const QString &parent = QString() ) const;
+    QStringList childGroups( const QString &parent = QString(), const QString &group = "startup" ) const;
 %Docstring
 Returns a list of all child groups with the specified ``parent``.
 
 .. versionadded:: 3.14
 %End
 
-    void start( const QString &name );
+    void start( const QString &name, const QString &group = "startup" );
 %Docstring
 Start a profile event with the given name.
 
@@ -55,28 +72,66 @@ Start a profile event with the given name.
              the active group appended after ending.
 %End
 
-    void end();
+    void end( const QString &group = "startup" );
 %Docstring
 End the current profile event.
 %End
 
-    double profileTime( const QString &name ) const;
+    double profileTime( const QString &name, const QString &group = "startup" ) const;
 %Docstring
 Returns the profile time for the specified ``name``.
 
 .. versionadded:: 3.14
 %End
 
-    void clear();
+    void clear( const QString &group = "startup" );
 %Docstring
 clear Clear all profile data.
 %End
 
-    double totalTime();
+    double totalTime( const QString &group = "startup" );
 %Docstring
 The current total time collected in the profiler.
 
 :return: The current total time collected in the profiler.
+%End
+
+    QSet< QString > groups() const;
+%Docstring
+Returns the set of known groups.
+%End
+
+    bool groupIsActive( const QString &group ) const;
+%Docstring
+Returns ``True`` if the specified ``group`` is currently being logged,
+i.e. it has a entry which has started and not yet stopped.
+
+.. versionadded:: 3.14
+%End
+
+    static QString translateGroupName( const QString &group );
+%Docstring
+Returns the translated name of a standard profile ``group``.
+%End
+
+
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual QModelIndex parent( const QModelIndex &child ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+
+
+
+    void groupAdded( const QString &group );
+%Docstring
+Emitted when a new group has started being profiled.
 %End
 
 };
@@ -105,7 +160,7 @@ Python scripts should not use QgsScopedRuntimeProfile directly. Instead, use :py
 %End
   public:
 
-    QgsScopedRuntimeProfile( const QString &name );
+    QgsScopedRuntimeProfile( const QString &name, const QString &group = "startup" );
 %Docstring
 Constructor for QgsScopedRuntimeProfile.
 
@@ -114,6 +169,16 @@ and starts recording the run time of the operation.
 %End
 
     ~QgsScopedRuntimeProfile();
+
+    void switchTask( const QString &name );
+%Docstring
+Switches the current task managed by the scoped profile to a new task with the given ``name``.
+The current task will be finalised before switching.
+
+This is useful for reusing an existing scoped runtime profiler with multi-step processes.
+
+.. versionadded:: 3.14
+%End
 
 };
 

@@ -18,7 +18,7 @@
 #include "qgsapplication.h"
 
 QgsProfilerWidgetFactory::QgsProfilerWidgetFactory( QgsRuntimeProfiler *profiler )
-  : QgsDevToolWidgetFactory( QObject::tr( "Startup Profiler" ), QgsApplication::getThemeIcon( QStringLiteral( "mIconStopwatch.svg" ) ) )
+  : QgsDevToolWidgetFactory( QObject::tr( "Profiler" ), QgsApplication::getThemeIcon( QStringLiteral( "mIconStopwatch.svg" ) ) )
   , mProfiler( profiler )
 {
 }

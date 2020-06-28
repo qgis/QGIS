@@ -324,12 +324,13 @@ void QgsExpressionTreeView::registerItem( const QString &group,
     const QString &label,
     const QString &expressionText,
     const QString &helpText,
-    QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder, QIcon icon, const QStringList &tags )
+    QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder, QIcon icon, const QStringList &tags, const QString &name )
 {
   QgsExpressionItem *item = new QgsExpressionItem( label, expressionText, helpText, type );
   item->setData( label, Qt::UserRole );
   item->setData( sortOrder, QgsExpressionItem::CUSTOM_SORT_ROLE );
   item->setData( tags, QgsExpressionItem::SEARCH_TAGS_ROLE );
+  item->setData( name, QgsExpressionItem::ITEM_NAME_ROLE );
   item->setIcon( icon );
 
   // Look up the group and insert the new function.
@@ -420,7 +421,7 @@ void QgsExpressionTreeView::loadFieldNames( const QgsFields &fields )
     const QgsField field = fields.at( i );
     QIcon icon = fields.iconForField( i );
     registerItem( QStringLiteral( "Fields and Values" ), field.displayNameWithAlias(),
-                  " \"" + field.name() + "\" ", QString(), QgsExpressionItem::Field, false, i, icon );
+                  " \"" + field.name() + "\" ", QString(), QgsExpressionItem::Field, false, i, icon, QStringList(), field.name() );
   }
 }
 
