@@ -206,7 +206,7 @@ QgsNetworkLoggerPanelWidget::QgsNetworkLoggerPanelWidget( QgsNetworkLogger *logg
   } );
 
 
-  QMenu *settingsMenu = new QMenu();
+  QMenu *settingsMenu = new QMenu( this );
   QToolButton *settingsButton = new QToolButton();
   settingsButton->setAutoRaise( true );
   settingsButton->setToolTip( tr( "Settings" ) );
