@@ -336,7 +336,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
   }
   QgsDebugMsgLevel( QStringLiteral( "theHistogram.width = %1 histogram.height = %2" ).arg( histogram.width ).arg( histogram.height ), 4 );
 
-  int myBinCount = binCount;
+  long myBinCount = binCount;
   if ( myBinCount == 0 )
   {
     // TODO: this was OK when stats/histogram were calced in provider,
@@ -359,16 +359,17 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
              mySrcDataType == Qgis::Int16 || mySrcDataType == Qgis::Int32 ||
              mySrcDataType == Qgis::UInt16 || mySrcDataType == Qgis::UInt32 ) )
       {
-        myBinCount = std::min( histogram.width * histogram.height, static_cast<int>( std::ceil( histogram.maximum - histogram.minimum + 1 ) ) );
+        myBinCount = std::min( static_cast<long>( histogram.width ) * static_cast<long>( histogram.height ), static_cast<long>( std::ceil( histogram.maximum - histogram.minimum + 1 ) ) );
       }
       else
       {
-        // This is for not integer types where we cannot limit the bin size
-        myBinCount = histogram.width * histogram.height;
+        // This is for not integer types
+        myBinCount = static_cast<long>( histogram.width ) * static_cast<long>( histogram.height );
       }
     }
   }
-  histogram.binCount = myBinCount;
+  // Hard limit 10'000'000
+  histogram.binCount = static_cast<int>( std::min( 10000000L, myBinCount ) );
   QgsDebugMsgLevel( QStringLiteral( "theHistogram.binCount = %1" ).arg( histogram.binCount ), 4 );
 }
 
