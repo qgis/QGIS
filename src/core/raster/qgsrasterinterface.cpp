@@ -363,8 +363,8 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
       }
       else
       {
-        // This is for not integer types:
-        myBinCount = std::min( 2000, histogram.width * histogram.height );
+        // This is for not integer types where we cannot limit the bin size
+        myBinCount = histogram.width * histogram.height;
       }
     }
   }
