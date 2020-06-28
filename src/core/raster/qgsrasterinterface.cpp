@@ -306,7 +306,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
   {
     // Calc resolution from theSampleSize
     double xRes, yRes;
-    xRes = yRes = std::sqrt( ( finalExtent.width() * finalExtent.height() ) / sampleSize );
+    xRes = yRes = std::sqrt( ( static_cast<double>( finalExtent.width( ) ) * finalExtent.height() ) / sampleSize );
 
     // But limit by physical resolution
     if ( capabilities() & Size )
@@ -336,7 +336,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
   }
   QgsDebugMsgLevel( QStringLiteral( "theHistogram.width = %1 histogram.height = %2" ).arg( histogram.width ).arg( histogram.height ), 4 );
 
-  long myBinCount = binCount;
+  qint64 myBinCount = binCount;
   if ( myBinCount == 0 )
   {
     // TODO: this was OK when stats/histogram were calced in provider,
@@ -359,17 +359,17 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
              mySrcDataType == Qgis::Int16 || mySrcDataType == Qgis::Int32 ||
              mySrcDataType == Qgis::UInt16 || mySrcDataType == Qgis::UInt32 ) )
       {
-        myBinCount = std::min( static_cast<long>( histogram.width ) * static_cast<long>( histogram.height ), static_cast<long>( std::ceil( histogram.maximum - histogram.minimum + 1 ) ) );
+        myBinCount = std::min( static_cast<qint64>( histogram.width ) * histogram.height, static_cast<qint64>( std::ceil( histogram.maximum - histogram.minimum + 1 ) ) );
       }
       else
       {
         // This is for not integer types
-        myBinCount = static_cast<long>( histogram.width ) * static_cast<long>( histogram.height );
+        myBinCount = static_cast<qint64>( histogram.width ) * static_cast<qint64>( histogram.height );
       }
     }
   }
   // Hard limit 10'000'000
-  histogram.binCount = static_cast<int>( std::min( 10000000L, myBinCount ) );
+  histogram.binCount = static_cast<int>( std::min( 10000000LL, myBinCount ) );
   QgsDebugMsgLevel( QStringLiteral( "theHistogram.binCount = %1" ).arg( histogram.binCount ), 4 );
 }
 
