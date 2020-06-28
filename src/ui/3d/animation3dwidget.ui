@@ -298,7 +298,6 @@
   <tabstop>cboInterpolation</tabstop>
   <tabstop>btnPlayPause</tabstop>
   <tabstop>sliderTime</tabstop>
-  <tabstop>btnRepeat</tabstop>
  </tabstops>
  <resources/>
  <connections/>
