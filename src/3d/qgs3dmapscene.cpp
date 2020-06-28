@@ -57,6 +57,8 @@
 #include "qgsmaplayertemporalproperties.h"
 
 #include "qgslinematerial_p.h"
+#include "qgs3dsceneexporter.h"
+#include "qgsabstract3drenderer.h"
 
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
@@ -762,4 +764,16 @@ void Qgs3DMapScene::updateSceneState()
   }
 
   setSceneState( Ready );
+}
+
+void Qgs3DMapScene::exportScene(const QString& sceneName, const QString& sceneDir) {
+  Qgs3DSceneExporter exporter;
+
+  for ( QgsMapLayer * layer : mLayerEntities.keys() ) {
+    exporter.parseEntity(mLayerEntities[layer]);
+  }
+  QString filePath = sceneDir;
+  if (!filePath.endsWith('/')) filePath.push_back('/');
+  filePath += sceneName + ".obj";
+  exporter.saveToFile(filePath);
 }

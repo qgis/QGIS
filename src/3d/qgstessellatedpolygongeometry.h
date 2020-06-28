@@ -21,6 +21,8 @@
 
 #include <Qt3DRender/QGeometry>
 
+class Qgs3DSceneExporter;
+
 namespace Qt3DRender
 {
   class QBuffer;
@@ -79,11 +81,14 @@ class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
      */
     QgsFeatureId triangleIndexToFeatureId( uint triangleIndex ) const;
 
+    friend class Qgs3DSceneExporter;
   private:
 
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QAttribute *mNormalAttribute = nullptr;
     Qt3DRender::QBuffer *mVertexBuffer = nullptr;
+
+    QVector<float> mVertexData;
 
     QVector<QgsFeatureId> mTriangleIndexFids;
     QVector<uint> mTriangleIndexStartingIndices;

@@ -44,6 +44,8 @@
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgs3dutils.h"
 
+#include "qgs3dsceneexporter.h"
+#include "qgsabstract3drenderer.h"
 
 
 Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
@@ -98,6 +100,9 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
 
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSaveMapAsImage.svg" ) ),
                       tr( "Save as Image…" ), this, &Qgs3DMapCanvasDockWidget::saveAsImage );
+
+  toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionSaveMapAsImage.svg" ) ),
+      tr( "Export 3D Scene" ), this, &Qgs3DMapCanvasDockWidget::exportScene );
 
   toolBar->addSeparator();
 
@@ -168,6 +173,17 @@ void Qgs3DMapCanvasDockWidget::saveAsImage()
   {
     mCanvas->saveAsImage( fileNameAndFilter.first, fileNameAndFilter.second );
   }
+}
+
+
+void Qgs3DMapCanvasDockWidget::exportScene()
+{
+
+  QgsSettings settings;  // where we keep last used filter in persistent state
+  QString initialPath = settings.value( QStringLiteral( "UI/lastExportAsDir" ), QDir::homePath() ).toString();
+  QString outputDir = QFileDialog::getExistingDirectory(this, QString("Export scane"), initialPath);
+
+  mCanvas->scene()->exportScene("scene", outputDir);
 }
 
 void Qgs3DMapCanvasDockWidget::toggleAnimations()
