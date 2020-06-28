@@ -81,6 +81,7 @@ class TestQgsProcessingAlgs: public QObject
     void kmeansCluster();
     void categorizeByStyle();
     void extractBinary();
+    void createDirectory();
 
     void polygonsToLines_data();
     void polygonsToLines();
@@ -821,6 +822,50 @@ void TestQgsProcessingAlgs::extractBinary()
   QVERIFY( file2.open( QIODevice::ReadOnly ) );
   d = file2.readAll();
   QCOMPARE( QString( QCryptographicHash::hash( d, QCryptographicHash::Md5 ).toHex() ), QStringLiteral( "4b952b80e4288ca5111be2f6dd5d6809" ) );
+}
+
+void TestQgsProcessingAlgs::createDirectory()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:createdirectory" ) ) );
+  QVERIFY( alg != nullptr );
+
+  // first make a path to an existing file
+  QString outputPath = QDir::tempPath() + "/test.txt";
+  if ( QFile::exists( outputPath ) )
+    QFile::remove( outputPath );
+  QFile file( outputPath );
+  file.open( QIODevice::ReadWrite );
+  file.close();
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "PATH" ), outputPath );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // path is an existing file
+  QVERIFY( !ok );
+
+  outputPath = QDir::tempPath() + "/createdir/test/test2";
+  QDir().rmdir( QDir::tempPath() + "/createdir/test/test2" );
+  QDir().rmdir( QDir::tempPath() + "/createdir/test" );
+  QDir().rmdir( QDir::tempPath() + "/createdir" );
+
+  parameters.insert( QStringLiteral( "PATH" ), outputPath );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( QFile::exists( outputPath ) );
+  QVERIFY( QFileInfo( outputPath ).isDir() );
+
+  // run a second time -- should be OK, no exception raised
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( QFile::exists( outputPath ) );
+  QVERIFY( QFileInfo( outputPath ).isDir() );
 }
 
 
