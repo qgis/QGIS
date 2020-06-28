@@ -88,7 +88,7 @@ void QgsLayoutToPdfAlgorithm::initAlgorithm( const QVariantMap & )
 
   QStringList textExportOptions
   {
-    QObject::tr( "Always Export Text as Paths (Recommended" ),
+    QObject::tr( "Always Export Text as Paths (Recommended)" ),
     QObject::tr( "Always Export Text as Text Objects" )
   };
 
