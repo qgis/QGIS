@@ -167,7 +167,7 @@ QgsRuntimeProfiler *QgsRuntimeProfiler::threadLocalInstance()
   static QThreadStorage<QgsRuntimeProfiler> sInstances;
   QgsRuntimeProfiler *profiler = &sInstances.localData();
 
-  if ( profiler->thread() == qApp->thread() )
+  if ( !qApp || profiler->thread() == qApp->thread() )
     sMainProfiler = profiler;
 
   if ( !profiler->mInitialized )
