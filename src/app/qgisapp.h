@@ -2120,7 +2120,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Do histogram stretch for singleband gray / multiband color rasters
     void histogramStretch( bool visibleAreaOnly = false, QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax );
 
-    //! Apply raster brightness
+    //! Apply raster brightness/contrast
     void adjustBrightnessContrast( int delta, bool updateBrightness = true );
 
     /**

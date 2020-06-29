@@ -315,7 +315,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsrasterlayerproperties.h"
 #include "qgsrasternuller.h"
 #include "qgsbrightnesscontrastfilter.h"
-#include "qgsgammacorrectionfilter.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsrasterprojector.h"
@@ -12257,8 +12256,8 @@ void QgisApp::adjustGamma( double delta )
       return;
     }
 
-    QgsGammaCorrectionFilter *gammaFilter = rasterLayer->gammaCorrectionFilter();
-    gammaFilter->setGamma( gammaFilter->gamma() + delta );
+    QgsBrightnessContrastFilter *brightnessFilter = rasterLayer->brightnessFilter();
+    brightnessFilter->setGamma( brightnessFilter->gamma() + delta );
 
     rasterLayer->triggerRepaint();
   }

@@ -190,8 +190,6 @@ Returns the raster's resample filter.
 
 .. seealso:: :py:func:`brightnessFilter`
 
-.. seealso:: :py:func:`gammaCorrectionFilter`
-
 .. seealso:: :py:func:`hueSaturationFilter`
 %End
 
@@ -201,22 +199,7 @@ Returns the raster's brightness/contrast filter.
 
 .. seealso:: :py:func:`resampleFilter`
 
-.. seealso:: :py:func:`gammaCorrectionFilter`
-
 .. seealso:: :py:func:`hueSaturationFilter`
-%End
-
-    QgsGammaCorrectionFilter *gammaCorrectionFilter() const;
-%Docstring
-Returns the raster's gamma correction filter.
-
-.. seealso:: :py:func:`resampleFilter`
-
-.. seealso:: :py:func:`brightnessFilter`
-
-.. seealso:: :py:func:`hueSaturationFilter`
-
-.. versionadded:: 3.16
 %End
 
     QgsHueSaturationFilter *hueSaturationFilter() const;
@@ -226,8 +209,6 @@ Returns the raster's hue/saturation filter.
 .. seealso:: :py:func:`resampleFilter`
 
 .. seealso:: :py:func:`brightnessFilter`
-
-.. seealso:: :py:func:`gammaCorrectionFilter`
 %End
 
     void setResamplingStage( QgsRasterPipe::ResamplingStage stage );

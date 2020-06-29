@@ -31,7 +31,6 @@ Base class for processing modules.
       ProjectorRole,
       NullerRole,
       HueSaturationRole,
-      GammaCorrectionRole
     };
 
     QgsRasterPipe();
@@ -103,13 +102,6 @@ Test if interface at index may be switched on/off
     QgsRasterRenderer *renderer() const;
     QgsRasterResampleFilter *resampleFilter() const;
     QgsBrightnessContrastFilter *brightnessFilter() const;
-
-    QgsGammaCorrectionFilter *gammaCorrectionFilter() const;
-%Docstring
-Returns gamma correction filter pipe
-
-.. versionadded:: 3.16
-%End
     QgsHueSaturationFilter *hueSaturationFilter() const;
     QgsRasterProjector *projector() const;
     QgsRasterNuller *nuller() const;
