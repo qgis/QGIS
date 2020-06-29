@@ -183,7 +183,7 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetPrint_Basic", outputFormat='JPG')
+        self._img_diff_error(r, h, "WMS_GetPrint_Basic", outputJpg=True)
 
         # Output PDF
         qs = "?" + "&".join(["%s=%s" % i for i in list({
