@@ -169,6 +169,7 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
   else
   {
     mMinMaxWidget->setBands( QList< int >() << mBandComboBox->currentBand() );
+    mColorRampShaderWidget->setRasterBand( mBandComboBox->currentBand() );
   }
 }
 
@@ -183,7 +184,6 @@ void QgsSingleBandPseudoColorRendererWidget::bandChanged()
 
 void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min, double max )
 {
-  Q_UNUSED( bandNo )
   QgsDebugMsg( QStringLiteral( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ) );
 
   if ( std::isnan( min ) )
