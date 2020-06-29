@@ -235,15 +235,26 @@ class CORE_EXPORT QgsLegendSettings
     void setSymbolSize( QSizeF s ) {mSymbolSize = s;}
 
     /**
-     * Returns the maximum marker symbol size in mm
+     * Returns the maximum symbol size in mm
      */
-    double maxMarkerSymbolSize() const {return mMaxMarkerSymbolSize; }
+    double maxSymbolSize() const {return mMaxSymbolSize; }
 
     /**
-     * Sets the maximum marker symbol size in mm
-     * @param size maximum marker size in mm
+     * Sets the maximum marker size in mm
+     * @param size maximum size in mm
      */
-    void setMaxMarkerSymbolSize( double size ) { mMaxMarkerSymbolSize = size;}
+    void setMaxSymbolSize( double size ) { mMaxSymbolSize = size;}
+
+    /**
+     * Returns the minimum symbol size in mm
+     */
+    double minSymbolSize() const {return mMinSymbolSize; }
+
+    /**
+     * Sets the minimum symbol size in mm
+     * @param size minimum size in mm
+     */
+    void setMinSymbolSize( double size ) { mMinSymbolSize = size;}
 
     /**
      * Sets the \a alignment for placement of legend symbols.
@@ -491,7 +502,10 @@ class CORE_EXPORT QgsLegendSettings
     QSizeF mSymbolSize;
 
 //! Maximum marker symbol size (in mm)
-    double mMaxMarkerSymbolSize = 0.0;
+    double mMaxSymbolSize = 0.0;
+
+//! Minimum marker symbol size (in mm)
+    double mMinSymbolSize = 0.0;
 
 //! Width and height of WMS legendGraphic pixmap
     QSizeF mWmsLegendSize;

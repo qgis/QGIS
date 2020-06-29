@@ -304,15 +304,26 @@ Sets the legend symbol ``width``.
 .. seealso:: :py:func:`symbolWidth`
 %End
 
-    double maxMarkerSymbolSize() const;
+    double maxSymbolSize() const;
 %Docstring
-Returns the legend maximum marker symbol size (in mm). 0.0 means there is no maximum set
+Returns the legend maximum symbol size (in mm). 0.0 means there is no maximum set
 %End
 
-    void setMaxMarkerSymbolSize( double size );
+    void setMaxSymbolSize( double size );
 %Docstring
-set maximum symbol size for point markers
-@param size maximum marker size (in mm) or 0.0 if no maximum
+set maximum symbol size
+@param size maximum size (in mm) or 0.0 if no maximum
+%End
+
+    double minSymbolSize() const;
+%Docstring
+Returns the legend minimum symbol size (in mm). 0.0 means there is no minimum set
+%End
+
+    void setMinSymbolSize( double size );
+%Docstring
+set minimum symbol size for symbol
+@param size inimum size (in mm) or 0.0 if no minimum
 %End
 
 
