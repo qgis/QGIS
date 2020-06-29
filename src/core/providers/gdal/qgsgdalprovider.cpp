@@ -43,6 +43,7 @@
 #include "qgspointxy.h"
 #include "qgssettings.h"
 #include "qgsogrutils.h"
+#include "qgsruntimeprofiler.h"
 
 #include <QImage>
 #include <QColor>
@@ -163,6 +164,10 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &opt
 #ifndef QT_NO_NETWORKPROXY
   QgsGdalUtils::setupProxy();
 #endif
+
+  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
+    profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
   if ( !CPLGetConfigOption( "AAIGRID_DATATYPE", nullptr ) )
   {
