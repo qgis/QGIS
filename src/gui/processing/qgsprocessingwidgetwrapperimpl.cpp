@@ -5256,7 +5256,7 @@ void QgsProcessingExtentWidgetWrapper::setWidgetValue( const QVariant &value, Qg
       QgsRectangle r = QgsProcessingParameters::parameterAsExtent( parameterDefinition(), value, context );
       QgsCoordinateReferenceSystem crs = QgsProcessingParameters::parameterAsPointCrs( parameterDefinition(), value, context );
       mExtentWidget->setCurrentExtent( r, crs );
-      mExtentWidget->setOutputExtentFromCurrent();
+      mExtentWidget->setOutputExtentFromUser( r, crs );
     }
   }
 }
