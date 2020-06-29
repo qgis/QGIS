@@ -766,14 +766,19 @@ void Qgs3DMapScene::updateSceneState()
   setSceneState( Ready );
 }
 
-void Qgs3DMapScene::exportScene(const QString& sceneName, const QString& sceneDir) {
+void Qgs3DMapScene::exportScene( const QString &sceneName, const QString &sceneDir )
+{
   Qgs3DSceneExporter exporter;
 
-  for ( QgsMapLayer * layer : mLayerEntities.keys() ) {
-    exporter.parseEntity(mLayerEntities[layer]);
+  for ( QgsMapLayer *layer : mLayerEntities.keys() )
+  {
+    exporter.parseEntity( mLayerEntities[layer] );
   }
+  // TODO: figure out why terrain entity is not parsed correctly
+  exporter.parseEntity( mTerrain );
+
   QString filePath = sceneDir;
-  if (!filePath.endsWith('/')) filePath.push_back('/');
+  if ( !filePath.endsWith( '/' ) ) filePath.push_back( '/' );
   filePath += sceneName + ".obj";
-  exporter.saveToFile(filePath);
+  exporter.saveToFile( filePath );
 }
