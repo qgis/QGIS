@@ -1951,6 +1951,19 @@ void QgsLineSymbol::setWidth( double w )
   }
 }
 
+void QgsLineSymbol::setWidthUnit( QgsUnitTypes::RenderUnit unit )
+{
+  const auto constLLayers = mLayers;
+  for ( QgsSymbolLayer *layer : constLLayers )
+  {
+    if ( layer->type() != QgsSymbol::Line )
+      continue;
+
+    QgsLineSymbolLayer *lineLayer = static_cast<QgsLineSymbolLayer *>( layer );
+    lineLayer->setWidthUnit( unit );
+  }
+}
+
 double QgsLineSymbol::width() const
 {
   double maxWidth = 0;

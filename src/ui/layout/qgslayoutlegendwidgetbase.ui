@@ -63,9 +63,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-1389</y>
+        <y>-1031</y>
         <width>387</width>
-        <height>2685</height>
+        <height>2728</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -788,7 +788,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="2">
+          <item row="5" column="0" colspan="2">
            <widget class="QgsCollapsibleGroupBoxBasic" name="mRasterStrokeGroupBox">
             <property name="title">
              <string>Draw stroke for raster symbols</string>
@@ -887,17 +887,31 @@
             </layout>
            </widget>
           </item>
-          <item row="3" column="1">
-           <widget class="QgsDoubleSpinBox" name="mMaxMarkerSizeSpinBox">
+          <item row="4" column="1">
+           <widget class="QgsDoubleSpinBox" name="mMaxSymbolSizeSpinBox">
             <property name="suffix">
              <string>mm</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="mMaxMarkerSizeLabel">
+          <item row="4" column="0">
+           <widget class="QLabel" name="mMaxSymbolSizeLabel">
             <property name="text">
-             <string>Max marker size</string>
+             <string>Max symbol size</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="mMinSymbolSizeLabel">
+            <property name="text">
+             <string>Min symbol size</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QgsDoubleSpinBox" name="mMinSymbolSizeSpinBox">
+            <property name="suffix">
+             <string>mm</string>
             </property>
            </widget>
           </item>
