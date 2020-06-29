@@ -231,7 +231,7 @@ void QgsLayoutLegendWidget::setGuiElements()
   mEqualColumnWidthCheckBox->setChecked( mLegend->equalColumnWidth() );
   mSymbolWidthSpinBox->setValue( mLegend->symbolWidth() );
   mSymbolHeightSpinBox->setValue( mLegend->symbolHeight() );
-  mMaxMarkerSizeSpinBox->setValue( mLegend->maxMarkerSize() );
+  mMaxMarkerSizeSpinBox->setValue( mLegend->maxMarkerSymbolSize() );
   mWmsLegendWidthSpinBox->setValue( mLegend->wmsLegendWidth() );
   mWmsLegendHeightSpinBox->setValue( mLegend->wmsLegendHeight() );
   mTitleSpaceBottomSpinBox->setValue( mLegend->style( QgsLegendStyle::Title ).margin( QgsLegendStyle::Bottom ) );
