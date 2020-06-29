@@ -18,7 +18,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsbrightnesscontrastfilter.h"
 #include "qgshuesaturationfilter.h"
-#include "qgsgammacorrectionfilter.h"
 #include "qgsrastercontourrendererwidget.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrendererwidget.h"
@@ -131,11 +130,7 @@ void QgsRendererRasterPropertiesWidget::apply()
   {
     brightnessFilter->setBrightness( mSliderBrightness->value() );
     brightnessFilter->setContrast( mSliderContrast->value() );
-  }
-
-  if ( QgsGammaCorrectionFilter *gammaFilter = mRasterLayer->gammaCorrectionFilter() )
-  {
-    gammaFilter->setGamma( mGammaSpinBox->value() );
+    brightnessFilter->setGamma( mGammaSpinBox->value() );
   }
 
   if ( QgsRasterRendererWidget *rendererWidget = dynamic_cast<QgsRasterRendererWidget *>( stackedWidget->currentWidget() ) )
@@ -198,11 +193,7 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer *layer )
   {
     mSliderBrightness->setValue( brightnessFilter->brightness() );
     mSliderContrast->setValue( brightnessFilter->contrast() );
-  }
-
-  if ( QgsGammaCorrectionFilter *gammaFilter = mRasterLayer->gammaCorrectionFilter() )
-  {
-    mGammaSpinBox->setValue( gammaFilter->gamma() );
+    mGammaSpinBox->setValue( brightnessFilter->gamma() );
   }
 
   btnColorizeColor->setColorDialogTitle( tr( "Select Color" ) );

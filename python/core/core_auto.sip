@@ -468,7 +468,6 @@
 %Include auto_generated/raster/qgscontrastenhancement.sip
 %Include auto_generated/raster/qgscontrastenhancementfunction.sip
 %Include auto_generated/raster/qgscubicrasterresampler.sip
-%Include auto_generated/raster/qgsgammacorrectionfilter.sip
 %Include auto_generated/raster/qgshillshaderenderer.sip
 %Include auto_generated/raster/qgshuesaturationfilter.sip
 %Include auto_generated/raster/qgslinearminmaxenhancement.sip
