@@ -350,7 +350,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
       // There is no best default value, to display something reasonable in histogram chart,
       // binCount should be small, OTOH, to get precise data for cumulative cut, the number should be big.
       // Because it is easier to define fixed lower value for the chart, we calc optimum binCount
-      // for higher resolution (to avoid calculating that where histogram() is used. In any any case,
+      // for higher resolution (to avoid calculating that where histogram() is used. In any case,
       // it does not make sense to use more than width*height;
 
       // for Int16/Int32 make sure bin count <= actual range, because there is no sense in having
