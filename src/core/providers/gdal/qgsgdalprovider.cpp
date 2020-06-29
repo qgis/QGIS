@@ -2737,7 +2737,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
   //int bApproxOK = false; //as we asked for stats, don't get approx values
   // GDAL does not have sample size parameter in API, just bApproxOK or not,
   // we decide if approximation should be used according to
-  // total size / sample size ration
+  // total size / sample size ratio
   int bApproxOK = false;
   if ( sampleSize > 0 )
   {
