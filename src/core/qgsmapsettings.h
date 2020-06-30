@@ -583,15 +583,27 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Adds a new clipping \a region to the map settings.
      *
      * \see clippingRegions()
+     * \see setClippingRegions()
      *
      * \since QGIS 3.16
      */
     void addClippingRegion( const QgsMapClippingRegion &region );
 
     /**
+     * Sets the list of clipping \a regions to apply to the map.
+     *
+     * \see addClippingRegion()
+     * \see clippingRegions()
+     *
+     * \since QGIS 3.16
+     */
+    void setClippingRegions( const QList< QgsMapClippingRegion > &regions );
+
+    /**
      * Returns the list of clipping regions to apply to the map.
      *
      * \see addClippingRegion()
+     * \see setClippingRegions()
      *
      * \since QGIS 3.16
      */

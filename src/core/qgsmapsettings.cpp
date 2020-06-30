@@ -687,6 +687,11 @@ void QgsMapSettings::addClippingRegion( const QgsMapClippingRegion &region )
   mClippingRegions.append( region );
 }
 
+void QgsMapSettings::setClippingRegions( const QList<QgsMapClippingRegion> &regions )
+{
+  mClippingRegions = regions;
+}
+
 QList<QgsMapClippingRegion> QgsMapSettings::clippingRegions() const
 {
   return mClippingRegions;

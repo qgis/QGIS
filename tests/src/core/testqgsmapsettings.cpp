@@ -614,6 +614,10 @@ void TestQgsMapSettings::testClippingRegions()
   QCOMPARE( settings3.clippingRegions().size(), 2 );
   QCOMPARE( settings3.clippingRegions().at( 0 ).geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))" ) );
   QCOMPARE( settings3.clippingRegions().at( 1 ).geometry().asWkt(), QStringLiteral( "Polygon ((10 0, 11 0, 11 1, 10 1, 10 0))" ) ) ;
+
+  settings.setClippingRegions( QList< QgsMapClippingRegion >() << region2 );
+  QCOMPARE( settings.clippingRegions().size(), 1 );
+  QCOMPARE( settings.clippingRegions().at( 0 ).geometry().asWkt(), QStringLiteral( "Polygon ((10 0, 11 0, 11 1, 10 1, 10 0))" ) ) ;
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )
