@@ -350,7 +350,6 @@ QgsMeshDatasetGroupTreeItemDelagate::QgsMeshDatasetGroupTreeItemDelagate( QObjec
   , mScalarDeselectedPixmap( QStringLiteral( ":/images/themes/default/propertyicons/meshcontoursoff.svg" ) )
   , mVectorSelectedPixmap( QStringLiteral( ":/images/themes/default/propertyicons/meshvectors.svg" ) )
   , mVectorDeselectedPixmap( QStringLiteral( ":/images/themes/default/propertyicons/meshvectorsoff.svg" ) )
-  , mMemoryPixmap( QStringLiteral( ":/images/themes/default/mIndicatorMemory.svg" ) )
 {
 }
 
@@ -361,15 +360,11 @@ void QgsMeshDatasetGroupTreeItemDelagate::paint( QPainter *painter, const QStyle
 
   QStyledItemDelegate::paint( painter, option, index );
   bool isVector = index.data( QgsMeshDatasetGroupTreeModel::IsVector ).toBool();
-  bool isMemory = index.data( QgsMeshDatasetGroupTreeModel::IsMemory ).toBool();
   if ( isVector )
   {
     bool isActive = index.data( QgsMeshDatasetGroupTreeModel::IsActiveVectorDatasetGroup ).toBool();
     painter->drawPixmap( iconRect( option.rect, true ), isActive ? mVectorSelectedPixmap : mVectorDeselectedPixmap );
   }
-
-  if ( isMemory )
-    painter->drawPixmap( iconRect( option.rect, 3 ), mMemoryPixmap );
 
   bool isActive = index.data( QgsMeshDatasetGroupTreeModel::IsActiveScalarDatasetGroup ).toBool();
   painter->drawPixmap( iconRect( option.rect, false ), isActive ? mScalarSelectedPixmap : mScalarDeselectedPixmap );
@@ -540,10 +535,6 @@ QVariant QgsMeshDatasetGroupListModel::data( const QModelIndex &index, int role 
       else
         return item->name();
       break;
-    case Qt::DecorationRole:
-      if ( item->storageType() == QgsMeshDatasetGroupTreeItem::Memory )
-        return QgsApplication::getThemeIcon( QStringLiteral( "mIndicatorMemory.svg" ) );
-      break;
   }
 
   return QVariant();
@@ -559,6 +550,7 @@ QgsMeshDatasetGroupTreeView::QgsMeshDatasetGroupTreeView( QWidget *parent ):
   , mModel( new QgsMeshDatasetGroupTreeModel( this ) )
   , mSaveMenu( new QgsMeshDatasetGroupSaveMenu( this ) )
 {
+  setItemDelegate( &mDelegate );
   setModel( mModel );
   setSelectionMode( QAbstractItemView::SingleSelection );
 
@@ -731,4 +723,15 @@ void QgsMeshDatasetGroupSaveMenu::saveDatasetGroup( int datasetGroup, const QStr
     QMessageBox::information( nullptr, QObject::tr( "Save Mesh Datasets" ), QObject::tr( "Datasets successfully saved on file" ) );
   }
 
+}
+
+QgsMeshDatasetGroupTreeView::Delegate::Delegate( QObject *parent ): QStyledItemDelegate( parent )
+{
+}
+
+void QgsMeshDatasetGroupTreeView::Delegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  QStyleOptionViewItem opt = option;
+  opt.decorationPosition = QStyleOptionViewItem::Right;
+  QStyledItemDelegate::paint( painter, opt, index );
 }

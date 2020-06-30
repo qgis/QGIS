@@ -163,7 +163,6 @@ class APP_EXPORT QgsMeshDatasetGroupTreeItemDelagate: public QStyledItemDelegate
     const QPixmap mScalarDeselectedPixmap;
     const QPixmap mVectorSelectedPixmap;
     const QPixmap mVectorDeselectedPixmap;
-    const QPixmap mMemoryPixmap;
 
     QRect iconRect( const QRect &rect, int pos ) const;
 };
@@ -199,6 +198,15 @@ class APP_EXPORT QgsMeshDatasetGroupTreeView: public QTreeView
 
     void selectAllItem( bool isChecked );
     QMenu *createContextMenu();
+
+    class Delegate: public QStyledItemDelegate
+    {
+      public:
+        Delegate( QObject *parent = nullptr );
+        void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    };
+
+    Delegate mDelegate;
 };
 
 /**
