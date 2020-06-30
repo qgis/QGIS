@@ -246,7 +246,7 @@ QDomElement QgsMeshDatasetGroupStore::writeXml( QDomDocument &doc, const QgsRead
       elemDataset.setAttribute( QStringLiteral( "source-index" ), it.value().second );
       storeElement.appendChild( elemDataset );
     }
-    it++;
+    ++it;
   }
 
   return storeElement;
@@ -332,7 +332,7 @@ void QgsMeshDatasetGroupStore::removePersistentProvider()
     if ( it.value().first == mPersistentProvider )
       it = mRegistery.erase( it );
     else
-      it++;
+      ++it;
   }
 
   mPersistentProvider = nullptr;
@@ -346,7 +346,7 @@ int QgsMeshDatasetGroupStore::newIndex()
   {
     if ( index <= it.key() )
       index = it.key() + 1;
-    it++;
+    ++it;
   }
   return index;
 }
@@ -377,7 +377,7 @@ void QgsMeshDatasetGroupStore::eraseExtraDataset( int indexInExtraStore )
     int localIndex = it.value().second;
     if ( it.value().first == mExtraDatasets.get() && localIndex > indexInExtraStore )
       it->second = localIndex - 1;
-    it++;
+    ++it;
   }
 }
 
@@ -388,7 +388,7 @@ int QgsMeshDatasetGroupStore::nativeIndexToGroupIndex( QgsMeshDatasetSourceInter
   {
     if ( it.value() == DatasetGroup{source, nativeIndex} )
       return it.key();
-    it++;
+    ++it;
   }
   return -1;
 }
@@ -450,7 +450,7 @@ void QgsMeshDatasetGroupStore::unregisterGroupNotPresentInTree()
       eraseDatasetGroup( datasetGroup ); //remove from where the dataset group is stored
     }
     else
-      it++;
+      ++it;
   }
 }
 
