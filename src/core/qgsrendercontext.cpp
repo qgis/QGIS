@@ -37,6 +37,8 @@ QgsRenderContext::QgsRenderContext()
   mDistanceArea.setEllipsoid( mDistanceArea.sourceCrs().ellipsoidAcronym() );
 }
 
+QgsRenderContext::~QgsRenderContext() = default;
+
 QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   : QgsTemporalRangeObject( rh )
   , mFlags( rh.mFlags )
@@ -65,6 +67,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mHasRenderedFeatureHandlers( rh.mHasRenderedFeatureHandlers )
   , mCustomRenderingFlags( rh.mCustomRenderingFlags )
   , mDisabledSymbolLayers()
+  , mClippingRegions( rh.mClippingRegions )
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
@@ -98,6 +101,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mRenderedFeatureHandlers = rh.mRenderedFeatureHandlers;
   mHasRenderedFeatureHandlers = rh.mHasRenderedFeatureHandlers;
   mCustomRenderingFlags = rh.mCustomRenderingFlags;
+  mClippingRegions = rh.mClippingRegions;
   setIsTemporal( rh.isTemporal() );
   if ( isTemporal() )
     setTemporalRange( rh.temporalRange() );
@@ -208,6 +212,8 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setIsTemporal( mapSettings.isTemporal() );
   if ( ctx.isTemporal() )
     ctx.setTemporalRange( mapSettings.temporalRange() );
+
+  ctx.mClippingRegions = mapSettings.clippingRegions();
 
   return ctx;
 }
@@ -489,6 +495,11 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
 QList<QgsRenderedFeatureHandlerInterface *> QgsRenderContext::renderedFeatureHandlers() const
 {
   return mRenderedFeatureHandlers;
+}
+
+QList<QgsMapClippingRegion> QgsRenderContext::clippingRegions() const
+{
+  return mClippingRegions;
 }
 
 
