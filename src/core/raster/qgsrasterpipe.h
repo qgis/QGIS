@@ -133,7 +133,7 @@ class CORE_EXPORT QgsRasterPipe
 
     /**
      * Stage at which resampling occurs.
-     * @since QGIS 3.16
+     * \since QGIS 3.16
      */
     enum class ResamplingStage
     {
