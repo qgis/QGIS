@@ -560,23 +560,14 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   double maxSymbolSize = settings.maxSymbolSize();
   double minSymbolSize = settings.minSymbolSize();
 
-  std::unique_ptr<QgsMarkerSymbol> minMaxSizeMarkerSymbol;
-  if ( QgsMarkerSymbol *markerSymbol = dynamic_cast<QgsMarkerSymbol *>( s ) )
+  std::unique_ptr<QgsSymbol> minMaxSizeSymbol( QgsSymbolLayerUtils::restrictedSizeSymbol( s, minSymbolSize, maxSymbolSize, context, width, height ) );
+  if ( minMaxSizeSymbol )
   {
-    // allow marker symbol to occupy bigger area if necessary
-    double size = markerSymbol->size( *context ) / context->scaleFactor();
+    s = minMaxSizeSymbol.get();
+  }
 
-    //If marker size exceeds max marker size, clone symbol and set max size in mm
-    if ( QgsSymbolLayerUtils::restrictSymbolSize( size, minSymbolSize, maxSymbolSize ) )
-    {
-      minMaxSizeMarkerSymbol.reset( dynamic_cast<QgsMarkerSymbol *>( s->clone() ) );
-      minMaxSizeMarkerSymbol->setSize( size );
-      minMaxSizeMarkerSymbol->setSizeUnit( QgsUnitTypes::RenderMillimeters );
-      s = minMaxSizeMarkerSymbol.get();
-    }
-
-    height = size;
-    width = size;
+  if ( s->type() == QgsSymbol::Marker )
+  {
     if ( width < desiredWidth )
     {
       widthOffset = ( desiredWidth - width ) / 2.0;
@@ -586,21 +577,6 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       heightOffset = ( desiredHeight - height ) / 2.0;
     }
   }
-
-  std::unique_ptr<QgsLineSymbol> minMaxSizeLineSymbol;
-  if ( QgsLineSymbol *lineSymbol = dynamic_cast<QgsLineSymbol *>( s ) )
-  {
-    double width = lineSymbol->width( *context ) / context->scaleFactor();
-    if ( QgsSymbolLayerUtils::restrictSymbolSize( width, minSymbolSize, maxSymbolSize ) )
-    {
-      minMaxSizeLineSymbol.reset( dynamic_cast<QgsLineSymbol *>( s->clone() ) );
-      minMaxSizeLineSymbol->setWidth( width );
-      minMaxSizeLineSymbol->setWidthUnit( QgsUnitTypes::RenderMillimeters );
-      s = minMaxSizeLineSymbol.get();
-      height = width;
-    }
-  }
-
   if ( ctx && ctx->painter )
   {
     double currentYCoord = ctx->top + ( itemHeight - desiredHeight ) / 2;
