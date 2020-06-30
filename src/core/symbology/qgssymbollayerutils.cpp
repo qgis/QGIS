@@ -4529,4 +4529,5 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
     height = size;
     return ls;
   }
+  return 0;
 }
