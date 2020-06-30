@@ -1026,56 +1026,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f3['value'], 'newly inserted')
         self.assertEqual(f3['pk'], doublepk)
 
-        # 3. Arbitrary precision (exact real types). PostgreSQL NUMERIC/DECIMAL type.
-        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable srid=4326 key="pk" table="qgis_test"."tb_test_numeric_pk" (geom)', "test_numeric_pk", "postgres")
-        self.assertTrue(vl.isValid())
-
-        # 3.1. Retrieving
-        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression("pk = '3.1415926535897932384626433832795028841972'")))
-        self.assertTrue(f.isValid())
-        self.assertEqual(f['value'], 'first teste')
-        # 3.2. Editing
-        self.assertTrue(vl.startEditing())
-        vl.changeAttributeValue(f.id(), vl.fields().indexOf('value'), 'Changed first')
-        self.assertTrue(vl.commitChanges())
-        # 3.2.1. Checking edit from another vector layer
-        vl2 = QgsVectorLayer(self.dbconn + ' sslmode=disable srid=4326 key="pk" table="qgis_test"."tb_test_numeric_pk" (geom)', "test_numeric_pk2", "postgres")
-        self.assertTrue(vl2.isValid())
-        f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression("pk = '3.1415926535897932384626433832795028841972'")))
-        self.assertTrue(f2.isValid())
-        self.assertEqual(f2['value'], 'Changed first')
-        # 3.3. Deleting
-        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression("pk = '2.7182818284590452353602874713526624977572'")))
-        vl.startEditing()
-        vl.deleteFeatures([f.id()])
-        self.assertTrue(vl.commitChanges())
-        # 3.3.1. Checking deletion
-        f_iterator = vl2.getFeatures(QgsFeatureRequest().setFilterExpression("pk = '2.7182818284590452353602874713526624977572'"))
-        got_feature = True
-
-        try:
-            f2 = next(f_iterator)
-            got_feature = f2.isValid()
-        except StopIteration:
-            got_feature = False
-        self.assertFalse(got_feature)
-        # 3.4. Inserting new feature
-        newpointwkt = 'Point(-47.751 -15.644)'
-        f = QgsFeature(vl.fields())
-        f['pk'] = 0.22222222222222222222222
-        f['value'] = 'newly inserted'
-        f.setGeometry(QgsGeometry.fromWkt(newpointwkt))
-        vl.startEditing()
-        res, f = vl.dataProvider().addFeatures([f])
-        self.assertTrue(res)
-        self.assertTrue(vl.commitChanges())
-        # 3.4.1. Checking insertion
-        f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 0.22222222222222222222222')))
-        self.assertTrue(f2.isValid())
-        # PostgreSQL adds trailing zeros to NUMERIC values on output to pad the field up to the scale length
-        self.assertEqual(f2['pk'], '0.2222222222222222000000000000000000000000')
-        self.assertEqual(f2['value'], 'newly inserted')
-        assert compareWkt(f2.geometry().asWkt(), newpointwkt), "Geometry mismatch. Expected: {} Got: {} \n".format(f2.geometry().asWkt(), newpointwkt)
+        # no NUMERIC/DECIMAL checks here. NUMERIC primary keys are unsupported.
+        # TODO: implement NUMERIC primary keys/arbitrary precision arithmethics/fixed point math in QGIS.
 
     def testPktMapInsert(self):
         vl = QgsVectorLayer('{} table="qgis_test"."{}" key="obj_id" sql='.format(self.dbconn, 'oid_serial_table'),
@@ -1300,8 +1252,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             'type': QVariant.String, 'typeName': 'qgis_test.char_domain_6', 'length': 6}
         expected['fld_text_domain'] = {
             'type': QVariant.String, 'typeName': 'qgis_test.text_domain', 'length': -1}
-        # Treating arbitrary precision PostgreSQL numbers (types numeric and decimal) as strings
-        expected['fld_numeric_domain'] = {'type': QVariant.String, 'typeName': 'qgis_test.numeric_domain', 'length': 10,
+        expected['fld_numeric_domain'] = {'type': QVariant.Double, 'typeName': 'qgis_test.numeric_domain', 'length': 10,
                                           'precision': 4}
 
         for f, e in list(expected.items()):

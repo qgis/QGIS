@@ -994,7 +994,7 @@ bool QgsPostgresProvider::loadFields()
       }
       else if ( fieldTypeName == QLatin1String( "numeric" ) )
       {
-        fieldType = QVariant::String;
+        fieldType = QVariant::Double;
 
         if ( formattedFieldType == QLatin1String( "numeric" ) || formattedFieldType.isEmpty() )
         {
@@ -4134,7 +4134,15 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
     }
 
     case QVariant::Double:
-      fieldType = QStringLiteral( "float8" );
+      if ( fieldSize > 18 )
+      {
+        fieldType = QStringLiteral( "numeric" );
+        fieldSize = -1;
+      }
+      else
+      {
+        fieldType = QStringLiteral( "float8" );
+      }
       fieldPrec = -1;
       break;
 
