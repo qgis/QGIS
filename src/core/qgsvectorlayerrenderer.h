@@ -163,6 +163,8 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     QList< QgsMapClippingRegion > mClippingRegions;
     QgsGeometry mClipFilterGeom;
     bool mApplyClipFilter = false;
+    QgsGeometry mClipFeatureGeom;
+    bool mApplyClipGeometries = false;
 };
 
 

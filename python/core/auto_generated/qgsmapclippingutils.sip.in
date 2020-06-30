@@ -42,6 +42,19 @@ a feature request.
 :return: combined clipping region for use when filtering features to render
 %End
 
+    static QgsGeometry calculateFeatureIntersectionGeometry( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, bool &shouldClip );
+%Docstring
+Returns the geometry representing the intersection of clipping ``regions`` from ``context`` which should be used to clip individual
+feature geometries prior to rendering.
+
+The returned geometry will be automatically reprojected into the same CRS as the source layer, ready for use for clipping features.
+
+:param regions: list of clip regions which apply to the layer
+:param context: a render context
+:param shouldClip: will be set to ``True`` if layer's features should be filtered, i.e. one or more clipping regions applies to the layer
+
+:return: combined clipping region for use when rendering features
+%End
 };
 
 /************************************************************************
