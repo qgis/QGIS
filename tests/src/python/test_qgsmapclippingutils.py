@@ -52,13 +52,10 @@ class TestQgsMapClippingUtils(unittest.TestCase):
         self.assertEqual(regions[0].geometry().asWkt(1), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
 
     def testCalculateFeatureRequestGeometry(self):
-        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
-                               "addfeat", "memory")
-        layer2 = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
-                                "addfeat", "memory")
-
         region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))
+        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersects)
         region2 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 0.1 0, 0.1 2, 0 2, 0 0))'))
+        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersect)
 
         rc = QgsRenderContext()
 
@@ -76,6 +73,42 @@ class TestQgsMapClippingUtils(unittest.TestCase):
 
         rc.setCoordinateTransform(QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateReferenceSystem('EPSG:4326'), QgsProject.instance()))
         geom, should_clip = QgsMapClippingUtils.calculateFeatureRequestGeometry([region, region2], rc)
+        self.assertTrue(should_clip)
+        self.assertEqual(geom.asWkt(0), 'Polygon ((11132 0, 0 0, 0 111325, 11132 111325, 11132 0))')
+
+    def testCalculateFeatureIntersectionGeometry(self):
+        region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))
+        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersect)
+        region2 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 0.1 0, 0.1 2, 0 2, 0 0))'))
+        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersects)
+        region3 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 0.1 0, 0.1 2, 0 2, 0 0))'))
+        region3.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersect)
+
+        rc = QgsRenderContext()
+
+        geom, should_clip = QgsMapClippingUtils.calculateFeatureIntersectionGeometry([], rc)
+        self.assertFalse(should_clip)
+        self.assertTrue(geom.isNull())
+
+        geom, should_clip = QgsMapClippingUtils.calculateFeatureIntersectionGeometry([region], rc)
+        self.assertTrue(should_clip)
+        self.assertEqual(geom.asWkt(1), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+
+        # region2 is a Intersects type clipping region, should not apply here
+        geom, should_clip = QgsMapClippingUtils.calculateFeatureIntersectionGeometry([region2], rc)
+        self.assertFalse(should_clip)
+        self.assertTrue(geom.isNull())
+
+        geom, should_clip = QgsMapClippingUtils.calculateFeatureIntersectionGeometry([region, region2], rc)
+        self.assertTrue(should_clip)
+        self.assertEqual(geom.asWkt(1), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+
+        geom, should_clip = QgsMapClippingUtils.calculateFeatureIntersectionGeometry([region, region2, region3], rc)
+        self.assertTrue(should_clip)
+        self.assertEqual(geom.asWkt(1), 'Polygon ((0.1 0, 0 0, 0 1, 0.1 1, 0.1 0))')
+
+        rc.setCoordinateTransform(QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateReferenceSystem('EPSG:4326'), QgsProject.instance()))
+        geom, should_clip = QgsMapClippingUtils.calculateFeatureIntersectionGeometry([region, region3], rc)
         self.assertTrue(should_clip)
         self.assertEqual(geom.asWkt(0), 'Polygon ((11132 0, 0 0, 0 111325, 11132 111325, 11132 0))')
 
