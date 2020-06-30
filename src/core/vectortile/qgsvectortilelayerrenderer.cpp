@@ -62,6 +62,8 @@ bool QgsVectorTileLayerRenderer::render()
   if ( ctx.renderingStopped() )
     return false;
 
+  ctx.painter()->save();
+
   QElapsedTimer tTotal;
   tTotal.start();
 
@@ -84,6 +86,7 @@ bool QgsVectorTileLayerRenderer::render()
   if ( !mTileRange.isValid() )
   {
     QgsDebugMsgLevel( QStringLiteral( "Vector tiles - outside of range" ), 2 );
+    ctx.painter()->restore();
     return true;   // nothing to do
   }
 
@@ -111,7 +114,10 @@ bool QgsVectorTileLayerRenderer::render()
   }
 
   if ( ctx.renderingStopped() )
+  {
+    ctx.painter()->restore();
     return false;
+  }
 
   // add @zoom_level variable which can be used in styling
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Tiles" ) ); // will be deleted by popper
@@ -165,12 +171,11 @@ bool QgsVectorTileLayerRenderer::render()
 
   mRenderer->stopRender( ctx );
 
-  ctx.painter()->setClipping( false );
-
   QgsDebugMsgLevel( QStringLiteral( "Total time for decoding: %1" ).arg( mTotalDecodeTime / 1000. ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Drawing time: %1" ).arg( mTotalDrawTime / 1000. ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Total time: %1" ).arg( tTotal.elapsed() / 1000. ), 2 );
 
+  ctx.painter()->restore();
   return !ctx.renderingStopped();
 }
 
@@ -209,8 +214,10 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
     return;
 
   // set up clipping so that rendering does not go behind tile's extent
-
-  ctx.painter()->setClipRegion( QRegion( tile.tilePolygon() ) );
+  ctx.painter()->save();
+  // we have to intersect with any existing painter clip regions, or we risk overwriting valid clip
+  // regions setup outside of the vector tile renderer (e.g. layout map clip region)
+  ctx.painter()->setClipRegion( QRegion( tile.tilePolygon() ), Qt::IntersectClip );
 
   QElapsedTimer tDraw;
   tDraw.start();
@@ -223,11 +230,14 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
 
   if ( mDrawTileBoundaries )
   {
+    ctx.painter()->save();
     ctx.painter()->setClipping( false );
 
     QPen pen( Qt::red );
     pen.setWidth( 3 );
     ctx.painter()->setPen( pen );
     ctx.painter()->drawPolygon( tile.tilePolygon() );
+    ctx.painter()->restore();
   }
+  ctx.painter()->restore();
 }
