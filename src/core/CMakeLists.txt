@@ -312,6 +312,7 @@ SET(QGIS_CORE_SRCS
   qgslocalizeddatapathregistry.cpp
   qgslogger.cpp
   qgsmapclippingregion.cpp
+  qgsmapclippingutils.cpp
   qgsmapdecoration.cpp
   qgsmaphittest.cpp
   qgsmaplayer.cpp
@@ -861,6 +862,7 @@ SET(QGIS_CORE_HDRS
   qgslocalizeddatapathregistry.h
   qgslogger.h
   qgsmapclippingregion.h
+  qgsmapclippingutils.h
   qgsmapdecoration.h
   qgsmaphittest.h
   qgsmaplayer.h
