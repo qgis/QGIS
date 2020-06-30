@@ -28,7 +28,7 @@
 
 #include "qgslabelingengine.h"
 #include "qgsvectortilelabeling.h"
-
+#include "qgsmapclippingutils.h"
 
 QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -53,6 +53,7 @@ QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *laye
     }
   }
 
+  mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
 }
 
 bool QgsVectorTileLayerRenderer::render()
@@ -63,6 +64,14 @@ bool QgsVectorTileLayerRenderer::render()
     return false;
 
   QgsScopedQPainterState painterState( ctx.painter() );
+
+  if ( !mClippingRegions.empty() )
+  {
+    bool needsPainterClipPath = false;
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), QgsMapLayerType::VectorTileLayer, needsPainterClipPath );
+    if ( needsPainterClipPath )
+      renderContext()->painter()->setClipPath( path, Qt::IntersectClip );
+  }
 
   QElapsedTimer tTotal;
   tTotal.start();

@@ -286,7 +286,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 
 bool QgsMeshLayerRenderer::render()
 {
-  renderContext()->painter()->save();
+  QgsScopedQPainterState painterState( renderContext()->painter() );
   if ( !mClippingRegions.empty() )
   {
     bool needsPainterClipPath = false;
@@ -299,7 +299,6 @@ bool QgsMeshLayerRenderer::render()
   renderMesh();
   renderVectorDataset();
 
-  renderContext()->painter()->restore();
   return true;
 }
 
