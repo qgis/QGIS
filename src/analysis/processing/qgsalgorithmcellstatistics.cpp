@@ -270,7 +270,7 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
             outputBlock->setValue( row, col, mNoDataValue );
           }
         }
-        else if ( !noDataInStack || ( noDataInStack && mIgnoreNoData ) )
+        else if ( !noDataInStack || mIgnoreNoData )
         {
           switch ( method )
           {
