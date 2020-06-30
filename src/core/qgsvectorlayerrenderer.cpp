@@ -189,6 +189,11 @@ bool QgsVectorLayerRenderer::render()
     requestExtent = requestExtent.intersect( mClipFilterGeom.boundingBox() );
 
     mClipFeatureGeom = QgsMapClippingUtils::calculateFeatureIntersectionGeometry( mClippingRegions, context, mApplyClipGeometries );
+
+    bool needsPainterClipPath = false;
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, context, needsPainterClipPath );
+    if ( needsPainterClipPath )
+      context.painter()->setClipPath( path, Qt::IntersectClip );
   }
   mRenderer->modifyRequestExtent( requestExtent, context );
 

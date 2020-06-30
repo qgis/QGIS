@@ -129,6 +129,48 @@ class TestQgsVectorLayerRenderer(unittest.TestCase):
         self.report += renderchecker.report()
         self.assertTrue(result)
 
+    def testRenderWithPainterClipRegions(self):
+        poly_layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'polys.shp'))
+        self.assertTrue(poly_layer.isValid())
+
+        sym1 = QgsFillSymbol.createSimple({'color': '#ff00ff', 'outline_color': '#000000', 'outline_width': '1'})
+        renderer = QgsSingleSymbolRenderer(sym1)
+        poly_layer.setRenderer(renderer)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        mapsettings.setExtent(QgsRectangle(-13875783.2, 2266009.4, -8690110.7, 6673344.5))
+        mapsettings.setLayers([poly_layer])
+
+        region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon ((-11725957 5368254, -12222900 4807501, -12246014 3834025, -12014878 3496059, -11259833 3518307, -10751333 3621153, -10574129 4516741, -10847640 5194995, -11105742 5325957, -11725957 5368254))'))
+        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.PainterClip)
+        region2 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon ((-11032549 5421399, -11533344 4693167, -11086481 4229112, -11167378 3742984, -10616504 3553984, -10161936 3925771, -9618766 4668482, -9472380 5620753, -10115709 5965063, -11032549 5421399))'))
+        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.PainterClip)
+        mapsettings.addClippingRegion(region)
+        mapsettings.addClippingRegion(region2)
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('vectorlayerrenderer')
+        renderchecker.setControlName('expected_painterclip_region')
+        result = renderchecker.runTest('expected_painterclip_region')
+        self.report += renderchecker.report()
+        self.assertTrue(result)
+
+        # also try with symbol levels
+        renderer.setUsingSymbolLevels(True)
+        poly_layer.setRenderer(renderer)
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('vectorlayerrenderer')
+        renderchecker.setControlName('expected_painterclip_region')
+        result = renderchecker.runTest('expected_painterclip_region')
+        self.report += renderchecker.report()
+        self.assertTrue(result)
+
 
 if __name__ == '__main__':
     unittest.main()

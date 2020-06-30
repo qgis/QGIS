@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include <QList>
+#include <QPainterPath>
 
 class QgsRenderContext;
 class QgsMapLayer;
@@ -69,6 +70,20 @@ class CORE_EXPORT QgsMapClippingUtils
      * \returns combined clipping region for use when rendering features
      */
     static QgsGeometry calculateFeatureIntersectionGeometry( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, bool &shouldClip );
+
+    /**
+     * Returns a QPainterPath representing the intersection of clipping \a regions from \a context which should be used to clip the painter
+     * during rendering.
+     *
+     * The returned coordinates are in painter coordinates for the destination \a context.
+     *
+     * \param regions list of clip regions which apply to the layer
+     * \param context a render context
+     * \param shouldClip will be set to TRUE if the clipping path should be applied
+     *
+     * \returns combined painter clipping region for use when rendering maps
+     */
+    static QPainterPath calculatePainterClipRegion( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, bool &shouldClip );
 };
 
 #endif // QGSMAPCLIPPINGUTILS_H

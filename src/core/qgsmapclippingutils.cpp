@@ -122,3 +122,42 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureIntersectionGeometry( const QLi
 
   return result;
 }
+
+QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMapClippingRegion> &regions, const QgsRenderContext &context, bool &shouldClip )
+{
+  QgsGeometry result;
+  bool first = true;
+  shouldClip = false;
+  for ( const QgsMapClippingRegion &region : regions )
+  {
+    if ( region.geometry().type() != QgsWkbTypes::PolygonGeometry )
+      continue;
+
+    if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::PainterClip )
+      continue;
+
+    shouldClip = true;
+    if ( first )
+    {
+      result = region.geometry();
+      first = false;
+    }
+    else
+    {
+      result = result.intersection( region.geometry() );
+    }
+  }
+
+  if ( !shouldClip )
+    return QPainterPath();
+
+  // filter out polygon parts from result only
+  result.convertGeometryCollectionToSubclass( QgsWkbTypes::PolygonGeometry );
+
+  // transform to painter coordinates
+  result.mapToPixel( context.mapToPixel() );
+
+  QPainterPath path;
+  path.addPolygon( result.asQPolygonF() );
+  return path;
+}
