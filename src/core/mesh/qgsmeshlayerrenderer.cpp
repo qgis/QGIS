@@ -39,6 +39,7 @@
 #include "qgssettings.h"
 #include "qgsstyle.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
+#include "qgsmapclippingutils.h"
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   QgsMeshLayer *layer,
@@ -69,6 +70,8 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   copyVectorDatasetValues( layer );
 
   calculateOutputSize();
+
+  mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
 }
 
 void QgsMeshLayerRenderer::copyTriangularMeshes( QgsMeshLayer *layer, QgsRenderContext &context )
@@ -283,9 +286,20 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 
 bool QgsMeshLayerRenderer::render()
 {
+  renderContext()->painter()->save();
+  if ( !mClippingRegions.empty() )
+  {
+    bool needsPainterClipPath = false;
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), QgsMapLayerType::MeshLayer, needsPainterClipPath );
+    if ( needsPainterClipPath )
+      renderContext()->painter()->setClipPath( path, Qt::IntersectClip );
+  }
+
   renderScalarDataset();
   renderMesh();
   renderVectorDataset();
+
+  renderContext()->painter()->restore();
   return true;
 }
 
