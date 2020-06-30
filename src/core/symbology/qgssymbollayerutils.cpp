@@ -4474,17 +4474,59 @@ QSet<const QgsSymbolLayer *> QgsSymbolLayerUtils::toSymbolLayerPointers( QgsFeat
   return visitor.mSymbolLayers;
 }
 
-bool QgsSymbolLayerUtils::restrictSymbolSize( double &size, double minSize, double maxSize )
+QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height )
 {
-  if ( size < minSize )
+  if ( !s || !context )
+  {
+    return 0;
+  }
+
+  double size;
+  const QgsMarkerSymbol *markerSymbol = dynamic_cast<const QgsMarkerSymbol *>( s );
+  const QgsLineSymbol *lineSymbol = dynamic_cast<const QgsLineSymbol *>( s );
+  if ( markerSymbol )
+  {
+    size = markerSymbol->size( *context );
+  }
+  else if ( lineSymbol )
+  {
+    size = lineSymbol->width( *context );
+  }
+  else
+  {
+    return 0; //not size restriction implemented for other symbol types
+  }
+
+  size /= context->scaleFactor();
+
+  if ( minSize > 0 && size < minSize )
   {
     size = minSize;
-    return true;
   }
-  if ( size > maxSize )
+  else if ( maxSize > 0 && size > maxSize )
   {
     size = maxSize;
-    return true;
   }
-  return false;
+  else
+  {
+    return 0;
+  }
+
+  if ( markerSymbol )
+  {
+    QgsMarkerSymbol *ms = dynamic_cast<QgsMarkerSymbol *>( s->clone() );
+    ms->setSize( size );
+    ms->setSizeUnit( QgsUnitTypes::RenderMillimeters );
+    width = size;
+    height = size;
+    return ms;
+  }
+  else if ( lineSymbol )
+  {
+    QgsLineSymbol *ls = dynamic_cast<QgsLineSymbol *>( s->clone() );
+    ls->setWidth( size );
+    ls->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+    height = size;
+    return ls;
+  }
 }
