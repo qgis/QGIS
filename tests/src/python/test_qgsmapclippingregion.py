@@ -10,13 +10,13 @@ __author__ = 'Nyall Dawson'
 __date__ = '2020-06'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-
 import qgis  # NOQA
 
 from qgis.testing import unittest
 from qgis.core import (
     QgsMapClippingRegion,
-    QgsGeometry
+    QgsGeometry,
+    QgsVectorLayer
 )
 
 
@@ -32,6 +32,33 @@ class TestQgsMapClippingRegion(unittest.TestCase):
         self.assertEqual(region.featureClip(), QgsMapClippingRegion.FeatureClippingType.Intersect)
         region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.PainterClip)
         self.assertEqual(region.featureClip(), QgsMapClippingRegion.FeatureClippingType.PainterClip)
+
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                               "addfeat", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                                "addfeat", "memory")
+        self.assertEqual(len(region.restrictedLayers()), 0)
+        region.setRestrictedLayers([layer, layer2])
+        self.assertCountEqual(region.restrictedLayers(), [layer, layer2])
+
+    def testAppliesToLayer(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                               "addfeat", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                                "addfeat", "memory")
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                                "addfeat", "memory")
+
+        region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))
+        # should apply to all layers by default
+        self.assertTrue(region.appliesToLayer(layer))
+        self.assertTrue(region.appliesToLayer(layer2))
+        self.assertTrue(region.appliesToLayer(layer3))
+
+        region.setRestrictedLayers([layer, layer2])
+        self.assertTrue(region.appliesToLayer(layer))
+        self.assertTrue(region.appliesToLayer(layer2))
+        self.assertFalse(region.appliesToLayer(layer3))
 
 
 if __name__ == '__main__':

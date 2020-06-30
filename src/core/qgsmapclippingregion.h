@@ -102,6 +102,11 @@ class CORE_EXPORT QgsMapClippingRegion
      */
     QList< QgsMapLayer * > restrictedLayers() const;
 
+    /**
+     * Returns TRUE if the clipping region should be applied to the specified map \a layer.
+     */
+    bool appliesToLayer( const QgsMapLayer *layer ) const;
+
   private:
 
     //! Geometry of clipping region (in destination map coordinates and CRS)
