@@ -15,6 +15,7 @@
 
 #include "qgsmapclippingregion.h"
 #include "qgsmaplayerlistutils.h"
+#include <algorithm>
 
 QgsGeometry QgsMapClippingRegion::geometry() const
 {
@@ -34,6 +35,18 @@ void QgsMapClippingRegion::setRestrictedLayers( const QList<QgsMapLayer *> &laye
 QList<QgsMapLayer *> QgsMapClippingRegion::restrictedLayers() const
 {
   return _qgis_listQPointerToRaw( mRestrictToLayersList );
+}
+
+bool QgsMapClippingRegion::appliesToLayer( const QgsMapLayer *layer ) const
+{
+  if ( mRestrictToLayersList.empty() )
+    return true;
+
+  auto it = std::find_if( mRestrictToLayersList.begin(), mRestrictToLayersList.end(), [layer]( const QgsWeakMapLayerPointer & item ) -> bool
+  {
+    return item == layer;
+  } );
+  return it != mRestrictToLayersList.end();
 }
 
 
