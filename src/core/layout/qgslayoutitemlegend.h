@@ -320,12 +320,14 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     /**
      * Returns the legend maximum symbol size (in mm). 0.0 means there is no maximum set
+     * \since QGIS 3.16
      */
     double maxSymbolSize() const;
 
     /**
-     * @brief set maximum symbol size
-     * @param size maximum size (in mm) or 0.0 if no maximum
+     * \brief set maximum symbol size
+     * \param size maximum size (in mm) or 0.0 if no maximum
+     * \since QGIS 3.16
      */
     void setMaxSymbolSize( double size );
 

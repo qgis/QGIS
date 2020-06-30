@@ -1142,6 +1142,7 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
     /**
      * Sets the width units for the whole symbol (including all symbol layers).
      * \param unit size units
+     * \since QGIS 3.16
      */
     void setWidthUnit( QgsUnitTypes::RenderUnit unit );
 

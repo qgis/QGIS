@@ -1117,6 +1117,8 @@ will be scaled to maintain their current relative size to the whole symbol size.
 Sets the width units for the whole symbol (including all symbol layers).
 
 :param unit: size units
+
+.. versionadded:: 3.16
 %End
 
 
