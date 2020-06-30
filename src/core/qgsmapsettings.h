@@ -33,6 +33,7 @@
 #include "qgsmaplayer.h"
 #include "qgsgeometry.h"
 #include "qgstemporalrangeobject.h"
+#include "qgsmapclippingregion.h"
 
 class QPainter;
 
@@ -579,6 +580,24 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     QList< QgsLabelBlockingRegion > labelBlockingRegions() const { return mLabelBlockingRegions; }
 
     /**
+     * Adds a new clipping \a region to the map settings.
+     *
+     * \see clippingRegions()
+     *
+     * \since QGIS 3.16
+     */
+    void addClippingRegion( const QgsMapClippingRegion &region );
+
+    /**
+     * Returns the list of clipping regions to apply to the map.
+     *
+     * \see addClippingRegion()
+     *
+     * \since QGIS 3.16
+     */
+    QList< QgsMapClippingRegion > clippingRegions() const;
+
+    /**
      * Sets the simplification setting to use when rendering vector layers.
      *
      * If the simplify \a method is enabled, it will override all other layer-specific simplification
@@ -692,6 +711,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
   private:
 
     QList< QgsLabelBlockingRegion > mLabelBlockingRegions;
+    QList< QgsMapClippingRegion > mClippingRegions;
     QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
 };
 

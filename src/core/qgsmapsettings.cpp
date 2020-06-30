@@ -682,6 +682,16 @@ void QgsMapSettings::setLabelBoundaryGeometry( const QgsGeometry &boundary )
   mLabelBoundaryGeometry = boundary;
 }
 
+void QgsMapSettings::addClippingRegion( const QgsMapClippingRegion &region )
+{
+  mClippingRegions.append( region );
+}
+
+QList<QgsMapClippingRegion> QgsMapSettings::clippingRegions() const
+{
+  return mClippingRegions;
+}
+
 void QgsMapSettings::addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler )
 {
   mRenderedFeatureHandlers.append( handler );

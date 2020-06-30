@@ -43,8 +43,8 @@ class QgsLabelingEngine;
 class QgsMapSettings;
 class QgsRenderedFeatureHandlerInterface;
 class QgsSymbolLayer;
-
 class QgsMaskIdProvider;
+class QgsMapClippingRegion;
 
 
 /**
@@ -58,6 +58,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 {
   public:
     QgsRenderContext();
+    ~QgsRenderContext() override;
 
     QgsRenderContext( const QgsRenderContext &rh );
     QgsRenderContext &operator=( const QgsRenderContext &rh );
@@ -786,6 +787,15 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     void clearCustomRenderingFlag( const QString &flag ) { mCustomRenderingFlags.remove( flag ); }
 
+    /**
+     * Returns the list of clipping regions to apply during the render.
+     *
+     * These regions are always in the final destination CRS for the map.
+     *
+     * \since QGIS 3.16
+     */
+    QList< QgsMapClippingRegion > clippingRegions() const;
+
   private:
 
     Flags mFlags;
@@ -876,6 +886,8 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     QVariantMap mCustomRenderingFlags;
 
     QSet<const QgsSymbolLayer *> mDisabledSymbolLayers;
+
+    QList< QgsMapClippingRegion > mClippingRegions;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;
