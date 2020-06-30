@@ -589,15 +589,39 @@ namespace QgsWms
           QList<QgsMapLayer *> layerSet;
           for ( auto layer : cMapParams.mLayers )
           {
-            QgsMapLayer *mlayer = mContext.layer( layer.mNickname );
-
-            if ( ! mlayer )
+            if ( mContext.isValidGroup( layer.mNickname ) )
             {
-              continue;
-            }
+              QList<QgsMapLayer *> layersFromGroup;
 
-            setLayerStyle( mlayer, layer.mStyle );
-            layerSet << mlayer;
+              const QList<QgsMapLayer *> cLayersFromGroup = mContext.layersFromGroup( layer.mNickname );
+              for ( QgsMapLayer *layerFromGroup : cLayersFromGroup )
+              {
+
+                if ( ! layerFromGroup )
+                {
+                  continue;
+                }
+
+                layersFromGroup.push_front( layerFromGroup );
+              }
+
+              if ( !layersFromGroup.isEmpty() )
+              {
+                layerSet.append( layersFromGroup );
+              }
+            }
+            else
+            {
+              QgsMapLayer *mlayer = mContext.layer( layer.mNickname );
+
+              if ( ! mlayer )
+              {
+                continue;
+              }
+
+              setLayerStyle( mlayer, layer.mStyle );
+              layerSet << mlayer;
+            }
           }
 
           layerSet << externalLayers( cMapParams.mExternalLayers );
