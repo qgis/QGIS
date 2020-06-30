@@ -12,7 +12,6 @@
 
 
 
-
 class QgsRenderContext : QgsTemporalRangeObject
 {
 %Docstring
@@ -27,6 +26,7 @@ to be rendered etc.
 %End
   public:
     QgsRenderContext();
+    ~QgsRenderContext();
 
     QgsRenderContext( const QgsRenderContext &rh );
 
@@ -787,6 +787,15 @@ Clears the specified custom rendering flag.
 .. seealso:: :py:func:`setCustomRenderingFlag`
 
 .. versionadded:: 3.12
+%End
+
+    QList< QgsMapClippingRegion > clippingRegions() const;
+%Docstring
+Returns the list of clipping regions to apply during the render.
+
+These regions are always in the final destination CRS for the map.
+
+.. versionadded:: 3.16
 %End
 
 };
