@@ -1,0 +1,84 @@
+# -*- coding: utf-8 -*-
+"""QGIS Unit tests for QgsMapClippingUtils.
+
+.. note:: This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+"""
+__author__ = 'Nyall Dawson'
+__date__ = '2020-06'
+__copyright__ = 'Copyright 2020, The QGIS Project'
+
+import qgis  # NOQA
+
+from qgis.testing import unittest
+from qgis.core import (
+    QgsMapClippingRegion,
+    QgsMapClippingUtils,
+    QgsMapSettings,
+    QgsRenderContext,
+    QgsGeometry,
+    QgsVectorLayer,
+    QgsCoordinateTransform,
+    QgsCoordinateReferenceSystem,
+    QgsProject
+)
+
+
+class TestQgsMapClippingUtils(unittest.TestCase):
+
+    def testClippingRegionsForLayer(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                               "addfeat", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                                "addfeat", "memory")
+
+        region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))
+        region2 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 0.1 0, 0.1 2, 0 2, 0 0))'))
+        region2.setRestrictedLayers([layer])
+        ms = QgsMapSettings()
+        ms.addClippingRegion(region)
+        ms.addClippingRegion(region2)
+        rc = QgsRenderContext.fromMapSettings(ms)
+
+        regions = QgsMapClippingUtils.collectClippingRegionsForLayer(rc, layer)
+        self.assertEqual(len(regions), 2)
+        self.assertEqual(regions[0].geometry().asWkt(1), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+        self.assertEqual(regions[1].geometry().asWkt(1), 'Polygon ((0 0, 0.1 0, 0.1 2, 0 2, 0 0))')
+
+        regions = QgsMapClippingUtils.collectClippingRegionsForLayer(rc, layer2)
+        self.assertEqual(len(regions), 1)
+        self.assertEqual(regions[0].geometry().asWkt(1), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+
+    def testCalculateFeatureRequestGeometry(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                               "addfeat", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                                "addfeat", "memory")
+
+        region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))
+        region2 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 0.1 0, 0.1 2, 0 2, 0 0))'))
+
+        rc = QgsRenderContext()
+
+        geom, should_clip = QgsMapClippingUtils.calculateFeatureRequestGeometry([], rc)
+        self.assertFalse(should_clip)
+        self.assertTrue(geom.isNull())
+
+        geom, should_clip = QgsMapClippingUtils.calculateFeatureRequestGeometry([region], rc)
+        self.assertTrue(should_clip)
+        self.assertEqual(geom.asWkt(1), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+
+        geom, should_clip = QgsMapClippingUtils.calculateFeatureRequestGeometry([region, region2], rc)
+        self.assertTrue(should_clip)
+        self.assertEqual(geom.asWkt(1), 'Polygon ((0.1 0, 0 0, 0 1, 0.1 1, 0.1 0))')
+
+        rc.setCoordinateTransform(QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateReferenceSystem('EPSG:4326'), QgsProject.instance()))
+        geom, should_clip = QgsMapClippingUtils.calculateFeatureRequestGeometry([region, region2], rc)
+        self.assertTrue(should_clip)
+        self.assertEqual(geom.asWkt(0), 'Polygon ((11132 0, 0 0, 0 111325, 11132 111325, 11132 0))')
+
+
+if __name__ == '__main__':
+    unittest.main()

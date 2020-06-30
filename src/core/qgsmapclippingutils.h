@@ -1,0 +1,61 @@
+/***************************************************************************
+  qgsmapclippingutils.h
+  --------------------------------------
+  Date                 : June 2020
+  Copyright            : (C) 2020 by Nyall Dawson
+  Email                : nyall dot dawson at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSMAPCLIPPINGUTILS_H
+#define QGSMAPCLIPPINGUTILS_H
+
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include <QList>
+
+class QgsRenderContext;
+class QgsMapLayer;
+class QgsGeometry;
+class QgsMapClippingRegion;
+
+/**
+ * \class QgsMapClippingUtils
+ * \ingroup core
+ *
+ * Utility functions for use when clipping map renders.
+ *
+ * \since QGIS 3.16
+*/
+class CORE_EXPORT QgsMapClippingUtils
+{
+  public:
+
+    /**
+     * Collects the list of map clipping regions from a \a context which apply to a map \a layer.
+     */
+    static QList< QgsMapClippingRegion > collectClippingRegionsForLayer( const QgsRenderContext &context, const QgsMapLayer *layer );
+
+    /**
+     * Returns the geometry representing the intersection of clipping \a regions from \a context.
+     *
+     * The returned geometry will be automatically reprojected into the same CRS as the source layer, ready for use for filtering
+     * a feature request.
+     *
+     * \param regions list of clip regions which apply to the layer
+     * \param context a render context
+     * \param shouldFilter will be set to TRUE if layer's features should be filtered, i.e. one or more clipping regions applies to the layer
+     *
+     * \returns combined clipping region for use when filtering features to render
+     */
+    static QgsGeometry calculateFeatureRequestGeometry( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, bool &shouldFilter );
+
+};
+
+#endif // QGSMAPCLIPPINGUTILS_H
