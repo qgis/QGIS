@@ -148,6 +148,7 @@ ADD_PYTHON_TEST(PyQgsLocalizedDataPathRegistry test_qgslocalizeddatapathregistry
 ADD_PYTHON_TEST(PyQgsLocator test_qgslocator.py)
 ADD_PYTHON_TEST(PyQgsMapCanvas test_qgsmapcanvas.py)
 ADD_PYTHON_TEST(PyQgsMapCanvasAnnotationItem test_qgsmapcanvasannotationitem.py)
+ADD_PYTHON_TEST(PyQgsMapClippingRegion test_qgsmapclippingregion.py)
 ADD_PYTHON_TEST(PyQgsMapLayer test_qgsmaplayer.py)
 ADD_PYTHON_TEST(PyQgsMapLayerAction test_qgsmaplayeraction.py)
 ADD_PYTHON_TEST(PyQgsMapLayerComboBox test_qgsmaplayercombobox.py)
