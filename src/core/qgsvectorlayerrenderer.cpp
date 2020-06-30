@@ -191,7 +191,7 @@ bool QgsVectorLayerRenderer::render()
     mClipFeatureGeom = QgsMapClippingUtils::calculateFeatureIntersectionGeometry( mClippingRegions, context, mApplyClipGeometries );
 
     bool needsPainterClipPath = false;
-    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, context, needsPainterClipPath );
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, context, QgsMapLayerType::VectorLayer, needsPainterClipPath );
     if ( needsPainterClipPath )
       context.painter()->setClipPath( path, Qt::IntersectClip );
   }
