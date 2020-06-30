@@ -140,6 +140,12 @@ QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMap
           continue;
         break;
 
+      case QgsMapLayerType::VectorTileLayer:
+        // for now, we ignore the region's featureClip behavior when rendering vector tiles
+        // TODO: ideally we should apply this during rendering, just like we do for normal
+        // vector layers
+        break;
+
       case QgsMapLayerType::MeshLayer:
       case QgsMapLayerType::RasterLayer:
       case QgsMapLayerType::PluginLayer:

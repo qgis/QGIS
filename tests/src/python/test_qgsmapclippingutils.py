@@ -124,12 +124,12 @@ class TestQgsMapClippingUtils(unittest.TestCase):
 
         rc = QgsRenderContext()
 
-        for t in [QgsMapLayerType.VectorLayer, QgsMapLayerType.RasterLayer, QgsMapLayerType.MeshLayer]:
+        for t in [QgsMapLayerType.VectorLayer, QgsMapLayerType.RasterLayer, QgsMapLayerType.MeshLayer, QgsMapLayerType.VectorTileLayer]:
             path, should_clip = QgsMapClippingUtils.calculatePainterClipRegion([], rc, t)
             self.assertFalse(should_clip)
             self.assertEqual(path.elementCount(), 0)
 
-        for t in [QgsMapLayerType.VectorLayer, QgsMapLayerType.RasterLayer, QgsMapLayerType.MeshLayer]:
+        for t in [QgsMapLayerType.VectorLayer, QgsMapLayerType.RasterLayer, QgsMapLayerType.MeshLayer, QgsMapLayerType.VectorTileLayer]:
             path, should_clip = QgsMapClippingUtils.calculatePainterClipRegion([region], rc, t)
             self.assertTrue(should_clip)
             self.assertEqual(QgsGeometry.fromQPolygonF(path.toFillPolygon()).asWkt(1), 'Polygon ((0 1, 1 1, 1 0, 0 0, 0 1))')
@@ -139,18 +139,18 @@ class TestQgsMapClippingUtils(unittest.TestCase):
         self.assertFalse(should_clip)
         self.assertEqual(path.elementCount(), 0)
 
-        for t in [QgsMapLayerType.RasterLayer, QgsMapLayerType.MeshLayer]:
+        for t in [QgsMapLayerType.RasterLayer, QgsMapLayerType.MeshLayer, QgsMapLayerType.VectorTileLayer]:
             path, should_clip = QgsMapClippingUtils.calculatePainterClipRegion([region2], rc, t)
             self.assertTrue(should_clip)
             self.assertEqual(QgsGeometry.fromQPolygonF(path.toFillPolygon()).asWkt(1), 'Polygon ((0 1, 0.1 1, 0.1 -1, 0 -1, 0 1))')
 
-        for t in [QgsMapLayerType.VectorLayer, QgsMapLayerType.RasterLayer, QgsMapLayerType.MeshLayer]:
+        for t in [QgsMapLayerType.VectorLayer, QgsMapLayerType.RasterLayer, QgsMapLayerType.MeshLayer, QgsMapLayerType.VectorTileLayer]:
             path, should_clip = QgsMapClippingUtils.calculatePainterClipRegion([region, region2, region3], rc, t)
             self.assertTrue(should_clip)
             self.assertEqual(QgsGeometry.fromQPolygonF(path.toFillPolygon()).asWkt(1), 'Polygon ((0.1 1, 0 1, 0 0, 0.1 0, 0.1 1))')
 
         rc.setMapToPixel(QgsMapToPixel(5, 10, 11, 200, 150, 0))
-        for t in [QgsMapLayerType.VectorLayer, QgsMapLayerType.RasterLayer, QgsMapLayerType.MeshLayer]:
+        for t in [QgsMapLayerType.VectorLayer, QgsMapLayerType.RasterLayer, QgsMapLayerType.MeshLayer, QgsMapLayerType.VectorTileLayer]:
             path, should_clip = QgsMapClippingUtils.calculatePainterClipRegion([region, region3], rc, t)
             self.assertTrue(should_clip)
             self.assertEqual(QgsGeometry.fromQPolygonF(path.toFillPolygon()).asWkt(0), 'Polygon ((98 77, 98 77, 98 77, 98 77, 98 77))')

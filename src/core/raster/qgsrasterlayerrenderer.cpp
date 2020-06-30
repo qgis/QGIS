@@ -283,7 +283,7 @@ bool QgsRasterLayerRenderer::render()
   // procedure to use :
   //
 
-  renderContext()->painter()->save();
+  QgsScopedQPainterState painterSate( renderContext()->painter() );
   if ( !mClippingRegions.empty() )
   {
     bool needsPainterClipPath = false;
@@ -320,8 +320,6 @@ bool QgsRasterLayerRenderer::render()
   {
     mPipe->setResamplingStage( oldResamplingState );
   }
-
-  renderContext()->painter()->restore();
 
   const QStringList errors = mFeedback->errors();
   for ( const QString &error : errors )
