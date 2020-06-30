@@ -56,6 +56,9 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureRequestGeometry( const QList< Q
     }
   }
 
+  if ( !shouldFilter )
+    return QgsGeometry();
+
   // filter out polygon parts from result only
   result.convertGeometryCollectionToSubclass( QgsWkbTypes::PolygonGeometry );
 
@@ -68,6 +71,52 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureRequestGeometry( const QList< Q
   {
     QgsDebugMsg( QStringLiteral( "Could not transform clipping region to layer CRS" ) );
     shouldFilter = false;
+    return QgsGeometry();
+  }
+
+  return result;
+}
+
+QgsGeometry QgsMapClippingUtils::calculateFeatureIntersectionGeometry( const QList<QgsMapClippingRegion> &regions, const QgsRenderContext &context, bool &shouldClip )
+{
+  QgsGeometry result;
+  bool first = true;
+  shouldClip = false;
+  for ( const QgsMapClippingRegion &region : regions )
+  {
+    if ( region.geometry().type() != QgsWkbTypes::PolygonGeometry )
+      continue;
+
+    if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::Intersect )
+      continue;
+
+    shouldClip = true;
+    if ( first )
+    {
+      result = region.geometry();
+      first = false;
+    }
+    else
+    {
+      result = result.intersection( region.geometry() );
+    }
+  }
+
+  if ( !shouldClip )
+    return QgsGeometry();
+
+  // filter out polygon parts from result only
+  result.convertGeometryCollectionToSubclass( QgsWkbTypes::PolygonGeometry );
+
+  // lastly transform back to layer CRS
+  try
+  {
+    result.transform( context.coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugMsg( QStringLiteral( "Could not transform clipping region to layer CRS" ) );
+    shouldClip = false;
     return QgsGeometry();
   }
 

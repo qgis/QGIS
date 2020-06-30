@@ -187,6 +187,8 @@ bool QgsVectorLayerRenderer::render()
   {
     mClipFilterGeom = QgsMapClippingUtils::calculateFeatureRequestGeometry( mClippingRegions, context, mApplyClipFilter );
     requestExtent = requestExtent.intersect( mClipFilterGeom.boundingBox() );
+
+    mClipFeatureGeom = QgsMapClippingUtils::calculateFeatureIntersectionGeometry( mClippingRegions, context, mApplyClipGeometries );
   }
   mRenderer->modifyRequestExtent( requestExtent, context );
 
@@ -345,6 +347,12 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
       if ( clipEngine && !clipEngine->intersects( fet.geometry().constGet() ) )
         continue; // skip features outside of clipping region
 
+      if ( mApplyClipGeometries )
+      {
+        QgsGeometry original = fet.geometry();
+        fet.setGeometry( original.intersection( mClipFeatureGeom ) );
+      }
+
       context.expressionContext().setFeature( fet );
 
       bool sel = context.showSelection() && mSelectedFeatureIds.contains( fet.id() );
@@ -438,6 +446,12 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
 
     if ( clipEngine && !clipEngine->intersects( fet.geometry().constGet() ) )
       continue; // skip features outside of clipping region
+
+    if ( mApplyClipGeometries )
+    {
+      QgsGeometry original = fet.geometry();
+      fet.setGeometry( original.intersection( mClipFeatureGeom ) );
+    }
 
     context.expressionContext().setFeature( fet );
     QgsSymbol *sym = mRenderer->symbolForFeature( fet, context );

@@ -61,7 +61,9 @@ class TestQgsVectorLayerRenderer(unittest.TestCase):
         mapsettings.setLayers([poly_layer])
 
         region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon ((-11725957 5368254, -12222900 4807501, -12246014 3834025, -12014878 3496059, -11259833 3518307, -10751333 3621153, -10574129 4516741, -10847640 5194995, -11105742 5325957, -11725957 5368254))'))
+        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersects)
         region2 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon ((-11032549 5421399, -11533344 4693167, -11086481 4229112, -11167378 3742984, -10616504 3553984, -10161936 3925771, -9618766 4668482, -9472380 5620753, -10115709 5965063, -11032549 5421399))'))
+        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersects)
         mapsettings.addClippingRegion(region)
         mapsettings.addClippingRegion(region2)
 
@@ -73,13 +75,24 @@ class TestQgsVectorLayerRenderer(unittest.TestCase):
         self.report += renderchecker.report()
         self.assertTrue(result)
 
-    def testRenderWithIntersectsRegionsSymbolLayers(self):
+        # also try with symbol levels
+        renderer.setUsingSymbolLevels(True)
+        poly_layer.setRenderer(renderer)
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('vectorlayerrenderer')
+        renderchecker.setControlName('expected_intersects_region')
+        result = renderchecker.runTest('expected_intersects_region')
+        self.report += renderchecker.report()
+        self.assertTrue(result)
+
+    def testRenderWithIntersectionRegions(self):
         poly_layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'polys.shp'))
         self.assertTrue(poly_layer.isValid())
 
         sym1 = QgsFillSymbol.createSimple({'color': '#ff00ff', 'outline_color': '#000000', 'outline_width': '1'})
         renderer = QgsSingleSymbolRenderer(sym1)
-        renderer.setUsingSymbolLevels(True)
         poly_layer.setRenderer(renderer)
 
         mapsettings = QgsMapSettings()
@@ -90,15 +103,29 @@ class TestQgsVectorLayerRenderer(unittest.TestCase):
         mapsettings.setLayers([poly_layer])
 
         region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon ((-11725957 5368254, -12222900 4807501, -12246014 3834025, -12014878 3496059, -11259833 3518307, -10751333 3621153, -10574129 4516741, -10847640 5194995, -11105742 5325957, -11725957 5368254))'))
+        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersect)
         region2 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon ((-11032549 5421399, -11533344 4693167, -11086481 4229112, -11167378 3742984, -10616504 3553984, -10161936 3925771, -9618766 4668482, -9472380 5620753, -10115709 5965063, -11032549 5421399))'))
+        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersect)
         mapsettings.addClippingRegion(region)
         mapsettings.addClippingRegion(region2)
 
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlPathPrefix('vectorlayerrenderer')
-        renderchecker.setControlName('expected_intersects_region')
-        result = renderchecker.runTest('expected_intersects_region')
+        renderchecker.setControlName('expected_intersection_region')
+        result = renderchecker.runTest('expected_intersection_region')
+        self.report += renderchecker.report()
+        self.assertTrue(result)
+
+        # also try with symbol levels
+        renderer.setUsingSymbolLevels(True)
+        poly_layer.setRenderer(renderer)
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('vectorlayerrenderer')
+        renderchecker.setControlName('expected_intersection_region')
+        result = renderchecker.runTest('expected_intersection_region')
         self.report += renderchecker.report()
         self.assertTrue(result)
 
