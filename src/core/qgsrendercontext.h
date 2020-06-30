@@ -1040,6 +1040,47 @@ class QgsScopedRenderContextScaleToPixels
 
     QgsRenderContext &mContext;
 };
+
+
+/**
+ * \ingroup core
+ *
+ * Scoped object for saving and restoring a QPainter object's state.
+ *
+ * Temporarily saves the QPainter state for the lifetime of the object, before restoring it
+ * on destruction.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.16
+ */
+class QgsScopedQPainterState
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedQPainterState.
+     *
+     * Saves the specified \a painter state.
+     */
+    QgsScopedQPainterState( QPainter *painter )
+      : mPainter( painter )
+    {
+      mPainter->save();
+    }
+
+    /**
+     * Restores the painter back to its original state.
+     */
+    ~QgsScopedQPainterState()
+    {
+      mPainter->restore();
+    }
+
+  private:
+
+    QPainter *mPainter = nullptr;
+};
+
 #endif
 
 #endif
