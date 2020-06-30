@@ -567,13 +567,12 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     double size = markerSymbol->size( *context ) / context->scaleFactor();
 
     //If marker size exceeds max marker size, clone symbol and set max size in mm
-    if ( ( maxSymbolSize > 0 && size > maxSymbolSize ) || ( minSymbolSize > 0 && size < minSymbolSize ) )
+    if ( QgsSymbolLayerUtils::restrictSymbolSize( size, minSymbolSize, maxSymbolSize ) )
     {
       minMaxSizeMarkerSymbol.reset( dynamic_cast<QgsMarkerSymbol *>( s->clone() ) );
-      minMaxSizeMarkerSymbol->setSize( size > maxSymbolSize ? maxSymbolSize : minSymbolSize );
+      minMaxSizeMarkerSymbol->setSize( size );
       minMaxSizeMarkerSymbol->setSizeUnit( QgsUnitTypes::RenderMillimeters );
       s = minMaxSizeMarkerSymbol.get();
-      size = ( size > maxSymbolSize ) ? maxSymbolSize : minSymbolSize;
     }
 
     height = size;
@@ -592,15 +591,14 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   if ( QgsLineSymbol *lineSymbol = dynamic_cast<QgsLineSymbol *>( s ) )
   {
     double width = lineSymbol->width( *context ) / context->scaleFactor();
-    if ( ( maxSymbolSize > 0 && width > maxSymbolSize ) || ( minSymbolSize > 0 && width < minSymbolSize ) )
+    if ( QgsSymbolLayerUtils::restrictSymbolSize( width, minSymbolSize, maxSymbolSize ) )
     {
       minMaxSizeLineSymbol.reset( dynamic_cast<QgsLineSymbol *>( s->clone() ) );
-      minMaxSizeLineSymbol->setWidth( width > maxSymbolSize ? maxSymbolSize : minSymbolSize );
+      minMaxSizeLineSymbol->setWidth( width );
       minMaxSizeLineSymbol->setWidthUnit( QgsUnitTypes::RenderMillimeters );
       s = minMaxSizeLineSymbol.get();
-      width = ( width > maxSymbolSize ) ? maxSymbolSize : minSymbolSize;
+      height = width;
     }
-    height = width;
   }
 
   if ( ctx && ctx->painter )

@@ -814,6 +814,17 @@ Converts a set of symbol layer id to a set of pointers to actual symbol layers c
 
 .. versionadded:: 3.12
 %End
+
+    static bool restrictSymbolSize( double &size, double minSize, double maxSize );
+%Docstring
+Restricts size value to min/max size
+
+:param size: value will be set so minSize if below minimum or to maxSize if above minimum
+:param minSize: the minimum symbolSize
+:param maxSize: the maximum symbol size
+
+:return: true if size value has been changed
+%End
 };
 
 

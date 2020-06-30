@@ -4473,3 +4473,18 @@ QSet<const QgsSymbolLayer *> QgsSymbolLayerUtils::toSymbolLayerPointers( QgsFeat
   renderer->accept( &visitor );
   return visitor.mSymbolLayers;
 }
+
+bool QgsSymbolLayerUtils::restrictSymbolSize( double &size, double minSize, double maxSize )
+{
+  if ( size < minSize )
+  {
+    size = minSize;
+    return true;
+  }
+  if ( size > maxSize )
+  {
+    size = maxSize;
+    return true;
+  }
+  return false;
+}
