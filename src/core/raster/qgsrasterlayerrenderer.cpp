@@ -25,6 +25,7 @@
 #include "qgsproject.h"
 #include "qgsexception.h"
 #include "qgsrasterlayertemporalproperties.h"
+#include "qgsmapclippingutils.h"
 
 ///@cond PRIVATE
 
@@ -253,6 +254,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( QgsDateTimeRange() );
     mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( temporalProperties->intervalHandlingMethod() );
   }
+
+  mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
 }
 
 QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
@@ -279,6 +282,15 @@ bool QgsRasterLayerRenderer::render()
   // so that we can maximise performance of the rendering process. So now we check which drawing
   // procedure to use :
   //
+
+  renderContext()->painter()->save();
+  if ( !mClippingRegions.empty() )
+  {
+    bool needsPainterClipPath = false;
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), QgsMapLayerType::RasterLayer, needsPainterClipPath );
+    if ( needsPainterClipPath )
+      renderContext()->painter()->setClipPath( path, Qt::IntersectClip );
+  }
 
   QgsRasterProjector *projector = mPipe->projector();
   bool restoreOldResamplingStage = false;
@@ -308,6 +320,8 @@ bool QgsRasterLayerRenderer::render()
   {
     mPipe->setResamplingStage( oldResamplingState );
   }
+
+  renderContext()->painter()->restore();
 
   const QStringList errors = mFeedback->errors();
   for ( const QString &error : errors )

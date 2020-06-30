@@ -9,6 +9,7 @@
 
 
 
+
 class QgsMapClippingUtils
 {
 %Docstring
@@ -56,10 +57,10 @@ The returned geometry will be automatically reprojected into the same CRS as the
 :return: combined clipping region for use when rendering features
 %End
 
-    static QPainterPath calculatePainterClipRegion( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, bool &shouldClip );
+    static QPainterPath calculatePainterClipRegion( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, QgsMapLayerType layerType, bool &shouldClip );
 %Docstring
 Returns a QPainterPath representing the intersection of clipping ``regions`` from ``context`` which should be used to clip the painter
-during rendering.
+during rendering of a layer of the specified ``layerType``.
 
 The returned coordinates are in painter coordinates for the destination ``context``.
 

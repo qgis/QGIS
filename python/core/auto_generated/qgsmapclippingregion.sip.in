@@ -52,12 +52,16 @@ Sets the clipping region ``geometry`` (in the destination map CRS).
 %Docstring
 Returns the feature clipping type.
 
+This setting is only used while rendering vector layers, for other layer types it is ignored.
+
 .. seealso:: :py:func:`setFeatureClip`
 %End
 
     void setFeatureClip( FeatureClippingType type );
 %Docstring
 Sets the feature clipping ``type``.
+
+This setting is only used while rendering vector layers, for other layer types it is ignored.
 
 .. seealso:: :py:func:`featureClip`
 %End

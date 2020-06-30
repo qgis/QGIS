@@ -66,6 +66,8 @@ class CORE_EXPORT QgsMapClippingRegion
     /**
      * Returns the feature clipping type.
      *
+     * This setting is only used while rendering vector layers, for other layer types it is ignored.
+     *
      * \see setFeatureClip()
      */
     FeatureClippingType featureClip() const
@@ -75,6 +77,8 @@ class CORE_EXPORT QgsMapClippingRegion
 
     /**
      * Sets the feature clipping \a type.
+     *
+     * This setting is only used while rendering vector layers, for other layer types it is ignored.
      *
      * \see featureClip()
      */

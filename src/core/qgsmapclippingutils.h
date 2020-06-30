@@ -18,6 +18,8 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsmaplayer.h"
+
 #include <QList>
 #include <QPainterPath>
 
@@ -73,7 +75,7 @@ class CORE_EXPORT QgsMapClippingUtils
 
     /**
      * Returns a QPainterPath representing the intersection of clipping \a regions from \a context which should be used to clip the painter
-     * during rendering.
+     * during rendering of a layer of the specified \a layerType.
      *
      * The returned coordinates are in painter coordinates for the destination \a context.
      *
@@ -83,7 +85,7 @@ class CORE_EXPORT QgsMapClippingUtils
      *
      * \returns combined painter clipping region for use when rendering maps
      */
-    static QPainterPath calculatePainterClipRegion( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, bool &shouldClip );
+    static QPainterPath calculatePainterClipRegion( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, QgsMapLayerType layerType, bool &shouldClip );
 };
 
 #endif // QGSMAPCLIPPINGUTILS_H
