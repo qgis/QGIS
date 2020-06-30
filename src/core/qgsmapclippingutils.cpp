@@ -123,7 +123,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureIntersectionGeometry( const QLi
   return result;
 }
 
-QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMapClippingRegion> &regions, const QgsRenderContext &context, bool &shouldClip )
+QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMapClippingRegion> &regions, const QgsRenderContext &context, QgsMapLayerType layerType, bool &shouldClip )
 {
   QgsGeometry result;
   bool first = true;
@@ -133,8 +133,20 @@ QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMap
     if ( region.geometry().type() != QgsWkbTypes::PolygonGeometry )
       continue;
 
-    if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::PainterClip )
-      continue;
+    switch ( layerType )
+    {
+      case QgsMapLayerType::VectorLayer:
+        if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::PainterClip )
+          continue;
+        break;
+
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::RasterLayer:
+      case QgsMapLayerType::PluginLayer:
+        // for these layer types, we ignore the region's featureClip behavior.
+        break;
+
+    }
 
     shouldClip = true;
     if ( first )
