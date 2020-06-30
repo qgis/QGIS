@@ -22,7 +22,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsCoordinateTransform,
     QgsCoordinateReferenceSystem,
-    QgsProject
+    QgsProject,
+    QgsMapToPixel
 )
 
 
@@ -111,6 +112,42 @@ class TestQgsMapClippingUtils(unittest.TestCase):
         geom, should_clip = QgsMapClippingUtils.calculateFeatureIntersectionGeometry([region, region3], rc)
         self.assertTrue(should_clip)
         self.assertEqual(geom.asWkt(0), 'Polygon ((11132 0, 0 0, 0 111325, 11132 111325, 11132 0))')
+
+    def testPainterClipPath(self):
+        region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))
+        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.PainterClip)
+        region2 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 0.1 0, 0.1 2, 0 2, 0 0))'))
+        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersects)
+        region3 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 0.1 0, 0.1 2, 0 2, 0 0))'))
+        region3.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.PainterClip)
+
+        rc = QgsRenderContext()
+
+        path, should_clip = QgsMapClippingUtils.calculatePainterClipRegion([], rc)
+        self.assertFalse(should_clip)
+        self.assertEqual(path.elementCount(), 0)
+
+        path, should_clip = QgsMapClippingUtils.calculatePainterClipRegion([region], rc)
+        self.assertTrue(should_clip)
+        self.assertEqual(QgsGeometry.fromQPolygonF(path.toFillPolygon()).asWkt(1), 'Polygon ((0 1, 1 1, 1 0, 0 0, 0 1))')
+
+        # region2 is a Intersects type clipping region, should not apply here
+        path, should_clip = QgsMapClippingUtils.calculatePainterClipRegion([region2], rc)
+        self.assertFalse(should_clip)
+        self.assertEqual(path.elementCount(), 0)
+
+        path, should_clip = QgsMapClippingUtils.calculatePainterClipRegion([region, region2], rc)
+        self.assertTrue(should_clip)
+        self.assertEqual(QgsGeometry.fromQPolygonF(path.toFillPolygon()).asWkt(1), 'Polygon ((0 1, 1 1, 1 0, 0 0, 0 1))')
+
+        path, should_clip = QgsMapClippingUtils.calculatePainterClipRegion([region, region2, region3], rc)
+        self.assertTrue(should_clip)
+        self.assertEqual(QgsGeometry.fromQPolygonF(path.toFillPolygon()).asWkt(1), 'Polygon ((0.1 1, 0 1, 0 0, 0.1 0, 0.1 1))')
+
+        rc.setMapToPixel(QgsMapToPixel(5, 10, 11, 200, 150, 0))
+        path, should_clip = QgsMapClippingUtils.calculatePainterClipRegion([region, region3], rc)
+        self.assertTrue(should_clip)
+        self.assertEqual(QgsGeometry.fromQPolygonF(path.toFillPolygon()).asWkt(0), 'Polygon ((98 77, 98 77, 98 77, 98 77, 98 77))')
 
 
 if __name__ == '__main__':
