@@ -39,6 +39,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
 #include "qgsvectorlayertemporalproperties.h"
+#include "qgsmapclippingutils.h"
 
 #include <QPicture>
 
@@ -124,8 +125,9 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   //register label and diagram layer to the labeling engine
   prepareLabeling( layer, mAttrNames );
   prepareDiagrams( layer, mAttrNames );
-}
 
+  mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( context, layer );
+}
 
 QgsVectorLayerRenderer::~QgsVectorLayerRenderer()
 {
@@ -181,6 +183,11 @@ bool QgsVectorLayerRenderer::render()
   QString rendererFilter = mRenderer->filter( mFields );
 
   QgsRectangle requestExtent = context.extent();
+  if ( !mClippingRegions.empty() )
+  {
+    mClipFilterGeom = QgsMapClippingUtils::calculateFeatureRequestGeometry( mClippingRegions, context, mApplyClipFilter );
+    requestExtent = requestExtent.intersect( mClipFilterGeom.boundingBox() );
+  }
   mRenderer->modifyRequestExtent( requestExtent, context );
 
   QgsFeatureRequest featureRequest = QgsFeatureRequest()
@@ -314,6 +321,13 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
   QgsRenderContext &context = *renderContext();
   context.expressionContext().appendScope( symbolScope );
 
+  std::unique_ptr< QgsGeometryEngine > clipEngine;
+  if ( mApplyClipFilter )
+  {
+    clipEngine.reset( QgsGeometry::createGeometryEngine( mClipFilterGeom.constGet() ) );
+    clipEngine->prepareGeometry();
+  }
+
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
@@ -327,6 +341,9 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
 
       if ( !fet.hasGeometry() || fet.geometry().isEmpty() )
         continue; // skip features without geometry
+
+      if ( clipEngine && !clipEngine->intersects( fet.geometry().constGet() ) )
+        continue; // skip features outside of clipping region
 
       context.expressionContext().setFeature( fet );
 
@@ -397,6 +414,14 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
   QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
   std::unique_ptr< QgsExpressionContextScopePopper > scopePopper = qgis::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
 
+
+  std::unique_ptr< QgsGeometryEngine > clipEngine;
+  if ( mApplyClipFilter )
+  {
+    clipEngine.reset( QgsGeometry::createGeometryEngine( mClipFilterGeom.constGet() ) );
+    clipEngine->prepareGeometry();
+  }
+
   // 1. fetch features
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
@@ -410,6 +435,9 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
 
     if ( !fet.hasGeometry() )
       continue; // skip features without geometry
+
+    if ( clipEngine && !clipEngine->intersects( fet.geometry().constGet() ) )
+      continue; // skip features outside of clipping region
 
     context.expressionContext().setFeature( fet );
     QgsSymbol *sym = mRenderer->symbolForFeature( fet, context );

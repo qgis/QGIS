@@ -1,0 +1,107 @@
+# -*- coding: utf-8 -*-
+"""QGIS Unit tests for QgsVectorLayerRenderer
+
+.. note:: This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+"""
+__author__ = 'Nyall Dawson'
+__date__ = '2020-06'
+__copyright__ = 'Copyright 2020, The QGIS Project'
+
+import qgis  # NOQA
+
+import os
+
+from qgis.PyQt.QtCore import QSize, QDir
+
+from qgis.core import (QgsVectorLayer,
+                       QgsMapClippingRegion,
+                       QgsRectangle,
+                       QgsMultiRenderChecker,
+                       QgsGeometry,
+                       QgsSingleSymbolRenderer,
+                       QgsMapSettings,
+                       QgsFillSymbol,
+                       QgsCoordinateReferenceSystem
+                       )
+from qgis.testing import start_app, unittest
+from utilities import (unitTestDataPath)
+
+# Convenience instances in case you may need them
+# not used in this test
+start_app()
+TEST_DATA_DIR = unitTestDataPath()
+
+
+class TestQgsVectorLayerRenderer(unittest.TestCase):
+
+    def setUp(self):
+        self.report = "<h1>Python QgsVectorLayerRenderer Tests</h1>\n"
+
+    def tearDown(self):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
+
+    def testRenderWithIntersectsRegions(self):
+        poly_layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'polys.shp'))
+        self.assertTrue(poly_layer.isValid())
+
+        sym1 = QgsFillSymbol.createSimple({'color': '#ff00ff', 'outline_color': '#000000', 'outline_width': '1'})
+        renderer = QgsSingleSymbolRenderer(sym1)
+        poly_layer.setRenderer(renderer)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        mapsettings.setExtent(QgsRectangle(-13875783.2, 2266009.4, -8690110.7, 6673344.5))
+        mapsettings.setLayers([poly_layer])
+
+        region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon ((-11725957 5368254, -12222900 4807501, -12246014 3834025, -12014878 3496059, -11259833 3518307, -10751333 3621153, -10574129 4516741, -10847640 5194995, -11105742 5325957, -11725957 5368254))'))
+        region2 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon ((-11032549 5421399, -11533344 4693167, -11086481 4229112, -11167378 3742984, -10616504 3553984, -10161936 3925771, -9618766 4668482, -9472380 5620753, -10115709 5965063, -11032549 5421399))'))
+        mapsettings.addClippingRegion(region)
+        mapsettings.addClippingRegion(region2)
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('vectorlayerrenderer')
+        renderchecker.setControlName('expected_intersects_region')
+        result = renderchecker.runTest('expected_intersects_region')
+        self.report += renderchecker.report()
+        self.assertTrue(result)
+
+    def testRenderWithIntersectsRegionsSymbolLayers(self):
+        poly_layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'polys.shp'))
+        self.assertTrue(poly_layer.isValid())
+
+        sym1 = QgsFillSymbol.createSimple({'color': '#ff00ff', 'outline_color': '#000000', 'outline_width': '1'})
+        renderer = QgsSingleSymbolRenderer(sym1)
+        renderer.setUsingSymbolLevels(True)
+        poly_layer.setRenderer(renderer)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        mapsettings.setExtent(QgsRectangle(-13875783.2, 2266009.4, -8690110.7, 6673344.5))
+        mapsettings.setLayers([poly_layer])
+
+        region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon ((-11725957 5368254, -12222900 4807501, -12246014 3834025, -12014878 3496059, -11259833 3518307, -10751333 3621153, -10574129 4516741, -10847640 5194995, -11105742 5325957, -11725957 5368254))'))
+        region2 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon ((-11032549 5421399, -11533344 4693167, -11086481 4229112, -11167378 3742984, -10616504 3553984, -10161936 3925771, -9618766 4668482, -9472380 5620753, -10115709 5965063, -11032549 5421399))'))
+        mapsettings.addClippingRegion(region)
+        mapsettings.addClippingRegion(region2)
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('vectorlayerrenderer')
+        renderchecker.setControlName('expected_intersects_region')
+        result = renderchecker.runTest('expected_intersects_region')
+        self.report += renderchecker.report()
+        self.assertTrue(result)
+
+
+if __name__ == '__main__':
+    unittest.main()
