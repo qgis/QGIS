@@ -200,16 +200,10 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
     mPen.setStyle( Qt::CustomDashLine );
 
     //scale pattern vector
-    double dashWidthDiv = qgsDoubleNear( scaledWidth, 0 ) ? 1.0 : scaledWidth;
+    //note that Qt seems to have issues with scaling dash patterns with very small pen widths.
+    //treating the pen as having no less than a 1 pixel size avoids the worst of these issues
+    const double dashWidthDiv = std::max( 1.0, scaledWidth );
 
-    //fix dash pattern width in Qt 4.8
-    QStringList versionSplit = QString( qVersion() ).split( '.' );
-    if ( versionSplit.size() > 1
-         && versionSplit.at( 1 ).toInt() >= 8
-         && scaledWidth < 1.0 )
-    {
-      dashWidthDiv = 1.0;
-    }
     QVector<qreal> scaledVector;
     QVector<qreal>::const_iterator it = mCustomDashVector.constBegin();
     for ( ; it != mCustomDashVector.constEnd(); ++it )
@@ -545,23 +539,9 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   //dash dot vector
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCustomDash ) )
   {
-    double scaledWidth = context.renderContext().convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
-    double dashWidthDiv = mPen.widthF();
-
-    if ( hasStrokeWidthExpression )
-    {
-      dashWidthDiv = pen.widthF();
-      scaledWidth = pen.widthF();
-    }
-
-    //fix dash pattern width in Qt 4.8
-    QStringList versionSplit = QString( qVersion() ).split( '.' );
-    if ( versionSplit.size() > 1
-         && versionSplit.at( 1 ).toInt() >= 8
-         && scaledWidth < 1.0 )
-    {
-      dashWidthDiv = 1.0;
-    }
+    //note that Qt seems to have issues with scaling dash patterns with very small pen widths.
+    //treating the pen as having no less than a 1 pixel size avoids the worst of these issues
+    const double dashWidthDiv = std::max( hasStrokeWidthExpression ? pen.widthF() : mPen.widthF(), 1.0 );
 
     QVector<qreal> dashVector;
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyCustomDash, context.renderContext().expressionContext() );
