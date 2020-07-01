@@ -67,7 +67,7 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
     void setBrightness( int brightness ) { mBrightness = qBound( -255, brightness, 255 ); }
 
     /**
-     * Returns currect brightness level.
+     * Returns current brightness level.
      * \see setBrightness()
      */
     int brightness() const { return mBrightness; }
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
     void setContrast( int contrast ) { mContrast = qBound( -100, contrast, 100 ); }
 
     /**
-     * Returns currect contrast level.
+     * Returns current contrast level.
      * \see setContrast()
      */
     int contrast() const { return mContrast; }
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
     void setGamma( double gamma ) { mGamma = qBound( 0.1, gamma, 10.0 ); }
 
     /**
-     * Returns currect gamma value.
+     * Returns current gamma value.
      * \see setGamma()
      *
      * \since QGIS 3.16
