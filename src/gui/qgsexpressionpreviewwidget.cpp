@@ -55,10 +55,12 @@ void QgsExpressionPreviewWidget::setCurrentFeature( const QgsFeature &feature )
     QgsFeature validFeature( feature );
     validFeature.setValid( true );
     mExpressionContext.setFeature( validFeature );
+    mFeaturePickerWidget->setEnabled( false );
   }
   else
   {
     mExpressionContext.setFeature( feature );
+    mFeaturePickerWidget->setEnabled( true );
   }
   refreshPreview();
 }
