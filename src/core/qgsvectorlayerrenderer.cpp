@@ -161,6 +161,8 @@ bool QgsVectorLayerRenderer::render()
 
   QgsRenderContext &context = *renderContext();
 
+  QgsScopedQPainterState painterState( context.painter() );
+
   // MUST be created in the thread doing the rendering
   mInterruptionChecker = qgis::make_unique< QgsVectorLayerRendererInterruptionChecker >( context );
   bool usingEffect = false;
