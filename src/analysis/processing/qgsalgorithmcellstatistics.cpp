@@ -109,7 +109,7 @@ void QgsCellStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "STATISTIC" ), QObject::tr( "Statistic" ),  statistics, false, 0, false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "IGNORE_NODATA" ), QObject::tr( "Ignore NoData values" ), true ) );
 
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REF_LAYER" ), QObject::tr( "Reference layer" ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REFERENCE_LAYER" ), QObject::tr( "Reference layer" ) ) );
 
   std::unique_ptr< QgsProcessingParameterNumber > output_nodata_parameter = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999, true );
   output_nodata_parameter->setFlags( output_nodata_parameter->flags() | QgsProcessingParameterDefinition::FlagAdvanced );

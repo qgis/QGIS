@@ -2129,7 +2129,7 @@ void TestQgsProcessingAlgs::cellStatistics()
   parameters.insert( QStringLiteral( "INPUT" ), inputDatasetPaths );
   parameters.insert( QStringLiteral( "STATISTIC" ), statistic );
   parameters.insert( QStringLiteral( "IGNORE_NODATA" ), ignoreNoData );
-  parameters.insert( QStringLiteral( "REF_LAYER" ), myDataPath + referenceLayer );
+  parameters.insert( QStringLiteral( "REFERENCE_LAYER" ), myDataPath + referenceLayer );
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   //prepare expectedRaster
