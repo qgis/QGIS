@@ -195,7 +195,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
 
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, polygonSource.get() );
 
-  // Initialize random engine
+  // Initialize random engine -- note that we only use this if the user has specified a fixed seed
   std::random_device rd;
   std::mt19937 mt( !mUseRandomSeed ? rd() : mRandSeed );
   std::uniform_real_distribution<> uniformDist( 0, 1 );
@@ -266,11 +266,10 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
       minDistanceForThisFeature = mMinDistanceProperty.valueAsDouble( expressionContext, minDistanceForThisFeature );
     const double pointProgressIncrement = featureProgressStep / ( numberPointsForThisFeature * maxAttemptsForThisFeature );
     double pointProgress = 0.0;
-    unsigned long fseed = uniformIntDist( mt );
     // Check if we can avoid using the acceptPoint function
     if ( ( minDistanceForThisFeature == 0 ) && ( mMinDistanceGlobal == 0 ) )
     {
-      QVector< QgsPointXY > newPoints = polyGeom.randomPointsInPolygon( numberPointsForThisFeature, fseed );
+      QVector< QgsPointXY > newPoints = polyGeom.randomPointsInPolygon( numberPointsForThisFeature, mUseRandomSeed ? uniformIntDist( mt ) : 0 );
       for ( int i = 0; i < newPoints.length(); i++ )
       {
         // add the point
@@ -342,7 +341,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
           indexPoints++;
         }
         return true;
-      }, fseed, feedback, maxAttemptsForThisFeature );
+      },  mUseRandomSeed ? uniformIntDist( mt ) : 0, feedback, maxAttemptsForThisFeature );
 
       // create and output features for the generated points
       for ( int i = 0; i < newPoints.length(); i++ )
