@@ -295,6 +295,11 @@ bool QgsVectorLayerRenderer::render()
     context.setVectorSimplifyMethod( vectorMethod );
   }
 
+  if ( mApplyClipGeometries )
+  {
+    context.setFeatureClipGeometry( mClipFeatureGeom );
+  }
+
   QgsFeatureIterator fit = mSource->getFeatures( featureRequest );
   // Attach an interruption checker so that iterators that have potentially
   // slow fetchFeature() implementations, such as in the WFS provider, can
@@ -351,12 +356,6 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
 
       if ( clipEngine && !clipEngine->intersects( fet.geometry().constGet() ) )
         continue; // skip features outside of clipping region
-
-      if ( mApplyClipGeometries )
-      {
-        QgsGeometry original = fet.geometry();
-        fet.setGeometry( original.intersection( mClipFeatureGeom ) );
-      }
 
       context.expressionContext().setFeature( fet );
 
@@ -451,12 +450,6 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
 
     if ( clipEngine && !clipEngine->intersects( fet.geometry().constGet() ) )
       continue; // skip features outside of clipping region
-
-    if ( mApplyClipGeometries )
-    {
-      QgsGeometry original = fet.geometry();
-      fet.setGeometry( original.intersection( mClipFeatureGeom ) );
-    }
 
     context.expressionContext().setFeature( fet );
     QgsSymbol *sym = mRenderer->symbolForFeature( fet, context );
