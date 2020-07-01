@@ -241,6 +241,8 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
         break; //in case some slow data sources are loaded
       for ( int band : i.bands )
       {
+        if ( feedback->isCanceled() )
+          break; //in case some slow data sources are loaded
         std::unique_ptr< QgsRasterBlock > b( i.interface->block( band, blockExtent, iterCols, iterRows ) );
         inputBlocks.emplace_back( std::move( b ) );
       }
