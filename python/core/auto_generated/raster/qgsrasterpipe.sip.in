@@ -30,7 +30,7 @@ Base class for processing modules.
       ResamplerRole,
       ProjectorRole,
       NullerRole,
-      HueSaturationRole
+      HueSaturationRole,
     };
 
     QgsRasterPipe();

@@ -13,7 +13,7 @@
 class QgsBrightnessContrastFilter : QgsRasterInterface
 {
 %Docstring
-Brightness/contrast filter pipe for rasters.
+Brightness/contrast and gamma correction filter pipe for rasters.
 %End
 
 %TypeHeaderCode
@@ -24,27 +24,94 @@ Brightness/contrast filter pipe for rasters.
 
     virtual QgsBrightnessContrastFilter *clone() const /Factory/;
 
+%Docstring
+Clone itself, create deep copy
+%End
 
     virtual int bandCount() const;
 
+%Docstring
+Gets number of bands
+%End
 
     virtual Qgis::DataType dataType( int bandNo ) const;
 
+%Docstring
+Returns data type for the band specified by number
+%End
 
     virtual bool setInput( QgsRasterInterface *input );
 
+%Docstring
+Set input.
+Returns ``True`` if set correctly, ``False`` if cannot use that input
+%End
 
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 
+%Docstring
+Read block of data using given extent and size.
+Returns pointer to data.
+Caller is responsible to free the memory returned.
+
+:param bandNo: band number
+:param extent: extent of block
+:param width: pixel width of block
+:param height: pixel height of block
+:param feedback: optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
+%End
 
     void setBrightness( int brightness );
+%Docstring
+Set brightness level. Acceptable value range is -255…255
+
+.. seealso:: :py:func:`brightness`
+%End
+
     int brightness() const;
+%Docstring
+Returns current brightness level.
+
+.. seealso:: :py:func:`setBrightness`
+%End
 
     void setContrast( int contrast );
+%Docstring
+Set contrast level. Acceptable value range is -100…100
+
+.. seealso:: :py:func:`contrast`
+%End
+
     int contrast() const;
+%Docstring
+Returns current contrast level.
+
+.. seealso:: :py:func:`setContrast`
+%End
+
+    void setGamma( double gamma );
+%Docstring
+Set gamma value. Acceptable value range is -0.1…10
+
+.. seealso:: :py:func:`gamma`
+
+.. versionadded:: 3.16
+%End
+
+    double gamma() const;
+%Docstring
+Returns current gamma value.
+
+.. seealso:: :py:func:`setGamma`
+
+.. versionadded:: 3.16
+%End
 
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
+%Docstring
+Write base class members to xml.
+%End
 
     virtual void readXml( const QDomElement &filterElem );
 

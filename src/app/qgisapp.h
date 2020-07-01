@@ -1297,6 +1297,22 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Decrease raster contrast
      * Valid for non wms raster layers only. */
     void decreaseContrast();
+
+    /**
+     * Increase raster gamma
+     * Valid for non wms raster layers only.
+     * \since QGIS 3.16
+     */
+    void increaseGamma();
+
+    /**
+     * Decrease raster gamma
+     * Valid for non wms raster layers only.
+     * \since QGIS 3.16
+     */
+    void decreaseGamma();
+
+
     //! plugin manager
     void showPluginManager();
     //! load Python support if possible
@@ -2104,8 +2120,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Do histogram stretch for singleband gray / multiband color rasters
     void histogramStretch( bool visibleAreaOnly = false, QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax );
 
-    //! Apply raster brightness
+    //! Apply raster brightness/contrast
     void adjustBrightnessContrast( int delta, bool updateBrightness = true );
+
+    /**
+     * Apply raster gamma
+     * \since QGIS 3.16
+     */
+    void adjustGamma( double delta );
 
     //! Copy a vector style from a layer to another one, if they have the same geometry type
     void duplicateVectorStyle( QgsVectorLayer *srcLayer, QgsVectorLayer *destLayer );

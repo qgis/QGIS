@@ -56,7 +56,7 @@ class CORE_EXPORT QgsRasterPipe
       ResamplerRole = 4,
       ProjectorRole = 5,
       NullerRole = 6,
-      HueSaturationRole = 7
+      HueSaturationRole = 7,
     };
 
     /**
