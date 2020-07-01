@@ -196,6 +196,9 @@ bool QgsVectorLayerRenderer::render()
       context.painter()->setClipPath( path, Qt::IntersectClip );
 
     mLabelClipFeatureGeom = QgsMapClippingUtils::calculateLabelIntersectionGeometry( mClippingRegions, context, mApplyLabelClipGeometries );
+
+    if ( mDiagramProvider )
+      mDiagramProvider->setClipFeatureGeometry( mLabelClipFeatureGeom );
   }
   mRenderer->modifyRequestExtent( requestExtent, context );
 

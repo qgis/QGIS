@@ -97,6 +97,13 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
      */
     virtual void registerFeature( QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() );
 
+    /**
+     * Sets a \a geometry to use to clip features to when registering them as diagrams.
+     *
+     * \since QGIS 3.16
+     */
+    void setClipFeatureGeometry( const QgsGeometry &geometry );
+
   protected:
     //! initialization method - called from constructors
     void init();
@@ -123,6 +130,8 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
 
     //! List of generated label features (owned by the provider)
     QList<QgsLabelFeature *> mFeatures;
+
+    QgsGeometry mLabelClipFeatureGeom;
 };
 
 #endif // QGSVECTORLAYERDIAGRAMPROVIDER_H
