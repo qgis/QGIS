@@ -161,16 +161,3 @@ INSERT INTO qgis_test.tb_test_double_pk (pk, value, geom) VALUES
     (2.718281828459045235360287471352662497757247093699959574966967627724076630353, 'second test', ST_SetSRID(ST_Point(-47.902, -15.763), 4326)),
     (1.333333333333333333333333333333333333333333333333333333333333333333333333333, 'third teste', ST_SetSRID(ST_Point(-47.751, -15.644), 4326));
 
-CREATE TABLE qgis_test.tb_test_numeric_pk
-(
-    pk NUMERIC(41, 40) PRIMARY KEY,
-    value VARCHAR(16),
-    geom geometry(Point, 4326)
-);
--- those values (pi, Euler's, and a third) will be truncated to fit
--- PostgreSQL's internal type size. The last digit will be rounded.
-INSERT INTO qgis_test.tb_test_numeric_pk (pk, value, geom) VALUES
-    (3.1415926535897932384626433832795028841972, 'first teste', ST_SetSRID(ST_Point(-47.887, -15.864), 4326)),
-    (2.7182818284590452353602874713526624977572, 'second test', ST_SetSRID(ST_Point(-47.902, -15.763), 4326)),
-    (1.3333333333333333333333333333333333333333, 'third teste', ST_SetSRID(ST_Point(-47.751, -15.644), 4326));
-
