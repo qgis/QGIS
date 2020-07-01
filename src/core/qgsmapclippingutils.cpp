@@ -179,3 +179,53 @@ QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMap
   path.addPolygon( result.asQPolygonF() );
   return path;
 }
+
+QgsGeometry QgsMapClippingUtils::calculateLabelIntersectionGeometry( const QList<QgsMapClippingRegion> &regions, const QgsRenderContext &context, bool &shouldClip )
+{
+  QgsGeometry result;
+  bool first = true;
+  shouldClip = false;
+  for ( const QgsMapClippingRegion &region : regions )
+  {
+    if ( region.geometry().type() != QgsWkbTypes::PolygonGeometry )
+      continue;
+
+    // for labeling, we clip using either painter clip regions or intersects type regions.
+    // unlike feature rendering, we clip features to painter clip regions for labeling, because
+    // we want the label to sit within the clip region if possible
+    if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::PainterClip &&
+         region.featureClip() != QgsMapClippingRegion::FeatureClippingType::Intersect )
+      continue;
+
+    shouldClip = true;
+    if ( first )
+    {
+      result = region.geometry();
+      first = false;
+    }
+    else
+    {
+      result = result.intersection( region.geometry() );
+    }
+  }
+
+  if ( !shouldClip )
+    return QgsGeometry();
+
+  // filter out polygon parts from result only
+  result.convertGeometryCollectionToSubclass( QgsWkbTypes::PolygonGeometry );
+
+  // lastly transform back to layer CRS
+  try
+  {
+    result.transform( context.coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugMsg( QStringLiteral( "Could not transform clipping region to layer CRS" ) );
+    shouldClip = false;
+    return QgsGeometry();
+  }
+
+  return result;
+}

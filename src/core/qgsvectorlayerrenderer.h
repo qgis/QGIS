@@ -165,6 +165,9 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     bool mApplyClipFilter = false;
     QgsGeometry mClipFeatureGeom;
     bool mApplyClipGeometries = false;
+    QgsGeometry mLabelClipFeatureGeom;
+    bool mApplyLabelClipGeometries = false;
+
 };
 
 
