@@ -194,6 +194,8 @@ bool QgsVectorLayerRenderer::render()
     const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, context, QgsMapLayerType::VectorLayer, needsPainterClipPath );
     if ( needsPainterClipPath )
       context.painter()->setClipPath( path, Qt::IntersectClip );
+
+    mLabelClipFeatureGeom = QgsMapClippingUtils::calculateLabelIntersectionGeometry( mClippingRegions, context, mApplyLabelClipGeometries );
   }
   mRenderer->modifyRequestExtent( requestExtent, context );
 
@@ -295,11 +297,6 @@ bool QgsVectorLayerRenderer::render()
     context.setVectorSimplifyMethod( vectorMethod );
   }
 
-  if ( mApplyClipGeometries )
-  {
-    context.setFeatureClipGeometry( mClipFeatureGeom );
-  }
-
   QgsFeatureIterator fit = mSource->getFeatures( featureRequest );
   // Attach an interruption checker so that iterators that have potentially
   // slow fetchFeature() implementations, such as in the WFS provider, can
@@ -357,6 +354,9 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
       if ( clipEngine && !clipEngine->intersects( fet.geometry().constGet() ) )
         continue; // skip features outside of clipping region
 
+      if ( mApplyClipGeometries )
+        context.setFeatureClipGeometry( mClipFeatureGeom );
+
       context.expressionContext().setFeature( fet );
 
       bool sel = context.showSelection() && mSelectedFeatureIds.contains( fet.id() );
@@ -385,6 +385,9 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
             QgsExpressionContextUtils::updateSymbolScope( symbol, symbolScope );
           }
 
+          if ( mApplyLabelClipGeometries )
+            context.setFeatureClipGeometry( mLabelClipFeatureGeom );
+
           if ( mLabelProvider )
           {
             mLabelProvider->registerFeature( fet, context, obstacleGeometry, symbol );
@@ -393,6 +396,9 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
           {
             mDiagramProvider->registerFeature( fet, context, obstacleGeometry );
           }
+
+          if ( mApplyLabelClipGeometries )
+            context.setFeatureClipGeometry( QgsGeometry() );
         }
       }
     }
@@ -433,6 +439,9 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
     clipEngine.reset( QgsGeometry::createGeometryEngine( mClipFilterGeom.constGet() ) );
     clipEngine->prepareGeometry();
   }
+
+  if ( mApplyLabelClipGeometries )
+    context.setFeatureClipGeometry( mLabelClipFeatureGeom );
 
   // 1. fetch features
   QgsFeature fet;
@@ -492,6 +501,9 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
     }
   }
 
+  if ( mApplyLabelClipGeometries )
+    context.setFeatureClipGeometry( QgsGeometry() );
+
   scopePopper.reset();
 
   if ( features.empty() )
@@ -518,6 +530,9 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
       levels[level].append( item );
     }
   }
+
+  if ( mApplyClipGeometries )
+    context.setFeatureClipGeometry( mClipFeatureGeom );
 
   // 2. draw features in correct order
   for ( int l = 0; l < levels.count(); l++ )

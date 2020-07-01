@@ -86,6 +86,20 @@ class CORE_EXPORT QgsMapClippingUtils
      * \returns combined painter clipping region for use when rendering maps
      */
     static QPainterPath calculatePainterClipRegion( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, QgsMapLayerType layerType, bool &shouldClip );
+
+    /**
+     * Returns the geometry representing the intersection of clipping \a regions from \a context which should be used to clip individual
+     * feature geometries while registering them with labeling engines.
+     *
+     * The returned geometry will be automatically reprojected into the same CRS as the source layer, ready for use for clipping features.
+     *
+     * \param regions list of clip regions which apply to the layer
+     * \param context a render context
+     * \param shouldClip will be set to TRUE if layer's features should be clipped for labeling, i.e. one or more clipping regions applies to the layer
+     *
+     * \returns combined clipping region for use when labeling features
+     */
+    static QgsGeometry calculateLabelIntersectionGeometry( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, bool &shouldClip );
 };
 
 #endif // QGSMAPCLIPPINGUTILS_H
