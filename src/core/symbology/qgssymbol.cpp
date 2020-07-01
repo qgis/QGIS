@@ -896,6 +896,14 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( context.vectorSimplifyMethod().simplifyAlgorithm() ) );
     segmentizedGeometry = simplifier.simplify( segmentizedGeometry );
   }
+  if ( !context.featureClipGeometry().isEmpty() )
+  {
+    // apply feature clipping from context to the rendered geometry only -- just like the render time simplification,
+    // we should NEVER apply this to the geometry attached to the feature itself. Doing so causes issues with certain
+    // renderer settings, e.g. if polygons are being rendered using a rule based renderer based on the feature's area,
+    // then we need to ensure that the original feature area is used instead of the clipped area..
+    segmentizedGeometry = segmentizedGeometry.intersection( context.featureClipGeometry() );
+  }
 
   QgsGeometry renderedBoundsGeom;
 
