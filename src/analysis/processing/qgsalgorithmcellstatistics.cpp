@@ -89,7 +89,7 @@ QgsCellStatisticsAlgorithm *QgsCellStatisticsAlgorithm::createInstance() const
 
 void QgsCellStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "INPUTS" ),
+  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "INPUT" ),
                 QObject::tr( "Input layers" ), QgsProcessing::TypeRaster ) );
 
   QStringList statistics = QStringList();

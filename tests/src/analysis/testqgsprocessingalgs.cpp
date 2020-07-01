@@ -2126,7 +2126,7 @@ void TestQgsProcessingAlgs::cellStatistics()
 
   QVariantMap parameters;
 
-  parameters.insert( QStringLiteral( "INPUTS" ), inputDatasetPaths );
+  parameters.insert( QStringLiteral( "INPUT" ), inputDatasetPaths );
   parameters.insert( QStringLiteral( "STATISTIC" ), statistic );
   parameters.insert( QStringLiteral( "IGNORE_NODATA" ), ignoreNoData );
   parameters.insert( QStringLiteral( "REF_LAYER" ), myDataPath + referenceLayer );
