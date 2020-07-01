@@ -237,14 +237,14 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
   }
 
   // There were problems in reading the file: throw
-  if ( ! layer.isValid() && ! rlayer.isValid() )
+  if ( ! layer.isValid() && ! rlayer.isValid() && children.isEmpty() )
   {
     QString errorMessage;
     // If it is file based and the file exists, there might be a permission error, let's change
     // the message to give the user a hint about this possiblity.
     if ( QFile::exists( path ) )
     {
-      errorMessage = tr( "Error opening file, check file and directory permissions on\n%1" ).arg( QDir::toNativeSeparators( path ) );
+      errorMessage = tr( "The file does not contain any layer or there was an error opening the file.\nCheck file and directory permissions on\n%1" ).arg( QDir::toNativeSeparators( path ) );
     }
     else
     {
