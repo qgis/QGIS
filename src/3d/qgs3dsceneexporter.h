@@ -25,6 +25,9 @@ class QgsTessellatedPolygonGeometry;
 class QgsTerrainTileEntity;
 class QgsTerrainEntity;
 class Qgs3DMapSettings;
+class QgsFlatTerrainGenerator;
+class QgsDemTerrainGenerator;
+class QgsChunkNode;
 
 class Qgs3DSceneExporter
 {
@@ -36,10 +39,15 @@ class Qgs3DSceneExporter
     void parseEntity( QgsTerrainEntity *terrain );
     void saveToFile( const QString &filePath );
   private:
-    void parseEntity( QgsTerrainTileEntity *tileEntity );
     void processAttribute( Qt3DRender::QAttribute *attribute );
     void process( QgsTessellatedPolygonGeometry *geom );
     void process( Qt3DExtras::QPlaneGeometry *plane );
+
+    void generateFlatTerrain( QgsTerrainEntity *terrain, QgsChunkNode *node );
+    void generateDemTerrain( QgsTerrainEntity *terrain, QgsChunkNode *node );
+
+    void parseDemTile( QgsTerrainTileEntity *tileEntity );
+    void parseFlatTile( QgsTerrainTileEntity *tileEntity );
   private:
     QVector<float> mVertxPosition;
     QVector<int> mIndexes;

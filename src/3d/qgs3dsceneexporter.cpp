@@ -37,6 +37,11 @@
 #include "qgsterraingenerator.h"
 #include "qgs3dmapsettings.h"
 #include "qgsflatterraingenerator.h"
+#include "qgsdemterraingenerator.h"
+#include "qgsdemterraintileloader_p.h"
+#include "qgsdemterraintilegeometry_p.h"
+
+#include <numeric>
 
 template<typename T>
 QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute )
@@ -45,6 +50,9 @@ QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute )
   uint bytesOffset = attribute->byteOffset();
   uint bytesStride = attribute->byteStride();
   uint vertexSize = attribute->vertexSize();
+  qDebug() << "bytesOffset=" << bytesOffset;
+  qDebug() << "bytesStride=" << bytesStride;
+  qDebug() << "vertexSize=" << vertexSize;
 
   QVector<T> result;
   for ( int i = bytesOffset; i < data.size(); i += bytesStride )
@@ -63,6 +71,28 @@ QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute )
   }
   return result;
 }
+
+template<>
+QVector<unsigned int> getAttributeData<unsigned int>( Qt3DRender::QAttribute *attribute )
+{
+  QByteArray data = attribute->buffer()->data();
+
+  QVector<unsigned int> result;
+  for ( int i = 0; i < data.size(); i += sizeof( unsigned int ) )
+  {
+    // maybe a problem with indienness can happen?
+    unsigned int v;
+    char *vArr = ( char * )&v;
+    for ( int k = 0; k < sizeof( unsigned int ); ++k )
+    {
+      vArr[k] = data.at( i + k );
+    }
+    result.push_back( v );
+  }
+
+  return result;
+}
+
 
 QVector<float> createPlaneVertexData( float w, float h, const QSize &resolution )
 {
@@ -185,52 +215,66 @@ void Qgs3DSceneExporter::parseEntity( Qt3DCore::QEntity *entity )
 
 void Qgs3DSceneExporter::parseEntity( QgsTerrainEntity *terrain )
 {
-  if ( terrain->map3D().terrainGenerator()->type() != QgsTerrainGenerator::Flat )
-    return;
-  QgsFlatTerrainGenerator *generator = dynamic_cast<QgsFlatTerrainGenerator *>( terrain->map3D().terrainGenerator() );
   QgsChunkNode *root = terrain->rootNode();
-  QgsChunkLoader *loader = generator->createChunkLoader( root );
+  QgsTerrainGenerator *generator = terrain->map3D().terrainGenerator();
+  switch ( generator->type() )
+  {
+    case QgsTerrainGenerator::Dem:
+      generateDemTerrain( terrain, root );
+      break;
+    case QgsTerrainGenerator::Flat:
+      generateFlatTerrain( terrain, root );
+      break;
+  }
+}
+
+void Qgs3DSceneExporter::generateFlatTerrain( QgsTerrainEntity *terrain, QgsChunkNode *node )
+{
+  QgsFlatTerrainGenerator *generator = dynamic_cast<QgsFlatTerrainGenerator *>( terrain->map3D().terrainGenerator() );
+  QgsChunkLoader *loader = generator->createChunkLoader( node );
   FlatTerrainChunkLoader *floatTerrainLoader = qobject_cast<FlatTerrainChunkLoader *>( loader );
   if ( floatTerrainLoader == nullptr ) return;
   Qt3DCore::QEntity *entity = floatTerrainLoader->createEntity( nullptr );
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
-  if ( tileEntity != nullptr ) parseEntity( tileEntity );
+  if ( tileEntity != nullptr ) parseFlatTile( tileEntity );
   if ( entity != nullptr ) delete entity;
 }
 
-void Qgs3DSceneExporter::processAttribute( Qt3DRender::QAttribute *attribute )
+void Qgs3DSceneExporter::generateDemTerrain( QgsTerrainEntity *terrain, QgsChunkNode *node )
 {
-  QVector<float> floatData = getAttributeData<float>( attribute );
-
-  int currentIndex = mIndexes.size() + 1;
-
-  for ( int i = 0; i < floatData.size(); i += 3 )
+  QgsChunkNode *const *children = node->children();
+  bool isLeaf = true;
+  for ( int i = 0; i < 4; ++i )
   {
-    mVertxPosition << floatData[i] << floatData[i + 1] << floatData[i + 2];
-    mIndexes << currentIndex;
-    ++currentIndex;
+    if ( children[i] == nullptr ) continue;
+    generateDemTerrain( terrain, children[i] );
+    isLeaf = false;
+  }
+  if ( !isLeaf ) return;
+
+  if ( node->entity() != nullptr )
+  {
+    // read tile data as displayed in the scene
+    Qt3DCore::QEntity *entity = node->entity();
+    qDebug() << "Loading existing entity";
+    QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
+    if ( tileEntity != nullptr ) parseDemTile( tileEntity );
+  }
+  else
+  {
+    // create the entity yourself and then delete it
+    // TODO: create tile data without using the jobs system
+    QgsDemTerrainTileLoader *demTerrainLoader = new QgsDemTerrainTileLoader( terrain, node );
+    if ( demTerrainLoader == nullptr ) return;
+    Qt3DCore::QEntity *entity = demTerrainLoader->createEntity( nullptr );
+    if ( entity == nullptr ) return;
+    QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
+    if ( tileEntity != nullptr ) parseDemTile( tileEntity );
+    delete entity;
   }
 }
 
-void Qgs3DSceneExporter::process( QgsTessellatedPolygonGeometry *geom )
-{
-  // Just use position attributes for now
-  processAttribute( geom->mPositionAttribute );
-}
-
-void Qgs3DSceneExporter::process( Qt3DExtras::QPlaneGeometry *geom )
-{
-  for ( Qt3DRender::QAttribute *attribute : geom->attributes() )
-  {
-    if ( attribute->name() == Qt3DRender::QAttribute::defaultPositionAttributeName() )
-    {
-      qDebug() << "Processing plane gemetry attribute";
-      processAttribute( attribute );
-    }
-  }
-}
-
-void Qgs3DSceneExporter::parseEntity( QgsTerrainTileEntity *tileEntity )
+void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity )
 {
   qDebug() << "Parsing Terrain tile entity";
   Qt3DRender::QGeometryRenderer *mesh = nullptr;
@@ -275,18 +319,118 @@ void Qgs3DSceneExporter::parseEntity( QgsTerrainTileEntity *tileEntity )
   }
 }
 
+void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
+{
+  qDebug() << "Parsing DEM Terrain tile entity";
+  Qt3DRender::QGeometryRenderer *mesh = nullptr;
+  Qt3DCore::QTransform *transform = nullptr;
+  for ( Qt3DCore::QComponent *component : tileEntity->components() )
+  {
+    Qt3DRender::QGeometryRenderer *meshTyped = qobject_cast<Qt3DRender::QGeometryRenderer *>( component );
+    if ( meshTyped != nullptr )
+    {
+      mesh = meshTyped;
+      continue;
+    }
+    Qt3DCore::QTransform *transformTyped = qobject_cast<Qt3DCore::QTransform *>( component );
+    if ( transformTyped != nullptr )
+    {
+      transform = transformTyped;
+    }
+  }
+  
+  Qt3DRender::QGeometry *geometry = mesh->geometry();
+  DemTerrainTileGeometry *tileGeometry = qobject_cast<DemTerrainTileGeometry *>( geometry );
+  if ( tileGeometry == nullptr )
+  {
+    qDebug() << "WARNING : " << "Qt3DExtras::QPlaneGeometry* is expected at " << __FILE__ << ":" << __LINE__;
+    return;
+  }
+
+  float scale = transform->scale();
+  QVector3D translation = transform->translation();
+
+  QVector<float> positionBuffer = getAttributeData<float>( tileGeometry->positionAttribute() );
+  QVector<unsigned int> indexBuffer = getAttributeData<unsigned int>( tileGeometry->indexAttribute() );
+
+  int startIndex = mVertxPosition.size() / 3 + 1;
+  for ( int i : indexBuffer ) mIndexes << startIndex + i;
+
+  for ( int i = 0; i < positionBuffer.size(); i += 3 )
+  {
+    for ( int j = 0; j < 3; ++j )
+    {
+      mVertxPosition << positionBuffer[i + j] * scale + translation[j];
+    }
+  }
+}
+
+void Qgs3DSceneExporter::processAttribute( Qt3DRender::QAttribute *attribute )
+{
+  QVector<float> floatData = getAttributeData<float>( attribute );
+
+  int currentIndex = mIndexes.size() + 1;
+
+  for ( int i = 0; i < floatData.size(); i += 3 )
+  {
+    mVertxPosition << floatData[i] << floatData[i + 1] << floatData[i + 2];
+    mIndexes << currentIndex;
+    ++currentIndex;
+  }
+}
+
+void Qgs3DSceneExporter::process( QgsTessellatedPolygonGeometry *geom )
+{
+  // Just use position attributes for now
+  processAttribute( geom->mPositionAttribute );
+}
+
+void Qgs3DSceneExporter::process( Qt3DExtras::QPlaneGeometry *geom )
+{
+  for ( Qt3DRender::QAttribute *attribute : geom->attributes() )
+  {
+    if ( attribute->name() == Qt3DRender::QAttribute::defaultPositionAttributeName() )
+    {
+      qDebug() << "Processing plane gemetry attribute";
+      processAttribute( attribute );
+    }
+  }
+}
+
 void Qgs3DSceneExporter::saveToFile( const QString &filePath )
 {
   QFile file( filePath );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Text ) )
     return;
 
+  float maxX = std::numeric_limits<float>::min(), maxY = std::numeric_limits<float>::min(), maxZ = std::numeric_limits<float>::min();
+  float minX = std::numeric_limits<float>::max(), minY = std::numeric_limits<float>::max(), minZ = std::numeric_limits<float>::max();
+  for ( int i = 0; i < mVertxPosition.size(); i += 3 )
+  {
+    if ( mVertxPosition[i] > maxX ) maxX = mVertxPosition[i];
+    if ( mVertxPosition[i + 1] > maxY ) maxY = mVertxPosition[i + 1];
+    if ( mVertxPosition[i + 2] > maxZ ) maxZ = mVertxPosition[i + 2];
+    if ( mVertxPosition[i] < minX ) minX = mVertxPosition[i];
+    if ( mVertxPosition[i + 1] < minY ) minY = mVertxPosition[i + 1];
+    if ( mVertxPosition[i + 2] < minZ ) minZ = mVertxPosition[i + 2];
+  }
+
+  float diffX = 1.0f, diffY = 1.0f, diffZ = 1.0f;
+  if ( mVertxPosition.size() >= 3 )
+  {
+    diffX = maxX - minX;
+    diffY = maxY - minY;
+    diffZ = maxZ - minZ;
+  }
+
+  float scale = qMin( diffX, qMin( diffY, diffZ ) );
+
   QTextStream out( &file );
 
   // Construct vertices
   for ( int i = 0; i < mVertxPosition.size(); i += 3 )
   {
-    out << "v " << mVertxPosition[i] << " " << mVertxPosition[i + 1] << " " << mVertxPosition[i + 2] << "\n";
+    out << "v " << mVertxPosition[i] / scale << " " << mVertxPosition[i + 1] / scale << " " << mVertxPosition[i + 2] / scale << "\n";
   }
 
   // Construct faces
