@@ -115,6 +115,7 @@
         <file>themes/default/algorithms/mAlgorithmPolygonToLine.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomExponentialRaster.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomGammaRaster.svg</file>
+        <file>themes/default/algorithms/mAlgorithmRandomPointsInPolygons.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomPointsOnLines.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomPointsWithinPolygon.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomPointsWithinExtent.svg</file>

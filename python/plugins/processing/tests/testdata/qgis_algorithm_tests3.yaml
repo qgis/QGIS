@@ -592,6 +592,74 @@ tests:
         type: vector
         name: randompointsinextent.gml
 
+  - algorithm: native:randompointsinpolygons
+    name: Random points in polygons, 10 pts, min distance 0.0, 10 tries, seed 1, attributes
+    params:
+      INCLUDE_POLYGON_ATTRIBUTES: true
+      INPUT:
+        name: polys.gml
+        type: vector
+      MAX_TRIES_PER_POINT: 10
+      MIN_DISTANCE: 0.0
+      MIN_DISTANCE_GLOBAL: 0.0
+      POINTS_NUMBER: 10
+      SEED: 1
+    results:
+      OUTPUT:
+        name: expected/randompointsinpolygons.gml
+        type: vector
+
+  - algorithm: native:randompointsinpolygons
+    name: Random points in polygons, 10 pts, global min distance 2.0, 10 tries, seed 1, attributes
+    params:
+      INCLUDE_POLYGON_ATTRIBUTES: true
+      INPUT:
+        name: polys.gml
+        type: vector
+      MAX_TRIES_PER_POINT: 10
+      MIN_DISTANCE: 0.0
+      MIN_DISTANCE_GLOBAL: 2.0
+      POINTS_NUMBER: 10
+      SEED: 1
+    results:
+      OUTPUT:
+        name: expected/randompointsinpolygons_gmin2.gml
+        type: vector
+
+  - algorithm: native:randompointsinpolygons
+    name: Random points in polygons, 10 pts, min distance 2.0, 10 tries, seed 1, no attributes
+    params:
+      INCLUDE_POLYGON_ATTRIBUTES: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      MAX_TRIES_PER_POINT: 10
+      MIN_DISTANCE: 2.0
+      MIN_DISTANCE_GLOBAL: 0.0
+      POINTS_NUMBER: 10
+      SEED: 1
+    results:
+      OUTPUT:
+        name: expected/randompointsinpolygons_min2.gml
+        type: vector
+
+  - algorithm: native:randompointsinpolygons
+    name: Random points in polygons, 10 pts, global min distance 2.0, min distance 2.0, 10 tries, seed 1, attributes
+    params:
+      INCLUDE_POLYGON_ATTRIBUTES: true
+      INPUT:
+        name: polys.gml
+        type: vector
+      MAX_TRIES_PER_POINT: 10
+      MIN_DISTANCE: 2.0
+      MIN_DISTANCE_GLOBAL: 2.0
+      POINTS_NUMBER: 10
+      SEED: 1
+    results:
+      OUTPUT:
+        name: expected/randompointsinpolygons_min2_gmin2.gml
+        type: vector
+
   - algorithm: native:randompointsonlines
     name: Random points on lines, seed 1, multilines - one empty geom
     params:
