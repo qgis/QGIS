@@ -48,6 +48,8 @@ class Qgs3DSceneExporter
 
     void parseDemTile( QgsTerrainTileEntity *tileEntity );
     void parseFlatTile( QgsTerrainTileEntity *tileEntity );
+
+    QgsTerrainTileEntity *createDEMTileEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
   private:
     QVector<float> mVertxPosition;
     QVector<int> mIndexes;

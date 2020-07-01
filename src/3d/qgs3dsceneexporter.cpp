@@ -50,9 +50,6 @@ QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute )
   uint bytesOffset = attribute->byteOffset();
   uint bytesStride = attribute->byteStride();
   uint vertexSize = attribute->vertexSize();
-  qDebug() << "bytesOffset=" << bytesOffset;
-  qDebug() << "bytesStride=" << bytesStride;
-  qDebug() << "vertexSize=" << vertexSize;
 
   QVector<T> result;
   for ( int i = bytesOffset; i < data.size(); i += bytesStride )
@@ -240,6 +237,82 @@ void Qgs3DSceneExporter::generateFlatTerrain( QgsTerrainEntity *terrain, QgsChun
   if ( entity != nullptr ) delete entity;
 }
 
+static void _heightMapMinMax( const QByteArray &heightMap, float &zMin, float &zMax )
+{
+  const float *zBits = ( const float * ) heightMap.constData();
+  int zCount = heightMap.count() / sizeof( float );
+  bool first = true;
+
+  zMin = zMax = std::numeric_limits<float>::quiet_NaN();
+  for ( int i = 0; i < zCount; ++i )
+  {
+    float z = zBits[i];
+    if ( std::isnan( z ) )
+      continue;
+    if ( first )
+    {
+      zMin = zMax = z;
+      first = false;
+    }
+    zMin = std::min( zMin, z );
+    zMax = std::max( zMax, z );
+  }
+}
+
+QgsTerrainTileEntity *Qgs3DSceneExporter::createDEMTileEntity( QgsTerrainEntity *terrain, QgsChunkNode *node )
+{
+  const Qgs3DMapSettings &map = terrain->map3D();
+  QgsDemTerrainGenerator *generator = static_cast<QgsDemTerrainGenerator *>( map.terrainGenerator() );
+  QgsDemHeightMapGenerator *heightMapGenerator = generator->heightMapGenerator();
+  float resolution = generator->resolution();
+//  heightMapGenerator->set
+  QByteArray heightMap = heightMapGenerator->renderSynchronously( node->tileX(), node->tileY(), node->tileZ() );
+  float skirtHeight = generator->skirtHeight();
+
+  float zMin, zMax;
+  _heightMapMinMax( heightMap, zMin, zMax );
+
+  if ( std::isnan( zMin ) || std::isnan( zMax ) )
+  {
+    // no data available for this tile
+    return nullptr;
+  }
+
+  QgsRectangle extent = map.terrainGenerator()->tilingScheme().tileToExtent( node->tileX(), node->tileY(), node->tileZ() ); //node->extent;
+  double x0 = extent.xMinimum() - map.origin().x();
+  double y0 = extent.yMinimum() - map.origin().y();
+  double side = extent.width();
+  double half = side / 2;
+
+  QgsTerrainTileEntity *entity = new QgsTerrainTileEntity( node->tileId() );
+
+  // create geometry renderer
+
+  Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
+  mesh->setGeometry( new DemTerrainTileGeometry( resolution, side, map.terrainVerticalScale(), skirtHeight, heightMap, mesh ) );
+  entity->addComponent( mesh ); // takes ownership if the component has no parent
+
+  // create material
+  // TODO: create texture component
+//      createTextureComponent( entity, map.isTerrainShadingEnabled(), map.terrainShadingMaterial() );
+
+  // create transform
+
+  Qt3DCore::QTransform *transform = nullptr;
+  transform = new Qt3DCore::QTransform();
+  entity->addComponent( transform );
+
+  transform->setScale( side );
+  transform->setTranslation( QVector3D( x0 + half, 0, - ( y0 + half ) ) );
+
+  node->setExactBbox( QgsAABB( x0, zMin * map.terrainVerticalScale(), -y0, x0 + side, zMax * map.terrainVerticalScale(), -( y0 + side ) ) );
+
+  entity->setEnabled( false );
+//    entity->setParent( nullptr );
+
+  return entity;
+}
+
 void Qgs3DSceneExporter::generateDemTerrain( QgsTerrainEntity *terrain, QgsChunkNode *node )
 {
   QgsChunkNode *const *children = node->children();
@@ -262,15 +335,10 @@ void Qgs3DSceneExporter::generateDemTerrain( QgsTerrainEntity *terrain, QgsChunk
   }
   else
   {
-    // create the entity yourself and then delete it
-    // TODO: create tile data without using the jobs system
-    QgsDemTerrainTileLoader *demTerrainLoader = new QgsDemTerrainTileLoader( terrain, node );
-    if ( demTerrainLoader == nullptr ) return;
-    Qt3DCore::QEntity *entity = demTerrainLoader->createEntity( nullptr );
-    if ( entity == nullptr ) return;
-    QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
-    if ( tileEntity != nullptr ) parseDemTile( tileEntity );
-    delete entity;
+    // create the entity synchronously and then delete it
+    QgsTerrainTileEntity *entity = createDEMTileEntity( terrain, node );
+    if ( entity != nullptr ) parseDemTile( entity );
+    if ( entity != nullptr ) delete entity;
   }
 }
 
@@ -321,7 +389,6 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity )
 
 void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
 {
-  qDebug() << "Parsing DEM Terrain tile entity";
   Qt3DRender::QGeometryRenderer *mesh = nullptr;
   Qt3DCore::QTransform *transform = nullptr;
   for ( Qt3DCore::QComponent *component : tileEntity->components() )
@@ -338,7 +405,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
       transform = transformTyped;
     }
   }
-  
+
   Qt3DRender::QGeometry *geometry = mesh->geometry();
   DemTerrainTileGeometry *tileGeometry = qobject_cast<DemTerrainTileGeometry *>( geometry );
   if ( tileGeometry == nullptr )
@@ -407,6 +474,7 @@ void Qgs3DSceneExporter::saveToFile( const QString &filePath )
   float minX = std::numeric_limits<float>::max(), minY = std::numeric_limits<float>::max(), minZ = std::numeric_limits<float>::max();
   for ( int i = 0; i < mVertxPosition.size(); i += 3 )
   {
+    if ( mVertxPosition[i + 1] < 0 ) continue;
     if ( mVertxPosition[i] > maxX ) maxX = mVertxPosition[i];
     if ( mVertxPosition[i + 1] > maxY ) maxY = mVertxPosition[i + 1];
     if ( mVertxPosition[i + 2] > maxZ ) maxZ = mVertxPosition[i + 2];
@@ -423,19 +491,34 @@ void Qgs3DSceneExporter::saveToFile( const QString &filePath )
     diffZ = maxZ - minZ;
   }
 
-  float scale = qMin( diffX, qMin( diffY, diffZ ) );
+  float centerX = ( minX + maxX ) / 2.0f;
+  float centerY = ( minY + maxY ) / 2.0f;
+  float centerZ = ( minZ + maxZ ) / 2.0f;
+
+  qDebug() << "Vertical span : " << diffY;
+
+  float scale = diffY;//qMax( diffX, qMax( diffY, diffZ ) );
 
   QTextStream out( &file );
+
+  QSet<int> ignored;
 
   // Construct vertices
   for ( int i = 0; i < mVertxPosition.size(); i += 3 )
   {
-    out << "v " << mVertxPosition[i] / scale << " " << mVertxPosition[i + 1] / scale << " " << mVertxPosition[i + 2] / scale << "\n";
+    // for now just ignore some vertex positions
+    if ( mVertxPosition[i + 1] < 0 ) ignored.insert( i / 3 );
+    out << "v ";
+    out << ( mVertxPosition[i] - centerX ) / scale << " ";
+    out << ( mVertxPosition[i + 1] - centerY ) / scale << " ";
+    out << ( mVertxPosition[i + 2] - centerZ ) / scale << "\n";
   }
 
   // Construct faces
   for ( int i = 0; i < mIndexes.size(); i += 3 )
   {
+    if ( ignored.contains( mIndexes[i] ) || ignored.contains( mIndexes[i + 1] ) || ignored.contains( mIndexes[i + 2] ) ) continue;
     out << "f " << mIndexes[i] << " " << mIndexes[i + 1] << " " << mIndexes[i + 2] << "\n";
   }
+  qDebug() << "Ignored count : " << ignored.size();
 }
