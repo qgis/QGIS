@@ -20,21 +20,19 @@
 
 #include <QtWidgets/QPushButton>
 
-QgsFixAttributeDialog::QgsFixAttributeDialog( QgsVectorLayer *vl, QgsFeatureList &features, QWidget *parent )
+
+QgsFixAttributeDialog::QgsFixAttributeDialog( QgsVectorLayer *vl, QgsFeatureList &features, QWidget *parent, const QgsAttributeEditorContext &context )
   : QDialog( parent )
   , mFeatures( features )
 {
-  init( vl );
+  init( vl, context );
 }
 
-void QgsFixAttributeDialog::init( QgsVectorLayer *layer )
+void QgsFixAttributeDialog::init( QgsVectorLayer *layer, const QgsAttributeEditorContext &context )
 {
-  QgsAttributeEditorContext context;
   setWindowTitle( tr( "%1 - Fix Pasted Features" ).arg( layer->name() ) );
   setLayout( new QGridLayout() );
   layout()->setMargin( 0 );
-  context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
-  context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
 
   mUnfixedFeatures = mFeatures;
   mCurrentFeature = mFeatures.begin();

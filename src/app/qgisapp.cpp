@@ -10214,7 +10214,14 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
     {
       newFeatures.clear();
 
-      QgsFixAttributeDialog *dialog = new QgsFixAttributeDialog( pasteVectorLayer, invalidFeatures, this );
+      QgsAttributeEditorContext context( createAttributeEditorContext() );
+      context.setAllowCustomUi( false );
+      context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
+      context.setVectorLayerTools( mVectorLayerTools );
+      context.setCadDockWidget( mAdvancedDigitizingDockWidget );
+      context.setMapCanvas( mMapCanvas );
+
+      QgsFixAttributeDialog *dialog = new QgsFixAttributeDialog( pasteVectorLayer, invalidFeatures, this, context );
       int feedback = dialog->exec();
 
       switch ( feedback )
