@@ -1484,22 +1484,27 @@ class CORE_EXPORT QgsGeometry
 #ifndef SIP_RUN
 
     /**
-     * Returns a list of \a count random points generated inside a (multi)polygon geometry.
+     * Returns a list of \a count random points generated inside a (multi)polygon geometry
+     * (if \a acceptPoint is specified, and restrictive, the number of points returned may
+     * be less than \a count).
      *
      * Optionally, a specific random \a seed can be used when generating points. If \a seed
      * is 0, then a completely random sequence of points will be generated.
      *
      * If the source geometry is not a (multi)polygon, an empty list will be returned.
      *
-     * The \a acceptPoint function is used to filter result candidates. If the function returns
-     * FALSE, then the point will not be accepted and another candidate generated.
-     *
      * The optional \a feedback argument can be used to provide cancellation support during
      * the point generation.
      *
+     * The \a acceptPoint function is used to filter result candidates. If the function returns
+     * FALSE, then the point will not be accepted and another candidate generated.
+     *
+     * When \a acceptPoint is specified, \a maxTriesPerPoint defines how many attempts to make
+     * before giving up generating a point.
+     *
      * \since QGIS 3.10
      */
-    QVector< QgsPointXY > randomPointsInPolygon( int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr ) const;
+    QVector< QgsPointXY > randomPointsInPolygon( int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr, int maxTriesPerPoint = 0 ) const;
 
     /**
      * Returns a list of \a count random points generated inside a (multi)polygon geometry.
