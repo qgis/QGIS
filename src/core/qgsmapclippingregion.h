@@ -33,13 +33,14 @@ class CORE_EXPORT QgsMapClippingRegion
   public:
 
     /**
-     * Feature clipping behavior.
+     * Feature clipping behavior, which controls how features from vector layers
+     * will be clipped.
      */
     enum class FeatureClippingType : int
     {
-      Intersect, //!< Clip the geometry of these features to the region prior to rendering (i.e. feature boundaries will follow the clip region)
-      PainterClip, //!< Applying clipping on the painter only (i.e. feature boundaries will be unchanged, but may be invisible where the feature falls outside the clipping region)
-      Intersects, //!< Only render features which intersect the clipping region, but do not clip these features to the region
+      ClipToIntersection, //!< Clip the geometry of these features to the region prior to rendering (i.e. feature boundaries will follow the clip region)
+      ClipPainterOnly, //!< Applying clipping on the painter only (i.e. feature boundaries will be unchanged, but may be invisible where the feature falls outside the clipping region)
+      NoClipping, //!< Only render features which intersect the clipping region, but do not clip these features to the region
     };
 
     /**
@@ -118,7 +119,7 @@ class CORE_EXPORT QgsMapClippingRegion
 
     QgsWeakMapLayerPointerList mRestrictToLayersList;
 
-    FeatureClippingType mFeatureClip = FeatureClippingType::Intersect;
+    FeatureClippingType mFeatureClip = FeatureClippingType::ClipToIntersection;
 
 };
 

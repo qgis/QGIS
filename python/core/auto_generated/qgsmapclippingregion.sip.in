@@ -24,9 +24,9 @@ A map clipping region (in map coordinates and CRS).
 
     enum class FeatureClippingType
     {
-      Intersect,
-      PainterClip,
-      Intersects,
+      ClipToIntersection,
+      ClipPainterOnly,
+      NoClipping,
     };
 
     explicit QgsMapClippingRegion( const QgsGeometry &geometry );
