@@ -305,7 +305,7 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::createDEMTileEntity( QgsTerrainEntity 
   transform->setScale( side );
   transform->setTranslation( QVector3D( x0 + half, 0, - ( y0 + half ) ) );
 
-  node->setExactBbox( QgsAABB( x0, zMin * map.terrainVerticalScale(), -y0, x0 + side, zMax * map.terrainVerticalScale(), -( y0 + side ) ) );
+//  node->setExactBbox( QgsAABB( x0, zMin * map.terrainVerticalScale(), -y0, x0 + side, zMax * map.terrainVerticalScale(), -( y0 + side ) ) );
 
   entity->setEnabled( false );
 //    entity->setParent( nullptr );
@@ -420,15 +420,30 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
   QVector<float> positionBuffer = getAttributeData<float>( tileGeometry->positionAttribute() );
   QVector<unsigned int> indexBuffer = getAttributeData<unsigned int>( tileGeometry->indexAttribute() );
 
-  int startIndex = mVertxPosition.size() / 3 + 1;
-  for ( int i : indexBuffer ) mIndexes << startIndex + i;
 
+  int startIndex = mVertxPosition.size() / 3 + 1;
+  // TODO: delete vertices not just ignore them
+  QSet<int> ignoredVetices;
   for ( int i = 0; i < positionBuffer.size(); i += 3 )
   {
+    bool isIgnored = false;
     for ( int j = 0; j < 3; ++j )
     {
       mVertxPosition << positionBuffer[i + j] * scale + translation[j];
+      // Vertices that have Y=0 are invalid and therefore any polygon that uses them shouldn't be contained in the model
+      if ( positionBuffer[i + j] == 0 ) isIgnored = true;
     }
+    if ( isIgnored ) ignoredVetices.insert( i / 3 );
+  }
+
+  for ( int i = 0; i < indexBuffer.size(); i += 3 )
+  {
+    if ( ignoredVetices.contains( indexBuffer[i] ) ) continue;
+    if ( ignoredVetices.contains( indexBuffer[i + 1] ) ) continue;
+    if ( ignoredVetices.contains( indexBuffer[i + 2] ) ) continue;
+    mIndexes << startIndex + indexBuffer[i];
+    mIndexes << startIndex + indexBuffer[i + 1];
+    mIndexes << startIndex + indexBuffer[i + 2];
   }
 }
 
