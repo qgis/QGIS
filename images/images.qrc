@@ -721,6 +721,7 @@
         <file>themes/default/providerGrass.svg</file>
         <file>themes/default/providerQgis.svg</file>
         <file>themes/default/providerSaga.svg</file>
+        <file>themes/default/providerOtb.svg</file>
         <file>themes/default/processingModel.svg</file>
         <file>themes/default/processingScript.svg</file>
         <file>themes/default/processingAlgorithm.svg</file>
