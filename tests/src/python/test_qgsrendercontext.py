@@ -520,6 +520,14 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertEqual(rc.clippingRegions()[0].geometry().asWkt(), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
         self.assertEqual(rc.clippingRegions()[1].geometry().asWkt(), 'Polygon ((10 0, 11 0, 11 1, 10 1, 10 0))')
 
+    def testFeatureClipGeometry(self):
+        rc = QgsRenderContext()
+        self.assertTrue(rc.featureClipGeometry().isNull())
+        rc.setFeatureClipGeometry(QgsGeometry.fromWkt('Polygon(( 0 0, 1 0 , 1 1 , 0 1, 0 0 ))'))
+        self.assertEqual(rc.featureClipGeometry().asWkt(), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+        rc2 = QgsRenderContext(rc)
+        self.assertEqual(rc2.featureClipGeometry().asWkt(), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+
 
 if __name__ == '__main__':
     unittest.main()
