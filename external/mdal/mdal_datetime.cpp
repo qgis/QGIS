@@ -49,7 +49,7 @@ MDAL::DateTime::DateTime( double value, Epoch epoch ):  mValid( true )
   }
 }
 
-std::string MDAL::DateTime::toStandartCalendarISO8601() const
+std::string MDAL::DateTime::toStandardCalendarISO8601() const
 {
   if ( mValid )
   {
@@ -69,6 +69,23 @@ double MDAL::DateTime::toJulianDay() const
 std::string MDAL::DateTime::toJulianDayString() const
 {
   return std::to_string( toJulianDay() );
+}
+
+std::vector<int> MDAL::DateTime::expandToCalendarArray() const
+{
+  std::vector<int> dateTimeArray( 6, 0 );
+  if ( mValid )
+  {
+    DateTimeValues value = dateTimeGregorianProleptic();
+    dateTimeArray[0] = value.year;
+    dateTimeArray[1] = value.month;
+    dateTimeArray[2] = value.day;
+    dateTimeArray[3] = value.hours;
+    dateTimeArray[4] = value.minutes;
+    dateTimeArray[5] = int( value.seconds + 0.5 );
+  }
+
+  return dateTimeArray;
 }
 
 

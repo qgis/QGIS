@@ -632,16 +632,12 @@ void MDAL::DriverHec2D::parseMesh(
   mMesh.reset(
     new MemoryMesh(
       name(),
-      vertices.size(),
-      0,
-      faces.size(),
       maxVerticesInFace,
-      computeExtent( vertices ),
       mFileName
     )
   );
-  mMesh->faces = faces;
-  mMesh->vertices = vertices;
+  mMesh->setFaces( std::move( faces ) );
+  mMesh->setVertices( std::move( vertices ) );
 }
 
 MDAL::DriverHec2D::DriverHec2D()

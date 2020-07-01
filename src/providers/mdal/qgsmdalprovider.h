@@ -86,6 +86,12 @@ class QgsMdalProvider : public QgsMeshDataProvider
                               const QVector<double> &times
                             ) override;
 
+    bool persistDatasetGroup( const QString &outputFilePath,
+                              const QString &outputDriver,
+                              QgsMeshDatasetSourceInterface *source,
+                              int datasetGroupIndex
+                            ) override;
+
     /**
      * Returns file filters for meshes and datasets to be used in Open File Dialogs
      * \param fileMeshFiltersString file mesh filters

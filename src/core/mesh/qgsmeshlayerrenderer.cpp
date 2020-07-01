@@ -114,7 +114,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
     datasetIndex = layer->staticScalarDatasetIndex();
 
   // Find out if we can use cache up to date. If yes, use it and return
-  const int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
+  const int datasetGroupCount = layer->datasetGroupCount();
   const QgsMeshRendererScalarSettings::DataResamplingMethod method = mRendererSettings.scalarSettings( datasetIndex.group() ).dataResamplingMethod();
   QgsMeshLayerRendererCache *cache = layer->rendererCache();
   if ( ( cache->mDatasetGroupsCount == datasetGroupCount ) &&
@@ -134,7 +134,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
   // Cache is not up-to-date, gather data
   if ( datasetIndex.isValid() )
   {
-    const QgsMeshDatasetGroupMetadata metadata = layer->dataProvider()->datasetGroupMetadata( datasetIndex.group() );
+    const QgsMeshDatasetGroupMetadata metadata = layer->datasetGroupMetadata( datasetIndex.group() );
     mScalarDataType = QgsMeshLayerUtils::datasetValuesType( metadata.dataType() );
 
     // populate scalar values
@@ -156,7 +156,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
     }
 
     // populate face active flag, always defined on faces
-    mScalarActiveFaceFlagValues = layer->dataProvider()->areFacesActive(
+    mScalarActiveFaceFlagValues = layer->areFacesActive(
                                     datasetIndex,
                                     0,
                                     mNativeMesh.faces.count() );
@@ -189,7 +189,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 
     }
 
-    const QgsMeshDatasetMetadata datasetMetadata = layer->dataProvider()->datasetMetadata( datasetIndex );
+    const QgsMeshDatasetMetadata datasetMetadata = layer->datasetMetadata( datasetIndex );
     mScalarDatasetMinimum = datasetMetadata.minimum();
     mScalarDatasetMaximum = datasetMetadata.maximum();
   }
@@ -216,7 +216,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
     datasetIndex = layer->staticVectorDatasetIndex();
 
   // Find out if we can use cache up to date. If yes, use it and return
-  const int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
+  const int datasetGroupCount = layer->datasetGroupCount();
   QgsMeshLayerRendererCache *cache = layer->rendererCache();
   if ( ( cache->mDatasetGroupsCount == datasetGroupCount ) &&
        ( cache->mActiveVectorDatasetIndex == datasetIndex ) &&
@@ -236,7 +236,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
   // Cache is not up-to-date, gather data
   if ( datasetIndex.isValid() )
   {
-    const QgsMeshDatasetGroupMetadata metadata = layer->dataProvider()->datasetGroupMetadata( datasetIndex );
+    const QgsMeshDatasetGroupMetadata metadata = layer->datasetGroupMetadata( datasetIndex );
 
     bool isScalar = metadata.isScalar();
     if ( isScalar )
@@ -262,7 +262,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
       else
         mVectorDatasetValuesMag = QVector<double>( count, std::numeric_limits<double>::quiet_NaN() );
 
-      const QgsMeshDatasetMetadata datasetMetadata = layer->dataProvider()->datasetMetadata( datasetIndex );
+      const QgsMeshDatasetMetadata datasetMetadata = layer->datasetMetadata( datasetIndex );
       mVectorDatasetMagMinimum = datasetMetadata.minimum();
       mVectorDatasetMagMaximum = datasetMetadata.maximum();
     }
