@@ -70,7 +70,7 @@ Set brightness level. Acceptable value range is -255…255
 
     int brightness() const;
 %Docstring
-Returns currect brightness level.
+Returns current brightness level.
 
 .. seealso:: :py:func:`setBrightness`
 %End
@@ -84,7 +84,7 @@ Set contrast level. Acceptable value range is -100…100
 
     int contrast() const;
 %Docstring
-Returns currect contrast level.
+Returns current contrast level.
 
 .. seealso:: :py:func:`setContrast`
 %End
@@ -100,7 +100,7 @@ Set gamma value. Acceptable value range is -0.1…10
 
     double gamma() const;
 %Docstring
-Returns currect gamma value.
+Returns current gamma value.
 
 .. seealso:: :py:func:`setGamma`
 
