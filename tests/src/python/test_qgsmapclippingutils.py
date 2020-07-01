@@ -27,6 +27,10 @@ from qgis.core import (
     QgsMapLayerType
 )
 
+from qgis.testing import start_app
+
+start_app()
+
 
 class TestQgsMapClippingUtils(unittest.TestCase):
 
