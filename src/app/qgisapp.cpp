@@ -10222,21 +10222,33 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
       context.setMapCanvas( mMapCanvas );
 
       QgsFixAttributeDialog *dialog = new QgsFixAttributeDialog( pasteVectorLayer, invalidFeatures, this, context );
-      int feedback = dialog->exec();
 
-      switch ( feedback )
+      connect( dialog, &QgsFixAttributeDialog::finished, this, [ = ]( int feedback )
       {
-        case QgsFixAttributeDialog::PasteValid:
-          //paste valid and fixed, vanish unfixed
-          newFeatures << validFeatures << dialog->fixedFeatures();
-          break;
-        case QgsFixAttributeDialog::PasteAll:
-          //paste all, even unfixed
-          newFeatures << validFeatures << dialog->fixedFeatures() << dialog->unfixedFeatures();
-          break;
-      }
+        QgsFeatureList features = newFeatures;
+        switch ( feedback )
+        {
+          case QgsFixAttributeDialog::PasteValid:
+            //paste valid and fixed, vanish unfixed
+            features << validFeatures << dialog->fixedFeatures();
+            break;
+          case QgsFixAttributeDialog::PasteAll:
+            //paste all, even unfixed
+            features << validFeatures << dialog->fixedFeatures() << dialog->unfixedFeatures();
+            break;
+        }
+        pasteFeatures( pasteVectorLayer, invalidGeometriesCount, nTotalFeatures, features );
+      } );
+      dialog->show();
+      return;
     }
   }
+
+  pasteFeatures( pasteVectorLayer, invalidGeometriesCount, nTotalFeatures, newFeatures );
+}
+
+void QgisApp::pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeometriesCount, int nTotalFeatures, QgsFeatureList &newFeatures )
+{
   pasteVectorLayer->addFeatures( newFeatures );
   QgsFeatureIds newIds;
   newIds.reserve( newFeatures.size() );

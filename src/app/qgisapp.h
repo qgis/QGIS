@@ -927,6 +927,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                 (defaults to the active layer on the legend)
      */
     void pasteFromClipboard( QgsMapLayer *destinationLayer = nullptr );
+
+    void pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeometriesCount, int nTotalFeatures, QgsFeatureList &newFeatures );
+
     //! copies features on the clipboard to a new vector layer
     void pasteAsNewVector();
     //! copies features on the clipboard to a new memory vector layer
