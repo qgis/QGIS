@@ -774,7 +774,6 @@ void Qgs3DMapScene::exportScene( const QString &sceneName, const QString &sceneD
   {
     exporter.parseEntity( mLayerEntities[layer] );
   }
-  // TODO: figure out why terrain entity is not parsed correctly
   exporter.parseEntity( mTerrain );
 
   QString filePath = sceneDir;

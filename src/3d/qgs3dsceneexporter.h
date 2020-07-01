@@ -18,6 +18,13 @@
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QAttribute>
+#include <Qt3DExtras/QPlaneGeometry>
+#include <QMap>
+
+class QgsTessellatedPolygonGeometry;
+class QgsTerrainTileEntity;
+class QgsTerrainEntity;
+class Qgs3DMapSettings;
 
 class Qgs3DSceneExporter
 {
@@ -26,11 +33,17 @@ class Qgs3DSceneExporter
     Qgs3DSceneExporter( );
 
     void parseEntity( Qt3DCore::QEntity *entity );
+    void parseEntity( QgsTerrainEntity *terrain );
     void saveToFile( const QString &filePath );
   private:
+    void parseEntity( QgsTerrainTileEntity *tileEntity );
     void processAttribute( Qt3DRender::QAttribute *attribute );
+    void process( QgsTessellatedPolygonGeometry *geom );
+    void process( Qt3DExtras::QPlaneGeometry *plane );
   private:
-    QVector<float> mVertices;
+    QVector<float> mVertxPosition;
+    QVector<int> mIndexes;
+    QMap<int, QString> mComments;
 };
 
 #endif // QGS3DSCENEEXPORTER_H
