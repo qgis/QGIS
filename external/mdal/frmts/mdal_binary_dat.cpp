@@ -491,3 +491,8 @@ bool MDAL::DriverBinaryDat::persist( MDAL::DatasetGroup *group )
 
   return false;
 }
+
+std::string MDAL::DriverBinaryDat::writeDatasetOnFileSuffix() const
+{
+  return "dat";
+}

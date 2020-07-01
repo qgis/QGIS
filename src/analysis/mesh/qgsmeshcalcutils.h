@@ -36,9 +36,6 @@
 #include "qgsmeshdataprovider.h"
 #include "qgis_analysis.h"
 
-struct QgsMeshMemoryDatasetGroup;
-struct QgsMeshMemoryDataset;
-
 /**
  * \ingroup analysis
  * \class QgsMeshCalcUtils

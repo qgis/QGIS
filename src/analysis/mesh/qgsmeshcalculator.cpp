@@ -104,6 +104,40 @@ QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
 {
 }
 
+QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
+                                      const QString &outputGroupName,
+                                      double startTime,
+                                      double endTime,
+                                      const QgsRectangle &outputExtent,
+                                      QgsMeshLayer *layer )
+  : mFormulaString( formulaString )
+  , mOutputGroupName( outputGroupName )
+  , mOutputExtent( outputExtent )
+  , mUseMask( false )
+  , mStartTime( startTime )
+  , mEndTime( endTime )
+  , mResultInMemory( true )
+  , mMeshLayer( layer )
+{
+}
+
+QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
+                                      const QString &outputGroupName,
+                                      double startTime,
+                                      double endTime,
+                                      const QgsGeometry &outputMask,
+                                      QgsMeshLayer *layer )
+  : mFormulaString( formulaString )
+  , mOutputGroupName( outputGroupName )
+  , mOutputMask( outputMask )
+  , mUseMask( true )
+  , mStartTime( startTime )
+  , mEndTime( endTime )
+  , mResultInMemory( true )
+  , mMeshLayer( layer )
+{
+}
+
 QgsMeshCalculator::Result QgsMeshCalculator::expression_valid(
   const QString &formulaString,
   QgsMeshLayer *layer )
@@ -136,7 +170,7 @@ QgsMeshCalculator::Result QgsMeshCalculator::expressionIsValid(
 QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *feedback )
 {
   // check input
-  if ( mOutputFile.isEmpty() )
+  if ( mOutputFile.isEmpty() && !mResultInMemory )
   {
     return CreateOutputError;
   }
@@ -164,7 +198,7 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
   }
 
   //open output dataset
-  std::unique_ptr<QgsMeshMemoryDatasetGroup> outputGroup = qgis::make_unique<QgsMeshMemoryDatasetGroup> ( mOutputFile, dsu.outputType() );
+  std::unique_ptr<QgsMeshMemoryDatasetGroup> outputGroup = qgis::make_unique<QgsMeshMemoryDatasetGroup> ( mOutputGroupName, dsu.outputType() );
 
   // calculate
   bool ok = calcNode->calculate( dsu, *outputGroup );
@@ -191,8 +225,7 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
   {
     dsu.filter( *outputGroup, mOutputExtent );
   }
-  outputGroup->isScalar = true;
-  outputGroup->name = mOutputGroupName;
+  outputGroup->setIsScalar( true );
 
   // before storing the file, find out if the process is not already canceled
   if ( feedback && feedback->isCanceled() )
@@ -204,22 +237,22 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
     feedback->setProgress( 80.0 );
   }
 
-  // store to file
+  // store to file or in memory
   QVector<QgsMeshDataBlock> datasetValues;
   QVector<QgsMeshDataBlock> datasetActive;
   QVector<double> times;
 
-  const auto datasize = outputGroup->datasets.size();
+  const auto datasize = outputGroup->datasetCount();
   datasetValues.reserve( datasize );
   times.reserve( datasize );
 
   for ( int i = 0; i < datasize; ++i )
   {
-    const std::shared_ptr<QgsMeshMemoryDataset> dataset = outputGroup->datasets.at( i );
+    const std::shared_ptr<QgsMeshMemoryDataset> dataset = outputGroup->memoryDatasets.at( i );
 
     times.push_back( dataset->time );
     datasetValues.push_back(
-      dataset->datasetValues( outputGroup->isScalar,
+      dataset->datasetValues( outputGroup->isScalar(),
                               0,
                               dataset->values.size() )
     );
@@ -233,15 +266,28 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
     }
   }
 
+  // calculate statistics
+  outputGroup->calculateStatistic();
+
   const QgsMeshDatasetGroupMetadata meta = outputGroup->groupMetadata();
-  bool err = mMeshLayer->dataProvider()->persistDatasetGroup(
-               mOutputFile,
-               mOutputDriver,
-               meta,
-               datasetValues,
-               datasetActive,
-               times
-             );
+  bool err;
+
+  if ( mResultInMemory )
+  {
+    err = !mMeshLayer->addDatasets( outputGroup.release() );
+  }
+  else
+  {
+    err = mMeshLayer->dataProvider()->persistDatasetGroup(
+            mOutputFile,
+            mOutputDriver,
+            meta,
+            datasetValues,
+            datasetActive,
+            times
+          );
+  }
+
 
   if ( err )
   {

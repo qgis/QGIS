@@ -12893,6 +12893,8 @@ bool QgisApp::checkMemoryLayers()
   // check to see if there are any temporary layers present (with features)
   bool hasTemporaryLayers = false;
   bool hasMemoryLayers = false;
+  bool hasMemoryMeshLayerDatasetGroup = false;
+
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( auto it = layers.begin(); it != layers.end(); ++it )
   {
@@ -12906,32 +12908,34 @@ bool QgisApp::checkMemoryLayers()
       }
     }
     else if ( it.value() && it.value()->isTemporary() )
-      hasTemporaryLayers = true;
+    {
+      if ( it.value()->type() == QgsMapLayerType::MeshLayer )
+        hasMemoryMeshLayerDatasetGroup = true;
+      else
+        hasTemporaryLayers = true;
+    }
   }
 
+  bool close = true;
   if ( hasTemporaryLayers )
-  {
-    if ( QMessageBox::warning( this,
-                               tr( "Close Project" ),
-                               tr( "This project includes one or more temporary layers. These layers are not permanently saved and their contents will be lost. Are you sure you want to proceed?" ),
-                               QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Yes )
-      return true;
-    else
-      return false;
-  }
+    close &= QMessageBox::warning( this,
+                                   tr( "Close Project" ),
+                                   tr( "This project includes one or more temporary layers. These layers are not permanently saved and their contents will be lost. Are you sure you want to proceed?" ),
+                                   QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Yes ;
   else if ( hasMemoryLayers )
-  {
     // use the more specific warning for memory layers
-    if ( QMessageBox::warning( this,
-                               tr( "Close Project" ),
-                               tr( "This project includes one or more temporary scratch layers. These layers are not saved to disk and their contents will be permanently lost. Are you sure you want to proceed?" ),
-                               QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Yes )
-      return true;
-    else
-      return false;
-  }
-  else
-    return true;
+    close &= QMessageBox::warning( this,
+                                   tr( "Close Project" ),
+                                   tr( "This project includes one or more temporary scratch layers. These layers are not saved to disk and their contents will be permanently lost. Are you sure you want to proceed?" ),
+                                   QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Yes;
+
+  if ( hasMemoryMeshLayerDatasetGroup )
+    close &= QMessageBox::warning( this,
+                                   tr( "Close Project" ),
+                                   tr( "This project includes one or more memory mesh layer dataset groups. These dataset groups are not saved to disk and their contents will be permanently lost. Are you sure you want to proceed?" ),
+                                   QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Yes;
+
+  return close;
 }
 
 bool QgisApp::checkTasksDependOnProject()

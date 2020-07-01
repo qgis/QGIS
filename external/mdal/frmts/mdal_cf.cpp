@@ -127,9 +127,10 @@ MDAL::cfdataset_info_map MDAL::DriverCF::parseDatasetGroupInfo()
       bool is_vector = true;
       bool is_polar = false;
       bool is_x = false;
+      bool invertedDirection = false;
       Classification classes = parseClassification( varid );
       bool isClassified = !classes.empty();
-      parseNetCDFVariableMetadata( varid, variable_name, vectorName, &is_vector, &is_polar, &is_x );
+      parseNetCDFVariableMetadata( varid, variable_name, vectorName, &is_vector, &is_polar, & invertedDirection, &is_x );
 
       Metadata meta;
       // check for units
@@ -165,6 +166,7 @@ MDAL::cfdataset_info_map MDAL::DriverCF::parseDatasetGroupInfo()
         {
           it->second.ncid_y = varid;
           it->second.classification_y = classes;
+          it->second.isInvertedDirection = invertedDirection;
         }
 
         // If it is classified, we want to keep each component as scalar
@@ -173,12 +175,12 @@ MDAL::cfdataset_info_map MDAL::DriverCF::parseDatasetGroupInfo()
         {
           CFDatasetGroupInfo scalarDsInfoX;
           scalarDsInfoX = it->second;
-          scalarDsInfoX.is_vector = false;
-          scalarDsInfoX.is_polar = false;
+          scalarDsInfoX.isVector = false;
+          scalarDsInfoX.isPolar = false;
           CFDatasetGroupInfo scalarDsInfoY;
           scalarDsInfoY = it->second;
-          scalarDsInfoY.is_vector = false;
-          scalarDsInfoX.is_polar = false;
+          scalarDsInfoY.isVector = false;
+          scalarDsInfoY.isPolar = false;
           scalarDsInfoX.ncid_x = it->second.ncid_x;
           scalarDsInfoY.ncid_x = it->second.ncid_y;
 
@@ -222,8 +224,9 @@ MDAL::cfdataset_info_map MDAL::DriverCF::parseDatasetGroupInfo()
         }
 
         dsInfo.outputType = mDimensions.type( dimid );
-        dsInfo.is_vector = is_vector;
-        dsInfo.is_polar = is_polar;
+        dsInfo.isVector = is_vector;
+        dsInfo.isPolar = is_polar;
+        dsInfo.isInvertedDirection = invertedDirection;
         dsInfo.nValues = mDimensions.size( mDimensions.type( dimid ) );
         dsInfo.timeLocation = timeLocation;
         dsInfo.metadata = meta;
@@ -241,10 +244,9 @@ MDAL::cfdataset_info_map MDAL::DriverCF::parseDatasetGroupInfo()
   // if ncid_y<0 set the datasetinfo to scalar
   for ( auto &it : dsinfo_map )
   {
-    if ( it.second.is_vector && it.second.ncid_y < 0 )
-      it.second.is_vector = false;
+    if ( it.second.isVector && it.second.ncid_y < 0 )
+      it.second.isVector = false;
   }
-
 
   return dsinfo_map;
 }
@@ -319,8 +321,14 @@ void MDAL::DriverCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<Relat
           mFileName,
           dsi.name
         );
-    group->setIsScalar( !dsi.is_vector );
-    group->setIsPolar( dsi.is_polar );
+    group->setIsScalar( !dsi.isVector );
+    group->setIsPolar( dsi.isPolar );
+    if ( dsi.isInvertedDirection )
+    {
+      auto referenceAngle = group->referenceAngles();
+      referenceAngle.second = referenceAngle.second + referenceAngle.first * 0.5;
+      group->setReferenceAngles( referenceAngle );
+    }
     group->setMetadata( dsi.metadata );
 
     if ( dsi.outputType == CFDimensions::Vertex )
@@ -343,7 +351,7 @@ void MDAL::DriverCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<Relat
     // read Y data if vector
     double fill_val_y = std::numeric_limits<double>::quiet_NaN();
     std::vector<double> vals_y;
-    if ( dsi.is_vector )
+    if ( dsi.isVector )
     {
       fill_val_y = mNcFile->getFillValue( dsi.ncid_y );
     }
@@ -563,17 +571,13 @@ std::unique_ptr< MDAL::Mesh > MDAL::DriverCF::load( const std::string &fileName,
     std::unique_ptr< MemoryMesh > mesh(
       new MemoryMesh(
         name(),
-        vertices.size(),
-        edges.size(),
-        faces.size(),
         mDimensions.size( mDimensions.MaxVerticesInFace ),
-        computeExtent( vertices ),
         mFileName
       )
     );
-    mesh->faces = faces;
-    mesh->edges = edges;
-    mesh->vertices = vertices;
+    mesh->setFaces( std::move( faces ) );
+    mesh->setEdges( std::move( edges ) );
+    mesh->setVertices( std::move( vertices ) );
     addBedElevation( mesh.get() );
     setProjection( mesh.get() );
 

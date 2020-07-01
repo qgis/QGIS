@@ -30,9 +30,6 @@
 #include "qgsprovidermetadata.h"
 #include "qgsfeedback.h"
 
-struct QgsMeshMemoryDatasetGroup;
-struct QgsMeshMemoryDataset;
-
 /**
  * \ingroup analysis
  * \class QgsMeshCalculator
@@ -146,6 +143,43 @@ class ANALYSIS_EXPORT QgsMeshCalculator
                        QgsMeshLayer *layer );
 
     /**
+     * Creates calculator with bounding box (rectangular) mask, store the result in the memory
+     * \param formulaString formula/expression to evaluate. Consists of dataset group names, operators and numbers
+     * \param outputGroupName output group name
+     * \param outputExtent spatial filter defined by rectangle
+     * \param startTime time filter defining the starting dataset
+     * \param endTime time filter defining the ending dataset
+     * \param layer mesh layer with dataset groups references in formulaString
+     *
+     * \since QGIS 3.16
+     */
+    QgsMeshCalculator( const QString &formulaString,
+                       const QString &outputGroupName,
+                       double startTime,
+                       double endTime,
+                       const QgsRectangle &outputExtent,
+                       QgsMeshLayer *layer );
+
+    /**
+     * Creates calculator with with geometry mask, store the result in the memory
+     * \param formulaString formula/expression to evaluate. Consists of dataset group names, operators and numbers
+     * \param outputGroupName output group name
+     * \param outputMask spatial filter defined by geometry
+     * \param startTime time filter defining the starting dataset
+     * \param endTime time filter defining the ending dataset
+     * \param layer mesh layer with dataset groups references in formulaString
+     *
+     * \since QGIS 3.16
+     */
+    QgsMeshCalculator( const QString &formulaString,
+                       const QString &outputGroupName,
+                       double startTime,
+                       double endTime,
+                       const QgsGeometry &outputMask,
+                       QgsMeshLayer *layer );
+
+
+    /**
      * Starts the calculation, writes new dataset group to file and adds it to the mesh layer
      * \param feedback The optional feedback argument for progress reporting and cancellation support
      * \returns QgsMeshCalculator::Success in case of success
@@ -188,6 +222,7 @@ class ANALYSIS_EXPORT QgsMeshCalculator
     bool mUseMask = false;
     double mStartTime = 0.0;
     double mEndTime = 0.0;
+    bool mResultInMemory = false;
     QgsMeshLayer *mMeshLayer = nullptr;
 };
 
