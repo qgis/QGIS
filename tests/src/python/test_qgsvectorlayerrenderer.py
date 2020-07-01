@@ -62,9 +62,9 @@ class TestQgsVectorLayerRenderer(unittest.TestCase):
         mapsettings.setLayers([poly_layer])
 
         region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon ((-11725957 5368254, -12222900 4807501, -12246014 3834025, -12014878 3496059, -11259833 3518307, -10751333 3621153, -10574129 4516741, -10847640 5194995, -11105742 5325957, -11725957 5368254))'))
-        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersects)
+        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.NoClipping)
         region2 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon ((-11032549 5421399, -11533344 4693167, -11086481 4229112, -11167378 3742984, -10616504 3553984, -10161936 3925771, -9618766 4668482, -9472380 5620753, -10115709 5965063, -11032549 5421399))'))
-        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersects)
+        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.NoClipping)
         mapsettings.addClippingRegion(region)
         mapsettings.addClippingRegion(region2)
 
@@ -104,9 +104,9 @@ class TestQgsVectorLayerRenderer(unittest.TestCase):
         mapsettings.setLayers([poly_layer])
 
         region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon ((-11725957 5368254, -12222900 4807501, -12246014 3834025, -12014878 3496059, -11259833 3518307, -10751333 3621153, -10574129 4516741, -10847640 5194995, -11105742 5325957, -11725957 5368254))'))
-        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersect)
+        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.ClipToIntersection)
         region2 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon ((-11032549 5421399, -11533344 4693167, -11086481 4229112, -11167378 3742984, -10616504 3553984, -10161936 3925771, -9618766 4668482, -9472380 5620753, -10115709 5965063, -11032549 5421399))'))
-        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersect)
+        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.ClipToIntersection)
         mapsettings.addClippingRegion(region)
         mapsettings.addClippingRegion(region2)
 
@@ -160,10 +160,10 @@ class TestQgsVectorLayerRenderer(unittest.TestCase):
 
         region = QgsMapClippingRegion(QgsGeometry.fromWkt(
             'Polygon ((-11725957 5368254, -12222900 4807501, -12246014 3834025, -12014878 3496059, -11259833 3518307, -10751333 3621153, -10574129 4516741, -10847640 5194995, -11105742 5325957, -11725957 5368254))'))
-        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersect)
+        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.ClipToIntersection)
         region2 = QgsMapClippingRegion(QgsGeometry.fromWkt(
             'Polygon ((-11032549 5421399, -11533344 4693167, -11086481 4229112, -11167378 3742984, -10616504 3553984, -10161936 3925771, -9618766 4668482, -9472380 5620753, -10115709 5965063, -11032549 5421399))'))
-        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersect)
+        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.ClipToIntersection)
         mapsettings.addClippingRegion(region)
         mapsettings.addClippingRegion(region2)
 
@@ -203,9 +203,9 @@ class TestQgsVectorLayerRenderer(unittest.TestCase):
         mapsettings.setLayers([poly_layer])
 
         region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon ((-11725957 5368254, -12222900 4807501, -12246014 3834025, -12014878 3496059, -11259833 3518307, -10751333 3621153, -10574129 4516741, -10847640 5194995, -11105742 5325957, -11725957 5368254))'))
-        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.PainterClip)
+        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.ClipPainterOnly)
         region2 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon ((-11032549 5421399, -11533344 4693167, -11086481 4229112, -11167378 3742984, -10616504 3553984, -10161936 3925771, -9618766 4668482, -9472380 5620753, -10115709 5965063, -11032549 5421399))'))
-        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.PainterClip)
+        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.ClipPainterOnly)
         mapsettings.addClippingRegion(region)
         mapsettings.addClippingRegion(region2)
 

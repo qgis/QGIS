@@ -29,9 +29,9 @@ class TestQgsMapClippingRegion(unittest.TestCase):
         region.setGeometry(QgsGeometry.fromWkt('Polygon((10 0, 11 0, 11 1, 10 1, 10 0))'))
         self.assertEqual(region.geometry().asWkt(), 'Polygon ((10 0, 11 0, 11 1, 10 1, 10 0))')
 
-        self.assertEqual(region.featureClip(), QgsMapClippingRegion.FeatureClippingType.Intersect)
-        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.PainterClip)
-        self.assertEqual(region.featureClip(), QgsMapClippingRegion.FeatureClippingType.PainterClip)
+        self.assertEqual(region.featureClip(), QgsMapClippingRegion.FeatureClippingType.ClipToIntersection)
+        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.ClipPainterOnly)
+        self.assertEqual(region.featureClip(), QgsMapClippingRegion.FeatureClippingType.ClipPainterOnly)
 
         layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
                                "addfeat", "memory")

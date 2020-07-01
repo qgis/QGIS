@@ -59,9 +59,9 @@ class TestQgsMapClippingUtils(unittest.TestCase):
 
     def testCalculateFeatureRequestGeometry(self):
         region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))
-        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersects)
+        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.NoClipping)
         region2 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 0.1 0, 0.1 2, 0 2, 0 0))'))
-        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersect)
+        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.NoClipping)
 
         rc = QgsRenderContext()
 
@@ -84,11 +84,11 @@ class TestQgsMapClippingUtils(unittest.TestCase):
 
     def testCalculateFeatureIntersectionGeometry(self):
         region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))
-        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersect)
+        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.ClipToIntersection)
         region2 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 0.1 0, 0.1 2, 0 2, 0 0))'))
-        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersects)
+        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.ClipToIntersection)
         region3 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 0.1 0, 0.1 2, 0 2, 0 0))'))
-        region3.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersect)
+        region3.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.ClipToIntersection)
 
         rc = QgsRenderContext()
 
@@ -120,11 +120,11 @@ class TestQgsMapClippingUtils(unittest.TestCase):
 
     def testPainterClipPath(self):
         region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))
-        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.PainterClip)
+        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.ClipPainterOnly)
         region2 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 0.1 0, 0.1 2, 0 2, 0 0))'))
-        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersects)
+        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.ClipPainterOnly)
         region3 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 0.1 0, 0.1 2, 0 2, 0 0))'))
-        region3.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.PainterClip)
+        region3.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.ClipPainterOnly)
 
         rc = QgsRenderContext()
 
@@ -161,11 +161,11 @@ class TestQgsMapClippingUtils(unittest.TestCase):
 
     def testLabelIntersectionGeometry(self):
         region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))
-        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersect)
+        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.ClipToIntersection)
         region2 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 0.1 0, 0.1 2, 0 2, 0 0))'))
-        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.Intersects)
+        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.NoClipping)
         region3 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 0.1 0, 0.1 2, 0 2, 0 0))'))
-        region3.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.PainterClip)
+        region3.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.ClipPainterOnly)
 
         rc = QgsRenderContext()
 
