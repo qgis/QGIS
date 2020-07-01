@@ -87,7 +87,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureIntersectionGeometry( const QLi
     if ( region.geometry().type() != QgsWkbTypes::PolygonGeometry )
       continue;
 
-    if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::Intersect )
+    if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::ClipToIntersection )
       continue;
 
     shouldClip = true;
@@ -136,7 +136,7 @@ QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMap
     switch ( layerType )
     {
       case QgsMapLayerType::VectorLayer:
-        if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::PainterClip )
+        if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly )
           continue;
         break;
 
@@ -193,8 +193,8 @@ QgsGeometry QgsMapClippingUtils::calculateLabelIntersectionGeometry( const QList
     // for labeling, we clip using either painter clip regions or intersects type regions.
     // unlike feature rendering, we clip features to painter clip regions for labeling, because
     // we want the label to sit within the clip region if possible
-    if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::PainterClip &&
-         region.featureClip() != QgsMapClippingRegion::FeatureClippingType::Intersect )
+    if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly &&
+         region.featureClip() != QgsMapClippingRegion::FeatureClippingType::ClipToIntersection )
       continue;
 
     shouldClip = true;

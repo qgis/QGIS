@@ -2731,11 +2731,11 @@ void TestQgsLabelingEngine::testClipping()
   mapSettings.setOutputDpi( 96 );
 
   QgsMapClippingRegion region1( QgsGeometry::fromWkt( "Polygon ((-92 45, -99 36, -94 29, -82 29, -81 45, -92 45))" ) );
-  region1.setFeatureClip( QgsMapClippingRegion::FeatureClippingType::Intersect );
+  region1.setFeatureClip( QgsMapClippingRegion::FeatureClippingType::ClipToIntersection );
   mapSettings.addClippingRegion( region1 );
 
   QgsMapClippingRegion region2( QgsGeometry::fromWkt( "Polygon ((-85 36, -85 46, -107 47, -108 28, -85 28, -85 36))" ) );
-  region2.setFeatureClip( QgsMapClippingRegion::FeatureClippingType::PainterClip );
+  region2.setFeatureClip( QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly );
   mapSettings.addClippingRegion( region2 );
 
   QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
