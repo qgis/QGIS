@@ -36,6 +36,7 @@
 #include "qgschunknode_p.h"
 #include "qgsterraingenerator.h"
 #include "qgs3dmapsettings.h"
+#include "qgsflatterraingenerator.h"
 
 template<typename T>
 QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute )
@@ -167,12 +168,12 @@ void Qgs3DSceneExporter::parseEntity( Qt3DCore::QEntity *entity )
       continue;
     }
 
-    Qt3DExtras::QPlaneGeometry *plane = qobject_cast<Qt3DExtras::QPlaneGeometry *>( geom );
-    if ( plane != nullptr )
-    {
-      process( plane );
-      continue;
-    }
+//    Qt3DExtras::QPlaneGeometry *plane = qobject_cast<Qt3DExtras::QPlaneGeometry *>( geom );
+//    if ( plane != nullptr )
+//    {
+//      process( plane );
+//      continue;
+//    }
 
   }
   for ( QObject *child : entity->children() )
@@ -186,16 +187,15 @@ void Qgs3DSceneExporter::parseEntity( QgsTerrainEntity *terrain )
 {
   if ( terrain->map3D().terrainGenerator()->type() != QgsTerrainGenerator::Flat )
     return;
-
-  qDebug() << "Parsing flat terrain";
-
-  QList<QgsChunkNode *> lst = terrain->activeNodes();
-  for ( QgsChunkNode *n : lst )
-  {
-    Qt3DCore::QEntity *entity = n->entity();
-    QgsTerrainTileEntity *terrainTile = qobject_cast<QgsTerrainTileEntity *>( entity );
-    if ( terrainTile != nullptr ) parseEntity( terrainTile );
-  }
+  QgsFlatTerrainGenerator *generator = dynamic_cast<QgsFlatTerrainGenerator *>( terrain->map3D().terrainGenerator() );
+  QgsChunkNode *root = terrain->rootNode();
+  QgsChunkLoader *loader = generator->createChunkLoader( root );
+  FlatTerrainChunkLoader *floatTerrainLoader = qobject_cast<FlatTerrainChunkLoader *>( loader );
+  if ( floatTerrainLoader == nullptr ) return;
+  Qt3DCore::QEntity *entity = floatTerrainLoader->createEntity( nullptr );
+  QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
+  if ( tileEntity != nullptr ) parseEntity( tileEntity );
+  if ( entity != nullptr ) delete entity;
 }
 
 void Qgs3DSceneExporter::processAttribute( Qt3DRender::QAttribute *attribute )
