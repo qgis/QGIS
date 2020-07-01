@@ -127,9 +127,9 @@ void QgsCellStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
 
 bool QgsCellStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsRasterLayer *referenceLayer = parameterAsRasterLayer( parameters, QStringLiteral( "REF_LAYER" ), context );
+  QgsRasterLayer *referenceLayer = parameterAsRasterLayer( parameters, QStringLiteral( "REFERENCE_LAYER" ), context );
   if ( !referenceLayer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "REF_LAYER" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "REFERENCE_LAYER" ) ) );
 
   mIgnoreNoData = parameterAsBool( parameters, QStringLiteral( "IGNORE_NODATA" ), context );
   mNoDataValue = parameterAsDouble( parameters, QStringLiteral( "OUTPUT_NODATA_VALUE" ), context );
@@ -140,7 +140,7 @@ bool QgsCellStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameters
   mLayerHeight = referenceLayer->height();
   mExtent = referenceLayer->extent();
 
-  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "INPUTS" ), context );
+  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "INPUT" ), context );
   QList< QgsRasterLayer * > rasterLayers;
   rasterLayers.reserve( layers.count() );
   for ( QgsMapLayer *l : layers )
