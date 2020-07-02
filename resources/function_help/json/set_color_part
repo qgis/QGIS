@@ -1,6 +1,7 @@
 {
   "name": "set_color_part",
   "type": "function",
+  "groups": ["Color"],
   "description": "Sets a specific color component for a color string, e.g., the red component or alpha component.",
   "arguments": [
                {"arg":"color", "description":"a color string"},

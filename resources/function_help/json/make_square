@@ -1,6 +1,7 @@
 {
   "name": "make_square",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Creates a square from a diagonal.",
   "variableLenArguments": true,
   "arguments": [

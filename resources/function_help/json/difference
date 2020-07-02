@@ -1,6 +1,7 @@
 {
   "name": "difference",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns a geometry that represents that part of geometry_a that does not intersect with geometry_b.",
   "arguments": [ {"arg":"geometry_a","description":"a geometry"},
                  {"arg":"geometry_b","description":"a geometry"}],

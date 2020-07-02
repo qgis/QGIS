@@ -1,6 +1,7 @@
 {
   "name": "m_min",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns the minimum m (measure) value of a geometry.",
   "arguments": [ {"arg":"geometry","description":"a geometry containing m values"}],
   "examples": [ { "expression":"m_min( make_point_m( 0,0,1 ) )", "returns":"1"},

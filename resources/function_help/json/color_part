@@ -1,6 +1,7 @@
 {
   "name": "color_part",
   "type": "function",
+  "groups": ["Color"],
   "description": "Returns a specific component from a color string, e.g., the red component or alpha component.",
   "arguments": [
                {"arg":"color", "description":"a color string"},

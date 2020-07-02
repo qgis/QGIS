@@ -1,6 +1,7 @@
 {
   "name": "make_triangle",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Creates a triangle polygon.",
   "variableLenArguments": false,
   "arguments": [

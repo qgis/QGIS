@@ -1,6 +1,7 @@
 {
   "name": "color_rgb",
   "type": "function",
+  "groups": ["Color"],
   "description": "Returns a string representation of a color based on its red, green, and blue components.",
   "arguments": [ {"arg":"red","description":"red component as an integer value from 0 to 255"},
                  {"arg":"green","description":"green component as an integer value from 0 to 255"},

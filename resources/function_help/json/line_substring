@@ -1,6 +1,7 @@
 {
   "name": "line_substring",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns the portion of a line (or curve) geometry which falls between the specified start and end distances (measured from the beginning of the line). Z and M values are linearly interpolated from existing values.",
   "arguments": [ {"arg":"geometry","description":"a linestring or curve geometry"},
                  {"arg":"start_distance","description":"distance to start of substring"},

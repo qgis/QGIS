@@ -1,6 +1,7 @@
 {
   "name": "clamp",
   "type": "function",
+  "groups": ["Math"],
   "description": "Restricts an input value to a specified range.",
   "arguments": [ {"arg":"minimum","description":"the smallest value <i>input</i> is allowed to take."},
                  {"arg":"input","description":"a value which will be restricted to the range specified by <i>minimum</i> and <i>maximum</i>"},

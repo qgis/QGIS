@@ -1,6 +1,7 @@
 {
   "name": "combine",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns the combination of two geometries.",
   "arguments": [ {"arg":"geometry1","description":"a geometry"},
                  {"arg":"geometry2","description":"a geometry"}],

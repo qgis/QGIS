@@ -1,6 +1,7 @@
 {
   "name": "project",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns a point projected from a start point using a distance, a bearing (azimuth) and an elevation in radians.",
   "arguments": [
     {"arg":"point","description":"start point"},

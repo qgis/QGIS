@@ -1,6 +1,7 @@
 {
   "name": "$x",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns the x coordinate of the current feature.",
   "examples": [ { "expression":"$x", "returns":"42"}
   ]

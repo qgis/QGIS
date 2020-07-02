@@ -1,6 +1,7 @@
 {
   "name": "crosses",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Tests whether a geometry crosses another. Returns true if the supplied geometries have some, but not all, interior points in common.",
   "arguments": [ {"arg":"geometry a","description":"a geometry"},
                  {"arg":"geometry b","description":"a geometry"}],

@@ -1,6 +1,7 @@
 {
   "name": "flip_coordinates",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns a copy of the geometry with the x and y coordinates swapped. Useful for repairing geometries which have had their latitude and longitude values reversed.",
   "arguments": [ {"arg":"geom","description":"a geometry"}],
   "examples": [ { "expression":"geom_to_wkt(flip_coordinates(make_point(1, 2)))", "returns":"Point (2 1)"}

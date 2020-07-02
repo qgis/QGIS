@@ -1,6 +1,7 @@
 {
   "name": "extrude",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns an extruded version of the input (Multi-)Curve or (Multi-)Linestring geometry with an extension specified by x and y.",
   "arguments": [
     {"arg":"geom","description":"a polygon geometry"},

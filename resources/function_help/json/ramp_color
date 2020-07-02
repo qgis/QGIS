@@ -1,6 +1,7 @@
 {
   "name": "ramp_color",
   "type": "function",
+  "groups": ["Color"],
   "description": "Returns a string representing a color from a color ramp.",
   "variants": [
   { "variant": "Saved ramp variant",

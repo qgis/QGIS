@@ -1,6 +1,7 @@
 {
   "name": "aggregate",
   "type": "function",
+  "groups": ["Aggregates"],
   "description": "Returns an aggregate value calculated using features from another layer.",
   "arguments": [
 	{"arg":"layer", "description":"a string, representing either a layer name or layer ID"},

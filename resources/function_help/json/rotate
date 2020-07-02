@@ -1,6 +1,7 @@
 {
   "name": "rotate",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns a rotated version of a geometry. Calculations are in the Spatial Reference System of this geometry.",
   "arguments": [ {"arg":"geom","description":"a geometry"},
                  {"arg":"rotation","description":"clockwise rotation in degrees"},

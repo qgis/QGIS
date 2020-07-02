@@ -1,6 +1,7 @@
 {
   "name": "generate_series",
   "type": "function",
+  "groups": ["Arrays"],
   "description": "Creates an array containing a sequence of numbers.",
   "arguments": [
     {"arg":"start", "description":"first value of the sequence"},

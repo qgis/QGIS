@@ -1,6 +1,7 @@
 {
         "name": "array_slice",
         "type": "function",
+  "groups": ["Arrays"],
         "description": "Returns a portion of the array. The slice is defined by the start_pos and end_pos arguments.",
         "arguments": [{
                         "arg": "array",
