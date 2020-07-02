@@ -38,7 +38,7 @@ class CORE_EXPORT QgsDataSourceUri
   public:
 
     /**
-     * Available SSQL connection modes.
+     * Available SSL connection modes.
      */
     enum SslMode
     {
