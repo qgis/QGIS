@@ -16590,6 +16590,34 @@ void TestQgsGeometry::asQPolygonF()
   QgsGeometry badGeom( QgsGeometry::fromPointXY( mPoint1 ) );
   QPolygonF fromBad = badGeom.asQPolygonF();
   QVERIFY( fromBad.isEmpty() );
+
+  // test a multipolygon
+  QPolygonF res = QgsGeometry::fromWkt( QStringLiteral( "MultiPolygon (((0 0, 10 0, 10 10, 0 10, 0 0 )),((2 2, 4 2, 4 4, 2 4, 2 2)))" ) ).asQPolygonF();
+  QVERIFY( res.isClosed() );
+  QCOMPARE( res.size(), 5 );
+  QCOMPARE( res.at( 0 ).x(), 0.0 );
+  QCOMPARE( res.at( 0 ).y(), 0.0 );
+  QCOMPARE( res.at( 1 ).x(), 10.0 );
+  QCOMPARE( res.at( 1 ).y(), 0.0 );
+  QCOMPARE( res.at( 2 ).x(), 10.0 );
+  QCOMPARE( res.at( 2 ).y(), 10.0 );
+  QCOMPARE( res.at( 3 ).x(), 0.0 );
+  QCOMPARE( res.at( 3 ).y(), 10.0 );
+  QCOMPARE( res.at( 4 ).x(), 0.0 );
+  QCOMPARE( res.at( 4 ).y(), 0.0 );
+
+  // test a multilinestring
+  res = QgsGeometry::fromWkt( QStringLiteral( "MultiLineString((0 0, 10 0, 10 10, 0 10 ),(2 2, 4 2, 4 4, 2 4))" ) ).asQPolygonF();
+  QVERIFY( !res.isClosed() );
+  QCOMPARE( res.size(), 4 );
+  QCOMPARE( res.at( 0 ).x(), 0.0 );
+  QCOMPARE( res.at( 0 ).y(), 0.0 );
+  QCOMPARE( res.at( 1 ).x(), 10.0 );
+  QCOMPARE( res.at( 1 ).y(), 0.0 );
+  QCOMPARE( res.at( 2 ).x(), 10.0 );
+  QCOMPARE( res.at( 2 ).y(), 10.0 );
+  QCOMPARE( res.at( 3 ).x(), 0.0 );
+  QCOMPARE( res.at( 3 ).y(), 10.0 );
 }
 
 void TestQgsGeometry::comparePolylines()
