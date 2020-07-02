@@ -52,7 +52,7 @@ class QgsFieldExpressionValuesGatherer: public QThread
     {
       mWasCanceled = false;
 
-      mIterator = mSource->getFeatures( mRequest );
+      QgsFeatureIterator iterator = mSource->getFeatures( mRequest );
 
       mDisplayExpression.prepare( &mExpressionContext );
 
@@ -61,7 +61,7 @@ class QgsFieldExpressionValuesGatherer: public QThread
       for ( const QString &fieldName : qgis::as_const( mIdentifierFields ) )
         attributeIndexes << mSource->fields().indexOf( fieldName );
 
-      while ( mIterator.nextFeature( feat ) )
+      while ( iterator.nextFeature( feat ) )
       {
         mExpressionContext.setFeature( feat );
         QVariantList attributes;
@@ -121,7 +121,6 @@ class QgsFieldExpressionValuesGatherer: public QThread
     QgsExpression mDisplayExpression;
     QgsExpressionContext mExpressionContext;
     QgsFeatureRequest mRequest;
-    QgsFeatureIterator mIterator;
     bool mWasCanceled = false;
     mutable QMutex mCancelMutex;
     QVector<QgsFeatureFilterModel::Entry> mEntries;
