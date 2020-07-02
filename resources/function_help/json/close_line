@@ -1,6 +1,7 @@
 {
   "name": "close_line",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns a closed line string of the input line string by appending the first point to the end of the line, if it is not already closed. If the geometry is not a line string or multi line string then the result will be null.",
   "arguments": [ {"arg":"geometry","description":"a line string geometry"}],
   "examples": [ { "expression":"geom_to_wkt(close_line(geom_from_wkt('LINESTRING(0 0, 1 0, 1 1)')))", "returns":"LineString (0 0, 1 0, 1 1, 0 0)"},

@@ -1,6 +1,7 @@
 {
   "name": "raster_value",
   "type": "function",
+  "groups": ["Rasters"],
   "description": "Returns the raster value found at the provided point.",
   "arguments": [ {"arg":"layer","description":"the name or id of a raster layer"},
                  {"arg":"band","description":"the band number to sample the value from."},

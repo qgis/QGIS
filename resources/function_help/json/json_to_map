@@ -1,6 +1,7 @@
 {
   "name": "json_to_map",
   "type": "function",
+  "groups": ["Maps"],
   "description": "Creates a map from a json-formatted string.",
   "arguments": [
     {"arg":"string", "description":"the input string"}],

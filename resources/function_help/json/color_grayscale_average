@@ -1,6 +1,7 @@
 {
   "name": "color_grayscale_average",
   "type": "function",
+  "groups": ["Color"],
   "description": "Applies a grayscale filter and returns a string representation from a provided color.",
   "arguments": [
                {"arg":"color", "description":"a color string"}

@@ -1,6 +1,7 @@
 {
   "name": "array_length",
   "type": "function",
+  "groups": ["Arrays"],
   "description": "Returns the number of elements of an array.",
   "arguments": [ {"arg":"array","description":"an array"}],
   "examples": [ { "expression":"array_length(array(1,2,3))", "returns":"3"}]

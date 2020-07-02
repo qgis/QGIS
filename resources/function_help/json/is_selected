@@ -1,6 +1,7 @@
 {
   "name": "is_selected",
   "type": "function",
+  "groups": ["Record and Attributes"],
   "description": "Returns True if a feature is selected. Can be used with zero, one or two arguments, see below for details.",
   "variants": [
         {

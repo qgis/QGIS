@@ -1,6 +1,7 @@
 {
   "name": "raster_statistic",
   "type": "function",
+  "groups": ["Rasters"],
   "description": "Returns statistics from a raster layer.",
   "arguments": [
 	{"arg":"layer", "description":"a string, representing either a raster layer name or layer ID"},

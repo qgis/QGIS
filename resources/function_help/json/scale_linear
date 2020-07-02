@@ -1,6 +1,7 @@
 {
   "name": "scale_linear",
   "type": "function",
+  "groups": ["Math"],
   "description": "Transforms a given value from an input domain to an output range using linear interpolation.",
   "arguments": [
 	{"arg":"val", "description":"A value in the input domain. The function will return a corresponding scaled value in the output range."},
