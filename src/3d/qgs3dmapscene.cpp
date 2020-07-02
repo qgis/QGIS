@@ -766,9 +766,11 @@ void Qgs3DMapScene::updateSceneState()
   setSceneState( Ready );
 }
 
-void Qgs3DMapScene::exportScene( const QString &sceneName, const QString &sceneDir )
+void Qgs3DMapScene::exportScene( const QString &sceneName, const QString &sceneDir, bool smoothEdges )
 {
   Qgs3DSceneExporter exporter;
+
+  exporter.setSmoothEdges( smoothEdges );
 
   for ( QgsMapLayer *layer : mLayerEntities.keys() )
   {

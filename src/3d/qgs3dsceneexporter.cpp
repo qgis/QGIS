@@ -195,12 +195,12 @@ void Qgs3DSceneExporter::parseEntity( Qt3DCore::QEntity *entity )
       continue;
     }
 
-//    Qt3DExtras::QPlaneGeometry *plane = qobject_cast<Qt3DExtras::QPlaneGeometry *>( geom );
-//    if ( plane != nullptr )
-//    {
-//      process( plane );
-//      continue;
-//    }
+    //    Qt3DExtras::QPlaneGeometry *plane = qobject_cast<Qt3DExtras::QPlaneGeometry *>( geom );
+    //    if ( plane != nullptr )
+    //    {
+    //      process( plane );
+    //      continue;
+    //    }
 
   }
   for ( QObject *child : entity->children() )
@@ -221,6 +221,11 @@ void Qgs3DSceneExporter::parseEntity( QgsTerrainEntity *terrain )
       break;
     case QgsTerrainGenerator::Flat:
       generateFlatTerrain( terrain, root );
+      break;
+    // TODO: implement other terrain types
+    case QgsTerrainGenerator::Mesh:
+      break;
+    case QgsTerrainGenerator::Online:
       break;
   }
 }
@@ -265,7 +270,7 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::createDEMTileEntity( QgsTerrainEntity 
   QgsDemTerrainGenerator *generator = static_cast<QgsDemTerrainGenerator *>( map.terrainGenerator() );
   QgsDemHeightMapGenerator *heightMapGenerator = generator->heightMapGenerator();
   float resolution = generator->resolution();
-//  heightMapGenerator->set
+  //  heightMapGenerator->set
   QByteArray heightMap = heightMapGenerator->renderSynchronously( node->tileX(), node->tileY(), node->tileZ() );
   float skirtHeight = generator->skirtHeight();
 
@@ -294,7 +299,7 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::createDEMTileEntity( QgsTerrainEntity 
 
   // create material
   // TODO: create texture component
-//      createTextureComponent( entity, map.isTerrainShadingEnabled(), map.terrainShadingMaterial() );
+  //      createTextureComponent( entity, map.isTerrainShadingEnabled(), map.terrainShadingMaterial() );
 
   // create transform
 
@@ -305,10 +310,10 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::createDEMTileEntity( QgsTerrainEntity 
   transform->setScale( side );
   transform->setTranslation( QVector3D( x0 + half, 0, - ( y0 + half ) ) );
 
-//  node->setExactBbox( QgsAABB( x0, zMin * map.terrainVerticalScale(), -y0, x0 + side, zMax * map.terrainVerticalScale(), -( y0 + side ) ) );
+  //  node->setExactBbox( QgsAABB( x0, zMin * map.terrainVerticalScale(), -y0, x0 + side, zMax * map.terrainVerticalScale(), -( y0 + side ) ) );
 
   entity->setEnabled( false );
-//    entity->setParent( nullptr );
+  //    entity->setParent( nullptr );
 
   return entity;
 }
@@ -529,11 +534,14 @@ void Qgs3DSceneExporter::saveToFile( const QString &filePath )
     out << ( mVertxPosition[i + 2] - centerZ ) / scale << "\n";
   }
 
+  // smoothen edges
+  if ( mSmoothEdges ) out << "s on\n";
+  else out << "s off\n";
+
   // Construct faces
   for ( int i = 0; i < mIndexes.size(); i += 3 )
   {
     if ( ignored.contains( mIndexes[i] ) || ignored.contains( mIndexes[i + 1] ) || ignored.contains( mIndexes[i + 2] ) ) continue;
     out << "f " << mIndexes[i] << " " << mIndexes[i + 1] << " " << mIndexes[i + 2] << "\n";
   }
-  qDebug() << "Ignored count : " << ignored.size();
 }

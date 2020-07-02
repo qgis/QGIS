@@ -38,6 +38,10 @@ class Qgs3DSceneExporter
     void parseEntity( Qt3DCore::QEntity *entity );
     void parseEntity( QgsTerrainEntity *terrain );
     void saveToFile( const QString &filePath );
+
+    void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
+    bool smoothEdges() { return mSmoothEdges; }
+
   private:
     void processAttribute( Qt3DRender::QAttribute *attribute );
     void process( QgsTessellatedPolygonGeometry *geom );
@@ -51,6 +55,8 @@ class Qgs3DSceneExporter
 
     QgsTerrainTileEntity *createDEMTileEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
   private:
+    bool mSmoothEdges = false;
+
     QVector<float> mVertxPosition;
     QVector<int> mIndexes;
     QMap<int, QString> mComments;

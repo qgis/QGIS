@@ -46,6 +46,7 @@
 
 #include "qgs3dsceneexporter.h"
 #include "qgsabstract3drenderer.h"
+#include "qgsmap3dexportwidget.h"
 
 
 Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
@@ -102,7 +103,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
                       tr( "Save as Image…" ), this, &Qgs3DMapCanvasDockWidget::saveAsImage );
 
   toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionSaveMapAsImage.svg" ) ),
-      tr( "Export 3D Scene" ), this, &Qgs3DMapCanvasDockWidget::exportScene );
+                      tr( "Export 3D Scene" ), this, &Qgs3DMapCanvasDockWidget::exportScene );
 
   toolBar->addSeparator();
 
@@ -173,17 +174,6 @@ void Qgs3DMapCanvasDockWidget::saveAsImage()
   {
     mCanvas->saveAsImage( fileNameAndFilter.first, fileNameAndFilter.second );
   }
-}
-
-
-void Qgs3DMapCanvasDockWidget::exportScene()
-{
-
-  QgsSettings settings;  // where we keep last used filter in persistent state
-  QString initialPath = settings.value( QStringLiteral( "UI/lastExportAsDir" ), QDir::homePath() ).toString();
-  QString outputDir = QFileDialog::getExistingDirectory(this, QString("Export scane"), initialPath);
-
-  mCanvas->scene()->exportScene("scene", outputDir);
 }
 
 void Qgs3DMapCanvasDockWidget::toggleAnimations()
@@ -305,6 +295,32 @@ void Qgs3DMapCanvasDockWidget::configure()
 
   // Disable map theme button if the terrain generator is a mesh
   mBtnMapThemes->setDisabled( map->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
+}
+
+void Qgs3DMapCanvasDockWidget::exportScene()
+{
+
+  QDialog dlg;
+  dlg.setWindowTitle( tr( "Export 3D Scene" ) );
+  dlg.setObjectName( QStringLiteral( "3DSceneExportDialog" ) );
+  dlg.setMinimumSize( 380, 460 );
+//  QgsGui::instance()->enableAutoGeometryRestore( &dlg );
+
+  QgsMap3DExportWidget *w = new QgsMap3DExportWidget( mCanvas->scene(), &dlg );
+  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg );
+
+  connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+  connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+  connect( &dlg, &QDialog::accepted, [ = ]()
+  {
+    w->exportScene();
+  } );
+
+  QVBoxLayout *layout = new QVBoxLayout( &dlg );
+  layout->addWidget( w, 1 );
+  layout->addWidget( buttons );
+  if ( !dlg.exec() )
+    return;
 }
 
 void Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged()
