@@ -772,11 +772,17 @@ QPainterPath QgsCurvePolygon::asQPainterPath() const
 {
   QPainterPath p;
   if ( mExteriorRing )
-    mExteriorRing->addToPainterPath( p );
+  {
+    QPainterPath ring = mExteriorRing->asQPainterPath();
+    ring.closeSubpath();
+    p.addPath( ring );
+  }
 
   for ( const QgsCurve *ring : mInteriorRings )
   {
-    p.addPath( ring->asQPainterPath() );
+    QPainterPath ringPath = ring->asQPainterPath();
+    ringPath.closeSubpath();
+    p.addPath( ringPath );
   }
 
   return p;
