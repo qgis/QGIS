@@ -33,7 +33,7 @@ QString QgsDrapeAlgorithmBase::groupId() const
 
 QString QgsDrapeAlgorithmBase::outputName() const
 {
-  return QObject::tr( "Updated" );
+  return QObject::tr( "Draped" );
 }
 
 void QgsDrapeAlgorithmBase::initParameters( const QVariantMap & )
