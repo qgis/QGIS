@@ -1912,9 +1912,15 @@ class CORE_EXPORT QgsGeometry
     QPointF asQPointF() const;
 
     /**
-     * Returns contents of the geometry as a QPolygonF. If geometry is a linestring,
-     * then the result will be an open QPolygonF. If the geometry is a polygon,
-     * then the result will be a closed QPolygonF of the geometry's exterior ring.
+     * Returns contents of the geometry as a QPolygonF.
+     *
+     * If geometry is a linestring, then the result will be an open QPolygonF.
+     * If the geometry is a polygon, then the result will be a closed QPolygonF
+     * of the geometry's exterior ring.
+     *
+     * If the geometry is a multi-part geometry, then only the first part will
+     * be considered when converting to a QPolygonF.
+     *
      * \since QGIS 2.7
      */
     QPolygonF asQPolygonF() const;

@@ -2557,36 +2557,22 @@ QPointF QgsGeometry::asQPointF() const
 
 QPolygonF QgsGeometry::asQPolygonF() const
 {
-  const QgsWkbTypes::Type type = wkbType();
-  const QgsLineString *line = nullptr;
-  if ( QgsWkbTypes::flatType( type ) == QgsWkbTypes::LineString )
+  const QgsAbstractGeometry *part = constGet();
+
+  // if a geometry collection, get first part only
+  if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection *>( part ) )
   {
-    line = qgsgeometry_cast< const QgsLineString * >( constGet() );
-  }
-  else if ( QgsWkbTypes::flatType( type ) == QgsWkbTypes::Polygon )
-  {
-    const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( constGet() );
-    if ( polygon )
-      line = qgsgeometry_cast< const QgsLineString * >( polygon->exteriorRing() );
+    if ( collection->numGeometries() > 0 )
+      part = collection->geometryN( 0 );
+    else
+      return QPolygonF();
   }
 
-  if ( line )
-  {
-    const double *srcX = line->xData();
-    const double *srcY = line->yData();
-    const int count = line->numPoints();
-    QPolygonF res( count );
-    QPointF *dest = res.data();
-    for ( int i = 0; i < count; ++i )
-    {
-      *dest++ = QPointF( *srcX++, *srcY++ );
-    }
-    return res;
-  }
-  else
-  {
-    return QPolygonF();
-  }
+  if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( part ) )
+    return curve->asQPolygonF();
+  else if ( const QgsCurvePolygon *polygon = qgsgeometry_cast< const QgsCurvePolygon * >( part ) )
+    return polygon->exteriorRing() ? polygon->exteriorRing()->asQPolygonF() : QPolygonF();
+  return QPolygonF();
 }
 
 bool QgsGeometry::deleteRing( int ringNum, int partNum )
