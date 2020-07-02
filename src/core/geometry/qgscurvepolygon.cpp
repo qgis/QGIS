@@ -768,6 +768,20 @@ void QgsCurvePolygon::forceRHR()
   mInteriorRings = validRings;
 }
 
+QPainterPath QgsCurvePolygon::asQPainterPath() const
+{
+  QPainterPath p;
+  if ( mExteriorRing )
+    mExteriorRing->addToPainterPath( p );
+
+  for ( const QgsCurve *ring : mInteriorRings )
+  {
+    p.addPath( ring->asQPainterPath() );
+  }
+
+  return p;
+}
+
 void QgsCurvePolygon::draw( QPainter &p ) const
 {
   if ( !mExteriorRing )

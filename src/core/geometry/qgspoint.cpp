@@ -321,6 +321,11 @@ void QgsPoint::draw( QPainter &p ) const
   p.drawRect( QRectF( mX - 2, mY - 2, 4, 4 ) );
 }
 
+QPainterPath QgsPoint::asQPainterPath() const
+{
+  return QPainterPath();
+}
+
 void QgsPoint::clear()
 {
   mX = mY = std::numeric_limits<double>::quiet_NaN();

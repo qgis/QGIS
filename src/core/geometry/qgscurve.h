@@ -89,6 +89,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      * Adds a curve to a painter path.
      */
     virtual void addToPainterPath( QPainterPath &path ) const = 0;
+    QPainterPath asQPainterPath() const override;
 
     /**
      * Draws the curve as a polygon on the specified QPainter.

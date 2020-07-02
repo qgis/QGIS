@@ -149,6 +149,8 @@ An IndexError will be raised if no geometry with the specified index exists.
 
     virtual void draw( QPainter &p ) const;
 
+    virtual QPainterPath asQPainterPath() const;
+
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
 
