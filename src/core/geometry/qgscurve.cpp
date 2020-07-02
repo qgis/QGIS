@@ -58,6 +58,13 @@ bool QgsCurve::isRing() const
   return ( isClosed() && numPoints() >= 4 );
 }
 
+QPainterPath QgsCurve::asQPainterPath() const
+{
+  QPainterPath p;
+  addToPainterPath( p );
+  return p;
+}
+
 QgsCoordinateSequence QgsCurve::coordinateSequence() const
 {
   QgsCoordinateSequence sequence;
