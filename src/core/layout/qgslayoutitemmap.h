@@ -32,6 +32,117 @@ class QgsRenderedFeatureHandlerInterface;
 
 /**
  * \ingroup core
+ * \class QgsLayoutItemMapAtlasClippingSettings
+ * \brief Contains settings relating to clipping a layout map by the current atlas feature.
+ * \since QGIS 3.16
+ */
+class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsLayoutItemMapAtlasClippingSettings, with the specified \a map parent.
+     */
+    QgsLayoutItemMapAtlasClippingSettings( QgsLayoutItemMap *map SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Returns TRUE if the map content should be clipped to the current atlas feature.
+     *
+     * \see setEnabled()
+     */
+    bool enabled() const;
+
+    /**
+     * Sets whether the map content should be clipped to the current atlas feature.
+     *
+     * \see enabled()
+     */
+    void setEnabled( bool enabled );
+
+    /**
+     * Returns the feature clipping type to apply when clipping to the current atlas feature.
+     *
+     * \see setFeatureClippingType()
+     */
+    QgsMapClippingRegion::FeatureClippingType featureClippingType() const;
+
+    /**
+     * Sets the feature clipping \a type to apply when clipping to the current atlas feature.
+     *
+     * \see featureClippingType()
+     */
+    void setFeatureClippingType( QgsMapClippingRegion::FeatureClippingType type );
+
+    /**
+     * Returns TRUE if labels should only be placed inside the atlas feature geometry.
+     *
+     * \see setForceLabelsInsideFeature()
+     */
+    bool forceLabelsInsideFeature() const;
+
+    /**
+     * Sets whether labels should only be placed inside the atlas feature geometry.
+     *
+     * \see forceLabelsInsideFeature()
+     */
+    void setForceLabelsInsideFeature( bool forceInside );
+
+    /**
+     * Returns the list of map layers to clip to the atlas feature.
+     *
+     * If the returned list is empty then all layers will be clipped.
+     *
+     * \see setLayersToClip()
+     */
+    QList< QgsMapLayer * > layersToClip() const;
+
+    /**
+     * Sets the list of map \a layers to clip to the atlas feature.
+     *
+     * If the \a layers list is empty then all layers will be clipped.
+     *
+     * \see layersToClip()
+     */
+    void setLayersToClip( const QList< QgsMapLayer * > &layers );
+
+    /**
+     * Stores settings in a DOM element, where \a element is the DOM element
+     * corresponding to a 'LayoutMap' tag.
+     * \see readXml()
+     */
+    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Sets the setting's state from a DOM document, where \a element is the DOM
+     * node corresponding to a 'LayoutMap' tag.
+     * \see writeXml()
+     */
+    bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context );
+
+  signals:
+
+    /**
+     * Emitted when the atlas clipping settings are changed.
+     */
+    void changed();
+
+  private slots:
+    void layersAboutToBeRemoved( const QList<QgsMapLayer *> &layers );
+
+  private:
+
+    QgsLayoutItemMap *mMap = nullptr;
+    bool mClipToAtlasFeature = false;
+    QList< QgsMapLayerRef > mLayersToClip;
+    QgsMapClippingRegion::FeatureClippingType mFeatureClippingType = QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly;
+    bool mForceLabelsInsideFeature = false;
+};
+
+
+/**
+ * \ingroup core
  * \class QgsLayoutItemMap
  * \brief Layout graphical items for displaying a map.
  * \since QGIS 3.0
@@ -559,6 +670,13 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
      */
     QTransform layoutToMapCoordsTransform() const;
 
+    /**
+     * Returns the map's atlas clipping settings.
+     *
+     * \since QGIS 3.16
+     */
+    QgsLayoutItemMapAtlasClippingSettings *atlasClippingSettings() { return mAtlasClippingSettings; }
+
   protected:
 
     void draw( QgsLayoutItemRenderContext &context ) override;
@@ -842,6 +960,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     PartType mCurrentExportPart = NotLayered;
     QStringList mExportThemes;
     QStringList::iterator mExportThemeIt;
+
+    QgsLayoutItemMapAtlasClippingSettings *mAtlasClippingSettings = nullptr;
 
     /**
      * Refresh the map's extents, considering data defined extent, scale and rotation

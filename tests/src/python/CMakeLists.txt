@@ -125,6 +125,7 @@ ADD_PYTHON_TEST(PyQgsLayoutItemPropertiesDialog test_qgslayoutitempropertiesdial
 ADD_PYTHON_TEST(PyQgsLayoutLabel test_qgslayoutlabel.py)
 ADD_PYTHON_TEST(PyQgsLayoutLegend test_qgslayoutlegend.py)
 ADD_PYTHON_TEST(PyQgsLayoutMap test_qgslayoutmap.py)
+ADD_PYTHON_TEST(PyQgsLayoutItemMapAtlasClippingSettings test_qgslayoutatlasclippingsettings.py)
 ADD_PYTHON_TEST(PyQgsLayoutMapGrid test_qgslayoutmapgrid.py)
 ADD_PYTHON_TEST(PyQgsLayoutMapOverview test_qgslayoutmapoverview.py)
 ADD_PYTHON_TEST(PyQgsLayoutMarker test_qgslayoutmarker.py)
