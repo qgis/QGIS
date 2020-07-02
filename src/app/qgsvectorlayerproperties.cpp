@@ -383,7 +383,11 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   const auto constFindLayers = mLayersDependenciesTreeGroup->findLayers();
   for ( QgsLayerTreeLayer *layer : constFindLayers )
   {
-    layer->setItemVisibilityChecked( dependencySources.contains( layer->layerId() ) );
+    bool visible = dependencySources.contains( layer->layerId() );
+    if ( visible )
+      layer->setItemVisibilityCheckedParentRecursive( true );
+    else
+      layer->setItemVisibilityChecked( false );
   }
 
   QgsMapSettings ms = QgisApp::instance()->mapCanvas()->mapSettings();
