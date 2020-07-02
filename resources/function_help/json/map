@@ -1,6 +1,7 @@
 {
   "name": "map",
   "type": "function",
+  "groups": ["Maps"],
   "description": "Returns a map containing all the keys and values passed as pair of parameters.",
   "variableLenArguments": true,
   "arguments": [

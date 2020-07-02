@@ -1,6 +1,7 @@
 {
   "name": "array_distinct",
   "type": "function",
+  "groups": ["Arrays"],
   "description": "Returns an array containing distinct values of the given array.",
   "arguments": [
     {"arg":"array","description":"an array"}],

@@ -1,6 +1,7 @@
 {
   "name": "y",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns the y coordinate of a point geometry, or the y-coordinate of the centroid for a non-point geometry.",
   "arguments": [ {"arg":"geom","description":"a geometry"}],
   "examples": [ { "expression":"y( geom_from_wkt( 'POINT(2 5)' ) )", "returns":"5"},

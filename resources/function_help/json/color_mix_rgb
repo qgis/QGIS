@@ -1,6 +1,7 @@
 {
   "name": "color_mix_rgb",
   "type": "function",
+  "groups": ["Color"],
   "description": "Returns a string representing a color mixing the red, green, blue, and alpha values of two provided colors based on a given ratio.",
   "arguments": [
                {"arg":"color1", "description":"a color string"},

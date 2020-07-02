@@ -1,6 +1,7 @@
 {
   "name": "array_find",
   "type": "function",
+  "groups": ["Arrays"],
   "description": "Returns the index (0 for the first one) of a value within an array. Returns -1 if the value is not found.",
   "arguments": [ {"arg":"array","description":"an array"},
                  {"arg":"value","description":"the value to search"}],

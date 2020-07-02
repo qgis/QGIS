@@ -1,6 +1,7 @@
 {
   "name": "radians",
   "type": "function",
+  "groups": ["Math"],
   "description": "Converts from degrees to radians.",
   "arguments": [ {"arg":"degrees","description":"numeric value"}],
   "examples": [

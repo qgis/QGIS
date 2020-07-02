@@ -1,6 +1,7 @@
 {
   "name": "closest_point",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns the point on geometry1 that is closest to geometry2.",
   "arguments": [
     {"arg":"geometry1","description":"geometry to find closest point on"},

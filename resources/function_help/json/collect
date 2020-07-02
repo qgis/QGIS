@@ -1,6 +1,7 @@
 {
   "name": "collect",
   "type": "function",
+  "groups": ["Aggregates"],
   "description": "Returns the multipart geometry of aggregated geometries from an expression",
   "arguments": [
 	{"arg":"expression", "description":"geometry expression to aggregate"},

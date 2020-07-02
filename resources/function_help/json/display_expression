@@ -1,6 +1,7 @@
 {
   "name": "display_expression",
   "type": "function",
+  "groups": ["Record and Attributes"],
   "description": "Returns the display expression for a given feature in a layer. If called with no parameters, it evaluates the current feature. The expression is evaluated by default.",
   "arguments": [
     {

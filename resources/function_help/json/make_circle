@@ -1,6 +1,7 @@
 {
   "name": "make_circle",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Creates a circular polygon.",
   "variableLenArguments": true,
   "arguments": [
