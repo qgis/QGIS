@@ -42,7 +42,6 @@ Adds a properties page factory to the vector layer properties dialog.
 
 
 
-      public:
 };
 
 
