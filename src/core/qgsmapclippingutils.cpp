@@ -169,15 +169,10 @@ QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMap
   if ( !shouldClip )
     return QPainterPath();
 
-  // filter out polygon parts from result only
-  result.convertGeometryCollectionToSubclass( QgsWkbTypes::PolygonGeometry );
-
   // transform to painter coordinates
   result.mapToPixel( context.mapToPixel() );
 
-  QPainterPath path;
-  path.addPolygon( result.asQPolygonF() );
-  return path;
+  return result.constGet()->asQPainterPath();
 }
 
 QgsGeometry QgsMapClippingUtils::calculateLabelIntersectionGeometry( const QList<QgsMapClippingRegion> &regions, const QgsRenderContext &context, bool &shouldClip )
