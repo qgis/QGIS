@@ -5902,7 +5902,6 @@ class TestQgsGeometry(unittest.TestCase):
                 rendered_image = self.renderGeometry(geom, False, True)
                 assert self.imageCheck(test['name'] + '_aspolygon', test['as_polygon_reference_image'], rendered_image)
 
-
     def testGeometryAsQPainterPath(self):
         '''Tests conversion of different geometries to QPainterPath, including bad/odd geometries.'''
 
@@ -5980,6 +5979,9 @@ class TestQgsGeometry(unittest.TestCase):
                  {'name': 'Collection Mixed',
                   'wkt': 'GeometryCollection(Point(1 2), MultiPoint(3 3, 2 3), LineString (0 0,3 4,4 3), MultiLineString((3 1, 3 2, 4 2)), Polygon((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)), MultiPolygon(((4 0, 5 0, 5 1, 6 1, 6 2, 4 2, 4 0)),(( 1 4, 2 4, 1 5, 1 4))))',
                   'reference_image': 'collection_mixed'},
+                 {'name': 'MultiCurvePolygon',
+                  'wkt': 'MultiSurface (CurvePolygon (CompoundCurve (CircularString (-12942312 4593500, -11871048 5481118, -11363838 5065730, -11551856 4038191, -12133399 4130014),(-12133399 4130014, -12942312 4593500)),(-12120281 5175043, -12456964 4694067, -11752991 4256817, -11569346 4943300, -12120281 5175043)),Polygon ((-10856627 5625411, -11083997 4995770, -10887235 4357384, -9684796 4851477, -10069576 5428648, -10856627 5625411)))',
+                  'reference_image': 'multicurvepolygon_with_rings'}
                  ]
 
         for test in tests:
