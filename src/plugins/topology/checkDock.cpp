@@ -89,7 +89,7 @@ checkDock::checkDock( QgisInterface *qIface, QWidget *parent )
   connect( mFixButton, &QAbstractButton::clicked, this, &checkDock::fix );
   connect( mErrorTableView, &QAbstractItemView::clicked, this, &checkDock::errorListClicked );
 
-  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &checkDock::parseErrorListByLayer );
+  connect( QgsProject::instance(), &QgsProject::layerWillBeRemoved, this, &checkDock::parseErrorListByLayer );
 
   connect( this, &QDockWidget::visibilityChanged, this, &checkDock::updateRubberBands );
   connect( qgsInterface, &QgisInterface::newProjectCreated, mConfigureDialog, &rulesDialog::clearRules );

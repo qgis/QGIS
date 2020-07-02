@@ -1084,7 +1084,7 @@ void QgsGeoreferencerMainWindow::setupConnections()
   connect( mCanvas, &QgsMapCanvas::zoomLastStatusChanged, mActionZoomLast, &QAction::setEnabled );
   connect( mCanvas, &QgsMapCanvas::zoomNextStatusChanged, mActionZoomNext, &QAction::setEnabled );
   // Connect when one Layer is removed - Case where change the Projetct in QGIS
-  connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QString & )>( &QgsProject::layerWillBeRemoved ), this, &QgsGeoreferencerMainWindow::layerWillBeRemoved );
+  connect( QgsProject::instance(), &QgsProject::layerWillBeRemoved, this, &QgsGeoreferencerMainWindow::layerWillBeRemoved );
 
   // Connect extents changed - Use for need add again Raster
   connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsGeoreferencerMainWindow::extentsChanged );

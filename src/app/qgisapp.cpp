@@ -4156,15 +4156,11 @@ void QgisApp::setupConnections()
   } );
 
   // connect map layer registry
-  connect( QgsProject::instance(), &QgsProject::layersAdded,
-           this, &QgisApp::layersWereAdded );
-  connect( QgsProject::instance(),
-           static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ),
-           this, &QgisApp::removingLayers );
+  connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgisApp::layersWereAdded );
+  connect( QgsProject::instance(), &QgsProject::layersWillBeRemoved, this, &QgisApp::removingLayers );
 
   // connect initialization signal
-  connect( this, &QgisApp::initializationCompleted,
-           this, &QgisApp::fileOpenAfterLaunch );
+  connect( this, &QgisApp::initializationCompleted, this, &QgisApp::fileOpenAfterLaunch );
 
   // Connect warning dialog from project reading
   connect( QgsProject::instance(), &QgsProject::oldProjectVersionWarning,

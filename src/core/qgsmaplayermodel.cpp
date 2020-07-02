@@ -25,7 +25,7 @@ QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject 
   : QAbstractItemModel( parent )
   , mProject( project ? project : QgsProject::instance() )
 {
-  connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
+  connect( mProject, &QgsProject::layersWillBeRemoved, this, &QgsMapLayerModel::removeLayers );
   addLayers( layers );
 }
 
@@ -34,7 +34,7 @@ QgsMapLayerModel::QgsMapLayerModel( QObject *parent, QgsProject *project )
   , mProject( project ? project : QgsProject::instance() )
 {
   connect( mProject, &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
-  connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
+  connect( mProject, &QgsProject::layersWillBeRemoved, this, &QgsMapLayerModel::removeLayers );
   addLayers( mProject->mapLayers().values() );
 }
 

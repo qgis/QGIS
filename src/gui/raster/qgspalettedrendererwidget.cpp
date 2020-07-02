@@ -117,7 +117,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
     mLoadFromLayerAction->setEnabled( false );
   }
 
-  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( QgsMapLayer * ) >( &QgsProject::layerWillBeRemoved ), this, &QgsPalettedRendererWidget::layerWillBeRemoved );
+  connect( QgsProject::instance(), &QgsProject::aboutToRemoveLayer, this, &QgsPalettedRendererWidget::layerWillBeRemoved );
   connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, this, &QgsPalettedRendererWidget::bandChanged );
 }
 

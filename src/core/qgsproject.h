@@ -1621,6 +1621,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \param layerIds A list of IDs for the layers which are to be removed.
      * \see layerWillBeRemoved()
      * \see layersRemoved()
+     * \see aboutToRemoveLayers()
      */
     void layersWillBeRemoved( const QStringList &layerIds );
 
@@ -1628,10 +1629,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Emitted when one or more layers are about to be removed from the registry.
      *
      * \param layers A list of layers which are to be removed.
-     * \see layerWillBeRemoved()
+     * \see layersWillBeRemoved()
      * \see layersRemoved()
+     * \see aboutToRemoveLayer()
+     * \since QGIS 3.16
      */
-    void layersWillBeRemoved( const QList<QgsMapLayer *> &layers );
+    void aboutToRemoveLayers( const QList<QgsMapLayer *> &layers );
 
     /**
      * Emitted when a layer is about to be removed from the registry.
@@ -1641,6 +1644,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note Consider using layersWillBeRemoved() instead
      * \see layersWillBeRemoved()
      * \see layerRemoved()
+     * \see aboutToRemoveLayer()
      */
     void layerWillBeRemoved( const QString &layerId );
 
@@ -1652,8 +1656,10 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note Consider using layersWillBeRemoved() instead
      * \see layersWillBeRemoved()
      * \see layerRemoved()
+     * \see aboutToRemoveLayers()
+     * \since QGIS 3.16
      */
-    void layerWillBeRemoved( QgsMapLayer *layer );
+    void aboutToRemoveLayer( QgsMapLayer *layer );
 
     /**
      * Emitted after one or more layers were removed from the registry.

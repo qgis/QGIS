@@ -1854,8 +1854,7 @@ void QgsLayoutItemMap::connectUpdateSlot()
   if ( project )
   {
     // handles updating the stored layer state BEFORE the layers are removed
-    connect( project, static_cast < void ( QgsProject::* )( const QList<QgsMapLayer *>& layers ) > ( &QgsProject::layersWillBeRemoved ),
-             this, &QgsLayoutItemMap::layersAboutToBeRemoved );
+    connect( project, &QgsProject::aboutToRemoveLayers, this, &QgsLayoutItemMap::layersAboutToBeRemoved );
     // redraws the map AFTER layers are removed
     connect( project->layerTreeRoot(), &QgsLayerTree::layerOrderChanged, this, [ = ]
     {

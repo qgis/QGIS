@@ -29,7 +29,7 @@
 QgsMapThemeCollection::QgsMapThemeCollection( QgsProject *project )
   : mProject( project )
 {
-  connect( project, static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsMapThemeCollection::registryLayersRemoved );
+  connect( project, &QgsProject::layersWillBeRemoved, this, &QgsMapThemeCollection::registryLayersRemoved );
 }
 
 QgsMapThemeCollection::MapThemeLayerRecord QgsMapThemeCollection::createThemeLayerRecord( QgsLayerTreeLayer *nodeLayer, QgsLayerTreeModel *model )
@@ -218,9 +218,9 @@ void QgsMapThemeCollection::setProject( QgsProject *project )
   if ( project == mProject )
     return;
 
-  disconnect( mProject, static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsMapThemeCollection::registryLayersRemoved );
+  disconnect( mProject, &QgsProject::layersWillBeRemoved, this, &QgsMapThemeCollection::registryLayersRemoved );
   mProject = project;
-  connect( mProject, static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsMapThemeCollection::registryLayersRemoved );
+  connect( mProject, &QgsProject::layersWillBeRemoved, this, &QgsMapThemeCollection::registryLayersRemoved );
   emit projectChanged();
 }
 

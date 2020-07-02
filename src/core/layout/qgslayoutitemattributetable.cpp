@@ -41,7 +41,7 @@ QgsLayoutItemAttributeTable::QgsLayoutItemAttributeTable( QgsLayout *layout )
 {
   if ( mLayout )
   {
-    connect( mLayout->project(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &QgsLayoutItemAttributeTable::removeLayer );
+    connect( mLayout->project(), &QgsProject::layerWillBeRemoved, this, &QgsLayoutItemAttributeTable::removeLayer );
 
     //coverage layer change = regenerate columns
     connect( &mLayout->reportContext(), &QgsLayoutReportContext::layerChanged, this, &QgsLayoutItemAttributeTable::atlasLayerChanged );

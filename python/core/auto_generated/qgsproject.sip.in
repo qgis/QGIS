@@ -1580,17 +1580,23 @@ Emitted when one or more layers are about to be removed from the registry.
 .. seealso:: :py:func:`layerWillBeRemoved`
 
 .. seealso:: :py:func:`layersRemoved`
+
+.. seealso:: :py:func:`aboutToRemoveLayers`
 %End
 
-    void layersWillBeRemoved( const QList<QgsMapLayer *> &layers );
+    void aboutToRemoveLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
 Emitted when one or more layers are about to be removed from the registry.
 
 :param layers: A list of layers which are to be removed.
 
-.. seealso:: :py:func:`layerWillBeRemoved`
+.. seealso:: :py:func:`layersWillBeRemoved`
 
 .. seealso:: :py:func:`layersRemoved`
+
+.. seealso:: :py:func:`aboutToRemoveLayer`
+
+.. versionadded:: 3.16
 %End
 
     void layerWillBeRemoved( const QString &layerId );
@@ -1606,9 +1612,11 @@ Emitted when a layer is about to be removed from the registry.
 .. seealso:: :py:func:`layersWillBeRemoved`
 
 .. seealso:: :py:func:`layerRemoved`
+
+.. seealso:: :py:func:`aboutToRemoveLayer`
 %End
 
-    void layerWillBeRemoved( QgsMapLayer *layer );
+    void aboutToRemoveLayer( QgsMapLayer *layer );
 %Docstring
 Emitted when a layer is about to be removed from the registry.
 
@@ -1621,6 +1629,10 @@ Emitted when a layer is about to be removed from the registry.
 .. seealso:: :py:func:`layersWillBeRemoved`
 
 .. seealso:: :py:func:`layerRemoved`
+
+.. seealso:: :py:func:`aboutToRemoveLayers`
+
+.. versionadded:: 3.16
 %End
 
     void layersRemoved( const QStringList &layerIds );
