@@ -1,0 +1,101 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmapclippingregion.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsMapClippingRegion
+{
+%Docstring
+
+A map clipping region (in map coordinates and CRS).
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsmapclippingregion.h"
+%End
+  public:
+
+    enum class FeatureClippingType
+    {
+      ClipToIntersection,
+      ClipPainterOnly,
+      NoClipping,
+    };
+
+    explicit QgsMapClippingRegion( const QgsGeometry &geometry );
+%Docstring
+Constructor for a map clipping region, with the specified ``geometry`` in the destination map CRS.
+%End
+
+    QgsGeometry geometry() const;
+%Docstring
+Returns the geometry of the clipping region (in the destination map CRS).
+
+.. seealso:: :py:func:`setGeometry`
+%End
+
+    void setGeometry( const QgsGeometry &geometry );
+%Docstring
+Sets the clipping region ``geometry`` (in the destination map CRS).
+
+.. seealso:: :py:func:`geometry`
+%End
+
+    FeatureClippingType featureClip() const;
+%Docstring
+Returns the feature clipping type.
+
+This setting is only used while rendering vector layers, for other layer types it is ignored.
+
+.. seealso:: :py:func:`setFeatureClip`
+%End
+
+    void setFeatureClip( FeatureClippingType type );
+%Docstring
+Sets the feature clipping ``type``.
+
+This setting is only used while rendering vector layers, for other layer types it is ignored.
+
+.. seealso:: :py:func:`featureClip`
+%End
+
+    void setRestrictedLayers( const QList< QgsMapLayer * > &layers );
+%Docstring
+Sets a list of ``layers`` to restrict the clipping region effects to.
+
+By default the clipping region applies to all layers.
+
+.. seealso:: :py:func:`restrictedLayers`
+%End
+
+
+    QList< QgsMapLayer * > restrictedLayers() const;
+%Docstring
+Returns the list of layers to restrict the clipping region effects to.
+
+If the list is empty then the clipping will be applied to all layers.
+
+.. seealso:: :py:func:`setRestrictedLayers`
+%End
+
+    bool appliesToLayer( const QgsMapLayer *layer ) const;
+%Docstring
+Returns ``True`` if the clipping region should be applied to the specified map ``layer``.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmapclippingregion.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

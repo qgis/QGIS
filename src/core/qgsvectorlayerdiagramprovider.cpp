@@ -173,6 +173,10 @@ void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature &feature, QgsRen
     mFeatures << label;
 }
 
+void QgsVectorLayerDiagramProvider::setClipFeatureGeometry( const QgsGeometry &geometry )
+{
+  mLabelClipFeatureGeom = geometry;
+}
 
 QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &feat, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
 {
@@ -214,23 +218,22 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
     extentGeom.rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
   }
 
-  geos::unique_ptr geomCopy;
-  std::unique_ptr<QgsGeometry> scopedPreparedGeom;
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, mSettings.coordinateTransform(), extentGeom ) )
   {
-    scopedPreparedGeom.reset( new QgsGeometry( QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), extentGeom ) ) );
-    QgsGeometry *preparedGeom = scopedPreparedGeom.get();
-    if ( preparedGeom->isNull() )
-      return nullptr;
-    geomCopy = QgsGeos::asGeos( *preparedGeom );
+    geom = QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), extentGeom );
   }
-  else
-  {
-    geomCopy = QgsGeos::asGeos( geom );
-  }
+  if ( geom.isEmpty() )
+    return nullptr;
 
-  if ( !geomCopy )
-    return nullptr; // invalid geometry
+  const QgsGeometry clipGeometry = mLabelClipFeatureGeom.isNull() ? context.featureClipGeometry() : mLabelClipFeatureGeom;
+  if ( !clipGeometry.isEmpty() )
+  {
+    const QgsWkbTypes::GeometryType expectedType = geom.type();
+    geom = geom.intersection( clipGeometry );
+    geom.convertGeometryCollectionToSubclass( expectedType );
+  }
+  if ( geom.isEmpty() )
+    return nullptr;
 
   QgsGeometry preparedObstacleGeom;
   if ( isObstacle && !obstacleGeometry.isNull() && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom ) )
@@ -287,7 +290,7 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
     }
   }
 
-  QgsDiagramLabelFeature *lf = new QgsDiagramLabelFeature( feat.id(), std::move( geomCopy ), QSizeF( diagramWidth, diagramHeight ) );
+  QgsDiagramLabelFeature *lf = new QgsDiagramLabelFeature( feat.id(), QgsGeos::asGeos( geom ), QSizeF( diagramWidth, diagramHeight ) );
   lf->setHasFixedPosition( ddPos );
   lf->setFixedPosition( QgsPointXY( ddPosX, ddPosY ) );
   lf->setHasFixedAngle( true );
@@ -342,3 +345,4 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
   lf->setDistLabel( dist );
   return lf;
 }
+

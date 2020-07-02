@@ -36,6 +36,12 @@ std::string MDAL::Driver::filters() const
   return mFilters;
 }
 
+std::string MDAL::Driver::writeDatasetOnFileSuffix() const
+{
+
+  return std::string();
+}
+
 bool MDAL::Driver::hasCapability( MDAL::Capability capability ) const
 {
   return capability == ( mCapabilityFlags & capability );

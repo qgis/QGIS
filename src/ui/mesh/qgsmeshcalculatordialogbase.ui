@@ -29,14 +29,7 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
-         <widget class="QListWidget" name="mDatasetsListWidget">
-          <property name="editTriggers">
-           <set>QAbstractItemView::CurrentChanged|QAbstractItemView::DoubleClicked|QAbstractItemView::SelectedClicked</set>
-          </property>
-          <property name="selectionMode">
-           <enum>QAbstractItemView::SingleSelection</enum>
-          </property>
-         </widget>
+         <widget class="QListView" name="mDatasetsListWidget"/>
         </item>
        </layout>
       </widget>
@@ -47,35 +40,59 @@
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
          <layout class="QGridLayout" name="gridLayout_5">
-          <item row="1" column="0">
+          <item row="2" column="0">
+           <widget class="QLabel" name="mOutputFormatLabel">
+            <property name="text">
+             <string>Output Format</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QRadioButton" name="mOutputOnMemoryRadioButton">
+            <property name="text">
+             <string>On Memory</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
            <widget class="QLabel" name="mOutputFormatLabel_2">
             <property name="text">
-             <string>Group name</string>
+             <string>Group Name</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" colspan="2">
+           <widget class="QComboBox" name="mOutputFormatComboBox"/>
+          </item>
+          <item row="3" column="1" colspan="2">
+           <widget class="QLineEdit" name="mOutputGroupNameLineEdit"/>
+          </item>
+          <item row="1" column="1" colspan="2">
+           <widget class="QgsFileWidget" name="mOutputDatasetFileWidget" native="true"/>
+          </item>
+          <item row="0" column="1">
+           <widget class="QRadioButton" name="mOutputOnFileRadioButton">
+            <property name="text">
+             <string>On File</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="0" column="0">
            <widget class="QLabel" name="mOutputDatasetLabel">
             <property name="text">
-             <string>Output dataset</string>
+             <string>Output Dataset</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QgsFileWidget" name="mOutputDatasetFileWidget" native="true"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="mOutputFormatLabel">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>Output format</string>
+             <string>Output File</string>
             </property>
            </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QComboBox" name="mOutputFormatComboBox"/>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="mOutputGroupNameLineEdit"/>
           </item>
          </layout>
         </item>
@@ -85,7 +102,7 @@
            <item>
             <widget class="QCheckBox" name="useExtentCb">
              <property name="text">
-              <string>Current extent</string>
+              <string>Current Extent</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -98,7 +115,7 @@
            <item>
             <widget class="QCheckBox" name="useMaskCb">
              <property name="text">
-              <string>Mask layer</string>
+              <string>Mask Layer</string>
              </property>
              <attribute name="buttonGroup">
               <string notr="true">buttonGroup</string>
@@ -352,8 +369,6 @@
        <zorder>maskBox</zorder>
        <zorder>extendBox</zorder>
        <zorder>horizontalWidget</zorder>
-       <zorder>mOutputFormatLabel_2</zorder>
-       <zorder>mOutputGroupNameLineEdit</zorder>
       </widget>
      </widget>
      <widget class="QWidget" name="verticalLayoutWidget">
@@ -622,7 +637,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mDatasetsListWidget</tabstop>
   <tabstop>mXMinSpinBox</tabstop>
   <tabstop>mXMaxSpinBox</tabstop>
   <tabstop>mYMinSpinBox</tabstop>

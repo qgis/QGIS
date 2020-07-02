@@ -1,6 +1,7 @@
 {
   "name": "length",
   "type": "function",
+  "groups": ["String", "GeometryGroup"],
   "description": "Returns the number of characters in a string or the length of a geometry linestring.",
   "variants": [
   { "variant": "String variant",

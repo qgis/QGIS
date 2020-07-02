@@ -1,6 +1,7 @@
 {
   "name": "within",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Tests whether a geometry is within another. Returns true if the geometry a is completely within geometry b.",
   "arguments": [ {"arg":"geometry a","description":"a geometry"},
                  {"arg":"geometry b","description":"a geometry"}],

@@ -50,9 +50,10 @@ void MDAL::MemoryDataset2D::activateFaces( MDAL::MemoryMesh *mesh )
   // Activate only Faces that do all Vertex's outputs with some data
   const size_t nFaces = mesh->facesCount();
 
+  const Faces &faces = mesh->faces();
   for ( unsigned int idx = 0; idx < nFaces; ++idx )
   {
-    const Face &elem = mesh->faces.at( idx );
+    const Face &elem = faces.at( idx );
     const std::size_t elemSize = elem.size();
     for ( size_t i = 0; i < elemSize; ++i )
     {
@@ -115,21 +116,12 @@ size_t MDAL::MemoryDataset2D::vectorData( size_t indexStart, size_t count, doubl
 }
 
 MDAL::MemoryMesh::MemoryMesh( const std::string &driverName,
-                              size_t verticesCount,
-                              size_t edgesCount,
-                              size_t facesCount,
                               size_t faceVerticesMaximumCount,
-                              MDAL::BBox extent,
                               const std::string &uri )
   : MDAL::Mesh( driverName,
-                verticesCount,
-                edgesCount,
-                facesCount,
                 faceVerticesMaximumCount,
-                extent,
                 uri )
-{
-}
+{}
 
 std::unique_ptr<MDAL::MeshVertexIterator> MDAL::MemoryMesh::readVertices()
 {
@@ -147,6 +139,27 @@ std::unique_ptr<MDAL::MeshFaceIterator> MDAL::MemoryMesh::readFaces()
 {
   std::unique_ptr<MDAL::MeshFaceIterator> it( new MemoryMeshFaceIterator( this ) );
   return it;
+}
+
+void MDAL::MemoryMesh::setVertices( Vertices vertices )
+{
+  mExtent = MDAL::computeExtent( vertices );
+  mVertices = std::move( vertices );
+}
+
+void MDAL::MemoryMesh::setFaces( MDAL::Faces faces )
+{
+  mFaces = std::move( faces );
+}
+
+void MDAL::MemoryMesh::setEdges( MDAL::Edges edges )
+{
+  mEdges = std::move( edges );
+}
+
+MDAL::BBox MDAL::MemoryMesh::extent() const
+{
+  return mExtent;
 }
 
 MDAL::MemoryMesh::~MemoryMesh() = default;
@@ -172,6 +185,7 @@ size_t MDAL::MemoryMeshVertexIterator::next( size_t vertexCount, double *coordin
     return 0;
 
   size_t i = 0;
+  const Vertices &vertices = mMemoryMesh->vertices();
 
   while ( true )
   {
@@ -181,7 +195,7 @@ size_t MDAL::MemoryMeshVertexIterator::next( size_t vertexCount, double *coordin
     if ( i >= vertexCount )
       break;
 
-    const Vertex v = mMemoryMesh->vertices[mLastVertexIndex + i];
+    const Vertex &v = vertices[mLastVertexIndex + i];
     coordinates[3 * i] = v.x;
     coordinates[3 * i + 1] = v.y;
     coordinates[3 * i + 2] = v.z;
@@ -209,6 +223,7 @@ size_t MDAL::MemoryMeshEdgeIterator::next( size_t edgeCount,
   assert( endVertexIndices );
 
   size_t maxEdges = mMemoryMesh->edgesCount();
+  const Edges &edges = mMemoryMesh->edges();
 
   if ( edgeCount > maxEdges )
     edgeCount = maxEdges;
@@ -226,7 +241,7 @@ size_t MDAL::MemoryMeshEdgeIterator::next( size_t edgeCount,
     if ( i >= edgeCount )
       break;
 
-    const Edge e = mMemoryMesh->edges[mLastEdgeIndex + i];
+    const Edge &e = edges[mLastEdgeIndex + i];
     startVertexIndices[i] = e.startVertex;
     endVertexIndices[i] = e.endVertex;
 
@@ -256,6 +271,7 @@ size_t MDAL::MemoryMeshFaceIterator::next(
   size_t faceVerticesMaximumCount = mMemoryMesh->faceVerticesMaximumCount();
   size_t vertexIndex = 0;
   size_t faceIndex = 0;
+  const Faces &faces = mMemoryMesh->faces();
 
   while ( true )
   {
@@ -268,7 +284,7 @@ size_t MDAL::MemoryMeshFaceIterator::next(
     if ( mLastFaceIndex + faceIndex >= maxFaces )
       break;
 
-    const Face &f = mMemoryMesh->faces[mLastFaceIndex + faceIndex];
+    const Face &f = faces[mLastFaceIndex + faceIndex];
     const std::size_t faceSize = f.size();
     for ( size_t faceVertexIndex = 0; faceVertexIndex < faceSize; ++faceVertexIndex )
     {

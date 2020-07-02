@@ -164,6 +164,14 @@ MDAL_EXPORT bool MDAL_DR_meshLoadCapability( MDAL_DriverH driver );
 MDAL_EXPORT bool MDAL_DR_writeDatasetsCapability( MDAL_DriverH driver, MDAL_DataLocation location );
 
 /**
+ * Returns the file suffix used to write datasets on file
+ * not thread-safe and valid only till next call
+ *
+ * \since MDAL 0.7.0
+ */
+MDAL_EXPORT const char *MDAL_DR_writeDatasetsSuffix( MDAL_DriverH driver );
+
+/**
  * Returns whether driver has capability to save mesh
  */
 MDAL_EXPORT bool MDAL_DR_saveMeshCapability( MDAL_DriverH driver );
@@ -208,8 +216,10 @@ MDAL_EXPORT MDAL_MeshH MDAL_LoadMesh( const char *uri );
  * not thread-safe and valid only till next call
  *
  * Parameter uri can be in format:
- *  - <drivername>:"meshfile" - function then returns uris with provided driver and meshfile
- *  - "meshfile" or meshfile  - function then finds proper driver and returns uris with it
+ *
+ * - <drivername>:"meshfile" - function then returns uris with provided driver and meshfile
+ * - "meshfile" or meshfile  - function then finds proper driver and returns uris with it
+ *
  * The uris can be used directly in MDAL_LoadMesh to load particular meshes
  *
  * \since MDAL 0.6.0
@@ -529,6 +539,14 @@ MDAL_EXPORT const char *MDAL_G_referenceTime( MDAL_DatasetGroupH group );
  * \since MDAL 0.6.0
  */
 MDAL_EXPORT bool MDAL_G_isTemporal( MDAL_DatasetGroupH group );
+
+/**
+ * Returns dataset group uri
+ * not thread-safe and valid only till next call
+ *
+ * \since MDAL 0.7.0
+ */
+MDAL_EXPORT const char *MDAL_G_uri( MDAL_DatasetGroupH group );
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// DATASETS

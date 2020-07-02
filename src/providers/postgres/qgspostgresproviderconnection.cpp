@@ -540,7 +540,7 @@ void QgsPostgresProviderConnection::store( const QString &name ) const
   settings.setValue( "username", dsUri.username() );
   settings.setValue( "password", dsUri.password() );
   settings.setValue( "authcfg", dsUri.authConfigId() );
-  settings.setValue( "sslmode", dsUri.sslMode() );
+  settings.setEnumValue( "sslmode", dsUri.sslMode() );
 
   // From configuration
   static const QStringList configurationParameters

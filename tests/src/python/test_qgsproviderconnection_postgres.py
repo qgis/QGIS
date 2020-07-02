@@ -24,6 +24,7 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsRasterLayer,
     QgsDataSourceUri,
+    QgsSettings,
 )
 from qgis.testing import unittest
 from osgeo import gdal
@@ -68,6 +69,16 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
 
         rl = QgsRasterLayer(conn.tableUri('qgis_test', 'Raster1'), 'r1', 'postgresraster')
         self.assertTrue(rl.isValid())
+
+    def test_sslmode_store(self):
+        """Test that sslmode is stored as a string in the settings"""
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection('database=\'mydb\' username=\'myuser\' password=\'mypasswd\' sslmode=verify-ca', {})
+        conn.store('my_sslmode_test')
+        settings = QgsSettings()
+        settings.beginGroup('/PostgreSQL/connections/my_sslmode_test')
+        self.assertEqual(settings.value("sslmode"), 'SslVerifyCa')
+        self.assertEqual(settings.enumValue("sslmode", QgsDataSourceUri.SslPrefer), QgsDataSourceUri.SslVerifyCa)
 
     def test_postgis_geometry_filter(self):
         """Make sure the postgres provider only returns one matching geometry record and no polygons etc."""

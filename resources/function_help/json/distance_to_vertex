@@ -1,6 +1,7 @@
 {
   "name": "distance_to_vertex",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns the distance along the geometry to a specified vertex.",
   "arguments": [ {"arg":"geometry","description":"a linestring geometry"},
                  {"arg":"vertex","description":"vertex index, starting from 0; if the value is negative, the selected vertex index will be its total count minus the absolute value"}],

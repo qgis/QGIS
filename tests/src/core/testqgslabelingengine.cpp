@@ -28,6 +28,8 @@
 #include "qgsmultirenderchecker.h"
 #include "qgsfontutils.h"
 #include "qgsnullsymbolrenderer.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbol.h"
 #include "pointset.h"
 
 class TestQgsLabelingEngine : public QObject
@@ -80,6 +82,7 @@ class TestQgsLabelingEngine : public QObject
     void testMapUnitLetterSpacing();
     void testMapUnitWordSpacing();
     void testReferencedFields();
+    void testClipping();
 
   private:
     QgsVectorLayer *vl = nullptr;
@@ -2688,6 +2691,73 @@ void TestQgsLabelingEngine::testReferencedFields()
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Size, QgsProperty::fromField( QStringLiteral( "my_dd_size" ) ) );
 
   QCOMPARE( settings.referencedFields( QgsRenderContext() ), QSet<QString>() << QStringLiteral( "hello" ) << QStringLiteral( "world" ) << QStringLiteral( "my_dd_size" ) );
+}
+
+void TestQgsLabelingEngine::testClipping()
+{
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 12 );
+  format.setSizeUnit( QgsUnitTypes::RenderPoints );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "Name" );
+  settings.placement = QgsPalLayerSettings::Line;
+
+  const QString filename = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( filename, QStringLiteral( "lines" ), QStringLiteral( "ogr" ) ) );
+
+  QgsStringMap props;
+  props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#487bb6" ) );
+  props.insert( QStringLiteral( "outline_width" ), QStringLiteral( "1" ) );
+  std::unique_ptr< QgsLineSymbol > symbol( QgsLineSymbol::createSimple( props ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( symbol.release() ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( QgsRectangle( -117.543, 49.438, -82.323, 21.839 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsMapClippingRegion region1( QgsGeometry::fromWkt( "Polygon ((-92 45, -99 36, -94 29, -82 29, -81 45, -92 45))" ) );
+  region1.setFeatureClip( QgsMapClippingRegion::FeatureClippingType::ClipToIntersection );
+  mapSettings.addClippingRegion( region1 );
+
+  QgsMapClippingRegion region2( QgsGeometry::fromWkt( "Polygon ((-85 36, -85 46, -107 47, -108 28, -85 28, -85 36))" ) );
+  region2.setFeatureClip( QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly );
+  mapSettings.addClippingRegion( region2 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, false );
+  //engineSettings.setFlag( QgsLabelingEngineSettings::DrawCandidates, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "label_feature_clipping" ), img, 20 ) );
+
+  // also check with symbol levels
+  vl2->renderer()->setUsingSymbolLevels( true );
+  QgsMapRendererSequentialJob job2( mapSettings );
+  job2.start();
+  job2.waitForFinished();
+
+  img = job2.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "label_feature_clipping" ), img, 20 ) );
 }
 
 QGSTEST_MAIN( TestQgsLabelingEngine )

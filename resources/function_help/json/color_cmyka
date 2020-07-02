@@ -1,6 +1,7 @@
 {
   "name": "color_cmyka",
   "type": "function",
+  "groups": ["Color"],
   "description": "Returns a string representation of a color based on its cyan, magenta, yellow, black and alpha (transparency) components",
   "arguments": [ {"arg":"cyan","description":"cyan component of the color, as a percentage integer value from 0 to 100"},
                  {"arg":"magenta","description":"magenta component of the color, as a percentage integer value from 0 to 100"},

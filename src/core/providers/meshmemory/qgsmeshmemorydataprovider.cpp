@@ -186,11 +186,11 @@ bool QgsMeshMemoryDataProvider::splitDatasetSections( const QString &uri, QgsMes
     if ( !success )
       break;
     std::shared_ptr<QgsMeshMemoryDataset> dataset = std::make_shared<QgsMeshMemoryDataset>();
-    success = addDatasetValues( sections[i], dataset, datasetGroup.isScalar );
+    success = addDatasetValues( sections[i], dataset, datasetGroup.isScalar() );
     if ( success )
-      success = checkDatasetValidity( dataset, datasetGroup.type );
+      success = checkDatasetValidity( dataset, datasetGroup.dataType() );
     if ( success )
-      datasetGroup.datasets.push_back( dataset );
+      datasetGroup.memoryDatasets.push_back( dataset );
   }
 
   return success;
@@ -207,15 +207,17 @@ bool QgsMeshMemoryDataProvider::setDatasetGroupType( const QString &def, QgsMesh
     return false;
   }
 
+  QgsMeshDatasetGroupMetadata::DataType type;
   if ( 0 == QString::compare( types[0].trimmed(), QStringLiteral( "vertex" ), Qt::CaseInsensitive ) )
-    datasetGroup.type = QgsMeshDatasetGroupMetadata::DataOnVertices;
+    type = QgsMeshDatasetGroupMetadata::DataOnVertices;
   else if ( 0 == QString::compare( types[0].trimmed(), QStringLiteral( "edge" ), Qt::CaseInsensitive ) )
-    datasetGroup.type = QgsMeshDatasetGroupMetadata::DataOnEdges;
+    type = QgsMeshDatasetGroupMetadata::DataOnEdges;
   else
-    datasetGroup.type = QgsMeshDatasetGroupMetadata::DataOnFaces;
+    type = QgsMeshDatasetGroupMetadata::DataOnFaces;
 
-  datasetGroup.isScalar = 0 == QString::compare( types[1].trimmed(), QStringLiteral( "scalar" ), Qt::CaseInsensitive );
-  datasetGroup.name = types[2].trimmed();
+  datasetGroup.setDataType( type );
+  datasetGroup.setIsScalar( 0 == QString::compare( types[1].trimmed(), QStringLiteral( "scalar" ), Qt::CaseInsensitive ) );
+  datasetGroup.setName( types[2].trimmed() );
 
   return true;
 }
@@ -233,7 +235,7 @@ bool QgsMeshMemoryDataProvider::addDatasetGroupMetadata( const QString &def, Qgs
       return false;
     }
 
-    datasetGroup.metadata.insert( keyVal.at( 0 ).trimmed(), keyVal.at( 1 ).trimmed() );
+    datasetGroup.addExtraMetadata( keyVal.at( 0 ).trimmed(), keyVal.at( 1 ).trimmed() );
   }
   return true;
 }
@@ -352,9 +354,9 @@ void QgsMeshMemoryDataProvider::addGroupToTemporalCapabilities( int groupIndex, 
 
   if ( group.datasetCount() > 1 ) //non temporal dataset groups (count=1) have no time in the capabilities
   {
-    for ( int i = 0; i < group.datasets.count(); ++i )
-      if ( group.datasets.at( i ) )
-        tempCap->addDatasetTime( groupIndex, group.datasets.at( i )->time );
+    for ( int i = 0; i < group.memoryDatasets.count(); ++i )
+      if ( group.memoryDatasets.at( i ) )
+        tempCap->addDatasetTime( groupIndex, group.memoryDatasets.at( i )->time );
   }
 
 }
@@ -404,13 +406,14 @@ bool QgsMeshMemoryDataProvider::addDataset( const QString &uri )
                         QStringLiteral( "Mesh Memory Provider" ) ) );
   }
 
-  calculateMinMaxForDatasetGroup( group );
+  group.calculateStatistic();
   mDatasetGroups.push_back( group );
   addGroupToTemporalCapabilities( mDatasetGroups.count() - 1, group );
 
   if ( valid )
   {
-    mExtraDatasetUris << uri;
+    if ( !mExtraDatasetUris.contains( uri ) )
+      mExtraDatasetUris << uri;
     temporalCapabilities()->setHasTemporalCapabilities( true );
     emit datasetGroupsAdded( 1 );
     emit dataChanged();
@@ -432,7 +435,7 @@ int QgsMeshMemoryDataProvider::datasetGroupCount() const
 int QgsMeshMemoryDataProvider::datasetCount( int groupIndex ) const
 {
   if ( ( groupIndex >= 0 ) && ( groupIndex < datasetGroupCount() ) )
-    return mDatasetGroups[groupIndex].datasets.count();
+    return mDatasetGroups[groupIndex].memoryDatasets.count();
   else
     return 0;
 }
@@ -449,40 +452,7 @@ QgsMeshDatasetGroupMetadata QgsMeshMemoryDataProvider::datasetGroupMetadata( int
   }
 }
 
-QgsMeshDatasetGroupMetadata QgsMeshMemoryDatasetGroup::groupMetadata() const
-{
-  return QgsMeshDatasetGroupMetadata(
-           name,
-           isScalar,
-           type,
-           minimum,
-           maximum,
-           0,
-           QDateTime(),
-           datasetCount() > 1,
-           metadata
-         );
-}
 
-int QgsMeshMemoryDatasetGroup::datasetCount() const
-{
-  return datasets.size();
-}
-
-void QgsMeshMemoryDatasetGroup::addDataset( std::shared_ptr<QgsMeshMemoryDataset> dataset )
-{
-  datasets.push_back( dataset );
-}
-
-void QgsMeshMemoryDatasetGroup::clearDatasets()
-{
-  datasets.clear();
-}
-
-std::shared_ptr<const QgsMeshMemoryDataset> QgsMeshMemoryDatasetGroup::constDataset( int index ) const
-{
-  return datasets[index];
-}
 
 QgsMeshDatasetMetadata QgsMeshMemoryDataProvider::datasetMetadata( QgsMeshDatasetIndex index ) const
 {
@@ -492,10 +462,10 @@ QgsMeshDatasetMetadata QgsMeshMemoryDataProvider::datasetMetadata( QgsMeshDatase
   {
     const QgsMeshMemoryDatasetGroup &grp = mDatasetGroups.at( index.group() );
     QgsMeshDatasetMetadata metadata(
-      grp.datasets[index.dataset()]->time,
-      grp.datasets[index.dataset()]->valid,
-      grp.datasets[index.dataset()]->minimum,
-      grp.datasets[index.dataset()]->maximum,
+      grp.memoryDatasets[index.dataset()]->time,
+      grp.memoryDatasets[index.dataset()]->valid,
+      grp.memoryDatasets[index.dataset()]->minimum,
+      grp.memoryDatasets[index.dataset()]->maximum,
       0
     );
     return metadata;
@@ -510,9 +480,9 @@ QgsMeshDatasetValue QgsMeshMemoryDataProvider::datasetValue( QgsMeshDatasetIndex
 {
   if ( ( index.group() >= 0 ) && ( index.group() < datasetGroupCount() ) &&
        ( index.dataset() >= 0 ) && ( index.dataset() < datasetCount( index.group() ) ) &&
-       ( valueIndex >= 0 ) && ( valueIndex < mDatasetGroups[index.group()].datasets[index.dataset()]->values.count() ) )
+       ( valueIndex >= 0 ) && ( valueIndex < mDatasetGroups[index.group()].memoryDatasets[index.dataset()]->values.count() ) )
   {
-    return mDatasetGroups[index.group()].datasets[index.dataset()]->values[valueIndex];
+    return mDatasetGroups[index.group()].memoryDatasets[index.dataset()]->values[valueIndex];
   }
   else
   {
@@ -525,10 +495,10 @@ QgsMeshDataBlock QgsMeshMemoryDataProvider::datasetValues( QgsMeshDatasetIndex i
   if ( ( index.group() >= 0 ) && ( index.group() < datasetGroupCount() ) )
   {
     const QgsMeshMemoryDatasetGroup group = mDatasetGroups[index.group()];
-    bool isScalar = group.isScalar;
-    if ( ( index.dataset() >= 0 ) && ( index.dataset() < group.datasets.size() ) )
+    bool isScalar = group.isScalar();
+    if ( ( index.dataset() >= 0 ) && ( index.dataset() < group.memoryDatasets.size() ) )
     {
-      return group.datasets[index.dataset()]->datasetValues( isScalar, valueIndex, count );
+      return group.memoryDatasets[index.dataset()]->datasetValues( isScalar, valueIndex, count );
     }
     else
     {
@@ -547,35 +517,14 @@ QgsMesh3dDataBlock QgsMeshMemoryDataProvider::dataset3dValues( QgsMeshDatasetInd
   return QgsMesh3dDataBlock();
 }
 
-QgsMeshDataBlock QgsMeshMemoryDataset::datasetValues( bool isScalar, int valueIndex, int count ) const
-{
-  QgsMeshDataBlock ret( isScalar ? QgsMeshDataBlock::ScalarDouble : QgsMeshDataBlock::Vector2DDouble, count );
-  QVector<double> buf( isScalar ? count : 2 * count );
-  for ( int i = 0; i < count; ++i )
-  {
-    int idx = valueIndex + i;
-    if ( ( idx < 0 ) || ( idx >= values.size() ) )
-      return ret;
 
-    QgsMeshDatasetValue val = values[ valueIndex + i ];
-    if ( isScalar )
-      buf[i] = val.x();
-    else
-    {
-      buf[2 * i] = val.x();
-      buf[2 * i + 1] = val.y();
-    }
-  }
-  ret.setValues( buf );
-  return ret;
-}
 
 bool QgsMeshMemoryDataProvider::isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const
 {
-  if ( mDatasetGroups[index.group()].datasets[index.dataset()]->active.isEmpty() )
+  if ( mDatasetGroups[index.group()].memoryDatasets[index.dataset()]->active.isEmpty() )
     return true;
   else
-    return mDatasetGroups[index.group()].datasets[index.dataset()]->active[faceIndex];
+    return mDatasetGroups[index.group()].memoryDatasets[index.dataset()]->active[faceIndex];
 }
 
 QgsMeshDataBlock QgsMeshMemoryDataProvider::areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const
@@ -583,9 +532,9 @@ QgsMeshDataBlock QgsMeshMemoryDataProvider::areFacesActive( QgsMeshDatasetIndex 
   if ( ( index.group() >= 0 ) && ( index.group() < datasetGroupCount() ) )
   {
     const QgsMeshMemoryDatasetGroup group = mDatasetGroups[index.group()];
-    if ( ( index.dataset() >= 0 ) && ( index.dataset() < group.datasets.size() ) )
+    if ( ( index.dataset() >= 0 ) && ( index.dataset() < group.memoryDatasets.size() ) )
     {
-      return group.datasets[index.dataset()]->areFacesActive( faceIndex, count );
+      return group.memoryDatasets[index.dataset()]->areFacesActive( faceIndex, count );
     }
     else
     {
@@ -598,20 +547,14 @@ QgsMeshDataBlock QgsMeshMemoryDataProvider::areFacesActive( QgsMeshDatasetIndex 
   }
 }
 
-QgsMeshDataBlock QgsMeshMemoryDataset::areFacesActive( int faceIndex, int count ) const
-{
-  QgsMeshDataBlock ret( QgsMeshDataBlock::ActiveFlagInteger, count );
-  if ( active.isEmpty() ||
-       ( faceIndex < 0 ) ||
-       ( faceIndex + count > active.size() )
-     )
-    ret.setValid( true );
-  else
-    ret.setActive( active );
-  return ret;
-}
 
-bool QgsMeshMemoryDataProvider::persistDatasetGroup( const QString &outputFilePath, const QString &outputDriver, const QgsMeshDatasetGroupMetadata &meta, const QVector<QgsMeshDataBlock> &datasetValues, const QVector<QgsMeshDataBlock> &datasetActive, const QVector<double> &times )
+
+bool QgsMeshMemoryDataProvider::persistDatasetGroup( const QString &outputFilePath,
+    const QString &outputDriver,
+    const QgsMeshDatasetGroupMetadata &meta,
+    const QVector<QgsMeshDataBlock> &datasetValues,
+    const QVector<QgsMeshDataBlock> &datasetActive,
+    const QVector<double> &times )
 {
   Q_UNUSED( outputFilePath )
   Q_UNUSED( outputDriver )
@@ -622,61 +565,16 @@ bool QgsMeshMemoryDataProvider::persistDatasetGroup( const QString &outputFilePa
   return true; // not implemented/supported
 }
 
-void QgsMeshMemoryDataProvider::calculateMinMaxForDatasetGroup( QgsMeshMemoryDatasetGroup &grp ) const
+bool QgsMeshMemoryDataProvider::persistDatasetGroup( const QString &outputFilePath,
+    const QString &outputDriver,
+    QgsMeshDatasetSourceInterface *source,
+    int datasetGroupIndex )
 {
-  double min = std::numeric_limits<double>::max();
-  double max = std::numeric_limits<double>::min();
-
-  int count = grp.datasets.size();
-  for ( int i = 0; i < count; ++i )
-  {
-    calculateMinMaxForDataset( grp.datasets[i] );
-    min = std::min( min, grp.datasets[i]->minimum );
-    max = std::max( max, grp.datasets[i]->maximum );
-  }
-
-  grp.minimum = min;
-  grp.maximum = max;
-}
-
-void QgsMeshMemoryDataProvider::calculateMinMaxForDataset( std::shared_ptr<QgsMeshMemoryDataset> &dataset ) const
-{
-  double min = std::numeric_limits<double>::max();
-  double max = std::numeric_limits<double>::min();
-
-  if ( !dataset->valid )
-  {
-    return;
-  }
-
-  bool firstIteration = true;
-  for ( int i = 0; i < dataset->values.size(); ++i )
-  {
-    double v = dataset->values[i].scalar();
-
-    if ( std::isnan( v ) )
-      continue;
-    if ( firstIteration )
-    {
-      firstIteration = false;
-      min = v;
-      max = v;
-    }
-    else
-    {
-      if ( v < min )
-      {
-        min = v;
-      }
-      if ( v > max )
-      {
-        max = v;
-      }
-    }
-  }
-
-  dataset->minimum = min;
-  dataset->maximum = max;
+  Q_UNUSED( outputFilePath )
+  Q_UNUSED( outputDriver )
+  Q_UNUSED( source )
+  Q_UNUSED( datasetGroupIndex )
+  return true; // not implemented/supported
 }
 
 QgsRectangle QgsMeshMemoryDataProvider::calculateExtent() const
@@ -693,18 +591,6 @@ QgsRectangle QgsMeshMemoryDataProvider::calculateExtent() const
   return rec;
 }
 
-QgsMeshMemoryDatasetGroup::QgsMeshMemoryDatasetGroup( const QString &nm, QgsMeshDatasetGroupMetadata::DataType dataType ):
-  name( nm ), type( dataType )
-{
-}
 
-
-QgsMeshMemoryDatasetGroup::QgsMeshMemoryDatasetGroup( const QString &nm ):
-  name( nm )
-{
-}
-
-QgsMeshMemoryDatasetGroup::QgsMeshMemoryDatasetGroup() = default;
-QgsMeshMemoryDataset::QgsMeshMemoryDataset() = default;
 
 ///@endcond

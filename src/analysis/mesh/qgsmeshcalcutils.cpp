@@ -35,9 +35,10 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::create( const QStri
 {
   const auto dp = mMeshLayer->dataProvider();
   std::shared_ptr<QgsMeshMemoryDatasetGroup> grp;
-  for ( int groupIndex = 0; groupIndex < dp->datasetGroupCount(); ++groupIndex )
+  const QList<int> &indexes = mMeshLayer->datasetGroupsIndexes();
+  for ( int groupIndex : indexes )
   {
-    const auto meta = dp->datasetGroupMetadata( groupIndex );
+    const auto meta = mMeshLayer->datasetGroupMetadata( groupIndex );
     const QString name = meta.name();
     if ( name == datasetGroupName )
     {
@@ -47,20 +48,19 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::create( const QStri
       Q_ASSERT( !( ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ) && ( mOutputType == QgsMeshDatasetGroupMetadata::DataOnFaces ) ) );
 
       grp = std::make_shared<QgsMeshMemoryDatasetGroup>();
-      grp->isScalar = meta.isScalar();
-      grp->type = mOutputType;
-      grp->maximum = meta.maximum();
-      grp->minimum = meta.minimum();
-      grp->name = meta.name();
+      grp->setIsScalar( meta.isScalar() );
+      grp->setDataType( mOutputType );
+      grp->setMinimumMaximum( meta.minimum(), meta.maximum() );
+      grp->setName( meta.name() );
 
       int nativeCount = ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ) ? dp->vertexCount() : dp->faceCount();
       int resultCount = ( mOutputType == QgsMeshDatasetGroupMetadata::DataOnVertices ) ? dp->vertexCount() : dp->faceCount();
 
-      for ( int datasetIndex = 0; datasetIndex < dp->datasetCount( groupIndex ); ++datasetIndex )
+      for ( int datasetIndex = 0; datasetIndex < mMeshLayer->datasetCount( groupIndex ); ++datasetIndex )
       {
         const QgsMeshDatasetIndex index( groupIndex, datasetIndex );
-        const auto dsMeta = dp->datasetMetadata( index );
-        std::shared_ptr<QgsMeshMemoryDataset> ds = create( grp->type );
+        const auto dsMeta = mMeshLayer->datasetMetadata( index );
+        std::shared_ptr<QgsMeshMemoryDataset> ds = create( grp->dataType() );
         ds->maximum = dsMeta.maximum();
         ds->minimum = dsMeta.minimum();
         ds->time = dsMeta.time();
@@ -75,8 +75,7 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::create( const QStri
         // for data on faces, there could be request to interpolate the data to vertices
         if ( ( meta.dataType() != QgsMeshDatasetGroupMetadata::DataOnVertices ) && ( mOutputType == QgsMeshDatasetGroupMetadata::DataOnVertices ) )
         {
-
-          if ( grp->isScalar )
+          if ( grp->isScalar() )
           {
             QVector<double> data =
               QgsMeshLayerUtils::interpolateFromFacesData(
@@ -133,9 +132,9 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::create( const QStri
             ds->values[value_i] = block.value( value_i );
         }
 
-        if ( grp->type == QgsMeshDatasetGroupMetadata::DataOnVertices )
+        if ( grp->dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices )
         {
-          const QgsMeshDataBlock active = dp->areFacesActive( index, 0, dp->faceCount() );
+          const QgsMeshDataBlock active = mMeshLayer->areFacesActive( index, 0, dp->faceCount() );
           Q_ASSERT( active.count() == dp->faceCount() );
           for ( int value_i = 0; value_i < dp->faceCount(); ++value_i )
             ds->active[value_i] = active.active( value_i );
@@ -151,7 +150,7 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::create( const QStri
 
 std::shared_ptr<QgsMeshMemoryDataset> QgsMeshCalcUtils::create( const QgsMeshMemoryDatasetGroup &grp ) const
 {
-  return create( grp.type );
+  return create( grp.dataType() );
 }
 
 std::shared_ptr<QgsMeshMemoryDataset> QgsMeshCalcUtils::create( const QgsMeshDatasetGroupMetadata::DataType type ) const
@@ -224,7 +223,7 @@ QgsMeshCalcUtils:: QgsMeshCalcUtils( QgsMeshLayer *layer,
       {
         if ( ds->datasetCount() != mTimes.size() )
         {
-          // different number of datasets in the groupss
+          // different number of datasets in the groups
           return;
         }
       }
@@ -272,7 +271,7 @@ QgsMeshCalcUtils:: QgsMeshCalcUtils( QgsMeshLayer *layer,
   // check that all datasets are of the same type
   for ( const auto &ds : vals )
   {
-    if ( ds->type != mOutputType )
+    if ( ds->dataType() != mOutputType )
       return;
   }
 
@@ -407,9 +406,9 @@ void QgsMeshCalcUtils::number( QgsMeshMemoryDatasetGroup &group1, double val ) c
 {
   Q_ASSERT( isValid() );
 
-  group1.datasets.clear();
+  group1.memoryDatasets.clear();
   std::shared_ptr<QgsMeshMemoryDataset> output = number( val, mTimes[0] );
-  group1.datasets.push_back( output );
+  group1.memoryDatasets.push_back( output );
 }
 
 
@@ -479,7 +478,7 @@ void QgsMeshCalcUtils::transferDatasets( QgsMeshMemoryDatasetGroup &group1, QgsM
   group1.clearDatasets();
   for ( int i = 0; i < group2.datasetCount(); ++i )
   {
-    std::shared_ptr<QgsMeshMemoryDataset> o = group2.datasets[i];
+    std::shared_ptr<QgsMeshMemoryDataset> o = group2.memoryDatasets[i];
     Q_ASSERT( o );
     group1.addDataset( o );
   }
@@ -494,7 +493,7 @@ void QgsMeshCalcUtils::expand( QgsMeshMemoryDatasetGroup &group1, const QgsMeshM
   {
     if ( group1.datasetCount() == 1 )
     {
-      const std::shared_ptr<QgsMeshMemoryDataset> o0 = group1.datasets[0];
+      const std::shared_ptr<QgsMeshMemoryDataset> o0 = group1.memoryDatasets[0];
       Q_ASSERT( o0 );
       for ( int i = 1; i < group2.datasetCount(); ++i )
       {
@@ -516,12 +515,12 @@ std::shared_ptr<QgsMeshMemoryDataset>  QgsMeshCalcUtils::canditateDataset(
   if ( group.datasetCount() > 1 )
   {
     Q_ASSERT( group.datasetCount() > datasetIndex );
-    return group.datasets[datasetIndex];
+    return group.memoryDatasets[datasetIndex];
   }
   else
   {
     Q_ASSERT( group.datasetCount() == 1 );
-    return group.datasets[0];
+    return group.memoryDatasets[0];
   }
 }
 
@@ -577,7 +576,7 @@ void QgsMeshCalcUtils::func1( QgsMeshMemoryDatasetGroup &group,
       output->values[n] = res_val;
     }
 
-    if ( group.type == QgsMeshDatasetGroupMetadata::DataOnVertices )
+    if ( group.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices )
       activate( output );
   }
 }
@@ -588,7 +587,7 @@ void QgsMeshCalcUtils::func2( QgsMeshMemoryDatasetGroup &group1,
                               std::function<double( double, double )> func ) const
 {
   Q_ASSERT( isValid() );
-  Q_ASSERT( group1.type == group2.type ); // we do not support mixed output types
+  Q_ASSERT( group1.dataType() == group2.dataType() ); // we do not support mixed output types
 
   expand( group1, group2 );
 
@@ -607,7 +606,7 @@ void QgsMeshCalcUtils::func2( QgsMeshMemoryDatasetGroup &group1,
       o1->values[n] = res_val;
     }
 
-    if ( group1.type == QgsMeshDatasetGroupMetadata::DataOnVertices )
+    if ( group1.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices )
     {
       activate( o1, o2 );
     }
@@ -622,7 +621,7 @@ void QgsMeshCalcUtils::funcAggr(
 {
   Q_ASSERT( isValid() );
 
-  if ( group1.type == QgsMeshDatasetGroupMetadata::DataOnVertices )
+  if ( group1.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices )
   {
     std::shared_ptr<QgsMeshMemoryDataset> output = QgsMeshCalcUtils::create( QgsMeshDatasetGroupMetadata::DataOnVertices );
     output->time = mTimes[0];
@@ -655,8 +654,8 @@ void QgsMeshCalcUtils::funcAggr(
     // lets do activation purely on NODATA values as we did aggregation here
     activate( output );
 
-    group1.datasets.clear();
-    group1.datasets.push_back( output );
+    group1.memoryDatasets.clear();
+    group1.memoryDatasets.push_back( output );
 
   }
   else
@@ -689,8 +688,8 @@ void QgsMeshCalcUtils::funcAggr(
       output->values[n] = res_val;
     }
 
-    group1.datasets.clear();
-    group1.datasets.push_back( output );
+    group1.memoryDatasets.clear();
+    group1.memoryDatasets.push_back( output );
   }
 }
 
@@ -732,8 +731,8 @@ void QgsMeshCalcUtils::addIf( QgsMeshMemoryDatasetGroup &trueGroup,
   expand( trueGroup, condition );
   expand( trueGroup, falseGroup );
 
-  Q_ASSERT( trueGroup.type == falseGroup.type ); // we do not support mixed output types
-  Q_ASSERT( trueGroup.type == condition.type ); // we do not support mixed output types
+  Q_ASSERT( trueGroup.dataType() == falseGroup.dataType() ); // we do not support mixed output types
+  Q_ASSERT( trueGroup.dataType() == condition.dataType() ); // we do not support mixed output types
 
   for ( int time_index = 0; time_index < trueGroup.datasetCount(); ++time_index )
   {
@@ -754,7 +753,7 @@ void QgsMeshCalcUtils::addIf( QgsMeshMemoryDatasetGroup &trueGroup,
       true_o->values[n] = resultValue;
     }
 
-    if ( trueGroup.type == QgsMeshDatasetGroupMetadata::DataOnVertices )
+    if ( trueGroup.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices )
     {
       // This is not ideal, as we do not check for true/false branch here in activate
       // problem is that activate is on elements, but condition is on nodes...
@@ -773,7 +772,7 @@ void QgsMeshCalcUtils::activate( QgsMeshMemoryDatasetGroup &group ) const
     for ( int datasetIndex = 0; datasetIndex < group.datasetCount(); ++datasetIndex )
     {
       std::shared_ptr<QgsMeshMemoryDataset> o1 = canditateDataset( group, datasetIndex );
-      Q_ASSERT( group.type == QgsMeshDatasetGroupMetadata::DataOnVertices );
+      Q_ASSERT( group.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices );
       activate( o1 );
     }
   }
@@ -1169,10 +1168,10 @@ void QgsMeshCalcUtils::maximum( QgsMeshMemoryDatasetGroup &group1, const QgsMesh
 QgsMeshDatasetGroupMetadata::DataType QgsMeshCalcUtils::determineResultDataType( QgsMeshLayer *layer, const QStringList &usedGroupNames )
 {
   QHash<QString, int> names;
-  const QgsMeshDataProvider *dp = layer->dataProvider();
-  for ( int groupId = 0; groupId < dp->datasetGroupCount(); ++groupId )
+  const QList<int> &groupIndexes = layer->datasetGroupsIndexes();
+  for ( int groupId : groupIndexes )
   {
-    const auto meta = dp->datasetGroupMetadata( groupId );
+    const auto meta = layer->datasetGroupMetadata( groupId );
     const QString name = meta.name();
     names[ name ] = groupId;
   }
@@ -1181,7 +1180,7 @@ QgsMeshDatasetGroupMetadata::DataType QgsMeshCalcUtils::determineResultDataType(
     if ( names.contains( datasetGroupName ) )
     {
       int groupId = names.value( datasetGroupName );
-      const auto meta = dp->datasetGroupMetadata( groupId );
+      const auto meta = layer->datasetGroupMetadata( groupId );
       if ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices )
       {
         return QgsMeshDatasetGroupMetadata::DataOnVertices;

@@ -1,6 +1,7 @@
 {
   "name": "simplify_vw",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description":"Simplifies a geometry by removing nodes using an area based threshold (ie, the Visvalingam-Whyatt algorithm). The algorithm removes vertices which create small areas in geometries, e.g., narrow spikes or nearly straight segments.",
   "arguments": [ {"arg":"geometry","description":"a geometry"},
                  {"arg":"tolerance","description":"a measure of the maximum area created by a node for the node to be removed"} ],

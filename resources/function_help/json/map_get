@@ -1,6 +1,7 @@
 {
   "name": "map_get",
   "type": "function",
+  "groups": ["Maps"],
   "description": "Returns the value of a map, given it's key.",
   "arguments": [ {"arg":"map","description":"a map"},
                  {"arg":"key","description":"the key to lookup"}],

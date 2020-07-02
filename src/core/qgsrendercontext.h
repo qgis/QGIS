@@ -43,8 +43,8 @@ class QgsLabelingEngine;
 class QgsMapSettings;
 class QgsRenderedFeatureHandlerInterface;
 class QgsSymbolLayer;
-
 class QgsMaskIdProvider;
+class QgsMapClippingRegion;
 
 
 /**
@@ -58,6 +58,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 {
   public:
     QgsRenderContext();
+    ~QgsRenderContext() override;
 
     QgsRenderContext( const QgsRenderContext &rh );
     QgsRenderContext &operator=( const QgsRenderContext &rh );
@@ -786,6 +787,42 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     void clearCustomRenderingFlag( const QString &flag ) { mCustomRenderingFlags.remove( flag ); }
 
+    /**
+     * Returns the list of clipping regions to apply during the render.
+     *
+     * These regions are always in the final destination CRS for the map.
+     *
+     * \since QGIS 3.16
+     */
+    QList< QgsMapClippingRegion > clippingRegions() const;
+
+    /**
+     * Returns the geometry to use to clip features at render time.
+     *
+     * When vector features are rendered, they should be clipped to this geometry.
+     *
+     * \warning The clipping must take effect for rendering the feature's symbol only,
+     * and should never be applied directly to the feature being rendered. Doing so would
+     * impact the results of rendering rules which rely on feature geometry, such as
+     * a rule-based renderer using the feature's area.
+     *
+     * \see setFeatureClipGeometry()
+     *
+     * \since QGIS 3.16
+     */
+    QgsGeometry featureClipGeometry() const;
+
+    /**
+     * Sets a \a geometry to use to clip features at render time.
+     *
+     * \note This is not usually set directly, but rather specified by calling QgsMapSettings:addClippingRegion()
+     * prior to constructing a QgsRenderContext.
+     *
+     * \see featureClipGeometry()
+     * \since QGIS 3.16
+     */
+    void setFeatureClipGeometry( const QgsGeometry &geometry );
+
   private:
 
     Flags mFlags;
@@ -876,6 +913,9 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     QVariantMap mCustomRenderingFlags;
 
     QSet<const QgsSymbolLayer *> mDisabledSymbolLayers;
+
+    QList< QgsMapClippingRegion > mClippingRegions;
+    QgsGeometry mFeatureClipGeometry;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;
@@ -1028,6 +1068,47 @@ class QgsScopedRenderContextScaleToPixels
 
     QgsRenderContext &mContext;
 };
+
+
+/**
+ * \ingroup core
+ *
+ * Scoped object for saving and restoring a QPainter object's state.
+ *
+ * Temporarily saves the QPainter state for the lifetime of the object, before restoring it
+ * on destruction.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.16
+ */
+class QgsScopedQPainterState
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedQPainterState.
+     *
+     * Saves the specified \a painter state.
+     */
+    QgsScopedQPainterState( QPainter *painter )
+      : mPainter( painter )
+    {
+      mPainter->save();
+    }
+
+    /**
+     * Restores the painter back to its original state.
+     */
+    ~QgsScopedQPainterState()
+    {
+      mPainter->restore();
+    }
+
+  private:
+
+    QPainter *mPainter = nullptr;
+};
+
 #endif
 
 #endif

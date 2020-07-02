@@ -1,6 +1,7 @@
 {
   "name": "make_date",
   "type": "function",
+  "groups": ["Date and Time"],
   "description": "Creates a date value from year, month and day numbers.",
   "arguments": [
     {"arg":"year","description":"Year number. Years 1 to 99 are interpreted as is. Year 0 is invalid."},

@@ -1,6 +1,7 @@
 {
   "name": "regexp_match",
   "type": "function",
+  "groups": ["Conditionals", "String"],
   "description": "Return the first matching position matching a regular expression within a string, or 0 if the substring is not found.",
   "arguments": [ {"arg":"input_string","description":"the string to test against the regular expression"},
   {"arg":"regex","description":"The regular expression to test against. Backslash characters must be double escaped (e.g., \"\\\\\\\\s\" to match a white space character)."}

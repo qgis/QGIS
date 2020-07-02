@@ -59,6 +59,8 @@ namespace MDAL
       void load( const std::string &datFile, Mesh *mesh ) override;
       bool persist( DatasetGroup *group ) override;
 
+      std::string writeDatasetOnFileSuffix() const override;
+
     private:
       bool canReadOldFormat( const std::string &line ) const;
       bool canReadNewFormat( const std::string &line ) const;

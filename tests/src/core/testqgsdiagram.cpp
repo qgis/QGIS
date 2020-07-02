@@ -894,6 +894,63 @@ class TestQgsDiagram : public QObject
       QVERIFY( imageCheck( "textdiagram_datadefined_background" ) );
     }
 
+    void testClipping()
+    {
+      const QString filename = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
+      std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( filename, QStringLiteral( "lines" ), QStringLiteral( "ogr" ) ) );
+
+      QgsStringMap props;
+      props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#487bb6" ) );
+      props.insert( QStringLiteral( "outline_width" ), QStringLiteral( "1" ) );
+      std::unique_ptr< QgsLineSymbol > symbol( QgsLineSymbol::createSimple( props ) );
+      vl2->setRenderer( new QgsSingleSymbolRenderer( symbol.release() ) );
+
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1;
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Value\"" );
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 5, 5 );
+      ds.rotationOffset = 0;
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      vl2->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::Line );
+      dls.setShowAllDiagrams( true );
+      vl2->setDiagramLayerSettings( dls );
+
+      mMapSettings->setLayers( QList<QgsMapLayer *>() << vl2.get() );
+
+      QgsMapClippingRegion region1( QgsGeometry::fromWkt( "Polygon ((-92 45, -99 36, -94 29, -82 29, -81 45, -92 45))" ) );
+      region1.setFeatureClip( QgsMapClippingRegion::FeatureClippingType::ClipToIntersection );
+      mMapSettings->addClippingRegion( region1 );
+
+      QgsMapClippingRegion region2( QgsGeometry::fromWkt( "Polygon ((-85 36, -85 46, -107 47, -108 28, -85 28, -85 36))" ) );
+      region2.setFeatureClip( QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly );
+      mMapSettings->addClippingRegion( region2 );
+
+      const bool res = imageCheck( QStringLiteral( "diagram_clipping" ) );
+      mMapSettings->setClippingRegions( QList< QgsMapClippingRegion >() );
+      mMapSettings->setLayers( QList<QgsMapLayer *>() << mPointsLayer );
+
+      QVERIFY( res );
+    }
+
+
+
 };
 
 bool TestQgsDiagram::imageCheck( const QString &testType )

@@ -82,6 +82,7 @@
         <file>themes/default/algorithms/mAlgorithmAddGeometryAttributes.svg</file>
         <file>themes/default/algorithms/mAlgorithmBasicStatistics.svg</file>
         <file>themes/default/algorithms/mAlgorithmBuffer.svg</file>
+        <file>themes/default/algorithms/mAlgorithmCellStatistics.svg</file>
         <file>themes/default/algorithms/mAlgorithmCentroids.svg</file>
         <file>themes/default/algorithms/mAlgorithmCheckGeometry.svg</file>
         <file>themes/default/algorithms/mAlgorithmClip.svg</file>
@@ -115,6 +116,7 @@
         <file>themes/default/algorithms/mAlgorithmPolygonToLine.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomExponentialRaster.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomGammaRaster.svg</file>
+        <file>themes/default/algorithms/mAlgorithmRandomPointsInPolygons.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomPointsOnLines.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomPointsWithinPolygon.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomPointsWithinExtent.svg</file>
@@ -274,6 +276,7 @@
         <file>themes/default/mActionCustomProjection.svg</file>
         <file>themes/default/mActionDecreaseBrightness.svg</file>
         <file>themes/default/mActionDecreaseContrast.svg</file>
+        <file>themes/default/mActionDecreaseGamma.svg</file>
         <file>themes/default/mActionDeleteAttribute.svg</file>
         <file>themes/default/mActionDeletePart.svg</file>
         <file>themes/default/mActionDeleteRing.svg</file>
@@ -318,6 +321,7 @@
         <file>themes/default/mActionIdentify.svg</file>
         <file>themes/default/mActionIncreaseBrightness.svg</file>
         <file>themes/default/mActionIncreaseContrast.svg</file>
+        <file>themes/default/mActionIncreaseGamma.svg</file>
         <file>themes/default/mActionInOverview.svg</file>
         <file>themes/default/mActionInvertSelection.svg</file>
         <file>themes/default/mActionKeyboardShortcuts.svg</file>
@@ -721,6 +725,7 @@
         <file>themes/default/providerGrass.svg</file>
         <file>themes/default/providerQgis.svg</file>
         <file>themes/default/providerSaga.svg</file>
+        <file>themes/default/providerOtb.svg</file>
         <file>themes/default/processingModel.svg</file>
         <file>themes/default/processingScript.svg</file>
         <file>themes/default/processingAlgorithm.svg</file>
