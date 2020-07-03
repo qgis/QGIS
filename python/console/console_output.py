@@ -282,8 +282,8 @@ class ShellOutputScintilla(QsciScintilla):
                                      QCoreApplication.translate("PythonConsole", "Clear Console"),
                                      self.clearConsole)
         pyQGISHelpAction = menu.addAction(iconPyQGISHelp,
-                                     QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
-                                     self.searchPyQGIS)
+                                          QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
+                                          self.searchPyQGIS)
         menu.addSeparator()
         copyAction = menu.addAction(
             QCoreApplication.translate("PythonConsole", "Copy"),
@@ -343,7 +343,7 @@ class ShellOutputScintilla(QsciScintilla):
             text = self.selectedText()
             text = text.replace('>>> ', '').replace('... ', '').strip()  # removing prompts
             version = '.'.join(Qgis.QGIS_VERSION.split('.')[0:2])
-            QDesktopServices.openUrl( QUrl('https://qgis.org/pyqgis/'+version+'/search.html?q='+text) )
+            QDesktopServices.openUrl(QUrl('https://qgis.org/pyqgis/' + version + '/search.html?q=' + text))
 
     def keyPressEvent(self, e):
         # empty text indicates possible shortcut key sequence so stay in output

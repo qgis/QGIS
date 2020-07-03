@@ -196,7 +196,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             text = self.selectedText()
             text = text.replace('>>> ', '').replace('... ', '').strip()  # removing prompts
             version = '.'.join(Qgis.QGIS_VERSION.split('.')[0:2])
-            QDesktopServices.openUrl( QUrl('https://qgis.org/pyqgis/'+version+'/search.html?q='+text) )
+            QDesktopServices.openUrl(QUrl('https://qgis.org/pyqgis/' + version + '/search.html?q=' + text))
 
     def autoCompleteKeyBinding(self):
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI')
