@@ -102,7 +102,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      */
     float worldSpaceError( float epsilon, float distance );
 
-    void exportScene( const QString &sceneName, const QString &sceneDir, bool smoothEdges = false );
+    void exportScene( const QString &sceneName, const QString &sceneDir, int levelOfDetails = 1, bool smoothEdges = false );
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
     void terrainEntityChanged();

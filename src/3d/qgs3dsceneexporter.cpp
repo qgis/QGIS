@@ -163,9 +163,12 @@ QVector<int> createPlaneIndexData( const QSize &resolution )
   return indexes;
 }
 
-Qgs3DSceneExporter::Qgs3DSceneExporter( )
-  : mVertxPosition()
+Qgs3DSceneExporter::Qgs3DSceneExporter( Qt3DCore::QNode *parent )
+  : Qt3DCore::QEntity( parent )
+  , mVertxPosition()
   , mIndexes()
+  , mSmoothEdges( false )
+  , mLevelOfDetails( 1 )
 {
 
 }
@@ -213,14 +216,45 @@ void Qgs3DSceneExporter::parseEntity( Qt3DCore::QEntity *entity )
 void Qgs3DSceneExporter::parseEntity( QgsTerrainEntity *terrain )
 {
   QgsChunkNode *root = terrain->rootNode();
+
+  int levelOfDetails = mLevelOfDetails;
+  QVector<QgsChunkNode *> leafs;
+  leafs << root;
+  for ( int i = 0; i < levelOfDetails; ++i )
+  {
+    QVector<QgsChunkNode *> nodes = leafs;
+    leafs.clear();
+    for ( QgsChunkNode *node : nodes )
+    {
+      node->ensureAllChildrenExist();
+      QgsChunkNode *const *children = node->children();
+      for ( int i = 0; i < 4; ++i )
+      {
+        if ( children[i] != nullptr )
+        {
+          leafs.push_back( children[i] );
+        }
+      }
+    }
+  }
+
   QgsTerrainGenerator *generator = terrain->map3D().terrainGenerator();
+  QgsTerrainTileEntity *terrainTile = nullptr;
   switch ( generator->type() )
   {
     case QgsTerrainGenerator::Dem:
-      generateDemTerrain( terrain, root );
+      for ( QgsChunkNode *node : leafs )
+      {
+        terrainTile = getDemTerrainEntity( terrain, node );
+        this->parseDemTile( terrainTile );
+      }
       break;
     case QgsTerrainGenerator::Flat:
-      generateFlatTerrain( terrain, root );
+      for ( QgsChunkNode *node : leafs )
+      {
+        terrainTile = getFlatTerrainEntity( terrain, node );
+        this->parseFlatTile( terrainTile );
+      }
       break;
     // TODO: implement other terrain types
     case QgsTerrainGenerator::Mesh:
@@ -230,16 +264,33 @@ void Qgs3DSceneExporter::parseEntity( QgsTerrainEntity *terrain )
   }
 }
 
-void Qgs3DSceneExporter::generateFlatTerrain( QgsTerrainEntity *terrain, QgsChunkNode *node )
+QgsTerrainTileEntity *Qgs3DSceneExporter::getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node )
 {
   QgsFlatTerrainGenerator *generator = dynamic_cast<QgsFlatTerrainGenerator *>( terrain->map3D().terrainGenerator() );
   QgsChunkLoader *loader = generator->createChunkLoader( node );
-  FlatTerrainChunkLoader *floatTerrainLoader = qobject_cast<FlatTerrainChunkLoader *>( loader );
-  if ( floatTerrainLoader == nullptr ) return;
-  Qt3DCore::QEntity *entity = floatTerrainLoader->createEntity( nullptr );
+  FlatTerrainChunkLoader *flatTerrainLoader = qobject_cast<FlatTerrainChunkLoader *>( loader );
+  if ( flatTerrainLoader == nullptr ) return nullptr;
+  // the entity we created should be deallocated when we deallocate the scene exporter
+  Qt3DCore::QEntity *entity = flatTerrainLoader->createEntity( this );
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
-  if ( tileEntity != nullptr ) parseFlatTile( tileEntity );
-  if ( entity != nullptr ) delete entity;
+  return tileEntity;
+}
+
+QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node )
+{
+  QgsTerrainTileEntity *tileEntity = nullptr;
+  if ( node->entity() != nullptr )
+  {
+    // read tile data as displayed in the scene (no need to make the entity)
+    Qt3DCore::QEntity *entity = node->entity();
+    tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
+  }
+  else
+  {
+    // create the entity synchronously and then it will be deleted once our scene exporter instance is deallocated
+    tileEntity = createDEMTileEntity( terrain, node );
+  }
+  return tileEntity;
 }
 
 static void _heightMapMinMax( const QByteArray &heightMap, float &zMin, float &zMax )
@@ -313,38 +364,10 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::createDEMTileEntity( QgsTerrainEntity 
   //  node->setExactBbox( QgsAABB( x0, zMin * map.terrainVerticalScale(), -y0, x0 + side, zMax * map.terrainVerticalScale(), -( y0 + side ) ) );
 
   entity->setEnabled( false );
-  //    entity->setParent( nullptr );
+  // set the parent to our scene exporter class so it will be deallocated properly
+  entity->setParent( this );
 
   return entity;
-}
-
-void Qgs3DSceneExporter::generateDemTerrain( QgsTerrainEntity *terrain, QgsChunkNode *node )
-{
-  QgsChunkNode *const *children = node->children();
-  bool isLeaf = true;
-  for ( int i = 0; i < 4; ++i )
-  {
-    if ( children[i] == nullptr ) continue;
-    generateDemTerrain( terrain, children[i] );
-    isLeaf = false;
-  }
-  if ( !isLeaf ) return;
-
-  if ( node->entity() != nullptr )
-  {
-    // read tile data as displayed in the scene
-    Qt3DCore::QEntity *entity = node->entity();
-    qDebug() << "Loading existing entity";
-    QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
-    if ( tileEntity != nullptr ) parseDemTile( tileEntity );
-  }
-  else
-  {
-    // create the entity synchronously and then delete it
-    QgsTerrainTileEntity *entity = createDEMTileEntity( terrain, node );
-    if ( entity != nullptr ) parseDemTile( entity );
-    if ( entity != nullptr ) delete entity;
-  }
 }
 
 void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity )
@@ -517,7 +540,7 @@ void Qgs3DSceneExporter::saveToFile( const QString &filePath )
 
   qDebug() << "Vertical span : " << diffY;
 
-  float scale = diffY;//qMax( diffX, qMax( diffY, diffZ ) );
+  float scale = std::max( diffX, std::max( diffY, diffZ ) );
 
   QTextStream out( &file );
 
