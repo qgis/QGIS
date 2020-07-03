@@ -133,13 +133,13 @@ QString QgsRandomPointsInPolygonsAlgorithm::shortHelpString() const
                       "and <i>Maximum number of attempts per point</i> can be data defined. "
                       "<p>Output from the algorithm:</p> "
                       "<ul> "
+                      "<li> The number of features with an empty or no geometry "
+                      "(<code>FEATURES_WITH_EMPTY_OR_NO_GEOMETRY</code>).</li> "
                       "<li> A point layer containing the random points (<code>OUTPUT</code>).</li> "
-                      "<li> The number of generated features (<code>POINTS_GENERATED</code>).</li> "
+                      "<li> The number of generated features (<code>OUTPUT_POINTS</code>).</li> "
                       "<li> The number of missed points (<code>POINTS_MISSED</code>).</li> "
                       "<li> The number of features with non-empty geometry and missing points "
                       "(<code>POLYGONS_WITH_MISSED_POINTS</code>).</li> "
-                      "<li> The number of features with an empty or no geometry "
-                      "(<code>LINES_WITH_EMPTY_OR_NO_GEOMETRY</code>).</li> "
                       "</ul>"
                     );
 }
