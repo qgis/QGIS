@@ -252,6 +252,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoLegendColumnCount, //!< Legend column count
       UndoLegendSymbolWidth, //!< Legend symbol width
       UndoLegendSymbolHeight, //!< Legend symbol height
+      UndoLegendMaxSymbolSize, //!< Legend maximum symbol size
+      UndoLegendMinSymbolSize, //!< Legend minimum symbol size
       UndoLegendWmsLegendWidth, //!< Legend WMS width
       UndoLegendWmsLegendHeight, //!< Legend WMS height
       UndoLegendTitleSpaceBottom, //!< Legend title space

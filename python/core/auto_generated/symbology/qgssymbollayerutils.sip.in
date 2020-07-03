@@ -814,6 +814,20 @@ Converts a set of symbol layer id to a set of pointers to actual symbol layers c
 
 .. versionadded:: 3.12
 %End
+
+    static QgsSymbol *restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height );
+%Docstring
+Creates a new symbol with size restricted to min/max size if original size is out of min/max range
+
+:param s: the original symbol
+:param minSize: the minimum size in mm
+:param maxSize: the maximum size in mm
+:param context: the render context
+:param width: expected width, can be changed by the function
+:param height: expected height, can be changed by this function
+
+:return: 0 if size is within minSize/maxSize range. New symbol if size was out of min/max range. Caller takes ownership
+%End
 };
 
 

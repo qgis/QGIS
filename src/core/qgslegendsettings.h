@@ -235,6 +235,28 @@ class CORE_EXPORT QgsLegendSettings
     void setSymbolSize( QSizeF s ) {mSymbolSize = s;}
 
     /**
+     * Returns the maximum symbol size in mm
+     */
+    double maxSymbolSize() const {return mMaxSymbolSize; }
+
+    /**
+     * Sets the maximum marker size in mm
+     * @param size maximum size in mm
+     */
+    void setMaxSymbolSize( double size ) { mMaxSymbolSize = size;}
+
+    /**
+     * Returns the minimum symbol size in mm
+     */
+    double minSymbolSize() const {return mMinSymbolSize; }
+
+    /**
+     * Sets the minimum symbol size in mm
+     * @param size minimum size in mm
+     */
+    void setMinSymbolSize( double size ) { mMinSymbolSize = size;}
+
+    /**
      * Sets the \a alignment for placement of legend symbols.
      *
      * Only Qt::AlignLeft or Qt::AlignRight are supported values.
@@ -478,6 +500,12 @@ class CORE_EXPORT QgsLegendSettings
 
 //! Width and height of symbol icon
     QSizeF mSymbolSize;
+
+//! Maximum marker symbol size (in mm)
+    double mMaxSymbolSize = 0.0;
+
+//! Minimum marker symbol size (in mm)
+    double mMinSymbolSize = 0.0;
 
 //! Width and height of WMS legendGraphic pixmap
     QSizeF mWmsLegendSize;

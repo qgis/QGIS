@@ -557,12 +557,24 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   double widthOffset = 0;
   double heightOffset = 0;
 
+  double maxSymbolSize = settings.maxSymbolSize();
+  double minSymbolSize = settings.minSymbolSize();
+
   if ( QgsMarkerSymbol *markerSymbol = dynamic_cast<QgsMarkerSymbol *>( s ) )
   {
-    // allow marker symbol to occupy bigger area if necessary
     double size = markerSymbol->size( *context ) / context->scaleFactor();
     height = size;
     width = size;
+  }
+
+  std::unique_ptr<QgsSymbol> minMaxSizeSymbol( QgsSymbolLayerUtils::restrictedSizeSymbol( s, minSymbolSize, maxSymbolSize, context, width, height ) );
+  if ( minMaxSizeSymbol )
+  {
+    s = minMaxSizeSymbol.get();
+  }
+
+  if ( s->type() == QgsSymbol::Marker )
+  {
     if ( width < desiredWidth )
     {
       widthOffset = ( desiredWidth - width ) / 2.0;
@@ -572,7 +584,6 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       heightOffset = ( desiredHeight - height ) / 2.0;
     }
   }
-
   if ( ctx && ctx->painter )
   {
     double currentYCoord = ctx->top + ( itemHeight - desiredHeight ) / 2;

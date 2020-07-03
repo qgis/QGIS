@@ -223,6 +223,28 @@ Sets the default symbol size (in millimeters) used for legend items.
 .. seealso:: :py:func:`symbolSize`
 %End
 
+    double maxSymbolSize() const;
+%Docstring
+Returns the maximum symbol size in mm
+%End
+
+    void setMaxSymbolSize( double size );
+%Docstring
+Sets the maximum marker size in mm
+@param size maximum size in mm
+%End
+
+    double minSymbolSize() const;
+%Docstring
+Returns the minimum symbol size in mm
+%End
+
+    void setMinSymbolSize( double size );
+%Docstring
+Sets the minimum symbol size in mm
+@param size minimum size in mm
+%End
+
     void setSymbolAlignment( Qt::AlignmentFlag alignment );
 %Docstring
 Sets the ``alignment`` for placement of legend symbols.
