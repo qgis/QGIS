@@ -19,10 +19,10 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication, QFile, QSize
+from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication, QFile, QSize, QUrl
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QShortcut, QApplication
 from qgis.PyQt.QtGui import QColor, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard, \
-    QFontDatabase
+    QFontDatabase, QDesktopServices
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
 
 import sys
@@ -190,6 +190,13 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.historyDlg.show()
         self.historyDlg._reloadHistory()
         self.historyDlg.activateWindow()
+
+    def searchPyQGIS(self):
+        if self.hasSelectedText():
+            text = self.selectedText()
+            text = text.replace('>>> ', '').replace('... ', '').strip()  # removing prompts
+            version = '.'.join(Qgis.QGIS_VERSION.split('.')[0:2])
+            QDesktopServices.openUrl( QUrl('https://qgis.org/pyqgis/'+version+'/search.html?q='+text) )
 
     def autoCompleteKeyBinding(self):
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI')
@@ -542,10 +549,15 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         pasteAction = menu.addAction(
             QCoreApplication.translate("PythonConsole", "Paste"),
             self.paste, QKeySequence.Paste)
+        pyQGISHelpAction = menu.addAction(
+            QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
+            self.searchPyQGIS)
         copyAction.setEnabled(False)
         pasteAction.setEnabled(False)
+        pyQGISHelpAction.setEnabled(False)
         if self.hasSelectedText():
             copyAction.setEnabled(True)
+            pyQGISHelpAction.setEnabled(True)
         if QApplication.clipboard().text():
             pasteAction.setEnabled(True)
         menu.exec_(self.mapToGlobal(e.pos()))
