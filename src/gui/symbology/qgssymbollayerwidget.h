@@ -162,12 +162,14 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     void colorChanged( const QColor &color );
     void penStyleChanged();
     void offsetChanged();
+    void patternOffsetChanged();
     void mCustomCheckBox_stateChanged( int state );
     void mChangePatternButton_clicked();
     void mPenWidthUnitWidget_changed();
     void mOffsetUnitWidget_changed();
     void mDashPatternUnitWidget_changed();
     void mDrawInsideCheckBox_stateChanged( int state );
+    void patternOffsetUnitChanged();
 
   private:
 

@@ -177,6 +177,13 @@ QgsSymbolLayer *QgsSimpleLineSymbolLayer::create( const QgsStringMap &props )
     l->setRingFilter( static_cast< RenderRingFilter>( props[QStringLiteral( "ring_filter" )].toInt() ) );
   }
 
+  if ( props.contains( QStringLiteral( "dash_pattern_offset" ) ) )
+    l->setDashPatternOffset( props[QStringLiteral( "dash_pattern_offset" )].toDouble() );
+  if ( props.contains( QStringLiteral( "dash_pattern_offset_unit" ) ) )
+    l->setDashPatternOffsetUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "dash_pattern_offset_unit" )] ) );
+  if ( props.contains( QStringLiteral( "dash_pattern_offset_map_unit_scale" ) ) )
+    l->setDashPatternOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "dash_pattern_offset_map_unit_scale" )] ) );
+
   l->restoreOldDataDefinedProperties( props );
 
   return l;
@@ -195,14 +202,15 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mPen.setColor( penColor );
   double scaledWidth = context.renderContext().convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
   mPen.setWidthF( scaledWidth );
+
+  //note that Qt seems to have issues with scaling dash patterns with very small pen widths.
+  //treating the pen as having no less than a 1 pixel size avoids the worst of these issues
+  const double dashWidthDiv = std::max( 1.0, scaledWidth );
   if ( mUseCustomDashPattern )
   {
     mPen.setStyle( Qt::CustomDashLine );
 
     //scale pattern vector
-    //note that Qt seems to have issues with scaling dash patterns with very small pen widths.
-    //treating the pen as having no less than a 1 pixel size avoids the worst of these issues
-    const double dashWidthDiv = std::max( 1.0, scaledWidth );
 
     QVector<qreal> scaledVector;
     QVector<qreal>::const_iterator it = mCustomDashVector.constBegin();
@@ -217,6 +225,12 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
   {
     mPen.setStyle( mPenStyle );
   }
+
+  if ( mDashPatternOffset && mPen.style() != Qt::SolidLine )
+  {
+    mPen.setDashOffset( context.renderContext().convertToPainterUnits( mDashPatternOffset, mDashPatternOffsetUnit, mDashPatternOffsetMapUnitScale ) / dashWidthDiv ) ;
+  }
+
   mPen.setJoinStyle( mPenJoinStyle );
   mPen.setCapStyle( mPenCapStyle );
 
@@ -385,6 +399,9 @@ QgsStringMap QgsSimpleLineSymbolLayer::properties() const
   map[QStringLiteral( "customdash" )] = QgsSymbolLayerUtils::encodeRealVector( mCustomDashVector );
   map[QStringLiteral( "customdash_unit" )] = QgsUnitTypes::encodeUnit( mCustomDashPatternUnit );
   map[QStringLiteral( "customdash_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mCustomDashPatternMapUnitScale );
+  map[QStringLiteral( "dash_pattern_offset" )] = QString::number( mDashPatternOffset );
+  map[QStringLiteral( "dash_pattern_offset_unit" )] = QgsUnitTypes::encodeUnit( mDashPatternOffsetUnit );
+  map[QStringLiteral( "dash_pattern_offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mDashPatternOffsetMapUnitScale );
   map[QStringLiteral( "draw_inside_polygon" )] = ( mDrawInsidePolygon ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   map[QStringLiteral( "ring_filter" )] = QString::number( static_cast< int >( mRingFilter ) );
   return map;
@@ -406,6 +423,9 @@ QgsSimpleLineSymbolLayer *QgsSimpleLineSymbolLayer::clone() const
   l->setCustomDashVector( mCustomDashVector );
   l->setDrawInsidePolygon( mDrawInsidePolygon );
   l->setRingFilter( mRingFilter );
+  l->setDashPatternOffset( mDashPatternOffset );
+  l->setDashPatternOffsetUnit( mDashPatternOffsetUnit );
+  l->setDashPatternOffsetMapUnitScale( mDashPatternOffsetMapUnitScale );
   copyDataDefinedProperties( l );
   copyPaintEffect( l );
   return l;
@@ -537,12 +557,13 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   }
 
   //dash dot vector
+
+  //note that Qt seems to have issues with scaling dash patterns with very small pen widths.
+  //treating the pen as having no less than a 1 pixel size avoids the worst of these issues
+  const double dashWidthDiv = std::max( hasStrokeWidthExpression ? pen.widthF() : mPen.widthF(), 1.0 );
+
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCustomDash ) )
   {
-    //note that Qt seems to have issues with scaling dash patterns with very small pen widths.
-    //treating the pen as having no less than a 1 pixel size avoids the worst of these issues
-    const double dashWidthDiv = std::max( hasStrokeWidthExpression ? pen.widthF() : mPen.widthF(), 1.0 );
-
     QVector<qreal> dashVector;
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyCustomDash, context.renderContext().expressionContext() );
     if ( exprVal.isValid() )
@@ -555,6 +576,15 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
       }
       pen.setDashPattern( dashVector );
     }
+  }
+
+  // dash pattern offset
+  double patternOffset = mDashPatternOffset;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDashPatternOffset ) && pen.style() != Qt::SolidLine )
+  {
+    context.setOriginalValueVariable( mDashPatternOffset );
+    patternOffset = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyDashPatternOffset, context.renderContext().expressionContext(), mDashPatternOffset );
+    pen.setDashOffset( context.renderContext().convertToPainterUnits( patternOffset, mDashPatternOffsetUnit, mDashPatternOffsetMapUnitScale ) / dashWidthDiv );
   }
 
   //line style
