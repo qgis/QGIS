@@ -195,6 +195,78 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     void setCustomDashVector( const QVector<qreal> &vector ) { mCustomDashVector = vector; }
 
     /**
+     * Returns the dash pattern offset, which dictates how far along the dash pattern
+     * the pattern should start rendering at.
+     *
+     * Offset units can be retrieved by calling dashPatternOffsetUnit().
+     *
+     * \see setDashPatternOffset()
+     * \see dashPatternOffsetUnit()
+     * \see dashPatternOffsetMapUnitScale()
+     *
+     * \since QGIS 3.16
+     */
+    double dashPatternOffset() const { return mDashPatternOffset; }
+
+    /**
+     * Sets the dash pattern \a offset, which dictates how far along the dash pattern
+     * the pattern should start rendering at.
+     *
+     * Offset units are set via setDashPatternOffsetUnit().
+     *
+     * \see dashPatternOffset()
+     * \see setDashPatternOffsetUnit()
+     * \see setDashPatternOffsetMapUnitScale()
+     *
+     * \since QGIS 3.16
+     */
+    void setDashPatternOffset( double offset ) { mDashPatternOffset = offset; }
+
+    /**
+     * Sets the \a unit for the dash pattern offset.
+     *
+     * \see dashPatternOffsetUnit()
+     * \see setDashPatternOffset()
+     * \see setDashPatternOffsetMapUnitScale()
+     *
+     * \since QGIS 3.16
+    */
+    void setDashPatternOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mDashPatternOffsetUnit = unit; }
+
+    /**
+     * Returns the units for the dash pattern offset.
+     *
+     * \see setDashPatternOffsetUnit()
+     * \see dashPatternOffset()
+     * \see dashPatternOffsetMapUnitScale()
+     *
+     * \since QGIS 3.16
+    */
+    QgsUnitTypes::RenderUnit dashPatternOffsetUnit() const { return mDashPatternOffsetUnit; }
+
+    /**
+     * Returns the map unit scale the dash pattern offset value.
+     *
+     * \see setDashPatternOffsetMapUnitScale()
+     * \see dashPatternOffsetUnit()
+     * \see dashPatternOffset()
+     *
+     * \since QGIS 3.16
+    */
+    const QgsMapUnitScale &dashPatternOffsetMapUnitScale() const { return mDashPatternOffsetMapUnitScale; }
+
+    /**
+     * Sets the map unit \a scale for the dash pattern offset.
+     *
+     * \see dashPatternOffsetMapUnitScale()
+     * \see setDashPatternOffset()
+     * \see setDashPatternOffsetUnit()
+     *
+     * \since QGIS 3.16
+    */
+    void setDashPatternOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mDashPatternOffsetMapUnitScale = scale; }
+
+    /**
      * Returns TRUE if the line should only be drawn inside polygons, and any portion
      * of the line which falls outside the polygon should be clipped away.
      *
@@ -227,6 +299,10 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     bool mUseCustomDashPattern = false;
     QgsUnitTypes::RenderUnit mCustomDashPatternUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mCustomDashPatternMapUnitScale;
+
+    double mDashPatternOffset = 0;
+    QgsUnitTypes::RenderUnit mDashPatternOffsetUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mDashPatternOffsetMapUnitScale;
 
     //! Vector with an even number of entries for the
     QVector<qreal> mCustomDashVector;
