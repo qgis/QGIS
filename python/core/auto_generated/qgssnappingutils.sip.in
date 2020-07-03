@@ -118,14 +118,14 @@ Find out which strategy is used for indexing - by default hybrid indexing is use
 %Docstring
 Create a new configuration for a snapping layer.
 
-```py
-snapper = QgsMapCanvasSnappingUtils(mapCanvas)
+.. code-block:: python
 
-snapping_layer1 = QgsSnappingUtils.LayerConfig(layer1, QgsPointLocator.Vertex, 10, QgsTolerance.Pixels)
-snapping_layer2 = QgsSnappingUtils.LayerConfig(layer2, QgsPointLocator.Vertex and QgsPointLocator.Edge, 10, QgsTolerance.Pixels)
+     snapper = QgsMapCanvasSnappingUtils(mapCanvas)
 
-snapper.setLayers([snapping_layer1, snapping_layer2])
-```
+     snapping_layer1 = QgsSnappingUtils.LayerConfig(layer1, QgsPointLocator.Vertex, 10, QgsTolerance.Pixels)
+     snapping_layer2 = QgsSnappingUtils.LayerConfig(layer2, QgsPointLocator.Vertex and QgsPointLocator.Edge, 10, QgsTolerance.Pixels)
+
+     snapper.setLayers([snapping_layer1, snapping_layer2])
 
 :param l: The vector layer for which this configuration is
 :param t: Which parts of the geometry should be snappable
