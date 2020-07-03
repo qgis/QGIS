@@ -47,6 +47,7 @@ class GUI_EXPORT QgsMaskingWidget: public QgsPanelWidget, private Ui::QgsMasking
     //! Applies the changes
     void apply();
 
+    //! Widget has been populated or not
     bool hasBeenPopulated();
 
   signals:
