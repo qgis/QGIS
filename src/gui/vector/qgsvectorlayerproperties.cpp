@@ -607,7 +607,7 @@ void QgsVectorLayerProperties::apply()
   mMetadataFilled = false;
 
   // save masking settings
-  if ( mMaskingWidget )
+  if ( mMaskingWidget && mMaskingWidget->hasBeenPopulated() )
     mMaskingWidget->apply();
 
   //
