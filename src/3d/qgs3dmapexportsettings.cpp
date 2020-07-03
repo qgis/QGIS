@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsmap3dexportwidget.h
+  qgs3dmapexportsettings.cpp
   --------------------------------------
   Date                 : July 2020
   Copyright            : (C) 2020 by Belgacem Nedjima
@@ -13,35 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMAP3DEXPORTWIDGET_H
-#define QGSMAP3DEXPORTWIDGET_H
+#include "qgs3dmapexportsettings.h"
 
-#include <QWidget>
-
-namespace Ui
+Qgs3DMapExportSettings::Qgs3DMapExportSettings(QObject* parent)
+: QObject(parent)
 {
-  class Map3DExportWidget;
+
 }
-
-class Qgs3DMapScene;
-class Qgs3DMapExportSettings;
-
-class QgsMap3DExportWidget : public QWidget
-{
-    Q_OBJECT
-
-  public:
-    explicit QgsMap3DExportWidget( Qgs3DMapScene *scene, Qgs3DMapExportSettings *exportSettings, QWidget *parent = nullptr );
-    ~QgsMap3DExportWidget();
-
-    void exportScene();
-  private slots:
-    void settingsChanged();
-  private:
-    Ui::Map3DExportWidget *ui;
-  private:
-    Qgs3DMapScene *mScene = nullptr;
-    Qgs3DMapExportSettings *mExportSettings = nullptr;
-};
-
-#endif // QGSMAP3DEXPORTWIDGET_H

@@ -111,6 +111,8 @@ SET(QGIS_3D_HDRS
   chunks/qgschunkqueuejob_p.h
   mesh/qgsmeshterraingenerator.h
   qgs3dsceneexporter.h
+  qgs3dmapexportsettings.cpp
+
 )
 
 SET(QGIS_3D_PRIVATE_HDRS

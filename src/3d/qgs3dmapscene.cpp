@@ -59,6 +59,7 @@
 #include "qgslinematerial_p.h"
 #include "qgs3dsceneexporter.h"
 #include "qgsabstract3drenderer.h"
+#include "qgs3dmapexportsettings.h"
 
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
@@ -766,12 +767,12 @@ void Qgs3DMapScene::updateSceneState()
   setSceneState( Ready );
 }
 
-void Qgs3DMapScene::exportScene( const QString &sceneName, const QString &sceneDir, int levelOfDetails, bool smoothEdges )
+void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
 {
   Qgs3DSceneExporter exporter;
 
-  exporter.setLevelOfDetails( levelOfDetails );
-  exporter.setSmoothEdges( smoothEdges );
+  exporter.setLevelOfDetails( exportSettings.levelOfDetails() );
+  exporter.setSmoothEdges( exportSettings.smoothEdges() );
 
   for ( QgsMapLayer *layer : mLayerEntities.keys() )
   {
@@ -779,8 +780,9 @@ void Qgs3DMapScene::exportScene( const QString &sceneName, const QString &sceneD
   }
   exporter.parseEntity( mTerrain );
 
-  QString filePath = sceneDir;
+  // TODO: make the scene .obj file created using a function in Qgs3DMapExportSettings
+  QString filePath = exportSettings.sceneFolderPath();
   if ( !filePath.endsWith( '/' ) ) filePath.push_back( '/' );
-  filePath += sceneName + ".obj";
+  filePath += exportSettings.sceneName() + ".obj";
   exporter.saveToFile( filePath );
 }

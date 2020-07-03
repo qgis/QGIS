@@ -47,7 +47,7 @@
 #include "qgs3dsceneexporter.h"
 #include "qgsabstract3drenderer.h"
 #include "qgsmap3dexportwidget.h"
-
+#include "qgs3dmapexportsettings.h"
 
 Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   : QgsDockWidget( parent )
@@ -306,7 +306,9 @@ void Qgs3DMapCanvasDockWidget::exportScene()
   dlg.setMinimumSize( 380, 460 );
 //  QgsGui::instance()->enableAutoGeometryRestore( &dlg );
 
-  QgsMap3DExportWidget *w = new QgsMap3DExportWidget( mCanvas->scene(), &dlg );
+  Qgs3DMapExportSettings *exportSettings = new Qgs3DMapExportSettings( &dlg );
+  QgsMap3DExportWidget *w = new QgsMap3DExportWidget( mCanvas->scene(), exportSettings, &dlg );
+
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg );
 
   connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
