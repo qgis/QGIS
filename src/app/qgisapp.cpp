@@ -10217,9 +10217,6 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
       QgsAttributeEditorContext context( createAttributeEditorContext() );
       context.setAllowCustomUi( false );
       context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
-      context.setVectorLayerTools( mVectorLayerTools );
-      context.setCadDockWidget( mAdvancedDigitizingDockWidget );
-      context.setMapCanvas( mMapCanvas );
 
       QgsFixAttributeDialog *dialog = new QgsFixAttributeDialog( pasteVectorLayer, invalidFeatures, this, context );
 
@@ -10238,6 +10235,7 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
             break;
         }
         pasteFeatures( pasteVectorLayer, invalidGeometriesCount, nTotalFeatures, features );
+        dialog->deleteLater();
       } );
       dialog->show();
       return;
@@ -10247,12 +10245,12 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   pasteFeatures( pasteVectorLayer, invalidGeometriesCount, nTotalFeatures, newFeatures );
 }
 
-void QgisApp::pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeometriesCount, int nTotalFeatures, QgsFeatureList &newFeatures )
+void QgisApp::pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeometriesCount, int nTotalFeatures, QgsFeatureList &features )
 {
-  pasteVectorLayer->addFeatures( newFeatures );
+  pasteVectorLayer->addFeatures( features );
   QgsFeatureIds newIds;
-  newIds.reserve( newFeatures.size() );
-  for ( const QgsFeature &f : qgis::as_const( newFeatures ) )
+  newIds.reserve( features.size() );
+  for ( const QgsFeature &f : qgis::as_const( features ) )
   {
     newIds << f.id();
   }
@@ -10261,7 +10259,7 @@ void QgisApp::pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeomet
   pasteVectorLayer->endEditCommand();
   pasteVectorLayer->updateExtents();
 
-  int nCopiedFeatures = newFeatures.count();
+  int nCopiedFeatures = features.count();
   Qgis::MessageLevel level = ( nCopiedFeatures == 0 || invalidGeometriesCount > 0 ) ? Qgis::Warning : Qgis::Info;
   QString message;
   if ( nCopiedFeatures == 0 )

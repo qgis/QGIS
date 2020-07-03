@@ -928,8 +928,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void pasteFromClipboard( QgsMapLayer *destinationLayer = nullptr );
 
-    void pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeometriesCount, int nTotalFeatures, QgsFeatureList &newFeatures );
-
     //! copies features on the clipboard to a new vector layer
     void pasteAsNewVector();
     //! copies features on the clipboard to a new memory vector layer
@@ -2188,6 +2186,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * try to resolve and create the broken relations.
      */
     void resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer );
+
+    /**
+     * Pastes the \a features to the \a pasteVectorLayer and gives feedback to the user
+     * according to \a invalidGeometryCount and \a nTotalFeatures
+     */
+    void pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeometriesCount, int nTotalFeatures, QgsFeatureList &features );
 
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
