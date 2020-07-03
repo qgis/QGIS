@@ -19,8 +19,8 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QThread, QMetaObject, Q_RETURN_ARG, Q_ARG, QObject, pyqtSlot
-from qgis.PyQt.QtGui import QColor, QFont, QKeySequence, QFontDatabase
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QThread, QMetaObject, Q_RETURN_ARG, Q_ARG, QObject, pyqtSlot, QUrl
+from qgis.PyQt.QtGui import QColor, QFont, QKeySequence, QFontDatabase, QDesktopServices
 from qgis.PyQt.QtWidgets import QGridLayout, QSpacerItem, QSizePolicy, QShortcut, QMenu, QApplication
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython
 from qgis.core import Qgis, QgsApplication, QgsSettings
@@ -265,6 +265,7 @@ class ShellOutputScintilla(QsciScintilla):
         iconClear = QgsApplication.getThemeIcon("console/iconClearConsole.svg")
         iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.svg")
         iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.svg")
+        iconPyQGISHelp = QgsApplication.getThemeIcon("console/iconHelpConsole.svg")
         menu.addAction(iconHideTool,
                        QCoreApplication.translate("PythonConsole", "Hide/Show Toolbar"),
                        self.hideToolBar)
@@ -280,6 +281,9 @@ class ShellOutputScintilla(QsciScintilla):
         clearAction = menu.addAction(iconClear,
                                      QCoreApplication.translate("PythonConsole", "Clear Console"),
                                      self.clearConsole)
+        pyQGISHelpAction = menu.addAction(iconPyQGISHelp,
+                                     QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
+                                     self.searchPyQGIS)
         menu.addSeparator()
         copyAction = menu.addAction(
             QCoreApplication.translate("PythonConsole", "Copy"),
@@ -294,11 +298,13 @@ class ShellOutputScintilla(QsciScintilla):
         runAction.setEnabled(False)
         clearAction.setEnabled(False)
         copyAction.setEnabled(False)
+        pyQGISHelpAction.setEnabled(False)
         selectAllAction.setEnabled(False)
         showEditorAction.setEnabled(True)
         if self.hasSelectedText():
             runAction.setEnabled(True)
             copyAction.setEnabled(True)
+            pyQGISHelpAction.setEnabled(True)
         if not self.text(3) == '':
             selectAllAction.setEnabled(True)
             clearAction.setEnabled(True)
@@ -331,6 +337,13 @@ class ShellOutputScintilla(QsciScintilla):
         cmd = self.selectedText()
         self.shell.insertFromDropPaste(cmd)
         self.shell.entered()
+
+    def searchPyQGIS(self):
+        if self.hasSelectedText():
+            text = self.selectedText()
+            text = text.replace('>>> ', '').replace('... ', '').strip()  # removing prompts
+            version = '.'.join(Qgis.QGIS_VERSION.split('.')[0:2])
+            QDesktopServices.openUrl( QUrl('https://qgis.org/pyqgis/'+version+'/search.html?q='+text) )
 
     def keyPressEvent(self, e):
         # empty text indicates possible shortcut key sequence so stay in output
