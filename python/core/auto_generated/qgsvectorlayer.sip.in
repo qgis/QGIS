@@ -34,6 +34,11 @@ manages editing transactions.
 
 Sample usage of the QgsVectorLayer class:
 
+.. code-block:: python
+
+         uri = "point?crs=epsg:4326&field=id:integer"
+         scratchLayer = QgsVectorLayer(uri, "Scratch point layer",  "memory")
+
 The main data providers supported by QGIS are listed below.
 
 \section providers Vector data providers
@@ -62,9 +67,14 @@ Since QGIS 3.4 when closing a project, the application shows a warning about pot
 loss if there are any non-empty memory layers present. If your memory layer should not
 trigger such warning, it is possible to suppress that by setting the following custom variable:
 
+
+
+
 .. code-block:: python
 
        layer.setCustomProperty("skipMemoryLayersCheck", 1)
+
+
 
 \subsection ogr OGR data provider (ogr)
 
