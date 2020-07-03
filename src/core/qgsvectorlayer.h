@@ -101,7 +101,7 @@ typedef QSet<int> QgsAttributeIds;
  *
  *  Sample usage of the QgsVectorLayer class:
  *
- * \code
+ * \code{.cpp}
  *     QString uri = "point?crs=epsg:4326&field=id:integer";
  *     QgsVectorLayer *scratchLayer = new QgsVectorLayer(uri, "Scratch point layer",  "memory");
  * \endcode
@@ -133,6 +133,7 @@ typedef QSet<int> QgsAttributeIds;
  * Since QGIS 3.4 when closing a project, the application shows a warning about potential data
  * loss if there are any non-empty memory layers present. If your memory layer should not
  * trigger such warning, it is possible to suppress that by setting the following custom variable:
+ *
  * \code{.py}
  *   layer.setCustomProperty("skipMemoryLayersCheck", 1)
  * \endcode
