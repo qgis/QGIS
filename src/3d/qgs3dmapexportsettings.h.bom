@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
   qgs3dmapexportsettings.h
   --------------------------------------
   Date                 : July 2020
@@ -25,14 +25,14 @@ class _3D_EXPORT Qgs3DMapExportSettings : public QObject
 {
     Q_OBJECT
   public:
-    Qgs3DMapExportSettings( QObject *parent = nullptr );
+    Qgs3DMapExportSettings(QObject* parent = nullptr);
     QString sceneName() const { return mSceneName; }
     QString sceneFolderPath() const { return mSceneFolderPath; }
     int terrrainResolution() const { return mTerrainResolution; }
     bool smoothEdges() const { return mSmoothEdges; }
 
-    void setSceneName( const QString &sceneName ) { mSceneName = sceneName; }
-    void setSceneFolderPath( const QString &sceneFolderPath ) { mSceneFolderPath = sceneFolderPath; }
+    void setSceneName( const QString& sceneName ) { mSceneName = sceneName; }
+    void setSceneFolderPath( const QString& sceneFolderPath ) { mSceneFolderPath = sceneFolderPath; }
     void setTerrainResolution( int resolution ) { mTerrainResolution = resolution; }
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
   private:

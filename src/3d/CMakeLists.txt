@@ -69,6 +69,7 @@ SET(QGIS_3D_SRCS
   mesh/qgsmesh3dmaterial_p.cpp
   mesh/qgsmeshterraingenerator.cpp
   qgs3dsceneexporter.cpp
+  qgsexportobject.cpp
 )
 
 SET(QGIS_3D_HDRS

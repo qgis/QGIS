@@ -20,6 +20,7 @@
 #include <Qt3DRender/QAttribute>
 #include <Qt3DExtras/QPlaneGeometry>
 #include <QMap>
+#include <QFile>
 
 class QgsTessellatedPolygonGeometry;
 class QgsTerrainTileEntity;
@@ -28,6 +29,7 @@ class Qgs3DMapSettings;
 class QgsFlatTerrainGenerator;
 class QgsDemTerrainGenerator;
 class QgsChunkNode;
+class QgsExportObject;
 
 class Qgs3DSceneExporter : public Qt3DCore::QEntity
 {
@@ -42,13 +44,12 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
     bool smoothEdges() { return mSmoothEdges; }
 
-    void setLevelOfDetails( int levelOfDetails ) { mLevelOfDetails = levelOfDetails; }
-    int levelOfDetails() { return mLevelOfDetails; }
+    void setTerrainResolution( int resolution ) { mTerrainResolution = resolution; }
+    int terrainResolution() { return mTerrainResolution; }
 
   private:
     void processAttribute( Qt3DRender::QAttribute *attribute );
     void process( QgsTessellatedPolygonGeometry *geom );
-    void process( Qt3DExtras::QPlaneGeometry *plane );
 
     QgsTerrainTileEntity *getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
     QgsTerrainTileEntity *getDemTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
@@ -58,11 +59,10 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
 
     QgsTerrainTileEntity *createDEMTileEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
   private:
-    QVector<float> mVertxPosition;
-    QVector<int> mIndexes;
+    QVector<QgsExportObject *> mObjects;
 
     bool mSmoothEdges;
-    int mLevelOfDetails;
+    int mTerrainResolution;
 };
 
 #endif // QGS3DSCENEEXPORTER_H

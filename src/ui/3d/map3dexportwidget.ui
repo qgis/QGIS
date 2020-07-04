@@ -64,9 +64,12 @@
       </widget>
      </item>
      <item row="2" column="1" colspan="2">
-      <widget class="QSpinBox" name="levelOfDetailsSpinBox">
+      <widget class="QSpinBox" name="terrainResolutionSpinBox">
+       <property name="minimum">
+        <number>1</number>
+       </property>
        <property name="maximum">
-        <number>4</number>
+        <number>4096</number>
        </property>
        <property name="value">
         <number>1</number>
@@ -76,7 +79,7 @@
      <item row="2" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Level of Details</string>
+        <string>Terrain resolution</string>
        </property>
       </widget>
      </item>

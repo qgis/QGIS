@@ -771,7 +771,7 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
 {
   Qgs3DSceneExporter exporter;
 
-  exporter.setLevelOfDetails( exportSettings.levelOfDetails() );
+  exporter.setTerrainResolution( exportSettings.terrrainResolution() );
   exporter.setSmoothEdges( exportSettings.smoothEdges() );
 
   for ( QgsMapLayer *layer : mLayerEntities.keys() )

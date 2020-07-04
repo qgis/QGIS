@@ -46,7 +46,7 @@ QgsMap3DExportWidget::QgsMap3DExportWidget( Qgs3DMapScene *scene, Qgs3DMapExport
   connect( ui->sceneNameLineEdit, &QLineEdit::textChanged, [ = ]( const QString & ) { settingsChanged(); } );
   connect( ui->folderPathLineEdit, &QLineEdit::textChanged, [ = ]( const QString & ) { settingsChanged(); } );
   connect( ui->smoothEdgesCheckBox, &QCheckBox::stateChanged, [ = ]( int ) { settingsChanged(); } );
-  connect( ui->levelOfDetailsSpinBox, QOverload<int>::of( &QSpinBox::valueChanged ), [ = ]( int ) { settingsChanged(); } );
+  connect( ui->terrainResolutionSpinBox, QOverload<int>::of( &QSpinBox::valueChanged ), [ = ]( int ) { settingsChanged(); } );
 
   // sets the export settings to whatever is on the scene
   settingsChanged();
@@ -61,7 +61,7 @@ void QgsMap3DExportWidget::settingsChanged()
 {
   mExportSettings->setSceneName( ui->sceneNameLineEdit->text() );
   mExportSettings->setSceneFolderPath( ui->folderPathLineEdit->text() );
-  mExportSettings->setLevelOfDetails( ui->levelOfDetailsSpinBox->value() );
+  mExportSettings->setTerrainResolution( ui->terrainResolutionSpinBox->value() );
   mExportSettings->setSmoothEdges( ui->smoothEdgesCheckBox->isChecked() );
 }
 

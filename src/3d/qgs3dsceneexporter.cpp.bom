@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
   qgs3dsceneexporter.cpp
   --------------------------------------
   Date                 : June 2020
@@ -81,7 +81,7 @@ QVector<unsigned int> getAttributeData<unsigned int>( Qt3DRender::QAttribute *at
     // maybe a problem with indienness can happen?
     unsigned int v;
     char *vArr = ( char * )&v;
-    for ( int k = 0; k < ( int )sizeof( unsigned int ); ++k )
+    for ( int k = 0; k < (int)sizeof( unsigned int ); ++k )
     {
       vArr[k] = data.at( i + k );
     }
@@ -403,11 +403,11 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity )
   QVector<float> positionBuffer = createPlaneVertexData( scale, scale, tileGeometry->resolution() );
   QVector<unsigned int> indexesBuffer = createPlaneIndexData( tileGeometry->resolution() );
 
-  QgsExportObject *object = new QgsExportObject( "Flat_tile", "", this );
-  mObjects.push_back( object );
+  QgsExportObject* object = new QgsExportObject("Flat_tile", "", this);
+  mObjects.push_back(object);
 
-  object->setSmoothEdges( mSmoothEdges );
-  object->setupPositionCoordinates( positionBuffer, indexesBuffer, scale, translation );
+  object->setSmoothEdges(mSmoothEdges);
+  object->setupPositionCoordinates(positionBuffer, indexesBuffer, scale, translation );
 }
 
 void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
@@ -443,22 +443,22 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
   QVector<float> positionBuffer = getAttributeData<float>( tileGeometry->positionAttribute() );
   QVector<unsigned int> indexBuffer = getAttributeData<unsigned int>( tileGeometry->indexAttribute() );
 
-  QgsExportObject *object = new QgsExportObject( "DEM_tile", "", this );
-  mObjects.push_back( object );
+  QgsExportObject* object = new QgsExportObject("DEM_tile", "", this);
+  mObjects.push_back(object);
 
-  object->setSmoothEdges( mSmoothEdges );
-  object->setupPositionCoordinates( positionBuffer, indexBuffer, scale, translation );
+  object->setSmoothEdges(mSmoothEdges);
+  object->setupPositionCoordinates(positionBuffer, indexBuffer, scale, translation );
 }
 
 void Qgs3DSceneExporter::processAttribute( Qt3DRender::QAttribute *attribute )
 {
   QVector<float> floatData = getAttributeData<float>( attribute );
 
-  QgsExportObject *object = new QgsExportObject( "attribute", "", this );
-  mObjects.push_back( object );
+  QgsExportObject* object = new QgsExportObject("attribute", "", this);
+  mObjects.push_back(object);
 
-  mObjects.push_back( object );
-  object->setupPositionCoordinates( floatData );
+  mObjects.push_back(object);
+  object->setupPositionCoordinates(floatData);
 }
 
 void Qgs3DSceneExporter::process( QgsTessellatedPolygonGeometry *geom )
@@ -475,7 +475,7 @@ void Qgs3DSceneExporter::saveToFile( const QString &filePath )
 
   float maxfloat = std::numeric_limits<float>::max(), minFloat = std::numeric_limits<float>::lowest();
   float minX = maxfloat, minY = maxfloat, minZ = maxfloat, maxX = minFloat, maxY = minFloat, maxZ = minFloat;
-  for ( QgsExportObject *obj : mObjects ) obj->objectBounds( minX, minY, minZ, maxX, maxY, maxZ );
+  for (QgsExportObject* obj : mObjects) obj->objectBounds(minX, minY, minZ, maxX, maxY, maxZ);
 
   float diffX = 1.0f, diffY = 1.0f, diffZ = 1.0f;
   diffX = maxX - minX;
@@ -486,8 +486,8 @@ void Qgs3DSceneExporter::saveToFile( const QString &filePath )
   float centerY = ( minY + maxY ) / 2.0f;
   float centerZ = ( minZ + maxZ ) / 2.0f;
 
-  float scale = std::min( diffX, std::min( diffY, diffZ ) );
+  float scale = std::min( diffX, std::min( diffY, diffZ) );
 
   QTextStream out( &file );
-  for ( QgsExportObject *obj : mObjects ) obj->saveTo( out, scale, QVector3D( centerX, centerY, centerZ ) );
+  for (QgsExportObject* obj : mObjects) obj->saveTo(out, scale, QVector3D(centerX, centerY, centerZ));
 }

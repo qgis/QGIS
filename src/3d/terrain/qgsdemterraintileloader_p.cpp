@@ -255,14 +255,14 @@ QByteArray QgsDemHeightMapGenerator::renderSynchronously( int x, int y, int z )
   QgsRectangle fullExtent = mTilingScheme.tileToExtent( 0, 0, 0 );
   extent = extent.intersect( fullExtent );
 
-  std::unique_ptr< QgsRasterBlock > block( mDtm->dataProvider()->block( 1, extent, mResolution, mResolution ) );
-
   QByteArray data;
-  if ( block )
+  if ( mDtm )
   {
-    block->convert( Qgis::Float32 ); // currently we expect just floats
-    data = block->data();
-    data.detach();  // this should make a deep copy
+    data = _readDtmData( mClonedProvider, extent, mResolution, mTilingScheme.crs() );
+  }
+  else
+  {
+    data = _readOnlineDtm( mDownloader.get(), extent, mResolution, mTilingScheme.crs() );
   }
 
   return data;
