@@ -91,9 +91,9 @@ void QgsMeshVectorArrowRenderer::draw()
 {
   // Set up the render configuration options
   QPainter *painter = mContext.painter();
-  painter->save();
-  if ( mContext.flags() & QgsRenderContext::Antialiasing )
-    painter->setRenderHint( QPainter::Antialiasing, true );
+
+  QgsScopedQPainterState painterState( painter );
+  mContext.setPainterFlagsUsingContext( painter );
 
   QPen pen = painter->pen();
   pen.setCapStyle( Qt::FlatCap );
@@ -120,8 +120,6 @@ void QgsMeshVectorArrowRenderer::draw()
   {
     drawVectorDataOnEdges( );
   }
-
-  painter->restore();
 }
 
 bool QgsMeshVectorArrowRenderer::calcVectorLineEnd(

@@ -845,7 +845,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
 
   if ( mLayout->renderContext().isPreviewRender() )
   {
-    painter->save();
+    QgsScopedQPainterState painterState( painter );
     painter->setClipRect( thisPaintRect );
     if ( !mCacheFinalImage || mCacheFinalImage->isNull() )
     {
@@ -885,14 +885,13 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       double imagePixelWidth = mCacheFinalImage->width(); //how many pixels of the image are for the map extent?
       double scale = rect().width() / imagePixelWidth;
 
-      painter->save();
+      QgsScopedQPainterState rotatedPainterState( painter );
 
       painter->translate( mLastRenderedImageOffsetX + mXOffset, mLastRenderedImageOffsetY + mYOffset );
       painter->scale( scale, scale );
       painter->drawImage( 0, 0, *mCacheFinalImage );
 
       //restore rotation
-      painter->restore();
     }
 
     painter->setClipRect( thisPaintRect, Qt::NoClip );
@@ -901,7 +900,6 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
     mGridStack->drawItems( painter );
     drawAnnotations( painter );
     drawMapFrame( painter );
-    painter->restore();
   }
   else
   {
@@ -966,11 +964,10 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       }
       drawAnnotations( &p );
 
-      painter->save();
+      QgsScopedQPainterState painterState( painter );
       painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
       painter->drawImage( QPointF( -tl.x()* dotsPerMM, -tl.y() * dotsPerMM ), image );
       painter->scale( dotsPerMM, dotsPerMM );
-      painter->restore();
     }
     else
     {
@@ -980,12 +977,12 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
         drawMapBackground( painter );
       }
 
-      painter->save();
+      QgsScopedQPainterState painterState( painter );
       painter->setClipRect( thisPaintRect );
 
       if ( shouldDrawPart( Layer ) && !qgsDoubleNear( size.width(), 0.0 ) && !qgsDoubleNear( size.height(), 0.0 ) )
       {
-        painter->save();
+        QgsScopedQPainterState stagedPainterState( painter );
         painter->translate( mXOffset, mYOffset );
 
         double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
@@ -1005,8 +1002,6 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
         {
           drawMap( painter, cExtent, size, paintDevice->logicalDpiX() );
         }
-
-        painter->restore();
       }
 
       painter->setClipRect( thisPaintRect, Qt::NoClip );
@@ -1020,7 +1015,6 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
         mGridStack->drawItems( painter );
       }
       drawAnnotations( painter );
-      painter->restore();
     }
 
     if ( shouldDrawPart( Frame ) )
@@ -2181,8 +2175,8 @@ void QgsLayoutItemMap::drawAnnotation( const QgsAnnotation *annotation, QgsRende
     return;
   }
 
-  context.painter()->save();
-  context.painter()->setRenderHint( QPainter::Antialiasing, context.flags() & QgsRenderContext::Antialiasing );
+  QgsScopedQPainterState painterState( context.painter() );
+  context.setPainterFlagsUsingContext();
 
   double itemX, itemY;
   if ( annotation->hasFixedMapPosition() )
@@ -2203,7 +2197,6 @@ void QgsLayoutItemMap::drawAnnotation( const QgsAnnotation *annotation, QgsRende
   context.painter()->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
 
   annotation->render( context );
-  context.painter()->restore();
 }
 
 QPointF QgsLayoutItemMap::layoutMapPosForItem( const QgsAnnotation *annotation ) const

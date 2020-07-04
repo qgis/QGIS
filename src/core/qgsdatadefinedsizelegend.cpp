@@ -271,8 +271,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   //
 
   QPainter *p = context.painter();
-
-  p->save();
+  QgsScopedQPainterState painterState( p );
   p->translate( 0, -textTopY );
 
   // draw symbols first so that they do not cover
@@ -283,7 +282,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
     double outputSymbolSize = context.convertToPainterUnits( c.size, s->sizeUnit(), s->sizeMapUnitScale() );
     double tx = ( outputLargestSize - outputSymbolSize ) / 2;
 
-    p->save();
+    QgsScopedQPainterState symbolPainterState( p );
     switch ( mVAlign )
     {
       case AlignCenter:
@@ -294,7 +293,6 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
         break;
     }
     s->drawPreviewIcon( nullptr, QSize( outputSymbolSize, outputSymbolSize ), &context );
-    p->restore();
   }
 
   QgsTextFormat format = QgsTextFormat::fromQFont( mFont );
@@ -328,8 +326,6 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
 
   if ( mLineSymbol )
     mLineSymbol->stopRender( context );
-
-  p->restore();
 }
 
 

@@ -2012,7 +2012,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
     return;
   }
 
-  p->save();
+  QgsScopedQPainterState painterState( p );
 
   bool hasDataDefinedAspectRatio = false;
   double aspectRatio = calculateAspectRatio( context, scaledSize, hasDataDefinedAspectRatio );
@@ -2092,10 +2092,9 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
                    ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
     if ( pct.width() > 1 )
     {
-      p->save();
+      QgsScopedQPainterState painterPictureState( p );
       _fixQPictureDPI( p );
       p->drawPicture( 0, 0, pct );
-      p->restore();
       hwRatio = static_cast< double >( pct.height() ) / static_cast< double >( pct.width() );
     }
   }
@@ -2118,14 +2117,8 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
     p->drawRect( QRectF( -wSize / 2.0, -hSize / 2.0, wSize, hSize ) );
   }
 
-  p->restore();
-
-  if ( context.renderContext().flags() & QgsRenderContext::Antialiasing )
-  {
-    // workaround issue with nested QPictures forgetting antialiasing flag - see https://github.com/qgis/QGIS/issues/22909
-    p->setRenderHint( QPainter::Antialiasing );
-  }
-
+  // workaround issue with nested QPictures forgetting antialiasing flag - see https://github.com/qgis/QGIS/issues/22909
+  context.renderContext().setPainterFlagsUsingContext( p );
 }
 
 double QgsSvgMarkerSymbolLayer::calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const
@@ -2767,7 +2760,7 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
     calculateOffsetAndRotation( context, scaledSize, scaledSize * ( height / width ), outputOffset, angle );
   }
 
-  p->save();
+  QgsScopedQPainterState painterState( p );
   p->translate( point + outputOffset );
 
   bool rotated = !qgsDoubleNear( angle, 0 );
@@ -2791,8 +2784,6 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
 
     p->drawImage( -img.width() / 2.0, -img.height() / 2.0, img );
   }
-
-  p->restore();
 }
 
 double QgsRasterMarkerSymbolLayer::calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const
@@ -3263,7 +3254,7 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
     }
   }
 
-  p->save();
+  QgsScopedQPainterState painterState( p );
   p->setBrush( mBrush );
   if ( !qgsDoubleNear( penWidth, 0.0 ) )
   {
@@ -3325,8 +3316,6 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
     path.addText( -chrOffset.x(), -chrOffset.y(), mFont, charToRender );
     p->drawPath( transform.map( path ) );
   }
-
-  p->restore();
 }
 
 QgsStringMap QgsFontMarkerSymbolLayer::properties() const

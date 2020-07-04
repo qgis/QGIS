@@ -273,8 +273,8 @@ bool QgsMapRendererTask::run()
       continue;
     }
 
-    context.painter()->save();
-    context.painter()->setRenderHint( QPainter::Antialiasing, context.flags() & QgsRenderContext::Antialiasing );
+    QgsScopedQPainterState painterState( context.painter() );
+    context.setPainterFlagsUsingContext();
 
     double itemX, itemY;
     if ( annotation->hasFixedMapPosition() )
@@ -291,7 +291,6 @@ bool QgsMapRendererTask::run()
     context.painter()->translate( itemX, itemY );
 
     annotation->render( context );
-    context.painter()->restore();
   }
 
   if ( !mFileName.isEmpty() )

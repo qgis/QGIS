@@ -133,6 +133,17 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
   return context;
 }
 
+void QgsRenderContext::setPainterFlagsUsingContext( QPainter *painter ) const
+{
+  if ( !painter )
+    painter = mPainter;
+
+  if ( !painter )
+    return;
+
+  painter->setRenderHint( QPainter::Antialiasing, mFlags & QgsRenderContext::Antialiasing );
+}
+
 QgsCoordinateTransformContext QgsRenderContext::transformContext() const
 {
 #ifdef QGISDEBUG
