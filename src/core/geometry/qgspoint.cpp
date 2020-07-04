@@ -25,6 +25,7 @@
 
 #include <cmath>
 #include <QPainter>
+#include <QPainterPath>
 #include <QRegularExpression>
 #include <QJsonObject>
 #include <QJsonArray>
