@@ -43,41 +43,41 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
   public:
     Qgs3DSceneExporter( Qt3DCore::QNode *parent = nullptr );
 
-    // Creates necessary export objects from entity if it represents valid entity
-    // If the entity doesn't define exportable object it will be ignored
+    //! Creates necessary export objects from entity if it represents valid entity
+    //! If the entity doesn't define exportable object it will be ignored
     void parseEntity( Qt3DCore::QEntity *entity );
-    // Creates terrain export objects from the terrain entity
+    //! Creates terrain export objects from the terrain entity
     void parseEntity( QgsTerrainEntity *terrain );
     void saveToFile( const QString &filePath );
 
-    // Sets whether the triangles will look smooth
+    //! Sets whether the triangles will look smooth
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
-    // Returns whether the triangles will look smooth
+    //! Returns whether the triangles will look smooth
     bool smoothEdges() { return mSmoothEdges; }
 
-    // Sets the terrian resolution
+    //! Sets the terrian resolution
     void setTerrainResolution( int resolution ) { mTerrainResolution = resolution; }
-    // Returns the terrain resolution
+    //! Returns the terrain resolution
     int terrainResolution() { return mTerrainResolution; }
 
   private:
-    // Processes the attribute directly by taking a position buffer and converting it to QgsExportObject
+    //! Processes the attribute directly by taking a position buffer and converting it to QgsExportObject
     void processAttribute( Qt3DRender::QAttribute *attribute );
-    // processes the tessellated polygons geometry and constructs QgsExportObject from it
+    //! Processes the tessellated polygons geometry and constructs QgsExportObject from it
     void process( QgsTessellatedPolygonGeometry *geom );
 
-    // Returns a tile entity that contains the geometry to be exported and necessary scaling parameters
+    //! Returns a tile entity that contains the geometry to be exported and necessary scaling parameters
     QgsTerrainTileEntity *getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
-    // Returns a tile entity that contains the geometry to be exported and necessary scaling parameters
+    //! Returns a tile entity that contains the geometry to be exported and necessary scaling parameters
     QgsTerrainTileEntity *getDemTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
 
-    // constructs a QgsExportObject from the DEM tile entity
+    //! Constructs a QgsExportObject from the DEM tile entity
     void parseDemTile( QgsTerrainTileEntity *tileEntity );
-    // constructs a QgsExportObject from the flat tile entity
+    //! Constructs a QgsExportObject from the flat tile entity
     void parseFlatTile( QgsTerrainTileEntity *tileEntity );
 
-    // Creates tile entity that contains the geometry to be exported and necessary scaling parameters
-    // THis function is needed because we need to generate geometry according to terrain resolution
+    //! Creates tile entity that contains the geometry to be exported and necessary scaling parameters
+    //! This function is needed because we need to generate geometry according to terrain resolution
     QgsTerrainTileEntity *createDEMTileEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
   private:
     QVector<QgsExportObject *> mObjects;

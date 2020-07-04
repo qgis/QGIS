@@ -44,20 +44,20 @@ class QgsExportObject : public QObject
      */
     QgsExportObject( const QString &name, const QString &parentName = QString(), QObject *parent = nullptr );
 
-    // Returns whether object edges will look smooth
+    //! Returns whether object edges will look smooth
     bool smoothEdges() { return mSmoothEdges; }
-    // Sets whether triangles edges will look smooth
+    //! Sets whether triangles edges will look smooth
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
 
-    // Sets positions coordinates from just one positions buffer (generates faces automatically) and does the translation and scaling
+    //! Sets positions coordinates from just one positions buffer (generates faces automatically) and does the translation and scaling
     void setupPositionCoordinates( const QVector<float> &positionsBuffer, float scale = 1.0f, const QVector3D translation = QVector3D( 0, 0, 0 ) );
-    // Sets positions coordinates from just one positions buffer and indexes buffer and does the translation and scaling
+    //! Sets positions coordinates from just one positions buffer and indexes buffer and does the translation and scaling
     void setupPositionCoordinates( const QVector<float> &positionsBuffer, const QVector<unsigned int> &facesIndexes, float scale = 1.0f, const QVector3D translation = QVector3D( 0, 0, 0 ) );
-    // Updates the box bounds explained with the current object bounds
-    // This expands the bounding box if the current object outside the bounds of the already established bounds
+    //! Updates the box bounds explained with the current object bounds
+    //! This expands the bounding box if the current object outside the bounds of the already established bounds
     void objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ );
 
-    // Saves the current object to the output stream while scaling the object and centering it to be visible in exported scene
+    //! Saves the current object to the output stream while scaling the object and centering it to be visible in exported scene
     void saveTo( QTextStream &out, int scale, const QVector3D &center );
   private:
     QString mName;

@@ -31,25 +31,25 @@ class _3D_EXPORT Qgs3DMapExportSettings : public QObject
 {
     Q_OBJECT
   public:
-    // Constructor
+    //! Constructor
     Qgs3DMapExportSettings( QObject *parent = nullptr );
 
-    // Returns the scene name
+    //! Returns the scene name
     QString sceneName() const { return mSceneName; }
-    // Returns the scene folder path
+    //! Returns the scene folder path
     QString sceneFolderPath() const { return mSceneFolderPath; }
-    // Returns the terrain resolution
+    //! Returns the terrain resolution
     int terrrainResolution() const { return mTerrainResolution; }
-    // Returns whether triangles edges will look smooth
+    //! Returns whether triangles edges will look smooth
     bool smoothEdges() const { return mSmoothEdges; }
 
-    // Sets the scene name
+    //! Sets the scene name
     void setSceneName( const QString &sceneName ) { mSceneName = sceneName; }
-    // Sets the scene's .obj file folder path
+    //! Sets the scene's .obj file folder path
     void setSceneFolderPath( const QString &sceneFolderPath ) { mSceneFolderPath = sceneFolderPath; }
-    // Sets the terrain resolution
+    //! Sets the terrain resolution
     void setTerrainResolution( int resolution ) { mTerrainResolution = resolution; }
-    // Sets whether triangles edges will look smooth
+    //! Sets whether triangles edges will look smooth
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
   private:
     QString mSceneName;
