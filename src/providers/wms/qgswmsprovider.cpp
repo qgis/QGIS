@@ -2086,8 +2086,8 @@ QString QgsWmsProvider::htmlMetadata()
         metadata += QStringLiteral( "%1:%2<br>" ).arg( it.key(), it.value() );
       }
       metadata += QStringLiteral( "</td></tr>" );
-    }
 
+<<<<<<< HEAD
     // GetFeatureInfo Request Formats
     metadata += QStringLiteral( "<tr><td>" ) %
                 tr( "Identify Formats" ) %
@@ -2095,6 +2095,16 @@ QString QgsWmsProvider::htmlMetadata()
                 QStringLiteral( "<td>" ) %
                 mTileLayer->infoFormats.join( QStringLiteral( "<br />" ) );
     QStringLiteral( "</td></tr>" );
+=======
+      // GetFeatureInfo Request Formats
+      metadata += QStringLiteral( "<tr><td>" ) %
+                  tr( "Identify Formats" ) %
+                  QStringLiteral( "</td>"
+                                  "<td>" ) %
+                  mTileLayer->infoFormats.join( QStringLiteral( "<br />" ) ) %
+                  QStringLiteral( "</td></tr>" );
+    }
+>>>>>>> 1e3558a6d3... Fix crash in QgsWmsProvider::htmlMetadata if layer is invalid
   }
   else
   {
