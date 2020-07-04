@@ -36,9 +36,8 @@ void QgsInterpolatedLineRenderer::setWidthUnit( const QgsUnitTypes::RenderUnit &
 void QgsInterpolatedLineRenderer::render( double value1, double value2, QgsPointXY point1, QgsPointXY point2, QgsRenderContext &context ) const
 {
   QPainter *painter = context.painter();
-  painter->save();
-  if ( context.flags() & QgsRenderContext::Antialiasing )
-    painter->setRenderHint( QPainter::Antialiasing, true );
+  QgsScopedQPainterState painterState( painter );
+  context.setPainterFlagsUsingContext( painter );
 
   const QgsMapToPixel &mapToPixel = context.mapToPixel();
 
@@ -209,7 +208,6 @@ void QgsInterpolatedLineRenderer::render( double value1, double value2, QgsPoint
       }
     }
   }
-  painter->restore();
 }
 
 void QgsInterpolatedLineRenderer::adjustLine( const double &value, const double &value1, const double &value2, double &width, double &adjusting ) const

@@ -596,9 +596,8 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     if ( QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layerNode()->layer() ) )
       opacity = static_cast<int >( std::round( 255 * vectorLayer->opacity() ) );
 
-    p->save();
-    if ( context->flags() & QgsRenderContext::Antialiasing )
-      p->setRenderHint( QPainter::Antialiasing );
+    QgsScopedQPainterState painterState( p );
+    context->setPainterFlagsUsingContext( p );
 
     switch ( settings.symbolAlignment() )
     {
@@ -627,8 +626,8 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       QImage tempImage = QImage( tempImageSize, QImage::Format_ARGB32 );
       tempImage.fill( Qt::transparent );
       QPainter imagePainter( &tempImage );
-      if ( context->flags() & QgsRenderContext::Antialiasing )
-        imagePainter.setRenderHint( QPainter::Antialiasing );
+      context->setPainterFlagsUsingContext( &imagePainter );
+
       context->setPainter( &imagePainter );
       imagePainter.translate( maxBleed, maxBleed );
       s->drawPreviewIcon( &imagePainter, symbolSize, context, false, nullptr, &patchShape );
@@ -653,8 +652,6 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       QgsTextRenderer::drawText( QPointF( width * dotsPerMM / 2, yBaselineVCenter ), 0, QgsTextRenderer::AlignCenter,
                                  QStringList() << mTextOnSymbolLabel, *context, mTextOnSymbolTextFormat );
     }
-
-    p->restore();
   }
 
   return QSizeF( std::max( width + 2 * widthOffset, static_cast< double >( desiredWidth ) ),

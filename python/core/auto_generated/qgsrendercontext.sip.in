@@ -111,6 +111,17 @@ Returns the destination QPainter for the render operation.
 %End
 
 
+    void setPainterFlagsUsingContext( QPainter *painter = 0 ) const;
+%Docstring
+Sets relevant flags on a destination ``painter``, using the flags and settings
+currently defined for the render context.
+
+If no ``painter`` is specified, then the flags will be applied to the render
+context's :py:func:`~QgsRenderContext.painter`.
+
+.. versionadded:: 3.16
+%End
+
     QPainter *maskPainter( int id = 0 );
 %Docstring
 Returns a mask QPainter for the render operation.

@@ -175,7 +175,7 @@ void QgsLayoutItemLegend::refresh()
 void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
 {
   QPainter *painter = context.renderContext().painter();
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
 
   // painter is scaled to dots, so scale back to layout units
   painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
@@ -201,8 +201,6 @@ void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
   legendRenderer.setLegendSize( rect().size() );
 
   legendRenderer.drawLegend( context.renderContext() );
-
-  painter->restore();
 }
 
 void QgsLayoutItemLegend::adjustBoxSize()

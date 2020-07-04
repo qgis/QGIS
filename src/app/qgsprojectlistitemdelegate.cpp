@@ -18,6 +18,7 @@
 #include "qgsnewsfeedmodel.h"
 #include "qgswebframe.h"
 #include "qgsapplication.h"
+#include "qgsrendercontext.h"
 
 #include <QApplication>
 #include <QPainter>
@@ -33,7 +34,7 @@ QgsProjectListItemDelegate::QgsProjectListItemDelegate( QObject *parent )
 
 void QgsProjectListItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
 
   QTextDocument doc;
   QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
@@ -90,8 +91,6 @@ void QgsProjectListItemDelegate::paint( QPainter *painter, const QStyleOptionVie
   painter->translate( option.rect.left() + ( !icon.isNull() ? icon.width() + 3.125 * mRoundedRectSizePixels : 1.875 * mRoundedRectSizePixels ), option.rect.top() + 1.875 * mRoundedRectSizePixels );
   ctx.clip = QRect( 0, 0, option.rect.width() - ( !icon.isNull() ? icon.width() - 4.375 * mRoundedRectSizePixels : 3.125 *  mRoundedRectSizePixels ), option.rect.height() - 3.125 * mRoundedRectSizePixels );
   doc.documentLayout()->draw( painter, ctx );
-
-  painter->restore();
 }
 
 QSize QgsProjectListItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -189,7 +188,7 @@ QgsNewsItemListItemDelegate::QgsNewsItemListItemDelegate( QObject *parent )
 
 void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
 
   QTextDocument doc;
   QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
@@ -253,8 +252,6 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
   painter->translate( option.rect.left() + ( !icon.isNull() ? icon.width() + 3.125 * mRoundedRectSizePixels : 1.875 * mRoundedRectSizePixels ), option.rect.top() + 1.875 * mRoundedRectSizePixels );
   ctx.clip = QRect( 0, 0, option.rect.width() - ( !icon.isNull() ? icon.width() - 4.375 * mRoundedRectSizePixels : 3.125 *  mRoundedRectSizePixels ), option.rect.height() - 3.125 * mRoundedRectSizePixels );
   doc.documentLayout()->draw( painter, ctx );
-
-  painter->restore();
 }
 
 QSize QgsNewsItemListItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const

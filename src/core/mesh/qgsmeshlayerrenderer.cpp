@@ -343,9 +343,9 @@ static QPainter *_painterForMeshFrame( QgsRenderContext &context, const QgsMeshR
 {
   // Set up the render configuration options
   QPainter *painter = context.painter();
+
   painter->save();
-  if ( context.flags() & QgsRenderContext::Antialiasing )
-    painter->setRenderHint( QPainter::Antialiasing, true );
+  context.setPainterFlagsUsingContext( painter );
 
   QPen pen = painter->pen();
   pen.setCapStyle( Qt::FlatCap );

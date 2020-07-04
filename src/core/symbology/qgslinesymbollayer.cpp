@@ -818,8 +818,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
     }
   }
 
-
-  context.renderContext().painter()->save();
+  QgsScopedQPainterState painterState( context.renderContext().painter() );
 
   double averageOver = mAverageAngleLength;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAverageAngleLength ) )
@@ -879,8 +878,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
       }
     }
   }
-
-  context.renderContext().painter()->restore();
 }
 
 void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )

@@ -146,12 +146,11 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
 
   if ( frameEnabled() )
   {
-    painter->save();
+    QgsScopedQPainterState painterState( painter );
     painter->setPen( pen() );
     painter->setBrush( Qt::NoBrush );
     painter->setRenderHint( QPainter::Antialiasing, true );
     painter->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
-    painter->restore();
   }
 }
 
@@ -252,7 +251,7 @@ void QgsResidualPlotItem::drawArrowHead( QPainter *p, const double x, const doub
   arrowHeadPoly << QPointF( middlePoint.x() + p1Rotated.x(), middlePoint.y() + p1Rotated.y() );
   arrowHeadPoly << QPointF( middlePoint.x() + p2Rotated.x(), middlePoint.y() + p2Rotated.y() );
 
-  p->save();
+  QgsScopedQPainterState painterState( p );
 
   QPen arrowPen = p->pen();
   arrowPen.setJoinStyle( Qt::RoundJoin );
@@ -262,8 +261,6 @@ void QgsResidualPlotItem::drawArrowHead( QPainter *p, const double x, const doub
   p->setBrush( arrowBrush );
   arrowBrush.setStyle( Qt::SolidPattern );
   p->drawPolygon( arrowHeadPoly );
-
-  p->restore();
 }
 
 double QgsResidualPlotItem::angle( QPointF p1, QPointF p2 )

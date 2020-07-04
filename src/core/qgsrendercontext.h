@@ -185,6 +185,17 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 #endif
 
     /**
+     * Sets relevant flags on a destination \a painter, using the flags and settings
+     * currently defined for the render context.
+     *
+     * If no \a painter is specified, then the flags will be applied to the render
+     * context's painter().
+     *
+     * \since QGIS 3.16
+     */
+    void setPainterFlagsUsingContext( QPainter *painter = nullptr ) const;
+
+    /**
      * Returns a mask QPainter for the render operation.
      * Multiple mask painters can be defined, each with a unique identifier.
      * nullptr is returned if a mask painter with the given identifier does not exist.

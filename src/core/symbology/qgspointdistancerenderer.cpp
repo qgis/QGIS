@@ -436,10 +436,9 @@ void QgsPointDistanceRenderer::drawLabels( QPointF centerPoint, QgsSymbolRenderC
     }
 
     QPointF drawingPoint( centerPoint + currentLabelShift );
-    p->save();
+    QgsScopedQPainterState painterState( p );
     p->translate( drawingPoint.x(), drawingPoint.y() );
     p->drawText( QPointF( 0, 0 ), groupIt->label );
-    p->restore();
   }
 }
 

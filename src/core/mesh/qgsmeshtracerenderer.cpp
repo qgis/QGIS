@@ -1171,10 +1171,9 @@ QImage QgsMeshParticleTracesField::imageRendered() const
 
 void QgsMeshParticleTracesField::stump()
 {
-  mPainter->save();
+  QgsScopedQPainterState painterState( mPainter.get() );
   mPainter->setCompositionMode( QPainter::CompositionMode_DestinationIn );
   mPainter->drawImage( QPoint( 0, 0 ), mStumpImage );
-  mPainter->restore();
 }
 
 void QgsMeshParticleTracesField::setStumpFactor( int sf )
