@@ -41,13 +41,17 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
 {
     Q_OBJECT
   public:
+    //! Constructor
     Qgs3DSceneExporter( Qt3DCore::QNode *parent = nullptr );
 
-    //! Creates necessary export objects from entity if it represents valid entity
-    //! If the entity doesn't define exportable object it will be ignored
+    /**
+     * Creates necessary export objects from entity if it represents valid entity
+     * If the entity doesn't define exportable object it will be ignored
+     */
     void parseEntity( Qt3DCore::QEntity *entity );
     //! Creates terrain export objects from the terrain entity
     void parseEntity( QgsTerrainEntity *terrain );
+    //! Saves the scene to a .obj file
     void saveToFile( const QString &filePath );
 
     //! Sets whether the triangles will look smooth
@@ -76,8 +80,10 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     //! Constructs a QgsExportObject from the flat tile entity
     void parseFlatTile( QgsTerrainTileEntity *tileEntity );
 
-    //! Creates tile entity that contains the geometry to be exported and necessary scaling parameters
-    //! This function is needed because we need to generate geometry according to terrain resolution
+    /**
+     * Creates tile entity that contains the geometry to be exported and necessary scaling parameters
+     * This function is needed because we need to generate geometry according to terrain resolution
+     */
     QgsTerrainTileEntity *createDEMTileEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
   private:
     QVector<QgsExportObject *> mObjects;
