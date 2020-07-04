@@ -15,8 +15,12 @@
 
 #include "qgs3dmapexportsettings.h"
 
-Qgs3DMapExportSettings::Qgs3DMapExportSettings(QObject* parent)
-: QObject(parent)
+Qgs3DMapExportSettings::Qgs3DMapExportSettings( QObject *parent )
+  : QObject( parent )
+  , mSceneName( "Scene" )
+  , mSceneFolderPath( "~/" )
+  , mTerrainResolution( 128 )
+  , mSmoothEdges( false )
 {
 
 }

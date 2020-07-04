@@ -103,6 +103,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      */
     float worldSpaceError( float epsilon, float distance );
 
+    // EXports the scene according to the scene export settings
     void exportScene( const Qgs3DMapExportSettings &exportSettings );
   signals:
     //! Emitted when the current terrain entity is replaced by a new one

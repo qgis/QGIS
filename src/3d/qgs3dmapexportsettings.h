@@ -21,19 +21,35 @@
 #include <QString>
 #include <QObject>
 
+/**
+ * @brief The Qgs3DMapExportSettings class
+ * Manages the various settings the user can choose from when exorting a 3D scene
+ * \ingroup 3d
+ * \since QGIS 3.16
+ */
 class _3D_EXPORT Qgs3DMapExportSettings : public QObject
 {
     Q_OBJECT
   public:
+    // Constructor
     Qgs3DMapExportSettings( QObject *parent = nullptr );
+
+    // Returns the scene name
     QString sceneName() const { return mSceneName; }
+    // Returns the scene folder path
     QString sceneFolderPath() const { return mSceneFolderPath; }
+    // Returns the terrain resolution
     int terrrainResolution() const { return mTerrainResolution; }
+    // Returns whether triangles edges will look smooth
     bool smoothEdges() const { return mSmoothEdges; }
 
+    // Sets the scene name
     void setSceneName( const QString &sceneName ) { mSceneName = sceneName; }
+    // Sets the scene's .obj file folder path
     void setSceneFolderPath( const QString &sceneFolderPath ) { mSceneFolderPath = sceneFolderPath; }
+    // Sets the terrain resolution
     void setTerrainResolution( int resolution ) { mTerrainResolution = resolution; }
+    // Sets whether triangles edges will look smooth
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
   private:
     QString mSceneName;

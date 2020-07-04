@@ -20,6 +20,7 @@
 #include <QFileDialog>
 #include <QtGlobal>
 
+#include "qgis.h"
 #include "qgs3dmapscene.h"
 #include "qgssettings.h"
 #include "qgs3dmapexportsettings.h"
@@ -46,7 +47,7 @@ QgsMap3DExportWidget::QgsMap3DExportWidget( Qgs3DMapScene *scene, Qgs3DMapExport
   connect( ui->sceneNameLineEdit, &QLineEdit::textChanged, [ = ]( const QString & ) { settingsChanged(); } );
   connect( ui->folderPathLineEdit, &QLineEdit::textChanged, [ = ]( const QString & ) { settingsChanged(); } );
   connect( ui->smoothEdgesCheckBox, &QCheckBox::stateChanged, [ = ]( int ) { settingsChanged(); } );
-  connect( ui->terrainResolutionSpinBox, QOverload<int>::of( &QSpinBox::valueChanged ), [ = ]( int ) { settingsChanged(); } );
+  connect( ui->terrainResolutionSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), [ = ]( int ) { settingsChanged(); } );
 
   // sets the export settings to whatever is on the scene
   settingsChanged();

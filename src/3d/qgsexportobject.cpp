@@ -1,16 +1,32 @@
+/***************************************************************************
+  qgsexportobject.cpp
+  --------------------------------------
+  Date                 : June 2020
+  Copyright            : (C) 2020 by Belgacem Nedjima
+  Email                : gb underscore nedjima at esi dot dz
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgsexportobject.h"
 
 #include <QVector3D>
 
-QgsExportObject::QgsExportObject(const QString& name, const QString& parentName, QObject* parent)
-  : QObject(parent)
-  , mName(name)
-  , mParentName(parentName)
-  , mSmoothEdges(true)
+QgsExportObject::QgsExportObject( const QString &name, const QString &parentName, QObject *parent )
+  : QObject( parent )
+  , mName( name )
+  , mParentName( parentName )
+  , mSmoothEdges( false )
 {
 }
 
-void QgsExportObject::setupPositionCoordinates( const QVector<float>& positionsBuffer, float scale, const QVector3D translation ) {
+void QgsExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, float scale, const QVector3D translation )
+{
   for ( int i = 0; i < positionsBuffer.size(); i += 3 )
   {
     for ( int j = 0; j < 3; ++j )
@@ -19,13 +35,13 @@ void QgsExportObject::setupPositionCoordinates( const QVector<float>& positionsB
     }
   }
 
-  for ( int i = 0; i < positionsBuffer.size() / 3; ++i)
+  for ( int i = 0; i < positionsBuffer.size() / 3; ++i )
   {
     mIndexes << i + 1;
   }
 }
 
-void QgsExportObject::setupPositionCoordinates( const QVector<float>& positionsBuffer, const QVector<unsigned int>& faceIndex, float scale, const QVector3D translation )
+void QgsExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, const QVector<unsigned int> &faceIndex, float scale, const QVector3D translation )
 {
   // TODO: delete vertices that are not used
   for ( int i = 0; i < positionsBuffer.size(); i += 3 )
@@ -38,24 +54,27 @@ void QgsExportObject::setupPositionCoordinates( const QVector<float>& positionsB
 
   for ( int i = 0; i < faceIndex.size(); i += 3 )
   {
-    if (faceIndex[i] == faceIndex[i + 1] && faceIndex[i + 1] == faceIndex[i + 2]) continue;
-    for (int j = 0; j < 3; ++j) mIndexes << faceIndex[i + j] + 1;
+    if ( faceIndex[i] == faceIndex[i + 1] && faceIndex[i + 1] == faceIndex[i + 2] ) continue;
+    for ( int j = 0; j < 3; ++j ) mIndexes << faceIndex[i + j] + 1;
   }
 }
 
-void QgsExportObject::objectBounds(float& minX, float& minY, float& minZ, float& maxX, float& maxY, float& maxZ) {
-  for (int vertice : mIndexes) {
-    int heightIndex = (vertice - 1) * 3 + 1;
-    minX = std::min(minX, mVertxPosition[heightIndex - 1]);
-    maxX = std::max(maxX, mVertxPosition[heightIndex - 1]);
-    minY = std::min(minY, mVertxPosition[heightIndex]);
-    maxY = std::max(maxY, mVertxPosition[heightIndex]);
-    minZ = std::min(minZ, mVertxPosition[heightIndex + 1]);
-    maxZ = std::max(maxZ, mVertxPosition[heightIndex + 1]);
+void QgsExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ )
+{
+  for ( int vertice : mIndexes )
+  {
+    int heightIndex = ( vertice - 1 ) * 3 + 1;
+    minX = std::min( minX, mVertxPosition[heightIndex - 1] );
+    maxX = std::max( maxX, mVertxPosition[heightIndex - 1] );
+    minY = std::min( minY, mVertxPosition[heightIndex] );
+    maxY = std::max( maxY, mVertxPosition[heightIndex] );
+    minZ = std::min( minZ, mVertxPosition[heightIndex + 1] );
+    maxZ = std::max( maxZ, mVertxPosition[heightIndex + 1] );
   }
 }
 
-void QgsExportObject::saveTo(QTextStream& out, int scale, const QVector3D& center) {
+void QgsExportObject::saveTo( QTextStream &out, int scale, const QVector3D &center )
+{
 
   // Set object name
   out << "o " << mName << "\n";
@@ -81,7 +100,7 @@ void QgsExportObject::saveTo(QTextStream& out, int scale, const QVector3D& cente
   int verticesCount = mVertxPosition.size() / 3;
   for ( int i = 0; i < mIndexes.size(); i += 3 )
   {
-    if (mIndexes[i] == mIndexes[i + 1] && mIndexes[i + 1] == mIndexes[i + 2]) continue;
-    out << "f " << -1 - (verticesCount - mIndexes[i]) << " " << -1 - (verticesCount - mIndexes[i + 1]) << " " << -1 - (verticesCount - mIndexes[i + 2]) << "\n";
+    if ( mIndexes[i] == mIndexes[i + 1] && mIndexes[i + 1] == mIndexes[i + 2] ) continue;
+    out << "f " << -1 - ( verticesCount - mIndexes[i] ) << " " << -1 - ( verticesCount - mIndexes[i + 1] ) << " " << -1 - ( verticesCount - mIndexes[i + 2] ) << "\n";
   }
 }
