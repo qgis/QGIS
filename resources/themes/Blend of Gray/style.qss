@@ -758,6 +758,12 @@ QAbstractItemView::selected, QListView::selected {
     outline: none;
 }
 
+QAbstractItemView::indicator:checked, QListView::indicator:checked {
+    image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
+}
+QAbstractItemView::indicator:unchecked, QListView::indicator:unchecked {
+    image: url(@theme_path/icons/qcheckbox-unchecked.svg);
+}
 
 /* ==================================================================================== */
 /* TREE VIEW                                                                            */
