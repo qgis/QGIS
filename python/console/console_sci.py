@@ -34,6 +34,7 @@ import traceback
 
 from qgis.core import QgsApplication, QgsSettings, Qgis
 from .ui_console_history_dlg import Ui_HistoryDialogPythonConsole
+from .console_base import QgsQsciScintillaBase
 
 _init_commands = ["import sys", "import os", "import re", "import math", "from qgis.core import *",
                   "from qgis.gui import *", "from qgis.analysis import *", "from qgis._3d import *",
@@ -44,28 +45,7 @@ _init_commands = ["import sys", "import os", "import re", "import math", "from q
 _historyFile = os.path.join(QgsApplication.qgisSettingsDirPath(), "console_history.txt")
 
 
-class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
-    DEFAULT_COLOR = "#4d4d4c"
-    KEYWORD_COLOR = "#8959a8"
-    CLASS_COLOR = "#4271ae"
-    METHOD_COLOR = "#4271ae"
-    DECORATION_COLOR = "#3e999f"
-    NUMBER_COLOR = "#c82829"
-    COMMENT_COLOR = "#8e908c"
-    COMMENT_BLOCK_COLOR = "#8e908c"
-    BACKGROUND_COLOR = "#ffffff"
-    CURSOR_COLOR = "#636363"
-    CARET_LINE_COLOR = "#efefef"
-    SINGLE_QUOTE_COLOR = "#718c00"
-    DOUBLE_QUOTE_COLOR = "#718c00"
-    TRIPLE_SINGLE_QUOTE_COLOR = "#eab700"
-    TRIPLE_DOUBLE_QUOTE_COLOR = "#eab700"
-    MARGIN_BACKGROUND_COLOR = "#efefef"
-    MARGIN_FOREGROUND_COLOR = "#636363"
-    SELECTION_BACKGROUND_COLOR = "#d7d7d7"
-    SELECTION_FOREGROUND_COLOR = "#303030"
-    MATCHED_BRACE_BACKGROUND_COLOR = "#b7f907"
-    MATCHED_BRACE_FOREGROUND_COLOR = "#303030"
+class ShellScintilla(QgsQsciScintillaBase, code.InteractiveInterpreter):
 
     def __init__(self, parent=None):
         super(ShellScintilla, self).__init__(parent)
