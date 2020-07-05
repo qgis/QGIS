@@ -3103,6 +3103,9 @@ void QgisApp::createMenus()
 
 void QgisApp::refreshProfileMenu()
 {
+  if ( !mConfigMenu )
+    return;
+
   mConfigMenu->clear();
   QgsUserProfile *profile = userProfileManager()->userProfile();
   QString activeName = profile->name();
