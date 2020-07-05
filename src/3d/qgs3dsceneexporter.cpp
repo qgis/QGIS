@@ -40,7 +40,7 @@
 #include "qgsdemterraingenerator.h"
 #include "qgsdemterraintileloader_p.h"
 #include "qgsdemterraintilegeometry_p.h"
-#include "qgsexportobject.h"
+#include "qgs3dexportobject.h"
 
 #include <numeric>
 
@@ -403,7 +403,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity )
   QVector<float> positionBuffer = createPlaneVertexData( scale, scale, tileGeometry->resolution() );
   QVector<unsigned int> indexesBuffer = createPlaneIndexData( tileGeometry->resolution() );
 
-  QgsExportObject *object = new QgsExportObject( "Flat_tile", "", this );
+  Qgs3DExportObject *object = new Qgs3DExportObject( "Flat_tile", "", this );
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
@@ -443,7 +443,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
   QVector<float> positionBuffer = getAttributeData<float>( tileGeometry->positionAttribute() );
   QVector<unsigned int> indexBuffer = getAttributeData<unsigned int>( tileGeometry->indexAttribute() );
 
-  QgsExportObject *object = new QgsExportObject( "DEM_tile", "", this );
+  Qgs3DExportObject *object = new Qgs3DExportObject( "DEM_tile", "", this );
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
@@ -454,7 +454,7 @@ void Qgs3DSceneExporter::processAttribute( Qt3DRender::QAttribute *attribute )
 {
   QVector<float> floatData = getAttributeData<float>( attribute );
 
-  QgsExportObject *object = new QgsExportObject( "attribute", "", this );
+  Qgs3DExportObject *object = new Qgs3DExportObject( "attribute", "", this );
   mObjects.push_back( object );
 
   mObjects.push_back( object );
@@ -470,12 +470,12 @@ void Qgs3DSceneExporter::process( QgsTessellatedPolygonGeometry *geom )
 void Qgs3DSceneExporter::saveToFile( const QString &filePath )
 {
   QFile file( filePath );
-  if ( !file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
     return;
 
   float maxfloat = std::numeric_limits<float>::max(), minFloat = std::numeric_limits<float>::lowest();
   float minX = maxfloat, minY = maxfloat, minZ = maxfloat, maxX = minFloat, maxY = minFloat, maxZ = minFloat;
-  for ( QgsExportObject *obj : mObjects ) obj->objectBounds( minX, minY, minZ, maxX, maxY, maxZ );
+  for ( Qgs3DExportObject *obj : mObjects ) obj->objectBounds( minX, minY, minZ, maxX, maxY, maxZ );
 
   float diffX = 1.0f, diffY = 1.0f, diffZ = 1.0f;
   diffX = maxX - minX;
@@ -489,5 +489,5 @@ void Qgs3DSceneExporter::saveToFile( const QString &filePath )
   float scale = std::min( diffX, std::min( diffY, diffZ ) );
 
   QTextStream out( &file );
-  for ( QgsExportObject *obj : mObjects ) obj->saveTo( out, scale, QVector3D( centerX, centerY, centerZ ) );
+  for ( Qgs3DExportObject *obj : mObjects ) obj->saveTo( out, scale, QVector3D( centerX, centerY, centerZ ) );
 }

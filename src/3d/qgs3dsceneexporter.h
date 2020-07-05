@@ -29,7 +29,7 @@ class Qgs3DMapSettings;
 class QgsFlatTerrainGenerator;
 class QgsDemTerrainGenerator;
 class QgsChunkNode;
-class QgsExportObject;
+class Qgs3DExportObject;
 
 /**
  * @brief The Qgs3DSceneExporter class
@@ -65,9 +65,9 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     int terrainResolution() { return mTerrainResolution; }
 
   private:
-    //! Processes the attribute directly by taking a position buffer and converting it to QgsExportObject
+    //! Processes the attribute directly by taking a position buffer and converting it to Qgs3DExportObject
     void processAttribute( Qt3DRender::QAttribute *attribute );
-    //! Processes the tessellated polygons geometry and constructs QgsExportObject from it
+    //! Processes the tessellated polygons geometry and constructs Qgs3DExportObject from it
     void process( QgsTessellatedPolygonGeometry *geom );
 
     //! Returns a tile entity that contains the geometry to be exported and necessary scaling parameters
@@ -75,9 +75,9 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     //! Returns a tile entity that contains the geometry to be exported and necessary scaling parameters
     QgsTerrainTileEntity *getDemTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
 
-    //! Constructs a QgsExportObject from the DEM tile entity
+    //! Constructs a Qgs3DExportObject from the DEM tile entity
     void parseDemTile( QgsTerrainTileEntity *tileEntity );
-    //! Constructs a QgsExportObject from the flat tile entity
+    //! Constructs a Qgs3DExportObject from the flat tile entity
     void parseFlatTile( QgsTerrainTileEntity *tileEntity );
 
     /**
@@ -86,7 +86,7 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
      */
     QgsTerrainTileEntity *createDEMTileEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
   private:
-    QVector<QgsExportObject *> mObjects;
+    QVector<Qgs3DExportObject *> mObjects;
 
     bool mSmoothEdges;
     int mTerrainResolution;

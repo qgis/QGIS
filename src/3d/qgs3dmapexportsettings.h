@@ -20,6 +20,7 @@
 
 #include <QString>
 #include <QObject>
+#include <QDir>
 
 /**
  * @brief The Qgs3DMapExportSettings class
@@ -32,7 +33,7 @@ class _3D_EXPORT Qgs3DMapExportSettings : public QObject
     Q_OBJECT
   public:
     //! Constructor
-    Qgs3DMapExportSettings( QObject *parent = nullptr );
+    Qgs3DMapExportSettings( QObject *parent = nullptr ): QObject( parent ) { }
 
     //! Returns the scene name
     QString sceneName() const { return mSceneName; }
@@ -51,11 +52,16 @@ class _3D_EXPORT Qgs3DMapExportSettings : public QObject
     void setTerrainResolution( int resolution ) { mTerrainResolution = resolution; }
     //! Sets whether triangles edges will look smooth
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
+    //! Returns a path to a file that with the "name.extension" in the export folder
+    QString getFilePath( const QString &name, const QString &extension ) const
+    {
+      return QDir( mSceneFolderPath ).filePath( name + "." + extension );
+    }
   private:
-    QString mSceneName;
-    QString mSceneFolderPath;
-    int mTerrainResolution;
-    bool mSmoothEdges;
+    QString mSceneName = QString( "Scene" );
+    QString mSceneFolderPath = QDir::homePath();
+    int mTerrainResolution = 128;
+    bool mSmoothEdges = false;
 };
 
 #endif // QGS3DMAPEXPORTSETTINGS_H

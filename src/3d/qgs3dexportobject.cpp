@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsexportobject.cpp
+  Qgs3DExportObject.cpp
   --------------------------------------
   Date                 : June 2020
   Copyright            : (C) 2020 by Belgacem Nedjima
@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsexportobject.h"
+#include "qgs3dexportobject.h"
 
 #include <QVector3D>
 
-QgsExportObject::QgsExportObject( const QString &name, const QString &parentName, QObject *parent )
+Qgs3DExportObject::Qgs3DExportObject( const QString &name, const QString &parentName, QObject *parent )
   : QObject( parent )
   , mName( name )
   , mParentName( parentName )
@@ -25,7 +25,7 @@ QgsExportObject::QgsExportObject( const QString &name, const QString &parentName
 {
 }
 
-void QgsExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, float scale, const QVector3D translation )
+void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, float scale, const QVector3D translation )
 {
   for ( int i = 0; i < positionsBuffer.size(); i += 3 )
   {
@@ -41,7 +41,7 @@ void QgsExportObject::setupPositionCoordinates( const QVector<float> &positionsB
   }
 }
 
-void QgsExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, const QVector<unsigned int> &faceIndex, float scale, const QVector3D translation )
+void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, const QVector<unsigned int> &faceIndex, float scale, const QVector3D translation )
 {
   // TODO: delete vertices that are not used
   for ( int i = 0; i < positionsBuffer.size(); i += 3 )
@@ -59,7 +59,7 @@ void QgsExportObject::setupPositionCoordinates( const QVector<float> &positionsB
   }
 }
 
-void QgsExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ )
+void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ )
 {
   for ( int vertice : mIndexes )
   {
@@ -73,7 +73,7 @@ void QgsExportObject::objectBounds( float &minX, float &minY, float &minZ, float
   }
 }
 
-void QgsExportObject::saveTo( QTextStream &out, int scale, const QVector3D &center )
+void Qgs3DExportObject::saveTo( QTextStream &out, int scale, const QVector3D &center )
 {
 
   // Set object name

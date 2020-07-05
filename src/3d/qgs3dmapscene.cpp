@@ -780,9 +780,6 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
   }
   exporter.parseEntity( mTerrain );
 
-  // TODO: make the scene .obj file created using a function in Qgs3DMapExportSettings
-  QString filePath = exportSettings.sceneFolderPath();
-  if ( !filePath.endsWith( '/' ) ) filePath.push_back( '/' );
-  filePath += exportSettings.sceneName() + ".obj";
+  QString filePath = exportSettings.getFilePath( exportSettings.sceneName(), "obj" );
   exporter.saveToFile( filePath );
 }
