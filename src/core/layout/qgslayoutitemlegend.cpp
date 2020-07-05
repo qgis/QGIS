@@ -394,22 +394,22 @@ void QgsLayoutItemLegend::setSymbolWidth( double w )
 
 double QgsLayoutItemLegend::maximumSymbolSize() const
 {
-  return mSettings.maxSymbolSize();
+  return mSettings.maximumSymbolSize();
 }
 
 void QgsLayoutItemLegend::setMaximumSymbolSize( double size )
 {
-  mSettings.setMaxSymbolSize( size );
+  mSettings.setMaximumSymbolSize( size );
 }
 
 double QgsLayoutItemLegend::minimumSymbolSize() const
 {
-  return mSettings.minSymbolSize();
+  return mSettings.minimumSymbolSize();
 }
 
 void QgsLayoutItemLegend::setMinimumSymbolSize( double size )
 {
-  mSettings.setMinSymbolSize( size );
+  mSettings.setMinimumSymbolSize( size );
 }
 
 void QgsLayoutItemLegend::setSymbolAlignment( Qt::AlignmentFlag alignment )
@@ -544,8 +544,8 @@ bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &legendElem, QDo
 
   legendElem.setAttribute( QStringLiteral( "symbolWidth" ), QString::number( mSettings.symbolSize().width() ) );
   legendElem.setAttribute( QStringLiteral( "symbolHeight" ), QString::number( mSettings.symbolSize().height() ) );
-  legendElem.setAttribute( QStringLiteral( "maxSymbolSize" ), QString::number( mSettings.maxSymbolSize() ) );
-  legendElem.setAttribute( QStringLiteral( "minSymbolSize" ), QString::number( mSettings.minSymbolSize() ) );
+  legendElem.setAttribute( QStringLiteral( "maxSymbolSize" ), QString::number( mSettings.maximumSymbolSize() ) );
+  legendElem.setAttribute( QStringLiteral( "minSymbolSize" ), QString::number( mSettings.minimumSymbolSize() ) );
 
   legendElem.setAttribute( QStringLiteral( "symbolAlignment" ), mSettings.symbolAlignment() );
 
@@ -641,8 +641,8 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
   mSettings.setSymbolSize( QSizeF( itemElem.attribute( QStringLiteral( "symbolWidth" ), QStringLiteral( "7.0" ) ).toDouble(), itemElem.attribute( QStringLiteral( "symbolHeight" ), QStringLiteral( "14.0" ) ).toDouble() ) );
   mSettings.setSymbolAlignment( static_cast< Qt::AlignmentFlag >( itemElem.attribute( QStringLiteral( "symbolAlignment" ), QString::number( Qt::AlignLeft ) ).toInt() ) );
 
-  mSettings.setMaxSymbolSize( itemElem.attribute( QStringLiteral( "maxSymbolSize" ), QStringLiteral( "0.0" ) ).toDouble() );
-  mSettings.setMinSymbolSize( itemElem.attribute( QStringLiteral( "minSymbolSize" ), QStringLiteral( "0.0" ) ).toDouble() );
+  mSettings.setMaximumSymbolSize( itemElem.attribute( QStringLiteral( "maxSymbolSize" ), QStringLiteral( "0.0" ) ).toDouble() );
+  mSettings.setMinimumSymbolSize( itemElem.attribute( QStringLiteral( "minSymbolSize" ), QStringLiteral( "0.0" ) ).toDouble() );
 
   mSettings.setWmsLegendSize( QSizeF( itemElem.attribute( QStringLiteral( "wmsLegendWidth" ), QStringLiteral( "50" ) ).toDouble(), itemElem.attribute( QStringLiteral( "wmsLegendHeight" ), QStringLiteral( "25" ) ).toDouble() ) );
   mSettings.setLineSpacing( itemElem.attribute( QStringLiteral( "lineSpacing" ), QStringLiteral( "1.0" ) ).toDouble() );
