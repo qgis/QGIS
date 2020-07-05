@@ -53,6 +53,7 @@ class Qgs3DExportObject : public QObject
     void setupPositionCoordinates( const QVector<float> &positionsBuffer, float scale = 1.0f, const QVector3D translation = QVector3D( 0, 0, 0 ) );
     //! Sets positions coordinates from just one positions buffer and indexes buffer and does the translation and scaling
     void setupPositionCoordinates( const QVector<float> &positionsBuffer, const QVector<unsigned int> &facesIndexes, float scale = 1.0f, const QVector3D translation = QVector3D( 0, 0, 0 ) );
+
     /**
      * Updates the box bounds explained with the current object bounds
      * This expands the bounding box if the current object outside the bounds of the already established bounds

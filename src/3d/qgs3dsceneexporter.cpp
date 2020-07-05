@@ -398,7 +398,6 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity )
   }
 
   float scale = transform->scale();
-  QVector3D translation = transform->translation();
 
   QVector<float> positionBuffer = createPlaneVertexData( scale, scale, tileGeometry->resolution() );
   QVector<unsigned int> indexesBuffer = createPlaneIndexData( tileGeometry->resolution() );
@@ -407,7 +406,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity )
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
-  object->setupPositionCoordinates( positionBuffer, indexesBuffer, scale, translation );
+  object->setupPositionCoordinates( positionBuffer, indexesBuffer );
 }
 
 void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
@@ -433,7 +432,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
   DemTerrainTileGeometry *tileGeometry = qobject_cast<DemTerrainTileGeometry *>( geometry );
   if ( tileGeometry == nullptr )
   {
-    qDebug() << "WARNING : " << "Qt3DExtras::QPlaneGeometry* is expected at " << __FILE__ << ":" << __LINE__;
+    qDebug() << "WARNING : " << "DemTerrainTileGeometry* is expected at " << __FILE__ << ":" << __LINE__;
     return;
   }
 
