@@ -235,26 +235,40 @@ class CORE_EXPORT QgsLegendSettings
     void setSymbolSize( QSizeF s ) {mSymbolSize = s;}
 
     /**
-     * Returns the maximum symbol size in mm
+     * Returns the maximum symbol size (in mm). 0.0 means there is no maximum set.
+     *
+     * \see setMaximumSymbolSize()
+     * \since QGIS 3.16
      */
-    double maxSymbolSize() const {return mMaxSymbolSize; }
+    double maximumSymbolSize() const {return mMaxSymbolSize; }
 
     /**
-     * Sets the maximum marker size in mm
-     * @param size maximum size in mm
+     * Set the maximum symbol \a size for symbol (in millimeters).
+     *
+     * A symbol size of 0.0 indicates no maximum is set.
+     *
+     * \see maximumSymbolSize()
+     * \since QGIS 3.16
      */
-    void setMaxSymbolSize( double size ) { mMaxSymbolSize = size;}
+    void setMaximumSymbolSize( double size ) { mMaxSymbolSize = size;}
 
     /**
-     * Returns the minimum symbol size in mm
+     * Returns the minimum symbol size (in mm). A value 0.0 means there is no minimum set.
+     *
+     * \see setMinimumSymbolSize
+     * \since QGIS 3.16
      */
-    double minSymbolSize() const {return mMinSymbolSize; }
+    double minimumSymbolSize() const {return mMinSymbolSize; }
 
     /**
-     * Sets the minimum symbol size in mm
-     * @param size minimum size in mm
+     * Set the minimum symbol \a size for symbol (in millimeters).
+     *
+     * A symbol size of 0.0 indicates no minimum is set.
+     *
+     * \see minimumSymbolSize()
+     * \since QGIS 3.16
      */
-    void setMinSymbolSize( double size ) { mMinSymbolSize = size;}
+    void setMinimumSymbolSize( double size ) { mMinSymbolSize = size;}
 
     /**
      * Sets the \a alignment for placement of legend symbols.
