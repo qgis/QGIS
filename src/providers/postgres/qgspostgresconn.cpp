@@ -361,6 +361,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   if ( mPostgresqlVersion >= 90000 )
   {
     PQexecNR( QStringLiteral( "SET application_name='QGIS'" ) );
+    PQexecNR( QStringLiteral( "SET extra_float_digits=3" ) );
   }
 
   PQsetNoticeProcessor( mConn, noticeProcessor, nullptr );
@@ -1212,7 +1213,6 @@ QString QgsPostgresConn::quotedValue( const QVariant &value )
   {
     case QVariant::Int:
     case QVariant::LongLong:
-    case QVariant::Double:
       return value.toString();
 
     case QVariant::DateTime:
@@ -1228,6 +1228,7 @@ QString QgsPostgresConn::quotedValue( const QVariant &value )
     case QVariant::List:
       return quotedList( value.toList() );
 
+    case QVariant::Double:
     case QVariant::String:
     default:
       return quotedString( value.toString() );
