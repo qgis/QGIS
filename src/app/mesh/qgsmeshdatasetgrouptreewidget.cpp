@@ -43,7 +43,6 @@ QgsMeshDatasetGroupTreeWidget::QgsMeshDatasetGroupTreeWidget( QWidget *parent ):
   } );
 
   connect( mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::apply, this, &QgsMeshDatasetGroupTreeWidget::apply );
-
 }
 
 void QgsMeshDatasetGroupTreeWidget::syncToLayer( QgsMeshLayer *meshLayer )

@@ -143,10 +143,12 @@ class ANALYSIS_EXPORT QgsMeshCalculator
                        QgsMeshLayer *layer );
 
     /**
-     * Creates calculator with bounding box (rectangular) mask, store the result in the memory
+     * Creates calculator with bounding box (rectangular) mask, store the result in \a destination (must be on memory or virtual),
+     * see QgsMeshCalculator::Destination
      * \param formulaString formula/expression to evaluate. Consists of dataset group names, operators and numbers
      * \param outputGroupName output group name
      * \param outputExtent spatial filter defined by rectangle
+     * \param destination destination of the calculation (memory or virtual)
      * \param startTime time filter defining the starting dataset
      * \param endTime time filter defining the ending dataset
      * \param layer mesh layer with dataset groups references in formulaString
@@ -155,16 +157,19 @@ class ANALYSIS_EXPORT QgsMeshCalculator
      */
     QgsMeshCalculator( const QString &formulaString,
                        const QString &outputGroupName,
-                       double startTime,
-                       double endTime,
                        const QgsRectangle &outputExtent,
-                       QgsMeshLayer *layer );
+                       const QgsMeshDatasetGroup::Type &destination,
+                       QgsMeshLayer *layer,
+                       double startTime,
+                       double endTime );
 
     /**
-     * Creates calculator with with geometry mask, store the result in the memory
+     * Creates calculator with with geometry mask, store the result in \a destination (must be on memory or virtual),
+     *  see QgsMeshCalculator::Destination
      * \param formulaString formula/expression to evaluate. Consists of dataset group names, operators and numbers
      * \param outputGroupName output group name
      * \param outputMask spatial filter defined by geometry
+     * \param destination destination of the calculation (memory or virtual)
      * \param startTime time filter defining the starting dataset
      * \param endTime time filter defining the ending dataset
      * \param layer mesh layer with dataset groups references in formulaString
@@ -173,14 +178,14 @@ class ANALYSIS_EXPORT QgsMeshCalculator
      */
     QgsMeshCalculator( const QString &formulaString,
                        const QString &outputGroupName,
-                       double startTime,
-                       double endTime,
                        const QgsGeometry &outputMask,
-                       QgsMeshLayer *layer );
-
+                       const QgsMeshDatasetGroup::Type &destination,
+                       QgsMeshLayer *layer,
+                       double startTime,
+                       double endTime );
 
     /**
-     * Starts the calculation, writes new dataset group to file and adds it to the mesh layer
+     * Starts the calculation, creates new dataset group and adds it to the mesh layer
      * \param feedback The optional feedback argument for progress reporting and cancellation support
      * \returns QgsMeshCalculator::Success in case of success
      */
@@ -220,9 +225,9 @@ class ANALYSIS_EXPORT QgsMeshCalculator
     QgsRectangle mOutputExtent;
     QgsGeometry mOutputMask;
     bool mUseMask = false;
+    QgsMeshDatasetGroup::Type mDestination;
     double mStartTime = 0.0;
     double mEndTime = 0.0;
-    bool mResultInMemory = false;
     QgsMeshLayer *mMeshLayer = nullptr;
 };
 

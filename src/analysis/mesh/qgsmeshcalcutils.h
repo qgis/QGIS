@@ -64,6 +64,21 @@ class ANALYSIS_EXPORT QgsMeshCalcUtils
                       double startTime,
                       double endTime );
 
+    /**
+     * Creates the utils and validates the input
+     *
+     * The constructor fetches dataset values from selected dataset corresponding to the relative time \a relativeTime
+     * (see QgsMeshLayer::datasetIndexAtRelativeTime() and creates memory datasets from them.
+     * There are only one dataset per group, selected with the matching method defined for the layer.
+     *
+     * \param layer mesh layer
+     * \param usedGroupNames dataset group's names that are used in the expression
+     * \param timeRange time range
+     */
+    QgsMeshCalcUtils( QgsMeshLayer *layer,
+                      const QStringList &usedGroupNames,
+                      const QgsInterval &relativeTime );
+
     //! Returns whether the input parameters are consistent and valid for given mesh layer
     bool isValid() const;
 
@@ -213,12 +228,17 @@ class ANALYSIS_EXPORT QgsMeshCalcUtils
      * memory dataset group. Returns NULLPTR if no such dataset group
      * exists. Resulting datasets are guaranteed to have the same mOutputType type
      */
-    std::shared_ptr<QgsMeshMemoryDatasetGroup> create( const QString &datasetGroupName ) const;
+    std::shared_ptr<QgsMeshMemoryDatasetGroup> create( const QString &datasetGroupName, const QgsInterval &relativeTime = QgsInterval() ) const;
 
     /**
      *  Creates dataset based on group. Initializes values and active based on group type.
      */
     std::shared_ptr<QgsMeshMemoryDataset> create( const QgsMeshMemoryDatasetGroup &grp ) const;
+
+    /**
+     *  Creates dataset based on group. Fill with values of corresponding dataset
+     */
+    std::shared_ptr<QgsMeshMemoryDataset> create( const QgsMeshDatasetIndex &datasetIndex ) const;
 
     /**
      *  Creates dataset with given type. Initializes values and active based on type.

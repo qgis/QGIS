@@ -308,6 +308,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsquerybuilder.h"
 #include "qgsrastercalcdialog.h"
 #include "qgsmeshcalculatordialog.h"
+#include "qgsmeshvirtualdatasetgroup.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsrasterfilewritertask.h"
 #include "qgsrasteriterator.h"
@@ -1085,6 +1086,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::updateProjectFromTemplates, this, QStringLiteral( "Update project from templates" ) );
   functionProfile( &QgisApp::legendLayerSelectionChanged, this, QStringLiteral( "Legend layer selection changed" ) );
   functionProfile( &QgisApp::init3D, this, QStringLiteral( "Initialize 3D support" ) );
+  functionProfile( &QgisApp::initMeshDataGenerator, this, QStringLiteral( "Initialize mesh calculator" ) );
   functionProfile( &QgisApp::initNativeProcessing, this, QStringLiteral( "Initialize native processing" ) );
   functionProfile( &QgisApp::initLayouts, this, QStringLiteral( "Initialize layouts support" ) );
 
@@ -12662,6 +12664,11 @@ void QgisApp::init3D()
 #endif
 }
 
+void QgisApp::initMeshDataGenerator()
+{
+  QgsApplication::instance()->meshDataGeneratorRegistry()->addMeshDataGenerator( new QgsMeshVirtualDatasetGroupGenerator );
+}
+
 void QgisApp::initNativeProcessing()
 {
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
@@ -12938,7 +12945,6 @@ bool QgisApp::checkMemoryLayers()
   // check to see if there are any temporary layers present (with features)
   bool hasTemporaryLayers = false;
   bool hasMemoryLayers = false;
-  bool hasMemoryMeshLayerDatasetGroup = false;
 
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( auto it = layers.begin(); it != layers.end(); ++it )
@@ -12954,10 +12960,7 @@ bool QgisApp::checkMemoryLayers()
     }
     else if ( it.value() && it.value()->isTemporary() )
     {
-      if ( it.value()->type() == QgsMapLayerType::MeshLayer )
-        hasMemoryMeshLayerDatasetGroup = true;
-      else
-        hasTemporaryLayers = true;
+      hasTemporaryLayers = true;
     }
   }
 
@@ -12972,12 +12975,6 @@ bool QgisApp::checkMemoryLayers()
     close &= QMessageBox::warning( this,
                                    tr( "Close Project" ),
                                    tr( "This project includes one or more temporary scratch layers. These layers are not saved to disk and their contents will be permanently lost. Are you sure you want to proceed?" ),
-                                   QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Yes;
-
-  if ( hasMemoryMeshLayerDatasetGroup )
-    close &= QMessageBox::warning( this,
-                                   tr( "Close Project" ),
-                                   tr( "This project includes one or more memory mesh layer dataset groups. These dataset groups are not saved to disk and their contents will be permanently lost. Are you sure you want to proceed?" ),
                                    QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Yes;
 
   return close;

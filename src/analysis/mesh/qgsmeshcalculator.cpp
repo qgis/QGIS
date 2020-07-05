@@ -23,6 +23,7 @@
 #include "qgsmeshcalculator.h"
 #include "qgsmeshcalcutils.h"
 #include "qgsmeshmemorydataprovider.h"
+#include "qgsmeshvirtualdatasetgroup.h"
 #include "qgis.h"
 
 QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
@@ -78,6 +79,7 @@ QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
   , mOutputFile( outputFile )
   , mOutputExtent( outputExtent )
   , mUseMask( false )
+  , mDestination( QgsMeshDatasetGroup::Persistent )
   , mStartTime( startTime )
   , mEndTime( endTime )
   , mMeshLayer( layer )
@@ -98,6 +100,7 @@ QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
   , mOutputFile( outputFile )
   , mOutputMask( outputMask )
   , mUseMask( true )
+  , mDestination( QgsMeshDatasetGroup::Persistent )
   , mStartTime( startTime )
   , mEndTime( endTime )
   , mMeshLayer( layer )
@@ -106,34 +109,36 @@ QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
 
 QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
                                       const QString &outputGroupName,
-                                      double startTime,
-                                      double endTime,
                                       const QgsRectangle &outputExtent,
-                                      QgsMeshLayer *layer )
+                                      const QgsMeshDatasetGroup::Type &destination,
+                                      QgsMeshLayer *layer,
+                                      double startTime,
+                                      double endTime )
   : mFormulaString( formulaString )
   , mOutputGroupName( outputGroupName )
   , mOutputExtent( outputExtent )
   , mUseMask( false )
+  , mDestination( destination )
   , mStartTime( startTime )
   , mEndTime( endTime )
-  , mResultInMemory( true )
   , mMeshLayer( layer )
 {
 }
 
 QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
                                       const QString &outputGroupName,
-                                      double startTime,
-                                      double endTime,
                                       const QgsGeometry &outputMask,
-                                      QgsMeshLayer *layer )
+                                      const QgsMeshDatasetGroup::Type &destination,
+                                      QgsMeshLayer *layer,
+                                      double startTime,
+                                      double endTime )
   : mFormulaString( formulaString )
   , mOutputGroupName( outputGroupName )
   , mOutputMask( outputMask )
   , mUseMask( true )
+  , mDestination( destination )
   , mStartTime( startTime )
   , mEndTime( endTime )
-  , mResultInMemory( true )
   , mMeshLayer( layer )
 {
 }
@@ -170,7 +175,7 @@ QgsMeshCalculator::Result QgsMeshCalculator::expressionIsValid(
 QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *feedback )
 {
   // check input
-  if ( mOutputFile.isEmpty() && !mResultInMemory )
+  if ( mOutputFile.isEmpty() && !( mDestination != QgsMeshDatasetGroup::Persistent ) )
   {
     return CreateOutputError;
   }
@@ -191,13 +196,34 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
     return ParserError;
   }
 
+  // proceed eventually on the fly
+  bool err;
+  if ( mDestination ==  QgsMeshDatasetGroup::Virtual )
+  {
+    std::unique_ptr<QgsMeshDatasetGroup> virtualDatasetGroup =
+      qgis::make_unique<QgsMeshVirtualDatasetGroup> ( mOutputGroupName, mFormulaString, mMeshLayer, mStartTime * 3600 * 1000, mEndTime * 3600 * 1000 );
+    virtualDatasetGroup->initialize();
+    virtualDatasetGroup->setReferenceTime( static_cast<QgsMeshLayerTemporalProperties *>( mMeshLayer->temporalProperties() )->referenceTime() );
+    err = !mMeshLayer->addDatasets( virtualDatasetGroup.release() );
+    if ( err )
+    {
+      return CreateOutputError;
+    }
+
+    if ( feedback )
+    {
+      feedback->setProgress( 100.0 );
+    }
+    return Success;
+  }
+
+  //open output dataset
   QgsMeshCalcUtils dsu( mMeshLayer, calcNode->usedDatasetGroupNames(), mStartTime, mEndTime );
   if ( !dsu.isValid() )
   {
     return InvalidDatasets;
   }
 
-  //open output dataset
   std::unique_ptr<QgsMeshMemoryDatasetGroup> outputGroup = qgis::make_unique<QgsMeshMemoryDatasetGroup> ( mOutputGroupName, dsu.outputType() );
 
   // calculate
@@ -267,12 +293,12 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
   }
 
   // calculate statistics
-  outputGroup->calculateStatistic();
+  outputGroup->initialize();
+  outputGroup->setReferenceTime( static_cast<QgsMeshLayerTemporalProperties *>( mMeshLayer->temporalProperties() )->referenceTime() );
 
   const QgsMeshDatasetGroupMetadata meta = outputGroup->groupMetadata();
-  bool err;
 
-  if ( mResultInMemory )
+  if ( mDestination == QgsMeshDatasetGroup::Memory )
   {
     err = !mMeshLayer->addDatasets( outputGroup.release() );
   }

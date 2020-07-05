@@ -605,6 +605,7 @@ SET(QGIS_CORE_SRCS
   mesh/qgsmeshtracerenderer.cpp
   mesh/qgsmeshvectorrenderer.cpp
   mesh/qgstriangularmesh.cpp
+  mesh/qgsmeshdatagenerator.cpp
 
   labeling/qgslabelfeature.cpp
   labeling/qgslabelingengine.cpp
@@ -1247,6 +1248,7 @@ SET(QGIS_CORE_HDRS
   mesh/qgsmeshtracerenderer.h
   mesh/qgsmeshvectorrenderer.h
   mesh/qgstriangularmesh.h
+  mesh/qgsmeshdatagenerator.h
 
   metadata/qgsabstractmetadatabase.h
   metadata/qgslayermetadata.h
