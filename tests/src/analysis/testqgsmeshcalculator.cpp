@@ -329,18 +329,18 @@ void TestQgsMeshCalculator::virtualDatasetGroup()
 
   const QgsMeshDataset *dataset = virtualDatasetGroup.dataset( 0 );
   QCOMPARE( dataset->valuesCount(), 5 );
-  QCOMPARE( dataset->datasetValue( 0 ).scalar(), 3 );
-  QCOMPARE( dataset->datasetValue( 1 ).scalar(), 4 );
-  QCOMPARE( dataset->datasetValue( 2 ).scalar(), 5 );
-  QCOMPARE( dataset->datasetValue( 3 ).scalar(), 4 );
-  QCOMPARE( dataset->datasetValue( 4 ).scalar(), 3 );
+  QCOMPARE( dataset->datasetValue( 0 ).scalar(), 3.0 );
+  QCOMPARE( dataset->datasetValue( 1 ).scalar(), 4.0 );
+  QCOMPARE( dataset->datasetValue( 2 ).scalar(), 5.0 );
+  QCOMPARE( dataset->datasetValue( 3 ).scalar(), 4.0 );
+  QCOMPARE( dataset->datasetValue( 4 ).scalar(), 3.0 );
 
   dataset = virtualDatasetGroup.dataset( 1 );
-  QCOMPARE( dataset->datasetValue( 0 ).scalar(), 4 );
-  QCOMPARE( dataset->datasetValue( 1 ).scalar(), 5 );
-  QCOMPARE( dataset->datasetValue( 2 ).scalar(), 6 );
-  QCOMPARE( dataset->datasetValue( 3 ).scalar(), 5 );
-  QCOMPARE( dataset->datasetValue( 4 ).scalar(), 4 );
+  QCOMPARE( dataset->datasetValue( 0 ).scalar(), 4.0 );
+  QCOMPARE( dataset->datasetValue( 1 ).scalar(), 5.0 );
+  QCOMPARE( dataset->datasetValue( 2 ).scalar(), 6.0 );
+  QCOMPARE( dataset->datasetValue( 3 ).scalar(), 5.0 );
+  QCOMPARE( dataset->datasetValue( 4 ).scalar(), 4.0 );
 
   formula = QStringLiteral( "\"VertexScalarDataset\" + \"FaceScalarDataset\"" );
   virtualDatasetGroup = QgsMeshVirtualDatasetGroup( "Virtual Dataset group", formula, mpMeshLayer, 0, 10000000 );
@@ -349,19 +349,19 @@ void TestQgsMeshCalculator::virtualDatasetGroup()
 
   dataset = virtualDatasetGroup.dataset( 0 );
   QCOMPARE( dataset->valuesCount(), 5 );
-  QCOMPARE( dataset->datasetValue( 0 ).scalar(), 2 );
+  QCOMPARE( dataset->datasetValue( 0 ).scalar(), 2.0 );
   QCOMPARE( dataset->datasetValue( 1 ).scalar(), 3.5 );
-  QCOMPARE( dataset->datasetValue( 2 ).scalar(), 5 );
+  QCOMPARE( dataset->datasetValue( 2 ).scalar(), 5.0 );
   QCOMPARE( dataset->datasetValue( 3 ).scalar(), 3.5 );
-  QCOMPARE( dataset->datasetValue( 4 ).scalar(), 2 );
+  QCOMPARE( dataset->datasetValue( 4 ).scalar(), 2.0 );
 
   dataset = virtualDatasetGroup.dataset( 1 );
   QCOMPARE( dataset->valuesCount(), 5 );
-  QCOMPARE( dataset->datasetValue( 0 ).scalar(), 4 );
+  QCOMPARE( dataset->datasetValue( 0 ).scalar(), 4.0 );
   QCOMPARE( dataset->datasetValue( 1 ).scalar(), 5.5 );
-  QCOMPARE( dataset->datasetValue( 2 ).scalar(), 7 );
+  QCOMPARE( dataset->datasetValue( 2 ).scalar(), 7.0 );
   QCOMPARE( dataset->datasetValue( 3 ).scalar(), 5.5 );
-  QCOMPARE( dataset->datasetValue( 4 ).scalar(), 4 );
+  QCOMPARE( dataset->datasetValue( 4 ).scalar(), 4.0 );
 }
 
 

@@ -664,6 +664,7 @@ class CORE_EXPORT QgsMeshDatasetGroup
     //! Returns some information about the dataset group
     virtual QString description() const;
 
+    //! Sets the reference time of the dataset group
     void setReferenceTime( const QDateTime &referenceTime );
 
   protected:
@@ -703,6 +704,7 @@ class CORE_EXPORT QgsMeshMemoryDataset: public QgsMeshDataset
     bool isActive( int faceIndex ) const override;
     int valuesCount() const override;
 
+    //! Calulates the minimum and the maximum of this group
     void calculateMinMax();
 
     QVector<QgsMeshDatasetValue> values;

@@ -26,9 +26,19 @@
 
 #define SIP_NO_FILE
 
+/**
+ * \ingroup analysis
+ * \class QgsMeshVirtualDatasetGroup
+ * Represents a dataset group calculated from a formula string.
+ * The calculation is done by the QgsMeshCalcUtils class from a QgsMeshCalcNode created from the formula
+ * Each dataset is calculted when needed, so there is only one dataset store in this class all the time.
+ *
+ * \since QGIS 3.6
+ */
 class ANALYSIS_EXPORT QgsMeshVirtualDatasetGroup: public QgsMeshDatasetGroup
 {
   public:
+
     /**
      * Constructor
      * \param name name of the dataset group
@@ -68,7 +78,12 @@ class ANALYSIS_EXPORT QgsMeshVirtualDatasetGroup: public QgsMeshDatasetGroup
     bool calculateDataset() const;
 };
 
-
+/**
+ * \ingroup analysis
+ * \class QgsMeshVirtualDatasetGroupGenerator
+ * Represents a factory that can be used to create virtual dataset group
+ * \since QGIS 3.6
+ */
 class ANALYSIS_EXPORT QgsMeshVirtualDatasetGroupGenerator: public QgsMeshDataGeneratorInterface
 {
   public:

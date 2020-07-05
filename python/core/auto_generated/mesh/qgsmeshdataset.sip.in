@@ -754,6 +754,9 @@ Returns some information about the dataset group
 %End
 
     void setReferenceTime( const QDateTime &referenceTime );
+%Docstring
+Sets the reference time of the dataset group
+%End
 
   protected:
 
