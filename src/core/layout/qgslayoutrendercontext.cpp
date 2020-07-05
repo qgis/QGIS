@@ -66,6 +66,8 @@ QgsRenderContext::Flags QgsLayoutRenderContext::renderContextFlags() const
     flags = flags | QgsRenderContext::Antialiasing;
   if ( mFlags & FlagUseAdvancedEffects )
     flags = flags | QgsRenderContext::UseAdvancedEffects;
+  if ( mFlags & FlagLosslessImageRendering )
+    flags = flags | QgsRenderContext::LosslessImageRendering;
 
   // TODO - expose as layout context flag?
   flags |= QgsRenderContext::ForceVectorOutput;

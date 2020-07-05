@@ -126,10 +126,15 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
   {
     context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
   }
+
   if ( painter && painter->renderHints() & QPainter::Antialiasing )
-  {
     context.setFlag( QgsRenderContext::Antialiasing, true );
-  }
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  if ( painter && painter->renderHints() & QPainter::LosslessImageRendering )
+    context.setFlag( QgsRenderContext::LosslessImageRendering, true );
+#endif
+
   return context;
 }
 
@@ -142,6 +147,9 @@ void QgsRenderContext::setPainterFlagsUsingContext( QPainter *painter ) const
     return;
 
   painter->setRenderHint( QPainter::Antialiasing, mFlags & QgsRenderContext::Antialiasing );
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  painter->setRenderHint( QPainter::LosslessImageRendering, mFlags & QgsRenderContext::LosslessImageRendering );
+#endif
 }
 
 QgsCoordinateTransformContext QgsRenderContext::transformContext() const
@@ -205,6 +213,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setFlag( RenderPartialOutput, mapSettings.testFlag( QgsMapSettings::RenderPartialOutput ) );
   ctx.setFlag( RenderPreviewJob, mapSettings.testFlag( QgsMapSettings::RenderPreviewJob ) );
   ctx.setFlag( RenderBlocking, mapSettings.testFlag( QgsMapSettings::RenderBlocking ) );
+  ctx.setFlag( LosslessImageRendering, mapSettings.testFlag( QgsMapSettings::LosslessImageRendering ) );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setRendererScale( mapSettings.scale() );
   ctx.setExpressionContext( mapSettings.expressionContext() );

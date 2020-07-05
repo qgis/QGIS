@@ -81,6 +81,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
       RenderPreviewJob         = 0x200, //!< Render is a 'canvas preview' render, and shortcuts should be taken to ensure fast rendering
       RenderBlocking           = 0x400, //!< Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server.
       RenderSymbolPreview      = 0x800, //!< The render is for a symbol preview only and map based properties may not be available, so care should be taken to handle map unit based sizes in an appropriate way.
+      LosslessImageRendering   = 0x1000, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
