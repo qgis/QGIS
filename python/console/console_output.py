@@ -241,34 +241,32 @@ class ShellOutputScintilla(QgsQsciScintillaBase):
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
-        iconRun = QgsApplication.getThemeIcon("console/mIconRunConsole.svg")
-        iconClear = QgsApplication.getThemeIcon("console/iconClearConsole.svg")
-        iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.svg")
-        iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.svg")
-        menu.addAction(iconHideTool,
+        menu.addAction(self.iconHideTool,
                        QCoreApplication.translate("PythonConsole", "Hide/Show Toolbar"),
                        self.hideToolBar)
         menu.addSeparator()
         showEditorAction = menu.addAction(
+            self.iconShowEditor,
             QCoreApplication.translate("PythonConsole", "Show Editor"),
             self.showEditor)
         menu.addSeparator()
-        runAction = menu.addAction(iconRun,
+        runAction = menu.addAction(self.iconRun,
                                    QCoreApplication.translate("PythonConsole", "Enter Selected"),
                                    self.enteredSelected,
                                    QKeySequence(Qt.CTRL + Qt.Key_E))
-        clearAction = menu.addAction(iconClear,
+        clearAction = menu.addAction(self.iconClear,
                                      QCoreApplication.translate("PythonConsole", "Clear Console"),
                                      self.clearConsole)
         menu.addSeparator()
         copyAction = menu.addAction(
+            self.iconCopy,
             QCoreApplication.translate("PythonConsole", "Copy"),
             self.copy, QKeySequence.Copy)
         selectAllAction = menu.addAction(
             QCoreApplication.translate("PythonConsole", "Select All"),
             self.selectAll, QKeySequence.SelectAll)
         menu.addSeparator()
-        menu.addAction(iconSettings,
+        menu.addAction(self.iconSettings,
                        QCoreApplication.translate("PythonConsole", "Options…"),
                        self.parent.openSettings)
         runAction.setEnabled(False)

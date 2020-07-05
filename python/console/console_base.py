@@ -19,6 +19,7 @@ email                : Richard Duivenvoorde (at) duif (dot) net
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
+from qgis.core import QgsApplication
 from qgis.PyQt.Qsci import QsciScintilla
 
 
@@ -51,6 +52,24 @@ class QgsQsciScintillaBase(QsciScintilla):
 
     def __init__(self, parent=None):
         super(QgsQsciScintillaBase, self).__init__(parent)
+
+        self.iconRun = QgsApplication.getThemeIcon("console/mIconRunConsole.svg")
+        self.iconRunScript = QgsApplication.getThemeIcon("mActionStart.svg")
+        self.iconUndo = QgsApplication.getThemeIcon("mActionUndo.svg")
+        self.iconRedo = QgsApplication.getThemeIcon("mActionRedo.svg")
+        self.iconCodePad = QgsApplication.getThemeIcon("console/iconCodepadConsole.svg")
+        self.iconCommentEditor = QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg")
+        self.iconUncommentEditor = QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.svg")
+        self.iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.svg")
+        self.iconFind = QgsApplication.getThemeIcon("console/iconSearchEditorConsole.svg")
+        self.iconSyntaxCk = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.svg")
+        self.iconObjInsp = QgsApplication.getThemeIcon("console/iconClassBrowserConsole.svg")
+        self.iconCut = QgsApplication.getThemeIcon("mActionEditCut.svg")
+        self.iconCopy = QgsApplication.getThemeIcon("mActionEditCopy.svg")
+        self.iconPaste = QgsApplication.getThemeIcon("mActionEditPaste.svg")
+        self.iconClear = QgsApplication.getThemeIcon("console/iconClearConsole.svg")
+        self.iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.svg")
+        self.iconShowEditor = QgsApplication.getThemeIcon("console/iconShowEditorConsole.svg")
 
 
 if __name__ == "__main__":

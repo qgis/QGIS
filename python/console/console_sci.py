@@ -517,9 +517,11 @@ class ShellScintilla(QgsQsciScintillaBase, code.InteractiveInterpreter):
         menu.addMenu(subMenu)
         menu.addSeparator()
         copyAction = menu.addAction(
+            self.iconCopy,
             QCoreApplication.translate("PythonConsole", "Copy"),
             self.copy, QKeySequence.Copy)
         pasteAction = menu.addAction(
+            self.iconPaste,
             QCoreApplication.translate("PythonConsole", "Paste"),
             self.paste, QKeySequence.Paste)
         copyAction.setEnabled(False)
