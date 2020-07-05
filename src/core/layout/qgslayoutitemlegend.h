@@ -319,29 +319,40 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void setSymbolWidth( double width );
 
     /**
-     * Returns the legend maximum symbol size (in mm). 0.0 means there is no maximum set
+     * Returns the maximum symbol size (in mm). 0.0 means there is no maximum set.
+     *
+     * \see setMaximumSymbolSize()
      * \since QGIS 3.16
      */
-    double maxSymbolSize() const;
+    double maximumSymbolSize() const;
 
     /**
-     * \brief set maximum symbol size
-     * \param size maximum size (in mm) or 0.0 if no maximum
+     * Set the maximum symbol \a size for symbol (in millimeters).
+     *
+     * A symbol size of 0.0 indicates no maximum is set.
+     *
+     * \see maximumSymbolSize()
      * \since QGIS 3.16
      */
-    void setMaxSymbolSize( double size );
+    void setMaximumSymbolSize( double size );
 
     /**
-     * Returns the legend minimum symbol size (in mm). 0.0 means there is no minimum set
+     * Returns the minimum symbol size (in mm). A value 0.0 means there is no minimum set.
+     *
+     * \see setMinimumSymbolSize
+     * \since QGIS 3.16
      */
-    double minSymbolSize() const;
+    double minimumSymbolSize() const;
 
     /**
-     * @brief set minimum symbol size for symbol
-     * @param size inimum size (in mm) or 0.0 if no minimum
+     * Set the minimum symbol \a size for symbol (in millimeters).
+     *
+     * A symbol size of 0.0 indicates no minimum is set.
+     *
+     * \see minimumSymbolSize()
+     * \since QGIS 3.16
      */
-    void setMinSymbolSize( double size );
-
+    void setMinimumSymbolSize( double size );
 
     /**
      * Sets the \a alignment for placement of legend symbols.

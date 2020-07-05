@@ -232,8 +232,8 @@ void QgsLayoutLegendWidget::setGuiElements()
   mEqualColumnWidthCheckBox->setChecked( mLegend->equalColumnWidth() );
   mSymbolWidthSpinBox->setValue( mLegend->symbolWidth() );
   mSymbolHeightSpinBox->setValue( mLegend->symbolHeight() );
-  mMaxSymbolSizeSpinBox->setValue( mLegend->maxSymbolSize() );
-  mMinSymbolSizeSpinBox->setValue( mLegend->minSymbolSize() );
+  mMaxSymbolSizeSpinBox->setValue( mLegend->maximumSymbolSize() );
+  mMinSymbolSizeSpinBox->setValue( mLegend->minimumSymbolSize() );
   mWmsLegendWidthSpinBox->setValue( mLegend->wmsLegendWidth() );
   mWmsLegendHeightSpinBox->setValue( mLegend->wmsLegendHeight() );
   mTitleSpaceBottomSpinBox->setValue( mLegend->style( QgsLegendStyle::Title ).margin( QgsLegendStyle::Bottom ) );
@@ -412,7 +412,7 @@ void QgsLayoutLegendWidget::mMaxSymbolSizeSpinBox_valueChanged( double d )
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Legend Maximum Symbol Size" ), QgsLayoutItem::UndoLegendMaxSymbolSize );
-    mLegend->setMaxSymbolSize( d );
+    mLegend->setMaximumSymbolSize( d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -424,7 +424,7 @@ void QgsLayoutLegendWidget::mMinSymbolSizeSpinBox_valueChanged( double d )
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Legend Minimum Symbol Size" ), QgsLayoutItem::UndoLegendMinSymbolSize );
-    mLegend->setMinSymbolSize( d );
+    mLegend->setMinimumSymbolSize( d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();

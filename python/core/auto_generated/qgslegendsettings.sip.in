@@ -223,26 +223,44 @@ Sets the default symbol size (in millimeters) used for legend items.
 .. seealso:: :py:func:`symbolSize`
 %End
 
-    double maxSymbolSize() const;
+    double maximumSymbolSize() const;
 %Docstring
-Returns the maximum symbol size in mm
+Returns the maximum symbol size (in mm). 0.0 means there is no maximum set.
+
+.. seealso:: :py:func:`setMaximumSymbolSize`
+
+.. versionadded:: 3.16
 %End
 
-    void setMaxSymbolSize( double size );
+    void setMaximumSymbolSize( double size );
 %Docstring
-Sets the maximum marker size in mm
-@param size maximum size in mm
+Set the maximum symbol ``size`` for symbol (in millimeters).
+
+A symbol size of 0.0 indicates no maximum is set.
+
+.. seealso:: :py:func:`maximumSymbolSize`
+
+.. versionadded:: 3.16
 %End
 
-    double minSymbolSize() const;
+    double minimumSymbolSize() const;
 %Docstring
-Returns the minimum symbol size in mm
+Returns the minimum symbol size (in mm). A value 0.0 means there is no minimum set.
+
+.. seealso:: :py:func:`setMinimumSymbolSize`
+
+.. versionadded:: 3.16
 %End
 
-    void setMinSymbolSize( double size );
+    void setMinimumSymbolSize( double size );
 %Docstring
-Sets the minimum symbol size in mm
-@param size minimum size in mm
+Set the minimum symbol ``size`` for symbol (in millimeters).
+
+A symbol size of 0.0 indicates no minimum is set.
+
+.. seealso:: :py:func:`minimumSymbolSize`
+
+.. versionadded:: 3.16
 %End
 
     void setSymbolAlignment( Qt::AlignmentFlag alignment );

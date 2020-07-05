@@ -557,8 +557,8 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   double widthOffset = 0;
   double heightOffset = 0;
 
-  double maxSymbolSize = settings.maxSymbolSize();
-  double minSymbolSize = settings.minSymbolSize();
+  double maxSymbolSize = settings.maximumSymbolSize();
+  double minSymbolSize = settings.minimumSymbolSize();
 
   if ( QgsMarkerSymbol *markerSymbol = dynamic_cast<QgsMarkerSymbol *>( s ) )
   {

@@ -304,33 +304,45 @@ Sets the legend symbol ``width``.
 .. seealso:: :py:func:`symbolWidth`
 %End
 
-    double maxSymbolSize() const;
+    double maximumSymbolSize() const;
 %Docstring
-Returns the legend maximum symbol size (in mm). 0.0 means there is no maximum set
+Returns the maximum symbol size (in mm). 0.0 means there is no maximum set.
+
+.. seealso:: :py:func:`setMaximumSymbolSize`
 
 .. versionadded:: 3.16
 %End
 
-    void setMaxSymbolSize( double size );
+    void setMaximumSymbolSize( double size );
 %Docstring
-set maximum symbol size
+Set the maximum symbol ``size`` for symbol (in millimeters).
 
-:param size: maximum size (in mm) or 0.0 if no maximum
+A symbol size of 0.0 indicates no maximum is set.
+
+.. seealso:: :py:func:`maximumSymbolSize`
 
 .. versionadded:: 3.16
 %End
 
-    double minSymbolSize() const;
+    double minimumSymbolSize() const;
 %Docstring
-Returns the legend minimum symbol size (in mm). 0.0 means there is no minimum set
+Returns the minimum symbol size (in mm). A value 0.0 means there is no minimum set.
+
+.. seealso:: :py:func:`setMinimumSymbolSize`
+
+.. versionadded:: 3.16
 %End
 
-    void setMinSymbolSize( double size );
+    void setMinimumSymbolSize( double size );
 %Docstring
-set minimum symbol size for symbol
-@param size inimum size (in mm) or 0.0 if no minimum
-%End
+Set the minimum symbol ``size`` for symbol (in millimeters).
 
+A symbol size of 0.0 indicates no minimum is set.
+
+.. seealso:: :py:func:`minimumSymbolSize`
+
+.. versionadded:: 3.16
+%End
 
     void setSymbolAlignment( Qt::AlignmentFlag alignment );
 %Docstring

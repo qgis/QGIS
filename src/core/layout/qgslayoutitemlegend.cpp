@@ -392,22 +392,22 @@ void QgsLayoutItemLegend::setSymbolWidth( double w )
   mSettings.setSymbolSize( QSizeF( w, mSettings.symbolSize().height() ) );
 }
 
-double QgsLayoutItemLegend::maxSymbolSize() const
+double QgsLayoutItemLegend::maximumSymbolSize() const
 {
   return mSettings.maxSymbolSize();
 }
 
-void QgsLayoutItemLegend::setMaxSymbolSize( double size )
+void QgsLayoutItemLegend::setMaximumSymbolSize( double size )
 {
   mSettings.setMaxSymbolSize( size );
 }
 
-double QgsLayoutItemLegend::minSymbolSize() const
+double QgsLayoutItemLegend::minimumSymbolSize() const
 {
   return mSettings.minSymbolSize();
 }
 
-void QgsLayoutItemLegend::setMinSymbolSize( double size )
+void QgsLayoutItemLegend::setMinimumSymbolSize( double size )
 {
   mSettings.setMinSymbolSize( size );
 }
