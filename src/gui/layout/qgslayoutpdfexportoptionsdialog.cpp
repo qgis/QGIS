@@ -66,7 +66,7 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
   mComboImageCompression->setDisabled( true );
   mComboImageCompression->addItem( tr( "Lossy (JPEG)" ) );
   mComboImageCompression->setCurrentIndex( 0 );
-  mComboImageCompression->setToolTip( tr( "Lossless image compression is available only with QGIS builds using Qt 5.14 or later" ) );
+  mComboImageCompression->setToolTip( tr( "Lossless image compression is available only with QGIS builds using Qt 5.13 or later" ) );
 #endif
 
 
