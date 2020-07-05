@@ -97,6 +97,7 @@ class TestQgsRenderContext(unittest.TestCase):
         c = QgsRenderContext.fromQPainter(p)
         self.assertEqual(c.painter(), p)
         self.assertEqual(c.testFlag(QgsRenderContext.Antialiasing), False)
+        self.assertEqual(c.testFlag(QgsRenderContext.LosslessImageRendering), False)
         self.assertAlmostEqual(c.scaleFactor(), 88 / 25.4, 3)
 
         im = QImage(1000, 600, QImage.Format_RGB32)
@@ -105,9 +106,16 @@ class TestQgsRenderContext(unittest.TestCase):
         im.setDotsPerMeterY(dots_per_m)
         p = QPainter(im)
         p.setRenderHint(QPainter.Antialiasing)
+        try:
+            p.setRenderHint(QPainter.LosslessImageRendering)
+            supports_lossless = True
+        except AttributeError:
+            supports_lossless = False
+
         c = QgsRenderContext.fromQPainter(p)
         self.assertEqual(c.painter(), p)
         self.assertEqual(c.testFlag(QgsRenderContext.Antialiasing), True)
+        self.assertEqual(c.testFlag(QgsRenderContext.LosslessImageRendering), supports_lossless)
         self.assertAlmostEqual(c.scaleFactor(), dots_per_m / 1000, 3)  # scaleFactor should be pixels/mm
 
     def testFromMapSettings(self):
@@ -118,10 +126,14 @@ class TestQgsRenderContext(unittest.TestCase):
         ms.setOutputSize(QSize(1000, 1000))
         ms.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         ms.setExtent(QgsRectangle(10000, 20000, 30000, 40000))
+        ms.setFlag(QgsMapSettings.Antialiasing, True)
+        ms.setFlag(QgsMapSettings.LosslessImageRendering, True)
 
         ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysText)
         rc = QgsRenderContext.fromMapSettings(ms)
         self.assertEqual(rc.textRenderFormat(), QgsRenderContext.TextFormatAlwaysText)
+        self.assertTrue(rc.testFlag(QgsRenderContext.Antialiasing))
+        self.assertTrue(rc.testFlag(QgsRenderContext.LosslessImageRendering))
 
         ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
         rc = QgsRenderContext.fromMapSettings(ms)
@@ -527,6 +539,30 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertEqual(rc.featureClipGeometry().asWkt(), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
         rc2 = QgsRenderContext(rc)
         self.assertEqual(rc2.featureClipGeometry().asWkt(), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+
+    def testSetPainterFlags(self):
+        rc = QgsRenderContext()
+        p = QPainter()
+        im = QImage(1000, 600, QImage.Format_RGB32)
+        p.begin(im)
+        rc.setPainterFlagsUsingContext(p)
+        self.assertFalse(p.testRenderHint(QPainter.Antialiasing))
+        try:
+            self.assertFalse(p.testRenderHint(QPainter.LosslessImageRendering))
+        except AttributeError:
+            pass
+
+        rc.setPainter(p)
+        rc.setFlag(QgsRenderContext.Antialiasing, True)
+        rc.setFlag(QgsRenderContext.LosslessImageRendering, True)
+        rc.setPainterFlagsUsingContext(p)
+        self.assertTrue(p.testRenderHint(QPainter.Antialiasing))
+        try:
+            self.assertTrue(p.testRenderHint(QPainter.LosslessImageRendering))
+        except AttributeError:
+            pass
+
+        p.end()
 
 
 if __name__ == '__main__':

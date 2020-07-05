@@ -44,6 +44,7 @@ to be rendered etc.
       RenderPreviewJob,
       RenderBlocking,
       RenderSymbolPreview,
+      LosslessImageRendering,
     };
     typedef QFlags<QgsRenderContext::Flag> Flags;
 
