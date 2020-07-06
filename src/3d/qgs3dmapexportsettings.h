@@ -43,6 +43,8 @@ class _3D_EXPORT Qgs3DMapExportSettings : public QObject
     int terrrainResolution() const { return mTerrainResolution; }
     //! Returns whether triangles edges will look smooth
     bool smoothEdges() const { return mSmoothEdges; }
+    //! Returns whether normals will be exported
+    bool exportNormals() const { return mExportNormals; }
 
     //! Sets the scene name
     void setSceneName( const QString &sceneName ) { mSceneName = sceneName; }
@@ -52,6 +54,8 @@ class _3D_EXPORT Qgs3DMapExportSettings : public QObject
     void setTerrainResolution( int resolution ) { mTerrainResolution = resolution; }
     //! Sets whether triangles edges will look smooth
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
+    //! Sets whether normals should be exported
+    void setExportNormals( bool exportNormals ) { mExportNormals = exportNormals; }
     //! Returns a path to a file that with the "name.extension" in the export folder
     QString getFilePath( const QString &name, const QString &extension ) const
     {
@@ -62,6 +66,7 @@ class _3D_EXPORT Qgs3DMapExportSettings : public QObject
     QString mSceneFolderPath = QDir::homePath();
     int mTerrainResolution = 128;
     bool mSmoothEdges = false;
+    bool mExportNormals = true;
 };
 
 #endif // QGS3DMAPEXPORTSETTINGS_H

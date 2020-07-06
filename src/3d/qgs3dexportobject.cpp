@@ -16,6 +16,7 @@
 #include "qgs3dexportobject.h"
 
 #include <QVector3D>
+#include <QDebug>
 
 Qgs3DExportObject::Qgs3DExportObject( const QString &name, const QString &parentName, QObject *parent )
   : QObject( parent )
@@ -54,9 +55,15 @@ void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &position
 
   for ( int i = 0; i < faceIndex.size(); i += 3 )
   {
+    // skip invalid triangles
     if ( faceIndex[i] == faceIndex[i + 1] && faceIndex[i + 1] == faceIndex[i + 2] ) continue;
     for ( int j = 0; j < 3; ++j ) mIndexes << faceIndex[i + j] + 1;
   }
+}
+
+void Qgs3DExportObject::setupNormalCoordinates( const QVector<float> &normalsBuffer )
+{
+  mNormals << normalsBuffer;
 }
 
 void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ )
@@ -94,13 +101,37 @@ void Qgs3DExportObject::saveTo( QTextStream &out, int scale, const QVector3D &ce
     out << ( mVertxPosition[i] - center.x() ) / scale << " ";
     out << ( mVertxPosition[i + 1] - center.y() ) / scale << " ";
     out << ( mVertxPosition[i + 2] - center.z() ) / scale << "\n";
+    if ( i + 3 <= mNormals.size() )
+    {
+      out << "vn " << mNormals[i] << " " << mNormals[i + 1] << " " << mNormals[i + 2] << "\n";
+    }
   }
 
-  // Construct faces
+  bool hasTextures = false;
+  // if the object has normals then the normals and positions buffers should be the same size
+  bool hasNormals = mNormals.size() == mVertxPosition.size();
+  if ( !hasNormals && !mNormals.empty() )
+  {
+    qDebug() << "WARNING: vertex normals count and vertex positions count are different";
+  }
   int verticesCount = mVertxPosition.size() / 3;
+
+  auto getVertexIndex = [&]( int i ) -> QString
+  {
+    int negativeIndex = -1 - ( verticesCount - i );
+    if ( !hasNormals && !hasTextures ) return QString( "%1" ).arg( negativeIndex );
+    if ( hasNormals && !hasTextures ) return QString( "%1//%2" ).arg( negativeIndex ).arg( negativeIndex );
+    // TODO: handle other cases
+    return QString( "%1" ).arg( negativeIndex );
+  };
+
+  // Construct faces
   for ( int i = 0; i < mIndexes.size(); i += 3 )
   {
     if ( mIndexes[i] == mIndexes[i + 1] && mIndexes[i + 1] == mIndexes[i + 2] ) continue;
-    out << "f " << -1 - ( verticesCount - mIndexes[i] ) << " " << -1 - ( verticesCount - mIndexes[i + 1] ) << " " << -1 - ( verticesCount - mIndexes[i + 2] ) << "\n";
+    out << "f " << getVertexIndex( mIndexes[i] );
+    out << " " << getVertexIndex( mIndexes[i + 1] );
+    out << " " << getVertexIndex( mIndexes[i + 2] );
+    out << "\n";
   }
 }

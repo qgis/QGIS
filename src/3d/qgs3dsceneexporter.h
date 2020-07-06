@@ -57,12 +57,17 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     //! Sets whether the triangles will look smooth
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
     //! Returns whether the triangles will look smooth
-    bool smoothEdges() { return mSmoothEdges; }
+    bool smoothEdges() const { return mSmoothEdges; }
+
+    //! Sets whether the normals will be exported
+    void setExportNormals( bool exportNormals ) { mExportNormals = exportNormals; }
+    //! Returns whether the normals will be exported
+    bool exportNormals() const { return mExportNormals; }
 
     //! Sets the terrian resolution
     void setTerrainResolution( int resolution ) { mTerrainResolution = resolution; }
     //! Returns the terrain resolution
-    int terrainResolution() { return mTerrainResolution; }
+    int terrainResolution() const { return mTerrainResolution; }
 
   private:
     //! Processes the attribute directly by taking a position buffer and converting it to Qgs3DExportObject
@@ -90,6 +95,7 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
 
     bool mSmoothEdges;
     int mTerrainResolution;
+    bool mExportNormals;
 };
 
 #endif // QGS3DSCENEEXPORTER_H

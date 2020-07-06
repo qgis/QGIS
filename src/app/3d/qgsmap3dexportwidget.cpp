@@ -38,10 +38,16 @@ QgsMap3DExportWidget::QgsMap3DExportWidget( Qgs3DMapScene *scene, Qgs3DMapExport
   QString initialPath = settings.value( QStringLiteral( "UI/last3DSceneExportDir" ), QDir::homePath() ).toString();
   ui->selectFolderWidget->setDefaultRoot( initialPath );
 
+  ui->sceneNameLineEdit->setText( exportSettings->sceneName() );
+  ui->selectFolderWidget->setFilePath( exportSettings->sceneFolderPath() );
+  ui->terrainResolutionSpinBox->setValue( exportSettings->terrrainResolution() );
+  ui->smoothEdgesCheckBox->setChecked( exportSettings->smoothEdges() );
+
   connect( ui->sceneNameLineEdit, &QLineEdit::textChanged, [ = ]( const QString & ) { settingsChanged(); } );
   connect( ui->selectFolderWidget, &QgsFileWidget::fileChanged, [ = ]( const QString & ) { settingsChanged(); } );
   connect( ui->smoothEdgesCheckBox, &QCheckBox::stateChanged, [ = ]( int ) { settingsChanged(); } );
   connect( ui->terrainResolutionSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), [ = ]( int ) { settingsChanged(); } );
+  connect( ui->exportNormalsCheckBox, &QCheckBox::stateChanged, [ = ]( int ) { settingsChanged(); } );
 
   // sets the export settings to whatever is on the scene
   settingsChanged();
@@ -58,6 +64,7 @@ void QgsMap3DExportWidget::settingsChanged()
   mExportSettings->setSceneFolderPath( ui->selectFolderWidget->filePath() );
   mExportSettings->setTerrainResolution( ui->terrainResolutionSpinBox->value() );
   mExportSettings->setSmoothEdges( ui->smoothEdgesCheckBox->isChecked() );
+  mExportSettings->setExportNormals( ui->exportNormalsCheckBox->isChecked() );
 }
 
 void QgsMap3DExportWidget::exportScene()

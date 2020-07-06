@@ -54,6 +54,9 @@ class Qgs3DExportObject : public QObject
     //! Sets positions coordinates from just one positions buffer and indexes buffer and does the translation and scaling
     void setupPositionCoordinates( const QVector<float> &positionsBuffer, const QVector<unsigned int> &facesIndexes, float scale = 1.0f, const QVector3D translation = QVector3D( 0, 0, 0 ) );
 
+    //! setss normal coordinates for each vertex
+    void setupNormalCoordinates( const QVector<float> &normalsBuffer );
+
     /**
      * Updates the box bounds explained with the current object bounds
      * This expands the bounding box if the current object outside the bounds of the already established bounds
@@ -66,6 +69,7 @@ class Qgs3DExportObject : public QObject
     QString mName;
     QString mParentName;
     QVector<float> mVertxPosition;
+    QVector<float> mNormals;
     QVector<int> mIndexes;
 
     bool mSmoothEdges;

@@ -55,12 +55,12 @@ QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute )
   QVector<T> result;
   for ( int i = bytesOffset; i < data.size(); i += bytesStride )
   {
-    for ( int j = 0; j < vertexSize * sizeof( T ); j += sizeof( T ) )
+    for ( unsigned int j = 0; j < vertexSize * sizeof( T ); j += sizeof( T ) )
     {
       // maybe a problem with indienness can happen?
       T v;
       char *vArr = ( char * )&v;
-      for ( int k = 0; k < sizeof( T ); ++k )
+      for ( unsigned int k = 0; k < sizeof( T ); ++k )
       {
         vArr[k] = data.at( i + j + k );
       }
@@ -163,7 +163,8 @@ QVector<unsigned int> createPlaneIndexData( const QSize &resolution )
 Qgs3DSceneExporter::Qgs3DSceneExporter( Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
   , mSmoothEdges( false )
-  , mTerrainResolution( 64 )
+  , mTerrainResolution( 128 )
+  , mExportNormals( true )
 {
 
 }
@@ -369,7 +370,6 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::createDEMTileEntity( QgsTerrainEntity 
   return entity;
 }
 
-
 void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity )
 {
   Qt3DRender::QGeometryRenderer *mesh = nullptr;
@@ -447,6 +447,12 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
 
   object->setSmoothEdges( mSmoothEdges );
   object->setupPositionCoordinates( positionBuffer, indexBuffer, scale, translation );
+
+  if ( mExportNormals )
+  {
+    QVector<float> normalsBuffer = getAttributeData<float>( tileGeometry->normalAttribute() );
+    object->setupNormalCoordinates( normalsBuffer );
+  }
 }
 
 void Qgs3DSceneExporter::processAttribute( Qt3DRender::QAttribute *attribute )
