@@ -6514,6 +6514,7 @@ QStringList QgsProcessingMultipleLayerWidgetWrapper::compatibleParameterTypes() 
          << QgsProcessingParameterMapLayer::typeName()
          << QgsProcessingParameterVectorLayer::typeName()
          << QgsProcessingParameterMeshLayer::typeName()
+         << QgsProcessingParameterFeatureSource::typeName()
          << QgsProcessingParameterRasterLayer::typeName()
          << QgsProcessingParameterFile::typeName()
          << QgsProcessingParameterString::typeName();
