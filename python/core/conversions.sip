@@ -1738,10 +1738,10 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
     // Set the list elements.
     for (int i = 0; i < sipCpp->size(); ++i)
     {
-       QgsWkbTypes::GeometryType e = sipCpp->at(i);
+       QgsWkbTypes::GeometryType e = static_cast<QgsWkbTypes::GeometryType>( sipCpp->at(i) );
         PyObject *eobj;
 
-        if ((eobj = sipConvertFromEnum(e, sipType_QgsWkbTypes_GeometryType)) == NULL)
+        if ((eobj = sipConvertFromEnum(static_cast<int>( e ), sipType_QgsWkbTypes_GeometryType)) == NULL)
         {
             Py_DECREF(l);
 
@@ -1768,12 +1768,12 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
         return 1;
     }
 
-    QList<QgsWkbTypes::GeometryType> *ql = new QList<QgsWkbTypes::GeometryType>;
+    QList<QgsWkbTypes::Type> *ql = new QList<QgsWkbTypes::GeometryType>;
 
     for (SIP_SSIZE_T i = 0; i < PyList_GET_SIZE(sipPy); ++i)
     {
         long l = SIPLong_AsLong(PyList_GET_ITEM(sipPy, i));
-        ql->append(static_cast<QgsWkbTypes::GeometryType>(l));
+        ql->append(static_cast<QgsWkbTypes::Type>(l));
     }
 
     *sipCppPtr = ql;

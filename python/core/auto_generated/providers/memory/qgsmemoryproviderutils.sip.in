@@ -25,7 +25,7 @@ Utility functions for use with the memory vector data provider.
 
     static QgsVectorLayer *createMemoryLayer( const QString &name,
         const QgsFields &fields,
-        QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry,
+        QgsWkbTypes::Type geometryType = QgsWkbTypes::Type::NoGeometry,
         const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) /Factory/;
 %Docstring
 Creates a new memory layer using the specified parameters. The caller takes responsibility
