@@ -86,8 +86,13 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
   {
     case StepLimit:
 
+<<<<<<< HEAD
       match = mCanvas->snappingUtils()->snapToMap( mMapPoint, &filter );
       if ( match.isValid() )
+=======
+      match = mCanvas->snappingUtils()->snapToMap( mMapPoint, &filter, true );
+      if ( match.isValid() && match.layer() )
+>>>>>>> 6597b4ab6c... Merge pull request #37600 from m-kuhn/fix_trim_extend_crash
       {
         mIs3DLayer = QgsWkbTypes::hasZ( match.layer()->wkbType() );
 
