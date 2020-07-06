@@ -154,11 +154,15 @@ class CORE_EXPORT QgsTextFormat
      * Returns a font with the size scaled to match the format's size settings (including
      * units and map unit scale) for a specified render context.
      * \param context destination render context
+     * \param scaleFactor optional font size scaling factor. It is recommended to set this to
+     * QgsTextRenderer::FONT_WORKAROUND_SCALE and then manually scale painter devices or calculations
+     * based on the resultant font metrics. Failure to do so will result in poor quality text rendering
+     * at small font sizes.
      * \returns font with scaled size
      * \see font()
      * \see size()
      */
-    QFont scaledFont( const QgsRenderContext &context ) const;
+    QFont scaledFont( const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 
     /**
      * Sets the font used for rendering text. Note that the size of the font
