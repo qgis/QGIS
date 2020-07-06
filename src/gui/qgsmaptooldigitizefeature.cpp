@@ -59,7 +59,7 @@ void QgsMapToolDigitizeFeature::activate()
   if ( !vlayer )
     vlayer = currentVectorLayer();
 
-  if ( vlayer && vlayer->geometryType() == QgsWkbTypes::NullGeometry )
+  if ( vlayer && vlayer->geometryType() == QgsWkbTypes::GeometryType::NullGeometry )
   {
     QgsFeature f;
     digitized( f );
@@ -134,7 +134,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       return;
 
     //check we only use this tool for point/multipoint layers
-    if ( vlayer->geometryType() != QgsWkbTypes::PointGeometry && mCheckGeometryType )
+    if ( vlayer->geometryType() != QgsWkbTypes::GeometryType::PointGeometry && mCheckGeometryType )
     {
       emit messageEmitted( tr( "Wrong editing tool, cannot apply the 'capture point' tool on this vector layer" ), Qgis::Warning );
       return;
@@ -161,7 +161,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       {
         QgsPointXY layerPoint = toLayerCoordinates( vlayer, e->mapPoint() );
         if ( isMatchPointZ )
-          savePoint = QgsPoint( QgsWkbTypes::PointZ, layerPoint.x(), layerPoint.y(), fetchPoint.z() );
+          savePoint = QgsPoint( QgsWkbTypes::Type::PointZ, layerPoint.x(), layerPoint.y(), fetchPoint.z() );
         else
           savePoint = QgsPoint( layerPoint.x(), layerPoint.y() );
       }
@@ -181,7 +181,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgsFeature f( vlayer->fields() );
 
       QgsGeometry g;
-      if ( layerWKBType == QgsWkbTypes::Point )
+      if ( layerWKBType == QgsWkbTypes::Type::Point )
       {
         g = QgsGeometry( qgis::make_unique<QgsPoint>( savePoint ) );
       }
@@ -196,7 +196,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       else if ( QgsWkbTypes::isMultiType( layerWKBType ) && QgsWkbTypes::hasZ( layerWKBType ) )
       {
         QgsMultiPoint *mp = new QgsMultiPoint();
-        mp->addGeometry( new QgsPoint( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), isMatchPointZ ? savePoint.z() : defaultZValue() ) );
+        mp->addGeometry( new QgsPoint( QgsWkbTypes::Type::PointZ, savePoint.x(), savePoint.y(), isMatchPointZ ? savePoint.z() : defaultZValue() ) );
         g.set( mp );
       }
       else
@@ -229,14 +229,14 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   else if ( mode() == CaptureLine || mode() == CapturePolygon )
   {
     //check we only use the line tool for line/multiline layers
-    if ( mode() == CaptureLine && vlayer->geometryType() != QgsWkbTypes::LineGeometry && mCheckGeometryType )
+    if ( mode() == CaptureLine && vlayer->geometryType() != QgsWkbTypes::GeometryType::LineGeometry && mCheckGeometryType )
     {
       emit messageEmitted( tr( "Wrong editing tool, cannot apply the 'capture line' tool on this vector layer" ), Qgis::Warning );
       return;
     }
 
     //check we only use the polygon tool for polygon/multipolygon layers
-    if ( mode() == CapturePolygon && vlayer->geometryType() != QgsWkbTypes::PolygonGeometry && mCheckGeometryType )
+    if ( mode() == CapturePolygon && vlayer->geometryType() != QgsWkbTypes::GeometryType::PolygonGeometry && mCheckGeometryType )
     {
       emit messageEmitted( tr( "Wrong editing tool, cannot apply the 'capture polygon' tool on this vector layer" ), Qgis::Warning );
       return;

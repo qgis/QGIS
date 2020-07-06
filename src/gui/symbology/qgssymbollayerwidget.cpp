@@ -217,7 +217,7 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
   spinOffset->setClearValue( 0.0 );
   spinPatternOffset->setClearValue( 0.0 );
 
-  if ( vl && vl->geometryType() != QgsWkbTypes::PolygonGeometry )
+  if ( vl && vl->geometryType() != QgsWkbTypes::GeometryType::PolygonGeometry )
   {
     //draw inside polygon checkbox only makes sense for polygon layers
     mDrawInsideCheckBox->hide();
@@ -1804,7 +1804,7 @@ QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *
   spinOffset->setClearValue( 0.0 );
 
 
-  if ( vl && vl->geometryType() != QgsWkbTypes::PolygonGeometry )
+  if ( vl && vl->geometryType() != QgsWkbTypes::GeometryType::PolygonGeometry )
   {
     mRingFilterComboBox->hide();
     mRingsLabel->hide();
@@ -2039,7 +2039,7 @@ QgsHashedLineSymbolLayerWidget::QgsHashedLineSymbolLayerWidget( QgsVectorLayer *
   spinOffset->setClearValue( 0.0 );
 
 
-  if ( vl && vl->geometryType() != QgsWkbTypes::PolygonGeometry )
+  if ( vl && vl->geometryType() != QgsWkbTypes::GeometryType::PolygonGeometry )
   {
     mRingFilterComboBox->hide();
     mRingsLabel->hide();

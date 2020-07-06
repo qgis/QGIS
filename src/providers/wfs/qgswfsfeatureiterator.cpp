@@ -621,10 +621,10 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures )
           // If receiving a geometry collection, but expecting a multipoint/...,
           // then try to convert it
           if ( f.hasGeometry() &&
-               f.geometry().wkbType() == QgsWkbTypes::GeometryCollection &&
-               ( mShared->mWKBType == QgsWkbTypes::MultiPoint ||
-                 mShared->mWKBType == QgsWkbTypes::MultiLineString ||
-                 mShared->mWKBType == QgsWkbTypes::MultiPolygon ) )
+               f.geometry().wkbType() == QgsWkbTypes::Type::GeometryCollection &&
+               ( mShared->mWKBType == QgsWkbTypes::Type::MultiPoint ||
+                 mShared->mWKBType == QgsWkbTypes::Type::MultiLineString ||
+                 mShared->mWKBType == QgsWkbTypes::Type::MultiPolygon ) )
           {
             QgsWkbTypes::Type singleType = QgsWkbTypes::singleType( mShared->mWKBType );
             auto g = f.geometry().constGet();
@@ -641,11 +641,11 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures )
             if ( allExpectedType )
             {
               QgsGeometryCollection *newGC;
-              if ( mShared->mWKBType == QgsWkbTypes::MultiPoint )
+              if ( mShared->mWKBType == QgsWkbTypes::Type::MultiPoint )
               {
                 newGC =  new QgsMultiPoint();
               }
-              else if ( mShared->mWKBType == QgsWkbTypes::MultiLineString )
+              else if ( mShared->mWKBType == QgsWkbTypes::Type::MultiLineString )
               {
                 newGC = new QgsMultiLineString();
               }

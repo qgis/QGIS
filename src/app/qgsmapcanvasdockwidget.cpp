@@ -57,7 +57,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   mXyMarker->setColor( QColor( 30, 30, 30, 225 ) );
   mXyMarker->setFillColor( QColor( 255, 255, 255, 225 ) );
 
-  mExtentRubberBand = new QgsRubberBand( mMapCanvas, QgsWkbTypes::PolygonGeometry );
+  mExtentRubberBand = new QgsRubberBand( mMapCanvas, QgsWkbTypes::GeometryType::PolygonGeometry );
   mExtentRubberBand->setStrokeColor( Qt::red );
   mExtentRubberBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 225 ) );
   mExtentRubberBand->setFillColor( Qt::transparent );

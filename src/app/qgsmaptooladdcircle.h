@@ -61,7 +61,7 @@ class APP_EXPORT QgsMapToolAddCircle: public QgsMapToolCapture
     //! Circle
     QgsCircle mCircle;
     //! Layer type which will be used for rubberband
-    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::LineGeometry;
+    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::GeometryType::LineGeometry;
 
     //! Snapping indicators
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;

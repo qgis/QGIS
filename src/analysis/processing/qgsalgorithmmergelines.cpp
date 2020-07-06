@@ -56,7 +56,7 @@ QgsProcessing::SourceType QgsMergeLinesAlgorithm::outputLayerType() const
 
 QgsWkbTypes::Type QgsMergeLinesAlgorithm::outputWkbType( QgsWkbTypes::Type ) const
 {
-  return QgsWkbTypes::MultiLineString;
+  return QgsWkbTypes::Type::MultiLineString;
 }
 
 QString QgsMergeLinesAlgorithm::shortHelpString() const

@@ -39,8 +39,8 @@ QgsGrassRegionEdit::QgsGrassRegionEdit( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
   mDraw = false;
-  mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
-  mSrcRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
+  mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::GeometryType::PolygonGeometry );
+  mSrcRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::GeometryType::PolygonGeometry );
   QString error;
   mCrs = QgsGrass::crs( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), error );
   QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
@@ -58,8 +58,8 @@ QgsGrassRegionEdit::~QgsGrassRegionEdit()
 void QgsGrassRegionEdit::canvasPressEvent( QgsMapMouseEvent *event )
 {
   mDraw = true;
-  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
-  mSrcRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+  mRubberBand->reset( QgsWkbTypes::GeometryType::PolygonGeometry );
+  mSrcRubberBand->reset( QgsWkbTypes::GeometryType::PolygonGeometry );
   emit captureStarted();
 
   mStartPoint = toMapCoordinates( event->pos() );
@@ -92,8 +92,8 @@ void QgsGrassRegionEdit::canvasReleaseEvent( QgsMapMouseEvent *event )
 //! called when map tool is about to get inactive
 void QgsGrassRegionEdit::deactivate()
 {
-  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
-  mSrcRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+  mRubberBand->reset( QgsWkbTypes::GeometryType::PolygonGeometry );
+  mSrcRubberBand->reset( QgsWkbTypes::GeometryType::PolygonGeometry );
   QgsMapTool::deactivate();
 }
 
@@ -163,7 +163,7 @@ void QgsGrassRegionEdit::drawRegion( QgsMapCanvas *canvas, QgsRubberBand *rubber
   {
     transform( canvas, points, coordinateTransform );
   }
-  rubberBand->reset( isPolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
+  rubberBand->reset( isPolygon ? QgsWkbTypes::GeometryType::PolygonGeometry : QgsWkbTypes::GeometryType::LineGeometry );
   for ( int i = 0; i < points.size(); i++ )
   {
     bool update = false; // true to update canvas

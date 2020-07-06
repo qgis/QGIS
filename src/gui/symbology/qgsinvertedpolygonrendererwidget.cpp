@@ -38,7 +38,7 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
   QgsWkbTypes::Type type = QgsWkbTypes::singleType( QgsWkbTypes::flatType( layer->wkbType() ) );
 
   // the renderer only applies to polygon vector layers
-  if ( type != QgsWkbTypes::Polygon && type != QgsWkbTypes::CurvePolygon )
+  if ( type != QgsWkbTypes::Type::Polygon && type != QgsWkbTypes::Type::CurvePolygon )
   {
     //setup blank dialog
     mRenderer.reset( nullptr );

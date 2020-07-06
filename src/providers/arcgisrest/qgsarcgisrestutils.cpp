@@ -76,17 +76,17 @@ QgsWkbTypes::Type QgsArcGisRestUtils::mapEsriGeometryType( const QString &esriGe
 {
   // http://resources.arcgis.com/en/help/arcobjects-cpp/componenthelp/index.html#//000w0000001p000000
   if ( esriGeometryType == QLatin1String( "esriGeometryNull" ) )
-    return QgsWkbTypes::Unknown;
+    return QgsWkbTypes::Type::Unknown;
   else if ( esriGeometryType == QLatin1String( "esriGeometryPoint" ) )
-    return QgsWkbTypes::Point;
+    return QgsWkbTypes::Type::Point;
   else if ( esriGeometryType == QLatin1String( "esriGeometryMultipoint" ) )
-    return QgsWkbTypes::MultiPoint;
+    return QgsWkbTypes::Type::MultiPoint;
   else if ( esriGeometryType == QLatin1String( "esriGeometryPolyline" ) )
-    return QgsWkbTypes::MultiCurve;
+    return QgsWkbTypes::Type::MultiCurve;
   else if ( esriGeometryType == QLatin1String( "esriGeometryPolygon" ) )
-    return QgsWkbTypes::MultiPolygon;
+    return QgsWkbTypes::Type::MultiPolygon;
   else if ( esriGeometryType == QLatin1String( "esriGeometryEnvelope" ) )
-    return QgsWkbTypes::Polygon;
+    return QgsWkbTypes::Type::Polygon;
   // Unsupported (either by qgis, or format unspecified by the specification)
   //  esriGeometryCircularArc
   //  esriGeometryEllipticArc
@@ -102,7 +102,7 @@ QgsWkbTypes::Type QgsArcGisRestUtils::mapEsriGeometryType( const QString &esriGe
   //  esriGeometrySphere
   //  esriGeometryTriangles
   //  esriGeometryBag
-  return QgsWkbTypes::Unknown;
+  return QgsWkbTypes::Type::Unknown;
 }
 
 std::unique_ptr< QgsPoint > QgsArcGisRestUtils::parsePoint( const QVariantList &coordList, QgsWkbTypes::Type pointType )
@@ -335,7 +335,7 @@ std::unique_ptr< QgsPolygon > QgsArcGisRestUtils::parseEsriEnvelope( const QVari
 
 std::unique_ptr<QgsAbstractGeometry> QgsArcGisRestUtils::parseEsriGeoJSON( const QVariantMap &geometryData, const QString &esriGeometryType, bool readM, bool readZ, QgsCoordinateReferenceSystem *crs )
 {
-  QgsWkbTypes::Type pointType = QgsWkbTypes::zmType( QgsWkbTypes::Point, readZ, readM );
+  QgsWkbTypes::Type pointType = QgsWkbTypes::zmType( QgsWkbTypes::Type::Point, readZ, readM );
   if ( crs )
   {
     *crs = parseSpatialReference( geometryData[QStringLiteral( "spatialReference" )].toMap() );

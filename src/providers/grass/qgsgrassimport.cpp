@@ -594,7 +594,7 @@ bool QgsGrassVectorImport::import()
   mProcess->setReadChannel( QProcess::StandardOutput );
 
   QgsWkbTypes::Type wkbType = mProvider->wkbType();
-  bool isPolygon = QgsWkbTypes::singleType( QgsWkbTypes::flatType( wkbType ) ) == QgsWkbTypes::Polygon;
+  bool isPolygon = QgsWkbTypes::singleType( QgsWkbTypes::flatType( wkbType ) ) == QgsWkbTypes::Type::Polygon;
   outStream << ( qint32 )wkbType;
 
   outStream << mProvider->fields();

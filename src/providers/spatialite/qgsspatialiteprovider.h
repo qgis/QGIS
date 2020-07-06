@@ -285,7 +285,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     QString mIndexGeometry;
 
     //! Geometry type
-    QgsWkbTypes::Type mGeomType = QgsWkbTypes::Unknown;
+    QgsWkbTypes::Type mGeomType = QgsWkbTypes::Type::Unknown;
 
     //! SQLite handle
     sqlite3 *mSqliteHandle = nullptr;

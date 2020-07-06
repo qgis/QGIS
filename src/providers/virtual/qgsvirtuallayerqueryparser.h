@@ -49,7 +49,7 @@ namespace QgsVirtualLayerQueryParser
       ColumnDef( const QString &name, QVariant::Type aType )
         : mName( name )
         , mType( aType )
-        , mWkbType( QgsWkbTypes::NoGeometry )
+        , mWkbType( QgsWkbTypes::Type::NoGeometry )
       {}
 
       QString name() const { return mName; }
@@ -60,14 +60,14 @@ namespace QgsVirtualLayerQueryParser
       long srid() const { return mSrid; }
       void setSrid( long srid ) { mSrid = srid; }
 
-      void setScalarType( QVariant::Type t ) { mType = t; mWkbType = QgsWkbTypes::NoGeometry; }
+      void setScalarType( QVariant::Type t ) { mType = t; mWkbType = QgsWkbTypes::Type::NoGeometry; }
       QVariant::Type scalarType() const { return mType; }
       QgsWkbTypes::Type wkbType() const { return mWkbType; }
 
     private:
       QString mName;
       QVariant::Type mType = QVariant::Invalid;
-      QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+      QgsWkbTypes::Type mWkbType = QgsWkbTypes::Type::Unknown;
       long mSrid = -1;
   };
 

@@ -78,7 +78,7 @@ QgsProcessing::SourceType QgsPointsAlongGeometryAlgorithm::outputLayerType() con
 
 QgsWkbTypes::Type QgsPointsAlongGeometryAlgorithm::outputWkbType( QgsWkbTypes::Type inputType ) const
 {
-  QgsWkbTypes::Type out = QgsWkbTypes::Point;
+  QgsWkbTypes::Type out = QgsWkbTypes::Type::Point;
   if ( QgsWkbTypes::hasZ( inputType ) )
     out = QgsWkbTypes::addZ( out );
   if ( QgsWkbTypes::hasM( inputType ) )
@@ -185,7 +185,7 @@ QgsFeatureList QgsPointsAlongGeometryAlgorithm::processFeature( const QgsFeature
     if ( mDynamicEndOffset )
       endOffset = mEndOffsetProperty.valueAsDouble( context.expressionContext(), endOffset );
 
-    const double totalLength = geometry.type() == QgsWkbTypes::PolygonGeometry ? geometry.constGet()->perimeter()
+    const double totalLength = geometry.type() == QgsWkbTypes::GeometryType::PolygonGeometry ? geometry.constGet()->perimeter()
                                : geometry.length() - endOffset;
 
     double currentDistance = startOffset;

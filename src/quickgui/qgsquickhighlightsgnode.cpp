@@ -31,7 +31,7 @@ QgsQuickHighlightSGNode::QgsQuickHighlightSGNode( const QgsGeometry &geom,
   handleGeometryCollection( geom.constGet(), geom.type() );
 }
 
-void QgsQuickHighlightSGNode::handleGeometryCollection( const QgsAbstractGeometry *geom, QgsWkbTypes::GeometryType type )
+void QgsQuickHighlightSGNode::handleGeometryCollection( const QgsAbstractGeometry *geom, QgsWkbTypes::Type type )
 {
   const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom );
   if ( collection && !collection->isEmpty() )
@@ -48,11 +48,11 @@ void QgsQuickHighlightSGNode::handleGeometryCollection( const QgsAbstractGeometr
   }
 }
 
-void QgsQuickHighlightSGNode::handleSingleGeometry( const QgsAbstractGeometry *geom, QgsWkbTypes::GeometryType type )
+void QgsQuickHighlightSGNode::handleSingleGeometry( const QgsAbstractGeometry *geom, QgsWkbTypes::Type type )
 {
   switch ( type )
   {
-    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::GeometryType::PointGeometry:
     {
       const QgsPoint *point = qgsgeometry_cast<const QgsPoint *>( geom );
       if ( point )
@@ -60,7 +60,7 @@ void QgsQuickHighlightSGNode::handleSingleGeometry( const QgsAbstractGeometry *g
       break;
     }
 
-    case QgsWkbTypes::LineGeometry:
+    case QgsWkbTypes::GeometryType::LineGeometry:
     {
       const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( geom );
       if ( line )
@@ -68,7 +68,7 @@ void QgsQuickHighlightSGNode::handleSingleGeometry( const QgsAbstractGeometry *g
       break;
     }
 
-    case QgsWkbTypes::PolygonGeometry:
+    case QgsWkbTypes::GeometryType::PolygonGeometry:
     {
       const QgsPolygon *poly = qgsgeometry_cast<const QgsPolygon *>( geom );
       if ( poly )
@@ -76,8 +76,8 @@ void QgsQuickHighlightSGNode::handleSingleGeometry( const QgsAbstractGeometry *g
       break;
     }
 
-    case QgsWkbTypes::UnknownGeometry:
-    case QgsWkbTypes::NullGeometry:
+    case QgsWkbTypes::GeometryType::UnknownGeometry:
+    case QgsWkbTypes::GeometryType::NullGeometry:
       break;
   }
 }

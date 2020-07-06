@@ -99,9 +99,9 @@ QVariantMap QgsFilterByGeometryAlgorithm::processAlgorithm( const QVariantMap &p
   const bool hasM = QgsWkbTypes::hasM( source->wkbType() );
   const bool hasZ = QgsWkbTypes::hasZ( source->wkbType() );
 
-  QgsWkbTypes::Type pointType = QgsWkbTypes::Point;
-  QgsWkbTypes::Type lineType = QgsWkbTypes::LineString;
-  QgsWkbTypes::Type polygonType = QgsWkbTypes::Polygon;
+  QgsWkbTypes::Type pointType = QgsWkbTypes::Type::Point;
+  QgsWkbTypes::Type lineType = QgsWkbTypes::Type::LineString;
+  QgsWkbTypes::Type polygonType = QgsWkbTypes::Type::Polygon;
   if ( hasM )
   {
     pointType = QgsWkbTypes::addM( pointType );
@@ -135,7 +135,7 @@ QVariantMap QgsFilterByGeometryAlgorithm::processAlgorithm( const QVariantMap &p
 
   QString noGeomSinkId;
   std::unique_ptr< QgsFeatureSink > noGeomSink( parameterAsSink( parameters, QStringLiteral( "NO_GEOMETRY" ), context, noGeomSinkId, source->fields(),
-      QgsWkbTypes::NoGeometry ) );
+      QgsWkbTypes::Type::NoGeometry ) );
   if ( parameters.value( QStringLiteral( "NO_GEOMETRY" ), QVariant() ).isValid() && !noGeomSink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "NO_GEOMETRY" ) ) );
 
@@ -161,29 +161,29 @@ QVariantMap QgsFilterByGeometryAlgorithm::processAlgorithm( const QVariantMap &p
     {
       switch ( f.geometry().type() )
       {
-        case QgsWkbTypes::PointGeometry:
+        case QgsWkbTypes::GeometryType::PointGeometry:
           if ( pointSink )
           {
             pointSink->addFeature( f, QgsFeatureSink::FastInsert );
           }
           pointCount++;
           break;
-        case QgsWkbTypes::LineGeometry:
+        case QgsWkbTypes::GeometryType::LineGeometry:
           if ( lineSink )
           {
             lineSink->addFeature( f, QgsFeatureSink::FastInsert );
           }
           lineCount++;
           break;
-        case QgsWkbTypes::PolygonGeometry:
+        case QgsWkbTypes::GeometryType::PolygonGeometry:
           if ( polygonSink )
           {
             polygonSink->addFeature( f, QgsFeatureSink::FastInsert );
           }
           polygonCount++;
           break;
-        case QgsWkbTypes::NullGeometry:
-        case QgsWkbTypes::UnknownGeometry:
+        case QgsWkbTypes::GeometryType::NullGeometry:
+        case QgsWkbTypes::GeometryType::UnknownGeometry:
           break;
       }
     }

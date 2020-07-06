@@ -86,7 +86,7 @@ QgsWkbTypes::Type QgsPoleOfInaccessibilityAlgorithm::outputWkbType( QgsWkbTypes:
 {
   Q_UNUSED( inputWkbType );
 
-  return QgsWkbTypes::Point;
+  return QgsWkbTypes::Type::Point;
 }
 
 QgsFields QgsPoleOfInaccessibilityAlgorithm::outputFields( const QgsFields &inputFields ) const

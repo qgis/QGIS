@@ -115,7 +115,7 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image, double si
 void QgsPoint3DBillboardMaterial::useDefaultSymbol( const Qgs3DMapSettings &map, bool selected )
 {
   // Default texture
-  std::unique_ptr< QgsMarkerSymbol> defaultSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
+  std::unique_ptr< QgsMarkerSymbol> defaultSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType::PointGeometry ) ) );
   setTexture2DFromSymbol( defaultSymbol.get(), map, selected );
 }
 

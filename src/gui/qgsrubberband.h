@@ -129,9 +129,9 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      *         Its CRS will be used to map points onto screen coordinates.
      * The ownership is transferred to this canvas.
      *  \param geometryType Defines how the data should be drawn onto the screen.
-     *         QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry or QgsWkbTypes::PointGeometry
+     *         QgsWkbTypes::GeometryType::LineGeometry, QgsWkbTypes::GeometryType::PolygonGeometry or QgsWkbTypes::GeometryType::PointGeometry
      */
-    QgsRubberBand( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
+    QgsRubberBand( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::LineGeometry );
 
     /**
      * Sets the color for the rubberband.
@@ -234,7 +234,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * Sets the representation type according to geometryType.
      *  \param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
      */
-    void reset( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
+    void reset( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::LineGeometry );
 
     /**
      * Adds a vertex to the rubberband and update canvas.
@@ -420,7 +420,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * Nested lists used for multitypes
      */
     QVector< QVector< QVector <QgsPointXY> > > mPoints;
-    QgsWkbTypes::GeometryType mGeometryType = QgsWkbTypes::PolygonGeometry;
+    QgsWkbTypes::GeometryType mGeometryType = QgsWkbTypes::GeometryType::PolygonGeometry;
     double mTranslationOffsetX = 0.0;
     double mTranslationOffsetY = 0.0;
 

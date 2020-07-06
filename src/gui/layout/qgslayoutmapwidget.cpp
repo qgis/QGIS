@@ -278,7 +278,7 @@ void QgsLayoutMapWidget::compositionAtlasToggled( bool atlasEnabled )
 {
   if ( atlasEnabled &&
        mMapItem && mMapItem->layout() && mMapItem->layout()->reportContext().layer()
-       && mMapItem->layout()->reportContext().layer()->wkbType() != QgsWkbTypes::NoGeometry )
+       && mMapItem->layout()->reportContext().layer()->wkbType() != QgsWkbTypes::Type::NoGeometry )
   {
     mAtlasCheckBox->setEnabled( true );
   }
@@ -938,7 +938,7 @@ void QgsLayoutMapWidget::toggleAtlasScalingOptionsByLayerType()
     return;
   }
 
-  if ( QgsWkbTypes::geometryType( layer->wkbType() ) == QgsWkbTypes::PointGeometry )
+  if ( QgsWkbTypes::geometryType( layer->wkbType() ) == QgsWkbTypes::GeometryType::PointGeometry )
   {
     //For point layers buffer setting makes no sense, so set "fixed scale" on and disable margin control
     mAtlasFixedScaleRadio->setChecked( true );
@@ -1115,7 +1115,7 @@ void QgsLayoutMapWidget::mDrawCanvasItemsCheckBox_stateChanged( int state )
 
 void QgsLayoutMapWidget::atlasLayerChanged( QgsVectorLayer *layer )
 {
-  if ( !layer || layer->wkbType() == QgsWkbTypes::NoGeometry )
+  if ( !layer || layer->wkbType() == QgsWkbTypes::Type::NoGeometry )
   {
     //geometryless layer, disable atlas control
     mAtlasCheckBox->setChecked( false );

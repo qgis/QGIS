@@ -173,7 +173,7 @@ void TestQgsRubberband::testVisibility()
   QCOMPARE( mRubberband->isVisible(), true );
 
   // Add point without update
-  mRubberband->reset( QgsWkbTypes::PolygonGeometry );
+  mRubberband->reset( QgsWkbTypes::GeometryType::PolygonGeometry );
   mRubberband->addPoint( QgsPointXY( 10, 10 ), false );
   QCOMPARE( mRubberband->isVisible(), false );
 
@@ -190,7 +190,7 @@ void TestQgsRubberband::testVisibility()
 
 void TestQgsRubberband::testClose()
 {
-  QgsRubberBand r( mCanvas, QgsWkbTypes::PolygonGeometry );
+  QgsRubberBand r( mCanvas, QgsWkbTypes::GeometryType::PolygonGeometry );
 
   // try closing empty rubber band, don't want to crash
   r.closePoints();

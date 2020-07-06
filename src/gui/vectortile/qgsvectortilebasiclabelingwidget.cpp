@@ -289,9 +289,9 @@ QgsVectorTileBasicLabelingWidget::QgsVectorTileBasicLabelingWidget( QgsVectorTil
   layout()->setContentsMargins( 0, 0, 0, 0 );
 
   QMenu *menuAddRule = new QMenu( btnAddRule );
-  menuAddRule->addAction( tr( "Marker" ), this, [this] { addStyle( QgsWkbTypes::PointGeometry ); } );
-  menuAddRule->addAction( tr( "Line" ), this, [this] { addStyle( QgsWkbTypes::LineGeometry ); } );
-  menuAddRule->addAction( tr( "Fill" ), this, [this] { addStyle( QgsWkbTypes::PolygonGeometry ); } );
+  menuAddRule->addAction( tr( "Marker" ), this, [this] { addStyle( QgsWkbTypes::GeometryType::PointGeometry ); } );
+  menuAddRule->addAction( tr( "Line" ), this, [this] { addStyle( QgsWkbTypes::GeometryType::LineGeometry ); } );
+  menuAddRule->addAction( tr( "Fill" ), this, [this] { addStyle( QgsWkbTypes::GeometryType::PolygonGeometry ); } );
   btnAddRule->setMenu( menuAddRule );
 
   //connect( btnAddRule, &QPushButton::clicked, this, &QgsVectorTileBasicLabelingWidget::addStyle );
@@ -351,7 +351,7 @@ void QgsVectorTileBasicLabelingWidget::editStyleAtIndex( const QModelIndex &inde
   QgsVectorTileBasicLabelingStyle style = mLabeling->style( index.row() );
 
   QgsPalLayerSettings labelSettings = style.labelSettings();
-  if ( labelSettings.layerType == QgsWkbTypes::UnknownGeometry )
+  if ( labelSettings.layerType == QgsWkbTypes::GeometryType::UnknownGeometry )
     labelSettings.layerType = style.geometryType();
 
   QgsSymbolWidgetContext context;

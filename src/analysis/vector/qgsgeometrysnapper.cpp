@@ -504,7 +504,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
 
 QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, double snapTolerance, const QList<QgsGeometry> &referenceGeometries, QgsGeometrySnapper::SnapMode mode )
 {
-  if ( QgsWkbTypes::geometryType( geometry.wkbType() ) == QgsWkbTypes::PolygonGeometry &&
+  if ( QgsWkbTypes::geometryType( geometry.wkbType() ) == QgsWkbTypes::GeometryType::PolygonGeometry &&
        ( mode == EndPointPreferClosest || mode == EndPointPreferNodes || mode == EndPointToEndPoint ) )
     return geometry;
 
@@ -533,7 +533,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
       for ( int iVert = 0, nVerts = polyLineSize( subjGeom, iPart, iRing ); iVert < nVerts; ++iVert )
       {
         if ( ( mode == EndPointPreferClosest || mode == EndPointPreferNodes || mode == EndPointToEndPoint ) &&
-             QgsWkbTypes::geometryType( subjGeom->wkbType() ) == QgsWkbTypes::LineGeometry && ( iVert > 0 && iVert < nVerts - 1 ) )
+             QgsWkbTypes::geometryType( subjGeom->wkbType() ) == QgsWkbTypes::GeometryType::LineGeometry && ( iVert > 0 && iVert < nVerts - 1 ) )
         {
           //endpoint mode and not at an endpoint, skip
           subjPointFlags[iPart][iRing].append( Unsnapped );

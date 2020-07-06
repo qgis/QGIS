@@ -100,8 +100,8 @@ QgsFeatureList QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feat
     return QgsFeatureList() << outputFeature;
   }
 
-  if ( outputGeometry.wkbType() == QgsWkbTypes::Unknown ||
-       QgsWkbTypes::flatType( outputGeometry.wkbType() ) == QgsWkbTypes::GeometryCollection )
+  if ( outputGeometry.wkbType() == QgsWkbTypes::Type::Unknown ||
+       QgsWkbTypes::flatType( outputGeometry.wkbType() ) == QgsWkbTypes::Type::GeometryCollection )
   {
     // keep only the parts of the geometry collection with correct type
     const QVector< QgsGeometry > tmpGeometries = outputGeometry.asGeometryCollection();

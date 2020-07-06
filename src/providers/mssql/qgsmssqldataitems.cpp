@@ -353,7 +353,7 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
   for ( int i = 0; i < typeList.size(); i++ )
   {
     QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList[i] );
-    if ( wkbType == QgsWkbTypes::Unknown )
+    if ( wkbType == QgsWkbTypes::Type::Unknown )
     {
       QgsDebugMsg( QStringLiteral( "unsupported geometry type:%1" ).arg( typeList[i] ) );
       continue;
@@ -421,7 +421,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &t
       }
 
       QString uri = connInfo() + " table=" + tableName;
-      if ( srcLayer->geometryType() != QgsWkbTypes::NullGeometry )
+      if ( srcLayer->geometryType() != QgsWkbTypes::GeometryType::NullGeometry )
         uri += QLatin1String( " (geom)" );
 
       std::unique_ptr< QgsVectorLayerExporterTask > exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri, QStringLiteral( "mssql" ), srcLayer->crs() ) );
@@ -558,16 +558,16 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
   QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( wkbType );
   switch ( flatType )
   {
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::Type::Point:
+    case QgsWkbTypes::Type::MultiPoint:
       layerType = QgsLayerItem::Point;
       break;
-    case QgsWkbTypes::LineString:
-    case QgsWkbTypes::MultiLineString:
+    case QgsWkbTypes::Type::LineString:
+    case QgsWkbTypes::Type::MultiLineString:
       layerType = QgsLayerItem::Line;
       break;
-    case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::MultiPolygon:
+    case QgsWkbTypes::Type::Polygon:
+    case QgsWkbTypes::Type::MultiPolygon:
       layerType = QgsLayerItem::Polygon;
       break;
     default:

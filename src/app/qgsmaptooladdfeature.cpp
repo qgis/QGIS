@@ -84,7 +84,7 @@ void QgsMapToolAddFeature::digitized( const QgsFeature &f )
         for ( QgsVectorLayer *vl : intersectionLayers )
         {
           //can only add topological points if background layer is editable...
-          if ( vl->geometryType() == QgsWkbTypes::PolygonGeometry && vl->isEditable() )
+          if ( vl->geometryType() == QgsWkbTypes::GeometryType::PolygonGeometry && vl->isEditable() )
           {
             vl->addTopologicalPoints( f.geometry() );
           }

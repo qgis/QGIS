@@ -38,8 +38,8 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea )
   , mMeasureArea( measureArea )
   , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
-  mRubberBand = new QgsRubberBand( canvas, mMeasureArea ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
-  mRubberBandPoints = new QgsRubberBand( canvas, QgsWkbTypes::PointGeometry );
+  mRubberBand = new QgsRubberBand( canvas, mMeasureArea ? QgsWkbTypes::GeometryType::PolygonGeometry : QgsWkbTypes::GeometryType::LineGeometry );
+  mRubberBandPoints = new QgsRubberBand( canvas, QgsWkbTypes::GeometryType::PointGeometry );
 
   // Append point we will move
   mPoints.append( QgsPointXY( 0, 0 ) );
@@ -109,8 +109,8 @@ void QgsMeasureTool::restart()
 {
   mPoints.clear();
 
-  mRubberBand->reset( mMeasureArea ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
-  mRubberBandPoints->reset( QgsWkbTypes::PointGeometry );
+  mRubberBand->reset( mMeasureArea ? QgsWkbTypes::GeometryType::PolygonGeometry : QgsWkbTypes::GeometryType::LineGeometry );
+  mRubberBandPoints->reset( QgsWkbTypes::GeometryType::PointGeometry );
 
   mDone = true;
   mWrongProjectProjection = false;

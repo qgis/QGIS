@@ -168,7 +168,7 @@ bool QgsOracleTableCache::saveToCache( const QString &connName, CacheFlags flags
     sqlite3_bind_text( stmtInsert, 6, item.pkCols.join( "," ).toUtf8().constData(), -1, SQLITE_TRANSIENT );
 
     QStringList geomTypes;
-    Q_FOREACH ( QgsWkbTypes::Type geomType, item.types )
+    Q_FOREACH ( QgsWkbTypes::GeometryType geomType, item.types )
       geomTypes.append( QString::number( static_cast<ulong>( geomType ) ) );
     sqlite3_bind_text( stmtInsert, 7, geomTypes.join( "," ).toUtf8().constData(), -1, SQLITE_TRANSIENT );
 

@@ -1490,7 +1490,7 @@ namespace QgsWms
     bool featureBBoxInitialized = false;
     while ( fit.nextFeature( feature ) )
     {
-      if ( layer->wkbType() == QgsWkbTypes::NoGeometry && ! searchRect.isEmpty() )
+      if ( layer->wkbType() == QgsWkbTypes::Type::NoGeometry && ! searchRect.isEmpty() )
       {
         break;
       }
@@ -1503,7 +1503,7 @@ namespace QgsWms
 
       renderContext.expressionContext().setFeature( feature );
 
-      if ( layer->wkbType() != QgsWkbTypes::NoGeometry && ! searchRect.isEmpty() )
+      if ( layer->wkbType() != QgsWkbTypes::Type::NoGeometry && ! searchRect.isEmpty() )
       {
         if ( !r2 )
         {
@@ -1519,7 +1519,7 @@ namespace QgsWms
       }
 
       QgsRectangle box;
-      if ( layer->wkbType() != QgsWkbTypes::NoGeometry && hasGeometry )
+      if ( layer->wkbType() != QgsWkbTypes::Type::NoGeometry && hasGeometry )
       {
         box = mapSettings.layerExtentToOutputExtent( layer, feature.geometry().boundingBox() );
         if ( featureBBox ) //extend feature info bounding box if requested
@@ -1544,7 +1544,7 @@ namespace QgsWms
 
       if ( mWmsParameters.infoFormat() == QgsWmsParameters::Format::GML )
       {
-        bool withGeom = layer->wkbType() != QgsWkbTypes::NoGeometry && addWktGeometry;
+        bool withGeom = layer->wkbType() != QgsWkbTypes::Type::NoGeometry && addWktGeometry;
         int gmlVersion = mWmsParameters.infoFormatVersion();
         QString typeName = mContext.layerNickname( *layer );
         QDomElement elem = createFeatureGML(
@@ -1609,7 +1609,7 @@ namespace QgsWms
 
         //append feature bounding box to feature info xml
         if ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) &&
-             layer->wkbType() != QgsWkbTypes::NoGeometry && hasGeometry )
+             layer->wkbType() != QgsWkbTypes::Type::NoGeometry && hasGeometry )
         {
           QDomElement bBoxElem = infoDocument.createElement( QStringLiteral( "BoundingBox" ) );
           bBoxElem.setAttribute( version == QLatin1String( "1.1.1" ) ? "SRS" : "CRS", outputCrs.authid() );
@@ -1621,7 +1621,7 @@ namespace QgsWms
         }
 
         //also append the wkt geometry as an attribute
-        if ( layer->wkbType() != QgsWkbTypes::NoGeometry && addWktGeometry && hasGeometry )
+        if ( layer->wkbType() != QgsWkbTypes::Type::NoGeometry && addWktGeometry && hasGeometry )
         {
           QgsGeometry geom = feature.geometry();
           if ( !geom.isNull() )
@@ -2344,8 +2344,8 @@ namespace QgsWms
     // always add bounding box info if feature contains geometry and has been
     // explicitly configured in the project
     if ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) &&
-         !geom.isNull() && geom.type() != QgsWkbTypes::UnknownGeometry &&
-         geom.type() != QgsWkbTypes::NullGeometry )
+         !geom.isNull() && geom.type() != QgsWkbTypes::GeometryType::UnknownGeometry &&
+         geom.type() != QgsWkbTypes::GeometryType::NullGeometry )
     {
       QgsRectangle box = feat->geometry().boundingBox();
       if ( transform.isValid() )
@@ -2478,7 +2478,7 @@ namespace QgsWms
     }
 
     double mapUnitTolerance = 0.0;
-    if ( ml->geometryType() == QgsWkbTypes::PolygonGeometry )
+    if ( ml->geometryType() == QgsWkbTypes::GeometryType::PolygonGeometry )
     {
       if ( ! mWmsParameters.polygonTolerance().isEmpty()
            && mWmsParameters.polygonToleranceAsInt() > 0 )
@@ -2490,7 +2490,7 @@ namespace QgsWms
         mapUnitTolerance = mapSettings.extent().width() / 400.0;
       }
     }
-    else if ( ml->geometryType() == QgsWkbTypes::LineGeometry )
+    else if ( ml->geometryType() == QgsWkbTypes::GeometryType::LineGeometry )
     {
       if ( ! mWmsParameters.lineTolerance().isEmpty()
            && mWmsParameters.lineToleranceAsInt() > 0 )
@@ -2577,14 +2577,14 @@ namespace QgsWms
         QgsPalLayerSettings::Placement placement = QgsPalLayerSettings::AroundPoint;
         switch ( param.mGeom.type() )
         {
-          case QgsWkbTypes::PointGeometry:
+          case QgsWkbTypes::GeometryType::PointGeometry:
           {
             placement = QgsPalLayerSettings::AroundPoint;
             palSettings.dist = 2; // in mm
             palSettings.placementFlags = 0;
             break;
           }
-          case QgsWkbTypes::PolygonGeometry:
+          case QgsWkbTypes::GeometryType::PolygonGeometry:
           {
             QgsGeometry point = param.mGeom.pointOnSurface();
             QgsPointXY pt = point.asPoint();

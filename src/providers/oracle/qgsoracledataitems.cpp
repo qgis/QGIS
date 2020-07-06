@@ -241,7 +241,7 @@ void QgsOracleConnectionItem::setLayerType( const QgsOracleLayerProperty &layerP
   for ( int i = 0 ; i < layerProperty.size(); i++ )
   {
     QgsWkbTypes::Type wkbType = layerProperty.types.at( i );
-    if ( wkbType == QgsWkbTypes::Unknown )
+    if ( wkbType == QgsWkbTypes::Type::Unknown )
     {
       QgsDebugMsgLevel( QStringLiteral( "skip unknown geometry type" ), 3 );
       continue;
@@ -499,26 +499,26 @@ void QgsOracleOwnerItem::addLayer( const QgsOracleLayerProperty &layerProperty )
   QgsLayerItem::LayerType layerType;
   switch ( wkbType )
   {
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::Point25D:
-    case QgsWkbTypes::MultiPoint:
-    case QgsWkbTypes::MultiPoint25D:
+    case QgsWkbTypes::Type::Point:
+    case QgsWkbTypes::Type::Point25D:
+    case QgsWkbTypes::Type::MultiPoint:
+    case QgsWkbTypes::Type::MultiPoint25D:
       layerType = QgsLayerItem::Point;
       break;
-    case QgsWkbTypes::LineString:
-    case QgsWkbTypes::LineString25D:
-    case QgsWkbTypes::MultiLineString:
-    case QgsWkbTypes::MultiLineString25D:
+    case QgsWkbTypes::Type::LineString:
+    case QgsWkbTypes::Type::LineString25D:
+    case QgsWkbTypes::Type::MultiLineString:
+    case QgsWkbTypes::Type::MultiLineString25D:
       layerType = QgsLayerItem::Line;
       break;
-    case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::Polygon25D:
-    case QgsWkbTypes::MultiPolygon:
-    case QgsWkbTypes::MultiPolygon25D:
+    case QgsWkbTypes::Type::Polygon:
+    case QgsWkbTypes::Type::Polygon25D:
+    case QgsWkbTypes::Type::MultiPolygon:
+    case QgsWkbTypes::Type::MultiPolygon25D:
       layerType = QgsLayerItem::Polygon;
       break;
     default:
-      if ( wkbType == QgsWkbTypes::NoGeometry && layerProperty.geometryColName.isEmpty() )
+      if ( wkbType == QgsWkbTypes::Type::NoGeometry && layerProperty.geometryColName.isEmpty() )
       {
         layerType = QgsLayerItem::TableLayer;
         tip = tr( "as geometryless table" );

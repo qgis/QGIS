@@ -28,7 +28,7 @@ QgsAbstract3DSymbol *QgsPoint3DSymbol::clone() const
 
 QgsPoint3DSymbol::QgsPoint3DSymbol()
 {
-  setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
+  setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType::PointGeometry ) ) );
 }
 
 QgsPoint3DSymbol::QgsPoint3DSymbol( const QgsPoint3DSymbol &other ) :

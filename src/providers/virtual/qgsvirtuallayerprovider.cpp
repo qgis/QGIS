@@ -293,7 +293,7 @@ bool QgsVirtualLayerProvider::createIt()
   resetSqlite();
   initVirtualLayerMetadata( mSqlite.get() );
 
-  bool noGeometry = mDefinition.geometryWkbType() == QgsWkbTypes::NoGeometry;
+  bool noGeometry = mDefinition.geometryWkbType() == QgsWkbTypes::Type::NoGeometry;
 
   // load source layers (and populate mLayers)
   if ( !loadSourceLayers() )
@@ -557,7 +557,7 @@ QgsRectangle QgsVirtualLayerProvider::extent() const
 
 void QgsVirtualLayerProvider::updateStatistics() const
 {
-  bool hasGeometry = mDefinition.geometryWkbType() != QgsWkbTypes::NoGeometry;
+  bool hasGeometry = mDefinition.geometryWkbType() != QgsWkbTypes::Type::NoGeometry;
   QString subset = mSubset.isEmpty() ? QString() : QStringLiteral( " WHERE %1" ).arg( mSubset );
 
   // `mTableName` might be a null string if the layer creation failed. Assert such situations at least during development.

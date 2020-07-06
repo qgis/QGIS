@@ -60,8 +60,8 @@ QgsLabelObstacleSettings QgsLabelObstacleSettingsWidget::settings() const
 
 void QgsLabelObstacleSettingsWidget::setGeometryType( QgsWkbTypes::GeometryType type )
 {
-  mObstacleTypeComboBox->setVisible( type == QgsWkbTypes::PolygonGeometry || type == QgsWkbTypes::UnknownGeometry );
-  mObstacleTypeLabel->setVisible( type == QgsWkbTypes::PolygonGeometry || type == QgsWkbTypes::UnknownGeometry );
+  mObstacleTypeComboBox->setVisible( type == QgsWkbTypes::GeometryType::PolygonGeometry || type == QgsWkbTypes::GeometryType::UnknownGeometry );
+  mObstacleTypeLabel->setVisible( type == QgsWkbTypes::GeometryType::PolygonGeometry || type == QgsWkbTypes::GeometryType::UnknownGeometry );
 }
 
 void QgsLabelObstacleSettingsWidget::updateDataDefinedProperties( QgsPropertyCollection &properties )

@@ -368,7 +368,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     void methodCodeWithMultiLineDef();
 #ifdef SIP_RUN
     % MethodCode
-    if ( QgsWkbTypes::flatType( a0 ) != QgsWkbTypes::Point )
+    if ( QgsWkbTypes::flatType( a0 ) != QgsWkbTypes::Type::Point )
     {
       multiLineDef( PyExc_ValueError,
                     QString( "%1 is not nice" ).arg( QgsWkbTypes::displayString( a0 ) ).toUtf8().constData() );

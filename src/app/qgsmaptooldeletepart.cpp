@@ -120,8 +120,8 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
 
   switch ( vlayer->geometryType() )
   {
-    case QgsWkbTypes::PointGeometry:
-    case QgsWkbTypes::LineGeometry:
+    case QgsWkbTypes::GeometryType::PointGeometry:
+    case QgsWkbTypes::GeometryType::LineGeometry:
     {
       QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Types( QgsPointLocator::Vertex | QgsPointLocator::Edge ) );
       if ( !match.isValid() )
@@ -135,13 +135,13 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
         fid = match.featureId();
         return QgsGeometry::fromPointXY( match.point() );
       }
-      else if ( QgsWkbTypes::geometryType( g.wkbType() ) == QgsWkbTypes::PointGeometry )
+      else if ( QgsWkbTypes::geometryType( g.wkbType() ) == QgsWkbTypes::GeometryType::PointGeometry )
       {
         fid = match.featureId();
         partNum = snapVertex;
         return QgsGeometry::fromPointXY( match.point() );
       }
-      else if ( QgsWkbTypes::geometryType( g.wkbType() ) == QgsWkbTypes::LineGeometry )
+      else if ( QgsWkbTypes::geometryType( g.wkbType() ) == QgsWkbTypes::GeometryType::LineGeometry )
       {
         QgsMultiPolylineXY mline = g.asMultiPolyline();
         for ( int part = 0; part < mline.count(); part++ )
@@ -157,7 +157,7 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
       }
       break;
     }
-    case QgsWkbTypes::PolygonGeometry:
+    case QgsWkbTypes::GeometryType::PolygonGeometry:
     {
       QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Area );
       if ( !match.isValid() )

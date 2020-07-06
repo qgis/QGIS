@@ -207,7 +207,7 @@ QgsGeometry QgsMapToolFillRing::ringUnderPoint( const QgsPointXY &p, QgsFeatureI
   while ( fit.nextFeature( f ) )
   {
     QgsGeometry g = f.geometry();
-    if ( g.isNull() || QgsWkbTypes::geometryType( g.wkbType() ) != QgsWkbTypes::PolygonGeometry )
+    if ( g.isNull() || QgsWkbTypes::geometryType( g.wkbType() ) != QgsWkbTypes::GeometryType::PolygonGeometry )
       continue;
 
     QgsMultiPolygonXY pol;

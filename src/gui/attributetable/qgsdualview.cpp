@@ -767,7 +767,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &maste
 
   QgsVectorLayer *vl = mFilterModel->layer();
   QgsMapCanvas *canvas = mFilterModel->mapCanvas();
-  if ( canvas && vl && vl->geometryType() != QgsWkbTypes::NullGeometry )
+  if ( canvas && vl && vl->geometryType() != QgsWkbTypes::GeometryType::NullGeometry )
   {
     QAction *zoomToFeatureAction = menu->addAction( tr( "Zoom to Feature" ) );
     connect( zoomToFeatureAction, &QAction::triggered, this, &QgsDualView::zoomToCurrentFeature );

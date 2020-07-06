@@ -235,7 +235,7 @@ void TestQgsPalLabeling::testGeometryGenerator()
 
   settings.placement = QgsPalLayerSettings::OverPoint;
   settings.geometryGeneratorEnabled = true;
-  settings.geometryGeneratorType = QgsWkbTypes::PointGeometry;
+  settings.geometryGeneratorType = QgsWkbTypes::GeometryType::PointGeometry;
   settings.geometryGenerator = "translate($geometry, 1, 0)";
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );

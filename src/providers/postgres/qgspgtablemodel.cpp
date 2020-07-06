@@ -55,20 +55,20 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     QgsWkbTypes::Type wkbType = layerProperty.types[ i ];
     int srid = layerProperty.srids[ i ];
 
-    if ( wkbType == QgsWkbTypes::Unknown && layerProperty.geometryColName.isEmpty() )
+    if ( wkbType == QgsWkbTypes::Type::Unknown && layerProperty.geometryColName.isEmpty() )
     {
-      wkbType = QgsWkbTypes::NoGeometry;
+      wkbType = QgsWkbTypes::Type::NoGeometry;
     }
 
     QString tip;
     bool withTipButSelectable = false;
     if ( ! layerProperty.isRaster )
     {
-      if ( wkbType == QgsWkbTypes::Unknown )
+      if ( wkbType == QgsWkbTypes::Type::Unknown )
       {
         tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
       }
-      else if ( wkbType != QgsWkbTypes::NoGeometry && srid == std::numeric_limits<int>::min() )
+      else if ( wkbType != QgsWkbTypes::Type::NoGeometry && srid == std::numeric_limits<int>::min() )
       {
         tip = tr( "Enter a SRID into the '%1' column" ).arg( tr( "SRID" ) );
       }
@@ -87,12 +87,12 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     }
     else
     {
-      typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select…" ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
+      typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Type::Unknown ? tr( "Select…" ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
     }
-    typeItem->setData( wkbType == QgsWkbTypes::Unknown, Qt::UserRole + 1 );
-    typeItem->setData( wkbType, Qt::UserRole + 2 );
+    typeItem->setData( wkbType == QgsWkbTypes::Type::Unknown, Qt::UserRole + 1 );
+    typeItem->setData( QVariant::fromValue( wkbType ), Qt::UserRole + 2 );
     typeItem->setData( layerProperty.isRaster, Qt::UserRole + 3 );
-    if ( wkbType == QgsWkbTypes::Unknown )
+    if ( wkbType == QgsWkbTypes::Type::Unknown )
       typeItem->setFlags( typeItem->flags() | Qt::ItemIsEditable );
 
     QStandardItem *geomTypeItem = new QStandardItem( QgsPostgresConn::displayStringForGeomType( layerProperty.geometryColType ) );
@@ -109,8 +109,8 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
       commentItem->setTextAlignment( Qt::AlignTop );
     }
     QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
-    QStandardItem *sridItem  = new QStandardItem( wkbType != QgsWkbTypes::NoGeometry ? QString::number( srid ) : QString() );
-    sridItem->setEditable( wkbType != QgsWkbTypes::NoGeometry && srid == std::numeric_limits<int>::min() );
+    QStandardItem *sridItem  = new QStandardItem( wkbType != QgsWkbTypes::Type::NoGeometry ? QString::number( srid ) : QString() );
+    sridItem->setEditable( wkbType != QgsWkbTypes::Type::NoGeometry && srid == std::numeric_limits<int>::min() );
     if ( sridItem->isEditable() )
     {
       sridItem->setText( tr( "Enter…" ) );
@@ -315,11 +315,11 @@ QIcon QgsPgTableModel::iconForWkbType( QgsWkbTypes::Type type )
   QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( QgsWkbTypes::Type( type ) );
   switch ( geomType )
   {
-    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::GeometryType::PointGeometry:
       return QgsApplication::getThemeIcon( "/mIconPointLayer.svg" );
-    case QgsWkbTypes::LineGeometry:
+    case QgsWkbTypes::GeometryType::LineGeometry:
       return QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
-    case QgsWkbTypes::PolygonGeometry:
+    case QgsWkbTypes::GeometryType::PolygonGeometry:
       return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
     default:
       break;
@@ -337,11 +337,11 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
     QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt();
 
     QString tip;
-    if ( wkbType == QgsWkbTypes::Unknown )
+    if ( wkbType == QgsWkbTypes::Type::Unknown )
     {
       tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
     }
-    else if ( wkbType != QgsWkbTypes::NoGeometry )
+    else if ( wkbType != QgsWkbTypes::Type::NoGeometry )
     {
       bool ok;
       int srid = idx.sibling( idx.row(), DbtmSrid ).data().toInt( &ok );
@@ -401,7 +401,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
 
   bool isRaster = itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 3 ).toBool();
   QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt() );
-  if ( wkbType == QgsWkbTypes::Unknown )
+  if ( wkbType == QgsWkbTypes::Type::Unknown )
   {
     if ( isRaster )
     {
@@ -444,7 +444,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
 
   QString geomColumnName;
   QString srid;
-  if ( wkbType != QgsWkbTypes::NoGeometry )
+  if ( wkbType != QgsWkbTypes::Type::NoGeometry )
   {
     geomColumnName = index.sibling( index.row(), DbtmGeomCol ).data( Qt::DisplayRole ).toString();
 

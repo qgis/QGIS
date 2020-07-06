@@ -321,7 +321,7 @@ void TestQgsGpsInformationWidget::testMultiPartLayers()
   QCOMPARE( multiLineString->featureCount(), 1L );
   QgsFeature f;
   QVERIFY( multiLineString->getFeatures().nextFeature( f ) );
-  QCOMPARE( f.geometry().wkbType(), QgsWkbTypes::MultiLineString );
+  QCOMPARE( f.geometry().wkbType(), QgsWkbTypes::Type::MultiLineString );
   multiLineString->rollBack();
 
   // multipolygon
@@ -349,7 +349,7 @@ void TestQgsGpsInformationWidget::testMultiPartLayers()
   widget->mBtnCloseFeature_clicked();
   QCOMPARE( multiPolygon->featureCount(), 1L );
   QVERIFY( multiPolygon->getFeatures().nextFeature( f ) );
-  QCOMPARE( f.geometry().wkbType(), QgsWkbTypes::MultiPolygon );
+  QCOMPARE( f.geometry().wkbType(), QgsWkbTypes::Type::MultiPolygon );
   multiPolygon->rollBack();
 }
 

@@ -258,7 +258,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
 
     if ( srcLayer->isValid() )
     {
-      uri.setDataSource( QString(), u.name,  srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? QStringLiteral( "geom" ) : QString() );
+      uri.setDataSource( QString(), u.name,  srcLayer->geometryType() != QgsWkbTypes::GeometryType::NullGeometry ? QStringLiteral( "geom" ) : QString() );
       QgsDebugMsg( "URI " + uri.uri( false ) );
 
       if ( !toSchema.isNull() )
@@ -358,7 +358,7 @@ QString QgsPGLayerItem::createUri()
 
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, cols.join( ',' ) );
   uri.setWkbType( mLayerProperty.types.at( 0 ) );
-  if ( uri.wkbType() != QgsWkbTypes::NoGeometry && mLayerProperty.srids.at( 0 ) != std::numeric_limits<int>::min() )
+  if ( uri.wkbType() != QgsWkbTypes::Type::NoGeometry && mLayerProperty.srids.at( 0 ) != std::numeric_limits<int>::min() )
     uri.setSrid( QString::number( mLayerProperty.srids.at( 0 ) ) );
 
   QgsDebugMsg( QStringLiteral( "layer uri: %1" ).arg( uri.uri( false ) ) );
@@ -410,7 +410,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
 
     if ( !layerProperty.geometryColName.isNull() &&
          //!layerProperty.isRaster &&
-         ( layerProperty.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown  ||
+         ( layerProperty.types.value( 0, QgsWkbTypes::Type::Unknown ) == QgsWkbTypes::Type::Unknown  ||
            layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
     {
       if ( dontResolveType )
@@ -500,13 +500,13 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
     QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( ( QgsWkbTypes::Type )wkbType );
     switch ( geomType )
     {
-      case QgsWkbTypes::PointGeometry:
+      case QgsWkbTypes::GeometryType::PointGeometry:
         layerType = QgsLayerItem::Point;
         break;
-      case QgsWkbTypes::LineGeometry:
+      case QgsWkbTypes::GeometryType::LineGeometry:
         layerType = QgsLayerItem::Line;
         break;
-      case QgsWkbTypes::PolygonGeometry:
+      case QgsWkbTypes::GeometryType::PolygonGeometry:
         layerType = QgsLayerItem::Polygon;
         break;
       default:

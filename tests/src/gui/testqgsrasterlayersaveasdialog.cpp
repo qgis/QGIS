@@ -120,7 +120,7 @@ QString TestQgsRasterLayerSaveAsDialog::prepareDb()
 
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
   saveOptions.fileEncoding = QStringLiteral( "UTF-8" );
-  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( fileName, vl.fields(), QgsWkbTypes::Point, vl.crs(), QgsCoordinateTransformContext(), saveOptions ) );
+  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( fileName, vl.fields(), QgsWkbTypes::Type::Point, vl.crs(), QgsCoordinateTransformContext(), saveOptions ) );
 
   QgsFeature f { vl.fields() };
   f.setAttribute( 0, QString( 1024, 'x' ) );

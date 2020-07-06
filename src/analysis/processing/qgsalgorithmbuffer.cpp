@@ -86,7 +86,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), QgsWkbTypes::MultiPolygon, source->sourceCrs() ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), QgsWkbTypes::Type::MultiPolygon, source->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -189,7 +189,7 @@ QgsProcessingAlgorithm::VectorProperties QgsBufferAlgorithm::sinkProperties( con
       const VectorProperties inputProps = sourceProperties.value( QStringLiteral( "INPUT" ) );
       result.fields = inputProps.fields;
       result.crs = inputProps.crs;
-      result.wkbType = QgsWkbTypes::MultiPolygon;
+      result.wkbType = QgsWkbTypes::Type::MultiPolygon;
       result.availability = Available;
       return result;
     }
@@ -200,7 +200,7 @@ QgsProcessingAlgorithm::VectorProperties QgsBufferAlgorithm::sinkProperties( con
       {
         result.fields = source->fields();
         result.crs = source->sourceCrs();
-        result.wkbType = QgsWkbTypes::MultiPolygon;
+        result.wkbType = QgsWkbTypes::Type::MultiPolygon;
         result.availability = Available;
         return result;
       }

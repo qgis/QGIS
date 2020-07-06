@@ -115,7 +115,7 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
   connect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
   QgsGeometry geometry = mSelectionHandler->selectedGeometry();
-  bool isSinglePoint = geometry.type() == QgsWkbTypes::PointGeometry;
+  bool isSinglePoint = geometry.type() == QgsWkbTypes::GeometryType::PointGeometry;
 
   if ( isSinglePoint )
     setClickContextScope( geometry.asPoint() );

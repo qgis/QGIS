@@ -192,7 +192,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       {
         QgsGeometry currentGeometry = inputFeature.geometry();
         newGeometry = combinedClipGeom.intersection( currentGeometry );
-        if ( newGeometry.wkbType() == QgsWkbTypes::Unknown || QgsWkbTypes::flatType( newGeometry.wkbType() ) == QgsWkbTypes::GeometryCollection )
+        if ( newGeometry.wkbType() == QgsWkbTypes::Type::Unknown || QgsWkbTypes::flatType( newGeometry.wkbType() ) == QgsWkbTypes::Type::GeometryCollection )
         {
           QgsGeometry intCom = inputFeature.geometry().combine( newGeometry );
           QgsGeometry intSym = inputFeature.geometry().symDifference( newGeometry );

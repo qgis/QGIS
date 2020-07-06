@@ -1047,8 +1047,8 @@ int QgsCategorizedSymbolRendererWidget::matchToSymbols( QgsStyle *style )
   if ( !mLayer || !style )
     return 0;
 
-  const QgsSymbol::SymbolType type = mLayer->geometryType() == QgsWkbTypes::PointGeometry ? QgsSymbol::Marker
-                                     : mLayer->geometryType() == QgsWkbTypes::LineGeometry ? QgsSymbol::Line
+  const QgsSymbol::SymbolType type = mLayer->geometryType() == QgsWkbTypes::GeometryType::PointGeometry ? QgsSymbol::Marker
+                                     : mLayer->geometryType() == QgsWkbTypes::GeometryType::LineGeometry ? QgsSymbol::Line
                                      : QgsSymbol::Fill;
 
   QVariantList unmatchedCategories;

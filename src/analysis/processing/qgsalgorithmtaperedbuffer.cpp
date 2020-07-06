@@ -56,7 +56,7 @@ QgsProcessing::SourceType QgsTaperedBufferAlgorithm::outputLayerType() const
 
 QgsWkbTypes::Type QgsTaperedBufferAlgorithm::outputWkbType( QgsWkbTypes::Type ) const
 {
-  return QgsWkbTypes::MultiPolygon;
+  return QgsWkbTypes::Type::MultiPolygon;
 }
 
 bool QgsTaperedBufferAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
@@ -190,7 +190,7 @@ QgsProcessing::SourceType QgsVariableWidthBufferByMAlgorithm::outputLayerType() 
 
 QgsWkbTypes::Type QgsVariableWidthBufferByMAlgorithm::outputWkbType( QgsWkbTypes::Type ) const
 {
-  return QgsWkbTypes::MultiPolygon;
+  return QgsWkbTypes::Type::MultiPolygon;
 }
 
 bool QgsVariableWidthBufferByMAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

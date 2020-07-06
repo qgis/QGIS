@@ -81,8 +81,8 @@ class TestQgsRuleBasedRenderer: public QObject
       f3.setAttribute( idx, QVariant( 100 ) );
 
       // prepare renderer
-      QgsSymbol *s1 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
-      QgsSymbol *s2 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+      QgsSymbol *s1 = QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType::PointGeometry );
+      QgsSymbol *s2 = QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType::PointGeometry );
       RRule *rootRule = new RRule( nullptr );
       rootRule->appendChild( new RRule( s1, 0, 0, QStringLiteral( "fld >= 5 and fld <= 20" ) ) );
       rootRule->appendChild( new RRule( s2, 0, 0, QStringLiteral( "fld <= 10" ) ) );

@@ -137,7 +137,7 @@ void QgsLabelingGui::showObstacleSettings()
   QgsLabelObstacleSettingsWidget *widget = new QgsLabelObstacleSettingsWidget( nullptr, mLayer );
   widget->setDataDefinedProperties( mDataDefinedProperties );
   widget->setSettings( mObstacleSettings );
-  widget->setGeometryType( mLayer ? mLayer->geometryType() : QgsWkbTypes::UnknownGeometry );
+  widget->setGeometryType( mLayer ? mLayer->geometryType() : QgsWkbTypes::GeometryType::UnknownGeometry );
   widget->setContext( symbolContext );
 
   auto applySettings = [ = ]
@@ -243,7 +243,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 {
   mPreviewFeature = QgsFeature();
 
-  if ( ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer ) && mGeomType == QgsWkbTypes::UnknownGeometry )
+  if ( ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer ) && mGeomType == QgsWkbTypes::GeometryType::UnknownGeometry )
   {
     setEnabled( false );
     return;
@@ -274,7 +274,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   mGeometryGenerator->setText( mSettings.geometryGenerator );
   mGeometryGeneratorGroupBox->setChecked( mSettings.geometryGeneratorEnabled );
-  mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( mSettings.geometryGeneratorType ) );
+  mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( QVariant::fromValue( mSettings.geometryGeneratorType ) ) );
 
   updateWidgetForFormat( mSettings.format() );
 
@@ -795,31 +795,31 @@ void QgsLabelingGui::updateGeometryTypeBasedWidgets()
     geometryType = mLayer->geometryType();
 
   // show/hide options based upon geometry type
-  chkMergeLines->setVisible( geometryType == QgsWkbTypes::LineGeometry );
-  mDirectSymbolsFrame->setVisible( geometryType == QgsWkbTypes::LineGeometry );
-  mMinSizeFrame->setVisible( geometryType != QgsWkbTypes::PointGeometry );
-  mPolygonFeatureOptionsFrame->setVisible( geometryType == QgsWkbTypes::PolygonGeometry );
+  chkMergeLines->setVisible( geometryType == QgsWkbTypes::GeometryType::LineGeometry );
+  mDirectSymbolsFrame->setVisible( geometryType == QgsWkbTypes::GeometryType::LineGeometry );
+  mMinSizeFrame->setVisible( geometryType != QgsWkbTypes::GeometryType::PointGeometry );
+  mPolygonFeatureOptionsFrame->setVisible( geometryType == QgsWkbTypes::GeometryType::PolygonGeometry );
 
 
   // set placement methods page based on geometry type
   switch ( geometryType )
   {
-    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::GeometryType::PointGeometry:
       stackedPlacement->setCurrentWidget( pagePoint );
       break;
-    case QgsWkbTypes::LineGeometry:
+    case QgsWkbTypes::GeometryType::LineGeometry:
       stackedPlacement->setCurrentWidget( pageLine );
       break;
-    case QgsWkbTypes::PolygonGeometry:
+    case QgsWkbTypes::GeometryType::PolygonGeometry:
       stackedPlacement->setCurrentWidget( pagePolygon );
       break;
-    case QgsWkbTypes::NullGeometry:
+    case QgsWkbTypes::GeometryType::NullGeometry:
       break;
-    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::GeometryType::UnknownGeometry:
       qFatal( "unknown geometry type unexpected" );
   }
 
-  if ( geometryType == QgsWkbTypes::PointGeometry || geometryType == QgsWkbTypes::PolygonGeometry )
+  if ( geometryType == QgsWkbTypes::GeometryType::PointGeometry || geometryType == QgsWkbTypes::GeometryType::PolygonGeometry )
   {
     // follow placement alignment is only valid for point or polygon layers
     if ( mFontMultiLineAlignComboBox->findData( QgsPalLayerSettings::MultiFollowPlacement ) == -1 )
@@ -912,7 +912,7 @@ void QgsLabelingGui::determineGeometryGeneratorType()
   expression.prepare( &context );
   const QgsGeometry geometry = expression.evaluate( &context ).value<QgsGeometry>();
 
-  mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( geometry.type() ) );
+  mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( QVariant::fromValue( geometry.type() ) ) );
 }
 
 void QgsLabelingGui::calloutTypeChanged()

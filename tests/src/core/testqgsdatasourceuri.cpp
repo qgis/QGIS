@@ -60,7 +60,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // key
       << true // estimatedmetadata
       << "1000003007" // srid
-      << QgsWkbTypes::Unknown // type
+      << QgsWkbTypes::Type::Unknown // type
       << false // selectatid
       << "" // service
       << "myname" // user
@@ -82,7 +82,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // key
       << true // estimatedmetadata
       << "3067" // srid
-      << QgsWkbTypes::Unknown // type
+      << QgsWkbTypes::Type::Unknown // type
       << false // selectatid
       << "" // service
       << "myname" // user
@@ -104,7 +104,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // key
       << false // estimatedmetadata
       << "" // srid
-      << QgsWkbTypes::Unknown // type
+      << QgsWkbTypes::Type::Unknown // type
       << false // selectatid
       << "" // service
       << "myname" // user
@@ -126,7 +126,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // key
       << false // estimatedmetadata
       << "" // srid
-      << QgsWkbTypes::Unknown // type
+      << QgsWkbTypes::Type::Unknown // type
       << false // selectatid
       << "" // service
       << "myname" // user
@@ -150,7 +150,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // key
       << false // estimatedmetadata
       << "" // srid
-      << QgsWkbTypes::MultiLineStringZ // type
+      << QgsWkbTypes::Type::MultiLineStringZ // type
       << false // selectatid
       << "" // service
       << "myname" // user
@@ -172,7 +172,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "OBJECTID" // key
       << true // estimatedmetadata
       << "4326" // srid
-      << QgsWkbTypes::Unknown // type
+      << QgsWkbTypes::Type::Unknown // type
       << false // selectatid
       << "" // service
       << "osuser" // user

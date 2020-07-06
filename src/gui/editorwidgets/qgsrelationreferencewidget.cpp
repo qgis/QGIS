@@ -953,7 +953,7 @@ void QgsRelationReferenceWidget::addEntry()
     return;
 
   // no geometry, skip the digitizing
-  if ( mReferencedLayer->geometryType() == QgsWkbTypes::UnknownGeometry || mReferencedLayer->geometryType() == QgsWkbTypes::NullGeometry )
+  if ( mReferencedLayer->geometryType() == QgsWkbTypes::GeometryType::UnknownGeometry || mReferencedLayer->geometryType() == QgsWkbTypes::GeometryType::NullGeometry )
   {
     QgsFeature f( mReferencedLayer->fields() );
     entryAdded( f );

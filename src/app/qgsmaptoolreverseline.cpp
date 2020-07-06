@@ -138,7 +138,7 @@ QgsGeometry QgsMapToolReverseLine::partUnderPoint( QPoint point, QgsFeatureId &f
 
   switch ( vlayer->geometryType() )
   {
-    case QgsWkbTypes::LineGeometry:
+    case QgsWkbTypes::GeometryType::LineGeometry:
     {
       QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Types( QgsPointLocator::Vertex | QgsPointLocator::Edge ) );
       if ( !match.isValid() )
@@ -152,7 +152,7 @@ QgsGeometry QgsMapToolReverseLine::partUnderPoint( QPoint point, QgsFeatureId &f
         fid = match.featureId();
         return g;
       }
-      else if ( QgsWkbTypes::geometryType( g.wkbType() ) == QgsWkbTypes::LineGeometry )
+      else if ( QgsWkbTypes::geometryType( g.wkbType() ) == QgsWkbTypes::GeometryType::LineGeometry )
       {
         QgsMultiPolylineXY mline = g.asMultiPolyline();
         for ( int part = 0; part < mline.count(); part++ )

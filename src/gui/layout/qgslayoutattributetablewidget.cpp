@@ -397,7 +397,7 @@ void QgsLayoutAttributeTableWidget::updateGuiElements()
   if ( mTable->vectorLayer() )
   {
     mLayerComboBox->setLayer( mTable->vectorLayer() );
-    if ( mTable->vectorLayer()->geometryType() == QgsWkbTypes::NullGeometry )
+    if ( mTable->vectorLayer()->geometryType() == QgsWkbTypes::GeometryType::NullGeometry )
     {
       //layer has no geometry, so uncheck & disable controls which require geometry
       mShowOnlyVisibleFeaturesCheckBox->setChecked( false );
@@ -774,7 +774,7 @@ void QgsLayoutAttributeTableWidget::changeLayer( QgsMapLayer *layer )
   mTable->update();
   mTable->endCommand();
 
-  if ( vl->geometryType() == QgsWkbTypes::NullGeometry )
+  if ( vl->geometryType() == QgsWkbTypes::GeometryType::NullGeometry )
   {
     //layer has no geometry, so uncheck & disable controls which require geometry
     mShowOnlyVisibleFeaturesCheckBox->setChecked( false );

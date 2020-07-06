@@ -119,7 +119,7 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
   }
 
   //Failed to detect feature type from describeFeatureType -> get first feature from layer to detect type
-  if ( mShared->mWKBType == QgsWkbTypes::Unknown )
+  if ( mShared->mWKBType == QgsWkbTypes::Type::Unknown )
   {
     auto downloader = qgis::make_unique<QgsFeatureDownloader>();
     downloader->setImpl( qgis::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get() ) );
@@ -664,42 +664,42 @@ void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueI
       // see if they are of the same type. If then, assume that all features
       // will be similar, and report the proper MultiPoint/MultiLineString/
       // MultiPolygon type instead.
-      if ( mShared->mWKBType == QgsWkbTypes::GeometryCollection )
+      if ( mShared->mWKBType == QgsWkbTypes::Type::GeometryCollection )
       {
         auto geomColl = geometry.asGeometryCollection();
-        mShared->mWKBType = QgsWkbTypes::Unknown;
+        mShared->mWKBType = QgsWkbTypes::Type::Unknown;
         for ( const auto &geom : geomColl )
         {
-          if ( mShared->mWKBType == QgsWkbTypes::Unknown )
+          if ( mShared->mWKBType == QgsWkbTypes::Type::Unknown )
           {
             mShared->mWKBType = geom.wkbType();
           }
           else if ( mShared->mWKBType != geom.wkbType() )
           {
-            mShared->mWKBType = QgsWkbTypes::Unknown;
+            mShared->mWKBType = QgsWkbTypes::Type::Unknown;
             break;
           }
         }
-        if ( mShared->mWKBType != QgsWkbTypes::Unknown )
+        if ( mShared->mWKBType != QgsWkbTypes::Type::Unknown )
         {
-          if ( mShared->mWKBType == QgsWkbTypes::Point )
+          if ( mShared->mWKBType == QgsWkbTypes::Type::Point )
           {
             QgsDebugMsg( QStringLiteral( "Layer of unknown type. First element is a GeometryCollection of Point. Advertizing optimistically as MultiPoint" ) );
-            mShared->mWKBType = QgsWkbTypes::MultiPoint;
+            mShared->mWKBType = QgsWkbTypes::Type::MultiPoint;
           }
-          else if ( mShared->mWKBType == QgsWkbTypes::LineString )
+          else if ( mShared->mWKBType == QgsWkbTypes::Type::LineString )
           {
             QgsDebugMsg( QStringLiteral( "Layer of unknown type. First element is a GeometryCollection of LineString. Advertizing optimistically as MultiLineString" ) );
-            mShared->mWKBType = QgsWkbTypes::MultiLineString;
+            mShared->mWKBType = QgsWkbTypes::Type::MultiLineString;
           }
-          else if ( mShared->mWKBType == QgsWkbTypes::Polygon )
+          else if ( mShared->mWKBType == QgsWkbTypes::Type::Polygon )
           {
             QgsDebugMsg( QStringLiteral( "Layer of unknown type. First element is a GeometryCollection of Polygon. Advertizing optimistically as MultiPolygon" ) );
-            mShared->mWKBType = QgsWkbTypes::MultiPolygon;
+            mShared->mWKBType = QgsWkbTypes::Type::MultiPolygon;
           }
           else
           {
-            mShared->mWKBType = QgsWkbTypes::Unknown;
+            mShared->mWKBType = QgsWkbTypes::Type::Unknown;
           }
         }
       }
@@ -1479,20 +1479,20 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
-      geomType = QgsWkbTypes::MultiPolygon;
+      geomType = QgsWkbTypes::Type::MultiPolygon;
     }
     else if ( ! foundGeometryAttribute && type == QLatin1String( "gmgml:LineString_Curve_MultiCurve_CompositeCurvePropertyType" ) )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
-      geomType = QgsWkbTypes::MultiLineString;
+      geomType = QgsWkbTypes::Type::MultiLineString;
     }
     // such as http://go.geozug.ch/Zug_WFS_Baumkataster/service.svc/get
     else if ( type == QLatin1String( "gmgml:Point_MultiPointPropertyType" ) )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
-      geomType = QgsWkbTypes::MultiPoint;
+      geomType = QgsWkbTypes::Type::MultiPoint;
     }
     //is it a geometry attribute?
     // the GeometryAssociationType has been seen in #11785
@@ -1502,7 +1502,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       geometryAttribute = name;
       // We have a choice parent element we cannot assume any valid information over the geometry type
       if ( attributeElement.parentNode().nodeName() == QStringLiteral( "choice" ) && ! attributeElement.nextSibling().isNull() )
-        geomType = QgsWkbTypes::Unknown;
+        geomType = QgsWkbTypes::Type::Unknown;
       else
         geomType = geomTypeFromPropertyType( geometryAttribute, gmlPT.cap( 1 ) );
     }
@@ -1542,7 +1542,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
   }
   if ( !foundGeometryAttribute )
   {
-    geomType = QgsWkbTypes::NoGeometry;
+    geomType = QgsWkbTypes::Type::NoGeometry;
   }
 
   return true;
@@ -1803,18 +1803,18 @@ QgsWkbTypes::Type QgsWFSProvider::geomTypeFromPropertyType( const QString &attNa
   QgsDebugMsgLevel( QStringLiteral( "DescribeFeatureType geometry attribute \"%1\" type is \"%2\"" )
                     .arg( attName, propType ), 4 );
   if ( propType == QLatin1String( "Point" ) )
-    return QgsWkbTypes::Point;
+    return QgsWkbTypes::Type::Point;
   if ( propType == QLatin1String( "LineString" ) || propType == QLatin1String( "Curve" ) )
-    return QgsWkbTypes::LineString;
+    return QgsWkbTypes::Type::LineString;
   if ( propType == QLatin1String( "Polygon" ) || propType == QLatin1String( "Surface" ) )
-    return QgsWkbTypes::Polygon;
+    return QgsWkbTypes::Type::Polygon;
   if ( propType == QLatin1String( "MultiPoint" ) )
-    return QgsWkbTypes::MultiPoint;
+    return QgsWkbTypes::Type::MultiPoint;
   if ( propType == QLatin1String( "MultiLineString" ) || propType == QLatin1String( "MultiCurve" ) )
-    return QgsWkbTypes::MultiLineString;
+    return QgsWkbTypes::Type::MultiLineString;
   if ( propType == QLatin1String( "MultiPolygon" ) || propType == QLatin1String( "MultiSurface" ) )
-    return QgsWkbTypes::MultiPolygon;
-  return QgsWkbTypes::Unknown;
+    return QgsWkbTypes::Type::MultiPolygon;
+  return QgsWkbTypes::Type::Unknown;
 }
 
 void QgsWFSProvider::handleException( const QDomDocument &serverResponse )

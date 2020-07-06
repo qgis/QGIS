@@ -94,7 +94,7 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
         QgsPointXY p1, p2;
         match.edgePoints( p1, p2 );
 
-        mRubberBandLimit.reset( createRubberBand( QgsWkbTypes::LineGeometry ) );
+        mRubberBandLimit.reset( createRubberBand( QgsWkbTypes::GeometryType::LineGeometry ) );
         mRubberBandLimit->addPoint( p1 );
         mRubberBandLimit->addPoint( p2 );
         mRubberBandLimit->show();
@@ -157,7 +157,7 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
 
         if ( mIsIntersection )
         {
-          mRubberBandIntersection.reset( createRubberBand( QgsWkbTypes::PointGeometry ) );
+          mRubberBandIntersection.reset( createRubberBand( QgsWkbTypes::GeometryType::PointGeometry ) );
           mRubberBandIntersection->addPoint( QgsPointXY( mIntersection ) );
           mRubberBandIntersection->show();
 

@@ -112,16 +112,16 @@ void QgsGeometryCheckerSetupTab::updateLayers()
   {
     QListWidgetItem *item = new QListWidgetItem( layer->name() );
     bool supportedGeometryType = true;
-    if ( layer->geometryType() == QgsWkbTypes::PointGeometry )
+    if ( layer->geometryType() == QgsWkbTypes::GeometryType::PointGeometry )
     {
       item->setIcon( QgsApplication::getThemeIcon( "/mIconPointLayer.svg" ) );
     }
-    else if ( layer->geometryType() == QgsWkbTypes::LineGeometry )
+    else if ( layer->geometryType() == QgsWkbTypes::GeometryType::LineGeometry )
     {
       item->setIcon( QgsApplication::getThemeIcon( "/mIconLineLayer.svg" ) );
       ui.comboLineLayerIntersection->addItem( layer->name(), layer->id() );
     }
-    else if ( layer->geometryType() == QgsWkbTypes::PolygonGeometry )
+    else if ( layer->geometryType() == QgsWkbTypes::GeometryType::PolygonGeometry )
     {
       item->setIcon( QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" ) );
       ui.comboLineLayerIntersection->addItem( layer->name(), layer->id() );
@@ -204,15 +204,15 @@ void QgsGeometryCheckerSetupTab::validateInput()
     for ( QgsVectorLayer *layer : layers )
     {
       QgsWkbTypes::GeometryType geomType = layer->geometryType();
-      if ( geomType == QgsWkbTypes::PointGeometry )
+      if ( geomType == QgsWkbTypes::GeometryType::PointGeometry )
       {
         ++nPoint;
       }
-      else if ( geomType == QgsWkbTypes::LineGeometry )
+      else if ( geomType == QgsWkbTypes::GeometryType::LineGeometry )
       {
         ++nLineString;
       }
-      else if ( geomType == QgsWkbTypes::PolygonGeometry )
+      else if ( geomType == QgsWkbTypes::GeometryType::PolygonGeometry )
       {
         ++nPolygon;
       }

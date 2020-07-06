@@ -123,18 +123,18 @@ void QgsBufferedLine3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DR
   QgsGeos engine( g );
   QgsAbstractGeometry *buffered = engine.buffer( mSymbol.width() / 2., nSegments, endCapStyle, joinStyle, mitreLimit ); // factory
 
-  if ( QgsWkbTypes::flatType( buffered->wkbType() ) == QgsWkbTypes::Polygon )
+  if ( QgsWkbTypes::flatType( buffered->wkbType() ) == QgsWkbTypes::Type::Polygon )
   {
     QgsPolygon *polyBuffered = static_cast<QgsPolygon *>( buffered );
     processPolygon( polyBuffered, f.id(), mSymbol.height(), mSymbol.extrusionHeight(), context, out );
   }
-  else if ( QgsWkbTypes::flatType( buffered->wkbType() ) == QgsWkbTypes::MultiPolygon )
+  else if ( QgsWkbTypes::flatType( buffered->wkbType() ) == QgsWkbTypes::Type::MultiPolygon )
   {
     QgsMultiPolygon *mpolyBuffered = static_cast<QgsMultiPolygon *>( buffered );
     for ( int i = 0; i < mpolyBuffered->numGeometries(); ++i )
     {
       QgsAbstractGeometry *partBuffered = mpolyBuffered->geometryN( i );
-      Q_ASSERT( QgsWkbTypes::flatType( partBuffered->wkbType() ) == QgsWkbTypes::Polygon );
+      Q_ASSERT( QgsWkbTypes::flatType( partBuffered->wkbType() ) == QgsWkbTypes::Type::Polygon );
       QgsPolygon *polyBuffered = static_cast<QgsPolygon *>( partBuffered )->clone(); // need to clone individual geometry parts
       processPolygon( polyBuffered, f.id(), mSymbol.height(), mSymbol.extrusionHeight(), context, out );
     }

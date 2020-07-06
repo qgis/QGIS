@@ -336,7 +336,7 @@ QList<QgsSingleGeometryCheckError *> QgsGeometrySelfIntersectionCheck::processGe
 ///@cond private
 QList<QgsWkbTypes::GeometryType> QgsGeometrySelfIntersectionCheck::factoryCompatibleGeometryTypes()
 {
-  return {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry};
+  return {QgsWkbTypes::GeometryType::LineGeometry, QgsWkbTypes::GeometryType::PolygonGeometry};
 }
 
 bool QgsGeometrySelfIntersectionCheck::factoryIsCompatible( QgsVectorLayer *layer )

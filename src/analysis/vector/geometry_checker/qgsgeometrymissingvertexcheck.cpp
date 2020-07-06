@@ -237,7 +237,7 @@ QgsGeometryCheck::CheckType QgsGeometryMissingVertexCheck::checkType() const
 ///@cond private
 QList<QgsWkbTypes::GeometryType> QgsGeometryMissingVertexCheck::factoryCompatibleGeometryTypes()
 {
-  return {QgsWkbTypes::PolygonGeometry};
+  return {QgsWkbTypes::GeometryType::PolygonGeometry};
 }
 
 bool QgsGeometryMissingVertexCheck::factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP

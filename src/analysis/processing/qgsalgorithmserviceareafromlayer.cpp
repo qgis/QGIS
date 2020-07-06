@@ -117,11 +117,11 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
 
   QString pointsSinkId;
   std::unique_ptr< QgsFeatureSink > pointsSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, pointsSinkId, fields,
-      QgsWkbTypes::MultiPoint, mNetwork->sourceCrs() ) );
+      QgsWkbTypes::Type::MultiPoint, mNetwork->sourceCrs() ) );
 
   QString linesSinkId;
   std::unique_ptr< QgsFeatureSink > linesSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LINES" ), context, linesSinkId, fields,
-      QgsWkbTypes::MultiLineString, mNetwork->sourceCrs() ) );
+      QgsWkbTypes::Type::MultiLineString, mNetwork->sourceCrs() ) );
 
   int idxStart;
   QString origPoint;

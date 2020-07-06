@@ -1287,7 +1287,7 @@ void QgsDwgImporter::addBlock( const DRW_Block &data )
   setString( dfn, f.get(), QStringLiteral( "name" ), name );
   SETINTEGERPTR( flags );
 
-  QgsPoint p( QgsWkbTypes::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z );
+  QgsPoint p( QgsWkbTypes::Type::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z );
 
   if ( !createFeature( layer, f.get(), p ) )
   {
@@ -1355,7 +1355,7 @@ void QgsDwgImporter::addPoint( const DRW_Point &data )
 
   setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
-  QgsPoint p( QgsWkbTypes::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z );
+  QgsPoint p( QgsWkbTypes::Type::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z );
   if ( !createFeature( layer, f, p ) )
   {
     LOG( tr( "Could not add %2 [%1]" )
@@ -1387,9 +1387,9 @@ bool QgsDwgImporter::circularStringFromArc( const DRW_Arc &data, QgsCircularStri
   double a2 = data.isccw ? data.endangle : -data.endangle;
 
   c.setPoints( QgsPointSequence()
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a0 ) * data.mRadius, data.basePoint.y + std::sin( a0 ) * data.mRadius )
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a1 ) * data.mRadius, data.basePoint.y + std::sin( a1 ) * data.mRadius )
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a2 ) * data.mRadius, data.basePoint.y + std::sin( a2 ) * data.mRadius )
+               << QgsPoint( QgsWkbTypes::Type::PointZ, data.basePoint.x + std::cos( a0 ) * data.mRadius, data.basePoint.y + std::sin( a0 ) * data.mRadius )
+               << QgsPoint( QgsWkbTypes::Type::PointZ, data.basePoint.x + std::cos( a1 ) * data.mRadius, data.basePoint.y + std::sin( a1 ) * data.mRadius )
+               << QgsPoint( QgsWkbTypes::Type::PointZ, data.basePoint.x + std::cos( a2 ) * data.mRadius, data.basePoint.y + std::sin( a2 ) * data.mRadius )
              );
 
   return true;
@@ -1443,9 +1443,9 @@ void QgsDwgImporter::addCircle( const DRW_Circle &data )
 
   QgsCircularString c;
   c.setPoints( QgsPointSequence()
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x - data.mRadius, data.basePoint.y, data.basePoint.z )
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + data.mRadius, data.basePoint.y, data.basePoint.z )
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x - data.mRadius, data.basePoint.y, data.basePoint.z )
+               << QgsPoint( QgsWkbTypes::Type::PointZ, data.basePoint.x - data.mRadius, data.basePoint.y, data.basePoint.z )
+               << QgsPoint( QgsWkbTypes::Type::PointZ, data.basePoint.x + data.mRadius, data.basePoint.y, data.basePoint.z )
+               << QgsPoint( QgsWkbTypes::Type::PointZ, data.basePoint.x - data.mRadius, data.basePoint.y, data.basePoint.z )
              );
 
   if ( !createFeature( layer, f, c ) )
@@ -1482,7 +1482,7 @@ bool QgsDwgImporter::curveFromLWPolyline( const DRW_LWPolyline &data, QgsCompoun
     Q_ASSERT( data.vertlist[i0] );
     QgsDebugMsgLevel( QStringLiteral( "%1: %2,%3 bulge:%4" ).arg( i ).arg( data.vertlist[i0]->x ).arg( data.vertlist[i0]->y ).arg( data.vertlist[i0]->bulge ), 5 );
 
-    QgsPoint p( QgsWkbTypes::PointZ, data.vertlist[i0]->x, data.vertlist[i0]->y, data.elevation );
+    QgsPoint p( QgsWkbTypes::Type::PointZ, data.vertlist[i0]->x, data.vertlist[i0]->y, data.elevation );
     s << p;
 
     bool hasBulge( data.vertlist[i0]->bulge != 0.0 );
@@ -1518,7 +1518,7 @@ bool QgsDwgImporter::curveFromLWPolyline( const DRW_LWPolyline &data, QgsCompoun
       double r = c / 2.0 / std::sin( a );
       double h = r * ( 1 - std::cos( a ) );
 
-      s << QgsPoint( QgsWkbTypes::PointZ,
+      s << QgsPoint( QgsWkbTypes::Type::PointZ,
                      data.vertlist[i0]->x + 0.5 * dx + h * dy / c,
                      data.vertlist[i0]->y + 0.5 * dy - h * dx / c,
                      data.elevation );
@@ -1549,8 +1549,8 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
     size_t i0 = i % vertexnum;
     size_t i1 = ( i + 1 ) % vertexnum;
 
-    QgsPoint p0( QgsWkbTypes::PointZ, data.vertlist[i0]->x, data.vertlist[i0]->y, data.elevation );
-    QgsPoint p1( QgsWkbTypes::PointZ, data.vertlist[i1]->x, data.vertlist[i1]->y, data.elevation );
+    QgsPoint p0( QgsWkbTypes::Type::PointZ, data.vertlist[i0]->x, data.vertlist[i0]->y, data.elevation );
+    QgsPoint p1( QgsWkbTypes::Type::PointZ, data.vertlist[i1]->x, data.vertlist[i1]->y, data.elevation );
     double staWidth = data.vertlist[i0]->stawidth == 0.0 ? data.width : data.vertlist[i0]->stawidth;
     double endWidth = data.vertlist[i0]->endwidth == 0.0 ? data.width : data.vertlist[i0]->endwidth;
     bool hasBulge( data.vertlist[i0]->bulge != 0.0 );
@@ -1634,7 +1634,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
         double r = c / 2.0 / std::sin( a );
         double h = r * ( 1 - std::cos( a ) );
 
-        s << QgsPoint( QgsWkbTypes::PointZ,
+        s << QgsPoint( QgsWkbTypes::Type::PointZ,
                        p0.x() + 0.5 * dx + h * dy / c,
                        p0.y() + 0.5 * dy - h * dx / c,
                        data.elevation );
@@ -1749,8 +1749,8 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
     size_t i0 = i % vertexnum;
     size_t i1 = ( i + 1 ) % vertexnum;
 
-    QgsPoint p0( QgsWkbTypes::PointZ, data.vertlist[i0]->basePoint.x, data.vertlist[i0]->basePoint.y, data.vertlist[i0]->basePoint.z );
-    QgsPoint p1( QgsWkbTypes::PointZ, data.vertlist[i1]->basePoint.x, data.vertlist[i1]->basePoint.y, data.vertlist[i1]->basePoint.z );
+    QgsPoint p0( QgsWkbTypes::Type::PointZ, data.vertlist[i0]->basePoint.x, data.vertlist[i0]->basePoint.y, data.vertlist[i0]->basePoint.z );
+    QgsPoint p1( QgsWkbTypes::Type::PointZ, data.vertlist[i1]->basePoint.x, data.vertlist[i1]->basePoint.y, data.vertlist[i1]->basePoint.z );
     double staWidth = data.vertlist[i0]->endwidth == 0.0 ? data.defendwidth : data.vertlist[i0]->stawidth;
     double endWidth = data.vertlist[i0]->stawidth == 0.0 ? data.defstawidth : data.vertlist[i0]->endwidth;
     bool hasBulge( data.vertlist[i0]->bulge != 0.0 );
@@ -1837,7 +1837,7 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
         double r = c / 2.0 / std::sin( a );
         double h = r * ( 1 - std::cos( a ) );
 
-        s << QgsPoint( QgsWkbTypes::PointZ,
+        s << QgsPoint( QgsWkbTypes::Type::PointZ,
                        p0.x() + 0.5 * dx + h * dy / c,
                        p0.y() + 0.5 * dy - h * dx / c,
                        p0.z() + 0.5 * dz );
@@ -2220,7 +2220,7 @@ void QgsDwgImporter::addInsert( const DRW_Insert &data )
   SETDOUBLE( colspace );
   SETDOUBLE( rowspace );
 
-  QgsPoint p( QgsWkbTypes::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z );
+  QgsPoint p( QgsWkbTypes::Type::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z );
 
   if ( !createFeature( layer, f, p ) )
   {
@@ -2263,10 +2263,10 @@ void QgsDwgImporter::addSolid( const DRW_Solid &data )
   // pt1 pt2
   // pt3 pt4
   QgsPointSequence s;
-  s << QgsPoint( QgsWkbTypes::PointZ,   data.basePoint.x,   data.basePoint.y, data.basePoint.z );
-  s << QgsPoint( QgsWkbTypes::PointZ,    data.secPoint.x,    data.secPoint.y, data.basePoint.z );
-  s << QgsPoint( QgsWkbTypes::PointZ, data.fourthPoint.x, data.fourthPoint.y, data.basePoint.z );
-  s << QgsPoint( QgsWkbTypes::PointZ,  data.thirdPoint.x,  data.thirdPoint.y, data.basePoint.z );
+  s << QgsPoint( QgsWkbTypes::Type::PointZ,   data.basePoint.x,   data.basePoint.y, data.basePoint.z );
+  s << QgsPoint( QgsWkbTypes::Type::PointZ,    data.secPoint.x,    data.secPoint.y, data.basePoint.z );
+  s << QgsPoint( QgsWkbTypes::Type::PointZ, data.fourthPoint.x, data.fourthPoint.y, data.basePoint.z );
+  s << QgsPoint( QgsWkbTypes::Type::PointZ,  data.thirdPoint.x,  data.thirdPoint.y, data.basePoint.z );
   s << s[0];
 
   QgsLineString *ls = new QgsLineString();
@@ -2309,7 +2309,7 @@ void QgsDwgImporter::addMText( const DRW_MText &data )
 
   setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
-  QgsPoint p( QgsWkbTypes::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z );
+  QgsPoint p( QgsWkbTypes::Type::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z );
 
   if ( !createFeature( layer, f, p ) )
   {
@@ -2349,7 +2349,7 @@ void QgsDwgImporter::addText( const DRW_Text &data )
 
   setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
-  QgsPoint p( QgsWkbTypes::PointZ,
+  QgsPoint p( QgsWkbTypes::Type::PointZ,
               ( data.alignH > 0 || data.alignV > 0 ) ? data.secPoint.x : data.basePoint.x,
               ( data.alignH > 0 || data.alignV > 0 ) ? data.secPoint.y : data.basePoint.y,
               ( data.alignH > 0 || data.alignV > 0 ) ? data.secPoint.z : data.basePoint.z );
@@ -2472,8 +2472,8 @@ void QgsDwgImporter::addHatch( const DRW_Hatch *pdata )
       {
         QgsLineString *ls = new QgsLineString();
         ls->setPoints( QgsPointSequence()
-                       << QgsPoint( QgsWkbTypes::PointZ, l->basePoint.x, l->basePoint.y, l->basePoint.z )
-                       << QgsPoint( QgsWkbTypes::PointZ, l->secPoint.x, l->secPoint.y, l->secPoint.z ) );
+                       << QgsPoint( QgsWkbTypes::Type::PointZ, l->basePoint.x, l->basePoint.y, l->basePoint.z )
+                       << QgsPoint( QgsWkbTypes::Type::PointZ, l->secPoint.x, l->secPoint.y, l->secPoint.z ) );
 
         if ( j > 0 )
           ls->moveVertex( QgsVertexId( 0, 0, 0 ), cc->endPoint() );
@@ -2555,8 +2555,8 @@ void QgsDwgImporter::addLine( const DRW_Line &data )
   QgsLineString l;
 
   l.setPoints( QgsPointSequence()
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z )
-               << QgsPoint( QgsWkbTypes::PointZ, data.secPoint.x, data.secPoint.y, data.secPoint.z ) );
+               << QgsPoint( QgsWkbTypes::Type::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z )
+               << QgsPoint( QgsWkbTypes::Type::PointZ, data.secPoint.x, data.secPoint.y, data.secPoint.z ) );
 
   if ( !createFeature( layer, f, l ) )
   {

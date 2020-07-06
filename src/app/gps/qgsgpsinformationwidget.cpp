@@ -1133,12 +1133,12 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
   if ( !vlayer )
     return;
 
-  if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry && mCaptureList.size() < 2 )
+  if ( vlayer->geometryType() == QgsWkbTypes::GeometryType::LineGeometry && mCaptureList.size() < 2 )
   {
     QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ), tr( "Cannot close a line feature until it has at least two vertices." ) );
     return;
   }
-  else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry && mCaptureList.size() < 3 )
+  else if ( vlayer->geometryType() == QgsWkbTypes::GeometryType::PolygonGeometry && mCaptureList.size() < 3 )
   {
     QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ),
         tr( "Cannot close a polygon feature until it has at least three vertices." ) );
@@ -1161,7 +1161,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
   bool is3D = QgsWkbTypes::hasZ( vlayer->wkbType() );
   switch ( vlayer->geometryType() )
   {
-    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::GeometryType::PointGeometry:
     {
       QgsFeature f;
       try
@@ -1208,8 +1208,8 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       break;
     }
 
-    case QgsWkbTypes::LineGeometry:
-    case QgsWkbTypes::PolygonGeometry:
+    case QgsWkbTypes::GeometryType::LineGeometry:
+    case QgsWkbTypes::GeometryType::PolygonGeometry:
     {
       disconnect( mNmea, &QgsGpsConnection::stateChanged,
                   this, &QgsGpsInformationWidget::displayGPSInformation );
@@ -1221,7 +1221,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       if ( ! is3D )
         ring->dropZValue();
 
-      if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
+      if ( vlayer->geometryType() == QgsWkbTypes::GeometryType::LineGeometry )
       {
 
         g = QgsGeometry( ring.release() );
@@ -1238,7 +1238,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
         if ( QgsWkbTypes::isMultiType( vlayer->wkbType() ) )
           g.convertToMultiType();
       }
-      else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
+      else if ( vlayer->geometryType() == QgsWkbTypes::GeometryType::PolygonGeometry )
       {
         ring->close();
         std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
@@ -1307,8 +1307,8 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       break;
     }
 
-    case QgsWkbTypes::NullGeometry:
-    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::GeometryType::NullGeometry:
+    case QgsWkbTypes::GeometryType::UnknownGeometry:
       return;
   }
   vlayer->triggerRepaint();
@@ -1354,7 +1354,7 @@ void QgsGpsInformationWidget::createRubberBand()
 {
   delete mRubberBand;
 
-  mRubberBand = new QgsRubberBand( mMapCanvas, QgsWkbTypes::LineGeometry );
+  mRubberBand = new QgsRubberBand( mMapCanvas, QgsWkbTypes::GeometryType::LineGeometry );
   mRubberBand->setColor( mBtnTrackColor->color() );
   mRubberBand->setWidth( mSpinTrackWidth->value() );
   mRubberBand->show();
@@ -1432,20 +1432,20 @@ void QgsGpsInformationWidget::updateCloseFeatureButton( QgsMapLayer *lyr )
 
     switch ( layerGeometryType )
     {
-      case QgsWkbTypes::PointGeometry:
+      case QgsWkbTypes::GeometryType::PointGeometry:
         buttonLabel = tr( "&Add Point" );
         break;
 
-      case QgsWkbTypes::LineGeometry:
+      case QgsWkbTypes::GeometryType::LineGeometry:
         buttonLabel = tr( "&Add Line" );
         break;
 
-      case QgsWkbTypes::PolygonGeometry:
+      case QgsWkbTypes::GeometryType::PolygonGeometry:
         buttonLabel = tr( "&Add Polygon" );
         break;
 
-      case QgsWkbTypes::UnknownGeometry:
-      case QgsWkbTypes::NullGeometry:
+      case QgsWkbTypes::GeometryType::UnknownGeometry:
+      case QgsWkbTypes::GeometryType::NullGeometry:
         enable = false;
         break;
     }

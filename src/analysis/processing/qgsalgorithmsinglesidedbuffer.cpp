@@ -75,7 +75,7 @@ QgsProcessing::SourceType QgsSingleSidedBufferAlgorithm::outputLayerType() const
 QgsWkbTypes::Type QgsSingleSidedBufferAlgorithm::outputWkbType( QgsWkbTypes::Type type ) const
 {
   Q_UNUSED( type );
-  return QgsWkbTypes::Polygon;
+  return QgsWkbTypes::Type::Polygon;
 }
 
 QgsSingleSidedBufferAlgorithm *QgsSingleSidedBufferAlgorithm::createInstance() const

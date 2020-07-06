@@ -236,7 +236,7 @@ void checkDock::errorListClicked( const QModelIndex &index )
 
   // use vertex marker when highlighting a point
   // and rubber band otherwise
-  if ( g.type() == QgsWkbTypes::PointGeometry )
+  if ( g.type() == QgsWkbTypes::GeometryType::PointGeometry )
   {
     mVMFeature1 = new QgsVertexMarker( canvas );
     mVMFeature1->setIconType( QgsVertexMarker::ICON_X );
@@ -265,7 +265,7 @@ void checkDock::errorListClicked( const QModelIndex &index )
     return;
   }
 
-  if ( g.type() == QgsWkbTypes::PointGeometry )
+  if ( g.type() == QgsWkbTypes::GeometryType::PointGeometry )
   {
     mVMFeature2 = new QgsVertexMarker( canvas );
     mVMFeature2->setIconType( QgsVertexMarker::ICON_BOX );
@@ -283,7 +283,7 @@ void checkDock::errorListClicked( const QModelIndex &index )
     return;
   }
 
-  if ( mErrorList.at( row )->conflict().type() == QgsWkbTypes::PointGeometry )
+  if ( mErrorList.at( row )->conflict().type() == QgsWkbTypes::GeometryType::PointGeometry )
   {
     mVMConflict = new QgsVertexMarker( canvas );
     mVMConflict->setIconType( QgsVertexMarker::ICON_BOX );
@@ -366,9 +366,9 @@ void checkDock::runTests( ValidateType type )
       te->conflict();
 
       QgsSettings settings;
-      if ( te->conflict().type() == QgsWkbTypes::PolygonGeometry )
+      if ( te->conflict().type() == QgsWkbTypes::GeometryType::PolygonGeometry )
       {
-        rb = new QgsRubberBand( qgsInterface->mapCanvas(), QgsWkbTypes::PolygonGeometry );
+        rb = new QgsRubberBand( qgsInterface->mapCanvas(), QgsWkbTypes::GeometryType::PolygonGeometry );
       }
       else
       {

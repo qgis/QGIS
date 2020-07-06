@@ -85,7 +85,7 @@ class QgsOapifItemsRequest : public QgsBaseNetworkRequest
 
     QgsFields mFields;
 
-    QgsWkbTypes::Type mWKBType = QgsWkbTypes::Unknown;
+    QgsWkbTypes::Type mWKBType = QgsWkbTypes::Type::Unknown;
 
     std::vector<QgsFeatureUniqueIdPair> mFeatures;
 

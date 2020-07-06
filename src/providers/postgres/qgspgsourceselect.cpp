@@ -58,16 +58,16 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
   if ( index.column() == QgsPgTableModel::DbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    static const QList<QgsWkbTypes::Type> types { QgsWkbTypes::Point
-        , QgsWkbTypes::LineString
-        , QgsWkbTypes::Polygon
-        , QgsWkbTypes::MultiPoint
-        , QgsWkbTypes::MultiLineString
-        , QgsWkbTypes::MultiPolygon
-        , QgsWkbTypes::NoGeometry };
+    static const QList<QgsWkbTypes::Type> types { QgsWkbTypes::Type::Point
+        , QgsWkbTypes::Type::LineString
+        , QgsWkbTypes::Type::Polygon
+        , QgsWkbTypes::Type::MultiPoint
+        , QgsWkbTypes::Type::MultiLineString
+        , QgsWkbTypes::Type::MultiPolygon
+        , QgsWkbTypes::Type::NoGeometry };
     for ( QgsWkbTypes::Type type : types )
     {
-      cb->addItem( QgsPgTableModel::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), type );
+      cb->addItem( QgsPgTableModel::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), QVariant::fromValue( type ) );
     }
     return cb;
   }
@@ -163,8 +163,8 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
       QgsWkbTypes::Type type = static_cast< QgsWkbTypes::Type >( cb->currentData().toInt() );
 
       model->setData( index, QgsPgTableModel::iconForWkbType( type ), Qt::DecorationRole );
-      model->setData( index, type != QgsWkbTypes::Unknown ? QgsPostgresConn::displayStringForWkbType( type ) : tr( "Select…" ) );
-      model->setData( index, type, Qt::UserRole + 2 );
+      model->setData( index, type != QgsWkbTypes::Type::Unknown ? QgsPostgresConn::displayStringForWkbType( type ) : tr( "Select…" ) );
+      model->setData( index, QVariant::fromValue( type ), Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsPgTableModel::DbtmPkCol )
     {

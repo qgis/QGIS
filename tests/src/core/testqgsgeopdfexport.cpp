@@ -145,7 +145,7 @@ void TestQgsGeoPdfExport::testCollectingFeatures()
   std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layerName=%2" ).arg( component.sourceVectorPath, component.sourceVectorLayer ), QStringLiteral( "layer" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( layer->featureCount(), 2L );
-  QCOMPARE( layer->wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( layer->wkbType(), QgsWkbTypes::Type::Polygon );
   QCOMPARE( layer->fields().at( 1 ).name(), QStringLiteral( "a1" ) );
   QCOMPARE( layer->fields().at( 2 ).name(), QStringLiteral( "a2" ) );
   QgsFeatureIterator it = layer->getFeatures();
@@ -171,7 +171,7 @@ void TestQgsGeoPdfExport::testCollectingFeatures()
   layer = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layerName=%2" ).arg( component.sourceVectorPath, component.sourceVectorLayer ), QStringLiteral( "layer" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( layer->featureCount(), 1L );
-  QCOMPARE( layer->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( layer->wkbType(), QgsWkbTypes::Type::LineString );
   QCOMPARE( layer->fields().at( 1 ).name(), QStringLiteral( "a1" ) );
   QCOMPARE( layer->fields().at( 2 ).name(), QStringLiteral( "a2" ) );
   it = layer->getFeatures();

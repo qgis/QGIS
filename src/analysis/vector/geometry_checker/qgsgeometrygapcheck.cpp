@@ -469,7 +469,7 @@ QgsGeometryCheck::Flags QgsGeometryGapCheck::factoryFlags()
 
 QList<QgsWkbTypes::GeometryType> QgsGeometryGapCheck::factoryCompatibleGeometryTypes()
 {
-  return {QgsWkbTypes::PolygonGeometry};
+  return {QgsWkbTypes::GeometryType::PolygonGeometry};
 }
 
 bool QgsGeometryGapCheck::factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP

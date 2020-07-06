@@ -52,7 +52,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 {
   mExpressionContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layerCache->layer() ) );
 
-  if ( layerCache->layer()->geometryType() == QgsWkbTypes::NullGeometry )
+  if ( layerCache->layer()->geometryType() == QgsWkbTypes::GeometryType::NullGeometry )
   {
     mFeatureRequest.setFlags( QgsFeatureRequest::NoGeometry );
   }

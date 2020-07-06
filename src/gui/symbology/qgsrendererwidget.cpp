@@ -58,11 +58,11 @@ QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
   contextMenu->addAction( tr( "Change Opacity…" ), this, SLOT( changeSymbolOpacity() ) );
   contextMenu->addAction( tr( "Change Output Unit…" ), this, SLOT( changeSymbolUnit() ) );
 
-  if ( mLayer && mLayer->geometryType() == QgsWkbTypes::LineGeometry )
+  if ( mLayer && mLayer->geometryType() == QgsWkbTypes::GeometryType::LineGeometry )
   {
     contextMenu->addAction( tr( "Change Width…" ), this, SLOT( changeSymbolWidth() ) );
   }
-  else if ( mLayer && mLayer->geometryType() == QgsWkbTypes::PointGeometry )
+  else if ( mLayer && mLayer->geometryType() == QgsWkbTypes::GeometryType::PointGeometry )
   {
     contextMenu->addAction( tr( "Change Size…" ), this, SLOT( changeSymbolSize() ) );
     contextMenu->addAction( tr( "Change Angle…" ), this, SLOT( changeSymbolAngle() ) );

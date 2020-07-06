@@ -169,7 +169,7 @@ void TestQgsVectorTileLayer::test_labeling()
   st.setStyleName( "st1" );
   st.setLayerName( "place" );
   st.setFilterExpression( "rank = 1 AND class = 'country'" );
-  st.setGeometryType( QgsWkbTypes::PointGeometry );
+  st.setGeometryType( QgsWkbTypes::GeometryType::PointGeometry );
   st.setLabelSettings( labelSettings );
 
   QgsVectorTileBasicLabeling *labeling = new QgsVectorTileBasicLabeling;
