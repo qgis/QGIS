@@ -35,7 +35,8 @@ from qgis.gui import (QgsProcessingContextGenerator,
                       QgsProcessingParametersWidget,
                       QgsGui,
                       QgsProcessingGui,
-                      QgsProcessingParametersGenerator)
+                      QgsProcessingParametersGenerator,
+                      QgsProcessingHiddenWidgetWrapper)
 from qgis.utils import iface
 
 from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
@@ -45,10 +46,10 @@ from processing.tools.dataobjects import createContext
 
 class ParametersPanel(QgsProcessingParametersWidget):
 
-    def __init__(self, parent, alg, in_place=False):
+    def __init__(self, parent, alg, in_place=False, active_layer=None):
         super().__init__(alg, parent)
         self.in_place = in_place
-        self.active_layer = None
+        self.active_layer = active_layer
 
         self.wrappers = {}
 
@@ -101,6 +102,15 @@ class ParametersPanel(QgsProcessingParametersWidget):
             if param.isDestination():
                 continue
             else:
+                if self.in_place and param.name() in ('INPUT', 'OUTPUT'):
+                    # don't show the input/output parameter widgets in in-place mode
+                    # we still need to CREATE them, because other wrappers may need to interact
+                    # with them (e.g. those parameters which need the input layer for field
+                    # selections/crs properties/etc)
+                    self.wrappers[param.name()] = QgsProcessingHiddenWidgetWrapper(param, QgsProcessingGui.Standard, self)
+                    self.wrappers[param.name()].setLinkedVectorLayer(self.active_layer)
+                    continue
+
                 wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent())
                 wrapper.setWidgetContext(widget_context)
                 wrapper.registerProcessingContextGenerator(self.context_generator)
@@ -118,13 +128,6 @@ class ParametersPanel(QgsProcessingParametersWidget):
                     stretch = wrapper.stretch()
                 else:
                     widget = wrapper.widget
-
-                if self.in_place and param.name() in ('INPUT', 'OUTPUT'):
-                    # don't show the input/output parameter widgets in in-place mode
-                    # we still need to CREATE them, because other wrappers may need to interact
-                    # with them (e.g. those parameters which need the input layer for field
-                    # selections/crs properties/etc)
-                    continue
 
                 if widget is not None:
                     if is_python_wrapper:
@@ -200,11 +203,6 @@ class ParametersPanel(QgsProcessingParametersWidget):
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
             if not param.isDestination():
-
-                if self.in_place and param.name() == 'INPUT':
-                    parameters[param.name()] = self.active_layer
-                    continue
-
                 try:
                     wrapper = self.wrappers[param.name()]
                 except KeyError:
@@ -219,7 +217,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
                 else:
                     widget = wrapper.wrappedWidget()
 
-                if widget is None:
+                if not isinstance(wrapper, QgsProcessingHiddenWidgetWrapper) and widget is None:
                     continue
 
                 value = wrapper.parameterValue()
