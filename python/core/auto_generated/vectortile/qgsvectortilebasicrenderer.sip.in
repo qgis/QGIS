@@ -34,7 +34,7 @@ zoom levels, or by disabling it.
 #include "qgsvectortilebasicrenderer.h"
 %End
   public:
-    QgsVectorTileBasicRendererStyle( const QString &stName = QString(), const QString &laName = QString(), QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+    QgsVectorTileBasicRendererStyle( const QString &stName = QString(), const QString &laName = QString(), QgsWkbTypes::GeometryType geomType = QgsWkbTypes::GeometryType::UnknownGeometry );
 %Docstring
 Constructs a style object
 %End

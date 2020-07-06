@@ -28,7 +28,7 @@ Handles storage of information regarding WKB types and their properties.
 
   public:
 
-    enum Type
+    enum class Type
     {
       Unknown,
       Point,
@@ -92,7 +92,7 @@ Handles storage of information regarding WKB types and their properties.
       MultiPolygon25D
     };
 
-    enum GeometryType
+    enum class GeometryType
     {
       PointGeometry,
       LineGeometry,
@@ -246,7 +246,7 @@ Invalid geometry types will return a dimension of 0.
 %Docstring
 Returns the geometry type for a WKB type, e.g., both MultiPolygon and CurvePolygon would have a
 PolygonGeometry geometry type.
-GeometryCollections are reported as QgsWkbTypes.UnknownGeometry.
+GeometryCollections are reported as QgsWkbTypes.GeometryType.UnknownGeometry.
 %End
 
     static QString displayString( Type type );

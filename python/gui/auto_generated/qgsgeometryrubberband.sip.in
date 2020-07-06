@@ -47,7 +47,7 @@ A rubberband class for QgsAbstractGeometry (considering curved geometries)*
       ICON_FULL_BOX
     };
 
-    QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
+    QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::GeometryType::LineGeometry );
     ~QgsGeometryRubberBand();
 
     void setGeometry( QgsAbstractGeometry *geom /Transfer/ );

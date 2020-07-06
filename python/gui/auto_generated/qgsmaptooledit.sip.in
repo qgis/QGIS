@@ -44,7 +44,7 @@ Returns stroke width for rubber bands (from global settings)
 Returns fill color for rubber bands (from global settings)
 %End
 
-    QgsRubberBand *createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) /Factory/;
+    QgsRubberBand *createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::LineGeometry, bool alternativeBand = false ) /Factory/;
 %Docstring
 Creates a rubber band with the color/line width from
 the QGIS settings. The caller takes ownership of the
@@ -54,7 +54,7 @@ returned object
 :param alternativeBand: if ``True``, rubber band will be set with more transparency and a dash pattern. default is ``False``.
 %End
 
-    QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const /Factory/;
+    QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::LineGeometry, bool alternativeBand = false ) const /Factory/;
 
     QgsVectorLayer *currentVectorLayer();
 %Docstring
