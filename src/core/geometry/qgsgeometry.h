@@ -1537,7 +1537,7 @@ class CORE_EXPORT QgsGeometry
      */
     SIP_PYOBJECT randomPointsInPolygon( int count, unsigned long seed = 0 ) const SIP_TYPEHINT( QgsPolylineXY );
     % MethodCode
-    const QgsWkbTypes::Type type = sipCpp->type();
+    const QgsWkbTypes::GeometryType type = sipCpp->type();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot generate points inside a null geometry." ).toUtf8().constData() );

@@ -379,7 +379,7 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
   vlayer->beginEditCommand( tr( "Features Rotated" ) );
 
   int start;
-  if ( vlayer->geometryType() == 2 )
+  if ( vlayer->geometryType() == QgsWkbTypes::GeometryType::PolygonGeometry )
   {
     start = 1;
   }

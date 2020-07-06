@@ -1517,7 +1517,7 @@ is null, a ValueError will be raised.
 .. versionadded:: 3.10
 %End
 %MethodCode
-    const QgsWkbTypes::Type type = sipCpp->type();
+    const QgsWkbTypes::GeometryType type = sipCpp->type();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot generate points inside a null geometry." ).toUtf8().constData() );
