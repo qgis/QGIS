@@ -274,7 +274,12 @@ QgsFields::iterator QgsFields::end()
 
 QIcon QgsFields::iconForField( int fieldIdx ) const
 {
-  switch ( d->fields.at( fieldIdx ).field.type() )
+  return QgsFields::iconForFieldType( d->fields.at( fieldIdx ).field.type() );
+}
+
+QIcon QgsFields::iconForFieldType( const QVariant::Type &type )
+{
+  switch ( type )
   {
     case QVariant::Bool:
       return QgsApplication::getThemeIcon( "/mIconFieldBool.svg" );
