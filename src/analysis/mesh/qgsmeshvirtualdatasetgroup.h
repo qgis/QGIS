@@ -33,7 +33,7 @@
  * The calculation is done by the QgsMeshCalcUtils class from a QgsMeshCalcNode created from the formula
  * Each dataset is calculted when needed, so there is only one dataset store in this class all the time.
  *
- * \since QGIS 3.6
+ * \since QGIS 3.16
  */
 class ANALYSIS_EXPORT QgsMeshVirtualDatasetGroup: public QgsMeshDatasetGroup
 {
@@ -82,7 +82,7 @@ class ANALYSIS_EXPORT QgsMeshVirtualDatasetGroup: public QgsMeshDatasetGroup
  * \ingroup analysis
  * \class QgsMeshVirtualDatasetGroupGenerator
  * Represents a factory that can be used to create virtual dataset group
- * \since QGIS 3.6
+ * \since QGIS 3.16
  */
 class ANALYSIS_EXPORT QgsMeshVirtualDatasetGroupGenerator: public QgsMeshDataGeneratorInterface
 {
