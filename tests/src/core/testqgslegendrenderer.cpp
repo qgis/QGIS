@@ -509,7 +509,7 @@ void TestQgsLegendRenderer::testBigMarkerMaxSize()
 
   QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
-  settings.setMaxSymbolSize( 5 ); //restrict maximum size to 5 mm
+  settings.setMaximumSymbolSize( 5 ); //restrict maximum size to 5 mm
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );
