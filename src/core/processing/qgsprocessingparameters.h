@@ -162,7 +162,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      */
     bool loadVariant( const QVariantMap &map );
 
-    bool operator==( const QgsProcessingFeatureSourceDefinition &other )
+    bool operator==( const QgsProcessingFeatureSourceDefinition &other ) const
     {
       return source == other.source
              && selectedFeaturesOnly == other.selectedFeaturesOnly
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
              && geometryCheck == other.geometryCheck;
     }
 
-    bool operator!=( const QgsProcessingFeatureSourceDefinition &other )
+    bool operator!=( const QgsProcessingFeatureSourceDefinition &other ) const
     {
       return !( *this == other );
     }
