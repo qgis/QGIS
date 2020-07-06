@@ -389,7 +389,7 @@
         "description" : "Sort results in descending order, field name must be specified with 'sortby' parameter",
         "required" : false,
         "schema" : {
-          "type" : "bool"
+          "type" : "boolean"
         }
       },
       "relations" : {
