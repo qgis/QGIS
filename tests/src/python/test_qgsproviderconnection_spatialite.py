@@ -110,6 +110,14 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
         self.assertFalse('myNewTable' in table_names)
         self.assertTrue('myNewAspatialTable' in table_names)
 
+    def test_gpkg_fields(self):
+        """Test fields"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('spatialite')
+        conn = md.createConnection(self.uri, {})
+        fields = conn.fields('', 'cdb_lines')
+        self.assertEqual(fields.names(), ['pk', 'geom', 'fid', 'id', 'typ', 'name', 'ortsrat', 'id_long'])
+
 
 if __name__ == '__main__':
     unittest.main()

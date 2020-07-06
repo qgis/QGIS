@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsvectorlayer.h"
 #include "qgsexception.h"
 #include <QVariant>
 #include <QObject>
@@ -212,6 +213,18 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType> 
   return mGeometryColumnTypes;
 }
 
+QgsFields QgsAbstractDatabaseProviderConnection::fields( const QString &schema, const QString &tableName ) const
+{
+  QgsVectorLayer vl { tableUri( schema, tableName ), QStringLiteral( "temp_layer" ), mProviderKey };
+  if ( vl.isValid() )
+  {
+    return vl.fields();
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Error retrieving fields information for uri: %1" ).arg( vl.publicSource() ) );
+  }
+}
 
 QString QgsAbstractDatabaseProviderConnection::TableProperty::defaultName() const
 {

@@ -24,6 +24,7 @@
 QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
+  mProviderKey = QStringLiteral( "ogr" );
   setDefaultCapabilities();
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "ogr" ), QgsSettings::Section::Providers );
@@ -36,6 +37,7 @@ QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString 
 QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &uri, const QVariantMap &configuration ):
   QgsAbstractDatabaseProviderConnection( uri, configuration )
 {
+  mProviderKey = QStringLiteral( "ogr" );
   // Cleanup the URI in case it contains other information other than the file path
   if ( uri.contains( '|' ) )
   {

@@ -29,6 +29,7 @@ extern "C"
 QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
+  mProviderKey = QStringLiteral( "postgres" );
   // Remove the sql and table empty parts
   const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=""\s*)raw" };
   setUri( QgsPostgresConn::connUri( name ).uri().replace( removePartsRe, QString() ) );
@@ -38,6 +39,7 @@ QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &nam
 QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &uri, const QVariantMap &configuration ):
   QgsAbstractDatabaseProviderConnection( QgsDataSourceUri( uri ).connectionInfo( false ), configuration )
 {
+  mProviderKey = QStringLiteral( "postgres" );
   setDefaultCapabilities();
 }
 
