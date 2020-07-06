@@ -156,9 +156,15 @@ class CORE_EXPORT QgsTextRenderer
      * Returns the font metrics for the given text \a format, when rendered
      * in the specified render \a context. The font metrics will take into account
      * all scaling required by the render context.
+     *
+     * The optional \a scaleFactor argument can specify a font size scaling factor. It is recommended to set this to
+     * QgsTextRenderer::FONT_WORKAROUND_SCALE and then manually scale painter devices or calculations
+     * based on the resultant font metrics. Failure to do so will result in poor quality text rendering
+     * at small font sizes.
+     *
      * \since QGIS 3.2
      */
-    static QFontMetricsF fontMetrics( QgsRenderContext &context, const QgsTextFormat &format );
+    static QFontMetricsF fontMetrics( QgsRenderContext &context, const QgsTextFormat &format, double scaleFactor = 1.0 );
 
     /**
      * Returns the width of a text based on a given format.
@@ -180,6 +186,16 @@ class CORE_EXPORT QgsTextRenderer
      */
     static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode = Point,
                               QFontMetricsF *fontMetrics = nullptr );
+
+    /**
+     * Scale factor for upscaling font sizes and downscaling destination painter devices.
+     *
+     * Using this scale factor and manually adjusting any font metric based calculations results in more stable
+     * font metrics and sizes for small font sizes.
+     *
+     * \since QGIS 3.16
+     */
+    static constexpr double FONT_WORKAROUND_SCALE = 10;
 
   private:
 
@@ -289,7 +305,6 @@ class CORE_EXPORT QgsTextRenderer
     friend class QgsLabelPreview;
 
     static QgsTextFormat updateShadowPosition( const QgsTextFormat &format );
-
 
 };
 

@@ -64,12 +64,20 @@ QFont QgsTextFormat::font() const
   return d->textFont;
 }
 
-QFont QgsTextFormat::scaledFont( const QgsRenderContext &context ) const
+QFont QgsTextFormat::scaledFont( const QgsRenderContext &context, double scaleFactor ) const
 {
   QFont font = d->textFont;
-  int fontPixelSize = QgsTextRenderer::sizeToPixel( d->fontSize, context, d->fontSizeUnits,
-                      d->fontSizeMapUnitScale );
-  font.setPixelSize( fontPixelSize );
+  if ( scaleFactor == 1 )
+  {
+    int fontPixelSize = QgsTextRenderer::sizeToPixel( d->fontSize, context, d->fontSizeUnits,
+                        d->fontSizeMapUnitScale );
+    font.setPixelSize( fontPixelSize );
+  }
+  else
+  {
+    double fontPixelSize = context.convertToPainterUnits( d->fontSize, d->fontSizeUnits, d->fontSizeMapUnitScale );
+    font.setPixelSize( std::round( scaleFactor * fontPixelSize + 0.5 ) );
+  }
   return font;
 }
 
