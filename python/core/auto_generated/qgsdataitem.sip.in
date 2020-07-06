@@ -49,6 +49,8 @@ Parent/children hierarchy is not based on QObject.
       Favorites,
       Project,
       Custom,
+      Fields,
+      Field,
     };
 
 
@@ -898,6 +900,89 @@ Creates a new data item from the specified path.
     static QIcon iconZip();
 
 };
+
+
+class QgsFieldsItem : QgsDataItem
+{
+%Docstring
+A collection of fields item
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsdataitem.h"
+%End
+  public:
+
+    QgsFieldsItem( QgsDataItem *parent /TransferThis/,
+                   const QString &name,
+                   const QString &path,
+                   const QString &providerKey,
+                   const QString schema,
+                   const QString tableName );
+%Docstring
+Constructor for QgsFieldsItem, with the specified ``parent`` item.
+
+The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
+but QgsDataItem items pointing to different logical locations should always use a different item ``path``.
+
+The ``providerKey`` string (added in QGIS 3.12) can be used to specify the key for the QgsDataItemProvider that created this item.
+The ``name`` argument specifies the text to show in the model for the item. A translated string should
+be used wherever appropriate.
+%End
+
+    ~QgsFieldsItem();
+
+    virtual QVector<QgsDataItem *> createChildren();
+
+
+    virtual QIcon icon();
+
+
+  protected:
+
+    static QIcon openFieldsIcon();
+%Docstring
+Shared open fields icon.
+%End
+
+    static QIcon fieldsIcon();
+%Docstring
+Shared closed fields icon.
+%End
+
+};
+
+
+class QgsFieldItem : QgsDataItem
+{
+%Docstring
+A layer field item
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsdataitem.h"
+%End
+  public:
+
+    QgsFieldItem( QgsDataItem *parent /TransferThis/,
+                  const QgsField &field );
+%Docstring
+Constructor for QgsFieldItem, with the specified ``parent`` item and /a field.
+The ``name`` argument specifies the text to show in the model for the item. A translated string should
+be used wherever appropriate.
+%End
+
+    ~QgsFieldItem();
+
+    virtual QIcon icon();
+
+
+};
+
 
 
 

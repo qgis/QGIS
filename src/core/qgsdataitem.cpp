@@ -43,6 +43,7 @@
 #include "qgsanimatedicon.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgsprovidermetadata.h"
 
 // use GDAL VSI mechanism
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
@@ -108,6 +109,82 @@ QIcon QgsDataCollectionItem::homeDirIcon()
 QIcon QgsDataCollectionItem::iconDir()
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolder.svg" ) );
+}
+
+
+QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
+                              const QString &name,
+                              const QString &path,
+                              const QString &providerKey,
+                              const QString schema,
+                              const QString tableName )
+  : QgsDataItem( QgsDataItem::Fields, parent, name, path, providerKey )
+  , mSchema( schema )
+  , mTableName( tableName )
+{
+  mCapabilities |= ( Fertile | Collapse );
+}
+
+QgsFieldsItem::~QgsFieldsItem()
+{
+
+}
+
+QVector<QgsDataItem *> QgsFieldsItem::createChildren()
+{
+  QVector<QgsDataItem *> children;
+  try
+  {
+    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey() ) };
+    if ( md )
+    {
+      QgsAbstractDatabaseProviderConnection *conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( parent()->path( ), {} ) ) };
+      if ( conn )
+      {
+        const QgsFields constFields { conn->fields( mSchema, mTableName ) };
+        for ( const auto &f : constFields )
+        {
+          children.push_back( new QgsFieldItem( this, f ) );
+        }
+      }
+    }
+  }
+  catch ( const QgsProviderConnectionException &ex )
+  {
+    children.push_back( new QgsErrorItem( this, ex.what(), path() + QStringLiteral( "/error" ) ) );
+  }
+  return children;
+}
+
+QIcon QgsFieldsItem::icon()
+{
+  return state() == Populated ? openFieldsIcon() : fieldsIcon();
+}
+
+QIcon QgsFieldsItem::openFieldsIcon()
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mSourceFields.svg" ) );
+}
+
+QIcon QgsFieldsItem::fieldsIcon()
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mSourceFields.svg" ) );
+}
+
+QgsFieldItem::QgsFieldItem( QgsDataItem *parent, const QgsField &field )
+  : QgsDataItem( QgsDataItem::Type::Field, parent, field.name(), parent->path() + '/' + field.name(), parent->providerKey() )
+  , mField( field )
+{
+  setState( QgsDataItem::State::Populated );
+}
+
+QgsFieldItem::~QgsFieldItem()
+{
+}
+
+QIcon QgsFieldItem::icon()
+{
+  return QgsFields::iconForFieldType( mField.type() );
 }
 
 QIcon QgsFavoritesItem::iconFavorites()

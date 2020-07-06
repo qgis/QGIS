@@ -82,6 +82,8 @@ class CORE_EXPORT QgsDataItem : public QObject
       Favorites, //!< Represents a favorite item
       Project, //!< Represents a QGIS project
       Custom, //!< Custom item type
+      Fields, //!< Collection of fields
+      Field, //!< Vector layer field
     };
 
     Q_ENUM( Type )
@@ -893,6 +895,89 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
   private:
     void init();
 };
+
+
+/**
+ * \ingroup core
+ * A collection of fields item
+ * \since QGIS 3.16
+*/
+class CORE_EXPORT QgsFieldsItem : public QgsDataItem
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Constructor for QgsFieldsItem, with the specified \a parent item.
+     *
+     * The \a path argument gives the item path in the browser tree. The \a path string can take any form,
+     * but QgsDataItem items pointing to different logical locations should always use a different item \a path.
+     *
+     * The \a providerKey string (added in QGIS 3.12) can be used to specify the key for the QgsDataItemProvider that created this item.
+     * The \a name argument specifies the text to show in the model for the item. A translated string should
+     * be used wherever appropriate.
+     */
+    QgsFieldsItem( QgsDataItem *parent SIP_TRANSFERTHIS,
+                   const QString &name,
+                   const QString &path,
+                   const QString &providerKey,
+                   const QString schema,
+                   const QString tableName );
+
+    ~QgsFieldsItem() override;
+
+    QVector<QgsDataItem *> createChildren() override;
+
+    QIcon icon() override;
+
+  protected:
+
+    /**
+     * Shared open fields icon.
+     */
+    static QIcon openFieldsIcon();
+
+    /**
+     * Shared closed fields icon.
+     */
+    static QIcon fieldsIcon();
+
+  private:
+
+    QString mSchema;
+    QString mTableName;
+};
+
+
+/**
+ * \ingroup core
+ * A layer field item
+ * \since QGIS 3.16
+*/
+class CORE_EXPORT QgsFieldItem : public QgsDataItem
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Constructor for QgsFieldItem, with the specified \a parent item and /a field.
+     * The \a name argument specifies the text to show in the model for the item. A translated string should
+     * be used wherever appropriate.
+     */
+    QgsFieldItem( QgsDataItem *parent SIP_TRANSFERTHIS,
+                  const QgsField &field );
+
+    ~QgsFieldItem() override;
+
+    // QgsDataItem interface
+    QIcon icon() override;
+
+  private:
+
+    const QgsField mField;
+
+};
+
 
 
 ///@cond PRIVATE
