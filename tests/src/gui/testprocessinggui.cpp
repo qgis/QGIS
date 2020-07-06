@@ -189,6 +189,7 @@ class TestProcessingGui : public QObject
     void testWrapperGeneral();
     void testWrapperDynamic();
     void testModelerWrapper();
+    void testHiddenWrapper();
     void testBooleanWrapper();
     void testStringWrapper();
     void testFileWrapper();
@@ -782,6 +783,33 @@ void TestProcessingGui::testModelerWrapper()
   QCOMPARE( w->value().toList().at( 2 ).value< QgsProcessingModelChildParameterSource>().staticValue().toString(), QStringLiteral( "something" ) );
   delete w;
 
+}
+
+void TestProcessingGui::testHiddenWrapper()
+{
+  TestParamType param( QStringLiteral( "boolean" ), QStringLiteral( "bool" ) );
+
+  QgsProcessingHiddenWidgetWrapper wrapper( &param );
+  QSignalSpy spy( &wrapper, &QgsProcessingHiddenWidgetWrapper::widgetValueHasChanged );
+
+  QgsProcessingContext context;
+  wrapper.setWidgetValue( 1, context );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( wrapper.widgetValue().toInt(), 1 );
+  wrapper.setWidgetValue( 1, context );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( wrapper.widgetValue().toInt(), 1 );
+  wrapper.setWidgetValue( 2, context );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( wrapper.widgetValue().toInt(), 2 );
+
+  QVERIFY( !wrapper.createWrappedWidget( context ) );
+  QVERIFY( !wrapper.createWrappedLabel() );
+
+  std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:3111&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( !wrapper.linkedVectorLayer() );
+  wrapper.setLinkedVectorLayer( vl.get() );
+  QCOMPARE( wrapper.linkedVectorLayer(), vl.get() );
 }
 
 void TestProcessingGui::testBooleanWrapper()
