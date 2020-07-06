@@ -33,7 +33,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   : QgsVectorDataProvider( uri, options )
 {
   mSharedData.reset( new QgsAfsSharedData() );
-  mSharedData->mGeometryType = QgsWkbTypes::Unknown;
+  mSharedData->mGeometryType = QgsWkbTypes::Type::Unknown;
   mSharedData->mDataSource = QgsDataSourceUri( uri );
 
   const QString authcfg = mSharedData->mDataSource.authConfigId();
@@ -184,12 +184,12 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   bool hasM = layerData[QStringLiteral( "hasM" )].toBool();
   bool hasZ = layerData[QStringLiteral( "hasZ" )].toBool();
   mSharedData->mGeometryType = QgsArcGisRestUtils::mapEsriGeometryType( layerData[QStringLiteral( "geometryType" )].toString() );
-  if ( mSharedData->mGeometryType == QgsWkbTypes::Unknown )
+  if ( mSharedData->mGeometryType == QgsWkbTypes::Type::Unknown )
   {
     if ( layerData.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) ) )
     {
       // it's possible to connect to ImageServers as a feature service, to view tile boundaries
-      mSharedData->mGeometryType = QgsWkbTypes::Polygon;
+      mSharedData->mGeometryType = QgsWkbTypes::Type::Polygon;
     }
     else
     {

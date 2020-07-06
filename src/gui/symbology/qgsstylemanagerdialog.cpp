@@ -355,15 +355,15 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemAll->addSeparator();
     item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), tr( "Point Label Settings…" ), this );
-    connect( item, &QAction::triggered, this, [ = ]( bool ) { addLabelSettings( QgsWkbTypes::PointGeometry ); } );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) { addLabelSettings( QgsWkbTypes::GeometryType::PointGeometry ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemLabelSettings->addAction( item );
     item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), tr( "Line Label Settings…" ), this );
-    connect( item, &QAction::triggered, this, [ = ]( bool ) {  addLabelSettings( QgsWkbTypes::LineGeometry ); } );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) {  addLabelSettings( QgsWkbTypes::GeometryType::LineGeometry ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemLabelSettings->addAction( item );
     item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), tr( "Polygon Label Settings…" ), this );
-    connect( item, &QAction::triggered, this, [ = ]( bool ) {  addLabelSettings( QgsWkbTypes::PolygonGeometry ); } );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) {  addLabelSettings( QgsWkbTypes::GeometryType::PolygonGeometry ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemLabelSettings->addAction( item );
 

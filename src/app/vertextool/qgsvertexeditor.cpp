@@ -268,7 +268,7 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
   }
   double z = ( index.column() == mZCol ? value.toDouble() : mLockedFeature->vertexMap().at( index.row() )->point().z() );
   double m = ( index.column() == mMCol ? value.toDouble() : mLockedFeature->vertexMap().at( index.row() )->point().m() );
-  QgsPoint p( QgsWkbTypes::PointZM, x, y, z, m );
+  QgsPoint p( QgsWkbTypes::Type::PointZM, x, y, z, m );
 
   mLockedFeature->layer()->beginEditCommand( QObject::tr( "Moved vertices" ) );
   mLockedFeature->layer()->moveVertex( p, mLockedFeature->featureId(), index.row() );

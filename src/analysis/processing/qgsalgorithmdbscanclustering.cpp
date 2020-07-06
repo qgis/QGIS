@@ -213,7 +213,7 @@ void QgsDbscanClusteringAlgorithm::dbscan( const std::size_t minSize,
     }
 
     QgsPointXY point;
-    if ( QgsWkbTypes::flatType( feat.geometry().wkbType() ) == QgsWkbTypes::Point )
+    if ( QgsWkbTypes::flatType( feat.geometry().wkbType() ) == QgsWkbTypes::Type::Point )
       point = QgsPointXY( *qgsgeometry_cast< const QgsPoint * >( feat.geometry().constGet() ) );
     else
     {

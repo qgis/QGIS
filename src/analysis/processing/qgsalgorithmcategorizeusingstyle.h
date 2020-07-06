@@ -58,7 +58,7 @@ class QgsCategorizeUsingStyleAlgorithm : public QgsProcessingAlgorithm
     QString mField;
     QString mLayerId;
     QString mLayerName;
-    QgsWkbTypes::GeometryType mLayerGeometryType = QgsWkbTypes::UnknownGeometry;
+    QgsWkbTypes::GeometryType mLayerGeometryType = QgsWkbTypes::GeometryType::UnknownGeometry;
     QgsFields mLayerFields;
     QgsExpression mExpression;
     QgsExpressionContext mExpressionContext;

@@ -728,7 +728,7 @@ QString QgsPostgresProvider::filterWhereClause() const
     delim = QStringLiteral( " AND " );
   }
 
-  if ( mRequestedGeomType != QgsWkbTypes::Unknown && mRequestedGeomType != mDetectedGeomType )
+  if ( mRequestedGeomType != QgsWkbTypes::Type::Unknown && mRequestedGeomType != mDetectedGeomType )
   {
     where += delim + QgsPostgresConn::postgisTypeFilter( mGeometryColumn, ( QgsWkbTypes::Type )mRequestedGeomType, mSpatialColType == SctGeography );
     delim = QStringLiteral( " AND " );
@@ -750,7 +750,7 @@ void QgsPostgresProvider::setExtent( QgsRectangle &newExtent )
  */
 QgsWkbTypes::Type QgsPostgresProvider::wkbType() const
 {
-  return mRequestedGeomType != QgsWkbTypes::Unknown ? mRequestedGeomType : mDetectedGeomType;
+  return mRequestedGeomType != QgsWkbTypes::Type::Unknown ? mRequestedGeomType : mDetectedGeomType;
 }
 
 QgsLayerMetadata QgsPostgresProvider::layerMetadata() const
@@ -3722,7 +3722,7 @@ bool QgsPostgresProvider::getGeometryDetails()
 {
   if ( mGeometryColumn.isNull() )
   {
-    mDetectedGeomType = QgsWkbTypes::NoGeometry;
+    mDetectedGeomType = QgsWkbTypes::Type::NoGeometry;
     mValid = true;
     return true;
   }
@@ -3964,14 +3964,14 @@ bool QgsPostgresProvider::getGeometryDetails()
           mSpatialColType = SctPcPatch;
         else
         {
-          detectedType = mRequestedGeomType == QgsWkbTypes::Unknown ? QString() : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
+          detectedType = mRequestedGeomType == QgsWkbTypes::Type::Unknown ? QString() : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
           detectedSrid = mRequestedSrid;
         }
       }
       else
       {
         connectionRO()->PQexecNR( QStringLiteral( "COMMIT" ) );
-        detectedType = mRequestedGeomType == QgsWkbTypes::Unknown ? QString() : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
+        detectedType = mRequestedGeomType == QgsWkbTypes::Type::Unknown ? QString() : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
       }
     }
     else
@@ -3984,7 +3984,7 @@ bool QgsPostgresProvider::getGeometryDetails()
   mDetectedGeomType = QgsPostgresConn::wkbTypeFromPostgis( detectedType );
   mDetectedSrid     = detectedSrid;
 
-  if ( mDetectedGeomType == QgsWkbTypes::Unknown )
+  if ( mDetectedGeomType == QgsWkbTypes::Type::Unknown )
   {
     mDetectedSrid.clear();
 
@@ -4017,7 +4017,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     if ( layerProperty.size() == 0 )
     {
       // no data - so take what's requested
-      if ( mRequestedGeomType == QgsWkbTypes::Unknown || mRequestedSrid.isEmpty() )
+      if ( mRequestedGeomType == QgsWkbTypes::Type::Unknown || mRequestedSrid.isEmpty() )
       {
         QgsMessageLog::logMessage( tr( "Geometry type and srid for empty column %1 of %2 undefined." ).arg( mGeometryColumn, mQuery ) );
       }
@@ -4029,7 +4029,7 @@ bool QgsPostgresProvider::getGeometryDetails()
       {
         QgsWkbTypes::Type wkbType = layerProperty.types.at( i );
 
-        if ( ( wkbType != QgsWkbTypes::Unknown && ( mRequestedGeomType == QgsWkbTypes::Unknown || mRequestedGeomType == wkbType ) ) &&
+        if ( ( wkbType != QgsWkbTypes::Type::Unknown && ( mRequestedGeomType == QgsWkbTypes::Type::Unknown || mRequestedGeomType == wkbType ) ) &&
              ( mRequestedSrid.isEmpty() || layerProperty.srids.at( i ) == mRequestedSrid.toInt() ) )
           break;
       }
@@ -4054,10 +4054,10 @@ bool QgsPostgresProvider::getGeometryDetails()
 
   QgsDebugMsgLevel( QStringLiteral( "Detected SRID is %1" ).arg( mDetectedSrid ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Requested SRID is %1" ).arg( mRequestedSrid ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Detected type is %1" ).arg( mDetectedGeomType ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Requested type is %1" ).arg( mRequestedGeomType ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Detected type is %1" ).arg( static_cast<int>( mDetectedGeomType ) ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Requested type is %1" ).arg( static_cast<int>( mRequestedGeomType ) ), 2 );
 
-  mValid = ( mDetectedGeomType != QgsWkbTypes::Unknown || mRequestedGeomType != QgsWkbTypes::Unknown )
+  mValid = ( mDetectedGeomType != QgsWkbTypes::Type::Unknown || mRequestedGeomType != QgsWkbTypes::Type::Unknown )
            && ( !mDetectedSrid.isEmpty() || !mRequestedSrid.isEmpty() );
 
   if ( !mValid )
@@ -4174,11 +4174,11 @@ void postgisGeometryType( QgsWkbTypes::Type wkbType, QString &geometryType, int 
   geometryType = QgsWkbTypes::displayString( flatType ).toUpper();
   switch ( flatType )
   {
-    case QgsWkbTypes::Unknown:
+    case QgsWkbTypes::Type::Unknown:
       geometryType = QStringLiteral( "GEOMETRY" );
       break;
 
-    case QgsWkbTypes::NoGeometry:
+    case QgsWkbTypes::Type::NoGeometry:
       geometryType.clear();
       dim = 0;
       break;
@@ -4200,7 +4200,7 @@ void postgisGeometryType( QgsWkbTypes::Type wkbType, QString &geometryType, int 
     geometryType += QLatin1String( "M" );
     dim = 3;
   }
-  else if ( wkbType >= QgsWkbTypes::Point25D && wkbType <= QgsWkbTypes::MultiPolygon25D )
+  else if ( wkbType >= QgsWkbTypes::Type::Point25D && wkbType <= QgsWkbTypes::Type::MultiPolygon25D )
   {
     dim = 3;
   }
@@ -5585,7 +5585,7 @@ QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri )
   if ( ! dsUri.authConfigId().isEmpty() )
     uriParts[ QStringLiteral( "authcfg" ) ] = dsUri.authConfigId();
   if ( dsUri.wkbType() != QgsWkbTypes::Type::Unknown )
-    uriParts[ QStringLiteral( "type" ) ] = dsUri.wkbType();
+    uriParts[ QStringLiteral( "type" ) ] = QVariant::fromValue( dsUri.wkbType() );
 
   if ( uri.contains( QStringLiteral( "selectatid=" ), Qt::CaseSensitivity::CaseInsensitive ) )
     uriParts[ QStringLiteral( "selectatid" ) ] = ! dsUri.selectAtIdDisabled();

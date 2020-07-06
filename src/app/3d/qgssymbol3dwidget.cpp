@@ -73,7 +73,7 @@ void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorL
   int pageIndex;
   switch ( vlayer->geometryType() )
   {
-    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::GeometryType::PointGeometry:
       pageIndex = 2;
       if ( symbol && symbol->type() == QLatin1String( "point" ) )
       {
@@ -85,7 +85,7 @@ void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorL
       }
       break;
 
-    case QgsWkbTypes::LineGeometry:
+    case QgsWkbTypes::GeometryType::LineGeometry:
       pageIndex = 1;
       if ( symbol && symbol->type() == QLatin1String( "line" ) )
       {
@@ -97,7 +97,7 @@ void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorL
       }
       break;
 
-    case QgsWkbTypes::PolygonGeometry:
+    case QgsWkbTypes::GeometryType::PolygonGeometry:
       pageIndex = 3;
       if ( symbol && symbol->type() == QLatin1String( "polygon" ) )
       {

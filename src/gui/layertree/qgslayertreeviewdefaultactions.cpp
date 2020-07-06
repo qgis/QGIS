@@ -355,7 +355,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas, const Q
     QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vLayer )
     {
-      if ( vLayer->geometryType() == QgsWkbTypes::NullGeometry )
+      if ( vLayer->geometryType() == QgsWkbTypes::GeometryType::NullGeometry )
         continue;
 
       if ( layerExtent.isEmpty() )

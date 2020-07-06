@@ -99,7 +99,7 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
 
   QgsGeometry geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
   QVERIFY( !geom.isNull() );
-  QCOMPARE( geom.constGet()->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( geom.constGet()->wkbType(), QgsWkbTypes::Type::LineString );
   QCOMPARE( geom.constGet()->nCoordinates(), 71 );
 
   OGR_F_Destroy( oFeat );
@@ -167,23 +167,23 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry2_data()
   QTest::addColumn<QString>( "wkt" );
   QTest::addColumn<int>( "type" );
 
-  QTest::newRow( "point" ) << QStringLiteral( "Point (1.1 2.2)" ) << static_cast< int >( QgsWkbTypes::Point );
-  QTest::newRow( "pointz" ) << QStringLiteral( "PointZ (1.1 2.2 3.3)" ) <<  static_cast< int >( QgsWkbTypes::Point25D ); // ogr uses 25d for z
-  QTest::newRow( "pointm" ) << QStringLiteral( "PointM (1.1 2.2 3.3)" ) <<  static_cast< int >( QgsWkbTypes::PointM );
-  QTest::newRow( "pointzm" ) << QStringLiteral( "PointZM (1.1 2.2 3.3 4.4)" ) <<  static_cast< int >( QgsWkbTypes::PointZM );
-  QTest::newRow( "point25d" ) << QStringLiteral( "Point25D (1.1 2.2 3.3)" ) <<  static_cast< int >( QgsWkbTypes::Point25D );
+  QTest::newRow( "point" ) << QStringLiteral( "Point (1.1 2.2)" ) << static_cast< int >( QgsWkbTypes::Type::Point );
+  QTest::newRow( "pointz" ) << QStringLiteral( "PointZ (1.1 2.2 3.3)" ) <<  static_cast< int >( QgsWkbTypes::Type::Point25D ); // ogr uses 25d for z
+  QTest::newRow( "pointm" ) << QStringLiteral( "PointM (1.1 2.2 3.3)" ) <<  static_cast< int >( QgsWkbTypes::Type::PointM );
+  QTest::newRow( "pointzm" ) << QStringLiteral( "PointZM (1.1 2.2 3.3 4.4)" ) <<  static_cast< int >( QgsWkbTypes::Type::PointZM );
+  QTest::newRow( "point25d" ) << QStringLiteral( "Point25D (1.1 2.2 3.3)" ) <<  static_cast< int >( QgsWkbTypes::Type::Point25D );
 
-  QTest::newRow( "linestring" ) << QStringLiteral( "LineString (1.1 2.2, 3.3 4.4)" ) << static_cast< int >( QgsWkbTypes::LineString );
-  QTest::newRow( "linestringz" ) << QStringLiteral( "LineStringZ (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( QgsWkbTypes::LineString25D ); // ogr uses 25d for z
-  QTest::newRow( "linestringm" ) << QStringLiteral( "LineStringM (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( QgsWkbTypes::LineStringM );
-  QTest::newRow( "linestringzm" ) << QStringLiteral( "LineStringZM (1.1 2.2 3.3 4.4, 5.5 6.6 7.7 8.8)" ) <<  static_cast< int >( QgsWkbTypes::LineStringZM );
-  QTest::newRow( "linestring25d" ) << QStringLiteral( "LineString25D (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( QgsWkbTypes::LineString25D );
+  QTest::newRow( "linestring" ) << QStringLiteral( "LineString (1.1 2.2, 3.3 4.4)" ) << static_cast< int >( QgsWkbTypes::Type::LineString );
+  QTest::newRow( "linestringz" ) << QStringLiteral( "LineStringZ (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( QgsWkbTypes::Type::LineString25D ); // ogr uses 25d for z
+  QTest::newRow( "linestringm" ) << QStringLiteral( "LineStringM (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( QgsWkbTypes::Type::LineStringM );
+  QTest::newRow( "linestringzm" ) << QStringLiteral( "LineStringZM (1.1 2.2 3.3 4.4, 5.5 6.6 7.7 8.8)" ) <<  static_cast< int >( QgsWkbTypes::Type::LineStringZM );
+  QTest::newRow( "linestring25d" ) << QStringLiteral( "LineString25D (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( QgsWkbTypes::Type::LineString25D );
 
-  QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineString ((1.1 2.2, 3.3 4.4))" ) << static_cast< int >( QgsWkbTypes::MultiLineString );
-  QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineString ((1.1 2.2, 3.3 4.4),(5 5, 6 6))" ) << static_cast< int >( QgsWkbTypes::MultiLineString );
-  QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineStringZ ((1.1 2.2 3, 3.3 4.4 6),(5 5 3, 6 6 1))" ) << static_cast< int >( QgsWkbTypes::MultiLineStringZ );
-  QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineStringM ((1.1 2.2 4, 3.3 4.4 7),(5 5 4, 6 6 2))" ) << static_cast< int >( QgsWkbTypes::MultiLineStringM );
-  QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineStringZM ((1.1 2.2 4 5, 3.3 4.4 8 9),(5 5 7 1, 6 6 2 3))" ) << static_cast< int >( QgsWkbTypes::MultiLineStringZM );
+  QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineString ((1.1 2.2, 3.3 4.4))" ) << static_cast< int >( QgsWkbTypes::Type::MultiLineString );
+  QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineString ((1.1 2.2, 3.3 4.4),(5 5, 6 6))" ) << static_cast< int >( QgsWkbTypes::Type::MultiLineString );
+  QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineStringZ ((1.1 2.2 3, 3.3 4.4 6),(5 5 3, 6 6 1))" ) << static_cast< int >( QgsWkbTypes::Type::MultiLineStringZ );
+  QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineStringM ((1.1 2.2 4, 3.3 4.4 7),(5 5 4, 6 6 2))" ) << static_cast< int >( QgsWkbTypes::Type::MultiLineStringM );
+  QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineStringZM ((1.1 2.2 4 5, 3.3 4.4 8 9),(5 5 7 1, 6 6 2 3))" ) << static_cast< int >( QgsWkbTypes::Type::MultiLineStringZM );
 }
 
 void TestQgsOgrUtils::ogrGeometryToQgsGeometry2()
@@ -229,7 +229,7 @@ void TestQgsOgrUtils::readOgrFeatureGeometry()
 
   QgsOgrUtils::readOgrFeatureGeometry( oFeat, f );
   QVERIFY( f.hasGeometry() );
-  QCOMPARE( f.geometry().constGet()->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( f.geometry().constGet()->wkbType(), QgsWkbTypes::Type::LineString );
   QCOMPARE( f.geometry().constGet()->nCoordinates(), 71 );
 
   OGR_F_Destroy( oFeat );
@@ -378,7 +378,7 @@ void TestQgsOgrUtils::readOgrFeature()
   QCOMPARE( f.attribute( "datetime_field" ), QVariant( QDateTime( QDate( 2005, 3, 5 ), QTime( 6, 45, 0 ) ) ) );
   QCOMPARE( f.attribute( "string_field" ), QVariant( "a string" ) );
   QVERIFY( f.hasGeometry() );
-  QCOMPARE( f.geometry().constGet()->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( f.geometry().constGet()->wkbType(), QgsWkbTypes::Type::LineString );
   QCOMPARE( f.geometry().constGet()->nCoordinates(), 71 );
 
   OGR_F_Destroy( oFeat );
@@ -436,7 +436,7 @@ void TestQgsOgrUtils::stringToFeatureList()
   features = QgsOgrUtils::stringToFeatureList( QStringLiteral( "{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}}" ), fields, QTextCodec::codecForName( "System" ) );
   QCOMPARE( features.length(), 1 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
-  QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Type::Point );
   QgsGeometry featureGeom = features.at( 0 ).geometry();
   const QgsPoint *point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
   QCOMPARE( point->x(), 125.0 );
@@ -448,14 +448,14 @@ void TestQgsOgrUtils::stringToFeatureList()
              " {\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [110, 20]},\"properties\": {\"name\": \"Henry Gale Island\"}}]}", fields, QTextCodec::codecForName( "System" ) );
   QCOMPARE( features.length(), 2 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
-  QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Type::Point );
   featureGeom = features.at( 0 ).geometry();
   point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
   QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
-  QCOMPARE( features.at( 1 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( features.at( 1 ).geometry().constGet()->wkbType(), QgsWkbTypes::Type::Point );
   featureGeom = features.at( 1 ).geometry();
   point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
   QCOMPARE( point->x(), 110.0 );

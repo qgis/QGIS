@@ -73,7 +73,7 @@ void TestQgsMimeDataUtils::testEncodeDecode()
   uri.supportedCrs << QStringLiteral( "EPSG:2036" ) <<  QStringLiteral( "EPSG:3857" ) ;
   uri.supportedFormats << QStringLiteral( "image/tiff" ) << QStringLiteral( "image/jpeg" );
   uri.uri = QStringLiteral( "crs=EPSG:2036&dpiMode=7&format=image/png&layers=lidar&styles=default&url=https://geoegl.msp.gouv.qc." );
-  uri.wkbType = QgsWkbTypes::PointZ;
+  uri.wkbType = QgsWkbTypes::Type::PointZ;
 
   QVERIFY( !uri.mapLayer() );
 
@@ -89,7 +89,7 @@ void TestQgsMimeDataUtils::testEncodeDecode()
   QCOMPARE( uriDecoded.supportedFormats, uri.supportedFormats );
   QCOMPARE( uriDecoded.uri, uri.uri );
   QCOMPARE( uriDecoded.supportedCrs, uri.supportedCrs );
-  QCOMPARE( uriDecoded.wkbType, QgsWkbTypes::PointZ );
+  QCOMPARE( uriDecoded.wkbType, QgsWkbTypes::Type::PointZ );
 
   QgsMimeDataUtils::decodeUriList( mimeData );
 
@@ -122,7 +122,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
 
   QgsMimeDataUtils::Uri uriDecoded( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
   QCOMPARE( uriDecoded.mapLayer(), vl1 );
-  QCOMPARE( uriDecoded.wkbType, QgsWkbTypes::LineString );
+  QCOMPARE( uriDecoded.wkbType, QgsWkbTypes::Type::LineString );
   bool owner = false;
   QString error;
   QCOMPARE( uriDecoded.vectorLayer( owner, error ), vl1 );
@@ -167,7 +167,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
   mimeData = QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList() << uri3 );
   QgsMimeDataUtils::Uri uriDecoded5( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
   QVERIFY( !uriDecoded5.mapLayer() );
-  QCOMPARE( uriDecoded5.wkbType, QgsWkbTypes::Point );
+  QCOMPARE( uriDecoded5.wkbType, QgsWkbTypes::Type::Point );
   QgsVectorLayer *res = uriDecoded5.vectorLayer( owner, error );
   QVERIFY( res );
   QVERIFY( res->isValid() );

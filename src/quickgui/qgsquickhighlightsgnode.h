@@ -51,8 +51,8 @@ class QUICK_EXPORT QgsQuickHighlightSGNode : public QSGNode
     ~QgsQuickHighlightSGNode() = default;
 
   private:
-    void handleGeometryCollection( const QgsAbstractGeometry *geom, QgsWkbTypes::GeometryType type );
-    void handleSingleGeometry( const QgsAbstractGeometry *geom, QgsWkbTypes::GeometryType type );
+    void handleGeometryCollection( const QgsAbstractGeometry *geom, QgsWkbTypes::Type type );
+    void handleSingleGeometry( const QgsAbstractGeometry *geom, QgsWkbTypes::Type type );
 
     QSGGeometryNode *createLineGeometry( const QgsLineString *line );
     QSGGeometryNode *createPointGeometry( const QgsPoint *point );

@@ -261,7 +261,7 @@ void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
       if ( layer->type() == QgsMapLayerType::VectorLayer )
       {
         auto vectorLayer = static_cast<QgsVectorLayer *>( layer );
-        if ( vectorLayer->geometryType() == QgsWkbTypes::PolygonGeometry )
+        if ( vectorLayer->geometryType() == QgsWkbTypes::GeometryType::PolygonGeometry )
         {
           QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest()
                                    .setDestinationCrs( mCanvas->mapSettings().destinationCrs(), mCanvas->mapSettings().transformContext() )
@@ -389,7 +389,7 @@ void QgsMapToolSelectionHandler::selectRadiusReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolSelectionHandler::initRubberBand()
 {
-  mSelectionRubberBand = qgis::make_unique<QgsRubberBand>( mCanvas, QgsWkbTypes::PolygonGeometry );
+  mSelectionRubberBand = qgis::make_unique<QgsRubberBand>( mCanvas, QgsWkbTypes::GeometryType::PolygonGeometry );
   mSelectionRubberBand->setFillColor( mFillColor );
   mSelectionRubberBand->setStrokeColor( mStrokeColor );
 }
@@ -447,7 +447,7 @@ void QgsMapToolSelectionHandler::updateRadiusRubberband( double radius )
 
   const int RADIUS_SEGMENTS = 80;
 
-  mSelectionRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+  mSelectionRubberBand->reset( QgsWkbTypes::GeometryType::PolygonGeometry );
   for ( int i = 0; i <= RADIUS_SEGMENTS; ++i )
   {
     double theta = i * ( 2.0 * M_PI / RADIUS_SEGMENTS );

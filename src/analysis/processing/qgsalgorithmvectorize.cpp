@@ -181,7 +181,7 @@ QgsProcessing::SourceType QgsRasterPixelsToPolygonsAlgorithm::outputType() const
 
 QgsWkbTypes::Type QgsRasterPixelsToPolygonsAlgorithm::sinkType() const
 {
-  return QgsWkbTypes::Polygon;
+  return QgsWkbTypes::Type::Polygon;
 }
 
 QgsGeometry QgsRasterPixelsToPolygonsAlgorithm::createGeometryForPixel( double centerX, double centerY, double pixelWidthX, double pixelWidthY ) const
@@ -240,7 +240,7 @@ QgsProcessing::SourceType QgsRasterPixelsToPointsAlgorithm::outputType() const
 
 QgsWkbTypes::Type QgsRasterPixelsToPointsAlgorithm::sinkType() const
 {
-  return QgsWkbTypes::Point;
+  return QgsWkbTypes::Type::Point;
 }
 
 QgsGeometry QgsRasterPixelsToPointsAlgorithm::createGeometryForPixel( double centerX, double centerY, double, double ) const

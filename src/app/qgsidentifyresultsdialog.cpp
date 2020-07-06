@@ -1937,7 +1937,7 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   if ( mHighlights.contains( featItem ) )
     return;
 
-  if ( !featItem->feature().hasGeometry() || featItem->feature().geometry().wkbType() == QgsWkbTypes::Unknown )
+  if ( !featItem->feature().hasGeometry() || featItem->feature().geometry().wkbType() == QgsWkbTypes::Type::Unknown )
     return;
 
   QgsHighlight *highlight = nullptr;

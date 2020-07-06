@@ -77,7 +77,7 @@ QgsProcessing::SourceType QgsInterpolatePointAlgorithm::outputLayerType() const
 
 QgsWkbTypes::Type QgsInterpolatePointAlgorithm::outputWkbType( QgsWkbTypes::Type inputType ) const
 {
-  QgsWkbTypes::Type out = QgsWkbTypes::Point;
+  QgsWkbTypes::Type out = QgsWkbTypes::Type::Point;
   if ( QgsWkbTypes::hasZ( inputType ) )
     out = QgsWkbTypes::addZ( out );
   if ( QgsWkbTypes::hasM( inputType ) )

@@ -67,7 +67,7 @@ class APP_EXPORT QgsMapToolAddCircularString: public QgsMapToolCapture
     void updateCenterPointRubberBand( const QgsPoint &pt );
     void removeCenterPointRubberBand();
     //! Layer type which will be used for rubberband
-    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::LineGeometry;
+    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::GeometryType::LineGeometry;
 
     //! Snapping indicators
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;

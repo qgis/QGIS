@@ -184,7 +184,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
     // Coordinate reference system
     mutable QgsCoordinateReferenceSystem mCrs;
 
-    mutable QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    mutable QgsWkbTypes::Type mWkbType = QgsWkbTypes::Type::Unknown;
 
     // The database object
     mutable QSqlDatabase mDatabase;

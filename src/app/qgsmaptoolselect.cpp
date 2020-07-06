@@ -141,7 +141,7 @@ QgsMapTool::Flags QgsMapToolSelect::flags() const
 void QgsMapToolSelect::selectFeatures( Qt::KeyboardModifiers modifiers )
 {
   if ( mSelectionHandler->selectionMode() == QgsMapToolSelectionHandler::SelectSimple &&
-       mSelectionHandler->selectedGeometry().type() == QgsWkbTypes::PointGeometry )
+       mSelectionHandler->selectedGeometry().type() == QgsWkbTypes::GeometryType::PointGeometry )
   {
     QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
     QgsRectangle r = QgsMapToolSelectUtils::expandSelectRectangle( mSelectionHandler->selectedGeometry().asPoint(), mCanvas, vlayer );

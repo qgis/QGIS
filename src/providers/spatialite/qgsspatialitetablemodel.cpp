@@ -161,17 +161,17 @@ void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString &table, co
 
 QIcon QgsSpatiaLiteTableModel::iconForType( QgsWkbTypes::Type type ) const
 {
-  if ( type == QgsWkbTypes::Point || type == QgsWkbTypes::Point25D || type == QgsWkbTypes::MultiPoint || type == QgsWkbTypes::MultiPoint25D )
+  if ( type == QgsWkbTypes::Type::Point || type == QgsWkbTypes::Type::Point25D || type == QgsWkbTypes::Type::MultiPoint || type == QgsWkbTypes::Type::MultiPoint25D )
   {
     return QgsLayerItem::iconPoint();
   }
-  else if ( type == QgsWkbTypes::LineString || type == QgsWkbTypes::LineString25D || type == QgsWkbTypes::MultiLineString
-            || type == QgsWkbTypes::MultiLineString25D )
+  else if ( type == QgsWkbTypes::Type::LineString || type == QgsWkbTypes::Type::LineString25D || type == QgsWkbTypes::Type::MultiLineString
+            || type == QgsWkbTypes::Type::MultiLineString25D )
   {
     return QgsLayerItem::iconLine();
   }
-  else if ( type == QgsWkbTypes::Polygon || type == QgsWkbTypes::Polygon25D || type == QgsWkbTypes::MultiPolygon
-            || type == QgsWkbTypes::MultiPolygon25D )
+  else if ( type == QgsWkbTypes::Type::Polygon || type == QgsWkbTypes::Type::Polygon25D || type == QgsWkbTypes::Type::MultiPolygon
+            || type == QgsWkbTypes::Type::MultiPolygon25D )
   {
     return QgsLayerItem::iconPolygon();
   }
@@ -181,27 +181,27 @@ QIcon QgsSpatiaLiteTableModel::iconForType( QgsWkbTypes::Type type ) const
 
 QString QgsSpatiaLiteTableModel::displayStringForType( QgsWkbTypes::Type type ) const
 {
-  if ( type == QgsWkbTypes::Point || type == QgsWkbTypes::Point25D )
+  if ( type == QgsWkbTypes::Type::Point || type == QgsWkbTypes::Type::Point25D )
   {
     return tr( "Point" );
   }
-  else if ( type == QgsWkbTypes::MultiPoint || type == QgsWkbTypes::MultiPoint25D )
+  else if ( type == QgsWkbTypes::Type::MultiPoint || type == QgsWkbTypes::Type::MultiPoint25D )
   {
     return tr( "Multipoint" );
   }
-  else if ( type == QgsWkbTypes::LineString || type == QgsWkbTypes::LineString25D )
+  else if ( type == QgsWkbTypes::Type::LineString || type == QgsWkbTypes::Type::LineString25D )
   {
     return tr( "Line" );
   }
-  else if ( type == QgsWkbTypes::MultiLineString || type == QgsWkbTypes::MultiLineString25D )
+  else if ( type == QgsWkbTypes::Type::MultiLineString || type == QgsWkbTypes::Type::MultiLineString25D )
   {
     return tr( "Multiline" );
   }
-  else if ( type == QgsWkbTypes::Polygon || type == QgsWkbTypes::Polygon25D )
+  else if ( type == QgsWkbTypes::Type::Polygon || type == QgsWkbTypes::Type::Polygon25D )
   {
     return tr( "Polygon" );
   }
-  else if ( type == QgsWkbTypes::MultiPolygon || type == QgsWkbTypes::MultiPolygon25D )
+  else if ( type == QgsWkbTypes::Type::MultiPolygon || type == QgsWkbTypes::Type::MultiPolygon25D )
   {
     return tr( "Multipolygon" );
   }
@@ -212,27 +212,27 @@ QgsWkbTypes::Type QgsSpatiaLiteTableModel::qgisTypeFromDbType( const QString &db
 {
   if ( dbType == QLatin1String( "POINT" ) )
   {
-    return QgsWkbTypes::Point;
+    return QgsWkbTypes::Type::Point;
   }
   else if ( dbType == QLatin1String( "MULTIPOINT" ) )
   {
-    return QgsWkbTypes::MultiPoint;
+    return QgsWkbTypes::Type::MultiPoint;
   }
   else if ( dbType == QLatin1String( "LINESTRING" ) )
   {
-    return QgsWkbTypes::LineString;
+    return QgsWkbTypes::Type::LineString;
   }
   else if ( dbType == QLatin1String( "MULTILINESTRING" ) )
   {
-    return QgsWkbTypes::MultiLineString;
+    return QgsWkbTypes::Type::MultiLineString;
   }
   else if ( dbType == QLatin1String( "POLYGON" ) )
   {
-    return QgsWkbTypes::Polygon;
+    return QgsWkbTypes::Type::Polygon;
   }
   else if ( dbType == QLatin1String( "MULTIPOLYGON" ) )
   {
-    return QgsWkbTypes::MultiPolygon;
+    return QgsWkbTypes::Type::MultiPolygon;
   }
-  return QgsWkbTypes::Unknown;
+  return QgsWkbTypes::Type::Unknown;
 }

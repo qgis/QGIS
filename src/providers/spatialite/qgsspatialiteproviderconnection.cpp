@@ -307,7 +307,7 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
           else
           {
             property.setGeometryColumnCount( 0 );
-            property.setGeometryColumnTypes( {{ QgsWkbTypes::NoGeometry, QgsCoordinateReferenceSystem() }} );
+            property.setGeometryColumnTypes( {{ QgsWkbTypes::Type::NoGeometry, QgsCoordinateReferenceSystem() }} );
             property.setFlag( QgsSpatiaLiteProviderConnection::TableFlag::Aspatial );
           }
           if ( viewNames.contains( tableName ) )

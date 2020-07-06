@@ -57,7 +57,7 @@ QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterI
 
 int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
 {
-  if ( !mPolygonLayer || mPolygonLayer->geometryType() != QgsWkbTypes::PolygonGeometry )
+  if ( !mPolygonLayer || mPolygonLayer->geometryType() != QgsWkbTypes::GeometryType::PolygonGeometry )
   {
     return 1;
   }

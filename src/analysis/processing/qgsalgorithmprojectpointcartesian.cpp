@@ -109,7 +109,7 @@ bool QgsProjectPointCartesianAlgorithm::prepareAlgorithm( const QVariantMap &par
 QgsFeatureList QgsProjectPointCartesianAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
-  if ( f.hasGeometry() && QgsWkbTypes::geometryType( f.geometry().wkbType() ) == QgsWkbTypes::PointGeometry )
+  if ( f.hasGeometry() && QgsWkbTypes::geometryType( f.geometry().wkbType() ) == QgsWkbTypes::GeometryType::PointGeometry )
   {
     double distance = mDistance;
     if ( mDynamicDistance )

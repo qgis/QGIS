@@ -182,14 +182,14 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
   QgsFields nonMatchingCategoryFields;
   nonMatchingCategoryFields.append( QgsField( QStringLiteral( "category" ), QVariant::String ) );
   QString nonMatchingCategoriesDest;
-  std::unique_ptr< QgsFeatureSink > nonMatchingCategoriesSink( parameterAsSink( parameters, QStringLiteral( "NON_MATCHING_CATEGORIES" ), context, nonMatchingCategoriesDest, nonMatchingCategoryFields, QgsWkbTypes::NoGeometry ) );
+  std::unique_ptr< QgsFeatureSink > nonMatchingCategoriesSink( parameterAsSink( parameters, QStringLiteral( "NON_MATCHING_CATEGORIES" ), context, nonMatchingCategoriesDest, nonMatchingCategoryFields, QgsWkbTypes::Type::NoGeometry ) );
   if ( !nonMatchingCategoriesSink && parameters.contains( QStringLiteral( "NON_MATCHING_CATEGORIES" ) ) && parameters.value( QStringLiteral( "NON_MATCHING_CATEGORIES" ) ).isValid() )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "NON_MATCHING_CATEGORIES" ) ) );
 
   QgsFields nonMatchingSymbolFields;
   nonMatchingSymbolFields.append( QgsField( QStringLiteral( "name" ), QVariant::String ) );
   QString nonMatchingSymbolsDest;
-  std::unique_ptr< QgsFeatureSink > nonMatchingSymbolsSink( parameterAsSink( parameters, QStringLiteral( "NON_MATCHING_SYMBOLS" ), context, nonMatchingSymbolsDest, nonMatchingSymbolFields, QgsWkbTypes::NoGeometry ) );
+  std::unique_ptr< QgsFeatureSink > nonMatchingSymbolsSink( parameterAsSink( parameters, QStringLiteral( "NON_MATCHING_SYMBOLS" ), context, nonMatchingSymbolsDest, nonMatchingSymbolFields, QgsWkbTypes::Type::NoGeometry ) );
   if ( !nonMatchingSymbolsSink && parameters.contains( QStringLiteral( "NON_MATCHING_SYMBOLS" ) ) && parameters.value( QStringLiteral( "NON_MATCHING_SYMBOLS" ) ).isValid() )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "NON_MATCHING_SYMBOLS" ) ) );
 
@@ -217,8 +217,8 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
 
   mRenderer = qgis::make_unique< QgsCategorizedSymbolRenderer >( mField, cats );
 
-  const QgsSymbol::SymbolType type = mLayerGeometryType == QgsWkbTypes::PointGeometry ? QgsSymbol::Marker
-                                     : mLayerGeometryType == QgsWkbTypes::LineGeometry ? QgsSymbol::Line
+  const QgsSymbol::SymbolType type = mLayerGeometryType == QgsWkbTypes::GeometryType::PointGeometry ? QgsSymbol::Marker
+                                     : mLayerGeometryType == QgsWkbTypes::GeometryType::LineGeometry ? QgsSymbol::Line
                                      : QgsSymbol::Fill;
 
   QVariantList unmatchedCategories;

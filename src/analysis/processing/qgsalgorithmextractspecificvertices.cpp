@@ -85,7 +85,7 @@ QgsFields QgsExtractSpecificVerticesAlgorithm::outputFields( const QgsFields &in
   outputFields.append( QgsField( QStringLiteral( "vertex_pos" ), QVariant::Int ) );
   outputFields.append( QgsField( QStringLiteral( "vertex_index" ), QVariant::Int ) );
   outputFields.append( QgsField( QStringLiteral( "vertex_part" ), QVariant::Int ) );
-  if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
+  if ( mGeometryType == QgsWkbTypes::GeometryType::PolygonGeometry )
   {
     outputFields.append( QgsField( QStringLiteral( "vertex_part_ring" ), QVariant::Int ) );
   }
@@ -98,7 +98,7 @@ QgsFields QgsExtractSpecificVerticesAlgorithm::outputFields( const QgsFields &in
 
 QgsWkbTypes::Type QgsExtractSpecificVerticesAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
 {
-  QgsWkbTypes::Type outputWkbType = QgsWkbTypes::Point;
+  QgsWkbTypes::Type outputWkbType = QgsWkbTypes::Type::Point;
   if ( QgsWkbTypes::hasM( inputWkbType ) )
   {
     outputWkbType = QgsWkbTypes::addM( outputWkbType );
@@ -162,7 +162,7 @@ QgsFeatureList QgsExtractSpecificVerticesAlgorithm::processFeature( const QgsFea
     attrs << QVariant()
           << QVariant()
           << QVariant();
-    if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
+    if ( mGeometryType == QgsWkbTypes::GeometryType::PolygonGeometry )
     {
       attrs << QVariant();
     }
@@ -202,7 +202,7 @@ QgsFeatureList QgsExtractSpecificVerticesAlgorithm::processFeature( const QgsFea
       attrs << vertex
             << vertexIndex
             << vertexId.part;
-      if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
+      if ( mGeometryType == QgsWkbTypes::GeometryType::PolygonGeometry )
       {
         attrs << vertexId.ring;
       }

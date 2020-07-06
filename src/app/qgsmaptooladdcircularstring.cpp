@@ -170,7 +170,7 @@ void QgsMapToolAddCircularString::createCenterPointRubberBand()
     return;
   }
 
-  mCenterPointRubberBand = createGeometryRubberBand( QgsWkbTypes::PolygonGeometry );
+  mCenterPointRubberBand = createGeometryRubberBand( QgsWkbTypes::GeometryType::PolygonGeometry );
   mCenterPointRubberBand->show();
 
   if ( mTempRubberBand )

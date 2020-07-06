@@ -24,7 +24,7 @@
 QgsMapToolExtent::QgsMapToolExtent( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
-  mRubberBand.reset( new QgsRubberBand( canvas, QgsWkbTypes::PolygonGeometry ) );
+  mRubberBand.reset( new QgsRubberBand( canvas, QgsWkbTypes::GeometryType::PolygonGeometry ) );
 }
 
 void QgsMapToolExtent::activate()
@@ -34,7 +34,7 @@ void QgsMapToolExtent::activate()
 
 void QgsMapToolExtent::deactivate()
 {
-  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+  mRubberBand->reset( QgsWkbTypes::GeometryType::PolygonGeometry );
 
   QgsMapTool::deactivate();
 }
@@ -112,11 +112,11 @@ void QgsMapToolExtent::drawExtent()
   if ( qgsDoubleNear( mStartPoint.x(), mEndPoint.x() ) && qgsDoubleNear( mStartPoint.y(), mEndPoint.y() ) )
     return;
 
-  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+  mRubberBand->reset( QgsWkbTypes::GeometryType::PolygonGeometry );
 
   QgsRectangle rect( mStartPoint, mEndPoint );
 
-  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+  mRubberBand->reset( QgsWkbTypes::GeometryType::PolygonGeometry );
   mRubberBand->addPoint( QgsPointXY( rect.xMinimum(), rect.yMinimum() ), false );
   mRubberBand->addPoint( QgsPointXY( rect.xMaximum(), rect.yMinimum() ), false );
   mRubberBand->addPoint( QgsPointXY( rect.xMaximum(), rect.yMaximum() ), false );

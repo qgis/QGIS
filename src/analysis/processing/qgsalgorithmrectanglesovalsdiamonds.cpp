@@ -71,7 +71,7 @@ QgsProcessing::SourceType QgsRectanglesOvalsDiamondsAlgorithm::outputLayerType()
 
 QgsWkbTypes::Type QgsRectanglesOvalsDiamondsAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
 {
-  QgsWkbTypes::Type outputWkbType = QgsWkbTypes::Polygon;
+  QgsWkbTypes::Type outputWkbType = QgsWkbTypes::Type::Polygon;
   if ( QgsWkbTypes::hasM( inputWkbType ) )
   {
     outputWkbType = QgsWkbTypes::addM( outputWkbType );

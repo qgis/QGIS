@@ -245,7 +245,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
         {
           QgsLabelObstacleSettingsWidget *obstacleWidget = new QgsLabelObstacleSettingsWidget( this, mLayer );
           obstacleWidget->setContext( context );
-          obstacleWidget->setGeometryType( mLayer ? mLayer->geometryType() : QgsWkbTypes::UnknownGeometry );
+          obstacleWidget->setGeometryType( mLayer ? mLayer->geometryType() : QgsWkbTypes::GeometryType::UnknownGeometry );
           obstacleWidget->setDockMode( dockMode() );
           obstacleWidget->setSettings( mSimpleSettings->obstacleSettings() );
           obstacleWidget->setDataDefinedProperties( mSimpleSettings->dataDefinedProperties() );

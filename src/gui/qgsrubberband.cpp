@@ -315,13 +315,13 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
   }
 
   QgsWkbTypes::Type geomType = geom.wkbType();
-  if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PointGeometry && !QgsWkbTypes::isMultiType( geomType ) )
+  if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::GeometryType::PointGeometry && !QgsWkbTypes::isMultiType( geomType ) )
   {
     QgsPointXY pt = geom.asPoint();
     addPoint( pt, false, idx );
     removeLastPoint( idx, false );
   }
-  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PointGeometry && QgsWkbTypes::isMultiType( geomType ) )
+  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::GeometryType::PointGeometry && QgsWkbTypes::isMultiType( geomType ) )
   {
     const QgsMultiPointXY mpt = geom.asMultiPoint();
     for ( const QgsPointXY &pt : mpt )
@@ -331,7 +331,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
       idx++;
     }
   }
-  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::LineGeometry && !QgsWkbTypes::isMultiType( geomType ) )
+  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::GeometryType::LineGeometry && !QgsWkbTypes::isMultiType( geomType ) )
   {
     const QgsPolylineXY line = geom.asPolyline();
     for ( const QgsPointXY &pt : line )
@@ -339,7 +339,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
       addPoint( pt, false, idx );
     }
   }
-  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::LineGeometry && QgsWkbTypes::isMultiType( geomType ) )
+  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::GeometryType::LineGeometry && QgsWkbTypes::isMultiType( geomType ) )
   {
     const QgsMultiPolylineXY mline = geom.asMultiPolyline();
     for ( const QgsPolylineXY &line : mline )
@@ -355,7 +355,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
       idx++;
     }
   }
-  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PolygonGeometry && !QgsWkbTypes::isMultiType( geomType ) )
+  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::GeometryType::PolygonGeometry && !QgsWkbTypes::isMultiType( geomType ) )
   {
     const QgsPolygonXY poly = geom.asPolygon();
     int ringIdx = 0;
@@ -368,7 +368,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
       ringIdx++;
     }
   }
-  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PolygonGeometry && QgsWkbTypes::isMultiType( geomType ) )
+  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::GeometryType::PolygonGeometry && QgsWkbTypes::isMultiType( geomType ) )
   {
     const QgsMultiPolygonXY multipoly = geom.asMultiPolygon();
     for ( const QgsPolygonXY &poly : multipoly )
@@ -411,7 +411,7 @@ void QgsRubberBand::setToCanvasRectangle( QRect rect )
   QgsPointXY ul = transform->toMapCoordinates( rect.left(), rect.top() );
   QgsPointXY ur = transform->toMapCoordinates( rect.right(), rect.top() );
 
-  reset( QgsWkbTypes::PolygonGeometry );
+  reset( QgsWkbTypes::GeometryType::PolygonGeometry );
   addPoint( ll, false );
   addPoint( lr, false );
   addPoint( ur, false );
@@ -489,13 +489,13 @@ void QgsRubberBand::drawShape( QPainter *p, const QVector<QPointF> &pts )
 {
   switch ( mGeometryType )
   {
-    case QgsWkbTypes::PolygonGeometry:
+    case QgsWkbTypes::GeometryType::PolygonGeometry:
     {
       p->drawPolygon( pts );
     }
     break;
 
-    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::GeometryType::PointGeometry:
     {
       const auto constPts = pts;
       for ( QPointF pt : constPts )
@@ -566,7 +566,7 @@ void QgsRubberBand::drawShape( QPainter *p, const QVector<QPointF> &pts )
     }
     break;
 
-    case QgsWkbTypes::LineGeometry:
+    case QgsWkbTypes::GeometryType::LineGeometry:
     default:
     {
       p->drawPolyline( pts );
@@ -688,13 +688,13 @@ QgsGeometry QgsRubberBand::asGeometry() const
 
   switch ( mGeometryType )
   {
-    case QgsWkbTypes::PolygonGeometry:
+    case QgsWkbTypes::GeometryType::PolygonGeometry:
     {
       geom = QgsGeometry::fromMultiPolygonXY( mPoints );
       break;
     }
 
-    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::GeometryType::PointGeometry:
     {
       QgsMultiPointXY multiPoint;
 
@@ -708,7 +708,7 @@ QgsGeometry QgsRubberBand::asGeometry() const
       break;
     }
 
-    case QgsWkbTypes::LineGeometry:
+    case QgsWkbTypes::GeometryType::LineGeometry:
     default:
     {
       if ( !mPoints.isEmpty() )

@@ -507,7 +507,7 @@ void QgsFieldCalculator::populateFields()
     mExistingFieldComboBox->addItem( fields.iconForField( idx ), fieldName, idx );
   }
 
-  if ( mVectorLayer->geometryType() != QgsWkbTypes::NullGeometry )
+  if ( mVectorLayer->geometryType() != QgsWkbTypes::GeometryType::NullGeometry )
   {
     mExistingFieldComboBox->addItem( tr( "<geometry>" ), "geom" );
 

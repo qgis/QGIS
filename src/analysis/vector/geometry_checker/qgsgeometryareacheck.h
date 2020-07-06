@@ -41,7 +41,7 @@ class ANALYSIS_EXPORT QgsGeometryAreaCheck : public QgsGeometryCheck
     QString id() const override { return factoryId(); }
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
 
-    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::PolygonGeometry}; }
+    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::GeometryType::PolygonGeometry}; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     static QString factoryDescription() { return tr( "Minimal area" ); }
     QString description() const override { return factoryDescription(); }

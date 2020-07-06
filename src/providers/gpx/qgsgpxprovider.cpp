@@ -144,12 +144,12 @@ QgsRectangle QgsGPXProvider::extent() const
 QgsWkbTypes::Type QgsGPXProvider::wkbType() const
 {
   if ( mFeatureType == WaypointType )
-    return QgsWkbTypes::Point;
+    return QgsWkbTypes::Type::Point;
 
   if ( mFeatureType == RouteType || mFeatureType == TrackType )
-    return QgsWkbTypes::LineString;
+    return QgsWkbTypes::Type::LineString;
 
-  return QgsWkbTypes::Unknown;
+  return QgsWkbTypes::Type::Unknown;
 }
 
 
@@ -218,7 +218,7 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
   QgsAttributes attrs = f.attributes();
 
   // is it a waypoint?
-  if ( mFeatureType == WaypointType && geo && wkbType == QgsWkbTypes::Point )
+  if ( mFeatureType == WaypointType && geo && wkbType == QgsWkbTypes::Type::Point )
   {
 
     // add geometry
@@ -248,7 +248,7 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
   }
 
   // is it a route?
-  if ( mFeatureType == RouteType && geo && wkbType == QgsWkbTypes::LineString )
+  if ( mFeatureType == RouteType && geo && wkbType == QgsWkbTypes::Type::LineString )
   {
 
     QgsRoute rte;
@@ -295,7 +295,7 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
   }
 
   // is it a track?
-  if ( mFeatureType == TrackType && geo && wkbType == QgsWkbTypes::LineString )
+  if ( mFeatureType == TrackType && geo && wkbType == QgsWkbTypes::Type::LineString )
   {
 
     QgsTrack trk;

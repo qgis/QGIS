@@ -233,7 +233,7 @@ void QgsMapToolCircle2TangentsPoint::radiusSpinBoxChanged( double radius )
     std::unique_ptr<QgsMultiPolygon> rb( new QgsMultiPolygon() );
     for ( int i = 0; i < mCenters.size(); ++i )
     {
-      std::unique_ptr<QgsGeometryRubberBand> tempRB( createGeometryRubberBand( QgsWkbTypes::PointGeometry, true ) );
+      std::unique_ptr<QgsGeometryRubberBand> tempRB( createGeometryRubberBand( QgsWkbTypes::GeometryType::PointGeometry, true ) );
       std::unique_ptr<QgsPoint> tempCenter( new QgsPoint( mCenters.at( i ) ) );
       tempRB->setGeometry( tempCenter.release() );
       tempRB->show();

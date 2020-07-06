@@ -281,7 +281,7 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
       }
 
       QString uri = connInfo() + " table=" + tableName;
-      if ( srcLayer->geometryType() != QgsWkbTypes::NullGeometry )
+      if ( srcLayer->geometryType() != QgsWkbTypes::GeometryType::NullGeometry )
         uri += QLatin1String( " (geom)" );
 
       std::unique_ptr< QgsVectorLayerExporterTask > exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri, QStringLiteral( "DB2" ), srcLayer->crs() ) );
@@ -434,22 +434,22 @@ QgsDb2LayerItem *QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, 
   QgsLayerItem::LayerType layerType;
   switch ( wkbType )
   {
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::Point25D:
-    case QgsWkbTypes::MultiPoint:
-    case QgsWkbTypes::MultiPoint25D:
+    case QgsWkbTypes::Type::Point:
+    case QgsWkbTypes::Type::Point25D:
+    case QgsWkbTypes::Type::MultiPoint:
+    case QgsWkbTypes::Type::MultiPoint25D:
       layerType = QgsLayerItem::Point;
       break;
-    case QgsWkbTypes::LineString:
-    case QgsWkbTypes::LineString25D:
-    case QgsWkbTypes::MultiLineString:
-    case QgsWkbTypes::MultiLineString25D:
+    case QgsWkbTypes::Type::LineString:
+    case QgsWkbTypes::Type::LineString25D:
+    case QgsWkbTypes::Type::MultiLineString:
+    case QgsWkbTypes::Type::MultiLineString25D:
       layerType = QgsLayerItem::Line;
       break;
-    case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::Polygon25D:
-    case QgsWkbTypes::MultiPolygon:
-    case QgsWkbTypes::MultiPolygon25D:
+    case QgsWkbTypes::Type::Polygon:
+    case QgsWkbTypes::Type::Polygon25D:
+    case QgsWkbTypes::Type::MultiPolygon:
+    case QgsWkbTypes::Type::MultiPolygon25D:
       layerType = QgsLayerItem::Polygon;
       break;
     default:

@@ -203,7 +203,7 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
 
   QgsFields fields = QgsProcessingUtils::combineFields( hubOutFields, spokeOutFields );
 
-  QgsWkbTypes::Type outType = geodesic ? QgsWkbTypes::MultiLineString : QgsWkbTypes::LineString;
+  QgsWkbTypes::Type outType = geodesic ? QgsWkbTypes::Type::MultiLineString : QgsWkbTypes::Type::LineString;
   bool hasZ = false;
   if ( QgsWkbTypes::hasZ( hubSource->wkbType() ) || QgsWkbTypes::hasZ( spokeSource->wkbType() ) )
   {
@@ -226,7 +226,7 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
   auto getPointFromFeature = [hasZ, hasM]( const QgsFeature & feature )->QgsPoint
   {
     QgsPoint p;
-    if ( feature.geometry().type() == QgsWkbTypes::PointGeometry && !feature.geometry().isMultipart() )
+    if ( feature.geometry().type() == QgsWkbTypes::GeometryType::PointGeometry && !feature.geometry().isMultipart() )
       p = *static_cast< const QgsPoint *>( feature.geometry().constGet() );
     else
       p = *static_cast< const QgsPoint *>( feature.geometry().pointOnSurface().constGet() );

@@ -342,7 +342,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
   QgsGeometry selectionGeom = geometry;
   bool isPointOrRectangle;
   QgsPointXY point;
-  bool isSingleClick = selectionGeom.type() == QgsWkbTypes::PointGeometry;
+  bool isSingleClick = selectionGeom.type() == QgsWkbTypes::GeometryType::PointGeometry;
   if ( isSingleClick )
   {
     isPointOrRectangle = true;
@@ -473,7 +473,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
   QgsGeometry selectionGeom = geometry;
   bool isPointOrRectangle;
   QgsPointXY point;
-  bool isSingleClick = selectionGeom.type() == QgsWkbTypes::PointGeometry;
+  bool isSingleClick = selectionGeom.type() == QgsWkbTypes::GeometryType::PointGeometry;
   if ( isSingleClick )
   {
     isPointOrRectangle = true;
@@ -667,8 +667,8 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
   calc.setEllipsoid( ellipsoid );
   calc.setSourceCrs( layer->crs(), QgsProject::instance()->transformContext() );
 
-  QgsWkbTypes::Type wkbType = QgsWkbTypes::NoGeometry;
-  QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::NullGeometry;
+  QgsWkbTypes::Type wkbType = QgsWkbTypes::Type::NoGeometry;
+  QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::NullGeometry;
 
   QgsVertexId vId;
   QgsPoint closestPoint;
@@ -695,7 +695,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
   QgsUnitTypes::AreaUnit cartesianAreaUnits = QgsUnitTypes::unitType( QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() ) ) == QgsUnitTypes::unitType( displayAreaUnits() )
       ? displayAreaUnits() : QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() );
 
-  if ( geometryType == QgsWkbTypes::LineGeometry )
+  if ( geometryType == QgsWkbTypes::GeometryType::LineGeometry )
   {
     double dist = calc.measureLength( feature.geometry() );
     dist = calc.convertLengthMeasurement( dist, displayDistanceUnits() );
@@ -711,7 +711,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
       derivedAttributes.insert( tr( "Length (Cartesian)" ), str );
     else
       derivedAttributes.insert( tr( "Length (Cartesian — 2D)" ), str );
-    if ( QgsWkbTypes::hasZ( feature.geometry().wkbType() ) && QgsWkbTypes::flatType( feature.geometry().wkbType() ) == QgsWkbTypes::LineString )
+    if ( QgsWkbTypes::hasZ( feature.geometry().wkbType() ) && QgsWkbTypes::flatType( feature.geometry().wkbType() ) == QgsWkbTypes::Type::LineString )
     {
       str = formatDistance( qgsgeometry_cast< const QgsLineString * >( feature.geometry().constGet() )->length3D()
                             * QgsUnitTypes::fromUnitToUnitFactor( layer->crs().mapUnits(), cartesianDistanceUnits ), cartesianDistanceUnits );
@@ -743,7 +743,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
       }
     }
   }
-  else if ( geometryType == QgsWkbTypes::PolygonGeometry )
+  else if ( geometryType == QgsWkbTypes::GeometryType::PolygonGeometry )
   {
     double area = calc.measureArea( feature.geometry() );
     area = calc.convertAreaMeasurement( area, displayAreaUnits() );
@@ -775,9 +775,9 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
     closestVertexAttributes( *feature.geometry().constGet(), vId, layer, derivedAttributes );
     closestPointAttributes( *feature.geometry().constGet(), layerPoint, derivedAttributes );
   }
-  else if ( geometryType == QgsWkbTypes::PointGeometry )
+  else if ( geometryType == QgsWkbTypes::GeometryType::PointGeometry )
   {
-    if ( QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Point )
+    if ( QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Type::Point )
     {
       // Include the x and y coordinates of the point as a derived attribute
       QgsPointXY pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, feature.geometry().asPoint() );

@@ -40,7 +40,7 @@ void QgsGeometryPointInPolygonCheck::collectErrors( const QMap<QString, QgsFeatu
       // Check whether point is contained by a fully contained by a polygon
       QgsRectangle rect( point->x() - mContext->tolerance, point->y() - mContext->tolerance,
                          point->x() + mContext->tolerance, point->y() + mContext->tolerance );
-      QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, featureIds.keys(), rect, {QgsWkbTypes::PolygonGeometry}, mContext );
+      QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, featureIds.keys(), rect, {QgsWkbTypes::GeometryType::PolygonGeometry}, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
         ++nTested;

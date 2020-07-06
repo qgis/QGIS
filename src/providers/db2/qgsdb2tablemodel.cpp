@@ -65,12 +65,12 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
   }
 
   QgsWkbTypes::Type wkbType = QgsDb2TableModel::wkbTypeFromDb2( layerProperty.type );
-  if ( wkbType == QgsWkbTypes::Unknown && layerProperty.geometryColName.isEmpty() )
+  if ( wkbType == QgsWkbTypes::Type::Unknown && layerProperty.geometryColName.isEmpty() )
   {
-    wkbType = QgsWkbTypes::NoGeometry;
+    wkbType = QgsWkbTypes::Type::NoGeometry;
   }
 
-  bool needToDetect = wkbType == QgsWkbTypes::Unknown && layerProperty.type != QLatin1String( "GEOMETRYCOLLECTION" );
+  bool needToDetect = wkbType == QgsWkbTypes::Type::Unknown && layerProperty.type != QLatin1String( "GEOMETRYCOLLECTION" );
 
   QList<QStandardItem *> childItemList;
 
@@ -82,7 +82,7 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
       ? tr( "Detecting…" )
       : QgsWkbTypes::displayString( wkbType ) );
   typeItem->setData( needToDetect, Qt::UserRole + 1 );
-  typeItem->setData( wkbType, Qt::UserRole + 2 );
+  typeItem->setData( static_cast<int>( wkbType ), Qt::UserRole + 2 );
 
   QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
   QStandardItem *geomItem = new QStandardItem( layerProperty.geometryColName );
@@ -128,7 +128,7 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
   childItemList << sqlItem;
 
   bool detailsFromThread = needToDetect ||
-                           ( wkbType != QgsWkbTypes::NoGeometry && layerProperty.srid.isEmpty() );
+                           ( wkbType != QgsWkbTypes::Type::NoGeometry && layerProperty.srid.isEmpty() );
 
   if ( detailsFromThread || pkText == tr( "Select…" ) )
   {
@@ -268,7 +268,7 @@ void QgsDb2TableModel::setGeometryTypesForTable( QgsDb2LayerProperty layerProper
         row[ DbtmType ]->setIcon( iconForWkbType( wkbType ) );
         row[ DbtmType ]->setText( QgsWkbTypes::displayString( wkbType ) );
         row[ DbtmType ]->setData( false, Qt::UserRole + 1 );
-        row[ DbtmType ]->setData( wkbType, Qt::UserRole + 2 );
+        row[ DbtmType ]->setData( static_cast<int>( wkbType ), Qt::UserRole + 2 );
 
         row[ DbtmSrid ]->setText( sridList.at( 0 ) );
 
@@ -297,15 +297,15 @@ QIcon QgsDb2TableModel::iconForWkbType( QgsWkbTypes::Type type )
   switch ( QgsWkbTypes::geometryType( type ) )
 
   {
-    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::GeometryType::PointGeometry:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) );
-    case QgsWkbTypes::LineGeometry:
+    case QgsWkbTypes::GeometryType::LineGeometry:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) );
-    case QgsWkbTypes::PolygonGeometry:
+    case QgsWkbTypes::GeometryType::PolygonGeometry:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) );
-    case QgsWkbTypes::NullGeometry:
+    case QgsWkbTypes::GeometryType::NullGeometry:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) );
-    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::GeometryType::UnknownGeometry:
       break;
   }
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
@@ -320,9 +320,9 @@ bool QgsDb2TableModel::setData( const QModelIndex &idx, const QVariant &value, i
   {
     const QgsWkbTypes::Type wkbType = static_cast< QgsWkbTypes::Type >( idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt() );
 
-    bool ok = wkbType != QgsWkbTypes::Unknown;
+    bool ok = wkbType != QgsWkbTypes::Type::Unknown;
 
-    if ( ok && wkbType != QgsWkbTypes::NoGeometry )
+    if ( ok && wkbType != QgsWkbTypes::Type::NoGeometry )
       idx.sibling( idx.row(), DbtmSrid ).data().toInt( &ok );
 
     QStringList pkCols = idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 1 ).toStringList();
@@ -348,7 +348,7 @@ QString QgsDb2TableModel::layerURI( const QModelIndex &index, const QString &con
     return QString();
 
   const QgsWkbTypes::Type wkbType = static_cast< QgsWkbTypes::Type >( itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt() );
-  if ( wkbType == QgsWkbTypes::Unknown )
+  if ( wkbType == QgsWkbTypes::Type::Unknown )
     // no geometry type selected
     return QString();
 
@@ -365,7 +365,7 @@ QString QgsDb2TableModel::layerURI( const QModelIndex &index, const QString &con
 
   QString geomColumnName;
   QString srid;
-  if ( wkbType != QgsWkbTypes::NoGeometry )
+  if ( wkbType != QgsWkbTypes::Type::NoGeometry )
   {
     geomColumnName = index.sibling( index.row(), DbtmGeomCol ).data( Qt::DisplayRole ).toString();
 
@@ -396,39 +396,39 @@ QgsWkbTypes::Type QgsDb2TableModel::wkbTypeFromDb2( QString type, int dim )
   if ( dim == 3 )
   {
     if ( type == QLatin1String( "ST_POINT" ) )
-      return QgsWkbTypes::Point25D;
+      return QgsWkbTypes::Type::Point25D;
     if ( type == QLatin1String( "ST_LINESTRING" ) )
-      return QgsWkbTypes::LineString25D;
+      return QgsWkbTypes::Type::LineString25D;
     if ( type == QLatin1String( "ST_POLYGON" ) )
-      return QgsWkbTypes::Polygon25D;
+      return QgsWkbTypes::Type::Polygon25D;
     if ( type == QLatin1String( "ST_MULTIPOINT" ) )
-      return QgsWkbTypes::MultiPoint25D;
+      return QgsWkbTypes::Type::MultiPoint25D;
     if ( type == QLatin1String( "ST_MULTILINESTRING" ) )
-      return QgsWkbTypes::MultiLineString25D;
+      return QgsWkbTypes::Type::MultiLineString25D;
     if ( type == QLatin1String( "ST_MULTIPOLYGON" ) )
-      return QgsWkbTypes::MultiPolygon25D;
+      return QgsWkbTypes::Type::MultiPolygon25D;
     if ( type == QLatin1String( "NONE" ) )
-      return QgsWkbTypes::NoGeometry;
+      return QgsWkbTypes::Type::NoGeometry;
     else
-      return QgsWkbTypes::Unknown;
+      return QgsWkbTypes::Type::Unknown;
   }
   else
   {
     if ( type == QLatin1String( "ST_POINT" ) )
-      return QgsWkbTypes::Point;
+      return QgsWkbTypes::Type::Point;
     if ( type == QLatin1String( "ST_LINESTRING" ) )
-      return QgsWkbTypes::LineString;
+      return QgsWkbTypes::Type::LineString;
     if ( type == QLatin1String( "ST_POLYGON" ) )
-      return QgsWkbTypes::Polygon;
+      return QgsWkbTypes::Type::Polygon;
     if ( type == QLatin1String( "ST_MULTIPOINT" ) )
-      return QgsWkbTypes::MultiPoint;
+      return QgsWkbTypes::Type::MultiPoint;
     if ( type == QLatin1String( "ST_MULTILINESTRING" ) )
-      return QgsWkbTypes::MultiLineString;
+      return QgsWkbTypes::Type::MultiLineString;
     if ( type == QLatin1String( "ST_MULTIPOLYGON" ) )
-      return QgsWkbTypes::MultiPolygon;
+      return QgsWkbTypes::Type::MultiPolygon;
     if ( type == QLatin1String( "NONE" ) )
-      return QgsWkbTypes::NoGeometry;
+      return QgsWkbTypes::Type::NoGeometry;
     else
-      return QgsWkbTypes::Unknown;
+      return QgsWkbTypes::Type::Unknown;
   }
 }

@@ -74,7 +74,7 @@ QgsFields QgsExtractVerticesAlgorithm::outputFields( const QgsFields &inputField
   QgsFields outputFields = inputFields;
   outputFields.append( QgsField( QStringLiteral( "vertex_index" ), QVariant::Int, QString(), 10, 0 ) );
   outputFields.append( QgsField( QStringLiteral( "vertex_part" ), QVariant::Int, QString(), 10, 0 ) );
-  if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
+  if ( mGeometryType == QgsWkbTypes::GeometryType::PolygonGeometry )
   {
     outputFields.append( QgsField( QStringLiteral( "vertex_part_ring" ), QVariant::Int, QString(), 10, 0 ) );
   }
@@ -87,7 +87,7 @@ QgsFields QgsExtractVerticesAlgorithm::outputFields( const QgsFields &inputField
 
 QgsWkbTypes::Type QgsExtractVerticesAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
 {
-  QgsWkbTypes::Type outputWkbType = QgsWkbTypes::Point;
+  QgsWkbTypes::Type outputWkbType = QgsWkbTypes::Type::Point;
   if ( QgsWkbTypes::hasM( inputWkbType ) )
   {
     outputWkbType = QgsWkbTypes::addM( outputWkbType );
@@ -128,7 +128,7 @@ QgsFeatureList QgsExtractVerticesAlgorithm::processFeature( const QgsFeature &fe
     QgsAttributes attrs = f.attributes();
     attrs << QVariant()
           << QVariant();
-    if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
+    if ( mGeometryType == QgsWkbTypes::GeometryType::PolygonGeometry )
     {
       attrs << QVariant();
     }
@@ -151,7 +151,7 @@ QgsFeatureList QgsExtractVerticesAlgorithm::processFeature( const QgsFeature &fe
       QgsAttributes attrs = f.attributes();
       attrs << vertexPos
             << vertexId.part;
-      if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
+      if ( mGeometryType == QgsWkbTypes::GeometryType::PolygonGeometry )
       {
         attrs << vertexId.ring;
       }

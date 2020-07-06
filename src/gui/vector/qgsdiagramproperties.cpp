@@ -156,7 +156,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
                                       << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   QgsWkbTypes::GeometryType layerType = layer->geometryType();
-  if ( layerType == QgsWkbTypes::UnknownGeometry || layerType == QgsWkbTypes::NullGeometry )
+  if ( layerType == QgsWkbTypes::GeometryType::UnknownGeometry || layerType == QgsWkbTypes::GeometryType::NullGeometry )
   {
     mDiagramTypeComboBox->setEnabled( false );
     mDiagramFrame->setEnabled( false );
@@ -166,20 +166,20 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
 
   switch ( layerType )
   {
-    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::GeometryType::PointGeometry:
       stackedPlacement->setCurrentWidget( pagePoint );
       mLinePlacementFrame->setVisible( false );
       break;
-    case QgsWkbTypes::LineGeometry:
+    case QgsWkbTypes::GeometryType::LineGeometry:
       stackedPlacement->setCurrentWidget( pageLine );
       mLinePlacementFrame->setVisible( true );
       break;
-    case QgsWkbTypes::PolygonGeometry:
+    case QgsWkbTypes::GeometryType::PolygonGeometry:
       stackedPlacement->setCurrentWidget( pagePolygon );
       mLinePlacementFrame->setVisible( false );
       break;
-    case QgsWkbTypes::NullGeometry:
-    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::GeometryType::NullGeometry:
+    case QgsWkbTypes::GeometryType::UnknownGeometry:
       break;
   }
 
@@ -284,11 +284,11 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
 
     switch ( layerType )
     {
-      case QgsWkbTypes::PointGeometry:
+      case QgsWkbTypes::GeometryType::PointGeometry:
         radAroundPoint->setChecked( true );
         break;
 
-      case QgsWkbTypes::LineGeometry:
+      case QgsWkbTypes::GeometryType::LineGeometry:
         radAroundLine->setChecked( true );
         chkLineAbove->setChecked( true );
         chkLineBelow->setChecked( false );
@@ -296,12 +296,12 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
         chkLineOrientationDependent->setChecked( false );
         break;
 
-      case QgsWkbTypes::PolygonGeometry:
+      case QgsWkbTypes::GeometryType::PolygonGeometry:
         radOverCentroid->setChecked( true );
         break;
 
-      case QgsWkbTypes::UnknownGeometry:
-      case QgsWkbTypes::NullGeometry:
+      case QgsWkbTypes::GeometryType::UnknownGeometry:
+      case QgsWkbTypes::GeometryType::NullGeometry:
         break;
     }
     mBackgroundColorButton->setColor( QColor( 255, 255, 255, 255 ) );
@@ -1049,7 +1049,7 @@ void QgsDiagramProperties::updatePlacementWidgets()
     mDistanceDDBtn->setEnabled( false );
   }
 
-  bool linePlacementEnabled = mLayer->geometryType() == QgsWkbTypes::LineGeometry && ( curWdgt == pageLine && radAroundLine->isChecked() );
+  bool linePlacementEnabled = mLayer->geometryType() == QgsWkbTypes::GeometryType::LineGeometry && ( curWdgt == pageLine && radAroundLine->isChecked() );
   chkLineAbove->setEnabled( linePlacementEnabled );
   chkLineBelow->setEnabled( linePlacementEnabled );
   chkLineOn->setEnabled( linePlacementEnabled );

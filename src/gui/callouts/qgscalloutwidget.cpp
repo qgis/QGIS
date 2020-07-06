@@ -226,7 +226,7 @@ void QgsSimpleLineCalloutWidget::setCallout( QgsCallout *callout )
 
 void QgsSimpleLineCalloutWidget::setGeometryType( QgsWkbTypes::GeometryType type )
 {
-  bool isPolygon = type == QgsWkbTypes::PolygonGeometry;
+  bool isPolygon = type == QgsWkbTypes::GeometryType::PolygonGeometry;
   mAnchorPointLbl->setEnabled( isPolygon );
   mAnchorPointLbl->setVisible( isPolygon );
   mAnchorPointComboBox->setEnabled( isPolygon );

@@ -110,7 +110,7 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
       continue;
 
     QgsPointXY point;
-    if ( QgsWkbTypes::flatType( feat.geometry().wkbType() ) == QgsWkbTypes::Point )
+    if ( QgsWkbTypes::flatType( feat.geometry().wkbType() ) == QgsWkbTypes::Type::Point )
       point = QgsPointXY( *qgsgeometry_cast< const QgsPoint * >( feat.geometry().constGet() ) );
     else
     {

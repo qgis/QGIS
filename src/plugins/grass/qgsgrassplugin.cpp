@@ -122,7 +122,7 @@ void QgsGrassPlugin::initGui()
   mCanvas = qGisInterface->mapCanvas();
 
   // Create region rubber band
-  mRegionBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
+  mRegionBand = new QgsRubberBand( mCanvas, QgsWkbTypes::GeometryType::PolygonGeometry );
   mRegionBand->setZValue( 20 );
 
   // Create the action for tool (the icons are set later by calling setCurrentTheme)

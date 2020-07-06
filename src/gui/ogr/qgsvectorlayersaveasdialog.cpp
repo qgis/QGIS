@@ -131,12 +131,12 @@ void QgsVectorLayerSaveAsDialog::setup()
   mFormatComboBox->blockSignals( false );
 
   //add geometry types to combobox
-  mGeometryTypeComboBox->addItem( tr( "Automatic" ), -1 );
-  mGeometryTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), QgsWkbTypes::displayString( QgsWkbTypes::Point ), QgsWkbTypes::Point );
-  mGeometryTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), QgsWkbTypes::displayString( QgsWkbTypes::LineString ), QgsWkbTypes::LineString );
-  mGeometryTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), QgsWkbTypes::displayString( QgsWkbTypes::Polygon ), QgsWkbTypes::Polygon );
-  mGeometryTypeComboBox->addItem( QgsWkbTypes::displayString( QgsWkbTypes::GeometryCollection ), QgsWkbTypes::GeometryCollection );
-  mGeometryTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) ), tr( "No geometry" ), QgsWkbTypes::NoGeometry );
+  mGeometryTypeComboBox->addItem( tr( "Automatic" ), QVariant::fromValue( QgsWkbTypes::Type::Unknown ) );
+  mGeometryTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), QgsWkbTypes::displayString( QgsWkbTypes::Type::Point ), QVariant::fromValue( QgsWkbTypes::Type::Point ) );
+  mGeometryTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), QgsWkbTypes::displayString( QgsWkbTypes::Type::LineString ), QVariant::fromValue( QgsWkbTypes::Type::LineString ) );
+  mGeometryTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), QgsWkbTypes::displayString( QgsWkbTypes::Type::Polygon ), QVariant::fromValue( QgsWkbTypes::Type::Polygon ) );
+  mGeometryTypeComboBox->addItem( QgsWkbTypes::displayString( QgsWkbTypes::Type::GeometryCollection ), QVariant::fromValue( QgsWkbTypes::Type::GeometryCollection ) );
+  mGeometryTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) ), tr( "No geometry" ), QVariant::fromValue( QgsWkbTypes::Type::NoGeometry ) );
   mGeometryTypeComboBox->setCurrentIndex( mGeometryTypeComboBox->findData( -1 ) );
 
   mEncodingComboBox->addItems( QgsVectorDataProvider::availableEncodings() );
@@ -969,20 +969,12 @@ bool QgsVectorLayerSaveAsDialog::onlySelected() const
 
 QgsWkbTypes::Type QgsVectorLayerSaveAsDialog::geometryType() const
 {
-  int currentIndexData = mGeometryTypeComboBox->currentData().toInt();
-  if ( currentIndexData == -1 )
-  {
-    //automatic
-    return QgsWkbTypes::Unknown;
-  }
-
-  return static_cast< QgsWkbTypes::Type >( currentIndexData );
+  return mGeometryTypeComboBox->currentData().value<QgsWkbTypes::Type>();
 }
 
 bool QgsVectorLayerSaveAsDialog::automaticGeometryType() const
 {
-  int currentIndexData = mGeometryTypeComboBox->currentData().toInt();
-  return currentIndexData == -1;
+  return geometryType() == QgsWkbTypes::Type::Unknown;
 }
 
 bool QgsVectorLayerSaveAsDialog::forceMulti() const
@@ -1023,9 +1015,11 @@ void QgsVectorLayerSaveAsDialog::mSymbologyExportComboBox_currentIndexChanged( c
 
 void QgsVectorLayerSaveAsDialog::mGeometryTypeComboBox_currentIndexChanged( int index )
 {
-  int currentIndexData = mGeometryTypeComboBox->itemData( index ).toInt();
+  Q_UNUSED( index );
 
-  if ( currentIndexData != -1 && currentIndexData != QgsWkbTypes::NoGeometry )
+  QgsWkbTypes::Type type = geometryType();
+
+  if ( type != QgsWkbTypes::Type::Unknown && type != QgsWkbTypes::Type::NoGeometry )
   {
     mForceMultiCheckBox->setEnabled( true );
     mIncludeZCheckBox->setEnabled( true );

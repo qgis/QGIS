@@ -634,9 +634,9 @@ void TestQgsGeometryUtils::testMidPoint()
 {
   QgsPoint p1( 4, 6 );
   QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPoint( 2, 2 ) ), QgsPoint( 3, 4 ) );
-  QCOMPARE( QgsGeometryUtils::midpoint( QgsPoint( 4, 6, 0 ), QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2 ) ), QgsPoint( QgsWkbTypes::PointZ, 3, 4, 1 ) );
-  QCOMPARE( QgsGeometryUtils::midpoint( QgsPoint( QgsWkbTypes::PointM, 4, 6, 0, 0 ), QgsPoint( QgsWkbTypes::PointM, 2, 2, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointM, 3, 4, 0, 1 ) );
-  QCOMPARE( QgsGeometryUtils::midpoint( QgsPoint( QgsWkbTypes::PointZM, 4, 6, 0, 0 ), QgsPoint( QgsWkbTypes::PointZM, 2, 2, 2, 2 ) ), QgsPoint( QgsWkbTypes::PointZM, 3, 4, 1, 1 ) );
+  QCOMPARE( QgsGeometryUtils::midpoint( QgsPoint( 4, 6, 0 ), QgsPoint( QgsWkbTypes::Type::PointZ, 2, 2, 2 ) ), QgsPoint( QgsWkbTypes::Type::PointZ, 3, 4, 1 ) );
+  QCOMPARE( QgsGeometryUtils::midpoint( QgsPoint( QgsWkbTypes::Type::PointM, 4, 6, 0, 0 ), QgsPoint( QgsWkbTypes::Type::PointM, 2, 2, 0, 2 ) ), QgsPoint( QgsWkbTypes::Type::PointM, 3, 4, 0, 1 ) );
+  QCOMPARE( QgsGeometryUtils::midpoint( QgsPoint( QgsWkbTypes::Type::PointZM, 4, 6, 0, 0 ), QgsPoint( QgsWkbTypes::Type::PointZM, 2, 2, 2, 2 ) ), QgsPoint( QgsWkbTypes::Type::PointZM, 3, 4, 1, 1 ) );
 }
 
 void TestQgsGeometryUtils::testGradient()
@@ -1110,20 +1110,20 @@ void TestQgsGeometryUtils::testInterpolatePointOnLineQgsPoint()
   QCOMPARE( p.x(), 10.0 );
   QCOMPARE( p.y(), 6.0 );
   // with m
-  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0, 0, 5, QgsWkbTypes::PointM ), QgsPoint( -10, -6, 0, 10, QgsWkbTypes::PointM ), 0.4 );
-  QCOMPARE( p.wkbType(), QgsWkbTypes::PointM );
+  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0, 0, 5, QgsWkbTypes::Type::PointM ), QgsPoint( -10, -6, 0, 10, QgsWkbTypes::Type::PointM ), 0.4 );
+  QCOMPARE( p.wkbType(), QgsWkbTypes::Type::PointM );
   QCOMPARE( p.x(), -4.0 );
   QCOMPARE( p.y(), -2.4 );
   QCOMPARE( p.m(), 7.0 );
   // with z
-  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0, 5, 0, QgsWkbTypes::PointZ ), QgsPoint( -10, -6, 10, 0, QgsWkbTypes::PointZ ), 0.4 );
-  QCOMPARE( p.wkbType(), QgsWkbTypes::PointZ );
+  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0, 5, 0, QgsWkbTypes::Type::PointZ ), QgsPoint( -10, -6, 10, 0, QgsWkbTypes::Type::PointZ ), 0.4 );
+  QCOMPARE( p.wkbType(), QgsWkbTypes::Type::PointZ );
   QCOMPARE( p.x(), -4.0 );
   QCOMPARE( p.y(), -2.4 );
   QCOMPARE( p.z(), 7.0 );
   // with zm
-  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0, 5, 10, QgsWkbTypes::PointZM ), QgsPoint( -10, -6, 10, 5, QgsWkbTypes::PointZM ), 0.4 );
-  QCOMPARE( p.wkbType(), QgsWkbTypes::PointZM );
+  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0, 5, 10, QgsWkbTypes::Type::PointZM ), QgsPoint( -10, -6, 10, 5, QgsWkbTypes::Type::PointZM ), 0.4 );
+  QCOMPARE( p.wkbType(), QgsWkbTypes::Type::PointZM );
   QCOMPARE( p.x(), -4.0 );
   QCOMPARE( p.y(), -2.4 );
   QCOMPARE( p.z(), 7.0 );

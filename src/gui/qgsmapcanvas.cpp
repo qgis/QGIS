@@ -1257,7 +1257,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
 
   // zoom in if point cannot be distinguished from others
   // also check that rect is empty, as it might not in case of multi points
-  if ( layer->geometryType() == QgsWkbTypes::PointGeometry && rect.isEmpty() )
+  if ( layer->geometryType() == QgsWkbTypes::GeometryType::PointGeometry && rect.isEmpty() )
   {
     int scaleFactor = 5;
     QgsPointXY centerMapCoordinates = rect.center();
@@ -1448,18 +1448,18 @@ void QgsMapCanvas::flashGeometries( const QList<QgsGeometry> &geometries, const 
   for ( const QgsGeometry &geom : geometries )
     rb->addGeometry( geom, crs );
 
-  if ( geomType == QgsWkbTypes::LineGeometry || geomType == QgsWkbTypes::PointGeometry )
+  if ( geomType == QgsWkbTypes::GeometryType::LineGeometry || geomType == QgsWkbTypes::GeometryType::PointGeometry )
   {
     rb->setWidth( 2 );
     rb->setSecondaryStrokeColor( QColor( 255, 255, 255 ) );
   }
-  if ( geomType == QgsWkbTypes::PointGeometry )
+  if ( geomType == QgsWkbTypes::GeometryType::PointGeometry )
     rb->setIcon( QgsRubberBand::ICON_CIRCLE );
 
   QColor startColor = color1;
   if ( !startColor.isValid() )
   {
-    if ( geomType == QgsWkbTypes::PolygonGeometry )
+    if ( geomType == QgsWkbTypes::GeometryType::PolygonGeometry )
     {
       startColor = rb->fillColor();
     }
@@ -1486,7 +1486,7 @@ void QgsMapCanvas::flashGeometries( const QList<QgsGeometry> &geometries, const 
   connect( animation, &QPropertyAnimation::valueChanged, this, [rb, geomType]( const QVariant & value )
   {
     QColor c = value.value<QColor>();
-    if ( geomType == QgsWkbTypes::PolygonGeometry )
+    if ( geomType == QgsWkbTypes::GeometryType::PolygonGeometry )
     {
       rb->setFillColor( c );
     }
@@ -1657,7 +1657,7 @@ void QgsMapCanvas::beginZoomRect( QPoint pos )
   mZoomRect.setRect( 0, 0, 0, 0 );
   QApplication::setOverrideCursor( mZoomCursor );
   mZoomDragging = true;
-  mZoomRubberBand.reset( new QgsRubberBand( this, QgsWkbTypes::PolygonGeometry ) );
+  mZoomRubberBand.reset( new QgsRubberBand( this, QgsWkbTypes::GeometryType::PolygonGeometry ) );
   QColor color( Qt::blue );
   color.setAlpha( 63 );
   mZoomRubberBand->setColor( color );

@@ -201,24 +201,24 @@ QgsPoint QgsMssqlGeometryParser::readCoordinates( int iPoint )
   if ( mIsGeography )
   {
     if ( ( mProps & SP_HASZVALUES ) && ( mProps & SP_HASMVALUES ) )
-      return QgsPoint( QgsWkbTypes::PointZM, ReadY( iPoint ), ReadX( iPoint ), ReadZ( iPoint ), ReadM( iPoint ) );
+      return QgsPoint( QgsWkbTypes::Type::PointZM, ReadY( iPoint ), ReadX( iPoint ), ReadZ( iPoint ), ReadM( iPoint ) );
     else if ( mProps & SP_HASZVALUES )
-      return QgsPoint( QgsWkbTypes::PointZ, ReadY( iPoint ), ReadX( iPoint ), ReadZ( iPoint ) );
+      return QgsPoint( QgsWkbTypes::Type::PointZ, ReadY( iPoint ), ReadX( iPoint ), ReadZ( iPoint ) );
     else if ( mProps & SP_HASMVALUES )
-      return QgsPoint( QgsWkbTypes::PointM, ReadY( iPoint ), ReadX( iPoint ), 0.0, ReadZ( iPoint ) );
+      return QgsPoint( QgsWkbTypes::Type::PointM, ReadY( iPoint ), ReadX( iPoint ), 0.0, ReadZ( iPoint ) );
     else
-      return QgsPoint( QgsWkbTypes::Point, ReadY( iPoint ), ReadX( iPoint ) );
+      return QgsPoint( QgsWkbTypes::Type::Point, ReadY( iPoint ), ReadX( iPoint ) );
   }
   else
   {
     if ( ( mProps & SP_HASZVALUES ) && ( mProps & SP_HASMVALUES ) )
-      return QgsPoint( QgsWkbTypes::PointZM, ReadX( iPoint ), ReadY( iPoint ), ReadZ( iPoint ), ReadM( iPoint ) );
+      return QgsPoint( QgsWkbTypes::Type::PointZM, ReadX( iPoint ), ReadY( iPoint ), ReadZ( iPoint ), ReadM( iPoint ) );
     else if ( mProps & SP_HASZVALUES )
-      return QgsPoint( QgsWkbTypes::PointZ, ReadX( iPoint ), ReadY( iPoint ), ReadZ( iPoint ) );
+      return QgsPoint( QgsWkbTypes::Type::PointZ, ReadX( iPoint ), ReadY( iPoint ), ReadZ( iPoint ) );
     else if ( mProps & SP_HASMVALUES )
-      return QgsPoint( QgsWkbTypes::PointM, ReadX( iPoint ), ReadY( iPoint ), 0.0, ReadZ( iPoint ) );
+      return QgsPoint( QgsWkbTypes::Type::PointM, ReadX( iPoint ), ReadY( iPoint ), 0.0, ReadZ( iPoint ) );
     else
-      return QgsPoint( QgsWkbTypes::Point, ReadX( iPoint ), ReadY( iPoint ) );
+      return QgsPoint( QgsWkbTypes::Type::Point, ReadX( iPoint ), ReadY( iPoint ) );
   }
 }
 

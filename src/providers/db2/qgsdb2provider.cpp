@@ -44,12 +44,12 @@ QgsDb2Provider::QgsDb2Provider( const QString &uri, const ProviderOptions &optio
   else
     mSRId = -1;
 
-  if ( 0 != anUri.wkbType() )
+  if ( QgsWkbTypes::Type::Unknown != anUri.wkbType() )
   {
     mWkbType = anUri.wkbType();
   }
-  QgsDebugMsg( QStringLiteral( "mWkbType: %1" ).arg( mWkbType ) );
-  QgsDebugMsg( QStringLiteral( "new mWkbType: %1" ).arg( anUri.wkbType() ) );
+  QgsDebugMsg( QStringLiteral( "mWkbType: %1" ).arg( static_cast<int>( mWkbType ) ) );
+  QgsDebugMsg( QStringLiteral( "new mWkbType: %1" ).arg( static_cast<int>( anUri.wkbType() ) ) );
 
   mValid = true;
   mSkipFailures = false;
@@ -106,7 +106,7 @@ QgsDb2Provider::QgsDb2Provider( const QString &uri, const ProviderOptions &optio
   if ( mGeometryColName.isEmpty() )
   {
     // table contains no geometries
-    mWkbType = QgsWkbTypes::NoGeometry;
+    mWkbType = QgsWkbTypes::Type::NoGeometry;
     mSRId = 0;
   }
 
@@ -738,19 +738,19 @@ void QgsDb2Provider::db2WkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString 
 
   QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( wkbType );
 
-  if ( flatType == QgsWkbTypes::Point )
+  if ( flatType == QgsWkbTypes::Type::Point )
     geometryType = QStringLiteral( "POINT" );
-  else if ( flatType == QgsWkbTypes::LineString )
+  else if ( flatType == QgsWkbTypes::Type::LineString )
     geometryType = QStringLiteral( "LINESTRING" );
-  else if ( flatType == QgsWkbTypes::Polygon )
+  else if ( flatType == QgsWkbTypes::Type::Polygon )
     geometryType = QStringLiteral( "POLYGON" );
-  else if ( flatType == QgsWkbTypes::MultiPoint )
+  else if ( flatType == QgsWkbTypes::Type::MultiPoint )
     geometryType = QStringLiteral( "MULTIPOINT" );
-  else if ( flatType == QgsWkbTypes::MultiLineString )
+  else if ( flatType == QgsWkbTypes::Type::MultiLineString )
     geometryType = QStringLiteral( "MULTILINESTRING" );
-  else if ( flatType == QgsWkbTypes::MultiPolygon )
+  else if ( flatType == QgsWkbTypes::Type::MultiPolygon )
     geometryType = QStringLiteral( "MULTIPOLYGON" );
-  else if ( flatType == QgsWkbTypes::Unknown )
+  else if ( flatType == QgsWkbTypes::Type::Unknown )
     geometryType = QStringLiteral( "GEOMETRY" );
   else
     dim = 0;
@@ -1357,7 +1357,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
   // other data source.
   QgsWkbTypes::Type wkbTypeSingle;
   wkbTypeSingle = QgsWkbTypes::singleType( wkbType );
-  if ( wkbType != QgsWkbTypes::NoGeometry && geometryColumn.isEmpty() )
+  if ( wkbType != QgsWkbTypes::Type::NoGeometry && geometryColumn.isEmpty() )
     geometryColumn = QStringLiteral( "GEOM" );
 
   if ( primaryKey.isEmpty() )
@@ -1406,7 +1406,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
   QString geometryType;
   int dim = 2;
   db2WkbTypeAndDimension( wkbTypeSingle, geometryType, dim );
-  QgsDebugMsg( QStringLiteral( "wkbTypeSingle: %1; geometryType: %2" ).arg( wkbTypeSingle ).arg( geometryType ) );
+  QgsDebugMsg( QStringLiteral( "wkbTypeSingle: %1; geometryType: %2" ).arg( static_cast<int>( wkbTypeSingle ) ).arg( geometryType ) );
   if ( overwrite )
   {
     // remove the old table with the same name

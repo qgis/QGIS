@@ -58,13 +58,13 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
     QComboBox *cb = new QComboBox( parent );
     Q_FOREACH ( QgsWkbTypes::Type type,
                 QList<QgsWkbTypes::Type>()
-                << QgsWkbTypes::Point
-                << QgsWkbTypes::LineString
-                << QgsWkbTypes::Polygon
-                << QgsWkbTypes::MultiPoint
-                << QgsWkbTypes::MultiLineString
-                << QgsWkbTypes::MultiPolygon
-                << QgsWkbTypes::NoGeometry )
+                << QgsWkbTypes::Type::Point
+                << QgsWkbTypes::Type::LineString
+                << QgsWkbTypes::Type::Polygon
+                << QgsWkbTypes::Type::MultiPoint
+                << QgsWkbTypes::Type::MultiLineString
+                << QgsWkbTypes::Type::MultiPolygon
+                << QgsWkbTypes::Type::NoGeometry )
     {
       cb->addItem( QgsOracleTableModel::iconForWkbType( type ), QgsOracleConn::displayStringForWkbType( type ), type );
     }
@@ -142,7 +142,7 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
       QgsWkbTypes::Type type = static_cast< QgsWkbTypes::Type >( cb->currentData().toInt() );
 
       model->setData( index, QgsOracleTableModel::iconForWkbType( type ), Qt::DecorationRole );
-      model->setData( index, type != QgsWkbTypes::Unknown ? QgsOracleConn::displayStringForWkbType( type ) : tr( "Select…" ) );
+      model->setData( index, type != QgsWkbTypes::Type::Unknown ? QgsOracleConn::displayStringForWkbType( type ) : tr( "Select…" ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsOracleTableModel::DbtmPkCol )

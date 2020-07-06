@@ -552,11 +552,11 @@ std::unique_ptr<QgsAbstract3DSymbol> Qgs3DUtils::symbolForGeometryType( QgsWkbTy
 {
   switch ( geomType )
   {
-    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::GeometryType::PointGeometry:
       return std::unique_ptr<QgsAbstract3DSymbol>( new QgsPoint3DSymbol );
-    case QgsWkbTypes::LineGeometry:
+    case QgsWkbTypes::GeometryType::LineGeometry:
       return std::unique_ptr<QgsAbstract3DSymbol>( new QgsLine3DSymbol );
-    case QgsWkbTypes::PolygonGeometry:
+    case QgsWkbTypes::GeometryType::PolygonGeometry:
       return std::unique_ptr<QgsAbstract3DSymbol>( new QgsPolygon3DSymbol );
     default:
       return nullptr;

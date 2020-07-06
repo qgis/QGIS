@@ -263,7 +263,7 @@ void QgsHighlight::paint( QPainter *p )
 
     switch ( mGeometry->type() )
     {
-      case QgsWkbTypes::PointGeometry:
+      case QgsWkbTypes::GeometryType::PointGeometry:
       {
         if ( !mGeometry->isMultipart() )
         {
@@ -280,7 +280,7 @@ void QgsHighlight::paint( QPainter *p )
       }
       break;
 
-      case QgsWkbTypes::LineGeometry:
+      case QgsWkbTypes::GeometryType::LineGeometry:
       {
         if ( !mGeometry->isMultipart() )
         {
@@ -298,7 +298,7 @@ void QgsHighlight::paint( QPainter *p )
         break;
       }
 
-      case QgsWkbTypes::PolygonGeometry:
+      case QgsWkbTypes::GeometryType::PolygonGeometry:
       {
         if ( !mGeometry->isMultipart() )
         {
@@ -315,8 +315,8 @@ void QgsHighlight::paint( QPainter *p )
         break;
       }
 
-      case QgsWkbTypes::UnknownGeometry:
-      case QgsWkbTypes::NullGeometry:
+      case QgsWkbTypes::GeometryType::UnknownGeometry:
+      case QgsWkbTypes::GeometryType::NullGeometry:
         return;
     }
   }

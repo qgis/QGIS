@@ -110,7 +110,7 @@ QString TestQgsRasterLayerSaveAsDialog::prepareDb()
   QgsVectorFileWriter w( fileName,
                          QStringLiteral( "UTF-8" ),
                          vl.fields(),
-                         QgsWkbTypes::Point,
+                         QgsWkbTypes::Type::Point,
                          vl.crs() );
   QgsFeature f { vl.fields() };
   f.setAttribute( 0, QString( 1024, 'x' ) );

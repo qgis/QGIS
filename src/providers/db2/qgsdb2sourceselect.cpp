@@ -54,15 +54,15 @@ QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyle
     QComboBox *cb = new QComboBox( parent );
     Q_FOREACH ( QgsWkbTypes::Type type,
                 QList<QgsWkbTypes::Type>()
-                << QgsWkbTypes::Point
-                << QgsWkbTypes::LineString
-                << QgsWkbTypes::Polygon
-                << QgsWkbTypes::MultiPoint
-                << QgsWkbTypes::MultiLineString
-                << QgsWkbTypes::MultiPolygon
-                << QgsWkbTypes::NoGeometry )
+                << QgsWkbTypes::Type::Point
+                << QgsWkbTypes::Type::LineString
+                << QgsWkbTypes::Type::Polygon
+                << QgsWkbTypes::Type::MultiPoint
+                << QgsWkbTypes::Type::MultiLineString
+                << QgsWkbTypes::Type::MultiPolygon
+                << QgsWkbTypes::Type::NoGeometry )
     {
-      cb->addItem( QgsDb2TableModel::iconForWkbType( type ), QgsWkbTypes::displayString( type ), type );
+      cb->addItem( QgsDb2TableModel::iconForWkbType( type ), QgsWkbTypes::displayString( type ), static_cast<int>( type ) );
     }
     cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
     return cb;
@@ -102,8 +102,8 @@ void QgsDb2SourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMod
       const QgsWkbTypes::Type type = static_cast< QgsWkbTypes::Type >( cb->currentData().toInt() );
 
       model->setData( index, QgsDb2TableModel::iconForWkbType( type ), Qt::DecorationRole );
-      model->setData( index, type != QgsWkbTypes::Unknown ? QgsWkbTypes::displayString( type ) : tr( "Select…" ) );
-      model->setData( index, type, Qt::UserRole + 2 );
+      model->setData( index, type != QgsWkbTypes::Type::Unknown ? QgsWkbTypes::displayString( type ) : tr( "Select…" ) );
+      model->setData( index, static_cast<int>( type ), Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsDb2TableModel::DbtmPkCol )
     {

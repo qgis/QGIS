@@ -48,7 +48,7 @@ class QgsAfsSharedData : public QObject
     QMutex mMutex;
     QgsDataSourceUri mDataSource;
     QgsRectangle mExtent;
-    QgsWkbTypes::Type mGeometryType = QgsWkbTypes::Unknown;
+    QgsWkbTypes::Type mGeometryType = QgsWkbTypes::Type::Unknown;
     QgsFields mFields;
     QString mObjectIdFieldName;
     QList<quint32> mObjectIds;

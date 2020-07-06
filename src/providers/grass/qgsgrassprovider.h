@@ -425,7 +425,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // grass feature type: GV_POINT, GV_LINE | GV_BOUNDARY, GV_AREA, ( GV_BOUNDARY, GV_CENTROID )
     int mGrassType = 0;
     // WKBPoint, WKBLineString, ...
-    QgsWkbTypes::Type mQgisType = QgsWkbTypes::Unknown;
+    QgsWkbTypes::Type mQgisType = QgsWkbTypes::Type::Unknown;
     QString mLayerName;
     QgsGrassVectorMapLayer *mLayer = nullptr;
     // The version of the map for which the instance was last time updated

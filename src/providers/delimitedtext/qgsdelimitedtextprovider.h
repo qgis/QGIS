@@ -221,8 +221,8 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     // Coordinate reference system
     QgsCoordinateReferenceSystem mCrs;
 
-    QgsWkbTypes::Type mWkbType = QgsWkbTypes::NoGeometry;
-    QgsWkbTypes::GeometryType mGeometryType = QgsWkbTypes::UnknownGeometry;
+    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Type::NoGeometry;
+    QgsWkbTypes::GeometryType mGeometryType = QgsWkbTypes::GeometryType::UnknownGeometry;
 
     // Spatial index
     bool mBuildSpatialIndex = false;

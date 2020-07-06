@@ -137,7 +137,7 @@ void TestQgsMapRendererJob::initTestCase()
 
     QgsVectorFileWriter::SaveVectorOptions saveOptions;
     saveOptions.fileEncoding = mEncoding;
-    std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, QgsWkbTypes::Polygon, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
+    std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, QgsWkbTypes::Type::Polygon, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
     double myInterval = 0.5;
     for ( double i = -180.0; i <= 180.0; i += myInterval )
     {

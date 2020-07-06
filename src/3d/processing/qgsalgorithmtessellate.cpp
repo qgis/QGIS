@@ -59,7 +59,7 @@ QgsProcessing::SourceType QgsTessellateAlgorithm::outputLayerType() const
 QgsWkbTypes::Type QgsTessellateAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
 {
   Q_UNUSED( inputWkbType )
-  return QgsWkbTypes::MultiPolygonZ;
+  return QgsWkbTypes::Type::MultiPolygonZ;
 }
 
 QString QgsTessellateAlgorithm::shortHelpString() const
@@ -84,7 +84,7 @@ QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature
   QgsFeature f = feature;
   if ( f.hasGeometry() )
   {
-    if ( QgsWkbTypes::geometryType( f.geometry().wkbType() ) != QgsWkbTypes::PolygonGeometry )
+    if ( QgsWkbTypes::geometryType( f.geometry().wkbType() ) != QgsWkbTypes::GeometryType::PolygonGeometry )
       f.clearGeometry();
     else
     {

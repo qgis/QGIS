@@ -84,7 +84,7 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 bool QgsMapToolReshape::isBindingLine( QgsVectorLayer *vlayer, const QgsRectangle &bbox ) const
 {
-  if ( vlayer->geometryType() != QgsWkbTypes::LineGeometry )
+  if ( vlayer->geometryType() != QgsWkbTypes::GeometryType::LineGeometry )
     return false;
 
   bool begin = false;
@@ -152,7 +152,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
       if ( reshapeReturn == 0 )
       {
         //avoid intersections on polygon layers
-        if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
+        if ( vlayer->geometryType() == QgsWkbTypes::GeometryType::PolygonGeometry )
         {
           //ignore all current layer features as they should be reshaped too
           QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;

@@ -52,7 +52,7 @@ QString QgsOrientedMinimumBoundingBoxAlgorithm::outputName() const
 
 QgsWkbTypes::Type QgsOrientedMinimumBoundingBoxAlgorithm::outputWkbType( QgsWkbTypes::Type ) const
 {
-  return QgsWkbTypes::Polygon;
+  return QgsWkbTypes::Type::Polygon;
 }
 
 QString QgsOrientedMinimumBoundingBoxAlgorithm::shortHelpString() const

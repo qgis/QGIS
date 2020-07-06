@@ -167,7 +167,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
 
   QgsFeatureRequest r;
   bool needsGeom = false;
-  if ( mLayer->geometryType() != QgsWkbTypes::NullGeometry &&
+  if ( mLayer->geometryType() != QgsWkbTypes::GeometryType::NullGeometry &&
        initialMode == QgsAttributeTableFilterModel::ShowVisible )
   {
     QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();

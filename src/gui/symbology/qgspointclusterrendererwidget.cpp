@@ -41,7 +41,7 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
   }
 
   //the renderer only applies to point vector layers
-  if ( QgsWkbTypes::flatType( layer->wkbType() ) != QgsWkbTypes::Point )
+  if ( QgsWkbTypes::flatType( layer->wkbType() ) != QgsWkbTypes::Type::Point )
   {
     //setup blank dialog
     mRenderer = nullptr;

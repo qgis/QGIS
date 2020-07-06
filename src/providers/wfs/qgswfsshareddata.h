@@ -89,7 +89,7 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     bool mGetFeatureEPSGDotHonoursEPSGOrder = false;
 
     //! Geometry type of the features in this layer
-    QgsWkbTypes::Type mWKBType = QgsWkbTypes::Unknown;
+    QgsWkbTypes::Type mWKBType = QgsWkbTypes::Type::Unknown;
 
     //! Create GML parser
     QgsGmlStreamingParser *createParser() const;

@@ -133,7 +133,7 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
     //! Compute OAPIF filter from the filter in the URI
     bool computeServerFilter( QString &errorMsg );
 
-    bool hasGeometry() const override { return mWKBType != QgsWkbTypes::Unknown; }
+    bool hasGeometry() const override { return mWKBType != QgsWkbTypes::Type::Unknown; }
 
     std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader * ) override;
 
@@ -155,7 +155,7 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
     QgsWFSDataSourceURI mURI;
 
     //! Geometry type of the features in this layer
-    QgsWkbTypes::Type mWKBType = QgsWkbTypes::Unknown;
+    QgsWkbTypes::Type mWKBType = QgsWkbTypes::Type::Unknown;
 
     //! Page size. 0 = disabled
     int mPageSize = 0;

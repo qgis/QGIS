@@ -456,7 +456,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
         {
           // retrieve layer types if needed
           if ( ! dontResolveType && ( !pr.geometryColName.isNull() &&
-                                      ( pr.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown ||
+                                      ( pr.types.value( 0, QgsWkbTypes::Type::Unknown ) == QgsWkbTypes::Type::Unknown ||
                                         pr.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) ) )
           {
             conn->retrieveLayerTypes( pr, useEstimatedMetadata );

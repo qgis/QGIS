@@ -268,17 +268,17 @@ void QgsRelationEditorWidget::initDualView( QgsVectorLayer *layer, const QgsFeat
 
   QIcon icon;
   QString text;
-  if ( layer->geometryType() == QgsWkbTypes::PointGeometry )
+  if ( layer->geometryType() == QgsWkbTypes::GeometryType::PointGeometry )
   {
     icon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionCapturePoint.svg" ) );
     text = tr( "Add Point child Feature" );
   }
-  else if ( layer->geometryType() == QgsWkbTypes::LineGeometry )
+  else if ( layer->geometryType() == QgsWkbTypes::GeometryType::LineGeometry )
   {
     icon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionCaptureLine.svg" ) );
     text = tr( "Add Line child Feature" );
   }
-  else if ( layer->geometryType() == QgsWkbTypes::PolygonGeometry )
+  else if ( layer->geometryType() == QgsWkbTypes::GeometryType::PolygonGeometry )
   {
     icon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionCapturePolygon.svg" ) );
     text = tr( "Add Polygon Feature" );
@@ -429,14 +429,14 @@ void QgsRelationEditorWidget::updateButtons()
     mEditorContext.mapCanvas() && (
       (
         mNmRelation.isValid() &&
-        mNmRelation.referencedLayer()->geometryType() != QgsWkbTypes::NullGeometry &&
-        mNmRelation.referencedLayer()->geometryType() != QgsWkbTypes::UnknownGeometry
+        mNmRelation.referencedLayer()->geometryType() != QgsWkbTypes::GeometryType::NullGeometry &&
+        mNmRelation.referencedLayer()->geometryType() != QgsWkbTypes::GeometryType::UnknownGeometry
       )
       ||
       (
         mRelation.isValid() &&
-        mRelation.referencedLayer()->geometryType() != QgsWkbTypes::NullGeometry &&
-        mRelation.referencedLayer()->geometryType() != QgsWkbTypes::UnknownGeometry
+        mRelation.referencedLayer()->geometryType() != QgsWkbTypes::GeometryType::NullGeometry &&
+        mRelation.referencedLayer()->geometryType() != QgsWkbTypes::GeometryType::UnknownGeometry
       )
     )
   );

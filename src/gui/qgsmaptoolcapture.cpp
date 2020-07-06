@@ -119,13 +119,13 @@ void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
 
   switch ( vlayer->geometryType() )
   {
-    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::GeometryType::PointGeometry:
       mCaptureMode = CapturePoint;
       break;
-    case QgsWkbTypes::LineGeometry:
+    case QgsWkbTypes::GeometryType::LineGeometry:
       mCaptureMode = CaptureLine;
       break;
-    case QgsWkbTypes::PolygonGeometry:
+    case QgsWkbTypes::GeometryType::PolygonGeometry:
       mCaptureMode = CapturePolygon;
       break;
     default:
@@ -180,7 +180,7 @@ bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent *e )
   if ( !tracer )
     return false;  // this should not happen!
 
-  mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
+  mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::GeometryType::PolygonGeometry : QgsWkbTypes::GeometryType::LineGeometry );
 
   QgsTracer::PathError err;
   QVector<QgsPointXY> points = tracer->findShortestPath( pt0, e->mapPoint(), &err );
@@ -343,7 +343,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
   if ( !mTempRubberBand && mCaptureCurve.numPoints() > 0 )
   {
-    mTempRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true ) );
+    mTempRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::GeometryType::PolygonGeometry : QgsWkbTypes::GeometryType::LineGeometry, true ) );
     QgsPoint pt = mCaptureCurve.endPoint();
     mTempRubberBand->addPoint( QgsPointXY( pt.x(), pt.y() ) );
     mTempRubberBand->addPoint( point );
@@ -363,7 +363,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       if ( mCaptureCurve.numPoints() > 0 )
       {
         // fix temporary rubber band after tracing which may have added multiple points
-        mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
+        mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::GeometryType::PolygonGeometry : QgsWkbTypes::GeometryType::LineGeometry );
         if ( mCaptureMode == CapturePolygon )
           mTempRubberBand->addPoint( *mRubberBand->getPoint( 0, 0 ), false );
         QgsPoint pt = mCaptureCurve.endPoint();
@@ -502,16 +502,16 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
 
   if ( !mRubberBand )
   {
-    mRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry ) );
+    mRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::GeometryType::PolygonGeometry : QgsWkbTypes::GeometryType::LineGeometry ) );
   }
 
   if ( !mTempRubberBand )
   {
-    mTempRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true ) );
+    mTempRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::GeometryType::PolygonGeometry : QgsWkbTypes::GeometryType::LineGeometry, true ) );
   }
   else
   {
-    mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
+    mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::GeometryType::PolygonGeometry : QgsWkbTypes::GeometryType::LineGeometry );
   }
 
   bool traceCreated = false;
@@ -559,7 +559,7 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
 
   if ( !mRubberBand )
   {
-    mRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry ) );
+    mRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::GeometryType::PolygonGeometry : QgsWkbTypes::GeometryType::LineGeometry ) );
   }
 
   QgsLineString *lineString = c->curveToLine();
@@ -574,7 +574,7 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
 
   if ( !mTempRubberBand )
   {
-    mTempRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true ) );
+    mTempRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::GeometryType::PolygonGeometry : QgsWkbTypes::GeometryType::LineGeometry, true ) );
   }
   else
   {
@@ -637,7 +637,7 @@ void QgsMapToolCapture::undo()
     }
     else
     {
-      mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
+      mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::GeometryType::PolygonGeometry : QgsWkbTypes::GeometryType::LineGeometry );
     }
 
     QgsVertexId vertexToRemove;
@@ -836,7 +836,7 @@ void QgsMapToolCapture::setPoints( const QgsPointSequence &pointList )
 
 QgsPoint QgsMapToolCapture::mapPoint( const QgsPointXY &point ) const
 {
-  QgsPoint newPoint( QgsWkbTypes::Point, point.x(), point.y() );
+  QgsPoint newPoint( QgsWkbTypes::Type::Point, point.x(), point.y() );
 
   // get current layer
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -849,15 +849,15 @@ QgsPoint QgsMapToolCapture::mapPoint( const QgsPointXY &point ) const
   const QgsWkbTypes::Type type = vlayer->wkbType();
   if ( QgsWkbTypes::hasZ( type ) && !QgsWkbTypes::hasM( type ) )
   {
-    newPoint.convertTo( QgsWkbTypes::PointZ );
+    newPoint.convertTo( QgsWkbTypes::Type::PointZ );
   }
   else if ( !QgsWkbTypes::hasZ( type ) && QgsWkbTypes::hasM( type ) )
   {
-    newPoint.convertTo( QgsWkbTypes::PointM );
+    newPoint.convertTo( QgsWkbTypes::Type::PointM );
   }
   else if ( QgsWkbTypes::hasZ( type ) && QgsWkbTypes::hasM( type ) )
   {
-    newPoint.convertTo( QgsWkbTypes::PointZM );
+    newPoint.convertTo( QgsWkbTypes::Type::PointZM );
   }
 
   // set z value if necessary

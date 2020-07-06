@@ -216,16 +216,16 @@ QgsGrassProvider::QgsGrassProvider( const QString &uri )
     case Centroid:
     case TopoPoint:
     case TopoNode:
-      mQgisType = QgsWkbTypes::Point;
+      mQgisType = QgsWkbTypes::Type::Point;
       break;
     case Line:
     case Boundary:
     case TopoLine:
-      mQgisType = QgsWkbTypes::LineString;
+      mQgisType = QgsWkbTypes::Type::LineString;
       break;
     case Polygon:
     case Face:
-      mQgisType = QgsWkbTypes::Polygon;
+      mQgisType = QgsWkbTypes::Type::Polygon;
       break;
   }
 
@@ -1123,7 +1123,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
   {
     return;
   }
-  if ( geometry->wkbType() == QgsWkbTypes::Point || geometry->wkbType() == QgsWkbTypes::PointZ )
+  if ( geometry->wkbType() == QgsWkbTypes::Type::Point || geometry->wkbType() == QgsWkbTypes::Type::PointZ )
   {
     const QgsPoint *point = dynamic_cast<const QgsPoint *>( geometry );
     if ( point )
@@ -1132,7 +1132,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
       QgsDebugMsg( QString( "x = %1 y = %2" ).arg( point->x() ).arg( point->y() ) );
     }
   }
-  else if ( geometry->wkbType() == QgsWkbTypes::LineString || geometry->wkbType() == QgsWkbTypes::LineStringZ )
+  else if ( geometry->wkbType() == QgsWkbTypes::Type::LineString || geometry->wkbType() == QgsWkbTypes::Type::LineStringZ )
   {
     const QgsLineString *lineString = dynamic_cast<const QgsLineString *>( geometry );
     if ( lineString )
@@ -1144,7 +1144,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
       }
     }
   }
-  else if ( geometry->wkbType() == QgsWkbTypes::Polygon || geometry->wkbType() == QgsWkbTypes::PolygonZ )
+  else if ( geometry->wkbType() == QgsWkbTypes::Type::Polygon || geometry->wkbType() == QgsWkbTypes::Type::PolygonZ )
   {
     const QgsPolygon *polygon = dynamic_cast<const QgsPolygon *>( geometry );
     if ( polygon && polygon->exteriorRing() )
@@ -1223,7 +1223,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
 
     // change polygon to linestring
     QgsWkbTypes::Type wkbType = QgsWkbTypes::flatType( geometry->wkbType() );
-    if ( wkbType == QgsWkbTypes::Polygon )
+    if ( wkbType == QgsWkbTypes::Type::Polygon )
     {
       QgsGeometry addedFeatureGeom = addedFeatures[fid].geometry();
       const QgsPolygon *polygon = dynamic_cast<const QgsPolygon *>( addedFeatureGeom.constGet() );

@@ -43,7 +43,7 @@ class QgsFeaturePool;
  * Implementing a custom geometry check consists of the following parts
  *
  * ### Writing the check
- *
+ *ca
  * A new subclass of QgsGeometryCheck needs to be written and at least the following
  * abstract methods need to be implemented:
  *

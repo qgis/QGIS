@@ -483,7 +483,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
                          mSource->mRequestedSrid );
   }
 
-  if ( mSource->mRequestedGeomType != QgsWkbTypes::Unknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )
+  if ( mSource->mRequestedGeomType != QgsWkbTypes::Type::Unknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )
   {
     whereClause += QStringLiteral( " AND %1" ).arg( QgsPostgresConn::postgisTypeFilter( mSource->mGeometryColumn, ( QgsWkbTypes::Type )mSource->mRequestedGeomType, castToGeometry ) );
   }
@@ -516,12 +516,12 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long
          mSource->mSpatialColType == SctPcPatch )
       geom += QLatin1String( "::geometry" );
 
-    QgsWkbTypes::Type usedGeomType = mSource->mRequestedGeomType != QgsWkbTypes::Unknown
+    QgsWkbTypes::Type usedGeomType = mSource->mRequestedGeomType != QgsWkbTypes::Type::Unknown
                                      ? mSource->mRequestedGeomType : mSource->mDetectedGeomType;
 
     if ( !mRequest.simplifyMethod().forceLocalOptimization() &&
          mRequest.simplifyMethod().methodType() != QgsSimplifyMethod::NoSimplification &&
-         QgsWkbTypes::flatType( QgsWkbTypes::singleType( usedGeomType ) ) != QgsWkbTypes::Point &&
+         QgsWkbTypes::flatType( QgsWkbTypes::singleType( usedGeomType ) ) != QgsWkbTypes::Type::Point &&
          !QgsWkbTypes::isCurvedType( usedGeomType ) )
     {
       // PostGIS simplification method to use
@@ -686,7 +686,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
       if ( ( unsigned int )newType != wkbType )
       {
         // overwrite type
-        unsigned int n = newType;
+        unsigned int n = static_cast<unsigned int>( newType );
         memcpy( featureGeom + 1, &n, sizeof( n ) );
       }
 
@@ -700,7 +700,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
         unsigned char *wkb = featureGeom + 9;
         for ( unsigned int i = 0; i < numGeoms; ++i )
         {
-          const unsigned int localType = QgsWkbTypes::singleType( newType ); // polygon(Z|M)
+          const unsigned int localType = static_cast<unsigned int>( QgsWkbTypes::singleType( newType ) ); // polygon(Z|M)
           memcpy( wkb + 1, &localType, sizeof( localType ) );
 
           // skip endian and type info

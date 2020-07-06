@@ -137,7 +137,7 @@ std::vector<QgsGeometry> QgsExplodeAlgorithm::curveAsSingleSegments( const QgsCu
     return parts;
   switch ( QgsWkbTypes::flatType( curve->wkbType() ) )
   {
-    case QgsWkbTypes::LineString:
+    case QgsWkbTypes::Type::LineString:
     {
       const QgsLineString *line = qgsgeometry_cast< const QgsLineString * >( curve );
       for ( int i = 0; i < line->numPoints() - 1; ++i )
@@ -159,7 +159,7 @@ std::vector<QgsGeometry> QgsExplodeAlgorithm::curveAsSingleSegments( const QgsCu
       break;
     }
 
-    case QgsWkbTypes::CircularString:
+    case QgsWkbTypes::Type::CircularString:
     {
       const QgsCircularString *string = qgsgeometry_cast< const QgsCircularString * >( curve );
       for ( int i = 0; i < string->numPoints() - 2; i += 2 )
@@ -183,7 +183,7 @@ std::vector<QgsGeometry> QgsExplodeAlgorithm::curveAsSingleSegments( const QgsCu
       break;
     }
 
-    case QgsWkbTypes::CompoundCurve:
+    case QgsWkbTypes::Type::CompoundCurve:
     {
       const QgsCompoundCurve *compoundCurve = qgsgeometry_cast< QgsCompoundCurve * >( curve );
       for ( int i = 0; i < compoundCurve->nCurves(); ++i )

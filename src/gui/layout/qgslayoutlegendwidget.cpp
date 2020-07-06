@@ -1362,7 +1362,7 @@ void QgsLayoutLegendWidget::updateFilterLegendByAtlasButton()
 {
   if ( QgsLayoutAtlas *atlas = layoutAtlas() )
   {
-    mFilterLegendByAtlasCheckBox->setEnabled( atlas->enabled() && mLegend->layout()->reportContext().layer() && mLegend->layout()->reportContext().layer()->geometryType() == QgsWkbTypes::PolygonGeometry );
+    mFilterLegendByAtlasCheckBox->setEnabled( atlas->enabled() && mLegend->layout()->reportContext().layer() && mLegend->layout()->reportContext().layer()->geometryType() == QgsWkbTypes::GeometryType::PolygonGeometry );
   }
 }
 
@@ -1543,15 +1543,15 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   {
     switch ( qobject_cast< QgsVectorLayer * >( mLayer->layer() )->geometryType() )
     {
-      case QgsWkbTypes::PolygonGeometry:
+      case QgsWkbTypes::GeometryType::PolygonGeometry:
         mPatchShapeButton->setSymbolType( QgsSymbol::Fill );
         break;
 
-      case QgsWkbTypes::LineGeometry:
+      case QgsWkbTypes::GeometryType::LineGeometry:
         mPatchShapeButton->setSymbolType( QgsSymbol::Line );
         break;
 
-      case QgsWkbTypes::PointGeometry:
+      case QgsWkbTypes::GeometryType::PointGeometry:
         mPatchShapeButton->setSymbolType( QgsSymbol::Marker );
         break;
 

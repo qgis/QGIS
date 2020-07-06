@@ -31,7 +31,7 @@ bool QgsOverlayUtils::sanitizeIntersectionResult( QgsGeometry &geom, QgsWkbTypes
   // Intersection of geometries may give use also geometries we do not want in our results.
   // For example, two square polygons touching at the corner have a point as the intersection, but no area.
   // In other cases we may get a mixture of geometries in the output - we want to keep only the expected types.
-  if ( QgsWkbTypes::flatType( geom.wkbType() ) == QgsWkbTypes::GeometryCollection )
+  if ( QgsWkbTypes::flatType( geom.wkbType() ) == QgsWkbTypes::Type::GeometryCollection )
   {
     // try to filter out irrelevant parts with different geometry type than what we want
     geom.convertGeometryCollectionToSubclass( geometryType );

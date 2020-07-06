@@ -114,7 +114,7 @@ void QgsMapToolLabel::createRubberBands()
   delete mFeatureRubberBand;
 
   //label rubber band
-  mLabelRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry );
+  mLabelRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::GeometryType::LineGeometry );
   mLabelRubberBand->addPoint( mCurrentLabel.pos.cornerPoints.at( 0 ) );
   mLabelRubberBand->addPoint( mCurrentLabel.pos.cornerPoints.at( 1 ) );
   mLabelRubberBand->addPoint( mCurrentLabel.pos.cornerPoints.at( 2 ) );
@@ -134,7 +134,7 @@ void QgsMapToolLabel::createRubberBands()
       QgsGeometry geom = f.geometry();
       if ( !geom.isNull() )
       {
-        if ( geom.type() == QgsWkbTypes::PolygonGeometry )
+        if ( geom.type() == QgsWkbTypes::GeometryType::PolygonGeometry )
         {
           // for polygons, we don't want to fill the whole polygon itself with the rubber band
           // as that obscures too much of the map and prevents users from getting a good view of
@@ -165,7 +165,7 @@ void QgsMapToolLabel::createRubberBands()
       }
 
       QgsGeometry pointGeom = QgsGeometry::fromPointXY( fixPoint );
-      mFixPointRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry );
+      mFixPointRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::GeometryType::LineGeometry );
       mFixPointRubberBand->setColor( QColor( 0, 0, 255, 65 ) );
       mFixPointRubberBand->setToGeometry( pointGeom, vlayer );
       mFixPointRubberBand->show();

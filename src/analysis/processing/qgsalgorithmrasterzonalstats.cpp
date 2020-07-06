@@ -184,7 +184,7 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
     outFields.append( QgsField( QStringLiteral( "max" ), QVariant::Double, QString(), 20, 8 ) );
     outFields.append( QgsField( QStringLiteral( "mean" ), QVariant::Double, QString(), 20, 8 ) );
 
-    sink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT_TABLE" ), context, tableDest, outFields, QgsWkbTypes::NoGeometry, QgsCoordinateReferenceSystem() ) );
+    sink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT_TABLE" ), context, tableDest, outFields, QgsWkbTypes::Type::NoGeometry, QgsCoordinateReferenceSystem() ) );
     if ( !sink )
       throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT_TABLE" ) ) );
   }

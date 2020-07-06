@@ -270,7 +270,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
   outFields.append( QgsField( QStringLiteral( "timestamp" ), QVariant::DateTime ) );
   QString outputDest;
   std::unique_ptr< QgsFeatureSink > outputSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, outputDest, outFields,
-      QgsWkbTypes::PointZ, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) );
+      QgsWkbTypes::Type::PointZ, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) );
 
   QgsFields invalidFields;
   invalidFields.append( QgsField( QStringLiteral( "photo" ), QVariant::String ) );
@@ -356,7 +356,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
       }
 
       QVariant altitude = extractAltitudeFromMetadata( metadata );
-      QgsGeometry p = QgsGeometry( new QgsPoint( tag.x(), tag.y(), altitude.toDouble(), 0, QgsWkbTypes::PointZ ) );
+      QgsGeometry p = QgsGeometry( new QgsPoint( tag.x(), tag.y(), altitude.toDouble(), 0, QgsWkbTypes::Type::PointZ ) );
       f.setGeometry( p );
 
       attributes

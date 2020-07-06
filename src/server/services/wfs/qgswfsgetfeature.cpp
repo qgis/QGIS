@@ -319,7 +319,7 @@ namespace QgsWfs
       }
 
       // geometry flags
-      if ( vlayer->wkbType() == QgsWkbTypes::NoGeometry )
+      if ( vlayer->wkbType() == QgsWkbTypes::Type::NoGeometry )
         featureRequest.setFlags( featureRequest.flags() | QgsFeatureRequest::NoGeometry );
       else
         featureRequest.setFlags( featureRequest.flags() | ( withGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );

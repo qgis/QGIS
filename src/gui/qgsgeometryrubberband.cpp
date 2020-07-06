@@ -43,7 +43,7 @@ void QgsGeometryRubberBand::paint( QPainter *painter )
   QgsScopedQPainterState painterState( painter );
   painter->translate( -pos() );
 
-  if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
+  if ( mGeometryType == QgsWkbTypes::GeometryType::PolygonGeometry )
   {
     painter->setBrush( mBrush );
   }

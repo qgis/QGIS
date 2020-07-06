@@ -148,7 +148,7 @@ class QgsDb2Provider final: public QgsVectorDataProvider
     mutable QString mGeometryColName, mGeometryColType;
     QString mLastError; //string containing the last reported error message
     mutable QgsCoordinateReferenceSystem mCrs; //coordinate reference system
-    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Type::Unknown;
     QSqlQuery mQuery; //current SQL query
     QString mConnInfo; // full connection information
     QString mSchemaName, mTableName; //current layer schema/name

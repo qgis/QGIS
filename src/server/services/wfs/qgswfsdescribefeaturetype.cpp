@@ -220,34 +220,34 @@ namespace QgsWfs
       QgsWkbTypes::Type wkbType = layer->wkbType();
       switch ( wkbType )
       {
-        case QgsWkbTypes::Point25D:
-        case QgsWkbTypes::Point:
+        case QgsWkbTypes::Type::Point25D:
+        case QgsWkbTypes::Type::Point:
           geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:PointPropertyType" ) );
           break;
-        case QgsWkbTypes::LineString25D:
-        case QgsWkbTypes::LineString:
+        case QgsWkbTypes::Type::LineString25D:
+        case QgsWkbTypes::Type::LineString:
           geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:LineStringPropertyType" ) );
           break;
-        case QgsWkbTypes::Polygon25D:
-        case QgsWkbTypes::Polygon:
+        case QgsWkbTypes::Type::Polygon25D:
+        case QgsWkbTypes::Type::Polygon:
           geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:PolygonPropertyType" ) );
           break;
-        case QgsWkbTypes::MultiPoint25D:
-        case QgsWkbTypes::MultiPoint:
+        case QgsWkbTypes::Type::MultiPoint25D:
+        case QgsWkbTypes::Type::MultiPoint:
           geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiPointPropertyType" ) );
           break;
-        case QgsWkbTypes::MultiCurve:
+        case QgsWkbTypes::Type::MultiCurve:
           geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiCurveType" ) );
           break;
-        case QgsWkbTypes::MultiLineString25D:
-        case QgsWkbTypes::MultiLineString:
+        case QgsWkbTypes::Type::MultiLineString25D:
+        case QgsWkbTypes::Type::MultiLineString:
           geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiLineStringPropertyType" ) );
           break;
-        case QgsWkbTypes::MultiSurface:
+        case QgsWkbTypes::Type::MultiSurface:
           geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiSurfaceType" ) );
           break;
-        case QgsWkbTypes::MultiPolygon25D:
-        case QgsWkbTypes::MultiPolygon:
+        case QgsWkbTypes::Type::MultiPolygon25D:
+        case QgsWkbTypes::Type::MultiPolygon:
           geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiPolygonPropertyType" ) );
           break;
         default:

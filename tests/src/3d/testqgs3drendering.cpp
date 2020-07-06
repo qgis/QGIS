@@ -588,7 +588,7 @@ void TestQgs3DRendering::testBillboardRendering()
   featureList << f1 << f2 << f3;
   layerPointsZ->dataProvider()->addFeatures( featureList );
 
-  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType::PointGeometry ) );
   markerSymbol->setColor( QColor( 255, 0, 0 ) );
   markerSymbol->setSize( 4 );
   QgsSimpleMarkerSymbolLayer *sl = static_cast<QgsSimpleMarkerSymbolLayer *>( markerSymbol->symbolLayer( 0 ) ) ;

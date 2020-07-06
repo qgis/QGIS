@@ -1071,7 +1071,7 @@ namespace QgsWms
             QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( l );
             if ( vLayer )
             {
-              if ( vLayer->wkbType() == QgsWkbTypes::NoGeometry )
+              if ( vLayer->wkbType() == QgsWkbTypes::Type::NoGeometry )
               {
                 geometryLayer = false;
               }

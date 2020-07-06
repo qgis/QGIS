@@ -78,7 +78,7 @@ bool QgsSplitWithLinesAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) cons
   if ( !layer )
     return false;
 
-  if ( layer->geometryType() != QgsWkbTypes::LineGeometry && layer->geometryType() != QgsWkbTypes::PolygonGeometry )
+  if ( layer->geometryType() != QgsWkbTypes::GeometryType::LineGeometry && layer->geometryType() != QgsWkbTypes::GeometryType::PolygonGeometry )
     return false;
 
   return true;
@@ -258,7 +258,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
       }
 
       bool passed = true;
-      if ( QgsWkbTypes::geometryType( aGeom.wkbType() ) == QgsWkbTypes::LineGeometry )
+      if ( QgsWkbTypes::geometryType( aGeom.wkbType() ) == QgsWkbTypes::GeometryType::LineGeometry )
       {
         int numPoints = aGeom.constGet()->nCoordinates();
 

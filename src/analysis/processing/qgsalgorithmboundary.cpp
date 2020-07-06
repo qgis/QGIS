@@ -80,21 +80,21 @@ QgsProcessingFeatureSource::Flag QgsBoundaryAlgorithm::sourceFlags() const
 
 QgsWkbTypes::Type QgsBoundaryAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
 {
-  QgsWkbTypes::Type outputWkb = QgsWkbTypes::Unknown;
+  QgsWkbTypes::Type outputWkb = QgsWkbTypes::Type::Unknown;
   switch ( QgsWkbTypes::geometryType( inputWkbType ) )
   {
-    case QgsWkbTypes::LineGeometry:
-      outputWkb = QgsWkbTypes::MultiPoint;
+    case QgsWkbTypes::GeometryType::LineGeometry:
+      outputWkb = QgsWkbTypes::Type::MultiPoint;
       break;
 
-    case QgsWkbTypes::PolygonGeometry:
-      outputWkb = QgsWkbTypes::MultiLineString;
+    case QgsWkbTypes::GeometryType::PolygonGeometry:
+      outputWkb = QgsWkbTypes::Type::MultiLineString;
       break;
 
-    case QgsWkbTypes::PointGeometry:
-    case QgsWkbTypes::UnknownGeometry:
-    case QgsWkbTypes::NullGeometry:
-      outputWkb = QgsWkbTypes::NoGeometry;
+    case QgsWkbTypes::GeometryType::PointGeometry:
+    case QgsWkbTypes::GeometryType::UnknownGeometry:
+    case QgsWkbTypes::GeometryType::NullGeometry:
+      outputWkb = QgsWkbTypes::Type::NoGeometry;
       break;
   }
 

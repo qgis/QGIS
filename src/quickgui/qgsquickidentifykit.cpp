@@ -117,8 +117,8 @@ static QgsQuickFeatureLayerPair _closestFeature( const QgsQuickFeatureLayerPairs
     }
 
     double dist = geom.distance( mapPointGeom );
-    QgsWkbTypes::GeometryType type = QgsWkbTypes::geometryType( geom.wkbType() );
-    if ( type == QgsWkbTypes::PointGeometry )
+    QgsWkbTypes::Type type = QgsWkbTypes::geometryType( geom.wkbType() );
+    if ( type == QgsWkbTypes::GeometryType::PointGeometry )
     {
       if ( dist < distMinPoint )
       {
@@ -126,7 +126,7 @@ static QgsQuickFeatureLayerPair _closestFeature( const QgsQuickFeatureLayerPairs
         distMinPoint = dist;
       }
     }
-    else if ( type == QgsWkbTypes::LineGeometry )
+    else if ( type == QgsWkbTypes::GeometryType::LineGeometry )
     {
       if ( dist < distMinLine )
       {

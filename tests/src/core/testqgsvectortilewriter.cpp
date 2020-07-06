@@ -132,9 +132,9 @@ void TestQgsVectorTileWriter::test_basic()
   QCOMPARE( features0["lines"].count(), 6 );
   QCOMPARE( features0["polys"].count(), 10 );
 
-  QCOMPARE( features0["points"][0].geometry().wkbType(), QgsWkbTypes::Point );
-  QCOMPARE( features0["lines"][0].geometry().wkbType(), QgsWkbTypes::LineString );
-  QCOMPARE( features0["polys"][0].geometry().wkbType(), QgsWkbTypes::MultiPolygon );   // source geoms in shp are multipolygons
+  QCOMPARE( features0["points"][0].geometry().wkbType(), QgsWkbTypes::Type::Point );
+  QCOMPARE( features0["lines"][0].geometry().wkbType(), QgsWkbTypes::Type::LineString );
+  QCOMPARE( features0["polys"][0].geometry().wkbType(), QgsWkbTypes::Type::MultiPolygon );   // source geoms in shp are multipolygons
 
   QgsAttributes attrsPolys0_0 = features0["polys"][0].attributes();
   QCOMPARE( attrsPolys0_0.count(), 1 );
@@ -201,9 +201,9 @@ void TestQgsVectorTileWriter::test_mbtiles()
   QCOMPARE( features0["lines"].count(), 6 );
   QCOMPARE( features0["polys"].count(), 10 );
 
-  QCOMPARE( features0["points"][0].geometry().wkbType(), QgsWkbTypes::Point );
-  QCOMPARE( features0["lines"][0].geometry().wkbType(), QgsWkbTypes::LineString );
-  QCOMPARE( features0["polys"][0].geometry().wkbType(), QgsWkbTypes::MultiPolygon );   // source geoms in shp are multipolygons
+  QCOMPARE( features0["points"][0].geometry().wkbType(), QgsWkbTypes::Type::Point );
+  QCOMPARE( features0["lines"][0].geometry().wkbType(), QgsWkbTypes::Type::LineString );
+  QCOMPARE( features0["polys"][0].geometry().wkbType(), QgsWkbTypes::Type::MultiPolygon );   // source geoms in shp are multipolygons
 
   QgsAttributes attrsPolys0_0 = features0["polys"][0].attributes();
   QCOMPARE( attrsPolys0_0.count(), 1 );

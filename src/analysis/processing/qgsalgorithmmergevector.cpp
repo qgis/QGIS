@@ -74,7 +74,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
 
   QgsFields outputFields;
   long totalFeatureCount = 0;
-  QgsWkbTypes::Type outputType = QgsWkbTypes::Unknown;
+  QgsWkbTypes::Type outputType = QgsWkbTypes::Type::Unknown;
   QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
 
   if ( outputCrs.isValid() )
@@ -110,7 +110,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
     }
 
     // check wkb type
-    if ( outputType != QgsWkbTypes::Unknown && outputType != QgsWkbTypes::NoGeometry )
+    if ( outputType != QgsWkbTypes::Type::Unknown && outputType != QgsWkbTypes::Type::NoGeometry )
     {
       if ( QgsWkbTypes::geometryType( outputType ) != QgsWkbTypes::geometryType( vl->wkbType() ) )
         throw QgsProcessingException( QObject::tr( "All layers must have same geometry type! Encountered a %1 layer when expecting a %2 layer." )

@@ -70,9 +70,9 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
      *   \param geometryType
      *   \param alternativeBand if TRUE, rubber band will be set with more transparency and a dash pattern. default is FALSE.
      */
-    QgsRubberBand *createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) SIP_FACTORY;
+    QgsRubberBand *createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::LineGeometry, bool alternativeBand = false ) SIP_FACTORY;
 
-    QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const SIP_FACTORY;
+    QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::LineGeometry, bool alternativeBand = false ) const SIP_FACTORY;
 
     //! Returns the current vector layer of the map canvas or 0
     QgsVectorLayer *currentVectorLayer();

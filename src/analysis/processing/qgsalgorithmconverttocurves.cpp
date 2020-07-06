@@ -122,20 +122,20 @@ QgsWkbTypes::Type QgsConvertToCurvesAlgorithm::outputWkbType( QgsWkbTypes::Type 
   if ( QgsWkbTypes::isCurvedType( inputWkbType ) )
     return inputWkbType;
 
-  QgsWkbTypes::Type outType = QgsWkbTypes::Unknown;
+  QgsWkbTypes::Type outType = QgsWkbTypes::Type::Unknown;
   switch ( QgsWkbTypes::geometryType( inputWkbType ) )
   {
-    case QgsWkbTypes::PointGeometry:
-    case QgsWkbTypes::NullGeometry:
-    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::GeometryType::PointGeometry:
+    case QgsWkbTypes::GeometryType::NullGeometry:
+    case QgsWkbTypes::GeometryType::UnknownGeometry:
       return inputWkbType;
 
-    case QgsWkbTypes::LineGeometry:
-      outType = QgsWkbTypes::CompoundCurve;
+    case QgsWkbTypes::GeometryType::LineGeometry:
+      outType = QgsWkbTypes::Type::CompoundCurve;
       break;
 
-    case QgsWkbTypes::PolygonGeometry:
-      outType = QgsWkbTypes::CurvePolygon;
+    case QgsWkbTypes::GeometryType::PolygonGeometry:
+      outType = QgsWkbTypes::Type::CurvePolygon;
       break;
   }
 

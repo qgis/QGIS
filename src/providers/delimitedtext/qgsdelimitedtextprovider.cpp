@@ -95,13 +95,13 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
   if ( query.hasQueryItem( QStringLiteral( "geomType" ) ) )
   {
     QString gtype = query.queryItemValue( QStringLiteral( "geomType" ) ).toLower();
-    if ( gtype == QLatin1String( "point" ) ) mGeometryType = QgsWkbTypes::PointGeometry;
-    else if ( gtype == QLatin1String( "line" ) ) mGeometryType = QgsWkbTypes::LineGeometry;
-    else if ( gtype == QLatin1String( "polygon" ) ) mGeometryType = QgsWkbTypes::PolygonGeometry;
-    else if ( gtype == QLatin1String( "none " ) ) mGeometryType = QgsWkbTypes::NullGeometry;
+    if ( gtype == QLatin1String( "point" ) ) mGeometryType = QgsWkbTypes::GeometryType::PointGeometry;
+    else if ( gtype == QLatin1String( "line" ) ) mGeometryType = QgsWkbTypes::GeometryType::LineGeometry;
+    else if ( gtype == QLatin1String( "polygon" ) ) mGeometryType = QgsWkbTypes::GeometryType::PolygonGeometry;
+    else if ( gtype == QLatin1String( "none " ) ) mGeometryType = QgsWkbTypes::GeometryType::NullGeometry;
   }
 
-  if ( mGeometryType != QgsWkbTypes::NullGeometry )
+  if ( mGeometryType != QgsWkbTypes::GeometryType::NullGeometry )
   {
     if ( query.hasQueryItem( QStringLiteral( "wktField" ) ) )
     {
@@ -112,7 +112,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
     else if ( query.hasQueryItem( QStringLiteral( "xField" ) ) && query.hasQueryItem( QStringLiteral( "yField" ) ) )
     {
       mGeomRep = GeomAsXy;
-      mGeometryType = QgsWkbTypes::PointGeometry;
+      mGeometryType = QgsWkbTypes::GeometryType::PointGeometry;
       mXFieldName = query.queryItemValue( QStringLiteral( "xField" ) );
       mYFieldName = query.queryItemValue( QStringLiteral( "yField" ) );
       if ( query.hasQueryItem( QStringLiteral( "zField" ) ) )
@@ -131,7 +131,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
     }
     else
     {
-      mGeometryType = QgsWkbTypes::NullGeometry;
+      mGeometryType = QgsWkbTypes::GeometryType::NullGeometry;
     }
   }
 
@@ -460,9 +460,9 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
         if ( !geom.isNull() )
         {
           QgsWkbTypes::Type type = geom.wkbType();
-          if ( type != QgsWkbTypes::NoGeometry )
+          if ( type != QgsWkbTypes::Type::NoGeometry )
           {
-            if ( mGeometryType == QgsWkbTypes::UnknownGeometry || geom.type() == mGeometryType )
+            if ( mGeometryType == QgsWkbTypes::GeometryType::UnknownGeometry || geom.type() == mGeometryType )
             {
               mGeometryType = geom.type();
               if ( !foundFirstGeometry )
@@ -538,12 +538,12 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
           {
             // Extent for the first point is just the first point
             mExtent.set( pt.x(), pt.y(), pt.x(), pt.y() );
-            mWkbType = QgsWkbTypes::Point;
+            mWkbType = QgsWkbTypes::Type::Point;
             if ( mZFieldIndex > -1 )
               mWkbType = QgsWkbTypes::addZ( mWkbType );
             if ( mMFieldIndex > -1 )
               mWkbType = QgsWkbTypes::addM( mWkbType );
-            mGeometryType = QgsWkbTypes::PointGeometry;
+            mGeometryType = QgsWkbTypes::GeometryType::PointGeometry;
             foundFirstGeometry = true;
           }
           mNumberFeatures++;
@@ -565,7 +565,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     }
     else
     {
-      mWkbType = QgsWkbTypes::NoGeometry;
+      mWkbType = QgsWkbTypes::Type::NoGeometry;
       mNumberFeatures++;
     }
 
@@ -751,7 +751,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
   }
 
   QgsDebugMsgLevel( "Field count for the delimited text file is " + QString::number( attributeFields.size() ), 2 );
-  QgsDebugMsgLevel( "geometry type is: " + QString::number( mWkbType ), 2 );
+  QgsDebugMsgLevel( "geometry type is: " + qgsEnumValueToKey( mWkbType ), 2 );
   QgsDebugMsgLevel( "feature count is: " + QString::number( mNumberFeatures ), 2 );
 
   QStringList warnings;
@@ -783,7 +783,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
   mUseSpatialIndex = buildSpatialIndex;
 
-  mValid = mGeometryType != QgsWkbTypes::UnknownGeometry;
+  mValid = mGeometryType != QgsWkbTypes::GeometryType::UnknownGeometry;
   mLayerValid = mValid;
 
   // If it is valid, then watch for changes to the file
@@ -860,7 +860,7 @@ void QgsDelimitedTextProvider::rescanFile() const
   bool foundFirstGeometry = false;
   while ( fi.nextFeature( f ) )
   {
-    if ( mGeometryType != QgsWkbTypes::NullGeometry && f.hasGeometry() )
+    if ( mGeometryType != QgsWkbTypes::GeometryType::NullGeometry && f.hasGeometry() )
     {
       if ( !foundFirstGeometry )
       {

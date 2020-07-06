@@ -57,13 +57,13 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
 
   mNameLineEdit->setText( tr( "New scratch layer" ) );
 
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) ), tr( "No Geometry" ), QgsWkbTypes::NoGeometry );
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "Point" ), QgsWkbTypes::Point );
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "LineString / CompoundCurve" ), QgsWkbTypes::LineString );
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "Polygon / CurvePolygon" ), QgsWkbTypes::Polygon );
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "MultiPoint" ), QgsWkbTypes::MultiPoint );
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "MultiLineString / MultiCurve" ), QgsWkbTypes::MultiLineString );
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "MultiPolygon / MultiSurface" ), QgsWkbTypes::MultiPolygon );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) ), tr( "No Geometry" ), QVariant::fromValue( QgsWkbTypes::Type::NoGeometry ) );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "Point" ), QVariant::fromValue( QgsWkbTypes::Type::Point ) );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "LineString / CompoundCurve" ), QVariant::fromValue( QgsWkbTypes::Type::LineString ) );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "Polygon / CurvePolygon" ), QVariant::fromValue( QgsWkbTypes::Type::Polygon ) );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "MultiPoint" ), QVariant::fromValue( QgsWkbTypes::Type::MultiPoint ) );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "MultiLineString / MultiCurve" ), QVariant::fromValue( QgsWkbTypes::Type::MultiLineString ) );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "MultiPolygon / MultiSurface" ), QVariant::fromValue( QgsWkbTypes::Type::MultiPolygon ) );
   mGeometryTypeBox->setCurrentIndex( -1 );
 
   mGeometryWithZCheckBox->setEnabled( false );
@@ -100,11 +100,11 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
 
 QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const
 {
-  QgsWkbTypes::Type geomType = QgsWkbTypes::Unknown;
-  geomType = static_cast<QgsWkbTypes::Type>
-             ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
+  QgsWkbTypes::Type geomType = QgsWkbTypes::Type::Unknown;
+  if ( mGeometryTypeBox->currentIndex() >= 0 )
+    geomType = mGeometryTypeBox->currentData( Qt::UserRole ).value<QgsWkbTypes::Type>();
 
-  if ( geomType != QgsWkbTypes::Unknown && geomType != QgsWkbTypes::NoGeometry )
+  if ( geomType != QgsWkbTypes::Type::Unknown && geomType != QgsWkbTypes::Type::NoGeometry )
   {
     if ( mGeometryWithZCheckBox->isChecked() )
       geomType = QgsWkbTypes::addZ( geomType );
@@ -117,10 +117,9 @@ QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const
 
 void QgsNewMemoryLayerDialog::geometryTypeChanged( int )
 {
-  QgsWkbTypes::Type geomType = static_cast<QgsWkbTypes::Type>
-                               ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
+  QgsWkbTypes::Type geomType = mGeometryTypeBox->currentData( Qt::UserRole ).value<QgsWkbTypes::Type>();
 
-  bool isSpatial = geomType != QgsWkbTypes::NoGeometry;
+  bool isSpatial = geomType != QgsWkbTypes::Type::NoGeometry;
   mGeometryWithZCheckBox->setEnabled( isSpatial );
   mGeometryWithMCheckBox->setEnabled( isSpatial );
   mCrsSelector->setEnabled( isSpatial );

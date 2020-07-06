@@ -53,7 +53,7 @@ void QgsMapToolSplitParts::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   if ( e->button() == Qt::LeftButton )
   {
     //If we snap the first point on a vertex of a line layer, we directly split the feature at this point
-    if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry && pointsZM().isEmpty() )
+    if ( vlayer->geometryType() == QgsWkbTypes::GeometryType::LineGeometry && pointsZM().isEmpty() )
     {
       QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Vertex );
       if ( m.isValid() )
