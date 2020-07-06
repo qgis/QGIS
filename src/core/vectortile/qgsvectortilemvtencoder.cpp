@@ -237,12 +237,12 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
   QgsWkbTypes::GeometryType geomType = g.type();
   double onePixel = mTileExtent.width() / mResolution;
 
-  if ( geomType == QgsWkbTypes::LineGeometry )
+  if ( geomType == QgsWkbTypes::GeometryType::LineGeometry )
   {
     if ( g.length() < onePixel )
       return; // too short
   }
-  else if ( geomType == QgsWkbTypes::PolygonGeometry )
+  else if ( geomType == QgsWkbTypes::GeometryType::PolygonGeometry )
   {
     if ( g.area() < onePixel * onePixel )
       return; // too small
@@ -293,11 +293,11 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
   //
 
   vector_tile::Tile_GeomType mvtGeomType = vector_tile::Tile_GeomType_UNKNOWN;
-  if ( geomType == QgsWkbTypes::PointGeometry )
+  if ( geomType == QgsWkbTypes::GeometryType::PointGeometry )
     mvtGeomType = vector_tile::Tile_GeomType_POINT;
-  else if ( geomType == QgsWkbTypes::LineGeometry )
+  else if ( geomType == QgsWkbTypes::GeometryType::LineGeometry )
     mvtGeomType = vector_tile::Tile_GeomType_LINESTRING;
-  else if ( geomType == QgsWkbTypes::PolygonGeometry )
+  else if ( geomType == QgsWkbTypes::GeometryType::PolygonGeometry )
     mvtGeomType = vector_tile::Tile_GeomType_POLYGON;
   feature->set_type( mvtGeomType );
 
@@ -311,7 +311,7 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
   const QgsAbstractGeometry *geom = g.constGet();
   switch ( QgsWkbTypes::flatType( g.wkbType() ) )
   {
-    case QgsWkbTypes::Point:
+    case QgsWkbTypes::Type::Point:
     {
       const QgsPoint *pt = static_cast<const QgsPoint *>( geom );
       geomWriter.addMoveTo( 1 );
@@ -319,19 +319,19 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
     }
     break;
 
-    case QgsWkbTypes::LineString:
+    case QgsWkbTypes::Type::LineString:
     {
       encodeLineString( qgsgeometry_cast<const QgsLineString *>( geom ), true, false, geomWriter );
     }
     break;
 
-    case QgsWkbTypes::Polygon:
+    case QgsWkbTypes::Type::Polygon:
     {
       encodePolygon( static_cast<const QgsPolygon *>( geom ), geomWriter );
     }
     break;
 
-    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::Type::MultiPoint:
     {
       const QgsMultiPoint *mpt = static_cast<const QgsMultiPoint *>( geom );
       geomWriter.addMoveTo( mpt->numGeometries() );
@@ -340,7 +340,7 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
     }
     break;
 
-    case QgsWkbTypes::MultiLineString:
+    case QgsWkbTypes::Type::MultiLineString:
     {
       const QgsMultiLineString *mls = qgsgeometry_cast<const QgsMultiLineString *>( geom );
       for ( int i = 0; i < mls->numGeometries(); ++i )
@@ -350,7 +350,7 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
     }
     break;
 
-    case QgsWkbTypes::MultiPolygon:
+    case QgsWkbTypes::Type::MultiPolygon:
     {
       const QgsMultiPolygon *mp = qgsgeometry_cast<const QgsMultiPolygon *>( geom );
       for ( int i = 0; i < mp->numGeometries(); ++i )

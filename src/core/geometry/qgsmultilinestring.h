@@ -57,7 +57,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
      */
     inline const QgsMultiLineString *cast( const QgsAbstractGeometry *geom ) const
     {
-      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiLineString )
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::Type::MultiLineString )
         return static_cast<const QgsMultiLineString *>( geom );
       return nullptr;
     }

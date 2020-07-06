@@ -118,15 +118,15 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
         const QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( table.geometryColumnTypes().at( 0 ).wkbType );
         switch ( geomType )
         {
-          case QgsWkbTypes::PointGeometry:
+          case QgsWkbTypes::GeometryType::PointGeometry:
           {
             return QgsLayerItem::iconPoint();
           }
-          case QgsWkbTypes::PolygonGeometry :
+          case QgsWkbTypes::GeometryType::PolygonGeometry :
           {
             return QgsLayerItem::iconPolygon();
           }
-          case QgsWkbTypes::LineGeometry :
+          case QgsWkbTypes::GeometryType::LineGeometry :
           {
             return QgsLayerItem::iconLine();
           }
@@ -136,7 +136,7 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
         return QVariant();
       }
       else if ( role == RoleWkbType )
-        return table.geometryColumnTypes().at( 0 ).wkbType;
+        return QVariant::fromValue( table.geometryColumnTypes().at( 0 ).wkbType );
       else if ( role == RoleCrs )
         return table.geometryColumnTypes().at( 0 ).crs;
 

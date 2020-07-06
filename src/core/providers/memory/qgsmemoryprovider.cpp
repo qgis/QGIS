@@ -51,7 +51,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
 
   if ( geometry.compare( QLatin1String( "none" ), Qt::CaseInsensitive ) == 0 )
   {
-    mWkbType = QgsWkbTypes::NoGeometry;
+    mWkbType = QgsWkbTypes::Type::NoGeometry;
   }
   else
   {
@@ -352,7 +352,7 @@ QgsFields QgsMemoryProvider::fields() const
 
 bool QgsMemoryProvider::isValid() const
 {
-  return ( mWkbType != QgsWkbTypes::Unknown );
+  return ( mWkbType != QgsWkbTypes::Type::Unknown );
 }
 
 QgsCoordinateReferenceSystem QgsMemoryProvider::crs() const
@@ -410,7 +410,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       it->setAttributes( attributes );
     }
 
-    if ( it->hasGeometry() && mWkbType == QgsWkbTypes::NoGeometry )
+    if ( it->hasGeometry() && mWkbType == QgsWkbTypes::Type::NoGeometry )
     {
       it->clearGeometry();
     }

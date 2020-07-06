@@ -306,13 +306,13 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   QString defaultSymbol;
   switch ( geomType )
   {
-    case QgsWkbTypes::PointGeometry :
+    case QgsWkbTypes::GeometryType::PointGeometry :
       defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ) );
       break;
-    case QgsWkbTypes::LineGeometry :
+    case QgsWkbTypes::GeometryType::LineGeometry :
       defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ) );
       break;
-    case QgsWkbTypes::PolygonGeometry :
+    case QgsWkbTypes::GeometryType::PolygonGeometry :
       defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ) );
       break;
     default:
@@ -326,13 +326,13 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   {
     switch ( geomType )
     {
-      case QgsWkbTypes::PointGeometry:
+      case QgsWkbTypes::GeometryType::PointGeometry:
         s = qgis::make_unique< QgsMarkerSymbol >();
         break;
-      case QgsWkbTypes::LineGeometry:
+      case QgsWkbTypes::GeometryType::LineGeometry:
         s = qgis::make_unique< QgsLineSymbol >();
         break;
-      case QgsWkbTypes::PolygonGeometry:
+      case QgsWkbTypes::GeometryType::PolygonGeometry:
         s = qgis::make_unique< QgsFillSymbol >();
         break;
       default:
@@ -518,7 +518,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
   context->setForceVectorOutput( true );
   QgsSymbolRenderContext symbolContext( *context, QgsUnitTypes::RenderUnknownUnit, mOpacity, false, mRenderHints, nullptr );
   symbolContext.setSelected( selected );
-  symbolContext.setOriginalGeometryType( mType == Fill ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::UnknownGeometry );
+  symbolContext.setOriginalGeometryType( mType == Fill ? QgsWkbTypes::GeometryType::PolygonGeometry : QgsWkbTypes::GeometryType::UnknownGeometry );
   if ( patchShape )
     symbolContext.setPatchShape( *patchShape );
 
@@ -956,7 +956,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
     switch ( QgsWkbTypes::flatType( part->wkbType() ) )
     {
-      case QgsWkbTypes::Point:
+      case QgsWkbTypes::Type::Point:
       {
         if ( mType != QgsSymbol::Marker )
         {
@@ -971,7 +971,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         break;
       }
 
-      case QgsWkbTypes::LineString:
+      case QgsWkbTypes::Type::LineString:
       {
         if ( mType != QgsSymbol::Line )
         {
@@ -986,8 +986,8 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         break;
       }
 
-      case QgsWkbTypes::Polygon:
-      case QgsWkbTypes::Triangle:
+      case QgsWkbTypes::Type::Polygon:
+      case QgsWkbTypes::Type::Triangle:
       {
         QPolygonF pts;
         QVector<QPolygonF> holes;
@@ -1010,15 +1010,15 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         break;
       }
 
-      case QgsWkbTypes::MultiPoint:
+      case QgsWkbTypes::Type::MultiPoint:
       {
         const QgsMultiPoint *mp = qgsgeometry_cast< const QgsMultiPoint * >( part );
         markers.reserve( mp->numGeometries() );
       }
       FALLTHROUGH
-      case QgsWkbTypes::MultiCurve:
-      case QgsWkbTypes::MultiLineString:
-      case QgsWkbTypes::GeometryCollection:
+      case QgsWkbTypes::Type::MultiCurve:
+      case QgsWkbTypes::Type::MultiLineString:
+      case QgsWkbTypes::Type::GeometryCollection:
       {
         const QgsGeometryCollection *geomCollection = qgsgeometry_cast<const QgsGeometryCollection *>( part );
 
@@ -1033,8 +1033,8 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         break;
       }
 
-      case QgsWkbTypes::MultiSurface:
-      case QgsWkbTypes::MultiPolygon:
+      case QgsWkbTypes::Type::MultiSurface:
+      case QgsWkbTypes::Type::MultiPolygon:
       {
         if ( mType != QgsSymbol::Fill )
         {
@@ -1079,7 +1079,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         QgsDebugMsg( QStringLiteral( "feature %1: unsupported wkb type %2/%3 for rendering" )
                      .arg( feature.id() )
                      .arg( QgsWkbTypes::displayString( part->wkbType() ) )
-                     .arg( part->wkbType(), 0, 16 ) );
+                     .arg( static_cast<int>( part->wkbType() ), 0, 16 ) );
     }
   };
 
@@ -2108,7 +2108,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
   //save old painter
   QPainter *renderPainter = context.painter();
   QgsSymbolRenderContext symbolContext( context, QgsUnitTypes::RenderUnknownUnit, mOpacity, selected, mRenderHints, f );
-  symbolContext.setOriginalGeometryType( QgsWkbTypes::LineGeometry );
+  symbolContext.setOriginalGeometryType( QgsWkbTypes::GeometryType::LineGeometry );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
   symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
 
@@ -2196,7 +2196,7 @@ QgsFillSymbol::QgsFillSymbol( const QgsSymbolLayerList &layers )
 void QgsFillSymbol::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layerIdx, bool selected )
 {
   QgsSymbolRenderContext symbolContext( context, QgsUnitTypes::RenderUnknownUnit, mOpacity, selected, mRenderHints, f );
-  symbolContext.setOriginalGeometryType( QgsWkbTypes::PolygonGeometry );
+  symbolContext.setOriginalGeometryType( QgsWkbTypes::GeometryType::PolygonGeometry );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
   symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
 

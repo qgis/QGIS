@@ -585,22 +585,22 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
         QString geomType;
         switch ( QgsWkbTypes::flatType( sourceWkbType ) )
         {
-          case QgsWkbTypes::Point:
+          case QgsWkbTypes::Type::Point:
             geomType = QStringLiteral( "POINT" );
             break;
-          case QgsWkbTypes::MultiPoint:
+          case QgsWkbTypes::Type::MultiPoint:
             geomType = QStringLiteral( "MULTIPOINT" );
             break;
-          case QgsWkbTypes::LineString:
+          case QgsWkbTypes::Type::LineString:
             geomType = QStringLiteral( "LINESTRING" );
             break;
-          case QgsWkbTypes::MultiLineString:
+          case QgsWkbTypes::Type::MultiLineString:
             geomType = QStringLiteral( "MULTILINESTRING" );
             break;
-          case QgsWkbTypes::Polygon:
+          case QgsWkbTypes::Type::Polygon:
             geomType = QStringLiteral( "POLYGON" );
             break;
-          case QgsWkbTypes::MultiPolygon:
+          case QgsWkbTypes::Type::MultiPolygon:
             geomType = QStringLiteral( "MULTIPOLYGON" );
             break;
           default:

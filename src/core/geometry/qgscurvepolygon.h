@@ -275,9 +275,9 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
         return nullptr;
 
       QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( geom->wkbType() );
-      if ( flatType == QgsWkbTypes::CurvePolygon
-           || flatType == QgsWkbTypes::Polygon
-           || flatType == QgsWkbTypes::Triangle )
+      if ( flatType == QgsWkbTypes::Type::CurvePolygon
+           || flatType == QgsWkbTypes::Type::Polygon
+           || flatType == QgsWkbTypes::Type::Triangle )
         return static_cast<const QgsCurvePolygon *>( geom );
       return nullptr;
     }

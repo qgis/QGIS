@@ -27,7 +27,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 QgsMultiPolygon::QgsMultiPolygon()
 {
-  mWkbType = QgsWkbTypes::MultiPolygon;
+  mWkbType = QgsWkbTypes::Type::MultiPolygon;
 }
 
 QString QgsMultiPolygon::geometryType() const
@@ -38,7 +38,7 @@ QString QgsMultiPolygon::geometryType() const
 void QgsMultiPolygon::clear()
 {
   QgsMultiSurface::clear();
-  mWkbType = QgsWkbTypes::MultiPolygon;
+  mWkbType = QgsWkbTypes::Type::MultiPolygon;
 }
 
 QgsMultiPolygon *QgsMultiPolygon::createEmptyWithSameType() const
@@ -142,7 +142,7 @@ bool QgsMultiPolygon::addGeometry( QgsAbstractGeometry *g )
 
   if ( mGeometries.empty() )
   {
-    setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiPolygon );
+    setZMTypeFromSubGeometry( g, QgsWkbTypes::Type::MultiPolygon );
   }
   if ( is3D() && !g->is3D() )
     g->addZValue();

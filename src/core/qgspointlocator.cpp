@@ -449,7 +449,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
   QgsPointLocator::MatchList lst;
 
   // geom is converted to a MultiCurve
-  QgsGeometry straightGeom = geom->convertToType( QgsWkbTypes::LineGeometry, true );
+  QgsGeometry straightGeom = geom->convertToType( QgsWkbTypes::GeometryType::LineGeometry, true );
   // and convert to straight segemnt / converts curve to linestring
   straightGeom.convertToStraightSegment();
 
@@ -457,7 +457,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
   //
   // Special case: Intersections cannot be done on an empty linestring like
   // QgsGeometry(QgsLineString()) or QgsGeometry::fromWkt("LINESTRING EMPTY")
-  if ( straightGeom.isEmpty() || ( ( straightGeom.type() != QgsWkbTypes::LineGeometry ) && ( !straightGeom.isMultipart() ) ) )
+  if ( straightGeom.isEmpty() || ( ( straightGeom.type() != QgsWkbTypes::GeometryType::LineGeometry ) && ( !straightGeom.isMultipart() ) ) )
     return lst;
 
   _CohenSutherland cs( rect );
@@ -826,7 +826,7 @@ void QgsPointLocator::onInitTaskFinished()
 bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
 {
   const QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
-  if ( geomType == QgsWkbTypes::NullGeometry // nothing to index
+  if ( geomType == QgsWkbTypes::GeometryType::NullGeometry // nothing to index
        || hasIndex()
        || mIsIndexing ) // already indexing, return!
     return true;
@@ -1209,7 +1209,7 @@ QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPointXY &point, do
     return Match();
 
   QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
-  if ( geomType == QgsWkbTypes::PointGeometry )
+  if ( geomType == QgsWkbTypes::GeometryType::PointGeometry )
     return Match();
 
   Match m;
@@ -1239,7 +1239,7 @@ QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, do
 
   // discard point and line layers to keep only polygons
   QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
-  if ( geomType == QgsWkbTypes::PointGeometry || geomType == QgsWkbTypes::LineGeometry )
+  if ( geomType == QgsWkbTypes::GeometryType::PointGeometry || geomType == QgsWkbTypes::GeometryType::LineGeometry )
     return Match();
 
   // use edges for adding tolerance
@@ -1257,7 +1257,7 @@ QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle &rec
     return MatchList();
 
   QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
-  if ( geomType == QgsWkbTypes::PointGeometry )
+  if ( geomType == QgsWkbTypes::GeometryType::PointGeometry )
     return MatchList();
 
   MatchList lst;
@@ -1297,7 +1297,7 @@ QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &po
     return MatchList();
 
   QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
-  if ( geomType == QgsWkbTypes::PointGeometry || geomType == QgsWkbTypes::LineGeometry )
+  if ( geomType == QgsWkbTypes::GeometryType::PointGeometry || geomType == QgsWkbTypes::GeometryType::LineGeometry )
     return MatchList();
 
   MatchList lst;

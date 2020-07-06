@@ -28,7 +28,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 QgsMultiSurface::QgsMultiSurface()
 {
-  mWkbType = QgsWkbTypes::MultiSurface;
+  mWkbType = QgsWkbTypes::Type::MultiSurface;
 }
 
 QString QgsMultiSurface::geometryType() const
@@ -39,7 +39,7 @@ QString QgsMultiSurface::geometryType() const
 void QgsMultiSurface::clear()
 {
   QgsGeometryCollection::clear();
-  mWkbType = QgsWkbTypes::MultiSurface;
+  mWkbType = QgsWkbTypes::Type::MultiSurface;
 }
 
 QgsMultiSurface *QgsMultiSurface::createEmptyWithSameType() const
@@ -152,7 +152,7 @@ bool QgsMultiSurface::addGeometry( QgsAbstractGeometry *g )
 
   if ( mGeometries.empty() )
   {
-    setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiSurface );
+    setZMTypeFromSubGeometry( g, QgsWkbTypes::Type::MultiSurface );
   }
   if ( is3D() && !g->is3D() )
     g->addZValue();

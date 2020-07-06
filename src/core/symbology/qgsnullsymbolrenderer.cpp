@@ -44,8 +44,8 @@ bool QgsNullSymbolRenderer::renderFeature( const QgsFeature &feature, QgsRenderC
   }
 
   if ( !feature.hasGeometry() ||
-       feature.geometry().type() == QgsWkbTypes::NullGeometry ||
-       feature.geometry().type() == QgsWkbTypes::UnknownGeometry )
+       feature.geometry().type() == QgsWkbTypes::GeometryType::NullGeometry ||
+       feature.geometry().type() == QgsWkbTypes::GeometryType::UnknownGeometry )
     return true;
 
   if ( !mSymbol )

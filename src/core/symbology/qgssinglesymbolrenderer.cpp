@@ -250,20 +250,20 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element
   std::unique_ptr< QgsSymbol > symbol;
   switch ( geomType )
   {
-    case QgsWkbTypes::LineGeometry:
+    case QgsWkbTypes::GeometryType::LineGeometry:
       symbol = qgis::make_unique< QgsLineSymbol >( layers );
       break;
 
-    case QgsWkbTypes::PolygonGeometry:
+    case QgsWkbTypes::GeometryType::PolygonGeometry:
       symbol = qgis::make_unique< QgsFillSymbol >( layers );
       break;
 
-    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::GeometryType::PointGeometry:
       symbol = qgis::make_unique< QgsMarkerSymbol >( layers );
       break;
 
     default:
-      QgsDebugMsg( QStringLiteral( "invalid geometry type: found %1" ).arg( geomType ) );
+      QgsDebugMsg( QStringLiteral( "invalid geometry type: found %1" ).arg( qgsEnumValueToKey( geomType ) ) );
       return nullptr;
   }
 

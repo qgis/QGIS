@@ -33,7 +33,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 QgsGeometryCollection::QgsGeometryCollection()
 {
-  mWkbType = QgsWkbTypes::GeometryCollection;
+  mWkbType = QgsWkbTypes::Type::GeometryCollection;
 }
 
 QgsGeometryCollection::QgsGeometryCollection( const QgsGeometryCollection &c ):
@@ -894,7 +894,7 @@ bool QgsGeometryCollection::addMValue( double mValue )
 
 bool QgsGeometryCollection::dropZValue()
 {
-  if ( mWkbType != QgsWkbTypes::GeometryCollection && !is3D() )
+  if ( mWkbType != QgsWkbTypes::Type::GeometryCollection && !is3D() )
     return false;
 
   mWkbType = QgsWkbTypes::dropZ( mWkbType );
@@ -908,7 +908,7 @@ bool QgsGeometryCollection::dropZValue()
 
 bool QgsGeometryCollection::dropMValue()
 {
-  if ( mWkbType != QgsWkbTypes::GeometryCollection && !isMeasure() )
+  if ( mWkbType != QgsWkbTypes::Type::GeometryCollection && !isMeasure() )
     return false;
 
   mWkbType = QgsWkbTypes::dropM( mWkbType );

@@ -537,19 +537,19 @@ QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer )
       QgsWkbTypes::GeometryType geomType = vl->geometryType();
       switch ( geomType )
       {
-        case QgsWkbTypes::PointGeometry:
+        case QgsWkbTypes::GeometryType::PointGeometry:
         {
           return QgsLayerItem::iconPoint();
         }
-        case QgsWkbTypes::PolygonGeometry :
+        case QgsWkbTypes::GeometryType::PolygonGeometry :
         {
           return QgsLayerItem::iconPolygon();
         }
-        case QgsWkbTypes::LineGeometry :
+        case QgsWkbTypes::GeometryType::LineGeometry :
         {
           return QgsLayerItem::iconLine();
         }
-        case QgsWkbTypes::NullGeometry :
+        case QgsWkbTypes::GeometryType::NullGeometry :
         {
           return QgsLayerItem::iconTable();
         }

@@ -308,7 +308,7 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
   QgsFeature fet;
 
   QgsFeatureRequest req;
-  if ( wkbType == QgsWkbTypes::NoGeometry )
+  if ( wkbType == QgsWkbTypes::Type::NoGeometry )
     req.setFlags( QgsFeatureRequest::NoGeometry );
   if ( onlySelected )
     req.setFilterFids( layer->selectedFeatureIds() );

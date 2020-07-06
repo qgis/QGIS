@@ -34,7 +34,7 @@
 
 QgsCurvePolygon::QgsCurvePolygon()
 {
-  mWkbType = QgsWkbTypes::CurvePolygon;
+  mWkbType = QgsWkbTypes::Type::CurvePolygon;
 }
 
 QgsCurvePolygon::~QgsCurvePolygon()
@@ -143,7 +143,7 @@ QgsCurvePolygon *QgsCurvePolygon::clone() const
 
 void QgsCurvePolygon::clear()
 {
-  mWkbType = QgsWkbTypes::CurvePolygon;
+  mWkbType = QgsWkbTypes::Type::CurvePolygon;
   mExteriorRing.reset();
   qDeleteAll( mInteriorRings );
   mInteriorRings.clear();
@@ -160,7 +160,7 @@ bool QgsCurvePolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
   }
 
   QgsWkbTypes::Type type = wkbPtr.readHeader();
-  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::CurvePolygon )
+  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::Type::CurvePolygon )
   {
     return false;
   }
@@ -174,15 +174,15 @@ bool QgsCurvePolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
     QgsWkbTypes::Type curveType = wkbPtr.readHeader();
     wkbPtr -= 1 + sizeof( int );
     QgsWkbTypes::Type flatCurveType = QgsWkbTypes::flatType( curveType );
-    if ( flatCurveType == QgsWkbTypes::LineString )
+    if ( flatCurveType == QgsWkbTypes::Type::LineString )
     {
       currentCurve.reset( new QgsLineString() );
     }
-    else if ( flatCurveType == QgsWkbTypes::CircularString )
+    else if ( flatCurveType == QgsWkbTypes::Type::CircularString )
     {
       currentCurve.reset( new QgsCircularString() );
     }
-    else if ( flatCurveType == QgsWkbTypes::CompoundCurve )
+    else if ( flatCurveType == QgsWkbTypes::Type::CompoundCurve )
     {
       currentCurve.reset( new QgsCompoundCurve() );
     }
@@ -210,7 +210,7 @@ bool QgsCurvePolygon::fromWkt( const QString &wkt )
 
   QPair<QgsWkbTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
-  if ( QgsWkbTypes::geometryType( parts.first ) != QgsWkbTypes::PolygonGeometry )
+  if ( QgsWkbTypes::geometryType( parts.first ) != QgsWkbTypes::GeometryType::PolygonGeometry )
     return false;
 
   mWkbType = parts.first;
@@ -226,11 +226,11 @@ bool QgsCurvePolygon::fromWkt( const QString &wkt )
     QPair<QgsWkbTypes::Type, QString> childParts = QgsGeometryUtils::wktReadBlock( childWkt );
 
     QgsWkbTypes::Type flatCurveType = QgsWkbTypes::flatType( childParts.first );
-    if ( flatCurveType == QgsWkbTypes::LineString )
+    if ( flatCurveType == QgsWkbTypes::Type::LineString )
       mInteriorRings.append( new QgsLineString() );
-    else if ( flatCurveType == QgsWkbTypes::CircularString )
+    else if ( flatCurveType == QgsWkbTypes::Type::CircularString )
       mInteriorRings.append( new QgsCircularString() );
-    else if ( flatCurveType == QgsWkbTypes::CompoundCurve )
+    else if ( flatCurveType == QgsWkbTypes::Type::CompoundCurve )
       mInteriorRings.append( new QgsCompoundCurve() );
     else
     {
@@ -635,13 +635,13 @@ void QgsCurvePolygon::setExteriorRing( QgsCurve *ring )
   mExteriorRing.reset( ring );
 
   //set proper wkb type
-  if ( QgsWkbTypes::flatType( wkbType() ) == QgsWkbTypes::Polygon )
+  if ( QgsWkbTypes::flatType( wkbType() ) == QgsWkbTypes::Type::Polygon )
   {
-    setZMTypeFromSubGeometry( ring, QgsWkbTypes::Polygon );
+    setZMTypeFromSubGeometry( ring, QgsWkbTypes::Type::Polygon );
   }
-  else if ( QgsWkbTypes::flatType( wkbType() ) == QgsWkbTypes::CurvePolygon )
+  else if ( QgsWkbTypes::flatType( wkbType() ) == QgsWkbTypes::Type::CurvePolygon )
   {
-    setZMTypeFromSubGeometry( ring, QgsWkbTypes::CurvePolygon );
+    setZMTypeFromSubGeometry( ring, QgsWkbTypes::Type::CurvePolygon );
   }
 
   //match dimensionality for rings

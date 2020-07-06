@@ -99,7 +99,7 @@ bool QgsHeatmapRenderer::renderFeature( const QgsFeature &feature, QgsRenderCont
     return false;
   }
 
-  if ( !feature.hasGeometry() || feature.geometry().type() != QgsWkbTypes::PointGeometry )
+  if ( !feature.hasGeometry() || feature.geometry().type() != QgsWkbTypes::GeometryType::PointGeometry )
   {
     //can only render point type
     return false;

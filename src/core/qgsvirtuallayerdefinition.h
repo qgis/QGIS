@@ -156,8 +156,8 @@ class CORE_EXPORT QgsVirtualLayerDefinition
 
     /**
      * Gets the type of the geometry
-     * QgsWkbTypes::NoGeometry to hide any geometry
-     * QgsWkbTypes::Unknown for unknown types
+     * QgsWkbTypes::Type::NoGeometry to hide any geometry
+     * QgsWkbTypes::Type::Unknown for unknown types
      */
     QgsWkbTypes::Type geometryWkbType() const { return mGeometryWkbType; }
     //! Sets the type of the geometry
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     //! Convenient method to test if the geometry is defined (not NoGeometry and not Unknown)
     bool hasDefinedGeometry() const
     {
-      return geometryWkbType() != QgsWkbTypes::NoGeometry && geometryWkbType() != QgsWkbTypes::Unknown;
+      return geometryWkbType() != QgsWkbTypes::Type::NoGeometry && geometryWkbType() != QgsWkbTypes::Type::Unknown;
     }
 
   private:
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     QString mFilePath;
     QgsFields mFields;
     bool mLazy = false;
-    QgsWkbTypes::Type mGeometryWkbType = QgsWkbTypes::Unknown;
+    QgsWkbTypes::Type mGeometryWkbType = QgsWkbTypes::Type::Unknown;
     long mGeometrySrid = 0;
 };
 

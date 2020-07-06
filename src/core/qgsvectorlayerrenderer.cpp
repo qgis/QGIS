@@ -142,7 +142,7 @@ QgsFeedback *QgsVectorLayerRenderer::feedback() const
 
 bool QgsVectorLayerRenderer::render()
 {
-  if ( mGeometryType == QgsWkbTypes::NullGeometry || mGeometryType == QgsWkbTypes::UnknownGeometry )
+  if ( mGeometryType == QgsWkbTypes::GeometryType::NullGeometry || mGeometryType == QgsWkbTypes::GeometryType::UnknownGeometry )
     return true;
 
   if ( !mRenderer )
@@ -379,7 +379,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
           QgsGeometry obstacleGeometry;
           QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, context );
           QgsSymbol *symbol = nullptr;
-          if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
+          if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::GeometryType::PointGeometry )
           {
             obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, context, symbols );
           }
@@ -484,7 +484,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
       QgsGeometry obstacleGeometry;
       QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, context );
       QgsSymbol *symbol = nullptr;
-      if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
+      if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::GeometryType::PointGeometry )
       {
         obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, context, symbols );
       }

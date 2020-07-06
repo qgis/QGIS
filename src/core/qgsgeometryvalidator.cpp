@@ -223,7 +223,7 @@ void QgsGeometryValidator::run()
       }
 
       // avoid calling geos for trivial point geometries
-      if ( QgsWkbTypes::geometryType( mGeometry.wkbType() ) == QgsWkbTypes::PointGeometry )
+      if ( QgsWkbTypes::geometryType( mGeometry.wkbType() ) == QgsWkbTypes::GeometryType::PointGeometry )
       {
         return;
       }
@@ -252,23 +252,23 @@ void QgsGeometryValidator::run()
     case QgsGeometry::ValidatorQgisInternal:
     {
       QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( mGeometry.wkbType() );
-      //if ( flatType == QgsWkbTypes::Point || flatType == QgsWkbTypes::MultiPoint )
+      //if ( flatType == QgsWkbTypes::Type::Point || flatType == QgsWkbTypes::Type::MultiPoint )
       //    break;
-      if ( flatType == QgsWkbTypes::LineString )
+      if ( flatType == QgsWkbTypes::Type::LineString )
       {
         validatePolyline( 0, mGeometry.asPolyline() );
       }
-      else if ( flatType == QgsWkbTypes::MultiLineString )
+      else if ( flatType == QgsWkbTypes::Type::MultiLineString )
       {
         QgsMultiPolylineXY mp = mGeometry.asMultiPolyline();
         for ( int i = 0; !mStop && i < mp.size(); i++ )
           validatePolyline( i, mp[i] );
       }
-      else if ( flatType == QgsWkbTypes::Polygon )
+      else if ( flatType == QgsWkbTypes::Type::Polygon )
       {
         validatePolygon( 0, mGeometry.asPolygon() );
       }
-      else if ( flatType == QgsWkbTypes::MultiPolygon )
+      else if ( flatType == QgsWkbTypes::Type::MultiPolygon )
       {
         QgsMultiPolygonXY mp = mGeometry.asMultiPolygon();
         for ( int i = 0; !mStop && i < mp.size(); i++ )
@@ -308,9 +308,9 @@ void QgsGeometryValidator::run()
         }
       }
 
-      else if ( flatType == QgsWkbTypes::Unknown )
+      else if ( flatType == QgsWkbTypes::Type::Unknown )
       {
-        emit errorFound( QgsGeometry::Error( QObject::tr( "Unknown geometry type %1" ).arg( mGeometry.wkbType() ) ) );
+        emit errorFound( QgsGeometry::Error( QObject::tr( "Unknown geometry type %1" ).arg( static_cast<int>( mGeometry.wkbType() ) ) ) );
         mErrorCount++;
       }
 

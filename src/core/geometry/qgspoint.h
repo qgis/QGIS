@@ -48,8 +48,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     /**
      * Construct a point with the provided initial coordinate values.
      *
-     * If \a wkbType is set to `QgsWkbTypes::Point`, `QgsWkbTypes::PointZ`, `QgsWkbTypes::PointM` or `QgsWkbTypes::PointZM`
-     * the type will be set accordingly. If it is left to the default `QgsWkbTypes::Unknown`, the type will be set
+     * If \a wkbType is set to `QgsWkbTypes::Type::Point`, `QgsWkbTypes::Type::PointZ`, `QgsWkbTypes::Type::PointM` or `QgsWkbTypes::Type::PointZM`
+     * the type will be set accordingly. If it is left to the default `QgsWkbTypes::Type::Unknown`, the type will be set
      * based on the following rules:
      *
      * - If only x and y are specified, the type will be a 2D point.
@@ -72,9 +72,9 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \endcode
      */
 #ifndef SIP_RUN
-    QgsPoint( double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN(), QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown );
+    QgsPoint( double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN(), QgsWkbTypes::Type wkbType = QgsWkbTypes::Type::Unknown );
 #else
-    QgsPoint( SIP_PYOBJECT x = Py_None, SIP_PYOBJECT y = Py_None, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, SIP_PYOBJECT wkbType = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
+    QgsPoint( SIP_PYOBJECT x = Py_None, SIP_PYOBJECT y = Py_None, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, SIP_PYOBJECT wkbType = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Type::Unknown )];
     % MethodCode
     if ( sipCanConvertToType( a0, sipType_QgsPointXY, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
     {
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       double y = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
       double z = a2 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a2 );
       double m = a3 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a3 );
-      QgsWkbTypes::Type wkbType = a4 == Py_None ? QgsWkbTypes::Unknown : static_cast<QgsWkbTypes::Type>( sipConvertToEnum( a4, sipType_QgsWkbTypes_Type ) );
+      QgsWkbTypes::Type wkbType = a4 == Py_None ? QgsWkbTypes::Type::Unknown : static_cast<QgsWkbTypes::Type>( sipConvertToEnum( a4, sipType_QgsWkbTypes_Type ) );
       sipCpp = new sipQgsPoint( QgsPoint( x, y, z, m, wkbType ) );
     }
     else // Invalid ctor arguments
@@ -550,7 +550,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      */
     inline const QgsPoint *cast( const QgsAbstractGeometry *geom ) const
     {
-      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::Point )
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::Type::Point )
         return static_cast<const QgsPoint *>( geom );
       return nullptr;
     }

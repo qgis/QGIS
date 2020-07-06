@@ -1938,7 +1938,7 @@ QgsSymbol::SymbolType QgsStyle::legendPatchShapeSymbolType( const QString &name 
 QgsWkbTypes::GeometryType QgsStyle::labelSettingsLayerType( const QString &name ) const
 {
   if ( !mLabelSettings.contains( name ) )
-    return QgsWkbTypes::UnknownGeometry;
+    return QgsWkbTypes::GeometryType::UnknownGeometry;
 
   return mLabelSettings.value( name ).layerType;
 }

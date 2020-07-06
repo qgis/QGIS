@@ -48,16 +48,16 @@ void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry *s
   }
 
   //special handling for 25d types:
-  if ( baseGeomType == QgsWkbTypes::LineString &&
-       ( subgeom->wkbType() == QgsWkbTypes::Point25D || subgeom->wkbType() == QgsWkbTypes::LineString25D ) )
+  if ( baseGeomType == QgsWkbTypes::Type::LineString &&
+       ( subgeom->wkbType() == QgsWkbTypes::Type::Point25D || subgeom->wkbType() == QgsWkbTypes::Type::LineString25D ) )
   {
-    mWkbType = QgsWkbTypes::LineString25D;
+    mWkbType = QgsWkbTypes::Type::LineString25D;
     return;
   }
-  else if ( baseGeomType == QgsWkbTypes::Polygon &&
-            ( subgeom->wkbType() == QgsWkbTypes::Point25D || subgeom->wkbType() == QgsWkbTypes::LineString25D ) )
+  else if ( baseGeomType == QgsWkbTypes::Type::Polygon &&
+            ( subgeom->wkbType() == QgsWkbTypes::Type::Point25D || subgeom->wkbType() == QgsWkbTypes::Type::LineString25D ) )
   {
-    mWkbType = QgsWkbTypes::Polygon25D;
+    mWkbType = QgsWkbTypes::Type::Polygon25D;
     return;
   }
 

@@ -18,6 +18,6 @@
 #include "qgsvectortilelayer.h"
 
 QgsVectorTileLabelProvider::QgsVectorTileLabelProvider( QgsVectorTileLayer *layer )
-  : QgsVectorLayerLabelProvider( QgsWkbTypes::UnknownGeometry, QgsFields(), layer->crs(), layer->id(), nullptr, layer )
+  : QgsVectorLayerLabelProvider( QgsWkbTypes::GeometryType::UnknownGeometry, QgsFields(), layer->crs(), layer->id(), nullptr, layer )
 {
 }

@@ -938,7 +938,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * Geometry type of layers associated with these settings.
      * \since QGIS 3.10
      */
-    QgsWkbTypes::GeometryType layerType = QgsWkbTypes::UnknownGeometry;
+    QgsWkbTypes::GeometryType layerType = QgsWkbTypes::GeometryType::UnknownGeometry;
 
     /**
      * Calculates the space required to render the provided \a text in map units.

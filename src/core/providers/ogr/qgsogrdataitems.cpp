@@ -80,14 +80,14 @@ QgsLayerItem::LayerType QgsOgrLayerItem::layerTypeFromDb( const QString &geometr
   // fallback - try parsing as a WKT type string
   switch ( QgsWkbTypes::geometryType( QgsWkbTypes::parseType( geometryType ) ) )
   {
-    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::GeometryType::PointGeometry:
       return QgsLayerItem::LayerType::Point;
-    case QgsWkbTypes::LineGeometry:
+    case QgsWkbTypes::GeometryType::LineGeometry:
       return QgsLayerItem::LayerType::Line;
-    case QgsWkbTypes::PolygonGeometry:
+    case QgsWkbTypes::GeometryType::PolygonGeometry:
       return QgsLayerItem::LayerType::Polygon;
-    case QgsWkbTypes::UnknownGeometry:
-    case QgsWkbTypes::NullGeometry:
+    case QgsWkbTypes::GeometryType::UnknownGeometry:
+    case QgsWkbTypes::GeometryType::NullGeometry:
       break;
   }
 
@@ -282,18 +282,18 @@ static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
   QgsWkbTypes::Type wkbType = QgsOgrProviderUtils::qgisTypeFromOgrType( ogrType );
   switch ( QgsWkbTypes::geometryType( wkbType ) )
   {
-    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::GeometryType::UnknownGeometry:
       break;
-    case QgsWkbTypes::NullGeometry:
+    case QgsWkbTypes::GeometryType::NullGeometry:
       layerType = QgsLayerItem::TableLayer;
       break;
-    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::GeometryType::PointGeometry:
       layerType = QgsLayerItem::Point;
       break;
-    case QgsWkbTypes::LineGeometry:
+    case QgsWkbTypes::GeometryType::LineGeometry:
       layerType = QgsLayerItem::Line;
       break;
-    case QgsWkbTypes::PolygonGeometry:
+    case QgsWkbTypes::GeometryType::PolygonGeometry:
       layerType = QgsLayerItem::Polygon;
       break;
   }

@@ -380,7 +380,7 @@ class CORE_EXPORT QgsStyle : public QObject
 
     /**
      * Returns the layer geometry type corresponding to the label settings
-     * with the specified \a name, or QgsWkbTypes::UnknownGeometry
+     * with the specified \a name, or QgsWkbTypes::GeometryType::UnknownGeometry
      * if matching label settings are not present.
      *
      * \since QGIS 3.10

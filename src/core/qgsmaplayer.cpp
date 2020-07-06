@@ -1116,7 +1116,7 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg, const 
   {
     //Getting the selectionLayer geometry
     const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( this );
-    QString geoType = QString::number( vl->geometryType() );
+    QString geoType = QString::number( static_cast<int>( vl->geometryType() ) );
 
     //Adding geometryinformation
     QDomElement layerGeometryType = myDocument.createElement( QStringLiteral( "layerGeometryType" ) );

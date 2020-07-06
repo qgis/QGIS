@@ -153,7 +153,7 @@ class CORE_EXPORT QgsRemappingSinkDefinition
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mDestinationCrs;
 
-    QgsWkbTypes::Type mDestinationWkbType = QgsWkbTypes::Unknown;
+    QgsWkbTypes::Type mDestinationWkbType = QgsWkbTypes::Type::Unknown;
 
     QgsFields mDestinationFields;
 

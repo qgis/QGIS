@@ -27,7 +27,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 QgsMultiLineString::QgsMultiLineString()
 {
-  mWkbType = QgsWkbTypes::MultiLineString;
+  mWkbType = QgsWkbTypes::Type::MultiLineString;
 }
 
 QString QgsMultiLineString::geometryType() const
@@ -50,7 +50,7 @@ QgsMultiLineString *QgsMultiLineString::clone() const
 void QgsMultiLineString::clear()
 {
   QgsMultiCurve::clear();
-  mWkbType = QgsWkbTypes::MultiLineString;
+  mWkbType = QgsWkbTypes::Type::MultiLineString;
 }
 
 bool QgsMultiLineString::fromWkt( const QString &wkt )
@@ -128,7 +128,7 @@ bool QgsMultiLineString::addGeometry( QgsAbstractGeometry *g )
 
   if ( mGeometries.empty() )
   {
-    setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiLineString );
+    setZMTypeFromSubGeometry( g, QgsWkbTypes::Type::MultiLineString );
   }
   if ( is3D() && !g->is3D() )
     g->addZValue();
@@ -143,7 +143,7 @@ bool QgsMultiLineString::addGeometry( QgsAbstractGeometry *g )
 
 bool QgsMultiLineString::insertGeometry( QgsAbstractGeometry *g, int index )
 {
-  if ( !g || QgsWkbTypes::flatType( g->wkbType() ) != QgsWkbTypes::LineString )
+  if ( !g || QgsWkbTypes::flatType( g->wkbType() ) != QgsWkbTypes::Type::LineString )
   {
     delete g;
     return false;

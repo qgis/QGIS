@@ -222,13 +222,13 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       }
       else if ( vlayer && layer->type() == QgsMapLayerType::VectorLayer )
       {
-        if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
+        if ( vlayer->geometryType() == QgsWkbTypes::GeometryType::PointGeometry )
           icon = QgsLayerItem::iconPoint();
-        else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
+        else if ( vlayer->geometryType() == QgsWkbTypes::GeometryType::LineGeometry )
           icon = QgsLayerItem::iconLine();
-        else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
+        else if ( vlayer->geometryType() == QgsWkbTypes::GeometryType::PolygonGeometry )
           icon = QgsLayerItem::iconPolygon();
-        else if ( vlayer->geometryType() == QgsWkbTypes::NullGeometry )
+        else if ( vlayer->geometryType() == QgsWkbTypes::GeometryType::NullGeometry )
           icon = QgsLayerItem::iconTable();
         else
           icon = QgsLayerItem::iconDefault();
@@ -651,7 +651,7 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
         }
       }
     }
-    bool polygonValid = !polygon.isNull() && polygon.type() == QgsWkbTypes::PolygonGeometry;
+    bool polygonValid = !polygon.isNull() && polygon.type() == QgsWkbTypes::GeometryType::PolygonGeometry;
     if ( useExpressions && !useExtent && !polygonValid ) // only expressions
     {
       mLegendFilterHitTest.reset( new QgsMapHitTest( *mLegendFilterMapSettings, exprs ) );

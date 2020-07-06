@@ -24,12 +24,12 @@
 
 QgsTriangle::QgsTriangle()
 {
-  mWkbType = QgsWkbTypes::Triangle;
+  mWkbType = QgsWkbTypes::Type::Triangle;
 }
 
 QgsTriangle::QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 )
 {
-  mWkbType = QgsWkbTypes::Triangle;
+  mWkbType = QgsWkbTypes::Type::Triangle;
 
   QVector< double > x { p1.x(), p2.x(), p3.x(), p1.x() };
   QVector< double > y { p1.y(), p2.y(), p3.y(), p1.y() };
@@ -48,7 +48,7 @@ QgsTriangle::QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint
 
 QgsTriangle::QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 )
 {
-  mWkbType = QgsWkbTypes::Triangle;
+  mWkbType = QgsWkbTypes::Type::Triangle;
 
   QVector< double > x { p1.x(), p2.x(), p3.x(), p1.x() };
   QVector< double > y {p1.y(), p2.y(), p3.y(), p1.y() };
@@ -58,7 +58,7 @@ QgsTriangle::QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsP
 
 QgsTriangle::QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 )
 {
-  mWkbType = QgsWkbTypes::Triangle;
+  mWkbType = QgsWkbTypes::Type::Triangle;
 
   QVector< double > x{ p1.x(), p2.x(), p3.x(), p1.x() };
   QVector< double > y{ p1.y(), p2.y(), p3.y(), p1.y() };
@@ -103,7 +103,7 @@ QgsTriangle *QgsTriangle::createEmptyWithSameType() const
 void QgsTriangle::clear()
 {
   QgsPolygon::clear();
-  mWkbType = QgsWkbTypes::Triangle;
+  mWkbType = QgsWkbTypes::Type::Triangle;
 }
 
 QgsTriangle *QgsTriangle::clone() const
@@ -120,7 +120,7 @@ bool QgsTriangle::fromWkb( QgsConstWkbPtr &wkbPtr )
   }
 
   QgsWkbTypes::Type type = wkbPtr.readHeader();
-  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::Triangle )
+  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::Type::Triangle )
   {
     return false;
   }
@@ -129,17 +129,17 @@ bool QgsTriangle::fromWkb( QgsConstWkbPtr &wkbPtr )
   QgsWkbTypes::Type ringType;
   switch ( mWkbType )
   {
-    case QgsWkbTypes::TriangleZ:
-      ringType = QgsWkbTypes::LineStringZ;
+    case QgsWkbTypes::Type::TriangleZ:
+      ringType = QgsWkbTypes::Type::LineStringZ;
       break;
-    case QgsWkbTypes::TriangleM:
-      ringType = QgsWkbTypes::LineStringM;
+    case QgsWkbTypes::Type::TriangleM:
+      ringType = QgsWkbTypes::Type::LineStringM;
       break;
-    case QgsWkbTypes::TriangleZM:
-      ringType = QgsWkbTypes::LineStringZM;
+    case QgsWkbTypes::Type::TriangleZM:
+      ringType = QgsWkbTypes::Type::LineStringZM;
       break;
     default:
-      ringType = QgsWkbTypes::LineString;
+      ringType = QgsWkbTypes::Type::LineString;
       break;
   }
 
@@ -164,7 +164,7 @@ bool QgsTriangle::fromWkt( const QString &wkt )
 
   QPair<QgsWkbTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
-  if ( QgsWkbTypes::geometryType( parts.first ) != QgsWkbTypes::PolygonGeometry )
+  if ( QgsWkbTypes::geometryType( parts.first ) != QgsWkbTypes::GeometryType::PolygonGeometry )
     return false;
 
   mWkbType = parts.first;
@@ -180,7 +180,7 @@ bool QgsTriangle::fromWkt( const QString &wkt )
     QPair<QgsWkbTypes::Type, QString> childParts = QgsGeometryUtils::wktReadBlock( childWkt );
 
     QgsWkbTypes::Type flatCurveType = QgsWkbTypes::flatType( childParts.first );
-    if ( flatCurveType == QgsWkbTypes::LineString )
+    if ( flatCurveType == QgsWkbTypes::Type::LineString )
       mInteriorRings.append( new QgsLineString() );
     else
     {
@@ -342,7 +342,7 @@ void QgsTriangle::setExteriorRing( QgsCurve *ring )
   mExteriorRing.reset( ring );
 
   //set proper wkb type
-  setZMTypeFromSubGeometry( ring, QgsWkbTypes::Triangle );
+  setZMTypeFromSubGeometry( ring, QgsWkbTypes::Type::Triangle );
 
   clearCache();
 }

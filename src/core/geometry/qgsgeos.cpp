@@ -1300,18 +1300,18 @@ QgsPoint QgsGeos::coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, 
     GEOSCoordSeq_getOrdinate_r( geosinit()->ctxt, cs, i, 3, &m );
   }
 
-  QgsWkbTypes::Type t = QgsWkbTypes::Point;
+  QgsWkbTypes::Type t = QgsWkbTypes::Type::Point;
   if ( hasZ && hasM )
   {
-    t = QgsWkbTypes::PointZM;
+    t = QgsWkbTypes::Type::PointZM;
   }
   else if ( hasZ )
   {
-    t = QgsWkbTypes::PointZ;
+    t = QgsWkbTypes::Type::PointZ;
   }
   else if ( hasM )
   {
-    t = QgsWkbTypes::PointM;
+    t = QgsWkbTypes::Type::PointM;
   }
   return QgsPoint( t, x, y, z, m );
 }
@@ -1331,28 +1331,28 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
     ++coordDims;
   }
 
-  if ( QgsWkbTypes::isMultiType( geom->wkbType() )  || QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::GeometryCollection )
+  if ( QgsWkbTypes::isMultiType( geom->wkbType() )  || QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::Type::GeometryCollection )
   {
     int geosType = GEOS_GEOMETRYCOLLECTION;
 
-    if ( QgsWkbTypes::flatType( geom->wkbType() ) != QgsWkbTypes::GeometryCollection )
+    if ( QgsWkbTypes::flatType( geom->wkbType() ) != QgsWkbTypes::Type::GeometryCollection )
     {
       switch ( QgsWkbTypes::geometryType( geom->wkbType() ) )
       {
-        case QgsWkbTypes::PointGeometry:
+        case QgsWkbTypes::GeometryType::PointGeometry:
           geosType = GEOS_MULTIPOINT;
           break;
 
-        case QgsWkbTypes::LineGeometry:
+        case QgsWkbTypes::GeometryType::LineGeometry:
           geosType = GEOS_MULTILINESTRING;
           break;
 
-        case QgsWkbTypes::PolygonGeometry:
+        case QgsWkbTypes::GeometryType::PolygonGeometry:
           geosType = GEOS_MULTIPOLYGON;
           break;
 
-        case QgsWkbTypes::UnknownGeometry:
-        case QgsWkbTypes::NullGeometry:
+        case QgsWkbTypes::GeometryType::UnknownGeometry:
+        case QgsWkbTypes::GeometryType::NullGeometry:
           return nullptr;
           break;
       }
@@ -1375,20 +1375,20 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
   {
     switch ( QgsWkbTypes::geometryType( geom->wkbType() ) )
     {
-      case QgsWkbTypes::PointGeometry:
+      case QgsWkbTypes::GeometryType::PointGeometry:
         return createGeosPoint( static_cast<const QgsPoint *>( geom ), coordDims, precision );
         break;
 
-      case QgsWkbTypes::LineGeometry:
+      case QgsWkbTypes::GeometryType::LineGeometry:
         return createGeosLinestring( static_cast<const QgsLineString *>( geom ), precision );
         break;
 
-      case QgsWkbTypes::PolygonGeometry:
+      case QgsWkbTypes::GeometryType::PolygonGeometry:
         return createGeosPolygon( static_cast<const QgsPolygon *>( geom ), precision );
         break;
 
-      case QgsWkbTypes::UnknownGeometry:
-      case QgsWkbTypes::NullGeometry:
+      case QgsWkbTypes::GeometryType::UnknownGeometry:
+      case QgsWkbTypes::GeometryType::NullGeometry:
         return nullptr;
         break;
     }

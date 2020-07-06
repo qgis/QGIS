@@ -37,7 +37,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkb( QgsConstWk
     return nullptr;
 
   //find out type (bytes 2-5)
-  QgsWkbTypes::Type type = QgsWkbTypes::Unknown;
+  QgsWkbTypes::Type type = QgsWkbTypes::Type::Unknown;
   try
   {
     type = wkbPtr.readHeader();
@@ -230,31 +230,31 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkbType( QgsWkb
   QgsWkbTypes::Type type = QgsWkbTypes::flatType( t );
   switch ( type )
   {
-    case QgsWkbTypes::Point:
+    case QgsWkbTypes::Type::Point:
       return qgis::make_unique< QgsPoint >();
-    case QgsWkbTypes::LineString:
+    case QgsWkbTypes::Type::LineString:
       return qgis::make_unique< QgsLineString >();
-    case QgsWkbTypes::CircularString:
+    case QgsWkbTypes::Type::CircularString:
       return qgis::make_unique< QgsCircularString >();
-    case QgsWkbTypes::CompoundCurve:
+    case QgsWkbTypes::Type::CompoundCurve:
       return qgis::make_unique< QgsCompoundCurve >();
-    case QgsWkbTypes::Polygon:
+    case QgsWkbTypes::Type::Polygon:
       return qgis::make_unique< QgsPolygon >();
-    case QgsWkbTypes::CurvePolygon:
+    case QgsWkbTypes::Type::CurvePolygon:
       return qgis::make_unique< QgsCurvePolygon >();
-    case QgsWkbTypes::MultiLineString:
+    case QgsWkbTypes::Type::MultiLineString:
       return qgis::make_unique< QgsMultiLineString >();
-    case QgsWkbTypes::MultiPolygon:
+    case QgsWkbTypes::Type::MultiPolygon:
       return qgis::make_unique< QgsMultiPolygon >();
-    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::Type::MultiPoint:
       return qgis::make_unique< QgsMultiPoint >();
-    case QgsWkbTypes::MultiCurve:
+    case QgsWkbTypes::Type::MultiCurve:
       return qgis::make_unique< QgsMultiCurve >();
-    case QgsWkbTypes::MultiSurface:
+    case QgsWkbTypes::Type::MultiSurface:
       return qgis::make_unique< QgsMultiSurface >();
-    case QgsWkbTypes::GeometryCollection:
+    case QgsWkbTypes::Type::GeometryCollection:
       return qgis::make_unique< QgsGeometryCollection >();
-    case QgsWkbTypes::Triangle:
+    case QgsWkbTypes::Type::Triangle:
       return qgis::make_unique< QgsTriangle >();
     default:
       return nullptr;
@@ -267,22 +267,22 @@ std::unique_ptr<QgsGeometryCollection> QgsGeometryFactory::createCollectionOfTyp
   std::unique_ptr< QgsGeometryCollection > collect;
   switch ( type )
   {
-    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::Type::MultiPoint:
       collect = qgis::make_unique< QgsMultiPoint >();
       break;
-    case QgsWkbTypes::MultiLineString:
+    case QgsWkbTypes::Type::MultiLineString:
       collect = qgis::make_unique< QgsMultiLineString >();
       break;
-    case QgsWkbTypes::MultiCurve:
+    case QgsWkbTypes::Type::MultiCurve:
       collect = qgis::make_unique< QgsMultiCurve >();
       break;
-    case QgsWkbTypes::MultiPolygon:
+    case QgsWkbTypes::Type::MultiPolygon:
       collect = qgis::make_unique< QgsMultiPolygon >();
       break;
-    case QgsWkbTypes::MultiSurface:
+    case QgsWkbTypes::Type::MultiSurface:
       collect = qgis::make_unique< QgsMultiSurface >();
       break;
-    case QgsWkbTypes::GeometryCollection:
+    case QgsWkbTypes::Type::GeometryCollection:
       collect = qgis::make_unique< QgsGeometryCollection >();
       break;
     default:
