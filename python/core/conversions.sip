@@ -1768,7 +1768,7 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
         return 1;
     }
 
-    QList<QgsWkbTypes::Type> *ql = new QList<QgsWkbTypes::GeometryType>;
+    QList<QgsWkbTypes::GeometryType> *ql = new QList<QgsWkbTypes::GeometryType>;
 
     for (SIP_SSIZE_T i = 0; i < PyList_GET_SIZE(sipPy); ++i)
     {

@@ -152,7 +152,7 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
   {
     QgsGeometry geometry;
     int partIndex = 0;
-    QgsWkbTypes::GeometryType geomType = mOriginalGeometry.wkbType();
+    QgsWkbTypes::Type geomType = mOriginalGeometry.wkbType();
     if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::GeometryType::LineGeometry )
     {
       QgsMultiPolylineXY newMultiLine;
@@ -484,7 +484,7 @@ void QgsMapToolOffsetCurve::prepareGeometry( const QgsPointLocator::Match &match
   }
   mOriginalGeometry = geom;
 
-  QgsWkbTypes::GeometryType geomType = geom.wkbType();
+  QgsWkbTypes::Type geomType = geom.wkbType();
   if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::GeometryType::LineGeometry )
   {
     if ( !geom.isMultipart() )
