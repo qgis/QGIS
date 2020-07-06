@@ -113,7 +113,7 @@ void MDAL::DriverSWW::addBedElevation( const NetCDFFile &ncFile,
   }
   else
   {
-    MDAL::addBedElevationDatasetGroup( mesh, mesh->vertices );
+    MDAL::addBedElevationDatasetGroup( mesh, mesh->vertices() );
   }
 }
 
@@ -447,16 +447,12 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSWW::load(
     std::unique_ptr< MDAL::MemoryMesh > mesh(
       new MemoryMesh(
         name(),
-        vertices.size(),
-        0,
-        faces.size(),
         3, // triangles
-        computeExtent( vertices ),
         mFileName
       )
     );
-    mesh->faces = faces;
-    mesh->vertices = vertices;
+    mesh->setFaces( std::move( faces ) );
+    mesh->setVertices( std::move( vertices ) );
 
     // Read times
     std::vector<double> times = readTimes( ncFile );

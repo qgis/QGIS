@@ -1,6 +1,7 @@
 {
   "name": "maptip",
   "type": "function",
+  "groups": ["Record and Attributes"],
   "description": "Returns the maptip for a given feature in a layer. If called with no parameters, it evaluates the current feature. The maptip is evaluated by default.",
   "arguments": [
     {

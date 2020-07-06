@@ -33,6 +33,7 @@ class APP_EXPORT QgsMeshDatasetGroupTreeWidget: public QWidget, private Ui::QgsM
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer( QgsMeshLayer *meshLayer );
 
+  public slots:
     //! Apply the dataset group tree item to the layer
     void apply();
 

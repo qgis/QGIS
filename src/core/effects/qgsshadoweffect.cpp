@@ -34,7 +34,7 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
   QImage colorisedIm = sourceAsImage( context )->copy();
 
   QPainter *painter = context.painter();
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->setCompositionMode( mBlendMode );
 
   if ( !exteriorShadow() )
@@ -88,7 +88,6 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
   {
     painter->drawImage( imageOffset( context ) + transPt, colorisedIm );
   }
-  painter->restore();
 }
 
 QgsStringMap QgsShadowEffect::properties() const

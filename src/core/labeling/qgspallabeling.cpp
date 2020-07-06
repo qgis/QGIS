@@ -1975,9 +1975,15 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   {
     unsigned int simplifyHints = simplifyMethod.simplifyHints() | QgsMapToPixelSimplifier::SimplifyEnvelope;
     QgsMapToPixelSimplifier::SimplifyAlgorithm simplifyAlgorithm = static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( simplifyMethod.simplifyAlgorithm() );
-    QgsGeometry g = geom;
     QgsMapToPixelSimplifier simplifier( simplifyHints, simplifyMethod.tolerance(), simplifyAlgorithm );
     geom = simplifier.simplify( geom );
+  }
+
+  if ( !context.featureClipGeometry().isEmpty() )
+  {
+    const QgsWkbTypes::GeometryType expectedType = geom.type();
+    geom = geom.intersection( context.featureClipGeometry() );
+    geom.convertGeometryCollectionToSubclass( expectedType );
   }
 
   // whether we're going to create a centroid for polygon

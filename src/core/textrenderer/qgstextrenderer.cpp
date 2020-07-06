@@ -357,21 +357,19 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
     }
     drawShadow( context, bufferComponent, format );
   }
-  p->save();
+
+  QgsScopedQPainterState painterState( p );
+  context.setPainterFlagsUsingContext( p );
+
   if ( context.useAdvancedEffects() )
   {
     p->setCompositionMode( buffer.blendMode() );
-  }
-  if ( context.flags() & QgsRenderContext::Antialiasing )
-  {
-    p->setRenderHint( QPainter::Antialiasing );
   }
 
   // scale for any print output or image saving @ specific dpi
   p->scale( component.dpiRatio, component.dpiRatio );
   _fixQPictureDPI( p );
   p->drawPicture( 0, 0, buffPict );
-  p->restore();
 
   return advance;
 }
@@ -417,12 +415,8 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
   pen.setWidthF( penSize );
   pen.setJoinStyle( mask.joinStyle() );
 
-  p->save();
-
-  if ( context.flags() & QgsRenderContext::Antialiasing )
-  {
-    p->setRenderHint( QPainter::Antialiasing );
-  }
+  QgsScopedQPainterState painterState( p );
+  context.setPainterFlagsUsingContext( p );
 
   // scale for any print output or image saving @ specific dpi
   p->scale( component.dpiRatio, component.dpiRatio );
@@ -442,7 +436,6 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
     p->setBrush( brush );
     p->drawPath( path );
   }
-  p->restore();
 }
 
 double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, QFontMetricsF * )
@@ -779,8 +772,8 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
           shdwContext.setScaleFactor( context.scaleFactor() );
           shdwContext.setPainter( &svgp );
 
-          QgsSymbolLayer *symShdwL = QgsSvgMarkerSymbolLayer::create( shdwmap );
-          QgsSvgMarkerSymbolLayer *svgShdwM = static_cast<QgsSvgMarkerSymbolLayer *>( symShdwL );
+          std::unique_ptr< QgsSymbolLayer > symShdwL( QgsSvgMarkerSymbolLayer::create( shdwmap ) );
+          QgsSvgMarkerSymbolLayer *svgShdwM = static_cast<QgsSvgMarkerSymbolLayer *>( symShdwL.get() );
           QgsSymbolRenderContext svgShdwContext( shdwContext, QgsUnitTypes::RenderUnknownUnit, background.opacity() );
 
           svgShdwM->renderPoint( QPointF( sizeOut / 2, -sizeOut / 2 ), svgShdwContext );
@@ -794,7 +787,9 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
           component.offset = QPointF( 0.0, 0.0 );
 
           // rotate about origin center of SVG
-          p->save();
+          QgsScopedQPainterState painterState( p );
+          context.setPainterFlagsUsingContext( p );
+
           p->translate( component.center.x(), component.center.y() );
           p->rotate( component.rotation );
           double xoff = context.convertToPainterUnits( background.offset().x(), background.offsetUnit(), background.offsetMapUnitScale() );
@@ -802,16 +797,8 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
           p->translate( QPointF( xoff, yoff ) );
           p->rotate( component.rotationOffset );
           p->translate( -sizeOut / 2, sizeOut / 2 );
-          if ( context.flags() & QgsRenderContext::Antialiasing )
-          {
-            p->setRenderHint( QPainter::Antialiasing );
-          }
 
           drawShadow( context, component, format );
-          p->restore();
-
-          delete svgShdwM;
-          svgShdwM = nullptr;
         }
         renderedSymbol.reset( );
 
@@ -828,14 +815,12 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
       renderedSymbol->setOpacity( background.opacity() );
 
       // draw the actual symbol
-      p->save();
+      QgsScopedQPainterState painterState( p );
+      context.setPainterFlagsUsingContext( p );
+
       if ( context.useAdvancedEffects() )
       {
         p->setCompositionMode( background.blendMode() );
-      }
-      if ( context.flags() & QgsRenderContext::Antialiasing )
-      {
-        p->setRenderHint( QPainter::Antialiasing );
       }
       p->translate( component.center.x(), component.center.y() );
       p->rotate( component.rotation );
@@ -849,7 +834,6 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
       renderedSymbol->renderPoint( QPointF( 0, 0 ), &f, context );
       renderedSymbol->stopRender( context );
       p->setCompositionMode( QPainter::CompositionMode_SourceOver ); // just to be sure
-      p->restore();
 
       break;
     }
@@ -906,11 +890,9 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
       if ( rect.isNull() )
         return;
 
-      p->save();
-      if ( context.flags() & QgsRenderContext::Antialiasing )
-      {
-        p->setRenderHint( QPainter::Antialiasing );
-      }
+      QgsScopedQPainterState painterState( p );
+      context.setPainterFlagsUsingContext( p );
+
       p->translate( QPointF( component.center.x(), component.center.y() ) );
       p->rotate( component.rotation );
       double xoff = context.convertToPainterUnits( background.offset().x(), background.offsetUnit(), background.offsetMapUnitScale() );
@@ -981,7 +963,6 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
       p->scale( component.dpiRatio, component.dpiRatio );
       _fixQPictureDPI( p );
       p->drawPicture( 0, 0, shapePict );
-      p->restore();
       break;
     }
   }
@@ -1085,10 +1066,7 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
 
   p->save();
   p->setRenderHint( QPainter::SmoothPixmapTransform );
-  if ( context.flags() & QgsRenderContext::Antialiasing )
-  {
-    p->setRenderHint( QPainter::Antialiasing );
-  }
+  context.setPainterFlagsUsingContext( p );
   if ( context.useAdvancedEffects() )
   {
     p->setCompositionMode( shadow.blendMode() );
@@ -1219,11 +1197,8 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
       {
         const QgsTextBlock block = document.at( i );
 
-        context.painter()->save();
-        if ( context.flags() & QgsRenderContext::Antialiasing )
-        {
-          context.painter()->setRenderHint( QPainter::Antialiasing );
-        }
+        QgsScopedQPainterState painterState( context.painter() );
+        context.setPainterFlagsUsingContext();
         context.painter()->translate( component.origin );
         if ( !qgsDoubleNear( rotation, 0.0 ) )
           context.painter()->rotate( rotation );
@@ -1395,7 +1370,6 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
             }
           }
         }
-        context.painter()->restore();
         if ( maskPainter )
           maskPainter->restore();
         i++;
@@ -1438,11 +1412,9 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
 
       for ( const QgsTextBlock &block : document )
       {
-        context.painter()->save();
-        if ( context.flags() & QgsRenderContext::Antialiasing )
-        {
-          context.painter()->setRenderHint( QPainter::Antialiasing );
-        }
+        QgsScopedQPainterState painterState( context.painter() );
+        context.setPainterFlagsUsingContext();
+
         context.painter()->translate( component.origin );
         if ( !qgsDoubleNear( rotation, 0.0 ) )
           context.painter()->rotate( rotation );
@@ -1625,7 +1597,6 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
           }
         }
 
-        context.painter()->restore();
         if ( maskPainter )
           maskPainter->restore();
         i++;

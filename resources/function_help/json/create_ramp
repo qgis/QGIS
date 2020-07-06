@@ -1,6 +1,7 @@
 {
   "name": "create_ramp",
   "type": "function",
+  "groups": ["Color"],
   "description": "Returns a gradient ramp from a map of color strings and steps.",
   "arguments": [ {"arg":"map","description":"a map of color strings and steps"},
                  {"arg":"discrete","optional":true,"description":"declare whether the color ramp is discrete"}],

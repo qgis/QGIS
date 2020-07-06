@@ -28,7 +28,7 @@
 
 #include "qgslabelingengine.h"
 #include "qgsvectortilelabeling.h"
-
+#include "qgsmapclippingutils.h"
 
 QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -53,6 +53,7 @@ QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *laye
     }
   }
 
+  mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
 }
 
 bool QgsVectorTileLayerRenderer::render()
@@ -61,6 +62,16 @@ bool QgsVectorTileLayerRenderer::render()
 
   if ( ctx.renderingStopped() )
     return false;
+
+  QgsScopedQPainterState painterState( ctx.painter() );
+
+  if ( !mClippingRegions.empty() )
+  {
+    bool needsPainterClipPath = false;
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), QgsMapLayerType::VectorTileLayer, needsPainterClipPath );
+    if ( needsPainterClipPath )
+      renderContext()->painter()->setClipPath( path, Qt::IntersectClip );
+  }
 
   QElapsedTimer tTotal;
   tTotal.start();
@@ -165,8 +176,6 @@ bool QgsVectorTileLayerRenderer::render()
 
   mRenderer->stopRender( ctx );
 
-  ctx.painter()->setClipping( false );
-
   QgsDebugMsgLevel( QStringLiteral( "Total time for decoding: %1" ).arg( mTotalDecodeTime / 1000. ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Drawing time: %1" ).arg( mTotalDrawTime / 1000. ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Total time: %1" ).arg( tTotal.elapsed() / 1000. ), 2 );
@@ -209,8 +218,10 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
     return;
 
   // set up clipping so that rendering does not go behind tile's extent
-
-  ctx.painter()->setClipRegion( QRegion( tile.tilePolygon() ) );
+  QgsScopedQPainterState savePainterState( ctx.painter() );
+  // we have to intersect with any existing painter clip regions, or we risk overwriting valid clip
+  // regions setup outside of the vector tile renderer (e.g. layout map clip region)
+  ctx.painter()->setClipRegion( QRegion( tile.tilePolygon() ), Qt::IntersectClip );
 
   QElapsedTimer tDraw;
   tDraw.start();
@@ -223,6 +234,7 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
 
   if ( mDrawTileBoundaries )
   {
+    QgsScopedQPainterState savePainterState( ctx.painter() );
     ctx.painter()->setClipping( false );
 
     QPen pen( Qt::red );

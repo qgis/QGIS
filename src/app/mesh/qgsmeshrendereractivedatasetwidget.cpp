@@ -170,7 +170,7 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
          .arg( tr( "Mesh type" ) )
          .arg( definedOnMesh );
 
-  const QgsMeshDatasetGroupMetadata gmeta = mMeshLayer->dataProvider()->datasetGroupMetadata( datasetIndex );
+  const QgsMeshDatasetGroupMetadata gmeta = mMeshLayer->datasetGroupMetadata( datasetIndex );
   QString definedOn;
   switch ( gmeta.dataType() )
   {

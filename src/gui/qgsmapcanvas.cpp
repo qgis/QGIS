@@ -1016,14 +1016,12 @@ void QgsMapCanvas::saveAsImage( const QString &fileName, QPixmap *theQPixmap, co
       continue;
     }
 
-    painter.save();
+    QgsScopedQPainterState painterState( &painter );
 
     QPointF itemScenePos = item->scenePos();
     painter.translate( itemScenePos.x(), itemScenePos.y() );
 
     item->paint( &painter, &option );
-
-    painter.restore();
   }
 
   painter.end();

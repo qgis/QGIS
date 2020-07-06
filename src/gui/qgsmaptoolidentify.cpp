@@ -248,7 +248,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
 bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMeshLayer *layer, const QgsPointXY &point )
 {
   QgsDebugMsgLevel( "point = " + point.toString(), 4 );
-  if ( !layer || !layer->dataProvider() )
+  if ( !layer )
     return false;
 
   const QgsMeshRendererSettings rendererSettings = layer->rendererSettings();
@@ -264,7 +264,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
   QString scalarGroup;
   if ( scalarDatasetIndex.isValid() )
   {
-    scalarGroup = layer->dataProvider()->datasetGroupMetadata( scalarDatasetIndex.group() ).name();
+    scalarGroup = layer->datasetGroupMetadata( scalarDatasetIndex.group() ).name();
 
     const QgsMeshDatasetValue scalarValue = layer->datasetValue( scalarDatasetIndex, point, searchRadius );
     const double scalar = scalarValue.scalar();
@@ -277,7 +277,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
   QString vectorGroup;
   if ( vectorDatasetIndex.isValid() )
   {
-    vectorGroup = layer->dataProvider()->datasetGroupMetadata( vectorDatasetIndex.group() ).name();
+    vectorGroup = layer->datasetGroupMetadata( vectorDatasetIndex.group() ).name();
 
     const QgsMeshDatasetValue vectorValue = layer->datasetValue( vectorDatasetIndex, point, searchRadius );
     const double vectorX = vectorValue.x();

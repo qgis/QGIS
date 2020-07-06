@@ -1,6 +1,7 @@
 
 {
   "name": "hash",
+  "groups": ["Conversions"],
   "type": "function",
   "description": "Creates a hash from a string with a given method.",
   "variableLenArguments": false,

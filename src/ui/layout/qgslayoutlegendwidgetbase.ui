@@ -63,9 +63,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-1283</y>
-        <width>367</width>
-        <height>2239</height>
+        <y>-1031</y>
+        <width>387</width>
+        <height>2728</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -235,11 +235,11 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="text">
-               <string/>
-              </property>
               <property name="toolTip">
                <string>Move item down</string>
+              </property>
+              <property name="text">
+               <string/>
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
@@ -255,11 +255,11 @@
             </item>
             <item>
              <widget class="QToolButton" name="mMoveUpToolButton">
-              <property name="text">
-               <string/>
-              </property>
               <property name="toolTip">
                <string>Move item up</string>
+              </property>
+              <property name="text">
+               <string/>
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
@@ -295,11 +295,11 @@
             </item>
             <item>
              <widget class="QToolButton" name="mAddToolButton">
-              <property name="text">
-               <string/>
-              </property>
               <property name="toolTip">
                <string>Add layer(s) to legend</string>
+              </property>
+              <property name="text">
+               <string/>
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
@@ -315,11 +315,11 @@
             </item>
             <item>
              <widget class="QToolButton" name="mRemoveToolButton">
-              <property name="text">
-               <string/>
-              </property>
               <property name="toolTip">
                <string>Remove selected item(s) from legend</string>
+              </property>
+              <property name="text">
+               <string/>
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
@@ -335,11 +335,11 @@
             </item>
             <item>
              <widget class="QToolButton" name="mEditPushButton">
-              <property name="text">
-               <string/>
-              </property>
               <property name="toolTip">
                <string>Edit selected item properties</string>
+              </property>
+              <property name="text">
+               <string/>
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
@@ -411,11 +411,11 @@
             </item>
             <item>
              <widget class="QgsLegendFilterButton" name="mExpressionFilterButton">
-              <property name="text">
-               <string/>
-              </property>
               <property name="toolTip">
                <string>Filter expression</string>
+              </property>
+              <property name="text">
+               <string/>
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
@@ -788,7 +788,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="2">
+          <item row="5" column="0" colspan="2">
            <widget class="QgsCollapsibleGroupBoxBasic" name="mRasterStrokeGroupBox">
             <property name="title">
              <string>Draw stroke for raster symbols</string>
@@ -885,6 +885,34 @@
               </widget>
              </item>
             </layout>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QgsDoubleSpinBox" name="mMaxSymbolSizeSpinBox">
+            <property name="suffix">
+             <string>mm</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="mMaxSymbolSizeLabel">
+            <property name="text">
+             <string>Max symbol size</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="mMinSymbolSizeLabel">
+            <property name="text">
+             <string>Min symbol size</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QgsDoubleSpinBox" name="mMinSymbolSizeSpinBox">
+            <property name="suffix">
+             <string>mm</string>
+            </property>
            </widget>
           </item>
          </layout>

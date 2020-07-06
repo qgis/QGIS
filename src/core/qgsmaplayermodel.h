@@ -128,6 +128,12 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * \brief layersChecked returns the list of layers which are checked (or unchecked)
      */
     QList<QgsMapLayer *> layersChecked( Qt::CheckState checkState = Qt::Checked );
+
+    /**
+     * Sets which layers are checked in the model.
+     */
+    void setLayersChecked( const QList< QgsMapLayer * > &layers );
+
     //! returns if the items can be checked or not
     bool itemsCheckable() const { return mItemCheckable; }
 

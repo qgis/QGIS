@@ -1411,11 +1411,10 @@ void QgsLayoutItemMapGrid::drawAnnotation( QPainter *p, QPointF pos, int rotatio
     return;
   }
 
-  p->save();
+  QgsScopedQPainterState painterState( p );
   p->translate( pos );
   p->rotate( rotation );
   QgsLayoutUtils::drawText( p, QPointF( 0, 0 ), annotationText, mGridAnnotationFont, mGridAnnotationFontColor );
-  p->restore();
 }
 
 QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemMapGrid::AnnotationCoordinate coord, QgsExpressionContext &expressionContext ) const

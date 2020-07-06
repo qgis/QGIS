@@ -85,6 +85,11 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
     //! Returns whether geometry simplification is enabled
     bool geometriesSimplified() const;
 
+    //! Sets whether to use lossless image compression
+    void setLosslessImageExport( bool enabled );
+    //! Returns whether lossless image compression is enabled
+    bool losslessImageExport() const;
+
     //! Sets whether to export a Geo-PDF
     void setExportGeoPdf( bool enabled );
     //! Returns whether Geo-PDF export is enabled

@@ -927,6 +927,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                 (defaults to the active layer on the legend)
      */
     void pasteFromClipboard( QgsMapLayer *destinationLayer = nullptr );
+
     //! copies features on the clipboard to a new vector layer
     void pasteAsNewVector();
     //! copies features on the clipboard to a new memory vector layer
@@ -1297,6 +1298,22 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Decrease raster contrast
      * Valid for non wms raster layers only. */
     void decreaseContrast();
+
+    /**
+     * Increase raster gamma
+     * Valid for non wms raster layers only.
+     * \since QGIS 3.16
+     */
+    void increaseGamma();
+
+    /**
+     * Decrease raster gamma
+     * Valid for non wms raster layers only.
+     * \since QGIS 3.16
+     */
+    void decreaseGamma();
+
+
     //! plugin manager
     void showPluginManager();
     //! load Python support if possible
@@ -2104,8 +2121,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Do histogram stretch for singleband gray / multiband color rasters
     void histogramStretch( bool visibleAreaOnly = false, QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax );
 
-    //! Apply raster brightness
+    //! Apply raster brightness/contrast
     void adjustBrightnessContrast( int delta, bool updateBrightness = true );
+
+    /**
+     * Apply raster gamma
+     * \since QGIS 3.16
+     */
+    void adjustGamma( double delta );
 
     //! Copy a vector style from a layer to another one, if they have the same geometry type
     void duplicateVectorStyle( QgsVectorLayer *srcLayer, QgsVectorLayer *destLayer );
@@ -2185,6 +2208,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * try to resolve and create the broken relations.
      */
     void resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer );
+
+    /**
+     * Pastes the \a features to the \a pasteVectorLayer and gives feedback to the user
+     * according to \a invalidGeometryCount and \a nTotalFeatures
+     */
+    void pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeometriesCount, int nTotalFeatures, QgsFeatureList &features );
 
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;

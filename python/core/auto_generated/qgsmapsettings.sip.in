@@ -345,6 +345,7 @@ Gets color that is used for drawing of selected vector features
       RenderPartialOutput,
       RenderPreviewJob,
       RenderBlocking,
+      LosslessImageRendering,
       // TODO: ignore scale-based visibility (overview)
     };
     typedef QFlags<QgsMapSettings::Flag> Flags;
@@ -667,6 +668,39 @@ Returns the list of regions to avoid placing labels within.
 .. seealso:: :py:func:`labelBoundaryGeometry`
 
 .. versionadded:: 3.6
+%End
+
+    void addClippingRegion( const QgsMapClippingRegion &region );
+%Docstring
+Adds a new clipping ``region`` to the map settings.
+
+.. seealso:: :py:func:`clippingRegions`
+
+.. seealso:: :py:func:`setClippingRegions`
+
+.. versionadded:: 3.16
+%End
+
+    void setClippingRegions( const QList< QgsMapClippingRegion > &regions );
+%Docstring
+Sets the list of clipping ``regions`` to apply to the map.
+
+.. seealso:: :py:func:`addClippingRegion`
+
+.. seealso:: :py:func:`clippingRegions`
+
+.. versionadded:: 3.16
+%End
+
+    QList< QgsMapClippingRegion > clippingRegions() const;
+%Docstring
+Returns the list of clipping regions to apply to the map.
+
+.. seealso:: :py:func:`addClippingRegion`
+
+.. seealso:: :py:func:`setClippingRegions`
+
+.. versionadded:: 3.16
 %End
 
     void setSimplifyMethod( const QgsVectorSimplifyMethod &method );

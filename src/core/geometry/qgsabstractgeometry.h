@@ -42,6 +42,7 @@ class QDomElement;
 class QgsGeometryPartIterator;
 class QgsGeometryConstPartIterator;
 class QgsConstWkbPtr;
+class QPainterPath;
 
 typedef QVector< QgsPoint > QgsPointSequence;
 #ifndef SIP_RUN
@@ -355,6 +356,16 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param p destination QPainter
      */
     virtual void draw( QPainter &p ) const = 0;
+
+    /**
+     * Returns the geometry represented as a QPainterPath.
+     *
+     * \warning not all geometry subclasses can be represented by a QPainterPath, e.g.
+     * points and multipoint geometries will return an empty path.
+     *
+     * \since QGIS 3.16
+     */
+    virtual QPainterPath asQPainterPath() const = 0;
 
     /**
      * Returns the vertex number corresponding to a vertex \a id.

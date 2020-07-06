@@ -26,6 +26,7 @@
 #include "qgsfieldformatterregistry.h"
 #include "qgsfieldformatter.h"
 #include "qgsapplication.h"
+#include "qgsfeatureid.h"
 
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -93,6 +94,10 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
     {
       featureJson["id"] = id.toString().toStdString();
     }
+  }
+  else if ( FID_IS_NULL( feature.id() ) )
+  {
+    featureJson["id"] = nullptr;
   }
   else
   {

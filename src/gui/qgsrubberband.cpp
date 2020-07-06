@@ -553,13 +553,14 @@ void QgsRubberBand::drawShape( QPainter *p, const QVector<QPointF> &pts )
           }
 
           case ICON_SVG:
+          {
             QRectF viewBox = mSvgRenderer->viewBoxF();
             QRectF r( mSvgOffset.x(), mSvgOffset.y(), viewBox.width(), viewBox.height() );
-            p->save();
+            QgsScopedQPainterState painterState( p );
             p->translate( pt );
             mSvgRenderer->render( p, r );
-            p->restore();
             break;
+          }
         }
       }
     }

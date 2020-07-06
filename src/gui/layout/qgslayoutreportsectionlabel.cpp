@@ -54,7 +54,7 @@ void QgsLayoutReportSectionLabel::paint( QPainter *painter, const QStyleOptionGr
   double margin = fm.height() / 5.0;
 
   double scaleValue = scale() / painter->transform().m11();
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->setRenderHint( QPainter::Antialiasing, true );
   painter->scale( scaleValue, scaleValue );
   QRectF r = rect();
@@ -89,7 +89,6 @@ void QgsLayoutReportSectionLabel::paint( QPainter *painter, const QStyleOptionGr
   painter->setPen( QPen( QColor( 0, 0, 0, 100 ) ) );
   painter->setFont( f );
   painter->drawText( textRect, Qt::AlignBottom, mLabel );
-  painter->restore();
 }
 
 void QgsLayoutReportSectionLabel::setLabel( const QString &label )

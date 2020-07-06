@@ -1,6 +1,7 @@
 {
   "name": "wordwrap",
   "type": "function",
+  "groups": ["String"],
   "description": "Returns a string wrapped to a maximum/minimum number of characters.",
   "arguments": [
     {"arg":"string","description":"the string to be wrapped"},

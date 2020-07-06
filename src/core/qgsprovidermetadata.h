@@ -81,7 +81,8 @@ class CORE_EXPORT QgsMeshDriverMetadata
      */
     QgsMeshDriverMetadata( const QString &name,
                            const QString &description,
-                           const MeshDriverCapabilities &capabilities );
+                           const MeshDriverCapabilities &capabilities,
+                           const QString &writeDatasetOnFileSuffix );
 
     /**
      * Returns the capabilities for this driver.
@@ -98,10 +99,16 @@ class CORE_EXPORT QgsMeshDriverMetadata
      */
     QString description() const;
 
+    /**
+     * Returns the suffix used to write datasets on file
+     */
+    QString writeDatasetOnFileSuffix() const;
+
   private:
     QString mName;
     QString mDescription;
     MeshDriverCapabilities mCapabilities;
+    QString mWriteDatasetOnFileSuffix;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMeshDriverMetadata::MeshDriverCapabilities )

@@ -375,6 +375,7 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
      * \param extraOptions dataset's extra options stored by the provider. Usually contains the name, time value, time units, data file vendor, ...
      */
     QgsMeshDatasetGroupMetadata( const QString &name,
+                                 const QString uri,
                                  bool isScalar,
                                  DataType dataType,
                                  double minimum,
@@ -388,6 +389,13 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
      * Returns name of the dataset group
      */
     QString name() const;
+
+    /**
+     * Returns the uri of the source
+     *
+     * \since QGIS 3.16
+     */
+    QString uri() const;
 
     /**
      * Returns extra metadata options, for example description
@@ -444,6 +452,7 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
 
   private:
     QString mName;
+    QString mUri;
     bool mIsScalar = false;
     DataType mDataType = DataType::DataOnFaces;
     double mMinimumValue = std::numeric_limits<double>::quiet_NaN();
@@ -548,6 +557,19 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
   public:
 
     /**
+     * Where the dataset group is stored
+     *
+     * \since QGIS 3.16
+     */
+    enum StorageType
+    {
+      None, //! Generic item that do not store dataset
+      File, //! Dataset group store on file
+      Memory, //! Temporary dataset group in memory
+      OnTheFly //! Dataset group which id based on expression evamluted in real-time
+    };
+
+    /**
      * Constructor for an empty dataset group tree item
      */
     QgsMeshDatasetGroupTreeItem();
@@ -560,6 +582,7 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
      * \param index index of the dataset group
      */
     QgsMeshDatasetGroupTreeItem( const QString &defaultName,
+                                 const QString &providerName,
                                  bool isVector,
                                  int index );
 
@@ -591,6 +614,16 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
      * \note takes ownership of item
      */
     void appendChild( QgsMeshDatasetGroupTreeItem *item SIP_TRANSFER );
+
+    /**
+     * Removes a item child if exists
+     * \param item the item to append
+     *
+     * \note takes ownership of item
+     *
+     * \since QGIS 3.16
+     */
+    void removeChild( QgsMeshDatasetGroupTreeItem *item SIP_TRANSFER );
 
     /**
      * Returns a child
@@ -648,6 +681,15 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
     void setName( const QString &name );
 
     /**
+     * Returns the name used by the provider to identify the dataset
+     *
+     * \return the provider name
+     *
+     * \since QGIS 3.16
+     */
+    QString providerName() const;
+
+    /**
      * \return whether the dataset group is vector
      */
     bool isVector() const;
@@ -674,6 +716,21 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
     QString defaultName() const;
 
     /**
+     * \return where the dataset group is stored
+     *
+     * \since QGIS 3.16
+     */
+    QgsMeshDatasetGroupTreeItem::StorageType storageType() const;
+
+    /**
+     * Sets where the dataset is stored
+     * \param storeType the type of storing
+     *
+     * \since QGIS 3.16
+     */
+    void setStorageType( QgsMeshDatasetGroupTreeItem::StorageType storageType );
+
+    /**
      * Write the item and its children in a DOM document
      * \param doc the DOM document
      * \param context writing context (e.g. for conversion between relative and absolute paths)
@@ -688,10 +745,199 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
 
     // Data
     QString mUserName;
+    QString mOriginalName;
     QString mProviderName;
+    StorageType mStoreType = None;
     bool mIsVector = false;
     int mDatasetGroupIndex = -1;
     bool mIsEnabled = true;
 };
+
+#ifndef SIP_RUN
+
+/**
+ * \ingroup core
+ *
+ * Abstract class that represents a dataset
+ *
+ * \since QGIS 3.16
+ */
+class CORE_EXPORT QgsMeshDataset
+{
+  public:
+    //! Constructor
+    QgsMeshDataset() = default;
+
+    //! Destructor
+    virtual ~QgsMeshDataset() = default;
+
+    //! Returns the value with index \a valueIndex
+    virtual QgsMeshDatasetValue datasetValue( int valueIndex ) const = 0;
+
+    //! Returns \a count values from \a valueIndex
+    virtual QgsMeshDataBlock datasetValues( bool isScalar, int valueIndex, int count ) const = 0;
+
+    //! Returns whether faces are active
+    virtual QgsMeshDataBlock areFacesActive( int faceIndex, int count ) const = 0;
+
+    //! Returns whether the face is active
+    virtual bool isActive( int faceIndex ) const = 0;
+
+    //! Returns the metadata of the dataset
+    virtual QgsMeshDatasetMetadata metaData() const = 0;
+
+    //! Calculates minimum and maximum of the dataset
+    virtual void calculateMinMax() = 0;
+
+    //! Returns the values count
+    virtual int valuesCount() const = 0;
+};
+
+/**
+ * \ingroup core
+ *
+ * Class to store memory dataset
+ * The QgsMeshDatasetValue objects and whether the faces are active are stored in QVector containers that are exposed for efficiency
+ *
+ * \since QGIS 3.16
+ */
+class CORE_EXPORT QgsMeshMemoryDataset: public QgsMeshDataset
+{
+  public:
+    //! Constructor
+    QgsMeshMemoryDataset() = default;
+
+    QgsMeshDatasetValue datasetValue( int valueIndex ) const override;
+    QgsMeshDataBlock datasetValues( bool isScalar, int valueIndex, int count ) const override;
+    QgsMeshDataBlock areFacesActive( int faceIndex, int count ) const override;
+    QgsMeshDatasetMetadata metaData() const override;
+    void calculateMinMax() override;
+    bool isActive( int faceIndex ) const override;
+    int valuesCount() const override;
+
+    QVector<QgsMeshDatasetValue> values;
+    QVector<int> active;
+    double time = -1;
+    bool valid = false;
+    double minimum = std::numeric_limits<double>::quiet_NaN();
+    double maximum = std::numeric_limits<double>::quiet_NaN();
+};
+
+/**
+ * \ingroup core
+ *
+ * Abstract class that represents a dataset group
+ *
+ * \since QGIS 3.16
+ */
+class CORE_EXPORT QgsMeshDatasetGroup
+{
+  public:
+    //! Default constructor
+    QgsMeshDatasetGroup() = default;
+    virtual ~QgsMeshDatasetGroup() = default;
+
+    //! Constructor with the \a name of the dataset group
+    QgsMeshDatasetGroup( const QString &name );
+
+    //! Constructor with the \a name of the dataset group and the \a dataTYpe
+    QgsMeshDatasetGroup( const QString &name, QgsMeshDatasetGroupMetadata::DataType dataType );
+
+    //! Returns the metadata of the dataset group
+    virtual QgsMeshDatasetGroupMetadata groupMetadata() const;
+
+    //! Returns the metadata of the dataset with index \a datasetIndex
+    virtual QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) = 0;
+
+    //! Returns the count of datasets in the group
+    virtual int datasetCount() const = 0;
+
+    //! Returns the dataset with \a index
+    virtual const QgsMeshDataset *dataset( int index ) const = 0;
+
+    //! Returns the minimum value of the whole dataset group
+    double minimum() const;
+
+    //! Returns the maximum value of the whole dataset group
+    double maximum() const;
+
+    //! Overrides the minimum and the maximum value of the whole dataset group
+    void setMinimumMaximum( double min, double max );
+
+    //! Returns the name of the dataset group
+    QString name() const;
+
+    //! Sets the name of the dataset group
+    void setName( const QString &name );
+
+    //! Returns the data type of the dataset group
+    QgsMeshDatasetGroupMetadata::DataType dataType() const;
+
+    //! Sets the data type of the dataset group
+    void setDataType( const QgsMeshDatasetGroupMetadata::DataType &dataType );
+
+    //! Adds extra metadata to the group
+    void addExtraMetadata( QString key, QString value );
+    //! Returns all the extra metadata of the group
+    QMap<QString, QString> extraMetadata() const;
+
+    //! Returns whether the group contain scalar values
+    bool isScalar() const;
+
+    //! Sets whether the group contain scalar values
+    void setIsScalar( bool isScalar );
+
+    //! Returns whether all the datasets contain \a count values
+    bool checkValueCountPerDataset( int count ) const;
+
+  protected:
+    QString mName;
+    double mMinimum = std::numeric_limits<double>::quiet_NaN();
+    double mMaximum = std::numeric_limits<double>::quiet_NaN();
+    QgsMeshDatasetGroupMetadata::DataType mDataType = QgsMeshDatasetGroupMetadata::DataOnVertices;
+    QMap<QString, QString> mMetadata;
+    bool mIsScalar = true;
+};
+
+/**
+ * \ingroup core
+ *
+ * Class that represents a dataset group stored in memory
+ * The QgsMeshMemoryDataset objects stores in a QVector container that are exposed for efficiency
+ *
+ * \since QGIS 3.16
+ */
+class CORE_EXPORT QgsMeshMemoryDatasetGroup: public QgsMeshDatasetGroup
+{
+  public:
+    //! Constructor
+    QgsMeshMemoryDatasetGroup() = default;
+    //! Constructor with the \a name of the group
+    QgsMeshMemoryDatasetGroup( const QString &name );
+    //! Constructor with the \a name of the group and the type of data \a dataType
+    QgsMeshMemoryDatasetGroup( const QString &name, QgsMeshDatasetGroupMetadata::DataType dataType );
+
+    int datasetCount() const override;
+    QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) override;
+    const QgsMeshDataset *dataset( int index ) const override;
+
+    //! Adds a memory dataset to the group
+    void addDataset( std::shared_ptr<QgsMeshMemoryDataset> dataset );
+
+    //! Removes all the datasets from the group
+    void clearDatasets();
+
+    //! Returns the dataset with \a index
+    std::shared_ptr<const QgsMeshMemoryDataset> constDataset( int index ) const;
+
+    //! Calculates the statictics (minimum and maximum)
+    void calculateStatistic();
+
+    //! Contains all the memory datasets
+    QVector<std::shared_ptr<QgsMeshMemoryDataset>> memoryDatasets;
+
+};
+
+#endif //SIP_RUN
 
 #endif // QGSMESHDATASET_H

@@ -235,6 +235,42 @@ class CORE_EXPORT QgsLegendSettings
     void setSymbolSize( QSizeF s ) {mSymbolSize = s;}
 
     /**
+     * Returns the maximum symbol size (in mm). 0.0 means there is no maximum set.
+     *
+     * \see setMaximumSymbolSize()
+     * \since QGIS 3.16
+     */
+    double maximumSymbolSize() const {return mMaxSymbolSize; }
+
+    /**
+     * Set the maximum symbol \a size for symbol (in millimeters).
+     *
+     * A symbol size of 0.0 indicates no maximum is set.
+     *
+     * \see maximumSymbolSize()
+     * \since QGIS 3.16
+     */
+    void setMaximumSymbolSize( double size ) { mMaxSymbolSize = size;}
+
+    /**
+     * Returns the minimum symbol size (in mm). A value 0.0 means there is no minimum set.
+     *
+     * \see setMinimumSymbolSize
+     * \since QGIS 3.16
+     */
+    double minimumSymbolSize() const {return mMinSymbolSize; }
+
+    /**
+     * Set the minimum symbol \a size for symbol (in millimeters).
+     *
+     * A symbol size of 0.0 indicates no minimum is set.
+     *
+     * \see minimumSymbolSize()
+     * \since QGIS 3.16
+     */
+    void setMinimumSymbolSize( double size ) { mMinSymbolSize = size;}
+
+    /**
      * Sets the \a alignment for placement of legend symbols.
      *
      * Only Qt::AlignLeft or Qt::AlignRight are supported values.
@@ -478,6 +514,12 @@ class CORE_EXPORT QgsLegendSettings
 
 //! Width and height of symbol icon
     QSizeF mSymbolSize;
+
+//! Maximum marker symbol size (in mm)
+    double mMaxSymbolSize = 0.0;
+
+//! Minimum marker symbol size (in mm)
+    double mMinSymbolSize = 0.0;
 
 //! Width and height of WMS legendGraphic pixmap
     QSizeF mWmsLegendSize;

@@ -125,6 +125,12 @@ HINTS[33]="Use QString() instead"
 KEYWORDS[34]="QLatin1String( \"\" )"
 HINTS[34]="Use QString() instead"
 
+KEYWORDS[35]="@see"
+HINTS[35]="Use \see instead (works correct with Python docstrings)"
+
+KEYWORDS[36]="@brief"
+HINTS[36]="Use \brief instead (works correct with Python docstrings)"
+
 RES=
 DIR=$(git rev-parse --show-toplevel)
 

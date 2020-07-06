@@ -1,6 +1,7 @@
 {
   "name": "intersection",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns a geometry that represents the shared portion of two geometries.",
   "arguments": [ {"arg":"geometry1","description":"a geometry"},
                  {"arg":"geometry2","description":"a geometry"}],

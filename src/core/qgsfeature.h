@@ -176,9 +176,9 @@ class CORE_EXPORT QgsFeature
      * \param id feature id
      */
 #ifndef SIP_RUN
-    QgsFeature( QgsFeatureId id = QgsFeatureId() );
+    QgsFeature( QgsFeatureId id = FID_NULL );
 #else
-    QgsFeature( qint64 id = 0 );
+    QgsFeature( qint64 id = FID_NULL );
 #endif
 
     /**
@@ -187,9 +187,9 @@ class CORE_EXPORT QgsFeature
      * \param id feature id
      */
 #ifndef SIP_RUN
-    QgsFeature( const QgsFields &fields, QgsFeatureId id = QgsFeatureId() );
+    QgsFeature( const QgsFields &fields, QgsFeatureId id = FID_NULL );
 #else
-    QgsFeature( const QgsFields &fields, qint64 id = 0 );
+    QgsFeature( const QgsFields &fields, qint64 id = FID_NULL );
 #endif
 
     /**

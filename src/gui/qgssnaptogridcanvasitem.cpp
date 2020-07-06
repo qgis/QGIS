@@ -29,7 +29,7 @@ void QgsSnapToGridCanvasItem::paint( QPainter *painter )
   if ( !mEnabled || !mAvailableByZoomFactor )
     return;
 
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   QgsRectangle mapRect = mMapCanvas->extent();
 
   painter->setRenderHints( QPainter::Antialiasing );
@@ -77,8 +77,6 @@ void QgsSnapToGridCanvasItem::paint( QPainter *painter )
     Q_UNUSED( e )
     mAvailableByZoomFactor = false;
   }
-
-  painter->restore();
 }
 
 QgsPointXY QgsSnapToGridCanvasItem::point() const

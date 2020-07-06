@@ -36,13 +36,11 @@ void QgsTransformEffect::draw( QgsRenderContext &context )
   QPainter *painter = context.painter();
 
   //apply transformations
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
 
   QTransform t = createTransform( context );
   painter->setTransform( t, true );
   drawSource( *painter );
-
-  painter->restore();
 }
 
 QgsStringMap QgsTransformEffect::properties() const

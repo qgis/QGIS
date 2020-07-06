@@ -155,7 +155,7 @@ void TestQgsMeshCalculator::dualOp()
 
   QVERIFY( node.calculate( utils, result ) );
   QCOMPARE( result.datasetCount(), 1 );
-  std::shared_ptr<QgsMeshMemoryDataset> ds = result.datasets[0];
+  std::shared_ptr<QgsMeshMemoryDataset> ds = result.memoryDatasets[0];
   for ( int i = 0; i < ds->values.size(); ++i )
   {
     double val = ds->values.at( i ).scalar();
@@ -202,7 +202,7 @@ void TestQgsMeshCalculator::singleOp()
   QVERIFY( node.calculate( utils, result ) );
 
   QCOMPARE( result.datasetCount(), 1 );
-  std::shared_ptr<QgsMeshMemoryDataset> ds = result.datasets[0];
+  std::shared_ptr<QgsMeshMemoryDataset> ds = result.memoryDatasets[0];
   for ( int i = 0; i < ds->values.size(); ++i )
   {
     double val = ds->values.at( i ).scalar();

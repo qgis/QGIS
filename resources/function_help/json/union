@@ -1,6 +1,7 @@
 {
   "name": "union",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns a geometry that represents the point set union of the geometries.",
   "arguments": [ {"arg":"geometry1","description":"a geometry"},
                  {"arg":"geometry2","description":"a geometry"}],

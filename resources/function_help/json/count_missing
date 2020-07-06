@@ -1,6 +1,7 @@
 {
   "name": "count_missing",
   "type": "function",
+  "groups": ["Aggregates"],
   "description": "Returns the count of missing (null) values.",
   "arguments": [
 	{"arg":"expression", "description":"sub expression of field to aggregate"},

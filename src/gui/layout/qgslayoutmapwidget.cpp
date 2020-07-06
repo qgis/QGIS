@@ -34,6 +34,7 @@
 #include "qgsbookmarkmodel.h"
 #include "qgsreferencedgeometry.h"
 #include "qgsprojectviewsettings.h"
+#include "qgsmaplayermodel.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -85,10 +86,14 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *ma
   connect( mOverviewListWidget, &QListWidget::currentItemChanged, this, &QgsLayoutMapWidget::mOverviewListWidget_currentItemChanged );
   connect( mOverviewListWidget, &QListWidget::itemChanged, this, &QgsLayoutMapWidget::mOverviewListWidget_itemChanged );
   connect( mActionLabelSettings, &QAction::triggered, this, &QgsLayoutMapWidget::showLabelSettings );
+  connect( mActionClipSettings, &QAction::triggered, this, &QgsLayoutMapWidget::showClipSettings );
+
   connect( mTemporalCheckBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutMapWidget::mTemporalCheckBox_toggled );
   connect( mStartDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsLayoutMapWidget::updateTemporalExtent );
   connect( mEndDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsLayoutMapWidget::updateTemporalExtent );
 
+  mStartDateTime->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ) ), mStartDateTime->maximumDateTime() );
+  mEndDateTime->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ) ), mStartDateTime->maximumDateTime() );
   mStartDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
   mEndDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 
@@ -205,8 +210,14 @@ void QgsLayoutMapWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout
 
 void QgsLayoutMapWidget::setReportTypeString( const QString &string )
 {
+  mReportTypeString = string;
   mAtlasCheckBox->setTitle( tr( "Controlled by %1" ).arg( string == tr( "atlas" ) ? tr( "Atlas" ) : tr( "Report" ) ) );
   mAtlasPredefinedScaleRadio->setToolTip( tr( "Use one of the predefined scales of the project where the %1 feature best fits." ).arg( string ) );
+
+  if ( mClipWidget )
+    mClipWidget->setReportTypeString( string );
+  if ( mLabelWidget )
+    mLabelWidget->setReportTypeString( string );
 }
 
 void QgsLayoutMapWidget::setDesignerInterface( QgsLayoutDesignerInterface *iface )
@@ -231,6 +242,8 @@ bool QgsLayoutMapWidget::setNewItem( QgsLayoutItem *item )
   mItemPropertiesWidget->setItem( mMapItem );
   if ( mLabelWidget )
     mLabelWidget->setItem( mMapItem );
+  if ( mClipWidget )
+    mClipWidget->setItem( mMapItem );
 
   if ( mMapItem )
   {
@@ -411,7 +424,19 @@ void QgsLayoutMapWidget::overviewSymbolChanged()
 void QgsLayoutMapWidget::showLabelSettings()
 {
   mLabelWidget = new QgsLayoutMapLabelingWidget( mMapItem );
+
+  if ( !mReportTypeString.isEmpty() )
+    mLabelWidget->setReportTypeString( mReportTypeString );
+
   openPanel( mLabelWidget );
+}
+
+void QgsLayoutMapWidget::showClipSettings()
+{
+  mClipWidget = new QgsLayoutMapClippingWidget( mMapItem );
+  if ( !mReportTypeString.isEmpty() )
+    mClipWidget->setReportTypeString( mReportTypeString );
+  openPanel( mClipWidget );
 }
 
 void QgsLayoutMapWidget::switchToMoveContentTool()
@@ -1922,4 +1947,181 @@ bool QgsLayoutMapItemBlocksLabelsModel::filterAcceptsRow( int source_row, const 
   }
 
   return true;
+}
+
+
+
+//
+// QgsLayoutMapClippingWidget
+//
+
+QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
+  : QgsLayoutItemBaseWidget( nullptr, map )
+  , mMapItem( map )
+{
+  setupUi( this );
+  setPanelTitle( tr( "Clipping Settings" ) );
+
+  mLayerModel = new QgsMapLayerModel( this );
+  mLayerModel->setItemsCheckable( true );
+  mLayersTreeView->setModel( mLayerModel );
+
+  mAtlasClippingTypeComboBox->addItem( tr( "Clip During Render Only" ), static_cast< int >( QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly ) );
+  mAtlasClippingTypeComboBox->addItem( tr( "Clip Feature Before Render" ), static_cast< int >( QgsMapClippingRegion::FeatureClippingType::ClipToIntersection ) );
+  mAtlasClippingTypeComboBox->addItem( tr( "Render Intersecting Features Unchanged" ), static_cast< int >( QgsMapClippingRegion::FeatureClippingType::NoClipping ) );
+
+  connect( mRadioClipSelectedLayers, &QRadioButton::toggled, mLayersTreeView, &QWidget::setEnabled );
+  mLayersTreeView->setEnabled( false );
+  mRadioClipAllLayers->setChecked( true );
+
+  connect( mClipToAtlasCheckBox, &QGroupBox::toggled, this, [ = ]( bool active )
+  {
+    if ( !mBlockUpdates )
+    {
+      mMapItem->beginCommand( tr( "Toggle Atlas Clipping" ) );
+      mMapItem->atlasClippingSettings()->setEnabled( active );
+      mMapItem->endCommand();
+    }
+  } );
+  connect( mForceLabelsInsideCheckBox, &QCheckBox::toggled, this, [ = ]( bool active )
+  {
+    if ( !mBlockUpdates )
+    {
+      mMapItem->beginCommand( tr( "Change Atlas Clipping Label Behavior" ) );
+      mMapItem->atlasClippingSettings()->setForceLabelsInsideFeature( active );
+      mMapItem->endCommand();
+    }
+  } );
+  connect( mAtlasClippingTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    if ( !mBlockUpdates )
+    {
+      mMapItem->beginCommand( tr( "Change Atlas Clipping Behavior" ) );
+      mMapItem->atlasClippingSettings()->setFeatureClippingType( static_cast< QgsMapClippingRegion::FeatureClippingType >( mAtlasClippingTypeComboBox->currentData().toInt() ) );
+      mMapItem->endCommand();
+    }
+  } );
+
+  connect( mRadioClipSelectedLayers, &QCheckBox::toggled, this, [ = ]( bool active )
+  {
+    if ( active && !mBlockUpdates )
+    {
+      mBlockUpdates = true;
+      mMapItem->beginCommand( tr( "Change Atlas Clipping Layers" ) );
+      mMapItem->atlasClippingSettings()->setLayersToClip( mLayerModel->layersChecked( ) );
+      mMapItem->endCommand();
+      mBlockUpdates = false;
+    }
+  } );
+  connect( mRadioClipAllLayers, &QCheckBox::toggled, this, [ = ]( bool active )
+  {
+    if ( active && !mBlockUpdates )
+    {
+      mBlockUpdates = true;
+      mMapItem->beginCommand( tr( "Change Atlas Clipping Layers" ) );
+      mMapItem->atlasClippingSettings()->setLayersToClip( QList< QgsMapLayer * >() );
+      mMapItem->endCommand();
+      mBlockUpdates = false;
+    }
+  } );
+  connect( mLayerModel, &QgsMapLayerModel::dataChanged, this, [ = ]( const QModelIndex &, const QModelIndex &, const QVector<int> &roles = QVector<int>() )
+  {
+    if ( !roles.contains( Qt::CheckStateRole ) )
+      return;
+
+    if ( !mBlockUpdates )
+    {
+      mBlockUpdates = true;
+      mMapItem->beginCommand( tr( "Change Atlas Clipping Layers" ) );
+      mMapItem->atlasClippingSettings()->setLayersToClip( mLayerModel->layersChecked() );
+      mMapItem->endCommand();
+      mBlockUpdates = false;
+    }
+  } );
+
+  setNewItem( map );
+
+  connect( &map->layout()->reportContext(), &QgsLayoutReportContext::layerChanged,
+           this, &QgsLayoutMapClippingWidget::atlasLayerChanged );
+  if ( QgsLayoutAtlas *atlas = layoutAtlas() )
+  {
+    connect( atlas, &QgsLayoutAtlas::toggled, this, &QgsLayoutMapClippingWidget::atlasToggled );
+    atlasToggled( atlas->enabled() );
+  }
+}
+
+void QgsLayoutMapClippingWidget::setReportTypeString( const QString &string )
+{
+  mClipToAtlasCheckBox->setTitle( tr( "Clip to %1 feature" ).arg( string ) );
+  mClipToAtlasLabel->setText( tr( "<b>When enabled, map layers will be automatically clipped to the boundary of the current %1 feature.</b>" ).arg( string ) );
+  mForceLabelsInsideCheckBox->setText( tr( "Force labels inside %1 feature" ).arg( string ) );
+}
+
+bool QgsLayoutMapClippingWidget::setNewItem( QgsLayoutItem *item )
+{
+  if ( item->type() != QgsLayoutItemRegistry::LayoutMap )
+    return false;
+
+  if ( mMapItem )
+  {
+    disconnect( mMapItem, &QgsLayoutObject::changed, this, &QgsLayoutMapClippingWidget::updateGuiElements );
+  }
+
+  mMapItem = qobject_cast< QgsLayoutItemMap * >( item );
+
+  if ( mMapItem )
+  {
+    connect( mMapItem, &QgsLayoutObject::changed, this, &QgsLayoutMapClippingWidget::updateGuiElements );
+  }
+
+  updateGuiElements();
+
+  return true;
+}
+
+void QgsLayoutMapClippingWidget::updateGuiElements()
+{
+  if ( mBlockUpdates )
+    return;
+
+  mBlockUpdates = true;
+  mClipToAtlasCheckBox->setChecked( mMapItem->atlasClippingSettings()->enabled() );
+  mAtlasClippingTypeComboBox->setCurrentIndex( mAtlasClippingTypeComboBox->findData( static_cast< int >( mMapItem->atlasClippingSettings()->featureClippingType() ) ) );
+  mForceLabelsInsideCheckBox->setChecked( mMapItem->atlasClippingSettings()->forceLabelsInsideFeature() );
+
+  mRadioClipAllLayers->setChecked( mMapItem->atlasClippingSettings()->layersToClip().isEmpty() );
+  mRadioClipSelectedLayers->setChecked( !mMapItem->atlasClippingSettings()->layersToClip().isEmpty() );
+  mLayerModel->setLayersChecked( mMapItem->atlasClippingSettings()->layersToClip() );
+
+  mBlockUpdates = false;
+}
+
+void QgsLayoutMapClippingWidget::atlasLayerChanged( QgsVectorLayer *layer )
+{
+  if ( !layer || layer->geometryType() != QgsWkbTypes::PolygonGeometry )
+  {
+    //non-polygon layer, disable atlas control
+    mClipToAtlasCheckBox->setChecked( false );
+    mClipToAtlasCheckBox->setEnabled( false );
+    return;
+  }
+  else
+  {
+    mClipToAtlasCheckBox->setEnabled( true );
+  }
+}
+
+void QgsLayoutMapClippingWidget::atlasToggled( bool atlasEnabled )
+{
+  if ( atlasEnabled &&
+       mMapItem && mMapItem->layout() && mMapItem->layout()->reportContext().layer()
+       && mMapItem->layout()->reportContext().layer()->geometryType() == QgsWkbTypes::PolygonGeometry )
+  {
+    mClipToAtlasCheckBox->setEnabled( true );
+  }
+  else
+  {
+    mClipToAtlasCheckBox->setEnabled( false );
+    mClipToAtlasCheckBox->setChecked( false );
+  }
 }

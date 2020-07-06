@@ -361,7 +361,7 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
   }
 
   QPainter *p = context.renderContext().painter();
-  p->save();
+  QgsScopedQPainterState painterState( p );
   // painter is scaled to dots, so scale back to layout units
   p->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
 
@@ -551,9 +551,6 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
     cell = QRectF( messageX, messageY, mTableSize.width() - messageX, cellBodyHeight );
     QgsLayoutUtils::drawText( p, cell, mEmptyTableMessage, mContentFont, mContentFontColor, Qt::AlignHCenter, Qt::AlignVCenter, static_cast< Qt::TextFlag >( 0 ) );
   }
-
-  p->restore();
-
 }
 
 void QgsLayoutTable::setCellMargin( const double margin )

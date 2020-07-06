@@ -68,7 +68,7 @@ Start the download
 
     void cancel();
 %Docstring
-Cancel the download operation
+Cancel the download operation.
 %End
 
   signals:

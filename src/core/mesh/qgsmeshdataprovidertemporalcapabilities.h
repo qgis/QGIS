@@ -22,6 +22,7 @@
 #include "qgsrange.h"
 #include "qgsmeshdataset.h"
 
+#define  INVALID_MESHLAYER_TIME -99999
 
 /**
  * \class QgsMeshDataProviderTemporalCapabilities

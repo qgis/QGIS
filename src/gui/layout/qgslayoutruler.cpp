@@ -288,7 +288,7 @@ void QgsLayoutRuler::drawGuideMarkers( QPainter *p, QgsLayout *layout )
 {
   QList< QgsLayoutItemPage * > visiblePages = mView->visiblePages();
   QList< QgsLayoutGuide * > guides = layout->guides().guides( mOrientation == Qt::Horizontal ? Qt::Vertical : Qt::Horizontal );
-  p->save();
+  QgsScopedQPainterState painterState( p );
   p->setRenderHint( QPainter::Antialiasing, true );
   p->setPen( Qt::NoPen );
   const auto constGuides = guides;
@@ -318,7 +318,6 @@ void QgsLayoutRuler::drawGuideMarkers( QPainter *p, QgsLayout *layout )
       drawGuideAtPos( p, convertLayoutPointToLocal( point ) );
     }
   }
-  p->restore();
 }
 
 void QgsLayoutRuler::drawGuideAtPos( QPainter *painter, QPoint pos )
@@ -417,11 +416,10 @@ QgsLayoutGuide *QgsLayoutRuler::guideAtPoint( QPoint localPoint ) const
 
 void QgsLayoutRuler::drawRotatedText( QPainter *painter, QPointF pos, const QString &text )
 {
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->translate( pos.x(), pos.y() );
   painter->rotate( 270 );
   painter->drawText( 0, 0, text );
-  painter->restore();
 }
 
 void QgsLayoutRuler::drawSmallDivisions( QPainter *painter, double startPos, int numDivisions, double rulerScale, double maxPos )

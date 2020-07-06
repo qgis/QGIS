@@ -1,6 +1,7 @@
 {
   "name": "distance",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns the minimum distance (based on spatial ref) between two geometries in projected units.",
   "arguments": [ {"arg":"geometry a","description":"a geometry"},
   {"arg":"geometry b","description":"a geometry"}],

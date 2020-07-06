@@ -1,6 +1,7 @@
 {
   "name": "array_to_string",
   "type": "function",
+  "groups": ["Arrays"],
   "description": "Concatenates array elements into a string separated by a delimiter and using optional string for empty values.",
   "arguments": [
     {"arg":"array", "description":"the input array"},

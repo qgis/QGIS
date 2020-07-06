@@ -311,6 +311,8 @@ SET(QGIS_CORE_SRCS
   qgslocalec.cpp
   qgslocalizeddatapathregistry.cpp
   qgslogger.cpp
+  qgsmapclippingregion.cpp
+  qgsmapclippingutils.cpp
   qgsmapdecoration.cpp
   qgsmaphittest.cpp
   qgsmaplayer.cpp
@@ -589,6 +591,7 @@ SET(QGIS_CORE_SRCS
   mesh/qgsmeshdataprovider.cpp
   mesh/qgsmeshdataprovidertemporalcapabilities.cpp
   mesh/qgsmeshdataset.cpp
+  mesh/qgsmeshdatasetgroupstore.cpp
   mesh/qgsmeshlayer.cpp
   mesh/qgsmeshlayerinterpolator.cpp
   mesh/qgsmeshlayerrenderer.cpp
@@ -601,8 +604,6 @@ SET(QGIS_CORE_SRCS
   mesh/qgsmeshtracerenderer.cpp
   mesh/qgsmeshvectorrenderer.cpp
   mesh/qgstriangularmesh.cpp
-
-
 
   labeling/qgslabelfeature.cpp
   labeling/qgslabelingengine.cpp
@@ -860,6 +861,8 @@ SET(QGIS_CORE_HDRS
   qgslocalec.h
   qgslocalizeddatapathregistry.h
   qgslogger.h
+  qgsmapclippingregion.h
+  qgsmapclippingutils.h
   qgsmapdecoration.h
   qgsmaphittest.h
   qgsmaplayer.h
@@ -1229,6 +1232,7 @@ SET(QGIS_CORE_HDRS
   mesh/qgsmeshdataprovider.h
   mesh/qgsmeshdataprovidertemporalcapabilities.h
   mesh/qgsmeshdataset.h
+  mesh/qgsmeshdatasetgroupstore.h
   mesh/qgsmeshlayer.h
   mesh/qgsmeshlayerinterpolator.h
   mesh/qgsmeshlayerrenderer.h
