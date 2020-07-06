@@ -23,6 +23,7 @@
 #include <QString>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -65,7 +66,7 @@ class CORE_EXPORT QgsWkbTypes
      * if they should be available for a given geometry type or act in
      * a different mode.
      */
-    enum Type
+    enum class Type SIP_MONKEYPATCH_SCOPEENUM : long
     {
       Unknown = 0,
       Point = 1,
@@ -136,7 +137,7 @@ class CORE_EXPORT QgsWkbTypes
      *
      * \see geometryType( QgsWkbTypes::Type )
      */
-    enum GeometryType
+    enum class GeometryType SIP_MONKEYPATCH_SCOPEENUM : int
     {
       PointGeometry,
       LineGeometry,
@@ -157,138 +158,138 @@ class CORE_EXPORT QgsWkbTypes
     {
       switch ( type )
       {
-        case Unknown:
-        case GeometryCollection:
-        case GeometryCollectionZ:
-        case GeometryCollectionM:
-        case GeometryCollectionZM:
-          return Unknown;
+        case Type::Unknown:
+        case Type::GeometryCollection:
+        case Type::GeometryCollectionZ:
+        case Type::GeometryCollectionM:
+        case Type::GeometryCollectionZM:
+          return Type::Unknown;
 
-        case Point:
-        case MultiPoint:
-          return Point;
+        case Type::Point:
+        case Type::MultiPoint:
+          return Type::Point;
 
-        case PointZ:
-        case MultiPointZ:
-          return PointZ;
+        case Type::PointZ:
+        case Type::MultiPointZ:
+          return Type::PointZ;
 
-        case PointM:
-        case MultiPointM:
-          return PointM;
+        case Type::PointM:
+        case Type::MultiPointM:
+          return Type::PointM;
 
-        case PointZM:
-        case MultiPointZM:
-          return PointZM;
+        case Type::PointZM:
+        case Type::MultiPointZM:
+          return Type::PointZM;
 
-        case LineString:
-        case MultiLineString:
-          return LineString;
+        case Type::LineString:
+        case Type::MultiLineString:
+          return Type::LineString;
 
-        case LineStringZ:
-        case MultiLineStringZ:
-          return LineStringZ;
+        case Type::LineStringZ:
+        case Type::MultiLineStringZ:
+          return Type::LineStringZ;
 
-        case LineStringM:
-        case MultiLineStringM:
-          return LineStringM;
+        case Type::LineStringM:
+        case Type::MultiLineStringM:
+          return Type::LineStringM;
 
-        case LineStringZM:
-        case MultiLineStringZM:
-          return LineStringZM;
+        case Type::LineStringZM:
+        case Type::MultiLineStringZM:
+          return Type::LineStringZM;
 
-        case Polygon:
-        case MultiPolygon:
-          return Polygon;
+        case Type::Polygon:
+        case Type::MultiPolygon:
+          return Type::Polygon;
 
-        case PolygonZ:
-        case MultiPolygonZ:
-          return PolygonZ;
+        case Type::PolygonZ:
+        case Type::MultiPolygonZ:
+          return Type::PolygonZ;
 
-        case PolygonM:
-        case MultiPolygonM:
-          return PolygonM;
+        case Type::PolygonM:
+        case Type::MultiPolygonM:
+          return Type::PolygonM;
 
-        case PolygonZM:
-        case MultiPolygonZM:
-          return PolygonZM;
+        case Type::PolygonZM:
+        case Type::MultiPolygonZM:
+          return Type::PolygonZM;
 
-        case Triangle:
+        case Type::Triangle:
           // case MultiTriangle:
-          return Triangle;
+          return Type::Triangle;
 
-        case TriangleZ:
+        case Type::TriangleZ:
           // case MultiTriangleZ:
-          return TriangleZ;
+          return Type::TriangleZ;
 
-        case TriangleM:
+        case Type::TriangleM:
           // case MultiTriangleM:
-          return TriangleM;
+          return Type::TriangleM;
 
-        case TriangleZM:
+        case Type::TriangleZM:
           // case MultiTriangleZM:
-          return TriangleZM;
+          return Type::TriangleZM;
 
-        case CircularString:
-          return CircularString;
+        case Type::CircularString:
+          return Type::CircularString;
 
-        case CircularStringZ:
-          return CircularStringZ;
+        case Type::CircularStringZ:
+          return Type::CircularStringZ;
 
-        case CircularStringM:
-          return CircularStringM;
+        case Type::CircularStringM:
+          return Type::CircularStringM;
 
-        case CircularStringZM:
-          return CircularStringZM;
+        case Type::CircularStringZM:
+          return Type::CircularStringZM;
 
-        case CompoundCurve:
-        case MultiCurve:
-          return CompoundCurve;
+        case Type::CompoundCurve:
+        case Type::MultiCurve:
+          return Type::CompoundCurve;
 
-        case CompoundCurveZ:
-        case MultiCurveZ:
-          return CompoundCurveZ;
+        case Type::CompoundCurveZ:
+        case Type::MultiCurveZ:
+          return Type::CompoundCurveZ;
 
-        case CompoundCurveM:
-        case MultiCurveM:
-          return CompoundCurveM;
+        case Type::CompoundCurveM:
+        case Type::MultiCurveM:
+          return Type::CompoundCurveM;
 
-        case CompoundCurveZM:
-        case MultiCurveZM:
-          return CompoundCurveZM;
+        case Type::CompoundCurveZM:
+        case Type::MultiCurveZM:
+          return Type::CompoundCurveZM;
 
-        case CurvePolygon:
-        case MultiSurface:
-          return CurvePolygon;
+        case Type::CurvePolygon:
+        case Type::MultiSurface:
+          return Type::CurvePolygon;
 
-        case CurvePolygonZ:
-        case MultiSurfaceZ:
-          return CurvePolygonZ;
+        case Type::CurvePolygonZ:
+        case Type::MultiSurfaceZ:
+          return Type::CurvePolygonZ;
 
-        case CurvePolygonM:
-        case MultiSurfaceM:
-          return CurvePolygonM;
+        case Type::CurvePolygonM:
+        case Type::MultiSurfaceM:
+          return Type::CurvePolygonM;
 
-        case CurvePolygonZM:
-        case MultiSurfaceZM:
-          return CurvePolygonZM;
+        case Type::CurvePolygonZM:
+        case Type::MultiSurfaceZM:
+          return Type::CurvePolygonZM;
 
-        case NoGeometry:
-          return NoGeometry;
+        case Type::NoGeometry:
+          return Type::NoGeometry;
 
-        case Point25D:
-        case MultiPoint25D:
-          return Point25D;
+        case Type::Point25D:
+        case Type::MultiPoint25D:
+          return Type::Point25D;
 
-        case LineString25D:
-        case MultiLineString25D:
-          return LineString25D;
+        case Type::LineString25D:
+        case Type::MultiLineString25D:
+          return Type::LineString25D;
 
-        case Polygon25D:
-        case MultiPolygon25D:
-          return Polygon25D;
+        case Type::Polygon25D:
+        case Type::MultiPolygon25D:
+          return Type::Polygon25D;
 
       }
-      return Unknown;
+      return Type::Unknown;
     }
 
     /**
@@ -302,134 +303,134 @@ class CORE_EXPORT QgsWkbTypes
     {
       switch ( type )
       {
-        case Unknown:
-          return Unknown;
+        case Type::Unknown:
+          return Type::Unknown;
 
         // until we support TIN types, use multipolygon
-        case Triangle:
-          return MultiPolygon;
+        case Type::Triangle:
+          return Type::MultiPolygon;
 
-        case TriangleZ:
-          return MultiPolygonZ;
+        case Type::TriangleZ:
+          return Type::MultiPolygonZ;
 
-        case TriangleM:
-          return MultiPolygonM;
+        case Type::TriangleM:
+          return Type::MultiPolygonM;
 
-        case TriangleZM:
-          return MultiPolygonZM;
+        case Type::TriangleZM:
+          return Type::MultiPolygonZM;
 
-        case GeometryCollection:
-          return GeometryCollection;
+        case Type::GeometryCollection:
+          return Type::GeometryCollection;
 
-        case GeometryCollectionZ:
-          return GeometryCollectionZ;
+        case Type::GeometryCollectionZ:
+          return Type::GeometryCollectionZ;
 
-        case GeometryCollectionM:
-          return GeometryCollectionM;
+        case Type::GeometryCollectionM:
+          return Type::GeometryCollectionM;
 
-        case GeometryCollectionZM:
-          return GeometryCollectionZM;
+        case Type::GeometryCollectionZM:
+          return Type::GeometryCollectionZM;
 
-        case Point:
-        case MultiPoint:
-          return MultiPoint;
+        case Type::Point:
+        case Type::MultiPoint:
+          return Type::MultiPoint;
 
-        case PointZ:
-        case MultiPointZ:
-          return MultiPointZ;
+        case Type::PointZ:
+        case Type::MultiPointZ:
+          return Type::MultiPointZ;
 
-        case PointM:
-        case MultiPointM:
-          return MultiPointM;
+        case Type::PointM:
+        case Type::MultiPointM:
+          return Type::MultiPointM;
 
-        case PointZM:
-        case MultiPointZM:
-          return MultiPointZM;
+        case Type::PointZM:
+        case Type::MultiPointZM:
+          return Type::MultiPointZM;
 
-        case LineString:
-        case MultiLineString:
-          return MultiLineString;
+        case Type::LineString:
+        case Type::MultiLineString:
+          return Type::MultiLineString;
 
-        case LineStringZ:
-        case MultiLineStringZ:
-          return MultiLineStringZ;
+        case Type::LineStringZ:
+        case Type::MultiLineStringZ:
+          return Type::MultiLineStringZ;
 
-        case LineStringM:
-        case MultiLineStringM:
-          return MultiLineStringM;
+        case Type::LineStringM:
+        case Type::MultiLineStringM:
+          return Type::MultiLineStringM;
 
-        case LineStringZM:
-        case MultiLineStringZM:
-          return MultiLineStringZM;
+        case Type::LineStringZM:
+        case Type::MultiLineStringZM:
+          return Type::MultiLineStringZM;
 
-        case Polygon:
-        case MultiPolygon:
-          return MultiPolygon;
+        case Type::Polygon:
+        case Type::MultiPolygon:
+          return Type::MultiPolygon;
 
-        case PolygonZ:
-        case MultiPolygonZ:
-          return MultiPolygonZ;
+        case Type::PolygonZ:
+        case Type::MultiPolygonZ:
+          return Type::MultiPolygonZ;
 
-        case PolygonM:
-        case MultiPolygonM:
-          return MultiPolygonM;
+        case Type::PolygonM:
+        case Type::MultiPolygonM:
+          return Type::MultiPolygonM;
 
-        case PolygonZM:
-        case MultiPolygonZM:
-          return MultiPolygonZM;
+        case Type::PolygonZM:
+        case Type::MultiPolygonZM:
+          return Type::MultiPolygonZM;
 
-        case CompoundCurve:
-        case CircularString:
-        case MultiCurve:
-          return MultiCurve;
+        case Type::CompoundCurve:
+        case Type::CircularString:
+        case Type::MultiCurve:
+          return Type::MultiCurve;
 
-        case CompoundCurveZ:
-        case CircularStringZ:
-        case MultiCurveZ:
-          return MultiCurveZ;
+        case Type::CompoundCurveZ:
+        case Type::CircularStringZ:
+        case Type::MultiCurveZ:
+          return Type::MultiCurveZ;
 
-        case CompoundCurveM:
-        case CircularStringM:
-        case MultiCurveM:
-          return MultiCurveM;
+        case Type::CompoundCurveM:
+        case Type::CircularStringM:
+        case Type::MultiCurveM:
+          return Type::MultiCurveM;
 
-        case CompoundCurveZM:
-        case CircularStringZM:
-        case MultiCurveZM:
-          return MultiCurveZM;
+        case Type::CompoundCurveZM:
+        case Type::CircularStringZM:
+        case Type::MultiCurveZM:
+          return Type::MultiCurveZM;
 
-        case CurvePolygon:
-        case MultiSurface:
-          return MultiSurface;
+        case Type::CurvePolygon:
+        case Type::MultiSurface:
+          return Type::MultiSurface;
 
-        case CurvePolygonZ:
-        case MultiSurfaceZ:
-          return MultiSurfaceZ;
+        case Type::CurvePolygonZ:
+        case Type::MultiSurfaceZ:
+          return Type::MultiSurfaceZ;
 
-        case CurvePolygonM:
-        case MultiSurfaceM:
-          return MultiSurfaceM;
+        case Type::CurvePolygonM:
+        case Type::MultiSurfaceM:
+          return Type::MultiSurfaceM;
 
-        case CurvePolygonZM:
-        case MultiSurfaceZM:
-          return MultiSurfaceZM;
+        case Type::CurvePolygonZM:
+        case Type::MultiSurfaceZM:
+          return Type::MultiSurfaceZM;
 
-        case NoGeometry:
-          return NoGeometry;
+        case Type::NoGeometry:
+          return Type::NoGeometry;
 
-        case Point25D:
-        case MultiPoint25D:
-          return MultiPoint25D;
+        case Type::Point25D:
+        case Type::MultiPoint25D:
+          return Type::MultiPoint25D;
 
-        case LineString25D:
-        case MultiLineString25D:
-          return MultiLineString25D;
+        case Type::LineString25D:
+        case Type::MultiLineString25D:
+          return Type::MultiLineString25D;
 
-        case Polygon25D:
-        case MultiPolygon25D:
-          return MultiPolygon25D;
+        case Type::Polygon25D:
+        case Type::MultiPolygon25D:
+          return Type::MultiPolygon25D;
       }
-      return Unknown;
+      return Type::Unknown;
     }
 
 
@@ -451,129 +452,129 @@ class CORE_EXPORT QgsWkbTypes
     {
       switch ( type )
       {
-        case Unknown:
-        case Triangle:
-        case TriangleZ:
-        case TriangleM:
-        case TriangleZM:
-          return Unknown;
+        case Type::Unknown:
+        case Type::Triangle:
+        case Type::TriangleZ:
+        case Type::TriangleM:
+        case Type::TriangleZM:
+          return Type::Unknown;
 
-        case GeometryCollection:
-          return GeometryCollection;
+        case Type::GeometryCollection:
+          return Type::GeometryCollection;
 
-        case GeometryCollectionZ:
-          return GeometryCollectionZ;
+        case Type::GeometryCollectionZ:
+          return Type::GeometryCollectionZ;
 
-        case GeometryCollectionM:
-          return GeometryCollectionM;
+        case Type::GeometryCollectionM:
+          return Type::GeometryCollectionM;
 
-        case GeometryCollectionZM:
-          return GeometryCollectionZM;
+        case Type::GeometryCollectionZM:
+          return Type::GeometryCollectionZM;
 
-        case Point:
-          return Point;
+        case Type::Point:
+          return Type::Point;
 
-        case MultiPoint:
-          return MultiPoint;
+        case Type::MultiPoint:
+          return Type::MultiPoint;
 
-        case PointZ:
-          return PointZ;
+        case Type::PointZ:
+          return Type::PointZ;
 
-        case MultiPointZ:
-          return MultiPointZ;
+        case Type::MultiPointZ:
+          return Type::MultiPointZ;
 
-        case PointM:
-          return PointM;
+        case Type::PointM:
+          return Type::PointM;
 
-        case MultiPointM:
-          return MultiPointM;
+        case Type::MultiPointM:
+          return Type::MultiPointM;
 
-        case PointZM:
-          return PointZM;
+        case Type::PointZM:
+          return Type::PointZM;
 
-        case MultiPointZM:
-          return MultiPointZM;
+        case Type::MultiPointZM:
+          return Type::MultiPointZM;
 
-        case LineString:
-        case CompoundCurve:
-        case CircularString:
-          return CompoundCurve;
+        case Type::LineString:
+        case Type::CompoundCurve:
+        case Type::CircularString:
+          return Type::CompoundCurve;
 
-        case MultiLineString:
-        case MultiCurve:
-          return MultiCurve;
+        case Type::MultiLineString:
+        case Type::MultiCurve:
+          return Type::MultiCurve;
 
-        case LineStringZ:
-        case CompoundCurveZ:
-        case CircularStringZ:
-        case LineString25D:
-          return CompoundCurveZ;
+        case Type::LineStringZ:
+        case Type::CompoundCurveZ:
+        case Type::CircularStringZ:
+        case Type::LineString25D:
+          return Type::CompoundCurveZ;
 
-        case MultiLineStringZ:
-        case MultiCurveZ:
-        case MultiLineString25D:
-          return MultiCurveZ;
+        case Type::MultiLineStringZ:
+        case Type::MultiCurveZ:
+        case Type::MultiLineString25D:
+          return Type::MultiCurveZ;
 
-        case LineStringM:
-        case CompoundCurveM:
-        case CircularStringM:
-          return CompoundCurveM;
+        case Type::LineStringM:
+        case Type::CompoundCurveM:
+        case Type::CircularStringM:
+          return Type::CompoundCurveM;
 
-        case MultiLineStringM:
-        case MultiCurveM:
-          return MultiCurveM;
+        case Type::MultiLineStringM:
+        case Type::MultiCurveM:
+          return Type::MultiCurveM;
 
-        case LineStringZM:
-        case CompoundCurveZM:
-        case CircularStringZM:
-          return CompoundCurveZM;
+        case Type::LineStringZM:
+        case Type::CompoundCurveZM:
+        case Type::CircularStringZM:
+          return Type::CompoundCurveZM;
 
-        case MultiLineStringZM:
-        case MultiCurveZM:
-          return MultiCurveZM;
+        case Type::MultiLineStringZM:
+        case Type::MultiCurveZM:
+          return Type::MultiCurveZM;
 
-        case Polygon:
-        case CurvePolygon:
-          return CurvePolygon;
+        case Type::Polygon:
+        case Type::CurvePolygon:
+          return Type::CurvePolygon;
 
-        case MultiPolygon:
-        case MultiSurface:
-          return MultiSurface;
+        case Type::MultiPolygon:
+        case Type::MultiSurface:
+          return Type::MultiSurface;
 
-        case PolygonZ:
-        case CurvePolygonZ:
-        case Polygon25D:
-          return CurvePolygonZ;
+        case Type::PolygonZ:
+        case Type::CurvePolygonZ:
+        case Type::Polygon25D:
+          return Type::CurvePolygonZ;
 
-        case MultiPolygonZ:
-        case MultiSurfaceZ:
-        case MultiPolygon25D:
-          return MultiSurfaceZ;
+        case Type::MultiPolygonZ:
+        case Type::MultiSurfaceZ:
+        case Type::MultiPolygon25D:
+          return Type::MultiSurfaceZ;
 
-        case PolygonM:
-        case CurvePolygonM:
-          return CurvePolygonM;
+        case Type::PolygonM:
+        case Type::CurvePolygonM:
+          return Type::CurvePolygonM;
 
-        case MultiPolygonM:
-        case MultiSurfaceM:
-          return MultiSurfaceM;
+        case Type::MultiPolygonM:
+        case Type::MultiSurfaceM:
+          return Type::MultiSurfaceM;
 
-        case PolygonZM:
-        case CurvePolygonZM:
-          return CurvePolygonZM;
+        case Type::PolygonZM:
+        case Type::CurvePolygonZM:
+          return Type::CurvePolygonZM;
 
-        case MultiPolygonZM:
-        case MultiSurfaceZM:
-          return MultiSurfaceZM;
+        case Type::MultiPolygonZM:
+        case Type::MultiSurfaceZM:
+          return Type::MultiSurfaceZM;
 
-        case NoGeometry:
-          return NoGeometry;
+        case Type::NoGeometry:
+          return Type::NoGeometry;
 
-        case Point25D:
-        case MultiPoint25D:
-          return MultiPoint25D;
+        case Type::Point25D:
+        case Type::MultiPoint25D:
+          return Type::MultiPoint25D;
       }
-      return Unknown;
+      return Type::Unknown;
     }
 
     /**
@@ -593,102 +594,102 @@ class CORE_EXPORT QgsWkbTypes
       switch ( type )
       {
 
-        case CircularString:
-        case CompoundCurve:
-          return LineString;
+        case Type::CircularString:
+        case Type::CompoundCurve:
+          return Type::LineString;
 
-        case CircularStringM:
-        case CompoundCurveM:
-          return LineStringM;
+        case Type::CircularStringM:
+        case Type::CompoundCurveM:
+          return Type::LineStringM;
 
-        case CircularStringZ:
-        case CompoundCurveZ:
-          return LineStringZ;
+        case Type::CircularStringZ:
+        case Type::CompoundCurveZ:
+          return Type::LineStringZ;
 
-        case CircularStringZM:
-        case CompoundCurveZM:
-          return LineStringZM;
+        case Type::CircularStringZM:
+        case Type::CompoundCurveZM:
+          return Type::LineStringZM;
 
-        case MultiCurve:
-          return MultiLineString;
+        case Type::MultiCurve:
+          return Type::MultiLineString;
 
-        case MultiCurveM:
-          return MultiLineStringM;
+        case Type::MultiCurveM:
+          return Type::MultiLineStringM;
 
-        case MultiCurveZ:
-          return MultiLineStringZ;
+        case Type::MultiCurveZ:
+          return Type::MultiLineStringZ;
 
-        case MultiCurveZM:
-          return MultiLineStringZM;
+        case Type::MultiCurveZM:
+          return Type::MultiLineStringZM;
 
-        case CurvePolygon:
-          return Polygon;
+        case Type::CurvePolygon:
+          return Type::Polygon;
 
-        case CurvePolygonM:
-          return PolygonM;
+        case Type::CurvePolygonM:
+          return Type::PolygonM;
 
-        case CurvePolygonZ:
-          return PolygonZ;
+        case Type::CurvePolygonZ:
+          return Type::PolygonZ;
 
-        case CurvePolygonZM:
-          return PolygonZM;
+        case Type::CurvePolygonZM:
+          return Type::PolygonZM;
 
-        case MultiSurface:
-          return MultiPolygon;
+        case Type::MultiSurface:
+          return Type::MultiPolygon;
 
-        case MultiSurfaceM:
-          return MultiPolygonM;
+        case Type::MultiSurfaceM:
+          return Type::MultiPolygonM;
 
-        case MultiSurfaceZ:
-          return MultiPolygonZ;
+        case Type::MultiSurfaceZ:
+          return Type::MultiPolygonZ;
 
-        case MultiSurfaceZM:
-          return MultiPolygonZM;
+        case Type::MultiSurfaceZM:
+          return Type:: MultiPolygonZM;
 
-        case GeometryCollection:
-        case GeometryCollectionM:
-        case GeometryCollectionZ:
-        case GeometryCollectionZM:
-        case LineString:
-        case LineString25D:
-        case LineStringM:
-        case LineStringZ:
-        case LineStringZM:
-        case MultiLineString:
-        case MultiLineString25D:
-        case MultiLineStringM:
-        case MultiLineStringZ:
-        case MultiLineStringZM:
-        case MultiPoint:
-        case MultiPoint25D:
-        case MultiPointM:
-        case MultiPointZ:
-        case MultiPointZM:
-        case MultiPolygon:
-        case MultiPolygon25D:
-        case MultiPolygonM:
-        case MultiPolygonZ:
-        case MultiPolygonZM:
-        case NoGeometry:
-        case Point:
-        case Point25D:
-        case PointM:
-        case PointZ:
-        case PointZM:
-        case Polygon:
-        case Polygon25D:
-        case PolygonM:
-        case PolygonZ:
-        case PolygonZM:
-        case Triangle:
-        case TriangleM:
-        case TriangleZ:
-        case TriangleZM:
-        case Unknown:
+        case Type::GeometryCollection:
+        case Type::GeometryCollectionM:
+        case Type::GeometryCollectionZ:
+        case Type::GeometryCollectionZM:
+        case Type::LineString:
+        case Type::LineString25D:
+        case Type::LineStringM:
+        case Type::LineStringZ:
+        case Type::LineStringZM:
+        case Type::MultiLineString:
+        case Type::MultiLineString25D:
+        case Type::MultiLineStringM:
+        case Type::MultiLineStringZ:
+        case Type::MultiLineStringZM:
+        case Type::MultiPoint:
+        case Type::MultiPoint25D:
+        case Type::MultiPointM:
+        case Type::MultiPointZ:
+        case Type::MultiPointZM:
+        case Type::MultiPolygon:
+        case Type::MultiPolygon25D:
+        case Type::MultiPolygonM:
+        case Type::MultiPolygonZ:
+        case Type:: MultiPolygonZM:
+        case Type::NoGeometry:
+        case Type::Point:
+        case Type::Point25D:
+        case Type::PointM:
+        case Type::PointZ:
+        case Type::PointZM:
+        case Type::Polygon:
+        case Type::Polygon25D:
+        case Type::PolygonM:
+        case Type::PolygonZ:
+        case Type::PolygonZM:
+        case Type::Triangle:
+        case Type::TriangleM:
+        case Type::TriangleZ:
+        case Type::TriangleZM:
+        case Type::Unknown:
           return type;
 
       }
-      return Unknown;
+      return Type::Unknown;
     }
 
     /**
@@ -702,98 +703,98 @@ class CORE_EXPORT QgsWkbTypes
     {
       switch ( type )
       {
-        case Unknown:
-          return Unknown;
+        case Type::Unknown:
+          return Type::Unknown;
 
-        case Point:
-        case PointZ:
-        case PointM:
-        case PointZM:
-        case Point25D:
-          return Point;
+        case Type::Point:
+        case Type::PointZ:
+        case Type::PointM:
+        case Type::PointZM:
+        case Type::Point25D:
+          return Type::Point;
 
-        case LineString:
-        case LineStringZ:
-        case LineStringM:
-        case LineStringZM:
-        case LineString25D:
-          return LineString;
+        case Type::LineString:
+        case Type::LineStringZ:
+        case Type::LineStringM:
+        case Type::LineStringZM:
+        case Type::LineString25D:
+          return Type::LineString;
 
-        case Polygon:
-        case PolygonZ:
-        case PolygonM:
-        case PolygonZM:
-        case Polygon25D:
-          return Polygon;
+        case Type::Polygon:
+        case Type::PolygonZ:
+        case Type::PolygonM:
+        case Type::PolygonZM:
+        case Type::Polygon25D:
+          return Type::Polygon;
 
-        case Triangle:
-        case TriangleZ:
-        case TriangleM:
-        case TriangleZM:
-          return Triangle;
+        case Type::Triangle:
+        case Type::TriangleZ:
+        case Type::TriangleM:
+        case Type::TriangleZM:
+          return Type::Triangle;
 
-        case MultiPoint:
-        case MultiPointZ:
-        case MultiPointM:
-        case MultiPointZM:
-        case MultiPoint25D:
-          return MultiPoint;
+        case Type::MultiPoint:
+        case Type::MultiPointZ:
+        case Type::MultiPointM:
+        case Type::MultiPointZM:
+        case Type::MultiPoint25D:
+          return Type::MultiPoint;
 
-        case MultiLineString:
-        case MultiLineStringZ:
-        case MultiLineStringM:
-        case MultiLineStringZM:
-        case MultiLineString25D:
-          return MultiLineString;
+        case Type::MultiLineString:
+        case Type::MultiLineStringZ:
+        case Type::MultiLineStringM:
+        case Type::MultiLineStringZM:
+        case Type::MultiLineString25D:
+          return Type::MultiLineString;
 
-        case MultiPolygon:
-        case MultiPolygonZ:
-        case MultiPolygonM:
-        case MultiPolygonZM:
-        case MultiPolygon25D:
-          return MultiPolygon;
+        case Type::MultiPolygon:
+        case Type::MultiPolygonZ:
+        case Type::MultiPolygonM:
+        case Type:: MultiPolygonZM:
+        case Type::MultiPolygon25D:
+          return Type::MultiPolygon;
 
-        case GeometryCollection:
-        case GeometryCollectionZ:
-        case GeometryCollectionM:
-        case GeometryCollectionZM:
-          return GeometryCollection;
+        case Type::GeometryCollection:
+        case Type::GeometryCollectionZ:
+        case Type::GeometryCollectionM:
+        case Type::GeometryCollectionZM:
+          return Type::GeometryCollection;
 
-        case CircularString:
-        case CircularStringZ:
-        case CircularStringM:
-        case CircularStringZM:
-          return CircularString;
+        case Type::CircularString:
+        case Type::CircularStringZ:
+        case Type::CircularStringM:
+        case Type::CircularStringZM:
+          return Type::CircularString;
 
-        case CompoundCurve:
-        case CompoundCurveZ:
-        case CompoundCurveM:
-        case CompoundCurveZM:
-          return CompoundCurve;
+        case Type::CompoundCurve:
+        case Type::CompoundCurveZ:
+        case Type::CompoundCurveM:
+        case Type::CompoundCurveZM:
+          return Type::CompoundCurve;
 
-        case MultiCurve:
-        case MultiCurveZ:
-        case MultiCurveM:
-        case MultiCurveZM:
-          return MultiCurve;
+        case Type::MultiCurve:
+        case Type::MultiCurveZ:
+        case Type::MultiCurveM:
+        case Type::MultiCurveZM:
+          return Type::MultiCurve;
 
-        case CurvePolygon:
-        case CurvePolygonZ:
-        case CurvePolygonM:
-        case CurvePolygonZM:
-          return CurvePolygon;
+        case Type::CurvePolygon:
+        case Type::CurvePolygonZ:
+        case Type::CurvePolygonM:
+        case Type::CurvePolygonZM:
+          return Type::CurvePolygon;
 
-        case MultiSurface:
-        case MultiSurfaceZ:
-        case MultiSurfaceM:
-        case MultiSurfaceZM:
-          return MultiSurface;
+        case Type::MultiSurface:
+        case Type::MultiSurfaceZ:
+        case Type::MultiSurfaceM:
+        case Type::MultiSurfaceZM:
+          return Type::MultiSurface;
 
-        case NoGeometry:
-          return NoGeometry;
+        case Type::NoGeometry:
+          return Type::NoGeometry;
 
       }
-      return Unknown;
+      return Type::Unknown;
     }
 
     //! Returns the modified input geometry type according to hasZ / hasM
@@ -820,7 +821,7 @@ class CORE_EXPORT QgsWkbTypes
      */
     static bool isSingleType( Type type )
     {
-      return ( type != Unknown && !isMultiType( type ) );
+      return ( type != Type::Unknown && !isMultiType( type ) );
     }
 
     /**
@@ -832,39 +833,39 @@ class CORE_EXPORT QgsWkbTypes
     {
       switch ( type )
       {
-        case Unknown:
-        case Point:
-        case LineString:
-        case Polygon:
-        case Triangle:
-        case CircularString:
-        case CompoundCurve:
-        case CurvePolygon:
-        case NoGeometry:
-        case PointZ:
-        case LineStringZ:
-        case PolygonZ:
-        case TriangleZ:
-        case CircularStringZ:
-        case CompoundCurveZ:
-        case CurvePolygonZ:
-        case PointM:
-        case LineStringM:
-        case PolygonM:
-        case TriangleM:
-        case CircularStringM:
-        case CompoundCurveM:
-        case CurvePolygonM:
-        case PointZM:
-        case LineStringZM:
-        case PolygonZM:
-        case TriangleZM:
-        case CircularStringZM:
-        case CompoundCurveZM:
-        case CurvePolygonZM:
-        case Point25D:
-        case LineString25D:
-        case Polygon25D:
+        case Type::Unknown:
+        case Type::Point:
+        case Type::LineString:
+        case Type::Polygon:
+        case Type::Triangle:
+        case Type::CircularString:
+        case Type::CompoundCurve:
+        case Type::CurvePolygon:
+        case Type::NoGeometry:
+        case Type::PointZ:
+        case Type::LineStringZ:
+        case Type::PolygonZ:
+        case Type::TriangleZ:
+        case Type::CircularStringZ:
+        case Type::CompoundCurveZ:
+        case Type::CurvePolygonZ:
+        case Type::PointM:
+        case Type::LineStringM:
+        case Type::PolygonM:
+        case Type::TriangleM:
+        case Type::CircularStringM:
+        case Type::CompoundCurveM:
+        case Type::CurvePolygonM:
+        case Type::PointZM:
+        case Type::LineStringZM:
+        case Type::PolygonZM:
+        case Type::TriangleZM:
+        case Type::CircularStringZM:
+        case Type::CompoundCurveZM:
+        case Type::CurvePolygonZM:
+        case Type::Point25D:
+        case Type::LineString25D:
+        case Type::Polygon25D:
           return false;
 
         default:
@@ -881,11 +882,11 @@ class CORE_EXPORT QgsWkbTypes
     {
       switch ( flatType( type ) )
       {
-        case CircularString:
-        case CompoundCurve:
-        case CurvePolygon:
-        case MultiCurve:
-        case MultiSurface:
+        case Type::CircularString:
+        case Type::CompoundCurve:
+        case Type::CurvePolygon:
+        case Type::MultiCurve:
+        case Type::MultiSurface:
           return true;
 
         default:
@@ -905,9 +906,9 @@ class CORE_EXPORT QgsWkbTypes
       GeometryType gtype = geometryType( type );
       switch ( gtype )
       {
-        case LineGeometry:
+        case GeometryType::LineGeometry:
           return 1;
-        case PolygonGeometry:
+        case GeometryType::PolygonGeometry:
           return 2;
         default: //point, no geometry, unknown geometry
           return 0;
@@ -923,7 +924,7 @@ class CORE_EXPORT QgsWkbTypes
      */
     static int coordDimensions( Type type )
     {
-      if ( type == Unknown || type == NoGeometry )
+      if ( type == Type::Unknown || type == Type::NoGeometry )
         return 0;
 
       return 2 + hasZ( type ) + hasM( type );
@@ -932,84 +933,84 @@ class CORE_EXPORT QgsWkbTypes
     /**
      * Returns the geometry type for a WKB type, e.g., both MultiPolygon and CurvePolygon would have a
      * PolygonGeometry geometry type.
-     * GeometryCollections are reported as QgsWkbTypes::UnknownGeometry.
+     * GeometryCollections are reported as QgsWkbTypes::GeometryType::UnknownGeometry.
      */
     static GeometryType geometryType( Type type )
     {
       switch ( type )
       {
-        case Unknown:
-        case GeometryCollection:
-        case GeometryCollectionZ:
-        case GeometryCollectionM:
-        case GeometryCollectionZM:
-          return UnknownGeometry;
+        case Type::Unknown:
+        case Type::GeometryCollection:
+        case Type::GeometryCollectionZ:
+        case Type::GeometryCollectionM:
+        case Type::GeometryCollectionZM:
+          return GeometryType::UnknownGeometry;
 
-        case Point:
-        case MultiPoint:
-        case PointZ:
-        case MultiPointZ:
-        case PointM:
-        case MultiPointM:
-        case PointZM:
-        case MultiPointZM:
-        case Point25D:
-        case MultiPoint25D:
-          return PointGeometry;
+        case Type::Point:
+        case Type::MultiPoint:
+        case Type::PointZ:
+        case Type::MultiPointZ:
+        case Type::PointM:
+        case Type::MultiPointM:
+        case Type::PointZM:
+        case Type::MultiPointZM:
+        case Type::Point25D:
+        case Type::MultiPoint25D:
+          return GeometryType::PointGeometry;
 
-        case LineString:
-        case MultiLineString:
-        case LineStringZ:
-        case MultiLineStringZ:
-        case LineStringM:
-        case MultiLineStringM:
-        case LineStringZM:
-        case MultiLineStringZM:
-        case LineString25D:
-        case MultiLineString25D:
-        case CircularString:
-        case CompoundCurve:
-        case MultiCurve:
-        case CircularStringZ:
-        case CompoundCurveZ:
-        case MultiCurveZ:
-        case CircularStringM:
-        case CompoundCurveM:
-        case MultiCurveM:
-        case CircularStringZM:
-        case CompoundCurveZM:
-        case MultiCurveZM:
-          return LineGeometry;
+        case Type::LineString:
+        case Type::MultiLineString:
+        case Type::LineStringZ:
+        case Type::MultiLineStringZ:
+        case Type::LineStringM:
+        case Type::MultiLineStringM:
+        case Type::LineStringZM:
+        case Type::MultiLineStringZM:
+        case Type::LineString25D:
+        case Type::MultiLineString25D:
+        case Type::CircularString:
+        case Type::CompoundCurve:
+        case Type::MultiCurve:
+        case Type::CircularStringZ:
+        case Type::CompoundCurveZ:
+        case Type::MultiCurveZ:
+        case Type::CircularStringM:
+        case Type::CompoundCurveM:
+        case Type::MultiCurveM:
+        case Type::CircularStringZM:
+        case Type::CompoundCurveZM:
+        case Type::MultiCurveZM:
+          return GeometryType::LineGeometry;
 
-        case Polygon:
-        case MultiPolygon:
-        case Triangle:
-        case PolygonZ:
-        case TriangleZ:
-        case MultiPolygonZ:
-        case PolygonM:
-        case TriangleM:
-        case MultiPolygonM:
-        case PolygonZM:
-        case MultiPolygonZM:
-        case TriangleZM:
-        case Polygon25D:
-        case MultiPolygon25D:
-        case CurvePolygon:
-        case MultiSurface:
-        case CurvePolygonZ:
-        case MultiSurfaceZ:
-        case CurvePolygonM:
-        case MultiSurfaceM:
-        case CurvePolygonZM:
-        case MultiSurfaceZM:
-          return PolygonGeometry;
+        case Type::Polygon:
+        case Type::MultiPolygon:
+        case Type::Triangle:
+        case Type::PolygonZ:
+        case Type::TriangleZ:
+        case Type::MultiPolygonZ:
+        case Type::PolygonM:
+        case Type::TriangleM:
+        case Type::MultiPolygonM:
+        case Type::PolygonZM:
+        case Type:: MultiPolygonZM:
+        case Type::TriangleZM:
+        case Type::Polygon25D:
+        case Type::MultiPolygon25D:
+        case Type::CurvePolygon:
+        case Type::MultiSurface:
+        case Type::CurvePolygonZ:
+        case Type::MultiSurfaceZ:
+        case Type::CurvePolygonM:
+        case Type::MultiSurfaceM:
+        case Type::CurvePolygonZM:
+        case Type::MultiSurfaceZM:
+          return GeometryType::PolygonGeometry;
 
-        case NoGeometry:
-          return NullGeometry;
+        case Type::NoGeometry:
+          return GeometryType::NullGeometry;
       }
 
-      return UnknownGeometry;
+      return GeometryType::UnknownGeometry;
     }
 
     /**
@@ -1043,38 +1044,38 @@ class CORE_EXPORT QgsWkbTypes
     {
       switch ( type )
       {
-        case PointZ:
-        case LineStringZ:
-        case PolygonZ:
-        case TriangleZ:
-        case MultiPointZ:
-        case MultiLineStringZ:
-        case MultiPolygonZ:
-        case GeometryCollectionZ:
-        case CircularStringZ:
-        case CompoundCurveZ:
-        case CurvePolygonZ:
-        case MultiCurveZ:
-        case MultiSurfaceZ:
-        case PointZM:
-        case LineStringZM:
-        case PolygonZM:
-        case TriangleZM:
-        case MultiPointZM:
-        case MultiLineStringZM:
-        case MultiPolygonZM:
-        case GeometryCollectionZM:
-        case CircularStringZM:
-        case CompoundCurveZM:
-        case CurvePolygonZM:
-        case MultiCurveZM:
-        case MultiSurfaceZM:
-        case Point25D:
-        case LineString25D:
-        case Polygon25D:
-        case MultiPoint25D:
-        case MultiLineString25D:
-        case MultiPolygon25D:
+        case Type::PointZ:
+        case Type::LineStringZ:
+        case Type::PolygonZ:
+        case Type::TriangleZ:
+        case Type::MultiPointZ:
+        case Type::MultiLineStringZ:
+        case Type::MultiPolygonZ:
+        case Type::GeometryCollectionZ:
+        case Type::CircularStringZ:
+        case Type::CompoundCurveZ:
+        case Type::CurvePolygonZ:
+        case Type::MultiCurveZ:
+        case Type::MultiSurfaceZ:
+        case Type::PointZM:
+        case Type::LineStringZM:
+        case Type::PolygonZM:
+        case Type::TriangleZM:
+        case Type::MultiPointZM:
+        case Type::MultiLineStringZM:
+        case Type:: MultiPolygonZM:
+        case Type::GeometryCollectionZM:
+        case Type::CircularStringZM:
+        case Type::CompoundCurveZM:
+        case Type::CurvePolygonZM:
+        case Type::MultiCurveZM:
+        case Type::MultiSurfaceZM:
+        case Type::Point25D:
+        case Type::LineString25D:
+        case Type::Polygon25D:
+        case Type::MultiPoint25D:
+        case Type::MultiLineString25D:
+        case Type::MultiPolygon25D:
           return true;
 
         default:
@@ -1093,32 +1094,32 @@ class CORE_EXPORT QgsWkbTypes
     {
       switch ( type )
       {
-        case PointM:
-        case LineStringM:
-        case PolygonM:
-        case TriangleM:
-        case MultiPointM:
-        case MultiLineStringM:
-        case MultiPolygonM:
-        case GeometryCollectionM:
-        case CircularStringM:
-        case CompoundCurveM:
-        case CurvePolygonM:
-        case MultiCurveM:
-        case MultiSurfaceM:
-        case PointZM:
-        case LineStringZM:
-        case PolygonZM:
-        case TriangleZM:
-        case MultiPointZM:
-        case MultiLineStringZM:
-        case MultiPolygonZM:
-        case GeometryCollectionZM:
-        case CircularStringZM:
-        case CompoundCurveZM:
-        case CurvePolygonZM:
-        case MultiCurveZM:
-        case MultiSurfaceZM:
+        case Type::PointM:
+        case Type::LineStringM:
+        case Type::PolygonM:
+        case Type::TriangleM:
+        case Type::MultiPointM:
+        case Type::MultiLineStringM:
+        case Type::MultiPolygonM:
+        case Type::GeometryCollectionM:
+        case Type::CircularStringM:
+        case Type::CompoundCurveM:
+        case Type::CurvePolygonM:
+        case Type::MultiCurveM:
+        case Type::MultiSurfaceM:
+        case Type::PointZM:
+        case Type::LineStringZM:
+        case Type::PolygonZM:
+        case Type::TriangleZM:
+        case Type::MultiPointZM:
+        case Type::MultiLineStringZM:
+        case Type:: MultiPolygonZM:
+        case Type::GeometryCollectionZM:
+        case Type::CircularStringZM:
+        case Type::CompoundCurveZM:
+        case Type::CurvePolygonZM:
+        case Type::MultiCurveZM:
+        case Type::MultiSurfaceZM:
           return true;
 
         default:
@@ -1139,17 +1140,17 @@ class CORE_EXPORT QgsWkbTypes
     {
       if ( hasZ( type ) )
         return type;
-      else if ( type == Unknown )
-        return Unknown;
-      else if ( type == NoGeometry )
-        return NoGeometry;
+      else if ( type == Type::Unknown )
+        return Type::Unknown;
+      else if ( type == Type::NoGeometry )
+        return Type::NoGeometry;
 
       //upgrade with z dimension
       Type flat = flatType( type );
       if ( hasM( type ) )
-        return static_cast< QgsWkbTypes::Type >( flat + 3000 );
+        return static_cast< QgsWkbTypes::Type >( static_cast<int>( flat ) + 3000 );
       else
-        return static_cast< QgsWkbTypes::Type >( flat + 1000 );
+        return static_cast< QgsWkbTypes::Type >( static_cast<int>( flat ) + 1000 );
     }
 
     /**
@@ -1164,24 +1165,24 @@ class CORE_EXPORT QgsWkbTypes
     {
       if ( hasM( type ) )
         return type;
-      else if ( type == Unknown )
-        return Unknown;
-      else if ( type == NoGeometry )
-        return NoGeometry;
-      else if ( type == Point25D ||
-                type == LineString25D ||
-                type == Polygon25D ||
-                type == MultiPoint25D ||
-                type == MultiLineString25D ||
-                type == MultiPolygon25D )
+      else if ( type == Type::Unknown )
+        return Type::Unknown;
+      else if ( type == Type::NoGeometry )
+        return Type::NoGeometry;
+      else if ( type == Type::Point25D ||
+                type == Type::LineString25D ||
+                type == Type::Polygon25D ||
+                type == Type::MultiPoint25D ||
+                type == Type::MultiLineString25D ||
+                type == Type::MultiPolygon25D )
         return type; //can't add M dimension to these types
 
       //upgrade with m dimension
       Type flat = flatType( type );
       if ( hasZ( type ) )
-        return static_cast< QgsWkbTypes::Type >( flat + 3000 );
+        return static_cast< QgsWkbTypes::Type >( static_cast<int>( flat ) + 3000 );
       else
-        return static_cast< QgsWkbTypes::Type >( flat + 2000 );
+        return static_cast< QgsWkbTypes::Type >( static_cast<int>( flat ) + 2000 );
     }
 
     /**
@@ -1229,12 +1230,12 @@ class CORE_EXPORT QgsWkbTypes
     {
       QgsWkbTypes::Type flat = flatType( type );
 
-      if ( flat >= Point && flat <= MultiPolygon )
-        return static_cast< QgsWkbTypes::Type >( static_cast<unsigned>( flat ) + 0x80000000U );
-      else if ( type == QgsWkbTypes::NoGeometry )
-        return QgsWkbTypes::NoGeometry;
+      if ( static_cast<int>( flat ) >= static_cast<int>( Type::Point ) && static_cast<int>( flat ) <= static_cast<int>( Type::MultiPolygon ) )
+        return static_cast< QgsWkbTypes::Type >( static_cast<unsigned>( static_cast<int>( flat ) ) + 0x80000000U );
+      else if ( type == QgsWkbTypes::Type::NoGeometry )
+        return QgsWkbTypes::Type::NoGeometry;
       else
-        return Unknown;
+        return Type::Unknown;
     }
 
 };
