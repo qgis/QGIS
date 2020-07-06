@@ -501,9 +501,9 @@ bool QgsProcessingUtils::canUseLayer( const QgsVectorLayer *layer, const QList<i
 {
   return layer && layer->isValid() &&
          ( sourceTypes.isEmpty()
-           || ( sourceTypes.contains( QgsProcessing::TypeVectorPoint ) && layer->geometryType() == QgsWkbTypes::PointGeometry )
-           || ( sourceTypes.contains( QgsProcessing::TypeVectorLine ) && layer->geometryType() == QgsWkbTypes::LineGeometry )
-           || ( sourceTypes.contains( QgsProcessing::TypeVectorPolygon ) && layer->geometryType() == QgsWkbTypes::PolygonGeometry )
+           || ( sourceTypes.contains( QgsProcessing::TypeVectorPoint ) && layer->geometryType() == QgsWkbTypes::GeometryType::PointGeometry )
+           || ( sourceTypes.contains( QgsProcessing::TypeVectorLine ) && layer->geometryType() == QgsWkbTypes::GeometryType::LineGeometry )
+           || ( sourceTypes.contains( QgsProcessing::TypeVectorPolygon ) && layer->geometryType() == QgsWkbTypes::GeometryType::PolygonGeometry )
            || ( sourceTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) && layer->isSpatial() )
            || sourceTypes.contains( QgsProcessing::TypeVector )
          );
@@ -1202,7 +1202,7 @@ QString QgsProcessingUtils::defaultRasterExtension()
 QgsProcessingFeatureSource::QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource, long long featureLimit )
   : mSource( originalSource )
   , mOwnsSource( ownsOriginalSource )
-  , mInvalidGeometryCheck( QgsWkbTypes::geometryType( mSource->wkbType() ) == QgsWkbTypes::PointGeometry
+  , mInvalidGeometryCheck( QgsWkbTypes::geometryType( mSource->wkbType() ) == QgsWkbTypes::GeometryType::PointGeometry
                            ? QgsFeatureRequest::GeometryNoCheck // never run geometry validity checks for point layers!
                            : context.invalidGeometryCheck() )
   , mInvalidGeometryCallback( context.invalidGeometryCallback() )

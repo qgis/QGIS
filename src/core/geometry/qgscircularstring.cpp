@@ -33,7 +33,7 @@
 
 QgsCircularString::QgsCircularString()
 {
-  mWkbType = QgsWkbTypes::CircularString;
+  mWkbType = QgsWkbTypes::Type::CircularString;
 }
 
 QgsCircularString::QgsCircularString( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 )
@@ -41,7 +41,7 @@ QgsCircularString::QgsCircularString( const QgsPoint &p1, const QgsPoint &p2, co
   //get wkb type from first point
   bool hasZ = p1.is3D();
   bool hasM = p1.isMeasure();
-  mWkbType = QgsWkbTypes::CircularString;
+  mWkbType = QgsWkbTypes::Type::CircularString;
 
   mX.resize( 3 );
   mX[ 0 ] = p1.x();
@@ -127,7 +127,7 @@ QgsCircularString *QgsCircularString::clone() const
 
 void QgsCircularString::clear()
 {
-  mWkbType = QgsWkbTypes::CircularString;
+  mWkbType = QgsWkbTypes::Type::CircularString;
   mX.clear();
   mY.clear();
   mZ.clear();
@@ -271,7 +271,7 @@ bool QgsCircularString::fromWkb( QgsConstWkbPtr &wkbPtr )
     return false;
 
   QgsWkbTypes::Type type = wkbPtr.readHeader();
-  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::CircularString )
+  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::Type::CircularString )
   {
     return false;
   }
@@ -310,7 +310,7 @@ bool QgsCircularString::fromWkt( const QString &wkt )
 
   QPair<QgsWkbTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
-  if ( QgsWkbTypes::flatType( parts.first ) != QgsWkbTypes::CircularString )
+  if ( QgsWkbTypes::flatType( parts.first ) != QgsWkbTypes::Type::CircularString )
     return false;
   mWkbType = parts.first;
 
@@ -526,18 +526,18 @@ QgsPoint QgsCircularString::pointN( int i ) const
     m = mM.at( i );
   }
 
-  QgsWkbTypes::Type t = QgsWkbTypes::Point;
+  QgsWkbTypes::Type t = QgsWkbTypes::Type::Point;
   if ( is3D() && isMeasure() )
   {
-    t = QgsWkbTypes::PointZM;
+    t = QgsWkbTypes::Type::PointZM;
   }
   else if ( is3D() )
   {
-    t = QgsWkbTypes::PointZ;
+    t = QgsWkbTypes::Type::PointZ;
   }
   else if ( isMeasure() )
   {
-    t = QgsWkbTypes::PointM;
+    t = QgsWkbTypes::Type::PointM;
   }
   return QgsPoint( t, x, y, z, m );
 }
@@ -648,7 +648,7 @@ void QgsCircularString::setPoints( const QgsPointSequence &points )
 
   if ( points.empty() )
   {
-    mWkbType = QgsWkbTypes::CircularString;
+    mWkbType = QgsWkbTypes::Type::CircularString;
     mX.clear();
     mY.clear();
     mZ.clear();
@@ -661,7 +661,7 @@ void QgsCircularString::setPoints( const QgsPointSequence &points )
   bool hasZ = firstPt.is3D();
   bool hasM = firstPt.isMeasure();
 
-  setZMTypeFromSubGeometry( &firstPt, QgsWkbTypes::CircularString );
+  setZMTypeFromSubGeometry( &firstPt, QgsWkbTypes::Type::CircularString );
 
   mX.resize( points.size() );
   mY.resize( points.size() );
@@ -1200,9 +1200,9 @@ QgsPoint *QgsCircularString::interpolatePoint( const double distance ) const
   if ( totalPoints == 0 )
     return nullptr;
 
-  QgsWkbTypes::Type pointType = QgsWkbTypes::Point;
+  QgsWkbTypes::Type pointType = QgsWkbTypes::Type::Point;
   if ( is3D() )
-    pointType = QgsWkbTypes::PointZ;
+    pointType = QgsWkbTypes::Type::PointZ;
   if ( isMeasure() )
     pointType = QgsWkbTypes::addM( pointType );
 
@@ -1273,9 +1273,9 @@ QgsCircularString *QgsCircularString::curveSubstring( double startDistance, doub
 
   QVector< QgsPoint > substringPoints;
 
-  QgsWkbTypes::Type pointType = QgsWkbTypes::Point;
+  QgsWkbTypes::Type pointType = QgsWkbTypes::Type::Point;
   if ( is3D() )
-    pointType = QgsWkbTypes::PointZ;
+    pointType = QgsWkbTypes::Type::PointZ;
   if ( isMeasure() )
     pointType = QgsWkbTypes::addM( pointType );
 

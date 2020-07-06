@@ -134,7 +134,7 @@ QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( QgsSymbol::SymbolType
     {
       QPolygonF points;
 
-      if ( QgsWkbTypes::flatType( mGeometry.wkbType() ) == QgsWkbTypes::MultiPoint )
+      if ( QgsWkbTypes::flatType( mGeometry.wkbType() ) == QgsWkbTypes::Type::MultiPoint )
       {
         const QgsGeometry patch = geom;
         for ( auto it = patch.vertices_begin(); it != patch.vertices_end(); ++it )

@@ -325,7 +325,7 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource,
     // ideally this wouldn't be mutable, but QgsVectorLayerFeatureSource has non-const getFeatures()
     mutable QgsVectorLayerFeatureSource mSource;
     QgsFeatureIds mSelectedFeatureIds;
-    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Type::Unknown;
     QString mName;
     QPointer< QgsVectorLayer > mLayer;
 

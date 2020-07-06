@@ -982,13 +982,13 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
   for ( i = 0; i < pointCount; ++i, tempPtr++ )
     tempPolyline[i] = QgsPointXY( tempPtr->rx(), tempPtr->ry() );
 
-  QgsGeometry tempGeometry = geometryType == QgsWkbTypes::PolygonGeometry ? QgsGeometry::fromPolygonXY( QgsPolygonXY() << tempPolyline ) : QgsGeometry::fromPolylineXY( tempPolyline );
+  QgsGeometry tempGeometry = geometryType == QgsWkbTypes::GeometryType::PolygonGeometry ? QgsGeometry::fromPolygonXY( QgsPolygonXY() << tempPolyline ) : QgsGeometry::fromPolylineXY( tempPolyline );
   if ( !tempGeometry.isNull() )
   {
     int quadSegments = 0; // we want miter joins, not round joins
     double miterLimit = 2.0; // the default value in GEOS (5.0) allows for fairly sharp endings
     QgsGeometry offsetGeom;
-    if ( geometryType == QgsWkbTypes::PolygonGeometry )
+    if ( geometryType == QgsWkbTypes::GeometryType::PolygonGeometry )
       offsetGeom = tempGeometry.buffer( -dist, quadSegments, QgsGeometry::CapFlat,
                                         QgsGeometry::JoinStyleMiter, miterLimit );
     else
@@ -998,18 +998,18 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
     {
       tempGeometry = offsetGeom;
 
-      if ( QgsWkbTypes::flatType( tempGeometry.wkbType() ) == QgsWkbTypes::LineString )
+      if ( QgsWkbTypes::flatType( tempGeometry.wkbType() ) == QgsWkbTypes::Type::LineString )
       {
         QgsPolylineXY line = tempGeometry.asPolyline();
         resultLine.append( makeOffsetGeometry( line ) );
         return resultLine;
       }
-      else if ( QgsWkbTypes::flatType( tempGeometry.wkbType() ) == QgsWkbTypes::Polygon )
+      else if ( QgsWkbTypes::flatType( tempGeometry.wkbType() ) == QgsWkbTypes::Type::Polygon )
       {
         resultLine.append( makeOffsetGeometry( tempGeometry.asPolygon() ) );
         return resultLine;
       }
-      else if ( QgsWkbTypes::flatType( tempGeometry.wkbType() ) == QgsWkbTypes::MultiLineString )
+      else if ( QgsWkbTypes::flatType( tempGeometry.wkbType() ) == QgsWkbTypes::Type::MultiLineString )
       {
         QgsMultiPolylineXY tempMPolyline = tempGeometry.asMultiPolyline();
         resultLine.reserve( tempMPolyline.count() );
@@ -1019,7 +1019,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
         }
         return resultLine;
       }
-      else if ( QgsWkbTypes::flatType( tempGeometry.wkbType() ) == QgsWkbTypes::MultiPolygon )
+      else if ( QgsWkbTypes::flatType( tempGeometry.wkbType() ) == QgsWkbTypes::Type::MultiPolygon )
       {
         QgsMultiPolygonXY tempMPolygon = tempGeometry.asMultiPolygon();
         resultLine.reserve( tempMPolygon.count() );
@@ -1260,7 +1260,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
     {
       switch ( geomType )
       {
-        case QgsWkbTypes::PolygonGeometry:
+        case QgsWkbTypes::GeometryType::PolygonGeometry:
           // polygon layer and point symbolizer: draw polygon centroid
           l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "CentroidFill" ), element );
           if ( l )
@@ -1268,7 +1268,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
 
           break;
 
-        case QgsWkbTypes::PointGeometry:
+        case QgsWkbTypes::GeometryType::PointGeometry:
           // point layer and point symbolizer: use markers
           l = createMarkerLayerFromSld( element );
           if ( l )
@@ -1276,7 +1276,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
 
           break;
 
-        case QgsWkbTypes::LineGeometry:
+        case QgsWkbTypes::GeometryType::LineGeometry:
           // line layer and point symbolizer: draw central point
           l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "SimpleMarker" ), element );
           if ( l )
@@ -1302,8 +1302,8 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
     {
       switch ( geomType )
       {
-        case QgsWkbTypes::PolygonGeometry:
-        case QgsWkbTypes::LineGeometry:
+        case QgsWkbTypes::GeometryType::PolygonGeometry:
+        case QgsWkbTypes::GeometryType::LineGeometry:
           // polygon layer and line symbolizer: draw polygon stroke
           // line layer and line symbolizer: draw line
           l = createLineLayerFromSld( element );
@@ -1312,7 +1312,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
 
           break;
 
-        case QgsWkbTypes::PointGeometry:
+        case QgsWkbTypes::GeometryType::PointGeometry:
           // point layer and line symbolizer: draw a little line marker
           l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "MarkerLine" ), element );
           if ( l )
@@ -1341,7 +1341,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
 
       switch ( geomType )
       {
-        case QgsWkbTypes::PolygonGeometry:
+        case QgsWkbTypes::GeometryType::PolygonGeometry:
           // polygon layer and polygon symbolizer: draw fill
 
           l = createFillLayerFromSld( element );
@@ -1363,7 +1363,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
 
           break;
 
-        case QgsWkbTypes::LineGeometry:
+        case QgsWkbTypes::GeometryType::LineGeometry:
           // line layer and polygon symbolizer: draw line
           l = createLineLayerFromSld( element );
           if ( l )
@@ -1371,7 +1371,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
 
           break;
 
-        case QgsWkbTypes::PointGeometry:
+        case QgsWkbTypes::GeometryType::PointGeometry:
           // point layer and polygon symbolizer: draw a square marker
           convertPolygonSymbolizerToPointMarker( element, layers );
           break;

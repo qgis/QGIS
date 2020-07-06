@@ -24,7 +24,7 @@
 
 QgsPolygon::QgsPolygon()
 {
-  mWkbType = QgsWkbTypes::Polygon;
+  mWkbType = QgsWkbTypes::Type::Polygon;
 }
 
 ///@cond DOXYGEN_SHUTTUP
@@ -59,7 +59,7 @@ QgsPolygon *QgsPolygon::clone() const
 void QgsPolygon::clear()
 {
   QgsCurvePolygon::clear();
-  mWkbType = QgsWkbTypes::Polygon;
+  mWkbType = QgsWkbTypes::Type::Polygon;
 }
 
 bool QgsPolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
@@ -71,7 +71,7 @@ bool QgsPolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
   }
 
   QgsWkbTypes::Type type = wkbPtr.readHeader();
-  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::Polygon )
+  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::Type::Polygon )
   {
     return false;
   }
@@ -80,20 +80,20 @@ bool QgsPolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
   QgsWkbTypes::Type ringType;
   switch ( mWkbType )
   {
-    case QgsWkbTypes::PolygonZ:
-      ringType = QgsWkbTypes::LineStringZ;
+    case QgsWkbTypes::Type::PolygonZ:
+      ringType = QgsWkbTypes::Type::LineStringZ;
       break;
-    case QgsWkbTypes::PolygonM:
-      ringType = QgsWkbTypes::LineStringM;
+    case QgsWkbTypes::Type::PolygonM:
+      ringType = QgsWkbTypes::Type::LineStringM;
       break;
-    case QgsWkbTypes::PolygonZM:
-      ringType = QgsWkbTypes::LineStringZM;
+    case QgsWkbTypes::Type::PolygonZM:
+      ringType = QgsWkbTypes::Type::LineStringZM;
       break;
-    case QgsWkbTypes::Polygon25D:
-      ringType = QgsWkbTypes::LineString25D;
+    case QgsWkbTypes::Type::Polygon25D:
+      ringType = QgsWkbTypes::Type::LineString25D;
       break;
     default:
-      ringType = QgsWkbTypes::LineString;
+      ringType = QgsWkbTypes::Type::LineString;
       break;
   }
 
@@ -145,17 +145,17 @@ QByteArray QgsPolygon::asWkb( QgsAbstractGeometry::WkbFlags flags ) const
   {
     switch ( type )
     {
-      case QgsWkbTypes::Triangle:
-        type = QgsWkbTypes::Polygon;
+      case QgsWkbTypes::Type::Triangle:
+        type = QgsWkbTypes::Type::Polygon;
         break;
-      case QgsWkbTypes::TriangleZ:
-        type = QgsWkbTypes::PolygonZ;
+      case QgsWkbTypes::Type::TriangleZ:
+        type = QgsWkbTypes::Type::PolygonZ;
         break;
-      case QgsWkbTypes::TriangleM:
-        type = QgsWkbTypes::PolygonM;
+      case QgsWkbTypes::Type::TriangleM:
+        type = QgsWkbTypes::Type::PolygonM;
         break;
-      case QgsWkbTypes::TriangleZM:
-        type = QgsWkbTypes::PolygonZM;
+      case QgsWkbTypes::Type::TriangleZM:
+        type = QgsWkbTypes::Type::PolygonZM;
         break;
       default:
         break;
@@ -199,9 +199,9 @@ void QgsPolygon::addInteriorRing( QgsCurve *ring )
     lineString->close();
   }
 
-  if ( mWkbType == QgsWkbTypes::Polygon25D )
+  if ( mWkbType == QgsWkbTypes::Type::Polygon25D )
   {
-    ring->convertTo( QgsWkbTypes::LineString25D );
+    ring->convertTo( QgsWkbTypes::Type::LineString25D );
     mInteriorRings.append( ring );
   }
   else
@@ -235,7 +235,7 @@ void QgsPolygon::setExteriorRing( QgsCurve *ring )
   mExteriorRing.reset( ring );
 
   //set proper wkb type
-  setZMTypeFromSubGeometry( ring, QgsWkbTypes::Polygon );
+  setZMTypeFromSubGeometry( ring, QgsWkbTypes::Type::Polygon );
 
   //match dimensionality for rings
   for ( QgsCurve *ring : qgis::as_const( mInteriorRings ) )

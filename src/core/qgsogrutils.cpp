@@ -402,7 +402,7 @@ std::unique_ptr< QgsLineString > ogrGeometryToQgsLineString( OGRGeometryH geom )
   }
   OGR_G_GetPointsZM( geom, x.data(), sizeof( double ), y.data(), sizeof( double ), pz, sizeof( double ), pm, sizeof( double ) );
 
-  return qgis::make_unique< QgsLineString>( x, y, z, m, wkbType == QgsWkbTypes::LineString25D );
+  return qgis::make_unique< QgsLineString>( x, y, z, m, wkbType == QgsWkbTypes::Type::LineString25D );
 }
 
 std::unique_ptr< QgsMultiLineString > ogrGeometryToQgsMultiLineString( OGRGeometryH geom )
@@ -517,23 +517,23 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
   // TODO - extend to other classes!
   switch ( QgsWkbTypes::flatType( wkbType ) )
   {
-    case QgsWkbTypes::Point:
+    case QgsWkbTypes::Type::Point:
     {
       return QgsGeometry( ogrGeometryToQgsPoint( geom ) );
     }
 
-    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::Type::MultiPoint:
     {
       return QgsGeometry( ogrGeometryToQgsMultiPoint( geom ) );
     }
 
-    case QgsWkbTypes::LineString:
+    case QgsWkbTypes::Type::LineString:
     {
       // optimised case for line -- avoid wkb conversion
       return QgsGeometry( ogrGeometryToQgsLineString( geom ) );
     }
 
-    case QgsWkbTypes::MultiLineString:
+    case QgsWkbTypes::Type::MultiLineString:
     {
       // optimised case for line -- avoid wkb conversion
       return QgsGeometry( ogrGeometryToQgsMultiLineString( geom ) );
@@ -574,8 +574,8 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
   {
     // TIN has the same wkb layout as a multipolygon, just need to overwrite the geom types...
     int nDims = 2 + hasZ + hasM;
-    uint32_t newMultiType = static_cast<uint32_t>( QgsWkbTypes::zmType( QgsWkbTypes::MultiPolygon, hasZ, hasM ) );
-    uint32_t newSingleType = static_cast<uint32_t>( QgsWkbTypes::zmType( QgsWkbTypes::Polygon, hasZ, hasM ) );
+    uint32_t newMultiType = static_cast<uint32_t>( QgsWkbTypes::zmType( QgsWkbTypes::Type::MultiPolygon, hasZ, hasM ) );
+    uint32_t newSingleType = static_cast<uint32_t>( QgsWkbTypes::zmType( QgsWkbTypes::Type::Polygon, hasZ, hasM ) );
     unsigned char *wkbptr = wkb;
 
     // Endianness
@@ -616,7 +616,7 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
   else if ( origGeomType % 1000 == 15 ) // PolyhedralSurface, PolyhedralSurfaceZ, PolyhedralSurfaceM or PolyhedralSurfaceZM
   {
     // PolyhedralSurface has the same wkb layout as a MultiPolygon, just need to overwrite the geom type...
-    uint32_t newType = static_cast<uint32_t>( QgsWkbTypes::zmType( QgsWkbTypes::MultiPolygon, hasZ, hasM ) );
+    uint32_t newType = static_cast<uint32_t>( QgsWkbTypes::zmType( QgsWkbTypes::Type::MultiPolygon, hasZ, hasM ) );
     // Overwrite geom type
     memcpy( wkb + 1, &newType, sizeof( uint32_t ) );
   }

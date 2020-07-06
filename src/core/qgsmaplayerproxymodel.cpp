@@ -68,13 +68,13 @@ bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const
     {
       if ( filters.testFlag( HasGeometry ) && vl->isSpatial() )
         return true;
-      if ( filters.testFlag( NoGeometry ) && vl->geometryType() == QgsWkbTypes::NullGeometry )
+      if ( filters.testFlag( NoGeometry ) && vl->geometryType() == QgsWkbTypes::GeometryType::NullGeometry )
         return true;
-      if ( filters.testFlag( PointLayer ) && vl->geometryType() == QgsWkbTypes::PointGeometry )
+      if ( filters.testFlag( PointLayer ) && vl->geometryType() == QgsWkbTypes::GeometryType::PointGeometry )
         return true;
-      if ( filters.testFlag( LineLayer ) && vl->geometryType() == QgsWkbTypes::LineGeometry )
+      if ( filters.testFlag( LineLayer ) && vl->geometryType() == QgsWkbTypes::GeometryType::LineGeometry )
         return true;
-      if ( filters.testFlag( PolygonLayer ) && vl->geometryType() == QgsWkbTypes::PolygonGeometry )
+      if ( filters.testFlag( PolygonLayer ) && vl->geometryType() == QgsWkbTypes::GeometryType::PolygonGeometry )
         return true;
     }
   }

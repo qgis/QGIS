@@ -336,7 +336,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       QgsFields fields;
 
       //! Geometry (WKB) type
-      QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown;
+      QgsWkbTypes::Type wkbType = QgsWkbTypes::Type::Unknown;
 
       //! Coordinate Reference System
       QgsCoordinateReferenceSystem crs;
@@ -684,7 +684,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \throws QgsProcessingException
      */
     QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT,
-                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() ) const SIP_THROW( QgsProcessingException ) SIP_FACTORY;
+                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::Type::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() ) const SIP_THROW( QgsProcessingException ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a name to a feature source.

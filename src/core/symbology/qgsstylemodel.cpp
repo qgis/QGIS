@@ -364,7 +364,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
       if ( entityType != QgsStyle::LabelSettingsEntity )
         return QVariant();
 
-      return mStyle->labelSettingsLayerType( name );
+      return QVariant::fromValue( mStyle->labelSettingsLayerType( name ) );
     }
 
     default:
@@ -696,8 +696,8 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   if ( mSymbolTypeFilterEnabled && symbolType != mSymbolType )
     return false;
 
-  if ( styleEntityType == QgsStyle::LabelSettingsEntity && mLayerType != QgsWkbTypes::UnknownGeometry &&
-       mLayerType != static_cast< QgsWkbTypes::GeometryType >( sourceModel()->data( index, QgsStyleModel::LayerTypeRole ).toInt() ) )
+  if ( styleEntityType == QgsStyle::LabelSettingsEntity && mLayerType != QgsWkbTypes::GeometryType::UnknownGeometry &&
+       mLayerType != sourceModel()->data( index, QgsStyleModel::LayerTypeRole ).value<QgsWkbTypes::GeometryType>() )
     return false;
 
   if ( mTagId >= 0 && !mTaggedSymbolNames.contains( name ) )

@@ -54,7 +54,7 @@ class QgsOgrFeatureSource final: public QgsAbstractFeatureSource
     OGRwkbGeometryType mOgrGeometryTypeFilter;
     QString mDriverName;
     QgsCoordinateReferenceSystem mCrs;
-    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Type::Unknown;
     QgsOgrDatasetSharedPtr mSharedDS = nullptr;
 
     friend class QgsOgrFeatureIterator;

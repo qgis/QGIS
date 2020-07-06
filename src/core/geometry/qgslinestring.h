@@ -665,7 +665,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     inline const QgsLineString *cast( const QgsAbstractGeometry *geom ) const
     {
-      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::LineString )
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::Type::LineString )
         return static_cast<const QgsLineString *>( geom );
       return nullptr;
     }

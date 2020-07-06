@@ -48,7 +48,7 @@ class CORE_EXPORT QgsMemoryProviderUtils
      */
     static QgsVectorLayer *createMemoryLayer( const QString &name,
         const QgsFields &fields,
-        QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry,
+        QgsWkbTypes::Type geometryType = QgsWkbTypes::Type::NoGeometry,
         const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) SIP_FACTORY;
 };
 

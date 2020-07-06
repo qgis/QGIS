@@ -57,7 +57,7 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
      */
     inline const QgsMultiPolygon *cast( const QgsAbstractGeometry *geom ) const
     {
-      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPolygon )
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::Type::MultiPolygon )
         return static_cast<const QgsMultiPolygon *>( geom );
       return nullptr;
     }

@@ -27,7 +27,7 @@ void QgsVectorTileBasicLabelingStyle::writeXml( QDomElement &elem, const QgsRead
 {
   elem.setAttribute( QStringLiteral( "name" ), mStyleName );
   elem.setAttribute( QStringLiteral( "layer" ), mLayerName );
-  elem.setAttribute( QStringLiteral( "geometry" ), mGeometryType );
+  elem.setAttribute( QStringLiteral( "geometry" ), static_cast<int>( mGeometryType ) );
   elem.setAttribute( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elem.setAttribute( QStringLiteral( "expression" ), mExpression );
   elem.setAttribute( QStringLiteral( "min-zoom" ), mMinZoomLevel );

@@ -1011,18 +1011,18 @@ bool QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( const QgsMapLayer *
   if ( !inputLayerTypes().empty() &&
        !inputLayerTypes().contains( QgsProcessing::TypeVector ) &&
        !inputLayerTypes().contains( QgsProcessing::TypeVectorAnyGeometry ) &&
-       ( ( inPlaceGeometryType == QgsWkbTypes::PolygonGeometry && !inputLayerTypes().contains( QgsProcessing::TypeVectorPolygon ) ) ||
-         ( inPlaceGeometryType == QgsWkbTypes::LineGeometry && !inputLayerTypes().contains( QgsProcessing::TypeVectorLine ) ) ||
-         ( inPlaceGeometryType == QgsWkbTypes::PointGeometry && !inputLayerTypes().contains( QgsProcessing::TypeVectorPoint ) ) ) )
+       ( ( inPlaceGeometryType == QgsWkbTypes::GeometryType::PolygonGeometry && !inputLayerTypes().contains( QgsProcessing::TypeVectorPolygon ) ) ||
+         ( inPlaceGeometryType == QgsWkbTypes::GeometryType::LineGeometry && !inputLayerTypes().contains( QgsProcessing::TypeVectorLine ) ) ||
+         ( inPlaceGeometryType == QgsWkbTypes::GeometryType::PointGeometry && !inputLayerTypes().contains( QgsProcessing::TypeVectorPoint ) ) ) )
     return false;
 
-  QgsWkbTypes::Type type = QgsWkbTypes::Unknown;
-  if ( inPlaceGeometryType == QgsWkbTypes::PointGeometry )
-    type = QgsWkbTypes::Point;
-  else if ( inPlaceGeometryType == QgsWkbTypes::LineGeometry )
-    type = QgsWkbTypes::LineString;
-  else if ( inPlaceGeometryType == QgsWkbTypes::PolygonGeometry )
-    type = QgsWkbTypes::Polygon;
+  QgsWkbTypes::Type type = QgsWkbTypes::Type::Unknown;
+  if ( inPlaceGeometryType == QgsWkbTypes::GeometryType::PointGeometry )
+    type = QgsWkbTypes::Type::Point;
+  else if ( inPlaceGeometryType == QgsWkbTypes::GeometryType::LineGeometry )
+    type = QgsWkbTypes::Type::LineString;
+  else if ( inPlaceGeometryType == QgsWkbTypes::GeometryType::PolygonGeometry )
+    type = QgsWkbTypes::Type::Polygon;
 
   if ( QgsWkbTypes::geometryType( outputWkbType( type ) ) != inPlaceGeometryType )
     return false;

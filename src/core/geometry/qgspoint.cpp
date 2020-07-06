@@ -43,22 +43,22 @@ QgsPoint::QgsPoint( double x, double y, double z, double m, QgsWkbTypes::Type wk
   , mZ( z )
   , mM( m )
 {
-  if ( wkbType != QgsWkbTypes::Unknown )
+  if ( wkbType != QgsWkbTypes::Type::Unknown )
   {
-    Q_ASSERT( QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Point );
+    Q_ASSERT( QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Type::Point );
     mWkbType = wkbType;
   }
   else if ( std::isnan( z ) )
   {
     if ( std::isnan( m ) )
-      mWkbType = QgsWkbTypes::Point;
+      mWkbType = QgsWkbTypes::Type::Point;
     else
-      mWkbType = QgsWkbTypes::PointM;
+      mWkbType = QgsWkbTypes::Type::PointM;
   }
   else if ( std::isnan( m ) )
-    mWkbType = QgsWkbTypes::PointZ;
+    mWkbType = QgsWkbTypes::Type::PointZ;
   else
-    mWkbType = QgsWkbTypes::PointZM;
+    mWkbType = QgsWkbTypes::Type::PointZM;
 }
 
 QgsPoint::QgsPoint( const QgsPointXY &p )
@@ -67,7 +67,7 @@ QgsPoint::QgsPoint( const QgsPointXY &p )
   , mZ( std::numeric_limits<double>::quiet_NaN() )
   , mM( std::numeric_limits<double>::quiet_NaN() )
 {
-  mWkbType = QgsWkbTypes::Point;
+  mWkbType = QgsWkbTypes::Type::Point;
   if ( p.isEmpty() )
   {
     mX = std::numeric_limits<double>::quiet_NaN();
@@ -81,7 +81,7 @@ QgsPoint::QgsPoint( QPointF p )
   , mZ( std::numeric_limits<double>::quiet_NaN() )
   , mM( std::numeric_limits<double>::quiet_NaN() )
 {
-  mWkbType = QgsWkbTypes::Point;
+  mWkbType = QgsWkbTypes::Type::Point;
 }
 
 QgsPoint::QgsPoint( QgsWkbTypes::Type wkbType, double x, double y, double z, double m )
@@ -90,7 +90,7 @@ QgsPoint::QgsPoint( QgsWkbTypes::Type wkbType, double x, double y, double z, dou
   , mZ( QgsWkbTypes::hasZ( wkbType ) ? z : std::numeric_limits<double>::quiet_NaN() )
   , mM( QgsWkbTypes::hasM( wkbType ) ? m : std::numeric_limits<double>::quiet_NaN() )
 {
-  Q_ASSERT( QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Point );
+  Q_ASSERT( QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Type::Point );
   mWkbType = wkbType;
 }
 
@@ -134,7 +134,7 @@ bool QgsPoint::removeDuplicateNodes( double, bool )
 bool QgsPoint::fromWkb( QgsConstWkbPtr &wkbPtr )
 {
   QgsWkbTypes::Type type = wkbPtr.readHeader();
-  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::Point )
+  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::Type::Point )
   {
     clear();
     return false;
@@ -165,7 +165,7 @@ bool QgsPoint::fromWkt( const QString &wkt )
 
   QPair<QgsWkbTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
-  if ( QgsWkbTypes::flatType( parts.first ) != QgsWkbTypes::Point )
+  if ( QgsWkbTypes::flatType( parts.first ) != QgsWkbTypes::Type::Point )
     return false;
   mWkbType = parts.first;
 
@@ -592,21 +592,21 @@ bool QgsPoint::convertTo( QgsWkbTypes::Type type )
 
   switch ( type )
   {
-    case QgsWkbTypes::Point:
+    case QgsWkbTypes::Type::Point:
       mZ = std::numeric_limits<double>::quiet_NaN();
       mM = std::numeric_limits<double>::quiet_NaN();
       mWkbType = type;
       return true;
-    case QgsWkbTypes::PointZ:
-    case QgsWkbTypes::Point25D:
+    case QgsWkbTypes::Type::PointZ:
+    case QgsWkbTypes::Type::Point25D:
       mM = std::numeric_limits<double>::quiet_NaN();
       mWkbType = type;
       return true;
-    case QgsWkbTypes::PointM:
+    case QgsWkbTypes::Type::PointM:
       mZ = std::numeric_limits<double>::quiet_NaN();
       mWkbType = type;
       return true;
-    case QgsWkbTypes::PointZM:
+    case QgsWkbTypes::Type::PointZM:
       mWkbType = type;
       return true;
     default:

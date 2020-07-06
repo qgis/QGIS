@@ -554,7 +554,7 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
     uri += QStringLiteral( " srid=%1" ).arg( mSrid );
   }
 
-  if ( mWkbType != QgsWkbTypes::Unknown && mWkbType != QgsWkbTypes::NoGeometry )
+  if ( mWkbType != QgsWkbTypes::Type::Unknown && mWkbType != QgsWkbTypes::Type::NoGeometry )
   {
     uri += QLatin1String( " type=" );
     uri += QgsWkbTypes::displayString( mWkbType );

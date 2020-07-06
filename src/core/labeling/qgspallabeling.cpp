@@ -681,12 +681,12 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
 {
   if ( layer->customProperty( QStringLiteral( "labeling" ) ).toString() != QLatin1String( "pal" ) )
   {
-    if ( layer->geometryType() == QgsWkbTypes::PointGeometry )
+    if ( layer->geometryType() == QgsWkbTypes::GeometryType::PointGeometry )
       placement = OrderedPositionsAroundPoint;
 
     // for polygons the "over point" (over centroid) placement is better than the default
     // "around point" (around centroid) which is more suitable for points
-    if ( layer->geometryType() == QgsWkbTypes::PolygonGeometry )
+    if ( layer->geometryType() == QgsWkbTypes::GeometryType::PolygonGeometry )
       placement = OverPoint;
 
     return; // there's no information available
@@ -1054,9 +1054,9 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
 
   geometryGenerator = placementElem.attribute( QStringLiteral( "geometryGenerator" ) );
   geometryGeneratorEnabled = placementElem.attribute( QStringLiteral( "geometryGeneratorEnabled" ) ).toInt();
-  geometryGeneratorType = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "geometryGeneratorType" ) ), QgsWkbTypes::PointGeometry );
+  geometryGeneratorType = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "geometryGeneratorType" ) ), QgsWkbTypes::GeometryType::PointGeometry );
 
-  layerType = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "layerType" ) ), QgsWkbTypes::UnknownGeometry );
+  layerType = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "layerType" ) ), QgsWkbTypes::GeometryType::UnknownGeometry );
 
   // rendering
   QDomElement renderingElem = elem.firstChildElement( QStringLiteral( "rendering" ) );
@@ -1204,10 +1204,10 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
 
   placementElem.setAttribute( QStringLiteral( "geometryGenerator" ), geometryGenerator );
   placementElem.setAttribute( QStringLiteral( "geometryGeneratorEnabled" ), geometryGeneratorEnabled );
-  const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWkbTypes::GeometryType>() );
-  placementElem.setAttribute( QStringLiteral( "geometryGeneratorType" ), metaEnum.valueToKey( geometryGeneratorType ) );
+  const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWkbTypes::Type>() );
+  placementElem.setAttribute( QStringLiteral( "geometryGeneratorType" ), qgsEnumValueToKey( geometryGeneratorType ) );
 
-  placementElem.setAttribute( QStringLiteral( "layerType" ), metaEnum.valueToKey( layerType ) );
+  placementElem.setAttribute( QStringLiteral( "layerType" ), qgsEnumValueToKey( layerType ) );
 
   // rendering
   QDomElement renderingElem = doc.createElement( QStringLiteral( "rendering" ) );
@@ -1989,7 +1989,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   // whether we're going to create a centroid for polygon
   bool centroidPoly = ( ( placement == QgsPalLayerSettings::AroundPoint
                           || placement == QgsPalLayerSettings::OverPoint )
-                        && geom.type() == QgsWkbTypes::PolygonGeometry );
+                        && geom.type() == QgsWkbTypes::GeometryType::PolygonGeometry );
 
   // CLIP the geometry if it is bigger than the extent
   // don't clip if centroid is requested for whole feature
@@ -2046,7 +2046,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   // as a result of using perimeter based labeling and the geometry is converted to a boundary)
   // note that we also force this if we are permitting labels to be placed outside of polygons too!
   QgsGeometry permissibleZone;
-  if ( geom.type() == QgsWkbTypes::PolygonGeometry && ( fitInPolygonOnly || polygonPlacement & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon ) )
+  if ( geom.type() == QgsWkbTypes::GeometryType::PolygonGeometry && ( fitInPolygonOnly || polygonPlacement & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon ) )
   {
     permissibleZone = geom;
     if ( QgsPalLabeling::geometryRequiresPreparation( permissibleZone, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) )
@@ -2057,7 +2057,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
 
   // if using perimeter based labeling for polygons, get the polygon's
   // linear boundary and use that for the label geometry
-  if ( ( geom.type() == QgsWkbTypes::PolygonGeometry )
+  if ( ( geom.type() == QgsWkbTypes::GeometryType::PolygonGeometry )
        && ( placement == Line || placement == PerimeterCurved ) )
   {
     geom = QgsGeometry( geom.constGet()->boundary() );
@@ -2073,7 +2073,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   }
   geos_geom_clone = QgsGeos::asGeos( geom );
 
-  if ( isObstacle || ( geom.type() == QgsWkbTypes::PointGeometry && offsetType == FromSymbolBounds ) )
+  if ( isObstacle || ( geom.type() == QgsWkbTypes::GeometryType::PointGeometry && offsetType == FromSymbolBounds ) )
   {
     if ( !obstacleGeometry.isNull() && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) )
     {
@@ -2475,7 +2475,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   ( *labelFeature )->setOverrunDistance( overrunDistanceEval );
   ( *labelFeature )->setOverrunSmoothDistance( overrunSmoothDist );
   ( *labelFeature )->setLabelAllParts( labelAll );
-  if ( geom.type() == QgsWkbTypes::PointGeometry && !obstacleGeometry.isNull() )
+  if ( geom.type() == QgsWkbTypes::GeometryType::PointGeometry && !obstacleGeometry.isNull() )
   {
     //register symbol size
     ( *labelFeature )->setSymbolSize( QSizeF( obstacleGeometry.boundingBox().width(),
@@ -3556,7 +3556,7 @@ bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry &geometry, Q
     return false;
   }
 
-  if ( geometry.type() == QgsWkbTypes::LineGeometry && geometry.isMultipart() && mergeLines )
+  if ( geometry.type() == QgsWkbTypes::GeometryType::LineGeometry && geometry.isMultipart() && mergeLines )
   {
     return true;
   }
@@ -3575,7 +3575,7 @@ bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry &geometry, Q
     return true;
 
   //requires fixing
-  if ( geometry.type() == QgsWkbTypes::PolygonGeometry && !geometry.isGeosValid() )
+  if ( geometry.type() == QgsWkbTypes::GeometryType::PolygonGeometry && !geometry.isGeosValid() )
     return true;
 
   return false;
@@ -3636,7 +3636,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
   //don't modify the feature's geometry so that geometry based expressions keep working
   QgsGeometry geom = geometry;
 
-  if ( geom.type() == QgsWkbTypes::LineGeometry && geom.isMultipart() && mergeLines )
+  if ( geom.type() == QgsWkbTypes::GeometryType::LineGeometry && geom.isMultipart() && mergeLines )
   {
     geom = geom.mergeLines();
   }
@@ -3676,7 +3676,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
   }
 
   // fix invalid polygons
-  if ( geom.type() == QgsWkbTypes::PolygonGeometry )
+  if ( geom.type() == QgsWkbTypes::GeometryType::PolygonGeometry )
   {
     if ( geom.isMultipart() )
     {
@@ -3737,13 +3737,13 @@ bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext &context, const 
   }
 
   QgsWkbTypes::GeometryType featureType = geom.type();
-  if ( featureType == QgsWkbTypes::PointGeometry ) //minimum size does not apply to point features
+  if ( featureType == QgsWkbTypes::GeometryType::PointGeometry ) //minimum size does not apply to point features
   {
     return true;
   }
 
   double mapUnitsPerMM = context.mapToPixel().mapUnitsPerPixel() * context.scaleFactor();
-  if ( featureType == QgsWkbTypes::LineGeometry )
+  if ( featureType == QgsWkbTypes::GeometryType::LineGeometry )
   {
     double length = geom.length();
     if ( length >= 0.0 )
@@ -3751,7 +3751,7 @@ bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext &context, const 
       return ( length >= ( minSize * mapUnitsPerMM ) );
     }
   }
-  else if ( featureType == QgsWkbTypes::PolygonGeometry )
+  else if ( featureType == QgsWkbTypes::GeometryType::PolygonGeometry )
   {
     double area = geom.area();
     if ( area >= 0.0 )

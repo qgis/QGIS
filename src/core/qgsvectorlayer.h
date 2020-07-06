@@ -471,7 +471,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
        * \see fallbackCrs
        * \since QGIS 3.8
        */
-      QgsWkbTypes::Type fallbackWkbType = QgsWkbTypes::Unknown;
+      QgsWkbTypes::Type fallbackWkbType = QgsWkbTypes::Type::Unknown;
 
       /**
        * Fallback layer coordinate reference system.
@@ -2807,7 +2807,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QSet<QString> mExcludeAttributesWFS;
 
     //! Geometry type as defined in enum WkbType (qgis.h)
-    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Type::Unknown;
 
     //! Renderer object which holds the information about how to display the features
     QgsFeatureRenderer *mRenderer = nullptr;

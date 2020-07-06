@@ -38,7 +38,7 @@ QgsPointDistanceRenderer::QgsPointDistanceRenderer( const QString &rendererName,
   , mDrawLabels( true )
 
 {
-  mRenderer.reset( QgsFeatureRenderer::defaultRenderer( QgsWkbTypes::PointGeometry ) );
+  mRenderer.reset( QgsFeatureRenderer::defaultRenderer( QgsWkbTypes::GeometryType::PointGeometry ) );
 }
 
 void QgsPointDistanceRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
@@ -71,7 +71,7 @@ bool QgsPointDistanceRenderer::renderFeature( const QgsFeature &feature, QgsRend
   //point position in screen coords
   QgsGeometry geom = feature.geometry();
   QgsWkbTypes::Type geomType = geom.wkbType();
-  if ( QgsWkbTypes::flatType( geomType ) != QgsWkbTypes::Point )
+  if ( QgsWkbTypes::flatType( geomType ) != QgsWkbTypes::Type::Point )
   {
     //can only render point type
     return false;

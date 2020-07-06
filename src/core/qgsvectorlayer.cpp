@@ -903,7 +903,7 @@ QgsRectangle QgsVectorLayer::extent() const
     QgsFeature fet;
     while ( fit.nextFeature( fet ) )
     {
-      if ( fet.hasGeometry() && fet.geometry().type() != QgsWkbTypes::UnknownGeometry )
+      if ( fet.hasGeometry() && fet.geometry().type() != QgsWkbTypes::GeometryType::UnknownGeometry )
       {
         QgsRectangle bb = fet.geometry().boundingBox();
         rect.combineExtentWith( bb );
@@ -976,7 +976,7 @@ bool QgsVectorLayer::setSubsetString( const QString &subset )
 
 bool QgsVectorLayer::simplifyDrawingCanbeApplied( const QgsRenderContext &renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const
 {
-  if ( mValid && mDataProvider && !mEditBuffer && ( isSpatial() && geometryType() != QgsWkbTypes::PointGeometry ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && renderContext.useRenderingOptimization() )
+  if ( mValid && mDataProvider && !mEditBuffer && ( isSpatial() && geometryType() != QgsWkbTypes::GeometryType::PointGeometry ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && renderContext.useRenderingOptimization() )
   {
     double maximumSimplificationScale = mSimplifyMethod.maximumScale();
 
@@ -2379,7 +2379,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
   // we must try to restore a renderer if our geometry type is unknown
   // as this allows the renderer to be correctly restored even for layers
   // with broken sources
-  if ( isSpatial() || mWkbType == QgsWkbTypes::Unknown )
+  if ( isSpatial() || mWkbType == QgsWkbTypes::Type::Unknown )
   {
     // try renderer v2 first
     if ( categories.testFlag( Symbology ) )
@@ -2816,7 +2816,7 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
   // we must try to write the renderer if our geometry type is unknown
   // as this allows the renderer to be correctly restored even for layers
   // with broken sources
-  if ( isSpatial() || mWkbType == QgsWkbTypes::Unknown )
+  if ( isSpatial() || mWkbType == QgsWkbTypes::Type::Unknown )
   {
     if ( categories.testFlag( Symbology ) )
     {
@@ -3483,7 +3483,7 @@ QgsFeatureIterator QgsVectorLayer::getSelectedFeatures( QgsFeatureRequest reques
   if ( mSelectedFeatureIds.isEmpty() )
     return QgsFeatureIterator();
 
-  if ( geometryType() == QgsWkbTypes::NullGeometry )
+  if ( geometryType() == QgsWkbTypes::GeometryType::NullGeometry )
     request.setFlags( QgsFeatureRequest::NoGeometry );
 
   if ( mSelectedFeatureIds.count() == 1 )
@@ -3604,7 +3604,7 @@ bool QgsVectorLayer::isEditable() const
 bool QgsVectorLayer::isSpatial() const
 {
   QgsWkbTypes::GeometryType t = geometryType();
-  return t != QgsWkbTypes::NullGeometry && t != QgsWkbTypes::UnknownGeometry;
+  return t != QgsWkbTypes::GeometryType::NullGeometry && t != QgsWkbTypes::GeometryType::UnknownGeometry;
 }
 
 bool QgsVectorLayer::isReadOnly() const
@@ -3653,7 +3653,7 @@ void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
   // we must allow setting a renderer if our geometry type is unknown
   // as this allows the renderer to be correctly set even for layers
   // with broken sources
-  if ( !isSpatial() && mWkbType != QgsWkbTypes::Unknown )
+  if ( !isSpatial() && mWkbType != QgsWkbTypes::Type::Unknown )
     return;
 
   if ( r != mRenderer )
@@ -4719,7 +4719,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
     if ( !pointPlacementElem.isNull() )
     {
       settings.placement = QgsPalLayerSettings::OverPoint;
-      if ( geometryType() == QgsWkbTypes::LineGeometry )
+      if ( geometryType() == QgsWkbTypes::GeometryType::LineGeometry )
       {
         settings.placement = QgsPalLayerSettings::Horizontal;
       }
@@ -4851,7 +4851,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
       }
       else if ( it.key() == QLatin1String( "followLine" ) && it.value() == QLatin1String( "true" ) )
       {
-        if ( geometryType() == QgsWkbTypes::PolygonGeometry )
+        if ( geometryType() == QgsWkbTypes::GeometryType::PolygonGeometry )
         {
           settings.placement = QgsPalLayerSettings::PerimeterCurved;
         }
@@ -5007,8 +5007,8 @@ QString QgsVectorLayer::htmlMetadata() const
   if ( isSpatial() )
   {
     // geom type
-    QgsWkbTypes::GeometryType type = geometryType();
-    if ( type < 0 || type > QgsWkbTypes::NullGeometry )
+    unsigned int type = static_cast<int>( geometryType() );
+    if ( type < 0 || type > static_cast<int>( QgsWkbTypes::GeometryType::NullGeometry ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "Invalid vector type" ), 2 );
     }

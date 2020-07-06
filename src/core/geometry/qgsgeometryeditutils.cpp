@@ -115,15 +115,15 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry 
   }
 
   bool added = false;
-  if ( QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiSurface
-       || QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPolygon )
+  if ( QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::Type::MultiSurface
+       || QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::Type::MultiPolygon )
   {
     QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( part.get() );
 
     if ( curve && curve->isClosed() && curve->numPoints() >= 4 )
     {
       std::unique_ptr<QgsCurvePolygon> poly;
-      if ( QgsWkbTypes::flatType( curve->wkbType() ) == QgsWkbTypes::LineString )
+      if ( QgsWkbTypes::flatType( curve->wkbType() ) == QgsWkbTypes::Type::LineString )
       {
         poly = qgis::make_unique< QgsPolygon >();
       }
@@ -137,14 +137,14 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry 
       poly->setExteriorRing( curve );
       added = geomCollection->addGeometry( poly.release() );
     }
-    else if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::Polygon
-              || QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::Triangle
-              || QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::CurvePolygon )
+    else if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::Type::Polygon
+              || QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::Type::Triangle
+              || QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::Type::CurvePolygon )
     {
       added = geomCollection->addGeometry( part.release() );
     }
-    else if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiPolygon
-              ||  QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiSurface )
+    else if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::Type::MultiPolygon
+              ||  QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::Type::MultiSurface )
     {
       std::unique_ptr<QgsGeometryCollection> parts( static_cast<QgsGeometryCollection *>( part.release() ) );
 
@@ -235,7 +235,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
 
 
   //check if g has polygon type
-  if ( QgsWkbTypes::geometryType( geomTypeBeforeModification ) != QgsWkbTypes::PolygonGeometry )
+  if ( QgsWkbTypes::geometryType( geomTypeBeforeModification ) != QgsWkbTypes::GeometryType::PolygonGeometry )
   {
     return nullptr;
   }

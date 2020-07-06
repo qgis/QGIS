@@ -113,7 +113,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
         {
           // not used by the spatialite provider for now ...
           QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( reGeom.cap( 2 ) );
-          if ( wkbType == QgsWkbTypes::Unknown )
+          if ( wkbType == QgsWkbTypes::Type::Unknown )
           {
             wkbType = static_cast<QgsWkbTypes::Type>( reGeom.cap( 2 ).toLong() );
           }
@@ -124,7 +124,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
     }
     else if ( key == QLatin1String( "nogeometry" ) )
     {
-      def.setGeometryWkbType( QgsWkbTypes::NoGeometry );
+      def.setGeometryWkbType( QgsWkbTypes::Type::NoGeometry );
     }
     else if ( key == QLatin1String( "uid" ) )
     {
@@ -276,12 +276,12 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
   if ( !uid().isEmpty() )
     urlQuery.addQueryItem( QStringLiteral( "uid" ), uid() );
 
-  if ( geometryWkbType() == QgsWkbTypes::NoGeometry )
+  if ( geometryWkbType() == QgsWkbTypes::Type::NoGeometry )
     urlQuery.addQueryItem( QStringLiteral( "nogeometry" ), QString() );
   else if ( !geometryField().isEmpty() )
   {
     if ( hasDefinedGeometry() )
-      urlQuery.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1:%2:%3" ).arg( geometryField() ). arg( geometryWkbType() ).arg( geometrySrid() ).toUtf8() );
+      urlQuery.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1:%2:%3" ).arg( geometryField() ). arg( static_cast<int>( geometryWkbType() ) ).arg( geometrySrid() ).toUtf8() );
     else
       urlQuery.addQueryItem( QStringLiteral( "geometry" ), geometryField() );
   }

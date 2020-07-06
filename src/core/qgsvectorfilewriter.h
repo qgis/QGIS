@@ -341,7 +341,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
         double symbologyScale = 1.0,
         const QgsRectangle *filterExtent = nullptr,
-        QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown,
+        QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Type::Unknown,
         bool forceMulti = false,
         bool includeZ = false,
         const QgsAttributeList &attributes = QgsAttributeList(),
@@ -424,7 +424,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
         double symbologyScale = 1.0,
         const QgsRectangle *filterExtent = nullptr,
-        QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown,
+        QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Type::Unknown,
         bool forceMulti = false,
         bool includeZ = false,
         const QgsAttributeList &attributes = QgsAttributeList(),
@@ -492,7 +492,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         /**
          * Set to a valid geometry type to override the default geometry type for the layer. This parameter
          * allows for conversion of geometryless tables to null geometries, etc */
-        QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown;
+        QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Type::Unknown;
 
         //! Sets to TRUE to force creation of multi* geometries
         bool forceMulti = false;
@@ -892,7 +892,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     {
       std::unique_ptr< QgsFeatureRenderer > renderer;
       QgsCoordinateReferenceSystem sourceCrs;
-      QgsWkbTypes::Type sourceWkbType = QgsWkbTypes::Unknown;
+      QgsWkbTypes::Type sourceWkbType = QgsWkbTypes::Type::Unknown;
       QgsFields sourceFields;
       QString providerType;
       long featureCount = 0;
@@ -905,7 +905,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       QgsRenderContext renderContext;
       bool shallTransform = false;
       QgsCoordinateReferenceSystem outputCrs;
-      QgsWkbTypes::Type destWkbType = QgsWkbTypes::Unknown;
+      QgsWkbTypes::Type destWkbType = QgsWkbTypes::Type::Unknown;
       QgsAttributeList attributes;
       QgsFields outputFields;
       QgsFeatureIterator sourceFeatureIterator;

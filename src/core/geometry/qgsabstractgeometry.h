@@ -1013,7 +1013,7 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QgsPoint childPoint( int index ) const;
 
   protected:
-    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Type::Unknown;
 
     /**
      * Updates the geometry type based on whether sub geometries contain z or m values.

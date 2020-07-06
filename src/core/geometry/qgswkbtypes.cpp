@@ -52,79 +52,79 @@ typedef  QMap<QgsWkbTypes::Type, WkbEntry> WkbEntries;
 Q_GLOBAL_STATIC_WITH_ARGS( WkbEntries, sWkbEntries, (
 {
   //register the known wkb types
-  { QgsWkbTypes::Unknown, WkbEntry( QLatin1String( "Unknown" ), false, QgsWkbTypes::Unknown, QgsWkbTypes::Unknown, QgsWkbTypes::Unknown, QgsWkbTypes::UnknownGeometry, false, false ) },
-  { QgsWkbTypes::NoGeometry, WkbEntry( QLatin1String( "NoGeometry" ), false, QgsWkbTypes::NoGeometry, QgsWkbTypes::NoGeometry, QgsWkbTypes::NoGeometry, QgsWkbTypes::NullGeometry, false, false ) },
+  { QgsWkbTypes::Type::Unknown, WkbEntry( QLatin1String( "Unknown" ), false, QgsWkbTypes::Type::Unknown, QgsWkbTypes::Type::Unknown, QgsWkbTypes::Type::Unknown, QgsWkbTypes::GeometryType::UnknownGeometry, false, false ) },
+  { QgsWkbTypes::Type::NoGeometry, WkbEntry( QLatin1String( "NoGeometry" ), false, QgsWkbTypes::Type::NoGeometry, QgsWkbTypes::Type::NoGeometry, QgsWkbTypes::Type::NoGeometry, QgsWkbTypes::GeometryType::NullGeometry, false, false ) },
   //point
-  {QgsWkbTypes::Point, WkbEntry( QLatin1String( "Point" ), false, QgsWkbTypes::MultiPoint, QgsWkbTypes::Point, QgsWkbTypes::Point, QgsWkbTypes::PointGeometry, false, false ) },
-  {QgsWkbTypes::PointZ, WkbEntry( QLatin1String( "PointZ" ), false, QgsWkbTypes::MultiPointZ, QgsWkbTypes::PointZ, QgsWkbTypes::Point, QgsWkbTypes::PointGeometry, true, false ) },
-  {QgsWkbTypes::PointM, WkbEntry( QLatin1String( "PointM" ), false, QgsWkbTypes::MultiPointM, QgsWkbTypes::PointM, QgsWkbTypes::Point, QgsWkbTypes::PointGeometry, false, true ) },
-  {QgsWkbTypes::PointZM, WkbEntry( QLatin1String( "PointZM" ), false, QgsWkbTypes::MultiPointZM, QgsWkbTypes::PointZM, QgsWkbTypes::Point, QgsWkbTypes::PointGeometry, true, true ) },
-  {QgsWkbTypes::Point25D, WkbEntry( QLatin1String( "Point25D" ), false, QgsWkbTypes::MultiPoint25D, QgsWkbTypes::Point25D, QgsWkbTypes::Point, QgsWkbTypes::PointGeometry, true, false ) },
+  {QgsWkbTypes::Type::Point, WkbEntry( QLatin1String( "Point" ), false, QgsWkbTypes::Type::MultiPoint, QgsWkbTypes::Type::Point, QgsWkbTypes::Type::Point, QgsWkbTypes::GeometryType::PointGeometry, false, false ) },
+  {QgsWkbTypes::Type::PointZ, WkbEntry( QLatin1String( "PointZ" ), false, QgsWkbTypes::Type::MultiPointZ, QgsWkbTypes::Type::PointZ, QgsWkbTypes::Type::Point, QgsWkbTypes::GeometryType::PointGeometry, true, false ) },
+  {QgsWkbTypes::Type::PointM, WkbEntry( QLatin1String( "PointM" ), false, QgsWkbTypes::Type::MultiPointM, QgsWkbTypes::Type::PointM, QgsWkbTypes::Type::Point, QgsWkbTypes::GeometryType::PointGeometry, false, true ) },
+  {QgsWkbTypes::Type::PointZM, WkbEntry( QLatin1String( "PointZM" ), false, QgsWkbTypes::Type::MultiPointZM, QgsWkbTypes::Type::PointZM, QgsWkbTypes::Type::Point, QgsWkbTypes::GeometryType::PointGeometry, true, true ) },
+  {QgsWkbTypes::Type::Point25D, WkbEntry( QLatin1String( "Point25D" ), false, QgsWkbTypes::Type::MultiPoint25D, QgsWkbTypes::Type::Point25D, QgsWkbTypes::Type::Point, QgsWkbTypes::GeometryType::PointGeometry, true, false ) },
   //linestring
-  { QgsWkbTypes::LineString, WkbEntry( QLatin1String( "LineString" ), false, QgsWkbTypes::MultiLineString, QgsWkbTypes::LineString, QgsWkbTypes::LineString, QgsWkbTypes::LineGeometry, false, false ) },
-  { QgsWkbTypes::LineStringZ, WkbEntry( QLatin1String( "LineStringZ" ), false, QgsWkbTypes::MultiLineStringZ, QgsWkbTypes::LineStringZ, QgsWkbTypes::LineString, QgsWkbTypes::LineGeometry, true, false ) },
-  { QgsWkbTypes::LineStringM, WkbEntry( QLatin1String( "LineStringM" ), false, QgsWkbTypes::MultiLineStringM, QgsWkbTypes::LineStringM, QgsWkbTypes::LineString, QgsWkbTypes::LineGeometry, false, true ) },
-  { QgsWkbTypes::LineStringZM, WkbEntry( QLatin1String( "LineStringZM" ), false, QgsWkbTypes::MultiLineStringZM, QgsWkbTypes::LineStringZM, QgsWkbTypes::LineString, QgsWkbTypes::LineGeometry, true, true ) },
-  { QgsWkbTypes::LineString25D, WkbEntry( QLatin1String( "LineString25D" ), false, QgsWkbTypes::MultiLineString25D, QgsWkbTypes::LineString25D, QgsWkbTypes::LineString, QgsWkbTypes::LineGeometry, true, false ) },
+  { QgsWkbTypes::Type::LineString, WkbEntry( QLatin1String( "LineString" ), false, QgsWkbTypes::Type::MultiLineString, QgsWkbTypes::Type::LineString, QgsWkbTypes::Type::LineString, QgsWkbTypes::GeometryType::LineGeometry, false, false ) },
+  { QgsWkbTypes::Type::LineStringZ, WkbEntry( QLatin1String( "LineStringZ" ), false, QgsWkbTypes::Type::MultiLineStringZ, QgsWkbTypes::Type::LineStringZ, QgsWkbTypes::Type::LineString, QgsWkbTypes::GeometryType::LineGeometry, true, false ) },
+  { QgsWkbTypes::Type::LineStringM, WkbEntry( QLatin1String( "LineStringM" ), false, QgsWkbTypes::Type::MultiLineStringM, QgsWkbTypes::Type::LineStringM, QgsWkbTypes::Type::LineString, QgsWkbTypes::GeometryType::LineGeometry, false, true ) },
+  { QgsWkbTypes::Type::LineStringZM, WkbEntry( QLatin1String( "LineStringZM" ), false, QgsWkbTypes::Type::MultiLineStringZM, QgsWkbTypes::Type::LineStringZM, QgsWkbTypes::Type::LineString, QgsWkbTypes::GeometryType::LineGeometry, true, true ) },
+  { QgsWkbTypes::Type::LineString25D, WkbEntry( QLatin1String( "LineString25D" ), false, QgsWkbTypes::Type::MultiLineString25D, QgsWkbTypes::Type::LineString25D, QgsWkbTypes::Type::LineString, QgsWkbTypes::GeometryType::LineGeometry, true, false ) },
   //circularstring
-  { QgsWkbTypes::CircularString, WkbEntry( QLatin1String( "CircularString" ), false, QgsWkbTypes::MultiCurve, QgsWkbTypes::CircularString, QgsWkbTypes::CircularString, QgsWkbTypes::LineGeometry, false, false ) },
-  { QgsWkbTypes::CircularStringZ, WkbEntry( QLatin1String( "CircularStringZ" ), false, QgsWkbTypes::MultiCurveZ, QgsWkbTypes::CircularStringZ, QgsWkbTypes::CircularString, QgsWkbTypes::LineGeometry, true, false ) },
-  { QgsWkbTypes::CircularStringM, WkbEntry( QLatin1String( "CircularStringM" ), false, QgsWkbTypes::MultiCurveM, QgsWkbTypes::CircularStringM, QgsWkbTypes::CircularString, QgsWkbTypes::LineGeometry, false, true ) },
-  { QgsWkbTypes::CircularStringZM, WkbEntry( QLatin1String( "CircularStringZM" ), false, QgsWkbTypes::MultiCurveZM, QgsWkbTypes::CircularStringZM, QgsWkbTypes::CircularString, QgsWkbTypes::LineGeometry, true, true ) },
+  { QgsWkbTypes::Type::CircularString, WkbEntry( QLatin1String( "CircularString" ), false, QgsWkbTypes::Type::MultiCurve, QgsWkbTypes::Type::CircularString, QgsWkbTypes::Type::CircularString, QgsWkbTypes::GeometryType::LineGeometry, false, false ) },
+  { QgsWkbTypes::Type::CircularStringZ, WkbEntry( QLatin1String( "CircularStringZ" ), false, QgsWkbTypes::Type::MultiCurveZ, QgsWkbTypes::Type::CircularStringZ, QgsWkbTypes::Type::CircularString, QgsWkbTypes::GeometryType::LineGeometry, true, false ) },
+  { QgsWkbTypes::Type::CircularStringM, WkbEntry( QLatin1String( "CircularStringM" ), false, QgsWkbTypes::Type::MultiCurveM, QgsWkbTypes::Type::CircularStringM, QgsWkbTypes::Type::CircularString, QgsWkbTypes::GeometryType::LineGeometry, false, true ) },
+  { QgsWkbTypes::Type::CircularStringZM, WkbEntry( QLatin1String( "CircularStringZM" ), false, QgsWkbTypes::Type::MultiCurveZM, QgsWkbTypes::Type::CircularStringZM, QgsWkbTypes::Type::CircularString, QgsWkbTypes::GeometryType::LineGeometry, true, true ) },
   //compoundcurve
-  { QgsWkbTypes::CompoundCurve, WkbEntry( QLatin1String( "CompoundCurve" ), false, QgsWkbTypes::MultiCurve, QgsWkbTypes::CompoundCurve, QgsWkbTypes::CompoundCurve, QgsWkbTypes::LineGeometry, false, false ) },
-  { QgsWkbTypes::CompoundCurveZ, WkbEntry( QLatin1String( "CompoundCurveZ" ), false, QgsWkbTypes::MultiCurveZ, QgsWkbTypes::CompoundCurveZ, QgsWkbTypes::CompoundCurve, QgsWkbTypes::LineGeometry, true, false ) },
-  { QgsWkbTypes::CompoundCurveM, WkbEntry( QLatin1String( "CompoundCurveM" ), false, QgsWkbTypes::MultiCurveM, QgsWkbTypes::CompoundCurveM, QgsWkbTypes::CompoundCurve, QgsWkbTypes::LineGeometry, false, true ) },
-  { QgsWkbTypes::CompoundCurveZM, WkbEntry( QLatin1String( "CompoundCurveZM" ), false, QgsWkbTypes::MultiCurveZM, QgsWkbTypes::CompoundCurveZM, QgsWkbTypes::CompoundCurve, QgsWkbTypes::LineGeometry, true, true ) },
+  { QgsWkbTypes::Type::CompoundCurve, WkbEntry( QLatin1String( "CompoundCurve" ), false, QgsWkbTypes::Type::MultiCurve, QgsWkbTypes::Type::CompoundCurve, QgsWkbTypes::Type::CompoundCurve, QgsWkbTypes::GeometryType::LineGeometry, false, false ) },
+  { QgsWkbTypes::Type::CompoundCurveZ, WkbEntry( QLatin1String( "CompoundCurveZ" ), false, QgsWkbTypes::Type::MultiCurveZ, QgsWkbTypes::Type::CompoundCurveZ, QgsWkbTypes::Type::CompoundCurve, QgsWkbTypes::GeometryType::LineGeometry, true, false ) },
+  { QgsWkbTypes::Type::CompoundCurveM, WkbEntry( QLatin1String( "CompoundCurveM" ), false, QgsWkbTypes::Type::MultiCurveM, QgsWkbTypes::Type::CompoundCurveM, QgsWkbTypes::Type::CompoundCurve, QgsWkbTypes::GeometryType::LineGeometry, false, true ) },
+  { QgsWkbTypes::Type::CompoundCurveZM, WkbEntry( QLatin1String( "CompoundCurveZM" ), false, QgsWkbTypes::Type::MultiCurveZM, QgsWkbTypes::Type::CompoundCurveZM, QgsWkbTypes::Type::CompoundCurve, QgsWkbTypes::GeometryType::LineGeometry, true, true ) },
   //polygon
-  { QgsWkbTypes::Polygon, WkbEntry( QLatin1String( "Polygon" ), false, QgsWkbTypes::MultiPolygon, QgsWkbTypes::Polygon, QgsWkbTypes::Polygon, QgsWkbTypes::PolygonGeometry, false, false ) },
-  { QgsWkbTypes::PolygonZ, WkbEntry( QLatin1String( "PolygonZ" ), false, QgsWkbTypes::MultiPolygonZ, QgsWkbTypes::PolygonZ, QgsWkbTypes::Polygon, QgsWkbTypes::PolygonGeometry, true, false ) },
-  { QgsWkbTypes::PolygonM, WkbEntry( QLatin1String( "PolygonM" ), false, QgsWkbTypes::MultiPolygonM, QgsWkbTypes::PolygonM, QgsWkbTypes::Polygon, QgsWkbTypes::PolygonGeometry, false, true ) },
-  { QgsWkbTypes::PolygonZM, WkbEntry( QLatin1String( "PolygonZM" ), false, QgsWkbTypes::MultiPolygonZM, QgsWkbTypes::PolygonZM, QgsWkbTypes::Polygon, QgsWkbTypes::PolygonGeometry, true, true ) },
-  { QgsWkbTypes::Polygon25D, WkbEntry( QLatin1String( "Polygon25D" ), false, QgsWkbTypes::MultiPolygon25D, QgsWkbTypes::Polygon25D, QgsWkbTypes::Polygon, QgsWkbTypes::PolygonGeometry, true, false ) },
+  { QgsWkbTypes::Type::Polygon, WkbEntry( QLatin1String( "Polygon" ), false, QgsWkbTypes::Type::MultiPolygon, QgsWkbTypes::Type::Polygon, QgsWkbTypes::Type::Polygon, QgsWkbTypes::GeometryType::PolygonGeometry, false, false ) },
+  { QgsWkbTypes::Type::PolygonZ, WkbEntry( QLatin1String( "PolygonZ" ), false, QgsWkbTypes::Type::MultiPolygonZ, QgsWkbTypes::Type::PolygonZ, QgsWkbTypes::Type::Polygon, QgsWkbTypes::GeometryType::PolygonGeometry, true, false ) },
+  { QgsWkbTypes::Type::PolygonM, WkbEntry( QLatin1String( "PolygonM" ), false, QgsWkbTypes::Type::MultiPolygonM, QgsWkbTypes::Type::PolygonM, QgsWkbTypes::Type::Polygon, QgsWkbTypes::GeometryType::PolygonGeometry, false, true ) },
+  { QgsWkbTypes::Type::PolygonZM, WkbEntry( QLatin1String( "PolygonZM" ), false, QgsWkbTypes::Type::MultiPolygonZM, QgsWkbTypes::Type::PolygonZM, QgsWkbTypes::Type::Polygon, QgsWkbTypes::GeometryType::PolygonGeometry, true, true ) },
+  { QgsWkbTypes::Type::Polygon25D, WkbEntry( QLatin1String( "Polygon25D" ), false, QgsWkbTypes::Type::MultiPolygon25D, QgsWkbTypes::Type::Polygon25D, QgsWkbTypes::Type::Polygon, QgsWkbTypes::GeometryType::PolygonGeometry, true, false ) },
   //triangle
-  { QgsWkbTypes::Triangle, WkbEntry( QLatin1String( "Triangle" ), false, QgsWkbTypes::Unknown, QgsWkbTypes::Triangle, QgsWkbTypes::Triangle, QgsWkbTypes::PolygonGeometry, false, false ) },
-  { QgsWkbTypes::TriangleZ, WkbEntry( QLatin1String( "TriangleZ" ), false, QgsWkbTypes::Unknown, QgsWkbTypes::TriangleZ, QgsWkbTypes::Triangle, QgsWkbTypes::PolygonGeometry, true, false ) },
-  { QgsWkbTypes::TriangleM, WkbEntry( QLatin1String( "TriangleM" ), false, QgsWkbTypes::Unknown, QgsWkbTypes::TriangleM, QgsWkbTypes::Triangle, QgsWkbTypes::PolygonGeometry, false, true ) },
-  { QgsWkbTypes::TriangleZM, WkbEntry( QLatin1String( "TriangleZM" ), false, QgsWkbTypes::Unknown, QgsWkbTypes::TriangleZM, QgsWkbTypes::Triangle, QgsWkbTypes::PolygonGeometry, true, true ) },
+  { QgsWkbTypes::Type::Triangle, WkbEntry( QLatin1String( "Triangle" ), false, QgsWkbTypes::Type::Unknown, QgsWkbTypes::Type::Triangle, QgsWkbTypes::Type::Triangle, QgsWkbTypes::GeometryType::PolygonGeometry, false, false ) },
+  { QgsWkbTypes::Type::TriangleZ, WkbEntry( QLatin1String( "TriangleZ" ), false, QgsWkbTypes::Type::Unknown, QgsWkbTypes::Type::TriangleZ, QgsWkbTypes::Type::Triangle, QgsWkbTypes::GeometryType::PolygonGeometry, true, false ) },
+  { QgsWkbTypes::Type::TriangleM, WkbEntry( QLatin1String( "TriangleM" ), false, QgsWkbTypes::Type::Unknown, QgsWkbTypes::Type::TriangleM, QgsWkbTypes::Type::Triangle, QgsWkbTypes::GeometryType::PolygonGeometry, false, true ) },
+  { QgsWkbTypes::Type::TriangleZM, WkbEntry( QLatin1String( "TriangleZM" ), false, QgsWkbTypes::Type::Unknown, QgsWkbTypes::Type::TriangleZM, QgsWkbTypes::Type::Triangle, QgsWkbTypes::GeometryType::PolygonGeometry, true, true ) },
   //curvepolygon
-  { QgsWkbTypes::CurvePolygon, WkbEntry( QLatin1String( "CurvePolygon" ), false, QgsWkbTypes::MultiSurface, QgsWkbTypes::CurvePolygon, QgsWkbTypes::CurvePolygon, QgsWkbTypes::PolygonGeometry, false, false ) },
-  { QgsWkbTypes::CurvePolygonZ, WkbEntry( QLatin1String( "CurvePolygonZ" ), false, QgsWkbTypes::MultiSurfaceZ, QgsWkbTypes::CurvePolygonZ, QgsWkbTypes::CurvePolygon, QgsWkbTypes::PolygonGeometry, true, false ) },
-  { QgsWkbTypes::CurvePolygonM, WkbEntry( QLatin1String( "CurvePolygonM" ), false, QgsWkbTypes::MultiSurfaceM, QgsWkbTypes::CurvePolygonM, QgsWkbTypes::CurvePolygon, QgsWkbTypes::PolygonGeometry, false, true ) },
-  { QgsWkbTypes::CurvePolygonZM, WkbEntry( QLatin1String( "CurvePolygonZM" ), false, QgsWkbTypes::MultiSurfaceZM, QgsWkbTypes::CurvePolygonZM, QgsWkbTypes::CurvePolygon, QgsWkbTypes::PolygonGeometry, true, true ) },
+  { QgsWkbTypes::Type::CurvePolygon, WkbEntry( QLatin1String( "CurvePolygon" ), false, QgsWkbTypes::Type::MultiSurface, QgsWkbTypes::Type::CurvePolygon, QgsWkbTypes::Type::CurvePolygon, QgsWkbTypes::GeometryType::PolygonGeometry, false, false ) },
+  { QgsWkbTypes::Type::CurvePolygonZ, WkbEntry( QLatin1String( "CurvePolygonZ" ), false, QgsWkbTypes::Type::MultiSurfaceZ, QgsWkbTypes::Type::CurvePolygonZ, QgsWkbTypes::Type::CurvePolygon, QgsWkbTypes::GeometryType::PolygonGeometry, true, false ) },
+  { QgsWkbTypes::Type::CurvePolygonM, WkbEntry( QLatin1String( "CurvePolygonM" ), false, QgsWkbTypes::Type::MultiSurfaceM, QgsWkbTypes::Type::CurvePolygonM, QgsWkbTypes::Type::CurvePolygon, QgsWkbTypes::GeometryType::PolygonGeometry, false, true ) },
+  { QgsWkbTypes::Type::CurvePolygonZM, WkbEntry( QLatin1String( "CurvePolygonZM" ), false, QgsWkbTypes::Type::MultiSurfaceZM, QgsWkbTypes::Type::CurvePolygonZM, QgsWkbTypes::Type::CurvePolygon, QgsWkbTypes::GeometryType::PolygonGeometry, true, true ) },
   //multipoint
-  { QgsWkbTypes::MultiPoint, WkbEntry( QLatin1String( "MultiPoint" ), true, QgsWkbTypes::MultiPoint, QgsWkbTypes::Point, QgsWkbTypes::MultiPoint, QgsWkbTypes::PointGeometry, false, false ) },
-  { QgsWkbTypes::MultiPointZ, WkbEntry( QLatin1String( "MultiPointZ" ), true, QgsWkbTypes::MultiPointZ, QgsWkbTypes::PointZ, QgsWkbTypes::MultiPoint, QgsWkbTypes::PointGeometry, true, false ) },
-  { QgsWkbTypes::MultiPointM, WkbEntry( QLatin1String( "MultiPointM" ), true, QgsWkbTypes::MultiPointM, QgsWkbTypes::PointM, QgsWkbTypes::MultiPoint, QgsWkbTypes::PointGeometry, false, true ) },
-  { QgsWkbTypes::MultiPointZM, WkbEntry( QLatin1String( "MultiPointZM" ), true, QgsWkbTypes::MultiPointZM, QgsWkbTypes::PointZM, QgsWkbTypes::MultiPoint, QgsWkbTypes::PointGeometry, true, true ) },
-  { QgsWkbTypes::MultiPoint25D, WkbEntry( QLatin1String( "MultiPoint25D" ), true, QgsWkbTypes::MultiPoint25D, QgsWkbTypes::Point25D, QgsWkbTypes::MultiPoint, QgsWkbTypes::PointGeometry, true, false ) },
+  { QgsWkbTypes::Type::MultiPoint, WkbEntry( QLatin1String( "MultiPoint" ), true, QgsWkbTypes::Type::MultiPoint, QgsWkbTypes::Type::Point, QgsWkbTypes::Type::MultiPoint, QgsWkbTypes::GeometryType::PointGeometry, false, false ) },
+  { QgsWkbTypes::Type::MultiPointZ, WkbEntry( QLatin1String( "MultiPointZ" ), true, QgsWkbTypes::Type::MultiPointZ, QgsWkbTypes::Type::PointZ, QgsWkbTypes::Type::MultiPoint, QgsWkbTypes::GeometryType::PointGeometry, true, false ) },
+  { QgsWkbTypes::Type::MultiPointM, WkbEntry( QLatin1String( "MultiPointM" ), true, QgsWkbTypes::Type::MultiPointM, QgsWkbTypes::Type::PointM, QgsWkbTypes::Type::MultiPoint, QgsWkbTypes::GeometryType::PointGeometry, false, true ) },
+  { QgsWkbTypes::Type::MultiPointZM, WkbEntry( QLatin1String( "MultiPointZM" ), true, QgsWkbTypes::Type::MultiPointZM, QgsWkbTypes::Type::PointZM, QgsWkbTypes::Type::MultiPoint, QgsWkbTypes::GeometryType::PointGeometry, true, true ) },
+  { QgsWkbTypes::Type::MultiPoint25D, WkbEntry( QLatin1String( "MultiPoint25D" ), true, QgsWkbTypes::Type::MultiPoint25D, QgsWkbTypes::Type::Point25D, QgsWkbTypes::Type::MultiPoint, QgsWkbTypes::GeometryType::PointGeometry, true, false ) },
   //multiline
-  { QgsWkbTypes::MultiLineString, WkbEntry( QLatin1String( "MultiLineString" ), true, QgsWkbTypes::MultiLineString, QgsWkbTypes::LineString, QgsWkbTypes::MultiLineString, QgsWkbTypes::LineGeometry, false, false ) },
-  { QgsWkbTypes::MultiLineStringZ, WkbEntry( QLatin1String( "MultiLineStringZ" ), true, QgsWkbTypes::MultiLineStringZ, QgsWkbTypes::LineStringZ, QgsWkbTypes::MultiLineString, QgsWkbTypes::LineGeometry, true, false ) },
-  { QgsWkbTypes::MultiLineStringM, WkbEntry( QLatin1String( "MultiLineStringM" ), true, QgsWkbTypes::MultiLineStringM, QgsWkbTypes::LineStringM, QgsWkbTypes::MultiLineString, QgsWkbTypes::LineGeometry, false, true ) },
-  { QgsWkbTypes::MultiLineStringZM, WkbEntry( QLatin1String( "MultiLineStringZM" ), true, QgsWkbTypes::MultiLineStringZM, QgsWkbTypes::LineStringZM, QgsWkbTypes::MultiLineString, QgsWkbTypes::LineGeometry, true, true ) },
-  { QgsWkbTypes::MultiLineString25D, WkbEntry( QLatin1String( "MultiLineString25D" ), true, QgsWkbTypes::MultiLineString25D, QgsWkbTypes::LineString25D, QgsWkbTypes::MultiLineString, QgsWkbTypes::LineGeometry, true, false ) },
+  { QgsWkbTypes::Type::MultiLineString, WkbEntry( QLatin1String( "MultiLineString" ), true, QgsWkbTypes::Type::MultiLineString, QgsWkbTypes::Type::LineString, QgsWkbTypes::Type::MultiLineString, QgsWkbTypes::GeometryType::LineGeometry, false, false ) },
+  { QgsWkbTypes::Type::MultiLineStringZ, WkbEntry( QLatin1String( "MultiLineStringZ" ), true, QgsWkbTypes::Type::MultiLineStringZ, QgsWkbTypes::Type::LineStringZ, QgsWkbTypes::Type::MultiLineString, QgsWkbTypes::GeometryType::LineGeometry, true, false ) },
+  { QgsWkbTypes::Type::MultiLineStringM, WkbEntry( QLatin1String( "MultiLineStringM" ), true, QgsWkbTypes::Type::MultiLineStringM, QgsWkbTypes::Type::LineStringM, QgsWkbTypes::Type::MultiLineString, QgsWkbTypes::GeometryType::LineGeometry, false, true ) },
+  { QgsWkbTypes::Type::MultiLineStringZM, WkbEntry( QLatin1String( "MultiLineStringZM" ), true, QgsWkbTypes::Type::MultiLineStringZM, QgsWkbTypes::Type::LineStringZM, QgsWkbTypes::Type::MultiLineString, QgsWkbTypes::GeometryType::LineGeometry, true, true ) },
+  { QgsWkbTypes::Type::MultiLineString25D, WkbEntry( QLatin1String( "MultiLineString25D" ), true, QgsWkbTypes::Type::MultiLineString25D, QgsWkbTypes::Type::LineString25D, QgsWkbTypes::Type::MultiLineString, QgsWkbTypes::GeometryType::LineGeometry, true, false ) },
   //multicurve
-  { QgsWkbTypes::MultiCurve, WkbEntry( QLatin1String( "MultiCurve" ), true, QgsWkbTypes::MultiCurve, QgsWkbTypes::CompoundCurve, QgsWkbTypes::MultiCurve, QgsWkbTypes::LineGeometry, false, false ) },
-  { QgsWkbTypes::MultiCurveZ, WkbEntry( QLatin1String( "MultiCurveZ" ), true, QgsWkbTypes::MultiCurveZ, QgsWkbTypes::CompoundCurveZ, QgsWkbTypes::MultiCurve, QgsWkbTypes::LineGeometry, true, false ) },
-  { QgsWkbTypes::MultiCurveM, WkbEntry( QLatin1String( "MultiCurveM" ), true, QgsWkbTypes::MultiCurveM, QgsWkbTypes::CompoundCurveM, QgsWkbTypes::MultiCurve, QgsWkbTypes::LineGeometry, false, true ) },
-  { QgsWkbTypes::MultiCurveZM, WkbEntry( QLatin1String( "MultiCurveZM" ), true, QgsWkbTypes::MultiCurveZM, QgsWkbTypes::CompoundCurveZM, QgsWkbTypes::MultiCurve, QgsWkbTypes::LineGeometry, true, true ) },
+  { QgsWkbTypes::Type::MultiCurve, WkbEntry( QLatin1String( "MultiCurve" ), true, QgsWkbTypes::Type::MultiCurve, QgsWkbTypes::Type::CompoundCurve, QgsWkbTypes::Type::MultiCurve, QgsWkbTypes::GeometryType::LineGeometry, false, false ) },
+  { QgsWkbTypes::Type::MultiCurveZ, WkbEntry( QLatin1String( "MultiCurveZ" ), true, QgsWkbTypes::Type::MultiCurveZ, QgsWkbTypes::Type::CompoundCurveZ, QgsWkbTypes::Type::MultiCurve, QgsWkbTypes::GeometryType::LineGeometry, true, false ) },
+  { QgsWkbTypes::Type::MultiCurveM, WkbEntry( QLatin1String( "MultiCurveM" ), true, QgsWkbTypes::Type::MultiCurveM, QgsWkbTypes::Type::CompoundCurveM, QgsWkbTypes::Type::MultiCurve, QgsWkbTypes::GeometryType::LineGeometry, false, true ) },
+  { QgsWkbTypes::Type::MultiCurveZM, WkbEntry( QLatin1String( "MultiCurveZM" ), true, QgsWkbTypes::Type::MultiCurveZM, QgsWkbTypes::Type::CompoundCurveZM, QgsWkbTypes::Type::MultiCurve, QgsWkbTypes::GeometryType::LineGeometry, true, true ) },
   //multipolygon
-  { QgsWkbTypes::MultiPolygon, WkbEntry( QLatin1String( "MultiPolygon" ), true, QgsWkbTypes::MultiPolygon, QgsWkbTypes::Polygon, QgsWkbTypes::MultiPolygon, QgsWkbTypes::PolygonGeometry, false, false ) },
-  { QgsWkbTypes::MultiPolygonZ, WkbEntry( QLatin1String( "MultiPolygonZ" ), true, QgsWkbTypes::MultiPolygonZ, QgsWkbTypes::PolygonZ, QgsWkbTypes::MultiPolygon, QgsWkbTypes::PolygonGeometry, true, false ) },
-  { QgsWkbTypes::MultiPolygonM, WkbEntry( QLatin1String( "MultiPolygonM" ), true, QgsWkbTypes::MultiPolygonM, QgsWkbTypes::PolygonM, QgsWkbTypes::MultiPolygon, QgsWkbTypes::PolygonGeometry, false, true ) },
-  { QgsWkbTypes::MultiPolygonZM, WkbEntry( QLatin1String( "MultiPolygonZM" ), true, QgsWkbTypes::MultiPolygonZM, QgsWkbTypes::PolygonZM, QgsWkbTypes::MultiPolygon, QgsWkbTypes::PolygonGeometry, true, true ) },
-  { QgsWkbTypes::MultiPolygon25D, WkbEntry( QLatin1String( "MultiPolygon25D" ), true, QgsWkbTypes::MultiPolygon25D, QgsWkbTypes::Polygon25D, QgsWkbTypes::MultiPolygon, QgsWkbTypes::PolygonGeometry, true, false ) },
+  { QgsWkbTypes::Type::MultiPolygon, WkbEntry( QLatin1String( "MultiPolygon" ), true, QgsWkbTypes::Type::MultiPolygon, QgsWkbTypes::Type::Polygon, QgsWkbTypes::Type::MultiPolygon, QgsWkbTypes::GeometryType::PolygonGeometry, false, false ) },
+  { QgsWkbTypes::Type::MultiPolygonZ, WkbEntry( QLatin1String( "MultiPolygonZ" ), true, QgsWkbTypes::Type::MultiPolygonZ, QgsWkbTypes::Type::PolygonZ, QgsWkbTypes::Type::MultiPolygon, QgsWkbTypes::GeometryType::PolygonGeometry, true, false ) },
+  { QgsWkbTypes::Type::MultiPolygonM, WkbEntry( QLatin1String( "MultiPolygonM" ), true, QgsWkbTypes::Type::MultiPolygonM, QgsWkbTypes::Type::PolygonM, QgsWkbTypes::Type::MultiPolygon, QgsWkbTypes::GeometryType::PolygonGeometry, false, true ) },
+  { QgsWkbTypes::Type::MultiPolygonZM, WkbEntry( QLatin1String( "MultiPolygonZM" ), true, QgsWkbTypes::Type::MultiPolygonZM, QgsWkbTypes::Type::PolygonZM, QgsWkbTypes::Type::MultiPolygon, QgsWkbTypes::GeometryType::PolygonGeometry, true, true ) },
+  { QgsWkbTypes::Type::MultiPolygon25D, WkbEntry( QLatin1String( "MultiPolygon25D" ), true, QgsWkbTypes::Type::MultiPolygon25D, QgsWkbTypes::Type::Polygon25D, QgsWkbTypes::Type::MultiPolygon, QgsWkbTypes::GeometryType::PolygonGeometry, true, false ) },
   //multisurface
-  { QgsWkbTypes::MultiSurface, WkbEntry( QLatin1String( "MultiSurface" ), true, QgsWkbTypes::MultiSurface, QgsWkbTypes::CurvePolygon, QgsWkbTypes::MultiSurface, QgsWkbTypes::PolygonGeometry, false, false ) },
-  { QgsWkbTypes::MultiSurfaceZ, WkbEntry( QLatin1String( "MultiSurfaceZ" ), true, QgsWkbTypes::MultiSurfaceZ, QgsWkbTypes::CurvePolygonZ, QgsWkbTypes::MultiSurface, QgsWkbTypes::PolygonGeometry, true, false ) },
-  { QgsWkbTypes::MultiSurfaceM, WkbEntry( QLatin1String( "MultiSurfaceM" ), true, QgsWkbTypes::MultiSurfaceM, QgsWkbTypes::CurvePolygonM, QgsWkbTypes::MultiSurface, QgsWkbTypes::PolygonGeometry, false, true ) },
-  { QgsWkbTypes::MultiSurfaceZM, WkbEntry( QLatin1String( "MultiSurfaceZM" ), true, QgsWkbTypes::MultiSurfaceZM, QgsWkbTypes::CurvePolygonZM, QgsWkbTypes::MultiSurface, QgsWkbTypes::PolygonGeometry, true, true ) },
+  { QgsWkbTypes::Type::MultiSurface, WkbEntry( QLatin1String( "MultiSurface" ), true, QgsWkbTypes::Type::MultiSurface, QgsWkbTypes::Type::CurvePolygon, QgsWkbTypes::Type::MultiSurface, QgsWkbTypes::GeometryType::PolygonGeometry, false, false ) },
+  { QgsWkbTypes::Type::MultiSurfaceZ, WkbEntry( QLatin1String( "MultiSurfaceZ" ), true, QgsWkbTypes::Type::MultiSurfaceZ, QgsWkbTypes::Type::CurvePolygonZ, QgsWkbTypes::Type::MultiSurface, QgsWkbTypes::GeometryType::PolygonGeometry, true, false ) },
+  { QgsWkbTypes::Type::MultiSurfaceM, WkbEntry( QLatin1String( "MultiSurfaceM" ), true, QgsWkbTypes::Type::MultiSurfaceM, QgsWkbTypes::Type::CurvePolygonM, QgsWkbTypes::Type::MultiSurface, QgsWkbTypes::GeometryType::PolygonGeometry, false, true ) },
+  { QgsWkbTypes::Type::MultiSurfaceZM, WkbEntry( QLatin1String( "MultiSurfaceZM" ), true, QgsWkbTypes::Type::MultiSurfaceZM, QgsWkbTypes::Type::CurvePolygonZM, QgsWkbTypes::Type::MultiSurface, QgsWkbTypes::GeometryType::PolygonGeometry, true, true ) },
   //geometrycollection
-  { QgsWkbTypes::GeometryCollection, WkbEntry( QLatin1String( "GeometryCollection" ), true, QgsWkbTypes::GeometryCollection, QgsWkbTypes::Unknown, QgsWkbTypes::GeometryCollection, QgsWkbTypes::UnknownGeometry, false, false ) },
-  { QgsWkbTypes::GeometryCollectionZ, WkbEntry( QLatin1String( "GeometryCollectionZ" ), true, QgsWkbTypes::GeometryCollectionZ, QgsWkbTypes::Unknown, QgsWkbTypes::GeometryCollection, QgsWkbTypes::UnknownGeometry, true, false ) },
-  { QgsWkbTypes::GeometryCollectionM, WkbEntry( QLatin1String( "GeometryCollectionM" ), true, QgsWkbTypes::GeometryCollectionM, QgsWkbTypes::Unknown, QgsWkbTypes::GeometryCollection, QgsWkbTypes::UnknownGeometry, false, true ) },
-  { QgsWkbTypes::GeometryCollectionZM, WkbEntry( QLatin1String( "GeometryCollectionZM" ), true, QgsWkbTypes::GeometryCollectionZM, QgsWkbTypes::Unknown, QgsWkbTypes::GeometryCollection, QgsWkbTypes::UnknownGeometry, true, true ) },
+  { QgsWkbTypes::Type::GeometryCollection, WkbEntry( QLatin1String( "GeometryCollection" ), true, QgsWkbTypes::Type::GeometryCollection, QgsWkbTypes::Type::Unknown, QgsWkbTypes::Type::GeometryCollection, QgsWkbTypes::GeometryType::UnknownGeometry, false, false ) },
+  { QgsWkbTypes::Type::GeometryCollectionZ, WkbEntry( QLatin1String( "GeometryCollectionZ" ), true, QgsWkbTypes::Type::GeometryCollectionZ, QgsWkbTypes::Type::Unknown, QgsWkbTypes::Type::GeometryCollection, QgsWkbTypes::GeometryType::UnknownGeometry, true, false ) },
+  { QgsWkbTypes::Type::GeometryCollectionM, WkbEntry( QLatin1String( "GeometryCollectionM" ), true, QgsWkbTypes::Type::GeometryCollectionM, QgsWkbTypes::Type::Unknown, QgsWkbTypes::Type::GeometryCollection, QgsWkbTypes::GeometryType::UnknownGeometry, false, true ) },
+  { QgsWkbTypes::Type::GeometryCollectionZM, WkbEntry( QLatin1String( "GeometryCollectionZM" ), true, QgsWkbTypes::Type::GeometryCollectionZM, QgsWkbTypes::Type::Unknown, QgsWkbTypes::Type::GeometryCollection, QgsWkbTypes::GeometryType::UnknownGeometry, true, true ) },
 } ) )
 
 QgsWkbTypes::Type QgsWkbTypes::parseType( const QString &wktStr )
@@ -139,7 +139,7 @@ QgsWkbTypes::Type QgsWkbTypes::parseType( const QString &wktStr )
       return it.key();
     }
   }
-  return Unknown;
+  return Type::Unknown;
 }
 
 QString QgsWkbTypes::displayString( Type type )
@@ -157,15 +157,15 @@ QString QgsWkbTypes::geometryDisplayString( QgsWkbTypes::GeometryType type )
 
   switch ( type )
   {
-    case PointGeometry:
+    case GeometryType::PointGeometry:
       return QStringLiteral( "Point" );
-    case LineGeometry:
+    case GeometryType::LineGeometry:
       return QStringLiteral( "Line" );
-    case PolygonGeometry:
+    case GeometryType::PolygonGeometry:
       return QStringLiteral( "Polygon" );
-    case UnknownGeometry:
+    case GeometryType::UnknownGeometry:
       return QStringLiteral( "Unknown geometry" );
-    case NullGeometry:
+    case GeometryType::NullGeometry:
       return QStringLiteral( "No geometry" );
     default:
       return QStringLiteral( "Invalid type" );

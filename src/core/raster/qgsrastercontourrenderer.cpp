@@ -24,7 +24,7 @@
 QgsRasterContourRenderer::QgsRasterContourRenderer( QgsRasterInterface *input )
   : QgsRasterRenderer( input, QStringLiteral( "contour" ) )
 {
-  mContourSymbol.reset( static_cast<QgsLineSymbol *>( QgsLineSymbol::defaultSymbol( QgsWkbTypes::LineGeometry ) ) );
+  mContourSymbol.reset( static_cast<QgsLineSymbol *>( QgsLineSymbol::defaultSymbol( QgsWkbTypes::GeometryType::LineGeometry ) ) );
 }
 
 QgsRasterContourRenderer::~QgsRasterContourRenderer() = default;

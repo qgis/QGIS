@@ -455,15 +455,15 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const d
     }
     switch ( partAnchor.type() )
     {
-      case QgsWkbTypes::PointGeometry:
+      case QgsWkbTypes::GeometryType::PointGeometry:
         line = label.shortestLine( partAnchor );
         break;
 
-      case QgsWkbTypes::LineGeometry:
+      case QgsWkbTypes::GeometryType::LineGeometry:
         line = label.shortestLine( partAnchor );
         break;
 
-      case QgsWkbTypes::PolygonGeometry:
+      case QgsWkbTypes::GeometryType::PolygonGeometry:
         if ( label.intersects( partAnchor ) )
           return;
 
@@ -484,8 +484,8 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const d
         }
         break;
 
-      case QgsWkbTypes::NullGeometry:
-      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::GeometryType::NullGeometry:
+      case QgsWkbTypes::GeometryType::UnknownGeometry:
         return; // shouldn't even get here..
     }
 
@@ -602,15 +602,15 @@ void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, cons
     }
     switch ( partAnchor.type() )
     {
-      case QgsWkbTypes::PointGeometry:
+      case QgsWkbTypes::GeometryType::PointGeometry:
         line = label.shortestLine( partAnchor );
         break;
 
-      case QgsWkbTypes::LineGeometry:
+      case QgsWkbTypes::GeometryType::LineGeometry:
         line = label.shortestLine( partAnchor );
         break;
 
-      case QgsWkbTypes::PolygonGeometry:
+      case QgsWkbTypes::GeometryType::PolygonGeometry:
         if ( label.intersects( partAnchor ) )
           return;
 
@@ -631,8 +631,8 @@ void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, cons
         }
         break;
 
-      case QgsWkbTypes::NullGeometry:
-      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::GeometryType::NullGeometry:
+      case QgsWkbTypes::GeometryType::UnknownGeometry:
         return; // shouldn't even get here..
     }
 

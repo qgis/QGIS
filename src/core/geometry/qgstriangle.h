@@ -443,7 +443,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      */
     inline const QgsTriangle *cast( const QgsAbstractGeometry *geom ) const
     {
-      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::Triangle )
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::Type::Triangle )
         return static_cast<const QgsTriangle *>( geom );
       return nullptr;
     }

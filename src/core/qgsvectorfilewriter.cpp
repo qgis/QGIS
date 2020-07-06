@@ -478,7 +478,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         // See logic in GDAL ogr/ogrsf_frmts/gpx/ogrgpxdatasource.cpp ICreateLayer()
         switch ( QgsWkbTypes::flatType( geometryType ) )
         {
-          case QgsWkbTypes::Point:
+          case QgsWkbTypes::Type::Point:
           {
             if ( !EQUAL( layerName.toUtf8().constData(), "track_points" ) &&
                  !EQUAL( layerName.toUtf8().constData(), "route_points" ) )
@@ -488,7 +488,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           }
           break;
 
-          case QgsWkbTypes::LineString:
+          case QgsWkbTypes::Type::LineString:
           {
             const char *pszForceGPXTrack
               = CSLFetchNameValue( options, "FORCE_GPX_TRACK" );
@@ -500,7 +500,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           }
           break;
 
-          case QgsWkbTypes::MultiLineString:
+          case QgsWkbTypes::Type::MultiLineString:
           {
             const char *pszForceGPXRoute
               = CSLFetchNameValue( options, "FORCE_GPX_ROUTE" );
@@ -2263,7 +2263,7 @@ OGRwkbGeometryType QgsVectorFileWriter::ogrTypeFromWkbType( QgsWkbTypes::Type ty
 
   OGRwkbGeometryType ogrType = static_cast<OGRwkbGeometryType>( type );
 
-  if ( type >= QgsWkbTypes::PointZ && type <= QgsWkbTypes::GeometryCollectionZ )
+  if ( type >= QgsWkbTypes::Type::PointZ && type <= QgsWkbTypes::Type::GeometryCollectionZ )
   {
     ogrType = static_cast<OGRwkbGeometryType>( QgsWkbTypes::to25D( type ) );
   }
@@ -2537,7 +2537,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
     }
   }
 
-  if ( mWkbType != QgsWkbTypes::NoGeometry )
+  if ( mWkbType != QgsWkbTypes::Type::NoGeometry )
   {
     if ( feature.hasGeometry() )
     {
@@ -2570,16 +2570,16 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
 
         // If requested WKB type is 25D and geometry WKB type is 3D,
         // we must force the use of 25D.
-        if ( mWkbType >= QgsWkbTypes::Point25D && mWkbType <= QgsWkbTypes::MultiPolygon25D )
+        if ( mWkbType >= QgsWkbTypes::Type::Point25D && mWkbType <= QgsWkbTypes::Type::MultiPolygon25D )
         {
           //ND: I suspect there's a bug here, in that this is NOT converting the geometry's WKB type,
           //so the exported WKB has a different type to what the OGRGeometry is expecting.
           //possibly this is handled already in OGR, but it should be fixed regardless by actually converting
           //geom to the correct WKB type
           QgsWkbTypes::Type wkbType = geom.wkbType();
-          if ( wkbType >= QgsWkbTypes::PointZ && wkbType <= QgsWkbTypes::MultiPolygonZ )
+          if ( wkbType >= QgsWkbTypes::Type::PointZ && wkbType <= QgsWkbTypes::Type::MultiPolygonZ )
           {
-            QgsWkbTypes::Type wkbType25d = static_cast<QgsWkbTypes::Type>( geom.wkbType() - QgsWkbTypes::PointZ + QgsWkbTypes::Point25D );
+            QgsWkbTypes::Type wkbType25d = static_cast<QgsWkbTypes::Type>( static_cast<int>( geom.wkbType() ) - static_cast<int>( QgsWkbTypes::Type::PointZ ) + static_cast<int>( QgsWkbTypes::Type::Point25D ) );
             mGeom2 = createEmptyGeometry( wkbType25d );
           }
         }
@@ -2846,7 +2846,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
   }
 
   details.destWkbType = details.sourceWkbType;
-  if ( options.overrideGeometryType != QgsWkbTypes::Unknown )
+  if ( options.overrideGeometryType != QgsWkbTypes::Type::Unknown )
   {
     details.destWkbType = QgsWkbTypes::flatType( options.overrideGeometryType );
     if ( QgsWkbTypes::hasZ( options.overrideGeometryType ) || options.includeZ )

@@ -58,8 +58,8 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 
       QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( geom->wkbType() );
 
-      if ( flatType == QgsWkbTypes::MultiSurface
-           || flatType == QgsWkbTypes::MultiPolygon )
+      if ( flatType == QgsWkbTypes::Type::MultiSurface
+           || flatType == QgsWkbTypes::Type::MultiPolygon )
         return static_cast<const QgsMultiSurface *>( geom );
       return nullptr;
     }

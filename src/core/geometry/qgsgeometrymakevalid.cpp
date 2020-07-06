@@ -348,33 +348,33 @@ static bool lwcollection_make_geos_friendly( QgsGeometryCollection *g );
 // Ensure the geometry is "structurally" valid (enough for GEOS to accept it)
 static bool lwgeom_make_geos_friendly( QgsAbstractGeometry *geom )
 {
-  QgsDebugMsgLevel( QStringLiteral( "lwgeom_make_geos_friendly enter (type %1)" ).arg( geom->wkbType() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "lwgeom_make_geos_friendly enter (type %1)" ).arg( static_cast<int>( geom->wkbType() ) ), 3 );
   switch ( QgsWkbTypes::flatType( geom->wkbType() ) )
   {
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::Type::Point:
+    case QgsWkbTypes::Type::MultiPoint:
       // a point is always valid
       return true;
       break;
 
-    case QgsWkbTypes::LineString:
+    case QgsWkbTypes::Type::LineString:
       // lines need at least 2 points
       return lwline_make_geos_friendly( qgsgeometry_cast<QgsLineString *>( geom ) );
       break;
 
-    case QgsWkbTypes::Polygon:
+    case QgsWkbTypes::Type::Polygon:
       // polygons need all rings closed and with npoints > 3
       return lwpoly_make_geos_friendly( qgsgeometry_cast<QgsPolygon *>( geom ) );
       break;
 
-    case QgsWkbTypes::MultiLineString:
-    case QgsWkbTypes::MultiPolygon:
-    case QgsWkbTypes::GeometryCollection:
+    case QgsWkbTypes::Type::MultiLineString:
+    case QgsWkbTypes::Type::MultiPolygon:
+    case QgsWkbTypes::Type::GeometryCollection:
       return lwcollection_make_geos_friendly( qgsgeometry_cast<QgsGeometryCollection *>( geom ) );
       break;
 
     default:
-      QgsDebugMsg( QStringLiteral( "lwgeom_make_geos_friendly: unsupported input geometry type: %1" ).arg( geom->wkbType() ) );
+      QgsDebugMsg( QStringLiteral( "lwgeom_make_geos_friendly: unsupported input geometry type: %1" ).arg( qgsEnumValueToKey( geom->wkbType() ) ) );
       break;
   }
   return false;
@@ -949,13 +949,13 @@ std::unique_ptr< QgsAbstractGeometry > _qgis_lwgeom_make_valid( const QgsAbstrac
     QgsGeometryCollection *collection = nullptr;
     switch ( QgsWkbTypes::multiType( lwgeom_out->wkbType() ) )
     {
-      case QgsWkbTypes::MultiPoint:
+      case QgsWkbTypes::Type::MultiPoint:
         collection = new QgsMultiPoint();
         break;
-      case QgsWkbTypes::MultiLineString:
+      case QgsWkbTypes::Type::MultiLineString:
         collection = new QgsMultiLineString();
         break;
-      case QgsWkbTypes::MultiPolygon:
+      case QgsWkbTypes::Type::MultiPolygon:
         collection = new QgsMultiPolygon();
         break;
       default:

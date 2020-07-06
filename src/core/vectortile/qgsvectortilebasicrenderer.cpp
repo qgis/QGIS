@@ -61,7 +61,7 @@ void QgsVectorTileBasicRendererStyle::writeXml( QDomElement &elem, const QgsRead
 {
   elem.setAttribute( QStringLiteral( "name" ), mStyleName );
   elem.setAttribute( QStringLiteral( "layer" ), mLayerName );
-  elem.setAttribute( QStringLiteral( "geometry" ), mGeometryType );
+  elem.setAttribute( QStringLiteral( "geometry" ), static_cast<int>( mGeometryType ) );
   elem.setAttribute( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elem.setAttribute( QStringLiteral( "expression" ), mExpression );
   elem.setAttribute( QStringLiteral( "min-zoom" ), mMinZoomLevel );
@@ -273,13 +273,13 @@ QList<QgsVectorTileBasicRendererStyle> QgsVectorTileBasicRenderer::simpleStyle(
   markerSymbolLayer->setSize( pointSize );
   QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol( QgsSymbolLayerList() << markerSymbolLayer );
 
-  QgsVectorTileBasicRendererStyle st1( QStringLiteral( "Polygons" ), QString(), QgsWkbTypes::PolygonGeometry );
+  QgsVectorTileBasicRendererStyle st1( QStringLiteral( "Polygons" ), QString(), QgsWkbTypes::GeometryType::PolygonGeometry );
   st1.setSymbol( fillSymbol );
 
-  QgsVectorTileBasicRendererStyle st2( QStringLiteral( "Lines" ), QString(), QgsWkbTypes::LineGeometry );
+  QgsVectorTileBasicRendererStyle st2( QStringLiteral( "Lines" ), QString(), QgsWkbTypes::GeometryType::LineGeometry );
   st2.setSymbol( lineSymbol );
 
-  QgsVectorTileBasicRendererStyle st3( QStringLiteral( "Points" ), QString(), QgsWkbTypes::PointGeometry );
+  QgsVectorTileBasicRendererStyle st3( QStringLiteral( "Points" ), QString(), QgsWkbTypes::GeometryType::PointGeometry );
   st3.setSymbol( markerSymbol );
 
   QList<QgsVectorTileBasicRendererStyle> lst;

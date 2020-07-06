@@ -545,7 +545,7 @@ double QgsDistanceArea::latitudeGeodesicCrossesAntimeridian( const QgsPointXY &p
 
 QgsGeometry QgsDistanceArea::splitGeometryAtAntimeridian( const QgsGeometry &geometry ) const
 {
-  if ( QgsWkbTypes::geometryType( geometry.wkbType() ) != QgsWkbTypes::LineGeometry )
+  if ( QgsWkbTypes::geometryType( geometry.wkbType() ) != QgsWkbTypes::GeometryType::LineGeometry )
     return geometry;
 
   QgsGeometry g = geometry;

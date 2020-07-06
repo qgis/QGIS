@@ -468,7 +468,7 @@ QgsAbstractGeometry *orthogonalizeGeom( const QgsAbstractGeometry *geom, int max
     geom = segmentizedCopy.get();
   }
 
-  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::GeometryType::LineGeometry )
   {
     return doOrthogonalize( static_cast< QgsLineString * >( geom->clone() ),
                             maxIterations, tolerance, lowerThreshold, upperThreshold );
@@ -493,8 +493,8 @@ QgsAbstractGeometry *orthogonalizeGeom( const QgsAbstractGeometry *geom, int max
 
 QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxIterations, double angleThreshold ) const
 {
-  if ( !mGeometry || ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) != QgsWkbTypes::LineGeometry
-                       && QgsWkbTypes::geometryType( mGeometry->wkbType() ) != QgsWkbTypes::PolygonGeometry ) )
+  if ( !mGeometry || ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) != QgsWkbTypes::GeometryType::LineGeometry
+                       && QgsWkbTypes::geometryType( mGeometry->wkbType() ) != QgsWkbTypes::GeometryType::PolygonGeometry ) )
   {
     return QgsGeometry();
   }
@@ -626,7 +626,7 @@ QgsAbstractGeometry *densifyGeometry( const QgsAbstractGeometry *geom, int extra
     geom = segmentizedCopy.get();
   }
 
-  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::GeometryType::LineGeometry )
   {
     return doDensify( static_cast< const QgsLineString * >( geom ), extraNodesPerSegment, distance );
   }
@@ -655,7 +655,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByCount( int extraNodesPerSegment 
     return QgsGeometry();
   }
 
-  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::GeometryType::PointGeometry )
   {
     return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
   }
@@ -690,7 +690,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
     return QgsGeometry();
   }
 
-  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::GeometryType::PointGeometry )
   {
     return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
   }
@@ -1044,7 +1044,7 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBufferByM( int segments ) co
 QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( const QgsGeometry &polygon, int count,
     const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed, QgsFeedback *feedback, int maxTriesPerPoint )
 {
-  if ( polygon.type() != QgsWkbTypes::PolygonGeometry || count == 0 )
+  if ( polygon.type() != QgsWkbTypes::GeometryType::PolygonGeometry || count == 0 )
     return QVector< QgsPointXY >();
 
   // step 1 - tessellate the polygon to triangles
@@ -1370,7 +1370,7 @@ std::unique_ptr< QgsCompoundCurve > lineToCurve( const QgsLineString *lineString
 
 std::unique_ptr< QgsAbstractGeometry > convertGeometryToCurves( const QgsAbstractGeometry *geom, double distanceTolerance, double angleTolerance )
 {
-  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::GeometryType::LineGeometry )
   {
     return lineToCurve( static_cast< const QgsLineString * >( geom ), distanceTolerance, angleTolerance );
   }
@@ -1399,7 +1399,7 @@ QgsGeometry QgsInternalGeometryEngine::convertToCurves( double distanceTolerance
     return QgsGeometry();
   }
 
-  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::GeometryType::PointGeometry )
   {
     return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
   }

@@ -40,7 +40,7 @@ QgsConstWkbPtr::QgsConstWkbPtr( const QByteArray &wkb )
   mP = reinterpret_cast< unsigned char * >( const_cast<char *>( wkb.constData() ) );
   mEnd = mP + wkb.length();
   mEndianSwap = false;
-  mWkbType = QgsWkbTypes::Unknown;
+  mWkbType = QgsWkbTypes::Type::Unknown;
 }
 
 QgsConstWkbPtr::QgsConstWkbPtr( const unsigned char *p, int size )
@@ -48,13 +48,13 @@ QgsConstWkbPtr::QgsConstWkbPtr( const unsigned char *p, int size )
   mP = const_cast< unsigned char * >( p );
   mEnd = mP + size;
   mEndianSwap = false;
-  mWkbType = QgsWkbTypes::Unknown;
+  mWkbType = QgsWkbTypes::Type::Unknown;
 }
 
 QgsWkbTypes::Type QgsConstWkbPtr::readHeader() const
 {
   if ( !mP )
-    return QgsWkbTypes::Unknown;
+    return QgsWkbTypes::Type::Unknown;
 
   char wkbEndian;
   *this >> wkbEndian;

@@ -133,7 +133,7 @@ bool QgsRemappingProxyFeatureSink::addFeatures( QgsFeatureIterator &iterator, Qg
 QVariant QgsRemappingSinkDefinition::toVariant() const
 {
   QVariantMap map;
-  map.insert( QStringLiteral( "wkb_type" ), mDestinationWkbType );
+  map.insert( QStringLiteral( "wkb_type" ), QVariant::fromValue( mDestinationWkbType ) );
   // we only really care about names here
   QVariantList fieldNames;
   for ( const QgsField &field : mDestinationFields )
@@ -154,7 +154,7 @@ QVariant QgsRemappingSinkDefinition::toVariant() const
 
 bool QgsRemappingSinkDefinition::loadVariant( const QVariantMap &map )
 {
-  mDestinationWkbType = static_cast< QgsWkbTypes::Type >( map.value( QStringLiteral( "wkb_type" ), QgsWkbTypes::Unknown ).toInt() );
+  mDestinationWkbType = static_cast< QgsWkbTypes::Type >( map.value( QStringLiteral( "wkb_type" ), static_cast<int>( QgsWkbTypes::Type::Unknown ) ).toInt() );
 
   const QVariantList fieldNames = map.value( QStringLiteral( "destination_field_names" ) ).toList();
   QgsFields fields;

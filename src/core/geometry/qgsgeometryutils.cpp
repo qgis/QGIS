@@ -1013,7 +1013,7 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   stringPoints.insert( 0, circlePoint1 );
   if ( circlePoint2 != circlePoint3 && circlePoint1 != circlePoint2 ) //draw straight line segment if two points have the same position
   {
-    QgsWkbTypes::Type pointWkbType = QgsWkbTypes::Point;
+    QgsWkbTypes::Type pointWkbType = QgsWkbTypes::Type::Point;
     if ( hasZ )
       pointWkbType = QgsWkbTypes::addZ( pointWkbType );
     if ( hasM )
@@ -1142,20 +1142,20 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
     if ( ( isMeasure || foundM ) && coordinates.length() > idx )
       m = coordinates[idx++].toDouble();
 
-    QgsWkbTypes::Type t = QgsWkbTypes::Point;
+    QgsWkbTypes::Type t = QgsWkbTypes::Type::Point;
     if ( is3D || foundZ )
     {
       if ( isMeasure || foundM )
-        t = QgsWkbTypes::PointZM;
+        t = QgsWkbTypes::Type::PointZM;
       else
-        t = QgsWkbTypes::PointZ;
+        t = QgsWkbTypes::Type::PointZ;
     }
     else
     {
       if ( isMeasure || foundM )
-        t = QgsWkbTypes::PointM;
+        t = QgsWkbTypes::Type::PointM;
       else
-        t = QgsWkbTypes::Point;
+        t = QgsWkbTypes::Type::Point;
     }
 
     points.append( QgsPoint( t, x, y, z, m ) );
@@ -1360,7 +1360,7 @@ QStringList QgsGeometryUtils::wktGetChildBlocks( const QString &wkt, const QStri
 
 QgsPoint QgsGeometryUtils::midpoint( const QgsPoint &pt1, const QgsPoint &pt2 )
 {
-  QgsWkbTypes::Type pType( QgsWkbTypes::Point );
+  QgsWkbTypes::Type pType( QgsWkbTypes::Type::Point );
 
 
   double x = ( pt1.x() + pt2.x() ) / 2.0;

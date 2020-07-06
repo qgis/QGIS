@@ -138,12 +138,12 @@ class CORE_EXPORT QgsMimeDataUtils
       QString pId;
 
       /**
-       * WKB type, if associated with a vector layer, or QgsWkbTypes::Unknown if not
+       * WKB type, if associated with a vector layer, or QgsWkbTypes::Type::Unknown if not
        * yet known.
        *
        * \since QGIS 3.8
        */
-      QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown;
+      QgsWkbTypes::Type wkbType = QgsWkbTypes::Type::Unknown;
 
 #ifdef SIP_RUN
       SIP_PYOBJECT __repr__();

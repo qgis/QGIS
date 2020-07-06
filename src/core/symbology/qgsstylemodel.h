@@ -248,7 +248,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     void setSymbolTypeFilterEnabled( bool enabled );
 
     /**
-     * Returns the layer type filter, or QgsWkbTypes::UnknownGeometry if no
+     * Returns the layer type filter, or QgsWkbTypes::GeometryType::UnknownGeometry if no
      * layer type filter is present.
      *
      * This setting has no effect on non-label settings entities (i.e. color ramps).
@@ -258,7 +258,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     QgsWkbTypes::GeometryType layerType() const;
 
     /**
-     * Sets the layer \a type filter. Set \a type to QgsWkbTypes::UnknownGeometry if no
+     * Sets the layer \a type filter. Set \a type to QgsWkbTypes::GeometryType::UnknownGeometry if no
      * layer type filter is desired.
      *
      * \see layerType()
@@ -360,7 +360,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     bool mSymbolTypeFilterEnabled = false;
     QgsSymbol::SymbolType mSymbolType = QgsSymbol::Marker;
 
-    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::UnknownGeometry;
+    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::GeometryType::UnknownGeometry;
 
 };
 

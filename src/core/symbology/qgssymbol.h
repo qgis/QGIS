@@ -899,7 +899,7 @@ class CORE_EXPORT QgsSymbolRenderContext
     QgsFields mFields;
     int mGeometryPartCount;
     int mGeometryPartNum;
-    QgsWkbTypes::GeometryType mOriginalGeometryType = QgsWkbTypes::UnknownGeometry;
+    QgsWkbTypes::GeometryType mOriginalGeometryType = QgsWkbTypes::GeometryType::UnknownGeometry;
     std::unique_ptr< QgsLegendPatchShape > mPatchShape;
 };
 

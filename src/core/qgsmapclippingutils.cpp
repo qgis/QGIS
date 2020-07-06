@@ -41,7 +41,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureRequestGeometry( const QList< Q
   shouldFilter = false;
   for ( const QgsMapClippingRegion &region : regions )
   {
-    if ( region.geometry().type() != QgsWkbTypes::PolygonGeometry )
+    if ( region.geometry().type() != QgsWkbTypes::GeometryType::PolygonGeometry )
       continue;
 
     shouldFilter = true;
@@ -60,7 +60,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureRequestGeometry( const QList< Q
     return QgsGeometry();
 
   // filter out polygon parts from result only
-  result.convertGeometryCollectionToSubclass( QgsWkbTypes::PolygonGeometry );
+  result.convertGeometryCollectionToSubclass( QgsWkbTypes::GeometryType::PolygonGeometry );
 
   // lastly transform back to layer CRS
   try
@@ -84,7 +84,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureIntersectionGeometry( const QLi
   shouldClip = false;
   for ( const QgsMapClippingRegion &region : regions )
   {
-    if ( region.geometry().type() != QgsWkbTypes::PolygonGeometry )
+    if ( region.geometry().type() != QgsWkbTypes::GeometryType::PolygonGeometry )
       continue;
 
     if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::ClipToIntersection )
@@ -106,7 +106,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureIntersectionGeometry( const QLi
     return QgsGeometry();
 
   // filter out polygon parts from result only
-  result.convertGeometryCollectionToSubclass( QgsWkbTypes::PolygonGeometry );
+  result.convertGeometryCollectionToSubclass( QgsWkbTypes::GeometryType::PolygonGeometry );
 
   // lastly transform back to layer CRS
   try
@@ -130,7 +130,7 @@ QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMap
   shouldClip = false;
   for ( const QgsMapClippingRegion &region : regions )
   {
-    if ( region.geometry().type() != QgsWkbTypes::PolygonGeometry )
+    if ( region.geometry().type() != QgsWkbTypes::GeometryType::PolygonGeometry )
       continue;
 
     switch ( layerType )
@@ -182,7 +182,7 @@ QgsGeometry QgsMapClippingUtils::calculateLabelIntersectionGeometry( const QList
   shouldClip = false;
   for ( const QgsMapClippingRegion &region : regions )
   {
-    if ( region.geometry().type() != QgsWkbTypes::PolygonGeometry )
+    if ( region.geometry().type() != QgsWkbTypes::GeometryType::PolygonGeometry )
       continue;
 
     // for labeling, we clip using either painter clip regions or intersects type regions.
@@ -208,7 +208,7 @@ QgsGeometry QgsMapClippingUtils::calculateLabelIntersectionGeometry( const QList
     return QgsGeometry();
 
   // filter out polygon parts from result only
-  result.convertGeometryCollectionToSubclass( QgsWkbTypes::PolygonGeometry );
+  result.convertGeometryCollectionToSubclass( QgsWkbTypes::GeometryType::PolygonGeometry );
 
   // lastly transform back to layer CRS
   try

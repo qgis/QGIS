@@ -264,7 +264,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
         return nullptr;
 
       QgsWkbTypes::Type type = geom->wkbType();
-      if ( QgsWkbTypes::geometryType( type ) == QgsWkbTypes::LineGeometry && QgsWkbTypes::isSingleType( type ) )
+      if ( QgsWkbTypes::geometryType( type ) == QgsWkbTypes::GeometryType::LineGeometry && QgsWkbTypes::isSingleType( type ) )
       {
         return static_cast<const QgsCurve *>( geom );
       }

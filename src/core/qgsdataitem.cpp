@@ -677,19 +677,19 @@ QgsLayerItem::LayerType QgsLayerItem::typeFromMapLayer( QgsMapLayer *layer )
     {
       switch ( qobject_cast< QgsVectorLayer * >( layer )->geometryType() )
       {
-        case QgsWkbTypes::PointGeometry:
+        case QgsWkbTypes::GeometryType::PointGeometry:
           return Point;
 
-        case QgsWkbTypes::LineGeometry:
+        case QgsWkbTypes::GeometryType::LineGeometry:
           return Line;
 
-        case QgsWkbTypes::PolygonGeometry:
+        case QgsWkbTypes::GeometryType::PolygonGeometry:
           return Polygon;
 
-        case QgsWkbTypes::NullGeometry:
+        case QgsWkbTypes::GeometryType::NullGeometry:
           return TableLayer;
 
-        case QgsWkbTypes::UnknownGeometry:
+        case QgsWkbTypes::GeometryType::UnknownGeometry:
           return Vector;
       }
 
@@ -770,16 +770,16 @@ QgsMimeDataUtils::Uri QgsLayerItem::mimeUri() const
       switch ( mLayerType )
       {
         case Point:
-          u.wkbType = QgsWkbTypes::Point;
+          u.wkbType = QgsWkbTypes::Type::Point;
           break;
         case Line:
-          u.wkbType = QgsWkbTypes::LineString;
+          u.wkbType = QgsWkbTypes::Type::LineString;
           break;
         case Polygon:
-          u.wkbType = QgsWkbTypes::Polygon;
+          u.wkbType = QgsWkbTypes::Type::Polygon;
           break;
         case TableLayer:
-          u.wkbType = QgsWkbTypes::NoGeometry;
+          u.wkbType = QgsWkbTypes::Type::NoGeometry;
           break;
 
         case Database:

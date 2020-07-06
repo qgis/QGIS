@@ -428,11 +428,11 @@ void extractLinework( const QgsGeometry &g, QgsMultiPolylineXY &mpl )
 
   switch ( QgsWkbTypes::flatType( geom.wkbType() ) )
   {
-    case QgsWkbTypes::LineString:
+    case QgsWkbTypes::Type::LineString:
       mpl << geom.asPolyline();
       break;
 
-    case QgsWkbTypes::Polygon:
+    case QgsWkbTypes::Type::Polygon:
     {
       const auto polygon = geom.asPolygon();
       for ( const QgsPolylineXY &ring : polygon )
@@ -440,7 +440,7 @@ void extractLinework( const QgsGeometry &g, QgsMultiPolylineXY &mpl )
     }
     break;
 
-    case QgsWkbTypes::MultiLineString:
+    case QgsWkbTypes::Type::MultiLineString:
     {
       const auto multiPolyline = geom.asMultiPolyline();
       for ( const QgsPolylineXY &linestring : multiPolyline )
@@ -448,7 +448,7 @@ void extractLinework( const QgsGeometry &g, QgsMultiPolylineXY &mpl )
     }
     break;
 
-    case QgsWkbTypes::MultiPolygon:
+    case QgsWkbTypes::Type::MultiPolygon:
     {
       const auto multiPolygon = geom.asMultiPolygon();
       for ( const QgsPolygonXY &polygon : multiPolygon )
