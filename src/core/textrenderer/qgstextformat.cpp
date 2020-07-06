@@ -833,6 +833,7 @@ QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSi
   context.setUseAdvancedEffects( true );
   context.setFlag( QgsRenderContext::Antialiasing, true );
   context.setPainter( &painter );
+  context.setFlag( QgsRenderContext::Antialiasing, true );
 
   // slightly inset text to account for buffer/background
   double xtrans = 0;

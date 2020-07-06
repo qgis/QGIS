@@ -34,6 +34,7 @@
 #include "qgslayoutmanager.h"
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
+#include "qgslayoututils.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -1579,7 +1580,8 @@ void TestQgsLayoutTable::wrappedText()
 
   QFont f;
   QString sourceText( "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua" );
-  QString wrapText = t->wrappedText( sourceText, 101 /*columnWidth*/, f );
+  QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
+  QString wrapText = t->wrappedText( context, sourceText, 101 /*columnWidth*/, QgsTextFormat::fromQFont( f ) ).join( '\n' );
   //there should be no line break before the last word (bug #20546)
   QVERIFY( !wrapText.endsWith( "\naliqua" ) );
 }

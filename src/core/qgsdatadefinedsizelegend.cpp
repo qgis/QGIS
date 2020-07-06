@@ -318,8 +318,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
     QRect rect( outputLargestSize + hLengthLine + hSpaceLineText, textCenterY[i] - textHeight / 2,
                 maxTextWidth, textHeight );
 
-    QgsTextRenderer::drawText( rect, 0, mTextAlignment == Qt::AlignRight ? QgsTextRenderer::AlignRight :
-                               mTextAlignment == Qt::AlignHCenter ? QgsTextRenderer::AlignCenter : QgsTextRenderer::AlignLeft,
+    QgsTextRenderer::drawText( rect, 0, QgsTextRenderer::convertQtHAlignment( mTextAlignment ),
                                QStringList() << c.label, context, format );
     i++;
   }
