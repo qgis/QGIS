@@ -87,7 +87,7 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
     case StepLimit:
 
       match = mCanvas->snappingUtils()->snapToMap( mMapPoint, &filter, true );
-      if ( match.isValid() )
+      if ( match.isValid() && match.layer() )
       {
         mIs3DLayer = QgsWkbTypes::hasZ( match.layer()->wkbType() );
 
