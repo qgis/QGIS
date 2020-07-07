@@ -60,12 +60,14 @@ class Qgs3DExportObject : public QObject
     //! Sets positions coordinates from just one positions buffer and indexes buffer and does the translation and scaling
     void setupPositionCoordinates( const QVector<float> &positionsBuffer, const QVector<unsigned int> &facesIndexes, float scale = 1.0f, const QVector3D translation = QVector3D( 0, 0, 0 ) );
 
-    //! setss normal coordinates for each vertex
+    //! Sets normal coordinates for each vertex
     void setupNormalCoordinates( const QVector<float> &normalsBuffer );
-    //! setss texture coordinates for each vertex
+    //! Sets texture coordinates for each vertex
     void setupTextureCoordinates( const QVector<float> &texturesBuffer );
 
+    //! Sets the texture image used by the object
     void setTextureImage( const QImage &image ) { this->mTextureImage = image; };
+    //! Returns the texture image used by the object
     QImage textureImage() { return mTextureImage; }
 
     /**
@@ -76,6 +78,7 @@ class Qgs3DExportObject : public QObject
 
     //! Saves the current object to the output stream while scaling the object and centering it to be visible in exported scene
     void saveTo( QTextStream &out, float scale, const QVector3D &center );
+    //! saves the texture of the object and material informations
     void saveMaterial( const QString &textureName, const QString &folder );
   private:
     QString mName;
