@@ -207,6 +207,9 @@ void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
   }
 
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "Relation" ) ).toString() );
+  // if no relation is given from the config, fetch one if there is only one available
+  if ( !relation.isValid() && !layer()->referencingRelations( mFieldIdx ).isEmpty() && layer()->referencingRelations( mFieldIdx ).count() == 1 )
+    relation = layer()->referencingRelations( mFieldIdx )[0];
   mWidget->setRelation( relation, false );
 
   mWidget->showIndeterminateState();
