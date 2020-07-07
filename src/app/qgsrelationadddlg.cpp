@@ -239,6 +239,8 @@ QList< QPair< QString, QString > > QgsRelationAddDlg::references()
   QList< QPair< QString, QString > > references;
   for ( int i = 0; i < mFieldPairWidgets.count(); i++ )
   {
+    if ( !mFieldPairWidgets.at( i )->isPairEnabled() )
+      continue;
     QString referencingField = mFieldPairWidgets.at( i )->referencingField();
     QString referencedField = mFieldPairWidgets.at( i )->referencedField();
     references << qMakePair( referencingField, referencedField );
