@@ -612,10 +612,12 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
     {
       int blockIndex = 0;
       double totalHeight = 0;
+      double lastLineLeading = 0;
       for ( const QgsTextBlock &block : document )
       {
         double maxBlockHeight = 0;
         double maxBlockLineSpacing = 0;
+        double maxBlockLeading = 0;
         for ( const QgsTextFragment &fragment : block )
         {
           QFont fragmentFont = baseFont;
@@ -625,7 +627,11 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
           const double fragmentHeight = fm.ascent() + fm.descent(); // ignore +1 for baseline
 
           maxBlockHeight = std::max( maxBlockHeight, fragmentHeight );
-          maxBlockLineSpacing = std::max( maxBlockLineSpacing, fm.lineSpacing() );
+          if ( fm.lineSpacing() > maxBlockLineSpacing )
+          {
+            maxBlockLineSpacing = fm.lineSpacing();
+            maxBlockLeading = fm.leading();
+          }
         }
 
         switch ( mode )
@@ -641,13 +647,15 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
           case Point:
             // standard rendering - designed to exactly replicate QPainter's drawText method
             totalHeight += blockIndex == 0 ? maxBlockHeight : maxBlockLineSpacing * format.lineHeight();
+            if ( blockIndex > 0 )
+              lastLineLeading = maxBlockLeading;
             break;
         }
 
         blockIndex++;
       }
 
-      return totalHeight / scaleFactor;
+      return ( totalHeight - lastLineLeading ) / scaleFactor;
     }
 
     case QgsTextFormat::VerticalOrientation:
