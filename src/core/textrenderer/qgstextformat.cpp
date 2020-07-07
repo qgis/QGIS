@@ -821,6 +821,7 @@ QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSi
 
   context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
   context.setUseAdvancedEffects( true );
+  context.setFlag( QgsRenderContext::Antialiasing, true );
   context.setPainter( &painter );
 
   // slightly inset text to account for buffer/background
