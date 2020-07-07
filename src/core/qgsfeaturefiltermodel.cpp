@@ -257,6 +257,7 @@ void QgsFeatureFilterModel::updateCompleter()
       setExtraValueDoesNotExist( true );
     }
 
+    mKeepCurrentEntry = true;
     mShouldReloadCurrentFeature = false;
 
     if ( mFilterValue.isEmpty() )
@@ -275,7 +276,7 @@ void QgsFeatureFilterModel::updateCompleter()
     const int newEntriesSize = entries.size();
 
     // fixed entry is either NULL or extra value
-    const int nbFixedEntry = ( mExtraValueDoesNotExist ? 0 : 1 ) + ( mAllowNull ? 1 : 0 );
+    const int nbFixedEntry = ( mKeepCurrentEntry ? 1 : 0 ) + ( mAllowNull ? 1 : 0 );
 
     // Find the index of the current entry in the new list
     int currentEntryInNewList = -1;
@@ -357,6 +358,8 @@ void QgsFeatureFilterModel::updateCompleter()
     }
 
     emit filterJobCompleted();
+
+    mKeepCurrentEntry = false;
   }
   emit endUpdate();
 
