@@ -101,6 +101,11 @@ QgsChunkLoader *QgsDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) 
   return new QgsDemTerrainTileLoader( mTerrain, node );
 }
 
+QgsChunkLoader *QgsDemTerrainGenerator::createSynchronousChunkLoader( QgsChunkNode *node ) const
+{
+  return new QgsDemTerrainTileLoader( mTerrain, node, true );
+}
+
 void QgsDemTerrainGenerator::updateGenerator()
 {
   QgsRasterLayer *dem = layer();

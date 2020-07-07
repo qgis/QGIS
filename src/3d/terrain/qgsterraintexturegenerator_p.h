@@ -35,6 +35,7 @@ class QgsProject;
 class QgsRasterLayer;
 
 #include <QObject>
+#include <QSize>
 
 #include "qgschunknode_p.h"
 #include "qgsrectangle.h"
@@ -71,6 +72,11 @@ class QgsTerrainTextureGenerator : public QObject
     //! Renders a map and returns rendered image. Blocks until the map rendering has finished
     QImage renderSynchronously( const QgsRectangle &extent, const QString &debugText = QString() );
 
+    //! Returns the generated texture size (in pixel)
+    QSize textureSize() const { return mTextureSize; }
+    //! Sets the generated textures size (in pixel)
+    void setTextureSize( QSize textureSize ) { mTextureSize = textureSize; }
+
   signals:
     //! Signal emitted when rendering of a map tile has finished and passes the output image
     void tileReady( int jobId, const QImage &image );
@@ -82,6 +88,7 @@ class QgsTerrainTextureGenerator : public QObject
     QgsMapSettings baseMapSettings();
 
     const Qgs3DMapSettings &mMap;
+    QSize mTextureSize;
 
     struct JobData
     {

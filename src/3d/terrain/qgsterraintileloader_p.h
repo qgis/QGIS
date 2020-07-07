@@ -64,6 +64,9 @@ class QgsTerrainTileLoader : public QgsChunkLoader
   protected:
     //! Starts asynchronous rendering of map texture
     void loadTexture();
+    //! Renders the map texture synchronously
+    void loadTextureSynchronously();
+
     //! Creates a new texture thaht is linked to the entity
     Qt3DRender::QTexture2D *createTexture( QgsTerrainTileEntity *entity );
     //! Creates material component for the entity with the rendered map as a texture

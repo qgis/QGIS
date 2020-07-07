@@ -25,6 +25,11 @@
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DExtras/QPlaneGeometry>
 #include <Qt3DCore/QTransform>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DExtras/QDiffuseMapMaterial>
+#include <Qt3DExtras/QTextureMaterial>
+#include <Qt3DRender/QTextureImage>
+#include <Qt3DRender/QTexture>
 
 #include <QByteArray>
 #include <QFile>
@@ -41,6 +46,8 @@
 #include "qgsdemterraintileloader_p.h"
 #include "qgsdemterraintilegeometry_p.h"
 #include "qgs3dexportobject.h"
+#include "qgsterraintextureimage_p.h"
+#include "qgsterraintexturegenerator_p.h"
 
 #include <numeric>
 
@@ -51,6 +58,11 @@ QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute )
   uint bytesOffset = attribute->byteOffset();
   uint bytesStride = attribute->byteStride();
   uint vertexSize = attribute->vertexSize();
+
+  qDebug() << "bytesOffset: " << bytesOffset;
+  qDebug() << "bytesStride: " << bytesStride;
+  qDebug() << "VertexSize: " << vertexSize;
+  qDebug() << "Data size: " << data.size();
 
   QVector<T> result;
   for ( int i = bytesOffset; i < data.size(); i += bytesStride )
@@ -129,6 +141,44 @@ QVector<float> createPlaneVertexData( float w, float h, const QSize &resolution 
   return data;
 }
 
+QVector<float> createPlaneTexCoordsData( float w, float h, const QSize &resolution, bool mirrored )
+{
+  Q_ASSERT( w > 0.0f );
+  Q_ASSERT( h > 0.0f );
+  Q_ASSERT( resolution.width() >= 2 );
+  Q_ASSERT( resolution.height() >= 2 );
+
+  const int nVerts = resolution.width() * resolution.height();
+
+  // Populate a buffer with the interleaved per-vertex data with
+  // vec3 pos, vec2 texCoord, vec3 normal, vec4 tangent
+  const quint32 elementSize = 3 + 2 + 3 + 4;
+  const quint32 stride = elementSize * sizeof( float );
+  QVector<float> buffer;
+  buffer.resize( stride * nVerts );
+
+  const float du = 1.0 / ( resolution.width() - 1 );
+  const float dv = 1.0 / ( resolution.height() - 1 );
+
+  // Iterate over z
+  for ( int j = 0; j < resolution.height(); ++j )
+  {
+    const float v = static_cast<float>( j ) * dv;
+
+    // Iterate over x
+    for ( int i = 0; i < resolution.width(); ++i )
+    {
+      const float u = static_cast<float>( i ) * du;
+
+      // texture coordinates
+      buffer.push_back( u );
+      buffer.push_back( mirrored ? 1.0f - v : v );
+    }
+  }
+
+  return buffer;
+}
+
 QVector<unsigned int> createPlaneIndexData( const QSize &resolution )
 {
   // Create the index data. 2 triangles per rectangular face
@@ -165,10 +215,11 @@ Qgs3DSceneExporter::Qgs3DSceneExporter( Qt3DCore::QNode *parent )
   , mSmoothEdges( false )
   , mTerrainResolution( 128 )
   , mExportNormals( true )
+  , mExportTextures( false )
+  , mTerrainTextureResolution( 512 )
 {
 
 }
-
 
 void Qgs3DSceneExporter::parseEntity( Qt3DCore::QEntity *entity )
 {
@@ -190,7 +241,9 @@ void Qgs3DSceneExporter::parseEntity( Qt3DCore::QEntity *entity )
     QgsTessellatedPolygonGeometry *tessellated = qobject_cast<QgsTessellatedPolygonGeometry *>( geom );
     if ( tessellated != nullptr )
     {
+      qDebug() << "Processing QgsTessellatedPolygonGeometry started";
       process( tessellated );
+      qDebug() << "Processing QgsTessellatedPolygonGeometry ended";
       continue;
     }
 
@@ -211,6 +264,7 @@ void Qgs3DSceneExporter::parseEntity( Qt3DCore::QEntity *entity )
 
 void Qgs3DSceneExporter::parseEntity( QgsTerrainEntity *terrain )
 {
+  const Qgs3DMapSettings &settings = terrain->map3D();
   QgsChunkNode *root = terrain->rootNode();
 
   // just use LoD0 for now
@@ -235,7 +289,7 @@ void Qgs3DSceneExporter::parseEntity( QgsTerrainEntity *terrain )
     }
   }
 
-  QgsTerrainGenerator *generator = terrain->map3D().terrainGenerator();
+  QgsTerrainGenerator *generator = settings.terrainGenerator();
   QgsTerrainTileEntity *terrainTile = nullptr;
   switch ( generator->type() )
   {
@@ -243,14 +297,21 @@ void Qgs3DSceneExporter::parseEntity( QgsTerrainEntity *terrain )
       for ( QgsChunkNode *node : leafs )
       {
         terrainTile = getDemTerrainEntity( terrain, node );
-        this->parseDemTile( terrainTile );
+        QgsTerrainTextureGenerator *textureGenerator = terrain->textureGenerator();
+        QSize oldResolution = textureGenerator->textureSize();
+        textureGenerator->setTextureSize( QSize( mTerrainTextureResolution, mTerrainTextureResolution ) );
+        this->parseDemTile( terrainTile, textureGenerator );
+        textureGenerator->setTextureSize( oldResolution );
       }
       break;
     case QgsTerrainGenerator::Flat:
       for ( QgsChunkNode *node : leafs )
       {
         terrainTile = getFlatTerrainEntity( terrain, node );
-        this->parseFlatTile( terrainTile );
+        QgsTerrainTextureGenerator *textureGenerator = terrain->textureGenerator();
+        QSize oldResolution = textureGenerator->textureSize();
+        this->parseFlatTile( terrainTile, textureGenerator );
+        textureGenerator->setTextureSize( oldResolution );
       }
       break;
     // TODO: implement other terrain types
@@ -264,7 +325,7 @@ void Qgs3DSceneExporter::parseEntity( QgsTerrainEntity *terrain )
 QgsTerrainTileEntity *Qgs3DSceneExporter::getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node )
 {
   QgsFlatTerrainGenerator *generator = dynamic_cast<QgsFlatTerrainGenerator *>( terrain->map3D().terrainGenerator() );
-  QgsChunkLoader *loader = generator->createChunkLoader( node );
+  QgsChunkLoader *loader = generator->createSynchronousChunkLoader( node );
   FlatTerrainChunkLoader *flatTerrainLoader = qobject_cast<FlatTerrainChunkLoader *>( loader );
   if ( flatTerrainLoader == nullptr ) return nullptr;
   // the entity we created should be deallocated when we deallocate the scene exporter
@@ -277,100 +338,18 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity 
 {
   QgsTerrainTileEntity *tileEntity = nullptr;
   // Just create a new tile (we don't need to export exact level of details as in the scene)
-
-//  if ( node->entity() != nullptr )
-//  {
-//    // read tile data as displayed in the scene (no need to make the entity)
-//    Qt3DCore::QEntity *entity = node->entity();
-//    tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
-//  }
-//  else
-  {
-//     create the entity synchronously and then it will be deleted once our scene exporter instance is deallocated
-    tileEntity = createDEMTileEntity( terrain, node );
-  }
+  // create the entity synchronously and then it will be deleted once our scene exporter instance is deallocated
+  const Qgs3DMapSettings &map = terrain->map3D();
+  QgsDemTerrainGenerator *generator = static_cast<QgsDemTerrainGenerator *>( map.terrainGenerator() );
+  int oldResolution = generator->resolution();
+  generator->setResolution( mTerrainResolution );
+  QgsDemTerrainTileLoader *loader = qobject_cast<QgsDemTerrainTileLoader *>( generator->createSynchronousChunkLoader( node ) );
+  tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
+  generator->setResolution( oldResolution );
   return tileEntity;
 }
 
-static void _heightMapMinMax( const QByteArray &heightMap, float &zMin, float &zMax )
-{
-  const float *zBits = ( const float * ) heightMap.constData();
-  int zCount = heightMap.count() / sizeof( float );
-  bool first = true;
-
-  zMin = zMax = std::numeric_limits<float>::quiet_NaN();
-  for ( int i = 0; i < zCount; ++i )
-  {
-    float z = zBits[i];
-    if ( std::isnan( z ) )
-      continue;
-    if ( first )
-    {
-      zMin = zMax = z;
-      first = false;
-    }
-    zMin = std::min( zMin, z );
-    zMax = std::max( zMax, z );
-  }
-}
-
-QgsTerrainTileEntity *Qgs3DSceneExporter::createDEMTileEntity( QgsTerrainEntity *terrain, QgsChunkNode *node )
-{
-  const Qgs3DMapSettings &map = terrain->map3D();
-  QgsDemTerrainGenerator *generator = static_cast<QgsDemTerrainGenerator *>( map.terrainGenerator() );
-  generator->setResolution( mTerrainResolution );
-  QgsDemHeightMapGenerator *heightMapGenerator = generator->heightMapGenerator();
-  QByteArray heightMap = heightMapGenerator->renderSynchronously( node->tileX(), node->tileY(), node->tileZ() );
-
-  float resolution = generator->resolution();
-  float skirtHeight = generator->skirtHeight();
-
-  float zMin, zMax;
-  _heightMapMinMax( heightMap, zMin, zMax );
-
-  if ( std::isnan( zMin ) || std::isnan( zMax ) )
-  {
-    // no data available for this tile
-    return nullptr;
-  }
-
-  QgsRectangle extent = map.terrainGenerator()->tilingScheme().tileToExtent( node->tileX(), node->tileY(), node->tileZ() ); //node->extent;
-  double x0 = extent.xMinimum() - map.origin().x();
-  double y0 = extent.yMinimum() - map.origin().y();
-  double side = extent.width();
-  double half = side / 2;
-
-  QgsTerrainTileEntity *entity = new QgsTerrainTileEntity( node->tileId() );
-
-  // create geometry renderer
-
-  Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  mesh->setGeometry( new DemTerrainTileGeometry( resolution, side, map.terrainVerticalScale(), skirtHeight, heightMap, mesh ) );
-  entity->addComponent( mesh ); // takes ownership if the component has no parent
-
-  // create material
-  // TODO: create texture component
-  //      createTextureComponent( entity, map.isTerrainShadingEnabled(), map.terrainShadingMaterial() );
-
-  // create transform
-
-  Qt3DCore::QTransform *transform = nullptr;
-  transform = new Qt3DCore::QTransform();
-  entity->addComponent( transform );
-
-  transform->setScale( side );
-  transform->setTranslation( QVector3D( x0 + half, 0, - ( y0 + half ) ) );
-
-  //  node->setExactBbox( QgsAABB( x0, zMin * map.terrainVerticalScale(), -y0, x0 + side, zMax * map.terrainVerticalScale(), -( y0 + side ) ) );
-
-  entity->setEnabled( false );
-  // set the parent to our scene exporter class so it will be deallocated properly
-  entity->setParent( this );
-
-  return entity;
-}
-
-void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity )
+void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, QgsTerrainTextureGenerator *textureGenerator )
 {
   Qt3DRender::QGeometryRenderer *mesh = nullptr;
   Qt3DCore::QTransform *transform = nullptr;
@@ -398,18 +377,37 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity )
   }
 
   float scale = transform->scale();
+  QVector3D translation = transform->translation();
 
   QVector<float> positionBuffer = createPlaneVertexData( scale, scale, tileGeometry->resolution() );
   QVector<unsigned int> indexesBuffer = createPlaneIndexData( tileGeometry->resolution() );
 
-  Qgs3DExportObject *object = new Qgs3DExportObject( "Flat_tile", "", this );
+  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "Flat_tile" ), "", this );
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
-  object->setupPositionCoordinates( positionBuffer, indexesBuffer );
+  object->setupPositionCoordinates( positionBuffer, indexesBuffer, 1.0f, translation );
+
+  if ( mExportNormals )
+  {
+    QVector<float> normalsBuffer;
+    for ( int i = 0; i < positionBuffer.size(); i += 3 ) normalsBuffer << 0.0f << 1.0f << 0.0f;
+    object->setupNormalCoordinates( normalsBuffer );
+  }
+
+  if ( mExportTextures )
+  {
+    qDebug() << "Generating texCoords";
+    QVector<float> texCoords = createPlaneTexCoordsData( 1.0f, 1.0f, tileGeometry->resolution(), false );
+    object->setupTextureCoordinates( texCoords );
+    qDebug() << "Generated texCoords";
+
+    QImage img = textureGenerator->renderSynchronously( tileEntity->textureImage()->imageExtent(),  tileEntity->textureImage()->imageDebugText() );
+    object->setTextureImage( img );
+  }
 }
 
-void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
+void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, QgsTerrainTextureGenerator *textureGenerator )
 {
   Qt3DRender::QGeometryRenderer *mesh = nullptr;
   Qt3DCore::QTransform *transform = nullptr;
@@ -442,7 +440,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
   QVector<float> positionBuffer = getAttributeData<float>( tileGeometry->positionAttribute() );
   QVector<unsigned int> indexBuffer = getAttributeData<unsigned int>( tileGeometry->indexAttribute() );
 
-  Qgs3DExportObject *object = new Qgs3DExportObject( "DEM_tile", "", this );
+  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "DEM_tile" ), "", this );
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
@@ -453,16 +451,24 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
     QVector<float> normalsBuffer = getAttributeData<float>( tileGeometry->normalAttribute() );
     object->setupNormalCoordinates( normalsBuffer );
   }
+
+  if ( mExportTextures )
+  {
+    QVector<float> texCoordsBuffer = getAttributeData<float>( tileGeometry->texCoordsAttribute() );
+    object->setupTextureCoordinates( texCoordsBuffer );
+
+    QImage img = textureGenerator->renderSynchronously( tileEntity->textureImage()->imageExtent(),  tileEntity->textureImage()->imageDebugText() );
+    object->setTextureImage( img );
+  }
 }
 
 void Qgs3DSceneExporter::processAttribute( Qt3DRender::QAttribute *attribute )
 {
   QVector<float> floatData = getAttributeData<float>( attribute );
 
-  Qgs3DExportObject *object = new Qgs3DExportObject( "attribute", "", this );
+  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "geometry" ), "", this );
   mObjects.push_back( object );
 
-  mObjects.push_back( object );
   object->setupPositionCoordinates( floatData );
 }
 
@@ -472,9 +478,12 @@ void Qgs3DSceneExporter::process( QgsTessellatedPolygonGeometry *geom )
   processAttribute( geom->mPositionAttribute );
 }
 
-void Qgs3DSceneExporter::saveToFile( const QString &filePath )
+void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath )
 {
-  QFile file( filePath );
+  QString objFilePath = QDir( sceneFolderPath ).filePath( sceneName + ".obj" );
+  QString mtlFilePath = QDir( sceneFolderPath ).filePath( sceneName + ".mtl" );
+
+  QFile file( objFilePath );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
     return;
 
@@ -491,8 +500,27 @@ void Qgs3DSceneExporter::saveToFile( const QString &filePath )
   float centerY = ( minY + maxY ) / 2.0f;
   float centerZ = ( minZ + maxZ ) / 2.0f;
 
-  float scale = std::min( diffX, std::min( diffY, diffZ ) );
+  float scale = 1.0f;//std::max( diffX, std::max( diffY, diffZ ) );
 
   QTextStream out( &file );
-  for ( Qgs3DExportObject *obj : mObjects ) obj->saveTo( out, scale, QVector3D( centerX, centerY, centerZ ) );
+  for ( Qgs3DExportObject *obj : mObjects )
+  {
+    // Set object name
+    out << "o " << obj->name() << "\n";
+    obj->saveTo( out, scale, QVector3D( centerX, centerY, centerZ ) );
+    obj->saveMaterial( obj->name(), sceneFolderPath );
+  }
+}
+
+QString Qgs3DSceneExporter::getObjectName( const QString &name )
+{
+  QString ret = name;
+  if ( usedObjectNamesCounter.contains( name ) )
+  {
+    ret = usedObjectNamesCounter[name];
+    usedObjectNamesCounter[name]++;
+  }
+  else
+    usedObjectNamesCounter[name] = 2;
+  return ret;
 }

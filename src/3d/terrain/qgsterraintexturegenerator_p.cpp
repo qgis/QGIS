@@ -30,6 +30,7 @@
 QgsTerrainTextureGenerator::QgsTerrainTextureGenerator( const Qgs3DMapSettings &map )
   : mMap( map )
   , mLastJobId( 0 )
+  , mTextureSize( QSize( mMap.mapTileResolution(), mMap.mapTileResolution() ) )
 {
 }
 
@@ -136,7 +137,7 @@ QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
 {
   QgsMapSettings mapSettings;
 
-  mapSettings.setOutputSize( QSize( mMap.mapTileResolution(), mMap.mapTileResolution() ) );
+  mapSettings.setOutputSize( mTextureSize );
   mapSettings.setDestinationCrs( mMap.crs() );
   mapSettings.setBackgroundColor( mMap.backgroundColor() );
   mapSettings.setFlag( QgsMapSettings::DrawLabeling, mMap.showLabels() );

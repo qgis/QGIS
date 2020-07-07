@@ -75,6 +75,7 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     void resolveReferences( const QgsProject &project ) override;
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
+    QgsChunkLoader *createSynchronousChunkLoader( QgsChunkNode *node ) const;
 
   private:
     void updateGenerator();

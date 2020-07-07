@@ -23,7 +23,7 @@
 #include <QDir>
 
 /**
- * @brief The Qgs3DMapExportSettings class
+ * \brief The Qgs3DMapExportSettings class
  * Manages the various settings the user can choose from when exorting a 3D scene
  * \ingroup 3d
  * \since QGIS 3.16
@@ -45,6 +45,8 @@ class _3D_EXPORT Qgs3DMapExportSettings : public QObject
     bool smoothEdges() const { return mSmoothEdges; }
     //! Returns whether normals will be exported
     bool exportNormals() const { return mExportNormals; }
+    //! Returns whether textures will be exported
+    bool exportTextures() const { return mExportTextures; }
 
     //! Sets the scene name
     void setSceneName( const QString &sceneName ) { mSceneName = sceneName; }
@@ -56,6 +58,8 @@ class _3D_EXPORT Qgs3DMapExportSettings : public QObject
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
     //! Sets whether normals should be exported
     void setExportNormals( bool exportNormals ) { mExportNormals = exportNormals; }
+    //! Sets whether textures will be exported
+    void setExportTextures( bool exportTextures ) { mExportTextures = exportTextures; }
     //! Returns a path to a file that with the "name.extension" in the export folder
     QString getFilePath( const QString &name, const QString &extension ) const
     {
@@ -67,6 +71,7 @@ class _3D_EXPORT Qgs3DMapExportSettings : public QObject
     int mTerrainResolution = 128;
     bool mSmoothEdges = false;
     bool mExportNormals = true;
+    bool mExportTextures = false;
 };
 
 #endif // QGS3DMAPEXPORTSETTINGS_H

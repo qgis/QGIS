@@ -28,10 +28,13 @@
 //---------------
 
 
-FlatTerrainChunkLoader::FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *node )
+FlatTerrainChunkLoader::FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, bool loadSynchronously )
   : QgsTerrainTileLoader( terrain, node )
 {
-  loadTexture();
+  if ( loadSynchronously )
+    loadTextureSynchronously();
+  else
+    loadTexture();
 }
 
 
@@ -81,6 +84,11 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
 QgsChunkLoader *QgsFlatTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
   return new FlatTerrainChunkLoader( mTerrain, node );
+}
+
+QgsChunkLoader *QgsFlatTerrainGenerator::createSynchronousChunkLoader( QgsChunkNode *node ) const
+{
+  return new FlatTerrainChunkLoader( mTerrain, node, true );
 }
 
 QgsTerrainGenerator *QgsFlatTerrainGenerator::clone() const

@@ -30,9 +30,10 @@ class QgsFlatTerrainGenerator;
 class QgsDemTerrainGenerator;
 class QgsChunkNode;
 class Qgs3DExportObject;
+class QgsTerrainTextureGenerator;
 
 /**
- * @brief The Qgs3DSceneExporter class
+ * \brief The Qgs3DSceneExporter class
  * Entity that handles the exporting of 3D scene
  * \ingroup 3d
  * \since QGIS 3.16
@@ -52,7 +53,7 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     //! Creates terrain export objects from the terrain entity
     void parseEntity( QgsTerrainEntity *terrain );
     //! Saves the scene to a .obj file
-    void saveToFile( const QString &filePath );
+    void save( const QString &sceneName, const QString &sceneFolderPath );
 
     //! Sets whether the triangles will look smooth
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
@@ -64,10 +65,20 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     //! Returns whether the normals will be exported
     bool exportNormals() const { return mExportNormals; }
 
+    //! Sets whether the textures will be exported
+    void setExportTextures( bool exportTextures ) { mExportTextures = exportTextures; }
+    //! Returns whether the textures will be exported
+    bool exportTextures() const { return mExportTextures; }
+
     //! Sets the terrian resolution
     void setTerrainResolution( int resolution ) { mTerrainResolution = resolution; }
     //! Returns the terrain resolution
     int terrainResolution() const { return mTerrainResolution; }
+
+    //! Sets the terrian texture resolution
+    void setTerrainTextureResolution( int resolution ) { mTerrainTextureResolution = resolution; }
+    //! Returns the terrain resolution
+    int terrainTextureResolution() const { return mTerrainTextureResolution; }
 
   private:
     //! Processes the attribute directly by taking a position buffer and converting it to Qgs3DExportObject
@@ -81,21 +92,20 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     QgsTerrainTileEntity *getDemTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
 
     //! Constructs a Qgs3DExportObject from the DEM tile entity
-    void parseDemTile( QgsTerrainTileEntity *tileEntity );
+    void parseDemTile( QgsTerrainTileEntity *tileEntity, QgsTerrainTextureGenerator *textureGenerator );
     //! Constructs a Qgs3DExportObject from the flat tile entity
-    void parseFlatTile( QgsTerrainTileEntity *tileEntity );
+    void parseFlatTile( QgsTerrainTileEntity *tileEntity, QgsTerrainTextureGenerator *textureGenerator );
 
-    /**
-     * Creates tile entity that contains the geometry to be exported and necessary scaling parameters
-     * This function is needed because we need to generate geometry according to terrain resolution
-     */
-    QgsTerrainTileEntity *createDEMTileEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
+    QString getObjectName( const QString &name );
   private:
+    QMap<QString, int> usedObjectNamesCounter;
     QVector<Qgs3DExportObject *> mObjects;
 
     bool mSmoothEdges;
     int mTerrainResolution;
     bool mExportNormals;
+    bool mExportTextures;
+    int mTerrainTextureResolution;
 };
 
 #endif // QGS3DSCENEEXPORTER_H

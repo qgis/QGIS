@@ -20,13 +20,6 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="sceneNameLabel">
-       <property name="text">
-        <string>Scene name</string>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="1" colspan="2">
       <widget class="QgsFileWidget" name="selectFolderWidget" native="true"/>
      </item>
@@ -43,24 +36,7 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="0" colspan="3">
-      <widget class="QCheckBox" name="smoothEdgesCheckBox">
-       <property name="text">
-        <string>Smooth Edges</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1" colspan="2">
-      <widget class="QLineEdit" name="sceneNameLineEdit"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="folderLAbel">
-       <property name="text">
-        <string>Folder</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
+     <item row="6" column="1">
       <spacer name="verticalSpacer">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -83,6 +59,37 @@
        </property>
        <property name="autoRepeat">
         <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" colspan="3">
+      <widget class="QCheckBox" name="smoothEdgesCheckBox">
+       <property name="text">
+        <string>Smooth Edges</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="2">
+      <widget class="QLineEdit" name="sceneNameLineEdit"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="folderLAbel">
+       <property name="text">
+        <string>Folder</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="sceneNameLabel">
+       <property name="text">
+        <string>Scene name</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0" colspan="3">
+      <widget class="QCheckBox" name="exportTexturesCheckBox">
+       <property name="text">
+        <string>Export textures</string>
        </property>
       </widget>
      </item>

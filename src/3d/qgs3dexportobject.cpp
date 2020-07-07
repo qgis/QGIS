@@ -17,6 +17,8 @@
 
 #include <QVector3D>
 #include <QDebug>
+#include <QDir>
+#include <QImage>
 
 Qgs3DExportObject::Qgs3DExportObject( const QString &name, const QString &parentName, QObject *parent )
   : QObject( parent )
@@ -66,6 +68,11 @@ void Qgs3DExportObject::setupNormalCoordinates( const QVector<float> &normalsBuf
   mNormals << normalsBuffer;
 }
 
+void Qgs3DExportObject::setupTextureCoordinates( const QVector<float> &texturesBuffer )
+{
+  mTexturesUV << texturesBuffer;
+}
+
 void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ )
 {
   for ( int vertice : mIndexes )
@@ -80,12 +87,8 @@ void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, flo
   }
 }
 
-void Qgs3DExportObject::saveTo( QTextStream &out, int scale, const QVector3D &center )
+void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &center )
 {
-
-  // Set object name
-  out << "o " << mName << "\n";
-
   // Set groups
   // turns out grouping doest work as expected in blender
 
@@ -105,11 +108,18 @@ void Qgs3DExportObject::saveTo( QTextStream &out, int scale, const QVector3D &ce
     {
       out << "vn " << mNormals[i] << " " << mNormals[i + 1] << " " << mNormals[i + 2] << "\n";
     }
+    int u_index = i / 3 * 2;
+    if ( u_index + 1 < mTexturesUV.size() )
+    {
+      // TODO: flip texture in a more appropriate way (for repeated textures)
+      out << "vt " << mTexturesUV[u_index] << " " << 1.0f - mTexturesUV[u_index + 1] << "\n";
+    }
   }
 
-  bool hasTextures = false;
+  bool hasTextures = mTexturesUV.size() == mVertxPosition.size() / 3 * 2;
   // if the object has normals then the normals and positions buffers should be the same size
   bool hasNormals = mNormals.size() == mVertxPosition.size();
+
   if ( !hasNormals && !mNormals.empty() )
   {
     qDebug() << "WARNING: vertex normals count and vertex positions count are different";
@@ -119,9 +129,9 @@ void Qgs3DExportObject::saveTo( QTextStream &out, int scale, const QVector3D &ce
   auto getVertexIndex = [&]( int i ) -> QString
   {
     int negativeIndex = -1 - ( verticesCount - i );
-    if ( !hasNormals && !hasTextures ) return QString( "%1" ).arg( negativeIndex );
     if ( hasNormals && !hasTextures ) return QString( "%1//%2" ).arg( negativeIndex ).arg( negativeIndex );
-    // TODO: handle other cases
+    if ( !hasNormals && hasTextures ) return QString( "%1/%2" ).arg( negativeIndex ).arg( negativeIndex );
+    if ( hasNormals && hasTextures ) return QString( "%1/%2/%3" ).arg( negativeIndex ).arg( negativeIndex ).arg( negativeIndex );
     return QString( "%1" ).arg( negativeIndex );
   };
 
@@ -134,4 +144,11 @@ void Qgs3DExportObject::saveTo( QTextStream &out, int scale, const QVector3D &ce
     out << " " << getVertexIndex( mIndexes[i + 2] );
     out << "\n";
   }
+}
+
+void Qgs3DExportObject::saveMaterial( const QString &textureName, const QString &folderPath )
+{
+  if ( mTexturesUV.size() == 0 ) return;
+  QString filePath = QDir( folderPath ).filePath( textureName + ".jpg" );
+  mTextureImage.save( filePath, "JPG" );
 }

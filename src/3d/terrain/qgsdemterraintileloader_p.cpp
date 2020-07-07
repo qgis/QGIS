@@ -52,7 +52,7 @@ static void _heightMapMinMax( const QByteArray &heightMap, float &zMin, float &z
 }
 
 
-QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node )
+QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, bool loadSynchronously )
   : QgsTerrainTileLoader( terrain, node )
   , mResolution( 0 )
 {
@@ -75,10 +75,19 @@ QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, Qgs
   else
     Q_ASSERT( false );
 
-  // get heightmap asynchronously
-  connect( heightMapGenerator, &QgsDemHeightMapGenerator::heightMapReady, this, &QgsDemTerrainTileLoader::onHeightMapReady );
-  mHeightMapJobId = heightMapGenerator->render( node->tileX(), node->tileY(), node->tileZ() );
-  mResolution = heightMapGenerator->resolution();
+  if ( loadSynchronously )
+  {
+    mResolution = heightMapGenerator->resolution();
+    mHeightMap = heightMapGenerator->renderSynchronously( node->tileX(), node->tileY(), node->tileZ() );
+    loadTextureSynchronously();
+  }
+  else
+  {
+    // get heightmap asynchronously
+    connect( heightMapGenerator, &QgsDemHeightMapGenerator::heightMapReady, this, &QgsDemTerrainTileLoader::onHeightMapReady );
+    mHeightMapJobId = heightMapGenerator->render( node->tileX(), node->tileY(), node->tileZ() );
+    mResolution = heightMapGenerator->resolution();
+  }
 }
 
 Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *parent )

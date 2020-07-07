@@ -20,9 +20,10 @@
 #include <QTextStream>
 #include <QVector>
 #include <QVector3D>
+#include <QImage>
 
 /**
- * @brief The Qgs3DExportObject class
+ * \brief The Qgs3DExportObject class
  * Manages the data of each object of the scene (positions, normals, texture coordinates ...) since each object
  * \ingroup 3d
  * \since QGIS 3.16
@@ -33,16 +34,21 @@ class Qgs3DExportObject : public QObject
   public:
 
     /**
-     * @brief Qgs3DExportObject
+     * \brief Qgs3DExportObject
      * Constructs an export object that will be filled with coordinates later
-     * @param name
+     * \param name
      * The name of the object (the user will be able to select each object individually using its name in blender)
-     * @param parentName
+     * \param parentName
      * The name of the parent (Will be useful to define scene hierarchie)
-     * @param parent
+     * \param parent
      * The parent QObject (we use this to delete the Qgs3DExportObject instance once the exporter instance is deallocated)
      */
     Qgs3DExportObject( const QString &name, const QString &parentName = QString(), QObject *parent = nullptr );
+
+    //! Returns the object name
+    QString name() const { return mName; }
+    //! Sets the object name
+    void setName( const QString &name ) { mName = name; }
 
     //! Returns whether object edges will look smooth
     bool smoothEdges() { return mSmoothEdges; }
@@ -56,6 +62,11 @@ class Qgs3DExportObject : public QObject
 
     //! setss normal coordinates for each vertex
     void setupNormalCoordinates( const QVector<float> &normalsBuffer );
+    //! setss texture coordinates for each vertex
+    void setupTextureCoordinates( const QVector<float> &texturesBuffer );
+
+    void setTextureImage( const QImage &image ) { this->mTextureImage = image; };
+    QImage textureImage() { return mTextureImage; }
 
     /**
      * Updates the box bounds explained with the current object bounds
@@ -64,13 +75,17 @@ class Qgs3DExportObject : public QObject
     void objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ );
 
     //! Saves the current object to the output stream while scaling the object and centering it to be visible in exported scene
-    void saveTo( QTextStream &out, int scale, const QVector3D &center );
+    void saveTo( QTextStream &out, float scale, const QVector3D &center );
+    void saveMaterial( const QString &textureName, const QString &folder );
   private:
     QString mName;
     QString mParentName;
     QVector<float> mVertxPosition;
     QVector<float> mNormals;
+    QVector<float> mTexturesUV;
     QVector<int> mIndexes;
+
+    QImage mTextureImage;
 
     bool mSmoothEdges;
 };
