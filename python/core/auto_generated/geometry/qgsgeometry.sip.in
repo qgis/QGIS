@@ -1635,7 +1635,7 @@ is not a single-point type, a TypeError will be raised. If the geometry
 is null, a ValueError will be raised.
 %End
 %MethodCode
-    const QgsWkbTypes::GeometryType type = sipCpp->wkbType();
+    const QgsWkbTypes::Type type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a point." ).toUtf8().constData() );

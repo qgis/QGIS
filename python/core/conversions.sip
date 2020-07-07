@@ -1773,7 +1773,7 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
     for (SIP_SSIZE_T i = 0; i < PyList_GET_SIZE(sipPy); ++i)
     {
         long l = SIPLong_AsLong(PyList_GET_ITEM(sipPy, i));
-        ql->append(static_cast<QgsWkbTypes::Type>(l));
+        ql->append(static_cast<QgsWkbTypes::GeometryType>(l));
     }
 
     *sipCppPtr = ql;

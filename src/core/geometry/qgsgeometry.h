@@ -123,7 +123,7 @@ class CORE_EXPORT QgsGeometry
 {
     Q_GADGET
     Q_PROPERTY( bool isNull READ isNull )
-    Q_PROPERTY( QgsWkbTypes::Type type READ type )
+    Q_PROPERTY( QgsWkbTypes::GeometryType type READ type )
 
   public:
 
@@ -1667,7 +1667,7 @@ class CORE_EXPORT QgsGeometry
      */
     SIP_PYOBJECT asPoint() const SIP_TYPEHINT( QgsPointXY );
     % MethodCode
-    const QgsWkbTypes::GeometryType type = sipCpp->wkbType();
+    const QgsWkbTypes::Type type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a point." ).toUtf8().constData() );
