@@ -72,6 +72,11 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
      */
     QgsRubberBand *createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::LineGeometry, bool alternativeBand = false ) SIP_FACTORY;
 
+    /**
+     * Creates a geometry rubber band for QgsAbstractGeometry (considering curved geometries)
+     * @param geometryType
+     * @param alternativeBand if TRUE, rubber band will be set with more transparency and a dash pattern. default is FALSE.
+     */
     QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::LineGeometry, bool alternativeBand = false ) const SIP_FACTORY;
 
     //! Returns the current vector layer of the map canvas or 0

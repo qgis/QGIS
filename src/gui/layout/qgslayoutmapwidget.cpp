@@ -2098,7 +2098,7 @@ void QgsLayoutMapClippingWidget::updateGuiElements()
 
 void QgsLayoutMapClippingWidget::atlasLayerChanged( QgsVectorLayer *layer )
 {
-  if ( !layer || layer->geometryType() != QgsWkbTypes::PolygonGeometry )
+  if ( !layer || layer->geometryType() != QgsWkbTypes::GeometryType::PolygonGeometry )
   {
     //non-polygon layer, disable atlas control
     mClipToAtlasCheckBox->setChecked( false );
@@ -2115,7 +2115,7 @@ void QgsLayoutMapClippingWidget::atlasToggled( bool atlasEnabled )
 {
   if ( atlasEnabled &&
        mMapItem && mMapItem->layout() && mMapItem->layout()->reportContext().layer()
-       && mMapItem->layout()->reportContext().layer()->geometryType() == QgsWkbTypes::PolygonGeometry )
+       && mMapItem->layout()->reportContext().layer()->geometryType() == QgsWkbTypes::GeometryType::PolygonGeometry )
   {
     mClipToAtlasCheckBox->setEnabled( true );
   }
