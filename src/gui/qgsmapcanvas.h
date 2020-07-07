@@ -1041,12 +1041,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
 
     /**
-     * Emitted after the map canvas context menu has been populated.
-     * Can be used to extend the map canvas context menu before it will be shown.
+     * Emitted before the map canvas context menu will be shown.
+     * Can be used to extend the context menu.
      *
      * \since QGIS 3.16
      */
-    void contextMenuPopulated( QMenu *menu, QgsMapMouseEvent *event );
+    void contextMenuAboutToShow( QMenu *menu, QgsMapMouseEvent *event );
 
 
   protected:

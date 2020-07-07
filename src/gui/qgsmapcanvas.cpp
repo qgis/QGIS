@@ -906,7 +906,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
   if ( mMapTool )
     mMapTool->populateContextMenu( mMenu );
 
-  emit contextMenuPopulated( mMenu, event );
+  emit contextMenuAboutToShow( mMenu, event );
 
   mMenu->exec( event->globalPos() );
 }
