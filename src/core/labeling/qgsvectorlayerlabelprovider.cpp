@@ -637,7 +637,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     }
 
     QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, document, labelfm,
-                                       hAlign, QgsTextRenderer::Label );
+                                       hAlign, QgsTextRenderer::AlignTop, QgsTextRenderer::Label );
 
   }
   if ( label->nextPart() )

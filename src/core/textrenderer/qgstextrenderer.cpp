@@ -42,7 +42,7 @@ int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext &c, QgsUni
   return static_cast< int >( c.convertToPainterUnits( size, unit, mapUnitScale ) + 0.5 ); //NOLINT
 }
 
-void QgsTextRenderer::drawText( const QRectF &rect, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool )
+void QgsTextRenderer::drawText( const QRectF &rect, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool, VAlignment vAlignment )
 {
   QgsTextFormat tmpFormat = format;
   if ( format.dataDefinedProperties().hasActiveProperties() ) // note, we use format instead of tmpFormat here, it's const and potentially avoids a detach
@@ -53,15 +53,15 @@ void QgsTextRenderer::drawText( const QRectF &rect, double rotation, QgsTextRend
 
   if ( tmpFormat.background().enabled() )
   {
-    drawPart( rect, rotation, alignment, document, context, tmpFormat, Background );
+    drawPart( rect, rotation, alignment, vAlignment, document, context, tmpFormat, Background );
   }
 
   if ( tmpFormat.buffer().enabled() )
   {
-    drawPart( rect, rotation, alignment, document, context, tmpFormat, Buffer );
+    drawPart( rect, rotation, alignment, vAlignment, document, context, tmpFormat, Buffer );
   }
 
-  drawPart( rect, rotation, alignment, document, context, tmpFormat, Text );
+  drawPart( rect, rotation, alignment, vAlignment, document, context, tmpFormat, Text );
 }
 
 void QgsTextRenderer::drawText( QPointF point, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool )
@@ -112,10 +112,10 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, HAlignment 
 {
   const QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
 
-  drawPart( rect, rotation, alignment, document, context, format, part );
+  drawPart( rect, rotation, alignment, AlignTop, document, context, format, part );
 }
 
-void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, QgsTextRenderer::HAlignment alignment, const QgsTextDocument &document, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part )
+void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, QgsTextRenderer::HAlignment alignment, VAlignment vAlignment, const QgsTextDocument &document, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part )
 {
   if ( !context.painter() )
   {
@@ -171,7 +171,7 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, QgsTextRend
       drawTextInternal( part, context, format, component,
                         document,
                         nullptr,
-                        alignment );
+                        alignment, vAlignment );
       break;
     }
   }
@@ -219,7 +219,7 @@ void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer
       drawTextInternal( part, context, format, component,
                         document,
                         nullptr,
-                        alignment,
+                        alignment, AlignTop,
                         Point );
       break;
     }
@@ -1146,7 +1146,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
                                         const Component &component,
                                         const QgsTextDocument &document,
                                         const QFontMetricsF *fontMetrics,
-                                        HAlignment alignment, DrawMode mode )
+                                        HAlignment alignment, VAlignment vAlignment, DrawMode mode )
 {
   if ( !context.painter() )
   {
@@ -1221,6 +1221,26 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
       int i = 0;
 
       bool adjustForAlignment = alignment != AlignLeft && ( mode != Label || textLines.size() > 1 );
+
+      if ( mode == Rect && vAlignment != AlignTop )
+      {
+        // need to calculate overall text height in advance so that we can adjust for vertical alignment
+        const double overallHeight = textHeight( context, format, textLines, Rect );
+        switch ( vAlignment )
+        {
+          case AlignTop:
+            break;
+
+          case AlignVCenter:
+            ascentOffset = -( component.size.height() - overallHeight ) * 0.5 + ascentOffset;
+            break;
+
+          case AlignBottom:
+            ascentOffset = -( component.size.height() - overallHeight ) + ascentOffset;
+            break;
+        }
+      }
+
 
       for ( const QString &line : qgis::as_const( textLines ) )
       {
