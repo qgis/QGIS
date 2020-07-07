@@ -463,18 +463,92 @@ Description: collection of data providers to QGIS - architecture-independent fil
 Package: qgis-server
 Architecture: any
 Depends:
- qgis-providers (= ${binary:Version}),
- python3-qgis (= ${binary:Version}),
+ qgis-server-dummy (= ${binary:Version}),
+ qgis-server-wms (= ${binary:Version}),
+ qgis-server-wcs (= ${binary:Version}),
+ qgis-server-wfs (= ${binary:Version}),
+ qgis-server-wfs3 (= ${binary:Version}),
+ qgis-server-common (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
-Conflicts: qgis-mapserver
-Provides: qgis-mapserver
-Replaces: qgis-mapserver
 Description: QGIS server providing various OGC services
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the QGIS server.
+ This package is a meta-package depending on all QGIS Server components.
+
+Package: qgis-server-common
+Architecture: any
+Depends:
+ qgis-providers (= ${binary:Version}),
+ python3-qgis (= ${binary:Version}),
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS server providing various OGC services
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the common QGIS server parts.
+
+Package: qgis-server-wms
+Architecture: any
+Depends:
+ qgis-server-common (= ${binary:Version}),
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS server providing various OGC services
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the wms service.
+
+Package: qgis-server-wfs
+Architecture: any
+Depends:
+ qgis-server-common (= ${binary:Version}),
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS server providing various OGC services
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the wfs service.
+
+Package: qgis-server-wfs3
+Architecture: any
+Depends:
+ qgis-server-common (= ${binary:Version}),
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS server providing various OGC services
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the wfs 3 service.
+
+Package: qgis-server-wcs
+Architecture: any
+Depends:
+ qgis-server-common (= ${binary:Version}),
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS server providing various OGC services
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the wcs service.
+
+Package: qgis-server-dummy
+Architecture: any
+Depends:
+ qgis-server-common (= ${binary:Version}),
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS server providing various OGC services
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the sample service.
 
 Package: qgis-api-doc
 Architecture: all
