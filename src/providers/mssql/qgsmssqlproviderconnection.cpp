@@ -37,6 +37,7 @@ const QStringList QgsMssqlProviderConnection::EXTRA_CONNECTION_PARAMETERS
 QgsMssqlProviderConnection::QgsMssqlProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
+  mProviderKey = QStringLiteral( "mssql" );
   // Remove the sql and table empty parts
   setUri( QgsMssqlConnection::connUri( name ).uri() );
   setDefaultCapabilities();
@@ -45,6 +46,7 @@ QgsMssqlProviderConnection::QgsMssqlProviderConnection( const QString &name )
 QgsMssqlProviderConnection::QgsMssqlProviderConnection( const QString &uri, const QVariantMap &configuration ):
   QgsAbstractDatabaseProviderConnection( QString(), configuration )
 {
+  mProviderKey = QStringLiteral( "mssql" );
   // Additional connection information
   const QgsDataSourceUri inputUri( uri );
   QgsDataSourceUri currentUri { QgsDataSourceUri( uri ).connectionInfo( false ) };

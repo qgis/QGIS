@@ -234,6 +234,8 @@ This information is calculated from the geometry columns types.
       CreateSpatialIndex,
       SpatialIndexExists,
       DeleteSpatialIndex,
+      DeleteField,
+      CreateField,
     };
 
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
@@ -461,6 +463,28 @@ Returns information about the existing schemas.
 Raises a QgsProviderConnectionException if any errors are encountered.
 
 :raises :: py:class:`QgsProviderConnectionException`
+%End
+
+    virtual QgsFields fields( const QString &schema, const QString &table ) const throw( QgsProviderConnectionException );
+%Docstring
+Returns the fields of a ``table`` and ``schema``.
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+.. note::
+
+   the default implementation creates a temporary vector layer, providers may
+   choose to override this method for a greater efficiency.
+
+.. versionadded:: 3.16
+
+:raises :: py:class:`QgsProviderConnectionException`
+%End
+
+    QString providerKey() const;
+%Docstring
+Returns the provider key
+
+.. versionadded:: 3.16
 %End
 
   protected:

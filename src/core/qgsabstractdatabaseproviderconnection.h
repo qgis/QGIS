@@ -293,6 +293,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       CreateSpatialIndex = 1 << 16, //!< The connection can create spatial indices
       SpatialIndexExists = 1 << 17, //!< The connection can determine if a spatial index exists
       DeleteSpatialIndex = 1 << 18, //!< The connection can delete spatial indices for tables
+      DeleteField = 1 << 19,        //!< Can delete an existing field
+      CreateField = 1 << 20,        //!< Can add a new field
     };
 
     Q_ENUM( Capability )
@@ -494,6 +496,22 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      */
     virtual QStringList schemas() const SIP_THROW( QgsProviderConnectionException );
 
+    /**
+     * Returns the fields of a \a table and \a schema.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \note the default implementation creates a temporary vector layer, providers may
+     * choose to override this method for a greater efficiency.
+     * \since QGIS 3.16
+     * \throws QgsProviderConnectionException
+     */
+    virtual QgsFields fields( const QString &schema, const QString &table ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Returns the provider key
+     * \since QGIS 3.16
+     */
+    QString providerKey() const;
+
   protected:
 
 ///@cond PRIVATE
@@ -506,6 +524,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 ///@endcond
 
     Capabilities mCapabilities = nullptr SIP_SKIP;
+    QString mProviderKey;
 
 };
 

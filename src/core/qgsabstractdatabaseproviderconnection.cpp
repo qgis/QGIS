@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsvectorlayer.h"
 #include "qgsexception.h"
 #include <QVariant>
 #include <QObject>
@@ -50,6 +51,11 @@ void QgsAbstractDatabaseProviderConnection::checkCapability( QgsAbstractDatabase
     const QString capName { metaEnum.valueToKey( capability ) };
     throw QgsProviderConnectionException( QObject::tr( "Operation '%1' is not supported for this connection" ).arg( capName ) );
   }
+}
+
+QString QgsAbstractDatabaseProviderConnection::providerKey() const
+{
+  return mProviderKey;
 }
 ///@endcond
 
@@ -212,6 +218,20 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType> 
   return mGeometryColumnTypes;
 }
 
+QgsFields QgsAbstractDatabaseProviderConnection::fields( const QString &schema, const QString &tableName ) const
+{
+  QgsVectorLayer::LayerOptions options { true, true };
+  options.skipCrsValidation = true;
+  QgsVectorLayer vl { tableUri( schema, tableName ), QStringLiteral( "temp_layer" ), mProviderKey, options };
+  if ( vl.isValid() )
+  {
+    return vl.fields();
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Error retrieving fields information for uri: %1" ).arg( vl.publicSource() ) );
+  }
+}
 
 QString QgsAbstractDatabaseProviderConnection::TableProperty::defaultName() const
 {
