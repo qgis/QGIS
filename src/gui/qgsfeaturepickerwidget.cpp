@@ -81,7 +81,6 @@ QgsFeaturePickerWidget::QgsFeaturePickerWidget( QWidget *parent )
   mComboBox->setModel( mModel );
 
   connect( mLineEdit, &QgsFilterLineEdit::textEdited, this, &QgsFeaturePickerWidget::onCurrentTextChanged );
-
 }
 
 QgsVectorLayer *QgsFeaturePickerWidget::layer() const
