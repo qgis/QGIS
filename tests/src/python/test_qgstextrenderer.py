@@ -52,14 +52,16 @@ def createEmptyLayer():
 
 class PyQgsTextRenderer(unittest.TestCase):
 
-    def setUp(self):
-        self.report = "<h1>Python QgsTextRenderer Tests</h1>\n"
+    @classmethod
+    def setUpClass(cls):
+        cls.report = "<h1>Python QgsTextRenderer Tests</h1>\n"
         QgsFontUtils.loadStandardTestFonts(['Bold', 'Oblique'])
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(cls):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+            report_file.write(cls.report)
 
     def createBufferSettings(self):
         s = QgsTextBufferSettings()
@@ -896,7 +898,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertAlmostEqual(metrics2.width(string), 104.15, 1)
 
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        PyQgsTextRenderer.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + name + ".png"
         image.save(file_name, "PNG")
@@ -906,7 +908,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         checker.setRenderedImage(file_name)
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
-        self.report += checker.report()
+        PyQgsTextRenderer.report += checker.report()
         print(checker.report())
         return result
 
