@@ -6,5 +6,5 @@
   "arguments": [ {"arg":"hue","description":"hue of the color, as an integer value from 0 to 360"},
                  {"arg":"saturation","description":"saturation percentage of the color as an integer value from 0 to 100"},
                  {"arg":"lightness","description":"lightness percentage of the color as an integer value from 0 to 100"}],
-  "examples": [ { "expression":"color_hsl(100,50,70)", "returns":"166,217,140"}]
+  "examples": [ { "expression":"color_hsl(100,50,70)", "returns":"'166,217,140'"}]
 }
