@@ -56,6 +56,7 @@ void QgsExpressionPreviewWidget::setCurrentFeature( const QgsFeature &feature )
     validFeature.setValid( true );
     mExpressionContext.setFeature( validFeature );
     mFeaturePickerWidget->setEnabled( false );
+    mFeaturePickerWidget->setTooltip( tr( "No feature was found on this layer to evaluate the expression." ) );
   }
   else
   {
