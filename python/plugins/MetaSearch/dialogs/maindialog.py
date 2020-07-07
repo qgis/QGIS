@@ -41,7 +41,7 @@ from qgis.PyQt.QtGui import QColor, QCursor
 from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform, QgsGeometry, QgsPointXY,
                        QgsProviderRegistry, QgsSettings, QgsProject)
-from qgis.gui import QgsRubberBand
+from qgis.gui import QgsRubberBand, QgsGui
 from qgis.utils import OverrideCursor
 
 with warnings.catch_warnings():
@@ -754,8 +754,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.settings.endGroup()
 
         # open provider window
-        ows_provider = QgsProviderRegistry.instance().createSelectionWidget(stype[2],
-                                                                            self)
+        ows_provider = QgsGui.sourceSelectProviderRegistry().createSelectionWidget(
+            stype[2],
+            self,
+            Qt.Widget,
+            QgsProviderRegistry.WidgetMode.Embedded)
         service_type = stype[0]
 
         # connect dialog signals to iface slots
