@@ -925,6 +925,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         context = QgsRenderContext.fromMapSettings(ms)
         context.setPainter(painter)
         context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
 
         painter.begin(image)
         painter.setRenderHint(QPainter.Antialiasing)
