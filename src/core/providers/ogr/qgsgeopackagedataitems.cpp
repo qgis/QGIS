@@ -323,7 +323,7 @@ QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent,
 QVector<QgsDataItem *> QgsGeoPackageVectorLayerItem::createChildren()
 {
   QVector<QgsDataItem *> children;
-  children.push_back( new QgsFieldsItem( this, tr( "Columns" ), uri() + QStringLiteral( "/columns/ " ), providerKey(), QString(), name() ) );
+  children.push_back( new QgsFieldsItem( this, tr( "Columns" ),  collection()->path() + QStringLiteral( "/columns/ " ), collection()->path(), providerKey(), QString(), name() ) );
   return children;
 }
 

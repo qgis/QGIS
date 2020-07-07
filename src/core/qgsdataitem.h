@@ -899,7 +899,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 
 /**
  * \ingroup core
- * A collection of fields item
+ * A collection of field items
  * \since QGIS 3.16
 */
 class CORE_EXPORT QgsFieldsItem : public QgsDataItem
@@ -912,17 +912,21 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
      *
      * The \a path argument gives the item path in the browser tree. The \a path string can take any form,
      * but QgsDataItem items pointing to different logical locations should always use a different item \a path.
-     *
-     * The \a providerKey string (added in QGIS 3.12) can be used to specify the key for the QgsDataItemProvider that created this item.
+     * The \connectionUri argument is the connection part of the layer URI that it is used internally to create
+     * a connection and retrieve fields information.
+     * The \a providerKey string can be used to specify the key for the QgsDataItemProvider that created this item.
      * The \a name argument specifies the text to show in the model for the item. A translated string should
      * be used wherever appropriate.
+     * The \a schema and \a tableName are used to retrieve the field information from the \a connectionUri.
+     *
      */
     QgsFieldsItem( QgsDataItem *parent SIP_TRANSFERTHIS,
                    const QString &name,
                    const QString &path,
+                   const QString &connectionUri,
                    const QString &providerKey,
-                   const QString schema,
-                   const QString tableName );
+                   const QString &schema,
+                   const QString &tableName );
 
     ~QgsFieldsItem() override;
 
@@ -946,6 +950,7 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
 
     QString mSchema;
     QString mTableName;
+    QString mConnectionUri;
 };
 
 

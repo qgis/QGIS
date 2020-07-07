@@ -905,7 +905,7 @@ Creates a new data item from the specified path.
 class QgsFieldsItem : QgsDataItem
 {
 %Docstring
-A collection of fields item
+A collection of field items
 
 .. versionadded:: 3.16
 %End
@@ -918,18 +918,21 @@ A collection of fields item
     QgsFieldsItem( QgsDataItem *parent /TransferThis/,
                    const QString &name,
                    const QString &path,
+                   const QString &connectionUri,
                    const QString &providerKey,
-                   const QString schema,
-                   const QString tableName );
+                   const QString &schema,
+                   const QString &tableName );
 %Docstring
 Constructor for QgsFieldsItem, with the specified ``parent`` item.
 
 The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
 but QgsDataItem items pointing to different logical locations should always use a different item ``path``.
-
-The ``providerKey`` string (added in QGIS 3.12) can be used to specify the key for the QgsDataItemProvider that created this item.
+The \connectionUri argument is the connection part of the layer URI that it is used internally to create
+a connection and retrieve fields information.
+The ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
 The ``name`` argument specifies the text to show in the model for the item. A translated string should
 be used wherever appropriate.
+The ``schema`` and ``tableName`` are used to retrieve the field information from the ``connectionUri``.
 %End
 
     ~QgsFieldsItem();

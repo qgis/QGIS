@@ -30,13 +30,20 @@
 class CORE_EXPORT QgsOgrDbLayerInfo
 {
   public:
-    QgsOgrDbLayerInfo( const QString &path, const QString &uri, const QString &name, const QString &theGeometryColumn, const QString &theGeometryType, const QgsLayerItem::LayerType &theLayerType )
+    QgsOgrDbLayerInfo( const QString &path,
+                       const QString &uri,
+                       const QString &name,
+                       const QString &theGeometryColumn,
+                       const QString &theGeometryType,
+                       const QgsLayerItem::LayerType &theLayerType,
+                       const QString &driverName )
       : mPath( path )
       , mUri( uri )
       , mName( name )
       , mGeometryColumn( theGeometryColumn )
       , mGeometryType( theGeometryType )
       , mLayerType( theLayerType )
+      , mDriverName( driverName )
     {
     }
     const QString path() const { return mPath; }
@@ -53,6 +60,7 @@ class CORE_EXPORT QgsOgrDbLayerInfo
     QString mGeometryColumn;
     QString mGeometryType;
     QgsLayerItem::LayerType mLayerType = QgsLayerItem::LayerType::NoType;
+    QString mDriverName;
 };
 
 /**
@@ -74,7 +82,7 @@ class CORE_EXPORT QgsOgrLayerItem final: public QgsLayerItem
 {
     Q_OBJECT
   public:
-    QgsOgrLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, bool isSubLayer = false );
+    QgsOgrLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &driverName = QString(), bool isSubLayer = false );
 
     QString layerName() const override;
 
@@ -87,9 +95,16 @@ class CORE_EXPORT QgsOgrLayerItem final: public QgsLayerItem
     static QgsLayerItem::LayerType layerTypeFromDb( const QString &geometryType );
     bool isSubLayer() const;
 
+    QVector<QgsDataItem *> createChildren() override;
+
   private:
+    QString mDriverName;
     bool mIsSubLayer;
+
+
 };
+
+
 
 
 class CORE_EXPORT QgsOgrDataCollectionItem final: public QgsDataCollectionItem

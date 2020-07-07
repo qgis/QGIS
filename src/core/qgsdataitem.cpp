@@ -115,12 +115,14 @@ QIcon QgsDataCollectionItem::iconDir()
 QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
                               const QString &name,
                               const QString &path,
+                              const QString &connectionUri,
                               const QString &providerKey,
-                              const QString schema,
-                              const QString tableName )
+                              const QString &schema,
+                              const QString &tableName )
   : QgsDataItem( QgsDataItem::Fields, parent, name, path, providerKey )
   , mSchema( schema )
   , mTableName( tableName )
+  , mConnectionUri( connectionUri )
 {
   mCapabilities |= ( Fertile | Collapse );
 }
@@ -138,7 +140,7 @@ QVector<QgsDataItem *> QgsFieldsItem::createChildren()
     QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey() ) };
     if ( md )
     {
-      QgsAbstractDatabaseProviderConnection *conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( parent()->path( ), {} ) ) };
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnectionUri, {} ) ) };
       if ( conn )
       {
         const QgsFields constFields { conn->fields( mSchema, mTableName ) };
