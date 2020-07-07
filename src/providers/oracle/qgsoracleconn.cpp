@@ -632,7 +632,7 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
   }
 }
 
-QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol, QgsWkbTypes::GeometryType geomType )
+QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol, QgsWkbTypes::Type geomType )
 {
   geomCol = quotedIdentifier( alias ) + "." + quotedIdentifier( geomCol );
 

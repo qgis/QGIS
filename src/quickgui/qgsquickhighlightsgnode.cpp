@@ -31,7 +31,7 @@ QgsQuickHighlightSGNode::QgsQuickHighlightSGNode( const QgsGeometry &geom,
   handleGeometryCollection( geom.constGet(), geom.type() );
 }
 
-void QgsQuickHighlightSGNode::handleGeometryCollection( const QgsAbstractGeometry *geom, QgsWkbTypes::Type type )
+void QgsQuickHighlightSGNode::handleGeometryCollection( const QgsAbstractGeometry *geom, QgsWkbTypes::GeometryType type )
 {
   const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom );
   if ( collection && !collection->isEmpty() )
@@ -48,7 +48,7 @@ void QgsQuickHighlightSGNode::handleGeometryCollection( const QgsAbstractGeometr
   }
 }
 
-void QgsQuickHighlightSGNode::handleSingleGeometry( const QgsAbstractGeometry *geom, QgsWkbTypes::Type type )
+void QgsQuickHighlightSGNode::handleSingleGeometry( const QgsAbstractGeometry *geom, QgsWkbTypes::GeometryType type )
 {
   switch ( type )
   {

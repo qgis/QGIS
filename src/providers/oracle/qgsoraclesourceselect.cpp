@@ -66,7 +66,7 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
                 << QgsWkbTypes::Type::MultiPolygon
                 << QgsWkbTypes::Type::NoGeometry )
     {
-      cb->addItem( QgsOracleTableModel::iconForWkbType( type ), QgsOracleConn::displayStringForWkbType( type ), type );
+      cb->addItem( QgsOracleTableModel::iconForWkbType( type ), QgsOracleConn::displayStringForWkbType( type ), static_cast<int>( type ) );
     }
     return cb;
   }
@@ -143,7 +143,7 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
 
       model->setData( index, QgsOracleTableModel::iconForWkbType( type ), Qt::DecorationRole );
       model->setData( index, type != QgsWkbTypes::Type::Unknown ? QgsOracleConn::displayStringForWkbType( type ) : tr( "Select…" ) );
-      model->setData( index, type, Qt::UserRole + 2 );
+      model->setData( index, static_cast<int>( type ), Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsOracleTableModel::DbtmPkCol )
     {

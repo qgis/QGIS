@@ -5585,7 +5585,7 @@ QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri )
   if ( ! dsUri.authConfigId().isEmpty() )
     uriParts[ QStringLiteral( "authcfg" ) ] = dsUri.authConfigId();
   if ( dsUri.wkbType() != QgsWkbTypes::Type::Unknown )
-    uriParts[ QStringLiteral( "type" ) ] = QVariant::fromValue( dsUri.wkbType() );
+    uriParts[ QStringLiteral( "type" ) ] = static_cast<int>( dsUri.wkbType() );
 
   if ( uri.contains( QStringLiteral( "selectatid=" ), Qt::CaseSensitivity::CaseInsensitive ) )
     uriParts[ QStringLiteral( "selectatid" ) ] = ! dsUri.selectAtIdDisabled();

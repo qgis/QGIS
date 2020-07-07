@@ -117,7 +117,7 @@ static QgsQuickFeatureLayerPair _closestFeature( const QgsQuickFeatureLayerPairs
     }
 
     double dist = geom.distance( mapPointGeom );
-    QgsWkbTypes::Type type = QgsWkbTypes::geometryType( geom.wkbType() );
+    QgsWkbTypes::GeometryType type = QgsWkbTypes::geometryType( geom.wkbType() );
     if ( type == QgsWkbTypes::GeometryType::PointGeometry )
     {
       if ( dist < distMinPoint )

@@ -71,7 +71,7 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     QStandardItem *ownerNameItem = new QStandardItem( layerProperty.ownerName );
     QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Type::Unknown ? tr( "Select…" ) : QgsOracleConn::displayStringForWkbType( wkbType ) );
     typeItem->setData( wkbType == QgsWkbTypes::Type::Unknown, Qt::UserRole + 1 );
-    typeItem->setData( wkbType, Qt::UserRole + 2 );
+    typeItem->setData( static_cast<int>( wkbType ), Qt::UserRole + 2 );
     if ( wkbType == QgsWkbTypes::Type::Unknown )
       typeItem->setFlags( typeItem->flags() | Qt::ItemIsEditable );
 

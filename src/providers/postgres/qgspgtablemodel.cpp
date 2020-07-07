@@ -334,7 +334,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
 
   if ( idx.column() == DbtmType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol )
   {
-    QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt();
+    QgsWkbTypes::Type wkbType = idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).value<QgsWkbTypes::Type>();
 
     QString tip;
     if ( wkbType == QgsWkbTypes::Type::Unknown )
@@ -400,7 +400,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   }
 
   bool isRaster = itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 3 ).toBool();
-  QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt() );
+  QgsWkbTypes::Type wkbType = itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).value<QgsWkbTypes::Type>();
   if ( wkbType == QgsWkbTypes::Type::Unknown )
   {
     if ( isRaster )
