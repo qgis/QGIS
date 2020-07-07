@@ -914,7 +914,8 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def checkRender(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.AlignLeft,
                     text=['test'],
-                    rect=QRectF(100, 100, 50, 250)):
+                    rect=QRectF(100, 100, 50, 250),
+                    vAlignment=QgsTextRenderer.AlignTop):
 
         image = QImage(400, 400, QImage.Format_RGB32)
 
@@ -950,7 +951,7 @@ class PyQgsTextRenderer(unittest.TestCase):
                                      alignment,
                                      text,
                                      context,
-                                     format)
+                                     format, vAlignment=vAlignment)
 
         painter.setFont(format.scaledFont(context))
         painter.setPen(QPen(QColor(255, 0, 255, 200)))
@@ -2125,6 +2126,42 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         assert self.checkRender(format, 'text_rect_right_aligned', text=['test'],
                                 alignment=QgsTextRenderer.AlignRight, rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextRectMultilineBottomAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        assert self.checkRender(format, 'text_rect_multiline_bottom_aligned', text=['test', 'bottom', 'aligned'],
+                                alignment=QgsTextRenderer.AlignLeft, rect=QRectF(100, 100, 200, 100), vAlignment=QgsTextRenderer.AlignBottom)
+
+    def testDrawTextRectBottomAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        assert self.checkRender(format, 'text_rect_bottom_aligned', text=['bottom aligned'],
+                                alignment=QgsTextRenderer.AlignLeft, rect=QRectF(100, 100, 200, 100), vAlignment=QgsTextRenderer.AlignBottom)
+
+    def testDrawTextRectMultilineVCenterAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        assert self.checkRender(format, 'text_rect_multiline_vcenter_aligned', text=['test', 'center', 'aligned'],
+                                alignment=QgsTextRenderer.AlignLeft, rect=QRectF(100, 100, 200, 100), vAlignment=QgsTextRenderer.AlignVCenter)
+
+    def testDrawTextRectVCenterAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        assert self.checkRender(format, 'text_rect_vcenter_aligned', text=['center aligned'],
+                                alignment=QgsTextRenderer.AlignLeft, rect=QRectF(100, 100, 200, 100), vAlignment=QgsTextRenderer.AlignVCenter)
 
     def testDrawTextRectMultilineCenterAlign(self):
         format = QgsTextFormat()

@@ -63,6 +63,17 @@ class CORE_EXPORT QgsTextRenderer
     };
 
     /**
+     * Vertical alignment
+     * \since QGIS 3.16
+     */
+    enum VAlignment
+    {
+      AlignTop = 0, //!< Align to top
+      AlignVCenter, //!< Center align
+      AlignBottom, //!< Align to bottom
+    };
+
+    /**
      * Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
      * \param size size to convert
      * \param c rendercontext
@@ -86,10 +97,11 @@ class CORE_EXPORT QgsTextRenderer
      * formats like SVG to maintain text as text objects, but at the cost of degraded
      * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
      * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
+     * \param vAlignment vertical alignment (since QGIS 3.16)
      */
     static void drawText( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
-                          bool drawAsOutlines = true );
+                          bool drawAsOutlines = true, VAlignment vAlignment = AlignTop );
 
     /**
      * Draws text at a point origin using the specified settings.
@@ -239,6 +251,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param rect destination rectangle for text
      * \param rotation text rotation
      * \param alignment horizontal alignment
+     * \param vAlignment vertical alignment
      * \param document text document to draw
      * \param context render context
      * \param format text format
@@ -248,7 +261,7 @@ class CORE_EXPORT QgsTextRenderer
      * \note Not available in Python bindings
      * \since QGIS 3.14
      */
-    static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QgsTextDocument &document,
+    static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, VAlignment vAlignment, const QgsTextDocument &document,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           TextPart part );
 
@@ -299,6 +312,7 @@ class CORE_EXPORT QgsTextRenderer
                                   const QgsTextDocument &document,
                                   const QFontMetricsF *fontMetrics,
                                   HAlignment alignment,
+                                  VAlignment vAlignment,
                                   DrawMode mode = Rect );
 
     friend class QgsVectorLayerLabelProvider;

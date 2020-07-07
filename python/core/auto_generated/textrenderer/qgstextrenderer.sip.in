@@ -46,6 +46,13 @@ and background shapes.
       AlignRight,
     };
 
+    enum VAlignment
+    {
+      AlignTop,
+      AlignVCenter,
+      AlignBottom,
+    };
+
     static int sizeToPixel( double size, const QgsRenderContext &c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 %Docstring
 Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
@@ -61,7 +68,7 @@ Calculates pixel size (considering output size should be in pixel or map units, 
 
     static void drawText( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
-                          bool drawAsOutlines = true );
+                          bool drawAsOutlines = true, VAlignment vAlignment = AlignTop );
 %Docstring
 Draws text within a rectangle using the specified settings.
 
@@ -75,6 +82,7 @@ Draws text within a rectangle using the specified settings.
                        formats like SVG to maintain text as text objects, but at the cost of degraded
                        rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
                        as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
+:param vAlignment: vertical alignment (since QGIS 3.16)
 %End
 
     static void drawText( QPointF point, double rotation, HAlignment alignment, const QStringList &textLines,
