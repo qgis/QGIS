@@ -66,7 +66,7 @@ class CORE_EXPORT QgsWkbTypes
      * if they should be available for a given geometry type or act in
      * a different mode.
      */
-    enum class Type SIP_MONKEYPATCH_SCOPEENUM : long
+    enum class Type SIP_MONKEYPATCH_SCOPEENUM : unsigned int
     {
       Unknown = 0,
       Point = 1,
