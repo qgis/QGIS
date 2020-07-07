@@ -1191,7 +1191,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
           break;
 
         case Rect:
-          labelWidest = component.size.width() / fontScale;
+          labelWidest = component.size.width();
           break;
       }
 
