@@ -5696,7 +5696,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     request.setFilterExpression( filterString ); //filter cached features
   }
 
-  if ( targetLayer->crs() != sourceLayer->crs() )
+  if ( sourceLayer && targetLayer->crs() != sourceLayer->crs() )
   {
     QgsCoordinateTransformContext TransformContext = context->variable( QStringLiteral( "_project_transform_context" ) ).value<QgsCoordinateTransformContext>();
     request.setDestinationCrs( sourceLayer->crs(), TransformContext ); //if crs are not the same, cached target will be reprojected to source crs
@@ -5763,7 +5763,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   const QgsGeometry geometry = feat.geometry();
 
   QVariant currentFeatId;
-  if ( sourceLayer->id() == targetLayerValue )
+  if ( sourceLayer && sourceLayer->id() == targetLayerValue )
   {
     currentFeatId = feat.id(); //if sourceLayer and targetLayer are the same, current feature have to be excluded from spatial check
   }
