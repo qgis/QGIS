@@ -77,6 +77,8 @@ QFont QgsTextFormat::scaledFont( const QgsRenderContext &context, double scaleFa
   {
     double fontPixelSize = context.convertToPainterUnits( d->fontSize, d->fontSizeUnits, d->fontSizeMapUnitScale );
     font.setPixelSize( std::round( scaleFactor * fontPixelSize + 0.5 ) );
+    font.setLetterSpacing( QFont::AbsoluteSpacing, d->textFont.letterSpacing() * scaleFactor );
+    font.setWordSpacing( d->textFont.wordSpacing() * scaleFactor );
   }
   return font;
 }
