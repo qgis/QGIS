@@ -426,26 +426,31 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
 
   // scale for any print output or image saving @ specific dpi
   p->scale( component.dpiRatio, component.dpiRatio );
-  if ( scaleFactor != 1.0 )
-    p->scale( 1 / scaleFactor, 1 / scaleFactor );
   if ( mask.paintEffect() && mask.paintEffect()->enabled() )
   {
     QgsPainterSwapper swapper( context, p );
     {
       QgsEffectPainter effectPainter( context, mask.paintEffect() );
+      if ( scaleFactor != 1.0 )
+        context.painter()->scale( 1 / scaleFactor, 1 / scaleFactor );
       context.painter()->setPen( pen );
       context.painter()->setBrush( brush );
       context.painter()->drawPath( path );
+      if ( scaleFactor != 1.0 )
+        context.painter()->scale( scaleFactor, scaleFactor );
     }
   }
   else
   {
+    if ( scaleFactor != 1.0 )
+      p->scale( 1 / scaleFactor, 1 / scaleFactor );
     p->setPen( pen );
     p->setBrush( brush );
     p->drawPath( path );
+    if ( scaleFactor != 1.0 )
+      p->scale( scaleFactor, scaleFactor );
+
   }
-  if ( scaleFactor != 1.0 )
-    p->scale( scaleFactor, scaleFactor );
 }
 
 double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, QFontMetricsF * )
