@@ -256,7 +256,8 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
 
   const double penSize = context.convertToPainterUnits( buffer.size(), buffer.sizeUnit(), buffer.sizeMapUnitScale() );
 
-  const QFont font = format.scaledFont( context, FONT_WORKAROUND_SCALE );
+  const double scaleFactor = context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ? FONT_WORKAROUND_SCALE : 1.0;
+  const QFont font = format.scaledFont( context, scaleFactor );
 
   QPainterPath path;
   path.setFillRule( Qt::WindingFill );
@@ -269,11 +270,11 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
       for ( const QgsTextFragment &fragment : component.block )
       {
         QFont fragmentFont = font;
-        fragment.characterFormat().updateFontForFormat( fragmentFont, FONT_WORKAROUND_SCALE );
+        fragment.characterFormat().updateFontForFormat( fragmentFont, scaleFactor );
 
         path.addText( xOffset, 0, fragmentFont, fragment.text() );
 
-        xOffset += fragment.horizontalAdvance( fragmentFont, true, FONT_WORKAROUND_SCALE );
+        xOffset += fragment.horizontalAdvance( fragmentFont, true, scaleFactor );
       }
       advance = xOffset;
       break;
@@ -283,11 +284,11 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
     case QgsTextFormat::RotationBasedOrientation:
     {
       double letterSpacing = font.letterSpacing();
-      double partYOffset = component.offset.y() * FONT_WORKAROUND_SCALE;
+      double partYOffset = component.offset.y() * scaleFactor;
       for ( const QgsTextFragment &fragment : component.block )
       {
         QFont fragmentFont = font;
-        fragment.characterFormat().updateFontForFormat( fragmentFont, FONT_WORKAROUND_SCALE );
+        fragment.characterFormat().updateFontForFormat( fragmentFont, scaleFactor );
 
         QFontMetricsF fragmentMetrics( fragmentFont );
         const double labelWidth = fragmentMetrics.maxWidth();
@@ -300,7 +301,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
           partYOffset += fragmentMetrics.ascent() + letterSpacing;
         }
       }
-      advance = partYOffset - component.offset.y() * FONT_WORKAROUND_SCALE;
+      advance = partYOffset - component.offset.y() * scaleFactor;
       break;
     }
   }
@@ -308,7 +309,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
   QColor bufferColor = buffer.color();
   bufferColor.setAlphaF( buffer.opacity() );
   QPen pen( bufferColor );
-  pen.setWidthF( penSize * FONT_WORKAROUND_SCALE );
+  pen.setWidthF( penSize * scaleFactor );
   pen.setJoinStyle( buffer.joinStyle() );
   QColor tmpColor( bufferColor );
   // honor pref for whether to fill buffer interior
@@ -328,16 +329,19 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
     buffer.paintEffect()->begin( context );
     context.painter()->setPen( pen );
     context.painter()->setBrush( tmpColor );
-    context.painter()->scale( 1 / FONT_WORKAROUND_SCALE, 1 / FONT_WORKAROUND_SCALE );
+    if ( scaleFactor != 1.0 )
+      context.painter()->scale( 1 / scaleFactor, 1 / scaleFactor );
     context.painter()->drawPath( path );
-    context.painter()->scale( FONT_WORKAROUND_SCALE, FONT_WORKAROUND_SCALE );
+    if ( scaleFactor != 1.0 )
+      context.painter()->scale( scaleFactor, scaleFactor );
     buffer.paintEffect()->end( context );
 
     context.setPainter( p );
   }
   else
   {
-    buffp.scale( 1 / FONT_WORKAROUND_SCALE, 1 / FONT_WORKAROUND_SCALE );
+    if ( scaleFactor != 1.0 )
+      buffp.scale( 1 / scaleFactor, 1 / scaleFactor );
     buffp.setPen( pen );
     buffp.setBrush( tmpColor );
     buffp.drawPath( path );
@@ -371,7 +375,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
   _fixQPictureDPI( p );
   p->drawPicture( 0, 0, buffPict );
 
-  return advance / FONT_WORKAROUND_SCALE;
+  return advance / scaleFactor;
 }
 
 void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer::Component &component, const QgsTextFormat &format )
@@ -390,15 +394,17 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
   QPainterPath path;
   path.setFillRule( Qt::WindingFill );
 
+  const double scaleFactor = context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ? FONT_WORKAROUND_SCALE : 1.0;
+
   // TODO: vertical text mode was ignored when masking feature was added.
   // Hopefully Oslandia come back and fix this? Hint hint...
 
-  const QFont font = format.scaledFont( context, FONT_WORKAROUND_SCALE );
+  const QFont font = format.scaledFont( context, scaleFactor );
   double xOffset = 0;
   for ( const QgsTextFragment &fragment : component.block )
   {
     QFont fragmentFont = font;
-    fragment.characterFormat().updateFontForFormat( fragmentFont, FONT_WORKAROUND_SCALE );
+    fragment.characterFormat().updateFontForFormat( fragmentFont, scaleFactor );
 
     path.addText( xOffset, 0, fragmentFont, fragment.text() );
 
@@ -412,7 +418,7 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
   QBrush brush;
   brush.setColor( bufferColor );
   pen.setColor( bufferColor );
-  pen.setWidthF( penSize * FONT_WORKAROUND_SCALE );
+  pen.setWidthF( penSize * scaleFactor );
   pen.setJoinStyle( mask.joinStyle() );
 
   QgsScopedQPainterState painterState( p );
@@ -420,7 +426,8 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
 
   // scale for any print output or image saving @ specific dpi
   p->scale( component.dpiRatio, component.dpiRatio );
-  p->scale( 1 / FONT_WORKAROUND_SCALE, 1 / FONT_WORKAROUND_SCALE );
+  if ( scaleFactor != 1.0 )
+    p->scale( 1 / scaleFactor, 1 / scaleFactor );
   if ( mask.paintEffect() && mask.paintEffect()->enabled() )
   {
     QgsPainterSwapper swapper( context, p );
@@ -437,7 +444,8 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
     p->setBrush( brush );
     p->drawPath( path );
   }
-  p->scale( FONT_WORKAROUND_SCALE, FONT_WORKAROUND_SCALE );
+  if ( scaleFactor != 1.0 )
+    p->scale( scaleFactor, scaleFactor );
 }
 
 double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, QFontMetricsF * )
@@ -455,7 +463,8 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
 double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document )
 {
   //calculate max width of text lines
-  const QFont baseFont = format.scaledFont( context, FONT_WORKAROUND_SCALE );
+  const double scaleFactor = context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ? FONT_WORKAROUND_SCALE : 1.0;
+  const QFont baseFont = format.scaledFont( context, scaleFactor );
 
   double width = 0;
   switch ( format.orientation() )
@@ -468,7 +477,7 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
         double blockWidth = 0;
         for ( const QgsTextFragment &fragment : block )
         {
-          blockWidth += fragment.horizontalAdvance( baseFont, FONT_WORKAROUND_SCALE );
+          blockWidth += fragment.horizontalAdvance( baseFont, scaleFactor );
         }
         maxLineWidth = std::max( maxLineWidth, blockWidth );
       }
@@ -486,7 +495,7 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
         for ( const QgsTextFragment &fragment : block )
         {
           QFont fragmentFont = baseFont;
-          fragment.characterFormat().updateFontForFormat( fragmentFont, FONT_WORKAROUND_SCALE );
+          fragment.characterFormat().updateFontForFormat( fragmentFont, scaleFactor );
           blockWidth = std::max( QFontMetricsF( fragmentFont ).maxWidth(), blockWidth );
         }
 
@@ -504,7 +513,7 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
     }
   }
 
-  return width / FONT_WORKAROUND_SCALE;
+  return width / scaleFactor;
 }
 
 double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode, QFontMetricsF * )
@@ -522,8 +531,9 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
 double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document, DrawMode mode )
 {
   //calculate max height of text lines
+  const double scaleFactor = context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ? FONT_WORKAROUND_SCALE : 1.0;
 
-  const QFont baseFont = format.scaledFont( context, FONT_WORKAROUND_SCALE );
+  const QFont baseFont = format.scaledFont( context, scaleFactor );
 
   switch ( format.orientation() )
   {
@@ -538,7 +548,7 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
         for ( const QgsTextFragment &fragment : block )
         {
           QFont fragmentFont = baseFont;
-          fragment.characterFormat().updateFontForFormat( fragmentFont, FONT_WORKAROUND_SCALE );
+          fragment.characterFormat().updateFontForFormat( fragmentFont, scaleFactor );
           const QFontMetricsF fm( fragmentFont );
 
           const double fragmentHeight = fm.ascent() + fm.descent(); // ignore +1 for baseline
@@ -566,7 +576,7 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
         blockIndex++;
       }
 
-      return totalHeight / FONT_WORKAROUND_SCALE;
+      return totalHeight / scaleFactor;
     }
 
     case QgsTextFormat::VerticalOrientation:
@@ -579,7 +589,7 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
         for ( const QgsTextFragment &fragment : block )
         {
           QFont fragmentFont = baseFont;
-          fragment.characterFormat().updateFontForFormat( fragmentFont, FONT_WORKAROUND_SCALE );
+          fragment.characterFormat().updateFontForFormat( fragmentFont, scaleFactor );
           const QFontMetricsF fm( fragmentFont );
 
           const double labelHeight = fm.ascent();
@@ -592,7 +602,7 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
         maxBlockHeight = std::max( maxBlockHeight, blockHeight );
       }
 
-      return maxBlockHeight / FONT_WORKAROUND_SCALE;
+      return maxBlockHeight / scaleFactor;
     }
 
     case QgsTextFormat::RotationBasedOrientation:
@@ -634,10 +644,12 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
     component.rotationOffset = background.rotation();
   }
 
+  const double scaleFactor = context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ? FONT_WORKAROUND_SCALE : 1;
+
   if ( mode != Label )
   {
     // need to calculate size of text
-    QFontMetricsF fm( format.scaledFont( context ) );
+    QFontMetricsF fm( format.scaledFont( context, scaleFactor ) );
     double width = textWidth( context, format, document );
     double height = textHeight( context, format, document, mode );
 
@@ -665,7 +677,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
 
       case Point:
       {
-        double originAdjust = fm.ascent() / 2.0 - fm.leading() / 2.0;
+        double originAdjust = fm.ascent() / scaleFactor / 2.0 - fm.leading() / scaleFactor / 2.0;
         switch ( component.hAlign )
         {
           case AlignLeft:
@@ -1140,8 +1152,8 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
   std::unique_ptr< QFontMetricsF > tmpMetrics;
   if ( !fontMetrics )
   {
-    fontScale = FONT_WORKAROUND_SCALE;
-    const QFont f = format.scaledFont( context, FONT_WORKAROUND_SCALE );
+    fontScale = context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ? FONT_WORKAROUND_SCALE : 1.0;
+    const QFont f = format.scaledFont( context, fontScale );
     tmpMetrics = qgis::make_unique< QFontMetricsF >( f );
     fontMetrics = tmpMetrics.get();
   }
@@ -1313,7 +1325,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
             path.setFillRule( Qt::WindingFill );
 
             QFont fragmentFont = font;
-            fragment.characterFormat().updateFontForFormat( fragmentFont, FONT_WORKAROUND_SCALE );
+            fragment.characterFormat().updateFontForFormat( fragmentFont, fontScale );
             QFontMetricsF fragmentMetrics = QFontMetricsF( fragmentFont );
 
             path.addText( xOffset, 0, fragmentFont, fragment.text() );
