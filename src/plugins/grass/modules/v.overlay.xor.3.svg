@@ -1,16 +1,1 @@
-<?xml version="1.0" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20001102//EN" "http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" width="500" x="0" y="0" height="500" id="/putrela0/mpasol/blazek/inst/qgiscvs07/plugins/grass/modules/v.overlay.xor.3" >
- <rect width="500" x="0" y="0" height="500" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);" />
- <g style="stroke:rgb(0,0,0);stroke-width:0.9;fill:none;" >
-  <clipPath id="clip1" >
-   <rect width="500" x="0" y="0" height="500" />
-  </clipPath>
-  <g style="clip-path:url(#clip1)" >
-   <polygon points="306 234 313 208 313 192 298 166 283 151 261 132 233 114 228 110 264 96 309 85 364 87 392 93 424 104 448 126 462 168 466 186 468 222 468 267 461 309 442 349 409 378 361 400 281 403 234 386 243 385 282 374 298 339 301 311 301 277 306 234" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
-   <polygon points="306 234 313 208 313 192 298 166 283 151 261 132 233 114 228 110 264 96 309 85 364 87 392 93 424 104 448 126 462 168 466 186 468 222 468 267 461 309 442 349 409 378 361 400 281 403 234 386 243 385 282 374 298 339 301 311 301 277 306 234" style="stroke:rgb(0,0,255);stroke-width:15;fill:none;" />
-   <polygon points="234 386 185 386 128 371 91 350 73 319 48 274 41 234 42 194 50 156 61 131 83 109 112 98 154 86 179 84 199 89 228 110 224 112 190 136 179 172 178 222 187 261 201 296 208 330 212 352 231 384 234 386" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
-   <polygon points="234 386 185 386 128 371 91 350 73 319 48 274 41 234 42 194 50 156 61 131 83 109 112 98 154 86 179 84 199 89 228 110 224 112 190 136 179 172 178 222 187 261 201 296 208 330 212 352 231 384 234 386" style="stroke:rgb(0,0,255);stroke-width:15;fill:none;" />
-  </g>
- </g>
-</svg>
+<svg height="500" width="500" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><clipPath id="a"><path d="m0 0h500v500h-500z"/></clipPath><path d="m0 0h500v500h-500z" fill="#fff"/><g clip-path="url(#a)" fill="none" stroke="#000" stroke-width=".9"><path d="m306 234 7-26v-16l-15-26-15-15-22-19-28-18-5-4 36-14 45-11 55 2 28 6 32 11 24 22 14 42 4 18 2 36v45l-7 42-19 40-33 29-48 22-80 3-47-17 9-1 39-11 16-35 3-28v-34z" fill="#aff" stroke="none"/><path d="m306 234 7-26v-16l-15-26-15-15-22-19-28-18-5-4 36-14 45-11 55 2 28 6 32 11 24 22 14 42 4 18 2 36v45l-7 42-19 40-33 29-48 22-80 3-47-17 9-1 39-11 16-35 3-28v-34z" fill="none" stroke="#00f" stroke-width="15"/><path d="m234 386h-49l-57-15-37-21-18-31-25-45-7-40 1-40 8-38 11-25 22-22 29-11 42-12 25-2 20 5 29 21-4 2-34 24-11 36-1 50 9 39 14 35 7 34 4 22 19 32z" fill="#aff" stroke="none"/><path d="m234 386h-49l-57-15-37-21-18-31-25-45-7-40 1-40 8-38 11-25 22-22 29-11 42-12 25-2 20 5 29 21-4 2-34 24-11 36-1 50 9 39 14 35 7 34 4 22 19 32z" fill="none" stroke="#00f" stroke-width="15"/></g></svg>

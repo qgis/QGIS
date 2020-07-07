@@ -1,4 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800">
-<rect width="1200" height="800" fill="#005BBB"/>
-<rect width="1200" height="400" y="400" fill="#FFD500"/>
-</svg>
+<svg height="800" width="1200" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h1200v800h-1200z" fill="#005bbb"/><path d="m0 400h1200v400h-1200z" fill="#ffd500"/></svg>

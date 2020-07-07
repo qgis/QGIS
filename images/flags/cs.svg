@@ -1,6 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="900" height="600">
-	<rect width="900" height="600" fill="#d7141a"/>
-	<rect width="900" height="300" fill="#fff"/>
-	<path d="M 450,300 0,0 V 600 z" fill="#11457e"/>
-</svg>
+<svg height="600" width="900" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h900v600h-900z" fill="#d7141a"/><path d="m0 0h900v300h-900z" fill="#fff"/><path d="m450 300-450-300v600z" fill="#11457e"/></svg>
