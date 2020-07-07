@@ -101,9 +101,9 @@ typedef QSet<int> QgsAttributeIds;
  *
  *  Sample usage of the QgsVectorLayer class:
  *
- * \code
- *     QString uri = "point?crs=epsg:4326&field=id:integer";
- *     QgsVectorLayer *scratchLayer = new QgsVectorLayer(uri, "Scratch point layer",  "memory");
+ * \code{.py}
+ *     uri = "point?crs=epsg:4326&field=id:integer"
+ *     scratchLayer = QgsVectorLayer(uri, "Scratch point layer",  "memory")
  * \endcode
  *
  * The main data providers supported by QGIS are listed below.
