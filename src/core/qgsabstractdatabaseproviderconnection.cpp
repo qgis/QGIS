@@ -52,6 +52,11 @@ void QgsAbstractDatabaseProviderConnection::checkCapability( QgsAbstractDatabase
     throw QgsProviderConnectionException( QObject::tr( "Operation '%1' is not supported for this connection" ).arg( capName ) );
   }
 }
+
+QString QgsAbstractDatabaseProviderConnection::providerKey() const
+{
+  return mProviderKey;
+}
 ///@endcond
 
 void QgsAbstractDatabaseProviderConnection::createVectorTable( const QString &schema,
@@ -215,7 +220,9 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType> 
 
 QgsFields QgsAbstractDatabaseProviderConnection::fields( const QString &schema, const QString &tableName ) const
 {
-  QgsVectorLayer vl { tableUri( schema, tableName ), QStringLiteral( "temp_layer" ), mProviderKey };
+  QgsVectorLayer::LayerOptions options { true, true };
+  options.skipCrsValidation = true;
+  QgsVectorLayer vl { tableUri( schema, tableName ), QStringLiteral( "temp_layer" ), mProviderKey, options };
   if ( vl.isValid() )
   {
     return vl.fields();

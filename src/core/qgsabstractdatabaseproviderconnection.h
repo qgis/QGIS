@@ -501,10 +501,16 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \note the default implementation creates a temporary vector layer, providers may
      * choose to override this method for a greater efficiency.
-     * \since QGIS 3.18
+     * \since QGIS 3.16
      * \throws QgsProviderConnectionException
      */
     virtual QgsFields fields( const QString &schema, const QString &table ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Returns the provider key
+     * \since QGIS 3.16
+     */
+    QString providerKey() const;
 
   protected:
 
