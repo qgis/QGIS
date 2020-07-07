@@ -1146,10 +1146,10 @@ Emitted when the map canvas temporal range changes.
 %End
 
 
-    void contextMenuPopulated( QMenu *menu, QgsMapMouseEvent *event );
+    void contextMenuAboutToShow( QMenu *menu, QgsMapMouseEvent *event );
 %Docstring
-Emitted after the map canvas context menu has been populated.
-Can be used to extend the map canvas context menu before it will be shown.
+Emitted before the map canvas context menu will be shown.
+Can be used to extend the context menu.
 
 .. versionadded:: 3.16
 %End
