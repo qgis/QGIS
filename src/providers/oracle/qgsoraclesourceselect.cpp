@@ -66,7 +66,7 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
                 << QgsWkbTypes::MultiPolygon
                 << QgsWkbTypes::NoGeometry )
     {
-      cb->addItem( QgsOracleTableModel::iconForWkbType( type ), QgsOracleConn::displayStringForWkbType( type ), type );
+      cb->addItem( QgsOracleTableModel::iconForWkbType( type ), QgsOracleConn::displayStringForWkbType( type ), static_cast<int>( type ) );
     }
     return cb;
   }
