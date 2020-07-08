@@ -188,6 +188,19 @@ Returns the height of a text based on a given format.
 :param fontMetrics: font metrics
 %End
 
+    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, QChar character, bool includeEffects = false );
+%Docstring
+Returns the height of a character when rendered with the specified text ``format``.
+
+:param context: render context
+:param format: text format
+:param character: character to determine height of. If ``character`` is invalid, then the maximum character height will be returned.
+:param includeEffects: if ``True``, then the size of formatting effects such as buffers and shadows will be considered in the
+                       returned height. If ``False``, then the returned size considers the character only.
+
+.. versionadded:: 3.16
+%End
+
     static const double FONT_WORKAROUND_SCALE;
 
 };

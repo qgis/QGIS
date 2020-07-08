@@ -200,6 +200,19 @@ class CORE_EXPORT QgsTextRenderer
                               QFontMetricsF *fontMetrics = nullptr );
 
     /**
+     * Returns the height of a character when rendered with the specified text \a format.
+     *
+     * \param context render context
+     * \param format text format
+     * \param character character to determine height of. If \a character is invalid, then the maximum character height will be returned.
+     * \param includeEffects if TRUE, then the size of formatting effects such as buffers and shadows will be considered in the
+     * returned height. If FALSE, then the returned size considers the character only.
+     *
+     * \since QGIS 3.16
+     */
+    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, QChar character, bool includeEffects = false );
+
+    /**
      * Scale factor for upscaling font sizes and downscaling destination painter devices.
      *
      * Using this scale factor and manually adjusting any font metric based calculations results in more stable
