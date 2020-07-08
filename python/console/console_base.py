@@ -19,8 +19,11 @@ email                : Richard Duivenvoorde (at) duif (dot) net
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QColor, QFontDatabase
+from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
 from qgis.core import QgsApplication
-from qgis.PyQt.Qsci import QsciScintilla
+import os
 
 
 class QgsQsciScintillaBase(QsciScintilla):
@@ -70,6 +73,73 @@ class QgsQsciScintillaBase(QsciScintilla):
         self.iconClear = QgsApplication.getThemeIcon("console/iconClearConsole.svg")
         self.iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.svg")
         self.iconShowEditor = QgsApplication.getThemeIcon("console/iconShowEditorConsole.svg")
+
+    def setLexers(self):
+        self.lexer = QsciLexerPython()
+        self.lexer.setIndentationWarning(QsciLexerPython.Inconsistent)
+        self.lexer.setFoldComments(True)
+        self.lexer.setFoldQuotes(True)
+
+        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
+
+        # output and console
+        loadFont = self.settings.value("pythonConsole/fontfamilytext")
+        if loadFont:
+            font.setFamily(loadFont)
+        fontSize = self.settings.value("pythonConsole/fontsize", type=int)
+        if fontSize:
+            font.setPointSize(fontSize)
+
+        # TODO: editor has it's own font and size...
+#        loadFont = self.settings.value("pythonConsole/fontfamilytextEditor")
+#        if loadFont:
+#            font.setFamily(loadFont)
+#        fontSize = self.settings.value("pythonConsole/fontsizeEditor", type=int)
+#        if fontSize:
+#            font.setPointSize(fontSize)
+
+        self.lexer.setDefaultFont(font)
+        self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(self.DEFAULT_COLOR))))
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColor", QColor(self.COMMENT_COLOR))), 1)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/numberFontColor", QColor(self.NUMBER_COLOR))), 2)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColor", QColor(self.KEYWORD_COLOR))), 5)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColor", QColor(self.CLASS_COLOR))), 8)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColor", QColor(self.METHOD_COLOR))), 9)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColor", QColor(self.DECORATION_COLOR))), 15)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentBlockFontColor", QColor(self.COMMENT_BLOCK_COLOR))), 12)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/singleQuoteFontColor", QColor(self.SINGLE_QUOTE_COLOR))), 4)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/doubleQuoteFontColor", QColor(self.DOUBLE_QUOTE_COLOR))), 3)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(self.TRIPLE_SINGLE_QUOTE_COLOR))), 6)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(self.TRIPLE_DOUBLE_QUOTE_COLOR))), 7)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(self.DEFAULT_COLOR))), 13)
+        self.lexer.setColor(QColor(Qt.red), 14)
+        self.lexer.setFont(font, 1)
+        self.lexer.setFont(font, 2)
+        self.lexer.setFont(font, 3)
+        self.lexer.setFont(font, 4)
+        self.lexer.setFont(font, QsciLexerPython.UnclosedString)
+
+        # ? only for editor and console ?
+        for style in range(0, 33):
+            paperColor = QColor(self.settings.value("pythonConsole/paperBackgroundColor", QColor(self.BACKGROUND_COLOR)))
+            self.lexer.setPaper(paperColor, style)
+
+            self.api = QsciAPIs(self.lexer)
+            checkBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
+            checkBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
+            if checkBoxAPI:
+                pap = os.path.join(QgsApplication.pkgDataPath(), "python", "qsci_apis", "pyqgis.pap")
+                self.api.loadPrepared(pap)
+            elif checkBoxPreparedAPI:
+                self.api.loadPrepared(self.settings.value("pythonConsole/preparedAPIFile"))
+            else:
+                apiPath = self.settings.value("pythonConsole/userAPI", [])
+                for i in range(0, len(apiPath)):
+                    self.api.load(apiPath[i])
+                self.api.prepare()
+                self.lexer.setAPIs(self.api)
+
+        self.setLexer(self.lexer)
 
 
 if __name__ == "__main__":

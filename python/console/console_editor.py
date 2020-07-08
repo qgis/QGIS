@@ -21,7 +21,7 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 from qgis.PyQt.QtCore import Qt, QObject, QEvent, QCoreApplication, QFileInfo, QSize, QDir
 from qgis.PyQt.QtGui import QFont, QFontMetrics, QColor, QKeySequence, QCursor, QFontDatabase
 from qgis.PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
-from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs, QsciStyle
+from qgis.PyQt.Qsci import QsciScintilla, QsciAPIs, QsciStyle
 from qgis.core import Qgis, QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar
 from qgis.utils import OverrideCursor
@@ -222,63 +222,6 @@ class Editor(QgsQsciScintillaBase):
                 self.autoCompleteFromAPIs()
             elif radioButtonSource == 'fromDocAPI':
                 self.autoCompleteFromAll()
-
-    def setLexers(self):
-        from qgis.core import QgsApplication
-
-        self.lexer = QsciLexerPython()
-        self.lexer.setIndentationWarning(QsciLexerPython.Inconsistent)
-        self.lexer.setFoldComments(True)
-        self.lexer.setFoldQuotes(True)
-
-        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
-
-        loadFont = self.settings.value("pythonConsole/fontfamilytextEditor")
-        if loadFont:
-            font.setFamily(loadFont)
-        fontSize = self.settings.value("pythonConsole/fontsizeEditor", type=int)
-        if fontSize:
-            font.setPointSize(fontSize)
-
-        self.lexer.setDefaultFont(font)
-        self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(self.DEFAULT_COLOR))))
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColor", QColor(self.COMMENT_COLOR))), 1)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/numberFontColor", QColor(self.NUMBER_COLOR))), 2)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColor", QColor(self.KEYWORD_COLOR))), 5)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColor", QColor(self.CLASS_COLOR))), 8)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColor", QColor(self.METHOD_COLOR))), 9)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColor", QColor(self.DECORATION_COLOR))), 15)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentBlockFontColor", QColor(self.COMMENT_BLOCK_COLOR))), 12)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/singleQuoteFontColor", QColor(self.SINGLE_QUOTE_COLOR))), 4)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/doubleQuoteFontColor", QColor(self.DOUBLE_QUOTE_COLOR))), 3)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(self.TRIPLE_SINGLE_QUOTE_COLOR))), 6)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(self.TRIPLE_DOUBLE_QUOTE_COLOR))), 7)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(self.DEFAULT_COLOR))), 13)
-        self.lexer.setFont(font, 1)
-        self.lexer.setFont(font, 3)
-        self.lexer.setFont(font, 4)
-        self.lexer.setFont(font, QsciLexerPython.UnclosedString)
-
-        for style in range(0, 33):
-            paperColor = QColor(self.settings.value("pythonConsole/paperBackgroundColor", QColor(self.BACKGROUND_COLOR)))
-            self.lexer.setPaper(paperColor, style)
-
-        self.api = QsciAPIs(self.lexer)
-        checkBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
-        checkBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
-        if checkBoxAPI:
-            pap = os.path.join(QgsApplication.pkgDataPath(), "python", "qsci_apis", "pyqgis.pap")
-            self.api.loadPrepared(pap)
-        elif checkBoxPreparedAPI:
-            self.api.loadPrepared(self.settings.value("pythonConsole/preparedAPIFile"))
-        else:
-            apiPath = self.settings.value("pythonConsole/userAPI", [])
-            for i in range(0, len(apiPath)):
-                self.api.load(apiPath[i])
-            self.api.prepare()
-            self.lexer.setAPIs(self.api)
-
-        self.setLexer(self.lexer)
 
     def move_cursor_to_end(self):
         """Move cursor to end of text"""
