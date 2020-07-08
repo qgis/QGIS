@@ -26,7 +26,17 @@ from qgis.core import (QgsVectorLayer,
                        QgsProject,
                        QgsWkbTypes,
                        QgsRectangle,
+<<<<<<< HEAD
                        QgsCoordinateTransform
+=======
+                       QgsCoordinateTransform,
+                       QgsMultiPolygon,
+                       QgsTriangle,
+                       QgsPoint,
+                       QgsFields,
+                       QgsCoordinateTransformContext,
+                       QgsFeatureSink
+>>>>>>> 1878fc7bfd... Merge pull request #37667 from elpaso/bugfix-gh37386-filewriter-python-leak
                        )
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QByteArray
 import os
@@ -1168,6 +1178,122 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
         self.assertEqual(f.geometry().asWkt(), 'PointZ (2 49 0)')
 
+<<<<<<< HEAD
+=======
+    def testWriteGpkgWithFID(self):
+        """Check writing a memory layer with a FID column takes it as FID"""
+
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=FID:integer(0)&field=name:string(20)',
+            'test',
+            'memory')
+
+        self.assertTrue(vl.isValid(), 'Provider not initialized')
+
+        ft = QgsFeature(vl.fields())
+        ft.setAttributes([123, 'text1'])
+        ft.setGeometry(QgsGeometry.fromWkt('Point(2 49)'))
+        myResult, myFeatures = vl.dataProvider().addFeatures([ft])
+        self.assertTrue(myResult)
+        self.assertTrue(myFeatures)
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'testWriteGpkgWithFID.gpkg')
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
+            vl,
+            dest_file_name,
+            'utf-8',
+            vl.crs(),
+            'GPKG')
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
+
+        # Open result and check
+        created_layer = QgsVectorLayer(dest_file_name, 'test', 'ogr')
+        self.assertTrue(created_layer.isValid())
+        f = next(created_layer.getFeatures(QgsFeatureRequest()))
+        self.assertEqual(f.geometry().asWkt(), 'Point (2 49)')
+        self.assertEqual(f.attributes(), [123, 'text1'])
+        self.assertEqual(f.id(), 123)
+
+    def testWriteTriangle(self):
+        """Check we can write geometries with triangle types."""
+        layer = QgsVectorLayer(
+            ('MultiPolygonZ?crs=epsg:4326&field=name:string(20)'),
+            'test',
+            'memory')
+
+        ft = QgsFeature()
+        geom = QgsMultiPolygon()
+        geom.addGeometry(QgsTriangle(QgsPoint(1, 2, 3), QgsPoint(2, 2, 4), QgsPoint(2, 3, 4)))
+        ft.setGeometry(geom)
+        ft.setAttributes(['Johny'])
+        myResult, myFeatures = layer.dataProvider().addFeatures([ft])
+        self.assertTrue(myResult)
+        self.assertTrue(myFeatures)
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'testWriteTriangle.gpkg')
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
+            layer,
+            dest_file_name,
+            'utf-8',
+            layer.crs(),
+            'GPKG')
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
+
+        # Open result and check
+        created_layer = QgsVectorLayer(dest_file_name, 'test', 'ogr')
+        self.assertTrue(created_layer.isValid())
+        f = next(created_layer.getFeatures(QgsFeatureRequest()))
+        self.assertEqual(f.geometry().asWkt(), 'MultiPolygonZ (((1 2 3, 2 2 4, 2 3 4, 1 2 3)))')
+        self.assertEqual(f.attributes(), [1, 'Johny'])
+
+    def testWriteConversionErrors(self):
+        """Test writing features with attribute values that cannot be
+        converted to the destination fields.
+        See: GH #36715"""
+
+        vl = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer', 'test', 'memory')
+        self.assertTrue(vl.startEditing())
+        f = QgsFeature(vl.fields())
+        f.setGeometry(QgsGeometry.fromWkt('point(9 45)'))
+        f.setAttribute(0, 'QGIS Rocks!')  # not valid!
+        self.assertTrue(vl.addFeatures([f]))
+        f.setAttribute(0, 12345)  # valid!
+        self.assertTrue(vl.addFeatures([f]))
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'writer_conversion_errors.shp')
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
+            vl,
+            dest_file_name,
+            'utf-8',
+            QgsCoordinateReferenceSystem(),
+            'ESRI Shapefile')
+        self.assertEqual(write_result, QgsVectorFileWriter.ErrFeatureWriteFailed, error_message)
+
+        # Open result and check
+        created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
+        self.assertEqual(created_layer.fields().count(), 1)
+        self.assertEqual(created_layer.featureCount(), 1)
+        f = next(created_layer.getFeatures(QgsFeatureRequest()))
+        self.assertEqual(f['int'], 12345)
+
+    def test_regression_37386(self):
+        """Test issue GH #37386"""
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'writer_regression_37386.gpkg')
+        fields = QgsFields()
+        fields.append(QgsField("note", QVariant.Double))
+        lyrname = "test1"
+        opts = QgsVectorFileWriter.SaveVectorOptions()
+        opts.driverName = "GPKG"
+        opts.layerName = lyrname
+        opts.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteFile
+        writer = QgsVectorFileWriter.create(dest_file_name, fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateTransformContext(), opts, QgsFeatureSink.SinkFlags(), None, lyrname)
+        self.assertEqual(writer.hasError(), QgsVectorFileWriter.NoError)
+        del writer
+        vl = QgsVectorLayer(dest_file_name)
+        self.assertTrue(vl.isValid())
+
+>>>>>>> 1878fc7bfd... Merge pull request #37667 from elpaso/bugfix-gh37386-filewriter-python-leak
 
 if __name__ == '__main__':
     unittest.main()
