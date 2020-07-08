@@ -19,10 +19,10 @@ email                : Richard Duivenvoorde (at) duif (dot) net
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QColor, QFontDatabase
+from qgis.PyQt.QtCore import Qt, QUrl
+from qgis.PyQt.QtGui import QColor, QFontDatabase, QDesktopServices
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, Qgis
 import os
 
 
@@ -73,6 +73,7 @@ class QgsQsciScintillaBase(QsciScintilla):
         self.iconClear = QgsApplication.getThemeIcon("console/iconClearConsole.svg")
         self.iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.svg")
         self.iconShowEditor = QgsApplication.getThemeIcon("console/iconShowEditorConsole.svg")
+        self.iconPyQGISHelp = QgsApplication.getThemeIcon("console/iconHelpConsole.svg")
 
     def setLexers(self):
         self.lexer = QsciLexerPython()
@@ -140,6 +141,13 @@ class QgsQsciScintillaBase(QsciScintilla):
                 self.lexer.setAPIs(self.api)
 
         self.setLexer(self.lexer)
+
+    def searchPyQGIS(self):
+        if self.hasSelectedText():
+            text = self.selectedText()
+            text = text.replace('>>> ', '').replace('... ', '').strip()  # removing prompts
+            version = '.'.join(Qgis.QGIS_VERSION.split('.')[0:2])
+            QDesktopServices.openUrl(QUrl('https://qgis.org/pyqgis/' + version + '/search.html?q=' + text))
 
 
 if __name__ == "__main__":

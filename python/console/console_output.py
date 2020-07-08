@@ -207,6 +207,9 @@ class ShellOutputScintilla(QgsQsciScintillaBase):
         clearAction = menu.addAction(self.iconClear,
                                      QCoreApplication.translate("PythonConsole", "Clear Console"),
                                      self.clearConsole)
+        pyQGISHelpAction = menu.addAction(self.iconPyQGISHelp,
+                                          QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
+                                          self.searchPyQGIS)
         menu.addSeparator()
         copyAction = menu.addAction(
             self.iconCopy,
@@ -222,11 +225,13 @@ class ShellOutputScintilla(QgsQsciScintillaBase):
         runAction.setEnabled(False)
         clearAction.setEnabled(False)
         copyAction.setEnabled(False)
+        pyQGISHelpAction.setEnabled(False)
         selectAllAction.setEnabled(False)
         showEditorAction.setEnabled(True)
         if self.hasSelectedText():
             runAction.setEnabled(True)
             copyAction.setEnabled(True)
+            pyQGISHelpAction.setEnabled(True)
         if not self.text(3) == '':
             selectAllAction.setEnabled(True)
             clearAction.setEnabled(True)

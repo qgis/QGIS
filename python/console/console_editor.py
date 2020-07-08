@@ -247,6 +247,9 @@ class Editor(QgsQsciScintillaBase):
         runSelected = menu.addAction(self.iconRun,  # spellok
                                      QCoreApplication.translate("PythonConsole", "Run Selected"),
                                      self.runSelectedCode, 'Ctrl+E')  # spellok
+        pyQGISHelpAction = menu.addAction(self.iconPyQGISHelp,
+                                          QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
+                                          self.searchPyQGIS)
         menu.addAction(self.iconRunScript,
                        QCoreApplication.translate("PythonConsole", "Run Script"),
                        self.runScriptCode, 'Shift+Ctrl+E')
@@ -293,6 +296,7 @@ class Editor(QgsQsciScintillaBase):
                        self.parent.pc.openSettings)
         syntaxCheck.setEnabled(False)
         pasteAction.setEnabled(False)
+        pyQGISHelpAction.setEnabled(False)
         codePadAction.setEnabled(False)
         cutAction.setEnabled(False)
         runSelected.setEnabled(False)  # spellok
@@ -306,6 +310,7 @@ class Editor(QgsQsciScintillaBase):
             copyAction.setEnabled(True)
             cutAction.setEnabled(True)
             codePadAction.setEnabled(True)
+            pyQGISHelpAction.setEnabled(True)
         if not self.text() == '':
             selectAllAction.setEnabled(True)
             syntaxCheck.setEnabled(True)

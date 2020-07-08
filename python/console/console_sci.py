@@ -459,10 +459,15 @@ class ShellScintilla(QgsQsciScintillaBase, code.InteractiveInterpreter):
             self.iconPaste,
             QCoreApplication.translate("PythonConsole", "Paste"),
             self.paste, QKeySequence.Paste)
+        pyQGISHelpAction = menu.addAction(self.iconPyQGISHelp,
+                                          QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
+                                          self.searchPyQGIS)
         copyAction.setEnabled(False)
         pasteAction.setEnabled(False)
+        pyQGISHelpAction.setEnabled(False)
         if self.hasSelectedText():
             copyAction.setEnabled(True)
+            pyQGISHelpAction.setEnabled(True)
         if QApplication.clipboard().text():
             pasteAction.setEnabled(True)
         menu.exec_(self.mapToGlobal(e.pos()))
