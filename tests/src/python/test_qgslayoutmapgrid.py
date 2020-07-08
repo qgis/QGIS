@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.PyQt.QtCore import QRectF
+from qgis.PyQt.QtCore import QRectF, QDir
 from qgis.PyQt.QtGui import QPainter, QColor
 
 from qgis.core import (QgsLayoutItemMap,
@@ -22,7 +22,9 @@ from qgis.core import (QgsLayoutItemMap,
                        QgsProperty,
                        QgsLayoutObject,
                        QgsFontUtils,
-                       QgsProject)
+                       QgsTextFormat,
+                       QgsProject,
+                       QgsCoordinateReferenceSystem)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath, getTestFont
 from qgslayoutchecker import QgsLayoutChecker
@@ -33,10 +35,19 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestQgsLayoutMapGrid(unittest.TestCase):
 
+    def setUp(self):
+        self.report = "<h1>Python QgsLayoutItemMap Tests</h1>\n"
+
+    def tearDown(self):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
+
     def testGrid(self):
         layout = QgsLayout(QgsProject.instance())
         layout.initializeDefaults()
         map = QgsLayoutItemMap(layout)
+        map.setCrs(QgsCoordinateReferenceSystem('EPSG:32633'))
         map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
         map.setFrameEnabled(True)
         map.setBackgroundColor(QColor(150, 100, 100))
@@ -55,7 +66,10 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         map.grid().setAnnotationEnabled(True)
         map.grid().setGridLineColor(QColor(0, 255, 0))
         map.grid().setGridLineWidth(0.5)
-        map.grid().setAnnotationFont(getTestFont())
+        format = QgsTextFormat.fromQFont(getTestFont('Bold'))
+        format.setColor(QColor(255, 0, 0))
+        format.setOpacity(150 / 255)
+        map.grid().setAnnotationTextFormat(format)
         map.grid().setAnnotationPrecision(0)
         map.grid().setAnnotationDisplay(QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Left)
         map.grid().setAnnotationPosition(QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.Right)
@@ -63,13 +77,13 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         map.grid().setAnnotationPosition(QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.Bottom)
         map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Right)
         map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Bottom)
-        map.grid().setAnnotationFontColor(QColor(255, 0, 0, 150))
         map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         checker = QgsLayoutChecker('composermap_grid', layout)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
         map.grid().setEnabled(False)
         map.grid().setAnnotationEnabled(False)
 
@@ -100,6 +114,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         checker = QgsLayoutChecker('composermap_crossgrid', layout)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
 
         map.grid().setStyle(QgsLayoutItemMapGrid.Solid)
         map.grid().setEnabled(False)
@@ -131,6 +146,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         checker = QgsLayoutChecker('composermap_markergrid', layout)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
 
         map.grid().setStyle(QgsLayoutItemMapGrid.Solid)
         map.grid().setEnabled(False)
@@ -162,6 +178,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         checker = QgsLayoutChecker('composermap_gridframeonly', layout)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
 
         map.grid().setStyle(QgsLayoutItemMapGrid.Solid)
         map.grid().setEnabled(False)
@@ -186,7 +203,6 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         map.grid().setIntervalX(2000)
         map.grid().setIntervalY(2000)
         map.grid().setGridLineColor(QColor(0, 0, 0))
-        map.grid().setAnnotationFontColor(QColor(0, 0, 0))
         map.grid().setBlendMode(QPainter.CompositionMode_SourceOver)
         map.grid().setFrameStyle(QgsLayoutItemMapGrid.Zebra)
         map.grid().setFrameWidth(10)
@@ -201,6 +217,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         checker = QgsLayoutChecker('composermap_zebrastyle', layout)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testLayout(0, 100)
+        self.report += checker.report()
         assert myTestResult, myMessage
 
     def testZebraStyleSides(self):
@@ -218,7 +235,6 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         map.grid().setIntervalX(2000)
         map.grid().setIntervalY(2000)
         map.grid().setGridLineColor(QColor(0, 0, 0))
-        map.grid().setAnnotationFontColor(QColor(0, 0, 0))
         map.grid().setBlendMode(QPainter.CompositionMode_SourceOver)
         map.grid().setFrameStyle(QgsLayoutItemMapGrid.Zebra)
         map.grid().setFrameWidth(10)
@@ -238,6 +254,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         checker = QgsLayoutChecker('composermap_zebrastyle_left', layout)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testLayout(0, 100)
+        self.report += checker.report()
         assert myTestResult, myMessage
 
         map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameTop, True)
@@ -245,6 +262,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         checker = QgsLayoutChecker('composermap_zebrastyle_lefttop', layout)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testLayout(0, 100)
+        self.report += checker.report()
         assert myTestResult, myMessage
 
         map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameRight, True)
@@ -252,6 +270,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         checker = QgsLayoutChecker('composermap_zebrastyle_lefttopright', layout)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testLayout(0, 100)
+        self.report += checker.report()
         assert myTestResult, myMessage
 
         map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameBottom, True)
@@ -271,7 +290,6 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         map.setExtent(myRectangle)
         map.grid().setIntervalX(2000)
         map.grid().setIntervalY(2000)
-        map.grid().setAnnotationFontColor(QColor(0, 0, 0))
         map.grid().setBlendMode(QPainter.CompositionMode_SourceOver)
         map.grid().setFrameStyle(QgsLayoutItemMapGrid.InteriorTicks)
         map.grid().setFrameWidth(10)
@@ -284,6 +302,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         checker = QgsLayoutChecker('composermap_interiorticks', layout)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testLayout(0, 100)
+        self.report += checker.report()
         assert myTestResult, myMessage
 
     def testExpressionContext(self):
@@ -321,7 +340,10 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         map.grid().setAnnotationEnabled(True)
         map.grid().setGridLineColor(QColor(0, 255, 0))
         map.grid().setGridLineWidth(0.5)
-        map.grid().setAnnotationFont(getTestFont())
+        format = QgsTextFormat.fromQFont(getTestFont('Bold'))
+        format.setColor(QColor(255, 0, 0))
+        format.setOpacity(150 / 255)
+        map.grid().setAnnotationTextFormat(format)
         map.grid().setAnnotationPrecision(0)
         map.grid().setAnnotationDisplay(QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Left)
         map.grid().setAnnotationPosition(QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.Right)
@@ -329,7 +351,6 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         map.grid().setAnnotationPosition(QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.Bottom)
         map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Right)
         map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Bottom)
-        map.grid().setAnnotationFontColor(QColor(255, 0, 0, 150))
         map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
         map.updateBoundingRect()
 
@@ -339,6 +360,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         checker = QgsLayoutChecker('composermap_grid', layout)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(myTestResult, myMessage)
 
         map.grid().dataDefinedProperties().setProperty(QgsLayoutObject.MapGridEnabled, QgsProperty.fromValue(False))
@@ -347,6 +369,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         checker = QgsLayoutChecker('composermap_datadefined_disabled', layout)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(myTestResult, myMessage)
 
     def testDataDefinedIntervalOffset(self):
@@ -377,6 +400,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
 
         checker = QgsLayoutChecker('composermap_datadefined_intervaloffset', layout)
         checker.setControlPathPrefix("composer_mapgrid")
+        self.report += checker.report()
         myTestResult, myMessage = checker.testLayout()
         self.assertTrue(myTestResult, myMessage)
 
@@ -415,6 +439,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
                                    'composermap_datadefined_framesizemargin', layout)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(myTestResult, myMessage)
 
     def testDataDefinedCrossSize(self):
@@ -446,6 +471,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
 
         checker = QgsLayoutChecker('composermap_datadefined_crosssize', layout)
         checker.setControlPathPrefix("composer_mapgrid")
+        self.report += checker.report()
         myTestResult, myMessage = checker.testLayout()
         self.assertTrue(myTestResult, myMessage)
 
@@ -482,6 +508,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         checker = QgsLayoutChecker('composermap_datadefined_framethickness', layout)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(myTestResult, myMessage)
 
     def testDataDefinedAnnotationDistance(self):
@@ -501,7 +528,12 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         map.grid().setAnnotationEnabled(True)
         map.grid().setGridLineColor(QColor(0, 255, 0))
         map.grid().setGridLineWidth(0.5)
-        map.grid().setAnnotationFont(getTestFont('Bold', 20))
+
+        format = QgsTextFormat.fromQFont(getTestFont('Bold', 20))
+        format.setColor(QColor(255, 0, 0))
+        format.setOpacity(150 / 255)
+        map.grid().setAnnotationTextFormat(format)
+
         map.grid().setAnnotationPrecision(0)
         map.grid().setAnnotationDisplay(QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Left)
         map.grid().setAnnotationPosition(QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.Right)
@@ -509,7 +541,6 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         map.grid().setAnnotationPosition(QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.Bottom)
         map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Right)
         map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Bottom)
-        map.grid().setAnnotationFontColor(QColor(255, 0, 0, 150))
         map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
         map.updateBoundingRect()
 
@@ -519,6 +550,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         checker = QgsLayoutChecker('composermap_datadefined_annotationdistance', layout)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(myTestResult, myMessage)
 
     def testDynamicInterval(self):
@@ -539,7 +571,12 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         map.grid().setAnnotationEnabled(True)
         map.grid().setGridLineColor(QColor(0, 255, 0))
         map.grid().setGridLineWidth(0.5)
-        map.grid().setAnnotationFont(getTestFont('Bold', 20))
+
+        format = QgsTextFormat.fromQFont(getTestFont('Bold', 20))
+        format.setColor(QColor(255, 0, 0))
+        format.setOpacity(150 / 255)
+        map.grid().setAnnotationTextFormat(format)
+
         map.grid().setAnnotationPrecision(0)
         map.grid().setAnnotationDisplay(QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Left)
         map.grid().setAnnotationPosition(QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.Right)
@@ -547,7 +584,6 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         map.grid().setAnnotationPosition(QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.Bottom)
         map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Right)
         map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Bottom)
-        map.grid().setAnnotationFontColor(QColor(255, 0, 0, 150))
         map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
         map.updateBoundingRect()
 
@@ -556,6 +592,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         checker = QgsLayoutChecker('composermap_dynamic_5_10', layout)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(myTestResult, myMessage)
 
         map.setScale(map.scale() * 1.1)
@@ -563,6 +600,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         checker = QgsLayoutChecker('composermap_dynamic_5_10_2', layout)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(myTestResult, myMessage)
 
         map.setScale(map.scale() * 1.8)
@@ -570,6 +608,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         checker = QgsLayoutChecker('composermap_dynamic_5_10_3', layout)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(myTestResult, myMessage)
 
         map.grid().setMinimumIntervalWidth(10)
@@ -579,6 +618,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         checker = QgsLayoutChecker('composermap_dynamic_5_10_4', layout)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(myTestResult, myMessage)
 
 
