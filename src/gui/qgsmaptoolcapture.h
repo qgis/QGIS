@@ -36,6 +36,7 @@ class QgsMapLayer;
 class QgsGeometryValidator;
 class QgsMapToolCaptureRubberband;
 
+#ifndef SIP_RUN
 /**
  * Class that reprensents a rubber can that can be linear or circular.
  */
@@ -101,6 +102,8 @@ class QgsMapToolCaptureRubberband: public QgsGeometryRubberBand
     QgsPointSequence mPoints;
     QgsPoint mFirstPolygonPoint;
 };
+
+#endif //SIP_RUN
 
 /**
  * \ingroup gui
