@@ -62,13 +62,13 @@ class QgsMapToolCaptureRubberband: public QgsGeometryRubberBand
     void reset( QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
 
     //! Adds point to the rubber band
-    void addPoint( const QgsPointXY &point, bool doUpdate = true );
+    void addPoint( const QgsPoint &point, bool doUpdate = true );
 
     //! Moves the last point to the \a point position
-    void movePoint( const QgsPointXY &point );
+    void movePoint( const QgsPoint &point );
 
     //! Moves the point with \a index to the \a point position
-    void movePoint( int index, const QgsPointXY &point );
+    void movePoint( int index, const QgsPoint &point );
 
     //! Returns the points count in the rubber band (except the first point if polygon)
     int pointsCount();
@@ -76,7 +76,7 @@ class QgsMapToolCaptureRubberband: public QgsGeometryRubberBand
     /**
      * Sets the first point that serves to render polygon rubber band
      */
-    void setFirstPolygonPoint( const QgsPointXY &point );
+    void setFirstPolygonPoint( const QgsPoint &point );
 
     //! Returns the type of the curve (linear string or circular string)
     QgsWkbTypes::Type stringType() const;
@@ -408,9 +408,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * again after every time a new trace with offset is created (to get new "anchor" point)
      */
     QgsPointXY mTracingStartPoint;
-
-    friend class TestQgsMapToolReshape;
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolCapture::Capabilities )
