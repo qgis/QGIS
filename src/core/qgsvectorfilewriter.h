@@ -635,7 +635,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                         const QgsVectorFileWriter::SaveVectorOptions &options,
                                         QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
                                         QString *newFilename = nullptr,
-                                        QString *newLayer = nullptr );
+                                        QString *newLayer = nullptr ) SIP_FACTORY;
 
     /**
      * Writes a layer out to a vector file.

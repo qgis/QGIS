@@ -431,7 +431,7 @@ Writes a layer out to a vector file.
                                         const QgsVectorFileWriter::SaveVectorOptions &options,
                                         QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
                                         QString *newFilename = 0,
-                                        QString *newLayer = 0 );
+                                        QString *newLayer = 0 ) /Factory/;
 %Docstring
 Create a new vector file writer.
 
