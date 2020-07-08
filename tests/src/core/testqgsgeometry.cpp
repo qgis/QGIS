@@ -52,6 +52,7 @@
 #include "qgscurvepolygon.h"
 #include "qgsproject.h"
 #include "qgslinesegment.h"
+#include "qgsgeos.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -85,6 +86,7 @@ class TestQgsGeometry : public QObject
     void vertexIterator();
     void partIterator();
 
+    void geos();
 
     // geometry types
     void point(); //test QgsPointV2
@@ -520,6 +522,28 @@ void TestQgsGeometry::partIterator()
   QCOMPARE( geom.asWkt(), QStringLiteral( "Point (1 2)" ) );
 
   // See test_qgsgeometry.py for geometry-type specific checks!
+}
+
+void TestQgsGeometry::geos()
+{
+  // test GEOS conversion utils
+
+  // empty parts should NOT be added to a GEOS collection -- it can cause crashes in GEOS
+  QgsMultiPolygon polyWithEmptyParts;
+  geos::unique_ptr asGeos( QgsGeos::asGeos( &polyWithEmptyParts ) );
+  QgsGeometry res( QgsGeos::fromGeos( asGeos.get() ) );
+  QCOMPARE( res.asWkt(), QStringLiteral( "MultiPolygon EMPTY" ) );
+  std::unique_ptr< QgsPolygon > emptyPolygon = qgis::make_unique< QgsPolygon >();
+  emptyPolygon->setExteriorRing( new QgsLineString() );
+  polyWithEmptyParts.addGeometry( emptyPolygon->clone() );
+  std::unique_ptr< QgsPolygon > nonEmptyPolygon = qgis::make_unique< QgsPolygon >();
+  nonEmptyPolygon->setExteriorRing( new QgsLineString( QVector< QgsPoint >() << QgsPoint( 0, 0 ) << QgsPoint( 0, 1 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) ) );
+  polyWithEmptyParts.addGeometry( nonEmptyPolygon->clone() );
+  polyWithEmptyParts.addGeometry( emptyPolygon->clone() );
+  asGeos = QgsGeos::asGeos( &polyWithEmptyParts );
+  QCOMPARE( GEOSGetNumGeometries_r( QgsGeos::getGEOSHandler(), asGeos.get() ), 1 );
+  res = QgsGeometry( QgsGeos::fromGeos( asGeos.get() ) );
+  QCOMPARE( res.asWkt(), QStringLiteral( "MultiPolygon (((0 0, 0 1, 1 1, 0 0)))" ) );
 }
 
 void TestQgsGeometry::point()
