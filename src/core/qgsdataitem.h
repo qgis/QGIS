@@ -949,10 +949,9 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
     QString connectionUri() const;
 
     /**
-     * Creates and returns a (possibly NULL) layer instance
-     * from the connection URI and schema/table information
+     * Creates and returns a (possibly NULL) layer from the connection URI and schema/table information
      */
-    QgsVectorLayer *layer();
+    QgsVectorLayer *layer() SIP_FACTORY;
 
 
   private:
