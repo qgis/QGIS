@@ -271,6 +271,11 @@ class CORE_EXPORT QgsTextRenderer
       double dpiRatio = 1.0;
       //! Horizontal alignment
       HAlignment hAlign = AlignLeft;
+
+      //! Any additional word spacing to apply while rendering component
+      double extraWordSpacing = 0;
+      //! Any additional letter spacing to apply while rendering component
+      double extraLetterSpacing = 0;
     };
 
     static double textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document );
@@ -346,6 +351,9 @@ class CORE_EXPORT QgsTextRenderer
                                   DrawMode mode = Rect );
 
     static QgsTextFormat::TextOrientation calculateRotationAndOrientationForComponent( const QgsTextFormat &format, const Component &component, double &rotation );
+
+    static void calculateExtraSpacingForLineJustification( double spaceToDistribute, const QgsTextBlock &block, double &extraWordSpace, double &extraLetterSpace );
+    static void applyExtraSpacingForLineJustification( QFont &font, double extraWordSpace, double extraLetterSpace );
 
     static void drawTextInternalHorizontal( QgsRenderContext &context,
                                             const QgsTextFormat &format,

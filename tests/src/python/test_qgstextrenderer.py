@@ -2146,7 +2146,10 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setFont(getTestFont('bold'))
         format.setSize(30)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
-        assert self.checkRender(format, 'text_rect_multiline_justify_aligned', text=['a test', 'of', 'justification', 'align'],
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(4)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'text_rect_multiline_justify_aligned', text=['a t est', 'off', 'justification', 'align'],
                                 alignment=QgsTextRenderer.AlignJustify, rect=QRectF(100, 100, 200, 100))
 
     def testDrawTextRectJustifyAlign(self):
@@ -2233,6 +2236,22 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         assert self.checkRenderPoint(format, 'text_point_right_aligned', text=['test'],
                                      alignment=QgsTextRenderer.AlignRight, point=QPointF(300, 200))
+
+    def testDrawTextPointJustifyAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRenderPoint(format, 'text_point_justify_aligned', text=['test'],
+                                     alignment=QgsTextRenderer.AlignJustify, point=QPointF(100, 200))
+
+    def testDrawTextPointMultilineJustifyAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRenderPoint(format, 'text_point_justify_multiline_aligned', text=['a t est', 'off', 'justification', 'align'],
+                                     alignment=QgsTextRenderer.AlignJustify, point=QPointF(100, 200))
 
     def testDrawTextPointCenterAlign(self):
         format = QgsTextFormat()
