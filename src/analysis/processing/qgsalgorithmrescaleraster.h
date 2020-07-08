@@ -61,7 +61,6 @@ class QgsRescaleRasterAlgorithm : public QgsProcessingAlgorithm
     double mMinimum;
     double mMaximum;
 
-    Qgis::DataType mDataType;
     QgsRectangle mExtent;
     QgsCoordinateReferenceSystem mCrs;
     std::unique_ptr< QgsRasterInterface > mInterface;
