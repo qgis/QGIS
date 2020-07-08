@@ -1091,6 +1091,8 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
 
   QgsLayoutItemMapGrid::BorderSide frameBorder = borderForLineCoord( pos, coordinateType );
   double textWidth = QgsTextRenderer::textWidth( context, mAnnotationFormat, QStringList() << annotationString ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  if ( extension )
+    textWidth *= 1.1; // little bit of extra padding when we are calculating the bounding rect, to account for antialiasing
   //relevant for annotations is the height of digits
   const QFontMetricsF metrics = QgsTextRenderer::fontMetrics( context, mAnnotationFormat, QgsTextRenderer::FONT_WORKAROUND_SCALE );
   double textHeight = ( extension ? ( QgsTextRenderer::textHeight( context, mAnnotationFormat, QChar(), true ) )
