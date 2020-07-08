@@ -71,6 +71,7 @@ class QgsProcessingExec
     int execute( const QString &algId, const QVariantMap &parameters );
 
     std::unique_ptr< QgsPythonUtils > mPythonUtils;
+    std::unique_ptr<QgsPythonUtils> loadPythonSupport();
 };
 
 #endif // QGSPROCESS_H

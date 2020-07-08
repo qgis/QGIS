@@ -27,7 +27,7 @@
 #include "qgsprocessingparametertype.h"
 #include "processing/models/qgsprocessingmodelalgorithm.h"
 
-#if defined(Q_OS_UNIX) and !defined(Q_OS_ANDROID)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
 #include "sigwatch.h"
 #endif
 
@@ -102,10 +102,10 @@ void ConsoleFeedback::showTerminalProgress( double progress )
 
 
 //! load Python support if possible
-std::unique_ptr< QgsPythonUtils > loadPythonSupport()
+std::unique_ptr< QgsPythonUtils > QgsProcessingExec::loadPythonSupport()
 {
   QString pythonlibName( QStringLiteral( "qgispython" ) );
-#if defined(Q_OS_UNIX) and !defined(Q_OS_ANDROID)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
   pythonlibName.prepend( QgsApplication::libraryPath() );
 #endif
 #ifdef __MINGW32__
@@ -464,7 +464,7 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params )
   QgsProcessingContext context;
   ConsoleFeedback feedback;
 
-#if defined(Q_OS_UNIX) and !defined(Q_OS_ANDROID)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
   UnixSignalWatcher sigwatch;
   sigwatch.watchForSignal( SIGINT );
 
@@ -497,15 +497,15 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params )
       if ( it.key() == QLatin1String( "CHILD_INPUTS" ) || it.key() == QLatin1String( "CHILD_RESULTS" ) )
         continue;
 
-      QVariant res = it.value();
-      if ( res.type() == QVariant::List || res.type() == QVariant::StringList )
+      QVariant result = it.value();
+      if ( result.type() == QVariant::List || result.type() == QVariant::StringList )
       {
         QStringList list;
-        for ( const QVariant &v : res.toList() )
+        for ( const QVariant &v : result.toList() )
           list << v.toString();
-        res = list.join( ", " );
+        result = list.join( ", " );
       }
-      std::cout << it.key().toLocal8Bit().constData() << ":\t" << res.toString().toLocal8Bit().constData() << '\n';
+      std::cout << it.key().toLocal8Bit().constData() << ":\t" << result.toString().toLocal8Bit().constData() << '\n';
     }
     return 0;
   }
