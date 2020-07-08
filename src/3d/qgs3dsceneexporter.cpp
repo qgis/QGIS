@@ -59,11 +59,6 @@ QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute )
   uint bytesStride = attribute->byteStride();
   uint vertexSize = attribute->vertexSize();
 
-  qDebug() << "bytesOffset: " << bytesOffset;
-  qDebug() << "bytesStride: " << bytesStride;
-  qDebug() << "VertexSize: " << vertexSize;
-  qDebug() << "Data size: " << data.size();
-
   QVector<T> result;
   for ( int i = bytesOffset; i < data.size(); i += bytesStride )
   {
@@ -102,7 +97,6 @@ QVector<unsigned int> getAttributeData<unsigned int>( Qt3DRender::QAttribute *at
 
   return result;
 }
-
 
 QVector<float> createPlaneVertexData( float w, float h, const QSize &resolution )
 {
@@ -241,9 +235,7 @@ void Qgs3DSceneExporter::parseEntity( Qt3DCore::QEntity *entity )
     QgsTessellatedPolygonGeometry *tessellated = qobject_cast<QgsTessellatedPolygonGeometry *>( geom );
     if ( tessellated != nullptr )
     {
-      qDebug() << "Processing QgsTessellatedPolygonGeometry started";
       process( tessellated );
-      qDebug() << "Processing QgsTessellatedPolygonGeometry ended";
       continue;
     }
 
@@ -291,27 +283,23 @@ void Qgs3DSceneExporter::parseEntity( QgsTerrainEntity *terrain )
 
   QgsTerrainGenerator *generator = settings.terrainGenerator();
   QgsTerrainTileEntity *terrainTile = nullptr;
+  QgsTerrainTextureGenerator *textureGenerator = terrain->textureGenerator();
+  QSize oldResolution = textureGenerator->textureSize();
+  textureGenerator->setTextureSize( QSize( mTerrainTextureResolution, mTerrainTextureResolution ) );
   switch ( generator->type() )
   {
     case QgsTerrainGenerator::Dem:
       for ( QgsChunkNode *node : leafs )
       {
         terrainTile = getDemTerrainEntity( terrain, node );
-        QgsTerrainTextureGenerator *textureGenerator = terrain->textureGenerator();
-        QSize oldResolution = textureGenerator->textureSize();
-        textureGenerator->setTextureSize( QSize( mTerrainTextureResolution, mTerrainTextureResolution ) );
         this->parseDemTile( terrainTile, textureGenerator );
-        textureGenerator->setTextureSize( oldResolution );
       }
       break;
     case QgsTerrainGenerator::Flat:
       for ( QgsChunkNode *node : leafs )
       {
         terrainTile = getFlatTerrainEntity( terrain, node );
-        QgsTerrainTextureGenerator *textureGenerator = terrain->textureGenerator();
-        QSize oldResolution = textureGenerator->textureSize();
         this->parseFlatTile( terrainTile, textureGenerator );
-        textureGenerator->setTextureSize( oldResolution );
       }
       break;
     // TODO: implement other terrain types
@@ -320,6 +308,7 @@ void Qgs3DSceneExporter::parseEntity( QgsTerrainEntity *terrain )
     case QgsTerrainGenerator::Online:
       break;
   }
+  textureGenerator->setTextureSize( oldResolution );
 }
 
 QgsTerrainTileEntity *Qgs3DSceneExporter::getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node )
@@ -397,10 +386,8 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, QgsTer
 
   if ( mExportTextures )
   {
-    qDebug() << "Generating texCoords";
     QVector<float> texCoords = createPlaneTexCoordsData( 1.0f, 1.0f, tileGeometry->resolution(), false );
     object->setupTextureCoordinates( texCoords );
-    qDebug() << "Generated texCoords";
 
     QImage img = textureGenerator->renderSynchronously( tileEntity->textureImage()->imageExtent(),  tileEntity->textureImage()->imageDebugText() );
     object->setTextureImage( img );
@@ -491,10 +478,10 @@ void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
   float minX = maxfloat, minY = maxfloat, minZ = maxfloat, maxX = minFloat, maxY = minFloat, maxZ = minFloat;
   for ( Qgs3DExportObject *obj : mObjects ) obj->objectBounds( minX, minY, minZ, maxX, maxY, maxZ );
 
-  float diffX = 1.0f, diffY = 1.0f, diffZ = 1.0f;
-  diffX = maxX - minX;
-  diffY = maxY - minY;
-  diffZ = maxZ - minZ;
+//  float diffX = 1.0f, diffY = 1.0f, diffZ = 1.0f;
+//  diffX = maxX - minX;
+//  diffY = maxY - minY;
+//  diffZ = maxZ - minZ;
 
   float centerX = ( minX + maxX ) / 2.0f;
   float centerY = ( minY + maxY ) / 2.0f;

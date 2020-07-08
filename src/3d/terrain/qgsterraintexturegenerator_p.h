@@ -88,7 +88,6 @@ class QgsTerrainTextureGenerator : public QObject
     QgsMapSettings baseMapSettings();
 
     const Qgs3DMapSettings &mMap;
-    QSize mTextureSize;
 
     struct JobData
     {
@@ -101,6 +100,7 @@ class QgsTerrainTextureGenerator : public QObject
 
     QHash<QgsMapRendererSequentialJob *, JobData> mJobs;
     int mLastJobId;
+    QSize mTextureSize;
 };
 
 /// @endcond

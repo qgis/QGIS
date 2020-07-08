@@ -775,6 +775,7 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
   exporter.setSmoothEdges( exportSettings.smoothEdges() );
   exporter.setExportNormals( exportSettings.exportNormals() );
   exporter.setExportTextures( exportSettings.exportTextures() );
+  exporter.setTerrainTextureResolution( exportSettings.terrainTextureResolution() );
 
   for ( QgsMapLayer *layer : mLayerEntities.keys() )
   {
@@ -782,6 +783,5 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
   }
   exporter.parseEntity( mTerrain );
 
-  QString filePath = exportSettings.getFilePath( exportSettings.sceneName(), "obj" );
   exporter.save( exportSettings.sceneName(), exportSettings.sceneFolderPath() );
 }

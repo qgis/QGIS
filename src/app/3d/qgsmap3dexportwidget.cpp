@@ -49,6 +49,7 @@ QgsMap3DExportWidget::QgsMap3DExportWidget( Qgs3DMapScene *scene, Qgs3DMapExport
   connect( ui->terrainResolutionSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), [ = ]( int ) { settingsChanged(); } );
   connect( ui->exportNormalsCheckBox, &QCheckBox::stateChanged, [ = ]( int ) { settingsChanged(); } );
   connect( ui->exportTexturesCheckBox, &QCheckBox::stateChanged, [ = ]( int ) { settingsChanged(); } );
+  connect( ui->terrainTextureResolutionSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), [ = ]( int ) { settingsChanged(); } );
 
   // sets the export settings to whatever is on the scene
   settingsChanged();
@@ -67,6 +68,7 @@ void QgsMap3DExportWidget::settingsChanged()
   mExportSettings->setSmoothEdges( ui->smoothEdgesCheckBox->isChecked() );
   mExportSettings->setExportNormals( ui->exportNormalsCheckBox->isChecked() );
   mExportSettings->setExportTextures( ui->exportTexturesCheckBox->isChecked() );
+  mExportSettings->setTerrainTextureResolution( ui->terrainTextureResolutionSpinBox->value() );
 }
 
 void QgsMap3DExportWidget::exportScene()

@@ -47,6 +47,8 @@ class _3D_EXPORT Qgs3DMapExportSettings : public QObject
     bool exportNormals() const { return mExportNormals; }
     //! Returns whether textures will be exported
     bool exportTextures() const { return mExportTextures; }
+    //! Returns the terrain texture resolution
+    int terrainTextureResolution() const { return mTerrainTextureResolution; }
 
     //! Sets the scene name
     void setSceneName( const QString &sceneName ) { mSceneName = sceneName; }
@@ -60,11 +62,9 @@ class _3D_EXPORT Qgs3DMapExportSettings : public QObject
     void setExportNormals( bool exportNormals ) { mExportNormals = exportNormals; }
     //! Sets whether textures will be exported
     void setExportTextures( bool exportTextures ) { mExportTextures = exportTextures; }
-    //! Returns a path to a file that with the "name.extension" in the export folder
-    QString getFilePath( const QString &name, const QString &extension ) const
-    {
-      return QDir( mSceneFolderPath ).filePath( name + "." + extension );
-    }
+    //! Sets the terrain texture resolution
+    void setTerrainTextureResolution( int resolution ) { mTerrainTextureResolution = resolution; }
+
   private:
     QString mSceneName = QString( "Scene" );
     QString mSceneFolderPath = QDir::homePath();
@@ -72,6 +72,7 @@ class _3D_EXPORT Qgs3DMapExportSettings : public QObject
     bool mSmoothEdges = false;
     bool mExportNormals = true;
     bool mExportTextures = false;
+    int mTerrainTextureResolution = 512;
 };
 
 #endif // QGS3DMAPEXPORTSETTINGS_H

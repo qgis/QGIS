@@ -57,6 +57,8 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
     QgsFlatTerrainGenerator() = default;
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
+
+    //! create a chunk loader that loads synchronously
     QgsChunkLoader *createSynchronousChunkLoader( QgsChunkNode *node ) const;
 
     QgsTerrainGenerator *clone() const override SIP_FACTORY;
