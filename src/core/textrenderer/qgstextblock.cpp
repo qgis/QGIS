@@ -21,6 +21,16 @@ QgsTextBlock::QgsTextBlock( const QgsTextFragment &fragment )
   mFragments.append( fragment );
 }
 
+QString QgsTextBlock::toPlainText() const
+{
+  QString res;
+  for ( const QgsTextFragment &fragment : mFragments )
+  {
+    res.append( fragment.text() );
+  }
+  return res;
+}
+
 void QgsTextBlock::append( const QgsTextFragment &fragment )
 {
   mFragments.append( fragment );

@@ -36,6 +36,13 @@ Constructor for an empty text block.
 Constructor for a QgsTextBlock consisting of a single text ``fragment``.
 %End
 
+    QString toPlainText() const;
+%Docstring
+Converts the block to plain text.
+
+.. versionadded:: 3.16
+%End
+
     void append( const QgsTextFragment &fragment );
 %Docstring
 Appends a ``fragment`` to the block.
