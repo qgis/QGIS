@@ -37,6 +37,36 @@ static void _fixQPictureDPI( QPainter *p )
             static_cast< double >( qt_defaultDpiY() ) / p->device()->logicalDpiY() );
 }
 
+QgsTextRenderer::HAlignment QgsTextRenderer::convertQtHAlignment( Qt::Alignment alignment )
+{
+  if ( alignment & Qt::AlignLeft )
+    return AlignLeft;
+  else if ( alignment & Qt::AlignRight )
+    return AlignRight;
+  else if ( alignment & Qt::AlignHCenter )
+    return AlignCenter;
+
+  // not supported
+  // Qt::AlignJustify
+  // Qt::AlignAbsolute
+  return AlignLeft;
+}
+
+QgsTextRenderer::VAlignment QgsTextRenderer::convertQtVAlignment( Qt::Alignment alignment )
+{
+  if ( alignment & Qt::AlignTop )
+    return AlignTop;
+  else if ( alignment & Qt::AlignBottom )
+    return AlignBottom;
+  else if ( alignment & Qt::AlignVCenter )
+    return AlignVCenter;
+  //not supported
+  else if ( alignment & Qt::AlignBaseline )
+    return AlignBottom;
+
+  return AlignTop;
+}
+
 int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext &c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &mapUnitScale )
 {
   return static_cast< int >( c.convertToPainterUnits( size, unit, mapUnitScale ) + 0.5 ); //NOLINT

@@ -63,6 +63,14 @@ class CORE_EXPORT QgsTextRenderer
     };
 
     /**
+     * Converts a Qt horizontal \a alignment flag to a QgsTextRenderer::HAlignment value.
+     *
+     * \see convertQtVAlignment()
+     * \since QGIS 3.16
+     */
+    static HAlignment convertQtHAlignment( Qt::Alignment alignment );
+
+    /**
      * Vertical alignment
      * \since QGIS 3.16
      */
@@ -72,6 +80,14 @@ class CORE_EXPORT QgsTextRenderer
       AlignVCenter, //!< Center align
       AlignBottom, //!< Align to bottom
     };
+
+    /**
+     * Converts a Qt vertical \a alignment flag to a QgsTextRenderer::VAlignment value.
+     *
+     * \see convertQtHAlignment()
+     * \since QGIS 3.16
+     */
+    static VAlignment convertQtVAlignment( Qt::Alignment alignment );
 
     /**
      * Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
