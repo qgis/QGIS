@@ -533,6 +533,39 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
   }
 }
 
+double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, QChar character, bool includeEffects )
+{
+  const double scaleFactor = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+  const QFont baseFont = format.scaledFont( context, scaleFactor );
+  const QFontMetrics fm( baseFont );
+  const double height = ( character.isNull() ? fm.height() : fm.boundingRect( character ).height() ) / scaleFactor;
+
+  if ( !includeEffects )
+    return height;
+
+  double maxExtension = 0;
+  if ( format.buffer().enabled() )
+  {
+    maxExtension += context.convertToPainterUnits( format.buffer().size(), format.buffer().sizeUnit(), format.buffer().sizeMapUnitScale() );
+  }
+  if ( format.shadow().enabled() )
+  {
+    maxExtension += context.convertToPainterUnits( format.shadow().offsetDistance(), format.shadow().offsetUnit(), format.shadow().offsetMapUnitScale() )
+                    + context.convertToPainterUnits( format.shadow().blurRadius(), format.shadow().blurRadiusUnit(), format.shadow().blurRadiusMapUnitScale() );
+  }
+  if ( format.background().enabled() )
+  {
+    maxExtension += context.convertToPainterUnits( std::fabs( format.background().offset().y() ), format.background().offsetUnit(), format.background().offsetMapUnitScale() )
+                    + context.convertToPainterUnits( format.background().strokeWidth(), format.background().strokeWidthUnit(), format.background().strokeWidthMapUnitScale() ) / 2.0;
+    if ( format.background().sizeType() == QgsTextBackgroundSettings::SizeBuffer && format.background().size().height() > 0 )
+    {
+      maxExtension += context.convertToPainterUnits( format.background().size().height(), format.background().sizeUnit(), format.background().sizeMapUnitScale() );
+    }
+  }
+
+  return height + maxExtension;
+}
+
 double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document, DrawMode mode )
 {
   //calculate max height of text lines
