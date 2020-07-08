@@ -610,7 +610,7 @@ void QgsMeshDatasetGroupTreeView::removeCurrentItem()
           varList.append( QStringLiteral( "\n" ) );
         }
       }
-      QMessageBox::information( this, tr( "Remove Dataset Group" ), tr( "This dataset group can be removed because it has the following dependencies :\n%1" )
+      QMessageBox::information( this, tr( "Remove Dataset Group" ), tr( "This dataset group can't be removed because other dataset groups depend on it:\n%1" )
                                 .arg( varList ) );
       return;
     }
@@ -815,7 +815,7 @@ QVariant QgsMeshAvailableDatasetGroupTreeModel::headerData( int section, Qt::Ori
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
   {
     if ( section == 0 )
-      return tr( "Groups" );
+      return tr( "Group" );
     if ( section == 1 )
       return  tr( "Type" );
     if ( section == 2 )

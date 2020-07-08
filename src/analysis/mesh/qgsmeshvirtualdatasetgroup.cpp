@@ -136,8 +136,8 @@ QDomElement QgsMeshVirtualDatasetGroup::writeXml( QDomDocument &doc, const QgsRe
   elemDataset.setAttribute( QStringLiteral( "source-type" ), QStringLiteral( "virtual" ) );
   elemDataset.setAttribute( QStringLiteral( "name" ), name() );
   elemDataset.setAttribute( QStringLiteral( "formula" ), mFormula );
-  elemDataset.setAttribute( QStringLiteral( "startTime" ), mStartTime );
-  elemDataset.setAttribute( QStringLiteral( "endTime" ), mEndTime );
+  elemDataset.setAttribute( QStringLiteral( "start-time" ), mStartTime );
+  elemDataset.setAttribute( QStringLiteral( "end-time" ), mEndTime );
 
   return elemDataset;
 }

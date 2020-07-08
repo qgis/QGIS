@@ -175,7 +175,7 @@ QgsMeshCalculator::Result QgsMeshCalculator::expressionIsValid(
 QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *feedback )
 {
   // check input
-  if ( mOutputFile.isEmpty() && !( mDestination != QgsMeshDatasetGroup::Persistent ) )
+  if ( mOutputFile.isEmpty() &&  mDestination == QgsMeshDatasetGroup::Persistent )
   {
     return CreateOutputError;
   }

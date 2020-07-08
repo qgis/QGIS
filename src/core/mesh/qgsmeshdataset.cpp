@@ -488,12 +488,12 @@ QgsMeshDatasetGroupTreeItem::QgsMeshDatasetGroupTreeItem( const QDomElement &ite
     dependOnElement = dependOnElement.nextSiblingElement( QStringLiteral( "dependent-on-item" ) );
   }
 
-  QDomElement dependencieElement = itemElement.firstChildElement( QStringLiteral( "dependencies-item" ) );
+  QDomElement dependencieElement = itemElement.firstChildElement( QStringLiteral( "dependency-item" ) );
   while ( !dependencieElement.isNull() )
   {
     if ( dependencieElement.hasAttribute( QStringLiteral( "dataset-index" ) ) )
       mDatasetGroupDependencies.append( dependencieElement.attribute( QStringLiteral( "dataset-index" ) ).toInt() );
-    dependencieElement = dependencieElement.nextSiblingElement( QStringLiteral( "dependencies-item" ) );
+    dependencieElement = dependencieElement.nextSiblingElement( QStringLiteral( "dependency-item" ) );
   }
 
   QDomElement childElement = itemElement.firstChildElement( QStringLiteral( "mesh-dataset-group-tree-item" ) );
@@ -692,7 +692,7 @@ QDomElement QgsMeshDatasetGroupTreeItem::writeXml( QDomDocument &doc, const QgsR
 
   for ( int index : mDatasetGroupDependencies )
   {
-    QDomElement dependencieElement = doc.createElement( QStringLiteral( "dependencie-item" ) );
+    QDomElement dependencieElement = doc.createElement( QStringLiteral( "dependency-item" ) );
     dependencieElement.setAttribute( QStringLiteral( "dataset-index" ), index );
     itemElement.appendChild( dependencieElement );
   }

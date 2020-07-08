@@ -296,8 +296,8 @@ void QgsMeshDatasetGroupStore::readXml( const QDomElement &storeElem, const QgsR
       source = mExtraDatasets.get();
       QString name = datasetElem.attribute( QStringLiteral( "name" ) );
       QString formula = datasetElem.attribute( QStringLiteral( "formula" ) );
-      qint64 startTime = datasetElem.attribute( QStringLiteral( "startTime" ) ).toLongLong();
-      qint64 endTime = datasetElem.attribute( QStringLiteral( "endTime" ) ).toLongLong();
+      qint64 startTime = datasetElem.attribute( QStringLiteral( "start-time" ) ).toLongLong();
+      qint64 endTime = datasetElem.attribute( QStringLiteral( "end-time" ) ).toLongLong();
       if ( QgsApplication::instance() )
       {
         QgsMeshDataGeneratorInterface *generator =
