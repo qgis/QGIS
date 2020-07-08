@@ -1145,6 +1145,16 @@ Emitted when the map canvas temporal range changes.
 .. versionadded:: 3.14
 %End
 
+
+    void contextMenuAboutToShow( QMenu *menu, QgsMapMouseEvent *event );
+%Docstring
+Emitted before the map canvas context menu will be shown.
+Can be used to extend the context menu.
+
+.. versionadded:: 3.16
+%End
+
+
   protected:
 
     virtual bool event( QEvent *e );

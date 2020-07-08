@@ -1034,10 +1034,20 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Emitted when the map canvas temporal range changes.
-    *
-    * \since QGIS 3.14
-    */
+     *
+     * \since QGIS 3.14
+     */
     void temporalRangeChanged();
+
+
+    /**
+     * Emitted before the map canvas context menu will be shown.
+     * Can be used to extend the context menu.
+     *
+     * \since QGIS 3.16
+     */
+    void contextMenuAboutToShow( QMenu *menu, QgsMapMouseEvent *event );
+
 
   protected:
 
