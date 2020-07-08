@@ -49,6 +49,8 @@ class _3D_EXPORT Qgs3DMapExportSettings : public QObject
     bool exportTextures() const { return mExportTextures; }
     //! Returns the terrain texture resolution
     int terrainTextureResolution() const { return mTerrainTextureResolution; }
+    //! Returns the scale of the exported model
+    float scale() const { return mScale; }
 
     //! Sets the scene name
     void setSceneName( const QString &sceneName ) { mSceneName = sceneName; }
@@ -64,6 +66,8 @@ class _3D_EXPORT Qgs3DMapExportSettings : public QObject
     void setExportTextures( bool exportTextures ) { mExportTextures = exportTextures; }
     //! Sets the terrain texture resolution
     void setTerrainTextureResolution( int resolution ) { mTerrainTextureResolution = resolution; }
+    //! Sets the scale of exported model
+    void setScale( float scale ) { mScale = scale; }
 
   private:
     QString mSceneName = QString( "Scene" );
@@ -73,6 +77,7 @@ class _3D_EXPORT Qgs3DMapExportSettings : public QObject
     bool mExportNormals = true;
     bool mExportTextures = false;
     int mTerrainTextureResolution = 512;
+    float mScale = 1.0f;
 };
 
 #endif // QGS3DMAPEXPORTSETTINGS_H

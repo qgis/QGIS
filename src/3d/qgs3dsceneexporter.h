@@ -70,15 +70,19 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     //! Returns whether the textures will be exported
     bool exportTextures() const { return mExportTextures; }
 
-    //! Sets the terrian resolution
+    //! Sets the terrain resolution
     void setTerrainResolution( int resolution ) { mTerrainResolution = resolution; }
     //! Returns the terrain resolution
     int terrainResolution() const { return mTerrainResolution; }
 
-    //! Sets the terrian texture resolution
+    //! Sets the terrain texture resolution
     void setTerrainTextureResolution( int resolution ) { mTerrainTextureResolution = resolution; }
     //! Returns the terrain resolution
     int terrainTextureResolution() const { return mTerrainTextureResolution; }
+    //! Sets the scale of the exported 3D model
+    void setScale( float scale ) { mScale = scale; }
+    //! Returns the scale of the exported 3D model
+    float scale() const { return mScale; }
 
   private:
     //! Processes the attribute directly by taking a position buffer and converting it to Qgs3DExportObject
@@ -106,6 +110,7 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     bool mExportNormals;
     bool mExportTextures;
     int mTerrainTextureResolution;
+    float mScale;
 };
 
 #endif // QGS3DSCENEEXPORTER_H

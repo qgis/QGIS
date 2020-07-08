@@ -211,6 +211,7 @@ Qgs3DSceneExporter::Qgs3DSceneExporter( Qt3DCore::QNode *parent )
   , mExportNormals( true )
   , mExportTextures( false )
   , mTerrainTextureResolution( 512 )
+  , mScale( 1.0f )
 {
 
 }
@@ -505,7 +506,7 @@ void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
     out << "o " << obj->name() << "\n";
     if ( material != QString() )
       out << "usemtl " << material << "\n";
-    obj->saveTo( out, scale, QVector3D( centerX, centerY, centerZ ) );
+    obj->saveTo( out, scale / mScale, QVector3D( centerX, centerY, centerZ ) );
   }
 }
 
