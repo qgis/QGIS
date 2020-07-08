@@ -50,7 +50,9 @@ QString QgsRescaleRasterAlgorithm::groupId() const
 QString QgsRescaleRasterAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Rescales raster layer to the new values range preserving shape "
-                      "(distribution) of the raster's histogram (pixel values)." );
+                      "(distribution) of the raster's histogram (pixel values).\n\n"
+                      "By default algorithm preserves original NODATA value, but there is "
+                      "an option to override it." );
 }
 
 QgsRescaleRasterAlgorithm *QgsRescaleRasterAlgorithm::createInstance() const
@@ -64,6 +66,7 @@ void QgsRescaleRasterAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT" ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MINIMUM" ), QObject::tr( "New minimum value" ), QgsProcessingParameterNumber::Double, 0 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAXIMUM" ), QObject::tr( "New maximum value" ), QgsProcessingParameterNumber::Double, 255 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NODATA" ), QObject::tr( "New NODATA value" ), QgsProcessingParameterNumber::Double, QVariant(), true ) );
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Rescaled" ) ) );
 }
 
@@ -90,7 +93,14 @@ bool QgsRescaleRasterAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
   mLayerWidth = layer->width();
   mLayerHeight = layer->height();
   mExtent = layer->extent();
-  mNoData = layer->dataProvider()->sourceNoDataValue( mBand );
+  if ( parameters.value( QStringLiteral( "NODATA" ) ).isValid() )
+  {
+    mNoData = parameterAsDouble( parameters, QStringLiteral( "NODATA" ), context );
+  }
+  else
+  {
+    mNoData = layer->dataProvider()->sourceNoDataValue( mBand );
+  }
   mXSize = mInterface->xSize();
   mYSize = mInterface->ySize();
 
@@ -102,6 +112,7 @@ QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &para
   feedback->pushInfo( QObject::tr( "Calculating raster minimum and maximum values…" ) );
   QgsRasterBandStats stats = mInterface->bandStatistics( mBand, QgsRasterBandStats::Min | QgsRasterBandStats::Max, QgsRectangle(), 0 );
 
+  feedback->pushInfo( QObject::tr( "Rescaling values…" ) );
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
