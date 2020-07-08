@@ -3053,38 +3053,38 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
 
     case QgsWkbTypes::LineString:
     {
-      QgsLineString *lineString = static_cast< QgsLineString * >( d->geometry.get() );
+      const QgsLineString *lineString = qgsgeometry_cast< const QgsLineString * >( geom.constGet() );
       return QgsGeometry( smoothLine( *lineString, iterations, offset, minimumDistance, maxAngle ) );
     }
 
     case QgsWkbTypes::MultiLineString:
     {
-      QgsMultiLineString *multiLine = static_cast< QgsMultiLineString * >( d->geometry.get() );
+      const QgsMultiLineString *multiLine = qgsgeometry_cast< const QgsMultiLineString * >( geom.constGet() );
 
       std::unique_ptr< QgsMultiLineString > resultMultiline = qgis::make_unique< QgsMultiLineString> ();
       resultMultiline->reserve( multiLine->numGeometries() );
       for ( int i = 0; i < multiLine->numGeometries(); ++i )
       {
-        resultMultiline->addGeometry( smoothLine( *( static_cast< QgsLineString * >( multiLine->geometryN( i ) ) ), iterations, offset, minimumDistance, maxAngle ).release() );
+        resultMultiline->addGeometry( smoothLine( *( qgsgeometry_cast< const QgsLineString * >( multiLine->geometryN( i ) ) ), iterations, offset, minimumDistance, maxAngle ).release() );
       }
       return QgsGeometry( std::move( resultMultiline ) );
     }
 
     case QgsWkbTypes::Polygon:
     {
-      QgsPolygon *poly = static_cast< QgsPolygon * >( d->geometry.get() );
+      const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon * >( geom.constGet() );
       return QgsGeometry( smoothPolygon( *poly, iterations, offset, minimumDistance, maxAngle ) );
     }
 
     case QgsWkbTypes::MultiPolygon:
     {
-      QgsMultiPolygon *multiPoly = static_cast< QgsMultiPolygon * >( d->geometry.get() );
+      const QgsMultiPolygon *multiPoly = qgsgeometry_cast< const QgsMultiPolygon * >( geom.constGet() );
 
       std::unique_ptr< QgsMultiPolygon > resultMultiPoly = qgis::make_unique< QgsMultiPolygon >();
       resultMultiPoly->reserve( multiPoly->numGeometries() );
       for ( int i = 0; i < multiPoly->numGeometries(); ++i )
       {
-        resultMultiPoly->addGeometry( smoothPolygon( *( static_cast< QgsPolygon * >( multiPoly->geometryN( i ) ) ), iterations, offset, minimumDistance, maxAngle ).release() );
+        resultMultiPoly->addGeometry( smoothPolygon( *( qgsgeometry_cast< const QgsPolygon * >( multiPoly->geometryN( i ) ) ), iterations, offset, minimumDistance, maxAngle ).release() );
       }
       return QgsGeometry( std::move( resultMultiPoly ) );
     }
