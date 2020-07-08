@@ -144,12 +144,11 @@ QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &para
   std::unique_ptr< QgsRasterBlock > block;
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, block, iterLeft, iterTop ) )
   {
-    if ( feedback )
-      feedback->setProgress( 100 * ( ( iterTop / blockHeight * numBlocksX ) + iterLeft / blockWidth ) / numBlocks );
+    feedback->setProgress( 100 * ( ( iterTop / blockHeight * numBlocksX ) + iterLeft / blockWidth ) / numBlocks );
 
     for ( int row = 0; row < iterRows; row++ )
     {
-      if ( feedback && feedback->isCanceled() )
+      if ( feedback->isCanceled() )
         break;
 
       for ( int col = 0; col < iterCols; col++ )
