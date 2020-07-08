@@ -45,10 +45,10 @@ QgsTextRenderer::HAlignment QgsTextRenderer::convertQtHAlignment( Qt::Alignment 
     return AlignRight;
   else if ( alignment & Qt::AlignHCenter )
     return AlignCenter;
+  else if ( alignment & Qt::AlignJustify )
+    return AlignJustify;
 
-  // not supported
-  // Qt::AlignJustify
-  // Qt::AlignAbsolute
+  // not supported?
   return AlignLeft;
 }
 
@@ -727,6 +727,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
         switch ( component.hAlign )
         {
           case AlignLeft:
+          case AlignJustify:
             component.center = QPointF( component.origin.x() + width / 2.0,
                                         component.origin.y() + height / 2.0 );
             break;
@@ -749,6 +750,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
         switch ( component.hAlign )
         {
           case AlignLeft:
+          case AlignJustify:
             component.center = QPointF( component.origin.x() + width / 2.0,
                                         component.origin.y() - height / 2.0 + originAdjust );
             break;
@@ -1203,6 +1205,7 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
 #endif
 }
 
+
 void QgsTextRenderer::drawTextInternal( TextPart drawType,
                                         QgsRenderContext &context,
                                         const QgsTextFormat &format,
@@ -1226,500 +1229,556 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
     fontMetrics = tmpMetrics.get();
   }
 
-  QPainter *maskPainter = context.maskPainter( context.currentMaskId() );
-
-  QgsTextFormat::TextOrientation orientation = format.orientation();
-  double rotation = -component.rotation * 180 / M_PI;
-  if ( format.orientation() == QgsTextFormat::RotationBasedOrientation )
-  {
-    // Between 45 to 135 and 235 to 315 degrees, rely on vertical orientation
-    if ( rotation >= -315 && rotation < -90 )
-    {
-      rotation -= 90;
-      orientation = QgsTextFormat::VerticalOrientation;
-    }
-    else if ( rotation >= -90 && rotation < -45 )
-    {
-      rotation += 90;
-      orientation = QgsTextFormat::VerticalOrientation;
-    }
-    else
-    {
-      orientation = QgsTextFormat::HorizontalOrientation;
-    }
-  }
-
-  const QStringList textLines = document.toPlainText();
-
+  double rotation = 0;
+  const QgsTextFormat::TextOrientation orientation = calculateRotationAndOrientationForComponent( format, component, rotation );
   switch ( orientation )
   {
     case QgsTextFormat::HorizontalOrientation:
     {
-      double labelWidest = 0.0;
-      switch ( mode )
-      {
-        case Label:
-        case Point:
-          for ( const QString &line : textLines )
-          {
-            double labelWidth = fontMetrics->width( line ) / fontScale;
-            if ( labelWidth > labelWidest )
-            {
-              labelWidest = labelWidth;
-            }
-          }
-          break;
-
-        case Rect:
-          labelWidest = component.size.width();
-          break;
-      }
-
-      double labelHeight = ( fontMetrics->ascent() + fontMetrics->descent() ) / fontScale; // ignore +1 for baseline
-      //  double labelHighest = labelfm->height() + ( double )(( lines - 1 ) * labelHeight * tmpLyr.multilineHeight );
-
-      // needed to move bottom of text's descender to within bottom edge of label
-      double ascentOffset = 0.25 * fontMetrics->ascent() / fontScale; // labelfm->descent() is not enough
-
-      int i = 0;
-
-      bool adjustForAlignment = alignment != AlignLeft && ( mode != Label || textLines.size() > 1 );
-
-      if ( mode == Rect && vAlignment != AlignTop )
-      {
-        // need to calculate overall text height in advance so that we can adjust for vertical alignment
-        const double overallHeight = textHeight( context, format, textLines, Rect );
-        switch ( vAlignment )
-        {
-          case AlignTop:
-            break;
-
-          case AlignVCenter:
-            ascentOffset = -( component.size.height() - overallHeight ) * 0.5 + ascentOffset;
-            break;
-
-          case AlignBottom:
-            ascentOffset = -( component.size.height() - overallHeight ) + ascentOffset;
-            break;
-        }
-      }
-
-
-      for ( const QString &line : qgis::as_const( textLines ) )
-      {
-        const QgsTextBlock block = document.at( i );
-
-        QgsScopedQPainterState painterState( context.painter() );
-        context.setPainterFlagsUsingContext();
-        context.painter()->translate( component.origin );
-        if ( !qgsDoubleNear( rotation, 0.0 ) )
-          context.painter()->rotate( rotation );
-
-        // apply to the mask painter the same transformations
-        if ( maskPainter )
-        {
-          maskPainter->save();
-          maskPainter->translate( component.origin );
-          if ( !qgsDoubleNear( rotation, 0.0 ) )
-            maskPainter->rotate( rotation );
-        }
-
-        // figure x offset for horizontal alignment of multiple lines
-        double xMultiLineOffset = 0.0;
-        double labelWidth = fontMetrics->width( line ) / fontScale;
-        if ( adjustForAlignment )
-        {
-          double labelWidthDiff = labelWidest - labelWidth;
-          if ( alignment == AlignCenter )
-          {
-            labelWidthDiff /= 2;
-          }
-          switch ( mode )
-          {
-            case Label:
-            case Rect:
-              xMultiLineOffset = labelWidthDiff;
-              break;
-
-            case Point:
-              if ( alignment == AlignRight )
-                xMultiLineOffset = labelWidthDiff - labelWidest;
-              else if ( alignment == AlignCenter )
-                xMultiLineOffset = labelWidthDiff - labelWidest / 2.0;
-
-              break;
-          }
-          //QgsDebugMsgLevel( QStringLiteral( "xMultiLineOffset: %1" ).arg( xMultiLineOffset ), 4 );
-        }
-
-        double yMultiLineOffset = ascentOffset;
-        switch ( mode )
-        {
-          case Label:
-            // rendering labels needs special handling - in this case text should be
-            // drawn with the bottom left corner coinciding with origin, vs top left
-            // for standard text rendering. Line height is also slightly different.
-            yMultiLineOffset = - ascentOffset - ( textLines.size() - 1 - i ) * labelHeight * format.lineHeight();
-            break;
-
-          case Rect:
-            // standard rendering - designed to exactly replicate QPainter's drawText method
-            yMultiLineOffset = - ascentOffset + labelHeight - 1 /*baseline*/ + format.lineHeight() * fontMetrics->lineSpacing() * i / fontScale;
-            break;
-
-          case Point:
-            // standard rendering - designed to exactly replicate QPainter's drawText rect method
-            yMultiLineOffset = 0 - ( textLines.size() - 1 - i ) * fontMetrics->lineSpacing() * format.lineHeight() / fontScale;
-            break;
-
-        }
-
-        context.painter()->translate( QPointF( xMultiLineOffset, yMultiLineOffset ) );
-        if ( maskPainter )
-          maskPainter->translate( QPointF( xMultiLineOffset, yMultiLineOffset ) );
-
-        Component subComponent;
-        subComponent.block = block;
-        subComponent.size = QSizeF( labelWidth, labelHeight );
-        subComponent.offset = QPointF( 0.0, -ascentOffset );
-        subComponent.rotation = -component.rotation * 180 / M_PI;
-        subComponent.rotationOffset = 0.0;
-
-        // draw the mask below the text (for preview)
-        if ( format.mask().enabled() )
-        {
-          QgsTextRenderer::drawMask( context, subComponent, format );
-        }
-
-        if ( drawType == QgsTextRenderer::Buffer )
-        {
-          QgsTextRenderer::drawBuffer( context, subComponent, format );
-        }
-        else
-        {
-          // store text's drawing in QPicture for drop shadow call
-          QPicture textPict;
-          QPainter textp;
-          textp.begin( &textPict );
-          textp.setPen( Qt::NoPen );
-          const QFont font = format.scaledFont( context, fontScale );
-          textp.scale( 1 / fontScale, 1 / fontScale );
-
-          double xOffset = 0;
-          for ( const QgsTextFragment &fragment : block )
-          {
-            // draw text, QPainterPath method
-            QPainterPath path;
-            path.setFillRule( Qt::WindingFill );
-
-            QFont fragmentFont = font;
-            fragment.characterFormat().updateFontForFormat( fragmentFont, fontScale );
-            QFontMetricsF fragmentMetrics = QFontMetricsF( fragmentFont );
-
-            path.addText( xOffset, 0, fragmentFont, fragment.text() );
-
-            QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
-            textColor.setAlphaF( format.opacity() );
-            textp.setBrush( textColor );
-            textp.drawPath( path );
-
-            xOffset += fragment.horizontalAdvance( fragmentFont, true );
-
-            // TODO: why are some font settings lost on drawPicture() when using drawText() inside QPicture?
-            //       e.g. some capitalization options, but not others
-            //textp.setFont( tmpLyr.textFont );
-            //textp.setPen( tmpLyr.textColor );
-            //textp.drawText( 0, 0, component.text() );
-          }
-          textp.end();
-
-          if ( format.shadow().enabled() && format.shadow().shadowPlacement() == QgsTextShadowSettings::ShadowText )
-          {
-            subComponent.picture = textPict;
-            subComponent.pictureBuffer = 0.0; // no pen width to deal with
-            subComponent.origin = QPointF( 0.0, 0.0 );
-
-            QgsTextRenderer::drawShadow( context, subComponent, format );
-          }
-
-          // paint the text
-          if ( context.useAdvancedEffects() )
-          {
-            context.painter()->setCompositionMode( format.blendMode() );
-          }
-
-          // scale for any print output or image saving @ specific dpi
-          context.painter()->scale( subComponent.dpiRatio, subComponent.dpiRatio );
-
-          switch ( context.textRenderFormat() )
-          {
-            case QgsRenderContext::TextFormatAlwaysOutlines:
-            {
-              // draw outlined text
-              _fixQPictureDPI( context.painter() );
-              context.painter()->drawPicture( 0, 0, textPict );
-              break;
-            }
-
-            case QgsRenderContext::TextFormatAlwaysText:
-            {
-              double xOffset = 0;
-              for ( const QgsTextFragment &fragment : block )
-              {
-                QFont fragmentFont = font;
-                fragment.characterFormat().updateFontForFormat( fragmentFont, fontScale );
-
-                QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
-                textColor.setAlphaF( format.opacity() );
-
-                context.painter()->setPen( textColor );
-                context.painter()->setFont( fragmentFont );
-                context.painter()->setRenderHint( QPainter::TextAntialiasing );
-
-                context.painter()->scale( 1 / fontScale, 1 / fontScale );
-                context.painter()->drawText( xOffset, 0, fragment.text() );
-                context.painter()->scale( fontScale, fontScale );
-
-                xOffset += fragment.horizontalAdvance( fragmentFont, true, fontScale );
-              }
-            }
-          }
-        }
-        if ( maskPainter )
-          maskPainter->restore();
-        i++;
-      }
+      drawTextInternalHorizontal( context, format, drawType, mode, component, document, fontScale, fontMetrics, alignment, vAlignment, rotation );
       break;
     }
 
     case QgsTextFormat::VerticalOrientation:
     case QgsTextFormat::RotationBasedOrientation:
     {
-      const QFont font = format.scaledFont( context, fontScale );
-      double letterSpacing = font.letterSpacing() / fontScale;
+      drawTextInternalVertical( context, format, drawType, mode, component, document, fontScale, fontMetrics, alignment, vAlignment, rotation );
+      break;
+    }
+  }
+}
 
-      double labelWidth = fontMetrics->maxWidth() / fontScale; // label width represents the width of one line of a multi-line label
-      double actualLabelWidest = labelWidth + ( textLines.size() - 1 ) * labelWidth * format.lineHeight();
-      double labelWidest = 0.0;
+QgsTextFormat::TextOrientation QgsTextRenderer::calculateRotationAndOrientationForComponent( const QgsTextFormat &format, const QgsTextRenderer::Component &component, double &rotation )
+{
+  rotation = -component.rotation * 180 / M_PI;
+
+  switch ( format.orientation() )
+  {
+    case QgsTextFormat::RotationBasedOrientation:
+    {
+      // Between 45 to 135 and 235 to 315 degrees, rely on vertical orientation
+      if ( rotation >= -315 && rotation < -90 )
+      {
+        rotation -= 90;
+        return QgsTextFormat::VerticalOrientation;
+      }
+      else if ( rotation >= -90 && rotation < -45 )
+      {
+        rotation += 90;
+        return QgsTextFormat::VerticalOrientation;
+      }
+
+      return QgsTextFormat::HorizontalOrientation;
+    }
+
+    case QgsTextFormat::HorizontalOrientation:
+    case QgsTextFormat::VerticalOrientation:
+      return format.orientation();
+  }
+  return QgsTextFormat::HorizontalOrientation;
+}
+
+void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, const QgsTextFormat &format, TextPart drawType, DrawMode mode, const Component &component, const QgsTextDocument &document, double fontScale, const QFontMetricsF *fontMetrics, HAlignment hAlignment,
+    VAlignment vAlignment, double rotation )
+{
+  QPainter *maskPainter = context.maskPainter( context.currentMaskId() );
+  const QStringList textLines = document.toPlainText();
+
+  double labelWidest = 0.0;
+  switch ( mode )
+  {
+    case Label:
+    case Point:
+      for ( const QString &line : textLines )
+      {
+        double labelWidth = fontMetrics->width( line ) / fontScale;
+        if ( labelWidth > labelWidest )
+        {
+          labelWidest = labelWidth;
+        }
+      }
+      break;
+
+    case Rect:
+      labelWidest = component.size.width();
+      break;
+  }
+
+  double labelHeight = ( fontMetrics->ascent() + fontMetrics->descent() ) / fontScale; // ignore +1 for baseline
+  //  double labelHighest = labelfm->height() + ( double )(( lines - 1 ) * labelHeight * tmpLyr.multilineHeight );
+
+  // needed to move bottom of text's descender to within bottom edge of label
+  double ascentOffset = 0.25 * fontMetrics->ascent() / fontScale; // labelfm->descent() is not enough
+
+  int i = 0;
+
+  bool adjustForAlignment = hAlignment != AlignLeft && ( mode != Label || textLines.size() > 1 );
+
+  if ( mode == Rect && vAlignment != AlignTop )
+  {
+    // need to calculate overall text height in advance so that we can adjust for vertical alignment
+    const double overallHeight = textHeight( context, format, textLines, Rect );
+    switch ( vAlignment )
+    {
+      case AlignTop:
+        break;
+
+      case AlignVCenter:
+        ascentOffset = -( component.size.height() - overallHeight ) * 0.5 + ascentOffset;
+        break;
+
+      case AlignBottom:
+        ascentOffset = -( component.size.height() - overallHeight ) + ascentOffset;
+        break;
+    }
+  }
+
+  for ( const QString &line : qgis::as_const( textLines ) )
+  {
+    const QgsTextBlock block = document.at( i );
+
+    QgsScopedQPainterState painterState( context.painter() );
+    context.setPainterFlagsUsingContext();
+    context.painter()->translate( component.origin );
+    if ( !qgsDoubleNear( rotation, 0.0 ) )
+      context.painter()->rotate( rotation );
+
+    // apply to the mask painter the same transformations
+    if ( maskPainter )
+    {
+      maskPainter->save();
+      maskPainter->translate( component.origin );
+      if ( !qgsDoubleNear( rotation, 0.0 ) )
+        maskPainter->rotate( rotation );
+    }
+
+    // figure x offset for horizontal alignment of multiple lines
+    double xMultiLineOffset = 0.0;
+    double labelWidth = fontMetrics->width( line ) / fontScale;
+    if ( adjustForAlignment )
+    {
+      double labelWidthDiff = 0;
+      switch ( hAlignment )
+      {
+        case AlignCenter:
+          labelWidthDiff = ( labelWidest - labelWidth ) * 0.5;
+          break;
+
+        case AlignRight:
+          labelWidthDiff = labelWidest - labelWidth;
+          break;
+
+        case AlignLeft:
+        case AlignJustify:
+          break;
+      }
+
       switch ( mode )
       {
         case Label:
-        case Point:
-          labelWidest = actualLabelWidest;
-          break;
-
         case Rect:
-          labelWidest = component.size.width();
+          xMultiLineOffset = labelWidthDiff;
           break;
-      }
 
-      int maxLineLength = 0;
-      for ( const QString &line : qgis::as_const( textLines ) )
-      {
-        maxLineLength = std::max( maxLineLength, line.length() );
-      }
-      double actualLabelHeight = fontMetrics->ascent() / fontScale + ( fontMetrics->ascent() / fontScale + letterSpacing ) * ( maxLineLength - 1 );
-      double ascentOffset = fontMetrics->ascent() / fontScale;
-
-      int i = 0;
-
-      bool adjustForAlignment = alignment != AlignLeft && ( mode != Label || textLines.size() > 1 );
-
-      for ( const QgsTextBlock &block : document )
-      {
-        QgsScopedQPainterState painterState( context.painter() );
-        context.setPainterFlagsUsingContext();
-
-        context.painter()->translate( component.origin );
-        if ( !qgsDoubleNear( rotation, 0.0 ) )
-          context.painter()->rotate( rotation );
-
-        // apply to the mask painter the same transformations
-        if ( maskPainter )
+        case Point:
         {
-          maskPainter->save();
-          maskPainter->translate( component.origin );
-          if ( !qgsDoubleNear( rotation, 0.0 ) )
-            maskPainter->rotate( rotation );
-        }
-
-        // figure x offset of multiple lines
-        double xOffset = actualLabelWidest - labelWidth - ( i * labelWidth * format.lineHeight() );
-        if ( adjustForAlignment )
-        {
-          double labelWidthDiff = labelWidest - actualLabelWidest;
-          if ( alignment == AlignCenter )
+          switch ( hAlignment )
           {
-            labelWidthDiff /= 2;
-          }
-          switch ( mode )
-          {
-            case Label:
-            case Rect:
-              xOffset += labelWidthDiff;
+            case AlignRight:
+              xMultiLineOffset = labelWidthDiff - labelWidest;
               break;
 
-            case Point:
+            case AlignCenter:
+              xMultiLineOffset = labelWidthDiff - labelWidest / 2.0;
+              break;
+
+            case AlignLeft:
+            case AlignJustify:
               break;
           }
         }
+        break;
+      }
+      //QgsDebugMsgLevel( QStringLiteral( "xMultiLineOffset: %1" ).arg( xMultiLineOffset ), 4 );
+    }
 
-        double yOffset = 0.0;
-        switch ( mode )
+    double yMultiLineOffset = ascentOffset;
+    switch ( mode )
+    {
+      case Label:
+        // rendering labels needs special handling - in this case text should be
+        // drawn with the bottom left corner coinciding with origin, vs top left
+        // for standard text rendering. Line height is also slightly different.
+        yMultiLineOffset = - ascentOffset - ( textLines.size() - 1 - i ) * labelHeight * format.lineHeight();
+        break;
+
+      case Rect:
+        // standard rendering - designed to exactly replicate QPainter's drawText method
+        yMultiLineOffset = - ascentOffset + labelHeight - 1 /*baseline*/ + format.lineHeight() * fontMetrics->lineSpacing() * i / fontScale;
+        break;
+
+      case Point:
+        // standard rendering - designed to exactly replicate QPainter's drawText rect method
+        yMultiLineOffset = 0 - ( textLines.size() - 1 - i ) * fontMetrics->lineSpacing() * format.lineHeight() / fontScale;
+        break;
+
+    }
+
+    context.painter()->translate( QPointF( xMultiLineOffset, yMultiLineOffset ) );
+    if ( maskPainter )
+      maskPainter->translate( QPointF( xMultiLineOffset, yMultiLineOffset ) );
+
+    Component subComponent;
+    subComponent.block = block;
+    subComponent.size = QSizeF( labelWidth, labelHeight );
+    subComponent.offset = QPointF( 0.0, -ascentOffset );
+    subComponent.rotation = -component.rotation * 180 / M_PI;
+    subComponent.rotationOffset = 0.0;
+
+    // draw the mask below the text (for preview)
+    if ( format.mask().enabled() )
+    {
+      QgsTextRenderer::drawMask( context, subComponent, format );
+    }
+
+    if ( drawType == QgsTextRenderer::Buffer )
+    {
+      QgsTextRenderer::drawBuffer( context, subComponent, format );
+    }
+    else
+    {
+      // store text's drawing in QPicture for drop shadow call
+      QPicture textPict;
+      QPainter textp;
+      textp.begin( &textPict );
+      textp.setPen( Qt::NoPen );
+      const QFont font = format.scaledFont( context, fontScale );
+      textp.scale( 1 / fontScale, 1 / fontScale );
+
+      double xOffset = 0;
+      for ( const QgsTextFragment &fragment : block )
+      {
+        // draw text, QPainterPath method
+        QPainterPath path;
+        path.setFillRule( Qt::WindingFill );
+
+        QFont fragmentFont = font;
+        fragment.characterFormat().updateFontForFormat( fragmentFont, fontScale );
+        QFontMetricsF fragmentMetrics = QFontMetricsF( fragmentFont );
+
+        path.addText( xOffset, 0, fragmentFont, fragment.text() );
+
+        QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
+        textColor.setAlphaF( format.opacity() );
+        textp.setBrush( textColor );
+        textp.drawPath( path );
+
+        xOffset += fragment.horizontalAdvance( fragmentFont, true );
+
+        // TODO: why are some font settings lost on drawPicture() when using drawText() inside QPicture?
+        //       e.g. some capitalization options, but not others
+        //textp.setFont( tmpLyr.textFont );
+        //textp.setPen( tmpLyr.textColor );
+        //textp.drawText( 0, 0, component.text() );
+      }
+      textp.end();
+
+      if ( format.shadow().enabled() && format.shadow().shadowPlacement() == QgsTextShadowSettings::ShadowText )
+      {
+        subComponent.picture = textPict;
+        subComponent.pictureBuffer = 0.0; // no pen width to deal with
+        subComponent.origin = QPointF( 0.0, 0.0 );
+
+        QgsTextRenderer::drawShadow( context, subComponent, format );
+      }
+
+      // paint the text
+      if ( context.useAdvancedEffects() )
+      {
+        context.painter()->setCompositionMode( format.blendMode() );
+      }
+
+      // scale for any print output or image saving @ specific dpi
+      context.painter()->scale( subComponent.dpiRatio, subComponent.dpiRatio );
+
+      switch ( context.textRenderFormat() )
+      {
+        case QgsRenderContext::TextFormatAlwaysOutlines:
         {
-          case Label:
-            if ( format.orientation() == QgsTextFormat::RotationBasedOrientation )
-            {
-              if ( rotation >= -405 && rotation < -180 )
-              {
-                yOffset = ascentOffset;
-              }
-              else if ( rotation >= 0 && rotation < 45 )
-              {
-                xOffset -= actualLabelWidest;
-                yOffset = -actualLabelHeight + ascentOffset + fontMetrics->descent() / fontScale;
-              }
-            }
-            else
-            {
-              yOffset = -actualLabelHeight + ascentOffset;
-            }
-            break;
-
-          case Point:
-            yOffset = -actualLabelHeight + ascentOffset;
-            break;
-
-          case Rect:
-            yOffset = ascentOffset;
-            break;
+          // draw outlined text
+          _fixQPictureDPI( context.painter() );
+          context.painter()->drawPicture( 0, 0, textPict );
+          break;
         }
 
-        context.painter()->translate( QPointF( xOffset, yOffset ) );
-
-        double fragmentYOffset = 0;
-        for ( const QgsTextFragment &fragment : block )
+        case QgsRenderContext::TextFormatAlwaysText:
         {
-          // apply some character replacement to draw symbols in vertical presentation
-          const QString line = QgsStringUtils::substituteVerticalCharacters( fragment.text() );
-
-          QFont fragmentFont( font );
-          fragment.characterFormat().updateFontForFormat( fragmentFont, fontScale );
-
-          QFontMetricsF fragmentMetrics( fragmentFont );
-
-          double labelHeight = fragmentMetrics.ascent() / fontScale + ( fragmentMetrics.ascent() / fontScale + letterSpacing ) * ( line.length() - 1 );
-
-          Component subComponent;
-          subComponent.block = QgsTextBlock( fragment );
-          subComponent.size = QSizeF( labelWidth, labelHeight );
-          subComponent.offset = QPointF( 0.0, fragmentYOffset );
-          subComponent.rotation = -component.rotation * 180 / M_PI;
-          subComponent.rotationOffset = 0.0;
-
-          // draw the mask below the text (for preview)
-          if ( format.mask().enabled() )
+          double xOffset = 0;
+          for ( const QgsTextFragment &fragment : block )
           {
-            // WARNING: totally broken! (has been since mask was introduced)
-#if 0
-            QgsTextRenderer::drawMask( context, subComponent, format );
-#endif
-          }
+            QFont fragmentFont = font;
+            fragment.characterFormat().updateFontForFormat( fragmentFont, fontScale );
 
-          if ( drawType == QgsTextRenderer::Buffer )
-          {
-            fragmentYOffset += QgsTextRenderer::drawBuffer( context, subComponent, format );
-          }
-          else
-          {
-            // draw text, QPainterPath method
-            QPainterPath path;
-            path.setFillRule( Qt::WindingFill );
-            const QStringList parts = QgsPalLabeling::splitToGraphemes( fragment.text() );
-            double partYOffset = 0.0;
-            for ( const auto &part : parts )
-            {
-              double partXOffset = ( labelWidth - ( fragmentMetrics.width( part ) / fontScale - letterSpacing ) ) / 2;
-              path.addText( partXOffset * fontScale, partYOffset * fontScale, fragmentFont, part );
-              partYOffset += fragmentMetrics.ascent() / fontScale + letterSpacing;
-            }
-
-            // store text's drawing in QPicture for drop shadow call
-            QPicture textPict;
-            QPainter textp;
-            textp.begin( &textPict );
-            textp.setPen( Qt::NoPen );
             QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
             textColor.setAlphaF( format.opacity() );
-            textp.setBrush( textColor );
-            textp.scale( 1 / fontScale, 1 / fontScale );
-            textp.drawPath( path );
-            // TODO: why are some font settings lost on drawPicture() when using drawText() inside QPicture?
-            //       e.g. some capitalization options, but not others
-            //textp.setFont( tmpLyr.textFont );
-            //textp.setPen( tmpLyr.textColor );
-            //textp.drawText( 0, 0, component.text() );
-            textp.end();
 
-            if ( format.shadow().enabled() && format.shadow().shadowPlacement() == QgsTextShadowSettings::ShadowText )
-            {
-              subComponent.picture = textPict;
-              subComponent.pictureBuffer = 0.0; // no pen width to deal with
-              subComponent.origin = QPointF( 0.0, fragmentYOffset );
-              const double prevY = subComponent.offset.y();
-              subComponent.offset = QPointF( 0, -labelHeight );
-              subComponent.useOrigin = true;
-              QgsTextRenderer::drawShadow( context, subComponent, format );
-              subComponent.useOrigin = false;
-              subComponent.offset = QPointF( 0, prevY );
-            }
+            context.painter()->setPen( textColor );
+            context.painter()->setFont( fragmentFont );
+            context.painter()->setRenderHint( QPainter::TextAntialiasing );
 
-            // paint the text
-            if ( context.useAdvancedEffects() )
-            {
-              context.painter()->setCompositionMode( format.blendMode() );
-            }
+            context.painter()->scale( 1 / fontScale, 1 / fontScale );
+            context.painter()->drawText( xOffset, 0, fragment.text() );
+            context.painter()->scale( fontScale, fontScale );
 
-            // scale for any print output or image saving @ specific dpi
-            context.painter()->scale( subComponent.dpiRatio, subComponent.dpiRatio );
-
-            switch ( context.textRenderFormat() )
-            {
-              case QgsRenderContext::TextFormatAlwaysOutlines:
-              {
-                // draw outlined text
-                _fixQPictureDPI( context.painter() );
-                context.painter()->drawPicture( 0, fragmentYOffset, textPict );
-                fragmentYOffset += partYOffset;
-                break;
-              }
-
-              case QgsRenderContext::TextFormatAlwaysText:
-              {
-                context.painter()->setFont( fragmentFont );
-                context.painter()->setPen( textColor );
-                context.painter()->setRenderHint( QPainter::TextAntialiasing );
-
-                double partYOffset = 0.0;
-                for ( const QString &part : parts )
-                {
-                  double partXOffset = ( labelWidth - ( fragmentMetrics.width( part ) / fontScale - letterSpacing ) ) / 2;
-                  context.painter()->scale( 1 / fontScale, 1 / fontScale );
-                  context.painter()->drawText( partXOffset * fontScale, ( fragmentYOffset + partYOffset ) * fontScale, part );
-                  context.painter()->scale( fontScale, fontScale );
-                  partYOffset += fragmentMetrics.ascent() / fontScale + letterSpacing;
-                }
-                fragmentYOffset += partYOffset;
-              }
-            }
+            xOffset += fragment.horizontalAdvance( fragmentFont, true, fontScale );
           }
         }
-
-        if ( maskPainter )
-          maskPainter->restore();
-        i++;
       }
-      break;
     }
+    if ( maskPainter )
+      maskPainter->restore();
+    i++;
+  }
+}
+
+void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart drawType, QgsTextRenderer::DrawMode mode, const QgsTextRenderer::Component &component, const QgsTextDocument &document, double fontScale, const QFontMetricsF *fontMetrics, QgsTextRenderer::HAlignment hAlignment, QgsTextRenderer::VAlignment, double rotation )
+{
+  QPainter *maskPainter = context.maskPainter( context.currentMaskId() );
+  const QStringList textLines = document.toPlainText();
+
+  const QFont font = format.scaledFont( context, fontScale );
+  double letterSpacing = font.letterSpacing() / fontScale;
+
+  double labelWidth = fontMetrics->maxWidth() / fontScale; // label width represents the width of one line of a multi-line label
+  double actualLabelWidest = labelWidth + ( textLines.size() - 1 ) * labelWidth * format.lineHeight();
+  double labelWidest = 0.0;
+  switch ( mode )
+  {
+    case Label:
+    case Point:
+      labelWidest = actualLabelWidest;
+      break;
+
+    case Rect:
+      labelWidest = component.size.width();
+      break;
+  }
+
+  int maxLineLength = 0;
+  for ( const QString &line : qgis::as_const( textLines ) )
+  {
+    maxLineLength = std::max( maxLineLength, line.length() );
+  }
+  double actualLabelHeight = fontMetrics->ascent() / fontScale + ( fontMetrics->ascent() / fontScale + letterSpacing ) * ( maxLineLength - 1 );
+  double ascentOffset = fontMetrics->ascent() / fontScale;
+
+  int i = 0;
+
+  bool adjustForAlignment = hAlignment != AlignLeft && ( mode != Label || textLines.size() > 1 );
+
+  for ( const QgsTextBlock &block : document )
+  {
+    QgsScopedQPainterState painterState( context.painter() );
+    context.setPainterFlagsUsingContext();
+
+    context.painter()->translate( component.origin );
+    if ( !qgsDoubleNear( rotation, 0.0 ) )
+      context.painter()->rotate( rotation );
+
+    // apply to the mask painter the same transformations
+    if ( maskPainter )
+    {
+      maskPainter->save();
+      maskPainter->translate( component.origin );
+      if ( !qgsDoubleNear( rotation, 0.0 ) )
+        maskPainter->rotate( rotation );
+    }
+
+    // figure x offset of multiple lines
+    double xOffset = actualLabelWidest - labelWidth - ( i * labelWidth * format.lineHeight() );
+    if ( adjustForAlignment )
+    {
+      double labelWidthDiff = 0;
+      switch ( hAlignment )
+      {
+        case AlignCenter:
+          labelWidthDiff = ( labelWidest - actualLabelWidest ) * 0.5;
+          break;
+
+        case AlignRight:
+          labelWidthDiff = labelWidest - actualLabelWidest;
+          break;
+
+        case AlignLeft:
+        case AlignJustify:
+          break;
+      }
+
+      switch ( mode )
+      {
+        case Label:
+        case Rect:
+          xOffset += labelWidthDiff;
+          break;
+
+        case Point:
+          break;
+      }
+    }
+
+    double yOffset = 0.0;
+    switch ( mode )
+    {
+      case Label:
+        if ( format.orientation() == QgsTextFormat::RotationBasedOrientation )
+        {
+          if ( rotation >= -405 && rotation < -180 )
+          {
+            yOffset = ascentOffset;
+          }
+          else if ( rotation >= 0 && rotation < 45 )
+          {
+            xOffset -= actualLabelWidest;
+            yOffset = -actualLabelHeight + ascentOffset + fontMetrics->descent() / fontScale;
+          }
+        }
+        else
+        {
+          yOffset = -actualLabelHeight + ascentOffset;
+        }
+        break;
+
+      case Point:
+        yOffset = -actualLabelHeight + ascentOffset;
+        break;
+
+      case Rect:
+        yOffset = ascentOffset;
+        break;
+    }
+
+    context.painter()->translate( QPointF( xOffset, yOffset ) );
+
+    double fragmentYOffset = 0;
+    for ( const QgsTextFragment &fragment : block )
+    {
+      // apply some character replacement to draw symbols in vertical presentation
+      const QString line = QgsStringUtils::substituteVerticalCharacters( fragment.text() );
+
+      QFont fragmentFont( font );
+      fragment.characterFormat().updateFontForFormat( fragmentFont, fontScale );
+
+      QFontMetricsF fragmentMetrics( fragmentFont );
+
+      double labelHeight = fragmentMetrics.ascent() / fontScale + ( fragmentMetrics.ascent() / fontScale + letterSpacing ) * ( line.length() - 1 );
+
+      Component subComponent;
+      subComponent.block = QgsTextBlock( fragment );
+      subComponent.size = QSizeF( labelWidth, labelHeight );
+      subComponent.offset = QPointF( 0.0, fragmentYOffset );
+      subComponent.rotation = -component.rotation * 180 / M_PI;
+      subComponent.rotationOffset = 0.0;
+
+      // draw the mask below the text (for preview)
+      if ( format.mask().enabled() )
+      {
+        // WARNING: totally broken! (has been since mask was introduced)
+#if 0
+        QgsTextRenderer::drawMask( context, subComponent, format );
+#endif
+      }
+
+      if ( drawType == QgsTextRenderer::Buffer )
+      {
+        fragmentYOffset += QgsTextRenderer::drawBuffer( context, subComponent, format );
+      }
+      else
+      {
+        // draw text, QPainterPath method
+        QPainterPath path;
+        path.setFillRule( Qt::WindingFill );
+        const QStringList parts = QgsPalLabeling::splitToGraphemes( fragment.text() );
+        double partYOffset = 0.0;
+        for ( const auto &part : parts )
+        {
+          double partXOffset = ( labelWidth - ( fragmentMetrics.width( part ) / fontScale - letterSpacing ) ) / 2;
+          path.addText( partXOffset * fontScale, partYOffset * fontScale, fragmentFont, part );
+          partYOffset += fragmentMetrics.ascent() / fontScale + letterSpacing;
+        }
+
+        // store text's drawing in QPicture for drop shadow call
+        QPicture textPict;
+        QPainter textp;
+        textp.begin( &textPict );
+        textp.setPen( Qt::NoPen );
+        QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
+        textColor.setAlphaF( format.opacity() );
+        textp.setBrush( textColor );
+        textp.scale( 1 / fontScale, 1 / fontScale );
+        textp.drawPath( path );
+        // TODO: why are some font settings lost on drawPicture() when using drawText() inside QPicture?
+        //       e.g. some capitalization options, but not others
+        //textp.setFont( tmpLyr.textFont );
+        //textp.setPen( tmpLyr.textColor );
+        //textp.drawText( 0, 0, component.text() );
+        textp.end();
+
+        if ( format.shadow().enabled() && format.shadow().shadowPlacement() == QgsTextShadowSettings::ShadowText )
+        {
+          subComponent.picture = textPict;
+          subComponent.pictureBuffer = 0.0; // no pen width to deal with
+          subComponent.origin = QPointF( 0.0, fragmentYOffset );
+          const double prevY = subComponent.offset.y();
+          subComponent.offset = QPointF( 0, -labelHeight );
+          subComponent.useOrigin = true;
+          QgsTextRenderer::drawShadow( context, subComponent, format );
+          subComponent.useOrigin = false;
+          subComponent.offset = QPointF( 0, prevY );
+        }
+
+        // paint the text
+        if ( context.useAdvancedEffects() )
+        {
+          context.painter()->setCompositionMode( format.blendMode() );
+        }
+
+        // scale for any print output or image saving @ specific dpi
+        context.painter()->scale( subComponent.dpiRatio, subComponent.dpiRatio );
+
+        switch ( context.textRenderFormat() )
+        {
+          case QgsRenderContext::TextFormatAlwaysOutlines:
+          {
+            // draw outlined text
+            _fixQPictureDPI( context.painter() );
+            context.painter()->drawPicture( 0, fragmentYOffset, textPict );
+            fragmentYOffset += partYOffset;
+            break;
+          }
+
+          case QgsRenderContext::TextFormatAlwaysText:
+          {
+            context.painter()->setFont( fragmentFont );
+            context.painter()->setPen( textColor );
+            context.painter()->setRenderHint( QPainter::TextAntialiasing );
+
+            double partYOffset = 0.0;
+            for ( const QString &part : parts )
+            {
+              double partXOffset = ( labelWidth - ( fragmentMetrics.width( part ) / fontScale - letterSpacing ) ) / 2;
+              context.painter()->scale( 1 / fontScale, 1 / fontScale );
+              context.painter()->drawText( partXOffset * fontScale, ( fragmentYOffset + partYOffset ) * fontScale, part );
+              context.painter()->scale( fontScale, fontScale );
+              partYOffset += fragmentMetrics.ascent() / fontScale + letterSpacing;
+            }
+            fragmentYOffset += partYOffset;
+          }
+        }
+      }
+    }
+
+    if ( maskPainter )
+      maskPainter->restore();
+    i++;
   }
 }

@@ -20,10 +20,10 @@
 #include "qgis_core.h"
 #include "qgstextblock.h"
 #include "qgsrendercontext.h"
+#include "qgstextformat.h"
 
 #include <QPicture>
 
-class QgsTextFormat;
 class QgsTextDocument;
 
 /**
@@ -60,6 +60,7 @@ class CORE_EXPORT QgsTextRenderer
       AlignLeft = 0, //!< Left align
       AlignCenter, //!< Center align
       AlignRight, //!< Right align
+      AlignJustify, //!< Justify align
     };
 
     /**
@@ -343,6 +344,32 @@ class CORE_EXPORT QgsTextRenderer
                                   HAlignment alignment,
                                   VAlignment vAlignment,
                                   DrawMode mode = Rect );
+
+    static QgsTextFormat::TextOrientation calculateRotationAndOrientationForComponent( const QgsTextFormat &format, const Component &component, double &rotation );
+
+    static void drawTextInternalHorizontal( QgsRenderContext &context,
+                                            const QgsTextFormat &format,
+                                            TextPart drawType,
+                                            DrawMode mode,
+                                            const Component &component,
+                                            const QgsTextDocument &document,
+                                            double fontScale,
+                                            const QFontMetricsF *fontMetrics,
+                                            HAlignment hAlignment,
+                                            VAlignment vAlignment,
+                                            double rotation );
+
+    static void drawTextInternalVertical( QgsRenderContext &context,
+                                          const QgsTextFormat &format,
+                                          TextPart drawType,
+                                          DrawMode mode,
+                                          const Component &component,
+                                          const QgsTextDocument &document,
+                                          double fontScale,
+                                          const QFontMetricsF *fontMetrics,
+                                          HAlignment hAlignment,
+                                          VAlignment vAlignment,
+                                          double rotation );
 
     friend class QgsVectorLayerLabelProvider;
     friend class QgsLabelPreview;
