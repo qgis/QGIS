@@ -83,7 +83,9 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
     Capability::Tables,
     Capability::Schemas,
     Capability::Spatial,
-    Capability::TableExists
+    Capability::TableExists,
+    Capability::DropColumn,
+    Capability::AddColumn
   };
 }
 

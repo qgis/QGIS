@@ -324,6 +324,22 @@ class TestPyQgsProviderConnectionBase():
             self.assertEqual(ct.crs, QgsCoordinateReferenceSystem.fromEpsgId(4326))
             self.assertEqual(ct.wkbType, QgsWkbTypes.LineString)
 
+            # Check fields
+            fields = conn.fields('myNewSchema', 'myNewTable')
+            for f in ['string_t', 'long_t', 'double_t', 'integer_t', 'date_t', 'datetime_t', 'time_t']:
+                self.assertTrue(f in fields.names())
+
+            if capabilities & QgsAbstractDatabaseProviderConnection.AddColumn:
+                field = QgsField('short_lived_field', QVariant.Int, 'integer')
+                conn.addColumn(field, 'myNewSchema', 'myNewTable')
+                fields = conn.fields('myNewSchema', 'myNewTable')
+                self.assertTrue('short_lived_field' in fields.names())
+
+                if capabilities & QgsAbstractDatabaseProviderConnection.DropColumn:
+                    conn.dropColumn('short_lived_field', 'myNewSchema', 'myNewTable')
+                    fields = conn.fields('myNewSchema', 'myNewTable')
+                    self.assertFalse('short_lived_field' in fields.names())
+
             # Drop table
             conn.dropVectorTable(schema, 'myNewTable')
             conn.dropVectorTable(schema, 'myNewAspatialTable')

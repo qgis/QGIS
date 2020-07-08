@@ -289,7 +289,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
       //set all as populated -- we also need to do this for newly created items, because they won't yet be children of this item
       for ( QgsDataItem *child : qgis::as_const( children ) )
       {
-        //child->setState( Populated );
+        child->setState( Populated );
       }
       setAsPopulated();
     }
@@ -592,7 +592,10 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
   if ( refresh )
     addChildItem( layerItem, true );
   else
+  {
     addChild( layerItem );
+    layerItem->setParent( this );
+  }
 
   return layerItem;
 }
@@ -601,7 +604,7 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
 QVector<QgsDataItem *> QgsMssqlLayerItem::createChildren()
 {
   QVector<QgsDataItem *> children;
-  children.push_back( new QgsFieldsItem( this, tr( "Columns" ), uri() + QStringLiteral( "/columns/ " ), createUri(), providerKey(), mLayerProperty.schemaName, mLayerProperty.tableName ) );
+  children.push_back( new QgsFieldsItem( this, uri() + QStringLiteral( "/columns/ " ), createUri(), providerKey(), mLayerProperty.schemaName, mLayerProperty.tableName ) );
   return children;
 }
 

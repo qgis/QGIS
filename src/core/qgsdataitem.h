@@ -899,12 +899,15 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 
 /**
  * \ingroup core
- * A collection of field items
+ * A collection of field items with some internal logic to retrieve
+ * the fields and a the vector layer instance from a connection URI,
+ * the schema and the table name.
  * \since QGIS 3.16
 */
 class CORE_EXPORT QgsFieldsItem : public QgsDataItem
 {
     Q_OBJECT
+
   public:
 
     /**
@@ -915,13 +918,9 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
      * The \connectionUri argument is the connection part of the layer URI that it is used internally to create
      * a connection and retrieve fields information.
      * The \a providerKey string can be used to specify the key for the QgsDataItemProvider that created this item.
-     * The \a name argument specifies the text to show in the model for the item. A translated string should
-     * be used wherever appropriate.
-     * The \a schema and \a tableName are used to retrieve the field information from the \a connectionUri.
-     *
+     * The \a schema and \a tableName are used to retrieve the layer and field information from the \a connectionUri.
      */
     QgsFieldsItem( QgsDataItem *parent SIP_TRANSFERTHIS,
-                   const QString &name,
                    const QString &path,
                    const QString &connectionUri,
                    const QString &providerKey,
@@ -934,17 +933,27 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
 
     QIcon icon() override;
 
-  protected:
+    /**
+     * Returns the schema name
+     */
+    QString schema() const;
 
     /**
-     * Shared open fields icon.
+     * Returns the table name
      */
-    static QIcon openFieldsIcon();
+    QString tableName() const;
 
     /**
-     * Shared closed fields icon.
+     * Returns the connection URI
      */
-    static QIcon fieldsIcon();
+    QString connectionUri() const;
+
+    /**
+     * Creates and returns a (possibly NULL) layer instance
+     * from the connection URI and schema/table information
+     */
+    QgsVectorLayer *layer();
+
 
   private:
 
@@ -956,7 +965,9 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
 
 /**
  * \ingroup core
- * A layer field item
+ * A layer field item, information about the connection URI, the schema and the
+ * table as well as the layer instance the field belongs to can be retrieved
+ * from the parent QgsFieldsItem object.
  * \since QGIS 3.16
 */
 class CORE_EXPORT QgsFieldItem : public QgsDataItem
@@ -965,16 +976,14 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
   public:
 
     /**
-     * Constructor for QgsFieldItem, with the specified \a parent item and /a field.
-     * The \a name argument specifies the text to show in the model for the item. A translated string should
-     * be used wherever appropriate.
+     * Constructor for QgsFieldItem, with the specified \a parent item and \a field.
+     * \note parent item must be a QgsFieldsItem
      */
     QgsFieldItem( QgsDataItem *parent SIP_TRANSFERTHIS,
                   const QgsField &field );
 
     ~QgsFieldItem() override;
 
-    // QgsDataItem interface
     QIcon icon() override;
 
   private:

@@ -113,13 +113,12 @@ QIcon QgsDataCollectionItem::iconDir()
 
 
 QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
-                              const QString &name,
                               const QString &path,
                               const QString &connectionUri,
                               const QString &providerKey,
                               const QString &schema,
                               const QString &tableName )
-  : QgsDataItem( QgsDataItem::Fields, parent, name, path, providerKey )
+  : QgsDataItem( QgsDataItem::Fields, parent, tr( "Fields" ), path, providerKey )
   , mSchema( schema )
   , mTableName( tableName )
   , mConnectionUri( connectionUri )
@@ -160,23 +159,62 @@ QVector<QgsDataItem *> QgsFieldsItem::createChildren()
 
 QIcon QgsFieldsItem::icon()
 {
-  return state() == Populated ? openFieldsIcon() : fieldsIcon();
+  return QgsApplication::getThemeIcon( QStringLiteral( "mSourceFields.svg" ) );
 }
 
-QIcon QgsFieldsItem::openFieldsIcon()
+QString QgsFieldsItem::connectionUri() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mSourceFields.svg" ) );
+  return mConnectionUri;
 }
 
-QIcon QgsFieldsItem::fieldsIcon()
+QgsVectorLayer *QgsFieldsItem::layer()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mSourceFields.svg" ) );
+  std::unique_ptr<QgsVectorLayer> vl;
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey() ) };
+  if ( md )
+  {
+    try
+    {
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnectionUri, {} ) ) };
+      if ( conn )
+      {
+        vl.reset( new QgsVectorLayer( conn->tableUri( mSchema, mTableName ), QStringLiteral( "temp_layer" ), providerKey() ) );
+        if ( vl->isValid() )
+        {
+          return vl.release();
+        }
+      }
+    }
+    catch ( const QgsProviderConnectionException &ex )
+    {
+      // This should never happen!
+      QgsDebugMsg( QStringLiteral( "Error getting connection from %1" ).arg( mConnectionUri ) );
+    }
+  }
+  else
+  {
+    // This should never happen!
+    QgsDebugMsg( QStringLiteral( "Error getting metadata for provider %1" ).arg( providerKey() ) );
+  }
+  return nullptr;
+}
+
+QString QgsFieldsItem::tableName() const
+{
+  return mTableName;
+}
+
+QString QgsFieldsItem::schema() const
+{
+  return mSchema;
 }
 
 QgsFieldItem::QgsFieldItem( QgsDataItem *parent, const QgsField &field )
   : QgsDataItem( QgsDataItem::Type::Field, parent, field.name(), parent->path() + '/' + field.name(), parent->providerKey() )
   , mField( field )
 {
+  // Precondition
+  Q_ASSERT( static_cast<QgsFieldsItem *>( parent ) );
   setState( QgsDataItem::State::Populated );
 }
 

@@ -68,7 +68,7 @@ QVector<QgsDataItem *> QgsOgrLayerItem::createChildren()
   // Proxy to spatialite provider data items because it implements the connections API
   if ( mDriverName == QStringLiteral( "SQLite" ) )
   {
-    children.push_back( new QgsFieldsItem( this, tr( "Columns" ),
+    children.push_back( new QgsFieldsItem( this,
                                            path() + QStringLiteral( "/columns/ " ),
                                            QStringLiteral( R"(dbname="%1")" ).arg( parent()->path().replace( '"', QStringLiteral( R"(\")" ) ) ),
                                            QStringLiteral( "spatialite" ), QString(), name() ) );
