@@ -63,6 +63,8 @@ void TestQgsLayoutManualTable::initTestCase()
   QgsApplication::initQgis();
 
   mReport = QStringLiteral( "<h1>Layout Manual Table Tests</h1>\n" );
+
+  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }
 
 void TestQgsLayoutManualTable::cleanupTestCase()
@@ -336,7 +338,7 @@ void TestQgsLayoutManualTable::rowHeight()
   table->addFrame( frame1 );
   table->setBackgroundColor( Qt::yellow );
 
-  table->setContentFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
 
   frame1->setFrameEnabled( false );
   table->setShowGrid( true );
@@ -364,7 +366,7 @@ void TestQgsLayoutManualTable::columnWidth()
   table->addFrame( frame1 );
   table->setBackgroundColor( Qt::yellow );
 
-  table->setContentFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
 
   frame1->setFrameEnabled( false );
   table->setShowGrid( true );
@@ -392,14 +394,15 @@ void TestQgsLayoutManualTable::headers()
   table->addFrame( frame1 );
   table->setBackgroundColor( Qt::yellow );
 
-  table->setContentFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ), 16 ) );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  QgsTextFormat headerFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ), 16 ) ) );
+  headerFormat.setColor( QColor( 255, 0, 255 ) );
+  table->setHeaderTextFormat( headerFormat );
 
   frame1->setFrameEnabled( false );
   table->setShowGrid( true );
   table->setHorizontalGrid( true );
   table->setVerticalGrid( true );
-  table->setHeaderFontColor( QColor( 255, 0, 255 ) );
 
   table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << QgsTableCell( QStringLiteral( "Helicopter" ) ) << QgsTableCell( QStringLiteral( "Plane" ) ) )
                            << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A" ) ) << QgsTableCell( QStringLiteral( "B" ) ) << QgsTableCell( QStringLiteral( "C" ) ) ) );

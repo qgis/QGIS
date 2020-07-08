@@ -104,6 +104,8 @@ void TestQgsLayoutTable::initTestCase()
   QgsProject::instance()->addMapLayer( mVectorLayer );
 
   mReport = QStringLiteral( "<h1>Layout Table Tests</h1>\n" );
+
+  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }
 
 void TestQgsLayoutTable::cleanupTestCase()
@@ -135,8 +137,8 @@ void TestQgsLayoutTable::init()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 10 );
-  table->setContentFont( QgsFontUtils::getStandardTestFont() );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 }
 
@@ -438,8 +440,8 @@ void TestQgsLayoutTable::attributeTableRender()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 10 );
-  table->setContentFont( QgsFontUtils::getStandardTestFont() );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 
   table->setMaximumNumberOfFeatures( 20 );
@@ -465,8 +467,8 @@ void TestQgsLayoutTable::manualColumnWidth()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 10 );
-  table->setContentFont( QgsFontUtils::getStandardTestFont() );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 
   table->setMaximumNumberOfFeatures( 20 );
@@ -493,8 +495,8 @@ void TestQgsLayoutTable::attributeTableEmpty()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 10 );
-  table->setContentFont( QgsFontUtils::getStandardTestFont() );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 
   table->setMaximumNumberOfFeatures( 20 );
@@ -535,8 +537,8 @@ void TestQgsLayoutTable::showEmptyRows()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 10 );
-  table->setContentFont( QgsFontUtils::getStandardTestFont() );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 
   table->setMaximumNumberOfFeatures( 3 );
@@ -562,8 +564,8 @@ void TestQgsLayoutTable::attributeTableExtend()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 10 );
-  table->setContentFont( QgsFontUtils::getStandardTestFont() );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 
   //test that adding and removing frames automatically does not result in a crash
@@ -594,8 +596,8 @@ void TestQgsLayoutTable::attributeTableRepeat()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 10 );
-  table->setContentFont( QgsFontUtils::getStandardTestFont() );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 
   //test that creating and removing new frames in repeat mode does not crash
@@ -722,8 +724,8 @@ void TestQgsLayoutTable::attributeTableRelationSource()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 10 );
-  table->setContentFont( QgsFontUtils::getStandardTestFont() );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 
   QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points_relations.shp" );
@@ -899,8 +901,8 @@ void TestQgsLayoutTable::multiLineText()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 10 );
-  table->setContentFont( QgsFontUtils::getStandardTestFont() );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 
   QgsVectorLayer *multiLineLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
@@ -951,8 +953,8 @@ void TestQgsLayoutTable::horizontalGrid()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 10 );
-  table->setContentFont( QgsFontUtils::getStandardTestFont() );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 
   QgsVectorLayer *multiLineLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
@@ -1008,8 +1010,8 @@ void TestQgsLayoutTable::verticalGrid()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 10 );
-  table->setContentFont( QgsFontUtils::getStandardTestFont() );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 
   QgsVectorLayer *multiLineLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
@@ -1065,8 +1067,8 @@ void TestQgsLayoutTable::align()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 10 );
-  table->setContentFont( QgsFontUtils::getStandardTestFont() );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 
   QgsVectorLayer *multiLineLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
@@ -1116,8 +1118,8 @@ void TestQgsLayoutTable::wrapChar()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 10 );
-  table->setContentFont( QgsFontUtils::getStandardTestFont() );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 
   std::unique_ptr< QgsVectorLayer > multiLineLayer = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
@@ -1157,8 +1159,8 @@ void TestQgsLayoutTable::autoWrap()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 10 );
-  table->setContentFont( QgsFontUtils::getStandardTestFont() );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 
   std::unique_ptr< QgsVectorLayer > multiLineLayer = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
@@ -1211,8 +1213,8 @@ void TestQgsLayoutTable::cellStyles()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 10 );
-  table->setContentFont( QgsFontUtils::getStandardTestFont() );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 
   QgsLayoutTableStyle original;
@@ -1415,8 +1417,8 @@ void TestQgsLayoutTable::cellStylesRender()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 10 );
-  table->setContentFont( QgsFontUtils::getStandardTestFont() );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 
   table->setMaximumNumberOfFeatures( 3 );
@@ -1461,8 +1463,8 @@ void TestQgsLayoutTable::conditionalFormatting()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 10 );
-  table->setContentFont( QgsFontUtils::getStandardTestFont() );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 
   table->setMaximumNumberOfFeatures( 7 );
