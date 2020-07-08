@@ -35,6 +35,7 @@ class TestQgsTextBlock(unittest.TestCase):
         block = QgsTextBlock(fragment)
         self.assertEqual(len(block), 1)
         self.assertEqual(block[0].text(), fragment.text())
+        self.assertEqual(block.toPlainText(), 'ludicrous gibs!')
 
     def testAppend(self):
         block = QgsTextBlock()
@@ -49,6 +50,8 @@ class TestQgsTextBlock(unittest.TestCase):
         self.assertEqual(len(block), 2)
         self.assertEqual(block[0].text(), 'a')
         self.assertEqual(block[1].text(), 'b')
+
+        self.assertEqual(block.toPlainText(), 'ab')
 
     def testAt(self):
         block = QgsTextBlock()
