@@ -24,9 +24,9 @@
 //
 
 QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback,
-    const std::function<QgsGeometry( const QVector< QgsGeometry >& )> &collector, int maxQueueLength )
+    const std::function<QgsGeometry( const QVector< QgsGeometry >& )> &collector, int maxQueueLength, QgsProcessingFeatureSource::Flags sourceFlags )
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
@@ -41,7 +41,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
   long count = source->featureCount();
 
   QgsFeature f;
-  QgsFeatureIterator it = source->getFeatures();
+  QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest(), sourceFlags );
 
   double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
@@ -281,7 +281,7 @@ QVariantMap QgsCollectAlgorithm::processAlgorithm( const QVariantMap &parameters
   return processCollection( parameters, context, feedback, []( const QVector< QgsGeometry > &parts )->QgsGeometry
   {
     return QgsGeometry::collectGeometry( parts );
-  } );
+  }, 0, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
 }
 
 
