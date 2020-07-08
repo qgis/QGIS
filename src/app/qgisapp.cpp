@@ -10251,19 +10251,25 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
 
 void QgisApp::pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeometriesCount, int nTotalFeatures, QgsFeatureList &features )
 {
-  pasteVectorLayer->addFeatures( features );
-  QgsFeatureIds newIds;
-  newIds.reserve( features.size() );
-  for ( const QgsFeature &f : qgis::as_const( features ) )
+  int nCopiedFeatures = features.count();
+  if ( pasteVectorLayer->addFeatures( features ) )
   {
-    newIds << f.id();
-  }
+    QgsFeatureIds newIds;
+    newIds.reserve( features.size() );
+    for ( const QgsFeature &f : qgis::as_const( features ) )
+    {
+      newIds << f.id();
+    }
 
-  pasteVectorLayer->selectByIds( newIds );
+    pasteVectorLayer->selectByIds( newIds );
+  }
+  else
+  {
+    nCopiedFeatures = 0;
+  }
   pasteVectorLayer->endEditCommand();
   pasteVectorLayer->updateExtents();
 
-  int nCopiedFeatures = features.count();
   Qgis::MessageLevel level = ( nCopiedFeatures == 0 || invalidGeometriesCount > 0 ) ? Qgis::Warning : Qgis::Info;
   QString message;
   if ( nCopiedFeatures == 0 )
