@@ -1055,8 +1055,18 @@ geos::unique_ptr QgsGeos::createGeosCollection( int typeId, const QVector<GEOSGe
   {
     if ( *geomIt )
     {
-      geomarr[i] = *geomIt;
-      ++i;
+      if ( GEOSisEmpty_r( geosinit()->ctxt, *geomIt ) )
+      {
+        // don't add empty parts to a geos collection, it can cause crashes in GEOS
+        nNullGeoms++;
+        nNotNullGeoms--;
+        GEOSGeom_destroy_r( geosinit()->ctxt, *geomIt );
+      }
+      else
+      {
+        geomarr[i] = *geomIt;
+        ++i;
+      }
     }
   }
   geos::unique_ptr geom;
