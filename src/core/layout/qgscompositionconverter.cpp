@@ -984,8 +984,21 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
       mapGrid->setAnnotationFrameDistance( annotationElem.attribute( QStringLiteral( "frameDistance" ), QStringLiteral( "0" ) ).toDouble() );
       QFont annotationFont;
       annotationFont.fromString( annotationElem.attribute( QStringLiteral( "font" ), QString() ) );
-      mapGrid->setAnnotationFont( annotationFont );
-      mapGrid->setAnnotationFontColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
+
+      QgsTextFormat annotationFormat = mapGrid->annotationTextFormat();
+      annotationFormat.setFont( annotationFont );
+      if ( annotationFont.pointSizeF() > 0 )
+      {
+        annotationFormat.setSize( annotationFont.pointSizeF() );
+        annotationFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+      }
+      else if ( annotationFont.pixelSize() > 0 )
+      {
+        annotationFormat.setSize( annotationFont.pixelSize() );
+        annotationFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
+      }
+      annotationFormat.setColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
+      mapGrid->setAnnotationTextFormat( annotationFormat );
 
       mapGrid->setAnnotationPrecision( annotationElem.attribute( QStringLiteral( "precision" ), QStringLiteral( "3" ) ).toInt() );
     }

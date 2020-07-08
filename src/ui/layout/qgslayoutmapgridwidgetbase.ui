@@ -49,7 +49,7 @@
         <x>0</x>
         <y>0</y>
         <width>409</width>
-        <height>1447</height>
+        <height>1416</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -686,38 +686,14 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0">
-          <item row="10" column="0">
-           <widget class="QLabel" name="mAnnotationPositionLabelBottom">
-            <property name="text">
-             <string>Bottom</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
+         <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0">
+          <item row="10" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationDisplayBottomComboBox"/>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="mAnnotationFormatLabel">
-            <property name="text">
-             <string>Format</string>
-            </property>
-           </widget>
-          </item>
-          <item row="14" column="0">
-           <widget class="QLabel" name="mFontColorLabel">
-            <property name="text">
-             <string>Font color</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="mAnnotationPositionLabelTop">
-            <property name="text">
-             <string>Top</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
+          <item row="14" column="1">
+           <widget class="QgsDoubleSpinBox" name="mDistanceToMapFrameSpinBox">
+            <property name="suffix">
+             <string> mm</string>
             </property>
            </widget>
           </item>
@@ -731,30 +707,6 @@
             </property>
            </widget>
           </item>
-          <item row="15" column="1">
-           <widget class="QgsDoubleSpinBox" name="mDistanceToMapFrameSpinBox">
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-           </widget>
-          </item>
-          <item row="16" column="0">
-           <widget class="QLabel" name="mCoordinatePrecisionLabel">
-            <property name="text">
-             <string>Coordinate precision</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="13" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Font</string>
-            </property>
-           </widget>
-          </item>
           <item row="4" column="0">
            <widget class="QLabel" name="mAnnotationPositionLabelRight">
             <property name="text">
@@ -764,109 +716,6 @@
              <bool>true</bool>
             </property>
            </widget>
-          </item>
-          <item row="15" column="0">
-           <widget class="QLabel" name="mDistanceToFrameLabel">
-            <property name="text">
-             <string>Distance to map frame</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="15" column="2">
-           <widget class="QgsPropertyOverrideButton" name="mLabelDistDDBtn">
-            <property name="text">
-             <string>…</string>
-            </property>
-           </widget>
-          </item>
-          <item row="16" column="1" colspan="2">
-           <widget class="QgsSpinBox" name="mCoordinatePrecisionSpinBox">
-            <property name="showClearButton" stdset="0">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="14" column="1" colspan="2">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QgsColorButton" name="mAnnotationFontColorButton">
-              <property name="minimumSize">
-               <size>
-                <width>120</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item row="13" column="1" colspan="2">
-           <widget class="QgsFontButton" name="mAnnotationFontButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Font</string>
-            </property>
-           </widget>
-          </item>
-          <item row="12" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationDirectionComboBoxBottom"/>
-          </item>
-          <item row="11" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationPositionBottomComboBox"/>
-          </item>
-          <item row="10" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationDisplayBottomComboBox"/>
-          </item>
-          <item row="9" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationDirectionComboBoxTop"/>
-          </item>
-          <item row="8" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationPositionTopComboBox"/>
-          </item>
-          <item row="7" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationDisplayTopComboBox"/>
-          </item>
-          <item row="6" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationDirectionComboBoxRight"/>
-          </item>
-          <item row="5" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationPositionRightComboBox"/>
-          </item>
-          <item row="4" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationDisplayRightComboBox"/>
-          </item>
-          <item row="3" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationDirectionComboBoxLeft"/>
-          </item>
-          <item row="2" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationPositionLeftComboBox"/>
-          </item>
-          <item row="1" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationDisplayLeftComboBox"/>
           </item>
           <item row="0" column="1" colspan="2">
            <layout class="QHBoxLayout" name="horizontalLayout_13">
@@ -886,6 +735,120 @@
             </item>
            </layout>
           </item>
+          <item row="13" column="1" colspan="2">
+           <widget class="QgsFontButton" name="mAnnotationFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationDisplayRightComboBox"/>
+          </item>
+          <item row="10" column="0">
+           <widget class="QLabel" name="mAnnotationPositionLabelBottom">
+            <property name="text">
+             <string>Bottom</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationDisplayTopComboBox"/>
+          </item>
+          <item row="13" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationPositionLeftComboBox"/>
+          </item>
+          <item row="15" column="0">
+           <widget class="QLabel" name="mCoordinatePrecisionLabel">
+            <property name="text">
+             <string>Coordinate precision</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="14" column="2">
+           <widget class="QgsPropertyOverrideButton" name="mLabelDistDDBtn">
+            <property name="text">
+             <string>…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationDirectionComboBoxTop"/>
+          </item>
+          <item row="8" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationPositionTopComboBox"/>
+          </item>
+          <item row="3" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationDirectionComboBoxLeft"/>
+          </item>
+          <item row="6" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationDirectionComboBoxRight"/>
+          </item>
+          <item row="1" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationDisplayLeftComboBox"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mAnnotationFormatLabel">
+            <property name="text">
+             <string>Format</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="mAnnotationPositionLabelTop">
+            <property name="text">
+             <string>Top</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="11" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationPositionBottomComboBox"/>
+          </item>
+          <item row="5" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationPositionRightComboBox"/>
+          </item>
+          <item row="14" column="0">
+           <widget class="QLabel" name="mDistanceToFrameLabel">
+            <property name="text">
+             <string>Distance to map frame</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="15" column="1" colspan="2">
+           <widget class="QgsSpinBox" name="mCoordinatePrecisionSpinBox">
+            <property name="showClearButton" stdset="0">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationDirectionComboBoxBottom"/>
+          </item>
          </layout>
         </widget>
        </item>
@@ -898,15 +861,21 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -915,9 +884,19 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsBlendModeComboBox</class>
@@ -929,38 +908,31 @@
    <extends>QToolButton</extends>
    <header>qgssymbolbutton.h</header>
   </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFontButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsfontbutton.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
   <tabstop>mGridTypeComboBox</tabstop>
   <tabstop>mMapGridCRSButton</tabstop>
+  <tabstop>mMapGridUnitComboBox</tabstop>
+  <tabstop>mMinWidthSpinBox</tabstop>
+  <tabstop>mMaxWidthSpinBox</tabstop>
   <tabstop>mOffsetXSpinBox</tabstop>
+  <tabstop>mOffsetXDDBtn</tabstop>
   <tabstop>mOffsetYSpinBox</tabstop>
+  <tabstop>mOffsetYDDBtn</tabstop>
   <tabstop>mCrossWidthSpinBox</tabstop>
+  <tabstop>mCrossWidthDDBtn</tabstop>
   <tabstop>mGridLineStyleButton</tabstop>
   <tabstop>mGridMarkerStyleButton</tabstop>
   <tabstop>mGridBlendComboBox</tabstop>
   <tabstop>mGridFrameGroupBox</tabstop>
   <tabstop>mFrameStyleComboBox</tabstop>
   <tabstop>mFrameWidthSpinBox</tabstop>
+  <tabstop>mFrameSizeDDBtn</tabstop>
   <tabstop>mGridFrameMarginSpinBox</tabstop>
+  <tabstop>mFrameMarginDDBtn</tabstop>
   <tabstop>mGridFramePenSizeSpinBox</tabstop>
+  <tabstop>mFrameLineThicknessDDBtn</tabstop>
   <tabstop>mGridFramePenColorButton</tabstop>
   <tabstop>mGridFrameFill1ColorButton</tabstop>
   <tabstop>mGridFrameFill2ColorButton</tabstop>
@@ -988,9 +960,15 @@
   <tabstop>mAnnotationPositionBottomComboBox</tabstop>
   <tabstop>mAnnotationDirectionComboBoxBottom</tabstop>
   <tabstop>mAnnotationFontButton</tabstop>
-  <tabstop>mAnnotationFontColorButton</tabstop>
   <tabstop>mDistanceToMapFrameSpinBox</tabstop>
+  <tabstop>mLabelDistDDBtn</tabstop>
   <tabstop>mCoordinatePrecisionSpinBox</tabstop>
+  <tabstop>mEnabledCheckBox</tabstop>
+  <tabstop>mEnabledDDBtn</tabstop>
+  <tabstop>mIntervalXSpinBox</tabstop>
+  <tabstop>mIntervalYDDBtn</tabstop>
+  <tabstop>mIntervalYSpinBox</tabstop>
+  <tabstop>mIntervalXDDBtn</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>

@@ -565,32 +565,62 @@ Returns whether annotations are shown for the grid.
 .. seealso:: :py:func:`setAnnotationEnabled`
 %End
 
-    void setAnnotationFont( const QFont &font );
+    void setAnnotationTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` to use when rendering grid annotations.
+
+.. seealso:: :py:func:`annotationTextFormat`
+
+.. versionadded:: 3.16
+%End
+
+    QgsTextFormat annotationTextFormat() const;
+%Docstring
+Returns the text format used when rendering grid annotations.
+
+.. seealso:: :py:func:`setAnnotationTextFormat`
+
+.. versionadded:: 3.16
+%End
+
+ void setAnnotationFont( const QFont &font ) /Deprecated/;
 %Docstring
 Sets the ``font`` used for drawing grid annotations.
 
 .. seealso:: :py:func:`annotationFont`
+
+.. deprecated::
+   use setAnnotationTextFormat() instead
 %End
 
-    QFont annotationFont() const;
+ QFont annotationFont() const /Deprecated/;
 %Docstring
 Returns the font used for drawing grid annotations.
 
 .. seealso:: :py:func:`setAnnotationFont`
+
+.. deprecated::
+   use annotationTextFormat() instead
 %End
 
-    void setAnnotationFontColor( const QColor &color );
+ void setAnnotationFontColor( const QColor &color ) /Deprecated/;
 %Docstring
 Sets the font ``color`` used for drawing grid annotations.
 
 .. seealso:: :py:func:`annotationFontColor`
+
+.. deprecated::
+   use setAnnotationTextFormat() instead
 %End
 
-    QColor annotationFontColor() const;
+ QColor annotationFontColor() const /Deprecated/;
 %Docstring
 Returns the font color used for drawing grid annotations.
 
 .. seealso:: :py:func:`setAnnotationFontColor`
+
+.. deprecated::
+   use annotationTextFormat() instead
 %End
 
     void setAnnotationPrecision( const int precision );

@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 #include "qgslayoutitemmapitem.h"
 #include "qgssymbol.h"
+#include "qgstextformat.h"
 #include <QPainter>
 
 class QgsCoordinateTransform;
@@ -562,28 +563,48 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     bool annotationEnabled() const { return mShowGridAnnotation; }
 
     /**
+     * Sets the text \a format to use when rendering grid annotations.
+     *
+     * \see annotationTextFormat()
+     * \since QGIS 3.16
+     */
+    void setAnnotationTextFormat( const QgsTextFormat &format ) { mAnnotationFormat = format; }
+
+    /**
+     * Returns the text format used when rendering grid annotations.
+     *
+     * \see setAnnotationTextFormat()
+     * \since QGIS 3.16
+     */
+    QgsTextFormat annotationTextFormat() const { return mAnnotationFormat; }
+
+    /**
      * Sets the \a font used for drawing grid annotations.
      * \see annotationFont()
+     * \deprecated use setAnnotationTextFormat() instead
      */
-    void setAnnotationFont( const QFont &font ) { mGridAnnotationFont = font; }
+    Q_DECL_DEPRECATED void setAnnotationFont( const QFont &font ) SIP_DEPRECATED;
 
     /**
      * Returns the font used for drawing grid annotations.
      * \see setAnnotationFont()
+     * \deprecated use annotationTextFormat() instead
      */
-    QFont annotationFont() const { return mGridAnnotationFont; }
+    Q_DECL_DEPRECATED QFont annotationFont() const SIP_DEPRECATED;
 
     /**
      * Sets the font \a color used for drawing grid annotations.
      * \see annotationFontColor()
+     * \deprecated use setAnnotationTextFormat() instead
      */
-    void setAnnotationFontColor( const QColor &color ) { mGridAnnotationFontColor = color; }
+    Q_DECL_DEPRECATED void setAnnotationFontColor( const QColor &color ) SIP_DEPRECATED;
 
     /**
      * Returns the font color used for drawing grid annotations.
      * \see setAnnotationFontColor()
+     * \deprecated use annotationTextFormat() instead
      */
-    QColor annotationFontColor() const { return mGridAnnotationFontColor; }
+    Q_DECL_DEPRECATED QColor annotationFontColor() const SIP_DEPRECATED;
 
     /**
      * Sets the coordinate \a precision for grid annotations.
@@ -882,10 +903,10 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     double mGridOffsetX = 0.0;
     //! Grid line offset in y-direction
     double mGridOffsetY = 0.0;
-    //! Font for grid line annotation
-    QFont mGridAnnotationFont;
-    //! Font color for grid coordinates
-    QColor mGridAnnotationFontColor  = Qt::black;
+
+    //! Text format for grid annotations
+    QgsTextFormat mAnnotationFormat;
+
     //! Digits after the dot
     int mGridAnnotationPrecision = 3;
     //! True if coordinate values should be drawn
@@ -989,29 +1010,29 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
 
     /**
      * Draw coordinates for mGridAnnotationType Coordinate
-        \param p drawing painter
-        \param hLines horizontal coordinate lines in item coordinates
-        \param vLines vertical coordinate lines in item coordinates
-        \param expressionContext expression context for evaluating custom annotation formats
-        \param extension optional. If specified, nothing will be drawn and instead the maximum extension for the grid
-        annotations will be stored in this variable.
+     * \param context destination render context
+     * \param hLines horizontal coordinate lines in item coordinates
+     * \param vLines vertical coordinate lines in item coordinates
+     * \param expressionContext expression context for evaluating custom annotation formats
+     * \param extension optional. If specified, nothing will be drawn and instead the maximum extension for the grid
+     * annotations will be stored in this variable.
      */
-    void drawCoordinateAnnotations( QPainter *p, const QList< QPair< double, QLineF > > &hLines, const QList< QPair< double, QLineF > > &vLines, QgsExpressionContext &expressionContext, GridExtension *extension = nullptr ) const;
+    void drawCoordinateAnnotations( QgsRenderContext &context, const QList< QPair< double, QLineF > > &hLines, const QList< QPair< double, QLineF > > &vLines, QgsExpressionContext &expressionContext, GridExtension *extension = nullptr ) const;
 
     /**
      * Draw an annotation. If optional extension argument is specified, nothing will be drawn and instead
      * the extension of the annotation outside of the map frame will be stored in this variable.
      */
-    void drawCoordinateAnnotation( QPainter *p, QPointF pos, const QString &annotationString, AnnotationCoordinate coordinateType, GridExtension *extension = nullptr ) const;
+    void drawCoordinateAnnotation( QgsRenderContext &context, QPointF pos, const QString &annotationString, AnnotationCoordinate coordinateType, GridExtension *extension = nullptr ) const;
 
     /**
      * Draws a single annotation
-     * \param p drawing painter
+     * \param context destination render context
      * \param pos item coordinates where to draw
      * \param rotation text rotation
      * \param annotationText the text to draw
      */
-    void drawAnnotation( QPainter *p, QPointF pos, int rotation, const QString &annotationText ) const;
+    void drawAnnotation( QgsRenderContext &context, QPointF pos, int rotation, const QString &annotationText ) const;
 
     QString gridAnnotationString( double value, AnnotationCoordinate coord, QgsExpressionContext &expressionContext ) const;
 
