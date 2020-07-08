@@ -34,6 +34,7 @@
 #include "qgspallabeling.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgstemporalrangeobject.h"
+#include "qgsfontutils.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -85,6 +86,8 @@ void TestQgsLayoutMap::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+
+  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 
   //create maplayers from testdata and add to layer registry
   QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
@@ -553,6 +556,7 @@ void TestQgsLayoutMap::rasterized()
   QgsLayoutItemMapGrid *grid = new QgsLayoutItemMapGrid( "test", map );
   grid->setIntervalX( 10 );
   grid->setIntervalY( 10 );
+  grid->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   grid->setBlendMode( QPainter::CompositionMode_Darken );
   grid->setAnnotationEnabled( true );
   grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Left );
