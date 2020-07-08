@@ -142,10 +142,13 @@ QVector<QgsDataItem *> QgsFieldsItem::createChildren()
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnectionUri, {} ) ) };
       if ( conn )
       {
+        int i = 0;
         const QgsFields constFields { conn->fields( mSchema, mTableName ) };
         for ( const auto &f : constFields )
         {
-          children.push_back( new QgsFieldItem( this, f ) );
+          QgsFieldItem *fieldItem { new QgsFieldItem( this, f ) };
+          fieldItem->setSortKey( i++ );
+          children.push_back( fieldItem );
         }
       }
     }
