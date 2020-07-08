@@ -302,6 +302,9 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
         QFont fragmentFont = font;
         fragment.characterFormat().updateFontForFormat( fragmentFont, scaleFactor );
 
+        if ( component.extraWordSpacing || component.extraLetterSpacing )
+          applyExtraSpacingForLineJustification( fragmentFont, component.extraWordSpacing, component.extraLetterSpacing );
+
         path.addText( xOffset, 0, fragmentFont, fragment.text() );
 
         xOffset += fragment.horizontalAdvance( fragmentFont, true, scaleFactor );
@@ -1245,6 +1248,51 @@ QgsTextFormat::TextOrientation QgsTextRenderer::calculateRotationAndOrientationF
   return QgsTextFormat::HorizontalOrientation;
 }
 
+void QgsTextRenderer::calculateExtraSpacingForLineJustification( const double spaceToDistribute, const QgsTextBlock &block, double &extraWordSpace, double &extraLetterSpace )
+{
+  const QString blockText = block.toPlainText();
+  QTextBoundaryFinder finder( QTextBoundaryFinder::Word, blockText );
+  finder.toStart();
+  int wordBoundaries = 0;
+  while ( finder.toNextBoundary() != -1 )
+  {
+    if ( finder.boundaryReasons() & QTextBoundaryFinder::StartOfItem )
+      wordBoundaries++;
+  }
+
+  if ( wordBoundaries > 0 )
+  {
+    // word boundaries found => justify by padding word spacing
+    extraWordSpace = spaceToDistribute / wordBoundaries;
+  }
+  else
+  {
+    // no word boundaries found => justify by letter spacing
+    QTextBoundaryFinder finder( QTextBoundaryFinder::Grapheme, blockText );
+    finder.toStart();
+
+    int graphemeBoundaries = 0;
+    while ( finder.toNextBoundary() != -1 )
+    {
+      if ( finder.boundaryReasons() & QTextBoundaryFinder::StartOfItem )
+        graphemeBoundaries++;
+    }
+
+    if ( graphemeBoundaries > 0 )
+    {
+      extraLetterSpace = spaceToDistribute / graphemeBoundaries;
+    }
+  }
+}
+
+void QgsTextRenderer::applyExtraSpacingForLineJustification( QFont &font, double extraWordSpace, double extraLetterSpace )
+{
+  const double prevWordSpace = font.wordSpacing();
+  font.setWordSpacing( prevWordSpace + extraWordSpace );
+  const double prevLetterSpace = font.letterSpacing();
+  font.setLetterSpacing( QFont::AbsoluteSpacing, prevLetterSpace + extraLetterSpace );
+}
+
 void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, const QgsTextFormat &format, TextPart drawType, DrawMode mode, const Component &component, const QgsTextDocument &document, double fontScale, const QFontMetricsF *fontMetrics, HAlignment hAlignment,
     VAlignment vAlignment, double rotation )
 {
@@ -1304,6 +1352,8 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
   {
     const QgsTextBlock block = document.at( i );
 
+    const bool isFinalLine = i == document.size() - 1;
+
     QgsScopedQPainterState painterState( context.painter() );
     context.setPainterFlagsUsingContext();
     context.painter()->translate( component.origin );
@@ -1322,6 +1372,8 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
     // figure x offset for horizontal alignment of multiple lines
     double xMultiLineOffset = 0.0;
     double labelWidth = fontMetrics->width( line ) / fontScale;
+    double extraWordSpace = 0;
+    double extraLetterSpace = 0;
     if ( adjustForAlignment )
     {
       double labelWidthDiff = 0;
@@ -1335,8 +1387,14 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
           labelWidthDiff = labelWidest - labelWidth;
           break;
 
-        case AlignLeft:
         case AlignJustify:
+          if ( !isFinalLine && labelWidest > labelWidth )
+          {
+            calculateExtraSpacingForLineJustification( labelWidest - labelWidth, block, extraWordSpace, extraLetterSpace );
+          }
+          break;
+
+        case AlignLeft:
           break;
       }
 
@@ -1366,7 +1424,6 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
         }
         break;
       }
-      //QgsDebugMsgLevel( QStringLiteral( "xMultiLineOffset: %1" ).arg( xMultiLineOffset ), 4 );
     }
 
     double yMultiLineOffset = ascentOffset;
@@ -1401,6 +1458,8 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
     subComponent.offset = QPointF( 0.0, -ascentOffset );
     subComponent.rotation = -component.rotation * 180 / M_PI;
     subComponent.rotationOffset = 0.0;
+    subComponent.extraWordSpacing = extraWordSpace * fontScale;
+    subComponent.extraLetterSpacing = extraLetterSpace * fontScale;
 
     // draw the mask below the text (for preview)
     if ( format.mask().enabled() )
@@ -1431,7 +1490,9 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
 
         QFont fragmentFont = font;
         fragment.characterFormat().updateFontForFormat( fragmentFont, fontScale );
-        QFontMetricsF fragmentMetrics = QFontMetricsF( fragmentFont );
+
+        if ( extraWordSpace || extraLetterSpace )
+          applyExtraSpacingForLineJustification( fragmentFont, extraWordSpace * fontScale, extraLetterSpace * fontScale );
 
         path.addText( xOffset, 0, fragmentFont, fragment.text() );
 
@@ -1441,12 +1502,6 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
         textp.drawPath( path );
 
         xOffset += fragment.horizontalAdvance( fragmentFont, true );
-
-        // TODO: why are some font settings lost on drawPicture() when using drawText() inside QPicture?
-        //       e.g. some capitalization options, but not others
-        //textp.setFont( tmpLyr.textFont );
-        //textp.setPen( tmpLyr.textColor );
-        //textp.drawText( 0, 0, component.text() );
       }
       textp.end();
 
@@ -1485,6 +1540,9 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
           {
             QFont fragmentFont = font;
             fragment.characterFormat().updateFontForFormat( fragmentFont, fontScale );
+
+            if ( extraWordSpace || extraLetterSpace )
+              applyExtraSpacingForLineJustification( fragmentFont, extraWordSpace * fontScale, extraLetterSpace * fontScale );
 
             QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
             textColor.setAlphaF( format.opacity() );
