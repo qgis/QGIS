@@ -335,5 +335,5 @@ void QgsMaskingWidget::apply()
 
 bool QgsMaskingWidget::hasBeenPopulated()
 {
-  return mMustPopulate == false;
+  return !mMustPopulate;
 }
