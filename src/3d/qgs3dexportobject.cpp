@@ -146,9 +146,14 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
   }
 }
 
-void Qgs3DExportObject::saveMaterial( const QString &textureName, const QString &folderPath )
+QString Qgs3DExportObject::saveMaterial( QTextStream &mtlOut, const QString &folderPath )
 {
-  if ( mTexturesUV.size() == 0 ) return;
+  QString textureName = mName + "_material";
+  if ( mTexturesUV.size() == 0 ) return QString();
   QString filePath = QDir( folderPath ).filePath( textureName + ".jpg" );
   mTextureImage.save( filePath, "JPG" );
+
+  mtlOut << "newmtl " << textureName << "\n";
+  mtlOut << "\tmap_Kd " << textureName << ".jpg" << "\n";
+  return textureName;
 }

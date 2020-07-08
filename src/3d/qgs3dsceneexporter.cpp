@@ -473,29 +473,39 @@ void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
   QFile file( objFilePath );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
     return;
+  QFile mtlFile( mtlFilePath );
+  if ( !mtlFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
+    return;
 
   float maxfloat = std::numeric_limits<float>::max(), minFloat = std::numeric_limits<float>::lowest();
   float minX = maxfloat, minY = maxfloat, minZ = maxfloat, maxX = minFloat, maxY = minFloat, maxZ = minFloat;
   for ( Qgs3DExportObject *obj : mObjects ) obj->objectBounds( minX, minY, minZ, maxX, maxY, maxZ );
 
-//  float diffX = 1.0f, diffY = 1.0f, diffZ = 1.0f;
-//  diffX = maxX - minX;
-//  diffY = maxY - minY;
-//  diffZ = maxZ - minZ;
+  float diffX = 1.0f, diffY = 1.0f, diffZ = 1.0f;
+  diffX = maxX - minX;
+  diffY = maxY - minY;
+  diffZ = maxZ - minZ;
 
   float centerX = ( minX + maxX ) / 2.0f;
   float centerY = ( minY + maxY ) / 2.0f;
   float centerZ = ( minZ + maxZ ) / 2.0f;
 
-  float scale = 1.0f;//std::max( diffX, std::max( diffY, diffZ ) );
+  float scale = std::max( diffX, std::max( diffY, diffZ ) );
 
   QTextStream out( &file );
+  // set material library name
+  QString mtlLibName = sceneName + ".mtl";
+  out << "mtllib " << mtlLibName << "\n";
+
+  QTextStream mtlOut( &mtlFile );
   for ( Qgs3DExportObject *obj : mObjects )
   {
     // Set object name
+    QString material = obj->saveMaterial( mtlOut, sceneFolderPath );
     out << "o " << obj->name() << "\n";
+    if ( material != QString() )
+      out << "usemtl " << material << "\n";
     obj->saveTo( out, scale, QVector3D( centerX, centerY, centerZ ) );
-    obj->saveMaterial( obj->name(), sceneFolderPath );
   }
 }
 
