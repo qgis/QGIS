@@ -63,6 +63,20 @@ class PyQgsTextRenderer(unittest.TestCase):
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 
+    def testAlignmentConversion(self):
+        self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignLeft), QgsTextRenderer.AlignLeft)
+        self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignRight), QgsTextRenderer.AlignRight)
+        self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignHCenter), QgsTextRenderer.AlignCenter)
+        # not supported, should fallback to left
+        self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignJustify), QgsTextRenderer.AlignLeft)
+        self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignAbsolute), QgsTextRenderer.AlignLeft)
+
+        self.assertEqual(QgsTextRenderer.convertQtVAlignment(Qt.AlignTop), QgsTextRenderer.AlignTop)
+        self.assertEqual(QgsTextRenderer.convertQtVAlignment(Qt.AlignBottom), QgsTextRenderer.AlignBottom)
+        self.assertEqual(QgsTextRenderer.convertQtVAlignment(Qt.AlignVCenter), QgsTextRenderer.AlignVCenter)
+        # note supported, should fallback to bottom
+        self.assertEqual(QgsTextRenderer.convertQtVAlignment(Qt.AlignBaseline), QgsTextRenderer.AlignBottom)
+
     def createBufferSettings(self):
         s = QgsTextBufferSettings()
         s.setEnabled(True)
