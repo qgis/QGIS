@@ -67,8 +67,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignLeft), QgsTextRenderer.AlignLeft)
         self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignRight), QgsTextRenderer.AlignRight)
         self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignHCenter), QgsTextRenderer.AlignCenter)
+        self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignJustify), QgsTextRenderer.AlignJustify)
         # not supported, should fallback to left
-        self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignJustify), QgsTextRenderer.AlignLeft)
         self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignAbsolute), QgsTextRenderer.AlignLeft)
 
         self.assertEqual(QgsTextRenderer.convertQtVAlignment(Qt.AlignTop), QgsTextRenderer.AlignTop)
@@ -2140,6 +2140,22 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         assert self.checkRender(format, 'text_rect_right_aligned', text=['test'],
                                 alignment=QgsTextRenderer.AlignRight, rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextRectMultilineJustifyAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRender(format, 'text_rect_multiline_justify_aligned', text=['a test', 'of', 'justification', 'align'],
+                                alignment=QgsTextRenderer.AlignJustify, rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextRectJustifyAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRender(format, 'text_rect_justify_aligned', text=['test'],
+                                alignment=QgsTextRenderer.AlignJustify, rect=QRectF(100, 100, 200, 100))
 
     def testDrawTextRectMultilineBottomAlign(self):
         format = QgsTextFormat()
