@@ -45,9 +45,39 @@ class _3D_EXPORT QgsPhongMaterialSettings
     QColor specular() const { return mSpecular; }
     //! Returns shininess of the surface
     float shininess() const { return mShininess; }
-    //! Returns whether the diffuse texture is used
-    bool isUsingDiffuseTexture() const { return mIsUsingDiffuseTexture; }
-    //! Returns the diffuse texture path
+
+    /**
+     * Returns whether the diffuse texture is used.
+     *
+     * \note Diffuse textures will only be used at render time if diffuseTextureEnabled() is TRUE
+     * and a texturePath() is non-empty.
+     *
+     * \see shouldUseDiffuseTexture()
+     * \see setDiffuseTextureEnabled()
+     * \see texturePath()
+     */
+    bool diffuseTextureEnabled() const { return mDiffuseTextureEnabled; }
+
+    /**
+     * Returns whether the diffuse texture should be used during rendering.
+     *
+     * Diffuse textures will only be used at render time if diffuseTextureEnabled() is TRUE
+     * and a texturePath() is non-empty.
+     *
+     * \see diffuseTextureEnabled()
+     * \see texturePath()
+     */
+    bool shouldUseDiffuseTexture() const { return mDiffuseTextureEnabled && !mTexturePath.isEmpty(); }
+
+    /**
+     * Returns the diffuse texture path.
+     *
+     * \note Diffuse textures will only be used at render time if diffuseTextureEnabled() is TRUE
+     * and a texturePath() is non-empty.
+     *
+     * \see setTexturePath()
+     * \see diffuseTextureEnabled()
+     */
     QString texturePath() const { return mTexturePath; }
 
     /**
@@ -68,10 +98,28 @@ class _3D_EXPORT QgsPhongMaterialSettings
     void setSpecular( const QColor &specular ) { mSpecular = specular; }
     //! Sets shininess of the surface
     void setShininess( float shininess ) { mShininess = shininess; }
-    //! Sets whether the diffuse texture will be used
-    void setUseTexture( bool used ) { mIsUsingDiffuseTexture = used; }
-    //! Sets the path of the texture
-    void setTexturePath( QString texturePath ) { mTexturePath = texturePath; }
+
+    /**
+     * Sets whether the diffuse texture is enabled.
+     *
+     * \note Diffuse textures will only be used at render time if diffuseTextureEnabled() is TRUE
+     * and a texturePath() is non-empty.
+     *
+     * \see diffuseTextureEnabled()
+     * \see setTexturePath()
+     */
+    void setDiffuseTextureEnabled( bool used ) { mDiffuseTextureEnabled = used; }
+
+    /**
+     * Sets the \a path of the texture.
+     *
+     * \note Diffuse textures will only be used at render time if diffuseTextureEnabled() is TRUE
+     * and a texturePath() is non-empty.
+     *
+     * \see texturePath()
+     * \see setDiffuseTextureEnabled()
+     */
+    void setTexturePath( const QString &path ) { mTexturePath = path; }
 
     /**
      * Sets the texture scale
@@ -94,7 +142,7 @@ class _3D_EXPORT QgsPhongMaterialSettings
              mDiffuse == other.mDiffuse &&
              mSpecular == other.mSpecular &&
              mShininess == other.mShininess &&
-             mIsUsingDiffuseTexture == other.mIsUsingDiffuseTexture &&
+             mDiffuseTextureEnabled == other.mDiffuseTextureEnabled &&
              mTexturePath == other.mTexturePath &&
              mTextureScale == other.mTextureScale &&
              mTextureRotation == other.mTextureRotation;
@@ -105,7 +153,7 @@ class _3D_EXPORT QgsPhongMaterialSettings
     QColor mDiffuse{ QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) };
     QColor mSpecular{ QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
     float mShininess = 0.0f;
-    bool mIsUsingDiffuseTexture{ false };
+    bool mDiffuseTextureEnabled{ false };
     QString mTexturePath;
     float mTextureScale{ 1.0f };
     float mTextureRotation{ 0.0f };

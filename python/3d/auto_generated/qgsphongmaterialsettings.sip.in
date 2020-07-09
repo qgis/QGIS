@@ -46,13 +46,47 @@ Returns specular color component
 %Docstring
 Returns shininess of the surface
 %End
-    bool isUsingDiffuseTexture() const;
+
+    bool diffuseTextureEnabled() const;
 %Docstring
-Returns whether the diffuse texture is used
+Returns whether the diffuse texture is used.
+
+.. note::
+
+   Diffuse textures will only be used at render time if :py:func:`~QgsPhongMaterialSettings.diffuseTextureEnabled` is ``True``
+   and a :py:func:`~QgsPhongMaterialSettings.texturePath` is non-empty.
+
+.. seealso:: :py:func:`shouldUseDiffuseTexture`
+
+.. seealso:: :py:func:`setDiffuseTextureEnabled`
+
+.. seealso:: :py:func:`texturePath`
 %End
+
+    bool shouldUseDiffuseTexture() const;
+%Docstring
+Returns whether the diffuse texture should be used during rendering.
+
+Diffuse textures will only be used at render time if :py:func:`~QgsPhongMaterialSettings.diffuseTextureEnabled` is ``True``
+and a :py:func:`~QgsPhongMaterialSettings.texturePath` is non-empty.
+
+.. seealso:: :py:func:`diffuseTextureEnabled`
+
+.. seealso:: :py:func:`texturePath`
+%End
+
     QString texturePath() const;
 %Docstring
-Returns the diffuse texture path
+Returns the diffuse texture path.
+
+.. note::
+
+   Diffuse textures will only be used at render time if :py:func:`~QgsPhongMaterialSettings.diffuseTextureEnabled` is ``True``
+   and a :py:func:`~QgsPhongMaterialSettings.texturePath` is non-empty.
+
+.. seealso:: :py:func:`setTexturePath`
+
+.. seealso:: :py:func:`diffuseTextureEnabled`
 %End
 
     float textureScale() const;
@@ -83,13 +117,33 @@ Sets specular color component
 %Docstring
 Sets shininess of the surface
 %End
-    void setUseTexture( bool used );
+
+    void setDiffuseTextureEnabled( bool used );
 %Docstring
-Sets whether the diffuse texture will be used
+Sets whether the diffuse texture is enabled.
+
+.. note::
+
+   Diffuse textures will only be used at render time if :py:func:`~QgsPhongMaterialSettings.diffuseTextureEnabled` is ``True``
+   and a :py:func:`~QgsPhongMaterialSettings.texturePath` is non-empty.
+
+.. seealso:: :py:func:`diffuseTextureEnabled`
+
+.. seealso:: :py:func:`setTexturePath`
 %End
-    void setTexturePath( QString texturePath );
+
+    void setTexturePath( const QString &path );
 %Docstring
-Sets the path of the texture
+Sets the ``path`` of the texture.
+
+.. note::
+
+   Diffuse textures will only be used at render time if :py:func:`~QgsPhongMaterialSettings.diffuseTextureEnabled` is ``True``
+   and a :py:func:`~QgsPhongMaterialSettings.texturePath` is non-empty.
+
+.. seealso:: :py:func:`texturePath`
+
+.. seealso:: :py:func:`setDiffuseTextureEnabled`
 %End
 
     void setTextureScale( float scale );
