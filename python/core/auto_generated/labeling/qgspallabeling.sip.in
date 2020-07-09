@@ -167,7 +167,8 @@ class QgsPalLayerSettings
       MultiLeft,
       MultiCenter,
       MultiRight,
-      MultiFollowPlacement
+      MultiFollowPlacement,
+      MultiJustify,
     };
 
 

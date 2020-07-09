@@ -618,6 +618,8 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       hAlign = QgsTextRenderer::AlignCenter;
     else if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiRight )
       hAlign = QgsTextRenderer::AlignRight;
+    else if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiJustify )
+      hAlign = QgsTextRenderer::AlignJustify;
 
     QgsTextRenderer::Component component;
     component.origin = outPt;
