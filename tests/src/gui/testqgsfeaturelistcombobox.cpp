@@ -294,7 +294,6 @@ void TestQgsFeatureListComboBox::testNotExistingYetFeature()
 
 void TestQgsFeatureListComboBox::testFeatureFurtherThanFetchLimit()
 {
-  QVERIFY( fetchLimit < mLayer->featureCount() );
   std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
   QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
   QSignalSpy spy( cb.get(), &QgsFeatureListComboBox::identifierValueChanged );
