@@ -65,7 +65,7 @@ class QgsMapToolCaptureRubberband: public QgsGeometryRubberBand
      * Resets the rubber band with the specified geometry type
      * that must be line geometry or polygon geometry.
      */
-    void reset( QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
+    void reset( QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry, QgsWkbTypes::Type stringType = QgsWkbTypes::LineString );
 
     //! Adds point to the rubber band
     void addPoint( const QgsPoint &point, bool doUpdate = true );
@@ -421,6 +421,9 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * again after every time a new trace with offset is created (to get new "anchor" point)
      */
     QgsPointXY mTracingStartPoint;
+
+    //! Used to store the state of digitizing type (linear or circular)
+    QgsWkbTypes::Type mDigitizingType = QgsWkbTypes::LineString;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolCapture::Capabilities )

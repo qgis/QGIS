@@ -181,7 +181,7 @@ bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent *e )
   if ( !tracer )
     return false;  // this should not happen!
 
-  mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
+  mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType );
   mTempRubberBand->setStringType( QgsWkbTypes::LineString );
   if ( mCaptureMode == CapturePolygon )
   {
@@ -370,13 +370,13 @@ QgsRubberBand *QgsMapToolCapture::takeRubberBand()
 
 void QgsMapToolCapture::toggleLinearCircularDigitizing()
 {
-  if ( !mTempRubberBand )
-    return;
-
-  if ( mTempRubberBand->stringType() == QgsWkbTypes::LineString )
-    mTempRubberBand->setStringType( QgsWkbTypes::CircularString );
+  if ( mDigitizingType == QgsWkbTypes::LineString )
+    mDigitizingType = QgsWkbTypes::CircularString ;
   else
-    mTempRubberBand->setStringType( QgsWkbTypes::LineString );
+    mDigitizingType = QgsWkbTypes::LineString;
+
+  if ( mTempRubberBand )
+    mTempRubberBand->setStringType( mDigitizingType );
 }
 
 
@@ -544,7 +544,10 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
     mRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry ) );
 
   if ( !mTempRubberBand )
+  {
     mTempRubberBand.reset( createCurveRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true ) );
+    mTempRubberBand->setStringType( mDigitizingType );
+  }
 
   bool traceCreated = false;
   if ( tracingEnabled() )
@@ -588,7 +591,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
         }
       }
 
-      mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
+      mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType );
       if ( mCaptureMode == CapturePolygon )
       {
         mTempRubberBand->setFirstPolygonPoint( firstCaptureMapPoint() );
@@ -599,7 +602,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
   }
   else
   {
-    mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
+    mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType );
     if ( mCaptureMode == CapturePolygon )
     {
       mTempRubberBand->setFirstPolygonPoint( firstCaptureMapPoint() );
@@ -638,7 +641,7 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
 
   if ( mTempRubberBand )
   {
-    mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
+    mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType );
     QgsPoint endPt = c->endPoint();
     mTempRubberBand->addPoint( endPt ); //add last point of c
   }
@@ -703,7 +706,7 @@ void QgsMapToolCapture::undo()
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
     mRubberBand->addGeometry( QgsGeometry( mCaptureCurve.clone() ), vlayer );
 
-    mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
+    mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType );
     if ( mCaptureMode == CapturePolygon )
     {
       mTempRubberBand->setFirstPolygonPoint( firstCaptureMapPoint() );
@@ -1013,11 +1016,12 @@ bool QgsMapToolCaptureRubberband::curveIsComplete() const
          ( mStringType == QgsWkbTypes::CircularString && mPoints.count() > 2 );
 }
 
-void QgsMapToolCaptureRubberband::reset( QgsWkbTypes::GeometryType geomType )
+void QgsMapToolCaptureRubberband::reset( QgsWkbTypes::GeometryType geomType, QgsWkbTypes::Type stringType )
 {
   if ( !( geomType == QgsWkbTypes::LineGeometry || geomType == QgsWkbTypes::PolygonGeometry ) )
     return;
 
+  mStringType = stringType;
   mPoints.clear();
   updateCurve();
 }
