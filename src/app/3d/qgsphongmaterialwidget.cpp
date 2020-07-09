@@ -58,7 +58,7 @@ void QgsPhongMaterialWidget::setMaterial( const QgsPhongMaterialSettings &materi
   btnAmbient->setColor( material.ambient() );
   btnSpecular->setColor( material.specular() );
   spinShininess->setValue( material.shininess() );
-  useDiffuseCheckBox->setCheckState( material.isUsingDiffuseTexture() ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
+  useDiffuseCheckBox->setCheckState( material.diffuseTextureEnabled() ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
   textureFile->setFilePath( material.texturePath() );
   textureScaleSpinBox->setValue( material.textureScale() );
   textureRotationSpinBox->setValue( material.textureRotation() );
@@ -71,7 +71,7 @@ QgsPhongMaterialSettings QgsPhongMaterialWidget::material() const
   m.setAmbient( btnAmbient->color() );
   m.setSpecular( btnSpecular->color() );
   m.setShininess( spinShininess->value() );
-  m.useTexture( useDiffuseCheckBox->checkState() == Qt::CheckState::Checked );
+  m.setDiffuseTextureEnabled( useDiffuseCheckBox->checkState() == Qt::CheckState::Checked );
   m.setTexturePath( textureFile->filePath() );
   m.setTextureScale( textureScaleSpinBox->value() );
   m.setTextureRotation( textureRotationSpinBox->value() );
