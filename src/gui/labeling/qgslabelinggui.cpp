@@ -192,6 +192,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   mFontMultiLineAlignComboBox->addItem( tr( "Left" ), QgsPalLayerSettings::MultiLeft );
   mFontMultiLineAlignComboBox->addItem( tr( "Center" ), QgsPalLayerSettings::MultiCenter );
   mFontMultiLineAlignComboBox->addItem( tr( "Right" ), QgsPalLayerSettings::MultiRight );
+  mFontMultiLineAlignComboBox->addItem( tr( "Justify" ), QgsPalLayerSettings::MultiJustify );
 
   // connections for groupboxes with separate activation checkboxes (that need to honor data defined setting)
   connect( mBufferDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
