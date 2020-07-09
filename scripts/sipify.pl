@@ -185,6 +185,15 @@ sub processDoxygenLine {
     # replace nullptr with None (nullptr means nothing to Python devs)
     $line =~ s/\bnullptr\b/None/g;
 
+    if ( $line =~ m/^\\(?<SUB>sub)?section/) {
+      my $sep = "-";
+      $sep = "~" if defined $+{SUB};
+      $line =~ s/\^\\(sub)?section //;
+      my $sep_line = $line =~ s/[\w ()]/$sep/gr;
+      # Use \Q to autoescape any potentially problematic characters in your variable.
+      $line .= "\n".$sep_line;
+    }
+
     # convert ### style headings
     if ( $line =~ m/^###\s+(.*)$/) {
       $line = "$1\n".('-' x length($1));
