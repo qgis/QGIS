@@ -140,7 +140,7 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         self.assertTrue('random' in pks)
 
         geometries_table = self._table_by_name(conn.tables('qgis_test'), 'geometries_table')
-        srids_and_types = [[t.crs.postgisSrid(), t.wkbType]
+        srids_and_types = [[t.crs.postgisSrid(), int(t.wkbType)]
                            for t in geometries_table.geometryColumnTypes()]
         srids_and_types.sort()
         self.assertEqual(srids_and_types,
