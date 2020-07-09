@@ -440,13 +440,17 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params )
     std::cout << it.key().toLocal8Bit().constData() << ":\t" << it.value().toString().toLocal8Bit().constData() << '\n';
   }
 
+  QgsProcessingContext context;
   const QgsProcessingParameterDefinitions defs = alg->parameterDefinitions();
   QList< const QgsProcessingParameterDefinition * > missingParams;
   for ( const QgsProcessingParameterDefinition *p : defs )
   {
-    if ( !( p->flags() & QgsProcessingParameterDefinition::FlagOptional ) && !params.contains( p->name() ) )
+    if ( !p->checkValueIsAcceptable( params.value( p->name() ), &context ) )
     {
-      missingParams << p;
+      if ( !( p->flags() & QgsProcessingParameterDefinition::FlagOptional ) && !params.contains( p->name() ) )
+      {
+        missingParams << p;
+      }
     }
   }
 
@@ -461,7 +465,14 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params )
     return 1;
   }
 
-  QgsProcessingContext context;
+  QString message;
+  if ( !alg->checkParameterValues( params, context, &message ) )
+  {
+    std::cerr << QStringLiteral( "ERROR:\tAn error was encountered while checking parameter values\n" ).toLocal8Bit().constData();
+    std::cerr << QStringLiteral( "\t%1\n" ).arg( message ).toLocal8Bit().constData();
+    return 1;
+  }
+
   ConsoleFeedback feedback;
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
