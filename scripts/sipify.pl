@@ -188,9 +188,8 @@ sub processDoxygenLine {
     if ( $line =~ m/^\\(?<SUB>sub)?section/) {
       my $sep = "-";
       $sep = "~" if defined $+{SUB};
-      $line =~ s/\^\\(sub)?section //;
+      $line =~ s/^\\(sub)?section \w+ //;
       my $sep_line = $line =~ s/[\w ()]/$sep/gr;
-      # Use \Q to autoescape any potentially problematic characters in your variable.
       $line .= "\n".$sep_line;
     }
 
