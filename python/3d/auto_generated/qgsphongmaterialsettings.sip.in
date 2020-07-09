@@ -83,7 +83,7 @@ Sets specular color component
 %Docstring
 Sets shininess of the surface
 %End
-    void useTexture( bool used );
+    void setUseTexture( bool used );
 %Docstring
 Sets whether the diffuse texture will be used
 %End
