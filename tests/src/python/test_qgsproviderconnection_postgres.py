@@ -140,11 +140,18 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         self.assertTrue('random' in pks)
 
         geometries_table = self._table_by_name(conn.tables('qgis_test'), 'geometries_table')
-        srids_and_types = [[t.crs.postgisSrid(), int(t.wkbType)]
+        srids_and_types = [[t.crs.postgisSrid(), t.wkbType]
                            for t in geometries_table.geometryColumnTypes()]
         srids_and_types.sort()
-        self.assertEqual(srids_and_types,
-                         [[0, 1], [0, 2], [0, 3], [0, 7], [3857, 1], [4326, 1]])
+        self.assertEqual(
+            srids_and_types,
+            [[0, QgsWkbTypes.Type.Point],
+             [0, QgsWkbTypes.Type.LineString],
+             [0, QgsWkbTypes.Type.Polygon],
+             [0, QgsWkbTypes.Type.GeometryCollection],
+             [3857, QgsWkbTypes.Type.Point],
+             [4326, QgsWkbTypes.Type.Point]]
+        )
 
         # Check TopoGeometry and Pointcloud layers are found in vector table names
         tables = conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Vector)

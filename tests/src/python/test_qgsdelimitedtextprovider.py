@@ -363,7 +363,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         print((prefix + "wanted={}"))
         print((prefix + "wanted['uri']=" + repr(result['uri'])))
         print((prefix + "wanted['fieldTypes']=" + repr(result['fieldTypes'])))
-        print((prefix + "wanted['geometryType']=" + repr(int(result['geometryType']))))
+        print((prefix + "wanted['geometryType']=QgsWkbTypes.{}".format(result['geometryType']._name_)))
         print((prefix + "wanted['data']={"))
         for k in sorted(data.keys()):
             row = data[k]
