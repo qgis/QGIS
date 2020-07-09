@@ -255,6 +255,11 @@ transformation from screen coordinates to layer's coordinates
 transformation from map coordinates to layer's coordinates
 %End
 
+    QgsPoint toLayerCoordinates( const QgsMapLayer *layer, const QgsPoint &point );
+%Docstring
+transformation from map coordinates to layer's coordinates
+%End
+
     QgsPointXY toMapCoordinates( const QgsMapLayer *layer, const QgsPointXY &point );
 %Docstring
 transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)

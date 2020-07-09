@@ -117,6 +117,8 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
 
   protected:
     void paint( QPainter *painter ) override;
+
+    //! Returns which geometry is handled by the rubber band, polygon or line
     QgsWkbTypes::GeometryType geometryType() const;
 
   private:

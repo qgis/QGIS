@@ -36,9 +36,15 @@ class QgsMapLayer;
 class QgsGeometryValidator;
 class QgsMapToolCaptureRubberband;
 
+
 #ifndef SIP_RUN
+
+///@cond PRIVATE
+
 /**
  * Class that reprensents a rubber can that can be linear or circular.
+ *
+ * \since QGIS 3.16
  */
 class QgsMapToolCaptureRubberband: public QgsGeometryRubberBand
 {
@@ -102,6 +108,8 @@ class QgsMapToolCaptureRubberband: public QgsGeometryRubberBand
     QgsPointSequence mPoints;
     QgsPoint mFirstPolygonPoint;
 };
+
+/// @endcond
 
 #endif //SIP_RUN
 
@@ -202,6 +210,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QgsRubberBand *takeRubberBand() SIP_FACTORY;
 
   public slots:
+    //! Changes the digitizing shape to linear or circular
     void toggleLinearCircularDigitizing();
 
   private slots:
