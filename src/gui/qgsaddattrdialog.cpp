@@ -90,6 +90,7 @@ void QgsAddAttrDialog::setPrecisionMinMax()
   int minPrecType = mTypeBox->itemData( idx, Qt::UserRole + 4 ).toInt();
   int maxPrecType = mTypeBox->itemData( idx, Qt::UserRole + 5 ).toInt();
   bool precisionIsEnabled = minPrecType < maxPrecType;
+  mPrec->setEnabled( precisionIsEnabled );
   mPrec->setVisible( precisionIsEnabled );
   mPrecLabel->setVisible( precisionIsEnabled );
 
@@ -138,7 +139,7 @@ QgsField QgsAddAttrDialog::field() const
            ( QVariant::Type ) mTypeBox->currentData( Qt::UserRole ).toInt(),
            mTypeBox->currentData( Qt::UserRole + 1 ).toString(),
            mLength->value(),
-           mPrec->value(),
+           mPrec->isEnabled() ? mPrec->value() : 0,
            mCommentEdit->text(),
            static_cast<QVariant::Type>( mTypeBox->currentData( Qt::UserRole ).toInt() ) == QVariant::Map ? QVariant::String : QVariant::Invalid
          );
