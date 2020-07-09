@@ -138,7 +138,7 @@ QgsField QgsAddAttrDialog::field() const
            ( QVariant::Type ) mTypeBox->currentData( Qt::UserRole ).toInt(),
            mTypeBox->currentData( Qt::UserRole + 1 ).toString(),
            mLength->value(),
-           mPrec->value(),
+           mPrec->isVisible() ? mPrec->value() : 0,
            mCommentEdit->text(),
            static_cast<QVariant::Type>( mTypeBox->currentData( Qt::UserRole ).toInt() ) == QVariant::Map ? QVariant::String : QVariant::Invalid
          );
