@@ -2472,5 +2472,34 @@ tests:
         name: expected/filter_geom_lines_poly.gml
         type: vector
 
+  - algorithm: native:rescaleraster
+    name: Rescale raster (original nodata)
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      MAXIMUM: 65535.0
+      MINIMUM: 0.0
+    results:
+      OUTPUT:
+        hash: 63610fb1f7ec3d6530591b1eb479355b52cedfebf6331cec77f2b35c
+        type: rasterhash
+
+  - algorithm: native:rescaleraster
+    name: Rescale raster (new nodata)
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      MAXIMUM: 65535.0
+      MINIMUM: 0.0
+      NODATA: -255.0
+    results:
+      OUTPUT:
+        hash: 63610fb1f7ec3d6530591b1eb479355b52cedfebf6331cec77f2b35c
+        type: rasterhash
+
 
 # See ../README.md for a description of the file format
