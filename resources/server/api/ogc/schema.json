@@ -376,7 +376,7 @@
       },
       "sortby" : {
         "name" : "sortby",
-        "in" : "path",
+        "in" : "query",
         "description" : "Sort results by the specified field name",
         "required" : false,
         "schema" : {
@@ -385,11 +385,11 @@
       },
       "sortdesc" : {
         "name" : "sortdesc",
-        "in" : "path",
+        "in" : "query",
         "description" : "Sort results in descending order, field name must be specified with 'sortby' parameter",
         "required" : false,
         "schema" : {
-          "type" : "bool"
+          "type" : "boolean"
         }
       },
       "relations" : {
