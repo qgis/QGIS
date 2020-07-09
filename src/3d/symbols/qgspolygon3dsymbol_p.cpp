@@ -20,6 +20,8 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgstessellator.h"
+#include "qgsapplication.h"
+#include "qgsimagecache.h"
 
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QMaterial>
@@ -28,6 +30,7 @@
 #include <Qt3DExtras/QDiffuseMapMaterial>
 #include <Qt3DRender/QAbstractTextureImage>
 #include <Qt3DRender/QTexture>
+#include <Qt3DRender/QPaintedTextureImage>
 
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QTechnique>
@@ -278,18 +281,46 @@ static void applyCullingMode( Qgs3DTypes::CullingMode cullingMode, Qt3DRender::Q
   }
 }
 
+
+class QgsQImageTextureImage : public Qt3DRender::QPaintedTextureImage
+{
+  public:
+    QgsQImageTextureImage( const QImage &image, Qt3DCore::QNode *parent = nullptr )
+      : Qt3DRender::QPaintedTextureImage( parent )
+      , mImage( image )
+    {
+      setSize( mImage.size() );
+    }
+
+    void paint( QPainter *painter ) override
+    {
+      painter->drawImage( mImage.rect(), mImage, mImage.rect() );
+    }
+
+  private:
+
+    QImage mImage;
+
+};
+
+
 Qt3DRender::QMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSymbol &symbol, bool isSelected, const Qgs3DRenderContext &context ) const
 {
-  Qt3DRender::QMaterial *retMaterial = nullptr;
+  bool fitsInCache = false;
+  QImage textureSourceImage;
+
   if ( symbol.material().shouldUseDiffuseTexture() )
+    textureSourceImage = QgsApplication::imageCache()->pathAsImage( symbol.material().texturePath(), QSize(), true, 1.0, fitsInCache );
+  ( void )fitsInCache;
+
+  Qt3DRender::QMaterial *retMaterial = nullptr;
+  if ( !textureSourceImage.isNull() )
   {
-    QString textureFilePath = symbol.material().texturePath();
     Qt3DExtras::QDiffuseMapMaterial *material = new Qt3DExtras::QDiffuseMapMaterial;
 
     applyCullingMode( symbol.cullingMode(), material );
 
-    Qt3DRender::QTextureImage *textureImage = new Qt3DRender::QTextureImage;
-    textureImage->setSource( QUrl::fromLocalFile( textureFilePath ) );
+    QgsQImageTextureImage *textureImage = new QgsQImageTextureImage( textureSourceImage );
     material->diffuse()->addTextureImage( textureImage );
 
     material->diffuse()->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
@@ -308,11 +339,9 @@ Qt3DRender::QMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSy
     }
 
     retMaterial = material;
-
   }
   else
   {
-
     Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial;
 
     applyCullingMode( symbol.cullingMode(), material );
