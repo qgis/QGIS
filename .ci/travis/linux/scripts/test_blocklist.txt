@@ -1,4 +1,4 @@
-# black list
+# block list
 PyQgsLocalServer
 PyQgsPalLabelingServer
 qgis_composerutils
@@ -26,3 +26,6 @@ PyQgsProviderConnectionMssql
 
 # Broken - segfaults on Travis, likely due to a real issue in the server code
 # PyQgsServerWMSGetPrint
+
+# Unreliable https://cdash.orfeo-toolbox.org/testDetails.php?test=21120313&build=47048
+PyQgsOracleProvider
