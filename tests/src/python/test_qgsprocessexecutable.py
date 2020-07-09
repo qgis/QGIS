@@ -111,7 +111,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
 
     def testAlgorithmRun(self):
         output_file = self.TMP_DIR + '/polygon_centroid.shp'
-        rc, output, err = self.run_process(['run', 'native:centroids', '--INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), '--ALL_PARTS=false', '--OUTPUT={}'.format(output_file)])
+        rc, output, err = self.run_process(['run', 'native:centroids', '--INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), '--OUTPUT={}'.format(output_file)])
         if os.environ.get('TRAVIS', '') != 'true':
             # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
             self.assertFalse(err)
