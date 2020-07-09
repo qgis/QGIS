@@ -21,12 +21,14 @@ __author__ = 'Chris Crook'
 __date__ = 'May 2013'
 __copyright__ = '(C) 2013, Chris Crook'
 
+from qgis.core import QgsWkbTypes
+
 
 def test_002_load_csv_file():
     wanted = {}
     wanted['uri'] = 'file://test.csv?geomType=none&type=csv'
     wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text']
-    wanted['geometryType'] = 4
+    wanted['geometryType'] = QgsWkbTypes.GeometryType.NullGeometry
     wanted['data'] = {
         2: {
             'id': '1',
