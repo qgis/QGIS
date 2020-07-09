@@ -34,7 +34,7 @@ QString QgsRescaleRasterAlgorithm::displayName() const
 
 QStringList QgsRescaleRasterAlgorithm::tags() const
 {
-  return QObject::tr( "raster,rescale,min,max" ).split( ',' );
+  return QObject::tr( "raster,rescale,minimum,maximum,range" ).split( ',' );
 }
 
 QString QgsRescaleRasterAlgorithm::group() const
@@ -49,9 +49,11 @@ QString QgsRescaleRasterAlgorithm::groupId() const
 
 QString QgsRescaleRasterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Rescales raster layer to the new values range preserving shape "
-                      "(distribution) of the raster's histogram (pixel values).\n\n"
-                      "By default algorithm preserves original NODATA value, but there is "
+  return QObject::tr( "Rescales raster layer to a new value range, while preserving the shape "
+                      "(distribution) of the raster's histogram (pixel values). Input values "
+                      "are mapped using a linear interpolation from the source raster's minimum "
+                      "and maximum pixel values to the destination minimum and maximum pixel range.\n\n"
+                      "By default the algorithm preserves original the NODATA value, but there is "
                       "an option to override it." );
 }
 
