@@ -590,6 +590,53 @@ This is purely a text format and no expression validation is made against it.
 
 };
 
+class QgsProcessingHiddenWidgetWrapper: QgsAbstractProcessingParameterWidgetWrapper
+{
+%Docstring
+
+An widget wrapper for hidden widgets.
+
+The hidden widget wrapper allows for creation of a widget wrapper which does not provide
+a graphical widget, yet still implements the :py:class:`QgsAbstractProcessingParameterWidgetWrapper`
+interface.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingwidgetwrapper.h"
+%End
+  public:
+
+    QgsProcessingHiddenWidgetWrapper( const QgsProcessingParameterDefinition *parameter = 0,
+                                      QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard,
+                                      QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProcessingHiddenWidgetWrapper, for the specified
+``parameter`` definition and dialog ``type``.
+%End
+
+    virtual void setWidgetValue( const QVariant &value, QgsProcessingContext &context );
+
+    virtual QVariant widgetValue() const;
+
+
+    virtual const QgsVectorLayer *linkedVectorLayer() const;
+
+
+    void setLinkedVectorLayer( const QgsVectorLayer *layer );
+%Docstring
+Sets the vector layer linked to the wrapper.
+%End
+
+  protected:
+    virtual QWidget *createWidget();
+
+    virtual QLabel *createLabel();
+
+
+};
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
