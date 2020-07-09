@@ -69,7 +69,7 @@
           <item>
            <widget class="QPushButton" name="mCopySettingsButton">
             <property name="text">
-             <string>Copy Settings from a 3D View…</string>
+             <string>Assign 3D Map View…</string>
             </property>
            </widget>
           </item>
