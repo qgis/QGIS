@@ -115,7 +115,7 @@
     <widget class="QComboBox" name="cboCullingMode">
      <item>
       <property name="text">
-       <string>No culling</string>
+       <string>No Culling</string>
       </property>
      </item>
      <item>
@@ -263,11 +263,11 @@
    <item row="5" column="1">
     <widget class="QComboBox" name="cboRenderedFacade">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <item>
       <property name="text">
-       <string>No facades</string>
+       <string>No Facades</string>
       </property>
      </item>
      <item>
@@ -282,7 +282,7 @@
      </item>
      <item>
       <property name="text">
-       <string>Walls and roofs</string>
+       <string>Walls and Roofs</string>
       </property>
      </item>
     </widget>
