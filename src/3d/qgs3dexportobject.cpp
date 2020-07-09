@@ -75,7 +75,7 @@ void Qgs3DExportObject::setupTextureCoordinates( const QVector<float> &texturesB
 
 void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ )
 {
-  for ( int vertice : mIndexes )
+  for ( unsigned int vertice : mIndexes )
   {
     int heightIndex = ( vertice - 1 ) * 3 + 1;
     minX = std::min( minX, mVertxPosition[heightIndex - 1] );

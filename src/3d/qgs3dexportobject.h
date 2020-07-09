@@ -86,7 +86,7 @@ class Qgs3DExportObject : public QObject
     QVector<float> mVertxPosition;
     QVector<float> mNormals;
     QVector<float> mTexturesUV;
-    QVector<int> mIndexes;
+    QVector<unsigned int> mIndexes;
 
     QImage mTextureImage;
 

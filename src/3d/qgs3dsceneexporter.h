@@ -46,12 +46,12 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     Qgs3DSceneExporter( Qt3DCore::QNode *parent = nullptr );
 
     /**
-     * Creates necessary export objects from entity if it represents valid entity
+     * Creates necessary export objects from entity if it represents valid vector layer entity
      * If the entity doesn't define exportable object it will be ignored
      */
-    void parseEntity( Qt3DCore::QEntity *entity );
+    void parseVectorLayerEntity( Qt3DCore::QEntity *entity );
     //! Creates terrain export objects from the terrain entity
-    void parseEntity( QgsTerrainEntity *terrain );
+    void parseTerrain( QgsTerrainEntity *terrain );
     //! Saves the scene to a .obj file
     void save( const QString &sceneName, const QString &sceneFolderPath );
 
@@ -86,9 +86,9 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
 
   private:
     //! Processes the attribute directly by taking a position buffer and converting it to Qgs3DExportObject
-    void processAttribute( Qt3DRender::QAttribute *attribute );
-    //! Processes the tessellated polygons geometry and constructs Qgs3DExportObject from it
-    void process( QgsTessellatedPolygonGeometry *geom );
+    void pocessPoistionAttributes( Qt3DRender::QGeometry *geometry );
+    //! constructs Qgs3DExportObject from the polygon geometry
+    void processPolygonGeometry( QgsTessellatedPolygonGeometry *geom );
 
     //! Returns a tile entity that contains the geometry to be exported and necessary scaling parameters
     QgsTerrainTileEntity *getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );

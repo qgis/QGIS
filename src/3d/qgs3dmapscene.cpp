@@ -780,9 +780,30 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
 
   for ( QgsMapLayer *layer : mLayerEntities.keys() )
   {
-    exporter.parseEntity( mLayerEntities[layer] );
+    QgsMapLayerType layerType =  layer->type();
+    Qt3DCore::QEntity *rootEntity = mLayerEntities[layer];
+    switch ( layerType )
+    {
+      case QgsMapLayerType::VectorLayer:
+        qDebug() << "Parsing vector layer";
+        exporter.parseVectorLayerEntity( rootEntity );
+        break;
+      case QgsMapLayerType::RasterLayer:
+        qDebug() << "Raster layer skipped";
+        break;
+      case QgsMapLayerType::PluginLayer:
+        qDebug() << "Plugin layer skipped";
+        break;
+      case QgsMapLayerType::MeshLayer:      //!< Added in 3.2
+        qDebug() << "Mesh layer skipped";
+        break;
+      case QgsMapLayerType::VectorTileLayer: //!< Added in 3.14
+        qDebug() << "Vector tile layer skipped";
+        break;
+    }
   }
-  exporter.parseEntity( mTerrain );
+  if ( mTerrain != nullptr )
+    exporter.parseTerrain( mTerrain );
 
   exporter.save( exportSettings.sceneName(), exportSettings.sceneFolderPath() );
 }
