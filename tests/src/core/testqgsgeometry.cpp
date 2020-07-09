@@ -16882,6 +16882,12 @@ void TestQgsGeometry::smoothCheck()
                                <<  QgsPointXY( 4.0, 3.8 ) << QgsPointXY( 3.8, 4.0 ) << QgsPointXY( 2.2, 4.0 ) << QgsPointXY( 2.0, 3.8 )
                                << QgsPointXY( 2, 2.2 ) << QgsPointXY( 2.2, 2 ) ) );
   QVERIFY( QgsGeometry::compare( multipoly, expectedMultiPoly ) );
+
+  // curved geometry
+  wkt = QStringLiteral( "CurvePolygon (CompoundCurve (CircularString (-70.75639028391421448 42.11076979194393743, -70.75300889449444242 42.10738840252416537, -70.75639028391421448 42.10400701310439331, -70.75977167333398654 42.10738840252416537, -70.75639028391421448 42.11076979194393743)))	1" );
+  geom = QgsGeometry::fromWkt( wkt );
+  result = geom.smooth( 3 );
+  QCOMPARE( result.wkbType(), QgsWkbTypes::Polygon );
 }
 
 void TestQgsGeometry::unaryUnion()
