@@ -26,7 +26,9 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent )
   setMaterial( QgsPhongMaterialSettings() );
 
   textureFile->setFilter( "Images (*.png *.xpm *.jpg *.jpeg *.bmp)" );
-//  btnDiffuse->setV
+
+  textureScaleSpinBox->setClearValue( 0 );
+  textureRotationSpinBox->setClearValue( 0 );
 
   connect( btnDiffuse, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
   connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
