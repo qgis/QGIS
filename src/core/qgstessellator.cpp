@@ -61,8 +61,6 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
   float u2, v2;
   float u3, v3;
 
-  float ox, oy;
-
   QVector<double> textureCoordinates;
   textureCoordinates.reserve( 12 );
   // select which side of the coordinates to use (x, z or y, z) depending on which side is smaller
@@ -80,9 +78,6 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
 
     u3 = x1;
     v3 = z1;
-
-    ox = ( x0 + x1 ) / 2.0f;
-    oy = ( z0 + z1 ) / 2.0f;
   }
   else
   {
@@ -98,8 +93,6 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
 
     u3 = -y1;
     v3 = z1;
-    ox = ( -y0 - y1 ) / 2.0f;
-    oy = ( z0 + z1 ) / 2.0f;
   }
 
   textureCoordinates.push_back( u0 );
