@@ -378,6 +378,10 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! create a curve rubber band
     QgsMapToolCaptureRubberband *createCurveRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const;
 
+    //! Returns extemity point of the captured curve in map coordinates
+    QgsPoint firstCaptureMapPoint();
+    QgsPoint lastCaptureMapPoint();
+
   private:
     //! The capture mode in which this tool operates
     CaptureMode mCaptureMode;
