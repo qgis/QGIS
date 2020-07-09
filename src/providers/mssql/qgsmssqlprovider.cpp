@@ -1784,7 +1784,8 @@ void QgsMssqlProvider::mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QStr
     geometryType += QLatin1String( "M" );
     dim = 3;
   }
-  else if ( wkbType >= QgsWkbTypes::Type::Point25D && wkbType <= QgsWkbTypes::Type::MultiPolygon25D )
+  else if ( static_cast<int>( wkbType ) >= static_cast<int>( QgsWkbTypes::Type::Point25D )
+            && static_cast<int>( wkbType ) <= static_cast<int>( QgsWkbTypes::Type::MultiPolygon25D ) )
   {
     dim = 3;
   }
