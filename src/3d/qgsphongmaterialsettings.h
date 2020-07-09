@@ -35,16 +35,7 @@ class QDomElement;
 class _3D_EXPORT QgsPhongMaterialSettings
 {
   public:
-    QgsPhongMaterialSettings()
-      : mAmbient( QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) )
-      , mDiffuse( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) )
-      , mSpecular( QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) )
-      , mIsUsingDiffuseTexture( false )
-      , mTexturePath( QString() )
-      , mTextureScale( 1.0f )
-      , mTextureRotation( 0.0f )
-    {
-    }
+    QgsPhongMaterialSettings() = default;
 
     //! Returns ambient color component
     QColor ambient() const { return mAmbient; }
@@ -78,7 +69,7 @@ class _3D_EXPORT QgsPhongMaterialSettings
     //! Sets shininess of the surface
     void setShininess( float shininess ) { mShininess = shininess; }
     //! Sets whether the diffuse texture will be used
-    void useTexture( bool used ) { mIsUsingDiffuseTexture = used; }
+    void setUseTexture( bool used ) { mIsUsingDiffuseTexture = used; }
     //! Sets the path of the texture
     void setTexturePath( QString texturePath ) { mTexturePath = texturePath; }
 
@@ -110,14 +101,14 @@ class _3D_EXPORT QgsPhongMaterialSettings
     }
 
   private:
-    QColor mAmbient;
-    QColor mDiffuse;
-    QColor mSpecular;
+    QColor mAmbient{ QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) };
+    QColor mDiffuse{ QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) };
+    QColor mSpecular{ QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
     float mShininess = 0.0f;
-    bool mIsUsingDiffuseTexture;
+    bool mIsUsingDiffuseTexture{ false };
     QString mTexturePath;
-    float mTextureScale;
-    float mTextureRotation;
+    float mTextureScale{ 1.0f };
+    float mTextureRotation{ 0.0f };
 };
 
 
