@@ -697,7 +697,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
 
     /**
      * Draws the vertical grid lines for the table.
-     * \param destination render context
+     * \param context destination render context
      * \param maxWidthMap QMap of int to double, where the int contains the column number and the double is the
      * maximum width of text present in the column.
      * \param firstRow index corresponding to first row shown in frame
