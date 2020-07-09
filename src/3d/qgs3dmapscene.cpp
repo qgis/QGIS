@@ -377,7 +377,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
   {
     if ( entity->isEnabled() && entity->needsUpdate() )
     {
-      qDebug() << "need for update";
+      QgsDebugMsgLevel( QStringLiteral( "need for update" ), 2 );
       entity->update( _sceneState( mCameraController ) );
     }
   }
