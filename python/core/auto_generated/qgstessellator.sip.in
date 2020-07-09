@@ -27,12 +27,14 @@ Optionally provides extrusion by adding triangles that serve as walls when extru
 #include "qgstessellator.h"
 %End
   public:
-    QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false );
+    QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
+                    bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f );
 %Docstring
 Creates tessellator with a specified origin point of the world (in map coordinates)
 %End
 
-    QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false );
+    QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
+                    bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f );
 %Docstring
 Creates tessellator with a specified ``bounds`` of input geometry coordinates.
 This constructor allows the tessellator to map input coordinates to a desirable range for numerical

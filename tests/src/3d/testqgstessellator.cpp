@@ -406,7 +406,7 @@ void TestQgsTessellator::testCrash2DTriangle()
   // test tessellation of a 2D triangle - https://github.com/qgis/QGIS/issues/36024
   QgsPolygon polygon;
   polygon.fromWkt( "Polygon((0 0, 42 0, 42 42, 0 0))" );
-  QgsTessellator t( 0, 0, true );
+  QgsTessellator t( 0, 0, true, false, false, true );
   t.addPolygon( polygon, 0 ); // must not crash - that's all we test here
 }
 

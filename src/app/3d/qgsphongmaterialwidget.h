@@ -36,6 +36,8 @@ class QgsPhongMaterialWidget : public QWidget, private Ui::PhongMaterialWidget
     void setMaterial( const QgsPhongMaterialSettings &material );
     QgsPhongMaterialSettings material() const;
 
+    //! activates the texturing UI (to make sure texturing UI isn't visible when the user doesn't need it like in the 3D configuration window)
+    void activateTexturingUI( bool activated );
   signals:
     void changed();
 
