@@ -922,6 +922,7 @@ class CORE_EXPORT QgsGeometry
      * \param splitFeature Set to True if you want to split a feature, otherwise set to False to split parts
      * fix this bug?
      * \returns OperationResult a result code: success or reason of failure
+     * \since QGIS 3.16
      */
     OperationResult splitGeometry( const QgsCurve *curve,  QVector<QgsGeometry> &newGeometries SIP_OUT, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, bool splitFeature = true );
 

@@ -92,7 +92,7 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     };
 
     QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
-    virtual ~QgsGeometryRubberBand() override;
+    ~QgsGeometryRubberBand() override;
 
     //! Sets geometry (takes ownership). Geometry is expected to be in map coordinates
     virtual void setGeometry( QgsAbstractGeometry *geom SIP_TRANSFER );

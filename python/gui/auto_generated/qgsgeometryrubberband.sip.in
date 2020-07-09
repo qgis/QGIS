@@ -49,7 +49,7 @@ A rubberband class for QgsAbstractGeometry (considering curved geometries)*
     };
 
     QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
-    virtual ~QgsGeometryRubberBand();
+    ~QgsGeometryRubberBand();
 
     virtual void setGeometry( QgsAbstractGeometry *geom /Transfer/ );
 %Docstring
@@ -95,7 +95,11 @@ Sets whether the vertices are drawn
   protected:
     virtual void paint( QPainter *painter );
 
+
     QgsWkbTypes::GeometryType geometryType() const;
+%Docstring
+Returns which geometry is handled by the rubber band, polygon or line
+%End
 
 };
 

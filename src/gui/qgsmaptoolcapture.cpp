@@ -574,7 +574,17 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
     {
       const QgsCurve *curve = mTempRubberBand->curve();
       if ( curve )
+      {
         addCurve( curve->clone() );
+        // add curve append only invalid match to mSnappingMatches,
+        // so we need to remove one and add the one from here if it is valid
+        if ( match.isValid() && mSnappingMatches.count() > 0 && !mSnappingMatches.last().isValid() )
+        {
+          mSnappingMatches.removeLast();
+          mSnappingMatches.append( match );
+        }
+      }
+
       mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
       if ( mCaptureMode == CapturePolygon )
       {

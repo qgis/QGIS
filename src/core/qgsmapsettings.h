@@ -466,6 +466,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     /**
      * \brief transform point coordinates from layer's CRS to output CRS
      * \returns the transformed point
+     * \since QGIS 3.16
      */
     QgsPoint layerToMapCoordinates( const QgsMapLayer *layer, QgsPoint point ) const;
 
@@ -485,6 +486,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     /**
      * \brief transform point coordinates from output CRS to layer's CRS
      * \returns the transformed point
+     * \since QGIS 3.16
      */
     QgsPoint mapToLayerCoordinates( const QgsMapLayer *layer, QgsPoint point ) const;
 

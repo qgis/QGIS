@@ -897,6 +897,8 @@ Splits this geometry according to a given curve.
                      fix this bug?
 
 :return: OperationResult a result code: success or reason of failure
+
+.. versionadded:: 3.16
 %End
 
     OperationResult reshapeGeometry( const QgsLineString &reshapeLineString );

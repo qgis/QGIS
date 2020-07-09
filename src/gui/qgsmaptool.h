@@ -240,9 +240,6 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! transformation from map coordinates to layer's coordinates
     QgsPointXY toLayerCoordinates( const QgsMapLayer *layer, const QgsPointXY &point );
 
-    //! transformation from map coordinates to layer's coordinates
-    QgsPoint toLayerCoordinates( const QgsMapLayer *layer, const QgsPoint &point );
-
     //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
     QgsPointXY toMapCoordinates( const QgsMapLayer *layer, const QgsPointXY &point );
 

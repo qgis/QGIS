@@ -12,6 +12,7 @@
 
 
 
+
 class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
 {
 
@@ -119,6 +120,9 @@ transfers ownership to the caller.
 
   public slots:
     void toggleLinearCircularDigitizing();
+%Docstring
+Changes the digitizing shape to linear or circular
+%End
 
   protected:
 

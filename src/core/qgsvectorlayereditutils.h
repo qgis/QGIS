@@ -210,6 +210,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * \param topologicalEditing TRUE if topological editing is enabled
      * \returns 0 in case of success,
      *  4 if there is a selection but no feature split
+     * \since QGIS 3.16
      */
     QgsGeometry::OperationResult splitFeatures( const QgsCurve *curve, bool preserveCircular = false, bool topologicalEditing = false );
 

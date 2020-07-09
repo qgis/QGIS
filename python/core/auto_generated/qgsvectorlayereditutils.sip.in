@@ -233,6 +233,8 @@ Splits features cut by the given curve
 
 :return: 0 in case of success,
          4 if there is a selection but no feature split
+
+.. versionadded:: 3.16
 %End
 
     int addTopologicalPoints( const QgsGeometry &geom );
