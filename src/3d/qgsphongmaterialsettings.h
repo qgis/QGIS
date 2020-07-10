@@ -35,6 +35,10 @@ class QDomElement;
 class _3D_EXPORT QgsPhongMaterialSettings
 {
   public:
+
+    /**
+     * Constructor for QgsPhongMaterialSettings.
+     */
     QgsPhongMaterialSettings() = default;
 
     //! Returns ambient color component
