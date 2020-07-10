@@ -524,6 +524,7 @@ Returns a pixmap preview for a text ``format``.
 
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

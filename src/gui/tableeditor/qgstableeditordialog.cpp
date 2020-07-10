@@ -78,6 +78,16 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
 
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::foregroundColorChanged, mTableWidget, &QgsTableEditorWidget::setSelectionForegroundColor );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::backgroundColorChanged, mTableWidget, &QgsTableEditorWidget::setSelectionBackgroundColor );
+
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::textFormatChanged, this, [ = ]
+  {
+    mTableWidget->setSelectionTextFormat( mFormattingWidget->textFormat() );
+  } );
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::hasTextFormatChanged, this, [ = ]
+  {
+    mTableWidget->setSelectionHasTextFormat( mFormattingWidget->textFormatSet() );
+  } );
+
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::numberFormatChanged, this, [ = ]
   {
     mTableWidget->setSelectionNumericFormat( mFormattingWidget->numericFormat() );
@@ -92,6 +102,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
     mFormattingWidget->setNumericFormat( mTableWidget->selectionNumericFormat(), mTableWidget->hasMixedSelectionNumericFormat() );
     mFormattingWidget->setRowHeight( mTableWidget->selectionRowHeight() );
     mFormattingWidget->setColumnWidth( mTableWidget->selectionColumnWidth() );
+    mFormattingWidget->setTextFormat( mTableWidget->selectionTextFormat(), mTableWidget->selectionHasTextFormat(), mTableWidget->hasMixedSelectionHasTextFormat() );
 
     updateActionNamesFromSelection();
 

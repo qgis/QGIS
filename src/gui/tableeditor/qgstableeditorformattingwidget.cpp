@@ -25,6 +25,7 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
   setPanelTitle( tr( "Formatting" ) );
 
   mFormatNumbersCheckBox->setTristate( false );
+  mTextFormatCheckBox->setTristate( false );
 
   mTextColorButton->setAllowOpacity( true );
   mTextColorButton->setColorDialogTitle( tr( "Text Color" ) );
@@ -66,6 +67,21 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
       mFormatNumbersCheckBox->setTristate( false );
     if ( !mBlockSignals )
       emit numberFormatChanged();
+  } );
+
+  connect( mTextFormatCheckBox, &QCheckBox::stateChanged, this, [ = ]( int state )
+  {
+    mFontButton->setEnabled( state == Qt::Checked );
+    if ( state != Qt::PartiallyChecked )
+      mTextFormatCheckBox->setTristate( false );
+    if ( !mBlockSignals )
+      emit hasTextFormatChanged();
+  } );
+
+  connect( mFontButton, &QgsFontButton::changed, this, [ = ]
+  {
+    if ( !mBlockSignals )
+      emit textFormatChanged();
   } );
 
   mCustomizeFormatButton->setEnabled( false );
@@ -114,6 +130,16 @@ QgsNumericFormat *QgsTableEditorFormattingWidget::numericFormat()
   return mNumericFormat->clone();
 }
 
+QgsTextFormat QgsTableEditorFormattingWidget::textFormat() const
+{
+  return mFontButton->textFormat();
+}
+
+bool QgsTableEditorFormattingWidget::textFormatSet() const
+{
+  return mTextFormatCheckBox->checkState() == Qt::Checked;
+}
+
 void QgsTableEditorFormattingWidget::setForegroundColor( const QColor &color )
 {
   mBlockSignals++;
@@ -134,6 +160,15 @@ void QgsTableEditorFormattingWidget::setNumericFormat( QgsNumericFormat *format,
   mBlockSignals++;
   mFormatNumbersCheckBox->setTristate( isMixedFormat );
   mFormatNumbersCheckBox->setCheckState( isMixedFormat ? Qt::PartiallyChecked : ( mNumericFormat.get() ? Qt::Checked : Qt::Unchecked ) );
+  mBlockSignals--;
+}
+
+void QgsTableEditorFormattingWidget::setTextFormat( const QgsTextFormat &format, bool isSet, bool isMixedFormat )
+{
+  mBlockSignals++;
+  mTextFormatCheckBox->setTristate( isMixedFormat );
+  mTextFormatCheckBox->setCheckState( isMixedFormat ? Qt::PartiallyChecked : ( isSet ? Qt::Checked : Qt::Unchecked ) );
+  mFontButton->setTextFormat( format );
   mBlockSignals--;
 }
 

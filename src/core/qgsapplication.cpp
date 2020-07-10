@@ -235,6 +235,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
   qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
   qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
+  qRegisterMetaType<QgsTextFormat>( "QgsTextFormat" );
   QMetaType::registerComparators<QgsProcessingModelChildDependency>();
   QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
   QMetaType::registerEqualsComparator<QgsProperty>();

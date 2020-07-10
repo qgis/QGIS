@@ -76,6 +76,8 @@ Returns ``True`` if the current selection has a mix of numeric formats.
 .. seealso:: :py:func:`selectionNumericFormat`
 %End
 
+    bool hasMixedSelectionHasTextFormat();
+
     QColor selectionForegroundColor();
 %Docstring
 Returns the foreground color for the currently selected cells.
@@ -99,6 +101,9 @@ invalid color will be returned.
 
 .. seealso:: :py:func:`selectionForegroundColor`
 %End
+
+    QgsTextFormat selectionTextFormat();
+    bool selectionHasTextFormat();
 
     double selectionRowHeight();
 %Docstring
@@ -256,6 +261,9 @@ Sets the background color for the currently selected cells.
 
 .. seealso:: :py:func:`setSelectionForegroundColor`
 %End
+
+    void setSelectionTextFormat( const QgsTextFormat &format );
+    void setSelectionHasTextFormat( bool hasFormat );
 
     void setSelectionRowHeight( double height );
 %Docstring
