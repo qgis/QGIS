@@ -972,8 +972,8 @@ void TestQgsTableEditor::textFormat()
   w.setSelectionTextFormat( format );
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( w.selectionTextFormat().size(), 21.0 );
-  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).textFormat().size(), 21 );
-  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).textFormat().size(), 21 );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).textFormat().size(), 21.0 );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).textFormat().size(), 21.0 );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).textFormat().size(), 12.6 );
   QVERIFY( w.tableContents().at( 0 ).at( 3 ).textFormat().size() != 21 );
 }
