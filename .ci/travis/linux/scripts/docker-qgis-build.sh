@@ -35,6 +35,7 @@ export CXX=/usr/lib/ccache/clang++
 
 cmake \
  -GNinja \
+ -DCMAKE_BUILD_TYPE=Debug \
  -DUSE_CCACHE=OFF \
  -DWITH_QUICK=ON \
  -DWITH_3D=ON \
