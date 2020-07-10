@@ -364,7 +364,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
       if ( entityType != QgsStyle::LabelSettingsEntity )
         return QVariant();
 
-      return QVariant::fromValue( mStyle->labelSettingsLayerType( name ) );
+      return static_cast<int>( mStyle->labelSettingsLayerType( name ) );
     }
 
     default:

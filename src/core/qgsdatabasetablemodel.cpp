@@ -136,7 +136,7 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
         return QVariant();
       }
       else if ( role == RoleWkbType )
-        return QVariant::fromValue( table.geometryColumnTypes().at( 0 ).wkbType );
+        return static_cast<int>( table.geometryColumnTypes().at( 0 ).wkbType );
       else if ( role == RoleCrs )
         return table.geometryColumnTypes().at( 0 ).crs;
 
