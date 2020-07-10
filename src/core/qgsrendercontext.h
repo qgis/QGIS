@@ -836,6 +836,24 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     void setFeatureClipGeometry( const QgsGeometry &geometry );
 
+    /**
+     * Returns the texture origin, which should be used as a brush transform when
+     * rendering using QBrush objects.
+     *
+     * \see setTextureOrigin()
+     * \since QGIS 3.16
+     */
+    QPointF textureOrigin() const;
+
+    /**
+     * Sets the texture \a origin, which should be used as a brush transform when
+     * rendering using QBrush objects.
+     *
+     * \see textureOrigin()
+     * \since QGIS 3.16
+     */
+    void setTextureOrigin( const QPointF &origin );
+
   private:
 
     Flags mFlags;
@@ -929,6 +947,8 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     QList< QgsMapClippingRegion > mClippingRegions;
     QgsGeometry mFeatureClipGeometry;
+
+    QPointF mTextureOrigin;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

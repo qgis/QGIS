@@ -844,6 +844,26 @@ Sets a ``geometry`` to use to clip features at render time.
 .. versionadded:: 3.16
 %End
 
+    QPointF textureOrigin() const;
+%Docstring
+Returns the texture origin, which should be used as a brush transform when
+rendering using QBrush objects.
+
+.. seealso:: :py:func:`setTextureOrigin`
+
+.. versionadded:: 3.16
+%End
+
+    void setTextureOrigin( const QPointF &origin );
+%Docstring
+Sets the texture ``origin``, which should be used as a brush transform when
+rendering using QBrush objects.
+
+.. seealso:: :py:func:`textureOrigin`
+
+.. versionadded:: 3.16
+%End
+
 };
 
 QFlags<QgsRenderContext::Flag> operator|(QgsRenderContext::Flag f1, QFlags<QgsRenderContext::Flag> f2);

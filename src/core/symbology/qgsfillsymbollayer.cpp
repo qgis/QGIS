@@ -1597,7 +1597,14 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVec
   p->setPen( QPen( Qt::NoPen ) );
 
   QTransform bkTransform = mBrush.transform();
-  if ( context.renderContext().testFlag( QgsRenderContext::RenderMapTile ) )
+  if ( !context.renderContext().textureOrigin().isNull() )
+  {
+    QPointF leftCorner = context.renderContext().textureOrigin();
+    QTransform t = mBrush.transform();
+    t.translate( leftCorner.x(), leftCorner.y() );
+    mBrush.setTransform( t );
+  }
+  else if ( context.renderContext().testFlag( QgsRenderContext::RenderMapTile ) )
   {
     //transform brush to upper left corner of geometry bbox
     QPointF leftCorner = points.boundingRect().topLeft();
