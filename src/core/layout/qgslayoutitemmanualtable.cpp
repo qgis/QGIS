@@ -318,6 +318,22 @@ QgsTextFormat QgsLayoutItemManualTable::textFormatForCell( int row, int column )
   return QgsLayoutTable::textFormatForCell( row, column );
 }
 
+Qt::Alignment QgsLayoutItemManualTable::horizontalAlignmentForCell( int row, int column ) const
+{
+  if ( row < mContents.size() && column < mContents.at( row ).size() )
+    return mContents.value( row ).value( column ).horizontalAlignment();
+
+  return QgsLayoutTable::horizontalAlignmentForCell( row, column );
+}
+
+Qt::Alignment QgsLayoutItemManualTable::verticalAlignmentForCell( int row, int column ) const
+{
+  if ( row < mContents.size() && column < mContents.at( row ).size() )
+    return mContents.value( row ).value( column ).verticalAlignment();
+
+  return QgsLayoutTable::verticalAlignmentForCell( row, column );
+}
+
 void QgsLayoutItemManualTable::refreshColumns()
 {
   // refresh columns

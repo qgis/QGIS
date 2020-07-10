@@ -141,6 +141,8 @@ class CORE_EXPORT QgsLayoutItemManualTable: public QgsLayoutTable
     bool calculateMaxRowHeights() override;
     QgsTextFormat textFormatForHeader( int column ) const override;
     QgsTextFormat textFormatForCell( int row, int column ) const override;
+    Qt::Alignment horizontalAlignmentForCell( int row, int column ) const override;
+    Qt::Alignment verticalAlignmentForCell( int row, int column ) const override;
 
   private:
 

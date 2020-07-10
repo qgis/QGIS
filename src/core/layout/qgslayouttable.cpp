@@ -550,8 +550,8 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
                                              textCell.top() * context.renderContext().scaleFactor(),
                                              textCell.width() * context.renderContext().scaleFactor(),
                                              textCell.height() * context.renderContext().scaleFactor() ), 0,
-                                     QgsTextRenderer::convertQtHAlignment( column.hAlignment() ), str, context.renderContext(), cellFormat, true,
-                                     QgsTextRenderer::convertQtVAlignment( column.vAlignment() ) );
+                                     QgsTextRenderer::convertQtHAlignment( horizontalAlignmentForCell( row, col ) ), str, context.renderContext(), cellFormat, true,
+                                     QgsTextRenderer::convertQtVAlignment( verticalAlignmentForCell( row, col ) ) );
         }
         p->restore();
 
@@ -1532,5 +1532,15 @@ QgsTextFormat QgsLayoutTable::textFormatForCell( int, int ) const
 QgsTextFormat QgsLayoutTable::textFormatForHeader( int ) const
 {
   return mHeaderTextFormat;
+}
+
+Qt::Alignment QgsLayoutTable::horizontalAlignmentForCell( int, int column ) const
+{
+  return mColumns.value( column ).hAlignment();
+}
+
+Qt::Alignment QgsLayoutTable::verticalAlignmentForCell( int, int column ) const
+{
+  return mColumns.value( column ).vAlignment();
 }
 

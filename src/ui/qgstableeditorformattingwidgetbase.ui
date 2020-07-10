@@ -131,15 +131,38 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox">
-         <property name="title">
-          <string>Text Format</string>
+        <widget class="QGroupBox" name="groupBox_7">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
          </property>
-         <layout class="QGridLayout" name="gridLayout">
+         <property name="title">
+          <string>Formatting</string>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_7">
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="mFormatNumbersCheckBox">
+            <property name="text">
+             <string>Format as number</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="0">
            <widget class="QCheckBox" name="mTextFormatCheckBox">
             <property name="text">
-             <string>Override format</string>
+             <string>Override text format</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QPushButton" name="mCustomizeFormatButton">
+            <property name="text">
+             <string>Customize…</string>
             </property>
            </widget>
           </item>
@@ -156,37 +179,25 @@
             </property>
            </widget>
           </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="groupBox_7">
-         <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
-         </property>
-         <property name="title">
-          <string>Formatting</string>
-         </property>
-         <property name="syncGroup" stdset="0">
-          <string notr="true">composeritem</string>
-         </property>
-         <property name="collapsed" stdset="0">
-          <bool>false</bool>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_7" columnstretch="2,0">
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="mFormatNumbersCheckBox">
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>Format as number</string>
+             <string>Horizontal alignment</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QPushButton" name="mCustomizeFormatButton">
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>Customize…</string>
+             <string>Vertical alignment</string>
             </property>
            </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QgsAlignmentComboBox" name="mVerticalAlignComboBox"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QgsAlignmentComboBox" name="mHorizontalAlignComboBox"/>
           </item>
          </layout>
         </widget>
@@ -285,10 +296,27 @@
    <extends>QToolButton</extends>
    <header>qgsfontbutton.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsAlignmentComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsalignmentcombobox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>scrollArea</tabstop>
   <tabstop>groupBox_6</tabstop>
+  <tabstop>mTextColorButton</tabstop>
+  <tabstop>mBackgroundColorButton</tabstop>
+  <tabstop>groupBox_7</tabstop>
+  <tabstop>mTextFormatCheckBox</tabstop>
+  <tabstop>mFontButton</tabstop>
+  <tabstop>mFormatNumbersCheckBox</tabstop>
+  <tabstop>mCustomizeFormatButton</tabstop>
+  <tabstop>mHorizontalAlignComboBox</tabstop>
+  <tabstop>mVerticalAlignComboBox</tabstop>
+  <tabstop>groupBox_8</tabstop>
+  <tabstop>mRowHeightSpinBox</tabstop>
+  <tabstop>mColumnWidthSpinBox</tabstop>
+  <tabstop>scrollArea</tabstop>
  </tabstops>
  <resources/>
  <connections/>

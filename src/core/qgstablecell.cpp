@@ -30,6 +30,8 @@ QgsTableCell::QgsTableCell( const QgsTableCell &other )
   , mHasTextFormat( other.mHasTextFormat )
   , mTextFormat( other.mTextFormat )
   , mFormat( other.mFormat ? other.mFormat->clone() : nullptr )
+  , mHAlign( other.mHAlign )
+  , mVAlign( other.mVAlign )
 {}
 
 QgsTableCell::~QgsTableCell() = default;
@@ -42,6 +44,8 @@ QgsTableCell &QgsTableCell::operator=( const QgsTableCell &other )
   mHasTextFormat = other.mHasTextFormat;
   mTextFormat = other.mTextFormat;
   mFormat.reset( other.mFormat ? other.mFormat->clone() : nullptr );
+  mHAlign = other.mHAlign;
+  mVAlign = other.mVAlign;
   return *this;
 }
 
@@ -72,6 +76,9 @@ QVariantMap QgsTableCell::properties( const QgsReadWriteContext &context ) const
   QDomElement textElem = mTextFormat.writeXml( textDoc, context );
   textDoc.appendChild( textElem );
   res.insert( QStringLiteral( "text_format" ), textDoc.toString() );
+
+  res.insert( QStringLiteral( "halign" ), static_cast< int >( mHAlign ) );
+  res.insert( QStringLiteral( "valign" ), static_cast< int >( mVAlign ) );
 
   return res;
 }
@@ -104,4 +111,27 @@ void QgsTableCell::setProperties( const QVariantMap &properties, const QgsReadWr
   {
     mFormat.reset();
   }
+
+  mHAlign = static_cast< Qt::Alignment >( properties.value( QStringLiteral( "halign" ), Qt::AlignLeft ).toInt() );
+  mVAlign = static_cast< Qt::Alignment >( properties.value( QStringLiteral( "valign" ), Qt::AlignVCenter ).toInt() );
+}
+
+Qt::Alignment QgsTableCell::horizontalAlignment() const
+{
+  return mHAlign;
+}
+
+void QgsTableCell::setHorizontalAlignment( Qt::Alignment alignment )
+{
+  mHAlign = alignment;
+}
+
+Qt::Alignment QgsTableCell::verticalAlignment() const
+{
+  return mVAlign;
+}
+
+void QgsTableCell::setVerticalAlignment( Qt::Alignment alignment )
+{
+  mVAlign = alignment;
 }

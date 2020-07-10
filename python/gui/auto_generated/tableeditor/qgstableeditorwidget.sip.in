@@ -77,6 +77,11 @@ Returns ``True`` if the current selection has a mix of numeric formats.
 %End
 
     bool hasMixedSelectionHasTextFormat();
+%Docstring
+Returns ``True`` if the current selection has a mix of text format override state.
+
+.. versionadded:: 3.16
+%End
 
     QColor selectionForegroundColor();
 %Docstring
@@ -102,8 +107,39 @@ invalid color will be returned.
 .. seealso:: :py:func:`selectionForegroundColor`
 %End
 
+    Qt::Alignment selectionHorizontalAlignment();
+%Docstring
+Returns the horizontal alignment for the currently selected cells.
+
+If the returned value contains both horizontal and vertical alignment flags, then
+the selected cells have a mix of different horizontal alignments.
+
+.. seealso:: :py:func:`selectionVerticalAlignment`
+%End
+
+    Qt::Alignment selectionVerticalAlignment();
+%Docstring
+Returns the horizontal alignment for the currently selected cells.
+
+If the returned value contains both horizontal and vertical alignment flags, then
+the selected cells have a mix of different vertical alignments.
+
+.. seealso:: :py:func:`selectionVerticalAlignment`
+%End
+
     QgsTextFormat selectionTextFormat();
+%Docstring
+Returns the text format for the currently selected cells.
+
+.. versionadded:: 3.16
+%End
+
     bool selectionHasTextFormat();
+%Docstring
+Returns whether the currently selected cells have the text format override option set.
+
+.. versionadded:: 3.16
+%End
 
     double selectionRowHeight();
 %Docstring
@@ -262,8 +298,41 @@ Sets the background color for the currently selected cells.
 .. seealso:: :py:func:`setSelectionForegroundColor`
 %End
 
+    void setSelectionHorizontalAlignment( Qt::Alignment alignment );
+%Docstring
+Sets the horizontal alignment for the currently selected cells.
+
+.. seealso:: :py:func:`selectionHorizontalAlignment`
+
+.. seealso:: :py:func:`setSelectionVerticalAlignment`
+
+.. versionadded:: 3.16
+%End
+
+    void setSelectionVerticalAlignment( Qt::Alignment alignment );
+%Docstring
+Sets the vertical alignment for the currently selected cells.
+
+.. seealso:: :py:func:`selectionVerticalAlignment`
+
+.. seealso:: :py:func:`setSelectionHorizontalAlignment`
+
+.. versionadded:: 3.16
+%End
+
     void setSelectionTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` for the selected cells.
+
+.. versionadded:: 3.16
+%End
+
     void setSelectionHasTextFormat( bool hasFormat );
+%Docstring
+Sets whether the selected cells have the text format override option set.
+
+.. versionadded:: 3.16
+%End
 
     void setSelectionRowHeight( double height );
 %Docstring

@@ -36,6 +36,9 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
   mBackgroundColorButton->setDefaultColor( QColor( 255, 255, 255 ) );
   mBackgroundColorButton->setShowNull( true );
 
+  mHorizontalAlignComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight | Qt::AlignJustify );
+  mVerticalAlignComboBox->setAvailableAlignments( Qt::AlignTop | Qt::AlignVCenter | Qt::AlignBottom );
+
   mRowHeightSpinBox->setClearValue( 0, tr( "Automatic" ) );
   mColumnWidthSpinBox->setClearValue( 0, tr( "Automatic" ) );
 
@@ -120,6 +123,22 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
       mBlockSignals--;
     }
   } );
+
+  connect( mHorizontalAlignComboBox, &QgsAlignmentComboBox::changed, this, [ = ]
+  {
+    if ( !mBlockSignals )
+    {
+      emit horizontalAlignmentChanged( mHorizontalAlignComboBox->currentAlignment() );
+    }
+  } );
+
+  connect( mVerticalAlignComboBox, &QgsAlignmentComboBox::changed, this, [ = ]
+  {
+    if ( !mBlockSignals )
+    {
+      emit verticalAlignmentChanged( mVerticalAlignComboBox->currentAlignment() );
+    }
+  } );
 }
 
 QgsNumericFormat *QgsTableEditorFormattingWidget::numericFormat()
@@ -191,6 +210,26 @@ void QgsTableEditorFormattingWidget::setColumnWidth( double width )
   else
     mColumnWidthSpinBox->setClearValue( 0, tr( "Automatic" ) );
   mColumnWidthSpinBox->setValue( width < 0 ? 0 : width );
+  mBlockSignals--;
+}
+
+void QgsTableEditorFormattingWidget::setHorizontalAlignment( Qt::Alignment alignment )
+{
+  mBlockSignals++;
+  if ( alignment & Qt::AlignHorizontal_Mask && alignment & Qt::AlignVertical_Mask )
+    mHorizontalAlignComboBox->setCurrentIndex( -1 );
+  else
+    mHorizontalAlignComboBox->setCurrentAlignment( alignment );
+  mBlockSignals--;
+}
+
+void QgsTableEditorFormattingWidget::setVerticalAlignment( Qt::Alignment alignment )
+{
+  mBlockSignals++;
+  if ( alignment & Qt::AlignHorizontal_Mask && alignment & Qt::AlignVertical_Mask )
+    mVerticalAlignComboBox->setCurrentIndex( -1 );
+  else
+    mVerticalAlignComboBox->setCurrentAlignment( alignment );
   mBlockSignals--;
 }
 

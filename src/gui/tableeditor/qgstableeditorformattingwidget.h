@@ -125,6 +125,26 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, private
      */
     void setColumnWidth( double width );
 
+    /**
+     * Sets the horizontal \a alignment to show in the widget.
+     *
+     * \see horizontalAlignmentChanged()
+     * \see setVerticalAlignment()
+     *
+     * \since QGIS 3.16
+     */
+    void setHorizontalAlignment( Qt::Alignment alignment );
+
+    /**
+     * Sets the vertical \a alignment to show in the widget.
+     *
+     * \see verticalAlignmentChanged()
+     * \see setHorizontalAlignment()
+     *
+     * \since QGIS 3.16
+     */
+    void setVerticalAlignment( Qt::Alignment alignment );
+
   signals:
 
     /**
@@ -169,6 +189,20 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, private
      * Emitted whenever the column \a width shown in the widget is changed.
      */
     void columnWidthChanged( double width );
+
+    /**
+     * Emitted when the horizontal \a alignment shown in the widget is changed.
+     *
+     * \since QGIS 3.16
+     */
+    void horizontalAlignmentChanged( Qt::Alignment alignment );
+
+    /**
+     * Emitted when the vertical \a alignment shown in the widget is changed.
+     *
+     * \since QGIS 3.16
+     */
+    void verticalAlignmentChanged( Qt::Alignment alignment );
 
   private:
 

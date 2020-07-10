@@ -741,6 +741,22 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      */
     virtual QgsTextFormat textFormatForHeader( int column ) const;
 
+    /**
+     * Returns the horizontal alignment to use for the cell at the specified \a row and \a column.
+     *
+     * \see verticalAlignmentForCell()
+     * \since QGIS 3.16
+     */
+    virtual Qt::Alignment horizontalAlignmentForCell( int row, int column ) const;
+
+    /**
+     * Returns the vertical alignment to use for the cell at the specified \a row and \a column.
+     *
+     * \see horizontalAlignmentForCell()
+     * \since QGIS 3.16
+     */
+    virtual Qt::Alignment verticalAlignmentForCell( int row, int column ) const;
+
   private:
 
     QMap< CellStyleGroup, QString > mCellStyleNames;

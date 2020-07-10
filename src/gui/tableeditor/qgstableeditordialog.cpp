@@ -79,6 +79,9 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::foregroundColorChanged, mTableWidget, &QgsTableEditorWidget::setSelectionForegroundColor );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::backgroundColorChanged, mTableWidget, &QgsTableEditorWidget::setSelectionBackgroundColor );
 
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::horizontalAlignmentChanged, mTableWidget, &QgsTableEditorWidget::setSelectionHorizontalAlignment );
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::verticalAlignmentChanged, mTableWidget, &QgsTableEditorWidget::setSelectionVerticalAlignment );
+
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::textFormatChanged, this, [ = ]
   {
     mTableWidget->setSelectionTextFormat( mFormattingWidget->textFormat() );
@@ -103,6 +106,8 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
     mFormattingWidget->setRowHeight( mTableWidget->selectionRowHeight() );
     mFormattingWidget->setColumnWidth( mTableWidget->selectionColumnWidth() );
     mFormattingWidget->setTextFormat( mTableWidget->selectionTextFormat(), mTableWidget->selectionHasTextFormat(), mTableWidget->hasMixedSelectionHasTextFormat() );
+    mFormattingWidget->setHorizontalAlignment( mTableWidget->selectionHorizontalAlignment() );
+    mFormattingWidget->setVerticalAlignment( mTableWidget->selectionVerticalAlignment() );
 
     updateActionNamesFromSelection();
 
