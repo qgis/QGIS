@@ -76,9 +76,6 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
 
-    //! create a chunk loader that creates the node entity synchronously
-//    QgsChunkLoader *createSynchronousChunkLoader( QgsChunkNode *node ) const;
-
   private:
     void updateGenerator();
 

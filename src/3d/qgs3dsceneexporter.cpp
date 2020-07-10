@@ -218,15 +218,14 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity 
 {
   // Just create a new tile (we don't need to export exact level of details as in the scene)
   // create the entity synchronously and then it will be deleted once our scene exporter instance is deallocated
-  QgsDemTerrainGenerator *generator = static_cast<QgsDemTerrainGenerator *>( terrain->map3D().terrainGenerator() );
-  int oldResolution = generator->resolution();
+  QgsDemTerrainGenerator *generator = dynamic_cast<QgsDemTerrainGenerator *>( terrain->map3D().terrainGenerator()->clone() );
   generator->setResolution( mTerrainResolution );
   QgsDemTerrainTileLoader *loader = qobject_cast<QgsDemTerrainTileLoader *>( generator->createChunkLoader( node ) );
   generator->heightMapGenerator()->waitForFinished();
   if ( mExportTextures )
     terrain->textureGenerator()->waitForFinished();
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
-  generator->setResolution( oldResolution );
+  delete generator;
   return tileEntity;
 }
 

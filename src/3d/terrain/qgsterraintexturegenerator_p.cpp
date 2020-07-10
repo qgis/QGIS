@@ -76,6 +76,8 @@ void QgsTerrainTextureGenerator::cancelJob( int jobId )
 
 void QgsTerrainTextureGenerator::waitForFinished()
 {
+  for ( QgsMapRendererSequentialJob *job : mJobs.keys() )
+    disconnect( job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
   QVector<QgsMapRendererSequentialJob *> toBeDeleted;
   for ( QgsMapRendererSequentialJob *mapJob : mJobs.keys() )
   {

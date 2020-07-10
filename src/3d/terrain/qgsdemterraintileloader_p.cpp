@@ -24,6 +24,7 @@
 #include "qgsterrainentity_p.h"
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintileentity_p.h"
+#include "qgsterraingenerator.h"
 
 #include <Qt3DRender/QGeometryRenderer>
 
@@ -52,23 +53,21 @@ static void _heightMapMinMax( const QByteArray &heightMap, float &zMin, float &z
 }
 
 
-QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node )
+QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsTerrainGenerator *terrainGenerator )
   : QgsTerrainTileLoader( terrain, node )
   , mResolution( 0 )
 {
 
-  const Qgs3DMapSettings &map = terrain->map3D();
-
   QgsDemHeightMapGenerator *heightMapGenerator = nullptr;
-  if ( map.terrainGenerator()->type() == QgsTerrainGenerator::Dem )
+  if ( terrainGenerator->type() == QgsTerrainGenerator::Dem )
   {
-    QgsDemTerrainGenerator *generator = static_cast<QgsDemTerrainGenerator *>( map.terrainGenerator() );
+    QgsDemTerrainGenerator *generator = static_cast<QgsDemTerrainGenerator *>( terrainGenerator );
     heightMapGenerator = generator->heightMapGenerator();
     mSkirtHeight = generator->skirtHeight();
   }
-  else if ( map.terrainGenerator()->type() == QgsTerrainGenerator::Online )
+  else if ( terrainGenerator->type() == QgsTerrainGenerator::Online )
   {
-    QgsOnlineTerrainGenerator *generator = static_cast<QgsOnlineTerrainGenerator *>( map.terrainGenerator() );
+    QgsOnlineTerrainGenerator *generator = static_cast<QgsOnlineTerrainGenerator *>( terrainGenerator );
     heightMapGenerator = generator->heightMapGenerator();
     mSkirtHeight = generator->skirtHeight();
   }
@@ -246,6 +245,11 @@ int QgsDemHeightMapGenerator::render( int x, int y, int z )
 
 void QgsDemHeightMapGenerator::waitForFinished()
 {
+  for ( QFutureWatcher<QByteArray> *fw : mJobs.keys() )
+  {
+    disconnect( fw, &QFutureWatcher<QByteArray>::finished, this, &QgsDemHeightMapGenerator::onFutureFinished );
+    disconnect( fw, &QFutureWatcher<QByteArray>::finished, fw, &QObject::deleteLater );
+  }
   QVector<QFutureWatcher<QByteArray>*> toBeDeleted;
   for ( QFutureWatcher<QByteArray> *fw : mJobs.keys() )
   {

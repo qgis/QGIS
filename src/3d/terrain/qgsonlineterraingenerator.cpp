@@ -24,12 +24,13 @@ QgsOnlineTerrainGenerator::~QgsOnlineTerrainGenerator() = default;
 
 QgsChunkLoader *QgsOnlineTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
-  return new QgsDemTerrainTileLoader( mTerrain, node );
+  return new QgsDemTerrainTileLoader( mTerrain, node, const_cast<QgsOnlineTerrainGenerator *>( this ) );
 }
 
 QgsTerrainGenerator *QgsOnlineTerrainGenerator::clone() const
 {
   QgsOnlineTerrainGenerator *cloned = new QgsOnlineTerrainGenerator;
+  cloned->setTerrain( mTerrain );
   cloned->mCrs = mCrs;
   cloned->mExtent = mExtent;
   cloned->mResolution = mResolution;
