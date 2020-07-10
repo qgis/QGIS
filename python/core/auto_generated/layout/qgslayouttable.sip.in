@@ -755,6 +755,24 @@ Returns the text format to use for the header cell at the specified ``column``.
 .. versionadded:: 3.16
 %End
 
+    virtual Qt::Alignment horizontalAlignmentForCell( int row, int column ) const;
+%Docstring
+Returns the horizontal alignment to use for the cell at the specified ``row`` and ``column``.
+
+.. seealso:: :py:func:`verticalAlignmentForCell`
+
+.. versionadded:: 3.16
+%End
+
+    virtual Qt::Alignment verticalAlignmentForCell( int row, int column ) const;
+%Docstring
+Returns the vertical alignment to use for the cell at the specified ``row`` and ``column``.
+
+.. seealso:: :py:func:`horizontalAlignmentForCell`
+
+.. versionadded:: 3.16
+%End
+
 };
 
 /************************************************************************

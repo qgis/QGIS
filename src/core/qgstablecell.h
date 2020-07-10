@@ -150,6 +150,42 @@ class CORE_EXPORT QgsTableCell
     void setNumericFormat( QgsNumericFormat *format SIP_TRANSFER );
 
     /**
+     * Returns the horizontal alignment for text in the cell.
+     *
+     * \see setHorizontalAlignment()
+     * \see verticalAlignment()
+     * \since QGIS 3.16
+     */
+    Qt::Alignment horizontalAlignment() const;
+
+    /**
+     * Sets the horizontal \a alignment for text in the cell.
+     *
+     * \see horizontalAlignment()
+     * \see setVerticalAlignment()
+     * \since QGIS 3.16
+     */
+    void setHorizontalAlignment( Qt::Alignment alignment );
+
+    /**
+     * Returns the vertical alignment for text in the cell.
+     *
+     * \see setVerticalAlignment()
+     * \see horizontalAlignment()
+     * \since QGIS 3.16
+     */
+    Qt::Alignment verticalAlignment() const;
+
+    /**
+     * Sets the vertical \a alignment for text in the cell.
+     *
+     * \see verticalAlignment()
+     * \see setHorizontalAlignment()
+     * \since QGIS 3.16
+     */
+    void setVerticalAlignment( Qt::Alignment alignment );
+
+    /**
      * Returns the properties of the cell.
      *
      * \see setProperties()
@@ -180,6 +216,10 @@ class CORE_EXPORT QgsTableCell
     bool mHasTextFormat = false;
     QgsTextFormat mTextFormat;
     std::unique_ptr< QgsNumericFormat > mFormat;
+
+    Qt::Alignment mHAlign = Qt::AlignLeft;
+    Qt::Alignment mVAlign = Qt::AlignVCenter;
+
 };
 
 /**

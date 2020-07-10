@@ -327,6 +327,8 @@ void QgsTableEditorWidget::setTableContents( const QgsTableContents &contents )
       item->setData( Qt::ForegroundRole, col.foregroundColor().isValid() ? col.foregroundColor() : QVariant() );
       item->setData( HasTextFormat, col.hasTextFormat() );
       item->setData( TextFormat, QVariant::fromValue( col.textFormat() ) );
+      item->setData( HorizontalAlignment, static_cast< int >( col.horizontalAlignment() ) );
+      item->setData( VerticalAlignment, static_cast< int >( col.verticalAlignment() ) );
       if ( col.numericFormat() )
       {
         mNumericFormats.insert( item, col.numericFormat()->clone() );
@@ -369,6 +371,8 @@ QgsTableContents QgsTableEditorWidget::tableContents() const
         cell.setForegroundColor( i->data( Qt::ForegroundRole ).value< QColor >() );
         cell.setHasTextFormat( i->data( HasTextFormat ).toBool() );
         cell.setTextFormat( i->data( TextFormat ).value< QgsTextFormat >() );
+        cell.setHorizontalAlignment( static_cast< Qt::Alignment >( i->data( HorizontalAlignment ).toInt() ) );
+        cell.setVerticalAlignment( static_cast< Qt::Alignment >( i->data( VerticalAlignment ).toInt() ) );
 
         if ( mNumericFormats.value( i ) )
         {
@@ -552,6 +556,52 @@ QColor QgsTableEditorWidget::selectionBackgroundColor()
     }
   }
   return c;
+}
+
+Qt::Alignment QgsTableEditorWidget::selectionHorizontalAlignment()
+{
+  Qt::Alignment alignment = Qt::AlignLeft;
+  bool first = true;
+  const QModelIndexList selection = selectedIndexes();
+  for ( const QModelIndex &index : selection )
+  {
+    Qt::Alignment cellAlign = static_cast< Qt::Alignment >( model()->data( index, HorizontalAlignment ).toInt() );
+    if ( first )
+    {
+      alignment = cellAlign;
+      first = false;
+    }
+    else if ( cellAlign == alignment )
+      continue;
+    else
+    {
+      return Qt::AlignLeft | Qt::AlignTop;
+    }
+  }
+  return alignment;
+}
+
+Qt::Alignment QgsTableEditorWidget::selectionVerticalAlignment()
+{
+  Qt::Alignment alignment = Qt::AlignVCenter;
+  bool first = true;
+  const QModelIndexList selection = selectedIndexes();
+  for ( const QModelIndex &index : selection )
+  {
+    Qt::Alignment cellAlign = static_cast< Qt::Alignment >( model()->data( index, VerticalAlignment ).toInt() );
+    if ( first )
+    {
+      alignment = cellAlign;
+      first = false;
+    }
+    else if ( cellAlign == alignment )
+      continue;
+    else
+    {
+      return Qt::AlignLeft | Qt::AlignTop;
+    }
+  }
+  return alignment;
 }
 
 QgsTextFormat QgsTableEditorWidget::selectionTextFormat()
@@ -948,6 +998,68 @@ void QgsTableEditorWidget::setSelectionBackgroundColor( const QColor &color )
       QTableWidgetItem *newItem = new QTableWidgetItem();
       newItem->setData( Qt::BackgroundRole, color.isValid() ? color : QVariant() );
       newItem->setData( PresetBackgroundColorRole, color.isValid() ? color : QVariant() );
+      setItem( index.row(), index.column(), newItem );
+      changed = true;
+    }
+  }
+  mBlockSignals--;
+  if ( changed && !mBlockSignals )
+    emit tableChanged();
+}
+
+void QgsTableEditorWidget::setSelectionHorizontalAlignment( Qt::Alignment alignment )
+{
+  const QModelIndexList selection = selectedIndexes();
+  bool changed = false;
+  mBlockSignals++;
+  for ( const QModelIndex &index : selection )
+  {
+    if ( index.row() == 0 && mIncludeHeader )
+      continue;
+
+    if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
+    {
+      if ( static_cast< Qt::Alignment >( i->data( HorizontalAlignment ).toInt() ) != alignment )
+      {
+        i->setData( HorizontalAlignment, static_cast< int >( alignment ) );
+        changed = true;
+      }
+    }
+    else
+    {
+      QTableWidgetItem *newItem = new QTableWidgetItem();
+      newItem->setData( HorizontalAlignment, static_cast< int >( alignment ) );
+      setItem( index.row(), index.column(), newItem );
+      changed = true;
+    }
+  }
+  mBlockSignals--;
+  if ( changed && !mBlockSignals )
+    emit tableChanged();
+}
+
+void QgsTableEditorWidget::setSelectionVerticalAlignment( Qt::Alignment alignment )
+{
+  const QModelIndexList selection = selectedIndexes();
+  bool changed = false;
+  mBlockSignals++;
+  for ( const QModelIndex &index : selection )
+  {
+    if ( index.row() == 0 && mIncludeHeader )
+      continue;
+
+    if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
+    {
+      if ( static_cast< Qt::Alignment >( i->data( HorizontalAlignment ).toInt() ) != alignment )
+      {
+        i->setData( VerticalAlignment, static_cast< int >( alignment ) );
+        changed = true;
+      }
+    }
+    else
+    {
+      QTableWidgetItem *newItem = new QTableWidgetItem();
+      newItem->setData( VerticalAlignment, static_cast< int >( alignment ) );
       setItem( index.row(), index.column(), newItem );
       changed = true;
     }

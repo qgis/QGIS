@@ -50,6 +50,7 @@ class TestQgsLayoutManualTable : public QObject
     void columnWidth();
     void headers();
     void cellTextFormat();
+    void cellTextAlignment();
 
   private:
     QString mReport;
@@ -468,6 +469,46 @@ void TestQgsLayoutManualTable::cellTextFormat()
 
   table->setColumnWidths( QList< double >() << 0 << 0.0 << 30.0 );
   QgsLayoutChecker checker( QStringLiteral( "manualtable_textformat" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "layout_manual_table" ) );
+  bool result = checker.testLayout( mReport );
+  QVERIFY( result );
+}
+
+void TestQgsLayoutManualTable::cellTextAlignment()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemManualTable *table = new QgsLayoutItemManualTable( &l );
+  QgsLayoutFrame *frame1 = new QgsLayoutFrame( &l, table );
+  frame1->attemptSetSceneRect( QRectF( 5, 5, 100, 60 ) );
+  frame1->setFrameEnabled( true );
+  table->addFrame( frame1 );
+  table->setBackgroundColor( Qt::yellow );
+
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+
+  frame1->setFrameEnabled( false );
+  table->setShowGrid( true );
+  table->setHorizontalGrid( true );
+  table->setVerticalGrid( true );
+
+  QgsTableCell c1( QStringLiteral( "Jet" ) );
+  c1.setHorizontalAlignment( Qt::AlignRight );
+  c1.setVerticalAlignment( Qt::AlignBottom );
+
+  QgsTableCell c3( QStringLiteral( "Plane" ) );
+  c3.setHorizontalAlignment( Qt::AlignCenter );
+  c3.setVerticalAlignment( Qt::AlignTop );
+
+  QgsTableCell c5( QStringLiteral( "B" ) );
+  c5.setHorizontalAlignment( Qt::AlignRight );
+  c5.setVerticalAlignment( Qt::AlignTop );
+
+  table->setTableContents( QgsTableContents() << ( QgsTableRow() << c1 << QgsTableCell( QStringLiteral( "Helicopter\nHelicopter" ) ) << c3 )
+                           << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A" ) ) << c5 << QgsTableCell( QStringLiteral( "C" ) ) ) );
+
+  table->setColumnWidths( QList< double >() << 0 << 0.0 << 30.0 );
+  QgsLayoutChecker checker( QStringLiteral( "manualtable_textalign" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_manual_table" ) );
   bool result = checker.testLayout( mReport );
   QVERIFY( result );

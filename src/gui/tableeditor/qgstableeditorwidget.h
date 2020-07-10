@@ -190,6 +190,26 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
     QColor selectionBackgroundColor();
 
     /**
+     * Returns the horizontal alignment for the currently selected cells.
+     *
+     * If the returned value contains both horizontal and vertical alignment flags, then
+     * the selected cells have a mix of different horizontal alignments.
+     *
+     * \see selectionVerticalAlignment()
+     */
+    Qt::Alignment selectionHorizontalAlignment();
+
+    /**
+     * Returns the horizontal alignment for the currently selected cells.
+     *
+     * If the returned value contains both horizontal and vertical alignment flags, then
+     * the selected cells have a mix of different vertical alignments.
+     *
+     * \see selectionVerticalAlignment()
+     */
+    Qt::Alignment selectionVerticalAlignment();
+
+    /**
      * Returns the text format for the currently selected cells.
      *
      * \since QGIS 3.16
@@ -357,6 +377,26 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
     void setSelectionBackgroundColor( const QColor &color );
 
     /**
+     * Sets the horizontal alignment for the currently selected cells.
+     *
+     * \see selectionHorizontalAlignment()
+     * \see setSelectionVerticalAlignment()
+     *
+     * \since QGIS 3.16
+     */
+    void setSelectionHorizontalAlignment( Qt::Alignment alignment );
+
+    /**
+     * Sets the vertical alignment for the currently selected cells.
+     *
+     * \see selectionVerticalAlignment()
+     * \see setSelectionHorizontalAlignment()
+     *
+     * \since QGIS 3.16
+     */
+    void setSelectionVerticalAlignment( Qt::Alignment alignment );
+
+    /**
      * Sets the text \a format for the selected cells.
      *
      * \since QGIS 3.16
@@ -427,7 +467,9 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
       ColumnWidth,
       CellContent,
       HasTextFormat,
-      TextFormat
+      TextFormat,
+      HorizontalAlignment,
+      VerticalAlignment
     };
 
     void updateHeaders();

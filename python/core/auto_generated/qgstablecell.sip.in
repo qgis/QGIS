@@ -144,6 +144,50 @@ Ownership of ``format`` is transferred to the cell.
 .. seealso:: :py:func:`numericFormat`
 %End
 
+    Qt::Alignment horizontalAlignment() const;
+%Docstring
+Returns the horizontal alignment for text in the cell.
+
+.. seealso:: :py:func:`setHorizontalAlignment`
+
+.. seealso:: :py:func:`verticalAlignment`
+
+.. versionadded:: 3.16
+%End
+
+    void setHorizontalAlignment( Qt::Alignment alignment );
+%Docstring
+Sets the horizontal ``alignment`` for text in the cell.
+
+.. seealso:: :py:func:`horizontalAlignment`
+
+.. seealso:: :py:func:`setVerticalAlignment`
+
+.. versionadded:: 3.16
+%End
+
+    Qt::Alignment verticalAlignment() const;
+%Docstring
+Returns the vertical alignment for text in the cell.
+
+.. seealso:: :py:func:`setVerticalAlignment`
+
+.. seealso:: :py:func:`horizontalAlignment`
+
+.. versionadded:: 3.16
+%End
+
+    void setVerticalAlignment( Qt::Alignment alignment );
+%Docstring
+Sets the vertical ``alignment`` for text in the cell.
+
+.. seealso:: :py:func:`verticalAlignment`
+
+.. seealso:: :py:func:`setHorizontalAlignment`
+
+.. versionadded:: 3.16
+%End
+
     QVariantMap properties( const QgsReadWriteContext &context ) const;
 %Docstring
 Returns the properties of the cell.
