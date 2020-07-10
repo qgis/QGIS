@@ -684,6 +684,8 @@ void QgsRelationEditorWidget::toggleEditing( bool state )
     if ( mNmRelation.isValid() )
       mEditorContext.vectorLayerTools()->stopEditing( mNmRelation.referencedLayer() );
   }
+
+  updateButtons();
 }
 
 void QgsRelationEditorWidget::saveEdits()
