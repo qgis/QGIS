@@ -304,6 +304,20 @@ bool QgsLayoutItemManualTable::calculateMaxRowHeights()
   return true;
 }
 
+QgsTextFormat QgsLayoutItemManualTable::textFormatForHeader( int column ) const
+{
+//  if ( mHeaders.value( column ).)
+  return QgsLayoutTable::textFormatForHeader( column );
+}
+
+QgsTextFormat QgsLayoutItemManualTable::textFormatForCell( int row, int column ) const
+{
+  if ( mContents.value( row ).value( column ).hasTextFormat() )
+    return mContents.value( row ).value( column ).textFormat();
+
+  return QgsLayoutTable::textFormatForCell( row, column );
+}
+
 void QgsLayoutItemManualTable::refreshColumns()
 {
   // refresh columns
