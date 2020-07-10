@@ -34,7 +34,7 @@ void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &position
   {
     for ( int j = 0; j < 3; ++j )
     {
-      mVertxPosition << positionsBuffer[i + j] * scale + translation[j];
+      mVertexPosition << positionsBuffer[i + j] * scale + translation[j];
     }
   }
 
@@ -51,15 +51,17 @@ void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &position
   {
     for ( int j = 0; j < 3; ++j )
     {
-      mVertxPosition << positionsBuffer[i + j] * scale + translation[j];
+      mVertexPosition << positionsBuffer[i + j] * scale + translation[j];
     }
   }
 
   for ( int i = 0; i < faceIndex.size(); i += 3 )
   {
     // skip invalid triangles
-    if ( faceIndex[i] == faceIndex[i + 1] && faceIndex[i + 1] == faceIndex[i + 2] ) continue;
-    for ( int j = 0; j < 3; ++j ) mIndexes << faceIndex[i + j] + 1;
+    if ( faceIndex[i] == faceIndex[i + 1] && faceIndex[i + 1] == faceIndex[i + 2] )
+      continue;
+    for ( int j = 0; j < 3; ++j )
+      mIndexes << faceIndex[i + j] + 1;
   }
 }
 
@@ -78,12 +80,12 @@ void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, flo
   for ( unsigned int vertice : mIndexes )
   {
     int heightIndex = ( vertice - 1 ) * 3 + 1;
-    minX = std::min( minX, mVertxPosition[heightIndex - 1] );
-    maxX = std::max( maxX, mVertxPosition[heightIndex - 1] );
-    minY = std::min( minY, mVertxPosition[heightIndex] );
-    maxY = std::max( maxY, mVertxPosition[heightIndex] );
-    minZ = std::min( minZ, mVertxPosition[heightIndex + 1] );
-    maxZ = std::max( maxZ, mVertxPosition[heightIndex + 1] );
+    minX = std::min( minX, mVertexPosition[heightIndex - 1] );
+    maxX = std::max( maxX, mVertexPosition[heightIndex - 1] );
+    minY = std::min( minY, mVertexPosition[heightIndex] );
+    maxY = std::max( maxY, mVertexPosition[heightIndex] );
+    minZ = std::min( minZ, mVertexPosition[heightIndex + 1] );
+    maxZ = std::max( maxZ, mVertexPosition[heightIndex + 1] );
   }
 }
 
@@ -93,17 +95,19 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
   // turns out grouping doest work as expected in blender
 
   // smoothen edges
-  if ( mSmoothEdges ) out << "s on\n";
-  else out << "s off\n";
+  if ( mSmoothEdges )
+    out << "s on\n";
+  else
+    out << "s off\n";
 
   // Construct vertices
-  for ( int i = 0; i < mVertxPosition.size(); i += 3 )
+  for ( int i = 0; i < mVertexPosition.size(); i += 3 )
   {
     // for now just ignore wrong vertex positions
     out << "v ";
-    out << ( mVertxPosition[i] - center.x() ) / scale << " ";
-    out << ( mVertxPosition[i + 1] - center.y() ) / scale << " ";
-    out << ( mVertxPosition[i + 2] - center.z() ) / scale << "\n";
+    out << ( mVertexPosition[i] - center.x() ) / scale << " ";
+    out << ( mVertexPosition[i + 1] - center.y() ) / scale << " ";
+    out << ( mVertexPosition[i + 2] - center.z() ) / scale << "\n";
     if ( i + 3 <= mNormals.size() )
     {
       out << "vn " << mNormals[i] << " " << mNormals[i + 1] << " " << mNormals[i + 2] << "\n";
@@ -116,29 +120,33 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
     }
   }
 
-  bool hasTextures = mTexturesUV.size() == mVertxPosition.size() / 3 * 2;
+  bool hasTextures = mTexturesUV.size() == mVertexPosition.size() / 3 * 2;
   // if the object has normals then the normals and positions buffers should be the same size
-  bool hasNormals = mNormals.size() == mVertxPosition.size();
+  bool hasNormals = mNormals.size() == mVertexPosition.size();
 
   if ( !hasNormals && !mNormals.empty() )
   {
     qDebug() << "WARNING: vertex normals count and vertex positions count are different";
   }
-  int verticesCount = mVertxPosition.size() / 3;
+  int verticesCount = mVertexPosition.size() / 3;
 
   auto getVertexIndex = [&]( int i ) -> QString
   {
     int negativeIndex = -1 - ( verticesCount - i );
-    if ( hasNormals && !hasTextures ) return QString( "%1//%2" ).arg( negativeIndex ).arg( negativeIndex );
-    if ( !hasNormals && hasTextures ) return QString( "%1/%2" ).arg( negativeIndex ).arg( negativeIndex );
-    if ( hasNormals && hasTextures ) return QString( "%1/%2/%3" ).arg( negativeIndex ).arg( negativeIndex ).arg( negativeIndex );
+    if ( hasNormals && !hasTextures )
+      return QString( "%1//%2" ).arg( negativeIndex ).arg( negativeIndex );
+    if ( !hasNormals && hasTextures )
+      return QString( "%1/%2" ).arg( negativeIndex ).arg( negativeIndex );
+    if ( hasNormals && hasTextures )
+      return QString( "%1/%2/%3" ).arg( negativeIndex ).arg( negativeIndex ).arg( negativeIndex );
     return QString( "%1" ).arg( negativeIndex );
   };
 
   // Construct faces
   for ( int i = 0; i < mIndexes.size(); i += 3 )
   {
-    if ( mIndexes[i] == mIndexes[i + 1] && mIndexes[i + 1] == mIndexes[i + 2] ) continue;
+    if ( mIndexes[i] == mIndexes[i + 1] && mIndexes[i + 1] == mIndexes[i + 2] )
+      continue;
     out << "f " << getVertexIndex( mIndexes[i] );
     out << " " << getVertexIndex( mIndexes[i + 1] );
     out << " " << getVertexIndex( mIndexes[i + 2] );
@@ -149,7 +157,8 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
 QString Qgs3DExportObject::saveMaterial( QTextStream &mtlOut, const QString &folderPath )
 {
   QString textureName = mName + "_material";
-  if ( mTexturesUV.size() == 0 ) return QString();
+  if ( mTexturesUV.size() == 0 )
+    return QString();
   QString filePath = QDir( folderPath ).filePath( textureName + ".jpg" );
   mTextureImage.save( filePath, "JPG" );
 

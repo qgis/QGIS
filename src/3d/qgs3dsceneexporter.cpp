@@ -82,8 +82,7 @@ QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute, QByteArray data 
   return result;
 }
 
-template<>
-QVector<unsigned int> getAttributeData<unsigned int>( Qt3DRender::QAttribute *attribute, QByteArray data )
+QVector<unsigned int> getIndexData( QByteArray data )
 {
   QVector<unsigned int> result;
   for ( int i = 0; i < data.size(); i += sizeof( unsigned int ) )
@@ -207,6 +206,8 @@ QVector<unsigned int> createPlaneIndexData( const QSize &resolution )
   return indexes;
 }
 
+
+
 Qgs3DSceneExporter::Qgs3DSceneExporter( Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
   , mSmoothEdges( false )
@@ -221,12 +222,14 @@ Qgs3DSceneExporter::Qgs3DSceneExporter( Qt3DCore::QNode *parent )
 
 void Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity )
 {
-  if ( entity == nullptr ) return;
+  if ( entity == nullptr )
+    return;
   // We iterate over every component and find components that represent a tessellated geometry
   for ( Qt3DCore::QComponent *c : entity->components() )
   {
     Qt3DRender::QGeometryRenderer *comp = qobject_cast<Qt3DRender::QGeometryRenderer *>( c );
-    if ( comp == nullptr ) continue;
+    if ( comp == nullptr )
+      continue;
     Qt3DRender::QGeometry *geom = comp->geometry();
 
     QgsTessellatedPolygonGeometry *tessellated = qobject_cast<QgsTessellatedPolygonGeometry *>( geom );
@@ -242,7 +245,8 @@ void Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity )
   for ( QObject *child : entity->children() )
   {
     Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>( child );
-    if ( childEntity != nullptr ) parseVectorLayerEntity( childEntity );
+    if ( childEntity != nullptr )
+      parseVectorLayerEntity( childEntity );
   }
 }
 
@@ -308,7 +312,8 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getFlatTerrainEntity( QgsTerrainEntity
   QgsFlatTerrainGenerator *generator = dynamic_cast<QgsFlatTerrainGenerator *>( terrain->map3D().terrainGenerator() );
   QgsChunkLoader *loader = generator->createSynchronousChunkLoader( node );
   FlatTerrainChunkLoader *flatTerrainLoader = qobject_cast<FlatTerrainChunkLoader *>( loader );
-  if ( flatTerrainLoader == nullptr ) return nullptr;
+  if ( flatTerrainLoader == nullptr )
+    return nullptr;
   // the entity we created should be deallocated when we deallocate the scene exporter
   Qt3DCore::QEntity *entity = flatTerrainLoader->createEntity( this );
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
@@ -330,24 +335,22 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity 
   return tileEntity;
 }
 
+template<typename Component>
+Component *findTypedComponent( Qt3DCore::QEntity *entity )
+{
+  for ( Qt3DCore::QComponent *component : entity->components() )
+  {
+    Component *typedComponent = qobject_cast<Component *>( component );
+    if ( typedComponent != nullptr )
+      return typedComponent;
+  }
+  return nullptr;
+}
+
 void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, QgsTerrainTextureGenerator *textureGenerator )
 {
-  Qt3DRender::QGeometryRenderer *mesh = nullptr;
-  Qt3DCore::QTransform *transform = nullptr;
-  for ( Qt3DCore::QComponent *component : tileEntity->components() )
-  {
-    Qt3DRender::QGeometryRenderer *meshTyped = qobject_cast<Qt3DRender::QGeometryRenderer *>( component );
-    if ( meshTyped != nullptr )
-    {
-      mesh = meshTyped;
-      continue;
-    }
-    Qt3DCore::QTransform *transformTyped = qobject_cast<Qt3DCore::QTransform *>( component );
-    if ( transformTyped != nullptr )
-    {
-      transform = transformTyped;
-    }
-  }
+  Qt3DRender::QGeometryRenderer *mesh = findTypedComponent<Qt3DRender::QGeometryRenderer>( tileEntity );
+  Qt3DCore::QTransform *transform = findTypedComponent<Qt3DCore::QTransform>( tileEntity );
 
   Qt3DRender::QGeometry *geometry = mesh->geometry();
   Qt3DExtras::QPlaneGeometry *tileGeometry = qobject_cast<Qt3DExtras::QPlaneGeometry *>( geometry );
@@ -356,6 +359,15 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, QgsTer
     qDebug() << "WARNING : " << "Qt3DExtras::QPlaneGeometry* is expected at " << __FILE__ << ":" << __LINE__;
     return;
   }
+
+  tileGeometry->updateVertices();
+  tileGeometry->updateIndices();
+
+  Qt3DRender::QAttribute *positionAttribute = tileGeometry->positionAttribute();
+  Qt3DRender::QAttribute *indexAttribute = tileGeometry->indexAttribute();
+
+  qDebug() << "Position attribute data size: " << positionAttribute->buffer()->data().size();
+  qDebug() << "Index attribute data size: " << indexAttribute->buffer()->data().size();
 
   float scale = transform->scale();
   QVector3D translation = transform->translation();
@@ -388,22 +400,8 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, QgsTer
 
 void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, QgsTerrainTextureGenerator *textureGenerator )
 {
-  Qt3DRender::QGeometryRenderer *mesh = nullptr;
-  Qt3DCore::QTransform *transform = nullptr;
-  for ( Qt3DCore::QComponent *component : tileEntity->components() )
-  {
-    Qt3DRender::QGeometryRenderer *meshTyped = qobject_cast<Qt3DRender::QGeometryRenderer *>( component );
-    if ( meshTyped != nullptr )
-    {
-      mesh = meshTyped;
-      continue;
-    }
-    Qt3DCore::QTransform *transformTyped = qobject_cast<Qt3DCore::QTransform *>( component );
-    if ( transformTyped != nullptr )
-    {
-      transform = transformTyped;
-    }
-  }
+  Qt3DRender::QGeometryRenderer *mesh = findTypedComponent<Qt3DRender::QGeometryRenderer>( tileEntity );
+  Qt3DCore::QTransform *transform = findTypedComponent<Qt3DCore::QTransform>( tileEntity );
 
   Qt3DRender::QGeometry *geometry = mesh->geometry();
   DemTerrainTileGeometry *tileGeometry = qobject_cast<DemTerrainTileGeometry *>( geometry );
@@ -422,7 +420,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, QgsTerr
 
   Qt3DRender::QAttribute *indexAttribute = tileGeometry->indexAttribute();
   QByteArray indexBytes = indexAttribute->buffer()->data();
-  QVector<unsigned int> indexBuffer = getAttributeData<unsigned int>( indexAttribute, indexBytes );
+  QVector<unsigned int> indexBuffer = getIndexData( indexBytes );
 
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "DEM_tile" ), "", this );
   mObjects.push_back( object );

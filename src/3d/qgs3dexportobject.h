@@ -83,7 +83,7 @@ class Qgs3DExportObject : public QObject
   private:
     QString mName;
     QString mParentName;
-    QVector<float> mVertxPosition;
+    QVector<float> mVertexPosition;
     QVector<float> mNormals;
     QVector<float> mTexturesUV;
     QVector<unsigned int> mIndexes;

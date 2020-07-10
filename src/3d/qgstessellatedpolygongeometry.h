@@ -88,8 +88,6 @@ class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
     Qt3DRender::QAttribute *mNormalAttribute = nullptr;
     Qt3DRender::QBuffer *mVertexBuffer = nullptr;
 
-    QVector<float> mVertexData;
-
     QVector<QgsFeatureId> mTriangleIndexFids;
     QVector<uint> mTriangleIndexStartingIndices;
 

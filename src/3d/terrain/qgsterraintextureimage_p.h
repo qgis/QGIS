@@ -62,8 +62,6 @@ class QgsTerrainTextureImage : public Qt3DRender::QAbstractTextureImage
     //! Returns debug information (normally map tile coordinates)
     QString imageDebugText() const { return mDebugText; }
 
-    QImage *getImage() { return &mImage; }
-
   private:
     QgsRectangle mExtent;
     QString mDebugText;

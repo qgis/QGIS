@@ -306,23 +306,19 @@ void Qgs3DMapCanvasDockWidget::exportScene()
   dlg.setMinimumSize( 380, 460 );
 //  QgsGui::instance()->enableAutoGeometryRestore( &dlg );
 
-  Qgs3DMapExportSettings *exportSettings = new Qgs3DMapExportSettings( &dlg );
-  QgsMap3DExportWidget *w = new QgsMap3DExportWidget( mCanvas->scene(), exportSettings, &dlg );
+  Qgs3DMapExportSettings exportSettings;
+  QgsMap3DExportWidget w( mCanvas->scene(), &exportSettings );
 
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg );
 
   connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
   connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-  connect( &dlg, &QDialog::accepted, [ = ]()
-  {
-    w->exportScene();
-  } );
 
   QVBoxLayout *layout = new QVBoxLayout( &dlg );
-  layout->addWidget( w, 1 );
+  layout->addWidget( &w, 1 );
   layout->addWidget( buttons );
-  if ( !dlg.exec() )
-    return;
+  if ( dlg.exec() )
+    w.exportScene();
 }
 
 void Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged()
