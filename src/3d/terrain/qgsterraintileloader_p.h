@@ -64,8 +64,6 @@ class QgsTerrainTileLoader : public QgsChunkLoader
   protected:
     //! Starts asynchronous rendering of map texture
     void loadTexture();
-    //! Renders the map texture synchronously
-    void loadTextureSynchronously();
 
     //! Creates a new texture thaht is linked to the entity
     Qt3DRender::QTexture2D *createTexture( QgsTerrainTileEntity *entity );
@@ -73,8 +71,6 @@ class QgsTerrainTileLoader : public QgsChunkLoader
     void createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial );
     //! Gives access to the terain entity
     QgsTerrainEntity *terrain() { return mTerrain; }
-
-
 
   private slots:
     void onImageReady( int jobId, const QImage &image );

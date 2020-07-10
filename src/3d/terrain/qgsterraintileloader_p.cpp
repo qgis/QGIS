@@ -64,11 +64,6 @@ void QgsTerrainTileLoader::loadTexture()
   mTextureJobId = mTerrain->textureGenerator()->render( mExtentMapCrs, mNode->tileId(), mTileDebugText );
 }
 
-void QgsTerrainTileLoader::loadTextureSynchronously()
-{
-  mTextureImage = mTerrain->textureGenerator()->renderSynchronously( mExtentMapCrs, mTileDebugText );
-}
-
 void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial )
 {
   Qt3DRender::QTexture2D *texture = createTexture( entity );

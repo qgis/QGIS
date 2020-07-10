@@ -69,8 +69,8 @@ class QgsTerrainTextureGenerator : public QObject
     //! Cancels a rendering job
     void cancelJob( int jobId );
 
-    //! Renders a map and returns rendered image. Blocks until the map rendering has finished
-    QImage renderSynchronously( const QgsRectangle &extent, const QString &debugText = QString() );
+    //! Waits for the texture generator to finish
+    void waitForFinished();
 
     //! Returns the generated texture size (in pixel)
     QSize textureSize() const { return mTextureSize; }

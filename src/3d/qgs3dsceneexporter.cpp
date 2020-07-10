@@ -183,14 +183,14 @@ void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain )
       for ( QgsChunkNode *node : leafs )
       {
         terrainTile = getDemTerrainEntity( terrain, node );
-        this->parseDemTile( terrainTile, textureGenerator );
+        this->parseDemTile( terrainTile );
       }
       break;
     case QgsTerrainGenerator::Flat:
       for ( QgsChunkNode *node : leafs )
       {
         terrainTile = getFlatTerrainEntity( terrain, node );
-        this->parseFlatTile( terrainTile, textureGenerator );
+        this->parseFlatTile( terrainTile );
       }
       break;
     // TODO: implement other terrain types
@@ -205,11 +205,10 @@ void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain )
 QgsTerrainTileEntity *Qgs3DSceneExporter::getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node )
 {
   QgsFlatTerrainGenerator *generator = dynamic_cast<QgsFlatTerrainGenerator *>( terrain->map3D().terrainGenerator() );
-  QgsChunkLoader *loader = generator->createSynchronousChunkLoader( node );
-  FlatTerrainChunkLoader *flatTerrainLoader = qobject_cast<FlatTerrainChunkLoader *>( loader );
-  if ( flatTerrainLoader == nullptr )
-    return nullptr;
-  // the entity we created should be deallocated when we deallocate the scene exporter
+  FlatTerrainChunkLoader *flatTerrainLoader = qobject_cast<FlatTerrainChunkLoader *>( generator->createChunkLoader( node ) );
+  if ( mExportTextures )
+    terrain->textureGenerator()->waitForFinished();
+  // the entity we created will be deallocated once the scene exporter is deallocated
   Qt3DCore::QEntity *entity = flatTerrainLoader->createEntity( this );
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
   return tileEntity;
@@ -217,15 +216,16 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getFlatTerrainEntity( QgsTerrainEntity
 
 QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node )
 {
-  QgsTerrainTileEntity *tileEntity = nullptr;
   // Just create a new tile (we don't need to export exact level of details as in the scene)
   // create the entity synchronously and then it will be deleted once our scene exporter instance is deallocated
-  const Qgs3DMapSettings &map = terrain->map3D();
-  QgsDemTerrainGenerator *generator = static_cast<QgsDemTerrainGenerator *>( map.terrainGenerator() );
+  QgsDemTerrainGenerator *generator = static_cast<QgsDemTerrainGenerator *>( terrain->map3D().terrainGenerator() );
   int oldResolution = generator->resolution();
   generator->setResolution( mTerrainResolution );
-  QgsDemTerrainTileLoader *loader = qobject_cast<QgsDemTerrainTileLoader *>( generator->createSynchronousChunkLoader( node ) );
-  tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
+  QgsDemTerrainTileLoader *loader = qobject_cast<QgsDemTerrainTileLoader *>( generator->createChunkLoader( node ) );
+  generator->heightMapGenerator()->waitForFinished();
+  if ( mExportTextures )
+    terrain->textureGenerator()->waitForFinished();
+  QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
   generator->setResolution( oldResolution );
   return tileEntity;
 }
@@ -242,7 +242,7 @@ Component *findTypedComponent( Qt3DCore::QEntity *entity )
   return nullptr;
 }
 
-void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, QgsTerrainTextureGenerator *textureGenerator )
+void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity )
 {
   Qt3DRender::QGeometryRenderer *mesh = findTypedComponent<Qt3DRender::QGeometryRenderer>( tileEntity );
   Qt3DCore::QTransform *transform = findTypedComponent<Qt3DCore::QTransform>( tileEntity );
@@ -289,15 +289,15 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, QgsTer
     // Reuse vertex buffer data for texture coordinates
     Qt3DRender::QAttribute *texCoordsAttribute = tileGeometry->texCoordAttribute();
     QVector<float> texCoords = getAttributeData<float>( texCoordsAttribute, verticesBytes );
-
     object->setupTextureCoordinates( texCoords );
 
-    QImage img = textureGenerator->renderSynchronously( tileEntity->textureImage()->imageExtent(),  tileEntity->textureImage()->imageDebugText() );
+    QgsTerrainTextureImage *textureImage = tileEntity->textureImage();
+    QImage img = textureImage->getImage();
     object->setTextureImage( img );
   }
 }
 
-void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, QgsTerrainTextureGenerator *textureGenerator )
+void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
 {
   Qt3DRender::QGeometryRenderer *mesh = findTypedComponent<Qt3DRender::QGeometryRenderer>( tileEntity );
   Qt3DCore::QTransform *transform = findTypedComponent<Qt3DCore::QTransform>( tileEntity );
@@ -342,7 +342,8 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, QgsTerr
     QVector<float> texCoordsBuffer = getAttributeData<float>( texCoordsAttribute, texCoordsBytes );
     object->setupTextureCoordinates( texCoordsBuffer );
 
-    QImage img = textureGenerator->renderSynchronously( tileEntity->textureImage()->imageExtent(),  tileEntity->textureImage()->imageDebugText() );
+    QgsTerrainTextureImage *textureImage = tileEntity->textureImage();
+    QImage img = textureImage->getImage();
     object->setTextureImage( img );
   }
 }

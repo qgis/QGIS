@@ -96,9 +96,9 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     QgsTerrainTileEntity *getDemTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
 
     //! Constructs a Qgs3DExportObject from the DEM tile entity
-    void parseDemTile( QgsTerrainTileEntity *tileEntity, QgsTerrainTextureGenerator *textureGenerator );
+    void parseDemTile( QgsTerrainTileEntity *tileEntity );
     //! Constructs a Qgs3DExportObject from the flat tile entity
-    void parseFlatTile( QgsTerrainTileEntity *tileEntity, QgsTerrainTextureGenerator *textureGenerator );
+    void parseFlatTile( QgsTerrainTileEntity *tileEntity );
 
     QString getObjectName( const QString &name );
   private:

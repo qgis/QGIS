@@ -34,7 +34,7 @@ class FlatTerrainChunkLoader : public QgsTerrainTileLoader
 
   public:
     //! Construct the loader for a node
-    FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *mNode, bool loadSynchronously = false );
+    FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *mNode );
 
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
@@ -57,9 +57,6 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
     QgsFlatTerrainGenerator() = default;
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
-
-    //! create a chunk loader that loads synchronously
-    QgsChunkLoader *createSynchronousChunkLoader( QgsChunkNode *node ) const;
 
     QgsTerrainGenerator *clone() const override SIP_FACTORY;
     Type type() const override;
