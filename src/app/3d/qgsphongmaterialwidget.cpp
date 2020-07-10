@@ -24,9 +24,6 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent )
   setupUi( this );
 
   setMaterial( QgsPhongMaterialSettings() );
-
-  textureFile->setFilter( "Images (*.png *.xpm *.jpg *.jpeg *.bmp)" );
-
   textureScaleSpinBox->setClearValue( 0 );
   textureRotationSpinBox->setClearValue( 0 );
 
@@ -35,7 +32,7 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent )
   connect( btnSpecular, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
   connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongMaterialWidget::changed );
   connect( useDiffuseCheckBox, &QCheckBox::stateChanged, this, &QgsPhongMaterialWidget::changed );
-  connect( textureFile, &QgsFileWidget::fileChanged, this, &QgsPhongMaterialWidget::changed );
+  connect( textureFile, &QgsImageSourceLineEdit::sourceChanged, this, &QgsPhongMaterialWidget::changed );
   connect( textureScaleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongMaterialWidget::changed );
   connect( textureRotationSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongMaterialWidget::changed );
   this->activateTexturingUI( false );
@@ -59,7 +56,7 @@ void QgsPhongMaterialWidget::setMaterial( const QgsPhongMaterialSettings &materi
   btnSpecular->setColor( material.specular() );
   spinShininess->setValue( material.shininess() );
   useDiffuseCheckBox->setCheckState( material.diffuseTextureEnabled() ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
-  textureFile->setFilePath( material.texturePath() );
+  textureFile->setSource( material.texturePath() );
   textureScaleSpinBox->setValue( material.textureScale() );
   textureRotationSpinBox->setValue( material.textureRotation() );
 }
@@ -72,7 +69,7 @@ QgsPhongMaterialSettings QgsPhongMaterialWidget::material() const
   m.setSpecular( btnSpecular->color() );
   m.setShininess( spinShininess->value() );
   m.setDiffuseTextureEnabled( useDiffuseCheckBox->checkState() == Qt::CheckState::Checked );
-  m.setTexturePath( textureFile->filePath() );
+  m.setTexturePath( textureFile->source() );
   m.setTextureScale( textureScaleSpinBox->value() );
   m.setTextureRotation( textureRotationSpinBox->value() );
   return m;
