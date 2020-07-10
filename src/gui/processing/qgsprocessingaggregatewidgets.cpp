@@ -34,7 +34,7 @@
 QgsAggregateMappingModel::QgsAggregateMappingModel( const QgsFields &sourceFields,
     QObject *parent )
   : QAbstractTableModel( parent )
-  , mExpressionContextGenerator( new QgsFieldMappingModel::ExpressionContextGenerator( &sourceFields ) )
+  , mExpressionContextGenerator( new QgsFieldMappingModel::ExpressionContextGenerator( sourceFields ) )
 {
   setSourceFields( sourceFields );
 }
