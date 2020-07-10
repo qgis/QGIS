@@ -486,4 +486,6 @@ class CORE_EXPORT QgsTextFormat
 
 };
 
+Q_DECLARE_METATYPE( QgsTextFormat )
+
 #endif // QGSTEXTFORMAT_H

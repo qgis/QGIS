@@ -58,6 +58,23 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, private
     QgsNumericFormat *numericFormat() SIP_TRANSFERBACK;
 
     /**
+     * Returns the current text format shown in the widget.
+     *
+     * \see setTextFormat()
+     * \see textFormatSet()
+     * \since QGIS 3.16
+     */
+    QgsTextFormat textFormat() const;
+
+    /**
+     * Returns TRUE if a text format is set in the widget.
+     *
+     * \see textFormat()
+     * \since QGIS 3.16
+     */
+    bool textFormatSet() const;
+
+    /**
      * Sets the cell foreground \a color to show in the widget.
      *
      * \see foregroundColorChanged()
@@ -81,6 +98,16 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, private
      * \see numericFormat()
      */
     void setNumericFormat( QgsNumericFormat *format, bool isMixedFormat );
+
+    /**
+     * Sets the text \a format to show in the widget.
+     *
+     * if \a isMixedFormat is TRUE then the widget will be set to indicate a "mixed format" setting.
+     *
+     * \see textFormat()
+     * \since QGIS 3.16
+     */
+    void setTextFormat( const QgsTextFormat &format, bool isSet, bool isMixedFormat );
 
     /**
      * Sets the row \a height to show in the widget, or 0 for automatic height.
@@ -118,6 +145,20 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, private
      * Emitted whenever the numeric format shown in the widget is changed.
      */
     void numberFormatChanged();
+
+    /**
+     * Emitted whenever the text format shown in the widget is changed.
+     *
+     * \since QGIS 3.16
+     */
+    void textFormatChanged();
+
+    /**
+     * Emitted whenever the apply text format option in the widget is changed.
+     *
+     * \since QGIS 3.16
+     */
+    void hasTextFormatChanged();
 
     /**
      * Emitted whenever the row \a height shown in the widget is changed.
