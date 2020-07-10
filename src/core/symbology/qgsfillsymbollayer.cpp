@@ -1597,7 +1597,7 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVec
   p->setPen( QPen( Qt::NoPen ) );
 
   QTransform bkTransform = mBrush.transform();
-  if ( !context.renderContext().textureOrigin().isNull() )
+  if ( applyBrushTransformFromContext() && !context.renderContext().textureOrigin().isNull() )
   {
     QPointF leftCorner = context.renderContext().textureOrigin();
     QTransform t = mBrush.transform();
@@ -1749,6 +1749,11 @@ bool QgsImageFillSymbolLayer::hasDataDefinedProperties() const
   if ( mStroke && mStroke->hasDataDefinedProperties() )
     return true;
   return false;
+}
+
+bool QgsImageFillSymbolLayer::applyBrushTransformFromContext() const
+{
+  return true;
 }
 
 
@@ -4169,6 +4174,11 @@ void QgsRasterFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext 
     file = context.renderContext().pathResolver().readPath( mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), file ) );
   }
   applyPattern( mBrush, file, width, opacity, context );
+}
+
+bool QgsRasterFillSymbolLayer::applyBrushTransformFromContext() const
+{
+  return false;
 }
 
 void QgsRasterFillSymbolLayer::applyPattern( QBrush &brush, const QString &imageFilePath, const double width, const double alpha, const QgsSymbolRenderContext &context )
