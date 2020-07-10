@@ -21,7 +21,8 @@ help a user to create valid geometries.
 
 Implementing a custom geometry check consists of the following parts
 
-### Writing the check
+Writing the check
+-----------------
 
 A new subclass of QgsGeometryCheck needs to be written and at least the following
 abstract methods need to be implemented:
@@ -53,7 +54,8 @@ into this method with the parameter ids and should be retrieved from the availab
 use of caching. New errors should be appended to the error list and other message strings to messages.
 The method needs to return a tuple (errors, messages).
 
-### Creating a geometry check factory
+Creating a geometry check factory
+---------------------------------
 
 A Geometry check factory manages meta information for checks. There will always be one single
 geometry check factory created per check type, but it's possible that multiple QgsGeometryCheck
@@ -87,7 +89,8 @@ Returns additional flags for a geometry check. If unsure return QgsGeometryCheck
 
 Returns the type of this geometry check.
 
-### Registering the geometry check
+Registering the geometry check
+------------------------------
 
 Finally the geometry check factory needs to be registered in QGIS, so the system
 is aware of the available geometry checks.
