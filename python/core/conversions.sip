@@ -1738,7 +1738,7 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
     // Set the list elements.
     for (int i = 0; i < sipCpp->size(); ++i)
     {
-       QgsWkbTypes::GeometryType e = static_cast<QgsWkbTypes::GeometryType>( sipCpp->at(i) );
+       QgsWkbTypes::GeometryType e = sipCpp->at(i);
         PyObject *eobj;
 
         if ((eobj = sipConvertFromEnum(static_cast<int>( e ), sipType_QgsWkbTypes_GeometryType)) == NULL)
