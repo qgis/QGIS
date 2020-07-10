@@ -148,29 +148,7 @@ void Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity )
 void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain )
 {
   const Qgs3DMapSettings &settings = terrain->map3D();
-  QgsChunkNode *root = terrain->rootNode();
-
-  // just use LoD0 for now
-  int levelOfDetails = 0;
-  QVector<QgsChunkNode *> leafs;
-  leafs << root;
-  for ( int i = 0; i < levelOfDetails; ++i )
-  {
-    QVector<QgsChunkNode *> nodes = leafs;
-    leafs.clear();
-    for ( QgsChunkNode *node : nodes )
-    {
-      node->ensureAllChildrenExist();
-      QgsChunkNode *const *children = node->children();
-      for ( int i = 0; i < 4; ++i )
-      {
-        if ( children[i] != nullptr )
-        {
-          leafs.push_back( children[i] );
-        }
-      }
-    }
-  }
+  QgsChunkNode *node = terrain->rootNode();
 
   QgsTerrainGenerator *generator = settings.terrainGenerator();
   QgsTerrainTileEntity *terrainTile = nullptr;
@@ -180,18 +158,12 @@ void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain )
   switch ( generator->type() )
   {
     case QgsTerrainGenerator::Dem:
-      for ( QgsChunkNode *node : leafs )
-      {
-        terrainTile = getDemTerrainEntity( terrain, node );
-        this->parseDemTile( terrainTile );
-      }
+      terrainTile = getDemTerrainEntity( terrain, node );
+      this->parseDemTile( terrainTile );
       break;
     case QgsTerrainGenerator::Flat:
-      for ( QgsChunkNode *node : leafs )
-      {
-        terrainTile = getFlatTerrainEntity( terrain, node );
-        this->parseFlatTile( terrainTile );
-      }
+      terrainTile = getFlatTerrainEntity( terrain, node );
+      this->parseFlatTile( terrainTile );
       break;
     // TODO: implement other terrain types
     case QgsTerrainGenerator::Mesh:
