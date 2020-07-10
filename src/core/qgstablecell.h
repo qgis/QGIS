@@ -17,6 +17,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgstextformat.h"
 #include <QVariant>
 #include <QColor>
 #include <memory>
@@ -95,6 +96,44 @@ class CORE_EXPORT QgsTableCell
     void setForegroundColor( const QColor &color ) { mForegroundColor = color; }
 
     /**
+     * Returns the cell's text format.
+     *
+     * \note The text format will only be used if hasTextFormat() returns TRUE.
+     *
+     * \see setTextFormat()
+     * \since QGIS 3.16
+     */
+    QgsTextFormat textFormat() const { return mTextFormat; }
+
+    /**
+     * Sets the cell's text \a format.
+     *
+     * \note The text format will only be used if hasTextFormat() returns TRUE.
+     *
+     * \see textFormat()
+     * \since QGIS 3.16
+     */
+    void setTextFormat( const QgsTextFormat &format ) { mTextFormat = format; }
+
+    /**
+     * Returns TRUE if the cell has a specific text format which should be applied.
+     *
+     * \see textFormat()
+     * \see setHasTextFormat()
+     * \since QGIS 3.16
+     */
+    bool hasTextFormat() const { return mHasTextFormat; }
+
+    /**
+     * Sets whether the cell has a specific text format which should be applied.
+     *
+     * \see setTextFormat()
+     * \see hasTextFormat()
+     * \since QGIS 3.16
+     */
+    void setHasTextFormat( bool hasTextFormat ) { mHasTextFormat = hasTextFormat; }
+
+    /**
      * Returns the numeric format used for numbers in the cell, or NULLPTR if no format is set.
      *
      * \see setNumericFormat()
@@ -138,6 +177,8 @@ class CORE_EXPORT QgsTableCell
     QVariant mContent;
     QColor mBackgroundColor;
     QColor mForegroundColor;
+    bool mHasTextFormat = false;
+    QgsTextFormat mTextFormat;
     std::unique_ptr< QgsNumericFormat > mFormat;
 };
 

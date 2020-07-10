@@ -17,6 +17,7 @@
 #include "qgsapplication.h"
 #include "qgsnumericformatregistry.h"
 #include "qgsnumericformat.h"
+#include "qgsreadwritecontext.h"
 
 QgsTableCell::QgsTableCell( const QVariant &content )
   : mContent( content )
@@ -26,6 +27,8 @@ QgsTableCell::QgsTableCell( const QgsTableCell &other )
   : mContent( other.mContent )
   , mBackgroundColor( other.mBackgroundColor )
   , mForegroundColor( other.mForegroundColor )
+  , mHasTextFormat( other.mHasTextFormat )
+  , mTextFormat( other.mTextFormat )
   , mFormat( other.mFormat ? other.mFormat->clone() : nullptr )
 {}
 
@@ -35,7 +38,9 @@ QgsTableCell &QgsTableCell::operator=( const QgsTableCell &other )
 {
   mContent = other.mContent;
   mBackgroundColor = other.mBackgroundColor;
-  mForegroundColor =  other.mForegroundColor;
+  mForegroundColor = other.mForegroundColor;
+  mHasTextFormat = other.mHasTextFormat;
+  mTextFormat = other.mTextFormat;
   mFormat.reset( other.mFormat ? other.mFormat->clone() : nullptr );
   return *this;
 }
@@ -54,21 +59,40 @@ QVariantMap QgsTableCell::properties( const QgsReadWriteContext &context ) const
 {
   QVariantMap res;
   res.insert( QStringLiteral( "content" ), mContent );
-  res.insert( QStringLiteral( "foreground" ), mForegroundColor );
   res.insert( QStringLiteral( "background" ), mBackgroundColor );
+  res.insert( QStringLiteral( "foreground" ), mForegroundColor );
   if ( mFormat )
   {
     res.insert( QStringLiteral( "format_type" ), mFormat->id() );
     res.insert( QStringLiteral( "format" ), mFormat->configuration( context ) );
   }
+
+  res.insert( QStringLiteral( "has_text_format" ), mHasTextFormat );
+  QDomDocument textDoc;
+  QDomElement textElem = mTextFormat.writeXml( textDoc, context );
+  textDoc.appendChild( textElem );
+  res.insert( QStringLiteral( "text_format" ), textDoc.toString() );
+
   return res;
 }
 
 void QgsTableCell::setProperties( const QVariantMap &properties, const QgsReadWriteContext &context )
 {
   mContent = properties.value( QStringLiteral( "content" ) );
-  mForegroundColor = properties.value( QStringLiteral( "foreground" ) ).value< QColor >();
   mBackgroundColor = properties.value( QStringLiteral( "background" ) ).value< QColor >();
+  mForegroundColor = properties.value( QStringLiteral( "foreground" ) ).value< QColor >();
+
+  QDomDocument doc;
+  QDomElement elem;
+  const QString textXml = properties.value( QStringLiteral( "text_format" ) ).toString();
+  if ( !textXml.isEmpty() )
+  {
+    doc.setContent( textXml );
+    elem = doc.documentElement();
+    mTextFormat.readXml( elem, context );
+  }
+  mHasTextFormat = properties.value( QStringLiteral( "has_text_format" ) ).toBool();
+
   if ( properties.contains( QStringLiteral( "format_type" ) ) )
   {
 
