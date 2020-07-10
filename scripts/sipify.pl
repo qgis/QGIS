@@ -184,8 +184,6 @@ sub processDoxygenLine {
     # replace nullptr with None (nullptr means nothing to Python devs)
     $line =~ s/\bnullptr\b/None/g;
 
-<<<<<<< HEAD
-=======
     if ( $line =~ m/^\\(?<SUB>sub)?section/) {
       my $sep = "-";
       $sep = "~" if defined $+{SUB};
@@ -202,7 +200,6 @@ sub processDoxygenLine {
       $line = "$1\n".('=' x length($1));
     }
 
->>>>>>> d76fe84051... Merge pull request #37713 from 3nids/pyqgis-doc-sectionizer
     if ( $line eq '*' ) {
         $line = '';
     }
