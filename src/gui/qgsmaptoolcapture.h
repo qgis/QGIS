@@ -93,6 +93,9 @@ class QgsMapToolCaptureRubberband: public QgsGeometryRubberBand
     //! Returns the last point of the rubber band
     QgsPoint lastPoint() const;
 
+    //! Returns the point of the rubber band at position from end
+    QgsPoint pointFromEnd( int posFromEnd ) const;
+
     //! Removes the last point of the rrubber band
     void removeLastPoint();
 

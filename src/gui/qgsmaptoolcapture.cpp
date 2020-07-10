@@ -146,19 +146,15 @@ bool QgsMapToolCapture::tracingEnabled()
 
 QgsPointXY QgsMapToolCapture::tracingStartPoint()
 {
-//There is already a try/catch in the toMapCoordinate() (in lastCaptureMapPoint()) int method if transform fail. Can we remove this try/catch?
+//There is already a try/catch in the toLayerCoordinate() method if transform fails. Can we remove this try/catch?
   try
   {
-    QgsMapLayer *layer = mCanvas->currentLayer();
-    if ( !layer )
-      return QgsPointXY();
-
     // if we have starting point from previous trace, then preferably use that one
     // (useful when tracing with offset)
     if ( mTracingStartPoint != QgsPointXY() )
       return mTracingStartPoint;
 
-    return lastCaptureMapPoint();
+    return mTempRubberBand->pointFromEnd( 1 );
   }
   catch ( QgsCsException & )
   {
@@ -170,6 +166,13 @@ QgsPointXY QgsMapToolCapture::tracingStartPoint()
 
 bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent *e )
 {
+  mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, QgsWkbTypes::LineString );
+  if ( mCaptureMode == CapturePolygon )
+  {
+    mTempRubberBand->setFirstPolygonPoint( firstCaptureMapPoint() );
+  }
+  mTempRubberBand->addPoint( lastCaptureMapPoint() );
+
   if ( !e->isSnapped() )
     return false;
 
@@ -180,13 +183,6 @@ bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent *e )
   QgsMapCanvasTracer *tracer = QgsMapCanvasTracer::tracerForCanvas( mCanvas );
   if ( !tracer )
     return false;  // this should not happen!
-
-  mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType );
-  mTempRubberBand->setStringType( QgsWkbTypes::LineString );
-  if ( mCaptureMode == CapturePolygon )
-  {
-    mTempRubberBand->setFirstPolygonPoint( firstCaptureMapPoint() );
-  }
 
   QgsTracer::PathError err;
   QVector<QgsPointXY> points = tracer->findShortestPath( pt0, e->mapPoint(), &err );
@@ -213,7 +209,7 @@ bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent *e )
     }
     else
     {
-      mTempRubberBand->addPoint( lastPoint, false );
+      mTempRubberBand->movePoint( lastPoint );
     }
   }
 
@@ -232,7 +228,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
   if ( !tracer )
     return false;  // this should not happen!
 
-  if ( mCaptureCurve.numPoints() == 0 )
+  if ( mTempRubberBand->pointsCount() == 0 )
   {
     if ( !tracer->init() )
     {
@@ -244,14 +240,9 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
     bool res = tracer->isPointSnapped( point );
     if ( res )
     {
-      QgsPoint layerPoint;
-      nextPoint( QgsPoint( point ), layerPoint ); // assuming the transform went fine earlier
-
-      mRubberBand->addPoint( point );
-      mCaptureCurve.addVertex( layerPoint );
-      mSnappingMatches.append( QgsPointLocator::Match() );
+      mTracingStartPoint = point;
     }
-    return res;
+    return false;
   }
 
   QgsPointXY pt0 = tracingStartPoint();
@@ -385,8 +376,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   QgsMapToolAdvancedDigitizing::cadCanvasMoveEvent( e );
   QgsPointXY point = e->mapPoint();
 
-  const QgsPointLocator::Match &match = e->mapPointMatch();
-  mSnapIndicator->setMatch( match );
+  mSnapIndicator->setMatch( e->mapPointMatch() );
 
   QgsPoint mapPoint = QgsPoint( point );
 
@@ -552,7 +542,9 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
   bool traceCreated = false;
   if ( tracingEnabled() )
   {
-    traceCreated = tracingAddVertex( point );
+    mDigitizingType = QgsWkbTypes::LineString;
+    mTempRubberBand->setStringType( QgsWkbTypes::LineString );
+    traceCreated = tracingAddVertex( mapPoint );
   }
 
   // keep new tracing start point if we created a trace. This is useful when tracing with
@@ -563,27 +555,18 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
   {
     // ordinary digitizing
 
-    if ( mRubberBand->size() == 0 )
-    {
-      mRubberBand->addPoint( point );
-      mCaptureCurve.addVertex( layerPoint );
-      mSnappingMatches.append( match );
-      if ( mCaptureMode == CapturePolygon )
-      {
-        mRubberBand->addPoint( point );
-        mTempRubberBand->setFirstPolygonPoint( mapPoint );
-      }
-    }
+    if ( mCaptureCurve.vertexCount() == 0 && mCaptureMode == CapturePolygon )
+      mTempRubberBand->setFirstPolygonPoint( mapPoint );
 
-    mTempRubberBand->movePoint( mapPoint );
-    if ( mTempRubberBand->curveIsComplete() )
+    mTempRubberBand->movePoint( mapPoint ); //move the last point of the temp rubberband before operating with it
+    if ( mTempRubberBand->curveIsComplete() ) //2 points for line and 3 points for circular
     {
       const QgsCurve *curve = mTempRubberBand->curve();
       if ( curve )
       {
         addCurve( curve->clone() );
         // add curve append only invalid match to mSnappingMatches,
-        // so we need to remove one and add the one from here if it is valid
+        // so we need to remove them and add the one from here if it is valid
         if ( match.isValid() && mSnappingMatches.count() > 0 && !mSnappingMatches.last().isValid() )
         {
           mSnappingMatches.removeLast();
@@ -602,6 +585,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
   }
   else
   {
+
     mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType );
     if ( mCaptureMode == CapturePolygon )
     {
@@ -697,6 +681,17 @@ void QgsMapToolCapture::undo()
     vertexToRemove.part = 0;
     vertexToRemove.ring = 0;
     vertexToRemove.vertex = size() - 1;
+    if ( mCaptureCurve.numPoints() == 2 && mCaptureCurve.nCurves() == 1 )
+    {
+      // store the first vertex to restore if after deleting the curve
+      // because when only two vertices, removing a point remove all the curve
+      QgsPoint fp = mCaptureCurve.startPoint();
+      mCaptureCurve.deleteVertex( vertexToRemove );
+      mCaptureCurve.addVertex( fp );
+    }
+    else
+      mCaptureCurve.deleteVertex( vertexToRemove );
+
     mCaptureCurve.deleteVertex( vertexToRemove );
     mSnappingMatches.removeAt( vertexToRemove.vertex );
     updateExtraSnapLayer();
@@ -707,16 +702,19 @@ void QgsMapToolCapture::undo()
     mRubberBand->addGeometry( QgsGeometry( mCaptureCurve.clone() ), vlayer );
 
     mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType );
-    if ( mCaptureMode == CapturePolygon )
+
+    if ( mCaptureCurve.numPoints() > 0 )
     {
-      mTempRubberBand->setFirstPolygonPoint( firstCaptureMapPoint() );
+      if ( mCaptureMode == CapturePolygon )
+      {
+        mTempRubberBand->setFirstPolygonPoint( firstCaptureMapPoint() );
+      }
+
+      mTempRubberBand->addPoint( lastCaptureMapPoint() );
+      mTempRubberBand->movePoint( lastPoint );
     }
 
-    mTempRubberBand->addPoint( lastCaptureMapPoint() );
-    mTempRubberBand->movePoint( lastPoint );
-
     mCadDockWidget->removePreviousPoint();
-
     validateGeometry();
   }
 }
@@ -1023,6 +1021,7 @@ void QgsMapToolCaptureRubberband::reset( QgsWkbTypes::GeometryType geomType, Qgs
 
   mStringType = stringType;
   mPoints.clear();
+  mFirstPolygonPoint = QgsPoint();
   updateCurve();
 }
 
@@ -1089,6 +1088,14 @@ QgsPoint QgsMapToolCaptureRubberband::lastPoint() const
     return QgsPoint();
 
   return mPoints.last();
+}
+
+QgsPoint QgsMapToolCaptureRubberband::pointFromEnd( int posFromEnd ) const
+{
+  if ( posFromEnd < mPoints.size() )
+    return mPoints.at( mPoints.size() - 1 - posFromEnd );
+  else
+    return QgsPoint();
 }
 
 void QgsMapToolCaptureRubberband::removeLastPoint()
