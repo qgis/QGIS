@@ -28,7 +28,11 @@ with three color components: ambient, diffuse and specular.
 #include "qgsphongmaterialsettings.h"
 %End
   public:
+
     QgsPhongMaterialSettings();
+%Docstring
+Constructor for QgsPhongMaterialSettings.
+%End
 
     QColor ambient() const;
 %Docstring
