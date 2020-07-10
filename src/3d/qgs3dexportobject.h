@@ -60,6 +60,12 @@ class Qgs3DExportObject : public QObject
     //! Sets positions coordinates from just one positions buffer and indexes buffer and does the translation and scaling
     void setupPositionCoordinates( const QVector<float> &positionsBuffer, const QVector<unsigned int> &facesIndexes, float scale = 1.0f, const QVector3D translation = QVector3D( 0, 0, 0 ) );
 
+    /**
+     * Sets positions coordinates from just one positions buffer and indexes buffer and does the translation and scaling
+     * Overloaded for 16 bit integers
+     */
+    void setupPositionCoordinates( const QVector<float> &positionsBuffer, const QVector<quint16> &facesIndexes, float scale = 1.0f, const QVector3D translation = QVector3D( 0, 0, 0 ) );
+
     //! Sets normal coordinates for each vertex
     void setupNormalCoordinates( const QVector<float> &normalsBuffer );
     //! Sets texture coordinates for each vertex
@@ -71,6 +77,7 @@ class Qgs3DExportObject : public QObject
     QImage textureImage() { return mTextureImage; }
 
     /**
+     *
      * Updates the box bounds explained with the current object bounds
      * This expands the bounding box if the current object outside the bounds of the already established bounds
      */

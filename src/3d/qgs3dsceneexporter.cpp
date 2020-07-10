@@ -30,6 +30,8 @@
 #include <Qt3DExtras/QTextureMaterial>
 #include <Qt3DRender/QTextureImage>
 #include <Qt3DRender/QTexture>
+#include <Qt3DRender/QBufferDataGenerator>
+#include <Qt3DRender/QBufferDataGeneratorPtr>
 
 #include <QByteArray>
 #include <QFile>
@@ -82,15 +84,16 @@ QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute, QByteArray data 
   return result;
 }
 
-QVector<unsigned int> getIndexData( QByteArray data )
+template<typename T>
+QVector<T> getIndexData( QByteArray data )
 {
-  QVector<unsigned int> result;
-  for ( int i = 0; i < data.size(); i += sizeof( unsigned int ) )
+  QVector<T> result;
+  for ( int i = 0; i < data.size(); i += sizeof( T ) )
   {
     // maybe a problem with indienness can happen?
-    unsigned int v;
+    T v;
     char *vArr = ( char * )&v;
-    for ( unsigned int k = 0; k < sizeof( unsigned int ); ++k )
+    for ( T k = 0; k < sizeof( T ); ++k )
     {
       vArr[k] = data.at( i + k );
     }
@@ -99,114 +102,6 @@ QVector<unsigned int> getIndexData( QByteArray data )
 
   return result;
 }
-
-QVector<float> createPlaneVertexData( float w, float h, const QSize &resolution )
-{
-  // Taken from Qt3D source with some modifications
-  Q_ASSERT( w > 0.0f );
-  Q_ASSERT( h > 0.0f );
-  Q_ASSERT( resolution.width() >= 2 );
-  Q_ASSERT( resolution.height() >= 2 );
-
-  // Populate a buffer with the interleaved per-vertex data with
-  // vec3 pos, vec2 texCoord, vec3 normal, vec4 tangent
-  QVector<float> data;
-
-  const float x0 = -w / 2.0f;
-  const float z0 = -h / 2.0f;
-  const float dx = w / ( resolution.width() - 1 );
-  const float dz = h / ( resolution.height() - 1 );
-
-  // Iterate over z
-  for ( int j = 0; j < resolution.height(); ++j )
-  {
-    const float z = z0 + static_cast<float>( j ) * dz;
-
-    // Iterate over x
-    for ( int i = 0; i < resolution.width(); ++i )
-    {
-      const float x = x0 + static_cast<float>( i ) * dx;
-
-      // position
-      data.push_back( x );
-      data.push_back( 0.0 );
-      data.push_back( z );
-    }
-  }
-
-  return data;
-}
-
-QVector<float> createPlaneTexCoordsData( float w, float h, const QSize &resolution, bool mirrored )
-{
-  Q_ASSERT( w > 0.0f );
-  Q_ASSERT( h > 0.0f );
-  Q_ASSERT( resolution.width() >= 2 );
-  Q_ASSERT( resolution.height() >= 2 );
-
-  const int nVerts = resolution.width() * resolution.height();
-
-  // Populate a buffer with the interleaved per-vertex data with
-  // vec3 pos, vec2 texCoord, vec3 normal, vec4 tangent
-  const quint32 elementSize = 3 + 2 + 3 + 4;
-  const quint32 stride = elementSize * sizeof( float );
-  QVector<float> buffer;
-  buffer.resize( stride * nVerts );
-
-  const float du = 1.0 / ( resolution.width() - 1 );
-  const float dv = 1.0 / ( resolution.height() - 1 );
-
-  // Iterate over z
-  for ( int j = 0; j < resolution.height(); ++j )
-  {
-    const float v = static_cast<float>( j ) * dv;
-
-    // Iterate over x
-    for ( int i = 0; i < resolution.width(); ++i )
-    {
-      const float u = static_cast<float>( i ) * du;
-
-      // texture coordinates
-      buffer.push_back( u );
-      buffer.push_back( mirrored ? 1.0f - v : v );
-    }
-  }
-
-  return buffer;
-}
-
-QVector<unsigned int> createPlaneIndexData( const QSize &resolution )
-{
-  // Create the index data. 2 triangles per rectangular face
-  const int faces = 2 * ( resolution.width() - 1 ) * ( resolution.height() - 1 );
-  const int indices = 3 * faces;
-  Q_ASSERT( indices < std::numeric_limits<quint16>::max() );
-  QVector<unsigned int> indexes;
-
-  // Iterate over z
-  for ( int j = 0; j < resolution.height() - 1; ++j )
-  {
-    const int rowStartIndex = j * resolution.width();
-    const int nextRowStartIndex = ( j + 1 ) * resolution.width();
-
-    // Iterate over x
-    for ( int i = 0; i < resolution.width() - 1; ++i )
-    {
-      // Split quad into two triangles
-      indexes.push_back( rowStartIndex + i );
-      indexes.push_back( nextRowStartIndex + i );
-      indexes.push_back( rowStartIndex + i + 1 );
-
-      indexes.push_back( nextRowStartIndex + i );
-      indexes.push_back( nextRowStartIndex + i + 1 );
-      indexes.push_back( rowStartIndex + i + 1 );
-    }
-  }
-
-  return indexes;
-}
-
-
 
 Qgs3DSceneExporter::Qgs3DSceneExporter( Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
@@ -360,29 +255,30 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, QgsTer
     return;
   }
 
-  tileGeometry->updateVertices();
-  tileGeometry->updateIndices();
-
-  Qt3DRender::QAttribute *positionAttribute = tileGeometry->positionAttribute();
-  Qt3DRender::QAttribute *indexAttribute = tileGeometry->indexAttribute();
-
-  qDebug() << "Position attribute data size: " << positionAttribute->buffer()->data().size();
-  qDebug() << "Index attribute data size: " << indexAttribute->buffer()->data().size();
-
   float scale = transform->scale();
   QVector3D translation = transform->translation();
 
-  QVector<float> positionBuffer = createPlaneVertexData( scale, scale, tileGeometry->resolution() );
-  QVector<unsigned int> indexesBuffer = createPlaneIndexData( tileGeometry->resolution() );
+  // Generate vertice data
+  Qt3DRender::QAttribute *positionAttribute = tileGeometry->positionAttribute();
+  Qt3DRender::QBufferDataGeneratorPtr positionDataGenerator =  positionAttribute->buffer()->dataGenerator();
+  QByteArray verticesBytes = positionDataGenerator->operator()();
+  QVector<float> positionBuffer = getAttributeData<float>( positionAttribute, verticesBytes );
+
+  // Generate index data
+  Qt3DRender::QAttribute *indexAttribute = tileGeometry->indexAttribute();
+  Qt3DRender::QBufferDataGeneratorPtr indexDataGenerator =  indexAttribute->buffer()->dataGenerator();
+  QByteArray indexBytes = indexDataGenerator->operator()();
+  QVector<quint16> indexesBuffer = getIndexData<quint16>( indexBytes );
 
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "Flat_tile" ), "", this );
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
-  object->setupPositionCoordinates( positionBuffer, indexesBuffer, 1.0f, translation );
+  object->setupPositionCoordinates( positionBuffer, indexesBuffer, scale, translation );
 
   if ( mExportNormals )
   {
+    // Evert
     QVector<float> normalsBuffer;
     for ( int i = 0; i < positionBuffer.size(); i += 3 ) normalsBuffer << 0.0f << 1.0f << 0.0f;
     object->setupNormalCoordinates( normalsBuffer );
@@ -390,7 +286,10 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, QgsTer
 
   if ( mExportTextures )
   {
-    QVector<float> texCoords = createPlaneTexCoordsData( 1.0f, 1.0f, tileGeometry->resolution(), false );
+    // Reuse vertex buffer data for texture coordinates
+    Qt3DRender::QAttribute *texCoordsAttribute = tileGeometry->texCoordAttribute();
+    QVector<float> texCoords = getAttributeData<float>( texCoordsAttribute, verticesBytes );
+
     object->setupTextureCoordinates( texCoords );
 
     QImage img = textureGenerator->renderSynchronously( tileEntity->textureImage()->imageExtent(),  tileEntity->textureImage()->imageDebugText() );
@@ -420,7 +319,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, QgsTerr
 
   Qt3DRender::QAttribute *indexAttribute = tileGeometry->indexAttribute();
   QByteArray indexBytes = indexAttribute->buffer()->data();
-  QVector<unsigned int> indexBuffer = getIndexData( indexBytes );
+  QVector<unsigned int> indexBuffer = getIndexData<uint>( indexBytes );
 
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "DEM_tile" ), "", this );
   mObjects.push_back( object );

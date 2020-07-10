@@ -785,7 +785,6 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
     switch ( layerType )
     {
       case QgsMapLayerType::VectorLayer:
-        qDebug() << "Parsing vector layer";
         exporter.parseVectorLayerEntity( rootEntity );
         break;
       case QgsMapLayerType::RasterLayer:

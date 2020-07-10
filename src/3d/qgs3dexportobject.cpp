@@ -44,25 +44,42 @@ void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &position
   }
 }
 
-void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, const QVector<unsigned int> &faceIndex, float scale, const QVector3D translation )
+void insertPositionData( QVector<float> &vertexPosition, const QVector<float> &positionsBuffer, float scale, const QVector3D translation )
 {
-  // TODO: delete vertices that are not used
   for ( int i = 0; i < positionsBuffer.size(); i += 3 )
   {
     for ( int j = 0; j < 3; ++j )
     {
-      mVertexPosition << positionsBuffer[i + j] * scale + translation[j];
+      vertexPosition << positionsBuffer[i + j] * scale + translation[j];
     }
   }
+}
 
+template<typename T>
+void insertIndexData( QVector<uint> &vertexIndex, const QVector<T> &faceIndex )
+{
   for ( int i = 0; i < faceIndex.size(); i += 3 )
   {
     // skip invalid triangles
     if ( faceIndex[i] == faceIndex[i + 1] && faceIndex[i + 1] == faceIndex[i + 2] )
       continue;
     for ( int j = 0; j < 3; ++j )
-      mIndexes << faceIndex[i + j] + 1;
+      vertexIndex << faceIndex[i + j] + 1;
   }
+}
+
+void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, const QVector<uint> &faceIndex, float scale, const QVector3D translation )
+{
+  // TODO: delete vertices that are not used
+  insertPositionData( mVertexPosition, positionsBuffer, scale, translation );
+  insertIndexData<uint>( mIndexes, faceIndex );
+}
+
+void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, const QVector<quint16> &faceIndex, float scale, const QVector3D translation )
+{
+  // TODO: delete vertices that are not used
+  insertPositionData( mVertexPosition, positionsBuffer, scale, translation );
+  insertIndexData<quint16>( mIndexes, faceIndex );
 }
 
 void Qgs3DExportObject::setupNormalCoordinates( const QVector<float> &normalsBuffer )
