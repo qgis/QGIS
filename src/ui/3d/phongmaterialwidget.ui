@@ -108,7 +108,7 @@
     </widget>
    </item>
    <item row="4" column="1">
-    <widget class="QgsFileWidget" name="textureFile" native="true"/>
+    <widget class="QgsImageSourceLineEdit" name="textureFile" native="true"/>
    </item>
    <item row="5" column="0">
     <widget class="QLabel" name="lblTextureScale">
@@ -171,9 +171,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFileWidget</class>
+   <class>QgsImageSourceLineEdit</class>
    <extends>QWidget</extends>
-   <header>qgsfilewidget.h</header>
+   <header>qgsfilecontentsourcelineedit.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
