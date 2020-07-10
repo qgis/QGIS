@@ -8,5 +8,5 @@
                {"arg":"color2", "description":"a color string"},
                {"arg":"ratio", "description":"a ratio"}
 	          ],
-  "examples": [ { "expression":"color_mix_rgb('0,0,0','255,255,255',0.5)", "returns":"127,127,127,255"}]
+  "examples": [ { "expression":"color_mix_rgb('0,0,0','255,255,255',0.5)", "returns":"'127,127,127,255'"}]
 }
