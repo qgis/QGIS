@@ -737,6 +737,24 @@ Checks whether a table contents contains a given row
 :return: ``True`` if contents contains rows
 %End
 
+    virtual QgsTextFormat textFormatForCell( int row, int column ) const;
+%Docstring
+Returns the text format to use for the cell at the specified ``row`` and ``column``.
+
+.. seealso:: :py:func:`textFormatForHeader`
+
+.. versionadded:: 3.16
+%End
+
+    virtual QgsTextFormat textFormatForHeader( int column ) const;
+%Docstring
+Returns the text format to use for the header cell at the specified ``column``.
+
+.. seealso:: :py:func:`textFormatForCell`
+
+.. versionadded:: 3.16
+%End
+
 };
 
 /************************************************************************

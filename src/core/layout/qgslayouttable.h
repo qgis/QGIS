@@ -725,6 +725,22 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      */
     bool contentsContainsRow( const QgsLayoutTableContents &contents, const QgsLayoutTableRow &row ) const;
 
+    /**
+     * Returns the text format to use for the cell at the specified \a row and \a column.
+     *
+     * \see textFormatForHeader()
+     * \since QGIS 3.16
+     */
+    virtual QgsTextFormat textFormatForCell( int row, int column ) const;
+
+    /**
+     * Returns the text format to use for the header cell at the specified \a column.
+     *
+     * \see textFormatForCell()
+     * \since QGIS 3.16
+     */
+    virtual QgsTextFormat textFormatForHeader( int column ) const;
+
   private:
 
     QMap< CellStyleGroup, QString > mCellStyleNames;

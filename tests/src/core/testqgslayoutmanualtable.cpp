@@ -49,6 +49,7 @@ class TestQgsLayoutManualTable : public QObject
     void rowHeight();
     void columnWidth();
     void headers();
+    void cellTextFormat();
 
   private:
     QString mReport;
@@ -412,6 +413,61 @@ void TestQgsLayoutManualTable::headers()
                      << QgsLayoutTableColumn( QStringLiteral( "header 3" ) ) );
 
   QgsLayoutChecker checker( QStringLiteral( "manualtable_headers" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "layout_manual_table" ) );
+  bool result = checker.testLayout( mReport );
+  QVERIFY( result );
+}
+
+void TestQgsLayoutManualTable::cellTextFormat()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemManualTable *table = new QgsLayoutItemManualTable( &l );
+  QgsLayoutFrame *frame1 = new QgsLayoutFrame( &l, table );
+  frame1->attemptSetSceneRect( QRectF( 5, 5, 100, 60 ) );
+  frame1->setFrameEnabled( true );
+  table->addFrame( frame1 );
+  table->setBackgroundColor( Qt::yellow );
+
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+
+  frame1->setFrameEnabled( false );
+  table->setShowGrid( true );
+  table->setHorizontalGrid( true );
+  table->setVerticalGrid( true );
+
+  QgsTableCell c1( QStringLiteral( "Jet" ) );
+  QgsTextFormat f1 = table->contentTextFormat();
+  f1.setSize( 20 );
+  f1.buffer().setEnabled( true );
+  f1.buffer().setColor( QColor( 100, 130, 150 ) );
+  f1.buffer().setSize( 1 );
+  c1.setTextFormat( f1 );
+  c1.setHasTextFormat( true );
+
+  QgsTableCell c3( QStringLiteral( "Plane" ) );
+  QgsTextFormat f2 = table->contentTextFormat();
+  f2.setSize( 16 );
+  f2.buffer().setEnabled( true );
+  f2.buffer().setColor( QColor( 150, 110, 90 ) );
+  f2.buffer().setSize( 1 );
+  c3.setTextFormat( f2 );
+  c3.setHasTextFormat( true );
+
+  QgsTableCell c5( QStringLiteral( "B" ) );
+  QgsTextFormat f3 = table->contentTextFormat();
+  f3.setSize( 36 );
+  f3.buffer().setEnabled( true );
+  f3.buffer().setColor( QColor( 200, 110, 90 ) );
+  f3.buffer().setSize( 1 );
+  c5.setTextFormat( f3 );
+  c5.setHasTextFormat( true );
+
+  table->setTableContents( QgsTableContents() << ( QgsTableRow() << c1 << QgsTableCell( QStringLiteral( "Helicopter" ) ) << c3 )
+                           << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A" ) ) << c5 << QgsTableCell( QStringLiteral( "C" ) ) ) );
+
+  table->setColumnWidths( QList< double >() << 0 << 0.0 << 30.0 );
+  QgsLayoutChecker checker( QStringLiteral( "manualtable_textformat" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_manual_table" ) );
   bool result = checker.testLayout( mReport );
   QVERIFY( result );
