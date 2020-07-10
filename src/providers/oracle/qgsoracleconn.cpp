@@ -610,7 +610,7 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
                                    tr( "Oracle" ) );
         continue;
       }
-      QgsDebugMsgLevel( QStringLiteral( "add type %1" ).arg( type ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "add type %1" ).arg( qgsEnumValueToKey( type ) ), 2 );
       layerProperty.types << type;
     }
     else

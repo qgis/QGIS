@@ -87,7 +87,7 @@ struct QgsOracleLayerProperty
     {
       if ( !typeString.isEmpty() )
         typeString += "|";
-      typeString += QString::number( type );
+      typeString += QString::number( static_cast<int>( type ) );
     }
     QString sridString;
     const auto constSrids = srids;
