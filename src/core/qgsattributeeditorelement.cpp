@@ -17,9 +17,6 @@
 #include "qgsrelationmanager.h"
 
 
-#include <QDebug>
-
-
 void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget )
 {
   mChildren.append( widget );
