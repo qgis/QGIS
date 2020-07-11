@@ -17,6 +17,9 @@
 #include "qgsrelationmanager.h"
 
 
+#include <QDebug>
+
+
 void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget )
 {
   mChildren.append( widget );
@@ -96,8 +99,7 @@ QgsAttributeEditorElement *QgsAttributeEditorRelation::clone( QgsAttributeEditor
 {
   QgsAttributeEditorRelation *element = new QgsAttributeEditorRelation( mRelationId, parent );
   element->mRelation = mRelation;
-  element->mShowLinkButton = mShowLinkButton;
-  element->mShowUnlinkButton = mShowUnlinkButton;
+  element->mButtons = mButtons;
 
   return element;
 }
@@ -133,9 +135,7 @@ void QgsAttributeEditorElement::setShowLabel( bool showLabel )
 void QgsAttributeEditorRelation::saveConfiguration( QDomElement &elem ) const
 {
   elem.setAttribute( QStringLiteral( "relation" ), mRelation.id() );
-  elem.setAttribute( QStringLiteral( "showLinkButton" ), mShowLinkButton );
-  elem.setAttribute( QStringLiteral( "showUnlinkButton" ), mShowUnlinkButton );
-  elem.setAttribute( QStringLiteral( "showSaveChildEditsButton" ), mShowSaveChildEditsButton );
+  elem.setAttribute( QStringLiteral( "buttons" ), qgsFlagValueToKeys( mButtons ) );
 }
 
 QString QgsAttributeEditorRelation::typeIdentifier() const
@@ -145,32 +145,37 @@ QString QgsAttributeEditorRelation::typeIdentifier() const
 
 bool QgsAttributeEditorRelation::showLinkButton() const
 {
-  return mShowLinkButton;
+  return mButtons.testFlag( Button::Link );
 }
 
 void QgsAttributeEditorRelation::setShowLinkButton( bool showLinkButton )
 {
-  mShowLinkButton = showLinkButton;
+  mButtons.setFlag( Button::Link, showLinkButton );
 }
 
 bool QgsAttributeEditorRelation::showUnlinkButton() const
 {
-  return mShowUnlinkButton;
+  return mButtons.testFlag( Button::Unlink );
 }
 
 void QgsAttributeEditorRelation::setShowUnlinkButton( bool showUnlinkButton )
 {
-  mShowUnlinkButton = showUnlinkButton;
+  mButtons.setFlag( Button::Unlink, showUnlinkButton );
 }
 
 void QgsAttributeEditorRelation::setShowSaveChildEditsButton( bool showSaveChildEdits )
 {
-  mShowSaveChildEditsButton = showSaveChildEdits;
+  mButtons.setFlag( Button::SaveChildEdits, showSaveChildEdits );
 }
 
 bool QgsAttributeEditorRelation::showSaveChildEditsButton() const
 {
-  return mShowSaveChildEditsButton;
+  return mButtons.testFlag( Button::SaveChildEdits );
+}
+
+void QgsAttributeEditorRelation::setShownButtons( const QgsAttributeEditorRelation::Buttons &buttons )
+{
+  mButtons = buttons;
 }
 
 QgsAttributeEditorElement *QgsAttributeEditorQmlElement::clone( QgsAttributeEditorElement *parent ) const

@@ -154,10 +154,12 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
     const_cast<QgsVectorLayerTools *>( myContext.vectorLayerTools() )->setForceSuppressFormPopup( true );
   }
 
+  /* TODO: this seems to have no effect
   if ( config( QStringLiteral( "hide-save-child-edits" ), false ).toBool() )
   {
     w->setShowSaveChildEditsButton( false );
   }
+  */
 
   w->setEditorContext( myContext );
 
@@ -189,16 +191,29 @@ bool QgsRelationWidgetWrapper::valid() const
 
 bool QgsRelationWidgetWrapper::showLinkButton() const
 {
-  return mWidget->showLinkButton();
+  return shownButtons().testFlag( QgsAttributeEditorRelation::Button::Link );
 }
 
 void QgsRelationWidgetWrapper::setShowLinkButton( bool showLinkButton )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   if ( mWidget )
     mWidget->setShowLinkButton( showLinkButton );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 bool QgsRelationWidgetWrapper::showSaveChildEditsButton() const
 {
-  return mWidget && mWidget->showSaveChildEditsButton();
+  return shownButtons().testFlag( QgsAttributeEditorRelation::Button::SaveChildEdits );
+}
+
+void QgsRelationWidgetWrapper::setShownButtons( const QgsAttributeEditorRelation::Buttons &buttons )
+{
+  if ( mWidget )
+    mWidget->setShownButtons( buttons );
+}
+
+QgsAttributeEditorRelation::Buttons QgsRelationWidgetWrapper::shownButtons() const
+{
+  return mWidget->shownButtons();
 }
