@@ -260,23 +260,23 @@ void QgsStackedBarDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCo
     switch ( s.diagramOrientation )
     {
       case QgsDiagramSettings::Up:
-        axisPoints << QPointF( baseX, baseY - scaledMaxVal ) << QPointF( baseX, baseY ) << QPointF( baseX + scaledWidth, baseY );
+        axisPoints << QPointF( baseX, baseY - scaledMaxVal - spacing * std::max( 0, values.size() - 1 ) ) << QPointF( baseX, baseY ) << QPointF( baseX + scaledWidth, baseY );
         break;
 
       case QgsDiagramSettings::Down:
-        axisPoints << QPointF( baseX, baseY ) << QPointF( baseX, baseY - scaledMaxVal ) << QPointF( baseX + scaledWidth, baseY - scaledMaxVal );
+        axisPoints << QPointF( baseX, baseY ) << QPointF( baseX, baseY - scaledMaxVal - spacing * std::max( 0, values.size() - 1 ) ) << QPointF( baseX + scaledWidth, baseY - scaledMaxVal - spacing * std::max( 0, values.size() - 1 ) );
         break;
 
       case QgsDiagramSettings::Right:
-        axisPoints << QPointF( baseX + scaledMaxVal, baseY - scaledWidth)
+        axisPoints << QPointF( baseX + scaledMaxVal + spacing * std::max( 0, values.size() - 1 ), baseY - scaledWidth )
                    << QPointF( baseX, baseY - scaledWidth )
                    << QPointF( baseX, baseY );
         break;
 
       case QgsDiagramSettings::Left:
         axisPoints << QPointF( baseX, baseY - scaledWidth )
-                   << QPointF( baseX + scaledMaxVal, baseY - scaledWidth )
-                   << QPointF( baseX + scaledMaxVal, baseY );
+                   << QPointF( baseX + scaledMaxVal + spacing * std::max( 0, values.size() - 1 ), baseY - scaledWidth )
+                   << QPointF( baseX + scaledMaxVal + spacing * std::max( 0, values.size() - 1 ), baseY );
         break;
     }
 
