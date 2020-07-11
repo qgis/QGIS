@@ -89,19 +89,13 @@ QStringList QgsVectorLayerJoinInfo::joinFieldNamesSubset( const QgsVectorLayerJo
     {
       if ( info.joinLayer() )
       {
-<<<<<<< HEAD
-        if ( !info.joinFieldNamesBlackList().contains( f.name() )
-             && f.name() != info.joinFieldName() )
-          fieldNames.append( f.name() );
-=======
         const QgsFields fields { info.joinLayer()->fields() };
         for ( const QgsField &f : fields )
         {
-          if ( !info.joinFieldNamesBlockList().contains( f.name() )
+          if ( !info.joinFieldNamesBlackList().contains( f.name() )
                && f.name() != info.joinFieldName() )
             fieldNames.append( f.name() );
         }
->>>>>>> 06fea4ffe4... Merge pull request #37744 from m-kuhn/fix_offline_editing_with_aux_storage
       }
     }
   }
