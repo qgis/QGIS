@@ -2,7 +2,7 @@
   "name": "$x",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns the x coordinate of the current feature.",
+  "description": "Returns the x coordinate of the current point feature.",
   "examples": [ { "expression":"$x", "returns":"42"}
   ]
 }
