@@ -33,7 +33,10 @@ class _3D_EXPORT Qgs3DMapExportSettings : public QObject
     Q_OBJECT
   public:
     //! Constructor
-    Qgs3DMapExportSettings( QObject *parent = nullptr ): QObject( parent ) { }
+    Qgs3DMapExportSettings( QObject *parent = nullptr );
+
+    //! destructor (save the export settings before deallocation)
+    ~Qgs3DMapExportSettings();
 
     //! Returns the scene name
     QString sceneName() const { return mSceneName; }

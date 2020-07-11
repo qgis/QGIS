@@ -33,15 +33,7 @@ QgsMap3DExportWidget::QgsMap3DExportWidget( Qgs3DMapScene *scene, Qgs3DMapExport
 {
   ui->setupUi( this );
 
-  QgsSettings settings;
-  ui->selectFolderWidget->setStorageMode( QgsFileWidget::StorageMode::GetDirectory );
-  QString initialPath = settings.value( QStringLiteral( "UI/last3DSceneExportDir" ), QDir::homePath() ).toString();
-  ui->selectFolderWidget->setDefaultRoot( initialPath );
-
-  ui->sceneNameLineEdit->setText( exportSettings->sceneName() );
-  ui->selectFolderWidget->setFilePath( exportSettings->sceneFolderPath() );
-  ui->terrainResolutionSpinBox->setValue( exportSettings->terrrainResolution() );
-  ui->smoothEdgesCheckBox->setChecked( exportSettings->smoothEdges() );
+  loadSettings();
 
   connect( ui->sceneNameLineEdit, &QLineEdit::textChanged, [ = ]( const QString & ) { settingsChanged(); } );
   connect( ui->selectFolderWidget, &QgsFileWidget::fileChanged, [ = ]( const QString & ) { settingsChanged(); } );
@@ -61,6 +53,18 @@ QgsMap3DExportWidget::~QgsMap3DExportWidget()
   delete ui;
 }
 
+void QgsMap3DExportWidget::loadSettings()
+{
+  ui->sceneNameLineEdit->setText( mExportSettings->sceneName() );
+  ui->selectFolderWidget->setFilePath( mExportSettings->sceneFolderPath() );
+  ui->terrainResolutionSpinBox->setValue( mExportSettings->terrrainResolution() );
+  ui->terrainTextureResolutionSpinBox->setValue( mExportSettings->terrainTextureResolution() );
+  ui->smoothEdgesCheckBox->setChecked( mExportSettings->smoothEdges() );
+  ui->exportNormalsCheckBox->setChecked( mExportSettings->exportNormals() );
+  ui->exportTexturesCheckBox->setChecked( mExportSettings->exportTextures() );
+  ui->scaleSpinBox->setValue( mExportSettings->scale() );
+}
+
 void QgsMap3DExportWidget::settingsChanged()
 {
   mExportSettings->setSceneName( ui->sceneNameLineEdit->text() );
@@ -76,6 +80,4 @@ void QgsMap3DExportWidget::settingsChanged()
 void QgsMap3DExportWidget::exportScene()
 {
   mScene->exportScene( *mExportSettings );
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "UI/last3DSceneExportDir" ), mExportSettings->sceneFolderPath() );
 }
