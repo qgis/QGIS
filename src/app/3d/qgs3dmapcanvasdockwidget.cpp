@@ -102,7 +102,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSaveMapAsImage.svg" ) ),
                       tr( "Save as Image…" ), this, &Qgs3DMapCanvasDockWidget::saveAsImage );
 
-  toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionSaveMapAsImage.svg" ) ),
+  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ),
                       tr( "Export 3D Scene" ), this, &Qgs3DMapCanvasDockWidget::exportScene );
 
   toolBar->addSeparator();
@@ -123,7 +123,6 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
 
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ),
                       tr( "Configure…" ), this, &Qgs3DMapCanvasDockWidget::configure );
-
 
   mCanvas = new Qgs3DMapCanvas( contentsWidget );
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
