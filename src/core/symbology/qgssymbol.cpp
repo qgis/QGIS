@@ -832,7 +832,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   bool usingSegmentizedGeometry = false;
   context.setGeometry( geom.constGet() );
 
-  if ( !geom.boundingBox().isNull() )
+  if ( geom.type() != QgsWkbTypes::PointGeometry && !geom.boundingBox().isNull() )
   {
     try
     {
