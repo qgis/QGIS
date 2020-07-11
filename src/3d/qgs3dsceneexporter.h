@@ -47,9 +47,9 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
 
     /**
      * Creates necessary export objects from entity if it represents valid vector layer entity
-     * If the entity doesn't define exportable object it will be ignored
+     * Returns false if the entity doesn't represent a vector layer
      */
-    void parseVectorLayerEntity( Qt3DCore::QEntity *entity );
+    bool parseVectorLayerEntity( Qt3DCore::QEntity *entity );
     //! Creates terrain export objects from the terrain entity
     void parseTerrain( QgsTerrainEntity *terrain );
     //! Saves the scene to a .obj file

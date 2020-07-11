@@ -115,10 +115,11 @@ Qgs3DSceneExporter::Qgs3DSceneExporter( Qt3DCore::QNode *parent )
 
 }
 
-void Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity )
+bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity )
 {
   if ( entity == nullptr )
-    return;
+    return false;
+  bool isValid = false;
   // We iterate over every component and find components that represent a tessellated geometry
   for ( Qt3DCore::QComponent *c : entity->components() )
   {
@@ -131,6 +132,7 @@ void Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity )
     if ( tessellated != nullptr )
     {
       processPolygonGeometry( tessellated );
+      isValid = true;
       continue;
     }
 
@@ -141,8 +143,12 @@ void Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity )
   {
     Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>( child );
     if ( childEntity != nullptr )
-      parseVectorLayerEntity( childEntity );
+    {
+      bool validChild = parseVectorLayerEntity( childEntity );
+      isValid = isValid || validChild;
+    }
   }
+  return isValid;
 }
 
 void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain )

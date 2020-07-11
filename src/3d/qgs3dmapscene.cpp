@@ -60,6 +60,7 @@
 #include "qgs3dsceneexporter.h"
 #include "qgsabstract3drenderer.h"
 #include "qgs3dmapexportsettings.h"
+#include "qgsmessageoutput.h"
 
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
@@ -769,6 +770,7 @@ void Qgs3DMapScene::updateSceneState()
 
 void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
 {
+  QVector<QString> notParsedLayers;
   Qgs3DSceneExporter exporter;
 
   exporter.setTerrainResolution( exportSettings.terrrainResolution() );
@@ -785,19 +787,20 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
     switch ( layerType )
     {
       case QgsMapLayerType::VectorLayer:
-        exporter.parseVectorLayerEntity( rootEntity );
+        if ( !exporter.parseVectorLayerEntity( rootEntity ) )
+          notParsedLayers.push_back( layer->name() );
         break;
       case QgsMapLayerType::RasterLayer:
-        qDebug() << "Raster layer skipped";
+        notParsedLayers.push_back( layer->name() );
         break;
       case QgsMapLayerType::PluginLayer:
-        qDebug() << "Plugin layer skipped";
+        notParsedLayers.push_back( layer->name() );
         break;
       case QgsMapLayerType::MeshLayer:      //!< Added in 3.2
-        qDebug() << "Mesh layer skipped";
+        notParsedLayers.push_back( layer->name() );
         break;
       case QgsMapLayerType::VectorTileLayer: //!< Added in 3.14
-        qDebug() << "Vector tile layer skipped";
+        notParsedLayers.push_back( layer->name() );
         break;
     }
   }
@@ -805,4 +808,12 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
     exporter.parseTerrain( mTerrain );
 
   exporter.save( exportSettings.sceneName(), exportSettings.sceneFolderPath() );
+
+  if ( notParsedLayers.size() != 0 )
+  {
+    QString message = "The following layers were not exported: \n";
+    for ( QString layerName : notParsedLayers )
+      message += layerName + "\n";
+    QgsMessageOutput::showMessage( "3D exporter warning", message, QgsMessageOutput::MessageText );
+  }
 }
