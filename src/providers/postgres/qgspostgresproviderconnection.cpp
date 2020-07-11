@@ -68,8 +68,8 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     Capability::CreateSpatialIndex,
     Capability::SpatialIndexExists,
     Capability::DeleteSpatialIndex,
-    Capability::DropColumn,
-    Capability::AddColumn
+    Capability::DeleteField,
+    Capability::AddField
   };
 }
 

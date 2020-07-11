@@ -712,7 +712,7 @@ void QgsFieldsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *me
     {
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
       // Check if it is supported
-      if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddColumn ) )
+      if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddField ) )
       {
         QAction *addColumnAction = new QAction( tr( "New field…" ), menu );
         connect( addColumnAction, &QAction::triggered, this, [ = ]
@@ -726,7 +726,7 @@ void QgsFieldsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *me
               std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
               try
               {
-                conn2->addColumn( dialog.field(), fieldsItem->schema(), fieldsItem->tableName() );
+                conn2->addField( dialog.field(), fieldsItem->schema(), fieldsItem->tableName() );
                 item->refresh();
               }
               catch ( const QgsProviderConnectionException &ex )
@@ -784,17 +784,17 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
       if ( md )
       {
         std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
-        if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DropColumn ) )
+        if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteField ) )
         {
-          QAction *dropColumnAction = new QAction( tr( "Delete field…" ), menu );
-          connect( dropColumnAction, &QAction::triggered, this, [ = ]
+          QAction *deleteFieldAction = new QAction( tr( "Delete field…" ), menu );
+          connect( deleteFieldAction, &QAction::triggered, this, [ = ]
           {
             if ( QMessageBox::warning( menu, tr( "Delete field" ), tr( "Delete '%1' permanently (with CASCADE)?" ).arg( item->name() ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
             {
               std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
               try
               {
-                conn2->dropColumn( item->name(), fieldsItem->schema(), fieldsItem->tableName(), true );
+                conn2->deleteField( item->name(), fieldsItem->schema(), fieldsItem->tableName(), true );
                 fieldsItem->refresh();
               }
               catch ( const QgsProviderConnectionException &ex )
@@ -810,7 +810,7 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
               }
             }
           } );
-          menu->addAction( dropColumnAction );
+          menu->addAction( deleteFieldAction );
         }
       }
     }

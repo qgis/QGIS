@@ -45,7 +45,7 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
         const TableFlags &flags = nullptr ) const override;
     QIcon icon() const override;
-    void dropColumn( const QString &fieldName, const QString &schema, const QString &tableName, bool force ) const override;
+    void deleteField( const QString &fieldName, const QString &schema, const QString &tableName, bool force ) const override;
 
   private:
 

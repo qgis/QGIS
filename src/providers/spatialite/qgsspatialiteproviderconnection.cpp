@@ -362,8 +362,8 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
     Capability::ExecuteSql,
     Capability::CreateSpatialIndex,
     Capability::SpatialIndexExists,
-    Capability::DropColumn,
-    Capability::AddColumn
+    Capability::DeleteField,
+    Capability::AddField
   };
 }
 
@@ -446,7 +446,7 @@ QString QgsSpatiaLiteProviderConnection::pathFromUri() const
 }
 
 
-void QgsSpatiaLiteProviderConnection::dropColumn( const QString &fieldName, const QString &, const QString &tableName, bool ) const
+void QgsSpatiaLiteProviderConnection::deleteField( const QString &fieldName, const QString &, const QString &tableName, bool ) const
 {
   QgsVectorLayer::LayerOptions options { false, false };
   options.skipCrsValidation = true;

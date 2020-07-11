@@ -154,9 +154,9 @@ bool QgsAbstractDatabaseProviderConnection::spatialIndexExists( const QString &,
   return false;
 }
 
-void QgsAbstractDatabaseProviderConnection::dropColumn( const QString &fieldName, const QString &schema, const QString &tableName, bool ) const
+void QgsAbstractDatabaseProviderConnection::deleteField( const QString &fieldName, const QString &schema, const QString &tableName, bool ) const
 {
-  checkCapability( Capability::DropColumn );
+  checkCapability( Capability::DeleteField );
 
   QgsVectorLayer::LayerOptions options { false, false };
   options.skipCrsValidation = true;
@@ -179,9 +179,9 @@ void QgsAbstractDatabaseProviderConnection::dropColumn( const QString &fieldName
   }
 }
 
-void QgsAbstractDatabaseProviderConnection::addColumn( const QgsField &field, const QString &schema, const QString &tableName ) const
+void QgsAbstractDatabaseProviderConnection::addField( const QgsField &field, const QString &schema, const QString &tableName ) const
 {
-  checkCapability( Capability::AddColumn );
+  checkCapability( Capability::AddField );
 
   QgsVectorLayer::LayerOptions options { false, false };
   options.skipCrsValidation = true;

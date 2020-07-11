@@ -293,8 +293,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       CreateSpatialIndex = 1 << 16, //!< The connection can create spatial indices
       SpatialIndexExists = 1 << 17, //!< The connection can determine if a spatial index exists
       DeleteSpatialIndex = 1 << 18, //!< The connection can delete spatial indices for tables
-      DropColumn = 1 << 19,         //!< Can delete an existing column
-      AddColumn = 1 << 20,          //!< Can add a new column
+      DeleteField = 1 << 19,        //!< Can delete an existing field/column
+      AddField = 1 << 20,           //!< Can add a new field/column
     };
 
     Q_ENUM( Capability )
@@ -395,27 +395,27 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void dropSchema( const QString &name, bool force = false ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Drops the column with the specified name.
+     * Deletes the field with the specified name.
      * Raises a QgsProviderConnectionException if any errors are encountered.
-     * \param fieldName name of the field to be dropped
+     * \param fieldName name of the field to be deleted
      * \param schema name of the schema (schema is ignored if not supported by the backend).
      * \param tableName name of the table
      * \param force if TRUE, a DROP CASCADE will drop all related objects
      * \note it is responsibility of the caller to handle open layers and registry entries.
      * \throws QgsProviderConnectionException
      */
-    virtual void dropColumn( const QString &fieldName, const QString &schema, const QString &tableName, bool force = false ) const SIP_THROW( QgsProviderConnectionException );
+    virtual void deleteField( const QString &fieldName, const QString &schema, const QString &tableName, bool force = false ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Adds a column
+     * Adds a field
      * Raises a QgsProviderConnectionException if any errors are encountered.
-     * \param field specification of the new column
+     * \param field specification of the new field
      * \param schema name of the schema (schema is ignored if not supported by the backend).
      * \param tableName name of the table
      * \note it is responsibility of the caller to handle open layers and registry entries.
      * \throws QgsProviderConnectionException
      */
-    virtual void addColumn( const QgsField &field, const QString &schema, const QString &tableName ) const SIP_THROW( QgsProviderConnectionException );
+    virtual void addField( const QgsField &field, const QString &schema, const QString &tableName ) const SIP_THROW( QgsProviderConnectionException );
 
 
     /**

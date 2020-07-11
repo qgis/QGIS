@@ -234,8 +234,8 @@ This information is calculated from the geometry columns types.
       CreateSpatialIndex,
       SpatialIndexExists,
       DeleteSpatialIndex,
-      DropColumn,
-      AddColumn,
+      DeleteField,
+      AddField,
     };
 
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
@@ -359,12 +359,12 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 :raises :: py:class:`QgsProviderConnectionException`
 %End
 
-    virtual void dropColumn( const QString &fieldName, const QString &schema, const QString &tableName, bool force = false ) const throw( QgsProviderConnectionException );
+    virtual void deleteField( const QString &fieldName, const QString &schema, const QString &tableName, bool force = false ) const throw( QgsProviderConnectionException );
 %Docstring
-Drops the column with the specified name.
+Deletes the field with the specified name.
 Raises a QgsProviderConnectionException if any errors are encountered.
 
-:param fieldName: name of the field to be dropped
+:param fieldName: name of the field to be deleted
 :param schema: name of the schema (schema is ignored if not supported by the backend).
 :param tableName: name of the table
 :param force: if ``True``, a DROP CASCADE will drop all related objects
@@ -376,12 +376,12 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 :raises :: py:class:`QgsProviderConnectionException`
 %End
 
-    virtual void addColumn( const QgsField &field, const QString &schema, const QString &tableName ) const throw( QgsProviderConnectionException );
+    virtual void addField( const QgsField &field, const QString &schema, const QString &tableName ) const throw( QgsProviderConnectionException );
 %Docstring
-Adds a column
+Adds a field
 Raises a QgsProviderConnectionException if any errors are encountered.
 
-:param field: specification of the new column
+:param field: specification of the new field
 :param schema: name of the schema (schema is ignored if not supported by the backend).
 :param tableName: name of the table
 

@@ -329,14 +329,14 @@ class TestPyQgsProviderConnectionBase():
             for f in ['string_t', 'long_t', 'double_t', 'integer_t', 'date_t', 'datetime_t', 'time_t']:
                 self.assertTrue(f in fields.names())
 
-            if capabilities & QgsAbstractDatabaseProviderConnection.AddColumn:
+            if capabilities & QgsAbstractDatabaseProviderConnection.AddField:
                 field = QgsField('short_lived_field', QVariant.Int, 'integer')
-                conn.addColumn(field, 'myNewSchema', 'myNewTable')
+                conn.addField(field, 'myNewSchema', 'myNewTable')
                 fields = conn.fields('myNewSchema', 'myNewTable')
                 self.assertTrue('short_lived_field' in fields.names())
 
-                if capabilities & QgsAbstractDatabaseProviderConnection.DropColumn:
-                    conn.dropColumn('short_lived_field', 'myNewSchema', 'myNewTable')
+                if capabilities & QgsAbstractDatabaseProviderConnection.DeleteField:
+                    conn.deleteField('short_lived_field', 'myNewSchema', 'myNewTable')
                     fields = conn.fields('myNewSchema', 'myNewTable')
                     self.assertFalse('short_lived_field' in fields.names())
 
