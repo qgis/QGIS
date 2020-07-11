@@ -60,6 +60,7 @@
 #include "qgsabstractvectorlayer3drenderer.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgspolygon3dsymbol.h"
+#include "qgsline3dsymbol.h"
 
 #include <numeric>
 
@@ -120,8 +121,9 @@ Qgs3DSceneExporter::Qgs3DSceneExporter( Qt3DCore::QNode *parent )
 
 }
 
-bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsVectorLayer *layer ) {
-  QgsAbstract3DRenderer* abstractRenderer =  layer->renderer3D();
+bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsVectorLayer *layer )
+{
+  QgsAbstract3DRenderer *abstractRenderer =  layer->renderer3D();
   QString rendererType = abstractRenderer->type();
 
   if ( rendererType == "mesh" )
@@ -140,19 +142,30 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
       QgsVectorLayer3DRenderer *vectorLayerRenderer = dynamic_cast< QgsVectorLayer3DRenderer *>( abstractVectorRenderer );
       const QgsAbstract3DSymbol *symbol = vectorLayerRenderer->symbol();
       QString symbolType = symbol->type();
-      if (symbolType == "polygon")
+      if ( symbolType == "polygon" )
       {
-        QList<QgsTessellatedPolygonGeometry *> geometries = entity->findChildren<QgsTessellatedPolygonGeometry *>();
         const QgsPolygon3DSymbol *polygonSymbol = dynamic_cast<const QgsPolygon3DSymbol *>( symbol );
-        for (QgsTessellatedPolygonGeometry * polygonGeometry : geometries)
-          processPolygonGeometry( polygonGeometry, polygonSymbol);
+        QList<QgsTessellatedPolygonGeometry *> geometries = entity->findChildren<QgsTessellatedPolygonGeometry *>();
+        for ( QgsTessellatedPolygonGeometry *polygonGeometry : geometries )
+          processPolygonGeometry( polygonGeometry, polygonSymbol );
         return geometries.size() != 0;
       }
-      else if (symbolType == "line")
+      else if ( symbolType == "line" )
       {
+        const QgsLine3DSymbol *lineSymbol = dynamic_cast<const QgsLine3DSymbol *>( symbol );
+        if ( lineSymbol->renderAsSimpleLines() )
+        {
 
+        }
+        else
+        {
+          QList<QgsTessellatedPolygonGeometry *> geometries = entity->findChildren<QgsTessellatedPolygonGeometry *>();
+          for ( QgsTessellatedPolygonGeometry *lineGeometry : geometries )
+            processBufferedLineGeometry( lineGeometry, lineSymbol );
+          return geometries.size() != 0;
+        }
       }
-      else if (symbolType == "point")
+      else if ( symbolType == "point" )
       {
 
       }
@@ -353,6 +366,26 @@ void Qgs3DSceneExporter::processPolygonGeometry( QgsTessellatedPolygonGeometry *
     object->setupNormalCoordinates( normalsData );
   }
   // TODO: handle textures
+}
+
+void Qgs3DSceneExporter::processBufferedLineGeometry( QgsTessellatedPolygonGeometry *geom, const QgsLine3DSymbol *lineSymbol )
+{
+  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "line_geometry" ), "", this );
+  mObjects.push_back( object );
+
+  Qt3DRender::QAttribute *positionAttribute = geom->mPositionAttribute;
+  QByteArray positionBytes = positionAttribute->buffer()->data();
+  QVector<float> positionData = getAttributeData<float>( positionAttribute, positionBytes );
+  object->setupPositionCoordinates( positionData );
+
+  if ( mExportNormals )
+  {
+    Qt3DRender::QAttribute *normalsAttribute = geom->mNormalAttribute;
+    QByteArray normalsBytes = normalsAttribute->buffer()->data();
+    QVector<float> normalsData = getAttributeData<float>( normalsAttribute, normalsBytes );
+    object->setupNormalCoordinates( normalsData );
+  }
+  // TODO: handle material
 }
 
 void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath )

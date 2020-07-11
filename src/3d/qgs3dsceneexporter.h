@@ -33,6 +33,7 @@ class Qgs3DExportObject;
 class QgsTerrainTextureGenerator;
 class QgsVectorLayer;
 class QgsPolygon3DSymbol;
+class QgsLine3DSymbol;
 
 /**
  * \brief The Qgs3DSceneExporter class
@@ -92,6 +93,8 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     void pocessPoistionAttributes( Qt3DRender::QGeometry *geometry );
     //! constructs Qgs3DExportObject from the polygon geometry
     void processPolygonGeometry( QgsTessellatedPolygonGeometry *geom, const QgsPolygon3DSymbol *polygonSymbol );
+
+    void processBufferedLineGeometry( QgsTessellatedPolygonGeometry *geom, const QgsLine3DSymbol *lineSymbol );
 
     //! Returns a tile entity that contains the geometry to be exported and necessary scaling parameters
     QgsTerrainTileEntity *getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
