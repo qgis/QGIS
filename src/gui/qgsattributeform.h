@@ -183,6 +183,14 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     QString aggregateFilter() const;
 
+    /**
+     * Sets an additional expression context scope to be used
+     * for calculations in this form.
+     *
+     * \since QGIS 3.16
+     */
+    void setExtraContextScope( QgsExpressionContextScope *extraScope SIP_TRANSFER );
+
   signals:
 
     /**
@@ -387,6 +395,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     QString createFilterExpression() const;
 
+    QgsExpressionContext createExpressionContext( const QgsFeature &feature ) const;
+
     //! constraints management
     void updateAllConstraints();
     void updateConstraints( QgsEditorWidgetWrapper *w );
@@ -407,6 +417,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QgsMessageBarItem *mMultiEditMessageBarItem = nullptr;
     QList<QgsWidgetWrapper *> mWidgets;
     QgsAttributeEditorContext mContext;
+    std::unique_ptr<QgsExpressionContextScope> mExtraContextScope;
     QDialogButtonBox *mButtonBox = nullptr;
     QWidget *mSearchButtonBox = nullptr;
     QList<QgsAttributeFormInterface *> mInterfaces;
