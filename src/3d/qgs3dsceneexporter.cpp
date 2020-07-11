@@ -55,6 +55,11 @@
 #include "qgsmeshlayer.h"
 #include "qgsmesh3dentity_p.h"
 #include "qgsmeshterraingenerator.h"
+#include "qgsvectorlayer.h"
+#include "qgsabstract3drenderer.h"
+#include "qgsabstractvectorlayer3drenderer.h"
+#include "qgsvectorlayer3drenderer.h"
+#include "qgspolygon3dsymbol.h"
 
 #include <numeric>
 
@@ -115,40 +120,45 @@ Qgs3DSceneExporter::Qgs3DSceneExporter( Qt3DCore::QNode *parent )
 
 }
 
-bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity )
-{
-  if ( entity == nullptr )
-    return false;
-  bool isValid = false;
-  // We iterate over every component and find components that represent a tessellated geometry
-  for ( Qt3DCore::QComponent *c : entity->components() )
+bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsVectorLayer *layer ) {
+  QgsAbstract3DRenderer* abstractRenderer =  layer->renderer3D();
+  QString rendererType = abstractRenderer->type();
+
+  if ( rendererType == "mesh" )
   {
-    Qt3DRender::QGeometryRenderer *comp = qobject_cast<Qt3DRender::QGeometryRenderer *>( c );
-    if ( comp == nullptr )
-      continue;
-    Qt3DRender::QGeometry *geom = comp->geometry();
-
-    QgsTessellatedPolygonGeometry *tessellated = qobject_cast<QgsTessellatedPolygonGeometry *>( geom );
-    if ( tessellated != nullptr )
-    {
-      processPolygonGeometry( tessellated );
-      isValid = true;
-      continue;
-    }
-
-//    pocessPoistionAttributes(geom);
+    // TODO: handle mesh layer
   }
-
-  for ( QObject *child : entity->children() )
+  else
   {
-    Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>( child );
-    if ( childEntity != nullptr )
+    QgsAbstractVectorLayer3DRenderer *abstractVectorRenderer = dynamic_cast< QgsAbstractVectorLayer3DRenderer *>( abstractRenderer );
+    if ( rendererType == "rulebased" )
     {
-      bool validChild = parseVectorLayerEntity( childEntity );
-      isValid = isValid || validChild;
+      // TODO: handle rule based renderers
+    }
+    else
+    {
+      QgsVectorLayer3DRenderer *vectorLayerRenderer = dynamic_cast< QgsVectorLayer3DRenderer *>( abstractVectorRenderer );
+      const QgsAbstract3DSymbol *symbol = vectorLayerRenderer->symbol();
+      QString symbolType = symbol->type();
+      if (symbolType == "polygon")
+      {
+        QList<QgsTessellatedPolygonGeometry *> geometries = entity->findChildren<QgsTessellatedPolygonGeometry *>();
+        const QgsPolygon3DSymbol *polygonSymbol = dynamic_cast<const QgsPolygon3DSymbol *>( symbol );
+        for (QgsTessellatedPolygonGeometry * polygonGeometry : geometries)
+          processPolygonGeometry( polygonGeometry, polygonSymbol);
+        return geometries.size() != 0;
+      }
+      else if (symbolType == "line")
+      {
+
+      }
+      else if (symbolType == "point")
+      {
+
+      }
     }
   }
-  return isValid;
+  return false;
 }
 
 void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain )
@@ -325,7 +335,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
   }
 }
 
-void Qgs3DSceneExporter::processPolygonGeometry( QgsTessellatedPolygonGeometry *geom )
+void Qgs3DSceneExporter::processPolygonGeometry( QgsTessellatedPolygonGeometry *geom, const QgsPolygon3DSymbol *polygonSymbol )
 {
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "polygon_geometry" ), "", this );
   mObjects.push_back( object );
