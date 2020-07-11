@@ -93,6 +93,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   mCameraController->resetView( 1000 );
 
   addCameraViewCenterEntity( mEngine->camera() );
+  updateLights();
 
   // create terrain entity
 
@@ -105,6 +106,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::terrainShadingChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::pointLightsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::directionalLightsChanged, this, &Qgs3DMapScene::updateLights );
+  connect( &map, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::renderersChanged, this, &Qgs3DMapScene::onRenderersChanged );
 
@@ -115,7 +117,6 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   // listen to changes of layers in order to add/remove 3D renderer entities
   connect( &map, &Qgs3DMapSettings::layersChanged, this, &Qgs3DMapScene::onLayersChanged );
 
-  updateLights();
 
 #if 0
   ChunkedEntity *testChunkEntity = new ChunkedEntity( AABB( -500, 0, -500, 500, 100, 500 ), 2.f, 3.f, 7, new TestChunkLoaderFactory );
@@ -453,6 +454,31 @@ void Qgs3DMapScene::updateLights()
   for ( Qt3DCore::QEntity *entity : qgis::as_const( mLightEntities ) )
     entity->deleteLater();
   mLightEntities.clear();
+  for ( Qt3DCore::QEntity *entity : qgis::as_const( mLightOriginEntities ) )
+    entity->deleteLater();
+  mLightOriginEntities.clear();
+
+  auto createLightOriginEntity = [ = ]( QVector3D translation, const QColor & color )->Qt3DCore::QEntity *
+  {
+    Qt3DCore::QEntity *originEntity = new Qt3DCore::QEntity;
+
+    Qt3DCore::QTransform *trLightOriginCenter = new Qt3DCore::QTransform;
+    trLightOriginCenter->setTranslation( translation );
+    originEntity->addComponent( trLightOriginCenter );
+
+    Qt3DExtras::QPhongMaterial *materialLightOriginCenter = new Qt3DExtras::QPhongMaterial;
+    materialLightOriginCenter->setAmbient( color );
+    originEntity->addComponent( materialLightOriginCenter );
+
+    Qt3DExtras::QSphereMesh *rendererLightOriginCenter = new Qt3DExtras::QSphereMesh;
+    rendererLightOriginCenter->setRadius( 20 );
+    originEntity->addComponent( rendererLightOriginCenter );
+
+    originEntity->setEnabled( true );
+    originEntity->setParent( this );
+
+    return originEntity;
+  };
 
   const auto newPointLights = mMap.pointLights();
   for ( const QgsPointLightSettings &pointLightSettings : newPointLights )
@@ -475,6 +501,9 @@ void Qgs3DMapScene::updateLights()
     lightEntity->addComponent( lightTransform );
     lightEntity->setParent( this );
     mLightEntities << lightEntity;
+
+    if ( mMap.showLightSourceOrigins() )
+      mLightOriginEntities << createLightOriginEntity( lightTransform->translation(), pointLightSettings.color() );
   }
 
   const auto newDirectionalLights = mMap.directionalLights();
