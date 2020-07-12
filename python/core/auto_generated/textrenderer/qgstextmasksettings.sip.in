@@ -46,6 +46,9 @@ Copy constructor.
 
     ~QgsTextMaskSettings();
 
+    bool operator==( const QgsTextMaskSettings &other ) const;
+    bool operator!=( const QgsTextMaskSettings &other ) const;
+
     bool enabled() const;
 %Docstring
 Returns whether the mask is enabled.
