@@ -61,6 +61,9 @@ class CORE_EXPORT QgsTextShadowSettings
 
     ~QgsTextShadowSettings();
 
+    bool operator==( const QgsTextShadowSettings &other ) const;
+    bool operator!=( const QgsTextShadowSettings &other ) const;
+
     /**
      * Returns whether the shadow is enabled.
      * \see setEnabled()
