@@ -294,7 +294,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       SpatialIndexExists = 1 << 17, //!< The connection can determine if a spatial index exists
       DeleteSpatialIndex = 1 << 18, //!< The connection can delete spatial indices for tables
       DeleteField = 1 << 19,        //!< Can delete an existing field/column
-      AddField = 1 << 20,           //!< Can add a new field/column
+      DeleteFieldCascade = 1 << 20, //!< Can delete an existing field/column with cascade
+      AddField = 1 << 21,           //!< Can add a new field/column
     };
 
     Q_ENUM( Capability )
@@ -403,6 +404,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \param force if TRUE, a DROP CASCADE will drop all related objects
      * \note it is responsibility of the caller to handle open layers and registry entries.
      * \throws QgsProviderConnectionException
+     * \since QGIS 3.16
      */
     virtual void deleteField( const QString &fieldName, const QString &schema, const QString &tableName, bool force = false ) const SIP_THROW( QgsProviderConnectionException );
 
@@ -414,6 +416,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \param tableName name of the table
      * \note it is responsibility of the caller to handle open layers and registry entries.
      * \throws QgsProviderConnectionException
+     * \since QGIS 3.16
      */
     virtual void addField( const QgsField &field, const QString &schema, const QString &tableName ) const SIP_THROW( QgsProviderConnectionException );
 

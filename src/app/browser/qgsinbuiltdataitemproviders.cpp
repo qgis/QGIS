@@ -715,36 +715,42 @@ void QgsFieldsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *me
       if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddField ) )
       {
         QAction *addColumnAction = new QAction( tr( "Add New Field…" ), menu );
-        connect( addColumnAction, &QAction::triggered, this, [ = ]
+        const QString itemName { item->name() };
+        const QString tableName { fieldsItem->name() };
+        const QString schema { fieldsItem->schema() };
+        QgsVectorLayer *itemLayer { fieldsItem->layer( ) };
+        const QString connectionUri { fieldsItem->connectionUri() };
+
+        connect( addColumnAction, &QAction::triggered, this, [ md, connectionUri, itemLayer, schema, tableName, context, menu ]
         {
-          std::unique_ptr<QgsVectorLayer> layer { fieldsItem->layer( ) };
+          std::unique_ptr<QgsVectorLayer> layer { itemLayer };
           if ( layer )
           {
             QgsAddAttrDialog dialog( layer.get(), menu );
             if ( dialog.exec() == QDialog::Accepted )
             {
-              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
+              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
               try
               {
-                conn2->addField( dialog.field(), fieldsItem->schema(), fieldsItem->tableName() );
-                item->refresh();
+                conn2->addField( dialog.field(), schema, tableName );
+                // FIXME!!! item->refresh();
               }
               catch ( const QgsProviderConnectionException &ex )
               {
                 if ( context.messageBar() )
                 {
-                  context.messageBar()->pushCritical( tr( "New Field" ), tr( "Failed to add the new field to '%1': %2" ).arg( fieldsItem->tableName(), ex.what() ) );
+                  context.messageBar()->pushCritical( tr( "New Field" ), tr( "Failed to add the new field to '%1': %2" ).arg( tableName, ex.what() ) );
                 }
                 else
                 {
-                  QMessageBox::critical( menu, tr( "New Field" ), tr( "Failed to a add new field to '%1': %2" ).arg( fieldsItem->tableName(), ex.what() ) );
+                  QMessageBox::critical( menu, tr( "New Field" ), tr( "Failed to a add new field to '%1': %2" ).arg( tableName, ex.what() ) );
                 }
               }
             }
           }
           else
           {
-            const QString message { tr( "Failed to create layer '%1'. Check application logs and user permissions." ).arg( fieldsItem->tableName() ) };
+            const QString message { tr( "Failed to create layer '%1'. Check application logs and user permissions." ).arg( tableName ) };
             if ( context.messageBar() )
             {
               context.messageBar()->pushCritical( tr( "Add Field" ), message );
@@ -787,25 +793,42 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
         if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteField ) )
         {
           QAction *deleteFieldAction = new QAction( tr( "Delete Field…" ), menu );
-          connect( deleteFieldAction, &QAction::triggered, this, [ = ]
+          const bool supportsCascade { conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteFieldCascade ) };
+          const QString itemName { item->name() };
+          const QString tableName { fieldsItem->name() };
+          const QString schema { fieldsItem->schema() };
+          const QString connectionUri { fieldsItem->connectionUri() };
+
+          connect( deleteFieldAction, &QAction::triggered, this, [ md, itemName, connectionUri, tableName, schema, context, supportsCascade, menu ]
           {
-            if ( QMessageBox::warning( menu, tr( "Delete Field" ), tr( "Delete '%1' permanently (with CASCADE)?" ).arg( item->name() ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
+            // Confirmation dialog
+            QMessageBox msgbox{QMessageBox::Icon::Question, tr( "Delete Field" ), tr( "Delete '%1' permanently?" ).arg( itemName ), QMessageBox::Ok | QMessageBox::Cancel };
+            QCheckBox *cb = new QCheckBox( tr( "Delete all related objects (CASCADE)?" ) );
+            msgbox.setCheckBox( cb );
+            msgbox.setDefaultButton( QMessageBox::Cancel );
+
+            if ( ! supportsCascade )
             {
-              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
+              cb->hide();
+            }
+
+            if ( msgbox.exec() == QMessageBox::Ok )
+            {
+              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
               try
               {
-                conn2->deleteField( item->name(), fieldsItem->schema(), fieldsItem->tableName(), true );
-                fieldsItem->refresh();
+                conn2->deleteField( itemName, schema, tableName, supportsCascade && cb->isChecked() );
+                // FIXME!!! fieldsItem->refresh();
               }
               catch ( const QgsProviderConnectionException &ex )
               {
                 if ( context.messageBar() )
                 {
-                  context.messageBar()->pushCritical( tr( "Delete Field" ), tr( "Failed to delete field '%1': %2" ).arg( item->name(), ex.what() ) );
+                  context.messageBar()->pushCritical( tr( "Delete Field" ), tr( "Failed to delete field '%1': %2" ).arg( itemName, ex.what() ) );
                 }
                 else
                 {
-                  QMessageBox::critical( menu, tr( "Delete Field" ), tr( "Failed to delete field '%1': %2" ).arg( item->name(), ex.what() ) );
+                  QMessageBox::critical( menu, tr( "Delete Field" ), tr( "Failed to delete field '%1': %2" ).arg( itemName, ex.what() ) );
                 }
               }
             }

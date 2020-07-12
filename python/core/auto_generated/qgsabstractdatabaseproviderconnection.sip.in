@@ -235,6 +235,7 @@ This information is calculated from the geometry columns types.
       SpatialIndexExists,
       DeleteSpatialIndex,
       DeleteField,
+      DeleteFieldCascade,
       AddField,
     };
 
@@ -374,6 +375,8 @@ Raises a QgsProviderConnectionException if any errors are encountered.
    it is responsibility of the caller to handle open layers and registry entries.
 
 :raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.16
 %End
 
     virtual void addField( const QgsField &field, const QString &schema, const QString &tableName ) const throw( QgsProviderConnectionException );
@@ -390,6 +393,8 @@ Raises a QgsProviderConnectionException if any errors are encountered.
    it is responsibility of the caller to handle open layers and registry entries.
 
 :raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.16
 %End
 
 

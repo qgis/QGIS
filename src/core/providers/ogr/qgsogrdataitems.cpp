@@ -57,7 +57,7 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
   mIsSubLayer = isSubLayer;
   mToolTip = uri;
   const bool isIndex { QRegularExpression( R"(=idx_[^_]+_[^_]+.*$)" ).match( uri ).hasMatch() };
-  setState( ( driverName ==  QStringLiteral( "SQLite" ) && ! isIndex ) ? NotPopulated : Populated ); // children are not expected except for sqlite
+  setState( ( driverName ==  QStringLiteral( "SQLite" ) && ! isIndex ) ? NotPopulated : Populated ); // children are accepted except for sqlite
 }
 
 

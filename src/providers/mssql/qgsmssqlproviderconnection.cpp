@@ -85,6 +85,7 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
     Capability::Spatial,
     Capability::TableExists,
     Capability::DeleteField,
+    Capability::DeleteFieldCascade,
     Capability::AddField
   };
 }
