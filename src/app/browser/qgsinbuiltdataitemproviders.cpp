@@ -716,7 +716,7 @@ void QgsFieldsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *me
       {
         QAction *addColumnAction = new QAction( tr( "Add New Field…" ), menu );
         const QString itemName { item->name() };
-        const QString tableName { fieldsItem->name() };
+        const QString tableName { fieldsItem->tableName() };
         const QString schema { fieldsItem->schema() };
         QgsVectorLayer *itemLayer { fieldsItem->layer( ) };
         const QString connectionUri { fieldsItem->connectionUri() };
@@ -795,11 +795,11 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           QAction *deleteFieldAction = new QAction( tr( "Delete Field…" ), menu );
           const bool supportsCascade { conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteFieldCascade ) };
           const QString itemName { item->name() };
-          const QString tableName { fieldsItem->name() };
+          const QString tableName { fieldsItem->tableName() };
           const QString schema { fieldsItem->schema() };
           const QString connectionUri { fieldsItem->connectionUri() };
 
-          connect( deleteFieldAction, &QAction::triggered, this, [ md, itemName, connectionUri, tableName, schema, context, supportsCascade, menu ]
+          connect( deleteFieldAction, &QAction::triggered, fieldsItem, [ md, itemName, connectionUri, tableName, schema, context, supportsCascade, menu ]
           {
             // Confirmation dialog
             QMessageBox msgbox{QMessageBox::Icon::Question, tr( "Delete Field" ), tr( "Delete '%1' permanently?" ).arg( itemName ), QMessageBox::Ok | QMessageBox::Cancel };
