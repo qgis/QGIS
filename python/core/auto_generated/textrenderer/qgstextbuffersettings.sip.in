@@ -39,6 +39,9 @@ Copy constructor.
 
     ~QgsTextBufferSettings();
 
+    bool operator==( const QgsTextBufferSettings &other ) const;
+    bool operator!=( const QgsTextBufferSettings &other ) const;
+
     bool enabled() const;
 %Docstring
 Returns whether the buffer is enabled.
