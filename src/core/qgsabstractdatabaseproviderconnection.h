@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgsfields.h"
 #include "qgsexception.h"
+#include "qgsvectordataprovider.h"
 
 #include <QObject>
 
@@ -532,6 +533,15 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \throws QgsProviderConnectionException
      */
     virtual QgsFields fields( const QString &schema, const QString &table ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Returns a list of native types supported by the connection.
+     * \note if the database does not contain any table, a temporary table will
+     * be created, in that case the correct user permissions might be required.
+     * \since QGIS 3.16
+     * \throws QgsProviderConnectionException
+     */
+    virtual QList< QgsVectorDataProvider::NativeType > nativeTypes() const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Returns the provider key
