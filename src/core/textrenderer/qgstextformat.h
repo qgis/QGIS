@@ -47,6 +47,10 @@ class CORE_EXPORT QgsTextFormat
       RotationBasedOrientation, //!< Horizontally or vertically oriented text based on rotation (only available for map labeling)
     };
 
+    /**
+     * Default constructor for QgsTextFormat. Creates a text format initially
+     * set to an invalid state (see isValid()).
+     */
     QgsTextFormat();
 
     /**
@@ -60,10 +64,32 @@ class CORE_EXPORT QgsTextFormat
     ~QgsTextFormat();
 
     /**
+     * Returns TRUE if the format is valid.
+     *
+     * A default constructed QgsTextFormat is invalid, until at least one or more properties
+     * have been set on the format. An invalid state can be used as a representation of a "not set"
+     * text format, e.g. for indicating that a default text format should be used.
+     *
+     * \note Calling any setter on a QgsTextFormat object will automatically set the format as valid.
+     *
+     * \see setValid()
+     * \since QGIS 3.16
+     */
+    bool isValid() const;
+
+    /**
+     * Sets the format to a valid state, without changing any of the default format settings.
+     *
+     * \see isValid()
+     * \since QGIS 3.16
+     */
+    void setValid();
+
+    /**
      * Returns a reference to the text buffer settings.
      * \see setBuffer()
      */
-    QgsTextBufferSettings &buffer() { return mBufferSettings; }
+    QgsTextBufferSettings &buffer();
 
     /**
      * Returns a reference to the text buffer settings.
@@ -76,13 +102,13 @@ class CORE_EXPORT QgsTextFormat
      * \param bufferSettings buffer settings
      * \see buffer()
      */
-    void setBuffer( const QgsTextBufferSettings &bufferSettings ) { mBufferSettings = bufferSettings; }
+    void setBuffer( const QgsTextBufferSettings &bufferSettings );
 
     /**
      * Returns a reference to the text background settings.
      * \see setBackground()
      */
-    QgsTextBackgroundSettings &background() { return mBackgroundSettings; }
+    QgsTextBackgroundSettings &background();
 
     /**
      * Returns a reference to the text background settings.
@@ -95,13 +121,13 @@ class CORE_EXPORT QgsTextFormat
      * \param backgroundSettings background settings
      * \see background()
      */
-    void setBackground( const QgsTextBackgroundSettings &backgroundSettings ) { mBackgroundSettings = backgroundSettings; }
+    void setBackground( const QgsTextBackgroundSettings &backgroundSettings );
 
     /**
      * Returns a reference to the text drop shadow settings.
      * \see setShadow()
      */
-    QgsTextShadowSettings &shadow() { return mShadowSettings; }
+    QgsTextShadowSettings &shadow();
 
     /**
      * Returns a reference to the text drop shadow settings.
@@ -114,13 +140,13 @@ class CORE_EXPORT QgsTextFormat
      * \param shadowSettings shadow settings
      * \see shadow()
      */
-    void setShadow( const QgsTextShadowSettings &shadowSettings ) { mShadowSettings = shadowSettings; }
+    void setShadow( const QgsTextShadowSettings &shadowSettings );
 
     /**
      * Returns a reference to the masking settings.
      * \see setMask()
      */
-    QgsTextMaskSettings &mask() { return mMaskSettings; }
+    QgsTextMaskSettings &mask();
 
     /**
      * Returns a reference to the masking settings.
@@ -137,7 +163,7 @@ class CORE_EXPORT QgsTextFormat
      * \see mask()
      * \since QGIS 3.12
      */
-    void setMask( const QgsTextMaskSettings &maskSettings ) { mMaskSettings = maskSettings; }
+    void setMask( const QgsTextMaskSettings &maskSettings );
 
     /**
      * Returns the font used for rendering text. Note that the size of the font

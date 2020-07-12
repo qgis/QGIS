@@ -35,6 +35,10 @@ Container for all settings relating to text rendering.
     };
 
     QgsTextFormat();
+%Docstring
+Default constructor for QgsTextFormat. Creates a text format initially
+set to an invalid state (see :py:func:`~QgsTextFormat.isValid`).
+%End
 
     QgsTextFormat( const QgsTextFormat &other );
 %Docstring
@@ -45,6 +49,32 @@ Copy constructor.
 
 
     ~QgsTextFormat();
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the format is valid.
+
+A default constructed QgsTextFormat is invalid, until at least one or more properties
+have been set on the format. An invalid state can be used as a representation of a "not set"
+text format, e.g. for indicating that a default text format should be used.
+
+.. note::
+
+   Calling any setter on a QgsTextFormat object will automatically set the format as valid.
+
+.. seealso:: :py:func:`setValid`
+
+.. versionadded:: 3.16
+%End
+
+    void setValid();
+%Docstring
+Sets the format to a valid state, without changing any of the default format settings.
+
+.. seealso:: :py:func:`isValid`
+
+.. versionadded:: 3.16
+%End
 
     QgsTextBufferSettings &buffer();
 %Docstring
