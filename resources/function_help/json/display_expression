@@ -5,16 +5,16 @@
   "description": "Returns the display expression for a given feature in a layer. If called with no parameters, it evaluates the current feature. The expression is evaluated by default.",
   "arguments": [
     {
-      "arg": "feature",
-      "optional": true,
-      "default": "current feature",
-      "description": "The feature which should be evaluated."
-    },
-    {
       "arg": "layer",
       "optional": true,
       "default": "current layer",
       "description": "The layer (or its id or name)."
+    },
+    {
+      "arg": "feature",
+      "optional": true,
+      "default": "current feature",
+      "description": "The feature which should be evaluated."
     },
     {
       "arg": "evaluate",
@@ -29,7 +29,7 @@
       "returns": "The display expression of the current feature."
     },
     {
-      "expression": "display_expression(get_feature_by_id('streets', 1), 'streets')",
+      "expression": "display_expression('streets', get_feature_by_id('streets', 1))",
       "returns": "The display expression of the feature with the ID 1 on the layer 'streets'."
     },
     {
