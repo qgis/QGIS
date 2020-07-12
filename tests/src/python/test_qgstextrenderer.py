@@ -550,6 +550,70 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setBlendMode(QPainter.CompositionMode_DestinationAtop)
         return s
 
+    def testShadowEquality(self):
+        s = self.createShadowSettings()
+        s2 = self.createShadowSettings()
+        self.assertEqual(s, s2)
+
+        s.setEnabled(False)
+        self.assertNotEqual(s, s2)
+        s = self.createShadowSettings()
+
+        s.setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        self.assertNotEqual(s, s2)
+        s = self.createShadowSettings()
+
+        s.setOffsetAngle(145)
+        self.assertNotEqual(s, s2)
+        s = self.createShadowSettings()
+
+        s.setOffsetDistance(175)
+        self.assertNotEqual(s, s2)
+        s = self.createShadowSettings()
+
+        s.setOffsetUnit(QgsUnitTypes.RenderPixels)
+        self.assertNotEqual(s, s2)
+        s = self.createShadowSettings()
+
+        s.setOffsetMapUnitScale(QgsMapUnitScale(15, 16))
+        self.assertNotEqual(s, s2)
+        s = self.createShadowSettings()
+
+        s.setOffsetGlobal(False)
+        self.assertNotEqual(s, s2)
+        s = self.createShadowSettings()
+
+        s.setBlurRadius(21)
+        self.assertNotEqual(s, s2)
+        s = self.createShadowSettings()
+
+        s.setBlurRadiusUnit(QgsUnitTypes.RenderPoints)
+        self.assertNotEqual(s, s2)
+        s = self.createShadowSettings()
+
+        s.setBlurRadiusMapUnitScale(QgsMapUnitScale(115, 116))
+        self.assertNotEqual(s, s2)
+        s = self.createShadowSettings()
+
+        s.setBlurAlphaOnly(False)
+        self.assertNotEqual(s, s2)
+        s = self.createShadowSettings()
+
+        s.setColor(QColor(255, 255, 0))
+        self.assertNotEqual(s, s2)
+        s = self.createShadowSettings()
+
+        s.setOpacity(0.6)
+        self.assertNotEqual(s, s2)
+        s = self.createShadowSettings()
+
+        s.setScale(23)
+        self.assertNotEqual(s, s2)
+        s = self.createShadowSettings()
+
+        s.setBlendMode(QPainter.CompositionMode_Darken)
+        self.assertNotEqual(s, s2)
+
     def checkShadowSettings(self, s):
         """ test QgsTextShadowSettings """
         self.assertTrue(s.enabled())

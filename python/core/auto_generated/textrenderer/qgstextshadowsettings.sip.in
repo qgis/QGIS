@@ -47,6 +47,9 @@ Copy constructor.
 
     ~QgsTextShadowSettings();
 
+    bool operator==( const QgsTextShadowSettings &other ) const;
+    bool operator!=( const QgsTextShadowSettings &other ) const;
+
     bool enabled() const;
 %Docstring
 Returns whether the shadow is enabled.
