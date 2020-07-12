@@ -19,6 +19,7 @@
 #include "qgsdataitem.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgsproject.h"
 
 QgsOracleTableModel::QgsOracleTableModel()
 {
@@ -32,7 +33,7 @@ QgsOracleTableModel::QgsOracleTableModel()
   headerLabels << tr( "Select at id" );
   headerLabels << tr( "Sql" );
   setHorizontalHeaderLabels( headerLabels );
-  SetHeaderData( Columns::DbtmTrustLayerMetadata, Qt::Orientation::Horizontal, tr( "Enable for fast project opening." ), Qt::ToolTipRole );
+  setHeaderData( Columns::DbtmTrustLayerMetadata, Qt::Orientation::Horizontal, tr( "Enable for fast project opening." ), Qt::ToolTipRole );
 }
 
 void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProperty )
@@ -106,7 +107,7 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     QStandardItem *sqlItem = new QStandardItem( layerProperty.sql );
 
     QStandardItem *trustLayerMetadata = new QStandardItem( QString() );
-    trustLayerMetadata->setFlags( checkPkUnicityItem->flags() | Qt::ItemIsUserCheckable );
+    trustLayerMetadata->setFlags( trustLayerMetadata->flags() | Qt::ItemIsUserCheckable );
     trustLayerMetadata->setCheckState( QgsProject::instance()->trustLayerMetadata() ? Qt::CheckState::Unchecked : Qt::CheckState::Checked );
     trustLayerMetadata->setToolTip( headerData( Columns::DbtmTrustLayerMetadata, Qt::Orientation::Horizontal, Qt::ToolTipRole ).toString() );
 
@@ -357,7 +358,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
   uri.setWkbType( wkbType );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
-  uri.setParam( QStringLiteral( "trustLayerMetadata" ), trustLayerMetadata ? QLati1String( "1" ) : QLatin1String( "0" ) );
+  uri.setParam( QStringLiteral( "trustLayerMetadata" ), trustLayerMetadata ? QLatin1String( "1" ) : QLatin1String( "0" ) );
 
   QgsDebugMsg( QStringLiteral( "returning uri %1" ).arg( uri.uri( false ) ) );
   return uri.uri( false );
