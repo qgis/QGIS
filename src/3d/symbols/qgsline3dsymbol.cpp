@@ -14,12 +14,29 @@
  ***************************************************************************/
 
 #include "qgsline3dsymbol.h"
-
+#include "qgsphongmaterialsettings.h"
 #include "qgs3dutils.h"
+
+QgsLine3DSymbol::QgsLine3DSymbol()
+  : mMaterial( qgis::make_unique< QgsPhongMaterialSettings >() )
+{
+
+}
+
+QgsLine3DSymbol::~QgsLine3DSymbol() = default;
 
 QgsAbstract3DSymbol *QgsLine3DSymbol::clone() const
 {
-  return new QgsLine3DSymbol( *this );
+  std::unique_ptr< QgsLine3DSymbol > result = qgis::make_unique< QgsLine3DSymbol >();
+  result->mAltClamping = mAltClamping;
+  result->mAltBinding = mAltBinding;
+  result->mWidth = mWidth;
+  result->mHeight = mHeight;
+  result->mExtrusionHeight = mExtrusionHeight;
+  result->mRenderAsSimpleLines = mRenderAsSimpleLines;
+  result->mMaterial.reset( mMaterial->clone() );
+  copyBaseSettings( result.get() );
+  return result.release();
 }
 
 void QgsLine3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
@@ -38,7 +55,7 @@ void QgsLine3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   elem.appendChild( elemDataProperties );
 
   QDomElement elemMaterial = doc.createElement( QStringLiteral( "material" ) );
-  mMaterial.writeXml( elemMaterial );
+  mMaterial->writeXml( elemMaterial, context );
   elem.appendChild( elemMaterial );
 }
 
@@ -55,7 +72,20 @@ void QgsLine3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   mRenderAsSimpleLines = elemDataProperties.attribute( QStringLiteral( "simple-lines" ), QStringLiteral( "0" ) ).toInt();
 
   QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
-  mMaterial.readXml( elemMaterial );
+  mMaterial->readXml( elemMaterial, context );
+}
+
+QgsAbstractMaterialSettings *QgsLine3DSymbol::material() const
+{
+  return mMaterial.get();
+}
+
+void QgsLine3DSymbol::setMaterial( QgsAbstractMaterialSettings *material )
+{
+  if ( material == mMaterial.get() )
+    return;
+
+  mMaterial.reset( material );
 }
 
 QgsAbstract3DSymbol *QgsLine3DSymbol::create()

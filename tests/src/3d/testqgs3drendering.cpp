@@ -116,7 +116,7 @@ void TestQgs3DRendering::initTestCase()
   QgsPhongMaterialSettings material;
   material.setAmbient( Qt::lightGray );
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
-  symbol3d->setMaterial( material );
+  symbol3d->setMaterial( material.clone() );
   symbol3d->setExtrusionHeight( 10.f );
   QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
   mLayerBuildings->setRenderer3D( renderer3d );
@@ -345,7 +345,7 @@ void TestQgs3DRendering::testLineRendering()
   lineSymbol->setWidth( 10 );
   QgsPhongMaterialSettings mat;
   mat.setAmbient( Qt::red );
-  lineSymbol->setMaterial( mat );
+  lineSymbol->setMaterial( mat.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
   QVector<QgsPoint> pts;
@@ -461,13 +461,13 @@ void TestQgs3DRendering::testRuleBasedRenderer()
   QgsPhongMaterialSettings material;
   material.setAmbient( Qt::lightGray );
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
-  symbol3d->setMaterial( material );
+  symbol3d->setMaterial( material.clone() );
   symbol3d->setExtrusionHeight( 10.f );
 
   QgsPhongMaterialSettings material2;
   material2.setAmbient( Qt::red );
   QgsPolygon3DSymbol *symbol3d2 = new QgsPolygon3DSymbol;
-  symbol3d2->setMaterial( material2 );
+  symbol3d2->setMaterial( material2.clone() );
   symbol3d2->setExtrusionHeight( 10.f );
 
   QgsRuleBased3DRenderer::Rule *root = new QgsRuleBased3DRenderer::Rule( nullptr );

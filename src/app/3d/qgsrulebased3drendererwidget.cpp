@@ -648,5 +648,8 @@ void Qgs3DRendererRulePropsWidget::apply()
   QString filter = mElseRadio->isChecked() ? QStringLiteral( "ELSE" ) : editFilter->text();
   mRule->setFilterExpression( filter );
   mRule->setDescription( editDescription->text() );
-  mRule->setSymbol( groupSymbol->isChecked() ? mSymbolWidget->symbol() : nullptr );
+  std::unique_ptr< QgsAbstract3DSymbol > newSymbol;
+  if ( groupSymbol->isChecked() )
+    newSymbol = mSymbolWidget->symbol();
+  mRule->setSymbol( newSymbol.release() );
 }

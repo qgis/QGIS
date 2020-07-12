@@ -10,7 +10,8 @@
 
 
 
-class QgsPoint3DSymbol : QgsAbstract3DSymbol
+
+class QgsPoint3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
 {
 %Docstring
 3D symbol that draws point geometries as 3D objects using one of the predefined shapes.
@@ -62,13 +63,16 @@ Returns method that determines altitude (whether to clamp to feature to terrain)
 Sets method that determines altitude (whether to clamp to feature to terrain)
 %End
 
-    QgsPhongMaterialSettings material() const;
+    QgsAbstractMaterialSettings *material() const;
 %Docstring
 Returns material used for shading of the symbol
 %End
-    void setMaterial( const QgsPhongMaterialSettings &material );
+
+    void setMaterial( QgsAbstractMaterialSettings *material /Transfer/ );
 %Docstring
-Sets material used for shading of the symbol
+Sets the ``material`` settings used for shading of the symbol.
+
+Ownership of ``material`` is transferred to the symbol.
 %End
 
     enum Shape

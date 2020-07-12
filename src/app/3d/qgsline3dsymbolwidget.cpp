@@ -16,7 +16,7 @@
 #include "qgsline3dsymbolwidget.h"
 
 #include "qgsline3dsymbol.h"
-
+#include "qgsphongmaterialsettings.h"
 
 QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
   : Qgs3DSymbolWidget( parent )
@@ -57,7 +57,8 @@ void QgsLine3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVec
   cboAltClamping->setCurrentIndex( static_cast<int>( lineSymbol->altitudeClamping() ) );
   cboAltBinding->setCurrentIndex( static_cast<int>( lineSymbol->altitudeBinding() ) );
   chkSimpleLines->setChecked( lineSymbol->renderAsSimpleLines() );
-  widgetMaterial->setMaterial( lineSymbol->material() );
+  // TODO -- make material widget generic!
+  widgetMaterial->setMaterial( *dynamic_cast< QgsPhongMaterialSettings *>( lineSymbol->material() ) );
   updateGuiState();
 }
 
@@ -70,7 +71,7 @@ QgsAbstract3DSymbol *QgsLine3DSymbolWidget::symbol()
   sym->setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );
   sym->setAltitudeBinding( static_cast<Qgs3DTypes::AltitudeBinding>( cboAltBinding->currentIndex() ) );
   sym->setRenderAsSimpleLines( chkSimpleLines->isChecked() );
-  sym->setMaterial( widgetMaterial->material() );
+  sym->setMaterial( widgetMaterial->material().clone() );
   return sym.release();
 }
 

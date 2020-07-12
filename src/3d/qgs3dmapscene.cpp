@@ -688,7 +688,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 
       // Before entity creation, set the maximum texture size
       // Not very clean, but for now, only place found in the workflow to do that simple
-      QgsMesh3DSymbol *sym = new QgsMesh3DSymbol( *meshRenderer->symbol() );
+      QgsMesh3DSymbol *sym = meshRenderer->symbol()->clone();
       sym->setMaximumTextureSize( maximumTextureSize() );
       meshRenderer->setSymbol( sym );
     }

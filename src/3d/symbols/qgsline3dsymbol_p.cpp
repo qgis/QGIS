@@ -36,20 +36,6 @@
 
 /// @cond PRIVATE
 
-
-static Qt3DExtras::QPhongMaterial *_material( const QgsLine3DSymbol &symbol )
-{
-  Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial;
-
-  material->setAmbient( symbol.material().ambient() );
-  material->setDiffuse( symbol.material().diffuse() );
-  material->setSpecular( symbol.material().specular() );
-  material->setShininess( symbol.material().shininess() );
-
-  return material;
-}
-
-
 // -----------
 
 
@@ -170,13 +156,10 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
   if ( out.tessellator->dataVerticesCount() == 0 )
     return;  // nothing to show - no need to create the entity
 
-  Qt3DExtras::QPhongMaterial *mat = _material( mSymbol );
-  if ( selected )
-  {
-    // update the material with selection colors
-    mat->setDiffuse( context.map().selectionColor() );
-    mat->setAmbient( context.map().selectionColor().darker() );
-  }
+  QgsMaterialContext materialContext;
+  materialContext.setIsSelected( selected );
+  materialContext.setSelectionColor( context.map().selectionColor() );
+  Qt3DRender::QMaterial *mat = mSymbol.material()->toMaterial( materialContext );
 
   // extract vertex buffer data from tessellator
   QByteArray data( ( const char * )out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
@@ -286,12 +269,10 @@ void QgsSimpleLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 
   // material (only ambient color is used for the color)
 
-  Qt3DExtras::QPhongMaterial *mat = _material( mSymbol );
-  if ( selected )
-  {
-    // update the material with selection colors
-    mat->setAmbient( context.map().selectionColor() );
-  }
+  QgsMaterialContext materialContext;
+  materialContext.setIsSelected( selected );
+  materialContext.setSelectionColor( context.map().selectionColor() );
+  Qt3DRender::QMaterial *mat = mSymbol.material()->toMaterial( materialContext );
 
   // geometry renderer
 
@@ -400,15 +381,11 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
     return;
 
   // material (only ambient color is used for the color)
-
-  QgsLineMaterial *mat = new QgsLineMaterial;
-  mat->setLineColor( mSymbol.material().ambient() );
+  QgsMaterialContext materialContext;
+  materialContext.setIsSelected( selected );
+  materialContext.setSelectionColor( context.map().selectionColor() );
+  QgsLineMaterial *mat = mSymbol.material()->toLineMaterial( materialContext );
   mat->setLineWidth( mSymbol.width() );
-  if ( selected )
-  {
-    // update the material with selection colors
-    mat->setLineColor( context.map().selectionColor() );
-  }
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
 

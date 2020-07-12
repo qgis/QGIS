@@ -221,13 +221,13 @@ void Qgs3DMapToolMeasureLine::updateSettings()
   lineSymbol->setWidth( 4 );
   lineSymbol->setAltitudeClamping( Qgs3DTypes::AltClampAbsolute );
 
-  QgsPhongMaterialSettings phongMaterial;
+  std::unique_ptr< QgsPhongMaterialSettings > phongMaterial = qgis::make_unique< QgsPhongMaterialSettings >();
   QgsSettings settings;
   int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 222 ).toInt();
   int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 155 ).toInt();
   int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 67 ).toInt();
-  phongMaterial.setAmbient( QColor( myRed, myGreen, myBlue ) );
-  lineSymbol->setMaterial( phongMaterial );
+  phongMaterial->setAmbient( QColor( myRed, myGreen, myBlue ) );
+  lineSymbol->setMaterial( phongMaterial.release() );
 
   // Set renderer
   QgsVectorLayer3DRenderer *lineSymbolRenderer = new QgsVectorLayer3DRenderer( lineSymbol );

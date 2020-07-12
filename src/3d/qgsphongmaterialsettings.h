@@ -17,6 +17,7 @@
 #define QGSPHONGMATERIALSETTINGS_H
 
 #include "qgis_3d.h"
+#include "qgsabstractmaterialsettings.h"
 
 #include <QColor>
 
@@ -32,7 +33,7 @@ class QDomElement;
  *
  * \since QGIS 3.0
  */
-class _3D_EXPORT QgsPhongMaterialSettings
+class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
 {
   public:
 
@@ -40,6 +41,8 @@ class _3D_EXPORT QgsPhongMaterialSettings
      * Constructor for QgsPhongMaterialSettings.
      */
     QgsPhongMaterialSettings() = default;
+
+    QgsPhongMaterialSettings *clone() const override SIP_FACTORY;
 
     //! Returns ambient color component
     QColor ambient() const { return mAmbient; }
@@ -135,10 +138,13 @@ class _3D_EXPORT QgsPhongMaterialSettings
     //! Sets the texture rotation in degrees
     void setTextureRotation( float rotation ) { mTextureRotation = rotation; }
 
-    //! Reads settings from a DOM element
-    void readXml( const QDomElement &elem );
-    //! Writes settings to a DOM element
-    void writeXml( QDomElement &elem ) const;
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
+#ifndef SIP_RUN
+    Qt3DRender::QMaterial *toMaterial( const QgsMaterialContext &context ) const override SIP_FACTORY;
+    QgsLineMaterial *toLineMaterial( const QgsMaterialContext &context ) const override SIP_FACTORY;
+    void addParametersToEffect( Qt3DRender::QEffect *effect ) const override;
+#endif
 
     bool operator==( const QgsPhongMaterialSettings &other ) const
     {

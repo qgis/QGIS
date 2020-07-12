@@ -81,6 +81,7 @@ SET(QGIS_3D_HDRS
   qgs3dutils.h
   qgsaabb.h
   qgsabstract3dengine.h
+  qgsabstractmaterialsettings.h
   qgsabstractvectorlayer3drenderer.h
   qgscameracontroller.h
   qgscamerapose.h

@@ -22,6 +22,7 @@
 #include "qgsline3dsymbolwidget.h"
 #include "qgspoint3dsymbolwidget.h"
 #include "qgspolygon3dsymbolwidget.h"
+#include "qgsabstractmaterialsettings.h"
 
 #include "qgsvectorlayer.h"
 
@@ -50,18 +51,18 @@ QgsSymbol3DWidget::QgsSymbol3DWidget( QWidget *parent ) : QWidget( parent )
   connect( widgetPolygon, &QgsPolygon3DSymbolWidget::changed, this, &QgsSymbol3DWidget::widgetChanged );
 }
 
-QgsAbstract3DSymbol *QgsSymbol3DWidget::symbol()
+std::unique_ptr<QgsAbstract3DSymbol> QgsSymbol3DWidget::symbol()
 {
   int pageIndex = widgetStack->currentIndex();
   if ( pageIndex == 1 || pageIndex == 2 || pageIndex == 3 )
   {
-    QgsAbstract3DSymbol *sym = nullptr;
+    std::unique_ptr< QgsAbstract3DSymbol > sym;
     if ( pageIndex == 1 )
-      sym = widgetLine->symbol();
+      sym.reset( widgetLine->symbol() );
     else if ( pageIndex == 2 )
-      sym = widgetPoint->symbol();
+      sym.reset( widgetPoint->symbol() );
     else
-      sym = widgetPolygon->symbol();
+      sym.reset( widgetPolygon->symbol() );
     return sym;
   }
   return nullptr;

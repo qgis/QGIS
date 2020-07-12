@@ -19,10 +19,11 @@
 #include "qgis_3d.h"
 
 #include "qgsabstract3dsymbol.h"
-#include "qgsphongmaterialsettings.h"
 #include "qgs3dtypes.h"
 
 #include <Qt3DRender/QCullFace>
+
+class QgsAbstractMaterialSettings;
 
 /**
  * \ingroup 3d
@@ -33,11 +34,12 @@
  *
  * \since QGIS 3.0
  */
-class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
+class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTORS
 {
   public:
     //! Constructor for QgsPolygon3DSymbol
-    QgsPolygon3DSymbol() = default;
+    QgsPolygon3DSymbol();
+    ~QgsPolygon3DSymbol() override;
 
     QString type() const override { return "polygon"; }
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
@@ -73,9 +75,14 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
     void setExtrusionHeight( float extrusionHeight ) { mExtrusionHeight = extrusionHeight; }
 
     //! Returns material used for shading of the symbol
-    QgsPhongMaterialSettings material() const { return mMaterial; }
-    //! Sets material used for shading of the symbol
-    void setMaterial( const QgsPhongMaterialSettings &material ) { mMaterial = material; }
+    QgsAbstractMaterialSettings *material() const;
+
+    /**
+     * Sets the \a material settings used for shading of the symbol.
+     *
+     * Ownership of \a material is transferred to the symbol.
+     */
+    void setMaterial( QgsAbstractMaterialSettings *material SIP_TRANSFER );
 
     //! Returns front/back culling mode
     Qgs3DTypes::CullingMode cullingMode() const { return mCullingMode; }
@@ -155,7 +162,7 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
 
     float mHeight = 0.0f;           //!< Base height of polygons
     float mExtrusionHeight = 0.0f;  //!< How much to extrude (0 means no walls)
-    QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
+    std::unique_ptr< QgsAbstractMaterialSettings > mMaterial; //!< Defines appearance of objects
     Qgs3DTypes::CullingMode mCullingMode = Qgs3DTypes::NoCulling;  //!< Front/back culling mode
     bool mInvertNormals = false;
     bool mAddBackFaces = false;

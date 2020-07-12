@@ -32,13 +32,14 @@ QgsAbstract3DSymbol *QgsPoint3DSymbol::create()
 }
 
 QgsPoint3DSymbol::QgsPoint3DSymbol()
+  : mMaterial( qgis::make_unique< QgsPhongMaterialSettings >() )
 {
   setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
 }
 
-QgsPoint3DSymbol::QgsPoint3DSymbol( const QgsPoint3DSymbol &other ) :
-  mAltClamping( other.altitudeClamping() )
-  , mMaterial( other.material() )
+QgsPoint3DSymbol::QgsPoint3DSymbol( const QgsPoint3DSymbol &other )
+  : mAltClamping( other.altitudeClamping() )
+  , mMaterial( other.material() ? other.material()->clone() : nullptr )
   , mShape( other.shape() )
   , mShapeProperties( other.shapeProperties() )
   , mTransform( other.transform() )
@@ -56,7 +57,7 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
   elem.appendChild( elemDataProperties );
 
   QDomElement elemMaterial = doc.createElement( QStringLiteral( "material" ) );
-  mMaterial.writeXml( elemMaterial );
+  mMaterial->writeXml( elemMaterial, context );
   elem.appendChild( elemMaterial );
 
   elem.setAttribute( QStringLiteral( "shape" ), shapeToString( mShape ) );
@@ -86,7 +87,7 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
   mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( QStringLiteral( "alt-clamping" ) ) );
 
   QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
-  mMaterial.readXml( elemMaterial );
+  mMaterial->readXml( elemMaterial, context );
 
   mShape = shapeFromString( elem.attribute( QStringLiteral( "shape" ) ) );
 
@@ -147,5 +148,18 @@ QMatrix4x4 QgsPoint3DSymbol::billboardTransform() const
   billboardTransformMatrix.translate( QVector3D( 0, mTransform.data()[13], 0 ) );
 
   return billboardTransformMatrix;
-
 }
+
+QgsAbstractMaterialSettings *QgsPoint3DSymbol::material() const
+{
+  return mMaterial.get();
+}
+
+void QgsPoint3DSymbol::setMaterial( QgsAbstractMaterialSettings *material )
+{
+  if ( material == mMaterial.get() )
+    return;
+
+  mMaterial.reset( material );
+}
+

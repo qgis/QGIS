@@ -24,6 +24,7 @@
 #include "qgssymbolbutton.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgsphongmaterialsettings.h"
 
 QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   : Qgs3DSymbolWidget( parent )
@@ -144,7 +145,8 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
       break;
   }
 
-  widgetMaterial->setMaterial( pointSymbol->material() );
+  //TODO - handle other subclasses
+  widgetMaterial->setMaterial( *dynamic_cast< QgsPhongMaterialSettings * >( pointSymbol->material() ) );
 
   // decompose the transform matrix
   // assuming the last row has values [0 0 0 1]
@@ -225,7 +227,7 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
   sym->setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );
   sym->setShape( static_cast<QgsPoint3DSymbol::Shape>( cboShape->itemData( cboShape->currentIndex() ).toInt() ) );
   sym->setShapeProperties( vm );
-  sym->setMaterial( widgetMaterial->material() );
+  sym->setMaterial( widgetMaterial->material().clone() );
   sym->setTransform( tr );
   return sym.release();
 }

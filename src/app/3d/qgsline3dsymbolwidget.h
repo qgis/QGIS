@@ -20,6 +20,8 @@
 
 #include "ui_line3dsymbolwidget.h"
 
+#include <memory>
+
 class QgsLine3DSymbol;
 
 //! A widget for configuration of 3D symbol for polygons

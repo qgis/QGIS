@@ -10,7 +10,7 @@
 
 
 
-class QgsPhongMaterialSettings
+class QgsPhongMaterialSettings : QgsAbstractMaterialSettings
 {
 %Docstring
 Basic shading material used for rendering based on the Phong shading model
@@ -33,6 +33,9 @@ with three color components: ambient, diffuse and specular.
 %Docstring
 Constructor for QgsPhongMaterialSettings.
 %End
+
+    virtual QgsPhongMaterialSettings *clone() const /Factory/;
+
 
     QColor ambient() const;
 %Docstring
@@ -162,14 +165,10 @@ If the texture scale is less than 1 the texture will be stretched
 Sets the texture rotation in degrees
 %End
 
-    void readXml( const QDomElement &elem );
-%Docstring
-Reads settings from a DOM element
-%End
-    void writeXml( QDomElement &elem ) const;
-%Docstring
-Writes settings to a DOM element
-%End
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
 
     bool operator==( const QgsPhongMaterialSettings &other ) const;
 

@@ -25,6 +25,11 @@ const QgsPropertiesDefinition &QgsAbstract3DSymbol::propertyDefinitions()
   return sPropertyDefinitions;
 }
 
+void QgsAbstract3DSymbol::copyBaseSettings( QgsAbstract3DSymbol *destination ) const
+{
+  destination->mDataDefinedProperties = mDataDefinedProperties;
+}
+
 void QgsAbstract3DSymbol::initPropertyDefinitions()
 {
   if ( !sPropertyDefinitions.isEmpty() )
