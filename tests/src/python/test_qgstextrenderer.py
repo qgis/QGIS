@@ -63,6 +63,96 @@ class PyQgsTextRenderer(unittest.TestCase):
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 
+    def testValid(self):
+        t = QgsTextFormat()
+        self.assertFalse(t.isValid())
+
+        tt = QgsTextFormat(t)
+        self.assertFalse(tt.isValid())
+
+        t.setValid()
+        self.assertTrue(t.isValid())
+        tt = QgsTextFormat(t)
+        self.assertTrue(tt.isValid())
+
+        doc = QDomDocument()
+        elem = t.writeXml(doc, QgsReadWriteContext())
+        parent = doc.createElement("settings")
+        parent.appendChild(elem)
+        t3 = QgsTextFormat()
+        t3.readXml(parent, QgsReadWriteContext())
+        self.assertTrue(t3.isValid())
+
+        t = QgsTextFormat()
+        t.buffer().setEnabled(True)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.background().setEnabled(True)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.shadow().setEnabled(True)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.mask().setEnabled(True)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.font()
+        self.assertFalse(t.isValid())
+        t.setFont(QFont())
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setNamedStyle('Bold')
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setSize(20)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setSizeUnit(QgsUnitTypes.RenderPixels)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setSizeMapUnitScale(QgsMapUnitScale(5, 10))
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setColor(QColor(255, 0, 0))
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setOpacity(0.2)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setBlendMode(QPainter.CompositionMode_Darken)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setLineHeight(20)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setOrientation(QgsTextFormat.VerticalOrientation)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setAllowHtmlFormatting(True)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setPreviewBackgroundColor(QColor(255, 0, 0))
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.dataDefinedProperties().setProperty(QgsPalLayerSettings.Bold, QgsProperty.fromValue(True))
+        self.assertTrue(t.isValid())
+
     def testAlignmentConversion(self):
         self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignLeft), QgsTextRenderer.AlignLeft)
         self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignRight), QgsTextRenderer.AlignRight)

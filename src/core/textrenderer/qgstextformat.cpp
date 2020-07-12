@@ -59,6 +59,64 @@ QgsTextFormat::~QgsTextFormat() //NOLINT
 
 }
 
+bool QgsTextFormat::isValid() const
+{
+  return d->isValid;
+}
+
+void QgsTextFormat::setValid()
+{
+  d->isValid = true;
+}
+
+QgsTextBufferSettings &QgsTextFormat::buffer()
+{
+  d->isValid = true;
+  return mBufferSettings;
+}
+
+void QgsTextFormat::setBuffer( const QgsTextBufferSettings &bufferSettings )
+{
+  d->isValid = true;
+  mBufferSettings = bufferSettings;
+}
+
+QgsTextBackgroundSettings &QgsTextFormat::background()
+{
+  d->isValid = true;
+  return mBackgroundSettings;
+}
+
+void QgsTextFormat::setBackground( const QgsTextBackgroundSettings &backgroundSettings )
+{
+  d->isValid = true;
+  mBackgroundSettings = backgroundSettings;
+}
+
+QgsTextShadowSettings &QgsTextFormat::shadow()
+{
+  d->isValid = true;
+  return mShadowSettings;
+}
+
+void QgsTextFormat::setShadow( const QgsTextShadowSettings &shadowSettings )
+{
+  d->isValid = true;
+  mShadowSettings = shadowSettings;
+}
+
+QgsTextMaskSettings &QgsTextFormat::mask()
+{
+  d->isValid = true;
+  return mMaskSettings;
+}
+
+void QgsTextFormat::setMask( const QgsTextMaskSettings &maskSettings )
+{
+  d->isValid = true;
+  mMaskSettings = maskSettings;
+}
+
 QFont QgsTextFormat::font() const
 {
   return d->textFont;
@@ -87,6 +145,7 @@ QFont QgsTextFormat::scaledFont( const QgsRenderContext &context, double scaleFa
 
 void QgsTextFormat::setFont( const QFont &font )
 {
+  d->isValid = true;
   d->textFont = font;
 }
 
@@ -101,6 +160,7 @@ QString QgsTextFormat::namedStyle() const
 
 void QgsTextFormat::setNamedStyle( const QString &style )
 {
+  d->isValid = true;
   QgsFontUtils::updateFontViaStyle( d->textFont, style );
   d->textNamedStyle = style;
 }
@@ -112,6 +172,7 @@ QgsUnitTypes::RenderUnit QgsTextFormat::sizeUnit() const
 
 void QgsTextFormat::setSizeUnit( QgsUnitTypes::RenderUnit unit )
 {
+  d->isValid = true;
   d->fontSizeUnits = unit;
 }
 
@@ -122,6 +183,7 @@ QgsMapUnitScale QgsTextFormat::sizeMapUnitScale() const
 
 void QgsTextFormat::setSizeMapUnitScale( const QgsMapUnitScale &scale )
 {
+  d->isValid = true;
   d->fontSizeMapUnitScale = scale;
 }
 
@@ -132,6 +194,7 @@ double QgsTextFormat::size() const
 
 void QgsTextFormat::setSize( double size )
 {
+  d->isValid = true;
   d->fontSize = size;
 }
 
@@ -142,6 +205,7 @@ QColor QgsTextFormat::color() const
 
 void QgsTextFormat::setColor( const QColor &color )
 {
+  d->isValid = true;
   d->textColor = color;
 }
 
@@ -152,6 +216,7 @@ double QgsTextFormat::opacity() const
 
 void QgsTextFormat::setOpacity( double opacity )
 {
+  d->isValid = true;
   d->opacity = opacity;
 }
 
@@ -162,6 +227,7 @@ QPainter::CompositionMode QgsTextFormat::blendMode() const
 
 void QgsTextFormat::setBlendMode( QPainter::CompositionMode mode )
 {
+  d->isValid = true;
   d->blendMode = mode;
 }
 
@@ -172,6 +238,7 @@ double QgsTextFormat::lineHeight() const
 
 void QgsTextFormat::setLineHeight( double height )
 {
+  d->isValid = true;
   d->multilineHeight = height;
 }
 
@@ -182,6 +249,7 @@ QgsTextFormat::TextOrientation QgsTextFormat::orientation() const
 
 void QgsTextFormat::setOrientation( TextOrientation orientation )
 {
+  d->isValid = true;
   d->orientation = orientation;
 }
 
@@ -192,6 +260,7 @@ bool QgsTextFormat::allowHtmlFormatting() const
 
 void QgsTextFormat::setAllowHtmlFormatting( bool allow )
 {
+  d->isValid = true;
   d->allowHtmlFormatting = allow;
 }
 
@@ -202,11 +271,13 @@ QColor QgsTextFormat::previewBackgroundColor() const
 
 void QgsTextFormat::setPreviewBackgroundColor( const QColor &color )
 {
+  d->isValid = true;
   d->previewBackgroundColor = color;
 }
 
 void QgsTextFormat::readFromLayer( QgsVectorLayer *layer )
 {
+  d->isValid = true;
   QFont appFont = QApplication::font();
   mTextFontFamily = layer->customProperty( QStringLiteral( "labeling/fontFamily" ), QVariant( appFont.family() ) ).toString();
   QString fontFamily = mTextFontFamily;
@@ -290,6 +361,7 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer *layer )
 
 void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
+  d->isValid = true;
   QDomElement textStyleElem;
   if ( elem.nodeName() == QStringLiteral( "text-style" ) )
     textStyleElem = elem;
@@ -580,6 +652,7 @@ bool QgsTextFormat::containsAdvancedEffects() const
 
 QgsPropertyCollection &QgsTextFormat::dataDefinedProperties()
 {
+  d->isValid = true;
   return d->mDataDefinedProperties;
 }
 
@@ -600,11 +673,13 @@ QSet<QString> QgsTextFormat::referencedFields( const QgsRenderContext &context )
 
 void QgsTextFormat::setDataDefinedProperties( const QgsPropertyCollection &collection )
 {
+  d->isValid = true;
   d->mDataDefinedProperties = collection;
 }
 
 void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
 {
+  d->isValid = true;
   if ( !d->mDataDefinedProperties.hasActiveProperties() )
     return;
 
