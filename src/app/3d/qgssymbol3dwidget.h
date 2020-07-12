@@ -17,6 +17,7 @@
 #define QGSSYMBOL3DWIDGET_H
 
 #include <QWidget>
+#include <memory>
 
 class QLabel;
 class QStackedWidget;
@@ -39,7 +40,7 @@ class QgsSymbol3DWidget : public QWidget
     QgsSymbol3DWidget( QWidget *parent = nullptr );
 
     //! Returns a new symbol instance or NULLPTR
-    QgsAbstract3DSymbol *symbol();
+    std::unique_ptr< QgsAbstract3DSymbol > symbol();
 
     //! Sets symbol (does not take ownership)
     void setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *vlayer );

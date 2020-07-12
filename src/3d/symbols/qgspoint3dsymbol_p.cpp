@@ -181,16 +181,6 @@ Qt3DRender::QMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoin
   technique->graphicsApiFilter()->setMajorVersion( 3 );
   technique->graphicsApiFilter()->setMinorVersion( 2 );
 
-  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ka" ), QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) );
-  Qt3DRender::QParameter *diffuseParameter = new Qt3DRender::QParameter( QStringLiteral( "kd" ), QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) );
-  Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( QStringLiteral( "ks" ), QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) );
-  Qt3DRender::QParameter *shininessParameter = new Qt3DRender::QParameter( QStringLiteral( "shininess" ), 150.0f );
-
-  diffuseParameter->setValue( symbol.material().diffuse() );
-  ambientParameter->setValue( symbol.material().ambient() );
-  specularParameter->setValue( symbol.material().specular() );
-  shininessParameter->setValue( symbol.material().shininess() );
-
   QMatrix4x4 transformMatrix = symbol.transform();
   QMatrix3x3 normalMatrix = transformMatrix.normalMatrix();  // transponed inverse of 3x3 sub-matrix
 
@@ -215,10 +205,7 @@ Qt3DRender::QMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoin
   effect->addParameter( paramInst );
   effect->addParameter( paramInstNormal );
 
-  effect->addParameter( ambientParameter );
-  effect->addParameter( diffuseParameter );
-  effect->addParameter( specularParameter );
-  effect->addParameter( shininessParameter );
+  symbol.material()->addParametersToEffect( effect );
 
   Qt3DRender::QMaterial *material = new Qt3DRender::QMaterial;
   material->setEffect( effect );
@@ -465,13 +452,10 @@ void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DMapSettings &map
 void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent, bool are_selected )
 {
   // build the default material
-  Qt3DExtras::QPhongMaterial *mat = Qgs3DUtils::phongMaterial( symbol.material() );
-
-  if ( are_selected )
-  {
-    mat->setDiffuse( map.selectionColor() );
-    mat->setAmbient( map.selectionColor().darker() );
-  }
+  QgsMaterialContext materialContext;
+  materialContext.setIsSelected( are_selected );
+  materialContext.setSelectionColor( map.selectionColor() );
+  Qt3DRender::QMaterial *mat = symbol.material()->toMaterial( materialContext );
 
   // get nodes
   for ( const QVector3D &position : positions )

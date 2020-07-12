@@ -18,9 +18,31 @@
 #include "qgs3dutils.h"
 #include "qgssymbollayerutils.h"
 
+QgsPolygon3DSymbol::QgsPolygon3DSymbol()
+  : mMaterial( qgis::make_unique< QgsPhongMaterialSettings >() )
+{
+
+}
+
+QgsPolygon3DSymbol::~QgsPolygon3DSymbol() = default;
+
 QgsAbstract3DSymbol *QgsPolygon3DSymbol::clone() const
 {
-  return new QgsPolygon3DSymbol( *this );
+  std::unique_ptr< QgsPolygon3DSymbol > result = qgis::make_unique< QgsPolygon3DSymbol >();
+  result->mAltClamping = mAltClamping;
+  result->mAltBinding = mAltBinding;
+  result->mHeight = mHeight;
+  result->mExtrusionHeight = mExtrusionHeight;
+  result->mMaterial.reset( mMaterial->clone() );
+  result->mCullingMode = mCullingMode;
+  result->mInvertNormals = mInvertNormals;
+  result->mAddBackFaces = mAddBackFaces;
+  result->mRenderedFacade = mRenderedFacade;
+  result->mEdgesEnabled = mEdgesEnabled;
+  result->mEdgeWidth = mEdgeWidth;
+  result->mEdgeColor = mEdgeColor;
+  copyBaseSettings( result.get() );
+  return result.release();
 }
 
 void QgsPolygon3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
@@ -41,7 +63,7 @@ void QgsPolygon3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext 
   elem.appendChild( elemDataProperties );
 
   QDomElement elemMaterial = doc.createElement( QStringLiteral( "material" ) );
-  mMaterial.writeXml( elemMaterial );
+  mMaterial->writeXml( elemMaterial, context );
   elem.appendChild( elemMaterial );
 
   QDomElement elemDDP = doc.createElement( QStringLiteral( "data-defined-properties" ) );
@@ -70,7 +92,7 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
   mRenderedFacade = elemDataProperties.attribute( QStringLiteral( "rendered-facade" ), "3" ).toInt();
 
   QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
-  mMaterial.readXml( elemMaterial );
+  mMaterial->readXml( elemMaterial, context );
 
   QDomElement elemDDP = elem.firstChildElement( QStringLiteral( "data-defined-properties" ) );
   if ( !elemDDP.isNull() )
@@ -88,4 +110,17 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
 QgsAbstract3DSymbol *QgsPolygon3DSymbol::create()
 {
   return new QgsPolygon3DSymbol();
+}
+
+QgsAbstractMaterialSettings *QgsPolygon3DSymbol::material() const
+{
+  return mMaterial.get();
+}
+
+void QgsPolygon3DSymbol::setMaterial( QgsAbstractMaterialSettings *material )
+{
+  if ( material == mMaterial.get() )
+    return;
+
+  mMaterial.reset( material );
 }

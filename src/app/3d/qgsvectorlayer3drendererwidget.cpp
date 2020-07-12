@@ -24,6 +24,7 @@
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
+#include "qgsabstractmaterialsettings.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -61,7 +62,7 @@ void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
   }
 }
 
-QgsAbstract3DSymbol *QgsSingleSymbol3DRendererWidget::symbol()
+std::unique_ptr<QgsAbstract3DSymbol> QgsSingleSymbol3DRendererWidget::symbol()
 {
   return widgetSymbol->symbol();  // cloned or null
 }
@@ -157,7 +158,8 @@ void QgsVectorLayer3DRendererWidget::apply()
       break;
     case 1:
     {
-      QgsVectorLayer3DRenderer *r = new QgsVectorLayer3DRenderer( widgetSingleSymbolRenderer->symbol() );
+      std::unique_ptr< QgsAbstract3DSymbol > symbol = widgetSingleSymbolRenderer->symbol();
+      QgsVectorLayer3DRenderer *r = new QgsVectorLayer3DRenderer( symbol ? symbol.release() : nullptr );
       r->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
       widgetBaseProperties->apply( r );
       mLayer->setRenderer3D( r );

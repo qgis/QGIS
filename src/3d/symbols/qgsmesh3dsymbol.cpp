@@ -16,10 +16,42 @@
 #include "qgsmesh3dsymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgs3dutils.h"
+#include "qgsphongmaterialsettings.h"
 
-QgsAbstract3DSymbol *QgsMesh3DSymbol::clone() const
+QgsMesh3DSymbol::QgsMesh3DSymbol()
+  : mMaterial( qgis::make_unique< QgsPhongMaterialSettings >() )
 {
-  return new QgsMesh3DSymbol( *this );
+
+}
+
+QgsMesh3DSymbol::~QgsMesh3DSymbol() = default;
+
+QgsMesh3DSymbol *QgsMesh3DSymbol::clone() const
+{
+  std::unique_ptr< QgsMesh3DSymbol > result = qgis::make_unique< QgsMesh3DSymbol >();
+
+  result->mAltClamping = mAltClamping;
+  result->mHeight = mHeight;
+  result->mMaterial.reset( mMaterial->clone() );
+  result->mAddBackFaces = mAddBackFaces;
+  result->mEnabled = mEnabled;
+  result->mSmoothedTriangles = mSmoothedTriangles;
+  result->mWireframeEnabled = mWireframeEnabled;
+  result->mWireframeLineWidth = mWireframeLineWidth;
+  result->mWireframeLineColor = mWireframeLineColor;
+  result->mVerticalScale = mVerticalScale;
+  result->mVerticalDatasetGroupIndex = mVerticalDatasetGroupIndex;
+  result->mIsVerticalMagnitudeRelative = mIsVerticalMagnitudeRelative;
+  result->mRenderingStyle = mRenderingStyle;
+  result->mColorRampShader = mColorRampShader;
+  result->mSingleColor = mSingleColor;
+  result->mArrowsEnabled = mArrowsEnabled;
+  result->mArrowsSpacing = mArrowsSpacing;
+  result->mArrowsFixedSize = mArrowsFixedSize;
+  result->mArrowsColor = mArrowsColor;
+  result->mMaximumTextureSize = mMaximumTextureSize;
+  copyBaseSettings( result.get() );
+  return result.release();
 }
 
 void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
@@ -36,7 +68,7 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   elem.appendChild( elemDataProperties );
 
   QDomElement elemMaterial = doc.createElement( QStringLiteral( "material" ) );
-  mMaterial.writeXml( elemMaterial );
+  mMaterial->writeXml( elemMaterial, context );
   elem.appendChild( elemMaterial );
 
   //Advanced symbol
@@ -75,7 +107,7 @@ void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   mAddBackFaces = elemDataProperties.attribute( QStringLiteral( "add-back-faces" ) ).toInt();
 
   QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
-  mMaterial.readXml( elemMaterial );
+  mMaterial->readXml( elemMaterial, context );
 
   //Advanced symbol
   QDomElement elemAdvancedSettings = elem.firstChildElement( QStringLiteral( "advanced-settings" ) );
@@ -249,4 +281,18 @@ bool QgsMesh3DSymbol::isEnabled() const
 void QgsMesh3DSymbol::setEnabled( bool enabled )
 {
   mEnabled = enabled;
+}
+
+
+QgsAbstractMaterialSettings *QgsMesh3DSymbol::material() const
+{
+  return mMaterial.get();
+}
+
+void QgsMesh3DSymbol::setMaterial( QgsAbstractMaterialSettings *material )
+{
+  if ( material == mMaterial.get() )
+    return;
+
+  mMaterial.reset( material );
 }

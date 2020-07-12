@@ -75,6 +75,11 @@ class CORE_EXPORT QgsAbstract3DSymbol
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
   protected:
+
+    /**
+     * Copies base class settings from this object to a \a destination object.
+     */
+    void copyBaseSettings( QgsAbstract3DSymbol *destination ) const;
     QgsPropertyCollection mDataDefinedProperties;
 
   private:

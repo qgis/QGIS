@@ -104,7 +104,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mTerrainShadingEnabled = elemTerrain.attribute( QStringLiteral( "shading-enabled" ), QStringLiteral( "0" ) ).toInt();
   QDomElement elemTerrainShadingMaterial = elemTerrain.firstChildElement( QStringLiteral( "shading-material" ) );
   if ( !elemTerrainShadingMaterial.isNull() )
-    mTerrainShadingMaterial.readXml( elemTerrainShadingMaterial );
+    mTerrainShadingMaterial.readXml( elemTerrainShadingMaterial, context );
   mTerrainMapTheme = elemTerrain.attribute( QStringLiteral( "map-theme" ) );
   mShowLabels = elemTerrain.attribute( QStringLiteral( "show-labels" ), QStringLiteral( "0" ) ).toInt();
 
@@ -254,7 +254,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemTerrain.setAttribute( QStringLiteral( "max-ground-error" ), QString::number( mMaxTerrainGroundError ) );
   elemTerrain.setAttribute( QStringLiteral( "shading-enabled" ), mTerrainShadingEnabled ? 1 : 0 );
   QDomElement elemTerrainShadingMaterial = doc.createElement( QStringLiteral( "shading-material" ) );
-  mTerrainShadingMaterial.writeXml( elemTerrainShadingMaterial );
+  mTerrainShadingMaterial.writeXml( elemTerrainShadingMaterial, context );
   elemTerrain.appendChild( elemTerrainShadingMaterial );
   elemTerrain.setAttribute( QStringLiteral( "map-theme" ), mTerrainMapTheme );
   elemTerrain.setAttribute( QStringLiteral( "show-labels" ), mShowLabels ? 1 : 0 );
