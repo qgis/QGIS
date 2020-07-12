@@ -173,13 +173,22 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
 
 QString Qgs3DExportObject::saveMaterial( QTextStream &mtlOut, const QString &folderPath )
 {
-  QString textureName = mName + "_material";
-  if ( mTexturesUV.size() == 0 )
-    return QString();
-  QString filePath = QDir( folderPath ).filePath( textureName + ".jpg" );
-  mTextureImage.save( filePath, "JPG" );
-
-  mtlOut << "newmtl " << textureName << "\n";
-  mtlOut << "\tmap_Kd " << textureName << ".jpg" << "\n";
-  return textureName;
+  QString materialName = mName + "_material";
+  if ( mMaterialParameters.size() == 0 && ( mTexturesUV.size() == 0 || mTextureImage.isNull() ) ) return QString();
+  mtlOut << "newmtl " << materialName << "\n";
+  if ( mTexturesUV.size() != 0 && !mTextureImage.isNull() )
+  {
+    QString filePath = QDir( folderPath ).filePath( materialName + ".jpg" );
+    mTextureImage.save( filePath, "JPG" );
+    mtlOut << "\tmap_Kd " << materialName << ".jpg" << "\n";
+  }
+  else
+  {
+    for ( QString parameter : mMaterialParameters.keys() )
+    {
+      mtlOut << "\t" << parameter << " " << mMaterialParameters[parameter] << "\n";
+    }
+    mtlOut << "\tillum 2\n";
+  }
+  return materialName;
 }

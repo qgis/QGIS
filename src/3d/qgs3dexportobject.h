@@ -83,10 +83,14 @@ class Qgs3DExportObject : public QObject
      */
     void objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ );
 
+    //! Sets a material parameter to be exported in the .mtl file
+    void setMaterialParameter( const QString &parameter, const QString &value ) { mMaterialParameters[parameter] = value; }
+
     //! Saves the current object to the output stream while scaling the object and centering it to be visible in exported scene
     void saveTo( QTextStream &out, float scale, const QVector3D &center );
     //! saves the texture of the object and material informations
     QString saveMaterial( QTextStream &mtlOut, const QString &folder );
+
   private:
     QString mName;
     QString mParentName;
@@ -94,6 +98,7 @@ class Qgs3DExportObject : public QObject
     QVector<float> mNormals;
     QVector<float> mTexturesUV;
     QVector<unsigned int> mIndexes;
+    QMap<QString, QString> mMaterialParameters;
 
     QImage mTextureImage;
 

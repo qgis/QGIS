@@ -61,6 +61,7 @@
 #include "qgsvectorlayer3drenderer.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsline3dsymbol.h"
+#include "qgspoint3dsymbol.h"
 
 #include <numeric>
 
@@ -155,7 +156,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
         const QgsLine3DSymbol *lineSymbol = dynamic_cast<const QgsLine3DSymbol *>( symbol );
         if ( lineSymbol->renderAsSimpleLines() )
         {
-
+          //TODO: handle simple line geometries in some way
         }
         else
         {
@@ -167,7 +168,17 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
       }
       else if ( symbolType == "point" )
       {
-
+        const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( symbol );
+        // TODO: handle point geometries somehow
+        if ( pointSymbol->shape() == QgsPoint3DSymbol::Model )
+        {
+        }
+        else if ( pointSymbol->shape() == QgsPoint3DSymbol::Billboard )
+        {
+        }
+        else
+        {
+        }
       }
     }
   }
@@ -385,7 +396,16 @@ void Qgs3DSceneExporter::processBufferedLineGeometry( QgsTessellatedPolygonGeome
     QVector<float> normalsData = getAttributeData<float>( normalsAttribute, normalsBytes );
     object->setupNormalCoordinates( normalsData );
   }
-  // TODO: handle material
+
+  QgsPhongMaterialSettings material = lineSymbol->material();
+  QColor diffuse = material.diffuse();
+  QColor specular = material.specular();
+  QColor ambient = material.ambient();
+  float shininess = material.shininess();
+  object->setMaterialParameter( QString( "Kd" ), QString( "%1 %2 %3" ).arg( diffuse.redF() ).arg( diffuse.greenF() ).arg( diffuse.blueF() ) );
+  object->setMaterialParameter( QString( "Ka" ), QString( "%1 %2 %3" ).arg( ambient.redF() ).arg( ambient.greenF() ).arg( ambient.blueF() ) );
+  object->setMaterialParameter( QString( "Ks" ), QString( "%1 %2 %3" ).arg( specular.redF() ).arg( specular.greenF() ).arg( specular.blueF() ) );
+  object->setMaterialParameter( QString( "Ns" ), QString( "%1" ).arg( shininess ) );
 }
 
 void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath )
