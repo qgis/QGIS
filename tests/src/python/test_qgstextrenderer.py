@@ -180,6 +180,46 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setBlendMode(QPainter.CompositionMode_DestinationAtop)
         return s
 
+    def testBufferEquality(self):
+        s = self.createBufferSettings()
+        s2 = self.createBufferSettings()
+        self.assertEqual(s, s2)
+
+        s.setEnabled(False)
+        self.assertNotEqual(s, s2)
+        s = self.createBufferSettings()
+
+        s.setSize(15)
+        self.assertNotEqual(s, s2)
+        s = self.createBufferSettings()
+
+        s.setSizeUnit(QgsUnitTypes.RenderPixels)
+        self.assertNotEqual(s, s2)
+        s = self.createBufferSettings()
+
+        s.setSizeMapUnitScale(QgsMapUnitScale(11, 12))
+        self.assertNotEqual(s, s2)
+        s = self.createBufferSettings()
+
+        s.setColor(QColor(255, 255, 0))
+        self.assertNotEqual(s, s2)
+        s = self.createBufferSettings()
+
+        s.setFillBufferInterior(False)
+        self.assertNotEqual(s, s2)
+        s = self.createBufferSettings()
+
+        s.setOpacity(0.6)
+        self.assertNotEqual(s, s2)
+        s = self.createBufferSettings()
+
+        s.setJoinStyle(Qt.MiterJoin)
+        self.assertNotEqual(s, s2)
+        s = self.createBufferSettings()
+
+        s.setBlendMode(QPainter.CompositionMode_Darken)
+        self.assertNotEqual(s, s2)
+
     def checkBufferSettings(self, s):
         """ test QgsTextBufferSettings """
         self.assertTrue(s.enabled())
@@ -402,7 +442,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
         s.setStrokeWidthMapUnitScale(QgsMapUnitScale(QgsMapUnitScale(251, 261)))
         self.assertNotEqual(s, s2)
-        s = self.createBackgroundSettings()
 
     def checkBackgroundSettings(self, s):
         """ test QgsTextBackgroundSettings """
