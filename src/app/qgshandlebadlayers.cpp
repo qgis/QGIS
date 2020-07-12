@@ -509,3 +509,168 @@ int QgsHandleBadLayers::layerCount()
 {
   return mLayerList->rowCount();
 }
+<<<<<<< HEAD
+=======
+
+QString QgsHandleBadLayers::checkBasepath( const QString &layerId, const QString &newPath, const QString &fileName )
+{
+  const QString originalBase = mOriginalFileBase.value( layerId );
+  const QFileInfo newpathInfo = QFileInfo( newPath );
+  if ( newpathInfo.exists() && newpathInfo.isFile() )
+  {
+    const QString newBasepath = newpathInfo.absoluteDir().path();
+    if ( !mAlternativeBasepaths.value( originalBase ).contains( newBasepath ) )
+      mAlternativeBasepaths[ originalBase ].append( newBasepath );
+    return ( newPath );
+  }
+  else if ( mAlternativeBasepaths.contains( originalBase ) )
+  {
+    const QStringList altPaths = mAlternativeBasepaths.value( originalBase );
+    for ( const QString &altPath : altPaths )
+    {
+      if ( QFileInfo::exists( altPath + fileName ) && QFileInfo( altPath + fileName ).isFile() )
+        return ( altPath + fileName );
+    }
+  }
+  return ( mOriginalFileBase.value( layerId ) );
+}
+
+void QgsHandleBadLayers::autoFind()
+{
+  QDir::setCurrent( QgsProject::instance()->absolutePath() );
+  QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( true );
+
+  QList<int> layersToFind;
+  if ( mRows.size() > 0 )
+    layersToFind = mRows;
+  else
+  {
+    for ( int i = 0; i < mLayerList->rowCount(); i++ )
+      layersToFind.append( i );
+  }
+
+  const QList<int> constLayersToFind = layersToFind;
+
+  QProgressDialog progressDialog( QObject::tr( "Searching files" ), 0, 1, layersToFind.size(), this, Qt::Dialog );
+
+  for ( int i : constLayersToFind )
+  {
+    int idx = mLayerList->item( i, 0 )->data( Qt::UserRole ).toInt();
+    QDomNode &node = const_cast<QDomNode &>( mLayers[ idx ] );
+
+    QTableWidgetItem *item = mLayerList->item( i, 4 );
+    QString datasource = item->text();
+    QString fileName;
+    const QString layerId { node.namedItem( QStringLiteral( "id" ) ).toElement().text() };
+    const QString name { mLayerList->item( i, 0 )->text() };
+    const QFileInfo dataInfo = QFileInfo( datasource );
+    const QString basepath = dataInfo.absoluteDir().path();
+    const QString longName = dataInfo.fileName();
+    QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
+    const QString fileType = mLayerList->item( i, 2 )->text();
+
+    progressDialog.setValue( i );
+    QChar sentenceEnd = ( name.length() > 15 ) ? QChar( 0x2026 ) : '.';
+    progressDialog.setLabelText( QObject::tr( "Searching for file: %1 \n [ %2 of %3 ] " ).arg( name.left( 15 ) + sentenceEnd,
+                                 QString::number( i + 1 ), QString::number( layersToFind.size() ) ) );
+    progressDialog.open();
+
+    if ( provider.toLower() == QStringLiteral( "none" ) )
+    {
+      if ( fileType == QStringLiteral( "raster" ) )
+        provider = QStringLiteral( "gdal" );
+      else if ( fileType == QStringLiteral( "vector" ) )
+        provider = QStringLiteral( "ogr" );
+      else if ( fileType.contains( "mesh", Qt::CaseInsensitive ) )
+        provider = QStringLiteral( "mdal" );
+    }
+    QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, dataInfo.absoluteFilePath() );
+    if ( providerMap.contains( QStringLiteral( "path" ) ) )
+      fileName = QFileInfo( providerMap[ QStringLiteral( "path" ) ].toString() ).fileName();
+    else
+    {
+      item->setForeground( QBrush( Qt::red ) );
+      continue;
+    }
+
+    datasource = QDir::toNativeSeparators( checkBasepath( layerId, basepath, fileName ) );
+
+    bool dataSourceChanged { false };
+
+    // Try first to change the datasource of the existing layers, this will
+    // maintain the current status (checked/unchecked) and group
+    if ( !datasource.isEmpty() && QgsProject::instance()->mapLayer( layerId ) )
+    {
+      QgsDataProvider::ProviderOptions options;
+      QgsMapLayer *mapLayer = QgsProject::instance()->mapLayer( layerId );
+      if ( mapLayer )
+      {
+        mapLayer->setDataSource( datasource.replace( fileName, longName ), name, provider, options );
+        dataSourceChanged = mapLayer->isValid();
+      }
+    }
+
+    if ( !dataSourceChanged )
+    {
+      QStringList filesFound = QgsFileUtils::findFile( fileName, basepath, 5 );
+      if ( filesFound.length() > 1 )
+      {
+        bool ok;
+        datasource = QInputDialog::getItem( nullptr, QObject::tr( "Select layer source" ), QObject::tr( "Many files were found, please select the source for %1 " ).arg( fileName ), filesFound, 0, false, &ok, Qt::Popup );
+        if ( !ok )
+          datasource = filesFound.at( 0 );
+      }
+      else
+      {
+        QString tdatasource = filesFound.length() == 1 ? filesFound.at( 0 ) : QString();
+        if ( !tdatasource.isEmpty() )
+          datasource = tdatasource;
+      }
+
+      datasource = QDir::toNativeSeparators( datasource );
+      if ( QgsProject::instance()->mapLayer( layerId ) && !( datasource.isEmpty() ) )
+      {
+        QgsDataProvider::ProviderOptions options;
+        QgsMapLayer *mapLayer = QgsProject::instance()->mapLayer( layerId );
+        if ( mapLayer )
+        {
+          mapLayer->setDataSource( datasource.replace( fileName, longName ), name, provider, options );
+          dataSourceChanged = mapLayer->isValid();
+        }
+      }
+      if ( dataSourceChanged )
+      {
+        const QString altBasepath = QFileInfo( datasource ).absoluteDir().path();
+        checkBasepath( layerId, altBasepath, fileName );
+      }
+    }
+
+    // If the data source was changed successfully, remove the bad layer from the dialog
+    // otherwise, try to set the new datasource in the XML node and reload the layer,
+    // finally marks with red all remaining bad layers.
+    if ( dataSourceChanged )
+    {
+      setFilename( i, datasource );
+      item->setForeground( QBrush( Qt::green ) );
+      item->setData( Qt::UserRole + 2, QVariant( true ) );
+    }
+    else
+    {
+      node.namedItem( QStringLiteral( "datasource" ) ).toElement().firstChild().toText().setData( datasource );
+      if ( QgsProject::instance()->readLayer( node ) )
+      {
+        mLayerList->removeRow( i-- );
+      }
+      else
+      {
+        item->setForeground( QBrush( Qt::red ) );
+      }
+    }
+
+  }
+
+  QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( false );
+
+}
+
+>>>>>>> 2c1bcffbc8... Merge pull request #37765 from elpaso/bugfix-gh37757-auto-find
