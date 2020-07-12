@@ -715,13 +715,14 @@ void QgsFieldsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *me
       if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddField ) )
       {
         QAction *addColumnAction = new QAction( tr( "Add New Field…" ), menu );
+        QPointer<QgsDataItem>itemPtr { item };
         const QString itemName { item->name() };
         const QString tableName { fieldsItem->tableName() };
         const QString schema { fieldsItem->schema() };
         QgsVectorLayer *itemLayer { fieldsItem->layer( ) };
         const QString connectionUri { fieldsItem->connectionUri() };
 
-        connect( addColumnAction, &QAction::triggered, this, [ md, connectionUri, itemLayer, schema, tableName, context, menu ]
+        connect( addColumnAction, &QAction::triggered, this, [ md, connectionUri, itemLayer, schema, tableName, context, itemPtr, menu ]
         {
           std::unique_ptr<QgsVectorLayer> layer { itemLayer };
           if ( layer )
@@ -733,7 +734,8 @@ void QgsFieldsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *me
               try
               {
                 conn2->addField( dialog.field(), schema, tableName );
-                // FIXME!!! item->refresh();
+                if ( itemPtr )
+                  itemPtr->refresh();
               }
               catch ( const QgsProviderConnectionException &ex )
               {
@@ -793,13 +795,15 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
         if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteField ) )
         {
           QAction *deleteFieldAction = new QAction( tr( "Delete Field…" ), menu );
+          QPointer<QgsFieldsItem>fieldsItemPtr { fieldsItem };
           const bool supportsCascade { conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteFieldCascade ) };
           const QString itemName { item->name() };
           const QString tableName { fieldsItem->tableName() };
           const QString schema { fieldsItem->schema() };
           const QString connectionUri { fieldsItem->connectionUri() };
 
-          connect( deleteFieldAction, &QAction::triggered, fieldsItem, [ md, itemName, connectionUri, tableName, schema, context, supportsCascade, menu ]
+
+          connect( deleteFieldAction, &QAction::triggered, fieldsItem, [ md, itemName, connectionUri, tableName, schema, context, supportsCascade, fieldsItemPtr, menu ]
           {
             // Confirmation dialog
             QMessageBox msgbox{QMessageBox::Icon::Question, tr( "Delete Field" ), tr( "Delete '%1' permanently?" ).arg( itemName ), QMessageBox::Ok | QMessageBox::Cancel };
@@ -818,7 +822,8 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
               try
               {
                 conn2->deleteField( itemName, schema, tableName, supportsCascade && cb->isChecked() );
-                // FIXME!!! fieldsItem->refresh();
+                if ( fieldsItemPtr )
+                  fieldsItemPtr->refresh();
               }
               catch ( const QgsProviderConnectionException &ex )
               {
