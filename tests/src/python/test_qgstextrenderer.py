@@ -307,6 +307,103 @@ class PyQgsTextRenderer(unittest.TestCase):
 
         return s
 
+    def testBackgroundEquality(self):
+        s = self.createBackgroundSettings()
+        s2 = self.createBackgroundSettings()
+        self.assertEqual(s, s2)
+
+        s.setEnabled(False)
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setType(QgsTextBackgroundSettings.ShapeRectangle)
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setSvgFile('svg2.svg')
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setSize(QSizeF(1, 22))
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setSizeUnit(QgsUnitTypes.RenderPixels)
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setSizeMapUnitScale(QgsMapUnitScale(11, 22))
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setRotationType(QgsTextBackgroundSettings.RotationSync)
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setRotation(145)
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setOffset(QPointF(31, 41))
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setOffsetUnit(QgsUnitTypes.RenderPixels)
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setOffsetMapUnitScale(QgsMapUnitScale(15, 16))
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setRadii(QSizeF(111, 112))
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setRadiiUnit(QgsUnitTypes.RenderPoints)
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setRadiiMapUnitScale(QgsMapUnitScale(151, 161))
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setFillColor(QColor(255, 255, 0))
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setStrokeColor(QColor(0, 255, 255))
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setOpacity(0.6)
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setJoinStyle(Qt.MiterJoin)
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setBlendMode(QPainter.CompositionMode_Darken)
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setStrokeWidth(17)
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setStrokeWidthUnit(QgsUnitTypes.RenderPixels)
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
+        s.setStrokeWidthMapUnitScale(QgsMapUnitScale(QgsMapUnitScale(251, 261)))
+        self.assertNotEqual(s, s2)
+        s = self.createBackgroundSettings()
+
     def checkBackgroundSettings(self, s):
         """ test QgsTextBackgroundSettings """
         self.assertTrue(s.enabled())
