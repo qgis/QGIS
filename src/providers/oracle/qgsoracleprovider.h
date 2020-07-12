@@ -339,6 +339,8 @@ class QgsOracleProvider final: public QgsVectorDataProvider
 
     friend class QgsOracleFeatureIterator;
     friend class QgsOracleFeatureSource;
+
+    bool mTrustLayerMetadata = false;
 };
 
 

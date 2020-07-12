@@ -32,6 +32,7 @@ QgsOracleTableModel::QgsOracleTableModel()
   headerLabels << tr( "Select at id" );
   headerLabels << tr( "Sql" );
   setHorizontalHeaderLabels( headerLabels );
+  SetHeaderData( Columns::DbtmTrustLayerMetadata, Qt::Orientation::Horizontal, tr( "Enable for fast project opening." ), Qt::ToolTipRole );
 }
 
 void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProperty )
@@ -103,6 +104,11 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ) );
 
     QStandardItem *sqlItem = new QStandardItem( layerProperty.sql );
+
+    QStandardItem *trustLayerMetadata = new QStandardItem( QString() );
+    trustLayerMetadata->setFlags( checkPkUnicityItem->flags() | Qt::ItemIsUserCheckable );
+    trustLayerMetadata->setCheckState( QgsProject::instance()->trustLayerMetadata() ? Qt::CheckState::Unchecked : Qt::CheckState::Checked );
+    trustLayerMetadata->setToolTip( headerData( Columns::DbtmTrustLayerMetadata, Qt::Orientation::Horizontal, Qt::ToolTipRole ).toString() );
 
     QList<QStandardItem *> childItemList;
     childItemList << ownerNameItem;
@@ -344,12 +350,14 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
 
   bool selectAtId = itemFromIndex( index.sibling( index.row(), DbtmSelectAtId ) )->checkState() == Qt::Checked;
   QString sql = index.sibling( index.row(), DbtmSql ).data( Qt::DisplayRole ).toString();
+  bool trustLayerMetadata = itemFromIndex( index.sibling( index.row(), DbtmTrustLayerMetadata ) )->checkState() == Qt::Checked;
 
   QgsDataSourceUri uri( connInfo );
   uri.setDataSource( ownerName, tableName, geomColumnName, sql, pkColumnName );
   uri.setWkbType( wkbType );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
+  uri.setParam( QStringLiteral( "trustLayerMetadata" ), trustLayerMetadata ? QLati1String( "1" ) : QLatin1String( "0" ) );
 
   QgsDebugMsg( QStringLiteral( "returning uri %1" ).arg( uri.uri( false ) ) );
   return uri.uri( false );

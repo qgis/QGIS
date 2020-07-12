@@ -51,6 +51,7 @@ class QgsOracleTableModel : public QStandardItemModel
       DbtmSrid,
       DbtmPkCol,
       DbtmSelectAtId,
+      DbtmTrustLayerMetadata,
       DbtmSql,
       DbtmColumns
     };
