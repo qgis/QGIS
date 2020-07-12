@@ -277,6 +277,39 @@ class PyQgsTextRenderer(unittest.TestCase):
                                  QgsSymbolLayerReference("layerid2", QgsSymbolLayerId("symbol2", 2))])
         return s
 
+    def testMaskEquality(self):
+        s = self.createMaskSettings()
+        s2 = self.createMaskSettings()
+        self.assertEqual(s, s2)
+
+        s.setEnabled(False)
+        self.assertNotEqual(s, s2)
+        s = self.createMaskSettings()
+
+        s.setSize(15)
+        self.assertNotEqual(s, s2)
+        s = self.createMaskSettings()
+
+        s.setSizeUnit(QgsUnitTypes.RenderPixels)
+        self.assertNotEqual(s, s2)
+        s = self.createMaskSettings()
+
+        s.setSizeMapUnitScale(QgsMapUnitScale(11, 12))
+        self.assertNotEqual(s, s2)
+        s = self.createMaskSettings()
+
+        s.setOpacity(0.6)
+        self.assertNotEqual(s, s2)
+        s = self.createMaskSettings()
+
+        s.setJoinStyle(Qt.MiterJoin)
+        self.assertNotEqual(s, s2)
+        s = self.createMaskSettings()
+
+        s.setMaskedSymbolLayers([QgsSymbolLayerReference("layerid11", QgsSymbolLayerId("symbol", 1)),
+                                 QgsSymbolLayerReference("layerid21", QgsSymbolLayerId("symbol2", 2))])
+        self.assertNotEqual(s, s2)
+
     def checkMaskSettings(self, s):
         """ test QgsTextMaskSettings """
         self.assertTrue(s.enabled())
