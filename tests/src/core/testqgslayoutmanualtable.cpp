@@ -44,6 +44,8 @@ class TestQgsLayoutManualTable : public QObject
     void cleanup();// will be called after every testfunction.
 
     void setContents();
+    void scopeForCell();
+    void expressionContents();
     void cellStyles();
     void cellFormat();
     void rowHeight();
@@ -268,6 +270,62 @@ void TestQgsLayoutManualTable::setContents()
 
   QCOMPARE( tableFromXml->rowHeights(), QList< double >() << 5.5 << 4.0 );
   QCOMPARE( tableFromXml->columnWidths(), QList< double >() << 15.5 << 14.0 << 13.4 );
+}
+
+void TestQgsLayoutManualTable::scopeForCell()
+{
+  QVector<QStringList> expectedRows;
+
+  QgsPrintLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  l.setName( QStringLiteral( "my layout" ) );
+  QgsLayoutItemManualTable *table = new QgsLayoutItemManualTable( &l );
+
+  std::unique_ptr< QgsExpressionContextScope > scope( table->scopeForCell( 1, 2 ) );
+
+  // variable values for row/col should start at 1, not 0!
+  QCOMPARE( scope->variable( QStringLiteral( "table_row" ) ).toInt(), 2 );
+  QCOMPARE( scope->variable( QStringLiteral( "table_column" ) ).toInt(), 3 );
+}
+
+void TestQgsLayoutManualTable::expressionContents()
+{
+  QVector<QStringList> expectedRows;
+
+  QgsPrintLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  l.setName( QStringLiteral( "my layout" ) );
+  QgsLayoutItemManualTable *table = new QgsLayoutItemManualTable( &l );
+
+  QStringList row;
+
+  // 2 x 3
+  row << QStringLiteral( "Jet" ) << QStringLiteral( "1,2" ) << QStringLiteral( "1,3" );
+  expectedRows.append( row );
+  row.clear();
+  row << QStringLiteral( "my layout" ) << QStringLiteral( "Helicopter" ) << QStringLiteral( "Plane" );
+  expectedRows.append( row );
+
+  table->setTableContents(
+    QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << QgsTableCell( QgsProperty::fromExpression( QStringLiteral( "@table_row  || ',' || @table_column" ) ) ) << QgsTableCell( QgsProperty::fromExpression( QStringLiteral( "@table_row  || ',' || @table_column" ) ) ) )
+    << ( QgsTableRow() << QgsTableCell( QgsProperty::fromExpression( QStringLiteral( "@layout_name" ) ) ) << QgsTableCell( QStringLiteral( "Helicopter" ) ) << QgsTableCell( QStringLiteral( "Plane" ) ) ) );
+  compareTable( table, expectedRows );
+
+  // save and restore
+
+  //write to XML
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+  QDomDocument doc( documentType );
+  QDomElement tableElement = doc.createElement( QStringLiteral( "table" ) );
+  QVERIFY( table->writeXml( tableElement, doc, QgsReadWriteContext(), true ) );
+
+  //read from XML
+  QgsLayoutItemManualTable *tableFromXml = new QgsLayoutItemManualTable( &l );
+  QVERIFY( tableFromXml->readXml( tableElement.firstChildElement(), doc, QgsReadWriteContext(), true ) );
+  compareTable( tableFromXml, expectedRows );
 }
 
 void TestQgsLayoutManualTable::cellStyles()

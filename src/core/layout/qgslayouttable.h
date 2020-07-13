@@ -538,6 +538,13 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     virtual QgsConditionalStyle conditionalCellStyle( int row, int column ) const;
 
     /**
+     * Creates a new QgsExpressionContextScope for the cell at \a row, \a column.
+     *
+     * \since QGIS 3.16
+     */
+    virtual QgsExpressionContextScope *scopeForCell( int row, int column ) const SIP_FACTORY;
+
+    /**
      * Returns the current contents of the table. Excludes header cells.
      */
     QgsLayoutTableContents &contents() { return mTableContents; }
