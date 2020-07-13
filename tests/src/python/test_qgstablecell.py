@@ -36,7 +36,7 @@ class TestQgsTableCell(unittest.TestCase):
         self.assertFalse(c.backgroundColor().isValid())
         self.assertFalse(c.foregroundColor().isValid())
         self.assertFalse(c.numericFormat())
-        self.assertFalse(c.hasTextFormat())
+        self.assertFalse(c.textFormat().isValid())
 
         c.setBackgroundColor(QColor(255, 0, 0))
         c.setForegroundColor(QColor(255, 0, 255))
@@ -48,9 +48,8 @@ class TestQgsTableCell(unittest.TestCase):
         format = QgsTextFormat()
         format.setSize(16.8)
         c.setTextFormat(format)
-        c.setHasTextFormat(True)
         self.assertEqual(c.textFormat().size(), 16.8)
-        self.assertTrue(c.hasTextFormat())
+        self.assertTrue(c.textFormat().isValid())
 
     def testProperties(self):
         c = QgsTableCell('test')
@@ -64,7 +63,7 @@ class TestQgsTableCell(unittest.TestCase):
         self.assertFalse(c2.backgroundColor().isValid())
         self.assertFalse(c2.foregroundColor().isValid())
         self.assertFalse(c2.numericFormat())
-        self.assertFalse(c2.hasTextFormat())
+        self.assertFalse(c2.textFormat().isValid())
 
         c.setBackgroundColor(QColor(255, 0, 0))
         c.setForegroundColor(QColor(255, 0, 255))
@@ -74,7 +73,6 @@ class TestQgsTableCell(unittest.TestCase):
         text_format = QgsTextFormat()
         text_format.setSize(16.8)
         c.setTextFormat(text_format)
-        c.setHasTextFormat(True)
         props = c.properties(QgsReadWriteContext())
 
         c3 = QgsTableCell()
@@ -86,7 +84,7 @@ class TestQgsTableCell(unittest.TestCase):
         self.assertIsInstance(c3.numericFormat(), QgsBearingNumericFormat)
         self.assertTrue(c3.numericFormat().showPlusSign())
         self.assertEqual(c3.textFormat().size(), 16.8)
-        self.assertTrue(c3.hasTextFormat())
+        self.assertTrue(c3.textFormat().isValid())
 
 
 if __name__ == '__main__':
