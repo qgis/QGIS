@@ -33,6 +33,13 @@
 #include <Qt3DRender/QBufferDataGenerator>
 #include <Qt3DRender/QBufferDataGeneratorPtr>
 
+#include <Qt3DExtras/QCylinderGeometry>
+#include <Qt3DExtras/QConeGeometry>
+#include <Qt3DExtras/QSphereGeometry>
+#include <Qt3DExtras/QCuboidGeometry>
+#include <Qt3DExtras/QTorusGeometry>
+#include <Qt3DExtras/QExtrudedTextMesh>
+
 #include <QByteArray>
 #include <QFile>
 #include <QTextStream>
@@ -62,6 +69,7 @@
 #include "qgspolygon3dsymbol.h"
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
+#include "qgsrulebased3drenderer.h"
 
 #include <numeric>
 
@@ -92,9 +100,9 @@ QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute, QByteArray data 
 }
 
 template<typename T>
-QVector<T> getIndexData( QByteArray data )
+QVector<uint> getIndexData( QByteArray data )
 {
-  QVector<T> result;
+  QVector<uint> result;
   for ( int i = 0; i < data.size(); i += sizeof( T ) )
   {
     // maybe a problem with indienness can happen?
@@ -104,7 +112,7 @@ QVector<T> getIndexData( QByteArray data )
     {
       vArr[k] = data.at( i + k );
     }
-    result.push_back( v );
+    result.push_back( ( uint ) v );
   }
 
   return result;
@@ -120,6 +128,16 @@ Qgs3DSceneExporter::Qgs3DSceneExporter( Qt3DCore::QNode *parent )
   , mScale( 1.0f )
 {
 
+}
+
+Qt3DRender::QAttribute *findAttribute( Qt3DRender::QGeometry *geometry, const QString &name, Qt3DRender::QAttribute::AttributeType type )
+{
+  for ( Qt3DRender::QAttribute *attribute : geometry->attributes() )
+  {
+    if ( attribute->attributeType() != type ) continue;
+    if ( attribute->name() == name ) return attribute;
+  }
+  return nullptr;
 }
 
 bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsVectorLayer *layer )
@@ -178,6 +196,36 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
         }
         else
         {
+          QList<Qt3DRender::QGeometry *> geometriesList =  entity->findChildren<Qt3DRender::QGeometry *>();
+          for ( Qt3DRender::QGeometry *geometry : geometriesList )
+          {
+            Qt3DRender::QAttribute *positionAttribute = findAttribute( geometry, Qt3DRender::QAttribute::defaultPositionAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
+            Qt3DRender::QAttribute *indexAttribute = nullptr;
+            for ( Qt3DRender::QAttribute *attribute : geometry->attributes() )
+            {
+              if ( attribute->attributeType() == Qt3DRender::QAttribute::IndexAttribute )
+                indexAttribute = attribute;
+            }
+            if ( positionAttribute == nullptr || indexAttribute == nullptr )
+              continue;
+            Qt3DRender::QBufferDataGeneratorPtr vertexDataGenerator = positionAttribute->buffer()->dataGenerator();
+            Qt3DRender::QBufferDataGeneratorPtr indexDataGenerator = indexAttribute->buffer()->dataGenerator();
+            QByteArray vertexBytes = vertexDataGenerator->operator()();
+            QByteArray indexBytes = indexDataGenerator->operator()();
+            QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
+            QVector<uint> indexData = getIndexData<quint16>( indexBytes );
+
+            Qt3DRender::QAttribute *instanceDataAttribute = findAttribute( geometry,  QStringLiteral( "pos" ), Qt3DRender::QAttribute::VertexAttribute );
+            Qt3DRender::QBuffer *instanceDataBuffer = instanceDataAttribute->buffer();
+            QVector<float> instancePosition = getAttributeData<float>( instanceDataAttribute, instanceDataBuffer->data() );
+            for ( int i = 0; i < instancePosition.size(); i += 3 )
+            {
+              Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "shape_geometry" ), "", this );
+              mObjects.push_back( object );
+              object->setupPositionCoordinates( positionData, indexData, 1.0f, QVector3D( instancePosition[i], instancePosition[i + 1], instancePosition[i + 2] ) );
+            }
+            return true;
+          }
         }
       }
     }
@@ -279,7 +327,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity )
   Qt3DRender::QAttribute *indexAttribute = tileGeometry->indexAttribute();
   Qt3DRender::QBufferDataGeneratorPtr indexDataGenerator =  indexAttribute->buffer()->dataGenerator();
   QByteArray indexBytes = indexDataGenerator->operator()();
-  QVector<quint16> indexesBuffer = getIndexData<quint16>( indexBytes );
+  QVector<uint> indexesBuffer = getIndexData<quint16>( indexBytes );
 
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "Flat_tile" ), "", this );
   mObjects.push_back( object );
