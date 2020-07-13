@@ -312,7 +312,7 @@ QgsTextFormat QgsLayoutItemManualTable::textFormatForHeader( int column ) const
 
 QgsTextFormat QgsLayoutItemManualTable::textFormatForCell( int row, int column ) const
 {
-  if ( mContents.value( row ).value( column ).hasTextFormat() )
+  if ( mContents.value( row ).value( column ).textFormat().isValid() )
     return mContents.value( row ).value( column ).textFormat();
 
   return QgsLayoutTable::textFormatForCell( row, column );

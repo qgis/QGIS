@@ -63,7 +63,7 @@ bool QgsTextFormat::operator==( const QgsTextFormat &other ) const
 {
   if ( d->isValid != other.isValid()
        || d->textFont != other.font()
-       || d->textNamedStyle != other.namedStyle()
+       || namedStyle() != other.namedStyle()
        || d->fontSizeUnits != other.sizeUnit()
        || d->fontSizeMapUnitScale != other.sizeMapUnitScale()
        || d->fontSize != other.size()

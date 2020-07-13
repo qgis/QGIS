@@ -325,7 +325,6 @@ void QgsTableEditorWidget::setTableContents( const QgsTableContents &contents )
       item->setData( Qt::BackgroundRole, col.backgroundColor().isValid() ? col.backgroundColor() : QColor( 255, 255, 255 ) );
       item->setData( PresetBackgroundColorRole, col.backgroundColor().isValid() ? col.backgroundColor() : QVariant() );
       item->setData( Qt::ForegroundRole, col.foregroundColor().isValid() ? col.foregroundColor() : QVariant() );
-      item->setData( HasTextFormat, col.hasTextFormat() );
       item->setData( TextFormat, QVariant::fromValue( col.textFormat() ) );
       item->setData( HorizontalAlignment, static_cast< int >( col.horizontalAlignment() ) );
       item->setData( VerticalAlignment, static_cast< int >( col.verticalAlignment() ) );
@@ -369,7 +368,6 @@ QgsTableContents QgsTableEditorWidget::tableContents() const
         cell.setContent( i->data( CellContent ) );
         cell.setBackgroundColor( i->data( PresetBackgroundColorRole ).value< QColor >() );
         cell.setForegroundColor( i->data( Qt::ForegroundRole ).value< QColor >() );
-        cell.setHasTextFormat( i->data( HasTextFormat ).toBool() );
         cell.setTextFormat( i->data( TextFormat ).value< QgsTextFormat >() );
         cell.setHorizontalAlignment( static_cast< Qt::Alignment >( i->data( HorizontalAlignment ).toInt() ) );
         cell.setVerticalAlignment( static_cast< Qt::Alignment >( i->data( VerticalAlignment ).toInt() ) );
@@ -489,29 +487,6 @@ bool QgsTableEditorWidget::hasMixedSelectionNumericFormat()
   return false;
 }
 
-bool QgsTableEditorWidget::hasMixedSelectionHasTextFormat()
-{
-  bool res = false;
-  bool first = true;
-  const QModelIndexList selection = selectedIndexes();
-  for ( const QModelIndex &index : selection )
-  {
-    bool hasFormat = model()->data( index, HasTextFormat ).isValid() ? model()->data( index, HasTextFormat ).toBool() : false;
-    if ( first )
-    {
-      res = hasFormat;
-      first = false;
-    }
-    else if ( hasFormat == res )
-      continue;
-    else
-    {
-      return true;
-    }
-  }
-  return false;
-}
-
 QColor QgsTableEditorWidget::selectionForegroundColor()
 {
   QColor c;
@@ -606,24 +581,26 @@ Qt::Alignment QgsTableEditorWidget::selectionVerticalAlignment()
 
 QgsTextFormat QgsTableEditorWidget::selectionTextFormat()
 {
+  QgsTextFormat format;
+  bool first = true;
   const QModelIndexList selection = selectedIndexes();
   for ( const QModelIndex &index : selection )
   {
-    if ( model()->data( index, TextFormat ).isValid() )
-      return model()->data( index, TextFormat ).value< QgsTextFormat >();
-  }
-  return QgsTextFormat();
-}
+    if ( !model()->data( index, TextFormat ).isValid() )
+      return QgsTextFormat();
 
-bool QgsTableEditorWidget::selectionHasTextFormat()
-{
-  const QModelIndexList selection = selectedIndexes();
-  for ( const QModelIndex &index : selection )
-  {
-    if ( model()->data( index, HasTextFormat ).isValid() )
-      return model()->data( index, HasTextFormat ).toBool();
+    QgsTextFormat cellFormat = model()->data( index, TextFormat ).value< QgsTextFormat >();
+    if ( first )
+    {
+      format = cellFormat;
+      first = false;
+    }
+    else if ( cellFormat == format )
+      continue;
+    else
+      return QgsTextFormat();
   }
-  return false;
+  return format;
 }
 
 double QgsTableEditorWidget::selectionRowHeight()
@@ -1088,34 +1065,6 @@ void QgsTableEditorWidget::setSelectionTextFormat( const QgsTextFormat &format )
     {
       QTableWidgetItem *newItem = new QTableWidgetItem();
       newItem->setData( TextFormat, QVariant::fromValue( format ) );
-      setItem( index.row(), index.column(), newItem );
-      changed = true;
-    }
-  }
-  mBlockSignals--;
-  if ( changed && !mBlockSignals )
-    emit tableChanged();
-}
-
-void QgsTableEditorWidget::setSelectionHasTextFormat( bool hasFormat )
-{
-  const QModelIndexList selection = selectedIndexes();
-  bool changed = false;
-  mBlockSignals++;
-  for ( const QModelIndex &index : selection )
-  {
-    if ( index.row() == 0 && mIncludeHeader )
-      continue;
-
-    if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
-    {
-      i->setData( HasTextFormat, hasFormat );
-      changed = true;
-    }
-    else
-    {
-      QTableWidgetItem *newItem = new QTableWidgetItem();
-      newItem->setData( HasTextFormat, hasFormat );
       setItem( index.row(), index.column(), newItem );
       changed = true;
     }

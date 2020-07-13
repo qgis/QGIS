@@ -106,28 +106,6 @@ Sets the cell's text ``format``.
 .. versionadded:: 3.16
 %End
 
-    bool hasTextFormat() const;
-%Docstring
-Returns ``True`` if the cell has a specific text format which should be applied.
-
-.. seealso:: :py:func:`textFormat`
-
-.. seealso:: :py:func:`setHasTextFormat`
-
-.. versionadded:: 3.16
-%End
-
-    void setHasTextFormat( bool hasTextFormat );
-%Docstring
-Sets whether the cell has a specific text format which should be applied.
-
-.. seealso:: :py:func:`setTextFormat`
-
-.. seealso:: :py:func:`hasTextFormat`
-
-.. versionadded:: 3.16
-%End
-
     const QgsNumericFormat *numericFormat() const;
 %Docstring
 Returns the numeric format used for numbers in the cell, or ``None`` if no format is set.

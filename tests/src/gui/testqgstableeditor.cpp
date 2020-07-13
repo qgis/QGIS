@@ -87,7 +87,6 @@ void TestQgsTableEditor::testData()
   c2.setForegroundColor( QColor( 0, 255, 0 ) );
   QgsTextFormat textFormat;
   textFormat.setSize( 12.6 );
-  c2.setHasTextFormat( true );
   c2.setTextFormat( textFormat );
   c2.setHorizontalAlignment( Qt::AlignRight );
   c2.setVerticalAlignment( Qt::AlignTop );
@@ -99,7 +98,7 @@ void TestQgsTableEditor::testData()
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).backgroundColor().isValid() );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).foregroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).hasTextFormat() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).horizontalAlignment(), Qt::AlignLeft );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).verticalAlignment(), Qt::AlignVCenter );
@@ -107,7 +106,7 @@ void TestQgsTableEditor::testData()
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).backgroundColor(), QColor( 255, 0, 0 ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).foregroundColor(), QColor( 0, 255, 0 ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 1 ).numericFormat() );
-  QVERIFY( w.tableContents().at( 0 ).at( 1 ).hasTextFormat() );
+  QVERIFY( w.tableContents().at( 0 ).at( 1 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).textFormat().size(), 12.6 );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).horizontalAlignment(), Qt::AlignRight );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).verticalAlignment(), Qt::AlignTop );
@@ -936,25 +935,23 @@ void TestQgsTableEditor::textFormat()
   QgsTextFormat format;
   format.setSize( 12.6 );
   c3.setTextFormat( format );
-  c3.setHasTextFormat( false );
   QgsTableCell c2( 76 );
   c2.setTextFormat( format );
-  c2.setHasTextFormat( true );
   w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << c2 << c3 << QgsTableCell( QStringLiteral( "Jet3" ) ) ) );
   QCOMPARE( spy.count(), 1 );
 
   QCOMPARE( w.tableContents().size(), 1 );
   QCOMPARE( w.tableContents().at( 0 ).size(), 4 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
-  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).hasTextFormat() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QStringLiteral( "76" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).textFormat().size(), 12.6 );
-  QVERIFY( w.tableContents().at( 0 ).at( 1 ).hasTextFormat() );
+  QVERIFY( w.tableContents().at( 0 ).at( 1 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "87" ) );
-  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).hasTextFormat() );
+  QVERIFY( w.tableContents().at( 0 ).at( 2 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).textFormat().size(), 12.6 );
   QCOMPARE( w.tableContents().at( 0 ).at( 3 ).content().toString(), QStringLiteral( "Jet3" ) );
-  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).hasTextFormat() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).textFormat().isValid() );
 
   w.selectionModel()->clearSelection();
   format.setSize( 21 );
@@ -971,6 +968,7 @@ void TestQgsTableEditor::textFormat()
   QVERIFY( w.selectionTextFormat().size() !=  21.0 );
   w.setSelectionTextFormat( format );
   QCOMPARE( spy.count(), 2 );
+  QVERIFY( w.selectionTextFormat().isValid() );
   QCOMPARE( w.selectionTextFormat().size(), 21.0 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).textFormat().size(), 21.0 );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).textFormat().size(), 21.0 );

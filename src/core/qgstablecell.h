@@ -116,24 +116,6 @@ class CORE_EXPORT QgsTableCell
     void setTextFormat( const QgsTextFormat &format ) { mTextFormat = format; }
 
     /**
-     * Returns TRUE if the cell has a specific text format which should be applied.
-     *
-     * \see textFormat()
-     * \see setHasTextFormat()
-     * \since QGIS 3.16
-     */
-    bool hasTextFormat() const { return mHasTextFormat; }
-
-    /**
-     * Sets whether the cell has a specific text format which should be applied.
-     *
-     * \see setTextFormat()
-     * \see hasTextFormat()
-     * \since QGIS 3.16
-     */
-    void setHasTextFormat( bool hasTextFormat ) { mHasTextFormat = hasTextFormat; }
-
-    /**
      * Returns the numeric format used for numbers in the cell, or NULLPTR if no format is set.
      *
      * \see setNumericFormat()
@@ -213,7 +195,6 @@ class CORE_EXPORT QgsTableCell
     QVariant mContent;
     QColor mBackgroundColor;
     QColor mForegroundColor;
-    bool mHasTextFormat = false;
     QgsTextFormat mTextFormat;
     std::unique_ptr< QgsNumericFormat > mFormat;
 

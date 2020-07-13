@@ -27,7 +27,6 @@ QgsTableCell::QgsTableCell( const QgsTableCell &other )
   : mContent( other.mContent )
   , mBackgroundColor( other.mBackgroundColor )
   , mForegroundColor( other.mForegroundColor )
-  , mHasTextFormat( other.mHasTextFormat )
   , mTextFormat( other.mTextFormat )
   , mFormat( other.mFormat ? other.mFormat->clone() : nullptr )
   , mHAlign( other.mHAlign )
@@ -41,7 +40,6 @@ QgsTableCell &QgsTableCell::operator=( const QgsTableCell &other )
   mContent = other.mContent;
   mBackgroundColor = other.mBackgroundColor;
   mForegroundColor = other.mForegroundColor;
-  mHasTextFormat = other.mHasTextFormat;
   mTextFormat = other.mTextFormat;
   mFormat.reset( other.mFormat ? other.mFormat->clone() : nullptr );
   mHAlign = other.mHAlign;
@@ -71,11 +69,13 @@ QVariantMap QgsTableCell::properties( const QgsReadWriteContext &context ) const
     res.insert( QStringLiteral( "format" ), mFormat->configuration( context ) );
   }
 
-  res.insert( QStringLiteral( "has_text_format" ), mHasTextFormat );
-  QDomDocument textDoc;
-  QDomElement textElem = mTextFormat.writeXml( textDoc, context );
-  textDoc.appendChild( textElem );
-  res.insert( QStringLiteral( "text_format" ), textDoc.toString() );
+  if ( mTextFormat.isValid() )
+  {
+    QDomDocument textDoc;
+    QDomElement textElem = mTextFormat.writeXml( textDoc, context );
+    textDoc.appendChild( textElem );
+    res.insert( QStringLiteral( "text_format" ), textDoc.toString() );
+  }
 
   res.insert( QStringLiteral( "halign" ), static_cast< int >( mHAlign ) );
   res.insert( QStringLiteral( "valign" ), static_cast< int >( mVAlign ) );
@@ -98,7 +98,10 @@ void QgsTableCell::setProperties( const QVariantMap &properties, const QgsReadWr
     elem = doc.documentElement();
     mTextFormat.readXml( elem, context );
   }
-  mHasTextFormat = properties.value( QStringLiteral( "has_text_format" ) ).toBool();
+  else
+  {
+    mTextFormat = QgsTextFormat();
+  }
 
   if ( properties.contains( QStringLiteral( "format_type" ) ) )
   {
