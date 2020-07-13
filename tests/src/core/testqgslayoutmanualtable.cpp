@@ -444,7 +444,6 @@ void TestQgsLayoutManualTable::cellTextFormat()
   f1.buffer().setColor( QColor( 100, 130, 150 ) );
   f1.buffer().setSize( 1 );
   c1.setTextFormat( f1 );
-  c1.setHasTextFormat( true );
 
   QgsTableCell c3( QStringLiteral( "Plane" ) );
   QgsTextFormat f2 = table->contentTextFormat();
@@ -453,7 +452,6 @@ void TestQgsLayoutManualTable::cellTextFormat()
   f2.buffer().setColor( QColor( 150, 110, 90 ) );
   f2.buffer().setSize( 1 );
   c3.setTextFormat( f2 );
-  c3.setHasTextFormat( true );
 
   QgsTableCell c5( QStringLiteral( "B" ) );
   QgsTextFormat f3 = table->contentTextFormat();
@@ -462,7 +460,6 @@ void TestQgsLayoutManualTable::cellTextFormat()
   f3.buffer().setColor( QColor( 200, 110, 90 ) );
   f3.buffer().setSize( 1 );
   c5.setTextFormat( f3 );
-  c5.setHasTextFormat( true );
 
   table->setTableContents( QgsTableContents() << ( QgsTableRow() << c1 << QgsTableCell( QStringLiteral( "Helicopter" ) ) << c3 )
                            << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A" ) ) << c5 << QgsTableCell( QStringLiteral( "C" ) ) ) );

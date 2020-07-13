@@ -86,10 +86,6 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   {
     mTableWidget->setSelectionTextFormat( mFormattingWidget->textFormat() );
   } );
-  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::hasTextFormatChanged, this, [ = ]
-  {
-    mTableWidget->setSelectionHasTextFormat( mFormattingWidget->textFormatSet() );
-  } );
 
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::numberFormatChanged, this, [ = ]
   {
@@ -105,7 +101,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
     mFormattingWidget->setNumericFormat( mTableWidget->selectionNumericFormat(), mTableWidget->hasMixedSelectionNumericFormat() );
     mFormattingWidget->setRowHeight( mTableWidget->selectionRowHeight() );
     mFormattingWidget->setColumnWidth( mTableWidget->selectionColumnWidth() );
-    mFormattingWidget->setTextFormat( mTableWidget->selectionTextFormat(), mTableWidget->selectionHasTextFormat(), mTableWidget->hasMixedSelectionHasTextFormat() );
+    mFormattingWidget->setTextFormat( mTableWidget->selectionTextFormat() );
     mFormattingWidget->setHorizontalAlignment( mTableWidget->selectionHorizontalAlignment() );
     mFormattingWidget->setVerticalAlignment( mTableWidget->selectionVerticalAlignment() );
 

@@ -161,13 +161,6 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
     bool hasMixedSelectionNumericFormat();
 
     /**
-     * Returns TRUE if the current selection has a mix of text format override state.
-     *
-     * \since QGIS 3.16
-     */
-    bool hasMixedSelectionHasTextFormat();
-
-    /**
      * Returns the foreground color for the currently selected cells.
      *
      * If the selected cells have a mix of different foreground colors then an
@@ -212,16 +205,11 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
     /**
      * Returns the text format for the currently selected cells.
      *
-     * \since QGIS 3.16
-     */
-    QgsTextFormat selectionTextFormat();
-
-    /**
-     * Returns whether the currently selected cells have the text format override option set.
+     * Returns an invalid QgsTextFormat if the selection has mixed text format.
      *
      * \since QGIS 3.16
      */
-    bool selectionHasTextFormat();
+    QgsTextFormat selectionTextFormat();
 
     /**
      * Returns the height (in millimeters) of the rows associated with the current selection,
@@ -404,13 +392,6 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
     void setSelectionTextFormat( const QgsTextFormat &format );
 
     /**
-     * Sets whether the selected cells have the text format override option set.
-     *
-     * \since QGIS 3.16
-     */
-    void setSelectionHasTextFormat( bool hasFormat );
-
-    /**
      * Sets the row \a height (in millimeters) for the currently selected rows, or 0 for automatic row height.
      *
      * \see setSelectionColumnWidth()
@@ -466,7 +447,6 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
       RowHeight,
       ColumnWidth,
       CellContent,
-      HasTextFormat,
       TextFormat,
       HorizontalAlignment,
       VerticalAlignment

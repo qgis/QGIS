@@ -25,7 +25,9 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
   setPanelTitle( tr( "Formatting" ) );
 
   mFormatNumbersCheckBox->setTristate( false );
-  mTextFormatCheckBox->setTristate( false );
+
+  mFontButton->setShowNullFormat( true );
+  mFontButton->setNoFormatString( tr( "Clear Formatting" ) );
 
   mTextColorButton->setAllowOpacity( true );
   mTextColorButton->setColorDialogTitle( tr( "Text Color" ) );
@@ -70,15 +72,6 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
       mFormatNumbersCheckBox->setTristate( false );
     if ( !mBlockSignals )
       emit numberFormatChanged();
-  } );
-
-  connect( mTextFormatCheckBox, &QCheckBox::stateChanged, this, [ = ]( int state )
-  {
-    mFontButton->setEnabled( state == Qt::Checked );
-    if ( state != Qt::PartiallyChecked )
-      mTextFormatCheckBox->setTristate( false );
-    if ( !mBlockSignals )
-      emit hasTextFormatChanged();
   } );
 
   connect( mFontButton, &QgsFontButton::changed, this, [ = ]
@@ -154,11 +147,6 @@ QgsTextFormat QgsTableEditorFormattingWidget::textFormat() const
   return mFontButton->textFormat();
 }
 
-bool QgsTableEditorFormattingWidget::textFormatSet() const
-{
-  return mTextFormatCheckBox->checkState() == Qt::Checked;
-}
-
 void QgsTableEditorFormattingWidget::setForegroundColor( const QColor &color )
 {
   mBlockSignals++;
@@ -182,11 +170,9 @@ void QgsTableEditorFormattingWidget::setNumericFormat( QgsNumericFormat *format,
   mBlockSignals--;
 }
 
-void QgsTableEditorFormattingWidget::setTextFormat( const QgsTextFormat &format, bool isSet, bool isMixedFormat )
+void QgsTableEditorFormattingWidget::setTextFormat( const QgsTextFormat &format )
 {
   mBlockSignals++;
-  mTextFormatCheckBox->setTristate( isMixedFormat );
-  mTextFormatCheckBox->setCheckState( isMixedFormat ? Qt::PartiallyChecked : ( isSet ? Qt::Checked : Qt::Unchecked ) );
   mFontButton->setTextFormat( format );
   mBlockSignals--;
 }
