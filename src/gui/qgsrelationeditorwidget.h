@@ -97,7 +97,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     Q_OBJECT
     Q_PROPERTY( QgsDualView::ViewMode viewMode READ viewMode WRITE setViewMode )
     Q_PROPERTY( bool showLabel READ showLabel WRITE setShowLabel )
-    Q_PROPERTY( QgsAttributeEditorRelation::Buttons shownButtons READ shownButtons WRITE setShownButtons )
+    Q_PROPERTY( QgsAttributeEditorRelation::Buttons visibleButtons READ shownButtons WRITE setVisibleButtons )
 
   public:
 
@@ -170,42 +170,42 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     /**
      * Determines if the "link feature" button should be shown
      * \since QGIS 2.18
-     * \deprecated since QGIS 3.16 use shownButtons() instead
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
     Q_DECL_DEPRECATED bool showLinkButton() const SIP_DEPRECATED;
 
     /**
      * Determines if the "link feature" button should be shown
      * \since QGIS 2.18
-     * \deprecated since QGIS 3.16 use setShownButtons() instead
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
     Q_DECL_DEPRECATED void setShowLinkButton( bool showLinkButton ) SIP_DEPRECATED;
 
     /**
      * Determines if the "unlink feature" button should be shown
      * \since QGIS 2.18
-     * \deprecated since QGIS 3.16 use shownButtons() instead
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
     Q_DECL_DEPRECATED bool showUnlinkButton() const SIP_DEPRECATED;
 
     /**
      * Determines if the "unlink feature" button should be shown
      * \since QGIS 2.18
-     * \deprecated since QGIS 3.16 use setShownButtons() instead
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
     Q_DECL_DEPRECATED void setShowUnlinkButton( bool showUnlinkButton ) SIP_DEPRECATED;
 
     /**
      * Determines if the "Save child layer edits" button should be shown
      * \since QGIS 3.14
-     * \deprecated since QGIS 3.16 use setShownButtons() instead
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
     Q_DECL_DEPRECATED void setShowSaveChildEditsButton( bool showChildEdits ) SIP_DEPRECATED;
 
     /**
      * Determines if the "Save child layer edits" button should be shown
      * \since QGIS 3.14
-     * \deprecated since QGIS 3.16 use shownButtons() instead
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
     Q_DECL_DEPRECATED bool showSaveChildEditsButton() const SIP_DEPRECATED;
 
@@ -213,13 +213,13 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      * Defines the buttons which are shown
      * \since QGIS 3.16
      */
-    void setShownButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
 
     /**
      * Returns the buttons which are shown
      * \since QGIS 3.16
      */
-    QgsAttributeEditorRelation::Buttons shownButtons() const;
+    QgsAttributeEditorRelation::Buttons visibleButtons() const;
 
     /**
      * Returns the widget's current feature

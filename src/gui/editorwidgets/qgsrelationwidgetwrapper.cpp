@@ -191,7 +191,7 @@ bool QgsRelationWidgetWrapper::valid() const
 
 bool QgsRelationWidgetWrapper::showLinkButton() const
 {
-  return shownButtons().testFlag( QgsAttributeEditorRelation::Button::Link );
+  return visibleButtons().testFlag( QgsAttributeEditorRelation::Button::Link );
 }
 
 void QgsRelationWidgetWrapper::setShowLinkButton( bool showLinkButton )
@@ -204,16 +204,16 @@ void QgsRelationWidgetWrapper::setShowLinkButton( bool showLinkButton )
 
 bool QgsRelationWidgetWrapper::showSaveChildEditsButton() const
 {
-  return shownButtons().testFlag( QgsAttributeEditorRelation::Button::SaveChildEdits );
+  return visibleButtons().testFlag( QgsAttributeEditorRelation::Button::SaveChildEdits );
 }
 
-void QgsRelationWidgetWrapper::setShownButtons( const QgsAttributeEditorRelation::Buttons &buttons )
+void QgsRelationWidgetWrapper::setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons )
 {
   if ( mWidget )
-    mWidget->setShownButtons( buttons );
+    mWidget->setVisibleButtons( buttons );
 }
 
-QgsAttributeEditorRelation::Buttons QgsRelationWidgetWrapper::shownButtons() const
+QgsAttributeEditorRelation::Buttons QgsRelationWidgetWrapper::visibleButtons() const
 {
-  return mWidget->shownButtons();
+  return mWidget->visibleButtons();
 }

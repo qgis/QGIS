@@ -954,7 +954,7 @@ bool QgsRelationEditorWidget::showSaveChildEditsButton() const
   return mSaveEditsButton->isVisible();
 }
 
-void QgsRelationEditorWidget::setShownButtons( const QgsAttributeEditorRelation::Buttons &buttons )
+void QgsRelationEditorWidget::setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons )
 {
   mLinkFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::Link ) );
   mUnlinkFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::Unlink ) );
@@ -965,7 +965,7 @@ void QgsRelationEditorWidget::setShownButtons( const QgsAttributeEditorRelation:
   mZoomToFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::ZoomToChildFeature ) );
 }
 
-QgsAttributeEditorRelation::Buttons QgsRelationEditorWidget::shownButtons() const
+QgsAttributeEditorRelation::Buttons QgsRelationEditorWidget::visibleButtons() const
 {
   QgsAttributeEditorRelation::Buttons buttons;
   if ( mLinkFeatureButton->isVisible() )

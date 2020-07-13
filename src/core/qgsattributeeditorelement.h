@@ -342,14 +342,14 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
        */
     enum class Button : int
     {
-      Link = 1 << 1, //!< Show link button
-      Unlink = 1 << 2, //!< Show unlink button
-      SaveChildEdits = 1 << 3, //!< Show save child edits button
-      AddChildFeature = 1 << 4, //!< Show add child feature (as in some projects we only want to allow to link/unlink existing features)
-      DuplicateChildFeature = 1 << 5, //!< Show duplicate child feature
-      DeleteChildFeature = 1 << 6, //!< Show delete child feature button
-      ZoomToChildFeature = 1 << 7, //!< Show zoom to child feature
-      AllButtons = Link | Unlink | SaveChildEdits | AddChildFeature | DuplicateChildFeature | DeleteChildFeature | ZoomToChildFeature //!< Defaults set of buttons shown
+      Link = 1 << 1, //!< Link button
+      Unlink = 1 << 2, //!< Unlink button
+      SaveChildEdits = 1 << 3, //!< Save child edits button
+      AddChildFeature = 1 << 4, //!< Add child feature (as in some projects we only want to allow to link/unlink existing features)
+      DuplicateChildFeature = 1 << 5, //!< Duplicate child feature
+      DeleteChildFeature = 1 << 6, //!< Delete child feature button
+      ZoomToChildFeature = 1 << 7, //!< Zoom to child feature
+      AllButtons = Link | Unlink | SaveChildEdits | AddChildFeature | DuplicateChildFeature | DeleteChildFeature | ZoomToChildFeature //!< All buttons
     };
     Q_ENUM( Button )
     Q_DECLARE_FLAGS( Buttons, Button )
@@ -417,42 +417,42 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     /**
      * Determines if the "link feature" button should be shown
      * \since QGIS 2.18
-     * \deprecated since QGIS 3.16 use shownButtons() instead
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
     Q_DECL_DEPRECATED bool showLinkButton() const SIP_DEPRECATED;
 
     /**
      * Determines if the "link feature" button should be shown
      * \since QGIS 2.18
-     * \deprecated since QGIS 3.16 use setShownButtons() instead
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
     Q_DECL_DEPRECATED void setShowLinkButton( bool showLinkButton ) SIP_DEPRECATED;
 
     /**
      * Determines if the "unlink feature" button should be shown
      * \since QGIS 2.18
-     * \deprecated since QGIS 3.16 use shownButtons() instead
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
     Q_DECL_DEPRECATED bool showUnlinkButton() const SIP_DEPRECATED;
 
     /**
      * Determines if the "unlink feature" button should be shown
      * \since QGIS 2.18
-     * \deprecated since QGIS 3.16 use setShownButtons() instead
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
     Q_DECL_DEPRECATED void setShowUnlinkButton( bool showUnlinkButton ) SIP_DEPRECATED;
 
     /**
      * Determines if the "Save child layer edits" button should be shown
      * \since QGIS 3.14
-     * \deprecated since QGIS 3.16 use setShownButtons() instead
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
     Q_DECL_DEPRECATED void setShowSaveChildEditsButton( bool showChildEdits ) SIP_DEPRECATED;
 
     /**
      * Determines if the "Save child layer edits" button should be shown
      * \since QGIS 3.14
-     * \deprecated since QGIS 3.16 use shownButtons() instead
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
     Q_DECL_DEPRECATED bool showSaveChildEditsButton() const SIP_DEPRECATED;
 
@@ -460,13 +460,13 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * Defines the buttons which are shown
      * \since QGIS 3.16
      */
-    void setShownButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
 
     /**
      * Returns the buttons which are shown
      * \since QGIS 3.16
      */
-    QgsAttributeEditorRelation::Buttons shownButtons() const {return mButtons;}
+    QgsAttributeEditorRelation::Buttons visibleButtons() const {return mButtons;}
 
 
   private:
@@ -474,7 +474,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     QString typeIdentifier() const override;
     QString mRelationId;
     QgsRelation mRelation;
-    Buttons mButtons = Button::AllButtons;
+    Buttons mButtons = Buttons( Button::AllButtons );
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAttributeEditorRelation::Buttons )

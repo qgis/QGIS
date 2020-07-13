@@ -170,7 +170,7 @@ bool QgsAttributeEditorRelation::showSaveChildEditsButton() const
   return mButtons.testFlag( Button::SaveChildEdits );
 }
 
-void QgsAttributeEditorRelation::setShownButtons( const QgsAttributeEditorRelation::Buttons &buttons )
+void QgsAttributeEditorRelation::setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons )
 {
   mButtons = buttons;
 }
