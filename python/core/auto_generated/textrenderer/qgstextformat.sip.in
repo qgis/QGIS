@@ -50,6 +50,9 @@ Copy constructor.
 
     ~QgsTextFormat();
 
+    bool operator==( const QgsTextFormat &other ) const;
+    bool operator!=( const QgsTextFormat &other ) const;
+
     bool isValid() const;
 %Docstring
 Returns ``True`` if the format is valid.

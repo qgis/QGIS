@@ -695,6 +695,96 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.dataDefinedProperties().setProperty(QgsPalLayerSettings.Bold, QgsProperty.fromExpression('1>2'))
         return s
 
+    def testFormatEquality(self):
+        s = self.createFormatSettings()
+        s2 = self.createFormatSettings()
+        self.assertEqual(s, s2)
+
+        s.buffer().setEnabled(False)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.buffer().setSize(12)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.mask().setEnabled(False)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.mask().setSize(12)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.background().setEnabled(False)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.background().setSvgFile('test2.svg')
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.shadow().setEnabled(False)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.shadow().setOffsetAngle(123)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        font = getTestFont()
+        font.setKerning(True)
+        s.setFont(font)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.setNamedStyle('Bold')
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.setSize(15)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.setSizeUnit(QgsUnitTypes.RenderPixels)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.setSizeMapUnitScale(QgsMapUnitScale(11, 12))
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.setColor(QColor(255, 255, 0))
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.setOpacity(0.6)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.setBlendMode(QPainter.CompositionMode_Darken)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.setLineHeight(15)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.setPreviewBackgroundColor(QColor(100, 250, 200))
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.setOrientation(QgsTextFormat.HorizontalOrientation)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.setAllowHtmlFormatting(False)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.dataDefinedProperties().setProperty(QgsPalLayerSettings.Bold, QgsProperty.fromExpression('1>3'))
+        self.assertNotEqual(s, s2)
+
     def checkTextFormat(self, s):
         """ test QgsTextFormat """
         self.assertTrue(s.buffer().enabled())

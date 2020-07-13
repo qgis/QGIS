@@ -63,6 +63,9 @@ class CORE_EXPORT QgsTextFormat
 
     ~QgsTextFormat();
 
+    bool operator==( const QgsTextFormat &other ) const;
+    bool operator!=( const QgsTextFormat &other ) const;
+
     /**
      * Returns TRUE if the format is valid.
      *

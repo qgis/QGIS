@@ -59,6 +59,36 @@ QgsTextFormat::~QgsTextFormat() //NOLINT
 
 }
 
+bool QgsTextFormat::operator==( const QgsTextFormat &other ) const
+{
+  if ( d->isValid != other.isValid()
+       || d->textFont != other.font()
+       || d->textNamedStyle != other.namedStyle()
+       || d->fontSizeUnits != other.sizeUnit()
+       || d->fontSizeMapUnitScale != other.sizeMapUnitScale()
+       || d->fontSize != other.size()
+       || d->textColor != other.color()
+       || d->opacity != other.opacity()
+       || d->blendMode != other.blendMode()
+       || d->multilineHeight != other.lineHeight()
+       || d->orientation != other.orientation()
+       || d->previewBackgroundColor != other.previewBackgroundColor()
+       || d->allowHtmlFormatting != other.allowHtmlFormatting()
+       || mBufferSettings != other.mBufferSettings
+       || mBackgroundSettings != other.mBackgroundSettings
+       || mShadowSettings != other.mShadowSettings
+       || mMaskSettings != other.mMaskSettings
+       || d->mDataDefinedProperties != other.dataDefinedProperties() )
+    return false;
+
+  return true;
+}
+
+bool QgsTextFormat::operator!=( const QgsTextFormat &other ) const
+{
+  return !( *this == other );
+}
+
 bool QgsTextFormat::isValid() const
 {
   return d->isValid;
