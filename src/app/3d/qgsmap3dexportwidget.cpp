@@ -33,6 +33,8 @@ QgsMap3DExportWidget::QgsMap3DExportWidget( Qgs3DMapScene *scene, Qgs3DMapExport
 {
   ui->setupUi( this );
 
+  ui->selectFolderWidget->setStorageMode( QgsFileWidget::StorageMode::GetDirectory );
+
   loadSettings();
 
   connect( ui->sceneNameLineEdit, &QLineEdit::textChanged, [ = ]( const QString & ) { settingsChanged(); } );
