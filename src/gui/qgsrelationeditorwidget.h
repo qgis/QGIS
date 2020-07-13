@@ -97,7 +97,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     Q_OBJECT
     Q_PROPERTY( QgsDualView::ViewMode viewMode READ viewMode WRITE setViewMode )
     Q_PROPERTY( bool showLabel READ showLabel WRITE setShowLabel )
-    Q_PROPERTY( QgsAttributeEditorRelation::Buttons visibleButtons READ shownButtons WRITE setVisibleButtons )
+    Q_PROPERTY( QgsAttributeEditorRelation::Buttons visibleButtons READ visibleButtons WRITE setVisibleButtons )
 
   public:
 
