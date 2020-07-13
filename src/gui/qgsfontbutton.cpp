@@ -821,6 +821,12 @@ void QgsFontButton::resizeEvent( QResizeEvent *event )
 
 void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, QFont *font )
 {
+  if ( mShowNoFormat && !mFormat.isValid() )
+  {
+    setIcon( QPixmap() );
+    return;
+  }
+
   QgsTextFormat tempFormat;
   QFont tempFont;
 
