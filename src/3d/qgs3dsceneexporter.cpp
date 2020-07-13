@@ -196,7 +196,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
         }
         else
         {
-          processInstancedPointGeometry(entity, pointSymbol);
+          processInstancedPointGeometry( entity, pointSymbol );
           return true;
         }
       }
@@ -437,7 +437,8 @@ void Qgs3DSceneExporter::processBufferedLineGeometry( QgsTessellatedPolygonGeome
   object->setMaterialParameter( QString( "Ns" ), QString( "%1" ).arg( shininess ) );
 }
 
-void Qgs3DSceneExporter::processInstancedPointGeometry( Qt3DCore::QEntity *entity, const QgsPoint3DSymbol *pointSymbol ) {
+void Qgs3DSceneExporter::processInstancedPointGeometry( Qt3DCore::QEntity *entity, const QgsPoint3DSymbol *pointSymbol )
+{
   QList<Qt3DRender::QGeometry *> geometriesList =  entity->findChildren<Qt3DRender::QGeometry *>();
   for ( Qt3DRender::QGeometry *geometry : geometriesList )
   {
