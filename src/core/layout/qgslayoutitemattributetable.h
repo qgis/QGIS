@@ -361,6 +361,8 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
 
     struct Cell
     {
+      Cell() = default;
+
       Cell( const QVariant &content, const QgsConditionalStyle &style, const QgsFeature &feature )
         : content( content )
         , style( style )
