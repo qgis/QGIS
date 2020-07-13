@@ -1375,6 +1375,10 @@ void TestQgsProperty::propertyCollection()
   QVERIFY( !collection.hasDynamicProperties() );
   QVERIFY( !collection.hasActiveProperties() );
 
+  QgsPropertyCollection collection2;
+  QVERIFY( collection == collection2 );
+  QVERIFY( !( collection != collection2 ) );
+
   QgsProperty property = QgsProperty::fromValue( "value", true );
   collection.setProperty( Property1, property );
   QVERIFY( collection.hasProperty( Property1 ) );
@@ -1385,6 +1389,12 @@ void TestQgsProperty::propertyCollection()
   QVERIFY( collection.isActive( Property1 ) );
   QVERIFY( collection.hasActiveProperties() );
   QVERIFY( !collection.hasDynamicProperties() );
+
+  QVERIFY( collection != collection2 );
+  QVERIFY( !( collection == collection2 ) );
+  collection2.setProperty( Property1, property );
+  QVERIFY( collection == collection2 );
+  QVERIFY( !( collection != collection2 ) );
 
   //preparation
   QVERIFY( collection.prepare( context ) );
@@ -1403,6 +1413,8 @@ void TestQgsProperty::propertyCollection()
   QCOMPARE( collection.property( Property1 ).value( context ), property2.value( context ) );
   QVERIFY( collection.hasActiveProperties() );
   QVERIFY( !collection.hasDynamicProperties() );
+  QVERIFY( collection != collection2 );
+  QVERIFY( !( collection == collection2 ) );
 
   //implicit conversion
   collection.setProperty( Property3, 5 );
@@ -1431,6 +1443,13 @@ void TestQgsProperty::propertyCollection()
   collection.setProperty( Property3, QgsProperty::fromField( QStringLiteral( "field1" ), true ) );
   collection.setProperty( Property4, QgsProperty::fromExpression( QStringLiteral( "\"field1\" + \"field2\"" ), true ) );
   QCOMPARE( collection.count(), 4 );
+
+  collection2 = collection;
+  QVERIFY( collection == collection2 );
+  QVERIFY( !( collection != collection2 ) );
+  collection2.setProperty( Property3, QgsProperty() );
+  QVERIFY( collection != collection2 );
+  QVERIFY( !( collection == collection2 ) );
 
   // test referenced fields
   QCOMPARE( collection.referencedFields( context ).count(), 2 );
@@ -1466,7 +1485,7 @@ void TestQgsProperty::propertyCollection()
   QVERIFY( restoredCollection.hasDynamicProperties() );
 
   // copy constructor
-  QgsPropertyCollection collection2( collection );
+  collection2 = QgsPropertyCollection( collection );
   QCOMPARE( collection2.name(), QStringLiteral( "collection" ) );
   QCOMPARE( collection2.count(), 4 );
   QCOMPARE( collection2.property( Property1 ).propertyType(), QgsProperty::StaticProperty );
