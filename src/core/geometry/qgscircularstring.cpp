@@ -314,11 +314,12 @@ bool QgsCircularString::fromWkt( const QString &wkt )
     return false;
   mWkbType = parts.first;
 
-  if ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 )
+  parts.second = parts.second.remove( '(' ).remove( ')' );
+  QString secondWithoutParentheses = parts.second;
+  secondWithoutParentheses = secondWithoutParentheses.simplified().remove( ' ' );
+  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+       secondWithoutParentheses.isEmpty() )
     return true;
-
-  if ( parts.second.compare( QLatin1String( "NULL" ), Qt::CaseInsensitive ) == 0 )
-    return false;
 
   QgsPointSequence points = QgsGeometryUtils::pointsFromWKT( parts.second, is3D(), isMeasure() );
   if ( points.isEmpty() )

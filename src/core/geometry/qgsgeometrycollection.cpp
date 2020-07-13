@@ -698,11 +698,11 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector
   }
   mWkbType = parts.first;
 
-  if ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 )
+  QString secondWithoutParentheses = parts.second;
+  secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
+  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+       secondWithoutParentheses.isEmpty() )
     return true;
-
-  if ( parts.second.compare( QLatin1String( "NULL" ), Qt::CaseInsensitive ) == 0 )
-    return false;
 
   QString defChildWkbType = QStringLiteral( "%1%2%3 " ).arg( defaultChildWkbType, is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
 
