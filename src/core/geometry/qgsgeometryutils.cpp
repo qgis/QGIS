@@ -1100,6 +1100,7 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
 {
   int dim = 2 + is3D + isMeasure;
   QgsPointSequence points;
+
   const QStringList coordList = wktCoordinateList.split( ',', QString::SkipEmptyParts );
 
   //first scan through for extra unexpected dimensions
@@ -1306,9 +1307,7 @@ QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString 
 {
   QString wktParsed = wkt;
   QString contents;
-  if ( wktParsed.count( '(' ) != wktParsed.count( ')' ) ) // if unbalanced parenthesis will returns false
-    contents = QStringLiteral( "NULL" );
-  else if ( wkt.contains( QString( "EMPTY" ), Qt::CaseInsensitive ) )
+  if ( wkt.contains( QString( "EMPTY" ), Qt::CaseInsensitive ) )
   {
     QRegularExpression wktRegEx( QStringLiteral( "^\\s*(\\w+)\\s+(\\w+)\\s*$" ) );
     wktRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
@@ -1321,6 +1320,14 @@ QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString 
   }
   else
   {
+    const int openedParenthesisCount = wktParsed.count( '(' );
+    const int closedParenthesisCount = wktParsed.count( ')' );
+    // closes missing parentheses
+    for ( int i = 0 ;  i < openedParenthesisCount - closedParenthesisCount; ++i )
+      wktParsed.push_back( ')' );
+    // removes extra parentheses
+    wktParsed.truncate( wktParsed.size() - ( closedParenthesisCount - openedParenthesisCount ) );
+
     QRegularExpression cooRegEx( QStringLiteral( "^[^\\(]*\\((.*)\\)[^\\)]*$" ) );
     cooRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
     QRegularExpressionMatch match = cooRegEx.match( wktParsed );
