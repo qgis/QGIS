@@ -284,8 +284,8 @@ void TestQgsLayoutManualTable::scopeForCell()
   std::unique_ptr< QgsExpressionContextScope > scope( table->scopeForCell( 1, 2 ) );
 
   // variable values for row/col should start at 1, not 0!
-  QCOMPARE( scope->variable( QStringLiteral( "table_row" ) ).toInt(), 2 );
-  QCOMPARE( scope->variable( QStringLiteral( "table_column" ) ).toInt(), 3 );
+  QCOMPARE( scope->variable( QStringLiteral( "row_number" ) ).toInt(), 2 );
+  QCOMPARE( scope->variable( QStringLiteral( "column_number" ) ).toInt(), 3 );
 }
 
 void TestQgsLayoutManualTable::expressionContents()
@@ -307,7 +307,7 @@ void TestQgsLayoutManualTable::expressionContents()
   expectedRows.append( row );
 
   table->setTableContents(
-    QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << QgsTableCell( QgsProperty::fromExpression( QStringLiteral( "@table_row  || ',' || @table_column" ) ) ) << QgsTableCell( QgsProperty::fromExpression( QStringLiteral( "@table_row  || ',' || @table_column" ) ) ) )
+    QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << QgsTableCell( QgsProperty::fromExpression( QStringLiteral( "@row_number  || ',' || @column_number" ) ) ) << QgsTableCell( QgsProperty::fromExpression( QStringLiteral( "@row_number  || ',' || @column_number" ) ) ) )
     << ( QgsTableRow() << QgsTableCell( QgsProperty::fromExpression( QStringLiteral( "@layout_name" ) ) ) << QgsTableCell( QStringLiteral( "Helicopter" ) ) << QgsTableCell( QStringLiteral( "Plane" ) ) ) );
   compareTable( table, expectedRows );
 

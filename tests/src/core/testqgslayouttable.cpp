@@ -1651,16 +1651,16 @@ void TestQgsLayoutTable::testScopeForCell()
   std::unique_ptr< QgsExpressionContextScope > scope( table->scopeForCell( 0, 0 ) );
 
   // variable values for row/col should start at 1, not 0!
-  QCOMPARE( scope->variable( QStringLiteral( "table_row" ) ).toInt(), 1 );
-  QCOMPARE( scope->variable( QStringLiteral( "table_column" ) ).toInt(), 1 );
+  QCOMPARE( scope->variable( QStringLiteral( "row_number" ) ).toInt(), 1 );
+  QCOMPARE( scope->variable( QStringLiteral( "column_number" ) ).toInt(), 1 );
   QCOMPARE( scope->feature().attribute( 0 ).toString(), QStringLiteral( "Jet" ) );
   scope.reset( table->scopeForCell( 0, 1 ) );
-  QCOMPARE( scope->variable( QStringLiteral( "table_row" ) ).toInt(), 1 );
-  QCOMPARE( scope->variable( QStringLiteral( "table_column" ) ).toInt(), 2 );
+  QCOMPARE( scope->variable( QStringLiteral( "row_number" ) ).toInt(), 1 );
+  QCOMPARE( scope->variable( QStringLiteral( "column_number" ) ).toInt(), 2 );
   QCOMPARE( scope->feature().attribute( 0 ).toString(), QStringLiteral( "Jet" ) );
   scope.reset( table->scopeForCell( 1, 2 ) );
-  QCOMPARE( scope->variable( QStringLiteral( "table_row" ) ).toInt(), 2 );
-  QCOMPARE( scope->variable( QStringLiteral( "table_column" ) ).toInt(), 3 );
+  QCOMPARE( scope->variable( QStringLiteral( "row_number" ) ).toInt(), 2 );
+  QCOMPARE( scope->variable( QStringLiteral( "column_number" ) ).toInt(), 3 );
   QCOMPARE( scope->feature().attribute( 0 ).toString(), QStringLiteral( "Biplane" ) );
 
   // make sure fields are set

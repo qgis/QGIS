@@ -992,8 +992,8 @@ QMap<int, QString> QgsLayoutTable::headerLabels() const
 QgsExpressionContextScope *QgsLayoutTable::scopeForCell( int row, int column ) const
 {
   std::unique_ptr< QgsExpressionContextScope > cellScope = qgis::make_unique< QgsExpressionContextScope >();
-  cellScope->setVariable( QStringLiteral( "table_row" ), row + 1, true );
-  cellScope->setVariable( QStringLiteral( "table_column" ), column + 1, true );
+  cellScope->setVariable( QStringLiteral( "row_number" ), row + 1, true );
+  cellScope->setVariable( QStringLiteral( "column_number" ), column + 1, true );
   return cellScope.release();
 }
 
