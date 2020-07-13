@@ -28,6 +28,7 @@
 #include "qgslogger.h"
 #include "qgstessellator.h"
 #include "qgsfeedback.h"
+#include "qgsgeometryengine.h"
 #include <QTransform>
 #include <functional>
 #include <memory>
@@ -40,6 +41,11 @@ QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry &geometr
 
 }
 
+QString QgsInternalGeometryEngine::lastError() const
+{
+  return mLastError;
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
@@ -48,6 +54,7 @@ QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry &geometr
 
 QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
 {
+  mLastError.clear();
   QVector<QgsLineString *> linesToProcess;
 
   const QgsMultiCurve *multiCurve = qgsgeometry_cast< const QgsMultiCurve * >( mGeometry );
@@ -238,6 +245,7 @@ QgsPoint surfacePoleOfInaccessibility( const QgsSurface *surface, double precisi
 
 QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, double *distanceFromBoundary ) const
 {
+  mLastError.clear();
   if ( distanceFromBoundary )
     *distanceFromBoundary = std::numeric_limits<double>::max();
 
@@ -493,6 +501,7 @@ QgsAbstractGeometry *orthogonalizeGeom( const QgsAbstractGeometry *geom, int max
 
 QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxIterations, double angleThreshold ) const
 {
+  mLastError.clear();
   if ( !mGeometry || ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) != QgsWkbTypes::LineGeometry
                        && QgsWkbTypes::geometryType( mGeometry->wkbType() ) != QgsWkbTypes::PolygonGeometry ) )
   {
@@ -650,6 +659,7 @@ QgsAbstractGeometry *densifyGeometry( const QgsAbstractGeometry *geom, int extra
 
 QgsGeometry QgsInternalGeometryEngine::densifyByCount( int extraNodesPerSegment ) const
 {
+  mLastError.clear();
   if ( !mGeometry )
   {
     return QgsGeometry();
@@ -685,6 +695,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByCount( int extraNodesPerSegment 
 
 QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) const
 {
+  mLastError.clear();
   if ( !mGeometry )
   {
     return QgsGeometry();
@@ -891,6 +902,7 @@ QVector<QgsPointXY> generateSegmentCurve( const QgsPoint &center1, const double 
 
 QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const std::function< std::unique_ptr< double[] >( const QgsLineString *line ) > &widthFunction ) const
 {
+  mLastError.clear();
   if ( !mGeometry )
   {
     return QgsGeometry();
@@ -996,6 +1008,7 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const 
 
 QgsGeometry QgsInternalGeometryEngine::taperedBuffer( double start, double end, int segments ) const
 {
+  mLastError.clear();
   start = std::fabs( start );
   end = std::fabs( end );
 
@@ -1028,6 +1041,7 @@ QgsGeometry QgsInternalGeometryEngine::taperedBuffer( double start, double end, 
 
 QgsGeometry QgsInternalGeometryEngine::variableWidthBufferByM( int segments ) const
 {
+  mLastError.clear();
   auto widthByM = []( const QgsLineString * line )->std::unique_ptr< double [] >
   {
     std::unique_ptr< double [] > widths( new double[ line->nCoordinates() ] );
@@ -1394,6 +1408,7 @@ std::unique_ptr< QgsAbstractGeometry > convertGeometryToCurves( const QgsAbstrac
 
 QgsGeometry QgsInternalGeometryEngine::convertToCurves( double distanceTolerance, double angleTolerance ) const
 {
+  mLastError.clear();
   if ( !mGeometry )
   {
     return QgsGeometry();
@@ -1432,4 +1447,67 @@ QgsGeometry QgsInternalGeometryEngine::convertToCurves( double distanceTolerance
   {
     return QgsGeometry( convertGeometryToCurves( mGeometry, distanceTolerance, angleTolerance ) );
   }
+}
+
+QgsGeometry QgsInternalGeometryEngine::orientedMinimumBoundingBox( double &area, double &angle, double &width, double &height ) const
+{
+  mLastError.clear();
+
+  QgsRectangle minRect;
+  area = std::numeric_limits<double>::max();
+  angle = 0;
+  width = std::numeric_limits<double>::max();
+  height = std::numeric_limits<double>::max();
+
+  if ( !mGeometry || mGeometry->nCoordinates() < 2 )
+    return QgsGeometry();
+
+  std::unique_ptr< QgsGeometryEngine >engine( QgsGeometry::createGeometryEngine( mGeometry ) );
+  QString error;
+  std::unique_ptr< QgsAbstractGeometry > hull( engine->convexHull( &mLastError ) );
+  if ( !hull )
+    return QgsGeometry();
+
+  QgsVertexId vertexId;
+  QgsPoint pt0;
+  QgsPoint pt1;
+  QgsPoint pt2;
+  // get first point
+  hull->nextVertex( vertexId, pt0 );
+  pt1 = pt0;
+  double totalRotation = 0;
+  while ( hull->nextVertex( vertexId, pt2 ) )
+  {
+    double currentAngle = QgsGeometryUtils::lineAngle( pt1.x(), pt1.y(), pt2.x(), pt2.y() );
+    double rotateAngle = 180.0 / M_PI * currentAngle;
+    totalRotation += rotateAngle;
+
+    QTransform t = QTransform::fromTranslate( pt0.x(), pt0.y() );
+    t.rotate( rotateAngle );
+    t.translate( -pt0.x(), -pt0.y() );
+
+    hull->transform( t );
+
+    QgsRectangle bounds = hull->boundingBox();
+    double currentArea = bounds.width() * bounds.height();
+    if ( currentArea  < area )
+    {
+      minRect = bounds;
+      area = currentArea;
+      angle = totalRotation;
+      width = bounds.width();
+      height = bounds.height();
+    }
+
+    pt1 = hull->vertexAt( vertexId );
+  }
+
+  QgsGeometry minBounds = QgsGeometry::fromRect( minRect );
+  minBounds.rotate( angle, QgsPointXY( pt0.x(), pt0.y() ) );
+
+  // constrain angle to 0 - 180
+  if ( angle > 180.0 )
+    angle = std::fmod( angle, 180.0 );
+
+  return minBounds;
 }

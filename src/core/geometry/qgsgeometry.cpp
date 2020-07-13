@@ -972,61 +972,12 @@ QgsRectangle QgsGeometry::boundingBox() const
 
 QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle, double &width, double &height ) const
 {
-  QgsRectangle minRect;
-  area = std::numeric_limits<double>::max();
-  angle = 0;
-  width = std::numeric_limits<double>::max();
-  height = std::numeric_limits<double>::max();
-
-  if ( !d->geometry || d->geometry->nCoordinates() < 2 )
-    return QgsGeometry();
-
-  QgsGeometry hull = convexHull();
-  if ( hull.isNull() )
-    return QgsGeometry();
-
-  QgsVertexId vertexId;
-  QgsPoint pt0;
-  QgsPoint pt1;
-  QgsPoint pt2;
-  // get first point
-  hull.constGet()->nextVertex( vertexId, pt0 );
-  pt1 = pt0;
-  double totalRotation = 0;
-  while ( hull.constGet()->nextVertex( vertexId, pt2 ) )
-  {
-    double currentAngle = QgsGeometryUtils::lineAngle( pt1.x(), pt1.y(), pt2.x(), pt2.y() );
-    double rotateAngle = 180.0 / M_PI * currentAngle;
-    totalRotation += rotateAngle;
-
-    QTransform t = QTransform::fromTranslate( pt0.x(), pt0.y() );
-    t.rotate( rotateAngle );
-    t.translate( -pt0.x(), -pt0.y() );
-
-    hull.get()->transform( t );
-
-    QgsRectangle bounds = hull.constGet()->boundingBox();
-    double currentArea = bounds.width() * bounds.height();
-    if ( currentArea  < area )
-    {
-      minRect = bounds;
-      area = currentArea;
-      angle = totalRotation;
-      width = bounds.width();
-      height = bounds.height();
-    }
-
-    pt1 = hull.constGet()->vertexAt( vertexId );
-  }
-
-  QgsGeometry minBounds = QgsGeometry::fromRect( minRect );
-  minBounds.rotate( angle, QgsPointXY( pt0.x(), pt0.y() ) );
-
-  // constrain angle to 0 - 180
-  if ( angle > 180.0 )
-    angle = std::fmod( angle, 180.0 );
-
-  return minBounds;
+  mLastError.clear();
+  QgsInternalGeometryEngine engine( *this );
+  const QgsGeometry res = engine.orientedMinimumBoundingBox( area, angle, width, height );
+  if ( res.isNull() )
+    mLastError = engine.lastError();
+  return res;
 }
 
 QgsGeometry QgsGeometry::orientedMinimumBoundingBox() const

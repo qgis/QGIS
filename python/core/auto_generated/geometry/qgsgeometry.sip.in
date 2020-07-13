@@ -917,6 +917,9 @@ Returns the oriented minimum bounding box for the geometry, which is the smalles
 rotated rectangle which fully encompasses the geometry. The area, angle (clockwise in degrees from North),
 width and height of the rotated bounding box will also be returned.
 
+If an error was encountered while creating the result, more information can be retrieved
+by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
+
 .. seealso:: :py:func:`boundingBox`
 
 .. versionadded:: 3.0
