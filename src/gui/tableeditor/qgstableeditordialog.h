@@ -25,6 +25,7 @@ class QgsMessageBar;
 class QgsDockWidget;
 class QgsPanelWidgetStack;
 class QgsTableEditorFormattingWidget;
+class QgsExpressionContextGenerator;
 
 /**
  * \ingroup gui
@@ -133,6 +134,13 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
      * \see tableHeaders()
      */
     void setTableHeaders( const QVariantList &headers );
+
+    /**
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for the editor when required.
+     * \since QGIS 3.16
+     */
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
   signals:
 

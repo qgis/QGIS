@@ -18,11 +18,13 @@
 #include "qgis_gui.h"
 #include "ui_qgstableeditorformattingwidgetbase.h"
 #include "qgspanelwidget.h"
+#include "qgsexpressioncontextgenerator.h"
 #include <memory>
 
 #define SIP_NO_FILE
 
 class QgsNumericFormat;
+class QgsProperty;
 
 /**
  * \ingroup gui
@@ -36,7 +38,7 @@ class QgsNumericFormat;
  *
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, private Ui::QgsTableEditorFormattingWidgetBase
+class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, public QgsExpressionContextGenerator, private Ui::QgsTableEditorFormattingWidgetBase
 {
     Q_OBJECT
   public:
@@ -145,6 +147,22 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, private
      */
     void setVerticalAlignment( Qt::Alignment alignment );
 
+    /**
+     * Sets the cell content's \a property to show in the widget.
+     *
+     * \since QGIS 3.16
+     */
+    void setCellProperty( const QgsProperty &property );
+
+    /**
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for the widget when required.
+     * \since QGIS 3.16
+     */
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+
+    QgsExpressionContext createExpressionContext() const override;
+
   signals:
 
     /**
@@ -204,10 +222,18 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, private
      */
     void verticalAlignmentChanged( Qt::Alignment alignment );
 
+    /**
+     * Emitted when the cell contents \a property shown in the widget is changed.
+     *
+     * \since QGIS 3.16
+     */
+    void cellPropertyChanged( const QgsProperty &property );
+
   private:
 
     std::unique_ptr< QgsNumericFormat > mNumericFormat;
     int mBlockSignals = 0;
+    QgsExpressionContextGenerator *mContextGenerator = nullptr;
 
 };
 

@@ -64,7 +64,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
 
   int minDockWidth( fontMetrics().boundingRect( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ) ).width() );
 
-  mPropertiesDock = new QgsDockWidget( tr( "Formatting" ), this );
+  mPropertiesDock = new QgsDockWidget( tr( "Cell Contents" ), this );
   mPropertiesDock->setObjectName( QStringLiteral( "FormattingDock" ) );
   mPropertiesStack = new QgsPanelWidgetStack();
   mPropertiesDock->setWidget( mPropertiesStack );
@@ -81,6 +81,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
 
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::horizontalAlignmentChanged, mTableWidget, &QgsTableEditorWidget::setSelectionHorizontalAlignment );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::verticalAlignmentChanged, mTableWidget, &QgsTableEditorWidget::setSelectionVerticalAlignment );
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::cellPropertyChanged, mTableWidget, &QgsTableEditorWidget::setSelectionCellProperty );
 
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::textFormatChanged, this, [ = ]
   {
@@ -108,6 +109,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
     mFormattingWidget->setTextFormat( mTableWidget->selectionTextFormat(), mTableWidget->selectionHasTextFormat(), mTableWidget->hasMixedSelectionHasTextFormat() );
     mFormattingWidget->setHorizontalAlignment( mTableWidget->selectionHorizontalAlignment() );
     mFormattingWidget->setVerticalAlignment( mTableWidget->selectionVerticalAlignment() );
+    mFormattingWidget->setCellProperty( mTableWidget->selectionCellProperty() );
 
     updateActionNamesFromSelection();
 
@@ -227,6 +229,11 @@ QVariantList QgsTableEditorDialog::tableHeaders() const
 void QgsTableEditorDialog::setTableHeaders( const QVariantList &headers )
 {
   mTableWidget->setTableHeaders( headers );
+}
+
+void QgsTableEditorDialog::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
+{
+  mFormattingWidget->registerExpressionContextGenerator( generator );
 }
 
 void QgsTableEditorDialog::updateActionNamesFromSelection()
