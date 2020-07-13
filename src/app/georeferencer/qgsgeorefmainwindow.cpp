@@ -401,14 +401,16 @@ void QgsGeoreferencerMainWindow::generateGDALScript()
 void QgsGeoreferencerMainWindow::setAddPointTool()
 {
   mCanvas->setMapTool( mToolAddPoint );
-  if ( mPrevQgisMapTool )
+  QgsMapTool *activeQgisMapTool = QgisApp::instance()->mapCanvas()->mapTool();
+  if ( activeQgisMapTool == mToolMovePointQgis )
     QgisApp::instance()->mapCanvas()->setMapTool( mPrevQgisMapTool );
 }
 
 void QgsGeoreferencerMainWindow::setDeletePointTool()
 {
   mCanvas->setMapTool( mToolDeletePoint );
-  if ( mPrevQgisMapTool )
+  QgsMapTool *activeQgisMapTool = QgisApp::instance()->mapCanvas()->mapTool();
+  if ( activeQgisMapTool == mToolMovePointQgis )
     QgisApp::instance()->mapCanvas()->setMapTool( mPrevQgisMapTool );
 }
 
