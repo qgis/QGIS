@@ -2,6 +2,7 @@
 # sources
 
 SET(QGIS_3D_SRCS
+  qgs3d.cpp
   qgsaabb.cpp
   qgsabstract3dengine.cpp
   qgsabstractvectorlayer3drenderer.cpp
@@ -73,6 +74,7 @@ SET(QGIS_3D_SRCS
 
 SET(QGIS_3D_HDRS
   processing/qgs3dalgorithms.h
+  qgs3d.h
   qgs3danimationsettings.h
   qgs3dmapscene.h
   qgs3dmapsettings.h
