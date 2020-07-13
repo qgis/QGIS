@@ -223,7 +223,17 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
               Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "shape_geometry" ), "", this );
               mObjects.push_back( object );
               object->setupPositionCoordinates( positionData, indexData, 1.0f, QVector3D( instancePosition[i], instancePosition[i + 1], instancePosition[i + 2] ) );
+              QgsPhongMaterialSettings material = pointSymbol->material();
+              QColor diffuse = material.diffuse();
+              QColor specular = material.specular();
+              QColor ambient = material.ambient();
+              float shininess = material.shininess();
+              object->setMaterialParameter( QString( "Kd" ), QString( "%1 %2 %3" ).arg( diffuse.redF() ).arg( diffuse.greenF() ).arg( diffuse.blueF() ) );
+              object->setMaterialParameter( QString( "Ka" ), QString( "%1 %2 %3" ).arg( ambient.redF() ).arg( ambient.greenF() ).arg( ambient.blueF() ) );
+              object->setMaterialParameter( QString( "Ks" ), QString( "%1 %2 %3" ).arg( specular.redF() ).arg( specular.greenF() ).arg( specular.blueF() ) );
+              object->setMaterialParameter( QString( "Ns" ), QString( "%1" ).arg( shininess ) );
             }
+
             return true;
           }
         }
