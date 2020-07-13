@@ -351,10 +351,9 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
       ZoomToChildFeature = 1 << 7, //!< Zoom to child feature
       AllButtons = Link | Unlink | SaveChildEdits | AddChildFeature | DuplicateChildFeature | DeleteChildFeature | ZoomToChildFeature //!< All buttons
     };
-    Q_ENUM( Button )
     Q_DECLARE_FLAGS( Buttons, Button )
+    Q_FLAG( Button )
     Q_FLAG( Buttons )
-
 
     /**
      * \deprecated since QGIS 3.0.2. The name parameter is not used for anything and overwritten by the relationId internally.

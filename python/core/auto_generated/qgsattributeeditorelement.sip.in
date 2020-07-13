@@ -301,7 +301,6 @@ This element will load a relation editor onto the form.
     typedef QFlags<QgsAttributeEditorRelation::Button> Buttons;
 
 
-
  QgsAttributeEditorRelation( const QString &name, const QString &relationId, QgsAttributeEditorElement *parent );
 %Docstring
 
