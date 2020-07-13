@@ -1,0 +1,60 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsnewvectortabledialog.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsNewVectorTableDialog : QDialog
+{
+%Docstring
+The QgsNewVectorTableDialog class is a provider-agnostic database vector
+and aspatial table designer dialog.
+
+It allows to design a new vector or aspatial database table by defining the schema
+(if supported by the provider) and table names, the list of QgsFields,
+the geometry type and the SRID (if the table is not aspatial).
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsnewvectortabledialog.h"
+%End
+  public:
+
+    QgsNewVectorTableDialog( QgsAbstractDatabaseProviderConnection *conn, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+QgsNewVectorTableDialog constructor
+
+:param connection: DB connection, ownership is NOT transfered
+:param parent: optional parent
+%End
+
+    QString tableName() const;
+
+    QString schemaName() const;
+
+    QgsFields fields() const;
+
+    QgsWkbTypes::Type geometryType() const;
+
+    void setFields( const QgsFields &fields );
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsnewvectortabledialog.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
