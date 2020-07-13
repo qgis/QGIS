@@ -320,7 +320,7 @@ void QgsTableEditorWidget::setTableContents( const QgsTableContents &contents )
     int colNumber = 0;
     for ( const QgsTableCell &col : row )
     {
-      QTableWidgetItem *item = new QTableWidgetItem( col.content().toString() );
+      QTableWidgetItem *item = new QTableWidgetItem( col.content().value< QgsProperty >().isActive() ? col.content().value< QgsProperty >().asExpression() : col.content().toString() );
       item->setData( CellContent, col.content() ); // can't use EditRole, because Qt. (https://bugreports.qt.io/browse/QTBUG-11549)
       item->setData( Qt::BackgroundRole, col.backgroundColor().isValid() ? col.backgroundColor() : QColor( 255, 255, 255 ) );
       item->setData( PresetBackgroundColorRole, col.backgroundColor().isValid() ? col.backgroundColor() : QVariant() );
@@ -328,6 +328,11 @@ void QgsTableEditorWidget::setTableContents( const QgsTableContents &contents )
       item->setData( TextFormat, QVariant::fromValue( col.textFormat() ) );
       item->setData( HorizontalAlignment, static_cast< int >( col.horizontalAlignment() ) );
       item->setData( VerticalAlignment, static_cast< int >( col.verticalAlignment() ) );
+      item->setData( CellProperty, QVariant::fromValue( col.content().value< QgsProperty >() ) );
+
+      if ( col.content().value< QgsProperty >().isActive() )
+        item->setFlags( item->flags() & ( ~Qt::ItemIsEditable ) );
+
       if ( col.numericFormat() )
       {
         mNumericFormats.insert( item, col.numericFormat()->clone() );
@@ -365,7 +370,7 @@ QgsTableContents QgsTableEditorWidget::tableContents() const
       QgsTableCell cell;
       if ( QTableWidgetItem *i = item( r, c ) )
       {
-        cell.setContent( i->data( CellContent ) );
+        cell.setContent( i->data( CellProperty ).value< QgsProperty >().isActive() ? i->data( CellProperty ) : i->data( CellContent ) );
         cell.setBackgroundColor( i->data( PresetBackgroundColorRole ).value< QColor >() );
         cell.setForegroundColor( i->data( Qt::ForegroundRole ).value< QColor >() );
         cell.setTextFormat( i->data( TextFormat ).value< QgsTextFormat >() );
@@ -577,6 +582,29 @@ Qt::Alignment QgsTableEditorWidget::selectionVerticalAlignment()
     }
   }
   return alignment;
+}
+
+QgsProperty QgsTableEditorWidget::selectionCellProperty()
+{
+  QgsProperty property;
+  bool first = true;
+  const QModelIndexList selection = selectedIndexes();
+  for ( const QModelIndex &index : selection )
+  {
+    const QgsProperty cellProperty = model()->data( index, CellProperty ).value< QgsProperty >();
+    if ( first )
+    {
+      property = cellProperty;
+      first = false;
+    }
+    else if ( cellProperty == property )
+      continue;
+    else
+    {
+      return QgsProperty();
+    }
+  }
+  return property;
 }
 
 QgsTextFormat QgsTableEditorWidget::selectionTextFormat()
@@ -1046,6 +1074,57 @@ void QgsTableEditorWidget::setSelectionVerticalAlignment( Qt::Alignment alignmen
     emit tableChanged();
 }
 
+void QgsTableEditorWidget::setSelectionCellProperty( const QgsProperty &property )
+{
+  const QModelIndexList selection = selectedIndexes();
+  bool changed = false;
+  mBlockSignals++;
+  for ( const QModelIndex &index : selection )
+  {
+    if ( index.row() == 0 && mIncludeHeader )
+      continue;
+
+    if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
+    {
+      if ( i->data( CellProperty ).value< QgsProperty >() != property )
+      {
+        if ( property.isActive() )
+        {
+          i->setData( CellProperty, QVariant::fromValue( property ) );
+          i->setText( property.asExpression() );
+          i->setFlags( i->flags() & ( ~Qt::ItemIsEditable ) );
+        }
+        else
+        {
+          i->setData( CellProperty, QVariant() );
+          i->setText( QString() );
+          i->setFlags( i->flags() | Qt::ItemIsEditable );
+        }
+        changed = true;
+      }
+    }
+    else
+    {
+      QTableWidgetItem *newItem = new QTableWidgetItem( property.asExpression() );
+      if ( property.isActive() )
+      {
+        newItem->setData( CellProperty,  QVariant::fromValue( property ) );
+        newItem->setFlags( newItem->flags() & ( ~Qt::ItemIsEditable ) );
+      }
+      else
+      {
+        newItem->setData( CellProperty, QVariant() );
+        newItem->setFlags( newItem->flags() | Qt::ItemIsEditable );
+      }
+      setItem( index.row(), index.column(), newItem );
+      changed = true;
+    }
+  }
+  mBlockSignals--;
+  if ( changed && !mBlockSignals )
+    emit tableChanged();
+}
+
 void QgsTableEditorWidget::setSelectionTextFormat( const QgsTextFormat &format )
 {
   const QModelIndexList selection = selectedIndexes();
@@ -1351,7 +1430,7 @@ void QgsTableEditorDelegate::setModelData( QWidget *editor, QAbstractItemModel *
   if ( QgsTableEditorTextEdit *lineEdit = qobject_cast<QgsTableEditorTextEdit * >( editor ) )
   {
     const QString text = lineEdit->toPlainText();
-    if ( text != model->data( index, QgsTableEditorWidget::CellContent ).toString() )
+    if ( text != model->data( index, QgsTableEditorWidget::CellContent ).toString() && !model->data( index, QgsTableEditorWidget::CellProperty ).value< QgsProperty >().isActive() )
     {
       model->setData( index, text, QgsTableEditorWidget::CellContent );
       model->setData( index, text, Qt::DisplayRole );

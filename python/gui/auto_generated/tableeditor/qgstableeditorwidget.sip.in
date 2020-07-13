@@ -120,6 +120,16 @@ the selected cells have a mix of different vertical alignments.
 .. seealso:: :py:func:`selectionVerticalAlignment`
 %End
 
+    QgsProperty selectionCellProperty();
+%Docstring
+Returns the QgsProperty used for the contents of the currently selected cells.
+
+If the returned value is a default constructed :py:class:`QgsProperty`, then the selected
+cells have a mix of different properties.
+
+.. versionadded:: 3.16
+%End
+
     QgsTextFormat selectionTextFormat();
 %Docstring
 Returns the text format for the currently selected cells.
@@ -304,6 +314,13 @@ Sets the vertical alignment for the currently selected cells.
 .. seealso:: :py:func:`selectionVerticalAlignment`
 
 .. seealso:: :py:func:`setSelectionHorizontalAlignment`
+
+.. versionadded:: 3.16
+%End
+
+    void setSelectionCellProperty( const QgsProperty &property );
+%Docstring
+Sets the cell contents QgsProperty for the currently selected cells.
 
 .. versionadded:: 3.16
 %End

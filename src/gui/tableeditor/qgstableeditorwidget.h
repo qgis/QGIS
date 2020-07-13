@@ -20,6 +20,7 @@
 
 #include "qgis_gui.h"
 #include "qgstablecell.h"
+#include "qgsproperty.h"
 #include <QTableWidget>
 #include <QPlainTextEdit>
 #include <QStyledItemDelegate>
@@ -201,6 +202,16 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      * \see selectionVerticalAlignment()
      */
     Qt::Alignment selectionVerticalAlignment();
+
+    /**
+     * Returns the QgsProperty used for the contents of the currently selected cells.
+     *
+     * If the returned value is a default constructed QgsProperty, then the selected
+     * cells have a mix of different properties.
+     *
+     * \since QGIS 3.16
+     */
+    QgsProperty selectionCellProperty();
 
     /**
      * Returns the text format for the currently selected cells.
@@ -385,6 +396,13 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
     void setSelectionVerticalAlignment( Qt::Alignment alignment );
 
     /**
+     * Sets the cell contents QgsProperty for the currently selected cells.
+     *
+     * \since QGIS 3.16
+     */
+    void setSelectionCellProperty( const QgsProperty &property );
+
+    /**
      * Sets the text \a format for the selected cells.
      *
      * \since QGIS 3.16
@@ -449,7 +467,8 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
       CellContent,
       TextFormat,
       HorizontalAlignment,
-      VerticalAlignment
+      VerticalAlignment,
+      CellProperty,
     };
 
     void updateHeaders();

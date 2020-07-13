@@ -161,6 +161,7 @@ void QgsLayoutManualTableWidget::setTableContents()
   else
   {
     mEditorDialog = new QgsTableEditorDialog( this );
+    mEditorDialog->registerExpressionContextGenerator( mTable );
     connect( this, &QWidget::destroyed, mEditorDialog, &QMainWindow::close );
 
     mEditorDialog->setIncludeTableHeader( mTable->includeTableHeader() );

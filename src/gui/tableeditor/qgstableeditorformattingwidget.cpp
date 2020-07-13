@@ -17,12 +17,13 @@
 #include "qgsnumericformatselectorwidget.h"
 #include "qgsnumericformat.h"
 #include "qgis.h"
+#include "qgsproperty.h"
 
 QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent )
   : QgsPanelWidget( parent )
 {
   setupUi( this );
-  setPanelTitle( tr( "Formatting" ) );
+  setPanelTitle( tr( "Cell Contents" ) );
 
   mFormatNumbersCheckBox->setTristate( false );
 
@@ -132,6 +133,19 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
       emit verticalAlignmentChanged( mVerticalAlignComboBox->currentAlignment() );
     }
   } );
+
+  connect( mExpressionEdit, qgis::overload<const QString &>::of( &QgsFieldExpressionWidget::fieldChanged ), this, [ = ]( const QString & expression )
+  {
+    if ( !mBlockSignals )
+    {
+      emit cellPropertyChanged( expression.isEmpty() ? QgsProperty() : QgsProperty::fromExpression( expression ) );
+    }
+  } );
+
+  mExpressionEdit->setAllowEmptyFieldName( true );
+
+  mExpressionEdit->registerExpressionContextGenerator( this );
+  mFontButton->registerExpressionContextGenerator( this );
 }
 
 QgsNumericFormat *QgsTableEditorFormattingWidget::numericFormat()
@@ -217,6 +231,37 @@ void QgsTableEditorFormattingWidget::setVerticalAlignment( Qt::Alignment alignme
   else
     mVerticalAlignComboBox->setCurrentAlignment( alignment );
   mBlockSignals--;
+}
+
+void QgsTableEditorFormattingWidget::setCellProperty( const QgsProperty &property )
+{
+  mBlockSignals++;
+  if ( !property.isActive() )
+    mExpressionEdit->setExpression( QString() );
+  else
+    mExpressionEdit->setExpression( property.asExpression() );
+  mBlockSignals--;
+}
+
+void QgsTableEditorFormattingWidget::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
+{
+  mContextGenerator = generator;
+}
+
+QgsExpressionContext QgsTableEditorFormattingWidget::createExpressionContext() const
+{
+  QgsExpressionContext context;
+  if ( mContextGenerator )
+    context = mContextGenerator->createExpressionContext();
+
+  QgsExpressionContextScope *cellScope = new QgsExpressionContextScope();
+  // TODO -- could set real row/column numbers here, in certain circumstances...
+  cellScope->setVariable( QStringLiteral( "row_number" ), 0 );
+  cellScope->setVariable( QStringLiteral( "column_number" ), 0 );
+  context.appendScope( cellScope );
+
+  context.setHighlightedVariables( QStringList() << QStringLiteral( "row_number" ) << QStringLiteral( "column_number" ) );
+  return context;
 }
 
 QgsTableEditorFormattingWidget::~QgsTableEditorFormattingWidget() = default;

@@ -118,6 +118,14 @@ Sets the table ``headers``.
 .. seealso:: :py:func:`tableHeaders`
 %End
 
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+%Docstring
+Register an expression context generator class that will be used to retrieve
+an expression context for the editor when required.
+
+.. versionadded:: 3.16
+%End
+
   signals:
 
     void tableChanged();
