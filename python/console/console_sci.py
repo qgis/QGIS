@@ -104,7 +104,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.runsource(line)
 
         self.history = []
-        self.historyIndex = 0
+        self.softHistory = []
+        self.softHistoryIndex = 0
         # Read history command file
         self.readHistoryFile()
 
@@ -342,7 +343,15 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def displayPrompt(self, more=False):
         self.SendScintilla(QsciScintilla.SCI_MARGINSETTEXT, 0, str.encode("..." if more else ">>>"))
 
-    def updateHistory(self, command):
+    def syncSoftHistory(self):
+        self.softHistory = self.history[:]
+        self.softHistory.append('')
+        self.softHistoryIndex = len(self.softHistory) - 1
+
+    def updateSoftHistory(self):
+        self.softHistory[self.softHistoryIndex] = self.text()
+
+    def updateHistory(self, command, skipSoftHistory=False):
         if isinstance(command, list):
             for line in command:
                 self.history.append(line)
@@ -350,7 +359,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             if len(self.history) <= 0 or \
                     command != self.history[-1]:
                 self.history.append(command)
-        self.historyIndex = len(self.history)
+        if not skipSoftHistory:
+            self.syncSoftHistory()
 
     def writeHistoryFile(self, fromCloseConsole=False):
         ok = False
@@ -374,13 +384,15 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                 for line in rH:
                     if line != "\n":
                         l = line.rstrip('\n')
-                        self.updateHistory(l)
+                        self.updateHistory(l, True)
+            self.syncSoftHistory()
         else:
             return
 
     def clearHistory(self, clearSession=False):
         if clearSession:
             self.history = []
+            self.syncSoftHistory()
             msgText = QCoreApplication.translate('PythonConsole',
                                                  'Session and file history cleared successfully.')
             self.parent.callWidgetMessageBar(msgText)
@@ -401,27 +413,23 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.clearHistory(True)
 
     def showPrevious(self):
-        if self.historyIndex < len(self.history) and self.history:
-            self.historyIndex += 1
-            if self.historyIndex == len(self.history):
-                self.setText("")
-                pass
-            else:
-                self.setText(self.history[self.historyIndex])
+        if self.softHistoryIndex < len(self.softHistory) - 1 and self.softHistory:
+            self.softHistoryIndex += 1
+            self.setText(self.softHistory[self.softHistoryIndex])
             self.move_cursor_to_end()
             # self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
     def showNext(self):
-        if self.historyIndex > 0 and self.history:
-            self.historyIndex -= 1
-            if self.historyIndex == len(self.history):
-                self.setText("")
-            else:
-                self.setText(self.history[self.historyIndex])
-            self.move_cursor_to_start()
+        if self.softHistoryIndex > 0 and self.softHistory:
+            self.softHistoryIndex -= 1
+            self.setText(self.softHistory[self.softHistoryIndex])
+            self.move_cursor_to_end()
             # self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
     def keyPressEvent(self, e):
+        # update the live history
+        self.updateSoftHistory()
+
         startLine, startPos, endLine, endPos = self.getSelection()
 
         # handle invalid cursor position and multiline selections
@@ -472,16 +480,11 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             e.accept()
 
         elif e.key() == Qt.Key_Down and not self.isListActive():
-            if self.is_cursor_at_end():
-                self.showPrevious()
-            else:
-                QsciScintilla.keyPressEvent(self, e)
+            self.showPrevious()
 
         elif e.key() == Qt.Key_Up and not self.isListActive():
-            if self.is_cursor_at_start():
-                self.showNext()
-            else:
-                QsciScintilla.keyPressEvent(self, e)
+            self.showNext()
+
         # TODO: press event for auto-completion file directory
         else:
             t = e.text()
