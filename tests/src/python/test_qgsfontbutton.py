@@ -103,6 +103,21 @@ class TestQgsFontButton(unittest.TestCase):
         r = button.textFormat()
         self.assertEqual(r.color(), QColor(0, 255, 0))
 
+    def testNull(self):
+        button = QgsFontButton()
+        self.assertFalse(button.showNullFormat())
+        button.setShowNullFormat(True)
+        self.assertTrue(button.showNullFormat())
+
+        s = QgsTextFormat()
+        s.setFont(getTestFont())
+        button.setTextFormat(s)
+        self.assertTrue(button.textFormat().isValid())
+        button.setToNullFormat()
+        self.assertFalse(button.textFormat().isValid())
+        button.setTextFormat(s)
+        self.assertTrue(button.textFormat().isValid())
+
 
 if __name__ == '__main__':
     unittest.main()
