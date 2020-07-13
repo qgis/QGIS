@@ -597,6 +597,13 @@ Returns the conditional style to use for the cell at ``row``, ``column``.
 .. versionadded:: 3.12
 %End
 
+    virtual QgsExpressionContextScope *scopeForCell( int row, int column ) const /Factory/;
+%Docstring
+Creates a new QgsExpressionContextScope for the cell at ``row``, ``column``.
+
+.. versionadded:: 3.16
+%End
+
     QgsLayoutTableContents &contents();
 %Docstring
 Returns the current contents of the table. Excludes header cells.
