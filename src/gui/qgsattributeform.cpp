@@ -1933,9 +1933,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       // This needs to be after QgsAttributeFormRelationEditorWidget creation, because the widget
       // does not exists yet until QgsAttributeFormRelationEditorWidget is created and the setters
       // below directly alter the widget and check for it.
-      rww->setShowLinkButton( relDef->showLinkButton() );
-      rww->setShowUnlinkButton( relDef->showUnlinkButton() );
-      rww->setShowSaveChildEditsButton( relDef->showSaveChildEditsButton() );
+      rww->setVisibleButtons( relDef->visibleButtons() );
       rww->setShowLabel( relDef->showLabel() );
 
       mWidgets.append( rww );

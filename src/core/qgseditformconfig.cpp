@@ -615,9 +615,20 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
     // At this time, the relations are not loaded
     // So we only grab the id and delegate the rest to onRelationsLoaded()
     QgsAttributeEditorRelation *relElement = new QgsAttributeEditorRelation( elem.attribute( QStringLiteral( "relation" ), QStringLiteral( "[None]" ) ), parent );
-    relElement->setShowLinkButton( elem.attribute( QStringLiteral( "showLinkButton" ), QStringLiteral( "1" ) ).toInt() );
-    relElement->setShowUnlinkButton( elem.attribute( QStringLiteral( "showUnlinkButton" ), QStringLiteral( "1" ) ).toInt() );
-    relElement->setShowSaveChildEditsButton( elem.attribute( QStringLiteral( "showSaveChildEditsButton" ), QStringLiteral( "1" ) ).toInt() );
+    if ( elem.hasAttribute( "buttons" ) )
+    {
+      QString buttonString = elem.attribute( QStringLiteral( "buttons" ), qgsFlagValueToKeys( QgsAttributeEditorRelation::Button::AllButtons ) );
+      relElement->setVisibleButtons( qgsFlagKeysToValue( buttonString, QgsAttributeEditorRelation::Button::AllButtons ) );
+    }
+    else
+    {
+      // pre QGIS 3.16 compatibility
+      QgsAttributeEditorRelation::Buttons buttons = QgsAttributeEditorRelation::Button::AllButtons;
+      buttons.setFlag( QgsAttributeEditorRelation::Button::Link, elem.attribute( QStringLiteral( "showLinkButton" ), QStringLiteral( "1" ) ).toInt() );
+      buttons.setFlag( QgsAttributeEditorRelation::Button::Unlink, elem.attribute( QStringLiteral( "showUnlinkButton" ), QStringLiteral( "1" ) ).toInt() );
+      buttons.setFlag( QgsAttributeEditorRelation::Button::SaveChildEdits, elem.attribute( QStringLiteral( "showSaveChildEditsButton" ), QStringLiteral( "1" ) ).toInt() );
+      relElement->setVisibleButtons( buttons );
+    }
     newElement = relElement;
   }
   else if ( elem.tagName() == QLatin1String( "attributeEditorQmlElement" ) )
