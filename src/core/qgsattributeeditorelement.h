@@ -340,7 +340,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
        * Possible buttons shown in the relation editor
        * \since QGIS 3.16
        */
-    enum class Button : int
+    enum Button
     {
       Link = 1 << 1, //!< Link button
       Unlink = 1 << 2, //!< Unlink button
@@ -351,15 +351,9 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
       ZoomToChildFeature = 1 << 7, //!< Zoom to child feature
       AllButtons = Link | Unlink | SaveChildEdits | AddChildFeature | DuplicateChildFeature | DeleteChildFeature | ZoomToChildFeature //!< All buttons
     };
-
     Q_ENUM( Button )
     Q_DECLARE_FLAGS( Buttons, Button )
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 12, 0 )
     Q_FLAG( Buttons )
-#else
-    Q_ENUM( Buttons )
-#endif
-
 
     /**
      * \deprecated since QGIS 3.0.2. The name parameter is not used for anything and overwritten by the relationId internally.
