@@ -1,4 +1,4 @@
-FROM      ubuntu:18.04
+FROM      debian:buster
 MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
 LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.1"
