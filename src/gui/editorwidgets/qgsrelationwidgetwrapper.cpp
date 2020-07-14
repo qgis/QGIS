@@ -101,20 +101,25 @@ void QgsRelationWidgetWrapper::widgetValueChanged( const QString &attribute, con
 
 bool QgsRelationWidgetWrapper::showUnlinkButton() const
 {
+  Q_NOWARN_DEPRECATED_PUSH
   return mWidget->showUnlinkButton();
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsRelationWidgetWrapper::setShowUnlinkButton( bool showUnlinkButton )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   if ( mWidget )
     mWidget->setShowUnlinkButton( showUnlinkButton );
+  Q_NOWARN_DEPRECATED_POP
 }
-
 
 void QgsRelationWidgetWrapper::setShowSaveChildEditsButton( bool showSaveChildEditsButton )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   if ( mWidget )
     mWidget->setShowSaveChildEditsButton( showSaveChildEditsButton );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 bool QgsRelationWidgetWrapper::showLabel() const
