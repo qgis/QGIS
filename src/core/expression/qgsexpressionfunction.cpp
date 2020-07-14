@@ -3853,6 +3853,25 @@ static QVariant fcnOrientedBBox( const QVariantList &values, const QgsExpression
   return result;
 }
 
+static QVariant fcnMainAngle( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  // we use the angle of the oriented minimum bounding box to calculate the polygon main angle.
+  // While ArcGIS uses a different approach ("the angle of longest collection of segments that have similar orientation"), this
+  // yields similar results to OMBB approach under the same constraints ("this tool is meant for primarily orthogonal polygons rather than organically shaped ones.")
+
+  double area, angle, width, height;
+  const QgsGeometry geom = fGeom.orientedMinimumBoundingBox( area, angle, width, height );
+
+  if ( geom.isNull() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Error calculating polygon main angle: %1" ).arg( geom.lastError() ) );
+    return QVariant();
+  }
+  return angle;
+}
+
 static QVariant fcnDifference( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -6178,6 +6197,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "oriented_bbox" ), QgsExpressionFunction::ParameterList()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
                                             fcnOrientedBBox, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "main_angle" ), QgsExpressionFunction::ParameterList()
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+                                            fcnMainAngle, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "minimal_circle" ), QgsExpressionFunction::ParameterList()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 36 ),
