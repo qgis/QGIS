@@ -184,6 +184,7 @@ class CORE_EXPORT QgsStyle : public QObject
       TextFormatEntity, //!< Text formats
       LabelSettingsEntity, //!< Label settings
       LegendPatchShapeEntity, //!< Legend patch shape (since QGIS 3.14)
+      Symbol3DEntity, //!< 3D symbol entity (since QGIS 3.14)
     };
 
     /**
@@ -255,6 +256,18 @@ class CORE_EXPORT QgsStyle : public QObject
      * \since QGIS 3.14
      */
     bool addLegendPatchShape( const QString &name, const QgsLegendPatchShape &shape, bool update = false );
+
+    /**
+     * Adds a 3d \a symbol with the specified \a name to the style. Ownership of \a symbol is transferred.
+     *
+     * If \a update is set to TRUE, the style database will be automatically updated with the new legend patch shape.
+     *
+     * Returns TRUE if the operation was successful.
+     *
+     * \note Adding 3d symbols with the name of existing ones replaces them.
+     * \since QGIS 3.16
+     */
+    bool addSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol SIP_TRANSFER, bool update = false );
 
     /**
      * Adds a new tag and returns the tag's id
@@ -377,6 +390,28 @@ class CORE_EXPORT QgsStyle : public QObject
      * \since QGIS 3.14
      */
     QgsSymbol::SymbolType legendPatchShapeSymbolType( const QString &name ) const;
+
+    /**
+     * Returns a new copy of the 3D symbol with the specified \a name.
+     *
+     * \since QGIS 3.16
+     */
+    QgsAbstract3DSymbol *symbol3D( const QString &name ) const SIP_FACTORY;
+
+    /**
+     * Returns count of 3D symbols in the style.
+     * \since QGIS 3.16
+     */
+    int symbol3DCount() const;
+
+    /**
+     * Returns the symbol type corresponding to the 3d symbol
+     * with the specified \a name, or an empty string
+     * if a matching 3d symbol is not present.
+     *
+     * \since QGIS 3.16
+     */
+    QString symbol3DType( const QString &name ) const;
 
     /**
      * Returns the layer geometry type corresponding to the label settings
@@ -687,6 +722,32 @@ class CORE_EXPORT QgsStyle : public QObject
      * \since QGIS 3.14
      */
     QList< QList< QPolygonF > > defaultPatchAsQPolygonF( QgsSymbol::SymbolType type, QSizeF size ) const;
+
+    /**
+     * Adds a 3d \a symbol to the database.
+     *
+     * \param name is the name of the 3d symbol
+     * \param symbol 3d symbol to save. Ownership is transferred.
+     * \param favorite is a boolean value to specify whether the 3d symbol should be added to favorites
+     * \param tags is a list of tags that are associated with the 3d symbol
+     * \returns returns the success state of the save operation
+     *
+     * \since QGIS 3.16
+     */
+    bool saveSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol SIP_TRANSFER, bool favorite, const QStringList &tags );
+
+    /**
+     * Changes a 3d symbol's name.
+     *
+     * \since QGIS 3.16
+     */
+    bool renameSymbol3D( const QString &oldName, const QString &newName );
+
+    /**
+     * Returns a list of names of 3d symbols in the style.
+     * \since QGIS 3.16
+     */
+    QStringList symbol3DNames() const;
 
     /**
      * Creates an on-disk database
@@ -1006,6 +1067,7 @@ class CORE_EXPORT QgsStyle : public QObject
     QgsTextFormatMap mTextFormats;
     QgsLabelSettingsMap mLabelSettings;
     QMap<QString, QgsLegendPatchShape > mLegendPatchShapes;
+    QMap<QString, QgsAbstract3DSymbol * > m3dSymbols;
 
     QHash< QgsStyle::StyleEntity, QHash< QString, QStringList > > mCachedTags;
     QHash< QgsStyle::StyleEntity, QHash< QString, bool > > mCachedFavorites;
@@ -1276,6 +1338,37 @@ class CORE_EXPORT QgsStyleLegendPatchShapeEntity : public QgsStyleEntityInterfac
   private:
 
     QgsLegendPatchShape mShape;
+};
+
+/**
+ * \class QgsStyleSymbol3DEntity
+ * \ingroup core
+ * A 3d symbol entity for QgsStyle databases.
+ * \since QGIS 3.16
+ */
+class CORE_EXPORT QgsStyleSymbol3DEntity : public QgsStyleEntityInterface
+{
+  public:
+
+    /**
+     * Constructor for QgsStyleSymbol3DEntity, with the specified \a symbol.
+     *
+     * Ownership of \a symbol is NOT transferred.
+     */
+    QgsStyleSymbol3DEntity( const QgsAbstract3DSymbol *symbol )
+      : mSymbol( symbol )
+    {}
+
+    QgsStyle::StyleEntity type() const override;
+
+    /**
+     * Returns the entity's symbol.
+     */
+    const QgsAbstract3DSymbol *symbol() const { return mSymbol; }
+
+  private:
+
+    const QgsAbstract3DSymbol *mSymbol = nullptr;
 };
 
 #endif

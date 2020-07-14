@@ -96,6 +96,7 @@ Constructor for QgsStyle.
       TextFormatEntity,
       LabelSettingsEntity,
       LegendPatchShapeEntity,
+      Symbol3DEntity,
     };
 
     bool addEntity( const QString &name, const QgsStyleEntityInterface *entity, bool update = false );
@@ -186,6 +187,21 @@ Returns ``True`` if the operation was successful.
    Adding legend patch shapes with the name of existing ones replaces them.
 
 .. versionadded:: 3.14
+%End
+
+    bool addSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol /Transfer/, bool update = false );
+%Docstring
+Adds a 3d ``symbol`` with the specified ``name`` to the style. Ownership of ``symbol`` is transferred.
+
+If ``update`` is set to ``True``, the style database will be automatically updated with the new legend patch shape.
+
+Returns ``True`` if the operation was successful.
+
+.. note::
+
+   Adding 3d symbols with the name of existing ones replaces them.
+
+.. versionadded:: 3.16
 %End
 
     int addTag( const QString &tagName );
@@ -311,6 +327,29 @@ with the specified ``name``, or QgsSymbol.Hybrid
 if a matching legend patch shape is not present.
 
 .. versionadded:: 3.14
+%End
+
+    QgsAbstract3DSymbol *symbol3D( const QString &name ) const /Factory/;
+%Docstring
+Returns a new copy of the 3D symbol with the specified ``name``.
+
+.. versionadded:: 3.16
+%End
+
+    int symbol3DCount() const;
+%Docstring
+Returns count of 3D symbols in the style.
+
+.. versionadded:: 3.16
+%End
+
+    QString symbol3DType( const QString &name ) const;
+%Docstring
+Returns the symbol type corresponding to the 3d symbol
+with the specified ``name``, or an empty string
+if a matching 3d symbol is not present.
+
+.. versionadded:: 3.16
 %End
 
     QgsWkbTypes::GeometryType labelSettingsLayerType( const QString &name ) const;
@@ -663,6 +702,34 @@ Returns the default patch geometry for the given symbol ``type`` and ``size`` as
 .. seealso:: :py:func:`defaultPatch`
 
 .. versionadded:: 3.14
+%End
+
+    bool saveSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol /Transfer/, bool favorite, const QStringList &tags );
+%Docstring
+Adds a 3d ``symbol`` to the database.
+
+:param name: is the name of the 3d symbol
+:param symbol: 3d symbol to save. Ownership is transferred.
+:param favorite: is a boolean value to specify whether the 3d symbol should be added to favorites
+:param tags: is a list of tags that are associated with the 3d symbol
+
+:return: returns the success state of the save operation
+
+.. versionadded:: 3.16
+%End
+
+    bool renameSymbol3D( const QString &oldName, const QString &newName );
+%Docstring
+Changes a 3d symbol's name.
+
+.. versionadded:: 3.16
+%End
+
+    QStringList symbol3DNames() const;
+%Docstring
+Returns a list of names of 3d symbols in the style.
+
+.. versionadded:: 3.16
 %End
 
     bool createDatabase( const QString &filename );
@@ -1237,6 +1304,36 @@ Constructor for QgsStyleLegendPatchShapeEntity, with the specified legend patch 
     const QgsLegendPatchShape &shape() const;
 %Docstring
 Returns the entity's legend patch shape.
+%End
+
+};
+
+class QgsStyleSymbol3DEntity : QgsStyleEntityInterface
+{
+%Docstring
+A 3d symbol entity for QgsStyle databases.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsstyle.h"
+%End
+  public:
+
+    QgsStyleSymbol3DEntity( const QgsAbstract3DSymbol *symbol );
+%Docstring
+Constructor for QgsStyleSymbol3DEntity, with the specified ``symbol``.
+
+Ownership of ``symbol`` is NOT transferred.
+%End
+
+    virtual QgsStyle::StyleEntity type() const;
+
+
+    const QgsAbstract3DSymbol *symbol() const;
+%Docstring
+Returns the entity's symbol.
 %End
 
 };

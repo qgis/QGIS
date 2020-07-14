@@ -175,6 +175,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               case QgsStyle::ColorrampEntity:
               case QgsStyle::TagEntity:
               case QgsStyle::SmartgroupEntity:
+              case QgsStyle::Symbol3DEntity:
                 break;
             }
             return tooltip;
@@ -317,6 +318,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
 
             case QgsStyle::TagEntity:
             case QgsStyle::SmartgroupEntity:
+            case QgsStyle::Symbol3DEntity:
               return QVariant();
           }
           break;
@@ -354,6 +356,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
         case QgsStyle::SmartgroupEntity:
         case QgsStyle::LabelSettingsEntity:
         case QgsStyle::TextFormatEntity:
+        case QgsStyle::Symbol3DEntity:
           return QVariant();
       }
       return QVariant();
