@@ -19,6 +19,7 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QAttribute>
 #include <Qt3DExtras/QPlaneGeometry>
+#include <Qt3DRender/QSceneLoader>
 #include <QMap>
 #include <QFile>
 
@@ -98,6 +99,8 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     void processBufferedLineGeometry( QgsTessellatedPolygonGeometry *geom, const QgsLine3DSymbol *lineSymbol );
     //! Constructs Qgs3DExportObject from instanced point geometry
     void processInstancedPointGeometry( Qt3DCore::QEntity *entity, const QgsPoint3DSymbol *pointSymbol );
+    //! Constructs Qgs3DExportObject from 3D models loaded using a scene loader
+    void processSceneLoaderGeometry( Qt3DRender::QSceneLoader *sceneLoader, const QgsPoint3DSymbol *pointSymbol );
 
     //! Returns a tile entity that contains the geometry to be exported and necessary scaling parameters
     QgsTerrainTileEntity *getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );

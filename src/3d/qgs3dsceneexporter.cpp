@@ -32,6 +32,8 @@
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QBufferDataGenerator>
 #include <Qt3DRender/QBufferDataGeneratorPtr>
+#include <Qt3DRender/QMesh>
+#include <Qt3DRender/QSceneLoader>
 
 #include <Qt3DExtras/QCylinderGeometry>
 #include <Qt3DExtras/QConeGeometry>
@@ -140,6 +142,19 @@ Qt3DRender::QAttribute *findAttribute( Qt3DRender::QGeometry *geometry, const QS
   return nullptr;
 }
 
+template<typename Component>
+Component *findTypedComponent( Qt3DCore::QEntity *entity )
+{
+  if ( entity == nullptr ) return nullptr;
+  for ( Qt3DCore::QComponent *component : entity->components() )
+  {
+    Component *typedComponent = qobject_cast<Component *>( component );
+    if ( typedComponent != nullptr )
+      return typedComponent;
+  }
+  return nullptr;
+}
+
 bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsVectorLayer *layer )
 {
   QgsAbstract3DRenderer *abstractRenderer =  layer->renderer3D();
@@ -187,9 +202,11 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
       else if ( symbolType == "point" )
       {
         const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( symbol );
-        // TODO: handle point geometries somehow
         if ( pointSymbol->shape() == QgsPoint3DSymbol::Model )
         {
+          Qt3DRender::QSceneLoader *sceneLoader = entity->findChild<Qt3DRender::QSceneLoader *>();
+          processSceneLoaderGeometry( sceneLoader, pointSymbol );
+          return true;
         }
         else if ( pointSymbol->shape() == QgsPoint3DSymbol::Billboard )
         {
@@ -259,18 +276,6 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity 
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
   delete generator;
   return tileEntity;
-}
-
-template<typename Component>
-Component *findTypedComponent( Qt3DCore::QEntity *entity )
-{
-  for ( Qt3DCore::QComponent *component : entity->components() )
-  {
-    Component *typedComponent = qobject_cast<Component *>( component );
-    if ( typedComponent != nullptr )
-      return typedComponent;
-  }
-  return nullptr;
 }
 
 void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity )
@@ -413,6 +418,8 @@ void Qgs3DSceneExporter::processBufferedLineGeometry( QgsTessellatedPolygonGeome
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "line_geometry" ), "", this );
   mObjects.push_back( object );
 
+  object->setSmoothEdges( mSmoothEdges );
+
   Qt3DRender::QAttribute *positionAttribute = geom->mPositionAttribute;
   QByteArray positionBytes = positionAttribute->buffer()->data();
   QVector<float> positionData = getAttributeData<float>( positionAttribute, positionBytes );
@@ -487,6 +494,85 @@ void Qgs3DSceneExporter::processInstancedPointGeometry( Qt3DCore::QEntity *entit
       object->setMaterialParameter( QString( "Ks" ), QString( "%1 %2 %3" ).arg( specular.redF() ).arg( specular.greenF() ).arg( specular.blueF() ) );
       object->setMaterialParameter( QString( "Ns" ), QString( "%1" ).arg( shininess ) );
     }
+  }
+}
+
+void Qgs3DSceneExporter::processSceneLoaderGeometry( Qt3DRender::QSceneLoader *sceneLoader, const QgsPoint3DSymbol *pointSymbol )
+{
+  Qt3DCore::QEntity *sceneLoaderParent = qobject_cast<Qt3DCore::QEntity *>( sceneLoader->parent() );
+  Qt3DCore::QTransform *entityTransform = findTypedComponent<Qt3DCore::QTransform>( sceneLoaderParent );
+  float entityScale = 1.0f;
+  QVector3D entityTranslation( 0.0f, 0.0f, 0.0f );
+  if ( entityTransform != nullptr )
+  {
+    entityScale = entityTransform->scale();
+    entityTranslation = entityTransform->translation();
+  }
+  for ( QString entityName : sceneLoader->entityNames() )
+  {
+    Qt3DRender::QGeometryRenderer *mesh = qobject_cast<Qt3DRender::QGeometryRenderer *>( sceneLoader->component( entityName, Qt3DRender::QSceneLoader::GeometryRendererComponent ) );
+    Qt3DRender::QGeometry *geometry = mesh->geometry();
+
+    Qt3DRender::QAttribute *positionAttribute = findAttribute( geometry, Qt3DRender::QAttribute::defaultPositionAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
+    Qt3DRender::QAttribute *indexAttribute = nullptr;
+    for ( Qt3DRender::QAttribute *attribute : geometry->attributes() )
+    {
+      if ( attribute->attributeType() == Qt3DRender::QAttribute::IndexAttribute )
+        indexAttribute = attribute;
+    }
+    if ( positionAttribute == nullptr || indexAttribute == nullptr )
+    {
+      qDebug() << "Mesh with null data";
+      continue;
+    }
+    Qt3DRender::QBufferDataGeneratorPtr vertexDataGenerator = positionAttribute->buffer()->dataGenerator();
+    Qt3DRender::QBufferDataGeneratorPtr indexDataGenerator = indexAttribute->buffer()->dataGenerator();
+
+    QByteArray vertexBytes;
+    QByteArray indexBytes;
+    if ( vertexDataGenerator.isNull() ) vertexBytes = positionAttribute->buffer()->data();
+    else vertexBytes = vertexDataGenerator->operator()();
+    if ( indexDataGenerator.isNull() ) indexBytes = indexAttribute->buffer()->data();
+    else indexBytes = indexDataGenerator->operator()();
+
+    QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
+    QVector<uint> indexData;
+    if ( indexAttribute->vertexBaseType() == Qt3DRender::QAttribute::VertexBaseType::UnsignedInt ) indexData = getIndexData<quint32>( indexBytes );
+    if ( indexAttribute->vertexBaseType() == Qt3DRender::QAttribute::VertexBaseType::UnsignedShort ) indexData = getIndexData<quint16>( indexBytes );
+    Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "shape_geometry" ), "", this );
+    mObjects.push_back( object );
+
+    Qt3DCore::QTransform *transform = qobject_cast<Qt3DCore::QTransform *>( sceneLoader->component( entityName, Qt3DRender::QSceneLoader::TransformComponent ) );
+    float scale = 1.0f;
+    QVector3D translation( 0.0f, 0.0f, 0.0f );
+
+    if ( transform != nullptr )
+    {
+      scale = transform->scale();
+      translation = transform->translation();
+    }
+
+    object->setupPositionCoordinates( positionData, indexData, scale * entityScale, translation + entityTranslation );
+
+    object->setSmoothEdges( mSmoothEdges );
+
+    if ( mExportNormals )
+    {
+      Qt3DRender::QAttribute *normalsAttribute = findAttribute( geometry, Qt3DRender::QAttribute::defaultNormalAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
+      // Reuse vertex bytes
+      QVector<float> normalsData = getAttributeData<float>( normalsAttribute, vertexBytes );
+      object->setupNormalCoordinates( normalsData );
+    }
+
+    QgsPhongMaterialSettings material = pointSymbol->material();
+    QColor diffuse = material.diffuse();
+    QColor specular = material.specular();
+    QColor ambient = material.ambient();
+    float shininess = material.shininess();
+    object->setMaterialParameter( QString( "Kd" ), QString( "%1 %2 %3" ).arg( diffuse.redF() ).arg( diffuse.greenF() ).arg( diffuse.blueF() ) );
+    object->setMaterialParameter( QString( "Ka" ), QString( "%1 %2 %3" ).arg( ambient.redF() ).arg( ambient.greenF() ).arg( ambient.blueF() ) );
+    object->setMaterialParameter( QString( "Ks" ), QString( "%1 %2 %3" ).arg( specular.redF() ).arg( specular.greenF() ).arg( specular.blueF() ) );
+    object->setMaterialParameter( QString( "Ns" ), QString( "%1" ).arg( shininess ) );
   }
 }
 
