@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsexpressioncontextutils.h"
 #include "qgslayouttable.h"
 #include "qgslayout.h"
 #include "qgslayoututils.h"
@@ -506,7 +507,6 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
       //calculate row height
       double rowHeight = mMaxRowHeightMap[row + 1] + 2 * mCellMargin;
 
-
       for ( const QgsLayoutTableColumn &column : qgis::as_const( mColumns ) )
       {
         const QRectF fullCell( currentX, currentY, mMaxColumnWidthMap[col] + 2 * mCellMargin, rowHeight );
@@ -524,6 +524,8 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
         QStringList str = cellContents.toString().split( '\n' );
 
         QgsTextFormat cellFormat = textFormatForCell( row, col );
+        QgsExpressionContextScopePopper popper( context.renderContext().expressionContext(), scopeForCell( row, col ) );
+        cellFormat.updateDataDefinedProperties( context.renderContext() );
 
         // disable text clipping to target text rectangle, because we manually clip to the full cell bounds below
         // and it's ok if text overlaps into the margin (e.g. extenders or italicized text)
@@ -1118,7 +1120,12 @@ bool QgsLayoutTable::calculateMaxColumnWidths()
       {
         //column width set to automatic, so check content size
         const QStringList multiLineSplit = ( *colIt ).toString().split( '\n' );
-        currentCellTextWidth = QgsTextRenderer::textWidth( context, textFormatForCell( row - 1, col ), multiLineSplit ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+
+        QgsTextFormat cellFormat = textFormatForCell( row - 1, col );
+        QgsExpressionContextScopePopper popper( context.expressionContext(), scopeForCell( row - 1, col ) );
+        cellFormat.updateDataDefinedProperties( context );
+
+        currentCellTextWidth = QgsTextRenderer::textWidth( context, cellFormat, multiLineSplit ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
         widths[ row * cols + col ] = currentCellTextWidth;
       }
       else
@@ -1192,7 +1199,9 @@ bool QgsLayoutTable::calculateMaxRowHeights()
     int i = 0;
     for ( ; colIt != rowIt->constEnd(); ++colIt )
     {
-      const QgsTextFormat cellFormat = textFormatForCell( row - 1, i );
+      QgsTextFormat cellFormat = textFormatForCell( row - 1, i );
+      QgsExpressionContextScopePopper popper( context.expressionContext(), scopeForCell( row - 1, i ) );
+      cellFormat.updateDataDefinedProperties( context );
       const double contentDescentMm = QgsTextRenderer::fontMetrics( context, cellFormat, QgsTextRenderer::FONT_WORKAROUND_SCALE ).descent() / QgsTextRenderer::FONT_WORKAROUND_SCALE  / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
 
       if ( textRequiresWrapping( context, ( *colIt ).toString(), mColumns.at( i ).width(), cellFormat ) )
