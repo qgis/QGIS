@@ -2,5 +2,13 @@
   "name": "CASE",
   "type": "expression",
   "groups": ["Conditionals"],
-  "description": "<pre><br>CASE<br>WHEN <i>condition</i> THEN <i>result</i><br>[ …n ]<br>[ ELSE <i>result</i> ]<br>END<br></pre>[ ] marks optional components<br><h4>Arguments</h4><br><i>  WHEN condition</i> - The condition expression to evaluate. <br><br><i>  THEN result</i> - If <i>condition</i> evaluates to True then <i>result</i> is evaluated and returned. <br><br><i>  ELSE result</i> - If none of the above conditions evaluated to True then <i>result</i> is evaluated and returned.<br><br><h4>Example</h4><pre>CASE<br>WHEN <i>\"column\" IS NULL</i> THEN <i>'None'</i><br>END</pre>"
+  "description": "The CASE expression evaluates several conditions and returns a result when the first condition is met. When a condition is true, it will stop reading and return the corresponding result. If none of the conditions is true, it returns the value in the ELSE clause. Furthermore, if no ELSE clause is set and none of the conditions is met, it returns NULL.<br><pre>CASE<br>WHEN <i>condition</i> THEN <i>result</i><br>[ …n ]<br>[ ELSE <i>result</i> ]<br>END</pre>[ ] marks optional components<br>",
+  "arguments": [
+   {"arg":"WHEN condition","description":"The condition expression to evaluate"},
+   {"arg":"THEN result","description":"If <i>condition</i> evaluates to True then <i>result</i> is evaluated and returned."},
+   {"arg":"ELSE result","description":"If none of the above conditions evaluated to True then <i>result</i> is evaluated and returned."}
+  ],
+  "examples": [
+   { "expression":"CASE WHEN \"column\" IS NULL THEN 'None' END", "returns":" Returns the string 'none' if the \"column\" field is NULL"}
+  ]
 }
