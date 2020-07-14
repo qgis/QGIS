@@ -853,14 +853,6 @@
                     <property name="syncGroup" stdset="0">
                      <string notr="true">labelrenderinggroup</string>
                     </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout_91">
-                     <property name="leftMargin">
-                      <number>6</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>6</number>
-                     </property>
-                     <item>
                       <layout class="QGridLayout" name="gridLayout_3">
                        <item row="0" column="2">
                         <widget class="QgsPropertyOverrideButton" name="mZOrderDDBtn">
@@ -1003,8 +995,6 @@
                         </widget>
                        </item>
                       </layout>
-                     </item>
-                    </layout>
                    </widget>
                   </item>
                   <item>
@@ -1136,7 +1126,7 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="3" column="0" colspan="3">
+                  <item row="3" column="0" colspan="2">
                    <widget class="QFrame" name="mLinearScaleFrame">
                     <property name="frameShape">
                      <enum>QFrame::NoFrame</enum>
@@ -1443,7 +1433,7 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="8" column="0">
+                  <item row="9" column="0">
                    <spacer name="verticalSpacer_4">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
@@ -1456,7 +1446,7 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="3" column="0" colspan="2">
+                  <item row="3" column="0">
                    <widget class="QFrame" name="mLinePlacementFrame">
                     <property name="frameShape">
                      <enum>QFrame::NoFrame</enum>
@@ -1527,7 +1517,7 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="7" column="0" colspan="2">
+                  <item row="7" column="0">
                    <widget class="QgsCollapsibleGroupBox" name="mPriorityGrpBox">
                     <property name="title">
                      <string>Priority</string>
@@ -2323,9 +2313,9 @@
   <tabstop>mZIndexSpinBox</tabstop>
   <tabstop>mZOrderDDBtn</tabstop>
   <tabstop>mShowAllCheckBox</tabstop>
-  <tabstop>mScaleVisibilityGroupBox</tabstop>
   <tabstop>mShowDiagramDDBtn</tabstop>
   <tabstop>mAlwaysShowDDBtn</tabstop>
+  <tabstop>mScaleVisibilityGroupBox</tabstop>
   <tabstop>scrollArea_5</tabstop>
   <tabstop>mDiagramUnitComboBox</tabstop>
   <tabstop>mFixedSizeRadio</tabstop>
@@ -2367,29 +2357,6 @@
   <tabstop>mButtonSizeLegendSettings</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>
