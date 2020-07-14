@@ -581,3 +581,13 @@ Qt3DExtras::QPhongMaterial *Qgs3DUtils::phongMaterial( const QgsPhongMaterialSet
   phong->setShininess( settings.shininess() );
   return phong;
 }
+
+QgsPhongMaterialSettings Qgs3DUtils::phongMaterialFromQt3DComponent( Qt3DExtras::QPhongMaterial *material )
+{
+  QgsPhongMaterialSettings settings;
+  settings.setAmbient( material->ambient() );
+  settings.setDiffuse( material->diffuse() );
+  settings.setSpecular( material->specular() );
+  settings.setShininess( material->shininess() );
+  return settings;
+}

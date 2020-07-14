@@ -177,6 +177,8 @@ class _3D_EXPORT Qgs3DUtils
 
     //! Returns phong material object based on the material settings
     static Qt3DExtras::QPhongMaterial *phongMaterial( const QgsPhongMaterialSettings &settings );
+    //! Returns phong material settings object based on the Qt3D material
+    static QgsPhongMaterialSettings phongMaterialFromQt3DComponent( Qt3DExtras::QPhongMaterial *material );
 };
 
 #endif // QGS3DUTILS_H

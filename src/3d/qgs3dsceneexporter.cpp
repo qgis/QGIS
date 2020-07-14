@@ -41,6 +41,7 @@
 #include <Qt3DExtras/QCuboidGeometry>
 #include <Qt3DExtras/QTorusGeometry>
 #include <Qt3DExtras/QExtrudedTextMesh>
+#include <Qt3DExtras/QPhongMaterial>
 
 #include <QByteArray>
 #include <QFile>
@@ -72,6 +73,7 @@
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgs3dutils.h"
 
 #include <numeric>
 
@@ -180,7 +182,20 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
     QgsAbstractVectorLayer3DRenderer *abstractVectorRenderer = dynamic_cast< QgsAbstractVectorLayer3DRenderer *>( abstractRenderer );
     if ( rendererType == "rulebased" )
     {
-      // TODO: handle rule based renderers
+      // Potential bug: meshes loaded using Qt3DRender::QSceneLoader will probably have wrong scale and translation
+      QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
+      for ( Qt3DRender::QGeometryRenderer *renderer : renderers )
+      {
+        Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( renderer->parent() );
+        if ( entity == nullptr ) continue;
+        Qgs3DExportObject *object = processGeometryRenderer( renderer );
+        if ( object == nullptr ) continue;
+        mObjects.push_back( object );
+        Qt3DExtras::QPhongMaterial *material = findTypedComponent<Qt3DExtras::QPhongMaterial>( entity );
+        if ( material == nullptr ) continue;
+        object->setupPhongMaterial( Qgs3DUtils::phongMaterialFromQt3DComponent( material ) );
+      }
+      return true;
     }
     else
     {
@@ -536,26 +551,40 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
 
   Qt3DRender::QAttribute *positionAttribute = findAttribute( geometry, Qt3DRender::QAttribute::defaultPositionAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
   Qt3DRender::QAttribute *indexAttribute = nullptr;
+  QByteArray indexBytes, vertexBytes;
+  QVector<uint> indexData;
+  QVector<float> positionData;
   for ( Qt3DRender::QAttribute *attribute : geometry->attributes() )
   {
     if ( attribute->attributeType() == Qt3DRender::QAttribute::IndexAttribute )
       indexAttribute = attribute;
   }
-  if ( positionAttribute == nullptr || indexAttribute == nullptr )
+  if ( indexAttribute != nullptr )
   {
-    qDebug() << "renderer with null data";
+    getData( indexAttribute->buffer() );
+    if ( indexAttribute->vertexBaseType() == Qt3DRender::QAttribute::VertexBaseType::UnsignedInt ) indexData = getIndexData<quint32>( indexBytes );
+    if ( indexAttribute->vertexBaseType() == Qt3DRender::QAttribute::VertexBaseType::UnsignedShort ) indexData = getIndexData<quint16>( indexBytes );
+  }
+
+  if ( positionAttribute != nullptr )
+  {
+    vertexBytes = getData( positionAttribute->buffer() );
+    positionData = getAttributeData<float>( positionAttribute, vertexBytes );
+  }
+  // For tesselated polygons that doesn't have index attributes
+  if ( positionAttribute != nullptr && indexAttribute == nullptr )
+  {
+    for ( int i = 0; i < positionData.size() / 3; ++i )
+      indexData.push_back( i );
+  }
+
+  if ( positionAttribute == nullptr )
+  {
+    qDebug() << "WARNING: renderer with null data";
     return nullptr;
   }
 
-  QByteArray vertexBytes = getData( positionAttribute->buffer() );
-  QByteArray indexBytes = getData( indexAttribute->buffer() );
-
-  QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
-  QVector<uint> indexData;
-  if ( indexAttribute->vertexBaseType() == Qt3DRender::QAttribute::VertexBaseType::UnsignedInt ) indexData = getIndexData<quint32>( indexBytes );
-  if ( indexAttribute->vertexBaseType() == Qt3DRender::QAttribute::VertexBaseType::UnsignedShort ) indexData = getIndexData<quint16>( indexBytes );
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "mesh_geometry" ), "", this );
-
   object->setupPositionCoordinates( positionData, scale * sceneScale, translation + sceneTranslation );
   object->setupFaces( indexData );
 
