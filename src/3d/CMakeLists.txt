@@ -37,7 +37,6 @@ SET(QGIS_3D_SRCS
   processing/qgs3dalgorithms.cpp
   processing/qgsalgorithmtessellate.cpp
 
-  symbols/qgsabstract3dsymbol.cpp
   symbols/qgsbillboardgeometry.cpp
   symbols/qgsline3dsymbol.cpp
   symbols/qgsline3dsymbol_p.cpp
@@ -96,7 +95,6 @@ SET(QGIS_3D_HDRS
   qgstilingscheme.h
   qgsvectorlayer3drenderer.h
   qgswindow3dengine.h
-  symbols/qgsabstract3dsymbol.h
   symbols/qgsbillboardgeometry.h
   symbols/qgsline3dsymbol.h
   symbols/qgsmesh3dsymbol.h
