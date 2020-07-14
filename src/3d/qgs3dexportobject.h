@@ -22,6 +22,8 @@
 #include <QVector3D>
 #include <QImage>
 
+#include <Qt3DRender/QAttribute>
+
 class QgsPhongMaterialSettings;
 
 /**
@@ -59,14 +61,10 @@ class Qgs3DExportObject : public QObject
 
     //! Sets positions coordinates from just one positions buffer (generates faces automatically) and does the translation and scaling
     void setupPositionCoordinates( const QVector<float> &positionsBuffer, float scale = 1.0f, const QVector3D translation = QVector3D( 0, 0, 0 ) );
-    //! Sets positions coordinates from just one positions buffer and indexes buffer and does the translation and scaling
-    void setupPositionCoordinates( const QVector<float> &positionsBuffer, const QVector<unsigned int> &facesIndexes, float scale = 1.0f, const QVector3D translation = QVector3D( 0, 0, 0 ) );
-
-    /**
-     * Sets positions coordinates from just one positions buffer and indexes buffer and does the translation and scaling
-     * Overloaded for 16 bit integers
-     */
-    void setupPositionCoordinates( const QVector<float> &positionsBuffer, const QVector<quint16> &facesIndexes, float scale = 1.0f, const QVector3D translation = QVector3D( 0, 0, 0 ) );
+    //! Sets the faces in facesIndexes to the faces in the object
+    void setupFaces( const QVector<uint> &facesIndexes );
+    //! Sets the faces in facesIndexes to the faces in the object
+    void setupFaces( const QVector<quint16> &facesIndexes );
 
     //! Sets normal coordinates for each vertex
     void setupNormalCoordinates( const QVector<float> &normalsBuffer );

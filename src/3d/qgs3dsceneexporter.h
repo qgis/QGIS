@@ -23,6 +23,7 @@
 #include <Qt3DRender/QMesh>
 #include <QMap>
 #include <QFile>
+#include <QVector3D>
 
 class QgsTessellatedPolygonGeometry;
 class QgsTerrainTileEntity;
@@ -103,7 +104,10 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     //! Constructs Qgs3DExportObject from 3D models loaded using a scene loader
     void processSceneLoaderGeometry( Qt3DRender::QSceneLoader *sceneLoader, const QgsPoint3DSymbol *pointSymbol );
     //! Constructs Qgs3DExportObject from 3D models loaded using QMesh class
-    void processMeshGeometry( Qt3DRender::QMesh *mesh, const QgsPoint3DSymbol *pointSymbol );
+    void processMeshGeometry( Qt3DRender::QGeometryRenderer *mesh, const QgsPoint3DSymbol *pointSymbol, float sceneScale = 1.0f, QVector3D sceneTranslation = QVector3D( 0.0f, 0.0f, 0.0f ) );
+
+    //! Constructs Qgs3DExportObject from geometry renderer
+    Qgs3DExportObject *processGeometryRenderer( Qt3DRender::QGeometryRenderer *mesh, float sceneScale = 1.0f, QVector3D sceneTranslation = QVector3D( 0.0f, 0.0f, 0.0f ) );
 
     //! Returns a tile entity that contains the geometry to be exported and necessary scaling parameters
     QgsTerrainTileEntity *getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );

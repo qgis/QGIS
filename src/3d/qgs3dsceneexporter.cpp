@@ -120,6 +120,17 @@ QVector<uint> getIndexData( QByteArray data )
   return result;
 }
 
+QByteArray getData( Qt3DRender::QBuffer *buffer )
+{
+  QByteArray bytes = buffer->data();
+  if ( bytes.isNull() )
+  {
+    Qt3DRender::QBufferDataGeneratorPtr dataGenerator = buffer->dataGenerator();
+    bytes = dataGenerator->operator()();
+  }
+  return bytes;
+}
+
 Qgs3DSceneExporter::Qgs3DSceneExporter( Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
   , mSmoothEdges( false )
@@ -302,21 +313,20 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity )
 
   // Generate vertice data
   Qt3DRender::QAttribute *positionAttribute = tileGeometry->positionAttribute();
-  Qt3DRender::QBufferDataGeneratorPtr positionDataGenerator =  positionAttribute->buffer()->dataGenerator();
-  QByteArray verticesBytes = positionDataGenerator->operator()();
+  QByteArray verticesBytes = getData( positionAttribute->buffer() );
   QVector<float> positionBuffer = getAttributeData<float>( positionAttribute, verticesBytes );
 
   // Generate index data
   Qt3DRender::QAttribute *indexAttribute = tileGeometry->indexAttribute();
-  Qt3DRender::QBufferDataGeneratorPtr indexDataGenerator =  indexAttribute->buffer()->dataGenerator();
-  QByteArray indexBytes = indexDataGenerator->operator()();
+  QByteArray indexBytes = getData( indexAttribute->buffer() );
   QVector<uint> indexesBuffer = getIndexData<quint16>( indexBytes );
 
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "Flat_tile" ), "", this );
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
-  object->setupPositionCoordinates( positionBuffer, indexesBuffer, scale, translation );
+  object->setupPositionCoordinates( positionBuffer, scale, translation );
+  object->setupFaces( indexesBuffer );
 
   if ( mExportNormals )
   {
@@ -367,7 +377,8 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
-  object->setupPositionCoordinates( positionBuffer, indexBuffer, scale, translation );
+  object->setupPositionCoordinates( positionBuffer, scale, translation );
+  object->setupFaces( indexBuffer );
 
   if ( mExportNormals )
   {
@@ -399,6 +410,9 @@ void Qgs3DSceneExporter::processPolygonGeometry( QgsTessellatedPolygonGeometry *
   QByteArray positionBytes = positionAttribute->buffer()->data();
   QVector<float> positionData = getAttributeData<float>( positionAttribute, positionBytes );
   object->setupPositionCoordinates( positionData );
+  QVector<uint> facesData;
+  for ( int i = 0; i < positionData.size() / 3; ++i ) facesData.push_back( i );
+  object->setupFaces( facesData );
 
   if ( mExportNormals )
   {
@@ -423,6 +437,9 @@ void Qgs3DSceneExporter::processBufferedLineGeometry( QgsTessellatedPolygonGeome
   QByteArray positionBytes = positionAttribute->buffer()->data();
   QVector<float> positionData = getAttributeData<float>( positionAttribute, positionBytes );
   object->setupPositionCoordinates( positionData );
+  QVector<uint> facesData;
+  for ( int i = 0; i < positionData.size() / 3; ++i ) facesData.push_back( i );
+  object->setupFaces( facesData );
 
   if ( mExportNormals )
   {
@@ -449,21 +466,20 @@ void Qgs3DSceneExporter::processInstancedPointGeometry( Qt3DCore::QEntity *entit
     }
     if ( positionAttribute == nullptr || indexAttribute == nullptr )
       continue;
-    Qt3DRender::QBufferDataGeneratorPtr vertexDataGenerator = positionAttribute->buffer()->dataGenerator();
-    Qt3DRender::QBufferDataGeneratorPtr indexDataGenerator = indexAttribute->buffer()->dataGenerator();
-    QByteArray vertexBytes = vertexDataGenerator->operator()();
-    QByteArray indexBytes = indexDataGenerator->operator()();
+    QByteArray vertexBytes = getData( positionAttribute->buffer() );
+    QByteArray indexBytes = getData( indexAttribute->buffer() );
     QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
     QVector<uint> indexData = getIndexData<quint16>( indexBytes );
 
     Qt3DRender::QAttribute *instanceDataAttribute = findAttribute( geometry,  QStringLiteral( "pos" ), Qt3DRender::QAttribute::VertexAttribute );
-    Qt3DRender::QBuffer *instanceDataBuffer = instanceDataAttribute->buffer();
-    QVector<float> instancePosition = getAttributeData<float>( instanceDataAttribute, instanceDataBuffer->data() );
+    QByteArray instancePositionBytes = getData( instanceDataAttribute->buffer() );
+    QVector<float> instancePosition = getAttributeData<float>( instanceDataAttribute, instancePositionBytes );
     for ( int i = 0; i < instancePosition.size(); i += 3 )
     {
       Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "shape_geometry" ), "", this );
       mObjects.push_back( object );
-      object->setupPositionCoordinates( positionData, indexData, 1.0f, QVector3D( instancePosition[i], instancePosition[i + 1], instancePosition[i + 2] ) );
+      object->setupPositionCoordinates( positionData, 1.0f, QVector3D( instancePosition[i], instancePosition[i + 1], instancePosition[i + 2] ) );
+      object->setupFaces( indexData );
 
       object->setSmoothEdges( mSmoothEdges );
 
@@ -494,73 +510,27 @@ void Qgs3DSceneExporter::processSceneLoaderGeometry( Qt3DRender::QSceneLoader *s
   for ( QString entityName : sceneLoader->entityNames() )
   {
     Qt3DRender::QGeometryRenderer *mesh = qobject_cast<Qt3DRender::QGeometryRenderer *>( sceneLoader->component( entityName, Qt3DRender::QSceneLoader::GeometryRendererComponent ) );
-    Qt3DRender::QGeometry *geometry = mesh->geometry();
-
-    Qt3DRender::QAttribute *positionAttribute = findAttribute( geometry, Qt3DRender::QAttribute::defaultPositionAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
-    Qt3DRender::QAttribute *indexAttribute = nullptr;
-    for ( Qt3DRender::QAttribute *attribute : geometry->attributes() )
-    {
-      if ( attribute->attributeType() == Qt3DRender::QAttribute::IndexAttribute )
-        indexAttribute = attribute;
-    }
-    if ( positionAttribute == nullptr || indexAttribute == nullptr )
-    {
-      qDebug() << "Mesh with null data";
-      continue;
-    }
-    Qt3DRender::QBufferDataGeneratorPtr vertexDataGenerator = positionAttribute->buffer()->dataGenerator();
-    Qt3DRender::QBufferDataGeneratorPtr indexDataGenerator = indexAttribute->buffer()->dataGenerator();
-
-    QByteArray vertexBytes;
-    QByteArray indexBytes;
-    if ( vertexDataGenerator.isNull() ) vertexBytes = positionAttribute->buffer()->data();
-    else vertexBytes = vertexDataGenerator->operator()();
-    if ( indexDataGenerator.isNull() ) indexBytes = indexAttribute->buffer()->data();
-    else indexBytes = indexDataGenerator->operator()();
-
-    QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
-    QVector<uint> indexData;
-    if ( indexAttribute->vertexBaseType() == Qt3DRender::QAttribute::VertexBaseType::UnsignedInt ) indexData = getIndexData<quint32>( indexBytes );
-    if ( indexAttribute->vertexBaseType() == Qt3DRender::QAttribute::VertexBaseType::UnsignedShort ) indexData = getIndexData<quint16>( indexBytes );
-    Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "shape_geometry" ), "", this );
-    mObjects.push_back( object );
-
-    Qt3DCore::QTransform *transform = qobject_cast<Qt3DCore::QTransform *>( sceneLoader->component( entityName, Qt3DRender::QSceneLoader::TransformComponent ) );
-    float scale = 1.0f;
-    QVector3D translation( 0.0f, 0.0f, 0.0f );
-
-    if ( transform != nullptr )
-    {
-      scale = transform->scale();
-      translation = transform->translation();
-    }
-
-    object->setupPositionCoordinates( positionData, indexData, scale * entityScale, translation + entityTranslation );
-
-    object->setSmoothEdges( mSmoothEdges );
-
-    if ( mExportNormals )
-    {
-      Qt3DRender::QAttribute *normalsAttribute = findAttribute( geometry, Qt3DRender::QAttribute::defaultNormalAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
-      // Reuse vertex bytes
-      QVector<float> normalsData = getAttributeData<float>( normalsAttribute, vertexBytes );
-      object->setupNormalCoordinates( normalsData );
-    }
-
-    object->setupPhongMaterial( pointSymbol->material() );
+    processMeshGeometry( mesh, pointSymbol, entityScale, entityTranslation );
   }
 }
 
-void Qgs3DSceneExporter::processMeshGeometry( Qt3DRender::QMesh *mesh, const QgsPoint3DSymbol *pointSymbol )
+void Qgs3DSceneExporter::processMeshGeometry( Qt3DRender::QGeometryRenderer *mesh, const QgsPoint3DSymbol *pointSymbol, float sceneScale, QVector3D sceneTranslation )
+{
+  Qgs3DExportObject *object = processGeometryRenderer( mesh, sceneScale, sceneTranslation );
+  object->setSmoothEdges( mSmoothEdges );
+  object->setupPhongMaterial( pointSymbol->material() );
+}
+
+Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeometryRenderer *mesh, float sceneScale, QVector3D sceneTranslation )
 {
   Qt3DCore::QEntity *meshParent = qobject_cast<Qt3DCore::QEntity *>( mesh->parent() );
-  Qt3DCore::QTransform *entityTransform = findTypedComponent<Qt3DCore::QTransform>( meshParent );
-  float entityScale = 1.0f;
-  QVector3D entityTranslation( 0.0f, 0.0f, 0.0f );
-  if ( entityTransform != nullptr )
+  Qt3DCore::QTransform *transform = findTypedComponent<Qt3DCore::QTransform>( meshParent );
+  float scale = 1.0f;
+  QVector3D translation( 0.0f, 0.0f, 0.0f );
+  if ( transform != nullptr )
   {
-    entityScale = entityTransform->scale();
-    entityTranslation = entityTransform->translation();
+    scale = transform->scale();
+    translation = transform->translation();
   }
   Qt3DRender::QGeometry *geometry = mesh->geometry();
 
@@ -573,29 +543,21 @@ void Qgs3DSceneExporter::processMeshGeometry( Qt3DRender::QMesh *mesh, const Qgs
   }
   if ( positionAttribute == nullptr || indexAttribute == nullptr )
   {
-    qDebug() << "Mesh with null data";
-    return;
+    qDebug() << "renderer with null data";
+    return nullptr;
   }
-  Qt3DRender::QBufferDataGeneratorPtr vertexDataGenerator = positionAttribute->buffer()->dataGenerator();
-  Qt3DRender::QBufferDataGeneratorPtr indexDataGenerator = indexAttribute->buffer()->dataGenerator();
 
-  QByteArray vertexBytes;
-  QByteArray indexBytes;
-  if ( vertexDataGenerator.isNull() ) vertexBytes = positionAttribute->buffer()->data();
-  else vertexBytes = vertexDataGenerator->operator()();
-  if ( indexDataGenerator.isNull() ) indexBytes = indexAttribute->buffer()->data();
-  else indexBytes = indexDataGenerator->operator()();
+  QByteArray vertexBytes = getData( positionAttribute->buffer() );
+  QByteArray indexBytes = getData( indexAttribute->buffer() );
 
   QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
   QVector<uint> indexData;
   if ( indexAttribute->vertexBaseType() == Qt3DRender::QAttribute::VertexBaseType::UnsignedInt ) indexData = getIndexData<quint32>( indexBytes );
   if ( indexAttribute->vertexBaseType() == Qt3DRender::QAttribute::VertexBaseType::UnsignedShort ) indexData = getIndexData<quint16>( indexBytes );
-  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "shape_geometry" ), "", this );
-  mObjects.push_back( object );
+  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "mesh_geometry" ), "", this );
 
-  object->setupPositionCoordinates( positionData, indexData, entityScale, entityTranslation );
-
-  object->setSmoothEdges( mSmoothEdges );
+  object->setupPositionCoordinates( positionData, scale * sceneScale, translation + sceneTranslation );
+  object->setupFaces( indexData );
 
   if ( mExportNormals )
   {
@@ -605,7 +567,7 @@ void Qgs3DSceneExporter::processMeshGeometry( Qt3DRender::QMesh *mesh, const Qgs
     object->setupNormalCoordinates( normalsData );
   }
 
-  object->setupPhongMaterial( pointSymbol->material() );
+  return object;
 }
 
 void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath )
