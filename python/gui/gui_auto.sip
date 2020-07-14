@@ -70,6 +70,7 @@
 %Include auto_generated/qgsdial.sip
 %Include auto_generated/qgsdialog.sip
 %Include auto_generated/qgsdockwidget.sip
+%Include auto_generated/qgsdoublevalidator.sip
 %Include auto_generated/qgsencodingfiledialog.sip
 %Include auto_generated/qgserrordialog.sip
 %Include auto_generated/qgsexpressionbuilderdialog.sip

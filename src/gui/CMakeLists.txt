@@ -393,6 +393,7 @@ SET(QGIS_GUI_SRCS
   qgsdetaileditemwidget.cpp
   qgsdial.cpp
   qgsdialog.cpp
+  qgsdoublevalidator.cpp
   qgsdockwidget.cpp
   qgsencodingfiledialog.cpp
   qgserrordialog.cpp
@@ -626,6 +627,7 @@ SET(QGIS_GUI_HDRS
   qgsdial.h
   qgsdialog.h
   qgsdockwidget.h
+  qgsdoublevalidator.h
   qgsencodingfiledialog.h
   qgserrordialog.h
   qgsexpressionbuilderdialog.h
