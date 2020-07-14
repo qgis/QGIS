@@ -40,10 +40,9 @@
 #include "qgsgeopackageproviderconnection.h"
 
 void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu,
-    const QList<QgsDataItem *> &selectedItems,
+    const QList<QgsDataItem *> &,
     QgsDataItemGuiContext context )
 {
-  populateDatabaseContextMenu( item, menu, selectedItems, context );
   if ( QgsGeoPackageVectorLayerItem *layerItem = qobject_cast< QgsGeoPackageVectorLayerItem * >( item ) )
   {
     // Check capabilities

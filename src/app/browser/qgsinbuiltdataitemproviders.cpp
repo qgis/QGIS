@@ -40,6 +40,7 @@
 #include "qgsaddattrdialog.h"
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsprovidermetadata.h"
+#include "qgsnewvectortabledialog.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -836,6 +837,82 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     {
       // This should never happen!
       QgsDebugMsg( QStringLiteral( "Error getting parent fields for %1" ).arg( item->name() ) );
+    }
+  }
+}
+
+QString QgsDatabaseItemGuiProvider::name()
+{
+  return QStringLiteral( "database" );
+}
+
+void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
+{
+  Q_UNUSED( selectedItems )
+  // Add create new table for connections
+  if ( QgsDataCollectionItem * collectionItem { qobject_cast<QgsDataCollectionItem *>( item ) } )
+  {
+    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( collectionItem->providerKey() ) };
+    if ( md )
+    {
+      const bool isSchema { qobject_cast<QgsDatabaseSchemaItem *>( item ) };
+      const QString connectionName { isSchema ? collectionItem->parent()->name() : collectionItem->name() };
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionName ) ) );
+      if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateVectorTable ) )
+      {
+        QAction *newTableAction = new QAction( QObject::tr( "New Table…" ), menu );
+        QObject::connect( newTableAction, &QAction::triggered, collectionItem, [ collectionItem, connectionName, md, isSchema, context]
+        {
+          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionName ) ) };
+          QgsNewVectorTableDialog dlg { conn2.get(), nullptr };
+          // TODO: dlg.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+          if ( isSchema )
+          {
+            dlg.setSchemaName( collectionItem->name() );
+          }
+          if ( dlg.exec() == QgsNewVectorTableDialog::DialogCode::Accepted )
+          {
+            const QgsFields fields { dlg.fields() };
+            const QString tableName { dlg.tableName() };
+            const QString schemaName { dlg.schemaName() };
+            const QString geometryColumn { dlg.geometryColumnName() };
+            const QgsWkbTypes::Type geometryType { dlg.geometryType() };
+            const QgsCoordinateReferenceSystem crs { dlg.crs( ) };
+            QMap<QString, QVariant> options;
+
+            if ( ! geometryColumn.isEmpty() )
+            {
+              options[ QStringLiteral( "geometryColumn" ) ] = geometryColumn;
+            }
+
+            QString title;
+            QString message;
+
+            try
+            {
+              conn2->createVectorTable( schemaName, tableName, fields, geometryType, crs, true, &options );
+              collectionItem->refresh();
+              title = QObject::tr( "New Table Created" );
+              message = QObject::tr( "Table '%1' was created successfully." ).arg( tableName );
+            }
+            catch ( QgsProviderConnectionException &ex )
+            {
+              title =  QObject::tr( "New Table Creation Error" );
+              message = QObject::tr( "Error creating new table '%1': %2" ).arg( tableName, ex.what() );
+            }
+
+            if ( context.messageBar() )
+            {
+              context.messageBar()->pushSuccess( title, message );
+            }
+            else
+            {
+              QMessageBox::information( nullptr, title, message );
+            }
+          }
+        } );
+        menu->addAction( newTableAction );
+      }
     }
   }
 }

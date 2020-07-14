@@ -79,6 +79,9 @@ class GUI_EXPORT QgsNewVectorTableDialog : public QDialog, private Ui_QgsNewVect
     QgsAbstractDatabaseProviderConnection *mConnection;
     QgsNewVectorTableFieldModel *mFieldModel;
     int mCurrentRow = -1;
+    // Used by validator
+    QStringList mTableNames;
+    QStringList mValidationErrors;
 
     void updateButtons();
     void selectRow( int row );

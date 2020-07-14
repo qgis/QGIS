@@ -20,15 +20,13 @@
 #include "qgspgnewconnection.h"
 #include "qgsnewnamedialog.h"
 #include "qgspgsourceselect.h"
-#include "qgsnewvectortabledialog.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
 
 
-void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
+void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
 {
-  populateDatabaseContextMenu( item, menu, selectedItems, context );
   if ( QgsPGRootItem *rootItem = qobject_cast< QgsPGRootItem * >( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), this );

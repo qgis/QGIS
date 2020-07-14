@@ -28,6 +28,23 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   QgsGui::enableAutoGeometryRestore( this );
   setWindowTitle( tr( "New Table" ) );
 
+  auto updateTableNames = [ = ]( const QString &schema = QString( ) )
+  {
+    mTableNames.clear();
+    try
+    {
+      const auto constTables { conn->tables( schema ) };
+      for ( const auto &tp : constTables )
+      {
+        mTableNames.push_back( tp.tableName() );
+      }
+    }
+    catch ( QgsProviderConnectionException &ex )
+    {
+      QgsDebugMsg( QStringLiteral( "Error retrieving tables from connection: %1" ).arg( ex.what() ) );
+    }
+  };
+
   mTableName->setText( QStringLiteral( "new_table_name" ) );
   mFieldsTableView->setModel( mFieldModel );
   QgsNewVectorTableDialogFieldsDelegate *delegate { new QgsNewVectorTableDialogFieldsDelegate( mConnection->nativeTypes(), this )};
@@ -36,23 +53,38 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   mFieldsTableView->setSelectionMode( QAbstractItemView::SelectionMode::SingleSelection );
 
   // Cosmetics
-  mFieldsTableView->setColumnWidth( QgsNewVectorTableFieldModel::ColumnHeaders::Name, 200 );
+  mFieldsTableView->horizontalHeader()->setStretchLastSection( true );
+  mFieldsTableView->setColumnWidth( QgsNewVectorTableFieldModel::ColumnHeaders::Type, 300 );
+  /*mFieldsTableView->setColumnWidth( QgsNewVectorTableFieldModel::ColumnHeaders::Name, 200 );
   mFieldsTableView->setColumnWidth( QgsNewVectorTableFieldModel::ColumnHeaders::Type, 400 );
   mFieldsTableView->setColumnWidth( QgsNewVectorTableFieldModel::ColumnHeaders::ProviderType, 300 );
   mFieldsTableView->setColumnWidth( QgsNewVectorTableFieldModel::ColumnHeaders::Length, 100 );
   mFieldsTableView->setColumnWidth( QgsNewVectorTableFieldModel::ColumnHeaders::Precision, 150 );
-  mFieldsTableView->setColumnWidth( QgsNewVectorTableFieldModel::ColumnHeaders::Comment, 300 );
+  mFieldsTableView->setColumnWidth( QgsNewVectorTableFieldModel::ColumnHeaders::Comment, 300 );*/
 
   // Schema is not supported by all providers
   if ( mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
   {
     mSchemaCbo->addItems( mConnection->schemas() );
+    connect( mSchemaCbo, &QComboBox::currentTextChanged, this, updateTableNames );
   }
   else
   {
+    updateTableNames();
     mSchemaCbo->hide();
     mSchemaLabel->hide();
   }
+
+  // Validators
+  connect( mTableName, &QLineEdit::textChanged, this, [ = ]( const QString & )
+  {
+    validate();
+  } );
+
+  connect( mGeomColumn, &QLineEdit::textChanged, this, [ = ]( const QString & )
+  {
+    validate();
+  } );
 
   connect( mGeomTypeCbo, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
   {
@@ -208,6 +240,7 @@ QgsCoordinateReferenceSystem QgsNewVectorTableDialog::crs() const
 void QgsNewVectorTableDialog::setFields( const QgsFields &fields )
 {
   mFieldModel->setFields( fields );
+  validate();
 }
 
 void QgsNewVectorTableDialog::updateButtons()
@@ -228,6 +261,23 @@ void QgsNewVectorTableDialog::selectRow( int row )
 
 void QgsNewVectorTableDialog::validate()
 {
+  mValidationErrors.clear();
+  if ( mTableNames.contains( mTableName->text() ) )
+  {
+    mValidationErrors.push_back( tr( "Table '%1' already exists!" ).arg( mTableName->text() ) );
+  }
+  // Check for field names and geom col name
+  if ( mGeomTypeCbo->currentIndex() != 0 && ! mGeomColumn->text().isEmpty() && fields().names().contains( mGeomColumn->text() ) )
+  {
+    mValidationErrors.push_back( tr( "Geometry column name cannot be equal to an existing field name!" ) );
+  }
+  const bool isValid { mValidationErrors.isEmpty() };
+  if ( ! isValid )
+  {
+    mValidationResults->setText( mValidationErrors.join( '\n' ) );
+  }
+  mValidationFrame->setVisible( ! isValid );
+  mButtonBox->button( QDialogButtonBox::StandardButton::Ok )->setEnabled( isValid && fields().count() > 0 );
 }
 
 void QgsNewVectorTableDialog::showEvent( QShowEvent *event )
