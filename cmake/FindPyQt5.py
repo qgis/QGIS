@@ -52,6 +52,8 @@ except ImportError:
         if os.path.exists(os.path.join(p, "QtCore", "QtCoremod.sip")):
             sip_dir = p
             break
+    else:
+        sys.exit(1)
     cfg = {
         'pyqt_version': PyQt5.QtCore.PYQT_VERSION,
         'pyqt_version_str': PyQt5.QtCore.PYQT_VERSION_STR,
