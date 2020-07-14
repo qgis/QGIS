@@ -35,6 +35,7 @@
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
 #include "qgslayoututils.h"
+#include "qgspallabeling.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -83,6 +84,7 @@ class TestQgsLayoutTable : public QObject
     void testBaseSort();
     void testExpressionSort();
     void testScopeForCell();
+    void testDataDefinedTextFormatForCell();
 
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
@@ -1050,6 +1052,34 @@ void TestQgsLayoutTable::verticalGrid()
   QVERIFY( result );
 
   delete multiLineLayer;
+}
+
+void TestQgsLayoutTable::testDataDefinedTextFormatForCell()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemAttributeTable *table = new QgsLayoutItemAttributeTable( &l );
+  table->setVectorLayer( mVectorLayer );
+
+  l.addMultiFrame( table );
+  QgsLayoutFrame *frame = new QgsLayoutFrame( &l, table );
+  frame->attemptSetSceneRect( QRectF( 5, 5, 100, 30 ) );
+  frame->setFrameEnabled( true );
+  l.addLayoutItem( frame );
+  table->addFrame( frame );
+
+  QgsTextFormat textFormat = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  table->setHeaderTextFormat( textFormat );
+  table->setContentTextFormat( textFormat );
+  table->refresh();
+
+  QCOMPARE( table->totalHeight(), 150.0 );
+
+  textFormat.dataDefinedProperties().setProperty( QgsPalLayerSettings::Size, QgsProperty::fromExpression( QStringLiteral( "if(@column_number = 1,30,5)" ) ) );
+  table->setContentTextFormat( textFormat );
+  table->refresh();
+
+  QCOMPARE( table->totalHeight(), 270.0 );
 }
 
 void TestQgsLayoutTable::align()
