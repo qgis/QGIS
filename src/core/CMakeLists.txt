@@ -654,6 +654,7 @@ SET(QGIS_CORE_SRCS
   geometry/qgswkbtypes.cpp
 
   3d/qgs3drendererregistry.cpp
+  3d/qgs3dsymbolregistry.cpp
   3d/qgsabstract3dsymbol.cpp
   3d/qgsabstract3drenderer.cpp
 
@@ -1033,6 +1034,7 @@ SET(QGIS_CORE_HDRS
   qobjectuniqueptr.h
 
   3d/qgs3drendererregistry.h
+  3d/qgs3dsymbolregistry.h
   3d/qgsabstract3dsymbol.h
   3d/qgsabstract3drenderer.h
 
