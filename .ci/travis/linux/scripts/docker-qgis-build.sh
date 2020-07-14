@@ -62,6 +62,7 @@ cmake \
  -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \
  -DWERROR=TRUE \
  -DADD_CLAZY_CHECKS=ON \
+ -DQt5_DIR="/usr/local/Qt-5.10.1/lib/cmake/Qt5" \
  -DQT5_3DEXTRA_LIBRARY="/usr/lib/x86_64-linux-gnu/libQt53DExtras.so" \
  -DQT5_3DEXTRA_INCLUDE_DIR="/root/QGIS/external/qt3dextra-headers" \
  -DCMAKE_PREFIX_PATH="/root/QGIS/external/qt3dextra-headers/cmake" \
