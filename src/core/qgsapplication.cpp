@@ -54,6 +54,7 @@
 #include "qgsuserprofilemanager.h"
 #include "qgsreferencedgeometry.h"
 #include "qgs3drendererregistry.h"
+#include "qgs3dsymbolregistry.h"
 #include "qgslayoutrendercontext.h"
 #include "qgssqliteutils.h"
 #include "qgsstyle.h"
@@ -2235,6 +2236,11 @@ Qgs3DRendererRegistry *QgsApplication::renderer3DRegistry()
   return members()->m3DRendererRegistry;
 }
 
+Qgs3DSymbolRegistry *QgsApplication::symbol3DRegistry()
+{
+  return members()->m3DSymbolRegistry;
+}
+
 QgsScaleBarRendererRegistry *QgsApplication::scaleBarRendererRegistry()
 {
   return members()->mScaleBarRendererRegistry;
@@ -2356,6 +2362,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup 3D symbol registry" ) );
+    m3DSymbolRegistry = new Qgs3DSymbolRegistry();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup 3D renderer registry" ) );
     m3DRendererRegistry = new Qgs3DRendererRegistry();
     profiler->end();
@@ -2399,6 +2410,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mValidityCheckRegistry;
   delete mActionScopeRegistry;
   delete m3DRendererRegistry;
+  delete m3DSymbolRegistry;
   delete mAnnotationRegistry;
   delete mColorSchemeRegistry;
   delete mFieldFormatterRegistry;
