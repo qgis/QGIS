@@ -205,7 +205,12 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
         if ( pointSymbol->shape() == QgsPoint3DSymbol::Model )
         {
           Qt3DRender::QSceneLoader *sceneLoader = entity->findChild<Qt3DRender::QSceneLoader *>();
-          processSceneLoaderGeometry( sceneLoader, pointSymbol );
+          if (sceneLoader != nullptr) processSceneLoaderGeometry( sceneLoader, pointSymbol );
+          else {
+            QList<Qt3DRender::QMesh *> meshes = entity->findChildren<Qt3DRender::QMesh *>();
+            for (Qt3DRender::QMesh * mesh : meshes)
+              processMeshGeometry(mesh, pointSymbol);
+          }
           return true;
         }
         else if ( pointSymbol->shape() == QgsPoint3DSymbol::Billboard )
@@ -574,6 +579,71 @@ void Qgs3DSceneExporter::processSceneLoaderGeometry( Qt3DRender::QSceneLoader *s
     object->setMaterialParameter( QString( "Ks" ), QString( "%1 %2 %3" ).arg( specular.redF() ).arg( specular.greenF() ).arg( specular.blueF() ) );
     object->setMaterialParameter( QString( "Ns" ), QString( "%1" ).arg( shininess ) );
   }
+}
+
+void Qgs3DSceneExporter::processMeshGeometry( Qt3DRender::QMesh *mesh, const QgsPoint3DSymbol *pointSymbol )
+{
+  Qt3DCore::QEntity *meshParent = qobject_cast<Qt3DCore::QEntity *>( mesh->parent() );
+  Qt3DCore::QTransform *entityTransform = findTypedComponent<Qt3DCore::QTransform>( meshParent );
+  float entityScale = 1.0f;
+  QVector3D entityTranslation( 0.0f, 0.0f, 0.0f );
+  if ( entityTransform != nullptr )
+  {
+    entityScale = entityTransform->scale();
+    entityTranslation = entityTransform->translation();
+  }
+  Qt3DRender::QGeometry *geometry = mesh->geometry();
+
+  Qt3DRender::QAttribute *positionAttribute = findAttribute( geometry, Qt3DRender::QAttribute::defaultPositionAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
+  Qt3DRender::QAttribute *indexAttribute = nullptr;
+  for ( Qt3DRender::QAttribute *attribute : geometry->attributes() )
+  {
+    if ( attribute->attributeType() == Qt3DRender::QAttribute::IndexAttribute )
+      indexAttribute = attribute;
+  }
+  if ( positionAttribute == nullptr || indexAttribute == nullptr )
+  {
+    qDebug() << "Mesh with null data";
+    return;
+  }
+  Qt3DRender::QBufferDataGeneratorPtr vertexDataGenerator = positionAttribute->buffer()->dataGenerator();
+  Qt3DRender::QBufferDataGeneratorPtr indexDataGenerator = indexAttribute->buffer()->dataGenerator();
+
+  QByteArray vertexBytes;
+  QByteArray indexBytes;
+  if ( vertexDataGenerator.isNull() ) vertexBytes = positionAttribute->buffer()->data();
+  else vertexBytes = vertexDataGenerator->operator()();
+  if ( indexDataGenerator.isNull() ) indexBytes = indexAttribute->buffer()->data();
+  else indexBytes = indexDataGenerator->operator()();
+
+  QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
+  QVector<uint> indexData;
+  if ( indexAttribute->vertexBaseType() == Qt3DRender::QAttribute::VertexBaseType::UnsignedInt ) indexData = getIndexData<quint32>( indexBytes );
+  if ( indexAttribute->vertexBaseType() == Qt3DRender::QAttribute::VertexBaseType::UnsignedShort ) indexData = getIndexData<quint16>( indexBytes );
+  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "shape_geometry" ), "", this );
+  mObjects.push_back( object );
+
+  object->setupPositionCoordinates( positionData, indexData, entityScale, entityTranslation );
+
+  object->setSmoothEdges( mSmoothEdges );
+
+  if ( mExportNormals )
+  {
+    Qt3DRender::QAttribute *normalsAttribute = findAttribute( geometry, Qt3DRender::QAttribute::defaultNormalAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
+    // Reuse vertex bytes
+    QVector<float> normalsData = getAttributeData<float>( normalsAttribute, vertexBytes );
+    object->setupNormalCoordinates( normalsData );
+  }
+
+  QgsPhongMaterialSettings material = pointSymbol->material();
+  QColor diffuse = material.diffuse();
+  QColor specular = material.specular();
+  QColor ambient = material.ambient();
+  float shininess = material.shininess();
+  object->setMaterialParameter( QString( "Kd" ), QString( "%1 %2 %3" ).arg( diffuse.redF() ).arg( diffuse.greenF() ).arg( diffuse.blueF() ) );
+  object->setMaterialParameter( QString( "Ka" ), QString( "%1 %2 %3" ).arg( ambient.redF() ).arg( ambient.greenF() ).arg( ambient.blueF() ) );
+  object->setMaterialParameter( QString( "Ks" ), QString( "%1 %2 %3" ).arg( specular.redF() ).arg( specular.greenF() ).arg( specular.blueF() ) );
+  object->setMaterialParameter( QString( "Ns" ), QString( "%1" ).arg( shininess ) );
 }
 
 void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath )
