@@ -205,11 +205,12 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
         if ( pointSymbol->shape() == QgsPoint3DSymbol::Model )
         {
           Qt3DRender::QSceneLoader *sceneLoader = entity->findChild<Qt3DRender::QSceneLoader *>();
-          if (sceneLoader != nullptr) processSceneLoaderGeometry( sceneLoader, pointSymbol );
-          else {
+          if ( sceneLoader != nullptr ) processSceneLoaderGeometry( sceneLoader, pointSymbol );
+          else
+          {
             QList<Qt3DRender::QMesh *> meshes = entity->findChildren<Qt3DRender::QMesh *>();
-            for (Qt3DRender::QMesh * mesh : meshes)
-              processMeshGeometry(mesh, pointSymbol);
+            for ( Qt3DRender::QMesh *mesh : meshes )
+              processMeshGeometry( mesh, pointSymbol );
           }
           return true;
         }
@@ -406,15 +407,8 @@ void Qgs3DSceneExporter::processPolygonGeometry( QgsTessellatedPolygonGeometry *
     QVector<float> normalsData = getAttributeData<float>( normalsAttribute, normalsBytes );
     object->setupNormalCoordinates( normalsData );
   }
-  QgsPhongMaterialSettings material =  polygonSymbol->material();
-  QColor diffuse = material.diffuse();
-  QColor specular = material.specular();
-  QColor ambient = material.ambient();
-  float shininess = material.shininess();
-  object->setMaterialParameter( QString( "Kd" ), QString( "%1 %2 %3" ).arg( diffuse.redF() ).arg( diffuse.greenF() ).arg( diffuse.blueF() ) );
-  object->setMaterialParameter( QString( "Ka" ), QString( "%1 %2 %3" ).arg( ambient.redF() ).arg( ambient.greenF() ).arg( ambient.blueF() ) );
-  object->setMaterialParameter( QString( "Ks" ), QString( "%1 %2 %3" ).arg( specular.redF() ).arg( specular.greenF() ).arg( specular.blueF() ) );
-  object->setMaterialParameter( QString( "Ns" ), QString( "%1" ).arg( shininess ) );
+
+  object->setupPhongMaterial( polygonSymbol->material() );
   // TODO: handle textures
 }
 
@@ -438,15 +432,7 @@ void Qgs3DSceneExporter::processBufferedLineGeometry( QgsTessellatedPolygonGeome
     object->setupNormalCoordinates( normalsData );
   }
 
-  QgsPhongMaterialSettings material = lineSymbol->material();
-  QColor diffuse = material.diffuse();
-  QColor specular = material.specular();
-  QColor ambient = material.ambient();
-  float shininess = material.shininess();
-  object->setMaterialParameter( QString( "Kd" ), QString( "%1 %2 %3" ).arg( diffuse.redF() ).arg( diffuse.greenF() ).arg( diffuse.blueF() ) );
-  object->setMaterialParameter( QString( "Ka" ), QString( "%1 %2 %3" ).arg( ambient.redF() ).arg( ambient.greenF() ).arg( ambient.blueF() ) );
-  object->setMaterialParameter( QString( "Ks" ), QString( "%1 %2 %3" ).arg( specular.redF() ).arg( specular.greenF() ).arg( specular.blueF() ) );
-  object->setMaterialParameter( QString( "Ns" ), QString( "%1" ).arg( shininess ) );
+  object->setupPhongMaterial( lineSymbol->material() );
 }
 
 void Qgs3DSceneExporter::processInstancedPointGeometry( Qt3DCore::QEntity *entity, const QgsPoint3DSymbol *pointSymbol )
@@ -489,15 +475,7 @@ void Qgs3DSceneExporter::processInstancedPointGeometry( Qt3DCore::QEntity *entit
         object->setupNormalCoordinates( normalsData );
       }
 
-      QgsPhongMaterialSettings material = pointSymbol->material();
-      QColor diffuse = material.diffuse();
-      QColor specular = material.specular();
-      QColor ambient = material.ambient();
-      float shininess = material.shininess();
-      object->setMaterialParameter( QString( "Kd" ), QString( "%1 %2 %3" ).arg( diffuse.redF() ).arg( diffuse.greenF() ).arg( diffuse.blueF() ) );
-      object->setMaterialParameter( QString( "Ka" ), QString( "%1 %2 %3" ).arg( ambient.redF() ).arg( ambient.greenF() ).arg( ambient.blueF() ) );
-      object->setMaterialParameter( QString( "Ks" ), QString( "%1 %2 %3" ).arg( specular.redF() ).arg( specular.greenF() ).arg( specular.blueF() ) );
-      object->setMaterialParameter( QString( "Ns" ), QString( "%1" ).arg( shininess ) );
+      object->setupPhongMaterial( pointSymbol->material() );
     }
   }
 }
@@ -569,15 +547,7 @@ void Qgs3DSceneExporter::processSceneLoaderGeometry( Qt3DRender::QSceneLoader *s
       object->setupNormalCoordinates( normalsData );
     }
 
-    QgsPhongMaterialSettings material = pointSymbol->material();
-    QColor diffuse = material.diffuse();
-    QColor specular = material.specular();
-    QColor ambient = material.ambient();
-    float shininess = material.shininess();
-    object->setMaterialParameter( QString( "Kd" ), QString( "%1 %2 %3" ).arg( diffuse.redF() ).arg( diffuse.greenF() ).arg( diffuse.blueF() ) );
-    object->setMaterialParameter( QString( "Ka" ), QString( "%1 %2 %3" ).arg( ambient.redF() ).arg( ambient.greenF() ).arg( ambient.blueF() ) );
-    object->setMaterialParameter( QString( "Ks" ), QString( "%1 %2 %3" ).arg( specular.redF() ).arg( specular.greenF() ).arg( specular.blueF() ) );
-    object->setMaterialParameter( QString( "Ns" ), QString( "%1" ).arg( shininess ) );
+    object->setupPhongMaterial( pointSymbol->material() );
   }
 }
 
@@ -635,15 +605,7 @@ void Qgs3DSceneExporter::processMeshGeometry( Qt3DRender::QMesh *mesh, const Qgs
     object->setupNormalCoordinates( normalsData );
   }
 
-  QgsPhongMaterialSettings material = pointSymbol->material();
-  QColor diffuse = material.diffuse();
-  QColor specular = material.specular();
-  QColor ambient = material.ambient();
-  float shininess = material.shininess();
-  object->setMaterialParameter( QString( "Kd" ), QString( "%1 %2 %3" ).arg( diffuse.redF() ).arg( diffuse.greenF() ).arg( diffuse.blueF() ) );
-  object->setMaterialParameter( QString( "Ka" ), QString( "%1 %2 %3" ).arg( ambient.redF() ).arg( ambient.greenF() ).arg( ambient.blueF() ) );
-  object->setMaterialParameter( QString( "Ks" ), QString( "%1 %2 %3" ).arg( specular.redF() ).arg( specular.greenF() ).arg( specular.blueF() ) );
-  object->setMaterialParameter( QString( "Ns" ), QString( "%1" ).arg( shininess ) );
+  object->setupPhongMaterial( pointSymbol->material() );
 }
 
 void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath )

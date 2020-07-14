@@ -22,6 +22,8 @@
 #include <QVector3D>
 #include <QImage>
 
+class QgsPhongMaterialSettings;
+
 /**
  * \brief The Qgs3DExportObject class
  * Manages the data of each object of the scene (positions, normals, texture coordinates ...) since each object
@@ -70,6 +72,8 @@ class Qgs3DExportObject : public QObject
     void setupNormalCoordinates( const QVector<float> &normalsBuffer );
     //! Sets texture coordinates for each vertex
     void setupTextureCoordinates( const QVector<float> &texturesBuffer );
+    //! Sets the material parameters (diffuse color, shininess...) from phong material
+    void setupPhongMaterial( const QgsPhongMaterialSettings &material );
 
     //! Sets the texture image used by the object
     void setTextureImage( const QImage &image ) { this->mTextureImage = image; };

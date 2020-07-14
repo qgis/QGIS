@@ -20,6 +20,8 @@
 #include <QDir>
 #include <QImage>
 
+#include "qgsphongmaterialsettings.h"
+
 Qgs3DExportObject::Qgs3DExportObject( const QString &name, const QString &parentName, QObject *parent )
   : QObject( parent )
   , mName( name )
@@ -90,6 +92,18 @@ void Qgs3DExportObject::setupNormalCoordinates( const QVector<float> &normalsBuf
 void Qgs3DExportObject::setupTextureCoordinates( const QVector<float> &texturesBuffer )
 {
   mTexturesUV << texturesBuffer;
+}
+
+void Qgs3DExportObject::setupPhongMaterial( const QgsPhongMaterialSettings &material )
+{
+  QColor diffuse = material.diffuse();
+  QColor specular = material.specular();
+  QColor ambient = material.ambient();
+  float shininess = material.shininess();
+  setMaterialParameter( QString( "Kd" ), QString( "%1 %2 %3" ).arg( diffuse.redF() ).arg( diffuse.greenF() ).arg( diffuse.blueF() ) );
+  setMaterialParameter( QString( "Ka" ), QString( "%1 %2 %3" ).arg( ambient.redF() ).arg( ambient.greenF() ).arg( ambient.blueF() ) );
+  setMaterialParameter( QString( "Ks" ), QString( "%1 %2 %3" ).arg( specular.redF() ).arg( specular.greenF() ).arg( specular.blueF() ) );
+  setMaterialParameter( QString( "Ns" ), QString( "%1" ).arg( shininess ) );
 }
 
 void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ )
