@@ -34,7 +34,7 @@ class QgsSymbol;
 class QgsSymbolLayer;
 class QgsColorRamp;
 class QgsStyleEntityInterface;
-
+class QgsAbstract3DSymbol;
 class QDomDocument;
 class QDomElement;
 

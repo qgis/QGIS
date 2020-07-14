@@ -16,7 +16,7 @@
 #ifndef QGSABSTRACT3DSYMBOL_H
 #define QGSABSTRACT3DSYMBOL_H
 
-#include "qgis_3d.h"
+#include "qgis_core.h"
 #include "qgis_sip.h"
 
 #include "qgspropertycollection.h"
@@ -36,9 +36,11 @@ class QgsReadWriteContext;
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
  * exposed to the Python bindings as a tech preview only.
  *
+ * \note Prior to QGIS 3.16 this was available through the QGIS 3D library.
+ *
  * \since QGIS 3.0
  */
-class _3D_EXPORT QgsAbstract3DSymbol
+class CORE_EXPORT QgsAbstract3DSymbol
 {
   public:
     virtual ~QgsAbstract3DSymbol() = default;
