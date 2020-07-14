@@ -37,6 +37,9 @@
 #include "processing/qgsprojectstylealgorithms.h"
 #include "qgsstylemanagerdialog.h"
 #include "qgsproviderregistry.h"
+#include "qgsaddattrdialog.h"
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsprovidermetadata.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -686,5 +689,153 @@ bool QgsProjectItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataIte
   else
   {
     return false;
+  }
+}
+
+QString QgsFieldsItemGuiProvider::name()
+{
+  return QStringLiteral( "fields_item" );
+}
+
+void QgsFieldsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
+{
+  Q_UNUSED( selectedItems )
+
+  if ( !item || item->type() != QgsDataItem::Type::Fields )
+    return;
+
+
+  if ( QgsFieldsItem *fieldsItem = qobject_cast<QgsFieldsItem *>( item ) )
+  {
+    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( fieldsItem->providerKey() ) };
+    if ( md )
+    {
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
+      // Check if it is supported
+      if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddField ) )
+      {
+        QAction *addColumnAction = new QAction( tr( "Add New Field…" ), menu );
+        QPointer<QgsDataItem>itemPtr { item };
+        const QString itemName { item->name() };
+
+        connect( addColumnAction, &QAction::triggered, fieldsItem, [ md, fieldsItem, context, itemPtr, menu ]
+        {
+          std::unique_ptr<QgsVectorLayer> layer { fieldsItem->layer() };
+          if ( layer )
+          {
+            QgsAddAttrDialog dialog( layer.get(), menu );
+            if ( dialog.exec() == QDialog::Accepted )
+            {
+              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
+              try
+              {
+                conn2->addField( dialog.field(), fieldsItem->schema(), fieldsItem->tableName() );
+                if ( itemPtr )
+                  itemPtr->refresh();
+              }
+              catch ( const QgsProviderConnectionException &ex )
+              {
+                if ( context.messageBar() )
+                {
+                  context.messageBar()->pushCritical( tr( "New Field" ), tr( "Failed to add the new field to '%1': %2" ).arg( fieldsItem->tableName(), ex.what() ) );
+                }
+                else
+                {
+                  QMessageBox::critical( menu, tr( "New Field" ), tr( "Failed to a add new field to '%1': %2" ).arg( fieldsItem->tableName(), ex.what() ) );
+                }
+              }
+            }
+          }
+          else
+          {
+            const QString message { tr( "Failed to create layer '%1'. Check application logs and user permissions." ).arg( fieldsItem->tableName() ) };
+            if ( context.messageBar() )
+            {
+              context.messageBar()->pushCritical( tr( "Add Field" ), message );
+            }
+            else
+            {
+              QMessageBox::critical( menu, tr( "Add Field" ), message );
+            }
+          }
+        } );
+        menu->addAction( addColumnAction );
+      }
+    }
+  }
+}
+
+QString QgsFieldItemGuiProvider::name()
+{
+  return QStringLiteral( "field_item" );
+}
+
+void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
+{
+  Q_UNUSED( selectedItems )
+
+  if ( !item || item->type() != QgsDataItem::Type::Field )
+    return;
+
+  if ( QgsFieldItem *fieldItem = qobject_cast<QgsFieldItem *>( item ) )
+  {
+    // Retrieve the connection from the parent
+    QgsFieldsItem *fieldsItem { static_cast<QgsFieldsItem *>( fieldItem->parent() ) };
+    if ( fieldsItem )
+    {
+      // Check if it is supported
+      QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( fieldsItem->providerKey() ) };
+      if ( md )
+      {
+        std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
+        if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteField ) )
+        {
+          QAction *deleteFieldAction = new QAction( tr( "Delete Field…" ), menu );
+          const bool supportsCascade { conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteFieldCascade ) };
+          const QString itemName { item->name() };
+
+          connect( deleteFieldAction, &QAction::triggered, fieldsItem, [ md, fieldsItem, itemName, context, supportsCascade, menu ]
+          {
+            // Confirmation dialog
+            QMessageBox msgbox{QMessageBox::Icon::Question, tr( "Delete Field" ), tr( "Delete '%1' permanently?" ).arg( itemName ), QMessageBox::Ok | QMessageBox::Cancel };
+            QCheckBox *cb = new QCheckBox( tr( "Delete all related objects (CASCADE)?" ) );
+            msgbox.setCheckBox( cb );
+            msgbox.setDefaultButton( QMessageBox::Cancel );
+
+            if ( ! supportsCascade )
+            {
+              cb->hide();
+            }
+
+            if ( msgbox.exec() == QMessageBox::Ok )
+            {
+              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
+              try
+              {
+                conn2->deleteField( itemName, fieldsItem->schema(), fieldsItem->tableName(), supportsCascade && cb->isChecked() );
+                fieldsItem->refresh();
+              }
+              catch ( const QgsProviderConnectionException &ex )
+              {
+                if ( context.messageBar() )
+                {
+                  context.messageBar()->pushCritical( tr( "Delete Field" ), tr( "Failed to delete field '%1': %2" ).arg( itemName, ex.what() ) );
+                }
+                else
+                {
+                  QMessageBox::critical( menu, tr( "Delete Field" ), tr( "Failed to delete field '%1': %2" ).arg( itemName, ex.what() ) );
+                }
+              }
+            }
+          } );
+          menu->addAction( deleteFieldAction );
+        }
+      }
+    }
+    else
+    {
+      // This should never happen!
+      QgsDebugMsg( QStringLiteral( "Error getting parent fields for %1" ).arg( item->name() ) );
+    }
   }
 }

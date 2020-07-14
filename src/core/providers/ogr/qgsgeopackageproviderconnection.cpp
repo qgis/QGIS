@@ -317,7 +317,9 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
     Capability::ExecuteSql,
     Capability::CreateSpatialIndex,
     Capability::SpatialIndexExists,
-    Capability::DeleteSpatialIndex
+    Capability::DeleteSpatialIndex,
+    Capability::DeleteField,
+    Capability::AddField
   };
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
   mCapabilities |= Capability::DropRasterTable;

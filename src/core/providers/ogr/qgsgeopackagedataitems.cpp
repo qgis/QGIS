@@ -315,7 +315,16 @@ QgsGeoPackageCollectionItem *QgsGeoPackageAbstractLayerItem::collection() const
 QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType )
   : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
 {
-  mCapabilities |= Rename;
+  mCapabilities |= ( Rename | Fertile );
+  setState( QgsDataItem::State::NotPopulated );
+}
+
+
+QVector<QgsDataItem *> QgsGeoPackageVectorLayerItem::createChildren()
+{
+  QVector<QgsDataItem *> children;
+  children.push_back( new QgsFieldsItem( this, collection()->path() + QStringLiteral( "/columns/ " ), collection()->path(), providerKey(), QString(), name() ) );
+  return children;
 }
 
 

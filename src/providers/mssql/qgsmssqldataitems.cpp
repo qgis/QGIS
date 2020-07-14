@@ -481,7 +481,7 @@ QgsMssqlLayerItem::QgsMssqlLayerItem( QgsDataItem *parent, const QString &name, 
 {
   mCapabilities |= Delete;
   mUri = createUri();
-  setState( Populated );
+  setState( NotPopulated );
 }
 
 
@@ -592,9 +592,20 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
   if ( refresh )
     addChildItem( layerItem, true );
   else
+  {
     addChild( layerItem );
+    layerItem->setParent( this );
+  }
 
   return layerItem;
+}
+
+
+QVector<QgsDataItem *> QgsMssqlLayerItem::createChildren()
+{
+  QVector<QgsDataItem *> children;
+  children.push_back( new QgsFieldsItem( this, uri() + QStringLiteral( "/columns/ " ), createUri(), providerKey(), mLayerProperty.schemaName, mLayerProperty.tableName ) );
+  return children;
 }
 
 // ---------------------------------------------------------------------------
@@ -658,4 +669,3 @@ bool QgsMssqlSchemaItem::layerCollection() const
 {
   return true;
 }
-

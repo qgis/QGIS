@@ -293,8 +293,9 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       CreateSpatialIndex = 1 << 16, //!< The connection can create spatial indices
       SpatialIndexExists = 1 << 17, //!< The connection can determine if a spatial index exists
       DeleteSpatialIndex = 1 << 18, //!< The connection can delete spatial indices for tables
-      DeleteField = 1 << 19,        //!< Can delete an existing field
-      CreateField = 1 << 20,        //!< Can add a new field
+      DeleteField = 1 << 19,        //!< Can delete an existing field/column
+      DeleteFieldCascade = 1 << 20, //!< Can delete an existing field/column with cascade
+      AddField = 1 << 21,           //!< Can add a new field/column
     };
 
     Q_ENUM( Capability )
@@ -393,6 +394,32 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \throws QgsProviderConnectionException
      */
     virtual void dropSchema( const QString &name, bool force = false ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Deletes the field with the specified name.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \param fieldName name of the field to be deleted
+     * \param schema name of the schema (schema is ignored if not supported by the backend).
+     * \param tableName name of the table
+     * \param force if TRUE, a DROP CASCADE will drop all related objects
+     * \note it is responsibility of the caller to handle open layers and registry entries.
+     * \throws QgsProviderConnectionException
+     * \since QGIS 3.16
+     */
+    virtual void deleteField( const QString &fieldName, const QString &schema, const QString &tableName, bool force = false ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Adds a field
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \param field specification of the new field
+     * \param schema name of the schema (schema is ignored if not supported by the backend).
+     * \param tableName name of the table
+     * \note it is responsibility of the caller to handle open layers and registry entries.
+     * \throws QgsProviderConnectionException
+     * \since QGIS 3.16
+     */
+    virtual void addField( const QgsField &field, const QString &schema, const QString &tableName ) const SIP_THROW( QgsProviderConnectionException );
+
 
     /**
      * Renames a schema with the specified \a name.

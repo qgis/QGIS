@@ -100,9 +100,14 @@ class QgsPGLayerItem : public QgsLayerItem
 
     const QgsPostgresLayerProperty &layerInfo() const { return mLayerProperty; }
 
+    QVector<QgsDataItem *> createChildren() override;
+
   private:
     QgsPostgresLayerProperty mLayerProperty;
+
 };
+
+
 
 //! Provider for Postgres data item
 class QgsPostgresDataItemProvider : public QgsDataItemProvider

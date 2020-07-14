@@ -314,9 +314,10 @@ QgsPGLayerItem::QgsPGLayerItem( QgsDataItem *parent, const QString &name, const 
   : QgsLayerItem( parent, name, path, QString(), layerType, layerProperty.isRaster ? QStringLiteral( "postgresraster" ) : QStringLiteral( "postgres" ) )
   , mLayerProperty( layerProperty )
 {
-  mCapabilities |= Delete;
+  mCapabilities |= Delete | Fertile;
   mUri = createUri();
-  setState( Populated );
+  // No rasters for now
+  setState( layerProperty.isRaster ? Populated : NotPopulated );
   Q_ASSERT( mLayerProperty.size() == 1 );
 }
 
@@ -523,6 +524,12 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
   return layerItem;
 }
 
+QVector<QgsDataItem *> QgsPGLayerItem::createChildren()
+{
+  QVector<QgsDataItem *> children;
+  children.push_back( new QgsFieldsItem( this, uri() + QStringLiteral( "/columns/ " ), createUri(), providerKey(), mLayerProperty.schemaName, mLayerProperty.tableName ) );
+  return children;
+}
 
 // ---------------------------------------------------------------------------
 QgsPGRootItem::QgsPGRootItem( QgsDataItem *parent, const QString &name, const QString &path )
