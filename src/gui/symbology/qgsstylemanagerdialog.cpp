@@ -34,6 +34,7 @@
 #include "qgstextformatwidget.h"
 #include "qgslabelinggui.h"
 #include "qgslegendpatchshapewidget.h"
+#include "qgsabstract3dsymbol.h"
 #include <QAction>
 #include <QFile>
 #include <QFileDialog>
@@ -614,6 +615,7 @@ void QgsStyleManagerDialog::copyItem()
 
     case QgsStyle::ColorrampEntity:
     case QgsStyle::LegendPatchShapeEntity:
+    case QgsStyle::Symbol3DEntity:
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
       return;
@@ -1009,6 +1011,59 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
         {
           dst->addLegendPatchShape( details.name, shape );
           dst->saveLegendPatchShape( details.name, shape, addItemToFavorites, symbolTags );
+          count++;
+        }
+        break;
+      }
+
+      case QgsStyle::Symbol3DEntity:
+      {
+        std::unique_ptr< QgsAbstract3DSymbol > symbol( src->symbol3D( details.name ) );
+        if ( !symbol )
+          continue;
+
+        const bool hasDuplicateName = dst->symbol3DNames().contains( details.name );
+        bool overwriteThis = false;
+        if ( isImport )
+          addItemToFavorites = favoriteSymbols.contains( details.name );
+
+        if ( hasDuplicateName && prompt )
+        {
+          cursorOverride.reset();
+          int res = QMessageBox::warning( parentWidget, isImport ? tr( "Import 3D Symbol" ) : tr( "Export 3D Symbol" ),
+                                          tr( "A 3D symbol with the name “%1” already exists.\nOverwrite?" )
+                                          .arg( details.name ),
+                                          QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          switch ( res )
+          {
+            case QMessageBox::Cancel:
+              return count;
+
+            case QMessageBox::No:
+              continue;
+
+            case QMessageBox::Yes:
+              overwriteThis = true;
+              break;
+
+            case QMessageBox::YesToAll:
+              prompt = false;
+              overwriteAll = true;
+              break;
+
+            case QMessageBox::NoToAll:
+              prompt = false;
+              overwriteAll = false;
+              break;
+          }
+        }
+
+        if ( !hasDuplicateName || overwriteAll || overwriteThis )
+        {
+          QgsAbstract3DSymbol *newSymbol = symbol.get();
+          dst->addSymbol3D( details.name, symbol.release() );
+          dst->saveSymbol3D( details.name, newSymbol, addItemToFavorites, symbolTags );
           count++;
         }
         break;

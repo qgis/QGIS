@@ -29,6 +29,8 @@
 #include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsabstract3dsymbol.h"
+#include "qgs3dsymbolregistry.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -52,6 +54,17 @@ enum LegendPatchTable
   LegendPatchTableName, //!< Legend patch name
   LegendPatchTableXML, //!< Legend patch definition (as XML)
   LegendPatchTableFavoriteId, //!< Legend patch is favorite flag
+};
+
+/**
+ * Columns available in the 3d symbol table.
+ */
+enum Symbol3DTable
+{
+  Symbol3DTableId, //!< 3d symbol ID
+  Symbol3DTableName, //!< 3d symbol name
+  Symbol3DTableXML, //!< 3d symbol definition (as XML)
+  Symbol3DTableFavoriteId, //!< 3d symbol is favorite flag
 };
 
 
@@ -100,6 +113,9 @@ bool QgsStyle::addEntity( const QString &name, const QgsStyleEntityInterface *en
     case LegendPatchShapeEntity:
       return addLegendPatchShape( name, static_cast< const QgsStyleLegendPatchShapeEntity * >( entity )->shape(), update );
 
+    case Symbol3DEntity:
+      return addSymbol3D( name, static_cast< const QgsStyleSymbol3DEntity * >( entity )->symbol()->clone(), update );
+
     case TagEntity:
     case SmartgroupEntity:
       break;
@@ -147,10 +163,12 @@ void QgsStyle::clear()
 {
   qDeleteAll( mSymbols );
   qDeleteAll( mColorRamps );
+  qDeleteAll( m3dSymbols );
 
   mSymbols.clear();
   mColorRamps.clear();
   mTextFormats.clear();
+  m3dSymbols.clear();
 
   mCachedTags.clear();
   mCachedFavorites.clear();
@@ -237,6 +255,9 @@ bool QgsStyle::renameEntity( QgsStyle::StyleEntity type, const QString &oldName,
 
     case LegendPatchShapeEntity:
       return renameLegendPatchShape( oldName, newName );
+
+    case Symbol3DEntity:
+      return renameSymbol3D( oldName, newName );
 
     case TagEntity:
     case SmartgroupEntity:
@@ -349,6 +370,27 @@ bool QgsStyle::addLegendPatchShape( const QString &name, const QgsLegendPatchSha
     mLegendPatchShapes.insert( name, shape );
     if ( update )
       saveLegendPatchShape( name, shape, false, QStringList() );
+  }
+
+  return true;
+}
+
+bool QgsStyle::addSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol, bool update )
+{
+  // delete previous symbol (if any)
+  if ( m3dSymbols.contains( name ) )
+  {
+    // TODO remove groups and tags?
+    delete m3dSymbols.take( name );
+    m3dSymbols.insert( name, symbol );
+    if ( update )
+      updateSymbol( Symbol3DEntity, name );
+  }
+  else
+  {
+    m3dSymbols.insert( name, symbol );
+    if ( update )
+      saveSymbol3D( name, symbol, false, QStringList() );
   }
 
   return true;
@@ -483,6 +525,11 @@ void QgsStyle::createTables()
                                   "name TEXT UNIQUE,"\
                                   "xml TEXT,"\
                                   "favorite INTEGER);"\
+                                  "CREATE TABLE symbol3d("\
+                                  "id INTEGER PRIMARY KEY,"\
+                                  "name TEXT UNIQUE,"\
+                                  "xml TEXT,"\
+                                  "favorite INTEGER);"\
                                   "CREATE TABLE tag("\
                                   "id INTEGER PRIMARY KEY,"\
                                   "name TEXT);"\
@@ -501,6 +548,9 @@ void QgsStyle::createTables()
                                   "CREATE TABLE lpstagmap("\
                                   "tag_id INTEGER NOT NULL,"\
                                   "legendpatchshape_id INTEGER);"\
+                                  "CREATE TABLE symbol3dtagmap("\
+                                  "tag_id INTEGER NOT NULL,"\
+                                  "symbol3d_id INTEGER);"\
                                   "CREATE TABLE smartgroup("\
                                   "id INTEGER PRIMARY KEY,"\
                                   "name TEXT,"\
@@ -567,6 +617,21 @@ bool QgsStyle::load( const QString &filename )
                                "legendpatchshape_id INTEGER);" );
     runEmptyQuery( query );
   }
+  // make sure 3d symbol table exists
+  query = QgsSqlite3Mprintf( "SELECT name FROM sqlite_master WHERE name='symbol3d'" );
+  statement = mCurrentDB.prepare( query, rc );
+  if ( rc != SQLITE_OK || sqlite3_step( statement.get() ) != SQLITE_ROW )
+  {
+    query = QgsSqlite3Mprintf( "CREATE TABLE symbol3d("\
+                               "id INTEGER PRIMARY KEY,"\
+                               "name TEXT UNIQUE,"\
+                               "xml TEXT,"\
+                               "favorite INTEGER);"\
+                               "CREATE TABLE symbol3dtagmap("\
+                               "tag_id INTEGER NOT NULL,"\
+                               "symbol3d_id INTEGER);" );
+    runEmptyQuery( query );
+  }
 
   // Make sure there are no Null fields in parenting symbols and groups
   query = QgsSqlite3Mprintf( "UPDATE symbol SET favorite=0 WHERE favorite IS NULL;"
@@ -574,6 +639,7 @@ bool QgsStyle::load( const QString &filename )
                              "UPDATE textformat SET favorite=0 WHERE favorite IS NULL;"
                              "UPDATE labelsettings SET favorite=0 WHERE favorite IS NULL;"
                              "UPDATE legendpatchshapes SET favorite=0 WHERE favorite IS NULL;"
+                             "UPDATE symbol3d SET favorite=0 WHERE favorite IS NULL;"
                            );
   runEmptyQuery( query );
 
@@ -687,6 +753,38 @@ bool QgsStyle::load( const QString &filename )
       QgsLegendPatchShape shape;
       shape.readXml( settingsElement, QgsReadWriteContext() );
       mLegendPatchShapes.insert( settingsName, shape );
+    }
+  }
+
+  {
+    QgsScopedRuntimeProfile profile( tr( "Load 3d symbols shapes" ) );
+    query = QgsSqlite3Mprintf( "SELECT * FROM symbol3d" );
+    statement = mCurrentDB.prepare( query, rc );
+    while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
+    {
+      QDomDocument doc;
+      const QString settingsName = statement.columnAsText( Symbol3DTableName );
+      QgsScopedRuntimeProfile profile( settingsName );
+      const QString xmlstring = statement.columnAsText( Symbol3DTableXML );
+      if ( !doc.setContent( xmlstring ) )
+      {
+        QgsDebugMsg( "Cannot open 3d symbol " + settingsName );
+        continue;
+      }
+      QDomElement settingsElement = doc.documentElement();
+
+      const QString symbolType = settingsElement.attribute( QStringLiteral( "type" ) );
+      std::unique_ptr< QgsAbstract3DSymbol > symbol( QgsApplication::symbol3DRegistry()->createSymbol( symbolType ) );
+      if ( symbol )
+      {
+        symbol->readXml( settingsElement, QgsReadWriteContext() );
+        m3dSymbols.insert( settingsName, symbol.release() );
+      }
+      else
+      {
+        QgsDebugMsg( "Cannot open 3d symbol " + settingsName );
+        continue;
+      }
     }
   }
 
@@ -1082,6 +1180,74 @@ QList<QList<QPolygonF> > QgsStyle::defaultPatchAsQPolygonF( QgsSymbol::SymbolTyp
   return res;
 }
 
+bool QgsStyle::saveSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol, bool favorite, const QStringList &tags )
+{
+  // insert it into the database
+  QDomDocument doc( QStringLiteral( "dummy" ) );
+  QDomElement elem = doc.createElement( QStringLiteral( "symbol" ) );
+  elem.setAttribute( QStringLiteral( "type" ), symbol->type() );
+  symbol->writeXml( elem, QgsReadWriteContext() );
+
+  QByteArray xmlArray;
+  QTextStream stream( &xmlArray );
+  stream.setCodec( "UTF-8" );
+  elem.save( stream, 4 );
+  auto query = QgsSqlite3Mprintf( "INSERT INTO symbol3d VALUES (NULL, '%q', '%q', %d);",
+                                  name.toUtf8().constData(), xmlArray.constData(), ( favorite ? 1 : 0 ) );
+  if ( !runEmptyQuery( query ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Couldn't insert 3d symbol into the database!" ) );
+    return false;
+  }
+
+  mCachedFavorites[ Symbol3DEntity ].insert( name, favorite );
+
+  tagSymbol( Symbol3DEntity, name, tags );
+
+  emit entityAdded( Symbol3DEntity, name );
+
+  return true;
+}
+
+bool QgsStyle::renameSymbol3D( const QString &oldName, const QString &newName )
+{
+  if ( m3dSymbols.contains( newName ) )
+  {
+    QgsDebugMsg( QStringLiteral( "3d symbol of new name already exists." ) );
+    return false;
+  }
+
+  if ( !m3dSymbols.contains( oldName ) )
+    return false;
+  QgsAbstract3DSymbol *symbol = m3dSymbols.take( oldName );
+
+  m3dSymbols.insert( newName, symbol );
+  mCachedTags[Symbol3DEntity ].remove( oldName );
+  mCachedFavorites[ Symbol3DEntity ].remove( oldName );
+
+  int labelSettingsId = 0;
+  sqlite3_statement_unique_ptr statement;
+  auto query = QgsSqlite3Mprintf( "SELECT id FROM symbol3d WHERE name='%q'", oldName.toUtf8().constData() );
+  int nErr;
+  statement = mCurrentDB.prepare( query, nErr );
+  if ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
+  {
+    labelSettingsId = sqlite3_column_int( statement.get(), 0 );
+  }
+  const bool result = rename( Symbol3DEntity, labelSettingsId, newName );
+  if ( result )
+  {
+    emit entityRenamed( Symbol3DEntity, oldName, newName );
+  }
+
+  return result;
+}
+
+QStringList QgsStyle::symbol3DNames() const
+{
+  return m3dSymbols.keys();
+}
+
 QStringList QgsStyle::symbolsOfFavorite( StyleEntity type ) const
 {
   if ( !mCurrentDB )
@@ -1294,6 +1460,15 @@ bool QgsStyle::removeEntityByName( QgsStyle::StyleEntity type, const QString &na
     case QgsStyle::SymbolEntity:
     {
       std::unique_ptr< QgsSymbol > symbol( mSymbols.take( name ) );
+      if ( !symbol )
+        return false;
+
+      break;
+    }
+
+    case QgsStyle::Symbol3DEntity:
+    {
+      std::unique_ptr< QgsAbstract3DSymbol > symbol( m3dSymbols.take( name ) );
       if ( !symbol )
         return false;
 
@@ -1935,6 +2110,24 @@ QgsSymbol::SymbolType QgsStyle::legendPatchShapeSymbolType( const QString &name 
   return mLegendPatchShapes.value( name ).symbolType();
 }
 
+QgsAbstract3DSymbol *QgsStyle::symbol3D( const QString &name ) const
+{
+  return m3dSymbols.contains( name ) ? m3dSymbols.value( name )->clone() : nullptr;
+}
+
+int QgsStyle::symbol3DCount() const
+{
+  return m3dSymbols.count();
+}
+
+QString QgsStyle::symbol3DType( const QString &name ) const
+{
+  if ( !m3dSymbols.contains( name ) )
+    return QString();
+
+  return m3dSymbols.value( name )->type();
+}
+
 QgsWkbTypes::GeometryType QgsStyle::labelSettingsLayerType( const QString &name ) const
 {
   if ( !mLabelSettings.contains( name ) )
@@ -2010,6 +2203,9 @@ QStringList QgsStyle::allNames( QgsStyle::StyleEntity type ) const
 
     case LegendPatchShapeEntity:
       return legendPatchShapeNames();
+
+    case Symbol3DEntity:
+      return symbol3DNames();
 
     case TagEntity:
       return tags();
@@ -2299,6 +2495,8 @@ bool QgsStyle::exportXml( const QString &filename )
   const QStringList favoriteSymbols = symbolsOfFavorite( SymbolEntity );
   const QStringList favoriteColorramps = symbolsOfFavorite( ColorrampEntity );
   const QStringList favoriteTextFormats = symbolsOfFavorite( TextFormatEntity );
+  const QStringList favoriteLegendShapes = symbolsOfFavorite( LegendPatchShapeEntity );
+  const QStringList favorite3DSymbols = symbolsOfFavorite( Symbol3DEntity );
 
   // save symbols and attach tags
   QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( mSymbols, QStringLiteral( "symbols" ), doc, QgsReadWriteContext() );
@@ -2390,11 +2588,33 @@ bool QgsStyle::exportXml( const QString &filename )
     {
       legendPatchShapeEl.setAttribute( QStringLiteral( "tags" ), tags.join( ',' ) );
     }
-    if ( favoriteTextFormats.contains( it.key() ) )
+    if ( favoriteLegendShapes.contains( it.key() ) )
     {
       legendPatchShapeEl.setAttribute( QStringLiteral( "favorite" ), QStringLiteral( "1" ) );
     }
     legendPatchShapesElem.appendChild( legendPatchShapeEl );
+  }
+
+  // save symbols and attach tags
+  QDomElement symbols3DElem = doc.createElement( QStringLiteral( "symbols3d" ) );
+  for ( auto it = m3dSymbols.constBegin(); it != m3dSymbols.constEnd(); ++it )
+  {
+    QDomElement symbolEl = doc.createElement( QStringLiteral( "symbol3d" ) );
+    symbolEl.setAttribute( QStringLiteral( "name" ), it.key() );
+    QDomElement defEl = doc.createElement( QStringLiteral( "definition" ) );
+    defEl.setAttribute( QStringLiteral( "type" ), it.value()->type() );
+    it.value()->writeXml( defEl, QgsReadWriteContext() );
+    symbolEl.appendChild( defEl );
+    QStringList tags = tagsOfSymbol( Symbol3DEntity, it.key() );
+    if ( tags.count() > 0 )
+    {
+      symbolEl.setAttribute( QStringLiteral( "tags" ), tags.join( ',' ) );
+    }
+    if ( favorite3DSymbols.contains( it.key() ) )
+    {
+      symbolEl.setAttribute( QStringLiteral( "favorite" ), QStringLiteral( "1" ) );
+    }
+    symbols3DElem.appendChild( symbolEl );
   }
 
   root.appendChild( symbolsElem );
@@ -2402,6 +2622,7 @@ bool QgsStyle::exportXml( const QString &filename )
   root.appendChild( textFormatsElem );
   root.appendChild( labelSettingsElem );
   root.appendChild( legendPatchShapesElem );
+  root.appendChild( symbols3DElem );
 
   // save
   QFile f( filename );
@@ -2702,6 +2923,56 @@ bool QgsStyle::importXml( const QString &filename, int sinceVersion )
     }
   }
 
+  // load 3d symbols
+  if ( version == STYLE_CURRENT_VERSION )
+  {
+    const QDomElement symbols3DElement = docEl.firstChildElement( QStringLiteral( "symbols3d" ) );
+    e = symbols3DElement.firstChildElement();
+    while ( !e.isNull() )
+    {
+      const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
+      if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
+      {
+        // skip the symbol, should already be present
+        continue;
+      }
+
+      if ( e.tagName() == QLatin1String( "symbol3d" ) )
+      {
+        QString name = e.attribute( QStringLiteral( "name" ) );
+        QStringList tags;
+        if ( e.hasAttribute( QStringLiteral( "tags" ) ) )
+        {
+          tags = e.attribute( QStringLiteral( "tags" ) ).split( ',' );
+        }
+        bool favorite = false;
+        if ( e.hasAttribute( QStringLiteral( "favorite" ) ) && e.attribute( QStringLiteral( "favorite" ) ) == QStringLiteral( "1" ) )
+        {
+          favorite = true;
+        }
+
+        const QDomElement symbolElem = e.firstChildElement();
+        const QString type = symbolElem.attribute( QStringLiteral( "type" ) );
+        std::unique_ptr< QgsAbstract3DSymbol > sym( QgsApplication::symbol3DRegistry()->createSymbol( type ) );
+        if ( sym )
+        {
+          sym->readXml( symbolElem, QgsReadWriteContext() );
+          QgsAbstract3DSymbol *newSym = sym.get();
+          addSymbol3D( name, sym.release() );
+          if ( mCurrentDB )
+          {
+            saveSymbol3D( name, newSym, favorite, tags );
+          }
+        }
+      }
+      else
+      {
+        QgsDebugMsg( "unknown tag: " + e.tagName() );
+      }
+      e = e.nextSiblingElement();
+    }
+  }
+
   query = QgsSqlite3Mprintf( "COMMIT TRANSACTION;" );
   runEmptyQuery( query );
 
@@ -2758,6 +3029,29 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
       }
       symEl.save( stream, 4 );
       query = QgsSqlite3Mprintf( "UPDATE symbol SET xml='%q' WHERE name='%q';",
+                                 xmlArray.constData(), name.toUtf8().constData() );
+      break;
+    }
+
+    case Symbol3DEntity:
+    {
+      // check if it is an existing symbol
+      if ( !symbol3DNames().contains( name ) )
+      {
+        QgsDebugMsg( QStringLiteral( "Update request received for unavailable symbol" ) );
+        return false;
+      }
+
+      symEl = doc.createElement( QStringLiteral( "symbol" ) );
+      symEl.setAttribute( QStringLiteral( "type" ), m3dSymbols.value( name )->type() );
+      m3dSymbols.value( name )->writeXml( symEl, QgsReadWriteContext() );
+      if ( symEl.isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "Couldn't convert symbol to valid XML!" ) );
+        return false;
+      }
+      symEl.save( stream, 4 );
+      query = QgsSqlite3Mprintf( "UPDATE symbol3d SET xml='%q' WHERE name='%q';",
                                  xmlArray.constData(), name.toUtf8().constData() );
       break;
     }
@@ -2879,6 +3173,7 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
       case LegendPatchShapeEntity:
       case TagEntity:
       case SmartgroupEntity:
+      case Symbol3DEntity:
         break;
     }
     emit entityChanged( type, name );
@@ -2953,6 +3248,9 @@ QString QgsStyle::entityTableName( QgsStyle::StyleEntity type )
     case LegendPatchShapeEntity:
       return QStringLiteral( "legendpatchshapes" );
 
+    case Symbol3DEntity:
+      return QStringLiteral( "symbol3d" );
+
     case TagEntity:
       return QStringLiteral( "tag" );
 
@@ -2981,6 +3279,9 @@ QString QgsStyle::tagmapTableName( QgsStyle::StyleEntity type )
     case LegendPatchShapeEntity:
       return QStringLiteral( "lpstagmap" );
 
+    case Symbol3DEntity:
+      return QStringLiteral( "symbol3dtagmap" );
+
     case TagEntity:
     case SmartgroupEntity:
       break;
@@ -3006,6 +3307,9 @@ QString QgsStyle::tagmapEntityIdFieldName( QgsStyle::StyleEntity type )
 
     case LegendPatchShapeEntity:
       return QStringLiteral( "legendpatchshape_id" );
+
+    case Symbol3DEntity:
+      return QStringLiteral( "symbol3d_id" );
 
     case TagEntity:
     case SmartgroupEntity:
@@ -3037,4 +3341,9 @@ QgsStyle::StyleEntity QgsStyleLabelSettingsEntity::type() const
 QgsStyle::StyleEntity QgsStyleLegendPatchShapeEntity::type() const
 {
   return QgsStyle::LegendPatchShapeEntity;
+}
+
+QgsStyle::StyleEntity QgsStyleSymbol3DEntity::type() const
+{
+  return QgsStyle::Symbol3DEntity;
 }
