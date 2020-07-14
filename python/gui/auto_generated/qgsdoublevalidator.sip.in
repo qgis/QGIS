@@ -15,7 +15,7 @@ class QgsDoubleValidator : QRegularExpressionValidator
 
 QgsDoubleValidator is a QLineEdit Validator that combines QDoubleValidator
 and QRegularExpressionValidator to allow user to enter double with both
-local and C interpretation.
+local and C interpretation as a fallback.
 
 .. versionadded:: 3.14
 %End
@@ -28,56 +28,47 @@ local and C interpretation.
     explicit QgsDoubleValidator( QObject *parent );
 %Docstring
 Constructor for QgsDoubleValidator.
-
-.. versionadded:: 3.14
 %End
 
-    QgsDoubleValidator( QRegularExpression reg, double bottom, double top, QObject *parent );
+    QgsDoubleValidator( const QRegularExpression &expression, double bottom, double top, QObject *parent );
 %Docstring
 Constructor for QgsDoubleValidator.
 
-.. versionadded:: 3.14
+:param bottom: the minimal range limit accepted by the validator
+:param top: the maximal range limit accepted by the validator
 %End
 
     QgsDoubleValidator( double bottom, double top, QObject *parent );
 %Docstring
 Constructor for QgsDoubleValidator.
 
-.. versionadded:: 3.14
+:param bottom: the minimal range limit accepted by the validator
+:param top: the maximal range limit accepted by the validator
 %End
 
-    QgsDoubleValidator( double bottom, double top, int dec, QObject *parent );
+    QgsDoubleValidator( double bottom, double top, int decimal, QObject *parent );
 %Docstring
 Constructor for QgsDoubleValidator.
 
-.. versionadded:: 3.14
+:param bottom: the minimal range limit accepted by the validator
+:param top: the maximal range limit accepted by the validator
+:param decimal: the number of decimal accepted by the validator
 %End
 
-    virtual QValidator::State validate( QString &input, int & ) const;
 
+
+    QValidator::State validate( QString &input ) const;
 %Docstring
-Evaluates input QString validity according to QRegularExpression
+Evaluates ``input`` string validity according to QRegularExpression
 and ability to be converted in double value.
-
-.. versionadded:: 3.14
-%End
-
-    QValidator::State validate( QString input ) const;
-%Docstring
-Evaluates input QString validity according to QRegularExpression
-and ability to be converted in double value.
-
-.. versionadded:: 3.14
 %End
 
 
-    static double toDouble( QString input );
+    static double toDouble( const QString &input );
 %Docstring
-Converts QString to double value.
+Converts ``input`` string to double value.
 It used locale interpretation first
 and C locale interpretation as fallback
-
-.. versionadded:: 3.14
 %End
 
     void setBottom( double bottom );
@@ -87,8 +78,6 @@ Set top range limit
 .. seealso:: :py:func:`setTop`
 
 .. seealso:: :py:func:`setRange`
-
-.. versionadded:: 3.14
 %End
 
     void setTop( double top );
@@ -98,8 +87,6 @@ Set top range limit
 .. seealso:: :py:func:`setBottom`
 
 .. seealso:: :py:func:`setRange`
-
-.. versionadded:: 3.14
 %End
 
     virtual void setRange( double bottom, double top );
@@ -109,8 +96,6 @@ Set bottom and top range limits
 .. seealso:: :py:func:`setBottom`
 
 .. seealso:: :py:func:`setTop`
-
-.. versionadded:: 3.14
 %End
 
     double bottom() const;
@@ -118,8 +103,6 @@ Set bottom and top range limits
 Returns top range limit
 
 .. seealso:: :py:func:`setBottom`
-
-.. versionadded:: 3.14
 %End
 
     double top() const;
@@ -127,8 +110,6 @@ Returns top range limit
 Returns top range limit
 
 .. seealso:: :py:func:`setTop`
-
-.. versionadded:: 3.14
 %End
 
 };

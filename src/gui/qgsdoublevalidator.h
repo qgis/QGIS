@@ -1,6 +1,3 @@
-#ifndef QGSDOUBLEVALIDATOR_H
-#define QGSDOUBLEVALIDATOR_H
-
 /***************************************************************************
                          qgsdoublevalidator.h  -  description
                              -------------------
@@ -20,6 +17,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSDOUBLEVALIDATOR_H
+#define QGSDOUBLEVALIDATOR_H
+
 #include <limits>
 #include <QRegExpValidator>
 #include <QLocale>
@@ -31,7 +31,7 @@
  *
  * QgsDoubleValidator is a QLineEdit Validator that combines QDoubleValidator
  * and QRegularExpressionValidator to allow user to enter double with both
- * local and C interpretation.
+ * local and C interpretation as a fallback.
  *
  * \since QGIS 3.14
  */
@@ -43,99 +43,93 @@ class GUI_EXPORT QgsDoubleValidator : public QRegularExpressionValidator
 
     /**
      * Constructor for QgsDoubleValidator.
-     * \since QGIS 3.14
      */
     explicit QgsDoubleValidator( QObject *parent );
 
     /**
      * Constructor for QgsDoubleValidator.
-     * \since QGIS 3.14
+     *
+     * \param bottom the minimal range limit accepted by the validator
+     * \param top the maximal range limit accepted by the validator
      */
-    QgsDoubleValidator( QRegularExpression reg, double bottom, double top, QObject *parent );
+    QgsDoubleValidator( const QRegularExpression &expression, double bottom, double top, QObject *parent );
 
     /**
      * Constructor for QgsDoubleValidator.
-     * \since QGIS 3.14
+     *
+     * \param bottom the minimal range limit accepted by the validator
+     * \param top the maximal range limit accepted by the validator
      */
     QgsDoubleValidator( double bottom, double top, QObject *parent );
 
     /**
      * Constructor for QgsDoubleValidator.
-     * \since QGIS 3.14
+     *
+     * \param bottom the minimal range limit accepted by the validator
+     * \param top the maximal range limit accepted by the validator
+     * \param decimal the number of decimal accepted by the validator
      */
-    QgsDoubleValidator( double bottom, double top, int dec, QObject *parent );
+    QgsDoubleValidator( double bottom, double top, int decimal, QObject *parent );
+
+
+    QValidator::State validate( QString &input, int & ) const override SIP_SKIP;
 
     /**
-     * Evaluates input QString validity according to QRegularExpression
+     * Evaluates \a input string validity according to QRegularExpression
      * and ability to be converted in double value.
-     * \since QGIS 3.14
      */
-    QValidator::State validate( QString &input, int & ) const override;
+    QValidator::State validate( QString &input ) const;
 
     /**
-     * Evaluates input QString validity according to QRegularExpression
-     * and ability to be converted in double value.
-     * \since QGIS 3.14
-     */
-    QValidator::State validate( QString input ) const;
-
-    /**
-     * Converts QString to double value.
+     * Converts \a input string to double value.
      * It used locale interpretation first
      * and C locale interpretation as fallback
-     * \since QGIS 3.14
      */
-    static double toDouble( QString input, bool *ok ) SIP_SKIP;
+    static double toDouble( const QString &input, bool *ok ) SIP_SKIP;
 
     /**
-     * Converts QString to double value.
+     * Converts \a input string to double value.
      * It used locale interpretation first
      * and C locale interpretation as fallback
-     * \since QGIS 3.14
      */
-    static double toDouble( QString input );
+    static double toDouble( const QString &input );
 
     /**
      * Set top range limit
      * \see setTop
      * \see setRange
-     * \since QGIS 3.14
      */
-    void setBottom( double bottom ) { b = bottom; }
+    void setBottom( double bottom ) { mMinimum = bottom; }
 
     /**
      * Set top range limit
      * \see setBottom
      * \see setRange
-     * \since QGIS 3.14
      */
-    void setTop( double top ) { t = top; }
+    void setTop( double top ) { mMaximum = top; }
 
     /**
      * Set bottom and top range limits
      * \see setBottom
      * \see setTop
-     * \since QGIS 3.14
      */
     virtual void setRange( double bottom, double top )
     {
-      b = bottom;
-      t = top;
+      mMinimum = bottom;
+      mMaximum = top;
     }
 
     /**
      * Returns top range limit
      * \see setBottom
-     * \since QGIS 3.14
      */
-    double bottom() const { return b; }
+    double bottom() const { return mMinimum; }
 
     /**
      * Returns top range limit
      * \see setTop
-     * \since QGIS 3.14
      */
-    double top() const { return t; }
+    double top() const { return mMaximum; }
 
   private:
     // Disables copy constructing
@@ -144,12 +138,12 @@ class GUI_EXPORT QgsDoubleValidator : public QRegularExpressionValidator
     /**
      * Bottom range limit
      */
-    double b;
+    double mMinimum;
 
     /**
      * Top range limit
      */
-    double t;
+    double mMaximum;
 };
 
 #endif // QGSDOUBLEVALIDATOR_H
