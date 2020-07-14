@@ -96,7 +96,7 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     void stop();
 };
 
-class QgsMssqlSchemaItem : public QgsDataCollectionItem
+class QgsMssqlSchemaItem : public QgsDatabaseSchemaItem
 {
     Q_OBJECT
   public:

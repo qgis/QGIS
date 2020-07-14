@@ -14,11 +14,14 @@ class QgsNewVectorTableDialog : QDialog
 {
 %Docstring
 The QgsNewVectorTableDialog class is a provider-agnostic database vector
-and aspatial table designer dialog.
+and aspatial table designer dialog based on the connections API.
 
 It allows to design a new vector or aspatial database table by defining the schema
-(if supported by the provider) and table names, the list of QgsFields,
-the geometry type and the SRID (if the table is not aspatial).
+(if supported by the provider) and table name, the list of QgsFields,
+the optional geometry type and SRID.
+
+The actual creation of the table is delegated to the connections API method
+:py:func:`QgsAbstractDatabaseProviderConnection.createVectorTable()`
 
 .. versionadded:: 3.16
 %End
@@ -36,17 +39,32 @@ QgsNewVectorTableDialog constructor
 :param parent: optional parent
 %End
 
+    void setSchemaName( const QString &name );
+
+    void setTableName( const QString &name );
+
+    void setGeometryType( QgsWkbTypes::Type type );
+
     QString tableName() const;
 
     QString schemaName() const;
+
+    QString geometryColumnName() const;
 
     QgsFields fields() const;
 
     QgsWkbTypes::Type geometryType() const;
 
+    QgsCoordinateReferenceSystem crs() const;
+
     void setFields( const QgsFields &fields );
 
+  protected:
+    virtual void showEvent( QShowEvent *event );
+
 };
+
+
 
 
 

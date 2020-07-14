@@ -119,50 +119,11 @@
    </item>
    <item row="3" column="0" colspan="2">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QCheckBox" name="mGeomColumnChk">
-       <property name="text">
-        <string>Create geometry column</string>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="1" colspan="2">
       <widget class="QComboBox" name="mGeomTypeCbo">
-       <item>
-        <property name="text">
-         <string notr="true">POINT</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">LINESTRING</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">POLYGON</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">MULTIPOINT</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">MULTILINESTRING</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">MULTIPOLYGON</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">GEOMETRYCOLLECTION</string>
-        </property>
-       </item>
+       <property name="currentText">
+        <string/>
+       </property>
       </widget>
      </item>
      <item row="1" column="0">
@@ -233,9 +194,19 @@
       </widget>
      </item>
      <item row="4" column="0">
-      <widget class="QCheckBox" name="chkSpatialIndex">
+      <widget class="QCheckBox" name="mSpatialIndexChk">
        <property name="text">
         <string>Create spatial index</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Geometry type</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -318,12 +289,11 @@
   <tabstop>mFieldUpBtn</tabstop>
   <tabstop>mFieldDownBtn</tabstop>
   <tabstop>mPrimaryKeyCbo</tabstop>
-  <tabstop>mGeomColumnChk</tabstop>
   <tabstop>mGeomTypeCbo</tabstop>
   <tabstop>mGeomColumn</tabstop>
   <tabstop>spinGeomDim</tabstop>
   <tabstop>mSrid</tabstop>
-  <tabstop>chkSpatialIndex</tabstop>
+  <tabstop>mSpatialIndexChk</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
@@ -343,6 +313,22 @@
     <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsNewVectorTableDialogBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>461</x>
+     <y>539</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>461</x>
+     <y>280</y>
     </hint>
    </hints>
   </connection>

@@ -17,6 +17,7 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsgui.h"
+#include "qgsapplication.h"
 
 QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderConnection *conn, QWidget *parent )
   : QDialog( parent )
@@ -27,6 +28,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   QgsGui::enableAutoGeometryRestore( this );
   setWindowTitle( tr( "New Table" ) );
 
+  mTableName->setText( QStringLiteral( "new_table_name" ) );
   mFieldsTableView->setModel( mFieldModel );
   QgsNewVectorTableDialogFieldsDelegate *delegate { new QgsNewVectorTableDialogFieldsDelegate( mConnection->nativeTypes(), this )};
   mFieldsTableView->setItemDelegate( delegate );
@@ -36,6 +38,9 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   // Cosmetics
   mFieldsTableView->setColumnWidth( QgsNewVectorTableFieldModel::ColumnHeaders::Name, 200 );
   mFieldsTableView->setColumnWidth( QgsNewVectorTableFieldModel::ColumnHeaders::Type, 400 );
+  mFieldsTableView->setColumnWidth( QgsNewVectorTableFieldModel::ColumnHeaders::ProviderType, 300 );
+  mFieldsTableView->setColumnWidth( QgsNewVectorTableFieldModel::ColumnHeaders::Length, 100 );
+  mFieldsTableView->setColumnWidth( QgsNewVectorTableFieldModel::ColumnHeaders::Precision, 150 );
   mFieldsTableView->setColumnWidth( QgsNewVectorTableFieldModel::ColumnHeaders::Comment, 300 );
 
   // Schema is not supported by all providers
@@ -49,6 +54,23 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     mSchemaLabel->hide();
   }
 
+  connect( mGeomTypeCbo, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
+  {
+    mGeomColumn->setEnabled( index != 0 );
+    mSpatialIndexChk->setEnabled( index != 0 );
+  } );
+
+  // Hardcode geometry types
+  // TODO: this information should really come from the connection through the provider
+  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconTableLayer.svg" ) ), tr( "No Geometry" ), QString() );
+  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPointLayer.svg" ) ), tr( "Point" ), QgsWkbTypes::Type::Point );
+  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconLineLayer.svg" ) ), tr( "Line" ), QgsWkbTypes::Type::LineString );
+  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPolygonLayer.svg" ) ), tr( "Polygon" ), QgsWkbTypes::Type::Polygon );
+  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPointLayer.svg" ) ), tr( "MultiPoint" ), QgsWkbTypes::Type::MultiPoint );
+  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconLineLayer.svg" ) ), tr( "MultiLine" ), QgsWkbTypes::Type::MultiLineString );
+  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPolygonLayer.svg" ) ), tr( "MultiPolygon" ), QgsWkbTypes::Type::MultiPolygon );
+  mGeomTypeCbo->setCurrentIndex( 0 );
+
   connect( mFieldsTableView->selectionModel(), &QItemSelectionModel::selectionChanged, mFieldsTableView, [ = ]( const QItemSelection & selected, const QItemSelection & )
   {
     if ( ! selected.isEmpty() )
@@ -58,7 +80,8 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     updateButtons();
   } );
 
-  // Default type for new fields
+  // Default type for new fields. The ternary operator is for extra safety,
+  // all providers should always return a non-empty list of native types.
   QVariant::Type defaultFieldType { mFieldModel->typeList().isEmpty() ? QVariant::Int : mFieldModel->typeList().first().mType };
   QString defaultFieldTypeName { mFieldModel->typeList().isEmpty() ? QString() : mFieldModel->typeList().first().mTypeName };
 
@@ -131,14 +154,34 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
 
 }
 
+void QgsNewVectorTableDialog::setSchemaName( const QString &name )
+{
+  mSchemaCbo->setCurrentText( name );
+}
+
+void QgsNewVectorTableDialog::setTableName( const QString &name )
+{
+  mTableName->setText( name );
+}
+
+void QgsNewVectorTableDialog::setGeometryType( QgsWkbTypes::Type type )
+{
+  mGeomTypeCbo->setCurrentIndex( mGeomTypeCbo->findData( type ) );
+}
+
 QString QgsNewVectorTableDialog::tableName() const
 {
-  return mTableName;
+  return mTableName->text();
 }
 
 QString QgsNewVectorTableDialog::schemaName() const
 {
-  return mSchemaName;
+  return mSchemaCbo->currentText();
+}
+
+QString QgsNewVectorTableDialog::geometryColumnName() const
+{
+  return mGeomColumn->text();
 }
 
 QgsFields QgsNewVectorTableDialog::fields() const
@@ -148,7 +191,18 @@ QgsFields QgsNewVectorTableDialog::fields() const
 
 QgsWkbTypes::Type QgsNewVectorTableDialog::geometryType() const
 {
-  return mGeometryType;
+  return static_cast<QgsWkbTypes::Type>( mGeomTypeCbo->currentData( ).toInt() );
+}
+
+QgsCoordinateReferenceSystem QgsNewVectorTableDialog::crs() const
+{
+  bool ok;
+  QgsCoordinateReferenceSystem srs{ QgsCoordinateReferenceSystem::fromEpsgId( mSrid->text().toLong( &ok ) ) };
+  if ( ok && srs.isValid() )
+  {
+    return srs;
+  }
+  return QgsCoordinateReferenceSystem();
 }
 
 void QgsNewVectorTableDialog::setFields( const QgsFields &fields )
@@ -172,15 +226,27 @@ void QgsNewVectorTableDialog::selectRow( int row )
   mFieldsTableView->scrollTo( index );
 }
 
+void QgsNewVectorTableDialog::validate()
+{
+}
+
+void QgsNewVectorTableDialog::showEvent( QShowEvent *event )
+{
+  QDialog::showEvent( event );
+  mTableName->setFocus();
+  mTableName->selectAll();
+}
+
+
+/// @cond private
+
+
 QgsNewVectorTableDialogFieldsDelegate::QgsNewVectorTableDialogFieldsDelegate( const QList<QgsVectorDataProvider::NativeType> &typeList, QObject *parent )
   : QStyledItemDelegate( parent )
   , mTypeList( typeList )
 {
 
 }
-
-
-/// @cond private
 
 QWidget *QgsNewVectorTableDialogFieldsDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -189,7 +255,8 @@ QWidget *QgsNewVectorTableDialogFieldsDelegate::createEditor( QWidget *parent, c
     QComboBox *cbo = new QComboBox { parent };
     cbo->setEditable( false );
     cbo->setFrame( false );
-    for ( const auto &f : mTypeList )
+    connect( cbo, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsNewVectorTableDialogFieldsDelegate::onCurrentTypeChanged );
+    for ( const auto &f : qgis::as_const( mTypeList ) )
     {
       cbo->addItem( f.mTypeDesc, f.mTypeName );
     }
@@ -228,6 +295,16 @@ void QgsNewVectorTableDialogFieldsDelegate::setModelData( QWidget *editor, QAbst
   QStyledItemDelegate::setModelData( editor, model, index );
 }
 
+void QgsNewVectorTableDialogFieldsDelegate::onCurrentTypeChanged( int index )
+{
+  Q_UNUSED( index )
+  QComboBox *cb = static_cast<QComboBox *>( sender() );
+  if ( cb )
+  {
+    emit commitData( cb );
+  }
+}
+
 QgsNewVectorTableFieldModel::QgsNewVectorTableFieldModel( const QList<QgsVectorDataProvider::NativeType> &typeList, QObject *parent )
   : QgsFieldModel( parent )
   , mTypeList( typeList )
@@ -237,7 +314,7 @@ QgsNewVectorTableFieldModel::QgsNewVectorTableFieldModel( const QList<QgsVectorD
 
 int QgsNewVectorTableFieldModel::columnCount( const QModelIndex & ) const
 {
-  return 3;
+  return 6;
 }
 
 QVariant QgsNewVectorTableFieldModel::data( const QModelIndex &index, int role ) const
@@ -245,50 +322,43 @@ QVariant QgsNewVectorTableFieldModel::data( const QModelIndex &index, int role )
   if ( mFields.exists( index.row() ) )
   {
     const QgsField field { mFields.at( index.row() ) };
-    switch ( static_cast<ColumnHeaders>( index.column() ) )
+    switch ( role )
     {
-      case ColumnHeaders::Name:
+      case Qt::ItemDataRole::DisplayRole:
       {
-        return QgsFieldModel::data( index, role );
-      }
-
-      case ColumnHeaders::Type:
-      {
-        switch ( role )
+        switch ( static_cast<ColumnHeaders>( index.column() ) )
         {
-          case Qt::ItemDataRole::DisplayRole:
+          case ColumnHeaders::Name:
           {
-            if ( index.column() == ColumnHeaders::Type )
-            {
-              return typeDesc( field.typeName() );
-            }
-            break;
+            return QgsFieldModel::data( index, role );
           }
-          case Qt::ItemDataRole::UserRole:
+          case ColumnHeaders::Type:
           {
-            if ( index.column() == ColumnHeaders::Type )
-            {
-              return field.typeName();
-            }
-            break;
+            return typeDesc( field.typeName() );
           }
-          default:
+          case ColumnHeaders::ProviderType:
           {
-            return QVariant();
+            return field.typeName();
           }
-        }
-        break;
-      }
-      case ColumnHeaders::Comment:
-      {
-        switch ( role )
-        {
-          case Qt::ItemDataRole::DisplayRole:
+          case ColumnHeaders::Comment:
           {
             return field.comment();
           }
-          default:
-            return QVariant();
+          case ColumnHeaders::Precision:
+          {
+            return field.precision();
+          }
+          case ColumnHeaders::Length:
+          {
+            return field.length();
+          }
+        }
+      }
+      default:
+      {
+        if ( static_cast<ColumnHeaders>( index.column() ) == ColumnHeaders::Name )
+        {
+          return QgsFieldModel::data( index, role );
         }
       }
     }
@@ -304,7 +374,7 @@ QVariant QgsNewVectorTableFieldModel::headerData( int section, Qt::Orientation o
     {
       case Qt::ItemDataRole::DisplayRole:
       {
-        switch ( section )
+        switch ( static_cast<QgsNewVectorTableFieldModel::ColumnHeaders>( section ) )
         {
           case ColumnHeaders::Name:
           {
@@ -317,6 +387,18 @@ QVariant QgsNewVectorTableFieldModel::headerData( int section, Qt::Orientation o
           case ColumnHeaders::Comment:
           {
             return tr( "Comment" );
+          }
+          case ColumnHeaders::ProviderType:
+          {
+            return tr( "Provider type" );
+          }
+          case ColumnHeaders::Length:
+          {
+            return tr( "Length" );
+          }
+          case ColumnHeaders::Precision:
+          {
+            return tr( "Precision" );
           }
           default:
             return QVariant();
@@ -334,6 +416,7 @@ Qt::ItemFlags QgsNewVectorTableFieldModel::flags( const QModelIndex &index ) con
 {
   if ( !index.isValid() )
     return Qt::ItemIsEnabled;
+  // TODO: define what is editable according to type
   return QAbstractItemModel::flags( index ) | Qt::ItemIsEditable;
 }
 
@@ -370,7 +453,7 @@ QVariant::Type QgsNewVectorTableFieldModel::type( const QString &typeName ) cons
 
 bool QgsNewVectorTableFieldModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  if ( role == Qt::ItemDataRole::EditRole && mFields.exists( index.row() ) && index.column() < 3 )
+  if ( role == Qt::ItemDataRole::EditRole && mFields.exists( index.row() ) && index.column() < 6 )
   {
     const int fieldIdx { index.row() };
     QgsField field {mFields.at( fieldIdx )};
@@ -392,7 +475,23 @@ bool QgsNewVectorTableFieldModel::setData( const QModelIndex &index, const QVari
         field.setComment( value.toString() );
         break;
       }
+      case ColumnHeaders::ProviderType:
+      {
+        field.setTypeName( value.toString() );
+        break;
+      }
+      case ColumnHeaders::Length:
+      {
+        field.setLength( value.toInt() );
+        break;
+      }
+      case ColumnHeaders::Precision:
+      {
+        field.setPrecision( value.toInt() );
+        break;
+      }
     }
+
     QgsFields fields;
     for ( int i = 0; i < mFields.count(); ++i )
     {

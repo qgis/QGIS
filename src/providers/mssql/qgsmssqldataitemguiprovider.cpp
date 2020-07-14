@@ -23,8 +23,9 @@
 #include <QMessageBox>
 
 
-void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
 {
+  populateDatabaseContextMenu( item, menu, selectedItems, context );
   if ( QgsMssqlRootItem *rootItem = qobject_cast< QgsMssqlRootItem * >( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );

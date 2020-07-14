@@ -102,7 +102,7 @@ void QgsGeoPackageRootItem::newConnection()
 }
 
 QgsGeoPackageCollectionItem::QgsGeoPackageCollectionItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "GPKG" ) )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "ogr" ) )
 {
   mToolTip = QString( path ).remove( QLatin1String( "gpkg:/" ) );
   mCapabilities |= Collapse;

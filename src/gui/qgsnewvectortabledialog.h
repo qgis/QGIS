@@ -32,11 +32,14 @@ class QgsNewVectorTableFieldModel;
 
 /**
  * The QgsNewVectorTableDialog class is a provider-agnostic database vector
- * and aspatial table designer dialog.
+ * and aspatial table designer dialog based on the connections API.
  *
  * It allows to design a new vector or aspatial database table by defining the schema
- * (if supported by the provider) and table names, the list of QgsFields,
- * the geometry type and the SRID (if the table is not aspatial).
+ * (if supported by the provider) and table name, the list of QgsFields,
+ * the optional geometry type and SRID.
+ *
+ * The actual creation of the table is delegated to the connections API method
+ * QgsAbstractDatabaseProviderConnection::createVectorTable()
  *
  * \since QGIS 3.16
  */
@@ -51,36 +54,42 @@ class GUI_EXPORT QgsNewVectorTableDialog : public QDialog, private Ui_QgsNewVect
      */
     QgsNewVectorTableDialog( QgsAbstractDatabaseProviderConnection *conn, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    void setSchemaName( const QString &name );
+
+    void setTableName( const QString &name );
+
+    void setGeometryType( QgsWkbTypes::Type type );
+
     QString tableName() const;
 
     QString schemaName() const;
+
+    QString geometryColumnName() const;
 
     QgsFields fields() const;
 
     QgsWkbTypes::Type geometryType() const;
 
+    QgsCoordinateReferenceSystem crs() const;
+
     void setFields( const QgsFields &fields );
 
   private:
 
-    // In
     QgsAbstractDatabaseProviderConnection *mConnection;
-
-    // Out
-    QString mTableName;
-    QString mSchemaName;
-    // Default to aspatial
-    QgsWkbTypes::Type mGeometryType = QgsWkbTypes::Type::NoGeometry;
-
-    // Internal
     QgsNewVectorTableFieldModel *mFieldModel;
     int mCurrentRow = -1;
 
     void updateButtons();
     void selectRow( int row );
+    void validate();
 
-
+    // QWidget interface
+  protected:
+    void showEvent( QShowEvent *event ) override;
 };
+
+
 
 /// @cond private
 
@@ -95,6 +104,10 @@ class QgsNewVectorTableDialogFieldsDelegate: public QStyledItemDelegate
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+
+  public slots:
+
+    void onCurrentTypeChanged( int index );
 
   private:
 
@@ -112,6 +125,9 @@ class QgsNewVectorTableFieldModel: public QgsFieldModel
     {
       Name,
       Type,
+      ProviderType,
+      Length,
+      Precision,
       Comment
     };
 
@@ -129,13 +145,10 @@ class QgsNewVectorTableFieldModel: public QgsFieldModel
   private:
 
     const QList< QgsVectorDataProvider::NativeType> mTypeList;
-
     QString typeDesc( const QString &typeName ) const;
     QVariant::Type type( const QString &typeName ) const;
 
 };
-
-
 
 
 #endif

@@ -161,7 +161,7 @@ bool QgsPostgresUtils::deleteSchema( const QString &schema, const QgsDataSourceU
 
 // ---------------------------------------------------------------------------
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "PostGIS" ) )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "postgres" ) )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
   mCapabilities |= Collapse;
@@ -368,7 +368,7 @@ QString QgsPGLayerItem::createUri()
 
 // ---------------------------------------------------------------------------
 QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem *parent, const QString &connectionName, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "PostGIS" ) )
+  : QgsDatabaseSchemaItem( parent, name, path, QStringLiteral( "postgres" ) )
   , mConnectionName( connectionName )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
@@ -533,7 +533,7 @@ QVector<QgsDataItem *> QgsPGLayerItem::createChildren()
 
 // ---------------------------------------------------------------------------
 QgsPGRootItem::QgsPGRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "PostGIS" ) )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "postgres" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconPostgis.svg" );

@@ -67,7 +67,7 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
 
 };
 
-class QgsPGSchemaItem : public QgsDataCollectionItem
+class QgsPGSchemaItem : public QgsDatabaseSchemaItem
 {
     Q_OBJECT
   public:

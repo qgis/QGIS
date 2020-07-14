@@ -120,6 +120,24 @@ class GUI_EXPORT QgsDataItemGuiProvider
                                       const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context );
 
     /**
+     * \brief populateDatabaseContextMenu adds database related actions to QgsDatabaseSchemaItem and QgsDataCollectionItem
+     * instances for providers that support the connections API and for connections having the required capabilities.
+     *
+     * Concrete classes should call this method from populateContextMenu() if they want to add common actions to the
+     * generated context menu.
+     *
+     * \param item item the actions belong to
+     * \param menu menu that will contain actions created by this method
+     * \param selectedItems selected items
+     * \param context data item gui context
+     * \since QGIS 3.16
+     */
+    virtual void populateDatabaseContextMenu( QgsDataItem *item,
+        QMenu *menu,
+        const QList<QgsDataItem *> &selectedItems,
+        QgsDataItemGuiContext context ) final;
+
+    /**
      * Sets a new \a name for the item, and returns TRUE if the item was successfully renamed.
      *
      * Items which implement this method should return the QgsDataItem::Rename capability.

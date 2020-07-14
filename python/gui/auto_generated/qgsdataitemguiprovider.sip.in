@@ -100,6 +100,25 @@ and contains accessors for useful objects like the application message bar.
 The base class method has no effect.
 %End
 
+    virtual void populateDatabaseContextMenu( QgsDataItem *item,
+        QMenu *menu,
+        const QList<QgsDataItem *> &selectedItems,
+        QgsDataItemGuiContext context ) final;
+%Docstring
+populateDatabaseContextMenu adds database related actions to QgsDatabaseSchemaItem and :py:class:`QgsDataCollectionItem`
+instances for providers that support the connections API and for connections having the required capabilities.
+
+Concrete classes should call this method from :py:func:`~QgsDataItemGuiProvider.populateContextMenu` if they want to add common actions to the
+generated context menu.
+
+:param item: item the actions belong to
+:param menu: menu that will contain actions created by this method
+:param selectedItems: selected items
+:param context: data item gui context
+
+.. versionadded:: 3.16
+%End
+
     virtual bool rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext context );
 %Docstring
 Sets a new ``name`` for the item, and returns ``True`` if the item was successfully renamed.

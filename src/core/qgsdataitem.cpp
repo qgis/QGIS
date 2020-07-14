@@ -1741,6 +1741,23 @@ QStringList QgsZipItem::getZipFileList()
   return mZipFileList;
 }
 
+
+QgsDatabaseSchemaItem::QgsDatabaseSchemaItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &providerKey )
+  : QgsDataCollectionItem( parent, name, path, providerKey )
+{
+
+}
+
+QgsDatabaseSchemaItem::~QgsDatabaseSchemaItem()
+{
+
+}
+
+QIcon QgsDatabaseSchemaItem::iconDataCollection()
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.svg" ) );
+}
+
 ///@cond PRIVATE
 
 QgsProjectHomeItem::QgsProjectHomeItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path )
