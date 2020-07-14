@@ -1063,23 +1063,21 @@ void TestQgsLayoutTable::testDataDefinedTextFormatForCell()
 
   l.addMultiFrame( table );
   QgsLayoutFrame *frame = new QgsLayoutFrame( &l, table );
-  frame->attemptSetSceneRect( QRectF( 5, 5, 100, 30 ) );
+  frame->attemptSetSceneRect( QRectF( 5, 5, 150, 30 ) );
   frame->setFrameEnabled( true );
   l.addLayoutItem( frame );
   table->addFrame( frame );
 
   QgsTextFormat textFormat = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
   table->setHeaderTextFormat( textFormat );
+
+  textFormat.dataDefinedProperties().setProperty( QgsPalLayerSettings::Size, QgsProperty::fromExpression( QStringLiteral( "if(@column_number = 1,35,15)" ) ) );
   table->setContentTextFormat( textFormat );
-  table->refresh();
 
-  QCOMPARE( table->totalHeight(), 150.0 );
-
-  textFormat.dataDefinedProperties().setProperty( QgsPalLayerSettings::Size, QgsProperty::fromExpression( QStringLiteral( "if(@column_number = 1,30,5)" ) ) );
-  table->setContentTextFormat( textFormat );
-  table->refresh();
-
-  QCOMPARE( table->totalHeight(), 270.0 );
+  QgsLayoutChecker checker( QStringLiteral( "composerattributetable_datadefinedtextformat" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_table" ) );
+  bool result = checker.testLayout( mReport );
+  QVERIFY( result );
 }
 
 void TestQgsLayoutTable::align()
