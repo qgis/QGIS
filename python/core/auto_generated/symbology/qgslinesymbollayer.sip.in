@@ -313,6 +313,64 @@ used to render polygon rings.
 .. seealso:: :py:func:`drawInsidePolygon`
 %End
 
+    bool alignDashPattern() const;
+%Docstring
+Returns ``True`` if dash patterns should be aligned to the start and end of lines, by
+applying subtle tweaks to the pattern sizing in order to ensure that the end of
+a line is represented by a complete dash element.
+
+.. seealso:: :py:func:`setAlignDashPattern`
+
+.. seealso:: :py:func:`tweakDashPatternOnCorners`
+
+.. versionadded:: 3.16
+%End
+
+    void setAlignDashPattern( bool enabled );
+%Docstring
+Sets whether dash patterns should be aligned to the start and end of lines, by
+applying subtle tweaks to the pattern sizing in order to ensure that the end of
+a line is represented by a complete dash element.
+
+.. seealso:: :py:func:`alignDashPattern`
+
+.. seealso:: :py:func:`setTweakDashPatternOnCorners`
+
+.. versionadded:: 3.16
+%End
+
+    bool tweakDashPatternOnCorners() const;
+%Docstring
+Returns ``True`` if dash patterns tweaks should be applied on sharp corners, to ensure
+that a double-length dash is drawn running into and out of the corner.
+
+.. note::
+
+   This setting is only applied if :py:func:`~QgsSimpleLineSymbolLayer.alignDashPattern` is ``True``.
+
+.. seealso:: :py:func:`setTweakDashPatternOnCorners`
+
+.. seealso:: :py:func:`alignDashPattern`
+
+.. versionadded:: 3.16
+%End
+
+    void setTweakDashPatternOnCorners( bool enabled );
+%Docstring
+Sets whether dash patterns tweaks should be applied on sharp corners, to ensure
+that a double-length dash is drawn running into and out of the corner.
+
+.. note::
+
+   This setting is only applied if :py:func:`~QgsSimpleLineSymbolLayer.alignDashPattern` is ``True``.
+
+.. seealso:: :py:func:`tweakDashPatternOnCorners`
+
+.. seealso:: :py:func:`setAlignDashPattern`
+
+.. versionadded:: 3.16
+%End
+
 };
 
 
