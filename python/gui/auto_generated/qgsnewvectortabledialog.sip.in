@@ -45,6 +45,10 @@ QgsNewVectorTableDialog constructor
 
     void setGeometryType( QgsWkbTypes::Type type );
 
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+
+    QgsCoordinateReferenceSystem crs() const;
+
     QString tableName() const;
 
     QString schemaName() const;
@@ -55,9 +59,9 @@ QgsNewVectorTableDialog constructor
 
     QgsWkbTypes::Type geometryType() const;
 
-    QgsCoordinateReferenceSystem crs() const;
-
     void setFields( const QgsFields &fields );
+
+    QStringList validationErrors() const;
 
   protected:
     virtual void showEvent( QShowEvent *event );

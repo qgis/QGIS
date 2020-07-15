@@ -60,6 +60,10 @@ class GUI_EXPORT QgsNewVectorTableDialog : public QDialog, private Ui_QgsNewVect
 
     void setGeometryType( QgsWkbTypes::Type type );
 
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+
+    QgsCoordinateReferenceSystem crs() const;
+
     QString tableName() const;
 
     QString schemaName() const;
@@ -70,14 +74,14 @@ class GUI_EXPORT QgsNewVectorTableDialog : public QDialog, private Ui_QgsNewVect
 
     QgsWkbTypes::Type geometryType() const;
 
-    QgsCoordinateReferenceSystem crs() const;
-
     void setFields( const QgsFields &fields );
+
+    QStringList validationErrors() const;
 
   private:
 
-    QgsAbstractDatabaseProviderConnection *mConnection;
-    QgsNewVectorTableFieldModel *mFieldModel;
+    QgsAbstractDatabaseProviderConnection *mConnection = nullptr;
+    QgsNewVectorTableFieldModel *mFieldModel = nullptr;
     int mCurrentRow = -1;
     // Used by validator
     QStringList mTableNames;
@@ -134,7 +138,7 @@ class QgsNewVectorTableFieldModel: public QgsFieldModel
       Comment
     };
 
-    QgsNewVectorTableFieldModel( const QList< QgsVectorDataProvider::NativeType> &typeList,  QObject *parent = nullptr );
+    QgsNewVectorTableFieldModel( const QList< QgsVectorDataProvider::NativeType> &nativeTypes,  QObject *parent = nullptr );
 
     // QAbstractItemModel interface
     int columnCount( const QModelIndex & ) const override;
@@ -143,11 +147,13 @@ class QgsNewVectorTableFieldModel: public QgsFieldModel
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
-    QList<QgsVectorDataProvider::NativeType> typeList() const;
+    QList<QgsVectorDataProvider::NativeType> nativeTypes() const;
+    QgsVectorDataProvider::NativeType nativeType( const QString &typeName ) const;
+    QgsVectorDataProvider::NativeType nativeType( int row ) const;
 
   private:
 
-    const QList< QgsVectorDataProvider::NativeType> mTypeList;
+    const QList< QgsVectorDataProvider::NativeType> mNativeTypes;
     QString typeDesc( const QString &typeName ) const;
     QVariant::Type type( const QString &typeName ) const;
 

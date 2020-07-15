@@ -865,7 +865,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         {
           std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionName ) ) };
           QgsNewVectorTableDialog dlg { conn2.get(), nullptr };
-          // TODO: dlg.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+          dlg.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
           if ( isSchema )
           {
             dlg.setSchemaName( collectionItem->name() );
@@ -878,7 +878,8 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             const QString geometryColumn { dlg.geometryColumnName() };
             const QgsWkbTypes::Type geometryType { dlg.geometryType() };
             const QgsCoordinateReferenceSystem crs { dlg.crs( ) };
-            QMap<QString, QVariant> options;
+            // This flag tells to the provider that field types do not need conversion
+            QMap<QString, QVariant> options { { QStringLiteral( "skipConvertFields" ), true } };
 
             if ( ! geometryColumn.isEmpty() )
             {

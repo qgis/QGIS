@@ -203,7 +203,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
         {
           // found it, get the field type
           QgsField fld = fields.at( fldIdx );
-          if ( convertField( fld ) )
+          if ( options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() || convertField( fld ) )
           {
             primaryKeyType = fld.typeName();
           }
@@ -418,7 +418,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
         continue;
       }
 
-      if ( !convertField( fld ) )
+      if ( ! options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() && !convertField( fld ) )
       {
         QgsDebugMsg( "error creating field " + fld.name() + ": unsupported type" );
         if ( errorMessage )

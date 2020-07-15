@@ -32,118 +32,43 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="2" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="layout3">
-     <property name="spacing">
-      <number>8</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Primary key</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="mPrimaryKeyCbo">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="1">
-    <layout class="QVBoxLayout" name="layout2">
-     <item>
-      <widget class="QPushButton" name="mAddFieldBtn">
-       <property name="text">
-        <string>Add field</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionNewAttribute.svg</normaloff>:/images/themes/default/mActionNewAttribute.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mDeleteFieldBtn">
-       <property name="text">
-        <string>Delete field</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionDeleteAttribute.svg</normaloff>:/images/themes/default/mActionDeleteAttribute.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="spacer2">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mFieldUpBtn">
-       <property name="text">
-        <string>Up</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mFieldDownBtn">
-       <property name="text">
-        <string>Down</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item row="3" column="0" colspan="2">
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="mGeomColumn">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <layout class="QGridLayout" name="mGeomLayout">
+     <item row="2" column="2">
+      <widget class="QCheckBox" name="mHasMChk">
        <property name="text">
-        <string notr="true">geom</string>
+        <string>Include values (M)</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_5">
+     <item row="1" column="0">
+      <widget class="QLabel" name="mGeomColumnLabel">
        <property name="text">
-        <string>Dimensions</string>
+        <string>Geometry column name</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
-      <widget class="QLineEdit" name="mSrid">
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="mHasZChk">
        <property name="text">
-        <string notr="true">0</string>
+        <string>Include Z dimension</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="0" colspan="3">
+     <item row="5" column="0" colspan="4">
       <widget class="QFrame" name="mValidationFrame">
        <property name="autoFillBackground">
         <bool>false</bool>
@@ -226,6 +151,49 @@
        </layout>
       </widget>
      </item>
+     <item row="1" column="1" colspan="2">
+      <widget class="QLineEdit" name="mGeomColumn">
+       <property name="text">
+        <string notr="true">geom</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QLabel" name="label_4">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>2</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="mDimensionsLabel">
+       <property name="text">
+        <string>Dimensions</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="2">
+      <widget class="QComboBox" name="mGeomTypeCbo">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="currentText">
+        <string/>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
@@ -237,19 +205,9 @@
       </widget>
      </item>
      <item row="3" column="0">
-      <widget class="QLabel" name="label_6">
+      <widget class="QLabel" name="mCrsLabel">
        <property name="text">
-        <string>SRID</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Name</string>
+        <string>CRS</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -257,39 +215,86 @@
       </widget>
      </item>
      <item row="4" column="0">
-      <widget class="QCheckBox" name="mSpatialIndexChk">
+      <widget class="QLabel" name="mSpatialIndexLabel">
        <property name="text">
         <string>Create spatial index</string>
        </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
       </widget>
      </item>
-     <item row="2" column="2" rowspan="2">
-      <spacer name="spacer1">
+     <item row="4" column="1">
+      <widget class="QCheckBox" name="mSpatialIndexChk">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1" colspan="2">
+      <widget class="QgsProjectionSelectionWidget" name="mCrs" native="true"/>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="1">
+    <layout class="QVBoxLayout" name="mButtonsLayout">
+     <item>
+      <widget class="QPushButton" name="mAddFieldBtn">
+       <property name="text">
+        <string>Add field</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionNewAttribute.svg</normaloff>:/images/themes/default/mActionNewAttribute.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mDeleteFieldBtn">
+       <property name="text">
+        <string>Delete field</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionDeleteAttribute.svg</normaloff>:/images/themes/default/mActionDeleteAttribute.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="spacer2">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Vertical</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>50</width>
-         <height>51</height>
+         <width>20</width>
+         <height>40</height>
         </size>
        </property>
       </spacer>
      </item>
-     <item row="2" column="1">
-      <widget class="QSpinBox" name="spinGeomDim">
-       <property name="minimum">
-        <number>2</number>
+     <item>
+      <widget class="QPushButton" name="mFieldUpBtn">
+       <property name="text">
+        <string>Up</string>
        </property>
-       <property name="maximum">
-        <number>4</number>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="mGeomTypeCbo">
-       <property name="currentText">
-        <string/>
+     <item>
+      <widget class="QPushButton" name="mFieldDownBtn">
+       <property name="text">
+        <string>Down</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
        </property>
       </widget>
      </item>
@@ -318,7 +323,7 @@
     </widget>
    </item>
    <item row="0" column="0" colspan="2">
-    <layout class="QGridLayout" name="layout1">
+    <layout class="QGridLayout" name="mNamesLAyout">
      <item row="0" column="0" colspan="2">
       <widget class="QLabel" name="mSchemaLabel">
        <property name="text">
@@ -351,18 +356,16 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="mButtonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mSchemaCbo</tabstop>
   <tabstop>mTableName</tabstop>
@@ -371,12 +374,6 @@
   <tabstop>mDeleteFieldBtn</tabstop>
   <tabstop>mFieldUpBtn</tabstop>
   <tabstop>mFieldDownBtn</tabstop>
-  <tabstop>mPrimaryKeyCbo</tabstop>
-  <tabstop>mGeomTypeCbo</tabstop>
-  <tabstop>mGeomColumn</tabstop>
-  <tabstop>spinGeomDim</tabstop>
-  <tabstop>mSrid</tabstop>
-  <tabstop>mSpatialIndexChk</tabstop>
   <tabstop>mButtonBox</tabstop>
  </tabstops>
  <resources>

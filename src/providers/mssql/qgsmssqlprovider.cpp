@@ -1864,7 +1864,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
       {
         // found, get the field type
         QgsField fld = fields.at( i );
-        if ( convertField( fld ) )
+        if ( options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() || convertField( fld ) )
         {
           primaryKeyType = fld.typeName();
         }
@@ -2044,7 +2044,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
         continue;
       }
 
-      if ( !convertField( fld ) )
+      if ( !options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() && !convertField( fld ) )
       {
         if ( errorMessage )
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
