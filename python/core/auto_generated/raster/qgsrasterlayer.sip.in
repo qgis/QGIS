@@ -25,6 +25,12 @@ corresponding to the provider type, and passes it the url. The data provider
 connects to the data source.
 
 Sample usage of the QgsRasterLayer class:
+
+.. code-block:: python
+
+         myFileNameQString = "/path/to/file"
+         myBaseNameQString = "my layer"
+         myRasterLayer = QgsRasterLayer(myFileNameQString, myBaseNameQString)
 %End
 
 %TypeHeaderCode

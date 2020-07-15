@@ -64,9 +64,8 @@ class QgsMeshDatasetGroupStore;
  * vertices and faces is comma separated coordinates and connections for mesh.
  * E.g. to create mesh with one quad and one triangle
  *
- * \code
- *  QString uri(
- *      "1.0, 2.0 \n" \
+ * \code{py}
+ *  uri = "1.0, 2.0 \n" \
  *      "2.0, 2.0 \n" \
  *      "3.0, 2.0 \n" \
  *      "2.0, 3.0 \n" \
@@ -74,8 +73,8 @@ class QgsMeshDatasetGroupStore;
  *      "---" \
  *      "0, 1, 3, 4 \n" \
  *      "1, 2, 3 \n"
- *    );
- *    QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch layer", "mesh_memory");
+ *
+ *  scratchLayer = QgsMeshLayer(uri, "My Scratch layer", "mesh_memory")
  * \endcode
  *
  * \subsection mdal MDAL data provider (mdal)
@@ -83,9 +82,9 @@ class QgsMeshDatasetGroupStore;
  * Accesses data using the MDAL drivers (https://github.com/lutraconsulting/MDAL). The url
  * is the MDAL connection string. QGIS must be built with MDAL support to allow this provider.
 
- * \code
- *     QString uri = "test/land.2dm";
- *     QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch Layer",  "mdal");
+ * \code{py}
+ *     uri = "test/land.2dm"
+ *     scratchLayer = QgsMeshLayer(uri, "My Scratch Layer",  "mdal")
  * \endcode
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
