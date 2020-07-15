@@ -51,6 +51,7 @@ class TestQgs3DSymbolRegistry : public QObject
     void addSymbol();
     void fetchTypes();
     void createSymbol();
+    void defaultSymbolForGeometryType();
 
   private:
 
@@ -154,6 +155,19 @@ void TestQgs3DSymbolRegistry::createSymbol()
   //try creating a bad symbol
   symbol.reset( registry->createSymbol( QStringLiteral( "bad symbol" ) ) );
   QVERIFY( !symbol.get() );
+}
+
+void TestQgs3DSymbolRegistry::defaultSymbolForGeometryType()
+{
+  Qgs3DSymbolRegistry *registry = QgsApplication::symbol3DRegistry();
+  std::unique_ptr< QgsAbstract3DSymbol > symbol( registry->defaultSymbolForGeometryType( QgsWkbTypes::PointGeometry ) );
+  QCOMPARE( symbol->type(), QStringLiteral( "point" ) );
+  symbol.reset( registry->defaultSymbolForGeometryType( QgsWkbTypes::LineGeometry ) );
+  QCOMPARE( symbol->type(), QStringLiteral( "line" ) );
+  symbol.reset( registry->defaultSymbolForGeometryType( QgsWkbTypes::PolygonGeometry ) );
+  QCOMPARE( symbol->type(), QStringLiteral( "polygon" ) );
+  symbol.reset( registry->defaultSymbolForGeometryType( QgsWkbTypes::NullGeometry ) );
+  QVERIFY( !symbol );
 }
 
 QGSTEST_MAIN( TestQgs3DSymbolRegistry )

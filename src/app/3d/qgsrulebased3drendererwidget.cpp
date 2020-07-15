@@ -22,6 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssymbol3dwidget.h"
 #include "qgsapplication.h"
+#include "qgs3dsymbolregistry.h"
 
 #include <QAction>
 #include <QClipboard>
@@ -106,7 +107,7 @@ void QgsRuleBased3DRendererWidget::setDockMode( bool dockMode )
 
 void QgsRuleBased3DRendererWidget::addRule()
 {
-  QgsRuleBased3DRenderer::Rule *newrule = new QgsRuleBased3DRenderer::Rule( Qgs3DUtils::symbolForGeometryType( mLayer->geometryType() ).release() );
+  QgsRuleBased3DRenderer::Rule *newrule = new QgsRuleBased3DRenderer::Rule( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() ) );
 
   QgsRuleBased3DRenderer::Rule *current = currentRule();
   if ( current )
@@ -568,7 +569,7 @@ Qgs3DRendererRulePropsWidget::Qgs3DRendererRulePropsWidget( QgsRuleBased3DRender
   else
   {
     groupSymbol->setChecked( false );
-    mSymbol = Qgs3DUtils::symbolForGeometryType( layer->geometryType() );
+    mSymbol.reset( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( layer->geometryType() ) );
   }
 
   mSymbolWidget = new QgsSymbol3DWidget( this );

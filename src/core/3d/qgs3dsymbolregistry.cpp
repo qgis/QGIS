@@ -41,6 +41,21 @@ QgsAbstract3DSymbol *Qgs3DSymbolRegistry::createSymbol( const QString &type ) co
   return mMetadata[type]->create();
 }
 
+QgsAbstract3DSymbol *Qgs3DSymbolRegistry::defaultSymbolForGeometryType( QgsWkbTypes::GeometryType type )
+{
+  switch ( type )
+  {
+    case QgsWkbTypes::PointGeometry:
+      return createSymbol( QStringLiteral( "point" ) );
+    case QgsWkbTypes::LineGeometry:
+      return createSymbol( QStringLiteral( "line" ) );
+    case QgsWkbTypes::PolygonGeometry:
+      return createSymbol( QStringLiteral( "polygon" ) );
+    default:
+      return nullptr;
+  }
+}
+
 Qgs3DSymbolAbstractMetadata *Qgs3DSymbolRegistry::symbolMetadata( const QString &type ) const
 {
   return mMetadata.value( type );

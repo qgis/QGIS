@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgswkbtypes.h"
 
 #include <QDomElement>
 #include <QMap>
@@ -188,6 +189,13 @@ class CORE_EXPORT Qgs3DSymbolRegistry
      * Returns NULLPTR if the specified type is not found in the registry.
      */
     QgsAbstract3DSymbol *createSymbol( const QString &type ) const SIP_FACTORY;
+
+    /**
+     * Creates a new instance of the default 3D symbol for the specified geometry \a type.
+     *
+     * The caller takes ownership of the returned symbol.
+     */
+    QgsAbstract3DSymbol *defaultSymbolForGeometryType( QgsWkbTypes::GeometryType type ) SIP_FACTORY;
 
   private:
 #ifdef SIP_RUN
