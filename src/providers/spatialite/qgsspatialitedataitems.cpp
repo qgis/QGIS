@@ -64,7 +64,7 @@ QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, const QString &name, const 
   : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "spatialite" ) )
 {
   mCapabilities |= Delete;
-  setState( Populated ); // no children are expected
+  setState( NotPopulated );
 }
 
 // ------
@@ -299,4 +299,14 @@ QgsDataItem *QgsSpatiaLiteDataItemProvider::createDataItem( const QString &pathI
 bool QgsSLConnectionItem::layerCollection() const
 {
   return true;
+}
+
+QVector<QgsDataItem *> QgsSLLayerItem::createChildren()
+{
+  QVector<QgsDataItem *> children;
+  children.push_back( new QgsFieldsItem( this,
+                                         path() + QStringLiteral( "/columns/ " ),
+                                         uri(),
+                                         QStringLiteral( "spatialite" ), QString(), name() ) );
+  return children;
 }
