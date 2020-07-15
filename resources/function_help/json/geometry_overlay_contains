@@ -1,0 +1,32 @@
+{
+  "name": "geometry_overlay_contains",
+  "type": "function",
+  "description": "Performs a spatial join of type CONTAINS. This returns an array of results of an expression evaluated on features from an other layer that CONTAIN the current feature.",
+  "arguments": [
+    {
+      "arg": "layer",
+      "description": "the other layer"
+    },
+    {
+      "arg": "expression",
+      "description": "an optional expression to evaluate on the features from the other layer (if not set, the function will just return a boolean indicating whether there is at least one match)",
+      "optional": true
+    },
+    {
+      "arg": "filter",
+      "description": "an optional expression to filter the matching features (if not set, all features will be returned)",
+      "optional": true
+    },
+    {
+      "arg": "limit",
+      "description": "an optional integer to limit the number of matching features (if not set, all features will be returned)",
+      "optional": true
+    }
+  ],
+  "examples": [
+    {
+      "expression": "geometry_overlay_contains('regions', name)",
+      "returns": "['South Africa', 'Africa', 'World']"
+    }
+  ]
+}
