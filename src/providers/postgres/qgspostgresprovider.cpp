@@ -4821,16 +4821,24 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     return result;
   }
   QString sql(
-    "SELECT RC.CONSTRAINT_NAME, KCU1.COLUMN_NAME, KCU2.CONSTRAINT_SCHEMA, KCU2.TABLE_NAME, KCU2.COLUMN_NAME, KCU1.ORDINAL_POSITION "
-    "FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS RC "
-    "INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KCU1 "
-    "ON KCU1.CONSTRAINT_CATALOG = RC.CONSTRAINT_CATALOG AND KCU1.CONSTRAINT_SCHEMA = RC.CONSTRAINT_SCHEMA AND KCU1.CONSTRAINT_NAME = RC.CONSTRAINT_NAME "
-    "INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KCU2 "
-    "ON KCU2.CONSTRAINT_CATALOG = RC.UNIQUE_CONSTRAINT_CATALOG AND KCU2.CONSTRAINT_SCHEMA = RC.UNIQUE_CONSTRAINT_SCHEMA AND KCU2.CONSTRAINT_NAME = RC.UNIQUE_CONSTRAINT_NAME "
-    "AND KCU2.ORDINAL_POSITION = KCU1.ORDINAL_POSITION "
-    "WHERE KCU1.CONSTRAINT_SCHEMA=" + QgsPostgresConn::quotedValue( mSchemaName ) + " AND KCU1.TABLE_NAME=" + QgsPostgresConn::quotedValue( mTableName ) +
-    "GROUP BY RC.CONSTRAINT_NAME, KCU1.COLUMN_NAME, KCU2.CONSTRAINT_SCHEMA, KCU2.TABLE_NAME, KCU2.COLUMN_NAME, KCU1.ORDINAL_POSITION " +
-    "ORDER BY KCU1.ORDINAL_POSITION"
+    "SELECT "
+    "  tc.constraint_name,  "
+    "  kcu.column_name,  "
+    "  ccu.table_schema AS constraint_schema, "
+    "  ccu.table_name AS constraint_table, "
+    "  ccu.column_name AS column_name, "
+    "  kcu.ordinal_position "
+    "FROM "
+    "  information_schema.table_constraints AS tc  "
+    "  JOIN information_schema.key_column_usage AS kcu "
+    "    ON tc.constraint_name = kcu.constraint_name "
+    "    AND tc.table_schema = kcu.table_schema "
+    "  JOIN information_schema.constraint_column_usage AS ccu "
+    "    ON ccu.constraint_name = tc.constraint_name "
+    "    AND ccu.table_schema = tc.table_schema "
+    "WHERE tc.constraint_type = 'FOREIGN KEY' "
+    "  AND tc.table_schema=" + QgsPostgresConn::quotedValue( mSchemaName ) +
+    "  AND tc.table_name=" + QgsPostgresConn::quotedValue( mTableName )
   );
   QgsPostgresResult sqlResult( connectionRO()->PQexec( sql ) );
   if ( sqlResult.PQresultStatus() != PGRES_TUPLES_OK )
