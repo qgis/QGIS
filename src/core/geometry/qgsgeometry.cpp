@@ -818,7 +818,13 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QVector<QgsPointX
   QgsPointSequence split, topology;
   convertPointList( splitLine, split );
   convertPointList( topologyTestPoints, topology );
+<<<<<<< HEAD
   return splitGeometry( split, newGeometries, topological, topology );
+=======
+  QgsGeometry::OperationResult result = splitGeometry( split, newGeometries, topological, topology, splitFeature );
+  convertPointList( topology, topologyTestPoints );
+  return result;
+>>>>>>> 152a1f98ce... Fix returning topological candidates when using deprecated QgsGeometry::splitGeometry
 }
 QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QgsPointSequence &topologyTestPoints )
 {
