@@ -17,6 +17,8 @@
 
 #include "qgs3dutils.h"
 #include "qgssymbollayerutils.h"
+#include "qgs3d.h"
+#include "qgsmaterialregistry.h"
 
 QgsPolygon3DSymbol::QgsPolygon3DSymbol()
   : mMaterial( qgis::make_unique< QgsPhongMaterialSettings >() )
@@ -62,6 +64,7 @@ void QgsPolygon3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext 
   elemDataProperties.setAttribute( QStringLiteral( "rendered-facade" ), mRenderedFacade );
   elem.appendChild( elemDataProperties );
 
+  elem.setAttribute( QStringLiteral( "material_type" ), mMaterial->type() );
   QDomElement elemMaterial = doc.createElement( QStringLiteral( "material" ) );
   mMaterial->writeXml( elemMaterial, context );
   elem.appendChild( elemMaterial );
@@ -91,7 +94,11 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
   mAddBackFaces = elemDataProperties.attribute( QStringLiteral( "add-back-faces" ) ).toInt();
   mRenderedFacade = elemDataProperties.attribute( QStringLiteral( "rendered-facade" ), "3" ).toInt();
 
-  QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
+  const QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
+  const QString materialType = elem.attribute( QStringLiteral( "material_type" ), QStringLiteral( "phong" ) );
+  mMaterial.reset( Qgs3D::materialRegistry()->createMaterialSettings( materialType ) );
+  if ( !mMaterial )
+    mMaterial.reset( Qgs3D::materialRegistry()->createMaterialSettings( QStringLiteral( "phong" ) ) );
   mMaterial->readXml( elemMaterial, context );
 
   QDomElement elemDDP = elem.firstChildElement( QStringLiteral( "data-defined-properties" ) );

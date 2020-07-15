@@ -91,6 +91,11 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     virtual ~QgsAbstractMaterialSettings() = default;
 
     /**
+     * Returns the unique type name for the material.
+     */
+    virtual QString type() const = 0;
+
+    /**
      * Clones the material settings.
      *
      * Caller takes ownership of the returned object.

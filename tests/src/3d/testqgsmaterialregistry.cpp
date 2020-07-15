@@ -27,6 +27,7 @@ class DummyMaterialSettings : public QgsAbstractMaterialSettings
 {
   public:
     DummyMaterialSettings() = default;
+    QString type() const override { return QStringLiteral( "Dummy" ); }
     static QgsAbstractMaterialSettings *create() { return new DummyMaterialSettings(); }
     DummyMaterialSettings *clone() const override { return new DummyMaterialSettings(); }
     void readXml( const QDomElement &, const QgsReadWriteContext & ) override { }
