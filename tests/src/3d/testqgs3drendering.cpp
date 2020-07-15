@@ -27,6 +27,7 @@
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
+#include "qgs3d.h"
 
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
@@ -89,6 +90,7 @@ void TestQgs3DRendering::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
+  Qgs3D::initialize();
 
   mReport = QStringLiteral( "<h1>3D Rendering Tests</h1>\n" );
 
