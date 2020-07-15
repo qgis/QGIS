@@ -42,6 +42,11 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
      */
     QgsPhongMaterialSettings() = default;
 
+    /**
+     * Returns a new instance of QgsPhongMaterialSettings.
+     */
+    static QgsAbstractMaterialSettings *create() SIP_FACTORY;
+
     QgsPhongMaterialSettings *clone() const override SIP_FACTORY;
 
     //! Returns ambient color component

@@ -27,6 +27,11 @@
 #include <Qt3DRender/QEffect>
 
 
+QgsAbstractMaterialSettings *QgsPhongMaterialSettings::create()
+{
+  return new QgsPhongMaterialSettings();
+}
+
 QgsPhongMaterialSettings *QgsPhongMaterialSettings::clone() const
 {
   return new QgsPhongMaterialSettings( *this );

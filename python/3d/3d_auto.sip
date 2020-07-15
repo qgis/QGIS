@@ -7,6 +7,7 @@
 %Include auto_generated/qgsabstractvectorlayer3drenderer.sip
 %Include auto_generated/qgscamerapose.sip
 %Include auto_generated/qgslayoutitem3dmap.sip
+%Include auto_generated/qgsmaterialregistry.sip
 %Include auto_generated/qgsphongmaterialsettings.sip
 %Include auto_generated/qgspointlightsettings.sip
 %Include auto_generated/qgsdirectionallightsettings.sip
