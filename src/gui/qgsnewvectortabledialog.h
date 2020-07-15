@@ -54,28 +54,64 @@ class GUI_EXPORT QgsNewVectorTableDialog : public QDialog, private Ui_QgsNewVect
      */
     QgsNewVectorTableDialog( QgsAbstractDatabaseProviderConnection *conn, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    /**
+     * Sets the schema \a name
+     */
     void setSchemaName( const QString &name );
 
+    /**
+     * Sets the table \a name
+     */
     void setTableName( const QString &name );
 
+    /**
+     * Sets the geometry \a type
+     */
     void setGeometryType( QgsWkbTypes::Type type );
 
+    /**
+     * Sets the CRS to \a crs
+     */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
+    /**
+     * Returns the CRS
+     */
     QgsCoordinateReferenceSystem crs() const;
 
+    /**
+     * Returns the table name
+     */
     QString tableName() const;
 
+    /**
+     * Returns the schema name
+     */
     QString schemaName() const;
 
+    /**
+     * Returns the geometry column name
+     */
     QString geometryColumnName() const;
 
+    /**
+     * Returns the fields
+     */
     QgsFields fields() const;
 
+    /**
+     * Returns the geometry type
+     */
     QgsWkbTypes::Type geometryType() const;
 
+    /**
+     * Sets the fields to \a fields
+     */
     void setFields( const QgsFields &fields );
 
+    /**
+     * Returns the validation errors or an empty list if the dialog is valid
+     */
     QStringList validationErrors() const;
 
   private:
