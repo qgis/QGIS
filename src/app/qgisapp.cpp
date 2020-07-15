@@ -97,19 +97,15 @@
 #include "qgsgeometrycheckregistry.h"
 
 #ifdef HAVE_3D
-#include "qgsabstract3drenderer.h"
+#include "qgs3d.h"
 #include "qgs3danimationsettings.h"
 #include "qgs3danimationwidget.h"
 #include "qgs3dmapcanvasdockwidget.h"
-#include "qgs3drendererregistry.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
 #include "qgscameracontroller.h"
 #include "qgsflatterraingenerator.h"
 #include "qgslayoutitem3dmap.h"
-#include "qgsrulebased3drenderer.h"
-#include "qgsvectorlayer3drenderer.h"
-#include "qgsmeshlayer3drenderer.h"
 #include "processing/qgs3dalgorithms.h"
 #include "qgs3dmaptoolmeasureline.h"
 #include "layout/qgslayout3dmapwidget.h"
@@ -12655,10 +12651,8 @@ void QgisApp::newMapCanvas()
 void QgisApp::init3D()
 {
 #ifdef HAVE_3D
-  // register 3D renderers
-  QgsApplication::instance()->renderer3DRegistry()->addRenderer( new QgsVectorLayer3DRendererMetadata );
-  QgsApplication::instance()->renderer3DRegistry()->addRenderer( new QgsRuleBased3DRendererMetadata );
-  QgsApplication::instance()->renderer3DRegistry()->addRenderer( new QgsMeshLayer3DRendererMetadata );
+  // initialize 3D registries
+  Qgs3D::initialize();
 #else
   mActionNew3DMapCanvas->setVisible( false );
 #endif
