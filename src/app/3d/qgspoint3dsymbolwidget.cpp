@@ -74,6 +74,11 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   connect( spinTY, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinBillboardHeight,  &QDoubleSpinBox::setValue );
 }
 
+Qgs3DSymbolWidget *QgsPoint3DSymbolWidget::create( QgsVectorLayer * )
+{
+  return new QgsPoint3DSymbolWidget();
+}
+
 void QgsPoint3DSymbolWidget::onOverwriteMaterialChecked( int state )
 {
   if ( state == Qt::Checked )

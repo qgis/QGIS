@@ -28,6 +28,8 @@ class QgsPolygon3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Polygon3D
   public:
     explicit QgsPolygon3DSymbolWidget( QWidget *parent = nullptr );
 
+    static Qgs3DSymbolWidget *create( QgsVectorLayer *layer );
+
     void setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer ) override;
     QgsAbstract3DSymbol *symbol() override;
 

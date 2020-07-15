@@ -29,6 +29,8 @@ class QgsPoint3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Point3DSymb
   public:
     explicit QgsPoint3DSymbolWidget( QWidget *parent = nullptr );
 
+    static Qgs3DSymbolWidget *create( QgsVectorLayer *layer );
+
     void setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer ) override;
     QgsAbstract3DSymbol *symbol() override;
 
