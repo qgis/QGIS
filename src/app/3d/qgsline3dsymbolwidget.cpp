@@ -45,7 +45,7 @@ Qgs3DSymbolWidget *QgsLine3DSymbolWidget::create( QgsVectorLayer * )
   return new QgsLine3DSymbolWidget();
 }
 
-void QgsLine3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer * )
+void QgsLine3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer )
 {
   const QgsLine3DSymbol *lineSymbol = dynamic_cast< const QgsLine3DSymbol *>( symbol );
   if ( !lineSymbol )
@@ -58,7 +58,7 @@ void QgsLine3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVec
   cboAltBinding->setCurrentIndex( static_cast<int>( lineSymbol->altitudeBinding() ) );
   chkSimpleLines->setChecked( lineSymbol->renderAsSimpleLines() );
   // TODO -- make material widget generic!
-  widgetMaterial->setMaterial( *dynamic_cast< QgsPhongMaterialSettings *>( lineSymbol->material() ) );
+  widgetMaterial->setSettings( lineSymbol->material(), layer );
   updateGuiState();
 }
 
@@ -71,7 +71,7 @@ QgsAbstract3DSymbol *QgsLine3DSymbolWidget::symbol()
   sym->setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );
   sym->setAltitudeBinding( static_cast<Qgs3DTypes::AltitudeBinding>( cboAltBinding->currentIndex() ) );
   sym->setRenderAsSimpleLines( chkSimpleLines->isChecked() );
-  sym->setMaterial( widgetMaterial->material().clone() );
+  sym->setMaterial( widgetMaterial->settings() );
   return sym.release();
 }
 

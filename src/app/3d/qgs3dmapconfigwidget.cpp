@@ -106,7 +106,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
   widgetTerrainMaterial->setDiffuseVisible( false );
-  widgetTerrainMaterial->setMaterial( mMap->terrainShadingMaterial() );
+  QgsPhongMaterialSettings terrainShadingMaterial = mMap->terrainShadingMaterial();
+  widgetTerrainMaterial->setSettings( &terrainShadingMaterial, nullptr );
 
   widgetLights->setPointLights( mMap->pointLights() );
   widgetLights->setDirectionalLights( mMap->directionalLights() );
@@ -225,7 +226,10 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setShowCameraViewCenter( chkShowCameraViewCenter->isChecked() );
   mMap->setShowLightSourceOrigins( chkShowLightSourceOrigins->isChecked() );
   mMap->setTerrainShadingEnabled( groupTerrainShading->isChecked() );
-  mMap->setTerrainShadingMaterial( widgetTerrainMaterial->material() );
+
+  std::unique_ptr< QgsAbstractMaterialSettings > terrainMaterial( widgetTerrainMaterial->settings() );
+  if ( QgsPhongMaterialSettings *phongMaterial = dynamic_cast< QgsPhongMaterialSettings * >( terrainMaterial.get() ) )
+    mMap->setTerrainShadingMaterial( *phongMaterial );
 
   mMap->setPointLights( widgetLights->pointLights() );
   mMap->setDirectionalLights( widgetLights->directionalLights() );

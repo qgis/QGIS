@@ -24,7 +24,7 @@
 
 class QgsAbstractMaterialSettings;
 class QgsReadWriteContext;
-class QgsMaterialSettingsWidget;
+class QgsMaterialSettingsWidget SIP_EXTERNAL;
 
 /**
  * \ingroup core
