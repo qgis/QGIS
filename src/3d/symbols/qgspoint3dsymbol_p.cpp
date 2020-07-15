@@ -615,20 +615,24 @@ void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
 namespace Qgs3DSymbolImpl
 {
 
-  QgsFeature3DHandler *handlerForPoint3DSymbol( QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol )
+  QgsFeature3DHandler *handlerForPoint3DSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
   {
-    if ( symbol.shape() == QgsPoint3DSymbol::Model )
-      return new QgsModelPoint3DSymbolHandler( symbol, layer->selectedFeatureIds() );
+    const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol * >( symbol );
+    if ( !pointSymbol )
+      return nullptr;
+
+    if ( pointSymbol->shape() == QgsPoint3DSymbol::Model )
+      return new QgsModelPoint3DSymbolHandler( *pointSymbol, layer->selectedFeatureIds() );
     // Add proper handler for billboard
-    else if ( symbol.shape() == QgsPoint3DSymbol::Billboard )
-      return new QgsPoint3DBillboardSymbolHandler( symbol, layer->selectedFeatureIds() );
+    else if ( pointSymbol->shape() == QgsPoint3DSymbol::Billboard )
+      return new QgsPoint3DBillboardSymbolHandler( *pointSymbol, layer->selectedFeatureIds() );
     else
-      return new QgsInstancedPoint3DSymbolHandler( symbol, layer->selectedFeatureIds() );
+      return new QgsInstancedPoint3DSymbolHandler( *pointSymbol, layer->selectedFeatureIds() );
   }
 
   Qt3DCore::QEntity *entityForPoint3DSymbol( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol )
   {
-    QgsFeature3DHandler *handler = handlerForPoint3DSymbol( layer, symbol );
+    QgsFeature3DHandler *handler = handlerForPoint3DSymbol( layer, &symbol );
     Qt3DCore::QEntity *e = entityFromHandler( handler, map, layer );
     delete handler;
     return e;

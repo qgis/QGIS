@@ -23,9 +23,6 @@
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
-#include "qgsline3dsymbol_p.h"
-#include "qgspoint3dsymbol_p.h"
-#include "qgspolygon3dsymbol_p.h"
 
 #include "qgsrulebasedchunkloader_p.h"
 #include "qgsapplication.h"
@@ -255,20 +252,7 @@ void QgsRuleBased3DRenderer::Rule::createHandlers( QgsVectorLayer *layer, QgsRul
   {
     // add handler!
     Q_ASSERT( !handlers.value( this ) );
-    QgsFeature3DHandler *handler = nullptr;
-    if ( mSymbol->type() == QLatin1String( "polygon" ) )
-    {
-      handler = Qgs3DSymbolImpl::handlerForPolygon3DSymbol( layer, *static_cast<QgsPolygon3DSymbol *>( mSymbol.get() ) );
-    }
-    else if ( mSymbol->type() == QLatin1String( "point" ) )
-    {
-      handler = Qgs3DSymbolImpl::handlerForPoint3DSymbol( layer, *static_cast<QgsPoint3DSymbol *>( mSymbol.get() ) );
-    }
-    else if ( mSymbol->type() == QLatin1String( "line" ) )
-    {
-      handler = Qgs3DSymbolImpl::handlerForLine3DSymbol( layer, *static_cast<QgsLine3DSymbol *>( mSymbol.get() ) );
-    }
-
+    QgsFeature3DHandler *handler = QgsApplication::symbol3DRegistry()->createHandlerForSymbol( layer, mSymbol.get() );
     if ( handler )
       handlers[this] = handler;
   }

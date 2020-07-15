@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dsymbolregistry.h"
+#include "qgsabstract3dsymbol.h"
 
 Qgs3DSymbolRegistry::Qgs3DSymbolRegistry()
 {
@@ -54,6 +55,17 @@ QgsAbstract3DSymbol *Qgs3DSymbolRegistry::defaultSymbolForGeometryType( QgsWkbTy
     default:
       return nullptr;
   }
+}
+
+QgsFeature3DHandler *Qgs3DSymbolRegistry::createHandlerForSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
+{
+  if ( !symbol )
+    return nullptr;
+
+  if ( !mMetadata.contains( symbol->type() ) )
+    return nullptr;
+
+  return mMetadata.value( symbol->type() )->createFeatureHandler( layer, symbol );
 }
 
 Qgs3DSymbolAbstractMetadata *Qgs3DSymbolRegistry::symbolMetadata( const QString &type ) const
