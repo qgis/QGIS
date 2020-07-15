@@ -23,6 +23,8 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent )
 {
   setupUi( this );
 
+  activateTexturingUI( true );
+
   QgsPhongMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
   textureScaleSpinBox->setClearValue( 0 );
@@ -36,7 +38,6 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent )
   connect( textureFile, &QgsImageSourceLineEdit::sourceChanged, this, &QgsPhongMaterialWidget::changed );
   connect( textureScaleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongMaterialWidget::changed );
   connect( textureRotationSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongMaterialWidget::changed );
-  this->activateTexturingUI( false );
 }
 
 QgsMaterialSettingsWidget *QgsPhongMaterialWidget::create()

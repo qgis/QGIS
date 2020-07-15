@@ -40,10 +40,7 @@ class QgsPhongMaterialWidget : public QgsMaterialSettingsWidget, private Ui::Pho
 
     //! activates the texturing UI (to make sure texturing UI isn't visible when the user doesn't need it like in the 3D configuration window)
     void activateTexturingUI( bool activated );
-  signals:
-    void changed();
 
-  public slots:
 };
 
 #endif // QGSPHONGMATERIALWIDGET_H

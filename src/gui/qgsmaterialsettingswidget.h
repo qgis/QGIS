@@ -54,6 +54,13 @@ class GUI_EXPORT QgsMaterialSettingsWidget : public QWidget
      * Caller takes ownership of the returned settings.
      */
     virtual QgsAbstractMaterialSettings *settings() = 0 SIP_FACTORY;
+
+  signals:
+
+    /**
+     * Emitted when the material definition is changed.
+     */
+    void changed();
 };
 
 #endif // QGSMATERIALSETTINGSWIDGET_H
