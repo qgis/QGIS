@@ -101,6 +101,12 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsColorRampShaderWidget::applyColorRamp );
   connect( mNumberOfEntriesSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsColorRampShaderWidget::classify );
   connect( mClipCheckBox, &QAbstractButton::toggled, this, &QgsColorRampShaderWidget::widgetChanged );
+  connect( mLabelPrecisionRawData, &QCheckBox::toggled, this, [ = ]
+  {
+    autoLabel();
+    mPrecisionSpinBox->setEnabled( ! mLabelPrecisionRawData->isChecked() );
+  } );
+  connect( mPrecisionSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, [ = ]( int ) { autoLabel(); } );
 }
 
 void QgsColorRampShaderWidget::initializeForUseWithRasterLayer()
@@ -167,6 +173,17 @@ void QgsColorRampShaderWidget::autoLabel()
   QString unit = mUnitLineEdit->text();
   QString label;
   int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
+
+  auto applyPrecision = [ = ]( QString value )
+  {
+    // TODO: rounding to powers of 10
+    if ( ! mLabelPrecisionRawData->isChecked() )
+    {
+      value = QLocale().toString( QLocale().toDouble( value ), 'f', mPrecisionSpinBox->value() );
+    }
+    return value;
+  };
+
   QTreeWidgetItem *currentItem = nullptr;
   for ( int i = 0; i < topLevelItemCount; ++i )
   {
@@ -181,20 +198,20 @@ void QgsColorRampShaderWidget::autoLabel()
     {
       if ( i == 0 )
       {
-        label = "<= " + currentItem->text( ValueColumn ) + unit;
+        label = "<= " + applyPrecision( currentItem->text( ValueColumn ) ) + unit;
       }
       else if ( QLocale().toDouble( currentItem->text( ValueColumn ) ) == std::numeric_limits<double>::infinity() )
       {
-        label = "> " + mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn ) + unit;
+        label = "> " + applyPrecision( mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn ) ) + unit;
       }
       else
       {
-        label = mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn ) + " - " + currentItem->text( ValueColumn ) + unit;
+        label = applyPrecision( mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn ) ) + " - " + applyPrecision( currentItem->text( ValueColumn ) ) + unit;
       }
     }
     else
     {
-      label = currentItem->text( ValueColumn ) + unit;
+      label = applyPrecision( currentItem->text( ValueColumn ) ) + unit;
     }
 
     if ( currentItem->text( LabelColumn ).isEmpty() || currentItem->text( LabelColumn ) == label || currentItem->foreground( LabelColumn ).color() == QColor( Qt::gray ) )
