@@ -576,7 +576,45 @@ void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
 
 bool QgsPointLocator::init( int maxFeaturesToIndex )
 {
+<<<<<<< HEAD
   return hasIndex() ? true : rebuildIndex( maxFeaturesToIndex );
+=======
+  const QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
+  if ( geomType == QgsWkbTypes::NullGeometry // nothing to index
+       || hasIndex()
+       || mIsIndexing ) // already indexing, return!
+    return true;
+
+  if ( !mLayer->dataProvider()
+       || !mLayer->dataProvider()->isValid() )
+    return false;
+
+  mRenderer.reset( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
+  mSource.reset( new QgsVectorLayerFeatureSource( mLayer ) );
+
+  if ( mContext )
+  {
+    mContext->expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
+  }
+
+  mIsIndexing = true;
+
+  if ( relaxed )
+  {
+    mInitTask = new QgsPointLocatorInitTask( this );
+    connect( mInitTask, &QgsPointLocatorInitTask::taskTerminated, this, &QgsPointLocator::onInitTaskFinished );
+    connect( mInitTask, &QgsPointLocatorInitTask::taskCompleted, this, &QgsPointLocator::onInitTaskFinished );
+    QgsApplication::taskManager()->addTask( mInitTask );
+    return true;
+  }
+  else
+  {
+    const bool ok = rebuildIndex( maxFeaturesToIndex );
+    mIsIndexing = false;
+    emit initFinished( ok );
+    return ok;
+  }
+>>>>>>> 27d3a4bdcf... Fix crash when trying to initialize snapping on invalid layer
 }
 
 
