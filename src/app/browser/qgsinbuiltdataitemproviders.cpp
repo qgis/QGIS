@@ -892,7 +892,26 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             try
             {
               conn2->createVectorTable( schemaName, tableName, fields, geometryType, crs, true, &options );
-              collectionItem->refresh();
+              // Ok, here is the trick: we cannot refresh the connection item because the refresh is not
+              // recursive.
+              // So, we check if the item is a schema or not, if it's not it means we initiated the new table from
+              // the parent connection item, hence we search for the schema item and refresh it instead of refreshing
+              // the connection item (the parent) with no effects.
+              if ( ! isSchema && conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
+              {
+                const auto constChildren { collectionItem->children() };
+                for ( const auto &c : constChildren )
+                {
+                  if ( c->name() == schemaName )
+                  {
+                    c->refresh();
+                  }
+                }
+              }
+              else
+              {
+                collectionItem->refresh( );
+              }
               title = QObject::tr( "New Table Created" );
               message = QObject::tr( "Table '%1' was created successfully." ).arg( tableName );
             }
