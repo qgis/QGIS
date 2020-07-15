@@ -183,7 +183,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   } );
 
   updateButtons();
-
+  validate();
 }
 
 void QgsNewVectorTableDialog::setSchemaName( const QString &name )
