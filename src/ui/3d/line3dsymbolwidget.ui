@@ -130,7 +130,7 @@
        <number>0</number>
       </property>
       <item row="3" column="0" colspan="2">
-       <widget class="QgsPhongMaterialWidget" name="widgetMaterial" native="true">
+       <widget class="QgsMaterialWidget" name="widgetMaterial" native="true">
         <property name="minimumSize">
          <size>
           <width>10</width>
@@ -159,9 +159,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsPhongMaterialWidget</class>
+   <class>QgsMaterialWidget</class>
    <extends>QWidget</extends>
-   <header>qgsphongmaterialwidget.h</header>
+   <header>qgsmaterialwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

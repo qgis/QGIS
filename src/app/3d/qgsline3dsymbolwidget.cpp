@@ -37,7 +37,7 @@ QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
   connect( cboAltBinding, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLine3DSymbolWidget::changed );
   connect( chkSimpleLines, &QCheckBox::clicked, this, &QgsLine3DSymbolWidget::changed );
   connect( chkSimpleLines, &QCheckBox::clicked, this, &QgsLine3DSymbolWidget::updateGuiState );
-  connect( widgetMaterial, &QgsPhongMaterialWidget::changed, this, &QgsLine3DSymbolWidget::changed );
+  connect( widgetMaterial, &QgsMaterialWidget::changed, this, &QgsLine3DSymbolWidget::changed );
 }
 
 Qgs3DSymbolWidget *QgsLine3DSymbolWidget::create( QgsVectorLayer * )
