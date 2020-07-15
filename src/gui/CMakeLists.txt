@@ -726,6 +726,7 @@ SET(QGIS_GUI_HDRS
   qgsnewmemorylayerdialog.h
   qgsnewnamedialog.h
   qgsnewvectorlayerdialog.h
+  qgsnewvectortabledialog.h
   qgsopacitywidget.h
   qgsoptionsdialogbase.h
   qgsoptionsdialoghighlightwidget.h
