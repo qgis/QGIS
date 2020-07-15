@@ -26,7 +26,7 @@
 #include "qgssymbollayerutils.h"
 
 QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
-  : QWidget( parent )
+  : Qgs3DSymbolWidget( parent )
 {
   setupUi( this );
 
@@ -52,7 +52,8 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   btnChangeSymbol->setSymbolType( QgsSymbol::Marker );
   btnChangeSymbol->setDialogTitle( tr( "Billboard symbol" ) );
 
-  setSymbol( QgsPoint3DSymbol( ) );
+  QgsPoint3DSymbol defaultSymbol;
+  setSymbol( &defaultSymbol, nullptr );
   onShapeChanged();
 
   connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPoint3DSymbolWidget::changed );
@@ -86,12 +87,16 @@ void QgsPoint3DSymbolWidget::onOverwriteMaterialChecked( int state )
   emit changed();
 }
 
-void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
+void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer * )
 {
-  cboAltClamping->setCurrentIndex( static_cast<int>( symbol.altitudeClamping() ) );
+  const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol *>( symbol );
+  if ( !pointSymbol )
+    return;
 
-  QVariantMap vm = symbol.shapeProperties();
-  int index = cboShape->findData( symbol.shape() );
+  cboAltClamping->setCurrentIndex( static_cast<int>( pointSymbol->altitudeClamping() ) );
+
+  QVariantMap vm = pointSymbol->shapeProperties();
+  int index = cboShape->findData( pointSymbol->shape() );
   cboShape->setCurrentIndex( index != -1 ? index : 1 );  // use cylinder by default if shape is not set
   widgetMaterial->setEnabled( true );
   switch ( cboShape->currentIndex() )
@@ -127,19 +132,19 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
       break;
     }
     case 7:  // billboard
-      if ( symbol.billboardSymbol() )
+      if ( pointSymbol->billboardSymbol() )
       {
-        btnChangeSymbol->setSymbol( symbol.billboardSymbol()->clone() );
+        btnChangeSymbol->setSymbol( pointSymbol->billboardSymbol()->clone() );
       }
       break;
   }
 
-  widgetMaterial->setMaterial( symbol.material() );
+  widgetMaterial->setMaterial( pointSymbol->material() );
 
   // decompose the transform matrix
   // assuming the last row has values [0 0 0 1]
   // see https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
-  QMatrix4x4 m = symbol.transform();
+  QMatrix4x4 m = pointSymbol->transform();
   float *md = m.data();  // returns data in column-major order
   float sx = QVector3D( md[0], md[1], md[2] ).length();
   float sy = QVector3D( md[4], md[5], md[6] ).length();
@@ -165,11 +170,11 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
   spinRZ->setValue( QgsLayoutUtils::normalizedAngle( rot.z() ) );
 }
 
-QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
+QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
 {
   QVariantMap vm;
-  QgsPoint3DSymbol sym;
-  sym.setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
+  std::unique_ptr< QgsPoint3DSymbol > sym = qgis::make_unique< QgsPoint3DSymbol >();
+  sym->setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
   switch ( cboShape->currentIndex() )
   {
     case 0:  // sphere
@@ -199,7 +204,7 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
       vm[QStringLiteral( "overwriteMaterial" )] = cbOverwriteMaterial->isChecked();
       break;
     case 7:  // billboard
-      sym.setBillboardSymbol( btnChangeSymbol->clonedSymbol<QgsMarkerSymbol>() );
+      sym->setBillboardSymbol( btnChangeSymbol->clonedSymbol<QgsMarkerSymbol>() );
       break;
   }
 
@@ -212,12 +217,12 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
   tr.scale( sca );
   tr.rotate( rot );
 
-  sym.setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );
-  sym.setShape( static_cast<QgsPoint3DSymbol::Shape>( cboShape->itemData( cboShape->currentIndex() ).toInt() ) );
-  sym.setShapeProperties( vm );
-  sym.setMaterial( widgetMaterial->material() );
-  sym.setTransform( tr );
-  return sym;
+  sym->setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );
+  sym->setShape( static_cast<QgsPoint3DSymbol::Shape>( cboShape->itemData( cboShape->currentIndex() ).toInt() ) );
+  sym->setShapeProperties( vm );
+  sym->setMaterial( widgetMaterial->material() );
+  sym->setTransform( tr );
+  return sym.release();
 }
 
 void QgsPoint3DSymbolWidget::onShapeChanged()

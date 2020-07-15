@@ -50,7 +50,6 @@ QgsSymbol3DWidget::QgsSymbol3DWidget( QWidget *parent ) : QWidget( parent )
   connect( widgetPolygon, &QgsPolygon3DSymbolWidget::changed, this, &QgsSymbol3DWidget::widgetChanged );
 }
 
-
 QgsAbstract3DSymbol *QgsSymbol3DWidget::symbol()
 {
   int pageIndex = widgetStack->currentIndex();
@@ -58,11 +57,11 @@ QgsAbstract3DSymbol *QgsSymbol3DWidget::symbol()
   {
     QgsAbstract3DSymbol *sym = nullptr;
     if ( pageIndex == 1 )
-      sym = new QgsLine3DSymbol( widgetLine->symbol() );
+      sym = widgetLine->symbol();
     else if ( pageIndex == 2 )
-      sym = new QgsPoint3DSymbol( widgetPoint->symbol() );
+      sym = widgetPoint->symbol();
     else
-      sym = new QgsPolygon3DSymbol( widgetPolygon->symbol() );
+      sym = widgetPolygon->symbol();
     return sym;
   }
   return nullptr;
@@ -77,11 +76,12 @@ void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorL
       pageIndex = 2;
       if ( symbol && symbol->type() == QLatin1String( "point" ) )
       {
-        whileBlocking( widgetPoint )->setSymbol( *static_cast<const QgsPoint3DSymbol *>( symbol ) );
+        whileBlocking( widgetPoint )->setSymbol( symbol, vlayer );
       }
       else
       {
-        whileBlocking( widgetPoint )->setSymbol( QgsPoint3DSymbol() );
+        QgsPoint3DSymbol defaultSymbol;
+        whileBlocking( widgetPoint )->setSymbol( &defaultSymbol, vlayer );
       }
       break;
 
@@ -89,11 +89,12 @@ void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorL
       pageIndex = 1;
       if ( symbol && symbol->type() == QLatin1String( "line" ) )
       {
-        whileBlocking( widgetLine )->setSymbol( *static_cast<const QgsLine3DSymbol *>( symbol ) );
+        whileBlocking( widgetLine )->setSymbol( symbol, vlayer );
       }
       else
       {
-        whileBlocking( widgetLine )->setSymbol( QgsLine3DSymbol() );
+        QgsLine3DSymbol defaultSymbol;
+        whileBlocking( widgetLine )->setSymbol( &defaultSymbol, vlayer );
       }
       break;
 
@@ -101,11 +102,12 @@ void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorL
       pageIndex = 3;
       if ( symbol && symbol->type() == QLatin1String( "polygon" ) )
       {
-        whileBlocking( widgetPolygon )->setSymbol( *static_cast<const QgsPolygon3DSymbol *>( symbol ), vlayer );
+        whileBlocking( widgetPolygon )->setSymbol( symbol, vlayer );
       }
       else
       {
-        whileBlocking( widgetPolygon )->setSymbol( QgsPolygon3DSymbol(), vlayer );
+        QgsPolygon3DSymbol defaultSymbol;
+        whileBlocking( widgetPolygon )->setSymbol( &defaultSymbol, vlayer );
       }
       break;
 
