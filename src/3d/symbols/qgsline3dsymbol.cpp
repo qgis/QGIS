@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgsline3dsymbol.h"
-#include "qgsphongmaterialsettings.h"
 #include "qgs3dutils.h"
+#include "qgs3d.h"
+#include "qgsmaterialregistry.h"
 
 QgsLine3DSymbol::QgsLine3DSymbol()
   : mMaterial( qgis::make_unique< QgsPhongMaterialSettings >() )
@@ -54,6 +55,7 @@ void QgsLine3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   elemDataProperties.setAttribute( QStringLiteral( "width" ), mWidth );
   elem.appendChild( elemDataProperties );
 
+  elem.setAttribute( QStringLiteral( "material_type" ), mMaterial->type() );
   QDomElement elemMaterial = doc.createElement( QStringLiteral( "material" ) );
   mMaterial->writeXml( elemMaterial, context );
   elem.appendChild( elemMaterial );
@@ -71,7 +73,11 @@ void QgsLine3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   mWidth = elemDataProperties.attribute( QStringLiteral( "width" ) ).toFloat();
   mRenderAsSimpleLines = elemDataProperties.attribute( QStringLiteral( "simple-lines" ), QStringLiteral( "0" ) ).toInt();
 
-  QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
+  const QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
+  const QString materialType = elem.attribute( QStringLiteral( "material_type" ), QStringLiteral( "phong" ) );
+  mMaterial.reset( Qgs3D::materialRegistry()->createMaterialSettings( materialType ) );
+  if ( !mMaterial )
+    mMaterial.reset( Qgs3D::materialRegistry()->createMaterialSettings( QStringLiteral( "phong" ) ) );
   mMaterial->readXml( elemMaterial, context );
 }
 

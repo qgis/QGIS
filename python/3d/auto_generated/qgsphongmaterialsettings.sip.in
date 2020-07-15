@@ -34,6 +34,9 @@ with three color components: ambient, diffuse and specular.
 Constructor for QgsPhongMaterialSettings.
 %End
 
+    virtual QString type() const;
+
+
     static QgsAbstractMaterialSettings *create() /Factory/;
 %Docstring
 Returns a new instance of QgsPhongMaterialSettings.
