@@ -62,8 +62,7 @@ Usage:
       # examine the result
 \endcode
 
-Three Value Logic
-=================
+\section value_logic Three Value Logic
 
 Similarly to SQL, this class supports three-value logic: true/false/unknown.
 Unknown value may be a result of operations with missing data (NULL). Please note
@@ -73,14 +72,12 @@ that NULL is different value than zero or an empty string. For example
 There is no special (three-value) 'boolean' type: true/false is represented as
 1/0 integer, unknown value is represented the same way as NULL values: NULL QVariant.
 
-Performance
-===========
+\section performance Performance
 
 For better performance with many evaluations you may first call prepare(fields) function
 to find out indices of columns and then repeatedly call evaluate(feature).
 
-Type conversion
-===============
+\section type_conversion Type conversion
 
 Operators and functions that expect arguments to be of a particular
 type automatically convert the arguments to that type, e.g. sin('2.1') will convert
@@ -90,8 +87,7 @@ If implicit or explicit conversion is invalid, the evaluation returns an error.
 Comparison operators do numeric comparison in case both operators are numeric (int/double)
 or they can be converted to numeric types.
 
-Implicit sharing
-================
+\section implicit_sharing Implicit sharing
 
 This class is implicitly shared, copying has a very low overhead.
 It is normally preferable to call `QgsExpression( otherExpression )` instead of
