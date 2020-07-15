@@ -25,6 +25,10 @@
 #include "qgsrulebased3drenderer.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsmeshlayer3drenderer.h"
+#include "qgs3dsymbolregistry.h"
+#include "qgspoint3dsymbol.h"
+#include "qgsline3dsymbol.h"
+#include "qgspolygon3dsymbol.h"
 
 Qgs3D *Qgs3D::instance()
 {
@@ -46,6 +50,14 @@ void Qgs3D::initialize()
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsVectorLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsRuleBased3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsMeshLayer3DRendererMetadata );
+
+  QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "point" ), QObject::tr( "Point" ),
+      &QgsPoint3DSymbol::create ) );
+  QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "line" ), QObject::tr( "Line" ),
+      &QgsLine3DSymbol::create ) );
+  QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "polygon" ), QObject::tr( "Polygon" ),
+      &QgsPolygon3DSymbol::create ) );
+
 }
 
 Qgs3D::Qgs3D()

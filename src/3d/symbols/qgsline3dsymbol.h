@@ -38,6 +38,13 @@ class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol
     //! Constructor for QgsLine3DSymbol
     QgsLine3DSymbol() = default;
 
+    /**
+     * Creates a new QgsLine3DSymbol.
+     *
+     * Caller takes ownership of the returned symbol.
+     */
+    static QgsAbstract3DSymbol *create() SIP_FACTORY;
+
     QString type() const override { return "line"; }
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
 

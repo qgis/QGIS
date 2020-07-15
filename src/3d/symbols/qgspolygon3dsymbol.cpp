@@ -84,3 +84,8 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
     mEdgeColor = QgsSymbolLayerUtils::decodeColor( elemEdges.attribute( QStringLiteral( "color" ) ) );
   }
 }
+
+QgsAbstract3DSymbol *QgsPolygon3DSymbol::create()
+{
+  return new QgsPolygon3DSymbol();
+}

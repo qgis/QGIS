@@ -26,6 +26,11 @@ QgsAbstract3DSymbol *QgsPoint3DSymbol::clone() const
   return new QgsPoint3DSymbol( *this );
 }
 
+QgsAbstract3DSymbol *QgsPoint3DSymbol::create()
+{
+  return new QgsPoint3DSymbol();
+}
+
 QgsPoint3DSymbol::QgsPoint3DSymbol()
 {
   setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
