@@ -93,7 +93,7 @@ void QgsPoint3DSymbolWidget::onOverwriteMaterialChecked( int state )
   emit changed();
 }
 
-void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer * )
+void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer )
 {
   const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol *>( symbol );
   if ( !pointSymbol )
@@ -146,7 +146,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
   }
 
   //TODO - handle other subclasses
-  widgetMaterial->setMaterial( *dynamic_cast< QgsPhongMaterialSettings * >( pointSymbol->material() ) );
+  widgetMaterial->setSettings( pointSymbol->material(), layer );
 
   // decompose the transform matrix
   // assuming the last row has values [0 0 0 1]
@@ -227,7 +227,7 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
   sym->setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );
   sym->setShape( static_cast<QgsPoint3DSymbol::Shape>( cboShape->itemData( cboShape->currentIndex() ).toInt() ) );
   sym->setShapeProperties( vm );
-  sym->setMaterial( widgetMaterial->material().clone() );
+  sym->setMaterial( widgetMaterial->settings() );
   sym->setTransform( tr );
   return sym.release();
 }

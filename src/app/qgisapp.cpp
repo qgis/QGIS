@@ -112,9 +112,7 @@
 #include "layout/qgslayout3dmapwidget.h"
 #include "layout/qgslayoutviewrubberband.h"
 #include "qgsvectorlayer3drendererwidget.h"
-#include "qgspoint3dsymbolwidget.h"
-#include "qgsline3dsymbolwidget.h"
-#include "qgspolygon3dsymbolwidget.h"
+#include "qgs3dapputils.h"
 #endif
 
 #ifdef HAVE_GEOREFERENCER
@@ -12657,11 +12655,7 @@ void QgisApp::init3D()
 #ifdef HAVE_3D
   // initialize 3D registries
   Qgs3D::initialize();
-
-  dynamic_cast< Qgs3DSymbolMetadata * >( QgsApplication::symbol3DRegistry()->symbolMetadata( QStringLiteral( "point" ) ) )->setWidgetFunction( QgsPoint3DSymbolWidget::create );
-  dynamic_cast< Qgs3DSymbolMetadata * >( QgsApplication::symbol3DRegistry()->symbolMetadata( QStringLiteral( "line" ) ) )->setWidgetFunction( QgsLine3DSymbolWidget::create );
-  dynamic_cast< Qgs3DSymbolMetadata * >( QgsApplication::symbol3DRegistry()->symbolMetadata( QStringLiteral( "polygon" ) ) )->setWidgetFunction( QgsPolygon3DSymbolWidget::create );
-
+  Qgs3DAppUtils::initialize();
 #else
   mActionNew3DMapCanvas->setVisible( false );
 #endif

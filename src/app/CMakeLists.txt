@@ -261,6 +261,7 @@ IF (WITH_3D)
     ${QGIS_APP_SRCS}
     3d/qgs3danimationwidget.cpp
     3d/qgs3danimationexportdialog.cpp
+    3d/qgs3dapputils.cpp
     3d/qgs3dmapcanvas.cpp
     3d/qgs3dmapcanvasdockwidget.cpp
     3d/qgs3dmapconfigwidget.cpp
