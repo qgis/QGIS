@@ -141,6 +141,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  * # Well-known text (WKT): Defined by Open Geospatial Consortium (OGC), this is another common
  *   format to define CRS. For WGS84 the OGC WKT definition is the following:
  *
+ *   \code
  *       GEOGCS["WGS 84",
  *              DATUM["WGS_1984",
  *                SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],
@@ -148,6 +149,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *              PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],
  *              UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],
  *              AUTHORITY["EPSG","4326"]]
+ *   \endcode
  *
  *   \see toWkt()
  *   \see createFromWkt()

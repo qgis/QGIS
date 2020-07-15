@@ -541,8 +541,11 @@ If the gridified geometry could not be calculated ``None`` will be returned.
 It may generate an invalid geometry (in some corner cases).
 It can also be thought as rounding the edges and it may be useful for removing errors.
 
-Example
--------
+Example:
+
+.. code-block:: python
+
+       geometry.snappedToGrid(1, 1)
 
 In this case we use a 2D grid of 1x1 to gridify.
 In this case, it can be thought like rounding the x and y of all the points/vertices to full units (remove all decimals).
@@ -702,7 +705,6 @@ Returns Java-style iterator for traversal of parts of the geometry. This iterato
 can safely be used to modify parts of the geometry.
 
 Example
--------
 
 .. code-block:: python
 
@@ -743,7 +745,6 @@ Returns a read-only, Java-style iterator for traversal of vertices of all the ge
    modified using the iterator. See :py:func:`~QgsAbstractGeometry.transformVertices` for a safe method to modify vertices "in-place".
 
 Example
--------
 
 .. code-block:: python
 

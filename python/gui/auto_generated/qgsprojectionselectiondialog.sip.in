@@ -19,6 +19,14 @@ Typically you will use this when you want to prompt the user for
 a coordinate system identifier e.g. from a plugin you might do this
 to get an epsg code:
 
+.. code-block:: python
+
+         crs = QgsCoordinateReferenceSystem()
+         mySelector = QgsProjectionSelectionDialog( iface.mainWindow() )
+         mySelector.setCrs( crs )
+         if mySelector.exec():
+           mCrs = mySelector.crs()
+
 If you wish to embed the projection selector into an existing dialog
 the you probably want to look at QgsProjectionSelectionWidget instead.
 
@@ -91,7 +99,7 @@ Sets this dialog to filter the available projections to those listed
 by the given Coordinate Reference Systems.
 
 :param crsFilter: a list of OGC Coordinate Reference Systems to filter the
-                  list of projections by.  This is useful in (e.g.) WMS situations
+                  list of projections by. This is useful in (e.g.) WMS situations
                   where you just want to offer what the WMS server can support.
 
 .. warning::

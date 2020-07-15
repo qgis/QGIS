@@ -42,8 +42,7 @@ E.g. to create mesh with one quad and one triangle
 
 .. code-block::
 
-      QString uri(
-          "1.0, 2.0 \n" \
+      uri = "1.0, 2.0 \n" \
           "2.0, 2.0 \n" \
           "3.0, 2.0 \n" \
           "2.0, 3.0 \n" \
@@ -51,8 +50,8 @@ E.g. to create mesh with one quad and one triangle
           "---" \
           "0, 1, 3, 4 \n" \
           "1, 2, 3 \n"
-        );
-        QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch layer", "mesh_memory");
+
+      scratchLayer = QgsMeshLayer(uri, "My Scratch layer", "mesh_memory")
 
 MDAL data provider (mdal)
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -62,8 +61,8 @@ is the MDAL connection string. QGIS must be built with MDAL support to allow thi
 
 .. code-block::
 
-         QString uri = "test/land.2dm";
-         QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch Layer",  "mdal");
+         uri = "test/land.2dm"
+         scratchLayer = QgsMeshLayer(uri, "My Scratch Layer",  "mdal")
 
 .. note::
 

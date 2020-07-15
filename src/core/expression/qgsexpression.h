@@ -50,21 +50,16 @@ Class for parsing and evaluation of expressions (formerly called "search strings
 The expressions try to follow both syntax and semantics of SQL expressions.
 
 Usage:
-\code{.cpp}
-  QgsExpression exp("gid*2 > 10 and type not in ('D','F')");
-  if (exp.hasParserError())
-  {
-    // show error message with parserErrorString() and exit
-  }
-  QVariant result = exp.evaluate(feature, fields);
-  if (exp.hasEvalError())
-  {
-    // show error message with evalErrorString()
-  }
+\code{.py}
+  exp = QgsExpression("gid*2 > 10 and type not in ('D','F')")
+  if exp.hasParserError():
+      # show error message with parserErrorString() and exit
+
+  result = exp.evaluate(feature, fields)
+  if exp.hasEvalError():
+      # show error message with evalErrorString()
   else
-  {
-    // examine the result
-  }
+      # examine the result
 \endcode
 
 Three Value Logic
