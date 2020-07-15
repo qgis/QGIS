@@ -40,6 +40,11 @@ QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
   connect( widgetMaterial, &QgsPhongMaterialWidget::changed, this, &QgsLine3DSymbolWidget::changed );
 }
 
+Qgs3DSymbolWidget *QgsLine3DSymbolWidget::create( QgsVectorLayer * )
+{
+  return new QgsLine3DSymbolWidget();
+}
+
 void QgsLine3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer * )
 {
   const QgsLine3DSymbol *lineSymbol = dynamic_cast< const QgsLine3DSymbol *>( symbol );

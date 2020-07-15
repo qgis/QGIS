@@ -29,6 +29,8 @@ class QgsLine3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Line3DSymbol
   public:
     explicit QgsLine3DSymbolWidget( QWidget *parent = nullptr );
 
+    static Qgs3DSymbolWidget *create( QgsVectorLayer *layer );
+
     void setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer ) override;
     QgsAbstract3DSymbol *symbol() override;
 
