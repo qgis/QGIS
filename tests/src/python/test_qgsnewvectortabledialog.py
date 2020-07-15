@@ -27,7 +27,12 @@ from qgis.core import (
 
 from qgis.gui import QgsNewVectorTableDialog
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtWidgets import *
+from qgis.PyQt.QtWidgets import (
+    QDialogButtonBox,
+    QLineEdit,
+    QComboBox,
+    QCheckBox
+)
 
 from utilities import unitTestDataPath
 
