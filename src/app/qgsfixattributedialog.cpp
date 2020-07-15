@@ -52,7 +52,7 @@ void QgsFixAttributeDialog::init( QgsVectorLayer *layer, const QgsAttributeEdito
   infoLayout->addWidget( mProgressBar );
   QgsFeature feature;
   mAttributeForm = new QgsAttributeForm( layer, *mCurrentFeature, context, this );
-  mAttributeForm->setMode( QgsAttributeEditorContext::SingleEditMode );
+  mAttributeForm->setMode( QgsAttributeEditorContext::FixAttributeMode );
   mAttributeForm->disconnectButtonBox();
   layout()->addWidget( mAttributeForm );
 
