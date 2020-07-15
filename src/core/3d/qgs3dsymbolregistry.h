@@ -27,6 +27,7 @@ class QgsAbstract3DSymbol;
 class QgsReadWriteContext;
 class Qgs3DSymbolWidget;
 class QgsVectorLayer;
+class QgsFeature3DHandler;
 
 /**
  * \ingroup core
@@ -78,6 +79,15 @@ class CORE_EXPORT Qgs3DSymbolAbstractMetadata
      * \note Not available in Python bindings
      */
     virtual Qgs3DSymbolWidget *createSymbolWidget( QgsVectorLayer * ) SIP_FACTORY { return nullptr; }
+
+    /**
+     * Creates a feature handler for a \a symbol of matching type, for the specified vector \a layer.
+     *
+     * Caller takes ownership of the returned handler.
+     *
+     * \note Not available in Python bindings
+     */
+    virtual QgsFeature3DHandler *createFeatureHandler( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol ) SIP_FACTORY { Q_UNUSED( layer ); Q_UNUSED( symbol ); return nullptr; }
 #endif
 
   private:
@@ -87,6 +97,9 @@ class CORE_EXPORT Qgs3DSymbolAbstractMetadata
 
 //! 3D symbol creation function
 typedef QgsAbstract3DSymbol *( *Qgs3DSymbolCreateFunc )() SIP_SKIP;
+
+//! 3D symbol widget creation function
+typedef QgsFeature3DHandler *( *Qgs3DSymbolFeatureHandlerFunc )( QgsVectorLayer *, const QgsAbstract3DSymbol * ) SIP_SKIP;
 
 //! 3D symbol widget creation function
 typedef Qgs3DSymbolWidget *( *Qgs3DSymbolWidgetFunc )( QgsVectorLayer * ) SIP_SKIP;
@@ -108,15 +121,17 @@ class CORE_EXPORT Qgs3DSymbolMetadata : public Qgs3DSymbolAbstractMetadata
     /**
      * Constructor for Qgs3DSymbolMetadata, with the specified \a type and \a visibleName.
      *
-     * The \a pfCreate and \a pfWidget arguments are used to specify
+     * The \a pfCreate, \a pfWidget and \a pfHandler arguments are used to specify
      * static functions for creating the symbol type and configuration widget.
      */
     Qgs3DSymbolMetadata( const QString &type, const QString &visibleName,
                          Qgs3DSymbolCreateFunc pfCreate,
-                         Qgs3DSymbolWidgetFunc pfWidget = nullptr ) SIP_SKIP
+                         Qgs3DSymbolWidgetFunc pfWidget = nullptr,
+                         Qgs3DSymbolFeatureHandlerFunc pfHandler = nullptr ) SIP_SKIP
   : Qgs3DSymbolAbstractMetadata( type, visibleName )
     , mCreateFunc( pfCreate )
     , mWidgetFunc( pfWidget )
+    , mFeatureHandlerFunc( pfHandler )
     {}
 
     /**
@@ -138,12 +153,19 @@ class CORE_EXPORT Qgs3DSymbolMetadata : public Qgs3DSymbolAbstractMetadata
      */
     void setWidgetFunction( Qgs3DSymbolWidgetFunc function ) { mWidgetFunc = function; }
 
+    /**
+     * Sets the symbol type's feature handler creation \a function.
+     */
+    void setFeatureHandlerFunction( Qgs3DSymbolFeatureHandlerFunc function ) { mFeatureHandlerFunc = function; }
+
     QgsAbstract3DSymbol *create() override SIP_FACTORY { return mCreateFunc ? mCreateFunc() : nullptr; }
     Qgs3DSymbolWidget *createSymbolWidget( QgsVectorLayer *vl ) override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; }
+    QgsFeature3DHandler *createFeatureHandler( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol ) override SIP_FACTORY { return mFeatureHandlerFunc ? mFeatureHandlerFunc( layer, symbol ) : nullptr; }
 
   private:
     Qgs3DSymbolCreateFunc mCreateFunc;
     Qgs3DSymbolWidgetFunc mWidgetFunc;
+    Qgs3DSymbolFeatureHandlerFunc mFeatureHandlerFunc;
 
 };
 #endif
@@ -196,6 +218,18 @@ class CORE_EXPORT Qgs3DSymbolRegistry
      * The caller takes ownership of the returned symbol.
      */
     QgsAbstract3DSymbol *defaultSymbolForGeometryType( QgsWkbTypes::GeometryType type ) SIP_FACTORY;
+
+#ifndef SIP_RUN
+
+    /**
+     * Creates a feature handler for a \a symbol, for the specified vector \a layer.
+     *
+     * Caller takes ownership of the returned handler.
+     *
+     * \note Not available in Python bindings
+     */
+    QgsFeature3DHandler *createHandlerForSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol ) SIP_FACTORY;
+#endif
 
   private:
 #ifdef SIP_RUN

@@ -59,6 +59,7 @@ Caller takes ownership of the returned symbol.
 
 
 
+
 class Qgs3DSymbolRegistry
 {
 %Docstring
@@ -109,6 +110,7 @@ Creates a new instance of the default 3D symbol for the specified geometry ``typ
 
 The caller takes ownership of the returned symbol.
 %End
+
 
   private:
     Qgs3DSymbolRegistry( const Qgs3DSymbolRegistry &rh );

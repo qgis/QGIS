@@ -30,6 +30,10 @@
 #include "qgsline3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
 
+#include "qgspolygon3dsymbol_p.h"
+#include "qgspoint3dsymbol_p.h"
+#include "qgsline3dsymbol_p.h"
+
 Qgs3D *Qgs3D::instance()
 {
   static Qgs3D *sInstance( new Qgs3D() );
@@ -52,12 +56,11 @@ void Qgs3D::initialize()
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsMeshLayer3DRendererMetadata );
 
   QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "point" ), QObject::tr( "Point" ),
-      &QgsPoint3DSymbol::create ) );
+      &QgsPoint3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForPoint3DSymbol ) );
   QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "line" ), QObject::tr( "Line" ),
-      &QgsLine3DSymbol::create ) );
+      &QgsLine3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForLine3DSymbol ) );
   QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "polygon" ), QObject::tr( "Polygon" ),
-      &QgsPolygon3DSymbol::create ) );
-
+      &QgsPolygon3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForPolygon3DSymbol ) );
 }
 
 Qgs3D::Qgs3D()

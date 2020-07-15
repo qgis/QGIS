@@ -371,14 +371,18 @@ namespace Qgs3DSymbolImpl
 {
 
 
-  QgsFeature3DHandler *handlerForPolygon3DSymbol( QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol )
+  QgsFeature3DHandler *handlerForPolygon3DSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
   {
-    return new QgsPolygon3DSymbolHandler( symbol, layer->selectedFeatureIds() );
+    const QgsPolygon3DSymbol *polygonSymbol = dynamic_cast< const QgsPolygon3DSymbol * >( symbol );
+    if ( !polygonSymbol )
+      return nullptr;
+
+    return new QgsPolygon3DSymbolHandler( *polygonSymbol, layer->selectedFeatureIds() );
   }
 
   Qt3DCore::QEntity *entityForPolygon3DSymbol( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol )
   {
-    QgsFeature3DHandler *handler = handlerForPolygon3DSymbol( layer, symbol );
+    QgsFeature3DHandler *handler = handlerForPolygon3DSymbol( layer, &symbol );
     Qt3DCore::QEntity *e = entityFromHandler( handler, map, layer );
     delete handler;
     return e;

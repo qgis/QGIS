@@ -433,18 +433,22 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
 namespace Qgs3DSymbolImpl
 {
 
-  QgsFeature3DHandler *handlerForLine3DSymbol( QgsVectorLayer *layer, const QgsLine3DSymbol &symbol )
+  QgsFeature3DHandler *handlerForLine3DSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
   {
-    if ( symbol.renderAsSimpleLines() )
-      return new QgsThickLine3DSymbolHandler( symbol, layer->selectedFeatureIds() );
+    const QgsLine3DSymbol *lineSymbol = dynamic_cast< const QgsLine3DSymbol * >( symbol );
+    if ( !lineSymbol )
+      return nullptr;
+
+    if ( lineSymbol->renderAsSimpleLines() )
+      return new QgsThickLine3DSymbolHandler( *lineSymbol, layer->selectedFeatureIds() );
     //return new QgsSimpleLine3DSymbolHandler( symbol, layer->selectedFeatureIds() );
     else
-      return new QgsBufferedLine3DSymbolHandler( symbol, layer->selectedFeatureIds() );
+      return new QgsBufferedLine3DSymbolHandler( *lineSymbol, layer->selectedFeatureIds() );
   }
 
   Qt3DCore::QEntity *entityForLine3DSymbol( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol )
   {
-    QgsFeature3DHandler *handler = handlerForLine3DSymbol( layer, symbol );
+    QgsFeature3DHandler *handler = handlerForLine3DSymbol( layer, &symbol );
     Qt3DCore::QEntity *e = entityFromHandler( handler, map, layer );
     delete handler;
     return e;
