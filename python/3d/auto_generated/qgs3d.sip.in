@@ -32,6 +32,11 @@ Returns a pointer to the singleton instance.
 
     ~Qgs3D();
 
+    static void initialize();
+%Docstring
+Initializes the 3D framework.
+%End
+
   private:
     Qgs3D( const Qgs3D &other );
 };
