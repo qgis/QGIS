@@ -1,5 +1,6 @@
 // Include auto-generated SIP files
 %Include auto_generated/qgisinterface.sip
+%Include auto_generated/qgs3dsymbolwidget.sip
 %Include auto_generated/qgsabstractdatasourcewidget.sip
 %Include auto_generated/qgsactionmenu.sip
 %Include auto_generated/qgsadvanceddigitizingdockwidget.sip

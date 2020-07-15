@@ -1,0 +1,49 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgs3dsymbolwidget.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class Qgs3DSymbolWidget : QWidget
+{
+%Docstring
+Base class for 3D symbol configuration widgets.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgs3dsymbolwidget.h"
+%End
+  public:
+
+    Qgs3DSymbolWidget( QWidget *parent );
+%Docstring
+Constructor for Qgs3DSymbolWidget with the specified ``parent`` widget.
+%End
+
+    virtual void setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer ) = 0;
+%Docstring
+Sets the ``symbol`` to show in the widget.
+%End
+
+    virtual QgsAbstract3DSymbol *symbol() = 0 /Factory/;
+%Docstring
+Return a new instance of the symbol defined by the widget.
+
+Caller takes ownership of the returned symbol.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgs3dsymbolwidget.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
