@@ -46,7 +46,7 @@ class GUI_EXPORT Qgs3DSymbolWidget : public QWidget
     virtual void setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer ) = 0;
 
     /**
-     * Return a new instance of the symbol defined by the widget.
+     * Returns a new instance of the symbol defined by the widget.
      *
      * Caller takes ownership of the returned symbol.
      */

@@ -34,7 +34,7 @@ Sets the ``symbol`` to show in the widget.
 
     virtual QgsAbstract3DSymbol *symbol() = 0 /Factory/;
 %Docstring
-Return a new instance of the symbol defined by the widget.
+Returns a new instance of the symbol defined by the widget.
 
 Caller takes ownership of the returned symbol.
 %End
