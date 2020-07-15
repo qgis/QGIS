@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include "qgstest.h"
+#include "qgs3d.h"
 
 //dummy symbol for testing
 class Dummy3DSymbol : public QgsAbstract3DSymbol
@@ -101,6 +102,10 @@ void TestQgs3DSymbolRegistry::instanceHasDefaultSymbols()
   //check that symbol registry is initially populated with some symbols
   //(assumes that there is some default symbols)
   Qgs3DSymbolRegistry *registry = QgsApplication::symbol3DRegistry();
+
+  // should be empty until initialized
+  QVERIFY( registry->symbolTypes().empty() );
+  Qgs3D::initialize();
   QVERIFY( registry->symbolTypes().length() > 0 );
 }
 

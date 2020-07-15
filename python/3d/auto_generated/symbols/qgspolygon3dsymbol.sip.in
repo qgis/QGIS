@@ -41,6 +41,13 @@ Constructor for QgsPolygon3DSymbol
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
 
+    static QgsAbstract3DSymbol *create() /Factory/;
+%Docstring
+Creates a new QgsPolygon3DSymbol.
+
+Caller takes ownership of the returned symbol.
+%End
+
     Qgs3DTypes::AltitudeClamping altitudeClamping() const;
 %Docstring
 Returns method that determines altitude (whether to clamp to feature to terrain)

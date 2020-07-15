@@ -57,3 +57,8 @@ void QgsLine3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
   mMaterial.readXml( elemMaterial );
 }
+
+QgsAbstract3DSymbol *QgsLine3DSymbol::create()
+{
+  return new QgsLine3DSymbol();
+}

@@ -32,6 +32,13 @@ class QgsLine3DSymbol : QgsAbstract3DSymbol
 Constructor for QgsLine3DSymbol
 %End
 
+    static QgsAbstract3DSymbol *create() /Factory/;
+%Docstring
+Creates a new QgsLine3DSymbol.
+
+Caller takes ownership of the returned symbol.
+%End
+
     virtual QString type() const;
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
 

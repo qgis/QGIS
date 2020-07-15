@@ -45,6 +45,13 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
+    /**
+     * Creates a new QgsPolygon3DSymbol.
+     *
+     * Caller takes ownership of the returned symbol.
+     */
+    static QgsAbstract3DSymbol *create() SIP_FACTORY;
+
     //! Returns method that determines altitude (whether to clamp to feature to terrain)
     Qgs3DTypes::AltitudeClamping altitudeClamping() const { return mAltClamping; }
     //! Sets method that determines altitude (whether to clamp to feature to terrain)

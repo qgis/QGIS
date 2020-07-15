@@ -28,6 +28,8 @@
 #include "qgspolygon3dsymbol_p.h"
 
 #include "qgsrulebasedchunkloader_p.h"
+#include "qgsapplication.h"
+#include "qgs3dsymbolregistry.h"
 
 QgsRuleBased3DRendererMetadata::QgsRuleBased3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( QStringLiteral( "rulebased" ) )
@@ -185,13 +187,7 @@ QgsRuleBased3DRenderer::Rule *QgsRuleBased3DRenderer::Rule::create( const QDomEl
   if ( !elemSymbol.isNull() )
   {
     QString symbolType = elemSymbol.attribute( QStringLiteral( "type" ) );
-    if ( symbolType == QLatin1String( "polygon" ) )
-      symbol = new QgsPolygon3DSymbol;
-    else if ( symbolType == QLatin1String( "point" ) )
-      symbol = new QgsPoint3DSymbol;
-    else if ( symbolType == QLatin1String( "line" ) )
-      symbol = new QgsLine3DSymbol;
-
+    symbol = QgsApplication::symbol3DRegistry()->createSymbol( symbolType );
     if ( symbol )
       symbol->readXml( elemSymbol, context );
   }
