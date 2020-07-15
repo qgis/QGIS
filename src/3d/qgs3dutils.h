@@ -169,9 +169,6 @@ class _3D_EXPORT Qgs3DUtils
      */
     static void estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin, double &zMax );
 
-    //! Returns a new 3D symbol based on given geometry type (or NULLPTR if geometry type is not supported)
-    static std::unique_ptr<QgsAbstract3DSymbol> symbolForGeometryType( QgsWkbTypes::GeometryType geomType );
-
     //! Returns expression context for use in preparation of 3D data of a layer
     static QgsExpressionContext globalProjectLayerExpressionContext( QgsVectorLayer *layer );
 

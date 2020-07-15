@@ -23,6 +23,7 @@
 #include "qgsvectorlayer3dpropertieswidget.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsapplication.h"
+#include "qgs3dsymbolregistry.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -55,7 +56,7 @@ void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
   }
   else
   {
-    std::unique_ptr<QgsAbstract3DSymbol> sym( Qgs3DUtils::symbolForGeometryType( layer->geometryType() ) );
+    std::unique_ptr<QgsAbstract3DSymbol> sym( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( layer->geometryType() ) );
     widgetSymbol->setSymbol( sym.get(), layer );
   }
 }
