@@ -318,7 +318,10 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
     if ( capabilities().testFlag( QgsMapToolCapture::Capability::SupportsCurves ) && vlayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::CircularGeometries ) )
     {
       QgsGeometry linear = QgsGeometry( mCaptureCurve.segmentize() );
-      QgsGeometry curved = linear.convertToCurves();
+      QgsGeometry curved = linear.convertToCurves(
+                             settings.value( QStringLiteral( "/qgis/digitizing/convert_to_curve_angle_tolerance" ), 1e-6 ).toDouble(),
+                             settings.value( QStringLiteral( "/qgis/digitizing/convert_to_curve_distance_tolerance" ), 1e-6 ).toDouble()
+                           );
       mCaptureCurve = *qgsgeometry_cast<QgsCompoundCurve *>( curved.constGet() );
     }
   }
