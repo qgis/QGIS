@@ -44,12 +44,14 @@
 #include "qgspoint3dsymbol.h"
 #include "qgs3dmapsettings.h"
 
+#include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgspoint.h"
 #include "qgs3dutils.h"
 #include "qgsbillboardgeometry.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgslogger.h"
+#include "qgssourcecache.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgssymbollayer.h"
@@ -439,19 +441,24 @@ void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DMapSettings &map
   Q_UNUSED( map )
   for ( const QVector3D &position : positions )
   {
-    // build the entity
-    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+    const QString source = QgsApplication::instance()->sourceCache()->localFilePath( symbol.shapeProperties()[QStringLiteral( "model" )].toString() );
+    // if the source is remote, the Qgs3DMapScene will take care of refreshing this 3D symbol when the source is fetched
+    if ( !source.isEmpty() )
+    {
+      // build the entity
+      Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
 
-    QUrl url = QUrl::fromLocalFile( symbol.shapeProperties()[QStringLiteral( "model" )].toString() );
-    Qt3DRender::QSceneLoader *modelLoader = new Qt3DRender::QSceneLoader;
-    modelLoader->setSource( url );
+      QUrl url = QUrl::fromLocalFile( source );
+      Qt3DRender::QSceneLoader *modelLoader = new Qt3DRender::QSceneLoader;
+      modelLoader->setSource( url );
 
-    entity->addComponent( modelLoader );
-    entity->addComponent( transform( position, symbol ) );
-    entity->setParent( parent );
+      entity->addComponent( modelLoader );
+      entity->addComponent( transform( position, symbol ) );
+      entity->setParent( parent );
 
 // cppcheck wrongly believes entity will leak
 // cppcheck-suppress memleak
+    }
   }
 }
 
@@ -469,20 +476,24 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DMapSettings &map,
   // get nodes
   for ( const QVector3D &position : positions )
   {
-    // build the entity
-    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+    const QString source = QgsApplication::instance()->sourceCache()->localFilePath( symbol.shapeProperties()[QStringLiteral( "model" )].toString() );
+    if ( !source.isEmpty() )
+    {
+      // build the entity
+      Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
 
-    QUrl url = QUrl::fromLocalFile( symbol.shapeProperties()[QStringLiteral( "model" )].toString() );
-    Qt3DRender::QMesh *mesh = new Qt3DRender::QMesh;
-    mesh->setSource( url );
+      QUrl url = QUrl::fromLocalFile( source );
+      Qt3DRender::QMesh *mesh = new Qt3DRender::QMesh;
+      mesh->setSource( url );
 
-    entity->addComponent( mesh );
-    entity->addComponent( mat );
-    entity->addComponent( transform( position, symbol ) );
-    entity->setParent( parent );
+      entity->addComponent( mesh );
+      entity->addComponent( mat );
+      entity->addComponent( transform( position, symbol ) );
+      entity->setParent( parent );
 
 // cppcheck wrongly believes entity will leak
 // cppcheck-suppress memleak
+    }
   }
 }
 

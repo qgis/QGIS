@@ -35,6 +35,7 @@
 #include <QOpenGLFunctions>
 #include <QTimer>
 
+#include "qgsapplication.h"
 #include "qgsaabb.h"
 #include "qgsabstract3dengine.h"
 #include "qgs3dmapscenepickhandler.h"
@@ -47,7 +48,9 @@
 #include "qgseventtracing.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
+#include "qgspoint3dsymbol.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgssourcecache.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
 #include "qgstessellatedpolygongeometry.h"
@@ -109,6 +112,41 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::renderersChanged, this, &Qgs3DMapScene::onRenderersChanged );
+
+  connect( QgsApplication::instance()->sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
+  {
+    const QList<QgsMapLayer *> modelVectorLayers = mModelVectorLayers;
+    for ( QgsMapLayer *layer : modelVectorLayers )
+    {
+      QgsAbstract3DRenderer *renderer = layer->renderer3D();
+      if ( renderer )
+      {
+        if ( renderer->type() == QLatin1String( "vector" ) )
+        {
+          const QgsPoint3DSymbol *pointSymbol = static_cast< const QgsPoint3DSymbol * >( static_cast< QgsVectorLayer3DRenderer *>( renderer )->symbol() );
+          if ( pointSymbol->shapeProperties()[QStringLiteral( "model" )].toString() == url )
+          {
+            removeLayerEntity( layer );
+            addLayerEntity( layer );
+          }
+        }
+        else if ( renderer->type() == QLatin1String( "rulebased" ) )
+        {
+          const QgsRuleBased3DRenderer::RuleList rules = static_cast< QgsRuleBased3DRenderer *>( renderer )->rootRule()->descendants();
+          for ( auto rule : rules )
+          {
+            const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol * >( rule->symbol() );
+            if ( pointSymbol->shapeProperties()[QStringLiteral( "model" )].toString() == url )
+            {
+              removeLayerEntity( layer );
+              addLayerEntity( layer );
+              break;
+            }
+          }
+        }
+      }
+    }
+  } );
 
   // create entities of renderers
 
@@ -617,6 +655,31 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
          ( renderer->type() == QLatin1String( "vector" ) || renderer->type() == QLatin1String( "rulebased" ) ) )
     {
       static_cast<QgsAbstractVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
+      if ( renderer->type() == QLatin1String( "vector" ) )
+      {
+        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
+        {
+          const QgsPoint3DSymbol *pointSymbol = static_cast< const QgsPoint3DSymbol * >( static_cast< QgsVectorLayer3DRenderer *>( renderer )->symbol() );
+          if ( pointSymbol->shape() == QgsPoint3DSymbol::Model )
+          {
+            mModelVectorLayers.append( layer );
+          }
+        }
+      }
+      else if ( renderer->type() == QLatin1String( "rulebased" ) )
+      {
+        const QgsRuleBased3DRenderer::RuleList rules = static_cast< QgsRuleBased3DRenderer *>( renderer )->rootRule()->descendants();
+        for ( auto rule : rules )
+        {
+          const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol * >( rule->symbol() );
+          if ( pointSymbol && pointSymbol->shape() == QgsPoint3DSymbol::Model )
+          {
+            mModelVectorLayers.append( layer );
+            break;
+          }
+        }
+      }
     }
     else if ( layer->type() == QgsMapLayerType::MeshLayer && renderer->type() == QLatin1String( "mesh" ) )
     {
@@ -692,6 +755,7 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+    mModelVectorLayers.removeAll( layer );
   }
 
   if ( layer->type() == QgsMapLayerType::MeshLayer )
