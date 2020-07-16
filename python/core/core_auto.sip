@@ -194,6 +194,7 @@
 %Include auto_generated/qgssimplifymethod.sip
 %Include auto_generated/qgssnappingconfig.sip
 %Include auto_generated/qgssnappingutils.sip
+%Include auto_generated/qgssourcecache.sip
 %Include auto_generated/qgsspatialindex.sip
 %Include auto_generated/qgsspatialindexkdbush.sip
 %Include auto_generated/qgsspatialindexkdbushdata.sip
