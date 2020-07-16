@@ -101,7 +101,7 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 }
 
 
-bool QgsPostgresDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext )
+bool QgsPostgresDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context )
 {
   if ( QgsPGLayerItem *layerItem = qobject_cast< QgsPGLayerItem * >( item ) )
   {
@@ -117,12 +117,12 @@ bool QgsPostgresDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataIte
     bool res = QgsPostgresUtils::deleteLayer( layerItem->uri(), errCause );
     if ( !res )
     {
-      QMessageBox::warning( nullptr, tr( "Delete %1" ).arg( typeName ), errCause );
+      notify( tr( "Delete %1" ).arg( typeName ), errCause, context, Qgis::MessageLevel::Warning );
       return false;
     }
     else
     {
-      QMessageBox::information( nullptr, tr( "Delete %1" ).arg( typeName ), tr( "%1 deleted successfully." ).arg( typeName ) );
+      notify( tr( "Delete %1" ).arg( typeName ), tr( "%1 deleted successfully." ).arg( typeName ), context, Qgis::MessageLevel::Success );
       if ( layerItem->parent() )
         layerItem->parent()->refresh();
       return true;

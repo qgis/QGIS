@@ -45,9 +45,9 @@
 #include <QFileInfo>
 #include <QMenu>
 #include <QInputDialog>
-#include <QMessageBox>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QMessageBox>
 
 QString QgsAppDirectoryItemGuiProvider::name()
 {
@@ -76,11 +76,11 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       QDir dir( directoryItem->dirPath() );
       if ( QFileInfo::exists( dir.absoluteFilePath( name ) ) )
       {
-        QMessageBox::critical( QgisApp::instance(), tr( "Create Directory" ), tr( "The path “%1” already exists." ).arg( QDir::toNativeSeparators( dir.absoluteFilePath( name ) ) ) );
+        notify( tr( "Create Directory" ), tr( "The path “%1” already exists." ).arg( QDir::toNativeSeparators( dir.absoluteFilePath( name ) ) ), context, Qgis::MessageLevel::Warning );
       }
       else if ( !dir.mkdir( name ) )
       {
-        QMessageBox::critical( QgisApp::instance(), tr( "Create Directory" ), tr( "Could not create directory “%1”." ).arg( QDir::toNativeSeparators( dir.absoluteFilePath( name ) ) ) );
+        notify( tr( "Create Directory" ), tr( "Could not create directory “%1”." ).arg( QDir::toNativeSeparators( dir.absoluteFilePath( name ) ) ), context, Qgis::MessageLevel::Critical );
       }
       else
       {
@@ -598,7 +598,7 @@ void QgsLayerItemGuiProvider::deleteLayers( const QStringList &itemPaths, QgsDat
       Q_NOWARN_DEPRECATED_POP
 
       if ( !res )
-        QMessageBox::information( QgisApp::instance(), tr( "Delete Layer" ), tr( "Item Layer %1 cannot be deleted." ).arg( item->name() ) );
+        notify( tr( "Delete Layer" ), tr( "Item Layer %1 cannot be deleted." ).arg( item->name() ), context, Qgis::MessageLevel::Warning );
     }
   }
 }
@@ -736,28 +736,13 @@ void QgsFieldsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *me
               }
               catch ( const QgsProviderConnectionException &ex )
               {
-                if ( context.messageBar() )
-                {
-                  context.messageBar()->pushCritical( tr( "New Field" ), tr( "Failed to add the new field to '%1': %2" ).arg( fieldsItem->tableName(), ex.what() ) );
-                }
-                else
-                {
-                  QMessageBox::critical( menu, tr( "New Field" ), tr( "Failed to a add new field to '%1': %2" ).arg( fieldsItem->tableName(), ex.what() ) );
-                }
+                notify( tr( "New Field" ), tr( "Failed to add the new field to '%1': %2" ).arg( fieldsItem->tableName(), ex.what() ), context, Qgis::MessageLevel::Critical );
               }
             }
           }
           else
           {
-            const QString message { tr( "Failed to create layer '%1'. Check application logs and user permissions." ).arg( fieldsItem->tableName() ) };
-            if ( context.messageBar() )
-            {
-              context.messageBar()->pushCritical( tr( "Add Field" ), message );
-            }
-            else
-            {
-              QMessageBox::critical( menu, tr( "Add Field" ), message );
-            }
+            notify( tr( "New Field" ), tr( "Failed to load layer'%1'. Check application logs and user permissions." ).arg( fieldsItem->tableName() ), context, Qgis::MessageLevel::Critical );
           }
         } );
         menu->addAction( addColumnAction );
@@ -795,7 +780,7 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           const bool supportsCascade { conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteFieldCascade ) };
           const QString itemName { item->name() };
 
-          connect( deleteFieldAction, &QAction::triggered, fieldsItem, [ md, fieldsItem, itemName, context, supportsCascade, menu ]
+          connect( deleteFieldAction, &QAction::triggered, fieldsItem, [ md, fieldsItem, itemName, context, supportsCascade ]
           {
             // Confirmation dialog
             QMessageBox msgbox{QMessageBox::Icon::Question, tr( "Delete Field" ), tr( "Delete '%1' permanently?" ).arg( itemName ), QMessageBox::Ok | QMessageBox::Cancel };
@@ -818,14 +803,7 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
               }
               catch ( const QgsProviderConnectionException &ex )
               {
-                if ( context.messageBar() )
-                {
-                  context.messageBar()->pushCritical( tr( "Delete Field" ), tr( "Failed to delete field '%1': %2" ).arg( itemName, ex.what() ) );
-                }
-                else
-                {
-                  QMessageBox::critical( menu, tr( "Delete Field" ), tr( "Failed to delete field '%1': %2" ).arg( itemName, ex.what() ) );
-                }
+                notify( tr( "Delete Field" ), tr( "Failed to delete field '%1': %2" ).arg( itemName, ex.what() ), context, Qgis::MessageLevel::Critical );
               }
             }
           } );
@@ -879,7 +857,9 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
               const QString schemaName { dlg.schemaName() };
               const QString geometryColumn { dlg.geometryColumnName() };
               const QgsWkbTypes::Type geometryType { dlg.geometryType() };
-              const bool createSpatialIndex { dlg.createSpatialIndex() };
+              const bool createSpatialIndex { dlg.createSpatialIndex() &&
+                                              geometryType != QgsWkbTypes::NoGeometry &&
+                                              geometryType != QgsWkbTypes::Unknown };
               const QgsCoordinateReferenceSystem crs { dlg.crs( ) };
               // This flag tells to the provider that field types do not need conversion
               QMap<QString, QVariant> options { { QStringLiteral( "skipConvertFields" ), true } };
@@ -888,9 +868,6 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
               {
                 options[ QStringLiteral( "geometryColumn" ) ] = geometryColumn;
               }
-
-              QString title;
-              QString message;
 
               try
               {
@@ -919,23 +896,13 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
                 {
                   collectionItem->refresh( );
                 }
-                title = QObject::tr( "New Table Created" );
-                message = QObject::tr( "Table '%1' was created successfully." ).arg( tableName );
+                notify( QObject::tr( "New Table Created" ), QObject::tr( "Table '%1' was created successfully." ).arg( tableName ), context, Qgis::MessageLevel::Success );
               }
               catch ( QgsProviderConnectionException &ex )
               {
-                title =  QObject::tr( "New Table Creation Error" );
-                message = QObject::tr( "Error creating new table '%1': %2" ).arg( tableName, ex.what() );
+                notify( QObject::tr( "New Table Creation Error" ), QObject::tr( "Error creating new table '%1': %2" ).arg( tableName, ex.what() ), context, Qgis::MessageLevel::Critical );
               }
 
-              if ( context.messageBar() )
-              {
-                context.messageBar()->pushSuccess( title, message );
-              }
-              else
-              {
-                QMessageBox::information( nullptr, title, message );
-              }
             }
           } );
           menu->addAction( newTableAction );

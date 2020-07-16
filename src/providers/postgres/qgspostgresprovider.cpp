@@ -4469,7 +4469,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
     if ( !provider->addAttributes( flist ) )
     {
       if ( errorMessage )
-        *errorMessage = QObject::tr( "Creation of fields failed" );
+        *errorMessage = QObject::tr( "Creation of fields failed:\n%1" ).arg( provider->errors().join( '\n' ) );
 
       return QgsVectorLayerExporter::ErrAttributeCreationFailed;
     }

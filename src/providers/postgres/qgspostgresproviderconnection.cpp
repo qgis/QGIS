@@ -340,17 +340,34 @@ void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString
 
 void QgsPostgresProviderConnection::createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options ) const
 {
-  if ( options.geometryColumnName.isEmpty() )
-    throw QgsProviderConnectionException( QObject::tr( "Geometry column name not specified while creating spatial index" ) );
-
   checkCapability( Capability::CreateSpatialIndex );
 
-  const QString indexName = QStringLiteral( "sidx_%1_%2" ).arg( name, options.geometryColumnName );
+  QString geometryColumnName { options.geometryColumnName };
+  if ( geometryColumnName.isEmpty() )
+  {
+    // Can we guess it?
+    try
+    {
+      const auto tp { table( schema, name ) };
+      geometryColumnName = tp.geometryColumn();
+    }
+    catch ( QgsProviderConnectionException & )
+    {
+      // pass
+    }
+  }
+
+  if ( geometryColumnName.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Geometry column name not specified while creating spatial index" ) );
+  }
+
+  const QString indexName = QStringLiteral( "sidx_%1_%2" ).arg( name, geometryColumnName );
   executeSql( QStringLiteral( "CREATE INDEX %1 ON %2.%3 USING GIST (%4);" )
               .arg( indexName,
                     QgsPostgresConn::quotedIdentifier( schema ),
                     QgsPostgresConn::quotedIdentifier( name ),
-                    QgsPostgresConn::quotedIdentifier( options.geometryColumnName ) ) );
+                    QgsPostgresConn::quotedIdentifier( geometryColumnName ) ) );
 }
 
 bool QgsPostgresProviderConnection::spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const
@@ -595,6 +612,7 @@ QList<QgsVectorDataProvider::NativeType> QgsPostgresProviderConnection::nativeTy
   if ( conn )
   {
     types = conn->nativeTypes();
+    QgsPostgresConnPool::instance()->releaseConnection( conn );
   }
   if ( types.isEmpty() )
   {
