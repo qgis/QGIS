@@ -4447,7 +4447,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
         continue;
       }
 
-      if ( ! options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() && !convertField( fld, options ) )
+      if ( ! (options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool()) && !convertField( fld, options ) )
       {
         if ( errorMessage )
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
