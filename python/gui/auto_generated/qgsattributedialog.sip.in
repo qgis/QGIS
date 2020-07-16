@@ -77,7 +77,7 @@ Intercept window activate/deactivate events to show/hide the highlighted feature
 
     void setExtraContextScope( QgsExpressionContextScope *extraScope /Transfer/ );
 %Docstring
-Sets an additional expression context scope to be used
+Sets ``extraScope`` as an additional expression context scope to be used
 for calculations in this form.
 
 .. versionadded:: 3.16
