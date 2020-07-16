@@ -670,6 +670,15 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static bool isSharpCorner( QPointF p1, QPointF p2, QPointF p3 );
 
     /**
+     * Appends a polyline \a line to an existing \a target polyline.
+     *
+     * Any duplicate points at the start \a line which match the end point from \a target will be skipped.
+     *
+     * \since QGIS 3.16
+     */
+    static void appendPolyline( QPolygonF &target, const QPolygonF &line );
+
+    /**
      * Returns a new valid expression instance for given field or expression string.
      * If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
      * If the string is empty, returns NULLPTR.

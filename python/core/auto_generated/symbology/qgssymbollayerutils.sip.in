@@ -744,6 +744,15 @@ Returns ``True`` if the angle formed by the line ``p1`` - ``p2`` - ``p3`` forms 
 .. versionadded:: 3.16
 %End
 
+    static void appendPolyline( QPolygonF &target, const QPolygonF &line );
+%Docstring
+Appends a polyline ``line`` to an existing ``target`` polyline.
+
+Any duplicate points at the start ``line`` which match the end point from ``target`` will be skipped.
+
+.. versionadded:: 3.16
+%End
+
     static QgsExpression *fieldOrExpressionToExpression( const QString &fieldOrExpression ) /Factory/;
 %Docstring
 Returns a new valid expression instance for given field or expression string.

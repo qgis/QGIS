@@ -4165,6 +4165,18 @@ bool QgsSymbolLayerUtils::isSharpCorner( QPointF p1, QPointF p2, QPointF p3 )
   return vertexAngle < M_PI * 135.0 / 180.0 || vertexAngle > M_PI * 225.0 / 180.0;
 }
 
+void QgsSymbolLayerUtils::appendPolyline( QPolygonF &target, const QPolygonF &line )
+{
+  target.reserve( target.size() + line.size() );
+  for ( const QPointF &pt : line )
+  {
+    if ( !target.empty() && target.last() == pt )
+      continue;
+
+    target << pt;
+  }
+}
+
 QgsExpression *QgsSymbolLayerUtils::fieldOrExpressionToExpression( const QString &fieldOrExpression )
 {
   if ( fieldOrExpression.isEmpty() )
