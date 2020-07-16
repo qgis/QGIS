@@ -173,6 +173,10 @@ void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
         w->setMode( QgsAttributeFormWidget::DefaultMode );
         break;
 
+      case QgsAttributeEditorContext::FixAttributeMode:
+        w->setMode( QgsAttributeFormWidget::DefaultMode );
+        break;
+
       case QgsAttributeEditorContext::MultiEditMode:
         w->setMode( QgsAttributeFormWidget::MultiEditMode );
         break;
@@ -212,6 +216,11 @@ void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
       break;
 
     case QgsAttributeEditorContext::AddFeatureMode:
+      synchronizeEnabledState();
+      mSearchButtonBox->setVisible( false );
+      break;
+
+    case QgsAttributeEditorContext::FixAttributeMode:
       synchronizeEnabledState();
       mSearchButtonBox->setVisible( false );
       break;
@@ -278,6 +287,7 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
     case QgsAttributeEditorContext::SingleEditMode:
     case QgsAttributeEditorContext::IdentifyMode:
     case QgsAttributeEditorContext::AddFeatureMode:
+    case QgsAttributeEditorContext::FixAttributeMode:
     {
       resetValues();
 
@@ -320,7 +330,7 @@ bool QgsAttributeForm::saveEdits()
 
     // An add dialog should perform an action by default
     // and not only if attributes have "changed"
-    if ( mMode == QgsAttributeEditorContext::AddFeatureMode )
+    if ( mMode == QgsAttributeEditorContext::AddFeatureMode || mMode == QgsAttributeEditorContext::FixAttributeMode )
       doUpdate = true;
 
     QgsAttributes src = mFeature.attributes();
@@ -379,7 +389,11 @@ bool QgsAttributeForm::saveEdits()
 
     if ( doUpdate )
     {
-      if ( mMode == QgsAttributeEditorContext::AddFeatureMode )
+      if ( mMode == QgsAttributeEditorContext::FixAttributeMode )
+      {
+        mFeature = updatedFeature;
+      }
+      else if ( mMode == QgsAttributeEditorContext::AddFeatureMode )
       {
         mFeature.setValid( true );
         mLayer->beginEditCommand( mEditCommandMessage );
@@ -735,6 +749,7 @@ bool QgsAttributeForm::save()
   {
     case QgsAttributeEditorContext::SingleEditMode:
     case QgsAttributeEditorContext::IdentifyMode:
+    case QgsAttributeEditorContext::FixAttributeMode:
     case QgsAttributeEditorContext::MultiEditMode:
       if ( !mDirty )
         return true;
@@ -761,6 +776,7 @@ bool QgsAttributeForm::save()
     case QgsAttributeEditorContext::SingleEditMode:
     case QgsAttributeEditorContext::IdentifyMode:
     case QgsAttributeEditorContext::AddFeatureMode:
+    case QgsAttributeEditorContext::FixAttributeMode:
     case QgsAttributeEditorContext::SearchMode:
     case QgsAttributeEditorContext::AggregateSearchMode:
       success = saveEdits();
@@ -848,6 +864,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
     case QgsAttributeEditorContext::SingleEditMode:
     case QgsAttributeEditorContext::IdentifyMode:
     case QgsAttributeEditorContext::AddFeatureMode:
+    case QgsAttributeEditorContext::FixAttributeMode:
     {
       Q_NOWARN_DEPRECATED_PUSH
       emit attributeChanged( eww->field().name(), value );
@@ -2264,6 +2281,7 @@ void QgsAttributeForm::layerSelectionChanged()
     case QgsAttributeEditorContext::SingleEditMode:
     case QgsAttributeEditorContext::IdentifyMode:
     case QgsAttributeEditorContext::AddFeatureMode:
+    case QgsAttributeEditorContext::FixAttributeMode:
     case QgsAttributeEditorContext::SearchMode:
     case QgsAttributeEditorContext::AggregateSearchMode:
       break;
