@@ -36,6 +36,7 @@ class QgsLocalizedDataPathRegistry;
 class QgsRendererRegistry;
 class QgsSvgCache;
 class QgsImageCache;
+class QgsSourceCache;
 class QgsSymbolLayerRegistry;
 class QgsRasterRendererRegistry;
 class QgsGpsConnectionRegistry;
@@ -644,6 +645,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsImageCache *imageCache();
 
     /**
+     * Returns the application's source cache, used for caching embedded and remote source strings as local files
+     *
+     * \since QGIS 3.16
+     */
+    static QgsSourceCache *sourceCache();
+
+    /**
      * Returns the application's network content registry used for fetching temporary files during QGIS session
      * \since QGIS 3.2
      */
@@ -942,6 +950,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsRendererRegistry *mRendererRegistry = nullptr;
       QgsSvgCache *mSvgCache = nullptr;
       QgsImageCache *mImageCache = nullptr;
+      QgsSourceCache *mSourceCache = nullptr;
       QgsSymbolLayerRegistry *mSymbolLayerRegistry = nullptr;
       QgsCalloutRegistry *mCalloutRegistry = nullptr;
       QgsTaskManager *mTaskManager = nullptr;

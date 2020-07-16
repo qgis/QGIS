@@ -35,6 +35,7 @@
 #include "qgsscalebarrendererregistry.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
+#include "qgssourcecache.h"
 #include "qgscolorschemeregistry.h"
 #include "qgspainteffectregistry.h"
 #include "qgsprojectstorageregistry.h"
@@ -2139,6 +2140,11 @@ QgsImageCache *QgsApplication::imageCache()
   return members()->mImageCache;
 }
 
+QgsSourceCache *QgsApplication::sourceCache()
+{
+  return members()->mSourceCache;
+}
+
 QgsNetworkContentFetcherRegistry *QgsApplication::networkContentFetcherRegistry()
 {
   return members()->mNetworkContentFetcherRegistry;
@@ -2285,6 +2291,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   {
     profiler->start( tr( "Setup image cache" ) );
     mImageCache = new QgsImageCache();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup source cache" ) );
+    mSourceCache = new QgsSourceCache();
     profiler->end();
   }
   {

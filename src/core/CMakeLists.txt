@@ -409,6 +409,7 @@ SET(QGIS_CORE_SRCS
   qgssqliteexpressioncompiler.cpp
   qgssqlstatement.cpp
   qgssqliteutils.cpp
+  qgssourcecache.cpp
   qgsspatialiteutils.cpp
   qgsstatisticalsummary.cpp
   qgsstoredexpressionmanager.cpp
@@ -966,6 +967,7 @@ SET(QGIS_CORE_HDRS
   qgsspatialindexkdbush.h
   qgsspatialindexkdbushdata.h
   qgsspatialindexutils.h
+  qgssourcecache.h
   qgsspatialiteutils.h
   qgssqlexpressioncompiler.h
   qgssqliteutils.h
