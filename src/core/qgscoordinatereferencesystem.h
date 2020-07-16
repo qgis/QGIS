@@ -108,7 +108,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  * CRS PROJ text: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 [output trimmed]
  * \endcode
  *
- * \section crs_def_frmats CRS Definition Formats
+ * \section crs_def_formats CRS Definition Formats
  *
  * This section gives an overview of various supported CRS definition formats:
  *
