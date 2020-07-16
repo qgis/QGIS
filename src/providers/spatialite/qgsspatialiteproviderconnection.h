@@ -46,6 +46,7 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
         const TableFlags &flags = nullptr ) const override;
     QIcon icon() const override;
     void deleteField( const QString &fieldName, const QString &schema, const QString &tableName, bool force ) const override;
+    QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
 
   private:
 
@@ -59,8 +60,9 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     //! extract the path from the DS URI (which is in "PG" form: 'dbname=\'/path_to.sqlite\' table="table_name" (geom_col_name)')
     QString pathFromUri() const;
 
-
 };
+
+
 
 
 

@@ -494,3 +494,8 @@ QIcon QgsMssqlProviderConnection::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconMssql.svg" ) );
 }
 
+
+QList<QgsVectorDataProvider::NativeType> QgsMssqlProviderConnection::nativeTypes() const
+{
+  return QgsMssqlConnection::nativeTypes();
+}

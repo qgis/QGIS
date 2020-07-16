@@ -587,3 +587,18 @@ QIcon QgsPostgresProviderConnection::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconPostgis.svg" ) );
 }
 
+
+QList<QgsVectorDataProvider::NativeType> QgsPostgresProviderConnection::nativeTypes() const
+{
+  QList<QgsVectorDataProvider::NativeType> types;
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsDataSourceUri{ uri() }.connectionInfo( false ) );
+  if ( conn )
+  {
+    types = conn->nativeTypes();
+  }
+  if ( types.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for connection %1" ).arg( uri() ) );
+  }
+  return types;
+}

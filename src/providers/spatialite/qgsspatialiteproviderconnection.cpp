@@ -470,3 +470,8 @@ void QgsSpatiaLiteProviderConnection::deleteField( const QString &fieldName, con
     throw QgsProviderConnectionException( QObject::tr( "Unknown error deleting field '%1' of table '%2'" ).arg( fieldName, tableName ) );
   }
 }
+
+QList<QgsVectorDataProvider::NativeType> QgsSpatiaLiteProviderConnection::nativeTypes() const
+{
+  return QgsSpatiaLiteConnection::nativeTypes();
+}

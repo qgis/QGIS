@@ -387,3 +387,14 @@ QList<QVariantList> QgsGeoPackageProviderConnection::executeGdalSqlPrivate( cons
   return results;
 }
 
+
+QList<QgsVectorDataProvider::NativeType> QgsGeoPackageProviderConnection::nativeTypes() const
+{
+  QList<QgsVectorDataProvider::NativeType> types;
+  QgsVectorLayer vl { uri(), QStringLiteral( "temp_layer" ), QStringLiteral( "ogr" ) };
+  if ( ! vl.isValid() || ! vl.dataProvider() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for %1: %2" ).arg( uri() ).arg( vl.dataProvider()->errors().join( '\n' ) ) );
+  }
+  return vl.dataProvider()->nativeTypes();
+}

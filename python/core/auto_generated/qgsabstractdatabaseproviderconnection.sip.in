@@ -536,14 +536,9 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 :raises :: py:class:`QgsProviderConnectionException`
 %End
 
-    virtual QList< QgsVectorDataProvider::NativeType > nativeTypes() const throw( QgsProviderConnectionException );
+    virtual QList< QgsVectorDataProvider::NativeType > nativeTypes() const throw( QgsProviderConnectionException ) = 0;
 %Docstring
 Returns a list of native types supported by the connection.
-
-.. note::
-
-   if the database does not contain any table, a temporary table will
-   be created, in that case the correct user permissions might be required.
 
 .. versionadded:: 3.16
 
