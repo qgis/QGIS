@@ -4073,6 +4073,89 @@ bool QgsSymbolLayerUtils::pointInPolygon( const QPolygonF &points, QPointF point
   return inside;
 }
 
+QPolygonF QgsSymbolLayerUtils::polylineSubstring( const QPolygonF &polyline, double startOffset, double endOffset )
+{
+  if ( polyline.size() < 2 )
+    return QPolygonF();
+
+  double totalLength = 0;
+  auto it = polyline.begin();
+  QPointF p1 = *it++;
+  std::vector< double > segmentLengths( polyline.size() - 1 );
+  auto segmentLengthIt = segmentLengths.begin();
+  for ( ; it != polyline.end(); ++it )
+  {
+    QPointF p2 = *it;
+    *segmentLengthIt = std::sqrt( std::pow( p1.x() - p2.x(), 2.0 ) + std::pow( p1.y() - p2.y(), 2.0 ) );
+    totalLength += *segmentLengthIt;
+
+    segmentLengthIt++;
+    p1 = p2;
+  }
+
+  if ( startOffset >= 0 && totalLength <= startOffset )
+    return QPolygonF();
+  if ( endOffset < 0 && totalLength <= -endOffset )
+    return QPolygonF();
+
+  const double startDistance = startOffset < 0 ? totalLength + startOffset : startOffset;
+  const double endDistance = endOffset <= 0 ? totalLength + endOffset : endOffset;
+  QPolygonF substringPoints;
+  substringPoints.reserve( polyline.size() );
+
+  it = polyline.begin();
+  segmentLengthIt = segmentLengths.begin();
+
+  p1 = *it++;
+  bool foundStart = false;
+  if ( qgsDoubleNear( startDistance, 0.0 ) || startDistance < 0 )
+  {
+    substringPoints << p1;
+    foundStart = true;
+  }
+
+  double distanceTraversed = 0;
+  for ( ; it != polyline.end(); ++it )
+  {
+    QPointF p2 = *it;
+    if ( distanceTraversed < startDistance && distanceTraversed + *segmentLengthIt > startDistance )
+    {
+      // start point falls on this segment
+      const double distanceToStart = startDistance - distanceTraversed;
+      double startX, startY;
+      QgsGeometryUtils::pointOnLineWithDistance( p1.x(), p1.y(), p2.x(), p2.y(), distanceToStart, startX, startY );
+      substringPoints << QPointF( startX, startY );
+      foundStart = true;
+    }
+    if ( foundStart && ( distanceTraversed + *segmentLengthIt > endDistance ) )
+    {
+      // end point falls on this segment
+      const double distanceToEnd = endDistance - distanceTraversed;
+      double endX, endY;
+      QgsGeometryUtils::pointOnLineWithDistance( p1.x(), p1.y(), p2.x(), p2.y(), distanceToEnd, endX, endY );
+      if ( substringPoints.last() != QPointF( endX, endY ) )
+        substringPoints << QPointF( endX, endY );
+    }
+    else if ( foundStart )
+    {
+      if ( substringPoints.last() != QPointF( p2.x(), p2.y() ) )
+        substringPoints << QPointF( p2.x(), p2.y() );
+    }
+
+    distanceTraversed += *segmentLengthIt;
+    if ( distanceTraversed > endDistance )
+      break;
+
+    p1 = p2;
+    segmentLengthIt++;
+  }
+
+  if ( ( substringPoints.size() < 2 ) || ( substringPoints.size() == 2 && substringPoints.at( 0 ) == substringPoints.at( 1 ) ) )
+    return QPolygonF();
+
+  return substringPoints;
+}
+
 QgsExpression *QgsSymbolLayerUtils::fieldOrExpressionToExpression( const QString &fieldOrExpression )
 {
   if ( fieldOrExpression.isEmpty() )

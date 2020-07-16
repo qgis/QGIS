@@ -649,6 +649,20 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static bool pointInPolygon( const QPolygonF &points, QPointF point );
 
     /**
+     * Returns the substring of a \a polyline which starts at \a startOffset from the beginning of the line
+     * and ends at \a endOffset from the start of the line.
+     *
+     * If \a startOffset is less than 0, then the start point will be calculated by subtracting that distance
+     * from the end of the line. Similarly, if \a endOffset is less than zero then the end point will be subtracted
+     * from the end of the line.
+     *
+     * May return an empty linestring if the substring is zero length.
+     *
+     * \since QGIS 3.16
+     */
+    static QPolygonF polylineSubstring( const QPolygonF &polyline, double startOffset, double endOffset );
+
+    /**
      * Returns a new valid expression instance for given field or expression string.
      * If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
      * If the string is empty, returns NULLPTR.
