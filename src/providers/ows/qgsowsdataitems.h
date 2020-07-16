@@ -32,7 +32,7 @@ class QgsOWSConnectionItem : public QgsDataCollectionItem
     void replacePath( QgsDataItem *item, QString before, QString after );
 };
 
-class QgsOWSRootItem : public QgsDataCollectionItem
+class QgsOWSRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:

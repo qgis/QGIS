@@ -1758,6 +1758,13 @@ QIcon QgsDatabaseSchemaItem::iconDataCollection()
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.svg" ) );
 }
 
+
+QgsConnectionsRootItem::QgsConnectionsRootItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &providerKey )
+  : QgsDataCollectionItem( parent, name, path, providerKey )
+{
+}
+
+
 ///@cond PRIVATE
 
 QgsProjectHomeItem::QgsProjectHomeItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path )

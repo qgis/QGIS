@@ -691,8 +691,37 @@ Returns the standard browser data collection icon.
 .. seealso:: :py:func:`iconDir`
 %End
 
-  protected:
+};
 
+
+
+class QgsConnectionsRootItem : QgsDataCollectionItem
+{
+%Docstring
+A Collection that represents a root group of connections from a single data provider
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsdataitem.h"
+%End
+  public:
+
+    QgsConnectionsRootItem( QgsDataItem *parent /TransferThis/, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
+%Docstring
+Constructor for QgsConnectionsRootItem, with the specified ``parent`` item.
+
+The ``name`` argument specifies the text to show in the model for the item. A translated string should
+be used wherever appropriate.
+
+The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
+but QgsSchemaItem items pointing to different logical locations should always use a different item ``path``.
+
+The optional ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
+%End
+
+    ~QgsConnectionsRootItem();
 };
 
 

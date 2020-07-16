@@ -533,7 +533,7 @@ QVector<QgsDataItem *> QgsPGLayerItem::createChildren()
 
 // ---------------------------------------------------------------------------
 QgsPGRootItem::QgsPGRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "postgres" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "postgres" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconPostgis.svg" );

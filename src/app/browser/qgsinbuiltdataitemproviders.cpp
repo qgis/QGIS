@@ -849,94 +849,97 @@ QString QgsDatabaseItemGuiProvider::name()
 void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
 {
   Q_UNUSED( selectedItems )
-  // Add create new table for connections
-  if ( QgsDataCollectionItem * collectionItem { qobject_cast<QgsDataCollectionItem *>( item ) } )
+  // Add create new table for collection items but not not if it is a root item
+  if ( ! qobject_cast<QgsConnectionsRootItem *>( item ) )
   {
-    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( collectionItem->providerKey() ) };
-    if ( md )
+    if ( QgsDataCollectionItem * collectionItem { qobject_cast<QgsDataCollectionItem *>( item ) } )
     {
-      const bool isSchema { qobject_cast<QgsDatabaseSchemaItem *>( item ) };
-      const QString connectionName { isSchema ? collectionItem->parent()->name() : collectionItem->name() };
-      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionName ) ) );
-      if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateVectorTable ) )
+      QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( collectionItem->providerKey() ) };
+      if ( md )
       {
-        QAction *newTableAction = new QAction( QObject::tr( "New Table…" ), menu );
-        QObject::connect( newTableAction, &QAction::triggered, collectionItem, [ collectionItem, connectionName, md, isSchema, context]
+        const bool isSchema { qobject_cast<QgsDatabaseSchemaItem *>( item ) };
+        const QString connectionName { isSchema ? collectionItem->parent()->name() : collectionItem->name() };
+        std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionName ) ) );
+        if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateVectorTable ) )
         {
-          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionName ) ) };
-          QgsNewVectorTableDialog dlg { conn2.get(), nullptr };
-          dlg.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
-          if ( isSchema )
+          QAction *newTableAction = new QAction( QObject::tr( "New Table…" ), menu );
+          QObject::connect( newTableAction, &QAction::triggered, collectionItem, [ collectionItem, connectionName, md, isSchema, context]
           {
-            dlg.setSchemaName( collectionItem->name() );
-          }
-          if ( dlg.exec() == QgsNewVectorTableDialog::DialogCode::Accepted )
-          {
-            const QgsFields fields { dlg.fields() };
-            const QString tableName { dlg.tableName() };
-            const QString schemaName { dlg.schemaName() };
-            const QString geometryColumn { dlg.geometryColumnName() };
-            const QgsWkbTypes::Type geometryType { dlg.geometryType() };
-            const bool createSpatialIndex { dlg.createSpatialIndex() };
-            const QgsCoordinateReferenceSystem crs { dlg.crs( ) };
-            // This flag tells to the provider that field types do not need conversion
-            QMap<QString, QVariant> options { { QStringLiteral( "skipConvertFields" ), true } };
-
-            if ( ! geometryColumn.isEmpty() )
+            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionName ) ) };
+            QgsNewVectorTableDialog dlg { conn2.get(), nullptr };
+            dlg.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+            if ( isSchema )
             {
-              options[ QStringLiteral( "geometryColumn" ) ] = geometryColumn;
+              dlg.setSchemaName( collectionItem->name() );
             }
-
-            QString title;
-            QString message;
-
-            try
+            if ( dlg.exec() == QgsNewVectorTableDialog::DialogCode::Accepted )
             {
-              conn2->createVectorTable( schemaName, tableName, fields, geometryType, crs, true, &options );
-              if ( createSpatialIndex && conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateSpatialIndex ) )
+              const QgsFields fields { dlg.fields() };
+              const QString tableName { dlg.tableName() };
+              const QString schemaName { dlg.schemaName() };
+              const QString geometryColumn { dlg.geometryColumnName() };
+              const QgsWkbTypes::Type geometryType { dlg.geometryType() };
+              const bool createSpatialIndex { dlg.createSpatialIndex() };
+              const QgsCoordinateReferenceSystem crs { dlg.crs( ) };
+              // This flag tells to the provider that field types do not need conversion
+              QMap<QString, QVariant> options { { QStringLiteral( "skipConvertFields" ), true } };
+
+              if ( ! geometryColumn.isEmpty() )
               {
-                conn2->createSpatialIndex( schemaName, tableName );
+                options[ QStringLiteral( "geometryColumn" ) ] = geometryColumn;
               }
-              // Ok, here is the trick: we cannot refresh the connection item because the refresh is not
-              // recursive.
-              // So, we check if the item is a schema or not, if it's not it means we initiated the new table from
-              // the parent connection item, hence we search for the schema item and refresh it instead of refreshing
-              // the connection item (the parent) with no effects.
-              if ( ! isSchema && conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
+
+              QString title;
+              QString message;
+
+              try
               {
-                const auto constChildren { collectionItem->children() };
-                for ( const auto &c : constChildren )
+                conn2->createVectorTable( schemaName, tableName, fields, geometryType, crs, true, &options );
+                if ( createSpatialIndex && conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateSpatialIndex ) )
                 {
-                  if ( c->name() == schemaName )
+                  conn2->createSpatialIndex( schemaName, tableName );
+                }
+                // Ok, here is the trick: we cannot refresh the connection item because the refresh is not
+                // recursive.
+                // So, we check if the item is a schema or not, if it's not it means we initiated the new table from
+                // the parent connection item, hence we search for the schema item and refresh it instead of refreshing
+                // the connection item (the parent) with no effects.
+                if ( ! isSchema && conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
+                {
+                  const auto constChildren { collectionItem->children() };
+                  for ( const auto &c : constChildren )
                   {
-                    c->refresh();
+                    if ( c->name() == schemaName )
+                    {
+                      c->refresh();
+                    }
                   }
                 }
+                else
+                {
+                  collectionItem->refresh( );
+                }
+                title = QObject::tr( "New Table Created" );
+                message = QObject::tr( "Table '%1' was created successfully." ).arg( tableName );
+              }
+              catch ( QgsProviderConnectionException &ex )
+              {
+                title =  QObject::tr( "New Table Creation Error" );
+                message = QObject::tr( "Error creating new table '%1': %2" ).arg( tableName, ex.what() );
+              }
+
+              if ( context.messageBar() )
+              {
+                context.messageBar()->pushSuccess( title, message );
               }
               else
               {
-                collectionItem->refresh( );
+                QMessageBox::information( nullptr, title, message );
               }
-              title = QObject::tr( "New Table Created" );
-              message = QObject::tr( "Table '%1' was created successfully." ).arg( tableName );
             }
-            catch ( QgsProviderConnectionException &ex )
-            {
-              title =  QObject::tr( "New Table Creation Error" );
-              message = QObject::tr( "Error creating new table '%1': %2" ).arg( tableName, ex.what() );
-            }
-
-            if ( context.messageBar() )
-            {
-              context.messageBar()->pushSuccess( title, message );
-            }
-            else
-            {
-              QMessageBox::information( nullptr, title, message );
-            }
-          }
-        } );
-        menu->addAction( newTableAction );
+          } );
+          menu->addAction( newTableAction );
+        }
       }
     }
   }

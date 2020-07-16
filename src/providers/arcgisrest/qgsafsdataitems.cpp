@@ -29,7 +29,7 @@
 
 
 QgsAfsRootItem::QgsAfsRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "AFS" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "AFS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconAfs.svg" );

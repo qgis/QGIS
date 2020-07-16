@@ -27,7 +27,7 @@
 #include <QImageReader>
 
 QgsAmsRootItem::QgsAmsRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "AMS" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "AMS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconAms.svg" );

@@ -31,7 +31,7 @@ class QgsMssqlConnectionItem;
 class QgsMssqlSchemaItem;
 class QgsMssqlLayerItem;
 
-class QgsMssqlRootItem : public QgsDataCollectionItem
+class QgsMssqlRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:

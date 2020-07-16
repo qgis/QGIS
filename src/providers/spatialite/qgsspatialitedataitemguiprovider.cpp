@@ -27,9 +27,8 @@
 #include <QMessageBox>
 
 
-void QgsSpatiaLiteDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
+void QgsSpatiaLiteDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
 {
-  QgsDataItemGuiProvider::populateContextMenu( item, menu, selectedItems, context );
   if ( QgsSLRootItem *rootItem = qobject_cast< QgsSLRootItem * >( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), this );
