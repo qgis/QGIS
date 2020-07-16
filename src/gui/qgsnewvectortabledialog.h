@@ -157,7 +157,7 @@ class QgsNewVectorTableDialogFieldsDelegate: public QStyledItemDelegate
 
   public slots:
 
-    void onCurrentTypeChanged( int index );
+    void onFieldTypeChanged( int index );
 
   private:
 

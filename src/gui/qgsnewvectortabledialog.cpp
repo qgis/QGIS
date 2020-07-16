@@ -65,6 +65,12 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     }
   };
 
+  // Validate on data changed
+  connect( mFieldModel, &QgsNewVectorTableFieldModel::modelReset, this, [ = ]()
+  {
+    validate();
+  } );
+
   mTableName->setText( QStringLiteral( "new_table_name" ) );
   mFieldsTableView->setModel( mFieldModel );
   QgsNewVectorTableDialogFieldsDelegate *delegate { new QgsNewVectorTableDialogFieldsDelegate( mConnection->nativeTypes(), this )};
@@ -131,7 +137,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
 
   // geometry types
   const bool hasSinglePart { conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SinglePart ) };
-  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconTableLayer.svg" ) ), tr( "No Geometry" ), QString() );
+  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconTableLayer.svg" ) ), tr( "No Geometry" ), QgsWkbTypes::Type::NoGeometry );
   if ( hasSinglePart )
     mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPointLayer.svg" ) ), tr( "Point" ), QgsWkbTypes::Type::Point );
   mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPointLayer.svg" ) ), tr( "MultiPoint" ), QgsWkbTypes::Type::MultiPoint );
@@ -318,7 +324,6 @@ void QgsNewVectorTableDialog::setFields( const QgsFields &fields )
   if ( mFieldModel )
   {
     mFieldModel->setFields( fields );
-    validate();
   }
 }
 
@@ -355,23 +360,32 @@ void QgsNewVectorTableDialog::validate()
   const bool isSpatial { mGeomTypeCbo->currentIndex() > 0 };
   if ( mTableNames.contains( mTableName->text(), Qt::CaseSensitivity::CaseInsensitive ) )
   {
-    mValidationErrors.push_back( tr( "Table '%1' already exists!" ).arg( mTableName->text() ) );
+    mValidationErrors.push_back( tr( "Table <b>%1</b> already exists!" ).arg( mTableName->text() ) );
   }
   // Check for field names and geom col name
   if ( isSpatial && fields().names().contains( mGeomColumn->text(), Qt::CaseSensitivity::CaseInsensitive ) )
   {
-    mValidationErrors.push_back( tr( "Geometry column name cannot be equal to an existing field name!" ) );
+    mValidationErrors.push_back( tr( "Geometry column name <b>%1</b> cannot be equal to an existing field name!" ).arg( mGeomColumn->text() ) );
   }
   // No geometry and no fields? No party!
-  if ( ! isSpatial && mFieldModel->fields().count() == 0 )
+  if ( ! isSpatial && fields().count() == 0 )
   {
     mValidationErrors.push_back( tr( "The table has no geometry column and no fields!" ) );
+  }
+  // Check if precision is <= length
+  const auto cFields { fields() };
+  for ( const auto &f : cFields )
+  {
+    if ( f.isNumeric() && f.length() >= 0 && f.precision() >= 0 && f.precision() > f.length() )
+    {
+      mValidationErrors.push_back( tr( "Field <b>%1</b>: precision cannot be greater than length!" ).arg( f.name() ) );
+    }
   }
 
   const bool isValid { mValidationErrors.isEmpty() };
   if ( ! isValid )
   {
-    mValidationResults->setText( mValidationErrors.join( '\n' ) );
+    mValidationResults->setText( mValidationErrors.join( QStringLiteral( "<br>" ) ) );
   }
 
   mValidationFrame->setVisible( ! isValid );
@@ -405,7 +419,7 @@ QWidget *QgsNewVectorTableDialogFieldsDelegate::createEditor( QWidget *parent, c
       QComboBox *cbo = new QComboBox { parent };
       cbo->setEditable( false );
       cbo->setFrame( false );
-      connect( cbo, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsNewVectorTableDialogFieldsDelegate::onCurrentTypeChanged );
+      connect( cbo, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsNewVectorTableDialogFieldsDelegate::onFieldTypeChanged );
       for ( const auto &f : qgis::as_const( mTypeList ) )
       {
         cbo->addItem( f.mTypeDesc, f.mTypeName );
@@ -419,7 +433,7 @@ QWidget *QgsNewVectorTableDialogFieldsDelegate::createEditor( QWidget *parent, c
       if ( model )
       {
         const QgsVectorDataProvider::NativeType nt { model->nativeType( index.row() ) };
-        sp->setRange( nt.mMinPrec, nt.mMaxPrec );
+        sp->setRange( nt.mMinPrec, std::min<int>( nt.mMaxPrec, index.model()->data( index.model()->index( index.row(), index.column() - 1 ) ).toInt() ) );
       }
       return sp;
     }
@@ -430,7 +444,7 @@ QWidget *QgsNewVectorTableDialogFieldsDelegate::createEditor( QWidget *parent, c
       if ( model )
       {
         const QgsVectorDataProvider::NativeType nt { model->nativeType( index.row() ) };
-        sp->setRange( nt.mMinLen, nt.mMaxLen );
+        sp->setRange( std::max<int>( nt.mMinLen, index.model()->data( index.model()->index( index.row(), index.column() + 1 ) ).toInt() ), nt.mMaxLen );
       }
       return sp;
     }
@@ -494,7 +508,7 @@ void QgsNewVectorTableDialogFieldsDelegate::setModelData( QWidget *editor, QAbst
   }
 }
 
-void QgsNewVectorTableDialogFieldsDelegate::onCurrentTypeChanged( int index )
+void QgsNewVectorTableDialogFieldsDelegate::onFieldTypeChanged( int index )
 {
   Q_UNUSED( index )
   QComboBox *cb = static_cast<QComboBox *>( sender() );
@@ -628,11 +642,11 @@ QVariant QgsNewVectorTableFieldModel::headerData( int section, Qt::Orientation o
           case ColumnHeaders::Type:
           case ColumnHeaders::ProviderType:
           {
-            return  Qt::AlignmentFlag::AlignVCenter + Qt::AlignmentFlag::AlignLeft;
+            return Qt::AlignmentFlag::AlignVCenter + Qt::AlignmentFlag::AlignLeft;
           }
           default:
           {
-            return  Qt::AlignmentFlag::AlignVCenter + Qt::AlignmentFlag::AlignHCenter;
+            return Qt::AlignmentFlag::AlignVCenter + Qt::AlignmentFlag::AlignHCenter;
           }
         }
         break;
@@ -751,7 +765,10 @@ bool QgsNewVectorTableFieldModel::setData( const QModelIndex &index, const QVari
       case ColumnHeaders::Type:
       {
         field.setTypeName( value.toString() );
-        field.setType( type( value.toString() ) );
+        const auto tp { nativeType( value.toString() ) };
+        field.setType( tp.mType );
+        field.setLength( std::max( std::min<int>( field.length(), tp.mMaxLen ), tp.mMinLen ) );
+        field.setPrecision( std::max( std::min<int>( field.precision(), tp.mMaxPrec ), tp.mMinPrec ) );
         break;
       }
       case ColumnHeaders::Comment:
