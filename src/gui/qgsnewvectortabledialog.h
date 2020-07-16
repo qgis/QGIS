@@ -41,6 +41,7 @@ class QgsNewVectorTableFieldModel;
  * The actual creation of the table is delegated to the connections API method
  * QgsAbstractDatabaseProviderConnection::createVectorTable()
  *
+ * \ingroup gui
  * \since QGIS 3.16
  */
 class GUI_EXPORT QgsNewVectorTableDialog : public QDialog, private Ui_QgsNewVectorTableDialogBase

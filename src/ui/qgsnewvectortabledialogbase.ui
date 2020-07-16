@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>924</width>
+    <width>936</width>
     <height>562</height>
    </rect>
   </property>
@@ -244,7 +244,7 @@
      <item>
       <widget class="QPushButton" name="mAddFieldBtn">
        <property name="text">
-        <string>Add field</string>
+        <string>Add Field</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">

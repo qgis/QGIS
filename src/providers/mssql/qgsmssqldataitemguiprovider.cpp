@@ -60,7 +60,7 @@ void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     connect( actionShowNoGeom, &QAction::toggled, connItem, &QgsMssqlConnectionItem::setAllowGeometrylessTables );
     menu->addAction( actionShowNoGeom );
 
-    QAction *actionCreateSchema = new QAction( tr( "Create Schema…" ), menu );
+    QAction *actionCreateSchema = new QAction( tr( "New Schema…" ), menu );
     connect( actionCreateSchema, &QAction::triggered, this, [connItem] { createSchema( connItem ); } );
     menu->addAction( actionCreateSchema );
   }

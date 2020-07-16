@@ -52,7 +52,7 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
     menu->addSeparator();
 
-    QAction *actionCreateSchema = new QAction( tr( "Create Schema…" ), this );
+    QAction *actionCreateSchema = new QAction( tr( "New Schema…" ), this );
     connect( actionCreateSchema, &QAction::triggered, this, [connItem] { createSchema( connItem ); } );
     menu->addAction( actionCreateSchema );
 
@@ -226,7 +226,7 @@ void QgsPostgresDataItemGuiProvider::createSchema( QgsDataItem *item )
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
   if ( !conn )
   {
-    QMessageBox::warning( nullptr, tr( "Create Schema" ), tr( "Unable to create schema." ) );
+    QMessageBox::warning( nullptr, tr( "New Schema" ), tr( "Unable to create schema." ) );
     return;
   }
 
@@ -236,7 +236,7 @@ void QgsPostgresDataItemGuiProvider::createSchema( QgsDataItem *item )
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
-    QMessageBox::warning( nullptr, tr( "Create Schema" ), tr( "Unable to create schema %1\n%2" ).arg( schemaName,
+    QMessageBox::warning( nullptr, tr( "New Schema" ), tr( "Unable to create schema %1\n%2" ).arg( schemaName,
                           result.PQresultErrorMessage() ) );
     conn->unref();
     return;
