@@ -58,7 +58,7 @@ Usage:
   result = exp.evaluate(feature, fields)
   if exp.hasEvalError():
       # show error message with evalErrorString()
-  else
+  else:
       # examine the result
 \endcode
 

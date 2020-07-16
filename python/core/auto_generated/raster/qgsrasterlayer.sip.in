@@ -28,9 +28,7 @@ Sample usage of the QgsRasterLayer class:
 
 .. code-block:: python
 
-         myFileNameQString = "/path/to/file"
-         myBaseNameQString = "my layer"
-         myRasterLayer = QgsRasterLayer(myFileNameQString, myBaseNameQString)
+         my_raster_layer = QgsRasterLayer("/path/to/file.tif", "my layer")
 %End
 
 %TypeHeaderCode
