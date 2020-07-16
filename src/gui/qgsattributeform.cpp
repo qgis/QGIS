@@ -530,7 +530,8 @@ bool QgsAttributeForm::updateDefaultValues( const int originIdx )
         if ( mAlreadyUpdatedFields.contains( eww->fieldIdx() ) )
           continue;
 
-        QString value = mLayer->defaultValue( eww->fieldIdx(), updatedFeature ).toString();
+        QgsExpressionContext context = createExpressionContext( updatedFeature );
+        QString value = mLayer->defaultValue( eww->fieldIdx(), updatedFeature, &context ).toString();
         eww->setValue( value );
       }
     }
@@ -848,6 +849,17 @@ QString QgsAttributeForm::createFilterExpression() const
   return filter;
 }
 
+QgsExpressionContext QgsAttributeForm::createExpressionContext( const QgsFeature &feature ) const
+{
+  QgsExpressionContext context;
+  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  context.appendScope( QgsExpressionContextUtils::formScope( feature, mContext.attributeFormModeString() ) );
+  if ( mExtraContextScope )
+    context.appendScope( new QgsExpressionContextScope( *mExtraContextScope.get() ) );
+  context.setFeature( feature );
+  return context;
+}
+
 
 void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariantList &additionalFieldValues )
 {
@@ -967,10 +979,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
     // sync OK button status
     synchronizeEnabledState();
 
-    QgsExpressionContext context;
-    context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
-    context.appendScope( QgsExpressionContextUtils::formScope( ft, mContext.attributeFormModeString() ) );
-    context.setFeature( ft );
+    QgsExpressionContext context = createExpressionContext( ft );
 
     // Recheck visibility for all containers which are controlled by this value
     const QVector<ContainerInformation *> infos = mContainerInformationDependency.value( eww->field().name() );
@@ -983,10 +992,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
 
 void QgsAttributeForm::updateContainersVisibility()
 {
-  QgsExpressionContext context;
-  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
-  context.appendScope( QgsExpressionContextUtils::formScope( mFeature, mContext.attributeFormModeString() ) );
-  context.setFeature( mFeature );
+  QgsExpressionContext context = createExpressionContext( mFeature );
 
   const QVector<ContainerInformation *> infos = mContainerVisibilityInformation;
 
@@ -1034,10 +1040,7 @@ void QgsAttributeForm::updateLabels()
     QgsFeature currentFeature;
     if ( currentFormFeature( currentFeature ) )
     {
-      QgsExpressionContext context;
-      context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
-      context.appendScope( QgsExpressionContextUtils::formScope( currentFeature, mContext.attributeFormModeString() ) );
-      context.setFeature( currentFeature );
+      QgsExpressionContext context = createExpressionContext( currentFeature );
 
       for ( auto it = mLabelDataDefinedProperties.constBegin() ; it != mLabelDataDefinedProperties.constEnd(); ++it )
       {
@@ -2394,6 +2397,11 @@ QString QgsAttributeForm::aggregateFilter() const
   }
 
   return filters.join( QStringLiteral( " AND " ) );
+}
+
+void QgsAttributeForm::setExtraContextScope( QgsExpressionContextScope *extraScope )
+{
+  mExtraContextScope.reset( extraScope );
 }
 
 int QgsAttributeForm::messageTimeout()
