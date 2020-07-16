@@ -148,3 +148,8 @@ bool QgsAttributeDialog::event( QEvent *e )
 
   return QDialog::event( e );
 }
+
+void QgsAttributeDialog::setExtraContextScope( QgsExpressionContextScope *extraScope )
+{
+  mAttributeForm->setExtraContextScope( extraScope );
+}
