@@ -737,6 +737,13 @@ May return an empty linestring if the substring is zero length.
 .. versionadded:: 3.16
 %End
 
+    static bool isSharpCorner( QPointF p1, QPointF p2, QPointF p3 );
+%Docstring
+Returns ``True`` if the angle formed by the line ``p1`` - ``p2`` - ``p3`` forms a "sharp" corner.
+
+.. versionadded:: 3.16
+%End
+
     static QgsExpression *fieldOrExpressionToExpression( const QString &fieldOrExpression ) /Factory/;
 %Docstring
 Returns a new valid expression instance for given field or expression string.

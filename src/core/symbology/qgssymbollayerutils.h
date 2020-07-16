@@ -663,6 +663,13 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QPolygonF polylineSubstring( const QPolygonF &polyline, double startOffset, double endOffset );
 
     /**
+     * Returns TRUE if the angle formed by the line \a p1 - \a p2 - \a p3 forms a "sharp" corner.
+     *
+     * \since QGIS 3.16
+     */
+    static bool isSharpCorner( QPointF p1, QPointF p2, QPointF p3 );
+
+    /**
      * Returns a new valid expression instance for given field or expression string.
      * If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
      * If the string is empty, returns NULLPTR.
