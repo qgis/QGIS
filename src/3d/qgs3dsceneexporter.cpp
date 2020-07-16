@@ -125,10 +125,13 @@ QVector<uint> getIndexData( QByteArray data )
 QByteArray getData( Qt3DRender::QBuffer *buffer )
 {
   QByteArray bytes = buffer->data();
+  Qt3DRender::QBufferDataGeneratorPtr dataGenerator = buffer->dataGenerator();
   if ( bytes.isNull() )
   {
-    Qt3DRender::QBufferDataGeneratorPtr dataGenerator = buffer->dataGenerator();
-    bytes = dataGenerator->operator()();
+    if ( !dataGenerator.isNull() )
+      bytes = dataGenerator->operator()();
+    else
+      qDebug() << "WARNING: QBuffer is null at " << __FILE__ << ":" << __LINE__;
   }
   return bytes;
 }
@@ -205,10 +208,16 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
       if ( symbolType == "polygon" )
       {
         const QgsPolygon3DSymbol *polygonSymbol = dynamic_cast<const QgsPolygon3DSymbol *>( symbol );
-        QList<QgsTessellatedPolygonGeometry *> geometries = entity->findChildren<QgsTessellatedPolygonGeometry *>();
-        for ( QgsTessellatedPolygonGeometry *polygonGeometry : geometries )
-          processPolygonGeometry( polygonGeometry, polygonSymbol );
-        return geometries.size() != 0;
+        QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
+        for ( Qt3DRender::QGeometryRenderer *r : renderers )
+        {
+          Qgs3DExportObject *object = processGeometryRenderer( r );
+          object->setName( QStringLiteral( "polygon" ) );
+          object->setupPhongMaterial( polygonSymbol->material() );
+          mObjects.push_back( object );
+          // TODO: handle materials (for rule based renderer's polygons as well)
+        }
+        return renderers.size() != 0;
       }
       else if ( symbolType == "line" )
       {
@@ -219,10 +228,15 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
         }
         else
         {
-          QList<QgsTessellatedPolygonGeometry *> geometries = entity->findChildren<QgsTessellatedPolygonGeometry *>();
-          for ( QgsTessellatedPolygonGeometry *lineGeometry : geometries )
-            processBufferedLineGeometry( lineGeometry, lineSymbol );
-          return geometries.size() != 0;
+          QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
+          for ( Qt3DRender::QGeometryRenderer *r : renderers )
+          {
+            Qgs3DExportObject *object = processGeometryRenderer( r );
+            object->setName( QStringLiteral( "buffered_line" ) );
+            object->setupPhongMaterial( lineSymbol->material() );
+            mObjects.push_back( object );
+          }
+          return renderers.size() != 0;
         }
       }
       else if ( symbolType == "point" )
@@ -231,12 +245,26 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
         if ( pointSymbol->shape() == QgsPoint3DSymbol::Model )
         {
           Qt3DRender::QSceneLoader *sceneLoader = entity->findChild<Qt3DRender::QSceneLoader *>();
-          if ( sceneLoader != nullptr ) processSceneLoaderGeometry( sceneLoader, pointSymbol );
+          if ( sceneLoader != nullptr )
+          {
+            QVector<Qgs3DExportObject *> objects = processSceneLoaderGeometries( sceneLoader );
+            for ( Qgs3DExportObject *obj : objects )
+            {
+              obj->setSmoothEdges( mSmoothEdges );
+              obj->setupPhongMaterial( pointSymbol->material() );
+            }
+            mObjects << objects;
+          }
           else
           {
             QList<Qt3DRender::QMesh *> meshes = entity->findChildren<Qt3DRender::QMesh *>();
             for ( Qt3DRender::QMesh *mesh : meshes )
-              processMeshGeometry( mesh, pointSymbol );
+            {
+              Qgs3DExportObject *object = processGeometryRenderer( mesh );
+              object->setSmoothEdges( mSmoothEdges );
+              object->setupPhongMaterial( pointSymbol->material() );
+              mObjects << object;
+            }
           }
           return true;
         }
@@ -245,7 +273,9 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
         }
         else
         {
-          processInstancedPointGeometry( entity, pointSymbol );
+          QVector<Qgs3DExportObject *> objects = processInstancedPointGeometry( entity, pointSymbol );
+          qDebug() << "Instanced geometries count: " << objects.size();
+          mObjects << objects;
           return true;
         }
       }
@@ -336,7 +366,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity )
   QByteArray indexBytes = getData( indexAttribute->buffer() );
   QVector<uint> indexesBuffer = getIndexData<quint16>( indexBytes );
 
-  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "Flat_tile" ), "", this );
+  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( QStringLiteral( "Flat_tile" ) ), "", this );
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
@@ -388,7 +418,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
   QByteArray indexBytes = indexAttribute->buffer()->data();
   QVector<unsigned int> indexBuffer = getIndexData<uint>( indexBytes );
 
-  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "DEM_tile" ), "", this );
+  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( QStringLiteral( "DEM_tile" ) ), "", this );
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
@@ -416,59 +446,9 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
   }
 }
 
-void Qgs3DSceneExporter::processPolygonGeometry( QgsTessellatedPolygonGeometry *geom, const QgsPolygon3DSymbol *polygonSymbol )
+QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( Qt3DCore::QEntity *entity, const QgsPoint3DSymbol *pointSymbol )
 {
-  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "polygon_geometry" ), "", this );
-  mObjects.push_back( object );
-
-  Qt3DRender::QAttribute *positionAttribute = geom->mPositionAttribute;
-  QByteArray positionBytes = positionAttribute->buffer()->data();
-  QVector<float> positionData = getAttributeData<float>( positionAttribute, positionBytes );
-  object->setupPositionCoordinates( positionData );
-  QVector<uint> facesData;
-  for ( int i = 0; i < positionData.size() / 3; ++i ) facesData.push_back( i );
-  object->setupFaces( facesData );
-
-  if ( mExportNormals )
-  {
-    Qt3DRender::QAttribute *normalsAttribute = geom->mNormalAttribute;
-    QByteArray normalsBytes = normalsAttribute->buffer()->data();
-    QVector<float> normalsData = getAttributeData<float>( normalsAttribute, normalsBytes );
-    object->setupNormalCoordinates( normalsData );
-  }
-
-  object->setupPhongMaterial( polygonSymbol->material() );
-  // TODO: handle textures
-}
-
-void Qgs3DSceneExporter::processBufferedLineGeometry( QgsTessellatedPolygonGeometry *geom, const QgsLine3DSymbol *lineSymbol )
-{
-  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "line_geometry" ), "", this );
-  mObjects.push_back( object );
-
-  object->setSmoothEdges( mSmoothEdges );
-
-  Qt3DRender::QAttribute *positionAttribute = geom->mPositionAttribute;
-  QByteArray positionBytes = positionAttribute->buffer()->data();
-  QVector<float> positionData = getAttributeData<float>( positionAttribute, positionBytes );
-  object->setupPositionCoordinates( positionData );
-  QVector<uint> facesData;
-  for ( int i = 0; i < positionData.size() / 3; ++i ) facesData.push_back( i );
-  object->setupFaces( facesData );
-
-  if ( mExportNormals )
-  {
-    Qt3DRender::QAttribute *normalsAttribute = geom->mNormalAttribute;
-    QByteArray normalsBytes = normalsAttribute->buffer()->data();
-    QVector<float> normalsData = getAttributeData<float>( normalsAttribute, normalsBytes );
-    object->setupNormalCoordinates( normalsData );
-  }
-
-  object->setupPhongMaterial( lineSymbol->material() );
-}
-
-void Qgs3DSceneExporter::processInstancedPointGeometry( Qt3DCore::QEntity *entity, const QgsPoint3DSymbol *pointSymbol )
-{
+  QVector<Qgs3DExportObject *> objects;
   QList<Qt3DRender::QGeometry *> geometriesList =  entity->findChildren<Qt3DRender::QGeometry *>();
   for ( Qt3DRender::QGeometry *geometry : geometriesList )
   {
@@ -491,8 +471,8 @@ void Qgs3DSceneExporter::processInstancedPointGeometry( Qt3DCore::QEntity *entit
     QVector<float> instancePosition = getAttributeData<float>( instanceDataAttribute, instancePositionBytes );
     for ( int i = 0; i < instancePosition.size(); i += 3 )
     {
-      Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "shape_geometry" ), "", this );
-      mObjects.push_back( object );
+      Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( QStringLiteral( "shape_geometry" ) ), "", this );
+      objects.push_back( object );
       object->setupPositionCoordinates( positionData, 1.0f, QVector3D( instancePosition[i], instancePosition[i + 1], instancePosition[i + 2] ) );
       object->setupFaces( indexData );
 
@@ -509,31 +489,28 @@ void Qgs3DSceneExporter::processInstancedPointGeometry( Qt3DCore::QEntity *entit
       object->setupPhongMaterial( pointSymbol->material() );
     }
   }
+  return objects;
 }
 
-void Qgs3DSceneExporter::processSceneLoaderGeometry( Qt3DRender::QSceneLoader *sceneLoader, const QgsPoint3DSymbol *pointSymbol )
+QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processSceneLoaderGeometries( Qt3DRender::QSceneLoader *sceneLoader )
 {
+  QVector<Qgs3DExportObject *> objects;
   Qt3DCore::QEntity *sceneLoaderParent = qobject_cast<Qt3DCore::QEntity *>( sceneLoader->parent() );
   Qt3DCore::QTransform *entityTransform = findTypedComponent<Qt3DCore::QTransform>( sceneLoaderParent );
-  float entityScale = 1.0f;
-  QVector3D entityTranslation( 0.0f, 0.0f, 0.0f );
+  float sceneScale = 1.0f;
+  QVector3D sceneTranslation( 0.0f, 0.0f, 0.0f );
   if ( entityTransform != nullptr )
   {
-    entityScale = entityTransform->scale();
-    entityTranslation = entityTransform->translation();
+    sceneScale = entityTransform->scale();
+    sceneTranslation = entityTransform->translation();
   }
   for ( QString entityName : sceneLoader->entityNames() )
   {
     Qt3DRender::QGeometryRenderer *mesh = qobject_cast<Qt3DRender::QGeometryRenderer *>( sceneLoader->component( entityName, Qt3DRender::QSceneLoader::GeometryRendererComponent ) );
-    processMeshGeometry( mesh, pointSymbol, entityScale, entityTranslation );
+    Qgs3DExportObject *object = processGeometryRenderer( mesh, sceneScale, sceneTranslation );
+    objects.push_back( object );
   }
-}
-
-void Qgs3DSceneExporter::processMeshGeometry( Qt3DRender::QGeometryRenderer *mesh, const QgsPoint3DSymbol *pointSymbol, float sceneScale, QVector3D sceneTranslation )
-{
-  Qgs3DExportObject *object = processGeometryRenderer( mesh, sceneScale, sceneTranslation );
-  object->setSmoothEdges( mSmoothEdges );
-  object->setupPhongMaterial( pointSymbol->material() );
+  return objects;
 }
 
 Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeometryRenderer *mesh, float sceneScale, QVector3D sceneTranslation )
@@ -547,6 +524,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     scale = transform->scale();
     translation = transform->translation();
   }
+
   Qt3DRender::QGeometry *geometry = mesh->geometry();
 
   Qt3DRender::QAttribute *positionAttribute = findAttribute( geometry, Qt3DRender::QAttribute::defaultPositionAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
@@ -561,7 +539,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   }
   if ( indexAttribute != nullptr )
   {
-    getData( indexAttribute->buffer() );
+    indexBytes = getData( indexAttribute->buffer() );
     if ( indexAttribute->vertexBaseType() == Qt3DRender::QAttribute::VertexBaseType::UnsignedInt ) indexData = getIndexData<quint32>( indexBytes );
     if ( indexAttribute->vertexBaseType() == Qt3DRender::QAttribute::VertexBaseType::UnsignedShort ) indexData = getIndexData<quint16>( indexBytes );
   }
@@ -571,7 +549,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     vertexBytes = getData( positionAttribute->buffer() );
     positionData = getAttributeData<float>( positionAttribute, vertexBytes );
   }
-  // For tesselated polygons that doesn't have index attributes
+  // For tesselated polygons that don't have index attributes
   if ( positionAttribute != nullptr && indexAttribute == nullptr )
   {
     for ( int i = 0; i < positionData.size() / 3; ++i )
@@ -580,11 +558,11 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
 
   if ( positionAttribute == nullptr )
   {
-    qDebug() << "WARNING: renderer with null data";
+    qDebug() << "WARNING: renderer with null data at " << __FILE__ << ":" << __LINE__;
     return nullptr;
   }
 
-  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( "mesh_geometry" ), "", this );
+  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( QStringLiteral( "mesh_geometry" ) ), "", this );
   object->setupPositionCoordinates( positionData, scale * sceneScale, translation + sceneTranslation );
   object->setupFaces( indexData );
 
@@ -601,8 +579,8 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
 
 void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath )
 {
-  QString objFilePath = QDir( sceneFolderPath ).filePath( sceneName + ".obj" );
-  QString mtlFilePath = QDir( sceneFolderPath ).filePath( sceneName + ".mtl" );
+  QString objFilePath = QDir( sceneFolderPath ).filePath( sceneName + QStringLiteral( ".obj" ) );
+  QString mtlFilePath = QDir( sceneFolderPath ).filePath( sceneName + QStringLiteral( ".mtl" ) );
 
   QFile file( objFilePath );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )

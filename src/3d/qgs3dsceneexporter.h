@@ -93,19 +93,10 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     float scale() const { return mScale; }
 
   private:
-    //! Processes the attribute directly by taking a position buffer and converting it to Qgs3DExportObject
-    void pocessPoistionAttributes( Qt3DRender::QGeometry *geometry );
-    //! Constructs Qgs3DExportObject from the polygon geometry
-    void processPolygonGeometry( QgsTessellatedPolygonGeometry *geom, const QgsPolygon3DSymbol *polygonSymbol );
-    //! Constructs Qgs3DExportObject from a buffered line geometry
-    void processBufferedLineGeometry( QgsTessellatedPolygonGeometry *geom, const QgsLine3DSymbol *lineSymbol );
     //! Constructs Qgs3DExportObject from instanced point geometry
-    void processInstancedPointGeometry( Qt3DCore::QEntity *entity, const QgsPoint3DSymbol *pointSymbol );
+    QVector<Qgs3DExportObject *> processInstancedPointGeometry( Qt3DCore::QEntity *entity, const QgsPoint3DSymbol *pointSymbol );
     //! Constructs Qgs3DExportObject from 3D models loaded using a scene loader
-    void processSceneLoaderGeometry( Qt3DRender::QSceneLoader *sceneLoader, const QgsPoint3DSymbol *pointSymbol );
-    //! Constructs Qgs3DExportObject from 3D models loaded using QMesh class
-    void processMeshGeometry( Qt3DRender::QGeometryRenderer *mesh, const QgsPoint3DSymbol *pointSymbol, float sceneScale = 1.0f, QVector3D sceneTranslation = QVector3D( 0.0f, 0.0f, 0.0f ) );
-
+    QVector<Qgs3DExportObject *> processSceneLoaderGeometries( Qt3DRender::QSceneLoader *sceneLoader );
     //! Constructs Qgs3DExportObject from geometry renderer
     Qgs3DExportObject *processGeometryRenderer( Qt3DRender::QGeometryRenderer *mesh, float sceneScale = 1.0f, QVector3D sceneTranslation = QVector3D( 0.0f, 0.0f, 0.0f ) );
 
