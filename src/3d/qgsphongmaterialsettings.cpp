@@ -58,9 +58,9 @@ QgsPhongMaterialSettings *QgsPhongMaterialSettings::clone() const
 
 void QgsPhongMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
-  mAmbient = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "ambient" ) ) );
-  mDiffuse = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "diffuse" ) ) );
-  mSpecular = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "specular" ) ) );
+  mAmbient = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
+  mDiffuse = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "diffuse" ), QStringLiteral( "178,178,178" ) ) );
+  mSpecular = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "specular" ), QStringLiteral( "255,255,255" ) ) );
   mShininess = elem.attribute( QStringLiteral( "shininess" ) ).toFloat();
   mDiffuseTextureEnabled = elem.attribute( QStringLiteral( "is_using_diffuse_texture" ), QStringLiteral( "0" ) ).toInt();
   mTexturePath = elem.attribute( QStringLiteral( "diffuse_texture_path" ), QString() );
