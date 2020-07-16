@@ -34,6 +34,7 @@
 #include "qgspolygon3dsymbol_p.h"
 #include "qgspoint3dsymbol_p.h"
 #include "qgsline3dsymbol_p.h"
+#include "qgsgoochmaterialsettings.h"
 
 #include "qgsstyle.h"
 
@@ -67,6 +68,8 @@ void Qgs3D::initialize()
 
   instance()->materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "phong" ), QObject::tr( "Realistic (Phong)" ),
       QgsPhongMaterialSettings::create, QgsPhongMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconPhongMaterial.svg" ) ) ) );
+  instance()->materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "gooch" ), QObject::tr( "CAD (Gooch)" ),
+      QgsGoochMaterialSettings::create, nullptr ) );
 
   // because we are usually populating the 3d registry AFTER QgsApplication initialisation, we need to defer creation
   // of 3d symbols in the default style until now

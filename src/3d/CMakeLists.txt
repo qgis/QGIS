@@ -13,6 +13,7 @@ SET(QGIS_3D_SRCS
   qgscameracontroller.cpp
   qgscamerapose.cpp
   qgsfeature3dhandler_p.cpp
+  qgsgoochmaterialsettings.cpp
   qgslayoutitem3dmap.cpp
   qgsmaterialregistry.cpp
   qgsoffscreen3dengine.cpp
@@ -89,6 +90,7 @@ SET(QGIS_3D_HDRS
   qgsabstractvectorlayer3drenderer.h
   qgscameracontroller.h
   qgscamerapose.h
+  qgsgoochmaterialsettings.h
   qgslayoutitem3dmap.h
   qgsmaterialregistry.h
   qgsmeshlayer3drenderer.h
