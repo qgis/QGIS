@@ -92,6 +92,13 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     mSchemaLabel->hide();
   }
 
+  if ( ! mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateSpatialIndex ) )
+  {
+    mSpatialIndexChk->setChecked( false );
+    mSpatialIndexChk->hide();
+    mSpatialIndexLabel->hide();
+  }
+
   // Initial load of table names
   updateTableNames( mSchemaCbo->currentText() );
 
@@ -122,16 +129,47 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     validate();
   } );
 
-  // Hardcode geometry types
-  // TODO: this information should really come from the connection through the provider but there is no API for that yet
+  // geometry types
+  const bool hasSinglePart { conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SinglePart ) };
   mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconTableLayer.svg" ) ), tr( "No Geometry" ), QString() );
-  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPointLayer.svg" ) ), tr( "Point" ), QgsWkbTypes::Type::Point );
-  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconLineLayer.svg" ) ), tr( "Line" ), QgsWkbTypes::Type::LineString );
-  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPolygonLayer.svg" ) ), tr( "Polygon" ), QgsWkbTypes::Type::Polygon );
+  if ( hasSinglePart )
+    mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPointLayer.svg" ) ), tr( "Point" ), QgsWkbTypes::Type::Point );
   mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPointLayer.svg" ) ), tr( "MultiPoint" ), QgsWkbTypes::Type::MultiPoint );
+  if ( hasSinglePart )
+    mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconLineLayer.svg" ) ), tr( "Line" ), QgsWkbTypes::Type::LineString );
   mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconLineLayer.svg" ) ), tr( "MultiLine" ), QgsWkbTypes::Type::MultiLineString );
+  if ( hasSinglePart )
+    mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPolygonLayer.svg" ) ), tr( "Polygon" ), QgsWkbTypes::Type::Polygon );
   mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPolygonLayer.svg" ) ), tr( "MultiPolygon" ), QgsWkbTypes::Type::MultiPolygon );
+
+  if ( conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::Curves ) )
+  {
+    mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconLineLayer.svg" ) ), tr( "CompoundCurve" ), QgsWkbTypes::Type::CompoundCurve );
+    mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPolygonLayer.svg" ) ), tr( "CurvePolygon" ), QgsWkbTypes::Type::CurvePolygon );
+    mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconLineLayer.svg" ) ), tr( "MultiCurve" ), QgsWkbTypes::Type::MultiCurve );
+    mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPolygonLayer.svg" ) ), tr( "MultiSurface" ), QgsWkbTypes::Type::MultiSurface );
+  }
+
   mGeomTypeCbo->setCurrentIndex( 0 );
+
+  const bool hasZ { conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::Z ) };
+  const bool hasM { conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::M ) };
+  if ( ! hasM )
+  {
+    mHasMChk->setEnabled( false );
+    mHasMChk->setChecked( false );
+  }
+  if ( ! hasZ )
+  {
+    mHasZChk->setEnabled( false );
+    mHasZChk->setChecked( false );
+  }
+  if ( ! hasM && ! hasM )
+  {
+    mHasZChk->setVisible( false );
+    mHasMChk->setVisible( false );
+    mDimensionsLabel->setVisible( false );
+  }
 
   connect( mFieldsTableView->selectionModel(), &QItemSelectionModel::selectionChanged, mFieldsTableView, [ = ]( const QItemSelection & selected, const QItemSelection & )
   {
@@ -282,6 +320,11 @@ void QgsNewVectorTableDialog::setFields( const QgsFields &fields )
     mFieldModel->setFields( fields );
     validate();
   }
+}
+
+bool QgsNewVectorTableDialog::createSpatialIndex()
+{
+  return mSpatialIndexChk->isChecked();
 }
 
 QStringList QgsNewVectorTableDialog::validationErrors() const

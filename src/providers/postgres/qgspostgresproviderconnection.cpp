@@ -72,6 +72,13 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     Capability::DeleteFieldCascade,
     Capability::AddField
   };
+  mGeometryColumnCapabilities =
+  {
+    GeometryColumnCapability::Z,
+    GeometryColumnCapability::M,
+    GeometryColumnCapability::SinglePart,
+    GeometryColumnCapability::Curves
+  };
 }
 
 void QgsPostgresProviderConnection::dropTablePrivate( const QString &schema, const QString &name ) const

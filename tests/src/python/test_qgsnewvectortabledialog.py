@@ -79,7 +79,7 @@ class TestPyQgsNewVectorTableDialog(unittest.TestCase):
         self.assertFalse(has_m_chk.isEnabled())
 
         # 2 is linestring
-        geom_type_combo.setCurrentIndex(2)
+        geom_type_combo.setCurrentIndex(3)
         self.assertTrue(geom_name_le.isEnabled())
         self.assertTrue(has_z_chk.isEnabled())
         self.assertTrue(has_m_chk.isEnabled())

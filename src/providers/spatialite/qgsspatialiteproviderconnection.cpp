@@ -365,6 +365,12 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
     Capability::DeleteField,
     Capability::AddField
   };
+  mGeometryColumnCapabilities =
+  {
+    GeometryColumnCapability::Z,
+    GeometryColumnCapability::M,
+    GeometryColumnCapability::SinglePart,
+  };
 }
 
 QList<QVariantList> QgsSpatiaLiteProviderConnection::executeSqlPrivate( const QString &sql ) const

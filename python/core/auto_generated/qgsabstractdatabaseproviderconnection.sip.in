@@ -238,8 +238,18 @@ This information is calculated from the geometry columns types.
       DeleteFieldCascade,
       AddField,
     };
-
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
+
+
+    enum GeometryColumnCapability
+    {
+      Z,
+      M,
+      SinglePart,
+      Curves
+    };
+
+    typedef QFlags<QgsAbstractDatabaseProviderConnection::GeometryColumnCapability> GeometryColumnCapabilities;
 
 
     QgsAbstractDatabaseProviderConnection( const QString &name );
@@ -261,6 +271,13 @@ The connection is not automatically stored in the settings.
     Capabilities capabilities() const;
 %Docstring
 Returns connection capabilities
+%End
+
+    virtual GeometryColumnCapabilities geometryColumnCapabilities();
+%Docstring
+Returns connection geomerty column capabilities (Z, M, SinglePart, Curves)
+
+.. versionadded:: 3.16
 %End
 
 

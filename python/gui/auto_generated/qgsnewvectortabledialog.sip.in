@@ -94,6 +94,12 @@ Returns the geometry type
 Sets the fields to ``fields``
 %End
 
+    bool createSpatialIndex();
+%Docstring
+Returns ``True`` if spatialindex checkbox is cheched
+@return
+%End
+
     QStringList validationErrors() const;
 %Docstring
 Returns the validation errors or an empty list if the dialog is valid

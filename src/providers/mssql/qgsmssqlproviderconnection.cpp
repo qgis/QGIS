@@ -88,6 +88,12 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
     Capability::DeleteFieldCascade,
     Capability::AddField
   };
+  mGeometryColumnCapabilities =
+  {
+    GeometryColumnCapability::Z,
+    GeometryColumnCapability::M,
+    GeometryColumnCapability::Curves
+  };
 }
 
 void QgsMssqlProviderConnection::dropTablePrivate( const QString &schema, const QString &name ) const

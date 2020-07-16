@@ -877,6 +877,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             const QString schemaName { dlg.schemaName() };
             const QString geometryColumn { dlg.geometryColumnName() };
             const QgsWkbTypes::Type geometryType { dlg.geometryType() };
+            const bool createSpatialIndex { dlg.createSpatialIndex() };
             const QgsCoordinateReferenceSystem crs { dlg.crs( ) };
             // This flag tells to the provider that field types do not need conversion
             QMap<QString, QVariant> options { { QStringLiteral( "skipConvertFields" ), true } };
@@ -892,6 +893,10 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             try
             {
               conn2->createVectorTable( schemaName, tableName, fields, geometryType, crs, true, &options );
+              if ( createSpatialIndex && conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateSpatialIndex ) )
+              {
+                conn2->createSpatialIndex( schemaName, tableName );
+              }
               // Ok, here is the trick: we cannot refresh the connection item because the refresh is not
               // recursive.
               // So, we check if the item is a schema or not, if it's not it means we initiated the new table from

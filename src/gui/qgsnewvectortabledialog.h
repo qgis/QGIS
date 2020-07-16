@@ -111,6 +111,12 @@ class GUI_EXPORT QgsNewVectorTableDialog : public QDialog, private Ui_QgsNewVect
     void setFields( const QgsFields &fields );
 
     /**
+     * Returns TRUE if spatialindex checkbox is cheched
+     * @return
+     */
+    bool createSpatialIndex();
+
+    /**
      * Returns the validation errors or an empty list if the dialog is valid
      */
     QStringList validationErrors() const;
