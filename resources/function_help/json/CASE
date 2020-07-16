@@ -9,6 +9,7 @@
    {"arg":"ELSE result","description":"If none of the above conditions evaluated to True then <i>result</i> is evaluated and returned."}
   ],
   "examples": [
-   { "expression":"CASE WHEN \"column\" IS NULL THEN 'None' END", "returns":" Returns the string 'none' if the \"column\" field is NULL"}
+   { "expression":"CASE WHEN \"name\" IS NULL THEN 'None' END", "returns":" Returns the string 'none' if the \"name\" field is NULL"},
+   { "expression":"CASE WHEN $area > 10000 THEN 'Big property' WHEN $area > 5000 THEN 'Medium property' ELSE 'Small property' END", "returns":" Returns the string 'Big property' if the area is bigger than 10000, 'Medium property' if the area is between 5000 and 10000, and 'Small property' for others"}
   ]
 }
