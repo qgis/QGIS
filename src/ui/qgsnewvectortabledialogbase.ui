@@ -255,7 +255,7 @@
      <item>
       <widget class="QPushButton" name="mDeleteFieldBtn">
        <property name="text">
-        <string>Delete field</string>
+        <string>Remove Field</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
