@@ -38,6 +38,7 @@ class QgsVectorLayer;
 class QgsPolygon3DSymbol;
 class QgsLine3DSymbol;
 class QgsPoint3DSymbol;
+class QgsMeshEntity;
 
 /**
  * \brief The Qgs3DSceneExporter class
@@ -104,11 +105,15 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     QgsTerrainTileEntity *getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
     //! Returns a tile entity that contains the geometry to be exported and necessary scaling parameters
     QgsTerrainTileEntity *getDemTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
+    //! Returns a tile entity that contains the geometry to be exported and necessary scaling parameters
+    QgsTerrainTileEntity *getMeshTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
 
     //! Constructs a Qgs3DExportObject from the DEM tile entity
     void parseDemTile( QgsTerrainTileEntity *tileEntity );
     //! Constructs a Qgs3DExportObject from the flat tile entity
     void parseFlatTile( QgsTerrainTileEntity *tileEntity );
+    //! Constructs a Qgs3DExportObject from the mesh terrain entity
+    void parseMeshTile( QgsTerrainTileEntity *meshEntity );
 
     QString getObjectName( const QString &name );
   private:

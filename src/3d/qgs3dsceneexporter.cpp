@@ -42,6 +42,7 @@
 #include <Qt3DExtras/QTorusGeometry>
 #include <Qt3DExtras/QExtrudedTextMesh>
 #include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DRender/QBufferDataGenerator>
 
 #include <QByteArray>
 #include <QFile>
@@ -61,7 +62,6 @@
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsmesh3dgeometry_p.h"
-#include <Qt3DRender/qbufferdatagenerator.h>
 #include "qgsmeshlayer.h"
 #include "qgsmesh3dentity_p.h"
 #include "qgsmeshterraingenerator.h"
@@ -178,7 +178,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
 
   if ( rendererType == "mesh" )
   {
-    // TODO: handle mesh layer
+    // TODO: handle mesh layers
   }
   else
   {
@@ -274,7 +274,6 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
         else
         {
           QVector<Qgs3DExportObject *> objects = processInstancedPointGeometry( entity, pointSymbol );
-          qDebug() << "Instanced geometries count: " << objects.size();
           mObjects << objects;
           return true;
         }
@@ -292,20 +291,23 @@ void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain )
   QgsTerrainGenerator *generator = settings.terrainGenerator();
   QgsTerrainTileEntity *terrainTile = nullptr;
   QgsTerrainTextureGenerator *textureGenerator = terrain->textureGenerator();
+  textureGenerator->waitForFinished();
   QSize oldResolution = textureGenerator->textureSize();
   textureGenerator->setTextureSize( QSize( mTerrainTextureResolution, mTerrainTextureResolution ) );
   switch ( generator->type() )
   {
     case QgsTerrainGenerator::Dem:
       terrainTile = getDemTerrainEntity( terrain, node );
-      this->parseDemTile( terrainTile );
+      parseDemTile( terrainTile );
       break;
     case QgsTerrainGenerator::Flat:
       terrainTile = getFlatTerrainEntity( terrain, node );
-      this->parseFlatTile( terrainTile );
+      parseFlatTile( terrainTile );
       break;
     // TODO: implement other terrain types
     case QgsTerrainGenerator::Mesh:
+      terrainTile = getMeshTerrainEntity( terrain, node );
+      parseMeshTile( terrainTile );
       break;
     case QgsTerrainGenerator::Online:
       break;
@@ -335,6 +337,16 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity 
   generator->heightMapGenerator()->waitForFinished();
   if ( mExportTextures )
     terrain->textureGenerator()->waitForFinished();
+  QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
+  delete generator;
+  return tileEntity;
+}
+
+QgsTerrainTileEntity *Qgs3DSceneExporter::getMeshTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node )
+{
+  QgsMeshTerrainGenerator *generator = dynamic_cast<QgsMeshTerrainGenerator *>( terrain->map3D().terrainGenerator() );;
+  QgsMeshTerrainTileLoader *loader = qobject_cast<QgsMeshTerrainTileLoader *>( generator->createChunkLoader( node ) );
+  // TODO: export textures
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
   delete generator;
   return tileEntity;
@@ -443,6 +455,17 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
     QgsTerrainTextureImage *textureImage = tileEntity->textureImage();
     QImage img = textureImage->getImage();
     object->setTextureImage( img );
+  }
+}
+
+void Qgs3DSceneExporter::parseMeshTile( QgsTerrainTileEntity *tileEntity )
+{
+  QList<Qt3DRender::QGeometryRenderer *> renderers = tileEntity->findChildren<Qt3DRender::QGeometryRenderer *>();
+  for ( Qt3DRender::QGeometryRenderer *renderer : renderers )
+  {
+    Qgs3DExportObject *obj = processGeometryRenderer( renderer );
+    if ( obj == nullptr ) continue;
+    mObjects << obj;
   }
 }
 

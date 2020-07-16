@@ -32,6 +32,7 @@
 //! Chunk loader for mesh terrain implementation
 class QgsMeshTerrainTileLoader: public QgsTerrainTileLoader
 {
+    Q_OBJECT
   public:
     //! Construct the loader for a node
     QgsMeshTerrainTileLoader( QgsTerrainEntity *terrain,
