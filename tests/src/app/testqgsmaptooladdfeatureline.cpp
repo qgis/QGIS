@@ -67,6 +67,7 @@ class TestQgsMapToolAddFeatureLine : public QObject
     void testTracing();
     void testTracingWithOffset();
     void testTracingWithConvertToCurves();
+    void testTracingWithConvertToCurvesCustomTolerance();
     void testZ();
     void testZMSnapping();
     void testTopologicalEditingZ();
@@ -81,6 +82,7 @@ class TestQgsMapToolAddFeatureLine : public QObject
     QgsMapToolAddFeature *mCaptureTool = nullptr;
     QgsVectorLayer *mLayerLine = nullptr;
     QgsVectorLayer *mLayerLineCurved = nullptr;
+    QgsVectorLayer *mLayerLineCurvedOffset = nullptr;
     QgsVectorLayer *mLayerLineZ = nullptr;
     QgsVectorLayer *mLayerPointZM = nullptr;
     QgsVectorLayer *mLayerTopoZ = nullptr;
@@ -131,7 +133,7 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   // just one added feature
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
 
-  // make testing layers
+  // make testing layers for tracing curves
   mLayerLineCurved = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "curved layer line" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerLineCurved->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineCurved );
@@ -146,6 +148,22 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
 
   // just one added feature
   QCOMPARE( mLayerLineCurved->undoStack()->index(), 1 );
+
+  // make testing layers for tracing curves with offset
+  mLayerLineCurvedOffset = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "curved layer line" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerLineCurvedOffset->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineCurvedOffset );
+
+  QgsFeature curveF2;
+  curveF2.setGeometry( QgsGeometry::fromWkt( "CIRCULARSTRING(100000006 100000001, 100000006.5 100000001.5, 100000007 100000001)" ) );
+
+  mLayerLineCurvedOffset->startEditing();
+  mLayerLineCurvedOffset->addFeature( curveF2 );
+  mFidCurvedF1 = curveF2.id();
+  QCOMPARE( mLayerLineCurvedOffset->featureCount(), ( long )1 );
+
+  // just one added feature
+  QCOMPARE( mLayerLineCurvedOffset->undoStack()->index(), 1 );
 
   // make testing layers
   mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer line Z" ), QStringLiteral( "memory" ) );
@@ -218,7 +236,7 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   mLayerSelfSnapLine->startEditing();
 
   // add layers to canvas
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineZ << mLayerPointZM << mLayerTopoZ << mLayerLine2D << mLayerSelfSnapLine );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineCurvedOffset << mLayerLineZ << mLayerPointZM << mLayerTopoZ << mLayerLine2D << mLayerSelfSnapLine );
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
   // create the tool
@@ -438,6 +456,72 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
   QCOMPARE( mLayerLineCurved->undoStack()->index(), 1 );
 
   mEnableTracingAction->setChecked( false );
+}
+
+
+void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance()
+{
+  // Exactly the same as testTracingWithConvertToCurves but far from the origin
+  // At this distance, the arcs aren't correctly detected with the default tolerance
+  double offset = 100000000; // remember to change the feature geometry accordingly in initTestCase (sic)
+
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve_angle_tolerance" ), 1e-5 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve_distance_tolerance" ), 1e-5 );
+
+  mCanvas->setExtent( QgsRectangle( offset + 0, offset + 0, offset + 8, offset + 8 ) );
+  QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( offset + 0, offset + 0, offset + 8, offset + 8 ) );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mCanvas->setCurrentLayer( mLayerLineCurvedOffset );
+
+  // enable snapping and tracing
+  mEnableTracingAction->setChecked( true );
+
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+
+  // tracing enabled - without converting to curves
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false );
+
+  utils.mouseClick( offset + 6, offset + 1, Qt::LeftButton );
+  utils.mouseClick( offset + 7, offset + 1, Qt::LeftButton );
+  utils.mouseClick( offset + 7, offset + 1, Qt::RightButton );
+
+  QgsFeatureId newFid1 = utils.newFeatureId( oldFids );
+
+  const QgsAbstractGeometry *g = mLayerLineCurvedOffset->getFeature( newFid1 ).geometry().constGet();
+  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( offset + 6, offset + 1 ) );
+  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, g->vertexCount() - 1 ) ), QgsPoint( offset + 7, offset + 1 ) );
+  QVERIFY( g->vertexCount() > 3 );  // a segmentized arc has (much) more than 3 points
+
+  mLayerLineCurvedOffset->undoStack()->undo();
+
+  // we redo the same with convert to curves enabled
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), true );
+
+  // tracing enabled - without converting to curves
+  utils.mouseClick( offset + 6, offset + 1, Qt::LeftButton );
+  utils.mouseClick( offset + 7, offset + 1, Qt::LeftButton );
+  utils.mouseClick( offset + 7, offset + 1, Qt::RightButton );
+
+  QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
+
+  g = mLayerLineCurvedOffset->getFeature( newFid2 ).geometry().constGet();
+  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( offset + 6, offset + 1 ) );
+  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, g->vertexCount() - 1 ) ), QgsPoint( offset + 7, offset + 1 ) );
+  QVERIFY( g->vertexCount() == 3 );  // a true arc is composed of 3 vertices
+
+  mLayerLineCurvedOffset->undoStack()->undo();
+
+  // no other unexpected changes happened
+  QCOMPARE( mLayerLineCurvedOffset->undoStack()->index(), 1 );
+
+  mEnableTracingAction->setChecked( false );
+
+  // restore the extent
+  mCanvas->setExtent( QgsRectangle( 0, 0, 8, 8 ) );
+  QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
+
 }
 
 void TestQgsMapToolAddFeatureLine::testZ()
