@@ -322,7 +322,7 @@ void QgsNewVectorTableDialog::validate()
   // No geometry and no fields? No party!
   if ( ! isSpatial && mFieldModel->fields().count() == 0 )
   {
-    mValidationErrors.push_back( tr( "The table has no geometry column and no fields: cannot create and empty table!" ) );
+    mValidationErrors.push_back( tr( "The table has no geometry column and no fields: cannot create an empty table!" ) );
   }
 
   const bool isValid { mValidationErrors.isEmpty() };
