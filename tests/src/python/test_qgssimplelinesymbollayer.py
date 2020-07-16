@@ -160,6 +160,7 @@ class TestQgsSimpleLineSymbolLayer(unittest.TestCase):
         s.symbolLayer(0).setPenStyle(Qt.DashDotDotLine)
         s.symbolLayer(0).setAlignDashPattern(True)
         s.symbolLayer(0).setTweakDashPatternOnCorners(True)
+        s.symbolLayer(0).setPenJoinStyle(Qt.RoundJoin)
 
         g = QgsGeometry.fromWkt('LineString(0 0, 2 1, 3 1, 10 0, 10 10, 5 5)')
         rendered_image = self.renderGeometry(s, g)

@@ -298,6 +298,17 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         res = QgsSymbolLayerUtils.polylineSubstring(QPolygonF([QPointF(11, 2), QPointF(11, 12), QPointF(111, 12)]), 1, -90)
         self.assertEqual([p for p in res], [QPointF(11, 3), QPointF(11, 12), QPointF(21, 12)])
 
+    def testAppendPolyline(self):
+        line = QPolygonF([QPointF(11, 2), QPointF(11, 12), QPointF(111, 12)])
+        line2 = QPolygonF([QPointF(111, 12), QPointF(111, 12), QPointF(111, 14), QPointF(111, 15)])
+        QgsSymbolLayerUtils.appendPolyline(line, line2)
+        self.assertEqual([p for p in line], [QPointF(11.0, 2.0), QPointF(11.0, 12.0), QPointF(111.0, 12.0), QPointF(111.0, 14.0), QPointF(111.0, 15.0)])
+
+        line = QPolygonF([QPointF(11, 2), QPointF(11, 12), QPointF(111, 12)])
+        line2 = QPolygonF([QPointF(111, 14), QPointF(111, 15)])
+        QgsSymbolLayerUtils.appendPolyline(line, line2)
+        self.assertEqual([p for p in line], [QPointF(11.0, 2.0), QPointF(11.0, 12.0), QPointF(111.0, 12.0), QPointF(111.0, 14.0), QPointF(111.0, 15.0)])
+
 
 if __name__ == '__main__':
     unittest.main()

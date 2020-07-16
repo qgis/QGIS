@@ -718,7 +718,7 @@ void QgsSimpleLineSymbolLayer::drawPathWithDashPatternTweaks( QPainter *painter,
       // add first dash from current buffer
       QPolygonF firstDashSubstring = QgsSymbolLayerUtils::polylineSubstring( bufferedPoints, 0, compressed.first() * scaleFactor );
       if ( !firstDashSubstring.empty() )
-        previousSegmentBuffer << firstDashSubstring;
+        QgsSymbolLayerUtils::appendPolyline( previousSegmentBuffer, firstDashSubstring );
 
       // then we skip over the first dash and gap for this segment
       bufferedPoints = QgsSymbolLayerUtils::polylineSubstring( bufferedPoints, ( compressed.first() + compressed.at( 1 ) ) * scaleFactor, 0 );
