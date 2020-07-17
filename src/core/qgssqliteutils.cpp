@@ -22,7 +22,7 @@
 #include <QVariant>
 #include <QSet>
 
-// Temporary solution until GDAL Unique suppport is available
+// Temporary solution until GDAL Unique support is available
 #include <regex>
 #include <sstream>
 #include <algorithm>

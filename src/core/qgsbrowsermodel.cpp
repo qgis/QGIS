@@ -776,7 +776,7 @@ QgsDataItem *QgsBrowserModel::addProviderRootItem( QgsDataItemProvider *pr )
   QgsDataItem *item = pr->createDataItem( QString(), nullptr );  // empty path -> top level
   if ( item )
   {
-    // make sure the top level key is set always
+    // make sure the top level key is always set
     item->setProviderKey( pr->name() );
     // Forward the signal from the root items to the model (and then to the app)
     connect( item, &QgsDataItem::connectionsChanged, this, &QgsBrowserModel::onConnectionsChanged );

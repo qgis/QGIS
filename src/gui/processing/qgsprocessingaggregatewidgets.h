@@ -51,7 +51,7 @@ class GUI_EXPORT QgsAggregateMappingModel: public QAbstractTableModel
     {
       SourceExpression,       //!< Expression
       Aggregate,              //!< Aggregate name
-      Delimiter,              //!< Delimeter
+      Delimiter,              //!< Delimiter
       DestinationName,        //!< Destination field name
       DestinationType,        //!< Destination field QVariant::Type casted to (int)
       DestinationLength,      //!< Destination field length

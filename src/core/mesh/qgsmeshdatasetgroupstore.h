@@ -44,7 +44,7 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
     //! Returns whether if the dataset groups have temporal capabilities (a least one dataset group with more than one dataset)
     bool hasTemporalCapabilities() const;
 
-    //! Returns the relative times of the dataset index with \a index, returned value in miliseconds
+    //! Returns the relative times of the dataset index with \a index, returned value in milliseconds
     quint64 datasetRelativeTime( QgsMeshDatasetIndex index );
 
     int datasetGroupCount() const override;
@@ -96,10 +96,10 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
  * This storing class has the repsonsability to assign this unique grlobal dataset group index and to link this dataset group index with the dataset group
  *
  * All dataset values or information needed can be retrieved from a QgsMeshDatasetIndex with the group index corresponding to the global group index.
- * The native group index is not exposed and global index can be obtained with datasetGroupIndexes() that returns the list of gloabl index available.
+ * The native group index is not exposed and global index can be obtained with datasetGroupIndexes() that returns the list of global index available.
  * The dataset index is the same than in the native source (data provider or other dataset source)
  *
- * This class as also the responsability to handle the dataset group tree item that contain information to display the available dataset (\see QgsMeshDatasetGroupTreeItem)
+ * This class as also the responsibility to handle the dataset group tree item that contain information to display the available dataset (\see QgsMeshDatasetGroupTreeItem)
  *
  * \since QGIS 3.16
  */
@@ -181,7 +181,7 @@ class QgsMeshDatasetGroupStore: public QObject
     //! Returns the relative time of the dataset from the persistent provider reference time
     quint64 datasetRelativeTime( const QgsMeshDatasetIndex &index ) const;
 
-    //! Returns wether at lea&st one of stored dataset group is temporal
+    //! Returns whether at lea&st one of stored dataset group is temporal
     bool hasTemporalCapabilities() const;
 
     //! Writes the store's information in a DOM document
@@ -191,7 +191,7 @@ class QgsMeshDatasetGroupStore: public QObject
     void readXml( const QDomElement &storeElem, const QgsReadWriteContext &context );
 
   signals:
-    //! emited after dataset groups are added
+    //! Emitted after dataset groups are added
     void datasetGroupsAdded( QList<int> indexes );
 
   private slots:
@@ -213,7 +213,7 @@ class QgsMeshDatasetGroupStore: public QObject
     int nativeIndexToGroupIndex( QgsMeshDatasetSourceInterface *source, int providerIndex );
     void createDatasetGroupTreeItems( const QList<int> &indexes );
 
-    //! Erases from the where this is store, not from the store (registry and tree item), for peristent dataset group, do nothing
+    //! Erases from the where this is store, not from the store (registry and tree item), for persistent dataset group, do nothing
     void eraseDatasetGroup( const DatasetGroup &group );
 
     //! Erases from the extra store but not from the main store (e.g. from egistry and from tree item))

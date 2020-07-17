@@ -587,7 +587,7 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
                                  int index );
 
     /**
-     * Constructor from a DOM element, contruct also the children
+     * Constructor from a DOM element, constructs also the children
      *
      * \param itemElement the DOM element
      * \param context writing context (e.g. for conversion between relative and absolute paths)
@@ -595,7 +595,7 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
     QgsMeshDatasetGroupTreeItem( const QDomElement &itemElement, const QgsReadWriteContext &context );
 
     /**
-     * Destructor, destructs also the chilren
+     * Destructor, destructs also the children
      *
     */
     ~QgsMeshDatasetGroupTreeItem();
@@ -628,7 +628,7 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
     /**
      * Returns a child
      * \param row the position of the child
-     * \return the item at the positon \a row
+     * \return the item at the position \a row
      */
     QgsMeshDatasetGroupTreeItem *child( int row ) const;
 
@@ -667,7 +667,7 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
 
     /**
      * Returns the name of the item
-     * This mame is the default name if the name has not been overrided (\see setName())
+     * This name is the default name if the name has not been overridden (\see setName())
      * \return the name to display
      */
     QString name() const;
@@ -675,7 +675,7 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
     /**
      * Overrides the default name with the name to display.
      * The default name is still stored in the item
-     * but will not be displayed anymore except if the empty string is setted.
+     * but will not be displayed anymore except if the empty string is set.
      * \param name to display
      */
     void setName( const QString &name );

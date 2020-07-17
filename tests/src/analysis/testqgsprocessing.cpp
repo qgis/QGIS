@@ -9591,7 +9591,7 @@ void TestQgsProcessing::modelExecution()
   QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_maxx" ).value.toDouble(), -83.3333, 0.001 );
   QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_maxy" ).value.toDouble(), 46.8719, 0.001 );
 
-  // test safe name of the child alg parameter as source to another algoritmn
+  // test safe name of the child alg parameter as source to another algorithm
   // parameter name should have [\s ' ( ) : .] chars changed to "_" (regexp [\\s'\"\\(\\):\.])
   // this case is esecially important in case of grass algs where name algorithm contains "."
   // name of the variable is get from childDescription or childId. Refs https://github.com/qgis/QGIS/issues/36377

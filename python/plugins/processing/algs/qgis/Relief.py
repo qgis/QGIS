@@ -170,6 +170,6 @@ class Relief(QgisAlgorithm):
         elif res == 6:
             raise QgsProcessingException(self.tr('Output raster size is too small (at least 3 rows needed).'))
         elif res == 7:
-            feedback.pushInfo(self.tr('Cancelled.'))
+            feedback.pushInfo(self.tr('Canceled.'))
 
         return {self.OUTPUT: outputFile, self.FREQUENCY_DISTRIBUTION: frequencyDistribution}

@@ -135,7 +135,7 @@ Sets the layer ``type`` to filter the model by. This is only used if
 
     void setHiddenDataItemProviderKeyFilter( const QStringList &hiddenItemsFilter );
 %Docstring
-Sets a filter to hide data items based on on item's data item provider key.
+Sets a filter to hide data items based on :py:func:`QgsDataItem.providerKey()` associated with the item.
 
 By default browser model shows all items from all available data item providers and few special
 items (e.g. Favorites).
@@ -153,7 +153,7 @@ This filter is always evaluated.
 
     void setShownDataItemProviderKeyFilter( const QStringList &shownItemsFilter );
 %Docstring
-Sets a filter to show data items based on on item's data item provider key.
+Sets a filter to show data items based on :py:func:`QgsDataItem.providerKey()` associated with the item.
 
 By default browser model shows all items from all available data item providers and few special
 items (e.g. Favorites).

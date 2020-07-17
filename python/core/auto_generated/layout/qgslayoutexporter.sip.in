@@ -198,7 +198,7 @@ Constructor for PdfExportSettings
 
       bool writeGeoPdf;
 
-      bool exportLayersAsSeperateFiles;
+      bool exportLayersAsSeparateFiles;
 
       bool useIso32000ExtensionFormatGeoreferencing;
 

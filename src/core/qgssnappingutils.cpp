@@ -350,7 +350,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
         }
         // We keep the maximum tolerance for intersection snapping and extra snapping
         maxTolerance = std::max( maxTolerance, tolerance );
-        // To avoid yet an additionnal setting, on extra snappings, we use the combination of all enabled snap types
+        // To avoid yet an additional setting, on extra snappings, we use the combination of all enabled snap types
         maxTypes = static_cast<QgsPointLocator::Type>( maxTypes | layerConfig.type );
       }
     }

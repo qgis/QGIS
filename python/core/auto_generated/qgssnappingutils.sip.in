@@ -171,7 +171,7 @@ Set if invisible features must be snapped or not.
     void addExtraSnapLayer( QgsVectorLayer *vl );
 %Docstring
 Supply an extra snapping layer (typically a memory layer).
-This can be used by map tools to provide additionnal
+This can be used by map tools to provide additional
 snappings points.
 
 .. seealso:: :py:func:`removeExtraSnapLayer`

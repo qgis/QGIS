@@ -345,7 +345,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
       Link = 1 << 1, //!< Link button
       Unlink = 1 << 2, //!< Unlink button
       SaveChildEdits = 1 << 3, //!< Save child edits button
-      AddChildFeature = 1 << 4, //!< Add child feature (as in some projects we only want to allow to link/unlink existing features)
+      AddChildFeature = 1 << 4, //!< Add child feature (as in some projects we only want to allow linking/unlinking existing features)
       DuplicateChildFeature = 1 << 5, //!< Duplicate child feature
       DeleteChildFeature = 1 << 6, //!< Delete child feature button
       ZoomToChildFeature = 1 << 7, //!< Zoom to child feature
