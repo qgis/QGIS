@@ -41,6 +41,7 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsprovidermetadata.h"
 #include "qgsnewvectortabledialog.h"
+#include "qgsdataitemproviderregistry.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -832,7 +833,9 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
   {
     if ( QgsDataCollectionItem * collectionItem { qobject_cast<QgsDataCollectionItem *>( item ) } )
     {
-      QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( collectionItem->providerKey() ) };
+      // This is super messy: we need the QgsDataProvider key and NOT the QgsDataItemProvider key!
+      const QString dataProviderKey { QgsApplication::dataItemProviderRegistry()->dataProviderKey( collectionItem->providerKey() ) };
+      QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( dataProviderKey ) };
       if ( md )
       {
         const bool isSchema { qobject_cast<QgsDatabaseSchemaItem *>( item ) };
@@ -874,7 +877,14 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
                 conn2->createVectorTable( schemaName, tableName, fields, geometryType, crs, true, &options );
                 if ( createSpatialIndex && conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateSpatialIndex ) )
                 {
-                  conn2->createSpatialIndex( schemaName, tableName );
+                  try
+                  {
+                    conn2->createSpatialIndex( schemaName, tableName );
+                  }
+                  catch ( QgsProviderConnectionException &ex )
+                  {
+                    notify( QObject::tr( "Create Spatial Index" ), QObject::tr( "Could not create spatial index for table '%1':%2." ).arg( tableName, ex.what() ), context, Qgis::MessageLevel::Warning );
+                  }
                 }
                 // Ok, here is the trick: we cannot refresh the connection item because the refresh is not
                 // recursive.
