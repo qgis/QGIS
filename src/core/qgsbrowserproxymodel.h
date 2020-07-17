@@ -144,7 +144,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     void setLayerType( QgsMapLayerType type );
 
     /**
-     * Sets a filter to hide data items based on on item's data item provider key.
+     * Sets a filter to hide data items based on QgsDataItem::providerKey() associated with the item.
      *
      * By default browser model shows all items from all available data item providers and few special
      * items (e.g. Favorites).
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     void setHiddenDataItemProviderKeyFilter( const QStringList &hiddenItemsFilter );
 
     /**
-     * Sets a filter to show data items based on on item's data item provider key.
+     * Sets a filter to show data items based on QgsDataItem::providerKey() associated with the item.
      *
      * By default browser model shows all items from all available data item providers and few special
      * items (e.g. Favorites).
