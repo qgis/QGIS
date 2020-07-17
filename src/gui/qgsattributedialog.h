@@ -99,7 +99,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      * Sets \a extraScope as an additional expression context scope to be used
      * for calculations in this form.
      *
-     * \since QGIS 3.16
+     * \since QGIS 3.14.1
      */
     void setExtraContextScope( QgsExpressionContextScope *extraScope SIP_TRANSFER );
 
