@@ -1,5 +1,5 @@
 {
   "name": "Processing",
   "type": "group",
-  "description": "This group contains functions that operate exclusively under the processing algorithms context."
+  "description": "This group contains functions that are only available in the processing algorithms context."
 }
