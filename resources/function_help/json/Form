@@ -1,5 +1,5 @@
 {
   "name": "Form",
   "type": "group",
-  "description": "This group contains functions that operate exclusively under the attribute form context. For example, in field's widgets settings."
+  "description": "This group contains functions that are only available in the attribute form context. For example, in field widget settings."
 }
