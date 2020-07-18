@@ -60,7 +60,7 @@ defaultMenuEntries.update({'native:creategrid': researchToolsMenu,
                            'qgis:randompointsinlayerbounds': researchToolsMenu,
                            'native:randompointsinpolygons': researchToolsMenu,
                            'qgis:randompointsinsidepolygons': researchToolsMenu,
-                           'qgis:randompointsonlines': researchToolsMenu,
+                           'native:randompointsonlines': researchToolsMenu,
                            'qgis:regularpoints': researchToolsMenu,
                            'native:selectbylocation': researchToolsMenu,
                            'native:polygonfromlayerextent': researchToolsMenu})
