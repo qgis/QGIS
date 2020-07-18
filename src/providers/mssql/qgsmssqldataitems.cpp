@@ -600,6 +600,12 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
   return layerItem;
 }
 
+void QgsMssqlSchemaItem::refresh()
+{
+  if ( parent() )
+    parent()->refresh();
+}
+
 
 QVector<QgsDataItem *> QgsMssqlLayerItem::createChildren()
 {

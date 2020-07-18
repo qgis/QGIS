@@ -105,7 +105,7 @@ class QgsMssqlSchemaItem : public QgsDatabaseSchemaItem
     QVector<QgsDataItem *> createChildren() override;
 
     QgsMssqlLayerItem *addLayer( const QgsMssqlLayerProperty &layerProperty, bool refresh );
-    void refresh() override {} // do not refresh directly
+    void refresh() override; // do not refresh directly (call parent)
     void addLayers( QgsDataItem *newLayers );
 
   public:
