@@ -516,7 +516,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>mButtonBox</sender>
    <signal>accepted()</signal>
    <receiver>QgsVectorLayerSaveAsDialogBase</receiver>
    <slot>accept()</slot>
@@ -532,7 +532,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>mButtonBox</sender>
    <signal>rejected()</signal>
    <receiver>QgsVectorLayerSaveAsDialogBase</receiver>
    <slot>reject()</slot>
