@@ -838,7 +838,8 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
       QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( dataProviderKey ) };
       if ( md )
       {
-        const bool isSchema { qobject_cast<QgsDatabaseSchemaItem *>( item ) };
+        // Note: we could have used layerCollection() but casting to QgsDatabaseSchemaItem is more explicit
+        const bool isSchema { qobject_cast<QgsDatabaseSchemaItem *>( item ) != nullptr };
         const QString connectionName { isSchema ? collectionItem->parent()->name() : collectionItem->name() };
         std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionName ) ) );
         if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateVectorTable ) )
