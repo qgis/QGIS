@@ -222,55 +222,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   mConnectionRO->PQexecNR( QStringLiteral( "set client_min_messages to error" ) );
 #endif
 
-  //fill type names into sets
-  QList<NativeType> nativeTypes;
-
-  nativeTypes     // integer types
-      << QgsVectorDataProvider::NativeType( tr( "Whole number (smallint - 16bit)" ), QStringLiteral( "int2" ), QVariant::Int, -1, -1, 0, 0 )
-      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 32bit)" ), QStringLiteral( "int4" ), QVariant::Int, -1, -1, 0, 0 )
-      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64bit)" ), QStringLiteral( "int8" ), QVariant::LongLong, -1, -1, 0, 0 )
-      << QgsVectorDataProvider::NativeType( tr( "Decimal number (numeric)" ), QStringLiteral( "numeric" ), QVariant::Double, 1, 20, 0, 20 )
-      << QgsVectorDataProvider::NativeType( tr( "Decimal number (decimal)" ), QStringLiteral( "decimal" ), QVariant::Double, 1, 20, 0, 20 )
-
-      // floating point
-      << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "real" ), QVariant::Double, -1, -1, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "double precision" ), QVariant::Double, -1, -1, -1, -1 )
-
-      // string types
-      << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), QStringLiteral( "char" ), QVariant::String, 1, 255, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), QStringLiteral( "varchar" ), QVariant::String, 1, 255, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Text, case-insensitive unlimited length (citext)" ), QStringLiteral( "citext" ), QVariant::String, -1, -1, -1, -1 )
-
-      // date type
-      << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "timestamp without time zone" ), QVariant::DateTime, -1, -1, -1, -1 )
-
-      // complex types
-      << QgsVectorDataProvider::NativeType( tr( "Map (hstore)" ), QStringLiteral( "hstore" ), QVariant::Map, -1, -1, -1, -1, QVariant::String )
-      << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 32bit)" ), QStringLiteral( "int4[]" ), QVariant::List, -1, -1, -1, -1, QVariant::Int )
-      << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 64bit)" ), QStringLiteral( "int8[]" ), QVariant::List, -1, -1, -1, -1, QVariant::LongLong )
-      << QgsVectorDataProvider::NativeType( tr( "Array of number (double)" ), QStringLiteral( "double precision[]" ), QVariant::List, -1, -1, -1, -1, QVariant::Double )
-      << QgsVectorDataProvider::NativeType( tr( "Array of text" ), QStringLiteral( "text[]" ), QVariant::StringList, -1, -1, -1, -1, QVariant::String )
-
-      // boolean
-      << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
-
-      // binary (bytea)
-      << QgsVectorDataProvider::NativeType( tr( "Binary object (bytea)" ), QStringLiteral( "bytea" ), QVariant::ByteArray, -1, -1, -1, -1 )
-      ;
-
-  if ( connectionRO()->pgVersion() >= 90200 )
-  {
-    nativeTypes << QgsVectorDataProvider::NativeType( tr( "JSON (json)" ), QStringLiteral( "json" ), QVariant::Map, -1, -1, -1, -1, QVariant::String );
-
-    if ( connectionRO()->pgVersion() >= 90400 )
-    {
-      nativeTypes << QgsVectorDataProvider::NativeType( tr( "JSON (jsonb)" ), QStringLiteral( "jsonb" ), QVariant::Map, -1, -1, -1, -1, QVariant::String );
-    }
-  }
-  setNativeTypes( nativeTypes );
+  setNativeTypes( mConnectionRO->nativeTypes() );
 
   QString key;
   switch ( mPrimaryKeyType )
@@ -4495,7 +4447,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
         continue;
       }
 
-      if ( !convertField( fld, options ) )
+      if ( !( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) && !convertField( fld, options ) )
       {
         if ( errorMessage )
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
@@ -4517,7 +4469,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
     if ( !provider->addAttributes( flist ) )
     {
       if ( errorMessage )
-        *errorMessage = QObject::tr( "Creation of fields failed" );
+        *errorMessage = QObject::tr( "Creation of fields failed:\n%1" ).arg( provider->errors().join( '\n' ) );
 
       return QgsVectorLayerExporter::ErrAttributeCreationFailed;
     }

@@ -88,6 +88,12 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
     Capability::DeleteFieldCascade,
     Capability::AddField
   };
+  mGeometryColumnCapabilities =
+  {
+    GeometryColumnCapability::Z,
+    GeometryColumnCapability::M,
+    GeometryColumnCapability::Curves
+  };
 }
 
 void QgsMssqlProviderConnection::dropTablePrivate( const QString &schema, const QString &name ) const
@@ -488,3 +494,8 @@ QIcon QgsMssqlProviderConnection::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconMssql.svg" ) );
 }
 
+
+QList<QgsVectorDataProvider::NativeType> QgsMssqlProviderConnection::nativeTypes() const
+{
+  return QgsMssqlConnection::nativeTypes();
+}

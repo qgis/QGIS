@@ -20,7 +20,7 @@
 ///@cond PRIVATE
 
 QgsVectorTileRootItem::QgsVectorTileRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "vectortile" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "vectortile" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconVectorTileLayer.svg" );

@@ -21,7 +21,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgswfscapabilities.h"
 
-class QgsWfsRootItem : public QgsDataCollectionItem
+class QgsWfsRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:

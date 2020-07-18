@@ -156,6 +156,7 @@
 %Include auto_generated/qgsnewauxiliaryfielddialog.sip
 %Include auto_generated/qgsnewauxiliarylayerdialog.sip
 %Include auto_generated/qgsnewgeopackagelayerdialog.sip
+%Include auto_generated/qgsnewvectortabledialog.sip
 %Include auto_generated/qgsnewhttpconnection.sip
 %Include auto_generated/qgsnewmemorylayerdialog.sip
 %Include auto_generated/qgsnewnamedialog.sip

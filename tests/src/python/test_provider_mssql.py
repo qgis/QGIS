@@ -23,12 +23,12 @@ from qgis.core import (QgsSettings,
                        QgsGeometry,
                        QgsPointXY,
                        QgsRectangle,
+                       QgsProviderRegistry,
                        NULL,
                        QgsVectorLayerExporter,
                        QgsCoordinateReferenceSystem)
 
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
-from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
 from providertestbase import ProviderTestCase
@@ -58,23 +58,13 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         assert cls.poly_vl.isValid(), cls.poly_vl.dataProvider().error().message()
         cls.poly_provider = cls.poly_vl.dataProvider()
 
-        cls.conn = QSqlDatabase.addDatabase('QODBC')
-        cls.conn.setDatabaseName('testsqlserver')
-        if 'QGIS_MSSQLTEST_DB2' in os.environ:
-            print(os.environ['QGIS_MSSQLTEST_DB2'])
-            cls.conn.setDatabaseName(os.environ['QGIS_MSSQLTEST_DB2'])
-        elif 'QGIS_MSSQLTEST_DB' in os.environ:
-            print(os.environ['QGIS_MSSQLTEST_DB'])
-            cls.conn.setDatabaseName(os.environ['QGIS_MSSQLTEST_DB'])
-        else:
-            cls.conn.setUserName('SA')
-            cls.conn.setPassword('<YourStrong!Passw0rd>')
-
-        assert cls.conn.open(), cls.conn.lastError().text()
-
         # Triggers a segfault in the sql server odbc driver on Travis - TODO test with more recent Ubuntu base image
         if os.environ.get('TRAVIS', '') == 'true':
             del cls.getEditableLayer
+
+        # Use connections API
+        md = QgsProviderRegistry.instance().providerMetadata('mssql')
+        cls.conn_api = md.createConnection(cls.dbconn, {})
 
     @classmethod
     def tearDownClass(cls):
@@ -86,10 +76,8 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
             self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.[{}]'.format(t))
 
     def execSQLCommand(self, sql):
-        self.assertTrue(self.conn)
-        query = QSqlQuery(self.conn)
-        self.assertTrue(query.exec_(sql), sql + ': ' + query.lastError().text())
-        query.finish()
+        self.assertTrue(self.conn_api)
+        self.conn_api.executeSql(sql)
 
     def getSource(self):
         # create temporary table for edit tests

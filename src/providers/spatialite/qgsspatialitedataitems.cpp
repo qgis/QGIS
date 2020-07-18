@@ -162,7 +162,7 @@ bool QgsSLConnectionItem::equal( const QgsDataItem *other )
 // ---------------------------------------------------------------------------
 
 QgsSLRootItem::QgsSLRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "spatialite" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "spatialite" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconSpatialite.svg" );

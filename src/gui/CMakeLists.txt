@@ -493,6 +493,7 @@ SET(QGIS_GUI_SRCS
   qgsnewnamedialog.cpp
   qgsnewvectorlayerdialog.cpp
   qgsnewgeopackagelayerdialog.cpp
+  qgsnewvectortabledialog.cpp
   qgsopacitywidget.cpp
   qgsoptionsdialogbase.cpp
   qgsoptionsdialoghighlightwidget.cpp
@@ -722,10 +723,12 @@ SET(QGIS_GUI_HDRS
   qgsnewauxiliaryfielddialog.h
   qgsnewauxiliarylayerdialog.h
   qgsnewgeopackagelayerdialog.h
+  qgsnewvectortabledialog.h
   qgsnewhttpconnection.h
   qgsnewmemorylayerdialog.h
   qgsnewnamedialog.h
   qgsnewvectorlayerdialog.h
+  qgsnewvectortabledialog.h
   qgsopacitywidget.h
   qgsoptionsdialogbase.h
   qgsoptionsdialoghighlightwidget.h
@@ -1196,6 +1199,7 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsnewvectortabledialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsowssourceselectbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsarcgisservicesourceselectbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h

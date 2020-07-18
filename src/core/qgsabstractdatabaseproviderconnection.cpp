@@ -16,6 +16,7 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsvectorlayer.h"
 #include "qgsexception.h"
+#include "qgslogger.h"
 #include <QVariant>
 #include <QObject>
 
@@ -33,6 +34,11 @@ QgsAbstractDatabaseProviderConnection::QgsAbstractDatabaseProviderConnection( co
 QgsAbstractDatabaseProviderConnection::Capabilities QgsAbstractDatabaseProviderConnection::capabilities() const
 {
   return mCapabilities;
+}
+
+QgsAbstractDatabaseProviderConnection::GeometryColumnCapabilities QgsAbstractDatabaseProviderConnection::geometryColumnCapabilities()
+{
+  return mGeometryColumnCapabilities;
 }
 
 QString QgsAbstractDatabaseProviderConnection::tableUri( const QString &schema, const QString &name ) const

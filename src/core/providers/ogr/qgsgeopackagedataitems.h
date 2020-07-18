@@ -144,7 +144,7 @@ class CORE_EXPORT QgsGeoPackageConnectionItem final: public QgsGeoPackageCollect
 };
 
 
-class CORE_EXPORT QgsGeoPackageRootItem final: public QgsDataCollectionItem
+class CORE_EXPORT QgsGeoPackageRootItem final: public QgsConnectionsRootItem
 {
     Q_OBJECT
 

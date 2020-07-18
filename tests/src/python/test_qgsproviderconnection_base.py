@@ -401,3 +401,13 @@ class TestPyQgsProviderConnectionBase():
         self.assertEqual(len(changed_spy), 1)
 
         self._test_operations(md, conn)
+
+    def test_native_types(self):
+        """Test native types retrieval"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+        native_types = conn.nativeTypes()
+        names = [nt.mTypeName.lower() for nt in native_types]
+        self.assertTrue('integer' in names or 'decimal' in names, names)
+        self.assertTrue('string' in names or 'text' in names, names)

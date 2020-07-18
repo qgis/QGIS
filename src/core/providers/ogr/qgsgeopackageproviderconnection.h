@@ -46,6 +46,7 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
         const TableFlags &flags = nullptr ) const override;
     QIcon icon() const override;
+    QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
 
   private:
 
@@ -54,6 +55,8 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
     QList<QVariantList> executeGdalSqlPrivate( const QString &sql ) const;
 
 };
+
+
 
 ///@endcond
 #endif // QGSGEOPACKAGEPROVIDERCONNECTION_H

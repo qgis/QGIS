@@ -28,6 +28,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgswkbtypes.h"
 #include "qgsconfig.h"
+#include "qgsvectordataprovider.h"
 
 extern "C"
 {
@@ -344,6 +345,12 @@ class QgsPostgresConn : public QObject
     QString fieldExpression( const QgsField &fld, QString expr = "%1" );
 
     QString connInfo() const { return mConnInfo; }
+
+    /**
+     * Returns a list of supported native types for this connection.
+     * \since QGIS 3.16
+     */
+    QList<QgsVectorDataProvider::NativeType> nativeTypes();
 
     /**
      * Returns the underlying database.

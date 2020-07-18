@@ -149,32 +149,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
   }
 
   //fill type names into sets
-  setNativeTypes( QList<NativeType>()
-                  // integer types
-                  << QgsVectorDataProvider::NativeType( tr( "8 Bytes integer" ), QStringLiteral( "bigint" ), QVariant::Int )
-                  << QgsVectorDataProvider::NativeType( tr( "4 Bytes integer" ), QStringLiteral( "int" ), QVariant::Int )
-                  << QgsVectorDataProvider::NativeType( tr( "2 Bytes integer" ), QStringLiteral( "smallint" ), QVariant::Int )
-                  << QgsVectorDataProvider::NativeType( tr( "1 Bytes integer" ), QStringLiteral( "tinyint" ), QVariant::Int )
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (numeric)" ), QStringLiteral( "numeric" ), QVariant::Double, 1, 20, 0, 20 )
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (decimal)" ), QStringLiteral( "decimal" ), QVariant::Double, 1, 20, 0, 20 )
-
-                  // floating point
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "real" ), QVariant::Double )
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "float" ), QVariant::Double )
-
-                  // date/time types
-                  << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "datetime" ), QVariant::DateTime, -1, -1, -1, -1 )
-
-                  // string types
-                  << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), QStringLiteral( "char" ), QVariant::String, 1, 255 )
-                  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), QStringLiteral( "varchar" ), QVariant::String, 1, 255 )
-                  << QgsVectorDataProvider::NativeType( tr( "Text, fixed length unicode (nchar)" ), QStringLiteral( "nchar" ), QVariant::String, 1, 255 )
-                  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length unicode (nvarchar)" ), QStringLiteral( "nvarchar" ), QVariant::String, 1, 255 )
-                  << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String )
-                  << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length unicode (ntext)" ), QStringLiteral( "text" ), QVariant::String )
-                );
+  setNativeTypes( QgsMssqlConnection::nativeTypes() );
 }
 
 QgsMssqlProvider::~QgsMssqlProvider()
@@ -1864,7 +1839,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
       {
         // found, get the field type
         QgsField fld = fields.at( i );
-        if ( convertField( fld ) )
+        if ( ( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) || convertField( fld ) )
         {
           primaryKeyType = fld.typeName();
         }
@@ -2044,7 +2019,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
         continue;
       }
 
-      if ( !convertField( fld ) )
+      if ( !( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) && !convertField( fld ) )
       {
         if ( errorMessage )
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );

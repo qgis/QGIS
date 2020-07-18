@@ -228,7 +228,7 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
 //
 
 QgsWfsRootItem::QgsWfsRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WFS" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "WFS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconWfs.svg" );

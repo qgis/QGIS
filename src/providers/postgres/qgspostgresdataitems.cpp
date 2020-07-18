@@ -368,7 +368,7 @@ QString QgsPGLayerItem::createUri()
 
 // ---------------------------------------------------------------------------
 QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem *parent, const QString &connectionName, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "PostGIS" ) )
+  : QgsDatabaseSchemaItem( parent, name, path, QStringLiteral( "PostGIS" ) )
   , mConnectionName( connectionName )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
@@ -533,7 +533,7 @@ QVector<QgsDataItem *> QgsPGLayerItem::createChildren()
 
 // ---------------------------------------------------------------------------
 QgsPGRootItem::QgsPGRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "PostGIS" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "PostGIS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconPostgis.svg" );

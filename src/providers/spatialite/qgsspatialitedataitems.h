@@ -49,7 +49,7 @@ class QgsSLConnectionItem : public QgsDataCollectionItem
     bool layerCollection() const override;
 };
 
-class QgsSLRootItem : public QgsDataCollectionItem
+class QgsSLRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:

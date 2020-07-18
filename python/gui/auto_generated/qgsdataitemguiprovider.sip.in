@@ -157,6 +157,15 @@ The function is replacement of :py:func:`QgsDataItem.paramWidget()`
 
 .. versionadded:: 3.10
 %End
+
+    static void notify( const QString &title, const QString &message, QgsDataItemGuiContext context, Qgis::MessageLevel level = Qgis::Info );
+%Docstring
+Notify the user showing a ``message`` with ``title`` and ``level``
+If the context has a message bar the message will be shown in the message bar
+else a message dialog will be used.
+
+.. versionadded:: 3.16
+%End
 };
 
 /************************************************************************

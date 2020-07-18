@@ -50,8 +50,6 @@ using namespace nlohmann;
 
 const QString QgsSpatiaLiteProvider::SPATIALITE_KEY = QStringLiteral( "spatialite" );
 const QString QgsSpatiaLiteProvider::SPATIALITE_DESCRIPTION = QStringLiteral( "SpatiaLite data provider" );
-static const QString SPATIALITE_ARRAY_PREFIX = QStringLiteral( "json" );
-static const QString SPATIALITE_ARRAY_SUFFIX = QStringLiteral( "list" );
 QAtomicInt QgsSpatiaLiteProvider::sSavepointId = 0;
 
 bool QgsSpatiaLiteProvider::convertField( QgsField &field )
@@ -110,7 +108,7 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
       subField.setType( field.subType() );
       subField.setSubType( QVariant::Invalid );
       if ( !convertField( subField ) ) return false;
-      fieldType = SPATIALITE_ARRAY_PREFIX + subField.typeName() + SPATIALITE_ARRAY_SUFFIX;
+      fieldType = QgsSpatiaLiteConnection::SPATIALITE_ARRAY_PREFIX + subField.typeName() + QgsSpatiaLiteConnection::SPATIALITE_ARRAY_SUFFIX;
       fieldSize = subField.length();
       fieldPrec = subField.precision();
       break;
@@ -203,7 +201,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
         {
           // found it, get the field type
           QgsField fld = fields.at( fldIdx );
-          if ( convertField( fld ) )
+          if ( ( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) || convertField( fld ) )
           {
             primaryKeyType = fld.typeName();
           }
@@ -418,7 +416,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
         continue;
       }
 
-      if ( !convertField( fld ) )
+      if ( !( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) && !convertField( fld ) )
       {
         QgsDebugMsg( "error creating field " + fld.name() + ": unsupported type" );
         if ( errorMessage )
@@ -620,18 +618,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
   spatialiteVersion();
 
   //fill type names into sets
-  setNativeTypes( QList<NativeType>()
-                  << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "BLOB" ), QVariant::ByteArray )
-                  << QgsVectorDataProvider::NativeType( tr( "Text" ), QStringLiteral( "TEXT" ), QVariant::String )
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "FLOAT" ), QVariant::Double )
-                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "INTEGER" ), QVariant::LongLong )
-                  << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "DATE" ), QVariant::Date )
-                  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "TIMESTAMP" ), QVariant::DateTime )
-
-                  << QgsVectorDataProvider::NativeType( tr( "Array of text" ), SPATIALITE_ARRAY_PREFIX.toUpper() + "TEXT" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::StringList, 0, 0, 0, 0, QVariant::String )
-                  << QgsVectorDataProvider::NativeType( tr( "Array of decimal numbers (double)" ), SPATIALITE_ARRAY_PREFIX.toUpper() + "REAL" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::Double )
-                  << QgsVectorDataProvider::NativeType( tr( "Array of whole numbers (integer)" ), SPATIALITE_ARRAY_PREFIX.toUpper() + "INTEGER" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::LongLong )
-                );
+  setNativeTypes( QgsSpatiaLiteConnection::nativeTypes() );
 
   // Update extent and feature count
   if ( ! mSubsetString.isEmpty() )
@@ -689,13 +676,13 @@ static TypeSubType getVariantType( const QString &type )
             type == QLatin1String( "double precision" ) ||
             type == QLatin1String( "float" ) )
     return TypeSubType( QVariant::Double, QVariant::Invalid );
-  else if ( type.startsWith( SPATIALITE_ARRAY_PREFIX ) && type.endsWith( SPATIALITE_ARRAY_SUFFIX ) )
+  else if ( type.startsWith( QgsSpatiaLiteConnection::SPATIALITE_ARRAY_PREFIX ) && type.endsWith( QgsSpatiaLiteConnection::SPATIALITE_ARRAY_SUFFIX ) )
   {
     // New versions of OGR convert list types (StringList, IntegerList, Integer64List and RealList)
     // to JSON when it stores a Spatialite table. It sets the column type as JSONSTRINGLIST,
     // JSONINTEGERLIST, JSONINTEGER64LIST or JSONREALLIST
-    TypeSubType subType = getVariantType( type.mid( SPATIALITE_ARRAY_PREFIX.length(),
-                                          type.length() - SPATIALITE_ARRAY_PREFIX.length() - SPATIALITE_ARRAY_SUFFIX.length() ) );
+    TypeSubType subType = getVariantType( type.mid( QgsSpatiaLiteConnection::SPATIALITE_ARRAY_PREFIX.length(),
+                                          type.length() - QgsSpatiaLiteConnection::SPATIALITE_ARRAY_PREFIX.length() - QgsSpatiaLiteConnection::SPATIALITE_ARRAY_SUFFIX.length() ) );
     return TypeSubType( subType.first == QVariant::String ? QVariant::StringList : QVariant::List, subType.first );
   }
   else if ( type == QLatin1String( "jsonarray" ) )

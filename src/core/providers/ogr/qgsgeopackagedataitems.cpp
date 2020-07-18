@@ -67,7 +67,7 @@ QgsDataItem *QgsGeoPackageDataItemProvider::createDataItem( const QString &path,
 }
 
 QgsGeoPackageRootItem::QgsGeoPackageRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "GPKG" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "GPKG" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mGeoPackage.svg" );

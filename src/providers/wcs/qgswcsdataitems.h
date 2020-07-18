@@ -53,7 +53,7 @@ class QgsWCSLayerItem : public QgsLayerItem
     QgsWcsCoverageSummary mCoverageSummary;
 };
 
-class QgsWCSRootItem : public QgsDataCollectionItem
+class QgsWCSRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:

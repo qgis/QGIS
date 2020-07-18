@@ -30,7 +30,7 @@ class QgsPGConnectionItem;
 class QgsPGSchemaItem;
 class QgsPGLayerItem;
 
-class QgsPGRootItem : public QgsDataCollectionItem
+class QgsPGRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:
@@ -67,7 +67,7 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
 
 };
 
-class QgsPGSchemaItem : public QgsDataCollectionItem
+class QgsPGSchemaItem : public QgsDatabaseSchemaItem
 {
     Q_OBJECT
   public:

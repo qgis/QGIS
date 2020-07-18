@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgsfields.h"
 #include "qgsexception.h"
+#include "qgsvectordataprovider.h"
 
 #include <QObject>
 
@@ -271,7 +272,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     };
 
     /**
-     * The Capability enum represent the operations supported by the connection
+     * The Capability enum represents the operations supported by the connection
      */
     enum Capability
     {
@@ -297,10 +298,25 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       DeleteFieldCascade = 1 << 20, //!< Can delete an existing field/column with cascade
       AddField = 1 << 21,           //!< Can add a new field/column
     };
-
     Q_ENUM( Capability )
     Q_DECLARE_FLAGS( Capabilities, Capability )
     Q_FLAG( Capabilities )
+
+    /**
+     * The GeometryColumnCapability enum represents the geomery column features supported by the connection
+     * \since QGIS 3.16
+     */
+    enum GeometryColumnCapability
+    {
+      Z = 1 << 1,                    //! Supports Z dimension
+      M = 1 << 2,                    //! Supports M dimension
+      SinglePart = 1 << 3,           //! Multi and single part types are distinct types
+      Curves = 1 << 4                //! Supports curves
+    };
+
+    Q_ENUM( GeometryColumnCapability )
+    Q_DECLARE_FLAGS( GeometryColumnCapabilities, GeometryColumnCapability )
+    Q_FLAG( GeometryColumnCapabilities )
 
     /**
      * Creates a new connection with \a name by reading its configuration from the settings.
@@ -322,6 +338,12 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * Returns connection capabilities
      */
     Capabilities capabilities() const;
+
+    /**
+     * Returns connection geomerty column capabilities (Z, M, SinglePart, Curves)
+     * \since QGIS 3.16
+     */
+    virtual GeometryColumnCapabilities geometryColumnCapabilities();
 
     // Operations interface
 
@@ -534,6 +556,13 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual QgsFields fields( const QString &schema, const QString &table ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
+     * Returns a list of native types supported by the connection.
+     * \since QGIS 3.16
+     * \throws QgsProviderConnectionException
+     */
+    virtual QList< QgsVectorDataProvider::NativeType > nativeTypes() const SIP_THROW( QgsProviderConnectionException ) = 0;
+
+    /**
      * Returns the provider key
      * \since QGIS 3.16
      */
@@ -551,6 +580,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 ///@endcond
 
     Capabilities mCapabilities = nullptr SIP_SKIP;
+    GeometryColumnCapabilities mGeometryColumnCapabilities = nullptr SIP_SKIP;
     QString mProviderKey;
 
 };

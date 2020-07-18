@@ -139,6 +139,22 @@ class QgsFieldItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 };
 
 
+class QgsDatabaseItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+{
+    Q_OBJECT
+
+  public:
+
+    QgsDatabaseItemGuiProvider() = default;
+
+    QString name() override;
+
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+
+};
+
+
 
 class QgsProjectItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
