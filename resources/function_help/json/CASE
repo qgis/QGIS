@@ -2,9 +2,9 @@
   "name": "CASE",
   "type": "expression",
   "groups": ["Conditionals"],
-  "description": "The CASE expression evaluates several conditions and returns a result when the first condition is met. When a condition is true, it will stop reading and return the corresponding result. If none of the conditions is true, it returns the value in the ELSE clause. Furthermore, if no ELSE clause is set and none of the conditions is met, it returns NULL.<br><pre>CASE<br>WHEN <i>condition</i> THEN <i>result</i><br>[ …n ]<br>[ ELSE <i>result</i> ]<br>END</pre>[ ] marks optional components<br>",
+  "description": "CASE is used to evaluate a series of conditions and return a result for the first condition that is met. The conditions are evaluated sequentially, and if a condition is true, the evaluation will stop, and the corresponding result will be returned. If none of the conditions are true, the value in the ELSE clause is returned. Furthermore, if no ELSE clause is set and none of the conditions are met, NULL is returned.<br><pre>CASE<br>WHEN <i>condition</i> THEN <i>result</i><br>[ …n ]<br>[ ELSE <i>result</i> ]<br>END</pre>[ ] marks optional components<br>",
   "arguments": [
-   {"arg":"WHEN condition","description":"The condition expression to evaluate"},
+   {"arg":"WHEN condition","description":"A condition expression to evaluate"},
    {"arg":"THEN result","description":"If <i>condition</i> evaluates to True then <i>result</i> is evaluated and returned."},
    {"arg":"ELSE result","description":"If none of the above conditions evaluated to True then <i>result</i> is evaluated and returned."}
   ],
