@@ -128,6 +128,18 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
      */
     void setEdgeColor( const QColor &color ) { mEdgeColor = color; }
 
+    /**
+     * Sets which facade of the buildings is rendered (0 for None, 1 for Walls, 2 for Roofs, 3 for WallsAndRoofs)
+     * \since QGIS 3.16
+     */
+    void setRenderedFacade( int side ) { mRenderedFacade = side; }
+
+    /**
+     * Returns which facade of the buildings is rendered (0 for None, 1 for Walls, 2 for Roofs, 3 for WallsAndRoofs)
+     * \since QGIS 3.16
+     */
+    int renderedFacade() const { return mRenderedFacade; }
+
   private:
     //! how to handle altitude of vector features
     Qgs3DTypes::AltitudeClamping mAltClamping = Qgs3DTypes::AltClampRelative;
@@ -140,6 +152,7 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
     Qgs3DTypes::CullingMode mCullingMode = Qgs3DTypes::NoCulling;  //!< Front/back culling mode
     bool mInvertNormals = false;
     bool mAddBackFaces = false;
+    int mRenderedFacade = 3;
 
     bool mEdgesEnabled = false;  //!< Whether to highlight edges
     float mEdgeWidth = 1.f;  //!< Width of edges in pixels

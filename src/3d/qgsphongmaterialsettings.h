@@ -35,12 +35,11 @@ class QDomElement;
 class _3D_EXPORT QgsPhongMaterialSettings
 {
   public:
-    QgsPhongMaterialSettings()
-      : mAmbient( QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) )
-      , mDiffuse( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) )
-      , mSpecular( QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) )
-    {
-    }
+
+    /**
+     * Constructor for QgsPhongMaterialSettings.
+     */
+    QgsPhongMaterialSettings() = default;
 
     //! Returns ambient color component
     QColor ambient() const { return mAmbient; }
@@ -51,6 +50,50 @@ class _3D_EXPORT QgsPhongMaterialSettings
     //! Returns shininess of the surface
     float shininess() const { return mShininess; }
 
+    /**
+     * Returns whether the diffuse texture is used.
+     *
+     * \note Diffuse textures will only be used at render time if diffuseTextureEnabled() is TRUE
+     * and a texturePath() is non-empty.
+     *
+     * \see shouldUseDiffuseTexture()
+     * \see setDiffuseTextureEnabled()
+     * \see texturePath()
+     */
+    bool diffuseTextureEnabled() const { return mDiffuseTextureEnabled; }
+
+    /**
+     * Returns whether the diffuse texture should be used during rendering.
+     *
+     * Diffuse textures will only be used at render time if diffuseTextureEnabled() is TRUE
+     * and a texturePath() is non-empty.
+     *
+     * \see diffuseTextureEnabled()
+     * \see texturePath()
+     */
+    bool shouldUseDiffuseTexture() const { return mDiffuseTextureEnabled && !mTexturePath.isEmpty(); }
+
+    /**
+     * Returns the diffuse texture path.
+     *
+     * \note Diffuse textures will only be used at render time if diffuseTextureEnabled() is TRUE
+     * and a texturePath() is non-empty.
+     *
+     * \see setTexturePath()
+     * \see diffuseTextureEnabled()
+     */
+    QString texturePath() const { return mTexturePath; }
+
+    /**
+     * Returns the texture scale
+     * The texture scale changes the size of the displayed texture in the 3D scene
+     * If the texture scale is less than 1 the texture will be stretched
+     */
+    float textureScale() const { return mTextureScale; }
+
+    //! Returns the texture's rotation in degrees
+    float textureRotation() const { return mTextureRotation; }
+
     //! Sets ambient color component
     void setAmbient( const QColor &ambient ) { mAmbient = ambient; }
     //! Sets diffuse color component
@@ -59,6 +102,38 @@ class _3D_EXPORT QgsPhongMaterialSettings
     void setSpecular( const QColor &specular ) { mSpecular = specular; }
     //! Sets shininess of the surface
     void setShininess( float shininess ) { mShininess = shininess; }
+
+    /**
+     * Sets whether the diffuse texture is enabled.
+     *
+     * \note Diffuse textures will only be used at render time if diffuseTextureEnabled() is TRUE
+     * and a texturePath() is non-empty.
+     *
+     * \see diffuseTextureEnabled()
+     * \see setTexturePath()
+     */
+    void setDiffuseTextureEnabled( bool used ) { mDiffuseTextureEnabled = used; }
+
+    /**
+     * Sets the \a path of the texture.
+     *
+     * \note Diffuse textures will only be used at render time if diffuseTextureEnabled() is TRUE
+     * and a texturePath() is non-empty.
+     *
+     * \see texturePath()
+     * \see setDiffuseTextureEnabled()
+     */
+    void setTexturePath( const QString &path ) { mTexturePath = path; }
+
+    /**
+     * Sets the texture scale
+     * The texture scale changes the size of the displayed texture in the 3D scene
+     * If the texture scale is less than 1 the texture will be stretched
+     */
+    void setTextureScale( float scale ) { mTextureScale = scale; }
+
+    //! Sets the texture rotation in degrees
+    void setTextureRotation( float rotation ) { mTextureRotation = rotation; }
 
     //! Reads settings from a DOM element
     void readXml( const QDomElement &elem );
@@ -70,14 +145,22 @@ class _3D_EXPORT QgsPhongMaterialSettings
       return mAmbient == other.mAmbient &&
              mDiffuse == other.mDiffuse &&
              mSpecular == other.mSpecular &&
-             mShininess == other.mShininess;
+             mShininess == other.mShininess &&
+             mDiffuseTextureEnabled == other.mDiffuseTextureEnabled &&
+             mTexturePath == other.mTexturePath &&
+             mTextureScale == other.mTextureScale &&
+             mTextureRotation == other.mTextureRotation;
     }
 
   private:
-    QColor mAmbient;
-    QColor mDiffuse;
-    QColor mSpecular;
+    QColor mAmbient{ QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) };
+    QColor mDiffuse{ QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) };
+    QColor mSpecular{ QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
     float mShininess = 0.0f;
+    bool mDiffuseTextureEnabled{ false };
+    QString mTexturePath;
+    float mTextureScale{ 1.0f };
+    float mTextureRotation{ 0.0f };
 };
 
 

@@ -94,7 +94,6 @@ class GUI_EXPORT QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private
     void mAnnotationFormatComboBox_currentIndexChanged( int index );
     void mCoordinatePrecisionSpinBox_valueChanged( int value );
     void mDistanceToMapFrameSpinBox_valueChanged( double d );
-    void mAnnotationFontColorButton_colorChanged( const QColor &color );
 
   protected:
 
@@ -109,13 +108,13 @@ class GUI_EXPORT QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private
 
     //! Sets the GUI elements to the values of mPicture
     void setGuiElementValues();
-    void annotationFontChanged();
     void lineSymbolChanged();
     void markerSymbolChanged();
     void gridEnabledToggled( bool active );
     void intervalUnitChanged( int index );
     void minIntervalChanged( double interval );
     void maxIntervalChanged( double interval );
+    void annotationTextFormatChanged();
 
   private:
     QPointer< QgsLayoutItemMap > mMap;

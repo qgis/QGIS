@@ -710,6 +710,13 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context ) { Q_UNUSED( context ) }
 
+    /**
+     * Returns TRUE if the image brush should be transformed using the render context's texture origin.
+     *
+     * \since QGIS 3.16
+     */
+    virtual bool applyBrushTransformFromContext() const;
+
   private:
 #ifdef SIP_RUN
     QgsImageFillSymbolLayer( const QgsImageFillSymbolLayer &other );
@@ -922,7 +929,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
   protected:
 
     void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
-
+    bool applyBrushTransformFromContext() const override;
   private:
 
     //! Path to the image file

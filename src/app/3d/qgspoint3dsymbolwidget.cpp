@@ -63,8 +63,7 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   const auto constSpinWidgets = spinWidgets;
   for ( QDoubleSpinBox *spinBox : constSpinWidgets )
     connect( spinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPoint3DSymbolWidget::changed );
-  connect( lineEditModel, static_cast<void ( QLineEdit::* )( const QString & )>( &QLineEdit::textChanged ), this, &QgsPoint3DSymbolWidget::changed );
-  connect( btnModel, static_cast<void ( QToolButton::* )( bool )>( &QToolButton::clicked ), this, &QgsPoint3DSymbolWidget::onChooseModelClicked );
+  connect( lineEditModel, &QgsAbstractFileContentSourceLineEdit::sourceChanged, this, &QgsPoint3DSymbolWidget::changed );
   connect( cbOverwriteMaterial, static_cast<void ( QCheckBox::* )( int )>( &QCheckBox::stateChanged ), this, &QgsPoint3DSymbolWidget::onOverwriteMaterialChecked );
   connect( widgetMaterial, &QgsPhongMaterialWidget::changed, this, &QgsPoint3DSymbolWidget::changed );
   connect( btnChangeSymbol, static_cast<void ( QgsSymbolButton::* )( )>( &QgsSymbolButton::changed ), this, &QgsPoint3DSymbolWidget::changed );
@@ -72,29 +71,6 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   // Sync between billboard height and TY
   connect( spinBillboardHeight, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinTY,  &QDoubleSpinBox::setValue );
   connect( spinTY, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinBillboardHeight,  &QDoubleSpinBox::setValue );
-}
-
-void QgsPoint3DSymbolWidget::onChooseModelClicked( bool )
-{
-  QgsSettings s;
-  QString lastDir = s.value( QStringLiteral( "/UI/lastModel3dDir" ), QDir::homePath() ).toString();
-
-  QString filePath = QFileDialog::getOpenFileName( this, tr( "Open 3d Model File" ), lastDir, QStringLiteral( "3D models (*.*)" ) );
-  if ( filePath.isEmpty() )
-  {
-    return;
-  }
-
-  //check if file exists
-  QFileInfo fileInfo( filePath );
-  if ( !fileInfo.exists() || !fileInfo.isReadable() )
-  {
-    QMessageBox::critical( nullptr, tr( "Invalid File" ), tr( "Error, file does not exist or is not readable." ) );
-    return;
-  }
-
-  s.setValue( QStringLiteral( "/UI/lastModel3dDir" ), fileInfo.absolutePath() );
-  lineEditModel->setText( filePath );
 }
 
 void QgsPoint3DSymbolWidget::onOverwriteMaterialChecked( int state )
@@ -144,7 +120,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
       break;
     case 6:  // 3d model
     {
-      lineEditModel->setText( vm[QStringLiteral( "model" )].toString() );
+      lineEditModel->setSource( vm[QStringLiteral( "model" )].toString() );
       bool overwriteMaterial = vm[QStringLiteral( "overwriteMaterial" )].toBool();
       widgetMaterial->setEnabled( overwriteMaterial );
       cbOverwriteMaterial->setChecked( overwriteMaterial );
@@ -219,7 +195,7 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
       vm[QStringLiteral( "minorRadius" )] = spinMinorRadius->value();
       break;
     case 6:  // 3d model
-      vm[QStringLiteral( "model" )] = lineEditModel->text();
+      vm[QStringLiteral( "model" )] = lineEditModel->source();
       vm[QStringLiteral( "overwriteMaterial" )] = cbOverwriteMaterial->isChecked();
       break;
     case 7:  // billboard
@@ -253,7 +229,7 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
              << labelTopRadius << spinTopRadius
              << labelBottomRadius << spinBottomRadius
              << labelLength << spinLength
-             << labelModel << lineEditModel << btnModel << cbOverwriteMaterial
+             << labelModel << lineEditModel << cbOverwriteMaterial
              << labelBillboardHeight << spinBillboardHeight << labelBillboardSymbol << btnChangeSymbol;
 
   widgetMaterial->setEnabled( true );
@@ -281,7 +257,7 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
       activeWidgets << labelRadius << spinRadius << labelMinorRadius << spinMinorRadius;
       break;
     case 6:  // 3d model
-      activeWidgets << labelModel << lineEditModel << btnModel << cbOverwriteMaterial;
+      activeWidgets << labelModel << lineEditModel << cbOverwriteMaterial;
       widgetMaterial->setEnabled( cbOverwriteMaterial->isChecked() );
       break;
     case 7:  // billboard

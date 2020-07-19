@@ -9,6 +9,7 @@
 
 
 
+
 class QgsAttributeEditorElement /Abstract/
 {
 %Docstring
@@ -282,6 +283,23 @@ This element will load a relation editor onto the form.
 #include "qgsattributeeditorelement.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    enum Button
+    {
+      Link,
+      Unlink,
+      SaveChildEdits,
+      AddChildFeature,
+      DuplicateChildFeature,
+      DeleteChildFeature,
+      ZoomToChildFeature,
+      AllButtons
+    };
+    typedef QFlags<QgsAttributeEditorRelation::Button> Buttons;
+
 
  QgsAttributeEditorRelation( const QString &name, const QString &relationId, QgsAttributeEditorElement *parent );
 %Docstring
@@ -333,50 +351,86 @@ Initializes the relation from the id
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
 
 
-    bool showLinkButton() const;
+ bool showLinkButton() const /Deprecated/;
 %Docstring
 Determines if the "link feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
 %End
 
-    void setShowLinkButton( bool showLinkButton );
+ void setShowLinkButton( bool showLinkButton ) /Deprecated/;
 %Docstring
 Determines if the "link feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
 %End
 
-    bool showUnlinkButton() const;
+ bool showUnlinkButton() const /Deprecated/;
 %Docstring
 Determines if the "unlink feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
 %End
 
-    void setShowUnlinkButton( bool showUnlinkButton );
+ void setShowUnlinkButton( bool showUnlinkButton ) /Deprecated/;
 %Docstring
 Determines if the "unlink feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
 %End
 
-    void setShowSaveChildEditsButton( bool showSaveChildEditsButton );
+ void setShowSaveChildEditsButton( bool showChildEdits ) /Deprecated/;
 %Docstring
-Determines if the "save child layer edits" button should be shown
+Determines if the "Save child layer edits" button should be shown
 
 .. versionadded:: 3.14
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
 %End
 
-    bool showSaveChildEditsButton( ) const;
+ bool showSaveChildEditsButton() const /Deprecated/;
 %Docstring
-Returns ``True`` if the "save child layer edits" button should be shown.
+Determines if the "Save child layer edits" button should be shown
 
 .. versionadded:: 3.14
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
+%End
+
+    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+%Docstring
+Defines the buttons which are shown
+
+.. versionadded:: 3.16
+%End
+
+    QgsAttributeEditorRelation::Buttons visibleButtons() const;
+%Docstring
+Returns the buttons which are shown
+
+.. versionadded:: 3.16
 %End
 
 
 };
+
+QFlags<QgsAttributeEditorRelation::Button> operator|(QgsAttributeEditorRelation::Button f1, QFlags<QgsAttributeEditorRelation::Button> f2);
+
+
 
 class QgsAttributeEditorQmlElement : QgsAttributeEditorElement
 {

@@ -334,7 +334,7 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
 }
 
 QgsDb2RootItem::QgsDb2RootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "DB2" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "DB2" ) )
 {
   mIconName = QStringLiteral( "mIconDb2.svg" );
   populate();

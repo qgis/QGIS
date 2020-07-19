@@ -67,8 +67,6 @@ QgsMaskSourceSelectionWidget::QgsMaskSourceSelectionWidget( QWidget *parent )
   vbox->addWidget( mTree );
 
   setLayout( vbox );
-
-  update();
 }
 
 void QgsMaskSourceSelectionWidget::update()

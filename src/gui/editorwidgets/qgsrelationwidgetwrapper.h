@@ -54,45 +54,57 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
 
     /**
      * Determines if the "link feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
-    bool showLinkButton() const;
+    Q_DECL_DEPRECATED bool showLinkButton() const SIP_DEPRECATED;
 
     /**
      * Determines if the "link feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
-    void setShowLinkButton( bool showLinkButton );
-
-    /**
-     * Determines if the "save child layer edits" button should be shown
-     *
-     * \since QGIS 3.14
-     */
-    bool showSaveChildEditsButton() const;
-
-    /**
-     * Determines if the "save child layer edits" button should be shown
-     *
-     * \since QGIS 3.14
-     */
-    void setShowSaveChildEditsButton( bool showSaveChildEditsButton );
+    Q_DECL_DEPRECATED void setShowLinkButton( bool showLinkButton ) SIP_DEPRECATED;
 
     /**
      * Determines if the "unlink feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
-    bool showUnlinkButton() const;
+    Q_DECL_DEPRECATED bool showUnlinkButton() const SIP_DEPRECATED;
 
     /**
      * Determines if the "unlink feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
-    void setShowUnlinkButton( bool showUnlinkButton );
+    Q_DECL_DEPRECATED void setShowUnlinkButton( bool showUnlinkButton ) SIP_DEPRECATED;
+
+    /**
+     * Determines if the "Save child layer edits" button should be shown
+     * \since QGIS 3.14
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
+     */
+    Q_DECL_DEPRECATED void setShowSaveChildEditsButton( bool showChildEdits ) SIP_DEPRECATED;
+
+    /**
+     * Determines if the "Save child layer edits" button should be shown
+     * \since QGIS 3.14
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
+     */
+    Q_DECL_DEPRECATED bool showSaveChildEditsButton() const SIP_DEPRECATED;
+
+    /**
+     * Defines the buttons which are shown
+     * \since QGIS 3.16
+     */
+    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+
+    /**
+     * Returns the buttons which are shown
+     * \since QGIS 3.16
+     */
+    QgsAttributeEditorRelation::Buttons visibleButtons() const;
 
     /**
      * The relation for which this wrapper is created.

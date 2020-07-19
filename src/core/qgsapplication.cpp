@@ -35,6 +35,7 @@
 #include "qgsscalebarrendererregistry.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
+#include "qgssourcecache.h"
 #include "qgscolorschemeregistry.h"
 #include "qgspainteffectregistry.h"
 #include "qgsprojectstorageregistry.h"
@@ -235,6 +236,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
   qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
   qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
+  qRegisterMetaType<QgsTextFormat>( "QgsTextFormat" );
   QMetaType::registerComparators<QgsProcessingModelChildDependency>();
   QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
   QMetaType::registerEqualsComparator<QgsProperty>();
@@ -2138,6 +2140,11 @@ QgsImageCache *QgsApplication::imageCache()
   return members()->mImageCache;
 }
 
+QgsSourceCache *QgsApplication::sourceCache()
+{
+  return members()->mSourceCache;
+}
+
 QgsNetworkContentFetcherRegistry *QgsApplication::networkContentFetcherRegistry()
 {
   return members()->mNetworkContentFetcherRegistry;
@@ -2284,6 +2291,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   {
     profiler->start( tr( "Setup image cache" ) );
     mImageCache = new QgsImageCache();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup source cache" ) );
+    mSourceCache = new QgsSourceCache();
     profiler->end();
   }
   {

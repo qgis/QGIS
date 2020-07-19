@@ -20,10 +20,10 @@
 #include "qgis_core.h"
 #include "qgstextblock.h"
 #include "qgsrendercontext.h"
+#include "qgstextformat.h"
 
 #include <QPicture>
 
-class QgsTextFormat;
 class QgsTextDocument;
 
 /**
@@ -60,7 +60,35 @@ class CORE_EXPORT QgsTextRenderer
       AlignLeft = 0, //!< Left align
       AlignCenter, //!< Center align
       AlignRight, //!< Right align
+      AlignJustify, //!< Justify align
     };
+
+    /**
+     * Converts a Qt horizontal \a alignment flag to a QgsTextRenderer::HAlignment value.
+     *
+     * \see convertQtVAlignment()
+     * \since QGIS 3.16
+     */
+    static HAlignment convertQtHAlignment( Qt::Alignment alignment );
+
+    /**
+     * Vertical alignment
+     * \since QGIS 3.16
+     */
+    enum VAlignment
+    {
+      AlignTop = 0, //!< Align to top
+      AlignVCenter, //!< Center align
+      AlignBottom, //!< Align to bottom
+    };
+
+    /**
+     * Converts a Qt vertical \a alignment flag to a QgsTextRenderer::VAlignment value.
+     *
+     * \see convertQtHAlignment()
+     * \since QGIS 3.16
+     */
+    static VAlignment convertQtVAlignment( Qt::Alignment alignment );
 
     /**
      * Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
@@ -86,10 +114,11 @@ class CORE_EXPORT QgsTextRenderer
      * formats like SVG to maintain text as text objects, but at the cost of degraded
      * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
      * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
+     * \param vAlignment vertical alignment (since QGIS 3.16)
      */
     static void drawText( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
-                          bool drawAsOutlines = true );
+                          bool drawAsOutlines = true, VAlignment vAlignment = AlignTop );
 
     /**
      * Draws text at a point origin using the specified settings.
@@ -156,9 +185,15 @@ class CORE_EXPORT QgsTextRenderer
      * Returns the font metrics for the given text \a format, when rendered
      * in the specified render \a context. The font metrics will take into account
      * all scaling required by the render context.
+     *
+     * The optional \a scaleFactor argument can specify a font size scaling factor. It is recommended to set this to
+     * QgsTextRenderer::FONT_WORKAROUND_SCALE and then manually scale painter devices or calculations
+     * based on the resultant font metrics. Failure to do so will result in poor quality text rendering
+     * at small font sizes.
+     *
      * \since QGIS 3.2
      */
-    static QFontMetricsF fontMetrics( QgsRenderContext &context, const QgsTextFormat &format );
+    static QFontMetricsF fontMetrics( QgsRenderContext &context, const QgsTextFormat &format, double scaleFactor = 1.0 );
 
     /**
      * Returns the width of a text based on a given format.
@@ -180,6 +215,29 @@ class CORE_EXPORT QgsTextRenderer
      */
     static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode = Point,
                               QFontMetricsF *fontMetrics = nullptr );
+
+    /**
+     * Returns the height of a character when rendered with the specified text \a format.
+     *
+     * \param context render context
+     * \param format text format
+     * \param character character to determine height of. If \a character is invalid, then the maximum character height will be returned.
+     * \param includeEffects if TRUE, then the size of formatting effects such as buffers and shadows will be considered in the
+     * returned height. If FALSE, then the returned size considers the character only.
+     *
+     * \since QGIS 3.16
+     */
+    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, QChar character, bool includeEffects = false );
+
+    /**
+     * Scale factor for upscaling font sizes and downscaling destination painter devices.
+     *
+     * Using this scale factor and manually adjusting any font metric based calculations results in more stable
+     * font metrics and sizes for small font sizes.
+     *
+     * \since QGIS 3.16
+     */
+    static constexpr double FONT_WORKAROUND_SCALE = 10;
 
   private:
 
@@ -213,6 +271,11 @@ class CORE_EXPORT QgsTextRenderer
       double dpiRatio = 1.0;
       //! Horizontal alignment
       HAlignment hAlign = AlignLeft;
+
+      //! Any additional word spacing to apply while rendering component
+      double extraWordSpacing = 0;
+      //! Any additional letter spacing to apply while rendering component
+      double extraLetterSpacing = 0;
     };
 
     static double textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document );
@@ -223,6 +286,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param rect destination rectangle for text
      * \param rotation text rotation
      * \param alignment horizontal alignment
+     * \param vAlignment vertical alignment
      * \param document text document to draw
      * \param context render context
      * \param format text format
@@ -232,7 +296,7 @@ class CORE_EXPORT QgsTextRenderer
      * \note Not available in Python bindings
      * \since QGIS 3.14
      */
-    static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QgsTextDocument &document,
+    static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, VAlignment vAlignment, const QgsTextDocument &document,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           TextPart part );
 
@@ -283,13 +347,42 @@ class CORE_EXPORT QgsTextRenderer
                                   const QgsTextDocument &document,
                                   const QFontMetricsF *fontMetrics,
                                   HAlignment alignment,
+                                  VAlignment vAlignment,
                                   DrawMode mode = Rect );
+
+    static QgsTextFormat::TextOrientation calculateRotationAndOrientationForComponent( const QgsTextFormat &format, const Component &component, double &rotation );
+
+    static void calculateExtraSpacingForLineJustification( double spaceToDistribute, const QgsTextBlock &block, double &extraWordSpace, double &extraLetterSpace );
+    static void applyExtraSpacingForLineJustification( QFont &font, double extraWordSpace, double extraLetterSpace );
+
+    static void drawTextInternalHorizontal( QgsRenderContext &context,
+                                            const QgsTextFormat &format,
+                                            TextPart drawType,
+                                            DrawMode mode,
+                                            const Component &component,
+                                            const QgsTextDocument &document,
+                                            double fontScale,
+                                            const QFontMetricsF *fontMetrics,
+                                            HAlignment hAlignment,
+                                            VAlignment vAlignment,
+                                            double rotation );
+
+    static void drawTextInternalVertical( QgsRenderContext &context,
+                                          const QgsTextFormat &format,
+                                          TextPart drawType,
+                                          DrawMode mode,
+                                          const Component &component,
+                                          const QgsTextDocument &document,
+                                          double fontScale,
+                                          const QFontMetricsF *fontMetrics,
+                                          HAlignment hAlignment,
+                                          VAlignment vAlignment,
+                                          double rotation );
 
     friend class QgsVectorLayerLabelProvider;
     friend class QgsLabelPreview;
 
     static QgsTextFormat updateShadowPosition( const QgsTextFormat &format );
-
 
 };
 

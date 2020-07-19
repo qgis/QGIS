@@ -877,6 +877,9 @@
         <file>themes/default/georeferencer/mActionDeleteGCPPoint.png</file>
         <file>themes/default/georeferencer/mActionMoveGCPPoint.png</file>
         <file>themes/default/georeferencer/mActionSaveGCPpointsAs.png</file>
+        <file>themes/default/mIconAlignBottom.svg</file>
+        <file>themes/default/mIconAlignTop.svg</file>
+        <file>themes/default/mIconAlignVCenter.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

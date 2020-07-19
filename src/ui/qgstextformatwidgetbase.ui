@@ -5948,7 +5948,7 @@ font-style: italic;</string>
                               <bool>true</bool>
                              </property>
                              <property name="text">
-                              <string>Discourage labels from covering features</string>
+                              <string>Discourage labels and diagrams from covering features</string>
                              </property>
                             </widget>
                            </item>

@@ -45,6 +45,7 @@ to be rendered etc.
       RenderBlocking,
       RenderSymbolPreview,
       LosslessImageRendering,
+      ApplyScalingWorkaroundForTextRendering,
     };
     typedef QFlags<QgsRenderContext::Flag> Flags;
 
@@ -839,6 +840,26 @@ Sets a ``geometry`` to use to clip features at render time.
    prior to constructing a QgsRenderContext.
 
 .. seealso:: :py:func:`featureClipGeometry`
+
+.. versionadded:: 3.16
+%End
+
+    QPointF textureOrigin() const;
+%Docstring
+Returns the texture origin, which should be used as a brush transform when
+rendering using QBrush objects.
+
+.. seealso:: :py:func:`setTextureOrigin`
+
+.. versionadded:: 3.16
+%End
+
+    void setTextureOrigin( const QPointF &origin );
+%Docstring
+Sets the texture ``origin``, which should be used as a brush transform when
+rendering using QBrush objects.
+
+.. seealso:: :py:func:`textureOrigin`
 
 .. versionadded:: 3.16
 %End

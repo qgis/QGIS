@@ -35,6 +35,7 @@
 #include <QOpenGLFunctions>
 #include <QTimer>
 
+#include "qgsapplication.h"
 #include "qgsaabb.h"
 #include "qgsabstract3dengine.h"
 #include "qgs3dmapscenepickhandler.h"
@@ -47,7 +48,9 @@
 #include "qgseventtracing.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
+#include "qgspoint3dsymbol.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgssourcecache.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
 #include "qgstessellatedpolygongeometry.h"
@@ -97,6 +100,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   mCameraController->resetView( 1000 );
 
   addCameraViewCenterEntity( mEngine->camera() );
+  updateLights();
 
   // create terrain entity
 
@@ -109,8 +113,44 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::terrainShadingChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::pointLightsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::directionalLightsChanged, this, &Qgs3DMapScene::updateLights );
+  connect( &map, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::renderersChanged, this, &Qgs3DMapScene::onRenderersChanged );
+
+  connect( QgsApplication::instance()->sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
+  {
+    const QList<QgsMapLayer *> modelVectorLayers = mModelVectorLayers;
+    for ( QgsMapLayer *layer : modelVectorLayers )
+    {
+      QgsAbstract3DRenderer *renderer = layer->renderer3D();
+      if ( renderer )
+      {
+        if ( renderer->type() == QLatin1String( "vector" ) )
+        {
+          const QgsPoint3DSymbol *pointSymbol = static_cast< const QgsPoint3DSymbol * >( static_cast< QgsVectorLayer3DRenderer *>( renderer )->symbol() );
+          if ( pointSymbol->shapeProperties()[QStringLiteral( "model" )].toString() == url )
+          {
+            removeLayerEntity( layer );
+            addLayerEntity( layer );
+          }
+        }
+        else if ( renderer->type() == QLatin1String( "rulebased" ) )
+        {
+          const QgsRuleBased3DRenderer::RuleList rules = static_cast< QgsRuleBased3DRenderer *>( renderer )->rootRule()->descendants();
+          for ( auto rule : rules )
+          {
+            const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol * >( rule->symbol() );
+            if ( pointSymbol->shapeProperties()[QStringLiteral( "model" )].toString() == url )
+            {
+              removeLayerEntity( layer );
+              addLayerEntity( layer );
+              break;
+            }
+          }
+        }
+      }
+    }
+  } );
 
   // create entities of renderers
 
@@ -119,7 +159,6 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   // listen to changes of layers in order to add/remove 3D renderer entities
   connect( &map, &Qgs3DMapSettings::layersChanged, this, &Qgs3DMapScene::onLayersChanged );
 
-  updateLights();
 
 #if 0
   ChunkedEntity *testChunkEntity = new ChunkedEntity( AABB( -500, 0, -500, 500, 100, 500 ), 2.f, 3.f, 7, new TestChunkLoaderFactory );
@@ -381,7 +420,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
   {
     if ( entity->isEnabled() && entity->needsUpdate() )
     {
-      qDebug() << "need for update";
+      QgsDebugMsgLevel( QStringLiteral( "need for update" ), 2 );
       entity->update( _sceneState( mCameraController ) );
     }
   }
@@ -457,6 +496,31 @@ void Qgs3DMapScene::updateLights()
   for ( Qt3DCore::QEntity *entity : qgis::as_const( mLightEntities ) )
     entity->deleteLater();
   mLightEntities.clear();
+  for ( Qt3DCore::QEntity *entity : qgis::as_const( mLightOriginEntities ) )
+    entity->deleteLater();
+  mLightOriginEntities.clear();
+
+  auto createLightOriginEntity = [ = ]( QVector3D translation, const QColor & color )->Qt3DCore::QEntity *
+  {
+    Qt3DCore::QEntity *originEntity = new Qt3DCore::QEntity;
+
+    Qt3DCore::QTransform *trLightOriginCenter = new Qt3DCore::QTransform;
+    trLightOriginCenter->setTranslation( translation );
+    originEntity->addComponent( trLightOriginCenter );
+
+    Qt3DExtras::QPhongMaterial *materialLightOriginCenter = new Qt3DExtras::QPhongMaterial;
+    materialLightOriginCenter->setAmbient( color );
+    originEntity->addComponent( materialLightOriginCenter );
+
+    Qt3DExtras::QSphereMesh *rendererLightOriginCenter = new Qt3DExtras::QSphereMesh;
+    rendererLightOriginCenter->setRadius( 20 );
+    originEntity->addComponent( rendererLightOriginCenter );
+
+    originEntity->setEnabled( true );
+    originEntity->setParent( this );
+
+    return originEntity;
+  };
 
   const auto newPointLights = mMap.pointLights();
   for ( const QgsPointLightSettings &pointLightSettings : newPointLights )
@@ -479,6 +543,9 @@ void Qgs3DMapScene::updateLights()
     lightEntity->addComponent( lightTransform );
     lightEntity->setParent( this );
     mLightEntities << lightEntity;
+
+    if ( mMap.showLightSourceOrigins() )
+      mLightOriginEntities << createLightOriginEntity( lightTransform->translation(), pointLightSettings.color() );
   }
 
   const auto newDirectionalLights = mMap.directionalLights();
@@ -592,6 +659,31 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
          ( renderer->type() == QLatin1String( "vector" ) || renderer->type() == QLatin1String( "rulebased" ) ) )
     {
       static_cast<QgsAbstractVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
+      if ( renderer->type() == QLatin1String( "vector" ) )
+      {
+        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
+        {
+          const QgsPoint3DSymbol *pointSymbol = static_cast< const QgsPoint3DSymbol * >( static_cast< QgsVectorLayer3DRenderer *>( renderer )->symbol() );
+          if ( pointSymbol->shape() == QgsPoint3DSymbol::Model )
+          {
+            mModelVectorLayers.append( layer );
+          }
+        }
+      }
+      else if ( renderer->type() == QLatin1String( "rulebased" ) )
+      {
+        const QgsRuleBased3DRenderer::RuleList rules = static_cast< QgsRuleBased3DRenderer *>( renderer )->rootRule()->descendants();
+        for ( auto rule : rules )
+        {
+          const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol * >( rule->symbol() );
+          if ( pointSymbol && pointSymbol->shape() == QgsPoint3DSymbol::Model )
+          {
+            mModelVectorLayers.append( layer );
+            break;
+          }
+        }
+      }
     }
     else if ( layer->type() == QgsMapLayerType::MeshLayer && renderer->type() == QLatin1String( "mesh" ) )
     {
@@ -667,6 +759,7 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+    mModelVectorLayers.removeAll( layer );
   }
 
   if ( layer->type() == QgsMapLayerType::MeshLayer )

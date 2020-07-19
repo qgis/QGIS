@@ -20,9 +20,18 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgstessellator.h"
+#include "qgsapplication.h"
+#include "qgsimagecache.h"
 
 #include <Qt3DCore/QTransform>
+#include <Qt3DRender/QMaterial>
 #include <Qt3DExtras/QPhongMaterial>
+
+#include <Qt3DExtras/QDiffuseMapMaterial>
+#include <Qt3DRender/QAbstractTextureImage>
+#include <Qt3DRender/QTexture>
+#include <Qt3DRender/QPaintedTextureImage>
+
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QCullFace>
@@ -60,7 +69,7 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
 
     void processPolygon( QgsPolygon *polyClone, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out );
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &out, bool selected );
-    Qt3DExtras::QPhongMaterial *material( const QgsPolygon3DSymbol &symbol ) const;
+    Qt3DRender::QMaterial *material( const QgsPolygon3DSymbol &symbol, bool isSelected, const Qgs3DRenderContext &context ) const;
 
     // input specific for this class
     const QgsPolygon3DSymbol &mSymbol;
@@ -80,8 +89,8 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   outEdges.withAdjacency = true;
   outEdges.init( mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), mSymbol.height(), &context.map() );
 
-  outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(), mSymbol.addBackFaces() ) );
-  outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(), mSymbol.addBackFaces() ) );
+  outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(), mSymbol.addBackFaces(), false, mSymbol.material().shouldUseDiffuseTexture(), mSymbol.renderedFacade(), mSymbol.material().textureRotation() ) );
+  outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(), mSymbol.addBackFaces(), false, mSymbol.material().shouldUseDiffuseTexture(), mSymbol.renderedFacade(), mSymbol.material().textureRotation() ) );
 
   QSet<QString> attrs = mSymbol.dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );
@@ -219,21 +228,13 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   if ( out.tessellator->dataVerticesCount() == 0 )
     return;  // nothing to show - no need to create the entity
 
-  Qt3DExtras::QPhongMaterial *mat = material( mSymbol );
-  if ( selected )
-  {
-    // update the material with selection colors
-    mat->setDiffuse( context.map().selectionColor() );
-    mat->setAmbient( context.map().selectionColor().darker() );
-  }
+  Qt3DRender::QMaterial *mat = material( mSymbol, selected, context );
 
   // extract vertex buffer data from tessellator
   QByteArray data( ( const char * )out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
   int nVerts = data.count() / out.tessellator->stride();
 
-  QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry;
-  geometry->setInvertNormals( mSymbol.invertNormals() );
-  geometry->setAddBackFaces( mSymbol.addBackFaces() );
+  QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, mSymbol.invertNormals(), mSymbol.addBackFaces(), mSymbol.material().shouldUseDiffuseTexture() );
   geometry->setData( data, nVerts, out.triangleIndexFids, out.triangleIndexStartingIndices );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
@@ -264,11 +265,9 @@ static Qt3DRender::QCullFace::CullingMode _qt3DcullingMode( Qgs3DTypes::CullingM
   return Qt3DRender::QCullFace::NoCulling;
 }
 
-Qt3DExtras::QPhongMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSymbol &symbol ) const
+// front/back side culling
+static void applyCullingMode( Qgs3DTypes::CullingMode cullingMode, Qt3DRender::QMaterial *material )
 {
-  Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial;
-
-  // front/back side culling
   auto techniques = material->effect()->techniques();
   for ( auto tit = techniques.constBegin(); tit != techniques.constEnd(); ++tit )
   {
@@ -276,16 +275,92 @@ Qt3DExtras::QPhongMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygo
     for ( auto rpit = renderPasses.begin(); rpit != renderPasses.end(); ++rpit )
     {
       Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
-      cullFace->setMode( _qt3DcullingMode( symbol.cullingMode() ) );
+      cullFace->setMode( _qt3DcullingMode( cullingMode ) );
       ( *rpit )->addRenderState( cullFace );
     }
   }
+}
 
-  material->setAmbient( symbol.material().ambient() );
-  material->setDiffuse( symbol.material().diffuse() );
-  material->setSpecular( symbol.material().specular() );
-  material->setShininess( symbol.material().shininess() );
-  return material;
+
+class QgsQImageTextureImage : public Qt3DRender::QPaintedTextureImage
+{
+  public:
+    QgsQImageTextureImage( const QImage &image, Qt3DCore::QNode *parent = nullptr )
+      : Qt3DRender::QPaintedTextureImage( parent )
+      , mImage( image )
+    {
+      setSize( mImage.size() );
+    }
+
+    void paint( QPainter *painter ) override
+    {
+      painter->drawImage( mImage.rect(), mImage, mImage.rect() );
+    }
+
+  private:
+
+    QImage mImage;
+
+};
+
+
+Qt3DRender::QMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSymbol &symbol, bool isSelected, const Qgs3DRenderContext &context ) const
+{
+  bool fitsInCache = false;
+  QImage textureSourceImage;
+
+  if ( symbol.material().shouldUseDiffuseTexture() )
+    textureSourceImage = QgsApplication::imageCache()->pathAsImage( symbol.material().texturePath(), QSize(), true, 1.0, fitsInCache );
+  ( void )fitsInCache;
+
+  Qt3DRender::QMaterial *retMaterial = nullptr;
+  if ( !textureSourceImage.isNull() )
+  {
+    Qt3DExtras::QDiffuseMapMaterial *material = new Qt3DExtras::QDiffuseMapMaterial;
+
+    applyCullingMode( symbol.cullingMode(), material );
+
+    QgsQImageTextureImage *textureImage = new QgsQImageTextureImage( textureSourceImage );
+    material->diffuse()->addTextureImage( textureImage );
+
+    material->diffuse()->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
+    material->diffuse()->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
+    material->diffuse()->wrapMode()->setZ( Qt3DRender::QTextureWrapMode::Repeat );
+    material->setSpecular( symbol.material().specular() );
+    material->setShininess( symbol.material().shininess() );
+    material->setTextureScale( symbol.material().textureScale() );
+
+    if ( isSelected )
+    {
+      // update the material with selection colors
+      // TODO : dampen the color of diffuse texture
+//      mat->setDiffuse( context.map().selectionColor() );
+      material->setAmbient( context.map().selectionColor().darker() );
+    }
+
+    retMaterial = material;
+  }
+  else
+  {
+    Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial;
+
+    applyCullingMode( symbol.cullingMode(), material );
+
+    material->setAmbient( symbol.material().ambient() );
+    material->setDiffuse( symbol.material().diffuse() );
+    material->setSpecular( symbol.material().specular() );
+    material->setShininess( symbol.material().shininess() );
+
+    if ( isSelected )
+    {
+      // update the material with selection colors
+      material->setDiffuse( context.map().selectionColor() );
+      material->setAmbient( context.map().selectionColor().darker() );
+    }
+    retMaterial = material;
+  }
+
+  return retMaterial;
 }
 
 

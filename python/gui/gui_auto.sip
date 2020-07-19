@@ -70,6 +70,7 @@
 %Include auto_generated/qgsdial.sip
 %Include auto_generated/qgsdialog.sip
 %Include auto_generated/qgsdockwidget.sip
+%Include auto_generated/qgsdoublevalidator.sip
 %Include auto_generated/qgsencodingfiledialog.sip
 %Include auto_generated/qgserrordialog.sip
 %Include auto_generated/qgsexpressionbuilderdialog.sip
@@ -155,6 +156,7 @@
 %Include auto_generated/qgsnewauxiliaryfielddialog.sip
 %Include auto_generated/qgsnewauxiliarylayerdialog.sip
 %Include auto_generated/qgsnewgeopackagelayerdialog.sip
+%Include auto_generated/qgsnewvectortabledialog.sip
 %Include auto_generated/qgsnewhttpconnection.sip
 %Include auto_generated/qgsnewmemorylayerdialog.sip
 %Include auto_generated/qgsnewnamedialog.sip

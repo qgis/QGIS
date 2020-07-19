@@ -135,7 +135,7 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
       },
       "sortby": {
         "description": "Sort results by the specified field name",
-        "in": "path",
+        "in": "query",
         "name": "sortby",
         "required": false,
         "schema": {
@@ -144,11 +144,11 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
       },
       "sortdesc": {
         "description": "Sort results in descending order, field name must be specified with 'sortby' parameter",
-        "in": "path",
+        "in": "query",
         "name": "sortdesc",
         "required": false,
         "schema": {
-          "type": "bool"
+          "type": "boolean"
         }
       }
     },

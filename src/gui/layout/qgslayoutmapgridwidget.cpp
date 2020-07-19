@@ -91,7 +91,6 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   connect( mDistanceToMapFrameSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mDistanceToMapFrameSpinBox_valueChanged );
   connect( mMinWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::minIntervalChanged );
   connect( mMaxWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::maxIntervalChanged );
-  connect( mAnnotationFontColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutMapGridWidget::mAnnotationFontColorButton_colorChanged );
   connect( mEnabledCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapGridWidget::gridEnabledToggled );
   setPanelTitle( tr( "Map Grid Properties" ) );
 
@@ -123,10 +122,6 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   mAnnotationFormatComboBox->addItem( tr( "Degree, Minute, Second with Suffix" ), QgsLayoutItemMapGrid::DegreeMinuteSecond );
   mAnnotationFormatComboBox->addItem( tr( "Degree, Minute, Second Aligned" ), QgsLayoutItemMapGrid::DegreeMinuteSecondPadded );
   mAnnotationFormatComboBox->addItem( tr( "Custom" ), QgsLayoutItemMapGrid::CustomFormat );
-
-  mAnnotationFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
-  mAnnotationFontColorButton->setAllowOpacity( true );
-  mAnnotationFontColorButton->setContext( QStringLiteral( "composer" ) );
 
   insertAnnotationDisplayEntries( mAnnotationDisplayLeftComboBox );
   insertAnnotationDisplayEntries( mAnnotationDisplayRightComboBox );
@@ -181,9 +176,11 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   updateGuiElements();
 
   blockAllSignals( false );
-  connect( mAnnotationFontButton, &QgsFontButton::changed, this, &QgsLayoutMapGridWidget::annotationFontChanged );
+  connect( mAnnotationFontButton, &QgsFontButton::changed, this, &QgsLayoutMapGridWidget::annotationTextFormatChanged );
   connect( mGridLineStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutMapGridWidget::lineSymbolChanged );
   connect( mGridMarkerStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutMapGridWidget::markerSymbolChanged );
+
+  connect( mAnnotationFontButton, &QgsFontButton::changed, this, &QgsLayoutMapGridWidget::annotationTextFormatChanged );
 
   mGridLineStyleButton->registerExpressionContextGenerator( mMapGrid );
   mGridLineStyleButton->setLayer( coverageLayer() );
@@ -193,8 +190,10 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   {
     connect( &mMap->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mGridLineStyleButton, &QgsSymbolButton::setLayer );
     connect( &mMap->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mGridMarkerStyleButton, &QgsSymbolButton::setLayer );
+    connect( &mMap->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mAnnotationFontButton, &QgsFontButton::setLayer );
   }
-
+  mAnnotationFontButton->setLayer( coverageLayer() );
+  mAnnotationFontButton->registerExpressionContextGenerator( mMapGrid );
 }
 
 void QgsLayoutMapGridWidget::populateDataDefinedButtons()
@@ -276,7 +275,6 @@ void QgsLayoutMapGridWidget::blockAllSignals( bool block )
   mAnnotationDirectionComboBoxBottom->blockSignals( block );
   mDistanceToMapFrameSpinBox->blockSignals( block );
   mCoordinatePrecisionSpinBox->blockSignals( block );
-  mAnnotationFontColorButton->blockSignals( block );
   mAnnotationFontButton->blockSignals( block );
   mMinWidthSpinBox->blockSignals( block );
   mMaxWidthSpinBox->blockSignals( block );
@@ -453,6 +451,7 @@ void QgsLayoutMapGridWidget::setGridItems()
 
   mGridMarkerStyleButton->registerExpressionContextGenerator( mMapGrid );
   mGridLineStyleButton->registerExpressionContextGenerator( mMapGrid );
+  mAnnotationFontButton->registerExpressionContextGenerator( mMapGrid );
 
   mEnabledCheckBox->setChecked( mMapGrid->enabled() );
   mIntervalXSpinBox->setValue( mMapGrid->intervalX() );
@@ -575,8 +574,9 @@ void QgsLayoutMapGridWidget::setGridItems()
   initAnnotationDirectionBox( mAnnotationDirectionComboBoxTop, mMapGrid->annotationDirection( QgsLayoutItemMapGrid::Top ) );
   initAnnotationDirectionBox( mAnnotationDirectionComboBoxBottom, mMapGrid->annotationDirection( QgsLayoutItemMapGrid::Bottom ) );
 
-  mAnnotationFontColorButton->setColor( mMapGrid->annotationFontColor() );
-  mAnnotationFontButton->setCurrentFont( mMapGrid->annotationFont() );
+  mAnnotationFontButton->setDialogTitle( tr( "Grid Annotation Font" ) );
+  mAnnotationFontButton->setMode( QgsFontButton::ModeTextRenderer );
+  mAnnotationFontButton->setTextFormat( mMapGrid->annotationTextFormat() );
 
   mAnnotationFormatComboBox->setCurrentIndex( mAnnotationFormatComboBox->findData( mMapGrid->annotationFormat() ) );
   mAnnotationFormatButton->setEnabled( mMapGrid->annotationFormat() == QgsLayoutItemMapGrid::CustomFormat );
@@ -912,6 +912,20 @@ void QgsLayoutMapGridWidget::maxIntervalChanged( double interval )
   mMap->update();
 }
 
+void QgsLayoutMapGridWidget::annotationTextFormatChanged()
+{
+  if ( !mMapGrid || !mMap )
+  {
+    return;
+  }
+
+  mMap->beginCommand( tr( "Change Annotation Font" ) );
+  mMapGrid->setAnnotationTextFormat( mAnnotationFontButton->textFormat() );
+  mMap->endCommand();
+  mMap->updateBoundingRect();
+  mMap->update();
+}
+
 void QgsLayoutMapGridWidget::mGridBlendComboBox_currentIndexChanged( int index )
 {
   Q_UNUSED( index )
@@ -1126,19 +1140,6 @@ void QgsLayoutMapGridWidget::mDistanceToMapFrameSpinBox_valueChanged( double d )
   mMap->endCommand();
 }
 
-void QgsLayoutMapGridWidget::annotationFontChanged()
-{
-  if ( !mMapGrid || !mMap )
-  {
-    return;
-  }
-
-  mMap->beginCommand( tr( "Change Annotation Font" ) );
-  mMapGrid->setAnnotationFont( mAnnotationFontButton->currentFont() );
-  mMap->updateBoundingRect();
-  mMap->update();
-  mMap->endCommand();
-}
 
 void QgsLayoutMapGridWidget::lineSymbolChanged()
 {
@@ -1178,19 +1179,6 @@ void QgsLayoutMapGridWidget::gridEnabledToggled( bool active )
   mMap->endCommand();
   mMap->updateBoundingRect();
   mMap->update();
-}
-
-void QgsLayoutMapGridWidget::mAnnotationFontColorButton_colorChanged( const QColor &color )
-{
-  if ( !mMapGrid || !mMap )
-  {
-    return;
-  }
-
-  mMap->beginCommand( tr( "Change Annotation Color" ), QgsLayoutItem::UndoMapGridAnnotationFontColor );
-  mMapGrid->setAnnotationFontColor( color );
-  mMap->update();
-  mMap->endCommand();
 }
 
 void QgsLayoutMapGridWidget::mAnnotationFormatComboBox_currentIndexChanged( int index )

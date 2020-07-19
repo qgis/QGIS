@@ -137,6 +137,7 @@
 #include "qgsalgorithmrenamelayer.h"
 #include "qgsalgorithmrenametablefield.h"
 #include "qgsalgorithmrepairshapefile.h"
+#include "qgsalgorithmrescaleraster.h"
 #include "qgsalgorithmreverselinedirection.h"
 #include "qgsalgorithmrotate.h"
 #include "qgsalgorithmroundrastervalues.h"
@@ -371,6 +372,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRenameLayerAlgorithm() );
   addAlgorithm( new QgsRenameTableFieldAlgorithm() );
   addAlgorithm( new QgsRepairShapefileAlgorithm() );
+  addAlgorithm( new QgsRescaleRasterAlgorithm() );
   addAlgorithm( new QgsReverseLineDirectionAlgorithm() );
   addAlgorithm( new QgsRotateFeaturesAlgorithm() );
   addAlgorithm( new QgsRoundRasterValuesAlgorithm() );

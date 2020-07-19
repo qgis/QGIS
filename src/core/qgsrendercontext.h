@@ -82,6 +82,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
       RenderBlocking           = 0x400, //!< Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server.
       RenderSymbolPreview      = 0x800, //!< The render is for a symbol preview only and map based properties may not be available, so care should be taken to handle map unit based sizes in an appropriate way.
       LosslessImageRendering   = 0x1000, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
+      ApplyScalingWorkaroundForTextRendering = 0x2000, //!< Whether a scaling workaround designed to stablise the rendering of small font sizes (or for painters scaled out by a large amount) when rendering text. Generally this is recommended, but it may incur some performance cost.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -835,6 +836,24 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     void setFeatureClipGeometry( const QgsGeometry &geometry );
 
+    /**
+     * Returns the texture origin, which should be used as a brush transform when
+     * rendering using QBrush objects.
+     *
+     * \see setTextureOrigin()
+     * \since QGIS 3.16
+     */
+    QPointF textureOrigin() const;
+
+    /**
+     * Sets the texture \a origin, which should be used as a brush transform when
+     * rendering using QBrush objects.
+     *
+     * \see textureOrigin()
+     * \since QGIS 3.16
+     */
+    void setTextureOrigin( const QPointF &origin );
+
   private:
 
     Flags mFlags;
@@ -928,6 +947,8 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     QList< QgsMapClippingRegion > mClippingRegions;
     QgsGeometry mFeatureClipGeometry;
+
+    QPointF mTextureOrigin;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

@@ -1,0 +1,45 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgs3d.h                                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class Qgs3D
+{
+%Docstring
+Qgs3D is a singleton class containing various registries and other global members
+related to 3D classes.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgs3d.h"
+%End
+  public:
+
+
+
+    static Qgs3D *instance();
+%Docstring
+Returns a pointer to the singleton instance.
+%End
+
+    ~Qgs3D();
+
+  private:
+    Qgs3D( const Qgs3D &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgs3d.h                                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

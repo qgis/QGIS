@@ -507,7 +507,7 @@ QString QgsWMTSLayerItem::createUri()
 
 // ---------------------------------------------------------------------------
 QgsWMSRootItem::QgsWMSRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WMS" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "WMS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconWms.svg" );
@@ -532,7 +532,7 @@ QVector<QgsDataItem *> QgsWMSRootItem::createChildren()
 // ---------------------------------------------------------------------------
 
 QgsWMTSRootItem::QgsWMTSRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WMS" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "WMS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconWms.svg" );
@@ -573,7 +573,7 @@ QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDat
 
 
 QgsXyzTileRootItem::QgsXyzTileRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WMS" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "WMS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconXyz.svg" );

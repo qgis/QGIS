@@ -43,6 +43,33 @@ QgsTextShadowSettings::~QgsTextShadowSettings() //NOLINT
 
 }
 
+bool QgsTextShadowSettings::operator==( const QgsTextShadowSettings &other ) const
+{
+  if ( d->enabled != other.enabled()
+       || d->shadowUnder != other.shadowPlacement()
+       || d->offsetAngle != other.offsetAngle()
+       || d->offsetDist != other.offsetDistance()
+       || d->offsetUnits != other.offsetUnit()
+       || d->offsetMapUnitScale != other.offsetMapUnitScale()
+       || d->offsetGlobal != other.offsetGlobal()
+       || d->radius != other.blurRadius()
+       || d->radiusUnits != other.blurRadiusUnit()
+       || d->radiusMapUnitScale != other.blurRadiusMapUnitScale()
+       || d->radiusAlphaOnly != other.blurAlphaOnly()
+       || d->scale != other.scale()
+       || d->color != other.color()
+       || d->opacity != other.opacity()
+       || d->blendMode != other.blendMode() )
+    return false;
+
+  return true;
+}
+
+bool QgsTextShadowSettings::operator!=( const QgsTextShadowSettings &other ) const
+{
+  return !( *this == other );
+}
+
 bool QgsTextShadowSettings::enabled() const
 {
   return d->enabled;

@@ -618,6 +618,8 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       hAlign = QgsTextRenderer::AlignCenter;
     else if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiRight )
       hAlign = QgsTextRenderer::AlignRight;
+    else if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiJustify )
+      hAlign = QgsTextRenderer::AlignJustify;
 
     QgsTextRenderer::Component component;
     component.origin = outPt;
@@ -637,7 +639,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     }
 
     QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, document, labelfm,
-                                       hAlign, QgsTextRenderer::Label );
+                                       hAlign, QgsTextRenderer::AlignTop, QgsTextRenderer::Label );
 
   }
   if ( label->nextPart() )

@@ -183,7 +183,7 @@ int QgsBrightnessContrastFilter::adjustColorComponent( int colorComponent, int a
     double adjustedColor = colorComponent / alphaFactor;
 
     // Make sure to return a premultiplied color
-    return alphaFactor * qBound( 0., std::pow( ( ( ( ( ( ( adjustedColor / 255.0 ) - 0.5 ) * contrastFactor ) + 0.5 ) * 255 ) + brightness ) / 255, gammaCorrection ), 255. );
+    return alphaFactor * qBound( 0., 255 * std::pow( ( ( ( ( ( ( adjustedColor / 255.0 ) - 0.5 ) * contrastFactor ) + 0.5 ) * 255 ) + brightness ) / 255, gammaCorrection ), 255. );
   }
 }
 

@@ -3188,6 +3188,10 @@ void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
         {
           aligntype = QgsPalLayerSettings::MultiFollowPlacement;
         }
+        else if ( str.compare( QLatin1String( "Justify" ), Qt::CaseInsensitive ) == 0 )
+        {
+          aligntype = QgsPalLayerSettings::MultiJustify;
+        }
         dataDefinedValues.insert( QgsPalLayerSettings::MultiLineAlignment, QVariant( static_cast< int >( aligntype ) ) );
       }
     }

@@ -25,8 +25,12 @@
 #include "qgspolygon.h"
 
 
-QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( QNode *parent )
-  : Qt3DRender::QGeometry( parent )
+QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals, bool _invertNormals, bool _addBackFaces, bool _addTextureCoords, QNode *parent )
+  : Qt3DRender::QGeometry( parent ),
+    mWithNormals( _withNormals ),
+    mInvertNormals( _invertNormals ),
+    mAddBackFaces( _addBackFaces ),
+    mAddTextureCoords( _addTextureCoords )
 {
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
   mVertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
@@ -34,7 +38,7 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( QNode *parent )
   mVertexBuffer = new Qt3DRender::QBuffer( this );
 #endif
 
-  QgsTessellator tmpTess( 0, 0, mWithNormals );
+  QgsTessellator tmpTess( 0, 0, mWithNormals, false, false, false, mAddTextureCoords );
   const int stride = tmpTess.stride();
 
   mPositionAttribute = new Qt3DRender::QAttribute( this );
@@ -58,6 +62,18 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( QNode *parent )
     mNormalAttribute->setByteOffset( 3 * sizeof( float ) );
     addAttribute( mNormalAttribute );
   }
+  if ( mAddTextureCoords )
+  {
+    mTextureCoordsAttribute = new Qt3DRender::QAttribute( this );
+    mTextureCoordsAttribute->setName( Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName() );
+    mTextureCoordsAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
+    mTextureCoordsAttribute->setVertexSize( 2 );
+    mTextureCoordsAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
+    mTextureCoordsAttribute->setBuffer( mVertexBuffer );
+    mTextureCoordsAttribute->setByteStride( stride );
+    mTextureCoordsAttribute->setByteOffset( mWithNormals ? 6 * sizeof( float ) : 3 * sizeof( float ) );
+    addAttribute( mTextureCoordsAttribute );
+  }
 }
 
 void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &polygons, const QList<QgsFeatureId> &featureIds, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon )
@@ -66,7 +82,7 @@ void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &poly
   mTriangleIndexStartingIndices.reserve( polygons.count() );
   mTriangleIndexFids.reserve( polygons.count() );
 
-  QgsTessellator tessellator( origin.x(), origin.y(), mWithNormals, mInvertNormals, mAddBackFaces );
+  QgsTessellator tessellator( origin.x(), origin.y(), mWithNormals, mInvertNormals, mAddBackFaces, false, mAddTextureCoords );
   for ( int i = 0; i < polygons.count(); ++i )
   {
     Q_ASSERT( tessellator.dataVerticesCount() % 3 == 0 );
@@ -88,6 +104,8 @@ void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &poly
   mPositionAttribute->setCount( nVerts );
   if ( mNormalAttribute )
     mNormalAttribute->setCount( nVerts );
+  if ( mAddTextureCoords )
+    mTextureCoordsAttribute->setCount( nVerts );
 }
 
 void QgsTessellatedPolygonGeometry::setData( const QByteArray &vertexBufferData, int vertexCount, const QVector<QgsFeatureId> &triangleIndexFids, const QVector<uint> &triangleIndexStartingIndices )
@@ -99,6 +117,8 @@ void QgsTessellatedPolygonGeometry::setData( const QByteArray &vertexBufferData,
   mPositionAttribute->setCount( vertexCount );
   if ( mNormalAttribute )
     mNormalAttribute->setCount( vertexCount );
+  if ( mTextureCoordsAttribute )
+    mTextureCoordsAttribute->setCount( vertexCount );
 }
 
 

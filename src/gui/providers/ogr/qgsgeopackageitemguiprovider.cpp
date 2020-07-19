@@ -91,26 +91,6 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
       menu->addAction( actionAddConnection );
     }
 
-    // Add table to existing DB
-    QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table…" ), collectionItem->parent() );
-    QPointer<QgsGeoPackageCollectionItem>collectionItemPtr { collectionItem };
-    const QString itemPath = collectionItem->path().remove( QStringLiteral( "gpkg:/" ) );
-    connect( actionAddTable, &QAction::triggered, actionAddTable, [ collectionItemPtr, itemPath ]
-    {
-      QgsNewGeoPackageLayerDialog dialog( nullptr );
-      dialog.setDatabasePath( itemPath );
-      dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
-      dialog.setOverwriteBehavior( QgsNewGeoPackageLayerDialog::AddNewLayer );
-      dialog.lockDatabasePath();
-      if ( dialog.exec() == QDialog::Accepted )
-      {
-        if ( collectionItemPtr )
-          collectionItemPtr->refreshConnections();
-      }
-    } );
-
-    menu->addAction( actionAddTable );
-
     QAction *sep = new QAction( collectionItem->parent() );
     sep->setSeparator( true );
     menu->addAction( sep );

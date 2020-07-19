@@ -298,6 +298,9 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
 
       case QgsWkbTypes::PolygonGeometry:
         radOverCentroid->setChecked( true );
+        mDiagramDistanceLabel->setEnabled( false );
+        mDiagramDistanceSpinBox->setEnabled( false );
+        mDistanceDDBtn->setEnabled( false );
         break;
 
       case QgsWkbTypes::UnknownGeometry:

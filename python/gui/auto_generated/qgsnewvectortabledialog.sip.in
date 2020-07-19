@@ -1,0 +1,124 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsnewvectortabledialog.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsNewVectorTableDialog : QDialog
+{
+%Docstring
+The QgsNewVectorTableDialog class is a provider-agnostic database vector
+and aspatial table designer dialog based on the connections API.
+
+It allows to design a new vector or aspatial database table by defining the schema
+(if supported by the provider) and table name, the list of QgsFields,
+the optional geometry type and SRID.
+
+The actual creation of the table is delegated to the connections API method
+:py:func:`QgsAbstractDatabaseProviderConnection.createVectorTable()`
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsnewvectortabledialog.h"
+%End
+  public:
+
+    QgsNewVectorTableDialog( QgsAbstractDatabaseProviderConnection *conn, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+QgsNewVectorTableDialog constructor
+
+:param connection: DB connection, ownership is NOT transfered
+:param parent: optional parent
+%End
+
+    void setSchemaName( const QString &name );
+%Docstring
+Sets the schema ``name``
+%End
+
+    void setTableName( const QString &name );
+%Docstring
+Sets the table ``name``
+%End
+
+    void setGeometryType( QgsWkbTypes::Type type );
+%Docstring
+Sets the geometry ``type``
+%End
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the CRS to ``crs``
+%End
+
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the CRS
+%End
+
+    QString tableName() const;
+%Docstring
+Returns the table name
+%End
+
+    QString schemaName() const;
+%Docstring
+Returns the schema name
+%End
+
+    QString geometryColumnName() const;
+%Docstring
+Returns the geometry column name
+%End
+
+    QgsFields fields() const;
+%Docstring
+Returns the fields
+%End
+
+    QgsWkbTypes::Type geometryType() const;
+%Docstring
+Returns the geometry type
+%End
+
+    void setFields( const QgsFields &fields );
+%Docstring
+Sets the fields to ``fields``
+%End
+
+    bool createSpatialIndex();
+%Docstring
+Returns ``True`` if spatialindex checkbox is cheched
+@return
+%End
+
+    QStringList validationErrors() const;
+%Docstring
+Returns the validation errors or an empty list if the dialog is valid
+%End
+
+  protected:
+    virtual void showEvent( QShowEvent *event );
+
+};
+
+
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsnewvectortabledialog.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -69,6 +69,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mDisabledSymbolLayers()
   , mClippingRegions( rh.mClippingRegions )
   , mFeatureClipGeometry( rh.mFeatureClipGeometry )
+  , mTextureOrigin( rh.mTextureOrigin )
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
@@ -104,6 +105,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mCustomRenderingFlags = rh.mCustomRenderingFlags;
   mClippingRegions = rh.mClippingRegions;
   mFeatureClipGeometry = rh.mFeatureClipGeometry;
+  mTextureOrigin = rh.mTextureOrigin;
   setIsTemporal( rh.isTemporal() );
   if ( isTemporal() )
     setTemporalRange( rh.temporalRange() );
@@ -532,6 +534,16 @@ QgsGeometry QgsRenderContext::featureClipGeometry() const
 void QgsRenderContext::setFeatureClipGeometry( const QgsGeometry &geometry )
 {
   mFeatureClipGeometry = geometry;
+}
+
+QPointF QgsRenderContext::textureOrigin() const
+{
+  return mTextureOrigin;
+}
+
+void QgsRenderContext::setTextureOrigin( const QPointF &origin )
+{
+  mTextureOrigin = origin;
 }
 
 

@@ -59,6 +59,9 @@ class CORE_EXPORT QgsTextBufferSettings
 
     ~QgsTextBufferSettings();
 
+    bool operator==( const QgsTextBufferSettings &other ) const;
+    bool operator!=( const QgsTextBufferSettings &other ) const;
+
     /**
      * Returns whether the buffer is enabled.
      * \see setEnabled()

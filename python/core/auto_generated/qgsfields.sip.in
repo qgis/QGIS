@@ -309,6 +309,14 @@ Returns an icon corresponding to a field index, based on the field's type and so
     }
 %End
 
+
+    static QIcon iconForFieldType( const QVariant::Type &type ) /Factory/;
+%Docstring
+Returns an icon corresponding to a field ``type``
+
+.. versionadded:: 3.16
+%End
+
     operator QVariant() const;
 
 

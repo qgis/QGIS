@@ -40,8 +40,9 @@ class QgsOgrItemGuiProvider : public QObject, public QgsDataItemGuiProvider
                               QgsDataItemGuiContext context ) override;
 
   protected slots:
-    void onDeleteLayer();
-    void deleteCollection();
+    void onDeleteLayer( QgsDataItemGuiContext context );
+    void deleteCollection( QgsDataItemGuiContext context );
+
 };
 
 ///@endcond

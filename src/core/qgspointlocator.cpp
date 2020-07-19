@@ -831,6 +831,10 @@ bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
        || mIsIndexing ) // already indexing, return!
     return true;
 
+  if ( !mLayer->dataProvider()
+       || !mLayer->dataProvider()->isValid() )
+    return false;
+
   mRenderer.reset( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
   mSource.reset( new QgsVectorLayerFeatureSource( mLayer ) );
 

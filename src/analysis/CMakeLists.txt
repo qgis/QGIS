@@ -142,6 +142,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrenamelayer.cpp
   processing/qgsalgorithmrenametablefield.cpp
   processing/qgsalgorithmrepairshapefile.cpp
+  processing/qgsalgorithmrescaleraster.cpp
   processing/qgsalgorithmreverselinedirection.cpp
   processing/qgsalgorithmrotate.cpp
   processing/qgsalgorithmroundrastervalues.cpp

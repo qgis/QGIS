@@ -38,9 +38,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>555</width>
-        <height>675</height>
+        <y>-49</y>
+        <width>541</width>
+        <height>724</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
@@ -56,7 +56,190 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item row="11" column="0">
+       <item row="8" column="0">
+        <widget class="QCheckBox" name="chkShowTileInfo">
+         <property name="text">
+          <string>Show map tile info</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="0">
+        <widget class="QCheckBox" name="chkShowCameraViewCenter">
+         <property name="text">
+          <string>Show camera's view center</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QgsCollapsibleGroupBox" name="groupTerrainShading">
+         <property name="title">
+          <string>Terrain Shading</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QgsPhongMaterialWidget" name="widgetTerrainMaterial" native="true"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QCheckBox" name="chkShowLabels">
+         <property name="text">
+          <string>Show labels</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QgsCollapsibleGroupBox" name="groupLights">
+         <property name="title">
+          <string>Lights</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QgsLightsWidget" name="widgetLights" native="true"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="9" column="0">
+        <widget class="QCheckBox" name="chkShowBoundingBoxes">
+         <property name="text">
+          <string>Show bounding boxes</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QgsCollapsibleGroupBox" name="cameraTerrain">
+         <property name="title">
+          <string>Camera</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Field of View</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="2">
+           <widget class="QgsSpinBox" name="spinCameraFieldOfView">
+            <property name="suffix">
+             <string>°</string>
+            </property>
+            <property name="maximum">
+             <number>180</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>Max. ground error</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Map tile resolution</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QgsSpinBox" name="spinMapResolution">
+           <property name="suffix">
+            <string> px</string>
+           </property>
+           <property name="maximum">
+            <number>4096</number>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Max. screen error</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QgsDoubleSpinBox" name="spinGroundError">
+           <property name="suffix">
+            <string> map units</string>
+           </property>
+           <property name="decimals">
+            <number>1</number>
+           </property>
+           <property name="minimum">
+            <double>0.100000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>1000.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>1.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>Zoom levels</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLabel" name="labelZoomLevels">
+           <property name="text">
+            <string>0</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QgsDoubleSpinBox" name="spinScreenError">
+           <property name="suffix">
+            <string> px</string>
+           </property>
+           <property name="decimals">
+            <number>1</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="12" column="0">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -152,189 +335,6 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="groupTerrainShading">
-         <property name="title">
-          <string>Terrain Shading</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QgsPhongMaterialWidget" name="widgetTerrainMaterial" native="true"/>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="cameraTerrain">
-         <property name="title">
-          <string>Camera</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>Field of View</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" colspan="2">
-           <widget class="QgsSpinBox" name="spinCameraFieldOfView">
-            <property name="suffix">
-             <string>°</string>
-            </property>
-            <property name="maximum">
-             <number>180</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="groupLights">
-         <property name="title">
-          <string>Lights</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QgsLightsWidget" name="widgetLights" native="true"/>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="10" column="0">
-        <widget class="QCheckBox" name="chkShowCameraViewCenter">
-         <property name="text">
-          <string>Show camera's view center</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="0">
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_6">
-           <property name="text">
-            <string>Max. ground error</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Map tile resolution</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QgsSpinBox" name="spinMapResolution">
-           <property name="suffix">
-            <string> px</string>
-           </property>
-           <property name="maximum">
-            <number>4096</number>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Max. screen error</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QgsDoubleSpinBox" name="spinGroundError">
-           <property name="suffix">
-            <string> map units</string>
-           </property>
-           <property name="decimals">
-            <number>1</number>
-           </property>
-           <property name="minimum">
-            <double>0.100000000000000</double>
-           </property>
-           <property name="maximum">
-            <double>1000.000000000000000</double>
-           </property>
-           <property name="value">
-            <double>1.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_7">
-           <property name="text">
-            <string>Zoom levels</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLabel" name="labelZoomLevels">
-           <property name="text">
-            <string>0</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QgsDoubleSpinBox" name="spinScreenError">
-           <property name="suffix">
-            <string> px</string>
-           </property>
-           <property name="decimals">
-            <number>1</number>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="7" column="0">
-        <widget class="QCheckBox" name="chkShowLabels">
-         <property name="text">
-          <string>Show labels</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0">
-        <widget class="QCheckBox" name="chkShowTileInfo">
-         <property name="text">
-          <string>Show map tile info</string>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="0">
-        <widget class="QCheckBox" name="chkShowBoundingBoxes">
-         <property name="text">
-          <string>Show bounding boxes</string>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="0">
         <widget class="QgsCollapsibleGroupBox" name="groupMeshTerrainShading">
          <property name="title">
@@ -354,6 +354,13 @@
            <number>9</number>
           </property>
          </layout>
+        </widget>
+       </item>
+       <item row="11" column="0">
+        <widget class="QCheckBox" name="chkShowLightSourceOrigins">
+         <property name="text">
+          <string>Show light sources</string>
+         </property>
         </widget>
        </item>
       </layout>

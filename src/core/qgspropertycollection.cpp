@@ -144,6 +144,16 @@ QgsPropertyCollection &QgsPropertyCollection::operator=( const QgsPropertyCollec
   return *this;
 }
 
+bool QgsPropertyCollection::operator==( const QgsPropertyCollection &other ) const
+{
+  return mProperties == other.mProperties;
+}
+
+bool QgsPropertyCollection::operator!=( const QgsPropertyCollection &other ) const
+{
+  return !( *this == other );
+}
+
 int QgsPropertyCollection::count() const
 {
   if ( !mDirty )

@@ -332,6 +332,9 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
 
     QgsPropertyCollection &operator=( const QgsPropertyCollection &other );
 
+    bool operator==( const QgsPropertyCollection &other ) const;
+    bool operator!=( const QgsPropertyCollection &other ) const;
+
     /**
      * Returns the number of properties contained within the collection.
      */

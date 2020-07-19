@@ -60,6 +60,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterlayertemporalproperties.h"
+#include "qgsdoublevalidator.h"
 
 #include "qgsrasterlayertemporalpropertieswidget.h"
 #include "qgsprojecttimesettings.h"
@@ -191,7 +192,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
   mScaleRangeWidget->setScaleRange( lyr->minimumScale(), lyr->maximumScale() );
 
-  leNoDataValue->setValidator( new QDoubleValidator( -std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), 1000, this ) );
+  leNoDataValue->setValidator( new QgsDoubleValidator( -std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), 1000, this ) );
 
   // build GUI components
   QIcon myPyramidPixmap( QgsApplication::getThemeIcon( "/mIconPyramid.svg" ) );
@@ -786,7 +787,8 @@ void QgsRasterLayerProperties::sync()
   // TODO: no data ranges
   if ( provider->sourceHasNoDataValue( 1 ) )
   {
-    lblSrcNoDataValue->setText( QgsRasterBlock::printValue( provider->sourceNoDataValue( 1 ) ) );
+    double v = QgsRasterBlock::printValue( provider->sourceNoDataValue( 1 ) ).toDouble();
+    lblSrcNoDataValue->setText( QLocale().toString( v, 'g' ) );
   }
   else
   {
@@ -943,7 +945,7 @@ void QgsRasterLayerProperties::apply()
   if ( "" != leNoDataValue->text() )
   {
     bool myDoubleOk = false;
-    double myNoDataValue = leNoDataValue->text().toDouble( &myDoubleOk );
+    double myNoDataValue = QgsDoubleValidator::toDouble( leNoDataValue->text(), &myDoubleOk );
     if ( myDoubleOk )
     {
       QgsRasterRange myNoDataRange( myNoDataValue, myNoDataValue );
@@ -1604,17 +1606,18 @@ void QgsRasterLayerProperties::setTransparencyCell( int row, int column, double 
     {
       case Qgis::Float32:
       case Qgis::Float64:
-        lineEdit->setValidator( new QDoubleValidator( nullptr ) );
+        lineEdit->setValidator( new QgsDoubleValidator( nullptr ) );
         if ( !std::isnan( value ) )
         {
-          valueString = QgsRasterBlock::printValue( value );
+          double v = QgsRasterBlock::printValue( value ).toDouble();
+          valueString = QLocale().toString( v, 'g' ) ;
         }
         break;
       default:
         lineEdit->setValidator( new QIntValidator( nullptr ) );
         if ( !std::isnan( value ) )
         {
-          valueString = QString::number( static_cast<int>( value ) );
+          valueString = QLocale().toString( static_cast<int>( value ) );
         }
         break;
     }
@@ -1634,7 +1637,8 @@ void QgsRasterLayerProperties::setTransparencyCellValue( int row, int column, do
 {
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( tableTransparency->cellWidget( row, column ) );
   if ( !lineEdit ) return;
-  lineEdit->setText( QgsRasterBlock::printValue( value ) );
+  double v = QgsRasterBlock::printValue( value ).toDouble();
+  lineEdit->setText( QLocale().toString( v, 'g' ) );
   lineEdit->adjustSize();
   adjustTransparencyCellWidth( row, column );
   tableTransparency->resizeColumnsToContents();

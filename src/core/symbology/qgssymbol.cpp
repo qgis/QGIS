@@ -832,6 +832,20 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   bool usingSegmentizedGeometry = false;
   context.setGeometry( geom.constGet() );
 
+  if ( geom.type() != QgsWkbTypes::PointGeometry && !geom.boundingBox().isNull() )
+  {
+    try
+    {
+      const QPointF boundsOrigin = _getPoint( context, QgsPoint( geom.boundingBox().xMinimum(), geom.boundingBox().yMinimum() ) );
+      if ( std::isfinite( boundsOrigin.x() ) && std::isfinite( boundsOrigin.y() ) )
+        context.setTextureOrigin( boundsOrigin );
+    }
+    catch ( QgsCsException & )
+    {
+
+    }
+  }
+
   bool tileMapRendering = context.testFlag( QgsRenderContext::RenderMapTile );
 
   //convert curve types to normal point/line/polygon ones

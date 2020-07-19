@@ -352,6 +352,21 @@ Returns whether to show camera's view center as a sphere (for debugging)
 
 .. versionadded:: 3.4
 %End
+
+    void setShowLightSourceOrigins( bool enabled );
+%Docstring
+Sets whether to show light source origins as a sphere (for debugging)
+
+.. versionadded:: 3.16
+%End
+
+    bool showLightSourceOrigins() const;
+%Docstring
+Returns whether to show light source origins as a sphere (for debugging)
+
+.. versionadded:: 3.16
+%End
+
     void setShowLabels( bool enabled );
 %Docstring
 Sets whether to display labels on terrain tiles
@@ -491,6 +506,14 @@ Emitted when the flag whether camera's view center is shown has changed
 
 .. versionadded:: 3.4
 %End
+
+    void showLightSourceOriginsChanged();
+%Docstring
+Emitted when the flag whether light source origins are shown has changed.
+
+.. versionadded:: 3.15
+%End
+
     void showLabelsChanged();
 %Docstring
 Emitted when the flag whether labels are displayed on terrain tiles has changed

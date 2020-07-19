@@ -984,8 +984,21 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
       mapGrid->setAnnotationFrameDistance( annotationElem.attribute( QStringLiteral( "frameDistance" ), QStringLiteral( "0" ) ).toDouble() );
       QFont annotationFont;
       annotationFont.fromString( annotationElem.attribute( QStringLiteral( "font" ), QString() ) );
-      mapGrid->setAnnotationFont( annotationFont );
-      mapGrid->setAnnotationFontColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
+
+      QgsTextFormat annotationFormat = mapGrid->annotationTextFormat();
+      annotationFormat.setFont( annotationFont );
+      if ( annotationFont.pointSizeF() > 0 )
+      {
+        annotationFormat.setSize( annotationFont.pointSizeF() );
+        annotationFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+      }
+      else if ( annotationFont.pixelSize() > 0 )
+      {
+        annotationFormat.setSize( annotationFont.pixelSize() );
+        annotationFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
+      }
+      annotationFormat.setColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
+      mapGrid->setAnnotationTextFormat( annotationFormat );
 
       mapGrid->setAnnotationPrecision( annotationElem.attribute( QStringLiteral( "precision" ), QStringLiteral( "3" ) ).toInt() );
     }
@@ -1408,18 +1421,48 @@ bool QgsCompositionConverter::readTableXml( QgsLayoutItemAttributeTable *layoutI
   layoutItem->setEmptyTableBehavior( static_cast<QgsLayoutTable::EmptyTableMode>( itemElem.attribute( QStringLiteral( "emptyTableMode" ), QStringLiteral( "0" ) ).toInt() ) );
   layoutItem->setEmptyTableMessage( itemElem.attribute( QStringLiteral( "emptyTableMessage" ), QObject::tr( "No matching records" ) ) );
   layoutItem->setShowEmptyRows( itemElem.attribute( QStringLiteral( "showEmptyRows" ), QStringLiteral( "0" ) ).toInt() );
-  if ( !QgsFontUtils::setFromXmlChildNode( layoutItem->mHeaderFont, itemElem, QStringLiteral( "headerFontProperties" ) ) )
+  QFont headerFont;
+  if ( !QgsFontUtils::setFromXmlChildNode( headerFont, itemElem, QStringLiteral( "headerFontProperties" ) ) )
   {
-    layoutItem->mHeaderFont.fromString( itemElem.attribute( QStringLiteral( "headerFont" ), QString() ) );
+    headerFont.fromString( itemElem.attribute( QStringLiteral( "headerFont" ), QString() ) );
   }
-  layoutItem->setHeaderFontColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "headerFontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
+  QgsTextFormat headerFormat = layoutItem->headerTextFormat();
+  headerFormat.setFont( headerFont );
+  if ( headerFont.pointSizeF() > 0 )
+  {
+    headerFormat.setSize( headerFont.pointSizeF() );
+    headerFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+  }
+  else if ( headerFont.pixelSize() > 0 )
+  {
+    headerFormat.setSize( headerFont.pixelSize() );
+    headerFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
+  }
+  headerFormat.setColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "headerFontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
+  layoutItem->setHeaderTextFormat( headerFormat );
   layoutItem->setHeaderHAlignment( static_cast<QgsLayoutTable::HeaderHAlignment>( itemElem.attribute( QStringLiteral( "headerHAlignment" ), QStringLiteral( "0" ) ).toInt() ) ) ;
   layoutItem->setHeaderMode( static_cast<QgsLayoutTable::HeaderMode>( itemElem.attribute( QStringLiteral( "headerMode" ), QStringLiteral( "0" ) ).toInt() ) );
-  if ( !QgsFontUtils::setFromXmlChildNode( layoutItem->mContentFont, itemElem, QStringLiteral( "contentFontProperties" ) ) )
+
+  QFont contentFont;
+  if ( !QgsFontUtils::setFromXmlChildNode( contentFont, itemElem, QStringLiteral( "contentFontProperties" ) ) )
   {
-    layoutItem->mContentFont.fromString( itemElem.attribute( QStringLiteral( "contentFont" ), QString() ) );
+    contentFont.fromString( itemElem.attribute( QStringLiteral( "contentFont" ), QString() ) );
   }
-  layoutItem->setContentFontColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "contentFontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
+  QgsTextFormat contentFormat = layoutItem->contentTextFormat();
+  contentFormat.setFont( contentFont );
+  if ( contentFont.pointSizeF() > 0 )
+  {
+    contentFormat.setSize( contentFont.pointSizeF() );
+    contentFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+  }
+  else if ( contentFont.pixelSize() > 0 )
+  {
+    contentFormat.setSize( contentFont.pixelSize() );
+    contentFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
+  }
+  contentFormat.setColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "contentFontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
+  layoutItem->setContentTextFormat( contentFormat );
+
   layoutItem->setCellMargin( itemElem.attribute( QStringLiteral( "cellMargin" ), QStringLiteral( "1.0" ) ).toDouble() );
   layoutItem->setGridStrokeWidth( itemElem.attribute( QStringLiteral( "gridStrokeWidth" ), QStringLiteral( "0.5" ) ).toDouble() );
   layoutItem->setHorizontalGrid( itemElem.attribute( QStringLiteral( "horizontalGrid" ), QStringLiteral( "1" ) ).toInt() );

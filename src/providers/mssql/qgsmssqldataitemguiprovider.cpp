@@ -60,7 +60,7 @@ void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     connect( actionShowNoGeom, &QAction::toggled, connItem, &QgsMssqlConnectionItem::setAllowGeometrylessTables );
     menu->addAction( actionShowNoGeom );
 
-    QAction *actionCreateSchema = new QAction( tr( "Create Schema…" ), menu );
+    QAction *actionCreateSchema = new QAction( tr( "New Schema…" ), menu );
     connect( actionCreateSchema, &QAction::triggered, this, [connItem] { createSchema( connItem ); } );
     menu->addAction( actionCreateSchema );
   }
@@ -83,7 +83,7 @@ void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
   }
 }
 
-bool QgsMssqlDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext )
+bool QgsMssqlDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context )
 {
   if ( QgsMssqlLayerItem *layerItem = qobject_cast< QgsMssqlLayerItem * >( item ) )
   {
@@ -105,11 +105,11 @@ bool QgsMssqlDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGu
 
     if ( !res )
     {
-      QMessageBox::warning( nullptr, tr( "Delete %1" ).arg( typeName ), errCause );
+      notify( tr( "Delete %1" ).arg( typeName ), errCause, context, Qgis::MessageLevel::Warning );
     }
     else
     {
-      QMessageBox::information( nullptr, tr( "Delete %1" ).arg( typeName ), tr( "%1 deleted successfully." ).arg( typeName ) );
+      notify( tr( "Delete %1" ).arg( typeName ), tr( "%1 deleted successfully." ).arg( typeName ), context, Qgis::MessageLevel::Success );
       if ( connItem )
         connItem->refresh();
     }

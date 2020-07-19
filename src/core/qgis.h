@@ -527,6 +527,34 @@ template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue
     return defaultValue;
 }
 
+/**
+ * Returns the value for the given keys of a flag.
+ * \since QGIS 3.16
+ */
+template<class T> QString qgsFlagValueToKeys( const T &value ) SIP_SKIP
+{
+  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  Q_ASSERT( metaEnum.isValid() );
+  return QString::fromUtf8( metaEnum.valueToKeys( static_cast<int>( value ) ) );
+}
+
+/**
+ * Returns the value corresponding to the given \a keys of a flag.
+ * If the keys are invalid, it will return the \a defaultValue.
+ * \since QGIS 3.16
+ */
+template<class T> T qgsFlagKeysToValue( const QString &keys, const T &defaultValue ) SIP_SKIP
+{
+  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  Q_ASSERT( metaEnum.isValid() );
+  bool ok = false;
+  T v = static_cast<T>( metaEnum.keysToValue( keys.toUtf8().constData(), &ok ) );
+  if ( ok )
+    return v;
+  else
+    return defaultValue;
+}
+
 
 /**
  * Converts a string to a double in a permissive way, e.g., allowing for incorrect

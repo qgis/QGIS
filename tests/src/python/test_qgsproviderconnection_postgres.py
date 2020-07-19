@@ -317,6 +317,14 @@ IMPORT FOREIGN SCHEMA qgis_test LIMIT TO ( "someData" )
         conn.executeSql(foreign_table_definition)
         self.assertEquals(conn.tables('foreign_schema', QgsAbstractDatabaseProviderConnection.Foreign)[0].tableName(), 'someData')
 
+    def test_fields(self):
+        """Test fields"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+        fields = conn.fields('qgis_test', 'someData')
+        self.assertEqual(fields.names(), ['pk', 'cnt', 'name', 'name2', 'num_char', 'dt', 'date', 'time', 'geom'])
+
 
 if __name__ == '__main__':
     unittest.main()
