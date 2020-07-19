@@ -13,7 +13,8 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 import qgis  # NOQA
 from qgis.core import (QgsTableCell,
                        QgsBearingNumericFormat,
-                       QgsReadWriteContext)
+                       QgsReadWriteContext,
+                       QgsTextFormat)
 
 from qgis.PyQt.QtGui import QColor
 
@@ -35,6 +36,7 @@ class TestQgsTableCell(unittest.TestCase):
         self.assertFalse(c.backgroundColor().isValid())
         self.assertFalse(c.foregroundColor().isValid())
         self.assertFalse(c.numericFormat())
+        self.assertFalse(c.textFormat().isValid())
 
         c.setBackgroundColor(QColor(255, 0, 0))
         c.setForegroundColor(QColor(255, 0, 255))
@@ -42,6 +44,12 @@ class TestQgsTableCell(unittest.TestCase):
         self.assertEqual(c.backgroundColor().name(), '#ff0000')
         self.assertEqual(c.foregroundColor().name(), '#ff00ff')
         self.assertIsInstance(c.numericFormat(), QgsBearingNumericFormat)
+
+        format = QgsTextFormat()
+        format.setSize(16.8)
+        c.setTextFormat(format)
+        self.assertEqual(c.textFormat().size(), 16.8)
+        self.assertTrue(c.textFormat().isValid())
 
     def testProperties(self):
         c = QgsTableCell('test')
@@ -55,12 +63,16 @@ class TestQgsTableCell(unittest.TestCase):
         self.assertFalse(c2.backgroundColor().isValid())
         self.assertFalse(c2.foregroundColor().isValid())
         self.assertFalse(c2.numericFormat())
+        self.assertFalse(c2.textFormat().isValid())
 
         c.setBackgroundColor(QColor(255, 0, 0))
         c.setForegroundColor(QColor(255, 0, 255))
         format = QgsBearingNumericFormat()
         format.setShowPlusSign(True)
         c.setNumericFormat(format)
+        text_format = QgsTextFormat()
+        text_format.setSize(16.8)
+        c.setTextFormat(text_format)
         props = c.properties(QgsReadWriteContext())
 
         c3 = QgsTableCell()
@@ -71,6 +83,8 @@ class TestQgsTableCell(unittest.TestCase):
         self.assertEqual(c3.foregroundColor().name(), '#ff00ff')
         self.assertIsInstance(c3.numericFormat(), QgsBearingNumericFormat)
         self.assertTrue(c3.numericFormat().showPlusSign())
+        self.assertEqual(c3.textFormat().size(), 16.8)
+        self.assertTrue(c3.textFormat().isValid())
 
 
 if __name__ == '__main__':

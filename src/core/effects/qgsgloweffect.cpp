@@ -92,10 +92,9 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
   }
 
   QPainter *painter = context.painter();
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->setCompositionMode( mBlendMode );
   painter->drawImage( imageOffset( context ), im );
-  painter->restore();
 }
 
 QgsStringMap QgsGlowEffect::properties() const

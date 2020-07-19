@@ -304,14 +304,6 @@ class BatchPanelFillWidget(QToolButton):
         dlg = MultipleInputDialog([layer.name() for layer in layers])
         dlg.exec_()
 
-        def generate_layer_id(layer):
-            # prefer layer name if unique
-            if len([l for l in layers if l.name().lower() == layer.name().lower()]) == 1:
-                return layer.name()
-            else:
-                # otherwise fall back to layer id
-                return layer.id()
-
         if not dlg.selectedoptions:
             return
 
@@ -321,8 +313,7 @@ class BatchPanelFillWidget(QToolButton):
 
         first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
         for row, selected_idx in enumerate(selected):
-            layer = layers[selected_idx]
-            value = generate_layer_id(layer)
+            value = layers[selected_idx].id()
             self.setRowValue(first_row + row, value, context)
 
     def calculateByExpression(self):

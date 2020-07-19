@@ -1,6 +1,7 @@
 {
   "name": "array_agg",
   "type": "function",
+  "groups": ["Aggregates"],
   "description": "Returns an array of aggregated values from a field or expression.",
   "arguments": [
     {"arg": "expression", "description": "sub expression of field to aggregate"},

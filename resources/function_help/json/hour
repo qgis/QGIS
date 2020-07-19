@@ -1,6 +1,7 @@
 {
   "name": "hour",
   "type": "function",
+  "groups": ["Date and Time"],
   "description": "Extracts the hour part from a datetime or time, or the number of hours from an interval.",
   "variants": [
   { "variant": "Time variant",

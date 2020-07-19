@@ -1,6 +1,7 @@
 {
   "name": "interior_ring_n",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns a specific interior ring from a polygon geometry, or null if the geometry is not a polygon.",
   "arguments": [ {"arg":"geometry","description":"polygon geometry"},
   {"arg":"index","description":"index of interior to return, where 1 is the first interior ring"} ],

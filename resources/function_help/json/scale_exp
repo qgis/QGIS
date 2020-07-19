@@ -1,6 +1,7 @@
 {
   "name": "scale_exp",
   "type": "function",
+  "groups": ["Math"],
   "description": "Transforms a given value from an input domain to an output range using an exponential curve. This function can be used to ease values in or out of the specified output range.",
   "arguments": [
 	{"arg":"val","description":"A value in the input domain. The function will return a corresponding scaled value in the output range."},

@@ -308,6 +308,18 @@ void QgsGeometryCollection::draw( QPainter &p ) const
   }
 }
 
+QPainterPath QgsGeometryCollection::asQPainterPath() const
+{
+  QPainterPath p;
+  for ( const QgsAbstractGeometry *geom : mGeometries )
+  {
+    QPainterPath partPath = geom->asQPainterPath();
+    if ( !partPath.isEmpty() )
+      p.addPath( partPath );
+  }
+  return p;
+}
+
 bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr &wkbPtr )
 {
   if ( !wkbPtr )

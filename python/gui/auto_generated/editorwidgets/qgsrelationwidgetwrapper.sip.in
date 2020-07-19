@@ -39,46 +39,78 @@ Only has an effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been ca
 .. versionadded:: 2.18
 %End
 
-    bool showLinkButton() const;
+ bool showLinkButton() const /Deprecated/;
 %Docstring
 Determines if the "link feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
 %End
 
-    void setShowLinkButton( bool showLinkButton );
+ void setShowLinkButton( bool showLinkButton ) /Deprecated/;
 %Docstring
 Determines if the "link feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
 %End
 
-    bool showSaveChildEditsButton() const;
-%Docstring
-Determines if the "save child layer edits" button should be shown
-
-.. versionadded:: 3.14
-%End
-
-    void setShowSaveChildEditsButton( bool showSaveChildEditsButton );
-%Docstring
-Determines if the "save child layer edits" button should be shown
-
-.. versionadded:: 3.14
-%End
-
-    bool showUnlinkButton() const;
+ bool showUnlinkButton() const /Deprecated/;
 %Docstring
 Determines if the "unlink feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
 %End
 
-    void setShowUnlinkButton( bool showUnlinkButton );
+ void setShowUnlinkButton( bool showUnlinkButton ) /Deprecated/;
 %Docstring
 Determines if the "unlink feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
+%End
+
+ void setShowSaveChildEditsButton( bool showChildEdits ) /Deprecated/;
+%Docstring
+Determines if the "Save child layer edits" button should be shown
+
+.. versionadded:: 3.14
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
+%End
+
+ bool showSaveChildEditsButton() const /Deprecated/;
+%Docstring
+Determines if the "Save child layer edits" button should be shown
+
+.. versionadded:: 3.14
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
+%End
+
+    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+%Docstring
+Defines the buttons which are shown
+
+.. versionadded:: 3.16
+%End
+
+    QgsAttributeEditorRelation::Buttons visibleButtons() const;
+%Docstring
+Returns the buttons which are shown
+
+.. versionadded:: 3.16
 %End
 
     QgsRelation relation() const;

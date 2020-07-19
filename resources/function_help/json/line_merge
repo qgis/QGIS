@@ -1,6 +1,7 @@
 {
   "name": "line_merge",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description":"Returns a LineString or MultiLineString geometry, where any connected LineStrings from the input geometry have been merged into a single linestring. This function will return null if passed a geometry which is not a LineString/MultiLineString.",
   "arguments": [ {"arg":"geometry","description":"a LineString/MultiLineString geometry"} ],
   "examples": [ { "expression":"geom_to_wkt(line_merge(geom_from_wkt('MULTILINESTRING((0 0, 1 1),(1 1, 2 2))')))", "returns":"'LineString(0 0,1 1,2 2)'"},

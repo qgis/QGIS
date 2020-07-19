@@ -399,6 +399,7 @@ Constructs an empty metadata object
 %End
 
     QgsMeshDatasetGroupMetadata( const QString &name,
+                                 const QString uri,
                                  bool isScalar,
                                  DataType dataType,
                                  double minimum,
@@ -424,6 +425,13 @@ Constructs a valid metadata object
     QString name() const;
 %Docstring
 Returns name of the dataset group
+%End
+
+    QString uri() const;
+%Docstring
+Returns the uri of the source
+
+.. versionadded:: 3.16
 %End
 
     QMap<QString, QString> extraOptions() const;
@@ -578,12 +586,21 @@ Maximum
 %End
   public:
 
+    enum StorageType
+    {
+      None,
+      File,
+      Memory,
+      OnTheFly
+    };
+
     QgsMeshDatasetGroupTreeItem();
 %Docstring
 Constructor for an empty dataset group tree item
 %End
 
     QgsMeshDatasetGroupTreeItem( const QString &defaultName,
+                                 const QString &providerName,
                                  bool isVector,
                                  int index );
 %Docstring
@@ -620,6 +637,19 @@ Appends a item child
 .. note::
 
    takes ownership of item
+%End
+
+    void removeChild( QgsMeshDatasetGroupTreeItem *item /Transfer/ );
+%Docstring
+Removes a item child if exists
+
+:param item: the item to append
+
+.. note::
+
+   takes ownership of item
+
+.. versionadded:: 3.16
 %End
 
     QgsMeshDatasetGroupTreeItem *child( int row ) const;
@@ -686,6 +716,15 @@ but will not be displayed anymore except if the empty string is setted.
 :param name: to display
 %End
 
+    QString providerName() const;
+%Docstring
+Returns the name used by the provider to identify the dataset
+
+:return: the provider name
+
+.. versionadded:: 3.16
+%End
+
     bool isVector() const;
 %Docstring
 
@@ -717,6 +756,23 @@ Sets whether the item is enabled, that is if it is displayed in view
 :return: the default name
 %End
 
+    QgsMeshDatasetGroupTreeItem::StorageType storageType() const;
+%Docstring
+
+:return: where the dataset group is stored
+
+.. versionadded:: 3.16
+%End
+
+    void setStorageType( QgsMeshDatasetGroupTreeItem::StorageType storageType );
+%Docstring
+Sets where the dataset is stored
+
+:param storeType: the type of storing
+
+.. versionadded:: 3.16
+%End
+
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context );
 %Docstring
 Write the item and its children in a DOM document
@@ -728,6 +784,7 @@ Write the item and its children in a DOM document
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -140,7 +140,7 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
     double centerYDouble = size.height() / 2.0;
 
     //save the current canvas rotation
-    context.painter()->save();
+    QgsScopedQPainterState painterState( context.painter() );
     //
     //work out how to shift the image so that it rotates
     //           properly about its center
@@ -239,6 +239,5 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
     svg.render( context.painter(), QRectF( 0, 0, size.width(), size.height() ) );
 
     //unrotate the canvas again
-    context.painter()->restore();
   }
 }

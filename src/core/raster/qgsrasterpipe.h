@@ -56,7 +56,7 @@ class CORE_EXPORT QgsRasterPipe
       ResamplerRole = 4,
       ProjectorRole = 5,
       NullerRole = 6,
-      HueSaturationRole = 7
+      HueSaturationRole = 7,
     };
 
     /**
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsRasterPipe
 
     /**
      * Stage at which resampling occurs.
-     * @since QGIS 3.16
+     * \since QGIS 3.16
      */
     enum class ResamplingStage
     {

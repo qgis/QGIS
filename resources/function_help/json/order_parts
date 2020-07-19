@@ -1,6 +1,7 @@
 {
   "name": "order_parts",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Orders the parts of a MultiGeometry by a given criteria",
   "arguments": [
     {"arg":"geom","description":"a multi-type geometry"},

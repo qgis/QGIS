@@ -832,6 +832,20 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   bool usingSegmentizedGeometry = false;
   context.setGeometry( geom.constGet() );
 
+  if ( geom.type() != QgsWkbTypes::PointGeometry && !geom.boundingBox().isNull() )
+  {
+    try
+    {
+      const QPointF boundsOrigin = _getPoint( context, QgsPoint( geom.boundingBox().xMinimum(), geom.boundingBox().yMinimum() ) );
+      if ( std::isfinite( boundsOrigin.x() ) && std::isfinite( boundsOrigin.y() ) )
+        context.setTextureOrigin( boundsOrigin );
+    }
+    catch ( QgsCsException & )
+    {
+
+    }
+  }
+
   bool tileMapRendering = context.testFlag( QgsRenderContext::RenderMapTile );
 
   //convert curve types to normal point/line/polygon ones
@@ -895,6 +909,14 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     const QgsMapToPixelSimplifier simplifier( simplifyHints, context.vectorSimplifyMethod().tolerance(),
         static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( context.vectorSimplifyMethod().simplifyAlgorithm() ) );
     segmentizedGeometry = simplifier.simplify( segmentizedGeometry );
+  }
+  if ( !context.featureClipGeometry().isEmpty() )
+  {
+    // apply feature clipping from context to the rendered geometry only -- just like the render time simplification,
+    // we should NEVER apply this to the geometry attached to the feature itself. Doing so causes issues with certain
+    // renderer settings, e.g. if polygons are being rendered using a rule based renderer based on the feature's area,
+    // then we need to ensure that the original feature area is used instead of the clipped area..
+    segmentizedGeometry = segmentizedGeometry.intersection( context.featureClipGeometry() );
   }
 
   QgsGeometry renderedBoundsGeom;
@@ -1940,6 +1962,19 @@ void QgsLineSymbol::setWidth( double w )
       if ( !qgsDoubleNear( origWidth, 0.0 ) && !qgsDoubleNear( lineLayer->offset(), 0.0 ) )
         lineLayer->setOffset( lineLayer->offset() * w / origWidth );
     }
+  }
+}
+
+void QgsLineSymbol::setWidthUnit( QgsUnitTypes::RenderUnit unit )
+{
+  const auto constLLayers = mLayers;
+  for ( QgsSymbolLayer *layer : constLLayers )
+  {
+    if ( layer->type() != QgsSymbol::Line )
+      continue;
+
+    QgsLineSymbolLayer *lineLayer = static_cast<QgsLineSymbolLayer *>( layer );
+    lineLayer->setWidthUnit( unit );
   }
 }
 

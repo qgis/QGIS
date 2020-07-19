@@ -56,6 +56,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
     QIcon icon() const override;
+    QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
 
   private:
 
@@ -63,6 +64,10 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     void setDefaultCapabilities();
     void dropTablePrivate( const QString &schema, const QString &name ) const;
     void renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const;
+
+
 };
+
+
 
 #endif // QGSPOSTGRESPROVIDERCONNECTION_H

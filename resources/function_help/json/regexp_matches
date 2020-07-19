@@ -1,6 +1,7 @@
 {
   "name": "regexp_matches",
   "type": "function",
+  "groups": ["Arrays"],
   "description": "Returns an array of all strings captured by capturing groups, in the order the groups themselves appear in the supplied regular expression against a string.",
   "arguments": [
     {"arg":"string", "description":"the string to capture groups from against the regular expression"},

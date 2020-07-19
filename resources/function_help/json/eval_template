@@ -1,6 +1,7 @@
 {
 	"name": "eval_template",
 	"type": "function",
+  "groups": ["General"],
 	"description": "Evaluates a template which is passed in a string. Useful to expand dynamic parameters passed as context variables or fields.",
 	"arguments": [{
 		"arg": "template",

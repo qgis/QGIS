@@ -9,6 +9,110 @@
 
 
 
+class QgsLayoutItemMapAtlasClippingSettings : QObject
+{
+%Docstring
+Contains settings relating to clipping a layout map by the current atlas feature.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgslayoutitemmap.h"
+%End
+  public:
+
+    QgsLayoutItemMapAtlasClippingSettings( QgsLayoutItemMap *map /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLayoutItemMapAtlasClippingSettings, with the specified ``map`` parent.
+%End
+
+    bool enabled() const;
+%Docstring
+Returns ``True`` if the map content should be clipped to the current atlas feature.
+
+.. seealso:: :py:func:`setEnabled`
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Sets whether the map content should be clipped to the current atlas feature.
+
+.. seealso:: :py:func:`enabled`
+%End
+
+    QgsMapClippingRegion::FeatureClippingType featureClippingType() const;
+%Docstring
+Returns the feature clipping type to apply when clipping to the current atlas feature.
+
+.. seealso:: :py:func:`setFeatureClippingType`
+%End
+
+    void setFeatureClippingType( QgsMapClippingRegion::FeatureClippingType type );
+%Docstring
+Sets the feature clipping ``type`` to apply when clipping to the current atlas feature.
+
+.. seealso:: :py:func:`featureClippingType`
+%End
+
+    bool forceLabelsInsideFeature() const;
+%Docstring
+Returns ``True`` if labels should only be placed inside the atlas feature geometry.
+
+.. seealso:: :py:func:`setForceLabelsInsideFeature`
+%End
+
+    void setForceLabelsInsideFeature( bool forceInside );
+%Docstring
+Sets whether labels should only be placed inside the atlas feature geometry.
+
+.. seealso:: :py:func:`forceLabelsInsideFeature`
+%End
+
+    QList< QgsMapLayer * > layersToClip() const;
+%Docstring
+Returns the list of map layers to clip to the atlas feature.
+
+If the returned list is empty then all layers will be clipped.
+
+.. seealso:: :py:func:`setLayersToClip`
+%End
+
+    void setLayersToClip( const QList< QgsMapLayer * > &layers );
+%Docstring
+Sets the list of map ``layers`` to clip to the atlas feature.
+
+If the ``layers`` list is empty then all layers will be clipped.
+
+.. seealso:: :py:func:`layersToClip`
+%End
+
+    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+Stores settings in a DOM element, where ``element`` is the DOM element
+corresponding to a 'LayoutMap' tag.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context );
+%Docstring
+Sets the setting's state from a DOM document, where ``element`` is the DOM
+node corresponding to a 'LayoutMap' tag.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the atlas clipping settings are changed.
+%End
+
+};
+
+
 class QgsLayoutItemMap : QgsLayoutItem, QgsTemporalRangeObject
 {
 %Docstring
@@ -621,6 +725,13 @@ Removes a previously added rendered feature ``handler``.
     QTransform layoutToMapCoordsTransform() const;
 %Docstring
 Creates a transform from layout coordinates to map coordinates.
+%End
+
+    QgsLayoutItemMapAtlasClippingSettings *atlasClippingSettings();
+%Docstring
+Returns the map's atlas clipping settings.
+
+.. versionadded:: 3.16
 %End
 
   protected:

@@ -159,13 +159,13 @@ QgsUnitTypes::TemporalUnit QgsMeshDataProviderTemporalCapabilities::temporalUnit
 qint64 QgsMeshDataProviderTemporalCapabilities::datasetTime( const QgsMeshDatasetIndex &index ) const
 {
   if ( !index.isValid() )
-    return -999999;
+    return INVALID_MESHLAYER_TIME;
 
   const QList<qint64> &timesList = mDatasetTimeSinceGroupReference[index.group()];
   if ( index.dataset() < timesList.count() )
     return timesList.at( index.dataset() );
   else
-    return -999999;
+    return INVALID_MESHLAYER_TIME;
 }
 
 void QgsMeshDataProviderTemporalCapabilities::clear()

@@ -957,6 +957,35 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(response.statusCode(), 200)
         self.compareApi(request, project, 'test_wfs3_collections_items_layer1_with_short_name_eq_two.json')
 
+    def test_wfs3_sorting(self):
+        """Test sorting"""
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
+        # Check not published
+        response = QgsBufferServerResponse()
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/layer1_with_short_name/items?sortby=does_not_exist')
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 400)  # Bad request
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/layer1_with_short_name/items?sortby=name')
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200)
+        self.compareApi(
+            request, project, 'test_wfs3_collections_items_layer1_with_short_name_sort_by_name.json')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/layer1_with_short_name/items?sortby=name&sortdesc=1')
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200)
+        self.compareApi(
+            request, project, 'test_wfs3_collections_items_layer1_with_short_name_sort_by_name_desc.json')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/layer1_with_short_name/items?sortby=name&sortdesc=0')
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200)
+        self.compareApi(
+            request, project, 'test_wfs3_collections_items_layer1_with_short_name_sort_by_name_asc.json')
+
     def test_wfs3_collection_items_properties(self):
         """Test WFS3 API items"""
         project = QgsProject()

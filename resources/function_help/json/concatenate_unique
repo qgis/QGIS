@@ -1,6 +1,7 @@
 {
   "name": "concatenate_unique",
   "type": "function",
+  "groups": ["Aggregates"],
   "description": "Returns all unique strings from a field or expression joined by a delimiter.",
   "arguments": [
 	{"arg":"expression", "description":"sub expression of field to aggregate"},

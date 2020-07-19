@@ -49,6 +49,8 @@ Parent/children hierarchy is not based on QObject.
       Favorites,
       Project,
       Custom,
+      Fields,
+      Field,
     };
 
 
@@ -652,6 +654,77 @@ Shared home directory icon.
 %End
 };
 
+
+class QgsDatabaseSchemaItem : QgsDataCollectionItem
+{
+%Docstring
+A Collection that represents a database schema item
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsdataitem.h"
+%End
+  public:
+
+    QgsDatabaseSchemaItem( QgsDataItem *parent /TransferThis/, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
+%Docstring
+Constructor for QgsDatabaseSchemaItem, with the specified ``parent`` item.
+
+The ``name`` argument specifies the text to show in the model for the item. A translated string should
+be used wherever appropriate.
+
+The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
+but QgsSchemaItem items pointing to different logical locations should always use a different item ``path``.
+
+The optional ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
+%End
+
+    ~QgsDatabaseSchemaItem();
+
+
+    static QIcon iconDataCollection();
+%Docstring
+Returns the standard browser data collection icon.
+
+.. seealso:: :py:func:`iconDir`
+%End
+
+};
+
+
+
+class QgsConnectionsRootItem : QgsDataCollectionItem
+{
+%Docstring
+A Collection that represents a root group of connections from a single data provider
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsdataitem.h"
+%End
+  public:
+
+    QgsConnectionsRootItem( QgsDataItem *parent /TransferThis/, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
+%Docstring
+Constructor for QgsConnectionsRootItem, with the specified ``parent`` item.
+
+The ``name`` argument specifies the text to show in the model for the item. A translated string should
+be used wherever appropriate.
+
+The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
+but QgsSchemaItem items pointing to different logical locations should always use a different item ``path``.
+
+The optional ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
+%End
+
+    ~QgsConnectionsRootItem();
+};
+
+
 class QgsDirectoryItem : QgsDataCollectionItem
 {
 %Docstring
@@ -898,6 +971,104 @@ Creates a new data item from the specified path.
     static QIcon iconZip();
 
 };
+
+
+class QgsFieldsItem : QgsDataItem
+{
+%Docstring
+A collection of field items with some internal logic to retrieve
+the fields and a the vector layer instance from a connection URI,
+the schema and the table name.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsdataitem.h"
+%End
+  public:
+
+    QgsFieldsItem( QgsDataItem *parent /TransferThis/,
+                   const QString &path,
+                   const QString &connectionUri,
+                   const QString &providerKey,
+                   const QString &schema,
+                   const QString &tableName );
+%Docstring
+Constructor for QgsFieldsItem, with the specified ``parent`` item.
+
+The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
+but QgsDataItem items pointing to different logical locations should always use a different item ``path``.
+The \connectionUri argument is the connection part of the layer URI that it is used internally to create
+a connection and retrieve fields information.
+The ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
+The ``schema`` and ``tableName`` are used to retrieve the layer and field information from the ``connectionUri``.
+%End
+
+    ~QgsFieldsItem();
+
+    virtual QVector<QgsDataItem *> createChildren();
+
+
+    virtual QIcon icon();
+
+
+    QString schema() const;
+%Docstring
+Returns the schema name
+%End
+
+    QString tableName() const;
+%Docstring
+Returns the table name
+%End
+
+    QString connectionUri() const;
+%Docstring
+Returns the connection URI
+%End
+
+    QgsVectorLayer *layer() /Factory/;
+%Docstring
+Creates and returns a (possibly NULL) layer from the connection URI and schema/table information
+%End
+
+
+};
+
+
+class QgsFieldItem : QgsDataItem
+{
+%Docstring
+A layer field item, information about the connection URI, the schema and the
+table as well as the layer instance the field belongs to can be retrieved
+from the parent QgsFieldsItem object.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsdataitem.h"
+%End
+  public:
+
+    QgsFieldItem( QgsDataItem *parent /TransferThis/,
+                  const QgsField &field );
+%Docstring
+Constructor for QgsFieldItem, with the specified ``parent`` item and ``field``.
+
+.. note::
+
+   parent item must be a :py:class:`QgsFieldsItem`
+%End
+
+    ~QgsFieldItem();
+
+    virtual QIcon icon();
+
+
+};
+
 
 
 

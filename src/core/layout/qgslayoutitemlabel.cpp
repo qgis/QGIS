@@ -111,7 +111,7 @@ QIcon QgsLayoutItemLabel::icon() const
 void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
 {
   QPainter *painter = context.renderContext().painter();
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
 
   // painter is scaled to dots, so scale back to layout units
   painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
@@ -149,8 +149,6 @@ void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
       break;
     }
   }
-
-  painter->restore();
 }
 
 void QgsLayoutItemLabel::contentChanged()

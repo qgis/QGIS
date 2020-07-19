@@ -1,6 +1,7 @@
 {
   "name": "make_interval",
   "type": "function",
+  "groups": ["Date and Time"],
   "description": "Creates an interval value from year, month, weeks, days, hours, minute and seconds values.",
   "arguments": [
     {"arg":"years","description":"Number of years (assumes a 365.25 day year length).", "optional": true, "default": "0"},

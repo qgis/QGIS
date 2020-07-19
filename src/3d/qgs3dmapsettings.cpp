@@ -47,6 +47,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mShowTerrainBoundingBoxes( other.mShowTerrainBoundingBoxes )
   , mShowTerrainTileInfo( other.mShowTerrainTileInfo )
   , mShowCameraViewCenter( other.mShowCameraViewCenter )
+  , mShowLightSources( other.mShowLightSources )
   , mShowLabels( other.mShowLabels )
   , mPointLights( other.mPointLights )
   , mDirectionalLights( other.mDirectionalLights )
@@ -215,6 +216,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mShowTerrainBoundingBoxes = elemDebug.attribute( QStringLiteral( "bounding-boxes" ), QStringLiteral( "0" ) ).toInt();
   mShowTerrainTileInfo = elemDebug.attribute( QStringLiteral( "terrain-tile-info" ), QStringLiteral( "0" ) ).toInt();
   mShowCameraViewCenter = elemDebug.attribute( QStringLiteral( "camera-view-center" ), QStringLiteral( "0" ) ).toInt();
+  mShowLightSources = elemDebug.attribute( QStringLiteral( "show-light-sources" ), QStringLiteral( "0" ) ).toInt();
 
   QDomElement elemTemporalRange = elem.firstChildElement( QStringLiteral( "temporal-range" ) );
   QDateTime start = QDateTime::fromString( elemTemporalRange.attribute( QStringLiteral( "start" ) ), Qt::ISODate );
@@ -308,6 +310,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemDebug.setAttribute( QStringLiteral( "bounding-boxes" ), mShowTerrainBoundingBoxes ? 1 : 0 );
   elemDebug.setAttribute( QStringLiteral( "terrain-tile-info" ), mShowTerrainTileInfo ? 1 : 0 );
   elemDebug.setAttribute( QStringLiteral( "camera-view-center" ), mShowCameraViewCenter ? 1 : 0 );
+  elemDebug.setAttribute( QStringLiteral( "show-light-sources" ), mShowLightSources ? 1 : 0 );
   elem.appendChild( elemDebug );
 
   QDomElement elemTemporalRange = doc.createElement( QStringLiteral( "temporal-range" ) );
@@ -538,6 +541,15 @@ void Qgs3DMapSettings::setShowCameraViewCenter( bool enabled )
 
   mShowCameraViewCenter = enabled;
   emit showCameraViewCenterChanged();
+}
+
+void Qgs3DMapSettings::setShowLightSourceOrigins( bool enabled )
+{
+  if ( mShowLightSources == enabled )
+    return;
+
+  mShowLightSources = enabled;
+  emit showLightSourceOriginsChanged();
 }
 
 void Qgs3DMapSettings::setShowLabels( bool enabled )

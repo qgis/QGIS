@@ -1,6 +1,7 @@
 {
   "name": "map_insert",
   "type": "function",
+  "groups": ["Maps"],
   "description": "Returns a map with an added key/value.",
   "arguments": [ {"arg":"map","description":"a map"},
                  {"arg":"key","description":"the key to add"},

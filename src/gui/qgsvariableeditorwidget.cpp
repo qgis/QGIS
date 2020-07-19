@@ -18,6 +18,7 @@
 #include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgsexpression.h"
+#include "qgsrendercontext.h"
 
 #include <QVBoxLayout>
 #include <QTreeWidget>
@@ -491,10 +492,9 @@ void QgsVariableEditorTree::drawRow( QPainter *painter, const QStyleOptionViewIt
   }
   QTreeWidget::drawRow( painter, opt, index );
   QColor color = static_cast<QRgb>( QApplication::style()->styleHint( QStyle::SH_Table_GridLineColor, &opt ) );
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->setPen( QPen( color ) );
   painter->drawLine( opt.rect.x(), opt.rect.bottom(), opt.rect.right(), opt.rect.bottom() );
-  painter->restore();
 }
 
 QColor QgsVariableEditorTree::rowColor( int index ) const

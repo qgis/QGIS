@@ -54,6 +54,7 @@ email                : tim at linfiniti.com
 #include "qgsbilinearrasterresampler.h"
 #include "qgscubicrasterresampler.h"
 #include "qgsrasterlayertemporalproperties.h"
+#include "qgsruntimeprofiler.h"
 
 #include <cmath>
 #include <cstdio>
@@ -621,6 +622,10 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   }
 
   //mBandCount = 0;
+
+  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
+    profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
 
   mDataProvider = qobject_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mProviderKey, mDataSource, options ) );
   if ( !mDataProvider )

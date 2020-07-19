@@ -44,6 +44,49 @@ QgsTextBackgroundSettings::~QgsTextBackgroundSettings() //NOLINT
 
 }
 
+bool QgsTextBackgroundSettings::operator==( const QgsTextBackgroundSettings &other ) const
+{
+  if ( !d->enabled == other.enabled()
+       || d->type != other.type()
+       || d->svgFile != other.svgFile()
+       || d->sizeType != other.sizeType()
+       || d->size != other.size()
+       || d->sizeUnits != other.sizeUnit()
+       || d->sizeMapUnitScale != other.sizeMapUnitScale()
+       || d->rotationType != other.rotationType()
+       || d->rotation != other.rotation()
+       || d->offset != other.offset()
+       || d->offsetUnits != other.offsetUnit()
+       || d->offsetMapUnitScale != other.offsetMapUnitScale()
+       || d->radii != other.radii()
+       || d->radiiUnits != other.radiiUnit()
+       || d->radiiMapUnitScale != other.radiiMapUnitScale()
+       || d->blendMode != other.blendMode()
+       || d->fillColor != other.fillColor()
+       || d->strokeColor != other.strokeColor()
+       || d->opacity != other.opacity()
+       || d->strokeWidth != other.strokeWidth()
+       || d->strokeWidthUnits != other.strokeWidthUnit()
+       || d->strokeWidthMapUnitScale != other.strokeWidthMapUnitScale()
+       || d->joinStyle != other.joinStyle() )
+    return false;
+
+  if ( static_cast< bool >( d->paintEffect ) != static_cast< bool >( other.paintEffect() )
+       || ( d->paintEffect && d->paintEffect->properties() != other.paintEffect()->properties() ) )
+    return false;
+
+  if ( static_cast< bool >( d->markerSymbol ) != static_cast< bool >( other.markerSymbol() )
+       || ( d->markerSymbol && QgsSymbolLayerUtils::symbolProperties( d->markerSymbol.get() ) != QgsSymbolLayerUtils::symbolProperties( other.markerSymbol() ) ) )
+    return false;
+
+  return true;
+}
+
+bool QgsTextBackgroundSettings::operator!=( const QgsTextBackgroundSettings &other ) const
+{
+  return !( *this == other );
+}
+
 bool QgsTextBackgroundSettings::enabled() const
 {
   return d->enabled;

@@ -388,7 +388,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       dependencySources << layer;
   }
 
-  mLayersDependenciesTreeModel = new DependenciesLayerTreeModel( mLayer, this );
+  mLayersDependenciesTreeModel = new QgsLayerTreeFilterProxyModel( this );
   mLayersDependenciesTreeModel->setLayerTreeModel( new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), mLayersDependenciesTreeModel ) );
   mLayersDependenciesTreeModel->setCheckedLayers( dependencySources );
   connect( QgsProject::instance(), &QObject::destroyed, this, [ = ] {mLayersDependenciesTreeView->setModel( nullptr );} );
@@ -607,7 +607,7 @@ void QgsVectorLayerProperties::apply()
   mMetadataFilled = false;
 
   // save masking settings
-  if ( mMaskingWidget )
+  if ( mMaskingWidget && mMaskingWidget->hasBeenPopulated() )
     mMaskingWidget->apply();
 
   //

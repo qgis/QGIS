@@ -160,7 +160,7 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
 
       public:
 
-        ExpressionContextGenerator( const QgsFields *sourceFields );
+        ExpressionContextGenerator( const QgsFields &sourceFields );
 
         // QgsExpressionContextGenerator interface
         QgsExpressionContext createExpressionContext() const override;
@@ -170,7 +170,7 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
 
         const QgsExpressionContextGenerator *mBaseGenerator = nullptr;
 
-        const QgsFields *mSourceFields;
+        const QgsFields mSourceFields;
 
     };
 

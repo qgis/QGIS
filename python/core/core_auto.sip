@@ -101,6 +101,8 @@
 %Include auto_generated/qgslocaldefaultsettings.sip
 %Include auto_generated/qgslocalizeddatapathregistry.sip
 %Include auto_generated/qgslogger.sip
+%Include auto_generated/qgsmapclippingregion.sip
+%Include auto_generated/qgsmapclippingutils.sip
 %Include auto_generated/qgsmapdecoration.sip
 %Include auto_generated/qgsmaphittest.sip
 %Include auto_generated/qgsmaplayer.sip
@@ -195,6 +197,7 @@
 %Include auto_generated/qgsspatialindex.sip
 %Include auto_generated/qgsspatialindexkdbush.sip
 %Include auto_generated/qgsspatialindexkdbushdata.sip
+%Include auto_generated/qgssourcecache.sip
 %Include auto_generated/qgssqliteutils.sip
 %Include auto_generated/qgssqlstatement.sip
 %Include auto_generated/qgsstatisticalsummary.sip

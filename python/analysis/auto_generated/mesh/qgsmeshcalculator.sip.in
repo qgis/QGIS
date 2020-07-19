@@ -10,7 +10,6 @@
 
 
 
-
 class QgsMeshCalculator
 {
 %Docstring
@@ -129,6 +128,45 @@ Creates calculator with geometry mask
 
 .. versionadded:: 3.12
 %End
+
+    QgsMeshCalculator( const QString &formulaString,
+                       const QString &outputGroupName,
+                       double startTime,
+                       double endTime,
+                       const QgsRectangle &outputExtent,
+                       QgsMeshLayer *layer );
+%Docstring
+Creates calculator with bounding box (rectangular) mask, store the result in the memory
+
+:param formulaString: formula/expression to evaluate. Consists of dataset group names, operators and numbers
+:param outputGroupName: output group name
+:param outputExtent: spatial filter defined by rectangle
+:param startTime: time filter defining the starting dataset
+:param endTime: time filter defining the ending dataset
+:param layer: mesh layer with dataset groups references in formulaString
+
+.. versionadded:: 3.16
+%End
+
+    QgsMeshCalculator( const QString &formulaString,
+                       const QString &outputGroupName,
+                       double startTime,
+                       double endTime,
+                       const QgsGeometry &outputMask,
+                       QgsMeshLayer *layer );
+%Docstring
+Creates calculator with with geometry mask, store the result in the memory
+
+:param formulaString: formula/expression to evaluate. Consists of dataset group names, operators and numbers
+:param outputGroupName: output group name
+:param outputMask: spatial filter defined by geometry
+:param startTime: time filter defining the starting dataset
+:param endTime: time filter defining the ending dataset
+:param layer: mesh layer with dataset groups references in formulaString
+
+.. versionadded:: 3.16
+%End
+
 
     Result processCalculation( QgsFeedback *feedback = 0 );
 %Docstring

@@ -282,49 +282,6 @@ class CORE_EXPORT QgsMeshLayerUtils
       const QgsTriangularMesh &triangularMesh,
       const QVector<double> &verticalMagnitude,
       bool isRelative );
-
-    /**
-     * Creates dataset group items from dataset group meta data
-     * \param metadataList a list of dataset group metadata
-     * \param rootItem the root of the items
-     * \param startingIndex index of the first created dataset group items
-     * \since QGIS 3.14
-     */
-    static void  createDatasetGroupTreeItems( const QList<QgsMeshDatasetGroupMetadata> &metadataList,
-        QgsMeshDatasetGroupTreeItem *rootItem, int startingIndex )
-    {
-      QMap<QString, QgsMeshDatasetGroupTreeItem *> mNameToItem;
-      for ( int i = 0; i < metadataList.count(); ++i )
-      {
-        int groupIndex = startingIndex + i;
-        const QgsMeshDatasetGroupMetadata meta = metadataList.at( i );
-        const QString name = meta.name();
-        const QStringList subdatasets = name.split( '/' );
-
-        QString displayName = name;
-        QgsMeshDatasetGroupTreeItem *parent = rootItem;
-
-        if ( subdatasets.size() == 2 )
-        {
-          auto it = mNameToItem.find( subdatasets[0] );
-          if ( it == mNameToItem.end() )
-            QgsDebugMsg( QStringLiteral( "Unable to find parent group for %1." ).arg( name ) );
-          else
-          {
-            displayName = subdatasets[1];
-            parent = it.value();
-          }
-        }
-        else if ( subdatasets.size() != 1 )
-          QgsDebugMsg( QStringLiteral( "Ignoring too deep child group name %1." ).arg( name ) );
-
-        QgsMeshDatasetGroupTreeItem *item = new QgsMeshDatasetGroupTreeItem( displayName, meta.isVector(), groupIndex );
-        parent->appendChild( item );
-        if ( mNameToItem.contains( name ) )
-          QgsDebugMsg( QStringLiteral( "Group %1 is not unique" ).arg( displayName ) );
-        mNameToItem[name] = item;
-      }
-    }
 };
 
 ///@endcond

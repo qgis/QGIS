@@ -236,7 +236,7 @@ void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
   context.renderContext().setExpressionContext( expressionContext );
 
   QPainter *painter = context.renderContext().painter();
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
 
   if ( mLayout->renderContext().isPreviewRender() )
   {
@@ -285,8 +285,6 @@ void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
     symbol->renderPolygon( pagePolygon, &rings, nullptr, context.renderContext() );
     symbol->stopRender( context.renderContext() );
   }
-
-  painter->restore();
 }
 
 void QgsLayoutItemPage::drawFrame( QgsRenderContext & )
@@ -360,7 +358,7 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
   double currentYCoord;
   double minYCoord = gridOffset.y() - gridMultiplyY * gridResolution;
 
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   //turn of antialiasing so grid is nice and sharp
   painter->setRenderHint( QPainter::Antialiasing, false );
 
@@ -415,7 +413,6 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
       break;
     }
   }
-  painter->restore();
 }
 
 ///@endcond

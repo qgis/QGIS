@@ -1,6 +1,7 @@
 {
   "name": "force_rhr",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Forces a geometry to respect the Right-Hand-Rule, in which the area that is bounded by a polygon is to the right of the boundary. In particular, the exterior ring is oriented in a clockwise direction and the interior rings in a counter-clockwise direction.",
   "arguments": [ {"arg":"geom","description":"a geometry. Any non-polygon geometries are returned unchanged."}],
   "examples": [ { "expression":"geom_to_wkt(force_rhr(geometry:=geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))')))", "returns":"Polygon ((-1 -1, 0 2, 4 2, 4 0, -1 -1))"}]

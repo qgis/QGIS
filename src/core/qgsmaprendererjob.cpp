@@ -255,6 +255,9 @@ QPainter *QgsMapRendererJob::allocateImageAndPainter( QString layerId, QImage *&
   {
     painter = new QPainter( image );
     painter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( QgsMapSettings::Antialiasing ) );
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+    painter->setRenderHint( QPainter::LosslessImageRendering, mSettings.testFlag( QgsMapSettings::LosslessImageRendering ) );
+#endif
   }
   return painter;
 }

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgraphicsviewmousehandles.h"
+#include "qgsrendercontext.h"
 #include "qgis.h"
 #include <QGraphicsView>
 #include <QGraphicsSceneHoverEvent>
@@ -141,7 +142,7 @@ void QgsGraphicsViewMouseHandles::drawSelectedItemBounds( QPainter *painter )
   }
 
   //use difference mode so that they are visible regardless of item colors
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->setCompositionMode( QPainter::CompositionMode_Difference );
 
   // use a grey dashed pen - in difference mode this should always be visible
@@ -198,7 +199,6 @@ void QgsGraphicsViewMouseHandles::drawSelectedItemBounds( QPainter *painter )
     path.addPolygon( itemBounds );
     painter->drawPath( path );
   }
-  painter->restore();
 }
 
 double QgsGraphicsViewMouseHandles::rectHandlerBorderTolerance()

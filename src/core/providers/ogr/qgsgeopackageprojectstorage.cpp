@@ -341,7 +341,7 @@ QString QgsGeoPackageProjectStorage::_executeSql( const QString &uri, const QStr
   char *errmsg = nullptr;
   ( void )sqlite3_exec(
     db.get(),                            /* An open database */
-    sql.toLocal8Bit(),                   /* SQL to be evaluated */
+    sql.toUtf8(),                        /* SQL to be evaluated */
     nullptr,                             /* Callback function */
     nullptr,                             /* 1st argument to callback */
     &errmsg                              /* Error msg written here */

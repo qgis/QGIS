@@ -25,6 +25,7 @@
 
 #include <cmath>
 #include <QPainter>
+#include <QPainterPath>
 #include <QRegularExpression>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -319,6 +320,11 @@ QString QgsPoint::asKml( int precision ) const
 void QgsPoint::draw( QPainter &p ) const
 {
   p.drawRect( QRectF( mX - 2, mY - 2, 4, 4 ) );
+}
+
+QPainterPath QgsPoint::asQPainterPath() const
+{
+  return QPainterPath();
 }
 
 void QgsPoint::clear()

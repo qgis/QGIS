@@ -234,9 +234,22 @@ This information is calculated from the geometry columns types.
       CreateSpatialIndex,
       SpatialIndexExists,
       DeleteSpatialIndex,
+      DeleteField,
+      DeleteFieldCascade,
+      AddField,
+    };
+    typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
+
+
+    enum GeometryColumnCapability
+    {
+      Z,
+      M,
+      SinglePart,
+      Curves
     };
 
-    typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
+    typedef QFlags<QgsAbstractDatabaseProviderConnection::GeometryColumnCapability> GeometryColumnCapabilities;
 
 
     QgsAbstractDatabaseProviderConnection( const QString &name );
@@ -258,6 +271,13 @@ The connection is not automatically stored in the settings.
     Capabilities capabilities() const;
 %Docstring
 Returns connection capabilities
+%End
+
+    virtual GeometryColumnCapabilities geometryColumnCapabilities();
+%Docstring
+Returns connection geomerty column capabilities (Z, M, SinglePart, Curves)
+
+.. versionadded:: 3.16
 %End
 
 
@@ -356,6 +376,44 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 
 :raises :: py:class:`QgsProviderConnectionException`
 %End
+
+    virtual void deleteField( const QString &fieldName, const QString &schema, const QString &tableName, bool force = false ) const throw( QgsProviderConnectionException );
+%Docstring
+Deletes the field with the specified name.
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:param fieldName: name of the field to be deleted
+:param schema: name of the schema (schema is ignored if not supported by the backend).
+:param tableName: name of the table
+:param force: if ``True``, a DROP CASCADE will drop all related objects
+
+.. note::
+
+   it is responsibility of the caller to handle open layers and registry entries.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.16
+%End
+
+    virtual void addField( const QgsField &field, const QString &schema, const QString &tableName ) const throw( QgsProviderConnectionException );
+%Docstring
+Adds a field
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:param field: specification of the new field
+:param schema: name of the schema (schema is ignored if not supported by the backend).
+:param tableName: name of the table
+
+.. note::
+
+   it is responsibility of the caller to handle open layers and registry entries.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.16
+%End
+
 
     virtual void renameSchema( const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
 %Docstring
@@ -461,6 +519,37 @@ Returns information about the existing schemas.
 Raises a QgsProviderConnectionException if any errors are encountered.
 
 :raises :: py:class:`QgsProviderConnectionException`
+%End
+
+    virtual QgsFields fields( const QString &schema, const QString &table ) const throw( QgsProviderConnectionException );
+%Docstring
+Returns the fields of a ``table`` and ``schema``.
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+.. note::
+
+   the default implementation creates a temporary vector layer, providers may
+   choose to override this method for a greater efficiency.
+
+.. versionadded:: 3.16
+
+:raises :: py:class:`QgsProviderConnectionException`
+%End
+
+    virtual QList< QgsVectorDataProvider::NativeType > nativeTypes() const throw( QgsProviderConnectionException ) = 0;
+%Docstring
+Returns a list of native types supported by the connection.
+
+.. versionadded:: 3.16
+
+:raises :: py:class:`QgsProviderConnectionException`
+%End
+
+    QString providerKey() const;
+%Docstring
+Returns the provider key
+
+.. versionadded:: 3.16
 %End
 
   protected:

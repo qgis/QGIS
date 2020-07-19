@@ -123,16 +123,16 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
       /**
        * Create a new configuration for a snapping layer.
-
-        ```py
-        snapper = QgsMapCanvasSnappingUtils(mapCanvas)
-
-        snapping_layer1 = QgsSnappingUtils.LayerConfig(layer1, QgsPointLocator.Vertex, 10, QgsTolerance.Pixels)
-        snapping_layer2 = QgsSnappingUtils.LayerConfig(layer2, QgsPointLocator.Vertex and QgsPointLocator.Edge, 10, QgsTolerance.Pixels)
-
-        snapper.setLayers([snapping_layer1, snapping_layer2])
-        ```
-
+       *
+       * \code{.py}
+       * snapper = QgsMapCanvasSnappingUtils(mapCanvas)
+       *
+       * snapping_layer1 = QgsSnappingUtils.LayerConfig(layer1, QgsPointLocator.Vertex, 10, QgsTolerance.Pixels)
+       * snapping_layer2 = QgsSnappingUtils.LayerConfig(layer2, QgsPointLocator.Vertex and QgsPointLocator.Edge, 10, QgsTolerance.Pixels)
+       *
+       * snapper.setLayers([snapping_layer1, snapping_layer2])
+       * \endcode
+       *
        * \param l   The vector layer for which this configuration is
        * \param t   Which parts of the geometry should be snappable
        * \param tol The tolerance radius in which the snapping will trigger

@@ -1,6 +1,7 @@
 {
   "name": "format_date",
   "type": "function",
+  "groups": ["String", "Date and Time"],
   "description": "Formats a date type or string into a custom string format. Uses Qt date/time format strings. See <a href='https://doc.qt.io/qt-5/qdatetime.html#toString'>QDateTime::toString</a>.",
   "arguments": [
 	{"arg":"datetime","description":"date, time or datetime value"},

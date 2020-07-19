@@ -434,8 +434,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
       QgsDebugMsg( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
   }
 
-  context.painter()->save();
+  QgsScopedQPainterState painterState( context.painter() );
   context.painter()->translate( originX, originY );
   mStyle->draw( context, mSettings, scaleContext );
-  context.painter()->restore();
 }

@@ -173,6 +173,10 @@ void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
         w->setMode( QgsAttributeFormWidget::DefaultMode );
         break;
 
+      case QgsAttributeEditorContext::FixAttributeMode:
+        w->setMode( QgsAttributeFormWidget::DefaultMode );
+        break;
+
       case QgsAttributeEditorContext::MultiEditMode:
         w->setMode( QgsAttributeFormWidget::MultiEditMode );
         break;
@@ -212,6 +216,11 @@ void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
       break;
 
     case QgsAttributeEditorContext::AddFeatureMode:
+      synchronizeEnabledState();
+      mSearchButtonBox->setVisible( false );
+      break;
+
+    case QgsAttributeEditorContext::FixAttributeMode:
       synchronizeEnabledState();
       mSearchButtonBox->setVisible( false );
       break;
@@ -278,6 +287,7 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
     case QgsAttributeEditorContext::SingleEditMode:
     case QgsAttributeEditorContext::IdentifyMode:
     case QgsAttributeEditorContext::AddFeatureMode:
+    case QgsAttributeEditorContext::FixAttributeMode:
     {
       resetValues();
 
@@ -320,7 +330,7 @@ bool QgsAttributeForm::saveEdits()
 
     // An add dialog should perform an action by default
     // and not only if attributes have "changed"
-    if ( mMode == QgsAttributeEditorContext::AddFeatureMode )
+    if ( mMode == QgsAttributeEditorContext::AddFeatureMode || mMode == QgsAttributeEditorContext::FixAttributeMode )
       doUpdate = true;
 
     QgsAttributes src = mFeature.attributes();
@@ -379,7 +389,11 @@ bool QgsAttributeForm::saveEdits()
 
     if ( doUpdate )
     {
-      if ( mMode == QgsAttributeEditorContext::AddFeatureMode )
+      if ( mMode == QgsAttributeEditorContext::FixAttributeMode )
+      {
+        mFeature = updatedFeature;
+      }
+      else if ( mMode == QgsAttributeEditorContext::AddFeatureMode )
       {
         mFeature.setValid( true );
         mLayer->beginEditCommand( mEditCommandMessage );
@@ -516,7 +530,8 @@ bool QgsAttributeForm::updateDefaultValues( const int originIdx )
         if ( mAlreadyUpdatedFields.contains( eww->fieldIdx() ) )
           continue;
 
-        QString value = mLayer->defaultValue( eww->fieldIdx(), updatedFeature ).toString();
+        QgsExpressionContext context = createExpressionContext( updatedFeature );
+        QString value = mLayer->defaultValue( eww->fieldIdx(), updatedFeature, &context ).toString();
         eww->setValue( value );
       }
     }
@@ -735,6 +750,7 @@ bool QgsAttributeForm::save()
   {
     case QgsAttributeEditorContext::SingleEditMode:
     case QgsAttributeEditorContext::IdentifyMode:
+    case QgsAttributeEditorContext::FixAttributeMode:
     case QgsAttributeEditorContext::MultiEditMode:
       if ( !mDirty )
         return true;
@@ -761,6 +777,7 @@ bool QgsAttributeForm::save()
     case QgsAttributeEditorContext::SingleEditMode:
     case QgsAttributeEditorContext::IdentifyMode:
     case QgsAttributeEditorContext::AddFeatureMode:
+    case QgsAttributeEditorContext::FixAttributeMode:
     case QgsAttributeEditorContext::SearchMode:
     case QgsAttributeEditorContext::AggregateSearchMode:
       success = saveEdits();
@@ -832,6 +849,17 @@ QString QgsAttributeForm::createFilterExpression() const
   return filter;
 }
 
+QgsExpressionContext QgsAttributeForm::createExpressionContext( const QgsFeature &feature ) const
+{
+  QgsExpressionContext context;
+  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  context.appendScope( QgsExpressionContextUtils::formScope( feature, mContext.attributeFormModeString() ) );
+  if ( mExtraContextScope )
+    context.appendScope( new QgsExpressionContextScope( *mExtraContextScope.get() ) );
+  context.setFeature( feature );
+  return context;
+}
+
 
 void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariantList &additionalFieldValues )
 {
@@ -848,6 +876,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
     case QgsAttributeEditorContext::SingleEditMode:
     case QgsAttributeEditorContext::IdentifyMode:
     case QgsAttributeEditorContext::AddFeatureMode:
+    case QgsAttributeEditorContext::FixAttributeMode:
     {
       Q_NOWARN_DEPRECATED_PUSH
       emit attributeChanged( eww->field().name(), value );
@@ -950,10 +979,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
     // sync OK button status
     synchronizeEnabledState();
 
-    QgsExpressionContext context;
-    context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
-    context.appendScope( QgsExpressionContextUtils::formScope( ft, mContext.attributeFormModeString() ) );
-    context.setFeature( ft );
+    QgsExpressionContext context = createExpressionContext( ft );
 
     // Recheck visibility for all containers which are controlled by this value
     const QVector<ContainerInformation *> infos = mContainerInformationDependency.value( eww->field().name() );
@@ -966,10 +992,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
 
 void QgsAttributeForm::updateContainersVisibility()
 {
-  QgsExpressionContext context;
-  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
-  context.appendScope( QgsExpressionContextUtils::formScope( mFeature, mContext.attributeFormModeString() ) );
-  context.setFeature( mFeature );
+  QgsExpressionContext context = createExpressionContext( mFeature );
 
   const QVector<ContainerInformation *> infos = mContainerVisibilityInformation;
 
@@ -1017,10 +1040,7 @@ void QgsAttributeForm::updateLabels()
     QgsFeature currentFeature;
     if ( currentFormFeature( currentFeature ) )
     {
-      QgsExpressionContext context;
-      context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
-      context.appendScope( QgsExpressionContextUtils::formScope( currentFeature, mContext.attributeFormModeString() ) );
-      context.setFeature( currentFeature );
+      QgsExpressionContext context = createExpressionContext( currentFeature );
 
       for ( auto it = mLabelDataDefinedProperties.constBegin() ; it != mLabelDataDefinedProperties.constEnd(); ++it )
       {
@@ -1933,9 +1953,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       // This needs to be after QgsAttributeFormRelationEditorWidget creation, because the widget
       // does not exists yet until QgsAttributeFormRelationEditorWidget is created and the setters
       // below directly alter the widget and check for it.
-      rww->setShowLinkButton( relDef->showLinkButton() );
-      rww->setShowUnlinkButton( relDef->showUnlinkButton() );
-      rww->setShowSaveChildEditsButton( relDef->showSaveChildEditsButton() );
+      rww->setVisibleButtons( relDef->visibleButtons() );
       rww->setShowLabel( relDef->showLabel() );
 
       mWidgets.append( rww );
@@ -2264,6 +2282,7 @@ void QgsAttributeForm::layerSelectionChanged()
     case QgsAttributeEditorContext::SingleEditMode:
     case QgsAttributeEditorContext::IdentifyMode:
     case QgsAttributeEditorContext::AddFeatureMode:
+    case QgsAttributeEditorContext::FixAttributeMode:
     case QgsAttributeEditorContext::SearchMode:
     case QgsAttributeEditorContext::AggregateSearchMode:
       break;
@@ -2378,6 +2397,11 @@ QString QgsAttributeForm::aggregateFilter() const
   }
 
   return filters.join( QStringLiteral( " AND " ) );
+}
+
+void QgsAttributeForm::setExtraContextScope( QgsExpressionContextScope *extraScope )
+{
+  mExtraContextScope.reset( extraScope );
 }
 
 int QgsAttributeForm::messageTimeout()

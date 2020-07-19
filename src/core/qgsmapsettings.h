@@ -33,6 +33,7 @@
 #include "qgsmaplayer.h"
 #include "qgsgeometry.h"
 #include "qgstemporalrangeobject.h"
+#include "qgsmapclippingregion.h"
 
 class QPainter;
 
@@ -311,6 +312,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
       RenderPartialOutput      = 0x200, //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
       RenderPreviewJob         = 0x400, //!< Render is a 'canvas preview' render, and shortcuts should be taken to ensure fast rendering
       RenderBlocking           = 0x800, //!< Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server.
+      LosslessImageRendering   = 0x1000, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
       // TODO: ignore scale-based visibility (overview)
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -579,6 +581,36 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     QList< QgsLabelBlockingRegion > labelBlockingRegions() const { return mLabelBlockingRegions; }
 
     /**
+     * Adds a new clipping \a region to the map settings.
+     *
+     * \see clippingRegions()
+     * \see setClippingRegions()
+     *
+     * \since QGIS 3.16
+     */
+    void addClippingRegion( const QgsMapClippingRegion &region );
+
+    /**
+     * Sets the list of clipping \a regions to apply to the map.
+     *
+     * \see addClippingRegion()
+     * \see clippingRegions()
+     *
+     * \since QGIS 3.16
+     */
+    void setClippingRegions( const QList< QgsMapClippingRegion > &regions );
+
+    /**
+     * Returns the list of clipping regions to apply to the map.
+     *
+     * \see addClippingRegion()
+     * \see setClippingRegions()
+     *
+     * \since QGIS 3.16
+     */
+    QList< QgsMapClippingRegion > clippingRegions() const;
+
+    /**
      * Sets the simplification setting to use when rendering vector layers.
      *
      * If the simplify \a method is enabled, it will override all other layer-specific simplification
@@ -692,6 +724,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
   private:
 
     QList< QgsLabelBlockingRegion > mLabelBlockingRegions;
+    QList< QgsMapClippingRegion > mClippingRegions;
     QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
 };
 

@@ -160,6 +160,20 @@ Sets edge lines color
 .. versionadded:: 3.8
 %End
 
+    void setRenderedFacade( int side );
+%Docstring
+Sets which facade of the buildings is rendered (0 for None, 1 for Walls, 2 for Roofs, 3 for WallsAndRoofs)
+
+.. versionadded:: 3.16
+%End
+
+    int renderedFacade() const;
+%Docstring
+Returns which facade of the buildings is rendered (0 for None, 1 for Walls, 2 for Roofs, 3 for WallsAndRoofs)
+
+.. versionadded:: 3.16
+%End
+
 };
 
 

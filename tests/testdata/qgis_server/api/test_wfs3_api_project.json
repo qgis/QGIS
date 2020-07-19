@@ -132,6 +132,24 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
           "type": "string"
         },
         "style": "form"
+      },
+      "sortby": {
+        "description": "Sort results by the specified field name",
+        "in": "query",
+        "name": "sortby",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "sortdesc": {
+        "description": "Sort results in descending order, field name must be specified with 'sortby' parameter",
+        "in": "query",
+        "name": "sortdesc",
+        "required": false,
+        "schema": {
+          "type": "boolean"
+        }
       }
     },
     "schemas": {
@@ -709,6 +727,12 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
             "$ref": "#/components/parameters/datetime"
           },
           {
+            "$ref": "#/components/parameters/sortby"
+          },
+          {
+            "$ref": "#/components/parameters/sortdesc"
+          },
+          {
             "description": "Retrieve features filtered by: id (Integer)",
             "explode": false,
             "in": "query",
@@ -1033,6 +1057,12 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
           },
           {
             "$ref": "#/components/parameters/datetime"
+          },
+          {
+            "$ref": "#/components/parameters/sortby"
+          },
+          {
+            "$ref": "#/components/parameters/sortdesc"
           },
           {
             "description": "Retrieve features filtered by: alias_id (Integer)",
@@ -1372,6 +1402,12 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
             "$ref": "#/components/parameters/datetime"
           },
           {
+            "$ref": "#/components/parameters/sortby"
+          },
+          {
+            "$ref": "#/components/parameters/sortdesc"
+          },
+          {
             "description": "Retrieve features filtered by: id (Integer)",
             "explode": false,
             "in": "query",
@@ -1709,6 +1745,12 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
             "$ref": "#/components/parameters/datetime"
           },
           {
+            "$ref": "#/components/parameters/sortby"
+          },
+          {
+            "$ref": "#/components/parameters/sortdesc"
+          },
+          {
             "description": "Retrieve features filtered by: id (Integer)",
             "explode": false,
             "in": "query",
@@ -2034,6 +2076,5 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
       "description": "Access to data (features).",
       "name": "Features"
     }
-  ],
-  "timeStamp": "2019-07-05T12:27:07Z"
+  ]
 }

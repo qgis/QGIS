@@ -1,6 +1,7 @@
 {
   "name": "intersects_bbox",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Tests whether a geometry's bounding box overlaps another geometry's bounding box. Returns true if the geometries spatially intersect the bounding box defined and false if they do not.",
   "arguments": [
 	{"arg":"geometry","description":"a geometry"},

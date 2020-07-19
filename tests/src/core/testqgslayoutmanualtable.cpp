@@ -44,11 +44,15 @@ class TestQgsLayoutManualTable : public QObject
     void cleanup();// will be called after every testfunction.
 
     void setContents();
+    void scopeForCell();
+    void expressionContents();
     void cellStyles();
     void cellFormat();
     void rowHeight();
     void columnWidth();
     void headers();
+    void cellTextFormat();
+    void cellTextAlignment();
 
   private:
     QString mReport;
@@ -63,6 +67,8 @@ void TestQgsLayoutManualTable::initTestCase()
   QgsApplication::initQgis();
 
   mReport = QStringLiteral( "<h1>Layout Manual Table Tests</h1>\n" );
+
+  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }
 
 void TestQgsLayoutManualTable::cleanupTestCase()
@@ -266,6 +272,62 @@ void TestQgsLayoutManualTable::setContents()
   QCOMPARE( tableFromXml->columnWidths(), QList< double >() << 15.5 << 14.0 << 13.4 );
 }
 
+void TestQgsLayoutManualTable::scopeForCell()
+{
+  QVector<QStringList> expectedRows;
+
+  QgsPrintLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  l.setName( QStringLiteral( "my layout" ) );
+  QgsLayoutItemManualTable *table = new QgsLayoutItemManualTable( &l );
+
+  std::unique_ptr< QgsExpressionContextScope > scope( table->scopeForCell( 1, 2 ) );
+
+  // variable values for row/col should start at 1, not 0!
+  QCOMPARE( scope->variable( QStringLiteral( "row_number" ) ).toInt(), 2 );
+  QCOMPARE( scope->variable( QStringLiteral( "column_number" ) ).toInt(), 3 );
+}
+
+void TestQgsLayoutManualTable::expressionContents()
+{
+  QVector<QStringList> expectedRows;
+
+  QgsPrintLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  l.setName( QStringLiteral( "my layout" ) );
+  QgsLayoutItemManualTable *table = new QgsLayoutItemManualTable( &l );
+
+  QStringList row;
+
+  // 2 x 3
+  row << QStringLiteral( "Jet" ) << QStringLiteral( "1,2" ) << QStringLiteral( "1,3" );
+  expectedRows.append( row );
+  row.clear();
+  row << QStringLiteral( "my layout" ) << QStringLiteral( "Helicopter" ) << QStringLiteral( "Plane" );
+  expectedRows.append( row );
+
+  table->setTableContents(
+    QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << QgsTableCell( QgsProperty::fromExpression( QStringLiteral( "@row_number  || ',' || @column_number" ) ) ) << QgsTableCell( QgsProperty::fromExpression( QStringLiteral( "@row_number  || ',' || @column_number" ) ) ) )
+    << ( QgsTableRow() << QgsTableCell( QgsProperty::fromExpression( QStringLiteral( "@layout_name" ) ) ) << QgsTableCell( QStringLiteral( "Helicopter" ) ) << QgsTableCell( QStringLiteral( "Plane" ) ) ) );
+  compareTable( table, expectedRows );
+
+  // save and restore
+
+  //write to XML
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+  QDomDocument doc( documentType );
+  QDomElement tableElement = doc.createElement( QStringLiteral( "table" ) );
+  QVERIFY( table->writeXml( tableElement, doc, QgsReadWriteContext(), true ) );
+
+  //read from XML
+  QgsLayoutItemManualTable *tableFromXml = new QgsLayoutItemManualTable( &l );
+  QVERIFY( tableFromXml->readXml( tableElement.firstChildElement(), doc, QgsReadWriteContext(), true ) );
+  compareTable( tableFromXml, expectedRows );
+}
+
 void TestQgsLayoutManualTable::cellStyles()
 {
   QgsLayout l( QgsProject::instance() );
@@ -336,7 +398,7 @@ void TestQgsLayoutManualTable::rowHeight()
   table->addFrame( frame1 );
   table->setBackgroundColor( Qt::yellow );
 
-  table->setContentFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
 
   frame1->setFrameEnabled( false );
   table->setShowGrid( true );
@@ -364,7 +426,7 @@ void TestQgsLayoutManualTable::columnWidth()
   table->addFrame( frame1 );
   table->setBackgroundColor( Qt::yellow );
 
-  table->setContentFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
 
   frame1->setFrameEnabled( false );
   table->setShowGrid( true );
@@ -392,14 +454,15 @@ void TestQgsLayoutManualTable::headers()
   table->addFrame( frame1 );
   table->setBackgroundColor( Qt::yellow );
 
-  table->setContentFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
-  table->setHeaderFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ), 16 ) );
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  QgsTextFormat headerFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ), 16 ) ) );
+  headerFormat.setColor( QColor( 255, 0, 255 ) );
+  table->setHeaderTextFormat( headerFormat );
 
   frame1->setFrameEnabled( false );
   table->setShowGrid( true );
   table->setHorizontalGrid( true );
   table->setVerticalGrid( true );
-  table->setHeaderFontColor( QColor( 255, 0, 255 ) );
 
   table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << QgsTableCell( QStringLiteral( "Helicopter" ) ) << QgsTableCell( QStringLiteral( "Plane" ) ) )
                            << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A" ) ) << QgsTableCell( QStringLiteral( "B" ) ) << QgsTableCell( QStringLiteral( "C" ) ) ) );
@@ -409,6 +472,98 @@ void TestQgsLayoutManualTable::headers()
                      << QgsLayoutTableColumn( QStringLiteral( "header 3" ) ) );
 
   QgsLayoutChecker checker( QStringLiteral( "manualtable_headers" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "layout_manual_table" ) );
+  bool result = checker.testLayout( mReport );
+  QVERIFY( result );
+}
+
+void TestQgsLayoutManualTable::cellTextFormat()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemManualTable *table = new QgsLayoutItemManualTable( &l );
+  QgsLayoutFrame *frame1 = new QgsLayoutFrame( &l, table );
+  frame1->attemptSetSceneRect( QRectF( 5, 5, 100, 60 ) );
+  frame1->setFrameEnabled( true );
+  table->addFrame( frame1 );
+  table->setBackgroundColor( Qt::yellow );
+
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+
+  frame1->setFrameEnabled( false );
+  table->setShowGrid( true );
+  table->setHorizontalGrid( true );
+  table->setVerticalGrid( true );
+
+  QgsTableCell c1( QStringLiteral( "Jet" ) );
+  QgsTextFormat f1 = table->contentTextFormat();
+  f1.setSize( 20 );
+  f1.buffer().setEnabled( true );
+  f1.buffer().setColor( QColor( 100, 130, 150 ) );
+  f1.buffer().setSize( 1 );
+  c1.setTextFormat( f1 );
+
+  QgsTableCell c3( QStringLiteral( "Plane" ) );
+  QgsTextFormat f2 = table->contentTextFormat();
+  f2.setSize( 16 );
+  f2.buffer().setEnabled( true );
+  f2.buffer().setColor( QColor( 150, 110, 90 ) );
+  f2.buffer().setSize( 1 );
+  c3.setTextFormat( f2 );
+
+  QgsTableCell c5( QStringLiteral( "B" ) );
+  QgsTextFormat f3 = table->contentTextFormat();
+  f3.setSize( 36 );
+  f3.buffer().setEnabled( true );
+  f3.buffer().setColor( QColor( 200, 110, 90 ) );
+  f3.buffer().setSize( 1 );
+  c5.setTextFormat( f3 );
+
+  table->setTableContents( QgsTableContents() << ( QgsTableRow() << c1 << QgsTableCell( QStringLiteral( "Helicopter" ) ) << c3 )
+                           << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A" ) ) << c5 << QgsTableCell( QStringLiteral( "C" ) ) ) );
+
+  table->setColumnWidths( QList< double >() << 0 << 0.0 << 30.0 );
+  QgsLayoutChecker checker( QStringLiteral( "manualtable_textformat" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "layout_manual_table" ) );
+  bool result = checker.testLayout( mReport );
+  QVERIFY( result );
+}
+
+void TestQgsLayoutManualTable::cellTextAlignment()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemManualTable *table = new QgsLayoutItemManualTable( &l );
+  QgsLayoutFrame *frame1 = new QgsLayoutFrame( &l, table );
+  frame1->attemptSetSceneRect( QRectF( 5, 5, 100, 60 ) );
+  frame1->setFrameEnabled( true );
+  table->addFrame( frame1 );
+  table->setBackgroundColor( Qt::yellow );
+
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+
+  frame1->setFrameEnabled( false );
+  table->setShowGrid( true );
+  table->setHorizontalGrid( true );
+  table->setVerticalGrid( true );
+
+  QgsTableCell c1( QStringLiteral( "Jet" ) );
+  c1.setHorizontalAlignment( Qt::AlignRight );
+  c1.setVerticalAlignment( Qt::AlignBottom );
+
+  QgsTableCell c3( QStringLiteral( "Plane" ) );
+  c3.setHorizontalAlignment( Qt::AlignCenter );
+  c3.setVerticalAlignment( Qt::AlignTop );
+
+  QgsTableCell c5( QStringLiteral( "B" ) );
+  c5.setHorizontalAlignment( Qt::AlignRight );
+  c5.setVerticalAlignment( Qt::AlignTop );
+
+  table->setTableContents( QgsTableContents() << ( QgsTableRow() << c1 << QgsTableCell( QStringLiteral( "Helicopter\nHelicopter" ) ) << c3 )
+                           << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A" ) ) << c5 << QgsTableCell( QStringLiteral( "C" ) ) ) );
+
+  table->setColumnWidths( QList< double >() << 0 << 0.0 << 30.0 );
+  QgsLayoutChecker checker( QStringLiteral( "manualtable_textalign" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_manual_table" ) );
   bool result = checker.testLayout( mReport );
   QVERIFY( result );

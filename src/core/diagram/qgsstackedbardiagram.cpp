@@ -17,6 +17,7 @@
 #include "qgsdiagramrenderer.h"
 #include "qgsrendercontext.h"
 #include "qgsexpression.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
 
@@ -86,6 +87,13 @@ QSizeF QgsStackedBarDiagram::diagramSize( const QgsFeature &feature, const QgsRe
       size = QSizeF( totalBarLength, s.barWidth );
       break;
     }
+  }
+
+  if ( s.showAxis() && s.axisLineSymbol() )
+  {
+    const double maxBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( s.axisLineSymbol(), c ) / painterUnitConversionScale;
+    size.setWidth( size.width() + 2 * maxBleed );
+    size.setHeight( size.height() + 2 * maxBleed );
   }
 
   return size;
@@ -201,6 +209,15 @@ void QgsStackedBarDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCo
   double baseX = position.x();
   double baseY = position.y();
 
+  if ( s.showAxis() && s.axisLineSymbol() )
+  {
+    // if showing axis, the diagram position needs shifting from the default base x so that the axis
+    // line stroke sits within the desired label engine rect (otherwise we risk overlaps of the axis line stroke)
+    const double maxBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( s.axisLineSymbol(), c );
+    baseX += maxBleed;
+    baseY -= maxBleed;
+  }
+
   mPen.setColor( s.penColor );
   setPenWidth( mPen, s, c );
   p->setPen( mPen );
@@ -234,5 +251,36 @@ void QgsStackedBarDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCo
     }
 
     currentOffset += length + spacing;
+  }
+
+  if ( s.showAxis() && s.axisLineSymbol() )
+  {
+    s.axisLineSymbol()->startRender( c );
+    QPolygonF axisPoints;
+    switch ( s.diagramOrientation )
+    {
+      case QgsDiagramSettings::Up:
+        axisPoints << QPointF( baseX, baseY - scaledMaxVal - spacing * std::max( 0, values.size() - 1 ) ) << QPointF( baseX, baseY ) << QPointF( baseX + scaledWidth, baseY );
+        break;
+
+      case QgsDiagramSettings::Down:
+        axisPoints << QPointF( baseX, baseY ) << QPointF( baseX, baseY - scaledMaxVal - spacing * std::max( 0, values.size() - 1 ) ) << QPointF( baseX + scaledWidth, baseY - scaledMaxVal - spacing * std::max( 0, values.size() - 1 ) );
+        break;
+
+      case QgsDiagramSettings::Right:
+        axisPoints << QPointF( baseX + scaledMaxVal + spacing * std::max( 0, values.size() - 1 ), baseY - scaledWidth )
+                   << QPointF( baseX, baseY - scaledWidth )
+                   << QPointF( baseX, baseY );
+        break;
+
+      case QgsDiagramSettings::Left:
+        axisPoints << QPointF( baseX, baseY - scaledWidth )
+                   << QPointF( baseX + scaledMaxVal + spacing * std::max( 0, values.size() - 1 ), baseY - scaledWidth )
+                   << QPointF( baseX + scaledMaxVal + spacing * std::max( 0, values.size() - 1 ), baseY );
+        break;
+    }
+
+    s.axisLineSymbol()->renderPolyline( axisPoints, nullptr, c );
+    s.axisLineSymbol()->stopRender( c );
   }
 }

@@ -589,7 +589,7 @@ void QgsHandleBadLayers::autoFind()
 
     // Try first to change the datasource of the existing layers, this will
     // maintain the current status (checked/unchecked) and group
-    if ( QgsProject::instance()->mapLayer( layerId ) )
+    if ( !datasource.isEmpty() && QgsProject::instance()->mapLayer( layerId ) )
     {
       QgsDataProvider::ProviderOptions options;
       QgsMapLayer *mapLayer = QgsProject::instance()->mapLayer( layerId );

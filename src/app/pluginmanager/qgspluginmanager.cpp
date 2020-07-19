@@ -1522,7 +1522,8 @@ void QgsPluginManager::buttonInstallFromZip_clicked()
   QMessageBox msgbox;
   if ( showInstallFromZipWarning )
   {
-    msgbox.setText( tr( "Security warning: installing a plugin from an untrusted source can lead to data loss and/or leak. Continue?" ) );
+    msgbox.setWindowTitle( tr( "Security warning" ) );
+    msgbox.setText( tr( "Installing a plugin from an untrusted source can harm your computer. Only continue if you received the plugin from a source you trust. Continue?" ) );
     msgbox.setIcon( QMessageBox::Icon::Warning );
     msgbox.addButton( QMessageBox::Yes );
     msgbox.addButton( QMessageBox::No );

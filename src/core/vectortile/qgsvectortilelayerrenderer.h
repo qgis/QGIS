@@ -25,6 +25,7 @@ class QgsVectorTileRawData;
 class QgsVectorTileLabelProvider;
 
 #include "qgsvectortilerenderer.h"
+#include "qgsmapclippingregion.h"
 
 /**
  * \ingroup core
@@ -87,6 +88,8 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     int mTotalDecodeTime = 0;
     //! Counter of total elapsed time to render tiles (ms)
     int mTotalDrawTime = 0;
+
+    QList< QgsMapClippingRegion > mClippingRegions;
 };
 
 

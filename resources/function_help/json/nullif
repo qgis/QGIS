@@ -1,6 +1,7 @@
 {
   "name": "nullif",
   "type": "function",
+  "groups": ["Conditionals"],
   "description": "Returns a null value if value1 equals value2; otherwise it returns value1. This can be used to conditionally substitute values with NULL.",
   "arguments": [ {"arg":"value1", "description": "The value that should either be used or substituted with NULL."},
                  {"arg":"value2", "description": "The control value that will trigger the NULL substitution."}],

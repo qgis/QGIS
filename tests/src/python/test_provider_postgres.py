@@ -837,6 +837,198 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertFalse(got_feature)
 
+    def testPktCompositeFloat(self):
+        """
+        Check that tables with PKs composed of many fields of different types are correctly read and written to
+        """
+        vl = QgsVectorLayer('{} sslmode=disable srid=4326 key=\'"pk1","pk2","pk3"\' table="qgis_test"."tb_test_composite_float_pk" (geom)'.format(self.dbconn), "test_composite_float", "postgres")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.fields()
+
+        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 3.14159274')))
+        # first of all: we must be able to fetch a valid feature
+        self.assertTrue(f.isValid())
+        self.assertEqual(f['pk1'], 1)
+        self.assertEqual(f['pk2'], 2)
+
+        self.assertEqual(round(f['pk3'], 6), round(3.14159274, 6))
+        self.assertEqual(f['value'], 'test 2')
+
+        # can we edit a field?
+        vl.startEditing()
+        vl.changeAttributeValue(f.id(), fields.indexOf('value'), 'Edited Test 2')
+        self.assertTrue(vl.commitChanges())
+
+        # Did we get it right? Let's create a new QgsVectorLayer and try to read back our changes:
+        vl2 = QgsVectorLayer('{} sslmode=disable srid=4326 key=\'"pk1","pk2","pk3"\' table="qgis_test"."tb_test_composite_float_pk" (geom)'.format(self.dbconn), "test_composite_float2", "postgres")
+        self.assertTrue(vl2.isValid())
+        f2 = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 3.14159274')))
+        self.assertTrue(f2.isValid())
+
+        # just making sure we have the correct feature
+        # Only 6 decimals for PostgreSQL 11.
+        self.assertEqual(round(f2['pk3'], 6), round(3.14159274, 6))
+
+        # Then, making sure we really did change our value.
+        self.assertEqual(f2['value'], 'Edited Test 2')
+
+        # How about inserting a new field?
+        f3 = QgsFeature(vl2.fields())
+        f3['pk1'] = 4
+        f3['pk2'] = -9223372036854775800
+        f3['pk3'] = 7.29154
+        f3['value'] = 'other test'
+        vl.startEditing()
+        res, f3 = vl.dataProvider().addFeatures([f3])
+        self.assertTrue(res)
+        self.assertTrue(vl.commitChanges())
+
+        # can we catch it on another layer?
+        f4 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk2 = -9223372036854775800')))
+
+        self.assertTrue(f4.isValid())
+        expected_attrs = [4, -9223372036854775800, 7.29154, 'other test']
+        gotten_attrs = [f4['pk1'], f4['pk2'], round(f4['pk3'], 5), f4['value']]
+        self.assertEqual(gotten_attrs, expected_attrs)
+
+        # Finally, let's delete one of the features.
+        f5 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 7.29154')))
+        vl2.startEditing()
+        vl2.deleteFeatures([f5.id()])
+        self.assertTrue(vl2.commitChanges())
+
+        # did we really delete?
+        f_iterator = vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 7.29154'))
+        got_feature = True
+
+        try:
+            f6 = next(f_iterator)
+            got_feature = f6.isValid()
+        except StopIteration:
+            got_feature = False
+
+        self.assertFalse(got_feature)
+
+    def testPktFloatingPoint(self):
+        """
+        Check if we can handle floating point/numeric primary keys correctly
+        """
+        # 1. 32 bit float (PostgreSQL "REAL" type)
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable srid=4326 key="pk" table="qgis_test"."tb_test_float_pk" (geom)', "test_float_pk", "postgres")
+        self.assertTrue(vl.isValid())
+
+        # 1.1. Retrieving
+        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 3.141592653589793238462643383279502884197169')))
+        self.assertTrue(f.isValid())
+        self.assertEqual(f['value'], 'first teste')
+        # 1.2. Editing
+        self.assertTrue(vl.startEditing())
+        vl.changeAttributeValue(f.id(), vl.fields().indexOf('value'), 'Changed first')
+        self.assertTrue(vl.commitChanges())
+        # 1.2.1. Checking edit from another vector layer
+        vl2 = QgsVectorLayer(self.dbconn + ' sslmode=disable srid=4326 key="pk1" table="qgis_test"."tb_test_float_pk" (geom)', "test_float_pk2", "postgres")
+        self.assertTrue(vl2.isValid())
+        f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 3.141592653589793238462643383279502884197169')))
+        self.assertTrue(f2.isValid())
+        self.assertEqual(f2['value'], 'Changed first')
+        # 1.3. Deleting
+        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 2.718281828459045235360287471352662497757247')))
+        vl.startEditing()
+        vl.deleteFeatures([f.id()])
+        self.assertTrue(vl.commitChanges())
+        # 1.3.1. Checking deletion
+        f_iterator = vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 2.718281828459045235360287471352662497757247'))
+        got_feature = True
+
+        try:
+            f2 = next(f_iterator)
+            got_feature = f2.isValid()
+        except StopIteration:
+            got_feature = False
+        self.assertFalse(got_feature)
+        # 1.4. Inserting new feature
+        newpointwkt = 'Point(-47.751 -15.644)'
+        f = QgsFeature(vl.fields())
+        f['pk'] = 0.22222222222222222222222
+        f['value'] = 'newly inserted'
+        f.setGeometry(QgsGeometry.fromWkt(newpointwkt))
+        vl.startEditing()
+        res, f = vl.dataProvider().addFeatures([f])
+        self.assertTrue(res)
+        self.assertTrue(vl.commitChanges())
+        # 1.4.1. Checking insertion
+        f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 0.22222222222222222222222')))
+        self.assertTrue(f2.isValid())
+        self.assertEqual(round(f2['pk'], 6), round(0.2222222222222222, 6))
+        self.assertEqual(f2['value'], 'newly inserted')
+        assert compareWkt(f2.geometry().asWkt(), newpointwkt), "Geometry mismatch. Expected: {} Got: {} \n".format(f2.geometry().asWkt(), newpointwkt)
+        # One more check: can we retrieve the same row with the value that we got from this layer?
+        floatpk = f2['pk']
+        f3 = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = {}'.format(floatpk))))
+        self.assertTrue(f3.isValid())
+        self.assertEqual(f3['value'], 'newly inserted')
+        self.assertEqual(f3['pk'], floatpk)
+
+        # 2. 64 bit float (PostgreSQL "DOUBLE PRECISION" type)
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable srid=4326 key="pk" table="qgis_test"."tb_test_double_pk" (geom)', "test_double_pk", "postgres")
+        self.assertTrue(vl.isValid())
+
+        # 2.1. Retrieving
+        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 3.141592653589793238462643383279502884197169')))
+        self.assertTrue(f.isValid())
+        self.assertEqual(f['value'], 'first teste')
+        # 2.2. Editing
+        self.assertTrue(vl.startEditing())
+        vl.changeAttributeValue(f.id(), vl.fields().indexOf('value'), 'Changed first')
+        self.assertTrue(vl.commitChanges())
+        # 2.2.1. Checking edit from another vector layer
+        vl2 = QgsVectorLayer(self.dbconn + ' sslmode=disable srid=4326 key="pk" table="qgis_test"."tb_test_double_pk" (geom)', "test_double_pk2", "postgres")
+        self.assertTrue(vl2.isValid())
+        f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 3.141592653589793238462643383279502884197169')))
+        self.assertTrue(f2.isValid())
+        self.assertEqual(f2['value'], 'Changed first')
+        # 2.3. Deleting
+        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 2.718281828459045235360287471352662497757247')))
+        vl.startEditing()
+        vl.deleteFeatures([f.id()])
+        self.assertTrue(vl.commitChanges())
+        # 2.3.1. Checking deletion
+        f_iterator = vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 2.718281828459045235360287471352662497757247'))
+        got_feature = True
+
+        try:
+            f2 = next(f_iterator)
+            got_feature = f2.isValid()
+        except StopIteration:
+            got_feature = False
+        self.assertFalse(got_feature)
+        # 2.4. Inserting new feature
+        newpointwkt = 'Point(-47.751 -15.644)'
+        f = QgsFeature(vl.fields())
+        f['pk'] = 0.22222222222222222222222
+        f['value'] = 'newly inserted'
+        f.setGeometry(QgsGeometry.fromWkt(newpointwkt))
+        vl.startEditing()
+        res, f = vl.dataProvider().addFeatures([f])
+        self.assertTrue(res)
+        self.assertTrue(vl.commitChanges())
+        # 2.4.1. Checking insertion
+        f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 0.22222222222222222222222')))
+        self.assertTrue(f2.isValid())
+        self.assertEqual(round(f2['pk'], 15), round(0.2222222222222222, 15))
+        self.assertEqual(f2['value'], 'newly inserted')
+        assert compareWkt(f2.geometry().asWkt(), newpointwkt), "Geometry mismatch. Expected: {} Got: {} \n".format(f2.geometry().asWkt(), newpointwkt)
+        # One more check: can we retrieve the same row with the value that we got from this layer?
+        doublepk = f2['pk']
+        f3 = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = {}'.format(doublepk))))
+        self.assertTrue(f3.isValid())
+        self.assertEqual(f3['value'], 'newly inserted')
+        self.assertEqual(f3['pk'], doublepk)
+
+        # no NUMERIC/DECIMAL checks here. NUMERIC primary keys are unsupported.
+        # TODO: implement NUMERIC primary keys/arbitrary precision arithmethics/fixed point math in QGIS.
+
     def testPktMapInsert(self):
         vl = QgsVectorLayer('{} table="qgis_test"."{}" key="obj_id" sql='.format(self.dbconn, 'oid_serial_table'),
                             "oid_serial", "postgres")

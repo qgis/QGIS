@@ -59,7 +59,7 @@ Writes configuration to a new DOM element and returns it
 %End
     void readXml( const QDomElement &elem );
 %Docstring
-Reads configuration from a DOM element previously written using writeXml()
+Reads configuration from a DOM element previously written using :py:func:`~QgsDirectionalLightSettings.writeXml`
 %End
 
     bool operator==( const QgsDirectionalLightSettings &other );

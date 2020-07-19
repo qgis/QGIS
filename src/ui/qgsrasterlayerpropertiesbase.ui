@@ -254,7 +254,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -302,8 +302,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>629</width>
-                <height>843</height>
+                <width>325</width>
+                <height>978</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -430,7 +430,7 @@ border-radius: 2px;</string>
                       <widget class="QgsDateTimeEdit" name="mReferenceDateTimeEdit">
                        <property name="dateTime">
                         <datetime>
-                         <hour>12</hour>
+                         <hour>6</hour>
                          <minute>20</minute>
                          <second>36</second>
                          <year>2020</year>
@@ -560,7 +560,7 @@ border-radius: 2px;</string>
                          <widget class="QgsDateTimeEdit" name="mStartStaticDateTimeEdit">
                           <property name="dateTime">
                            <datetime>
-                            <hour>18</hour>
+                            <hour>9</hour>
                             <minute>3</minute>
                             <second>57</second>
                             <year>2020</year>
@@ -726,8 +726,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>494</width>
-                <height>484</height>
+                <width>643</width>
+                <height>682</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -809,42 +809,10 @@ border-radius: 2px;</string>
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_2">
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="labelSaturation">
-                    <property name="text">
-                     <string>Saturation</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
+                  <item row="4" column="0">
                    <widget class="QLabel" name="label_3">
                     <property name="text">
                      <string>Hue</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <widget class="QSlider" name="sliderSaturation">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>75</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="minimum">
-                     <number>-100</number>
-                    </property>
-                    <property name="maximum">
-                     <number>100</number>
-                    </property>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
                     </property>
                    </widget>
                   </item>
@@ -936,7 +904,7 @@ border-radius: 2px;</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="3">
+                  <item row="3" column="3">
                    <widget class="Line" name="line_2">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
@@ -950,30 +918,14 @@ border-radius: 2px;</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="4">
+                  <item row="3" column="4">
                    <widget class="QLabel" name="labelGrayscale">
                     <property name="text">
                      <string>Grayscale</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="2">
-                   <widget class="QSpinBox" name="spinBoxSaturation">
-                    <property name="minimum">
-                     <number>-100</number>
-                    </property>
-                    <property name="maximum">
-                     <number>100</number>
-                    </property>
-                    <property name="value">
-                     <number>0</number>
-                    </property>
-                    <property name="decimals" stdset="0">
-                     <number>0</number>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="1" colspan="6">
+                  <item row="4" column="1" colspan="6">
                    <layout class="QHBoxLayout" name="horizontalLayout_12">
                     <item>
                      <widget class="QCheckBox" name="mColorizeCheck">
@@ -1049,24 +1001,7 @@ border-radius: 2px;</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="6">
-                   <widget class="QToolButton" name="mResetColorRenderingBtn">
-                    <property name="toolTip">
-                     <string>Reset all color rendering options to default</string>
-                    </property>
-                    <property name="text">
-                     <string>Reset</string>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
-                    </property>
-                    <property name="toolButtonStyle">
-                     <enum>Qt::ToolButtonTextBesideIcon</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="5" colspan="2">
+                  <item row="3" column="5" colspan="2">
                    <widget class="QComboBox" name="comboGrayscale">
                     <item>
                      <property name="text">
@@ -1088,6 +1023,123 @@ border-radius: 2px;</string>
                       <string>By average</string>
                      </property>
                     </item>
+                   </widget>
+                  </item>
+                  <item row="0" column="6">
+                   <widget class="QToolButton" name="mResetColorRenderingBtn">
+                    <property name="toolTip">
+                     <string>Reset all color rendering options to default</string>
+                    </property>
+                    <property name="text">
+                     <string>Reset</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
+                    </property>
+                    <property name="toolButtonStyle">
+                     <enum>Qt::ToolButtonTextBesideIcon</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_15">
+                    <property name="text">
+                     <string>Gamma</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QSlider" name="mSliderGamma">
+                    <property name="minimum">
+                     <number>10</number>
+                    </property>
+                    <property name="maximum">
+                     <number>1000</number>
+                    </property>
+                    <property name="singleStep">
+                     <number>10</number>
+                    </property>
+                    <property name="pageStep">
+                     <number>100</number>
+                    </property>
+                    <property name="value">
+                     <number>100</number>
+                    </property>
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="2">
+                   <widget class="QDoubleSpinBox" name="mGammaSpinBox">
+                    <property name="minimum">
+                     <double>0.100000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>10.000000000000000</double>
+                    </property>
+                    <property name="singleStep">
+                     <double>0.100000000000000</double>
+                    </property>
+                    <property name="value">
+                     <double>1.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="3">
+                   <widget class="Line" name="line_3">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="4">
+                   <widget class="QLabel" name="labelSaturation">
+                    <property name="text">
+                     <string>Saturation</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="5">
+                   <widget class="QSlider" name="sliderSaturation">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>75</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="minimum">
+                     <number>-100</number>
+                    </property>
+                    <property name="maximum">
+                     <number>100</number>
+                    </property>
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="6">
+                   <widget class="QSpinBox" name="spinBoxSaturation">
+                    <property name="minimum">
+                     <number>-100</number>
+                    </property>
+                    <property name="maximum">
+                     <number>100</number>
+                    </property>
+                    <property name="value">
+                     <number>0</number>
+                    </property>
+                    <property name="decimals" stdset="0">
+                     <number>0</number>
+                    </property>
                    </widget>
                   </item>
                  </layout>
@@ -1686,7 +1738,7 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>86</width>
+                <width>98</width>
                 <height>42</height>
                </rect>
               </property>
@@ -2672,6 +2724,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>mBrightnessSpinBox</tabstop>
   <tabstop>mSliderContrast</tabstop>
   <tabstop>mContrastSpinBox</tabstop>
+  <tabstop>mSliderGamma</tabstop>
+  <tabstop>mGammaSpinBox</tabstop>
   <tabstop>sliderSaturation</tabstop>
   <tabstop>spinBoxSaturation</tabstop>
   <tabstop>comboGrayscale</tabstop>
@@ -2721,6 +2775,20 @@ p, li { white-space: pre-wrap; }
   <tabstop>mWMSPrintLayerLineEdit</tabstop>
   <tabstop>mPublishDataSourceUrlCheckBox</tabstop>
   <tabstop>mBackgroundLayerCheckBox</tabstop>
+  <tabstop>scrollArea_3</tabstop>
+  <tabstop>mWmstGroup</tabstop>
+  <tabstop>mFetchModeComboBox</tabstop>
+  <tabstop>mDisableTime</tabstop>
+  <tabstop>mReferenceDateTimeEdit</tabstop>
+  <tabstop>mReferenceTime</tabstop>
+  <tabstop>mStaticTemporalRange</tabstop>
+  <tabstop>mSetEndAsStartStaticButton</tabstop>
+  <tabstop>mEndStaticDateTimeEdit</tabstop>
+  <tabstop>mStartStaticDateTimeEdit</tabstop>
+  <tabstop>mProjectTemporalRange</tabstop>
+  <tabstop>mPostgresRasterTemporalGroup</tabstop>
+  <tabstop>mPostgresRasterTemporalFieldComboBox</tabstop>
+  <tabstop>mPostgresRasterDefaultTime</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

@@ -52,6 +52,7 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsstyle.h"
 #include "qgsbookmarkmanager.h"
+#include "qgsexpressioncontextutils.h"
 
 class TestQgsProcessingAlgs: public QObject
 {
@@ -80,6 +81,7 @@ class TestQgsProcessingAlgs: public QObject
     void kmeansCluster();
     void categorizeByStyle();
     void extractBinary();
+    void createDirectory();
 
     void polygonsToLines_data();
     void polygonsToLines();
@@ -97,6 +99,8 @@ class TestQgsProcessingAlgs: public QObject
 
     void rasterLogicOp_data();
     void rasterLogicOp();
+    void cellStatistics_data();
+    void cellStatistics();
     void roundRasterValues_data();
     void roundRasterValues();
 
@@ -129,6 +133,9 @@ class TestQgsProcessingAlgs: public QObject
     void conditionalBranch();
 
     void saveLog();
+    void setProjectVariable();
+    void exportLayoutPdf();
+    void exportLayoutPng();
 
   private:
 
@@ -819,6 +826,50 @@ void TestQgsProcessingAlgs::extractBinary()
   QVERIFY( file2.open( QIODevice::ReadOnly ) );
   d = file2.readAll();
   QCOMPARE( QString( QCryptographicHash::hash( d, QCryptographicHash::Md5 ).toHex() ), QStringLiteral( "4b952b80e4288ca5111be2f6dd5d6809" ) );
+}
+
+void TestQgsProcessingAlgs::createDirectory()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:createdirectory" ) ) );
+  QVERIFY( alg != nullptr );
+
+  // first make a path to an existing file
+  QString outputPath = QDir::tempPath() + "/test.txt";
+  if ( QFile::exists( outputPath ) )
+    QFile::remove( outputPath );
+  QFile file( outputPath );
+  file.open( QIODevice::ReadWrite );
+  file.close();
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "PATH" ), outputPath );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // path is an existing file
+  QVERIFY( !ok );
+
+  outputPath = QDir::tempPath() + "/createdir/test/test2";
+  QDir().rmdir( QDir::tempPath() + "/createdir/test/test2" );
+  QDir().rmdir( QDir::tempPath() + "/createdir/test" );
+  QDir().rmdir( QDir::tempPath() + "/createdir" );
+
+  parameters.insert( QStringLiteral( "PATH" ), outputPath );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( QFile::exists( outputPath ) );
+  QVERIFY( QFileInfo( outputPath ).isDir() );
+
+  // run a second time -- should be OK, no exception raised
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( QFile::exists( outputPath ) );
+  QVERIFY( QFileInfo( outputPath ).isDir() );
 }
 
 
@@ -1911,6 +1962,273 @@ void TestQgsProcessingAlgs::rasterLogicOp()
     for ( int col = 0; col < nCols; col++ )
     {
       QCOMPARE( res2[row * nCols + col], expectedAnd[row * nCols + col] );
+    }
+  }
+}
+
+void TestQgsProcessingAlgs::cellStatistics_data()
+{
+  QTest::addColumn<QStringList>( "inputRasters" );
+  QTest::addColumn<QString>( "referenceLayer" );
+  QTest::addColumn<int>( "statistic" );
+  QTest::addColumn<bool>( "ignoreNoData" );
+  QTest::addColumn<QString>( "expectedRaster" );
+  QTest::addColumn<Qgis::DataType>( "expectedDataType" );
+
+  /*
+   * Testcase 1: sum
+   */
+  QTest::newRow( "testcase_1" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 0
+      << false
+      << QStringLiteral( "/cellstatistics_sum_result.tif" )
+      << Qgis::Float64;
+
+  /*
+   * Testcase 2: count
+   */
+  QTest::newRow( "testcase_2" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 1
+      << false
+      << QStringLiteral( "/cellstatistics_count_result.tif" )
+      << Qgis::Int32;
+
+  /*
+   * Testcase 3: mean
+   */
+  QTest::newRow( "testcase_3" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 2
+      << false
+      << QStringLiteral( "/cellstatistics_mean_result.tif" )
+      << Qgis::Float64;
+
+  /*
+   * Testcase 4: median
+   */
+  QTest::newRow( "testcase_4" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 3
+      << false
+      << QStringLiteral( "/cellstatistics_median_result.tif" )
+      << Qgis::Float64;
+
+  /*
+   * Testcase 5: Standard deviation
+   */
+  QTest::newRow( "testcase_5" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 4
+      << false
+      << QStringLiteral( "/cellstatistics_stddev_result.tif" )
+      << Qgis::Float64;
+
+  /*
+   * Testcase 6: Variance
+   */
+  QTest::newRow( "testcase_6" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 5
+      << false
+      << QStringLiteral( "/cellstatistics_variance_result.tif" )
+      << Qgis::Float64;
+
+  /*
+   * Testcase 7: Minimum
+   */
+  QTest::newRow( "testcase_7" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 6
+      << false
+      << QStringLiteral( "/cellstatistics_min_result.tif" )
+      << Qgis::Float64;
+
+  /*
+   * Testcase 8: Maximum
+   */
+  QTest::newRow( "testcase_8" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 7
+      << false
+      << QStringLiteral( "/cellstatistics_max_result.tif" )
+      << Qgis::Float64;
+
+  /*
+   * Testcase 9: Minority
+   */
+  QTest::newRow( "testcase_9" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 8
+      << false
+      << QStringLiteral( "/cellstatistics_minority_result.tif" )
+      << Qgis::Float64;
+
+  /*
+   * Testcase 10: Majority
+   */
+  QTest::newRow( "testcase_10" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 9
+      << false
+      << QStringLiteral( "/cellstatistics_majority_result.tif" )
+      << Qgis::Float64;
+
+  /*
+   * Testcase 11: Range
+   */
+  QTest::newRow( "testcase_11" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 10
+      << false
+      << QStringLiteral( "/cellstatistics_range_result.tif" )
+      << Qgis::Float64;
+
+  /*
+   * Testcase 12: Variety
+   */
+  QTest::newRow( "testcase_12" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 11
+      << false
+      << QStringLiteral( "/cellstatistics_variety_result.tif" )
+      << Qgis::Int32;
+
+  /*
+   * Testcase 13: Sum (integer)
+   */
+  QTest::newRow( "testcase_13" )
+      << QStringList( {"/raster/statisticsRas1_int32.tif", "/raster/statisticsRas2_int32.tif", "/raster/statisticsRas3_int32.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_int32.tif" )
+      << 0
+      << false
+      << QStringLiteral( "/cellstatistics_sum_result_int32.tif" )
+      << Qgis::Int32;
+
+  /*
+   * Testcase 14: sum (ignore nodata)
+   */
+  QTest::newRow( "testcase_14" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 0
+      << true
+      << QStringLiteral( "/cellstatistics_sum_ignore_nodata_result.tif" )
+      << Qgis::Float64;
+
+  /*
+   * Testcase 15: mean
+   */
+  QTest::newRow( "testcase_15" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 2
+      << true
+      << QStringLiteral( "/cellstatistics_mean_ignore_nodata_result.tif" )
+      << Qgis::Float64;
+}
+
+void TestQgsProcessingAlgs::cellStatistics()
+{
+  QFETCH( QStringList, inputRasters );
+  QFETCH( QString, referenceLayer );
+  QFETCH( int, statistic );
+  QFETCH( bool, ignoreNoData );
+  QFETCH( QString, expectedRaster );
+  QFETCH( Qgis::DataType, expectedDataType );
+
+
+  //prepare input params
+  QgsProject p;
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:cellstatistics" ) ) );
+
+  QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
+
+  QStringList inputDatasetPaths;
+
+  for ( const auto &raster : inputRasters )
+  {
+    inputDatasetPaths << myDataPath + raster;
+  }
+
+  std::unique_ptr<QgsRasterLayer> inputRasterLayer1 = qgis::make_unique< QgsRasterLayer >( myDataPath + inputRasters[0], "inputDataset", "gdal" );
+
+  //set project crs and ellipsoid from input layer
+  p.setCrs( inputRasterLayer1->crs(), true );
+
+  //set project after layer has been added so that transform context/ellipsoid from crs is also set
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+
+  QVariantMap parameters;
+
+  parameters.insert( QStringLiteral( "INPUT" ), inputDatasetPaths );
+  parameters.insert( QStringLiteral( "STATISTIC" ), statistic );
+  parameters.insert( QStringLiteral( "IGNORE_NODATA" ), ignoreNoData );
+  parameters.insert( QStringLiteral( "REFERENCE_LAYER" ), myDataPath + referenceLayer );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  //prepare expectedRaster
+  std::unique_ptr<QgsRasterLayer> expectedRasterLayer = qgis::make_unique< QgsRasterLayer >( myDataPath + "/control_images/expected_cellStatistics/" + expectedRaster, "expectedDataset", "gdal" );
+  std::unique_ptr< QgsRasterInterface > expectedInterface( expectedRasterLayer->dataProvider()->clone() );
+  QgsRasterIterator expectedIter( expectedInterface.get() );
+  expectedIter.startRasterRead( 1, expectedRasterLayer->width(), expectedRasterLayer->height(), expectedInterface->extent() );
+
+  //run alg...
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  //...and check results with expected datasets
+  std::unique_ptr<QgsRasterLayer> outputRaster = qgis::make_unique< QgsRasterLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  std::unique_ptr< QgsRasterInterface > outputInterface( outputRaster->dataProvider()->clone() );
+
+  QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
+  QCOMPARE( outputRaster->width(), expectedRasterLayer->width() );
+  QCOMPARE( outputRaster->height(), expectedRasterLayer->height() );
+
+  QgsRasterIterator outputIter( outputInterface.get() );
+  outputIter.startRasterRead( 1, outputRaster->width(), outputRaster->height(), outputInterface->extent() );
+  int outputIterLeft = 0;
+  int outputIterTop = 0;
+  int outputIterCols = 0;
+  int outputIterRows = 0;
+  int expectedIterLeft = 0;
+  int expectedIterTop = 0;
+  int expectedIterCols = 0;
+  int expectedIterRows = 0;
+
+  std::unique_ptr< QgsRasterBlock > outputRasterBlock;
+  std::unique_ptr< QgsRasterBlock > expectedRasterBlock;
+
+  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) &&
+          expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
+  {
+    for ( int row = 0; row < expectedIterRows; row++ )
+    {
+      for ( int column = 0; column < expectedIterCols; column++ )
+      {
+        double expectedValue = expectedRasterBlock->value( row, column );
+        double outputValue = outputRasterBlock->value( row, column );
+        QCOMPARE( outputValue, expectedValue );
+      }
     }
   }
 }
@@ -3658,6 +3976,107 @@ void TestQgsProcessingAlgs::saveLog()
   QFile file2( results.value( QStringLiteral( "OUTPUT" ) ).toString() );
   QVERIFY( file2.open( QFile::ReadOnly  | QIODevice::Text ) );
   QCOMPARE( QString( file2.readAll() ), QStringLiteral( "<span style=\"color:red\">test</span><br/>" ) );
+}
+
+void TestQgsProcessingAlgs::setProjectVariable()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:setprojectvariable" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "NAME" ), QStringLiteral( "my_var" ) );
+  parameters.insert( QStringLiteral( "VALUE" ), 11 );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  QgsProject p;
+  context->setProject( &p );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::projectScope( &p ) );
+  QCOMPARE( scope->variable( QStringLiteral( "my_var" ) ).toInt(), 11 );
+
+  //overwrite existing
+  parameters.insert( QStringLiteral( "VALUE" ), 13 );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  scope.reset( QgsExpressionContextUtils::projectScope( &p ) );
+  QCOMPARE( scope->variable( QStringLiteral( "my_var" ) ).toInt(), 13 );
+}
+
+void TestQgsProcessingAlgs::exportLayoutPdf()
+{
+  QgsProject p;
+  QgsPrintLayout *layout = new QgsPrintLayout( &p );
+  layout->initializeDefaults();
+  layout->setName( QStringLiteral( "my layout" ) );
+  p.layoutManager()->addLayout( layout );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:printlayouttopdf" ) ) );
+  QVERIFY( alg != nullptr );
+
+  const QString outputPdf = QDir::tempPath() + "/my_layout.pdf";
+  if ( QFile::exists( outputPdf ) )
+    QFile::remove( outputPdf );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "missing" ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputPdf );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // invalid layout name
+  QVERIFY( !ok );
+  QVERIFY( !QFile::exists( outputPdf ) );
+
+  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "my layout" ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( QFile::exists( outputPdf ) );
+}
+
+void TestQgsProcessingAlgs::exportLayoutPng()
+{
+  QgsProject p;
+  QgsPrintLayout *layout = new QgsPrintLayout( &p );
+  layout->initializeDefaults();
+  layout->setName( QStringLiteral( "my layout" ) );
+  p.layoutManager()->addLayout( layout );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:printlayouttoimage" ) ) );
+  QVERIFY( alg != nullptr );
+
+  const QString outputPdf = QDir::tempPath() + "/my_layout.png";
+  if ( QFile::exists( outputPdf ) )
+    QFile::remove( outputPdf );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "missing" ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputPdf );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // invalid layout name
+  QVERIFY( !ok );
+  QVERIFY( !QFile::exists( outputPdf ) );
+
+  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "my layout" ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( QFile::exists( outputPdf ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )

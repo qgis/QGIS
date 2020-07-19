@@ -793,6 +793,7 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "row_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "grid_number" ), QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "grid_axis" ), QCoreApplication::translate( "variable_help", "Current grid annotation axis (e.g., 'x' for longitude, 'y' for latitude)." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "column_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current column." ) );
 
   // map canvas item variables
   sVariableHelpTexts()->insert( QStringLiteral( "canvas_cursor_point" ), QCoreApplication::translate( "variable_help", "Last cursor position on the canvas in the project's geographical coordinates." ) );

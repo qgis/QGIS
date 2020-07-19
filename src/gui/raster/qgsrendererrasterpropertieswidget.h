@@ -85,6 +85,18 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
 
     void refreshAfterStyleChanged();
 
+    /**
+     * updates gamma spinbox on slider changes
+     * \since QGIS 3.16
+     */
+    void updateGammaSpinBox( int value );
+
+    /**
+     * updates gamma slider on spinbox changes
+     * \since QGIS 3.16
+     */
+    void updateGammaSlider( double value );
+
   private:
     void setRendererWidget( const QString &rendererName );
 

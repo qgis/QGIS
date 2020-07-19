@@ -1,6 +1,7 @@
 {
   "name": "make_ellipse",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Creates an elliptical polygon.",
   "variableLenArguments": true,
   "arguments": [

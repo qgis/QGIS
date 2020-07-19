@@ -69,13 +69,16 @@ namespace MDAL
 
       //! Returns a string with the date/time expressed in Greogrian proleptic calendar with ISO8601 format (local time zone)
       //! Do not support negative year
-      std::string toStandartCalendarISO8601() const;
+      std::string toStandardCalendarISO8601() const;
 
       //! Returns the Julian day value
       double toJulianDay() const;
 
       //! Returns the Julain day value expressed with a string
       std::string toJulianDayString() const;
+
+      //! Returns a array of int with {year,month,day,hours,minutes,seconds} with standard calendar format
+      std::vector<int> expandToCalendarArray() const;
 
       //! operators
       RelativeTimestamp operator-( const DateTime &other ) const;

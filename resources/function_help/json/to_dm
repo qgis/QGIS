@@ -1,6 +1,7 @@
 {
   "name": "to_dm",
   "type": "function",
+  "groups": ["Conversions"],
   "description": "Convert a coordinate to degree, minute.",
   "arguments": [
     {"arg":"coordinate","description":"A latitude or longitude value."},

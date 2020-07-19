@@ -25,6 +25,7 @@
 QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
+  mProviderKey = QStringLiteral( "spatialite" );
   setDefaultCapabilities();
   // TODO: QGIS 4: move into QgsSettings::Section::Providers group
   QgsSettings settings;
@@ -39,6 +40,7 @@ QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString 
 QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString &uri, const QVariantMap &configuration ):
   QgsAbstractDatabaseProviderConnection( uri, configuration )
 {
+  mProviderKey = QStringLiteral( "spatialite" );
   const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=""\s*|\([^\)]+\))raw" };
   // Cleanup the URI in case it contains other information other than the file path
   setUri( QString( uri ).replace( removePartsRe, QString() ) );
@@ -198,14 +200,36 @@ void QgsSpatiaLiteProviderConnection::vacuum( const QString &schema, const QStri
 
 void QgsSpatiaLiteProviderConnection::createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options ) const
 {
-  Q_UNUSED( name )
-  checkCapability( Capability::Vacuum );
+
+  checkCapability( Capability::CreateSpatialIndex );
+
   if ( ! schema.isEmpty() )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
   }
+
+  QString geometryColumnName { options.geometryColumnName };
+  if ( geometryColumnName.isEmpty() )
+  {
+    // Can we guess it?
+    try
+    {
+      const auto tp { table( schema, name ) };
+      geometryColumnName = tp.geometryColumn();
+    }
+    catch ( QgsProviderConnectionException & )
+    {
+      // pass
+    }
+  }
+
+  if ( geometryColumnName.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Geometry column name not specified while creating spatial index" ) );
+  }
+
   executeSqlPrivate( QStringLiteral( "SELECT CreateSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
-                     QgsSqliteUtils::quotedString( ( options.geometryColumnName ) ) ) );
+                     QgsSqliteUtils::quotedString( ( geometryColumnName ) ) ) );
 }
 
 bool QgsSpatiaLiteProviderConnection::spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const
@@ -328,7 +352,7 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
 
   if ( ! errCause.isEmpty() )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: %2" ).arg( pathFromUri() ).arg( errCause ) );
+    throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: %2" ).arg( pathFromUri(), errCause ) );
   }
   // Filters
   if ( flags )
@@ -360,6 +384,14 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
     Capability::ExecuteSql,
     Capability::CreateSpatialIndex,
     Capability::SpatialIndexExists,
+    Capability::DeleteField,
+    Capability::AddField
+  };
+  mGeometryColumnCapabilities =
+  {
+    GeometryColumnCapability::Z,
+    GeometryColumnCapability::M,
+    GeometryColumnCapability::SinglePart,
   };
 }
 
@@ -441,3 +473,27 @@ QString QgsSpatiaLiteProviderConnection::pathFromUri() const
   return dsUri.database();
 }
 
+
+void QgsSpatiaLiteProviderConnection::deleteField( const QString &fieldName, const QString &, const QString &tableName, bool ) const
+{
+  QgsVectorLayer::LayerOptions options { false, false };
+  options.skipCrsValidation = true;
+  std::unique_ptr<QgsVectorLayer> vl { qgis::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( pathFromUri(), tableName ), QStringLiteral( "temp_layer" ), QStringLiteral( "ogr" ), options ) };
+  if ( ! vl->isValid() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not create a valid layer for table '%1'" ).arg( tableName ) );
+  }
+  if ( vl->fields().lookupField( fieldName ) == -1 )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not delete field '%1' of table '%2': field does not exist" ).arg( fieldName, tableName ) );
+  }
+  if ( ! vl->dataProvider()->deleteAttributes( {vl->fields().lookupField( fieldName )} ) )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Unknown error deleting field '%1' of table '%2'" ).arg( fieldName, tableName ) );
+  }
+}
+
+QList<QgsVectorDataProvider::NativeType> QgsSpatiaLiteProviderConnection::nativeTypes() const
+{
+  return QgsSpatiaLiteConnection::nativeTypes();
+}

@@ -285,6 +285,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             self.textMetadata.document().setDefaultStyleSheet(style)
             self.textMetadata.setHtml(metadata)
 
+            # clear results in Search tab
+            self.clear_results()
+
     def add_connection(self):
         """add new service"""
 
@@ -540,6 +543,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.btnPrev.setEnabled(disabled)
         self.btnNext.setEnabled(disabled)
         self.btnLast.setEnabled(disabled)
+
+    def clear_results(self):
+        """clear search results"""
+
+        self.treeRecords.clear()
 
     def record_clicked(self):
         """record clicked signal"""

@@ -125,7 +125,17 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     void pixelSelected( const QgsPointXY &, const Qt::MouseButton & );
 
+    /**
+     * updates gamma spinbox on slider changes
+     * \since QGIS 3.16
+     */
+    void updateGammaSpinBox( int value );
 
+    /**
+     * updates gamma slider on spinbox changes
+     * \since QGIS 3.16
+     */
+    void updateGammaSlider( double value );
 
     void mRenderTypeComboBox_currentIndexChanged( int index );
     //! Load the default style when appropriate button is pressed.

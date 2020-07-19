@@ -486,6 +486,62 @@ class TestQgsDiagram : public QObject
 
     }
 
+    void testStackedAxis()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 5, 5 );
+      ds.rotationOffset = 0;
+      ds.setSpacing( 3 );
+      ds.setShowAxis( true );
+
+      QgsStringMap props;
+      props.insert( QStringLiteral( "width" ), QStringLiteral( "2" ) );
+      props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff00ff" ) );
+      ds.setAxisLineSymbol( QgsLineSymbol::createSimple( props ) );
+
+      QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+      dr->setLowerValue( 0.0 );
+      dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
+      dr->setUpperValue( 10 );
+      dr->setUpperSize( QSizeF( 40, 40 ) );
+      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setDiagram( new QgsStackedBarDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "stacked_axis_up" ) );
+
+      ds.diagramOrientation = QgsDiagramSettings::Down;
+      dr->setDiagramSettings( ds );
+      QVERIFY( imageCheck( "stacked_axis_down" ) );
+
+      ds.diagramOrientation = QgsDiagramSettings::Left;
+      dr->setDiagramSettings( ds );
+      QVERIFY( imageCheck( "stacked_axis_left" ) );
+
+      ds.diagramOrientation = QgsDiagramSettings::Right;
+      dr->setDiagramSettings( ds );
+      QVERIFY( imageCheck( "stacked_axis_right" ) );
+    }
+
     void testPieDiagramExpression()
     {
       QgsDiagramSettings ds;
@@ -893,6 +949,63 @@ class TestQgsDiagram : public QObject
 
       QVERIFY( imageCheck( "textdiagram_datadefined_background" ) );
     }
+
+    void testClipping()
+    {
+      const QString filename = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
+      std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( filename, QStringLiteral( "lines" ), QStringLiteral( "ogr" ) ) );
+
+      QgsStringMap props;
+      props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#487bb6" ) );
+      props.insert( QStringLiteral( "outline_width" ), QStringLiteral( "1" ) );
+      std::unique_ptr< QgsLineSymbol > symbol( QgsLineSymbol::createSimple( props ) );
+      vl2->setRenderer( new QgsSingleSymbolRenderer( symbol.release() ) );
+
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1;
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Value\"" );
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 5, 5 );
+      ds.rotationOffset = 0;
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      vl2->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::Line );
+      dls.setShowAllDiagrams( true );
+      vl2->setDiagramLayerSettings( dls );
+
+      mMapSettings->setLayers( QList<QgsMapLayer *>() << vl2.get() );
+
+      QgsMapClippingRegion region1( QgsGeometry::fromWkt( "Polygon ((-92 45, -99 36, -94 29, -82 29, -81 45, -92 45))" ) );
+      region1.setFeatureClip( QgsMapClippingRegion::FeatureClippingType::ClipToIntersection );
+      mMapSettings->addClippingRegion( region1 );
+
+      QgsMapClippingRegion region2( QgsGeometry::fromWkt( "Polygon ((-85 36, -85 46, -107 47, -108 28, -85 28, -85 36))" ) );
+      region2.setFeatureClip( QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly );
+      mMapSettings->addClippingRegion( region2 );
+
+      const bool res = imageCheck( QStringLiteral( "diagram_clipping" ) );
+      mMapSettings->setClippingRegions( QList< QgsMapClippingRegion >() );
+      mMapSettings->setLayers( QList<QgsMapLayer *>() << mPointsLayer );
+
+      QVERIFY( res );
+    }
+
+
 
 };
 

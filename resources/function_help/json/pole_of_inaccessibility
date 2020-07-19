@@ -1,6 +1,7 @@
 {
   "name": "pole_of_inaccessibility",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Calculates the approximate pole of inaccessibility for a surface, which is the most distant internal point from the boundary of the surface. This function uses the 'polylabel' algorithm (Vladimir Agafonkin, 2016), which is an iterative approach guaranteed to find the true pole of inaccessibility within a specified tolerance. More precise tolerances require more iterations and will take longer to calculate.",
   "arguments": [ {"arg":"geometry","description":"a geometry"},
                  {"arg":"tolerance","description":"maximum distance between the returned point and the true pole location"}],

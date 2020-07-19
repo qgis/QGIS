@@ -943,6 +943,10 @@ class CORE_EXPORT QgsGeometry
      * Returns the oriented minimum bounding box for the geometry, which is the smallest (by area)
      * rotated rectangle which fully encompasses the geometry. The area, angle (clockwise in degrees from North),
      * width and height of the rotated bounding box will also be returned.
+     *
+     * If an error was encountered while creating the result, more information can be retrieved
+     * by calling lastError() on the returned geometry.
+     *
      * \see boundingBox()
      * \since QGIS 3.0
      */
@@ -951,6 +955,10 @@ class CORE_EXPORT QgsGeometry
     /**
      * Returns the oriented minimum bounding box for the geometry, which is the smallest (by area)
      * rotated rectangle which fully encompasses the geometry.
+     *
+     * If an error was encountered while creating the result, more information can be retrieved
+     * by calling lastError() on the returned geometry.
+     *
      * \since QGIS 3.0
      */
     QgsGeometry orientedMinimumBoundingBox() const SIP_SKIP;
@@ -1484,22 +1492,27 @@ class CORE_EXPORT QgsGeometry
 #ifndef SIP_RUN
 
     /**
-     * Returns a list of \a count random points generated inside a (multi)polygon geometry.
+     * Returns a list of \a count random points generated inside a (multi)polygon geometry
+     * (if \a acceptPoint is specified, and restrictive, the number of points returned may
+     * be less than \a count).
      *
      * Optionally, a specific random \a seed can be used when generating points. If \a seed
      * is 0, then a completely random sequence of points will be generated.
      *
      * If the source geometry is not a (multi)polygon, an empty list will be returned.
      *
-     * The \a acceptPoint function is used to filter result candidates. If the function returns
-     * FALSE, then the point will not be accepted and another candidate generated.
-     *
      * The optional \a feedback argument can be used to provide cancellation support during
      * the point generation.
      *
+     * The \a acceptPoint function is used to filter result candidates. If the function returns
+     * FALSE, then the point will not be accepted and another candidate generated.
+     *
+     * When \a acceptPoint is specified, \a maxTriesPerPoint defines how many attempts to make
+     * before giving up generating a point.
+     *
      * \since QGIS 3.10
      */
-    QVector< QgsPointXY > randomPointsInPolygon( int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr ) const;
+    QVector< QgsPointXY > randomPointsInPolygon( int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr, int maxTriesPerPoint = 0 ) const;
 
     /**
      * Returns a list of \a count random points generated inside a (multi)polygon geometry.
@@ -1912,9 +1925,15 @@ class CORE_EXPORT QgsGeometry
     QPointF asQPointF() const;
 
     /**
-     * Returns contents of the geometry as a QPolygonF. If geometry is a linestring,
-     * then the result will be an open QPolygonF. If the geometry is a polygon,
-     * then the result will be a closed QPolygonF of the geometry's exterior ring.
+     * Returns contents of the geometry as a QPolygonF.
+     *
+     * If geometry is a linestring, then the result will be an open QPolygonF.
+     * If the geometry is a polygon, then the result will be a closed QPolygonF
+     * of the geometry's exterior ring.
+     *
+     * If the geometry is a multi-part geometry, then only the first part will
+     * be considered when converting to a QPolygonF.
+     *
      * \since QGIS 2.7
      */
     QPolygonF asQPolygonF() const;

@@ -238,6 +238,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   // Set time settings input
   QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
 
+  mStartDateTimeEdit->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ) ), mStartDateTimeEdit->maximumDateTime() );
+  mEndDateTimeEdit->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ) ), mEndDateTimeEdit->maximumDateTime() );
   mStartDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
   mEndDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 

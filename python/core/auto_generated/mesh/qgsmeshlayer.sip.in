@@ -28,9 +28,11 @@ yet support editing transactions.
 
 The main data providers supported by QGIS are listed below.
 
-\section mesh_providers Mesh data providers
+Mesh data providers
+-------------------
 
-\subsection mesh_memory Memory data providerType (mesh_memory)
+Memory data providerType (mesh_memory)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The memory data provider is used to construct in memory data, for example scratch
 data. There is no inherent persistent storage of the data. The data source uri is constructed.
@@ -52,7 +54,8 @@ E.g. to create mesh with one quad and one triangle
         );
         QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch layer", "mesh_memory");
 
-\subsection mdal MDAL data provider (mdal)
+MDAL data provider (mdal)
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Accesses data using the MDAL drivers (https://github.com/lutraconsulting/MDAL). The url
 is the MDAL connection string. QGIS must be built with MDAL support to allow this provider.
@@ -144,6 +147,8 @@ QgsMeshLayer cannot be copied.
 
     virtual QStringList subLayers() const;
 
+    virtual bool isTemporary() const;
+
 
     QString providerType() const;
 %Docstring
@@ -152,7 +157,7 @@ Returns the provider type for this layer
 
     bool addDatasets( const QString &path, const QDateTime &defaultReferenceTime = QDateTime() );
 %Docstring
-Add datasets to the mesh from file with ``path``. Use the the time ``defaultReferenceTime`` as reference time is not provided in the file
+Adds datasets to the mesh from file with ``path``. Use the the time ``defaultReferenceTime`` as reference time is not provided in the file
 
 :param path: the path to the atasets file
 :param defaultReferenceTime: reference time used if not provided in the file
@@ -160,6 +165,20 @@ Add datasets to the mesh from file with ``path``. Use the the time ``defaultRefe
 :return: whether the dataset is added
 
 .. versionadded:: 3.14
+%End
+
+
+    bool saveDataset( const QString &path, int datasetGroupIndex, QString driver );
+%Docstring
+Saves datasets group on file with the specified ``driver``
+
+:param path: the path of the file
+:param datasetGroupIndex: the index of the dataset group
+:param driver: the driver to used for saving
+
+:return: false if succeeds
+
+.. versionadded:: 3.16
 %End
 
 
@@ -211,6 +230,166 @@ Returns (date) time in hours formatted to human readable form
 .. versionadded:: 3.8
 %End
 
+    int datasetGroupCount() const;
+%Docstring
+Returns the dataset groups count handle by the layer
+
+.. versionadded:: 3.16
+%End
+
+    int extraDatasetGroupCount() const;
+%Docstring
+Returns the extra dataset groups count handle by the layer
+
+.. versionadded:: 3.16
+%End
+
+    QList<int> datasetGroupsIndexes() const;
+%Docstring
+Returns the list of indexes of dataset groups count handled by the layer
+
+.. note::
+
+   indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
+   In the layer scope, those indexes can be different from the data provider indexes.
+
+.. versionadded:: 3.16
+%End
+
+    QgsMeshDatasetGroupMetadata datasetGroupMetadata( const QgsMeshDatasetIndex &index ) const;
+%Docstring
+Returns the dataset groups metadata
+
+.. note::
+
+   indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
+   In the layer scope, those indexes can be different from the data provider indexes.
+
+.. versionadded:: 3.16
+%End
+
+    int datasetCount( const QgsMeshDatasetIndex &index ) const;
+%Docstring
+Returns the dataset count in the dataset groups
+
+:param index: index of the dataset in the group
+
+.. note::
+
+   indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
+   In the layer scope, those indexes can be different from the data provider indexes.
+
+
+.. versionadded:: 3.16
+%End
+
+    QgsMeshDatasetMetadata datasetMetadata( const QgsMeshDatasetIndex &index ) const;
+%Docstring
+Returns the dataset metadata
+
+:param index: index of the dataset
+
+.. note::
+
+   indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
+   In the layer scope, those indexes can be different from the data provider indexes.
+
+
+.. versionadded:: 3.16
+%End
+
+    QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, int valueIndex ) const;
+%Docstring
+Returns  vector/scalar value associated with the index from the dataset
+To read multiple continuous values, use :py:func:`~QgsMeshLayer.datasetValues`
+
+See :py:func:`QgsMeshDatasetMetadata.isVector()` or :py:func:`QgsMeshDataBlock.type()`
+to check if the returned value is vector or scalar
+
+Returns invalid value for DataOnVolumes
+
+:param index: index of the dataset
+:param valueIndex: index of the value
+
+.. note::
+
+   indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
+   In the layer scope, those indexes can be different from the data provider indexes.
+
+
+.. versionadded:: 3.16
+%End
+
+    QgsMeshDataBlock datasetValues( const QgsMeshDatasetIndex &index, int valueIndex, int count ) const;
+%Docstring
+Returns N vector/scalar values from the index from the dataset
+
+See :py:func:`QgsMeshDatasetMetadata.isVector()` or :py:func:`QgsMeshDataBlock.type()`
+to check if the returned value is vector or scalar
+
+Returns invalid block for DataOnVolumes. Use :py:func:`QgsMeshLayerUtils.datasetValues()` if you
+need block for any type of data type
+
+:param index: index of the dataset
+:param valueIndex: index of the value
+:param count: number of values to return
+
+.. note::
+
+   indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
+   In the layer scope, those indexes can be different from the data provider indexes.
+
+
+.. versionadded:: 3.16
+%End
+
+    QgsMesh3dDataBlock dataset3dValues( const QgsMeshDatasetIndex &index, int faceIndex, int count ) const;
+%Docstring
+Returns N vector/scalar values from the face index from the dataset for 3d stacked meshes
+
+See :py:func:`QgsMeshDatasetMetadata.isVector()` to check if the returned value is vector or scalar
+
+returns invalid block for DataOnFaces and DataOnVertices.
+
+:param index: index of the dataset
+:param valueIndex: index of the value
+:param count: number of values to return
+
+.. note::
+
+   indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
+   In the layer scope, those indexes can be different from the data provider indexes.
+
+
+.. versionadded:: 3.16
+%End
+
+    bool isFaceActive( const QgsMeshDatasetIndex &index, int faceIndex ) const;
+%Docstring
+Returns N vector/scalar values from the face index from the dataset for 3d stacked meshes
+
+See :py:func:`QgsMeshDatasetMetadata.isVector()` to check if the returned value is vector or scalar
+
+returns invalid block for DataOnFaces and DataOnVertices.
+%End
+
+    QgsMeshDataBlock areFacesActive( const QgsMeshDatasetIndex &index, int faceIndex, int count ) const;
+%Docstring
+Returns whether the faces are active for particular dataset
+
+:param index: index of the dataset
+:param valueIndex: index of the value
+:param count: number of values to return
+
+.. note::
+
+   indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
+   In the layer scope, those indexes are different from the data provider indexes.
+
+
+.. versionadded:: 3.16
+%End
+
     QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius = 0 ) const;
 %Docstring
 Interpolates the value on the given point from given dataset.
@@ -232,6 +411,12 @@ For 1D datasets, it uses :py:func:`~QgsMeshLayer.dataset1dValue` with ``searchRa
 :return: interpolated value at the point. Returns NaN values for values
          outside the mesh layer, nodata values and in case triangular mesh was not
          previously used for rendering
+
+
+.. note::
+
+   indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
+   In the layer scope, those indexes are different from the data provider indexes.
 
 
 .. versionadded:: 3.4
@@ -257,6 +442,12 @@ Returns the 3d values of stacked 3d mesh defined by the given point
          previously used for rendering or for datasets that do not have type DataOnVolumes
 
 
+.. note::
+
+   indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
+   In the layer scope, those indexes are different from the data provider indexes.
+
+
 .. versionadded:: 3.12
 %End
 
@@ -280,6 +471,12 @@ Returns the value of 1D mesh dataset defined on edge that are in the search area
          outside the mesh layer and in case triangular mesh was not previously used for rendering
 
 
+.. note::
+
+   indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
+   In the layer scope, those indexes are different from the data provider indexes.
+
+
 .. versionadded:: 3.14
 %End
 
@@ -296,6 +493,12 @@ If the temporal properties is not active, returns invalid dataset index
 .. note::
 
    the returned dataset index depends on the matching method, see :py:func:`~QgsMeshLayer.setTemporalMatchingMethod`
+
+
+.. note::
+
+   indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
+   In the layer scope, those indexes are different from the data provider indexes.
 
 
 .. versionadded:: 3.14
@@ -433,6 +636,13 @@ Reset the dataset group tree item to default from provider
 Returns the first valid time step of the dataset groups, invalid QgInterval if no time step is present
 
 .. versionadded:: 3.14
+%End
+
+    QgsInterval datasetRelativeTime( const QgsMeshDatasetIndex &index );
+%Docstring
+Returns the relative time (in milliseconds) of the dataset from the reference time of its group
+
+.. versionadded:: 3.16
 %End
 
   public slots:

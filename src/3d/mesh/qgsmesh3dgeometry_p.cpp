@@ -394,7 +394,7 @@ int QgsMeshDataset3dGeometry::extractDataset( QVector<double> &verticalMagnitude
 {
   QgsMeshLayer *layer = meshLayer();
 
-  if ( !layer || !layer->dataProvider() )
+  if ( !layer )
     return 0;
 
   QgsMeshDatasetIndex scalarDatasetIndex = layer->activeScalarDatasetAtTime( mTimeRange );
@@ -416,12 +416,12 @@ int QgsMeshDataset3dGeometry::extractDataset( QVector<double> &verticalMagnitude
   {
     //if invalid (for example, static mode) use the scalar dataset index
     int vertDataSetIndex = scalarDatasetIndex.dataset();
-    vertDataSetIndex = std::min( vertDataSetIndex, layer->dataProvider()->datasetCount( mVerticalGroupDatasetIndex ) - 1 );
+    vertDataSetIndex = std::min( vertDataSetIndex, layer->datasetCount( mVerticalGroupDatasetIndex ) - 1 );
     verticalMagDatasetIndex = QgsMeshDatasetIndex( vertDataSetIndex, mVerticalGroupDatasetIndex );
   }
   //define the active face for vertical magnitude, the inactive faces will not be rendered
   // The active face flag values are defined based on the vertival magnitude dataset
-  activeFaceFlagValues = layer->dataProvider()->areFacesActive( verticalMagDatasetIndex, 0, nativeMesh.faces.count() );
+  activeFaceFlagValues = layer->areFacesActive( verticalMagDatasetIndex, 0, nativeMesh.faces.count() );
   verticalMagnitude = QgsMeshLayerUtils::calculateMagnitudeOnVertices(
                         layer,
                         verticalMagDatasetIndex,
@@ -441,7 +441,7 @@ int QgsMeshDataset3dGeometry::extractDataset( QVector<double> &verticalMagnitude
 
   //extract the scalar dataset used to render color shading
   QgsMeshDataBlock scalarActiveFaceFlagValues =
-    layer->dataProvider()->areFacesActive( scalarDatasetIndex, 0, nativeMesh.faces.count() );
+    layer->areFacesActive( scalarDatasetIndex, 0, nativeMesh.faces.count() );
   scalarMagnitude = QgsMeshLayerUtils::calculateMagnitudeOnVertices(
                       layer,
                       scalarDatasetIndex,

@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>338</width>
-    <height>138</height>
+    <width>394</width>
+    <height>248</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
-  <layout class="QFormLayout" name="formLayout">
+  <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QLabel" name="lblDiffuse">
      <property name="text">
@@ -97,6 +97,65 @@
      </property>
     </widget>
    </item>
+   <item row="4" column="0">
+    <widget class="QCheckBox" name="useDiffuseCheckBox">
+     <property name="text">
+      <string>Use diffuse texture</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QgsImageSourceLineEdit" name="textureFile" native="true"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="lblTextureScale">
+     <property name="text">
+      <string>Texture scale</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QgsDoubleSpinBox" name="textureScaleSpinBox">
+     <property name="minimum">
+      <double>0.010000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>100.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>1.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="lblTextureRotation">
+     <property name="text">
+      <string>Texture rotation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QgsDoubleSpinBox" name="textureRotationSpinBox">
+     <property name="suffix">
+      <string> °</string>
+     </property>
+     <property name="minimum">
+      <double>-360.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>360.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.500000000000000</double>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -109,6 +168,12 @@
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsImageSourceLineEdit</class>
+   <extends>QWidget</extends>
+   <header>qgsfilecontentsourcelineedit.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

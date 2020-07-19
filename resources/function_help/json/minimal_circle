@@ -1,6 +1,7 @@
 {
   "name": "minimal_circle",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns the minimal enclosing circle of a geometry. It represents the minimum circle that encloses all geometries within the set.",
   "arguments": [
     {"arg":"geometry","description":"a geometry"},

@@ -139,7 +139,7 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
     if ( !hasFaces )
       mOpacityContainerWidget->setVisible( false );
 
-    const QgsMeshDatasetGroupMetadata metadata = mMeshLayer->dataProvider()->datasetGroupMetadata( mActiveDatasetGroup );
+    const QgsMeshDatasetGroupMetadata metadata = mMeshLayer->datasetGroupMetadata( mActiveDatasetGroup );
     double min = metadata.minimum();
     double max = metadata.maximum();
     mScalarEdgeStrokeWidthVariablePushButton->setDefaultMinMaxValue( min, max );
@@ -174,7 +174,7 @@ void QgsMeshRendererScalarSettingsWidget::minMaxEdited()
 
 void QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked()
 {
-  const QgsMeshDatasetGroupMetadata metadata = mMeshLayer->dataProvider()->datasetGroupMetadata( mActiveDatasetGroup );
+  const QgsMeshDatasetGroupMetadata metadata = mMeshLayer->datasetGroupMetadata( mActiveDatasetGroup );
   double min = metadata.minimum();
   double max = metadata.maximum();
   whileBlocking( mScalarMinLineEdit )->setText( QString::number( min ) );
@@ -198,26 +198,26 @@ QgsMeshRendererScalarSettings::DataResamplingMethod QgsMeshRendererScalarSetting
 
 bool QgsMeshRendererScalarSettingsWidget::dataIsDefinedOnFaces() const
 {
-  if ( !mMeshLayer || !mMeshLayer->dataProvider() || !mMeshLayer->dataProvider()->isValid() )
+  if ( !mMeshLayer )
     return false;
 
   if ( mActiveDatasetGroup < 0 )
     return false;
 
-  QgsMeshDatasetGroupMetadata meta = mMeshLayer->dataProvider()->datasetGroupMetadata( mActiveDatasetGroup );
+  QgsMeshDatasetGroupMetadata meta = mMeshLayer->datasetGroupMetadata( mActiveDatasetGroup );
   const bool onFaces = ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces );
   return onFaces;
 }
 
 bool QgsMeshRendererScalarSettingsWidget::dataIsDefinedOnEdges() const
 {
-  if ( !mMeshLayer || !mMeshLayer->dataProvider() || !mMeshLayer->dataProvider()->isValid() )
+  if ( !mMeshLayer )
     return false;
 
   if ( mActiveDatasetGroup < 0 )
     return false;
 
-  QgsMeshDatasetGroupMetadata meta = mMeshLayer->dataProvider()->datasetGroupMetadata( mActiveDatasetGroup );
+  QgsMeshDatasetGroupMetadata meta = mMeshLayer->datasetGroupMetadata( mActiveDatasetGroup );
   const bool onEdges = ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnEdges );
   return onEdges;
 }

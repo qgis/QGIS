@@ -25,7 +25,7 @@ import qgis  # NOQA
 
 from utilities import unitTestDataPath
 
-from qgis.PyQt.QtCore import QDir
+from qgis.PyQt.QtCore import QDir, Qt
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -38,7 +38,10 @@ from qgis.core import (QgsGeometry,
                        QgsReadWriteContext,
                        QgsSymbolLayerUtils,
                        QgsSimpleLineSymbolLayer,
-                       QgsLineSymbolLayer
+                       QgsLineSymbolLayer,
+                       QgsLineSymbol,
+                       QgsUnitTypes,
+                       QgsMapUnitScale
                        )
 
 from qgis.testing import unittest, start_app
@@ -56,6 +59,67 @@ class TestQgsSimpleLineSymbolLayer(unittest.TestCase):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
+
+    def testDashPatternOffset(self):
+
+        s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '0.6'})
+
+        s.symbolLayer(0).setDashPatternOffset(1.2)
+        s.symbolLayer(0).setDashPatternOffsetUnit(QgsUnitTypes.RenderPoints)
+        s.symbolLayer(0).setDashPatternOffsetMapUnitScale(QgsMapUnitScale(5, 10))
+
+        s2 = s.clone()
+        self.assertEqual(s2.symbolLayer(0).dashPatternOffset(), 1.2)
+        self.assertEqual(s2.symbolLayer(0).dashPatternOffsetUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(s2.symbolLayer(0).dashPatternOffsetMapUnitScale().minScale, 5)
+        self.assertEqual(s2.symbolLayer(0).dashPatternOffsetMapUnitScale().maxScale, 10)
+
+        doc = QDomDocument()
+        context = QgsReadWriteContext()
+        element = QgsSymbolLayerUtils.saveSymbol('test', s, doc, context)
+
+        s2 = QgsSymbolLayerUtils.loadSymbol(element, context)
+        self.assertEqual(s2.symbolLayer(0).dashPatternOffset(), 1.2)
+        self.assertEqual(s2.symbolLayer(0).dashPatternOffsetUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(s2.symbolLayer(0).dashPatternOffsetMapUnitScale().minScale, 5)
+        self.assertEqual(s2.symbolLayer(0).dashPatternOffsetMapUnitScale().maxScale, 10)
+
+    def testDashPatternOffsetRender(self):
+        # rendering test
+        s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
+
+        s.symbolLayer(0).setPenStyle(Qt.DashDotDotLine)
+        s.symbolLayer(0).setDashPatternOffset(10)
+        s.symbolLayer(0).setDashPatternOffsetUnit(QgsUnitTypes.RenderPoints)
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('simpleline_dashpattern_offset', 'simpleline_dashpattern_offset', rendered_image)
+
+    def testDashPatternOffsetRenderNegative(self):
+        # rendering test
+        s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
+
+        s.symbolLayer(0).setPenStyle(Qt.DashDotDotLine)
+        s.symbolLayer(0).setDashPatternOffset(-10)
+        s.symbolLayer(0).setDashPatternOffsetUnit(QgsUnitTypes.RenderPoints)
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('simpleline_dashpattern_offset_negative', 'simpleline_dashpattern_offset_negative', rendered_image)
+
+    def testDashPatternOffsetRenderCustomPattern(self):
+        # rendering test
+        s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
+
+        s.symbolLayer(0).setUseCustomDashPattern(True)
+        s.symbolLayer(0).setPenCapStyle(Qt.FlatCap)
+        s.symbolLayer(0).setCustomDashVector([3, 4, 5, 6])
+        s.symbolLayer(0).setDashPatternOffset(10)
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('simpleline_dashpattern_offset_custom', 'simpleline_dashpattern_offset_custom', rendered_image)
 
     def testRingFilter(self):
         # test filtering rings during rendering

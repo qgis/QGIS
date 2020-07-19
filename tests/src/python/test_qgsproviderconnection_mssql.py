@@ -101,6 +101,14 @@ class TestPyQgsProviderConnectionMssql(unittest.TestCase, TestPyQgsProviderConne
         vl = QgsVectorLayer(conn.tableUri('qgis_test', 'someData'), 'my', 'mssql')
         self.assertTrue(vl.isValid())
 
+    def test_gpkg_fields(self):
+        """Test fields"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('mssql')
+        conn = md.createConnection(self.uri, {})
+        fields = conn.fields('qgis_test', 'someData')
+        self.assertEqual(fields.names(), ['pk', 'cnt', 'name', 'name2', 'num_char'])
+
 
 if __name__ == '__main__':
     unittest.main()

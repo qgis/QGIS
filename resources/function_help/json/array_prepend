@@ -1,6 +1,7 @@
 {
   "name": "array_prepend",
   "type": "function",
+  "groups": ["Arrays"],
   "description": "Returns an array with the given value added at the beginning.",
   "arguments": [ {"arg":"array","description":"an array"},
                  {"arg":"value","description":"the value to add"}],

@@ -52,6 +52,7 @@
 #include "qgscurvepolygon.h"
 #include "qgsproject.h"
 #include "qgslinesegment.h"
+#include "qgsgeos.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -85,6 +86,7 @@ class TestQgsGeometry : public QObject
     void vertexIterator();
     void partIterator();
 
+    void geos();
 
     // geometry types
     void point(); //test QgsPointV2
@@ -520,6 +522,25 @@ void TestQgsGeometry::partIterator()
   QCOMPARE( geom.asWkt(), QStringLiteral( "Point (1 2)" ) );
 
   // See test_qgsgeometry.py for geometry-type specific checks!
+}
+
+void TestQgsGeometry::geos()
+{
+  // test GEOS conversion utils
+
+  // empty parts should NOT be added to a GEOS collection -- it can cause crashes in GEOS
+  QgsMultiPolygon polyWithEmptyParts;
+  geos::unique_ptr asGeos( QgsGeos::asGeos( &polyWithEmptyParts ) );
+  QgsGeometry res( QgsGeos::fromGeos( asGeos.get() ) );
+  QCOMPARE( res.asWkt(), QStringLiteral( "MultiPolygon EMPTY" ) );
+  polyWithEmptyParts.addGeometry( new QgsPolygon( new QgsLineString() ) );
+  polyWithEmptyParts.addGeometry( new QgsPolygon( new QgsLineString( QVector< QgsPoint >() << QgsPoint( 0, 0 ) << QgsPoint( 0, 1 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) ) ) );
+  polyWithEmptyParts.addGeometry( new QgsPolygon( new QgsLineString() ) );
+  polyWithEmptyParts.addGeometry( new QgsPolygon( new QgsLineString( QVector< QgsPoint >() << QgsPoint( 10, 0 ) << QgsPoint( 10, 1 ) << QgsPoint( 11, 1 ) << QgsPoint( 10, 0 ) ) ) );
+  asGeos = QgsGeos::asGeos( &polyWithEmptyParts );
+  QCOMPARE( GEOSGetNumGeometries_r( QgsGeos::getGEOSHandler(), asGeos.get() ), 2 );
+  res = QgsGeometry( QgsGeos::fromGeos( asGeos.get() ) );
+  QCOMPARE( res.asWkt(), QStringLiteral( "MultiPolygon (((0 0, 0 1, 1 1, 0 0)),((10 0, 10 1, 11 1, 10 0)))" ) );
 }
 
 void TestQgsGeometry::point()
@@ -16590,6 +16611,34 @@ void TestQgsGeometry::asQPolygonF()
   QgsGeometry badGeom( QgsGeometry::fromPointXY( mPoint1 ) );
   QPolygonF fromBad = badGeom.asQPolygonF();
   QVERIFY( fromBad.isEmpty() );
+
+  // test a multipolygon
+  QPolygonF res = QgsGeometry::fromWkt( QStringLiteral( "MultiPolygon (((0 0, 10 0, 10 10, 0 10, 0 0 )),((2 2, 4 2, 4 4, 2 4, 2 2)))" ) ).asQPolygonF();
+  QVERIFY( res.isClosed() );
+  QCOMPARE( res.size(), 5 );
+  QCOMPARE( res.at( 0 ).x(), 0.0 );
+  QCOMPARE( res.at( 0 ).y(), 0.0 );
+  QCOMPARE( res.at( 1 ).x(), 10.0 );
+  QCOMPARE( res.at( 1 ).y(), 0.0 );
+  QCOMPARE( res.at( 2 ).x(), 10.0 );
+  QCOMPARE( res.at( 2 ).y(), 10.0 );
+  QCOMPARE( res.at( 3 ).x(), 0.0 );
+  QCOMPARE( res.at( 3 ).y(), 10.0 );
+  QCOMPARE( res.at( 4 ).x(), 0.0 );
+  QCOMPARE( res.at( 4 ).y(), 0.0 );
+
+  // test a multilinestring
+  res = QgsGeometry::fromWkt( QStringLiteral( "MultiLineString((0 0, 10 0, 10 10, 0 10 ),(2 2, 4 2, 4 4, 2 4))" ) ).asQPolygonF();
+  QVERIFY( !res.isClosed() );
+  QCOMPARE( res.size(), 4 );
+  QCOMPARE( res.at( 0 ).x(), 0.0 );
+  QCOMPARE( res.at( 0 ).y(), 0.0 );
+  QCOMPARE( res.at( 1 ).x(), 10.0 );
+  QCOMPARE( res.at( 1 ).y(), 0.0 );
+  QCOMPARE( res.at( 2 ).x(), 10.0 );
+  QCOMPARE( res.at( 2 ).y(), 10.0 );
+  QCOMPARE( res.at( 3 ).x(), 0.0 );
+  QCOMPARE( res.at( 3 ).y(), 10.0 );
 }
 
 void TestQgsGeometry::comparePolylines()
@@ -17070,6 +17119,12 @@ void TestQgsGeometry::smoothCheck()
                                <<  QgsPointXY( 4.0, 3.8 ) << QgsPointXY( 3.8, 4.0 ) << QgsPointXY( 2.2, 4.0 ) << QgsPointXY( 2.0, 3.8 )
                                << QgsPointXY( 2, 2.2 ) << QgsPointXY( 2.2, 2 ) ) );
   QVERIFY( QgsGeometry::compare( multipoly, expectedMultiPoly ) );
+
+  // curved geometry
+  wkt = QStringLiteral( "CurvePolygon (CompoundCurve (CircularString (-70.75639028391421448 42.11076979194393743, -70.75300889449444242 42.10738840252416537, -70.75639028391421448 42.10400701310439331, -70.75977167333398654 42.10738840252416537, -70.75639028391421448 42.11076979194393743)))	1" );
+  geom = QgsGeometry::fromWkt( wkt );
+  result = geom.smooth( 3 );
+  QCOMPARE( result.wkbType(), QgsWkbTypes::Polygon );
 }
 
 void TestQgsGeometry::unaryUnion()
@@ -17668,6 +17723,93 @@ void TestQgsGeometry::splitGeometry()
   QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( 2749544.19, 1262914.79, 0 ) << QgsPoint( 2749557.64, 1262897.30, 0 ), newGeoms, false, testPoints ), QgsGeometry::Success );
   QVERIFY( newGeoms.count() == 1 );
   QCOMPARE( newGeoms[0].asWkt( 2 ), QStringLiteral( "LineStringZ (2749549.12 1262908.38 125.14, 2749557.82 1262920.06 200)" ) );
+
+  // Test split geometry with topological editing
+  QVector<QgsPointXY> testPointsXY;
+  testPoints.clear();
+  newGeoms.clear();
+  g1 = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0))" ) );
+  QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 0.0, 42.0 ) << QgsPoint( 101.0, 42.0 ), newGeoms, true, testPoints ), QgsGeometry::Success );
+  QCOMPARE( newGeoms.count(), 1 );
+  QCOMPARE( testPoints.count(), 2 );
+  QgsGeometry::convertPointList( testPoints, testPointsXY );
+  QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
+  QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 1 ) ) ) );
+
+  testPointsXY.clear();
+  testPoints.clear();
+  newGeoms.clear();
+  g1 = QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0)" ) );
+  QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 0.0, 42.0 ) << QgsPoint( 101.0, 42.0 ), newGeoms, true, testPoints ), QgsGeometry::Success );
+  QCOMPARE( newGeoms.count(), 2 );
+  QCOMPARE( testPoints.count(), 2 );
+  QgsGeometry::convertPointList( testPoints, testPointsXY );
+  QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
+  QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 1 ) ) ) );
+
+  // Test split parts with topological editing
+  testPointsXY.clear();
+  testPoints.clear();
+  newGeoms.clear();
+  g1 = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0))" ) );
+  QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 0.0, 42.0 ) << QgsPoint( 101.0, 42.0 ), newGeoms, true, testPoints, false ), QgsGeometry::Success );
+  QCOMPARE( newGeoms.count(), 2 );
+  QCOMPARE( testPoints.count(), 2 );
+  QgsGeometry::convertPointList( testPoints, testPointsXY );
+  QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
+  QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 1 ) ) ) );
+
+  testPointsXY.clear();
+  testPoints.clear();
+  newGeoms.clear();
+  g1 = QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0)" ) );
+  QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 0.0, 42.0 ) << QgsPoint( 101.0, 42.0 ), newGeoms, true, testPoints, false ), QgsGeometry::Success );
+  QCOMPARE( newGeoms.count(), 3 );
+  QCOMPARE( testPoints.count(), 2 );
+  QgsGeometry::convertPointList( testPoints, testPointsXY );
+  QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
+  QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 1 ) ) ) );
+
+  // Repeat previous tests with QVector<QgsPointXY> instead of QgsPointSequence
+  // Those tests are for the deprecated QgsGeometry::splitGeometry() variant and should be removed in QGIS 4.0
+  Q_NOWARN_DEPRECATED_PUSH
+  testPointsXY.clear();
+  newGeoms.clear();
+  g1 = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0))" ) );
+  QCOMPARE( g1.splitGeometry( QgsPolylineXY() << QgsPointXY( 0.0, 42.0 ) << QgsPointXY( 101.0, 42.0 ), newGeoms, true, testPointsXY ), QgsGeometry::Success );
+  QCOMPARE( newGeoms.count(), 1 );
+  QCOMPARE( testPointsXY.count(), 2 );
+  QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
+  QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 1 ) ) ) );
+
+  testPointsXY.clear();
+  newGeoms.clear();
+  g1 = QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0)" ) );
+  QCOMPARE( g1.splitGeometry( QgsPolylineXY() << QgsPointXY( 0.0, 42.0 ) << QgsPointXY( 101.0, 42.0 ), newGeoms, true, testPointsXY ), QgsGeometry::Success );
+  QCOMPARE( newGeoms.count(), 2 );
+  QCOMPARE( testPointsXY.count(), 2 );
+  QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
+  QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 1 ) ) ) );
+
+  // Test split parts with topological editing
+  testPointsXY.clear();
+  newGeoms.clear();
+  g1 = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0))" ) );
+  QCOMPARE( g1.splitGeometry( QgsPolylineXY() << QgsPointXY( 0.0, 42.0 ) << QgsPointXY( 101.0, 42.0 ), newGeoms, true, testPointsXY, false ), QgsGeometry::Success );
+  QCOMPARE( newGeoms.count(), 2 );
+  QCOMPARE( testPointsXY.count(), 2 );
+  QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
+  QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 1 ) ) ) );
+
+  testPointsXY.clear();
+  newGeoms.clear();
+  g1 = QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0)" ) );
+  QCOMPARE( g1.splitGeometry( QgsPolylineXY() << QgsPointXY( 0.0, 42.0 ) << QgsPointXY( 101.0, 42.0 ), newGeoms, true, testPointsXY, false ), QgsGeometry::Success );
+  QCOMPARE( newGeoms.count(), 3 );
+  QCOMPARE( testPointsXY.count(), 2 );
+  QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
+  QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 1 ) ) ) );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void TestQgsGeometry::snappedToGrid()

@@ -12,7 +12,6 @@
 
 
 
-
 class QgsRenderContext : QgsTemporalRangeObject
 {
 %Docstring
@@ -27,6 +26,7 @@ to be rendered etc.
 %End
   public:
     QgsRenderContext();
+    ~QgsRenderContext();
 
     QgsRenderContext( const QgsRenderContext &rh );
 
@@ -44,6 +44,8 @@ to be rendered etc.
       RenderPreviewJob,
       RenderBlocking,
       RenderSymbolPreview,
+      LosslessImageRendering,
+      ApplyScalingWorkaroundForTextRendering,
     };
     typedef QFlags<QgsRenderContext::Flag> Flags;
 
@@ -110,6 +112,17 @@ Returns the destination QPainter for the render operation.
 .. seealso:: :py:func:`setPainter`
 %End
 
+
+    void setPainterFlagsUsingContext( QPainter *painter = 0 ) const;
+%Docstring
+Sets relevant flags on a destination ``painter``, using the flags and settings
+currently defined for the render context.
+
+If no ``painter`` is specified, then the flags will be applied to the render
+context's :py:func:`~QgsRenderContext.painter`.
+
+.. versionadded:: 3.16
+%End
 
     QPainter *maskPainter( int id = 0 );
 %Docstring
@@ -787,6 +800,68 @@ Clears the specified custom rendering flag.
 .. seealso:: :py:func:`setCustomRenderingFlag`
 
 .. versionadded:: 3.12
+%End
+
+    QList< QgsMapClippingRegion > clippingRegions() const;
+%Docstring
+Returns the list of clipping regions to apply during the render.
+
+These regions are always in the final destination CRS for the map.
+
+.. versionadded:: 3.16
+%End
+
+    QgsGeometry featureClipGeometry() const;
+%Docstring
+Returns the geometry to use to clip features at render time.
+
+When vector features are rendered, they should be clipped to this geometry.
+
+.. warning::
+
+   The clipping must take effect for rendering the feature's symbol only,
+   and should never be applied directly to the feature being rendered. Doing so would
+   impact the results of rendering rules which rely on feature geometry, such as
+   a rule-based renderer using the feature's area.
+
+.. seealso:: :py:func:`setFeatureClipGeometry`
+
+
+.. versionadded:: 3.16
+%End
+
+    void setFeatureClipGeometry( const QgsGeometry &geometry );
+%Docstring
+Sets a ``geometry`` to use to clip features at render time.
+
+.. note::
+
+   This is not usually set directly, but rather specified by calling QgsMapSettings::py:func:`~QgsRenderContext.addClippingRegion`
+   prior to constructing a QgsRenderContext.
+
+.. seealso:: :py:func:`featureClipGeometry`
+
+.. versionadded:: 3.16
+%End
+
+    QPointF textureOrigin() const;
+%Docstring
+Returns the texture origin, which should be used as a brush transform when
+rendering using QBrush objects.
+
+.. seealso:: :py:func:`setTextureOrigin`
+
+.. versionadded:: 3.16
+%End
+
+    void setTextureOrigin( const QPointF &origin );
+%Docstring
+Sets the texture ``origin``, which should be used as a brush transform when
+rendering using QBrush objects.
+
+.. seealso:: :py:func:`textureOrigin`
+
+.. versionadded:: 3.16
 %End
 
 };

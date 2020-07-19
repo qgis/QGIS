@@ -1297,7 +1297,7 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, const
 
   //draw shapeburst image in correct place in the destination painter
 
-  p->save();
+  QgsScopedQPainterState painterState( p );
   QPointF offset;
   if ( !mOffset.isNull() )
   {
@@ -1312,8 +1312,6 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, const
   {
     p->translate( -offset );
   }
-  p->restore();
-
 }
 
 //fast distance transform code, adapted from http://cs.brown.edu/~pff/dt/
@@ -1599,7 +1597,14 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVec
   p->setPen( QPen( Qt::NoPen ) );
 
   QTransform bkTransform = mBrush.transform();
-  if ( context.renderContext().testFlag( QgsRenderContext::RenderMapTile ) )
+  if ( applyBrushTransformFromContext() && !context.renderContext().textureOrigin().isNull() )
+  {
+    QPointF leftCorner = context.renderContext().textureOrigin();
+    QTransform t = mBrush.transform();
+    t.translate( leftCorner.x(), leftCorner.y() );
+    mBrush.setTransform( t );
+  }
+  else if ( context.renderContext().testFlag( QgsRenderContext::RenderMapTile ) )
   {
     //transform brush to upper left corner of geometry bbox
     QPointF leftCorner = points.boundingRect().topLeft();
@@ -1744,6 +1749,11 @@ bool QgsImageFillSymbolLayer::hasDataDefinedProperties() const
   if ( mStroke && mStroke->hasDataDefinedProperties() )
     return true;
   return false;
+}
+
+bool QgsImageFillSymbolLayer::applyBrushTransformFromContext() const
+{
+  return true;
 }
 
 
@@ -3218,11 +3228,12 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext 
     pointRenderContext.setRendererScale( context.renderContext().rendererScale() );
     pointRenderContext.setPainter( &p );
     pointRenderContext.setScaleFactor( context.renderContext().scaleFactor() );
+
     if ( context.renderContext().flags() & QgsRenderContext::Antialiasing )
-    {
       pointRenderContext.setFlag( QgsRenderContext::Antialiasing, true );
-      p.setRenderHint( QPainter::Antialiasing, true );
-    }
+    pointRenderContext.setFlag( QgsRenderContext::LosslessImageRendering, context.renderContext().flags() & QgsRenderContext::LosslessImageRendering );
+
+    context.renderContext().setPainterFlagsUsingContext( &p );
     QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() );
     pointRenderContext.setMapToPixel( mtp );
     pointRenderContext.setForceVectorOutput( false );
@@ -4163,6 +4174,11 @@ void QgsRasterFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext 
     file = context.renderContext().pathResolver().readPath( mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), file ) );
   }
   applyPattern( mBrush, file, width, opacity, context );
+}
+
+bool QgsRasterFillSymbolLayer::applyBrushTransformFromContext() const
+{
+  return false;
 }
 
 void QgsRasterFillSymbolLayer::applyPattern( QBrush &brush, const QString &imageFilePath, const double width, const double alpha, const QgsSymbolRenderContext &context )

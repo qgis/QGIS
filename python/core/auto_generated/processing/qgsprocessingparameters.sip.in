@@ -95,9 +95,9 @@ You can use QgsXmlUtils.readVariant to load it from an XML document.
 .. versionadded:: 3.14
 %End
 
-    bool operator==( const QgsProcessingFeatureSourceDefinition &other );
+    bool operator==( const QgsProcessingFeatureSourceDefinition &other ) const;
 
-    bool operator!=( const QgsProcessingFeatureSourceDefinition &other );
+    bool operator!=( const QgsProcessingFeatureSourceDefinition &other ) const;
 
     operator QVariant() const;
 

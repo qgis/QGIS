@@ -120,7 +120,6 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid buster bionic eoan focal"))
 		-DWITH_3D=TRUE \
 		-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid buster eoan focal"))
 $(shell test -f /usr/include/$(DEB_BUILD_MULTIARCH)/qt5/Qt3DExtras/qt3dextrasversion.h)
 ifneq (0,$(.SHELLSTATUS))
 # Qt3DExtras intentionally removed from debian (#895386) and in turn ubuntu
@@ -128,7 +127,6 @@ ifneq (0,$(.SHELLSTATUS))
 		-DCMAKE_PREFIX_PATH=$(realpath external/qt3dextra-headers/cmake) \
 		-DQT5_3DEXTRA_INCLUDE_DIR=$(realpath external/qt3dextra-headers) \
 		-DQT5_3DEXTRA_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libQt53DExtras.so
-endif
 endif
 
 endif

@@ -18,11 +18,13 @@
 #include "qgis_gui.h"
 #include "ui_qgstableeditorformattingwidgetbase.h"
 #include "qgspanelwidget.h"
+#include "qgsexpressioncontextgenerator.h"
 #include <memory>
 
 #define SIP_NO_FILE
 
 class QgsNumericFormat;
+class QgsProperty;
 
 /**
  * \ingroup gui
@@ -36,7 +38,7 @@ class QgsNumericFormat;
  *
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, private Ui::QgsTableEditorFormattingWidgetBase
+class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, public QgsExpressionContextGenerator, private Ui::QgsTableEditorFormattingWidgetBase
 {
     Q_OBJECT
   public:
@@ -56,6 +58,14 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, private
      * \see setNumericFormat()
      */
     QgsNumericFormat *numericFormat() SIP_TRANSFERBACK;
+
+    /**
+     * Returns the current text format shown in the widget.
+     *
+     * \see setTextFormat()
+     * \since QGIS 3.16
+     */
+    QgsTextFormat textFormat() const;
 
     /**
      * Sets the cell foreground \a color to show in the widget.
@@ -83,6 +93,14 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, private
     void setNumericFormat( QgsNumericFormat *format, bool isMixedFormat );
 
     /**
+     * Sets the text \a format to show in the widget.
+     *
+     * \see textFormat()
+     * \since QGIS 3.16
+     */
+    void setTextFormat( const QgsTextFormat &format );
+
+    /**
      * Sets the row \a height to show in the widget, or 0 for automatic height.
      *
      * \see rowHeightChanged()
@@ -97,6 +115,42 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, private
      * \see setRowHeight()
      */
     void setColumnWidth( double width );
+
+    /**
+     * Sets the horizontal \a alignment to show in the widget.
+     *
+     * \see horizontalAlignmentChanged()
+     * \see setVerticalAlignment()
+     *
+     * \since QGIS 3.16
+     */
+    void setHorizontalAlignment( Qt::Alignment alignment );
+
+    /**
+     * Sets the vertical \a alignment to show in the widget.
+     *
+     * \see verticalAlignmentChanged()
+     * \see setHorizontalAlignment()
+     *
+     * \since QGIS 3.16
+     */
+    void setVerticalAlignment( Qt::Alignment alignment );
+
+    /**
+     * Sets the cell content's \a property to show in the widget.
+     *
+     * \since QGIS 3.16
+     */
+    void setCellProperty( const QgsProperty &property );
+
+    /**
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for the widget when required.
+     * \since QGIS 3.16
+     */
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+
+    QgsExpressionContext createExpressionContext() const override;
 
   signals:
 
@@ -120,6 +174,13 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, private
     void numberFormatChanged();
 
     /**
+     * Emitted whenever the text format shown in the widget is changed.
+     *
+     * \since QGIS 3.16
+     */
+    void textFormatChanged();
+
+    /**
      * Emitted whenever the row \a height shown in the widget is changed.
      */
     void rowHeightChanged( double height );
@@ -129,10 +190,32 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, private
      */
     void columnWidthChanged( double width );
 
+    /**
+     * Emitted when the horizontal \a alignment shown in the widget is changed.
+     *
+     * \since QGIS 3.16
+     */
+    void horizontalAlignmentChanged( Qt::Alignment alignment );
+
+    /**
+     * Emitted when the vertical \a alignment shown in the widget is changed.
+     *
+     * \since QGIS 3.16
+     */
+    void verticalAlignmentChanged( Qt::Alignment alignment );
+
+    /**
+     * Emitted when the cell contents \a property shown in the widget is changed.
+     *
+     * \since QGIS 3.16
+     */
+    void cellPropertyChanged( const QgsProperty &property );
+
   private:
 
     std::unique_ptr< QgsNumericFormat > mNumericFormat;
     int mBlockSignals = 0;
+    QgsExpressionContextGenerator *mContextGenerator = nullptr;
 
 };
 

@@ -43,8 +43,8 @@ class QgsLabelingEngine;
 class QgsMapSettings;
 class QgsRenderedFeatureHandlerInterface;
 class QgsSymbolLayer;
-
 class QgsMaskIdProvider;
+class QgsMapClippingRegion;
 
 
 /**
@@ -58,6 +58,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 {
   public:
     QgsRenderContext();
+    ~QgsRenderContext() override;
 
     QgsRenderContext( const QgsRenderContext &rh );
     QgsRenderContext &operator=( const QgsRenderContext &rh );
@@ -80,6 +81,8 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
       RenderPreviewJob         = 0x200, //!< Render is a 'canvas preview' render, and shortcuts should be taken to ensure fast rendering
       RenderBlocking           = 0x400, //!< Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server.
       RenderSymbolPreview      = 0x800, //!< The render is for a symbol preview only and map based properties may not be available, so care should be taken to handle map unit based sizes in an appropriate way.
+      LosslessImageRendering   = 0x1000, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
+      ApplyScalingWorkaroundForTextRendering = 0x2000, //!< Whether a scaling workaround designed to stablise the rendering of small font sizes (or for painters scaled out by a large amount) when rendering text. Generally this is recommended, but it may incur some performance cost.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -182,6 +185,17 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     */
     const QPainter *painter() const { return mPainter; }
 #endif
+
+    /**
+     * Sets relevant flags on a destination \a painter, using the flags and settings
+     * currently defined for the render context.
+     *
+     * If no \a painter is specified, then the flags will be applied to the render
+     * context's painter().
+     *
+     * \since QGIS 3.16
+     */
+    void setPainterFlagsUsingContext( QPainter *painter = nullptr ) const;
 
     /**
      * Returns a mask QPainter for the render operation.
@@ -786,6 +800,60 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     void clearCustomRenderingFlag( const QString &flag ) { mCustomRenderingFlags.remove( flag ); }
 
+    /**
+     * Returns the list of clipping regions to apply during the render.
+     *
+     * These regions are always in the final destination CRS for the map.
+     *
+     * \since QGIS 3.16
+     */
+    QList< QgsMapClippingRegion > clippingRegions() const;
+
+    /**
+     * Returns the geometry to use to clip features at render time.
+     *
+     * When vector features are rendered, they should be clipped to this geometry.
+     *
+     * \warning The clipping must take effect for rendering the feature's symbol only,
+     * and should never be applied directly to the feature being rendered. Doing so would
+     * impact the results of rendering rules which rely on feature geometry, such as
+     * a rule-based renderer using the feature's area.
+     *
+     * \see setFeatureClipGeometry()
+     *
+     * \since QGIS 3.16
+     */
+    QgsGeometry featureClipGeometry() const;
+
+    /**
+     * Sets a \a geometry to use to clip features at render time.
+     *
+     * \note This is not usually set directly, but rather specified by calling QgsMapSettings:addClippingRegion()
+     * prior to constructing a QgsRenderContext.
+     *
+     * \see featureClipGeometry()
+     * \since QGIS 3.16
+     */
+    void setFeatureClipGeometry( const QgsGeometry &geometry );
+
+    /**
+     * Returns the texture origin, which should be used as a brush transform when
+     * rendering using QBrush objects.
+     *
+     * \see setTextureOrigin()
+     * \since QGIS 3.16
+     */
+    QPointF textureOrigin() const;
+
+    /**
+     * Sets the texture \a origin, which should be used as a brush transform when
+     * rendering using QBrush objects.
+     *
+     * \see textureOrigin()
+     * \since QGIS 3.16
+     */
+    void setTextureOrigin( const QPointF &origin );
+
   private:
 
     Flags mFlags;
@@ -876,6 +944,11 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     QVariantMap mCustomRenderingFlags;
 
     QSet<const QgsSymbolLayer *> mDisabledSymbolLayers;
+
+    QList< QgsMapClippingRegion > mClippingRegions;
+    QgsGeometry mFeatureClipGeometry;
+
+    QPointF mTextureOrigin;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;
@@ -1028,6 +1101,47 @@ class QgsScopedRenderContextScaleToPixels
 
     QgsRenderContext &mContext;
 };
+
+
+/**
+ * \ingroup core
+ *
+ * Scoped object for saving and restoring a QPainter object's state.
+ *
+ * Temporarily saves the QPainter state for the lifetime of the object, before restoring it
+ * on destruction.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.16
+ */
+class QgsScopedQPainterState
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedQPainterState.
+     *
+     * Saves the specified \a painter state.
+     */
+    QgsScopedQPainterState( QPainter *painter )
+      : mPainter( painter )
+    {
+      mPainter->save();
+    }
+
+    /**
+     * Restores the painter back to its original state.
+     */
+    ~QgsScopedQPainterState()
+    {
+      mPainter->restore();
+    }
+
+  private:
+
+    QPainter *mPainter = nullptr;
+};
+
 #endif
 
 #endif

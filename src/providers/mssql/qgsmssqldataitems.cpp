@@ -481,7 +481,7 @@ QgsMssqlLayerItem::QgsMssqlLayerItem( QgsDataItem *parent, const QString &name, 
 {
   mCapabilities |= Delete;
   mUri = createUri();
-  setState( Populated );
+  setState( NotPopulated );
 }
 
 
@@ -520,7 +520,7 @@ QString QgsMssqlLayerItem::createUri()
 
 // ---------------------------------------------------------------------------
 QgsMssqlSchemaItem::QgsMssqlSchemaItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "MSSQL" ) )
+  : QgsDatabaseSchemaItem( parent, name, path, QStringLiteral( "MSSQL" ) )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
   //not fertile, since children are created by QgsMssqlConnectionItem
@@ -592,14 +592,31 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
   if ( refresh )
     addChildItem( layerItem, true );
   else
+  {
     addChild( layerItem );
+    layerItem->setParent( this );
+  }
 
   return layerItem;
 }
 
+void QgsMssqlSchemaItem::refresh()
+{
+  if ( parent() )
+    parent()->refresh();
+}
+
+
+QVector<QgsDataItem *> QgsMssqlLayerItem::createChildren()
+{
+  QVector<QgsDataItem *> children;
+  children.push_back( new QgsFieldsItem( this, uri() + QStringLiteral( "/columns/ " ), createUri(), providerKey(), mLayerProperty.schemaName, mLayerProperty.tableName ) );
+  return children;
+}
+
 // ---------------------------------------------------------------------------
 QgsMssqlRootItem::QgsMssqlRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "MSSQL" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "MSSQL" ) )
 {
   mIconName = QStringLiteral( "mIconMssql.svg" );
   populate();
@@ -658,4 +675,3 @@ bool QgsMssqlSchemaItem::layerCollection() const
 {
   return true;
 }
-

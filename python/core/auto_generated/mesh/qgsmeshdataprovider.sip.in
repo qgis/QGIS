@@ -166,6 +166,7 @@ Datasets are grouped in the dataset groups. A dataset group represents a measure
 #include "qgsmeshdataprovider.h"
 %End
   public:
+    QgsMeshDatasetSourceInterface();
     virtual ~QgsMeshDatasetSourceInterface();
 
     virtual bool addDataset( const QString &uri ) = 0;
@@ -325,6 +326,45 @@ On success, the mesh's dataset group count is changed
 
 .. versionadded:: 3.12.3
 %End
+
+
+    virtual bool persistDatasetGroup( const QString &outputFilePath,
+                                      const QString &outputDriver,
+                                      QgsMeshDatasetSourceInterface *source,
+                                      int datasetGroupIndex
+                                    ) = 0;
+%Docstring
+Saves a an existing dataset group provided by ``source`` to a file with a specified driver
+
+On success, the mesh's dataset group count is changed
+
+:param outputFilePath: destination path of the stored file
+:param outputDriver: output driver name
+:param source: source of the dataset group
+:param datasetGroupIndex: index of the dataset group in the ``source``
+
+:return: ``True`` on failure, ``False`` on success
+
+
+.. versionadded:: 3.16
+%End
+
+    QgsMeshDatasetIndex datasetIndexAtTime( const QDateTime &referenceTime,
+                                            int groupIndex,
+                                            quint64 time,
+                                            QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const;
+%Docstring
+Returns the dataset index of the dataset in a specific dataet group at ``time`` from the ``reference`` time
+
+:param referenceTime: the reference time from where to find the dataset
+:param groupIndex: the index of the dataset group
+:param time: the relative time from reference time
+:param method: the method used to check the time
+
+:return: the dataset index
+%End
+
+  protected:
 };
 
 

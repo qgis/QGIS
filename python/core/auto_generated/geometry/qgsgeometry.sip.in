@@ -917,6 +917,9 @@ Returns the oriented minimum bounding box for the geometry, which is the smalles
 rotated rectangle which fully encompasses the geometry. The area, angle (clockwise in degrees from North),
 width and height of the rotated bounding box will also be returned.
 
+If an error was encountered while creating the result, more information can be retrieved
+by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
+
 .. seealso:: :py:func:`boundingBox`
 
 .. versionadded:: 3.0
@@ -1823,9 +1826,14 @@ otherwise returns a null QPointF.
 
     QPolygonF asQPolygonF() const;
 %Docstring
-Returns contents of the geometry as a QPolygonF. If geometry is a linestring,
-then the result will be an open QPolygonF. If the geometry is a polygon,
-then the result will be a closed QPolygonF of the geometry's exterior ring.
+Returns contents of the geometry as a QPolygonF.
+
+If geometry is a linestring, then the result will be an open QPolygonF.
+If the geometry is a polygon, then the result will be a closed QPolygonF
+of the geometry's exterior ring.
+
+If the geometry is a multi-part geometry, then only the first part will
+be considered when converting to a QPolygonF.
 
 .. versionadded:: 2.7
 %End

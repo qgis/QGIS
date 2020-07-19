@@ -241,7 +241,6 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
      */
     void setListening( bool isListening ) override;
 
-
   private:
     Relkind relkind() const;
 

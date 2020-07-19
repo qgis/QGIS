@@ -159,6 +159,51 @@ an expression context for the button when required.
 .. versionadded:: 3.10
 %End
 
+    void setShowNullFormat( const bool show );
+%Docstring
+Sets whether the "null format" option should be shown in the button's drop-down menu. This option
+is only used for buttons set to the ModeTextRenderer :py:func:`~QgsFontButton.mode`.
+
+If selected, the "null format" option sets the button's format to an invalid :py:class:`QgsTextFormat`. This
+can be used to represent a "use default format" state for the button.
+
+By default this option is not shown.
+
+.. seealso:: :py:func:`setNoFormatString`
+
+.. seealso:: :py:func:`showNullFormat`
+
+.. versionadded:: 3.16
+%End
+
+    void setNoFormatString( const QString &string );
+%Docstring
+Sets the ``string`` to use for the "null format" option in the button's drop-down menu.
+
+.. note::
+
+   The "null format" option is only shown if :py:func:`~QgsFontButton.showNullFormat` is ``True``.
+
+.. seealso:: :py:func:`setShowNullFormat`
+
+.. versionadded:: 3.16
+%End
+
+    bool showNullFormat() const;
+%Docstring
+Returns whether the "null format" option will be shown in the button's drop-down menu. This option
+is only used for buttons set to the ModeTextRenderer :py:func:`~QgsFontButton.mode`.
+
+If selected, the "null format" option sets the button's format to an invalid :py:class:`QgsTextFormat`. This
+can be used to represent a "use default format" state for the button.
+
+By default this option is not shown.
+
+.. seealso:: :py:func:`setShowNullFormat`
+
+.. versionadded:: 3.16
+%End
+
   public slots:
 
     void setTextFormat( const QgsTextFormat &format );
@@ -167,6 +212,15 @@ Sets the current text ``format`` to show in the widget.
 This is only used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
 
 .. seealso:: :py:func:`textFormat`
+%End
+
+    void setToNullFormat();
+%Docstring
+Sets the text format to a null (invalid) :py:class:`QgsTextFormat`.
+
+This is only used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
+
+.. versionadded:: 3.16
 %End
 
     void setCurrentFont( const QFont &font );

@@ -1,6 +1,7 @@
 {
   "name": "collect_geometries",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Collects a set of geometries into a multi-part geometry object.",
   "variants": [
   { "variant": "List of arguments variant",

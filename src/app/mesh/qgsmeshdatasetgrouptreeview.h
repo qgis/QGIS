@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QTreeView>
 #include <QMap>
+#include <QMenu>
 #include <QVector>
 #include <QItemSelection>
 #include <QStandardItemModel>
@@ -32,6 +33,23 @@
 
 class QgsMeshLayer;
 
+class QgsMeshDatasetGroupSaveMenu: public QObject
+{
+    Q_OBJECT
+  public:
+    QgsMeshDatasetGroupSaveMenu( QObject *parent = nullptr ): QObject( parent ) {}
+    QMenu *createSaveMenu( int groupIndex, QMenu *parentMenu = nullptr );
+
+    void setMeshLayer( QgsMeshLayer *meshLayer );
+
+  signals:
+    void datasetGroupSaved();
+
+  private:
+    QgsMeshLayer *mMeshLayer = nullptr;
+
+    void saveDatasetGroup( int datasetGroup, const QString &driver, const QString &fileSuffix );
+};
 
 /**
  * Item Model for QgsMeshDatasetGroupTreeItem
@@ -46,7 +64,8 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
       IsVector,
       IsActiveScalarDatasetGroup,
       IsActiveVectorDatasetGroup,
-      DatasetGroupIndex
+      DatasetGroupIndex,
+      IsMemory
     };
 
     explicit QgsMeshDatasetGroupTreeModel( QObject *parent = nullptr );
@@ -68,6 +87,9 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
     //! Returns the dataset group root tree item, keeps ownership
     QgsMeshDatasetGroupTreeItem *datasetGroupTreeRootItem();
 
+    //! Returns the dataset group tree item with \a index, keeps ownership
+    QgsMeshDatasetGroupTreeItem *datasetGroupTreeItem( int groupIndex );
+
     //! Returns whether the dataset groups related to the QModelIndex is set as enabled
     bool isEnabled( const QModelIndex &index ) const;
 
@@ -76,6 +98,12 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
 
     //! Sets all groups as enabled
     void setAllGroupsAsEnabled( bool isEnabled );
+
+    //! Removes an item from the tree
+    void removeItem( const QModelIndex &index );
+
+    //! Sets the storage type for specified item
+    void setStorageType( const QModelIndex &index, QgsMeshDatasetGroupTreeItem::StorageType type );
 
   private:
     std::unique_ptr<QgsMeshDatasetGroupTreeItem> mRootItem;
@@ -126,7 +154,7 @@ class APP_EXPORT QgsMeshDatasetGroupTreeItemDelagate: public QStyledItemDelegate
                 const QModelIndex &index ) const override;
 
     //! Icon rectangle for given item rectangle
-    QRect iconRect( const QRect rect, bool isVector ) const;
+    QRect iconRect( const QRect &rect, bool isVector ) const;
 
     QSize sizeHint( const QStyleOptionViewItem &option,
                     const QModelIndex &index ) const override;
@@ -135,6 +163,8 @@ class APP_EXPORT QgsMeshDatasetGroupTreeItemDelagate: public QStyledItemDelegate
     const QPixmap mScalarDeselectedPixmap;
     const QPixmap mVectorSelectedPixmap;
     const QPixmap mVectorDeselectedPixmap;
+
+    QRect iconRect( const QRect &rect, int pos ) const;
 };
 
 class APP_EXPORT QgsMeshDatasetGroupTreeView: public QTreeView
@@ -148,13 +178,35 @@ class APP_EXPORT QgsMeshDatasetGroupTreeView: public QTreeView
 
     QgsMeshDatasetGroupTreeItem *datasetGroupTreeRootItem();
 
+  signals:
+    void apply();
+
   public slots:
     void selectAllGroups();
     void deselectAllGroups();
 
+  protected:
+    void contextMenuEvent( QContextMenuEvent *event ) override;
+
+  private slots:
+    void removeCurrentItem();
+    void onDatasetGroupSaved();
+
   private:
     QgsMeshDatasetGroupTreeModel *mModel;
+    QgsMeshDatasetGroupSaveMenu *mSaveMenu;
+
     void selectAllItem( bool isChecked );
+    QMenu *createContextMenu();
+
+    class Delegate: public QStyledItemDelegate
+    {
+      public:
+        Delegate( QObject *parent = nullptr );
+        void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    };
+
+    Delegate mDelegate;
 };
 
 /**
@@ -217,8 +269,11 @@ class APP_EXPORT QgsMeshDatasetGroupListModel: public QAbstractListModel
     int rowCount( const QModelIndex &parent ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
 
+    void setDisplayProviderName( bool displayProviderName );
+
   private:
     QgsMeshDatasetGroupTreeItem *mRootItem = nullptr;
+    bool mDisplayProviderName = false;
 };
 
 #endif // QGSMESHDATASETGROUPTREE_H

@@ -43,6 +43,8 @@ class GUI_EXPORT QgsAttributeWidgetEdit: public QgsCollapsibleGroupBox, private 
 
 
   private:
+    void showRelationButtons( bool show );
+
     QTreeWidgetItem *mTreeItem;
 };
 

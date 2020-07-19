@@ -66,6 +66,9 @@ class CORE_EXPORT QgsTextMaskSettings
 
     ~QgsTextMaskSettings();
 
+    bool operator==( const QgsTextMaskSettings &other ) const;
+    bool operator!=( const QgsTextMaskSettings &other ) const;
+
     /**
      * Returns whether the mask is enabled.
      */

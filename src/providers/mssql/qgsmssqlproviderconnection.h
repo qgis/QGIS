@@ -48,6 +48,7 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
     QIcon icon() const override;
+    QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
 
   private:
 
@@ -57,6 +58,9 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
     void renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const;
 
     static const QStringList EXTRA_CONNECTION_PARAMETERS;
+
 };
+
+
 
 #endif // QGSMSSQLPROVIDERCONNECTION_H

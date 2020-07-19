@@ -41,7 +41,6 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
   connect( txtName, &QLineEdit::textChanged, this, &QgsMssqlNewConnection::updateOkButtonState );
-  connect( txtService, &QLineEdit::textChanged, this, &QgsMssqlNewConnection::updateOkButtonState );
   connect( txtHost, &QLineEdit::textChanged, this, &QgsMssqlNewConnection::updateOkButtonState );
   connect( listDatabase, &QListWidget::currentItemChanged, this, &QgsMssqlNewConnection::updateOkButtonState );
 
@@ -253,6 +252,6 @@ void QgsMssqlNewConnection::showHelp()
 void QgsMssqlNewConnection::updateOkButtonState()
 {
   QListWidgetItem *item = listDatabase->currentItem();
-  bool enabled = !txtName->text().isEmpty() && !txtService->text().isEmpty() && !txtHost->text().isEmpty() && item;
+  bool enabled = !txtName->text().isEmpty() && !txtHost->text().isEmpty() && item;
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }

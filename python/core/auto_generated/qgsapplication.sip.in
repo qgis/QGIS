@@ -697,6 +697,13 @@ Returns the application's image cache, used for caching resampled versions of ra
 .. versionadded:: 3.6
 %End
 
+    static QgsSourceCache *sourceCache();
+%Docstring
+Returns the application's source cache, used for caching embedded and remote source strings as local files
+
+.. versionadded:: 3.16
+%End
+
     static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry() /KeepReference/;
 %Docstring
 Returns the application's network content registry used for fetching temporary files during QGIS session

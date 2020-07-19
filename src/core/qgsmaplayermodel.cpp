@@ -105,6 +105,20 @@ QList<QgsMapLayer *> QgsMapLayerModel::layersChecked( Qt::CheckState checkState 
   return layers;
 }
 
+void QgsMapLayerModel::setLayersChecked( const QList<QgsMapLayer *> &layers )
+{
+  QMap<QString, Qt::CheckState>::iterator i = mLayersChecked.begin();
+  for ( ; i != mLayersChecked.end(); ++i )
+  {
+    *i = Qt::Unchecked;
+  }
+  for ( const QgsMapLayer *layer : layers )
+  {
+    mLayersChecked[ layer->id() ] = Qt::Checked;
+  }
+  emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ), QVector<int>() << Qt::CheckStateRole );
+}
+
 QModelIndex QgsMapLayerModel::indexFromLayer( QgsMapLayer *layer ) const
 {
   int r = mLayers.indexOf( layer );
@@ -569,7 +583,7 @@ bool QgsMapLayerModel::setData( const QModelIndex &index, const QVariant &value,
       {
         QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
         mLayersChecked[layer->id()] = ( Qt::CheckState )value.toInt();
-        emit dataChanged( index, index );
+        emit dataChanged( index, index, QVector< int >() << Qt::CheckStateRole );
         return true;
       }
       break;

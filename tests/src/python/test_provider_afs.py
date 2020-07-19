@@ -697,6 +697,46 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         l.url = 'http://' + sanitize(endpoint, '')
         self.assertEqual(md.links(), [l])
 
+    def testFieldAlias(self):
+        """ Test that field aliases are correctly acquired from provider """
+
+        endpoint = self.basetestpath + '/alias_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write("""
+        {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+        "QGIS Provider Test Layer","geometryType":"esriGeometryPoint","copyrightText":"not copyright","parentLayer":{"id":2,"name":"QGIS Tests"},"subLayers":[],
+        "minScale":72225,"maxScale":0,
+        "defaultVisibility":true,
+        "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+        "spatialReference":{"wkid":4326,"latestWkid":4326}},
+        "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+        "displayField":"LABEL","typeIdField":null,
+        "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"field id","domain":null},{"name":"second","type":"esriFieldTypeString","domain":null}],
+        "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+        "capabilities":"Map,Query,Data","maxRecordCount":1000,"supportsStatistics":true,
+        "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+        "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
+                'UTF-8'))
+
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
+            f.write("""
+        {
+         "objectIdFieldName": "OBJECTID",
+         "objectIds": [
+          1
+         ]
+        }
+        """.encode('UTF-8'))
+
+        # Create test layer
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual(vl.fields().at(0).name(), 'OBJECTID')
+        self.assertEqual(vl.fields().at(0).alias(), 'field id')
+        self.assertEqual(vl.fields().at(1).name(), 'second')
+        self.assertFalse(vl.fields().at(1).alias())
+
     def testRenderer(self):
         """ Test that renderer is correctly acquired from provider """
 

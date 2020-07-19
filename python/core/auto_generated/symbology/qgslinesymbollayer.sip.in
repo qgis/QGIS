@@ -207,6 +207,90 @@ This setting is only used when :py:func:`~QgsSimpleLineSymbolLayer.useCustomDash
 .. seealso:: :py:func:`setUseCustomDashPattern`
 %End
 
+    double dashPatternOffset() const;
+%Docstring
+Returns the dash pattern offset, which dictates how far along the dash pattern
+the pattern should start rendering at.
+
+Offset units can be retrieved by calling :py:func:`~QgsSimpleLineSymbolLayer.dashPatternOffsetUnit`.
+
+.. seealso:: :py:func:`setDashPatternOffset`
+
+.. seealso:: :py:func:`dashPatternOffsetUnit`
+
+.. seealso:: :py:func:`dashPatternOffsetMapUnitScale`
+
+.. versionadded:: 3.16
+%End
+
+    void setDashPatternOffset( double offset );
+%Docstring
+Sets the dash pattern ``offset``, which dictates how far along the dash pattern
+the pattern should start rendering at.
+
+Offset units are set via :py:func:`~QgsSimpleLineSymbolLayer.setDashPatternOffsetUnit`.
+
+.. seealso:: :py:func:`dashPatternOffset`
+
+.. seealso:: :py:func:`setDashPatternOffsetUnit`
+
+.. seealso:: :py:func:`setDashPatternOffsetMapUnitScale`
+
+.. versionadded:: 3.16
+%End
+
+    void setDashPatternOffsetUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the dash pattern offset.
+
+.. seealso:: :py:func:`dashPatternOffsetUnit`
+
+.. seealso:: :py:func:`setDashPatternOffset`
+
+.. seealso:: :py:func:`setDashPatternOffsetMapUnitScale`
+
+.. versionadded:: 3.16
+%End
+
+    QgsUnitTypes::RenderUnit dashPatternOffsetUnit() const;
+%Docstring
+Returns the units for the dash pattern offset.
+
+.. seealso:: :py:func:`setDashPatternOffsetUnit`
+
+.. seealso:: :py:func:`dashPatternOffset`
+
+.. seealso:: :py:func:`dashPatternOffsetMapUnitScale`
+
+.. versionadded:: 3.16
+%End
+
+    const QgsMapUnitScale &dashPatternOffsetMapUnitScale() const;
+%Docstring
+Returns the map unit scale the dash pattern offset value.
+
+.. seealso:: :py:func:`setDashPatternOffsetMapUnitScale`
+
+.. seealso:: :py:func:`dashPatternOffsetUnit`
+
+.. seealso:: :py:func:`dashPatternOffset`
+
+.. versionadded:: 3.16
+%End
+
+    void setDashPatternOffsetMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the dash pattern offset.
+
+.. seealso:: :py:func:`dashPatternOffsetMapUnitScale`
+
+.. seealso:: :py:func:`setDashPatternOffset`
+
+.. seealso:: :py:func:`setDashPatternOffsetUnit`
+
+.. versionadded:: 3.16
+%End
+
     bool drawInsidePolygon() const;
 %Docstring
 Returns ``True`` if the line should only be drawn inside polygons, and any portion

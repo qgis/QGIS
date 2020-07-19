@@ -781,19 +781,11 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mOverrunDistanceDDBtn, QgsPalLayerSettings::OverrunDistance );
 
   // data defined-only
-  QString ddPlaceInfo = tr( "In edit mode, layer's relevant labeling map tool is:<br>"
-                            "&nbsp;&nbsp;Defined attribute field -&gt; <i>enabled</i><br>"
-                            "&nbsp;&nbsp;Defined expression -&gt; <i>disabled</i>" );
   registerDataDefinedButton( mCoordXDDBtn, QgsPalLayerSettings::PositionX );
-  mCoordXDDBtn->setUsageInfo( ddPlaceInfo );
   registerDataDefinedButton( mCoordYDDBtn, QgsPalLayerSettings::PositionY );
-  mCoordYDDBtn->setUsageInfo( ddPlaceInfo );
   registerDataDefinedButton( mCoordAlignmentHDDBtn, QgsPalLayerSettings::Hali );
-  mCoordAlignmentHDDBtn->setUsageInfo( ddPlaceInfo );
   registerDataDefinedButton( mCoordAlignmentVDDBtn, QgsPalLayerSettings::Vali );
-  mCoordAlignmentVDDBtn->setUsageInfo( ddPlaceInfo );
   registerDataDefinedButton( mCoordRotationDDBtn, QgsPalLayerSettings::LabelRotation );
-  mCoordRotationDDBtn->setUsageInfo( ddPlaceInfo );
 
   // rendering
   QString ddScaleVisInfo = tr( "Value &lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1<br>"

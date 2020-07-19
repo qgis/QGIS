@@ -42,6 +42,8 @@ QgsMeshDatasetGroupTreeWidget::QgsMeshDatasetGroupTreeWidget( QWidget *parent ):
     this->mDatasetGroupTreeView->resetDefault( this->mMeshLayer );
   } );
 
+  connect( mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::apply, this, &QgsMeshDatasetGroupTreeWidget::apply );
+
 }
 
 void QgsMeshDatasetGroupTreeWidget::syncToLayer( QgsMeshLayer *meshLayer )
@@ -87,4 +89,3 @@ void QgsMeshDatasetGroupTreeWidget::addDataset()
     QMessageBox::warning( this, tr( "Load mesh datasets" ), tr( "Could not read mesh dataset." ) );
   }
 }
-

@@ -14,7 +14,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsvectorlayer.h"
 #include "qgsexception.h"
+#include "qgslogger.h"
 #include <QVariant>
 #include <QObject>
 
@@ -34,6 +36,11 @@ QgsAbstractDatabaseProviderConnection::Capabilities QgsAbstractDatabaseProviderC
   return mCapabilities;
 }
 
+QgsAbstractDatabaseProviderConnection::GeometryColumnCapabilities QgsAbstractDatabaseProviderConnection::geometryColumnCapabilities()
+{
+  return mGeometryColumnCapabilities;
+}
+
 QString QgsAbstractDatabaseProviderConnection::tableUri( const QString &schema, const QString &name ) const
 {
   Q_UNUSED( schema )
@@ -50,6 +57,11 @@ void QgsAbstractDatabaseProviderConnection::checkCapability( QgsAbstractDatabase
     const QString capName { metaEnum.valueToKey( capability ) };
     throw QgsProviderConnectionException( QObject::tr( "Operation '%1' is not supported for this connection" ).arg( capName ) );
   }
+}
+
+QString QgsAbstractDatabaseProviderConnection::providerKey() const
+{
+  return mProviderKey;
 }
 ///@endcond
 
@@ -148,6 +160,56 @@ bool QgsAbstractDatabaseProviderConnection::spatialIndexExists( const QString &,
   return false;
 }
 
+void QgsAbstractDatabaseProviderConnection::deleteField( const QString &fieldName, const QString &schema, const QString &tableName, bool ) const
+{
+  checkCapability( Capability::DeleteField );
+
+  QgsVectorLayer::LayerOptions options { false, false };
+  options.skipCrsValidation = true;
+  std::unique_ptr<QgsVectorLayer> vl { qgis::make_unique<QgsVectorLayer>( tableUri( schema, tableName ), QStringLiteral( "temp_layer" ), mProviderKey, options ) };
+  if ( ! vl->isValid() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not create a vector layer for table '%1' in schema '%2'" )
+                                          .arg( tableName, schema ) );
+  }
+  if ( vl->fields().lookupField( fieldName ) == -1 )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not find field '%1' in table '%2' in schema '%3'" )
+                                          .arg( fieldName, tableName, schema ) );
+
+  }
+  if ( ! vl->dataProvider()->deleteAttributes( { vl->fields().lookupField( fieldName ) } ) )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Unknown error deleting field '%1' in table '%2' in schema '%3'" )
+                                          .arg( fieldName, tableName, schema ) );
+  }
+}
+
+void QgsAbstractDatabaseProviderConnection::addField( const QgsField &field, const QString &schema, const QString &tableName ) const
+{
+  checkCapability( Capability::AddField );
+
+  QgsVectorLayer::LayerOptions options { false, false };
+  options.skipCrsValidation = true;
+  std::unique_ptr<QgsVectorLayer> vl( qgis::make_unique<QgsVectorLayer>( tableUri( schema, tableName ), QStringLiteral( "temp_layer" ), mProviderKey, options ) );
+  if ( ! vl->isValid() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not create a vector layer for table '%1' in schema '%2'" )
+                                          .arg( tableName, schema ) );
+  }
+  if ( vl->fields().lookupField( field.name() ) != -1 )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Field '%1' in table '%2' in schema '%3' already exists" )
+                                          .arg( field.name(), tableName, schema ) );
+
+  }
+  if ( ! vl->dataProvider()->addAttributes( { field  } ) )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Unknown error adding field '%1' in table '%2' in schema '%3'" )
+                                          .arg( field.name(), tableName, schema ) );
+  }
+}
+
 QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseProviderConnection::tables( const QString &, const QgsAbstractDatabaseProviderConnection::TableFlags & ) const
 {
   checkCapability( Capability::Tables );
@@ -167,8 +229,7 @@ QgsAbstractDatabaseProviderConnection::TableProperty QgsAbstractDatabaseProvider
     }
   }
   throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" )
-                                        .arg( name )
-                                        .arg( schema ) );
+                                        .arg( name, schema ) );
 }
 
 QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseProviderConnection::tablesInt( const QString &schema, const int flags ) const
@@ -212,6 +273,20 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType> 
   return mGeometryColumnTypes;
 }
 
+QgsFields QgsAbstractDatabaseProviderConnection::fields( const QString &schema, const QString &tableName ) const
+{
+  QgsVectorLayer::LayerOptions options { true, true };
+  options.skipCrsValidation = true;
+  QgsVectorLayer vl { tableUri( schema, tableName ), QStringLiteral( "temp_layer" ), mProviderKey, options };
+  if ( vl.isValid() )
+  {
+    return vl.fields();
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Error retrieving fields information for uri: %1" ).arg( vl.publicSource() ) );
+  }
+}
 
 QString QgsAbstractDatabaseProviderConnection::TableProperty::defaultName() const
 {

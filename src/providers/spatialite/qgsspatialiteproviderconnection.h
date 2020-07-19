@@ -45,6 +45,8 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
         const TableFlags &flags = nullptr ) const override;
     QIcon icon() const override;
+    void deleteField( const QString &fieldName, const QString &schema, const QString &tableName, bool force ) const override;
+    QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
 
   private:
 
@@ -59,6 +61,10 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     QString pathFromUri() const;
 
 };
+
+
+
+
 
 ///@endcond
 #endif // QGSSPATIALITEPROVIDERCONNECTION_H

@@ -140,6 +140,27 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     mRequest.setFilterRect( mFilterRect );
   }
 
+  // check whether the order by clause(s) can be delegated to the provider
+  mDelegatedOrderByToProvider = !mSource->mHasEditBuffer;
+  if ( !mRequest.orderBy().isEmpty() )
+  {
+    QSet<int> attributeIndexes;
+    const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
+    for ( int attrIndex : usedAttributeIndices )
+    {
+      if ( mSource->mFields.fieldOrigin( attrIndex ) != QgsFields::OriginProvider )
+        mDelegatedOrderByToProvider = false;
+
+      attributeIndexes << attrIndex;
+    }
+
+    if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mDelegatedOrderByToProvider )
+    {
+      attributeIndexes += qgis::listToSet( mRequest.subsetOfAttributes() );
+      mRequest.setSubsetOfAttributes( qgis::setToList( attributeIndexes ) );
+    }
+  }
+
   if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
   {
     mRequest.expressionContext()->setFields( mSource->mFields );
@@ -147,7 +168,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
 
     if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
     {
-      //ensure that all fields required for filter expressions are prepared
+      // ensure that all fields required for filter expressions are prepared
       QSet<int> attributeIndexes = mRequest.filterExpression()->referencedAttributeIndexes( mSource->mFields );
       attributeIndexes += qgis::listToSet( mRequest.subsetOfAttributes() );
       mRequest.setSubsetOfAttributes( qgis::setToList( attributeIndexes ) );
@@ -166,6 +187,11 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   if ( mRequest.destinationCrs().isValid() )
   {
     mProviderRequest.setDestinationCrs( QgsCoordinateReferenceSystem(), mRequest.transformContext() );
+  }
+
+  if ( !mDelegatedOrderByToProvider )
+  {
+    mProviderRequest.setOrderBy( QgsFeatureRequest::OrderBy() );
   }
 
   if ( mProviderRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
@@ -1182,7 +1208,7 @@ void QgsVectorLayerFeatureIterator::createExpressionContext()
 bool QgsVectorLayerFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys )
 {
   Q_UNUSED( orderBys )
-  return true;
+  return mDelegatedOrderByToProvider;
 }
 
 

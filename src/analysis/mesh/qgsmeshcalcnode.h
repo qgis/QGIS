@@ -32,8 +32,6 @@
 
 #include "qgsmeshcalcutils.h"
 
-struct QgsMeshMemoryDatasetGroup;
-
 /**
  * \ingroup analysis
  * \class QgsMeshCalcNode

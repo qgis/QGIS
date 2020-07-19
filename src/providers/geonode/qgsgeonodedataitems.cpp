@@ -186,7 +186,7 @@ void QgsGeoNodeServiceItem::replacePath( QgsDataItem *item, const QString &befor
 }
 
 QgsGeoNodeRootItem::QgsGeoNodeRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "GeoNode" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "GeoNode" ) )
 {
   mCapabilities |= Fast;
   {

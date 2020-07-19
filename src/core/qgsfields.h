@@ -338,6 +338,13 @@ class CORE_EXPORT  QgsFields
     % End
 #endif
 
+
+    /**
+     * Returns an icon corresponding to a field \a type
+     * \since QGIS 3.16
+     */
+    static QIcon iconForFieldType( const QVariant::Type &type ) SIP_FACTORY;
+
     //! Allows direct construction of QVariants from fields.
     operator QVariant() const
     {

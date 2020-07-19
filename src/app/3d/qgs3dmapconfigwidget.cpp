@@ -102,6 +102,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   chkShowTileInfo->setChecked( mMap->showTerrainTilesInfo() );
   chkShowBoundingBoxes->setChecked( mMap->showTerrainBoundingBoxes() );
   chkShowCameraViewCenter->setChecked( mMap->showCameraViewCenter() );
+  chkShowLightSourceOrigins->setChecked( mMap->showLightSourceOrigins() );
 
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
   widgetTerrainMaterial->setDiffuseVisible( false );
@@ -222,7 +223,7 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setShowTerrainTilesInfo( chkShowTileInfo->isChecked() );
   mMap->setShowTerrainBoundingBoxes( chkShowBoundingBoxes->isChecked() );
   mMap->setShowCameraViewCenter( chkShowCameraViewCenter->isChecked() );
-
+  mMap->setShowLightSourceOrigins( chkShowLightSourceOrigins->isChecked() );
   mMap->setTerrainShadingEnabled( groupTerrainShading->isChecked() );
   mMap->setTerrainShadingMaterial( widgetTerrainMaterial->material() );
 

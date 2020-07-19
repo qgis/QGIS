@@ -393,6 +393,7 @@ SET(QGIS_GUI_SRCS
   qgsdetaileditemwidget.cpp
   qgsdial.cpp
   qgsdialog.cpp
+  qgsdoublevalidator.cpp
   qgsdockwidget.cpp
   qgsencodingfiledialog.cpp
   qgserrordialog.cpp
@@ -492,6 +493,7 @@ SET(QGIS_GUI_SRCS
   qgsnewnamedialog.cpp
   qgsnewvectorlayerdialog.cpp
   qgsnewgeopackagelayerdialog.cpp
+  qgsnewvectortabledialog.cpp
   qgsopacitywidget.cpp
   qgsoptionsdialogbase.cpp
   qgsoptionsdialoghighlightwidget.cpp
@@ -626,6 +628,7 @@ SET(QGIS_GUI_HDRS
   qgsdial.h
   qgsdialog.h
   qgsdockwidget.h
+  qgsdoublevalidator.h
   qgsencodingfiledialog.h
   qgserrordialog.h
   qgsexpressionbuilderdialog.h
@@ -720,10 +723,12 @@ SET(QGIS_GUI_HDRS
   qgsnewauxiliaryfielddialog.h
   qgsnewauxiliarylayerdialog.h
   qgsnewgeopackagelayerdialog.h
+  qgsnewvectortabledialog.h
   qgsnewhttpconnection.h
   qgsnewmemorylayerdialog.h
   qgsnewnamedialog.h
   qgsnewvectorlayerdialog.h
+  qgsnewvectortabledialog.h
   qgsopacitywidget.h
   qgsoptionsdialogbase.h
   qgsoptionsdialoghighlightwidget.h
@@ -1138,8 +1143,7 @@ SET(QGIS_GUI_PRIVATE_HDRS
   attributetable/qgsfeaturefilterwidget_p.h
 )
 
-FIND_PACKAGE(Qt5Qml REQUIRED)
-FIND_PACKAGE(Qt5QuickWidgets REQUIRED)
+FIND_PACKAGE(Qt5 COMPONENTS Qml QuickWidgets REQUIRED)
 
 IF(Qt5Qml_FOUND)
 ADD_DEFINITIONS(-DWITH_QML)
@@ -1195,6 +1199,7 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsnewvectortabledialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsowssourceselectbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsarcgisservicesourceselectbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h

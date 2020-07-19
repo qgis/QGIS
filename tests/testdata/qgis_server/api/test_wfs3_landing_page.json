@@ -27,11 +27,11 @@ Content-Type: application/json
       "type": "application/json"
     },
     {
-      "href": "http://server.qgis.org/wfs3/api.json",
+      "href": "http://server.qgis.org/wfs3/api",
       "rel": "service-desc",
       "title": "API description",
       "type": "application/vnd.oai.openapi+json;version=3.0"
     }
   ],
-  "timeStamp": "2019-07-05T12:27:07Z"
+  "timeStamp": "2020-06-26T11:53:46Z"
 }

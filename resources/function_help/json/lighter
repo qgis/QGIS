@@ -1,6 +1,7 @@
 {
   "name": "lighter",
   "type": "function",
+  "groups": ["Color"],
   "description": "Returns a lighter (or darker) color string",
   "arguments": [
                {"arg":"color", "description":"a color string"},

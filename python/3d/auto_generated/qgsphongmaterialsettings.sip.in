@@ -28,7 +28,11 @@ with three color components: ambient, diffuse and specular.
 #include "qgsphongmaterialsettings.h"
 %End
   public:
+
     QgsPhongMaterialSettings();
+%Docstring
+Constructor for QgsPhongMaterialSettings.
+%End
 
     QColor ambient() const;
 %Docstring
@@ -47,6 +51,60 @@ Returns specular color component
 Returns shininess of the surface
 %End
 
+    bool diffuseTextureEnabled() const;
+%Docstring
+Returns whether the diffuse texture is used.
+
+.. note::
+
+   Diffuse textures will only be used at render time if :py:func:`~QgsPhongMaterialSettings.diffuseTextureEnabled` is ``True``
+   and a :py:func:`~QgsPhongMaterialSettings.texturePath` is non-empty.
+
+.. seealso:: :py:func:`shouldUseDiffuseTexture`
+
+.. seealso:: :py:func:`setDiffuseTextureEnabled`
+
+.. seealso:: :py:func:`texturePath`
+%End
+
+    bool shouldUseDiffuseTexture() const;
+%Docstring
+Returns whether the diffuse texture should be used during rendering.
+
+Diffuse textures will only be used at render time if :py:func:`~QgsPhongMaterialSettings.diffuseTextureEnabled` is ``True``
+and a :py:func:`~QgsPhongMaterialSettings.texturePath` is non-empty.
+
+.. seealso:: :py:func:`diffuseTextureEnabled`
+
+.. seealso:: :py:func:`texturePath`
+%End
+
+    QString texturePath() const;
+%Docstring
+Returns the diffuse texture path.
+
+.. note::
+
+   Diffuse textures will only be used at render time if :py:func:`~QgsPhongMaterialSettings.diffuseTextureEnabled` is ``True``
+   and a :py:func:`~QgsPhongMaterialSettings.texturePath` is non-empty.
+
+.. seealso:: :py:func:`setTexturePath`
+
+.. seealso:: :py:func:`diffuseTextureEnabled`
+%End
+
+    float textureScale() const;
+%Docstring
+Returns the texture scale
+The texture scale changes the size of the displayed texture in the 3D scene
+If the texture scale is less than 1 the texture will be stretched
+%End
+
+    float textureRotation() const;
+%Docstring
+Returns the texture's rotation in degrees
+%End
+
     void setAmbient( const QColor &ambient );
 %Docstring
 Sets ambient color component
@@ -62,6 +120,46 @@ Sets specular color component
     void setShininess( float shininess );
 %Docstring
 Sets shininess of the surface
+%End
+
+    void setDiffuseTextureEnabled( bool used );
+%Docstring
+Sets whether the diffuse texture is enabled.
+
+.. note::
+
+   Diffuse textures will only be used at render time if :py:func:`~QgsPhongMaterialSettings.diffuseTextureEnabled` is ``True``
+   and a :py:func:`~QgsPhongMaterialSettings.texturePath` is non-empty.
+
+.. seealso:: :py:func:`diffuseTextureEnabled`
+
+.. seealso:: :py:func:`setTexturePath`
+%End
+
+    void setTexturePath( const QString &path );
+%Docstring
+Sets the ``path`` of the texture.
+
+.. note::
+
+   Diffuse textures will only be used at render time if :py:func:`~QgsPhongMaterialSettings.diffuseTextureEnabled` is ``True``
+   and a :py:func:`~QgsPhongMaterialSettings.texturePath` is non-empty.
+
+.. seealso:: :py:func:`texturePath`
+
+.. seealso:: :py:func:`setDiffuseTextureEnabled`
+%End
+
+    void setTextureScale( float scale );
+%Docstring
+Sets the texture scale
+The texture scale changes the size of the displayed texture in the 3D scene
+If the texture scale is less than 1 the texture will be stretched
+%End
+
+    void setTextureRotation( float rotation );
+%Docstring
+Sets the texture rotation in degrees
 %End
 
     void readXml( const QDomElement &elem );

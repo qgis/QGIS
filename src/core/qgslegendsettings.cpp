@@ -16,6 +16,7 @@
 #include "qgslegendsettings.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpression.h"
+#include "qgsrendercontext.h"
 
 #include <QPainter>
 
@@ -116,12 +117,11 @@ void QgsLegendSettings::drawText( QPainter *p, double x, double y, const QString
 {
   QFont textFont = scaledFontPixelSize( font );
 
-  p->save();
+  QgsScopedQPainterState painterState( p );
   p->setFont( textFont );
   double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
   p->scale( scaleFactor, scaleFactor );
   p->drawText( QPointF( x * FONT_WORKAROUND_SCALE, y * FONT_WORKAROUND_SCALE ), text );
-  p->restore();
 }
 
 
@@ -132,12 +132,11 @@ void QgsLegendSettings::drawText( QPainter *p, const QRectF &rect, const QString
   QRectF scaledRect( rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE,
                      rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE );
 
-  p->save();
+  QgsScopedQPainterState painterState( p );
   p->setFont( textFont );
   double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
   p->scale( scaleFactor, scaleFactor );
   p->drawText( scaledRect, halignment | valignment | flags, text );
-  p->restore();
 }
 
 

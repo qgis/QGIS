@@ -235,6 +235,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QgsMapTool *mToolZoomIn = nullptr;
     QgsMapTool *mToolZoomOut = nullptr;
     QgsMapTool *mToolPan = nullptr;
+    QgsMapTool *mPrevQgisMapTool = nullptr;
     QgsGeorefToolAddPoint *mToolAddPoint = nullptr;
     QgsGeorefToolDeletePoint *mToolDeletePoint = nullptr;
     QgsGeorefToolMovePoint *mToolMovePoint = nullptr;

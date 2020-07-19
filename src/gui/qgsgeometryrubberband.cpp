@@ -40,7 +40,7 @@ void QgsGeometryRubberBand::paint( QPainter *painter )
     return;
   }
 
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->translate( -pos() );
 
   if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
@@ -54,7 +54,7 @@ void QgsGeometryRubberBand::paint( QPainter *painter )
   painter->setPen( mPen );
 
 
-  QgsAbstractGeometry *paintGeom = mGeometry->clone();
+  std::unique_ptr< QgsAbstractGeometry > paintGeom( mGeometry->clone() );
 
   paintGeom->transform( mMapCanvas->getCoordinateTransform()->transform() );
   paintGeom->draw( *painter );
@@ -66,9 +66,6 @@ void QgsGeometryRubberBand::paint( QPainter *painter )
   {
     drawVertex( painter, vertex.x(), vertex.y() );
   }
-
-  delete paintGeom;
-  painter->restore();
 }
 
 void QgsGeometryRubberBand::drawVertex( QPainter *p, double x, double y )

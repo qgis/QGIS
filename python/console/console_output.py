@@ -178,7 +178,7 @@ class ShellOutputScintilla(QsciScintilla):
         txtInit = QCoreApplication.translate("PythonConsole",
                                              "Python Console\n"
                                              "Use iface to access QGIS API interface or Type help(iface) for more info\n"
-                                             "Security warning: typing commands from an untrusted source can lead to data loss and/or leak")
+                                             "Security warning: typing commands from an untrusted source can harm your computer")
 
         # some translation string for the console header ends without '\n'
         # and the first command in console will be appended at the header text.

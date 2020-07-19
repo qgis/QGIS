@@ -37,6 +37,8 @@ QgsRenderContext::QgsRenderContext()
   mDistanceArea.setEllipsoid( mDistanceArea.sourceCrs().ellipsoidAcronym() );
 }
 
+QgsRenderContext::~QgsRenderContext() = default;
+
 QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   : QgsTemporalRangeObject( rh )
   , mFlags( rh.mFlags )
@@ -65,6 +67,9 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mHasRenderedFeatureHandlers( rh.mHasRenderedFeatureHandlers )
   , mCustomRenderingFlags( rh.mCustomRenderingFlags )
   , mDisabledSymbolLayers()
+  , mClippingRegions( rh.mClippingRegions )
+  , mFeatureClipGeometry( rh.mFeatureClipGeometry )
+  , mTextureOrigin( rh.mTextureOrigin )
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
@@ -98,6 +103,9 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mRenderedFeatureHandlers = rh.mRenderedFeatureHandlers;
   mHasRenderedFeatureHandlers = rh.mHasRenderedFeatureHandlers;
   mCustomRenderingFlags = rh.mCustomRenderingFlags;
+  mClippingRegions = rh.mClippingRegions;
+  mFeatureClipGeometry = rh.mFeatureClipGeometry;
+  mTextureOrigin = rh.mTextureOrigin;
   setIsTemporal( rh.isTemporal() );
   if ( isTemporal() )
     setTemporalRange( rh.temporalRange() );
@@ -120,11 +128,30 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
   {
     context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
   }
+
   if ( painter && painter->renderHints() & QPainter::Antialiasing )
-  {
     context.setFlag( QgsRenderContext::Antialiasing, true );
-  }
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  if ( painter && painter->renderHints() & QPainter::LosslessImageRendering )
+    context.setFlag( QgsRenderContext::LosslessImageRendering, true );
+#endif
+
   return context;
+}
+
+void QgsRenderContext::setPainterFlagsUsingContext( QPainter *painter ) const
+{
+  if ( !painter )
+    painter = mPainter;
+
+  if ( !painter )
+    return;
+
+  painter->setRenderHint( QPainter::Antialiasing, mFlags & QgsRenderContext::Antialiasing );
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  painter->setRenderHint( QPainter::LosslessImageRendering, mFlags & QgsRenderContext::LosslessImageRendering );
+#endif
 }
 
 QgsCoordinateTransformContext QgsRenderContext::transformContext() const
@@ -188,6 +215,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setFlag( RenderPartialOutput, mapSettings.testFlag( QgsMapSettings::RenderPartialOutput ) );
   ctx.setFlag( RenderPreviewJob, mapSettings.testFlag( QgsMapSettings::RenderPreviewJob ) );
   ctx.setFlag( RenderBlocking, mapSettings.testFlag( QgsMapSettings::RenderBlocking ) );
+  ctx.setFlag( LosslessImageRendering, mapSettings.testFlag( QgsMapSettings::LosslessImageRendering ) );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setRendererScale( mapSettings.scale() );
   ctx.setExpressionContext( mapSettings.expressionContext() );
@@ -208,6 +236,8 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setIsTemporal( mapSettings.isTemporal() );
   if ( ctx.isTemporal() )
     ctx.setTemporalRange( mapSettings.temporalRange() );
+
+  ctx.mClippingRegions = mapSettings.clippingRegions();
 
   return ctx;
 }
@@ -489,6 +519,31 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
 QList<QgsRenderedFeatureHandlerInterface *> QgsRenderContext::renderedFeatureHandlers() const
 {
   return mRenderedFeatureHandlers;
+}
+
+QList<QgsMapClippingRegion> QgsRenderContext::clippingRegions() const
+{
+  return mClippingRegions;
+}
+
+QgsGeometry QgsRenderContext::featureClipGeometry() const
+{
+  return mFeatureClipGeometry;
+}
+
+void QgsRenderContext::setFeatureClipGeometry( const QgsGeometry &geometry )
+{
+  mFeatureClipGeometry = geometry;
+}
+
+QPointF QgsRenderContext::textureOrigin() const
+{
+  return mTextureOrigin;
+}
+
+void QgsRenderContext::setTextureOrigin( const QPointF &origin )
+{
+  mTextureOrigin = origin;
 }
 
 

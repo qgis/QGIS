@@ -43,11 +43,13 @@ class APP_EXPORT QgsMeshCalculatorDialog: public QDialog, private Ui::QgsMeshCal
     std::unique_ptr<QgsMeshCalculator> calculator() const;
 
   private slots:
-    void mDatasetsListWidget_doubleClicked( QListWidgetItem *item );
+    void datasetGroupEntry( const QModelIndex &index );
     void mCurrentLayerExtentButton_clicked();
     void mAllTimesButton_clicked();
     void toggleExtendMask( int state );
     void updateInfoMessage();
+    void onOutputRadioButtonChange();
+    void onOutputFormatChange();
 
     //calculator buttons
     void mPlusPushButton_clicked();
@@ -89,6 +91,8 @@ class APP_EXPORT QgsMeshCalculatorDialog: public QDialog, private Ui::QgsMeshCal
     double startTime() const;
     double endTime() const;
 
+    QString datasetGroupName( const QModelIndex &index ) const;
+
     //! Combines geometries from selected vector layer to create mask filter geometry
     QgsGeometry maskGeometry( QgsVectorLayer *layer ) const;
 
@@ -110,11 +114,11 @@ class APP_EXPORT QgsMeshCalculatorDialog: public QDialog, private Ui::QgsMeshCal
     //! Quotes the dataset group name for calculator
     QString quoteDatasetGroupEntry( const QString group );
 
-    //! Gets all datasets groups from layer and populated list
-    void getDatasetGroupNames();
-
     //! Add file suffix if not present
-    QString addSuffix( const QString fileName ) const;
+    QString controlSuffix( const QString &fileName ) const;
+
+    //! Returns the current output suffix
+    QString currentOutputSuffix() const;
 
     //! Gets all mesh drivers that can persist datasets
     void getMeshDrivers();

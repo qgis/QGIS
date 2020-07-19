@@ -1,8 +1,1 @@
-<svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
-<g fill="#82a0b4" fill-rule="evenodd" stroke="#3c5a6e" stroke-linejoin="round" transform="translate(-18 -24)">
-<path d="m30 47l4.5-4.5h-3v-3h-3v3h-3z"/>
-<path d="m19 36l4.5 4.5v-3h3v-3h-3v-3z"/>
-<path d="m30 25l4.5 4.5h-3v3h-3v-3h-3z"/>
-<path d="m41 36l-4.5 4.5v-3h-3v-3h3v-3z"/>
-</g>
-</svg>
+<svg height="24" width="24" xmlns="http://www.w3.org/2000/svg"><g fill="#82a0b4" fill-rule="evenodd" stroke="#3c5a6e" stroke-linejoin="round" transform="translate(-18 -24)"><path d="m30 47 4.5-4.5h-3v-3h-3v3h-3z"/><path d="m19 36 4.5 4.5v-3h3v-3h-3v-3z"/><path d="m30 25 4.5 4.5h-3v3h-3v-3h-3z"/><path d="m41 36-4.5 4.5v-3h-3v-3h3v-3z"/></g></svg>

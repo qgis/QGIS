@@ -91,6 +91,9 @@ class CORE_EXPORT QgsTextBackgroundSettings
 
     ~QgsTextBackgroundSettings();
 
+    bool operator==( const QgsTextBackgroundSettings &other ) const;
+    bool operator!=( const QgsTextBackgroundSettings &other ) const;
+
     /**
      * Returns whether the background is enabled.
      * \see setEnabled()

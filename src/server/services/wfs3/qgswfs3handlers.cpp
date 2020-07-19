@@ -301,7 +301,7 @@ void QgsWfs3LandingPageHandler::handleRequest( const QgsServerApiContext &contex
   } );
   data["links"].push_back(
   {
-    { "href", href( context, "/api.json" )},
+    { "href", href( context, "/api" )},
     { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::service_desc ) },
     { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::OPENAPI3 ) },
     { "title", "API description" },
@@ -930,6 +930,20 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
       QStringLiteral( "results" ) };
   params.push_back( resultType );
 
+  // Sortby
+  QgsServerQueryStringParameter sortBy { QStringLiteral( "sortby" ), false,
+                                         QgsServerQueryStringParameter::Type::String,
+                                         QStringLiteral( "Sort results by the specified field" )
+                                       };
+  params.push_back( sortBy );
+
+  // Sortdesc
+  QgsServerQueryStringParameter sortDesc { QStringLiteral( "sortdesc" ), false,
+      QgsServerQueryStringParameter::Type::Boolean,
+      QStringLiteral( "Sort results in descending order, field name must be specified with 'sortby' parameter" ),
+      false };
+  params.push_back( sortDesc );
+
   return params;
 }
 
@@ -956,7 +970,9 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
       QStringLiteral( "bbox" ),
       QStringLiteral( "bbox-crs" ),
       QStringLiteral( "crs" ),
-      QStringLiteral( "datetime" )
+      QStringLiteral( "datetime" ),
+      QStringLiteral( "sortby" ),
+      QStringLiteral( "sortdesc" ),
     };
 
     json componentParameters = json::array();
@@ -1187,11 +1203,28 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       // Properties (subset attributes)
       const QStringList requestedProperties { params.value( QStringLiteral( "properties" ) ).toStringList( ) };
 
+      // Sorting
+      const QString sortBy { params.value( QStringLiteral( "sortby" ) ).toString( ) };
+      const bool sortDesc { params.value( QStringLiteral( "sortdesc" ) ).toBool( ) };
+
+      if ( !sortBy.isEmpty() )
+      {
+        if ( ! constPublishedFields.names().contains( QgsServerApiUtils::sanitizedFieldValue( sortBy ) ) )
+        {
+          throw QgsServerApiBadRequestException( QStringLiteral( "Invalid sortBy field '%1'" ).arg( QgsServerApiUtils::sanitizedFieldValue( sortBy ) ) );
+        }
+      }
+
 
       // ////////////////////////////////////////////////////////////////////////////////////////////////////
       // End of input control: inputs are valid, process the request
 
       QgsFeatureRequest featureRequest = filteredRequest( mapLayer, context, requestedProperties );
+
+      if ( ! sortBy.isEmpty() )
+      {
+        featureRequest.setOrderBy( { { { sortBy, ! sortDesc } } } );
+      }
 
       if ( ! filterRect.isNull() )
       {

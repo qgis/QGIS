@@ -99,6 +99,7 @@
 #include "qgsauxiliarystorage.h"
 #include "qgsgeometryoptions.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsruntimeprofiler.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -1199,7 +1200,7 @@ static const QgsPointSequence vectorPointXY2pointSequence( const QVector<QgsPoin
   while ( it != points.constEnd() )
   {
     pts.append( QgsPoint( *it ) );
-    it++;
+    ++it;
   }
   return pts;
 }
@@ -1631,6 +1632,10 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
   // reset style if loading default style, style is missing, or geometry type is has changed (and layer is valid)
   if ( !renderer() || !legend() || ( mValid && geomType != geometryType() ) || loadDefaultStyleFlag )
   {
+    std::unique_ptr< QgsScopedRuntimeProfile > profile;
+    if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
+      profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
+
     bool defaultLoadedFlag = false;
 
     if ( loadDefaultStyleFlag && isSpatial() && mDataProvider->capabilities() & QgsVectorDataProvider::CreateRenderer )
@@ -1714,6 +1719,10 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
     }
   }
 
+  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
+    profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
+
   mDataProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, mDataSource, options ) );
   if ( !mDataProvider )
   {
@@ -1734,6 +1743,8 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
     return false;
   }
 
+  if ( profile )
+    profile->switchTask( tr( "Read layer metadata" ) );
   if ( mDataProvider->capabilities() & QgsVectorDataProvider::ReadLayerMetadata )
   {
     setMetadata( mDataProvider->layerMetadata() );
@@ -1746,6 +1757,8 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   // get and store the feature type
   mWkbType = mDataProvider->wkbType();
 
+  if ( profile )
+    profile->switchTask( tr( "Read layer fields" ) );
   updateFields();
 
   if ( mProviderKey == QLatin1String( "postgres" ) )
@@ -3354,6 +3367,7 @@ bool QgsVectorLayer::commitChanges()
     delete mEditBuffer;
     mEditBuffer = nullptr;
     undoStack()->clear();
+    emit afterCommitChanges();
     emit editingStopped();
   }
   else
@@ -5322,6 +5336,12 @@ void QgsVectorLayer::emitDataChanged()
   mDataChangedFired = false;
 }
 
+void QgsVectorLayer::onAfterCommitChangesDependency()
+{
+  mDataChangedFired = true;
+  reload();
+}
+
 bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
 {
   QSet<QgsMapLayerDependency> deps;
@@ -5345,6 +5365,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
     disconnect( lyr, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayer::emitDataChanged );
     disconnect( lyr, &QgsVectorLayer::dataChanged, this, &QgsVectorLayer::emitDataChanged );
     disconnect( lyr, &QgsVectorLayer::repaintRequested, this, &QgsVectorLayer::triggerRepaint );
+    disconnect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::onAfterCommitChangesDependency );
   }
 
   // assign new dependencies
@@ -5365,6 +5386,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
     connect( lyr, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayer::emitDataChanged );
     connect( lyr, &QgsVectorLayer::dataChanged, this, &QgsVectorLayer::emitDataChanged );
     connect( lyr, &QgsVectorLayer::repaintRequested, this, &QgsVectorLayer::triggerRepaint );
+    connect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::onAfterCommitChangesDependency );
   }
 
   // if new layers are present, emit a data change

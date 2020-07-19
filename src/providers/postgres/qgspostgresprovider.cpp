@@ -222,55 +222,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   mConnectionRO->PQexecNR( QStringLiteral( "set client_min_messages to error" ) );
 #endif
 
-  //fill type names into sets
-  QList<NativeType> nativeTypes;
-
-  nativeTypes     // integer types
-      << QgsVectorDataProvider::NativeType( tr( "Whole number (smallint - 16bit)" ), QStringLiteral( "int2" ), QVariant::Int, -1, -1, 0, 0 )
-      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 32bit)" ), QStringLiteral( "int4" ), QVariant::Int, -1, -1, 0, 0 )
-      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64bit)" ), QStringLiteral( "int8" ), QVariant::LongLong, -1, -1, 0, 0 )
-      << QgsVectorDataProvider::NativeType( tr( "Decimal number (numeric)" ), QStringLiteral( "numeric" ), QVariant::Double, 1, 20, 0, 20 )
-      << QgsVectorDataProvider::NativeType( tr( "Decimal number (decimal)" ), QStringLiteral( "decimal" ), QVariant::Double, 1, 20, 0, 20 )
-
-      // floating point
-      << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "real" ), QVariant::Double, -1, -1, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "double precision" ), QVariant::Double, -1, -1, -1, -1 )
-
-      // string types
-      << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), QStringLiteral( "char" ), QVariant::String, 1, 255, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), QStringLiteral( "varchar" ), QVariant::String, 1, 255, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Text, case-insensitive unlimited length (citext)" ), QStringLiteral( "citext" ), QVariant::String, -1, -1, -1, -1 )
-
-      // date type
-      << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "timestamp without time zone" ), QVariant::DateTime, -1, -1, -1, -1 )
-
-      // complex types
-      << QgsVectorDataProvider::NativeType( tr( "Map (hstore)" ), QStringLiteral( "hstore" ), QVariant::Map, -1, -1, -1, -1, QVariant::String )
-      << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 32bit)" ), QStringLiteral( "int4[]" ), QVariant::List, -1, -1, -1, -1, QVariant::Int )
-      << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 64bit)" ), QStringLiteral( "int8[]" ), QVariant::List, -1, -1, -1, -1, QVariant::LongLong )
-      << QgsVectorDataProvider::NativeType( tr( "Array of number (double)" ), QStringLiteral( "double precision[]" ), QVariant::List, -1, -1, -1, -1, QVariant::Double )
-      << QgsVectorDataProvider::NativeType( tr( "Array of text" ), QStringLiteral( "text[]" ), QVariant::StringList, -1, -1, -1, -1, QVariant::String )
-
-      // boolean
-      << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
-
-      // binary (bytea)
-      << QgsVectorDataProvider::NativeType( tr( "Binary object (bytea)" ), QStringLiteral( "bytea" ), QVariant::ByteArray, -1, -1, -1, -1 )
-      ;
-
-  if ( connectionRO()->pgVersion() >= 90200 )
-  {
-    nativeTypes << QgsVectorDataProvider::NativeType( tr( "JSON (json)" ), QStringLiteral( "json" ), QVariant::Map, -1, -1, -1, -1, QVariant::String );
-
-    if ( connectionRO()->pgVersion() >= 90400 )
-    {
-      nativeTypes << QgsVectorDataProvider::NativeType( tr( "JSON (jsonb)" ), QStringLiteral( "jsonb" ), QVariant::Map, -1, -1, -1, -1, QVariant::String );
-    }
-  }
-  setNativeTypes( nativeTypes );
+  setNativeTypes( mConnectionRO->nativeTypes() );
 
   QString key;
   switch ( mPrimaryKeyType )
@@ -1123,8 +1075,7 @@ bool QgsPostgresProvider::loadFields()
       else if ( fieldTypeName == QLatin1String( "name" ) )
       {
         fieldSubType = QVariant::String;
-        // "name" type lenght is 64 according to: SELECT typlen FROM pg_type WHERE typname = 'name';
-        fieldSize = 64;
+        fieldSize = 63;
       }
       else
       {
@@ -4496,7 +4447,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
         continue;
       }
 
-      if ( !convertField( fld, options ) )
+      if ( !( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) && !convertField( fld, options ) )
       {
         if ( errorMessage )
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
@@ -4518,7 +4469,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
     if ( !provider->addAttributes( flist ) )
     {
       if ( errorMessage )
-        *errorMessage = QObject::tr( "Creation of fields failed" );
+        *errorMessage = QObject::tr( "Creation of fields failed:\n%1" ).arg( provider->errors().join( '\n' ) );
 
       return QgsVectorLayerExporter::ErrAttributeCreationFailed;
     }
@@ -5083,7 +5034,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                                 " AND f_table_schema=%2"
                                 " AND f_table_name=%3"
                                 " AND f_geometry_column=%4"
-                                " AND type=%5"
+                                " AND (type=%5 OR type IS NULL)"
                                 " AND styleName=%6" )
                        .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                        .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
@@ -5111,12 +5062,13 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                    ",styleSLD=XMLPARSE(DOCUMENT %13)"
                    ",description=%4"
                    ",owner=%5"
+                   ",type=%2"
                    " WHERE f_table_catalog=%6"
                    " AND f_table_schema=%7"
                    " AND f_table_name=%8"
                    " AND f_geometry_column=%9"
                    " AND styleName=%10"
-                   " AND type=%2" )
+                   " AND (type=%2 OR type IS NULL)" )
           .arg( useAsDefault ? "true" : "false" )
           .arg( wkbTypeString )
           .arg( QgsPostgresConn::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
@@ -5139,7 +5091,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                                         " AND f_table_schema=%2"
                                         " AND f_table_name=%3"
                                         " AND f_geometry_column=%4"
-                                        " AND type=%5" )
+                                        " AND (type=%5 OR type IS NULL)" )
                                .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                                .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                                .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
@@ -5164,6 +5116,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
 QString QgsPostgresProviderMetadata::loadStyle( const QString &uri, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
+  QString selectQmlQuery;
 
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
@@ -5195,20 +5148,39 @@ QString QgsPostgresProviderMetadata::loadStyle( const QString &uri, QString &err
 
   QString wkbTypeString = QgsPostgresConn::quotedValue( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( dsUri.wkbType() ) ) );
 
-  QString selectQmlQuery = QString( "SELECT styleQML"
-                                    " FROM layer_styles"
-                                    " WHERE f_table_catalog=%1"
-                                    " AND f_table_schema=%2"
-                                    " AND f_table_name=%3"
-                                    " AND f_geometry_column %4"
-                                    " AND type=%5"
-                                    " ORDER BY CASE WHEN useAsDefault THEN 1 ELSE 2 END"
-                                    ",update_time DESC LIMIT 1" )
-                           .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
-                           .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
-                           .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-                           .arg( geomColumnExpr )
-                           .arg( wkbTypeString );
+  // support layer_styles without type column < 3.14
+  if ( !columnExists( *conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+  {
+    selectQmlQuery = QString( "SELECT styleQML"
+                              " FROM layer_styles"
+                              " WHERE f_table_catalog=%1"
+                              " AND f_table_schema=%2"
+                              " AND f_table_name=%3"
+                              " AND f_geometry_column %4"
+                              " ORDER BY CASE WHEN useAsDefault THEN 1 ELSE 2 END"
+                              ",update_time DESC LIMIT 1" )
+                     .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
+                     .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
+                     .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
+                     .arg( geomColumnExpr );
+  }
+  else
+  {
+    selectQmlQuery = QString( "SELECT styleQML"
+                              " FROM layer_styles"
+                              " WHERE f_table_catalog=%1"
+                              " AND f_table_schema=%2"
+                              " AND f_table_name=%3"
+                              " AND f_geometry_column %4"
+                              " AND (type=%5 OR type IS NULL)"
+                              " ORDER BY CASE WHEN useAsDefault THEN 1 ELSE 2 END"
+                              ",update_time DESC LIMIT 1" )
+                     .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
+                     .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
+                     .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
+                     .arg( geomColumnExpr )
+                     .arg( wkbTypeString );
+  }
 
   QgsPostgresResult result( conn->PQexec( selectQmlQuery ) );
 
@@ -5243,7 +5215,7 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
                                         " AND f_table_schema=%2"
                                         " AND f_table_name=%3"
                                         " AND f_geometry_column=%4"
-                                        " AND type=%5"
+                                        " AND (type=%5 OR type IS NULL)"
                                         " ORDER BY useasdefault DESC, update_time DESC" )
                                .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                                .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )

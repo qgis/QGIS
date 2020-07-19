@@ -311,8 +311,9 @@ class CORE_EXPORT QgsPalLayerSettings
       MultiLeft = 0,
       MultiCenter,
       MultiRight,
-      MultiFollowPlacement /*!< Alignment follows placement of label, e.g., labels to the left of a feature
+      MultiFollowPlacement, /*!< Alignment follows placement of label, e.g., labels to the left of a feature
                                will be drawn with right alignment*/
+      MultiJustify, //!< Justified
     };
 
     //TODO QGIS 4.0 - Remove -- moved to QgsLabelEngineObstacleSettings
@@ -358,7 +359,7 @@ class CORE_EXPORT QgsPalLayerSettings
       AutoWrapLength = 101,
       MultiLineHeight = 32,
       MultiLineAlignment = 33,
-      TextOrientation = 104,
+      TextOrientation = 110,
       DirSymbDraw = 34,
       DirSymbLeft = 35,
       DirSymbRight = 36,

@@ -1,6 +1,7 @@
 {
   "name": "relation_aggregate",
   "type": "function",
+  "groups": ["Aggregates"],
   "description": "Returns an aggregate value calculated using all matching child features from a layer relation.",
   "arguments": [
 	{"arg":"relation", "description":"a string, representing a relation ID"},

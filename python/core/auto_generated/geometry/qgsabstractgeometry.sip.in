@@ -320,6 +320,18 @@ Draws the geometry using the specified QPainter.
 :param p: destination QPainter
 %End
 
+    virtual QPainterPath asQPainterPath() const = 0;
+%Docstring
+Returns the geometry represented as a QPainterPath.
+
+.. warning::
+
+   not all geometry subclasses can be represented by a QPainterPath, e.g.
+   points and multipoint geometries will return an empty path.
+
+.. versionadded:: 3.16
+%End
+
     virtual int vertexNumberFromVertexId( QgsVertexId id ) const = 0;
 %Docstring
 Returns the vertex number corresponding to a vertex ``id``.

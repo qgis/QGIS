@@ -53,7 +53,7 @@ mv ${LOG_FILE}.tmp ${LOG_FILE}
 for category in "style" "performance" "portability"; do
     if grep "${category}," ${LOG_FILE} >/dev/null; then
         echo "INFO: Issues in '${category}' category found, but not considered as making script to fail:"
-        grep "${category}," ${LOG_FILE} | grep -v -e "clarifyCalculation," -e "duplicateExpressionTernary," -e "redundantCondition," -e "unusedPrivateFunction,"
+        grep "${category}," ${LOG_FILE} | grep -v -e "clarifyCalculation," -e "duplicateExpressionTernary," -e "redundantCondition," -e "unusedPrivateFunction," -e "postfixOperator,"
         echo ""
     fi
 done
@@ -65,7 +65,7 @@ else
     UNUSED_PRIVATE_FUNCTION="unusedPrivateFunction"
 fi
 
-for category in "error" "warning" "clarifyCalculation" "duplicateExpressionTernary" "redundantCondition" "${UNUSED_PRIVATE_FUNCTION}"; do
+for category in "error" "warning" "clarifyCalculation" "duplicateExpressionTernary" "redundantCondition" "postfixOperator" "${UNUSED_PRIVATE_FUNCTION}"; do
     if test "${category}" != ""; then
         if grep "${category}," ${LOG_FILE}  >/dev/null; then
             echo "ERROR: Issues in '${category}' category found:"

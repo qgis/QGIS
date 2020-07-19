@@ -1,6 +1,7 @@
 {
   "name": "second",
   "type": "function",
+  "groups": ["Date and Time"],
   "description": "Extracts the seconds part from a datetime or time, or the number of seconds from an interval.",
   "variants": [
   { "variant": "Time variant",

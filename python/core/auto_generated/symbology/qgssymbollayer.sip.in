@@ -145,6 +145,7 @@ class QgsSymbolLayer
       PropertyDensityArea,
       PropertyFontFamily,
       PropertyFontStyle,
+      PropertyDashPatternOffset,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();

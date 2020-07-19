@@ -38,6 +38,8 @@
 #include "qgslockedfeature.h"
 #include "qgsvertexeditor.h"
 #include "qgsmapmouseevent.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsmessagebar.h"
 
 #include <QMenu>
 #include <QRubberBand>
@@ -514,6 +516,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     // only handling of selection rect being dragged
     QList<Vertex> vertices;
     QList<Vertex> selectedVertices;
+    bool showInvisibleFeatureWarning = false;
 
     QgsGeometry rubberBandGeometry = mSelectionRubberBand->asGeometry();
 
@@ -545,16 +548,41 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         continue;
       }
 
+      QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
+      context.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
+      std::unique_ptr< QgsFeatureRenderer > r;
+      if ( vlayer->renderer() )
+      {
+        r.reset( vlayer->renderer()->clone() );
+        r->startRender( context, vlayer->fields() );
+      }
+
       QgsRectangle layerRect = layerRubberBandGeometry.boundingBox();
       std::unique_ptr< QgsGeometryEngine > layerRubberBandEngine( QgsGeometry::createGeometryEngine( layerRubberBandGeometry.constGet() ) );
       layerRubberBandEngine->prepareGeometry();
 
+      QgsFeatureRequest request;
+      request.setFilterRect( layerRect );
+      request.setFlags( QgsFeatureRequest::ExactIntersect );
+      if ( r )
+        request.setSubsetOfAttributes( r->usedAttributes( context ), vlayer->fields() );
+      else
+        request.setNoAttributes();
+
       QgsFeature f;
-      QgsFeatureIterator fi = vlayer->getFeatures( QgsFeatureRequest( layerRect ).setNoAttributes() );
+      QgsFeatureIterator fi = vlayer->getFeatures( request );
       while ( fi.nextFeature( f ) )
       {
         if ( mLockedFeature && mLockedFeature->featureId() != f.id() )
           continue;  // with locked feature we only allow selection of its vertices
+
+        context.expressionContext().setFeature( f );
+        bool isFeatureInvisible = ( r && !r->willRenderFeature( f, context ) );
+        // If we've already determined that we have to show users a warning about selecting invisible vertices,
+        // then we don't need to check through the vertices for other invisible features.
+        // We'll be showing the warning anyway regardless of the outcome!
+        if ( isFeatureInvisible && showInvisibleFeatureWarning )
+          continue;
 
         bool isFeatureSelected = vlayer->selectedFeatureIds().contains( f.id() );
         QgsGeometry g = f.geometry();
@@ -563,6 +591,13 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           QgsPoint pt = g.vertexAt( i );
           if ( layerRubberBandEngine->contains( &pt ) )
           {
+            // we don't want to select invisible features,
+            // but if the user tried to selected one we want to warn him
+            if ( isFeatureInvisible )
+            {
+              showInvisibleFeatureWarning = true;
+              break;
+            }
             vertices << Vertex( vlayer, f.id(), i );
 
             if ( isFeatureSelected )
@@ -570,6 +605,16 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           }
         }
       }
+      if ( r )
+        r->stopRender( context );
+    }
+    if ( showInvisibleFeatureWarning )
+    {
+      QgisApp::instance()->messageBar()->pushMessage(
+        tr( "Invisible vertices were not selected" ),
+        tr( "Vertices belonging to features that are not displayed on the map canvas were not selected." ),
+        Qgis::Warning,
+        QgisApp::instance()->messageTimeout() );
     }
 
     // here's where we give precedence to vertices of selected features in case there's no bound (locked) feature

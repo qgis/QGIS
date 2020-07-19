@@ -1,6 +1,7 @@
 {
   "name": "array_contains",
   "type": "function",
+  "groups": ["Arrays"],
   "description": "Returns true if an array contains the given value.",
   "arguments": [ {"arg":"array","description":"an array"},
                  {"arg":"value","description":"the value to search"}],

@@ -728,6 +728,18 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \since QGIS 3.12
      */
     static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
+
+    /**
+     * \brief Creates a new symbol with size restricted to min/max size if original size is out of min/max range
+     * \param s the original symbol
+     * \param minSize the minimum size in mm
+     * \param maxSize the maximum size in mm
+     * \param context the render context
+     * \param width expected width, can be changed by the function
+     * \param height expected height, can be changed by this function
+     * \return 0 if size is within minSize/maxSize range. New symbol if size was out of min/max range. Caller takes ownership
+     */
+    static QgsSymbol *restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height );
 };
 
 class QPolygonF;

@@ -55,10 +55,13 @@ void QgsExpressionPreviewWidget::setCurrentFeature( const QgsFeature &feature )
     QgsFeature validFeature( feature );
     validFeature.setValid( true );
     mExpressionContext.setFeature( validFeature );
+    mFeaturePickerWidget->setEnabled( false );
+    mFeaturePickerWidget->setToolTip( tr( "No feature was found on this layer to evaluate the expression." ) );
   }
   else
   {
     mExpressionContext.setFeature( feature );
+    mFeaturePickerWidget->setEnabled( true );
   }
   refreshPreview();
 }

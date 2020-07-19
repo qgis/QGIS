@@ -64,7 +64,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
 
   int minDockWidth( fontMetrics().boundingRect( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ) ).width() );
 
-  mPropertiesDock = new QgsDockWidget( tr( "Formatting" ), this );
+  mPropertiesDock = new QgsDockWidget( tr( "Cell Contents" ), this );
   mPropertiesDock->setObjectName( QStringLiteral( "FormattingDock" ) );
   mPropertiesStack = new QgsPanelWidgetStack();
   mPropertiesDock->setWidget( mPropertiesStack );
@@ -78,6 +78,16 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
 
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::foregroundColorChanged, mTableWidget, &QgsTableEditorWidget::setSelectionForegroundColor );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::backgroundColorChanged, mTableWidget, &QgsTableEditorWidget::setSelectionBackgroundColor );
+
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::horizontalAlignmentChanged, mTableWidget, &QgsTableEditorWidget::setSelectionHorizontalAlignment );
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::verticalAlignmentChanged, mTableWidget, &QgsTableEditorWidget::setSelectionVerticalAlignment );
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::cellPropertyChanged, mTableWidget, &QgsTableEditorWidget::setSelectionCellProperty );
+
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::textFormatChanged, this, [ = ]
+  {
+    mTableWidget->setSelectionTextFormat( mFormattingWidget->textFormat() );
+  } );
+
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::numberFormatChanged, this, [ = ]
   {
     mTableWidget->setSelectionNumericFormat( mFormattingWidget->numericFormat() );
@@ -92,6 +102,10 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
     mFormattingWidget->setNumericFormat( mTableWidget->selectionNumericFormat(), mTableWidget->hasMixedSelectionNumericFormat() );
     mFormattingWidget->setRowHeight( mTableWidget->selectionRowHeight() );
     mFormattingWidget->setColumnWidth( mTableWidget->selectionColumnWidth() );
+    mFormattingWidget->setTextFormat( mTableWidget->selectionTextFormat() );
+    mFormattingWidget->setHorizontalAlignment( mTableWidget->selectionHorizontalAlignment() );
+    mFormattingWidget->setVerticalAlignment( mTableWidget->selectionVerticalAlignment() );
+    mFormattingWidget->setCellProperty( mTableWidget->selectionCellProperty() );
 
     updateActionNamesFromSelection();
 
@@ -211,6 +225,11 @@ QVariantList QgsTableEditorDialog::tableHeaders() const
 void QgsTableEditorDialog::setTableHeaders( const QVariantList &headers )
 {
   mTableWidget->setTableHeaders( headers );
+}
+
+void QgsTableEditorDialog::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
+{
+  mFormattingWidget->registerExpressionContextGenerator( generator );
 }
 
 void QgsTableEditorDialog::updateActionNamesFromSelection()

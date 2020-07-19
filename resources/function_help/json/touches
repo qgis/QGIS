@@ -1,6 +1,7 @@
 {
   "name": "touches",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Tests whether a geometry touches another. Returns true if the geometries have at least one point in common, but their interiors do not intersect.",
   "arguments": [ {"arg":"geometry a","description":"a geometry"},
                  {"arg":"geometry b","description":"a geometry"}],

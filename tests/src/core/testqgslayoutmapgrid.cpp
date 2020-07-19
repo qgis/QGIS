@@ -74,6 +74,8 @@ void TestQgsLayoutMapGrid::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
+
   mReport = QStringLiteral( "<h1>Composer Map Grid Tests</h1>\n" );
 }
 
@@ -110,7 +112,11 @@ void TestQgsLayoutMapGrid::grid()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+
+  QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setColor( QColor( 255, 0, 0 ) );
+  format.setOpacity( 150.0 / 255.0 );
+  map->grid()->setAnnotationTextFormat( format );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -130,10 +136,8 @@ void TestQgsLayoutMapGrid::grid()
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Bottom );
   map->grid()->setAnnotationDirection( QgsLayoutItemMapGrid::Horizontal, QgsLayoutItemMapGrid::Right );
   map->grid()->setAnnotationDirection( QgsLayoutItemMapGrid::Horizontal, QgsLayoutItemMapGrid::Bottom );
-  map->grid()->setAnnotationFontColor( QColor( 255, 0, 0, 150 ) );
   map->grid()->setBlendMode( QPainter::CompositionMode_Overlay );
   map->updateBoundingRect();
-  qWarning() << "grid annotation font: " << map->grid()->annotationFont().toString() << " exactMatch:" << map->grid()->annotationFont().exactMatch();
   QgsLayoutChecker checker( QStringLiteral( "composermap_grid" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
 
@@ -154,7 +158,7 @@ void TestQgsLayoutMapGrid::reprojected()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -197,7 +201,7 @@ void TestQgsLayoutMapGrid::crossGrid()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -235,7 +239,7 @@ void TestQgsLayoutMapGrid::markerGrid()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -272,7 +276,7 @@ void TestQgsLayoutMapGrid::frameOnly()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -313,7 +317,9 @@ void TestQgsLayoutMapGrid::zebraStyle()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setColor( QColor( 0, 0, 0, 0 ) );
+  map->grid()->setAnnotationTextFormat( format );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -323,7 +329,6 @@ void TestQgsLayoutMapGrid::zebraStyle()
   l.addLayoutItem( map );
 
   map->setExtent( QgsRectangle( 785462.375, 3341423.125, 789262.375, 3343323.125 ) ); //zoom in
-  map->grid()->setAnnotationFontColor( QColor( 0, 0, 0, 0 ) );
   map->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::Zebra );
@@ -353,7 +358,9 @@ void TestQgsLayoutMapGrid::zebraStyleSides()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setColor( QColor( 0, 0, 0, 0 ) );
+  map->grid()->setAnnotationTextFormat( format );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -363,7 +370,6 @@ void TestQgsLayoutMapGrid::zebraStyleSides()
   l.addLayoutItem( map );
 
   map->setExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
-  map->grid()->setAnnotationFontColor( QColor( 0, 0, 0, 0 ) );
   map->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::Zebra );
@@ -415,7 +421,9 @@ void TestQgsLayoutMapGrid::zebraStyleMargin()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setColor( QColor( 0, 0, 0, 0 ) );
+  map->grid()->setAnnotationTextFormat( format );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -425,7 +433,6 @@ void TestQgsLayoutMapGrid::zebraStyleMargin()
   l.addLayoutItem( map );
 
   map->setExtent( QgsRectangle( 785462.375, 3341423.125, 789262.375, 3343323.125 ) ); //zoom in
-  map->grid()->setAnnotationFontColor( QColor( 0, 0, 0, 0 ) );
   map->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::Zebra );
@@ -456,7 +463,9 @@ void TestQgsLayoutMapGrid::zebraStyleNautical()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setColor( QColor( 0, 0, 0, 0 ) );
+  map->grid()->setAnnotationTextFormat( format );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -466,7 +475,6 @@ void TestQgsLayoutMapGrid::zebraStyleNautical()
   l.addLayoutItem( map );
 
   map->setExtent( QgsRectangle( 785462.375, 3341423.125, 789262.375, 3343323.125 ) ); //zoom in
-  map->grid()->setAnnotationFontColor( QColor( 0, 0, 0, 0 ) );
   map->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::ZebraNautical );
@@ -497,7 +505,9 @@ void TestQgsLayoutMapGrid::frameDivisions()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setColor( QColor( 0, 0, 0, 0 ) );
+  map->grid()->setAnnotationTextFormat( format );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -511,7 +521,6 @@ void TestQgsLayoutMapGrid::frameDivisions()
   map->setMapRotation( 45.0 );
 
   //setup defaults
-  map->grid()->setAnnotationFontColor( QColor( 0, 0, 0, 0 ) );
   map->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::Zebra );
   map->grid()->setFrameWidth( 10 );
@@ -561,7 +570,9 @@ void TestQgsLayoutMapGrid::annotationFilter()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setColor( QColor( 0, 0, 0, 0 ) );
+  map->grid()->setAnnotationTextFormat( format );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -575,12 +586,10 @@ void TestQgsLayoutMapGrid::annotationFilter()
   map->setMapRotation( 45.0 );
 
   //setup defaults
-  map->grid()->setAnnotationFontColor( QColor( 0, 0, 0, 0 ) );
   map->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
   map->grid()->setEnabled( true );
   map->grid()->setAnnotationEnabled( true );
-  map->grid()->setAnnotationFontColor( Qt::black );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Left );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Right );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Top );
@@ -622,7 +631,7 @@ void TestQgsLayoutMapGrid::interiorTicks()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -660,7 +669,7 @@ void TestQgsLayoutMapGrid::interiorTicksMargin()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -699,7 +708,7 @@ void TestQgsLayoutMapGrid::interiorTicksAnnotated()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -717,7 +726,6 @@ void TestQgsLayoutMapGrid::interiorTicksAnnotated()
   map->grid()->setEnabled( true );
   map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
   map->grid()->setAnnotationEnabled( true );
-  map->grid()->setAnnotationFontColor( Qt::black );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Left );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Right );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Top );
@@ -755,7 +763,7 @@ void TestQgsLayoutMapGrid::exteriorTicks()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -793,7 +801,7 @@ void TestQgsLayoutMapGrid::exteriorTicksMargin()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -832,7 +840,7 @@ void TestQgsLayoutMapGrid::exteriorTicksAnnotated()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -850,7 +858,6 @@ void TestQgsLayoutMapGrid::exteriorTicksAnnotated()
   map->grid()->setEnabled( true );
   map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
   map->grid()->setAnnotationEnabled( true );
-  map->grid()->setAnnotationFontColor( Qt::black );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Left );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Right );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Top );
@@ -888,7 +895,7 @@ void TestQgsLayoutMapGrid::interiorExteriorTicks()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -926,7 +933,7 @@ void TestQgsLayoutMapGrid::interiorExteriorTicksMargin()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -965,7 +972,7 @@ void TestQgsLayoutMapGrid::interiorExteriorTicksAnnotated()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -983,7 +990,6 @@ void TestQgsLayoutMapGrid::interiorExteriorTicksAnnotated()
   map->grid()->setEnabled( true );
   map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
   map->grid()->setAnnotationEnabled( true );
-  map->grid()->setAnnotationFontColor( Qt::black );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Left );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Right );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Top );
@@ -1021,7 +1027,7 @@ void TestQgsLayoutMapGrid::lineBorder()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -1059,7 +1065,7 @@ void TestQgsLayoutMapGrid::lineBorderMargin()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -1098,7 +1104,7 @@ void TestQgsLayoutMapGrid::lineBorderNautical()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -1137,7 +1143,7 @@ void TestQgsLayoutMapGrid::lineBorderAnnotated()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -1155,7 +1161,6 @@ void TestQgsLayoutMapGrid::lineBorderAnnotated()
   map->grid()->setEnabled( true );
   map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
   map->grid()->setAnnotationEnabled( true );
-  map->grid()->setAnnotationFontColor( Qt::black );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Left );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Right );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Top );
@@ -1193,7 +1198,7 @@ void TestQgsLayoutMapGrid::annotationFormats()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -1257,7 +1262,7 @@ void TestQgsLayoutMapGrid::descendingAnnotations()
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
   map->setBackgroundColor( QColor( 150, 100, 100 ) );
-  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   map->grid()->setAnnotationPrecision( 0 );
   map->grid()->setIntervalX( 2000 );
   map->grid()->setIntervalY( 2000 );
@@ -1272,7 +1277,6 @@ void TestQgsLayoutMapGrid::descendingAnnotations()
   map->grid()->setEnabled( true );
   map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
   map->grid()->setAnnotationEnabled( true );
-  map->grid()->setAnnotationFontColor( Qt::black );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Left );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Right );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Top );

@@ -1,6 +1,7 @@
 {
   "name": "geometry_n",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns a specific geometry from a geometry collection, or null if the input geometry is not a collection.",
   "arguments": [ {"arg":"geometry","description":"geometry collection"},
   {"arg":"index","description":"index of geometry to return, where 1 is the first geometry in the collection"} ],

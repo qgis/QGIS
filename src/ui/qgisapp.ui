@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1064</width>
-     <height>24</height>
+     <height>20</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -604,6 +604,8 @@
    <addaction name="mActionDecreaseBrightness"/>
    <addaction name="mActionIncreaseContrast"/>
    <addaction name="mActionDecreaseContrast"/>
+   <addaction name="mActionIncreaseGamma"/>
+   <addaction name="mActionDecreaseGamma"/>
   </widget>
   <widget class="QToolBar" name="mLabelToolBar">
    <property name="windowTitle">
@@ -3335,6 +3337,30 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="text">
     <string>Georeferencer…</string>
+   </property>
+  </action>
+  <action name="mActionDecreaseGamma">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDecreaseGamma.svg</normaloff>:/images/themes/default/mActionDecreaseGamma.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Decrease Gamma</string>
+   </property>
+   <property name="toolTip">
+    <string>Decrease Gamma</string>
+   </property>
+  </action>
+  <action name="mActionIncreaseGamma">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIncreaseGamma.svg</normaloff>:/images/themes/default/mActionIncreaseGamma.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Increase Gamma</string>
+   </property>
+   <property name="toolTip">
+    <string>Increase Gamma</string>
    </property>
   </action>
  </widget>
