@@ -100,6 +100,10 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     QVector<Qgs3DExportObject *> processSceneLoaderGeometries( Qt3DRender::QSceneLoader *sceneLoader );
     //! Constructs Qgs3DExportObject from geometry renderer
     Qgs3DExportObject *processGeometryRenderer( Qt3DRender::QGeometryRenderer *mesh, float sceneScale = 1.0f, QVector3D sceneTranslation = QVector3D( 0.0f, 0.0f, 0.0f ) );
+    //! Constricts Qgs3DExportObject from line entity
+    QVector<Qgs3DExportObject *> processLines( Qt3DCore::QEntity *entity );
+    //! Constricts Qgs3DExportObject from billboard point entity
+    Qgs3DExportObject *processPoints( Qt3DCore::QEntity *entity );
 
     //! Returns a tile entity that contains the geometry to be exported and necessary scaling parameters
     QgsTerrainTileEntity *getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );

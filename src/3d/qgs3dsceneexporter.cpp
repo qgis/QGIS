@@ -74,13 +74,13 @@
 #include "qgspoint3dsymbol.h"
 #include "qgsrulebased3drenderer.h"
 #include "qgs3dutils.h"
+#include "qgsbillboardgeometry.h"
 
 #include <numeric>
 
 template<typename T>
 QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute, QByteArray data )
 {
-//  QByteArray data = attribute->buffer()->data();
   uint bytesOffset = attribute->byteOffset();
   uint bytesStride = attribute->byteStride();
   uint vertexSize = attribute->vertexSize();
@@ -104,7 +104,7 @@ QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute, QByteArray data 
 }
 
 template<typename T>
-QVector<uint> getIndexData( QByteArray data )
+QVector<uint> _getIndexDataImplementation( QByteArray data )
 {
   QVector<uint> result;
   for ( int i = 0; i < data.size(); i += sizeof( T ) )
@@ -112,14 +112,34 @@ QVector<uint> getIndexData( QByteArray data )
     // maybe a problem with indienness can happen?
     T v;
     char *vArr = ( char * )&v;
-    for ( T k = 0; k < sizeof( T ); ++k )
-    {
+    for ( unsigned long k = 0; k < sizeof( T ); ++k )
       vArr[k] = data.at( i + k );
-    }
     result.push_back( ( uint ) v );
   }
-
   return result;
+}
+
+QVector<uint> getIndexData( Qt3DRender::QAttribute *indexAttribute, QByteArray data )
+{
+  switch ( indexAttribute->vertexBaseType() )
+  {
+    case Qt3DRender::QAttribute::VertexBaseType::Int:
+      return _getIndexDataImplementation<int>( data );
+    case Qt3DRender::QAttribute::VertexBaseType::UnsignedInt:
+      return _getIndexDataImplementation<uint>( data );
+    case Qt3DRender::QAttribute::VertexBaseType::Short:
+      return _getIndexDataImplementation<short>( data );
+    case Qt3DRender::QAttribute::VertexBaseType::UnsignedShort:
+      return _getIndexDataImplementation<ushort>( data );
+    case Qt3DRender::QAttribute::VertexBaseType::Byte:
+      return _getIndexDataImplementation<char>( data );
+    case Qt3DRender::QAttribute::VertexBaseType::UnsignedByte:
+      return _getIndexDataImplementation<uchar>( data );
+    default:
+      qDebug() << "WARNING: Probably trying to get index data using an attribute that has vertex data at " << __FILE__ << ":" << __LINE__;
+      break;
+  }
+  return QVector<uint>();
 }
 
 QByteArray getData( Qt3DRender::QBuffer *buffer )
@@ -224,7 +244,9 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
         const QgsLine3DSymbol *lineSymbol = dynamic_cast<const QgsLine3DSymbol *>( symbol );
         if ( lineSymbol->renderAsSimpleLines() )
         {
-          //TODO: handle simple line geometries in some way
+          QVector<Qgs3DExportObject *> objs = processLines( entity );
+          mObjects << objs;
+          return objs.size() != 0;
         }
         else
         {
@@ -270,6 +292,9 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
         }
         else if ( pointSymbol->shape() == QgsPoint3DSymbol::Billboard )
         {
+          Qgs3DExportObject *obj = processPoints( entity );
+          if ( obj != nullptr ) mObjects << obj;
+          if ( obj != nullptr ) return true;
         }
         else
         {
@@ -348,7 +373,6 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getMeshTerrainEntity( QgsTerrainEntity
   QgsMeshTerrainTileLoader *loader = qobject_cast<QgsMeshTerrainTileLoader *>( generator->createChunkLoader( node ) );
   // TODO: export textures
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
-  delete generator;
   return tileEntity;
 }
 
@@ -376,7 +400,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity )
   // Generate index data
   Qt3DRender::QAttribute *indexAttribute = tileGeometry->indexAttribute();
   QByteArray indexBytes = getData( indexAttribute->buffer() );
-  QVector<uint> indexesBuffer = getIndexData<quint16>( indexBytes );
+  QVector<uint> indexesBuffer = getIndexData( indexAttribute,  indexBytes );
 
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( QStringLiteral( "Flat_tile" ) ), "", this );
   mObjects.push_back( object );
@@ -387,7 +411,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity )
 
   if ( mExportNormals )
   {
-    // Evert
+    // Everts
     QVector<float> normalsBuffer;
     for ( int i = 0; i < positionBuffer.size(); i += 3 ) normalsBuffer << 0.0f << 1.0f << 0.0f;
     object->setupNormalCoordinates( normalsBuffer );
@@ -428,7 +452,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity )
 
   Qt3DRender::QAttribute *indexAttribute = tileGeometry->indexAttribute();
   QByteArray indexBytes = indexAttribute->buffer()->data();
-  QVector<unsigned int> indexBuffer = getIndexData<uint>( indexBytes );
+  QVector<unsigned int> indexBuffer = getIndexData( indexAttribute, indexBytes );
 
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( QStringLiteral( "DEM_tile" ) ), "", this );
   mObjects.push_back( object );
@@ -487,7 +511,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
     QByteArray vertexBytes = getData( positionAttribute->buffer() );
     QByteArray indexBytes = getData( indexAttribute->buffer() );
     QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
-    QVector<uint> indexData = getIndexData<quint16>( indexBytes );
+    QVector<uint> indexData = getIndexData( indexAttribute, indexBytes );
 
     Qt3DRender::QAttribute *instanceDataAttribute = findAttribute( geometry,  QStringLiteral( "pos" ), Qt3DRender::QAttribute::VertexAttribute );
     QByteArray instancePositionBytes = getData( instanceDataAttribute->buffer() );
@@ -563,8 +587,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   if ( indexAttribute != nullptr )
   {
     indexBytes = getData( indexAttribute->buffer() );
-    if ( indexAttribute->vertexBaseType() == Qt3DRender::QAttribute::VertexBaseType::UnsignedInt ) indexData = getIndexData<quint32>( indexBytes );
-    if ( indexAttribute->vertexBaseType() == Qt3DRender::QAttribute::VertexBaseType::UnsignedShort ) indexData = getIndexData<quint16>( indexBytes );
+    indexData = getIndexData( indexAttribute, indexBytes );
   }
 
   if ( positionAttribute != nullptr )
@@ -598,6 +621,67 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   }
 
   return object;
+}
+
+QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity *entity )
+{
+  QVector<Qgs3DExportObject *> objs;
+  QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
+  for ( Qt3DRender::QGeometryRenderer *renderer : renderers )
+  {
+    if ( renderer->primitiveType() != Qt3DRender::QGeometryRenderer::LineStripAdjacency ) continue;
+    Qt3DRender::QGeometry *geom = renderer->geometry();
+    Qt3DRender::QAttribute *positionAttribute = findAttribute( geom, Qt3DRender::QAttribute::defaultPositionAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
+    Qt3DRender::QAttribute *indexAttribute = nullptr;
+    for ( Qt3DRender::QAttribute *attribute : geom->attributes() )
+    {
+      if ( attribute->attributeType() == Qt3DRender::QAttribute::IndexAttribute )
+      {
+        indexAttribute = attribute;
+        break;
+      }
+    }
+    if ( positionAttribute == nullptr || indexAttribute == nullptr )
+    {
+      qDebug() << "WARNING: position or index attribute was not found at " << __FILE__ << ":" << __LINE__;
+      continue;
+    }
+
+    QByteArray vertexBytes = getData( positionAttribute->buffer() );
+    QByteArray indexBytes = getData( indexAttribute->buffer() );
+    QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
+    QVector<uint> indexData = getIndexData( indexAttribute, indexBytes );
+
+    Qgs3DExportObject *exportObject = new Qgs3DExportObject( getObjectName( "line" ), "", this );
+    exportObject->setType( Qgs3DExportObject::LineStrip );
+    exportObject->setupPositionCoordinates( positionData );
+    exportObject->setupLine( indexData );
+
+    objs.push_back( exportObject );
+  }
+  return objs;
+}
+
+Qgs3DExportObject *Qgs3DSceneExporter::processPoints( Qt3DCore::QEntity *entity )
+{
+  QVector<float> points;
+  QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
+  for ( Qt3DRender::QGeometryRenderer *renderer : renderers )
+  {
+    Qt3DRender::QGeometry *geometry = qobject_cast<QgsBillboardGeometry *>( renderer->geometry() );
+    if ( geometry == nullptr )
+      continue;
+    Qt3DRender::QAttribute *positionAttribute = findAttribute( geometry, Qt3DRender::QAttribute::defaultPositionAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
+    QByteArray positionBytes = getData( positionAttribute->buffer() );
+    if ( positionBytes.size() == 0 )
+      continue;
+    QVector<float> positions = getAttributeData<float>( positionAttribute, positionBytes );
+    points << positions;
+  }
+  Qgs3DExportObject *obj = new Qgs3DExportObject( getObjectName( "points" ), "", this );
+  obj->setType( Qgs3DExportObject::Points );
+  obj->setupPositionCoordinates( points );
+  return obj;
 }
 
 void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath )

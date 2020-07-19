@@ -36,6 +36,12 @@ class Qgs3DExportObject : public QObject
 {
     Q_OBJECT
   public:
+    enum ObjectType
+    {
+      TriangularFaces,
+      LineStrip,
+      Points
+    };
 
     /**
      * \brief Qgs3DExportObject
@@ -54,6 +60,11 @@ class Qgs3DExportObject : public QObject
     //! Sets the object name
     void setName( const QString &name ) { mName = name; }
 
+    //! Returns the object type
+    ObjectType type() const { return mType; }
+    //! Sets the object type
+    void setType( ObjectType type ) { mType = type; }
+
     //! Returns whether object edges will look smooth
     bool smoothEdges() { return mSmoothEdges; }
     //! Sets whether triangles edges will look smooth
@@ -63,8 +74,8 @@ class Qgs3DExportObject : public QObject
     void setupPositionCoordinates( const QVector<float> &positionsBuffer, float scale = 1.0f, const QVector3D translation = QVector3D( 0, 0, 0 ) );
     //! Sets the faces in facesIndexes to the faces in the object
     void setupFaces( const QVector<uint> &facesIndexes );
-    //! Sets the faces in facesIndexes to the faces in the object
-    void setupFaces( const QVector<quint16> &facesIndexes );
+    //! sets line vertex indexes
+    void setupLine( const QVector<uint> &facesIndexes );
 
     //! Sets normal coordinates for each vertex
     void setupNormalCoordinates( const QVector<float> &normalsBuffer );
@@ -95,6 +106,7 @@ class Qgs3DExportObject : public QObject
 
   private:
     QString mName;
+    ObjectType mType = ObjectType::TriangularFaces;
     QString mParentName;
     QVector<float> mVertexPosition;
     QVector<float> mNormals;

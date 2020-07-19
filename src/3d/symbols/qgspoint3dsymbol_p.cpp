@@ -244,6 +244,7 @@ Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const
   instanceDataAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
   instanceDataAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
   instanceDataAttribute->setVertexSize( 3 );
+  instanceDataAttribute->setByteOffset( 0 );
   instanceDataAttribute->setDivisor( 1 );
   instanceDataAttribute->setBuffer( instanceBuffer );
   instanceDataAttribute->setCount( count );

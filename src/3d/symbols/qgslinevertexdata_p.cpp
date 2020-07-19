@@ -91,16 +91,21 @@ Qt3DRender::QGeometry *QgsLineVertexData::createGeometry( Qt3DCore::QNode *paren
   positionAttribute->setBuffer( vertexBuffer );
   positionAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
   positionAttribute->setVertexSize( 3 );
+  positionAttribute->setByteStride( 3 * sizeof( float ) );
+  positionAttribute->setByteOffset( 0 );
   positionAttribute->setName( Qt3DRender::QAttribute::defaultPositionAttributeName() );
 
   Qt3DRender::QAttribute *indexAttribute = new Qt3DRender::QAttribute( parent );
   indexAttribute->setAttributeType( Qt3DRender::QAttribute::IndexAttribute );
   indexAttribute->setBuffer( indexBuffer );
+  indexAttribute->setByteOffset( 0 );
+  indexAttribute->setByteStride( sizeof( uint ) );
   indexAttribute->setVertexBaseType( Qt3DRender::QAttribute::UnsignedInt );
 
   Qt3DRender::QGeometry *geom = new Qt3DRender::QGeometry;
   geom->addAttribute( positionAttribute );
   geom->addAttribute( indexAttribute );
+
   return geom;
 }
 

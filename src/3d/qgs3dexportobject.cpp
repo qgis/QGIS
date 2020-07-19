@@ -65,9 +65,9 @@ void Qgs3DExportObject::setupFaces( const QVector<uint> &facesIndexes )
   insertIndexData<uint>( mIndexes, facesIndexes );
 }
 
-void Qgs3DExportObject::setupFaces( const QVector<quint16> &facesIndexes )
+void Qgs3DExportObject::setupLine( const QVector<uint> &lineIndexes )
 {
-  insertIndexData<quint16>( mIndexes, facesIndexes );
+  for ( int i = 0; i < mVertexPosition.size(); i += 3 ) mIndexes << i / 3 + 1;
 }
 
 void Qgs3DExportObject::setupNormalCoordinates( const QVector<float> &normalsBuffer )
@@ -94,6 +94,7 @@ void Qgs3DExportObject::setupPhongMaterial( const QgsPhongMaterialSettings &mate
 
 void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ )
 {
+  if ( mType != TriangularFaces ) return;
   for ( unsigned int vertice : mIndexes )
   {
     int heightIndex = ( vertice - 1 ) * 3 + 1;
@@ -159,14 +160,30 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
     return QString( "%1" ).arg( negativeIndex );
   };
 
-  // Construct faces
-  for ( int i = 0; i < mIndexes.size(); i += 3 )
+  if ( mType == TriangularFaces )
   {
-    if ( mIndexes[i] == mIndexes[i + 1] && mIndexes[i + 1] == mIndexes[i + 2] )
-      continue;
-    out << "f " << getVertexIndex( mIndexes[i] );
-    out << " " << getVertexIndex( mIndexes[i + 1] );
-    out << " " << getVertexIndex( mIndexes[i + 2] );
+    // Construct triangular faces
+    for ( int i = 0; i < mIndexes.size(); i += 3 )
+    {
+      if ( mIndexes[i] == mIndexes[i + 1] && mIndexes[i + 1] == mIndexes[i + 2] )
+        continue;
+      out << "f " << getVertexIndex( mIndexes[i] );
+      out << " " << getVertexIndex( mIndexes[i + 1] );
+      out << " " << getVertexIndex( mIndexes[i + 2] );
+      out << "\n";
+    }
+  }
+  else if ( mType == LineStrip )
+  {
+    out << "l";
+    for ( int i : mIndexes ) out << " " << getVertexIndex( i );
+    out << "\n";
+  }
+  else if ( mType == Points )
+  {
+    out << "p";
+    for ( int i = 0; i < mVertexPosition.size(); i += 3 )
+      out << " " << getVertexIndex( i / 3 + 1 );
     out << "\n";
   }
 }
