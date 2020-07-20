@@ -565,7 +565,10 @@ QVariant QgsNewVectorTableFieldModel::data( const QModelIndex &index, int role )
           {
             return field.length();
           }
+          default:
+            break;
         }
+        return QgsFieldModel::data( index, role );
       }
       case Qt::ItemDataRole::TextAlignmentRole:
       {
@@ -577,10 +580,9 @@ QVariant QgsNewVectorTableFieldModel::data( const QModelIndex &index, int role )
             return Qt::AlignmentFlag::AlignVCenter + Qt::AlignmentFlag::AlignHCenter;
           }
           default:
-          {
-            return QgsFieldModel::data( index, role );
-          }
+            break;
         }
+        return QgsFieldModel::data( index, role );
       }
       default:
       {
