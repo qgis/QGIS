@@ -64,8 +64,12 @@ class QgsMapToolCaptureRubberband: public QgsGeometryRubberBand
     /**
      * Resets the rubber band with the specified geometry type
      * that must be line geometry or polygon geometry.
+     * \a firstPolygonPoint is the first point that will be used to render the polygon rubber band (if \a geomType is PolygonGeometry)
      */
-    void reset( QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry, QgsWkbTypes::Type stringType = QgsWkbTypes::LineString );
+    void reset( QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry, QgsWkbTypes::Type stringType = QgsWkbTypes::LineString, const QgsPoint &firstPolygonPoint = QgsPoint() );
+
+    //! Sets the geometry type of the rubberband without removing already existing points
+    void setRubberBandGeometryType( QgsWkbTypes::GeometryType geomType );
 
     //! Adds point to the rubber band
     void addPoint( const QgsPoint &point, bool doUpdate = true );
@@ -78,11 +82,6 @@ class QgsMapToolCaptureRubberband: public QgsGeometryRubberBand
 
     //! Returns the points count in the rubber band (except the first point if polygon)
     int pointsCount();
-
-    /**
-     * Sets the first point that serves to render polygon rubber band
-     */
-    void setFirstPolygonPoint( const QgsPoint &point );
 
     //! Returns the type of the curve (linear string or circular string)
     QgsWkbTypes::Type stringType() const;
@@ -379,11 +378,14 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool tracingAddVertex( const QgsPointXY &point );
 
     //! create a curve rubber band
-    QgsMapToolCaptureRubberband *createCurveRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const;
+    QgsMapToolCaptureRubberband *createCurveRubberBand() const;
 
     //! Returns extemity point of the captured curve in map coordinates
-    QgsPoint firstCaptureMapPoint();
-    QgsPoint lastCaptureMapPoint();
+    QgsPoint firstCapturedMapPoint();
+    QgsPoint lastCapturedMapPoint();
+
+    //! Reset the
+    void resetRubberBand();
 
   private:
     //! The capture mode in which this tool operates

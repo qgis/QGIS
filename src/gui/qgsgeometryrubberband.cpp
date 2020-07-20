@@ -75,6 +75,11 @@ QgsWkbTypes::GeometryType QgsGeometryRubberBand::geometryType() const
   return mGeometryType;
 }
 
+void QgsGeometryRubberBand::setGeometryType( const QgsWkbTypes::GeometryType &geometryType )
+{
+  mGeometryType = geometryType;
+}
+
 void QgsGeometryRubberBand::drawVertex( QPainter *p, double x, double y )
 {
   qreal s = ( mIconSize - 1 ) / 2.0;

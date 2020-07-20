@@ -121,6 +121,9 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     //! Returns which geometry is handled by the rubber band, polygon or line
     QgsWkbTypes::GeometryType geometryType() const;
 
+    //! Sets which geometry is handled by the rubber band, polygon or line
+    void setGeometryType( const QgsWkbTypes::GeometryType &geometryType );
+
   private:
     std::unique_ptr<QgsAbstractGeometry> mGeometry = nullptr;
     QBrush mBrush;
