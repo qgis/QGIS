@@ -3560,14 +3560,13 @@ long QgsPostgresProvider::featureCount() const
     {
       // parse explain output to estimate feature count
       // we don't use pg_class reltuples because it returns 0 for view
-      sql = QStringLiteral( "EXPLAIN (FORMAT JSON) SELECT count(*) FROM %1%2" ).arg( mQuery, filterWhereClause() );
+      sql = QStringLiteral( "EXPLAIN (FORMAT JSON) SELECT 1 FROM %1%2" ).arg( mQuery, filterWhereClause() );
       QgsPostgresResult result( connectionRO()->PQexec( sql ) );
 
       const QString json = result.PQgetvalue( 0, 0 );
       const QVariantList explain = QgsJsonUtils::parseJson( json ).toList();
-      const QVariantMap countPlan = explain.count() ? explain[0].toMap().value( "Plan" ).toMap() : QVariantMap();
-      const QVariantList queryPlan = countPlan.value( "Plans" ).toList();
-      const QVariant nbRows = queryPlan.count() ? queryPlan[0].toMap().value( "Plan Rows" ) : QVariant();
+      const QVariantMap countPlan = !explain.isEmpty() ? explain[0].toMap().value( "Plan" ).toMap() : QVariantMap();
+      const QVariant nbRows = countPlan.value( "Plan Rows" );
 
       if ( nbRows.isValid() )
         num = nbRows.toInt();
