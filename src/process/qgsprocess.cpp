@@ -122,7 +122,7 @@ std::unique_ptr< QgsPythonUtils > QgsProcessingExec::loadPythonSupport()
     pythonlib.setFileName( pythonlibName );
     if ( !pythonlib.load() )
     {
-      std::cerr << QStringLiteral( "Couldn't load Python support library: %1" ).arg( pythonlib.errorString() ).toLocal8Bit().constData();
+      std::cerr << QStringLiteral( "Couldn't load Python support library: %1\n" ).arg( pythonlib.errorString() ).toLocal8Bit().constData();
       return nullptr;
     }
   }
@@ -132,7 +132,7 @@ std::unique_ptr< QgsPythonUtils > QgsProcessingExec::loadPythonSupport()
   if ( !pythonlib_inst )
   {
     //using stderr on purpose because we want end users to see this [TS]
-    std::cerr << "Couldn't resolve python support library's instance() symbol.";
+    std::cerr << "Couldn't resolve Python support library's instance() symbol.\n";
     return nullptr;
   }
 
@@ -158,7 +158,7 @@ int QgsProcessingExec::run( const QStringList &args )
     if ( level == Qgis::Critical )
     {
       if ( !message.contains( QLatin1String( "DeprecationWarning:" ) ) )
-        std::cerr << message.toLocal8Bit().constData();
+        std::cerr << message.toLocal8Bit().constData() << '\n';
     }
   } );
 
