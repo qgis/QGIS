@@ -135,7 +135,7 @@ void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
   }
 
   if ( mTempRubberBand )
-    mTempRubberBand->setRubberBandGeometryType( CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
+    mTempRubberBand->setRubberBandGeometryType( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
 
   resetRubberBand();
 }
@@ -271,14 +271,17 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
   // Move the last point of the captured curve to the first point on the trace string (necessary if there is offset)
   QgsVertexId lastVertexId( 0, 0, mCaptureCurve.numPoints() - 1 );
   mCaptureCurve.moveVertex( lastVertexId, layerPoints.first() );
+  mSnappingMatches.removeLast();
+  mSnappingMatches.append( QgsPointLocator::Match() );
 
+  int pointBefore = mCaptureCurve.numPoints();
   mCaptureCurve.addCurve( new QgsLineString( layerPoints ) );
 
   resetRubberBand();
 
   // Curves de-approximation
   QgsSettings settings;
-  //if ( settings.value( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false ).toBool() )
+  if ( settings.value( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false ).toBool() )
   {
     // If the tool and the layer support curves
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -292,6 +295,11 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
       mCaptureCurve = *qgsgeometry_cast<QgsCompoundCurve *>( curved.constGet() );
     }
   }
+
+  // sync the snapping matches list
+  int pointAfter = mCaptureCurve.numPoints();
+  for ( ; pointBefore < pointAfter; ++pointBefore )
+    mSnappingMatches.append( QgsPointLocator::Match() );
 
   tracer->reportError( QgsTracer::ErrNone, true ); // clear messagebar if there was any error
   return true;
@@ -556,6 +564,12 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
           if ( match.isValid() && mSnappingMatches.count() > 0 && !mSnappingMatches.last().isValid() )
           {
             mSnappingMatches.removeLast();
+            if ( mTempRubberBand->stringType() == QgsWkbTypes::CircularString )
+            {
+              // for circular string two points are added and match for intermediate point is stored
+              mSnappingMatches.removeLast();
+              mSnappingMatches.append( mCircularIntermediateMatch );
+            }
             mSnappingMatches.append( match );
           }
         }
@@ -566,6 +580,13 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
       {
         mCaptureCurve.addVertex( layerPoint );
         mSnappingMatches.append( match );
+      }
+      else
+      {
+        if ( mTempRubberBand->stringType() == QgsWkbTypes::CircularString )
+        {
+          mCircularIntermediateMatch = match;
+        }
       }
 
       mTempRubberBand->addPoint( mapPoint );
@@ -667,11 +688,18 @@ void QgsMapToolCapture::undo()
       mCaptureCurve.addVertex( fp );
     }
     else
+    {
+      int pointsCountBefore = mCaptureCurve.numPoints();
       mCaptureCurve.deleteVertex( vertexToRemove );
+      int pointsCountAfter = mCaptureCurve.numPoints();
+      for ( ; pointsCountAfter < pointsCountBefore; pointsCountAfter++ )
+        mSnappingMatches.removeLast();
+    }
 
-    mCaptureCurve.deleteVertex( vertexToRemove );
-    mSnappingMatches.removeAt( vertexToRemove.vertex );
     updateExtraSnapLayer();
+
+    std::cout << "*************************** remaining vertices " << mCaptureCurve.numPoints() << std::endl;
+    std::cout << "*************************** remaining matches " << mSnappingMatches.count() << std::endl;
 
     resetRubberBand();
 
@@ -855,6 +883,7 @@ void QgsMapToolCapture::setPoints( const QVector<QgsPointXY> &pointList )
   mSnappingMatches.clear();
   for ( int i = 0; i < line->length(); ++i )
     mSnappingMatches.append( QgsPointLocator::Match() );
+  resetRubberBand();
 }
 
 void QgsMapToolCapture::setPoints( const QgsPointSequence &pointList )
@@ -866,6 +895,7 @@ void QgsMapToolCapture::setPoints( const QgsPointSequence &pointList )
   mSnappingMatches.clear();
   for ( int i = 0; i < line->length(); ++i )
     mSnappingMatches.append( QgsPointLocator::Match() );
+  resetRubberBand();
 }
 
 QgsPoint QgsMapToolCapture::mapPoint( const QgsPointXY &point ) const
