@@ -62,6 +62,7 @@ class ProcessingConfig:
     DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DefaultOutputRasterLayerExt'
     DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DefaultOutputVectorLayerExt'
     TEMP_PATH = 'TEMP_PATH2'
+    RESULTS_GROUP_NAME = 'RESULTS_GROUP_NAME'
 
     settings = {}
     settingIcons = {}
@@ -172,6 +173,13 @@ class ProcessingConfig:
             ProcessingConfig.TEMP_PATH,
             ProcessingConfig.tr('Override temporary output folder path (leave blank for default)'), None,
             valuetype=Setting.FOLDER))
+
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.RESULTS_GROUP_NAME,
+            ProcessingConfig.tr("Results group name"),
+            "",
+            valuetype=Setting.STRING))
 
     @staticmethod
     def setGroupIcon(group, icon):
