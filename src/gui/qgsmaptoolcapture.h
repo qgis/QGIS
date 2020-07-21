@@ -212,8 +212,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QgsRubberBand *takeRubberBand() SIP_FACTORY;
 
   public slots:
-    //! Changes the digitizing shape to linear or circular
-    void toggleLinearCircularDigitizing();
+    //! Enable the digitizing with curve
+    void setCircularDigitizingEnable( bool enable );
 
   private slots:
     void addError( const QgsGeometry::Error &error );

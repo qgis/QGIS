@@ -349,13 +349,9 @@ QgsRubberBand *QgsMapToolCapture::takeRubberBand()
   return mRubberBand.release();
 }
 
-void QgsMapToolCapture::toggleLinearCircularDigitizing()
+void QgsMapToolCapture::setCircularDigitizingEnable( bool enable )
 {
-  if ( mDigitizingType == QgsWkbTypes::LineString )
-    mDigitizingType = QgsWkbTypes::CircularString ;
-  else
-    mDigitizingType = QgsWkbTypes::LineString;
-
+  mDigitizingType = enable ? QgsWkbTypes::CircularString : QgsWkbTypes::LineString;
   if ( mTempRubberBand )
     mTempRubberBand->setStringType( mDigitizingType );
 }
@@ -716,7 +712,8 @@ void QgsMapToolCapture::undo()
       mCaptureCurve.deleteVertex( vertexToRemove );
       int pointsCountAfter = mCaptureCurve.numPoints();
       for ( ; pointsCountAfter < pointsCountBefore; pointsCountAfter++ )
-        mSnappingMatches.removeLast();
+        if ( !mSnappingMatches.empty() )
+          mSnappingMatches.removeLast();
     }
 
     updateExtraSnapLayer();

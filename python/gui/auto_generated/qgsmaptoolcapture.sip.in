@@ -119,9 +119,9 @@ transfers ownership to the caller.
 %End
 
   public slots:
-    void toggleLinearCircularDigitizing();
+    void setCircularDigitizingEnable( bool enable );
 %Docstring
-Changes the digitizing shape to linear or circular
+Enable the digitizing with curve
 %End
 
   protected:
