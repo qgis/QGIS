@@ -1246,6 +1246,14 @@ void QgsOgrProvider::loadFields()
                           width, prec, QString(), varSubType
                         );
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,2,0)
+    const QString alias = textEncoding()->toUnicode( OGR_Fld_GetAlternativeNameRef( fldDef ) );
+    if ( !alias.isEmpty() )
+    {
+      newField.setAlias( alias );
+    }
+#endif
+
     // check if field is nullable
     bool nullable = OGR_Fld_IsNullable( fldDef );
     if ( !nullable )
