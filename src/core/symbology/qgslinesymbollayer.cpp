@@ -338,11 +338,13 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
   p->setBrush( Qt::NoBrush );
 
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #2 points).
+  std::unique_ptr< QgsScopedQPainterState > painterState;
   if ( points.size() <= 2 &&
        ( context.renderContext().vectorSimplifyMethod().simplifyHints() & QgsVectorSimplifyMethod::AntialiasingSimplification ) &&
        QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( points, context.renderContext().vectorSimplifyMethod().threshold() ) &&
        ( p->renderHints() & QPainter::Antialiasing ) )
   {
+    painterState = qgis::make_unique< QgsScopedQPainterState >( p );
     p->setRenderHint( QPainter::Antialiasing, false );
   }
 
@@ -375,7 +377,6 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
       scaledOffset = std::min( std::max( context.renderContext().convertToPainterUnits( offset, QgsUnitTypes::RenderMillimeters ), 3.0 ), 100.0 );
     }
 
-    p->setPen( pen );
     QList<QPolygonF> mline = ::offsetLine( points, scaledOffset, context.originalGeometryType() != QgsWkbTypes::UnknownGeometry ? context.originalGeometryType() : QgsWkbTypes::LineGeometry );
     for ( const QPolygonF &part : mline )
     {
@@ -385,14 +386,13 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
       }
       else
       {
+        p->setPen( pen );
         QPainterPath path;
         path.addPolygon( part );
         p->drawPath( path );
       }
     }
   }
-
-  p->setRenderHint( QPainter::Antialiasing, context.renderContext().testFlag( QgsRenderContext::Antialiasing ) );
 }
 
 QgsStringMap QgsSimpleLineSymbolLayer::properties() const
