@@ -54,7 +54,7 @@ QSizeF QgsStackedBarDiagram::diagramSize( const QgsFeature &feature, const QgsRe
   }
 
   bool ok = false;
-  double value = attrVal.toDouble( &ok );
+  double value = fabs( attrVal.toDouble( &ok ) );
   if ( !ok )
   {
     return QSizeF(); //zero size if attribute is missing
@@ -129,12 +129,6 @@ QSizeF QgsStackedBarDiagram::diagramSize( const QgsAttributes &attributes, const
     return QSizeF(); //zero size if no attributes
   }
 
-  double totalSum = 0;
-  for ( int i = 0; i < attributes.count(); ++i )
-  {
-    totalSum += attributes.at( i ).toDouble();
-  }
-
   // eh - this method returns size in unknown units ...! We'll have to fake it and use a rough estimation of
   // a conversion factor to painter units...
   // TODO QGIS 4.0 -- these methods should all use painter units, dependent on the render context scaling...
@@ -166,7 +160,8 @@ void QgsStackedBarDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCo
     return;
   }
 
-  QList<double> values;
+  QList< QPair<double, QColor> > values;
+  QList< QPair<double, QColor> > negativeValues;
 
   QgsExpressionContext expressionContext = c.expressionContext();
   expressionContext.setFeature( feature );
@@ -175,13 +170,26 @@ void QgsStackedBarDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCo
 
   values.reserve( s.categoryAttributes.size() );
   double total = 0;
+  double negativeTotal = 0;
+
+  QList< QColor >::const_iterator colIt = s.categoryColors.constBegin();
   for ( const QString &cat : qgis::as_const( s.categoryAttributes ) )
   {
     QgsExpression *expression = getExpression( cat, expressionContext );
     double currentVal = expression->evaluate( &expressionContext ).toDouble();
-    values.push_back( currentVal );
-    total += currentVal;
+    total += fabs( currentVal );
+    if ( currentVal >= 0 )
+    {
+      values.push_back( qMakePair( currentVal, *colIt ) );
+    }
+    else
+    {
+      negativeTotal += currentVal;
+      negativeValues.push_back( qMakePair( -currentVal, *colIt ) );
+    }
+    colIt++;
   }
+
 
   const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() );
   const double totalSpacing = std::max( 0, s.categoryAttributes.size() - 1 ) * spacing;
@@ -203,8 +211,11 @@ void QgsStackedBarDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCo
     scaledMaxVal -= totalSpacing;
 
   double currentOffset = 0;
+  if ( !negativeValues.isEmpty() )
+  {
+    currentOffset = negativeTotal / total * scaledMaxVal - ( negativeValues.size() - 1 ) * spacing;
+  }
   double scaledWidth = sizePainterUnits( s.barWidth, s, c );
-
 
   double baseX = position.x();
   double baseY = position.y();
@@ -222,13 +233,17 @@ void QgsStackedBarDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCo
   setPenWidth( mPen, s, c );
   p->setPen( mPen );
 
-  QList<double>::const_iterator valIt = values.constBegin();
-  QList< QColor >::const_iterator colIt = s.categoryColors.constBegin();
-  for ( ; valIt != values.constEnd(); ++valIt, ++colIt )
+  while ( !negativeValues.isEmpty() )
   {
-    double length = *valIt / total * scaledMaxVal;
+    values.push_front( negativeValues.takeLast() );
+  }
 
-    mCategoryBrush.setColor( *colIt );
+  QList< QPair<double, QColor> >::const_iterator valIt = values.constBegin();
+  for ( ; valIt != values.constEnd(); ++valIt )
+  {
+    double length = valIt->first / total * scaledMaxVal;
+
+    mCategoryBrush.setColor( valIt->second );
     p->setBrush( mCategoryBrush );
 
     switch ( s.diagramOrientation )
