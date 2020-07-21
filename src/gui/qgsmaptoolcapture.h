@@ -404,7 +404,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QgsCompoundCurve mCaptureCurve;
 
     QList<QgsPointLocator::Match> mSnappingMatches;
-    QgsPointLocator::Match mCircularIntermediateMatch = QgsPointLocator::Match();
+    QgsPointLocator::Match mCircularIntermediateMatch;
+    QgsPoint mCircularItermediatePoint;
 
     void validateGeometry();
     QgsGeometryValidator *mValidator = nullptr;

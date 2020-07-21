@@ -171,9 +171,6 @@ QgsPointXY QgsMapToolCapture::tracingStartPoint()
 
 bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent *e )
 {
-  mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, QgsWkbTypes::LineString, firstCapturedMapPoint() );
-  mTempRubberBand->addPoint( lastCapturedMapPoint() );
-
   if ( !e->isSnapped() )
     return false;
 
@@ -192,6 +189,9 @@ bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent *e )
     tracer->reportError( err, false );
     return false;
   }
+
+  mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, QgsWkbTypes::LineString, firstCapturedMapPoint() );
+  mTempRubberBand->addPoint( lastCapturedMapPoint() );
 
   // if there is offset, we need to fix the rubber bands to make sure they are aligned correctly.
   // There are two cases we need to sort out:
@@ -373,9 +373,34 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   if ( mCaptureMode != CapturePoint && mTempRubberBand && mCapturing )
   {
     bool hasTrace = false;
+
+
     if ( tracingEnabled() && mCaptureCurve.numPoints() != 0 )
     {
+      // Store the intermediate point for circular string to retrieve after tracing mouse move if
+      // the digitizing type is circular and the temp rubber band is effectivly circular and if this point is existing
+      // Store an empty point if the digitizing type is linear ot the point is not existing (curve not complete)
+      if ( mDigitizingType == QgsWkbTypes::CircularString &&
+           mTempRubberBand->stringType() == QgsWkbTypes::CircularString &&
+           mTempRubberBand->curveIsComplete() )
+        mCircularItermediatePoint = mTempRubberBand->pointFromEnd( 1 );
+      else if ( mDigitizingType == QgsWkbTypes::LineString ||
+                !mTempRubberBand->curveIsComplete() )
+        mCircularItermediatePoint = QgsPoint();
+
       hasTrace = tracingMouseMove( e );
+
+      if ( !hasTrace )
+      {
+        // Restore the temp rubber band
+        mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType, firstCapturedMapPoint() );
+        mTempRubberBand->addPoint( lastCapturedMapPoint() );
+        if ( !mCircularItermediatePoint.isEmpty() )
+        {
+          mTempRubberBand->movePoint( mCircularItermediatePoint );
+          mTempRubberBand->addPoint( mCircularItermediatePoint );
+        }
+      }
     }
 
     if ( !hasTrace )
@@ -540,8 +565,6 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
     bool traceCreated = false;
     if ( tracingEnabled() )
     {
-      mDigitizingType = QgsWkbTypes::LineString;
-      mTempRubberBand->setStringType( QgsWkbTypes::LineString );
       traceCreated = tracingAddVertex( mapPoint );
     }
 
@@ -697,9 +720,6 @@ void QgsMapToolCapture::undo()
     }
 
     updateExtraSnapLayer();
-
-    std::cout << "*************************** remaining vertices " << mCaptureCurve.numPoints() << std::endl;
-    std::cout << "*************************** remaining matches " << mSnappingMatches.count() << std::endl;
 
     resetRubberBand();
 
@@ -1018,9 +1038,9 @@ void QgsMapToolCaptureRubberband::reset( QgsWkbTypes::GeometryType geomType, Qgs
   if ( !( geomType == QgsWkbTypes::LineGeometry || geomType == QgsWkbTypes::PolygonGeometry ) )
     return;
 
-  mStringType = stringType;
   mPoints.clear();
   mFirstPolygonPoint = firstPolygonPoint;
+  setStringType( stringType );
   setRubberBandGeometryType( geomType );
 }
 
