@@ -528,7 +528,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   }
 
   std::unique_ptr< QgsLayoutGeoPdfExporter > geoPdfExporter;
-  if ( settings.writeGeoPdf || settings.exportLayersAsSeparateFiles )
+  if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )
     geoPdfExporter = qgis::make_unique< QgsLayoutGeoPdfExporter >( mLayout );
 
   mLayout->renderContext().setFlags( settings.flags );
@@ -542,21 +542,21 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   mLayout->renderContext().setExportThemes( settings.exportThemes );
 
   ExportResult result = Success;
-  if ( settings.writeGeoPdf || settings.exportLayersAsSeparateFiles )
+  if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )
   {
     mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagRenderLabelsByMapLayer, true );
 
     // here we need to export layers to individual PDFs
     PdfExportSettings subSettings = settings;
     subSettings.writeGeoPdf = false;
-    subSettings.exportLayersAsSeparateFiles = false;
+    subSettings.exportLayersAsSeperateFiles = false;
 
     const QList<QGraphicsItem *> items = mLayout->items( Qt::AscendingOrder );
 
     QList< QgsLayoutGeoPdfExporter::ComponentLayerDetail > pdfComponents;
 
-    const QDir baseDir = settings.exportLayersAsSeparateFiles ? QFileInfo( filePath ).dir() : QDir();
-    const QString baseFileName = settings.exportLayersAsSeparateFiles ? QFileInfo( filePath ).completeBaseName() : QString();
+    const QDir baseDir = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).dir() : QDir();
+    const QString baseFileName = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).completeBaseName() : QString();
 
     auto exportFunc = [this, &subSettings, &pdfComponents, &geoPdfExporter, &settings, &baseDir, &baseFileName]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
     {
