@@ -159,6 +159,10 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
 
     QPen mPen;
     QBrush mBrush;
+    //! QPen to use as stroke of selected symbols
+    QPen mSelPen;
+    //! QBrush to use as fill of selected symbols
+    QBrush mSelBrush;
 
     /**
      * Setup mPainterPath
