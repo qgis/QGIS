@@ -30,15 +30,13 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
+import os.path
 import PyQt5.QtCore
 
 try:
-    import PyQt5.pyqtconfig
-
-    pyqtcfg = PyQt5.pyqtconfig.Configuration()
+    __import__('sipbuild')
 except ImportError:
     import sipconfig  # won't work for SIP v5
-    import os.path
     import sys
 
     cfg = sipconfig.Configuration()
@@ -56,14 +54,18 @@ except ImportError:
     else:
         sys.exit(1)
     cfg = {
-        'pyqt_version': PyQt5.QtCore.PYQT_VERSION,
-        'pyqt_version_str': PyQt5.QtCore.PYQT_VERSION_STR,
-        'pyqt_sip_flags': PyQt5.QtCore.PYQT_CONFIGURATION['sip_flags'],
         'pyqt_mod_dir': os.path.join(cfg.default_mod_dir, "PyQt5"),
         'pyqt_sip_dir': sip_dir,
         'pyqt_bin_dir': cfg.default_bin_dir,
     }
-    pyqtcfg = sipconfig.Configuration([cfg])
+else:  # Code for SIP v5
+    from distutils.sysconfig import get_python_lib
+    import shutil
+    cfg = {
+        'pyqt_mod_dir': os.path.dirname(PyQt5.__file__),
+        'pyqt_sip_dir': os.path.join(get_python_lib(plat_specific=1), "PyQt5", "bindings"),
+        'pyqt_bin_dir': os.path.dirname(shutil.which("pyuic5")),
+    }
 
 print("pyqt_version:%06.0x" % PyQt5.QtCore.PYQT_VERSION)
 print("pyqt_version_num:%d" % PyQt5.QtCore.PYQT_VERSION)
@@ -82,10 +84,10 @@ for item in pyqt_config_list:
         in_t = False
 print("pyqt_version_tag:%s" % pyqt_version_tag)
 
-print("pyqt_mod_dir:%s" % pyqtcfg.pyqt_mod_dir)
-print("pyqt_sip_dir:%s" % pyqtcfg.pyqt_sip_dir)
+print("pyqt_mod_dir:%s" % cfg['pyqt_mod_dir'])
+print("pyqt_sip_dir:%s" % cfg['pyqt_sip_dir'])
 print("pyqt_sip_flags:%s" % PyQt5.QtCore.PYQT_CONFIGURATION['sip_flags'])
-print("pyqt_bin_dir:%s" % pyqtcfg.pyqt_bin_dir)
+print("pyqt_bin_dir:%s" % cfg['pyqt_bin_dir'])
 
 try:
     import PyQt5.sip
