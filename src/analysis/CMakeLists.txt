@@ -147,6 +147,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrotate.cpp
   processing/qgsalgorithmroundrastervalues.cpp
   processing/qgsalgorithmruggedness.cpp
+  processing/qgsalgorithmsavefeatures.cpp
   processing/qgsalgorithmsavelog.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp
   processing/qgsalgorithmsegmentize.cpp

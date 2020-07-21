@@ -223,6 +223,8 @@ class CORE_EXPORT QgsProcessingUtils
         QgsWkbTypes::Type geometryType,
         const QgsCoordinateReferenceSystem &crs,
         const QVariantMap &createOptions = QVariantMap(),
+        const QStringList &datasourceOptions = QStringList(),
+        const QStringList &layerOptions = QStringList(),
         QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
         QgsRemappingSinkDefinition *remappingDefinition = nullptr ) SIP_FACTORY;
 #endif
