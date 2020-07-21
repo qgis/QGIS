@@ -58,6 +58,7 @@ class TestQgsEllipseMarkerSymbol : public QObject
     void ellipseMarkerSymbolBevelJoin();
     void ellipseMarkerSymbolMiterJoin();
     void ellipseMarkerSymbolRoundJoin();
+    void selected();
     void bounds();
 
   private:
@@ -193,6 +194,22 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolRoundJoin()
   mEllipseMarkerLayer->setStrokeWidth( 3 );
   mEllipseMarkerLayer->setPenJoinStyle( Qt::RoundJoin );
   QVERIFY( imageCheck( "ellipsemarker_roundjoin" ) );
+}
+
+void TestQgsEllipseMarkerSymbol::selected()
+{
+  mEllipseMarkerLayer->setFillColor( Qt::blue );
+  mEllipseMarkerLayer->setStrokeColor( Qt::black );
+  mEllipseMarkerLayer->setSymbolName( QStringLiteral( "triangle" ) );
+  mEllipseMarkerLayer->setSymbolHeight( 25 );
+  mEllipseMarkerLayer->setSymbolWidth( 20 );
+  mEllipseMarkerLayer->setStrokeWidth( 3 );
+  mEllipseMarkerLayer->setPenJoinStyle( Qt::RoundJoin );
+
+  mpPointsLayer->selectAll();
+  const bool res = imageCheck( "ellipsemarker_selected" );
+  mpPointsLayer->removeSelection();
+  QVERIFY( res );
 }
 
 void TestQgsEllipseMarkerSymbol::bounds()
