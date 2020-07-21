@@ -337,7 +337,6 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
   const QPen pen = context.selected() ? mSelPen : mPen;
   p->setBrush( Qt::NoBrush );
 
-  const bool antialiasingWasEnabled = p->testRenderHint( QPainter::Antialiasing );
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #2 points).
   if ( points.size() <= 2 &&
        ( context.renderContext().vectorSimplifyMethod().simplifyHints() & QgsVectorSimplifyMethod::AntialiasingSimplification ) &&
@@ -393,7 +392,7 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
     }
   }
 
-  p->setRenderHint( QPainter::Antialiasing, antialiasingWasEnabled );
+  p->setRenderHint( QPainter::Antialiasing, context.renderContext().testFlag( QgsRenderContext::Antialiasing ) );
 }
 
 QgsStringMap QgsSimpleLineSymbolLayer::properties() const
