@@ -30,12 +30,13 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
+import PyQt5.QtCore
+
 try:
     import PyQt5.pyqtconfig
 
     pyqtcfg = PyQt5.pyqtconfig.Configuration()
 except ImportError:
-    import PyQt5.QtCore
     import sipconfig  # won't work for SIP v5
     import os.path
     import sys
@@ -64,17 +65,18 @@ except ImportError:
     }
     pyqtcfg = sipconfig.Configuration([cfg])
 
-print("pyqt_version:%06.0x" % pyqtcfg.pyqt_version)
-print("pyqt_version_num:%d" % pyqtcfg.pyqt_version)
-print("pyqt_version_str:%s" % pyqtcfg.pyqt_version_str)
+print("pyqt_version:%06.0x" % PyQt5.QtCore.PYQT_VERSION)
+print("pyqt_version_num:%d" % PyQt5.QtCore.PYQT_VERSION)
+print("pyqt_version_str:%s" % PyQt5.QtCore.PYQT_VERSION_STR)
 
 pyqt_version_tag = ""
 in_t = False
-for item in pyqtcfg.pyqt_sip_flags.split(' '):
+pyqt_config_list = PyQt5.QtCore.PYQT_CONFIGURATION["sip_flags"].split(' ')
+for item in pyqt_config_list:
     if item == "-t":
         in_t = True
     elif in_t:
-        if item.startswith("Qt_4"):
+        if item.startswith("Qt_5"):
             pyqt_version_tag = item
     else:
         in_t = False
@@ -82,7 +84,7 @@ print("pyqt_version_tag:%s" % pyqt_version_tag)
 
 print("pyqt_mod_dir:%s" % pyqtcfg.pyqt_mod_dir)
 print("pyqt_sip_dir:%s" % pyqtcfg.pyqt_sip_dir)
-print("pyqt_sip_flags:%s" % pyqtcfg.pyqt_sip_flags)
+print("pyqt_sip_flags:%s" % PyQt5.QtCore.PYQT_CONFIGURATION['sip_flags'])
 print("pyqt_bin_dir:%s" % pyqtcfg.pyqt_bin_dir)
 
 try:
