@@ -915,7 +915,7 @@ bool QgsGeometryUtils::pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2
     double angle2 = arcAngle( a2, a3, b );
 
     // Is the sweep angle similar to the previous one?
-    // We only consider a segment replacable by an arc if the points within
+    // We only consider a segment replaceable by an arc if the points within
     // it are regularly spaced
     diff = std::fabs( angle1 - angle2 );
     if ( diff > pointSpacingAngleTolerance )

@@ -315,7 +315,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QList< QgsGeometry::Error > mGeomErrors;
     QList< QgsVertexMarker * > mGeomErrorMarkers;
 
-    //! A layer containing the current capture curve to provide additionnal snapping
+    //! A layer containing the current capture curve to provide additional snapping
     QgsVectorLayer *mExtraSnapLayer = nullptr;
     //! The feature in that layer (for updating)
     QgsFeatureId mExtraSnapFeatureId;

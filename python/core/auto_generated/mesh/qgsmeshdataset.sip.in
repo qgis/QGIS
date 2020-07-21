@@ -613,7 +613,7 @@ Constructor
 
     QgsMeshDatasetGroupTreeItem( const QDomElement &itemElement, const QgsReadWriteContext &context );
 %Docstring
-Constructor from a DOM element, contruct also the children
+Constructor from a DOM element, constructs also the children
 
 :param itemElement: the DOM element
 :param context: writing context (e.g. for conversion between relative and absolute paths)
@@ -658,7 +658,7 @@ Returns a child
 
 :param row: the position of the child
 
-:return: the item at the positon ``row``
+:return: the item at the position ``row``
 %End
 
     QgsMeshDatasetGroupTreeItem *childFromDatasetGroupIndex( int index );
@@ -702,7 +702,7 @@ Returns the position of the item in the parent
     QString name() const;
 %Docstring
 Returns the name of the item
-This mame is the default name if the name has not been overrided (:py:func:`setName`)
+This name is the default name if the name has not been overridden (:py:func:`setName`)
 
 :return: the name to display
 %End
@@ -711,7 +711,7 @@ This mame is the default name if the name has not been overrided (:py:func:`setN
 %Docstring
 Overrides the default name with the name to display.
 The default name is still stored in the item
-but will not be displayed anymore except if the empty string is setted.
+but will not be displayed anymore except if the empty string is set.
 
 :param name: to display
 %End

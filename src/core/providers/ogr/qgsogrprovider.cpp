@@ -55,7 +55,7 @@ email                : sherman at mrcc.com
 #include <ogr_srs_api.h>
 #include <cpl_string.h>
 
-// Temporary solution until GDAL Unique suppport is available
+// Temporary solution until GDAL Unique support is available
 #include "qgssqliteutils.h"
 #include <sqlite3.h>
 // end temporary
@@ -3963,7 +3963,7 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
 
   if ( originalField.type() == QVariant::DateTime )
   {
-    // ensure that we treat times as local time, to match behaviour when iterating features
+    // ensure that we treat times as local time, to match behavior when iterating features
     QDateTime temp = res.toDateTime();
     temp.setTimeSpec( Qt::LocalTime );
     res = temp;
@@ -4019,7 +4019,7 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
 
   if ( originalField.type() == QVariant::DateTime )
   {
-    // ensure that we treat times as local time, to match behaviour when iterating features
+    // ensure that we treat times as local time, to match behavior when iterating features
     QDateTime temp = res.toDateTime();
     temp.setTimeSpec( Qt::LocalTime );
     res = temp;
@@ -4098,7 +4098,7 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
   }
   else if ( bIsGpkg )
   {
-    // If WAL isn't set, we explicitely disable it, as it is persistent and it
+    // If WAL isn't set, we explicitly disable it, as it is persistent and it
     // may have been set on a previous connection.
     CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "DELETE" );
   }

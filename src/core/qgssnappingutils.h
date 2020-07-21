@@ -189,7 +189,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     /**
      * Supply an extra snapping layer (typically a memory layer).
-     * This can be used by map tools to provide additionnal
+     * This can be used by map tools to provide additional
      * snappings points.
      *
      * \see removeExtraSnapLayer()
@@ -301,7 +301,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     LocatorsMap mTemporaryLocators;
     //! list of layer IDs that are too large to be indexed (hybrid strategy will use temporary locators for those)
     QSet<QString> mHybridNonindexableLayers;
-    //! list of additionnal snapping layers
+    //! list of additional snapping layers
     QSet<QgsVectorLayer *> mExtraSnapLayers;
 
     /**

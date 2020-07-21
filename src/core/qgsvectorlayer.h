@@ -2483,7 +2483,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void beforeRollBack();
 
     /**
-     * Emitted after changes are commited to the data provider.
+     * Emitted after changes are committed to the data provider.
      * \since QGIS 3.16
      */
     void afterCommitChanges();

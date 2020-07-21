@@ -265,7 +265,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
   {
     QString errorMessage;
     // If it is file based and the file exists, there might be a permission error, let's change
-    // the message to give the user a hint about this possiblity.
+    // the message to give the user a hint about this possibility.
     if ( QFile::exists( path ) )
     {
       errorMessage = tr( "The file does not contain any layer or there was an error opening the file.\nCheck file and directory permissions on\n%1" ).arg( QDir::toNativeSeparators( path ) );
