@@ -419,7 +419,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   }
 
   // consider spatial reference system of the layer
-  if ( driverName == QLatin1String( "KML" ) || driverName == QLatin1String( "GPX" ) )
+  if ( driverName == QLatin1String( "KML" ) || driverName == QLatin1String( "LIBKML" ) || driverName == QLatin1String( "GPX" ) )
   {
     if ( srs.authid() != QStringLiteral( "EPSG:4326" ) )
     {
