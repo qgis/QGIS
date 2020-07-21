@@ -293,38 +293,13 @@ QgsHanaProvider::QgsHanaProvider(
     readAttributeFields();
     readSrsInformation();
     readMetadata();
+
+    setNativeTypes( conn->getNativeTypes() );
   }
   catch ( const QgsHanaException & )
   {
     return;
   }
-
-  //fill type names into sets
-  setNativeTypes( QList< NativeType >()
-                  // boolean
-                  << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "BOOLEAN" ), QVariant::Bool, -1, -1, -1, -1 )
-                  // integer types
-                  << QgsVectorDataProvider::NativeType( tr( "8 bytes integer" ), QStringLiteral( "BIGINT" ), QVariant::LongLong, -1, -1, 0, 0 )
-                  << QgsVectorDataProvider::NativeType( tr( "4 bytes integer" ), QStringLiteral( "INTEGER" ), QVariant::Int, -1, -1, 0, 0 )
-                  << QgsVectorDataProvider::NativeType( tr( "2 bytes integer" ), QStringLiteral( "SMALLINT" ), QVariant::Int, -1, -1, 0, 0 )
-                  << QgsVectorDataProvider::NativeType( tr( "1 byte integer" ), QStringLiteral( "TINYINT" ), QVariant::Int, -1, -1, 0, 0 )
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (DECIMAL)" ), QStringLiteral( "DECIMAL" ), QVariant::Double, 1, 31, 0, 31 )
-                  // floating point
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (REAL)" ), QStringLiteral( "REAL" ), QVariant::Double )
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (DOUBLE)" ), QStringLiteral( "DOUBLE" ), QVariant::Double )
-                  // date/time types
-                  << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "DATE" ), QVariant::Date, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "TIME" ), QVariant::Time, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "TIMESTAMP" ), QVariant::DateTime, -1, -1, -1, -1 )
-                  // string types
-                  << QgsVectorDataProvider::NativeType( tr( "Text, variable length (VARCHAR)" ), QStringLiteral( "VARCHAR" ), QVariant::String, 1, 5000 )
-                  << QgsVectorDataProvider::NativeType( tr( "Unicode text, variable length (NVARCHAR)" ), QStringLiteral( "NVARCHAR" ), QVariant::String, 1, 5000 )
-                  << QgsVectorDataProvider::NativeType( tr( "Text, variable length large object (CLOB)" ), QStringLiteral( "CLOB" ), QVariant::String )
-                  << QgsVectorDataProvider::NativeType( tr( "Unicode text, variable length large object (NCLOB)" ), QStringLiteral( "NCLOB" ), QVariant::String )
-                  // binary types
-                  << QgsVectorDataProvider::NativeType( tr( "Binary object (VARBINARY)" ), QStringLiteral( "VARBINARY" ), QVariant::ByteArray, 1, 5000 )
-                  << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "BLOB" ), QVariant::ByteArray )
-                );
 
   mValid = true;
 

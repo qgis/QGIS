@@ -30,6 +30,7 @@
 QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
+  mProviderKey = QStringLiteral( "hana" );
   QgsHanaSettings settings( name, true );
   setUri( settings.toDataSourceUri().uri() );
   setCapabilities();
@@ -38,6 +39,7 @@ QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &name )
 QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &uri, const QVariantMap &configuration ):
   QgsAbstractDatabaseProviderConnection( QgsHanaUtils::connectionInfo( QgsDataSourceUri( uri ) ), configuration )
 {
+  mProviderKey = QStringLiteral( "hana" );
   setCapabilities();
 }
 
@@ -359,4 +361,17 @@ void QgsHanaProviderConnection::remove( const QString &name ) const
 QIcon QgsHanaProviderConnection::icon() const
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconHana.svg" ) );
+}
+
+QList<QgsVectorDataProvider::NativeType> QgsHanaProviderConnection::nativeTypes() const
+{
+  const QgsDataSourceUri dsUri { uri() };
+  QgsHanaConnectionRef conn( dsUri );
+  if ( conn.isNull() )
+    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+
+  QList<QgsVectorDataProvider::NativeType> types = conn->getNativeTypes();
+  if ( types.isEmpty() )
+    throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for connection %1" ).arg( uri() ) );
+  return types;
 }

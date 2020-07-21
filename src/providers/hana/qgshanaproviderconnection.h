@@ -47,6 +47,7 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
     QIcon icon() const override;
+    QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
 
   private:
     QList<QVariantList> executeSqlQuery( QgsHanaConnection &conn, const QString &sql ) const;
