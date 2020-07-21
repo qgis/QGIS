@@ -668,6 +668,7 @@ void QgsProcessingUtils::parseDestinationString( QString &destination, QString &
   {
     useWriter = true;
     providerKey = QStringLiteral( "ogr" );
+
     QRegularExpression splitRx( QStringLiteral( "^(.*)\\.(.*?)$" ) );
     QRegularExpressionMatch match = splitRx.match( destination );
     if ( match.hasMatch() )
@@ -687,7 +688,7 @@ void QgsProcessingUtils::parseDestinationString( QString &destination, QString &
   }
 }
 
-QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, QgsProcessingContext &context, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions, QgsFeatureSink::SinkFlags sinkFlags, QgsRemappingSinkDefinition *remappingDefinition )
+QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, QgsProcessingContext &context, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions, const QStringList &datasourceOptions, const QStringList &layerOptions, QgsFeatureSink::SinkFlags sinkFlags, QgsRemappingSinkDefinition *remappingDefinition )
 {
   QVariantMap options = createOptions;
   if ( !options.contains( QStringLiteral( "fileEncoding" ) ) )
@@ -737,11 +738,13 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       // use QgsVectorFileWriter for OGR destinations instead of QgsVectorLayerImport, as that allows
       // us to use any OGR format which supports feature addition
       QString finalFileName;
+      QString finalLayerName;
       QgsVectorFileWriter::SaveVectorOptions saveOptions;
       saveOptions.fileEncoding = options.value( QStringLiteral( "fileEncoding" ) ).toString();
+      saveOptions.layerName = !layerName.isEmpty() ? layerName : options.value( QStringLiteral( "layerName" ) ).toString();
       saveOptions.driverName = format;
-      saveOptions.datasourceOptions = QgsVectorFileWriter::defaultDatasetOptions( format );
-      saveOptions.layerOptions = QgsVectorFileWriter::defaultLayerOptions( format );
+      saveOptions.datasourceOptions = !datasourceOptions.isEmpty() ? datasourceOptions : QgsVectorFileWriter::defaultDatasetOptions( format );
+      saveOptions.layerOptions = !layerOptions.isEmpty() ? layerOptions : QgsVectorFileWriter::defaultLayerOptions( format );
       saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
       if ( remappingDefinition )
       {
@@ -761,12 +764,15 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       {
         saveOptions.actionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
       }
-      std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( destination, newFields, geometryType, crs, context.transformContext(), saveOptions, sinkFlags, &finalFileName ) );
+      std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( destination, newFields, geometryType, crs, context.transformContext(), saveOptions, sinkFlags, &finalFileName, &finalLayerName ) );
       if ( writer->hasError() )
       {
         throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, writer->errorMessage() ) );
       }
       destination = finalFileName;
+      if ( !saveOptions.layerName.isEmpty() && !finalLayerName.isEmpty() )
+        destination += QStringLiteral( "|layername=%1" ).arg( finalLayerName );
+
       if ( remappingDefinition )
       {
         std::unique_ptr< QgsRemappingProxyFeatureSink > remapSink = qgis::make_unique< QgsRemappingProxyFeatureSink >( *remappingDefinition, writer.release(), true );

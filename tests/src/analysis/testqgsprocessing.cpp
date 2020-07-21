@@ -1899,7 +1899,7 @@ void TestQgsProcessing::createFeatureSink()
   fields2.append( QgsField( "field2", QVariant::String ) );
   context.expressionContext().appendScope( new QgsExpressionContextScope() );
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "extra" ), 2 );
-  sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields2, QgsWkbTypes::Point, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QVariantMap(), nullptr, &remapDef ) );
+  sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields2, QgsWkbTypes::Point, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QVariantMap(), QStringList(), QStringList(), nullptr, &remapDef ) );
   QVERIFY( sink.get() );
   f = QgsFeature( fields2 );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point(10 0)" ) ) );
@@ -1971,7 +1971,7 @@ void TestQgsProcessing::createFeatureSink()
   remapDef.setDestinationWkbType( QgsWkbTypes::Point );
   remapDef.addMappedField( QStringLiteral( "my_field" ), QgsProperty::fromExpression( QStringLiteral( "field2 || @extra" ) ) );
   destination2 = QStringLiteral( "ogr:dbname='%1' table=\"points\" (geom) sql=" ).arg( geopackagePath );
-  sink.reset( QgsProcessingUtils::createFeatureSink( destination2, context, fields2, QgsWkbTypes::PointZ, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QVariantMap(), nullptr, &remapDef ) );
+  sink.reset( QgsProcessingUtils::createFeatureSink( destination2, context, fields2, QgsWkbTypes::PointZ, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QVariantMap(), QStringList(), QStringList(), nullptr, &remapDef ) );
   QVERIFY( sink.get() );
   f = QgsFeature( fields );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PointZ(3 4 5)" ) ) );

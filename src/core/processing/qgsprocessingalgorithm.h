@@ -679,12 +679,16 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * The \a destinationIdentifier argument will be set to a string which can be used to retrieve the layer corresponding
      * to the sink, e.g. via calling QgsProcessingUtils::mapLayerFromString().
      *
+     * The \a createOptions argument is used to pass on creation options such as layer name.
+     *
+     * The \a datasourceOptions and \a layerOptions arguments is used to pass on GDAL-specific format driver options.
+     *
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
      *
      * \throws QgsProcessingException
      */
     QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT,
-                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() ) const SIP_THROW( QgsProcessingException ) SIP_FACTORY;
+                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) const SIP_THROW( QgsProcessingException ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a name to a feature source.
