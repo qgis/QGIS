@@ -19,7 +19,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsapplication.h"
-#include "qgsmeshdatagenerator.h"
+#include "qgsmeshvirtualdatasetgroup.h"
 
 
 QList<int> QgsMeshDatasetGroupStore::datasetGroupIndexes() const
@@ -290,25 +290,17 @@ void QgsMeshDatasetGroupStore::readXml( const QDomElement &storeElem, const QgsR
       source = mPersistentProvider;
       sourceIndex = datasetElem.attribute( QStringLiteral( "source-index" ) ).toInt();
     }
-    else
+    else if ( datasetElem.attribute( QStringLiteral( "source-type" ) ) == QStringLiteral( "virtual" ) )
     {
-      QString keyGenerator = datasetElem.attribute( QStringLiteral( "source-type" ) );
       source = mExtraDatasets.get();
       QString name = datasetElem.attribute( QStringLiteral( "name" ) );
       QString formula = datasetElem.attribute( QStringLiteral( "formula" ) );
       qint64 startTime = datasetElem.attribute( QStringLiteral( "start-time" ) ).toLongLong();
       qint64 endTime = datasetElem.attribute( QStringLiteral( "end-time" ) ).toLongLong();
-      if ( QgsApplication::instance() )
-      {
-        QgsMeshDataGeneratorInterface *generator =
-          QgsApplication::instance()->meshDataGeneratorRegistry()->meshDataGenerator( keyGenerator );
-        if ( generator )
-        {
-          QgsMeshDatasetGroup *dsg = generator->createVirtualDatasetGroupFromFormula( name, formula, mLayer, startTime, endTime );
-          extraDatasetGroups[globalIndex] = dsg;
-          sourceIndex = mExtraDatasets->addDatasetGroup( dsg );
-        }
-      }
+
+      QgsMeshDatasetGroup *dsg = new QgsMeshVirtualDatasetGroup( name, formula, mLayer, startTime, endTime );
+      extraDatasetGroups[globalIndex] = dsg;
+      sourceIndex = mExtraDatasets->addDatasetGroup( dsg );
     }
 
     if ( source )

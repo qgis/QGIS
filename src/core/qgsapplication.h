@@ -60,7 +60,6 @@ class QgsStyleModel;
 class QgsNumericFormatRegistry;
 class QgsConnectionRegistry;
 class QgsScaleBarRendererRegistry;
-class QgsMeshDataGeneratorRegistry;
 
 /**
  * \ingroup core
@@ -809,14 +808,6 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsLocalizedDataPathRegistry *localizedDataPathRegistry() SIP_KEEPREFERENCE;
 
     /**
-     * Returns the registry of mesh data generators
-     * These are used to generate mesh data as virtual dataset groups
-     *
-     * \since QGIS 3.16
-     */
-    static QgsMeshDataGeneratorRegistry *meshDataGeneratorRegistry() SIP_SKIP;
-
-    /**
      * This string is used to represent the value `NULL` throughout QGIS.
      *
      * In general, when passing values around, prefer to use a null QVariant
@@ -957,7 +948,6 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsPageSizeRegistry *mPageSizeRegistry = nullptr;
       QgsRasterRendererRegistry *mRasterRendererRegistry = nullptr;
       QgsRendererRegistry *mRendererRegistry = nullptr;
-      QgsMeshDataGeneratorRegistry *mMeshDataGeneratorRegistry = nullptr;
       QgsSvgCache *mSvgCache = nullptr;
       QgsImageCache *mImageCache = nullptr;
       QgsSourceCache *mSourceCache = nullptr;

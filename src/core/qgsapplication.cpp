@@ -65,7 +65,6 @@
 #include "qgsconnectionregistry.h"
 #include "qgsremappingproxyfeaturesink.h"
 #include "qgsmeshlayer.h"
-#include "qgsmeshdatagenerator.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -2252,11 +2251,6 @@ QgsLocalizedDataPathRegistry *QgsApplication::localizedDataPathRegistry()
   return members()->mLocalizedDataPathRegistry;
 }
 
-QgsMeshDataGeneratorRegistry *QgsApplication::meshDataGeneratorRegistry()
-{
-  return members()->mMeshDataGeneratorRegistry;
-}
-
 QgsApplication::ApplicationMembers::ApplicationMembers()
 {
   // don't use initializer lists or scoped pointers - as more objects are added here we
@@ -2388,11 +2382,6 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
-    profiler->start( tr( "Setup mesh data generator registry" ) );
-    mMeshDataGeneratorRegistry = new QgsMeshDataGeneratorRegistry();
-    profiler->end();
-  }
-  {
     profiler->start( tr( "Setup bookmark manager" ) );
     mBookmarkManager = new QgsBookmarkManager( nullptr );
     profiler->end();
@@ -2435,7 +2424,6 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mBookmarkManager;
   delete mConnectionRegistry;
   delete mLocalizedDataPathRegistry;
-  delete mMeshDataGeneratorRegistry;
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()

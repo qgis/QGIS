@@ -22,7 +22,7 @@
 #include <QVector>
 #include <QStringList>
 
-#include "qgis_analysis.h"
+#include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsrectangle.h"
 #include "qgsmeshlayer.h"
@@ -31,7 +31,7 @@
 #include "qgsfeedback.h"
 
 /**
- * \ingroup analysis
+ * \ingroup core
  * \class QgsMeshCalculator
  * Performs mesh layer calculations.
  *
@@ -45,7 +45,7 @@
  *
  * \since QGIS 3.6
 */
-class ANALYSIS_EXPORT QgsMeshCalculator
+class CORE_EXPORT QgsMeshCalculator
 {
   public:
 

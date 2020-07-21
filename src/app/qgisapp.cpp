@@ -308,7 +308,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsquerybuilder.h"
 #include "qgsrastercalcdialog.h"
 #include "qgsmeshcalculatordialog.h"
-#include "qgsmeshvirtualdatasetgroup.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsrasterfilewritertask.h"
 #include "qgsrasteriterator.h"
@@ -1086,7 +1085,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::updateProjectFromTemplates, this, QStringLiteral( "Update project from templates" ) );
   functionProfile( &QgisApp::legendLayerSelectionChanged, this, QStringLiteral( "Legend layer selection changed" ) );
   functionProfile( &QgisApp::init3D, this, QStringLiteral( "Initialize 3D support" ) );
-  functionProfile( &QgisApp::initMeshDataGenerator, this, QStringLiteral( "Initialize mesh calculator" ) );
   functionProfile( &QgisApp::initNativeProcessing, this, QStringLiteral( "Initialize native processing" ) );
   functionProfile( &QgisApp::initLayouts, this, QStringLiteral( "Initialize layouts support" ) );
 
@@ -12662,11 +12660,6 @@ void QgisApp::init3D()
 #else
   mActionNew3DMapCanvas->setVisible( false );
 #endif
-}
-
-void QgisApp::initMeshDataGenerator()
-{
-  QgsApplication::instance()->meshDataGeneratorRegistry()->addMeshDataGenerator( new QgsMeshVirtualDatasetGroupGenerator );
 }
 
 void QgisApp::initNativeProcessing()

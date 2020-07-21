@@ -877,7 +877,6 @@ differently across work stations.
 .. versionadded:: 3.14
 %End
 
-
     static QString nullRepresentation();
 %Docstring
 This string is used to represent the value `NULL` throughout QGIS.

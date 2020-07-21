@@ -28,18 +28,18 @@
 #include <memory>
 #include <limits>
 
-#include "qgis_analysis.h"
+#include "qgis_core.h"
 
 #include "qgsmeshcalcutils.h"
 
 /**
- * \ingroup analysis
+ * \ingroup core
  * \class QgsMeshCalcNode
  * Represents a single calculation node
  *
  * \since QGIS 3.6
  */
-class ANALYSIS_EXPORT QgsMeshCalcNode
+class CORE_EXPORT QgsMeshCalcNode
 {
   public:
     //! types of mesh node

@@ -174,8 +174,3 @@ bool QgsMeshVirtualDatasetGroup::calculateDataset() const
 
   return true;
 }
-
-QgsMeshDatasetGroup *QgsMeshVirtualDatasetGroupGenerator::createVirtualDatasetGroupFromFormula( const QString &name, const QString &formulaString, QgsMeshLayer *layer, qint64 relativeStartTime, qint64 relativeEndTime )
-{
-  return new QgsMeshVirtualDatasetGroup( name, formulaString, layer, relativeStartTime, relativeEndTime );
-}

@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/analysis/mesh/qgsmeshcalculator.h                                *
+ * src/core/mesh/qgsmeshcalculator.h                                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -216,7 +216,7 @@ Returns whether formula is valid for particular mesh layer
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/analysis/mesh/qgsmeshcalculator.h                                *
+ * src/core/mesh/qgsmeshcalculator.h                                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

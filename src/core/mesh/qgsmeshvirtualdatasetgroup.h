@@ -20,14 +20,13 @@
 
 #include "qgsmeshdataset.h"
 #include "qgsmeshcalcnode.h"
-#include "qgsmeshdatagenerator.h"
 
 #include "qgsmeshlayertemporalproperties.h"
 
 #define SIP_NO_FILE
 
 /**
- * \ingroup analysis
+ * \ingroup core
  * \class QgsMeshVirtualDatasetGroup
  * Represents a dataset group calculated from a formula string.
  * The calculation is done by the QgsMeshCalcUtils class from a QgsMeshCalcNode created from the formula
@@ -35,7 +34,7 @@
  *
  * \since QGIS 3.16
  */
-class ANALYSIS_EXPORT QgsMeshVirtualDatasetGroup: public QgsMeshDatasetGroup
+class CORE_EXPORT QgsMeshVirtualDatasetGroup: public QgsMeshDatasetGroup
 {
   public:
 
@@ -76,25 +75,6 @@ class ANALYSIS_EXPORT QgsMeshVirtualDatasetGroup: public QgsMeshDatasetGroup
     mutable int mCurrentDatasetIndex = -1;
 
     bool calculateDataset() const;
-};
-
-/**
- * \ingroup analysis
- * \class QgsMeshVirtualDatasetGroupGenerator
- * Represents a factory that can be used to create virtual dataset group
- * \since QGIS 3.16
- */
-class ANALYSIS_EXPORT QgsMeshVirtualDatasetGroupGenerator: public QgsMeshDataGeneratorInterface
-{
-  public:
-
-    QgsMeshDatasetGroup *createVirtualDatasetGroupFromFormula( const QString &name,
-        const QString &formulaString,
-        QgsMeshLayer *layer,
-        qint64 relativeStartTime,
-        qint64 relativeEndTime ) override;
-
-    QString key() const override {return QStringLiteral( "virtual" );}
 };
 
 #endif // QGSMESHVIRTUALDATASETGROUP_H

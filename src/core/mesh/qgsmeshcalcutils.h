@@ -34,10 +34,10 @@
 #include "qgsrectangle.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshdataprovider.h"
-#include "qgis_analysis.h"
+#include "qgis_core.h"
 
 /**
- * \ingroup analysis
+ * \ingroup core
  * \class QgsMeshCalcUtils
  * Mathematical operations on QgsMeshMemoryDatasetGroup
  * QgsMeshMemoryDatasetGroups must be compatible (same mesh structure, same number of datasets, ...)
@@ -45,7 +45,7 @@
  *
  * \since QGIS 3.6
  */
-class ANALYSIS_EXPORT QgsMeshCalcUtils
+class CORE_EXPORT QgsMeshCalcUtils
 {
   public:
 
@@ -228,22 +228,22 @@ class ANALYSIS_EXPORT QgsMeshCalcUtils
      * memory dataset group. Returns NULLPTR if no such dataset group
      * exists. Resulting datasets are guaranteed to have the same mOutputType type
      */
-    std::shared_ptr<QgsMeshMemoryDatasetGroup> create( const QString &datasetGroupName, const QgsInterval &relativeTime = QgsInterval() ) const;
+    std::shared_ptr<QgsMeshMemoryDatasetGroup> createMemoryDatasetGroup( const QString &datasetGroupName, const QgsInterval &relativeTime = QgsInterval() ) const;
 
     /**
      *  Creates dataset based on group. Initializes values and active based on group type.
      */
-    std::shared_ptr<QgsMeshMemoryDataset> create( const QgsMeshMemoryDatasetGroup &grp ) const;
+    std::shared_ptr<QgsMeshMemoryDataset> createMemoryDataset( const QgsMeshMemoryDatasetGroup &grp ) const;
 
     /**
      *  Creates dataset based on group. Fill with values of corresponding dataset
      */
-    std::shared_ptr<QgsMeshMemoryDataset> create( const QgsMeshDatasetIndex &datasetIndex ) const;
+    std::shared_ptr<QgsMeshMemoryDataset> createMemoryDataset( const QgsMeshDatasetIndex &datasetIndex ) const;
 
     /**
      *  Creates dataset with given type. Initializes values and active based on type.
      */
-    std::shared_ptr<QgsMeshMemoryDataset> create( const QgsMeshDatasetGroupMetadata::DataType type ) const;
+    std::shared_ptr<QgsMeshMemoryDataset> createMemoryDataset( const QgsMeshDatasetGroupMetadata::DataType type ) const;
 
     /**
      * Returns dataset based on (time) index. If group has only 1 dataset, returns first one
