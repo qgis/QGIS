@@ -407,6 +407,8 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry *entry )
   std::unique_ptr< QImage > image = qgis::make_unique< QImage >( imageSize, QImage::Format_ARGB32_Premultiplied );
   image->fill( 0 ); // transparent background
 
+  const bool isFixedAR = entry->fixedAspectRatio > 0;
+
   QPainter p( image.get() );
   QSvgRenderer r( entry->svgContent );
   if ( qgsDoubleNear( viewBoxSize.width(), viewBoxSize.height() ) )
@@ -416,7 +418,7 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry *entry )
   else
   {
     QSizeF s( viewBoxSize );
-    s.scale( scaledSize.width(), scaledSize.height(), Qt::KeepAspectRatio );
+    s.scale( scaledSize.width(), scaledSize.height(), isFixedAR ? Qt::IgnoreAspectRatio : Qt::KeepAspectRatio );
     QRectF rect( ( imageSize.width() - s.width() ) / 2, ( imageSize.height() - s.height() ) / 2, s.width(), s.height() );
     r.render( &p, rect );
   }
