@@ -17,11 +17,13 @@
 #define QGS3DSYMBOLWIDGET_H
 
 #include <QWidget>
+#include <QDialog>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
 class QgsAbstract3DSymbol;
 class QgsVectorLayer;
+class QDialogButtonBox;
 
 /**
  * \ingroup gui
@@ -51,6 +53,43 @@ class GUI_EXPORT Qgs3DSymbolWidget : public QWidget
      * Caller takes ownership of the returned symbol.
      */
     virtual QgsAbstract3DSymbol *symbol() = 0 SIP_FACTORY;
+};
+
+
+
+/**
+ * \ingroup gui
+ * \brief A dialog for configuring a 3D symbol.
+ * \since QGIS 3.16
+ */
+class GUI_EXPORT Qgs3DSymbolDialog : public QDialog
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for Qgs3DSymbolDialog, initially showing the specified \a symbol.
+     */
+    Qgs3DSymbolDialog( const QgsAbstract3DSymbol *symbol, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Returns a new instance of the symbol defined by the dialog.
+     *
+     * Caller takes ownership of the returned symbol.
+     */
+    QgsAbstract3DSymbol *symbol() const SIP_FACTORY;
+
+    /**
+     * Returns a reference to the dialog's button box.
+     */
+    QDialogButtonBox *buttonBox() const;
+
+  private:
+
+    Qgs3DSymbolWidget *mWidget = nullptr;
+    QDialogButtonBox *mButtonBox = nullptr;
+
 };
 
 #endif // QGS3DSYMBOLWIDGET_H
