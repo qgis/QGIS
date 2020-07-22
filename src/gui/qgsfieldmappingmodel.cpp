@@ -310,6 +310,8 @@ QString QgsFieldMappingModel::findExpressionForDestinationField( const QgsFieldM
 void QgsFieldMappingModel::setSourceFields( const QgsFields &sourceFields )
 {
   mSourceFields = sourceFields;
+  if ( mExpressionContextGenerator )
+    mExpressionContextGenerator->setSourceFields( mSourceFields );
   QStringList usedFields;
   beginResetModel();
   for ( const Field &f : qgis::as_const( mMapping ) )
@@ -524,4 +526,9 @@ QgsExpressionContext QgsFieldMappingModel::ExpressionContextGenerator::createExp
 void QgsFieldMappingModel::ExpressionContextGenerator::setBaseExpressionContextGenerator( const QgsExpressionContextGenerator *generator )
 {
   mBaseGenerator = generator;
+}
+
+void QgsFieldMappingModel::ExpressionContextGenerator::setSourceFields( const QgsFields &fields )
+{
+  mSourceFields = fields;
 }
