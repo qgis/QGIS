@@ -24,13 +24,16 @@
 class QgsImageTexture : public Qt3DRender::QPaintedTextureImage
 {
   public:
+    //! Constructor
     QgsImageTexture( const QImage &image, Qt3DCore::QNode *parent = nullptr );
 
+    //! paints on the current QImage using painter
     void paint( QPainter *painter ) override
     {
       painter->drawImage( mImage.rect(), mImage, mImage.rect() );
     }
 
+    //! Returns the image
     QImage getImage() const { return mImage; }
 
   private:
