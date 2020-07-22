@@ -225,7 +225,7 @@ class CORE_EXPORT QgsMeshCalculator
     QgsRectangle mOutputExtent;
     QgsGeometry mOutputMask;
     bool mUseMask = false;
-    QgsMeshDatasetGroup::Type mDestination;
+    QgsMeshDatasetGroup::Type mDestination = QgsMeshDatasetGroup::Persistent;
     double mStartTime = 0.0;
     double mEndTime = 0.0;
     QgsMeshLayer *mMeshLayer = nullptr;
