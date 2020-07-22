@@ -1308,7 +1308,8 @@ QVariant QgsExpressionNodeColumnRef::evalNode( QgsExpression *parent, const QgsE
         return feature.attribute( mName );
     }
   }
-  parent->setEvalErrorString( tr( "Column '%1' not found" ).arg( mName ) );
+  if ( index < 0 )
+    parent->setEvalErrorString( tr( "Column '%1' not found" ).arg( mName ) );
   return QVariant();
 }
 
