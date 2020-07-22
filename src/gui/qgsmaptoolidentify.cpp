@@ -28,6 +28,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsmessageviewer.h"
 #include "qgsmeshlayer.h"
+#include "qgsmeshlayertemporalproperties.h"
 #include "qgsmaplayer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
@@ -252,7 +253,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
     return false;
 
   double searchRadius = mOverrideCanvasSearchRadius < 0 ? searchRadiusMU( mCanvas ) : mOverrideCanvasSearchRadius;
-  bool isTemporal = mCanvas->mapSettings().isTemporal();
+  bool isTemporal = mCanvas->mapSettings().isTemporal() && layer->temporalProperties()->isActive();
 
   QList<QgsMeshDatasetIndex> datasetIndexList;
   int activeScalarGroup = layer->rendererSettings().activeScalarDatasetGroup();
@@ -263,7 +264,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
     const QgsDateTimeRange &time = mCanvas->mapSettings().temporalRange();
     if ( activeScalarGroup >= 0 )
       datasetIndexList.append( layer->activeScalarDatasetAtTime( time ) );
-    if ( activeVectorGroup >= 0 )
+    if ( activeVectorGroup >= 0 && activeVectorGroup != activeScalarGroup )
       datasetIndexList.append( layer->activeVectorDatasetAtTime( time ) );
 
     const QList<int> allGroup = layer->datasetGroupsIndexes();
@@ -277,7 +278,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
   {
     if ( activeScalarGroup >= 0 )
       datasetIndexList.append( layer->staticScalarDatasetIndex() );
-    if ( activeVectorGroup >= 0 )
+    if ( activeVectorGroup >= 0 && activeVectorGroup != activeScalarGroup )
       datasetIndexList.append( layer->staticVectorDatasetIndex() );
   }
 
@@ -295,7 +296,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
     {
       const QgsMeshDatasetValue scalarValue = layer->datasetValue( index, point, searchRadius );
       const double scalar = scalarValue.scalar();
-      attribute.insert( tr( "Scalar value" ), std::isnan( scalar ) ? tr( "no data" ) : QString::number( scalar ) );
+      attribute.insert( tr( "Scalar Value" ), std::isnan( scalar ) ? tr( "no data" ) : QString::number( scalar ) );
     }
 
     if ( groupMeta.isVector() )
@@ -304,7 +305,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
       const double vectorX = vectorValue.x();
       const double vectorY = vectorValue.y();
       if ( std::isnan( vectorX ) || std::isnan( vectorY ) )
-        attribute.insert( tr( "Vector value" ), tr( "no data" ) );
+        attribute.insert( tr( "Vector Value" ), tr( "no data" ) );
       else
       {
         attribute.insert( tr( "Vector Magnitude" ), QString::number( vectorValue.scalar() ) );
@@ -316,7 +317,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
     const QgsMeshDatasetMetadata &meta = layer->datasetMetadata( index );
 
     if ( groupMeta.isTemporal() )
-      derivedAttributes.insert( tr( "Time step" ), layer->formatTime( meta.time() ) );
+      derivedAttributes.insert( tr( "Time Step" ), layer->formatTime( meta.time() ) );
     derivedAttributes.insert( tr( "Source" ), groupMeta.uri() );
 
     QString resultName = groupMeta.name();
@@ -336,22 +337,22 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
   QgsPointXY vertexPoint = layer->snapOnElement( QgsMesh::Vertex, point, searchRadius );
   if ( !vertexPoint.isEmpty() )
   {
-    derivedGeometry.insert( tr( "Snapped Vertex position X" ), QString::number( vertexPoint.x() ) );
-    derivedGeometry.insert( tr( "Snapped Vertex position Y" ), QString::number( vertexPoint.y() ) );
+    derivedGeometry.insert( tr( "Snapped Vertex Position X" ), QString::number( vertexPoint.x() ) );
+    derivedGeometry.insert( tr( "Snapped Vertex Position Y" ), QString::number( vertexPoint.y() ) );
   }
 
   QgsPointXY faceCentroid = layer->snapOnElement( QgsMesh::Face, point, searchRadius );
   if ( !faceCentroid.isEmpty() )
   {
-    derivedGeometry.insert( tr( "Face centroid X" ), QString::number( faceCentroid.x() ) );
-    derivedGeometry.insert( tr( "Face centroid Y" ), QString::number( faceCentroid.y() ) );
+    derivedGeometry.insert( tr( "Face Centroid X" ), QString::number( faceCentroid.x() ) );
+    derivedGeometry.insert( tr( "Face Centroid Y" ), QString::number( faceCentroid.y() ) );
   }
 
   QgsPointXY pointOnEdge = layer->snapOnElement( QgsMesh::Edge, point, searchRadius );
   if ( !pointOnEdge.isEmpty() )
   {
-    derivedGeometry.insert( tr( "Point on edge X" ), QString::number( pointOnEdge.x() ) );
-    derivedGeometry.insert( tr( "Point on edge Y" ), QString::number( pointOnEdge.y() ) );
+    derivedGeometry.insert( tr( "Point on Edge X" ), QString::number( pointOnEdge.x() ) );
+    derivedGeometry.insert( tr( "Point on Edge Y" ), QString::number( pointOnEdge.y() ) );
   }
 
   const IdentifyResult result( qobject_cast<QgsMapLayer *>( layer ),
