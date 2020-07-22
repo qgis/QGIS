@@ -48,6 +48,7 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
   mPositionAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
   mPositionAttribute->setBuffer( mVertexBuffer );
   mPositionAttribute->setByteStride( stride );
+  mPositionAttribute->setByteOffset( 0 );
   addAttribute( mPositionAttribute );
 
   if ( mWithNormals )
