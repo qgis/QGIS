@@ -2414,13 +2414,12 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
     }
 
     // Check type compatibility before passing attribute value to OGR
-    if ( ! field.convertCompatible( attrValue ) )
+    QString errorMessage;
+    if ( ! field.convertCompatible( attrValue, &errorMessage ) )
     {
-      mErrorMessage = QObject::tr( "Error converting value (%1) from %2 to %3 for attribute field %4" )
+      mErrorMessage = QObject::tr( "Error converting value (%1) for attribute field %2: %3" )
                       .arg( feature.attribute( fldIdx ).toString(),
-                            mFields.at( fldIdx ).typeName(),
-                            attrValue.typeName(),
-                            mFields.at( fldIdx ).name() );
+                            mFields.at( fldIdx ).name(), errorMessage );
       QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
       mError = ErrFeatureWriteFailed;
       return nullptr;

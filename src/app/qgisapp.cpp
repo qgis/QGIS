@@ -9690,14 +9690,15 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
                             vl->dataProvider()->defaultValueClause( vl->fields().fieldOriginIndex( i ) ) == val;
 
       // convert to destination data type
-      if ( !isDefaultValue && !fld.convertCompatible( val ) )
+      QString errorMessage;
+      if ( !isDefaultValue && !fld.convertCompatible( val, &errorMessage ) )
       {
         if ( firstFeature )
         {
           //only warn on first feature
           visibleMessageBar()->pushMessage(
             tr( "Invalid result" ),
-            tr( "Could not store value '%1' in field of type %2" ).arg( merged.at( i ).toString(), fld.typeName() ),
+            tr( "Could not store value '%1' in field of type %2: %3" ).arg( merged.at( i ).toString(), fld.typeName(), errorMessage ),
             Qgis::Warning );
         }
       }
@@ -9862,6 +9863,7 @@ void QgisApp::mergeSelectedFeatures()
   newFeature.setGeometry( unionGeom );
 
   QgsAttributes attrs = d.mergedAttributes();
+  QString errorMessage;
   for ( int i = 0; i < attrs.count(); ++i )
   {
     QVariant val = attrs.at( i );
@@ -9870,11 +9872,11 @@ void QgisApp::mergeSelectedFeatures()
                           vl->dataProvider()->defaultValueClause( vl->fields().fieldOriginIndex( i ) ) == val;
 
     // convert to destination data type
-    if ( !isDefaultValue && !vl->fields().at( i ).convertCompatible( val ) )
+    if ( !isDefaultValue && !vl->fields().at( i ).convertCompatible( val, &errorMessage ) )
     {
       visibleMessageBar()->pushMessage(
         tr( "Invalid result" ),
-        tr( "Could not store value '%1' in field of type %2." ).arg( attrs.at( i ).toString(), vl->fields().at( i ).typeName() ),
+        tr( "Could not store value '%1' in field of type %2: %3" ).arg( attrs.at( i ).toString(), vl->fields().at( i ).typeName(), errorMessage ),
         Qgis::Warning );
     }
     attrs[i] = val;
