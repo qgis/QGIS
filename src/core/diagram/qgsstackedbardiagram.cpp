@@ -187,7 +187,7 @@ void QgsStackedBarDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCo
       negativeTotal += currentVal;
       negativeValues.push_back( qMakePair( -currentVal, *colIt ) );
     }
-    colIt++;
+    ++colIt;
   }
 
 
