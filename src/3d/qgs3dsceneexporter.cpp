@@ -34,7 +34,7 @@
 #include <Qt3DRender/QBufferDataGeneratorPtr>
 #include <Qt3DRender/QMesh>
 #include <Qt3DRender/QSceneLoader>
-
+#include <Qt3DRender/QAbstractTexture>
 #include <Qt3DExtras/QCylinderGeometry>
 #include <Qt3DExtras/QConeGeometry>
 #include <Qt3DExtras/QSphereGeometry>
@@ -42,7 +42,7 @@
 #include <Qt3DExtras/QTorusGeometry>
 #include <Qt3DExtras/QExtrudedTextMesh>
 #include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DRender/QBufferDataGenerator>
+#include <Qt3DRender/QAbstractTextureImage>
 
 #include <QByteArray>
 #include <QFile>
@@ -75,6 +75,7 @@
 #include "qgsrulebased3drenderer.h"
 #include "qgs3dutils.h"
 #include "qgsbillboardgeometry.h"
+#include "qgsimagetexture.h"
 
 #include <numeric>
 
@@ -84,8 +85,14 @@ QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute, QByteArray data 
   uint bytesOffset = attribute->byteOffset();
   uint bytesStride = attribute->byteStride();
   uint vertexSize = attribute->vertexSize();
-
   QVector<T> result;
+
+  if ( bytesStride == 0 )
+  {
+    qDebug() << "WARNING: bytesStride==0 at " << __FILE__ << ":" << __LINE__;
+    return result;
+  }
+
   for ( int i = bytesOffset; i < data.size(); i += bytesStride )
   {
     for ( unsigned int j = 0; j < vertexSize * sizeof( T ); j += sizeof( T ) )
@@ -213,10 +220,9 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
         if ( entity == nullptr ) continue;
         Qgs3DExportObject *object = processGeometryRenderer( renderer );
         if ( object == nullptr ) continue;
+        if ( mExportTextures )
+          processEntityMaterial( entity, object );
         mObjects.push_back( object );
-        Qt3DExtras::QPhongMaterial *material = findTypedComponent<Qt3DExtras::QPhongMaterial>( entity );
-        if ( material == nullptr ) continue;
-        object->setupPhongMaterial( Qgs3DUtils::phongMaterialFromQt3DComponent( material ) );
       }
       return true;
     }
@@ -227,15 +233,12 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
       QString symbolType = symbol->type();
       if ( symbolType == "polygon" )
       {
-        const QgsPolygon3DSymbol *polygonSymbol = dynamic_cast<const QgsPolygon3DSymbol *>( symbol );
         QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
         for ( Qt3DRender::QGeometryRenderer *r : renderers )
         {
           Qgs3DExportObject *object = processGeometryRenderer( r );
-          object->setName( QStringLiteral( "polygon" ) );
-          object->setupPhongMaterial( polygonSymbol->material() );
+          processEntityMaterial( entity, object );
           mObjects.push_back( object );
-          // TODO: handle materials (for rule based renderer's polygons as well)
         }
         return renderers.size() != 0;
       }
@@ -298,14 +301,44 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
         }
         else
         {
-          QVector<Qgs3DExportObject *> objects = processInstancedPointGeometry( entity, pointSymbol );
-          mObjects << objects;
+          QVector<Qgs3DExportObject *> objects = processInstancedPointGeometry( entity );
+          for ( Qgs3DExportObject *obj : objects )
+          {
+            obj->setupPhongMaterial( pointSymbol->material() );
+            mObjects << obj;
+          }
           return true;
         }
       }
     }
   }
   return false;
+}
+
+void Qgs3DSceneExporter::processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3DExportObject *object )
+{
+  Qt3DExtras::QPhongMaterial *phongMaterial = findTypedComponent<Qt3DExtras::QPhongMaterial>( entity );
+  if ( phongMaterial != nullptr )
+  {
+    object->setupPhongMaterial( Qgs3DUtils::phongMaterialFromQt3DComponent( phongMaterial ) );
+  }
+  Qt3DExtras::QDiffuseMapMaterial *diffuseMapMaterial = findTypedComponent<Qt3DExtras::QDiffuseMapMaterial>( entity );
+  if ( diffuseMapMaterial != nullptr )
+  {
+    QVector<Qt3DRender::QAbstractTextureImage *> textureImages = diffuseMapMaterial->diffuse()->textureImages();
+    QgsImageTexture *imageTexture = nullptr;
+    for ( Qt3DRender::QAbstractTextureImage *tex : textureImages )
+    {
+      imageTexture = dynamic_cast<QgsImageTexture *>( tex );
+      if ( imageTexture != nullptr ) break;
+    }
+    if ( imageTexture != nullptr )
+    {
+      qDebug() << "Exporting image texture";
+      QImage image = imageTexture->getImage();
+      object->setTextureImage( image );
+    }
+  }
 }
 
 void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain )
@@ -493,7 +526,7 @@ void Qgs3DSceneExporter::parseMeshTile( QgsTerrainTileEntity *tileEntity )
   }
 }
 
-QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( Qt3DCore::QEntity *entity, const QgsPoint3DSymbol *pointSymbol )
+QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( Qt3DCore::QEntity *entity )
 {
   QVector<Qgs3DExportObject *> objects;
   QList<Qt3DRender::QGeometry *> geometriesList =  entity->findChildren<Qt3DRender::QGeometry *>();
@@ -532,8 +565,6 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
         QVector<float> normalsData = getAttributeData<float>( normalsAttribute, vertexBytes );
         object->setupNormalCoordinates( normalsData );
       }
-
-      object->setupPhongMaterial( pointSymbol->material() );
     }
   }
   return objects;
@@ -618,6 +649,14 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     // Reuse vertex bytes
     QVector<float> normalsData = getAttributeData<float>( normalsAttribute, vertexBytes );
     object->setupNormalCoordinates( normalsData );
+  }
+
+  if ( mExportTextures )
+  {
+    Qt3DRender::QAttribute *texCoordsAttribute = findAttribute( geometry, Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
+    // Reuse vertex bytes
+    QVector<float> texCoordsData = getAttributeData<float>( texCoordsAttribute, vertexBytes );
+    object->setupTextureCoordinates( texCoordsData );
   }
 
   return object;

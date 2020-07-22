@@ -44,6 +44,8 @@
 #include "qgslinevertexdata_p.h"
 #include "qgslinematerial_p.h"
 
+#include "qgsimagetexture.h"
+
 /// @cond PRIVATE
 
 
@@ -282,26 +284,6 @@ static void applyCullingMode( Qgs3DTypes::CullingMode cullingMode, Qt3DRender::Q
 }
 
 
-class QgsQImageTextureImage : public Qt3DRender::QPaintedTextureImage
-{
-  public:
-    QgsQImageTextureImage( const QImage &image, Qt3DCore::QNode *parent = nullptr )
-      : Qt3DRender::QPaintedTextureImage( parent )
-      , mImage( image )
-    {
-      setSize( mImage.size() );
-    }
-
-    void paint( QPainter *painter ) override
-    {
-      painter->drawImage( mImage.rect(), mImage, mImage.rect() );
-    }
-
-  private:
-
-    QImage mImage;
-
-};
 
 
 Qt3DRender::QMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSymbol &symbol, bool isSelected, const Qgs3DRenderContext &context ) const
@@ -311,7 +293,6 @@ Qt3DRender::QMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSy
 
   if ( symbol.material().shouldUseDiffuseTexture() )
     textureSourceImage = QgsApplication::imageCache()->pathAsImage( symbol.material().texturePath(), QSize(), true, 1.0, fitsInCache );
-  ( void )fitsInCache;
 
   Qt3DRender::QMaterial *retMaterial = nullptr;
   if ( !textureSourceImage.isNull() )
@@ -320,7 +301,8 @@ Qt3DRender::QMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSy
 
     applyCullingMode( symbol.cullingMode(), material );
 
-    QgsQImageTextureImage *textureImage = new QgsQImageTextureImage( textureSourceImage );
+    QgsImageTexture *textureImage = new QgsImageTexture( textureSourceImage );
+
     material->diffuse()->addTextureImage( textureImage );
 
     material->diffuse()->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );

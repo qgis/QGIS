@@ -72,6 +72,7 @@ SET(QGIS_3D_SRCS
   qgs3dsceneexporter.cpp
   qgs3dexportobject.cpp
   qgs3dmapexportsettings.cpp
+  qgsimagetexture.cpp
 )
 
 SET(QGIS_3D_HDRS

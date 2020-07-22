@@ -36,6 +36,7 @@ class Qgs3DExportObject : public QObject
 {
     Q_OBJECT
   public:
+    //! The type of exported geometry
     enum ObjectType
     {
       TriangularFaces,

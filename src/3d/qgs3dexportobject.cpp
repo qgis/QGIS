@@ -33,6 +33,7 @@ void insertIndexData( QVector<uint> &vertexIndex, const QVector<T> &faceIndex )
 {
   for ( int i = 0; i < faceIndex.size(); i += 3 )
   {
+    if ( i + 2 >= faceIndex.size() ) continue;
     // skip invalid triangles
     if ( faceIndex[i] == faceIndex[i + 1] && faceIndex[i + 1] == faceIndex[i + 2] )
       continue;
@@ -67,6 +68,7 @@ void Qgs3DExportObject::setupFaces( const QVector<uint> &facesIndexes )
 
 void Qgs3DExportObject::setupLine( const QVector<uint> &lineIndexes )
 {
+  Q_UNUSED( lineIndexes );
   for ( int i = 0; i < mVertexPosition.size(); i += 3 ) mIndexes << i / 3 + 1;
 }
 
@@ -196,6 +198,7 @@ QString Qgs3DExportObject::saveMaterial( QTextStream &mtlOut, const QString &fol
   if ( mTexturesUV.size() != 0 && !mTextureImage.isNull() )
   {
     QString filePath = QDir( folderPath ).filePath( materialName + ".jpg" );
+    qDebug() << "saving texture image " << filePath;
     mTextureImage.save( filePath, "JPG" );
     mtlOut << "\tmap_Kd " << materialName << ".jpg" << "\n";
   }

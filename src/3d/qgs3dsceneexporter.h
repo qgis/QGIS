@@ -95,11 +95,13 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
 
   private:
     //! Constructs Qgs3DExportObject from instanced point geometry
-    QVector<Qgs3DExportObject *> processInstancedPointGeometry( Qt3DCore::QEntity *entity, const QgsPoint3DSymbol *pointSymbol );
+    QVector<Qgs3DExportObject *> processInstancedPointGeometry( Qt3DCore::QEntity *entity );
     //! Constructs Qgs3DExportObject from 3D models loaded using a scene loader
     QVector<Qgs3DExportObject *> processSceneLoaderGeometries( Qt3DRender::QSceneLoader *sceneLoader );
     //! Constructs Qgs3DExportObject from geometry renderer
     Qgs3DExportObject *processGeometryRenderer( Qt3DRender::QGeometryRenderer *mesh, float sceneScale = 1.0f, QVector3D sceneTranslation = QVector3D( 0.0f, 0.0f, 0.0f ) );
+    //! Extracts material information from geometry renderer and inserts it into the export object
+    void processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3DExportObject *object );
     //! Constricts Qgs3DExportObject from line entity
     QVector<Qgs3DExportObject *> processLines( Qt3DCore::QEntity *entity );
     //! Constricts Qgs3DExportObject from billboard point entity
