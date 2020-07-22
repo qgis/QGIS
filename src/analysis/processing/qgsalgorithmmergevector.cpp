@@ -167,13 +167,13 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
   bool addLayerField = false;
   if ( outputFields.lookupField( QStringLiteral( "layer" ) ) < 0 )
   {
-    outputFields.append( QgsField( QStringLiteral( "layer" ), QVariant::String, QString(), 100 ) );
+    outputFields.append( QgsField( QStringLiteral( "layer" ), QVariant::String, QString() ) );
     addLayerField = true;
   }
   bool addPathField = false;
   if ( outputFields.lookupField( QStringLiteral( "path" ) ) < 0 )
   {
-    outputFields.append( QgsField( QStringLiteral( "path" ), QVariant::String, QString(), 200 ) );
+    outputFields.append( QgsField( QStringLiteral( "path" ), QVariant::String, QString() ) );
     addPathField = true;
   }
 
