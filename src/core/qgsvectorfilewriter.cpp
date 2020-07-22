@@ -2296,6 +2296,11 @@ bool QgsVectorFileWriter::addFeatures( QgsFeatureList &features, QgsFeatureSink:
   return result;
 }
 
+QString QgsVectorFileWriter::lastError() const
+{
+  return mErrorMessage;
+}
+
 bool QgsVectorFileWriter::addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit )
 {
   // create the feature
