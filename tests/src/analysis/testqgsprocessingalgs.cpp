@@ -261,8 +261,8 @@ void TestQgsProcessingAlgs::saveFeaturesAlg()
   QVariantMap outputs = saveFeatures->run( parameters, *context, &feedback, &ok );
   QCOMPARE( ok, true );
   QCOMPARE( outputs.value( QStringLiteral( "OUTPUT" ) ).toString(), QStringLiteral( "%1|layername=%2" ).arg( outputGeoJson, layerName ) );
-  QCOMPARE( outputs.value( QStringLiteral( "OUTPUT_FILE_PATH" ) ).toString(), outputGeoJson );
-  QCOMPARE( outputs.value( QStringLiteral( "OUTPUT_LAYER_NAME" ) ).toString(), layerName );
+  QCOMPARE( outputs.value( QStringLiteral( "FILE_PATH" ) ).toString(), outputGeoJson );
+  QCOMPARE( outputs.value( QStringLiteral( "LAYER_NAME" ) ).toString(), layerName );
 
   std::unique_ptr< QgsVectorLayer > savedLayer = qgis::make_unique< QgsVectorLayer >( outputs.value( QStringLiteral( "OUTPUT" ) ).toString(), "points", "ogr" );
   QVERIFY( savedLayer->isValid() );
