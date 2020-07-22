@@ -188,6 +188,11 @@ bool QgsVectorLayerExporter::addFeature( QgsFeature &feat, Flags )
   return true;
 }
 
+QString QgsVectorLayerExporter::lastError() const
+{
+  return mErrorMessage;
+}
+
 bool QgsVectorLayerExporter::flushBuffer()
 {
   if ( mFeatureBuffer.count() <= 0 )

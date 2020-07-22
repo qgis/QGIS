@@ -124,6 +124,8 @@ Returns the number of error messages encountered during the export.
 
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
+    virtual QString lastError() const;
+
 
     ~QgsVectorLayerExporter();
 

@@ -73,6 +73,13 @@ Flushes any internal buffer which may exist in the sink, causing any buffered fe
 
 :return: ``False`` if any buffered features could not be added to the sink.
 %End
+
+    virtual QString lastError() const;
+%Docstring
+Returns the most recent error encountered by the sink, e.g. when a call to :py:func:`~QgsFeatureSink.addFeatures` returns ``False``.
+
+.. versionadded:: 3.16
+%End
 };
 
 QFlags<QgsFeatureSink::Flag> operator|(QgsFeatureSink::Flag f1, QFlags<QgsFeatureSink::Flag> f2);

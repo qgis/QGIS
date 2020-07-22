@@ -234,6 +234,8 @@ or if the given attribute is not an enum type.
 
     virtual bool addFeatures( QgsFeatureList &flist /In,Out/, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
+    virtual QString lastError() const;
+
 
     virtual bool deleteFeatures( const QgsFeatureIds &id );
 %Docstring
