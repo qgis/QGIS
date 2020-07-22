@@ -274,6 +274,11 @@ QWidget *QgsFieldMappingWidget::ExpressionDelegate::createEditor( QWidget *paren
     if ( mappingWidget->sourceLayer() )
       editor->setLayer( mappingWidget->sourceLayer() );
   }
+  else if ( QgsAggregateMappingWidget *aggregateWidget = qobject_cast< QgsAggregateMappingWidget *>( ExpressionDelegate::parent() ) )
+  {
+    if ( aggregateWidget->sourceLayer() )
+      editor->setLayer( aggregateWidget->sourceLayer() );
+  }
 
   editor->setField( index.model()->data( index, Qt::DisplayRole ).toString() );
   connect( editor,
