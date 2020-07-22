@@ -1383,7 +1383,13 @@ bool QgsProcessingFeatureSink::addFeature( QgsFeature &feature, QgsFeatureSink::
 {
   bool result = QgsProxyFeatureSink::addFeature( feature, flags );
   if ( !result && mContext.feedback() )
-    mContext.feedback()->reportError( QObject::tr( "Feature could not be written to %1" ).arg( mSinkName ) );
+  {
+    const QString error = lastError();
+    if ( !error.isEmpty() )
+      mContext.feedback()->reportError( QObject::tr( "Feature could not be written to %1: %2" ).arg( mSinkName, error ) );
+    else
+      mContext.feedback()->reportError( QObject::tr( "Feature could not be written to %1" ).arg( mSinkName ) );
+  }
   return result;
 }
 
@@ -1391,7 +1397,13 @@ bool QgsProcessingFeatureSink::addFeatures( QgsFeatureList &features, QgsFeature
 {
   bool result = QgsProxyFeatureSink::addFeatures( features, flags );
   if ( !result && mContext.feedback() )
-    mContext.feedback()->reportError( QObject::tr( "%1 feature(s) could not be written to %2" ).arg( features.count() ).arg( mSinkName ) );
+  {
+    const QString error = lastError();
+    if ( !error.isEmpty() )
+      mContext.feedback()->reportError( QObject::tr( "%1 feature(s) could not be written to %2: %3" ).arg( features.count() ).arg( mSinkName, error ) );
+    else
+      mContext.feedback()->reportError( QObject::tr( "%1 feature(s) could not be written to %2" ).arg( features.count() ).arg( mSinkName ) );
+  }
   return result;
 }
 
@@ -1399,6 +1411,12 @@ bool QgsProcessingFeatureSink::addFeatures( QgsFeatureIterator &iterator, QgsFea
 {
   bool result = QgsProxyFeatureSink::addFeatures( iterator, flags );
   if ( !result && mContext.feedback() )
-    mContext.feedback()->reportError( QObject::tr( "Features could not be written to %1" ).arg( mSinkName ) );
+  {
+    const QString error = lastError();
+    if ( !error.isEmpty() )
+      mContext.feedback()->reportError( QObject::tr( "Features could not be written to %1: %2" ).arg( mSinkName, error ) );
+    else
+      mContext.feedback()->reportError( QObject::tr( "Features could not be written to %1" ).arg( mSinkName ) );
+  }
   return result;
 }
