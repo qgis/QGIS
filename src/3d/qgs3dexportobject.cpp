@@ -88,10 +88,10 @@ void Qgs3DExportObject::setupPhongMaterial( const QgsPhongMaterialSettings &mate
   QColor specular = material.specular();
   QColor ambient = material.ambient();
   float shininess = material.shininess();
-  setMaterialParameter( QString( "Kd" ), QString( "%1 %2 %3" ).arg( diffuse.redF() ).arg( diffuse.greenF() ).arg( diffuse.blueF() ) );
-  setMaterialParameter( QString( "Ka" ), QString( "%1 %2 %3" ).arg( ambient.redF() ).arg( ambient.greenF() ).arg( ambient.blueF() ) );
-  setMaterialParameter( QString( "Ks" ), QString( "%1 %2 %3" ).arg( specular.redF() ).arg( specular.greenF() ).arg( specular.blueF() ) );
-  setMaterialParameter( QString( "Ns" ), QString( "%1" ).arg( shininess ) );
+  setMaterialParameter( QStringLiteral( "Kd" ), QStringLiteral( "%1 %2 %3" ).arg( diffuse.redF() ).arg( diffuse.greenF() ).arg( diffuse.blueF() ) );
+  setMaterialParameter( QStringLiteral( "Ka" ), QStringLiteral( "%1 %2 %3" ).arg( ambient.redF() ).arg( ambient.greenF() ).arg( ambient.blueF() ) );
+  setMaterialParameter( QStringLiteral( "Ks" ), QStringLiteral( "%1 %2 %3" ).arg( specular.redF() ).arg( specular.greenF() ).arg( specular.blueF() ) );
+  setMaterialParameter( QStringLiteral( "Ns" ), QStringLiteral( "%1" ).arg( shininess ) );
 }
 
 void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ )
@@ -154,12 +154,12 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
   {
     int negativeIndex = -1 - ( verticesCount - i );
     if ( hasNormals && !hasTextures )
-      return QString( "%1//%2" ).arg( negativeIndex ).arg( negativeIndex );
+      return QStringLiteral( "%1//%2" ).arg( negativeIndex ).arg( negativeIndex );
     if ( !hasNormals && hasTextures )
-      return QString( "%1/%2" ).arg( negativeIndex ).arg( negativeIndex );
+      return QStringLiteral( "%1/%2" ).arg( negativeIndex ).arg( negativeIndex );
     if ( hasNormals && hasTextures )
-      return QString( "%1/%2/%3" ).arg( negativeIndex ).arg( negativeIndex ).arg( negativeIndex );
-    return QString( "%1" ).arg( negativeIndex );
+      return QStringLiteral( "%1/%2/%3" ).arg( negativeIndex ).arg( negativeIndex ).arg( negativeIndex );
+    return QStringLiteral( "%1" ).arg( negativeIndex );
   };
 
   if ( mType == TriangularFaces )

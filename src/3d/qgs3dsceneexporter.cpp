@@ -336,7 +336,6 @@ void Qgs3DSceneExporter::processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3D
     }
     if ( imageTexture != nullptr )
     {
-      qDebug() << "Exporting image texture";
       QImage image = imageTexture->getImage();
       object->setTextureImage( image );
     }
@@ -652,12 +651,6 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     return nullptr;
   }
 
-  if ( positionData.size() == 0 )
-  {
-    qDebug() << "positionData.size()==" << positionData.size();
-    qDebug() << "indexData.size()==" << indexData.size();
-  }
-
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( QStringLiteral( "mesh_geometry" ) ), "", this );
   object->setupPositionCoordinates( positionData, scale * sceneScale, translation + sceneTranslation );
   object->setupFaces( indexData );
@@ -792,7 +785,7 @@ QString Qgs3DSceneExporter::getObjectName( const QString &name )
   QString ret = name;
   if ( usedObjectNamesCounter.contains( name ) )
   {
-    ret = QString( "%1%2" ).arg( name ).arg( usedObjectNamesCounter[name] );
+    ret = QStringLiteral( "%1%2" ).arg( name ).arg( usedObjectNamesCounter[name] );
     usedObjectNamesCounter[name]++;
   }
   else
