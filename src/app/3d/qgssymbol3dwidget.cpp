@@ -53,6 +53,7 @@ QgsSymbol3DWidget::QgsSymbol3DWidget( QgsVectorLayer *layer, QWidget *parent )
   mStyleWidget = new QgsStyleItemsListWidget( this );
   mStyleWidget->setStyle( QgsStyle::defaultStyle() );
   mStyleWidget->setEntityType( QgsStyle::Symbol3DEntity );
+  mStyleWidget->setLayerType( mLayer->geometryType() );
 
   connect( mStyleWidget, &QgsStyleItemsListWidget::selectionChanged, this, &QgsSymbol3DWidget::setSymbolFromStyle );
   connect( mStyleWidget, &QgsStyleItemsListWidget::saveEntity, this, &QgsSymbol3DWidget::saveSymbol );
@@ -85,6 +86,7 @@ void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorL
 {
   int pageIndex;
   mLayer = vlayer;
+  mStyleWidget->setLayerType( mLayer->geometryType() );
   switch ( mLayer->geometryType() )
   {
     case QgsWkbTypes::PointGeometry:
