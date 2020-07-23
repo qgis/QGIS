@@ -47,7 +47,7 @@ QgsSymbol3DWidget::QgsSymbol3DWidget( QgsVectorLayer *layer, QWidget *parent )
   connect( mStyleWidget, &QgsStyleItemsListWidget::selectionChanged, this, &QgsSymbol3DWidget::setSymbolFromStyle );
   connect( mStyleWidget, &QgsStyleItemsListWidget::saveEntity, this, &QgsSymbol3DWidget::saveSymbol );
 
-  layout->addWidget( mStyleWidget );
+  layout->addWidget( mStyleWidget, 1 );
 }
 
 std::unique_ptr<QgsAbstract3DSymbol> QgsSymbol3DWidget::symbol()
