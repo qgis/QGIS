@@ -168,7 +168,8 @@ void QgsDecorationScaleBar::setupScaleBar()
       lineSymbol->setColor( mColor ); // Compatibility with pre 3.2 configuration
       lineSymbol->setWidth( 0.3 );
       lineSymbol->setOutputUnit( QgsUnitTypes::RenderMillimeters );
-      mSettings.setLineSymbol( lineSymbol.release() );
+      mSettings.setLineSymbol( lineSymbol->clone() );
+      mSettings.setDivisionLineSymbol( lineSymbol.release() );
       mSettings.setHeight( 2.2 );
       break;
     }
