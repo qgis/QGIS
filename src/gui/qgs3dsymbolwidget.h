@@ -53,6 +53,18 @@ class GUI_EXPORT Qgs3DSymbolWidget : public QWidget
      * Caller takes ownership of the returned symbol.
      */
     virtual QgsAbstract3DSymbol *symbol() = 0 SIP_FACTORY;
+
+    /**
+     * Returns the symbol type handled by the widget.
+     */
+    virtual QString symbolType() const = 0;
+
+  signals:
+
+    /**
+     * Emitted when the symbol is changed.
+     */
+    void changed();
 };
 
 

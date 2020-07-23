@@ -14,19 +14,14 @@
  ***************************************************************************/
 
 #include "qgssymbol3dwidget.h"
-
-#include "qgsline3dsymbol.h"
-#include "qgspoint3dsymbol.h"
-#include "qgspolygon3dsymbol.h"
-
-#include "qgsline3dsymbolwidget.h"
-#include "qgspoint3dsymbolwidget.h"
-#include "qgspolygon3dsymbolwidget.h"
 #include "qgsabstractmaterialsettings.h"
 #include "qgsstyleitemslistwidget.h"
 #include "qgsstylesavedialog.h"
 #include "qgsvectorlayer.h"
-
+#include "qgsapplication.h"
+#include "qgs3dsymbolregistry.h"
+#include "qgs3dsymbolwidget.h"
+#include "qgsabstract3dsymbol.h"
 #include <QStackedWidget>
 #include <QMessageBox>
 
@@ -36,15 +31,9 @@ QgsSymbol3DWidget::QgsSymbol3DWidget( QgsVectorLayer *layer, QWidget *parent )
   , mLayer( layer )
 {
   widgetUnsupported = new QLabel( tr( "Sorry, this symbol is not supported." ), this );
-  widgetLine = new QgsLine3DSymbolWidget( this );
-  widgetPoint = new QgsPoint3DSymbolWidget( this );
-  widgetPolygon = new QgsPolygon3DSymbolWidget( this );
 
   widgetStack = new QStackedWidget( this );
   widgetStack->addWidget( widgetUnsupported );
-  widgetStack->addWidget( widgetLine );
-  widgetStack->addWidget( widgetPoint );
-  widgetStack->addWidget( widgetPolygon );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -59,80 +48,33 @@ QgsSymbol3DWidget::QgsSymbol3DWidget( QgsVectorLayer *layer, QWidget *parent )
   connect( mStyleWidget, &QgsStyleItemsListWidget::saveEntity, this, &QgsSymbol3DWidget::saveSymbol );
 
   layout->addWidget( mStyleWidget );
-
-  connect( widgetLine, &QgsLine3DSymbolWidget::changed, this, &QgsSymbol3DWidget::widgetChanged );
-  connect( widgetPoint, &QgsPoint3DSymbolWidget::changed, this, &QgsSymbol3DWidget::widgetChanged );
-  connect( widgetPolygon, &QgsPolygon3DSymbolWidget::changed, this, &QgsSymbol3DWidget::widgetChanged );
 }
 
 std::unique_ptr<QgsAbstract3DSymbol> QgsSymbol3DWidget::symbol()
 {
-  int pageIndex = widgetStack->currentIndex();
-  if ( pageIndex == 1 || pageIndex == 2 || pageIndex == 3 )
+  if ( Qgs3DSymbolWidget *w = qobject_cast< Qgs3DSymbolWidget * >( widgetStack->currentWidget() ) )
   {
-    std::unique_ptr< QgsAbstract3DSymbol > sym;
-    if ( pageIndex == 1 )
-      sym.reset( widgetLine->symbol() );
-    else if ( pageIndex == 2 )
-      sym.reset( widgetPoint->symbol() );
-    else
-      sym.reset( widgetPolygon->symbol() );
-    return sym;
+    return std::unique_ptr< QgsAbstract3DSymbol >( w->symbol() );
   }
   return nullptr;
 }
 
 void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *vlayer )
 {
-  int pageIndex;
   mLayer = vlayer;
   mStyleWidget->setLayerType( mLayer->geometryType() );
-  switch ( mLayer->geometryType() )
+
+  if ( Qgs3DSymbolWidget *w = qobject_cast< Qgs3DSymbolWidget * >( widgetStack->currentWidget() ) )
   {
-    case QgsWkbTypes::PointGeometry:
-      pageIndex = 2;
-      if ( symbol && symbol->type() == QLatin1String( "point" ) )
-      {
-        whileBlocking( widgetPoint )->setSymbol( symbol, vlayer );
-      }
-      else
-      {
-        QgsPoint3DSymbol defaultSymbol;
-        whileBlocking( widgetPoint )->setSymbol( &defaultSymbol, vlayer );
-      }
-      break;
-
-    case QgsWkbTypes::LineGeometry:
-      pageIndex = 1;
-      if ( symbol && symbol->type() == QLatin1String( "line" ) )
-      {
-        whileBlocking( widgetLine )->setSymbol( symbol, vlayer );
-      }
-      else
-      {
-        QgsLine3DSymbol defaultSymbol;
-        whileBlocking( widgetLine )->setSymbol( &defaultSymbol, vlayer );
-      }
-      break;
-
-    case QgsWkbTypes::PolygonGeometry:
-      pageIndex = 3;
-      if ( symbol && symbol->type() == QLatin1String( "polygon" ) )
-      {
-        whileBlocking( widgetPolygon )->setSymbol( symbol, vlayer );
-      }
-      else
-      {
-        QgsPolygon3DSymbol defaultSymbol;
-        whileBlocking( widgetPolygon )->setSymbol( &defaultSymbol, vlayer );
-      }
-      break;
-
-    default:
-      pageIndex = 0;   // unsupported
-      break;
+    if ( w->symbolType() == symbol->type() )
+    {
+      // we can reuse the existing widget
+      w->setSymbol( symbol, mLayer );
+      return;
+    }
   }
-  widgetStack->setCurrentIndex( pageIndex );
+
+  updateSymbolWidget( symbol );
 }
 
 void QgsSymbol3DWidget::setSymbolFromStyle( const QString &name )
@@ -142,12 +84,7 @@ void QgsSymbol3DWidget::setSymbolFromStyle( const QString &name )
   if ( !s )
     return;
 
-  if ( s->type() == QStringLiteral( "point" ) )
-    widgetPoint->setSymbol( s.release(), mLayer );
-  else if ( s->type() == QStringLiteral( "line" ) )
-    widgetLine->setSymbol( s.release(), mLayer );
-  else if ( s->type() == QStringLiteral( "polygon" ) )
-    widgetPolygon->setSymbol( s.release(), mLayer );
+  setSymbol( s.get(), mLayer );
 }
 
 void QgsSymbol3DWidget::saveSymbol()
@@ -184,4 +121,31 @@ void QgsSymbol3DWidget::saveSymbol()
 
   // make sure the symbol is stored
   QgsStyle::defaultStyle()->saveSymbol3D( saveDlg.name(), s, saveDlg.isFavorite(), symbolTags );
+}
+
+void QgsSymbol3DWidget::updateSymbolWidget( const QgsAbstract3DSymbol *newSymbol )
+{
+  if ( widgetStack->currentWidget() != widgetUnsupported )
+  {
+    // stop updating from the original widget
+    if ( Qgs3DSymbolWidget *w = qobject_cast< Qgs3DSymbolWidget * >( widgetStack->currentWidget() ) )
+      disconnect( w, &Qgs3DSymbolWidget::changed, this, &QgsSymbol3DWidget::widgetChanged );
+    widgetStack->removeWidget( widgetStack->currentWidget() );
+  }
+
+  const QString symbolType = newSymbol->type();
+  if ( Qgs3DSymbolAbstractMetadata *am = QgsApplication::symbol3DRegistry()->symbolMetadata( symbolType ) )
+  {
+    if ( Qgs3DSymbolWidget *w = am->createSymbolWidget( mLayer ) )
+    {
+      w->setSymbol( newSymbol, mLayer );
+      widgetStack->addWidget( w );
+      widgetStack->setCurrentWidget( w );
+      // start receiving updates from widget
+      connect( w, &Qgs3DSymbolWidget::changed, this, &QgsSymbol3DWidget::widgetChanged );
+      return;
+    }
+  }
+  // When anything is not right
+  widgetStack->setCurrentWidget( widgetUnsupported );
 }

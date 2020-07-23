@@ -38,6 +38,18 @@ Returns a new instance of the symbol defined by the widget.
 
 Caller takes ownership of the returned symbol.
 %End
+
+    virtual QString symbolType() const = 0;
+%Docstring
+Returns the symbol type handled by the widget.
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the symbol is changed.
+%End
 };
 
 

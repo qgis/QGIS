@@ -232,6 +232,11 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
   return sym.release();
 }
 
+QString QgsPoint3DSymbolWidget::symbolType() const
+{
+  return QStringLiteral( "point" );
+}
+
 void QgsPoint3DSymbolWidget::onShapeChanged()
 {
   QList<QWidget *> allWidgets;
