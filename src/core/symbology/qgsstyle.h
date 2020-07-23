@@ -1084,6 +1084,9 @@ class CORE_EXPORT QgsStyle : public QObject
     mutable QHash< QgsSymbol::SymbolType, QHash< QSizeF, QgsLegendPatchShape > > mDefaultPatchCache;
     mutable QHash< QgsSymbol::SymbolType, QHash< QSizeF, QList< QList< QPolygonF > > > > mDefaultPatchQPolygonFCache;
 
+    QMap< QString, QDomElement > mDeferred3DsymbolElements;
+    void handleDeferred3DSymbolCreation();
+
     static QgsStyle *sDefaultStyle;
 
     //! Convenience function to open the DB and return a sqlite3 object
@@ -1135,6 +1138,8 @@ class CORE_EXPORT QgsStyle : public QObject
      * Returns the entity ID field name for for the tag map table for the specified entity \a type.
      */
     static QString tagmapEntityIdFieldName( StyleEntity type );
+
+    friend class Qgs3D;
 
     Q_DISABLE_COPY( QgsStyle )
 };
