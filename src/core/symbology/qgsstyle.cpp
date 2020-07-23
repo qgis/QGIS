@@ -456,6 +456,27 @@ QStringList QgsStyle::colorRampNames() const
   return mColorRamps.keys();
 }
 
+void QgsStyle::handleDeferred3DSymbolCreation()
+{
+  for ( auto it = mDeferred3DsymbolElements.constBegin(); it != mDeferred3DsymbolElements.constEnd(); ++it )
+  {
+    const QString symbolType = it.value().attribute( QStringLiteral( "type" ) );
+    std::unique_ptr< QgsAbstract3DSymbol > symbol( QgsApplication::symbol3DRegistry()->createSymbol( symbolType ) );
+    if ( symbol )
+    {
+      symbol->readXml( it.value(), QgsReadWriteContext() );
+      addSymbol3D( it.key(), symbol.release(), false );
+      emit entityAdded( Symbol3DEntity, it.key() );
+    }
+    else
+    {
+      QgsDebugMsg( "Cannot open 3d symbol " + it.key() );
+      continue;
+    }
+  }
+  mDeferred3DsymbolElements.clear();
+}
+
 bool QgsStyle::openDatabase( const QString &filename )
 {
   int rc = mCurrentDB.open( filename );
@@ -760,6 +781,9 @@ bool QgsStyle::load( const QString &filename )
     QgsScopedRuntimeProfile profile( tr( "Load 3d symbols shapes" ) );
     query = QgsSqlite3Mprintf( "SELECT * FROM symbol3d" );
     statement = mCurrentDB.prepare( query, rc );
+
+    const bool registry3dPopulated = !QgsApplication::symbol3DRegistry()->symbolTypes().empty();
+
     while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
     {
       QDomDocument doc;
@@ -773,17 +797,24 @@ bool QgsStyle::load( const QString &filename )
       }
       QDomElement settingsElement = doc.documentElement();
 
-      const QString symbolType = settingsElement.attribute( QStringLiteral( "type" ) );
-      std::unique_ptr< QgsAbstract3DSymbol > symbol( QgsApplication::symbol3DRegistry()->createSymbol( symbolType ) );
-      if ( symbol )
+      if ( !registry3dPopulated )
       {
-        symbol->readXml( settingsElement, QgsReadWriteContext() );
-        m3dSymbols.insert( settingsName, symbol.release() );
+        mDeferred3DsymbolElements.insert( settingsName, settingsElement );
       }
       else
       {
-        QgsDebugMsg( "Cannot open 3d symbol " + settingsName );
-        continue;
+        const QString symbolType = settingsElement.attribute( QStringLiteral( "type" ) );
+        std::unique_ptr< QgsAbstract3DSymbol > symbol( QgsApplication::symbol3DRegistry()->createSymbol( symbolType ) );
+        if ( symbol )
+        {
+          symbol->readXml( settingsElement, QgsReadWriteContext() );
+          m3dSymbols.insert( settingsName, symbol.release() );
+        }
+        else
+        {
+          QgsDebugMsg( "Cannot open 3d symbol " + settingsName );
+          continue;
+        }
       }
     }
   }
