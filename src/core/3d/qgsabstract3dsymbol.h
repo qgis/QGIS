@@ -55,6 +55,13 @@ class CORE_EXPORT QgsAbstract3DSymbol
     //! Reads symbol configuration from the given DOM element
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) = 0;
 
+    /**
+     * Returns the list of the vector layer geometry types which are compatible with this symbol.
+     *
+     * \since QGIS 3.16
+     */
+    virtual QList< QgsWkbTypes::GeometryType > compatibleGeometryTypes() const;
+
     //! Data definable properties.
     enum Property
     {
