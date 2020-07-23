@@ -54,6 +54,9 @@ class Dummy3dSymbol(QgsAbstract3DSymbol):
     def writeXml(self, elem, context):
         pass
 
+    def compatibleGeometryTypes(self):
+        return [int(QgsWkbTypes.PointGeometry), int(QgsWkbTypes.LineGeometry)]
+
 
 def createMarkerSymbol():
     symbol = QgsMarkerSymbol.createSimple({
@@ -495,6 +498,13 @@ class TestQgsStyleModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(2, 0), QgsStyleModel.IsFavoriteRole), True)
         self.assertEqual(model.data(model.index(3, 0), QgsStyleModel.IsFavoriteRole), False)
         self.assertEqual(model.data(model.index(4, 0), QgsStyleModel.IsFavoriteRole), False)
+
+        self.assertEqual(model.data(model.index(0, 0), QgsStyleModel.CompatibleGeometryTypesRole), [0, 1])
+        self.assertEqual(model.data(model.index(1, 0), QgsStyleModel.CompatibleGeometryTypesRole), [0, 1])
+        self.assertEqual(model.data(model.index(2, 0), QgsStyleModel.CompatibleGeometryTypesRole), [0, 1])
+        self.assertEqual(model.data(model.index(3, 0), QgsStyleModel.CompatibleGeometryTypesRole), [0, 1])
+        self.assertEqual(model.data(model.index(4, 0), QgsStyleModel.CompatibleGeometryTypesRole), [0, 1])
+        self.assertEqual(model.data(model.index(5, 0), QgsStyleModel.CompatibleGeometryTypesRole), None)
 
     def test_mixed_style(self):
         """
