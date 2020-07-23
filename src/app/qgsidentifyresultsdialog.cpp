@@ -1087,7 +1087,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsMeshLayer *layer,
       QgsFeature(),
       layer->crs(),
       QStringList() << label << QString() );
+
   layItem->addChild( featItem );
+  featItem->setExpanded( true );
 
   // attributes
   for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
