@@ -31,8 +31,9 @@
 #include <QMessageBox>
 
 
-QgsSymbol3DWidget::QgsSymbol3DWidget( QWidget *parent )
+QgsSymbol3DWidget::QgsSymbol3DWidget( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
+  , mLayer( layer )
 {
   widgetUnsupported = new QLabel( tr( "Sorry, this symbol is not supported." ), this );
   widgetLine = new QgsLine3DSymbolWidget( this );
@@ -83,7 +84,8 @@ std::unique_ptr<QgsAbstract3DSymbol> QgsSymbol3DWidget::symbol()
 void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *vlayer )
 {
   int pageIndex;
-  switch ( vlayer->geometryType() )
+  mLayer = vlayer;
+  switch ( mLayer->geometryType() )
   {
     case QgsWkbTypes::PointGeometry:
       pageIndex = 2;
@@ -139,11 +141,11 @@ void QgsSymbol3DWidget::setSymbolFromStyle( const QString &name )
     return;
 
   if ( s->type() == QStringLiteral( "point" ) )
-    widgetPoint->setSymbol( s.release(), nullptr );
+    widgetPoint->setSymbol( s.release(), mLayer );
   else if ( s->type() == QStringLiteral( "line" ) )
-    widgetLine->setSymbol( s.release(), nullptr );
+    widgetLine->setSymbol( s.release(), mLayer );
   else if ( s->type() == QStringLiteral( "polygon" ) )
-    widgetPolygon->setSymbol( s.release(), nullptr );
+    widgetPolygon->setSymbol( s.release(), mLayer );
 }
 
 void QgsSymbol3DWidget::saveSymbol()

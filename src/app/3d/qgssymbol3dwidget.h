@@ -38,7 +38,7 @@ class QgsSymbol3DWidget : public QWidget
     Q_OBJECT
 
   public:
-    QgsSymbol3DWidget( QWidget *parent = nullptr );
+    QgsSymbol3DWidget( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     //! Returns a new symbol instance or NULLPTR
     std::unique_ptr< QgsAbstract3DSymbol > symbol();
@@ -63,6 +63,8 @@ class QgsSymbol3DWidget : public QWidget
     QLabel *widgetUnsupported = nullptr;
 
     QgsStyleItemsListWidget *mStyleWidget = nullptr;
+
+    QgsVectorLayer *mLayer = nullptr;
 
 };
 
