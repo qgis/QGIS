@@ -65,6 +65,7 @@
 #include "qgsstylemodel.h"
 #include "qgsconnectionregistry.h"
 #include "qgsremappingproxyfeaturesink.h"
+#include "qgsmeshlayer.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"

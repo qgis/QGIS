@@ -289,6 +289,10 @@ bool QgsMdalProvider::persistDatasetGroup(
     MDAL_G_setMetadata( g, it.key().toStdString().c_str(), it.value().toStdString().c_str() );
   }
 
+  if ( meta.referenceTime().isValid() )
+  {
+    MDAL_G_setReferenceTime( g, meta.referenceTime().toString( Qt::ISODateWithMs ).toStdString().c_str() );
+  }
 
   for ( int i = 0; i < datasetValues.size(); ++i )
   {
@@ -368,6 +372,11 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &outputFilePath, const 
   for ( auto it = extraOptions.cbegin(); it != extraOptions.cend(); ++it )
   {
     MDAL_G_setMetadata( g, it.key().toStdString().c_str(), it.value().toStdString().c_str() );
+  }
+
+  if ( meta.referenceTime().isValid() )
+  {
+    MDAL_G_setReferenceTime( g, meta.referenceTime().toString( Qt::ISODateWithMs ).toStdString().c_str() );
   }
 
   bool fail = false;

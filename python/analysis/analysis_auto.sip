@@ -4,7 +4,6 @@
 %Include auto_generated/interpolation/qgsidwinterpolator.sip
 %Include auto_generated/interpolation/qgsinterpolator.sip
 %Include auto_generated/interpolation/qgstininterpolator.sip
-%Include auto_generated/mesh/qgsmeshcalculator.sip
 %Include auto_generated/mesh/qgsmeshcontours.sip
 %Include auto_generated/network/qgsgraph.sip
 %Include auto_generated/network/qgsgraphanalyzer.sip

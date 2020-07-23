@@ -40,20 +40,6 @@
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
          <layout class="QGridLayout" name="gridLayout_5">
-          <item row="2" column="0">
-           <widget class="QLabel" name="mOutputFormatLabel">
-            <property name="text">
-             <string>Output Format</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QRadioButton" name="mOutputOnMemoryRadioButton">
-            <property name="text">
-             <string>On Memory</string>
-            </property>
-           </widget>
-          </item>
           <item row="3" column="0">
            <widget class="QLabel" name="mOutputFormatLabel_2">
             <property name="text">
@@ -61,14 +47,12 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1" colspan="2">
-           <widget class="QComboBox" name="mOutputFormatComboBox"/>
-          </item>
-          <item row="3" column="1" colspan="2">
-           <widget class="QLineEdit" name="mOutputGroupNameLineEdit"/>
-          </item>
-          <item row="1" column="1" colspan="2">
-           <widget class="QgsFileWidget" name="mOutputDatasetFileWidget" native="true"/>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mOutputFormatLabel">
+            <property name="text">
+             <string>Output Format</string>
+            </property>
+           </widget>
           </item>
           <item row="0" column="1">
            <widget class="QRadioButton" name="mOutputOnFileRadioButton">
@@ -80,12 +64,28 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="1" colspan="2">
+           <widget class="QgsFileWidget" name="mOutputDatasetFileWidget" native="true"/>
+          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="mOutputDatasetLabel">
             <property name="text">
              <string>Output Dataset</string>
             </property>
            </widget>
+          </item>
+          <item row="2" column="1" colspan="2">
+           <widget class="QComboBox" name="mOutputFormatComboBox"/>
+          </item>
+          <item row="0" column="2">
+           <widget class="QRadioButton" name="mOutputVirtualRadioButton">
+            <property name="text">
+             <string>Virtual</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" colspan="2">
+           <widget class="QLineEdit" name="mOutputGroupNameLineEdit"/>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_4">

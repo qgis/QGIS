@@ -231,4 +231,48 @@ QgsMeshCalcNode *QgsMeshCalcNode::parseMeshCalcString( const QString &str, QStri
   return localParseMeshCalcString( str, parserErrorMsg );
 }
 
+bool QgsMeshCalcNode::isNonTemporal() const
+{
+  if ( mType == tNoData || mType == tNumber )
+    return true;
+
+  if ( mType == tDatasetGroupRef )
+    return false;
+
+  switch ( mOperator )
+  {
+    case QgsMeshCalcNode::opPLUS:
+    case QgsMeshCalcNode::opMINUS:
+    case QgsMeshCalcNode::opMUL:
+    case QgsMeshCalcNode::opDIV:
+    case QgsMeshCalcNode::opPOW:
+    case QgsMeshCalcNode::opEQ:
+    case QgsMeshCalcNode::opNE:
+    case QgsMeshCalcNode::opGT:
+    case QgsMeshCalcNode::opLT:
+    case QgsMeshCalcNode::opGE:
+    case QgsMeshCalcNode::opLE:
+    case QgsMeshCalcNode::opAND:
+    case QgsMeshCalcNode::opOR:
+    case QgsMeshCalcNode::opNOT:
+    case QgsMeshCalcNode::opIF:
+    case QgsMeshCalcNode::opSIGN:
+    case QgsMeshCalcNode::opMIN:
+    case QgsMeshCalcNode::opMAX:
+    case QgsMeshCalcNode::opABS:
+      return ( mLeft && mLeft->isNonTemporal() ) &&
+             ( mRight && mRight->isNonTemporal() );
+      break;
+    case QgsMeshCalcNode::opSUM_AGGR:
+    case QgsMeshCalcNode::opMAX_AGGR:
+    case QgsMeshCalcNode::opMIN_AGGR:
+    case QgsMeshCalcNode::opAVG_AGGR:
+    case QgsMeshCalcNode::opNONE:
+      return true;
+      break;
+  }
+
+  return true;
+}
+
 ///@endcond

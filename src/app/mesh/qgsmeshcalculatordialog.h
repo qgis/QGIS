@@ -128,6 +128,7 @@ class APP_EXPORT QgsMeshCalculatorDialog: public QDialog, private Ui::QgsMeshCal
 
     QgsMeshLayer *mLayer;
     QHash<QString, QgsMeshDriverMetadata> mMeshDrivers;
+    QStringList mVariableNames;
 
     friend class TestQgsMeshCalculatorDialog;
 };
