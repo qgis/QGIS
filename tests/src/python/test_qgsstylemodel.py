@@ -37,6 +37,7 @@ class Dummy3dSymbol(QgsAbstract3DSymbol):
 
     def __init__(self):
         super().__init__()
+        self.layer_types = [int(QgsWkbTypes.PointGeometry), int(QgsWkbTypes.LineGeometry)]
 
     @staticmethod
     def create():
@@ -55,7 +56,7 @@ class Dummy3dSymbol(QgsAbstract3DSymbol):
         pass
 
     def compatibleGeometryTypes(self):
-        return [int(QgsWkbTypes.PointGeometry), int(QgsWkbTypes.LineGeometry)]
+        return self.layer_types
 
 
 def createMarkerSymbol():
@@ -2012,8 +2013,10 @@ class TestQgsStyleModel(unittest.TestCase):
         self.assertTrue(style.addSymbol3D('sym3d a', symbol3d_a, True))
         style.tagSymbol(QgsStyle.Symbol3DEntity, 'sym3d a', ['tag 1', 'tag 2'])
         symbol3d_B = Dummy3dSymbol()
+        symbol3d_B.layer_types = [2]
         self.assertTrue(style.addSymbol3D('sym3d BB', symbol3d_B, True))
         symbol3d_B = Dummy3dSymbol()
+        symbol3d_B.layer_types = [1]
         self.assertTrue(style.addSymbol3D('sym3d c', symbol3d_B, True))
 
         model = QgsStyleProxyModel(style)
@@ -2513,6 +2516,22 @@ class TestQgsStyleModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(1, 0)), 'x')
         model.setLayerType(QgsWkbTypes.PolygonGeometry)
         self.assertEqual(model.rowCount(), 0)
+        model.setLayerType(QgsWkbTypes.UnknownGeometry)
+        self.assertEqual(model.rowCount(), 3)
+
+        model.setEntityFilter(QgsStyle.Symbol3DEntity)
+        model.setEntityFilterEnabled(True)
+        self.assertEqual(model.rowCount(), 3)
+        model.setLayerType(QgsWkbTypes.PointGeometry)
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), 'sym3d a')
+        model.setLayerType(QgsWkbTypes.LineGeometry)
+        self.assertEqual(model.rowCount(), 2)
+        self.assertEqual(model.data(model.index(0, 0)), 'sym3d a')
+        self.assertEqual(model.data(model.index(1, 0)), 'x')
+        model.setLayerType(QgsWkbTypes.PolygonGeometry)
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), 'sym3d BB')
         model.setLayerType(QgsWkbTypes.UnknownGeometry)
         self.assertEqual(model.rowCount(), 3)
 

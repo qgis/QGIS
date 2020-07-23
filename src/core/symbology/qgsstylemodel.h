@@ -252,7 +252,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      * Returns the layer type filter, or QgsWkbTypes::UnknownGeometry if no
      * layer type filter is present.
      *
-     * This setting has no effect on non-label settings entities (i.e. color ramps).
+     * This setting has an effect on label settings entities and 3d symbols only.
      *
      * \see setLayerType()
      */
