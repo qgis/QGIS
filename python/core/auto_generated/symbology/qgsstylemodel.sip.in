@@ -43,6 +43,7 @@ instead.
       SymbolTypeRole,
       IsFavoriteRole,
       LayerTypeRole,
+      CompatibleGeometryTypesRole,
     };
 
     explicit QgsStyleModel( QgsStyle *style, QObject *parent /TransferThis/ = 0 );

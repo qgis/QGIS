@@ -364,10 +364,49 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
 
     case LayerTypeRole:
     {
-      if ( entityType != QgsStyle::LabelSettingsEntity )
-        return QVariant();
+      switch ( entityType )
+      {
+        case QgsStyle::LabelSettingsEntity:
+          return mStyle->labelSettingsLayerType( name );
 
-      return mStyle->labelSettingsLayerType( name );
+        case QgsStyle::Symbol3DEntity:
+        case QgsStyle::SymbolEntity:
+        case QgsStyle::LegendPatchShapeEntity:
+        case QgsStyle::TagEntity:
+        case QgsStyle::ColorrampEntity:
+        case QgsStyle::SmartgroupEntity:
+        case QgsStyle::TextFormatEntity:
+          return QVariant();
+      }
+      return QVariant();
+    }
+
+    case CompatibleGeometryTypesRole:
+    {
+      switch ( entityType )
+      {
+        case QgsStyle::Symbol3DEntity:
+        {
+          QVariantList res;
+          const QList< QgsWkbTypes::GeometryType > types = mStyle->symbol3DCompatibleGeometryTypes( name );
+          res.reserve( types.size() );
+          for ( QgsWkbTypes::GeometryType type : types )
+          {
+            res << static_cast< int >( type );
+          }
+          return res;
+        }
+
+        case QgsStyle::LabelSettingsEntity:
+        case QgsStyle::SymbolEntity:
+        case QgsStyle::LegendPatchShapeEntity:
+        case QgsStyle::TagEntity:
+        case QgsStyle::ColorrampEntity:
+        case QgsStyle::SmartgroupEntity:
+        case QgsStyle::TextFormatEntity:
+          return QVariant();
+      }
+      return QVariant();
     }
 
     default:

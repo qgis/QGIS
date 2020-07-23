@@ -63,6 +63,7 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
       SymbolTypeRole, //!< Symbol type (for symbol or legend patch shape entities)
       IsFavoriteRole, //!< Whether entity is flagged as a favorite
       LayerTypeRole, //!< Layer type (for label settings entities)
+      CompatibleGeometryTypesRole, //!< Compatible layer geometry types (for 3D symbols)
     };
 
     /**
