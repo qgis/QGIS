@@ -114,6 +114,11 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
   }
 }
 
+QList<QgsWkbTypes::GeometryType> QgsPolygon3DSymbol::compatibleGeometryTypes() const
+{
+  return QList< QgsWkbTypes::GeometryType >() << QgsWkbTypes::PolygonGeometry;
+}
+
 QgsAbstract3DSymbol *QgsPolygon3DSymbol::create()
 {
   return new QgsPolygon3DSymbol();

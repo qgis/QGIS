@@ -46,6 +46,7 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+    QList< QgsWkbTypes::GeometryType > compatibleGeometryTypes() const override;
 
     /**
      * Creates a new QgsPolygon3DSymbol.

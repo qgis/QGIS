@@ -109,6 +109,11 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
   setBillboardSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ) );
 }
 
+QList<QgsWkbTypes::GeometryType> QgsPoint3DSymbol::compatibleGeometryTypes() const
+{
+  return QList< QgsWkbTypes::GeometryType >() << QgsWkbTypes::PointGeometry;
+}
+
 QgsPoint3DSymbol::Shape QgsPoint3DSymbol::shapeFromString( const QString &shape )
 {
   if ( shape ==  QStringLiteral( "sphere" ) )

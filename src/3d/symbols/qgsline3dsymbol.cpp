@@ -94,6 +94,11 @@ void QgsLine3DSymbol::setMaterial( QgsAbstractMaterialSettings *material )
   mMaterial.reset( material );
 }
 
+QList<QgsWkbTypes::GeometryType> QgsLine3DSymbol::compatibleGeometryTypes() const
+{
+  return QList< QgsWkbTypes::GeometryType >() << QgsWkbTypes::LineGeometry;
+}
+
 QgsAbstract3DSymbol *QgsLine3DSymbol::create()
 {
   return new QgsLine3DSymbol();

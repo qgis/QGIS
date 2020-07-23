@@ -19,6 +19,11 @@
 QgsPropertiesDefinition QgsAbstract3DSymbol::sPropertyDefinitions;
 
 
+QList<QgsWkbTypes::GeometryType> QgsAbstract3DSymbol::compatibleGeometryTypes() const
+{
+  return QList< QgsWkbTypes::GeometryType >();
+}
+
 const QgsPropertiesDefinition &QgsAbstract3DSymbol::propertyDefinitions()
 {
   initPropertyDefinitions();
