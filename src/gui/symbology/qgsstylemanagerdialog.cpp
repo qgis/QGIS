@@ -673,9 +673,10 @@ void QgsStyleManagerDialog::pasteItem()
     }
 
     QStringList symbolTags = saveDlg.tags().split( ',' );
-    mStyle->addSymbol( saveDlg.name(), tempSymbol->clone() );
+    QgsSymbol *newSymbol = tempSymbol.get();
+    mStyle->addSymbol( saveDlg.name(), tempSymbol.release() );
     // make sure the symbol is stored
-    mStyle->saveSymbol( saveDlg.name(), tempSymbol->clone(), saveDlg.isFavorite(), symbolTags );
+    mStyle->saveSymbol( saveDlg.name(), newSymbol, saveDlg.isFavorite(), symbolTags );
     return;
   }
 
