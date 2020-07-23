@@ -100,3 +100,8 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
 
   return sym.release();
 }
+
+QString QgsPolygon3DSymbolWidget::symbolType() const
+{
+  return QStringLiteral( "polygon" );
+}
