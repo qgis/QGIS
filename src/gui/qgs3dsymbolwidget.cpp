@@ -44,6 +44,7 @@ Qgs3DSymbolDialog::Qgs3DSymbolDialog( const QgsAbstract3DSymbol *symbol, QWidget
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Ok, Qt::Horizontal );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  vLayout->addStretch();
   vLayout->addWidget( mButtonBox );
   setLayout( vLayout );
   setWindowTitle( tr( "3D Symbol" ) );
