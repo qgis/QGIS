@@ -156,6 +156,8 @@ void QgsSymbol3DWidget::saveSymbol()
   if ( saveDlg.name().isEmpty() )
     return;
 
+  std::unique_ptr< QgsAbstract3DSymbol > newSymbol( symbol() );
+
   // check if there is no symbol with same name
   if ( QgsStyle::defaultStyle()->symbol3DNames().contains( saveDlg.name() ) )
   {
@@ -173,9 +175,9 @@ void QgsSymbol3DWidget::saveSymbol()
   QStringList symbolTags = saveDlg.tags().split( ',' );
 
   // add new symbol to style and re-populate the list
-  QgsAbstract3DSymbol *newSymbol = symbol();
-  QgsStyle::defaultStyle()->addSymbol3D( saveDlg.name(), newSymbol );
+  QgsAbstract3DSymbol *s = newSymbol.get();
+  QgsStyle::defaultStyle()->addSymbol3D( saveDlg.name(), newSymbol.release() );
 
   // make sure the symbol is stored
-  QgsStyle::defaultStyle()->saveSymbol3D( saveDlg.name(), newSymbol, saveDlg.isFavorite(), symbolTags );
+  QgsStyle::defaultStyle()->saveSymbol3D( saveDlg.name(), s, saveDlg.isFavorite(), symbolTags );
 }
