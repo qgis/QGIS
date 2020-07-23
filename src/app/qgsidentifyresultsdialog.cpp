@@ -72,6 +72,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectortilelayer.h"
+#include "qgsrelationmanager.h"
 #include "qgswebview.h"
 #include "qgswebframe.h"
 #include "qgsstringutils.h"
@@ -531,11 +532,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     connect( vlayer, &QgsVectorLayer::editingStopped, this, &QgsIdentifyResultsDialog::editingToggled );
   }
 
-  QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( vlayer->fields(), f, vlayer->crs() );
-  featItem->setData( 0, Qt::UserRole, FID_TO_STRING( f.id() ) );
+  QgsIdentifyResultsFeatureItem *featItem = createFeatureItem( vlayer, f, derivedAttributes, true, layItem );
   featItem->setData( 0, Qt::UserRole + 1, mFeatures.size() );
   mFeatures << f;
-  layItem->addChild( featItem );
   layItem->setFirstColumnSpanned( true );
 
   QString countSuffix = layItem->childCount() > 1
@@ -543,7 +542,73 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
                         : QString();
   layItem->setText( 0, QStringLiteral( "%1 %2" ).arg( vlayer->name(), countSuffix ) );
 
-  if ( derivedAttributes.size() >= 0 )
+
+  // table
+  const QgsAttributes attrs = f.attributes();
+  const QgsFields fields = vlayer->fields();
+  int j = tblResults->rowCount();
+  for ( int i = 0; i < attrs.count(); ++i )
+  {
+    if ( i >= fields.count() )
+      continue;
+
+    QString value = fields.at( i ).displayString( attrs.at( i ) );
+    const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vlayer, fields.at( i ).name() );
+    QString value2 = representValue( vlayer, setup, fields.at( i ).name(), attrs.at( i ) );
+
+    tblResults->setRowCount( j + 1 );
+
+    QgsDebugMsgLevel( QStringLiteral( "adding item #%1 / %2 / %3 / %4" ).arg( j ).arg( vlayer->name(), vlayer->attributeDisplayName( i ), value2 ), 4 );
+
+    QTableWidgetItem *item = new QTableWidgetItem( vlayer->name() );
+    item->setData( Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( vlayer ) ) );
+    item->setData( Qt::UserRole + 1, vlayer->id() );
+    tblResults->setItem( j, 0, item );
+
+    item = new QTableWidgetItem( FID_TO_STRING( f.id() ) );
+    item->setData( Qt::UserRole, FID_TO_STRING( f.id() ) );
+    item->setData( Qt::UserRole + 1, mFeatures.size() );
+    item->setData( FeatureRole, f );
+    tblResults->setItem( j, 1, item );
+
+    item = new QTableWidgetItem( QString::number( i ) );
+    if ( fields.at( i ).name() == vlayer->displayField() )
+      item->setData( Qt::DisplayRole, vlayer->attributeDisplayName( i ) + " *" );
+    else
+      item->setData( Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
+    item->setData( Qt::UserRole, fields.at( i ).name() );
+    item->setData( Qt::UserRole + 1, i );
+    tblResults->setItem( j, 2, item );
+
+    item = new QTableWidgetItem( value );
+    item->setData( Qt::UserRole, value );
+    item->setData( Qt::DisplayRole, value2 );
+    tblResults->setItem( j, 3, item );
+
+    // highlight first item
+    // if ( i==0 )
+    // {
+    //   QBrush b = tblResults->palette().brush( QPalette::AlternateBase );
+    //   for ( int k = 0; k <= 3; k++)
+    //  tblResults->item( j, k )->setBackground( b );
+    // }
+
+    tblResults->resizeRowToContents( j );
+    j++;
+  }
+  //tblResults->resizeColumnToContents( 1 );
+
+  highlightFeature( featItem );
+}
+
+QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes, bool includeRelations, QTreeWidgetItem *parentItem )
+{
+  QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( vlayer->fields(), f, vlayer->crs() );
+  featItem->setData( 0, Qt::UserRole, FID_TO_STRING( f.id() ) );
+  featItem->setData( 0, FeatureRole, f );
+  parentItem->addChild( featItem );
+
+  if ( !derivedAttributes.empty() )
   {
     QgsTreeWidgetItem *derivedItem = new QgsTreeWidgetItem( QStringList() << tr( "(Derived)" ) );
     derivedItem->setData( 0, Qt::UserRole, "derived" );
@@ -608,7 +673,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     }
   }
 
-  const QgsFields &fields = vlayer->fields();
+  const QgsFields fields = vlayer->fields();
   QgsAttributes attrs = f.attributes();
   bool featureLabeled = false;
 
@@ -648,12 +713,14 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       QLabel *valueLabel = new QLabel( links );
       valueLabel->setOpenExternalLinks( true );
       attrItem->setData( 1, Qt::DisplayRole, QString() );
-      attrItem->treeWidget()->setItemWidget( attrItem, 1, valueLabel );
+      QTreeWidget *tw = attrItem->treeWidget();
+      tw->setItemWidget( attrItem, 1, valueLabel );
     }
     else
     {
       attrItem->setData( 1, Qt::DisplayRole, value );
-      attrItem->treeWidget()->setItemWidget( attrItem, 1, nullptr );
+      QTreeWidget *tw = attrItem->treeWidget();
+      tw->setItemWidget( attrItem, 1, nullptr );
     }
 
     if ( fields.at( i ).name() == vlayer->displayField() )
@@ -663,6 +730,41 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       featItem->setText( 1, attrItem->text( 1 ) );
       featItem->setToolTip( 1, attrItem->text( 1 ) );
       featureLabeled = true;
+    }
+  }
+
+  // add entries for related items
+  if ( includeRelations )
+  {
+    const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( vlayer );
+    if ( !relations.empty() )
+    {
+      for ( const QgsRelation &relation : relations )
+      {
+        QgsFeatureIterator childIt = relation.getRelatedFeatures( f );
+        QgsFeature childFeature;
+        QgsTreeWidgetItem *relationItem = nullptr;
+        while ( childIt.nextFeature( childFeature ) )
+        {
+          if ( !relationItem )
+          {
+            relationItem = new QgsTreeWidgetItem( QStringList() << relation.name() );
+            QFont italicFont;
+            italicFont.setItalic( true );
+            relationItem->setFont( 0, italicFont );
+            relationItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( relation.referencingLayer() ) ) );
+            featItem->addChild( relationItem );
+          }
+
+          QgsIdentifyResultsFeatureItem *childItem = createFeatureItem( relation.referencingLayer(), childFeature, QMap<QString, QString>(), false, relationItem );
+          relationItem->addChild( childItem );
+        }
+
+        if ( relationItem )
+        {
+          relationItem->setText( 0, QStringLiteral( "%1 [%2]" ).arg( relation.name() ).arg( relationItem->childCount() ) );
+        }
+      }
     }
   }
 
@@ -677,59 +779,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     featItem->setToolTip( 1, value );
   }
 
-  // table
-  int j = tblResults->rowCount();
-  for ( int i = 0; i < attrs.count(); ++i )
-  {
-    if ( i >= fields.count() )
-      continue;
-
-    QString value = fields.at( i ).displayString( attrs.at( i ) );
-    const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vlayer, fields.at( i ).name() );
-    QString value2 = representValue( vlayer, setup, fields.at( i ).name(), attrs.at( i ) );
-
-    tblResults->setRowCount( j + 1 );
-
-    QgsDebugMsgLevel( QStringLiteral( "adding item #%1 / %2 / %3 / %4" ).arg( j ).arg( vlayer->name(), vlayer->attributeDisplayName( i ), value2 ), 4 );
-
-    QTableWidgetItem *item = new QTableWidgetItem( vlayer->name() );
-    item->setData( Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( vlayer ) ) );
-    item->setData( Qt::UserRole + 1, vlayer->id() );
-    tblResults->setItem( j, 0, item );
-
-    item = new QTableWidgetItem( FID_TO_STRING( f.id() ) );
-    item->setData( Qt::UserRole, FID_TO_STRING( f.id() ) );
-    item->setData( Qt::UserRole + 1, mFeatures.size() );
-    tblResults->setItem( j, 1, item );
-
-    item = new QTableWidgetItem( QString::number( i ) );
-    if ( fields.at( i ).name() == vlayer->displayField() )
-      item->setData( Qt::DisplayRole, vlayer->attributeDisplayName( i ) + " *" );
-    else
-      item->setData( Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
-    item->setData( Qt::UserRole, fields.at( i ).name() );
-    item->setData( Qt::UserRole + 1, i );
-    tblResults->setItem( j, 2, item );
-
-    item = new QTableWidgetItem( value );
-    item->setData( Qt::UserRole, value );
-    item->setData( Qt::DisplayRole, value2 );
-    tblResults->setItem( j, 3, item );
-
-    // highlight first item
-    // if ( i==0 )
-    // {
-    //   QBrush b = tblResults->palette().brush( QPalette::AlternateBase );
-    //   for ( int k = 0; k <= 3; k++)
-    //  tblResults->item( j, k )->setBackground( b );
-    // }
-
-    tblResults->resizeRowToContents( j );
-    j++;
-  }
-  //tblResults->resizeColumnToContents( 1 );
-
-  highlightFeature( featItem );
+  return featItem;
 }
 
 void QgsIdentifyResultsDialog::mapLayerActionDestroyed()
@@ -1394,7 +1444,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
   mActionPopup->addAction( tr( "Collapse All" ), this, &QgsIdentifyResultsDialog::collapseAll );
   mActionPopup->addSeparator();
 
-  if ( featItem && vlayer )
+  if ( featItem && featItem->data( 0, Qt::UserRole + 1 ).isValid() && vlayer )
   {
     QList<QgsAction> actions = vlayer->actions()->actions( QStringLiteral( "Field" ) );
     if ( !actions.isEmpty() )
@@ -1418,7 +1468,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
     }
   }
 
-  if ( featItem && vlayer )
+  if ( featItem && featItem->data( 0, Qt::UserRole + 1 ).isValid() && vlayer )
   {
     //get valid QgsMapLayerActions for this layer
     QList< QgsMapLayerAction * > registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer );
@@ -1550,7 +1600,7 @@ void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, const QString &a
   if ( !featItem )
     return;
 
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( featItem->parent()->data( 0, Qt::UserRole ).value<QObject *>() );
+  QgsVectorLayer *layer = vectorLayer( item );
   if ( !layer )
     return;
 
@@ -1570,8 +1620,8 @@ void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, const QString &a
     }
   }
 
-  int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
-  layer->actions()->doAction( action, mFeatures[ featIdx ], idx, mExpressionContextScope );
+  const QgsFeature feat = featItem->data( 0, FeatureRole ).value< QgsFeature >();
+  layer->actions()->doAction( action, feat, idx, mExpressionContextScope );
 }
 
 void QgsIdentifyResultsDialog::doMapLayerAction( QTreeWidgetItem *item, QgsMapLayerAction *action )
@@ -1587,8 +1637,8 @@ void QgsIdentifyResultsDialog::doMapLayerAction( QTreeWidgetItem *item, QgsMapLa
   if ( !action )
     return;
 
-  int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
-  action->triggerForFeature( layer, mFeatures[ featIdx ] );
+  const QgsFeature feat = featItem->data( 0, FeatureRole ).value< QgsFeature >();
+  action->triggerForFeature( layer, feat );
 }
 
 QTreeWidgetItem *QgsIdentifyResultsDialog::featureItem( QTreeWidgetItem *item )
@@ -1596,6 +1646,18 @@ QTreeWidgetItem *QgsIdentifyResultsDialog::featureItem( QTreeWidgetItem *item )
   if ( !item )
     return nullptr;
 
+  // best approach!
+  QTreeWidgetItem *i = item;
+  while ( i )
+  {
+    if ( i->data( 0, FeatureRole ).isValid() )
+    {
+      return i;
+    }
+    i = i->parent();
+  }
+
+  // old, fragile approach -- but I'm not confident to remove this yet!
   QTreeWidgetItem *featItem = nullptr;
   if ( item->parent() )
   {
@@ -1667,10 +1729,16 @@ QgsMapLayer *QgsIdentifyResultsDialog::layer( QTreeWidgetItem *item )
 
 QgsVectorLayer *QgsIdentifyResultsDialog::vectorLayer( QTreeWidgetItem *item )
 {
-  item = layerItem( item );
-  if ( !item )
-    return nullptr;
-  return qobject_cast<QgsVectorLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
+  QTreeWidgetItem *i = item;
+  while ( i )
+  {
+    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( i->data( 0, Qt::UserRole ).value<QObject *>() ) )
+    {
+      return vl;
+    }
+    i = i->parent();
+  }
+  return nullptr;
 }
 
 QgsRasterLayer *QgsIdentifyResultsDialog::rasterLayer( QTreeWidgetItem *item )
