@@ -34,10 +34,11 @@
 
 
 
-QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QWidget *parent )
+QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
+  , mLayer( layer )
 {
-  widgetSymbol = new QgsSymbol3DWidget( this );
+  widgetSymbol = new QgsSymbol3DWidget( mLayer, this );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -90,7 +91,7 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
   layout->addWidget( widgetBaseProperties );
 
   widgetNoRenderer = new QLabel;
-  widgetSingleSymbolRenderer = new QgsSingleSymbol3DRendererWidget( this );
+  widgetSingleSymbolRenderer = new QgsSingleSymbol3DRendererWidget( qobject_cast< QgsVectorLayer *>( layer ), this );
   widgetRuleBasedRenderer = new QgsRuleBased3DRendererWidget( this );
 
   widgetRendererStack->addWidget( widgetNoRenderer );

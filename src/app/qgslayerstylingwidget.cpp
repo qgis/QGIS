@@ -489,7 +489,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
           {
             if ( !mVector3DWidget )
             {
-              mVector3DWidget = new QgsVectorLayer3DRendererWidget( nullptr, mMapCanvas, mWidgetStack );
+              mVector3DWidget = new QgsVectorLayer3DRendererWidget( vlayer, mMapCanvas, mWidgetStack );
               mVector3DWidget->setDockMode( true );
               connect( mVector3DWidget, &QgsVectorLayer3DRendererWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             }
