@@ -26,6 +26,7 @@ class QgsAbstract3DSymbol;
 class QgsLine3DSymbolWidget;
 class QgsPoint3DSymbolWidget;
 class QgsPolygon3DSymbolWidget;
+class QgsStyleItemsListWidget;
 
 class QgsVectorLayer;
 
@@ -48,6 +49,11 @@ class QgsSymbol3DWidget : public QWidget
   signals:
     void widgetChanged();
 
+  private slots:
+
+    void setSymbolFromStyle( const QString &name );
+    void saveSymbol();
+
   private:
 
     QStackedWidget *widgetStack = nullptr;
@@ -55,6 +61,8 @@ class QgsSymbol3DWidget : public QWidget
     QgsPoint3DSymbolWidget *widgetPoint = nullptr;
     QgsPolygon3DSymbolWidget *widgetPolygon = nullptr;
     QLabel *widgetUnsupported = nullptr;
+
+    QgsStyleItemsListWidget *mStyleWidget = nullptr;
 
 };
 
