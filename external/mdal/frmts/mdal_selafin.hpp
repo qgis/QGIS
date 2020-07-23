@@ -127,7 +127,7 @@ namespace MDAL
 
       double readDouble( );
       int readInt( );
-      size_t readSizet( );
+      size_t readSizeT( );
 
       void ignoreArrayLength( );
       std::string readStringWithoutLength( size_t len );
@@ -157,7 +157,7 @@ namespace MDAL
 
       std::string mFileName;
       bool mStreamInFloatPrecision = true;
-      bool mIsNativeLittleEndian = true;
+      bool mChangeEndianness = true;
       long long mFileSize = -1;
 
       std::ifstream mIn;
