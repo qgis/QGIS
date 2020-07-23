@@ -738,9 +738,34 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   if ( mSymbolTypeFilterEnabled && symbolType != mSymbolType )
     return false;
 
-  if ( styleEntityType == QgsStyle::LabelSettingsEntity && mLayerType != QgsWkbTypes::UnknownGeometry &&
-       mLayerType != static_cast< QgsWkbTypes::GeometryType >( sourceModel()->data( index, QgsStyleModel::LayerTypeRole ).toInt() ) )
-    return false;
+  if ( mLayerType != QgsWkbTypes::UnknownGeometry )
+  {
+    switch ( styleEntityType )
+    {
+      case QgsStyle::SymbolEntity:
+      case QgsStyle::TextFormatEntity:
+      case QgsStyle::TagEntity:
+      case QgsStyle::ColorrampEntity:
+      case QgsStyle::SmartgroupEntity:
+      case QgsStyle::LegendPatchShapeEntity:
+        break;
+
+      case QgsStyle::LabelSettingsEntity:
+      {
+        if ( mLayerType != static_cast< QgsWkbTypes::GeometryType >( sourceModel()->data( index, QgsStyleModel::LayerTypeRole ).toInt() ) )
+          return false;
+        break;
+      }
+
+      case QgsStyle::Symbol3DEntity:
+      {
+        const QVariantList types = sourceModel()->data( index, QgsStyleModel::CompatibleGeometryTypesRole ).toList();
+        if ( !types.empty() && !types.contains( mLayerType ) )
+          return false;
+        break;
+      }
+    }
+  }
 
   if ( mTagId >= 0 && !mTaggedSymbolNames.contains( name ) )
     return false;
