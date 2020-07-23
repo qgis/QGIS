@@ -127,20 +127,40 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     long long currentFrameNumber() const;
 
     /**
-     * Sets the frame \a duration, which dictates the temporal length of each frame in the animation.
+     * Sets the frame \a timestep, which together with the frame timestep unit dictates
+     * the temporal length of each frame in the animation.
      *
      * \note Calling this will reset the currentFrameNumber() to the first frame.
      *
-     * \see frameDuration()
+     * \see frameFrameTimeStep()
      */
-    void setFrameDuration( QgsInterval duration );
+    void setFrameTimeStep( double timeStep );
 
     /**
-     * Returns the current set frame duration, which dictates the temporal length of each frame in the animation.
+     * Sets the frame \a timestep unit, which together with the frame time step dictates
+     * the temporal length of each frame in the animation.
      *
-     * \see setFrameDuration()
+     * \note Calling this will reset the currentFrameNumber() to the first frame.
+     *
+     * \see frameTimeStepUnit()
      */
-    QgsInterval frameDuration() const;
+    void setFrameTimeStepUnit( QgsUnitTypes::TemporalUnit timeStepUnit );
+
+    /**
+     * Returns the current set frame timestep, which together with frame timestep unit
+     * dictates the temporal length of each frame in the animation.
+     *
+     * \see setFrameTimeStep()
+     */
+    double frameTimeStep() const;
+
+    /**
+     * Returns the current set frame timestep unit, which together with frame timestep
+     * dictates the temporal length of each frame in the animation.
+     *
+     * \see setFrameTimeStepUnit()
+     */
+    QgsUnitTypes::TemporalUnit frameTimeStepUnit() const;
 
     /**
      * Calculates the temporal range associated with a particular animation \a frame.
@@ -288,7 +308,9 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     long long mCurrentFrameNumber = 0;
 
     //! Frame duration
-    QgsInterval mFrameDuration;
+    double mFrameTimeStep;
+    bool mFrameTimeStepIsFractional;
+    QgsUnitTypes::TemporalUnit mFrameTimeStepUnit;
 
     //! Member for frame rate
     double mFramesPerSecond = 1;

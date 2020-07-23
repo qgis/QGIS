@@ -109,22 +109,44 @@ Returns the current frame number.
 .. seealso:: :py:func:`setCurrentFrameNumber`
 %End
 
-    void setFrameDuration( QgsInterval duration );
+    void setFrameTimeStep( double timeStep );
 %Docstring
-Sets the frame ``duration``, which dictates the temporal length of each frame in the animation.
+Sets the frame ``timestep``, which together with the frame timestep unit dictates
+the temporal length of each frame in the animation.
 
 .. note::
 
    Calling this will reset the :py:func:`~QgsTemporalNavigationObject.currentFrameNumber` to the first frame.
 
-.. seealso:: :py:func:`frameDuration`
+.. seealso:: :py:func:`frameFrameTimeStep`
 %End
 
-    QgsInterval frameDuration() const;
+    void setFrameTimeStepUnit( QgsUnitTypes::TemporalUnit timeStepUnit );
 %Docstring
-Returns the current set frame duration, which dictates the temporal length of each frame in the animation.
+Sets the frame ``timestep`` unit, which together with the frame time step dictates
+the temporal length of each frame in the animation.
 
-.. seealso:: :py:func:`setFrameDuration`
+.. note::
+
+   Calling this will reset the :py:func:`~QgsTemporalNavigationObject.currentFrameNumber` to the first frame.
+
+.. seealso:: :py:func:`frameTimeStepUnit`
+%End
+
+    double frameTimeStep() const;
+%Docstring
+Returns the current set frame timestep, which together with frame timestep unit
+dictates the temporal length of each frame in the animation.
+
+.. seealso:: :py:func:`setFrameTimeStep`
+%End
+
+    QgsUnitTypes::TemporalUnit frameTimeStepUnit() const;
+%Docstring
+Returns the current set frame timestep unit, which together with frame timestep
+dictates the temporal length of each frame in the animation.
+
+.. seealso:: :py:func:`setFrameTimeStepUnit`
 %End
 
     QgsDateTimeRange dateTimeRangeForFrameNumber( long long frame ) const;

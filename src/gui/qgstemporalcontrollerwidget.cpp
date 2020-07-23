@@ -285,8 +285,8 @@ void QgsTemporalControllerWidget::updateFrameDuration()
   QgsProject::instance()->timeSettings()->setTimeStepUnit( static_cast< QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->currentData().toInt() ) );
   QgsProject::instance()->timeSettings()->setTimeStep( mStepSpinBox->value() );
 
-  mNavigationObject->setFrameDuration( QgsInterval( QgsProject::instance()->timeSettings()->timeStep(),
-                                       QgsProject::instance()->timeSettings()->timeStepUnit() ) );
+  mNavigationObject->setFrameTimeStep( QgsProject::instance()->timeSettings()->timeStep() );
+  mNavigationObject->setFrameTimeStepUnit( QgsProject::instance()->timeSettings()->timeStepUnit() );
   mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
 }
 
