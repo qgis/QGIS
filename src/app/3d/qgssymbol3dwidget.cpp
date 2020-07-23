@@ -23,13 +23,16 @@
 #include "qgspoint3dsymbolwidget.h"
 #include "qgspolygon3dsymbolwidget.h"
 #include "qgsabstractmaterialsettings.h"
-
+#include "qgsstyleitemslistwidget.h"
+#include "qgsstylesavedialog.h"
 #include "qgsvectorlayer.h"
 
 #include <QStackedWidget>
+#include <QMessageBox>
 
 
-QgsSymbol3DWidget::QgsSymbol3DWidget( QWidget *parent ) : QWidget( parent )
+QgsSymbol3DWidget::QgsSymbol3DWidget( QWidget *parent )
+  : QWidget( parent )
 {
   widgetUnsupported = new QLabel( tr( "Sorry, this symbol is not supported." ), this );
   widgetLine = new QgsLine3DSymbolWidget( this );
@@ -45,6 +48,15 @@ QgsSymbol3DWidget::QgsSymbol3DWidget( QWidget *parent ) : QWidget( parent )
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( widgetStack );
+
+  mStyleWidget = new QgsStyleItemsListWidget( this );
+  mStyleWidget->setStyle( QgsStyle::defaultStyle() );
+  mStyleWidget->setEntityType( QgsStyle::Symbol3DEntity );
+
+  connect( mStyleWidget, &QgsStyleItemsListWidget::selectionChanged, this, &QgsSymbol3DWidget::setSymbolFromStyle );
+  connect( mStyleWidget, &QgsStyleItemsListWidget::saveEntity, this, &QgsSymbol3DWidget::saveSymbol );
+
+  layout->addWidget( mStyleWidget );
 
   connect( widgetLine, &QgsLine3DSymbolWidget::changed, this, &QgsSymbol3DWidget::widgetChanged );
   connect( widgetPoint, &QgsPoint3DSymbolWidget::changed, this, &QgsSymbol3DWidget::widgetChanged );
@@ -117,4 +129,53 @@ void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorL
       break;
   }
   widgetStack->setCurrentIndex( pageIndex );
+}
+
+void QgsSymbol3DWidget::setSymbolFromStyle( const QString &name )
+{
+  // get new instance of symbol from style
+  std::unique_ptr< QgsAbstract3DSymbol > s( QgsStyle::defaultStyle()->symbol3D( name ) );
+  if ( !s )
+    return;
+
+  if ( s->type() == QStringLiteral( "point" ) )
+    widgetPoint->setSymbol( s.release(), nullptr );
+  else if ( s->type() == QStringLiteral( "line" ) )
+    widgetLine->setSymbol( s.release(), nullptr );
+  else if ( s->type() == QStringLiteral( "polygon" ) )
+    widgetPolygon->setSymbol( s.release(), nullptr );
+}
+
+void QgsSymbol3DWidget::saveSymbol()
+{
+  QgsStyleSaveDialog saveDlg( this, QgsStyle::Symbol3DEntity );
+  saveDlg.setDefaultTags( mStyleWidget->currentTagFilter() );
+  if ( !saveDlg.exec() )
+    return;
+
+  if ( saveDlg.name().isEmpty() )
+    return;
+
+  // check if there is no symbol with same name
+  if ( QgsStyle::defaultStyle()->symbol3DNames().contains( saveDlg.name() ) )
+  {
+    int res = QMessageBox::warning( this, tr( "Save 3D Symbol" ),
+                                    tr( "A 3D symbol with the name '%1' already exists. Overwrite?" )
+                                    .arg( saveDlg.name() ),
+                                    QMessageBox::Yes | QMessageBox::No );
+    if ( res != QMessageBox::Yes )
+    {
+      return;
+    }
+    QgsStyle::defaultStyle()->removeEntityByName( QgsStyle::Symbol3DEntity, saveDlg.name() );
+  }
+
+  QStringList symbolTags = saveDlg.tags().split( ',' );
+
+  // add new symbol to style and re-populate the list
+  QgsAbstract3DSymbol *newSymbol = symbol();
+  QgsStyle::defaultStyle()->addSymbol3D( saveDlg.name(), newSymbol );
+
+  // make sure the symbol is stored
+  QgsStyle::defaultStyle()->saveSymbol3D( saveDlg.name(), newSymbol, saveDlg.isFavorite(), symbolTags );
 }
