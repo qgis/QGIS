@@ -108,6 +108,7 @@ class Dummy3DSymbol : public QgsAbstract3DSymbol
     QgsAbstract3DSymbol *clone() const override { Dummy3DSymbol *res = new Dummy3DSymbol(); res->id = id; return res; }
     void readXml( const QDomElement &elem, const QgsReadWriteContext & ) override { id = elem.attribute( QStringLiteral( "id" ) ); }
     void writeXml( QDomElement &elem, const QgsReadWriteContext & ) const override { elem.setAttribute( QStringLiteral( "id" ), id ); }
+    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return QList< QgsWkbTypes::GeometryType >() << QgsWkbTypes::PointGeometry << QgsWkbTypes::LineGeometry; }
 
     QString id;
 
@@ -444,6 +445,7 @@ void TestStyle::testCreate3dSymbol()
   QCOMPARE( mStyle->symbol3DCount(), 0 );
   // non existent settings, should be default
   QVERIFY( !mStyle->symbol3D( QString( "blah" ) ) );
+  QVERIFY( mStyle->symbol3DCompatibleGeometryTypes( QStringLiteral( "blah" ) ).isEmpty() );
 
   QSignalSpy spy( mStyle, &QgsStyle::entityAdded );
   QSignalSpy spyChanged( mStyle, &QgsStyle::entityChanged );
@@ -456,6 +458,8 @@ void TestStyle::testCreate3dSymbol()
 
   QVERIFY( mStyle->symbol3DNames().contains( QStringLiteral( "test_settings" ) ) );
   QCOMPARE( mStyle->symbol3DCount(), 1 );
+  QVERIFY( mStyle->symbol3DCompatibleGeometryTypes( QStringLiteral( "blah" ) ).isEmpty() );
+  QCOMPARE( mStyle->symbol3DCompatibleGeometryTypes( QStringLiteral( "test_settings" ) ), QList< QgsWkbTypes::GeometryType >() << QgsWkbTypes::PointGeometry << QgsWkbTypes::LineGeometry );
   std::unique_ptr< Dummy3DSymbol > retrieved( dynamic_cast< Dummy3DSymbol * >( mStyle->symbol3D( QStringLiteral( "test_settings" ) ) ) );
   QCOMPARE( retrieved->id, QStringLiteral( "xxx" ) );
   symbol.id = QStringLiteral( "yyy" );

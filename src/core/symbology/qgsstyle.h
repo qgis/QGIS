@@ -405,13 +405,12 @@ class CORE_EXPORT QgsStyle : public QObject
     int symbol3DCount() const;
 
     /**
-     * Returns the symbol type corresponding to the 3d symbol
-     * with the specified \a name, or an empty string
-     * if a matching 3d symbol is not present.
+     * Returns the list of the vector layer geometry types which are compatible with the 3D symbol
+     * with the specified \a name, or an empty list if a matching 3d symbol is not present.
      *
      * \since QGIS 3.16
      */
-    QString symbol3DType( const QString &name ) const;
+    QList< QgsWkbTypes::GeometryType > symbol3DCompatibleGeometryTypes( const QString &name ) const;
 
     /**
      * Returns the layer geometry type corresponding to the label settings

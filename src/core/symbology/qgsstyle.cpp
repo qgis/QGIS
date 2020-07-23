@@ -2151,12 +2151,12 @@ int QgsStyle::symbol3DCount() const
   return m3dSymbols.count();
 }
 
-QString QgsStyle::symbol3DType( const QString &name ) const
+QList<QgsWkbTypes::GeometryType> QgsStyle::symbol3DCompatibleGeometryTypes( const QString &name ) const
 {
   if ( !m3dSymbols.contains( name ) )
-    return QString();
+    return QList<QgsWkbTypes::GeometryType>();
 
-  return m3dSymbols.value( name )->type();
+  return m3dSymbols.value( name )->compatibleGeometryTypes();
 }
 
 QgsWkbTypes::GeometryType QgsStyle::labelSettingsLayerType( const QString &name ) const

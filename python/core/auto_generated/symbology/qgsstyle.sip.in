@@ -343,11 +343,10 @@ Returns count of 3D symbols in the style.
 .. versionadded:: 3.16
 %End
 
-    QString symbol3DType( const QString &name ) const;
+    QList< QgsWkbTypes::GeometryType > symbol3DCompatibleGeometryTypes( const QString &name ) const;
 %Docstring
-Returns the symbol type corresponding to the 3d symbol
-with the specified ``name``, or an empty string
-if a matching 3d symbol is not present.
+Returns the list of the vector layer geometry types which are compatible with the 3D symbol
+with the specified ``name``, or an empty list if a matching 3d symbol is not present.
 
 .. versionadded:: 3.16
 %End
