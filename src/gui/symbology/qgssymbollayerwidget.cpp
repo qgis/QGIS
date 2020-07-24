@@ -346,9 +346,7 @@ void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 
   whileBlocking( mCheckAlignDash )->setChecked( mLayer->alignDashPattern() );
   mCheckDashCorners->setEnabled( mLayer->alignDashPattern() );
-  whileBlocking( mCheckDashCorners )->setChecked( mLayer->tweakDashPatternOnCorners() );
-  if ( !mLayer->alignDashPattern() )
-    mCheckDashCorners->setChecked( false );
+  whileBlocking( mCheckDashCorners )->setChecked( mLayer->tweakDashPatternOnCorners() && mLayer->alignDashPattern() );
 
   updatePatternIcon();
 
