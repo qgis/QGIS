@@ -1307,6 +1307,10 @@ QVariant QgsExpressionNodeColumnRef::evalNode( QgsExpression *parent, const QgsE
       else
         return feature.attribute( mName );
     }
+    else
+    {
+      parent->setEvalErrorString( tr( "No feature available for field '%1' evaluation" ).arg( mName ) );
+    }
   }
   if ( index < 0 )
     parent->setEvalErrorString( tr( "Column '%1' not found" ).arg( mName ) );
