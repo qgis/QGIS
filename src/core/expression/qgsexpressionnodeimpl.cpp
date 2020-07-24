@@ -1307,8 +1307,17 @@ QVariant QgsExpressionNodeColumnRef::evalNode( QgsExpression *parent, const QgsE
       else
         return feature.attribute( mName );
     }
+    else
+    {
+      parent->setEvalErrorString( tr( "No feature available for field '%1' evaluation" ).arg( mName ) );
+    }
   }
+<<<<<<< HEAD
   parent->setEvalErrorString( tr( "Column '%1' not found" ).arg( mName ) );
+=======
+  if ( index < 0 )
+    parent->setEvalErrorString( tr( "Field '%1' not found" ).arg( mName ) );
+>>>>>>> a345ae94a5... Merge pull request #37929 from nyalldawson/fix_37912_refactor_fields
   return QVariant();
 }
 
