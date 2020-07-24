@@ -488,7 +488,7 @@ class TestQgsStyleModel(unittest.TestCase):
         self.assertIsNone(model.data(model.index(-1, 0), Qt.DecorationRole))
         self.assertIsNone(model.data(model.index(0, 1), Qt.DecorationRole))
         self.assertIsNone(model.data(model.index(5, 0), Qt.DecorationRole))
-        #self.assertFalse(model.data(model.index(0, 0), Qt.DecorationRole).isNull())
+        # self.assertFalse(model.data(model.index(0, 0), Qt.DecorationRole).isNull())
 
         self.assertEqual(model.data(model.index(0, 0), QgsStyleModel.TypeRole), QgsStyle.Symbol3DEntity)
         self.assertEqual(model.data(model.index(1, 0), QgsStyleModel.TypeRole), QgsStyle.Symbol3DEntity)
@@ -636,7 +636,7 @@ class TestQgsStyleModel(unittest.TestCase):
         self.assertFalse(model.data(model.index(8, 0), Qt.DecorationRole).isNull())
         self.assertFalse(model.data(model.index(11, 0), Qt.DecorationRole).isNull())
         self.assertFalse(model.data(model.index(14, 0), Qt.DecorationRole).isNull())
-        #self.assertFalse(model.data(model.index(17, 0), Qt.DecorationRole).isNull())
+        # self.assertFalse(model.data(model.index(17, 0), Qt.DecorationRole).isNull())
 
         self.assertEqual(model.data(model.index(0, 0), QgsStyleModel.TypeRole), QgsStyle.SymbolEntity)
         self.assertEqual(model.data(model.index(1, 0), QgsStyleModel.TypeRole), QgsStyle.SymbolEntity)
