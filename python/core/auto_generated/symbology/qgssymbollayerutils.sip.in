@@ -741,6 +741,8 @@ May return an empty linestring if the substring is zero length.
 %Docstring
 Returns ``True`` if the angle formed by the line ``p1`` - ``p2`` - ``p3`` forms a "sharp" corner.
 
+Sharp corners form an angle which exceeds a 45 degree threshold.
+
 .. versionadded:: 3.16
 %End
 

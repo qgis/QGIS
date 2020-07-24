@@ -665,6 +665,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Returns TRUE if the angle formed by the line \a p1 - \a p2 - \a p3 forms a "sharp" corner.
      *
+     * Sharp corners form an angle which exceeds a 45 degree threshold.
+     *
      * \since QGIS 3.16
      */
     static bool isSharpCorner( QPointF p1, QPointF p2, QPointF p3 );

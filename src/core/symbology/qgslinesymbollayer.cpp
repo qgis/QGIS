@@ -642,7 +642,7 @@ void QgsSimpleLineSymbolLayer::drawPathWithDashPatternTweaks( QPainter *painter,
   const double dashWidthDiv = std::max( 1.0, pen.widthF() );
   // back to painter units
   for ( int i = 0; i < sourcePattern.size(); ++ i )
-    sourcePattern[i ] *= dashWidthDiv;
+    sourcePattern[i] *= dashWidthDiv;
 
   QVector< qreal > buffer;
   QPolygonF bufferedPoints;
