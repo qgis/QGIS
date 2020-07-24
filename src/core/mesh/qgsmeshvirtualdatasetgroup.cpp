@@ -78,7 +78,7 @@ void QgsMeshVirtualDatasetGroup::initialize()
   if ( times.isEmpty() )
     times.insert( 0 );
 
-  mDatasetTimes = times.toList();
+  mDatasetTimes = qgis::setToList( times );
   std::sort( mDatasetTimes.begin(), mDatasetTimes.end() );
 
   mDatasetMetaData = QVector<QgsMeshDatasetMetadata>( mDatasetTimes.count() );
