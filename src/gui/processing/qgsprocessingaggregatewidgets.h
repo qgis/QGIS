@@ -18,6 +18,7 @@
 
 #include <QAbstractTableModel>
 #include <QStyledItemDelegate>
+#include <QPointer>
 
 #include "qgsfields.h"
 #include "qgsexpressioncontextgenerator.h"
@@ -176,6 +177,22 @@ class GUI_EXPORT QgsAggregateMappingWidget : public QgsPanelWidget
     void setSourceFields( const QgsFields &sourceFields );
 
     /**
+     * Sets a source \a layer to use when generating expression previews in the widget.
+     *
+     * \since QGIS 3.16
+     */
+    void setSourceLayer( QgsVectorLayer *layer );
+
+    /**
+     * Returns the source layer for use when generating expression previews.
+     *
+     * Returned value may be NULLPTR.
+     *
+     * \since QGIS 3.16
+     */
+    QgsVectorLayer *sourceLayer();
+
+    /**
      * Scroll the fields view to \a index
      */
     void scrollTo( const QModelIndex &index ) const;
@@ -211,6 +228,7 @@ class GUI_EXPORT QgsAggregateMappingWidget : public QgsPanelWidget
 
     QTableView *mTableView = nullptr;
     QAbstractTableModel *mModel = nullptr;
+    QPointer< QgsVectorLayer > mSourceLayer;
     void updateColumns();
     //! Returns selected row indexes in ascending order
     std::list<int> selectedRows( );
