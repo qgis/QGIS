@@ -211,7 +211,7 @@ QgsLayoutItem::ExportLayerBehavior QgsLayoutItemPage::exportLayerBehavior() cons
 
 bool QgsLayoutItemPage::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
-  QgsStyleSymbolEntity entity( pageStyleSymbol() );
+  QgsStyleSymbolEntity entity( mPageStyleSymbol.get() );
   if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "page" ), QObject::tr( "Page" ) ) ) )
     return false;
   return true;

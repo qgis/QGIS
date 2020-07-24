@@ -1108,7 +1108,7 @@ A symbol entity for QgsStyle databases.
 %End
   public:
 
-    QgsStyleSymbolEntity( const QgsSymbol *symbol );
+    QgsStyleSymbolEntity( QgsSymbol *symbol );
 %Docstring
 Constructor for QgsStyleSymbolEntity, with the specified ``symbol``.
 
@@ -1118,7 +1118,7 @@ Ownership of ``symbol`` is NOT transferred.
     virtual QgsStyle::StyleEntity type() const;
 
 
-    const QgsSymbol *symbol() const;
+    QgsSymbol *symbol() const;
 %Docstring
 Returns the entity's symbol.
 %End
@@ -1138,7 +1138,7 @@ A color ramp entity for QgsStyle databases.
 %End
   public:
 
-    QgsStyleColorRampEntity( const QgsColorRamp *ramp );
+    QgsStyleColorRampEntity( QgsColorRamp *ramp );
 %Docstring
 Constructor for QgsStyleColorRampEntity, with the specified color ``ramp``.
 
@@ -1148,7 +1148,7 @@ Ownership of ``ramp`` is NOT transferred.
     virtual QgsStyle::StyleEntity type() const;
 
 
-    const QgsColorRamp *ramp() const;
+    QgsColorRamp *ramp() const;
 %Docstring
 Returns the entity's color ramp.
 %End
