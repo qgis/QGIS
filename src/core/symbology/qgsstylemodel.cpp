@@ -316,9 +316,28 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               return icon;
             }
 
+            case QgsStyle::Symbol3DEntity:
+            {
+              // hack for now -- we just use a generic "3d icon" svg file.
+              // TODO - render proper thumbnails
+
+              // use cached icon if possible
+              QIcon icon = mIconCache[ entityType ].value( name );
+              if ( !icon.isNull() )
+                return icon;
+
+              if ( mAdditionalSizes.isEmpty() )
+                icon.addFile( QgsApplication::defaultThemePath() + QDir::separator() + QStringLiteral( "3d.svg" ), QSize( 24, 24 ) );
+              for ( const QSize &s : mAdditionalSizes )
+              {
+                icon.addFile( QgsApplication::defaultThemePath() + QDir::separator() + QStringLiteral( "3d.svg" ), s );
+              }
+              mIconCache[ entityType ].insert( name, icon );
+              return icon;
+            }
+
             case QgsStyle::TagEntity:
             case QgsStyle::SmartgroupEntity:
-            case QgsStyle::Symbol3DEntity:
               return QVariant();
           }
           break;
