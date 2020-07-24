@@ -549,6 +549,46 @@ class TestQgsExpression: public QObject
       QVERIFY( expression4.hasEvalError() );
     }
 
+    void fieldsButNoFeature()
+    {
+      // test evaluating an expression with fields in the context but no feature
+      QgsExpressionContext context;
+      QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+
+      QgsFields fields;
+      fields.append( QgsField( QStringLiteral( "x" ) ) );
+      fields.append( QgsField( QStringLiteral( "y" ) ) );
+      fields.append( QgsField( QStringLiteral( "z" ) ) );
+      scope->setFields( fields );
+      context.appendScope( scope );
+
+      // doesn't exist
+      QgsExpression expression( "\"a\"" );
+      QVERIFY( !expression.hasParserError() );
+      QVERIFY( !expression.evaluate( &context ).isValid() );
+      QVERIFY( expression.hasEvalError() );
+      QCOMPARE( expression.evalErrorString(), QStringLiteral( "Field 'a' not found" ) );
+      expression = QgsExpression( "\"x\"" );
+      QVERIFY( !expression.hasParserError() );
+      QVERIFY( !expression.evaluate( &context ).isValid() );
+      QVERIFY( expression.hasEvalError() );
+      QCOMPARE( expression.evalErrorString(), QStringLiteral( "No feature available for field 'x' evaluation" ) );
+      expression = QgsExpression( "\"y\"" );
+      QVERIFY( !expression.hasParserError() );
+      QVERIFY( !expression.evaluate( &context ).isValid() );
+      QVERIFY( expression.hasEvalError() );
+      QCOMPARE( expression.evalErrorString(), QStringLiteral( "No feature available for field 'y' evaluation" ) );
+
+      QgsFeature f( fields );
+      f.setValid( true );
+      f.setAttributes( QgsAttributes() << 1 << 2 << 3 );
+      scope->setFeature( f );
+      expression = QgsExpression( "\"z\"" );
+      QVERIFY( !expression.hasParserError() );
+      QCOMPARE( expression.evaluate( &context ).toInt(), 3 );
+      QVERIFY( !expression.hasEvalError() );
+    }
+
     void evaluation_data()
     {
       QTest::addColumn<QString>( "string" );
