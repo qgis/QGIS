@@ -21,6 +21,11 @@
 #include <Qt3DCore/QNode>
 #include <Qt3DRender/QPaintedTextureImage>
 
+
+/**
+ * @brief The QgsImageTexture class
+ * Holds an image that can be used as a texture in the 3D view
+ */
 class QgsImageTexture : public Qt3DRender::QPaintedTextureImage
 {
   public:
