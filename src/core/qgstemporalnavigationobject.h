@@ -132,7 +132,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      *
      * \note Calling this will reset the currentFrameNumber() to the closest temporal match for the previous temporal range.
      *
-     * \see frameFrameTimeStep()
+     * \see frameTimeStep()
      */
     void setFrameTimeStep( double timeStep );
 
