@@ -68,8 +68,8 @@ QgsRasterEqualToFrequencyAlgorithm *QgsRasterEqualToFrequencyAlgorithm::createIn
 
 void QgsRasterEqualToFrequencyAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral("INPUT_VALUE_RASTER"), QObject::tr("Input value raster") ) );
-  addParameter( new QgsProcessingParameterBand( QStringLiteral("INPUT_VALUE_RASTER_BAND"), QObject::tr("Value raster band"), 1, QStringLiteral("INPUT_VALUE_RASTER") ) );
+  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_VALUE_RASTER" ), QObject::tr( "Input value raster" ) ) );
+  addParameter( new QgsProcessingParameterBand( QStringLiteral( "INPUT_VALUE_RASTER_BAND" ), QObject::tr( "Value raster band" ), 1, QStringLiteral( "INPUT_VALUE_RASTER" ) ) );
 
 
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "INPUT_RASTERS" ),
@@ -83,9 +83,9 @@ void QgsRasterEqualToFrequencyAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ),
                 QObject::tr( "Output layer" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "EQUAL_VALUES_COUNT"), QObject::tr("Count of equal value occurrances") ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "FOUND_LOCATIONS_COUNT" ), QObject::tr("Count of cells with equal value occurrances") ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MEAN_FREQUENCY_PER_LOCATION" ), QObject::tr("Mean frequency at valid cell locations" ) ) );
+  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "EQUAL_VALUES_COUNT" ), QObject::tr( "Count of equal value occurrances" ) ) );
+  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "FOUND_LOCATIONS_COUNT" ), QObject::tr( "Count of cells with equal value occurrances" ) ) );
+  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MEAN_FREQUENCY_PER_LOCATION" ), QObject::tr( "Mean frequency at valid cell locations" ) ) );
   addOutput( new QgsProcessingOutputString( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ) ) );
   addOutput( new QgsProcessingOutputString( QStringLiteral( "CRS_AUTHID" ), QObject::tr( "CRS authority identifier" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "WIDTH_IN_PIXELS" ), QObject::tr( "Width in pixels" ) ) );
@@ -99,7 +99,7 @@ bool QgsRasterEqualToFrequencyAlgorithm::prepareAlgorithm( const QVariantMap &pa
   if ( !inputValueRaster )
     throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT_VALUE_RASTER" ) ) );
 
-  mInputValueRasterBand = parameterAsInt( parameters, QStringLiteral( "INPUT_VALUE_RASTER_BAND"), context );
+  mInputValueRasterBand = parameterAsInt( parameters, QStringLiteral( "INPUT_VALUE_RASTER_BAND" ), context );
   mIgnoreNoData = parameterAsBool( parameters, QStringLiteral( "IGNORE_NODATA" ), context );
 
   mInputValueRasterInterface.reset( inputValueRaster->dataProvider()->clone() );
@@ -194,7 +194,7 @@ QVariantMap QgsRasterEqualToFrequencyAlgorithm::processAlgorithm( const QVariant
       }
     }
 
-    std::unique_ptr< QgsRasterBlock > outputBlock = qgis::make_unique<QgsRasterBlock>( Qgis::Int32, iterCols, iterRows);
+    std::unique_ptr< QgsRasterBlock > outputBlock = qgis::make_unique<QgsRasterBlock>( Qgis::Int32, iterCols, iterRows );
     feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
     for ( int row = 0; row < iterRows; row++ )
     {
@@ -209,7 +209,7 @@ QVariantMap QgsRasterEqualToFrequencyAlgorithm::processAlgorithm( const QVariant
         bool valueRasterCellIsNoData = false;
         double searchValue = inputBlock->valueAndNoData( row, col, valueRasterCellIsNoData );
 
-        if ( (valueRasterCellIsNoData || noDataInStack) && !mIgnoreNoData )
+        if ( ( valueRasterCellIsNoData || noDataInStack ) && !mIgnoreNoData )
         {
           //output cell will always be NoData if NoData occurs in valueRaster or cellValueStack and NoData is not ignored
           //this saves unnecessary iterations on the cellValueStack
@@ -218,7 +218,7 @@ QVariantMap QgsRasterEqualToFrequencyAlgorithm::processAlgorithm( const QVariant
         }
         else
         {
-          int equalCount = static_cast<int>(std::count(cellValues.begin(), cellValues.end(), searchValue));
+          int equalCount = static_cast<int>( std::count( cellValues.begin(), cellValues.end(), searchValue ) );
           outputBlock->setValue( row, col, equalCount );
           equalValuesCount += equalCount;
         }
@@ -229,11 +229,11 @@ QVariantMap QgsRasterEqualToFrequencyAlgorithm::processAlgorithm( const QVariant
   provider->setEditable( false );
 
   unsigned long long foundLocationsCount = layerSize - noDataLocationsCount;
-  double meanEqualCountPerValidLocation = static_cast<double>(equalValuesCount) / static_cast<double>(foundLocationsCount * mInputs.size() );
+  double meanEqualCountPerValidLocation = static_cast<double>( equalValuesCount ) / static_cast<double>( foundLocationsCount * mInputs.size() );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "EQUAL_VALUES_COUNT" ), equalValuesCount);
-  outputs.insert( QStringLiteral( "FOUND_LOCATIONS_COUNT" ), foundLocationsCount);
+  outputs.insert( QStringLiteral( "EQUAL_VALUES_COUNT" ), equalValuesCount );
+  outputs.insert( QStringLiteral( "FOUND_LOCATIONS_COUNT" ), foundLocationsCount );
   outputs.insert( QStringLiteral( "MEAN_FREQUENCY_PER_LOCATION" ),  meanEqualCountPerValidLocation );
   outputs.insert( QStringLiteral( "EXTENT" ), mExtent.toString() );
   outputs.insert( QStringLiteral( "CRS_AUTHID" ), mCrs.authid() );
