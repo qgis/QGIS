@@ -9,6 +9,7 @@
 
 
 
+
 class QgsStyleModel: QAbstractItemModel
 {
 %Docstring
@@ -84,6 +85,7 @@ Adds an additional icon ``size`` to generate for Qt.DecorationRole data.
 This allows style icons to be generated at an icon size which
 corresponds exactly to the view's icon size in which this model is used.
 %End
+
 
 };
 
