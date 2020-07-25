@@ -438,7 +438,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
   QVector<uint> indexesBuffer = getIndexData( indexAttribute,  indexBytes );
 
   QString objectNamePrefix = layerName;
-  if ( objectNamePrefix != QString() ) objectNamePrefix += QStringLiteral( "" );
+  if ( objectNamePrefix != QString() ) objectNamePrefix += QString();
 
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "Flat_tile" ) ), "", this );
   mObjects.push_back( object );

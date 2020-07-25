@@ -25,7 +25,7 @@
 /**
  * \brief The QgsImageTexture class
  * Holds an image that can be used as a texture in the 3D view
- * \ingroup 3D
+ * \ingroup 3d
  * \since QGIS 3.16
  */
 class QgsImageTexture : public Qt3DRender::QPaintedTextureImage
