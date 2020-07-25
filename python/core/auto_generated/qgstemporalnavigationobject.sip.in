@@ -118,7 +118,7 @@ the temporal length of each frame in the animation.
 
    Calling this will reset the :py:func:`~QgsTemporalNavigationObject.currentFrameNumber` to the first frame.
 
-.. seealso:: :py:func:`frameFrameTimeStep`
+.. seealso:: :py:func:`frameTimeStep`
 %End
 
     void setFrameTimeStepUnit( QgsUnitTypes::TemporalUnit timeStepUnit );
