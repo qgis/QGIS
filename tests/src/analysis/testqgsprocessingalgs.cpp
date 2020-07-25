@@ -2356,8 +2356,8 @@ void TestQgsProcessingAlgs::equalToFrequency()
   QVariantMap parameters;
 
   parameters.insert( QStringLiteral( "INPUT_VALUE_RASTER" ), myDataPath + inputValueRaster );
-  parameters.insert( QStringLiteral( "INPUT_VALUE_RASTER_BAND"), inputValueRasterBand);
-  parameters.insert( QStringLiteral( "INPUT_RASTERS"), inputDatasetPaths);
+  parameters.insert( QStringLiteral( "INPUT_VALUE_RASTER_BAND" ), inputValueRasterBand );
+  parameters.insert( QStringLiteral( "INPUT_RASTERS" ), inputDatasetPaths );
   parameters.insert( QStringLiteral( "IGNORE_NODATA" ), ignoreNoData );
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
@@ -2410,7 +2410,7 @@ void TestQgsProcessingAlgs::equalToFrequency()
         QCOMPARE( outputValue, expectedValue );
 
         Qgis::DataType outputDataType = outputRasterBlock->dataType();
-        QCOMPARE( outputDataType, expectedDataType);
+        QCOMPARE( outputDataType, expectedDataType );
       }
     }
   }
