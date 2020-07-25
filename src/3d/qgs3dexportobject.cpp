@@ -85,7 +85,7 @@ void Qgs3DExportObject::setupTextureCoordinates( const QVector<float> &texturesB
 void Qgs3DExportObject::setupMaterial( QgsAbstractMaterialSettings *material )
 {
   QMap<QString, QString> parameters = material->toExportParameters();
-  for (QString& key : parameters.keys()) setMaterialParameter(key, parameters[key]);
+  for ( QString &key : parameters.keys() ) setMaterialParameter( key, parameters[key] );
 }
 
 void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ )

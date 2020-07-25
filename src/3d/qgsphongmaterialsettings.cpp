@@ -143,7 +143,8 @@ QgsLineMaterial *QgsPhongMaterialSettings::toLineMaterial( const QgsMaterialCont
   return mat;
 }
 
-QMap<QString, QString> QgsPhongMaterialSettings::toExportParameters() const {
+QMap<QString, QString> QgsPhongMaterialSettings::toExportParameters() const
+{
   QMap<QString, QString> parameters;
   parameters[ QString( "Kd" ) ] = QStringLiteral( "%1 %2 %3" ).arg( mDiffuse.redF() ).arg( mDiffuse.greenF() ).arg( mDiffuse.blueF() );
   parameters[ QString( "Ka" ) ] = QStringLiteral( "%1 %2 %3" ).arg( mAmbient.redF() ).arg( mAmbient.greenF() ).arg( mAmbient.blueF() );

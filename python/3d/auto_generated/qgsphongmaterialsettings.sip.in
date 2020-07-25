@@ -54,6 +54,9 @@ Returns specular color component
 Returns shininess of the surface
 %End
 
+    virtual QMap<QString, QString> toExportParameters() const;
+
+
     bool diffuseTextureEnabled() const;
 %Docstring
 Returns whether the diffuse texture is used.
