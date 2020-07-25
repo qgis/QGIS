@@ -27,6 +27,33 @@ const double ICON_PADDING_FACTOR = 0.16;
 
 const auto ENTITIES = { QgsStyle::SymbolEntity, QgsStyle::ColorrampEntity, QgsStyle::TextFormatEntity, QgsStyle::LabelSettingsEntity, QgsStyle::LegendPatchShapeEntity, QgsStyle::Symbol3DEntity };
 
+QgsAbstractStyleEntityIconGenerator *QgsStyleModel::sIconGenerator = nullptr;
+
+//
+// QgsAbstractStyleEntityIconGenerator
+//
+
+QgsAbstractStyleEntityIconGenerator::QgsAbstractStyleEntityIconGenerator( QObject *parent )
+  : QObject( parent )
+{
+
+}
+
+void QgsAbstractStyleEntityIconGenerator::setIconSizes( const QList<QSize> &sizes )
+{
+  mIconSizes = sizes;
+}
+
+QList<QSize> QgsAbstractStyleEntityIconGenerator::iconSizes() const
+{
+  return mIconSizes;
+}
+
+
+//
+// QgsStyleModel
+//
+
 QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
   : QAbstractItemModel( parent )
   , mStyle( style )
@@ -55,6 +82,9 @@ QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
   // if project color scheme changes, we need to redraw symbols - they may use project colors and accordingly
   // need updating to reflect the new colors
   connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsStyleModel::rebuildSymbolIcons );
+
+  if ( sIconGenerator )
+    connect( sIconGenerator, &QgsAbstractStyleEntityIconGenerator::iconGenerated, this, &QgsStyleModel::iconGenerated, Qt::QueuedConnection );
 }
 
 QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
@@ -326,6 +356,13 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               if ( !icon.isNull() )
                 return icon;
 
+              if ( sIconGenerator && !mPending3dSymbolIcons.contains( name ) )
+              {
+                mPending3dSymbolIcons.insert( name );
+                sIconGenerator->generateIcon( mStyle, QgsStyle::Symbol3DEntity, name );
+              }
+
+              // TODO - use hourglass icon
               if ( mAdditionalSizes.isEmpty() )
                 icon.addFile( QgsApplication::defaultThemePath() + QDir::separator() + QStringLiteral( "3d.svg" ), QSize( 24, 24 ) );
               for ( const QSize &s : mAdditionalSizes )
@@ -553,7 +590,17 @@ void QgsStyleModel::addDesiredIconSize( QSize size )
     return;
 
   mAdditionalSizes << size;
+
+  if ( sIconGenerator )
+    sIconGenerator->setIconSizes( mAdditionalSizes );
+
   mIconCache.clear();
+}
+
+void QgsStyleModel::setIconGenerator( QgsAbstractStyleEntityIconGenerator *generator )
+{
+  sIconGenerator = generator;
+  connect( sIconGenerator, &QgsAbstractStyleEntityIconGenerator::iconGenerated, QgsApplication::defaultStyleModel(), &QgsStyleModel::iconGenerated, Qt::QueuedConnection );
 }
 
 void QgsStyleModel::onEntityAdded( QgsStyle::StyleEntity type, const QString &name )
@@ -649,6 +696,29 @@ void QgsStyleModel::rebuildSymbolIcons()
   mIconCache[ QgsStyle::SymbolEntity ].clear();
   mExpressionContext.reset();
   emit dataChanged( index( 0, 0 ), index( mEntityNames[ QgsStyle::SymbolEntity ].count() - 1, 0 ), QVector<int>() << Qt::DecorationRole );
+}
+
+void QgsStyleModel::iconGenerated( QgsStyle::StyleEntity type, const QString &name, const QIcon &icon )
+{
+  int row = mEntityNames[type].indexOf( name ) + offsetForEntity( type );
+
+  switch ( type )
+  {
+    case QgsStyle::Symbol3DEntity:
+      mPending3dSymbolIcons.remove( name );
+      mIconCache[ QgsStyle::Symbol3DEntity ].insert( name, icon );
+      emit dataChanged( index( row, 0 ), index( row, 0 ) );
+      break;
+
+    case QgsStyle::SymbolEntity:
+    case QgsStyle::TagEntity:
+    case QgsStyle::ColorrampEntity:
+    case QgsStyle::LegendPatchShapeEntity:
+    case QgsStyle::TextFormatEntity:
+    case QgsStyle::SmartgroupEntity:
+    case QgsStyle::LabelSettingsEntity:
+      break;
+  }
 }
 
 QgsStyle::StyleEntity QgsStyleModel::entityTypeFromRow( int row ) const
@@ -946,3 +1016,4 @@ void QgsStyleProxyModel::setEntityFilters( const QList<QgsStyle::StyleEntity> &f
   mEntityFilters = filters;
   invalidateFilter();
 }
+
