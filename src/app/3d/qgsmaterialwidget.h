@@ -17,6 +17,7 @@
 #define QGSMATERIALWIDGET_H
 
 #include <QWidget>
+#include <memory>
 #include <ui_materialwidget.h>
 
 class QgsAbstractMaterialSettings;
