@@ -21,7 +21,7 @@ static const char *EMPTY_STR = "";
 
 const char *MDAL_Version()
 {
-  return "0.6.90";
+  return "0.6.91";
 }
 
 MDAL_Status MDAL_LastStatus()
@@ -872,6 +872,18 @@ const char *MDAL_G_referenceTime( MDAL_DatasetGroupH group )
   }
   MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
   return _return_str( g->referenceTime().toStandardCalendarISO8601() );
+}
+
+void MDAL_G_setReferenceTime( MDAL_DatasetGroupH group, const char *referenceTimeISO8601 )
+{
+  if ( !group )
+  {
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleDataset, "Dataset Group is not valid (null)" );
+    return;
+  }
+  MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
+  const std::string datetime( referenceTimeISO8601 );
+  g->setReferenceTime( MDAL::DateTime( datetime ) );
 }
 
 void MDAL_G_setMetadata( MDAL_DatasetGroupH group, const char *key, const char *val )

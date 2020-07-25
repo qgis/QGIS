@@ -837,7 +837,7 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a static b
 
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
                                             const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
-                                            QgsProcessingContext &context, QString &destinationIdentifier /Out/, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() ) /Factory/;
+                                            QgsProcessingContext &context, QString &destinationIdentifier /Out/, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) /Factory/;
 %Docstring
 Evaluates the parameter with matching ``definition`` to a feature sink.
 
@@ -849,12 +849,16 @@ providers and stored temporarily in the ``context``. The ``destinationIdentifier
 argument will be set to a string which can be used to retrieve the layer corresponding
 to the sink, e.g. via calling :py:func:`QgsProcessingUtils.mapLayerFromString()`.
 
+The ``createOptions`` argument is used to pass on creation options such as layer name.
+
+The ``datasourceOptions`` and ``layerOptions`` arguments is used to pass on GDAL-specific format driver options.
+
 This function creates a new object and the caller takes responsibility for deleting the returned object.
 %End
 
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariant &value,
                                             const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
-                                            QgsProcessingContext &context, QString &destinationIdentifier /Out/, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() ) throw( QgsProcessingException ) /Factory/;
+                                            QgsProcessingContext &context, QString &destinationIdentifier /Out/, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) throw( QgsProcessingException ) /Factory/;
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a feature sink.
 
@@ -865,6 +869,10 @@ Sinks will either be taken from ``context``'s active project, or created from ex
 providers and stored temporarily in the ``context``. The ``destinationIdentifier``
 argument will be set to a string which can be used to retrieve the layer corresponding
 to the sink, e.g. via calling :py:func:`QgsProcessingUtils.mapLayerFromString()`.
+
+The ``createOptions`` argument is used to pass on creation options such as layer name.
+
+The ``datasourceOptions`` and ``layerOptions`` arguments is used to pass on GDAL-specific format driver options.
 
 This function creates a new object and the caller takes responsibility for deleting the returned object.
 

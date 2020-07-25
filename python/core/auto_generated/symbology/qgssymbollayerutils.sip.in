@@ -723,6 +723,38 @@ Calculate a point on the surface of a QPolygonF
 Calculate whether a point is within of a QPolygonF
 %End
 
+    static QPolygonF polylineSubstring( const QPolygonF &polyline, double startOffset, double endOffset );
+%Docstring
+Returns the substring of a ``polyline`` which starts at ``startOffset`` from the beginning of the line
+and ends at ``endOffset`` from the start of the line.
+
+If ``startOffset`` is less than 0, then the start point will be calculated by subtracting that distance
+from the end of the line. Similarly, if ``endOffset`` is less than zero then the end point will be subtracted
+from the end of the line.
+
+May return an empty linestring if the substring is zero length.
+
+.. versionadded:: 3.16
+%End
+
+    static bool isSharpCorner( QPointF p1, QPointF p2, QPointF p3 );
+%Docstring
+Returns ``True`` if the angle formed by the line ``p1`` - ``p2`` - ``p3`` forms a "sharp" corner.
+
+Sharp corners form an angle which exceeds a 45 degree threshold.
+
+.. versionadded:: 3.16
+%End
+
+    static void appendPolyline( QPolygonF &target, const QPolygonF &line );
+%Docstring
+Appends a polyline ``line`` to an existing ``target`` polyline.
+
+Any duplicate points at the start ``line`` which match the end point from ``target`` will be skipped.
+
+.. versionadded:: 3.16
+%End
+
     static QgsExpression *fieldOrExpressionToExpression( const QString &fieldOrExpression ) /Factory/;
 %Docstring
 Returns a new valid expression instance for given field or expression string.

@@ -28,6 +28,7 @@
 #include <QMenu>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QHeaderView>
 
 
 QgsMeshDatasetGroupTreeModel::QgsMeshDatasetGroupTreeModel( QObject *parent )
@@ -42,52 +43,28 @@ int QgsMeshDatasetGroupTreeModel::columnCount( const QModelIndex &parent ) const
   return 1;
 }
 
-bool QgsMeshDatasetGroupTreeModel::setData( const QModelIndex &index, const QVariant &value, int role )
-{
-  if ( !index.isValid() )
-    return false;
-
-  QgsMeshDatasetGroupTreeItem *item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
-
-  switch ( role )
-  {
-    case Qt::EditRole:
-      if ( value != QString() )
-      {
-        item->setName( value.toString() );
-        return true;
-      }
-      break;
-    case Qt::CheckStateRole :
-      item->setIsEnabled( value.toBool() );
-      return true;
-  }
-  return false;
-}
-
 QVariant QgsMeshDatasetGroupTreeModel::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() )
     return QVariant();
 
   QgsMeshDatasetGroupTreeItem *item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
+  if ( !item )
+    return QVariant();
 
   switch ( role )
   {
     case Qt::DisplayRole:
     case Name:
       return item->name();
-    case IsVector:
-      return item->isVector();
+      break;
+    case Qt::CheckStateRole :
+      if ( index.column() == 0 )
+        return static_cast< int >( item->isEnabled() ? Qt::Checked : Qt::Unchecked );
+      break;
     case DatasetGroupIndex:
       return item->datasetGroupIndex();
-    case Qt::CheckStateRole :
-      return static_cast< int >( item->isEnabled() ? Qt::Checked : Qt::Unchecked );
-    case IsMemory:
-      return item->storageType() == QgsMeshDatasetGroupTreeItem::Memory;
-    case Qt::DecorationRole:
-      if ( item->storageType() == QgsMeshDatasetGroupTreeItem::Memory )
-        return QgsApplication::getThemeIcon( QStringLiteral( "mIndicatorMemory.svg" ) );
+      break;
   }
 
   return QVariant();
@@ -187,6 +164,14 @@ QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeModel::datasetGroupTreeItem(
     return nullptr;
 }
 
+QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeModel::datasetGroupTreeItem( QModelIndex index )
+{
+  if ( !index.isValid() || !hasIndex( index.row(), index.column(), index.parent() ) )
+    return nullptr;
+
+  return static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
+}
+
 bool QgsMeshDatasetGroupTreeModel::isEnabled( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
@@ -232,7 +217,7 @@ void QgsMeshDatasetGroupTreeModel::removeItem( const QModelIndex &index )
     return;
 
   QgsMeshDatasetGroupTreeItem *item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
-  if ( !item || item->storageType() == QgsMeshDatasetGroupTreeItem::File )
+  if ( !item || item->datasetGroupType() == QgsMeshDatasetGroup::Persistent )
     return;
 
   beginRemoveRows( index.parent(), index.row(), index.row() );
@@ -241,7 +226,7 @@ void QgsMeshDatasetGroupTreeModel::removeItem( const QModelIndex &index )
   endRemoveRows();
 }
 
-void QgsMeshDatasetGroupTreeModel::setStorageType( const QModelIndex &index, QgsMeshDatasetGroupTreeItem::StorageType type )
+void QgsMeshDatasetGroupTreeModel::setPersistentDatasetGroup( const QModelIndex &index, const QString &uri )
 {
   if ( !index.isValid() )
     return;
@@ -249,7 +234,7 @@ void QgsMeshDatasetGroupTreeModel::setStorageType( const QModelIndex &index, Qgs
   QgsMeshDatasetGroupTreeItem *item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
   if ( !item )
     return;
-  item->setStorageType( type );
+  item->setPersistentDatasetGroup( uri );
   dataChanged( index, index );
 }
 
@@ -313,6 +298,8 @@ QVariant QgsMeshDatasetGroupProxyModel::data( const QModelIndex &index, int role
 
   switch ( role )
   {
+    case QgsMeshDatasetGroupTreeModel::IsVector:
+      return item->isVector();
     case QgsMeshDatasetGroupTreeModel::IsActiveScalarDatasetGroup:
       return item->datasetGroupIndex() == mActiveScalarGroupIndex;
     case QgsMeshDatasetGroupTreeModel::IsActiveVectorDatasetGroup:
@@ -320,6 +307,8 @@ QVariant QgsMeshDatasetGroupProxyModel::data( const QModelIndex &index, int role
     case Qt::CheckStateRole :
       return QVariant();
     case Qt::DecorationRole:
+      return QVariant();
+    case Qt::BackgroundColorRole:
       return QVariant();
   }
 
@@ -535,6 +524,9 @@ QVariant QgsMeshDatasetGroupListModel::data( const QModelIndex &index, int role 
       else
         return item->name();
       break;
+    case Qt::DecorationRole:
+      return QVariant();
+      break;
   }
 
   return QVariant();
@@ -545,14 +537,27 @@ void QgsMeshDatasetGroupListModel::setDisplayProviderName( bool displayProviderN
   mDisplayProviderName = displayProviderName;
 }
 
+QStringList QgsMeshDatasetGroupListModel::variableNames() const
+{
+  int varCount = rowCount( QModelIndex() );
+  QStringList variableNames;
+  for ( int i = 0; i < varCount; ++i )
+    variableNames.append( data( createIndex( i, 0 ), Qt::DisplayRole ).toString() );
+
+  return variableNames;
+}
+
 QgsMeshDatasetGroupTreeView::QgsMeshDatasetGroupTreeView( QWidget *parent ):
   QTreeView( parent )
-  , mModel( new QgsMeshDatasetGroupTreeModel( this ) )
+  , mModel( new QgsMeshAvailableDatasetGroupTreeModel( this ) )
   , mSaveMenu( new QgsMeshDatasetGroupSaveMenu( this ) )
 {
-  setItemDelegate( &mDelegate );
+  // To avoid the theme style overrides the background defined by the model
+  setStyleSheet( "QgsMeshDatasetGroupTreeView::item {background:none}" );
+
   setModel( mModel );
   setSelectionMode( QAbstractItemView::SingleSelection );
+  header()->setSectionResizeMode( QHeaderView::ResizeToContents );
 
   connect( mSaveMenu, &QgsMeshDatasetGroupSaveMenu::datasetGroupSaved, this, &QgsMeshDatasetGroupTreeView::onDatasetGroupSaved );
 }
@@ -588,13 +593,36 @@ void QgsMeshDatasetGroupTreeView::contextMenuEvent( QContextMenuEvent *event )
 
 void QgsMeshDatasetGroupTreeView::removeCurrentItem()
 {
-  if ( QMessageBox::question( this, tr( "Remove Dataset Group" ), tr( "Remove dataset group?" ) ) == QMessageBox::Ok )
+  QgsMeshDatasetGroupTreeItem *item = mModel->datasetGroupTreeItem( currentIndex() );
+
+  if ( item )
+  {
+    QList<int> dependencies = item->groupIndexDependencies();
+    if ( !dependencies.isEmpty() )
+    {
+      QString varList;
+      for ( int dependentGroupIndex : dependencies )
+      {
+        QgsMeshDatasetGroupTreeItem *item = mModel->datasetGroupTreeItem( dependentGroupIndex );
+        if ( item )
+        {
+          varList.append( item->name() );
+          varList.append( QStringLiteral( "\n" ) );
+        }
+      }
+      QMessageBox::information( this, tr( "Remove Dataset Group" ), tr( "This dataset group can't be removed because other dataset groups depend on it:\n%1" )
+                                .arg( varList ) );
+      return;
+    }
+  }
+
+  if ( QMessageBox::question( this, tr( "Remove Dataset Group" ), tr( "Remove dataset group?" ) ) == QMessageBox::Yes )
     mModel->removeItem( currentIndex() );
 }
 
-void QgsMeshDatasetGroupTreeView::onDatasetGroupSaved()
+void QgsMeshDatasetGroupTreeView::onDatasetGroupSaved( const QString &uri )
 {
-  mModel->setStorageType( currentIndex(), QgsMeshDatasetGroupTreeItem::File );
+  mModel->setPersistentDatasetGroup( currentIndex(), uri );
   emit apply();
 }
 
@@ -612,14 +640,14 @@ QMenu *QgsMeshDatasetGroupTreeView::createContextMenu()
   if ( !item )
     return nullptr;
 
-  switch ( item->storageType() )
+  switch ( item->datasetGroupType() )
   {
-    case QgsMeshDatasetGroupTreeItem::None:
+    case QgsMeshDatasetGroup::None:
       break;
-    case QgsMeshDatasetGroupTreeItem::File:
+    case QgsMeshDatasetGroup::Persistent:
       break;
-    case QgsMeshDatasetGroupTreeItem::Memory:
-    case QgsMeshDatasetGroupTreeItem::OnTheFly:
+    case QgsMeshDatasetGroup::Memory:
+    case QgsMeshDatasetGroup::Virtual:
       contextMenu->addAction( tr( "Remove Dataset Group" ), this, &QgsMeshDatasetGroupTreeView::removeCurrentItem );
       mSaveMenu->createSaveMenu( groupIndex, contextMenu );
       break;
@@ -719,19 +747,117 @@ void QgsMeshDatasetGroupSaveMenu::saveDatasetGroup( int datasetGroup, const QStr
   }
   else
   {
-    emit datasetGroupSaved();
+    emit datasetGroupSaved( saveFileName );
     QMessageBox::information( nullptr, QObject::tr( "Save Mesh Datasets" ), QObject::tr( "Datasets successfully saved on file" ) );
   }
 
 }
 
-QgsMeshDatasetGroupTreeView::Delegate::Delegate( QObject *parent ): QStyledItemDelegate( parent )
+QgsMeshAvailableDatasetGroupTreeModel::QgsMeshAvailableDatasetGroupTreeModel( QObject *parent ): QgsMeshDatasetGroupTreeModel( parent )
+{}
+
+QVariant QgsMeshAvailableDatasetGroupTreeModel::data( const QModelIndex &index, int role ) const
 {
+  if ( !index.isValid() )
+    return QVariant();
+
+  switch ( role )
+  {
+    case Qt::DisplayRole:
+    case Name:
+      return textDisplayed( index );
+    case Qt::BackgroundColorRole:
+      return backGroundColor( index );
+  }
+  return QgsMeshDatasetGroupTreeModel::data( index, role );
 }
 
-void QgsMeshDatasetGroupTreeView::Delegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+bool QgsMeshAvailableDatasetGroupTreeModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  QStyleOptionViewItem opt = option;
-  opt.decorationPosition = QStyleOptionViewItem::Right;
-  QStyledItemDelegate::paint( painter, opt, index );
+  if ( !index.isValid() )
+    return false;
+
+  QgsMeshDatasetGroupTreeItem *item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
+  if ( !item )
+    return false;
+
+  switch ( role )
+  {
+    case Qt::EditRole:
+      if ( value != QString() )
+      {
+        item->setName( value.toString() );
+        return true;
+      }
+      break;
+    case Qt::CheckStateRole :
+      item->setIsEnabled( value.toBool() );
+      return true;
+  }
+  return false;
+}
+
+Qt::ItemFlags QgsMeshAvailableDatasetGroupTreeModel::flags( const QModelIndex &index ) const
+{
+  if ( !index.isValid() )
+    return Qt::NoItemFlags;
+
+  if ( index.column() > 0 )
+    return Qt::ItemIsEnabled;
+
+  return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
+}
+
+QVariant QgsMeshAvailableDatasetGroupTreeModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  Q_UNUSED( section )
+
+  if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
+  {
+    if ( section == 0 )
+      return tr( "Group" );
+    if ( section == 1 )
+      return  tr( "Type" );
+    if ( section == 2 )
+      return  tr( "Description" );
+  }
+
+  return QVariant();
+}
+
+int QgsMeshAvailableDatasetGroupTreeModel::columnCount( const QModelIndex &parent ) const {Q_UNUSED( parent ); return 3;}
+
+QString QgsMeshAvailableDatasetGroupTreeModel::textDisplayed( const QModelIndex &index ) const
+{
+  QgsMeshDatasetGroupTreeItem *item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
+  if ( !item )
+    return QString();
+
+  switch ( index.column() )
+  {
+    case 0:
+      return item->name();
+    case 1:
+      if ( item->isVector() )
+        return tr( "Vector" );
+      else
+        return tr( "Scalar" );
+    case 2 :
+      return item->description();
+  }
+  return QString();
+}
+
+QColor QgsMeshAvailableDatasetGroupTreeModel::backGroundColor( const QModelIndex &index ) const
+{
+  QgsMeshDatasetGroupTreeItem *item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
+  if ( !item )
+    return QColor();
+
+  if ( item->datasetGroupType() == QgsMeshDatasetGroup::Virtual )
+    return QColor( 103, 0, 243, 44 );
+  else if ( item->datasetGroupType() == QgsMeshDatasetGroup::Memory )
+    return QColor( 252, 155, 79, 44 );
+  else
+    return QColor( 252, 255, 79, 44 );
 }

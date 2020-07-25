@@ -82,16 +82,10 @@ void Qgs3DExportObject::setupTextureCoordinates( const QVector<float> &texturesB
   mTexturesUV << texturesBuffer;
 }
 
-void Qgs3DExportObject::setupPhongMaterial( const QgsPhongMaterialSettings &material )
+void Qgs3DExportObject::setupMaterial( QgsAbstractMaterialSettings *material )
 {
-  QColor diffuse = material.diffuse();
-  QColor specular = material.specular();
-  QColor ambient = material.ambient();
-  float shininess = material.shininess();
-  setMaterialParameter( QStringLiteral( "Kd" ), QStringLiteral( "%1 %2 %3" ).arg( diffuse.redF() ).arg( diffuse.greenF() ).arg( diffuse.blueF() ) );
-  setMaterialParameter( QStringLiteral( "Ka" ), QStringLiteral( "%1 %2 %3" ).arg( ambient.redF() ).arg( ambient.greenF() ).arg( ambient.blueF() ) );
-  setMaterialParameter( QStringLiteral( "Ks" ), QStringLiteral( "%1 %2 %3" ).arg( specular.redF() ).arg( specular.greenF() ).arg( specular.blueF() ) );
-  setMaterialParameter( QStringLiteral( "Ns" ), QStringLiteral( "%1" ).arg( shininess ) );
+  QMap<QString, QString> parameters = material->toExportParameters();
+  for (QString& key : parameters.keys()) setMaterialParameter(key, parameters[key]);
 }
 
 void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ )
@@ -201,13 +195,11 @@ QString Qgs3DExportObject::saveMaterial( QTextStream &mtlOut, const QString &fol
     mTextureImage.save( filePath, "JPG" );
     mtlOut << "\tmap_Kd " << materialName << ".jpg" << "\n";
   }
-  else
+  for ( QString key : mMaterialParameters.keys() )
   {
-    for ( QString parameter : mMaterialParameters.keys() )
-    {
-      mtlOut << "\t" << parameter << " " << mMaterialParameters[parameter] << "\n";
-    }
-    mtlOut << "\tillum 2\n";
+    mtlOut << "\t" << key << " " << mMaterialParameters[key] << "\n";
+    qDebug() << "\t" << key << " " << mMaterialParameters[key] << "\n";
   }
+  mtlOut << "\tillum 2\n";
   return materialName;
 }

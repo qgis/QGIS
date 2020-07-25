@@ -54,6 +54,7 @@ class TestQgsSvgCache : public QObject
     void changeImage(); //check that cache is updated if svg source file changes
     void base64();
     void replaceParams();
+    void aspectRatio();
 
 };
 
@@ -330,6 +331,18 @@ void TestQgsSvgCache::replaceParams()
   cache.replaceElemParams( elem, QColor( 255, 0, 0, 25 ), QColor( 0, 255, 0, 100 ), 0.6 );
   QCOMPARE( elem.attribute( QStringLiteral( "stroke-size" ) ), QStringLiteral( "0.6" ) );
 
+}
+
+void TestQgsSvgCache::aspectRatio()
+{
+  // test rendering SVGs with manual aspect ratio
+  QgsSvgCache cache;
+  bool inCache = false;
+
+  const QString originalImage = TEST_DATA_DIR + QStringLiteral( "/test_symbol_svg.svg" );
+  QImage img = cache.svgAsImage( originalImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
+                                 1.0, inCache, 0.5 );
+  QVERIFY( imageCheck( QStringLiteral( "svgcache_aspect_ratio" ), img, 30 ) );
 }
 
 bool TestQgsSvgCache::imageCheck( const QString &testName, QImage &image, int mismatchCount )

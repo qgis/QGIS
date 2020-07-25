@@ -16,21 +16,25 @@
 #ifndef QGSLINE3DSYMBOLWIDGET_H
 #define QGSLINE3DSYMBOLWIDGET_H
 
-#include <QWidget>
+#include "qgs3dsymbolwidget.h"
 
 #include "ui_line3dsymbolwidget.h"
+
+#include <memory>
 
 class QgsLine3DSymbol;
 
 //! A widget for configuration of 3D symbol for polygons
-class QgsLine3DSymbolWidget : public QWidget, private Ui::Line3DSymbolWidget
+class QgsLine3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Line3DSymbolWidget
 {
     Q_OBJECT
   public:
     explicit QgsLine3DSymbolWidget( QWidget *parent = nullptr );
 
-    void setSymbol( const QgsLine3DSymbol &symbol );
-    QgsLine3DSymbol symbol() const;
+    static Qgs3DSymbolWidget *create( QgsVectorLayer *layer );
+
+    void setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer ) override;
+    QgsAbstract3DSymbol *symbol() override;
 
   private slots:
     void updateGuiState();

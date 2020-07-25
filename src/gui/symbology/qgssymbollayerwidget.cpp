@@ -187,6 +187,27 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
   connect( mDashPatternUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleLineSymbolLayerWidget::mDashPatternUnitWidget_changed );
   connect( mDrawInsideCheckBox, &QCheckBox::stateChanged, this, &QgsSimpleLineSymbolLayerWidget::mDrawInsideCheckBox_stateChanged );
   connect( mPatternOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleLineSymbolLayerWidget::patternOffsetUnitChanged );
+  connect( mCheckAlignDash, &QCheckBox::toggled, this, [ = ]
+  {
+    mCheckDashCorners->setEnabled( mCheckAlignDash->isChecked() );
+    if ( !mCheckAlignDash->isChecked() )
+      mCheckDashCorners->setChecked( false );
+
+    if ( mLayer )
+    {
+      mLayer->setAlignDashPattern( mCheckAlignDash->isChecked() );
+      emit changed();
+    }
+  } );
+  connect( mCheckDashCorners, &QCheckBox::toggled, this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setTweakDashPatternOnCorners( mCheckDashCorners->isChecked() );
+      emit changed();
+    }
+  } );
+
   mPenWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
@@ -322,6 +343,10 @@ void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( mDrawInsideCheckBox )->setCheckState( drawInsidePolygon ? Qt::Checked : Qt::Unchecked );
 
   whileBlocking( mRingFilterComboBox )->setCurrentIndex( mRingFilterComboBox->findData( mLayer->ringFilter() ) );
+
+  whileBlocking( mCheckAlignDash )->setChecked( mLayer->alignDashPattern() );
+  mCheckDashCorners->setEnabled( mLayer->alignDashPattern() );
+  whileBlocking( mCheckDashCorners )->setChecked( mLayer->tweakDashPatternOnCorners() && mLayer->alignDashPattern() );
 
   updatePatternIcon();
 

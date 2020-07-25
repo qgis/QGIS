@@ -142,6 +142,7 @@
 #include "qgsalgorithmrotate.h"
 #include "qgsalgorithmroundrastervalues.h"
 #include "qgsalgorithmruggedness.h"
+#include "qgsalgorithmsavefeatures.h"
 #include "qgsalgorithmsavelog.h"
 #include "qgsalgorithmsaveselectedfeatures.h"
 #include "qgsalgorithmsegmentize.h"
@@ -377,6 +378,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRotateFeaturesAlgorithm() );
   addAlgorithm( new QgsRoundRasterValuesAlgorithm() );
   addAlgorithm( new QgsRuggednessAlgorithm() );
+  addAlgorithm( new QgsSaveFeaturesAlgorithm() );
   addAlgorithm( new QgsSaveLogToFileAlgorithm() );
   addAlgorithm( new QgsSaveSelectedFeatures() );
   addAlgorithm( new QgsSegmentizeByMaximumAngleAlgorithm() );

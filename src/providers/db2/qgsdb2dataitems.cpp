@@ -167,7 +167,7 @@ QVector<QgsDataItem *> QgsDb2ConnectionItem::createChildren()
   QSqlDatabase db = QgsDb2Provider::getDatabase( connInfo, errorMsg );
   if ( errorMsg.isEmpty() )
   {
-    //children.append( new QgsFavouritesItem(this, "connection successful", mPath + "/success"));
+    //children.append( new QgsFavoritesItem(this, "connection successful", mPath + "/success"));
     QgsDebugMsg( "DB open successful for connection " + db.connectionName() );
   }
   else

@@ -141,7 +141,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   {
     // only non-root directories can be added as favorites
     QAction *addAsFavorite = new QAction( tr( "Add as a Favorite" ), menu );
-    addAsFavorite->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavourites.svg" ) ) );
+    addAsFavorite->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavorites.svg" ) ) );
     menu->addAction( addAsFavorite );
     connect( addAsFavorite, &QAction::triggered, this, [ = ]
     {
@@ -743,7 +743,7 @@ void QgsFieldsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *me
           }
           else
           {
-            notify( tr( "New Field" ), tr( "Failed to load layer'%1'. Check application logs and user permissions." ).arg( fieldsItem->tableName() ), context, Qgis::MessageLevel::Critical );
+            notify( tr( "New Field" ), tr( "Failed to load layer '%1'. Check application logs and user permissions." ).arg( fieldsItem->tableName() ), context, Qgis::MessageLevel::Critical );
           }
         } );
         menu->addAction( addColumnAction );

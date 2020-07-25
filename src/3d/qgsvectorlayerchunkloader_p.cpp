@@ -28,9 +28,8 @@
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
 
-#include "qgsline3dsymbol_p.h"
-#include "qgspoint3dsymbol_p.h"
-#include "qgspolygon3dsymbol_p.h"
+#include "qgsapplication.h"
+#include "qgs3dsymbolregistry.h"
 
 #include <QtConcurrent>
 
@@ -52,17 +51,10 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   QgsVectorLayer *layer = mFactory->mLayer;
   const Qgs3DMapSettings &map = mFactory->mMap;
 
-  QgsFeature3DHandler *handler = nullptr;
-  QString symbolType = mFactory->mSymbol->type();
-  if ( symbolType == QLatin1String( "polygon" ) )
-    handler = Qgs3DSymbolImpl::handlerForPolygon3DSymbol( layer, *static_cast<QgsPolygon3DSymbol *>( mFactory->mSymbol.get() ) );
-  else if ( symbolType == QLatin1String( "point" ) )
-    handler = Qgs3DSymbolImpl::handlerForPoint3DSymbol( layer, *static_cast<QgsPoint3DSymbol *>( mFactory->mSymbol.get() ) );
-  else if ( symbolType == QLatin1String( "line" ) )
-    handler = Qgs3DSymbolImpl::handlerForLine3DSymbol( layer, *static_cast<QgsLine3DSymbol *>( mFactory->mSymbol.get() ) );
-  else
+  QgsFeature3DHandler *handler = QgsApplication::symbol3DRegistry()->createHandlerForSymbol( layer, mFactory->mSymbol.get() );
+  if ( !handler )
   {
-    QgsDebugMsg( QStringLiteral( "Unknown 3D symbol type for vector layer: " ) + symbolType );
+    QgsDebugMsg( QStringLiteral( "Unknown 3D symbol type for vector layer: " ) + mFactory->mSymbol->type() );
     return;
   }
   mHandler.reset( handler );

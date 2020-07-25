@@ -251,6 +251,8 @@
 %Include auto_generated/qgsxmlutils.sip
 %Include auto_generated/qgsziputils.sip
 %Include auto_generated/./3d/qgs3drendererregistry.sip
+%Include auto_generated/./3d/qgs3dsymbolregistry.sip
+%Include auto_generated/./3d/qgsabstract3dsymbol.sip
 %Include auto_generated/./3d/qgsabstract3drenderer.sip
 %Include auto_generated/annotations/qgsannotation.sip
 %Include auto_generated/annotations/qgsannotationmanager.sip
@@ -426,6 +428,7 @@
 %Include auto_generated/mesh/qgsmeshspatialindex.sip
 %Include auto_generated/mesh/qgsmeshtimesettings.sip
 %Include auto_generated/mesh/qgsmeshtracerenderer.sip
+%Include auto_generated/mesh/qgsmeshcalculator.sip
 %Include auto_generated/metadata/qgsabstractmetadatabase.sip
 %Include auto_generated/metadata/qgslayermetadata.sip
 %Include auto_generated/metadata/qgslayermetadataformatter.sip

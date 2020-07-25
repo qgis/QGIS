@@ -36,20 +36,6 @@
 
 /// @cond PRIVATE
 
-
-static Qt3DExtras::QPhongMaterial *_material( const QgsLine3DSymbol &symbol )
-{
-  Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial;
-
-  material->setAmbient( symbol.material().ambient() );
-  material->setDiffuse( symbol.material().diffuse() );
-  material->setSpecular( symbol.material().specular() );
-  material->setShininess( symbol.material().shininess() );
-
-  return material;
-}
-
-
 // -----------
 
 
@@ -170,13 +156,10 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
   if ( out.tessellator->dataVerticesCount() == 0 )
     return;  // nothing to show - no need to create the entity
 
-  Qt3DExtras::QPhongMaterial *mat = _material( mSymbol );
-  if ( selected )
-  {
-    // update the material with selection colors
-    mat->setDiffuse( context.map().selectionColor() );
-    mat->setAmbient( context.map().selectionColor().darker() );
-  }
+  QgsMaterialContext materialContext;
+  materialContext.setIsSelected( selected );
+  materialContext.setSelectionColor( context.map().selectionColor() );
+  Qt3DRender::QMaterial *mat = mSymbol.material()->toMaterial( materialContext );
 
   // extract vertex buffer data from tessellator
   QByteArray data( ( const char * )out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
@@ -286,12 +269,10 @@ void QgsSimpleLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 
   // material (only ambient color is used for the color)
 
-  Qt3DExtras::QPhongMaterial *mat = _material( mSymbol );
-  if ( selected )
-  {
-    // update the material with selection colors
-    mat->setAmbient( context.map().selectionColor() );
-  }
+  QgsMaterialContext materialContext;
+  materialContext.setIsSelected( selected );
+  materialContext.setSelectionColor( context.map().selectionColor() );
+  Qt3DRender::QMaterial *mat = mSymbol.material()->toMaterial( materialContext );
 
   // geometry renderer
 
@@ -400,15 +381,11 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
     return;
 
   // material (only ambient color is used for the color)
-
-  QgsLineMaterial *mat = new QgsLineMaterial;
-  mat->setLineColor( mSymbol.material().ambient() );
+  QgsMaterialContext materialContext;
+  materialContext.setIsSelected( selected );
+  materialContext.setSelectionColor( context.map().selectionColor() );
+  QgsLineMaterial *mat = mSymbol.material()->toLineMaterial( materialContext );
   mat->setLineWidth( mSymbol.width() );
-  if ( selected )
-  {
-    // update the material with selection colors
-    mat->setLineColor( context.map().selectionColor() );
-  }
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
 
@@ -433,18 +410,22 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
 namespace Qgs3DSymbolImpl
 {
 
-  QgsFeature3DHandler *handlerForLine3DSymbol( QgsVectorLayer *layer, const QgsLine3DSymbol &symbol )
+  QgsFeature3DHandler *handlerForLine3DSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
   {
-    if ( symbol.renderAsSimpleLines() )
-      return new QgsThickLine3DSymbolHandler( symbol, layer->selectedFeatureIds() );
+    const QgsLine3DSymbol *lineSymbol = dynamic_cast< const QgsLine3DSymbol * >( symbol );
+    if ( !lineSymbol )
+      return nullptr;
+
+    if ( lineSymbol->renderAsSimpleLines() )
+      return new QgsThickLine3DSymbolHandler( *lineSymbol, layer->selectedFeatureIds() );
     //return new QgsSimpleLine3DSymbolHandler( symbol, layer->selectedFeatureIds() );
     else
-      return new QgsBufferedLine3DSymbolHandler( symbol, layer->selectedFeatureIds() );
+      return new QgsBufferedLine3DSymbolHandler( *lineSymbol, layer->selectedFeatureIds() );
   }
 
   Qt3DCore::QEntity *entityForLine3DSymbol( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol )
   {
-    QgsFeature3DHandler *handler = handlerForLine3DSymbol( layer, symbol );
+    QgsFeature3DHandler *handler = handlerForLine3DSymbol( layer, &symbol );
     Qt3DCore::QEntity *e = entityFromHandler( handler, map, layer );
     delete handler;
     return e;

@@ -75,9 +75,9 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *
  * Most commonly one comes across two types of coordinate systems:
  *
- * # Geographic coordinate systems: based on a geodetic datum, normally with coordinates being
+ * - Geographic coordinate systems: based on a geodetic datum, normally with coordinates being
  *   latitude/longitude in degrees. The most common one is World Geodetic System 84 (WGS84).
- * # Projected coordinate systems: based on a geodetic datum with coordinates projected to a plane,
+ * - Projected coordinate systems: based on a geodetic datum with coordinates projected to a plane,
  *   typically using meters or feet as units. Common projected coordinate systems are Universal
  *   Transverse Mercator or Albers Equal Area.
  *
@@ -108,12 +108,11 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  * CRS PROJ text: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 [output trimmed]
  * \endcode
  *
- * CRS Definition Formats
- * ======================
+ * \section crs_def_formats CRS Definition Formats
  *
  * This section gives an overview of various supported CRS definition formats:
  *
- * # Authority and Code: Also referred to as OGC WMS format within QGIS as they have been widely
+ * - Authority and Code: Also referred to as OGC WMS format within QGIS as they have been widely
  *   used in OGC standards. These are encoded as `<auth>:<code>`, for example `EPSG:4326` refers
  *   to WGS84 system. EPSG is the most commonly used authority that covers a wide range
  *   of coordinate systems around the world.
@@ -128,7 +127,8 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *
  *    \see authid()
  *   \see createFromOgcWmsCrs()
- * # PROJ string: This is a string consisting of a series of key/value pairs in the following
+ *
+ * - PROJ string: This is a string consisting of a series of key/value pairs in the following
  *   format: `+param1=value1 +param2=value2 [...]`. This is the format natively used by the
  *   underlying proj library. For example, the definition of WGS84 looks like this:
  *
@@ -138,9 +138,11 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *
  *   \see toProj()
  *   \see createFromProj()
- * # Well-known text (WKT): Defined by Open Geospatial Consortium (OGC), this is another common
+ *
+ * - Well-known text (WKT): Defined by Open Geospatial Consortium (OGC), this is another common
  *   format to define CRS. For WGS84 the OGC WKT definition is the following:
  *
+ *   \code
  *       GEOGCS["WGS 84",
  *              DATUM["WGS_1984",
  *                SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],
@@ -148,12 +150,12 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *              PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],
  *              UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],
  *              AUTHORITY["EPSG","4326"]]
+ *   \endcode
  *
  *   \see toWkt()
  *   \see createFromWkt()
  *
- * CRS Database and Custom CRS
- * ===========================
+ * \section crs_db_and_custom CRS Database and Custom CRS
  *
  * The database of CRS shipped with QGIS is stored in a SQLite database (see QgsApplication::srsDatabaseFilePath())
  * and it is based on the data files maintained by GDAL project (a variety of .csv and .wkt files).
@@ -169,8 +171,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  * The local CRS databases should never be accessed directly with SQLite functions, instead
  * you should use QgsCoordinateReferenceSystem API for CRS lookups and for managements of custom CRS.
  *
- * Validation
- * ==========
+ * \section validation Validation
  *
  * In some cases (most prominently when loading a map layer), QGIS will try to ensure
  * that the given map layer CRS is valid using validate() call. If not, a custom
@@ -180,8 +181,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  * (WGS84). QGIS application registers its validation function that will act according
  * to user's settings (either show CRS selector dialog or use project/custom CRS).
  *
- * Object Construction and Copying  {#crs_construct_and_copy}
- * ===============================
+ * \section crs_construct_and_copy Object Construction and Copying
  *
  * The easiest way of creating CRS instances is to use QgsCoordinateReferenceSystem(const QString&)
  * constructor that automatically recognizes definition format from the given string.
@@ -193,8 +193,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *
  * Since QGIS 2.16 QgsCoordinateReferenceSystem objects are implicitly shared.
  *
- * Caveats
- * =======
+ * \section caveats Caveats
  *
  * There are two different flavors of WKT: one is defined by OGC, the other is the standard
  * used by ESRI. They look very similar, but they are not the same. QGIS is able to consume

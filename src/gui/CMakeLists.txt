@@ -335,6 +335,7 @@ SET(QGIS_GUI_SRCS
   vectortile/qgsvectortilesourceselect.cpp
 
   qgisinterface.cpp
+  qgs3dsymbolwidget.cpp
   qgsactionmenu.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
@@ -567,6 +568,7 @@ SET(QGIS_GUI_SRCS
 SET(QGIS_GUI_HDRS
   qgisinterface.h
 
+  qgs3dsymbolwidget.h
   qgsabstractdatasourcewidget.h
   qgsactionmenu.h
   qgsaddattrdialog.h

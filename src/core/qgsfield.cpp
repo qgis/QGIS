@@ -336,8 +336,12 @@ QString QgsField::displayString( const QVariant &v ) const
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsField::convertCompatible( QVariant &v ) const
+bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
 {
+  const QVariant original = v;
+  if ( errorMessage )
+    errorMessage->clear();
+
   if ( v.isNull() )
   {
     v.convert( d->type );
@@ -347,6 +351,8 @@ bool QgsField::convertCompatible( QVariant &v ) const
   if ( d->type == QVariant::Int && v.toInt() != v.toLongLong() )
   {
     v = QVariant( d->type );
+    if ( errorMessage )
+      *errorMessage = QObject::tr( "Value \"%1\" is too large for integer field" ).arg( original.toLongLong() );
     return false;
   }
 
@@ -422,6 +428,10 @@ bool QgsField::convertCompatible( QVariant &v ) const
     {
       //couldn't convert to number
       v = QVariant( d->type );
+
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Value \"%1\" is not a number" ).arg( original.toString() );
+
       return false;
     }
 
@@ -430,6 +440,10 @@ bool QgsField::convertCompatible( QVariant &v ) const
     {
       //double too large to fit in int
       v = QVariant( d->type );
+
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Value \"%1\" is too large for integer field" ).arg( original.toDouble() );
+
       return false;
     }
     v = QVariant( static_cast< int >( std::round( dbl ) ) );
@@ -450,6 +464,10 @@ bool QgsField::convertCompatible( QVariant &v ) const
       {
         //couldn't convert to number
         v = QVariant( d->type );
+
+        if ( errorMessage )
+          *errorMessage = QObject::tr( "Value \"%1\" is not a number" ).arg( original.toString() );
+
         return false;
       }
 
@@ -458,6 +476,10 @@ bool QgsField::convertCompatible( QVariant &v ) const
       {
         //double too large to fit in longlong
         v = QVariant( d->type );
+
+        if ( errorMessage )
+          *errorMessage = QObject::tr( "Value \"%1\" is too large for long long field" ).arg( original.toDouble() );
+
         return false;
       }
       v = QVariant( static_cast< long long >( std::round( dbl ) ) );
@@ -468,6 +490,10 @@ bool QgsField::convertCompatible( QVariant &v ) const
   if ( !v.convert( d->type ) )
   {
     v = QVariant( d->type );
+
+    if ( errorMessage )
+      *errorMessage = QObject::tr( "Could not convert value \"%1\" to target type" ).arg( original.toString() );
+
     return false;
   }
 
@@ -481,7 +507,12 @@ bool QgsField::convertCompatible( QVariant &v ) const
 
   if ( d->type == QVariant::String && d->length > 0 && v.toString().length() > d->length )
   {
+    const int length = v.toString().length();
     v = v.toString().left( d->length );
+
+    if ( errorMessage )
+      *errorMessage = QObject::tr( "String of length %1 exceeds maximum field length (%2)" ).arg( length ).arg( d->length );
+
     return false;
   }
 

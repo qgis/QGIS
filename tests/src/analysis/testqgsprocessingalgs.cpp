@@ -72,6 +72,7 @@ class TestQgsProcessingAlgs: public QObject
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
+    void saveFeaturesAlg();
     void packageAlg();
     void renameLayerAlg();
     void loadLayerAlg();
@@ -233,6 +234,39 @@ QVariantMap pkgAlg( const QStringList &layers, const QString &outputGpkg, bool o
   parameters.insert( QStringLiteral( "OUTPUT" ), outputGpkg );
   parameters.insert( QStringLiteral( "OVERWRITE" ), overwrite );
   return package->run( parameters, *context, &feedback, ok );
+}
+
+void TestQgsProcessingAlgs::saveFeaturesAlg()
+{
+  QString outputGeoJson = QDir::tempPath() + "/savefeatures_alg.geojson";
+  QString layerName = QStringLiteral( "custom_layer" );
+
+  if ( QFile::exists( outputGeoJson ) )
+    QFile::remove( outputGeoJson );
+
+  QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), dataDir + "/points.shp" );
+  parameters.insert( QStringLiteral( "LAYER_NAME" ), layerName );
+  parameters.insert( QStringLiteral( "LAYER_OPTIONS" ), QStringLiteral( "COORDINATE_PRECISION=1" ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputGeoJson );
+
+  const QgsProcessingAlgorithm *saveFeatures( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:savefeatures" ) ) );
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+
+  QgsProcessingFeedback feedback;
+  bool ok = false;
+  QVariantMap outputs = saveFeatures->run( parameters, *context, &feedback, &ok );
+  QCOMPARE( ok, true );
+  QCOMPARE( outputs.value( QStringLiteral( "OUTPUT" ) ).toString(), QStringLiteral( "%1|layername=%2" ).arg( outputGeoJson, layerName ) );
+  QCOMPARE( outputs.value( QStringLiteral( "FILE_PATH" ) ).toString(), outputGeoJson );
+  QCOMPARE( outputs.value( QStringLiteral( "LAYER_NAME" ) ).toString(), layerName );
+
+  std::unique_ptr< QgsVectorLayer > savedLayer = qgis::make_unique< QgsVectorLayer >( outputs.value( QStringLiteral( "OUTPUT" ) ).toString(), "points", "ogr" );
+  QVERIFY( savedLayer->isValid() );
+  QCOMPARE( savedLayer->getFeature( 1 ).geometry().asPoint().x(), -83.3 );
 }
 
 void TestQgsProcessingAlgs::packageAlg()

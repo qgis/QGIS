@@ -17,6 +17,23 @@
 
 #include "qgs3d.h"
 
+#include "qgsapplication.h"
+#include "qgs3drendererregistry.h"
+
+#include "qgsabstract3drenderer.h"
+#include "qgs3drendererregistry.h"
+#include "qgsrulebased3drenderer.h"
+#include "qgsvectorlayer3drenderer.h"
+#include "qgsmeshlayer3drenderer.h"
+#include "qgs3dsymbolregistry.h"
+#include "qgspoint3dsymbol.h"
+#include "qgsline3dsymbol.h"
+#include "qgspolygon3dsymbol.h"
+
+#include "qgspolygon3dsymbol_p.h"
+#include "qgspoint3dsymbol_p.h"
+#include "qgsline3dsymbol_p.h"
+
 Qgs3D *Qgs3D::instance()
 {
   static Qgs3D *sInstance( new Qgs3D() );
@@ -25,6 +42,25 @@ Qgs3D *Qgs3D::instance()
 
 Qgs3D::~Qgs3D()
 {
+}
+
+void Qgs3D::initialize()
+{
+  if ( instance()->mInitialized )
+    return;
+
+  instance()->mInitialized = true;
+
+  QgsApplication::renderer3DRegistry()->addRenderer( new QgsVectorLayer3DRendererMetadata );
+  QgsApplication::renderer3DRegistry()->addRenderer( new QgsRuleBased3DRendererMetadata );
+  QgsApplication::renderer3DRegistry()->addRenderer( new QgsMeshLayer3DRendererMetadata );
+
+  QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "point" ), QObject::tr( "Point" ),
+      &QgsPoint3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForPoint3DSymbol ) );
+  QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "line" ), QObject::tr( "Line" ),
+      &QgsLine3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForLine3DSymbol ) );
+  QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "polygon" ), QObject::tr( "Polygon" ),
+      &QgsPolygon3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForPolygon3DSymbol ) );
 }
 
 Qgs3D::Qgs3D()

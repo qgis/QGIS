@@ -42,8 +42,7 @@ E.g. to create mesh with one quad and one triangle
 
 .. code-block::
 
-      QString uri(
-          "1.0, 2.0 \n" \
+      uri = "1.0, 2.0 \n" \
           "2.0, 2.0 \n" \
           "3.0, 2.0 \n" \
           "2.0, 3.0 \n" \
@@ -51,8 +50,8 @@ E.g. to create mesh with one quad and one triangle
           "---" \
           "0, 1, 3, 4 \n" \
           "1, 2, 3 \n"
-        );
-        QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch layer", "mesh_memory");
+
+      scratchLayer = QgsMeshLayer(uri, "My Scratch layer", "mesh_memory")
 
 MDAL data provider (mdal)
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -62,8 +61,8 @@ is the MDAL connection string. QGIS must be built with MDAL support to allow thi
 
 .. code-block::
 
-         QString uri = "test/land.2dm";
-         QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch Layer",  "mdal");
+         uri = "test/land.2dm"
+         scratchLayer = QgsMeshLayer(uri, "My Scratch Layer",  "mdal")
 
 .. note::
 
@@ -146,8 +145,6 @@ QgsMeshLayer cannot be copied.
     virtual void reload();
 
     virtual QStringList subLayers() const;
-
-    virtual bool isTemporary() const;
 
 
     QString providerType() const;
@@ -480,11 +477,10 @@ Returns the value of 1D mesh dataset defined on edge that are in the search area
 .. versionadded:: 3.14
 %End
 
-
     QgsMeshDatasetIndex datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const;
 %Docstring
 Returns dataset index from datasets group depending on the time range.
-If the temporal properties is not active, returns invalid dataset index
+If the temporal properties is not active, returns invalid dataset index. This method is used for rendering mesh layer.
 
 :param timeRange: the time range
 
@@ -502,6 +498,29 @@ If the temporal properties is not active, returns invalid dataset index
 
 
 .. versionadded:: 3.14
+%End
+
+    QgsMeshDatasetIndex datasetIndexAtRelativeTime( const QgsInterval &relativeTime, int datasetGroupIndex ) const;
+%Docstring
+Returns dataset index from datasets group depending on the relative time from the layer reference time.
+Dataset index is valid even the temporal properties is inactive. This method is used for calculation on mesh layer.
+
+:param relativeTime: the relative from the mesh layer reference time
+
+:return: dataset index
+
+.. note::
+
+   the returned dataset index depends on the matching method, see :py:func:`~QgsMeshLayer.setTemporalMatchingMethod`
+
+
+.. note::
+
+   indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
+   In the layer scope, those indexes are different from the data provider indexes.
+
+
+.. versionadded:: 3.16
 %End
 
     QgsMeshDatasetIndex activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange ) const;
@@ -639,6 +658,13 @@ Returns the first valid time step of the dataset groups, invalid QgInterval if n
 %End
 
     QgsInterval datasetRelativeTime( const QgsMeshDatasetIndex &index );
+%Docstring
+Returns the relative time of the dataset from the reference time of its group
+
+.. versionadded:: 3.16
+%End
+
+    qint64 datasetRelativeTimeInMilliseconds( const QgsMeshDatasetIndex &index );
 %Docstring
 Returns the relative time (in milliseconds) of the dataset from the reference time of its group
 

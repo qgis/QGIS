@@ -121,6 +121,51 @@ class TestQgsSimpleLineSymbolLayer(unittest.TestCase):
         rendered_image = self.renderGeometry(s, g)
         assert self.imageCheck('simpleline_dashpattern_offset_custom', 'simpleline_dashpattern_offset_custom', rendered_image)
 
+    def testDashTweaks(self):
+        s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '0.6'})
+
+        self.assertFalse(s.symbolLayer(0).alignDashPattern())
+        self.assertFalse(s.symbolLayer(0).tweakDashPatternOnCorners())
+
+        s.symbolLayer(0).setAlignDashPattern(True)
+        s.symbolLayer(0).setTweakDashPatternOnCorners(True)
+
+        s2 = s.clone()
+        self.assertTrue(s2.symbolLayer(0).alignDashPattern())
+        self.assertTrue(s2.symbolLayer(0).tweakDashPatternOnCorners())
+
+        doc = QDomDocument()
+        context = QgsReadWriteContext()
+        element = QgsSymbolLayerUtils.saveSymbol('test', s, doc, context)
+
+        s2 = QgsSymbolLayerUtils.loadSymbol(element, context)
+        self.assertTrue(s2.symbolLayer(0).alignDashPattern())
+        self.assertTrue(s2.symbolLayer(0).tweakDashPatternOnCorners())
+
+    def testAlignDashRender(self):
+        # rendering test
+        s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
+
+        s.symbolLayer(0).setPenStyle(Qt.DashDotDotLine)
+        s.symbolLayer(0).setAlignDashPattern(True)
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 9.2 0, 9.2 10, 1.3 10)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('simpleline_aligndashpattern', 'simpleline_aligndashpattern', rendered_image)
+
+    def testDashCornerTweakDashRender(self):
+        # rendering test
+        s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
+
+        s.symbolLayer(0).setPenStyle(Qt.DashDotDotLine)
+        s.symbolLayer(0).setAlignDashPattern(True)
+        s.symbolLayer(0).setTweakDashPatternOnCorners(True)
+        s.symbolLayer(0).setPenJoinStyle(Qt.RoundJoin)
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 2 1, 3 1, 10 0, 10 10, 5 5)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('simpleline_dashcornertweak', 'simpleline_dashcornertweak', rendered_image)
+
     def testRingFilter(self):
         # test filtering rings during rendering
 

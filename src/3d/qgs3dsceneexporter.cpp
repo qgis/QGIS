@@ -259,7 +259,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
           {
             Qgs3DExportObject *object = processGeometryRenderer( r, layer->name() + QStringLiteral( "_" ) );
             if ( object == nullptr ) continue;
-            object->setupPhongMaterial( lineSymbol->material() );
+            object->setupMaterial( lineSymbol->material() );
             mObjects.push_back( object );
           }
           return renderers.size() != 0;
@@ -277,7 +277,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
             for ( Qgs3DExportObject *obj : objects )
             {
               obj->setSmoothEdges( mSmoothEdges );
-              obj->setupPhongMaterial( pointSymbol->material() );
+              obj->setupMaterial( pointSymbol->material() );
             }
             mObjects << objects;
           }
@@ -289,7 +289,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
               Qgs3DExportObject *object = processGeometryRenderer( mesh, layer->name() + QStringLiteral( "_" ) );
               if ( object == nullptr ) continue;
               object->setSmoothEdges( mSmoothEdges );
-              object->setupPhongMaterial( pointSymbol->material() );
+              object->setupMaterial( pointSymbol->material() );
               mObjects << object;
             }
           }
@@ -306,7 +306,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
           QVector<Qgs3DExportObject *> objects = processInstancedPointGeometry( entity, layer->name() + QStringLiteral( "_" ) );
           for ( Qgs3DExportObject *obj : objects )
           {
-            obj->setupPhongMaterial( pointSymbol->material() );
+            obj->setupMaterial( pointSymbol->material() );
             mObjects << obj;
           }
           return true;
@@ -322,7 +322,8 @@ void Qgs3DSceneExporter::processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3D
   Qt3DExtras::QPhongMaterial *phongMaterial = findTypedComponent<Qt3DExtras::QPhongMaterial>( entity );
   if ( phongMaterial != nullptr )
   {
-    object->setupPhongMaterial( Qgs3DUtils::phongMaterialFromQt3DComponent( phongMaterial ) );
+    QgsPhongMaterialSettings material = Qgs3DUtils::phongMaterialFromQt3DComponent( phongMaterial );
+    object->setupMaterial( &material );
   }
   Qt3DExtras::QDiffuseMapMaterial *diffuseMapMaterial = findTypedComponent<Qt3DExtras::QDiffuseMapMaterial>( entity );
   if ( diffuseMapMaterial != nullptr )

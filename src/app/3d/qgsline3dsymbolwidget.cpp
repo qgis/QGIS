@@ -16,10 +16,10 @@
 #include "qgsline3dsymbolwidget.h"
 
 #include "qgsline3dsymbol.h"
-
+#include "qgsphongmaterialsettings.h"
 
 QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
-  : QWidget( parent )
+  : Qgs3DSymbolWidget( parent )
 {
   setupUi( this );
 
@@ -27,7 +27,8 @@ QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
   spinWidth->setClearValue( 0.0 );
   spinExtrusion->setClearValue( 0.0 );
 
-  setSymbol( QgsLine3DSymbol() );
+  QgsLine3DSymbol defaultLine;
+  setSymbol( &defaultLine, nullptr );
 
   connect( spinWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLine3DSymbolWidget::changed );
   connect( spinHeight, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLine3DSymbolWidget::changed );
@@ -39,29 +40,39 @@ QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
   connect( widgetMaterial, &QgsPhongMaterialWidget::changed, this, &QgsLine3DSymbolWidget::changed );
 }
 
-void QgsLine3DSymbolWidget::setSymbol( const QgsLine3DSymbol &symbol )
+Qgs3DSymbolWidget *QgsLine3DSymbolWidget::create( QgsVectorLayer * )
 {
-  spinWidth->setValue( symbol.width() );
-  spinHeight->setValue( symbol.height() );
-  spinExtrusion->setValue( symbol.extrusionHeight() );
-  cboAltClamping->setCurrentIndex( static_cast<int>( symbol.altitudeClamping() ) );
-  cboAltBinding->setCurrentIndex( static_cast<int>( symbol.altitudeBinding() ) );
-  chkSimpleLines->setChecked( symbol.renderAsSimpleLines() );
-  widgetMaterial->setMaterial( symbol.material() );
+  return new QgsLine3DSymbolWidget();
+}
+
+void QgsLine3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer * )
+{
+  const QgsLine3DSymbol *lineSymbol = dynamic_cast< const QgsLine3DSymbol *>( symbol );
+  if ( !lineSymbol )
+    return;
+
+  spinWidth->setValue( lineSymbol->width() );
+  spinHeight->setValue( lineSymbol->height() );
+  spinExtrusion->setValue( lineSymbol->extrusionHeight() );
+  cboAltClamping->setCurrentIndex( static_cast<int>( lineSymbol->altitudeClamping() ) );
+  cboAltBinding->setCurrentIndex( static_cast<int>( lineSymbol->altitudeBinding() ) );
+  chkSimpleLines->setChecked( lineSymbol->renderAsSimpleLines() );
+  // TODO -- make material widget generic!
+  widgetMaterial->setMaterial( *dynamic_cast< QgsPhongMaterialSettings *>( lineSymbol->material() ) );
   updateGuiState();
 }
 
-QgsLine3DSymbol QgsLine3DSymbolWidget::symbol() const
+QgsAbstract3DSymbol *QgsLine3DSymbolWidget::symbol()
 {
-  QgsLine3DSymbol sym;
-  sym.setWidth( spinWidth->value() );
-  sym.setHeight( spinHeight->value() );
-  sym.setExtrusionHeight( spinExtrusion->value() );
-  sym.setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );
-  sym.setAltitudeBinding( static_cast<Qgs3DTypes::AltitudeBinding>( cboAltBinding->currentIndex() ) );
-  sym.setRenderAsSimpleLines( chkSimpleLines->isChecked() );
-  sym.setMaterial( widgetMaterial->material() );
-  return sym;
+  std::unique_ptr< QgsLine3DSymbol > sym = qgis::make_unique< QgsLine3DSymbol >();
+  sym->setWidth( spinWidth->value() );
+  sym->setHeight( spinHeight->value() );
+  sym->setExtrusionHeight( spinExtrusion->value() );
+  sym->setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );
+  sym->setAltitudeBinding( static_cast<Qgs3DTypes::AltitudeBinding>( cboAltBinding->currentIndex() ) );
+  sym->setRenderAsSimpleLines( chkSimpleLines->isChecked() );
+  sym->setMaterial( widgetMaterial->material().clone() );
+  return sym.release();
 }
 
 void QgsLine3DSymbolWidget::updateGuiState()

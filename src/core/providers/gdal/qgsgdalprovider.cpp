@@ -975,7 +975,7 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
            sExtraArg.eResampleAlg != GRIORA_NearestNeighbour &&
            sExtraArg.eResampleAlg != GRIORA_Bilinear )
       {
-        // As time of writing in GDAL up to 3.1, there's a difference of behaviour
+        // As time of writing in GDAL up to 3.1, there's a difference of behavior
         // when using non-nearest resampling on mask bands.
         // With bilinear, values are returned in [0,255] range
         // whereas with cubic (and other convolution-based methods), there are in [0,1] range.
@@ -1005,7 +1005,7 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
   }
   // Provider resampling was asked but we cannot do it in a performant way
   // (too much downsampling compared to the allowed maximum resampling factor),
-  // so fallback to something replicating QgsRasterResampleFilter behaviour
+  // so fallback to something replicating QgsRasterResampleFilter behavior
   else if ( mProviderResamplingEnabled &&
             mZoomedOutResamplingMethod != QgsRasterDataProvider::ResamplingMethod::Nearest &&
             resamplingFactor > 1 )

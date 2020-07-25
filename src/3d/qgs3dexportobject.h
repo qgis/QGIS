@@ -24,7 +24,7 @@
 
 #include <Qt3DRender/QAttribute>
 
-class QgsPhongMaterialSettings;
+class QgsAbstractMaterialSettings;
 
 /**
  * \brief The Qgs3DExportObject class
@@ -83,7 +83,7 @@ class Qgs3DExportObject : public QObject
     //! Sets texture coordinates for each vertex
     void setupTextureCoordinates( const QVector<float> &texturesBuffer );
     //! Sets the material parameters (diffuse color, shininess...) from phong material
-    void setupPhongMaterial( const QgsPhongMaterialSettings &material );
+    void setupMaterial( QgsAbstractMaterialSettings* material );
 
     //! Sets the texture image used by the object
     void setTextureImage( const QImage &image ) { this->mTextureImage = image; };

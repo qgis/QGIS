@@ -1,8 +1,0 @@
-{
-  "name": "$numfeatures",
-  "type": "function",
-  "description": "In atlas generation, returns the total number of features within the coverage layer.",
-  "examples": [
-	{ "expression":"$numfeatures", "returns":"42"}
-  ]
-}

@@ -45,7 +45,7 @@ class QgsSingleSymbol3DRendererWidget : public QWidget
     void setLayer( QgsVectorLayer *layer );
 
     //! Returns the cloned symbol or NULLPTR.
-    QgsAbstract3DSymbol *symbol();
+    std::unique_ptr< QgsAbstract3DSymbol > symbol();
 
   signals:
     void widgetChanged();

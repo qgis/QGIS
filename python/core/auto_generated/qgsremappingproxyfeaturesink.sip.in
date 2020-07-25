@@ -192,6 +192,8 @@ Remaps a ``feature`` to a set of features compatible with the destination sink.
 
     virtual bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
+    virtual QString lastError() const;
+
 
     QgsFeatureSink *destinationSink();
 %Docstring

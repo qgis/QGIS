@@ -81,6 +81,22 @@ Returns the selection model
 Set source fields of the underlying mapping model to ``sourceFields``
 %End
 
+    void setSourceLayer( QgsVectorLayer *layer );
+%Docstring
+Sets a source ``layer`` to use when generating expression previews in the widget.
+
+.. versionadded:: 3.16
+%End
+
+    QgsVectorLayer *sourceLayer();
+%Docstring
+Returns the source layer for use when generating expression previews.
+
+Returned value may be ``None``.
+
+.. versionadded:: 3.16
+%End
+
     void setDestinationFields( const QgsFields &destinationFields,
                                const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 %Docstring

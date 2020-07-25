@@ -23,6 +23,8 @@
 #include "qgsvectorlayer3dpropertieswidget.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsapplication.h"
+#include "qgs3dsymbolregistry.h"
+#include "qgsabstractmaterialsettings.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -55,12 +57,12 @@ void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
   }
   else
   {
-    std::unique_ptr<QgsAbstract3DSymbol> sym( Qgs3DUtils::symbolForGeometryType( layer->geometryType() ) );
+    std::unique_ptr<QgsAbstract3DSymbol> sym( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( layer->geometryType() ) );
     widgetSymbol->setSymbol( sym.get(), layer );
   }
 }
 
-QgsAbstract3DSymbol *QgsSingleSymbol3DRendererWidget::symbol()
+std::unique_ptr<QgsAbstract3DSymbol> QgsSingleSymbol3DRendererWidget::symbol()
 {
   return widgetSymbol->symbol();  // cloned or null
 }
@@ -156,7 +158,8 @@ void QgsVectorLayer3DRendererWidget::apply()
       break;
     case 1:
     {
-      QgsVectorLayer3DRenderer *r = new QgsVectorLayer3DRenderer( widgetSingleSymbolRenderer->symbol() );
+      std::unique_ptr< QgsAbstract3DSymbol > symbol = widgetSingleSymbolRenderer->symbol();
+      QgsVectorLayer3DRenderer *r = new QgsVectorLayer3DRenderer( symbol ? symbol.release() : nullptr );
       r->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
       widgetBaseProperties->apply( r );
       mLayer->setRenderer3D( r );

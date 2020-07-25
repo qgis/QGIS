@@ -83,7 +83,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
     cboTerrainLayer->setLayer( meshTerrain->meshLayer() );
     mMeshSymbolWidget->setLayer( meshTerrain->meshLayer(), false );
     mMeshSymbolWidget->setSymbol( meshTerrain->symbol() );
-    spinTerrainScale->setValue( meshTerrain->symbol().verticalScale() );
+    spinTerrainScale->setValue( meshTerrain->symbol()->verticalScale() );
   }
   else
   {
@@ -194,9 +194,9 @@ void Qgs3DMapConfigWidget::apply()
       QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( cboTerrainLayer->currentLayer() );
       QgsMeshTerrainGenerator *newTerrainGenerator = new QgsMeshTerrainGenerator;
       newTerrainGenerator->setLayer( meshLayer );
-      QgsMesh3DSymbol symbol = mMeshSymbolWidget->symbol();
-      symbol.setVerticalScale( spinTerrainScale->value() );
-      newTerrainGenerator->setSymbol( symbol );
+      std::unique_ptr< QgsMesh3DSymbol > symbol = mMeshSymbolWidget->symbol();
+      symbol->setVerticalScale( spinTerrainScale->value() );
+      newTerrainGenerator->setSymbol( symbol.release() );
       mMap->setTerrainGenerator( newTerrainGenerator );
       needsUpdateOrigin = true;
     }

@@ -147,6 +147,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrotate.cpp
   processing/qgsalgorithmroundrastervalues.cpp
   processing/qgsalgorithmruggedness.cpp
+  processing/qgsalgorithmsavefeatures.cpp
   processing/qgsalgorithmsavelog.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp
   processing/qgsalgorithmsegmentize.cpp
@@ -218,9 +219,6 @@ SET(QGIS_ANALYSIS_SRCS
   vector/qgsgeometrysnappersinglesource.cpp
   vector/qgszonalstatistics.cpp
 
-  mesh/qgsmeshcalcnode.cpp
-  mesh/qgsmeshcalculator.cpp
-  mesh/qgsmeshcalcutils.cpp
   mesh/qgsmeshcontours.cpp
 
   network/qgsgraph.cpp
@@ -288,9 +286,6 @@ SET(QGIS_ANALYSIS_HDRS
   interpolation/qgsinterpolator.h
   interpolation/qgstininterpolator.h
 
-  mesh/qgsmeshcalcnode.h
-  mesh/qgsmeshcalculator.h
-  mesh/qgsmeshcalcutils.h
   mesh/qgsmeshcontours.h
 
   network/qgsgraph.h
@@ -374,10 +369,7 @@ INCLUDE_DIRECTORIES(BEFORE raster)
 INCLUDE_DIRECTORIES(BEFORE mesh)
 
 ADD_FLEX_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalclexer.ll)
-ADD_FLEX_FILES_PREFIX(QGIS_ANALYSIS_SRCS mesh mesh/qgsmeshcalclexer.ll)
-
 ADD_BISON_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalcparser.yy)
-ADD_BISON_FILES_PREFIX(QGIS_ANALYSIS_SRCS mesh mesh/qgsmeshcalcparser.yy)
 
 IF(NOT MSVC)
   SET_SOURCE_FILES_PROPERTIES(

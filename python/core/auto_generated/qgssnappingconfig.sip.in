@@ -347,14 +347,14 @@ Sets if the snapping on intersection is enabled
 
     bool selfSnapping() const;
 %Docstring
-Returns if self snapping (snapping to the currently digitised feature) is enabled
+Returns if self snapping (snapping to the currently digitized feature) is enabled
 
 .. versionadded:: 3.14
 %End
 
     void setSelfSnapping( bool enabled );
 %Docstring
-Sets if self snapping (snapping to the currently digitised feature) is enabled
+Sets if self snapping (snapping to the currently digitized feature) is enabled
 
 .. versionadded:: 3.14
 %End
