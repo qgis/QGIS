@@ -897,8 +897,9 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
         break;
     }
   }
+
   if ( mTerrain != nullptr )
-    exporter.parseTerrain( mTerrain );
+    exporter.parseTerrain( mTerrain, "Terrain" );
 
   exporter.save( exportSettings.sceneName(), exportSettings.sceneFolderPath() );
 

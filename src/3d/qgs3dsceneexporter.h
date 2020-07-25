@@ -60,7 +60,8 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     bool parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsVectorLayer *layer );
 
     //! Creates terrain export objects from the terrain entity
-    void parseTerrain( QgsTerrainEntity *terrain );
+    void parseTerrain( QgsTerrainEntity *terrain, const  QString &layer );
+
     //! Saves the scene to a .obj file
     void save( const QString &sceneName, const QString &sceneFolderPath );
 
@@ -95,17 +96,17 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
 
   private:
     //! Constructs Qgs3DExportObject from instanced point geometry
-    QVector<Qgs3DExportObject *> processInstancedPointGeometry( Qt3DCore::QEntity *entity );
+    QVector<Qgs3DExportObject *> processInstancedPointGeometry( Qt3DCore::QEntity *entity, const QString &objectNamePrefix );
     //! Constructs Qgs3DExportObject from 3D models loaded using a scene loader
-    QVector<Qgs3DExportObject *> processSceneLoaderGeometries( Qt3DRender::QSceneLoader *sceneLoader );
+    QVector<Qgs3DExportObject *> processSceneLoaderGeometries( Qt3DRender::QSceneLoader *sceneLoader, const QString &objectNamePrefix );
     //! Constructs Qgs3DExportObject from geometry renderer
-    Qgs3DExportObject *processGeometryRenderer( Qt3DRender::QGeometryRenderer *mesh, float sceneScale = 1.0f, QVector3D sceneTranslation = QVector3D( 0.0f, 0.0f, 0.0f ) );
+    Qgs3DExportObject *processGeometryRenderer( Qt3DRender::QGeometryRenderer *mesh, const QString &objectNamePrefix, float sceneScale = 1.0f, QVector3D sceneTranslation = QVector3D( 0.0f, 0.0f, 0.0f ) );
     //! Extracts material information from geometry renderer and inserts it into the export object
     void processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3DExportObject *object );
     //! Constricts Qgs3DExportObject from line entity
-    QVector<Qgs3DExportObject *> processLines( Qt3DCore::QEntity *entity );
+    QVector<Qgs3DExportObject *> processLines( Qt3DCore::QEntity *entity, const QString &objectNamePrefix );
     //! Constricts Qgs3DExportObject from billboard point entity
-    Qgs3DExportObject *processPoints( Qt3DCore::QEntity *entity );
+    Qgs3DExportObject *processPoints( Qt3DCore::QEntity *entity, const QString &objectNamePrefix );
 
     //! Returns a tile entity that contains the geometry to be exported and necessary scaling parameters
     QgsTerrainTileEntity *getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
@@ -115,11 +116,11 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     QgsTerrainTileEntity *getMeshTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
 
     //! Constructs a Qgs3DExportObject from the DEM tile entity
-    void parseDemTile( QgsTerrainTileEntity *tileEntity );
+    void parseDemTile( QgsTerrainTileEntity *tileEntity, const QString &layerName );
     //! Constructs a Qgs3DExportObject from the flat tile entity
-    void parseFlatTile( QgsTerrainTileEntity *tileEntity );
+    void parseFlatTile( QgsTerrainTileEntity *tileEntity, const QString &layerName );
     //! Constructs a Qgs3DExportObject from the mesh terrain entity
-    void parseMeshTile( QgsTerrainTileEntity *meshEntity );
+    void parseMeshTile( QgsTerrainTileEntity *meshEntity, const QString &layerName );
 
     QString getObjectName( const QString &name );
   private:
