@@ -53,7 +53,7 @@ QString QgsCellStatisticsAlgorithm::shortHelpString() const
                       "output raster. At each cell location, "
                       "the output value is defined as a function of all overlaid cell values of the "
                       "input rasters.\n\n"
-                      "The output rasters extent and resolution is defined by a reference "
+                      "The output raster's extent and resolution is defined by a reference "
                       "raster. The following functions can be applied on the input "
                       "raster cells per output raster cell location:\n"
                       "<ul> "
