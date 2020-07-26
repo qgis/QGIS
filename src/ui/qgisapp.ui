@@ -2768,7 +2768,7 @@ Acts on the currently active layer only.</string>
     <string>Add Circular String by Radius</string>
    </property>
    <property name="toolTip">
-    <string>Add Circular String by radius</string>
+    <string>Add Circular String by Radius</string>
    </property>
   </action>
   <action name="mActionReportaBug">
