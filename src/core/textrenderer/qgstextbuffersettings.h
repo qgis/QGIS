@@ -212,7 +212,7 @@ class CORE_EXPORT QgsTextBufferSettings
      * \returns paint effect
      * \see setPaintEffect()
      */
-    QgsPaintEffect *paintEffect() const;
+    const QgsPaintEffect *paintEffect() const;
 
     /**
      * Sets the current paint \a effect for the buffer.

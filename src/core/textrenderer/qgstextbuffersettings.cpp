@@ -134,7 +134,7 @@ void QgsTextBufferSettings::setBlendMode( QPainter::CompositionMode mode )
   d->blendMode = mode;
 }
 
-QgsPaintEffect *QgsTextBufferSettings::paintEffect() const
+const QgsPaintEffect *QgsTextBufferSettings::paintEffect() const
 {
   return d->paintEffect.get();
 }

@@ -555,7 +555,7 @@ Sets the join style used for drawing the background shape.
 .. seealso:: :py:func:`joinStyle`
 %End
 
-    QgsPaintEffect *paintEffect() const;
+    const QgsPaintEffect *paintEffect() const;
 %Docstring
 Returns the current paint effect for the background shape.
 

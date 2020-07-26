@@ -475,7 +475,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \returns paint effect
      * \see setPaintEffect()
      */
-    QgsPaintEffect *paintEffect() const;
+    const QgsPaintEffect *paintEffect() const;
 
     /**
      * Sets the current paint \a effect for the background shape.
