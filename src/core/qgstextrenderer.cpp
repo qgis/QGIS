@@ -176,7 +176,7 @@ void QgsTextBufferSettings::setBlendMode( QPainter::CompositionMode mode )
   d->blendMode = mode;
 }
 
-QgsPaintEffect *QgsTextBufferSettings::paintEffect() const
+const QgsPaintEffect *QgsTextBufferSettings::paintEffect() const
 {
   return d->paintEffect.get();
 }
@@ -667,7 +667,7 @@ void QgsTextBackgroundSettings::setJoinStyle( Qt::PenJoinStyle style )
   d->joinStyle = style;
 }
 
-QgsPaintEffect *QgsTextBackgroundSettings::paintEffect() const
+const QgsPaintEffect *QgsTextBackgroundSettings::paintEffect() const
 {
   return d->paintEffect.get();
 }
@@ -2630,11 +2630,12 @@ void QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRender
   {
     context.setPainter( &buffp );
 
-    buffer.paintEffect()->begin( context );
+    std::unique_ptr< QgsPaintEffect > tmpEffect( buffer.paintEffect()->clone() );
+    tmpEffect->begin( context );
     context.painter()->setPen( pen );
     context.painter()->setBrush( tmpColor );
     context.painter()->drawPath( path );
-    buffer.paintEffect()->end( context );
+    tmpEffect->end( context );
 
     context.setPainter( p );
   }
@@ -2775,9 +2776,11 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
 
   QPainter *prevP = context.painter();
   QPainter *p = context.painter();
+  std::unique_ptr< QgsPaintEffect > tmpEffect;
   if ( background.paintEffect() && background.paintEffect()->enabled() )
   {
-    background.paintEffect()->begin( context );
+    tmpEffect.reset( background.paintEffect()->clone() );
+    tmpEffect->begin( context );
     p = context.painter();
   }
 
@@ -3145,9 +3148,9 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
     }
   }
 
-  if ( background.paintEffect() && background.paintEffect()->enabled() )
+  if ( tmpEffect )
   {
-    background.paintEffect()->end( context );
+    tmpEffect->end( context );
     context.setPainter( prevP );
   }
 }
