@@ -284,7 +284,7 @@ void QgsTextBackgroundSettings::setJoinStyle( Qt::PenJoinStyle style )
   d->joinStyle = style;
 }
 
-QgsPaintEffect *QgsTextBackgroundSettings::paintEffect() const
+const QgsPaintEffect *QgsTextBackgroundSettings::paintEffect() const
 {
   return d->paintEffect.get();
 }
