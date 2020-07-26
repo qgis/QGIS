@@ -282,6 +282,7 @@ IF (WITH_3D)
     3d/qgsvectorlayer3drendererwidget.cpp
     3d/qgsmeshlayer3drendererwidget.cpp
     layout/qgslayout3dmapwidget.cpp
+    3d/qgsskyboxrenderingsettingswidget.cpp
   )
 ENDIF (WITH_3D)
 
