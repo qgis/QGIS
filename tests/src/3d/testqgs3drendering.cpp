@@ -65,6 +65,8 @@ class TestQgs3DRendering : public QObject
     void testMeshTerrain();
     void testExtrudedPolygons();
     void testLineRendering();
+    void testBufferedLineRendering();
+    void testBufferedLineRenderingWidth();
     void testMapTheme();
     void testMesh();
     void testRuleBasedRenderer();
@@ -387,6 +389,97 @@ void TestQgs3DRendering::testLineRendering()
 
   QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
   QVERIFY( renderCheck( "line_rendering_2", img2, 40 ) );
+
+  delete layerLines;
+}
+
+void TestQgs3DRendering::testBufferedLineRendering()
+{
+  QgsRectangle fullExtent = mLayerDtm->extent();
+
+  QgsVectorLayer *layerLines = new QgsVectorLayer( QString( TEST_DATA_DIR ) + "/3d/lines.shp", "lines", "ogr" );
+  QVERIFY( layerLines->isValid() );
+
+  QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
+  lineSymbol->setWidth( 10 );
+  lineSymbol->setExtrusionHeight( 30 );
+  QgsPhongMaterialSettings mat;
+  mat.setAmbient( Qt::red );
+  lineSymbol->setMaterial( mat.clone() );
+  layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << layerLines );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setExtent( fullExtent );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 300, 0, 250 ), 500, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "buffered_lines", img, 40 ) );
+
+  delete layerLines;
+}
+
+void TestQgs3DRendering::testBufferedLineRenderingWidth()
+{
+  QgsRectangle fullExtent = mLayerDtm->extent();
+
+  QgsVectorLayer *layerLines = new QgsVectorLayer( QString( TEST_DATA_DIR ) + "/3d/lines.shp", "lines", "ogr" );
+  QVERIFY( layerLines->isValid() );
+
+  QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
+  lineSymbol->setWidth( 20 );
+  lineSymbol->setExtrusionHeight( 30 );
+  lineSymbol->setHeight( 10 );
+  QgsPhongMaterialSettings mat;
+  mat.setAmbient( Qt::red );
+  lineSymbol->setMaterial( mat.clone() );
+  layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << layerLines );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setExtent( fullExtent );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 300, 0, 250 ), 500, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "buffered_lines_width", img, 40 ) );
 
   delete layerLines;
 }
