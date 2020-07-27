@@ -35,28 +35,27 @@ class TestQgsRelationPostgresql(unittest.TestCase):
         Setup the involved layers and relations for a n:m relation
         :return:
         """
-	cls.mapCanvas = QgsMapCanvas()
+        cls.mapCanvas = QgsMapCanvas()
         cls.dbconn = 'service=\'qgis_test\''
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layer
-	tables = [ 'c_amgmt_amgmt_lot', 'c_batiment_bat_lot', 'c_ens_immo_amgmt', 'c_ens_immo_bat', 'c_terrain_ens_immo', 't_actes', 't_adresse', 't_amgmt', 't_amgmt_lot', 't_bat', 't_bat_lot', 't_ens_immo', 't_terrain' ]
-	vl_tables = ['vl_c_amgmt_amgmt_lot','vl_c_batiment_bat_lot','vl_c_ens_immo_amgmt','vl_c_ens_immo_bat','vl_c_terrain_ens_immo','vl_t_actes','vl_t_adresse','vl_t_amgmt','vl_t_amgmt_lot','vl_t_bat','vl_t_bat_lot','vl_t_ens_immo','vl_t_terrain' ]
+        tables = ['c_amgmt_amgmt_lot', 'c_batiment_bat_lot', 'c_ens_immo_amgmt', 'c_ens_immo_bat', 'c_terrain_ens_immo', 't_actes', 't_adresse', 't_amgmt', 't_amgmt_lot', 't_bat', 't_bat_lot', 't_ens_immo', 't_terrain']
+        vl_tables = ['vl_c_amgmt_amgmt_lot', 'vl_c_batiment_bat_lot', 'vl_c_ens_immo_amgmt', 'vl_c_ens_immo_bat', 'vl_c_terrain_ens_immo', 'vl_t_actes', 'vl_t_adresse', 'vl_t_amgmt', 'vl_t_amgmt_lot', 'vl_t_bat', 'vl_t_bat_lot', 'vl_t_ens_immo', 'vl_t_terrain']
 
-	for i in range(len(tables)):
-		vl_tables[i] = QgsVectorLayer(dbconn + ' sslmode=disable key=\'pk\' table="relations"."{}" sql='.format(tables[i]), tables[i], 'postgres')
-		assert(vl_tables[i].isValid())
-		QgsProject.instance().addMapLayer(vl_tables[i])
+        for i in range(len(tables)):
+            vl_tables[i] = QgsVectorLayer(dbconn + ' sslmode=disable key=\'pk\' table="relations"."{}" sql='.format(tables[i]), tables[i], 'postgres')
+            assert(vl_tables[i].isValid())
+            QgsProject.instance().addMapLayer(vl_tables[i])
 
         cls.relMgr = QgsProject.instance().relationManager()
-
 
     def test_discover_relations(self):
         """
         Test the automatic discovery of relations
         """
-	relations = cls.relMgr.discoverRelations([], vl_tables)
-	assert( len(relations) == 18 )
+        relations = cls.relMgr.discoverRelations([], vl_tables)
+        assert(len(relations) == 18)
 
 
 if __name__ == '__main__':
