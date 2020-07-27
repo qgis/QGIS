@@ -42,14 +42,6 @@ void insertIndexData( QVector<uint> &vertexIndex, const QVector<T> &faceIndex )
   }
 }
 
-Qgs3DExportObject::Qgs3DExportObject( const QString &name, const QString &parentName, QObject *parent )
-  : QObject( parent )
-  , mName( name )
-  , mParentName( parentName )
-  , mSmoothEdges( false )
-{
-}
-
 void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, float scale, const QVector3D translation )
 {
   for ( int i = 0; i < positionsBuffer.size(); i += 3 )

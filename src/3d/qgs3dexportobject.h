@@ -47,14 +47,12 @@ class Qgs3DExportObject : public QObject
     /**
      * \brief Qgs3DExportObject
      * Constructs an export object that will be filled with coordinates later
-     * \param name
-     * The name of the object (the user will be able to select each object individually using its name in blender)
      * \param parentName
      * The name of the parent (Will be useful to define scene hierarchie)
      * \param parent
      * The parent QObject (we use this to delete the Qgs3DExportObject instance once the exporter instance is deallocated)
      */
-    Qgs3DExportObject( const QString &name, const QString &parentName = QString(), QObject *parent = nullptr );
+    Qgs3DExportObject( const QString &name, QObject *parent = nullptr ) : QObject( parent ), mName( name ) { }
 
     //! Returns the object name
     QString name() const { return mName; }
@@ -117,7 +115,7 @@ class Qgs3DExportObject : public QObject
 
     QImage mTextureImage;
 
-    bool mSmoothEdges;
+    bool mSmoothEdges = false;
 };
 
 #endif // Qgs3DExportObject_H
