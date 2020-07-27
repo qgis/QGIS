@@ -69,8 +69,8 @@ class Qgs3DExportObject : public QObject
     //! Sets whether triangles edges will look smooth
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
 
-    //! Sets positions coordinates from just one positions buffer (generates faces automatically) and does the translation and scaling
-    void setupPositionCoordinates( const QVector<float> &positionsBuffer, float scale = 1.0f, const QVector3D translation = QVector3D( 0, 0, 0 ) );
+    //! Sets positions coordinates and does the translation and scaling
+    void setupPositionCoordinates( const QVector<float> &positionsBuffer, float scale = 1.0f, const QVector3D &translation = QVector3D( 0, 0, 0 ) );
     //! Sets the faces in facesIndexes to the faces in the object
     void setupFaces( const QVector<uint> &facesIndexes );
     //! sets line vertex indexes

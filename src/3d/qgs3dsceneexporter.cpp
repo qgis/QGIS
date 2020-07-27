@@ -97,7 +97,7 @@ QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute, QByteArray data 
   {
     for ( unsigned int j = 0; j < vertexSize * sizeof( T ); j += sizeof( T ) )
     {
-      // maybe a problem with indienness can happen?
+      // maybe a problem with endienness can happen?
       T v;
       char *vArr = ( char * )&v;
       for ( unsigned int k = 0; k < sizeof( T ); ++k )
@@ -161,18 +161,6 @@ QByteArray getData( Qt3DRender::QBuffer *buffer )
       qDebug() << "WARNING: QBuffer is null at " << __FILE__ << ":" << __LINE__;
   }
   return bytes;
-}
-
-Qgs3DSceneExporter::Qgs3DSceneExporter( Qt3DCore::QNode *parent )
-  : Qt3DCore::QEntity( parent )
-  , mSmoothEdges( false )
-  , mTerrainResolution( 128 )
-  , mExportNormals( true )
-  , mExportTextures( false )
-  , mTerrainTextureResolution( 512 )
-  , mScale( 1.0f )
-{
-
 }
 
 Qt3DRender::QAttribute *findAttribute( Qt3DRender::QGeometry *geometry, const QString &name, Qt3DRender::QAttribute::AttributeType type )

@@ -24,7 +24,7 @@
 
 /**
  * \brief The Qgs3DMapExportSettings class
- * Manages the various settings the user can choose from when exorting a 3D scene
+ * Manages the various settings the user can choose from when exporting a 3D scene
  * \ingroup 3d
  * \since QGIS 3.16
  */

@@ -51,7 +51,7 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     Q_OBJECT
   public:
     //! Constructor
-    Qgs3DSceneExporter( Qt3DCore::QNode *parent = nullptr );
+    Qgs3DSceneExporter( Qt3DCore::QNode *parent = nullptr ) : Qt3DCore::QEntity( parent ) { }
 
     /**
      * Creates necessary export objects from entity if it represents valid vector layer entity
@@ -127,12 +127,12 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     QMap<QString, int> usedObjectNamesCounter;
     QVector<Qgs3DExportObject *> mObjects;
 
-    bool mSmoothEdges;
-    int mTerrainResolution;
-    bool mExportNormals;
-    bool mExportTextures;
-    int mTerrainTextureResolution;
-    float mScale;
+    bool mSmoothEdges = false;
+    int mTerrainResolution = 128;
+    bool mExportNormals = true;
+    bool mExportTextures = false;
+    int mTerrainTextureResolution = 512;
+    float mScale = 1.0f;
 };
 
 #endif // QGS3DSCENEEXPORTER_H

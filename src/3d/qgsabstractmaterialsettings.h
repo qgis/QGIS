@@ -118,7 +118,7 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     /**
      * Returns the parameters to be exported to .mtl file
      */
-    virtual QMap<QString, QString> toExportParameters() const = 0 SIP_FACTORY;
+    virtual QMap<QString, QString> toExportParameters() const = 0;
 
     /**
      * Adds parameters from the material to a destination \a effect.

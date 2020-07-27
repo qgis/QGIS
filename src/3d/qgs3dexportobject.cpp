@@ -42,7 +42,7 @@ void insertIndexData( QVector<uint> &vertexIndex, const QVector<T> &faceIndex )
   }
 }
 
-void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, float scale, const QVector3D translation )
+void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, float scale, const QVector3D &translation )
 {
   for ( int i = 0; i < positionsBuffer.size(); i += 3 )
   {
@@ -77,7 +77,10 @@ void Qgs3DExportObject::setupTextureCoordinates( const QVector<float> &texturesB
 void Qgs3DExportObject::setupMaterial( QgsAbstractMaterialSettings *material )
 {
   QMap<QString, QString> parameters = material->toExportParameters();
-  for ( QString &key : parameters.keys() ) setMaterialParameter( key, parameters[key] );
+  for ( auto it = parameters.begin(); it != parameters.end(); ++it )
+  {
+    setMaterialParameter( it.key(), it.value() );
+  }
 }
 
 void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ )
@@ -190,7 +193,6 @@ QString Qgs3DExportObject::saveMaterial( QTextStream &mtlOut, const QString &fol
   for ( QString key : mMaterialParameters.keys() )
   {
     mtlOut << "\t" << key << " " << mMaterialParameters[key] << "\n";
-    qDebug() << "\t" << key << " " << mMaterialParameters[key] << "\n";
   }
   mtlOut << "\tillum 2\n";
   return materialName;
