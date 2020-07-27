@@ -2283,7 +2283,7 @@ void TestQgsProcessingAlgs::rasterFrequencyByComparisonOperator_data()
    * Testcase 1 - equal to frequency: don't ignore NoData
    */
   QTest::newRow( "testcase_1" )
-      << QStringLiteral( "native:equaltofrequency")
+      << QStringLiteral( "native:equaltofrequency" )
       << QStringLiteral( "/raster/valueRas1_float64.asc" )
       << 1
       << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
@@ -2294,7 +2294,7 @@ void TestQgsProcessingAlgs::rasterFrequencyByComparisonOperator_data()
    * Testcase 2 - equal to frequency: ignore NoData
    */
   QTest::newRow( "testcase_2" )
-      << QStringLiteral( "native:equaltofrequency")
+      << QStringLiteral( "native:equaltofrequency" )
       << QStringLiteral( "/raster/valueRas1_float64.asc" )
       << 1
       << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
@@ -2306,7 +2306,7 @@ void TestQgsProcessingAlgs::rasterFrequencyByComparisonOperator_data()
    * Testcase 3 - equal to frequency: NoData in value raster
    */
   QTest::newRow( "testcase_3" )
-      << QStringLiteral( "native:equaltofrequency")
+      << QStringLiteral( "native:equaltofrequency" )
       << QStringLiteral( "/raster/valueRas2_float64.asc" )
       << 1
       << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
@@ -2318,7 +2318,7 @@ void TestQgsProcessingAlgs::rasterFrequencyByComparisonOperator_data()
    * Testcase 4 - equal to frequency: test with random byte raster
    */
   QTest::newRow( "testcase_4" )
-      << QStringLiteral( "native:equaltofrequency")
+      << QStringLiteral( "native:equaltofrequency" )
       << QStringLiteral( "/raster/valueRas3_float64.asc" )
       << 1
       << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
@@ -2330,7 +2330,7 @@ void TestQgsProcessingAlgs::rasterFrequencyByComparisonOperator_data()
    * Testcase 5 - greater than frequency: don't ignore NoData
    */
   QTest::newRow( "testcase_5" )
-      << QStringLiteral( "native:greaterthanfrequency")
+      << QStringLiteral( "native:greaterthanfrequency" )
       << QStringLiteral( "/raster/valueRas1_float64.asc" )
       << 1
       << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
@@ -2341,7 +2341,7 @@ void TestQgsProcessingAlgs::rasterFrequencyByComparisonOperator_data()
    * Testcase 6 - greater than frequency: ignore NoData
    */
   QTest::newRow( "testcase_6" )
-      << QStringLiteral( "native:greaterthanfrequency")
+      << QStringLiteral( "native:greaterthanfrequency" )
       << QStringLiteral( "/raster/valueRas1_float64.asc" )
       << 1
       << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
@@ -2353,7 +2353,7 @@ void TestQgsProcessingAlgs::rasterFrequencyByComparisonOperator_data()
    * Testcase 7 - greater than frequency: NoData in value raster
    */
   QTest::newRow( "testcase_7" )
-      << QStringLiteral( "native:greaterthanfrequency")
+      << QStringLiteral( "native:greaterthanfrequency" )
       << QStringLiteral( "/raster/valueRas2_float64.asc" )
       << 1
       << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
@@ -2365,7 +2365,7 @@ void TestQgsProcessingAlgs::rasterFrequencyByComparisonOperator_data()
    * Testcase 8 - greater than frequency: test with random byte raster
    */
   QTest::newRow( "testcase_8" )
-      << QStringLiteral( "native:greaterthanfrequency")
+      << QStringLiteral( "native:greaterthanfrequency" )
       << QStringLiteral( "/raster/valueRas3_float64.asc" )
       << 1
       << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
@@ -2377,7 +2377,7 @@ void TestQgsProcessingAlgs::rasterFrequencyByComparisonOperator_data()
    * Testcase 9 - less than frequency: don't ignore NoData
    */
   QTest::newRow( "testcase_9" )
-      << QStringLiteral( "native:lessthanfrequency")
+      << QStringLiteral( "native:lessthanfrequency" )
       << QStringLiteral( "/raster/valueRas1_float64.asc" )
       << 1
       << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
@@ -2388,7 +2388,7 @@ void TestQgsProcessingAlgs::rasterFrequencyByComparisonOperator_data()
    * Testcase 10 - greater than frequency: ignore NoData
    */
   QTest::newRow( "testcase_10" )
-      << QStringLiteral( "native:lessthanfrequency")
+      << QStringLiteral( "native:lessthanfrequency" )
       << QStringLiteral( "/raster/valueRas1_float64.asc" )
       << 1
       << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
@@ -2400,7 +2400,7 @@ void TestQgsProcessingAlgs::rasterFrequencyByComparisonOperator_data()
    * Testcase 11 - less than frequency: NoData in value raster
    */
   QTest::newRow( "testcase_11" )
-      << QStringLiteral( "native:lessthanfrequency")
+      << QStringLiteral( "native:lessthanfrequency" )
       << QStringLiteral( "/raster/valueRas2_float64.asc" )
       << 1
       << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
@@ -2412,7 +2412,7 @@ void TestQgsProcessingAlgs::rasterFrequencyByComparisonOperator_data()
    * Testcase 12 - less than frequency: test with random byte raster
    */
   QTest::newRow( "testcase_12" )
-      << QStringLiteral( "native:lessthanfrequency")
+      << QStringLiteral( "native:lessthanfrequency" )
       << QStringLiteral( "/raster/valueRas3_float64.asc" )
       << 1
       << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
@@ -2423,7 +2423,7 @@ void TestQgsProcessingAlgs::rasterFrequencyByComparisonOperator_data()
 
 void TestQgsProcessingAlgs::rasterFrequencyByComparisonOperator()
 {
-  QFETCH( QString, algName);
+  QFETCH( QString, algName );
   QFETCH( QString, inputValueRaster );
   QFETCH( int, inputValueRasterBand );
   QFETCH( QStringList, inputRasters );
