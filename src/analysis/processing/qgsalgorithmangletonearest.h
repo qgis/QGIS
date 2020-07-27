@@ -37,6 +37,7 @@ class QgsAngleToNearestAlgorithm : public QgsProcessingAlgorithm
     QgsAngleToNearestAlgorithm() = default;
     ~QgsAngleToNearestAlgorithm() override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    Flags flags() const override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -45,6 +46,7 @@ class QgsAngleToNearestAlgorithm : public QgsProcessingAlgorithm
     QString shortHelpString() const override;
     QString shortDescription() const override;
     QgsAngleToNearestAlgorithm *createInstance() const override SIP_FACTORY;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
 
@@ -53,6 +55,7 @@ class QgsAngleToNearestAlgorithm : public QgsProcessingAlgorithm
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
+    bool mIsInPlace = false;
     std::unique_ptr< QgsFeatureRenderer > mSourceRenderer;
 
 };
