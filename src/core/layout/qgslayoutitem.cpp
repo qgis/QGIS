@@ -1165,6 +1165,11 @@ bool QgsLayoutItem::accept( QgsStyleEntityVisitorInterface *visitor ) const
   return true;
 }
 
+QgsGeometry QgsLayoutItem::clipPath() const
+{
+  return QgsGeometry();
+}
+
 void QgsLayoutItem::refresh()
 {
   QgsLayoutObject::refresh();
