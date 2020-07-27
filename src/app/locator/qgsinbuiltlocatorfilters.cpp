@@ -844,9 +844,9 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
       }
     }
 
-    if ( !okX && !okY && string.indexOf( QStringLiteral( "google.com/maps/" ) ) != -1 )
+    if ( !okX && !okY )
     {
-      QRegularExpression locationRx( QStringLiteral( "\\/@([0-9\\-\\.\\,]*)z" ) );
+      QRegularExpression locationRx( QStringLiteral( "google.*\\/@([0-9\\-\\.\\,]*)z" ) );
       QRegularExpressionMatch match = locationRx.match( string );
       if ( match.hasMatch() )
       {
