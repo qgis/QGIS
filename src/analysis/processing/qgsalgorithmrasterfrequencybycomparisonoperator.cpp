@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmrasterequaltofrequency.cpp
+                         qgsalgorithmrasterfrequencybycomparisonoperator.cpp
                          ---------------------
     begin                : June 2020
     copyright            : (C) 2020 by Clemens Raffler
@@ -15,58 +15,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmrasterequaltofrequency.h"
+#include "qgsalgorithmrasterfrequencybycomparisonoperator.h"
 #include "qgsrasterprojector.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsrasteranalysisutils.h"
 
 ///@cond PRIVATE
 
-QString QgsRasterEqualToFrequencyAlgorithm::displayName() const
-{
-  return QObject::tr( "Equal to frequency" );
-}
+//
+//QgsRasterFrequencyByComparisonOperatorBase
+//
 
-QString QgsRasterEqualToFrequencyAlgorithm::name() const
-{
-  return QObject::tr( "equaltofrequency" );
-}
-
-QStringList QgsRasterEqualToFrequencyAlgorithm::tags() const
-{
-  return QObject::tr( "cell,equal,frequency,pixel,stack" ).split( ',' );
-}
-
-QString QgsRasterEqualToFrequencyAlgorithm::group() const
+QString QgsRasterFrequencyByComparisonOperatorBase::group() const
 {
   return QObject::tr( "Raster analysis" );
 }
 
-QString QgsRasterEqualToFrequencyAlgorithm::groupId() const
+QString QgsRasterFrequencyByComparisonOperatorBase::groupId() const
 {
   return QStringLiteral( "rasteranalysis" );
 }
 
-QString QgsRasterEqualToFrequencyAlgorithm::shortHelpString() const
-{
-  return QObject::tr( "The Equal to frequency algorithm evaluates on a cell-by-cell basis the frequency "
-                      "(number of times) the values of an input stack of rasters are equal "
-                      "to the value of an input raster. \n "
-                      "If multiband rasters are used in the data raster stack, the algorithm will always "
-                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis."
-                      "The input value layer serves as reference layer for the sample layers."
-                      "Any NoData cells in the value raster or the data layer stack will result in a NoData cell "
-                      "in the output raster if the ignore NoData parameter is not checked."
-                      "The output NoData value can be set manually. The output rasters extent and resolution "
-                      "is defined by the input raster layer and is always of int32 type." );
-}
-
-QgsRasterEqualToFrequencyAlgorithm *QgsRasterEqualToFrequencyAlgorithm::createInstance() const
-{
-  return new QgsRasterEqualToFrequencyAlgorithm();
-}
-
-void QgsRasterEqualToFrequencyAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsRasterFrequencyByComparisonOperatorBase::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_VALUE_RASTER" ), QObject::tr( "Input value raster" ) ) );
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "INPUT_VALUE_RASTER_BAND" ), QObject::tr( "Value raster band" ), 1, QStringLiteral( "INPUT_VALUE_RASTER" ) ) );
@@ -83,7 +53,7 @@ void QgsRasterEqualToFrequencyAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ),
                 QObject::tr( "Output layer" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "EQUAL_VALUES_COUNT" ), QObject::tr( "Count of equal value occurrances" ) ) );
+  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "OCCURENCE_COUNT" ), QObject::tr( "Count of value occurrances" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "FOUND_LOCATIONS_COUNT" ), QObject::tr( "Count of cells with equal value occurrances" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MEAN_FREQUENCY_PER_LOCATION" ), QObject::tr( "Mean frequency at valid cell locations" ) ) );
   addOutput( new QgsProcessingOutputString( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ) ) );
@@ -93,7 +63,7 @@ void QgsRasterEqualToFrequencyAlgorithm::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TOTAL_PIXEL_COUNT" ), QObject::tr( "Total pixel count" ) ) );
 }
 
-bool QgsRasterEqualToFrequencyAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsRasterFrequencyByComparisonOperatorBase::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsRasterLayer *inputValueRaster = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT_VALUE_RASTER" ), context );
   if ( !inputValueRaster )
@@ -142,7 +112,7 @@ bool QgsRasterEqualToFrequencyAlgorithm::prepareAlgorithm( const QVariantMap &pa
   return true;
 }
 
-QVariantMap QgsRasterEqualToFrequencyAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QFileInfo fi( outputFile );
@@ -175,7 +145,7 @@ QVariantMap QgsRasterEqualToFrequencyAlgorithm::processAlgorithm( const QVariant
   int iterRows = 0;
   QgsRectangle blockExtent;
 
-  unsigned long long equalValuesCount = 0;
+  unsigned long long occurrenceCount = 0;
   unsigned long long noDataLocationsCount = 0;
   std::unique_ptr< QgsRasterBlock > inputBlock;
   while ( iter.readNextRasterPart( 1, iterCols, iterRows, inputBlock, iterLeft, iterTop, &blockExtent ) )
@@ -207,7 +177,7 @@ QVariantMap QgsRasterEqualToFrequencyAlgorithm::processAlgorithm( const QVariant
         std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, noDataInStack );
 
         bool valueRasterCellIsNoData = false;
-        double searchValue = inputBlock->valueAndNoData( row, col, valueRasterCellIsNoData );
+        double value = inputBlock->valueAndNoData( row, col, valueRasterCellIsNoData );
 
         if ( ( valueRasterCellIsNoData || noDataInStack ) && !mIgnoreNoData )
         {
@@ -218,9 +188,9 @@ QVariantMap QgsRasterEqualToFrequencyAlgorithm::processAlgorithm( const QVariant
         }
         else
         {
-          int equalCount = static_cast<int>( std::count( cellValues.begin(), cellValues.end(), searchValue ) );
-          outputBlock->setValue( row, col, equalCount );
-          equalValuesCount += equalCount;
+          int frequency = applyComparisonOperator( value, cellValues );
+          outputBlock->setValue( row, col, frequency );
+          occurrenceCount += frequency;
         }
       }
     }
@@ -229,10 +199,10 @@ QVariantMap QgsRasterEqualToFrequencyAlgorithm::processAlgorithm( const QVariant
   provider->setEditable( false );
 
   unsigned long long foundLocationsCount = layerSize - noDataLocationsCount;
-  double meanEqualCountPerValidLocation = static_cast<double>( equalValuesCount ) / static_cast<double>( foundLocationsCount * mInputs.size() );
+  double meanEqualCountPerValidLocation = static_cast<double>( occurrenceCount ) / static_cast<double>( foundLocationsCount * mInputs.size() );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "EQUAL_VALUES_COUNT" ), equalValuesCount );
+  outputs.insert( QStringLiteral( "OCCURENCE_COUNT" ), occurrenceCount );
   outputs.insert( QStringLiteral( "FOUND_LOCATIONS_COUNT" ), foundLocationsCount );
   outputs.insert( QStringLiteral( "MEAN_FREQUENCY_PER_LOCATION" ),  meanEqualCountPerValidLocation );
   outputs.insert( QStringLiteral( "EXTENT" ), mExtent.toString() );
@@ -245,7 +215,134 @@ QVariantMap QgsRasterEqualToFrequencyAlgorithm::processAlgorithm( const QVariant
   return outputs;
 }
 
+//
+// QgsRasterFrequencyByEqualOperatorAlgorithm
+//
 
+QString QgsRasterFrequencyByEqualOperatorAlgorithm::displayName() const
+{
+  return QObject::tr( "Equal to frequency" );
+}
+
+QString QgsRasterFrequencyByEqualOperatorAlgorithm::name() const
+{
+  return QObject::tr( "equaltofrequency" );
+}
+
+QStringList QgsRasterFrequencyByEqualOperatorAlgorithm::tags() const
+{
+  return QObject::tr( "cell,equal,frequency,pixel,stack" ).split( ',' );
+}
+
+QString QgsRasterFrequencyByEqualOperatorAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "The Equal to frequency algorithm evaluates on a cell-by-cell basis the frequency "
+                      "(number of times) the values of an input stack of rasters are equal "
+                      "to the value of a value raster. \n "
+                      "If multiband rasters are used in the data raster stack, the algorithm will always "
+                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis."
+                      "The input value layer serves as reference layer for the sample layers."
+                      "Any NoData cells in the value raster or the data layer stack will result in a NoData cell "
+                      "in the output raster if the ignore NoData parameter is not checked."
+                      "The output NoData value can be set manually. The output rasters extent and resolution "
+                      "is defined by the input raster layer and is always of int32 type." );
+}
+
+QgsRasterFrequencyByEqualOperatorAlgorithm *QgsRasterFrequencyByEqualOperatorAlgorithm::createInstance() const
+{
+  return new QgsRasterFrequencyByEqualOperatorAlgorithm();
+}
+
+int QgsRasterFrequencyByEqualOperatorAlgorithm::applyComparisonOperator( double searchValue, std::vector<double> cellValueStack )
+{
+  return static_cast<int>( std::count( cellValueStack.begin(), cellValueStack.end(), searchValue ) );
+}
+
+//
+// QgsRasterFrequencyByGreaterThanOperatorAlgorithm
+//
+
+QString QgsRasterFrequencyByGreaterThanOperatorAlgorithm::displayName() const
+{
+  return QObject::tr( "Greater than frequency" );
+}
+
+QString QgsRasterFrequencyByGreaterThanOperatorAlgorithm::name() const
+{
+  return QObject::tr( "greaterthanfrequency" );
+}
+
+QStringList QgsRasterFrequencyByGreaterThanOperatorAlgorithm::tags() const
+{
+  return QObject::tr( "cell,greater,frequency,pixel,stack" ).split( ',' );
+}
+
+QString QgsRasterFrequencyByGreaterThanOperatorAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "The Greater than frequency algorithm evaluates on a cell-by-cell basis the frequency "
+                      "(number of times) the values of an input stack of rasters are greater than "
+                      " the value of a value raster. \n "
+                      "If multiband rasters are used in the data raster stack, the algorithm will always "
+                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis."
+                      "The input value layer serves as reference layer for the sample layers."
+                      "Any NoData cells in the value raster or the data layer stack will result in a NoData cell "
+                      "in the output raster if the ignore NoData parameter is not checked."
+                      "The output NoData value can be set manually. The output rasters extent and resolution "
+                      "is defined by the input raster layer and is always of int32 type." );
+}
+
+QgsRasterFrequencyByGreaterThanOperatorAlgorithm *QgsRasterFrequencyByGreaterThanOperatorAlgorithm::createInstance() const
+{
+  return new QgsRasterFrequencyByGreaterThanOperatorAlgorithm();
+}
+
+int QgsRasterFrequencyByGreaterThanOperatorAlgorithm::applyComparisonOperator( double searchValue, std::vector<double> cellValueStack )
+{
+  return static_cast<int>( std::count_if(cellValueStack.begin(), cellValueStack.end(),[&](double const& stackValue){ return stackValue > searchValue; }) );
+}
+
+//
+// QgsRasterFrequencyByLessThanOperatorAlgorithm
+//
+
+QString QgsRasterFrequencyByLessThanOperatorAlgorithm::displayName() const
+{
+  return QObject::tr( "Less than frequency" );
+}
+
+QString QgsRasterFrequencyByLessThanOperatorAlgorithm::name() const
+{
+  return QObject::tr( "lessthanfrequency" );
+}
+
+QStringList QgsRasterFrequencyByLessThanOperatorAlgorithm::tags() const
+{
+  return QObject::tr( "cell,less,lower,frequency,pixel,stack" ).split( ',' );
+}
+
+QString QgsRasterFrequencyByLessThanOperatorAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "The Less than frequency algorithm evaluates on a cell-by-cell basis the frequency "
+                      "(number of times) the values of an input stack of rasters are less than "
+                      " the value of a value raster. \n "
+                      "If multiband rasters are used in the data raster stack, the algorithm will always "
+                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis."
+                      "The input value layer serves as reference layer for the sample layers."
+                      "Any NoData cells in the value raster or the data layer stack will result in a NoData cell "
+                      "in the output raster if the ignore NoData parameter is not checked."
+                      "The output NoData value can be set manually. The output rasters extent and resolution "
+                      "is defined by the input raster layer and is always of int32 type." );
+}
+
+QgsRasterFrequencyByLessThanOperatorAlgorithm *QgsRasterFrequencyByLessThanOperatorAlgorithm::createInstance() const
+{
+  return new QgsRasterFrequencyByLessThanOperatorAlgorithm();
+}
+
+int QgsRasterFrequencyByLessThanOperatorAlgorithm::applyComparisonOperator( double searchValue, std::vector<double> cellValueStack )
+{
+  return static_cast<int>( std::count_if(cellValueStack.begin(), cellValueStack.end(),[&](double const& stackValue){ return stackValue < searchValue; }) );
+}
 
 ///@endcond
 

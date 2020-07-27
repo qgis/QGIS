@@ -126,7 +126,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrandompointsinpolygons.cpp
   processing/qgsalgorithmrandompointsonlines.cpp
   processing/qgsalgorithmrandomraster.cpp
-  processing/qgsalgorithmrasterequaltofrequency.cpp
+  processing/qgsalgorithmrasterfrequencybycomparisonoperator.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmrasterlogicalop.cpp
   processing/qgsalgorithmrasterize.cpp
