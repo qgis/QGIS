@@ -731,18 +731,14 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
   const QgsCoordinateReferenceSystem wgs84Crs( QStringLiteral( "EPSG:4326" ) );
 
   // Coordinates such as 106.8468,-6.3804
-  QStringList coordinates = string.split( ' ' );
-  if ( coordinates.size() != 2 )
-  {
-    coordinates = string.split( ',' );
-  }
-
-  if ( coordinates.size() == 2 )
+  QRegularExpression separatorRx( QStringLiteral( "^([0-9\\-\\.]*)[\\s\\,]*([0-9\\-\\.]*)$" ) );
+  QRegularExpressionMatch match = separatorRx.match( string.trimmed() );
+  if ( match.hasMatch() )
   {
     bool okX = false;
     bool okY = false;
-    double posX = coordinates.at( 0 ).toDouble( &okX );
-    double posY = coordinates.at( 1 ).toDouble( &okY );
+    double posX = match.captured( 1 ).toDouble( &okX );
+    double posY = match.captured( 2 ).toDouble( &okY );
 
     if ( okX && okY )
     {
@@ -847,7 +843,7 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
     if ( !okX && !okY )
     {
       QRegularExpression locationRx( QStringLiteral( "google.*\\/@([0-9\\-\\.\\,]*)z" ) );
-      QRegularExpressionMatch match = locationRx.match( string );
+      match = locationRx.match( string );
       if ( match.hasMatch() )
       {
         QStringList params = match.captured( 1 ).split( ',' );
