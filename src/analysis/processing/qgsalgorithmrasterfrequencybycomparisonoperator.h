@@ -39,7 +39,7 @@ class QgsRasterFrequencyByComparisonOperatorBase : public QgsProcessingAlgorithm
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    virtual int applyComparisonOperator( double value, std::vector<double>cellValueStack  ) = 0;
+    virtual int applyComparisonOperator( double value, std::vector<double>cellValueStack ) = 0;
 
   private:
     std::unique_ptr< QgsRasterInterface > mInputValueRasterInterface;
