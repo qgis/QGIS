@@ -45,7 +45,8 @@ from qgis.core import (QgsLayoutItemMap,
                        QgsSingleSymbolRenderer,
                        QgsGeometry,
                        QgsLayoutItemShape,
-                       QgsMapClippingRegion)
+                       QgsMapClippingRegion,
+                       QgsLayoutItemMapOverview)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -576,6 +577,86 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         map.itemClippingSettings().setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.ClipPainterOnly)
 
         checker = QgsLayoutChecker('composermap_itemclip_force_labels_inside', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
+
+    def testClippingOverview(self):
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(30)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        settings = QgsPalLayerSettings()
+        settings.setFormat(format)
+        settings.fieldName = "'XXXX'"
+        settings.isExpression = True
+        settings.placement = QgsPalLayerSettings.OverPoint
+
+        vl = QgsVectorLayer("Polygon?crs=epsg:4326&field=id:integer", "vl", "memory")
+
+        props = {"color": "127,255,127", 'outline_style': 'solid', 'outline_width': '1', 'outline_color': '0,0,255'}
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        renderer = QgsSingleSymbolRenderer(fillSymbol)
+        vl.setRenderer(renderer)
+
+        f = QgsFeature(vl.fields(), 1)
+        for x in range(0, 15, 3):
+            for y in range(0, 15, 3):
+                f.setGeometry(QgsGeometry(QgsPoint(x, y)).buffer(1, 3))
+                vl.dataProvider().addFeature(f)
+
+        vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+        vl.setLabelsEnabled(True)
+
+        vl2 = vl.clone()
+        vl2.setLabelsEnabled(False)
+
+        p = QgsProject()
+
+        p.addMapLayer(vl)
+        p.addMapLayer(vl2)
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        map.setFrameEnabled(True)
+        map.zoomToExtent(vl.extent())
+        map.setLayers([vl])
+        layout.addLayoutItem(map)
+
+        map2 = QgsLayoutItemMap(layout)
+        map2.attemptSetSceneRect(QRectF(160, 150, 70, 70))
+        map2.setFrameEnabled(True)
+        map2extent = vl.extent()
+        map2extent.grow(3)
+        map2.zoomToExtent(map2extent)
+        map2.setLayers([vl2])
+        layout.addLayoutItem(map2)
+        overview = QgsLayoutItemMapOverview("t", map2)
+        overview.setLinkedMap(map)
+        props = {"color": "0,0,0,0", 'outline_style': 'solid', 'outline_width': '1', 'outline_color': '0,0,255'}
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        overview.setFrameSymbol(fillSymbol)
+
+        map2.overviews().addOverview(overview)
+
+        shape = QgsLayoutItemShape(layout)
+        layout.addLayoutItem(shape)
+        shape.setShapeType(QgsLayoutItemShape.Ellipse)
+        shape.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        props = {"color": "0,0,0,0", 'outline_style': 'no'}
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        shape.setSymbol(fillSymbol)
+
+        map.itemClippingSettings().setEnabled(True)
+        map.itemClippingSettings().setSourceItem(shape)
+        map.itemClippingSettings().setForceLabelsInsideClipPath(False)
+        map.itemClippingSettings().setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.ClipToIntersection)
+
+        checker = QgsLayoutChecker('composermap_itemclip_overview', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
         self.report += checker.report()
