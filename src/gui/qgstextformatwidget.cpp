@@ -584,7 +584,19 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
       mFormatNumFrame->hide();
       mFormatNumChkBx->hide();
       mFormatNumDDBtn->hide();
-      mSubstitutionsFrame->hide();
+      mCheckBoxSubstituteText->hide();
+      mToolButtonConfigureSubstitutes->hide();
+      mLabelWrapOnCharacter->hide();
+      wrapCharacterEdit->hide();
+      mWrapCharDDBtn->hide();
+      mLabelWrapLinesTo->hide();
+      mAutoWrapLengthSpinBox->hide();
+      mAutoWrapLengthDDBtn->hide();
+      mAutoWrapTypeComboBox->hide();
+      mFontMultiLineLabel->hide();
+      mFontMultiLineAlignComboBox->hide();
+      mFontMultiLineAlignDDBtn->hide();
+
       mTextOrientationComboBox->removeItem( mTextOrientationComboBox->findData( QgsTextFormat::RotationBasedOrientation ) );
       break;
     }
