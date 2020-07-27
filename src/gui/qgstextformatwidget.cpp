@@ -2036,12 +2036,23 @@ QgsTextFormatPanelWidget::QgsTextFormatPanelWidget( const QgsTextFormat &format,
   : QgsPanelWidgetWrapper( new QgsTextFormatWidget( format, mapCanvas, nullptr, layer ), parent )
 {
   mFormatWidget = qobject_cast< QgsTextFormatWidget * >( widget() );
-  connect( mFormatWidget, &QgsTextFormatWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [ = ]
+  {
+    if ( !mBlockSignals )
+      emit widgetChanged();
+  } );
 }
 
 QgsTextFormat QgsTextFormatPanelWidget::format() const
 {
   return mFormatWidget->format();
+}
+
+void QgsTextFormatPanelWidget::setFormat( const QgsTextFormat &format )
+{
+  mBlockSignals = true;
+  mFormatWidget->setFormat( format );
+  mBlockSignals = false;
 }
 
 void QgsTextFormatPanelWidget::setContext( const QgsSymbolWidgetContext &context )
