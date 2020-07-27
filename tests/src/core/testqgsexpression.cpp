@@ -567,7 +567,7 @@ class TestQgsExpression: public QObject
       QVERIFY( !expression.hasParserError() );
       QVERIFY( !expression.evaluate( &context ).isValid() );
       QVERIFY( expression.hasEvalError() );
-      QCOMPARE( expression.evalErrorString(), QStringLiteral( "Field 'a' not found" ) );
+      QCOMPARE( expression.evalErrorString(), QStringLiteral( "Column 'a' not found" ) );
       expression = QgsExpression( "\"x\"" );
       QVERIFY( !expression.hasParserError() );
       QVERIFY( !expression.evaluate( &context ).isValid() );
