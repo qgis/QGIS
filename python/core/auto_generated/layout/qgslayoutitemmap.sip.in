@@ -195,18 +195,18 @@ Sets the feature clipping ``type`` to apply when clipping to the associated item
 .. seealso:: :py:func:`featureClippingType`
 %End
 
-    bool forceLabelsInsideFeature() const;
+    bool forceLabelsInsideClipPath() const;
 %Docstring
 Returns ``True`` if labels should only be placed inside the clip path geometry.
 
-.. seealso:: :py:func:`setForceLabelsInsideFeature`
+.. seealso:: :py:func:`setForceLabelsInsideClipPath`
 %End
 
-    void setForceLabelsInsideFeature( bool forceInside );
+    void setForceLabelsInsideClipPath( bool forceInside );
 %Docstring
 Sets whether labels should only be placed inside the clip path geometry.
 
-.. seealso:: :py:func:`forceLabelsInsideFeature`
+.. seealso:: :py:func:`forceLabelsInsideClipPath`
 %End
 
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
