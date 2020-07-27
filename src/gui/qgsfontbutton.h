@@ -24,6 +24,8 @@
 class QgsExpressionContextGenerator;
 class QgsMapCanvas;
 class QgsMessageBar;
+class QgsTextFormatPanelWidget;
+
 
 /**
  * \ingroup gui
@@ -278,6 +280,14 @@ class GUI_EXPORT QgsFontButton : public QToolButton
 
     QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 
+<<<<<<< HEAD
+=======
+    bool mShowNoFormat = false;
+    QString mNullFormatString;
+    QPointer< QAction > mNullFormatAction;
+    QPointer< QgsTextFormatPanelWidget > mActivePanel;
+
+>>>>>>> 0bb9174c2a... Merge pull request #37973 from nyalldawson/table_editor_fixes
     /**
      * Attempts to parse \a mimeData as a text format.
      * \returns TRUE if mime data could be intrepreted as a format

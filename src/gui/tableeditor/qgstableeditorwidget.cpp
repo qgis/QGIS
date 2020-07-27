@@ -1061,6 +1061,22 @@ void QgsTableEditorTextEdit::keyPressEvent( QKeyEvent *event )
       break;
     }
 
+    case Qt::Key_Tab:
+    {
+      if ( event->modifiers() & Qt::ControlModifier )
+      {
+        // if tab is pressed then defer to table, unless ctrl modifier is also held
+        // (emulate spreadsheet behavior)
+        insertPlainText( QString( '\t' ) );
+        resizeToContents();
+      }
+      else
+      {
+        event->ignore();
+      }
+      break;
+    }
+
     default:
       QPlainTextEdit::keyPressEvent( event );
   }

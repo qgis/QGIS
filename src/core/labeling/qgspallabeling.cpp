@@ -1301,6 +1301,7 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
   QgsMapToPixel newCoordXForm;
   newCoordXForm.setParameters( 1, 0, 0, 0, 0, 0 );
   context.setMapToPixel( newCoordXForm );
+  context.setFlag( QgsRenderContext::Antialiasing, true );
 
   context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
   context.setUseAdvancedEffects( true );
