@@ -89,7 +89,7 @@ QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute, QByteArray data 
 
   if ( bytesStride == 0 )
   {
-    qDebug() << "WARNING: bytesStride==0 at " << __FILE__ << ":" << __LINE__;
+    QgsDebugMsg( "bytesStride==0, the attribute probably was not set properly" );
     return result;
   }
 
@@ -143,7 +143,7 @@ QVector<uint> getIndexData( Qt3DRender::QAttribute *indexAttribute, QByteArray d
     case Qt3DRender::QAttribute::VertexBaseType::UnsignedByte:
       return _getIndexDataImplementation<uchar>( data );
     default:
-      qDebug() << "WARNING: Probably trying to get index data using an attribute that has vertex data at " << __FILE__ << ":" << __LINE__;
+      QgsDebugMsg( "Probably trying to get index data using an attribute that has vertex data" );
       break;
   }
   return QVector<uint>();
@@ -158,7 +158,7 @@ QByteArray getData( Qt3DRender::QBuffer *buffer )
     if ( !dataGenerator.isNull() )
       bytes = dataGenerator->operator()();
     else
-      qDebug() << "WARNING: QBuffer is null at " << __FILE__ << ":" << __LINE__;
+      QgsDebugMsg( "QBuffer is null" );
   }
   return bytes;
 }
@@ -408,7 +408,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
   Qt3DExtras::QPlaneGeometry *tileGeometry = qobject_cast<Qt3DExtras::QPlaneGeometry *>( geometry );
   if ( tileGeometry == nullptr )
   {
-    qDebug() << "WARNING : " << "Qt3DExtras::QPlaneGeometry* is expected at " << __FILE__ << ":" << __LINE__;
+    QgsDebugMsg( "Qt3DExtras::QPlaneGeometry* is expected but something else was given" );
     return;
   }
 
@@ -465,7 +465,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
   DemTerrainTileGeometry *tileGeometry = qobject_cast<DemTerrainTileGeometry *>( geometry );
   if ( tileGeometry == nullptr )
   {
-    qDebug() << "WARNING : " << "DemTerrainTileGeometry* is expected at " << __FILE__ << ":" << __LINE__;
+    QgsDebugMsg( "DemTerrainTileGeometry* is expected but something else was given" );
     return;
   }
 
@@ -645,7 +645,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
 
   if ( positionAttribute == nullptr )
   {
-    qDebug() << "WARNING: renderer with null data at " << __FILE__ << ":" << __LINE__;
+    QgsDebugMsg( "Geometry renderer with null data was being processed" );
     return nullptr;
   }
 
@@ -692,7 +692,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity
     }
     if ( positionAttribute == nullptr || indexAttribute == nullptr )
     {
-      qDebug() << "WARNING: position or index attribute was not found at " << __FILE__ << ":" << __LINE__;
+      QgsDebugMsg( "Position or index attribute was not found" );
       continue;
     }
 

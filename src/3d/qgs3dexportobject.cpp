@@ -25,6 +25,7 @@
 #include <Qt3DRender/QBufferDataGenerator>
 #include <Qt3DRender/QBufferDataGeneratorPtr>
 
+#include "qgslogger.h"
 #include "qgsphongmaterialsettings.h"
 
 
@@ -135,7 +136,7 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
 
   if ( !hasNormals && !mNormals.empty() )
   {
-    qDebug() << "WARNING: vertex normals count and vertex positions count are different";
+    QgsDebugMsg( "Vertex normals count and vertex positions count are different" );
   }
   int verticesCount = mVertexPosition.size() / 3;
 
