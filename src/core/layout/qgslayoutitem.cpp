@@ -589,6 +589,9 @@ bool QgsLayoutItem::shouldBlockUndoCommands() const
 
 bool QgsLayoutItem::shouldDrawItem() const
 {
+  if ( mLayout && QgsLayoutUtils::itemIsAClippingSource( this ) )
+    return false;
+
   if ( !mLayout || mLayout->renderContext().isPreviewRender() )
   {
     //preview mode so OK to draw item
