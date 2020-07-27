@@ -54,7 +54,7 @@ class TestQgsRelationPostgresql(unittest.TestCase):
         Test the automatic discovery of relations
         """
         relations = self.relMgr.discoverRelations([], self.vl_tables)
-        assert(len(relations) == 18)
+        self.assertEqual(len(relations), 18)
 
 
 if __name__ == '__main__':
