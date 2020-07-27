@@ -1539,7 +1539,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
     {
       jobMapSettings.addClippingRegion( mItemClippingSettings->toMapClippingRegion() );
 
-      if ( mItemClippingSettings->forceLabelsInsideFeature() )
+      if ( mItemClippingSettings->forceLabelsInsideClipPath() )
       {
         const double layoutLabelMargin = mLayout->convertToLayoutUnits( mEvaluatedLabelMargin );
         const double layoutLabelMarginInMapUnits = layoutLabelMargin / rect().width() * jobMapSettings.extent().width();
@@ -2921,12 +2921,12 @@ void QgsLayoutItemMapItemClipPathSettings::setFeatureClippingType( QgsMapClippin
   emit changed();
 }
 
-bool QgsLayoutItemMapItemClipPathSettings::forceLabelsInsideFeature() const
+bool QgsLayoutItemMapItemClipPathSettings::forceLabelsInsideClipPath() const
 {
   return mForceLabelsInsideClipPath;
 }
 
-void QgsLayoutItemMapItemClipPathSettings::setForceLabelsInsideFeature( bool forceInside )
+void QgsLayoutItemMapItemClipPathSettings::setForceLabelsInsideClipPath( bool forceInside )
 {
   if ( forceInside == mForceLabelsInsideClipPath )
     return;

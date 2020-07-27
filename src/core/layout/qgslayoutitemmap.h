@@ -224,16 +224,16 @@ class CORE_EXPORT QgsLayoutItemMapItemClipPathSettings : public QObject
     /**
      * Returns TRUE if labels should only be placed inside the clip path geometry.
      *
-     * \see setForceLabelsInsideFeature()
+     * \see setForceLabelsInsideClipPath()
      */
-    bool forceLabelsInsideFeature() const;
+    bool forceLabelsInsideClipPath() const;
 
     /**
      * Sets whether labels should only be placed inside the clip path geometry.
      *
-     * \see forceLabelsInsideFeature()
+     * \see forceLabelsInsideClipPath()
      */
-    void setForceLabelsInsideFeature( bool forceInside );
+    void setForceLabelsInsideClipPath( bool forceInside );
 
     /**
      * Stores settings in a DOM element, where \a element is the DOM element
