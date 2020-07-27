@@ -542,6 +542,8 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
       break;
 
     case Text:
+    {
+      const int prevIndex = mOptionsTab->currentIndex();
       toggleDDButtons( true );
       delete mLabelingOptionsListWidget->takeItem( 8 ); // rendering
       delete mLabelingOptionsListWidget->takeItem( 7 ); // placement
@@ -555,7 +557,27 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
       mLabelStackedWidget->removeWidget( mLabelPage_Callouts );
       mLabelStackedWidget->removeWidget( mLabelPage_Mask );
       mLabelStackedWidget->removeWidget( mLabelPage_Placement );
-      mLabelStackedWidget->setCurrentIndex( 0 );
+      switch ( prevIndex )
+      {
+        case 0:
+        case 1:
+        case 2:
+          break;
+
+        case 4: // background - account for removed mask tab
+        case 5: // shadow
+          mLabelStackedWidget->setCurrentIndex( prevIndex - 1 );
+          mOptionsTab->setCurrentIndex( prevIndex - 1 );
+          break;
+
+        case 3: // mask
+        case 6: // callouts
+        case 7: // placement
+        case 8: // rendering
+          mLabelStackedWidget->setCurrentIndex( 0 );
+          mOptionsTab->setCurrentIndex( 0 );
+          break;
+      }
 
       frameLabelWith->hide();
       mDirectSymbolsFrame->hide();
@@ -565,6 +587,7 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
       mSubstitutionsFrame->hide();
       mTextOrientationComboBox->removeItem( mTextOrientationComboBox->findData( QgsTextFormat::RotationBasedOrientation ) );
       break;
+    }
   }
 }
 
@@ -993,7 +1016,20 @@ QgsTextFormatWidget::~QgsTextFormatWidget()
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Windows/Labeling/FontPreviewSplitState" ), mFontPreviewSplitter->saveState() );
   settings.setValue( QStringLiteral( "Windows/Labeling/OptionsSplitState" ), mLabelingOptionsSplitter->saveState() );
-  settings.setValue( QStringLiteral( "Windows/Labeling/Tab" ), mLabelingOptionsListWidget->currentRow() );
+
+  int prevIndex = mLabelingOptionsListWidget->currentRow();
+  if ( mWidgetMode == Text )
+  {
+    switch ( prevIndex )
+    {
+      case 3: // background - account for removed mask tab
+      case 4: // shadow - account for removed mask tab
+        prevIndex++;
+        break;
+    }
+  }
+
+  settings.setValue( QStringLiteral( "Windows/Labeling/Tab" ), prevIndex );
 }
 
 QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) const
