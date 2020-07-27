@@ -32,9 +32,8 @@ class QgsAbstractMaterialSettings;
  * \ingroup 3d
  * \since QGIS 3.16
  */
-class Qgs3DExportObject : public QObject
+class Qgs3DExportObject
 {
-    Q_OBJECT
   public:
     //! The type of exported geometry
     enum ObjectType
@@ -52,7 +51,7 @@ class Qgs3DExportObject : public QObject
      * \param parent
      * The parent QObject (we use this to delete the Qgs3DExportObject instance once the exporter instance is deallocated)
      */
-    Qgs3DExportObject( const QString &name, QObject *parent = nullptr ) : QObject( parent ), mName( name ) { }
+    Qgs3DExportObject( const QString &name ) : mName( name ) { }
 
     //! Returns the object name
     QString name() const { return mName; }

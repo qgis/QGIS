@@ -25,6 +25,8 @@
 #include <QFile>
 #include <QVector3D>
 
+#include "qgs3dexportobject.h"
+
 class QgsTessellatedPolygonGeometry;
 class QgsTerrainTileEntity;
 class QgsTerrainEntity;
@@ -48,10 +50,15 @@ class QgsMeshEntity;
  */
 class Qgs3DSceneExporter : public Qt3DCore::QEntity
 {
-    Q_OBJECT
   public:
     //! Constructor
-    Qgs3DSceneExporter( Qt3DCore::QNode *parent = nullptr ) : Qt3DCore::QEntity( parent ) { }
+    Qgs3DSceneExporter() { }
+    //! Destructor
+    ~Qgs3DSceneExporter()
+    {
+      for ( Qgs3DExportObject *obj : mObjects )
+        delete obj;
+    }
 
     /**
      * Creates necessary export objects from entity if it represents valid vector layer entity

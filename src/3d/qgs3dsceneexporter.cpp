@@ -428,7 +428,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
   QString objectNamePrefix = layerName;
   if ( objectNamePrefix != QString() ) objectNamePrefix += QString();
 
-  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "Flat_tile" ) ), this );
+  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "Flat_tile" ) ) );
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
@@ -483,7 +483,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
   QString objectNamePrefix = layerName;
   if ( objectNamePrefix != QString() ) objectNamePrefix += QStringLiteral( "_" );
 
-  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( layerName + QStringLiteral( "DEM_tile" ) ), this );
+  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( layerName + QStringLiteral( "DEM_tile" ) ) );
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
@@ -550,7 +550,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
     QVector<float> instancePosition = getAttributeData<float>( instanceDataAttribute, instancePositionBytes );
     for ( int i = 0; i < instancePosition.size(); i += 3 )
     {
-      Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "shape_geometry" ) ), this );
+      Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "shape_geometry" ) ) );
       objects.push_back( object );
       object->setupPositionCoordinates( positionData, 1.0f, QVector3D( instancePosition[i], instancePosition[i + 1], instancePosition[i + 2] ) );
       object->setupFaces( indexData );
@@ -649,7 +649,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     return nullptr;
   }
 
-  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "mesh_geometry" ) ), this );
+  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "mesh_geometry" ) ) );
   object->setupPositionCoordinates( positionData, scale * sceneScale, translation + sceneTranslation );
   object->setupFaces( indexData );
 
@@ -701,7 +701,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity
     QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
     QVector<uint> indexData = getIndexData( indexAttribute, indexBytes );
 
-    Qgs3DExportObject *exportObject = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "line" ) ), this );
+    Qgs3DExportObject *exportObject = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "line" ) ) );
     exportObject->setType( Qgs3DExportObject::LineStrip );
     exportObject->setupPositionCoordinates( positionData );
     exportObject->setupLine( indexData );
@@ -727,7 +727,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processPoints( Qt3DCore::QEntity *entity,
     QVector<float> positions = getAttributeData<float>( positionAttribute, positionBytes );
     points << positions;
   }
-  Qgs3DExportObject *obj = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "points" ) ), this );
+  Qgs3DExportObject *obj = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "points" ) ) );
   obj->setType( Qgs3DExportObject::Points );
   obj->setupPositionCoordinates( points );
   return obj;

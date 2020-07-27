@@ -16,7 +16,7 @@
 #include "qgs3dmapexportsettings.h"
 #include "qgssettings.h"
 
-Qgs3DMapExportSettings::Qgs3DMapExportSettings( QObject *parent ): QObject( parent )
+Qgs3DMapExportSettings::Qgs3DMapExportSettings()
 {
   QgsSettings settings;
   mSceneName = settings.value( QStringLiteral( "UI/last3DSceneExportName" ), QStringLiteral( "Scene" ) ).toString();

@@ -899,14 +899,14 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
     }
   }
 
-  if ( mTerrain != nullptr )
+  if ( mTerrain )
     exporter.parseTerrain( mTerrain, "Terrain" );
 
   exporter.save( exportSettings.sceneName(), exportSettings.sceneFolderPath() );
 
   if ( !notParsedLayers.empty() )
   {
-    QString message = "The following layers were not exported: \n";
+    QString message = tr( "The following layers were not exported:" ) + "\n";
     for ( const QString &layerName : notParsedLayers )
       message += layerName + "\n";
     QgsMessageOutput::showMessage( tr( "3D exporter warning" ), message, QgsMessageOutput::MessageText );

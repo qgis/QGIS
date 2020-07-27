@@ -28,12 +28,11 @@
  * \ingroup 3d
  * \since QGIS 3.16
  */
-class _3D_EXPORT Qgs3DMapExportSettings : public QObject
+class _3D_EXPORT Qgs3DMapExportSettings
 {
-    Q_OBJECT
   public:
     //! Constructor
-    Qgs3DMapExportSettings( QObject *parent = nullptr );
+    Qgs3DMapExportSettings();
 
     //! destructor (save the export settings before deallocation)
     ~Qgs3DMapExportSettings();
