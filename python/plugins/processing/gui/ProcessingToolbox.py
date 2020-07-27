@@ -233,7 +233,10 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             dlg.exec_()
 
     def executeAlgorithm(self):
-        alg = self.algorithmTree.selectedAlgorithm().create() if self.algorithmTree.selectedAlgorithm() is not None else None
+        config = {}
+        if self.in_place_mode:
+            config['IN_PLACE'] = True
+        alg = self.algorithmTree.selectedAlgorithm().create(config) if self.algorithmTree.selectedAlgorithm() is not None else None
         if alg is not None:
             ok, message = alg.canExecute()
             if not ok:

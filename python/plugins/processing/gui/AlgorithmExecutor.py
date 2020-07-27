@@ -153,7 +153,7 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
         if hasattr(alg, 'processFeature'):  # in-place feature editing
             # Make a clone or it will crash the second time the dialog
             # is opened and run
-            alg = alg.create()
+            alg = alg.create({'IN_PLACE': True})
             if not alg.prepare(parameters, context, feedback):
                 raise QgsProcessingException(tr("Could not prepare selected algorithm."))
             # Check again for compatibility after prepare
@@ -218,7 +218,7 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
             else:
                 selected_ids = []
 
-            results, ok = alg.run(parameters, context, feedback)
+            results, ok = alg.run(parameters, context, feedback, configuration={'IN_PLACE': True})
 
             if ok:
                 result_layer = QgsProcessingUtils.mapLayerFromString(results['OUTPUT'], context)
