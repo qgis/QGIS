@@ -240,10 +240,10 @@ QString QgsRasterFrequencyByEqualOperatorAlgorithm::shortHelpString() const
                       "(number of times) the values of an input stack of rasters are equal "
                       "to the value of a value raster. \n "
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
-                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis."
-                      "The input value layer serves as reference layer for the sample layers."
+                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis. "
+                      "The input value layer serves as reference layer for the sample layers. "
                       "Any NoData cells in the value raster or the data layer stack will result in a NoData cell "
-                      "in the output raster if the ignore NoData parameter is not checked."
+                      "in the output raster if the ignore NoData parameter is not checked. "
                       "The output NoData value can be set manually. The output rasters extent and resolution "
                       "is defined by the input raster layer and is always of int32 type." );
 }
@@ -283,10 +283,10 @@ QString QgsRasterFrequencyByGreaterThanOperatorAlgorithm::shortHelpString() cons
                       "(number of times) the values of an input stack of rasters are greater than "
                       " the value of a value raster. \n "
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
-                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis."
-                      "The input value layer serves as reference layer for the sample layers."
+                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis. "
+                      "The input value layer serves as reference layer for the sample layers. "
                       "Any NoData cells in the value raster or the data layer stack will result in a NoData cell "
-                      "in the output raster if the ignore NoData parameter is not checked."
+                      "in the output raster if the ignore NoData parameter is not checked. "
                       "The output NoData value can be set manually. The output rasters extent and resolution "
                       "is defined by the input raster layer and is always of int32 type." );
 }
@@ -326,10 +326,10 @@ QString QgsRasterFrequencyByLessThanOperatorAlgorithm::shortHelpString() const
                       "(number of times) the values of an input stack of rasters are less than "
                       " the value of a value raster. \n "
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
-                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis."
-                      "The input value layer serves as reference layer for the sample layers."
+                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis. "
+                      "The input value layer serves as reference layer for the sample layers. "
                       "Any NoData cells in the value raster or the data layer stack will result in a NoData cell "
-                      "in the output raster if the ignore NoData parameter is not checked."
+                      "in the output raster if the ignore NoData parameter is not checked. "
                       "The output NoData value can be set manually. The output rasters extent and resolution "
                       "is defined by the input raster layer and is always of int32 type." );
 }
