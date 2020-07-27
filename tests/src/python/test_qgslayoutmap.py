@@ -662,6 +662,66 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         self.report += checker.report()
         self.assertTrue(result, message)
 
+    def testClippingHideClipSource(self):
+        """
+        When an item is set to be the clip source, it shouldn't render anything itself
+        """
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(30)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        settings = QgsPalLayerSettings()
+        settings.setFormat(format)
+        settings.fieldName = "'XXXX'"
+        settings.isExpression = True
+        settings.placement = QgsPalLayerSettings.OverPoint
+
+        vl = QgsVectorLayer("Polygon?crs=epsg:4326&field=id:integer", "vl", "memory")
+
+        props = {"color": "127,255,127", 'outline_style': 'solid', 'outline_width': '1', 'outline_color': '0,0,255'}
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        renderer = QgsSingleSymbolRenderer(fillSymbol)
+        vl.setRenderer(renderer)
+
+        f = QgsFeature(vl.fields(), 1)
+        for x in range(0, 15, 3):
+            for y in range(0, 15, 3):
+                f.setGeometry(QgsGeometry(QgsPoint(x, y)).buffer(1, 3))
+                vl.dataProvider().addFeature(f)
+
+        vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+        vl.setLabelsEnabled(True)
+
+        p = QgsProject()
+
+        p.addMapLayer(vl)
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        map.setFrameEnabled(True)
+        map.zoomToExtent(vl.extent())
+        map.setLayers([vl])
+        layout.addLayoutItem(map)
+
+        shape = QgsLayoutItemShape(layout)
+        layout.addLayoutItem(shape)
+        shape.setShapeType(QgsLayoutItemShape.Ellipse)
+        shape.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+
+        map.itemClippingSettings().setEnabled(True)
+        map.itemClippingSettings().setSourceItem(shape)
+        map.itemClippingSettings().setForceLabelsInsideClipPath(False)
+        map.itemClippingSettings().setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.ClipToIntersection)
+
+        checker = QgsLayoutChecker('composermap_itemclip_nodrawsource', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
+
 
 if __name__ == '__main__':
     unittest.main()
