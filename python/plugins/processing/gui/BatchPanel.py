@@ -37,7 +37,19 @@ from qgis.PyQt.QtWidgets import (
     QMenu,
     QAction
 )
-from qgis.PyQt.QtGui import QPalette
+
+# adding to this list? also update the HistoryDialog.py executeAlgorithm imports!!
+
+from qgis.PyQt.QtCore import (
+    QTime,  # NOQA - must be here for saved file evaluation
+    QDate,  # NOQA - must be here for saved file evaluation
+    QDateTime  # NOQA - must be here for saved file evaluation
+)
+from qgis.PyQt.QtGui import (
+    QPalette,
+    QColor,  # NOQA - must be here for saved file evaluation
+)
+
 from qgis.PyQt.QtCore import (
     QDir,
     QFileInfo,
@@ -49,6 +61,7 @@ from qgis.core import (
     QgsSettings,
     QgsProperty,  # NOQA - must be here for saved file evaluation
     QgsProject,
+    QgsFeatureRequest,  # NOQA - must be here for saved file evaluation
     QgsProcessingFeatureSourceDefinition,  # NOQA - must be here for saved file evaluation
     QgsCoordinateReferenceSystem,  # NOQA - must be here for saved file evaluation
     QgsProcessingParameterDefinition,
