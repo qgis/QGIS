@@ -48,7 +48,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgspostgresproviderconnection.h"
 
-#include <QDebug>
+
 const QString QgsPostgresProvider::POSTGRES_KEY = QStringLiteral( "postgres" );
 const QString QgsPostgresProvider::POSTGRES_DESCRIPTION = QStringLiteral( "PostgreSQL/PostGIS data provider" );
 
@@ -4847,7 +4847,6 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     "     kcu1.ordinal_position "
     "ORDER BY kcu1.ordinal_position"
   );
-  qDebug() << sql << "\n";
   QgsPostgresResult sqlResult( connectionRO()->PQexec( sql ) );
   if ( sqlResult.PQresultStatus() != PGRES_TUPLES_OK )
   {
