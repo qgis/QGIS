@@ -144,8 +144,9 @@ class RasterCalculator(QgisAlgorithm):
             expression = self.mappedNameToLayer(lyr, expression, layersDict, context)
 
         # check for layers available in the project
-        for lyr in QgsProcessingUtils.compatibleRasterLayers(context.project()):
-            expression = self.mappedNameToLayer(lyr, expression, layersDict, context)
+        if context.project():
+            for lyr in QgsProcessingUtils.compatibleRasterLayers(context.project()):
+                expression = self.mappedNameToLayer(lyr, expression, layersDict, context)
 
         # create the list of layers to be passed as inputs to RasterCalculaltor
         # at this phase expression has been modified to match available layers
