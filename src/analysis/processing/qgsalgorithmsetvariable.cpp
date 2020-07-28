@@ -27,7 +27,9 @@ QString QgsSetProjectVariableAlgorithm::name() const
 
 QgsProcessingAlgorithm::Flags QgsSetProjectVariableAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::FlagHideFromToolbox | QgsProcessingAlgorithm::FlagSkipGenericModelLogging;
+  return QgsProcessingAlgorithm::FlagHideFromToolbox
+         | QgsProcessingAlgorithm::FlagSkipGenericModelLogging
+         | QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool;
 }
 
 QString QgsSetProjectVariableAlgorithm::displayName() const

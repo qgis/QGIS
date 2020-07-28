@@ -51,6 +51,13 @@ void QgsCategorizeUsingStyleAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( failSymbols.release() );
 }
 
+QgsProcessingAlgorithm::Flags QgsCategorizeUsingStyleAlgorithm::flags() const
+{
+  Flags f = QgsProcessingAlgorithm::flags();
+  f |= FlagNotAvailableInStandaloneTool;
+  return f;
+}
+
 QString QgsCategorizeUsingStyleAlgorithm::name() const
 {
   return QStringLiteral( "categorizeusingstyle" );
