@@ -43,7 +43,6 @@ from qgis.core import (NULL,
                        QgsProcessingParameterFeatureSink)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 

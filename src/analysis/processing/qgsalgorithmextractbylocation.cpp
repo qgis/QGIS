@@ -369,7 +369,7 @@ QString QgsSelectByLocationAlgorithm::name() const
 
 QgsProcessingAlgorithm::Flags QgsSelectByLocationAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading;
+  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading | QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool;
 }
 
 QString QgsSelectByLocationAlgorithm::displayName() const
