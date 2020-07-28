@@ -65,18 +65,6 @@ QgsAnnotationItem *QgsAnnotationItemRegistry::createItem( const QString &type ) 
   return mMetadata[type]->createItem();
 }
 
-QgsAnnotationItem *QgsAnnotationItemRegistry::createItem( const QDomElement &element, const QgsReadWriteContext &context ) const
-{
-  const QString type = element.attribute( QStringLiteral( "type" ) );
-  if ( !mMetadata.contains( type ) )
-    return nullptr;
-
-  std::unique_ptr< QgsAnnotationItem > newItem( mMetadata[type]->createItem() );
-  if ( newItem )
-    newItem->readXml( element, context );
-  return newItem.release();
-}
-
 QMap<QString, QString> QgsAnnotationItemRegistry::itemTypes() const
 {
   QMap<QString, QString> types;
