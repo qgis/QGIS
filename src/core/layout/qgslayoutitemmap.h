@@ -182,8 +182,21 @@ class CORE_EXPORT QgsLayoutItemMapItemClipPathSettings : public QObject
 
     /**
      * Returns the geometry to use for clipping the parent map, in the map item's CRS.
+     *
+     * \see clipPathInMapItemCoordinates()
      */
     QgsGeometry clippedMapExtent() const;
+
+    /**
+     * Returns the clipping path geometry, in the map item's coordinate space.
+     *
+     * \warning The return path is not in geographic coordinates, rather the map
+     * layout item's QGraphicsItem coordinate space. Use clippedMapExtent() to retrieve
+     * the clip path in the map's CRS.
+     *
+     * \see clippedMapExtent()
+     */
+    QgsGeometry clipPathInMapItemCoordinates() const;
 
     /**
      * Returns the clip path as a map clipping region.
@@ -824,6 +837,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     void draw( QgsLayoutItemRenderContext &context ) override;
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
+    QPainterPath framePath() const override;
 
     //! True if a draw is already in progress
     bool isDrawing() const {return mDrawing;}

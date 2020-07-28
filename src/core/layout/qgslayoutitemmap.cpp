@@ -859,6 +859,17 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
   return true;
 }
 
+QPainterPath QgsLayoutItemMap::framePath() const
+{
+  if ( mItemClippingSettings->isActive() )
+  {
+    const QgsGeometry g = mItemClippingSettings->clipPathInMapItemCoordinates();
+    if ( !g.isNull() )
+      return g.constGet()->asQPainterPath();
+  }
+  return QgsLayoutItem::framePath();
+}
+
 void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *style, QWidget * )
 {
   if ( !mLayout || !painter || !painter->device() || !mUpdatesEnabled )
@@ -2862,6 +2873,17 @@ QgsGeometry QgsLayoutItemMapItemClipPathSettings::clippedMapExtent() const
   {
     QgsGeometry clipGeom( mClipPathSource->clipPath() );
     clipGeom.transform( mMap->layoutToMapCoordsTransform() );
+    return clipGeom;
+  }
+  return QgsGeometry();
+}
+
+QgsGeometry QgsLayoutItemMapItemClipPathSettings::clipPathInMapItemCoordinates() const
+{
+  if ( isActive() )
+  {
+    QgsGeometry clipGeom( mClipPathSource->clipPath() );
+    clipGeom.transform( mMap->sceneTransform().inverted() );
     return clipGeom;
   }
   return QgsGeometry();

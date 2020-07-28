@@ -1149,14 +1149,29 @@ Note that the context's painter has been scaled so that painter units are pixels
 Use the QgsRenderContext methods to convert from millimeters or other units to the painter's units.
 %End
 
+    virtual QPainterPath framePath() const;
+%Docstring
+Returns the path to use when drawing the item's frame or background.
+
+.. seealso:: :py:func:`drawFrame`
+
+.. seealso:: :py:func:`drawBackground`
+
+.. versionadded:: 3.16
+%End
+
     virtual void drawFrame( QgsRenderContext &context );
 %Docstring
 Draws the frame around the item.
+
+.. seealso:: :py:func:`framePath`
 %End
 
     virtual void drawBackground( QgsRenderContext &context );
 %Docstring
 Draws the background for the item.
+
+.. seealso:: :py:func:`framePath`
 %End
 
     virtual void setFixedSize( const QgsLayoutSize &size );

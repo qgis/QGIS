@@ -157,6 +157,21 @@ Sets whether the map content should be clipped to the associated item.
     QgsGeometry clippedMapExtent() const;
 %Docstring
 Returns the geometry to use for clipping the parent map, in the map item's CRS.
+
+.. seealso:: :py:func:`clipPathInMapItemCoordinates`
+%End
+
+    QgsGeometry clipPathInMapItemCoordinates() const;
+%Docstring
+Returns the clipping path geometry, in the map item's coordinate space.
+
+.. warning::
+
+   The return path is not in geographic coordinates, rather the map
+   layout item's QGraphicsItem coordinate space. Use :py:func:`~QgsLayoutItemMapItemClipPathSettings.clippedMapExtent` to retrieve
+   the clip path in the map's CRS.
+
+.. seealso:: :py:func:`clippedMapExtent`
 %End
 
     QgsMapClippingRegion toMapClippingRegion() const;
@@ -879,6 +894,8 @@ Returns the map's item based clip path settings.
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+
+    virtual QPainterPath framePath() const;
 
 
     bool isDrawing() const;
