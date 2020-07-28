@@ -12657,8 +12657,6 @@ void QgisApp::init3D()
   // initialize 3D registries
   Qgs3D::initialize();
   Qgs3DAppUtils::initialize();
-
-  QgsStyleModel::setIconGenerator( new Qgs3DIconGenerator( QgsApplication::defaultStyleModel() ) );
 #else
   mActionNew3DMapCanvas->setVisible( false );
 #endif
