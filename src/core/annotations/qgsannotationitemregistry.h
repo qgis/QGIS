@@ -185,12 +185,6 @@ class CORE_EXPORT QgsAnnotationItemRegistry : public QObject
     QgsAnnotationItem *createItem( const QString &type ) const SIP_FACTORY;
 
     /**
-     * Creates a new instance of a annotation item given a DOM \a element corresponding
-     * to an item.
-     */
-    QgsAnnotationItem *createItem( const QDomElement &element, const QgsReadWriteContext &context ) const SIP_FACTORY;
-
-    /**
      * Returns a map of available item types to translated name.
      */
     QMap< QString, QString> itemTypes() const;

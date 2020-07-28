@@ -115,9 +115,11 @@ bool QgsAnnotationLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
   {
     QDomElement itemElement = items.at( i ).toElement();
     const QString id = itemElement.attribute( QStringLiteral( "id" ) );
-    std::unique_ptr< QgsAnnotationItem > item( QgsApplication::annotationItemRegistry()->createItem( itemElement, context ) );
+    const QString type = itemElement.attribute( QStringLiteral( "type" ) );
+    std::unique_ptr< QgsAnnotationItem > item( QgsApplication::annotationItemRegistry()->createItem( type ) );
     if ( item )
     {
+      item->readXml( itemElement, context );
       mItems.insert( id, item.release() );
     }
   }
