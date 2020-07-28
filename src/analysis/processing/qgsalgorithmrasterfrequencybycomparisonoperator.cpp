@@ -53,7 +53,7 @@ void QgsRasterFrequencyByComparisonOperatorBase::initAlgorithm( const QVariantMa
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ),
                 QObject::tr( "Output layer" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "OCCURENCE_COUNT" ), QObject::tr( "Count of value occurrances" ) ) );
+  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "OCCURRENCE_COUNT" ), QObject::tr( "Count of value occurrances" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "FOUND_LOCATIONS_COUNT" ), QObject::tr( "Count of cells with equal value occurrances" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MEAN_FREQUENCY_PER_LOCATION" ), QObject::tr( "Mean frequency at valid cell locations" ) ) );
   addOutput( new QgsProcessingOutputString( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ) ) );
@@ -202,7 +202,7 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
   double meanEqualCountPerValidLocation = static_cast<double>( occurrenceCount ) / static_cast<double>( foundLocationsCount * mInputs.size() );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OCCURENCE_COUNT" ), occurrenceCount );
+  outputs.insert( QStringLiteral( "OCCURRENCE_COUNT" ), occurrenceCount );
   outputs.insert( QStringLiteral( "FOUND_LOCATIONS_COUNT" ), foundLocationsCount );
   outputs.insert( QStringLiteral( "MEAN_FREQUENCY_PER_LOCATION" ),  meanEqualCountPerValidLocation );
   outputs.insert( QStringLiteral( "EXTENT" ), mExtent.toString() );
