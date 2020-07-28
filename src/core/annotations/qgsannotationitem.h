@@ -37,6 +37,28 @@ class QgsFillSymbol;
  */
 class CORE_EXPORT QgsAnnotationItem
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->type() == "marker" )
+    {
+      sipType = sipType_QgsAnnotationMarkerItem;
+    }
+    else if ( sipCpp->type() == "linestring" )
+    {
+      sipType = sipType_QgsAnnotationLineStringItem;
+    }
+    else if ( sipCpp->type() == "polygon" )
+    {
+      sipType = sipType_QgsAnnotationPolygonItem;
+    }
+    else
+    {
+      sipType = 0;
+    }
+    SIP_END
+#endif
+
   public:
 
     /**
@@ -112,92 +134,4 @@ class CORE_EXPORT QgsAnnotationItem
 
 };
 
-class CORE_EXPORT QgsMarkerItem : public QgsAnnotationItem
-{
-  public:
-
-    QgsMarkerItem( QgsPointXY point, const QgsCoordinateReferenceSystem &crs );
-    ~QgsMarkerItem() override;
-
-    QString type() const override;
-    void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
-    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
-    static QgsMarkerItem *create() SIP_FACTORY;
-    bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
-
-    QgsMarkerItem *clone() override SIP_FACTORY;
-
-    const QgsMarkerSymbol *symbol() const;
-    void setSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
-
-  private:
-
-    QgsPointXY mPoint;
-    std::unique_ptr< QgsMarkerSymbol > mSymbol;
-
-#ifdef SIP_RUN
-    QgsMarkerItem( const QgsMarkerItem &other );
-#endif
-
-};
-
-
-class CORE_EXPORT QgsLineStringItem : public QgsAnnotationItem
-{
-  public:
-
-    QgsLineStringItem( const QgsLineString &linestring, const QgsCoordinateReferenceSystem &crs );
-    ~QgsLineStringItem() override;
-
-    QString type() const override;
-    void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
-    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
-    static QgsLineStringItem *create() SIP_FACTORY;
-    bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
-
-    QgsLineStringItem *clone() override SIP_FACTORY;
-
-    const QgsLineSymbol *symbol() const;
-    void setSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
-
-  private:
-
-    QgsLineString mLineString;
-    std::unique_ptr< QgsLineSymbol > mSymbol;
-
-#ifdef SIP_RUN
-    QgsLineStringItem( const QgsLineStringItem &other );
-#endif
-
-};
-
-
-class CORE_EXPORT QgsPolygonItem : public QgsAnnotationItem
-{
-  public:
-
-    QgsPolygonItem( const QgsPolygon &polygon, const QgsCoordinateReferenceSystem &crs );
-    ~QgsPolygonItem() override;
-
-    QString type() const override;
-    void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
-    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
-    static QgsPolygonItem *create() SIP_FACTORY;
-    bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
-
-    QgsPolygonItem *clone() override SIP_FACTORY;
-
-    const QgsFillSymbol *symbol() const;
-    void setSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
-
-  private:
-
-    QgsPolygon mPolygon;
-    std::unique_ptr< QgsFillSymbol > mSymbol;
-
-#ifdef SIP_RUN
-    QgsPolygonItem( const QgsPolygonItem &other );
-#endif
-
-};
 #endif // QGSANNOTATIONITEM_H
