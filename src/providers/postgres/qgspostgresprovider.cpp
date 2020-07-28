@@ -48,7 +48,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgspostgresproviderconnection.h"
 
-
+#include <QDebug>
 const QString QgsPostgresProvider::POSTGRES_KEY = QStringLiteral( "postgres" );
 const QString QgsPostgresProvider::POSTGRES_DESCRIPTION = QStringLiteral( "PostgreSQL/PostGIS data provider" );
 
@@ -4821,25 +4821,32 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     return result;
   }
   QString sql(
-    "SELECT "
-    "  tc.constraint_name,  "
-    "  kcu.column_name,  "
-    "  ccu.table_schema AS constraint_schema, "
-    "  ccu.table_name AS constraint_table, "
-    "  ccu.column_name AS column_name, "
-    "  kcu.ordinal_position "
-    "FROM "
-    "  information_schema.table_constraints AS tc  "
-    "  JOIN information_schema.key_column_usage AS kcu "
-    "    ON tc.constraint_name = kcu.constraint_name "
-    "    AND tc.table_schema = kcu.table_schema "
-    "  JOIN information_schema.constraint_column_usage AS ccu "
-    "    ON ccu.constraint_name = tc.constraint_name "
-    "    AND ccu.table_schema = tc.table_schema "
+    "SELECT tc.constraint_name , "
+    "   kcu1.column_name , "
+    "   kcu2.constraint_schema , "
+    "   kcu2.table_name , "
+    "   kcu2.column_name , "
+    "   kcu1.ordinal_position "
+    "FROM information_schema.table_constraints AS tc "
+    "INNER JOIN information_schema.key_column_usage AS kcu1 ON tc.constraint_name = kcu1.constraint_name "
+    "AND tc.table_schema = kcu1.table_schema "
+    "INNER JOIN information_schema.key_column_usage AS kcu2 ON tc.constraint_name = kcu2.constraint_name "
+    "AND tc.table_schema = kcu2.table_schema "
+    "INNER JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name "
+    "AND ccu.table_schema = tc.table_schema "
     "WHERE tc.constraint_type = 'FOREIGN KEY' "
     "  AND tc.table_schema=" + QgsPostgresConn::quotedValue( mSchemaName ) +
-    "  AND tc.table_name=" + QgsPostgresConn::quotedValue( mTableName )
+    "  AND tc.table_name=" + QgsPostgresConn::quotedValue( mTableName ) +
+    "  AND kcu1.ordinal_position= kcu2.ordinal_position "
+    "GROUP BY tc.constraint_name, "
+    "     kcu1.column_name, "
+    "     kcu2.constraint_schema, "
+    "     kcu2.table_name, "
+    "     kcu2.column_name, "
+    "     kcu1.ordinal_position "
+    "ORDER BY kcu1.ordinal_position"
   );
+  qDebug() << sql << "\n";
   QgsPostgresResult sqlResult( connectionRO()->PQexec( sql ) );
   if ( sqlResult.PQresultStatus() != PGRES_TUPLES_OK )
   {
