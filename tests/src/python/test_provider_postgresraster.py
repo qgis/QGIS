@@ -77,7 +77,9 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         cls._load_test_table('public', 'raster_3035_tiled_composite_pk')
         cls._load_test_table('public', 'raster_3035_untiled_multiple_rows')
         cls._load_test_table('idro', 'cosmo_i5_snow', 'bug_34823_pg_raster')
-        cls._load_test_table('public', 'int16_regression_36689', 'bug_36689_pg_raster')
+        cls._load_test_table(
+            'public', 'int16_regression_36689', 'bug_36689_pg_raster')
+        cls._load_test_table('public', 'bug_37968_dem_linear_cdn_extract')
 
         # Fix timing issues in backend
         # time.sleep(1)
@@ -480,6 +482,26 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
 
         self.assertEqual(data, [55, 52, 46, 39, 33, 30, 58, 54, 49, 45, 41, 37, 58, 54, 50,
                                 47, 45, 43, 54, 51, 49, 47, 46, 44, 47, 47, 47, 47, 46, 45, 41, 43, 45, 48, 49, 46])
+
+    def testNegativeScaleY(self):
+        """Test regression https://github.com/qgis/QGIS/issues/37968
+        Y is growing south
+        """
+
+        rl = QgsRasterLayer(
+            self.dbconn + " sslmode=disable table={table} schema={schema}".format(
+                table='bug_37968_dem_linear_cdn_extract', schema='public'), 'pg_layer', 'postgresraster')
+
+        self.assertTrue(rl.isValid())
+        compareWkt(rl.extent().asWktPolygon(
+        ), 'POLYGON((-40953.223387096 170588, -40873.21532258 170588, -40873.21532258 170668, -40953.223387096 170668, -40953.23387096))')
+        block = rl.dataProvider().block(1, rl.extent(), 6, 6)
+        data = []
+        for i in range(6):
+            for j in range(6):
+                data.append(int(block.value(i, j)))
+
+        self.assertEqual(data, [52, 52, 52, 52, 44, 43, 52, 52, 52, 48, 44, 44, 49, 52, 49, 44, 44, 44, 43, 47, 46, 44, 44, 44, 42, 42, 43, 44, 44, 48, 42, 43, 43, 44, 44, 47])
 
 
 if __name__ == '__main__':
