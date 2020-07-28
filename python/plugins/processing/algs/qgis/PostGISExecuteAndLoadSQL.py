@@ -55,7 +55,7 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
         super().__init__()
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool
+        return super().flags() | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool | QgsProcessingAlgorithm.FlagRequiresProject
 
     def initAlgorithm(self, config=None):
         db_param = QgsProcessingParameterProviderConnection(

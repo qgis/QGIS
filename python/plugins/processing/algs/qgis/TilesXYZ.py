@@ -49,7 +49,8 @@ from qgis.core import (QgsProcessingException,
                        QgsMapRendererCustomPainterJob,
                        QgsLabelingEngineSettings,
                        QgsApplication,
-                       QgsExpressionContextUtils)
+                       QgsExpressionContextUtils,
+                       QgsProcessingAlgorithm)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 import threading
 from concurrent.futures import ThreadPoolExecutor
@@ -439,6 +440,9 @@ class TilesXYZAlgorithmMBTiles(TilesXYZAlgorithmBase):
 
     def groupId(self):
         return 'rastertools'
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagRequiresProject
 
     def processAlgorithm(self, parameters, context, feedback):
         output_file = self.parameterAsString(parameters, self.OUTPUT_FILE, context)
