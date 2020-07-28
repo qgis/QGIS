@@ -101,11 +101,8 @@ and 1.0 (fully opaque).
 
     virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
 
-    virtual QgsDataProvider *dataProvider();
-
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

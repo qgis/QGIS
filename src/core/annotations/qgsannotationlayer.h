@@ -119,39 +119,11 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &, StyleCategories categories = AllStyleCategories ) const override;
     bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
-    QgsDataProvider *dataProvider() override;
-    const QgsDataProvider *dataProvider() const override SIP_SKIP;
 
   private:
-    std::unique_ptr< QgsDataProvider > mDataProvider;
     QMap<QString, QgsAnnotationItem *> mItems;
     double mOpacity = 100;
+    QgsCoordinateTransformContext mTransformContext;
 };
-
-#ifndef SIP_RUN
-///@cond PRIVATE
-
-/**
- * A minimal data provider for annotation layers
- */
-class QgsAnnotationLayerDataProvider : public QgsDataProvider
-{
-    Q_OBJECT
-
-  public:
-    QgsAnnotationLayerDataProvider( const QgsDataProvider::ProviderOptions &providerOptions );
-    void setExtent( const QgsRectangle &extent ) { mExtent = extent; }
-    QgsCoordinateReferenceSystem crs() const override;
-    QString name() const override;
-    QString description() const override;
-    QgsRectangle extent() const override;
-    bool isValid() const override;
-
-  private:
-
-    QgsRectangle mExtent;
-};
-///@endcond
-#endif
 
 #endif // QGSANNOTATIONLAYER_H
