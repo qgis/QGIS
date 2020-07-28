@@ -1,0 +1,69 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationpolygonitem.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsAnnotationPolygonItem : QgsAnnotationItem
+{
+%Docstring
+An annotation item which renders a fill symbol for a polygon geometry.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsannotationpolygonitem.h"
+%End
+  public:
+
+    QgsAnnotationPolygonItem( const QgsPolygon &polygon, const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Constructor for QgsAnnotationPolygonItem, with the specified ``polygon`` in the given ``crs``.
+%End
+    ~QgsAnnotationPolygonItem();
+
+    virtual QString type() const;
+
+    virtual void render( QgsRenderContext &context, QgsFeedback *feedback );
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    static QgsAnnotationPolygonItem *create() /Factory/;
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual QgsAnnotationPolygonItem *clone() /Factory/;
+
+
+    const QgsFillSymbol *symbol() const;
+%Docstring
+Returns the symbol used to render the item.
+
+.. seealso:: :py:func:`setSymbol`
+%End
+
+    void setSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used to render the marker item.
+
+The item takes ownership of the symbol.
+
+.. seealso:: :py:func:`symbol`
+%End
+
+  private:
+    QgsAnnotationPolygonItem( const QgsAnnotationPolygonItem &other );
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationpolygonitem.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

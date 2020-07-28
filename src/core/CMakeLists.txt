@@ -129,7 +129,10 @@ SET(QGIS_CORE_SRCS
   annotations/qgsannotationitemregistry.cpp
   annotations/qgsannotationlayer.cpp
   annotations/qgsannotationlayerrenderer.cpp
+  annotations/qgsannotationlinestringitem.cpp
+  annotations/qgsannotationmarkeritem.cpp
   annotations/qgsannotationmanager.cpp
+  annotations/qgsannotationpolygonitem.cpp
   annotations/qgshtmlannotation.cpp
   annotations/qgssvgannotation.cpp
   annotations/qgstextannotation.cpp
@@ -1053,7 +1056,10 @@ SET(QGIS_CORE_HDRS
   annotations/qgsannotationitemregistry.h
   annotations/qgsannotationlayer.h
   annotations/qgsannotationlayerrenderer.h
+  annotations/qgsannotationlinestringitem.h
+  annotations/qgsannotationmarkeritem.h
   annotations/qgsannotationmanager.h
+  annotations/qgsannotationpolygonitem.h
   annotations/qgsannotationregistry.h
   annotations/qgshtmlannotation.h
   annotations/qgssvgannotation.h

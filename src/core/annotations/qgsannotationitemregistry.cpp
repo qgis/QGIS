@@ -16,6 +16,9 @@
 
 #include "qgsannotationitemregistry.h"
 #include "qgsannotationitem.h"
+#include "qgsannotationmarkeritem.h"
+#include "qgsannotationlinestringitem.h"
+#include "qgsannotationpolygonitem.h"
 #include <QDomElement>
 
 QgsAnnotationItemRegistry::QgsAnnotationItemRegistry( QObject *parent )
@@ -34,11 +37,11 @@ bool QgsAnnotationItemRegistry::populate()
     return false;
 
   mMetadata.insert( QStringLiteral( "marker" ), new QgsAnnotationItemMetadata( QStringLiteral( "marker" ), QObject::tr( "Marker" ), QObject::tr( "Markers" ),
-                    QgsMarkerItem::create ) );
+                    QgsAnnotationMarkerItem::create ) );
   mMetadata.insert( QStringLiteral( "linestring" ), new QgsAnnotationItemMetadata( QStringLiteral( "linestring" ), QObject::tr( "Polyline" ), QObject::tr( "Polylines" ),
-                    QgsLineStringItem::create ) );
+                    QgsAnnotationLineStringItem::create ) );
   mMetadata.insert( QStringLiteral( "polygon" ), new QgsAnnotationItemMetadata( QStringLiteral( "polygon" ), QObject::tr( "Polygon" ), QObject::tr( "Polygons" ),
-                    QgsPolygonItem::create ) );
+                    QgsAnnotationPolygonItem::create ) );
   return true;
 }
 
