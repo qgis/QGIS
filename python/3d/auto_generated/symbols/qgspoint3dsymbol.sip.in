@@ -138,12 +138,6 @@ Sets transform for individual objects represented by the symbol
 Returns transform for billboards
 %End
 
-    virtual bool exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const;
-
-%Docstring
-Exports the geometries contained withing the hierarchy of entity.
-Returns whether any objects were exported
-%End
   private:
     QgsPoint3DSymbol &operator=( const QgsPoint3DSymbol & );
 };
