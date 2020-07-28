@@ -764,11 +764,8 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
 
   while ( true )
   {
-    QChar c = buffer[cp];
-    cp++;
-
     // If end of line then if escaped or buffered then try to get more...
-    if ( cp > cpmax )
+    if ( cp >= cpmax )
     {
       if ( quoted || escaped )
       {
@@ -786,6 +783,9 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
       }
       break;
     }
+
+    QChar c = buffer[cp];
+    cp++;
 
     // If escaped, then just append the character
     if ( escaped )
