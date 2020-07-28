@@ -49,6 +49,7 @@ Abstract base class for processing algorithms.
       FlagCustomException,
       FlagPruneModelBranchesBasedOnAlgorithmResults,
       FlagSkipGenericModelLogging,
+      FlagNotAvailableInStandaloneTool,
       FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
