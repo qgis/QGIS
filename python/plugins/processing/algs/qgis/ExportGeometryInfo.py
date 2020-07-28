@@ -139,6 +139,8 @@ class ExportGeometryInfo(QgisAlgorithm):
             self.distance_area.setSourceCrs(source.sourceCrs(), context.transformContext())
             self.distance_area.setEllipsoid(context.ellipsoid())
         elif method == 1:
+            if not context.project():
+                raise QgsProcessingException(self.tr('No project is available in this context'))
             coordTransform = QgsCoordinateTransform(source.sourceCrs(), context.project().crs(), context.project())
 
         features = source.getFeatures()
