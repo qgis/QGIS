@@ -188,7 +188,7 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
           bool noDataInStack = false;
           std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, noDataInStack );
 
-          if( noDataInStack && !mIgnoreNoData )
+          if ( noDataInStack && !mIgnoreNoData )
           {
             outputBlock->setValue( row, col, mNoDataValue );
             noDataLocationsCount++;
@@ -289,7 +289,7 @@ QString QgsRasterFrequencyByGreaterThanOperatorAlgorithm::shortHelpString() cons
 {
   return QObject::tr( "The Greater than frequency algorithm evaluates on a cell-by-cell basis the frequency "
                       "(number of times) the values of an input stack of rasters are greater than "
-                      " the value of a value raster. \n "
+                      "the value of a value raster. \n "
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
                       "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis. "
                       "The input value layer serves as reference layer for the sample layers. "
@@ -332,7 +332,7 @@ QString QgsRasterFrequencyByLessThanOperatorAlgorithm::shortHelpString() const
 {
   return QObject::tr( "The Less than frequency algorithm evaluates on a cell-by-cell basis the frequency "
                       "(number of times) the values of an input stack of rasters are less than "
-                      " the value of a value raster. \n "
+                      "the value of a value raster. \n "
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
                       "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis. "
                       "The input value layer serves as reference layer for the sample layers. "
