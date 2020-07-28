@@ -110,7 +110,35 @@ QgsMapLayer *QgsProcessingContext::takeResultLayer( const QString &id )
   return tempLayerStore.takeMapLayer( tempLayerStore.mapLayer( id ) );
 }
 
+QString QgsProcessingContext::ellipsoid() const
+{
+  return mEllipsoid;
+}
 
+void QgsProcessingContext::setEllipsoid( const QString &ellipsoid )
+{
+  mEllipsoid = ellipsoid;
+}
+
+QgsUnitTypes::DistanceUnit QgsProcessingContext::distanceUnit() const
+{
+  return mDistanceUnit;
+}
+
+void QgsProcessingContext::setDistanceUnit( QgsUnitTypes::DistanceUnit unit )
+{
+  mDistanceUnit = unit;
+}
+
+QgsUnitTypes::AreaUnit QgsProcessingContext::areaUnit() const
+{
+  return mAreaUnit;
+}
+
+void QgsProcessingContext::setAreaUnit( QgsUnitTypes::AreaUnit areaUnit )
+{
+  mAreaUnit = areaUnit;
+}
 
 QgsProcessingLayerPostProcessorInterface *QgsProcessingContext::LayerDetails::postProcessor() const
 {

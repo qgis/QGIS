@@ -956,9 +956,28 @@ void TestQgsProcessing::context()
   context.setFlags( QgsProcessingContext::Flags( nullptr ) );
   QCOMPARE( context.flags(), QgsProcessingContext::Flags( nullptr ) );
 
+  QCOMPARE( context.ellipsoid(), QString() );
+  QCOMPARE( context.distanceUnit(), QgsUnitTypes::DistanceUnknownUnit );
+  QCOMPARE( context.areaUnit(), QgsUnitTypes::AreaUnknownUnit );
+
   QgsProject p;
+  p.setEllipsoid( QStringLiteral( "WGS84" ) );
+  p.setDistanceUnits( QgsUnitTypes::DistanceFeet );
+  p.setAreaUnits( QgsUnitTypes::AreaHectares );
   context.setProject( &p );
   QCOMPARE( context.project(), &p );
+  QCOMPARE( context.ellipsoid(), QStringLiteral( "WGS84" ) );
+  QCOMPARE( context.distanceUnit(), QgsUnitTypes::DistanceFeet );
+  QCOMPARE( context.areaUnit(), QgsUnitTypes::AreaHectares );
+
+  // if context ellipsoid/units are already set then setting the project shouldn't overwrite them
+  p.setEllipsoid( QStringLiteral( "WGS84v2" ) );
+  p.setDistanceUnits( QgsUnitTypes::DistanceMiles );
+  p.setAreaUnits( QgsUnitTypes::AreaAcres );
+  context.setProject( &p );
+  QCOMPARE( context.ellipsoid(), QStringLiteral( "WGS84" ) );
+  QCOMPARE( context.distanceUnit(), QgsUnitTypes::DistanceFeet );
+  QCOMPARE( context.areaUnit(), QgsUnitTypes::AreaHectares );
 
   context.setInvalidGeometryCheck( QgsFeatureRequest::GeometrySkipInvalid );
   QCOMPARE( context.invalidGeometryCheck(), QgsFeatureRequest::GeometrySkipInvalid );
