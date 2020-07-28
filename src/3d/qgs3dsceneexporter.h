@@ -140,6 +140,10 @@ class Qgs3DSceneExporter : public Qt3DCore::QEntity
     bool mExportTextures = false;
     int mTerrainTextureResolution = 512;
     float mScale = 1.0f;
+
+    friend QgsPolygon3DSymbol;
+    friend QgsLine3DSymbol;
+    friend QgsPoint3DSymbol;
 };
 
 #endif // QGS3DSCENEEXPORTER_H

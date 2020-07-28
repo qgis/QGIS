@@ -154,6 +154,13 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
      */
     int renderedFacade() const { return mRenderedFacade; }
 
+    /**
+     * Exports the geometries contained withing the hierarchy of entity.
+     * Returns whether any objects were exported
+     * \since QGIS 3.16
+     */
+    bool exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const override;
+
   private:
     //! how to handle altitude of vector features
     Qgs3DTypes::AltitudeClamping mAltClamping = Qgs3DTypes::AltClampRelative;

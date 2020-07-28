@@ -186,6 +186,15 @@ Returns which facade of the buildings is rendered (0 for None, 1 for Walls, 2 fo
 .. versionadded:: 3.16
 %End
 
+    virtual bool exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const;
+
+%Docstring
+Exports the geometries contained withing the hierarchy of entity.
+Returns whether any objects were exported
+
+.. versionadded:: 3.16
+%End
+
 };
 
 

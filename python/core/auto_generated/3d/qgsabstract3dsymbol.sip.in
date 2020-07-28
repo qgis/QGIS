@@ -10,6 +10,9 @@
 
 
 
+namespace Qt3DCore
+{
+}
 
 
 class QgsAbstract3DSymbol
@@ -76,6 +79,13 @@ Returns a reference to the symbol layer's property collection, used for data def
     void setDataDefinedProperties( const QgsPropertyCollection &collection );
 %Docstring
 Sets the symbol layer's property collection, used for data defined overrides.
+%End
+
+    virtual bool exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const;
+%Docstring
+Exports the geometries contained withing the hierarchy of entity.
+Returns whether any objects were exported
+If this function is not overloaded we don't try to export anything
 %End
 
   protected:
