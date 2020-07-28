@@ -1390,16 +1390,26 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   mCacheRenderingImage->setDotsPerMeterX( static_cast< int >( std::round( 1000 * w / widthLayoutUnits ) ) );
   mCacheRenderingImage->setDotsPerMeterY( static_cast< int >( std::round( 1000 * h / heightLayoutUnits ) ) );
 
+  //start with empty fill to avoid artifacts
+  mCacheRenderingImage->fill( QColor( 255, 255, 255, 0 ).rgba() );
   if ( hasBackground() )
   {
     //Initially fill image with specified background color. This ensures that layers with blend modes will
     //preview correctly
-    mCacheRenderingImage->fill( backgroundColor().rgba() );
-  }
-  else
-  {
-    //no background, but start with empty fill to avoid artifacts
-    mCacheRenderingImage->fill( QColor( 255, 255, 255, 0 ).rgba() );
+    if ( mItemClippingSettings->isActive() )
+    {
+      QPainter p( mCacheRenderingImage.get() );
+      const QPainterPath path = framePath();
+      p.setPen( Qt::NoPen );
+      p.setBrush( backgroundColor() );
+      p.scale( mCacheRenderingImage->width() / widthLayoutUnits, mCacheRenderingImage->height() / heightLayoutUnits );
+      p.drawPath( path );
+      p.end();
+    }
+    else
+    {
+      mCacheRenderingImage->fill( backgroundColor().rgba() );
+    }
   }
 
   mCacheInvalidated = false;
