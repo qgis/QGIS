@@ -116,10 +116,14 @@ class TestQgsRenderContext(unittest.TestCase):
         ms.setOutputSize(QSize(1000, 1000))
         ms.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         ms.setExtent(QgsRectangle(10000, 20000, 30000, 40000))
+        ms.setFlag(QgsMapSettings.Antialiasing, True)
+        ms.setFlag(QgsMapSettings.Render3DMap, True)
 
         ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysText)
         rc = QgsRenderContext.fromMapSettings(ms)
         self.assertEqual(rc.textRenderFormat(), QgsRenderContext.TextFormatAlwaysText)
+        self.assertTrue(rc.testFlag(QgsRenderContext.Antialiasing))
+        self.assertTrue(rc.testFlag(QgsRenderContext.Render3DMap))
 
         ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
         rc = QgsRenderContext.fromMapSettings(ms)

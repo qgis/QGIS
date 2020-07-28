@@ -345,6 +345,7 @@ Gets color that is used for drawing of selected vector features
       RenderPartialOutput,
       RenderPreviewJob,
       RenderBlocking,
+      Render3DMap,
       // TODO: ignore scale-based visibility (overview)
     };
     typedef QFlags<QgsMapSettings::Flag> Flags;
