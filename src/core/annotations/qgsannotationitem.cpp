@@ -25,6 +25,15 @@ QgsAnnotationItem::QgsAnnotationItem( const QgsCoordinateReferenceSystem &crs )
 
 }
 
+void QgsAnnotationItem::setCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mCrs = crs;
+}
+
+//
+// QgsMarkerItem
+//
+
 QgsMarkerItem::QgsMarkerItem( QgsPointXY point, const QgsCoordinateReferenceSystem &crs )
   : QgsAnnotationItem( crs )
   , mPoint( point )
@@ -77,21 +86,21 @@ QgsMarkerItem *QgsMarkerItem::create()
   return new QgsMarkerItem( QgsPointXY(), QgsCoordinateReferenceSystem() );
 }
 
-QgsMarkerItem *QgsMarkerItem::createFromElement( const QDomElement &element, const QgsReadWriteContext &context )
+bool QgsMarkerItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const double x = element.attribute( QStringLiteral( "x" ) ).toDouble();
   const double y = element.attribute( QStringLiteral( "y" ) ).toDouble();
+  mPoint = QgsPointXY( x, y );
 
   QgsCoordinateReferenceSystem crs;
   crs.readXml( element );
-
-  std::unique_ptr< QgsMarkerItem > item = qgis::make_unique< QgsMarkerItem >( QgsPointXY( x, y ), crs );
+  setCrs( crs );
 
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
-    item->setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ) );
+    setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ) );
 
-  return item.release();
+  return true;
 }
 
 QgsMarkerItem *QgsMarkerItem::clone()
@@ -179,22 +188,21 @@ QgsLineStringItem *QgsLineStringItem::create()
   return new QgsLineStringItem( QgsLineString(), QgsCoordinateReferenceSystem() );
 }
 
-QgsLineStringItem *QgsLineStringItem::createFromElement( const QDomElement &element, const QgsReadWriteContext &context )
+bool QgsLineStringItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QString wkt = element.attribute( QStringLiteral( "wkt" ) );
   QgsLineString ls;
-  ls.fromWkt( wkt );
+  mLineString.fromWkt( wkt );
 
   QgsCoordinateReferenceSystem crs;
   crs.readXml( element );
-
-  std::unique_ptr< QgsLineStringItem > item = qgis::make_unique< QgsLineStringItem >( ls, crs );
+  setCrs( crs );
 
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
-    item->setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( symbolElem, context ) );
+    setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( symbolElem, context ) );
 
-  return item.release();
+  return true;
 }
 
 QgsLineStringItem *QgsLineStringItem::clone()
@@ -294,22 +302,20 @@ QgsPolygonItem *QgsPolygonItem::create()
   return new QgsPolygonItem( QgsPolygon(), QgsCoordinateReferenceSystem() );
 }
 
-QgsPolygonItem *QgsPolygonItem::createFromElement( const QDomElement &element, const QgsReadWriteContext &context )
+bool QgsPolygonItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QString wkt = element.attribute( QStringLiteral( "wkt" ) );
-  QgsPolygon poly;
-  poly.fromWkt( wkt );
+  mPolygon.fromWkt( wkt );
 
   QgsCoordinateReferenceSystem crs;
   crs.readXml( element );
-
-  std::unique_ptr< QgsPolygonItem > item = qgis::make_unique< QgsPolygonItem >( poly, crs );
+  setCrs( crs );
 
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
-    item->setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElem, context ) );
+    setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElem, context ) );
 
-  return item.release();
+  return true;
 }
 
 QgsPolygonItem *QgsPolygonItem::clone()

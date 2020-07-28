@@ -45,6 +45,15 @@ Returns a unique (untranslated) string identifying the type of item.
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
 Returns the CRS used for storing the location of the item.
+
+.. seealso:: :py:func:`setCrs`
+%End
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the ``crs`` used for storing the location of the item.
+
+.. seealso:: :py:func:`crs`
 %End
 
     virtual void render( QgsRenderContext &context, QgsFeedback *feedback ) = 0;
@@ -58,6 +67,11 @@ render operations.
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const = 0;
 %Docstring
 Writes the item's state the an XML ``element``.
+%End
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
+%Docstring
+Reads the item's state from the given DOM ``element``.
 %End
 
     int zIndex() const;
@@ -88,7 +102,8 @@ class QgsMarkerItem : QgsAnnotationItem
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     static QgsMarkerItem *create() /Factory/;
-    static QgsMarkerItem *createFromElement( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
 
     virtual QgsMarkerItem *clone() /Factory/;
 
@@ -119,7 +134,8 @@ class QgsLineStringItem : QgsAnnotationItem
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     static QgsLineStringItem *create() /Factory/;
-    static QgsLineStringItem *createFromElement( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
 
     virtual QgsLineStringItem *clone() /Factory/;
 
@@ -150,7 +166,8 @@ class QgsPolygonItem : QgsAnnotationItem
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     static QgsPolygonItem *create() /Factory/;
-    static QgsPolygonItem *createFromElement( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
 
     virtual QgsPolygonItem *clone() /Factory/;
 

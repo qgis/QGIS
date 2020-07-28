@@ -55,19 +55,12 @@ Returns a translated, user visible name for the annotation item class.
 Returns a translated, user visible name for plurals of the annotation item class (e.g. "Labels" for a "Label" item).
 %End
 
-    virtual QgsAnnotationItem *createItem( const QDomElement &element, const QgsReadWriteContext &context ) = 0 /Factory/;
-%Docstring
-Creates an annotation item of this class using the state present in the specified
-DOM ``element``.
-%End
-
     virtual QgsAnnotationItem *createItem() = 0 /Factory/;
 %Docstring
 Creates a new, default, annotation item of this class.
 %End
 
 };
-
 
 
 
