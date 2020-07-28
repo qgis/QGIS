@@ -87,7 +87,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      * This map contains references to items owned by the layer, and ownership of these remains
      * with the layer.
      */
-    const QMap<QString, QgsAnnotationItem *> &items() const { return mItems; }
+    QMap<QString, QgsAnnotationItem *> items() const { return mItems; }
 
     /**
      * Sets the \a opacity for the annotation layer, where \a opacity is a value between 0 (totally transparent)
