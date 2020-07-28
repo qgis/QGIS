@@ -459,6 +459,20 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, co
       std::cerr << QStringLiteral( "The \"%1\" algorithm is not available for use outside of the QGIS desktop application\n" ).arg( id ).toLocal8Bit().constData();
       return 1;
     }
+
+    if ( alg->flags() & QgsProcessingAlgorithm::FlagKnownIssues )
+    {
+      std::cout << "\n****************\n";
+      std::cout << "Warning: this algorithm contains known issues and the results may be unreliable!\n";
+      std::cout << "****************\n\n";
+    }
+
+    if ( alg->flags() & QgsProcessingAlgorithm::FlagDeprecated )
+    {
+      std::cout << "\n****************\n";
+      std::cout << "Warning: this algorithm is deprecated and may be removed in a future QGIS version!\n";
+      std::cout << "****************\n\n";
+    }
   }
 
   std::cout << "\n----------------\n";
