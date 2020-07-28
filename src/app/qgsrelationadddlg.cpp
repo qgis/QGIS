@@ -44,7 +44,7 @@ QgsFieldPairWidget::QgsFieldPairWidget( int index, QWidget *parent )
   mAddButton = new QToolButton( this );
   mAddButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
   mAddButton->setMinimumWidth( 30 );
-  mAddButton->setToolTip( "Add new fields to pair" );
+  mAddButton->setToolTip( "Add new field pair as part of a composite foreign key" );
   mLayout->addWidget( mAddButton, 0, Qt::AlignLeft );
 
   mRemoveButton = new QToolButton( this );
