@@ -58,7 +58,7 @@ Ownership of ``item`` is transferred to the layer.
 %End
 
 
-    const QMap<QString, QgsAnnotationItem *> &items() const;
+    QMap<QString, QgsAnnotationItem *> items() const;
 %Docstring
 Returns a map of items contained in the layer.
 
