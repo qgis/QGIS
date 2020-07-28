@@ -730,15 +730,37 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
   const QgsCoordinateReferenceSystem currentCrs = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs();
   const QgsCoordinateReferenceSystem wgs84Crs( QStringLiteral( "EPSG:4326" ) );
 
+  bool okX = false;
+  bool okY = false;
+  double posX = 0.0;
+  double posY = 0.0;
+  QLocale locale;
+
   // Coordinates such as 106.8468,-6.3804
-  QRegularExpression separatorRx( QStringLiteral( "^([0-9\\-\\.]*)[\\s\\,]*([0-9\\-\\.]*)$" ) );
+  QRegularExpression separatorRx( QStringLiteral( "^([0-9\\-\\%1\\%2]*)[\\s%3]*([0-9\\-\\%1\\%2]*)$" ).arg( locale.decimalPoint(),
+                                  locale.groupSeparator(),
+                                  locale.decimalPoint() != ',' && locale.groupSeparator() != ',' ? QStringLiteral( "\\," ) : QString() ) );
   QRegularExpressionMatch match = separatorRx.match( string.trimmed() );
   if ( match.hasMatch() )
   {
-    bool okX = false;
-    bool okY = false;
-    double posX = match.captured( 1 ).toDouble( &okX );
-    double posY = match.captured( 2 ).toDouble( &okY );
+    posX = locale.toDouble( match.captured( 1 ), &okX );
+    posY = locale.toDouble( match.captured( 2 ), &okY );
+  }
+
+  if ( !match.hasMatch() || !okX || !okY )
+  {
+    // Digit detection using user locale failed, use default C decimal separators
+    separatorRx = QRegularExpression( QStringLiteral( "^([0-9\\-\\.]*)[\\s\\,]*([0-9\\-\\.]*)$" ) );
+    match = separatorRx.match( string.trimmed() );
+  }
+
+  if ( match.hasMatch() )
+  {
+    if ( !okX || !okY )
+    {
+      posX = match.captured( 1 ).toDouble( &okX );
+      posY = match.captured( 2 ).toDouble( &okY );
+    }
 
     if ( okX && okY )
     {
@@ -751,7 +773,7 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
       {
         QgsLocatorResult result;
         result.filter = this;
-        result.displayString = tr( "Go to %1 %2 (Map CRS, %3)" ).arg( QString::number( point.x(), 'g', 10 ), QString::number( point.y(), 'g', 10 ), currentCrs.userFriendlyIdentifier() );
+        result.displayString = tr( "Go to %1 %2 (Map CRS, %3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), currentCrs.userFriendlyIdentifier() );
         result.userData = data;
         result.score = 0.9;
         emit resultFetched( result );
@@ -777,7 +799,7 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
 
         QgsLocatorResult result;
         result.filter = this;
-        result.displayString = tr( "Go to %1° %2° (%3)" ).arg( QString::number( point.x(), 'g', 10 ), QString::number( point.y(), 'g', 10 ), wgs84Crs.userFriendlyIdentifier() );
+        result.displayString = tr( "Go to %1° %2° (%3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), wgs84Crs.userFriendlyIdentifier() );
         result.userData = data;
         result.score = 1.0;
         emit resultFetched( result );
@@ -813,10 +835,10 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
   if ( url.isValid() )
   {
     double scale = 0.0;
-    bool okX = false;
-    bool okY = false;
-    double posX = 0.0;
-    double posY = 0.0;
+    okX = false;
+    okY = false;
+    posX = 0.0;
+    posY = 0.0;
     if ( url.hasFragment() )
     {
       // Check for OSM/Leaflet/OpenLayers pattern (e.g. http://www.openstreetmap.org/#map=6/46.423/4.746)
@@ -882,7 +904,7 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
 
       QgsLocatorResult result;
       result.filter = this;
-      result.displayString = tr( "Go to %1° %2° %3(%4)" ).arg( QString::number( point.x(), 'g', 10 ), QString::number( point.y(), 'g', 10 ),
+      result.displayString = tr( "Go to %1° %2° %3(%4)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ),
                              scale > 0.0 ? tr( "at scale 1:%1 " ).arg( scale ) : QString(),
                              wgs84Crs.userFriendlyIdentifier() );
       result.userData = data;
