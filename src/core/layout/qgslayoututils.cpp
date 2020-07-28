@@ -461,6 +461,22 @@ double QgsLayoutUtils::calculatePrettySize( const double minimumSize, const doub
   }
 }
 
+bool QgsLayoutUtils::itemIsAClippingSource( const QgsLayoutItem *item )
+{
+  if ( !( item->itemFlags() & QgsLayoutItem::FlagProvidesClipPath ) )
+    return false; // not a clipping provider, so shortcut out
+
+  // current only maps can be clipped
+  QList< QgsLayoutItemMap * > maps;
+  item->layout()->layoutItems( maps );
+  for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+  {
+    if ( map->itemClippingSettings()->isActive() && map->itemClippingSettings()->sourceItem() == item )
+      return true;
+  }
+  return false;
+}
+
 double QgsLayoutUtils::pointsToMM( const double pointSize )
 {
   //conversion to mm based on 1 point = 1/72 inch

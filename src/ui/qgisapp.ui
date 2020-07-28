@@ -1175,7 +1175,7 @@
     <string>Select Feature(s)</string>
    </property>
    <property name="toolTip">
-    <string>Select Features by area or single click</string>
+    <string>Select Features by Area or Single Click</string>
    </property>
   </action>
   <action name="mActionSelectPolygon">
@@ -2004,7 +2004,7 @@ Acts on all layers.</string>
     <string notr="true">More Add Layer actions here</string>
    </property>
    <property name="toolTip">
-    <string notr="true">More Add Layer actions here</string>
+    <string notr="true">More Add Layer Actions here</string>
    </property>
    <property name="visible">
     <bool>false</bool>
@@ -2035,7 +2035,7 @@ Acts on all layers.</string>
     <string>Embed Layers and Groups…</string>
    </property>
    <property name="toolTip">
-    <string>Embed layers and groups from other project files</string>
+    <string>Embed Layers and Groups from other Project Files</string>
    </property>
   </action>
   <action name="mActionDecorationTitle">
@@ -2294,7 +2294,7 @@ Shows highlight rectangles around labels which are fixed in place, e.g. due to m
     <string>Show/Hide Labels and Diagrams</string>
    </property>
    <property name="toolTip">
-    <string>Show/Hide Labels And Diagrams
+    <string>Show/Hide Labels and Diagrams
 Click or marquee on features to show individual labels or diagrams.
 Shift+click or marquee on a label or diagram to hide it.
 Acts on the currently active layer only.</string>
@@ -2501,7 +2501,7 @@ Acts on the currently active layer only.</string>
     <string>Select Features by Expression…</string>
    </property>
    <property name="toolTip">
-    <string>Select features using an expression</string>
+    <string>Select Features Using an Expression</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F3</string>
@@ -2616,7 +2616,7 @@ Acts on the currently active layer only.</string>
     <string>Normal</string>
    </property>
    <property name="toolTip">
-    <string>Normal preview mode</string>
+    <string>Normal Preview Mode</string>
    </property>
   </action>
   <action name="mActionPreviewModeGrayscale">
@@ -2627,7 +2627,7 @@ Acts on the currently active layer only.</string>
     <string>Simulate Photocopy (Grayscale)</string>
    </property>
    <property name="toolTip">
-    <string>Simulate photocopy (grayscale)</string>
+    <string>Simulate Photocopy (Grayscale)</string>
    </property>
   </action>
   <action name="mActionPreviewModeMono">
@@ -2638,7 +2638,7 @@ Acts on the currently active layer only.</string>
     <string>Simulate Fax (Mono)</string>
    </property>
    <property name="toolTip">
-    <string>Simulate fax (mono)</string>
+    <string>Simulate Fax (Mono)</string>
    </property>
   </action>
   <action name="mActionPreviewProtanope">
@@ -2649,7 +2649,7 @@ Acts on the currently active layer only.</string>
     <string>Simulate Color Blindness (Protanope)</string>
    </property>
    <property name="toolTip">
-    <string>Simulate color blindness (protanope)</string>
+    <string>Simulate Color Blindness (Protanope)</string>
    </property>
   </action>
   <action name="mActionPreviewDeuteranope">
@@ -2660,7 +2660,7 @@ Acts on the currently active layer only.</string>
     <string>Simulate Color Blindness (Deuteranope)</string>
    </property>
    <property name="toolTip">
-    <string>Simulate color blindness (deuteranope)</string>
+    <string>Simulate Color Blindness (Deuteranope)</string>
    </property>
   </action>
   <action name="mActionSetLayerScaleVisibility">
@@ -2718,7 +2718,7 @@ Acts on the currently active layer only.</string>
     <string>New Temporary Scratch Layer…</string>
    </property>
    <property name="toolTip">
-    <string>New temporary scratch layer</string>
+    <string>New Temporary Scratch Layer</string>
    </property>
   </action>
   <action name="mActionStatisticalSummary">
@@ -2733,7 +2733,7 @@ Acts on the currently active layer only.</string>
     <string>Statistical Summary</string>
    </property>
    <property name="toolTip">
-    <string>Show statistical summary</string>
+    <string>Show Statistical Summary</string>
    </property>
   </action>
   <action name="mActionShowAlignRasterTool">
@@ -2753,7 +2753,7 @@ Acts on the currently active layer only.</string>
     <string>Add Circular String</string>
    </property>
    <property name="toolTip">
-    <string>Add circular string</string>
+    <string>Add Circular String</string>
    </property>
   </action>
   <action name="mActionCircularStringRadius">
@@ -2768,7 +2768,7 @@ Acts on the currently active layer only.</string>
     <string>Add Circular String by Radius</string>
    </property>
    <property name="toolTip">
-    <string>Add circular string by radius</string>
+    <string>Add Circular String by Radius</string>
    </property>
   </action>
   <action name="mActionReportaBug">
@@ -2905,7 +2905,7 @@ Acts on the currently active layer only.</string>
     <string>Add Circle from &amp;2 Points</string>
    </property>
    <property name="toolTip">
-    <string>Add circle from 2 points</string>
+    <string>Add Circle from 2 Points</string>
    </property>
   </action>
   <action name="mActionCircle3Points">
@@ -2920,7 +2920,7 @@ Acts on the currently active layer only.</string>
     <string>Add Circle from &amp;3 Points</string>
    </property>
    <property name="toolTip">
-    <string>Add circle from 3 points</string>
+    <string>Add Circle from 3 Points</string>
    </property>
   </action>
   <action name="mActionCircleCenterPoint">
@@ -2935,7 +2935,7 @@ Acts on the currently active layer only.</string>
     <string>&amp;Add Circle by a Center Point and Another Point</string>
    </property>
    <property name="toolTip">
-    <string>Add Circle by a center point and another point</string>
+    <string>Add Circle by a Center Point and Another Point</string>
    </property>
   </action>
   <action name="mActionEllipseCenter2Points">
@@ -2950,7 +2950,7 @@ Acts on the currently active layer only.</string>
     <string>&amp;Add Ellipse from Center and 2 Points</string>
    </property>
    <property name="toolTip">
-    <string>Add Ellipse from center and 2 points</string>
+    <string>Add Ellipse from Center and 2 Points</string>
    </property>
   </action>
   <action name="mActionEllipseCenterPoint">
@@ -2980,7 +2980,7 @@ Acts on the currently active layer only.</string>
     <string>Add Ellipse from &amp;Extent</string>
    </property>
    <property name="toolTip">
-    <string>Add Ellipse from extent</string>
+    <string>Add Ellipse from Extent</string>
    </property>
   </action>
   <action name="mActionEllipseFoci">
@@ -2995,7 +2995,7 @@ Acts on the currently active layer only.</string>
     <string>Add Ellipse from &amp;Foci</string>
    </property>
    <property name="toolTip">
-    <string>Add Ellipse from foci</string>
+    <string>Add Ellipse from Foci</string>
    </property>
   </action>
   <action name="mActionRectangleExtent">
@@ -3010,7 +3010,7 @@ Acts on the currently active layer only.</string>
     <string>&amp;Add Rectangle from Extent</string>
    </property>
    <property name="toolTip">
-    <string>Add rectangle from extent</string>
+    <string>Add Rectangle from Extent</string>
    </property>
   </action>
   <action name="mActionRectangleCenterPoint">
@@ -3025,7 +3025,7 @@ Acts on the currently active layer only.</string>
     <string>Add &amp;Rectangle from Center and a Point</string>
    </property>
    <property name="toolTip">
-    <string>Add rectangle from center and a point</string>
+    <string>Add Rectangle from Center and a Point</string>
    </property>
   </action>
   <action name="mActionRegularPolygonCenterPoint">
@@ -3040,7 +3040,7 @@ Acts on the currently active layer only.</string>
     <string>&amp;Add Regular Polygon from Center and a Point</string>
    </property>
    <property name="toolTip">
-    <string>Add regular polygon from center and a point</string>
+    <string>Add Regular Polygon from Center and a Point</string>
    </property>
   </action>
   <action name="mActionRegularPolygon2Points">
@@ -3055,7 +3055,7 @@ Acts on the currently active layer only.</string>
     <string>Add &amp;Regular Polygon from 2 Points</string>
    </property>
    <property name="toolTip">
-    <string>Add regular polygon from 2 points</string>
+    <string>Add Regular Polygon from 2 Points</string>
    </property>
   </action>
   <action name="mActionCircle3Tangents">
@@ -3070,7 +3070,7 @@ Acts on the currently active layer only.</string>
     <string>Add &amp;Circle from 3 Tangents</string>
    </property>
    <property name="toolTip">
-    <string>Add circle from 3 tangents</string>
+    <string>Add Circle from 3 Tangents</string>
    </property>
   </action>
   <action name="mActionRectangle3PointsDistance">
@@ -3085,7 +3085,7 @@ Acts on the currently active layer only.</string>
     <string>Add Rectangle &amp;from 3 Points (Distance from 2nd and 3rd point)</string>
    </property>
    <property name="toolTip">
-    <string>Add rectangle from 3 points (Distance from 2nd and 3rd point)</string>
+    <string>Add Rectangle from 3 Points (Distance from 2nd and 3rd Point)</string>
    </property>
   </action>
   <action name="mActionCircle2TangentsPoint">
@@ -3100,7 +3100,7 @@ Acts on the currently active layer only.</string>
     <string>Add Circle &amp;from 2 Tangents and a Point</string>
    </property>
    <property name="toolTip">
-    <string>Add circle from 2 tangents and a point</string>
+    <string>Add Circle from 2 Tangents and a Point</string>
    </property>
   </action>
   <action name="mActionRegularPolygonCenterCorner">
@@ -3115,7 +3115,7 @@ Acts on the currently active layer only.</string>
     <string>Add Regular &amp;Polygon from Center and a Corner</string>
    </property>
    <property name="toolTip">
-    <string>Add regular polygon from center and a corner</string>
+    <string>Add Regular Polygon from Center and a Corner</string>
    </property>
   </action>
   <action name="mActionNew3DMapCanvas">
@@ -3185,7 +3185,7 @@ Acts on the currently active layer only.</string>
     <string>Revert…</string>
    </property>
    <property name="toolTip">
-    <string>Revert Project to Saved version</string>
+    <string>Revert Project to Saved Version</string>
    </property>
   </action>
   <action name="mActionCopyLayer">
@@ -3236,7 +3236,7 @@ Acts on the currently active layer only.</string>
     <string>Add Rectangle &amp;from 3 Points (Distance from projected point on segment p1 and p2)</string>
    </property>
    <property name="toolTip">
-    <string>Add rectangle from 3 points (Distance from projected point on segment p1 and p2)</string>
+    <string>Add Rectangle from 3 Points (Distance from Projected Point on Segment p1 and p2)</string>
    </property>
   </action>
   <action name="mActionShowMeshCalculator">

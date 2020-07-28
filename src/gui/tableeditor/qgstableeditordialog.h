@@ -154,6 +154,10 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
      */
     void includeHeaderChanged( bool included );
 
+  protected:
+
+    void closeEvent( QCloseEvent * ) override;
+
   private:
     QgsTableEditorWidget *mTableWidget = nullptr;
     QgsMessageBar *mMessageBar = nullptr;

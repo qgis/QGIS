@@ -186,7 +186,7 @@
        <number>0</number>
       </property>
       <item row="0" column="0">
-       <widget class="QgsPhongMaterialWidget" name="widgetMaterial" native="true">
+       <widget class="QgsMaterialWidget" name="widgetMaterial" native="true">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -424,9 +424,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsPhongMaterialWidget</class>
+   <class>QgsMaterialWidget</class>
    <extends>QWidget</extends>
-   <header>qgsphongmaterialwidget.h</header>
+   <header>qgsmaterialwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

@@ -19,9 +19,10 @@
 #include "qgsreadwritecontext.h"
 #include "qgsxmlutils.h"
 #include "qgssymbollayerutils.h"
+#include "qgs3d.h"
+#include "qgsmaterialregistry.h"
 #include "qgs3dexportobject.h"
 #include "qgs3dsceneexporter.h"
-
 
 QgsAbstract3DSymbol *QgsPoint3DSymbol::clone() const
 {
@@ -58,6 +59,7 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
   elemDataProperties.setAttribute( QStringLiteral( "alt-clamping" ), Qgs3DUtils::altClampingToString( mAltClamping ) );
   elem.appendChild( elemDataProperties );
 
+  elem.setAttribute( QStringLiteral( "material_type" ), mMaterial->type() );
   QDomElement elemMaterial = doc.createElement( QStringLiteral( "material" ) );
   mMaterial->writeXml( elemMaterial, context );
   elem.appendChild( elemMaterial );
@@ -89,6 +91,10 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
   mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( QStringLiteral( "alt-clamping" ) ) );
 
   QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
+  const QString materialType = elem.attribute( QStringLiteral( "material_type" ), QStringLiteral( "phong" ) );
+  mMaterial.reset( Qgs3D::materialRegistry()->createMaterialSettings( materialType ) );
+  if ( !mMaterial )
+    mMaterial.reset( Qgs3D::materialRegistry()->createMaterialSettings( QStringLiteral( "phong" ) ) );
   mMaterial->readXml( elemMaterial, context );
 
   mShape = shapeFromString( elem.attribute( QStringLiteral( "shape" ) ) );
