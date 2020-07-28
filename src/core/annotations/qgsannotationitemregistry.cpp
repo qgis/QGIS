@@ -34,11 +34,11 @@ bool QgsAnnotationItemRegistry::populate()
     return false;
 
   mMetadata.insert( QStringLiteral( "marker" ), new QgsAnnotationItemMetadata( QStringLiteral( "marker" ), QObject::tr( "Marker" ), QObject::tr( "Markers" ),
-                    QgsMarkerItem::create, QgsMarkerItem::createFromElement ) );
+                    QgsMarkerItem::create ) );
   mMetadata.insert( QStringLiteral( "linestring" ), new QgsAnnotationItemMetadata( QStringLiteral( "linestring" ), QObject::tr( "Polyline" ), QObject::tr( "Polylines" ),
-                    QgsLineStringItem::create, QgsLineStringItem::createFromElement ) );
+                    QgsLineStringItem::create ) );
   mMetadata.insert( QStringLiteral( "polygon" ), new QgsAnnotationItemMetadata( QStringLiteral( "polygon" ), QObject::tr( "Polygon" ), QObject::tr( "Polygons" ),
-                    QgsPolygonItem::create, QgsPolygonItem::createFromElement ) );
+                    QgsPolygonItem::create ) );
   return true;
 }
 
@@ -71,7 +71,10 @@ QgsAnnotationItem *QgsAnnotationItemRegistry::createItem( const QDomElement &ele
   if ( !mMetadata.contains( type ) )
     return nullptr;
 
-  return mMetadata[type]->createItem( element, context );
+  std::unique_ptr< QgsAnnotationItem > newItem( mMetadata[type]->createItem() );
+  if ( newItem )
+    newItem->readXml( element, context );
+  return newItem.release();
 }
 
 QMap<QString, QString> QgsAnnotationItemRegistry::itemTypes() const

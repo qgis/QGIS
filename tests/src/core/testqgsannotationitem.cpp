@@ -54,6 +54,11 @@ class TestItem : public QgsAnnotationItem
     {
       return true;
     }
+
+    bool readXml( const QDomElement &, const QgsReadWriteContext & ) override
+    {
+      return true;
+    }
 };
 
 
@@ -66,7 +71,6 @@ class TestQgsAnnotationItem: public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
-    void registry();
 
   private:
 
@@ -101,58 +105,6 @@ void TestQgsAnnotationItem::init()
 void TestQgsAnnotationItem::cleanup()
 {
 
-}
-
-void TestQgsAnnotationItem::registry()
-{
-  // test QgsAnnotationItemRegistry
-  QgsAnnotationItemRegistry registry;
-
-  // empty registry
-  QVERIFY( !registry.itemMetadata( QString() ) );
-  QVERIFY( registry.itemTypes().isEmpty() );
-  QVERIFY( !registry.createItem( QString() ) );
-
-  auto create = []()->QgsAnnotationItem *
-  {
-    return new TestItem();
-  };
-
-  auto createFromElement = []( const QDomElement &, const QgsReadWriteContext & )->QgsAnnotationItem *
-  {
-    return new TestItem();
-  };
-
-  QSignalSpy spyTypeAdded( &registry, &QgsAnnotationItemRegistry::typeAdded );
-
-  QgsAnnotationItemMetadata *metadata = new QgsAnnotationItemMetadata( QStringLiteral( "test_item" ), QStringLiteral( "my type" ), QStringLiteral( "my types" ), create, createFromElement );
-  QVERIFY( registry.addItemType( metadata ) );
-  QCOMPARE( spyTypeAdded.count(), 1 );
-  QCOMPARE( spyTypeAdded.value( 0 ).at( 0 ).toString(), QStringLiteral( "test_item" ) );
-  QCOMPARE( spyTypeAdded.value( 0 ).at( 1 ).toString(), QStringLiteral( "my type" ) );
-  // duplicate type id
-  QVERIFY( !registry.addItemType( metadata ) );
-  QCOMPARE( spyTypeAdded.count(), 1 );
-
-  //retrieve metadata
-  QVERIFY( !registry.itemMetadata( QString() ) );
-  QCOMPARE( registry.itemMetadata( QStringLiteral( "test_item" ) )->visibleName(), QStringLiteral( "my type" ) );
-  QCOMPARE( registry.itemMetadata( QStringLiteral( "test_item" ) )->visiblePluralName(), QStringLiteral( "my types" ) );
-  QCOMPARE( registry.itemTypes().count(), 1 );
-  QCOMPARE( registry.itemTypes().value( QStringLiteral( "test_item" ) ), QStringLiteral( "my type" ) );
-  QgsAnnotationItem *item = registry.createItem( QStringLiteral( "test_item" ) );
-  QVERIFY( item );
-  QVERIFY( dynamic_cast< TestItem *>( item ) );
-  delete item;
-
-#if 0
-  //test populate
-  QgsAnnotationItemRegistry reg2;
-  QVERIFY( reg2.itemTypes().isEmpty() );
-  QVERIFY( reg2.populate() );
-  QVERIFY( !reg2.itemTypes().isEmpty() );
-  QVERIFY( !reg2.populate() );
-#endif
 }
 
 bool TestQgsAnnotationItem::renderCheck( QString testName, QImage &image, int mismatchCount )

@@ -73,12 +73,6 @@ class CORE_EXPORT QgsAnnotationItemAbstractMetadata
     QString visiblePluralName() const { return mVisibleNamePlural; }
 
     /**
-     * Creates an annotation item of this class using the state present in the specified
-     * DOM \a element.
-     */
-    virtual QgsAnnotationItem *createItem( const QDomElement &element, const QgsReadWriteContext &context ) = 0 SIP_FACTORY;
-
-    /**
      * Creates a new, default, annotation item of this class.
      */
     virtual QgsAnnotationItem *createItem() = 0 SIP_FACTORY;
@@ -90,11 +84,8 @@ class CORE_EXPORT QgsAnnotationItemAbstractMetadata
     QString mVisibleNamePlural;
 };
 
-//! Annotation item creation function from DOM state
-typedef std::function<QgsAnnotationItem *( const QDomElement &, const QgsReadWriteContext & )> QgsAnnotationItemCreateFunc SIP_SKIP;
-
 //! Annotation item creation function
-typedef std::function<QgsAnnotationItem *()> QgsAnnotationItemDefaultCreateFunc SIP_SKIP;
+typedef std::function<QgsAnnotationItem *()> QgsAnnotationItemCreateFunc SIP_SKIP;
 
 #ifndef SIP_RUN
 
@@ -115,29 +106,20 @@ class CORE_EXPORT QgsAnnotationItemMetadata : public QgsAnnotationItemAbstractMe
      * The \a visiblePluralName argument is used to specify a plural variant of the item type.
      */
     QgsAnnotationItemMetadata( const QString &type, const QString &visibleName, const QString &visiblePluralName,
-                               const QgsAnnotationItemDefaultCreateFunc &pfDefaultCreate,
                                const QgsAnnotationItemCreateFunc &pfCreate )
       : QgsAnnotationItemAbstractMetadata( type, visibleName, visiblePluralName )
       , mCreateFunc( pfCreate )
-      , mCreateDefaultFunc( pfDefaultCreate )
     {}
-
-    /**
-     * Returns the classes' item creation from DOM state function.
-     */
-    QgsAnnotationItemCreateFunc createFunction() const { return mCreateFunc; }
 
     /**
      * Returns the classes' item default creation function.
      */
-    QgsAnnotationItemDefaultCreateFunc createDefaultFunction() const { return mCreateDefaultFunc; }
+    QgsAnnotationItemCreateFunc createFunction() const { return mCreateFunc; }
 
-    QgsAnnotationItem *createItem( const QDomElement &element, const QgsReadWriteContext &context ) override { return mCreateFunc ? mCreateFunc( element, context ) : nullptr; }
-    QgsAnnotationItem *createItem() override { return mCreateDefaultFunc ? mCreateDefaultFunc() : nullptr; }
+    QgsAnnotationItem *createItem() override { return mCreateFunc ? mCreateFunc() : nullptr; }
 
   protected:
     QgsAnnotationItemCreateFunc mCreateFunc = nullptr;
-    QgsAnnotationItemDefaultCreateFunc mCreateDefaultFunc = nullptr;
 
 };
 

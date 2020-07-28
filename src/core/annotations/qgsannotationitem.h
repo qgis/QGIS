@@ -66,8 +66,17 @@ class CORE_EXPORT QgsAnnotationItem
 
     /**
      * Returns the CRS used for storing the location of the item.
+     *
+     * \see setCrs()
      */
     QgsCoordinateReferenceSystem crs() const { return mCrs; }
+
+    /**
+     * Sets the \a crs used for storing the location of the item.
+     *
+     * \see crs()
+     */
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Renders the item to the specified render \a context.
@@ -81,6 +90,11 @@ class CORE_EXPORT QgsAnnotationItem
      * Writes the item's state the an XML \a element.
      */
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const = 0;
+
+    /**
+     * Reads the item's state from the given DOM \a element.
+     */
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
 
     /**
      * Returns the item's z index, which controls the order in which annotation items
@@ -109,7 +123,7 @@ class CORE_EXPORT QgsMarkerItem : public QgsAnnotationItem
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     static QgsMarkerItem *create() SIP_FACTORY;
-    static QgsMarkerItem *createFromElement( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
 
     QgsMarkerItem *clone() override SIP_FACTORY;
 
@@ -139,7 +153,7 @@ class CORE_EXPORT QgsLineStringItem : public QgsAnnotationItem
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     static QgsLineStringItem *create() SIP_FACTORY;
-    static QgsLineStringItem *createFromElement( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
 
     QgsLineStringItem *clone() override SIP_FACTORY;
 
@@ -169,7 +183,7 @@ class CORE_EXPORT QgsPolygonItem : public QgsAnnotationItem
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     static QgsPolygonItem *create() SIP_FACTORY;
-    static QgsPolygonItem *createFromElement( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
 
     QgsPolygonItem *clone() override SIP_FACTORY;
 
