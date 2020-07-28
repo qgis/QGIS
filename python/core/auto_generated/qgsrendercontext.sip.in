@@ -42,6 +42,7 @@ to be rendered etc.
       RenderPartialOutput,
       RenderPreviewJob,
       RenderBlocking,
+      Render3DMap,
     };
     typedef QFlags<QgsRenderContext::Flag> Flags;
 
