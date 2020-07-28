@@ -961,6 +961,7 @@ void TestQgsProcessing::context()
   QCOMPARE( context.areaUnit(), QgsUnitTypes::AreaUnknownUnit );
 
   QgsProject p;
+  p.setCrs( QgsCoordinateReferenceSystem( "EPSG:4536" ) );
   p.setEllipsoid( QStringLiteral( "WGS84" ) );
   p.setDistanceUnits( QgsUnitTypes::DistanceFeet );
   p.setAreaUnits( QgsUnitTypes::AreaHectares );
