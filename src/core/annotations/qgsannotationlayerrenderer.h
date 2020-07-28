@@ -31,7 +31,7 @@ class QgsAnnotationLayer;
  * Implementation of threaded rendering for annotation layers.
  *
  * \note not available in Python bindings
- * \since QGIS 3.12
+ * \since QGIS 3.16
  */
 class CORE_EXPORT QgsAnnotationLayerRenderer : public QgsMapLayerRenderer
 {

@@ -33,12 +33,16 @@ class QgsFillSymbol;
  * \ingroup core
  * Abstract base class for annotation items which are drawn with QgsAnnotationLayers.
  *
- * \since QGIS 3.12
+ * \since QGIS 3.16
  */
 class CORE_EXPORT QgsAnnotationItem
 {
   public:
 
+    /**
+     * Constructor for an annotation item, with the specified \a crs for storing
+     * its geographic location.
+     */
     QgsAnnotationItem( const QgsCoordinateReferenceSystem &crs );
 
 #ifndef SIP_RUN
@@ -60,7 +64,10 @@ class CORE_EXPORT QgsAnnotationItem
      */
     virtual QString type() const = 0;
 
-    QgsCoordinateReferenceSystem crs() const { return QgsCoordinateReferenceSystem(); }
+    /**
+     * Returns the CRS used for storing the location of the item.
+     */
+    QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
     /**
      * Renders the item to the specified render \a context.
@@ -75,6 +82,10 @@ class CORE_EXPORT QgsAnnotationItem
      */
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const = 0;
 
+    /**
+     * Returns the item's z index, which controls the order in which annotation items
+     * are rendered in the layer.
+     */
     int zIndex() const { return 0; }
 
   private:

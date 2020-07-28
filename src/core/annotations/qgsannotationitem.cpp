@@ -265,7 +265,7 @@ void QgsPolygonItem::render( QgsRenderContext &context, QgsFeedback * )
 
   QPolygonF exterior = mPolygon.exteriorRing()->asQPolygonF();
   transformRing( exterior );
-  QList<QPolygonF> rings;
+  QVector<QPolygonF> rings;
   rings.reserve( mPolygon.numInteriorRings() );
   for ( int i = 0; i < mPolygon.numInteriorRings(); ++i )
   {

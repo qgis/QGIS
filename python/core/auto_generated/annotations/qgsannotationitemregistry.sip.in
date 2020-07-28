@@ -20,7 +20,7 @@ GUI behavior of QgsAnnotationItems.
 
    In C++ you can use QgsAnnotationItemMetadata convenience class.
 
-.. versionadded:: 3.12
+.. versionadded:: 3.16
 %End
 
 %TypeHeaderCode
@@ -83,7 +83,7 @@ QgsAnnotationItemRegistry is not usually directly created, but rather accessed t
 A companion class, :py:class:`QgsAnnotationItemGuiRegistry`, handles the GUI behavior
 of annotation items.
 
-.. versionadded:: 3.12
+.. versionadded:: 3.16
 %End
 
 %TypeHeaderCode
