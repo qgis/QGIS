@@ -127,7 +127,7 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
 
   QgsDistanceArea da;
   da.setSourceCrs( mCrs, context.transformContext() );
-  da.setEllipsoid( context.project()->ellipsoid() );
+  da.setEllipsoid( context.ellipsoid() );
 
   // loop through input
   double step = mInputCount > 0 ? 100.0 / mInputCount : 0;
