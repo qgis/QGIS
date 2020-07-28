@@ -216,6 +216,9 @@ int QgsProcessingExec::run( const QStringList &args )
     const QString algId = args.at( 2 );
 
     // build parameter map
+    QString ellipsoid;
+    QgsUnitTypes::DistanceUnit distanceUnit = QgsUnitTypes::DistanceUnknownUnit;
+    QgsUnitTypes::AreaUnit areaUnit = QgsUnitTypes::AreaUnknownUnit;
     QVariantMap params;
     for ( int i = 3; i < args.count(); i++ )
     {
@@ -227,8 +230,24 @@ int QgsProcessingExec::run( const QStringList &args )
       if ( parts.count() >= 2 )
       {
         const QString name = parts.at( 0 );
-        const QString value = parts.mid( 1 ).join( '=' );
-        params.insert( name, value );
+
+        if ( name.compare( QLatin1String( "ellipsoid" ), Qt::CaseInsensitive ) == 0 )
+        {
+          ellipsoid = parts.mid( 1 ).join( '=' );
+        }
+        else if ( name.compare( QLatin1String( "distance_units" ), Qt::CaseInsensitive ) == 0 )
+        {
+          distanceUnit = QgsUnitTypes::decodeDistanceUnit( parts.mid( 1 ).join( '=' ) );
+        }
+        else if ( name.compare( QLatin1String( "area_units" ), Qt::CaseInsensitive ) == 0 )
+        {
+          areaUnit = QgsUnitTypes::decodeAreaUnit( parts.mid( 1 ).join( '=' ) );
+        }
+        else
+        {
+          const QString value = parts.mid( 1 ).join( '=' );
+          params.insert( name, value );
+        }
       }
       else
       {
@@ -237,7 +256,7 @@ int QgsProcessingExec::run( const QStringList &args )
       }
     }
 
-    return execute( algId, params );
+    return execute( algId, params, ellipsoid, distanceUnit, areaUnit );
   }
   else
   {
@@ -257,7 +276,8 @@ void QgsProcessingExec::showUsage( const QString &appName )
       << "\tplugins\tlist available and active plugins\n"
       << "\tlist\tlist all available processing algorithms\n"
       << "\thelp\tshow help for an algorithm. The algorithm id or a path to a model file must be specified.\n"
-      << "\trun\truns an algorithm. The algorithm id or a path to a model file and parameter values must be specified. Parameter values are specified via the --PARAMETER=VALUE syntax\n";
+      << "\trun\truns an algorithm. The algorithm id or a path to a model file and parameter values must be specified. Parameter values are specified via the --PARAMETER=VALUE syntax. "
+      "If required, the ellipsoid to use for distance and area calculations can be specified via the \"--ELLIPSOID=name\" argument.\n";
 
   std::cout << msg.join( QString() ).toLocal8Bit().constData();
 }
@@ -407,7 +427,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &id )
   return 0;
 }
 
-int QgsProcessingExec::execute( const QString &id, const QVariantMap &params )
+int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, const QString &ellipsoid, QgsUnitTypes::DistanceUnit distanceUnit, QgsUnitTypes::AreaUnit areaUnit )
 {
   std::unique_ptr< QgsProcessingModelAlgorithm > model;
   const QgsProcessingAlgorithm *alg = nullptr;
@@ -440,7 +460,20 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params )
     std::cout << it.key().toLocal8Bit().constData() << ":\t" << it.value().toString().toLocal8Bit().constData() << '\n';
   }
 
+  std::cout << "\n";
+
+  if ( !ellipsoid.isEmpty() )
+    std::cout << "Using ellipsoid:\t" << ellipsoid.toLocal8Bit().constData() << '\n';
+  if ( distanceUnit != QgsUnitTypes::DistanceUnknownUnit )
+    std::cout << "Using distance unit:\t" << QgsUnitTypes::toString( distanceUnit ).toLocal8Bit().constData() << '\n';
+  if ( areaUnit != QgsUnitTypes::AreaUnknownUnit )
+    std::cout << "Using area unit:\t" << QgsUnitTypes::toString( areaUnit ).toLocal8Bit().constData() << '\n';
+
   QgsProcessingContext context;
+  context.setEllipsoid( ellipsoid );
+  context.setDistanceUnit( distanceUnit );
+  context.setAreaUnit( areaUnit );
+
   const QgsProcessingParameterDefinitions defs = alg->parameterDefinitions();
   QList< const QgsProcessingParameterDefinition * > missingParams;
   for ( const QgsProcessingParameterDefinition *p : defs )
