@@ -91,13 +91,8 @@ bool QgsLineDensityAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
   mExtent = mSource->sourceExtent();
   mCrs = mSource->sourceCrs();
   mDa = QgsDistanceArea();
-
-  if ( context.project() )
-  {
-    mDa.setEllipsoid( context.project()->ellipsoid() );
-  }
+  mDa.setEllipsoid( context.ellipsoid() );
   mDa.setSourceCrs( mCrs, context.transformContext() );
-
 
   //get cell midpoint from top left cell
   QgsPoint firstCellMidpoint = QgsPoint( mExtent.xMinimum() + ( mPixelSize / 2 ), mExtent.yMaximum() - ( mPixelSize / 2 ) );
