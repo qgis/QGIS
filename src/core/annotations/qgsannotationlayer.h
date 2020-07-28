@@ -34,7 +34,7 @@ class QgsAnnotationItem;
  * Annotation layers store a set of QgsAnnotationItem items, which are rendered according to the item's
  * z-order.
  *
- * \since QGIS 3.12
+ * \since QGIS 3.16
  */
 class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
 {
@@ -44,7 +44,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
 
     /**
      * Setting options for loading annotation layers.
-     * \since QGIS 3.12
+     * \since QGIS 3.16
      */
     struct LayerOptions
     {

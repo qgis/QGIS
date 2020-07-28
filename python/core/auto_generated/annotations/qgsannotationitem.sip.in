@@ -15,7 +15,7 @@ class QgsAnnotationItem
 %Docstring
 Abstract base class for annotation items which are drawn with QgsAnnotationLayers.
 
-.. versionadded:: 3.12
+.. versionadded:: 3.16
 %End
 
 %TypeHeaderCode
@@ -24,6 +24,10 @@ Abstract base class for annotation items which are drawn with QgsAnnotationLayer
   public:
 
     QgsAnnotationItem( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Constructor for an annotation item, with the specified ``crs`` for storing
+its geographic location.
+%End
 
 
     virtual ~QgsAnnotationItem();
@@ -39,6 +43,9 @@ Returns a unique (untranslated) string identifying the type of item.
 %End
 
     QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the CRS used for storing the location of the item.
+%End
 
     virtual void render( QgsRenderContext &context, QgsFeedback *feedback ) = 0;
 %Docstring
@@ -54,6 +61,10 @@ Writes the item's state the an XML ``element``.
 %End
 
     int zIndex() const;
+%Docstring
+Returns the item's z index, which controls the order in which annotation items
+are rendered in the layer.
+%End
 
   private:
     QgsAnnotationItem( const QgsAnnotationItem &other );
@@ -89,6 +100,67 @@ class QgsMarkerItem : QgsAnnotationItem
     QgsMarkerItem( const QgsMarkerItem &other );
 };
 
+
+class QgsLineStringItem : QgsAnnotationItem
+{
+
+%TypeHeaderCode
+#include "qgsannotationitem.h"
+%End
+  public:
+
+    QgsLineStringItem( const QgsLineString &linestring, const QgsCoordinateReferenceSystem &crs );
+    ~QgsLineStringItem();
+
+    virtual QString type() const;
+
+    virtual void render( QgsRenderContext &context, QgsFeedback *feedback );
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    static QgsLineStringItem *create() /Factory/;
+    static QgsLineStringItem *createFromElement( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+
+    virtual QgsLineStringItem *clone() /Factory/;
+
+
+    const QgsLineSymbol *symbol() const;
+    void setSymbol( QgsLineSymbol *symbol /Transfer/ );
+
+  private:
+    QgsLineStringItem( const QgsLineStringItem &other );
+};
+
+
+class QgsPolygonItem : QgsAnnotationItem
+{
+
+%TypeHeaderCode
+#include "qgsannotationitem.h"
+%End
+  public:
+
+    QgsPolygonItem( const QgsPolygon &polygon, const QgsCoordinateReferenceSystem &crs );
+    ~QgsPolygonItem();
+
+    virtual QString type() const;
+
+    virtual void render( QgsRenderContext &context, QgsFeedback *feedback );
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    static QgsPolygonItem *create() /Factory/;
+    static QgsPolygonItem *createFromElement( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+
+    virtual QgsPolygonItem *clone() /Factory/;
+
+
+    const QgsFillSymbol *symbol() const;
+    void setSymbol( QgsFillSymbol *symbol /Transfer/ );
+
+  private:
+    QgsPolygonItem( const QgsPolygonItem &other );
+};
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

@@ -36,7 +36,7 @@ class QgsReadWriteContext;
  * GUI behavior of QgsAnnotationItems.
  *
  * \note In C++ you can use QgsAnnotationItemMetadata convenience class.
- * \since QGIS 3.12
+ * \since QGIS 3.16
  */
 class CORE_EXPORT QgsAnnotationItemAbstractMetadata
 {
@@ -102,7 +102,7 @@ typedef std::function<QgsAnnotationItem *()> QgsAnnotationItemDefaultCreateFunc 
  * \ingroup core
  * Convenience metadata class that uses static functions to create annotation items and their configuration widgets.
  * \note not available in Python bindings
- * \since QGIS 3.12
+ * \since QGIS 3.16
  */
 class CORE_EXPORT QgsAnnotationItemMetadata : public QgsAnnotationItemAbstractMetadata
 {
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsAnnotationItemMetadata : public QgsAnnotationItemAbstractMe
  * A companion class, QgsAnnotationItemGuiRegistry, handles the GUI behavior
  * of annotation items.
  *
- * \since QGIS 3.12
+ * \since QGIS 3.16
  */
 class CORE_EXPORT QgsAnnotationItemRegistry : public QObject
 {
