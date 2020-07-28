@@ -314,6 +314,9 @@ void QgsProcessingExec::listAlgorithms()
     const QList<const QgsProcessingAlgorithm *> algorithms = provider->algorithms();
     for ( const QgsProcessingAlgorithm *algorithm : algorithms )
     {
+      if ( algorithm->flags() & QgsProcessingAlgorithm::FlagDeprecated || algorithm->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool )
+        continue;
+
       std::cout << "\t" << algorithm->id().toLocal8Bit().constData() << "\t" << algorithm->displayName().toLocal8Bit().constData() << "\n";
     }
 
@@ -448,6 +451,12 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, co
     if ( ! alg )
     {
       std::cerr << QStringLiteral( "Algorithm %1 not found!\n" ).arg( id ).toLocal8Bit().constData();
+      return 1;
+    }
+
+    if ( alg->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool )
+    {
+      std::cerr << QStringLiteral( "The \"%1\" algorithm is not available for use outside of the QGIS desktop application\n" ).arg( id ).toLocal8Bit().constData();
       return 1;
     }
   }
