@@ -62,14 +62,13 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
     @classmethod
     def setUpClass(cls):
         cls.item_class = QgsLayoutItemMap
+        cls.report = "<h1>Python QgsLayoutItemMap Tests</h1>\n"
 
-    def setUp(self):
-        self.report = "<h1>Python QgsLayoutItemMap Tests</h1>\n"
-
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(cls):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+            report_file.write(cls.report)
 
     def __init__(self, methodName):
         """Run once on class initialization."""
@@ -129,7 +128,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_crs3857', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
         # overwrite CRS
@@ -141,7 +140,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_crs4326', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
         # change back to project CRS
@@ -227,21 +226,21 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_label_nomargin', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
         map.setLabelMargin(QgsLayoutMeasurement(15, QgsUnitTypes.LayoutMillimeters))
         checker = QgsLayoutChecker('composermap_label_margin', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
         map.setLabelMargin(QgsLayoutMeasurement(3, QgsUnitTypes.LayoutCentimeters))
         checker = QgsLayoutChecker('composermap_label_cm_margin', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
         map.setMapRotation(45)
@@ -250,7 +249,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_rotated_label_margin', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
         # data defined
@@ -261,7 +260,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_dd_label_margin', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
     def testPartialLabels(self):
@@ -316,7 +315,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_label_nomargin', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
         # showing partial labels
@@ -324,7 +323,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_show_partial_labels', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
     def testBlockingItems(self):
@@ -391,7 +390,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_label_blockers', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
         doc = QDomDocument("testdoc")
@@ -498,7 +497,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
-        map.setFrameEnabled(True)
+        map.setFrameEnabled(False)
         map.zoomToExtent(vl.extent())
         map.setLayers([vl])
         layout.addLayoutItem(map)
@@ -519,7 +518,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_itemclip', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
     def testClippingForceLabelsInside(self):
@@ -558,7 +557,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
-        map.setFrameEnabled(True)
+        map.setFrameEnabled(False)
         map.zoomToExtent(vl.extent())
         map.setLayers([vl])
         layout.addLayoutItem(map)
@@ -579,7 +578,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_itemclip_force_labels_inside', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
     def testClippingOverview(self):
@@ -622,7 +621,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
-        map.setFrameEnabled(True)
+        map.setFrameEnabled(False)
         map.zoomToExtent(vl.extent())
         map.setLayers([vl])
         layout.addLayoutItem(map)
@@ -659,7 +658,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_itemclip_overview', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
     def testClippingHideClipSource(self):
@@ -701,7 +700,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
-        map.setFrameEnabled(True)
+        map.setFrameEnabled(False)
         map.zoomToExtent(vl.extent())
         map.setLayers([vl])
         layout.addLayoutItem(map)
@@ -719,7 +718,55 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_itemclip_nodrawsource', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
+        self.assertTrue(result, message)
+
+    def testClippingBackgroundFrame(self):
+        """
+        Make sure frame/background are also clipped
+        """
+        vl = QgsVectorLayer("Polygon?crs=epsg:4326&field=id:integer", "vl", "memory")
+
+        props = {"color": "127,255,127", 'outline_style': 'solid', 'outline_width': '1', 'outline_color': '0,0,255'}
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        renderer = QgsSingleSymbolRenderer(fillSymbol)
+        vl.setRenderer(renderer)
+
+        f = QgsFeature(vl.fields(), 1)
+        for x in range(0, 15, 3):
+            for y in range(0, 15, 3):
+                f.setGeometry(QgsGeometry(QgsPoint(x, y)).buffer(1, 3))
+                vl.dataProvider().addFeature(f)
+
+        p = QgsProject()
+
+        p.addMapLayer(vl)
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        map.setFrameEnabled(True)
+        map.setFrameStrokeWidth(QgsLayoutMeasurement(2, QgsUnitTypes.LayoutMillimeters))
+        map.setBackgroundEnabled(True)
+        map.setBackgroundColor(QColor(200, 255, 200))
+        map.zoomToExtent(vl.extent())
+        map.setLayers([vl])
+        layout.addLayoutItem(map)
+
+        shape = QgsLayoutItemShape(layout)
+        layout.addLayoutItem(shape)
+        shape.setShapeType(QgsLayoutItemShape.Ellipse)
+        shape.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+
+        map.itemClippingSettings().setEnabled(True)
+        map.itemClippingSettings().setSourceItem(shape)
+        map.itemClippingSettings().setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.ClipPainterOnly)
+
+        checker = QgsLayoutChecker('composermap_itemclip_background', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
 

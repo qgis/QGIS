@@ -1082,12 +1082,25 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual void draw( QgsLayoutItemRenderContext &context ) = 0;
 
     /**
+     * Returns the path to use when drawing the item's frame or background.
+     *
+     * \see drawFrame()
+     * \see drawBackground()
+     * \since QGIS 3.16
+     */
+    virtual QPainterPath framePath() const;
+
+    /**
      * Draws the frame around the item.
+     *
+     * \see framePath()
      */
     virtual void drawFrame( QgsRenderContext &context );
 
     /**
      * Draws the background for the item.
+     *
+     * \see framePath()
      */
     virtual void drawBackground( QgsRenderContext &context );
 
