@@ -173,13 +173,10 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
 
       for ( int col = 0; col < iterCols; col++ )
       {
-        bool noDataInStack = false;
-        std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, noDataInStack );
-
         bool valueRasterCellIsNoData = false;
         double value = inputBlock->valueAndNoData( row, col, valueRasterCellIsNoData );
 
-        if ( ( valueRasterCellIsNoData || noDataInStack ) && !mIgnoreNoData )
+        if ( valueRasterCellIsNoData && !mIgnoreNoData )
         {
           //output cell will always be NoData if NoData occurs in valueRaster or cellValueStack and NoData is not ignored
           //this saves unnecessary iterations on the cellValueStack
@@ -188,9 +185,20 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
         }
         else
         {
-          int frequency = applyComparisonOperator( value, cellValues );
-          outputBlock->setValue( row, col, frequency );
-          occurrenceCount += frequency;
+          bool noDataInStack = false;
+          std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, noDataInStack );
+
+          if( noDataInStack && !mIgnoreNoData )
+          {
+            outputBlock->setValue( row, col, mNoDataValue );
+            noDataLocationsCount++;
+          }
+          else
+          {
+            int frequency = applyComparisonOperator( value, cellValues );
+            outputBlock->setValue( row, col, frequency );
+            occurrenceCount += frequency;
+          }
         }
       }
     }
