@@ -1265,6 +1265,84 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(desclist, [])
         self.assertEqual(errmsg, "")
 
+<<<<<<< HEAD
+=======
+    def testStyleWithGeometryType(self):
+        """Test saving styles with the additional geometry type
+        Layers are created from geometries_table
+        """
+
+        myconn = 'service=\'qgis_test\''
+        if 'QGIS_PGTEST_DB' in os.environ:
+            myconn = os.environ['QGIS_PGTEST_DB']
+
+        # point layer
+        myPoint = QgsVectorLayer(
+            myconn +
+            ' sslmode=disable srid=4326 type=POINT table="qgis_test"."geometries_table" (geom) sql=', 'Point',
+            'postgres')
+        self.assertTrue(myPoint.isValid())
+        myPoint.saveStyleToDatabase('myPointStyle', '', False, '')
+
+        # polygon layer
+        myPolygon = QgsVectorLayer(
+            myconn +
+            ' sslmode=disable srid=4326 type=POLYGON table="qgis_test"."geometries_table" (geom) sql=', 'Poly',
+            'postgres')
+        self.assertTrue(myPoint.isValid())
+        myPolygon.saveStyleToDatabase('myPolygonStyle', '', False, '')
+
+        # how many
+        related_count, idlist, namelist, desclist, errmsg = myPolygon.listStylesInDatabase()
+        self.assertEqual(len(idlist), 2)
+        self.assertEqual(namelist, ['myPolygonStyle', 'myPointStyle'])
+
+        # raw psycopg2 query
+        self.assertTrue(self.con)
+        cur = self.con.cursor()
+        self.assertTrue(cur)
+        cur.execute("select stylename, type from layer_styles order by type")
+        self.assertEqual(cur.fetchall(), [
+                         ('myPointStyle', 'Point'), ('myPolygonStyle', 'Polygon')])
+        cur.close()
+
+        # delete them
+        myPolygon.deleteStyleFromDatabase(idlist[1])
+        myPolygon.deleteStyleFromDatabase(idlist[0])
+        styles = myPolygon.listStylesInDatabase()
+        ids = styles[1]
+        self.assertEqual(len(ids), 0)
+
+    def testSaveStyleInvalidXML(self):
+
+        self.execSQLCommand('DROP TABLE IF EXISTS layer_styles CASCADE')
+
+        vl = self.getEditableLayer()
+        self.assertTrue(vl.isValid())
+        self.assertTrue(
+            vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
+        self.assertTrue(vl.dataProvider().isDeleteStyleFromDatabaseSupported())
+
+        mFilePath = QDir.toNativeSeparators(
+            '%s/symbol_layer/%s.qml' % (unitTestDataPath(), "fontSymbol"))
+        status = vl.loadNamedStyle(mFilePath)
+        self.assertTrue(status)
+
+        errorMsg = vl.saveStyleToDatabase(
+            "fontSymbol", "font with invalid utf8 char", False, "")
+        self.assertEqual(errorMsg, "")
+
+        qml, errmsg = vl.getStyleFromDatabase("1")
+        self.assertTrue('v="\u001E"' in qml)
+        self.assertEqual(errmsg, "")
+
+        # Test loadStyle from metadata
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        qml = md.loadStyle(self.dbconn + " type=POINT table=\"qgis_test\".\"editData\" (geom)", 'fontSymbol')
+        self.assertTrue(qml.startswith('<!DOCTYPE qgi'), qml)
+        self.assertTrue('v="\u001E"' in qml)
+
+>>>>>>> 0f7a946f51... PG style storage: replace forbidden XML unicode chars
     def testHasMetadata(self):
         # views don't have metadata
         vl = QgsVectorLayer('{} table="qgis_test"."{}" key="pk" sql='.format(self.dbconn, 'bikes_view'), "bikes_view", "postgres")

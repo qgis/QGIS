@@ -155,7 +155,7 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
       }
       else if ( pname == QLatin1String( "connect_timeout" ) )
       {
-        QgsDebugMsg( QStringLiteral( "connection timeout ignored" ) );
+        QgsDebugMsgLevel( QStringLiteral( "connection timeout ignored" ), 3 );
       }
       else if ( pname == QLatin1String( "dbname" ) )
       {
