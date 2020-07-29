@@ -76,13 +76,15 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      * Adds an \a item to the layer.
      *
      * Ownership of \a item is transferred to the layer.
+     *
+     * Returns the unique ID assigned to the item.
      */
-    void addItem( QgsAnnotationItem *item SIP_TRANSFER );
+    QString addItem( QgsAnnotationItem *item SIP_TRANSFER );
 
     //KadasMapItem *takeItem( const QString &itemId );
 
     /**
-     * Returns a map of items contained in the layer.
+     * Returns a map of items contained in the layer, by unique item ID.
      *
      * This map contains references to items owned by the layer, and ownership of these remains
      * with the layer.

@@ -73,6 +73,7 @@ bool QgsAnnotationLineStringItem::writeXml( QDomElement &element, QDomDocument &
 {
   element.setAttribute( QStringLiteral( "wkt" ), mLineString.asWkt() );
   crs().writeXml( element, document );
+  element.setAttribute( QStringLiteral( "zIndex" ), zIndex() );
 
   element.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "lineSymbol" ), mSymbol.get(), document, context ) );
 
@@ -93,6 +94,7 @@ bool QgsAnnotationLineStringItem::readXml( const QDomElement &element, const Qgs
   QgsCoordinateReferenceSystem crs;
   crs.readXml( element );
   setCrs( crs );
+  setZIndex( element.attribute( QStringLiteral( "zIndex" ) ).toInt() );
 
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
@@ -105,6 +107,7 @@ QgsAnnotationLineStringItem *QgsAnnotationLineStringItem::clone()
 {
   std::unique_ptr< QgsAnnotationLineStringItem > item = qgis::make_unique< QgsAnnotationLineStringItem >( mLineString, crs() );
   item->setSymbol( mSymbol->clone() );
+  item->setZIndex( zIndex() );
   return item.release();
 }
 

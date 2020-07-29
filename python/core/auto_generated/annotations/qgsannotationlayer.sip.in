@@ -50,17 +50,19 @@ The ``options`` argument specifies load-time layer options.
 %End
     ~QgsAnnotationLayer();
 
-    void addItem( QgsAnnotationItem *item /Transfer/ );
+    QString addItem( QgsAnnotationItem *item /Transfer/ );
 %Docstring
 Adds an ``item`` to the layer.
 
 Ownership of ``item`` is transferred to the layer.
+
+Returns the unique ID assigned to the item.
 %End
 
 
     QMap<QString, QgsAnnotationItem *> items() const;
 %Docstring
-Returns a map of items contained in the layer.
+Returns a map of items contained in the layer, by unique item ID.
 
 This map contains references to items owned by the layer, and ownership of these remains
 with the layer.

@@ -60,8 +60,10 @@ class TestQgsAnnotationLineStringItem(unittest.TestCase):
 
         item.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         item.setLineString(QgsLineString([QgsPoint(22, 23), QgsPoint(24, 23), QgsPoint(24, 25)]))
+        item.setZIndex(11)
         self.assertEqual(item.crs().authid(), 'EPSG:3111')
         self.assertEqual(item.lineString().asWkt(), 'LineString (22 23, 24 23, 24 25)')
+        self.assertEqual(item.zIndex(), 11)
 
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
         self.assertEqual(item.symbol()[0].color(), QColor(255, 255, 0))
@@ -73,6 +75,7 @@ class TestQgsAnnotationLineStringItem(unittest.TestCase):
         item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]),
                                            QgsCoordinateReferenceSystem('EPSG:4326'))
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
+        item.setZIndex(11)
 
         self.assertTrue(item.writeXml(elem, doc, QgsReadWriteContext()))
 
@@ -82,16 +85,19 @@ class TestQgsAnnotationLineStringItem(unittest.TestCase):
         self.assertEqual(s2.crs().authid(), 'EPSG:4326')
         self.assertEqual(s2.lineString().asWkt(), 'LineString (12 13, 14 13, 14 15)')
         self.assertEqual(s2.symbol()[0].color(), QColor(255, 255, 0))
+        self.assertEqual(s2.zIndex(), 11)
 
     def testClone(self):
         item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]),
                                            QgsCoordinateReferenceSystem('EPSG:4326'))
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
+        item.setZIndex(11)
 
         item2 = item.clone()
         self.assertEqual(item2.crs().authid(), 'EPSG:4326')
         self.assertEqual(item2.lineString().asWkt(), 'LineString (12 13, 14 13, 14 15)')
         self.assertEqual(item2.symbol()[0].color(), QColor(255, 255, 0))
+        self.assertEqual(item2.zIndex(), 11)
 
     def testRenderLineString(self):
         item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]),
