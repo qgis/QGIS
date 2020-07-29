@@ -2874,6 +2874,12 @@ void QgsLayoutItemMapItemClipPathSettings::setEnabled( bool enabled )
     return;
 
   mEnabled = enabled;
+
+  if ( mClipPathSource )
+  {
+    // may need to refresh the clip source in order to get it to render/not render depending on enabled state
+    mClipPathSource->refresh();
+  }
   emit changed();
 }
 
@@ -2913,22 +2919,31 @@ void QgsLayoutItemMapItemClipPathSettings::setSourceItem( QgsLayoutItem *item )
 
   if ( mClipPathSource )
   {
-    disconnect( mClipPathSource, &QgsLayoutItem::sizePositionChanged, mMap, &QgsLayoutItemMap::refresh );
+    disconnect( mClipPathSource, &QgsLayoutItem::clipPathChanged, mMap, &QgsLayoutItemMap::refresh );
     disconnect( mClipPathSource, &QgsLayoutItem::rotationChanged, mMap, &QgsLayoutItemMap::refresh );
-    disconnect( mClipPathSource, &QgsLayoutItem::sizePositionChanged, mMap, &QgsLayoutItemMap::extentChanged );
+    disconnect( mClipPathSource, &QgsLayoutItem::clipPathChanged, mMap, &QgsLayoutItemMap::extentChanged );
     disconnect( mClipPathSource, &QgsLayoutItem::rotationChanged, mMap, &QgsLayoutItemMap::extentChanged );
   }
 
+  QgsLayoutItem *oldItem = mClipPathSource;
   mClipPathSource = item;
 
   if ( mClipPathSource )
   {
     // if item size or rotation changes, we need to redraw this map
-    connect( mClipPathSource, &QgsLayoutItem::sizePositionChanged, mMap, &QgsLayoutItemMap::refresh );
+    connect( mClipPathSource, &QgsLayoutItem::clipPathChanged, mMap, &QgsLayoutItemMap::refresh );
     connect( mClipPathSource, &QgsLayoutItem::rotationChanged, mMap, &QgsLayoutItemMap::refresh );
     // and if clip item size or rotation changes, then effectively we've changed the visible extent of the map
-    connect( mClipPathSource, &QgsLayoutItem::sizePositionChanged, mMap, &QgsLayoutItemMap::extentChanged );
+    connect( mClipPathSource, &QgsLayoutItem::clipPathChanged, mMap, &QgsLayoutItemMap::extentChanged );
     connect( mClipPathSource, &QgsLayoutItem::rotationChanged, mMap, &QgsLayoutItemMap::extentChanged );
+    // trigger a redraw of the clip source, so that it becomes invisible
+    mClipPathSource->refresh();
+  }
+
+  if ( oldItem )
+  {
+    // may need to refresh the previous item in order to get it to render
+    oldItem->refresh();
   }
 
   emit changed();
