@@ -23,6 +23,7 @@
 #include "qgsproject.h"
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemgroup.h"
+#include "qgslayoutitemshape.h"
 #include <QObject>
 #include "qgstest.h"
 #include <QList>
@@ -967,17 +968,27 @@ void TestQgsLayoutModel::proxy()
   QgsLayoutItemLabel *item3 = new QgsLayoutItemLabel( layout );
   item3->setId( QStringLiteral( "a" ) );
   layout->addLayoutItem( item3 );
-  QCOMPARE( proxy->rowCount( QModelIndex() ), 3 );
+  QgsLayoutItemShape *item4 = new QgsLayoutItemShape( layout );
+  item4->setId( QStringLiteral( "d" ) );
+  layout->addLayoutItem( item4 );
+  QgsLayoutItemShape *item5 = new QgsLayoutItemShape( layout );
+  item5->setId( QStringLiteral( "e" ) );
+  layout->addLayoutItem( item5 );
+  QCOMPARE( proxy->rowCount( QModelIndex() ), 5 );
   QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QStringLiteral( "a" ) );
   QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), QStringLiteral( "b" ) );
   QCOMPARE( proxy->data( proxy->index( 2, 2, QModelIndex() ) ).toString(), QStringLiteral( "c" ) );
+  QCOMPARE( proxy->data( proxy->index( 3, 2, QModelIndex() ) ).toString(), QStringLiteral( "d" ) );
+  QCOMPARE( proxy->data( proxy->index( 4, 2, QModelIndex() ) ).toString(), QStringLiteral( "e" ) );
 
   proxy->setAllowEmptyItem( true );
-  QCOMPARE( proxy->rowCount( QModelIndex() ), 4 );
+  QCOMPARE( proxy->rowCount( QModelIndex() ), 6 );
   QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QString() );
   QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), QStringLiteral( "a" ) );
   QCOMPARE( proxy->data( proxy->index( 2, 2, QModelIndex() ) ).toString(), QStringLiteral( "b" ) );
   QCOMPARE( proxy->data( proxy->index( 3, 2, QModelIndex() ) ).toString(), QStringLiteral( "c" ) );
+  QCOMPARE( proxy->data( proxy->index( 4, 2, QModelIndex() ) ).toString(), QStringLiteral( "d" ) );
+  QCOMPARE( proxy->data( proxy->index( 5, 2, QModelIndex() ) ).toString(), QStringLiteral( "e" ) );
 
   proxy->setFilterType( QgsLayoutItemRegistry::LayoutMap );
   QCOMPARE( proxy->rowCount( QModelIndex() ), 3 );
@@ -993,6 +1004,16 @@ void TestQgsLayoutModel::proxy()
   proxy->setFilterType( QgsLayoutItemRegistry::LayoutScaleBar );
   QCOMPARE( proxy->rowCount( QModelIndex() ), 1 );
   QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QString() );
+
+  proxy->setAllowEmptyItem( false );
+  proxy->setFilterType( QgsLayoutItemRegistry::LayoutItem );
+  QCOMPARE( proxy->rowCount( QModelIndex() ), 5 );
+  proxy->setItemFlags( QgsLayoutItem::FlagProvidesClipPath );
+  QCOMPARE( proxy->rowCount( QModelIndex() ), 2 );
+  QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QStringLiteral( "d" ) );
+  QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), QStringLiteral( "e" ) );
+  proxy->setItemFlags( nullptr );
+  QCOMPARE( proxy->rowCount( QModelIndex() ), 5 );
 }
 
 void TestQgsLayoutModel::proxyCrash()
