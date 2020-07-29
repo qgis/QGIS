@@ -47,6 +47,24 @@ class CORE_EXPORT QgsAnnotationPolygonItem : public QgsAnnotationItem
     QgsAnnotationPolygonItem *clone() override SIP_FACTORY;
 
     /**
+     * Returns the polygon geometry of the item.
+     *
+     * The coordinate reference system for the polygon can be retrieved through crs().
+     *
+     * \see setPolygon()
+     */
+    QgsPolygon polygon() const { return mPolygon; }
+
+    /**
+     * Sets the \a polygon geometry of the item.
+     *
+     * The coordinate reference system for the polygon can be set through setCrs().
+     *
+     * \see polygon()
+     */
+    void setPolygon( const QgsPolygon &polygon ) { mPolygon = polygon; }
+
+    /**
      * Returns the symbol used to render the item.
      *
      * \see setSymbol()

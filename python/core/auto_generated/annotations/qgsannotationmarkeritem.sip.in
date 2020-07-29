@@ -41,6 +41,24 @@ Constructor for QgsAnnotationMarkerItem, at the specified ``point`` in the given
     virtual QgsAnnotationMarkerItem *clone() /Factory/;
 
 
+    QgsPointXY point() const;
+%Docstring
+Returns the point location of the marker.
+
+The coordinate reference system for the point can be retrieved through :py:func:`~QgsAnnotationMarkerItem.crs`.
+
+.. seealso:: :py:func:`setPoint`
+%End
+
+    void setPoint( QgsPointXY point );
+%Docstring
+Sets the ``point`` location of the marker.
+
+The coordinate reference system for the point can be set through :py:func:`~QgsAnnotationMarkerItem.setCrs`.
+
+.. seealso:: :py:func:`point`
+%End
+
     const QgsMarkerSymbol *symbol() const;
 %Docstring
 Returns the symbol used to render the marker item.

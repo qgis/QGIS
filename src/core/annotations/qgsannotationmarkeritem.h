@@ -47,6 +47,24 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
     QgsAnnotationMarkerItem *clone() override SIP_FACTORY;
 
     /**
+     * Returns the point location of the marker.
+     *
+     * The coordinate reference system for the point can be retrieved through crs().
+     *
+     * \see setPoint()
+     */
+    QgsPointXY point() const { return mPoint; }
+
+    /**
+     * Sets the \a point location of the marker.
+     *
+     * The coordinate reference system for the point can be set through setCrs().
+     *
+     * \see point()
+     */
+    void setPoint( QgsPointXY point ) { mPoint = point; }
+
+    /**
      * Returns the symbol used to render the marker item.
      *
      * \see setSymbol()
