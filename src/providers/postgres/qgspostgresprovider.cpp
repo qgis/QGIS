@@ -4821,31 +4821,39 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     return result;
   }
   QString sql(
-    "SELECT tc.constraint_name , "
-    "   kcu1.column_name , "
-    "   kcu2.constraint_schema , "
-    "   kcu2.table_name , "
-    "   kcu2.column_name , "
-    "   kcu1.ordinal_position "
-    "FROM information_schema.table_constraints AS tc "
-    "INNER JOIN information_schema.key_column_usage AS kcu1 ON tc.constraint_name = kcu1.constraint_name "
-    "AND tc.table_schema = kcu1.table_schema "
-    "INNER JOIN information_schema.key_column_usage AS kcu2 ON tc.constraint_name = kcu2.constraint_name "
-    "AND tc.table_schema = kcu2.table_schema "
-    "INNER JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name "
-    "AND ccu.table_schema = tc.table_schema "
-    "WHERE tc.constraint_type = 'FOREIGN KEY' "
-    "  AND tc.table_schema=" + QgsPostgresConn::quotedValue( mSchemaName ) +
-    "  AND tc.table_name=" + QgsPostgresConn::quotedValue( mTableName ) +
-    "  AND kcu1.ordinal_position= kcu2.ordinal_position "
-    "GROUP BY tc.constraint_name, "
-    "     kcu1.column_name, "
-    "     kcu2.constraint_schema, "
-    "     kcu2.table_name, "
-    "     kcu2.column_name, "
-    "     kcu1.ordinal_position "
-    "ORDER BY kcu1.ordinal_position"
+    "WITH foreign_keys AS "
+    "  ( SELECT c.conname, "
+    "           c.conrelid, "
+    "           c.confrelid, "
+    "           unnest(c.conkey) AS conkey, "
+    "           unnest(c.confkey) AS confkey, "
+    "     (SELECT relname "
+    "      FROM pg_catalog.pg_class "
+    "      WHERE oid = c.conrelid) as referencing_table, "
+    "     (SELECT relname "
+    "      FROM pg_catalog.pg_class "
+    "      WHERE oid = c.confrelid) as referenced_table, "
+    "     (SELECT relnamespace::regnamespace::text "
+    "      FROM pg_catalog.pg_class "
+    "      WHERE oid = c.confrelid) as constraint_schema "
+    "   FROM pg_constraint c "
+    "   WHERE contype = 'f' "
+    "     AND c.conrelid::regclass = " + QgsPostgresConn::quotedValue( QString( mSchemaName + "." +  mTableName ) ) + "::regclass ) "
+    "SELECT fk.conname as constraint_name, "
+    "       a.attname as column_name, "
+    "       fk.constraint_schema, "
+    "       referenced_table as table_name, "
+    "       af.attname as column_name, "
+    "       fk.confkey as ordinal_position "
+    "FROM foreign_keys fk "
+    "JOIN pg_attribute af ON af.attnum = fk.confkey "
+    "AND af.attrelid = fk.confrelid "
+    "JOIN pg_attribute a ON a.attnum = conkey "
+    "AND a.attrelid = fk.conrelid "
+    "ORDER BY fk.confrelid, "
+    "         fk.conname ;"
   );
+  
   QgsPostgresResult sqlResult( connectionRO()->PQexec( sql ) );
   if ( sqlResult.PQresultStatus() != PGRES_TUPLES_OK )
   {
@@ -4862,7 +4870,7 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     const QString refTable = sqlResult.PQgetvalue( row, 3 );
     const QString refColumn = sqlResult.PQgetvalue( row, 4 );
     const QString position = sqlResult.PQgetvalue( row, 5 );
-    if ( position == QLatin1String( "1" ) )
+    if ( ( position == QLatin1String( "1" ) ) || ( nbFound == 0 ) )
     {
       // first reference field => try to find if we have layers for the referenced table
       const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refSchema, refTable );
