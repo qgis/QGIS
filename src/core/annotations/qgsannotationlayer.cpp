@@ -42,12 +42,14 @@ QString QgsAnnotationLayer::addItem( QgsAnnotationItem *item )
   return uuid;
 }
 
-#if 0
-QgsAnnotationItem *QgsAnnotationItem::takeItem( const QString &itemId )
+bool QgsAnnotationLayer::removeItem( const QString &id )
 {
-  return mItems.take( itemId );
+  if ( !mItems.contains( id ) )
+    return false;
+
+  delete mItems.take( id );
+  return true;
 }
-#endif
 
 QgsAnnotationLayer *QgsAnnotationLayer::clone() const
 {
@@ -184,52 +186,3 @@ bool QgsAnnotationLayer::readSymbology( const QDomNode &node, QString &, QgsRead
   }
   return true;
 }
-
-
-#if 0
-QString QgsAnnotationLayer::pickItem( const QgsRectangle &pickRect, const QgsMapSettings &mapSettings ) const
-{
-  for ( auto it = mItems.begin(), itEnd = mItems.end(); it != itEnd; ++it )
-  {
-    QgsCoordinateTransform crst( mapSettings.destinationCrs(), it.value()->crs(), transformContext() );
-    if ( it.value()->intersects( crst.transform( pickRect ), mapSettings ) )
-    {
-      return it.key();
-    }
-  }
-  return QString();
-}
-
-QString QgsAnnotationLayer::pickItem( const QgsPointXY &mapPos, const QgsMapSettings &mapSettings ) const
-{
-  QgsRenderContext renderContext = QgsRenderContext::fromMapSettings( mapSettings );
-  double radiusmm = QgsSettings().value( "/Map/searchRadiusMM", Qgis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
-  radiusmm = radiusmm > 0 ? radiusmm : Qgis::DEFAULT_SEARCH_RADIUS_MM;
-  double radiusmu = radiusmm * renderContext.scaleFactor() * renderContext.mapToPixel().mapUnitsPerPixel();
-  QgsRectangle filterRect;
-  filterRect.setXMinimum( mapPos.x() - radiusmu );
-  filterRect.setXMaximum( mapPos.x() + radiusmu );
-  filterRect.setYMinimum( mapPos.y() - radiusmu );
-  filterRect.setYMaximum( mapPos.y() + radiusmu );
-  return pickItem( filterRect, mapSettings );
-}
-
-QRectF QgsAnnotationLayer::margin() const
-{
-  bool empty = true;
-  QRectF rect;
-  for ( const KadasMapItem *item : mItems )
-  {
-    if ( empty )
-    {
-      rect = item->margin();
-    }
-    else
-    {
-      rect = rect.united( item->margin() );
-    }
-  }
-  return rect;
-}
-#endif
-

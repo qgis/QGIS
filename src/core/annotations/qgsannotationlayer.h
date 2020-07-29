@@ -81,7 +81,10 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      */
     QString addItem( QgsAnnotationItem *item SIP_TRANSFER );
 
-    //KadasMapItem *takeItem( const QString &itemId );
+    /**
+     * Removes (and deletes) the item with matching \a id.
+     */
+    bool removeItem( const QString &id );
 
     /**
      * Returns a map of items contained in the layer, by unique item ID.
@@ -105,17 +108,9 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      */
     double opacity() const { return mOpacity; }
 
-//    QRectF margin() const;
-
     QgsAnnotationLayer *clone() const override SIP_FACTORY;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     QgsRectangle extent() const override;
-
-#if 0
-    virtual QString pickItem( const QgsRectangle &pickRect, const QgsMapSettings &mapSettings ) const;
-    QString pickItem( const QgsPointXY &mapPos, const QgsMapSettings &mapSettings ) const;
-#endif
-
     void setTransformContext( const QgsCoordinateTransformContext &context ) override;
     bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context ) override;
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;

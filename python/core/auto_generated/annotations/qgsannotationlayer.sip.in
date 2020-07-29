@@ -59,6 +59,10 @@ Ownership of ``item`` is transferred to the layer.
 Returns the unique ID assigned to the item.
 %End
 
+    bool removeItem( const QString &id );
+%Docstring
+Removes (and deletes) the item with matching ``id``.
+%End
 
     QMap<QString, QgsAnnotationItem *> items() const;
 %Docstring
@@ -84,14 +88,11 @@ and 1.0 (fully opaque).
 .. seealso:: :py:func:`setOpacity`
 %End
 
-
     virtual QgsAnnotationLayer *clone() const /Factory/;
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 
     virtual QgsRectangle extent() const;
-
-
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &context );
 
