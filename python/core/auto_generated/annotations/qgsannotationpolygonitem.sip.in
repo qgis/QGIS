@@ -41,6 +41,24 @@ Constructor for QgsAnnotationPolygonItem, with the specified ``polygon`` in the 
     virtual QgsAnnotationPolygonItem *clone() /Factory/;
 
 
+    QgsPolygon polygon() const;
+%Docstring
+Returns the polygon geometry of the item.
+
+The coordinate reference system for the polygon can be retrieved through :py:func:`~QgsAnnotationPolygonItem.crs`.
+
+.. seealso:: :py:func:`setPolygon`
+%End
+
+    void setPolygon( const QgsPolygon &polygon );
+%Docstring
+Sets the ``polygon`` geometry of the item.
+
+The coordinate reference system for the polygon can be set through :py:func:`~QgsAnnotationPolygonItem.setCrs`.
+
+.. seealso:: :py:func:`polygon`
+%End
+
     const QgsFillSymbol *symbol() const;
 %Docstring
 Returns the symbol used to render the item.

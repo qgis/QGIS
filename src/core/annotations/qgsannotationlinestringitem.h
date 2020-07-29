@@ -48,6 +48,24 @@ class CORE_EXPORT QgsAnnotationLineStringItem : public QgsAnnotationItem
     QgsAnnotationLineStringItem *clone() override SIP_FACTORY;
 
     /**
+     * Returns the line string geometry of the item.
+     *
+     * The coordinate reference system for the line can be retrieved through crs().
+     *
+     * \see setLineString()
+     */
+    QgsLineString lineString() const { return mLineString; }
+
+    /**
+     * Sets the \a lineString geometry of the item.
+     *
+     * The coordinate reference system for the line can be set through setCrs().
+     *
+     * \see lineString()
+     */
+    void setLineString( const QgsLineString &lineString ) { mLineString = lineString; }
+
+    /**
      * Returns the symbol used to render the item.
      *
      * \see setSymbol()

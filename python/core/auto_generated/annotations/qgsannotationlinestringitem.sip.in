@@ -42,6 +42,24 @@ Constructor for QgsAnnotationLineStringItem, with the specified ``linestring`` i
     virtual QgsAnnotationLineStringItem *clone() /Factory/;
 
 
+    QgsLineString lineString() const;
+%Docstring
+Returns the line string geometry of the item.
+
+The coordinate reference system for the line can be retrieved through :py:func:`~QgsAnnotationLineStringItem.crs`.
+
+.. seealso:: :py:func:`setLineString`
+%End
+
+    void setLineString( const QgsLineString &lineString );
+%Docstring
+Sets the ``lineString`` geometry of the item.
+
+The coordinate reference system for the line can be set through :py:func:`~QgsAnnotationLineStringItem.setCrs`.
+
+.. seealso:: :py:func:`lineString`
+%End
+
     const QgsLineSymbol *symbol() const;
 %Docstring
 Returns the symbol used to render the item.
