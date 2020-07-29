@@ -45,6 +45,7 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
     static QgsAnnotationMarkerItem *create() SIP_FACTORY;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QgsAnnotationMarkerItem *clone() override SIP_FACTORY;
+    QgsRectangle boundingBox() const override;
 
     /**
      * Returns the point location of the marker.

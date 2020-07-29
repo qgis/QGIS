@@ -98,6 +98,11 @@ QgsAnnotationMarkerItem *QgsAnnotationMarkerItem::clone()
   return item.release();
 }
 
+QgsRectangle QgsAnnotationMarkerItem::boundingBox() const
+{
+  return QgsRectangle( mPoint.x(), mPoint.y(), mPoint.x(), mPoint.y() );
+}
+
 const QgsMarkerSymbol *QgsAnnotationMarkerItem::symbol() const
 {
   return mSymbol.get();

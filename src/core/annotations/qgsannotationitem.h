@@ -87,6 +87,13 @@ class CORE_EXPORT QgsAnnotationItem
     virtual QString type() const = 0;
 
     /**
+     * Returns the bounding box of the item's geographic location.
+     *
+     * The coordinate reference system for the bounding box is retrieved via crs().
+     */
+    virtual QgsRectangle boundingBox() const = 0;
+
+    /**
      * Returns the CRS used for storing the location of the item.
      *
      * \see setCrs()

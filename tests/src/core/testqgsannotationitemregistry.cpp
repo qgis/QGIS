@@ -61,6 +61,8 @@ class TestItem : public QgsAnnotationItem
     {
       return true;
     }
+
+    QgsRectangle boundingBox() const override { return QgsRectangle(); }
 };
 
 

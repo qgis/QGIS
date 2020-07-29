@@ -60,6 +60,13 @@ Returns a clone of the item. Ownership is transferred to the caller.
 Returns a unique (untranslated) string identifying the type of item.
 %End
 
+    virtual QgsRectangle boundingBox() const = 0;
+%Docstring
+Returns the bounding box of the item's geographic location.
+
+The coordinate reference system for the bounding box is retrieved via :py:func:`~QgsAnnotationItem.crs`.
+%End
+
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
 Returns the CRS used for storing the location of the item.

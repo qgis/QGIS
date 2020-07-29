@@ -44,6 +44,7 @@ class CORE_EXPORT QgsAnnotationLineStringItem : public QgsAnnotationItem
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     static QgsAnnotationLineStringItem *create() SIP_FACTORY;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
+    QgsRectangle boundingBox() const override;
 
     QgsAnnotationLineStringItem *clone() override SIP_FACTORY;
 

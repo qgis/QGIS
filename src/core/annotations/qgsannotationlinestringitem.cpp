@@ -103,6 +103,11 @@ bool QgsAnnotationLineStringItem::readXml( const QDomElement &element, const Qgs
   return true;
 }
 
+QgsRectangle QgsAnnotationLineStringItem::boundingBox() const
+{
+  return mLineString.boundingBox();
+}
+
 QgsAnnotationLineStringItem *QgsAnnotationLineStringItem::clone()
 {
   std::unique_ptr< QgsAnnotationLineStringItem > item = qgis::make_unique< QgsAnnotationLineStringItem >( mLineString, crs() );

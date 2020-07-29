@@ -40,6 +40,8 @@ Constructor for QgsAnnotationPolygonItem, with the specified ``polygon`` in the 
 
     virtual QgsAnnotationPolygonItem *clone() /Factory/;
 
+    virtual QgsRectangle boundingBox() const;
+
 
     QgsPolygon polygon() const;
 %Docstring
