@@ -373,6 +373,22 @@ by manual field configuration.
 :return: the value
 %End
 
+    void setReadOnly( bool readOnly );
+%Docstring
+Make field read-only if ``readOnly`` is set to true. This is the case for
+providers which support generated fields for instance.
+
+.. versionadded:: 3.18
+%End
+
+    bool isReadOnly() const;
+%Docstring
+Returns ``True`` if this field is a read-only field. This is the case for
+providers which support generated fields for instance.
+
+.. versionadded:: 3.18
+%End
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsField: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->typeName() );

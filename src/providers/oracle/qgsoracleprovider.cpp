@@ -773,6 +773,7 @@ bool QgsOracleProvider::loadFields()
 
     QVariant::Type type = field.type();
     QgsField newField( field.name(), type, types.value( field.name() ), field.length(), field.precision(), comments.value( field.name() ) );
+    newField.setReadOnly( alwaysGenerated.value( field.name(), false ) );
 
     QgsFieldConstraints constraints;
     if ( mPrimaryKeyAttrs.contains( i ) )
@@ -1220,7 +1221,6 @@ QString QgsOracleProvider::defaultValueClause( int fieldId ) const
 
   return QString();
 }
-
 
 bool QgsOracleProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value ) const
 {

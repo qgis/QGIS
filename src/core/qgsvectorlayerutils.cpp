@@ -863,7 +863,9 @@ bool _fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFea
 {
   return layer->isEditable() &&
          !layer->editFormConfig().readOnly( fieldIndex ) &&
-         ( ( layer->dataProvider() && layer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) || FID_IS_NEW( feature.id() ) );
+         layer->dataProvider() &&
+         ( ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) || FID_IS_NEW( feature.id() ) ) &&
+         !layer->fields().at( fieldIndex ).isReadOnly();
 }
 
 bool QgsVectorLayerUtils::fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature )

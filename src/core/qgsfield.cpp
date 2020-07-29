@@ -561,6 +561,17 @@ QgsEditorWidgetSetup QgsField::editorWidgetSetup() const
   return d->editorWidgetSetup;
 }
 
+void QgsField::setReadOnly( bool readOnly )
+{
+  d->isReadOnly = readOnly;
+}
+
+bool QgsField::isReadOnly() const
+{
+  return d->isReadOnly;
+}
+
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsfield.cpp.
