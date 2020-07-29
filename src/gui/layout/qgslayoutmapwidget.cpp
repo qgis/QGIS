@@ -1970,6 +1970,14 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
   mAtlasClippingTypeComboBox->addItem( tr( "Clip Feature Before Render" ), static_cast< int >( QgsMapClippingRegion::FeatureClippingType::ClipToIntersection ) );
   mAtlasClippingTypeComboBox->addItem( tr( "Render Intersecting Features Unchanged" ), static_cast< int >( QgsMapClippingRegion::FeatureClippingType::NoClipping ) );
 
+  for ( int i = 0; i < mAtlasClippingTypeComboBox->count(); ++i )
+  {
+    mItemClippingTypeComboBox->addItem( mAtlasClippingTypeComboBox->itemText( i ), mAtlasClippingTypeComboBox->itemData( i ) );
+  }
+
+  mClipItemComboBox->setCurrentLayout( map->layout() );
+  mClipItemComboBox->setItemFlags( QgsLayoutItem::FlagProvidesClipPath );
+
   connect( mRadioClipSelectedLayers, &QRadioButton::toggled, mLayersTreeView, &QWidget::setEnabled );
   mLayersTreeView->setEnabled( false );
   mRadioClipAllLayers->setChecked( true );
@@ -2039,6 +2047,45 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
     }
   } );
 
+  // item clipping widgets
+
+  connect( mClipToItemCheckBox, &QGroupBox::toggled, this, [ = ]( bool active )
+  {
+    if ( !mBlockUpdates )
+    {
+      mMapItem->beginCommand( tr( "Toggle Map Clipping" ) );
+      mMapItem->itemClippingSettings()->setEnabled( active );
+      mMapItem->endCommand();
+    }
+  } );
+  connect( mItemClippingTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    if ( !mBlockUpdates )
+    {
+      mMapItem->beginCommand( tr( "Change Map Clipping Behavior" ) );
+      mMapItem->itemClippingSettings()->setFeatureClippingType( static_cast< QgsMapClippingRegion::FeatureClippingType >( mItemClippingTypeComboBox->currentData().toInt() ) );
+      mMapItem->endCommand();
+    }
+  } );
+  connect( mForceLabelsInsideItemCheckBox, &QCheckBox::toggled, this, [ = ]( bool active )
+  {
+    if ( !mBlockUpdates )
+    {
+      mMapItem->beginCommand( tr( "Change Map Clipping Label Behavior" ) );
+      mMapItem->itemClippingSettings()->setForceLabelsInsideClipPath( active );
+      mMapItem->endCommand();
+    }
+  } );
+  connect( mClipItemComboBox, &QgsLayoutItemComboBox::itemChanged, this, [ = ]( QgsLayoutItem * item )
+  {
+    if ( !mBlockUpdates )
+    {
+      mMapItem->beginCommand( tr( "Change Map Clipping Item" ) );
+      mMapItem->itemClippingSettings()->setSourceItem( item );
+      mMapItem->endCommand();
+    }
+  } );
+
   setNewItem( map );
 
   connect( &map->layout()->reportContext(), &QgsLayoutReportContext::layerChanged,
@@ -2092,6 +2139,11 @@ void QgsLayoutMapClippingWidget::updateGuiElements()
   mRadioClipAllLayers->setChecked( mMapItem->atlasClippingSettings()->layersToClip().isEmpty() );
   mRadioClipSelectedLayers->setChecked( !mMapItem->atlasClippingSettings()->layersToClip().isEmpty() );
   mLayerModel->setLayersChecked( mMapItem->atlasClippingSettings()->layersToClip() );
+
+  mClipToItemCheckBox->setChecked( mMapItem->itemClippingSettings()->enabled() );
+  mItemClippingTypeComboBox->setCurrentIndex( mItemClippingTypeComboBox->findData( static_cast< int >( mMapItem->itemClippingSettings()->featureClippingType() ) ) );
+  mForceLabelsInsideItemCheckBox->setChecked( mMapItem->itemClippingSettings()->forceLabelsInsideClipPath() );
+  mClipItemComboBox->setItem( mMapItem->itemClippingSettings()->sourceItem() );
 
   mBlockUpdates = false;
 }
