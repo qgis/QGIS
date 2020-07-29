@@ -74,6 +74,21 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertIsInstance(layer.items()[linestring_item_id], QgsAnnotationLineStringItem)
         self.assertIsInstance(layer.items()[marker_item_id], QgsAnnotationMarkerItem)
 
+        self.assertFalse(layer.removeItem('xxxx'))
+        self.assertEqual(len(layer.items()), 3)
+        self.assertTrue(layer.removeItem(linestring_item_id))
+        self.assertEqual(len(layer.items()), 2)
+        self.assertIsInstance(layer.items()[polygon_item_id], QgsAnnotationPolygonItem)
+        self.assertIsInstance(layer.items()[marker_item_id], QgsAnnotationMarkerItem)
+        self.assertFalse(layer.removeItem(linestring_item_id))
+
+        self.assertTrue(layer.removeItem(polygon_item_id))
+        self.assertEqual(len(layer.items()), 1)
+        self.assertIsInstance(layer.items()[marker_item_id], QgsAnnotationMarkerItem)
+
+        self.assertTrue(layer.removeItem(marker_item_id))
+        self.assertEqual(len(layer.items()), 0)
+
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
 
