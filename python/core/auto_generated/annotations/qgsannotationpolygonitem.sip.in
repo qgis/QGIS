@@ -35,7 +35,12 @@ Constructor for QgsAnnotationPolygonItem, with the specified ``polygon`` in the 
 
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
+
     static QgsAnnotationPolygonItem *create() /Factory/;
+%Docstring
+Creates a new polygon annotation item.
+%End
+
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
     virtual QgsAnnotationPolygonItem *clone() /Factory/;
