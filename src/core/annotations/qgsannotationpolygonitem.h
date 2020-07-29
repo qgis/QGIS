@@ -42,7 +42,12 @@ class CORE_EXPORT QgsAnnotationPolygonItem : public QgsAnnotationItem
     QString type() const override;
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+
+    /**
+     * Creates a new polygon annotation item.
+     */
     static QgsAnnotationPolygonItem *create() SIP_FACTORY;
+
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QgsAnnotationPolygonItem *clone() override SIP_FACTORY;
     QgsRectangle boundingBox() const override;

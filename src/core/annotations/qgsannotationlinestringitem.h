@@ -42,7 +42,12 @@ class CORE_EXPORT QgsAnnotationLineStringItem : public QgsAnnotationItem
     QString type() const override;
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+
+    /**
+     * Creates a new linestring annotation item.
+     */
     static QgsAnnotationLineStringItem *create() SIP_FACTORY;
+
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QgsRectangle boundingBox() const override;
 

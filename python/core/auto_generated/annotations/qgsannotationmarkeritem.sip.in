@@ -35,7 +35,12 @@ Constructor for QgsAnnotationMarkerItem, at the specified ``point`` in the given
 
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
+
     static QgsAnnotationMarkerItem *create() /Factory/;
+%Docstring
+Creates a new marker annotation item.
+%End
+
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
     virtual QgsAnnotationMarkerItem *clone() /Factory/;

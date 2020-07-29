@@ -35,7 +35,12 @@ Constructor for QgsAnnotationLineStringItem, with the specified ``linestring`` i
 
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
+
     static QgsAnnotationLineStringItem *create() /Factory/;
+%Docstring
+Creates a new linestring annotation item.
+%End
+
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
     virtual QgsRectangle boundingBox() const;
