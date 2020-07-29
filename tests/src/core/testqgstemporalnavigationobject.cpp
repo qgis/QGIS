@@ -199,7 +199,8 @@ void TestQgsTemporalNavigationObject::frameSettings()
   navigationObject->setFrameTimeStep( 1 );
   navigationObject->setFrameTimeStepUnit( QgsUnitTypes::TemporalHours );
   QCOMPARE( navigationObject->frameTimeStep(), 1 );
-  QCOMPARE( navigationObject->frameTimeStepUnit(), QgsUnitTypes::TemporalHours );
+  QCOMPARE( static_cast<int>( navigationObject->frameTimeStepUnit() ),
+            static_cast<int>( QgsUnitTypes::TemporalHours ) );
 
   QCOMPARE( navigationObject->currentFrameNumber(), 0 );
   QCOMPARE( navigationObject->totalFrameCount(), 5 );
