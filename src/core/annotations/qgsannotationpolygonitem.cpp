@@ -124,6 +124,11 @@ QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::clone()
   return item.release();
 }
 
+QgsRectangle QgsAnnotationPolygonItem::boundingBox() const
+{
+  return mPolygon.boundingBox();
+}
+
 const QgsFillSymbol *QgsAnnotationPolygonItem::symbol() const
 {
   return mSymbol.get();

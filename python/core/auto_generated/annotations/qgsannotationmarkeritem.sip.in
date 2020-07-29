@@ -40,6 +40,8 @@ Constructor for QgsAnnotationMarkerItem, at the specified ``point`` in the given
 
     virtual QgsAnnotationMarkerItem *clone() /Factory/;
 
+    virtual QgsRectangle boundingBox() const;
+
 
     QgsPointXY point() const;
 %Docstring

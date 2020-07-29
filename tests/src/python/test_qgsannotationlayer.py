@@ -89,6 +89,30 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertTrue(layer.removeItem(marker_item_id))
         self.assertEqual(len(layer.items()), 0)
 
+    def testExtent(self):
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+
+        polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])),
+                                                                 QgsCoordinateReferenceSystem('EPSG:4326')))
+        linestring_item_id = layer.addItem(QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]),
+                                                                       QgsCoordinateReferenceSystem('EPSG:4326')))
+        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPointXY(12, 13), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        # no crs set, so item bounds are taken direct...
+        extent = layer.extent()
+        self.assertEqual(extent.xMinimum(), 11.0)
+        self.assertEqual(extent.xMaximum(), 14.0)
+        self.assertEqual(extent.yMinimum(), 13.0)
+        self.assertEqual(extent.yMaximum(), 15.0)
+
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        extent = layer.extent()
+        self.assertAlmostEqual(extent.xMinimum(), 1224514.0, -3)
+        self.assertAlmostEqual(extent.xMaximum(), 1558472.0, -3)
+        self.assertAlmostEqual(extent.yMinimum(), 1459732.0, -3)
+        self.assertAlmostEqual(extent.yMaximum(), 1689200.0, -3)
+
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
 
