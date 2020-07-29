@@ -88,6 +88,7 @@ bool QgsAnnotationPolygonItem::writeXml( QDomElement &element, QDomDocument &doc
   element.setAttribute( QStringLiteral( "wkt" ), mPolygon.asWkt() );
   crs().writeXml( element, document );
 
+  element.setAttribute( QStringLiteral( "zIndex" ), zIndex() );
   element.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "lineSymbol" ), mSymbol.get(), document, context ) );
 
   return true;
@@ -106,6 +107,7 @@ bool QgsAnnotationPolygonItem::readXml( const QDomElement &element, const QgsRea
   QgsCoordinateReferenceSystem crs;
   crs.readXml( element );
   setCrs( crs );
+  setZIndex( element.attribute( QStringLiteral( "zIndex" ) ).toInt() );
 
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
@@ -118,6 +120,7 @@ QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::clone()
 {
   std::unique_ptr< QgsAnnotationPolygonItem > item = qgis::make_unique< QgsAnnotationPolygonItem >( mPolygon, crs() );
   item->setSymbol( mSymbol->clone() );
+  item->setZIndex( zIndex() );
   return item.release();
 }
 

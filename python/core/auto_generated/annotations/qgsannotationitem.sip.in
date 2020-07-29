@@ -96,6 +96,16 @@ Reads the item's state from the given DOM ``element``.
 %Docstring
 Returns the item's z index, which controls the order in which annotation items
 are rendered in the layer.
+
+.. seealso:: :py:func:`setZIndex`
+%End
+
+    void setZIndex( int index );
+%Docstring
+Sets the item's z ``index``, which controls the order in which annotation items
+are rendered in the layer.
+
+.. seealso:: :py:func:`zIndex`
 %End
 
   private:

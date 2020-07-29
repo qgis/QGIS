@@ -121,12 +121,23 @@ class CORE_EXPORT QgsAnnotationItem
     /**
      * Returns the item's z index, which controls the order in which annotation items
      * are rendered in the layer.
+     *
+     * \see setZIndex()
      */
-    int zIndex() const { return 0; }
+    int zIndex() const { return mZIndex; }
+
+    /**
+     * Sets the item's z \a index, which controls the order in which annotation items
+     * are rendered in the layer.
+     *
+     * \see zIndex()
+     */
+    void setZIndex( int index ) { mZIndex = index; }
 
   private:
 
     QgsCoordinateReferenceSystem mCrs;
+    int mZIndex = 0;
 
 #ifdef SIP_RUN
     QgsAnnotationItem( const QgsAnnotationItem &other );

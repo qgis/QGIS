@@ -1,0 +1,226 @@
+# -*- coding: utf-8 -*-
+"""QGIS Unit tests for QgsAnnotationLayer.
+
+.. note:: This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+"""
+__author__ = '(C) 2020 by Nyall Dawson'
+__date__ = '29/07/2020'
+__copyright__ = 'Copyright 2020, The QGIS Project'
+
+import qgis  # NOQA
+
+from qgis.PyQt.QtCore import (QSize,
+                              QDir)
+from qgis.PyQt.QtGui import (QImage,
+                             QPainter,
+                             QColor)
+from qgis.core import (QgsMapSettings,
+                       QgsCoordinateTransform,
+                       QgsProject,
+                       QgsPoint,
+                       QgsCoordinateReferenceSystem,
+                       QgsFillSymbol,
+                       QgsRenderChecker,
+                       QgsReadWriteContext,
+                       QgsRenderContext,
+                       QgsAnnotationPolygonItem,
+                       QgsRectangle,
+                       QgsLineString,
+                       QgsPolygon,
+                       QgsAnnotationLayer,
+                       QgsAnnotationLineStringItem,
+                       QgsAnnotationMarkerItem,
+                       QgsPointXY,
+                       QgsLineSymbol,
+                       QgsMarkerSymbol
+                       )
+from qgis.PyQt.QtXml import QDomDocument
+
+from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
+
+start_app()
+TEST_DATA_DIR = unitTestDataPath()
+
+
+class TestQgsAnnotationLayer(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.report = "<h1>Python QgsAnnotationLayer Tests</h1>\n"
+
+    @classmethod
+    def tearDownClass(cls):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(cls.report)
+
+    def testItems(self):
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+
+        polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])),
+                                                                 QgsCoordinateReferenceSystem('EPSG:4326')))
+        linestring_item_id = layer.addItem(QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]),
+                                                                       QgsCoordinateReferenceSystem('EPSG:4326')))
+        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPointXY(12, 13), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        self.assertEqual(len(layer.items()), 3)
+
+        self.assertIsInstance(layer.items()[polygon_item_id], QgsAnnotationPolygonItem)
+        self.assertIsInstance(layer.items()[linestring_item_id], QgsAnnotationLineStringItem)
+        self.assertIsInstance(layer.items()[marker_item_id], QgsAnnotationMarkerItem)
+
+    def testReadWriteXml(self):
+        doc = QDomDocument("testdoc")
+
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+
+        polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])),
+                                                                 QgsCoordinateReferenceSystem('EPSG:4326')))
+        linestring_item_id = layer.addItem(QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]),
+                                                                       QgsCoordinateReferenceSystem('EPSG:4326')))
+        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPointXY(12, 13), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        elem = doc.createElement("maplayer")
+        self.assertTrue(layer.writeLayerXml(elem, doc, QgsReadWriteContext()))
+
+        layer2 = QgsAnnotationLayer('test2', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer2.readLayerXml(elem, QgsReadWriteContext()))
+
+        self.assertEqual(len(layer2.items()), 3)
+        self.assertIsInstance(layer2.items()[polygon_item_id], QgsAnnotationPolygonItem)
+        self.assertIsInstance(layer2.items()[linestring_item_id], QgsAnnotationLineStringItem)
+        self.assertIsInstance(layer2.items()[marker_item_id], QgsAnnotationMarkerItem)
+
+    def testClone(self):
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+
+        polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])),
+                                                                 QgsCoordinateReferenceSystem('EPSG:4326')))
+        linestring_item_id = layer.addItem(QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]),
+                                                                       QgsCoordinateReferenceSystem('EPSG:4326')))
+        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPointXY(12, 13), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        layer2 = layer.clone()
+
+        self.assertEqual(len(layer2.items()), 3)
+        self.assertIsInstance(layer2.items()[polygon_item_id], QgsAnnotationPolygonItem)
+        # should not be the SAME instance of the item -- the item must have been cloned for the cloned layer!
+        self.assertNotEqual(layer.items()[polygon_item_id], layer2.items()[polygon_item_id])
+        self.assertIsInstance(layer2.items()[linestring_item_id], QgsAnnotationLineStringItem)
+        self.assertIsInstance(layer2.items()[marker_item_id], QgsAnnotationMarkerItem)
+
+    def testRenderLayer(self):
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+
+        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])),
+                                        QgsCoordinateReferenceSystem('EPSG:4326'))
+        item.setSymbol(
+            QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
+        item.setZIndex(3)
+        layer.addItem(item)
+
+        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]),
+                                           QgsCoordinateReferenceSystem('EPSG:4326'))
+        item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
+        item.setZIndex(2)
+        layer.addItem(item)
+
+        item = QgsAnnotationMarkerItem(QgsPointXY(12, 13), QgsCoordinateReferenceSystem('EPSG:4326'))
+        item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '6', 'outline_color': 'black'}))
+        item.setZIndex(1)
+        layer.addItem(item)
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        settings.setExtent(QgsRectangle(10, 10, 18, 18))
+        settings.setOutputSize(QSize(300, 300))
+
+        settings.setFlag(QgsMapSettings.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        image = QImage(200, 200, QImage.Format_ARGB32)
+        image.setDotsPerMeterX(96 / 25.4 * 1000)
+        image.setDotsPerMeterY(96 / 25.4 * 1000)
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            renderer = layer.createMapRenderer(rc)
+            renderer.render()
+        finally:
+            painter.end()
+
+        self.assertTrue(self.imageCheck('layer_render', 'layer_render', image))
+
+    def testRenderWithTransform(self):
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+
+        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(11.5, 13), QgsPoint(12, 13), QgsPoint(12, 13.5), QgsPoint(11.5, 13)])),
+                                        QgsCoordinateReferenceSystem('EPSG:4326'))
+        item.setSymbol(
+            QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
+        item.setZIndex(1)
+        layer.addItem(item)
+
+        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]),
+                                           QgsCoordinateReferenceSystem('EPSG:4326'))
+        item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
+        item.setZIndex(2)
+        layer.addItem(item)
+
+        item = QgsAnnotationMarkerItem(QgsPointXY(12, 13), QgsCoordinateReferenceSystem('EPSG:4326'))
+        item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '6', 'outline_color': 'black'}))
+        item.setZIndex(3)
+        layer.addItem(item)
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        settings.setExtent(QgsRectangle(1250958, 1386945, 1420709, 1532518))
+        settings.setOutputSize(QSize(300, 300))
+
+        settings.setFlag(QgsMapSettings.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        rc.setCoordinateTransform(QgsCoordinateTransform(item.crs(), settings.destinationCrs(), QgsProject.instance()))
+        image = QImage(200, 200, QImage.Format_ARGB32)
+        image.setDotsPerMeterX(96 / 25.4 * 1000)
+        image.setDotsPerMeterY(96 / 25.4 * 1000)
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            renderer = layer.createMapRenderer(rc)
+            renderer.render()
+        finally:
+            painter.end()
+
+        self.assertTrue(self.imageCheck('layer_render_transform', 'layer_render_transform', image))
+
+    def imageCheck(self, name, reference_image, image):
+        TestQgsAnnotationLayer.report += "<h2>Render {}</h2>\n".format(name)
+        temp_dir = QDir.tempPath() + '/'
+        file_name = temp_dir + 'patch_' + name + ".png"
+        image.save(file_name, "PNG")
+        checker = QgsRenderChecker()
+        checker.setControlPathPrefix("annotation_layer")
+        checker.setControlName("expected_" + reference_image)
+        checker.setRenderedImage(file_name)
+        checker.setColorTolerance(2)
+        result = checker.compareImages(name, 20)
+        TestQgsAnnotationLayer.report += checker.report()
+        return result
+
+
+if __name__ == '__main__':
+    unittest.main()

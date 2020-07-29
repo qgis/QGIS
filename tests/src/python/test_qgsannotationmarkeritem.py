@@ -59,9 +59,11 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
 
         item.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         item.setPoint(QgsPointXY(1000, 2000))
+        item.setZIndex(11)
         self.assertEqual(item.crs().authid(), 'EPSG:3111')
         self.assertEqual(item.point().x(), 1000.0)
         self.assertEqual(item.point().y(), 2000.0)
+        self.assertEqual(item.zIndex(), 11)
 
         item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '3', 'outline_color': 'black'}))
         self.assertEqual(item.symbol()[0].color(), QColor(100, 200, 200))
@@ -72,6 +74,7 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
 
         item = QgsAnnotationMarkerItem(QgsPointXY(12, 13), QgsCoordinateReferenceSystem('EPSG:4326'))
         item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '3', 'outline_color': 'black'}))
+        item.setZIndex(11)
 
         self.assertTrue(item.writeXml(elem, doc, QgsReadWriteContext()))
 
@@ -82,16 +85,19 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
         self.assertEqual(s2.point().x(), 12.0)
         self.assertEqual(s2.point().y(), 13.0)
         self.assertEqual(s2.symbol()[0].color(), QColor(100, 200, 200))
+        self.assertEqual(s2.zIndex(), 11)
 
     def testClone(self):
         item = QgsAnnotationMarkerItem(QgsPointXY(12, 13), QgsCoordinateReferenceSystem('EPSG:4326'))
         item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '3', 'outline_color': 'black'}))
+        item.setZIndex(11)
 
         item2 = item.clone()
         self.assertEqual(item2.crs().authid(), 'EPSG:4326')
         self.assertEqual(item2.point().x(), 12.0)
         self.assertEqual(item2.point().y(), 13.0)
         self.assertEqual(item2.symbol()[0].color(), QColor(100, 200, 200))
+        self.assertEqual(item2.zIndex(), 11)
 
     def testRenderMarker(self):
         item = QgsAnnotationMarkerItem(QgsPointXY(12, 13), QgsCoordinateReferenceSystem('EPSG:4326'))

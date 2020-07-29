@@ -35,9 +35,11 @@ QgsAnnotationLayer::~QgsAnnotationLayer()
   qDeleteAll( mItems );
 }
 
-void QgsAnnotationLayer::addItem( QgsAnnotationItem *item )
+QString QgsAnnotationLayer::addItem( QgsAnnotationItem *item )
 {
-  mItems.insert( QUuid::createUuid().toString(), item );
+  const QString uuid = QUuid::createUuid().toString();
+  mItems.insert( uuid, item );
+  return uuid;
 }
 
 #if 0
