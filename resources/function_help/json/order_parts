@@ -4,7 +4,7 @@
   "groups": ["GeometryGroup"],
   "description": "Orders the parts of a MultiGeometry by a given criteria",
   "arguments": [
-    {"arg":"geom","description":"a multi-type geometry"},
+    {"arg":"geometry","description":"a multi-type geometry"},
     {"arg":"orderby","description":"an expression string defining the order criteria"},
     {"arg":"ascending","description":"boolean, True for ascending, False for descending"}
   ],
