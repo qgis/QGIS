@@ -20,6 +20,7 @@
 #include "qgspainteffect.h"
 #include "qgspainterswapper.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgssymbollayerreference.h"
 
 QgsMaskMarkerSymbolLayer::QgsMaskMarkerSymbolLayer()
@@ -180,6 +181,21 @@ void QgsMaskMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
     else
     {
       mSymbol->renderPoint( point, context.feature(), context.renderContext(), /* layer = */ -1, /* selected = */ false );
+    }
+  }
+
+  //Save mask paths
+  QgsSymbolLayerList symbolLayerList = subSymbol()->symbolLayers();
+  for ( QgsSymbolLayer *symbolLayer : symbolLayerList )
+  {
+    //Only simple markers are supported for now
+    QgsSimpleMarkerSymbolLayerBase *markerSymbolLayer = dynamic_cast< QgsSimpleMarkerSymbolLayerBase * >( symbolLayer );
+    if ( markerSymbolLayer )
+    {
+      QTransform transform;
+      transform.translate( point.x(), point.y() );
+      QPainterPath path = transform.map( markerSymbolLayer->path() );
+      context.renderContext().addToMaskPainterPath( path );
     }
   }
 }

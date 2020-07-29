@@ -564,4 +564,13 @@ void QgsRenderContext::setZRange( const QgsDoubleRange &range )
   mZRange = range;
 }
 
+void QgsRenderContext::addToMaskPainterPath( QPainterPath const &path )
+{
+  mMaskPainterPath.addPath( path );
+}
+
+void QgsRenderContext::addToMaskLabelPainterPath( int id, QPainterPath const &path )
+{
+  mMaskLabelPainterPaths[id].addPath( path );
+}
 

@@ -871,6 +871,28 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \since QGIS 3.16
      */
     void setTextureOrigin( const QPointF &origin );
+    /**
+     * Add a painter path to the mask painter path of this render context
+     */
+    void addToMaskPainterPath( QPainterPath const &path ); SIP_SKIP
+
+    /**
+     * Returns the mask painter path stored in this render context
+     * \since QGIS 3.16
+     */
+    QPainterPath maskPainterPath() { return mMaskPainterPath; } SIP_SKIP
+
+    /**
+     * Add a painter path to the mask label painter path of this render context with id
+     * \since QGIS 3.16
+     */
+    void addToMaskLabelPainterPath( int id, QPainterPath const &path ); SIP_SKIP
+
+    /**
+     * Return the label mask painter path with id
+     * \since QGIS 3.16
+     */
+    QPainterPath maskLabelPainterPath( int id = 0 ) { return mMaskLabelPainterPaths[id]; } SIP_SKIP
 
     /**
      * Returns the range of z-values which should be rendered.
@@ -921,6 +943,10 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \since QGIS 3.12
      */
     bool mIsGuiPreview = false;
+
+    QPainterPath mMaskPainterPath;
+
+    QMap<int, QPainterPath> mMaskLabelPainterPaths;
 
     //! For transformation between coordinate systems. Can be invalid if on-the-fly reprojection is not used
     QgsCoordinateTransform mCoordTransform;

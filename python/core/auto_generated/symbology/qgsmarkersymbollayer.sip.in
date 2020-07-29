@@ -136,6 +136,8 @@ Encodes a shape to its string representation.
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context );
 
 
+    QPainterPath path();
+
   protected:
 
     bool prepareMarkerShape( Shape shape );

@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 #include <QFutureWatcher>
 #include <QImage>
+#include <QPicture>
 #include <QPainter>
 #include <QObject>
 #include <QTime>
@@ -119,6 +120,10 @@ struct LayerRenderJob
   //! Mask image, needed during the first pass if a mask is defined
   QImage *maskImage = nullptr;
 
+  QPainterPath maskPainterPath;
+
+  QPicture *imgPic;
+
   /**
    * Pointer to the first pass job, needed during the second pass
    * to access first pass painter and image.
@@ -149,6 +154,8 @@ struct LabelRenderJob
    * Note that if complete is FALSE then img will be uninitialized and contain random data!.
    */
   QImage *img = nullptr;
+
+  QPicture *imgPic = nullptr;
 
   /**
    * Mask images
@@ -440,7 +447,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * \note not available in Python bindings
      * \since QGIS 3.12
      */
-    static void composeSecondPass( LayerRenderJobs &secondPassJobs, LabelRenderJob &labelJob ) SIP_SKIP;
+    static void composeSecondPass( LayerRenderJobs &secondPassJobs, LabelRenderJob &labelJob, bool forceVector ) SIP_SKIP;
 
     //! \note not available in Python bindings
     void logRenderingTime( const LayerRenderJobs &jobs, const LayerRenderJobs &secondPassJobs, const LabelRenderJob &labelJob ) SIP_SKIP;
@@ -490,6 +497,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     //! Convenient method to allocate a new image and a new QPainter on this image
     QPainter *allocateImageAndPainter( QString layerId, QImage *&image );
+
+    QPainter *allocatePictureAndPainter( QPicture *&image );
 };
 
 

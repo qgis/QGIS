@@ -315,8 +315,9 @@ void QgsMapRendererParallelJob::renderLayersSecondPassFinished()
 {
   QgsDebugMsgLevel( QStringLiteral( "PARALLEL finished" ), 2 );
 
+  bool forceVector = mSettings.testFlag( QgsMapSettings::ForceVectorOutput );
   // compose second pass images into first pass images
-  composeSecondPass( mSecondPassLayerJobs, mLabelJob );
+  composeSecondPass( mSecondPassLayerJobs, mLabelJob, forceVector );
 
   // compose final image
   mFinalImage = composeImage( mSettings, mLayerJobs, mLabelJob );

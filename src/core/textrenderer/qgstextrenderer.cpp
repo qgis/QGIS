@@ -25,6 +25,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgslogger.h"
 
 #include <QTextBoundaryFinder>
 
@@ -491,6 +492,16 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
       p->scale( scaleFactor, scaleFactor );
 
   }
+
+  if ( !context.isGuiPreview() )
+  {
+    //Save painter path for label selective masking
+    QPainterPathStroker stroker( pen );
+    path = stroker.createStroke( path );
+    path = p->combinedTransform().map( path );
+    context.addToMaskLabelPainterPath( context.currentMaskId(), path );
+  }
+  p->restore();
 }
 
 double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, QFontMetricsF * )

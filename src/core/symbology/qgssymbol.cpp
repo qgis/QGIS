@@ -53,6 +53,7 @@
 #include "qgslegendpatchshape.h"
 #include "qgsgeos.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmasksymbollayer.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 
