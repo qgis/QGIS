@@ -46,7 +46,10 @@ from PyQt5.QtWidgets import (QDialog,
                              QDoubleSpinBox,
                              QMessageBox,
                              QWidget,
-                             QScrollArea)
+                             QScrollArea,
+                             QLayout,
+                             QDialogButtonBox,
+                             QListWidget)
 import struct
 import glob
 
@@ -80,6 +83,33 @@ def imageFromPath(path):
     return image
 
 
+class SelectReferenceImageDialog(QDialog):
+
+    def __init__(self, parent, test_name, images):
+        super().__init__(parent)
+
+        self.setWindowTitle('Select reference image')
+
+        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+
+        layout = QVBoxLayout()
+        layout.addWidget(QLabel('Found multiple matching reference images for {}'.format(test_name)))
+
+        self.list = QListWidget()
+        layout.addWidget(self.list, 1)
+
+        layout.addWidget(self.button_box)
+        self.setLayout(layout)
+
+        for image in images:
+            self.list.addItem(image)
+
+    def selected_image(self):
+        return self.list.currentItem().text()
+
+
 class ResultHandler(QDialog):
 
     def __init__(self, parent=None):
@@ -108,6 +138,7 @@ class ResultHandler(QDialog):
         grid.addWidget(QLabel('New Mask'), 3, 1)
         grid.addWidget(self.mask_label, 4, 0)
         grid.addWidget(self.new_mask_label, 4, 1)
+        grid.setSizeConstraint(QLayout.SetFixedSize)
 
         self.widget.setLayout(grid)
         self.scrollArea.setWidget(self.widget)
@@ -225,15 +256,20 @@ class ResultHandler(QDialog):
             return
 
         self.control_label.setPixmap(QPixmap.fromImage(self.control_image))
+        self.control_label.setFixedSize(self.control_image.size())
         self.rendered_label.setPixmap(QPixmap.fromImage(self.rendered_image))
+        self.rendered_label.setFixedSize(self.rendered_image.size())
         self.mask_label.setPixmap(QPixmap.fromImage(self.mask_image))
+        self.mask_label.setFixedSize(self.mask_image.size())
         self.diff_label.setPixmap(QPixmap.fromImage(self.diff_image))
+        self.diff_label.setFixedSize(self.diff_image.size())
         self.preview_mask()
 
     def preview_mask(self):
         self.new_mask_image = self.create_mask(
             self.control_image, self.rendered_image, self.mask_image, self.overload_spin.value())
         self.new_mask_label.setPixmap(QPixmap.fromImage(self.new_mask_image))
+        self.new_mask_label.setFixedSize(self.new_mask_image.size())
 
     def save_mask(self):
         self.new_mask_image.save(self.mask_image_path, "png")
@@ -296,15 +332,17 @@ class ResultHandler(QDialog):
         matching_control_images = [x[0]
                                    for x in os.walk(control_images_folder) if test_name in x[0]]
         if len(matching_control_images) > 1:
-            QMessageBox.warning(
-                self, 'Result', 'Found multiple matching control images for {}'.format(test_name))
-            return None
+            dlg = SelectReferenceImageDialog(self, test_name, matching_control_images)
+            if not dlg.exec_():
+                return None
+
+            found_control_image_path = dlg.selected_image()
         elif len(matching_control_images) == 0:
             QMessageBox.warning(
                 self, 'Result', 'No matching control images found for {}'.format(test_name))
             return None
-
-        found_control_image_path = matching_control_images[0]
+        else:
+            found_control_image_path = matching_control_images[0]
 
         # check for a single matching expected image
         images = glob.glob(os.path.join(found_control_image_path, '*.png'))
