@@ -67,6 +67,14 @@ class CORE_EXPORT QgsCoordinateUtils
      */
     Q_INVOKABLE static QString formatCoordinateForProject( QgsProject *project, const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision );
 
+    /**
+     * Converts a degree minute second coordinate string to its decimal equivalent.
+     * \param string degree minute second string to convert
+     * \returns Double decimal value
+     * \since QGIS 3.16
+     */
+    Q_INVOKABLE static double dmsToDecimal( const QString &string, bool *ok );
+
 };
 
 
