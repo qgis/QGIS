@@ -167,9 +167,14 @@ void QgsSimpleMarkerSymbolLayerBase::startRender( QgsSymbolRenderContext &contex
   }
 
   if ( !mPolygon.isEmpty() )
+  {
     mPolygon = transform.map( mPolygon );
-  else
     mPath = transform.map( mPath );
+  }
+  else
+  {
+    mPath = transform.map( mPath );
+  }
 
   QgsMarkerSymbolLayer::startRender( context );
 }
@@ -255,6 +260,7 @@ void QgsSimpleMarkerSymbolLayerBase::renderPoint( QPointF point, QgsSymbolRender
   if ( !mPolygon.isEmpty() )
   {
     polygon = transform.map( mPolygon );
+    path = transform.map( mPath );
   }
   else
   {
@@ -559,7 +565,6 @@ bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerPath( QgsSimpleMarkerSymbolLay
   switch ( symbol )
   {
     case Circle:
-
       mPath.addEllipse( QRectF( -1, -1, 2, 2 ) ); // x,y,w,h
       return true;
 
@@ -699,6 +704,10 @@ void QgsSimpleMarkerSymbolLayerBase::calculateOffsetAndRotation( QgsSymbolRender
     offset = _rotatedOffset( offset, angle );
 }
 
+QPainterPath QgsSimpleMarkerSymbolLayerBase::path()
+{
+  return mPath;
+}
 
 //
 // QgsSimpleMarkerSymbolLayer
@@ -1018,9 +1027,13 @@ void QgsSimpleMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpl
   p->setPen( context.selected() ? mSelPen : mPen );
 
   if ( !polygon.isEmpty() )
+  {
     p->drawPolygon( polygon );
+  }
   else
+  {
     p->drawPath( path );
+  }
 }
 
 void QgsSimpleMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &context )

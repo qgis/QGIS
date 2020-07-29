@@ -23,6 +23,7 @@
 #include "qgspainterswapper.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgslogger.h"
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();
@@ -485,6 +486,16 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
       p->scale( scaleFactor, scaleFactor );
 
   }
+
+  if ( !context.isGuiPreview() )
+  {
+    //Save painter path for label selective masking
+    QPainterPathStroker stroker( pen );
+    path = stroker.createStroke( path );
+    path = p->combinedTransform().map( path );
+    context.addToMaskLabelPainterPath( context.currentMaskId(), path );
+  }
+  p->restore();
 }
 
 double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, QFontMetricsF * )

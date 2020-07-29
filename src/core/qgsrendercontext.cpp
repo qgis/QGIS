@@ -547,4 +547,13 @@ void QgsRenderContext::setTextureOrigin( const QPointF &origin )
   mTextureOrigin = origin;
 }
 
+void QgsRenderContext::addToMaskPainterPath( QPainterPath const &path )
+{
+  mMaskPainterPath.addPath( path );
+}
+
+void QgsRenderContext::addToMaskLabelPainterPath( int id, QPainterPath const &path )
+{
+  mMaskLabelPainterPaths[id].addPath( path );
+}
 

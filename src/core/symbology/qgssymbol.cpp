@@ -51,6 +51,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
 #include "qgslegendpatchshape.h"
+#include "qgsmasksymbollayer.h"
 
 inline
 QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )
