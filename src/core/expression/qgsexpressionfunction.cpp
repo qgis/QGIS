@@ -435,8 +435,9 @@ static QVariant fcnRnd( const QVariantList &values, const QgsExpressionContext *
     generator.seed( seed );
   }
 
+  // Return a random integer in the range [min, max] (inclusive)
   qint64 randomInteger = min + ( generator() % ( max - min + 1 ) );
-  if ( randomInteger  > std::numeric_limits<int>::max() || randomInteger < -std::numeric_limits<int>::max() )
+  if ( randomInteger > std::numeric_limits<int>::max() || randomInteger < std::numeric_limits<int>::min() )
   {
     return QVariant( randomInteger );
   }
@@ -445,9 +446,6 @@ static QVariant fcnRnd( const QVariantList &values, const QgsExpressionContext *
     // Prevent wrong conversion of QVariant. See #36412
     return QVariant( int( randomInteger ) );
   }
-
-  // Return a random integer in the range [min, max] (inclusive)
-  return QVariant( min + ( generator() % ( max - min + 1 ) ) );
 }
 
 static QVariant fcnLinearScale( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )

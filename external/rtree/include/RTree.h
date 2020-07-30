@@ -749,7 +749,7 @@ protected:
         ElementTypeReal increase;
         ElementTypeReal bestIncr = CastElementTypeReal(-1);
         ElementTypeReal area;
-        ElementTypeReal bestArea;
+        ElementTypeReal bestArea = CastElementTypeReal(-1);
         int best = 0;
         Rect tempRect;
 

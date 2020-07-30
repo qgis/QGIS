@@ -810,8 +810,8 @@ QString QgsOgrUtils::readShapefileEncodingFromCpg( const QString &path )
       }
     }
   }
-#endif
   return QString();
+#endif
 }
 
 QString QgsOgrUtils::readShapefileEncodingFromLdid( const QString &path )

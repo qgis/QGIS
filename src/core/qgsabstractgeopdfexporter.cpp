@@ -157,7 +157,6 @@ bool QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionM
     default:
       return false;
   }
-  return false;
 }
 
 void QgsAbstractGeoPdfExporter::pushRenderedFeature( const QString &layerId, const QgsAbstractGeoPdfExporter::RenderedFeature &feature, const QString &group )
@@ -631,6 +630,5 @@ QString QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::Compositio
       return QStringLiteral( "Normal" );
 
   }
-  return QString();
 }
 
