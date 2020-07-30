@@ -35,6 +35,7 @@ class DummyMaterialSettings : public QgsAbstractMaterialSettings
     void addParametersToEffect( Qt3DRender::QEffect * ) const override {}
     Qt3DRender::QMaterial *toMaterial( const QgsMaterialContext & ) const override { return nullptr; }
     QgsLineMaterial *toLineMaterial( const QgsMaterialContext & ) const override { return nullptr; }
+    QMap<QString, QString> toExportParameters() const override { return QMap<QString, QString>(); }
 };
 
 class TestQgsMaterialRegistry : public QObject
