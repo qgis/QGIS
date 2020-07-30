@@ -80,17 +80,6 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     bool diffuseTextureEnabled() const { return mDiffuseTextureEnabled; }
 
     /**
-     * Returns whether the diffuse texture should be used during rendering.
-     *
-     * Diffuse textures will only be used at render time if diffuseTextureEnabled() is TRUE
-     * and a texturePath() is non-empty.
-     *
-     * \see diffuseTextureEnabled()
-     * \see texturePath()
-     */
-    bool shouldUseDiffuseTexture() const { return mDiffuseTextureEnabled && !mTexturePath.isEmpty(); }
-
-    /**
      * Returns the diffuse texture path.
      *
      * \note Diffuse textures will only be used at render time if diffuseTextureEnabled() is TRUE
@@ -108,8 +97,8 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
      */
     float textureScale() const { return mTextureScale; }
 
-    //! Returns the texture's rotation in degrees
-    float textureRotation() const { return mTextureRotation; }
+    bool requiresTextureCoordinates() const override;
+    float textureRotation() const override;
 
     //! Sets ambient color component
     void setAmbient( const QColor &ambient ) { mAmbient = ambient; }
