@@ -47,6 +47,9 @@
 #include "qgssymbollayer.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgssymbol.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgsfillsymbollayer.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -63,6 +66,7 @@ class TestQgs3DRendering : public QObject
     void testDemTerrain();
     void testMeshTerrain();
     void testExtrudedPolygons();
+    void testPolygonsEdges();
     void testLineRendering();
     void testMapTheme();
     void testMesh();
@@ -330,6 +334,58 @@ void TestQgs3DRendering::testExtrudedPolygons()
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QVERIFY( renderCheck( "polygon3d_extrusion", img, 40 ) );
+}
+
+void TestQgs3DRendering::testPolygonsEdges()
+{
+  QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+
+  QgsPhongMaterialSettings material;
+  material.setAmbient( Qt::lightGray );
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterial( material );
+  symbol3d->setExtrusionHeight( 10.f );
+  symbol3d->setHeight( 20.f );
+  symbol3d->setEdgesEnabled( true );
+  symbol3d->setEdgeWidth( 8 );
+  symbol3d->setEdgeColor( QColor( 255, 0, 0 ) );
+
+  std::unique_ptr< QgsVectorLayer > layer( mLayerBuildings->clone() );
+
+  std::unique_ptr< QgsSimpleFillSymbolLayer > simpleFill = qgis::make_unique< QgsSimpleFillSymbolLayer >( QColor( 0, 0, 0 ), Qt::SolidPattern, QColor( 0, 0, 0 ), Qt::NoPen );
+  std::unique_ptr< QgsFillSymbol > fillSymbol = qgis::make_unique< QgsFillSymbol >( QgsSymbolLayerList() << simpleFill.release() );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol.release() ) );
+
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  layer->setRenderer3D( renderer3d );
+
+  map->setLayers( QList<QgsMapLayer *>() << layer.get() );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setExtent( fullExtent );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 250 ), 100, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QVERIFY( renderCheck( "polygon_edges_height", img, 40 ) );
 }
 
 void TestQgs3DRendering::testLineRendering()
