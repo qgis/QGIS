@@ -332,7 +332,7 @@ class ResultHandler(QDialog):
             script_folder, '../tests/testdata/control_images')
 
         matching_control_images = [x[0]
-                                   for x in os.walk(control_images_folder) if test_name in x[0]]
+                                   for x in os.walk(control_images_folder) if test_name + '/' in x[0] or x[0].endswith(test_name)]
         if len(matching_control_images) > 1:
             for item in matching_control_images:
                 print(' -  ' + item)
