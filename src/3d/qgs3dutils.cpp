@@ -557,16 +557,6 @@ QgsExpressionContext Qgs3DUtils::globalProjectLayerExpressionContext( QgsVectorL
   return exprContext;
 }
 
-Qt3DExtras::QPhongMaterial *Qgs3DUtils::phongMaterial( const QgsPhongMaterialSettings &settings )
-{
-  Qt3DExtras::QPhongMaterial *phong = new Qt3DExtras::QPhongMaterial;
-  phong->setAmbient( settings.ambient() );
-  phong->setDiffuse( settings.diffuse() );
-  phong->setSpecular( settings.specular() );
-  phong->setShininess( settings.shininess() );
-  return phong;
-}
-
 QgsPhongMaterialSettings Qgs3DUtils::phongMaterialFromQt3DComponent( Qt3DExtras::QPhongMaterial *material )
 {
   QgsPhongMaterialSettings settings;
