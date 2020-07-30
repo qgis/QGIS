@@ -29,6 +29,21 @@ QgsAbstractMaterialSettings *QgsGoochMaterialSettings::create()
   return new QgsGoochMaterialSettings();
 }
 
+bool QgsGoochMaterialSettings::supportsTechnique( QgsMaterialSettingsRenderingTechnique technique )
+{
+  switch ( technique )
+  {
+    case QgsMaterialSettingsRenderingTechnique::Triangles:
+      return true;
+
+    case QgsMaterialSettingsRenderingTechnique::Lines:
+    case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
+    case QgsMaterialSettingsRenderingTechnique::Points:
+      return false;
+  }
+  return false;
+}
+
 QgsGoochMaterialSettings *QgsGoochMaterialSettings::clone() const
 {
   return new QgsGoochMaterialSettings( *this );
@@ -40,7 +55,9 @@ void QgsGoochMaterialSettings::readXml( const QDomElement &elem, const QgsReadWr
   mCool = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "cool" ), QStringLiteral( "255,130,0" ) ) );
   mDiffuse = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "diffuse" ), QStringLiteral( "178,178,178" ) ) );
   mSpecular = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "specular" ) ) );
-  mShininess = elem.attribute( QStringLiteral( "shininess" ) ).toFloat();
+  mShininess = elem.attribute( QStringLiteral( "shininess2" ), QStringLiteral( "100" ) ).toFloat();
+  mAlpha = elem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "0.25" ) ).toFloat();
+  mBeta = elem.attribute( QStringLiteral( "beta" ), QStringLiteral( "0.5" ) ).toFloat();
 }
 
 void QgsGoochMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext & ) const
@@ -49,37 +66,41 @@ void QgsGoochMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteCo
   elem.setAttribute( QStringLiteral( "cool" ), QgsSymbolLayerUtils::encodeColor( mCool ) );
   elem.setAttribute( QStringLiteral( "diffuse" ), QgsSymbolLayerUtils::encodeColor( mDiffuse ) );
   elem.setAttribute( QStringLiteral( "specular" ), QgsSymbolLayerUtils::encodeColor( mSpecular ) );
-  elem.setAttribute( QStringLiteral( "shininess" ), mShininess );
+  elem.setAttribute( QStringLiteral( "shininess2" ), mShininess );
+  elem.setAttribute( QStringLiteral( "alpha" ), mAlpha );
+  elem.setAttribute( QStringLiteral( "beta" ), mBeta );
 }
 
-Qt3DRender::QMaterial *QgsGoochMaterialSettings::toMaterial( const QgsMaterialContext &context ) const
+Qt3DRender::QMaterial *QgsGoochMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
-  Qt3DExtras::QGoochMaterial *material  = new Qt3DExtras::QGoochMaterial;
-  material->setDiffuse( mDiffuse );
-  material->setWarm( mWarm );
-  material->setCool( mCool );
-
-  material->setSpecular( mSpecular );
-  material->setShininess( mShininess );
-
-  if ( context.isSelected() )
+  switch ( technique )
   {
-    // update the material with selection colors
-    material->setDiffuse( context.selectionColor() );
-  }
-  return material;
-}
+    case QgsMaterialSettingsRenderingTechnique::Triangles:
+    {
+      Qt3DExtras::QGoochMaterial *material  = new Qt3DExtras::QGoochMaterial;
+      material->setDiffuse( mDiffuse );
+      material->setWarm( mWarm );
+      material->setCool( mCool );
 
-QgsLineMaterial *QgsGoochMaterialSettings::toLineMaterial( const QgsMaterialContext &context ) const
-{
-  QgsLineMaterial *mat = new QgsLineMaterial;
-  mat->setLineColor( mDiffuse );
-  if ( context.isSelected() )
-  {
-    // update the material with selection colors
-    mat->setLineColor( context.selectionColor() );
+      material->setSpecular( mSpecular );
+      material->setShininess( mShininess );
+      material->setAlpha( mAlpha );
+      material->setBeta( mBeta );
+
+      if ( context.isSelected() )
+      {
+        // update the material with selection colors
+        material->setDiffuse( context.selectionColor() );
+      }
+      return material;
+    }
+
+    case QgsMaterialSettingsRenderingTechnique::Lines:
+    case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
+    case QgsMaterialSettingsRenderingTechnique::Points:
+      return nullptr;
   }
-  return mat;
+  return nullptr;
 }
 
 void QgsGoochMaterialSettings::addParametersToEffect( Qt3DRender::QEffect * ) const
