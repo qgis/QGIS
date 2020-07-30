@@ -79,8 +79,6 @@ Returns whether the diffuse texture is used.
    Diffuse textures will only be used at render time if :py:func:`~QgsPhongMaterialSettings.diffuseTextureEnabled` is ``True``
    and a :py:func:`~QgsPhongMaterialSettings.texturePath` is non-empty.
 
-.. seealso:: :py:func:`shouldUseDiffuseTexture`
-
 .. seealso:: :py:func:`setDiffuseTextureEnabled`
 
 .. seealso:: :py:func:`texturePath`

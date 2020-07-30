@@ -73,7 +73,6 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
      * \note Diffuse textures will only be used at render time if diffuseTextureEnabled() is TRUE
      * and a texturePath() is non-empty.
      *
-     * \see shouldUseDiffuseTexture()
      * \see setDiffuseTextureEnabled()
      * \see texturePath()
      */
