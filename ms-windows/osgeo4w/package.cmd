@@ -22,13 +22,13 @@ set PACKAGENAME=%3
 set ARCH=%4
 set SHA=%5
 set SITE=%6
-if "%VERSION%"=="" goto usage
-if "%PACKAGE%"=="" goto usage
-if "%PACKAGENAME%"=="" goto usage
-if "%ARCH%"=="" goto usage
-if not "%SHA%"=="" set SHA=-%SHA%
-if "%SITE%"=="" set SITE=qgis.org
-if "%BUILDNAME%"=="" set BUILDNAME=%PACKAGENAME%-%VERSION%%SHA%-Release-VC16-%ARCH%
+if not defined VERSION goto usage
+if not defined PACKAGE goto usage
+if not defined PACKAGENAME goto usage
+if not defined ARCH goto usage
+if defined SHA set SHA=-%SHA%
+if not defined SITE set SITE=qgis.org
+if not defined BUILDNAME set BUILDNAME=%PACKAGENAME%-%VERSION%%SHA%-Release-VC16-%ARCH%
 
 set BUILDDIR=%CD%\build-%PACKAGENAME%-%ARCH%
 if not exist "%BUILDDIR%" mkdir %BUILDDIR%
@@ -105,11 +105,10 @@ touch %SRCDIR%\CMakeLists.txt
 echo CMAKE: %DATE% %TIME%
 if errorlevel 1 goto error
 
-if "%CMAKEGEN%"=="" set CMAKEGEN=-G Ninja
+if not defined CMAKEGEN set CMAKEGEN=-G Ninja
 if not defined CC set CC=cl.exe
-if not defined CXX CXX=cl.exe
-
-if "%OSGEO4W_CXXFLAGS%"=="" set OSGEO4W_CXXFLAGS=/MD /Z7 /MP /O2 /Ob2 /D NDEBUG
+if not defined CXX set CXX=cl.exe
+if not defined OSGEO4W_CXXFLAGS set OSGEO4W_CXXFLAGS=/MD /Z7 /MP /O2 /Ob2 /D NDEBUG
 
 for %%i in (%PYTHONHOME%) do set PYVER=%%~ni
 

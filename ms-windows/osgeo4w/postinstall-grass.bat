@@ -1,6 +1,6 @@
 textreplace -std -t bin\@package@-grass@grassmajor@.bat
 
-if "%OSGEO4W_DESKTOP%"=="" set OSGEO4W_DESKTOP=~$folder.common_desktop$
+if not defined OSGEO4W_DESKTOP set OSGEO4W_DESKTOP=~$folder.common_desktop$
 
 copy bin\@package@-bin.exe bin\@package@-bin-g@grassmajor@.exe
 copy bin\@package@-bin.vars bin\@package@-bin-g@grassmajor@.vars

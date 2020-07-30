@@ -5,7 +5,7 @@ textreplace -std -t bin\@package@-designer.bat
 textreplace -std -t bin\python-@package@.bat
 textreplace -std -t bin\qgis_process-@package@.bat
 
-if "%OSGEO4W_DESKTOP%"=="" set OSGEO4W_DESKTOP=~$folder.common_desktop$
+if not defined OSGEO4W_DESKTOP set OSGEO4W_DESKTOP=~$folder.common_desktop$
 
 if not %OSGEO4W_MENU_LINKS%==0 mkdir "%OSGEO4W_STARTMENU%"
 if not %OSGEO4W_DESKTOP_LINKS%==0 mkdir "%OSGEO4W_DESKTOP%"

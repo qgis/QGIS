@@ -1,5 +1,5 @@
 variables:
-  LR: release-3_12
+  LR: release-3_14
   LTR: release-3_10
   Agent.Source.Git.ShallowFetchDepth: 120
 

@@ -5,7 +5,7 @@ textreplace -std -t bin\qgis_process-@package@.bat
 
 REM get short path without blanks
 for %%i in ("%OSGEO4W_ROOT%") do set O4W_ROOT=%%~fsi
-if "%OSGEO4W_DESKTOP%"=="" set OSGEO4W_DESKTOP=~$folder.common_desktop$
+if not defined OSGEO4W_DESKTOP set OSGEO4W_DESKTOP=~$folder.common_desktop$
 
 call "%OSGEO4W_ROOT%\bin\@package@.bat" --postinstall
 

@@ -14,11 +14,11 @@ REM *   (at your option) any later version.                                   *
 REM *                                                                         *
 REM ***************************************************************************
 
-if not "%PROGRAMFILES(X86)%"=="" set PF86=%PROGRAMFILES(X86)%
-if "%PF86%"=="" set PF86=%PROGRAMFILES%
-if "%PF86%"=="" (echo PROGRAMFILES not set & goto error)
+if defined PROGRAMFILES(X86) set PF86=%PROGRAMFILES(X86)%
+if not defined PF86 set PF86=%PROGRAMFILES%
+if not defined PF86 (echo PROGRAMFILES not set & goto error)
 
-if "%VCSDK%"=="" set VCSDK=10.0.18362.0
+if not defined VCSDK set VCSDK=10.0.18362.0
 
 set ARCH=%1
 if "%ARCH%"=="x86" goto x86
@@ -49,15 +49,13 @@ if not exist "%DBGHLP_PATH%\dbghelp.dll" (
   goto error
 )
 
-if "%CC%"=="" set CC=cl.exe
-if "%CXX%"=="" set CXX=cl.exe
+if not defined CC set CC=cl.exe
+if not defined CXX set CXX=cl.exe
 
-if "%OSGEO4W_ROOT%"=="" (
-	if "%ARCH%"=="x86" (
-		set OSGEO4W_ROOT=C:\OSGeo4W
-	) else (
-		set OSGEO4W_ROOT=C:\OSGeo4W64
-	)
+if not defined OSGEO4W_ROOT if "%ARCH%"=="x86" (
+	set OSGEO4W_ROOT=C:\OSGeo4W
+) else (
+	set OSGEO4W_ROOT=C:\OSGeo4W64
 )
 
 if not exist "%OSGEO4W_ROOT%\bin\o4w_env.bat" (echo o4w_env.bat not found & goto error)
@@ -66,7 +64,7 @@ call "%OSGEO4W_ROOT%\bin\py3_env.bat"
 call "%OSGEO4W_ROOT%\bin\qt5_env.bat"
 
 for %%e in (Community Professional Enterprise) do if exist "%PF86%\Microsoft Visual Studio\2019\%%e" set vcdir=%PF86%\Microsoft Visual Studio\2019\%%e
-if "%vcdir%"=="" (echo Visual C++ not found & goto error)
+if not defined vcdir (echo Visual C++ not found & goto error)
 
 set VS160COMNTOOLS=%vcdir%\Common7\Tools
 call "%vcdir%\VC\Auxiliary\Build\vcvarsall.bat" %VCARCH%
@@ -76,7 +74,7 @@ set GRASS7=
 if exist %OSGEO4W_ROOT%\bin\grass74.bat set GRASS7=%OSGEO4W_ROOT%\bin\grass74.bat
 if exist %OSGEO4W_ROOT%\bin\grass76.bat set GRASS7=%OSGEO4W_ROOT%\bin\grass76.bat
 if exist %OSGEO4W_ROOT%\bin\grass78.bat set GRASS7=%OSGEO4W_ROOT%\bin\grass78.bat
-if "%GRASS7%"=="" (echo GRASS7 not found & goto error)
+if not defined GRASS7 (echo GRASS7 not found & goto error)
 for /f "usebackq tokens=1" %%a in (`%GRASS7% --config path`) do set GRASS_PREFIX=%%a
 
 set PYTHONPATH=
