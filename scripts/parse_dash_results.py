@@ -44,12 +44,12 @@ from PyQt5.QtWidgets import (QDialog,
                              QGridLayout,
                              QPushButton,
                              QDoubleSpinBox,
-                             QMessageBox,
                              QWidget,
                              QScrollArea,
                              QLayout,
                              QDialogButtonBox,
                              QListWidget)
+import termcolor
 import struct
 import glob
 
@@ -57,7 +57,7 @@ dash_url = 'https://cdash.orfeo-toolbox.org'
 
 
 def error(msg):
-    print(msg)
+    print(termcolor.colored(msg, 'red'))
     sys.exit(1)
 
 
@@ -70,15 +70,14 @@ def colorDiff(c1, c2):
 
 
 def imageFromPath(path):
-    print(path)
     if (path[:8] == 'https://' or path[:7] == 'file://'):
         # fetch remote image
-        print('fetching remote!')
+        print('fetching remote ({})'.format(path))
         data = urllib.request.urlopen(path).read()
         image = QImage()
         image.loadFromData(data)
     else:
-        print('using local!')
+        print('using local ({})'.format(path))
         image = QImage(path)
     return image
 
@@ -195,9 +194,11 @@ class ResultHandler(QDialog):
             images[test_name] = '{}/{}'.format(dash_url, rendered_image)
 
         if images:
-            print('found images:\n{}'.format(images))
+            print('Found images:\n')
+            for title, url in images.items():
+                print('  ' + termcolor.colored(title, attrs=['bold']) + ' : ' + url)
         else:
-            print('no images found\n')
+            print(termcolor.colored('No images found\n', 'yellow'))
         self.images = images
         self.load_next()
 
@@ -209,6 +210,7 @@ class ResultHandler(QDialog):
 
         test_name, rendered_image = self.images.popitem()
         self.test_name_label.setText(test_name)
+        print(termcolor.colored('\n' + test_name, attrs=['bold']))
         control_image = self.get_control_image_path(test_name)
         if not control_image:
             self.load_next()
@@ -332,14 +334,16 @@ class ResultHandler(QDialog):
         matching_control_images = [x[0]
                                    for x in os.walk(control_images_folder) if test_name in x[0]]
         if len(matching_control_images) > 1:
+            for item in matching_control_images:
+                print(' -  ' + item)
+
             dlg = SelectReferenceImageDialog(self, test_name, matching_control_images)
             if not dlg.exec_():
                 return None
 
             found_control_image_path = dlg.selected_image()
         elif len(matching_control_images) == 0:
-            QMessageBox.warning(
-                self, 'Result', 'No matching control images found for {}'.format(test_name))
+            print(termcolor.colored('No matching control images found for {}'.format(test_name), 'yellow'))
             return None
         else:
             found_control_image_path = matching_control_images[0]
@@ -397,7 +401,7 @@ class ResultHandler(QDialog):
         if mismatch_count:
             return diff_image
         else:
-            print('No mismatches')
+            print(termcolor.colored('No mismatches', 'green'))
             return None
 
 
