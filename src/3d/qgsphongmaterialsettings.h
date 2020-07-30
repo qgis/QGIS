@@ -43,6 +43,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     QgsPhongMaterialSettings() = default;
 
     QString type() const override;
+    static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
 
     /**
      * Returns a new instance of QgsPhongMaterialSettings.
@@ -150,8 +151,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 #ifndef SIP_RUN
-    Qt3DRender::QMaterial *toMaterial( const QgsMaterialContext &context ) const override SIP_FACTORY;
-    QgsLineMaterial *toLineMaterial( const QgsMaterialContext &context ) const override SIP_FACTORY;
+    Qt3DRender::QMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
     void addParametersToEffect( Qt3DRender::QEffect *effect ) const override;
 #endif
 

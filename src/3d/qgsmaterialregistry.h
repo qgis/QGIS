@@ -23,9 +23,10 @@
 #include <QMap>
 #include <QIcon>
 
-class QgsAbstractMaterialSettings;
 class QgsReadWriteContext;
 class QgsMaterialSettingsWidget SIP_EXTERNAL;
+class QgsAbstractMaterialSettings;
+enum class QgsMaterialSettingsRenderingTechnique;
 
 /**
  * \ingroup core
@@ -75,6 +76,11 @@ class _3D_EXPORT QgsMaterialSettingsAbstractMetadata
      */
     virtual QgsAbstractMaterialSettings *create() = 0 SIP_FACTORY;
 
+    /**
+     * Returns TRUE if the material type supports the specified rendering \a technique.
+     */
+    virtual bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique ) const = 0;
+
 #ifndef SIP_RUN
 
     /**
@@ -99,6 +105,9 @@ typedef QgsAbstractMaterialSettings *( *QgsMaterialSettingsCreateFunc )() SIP_SK
 //! Material settings widget creation function
 typedef QgsMaterialSettingsWidget *( *QgsMaterialSettingsWidgetFunc )() SIP_SKIP;
 
+//! Material settings supports technique function
+typedef bool ( *QgsMaterialSettingsSupportsTechniqueFunc )( QgsMaterialSettingsRenderingTechnique ) SIP_SKIP;
+
 #ifndef SIP_RUN
 
 /**
@@ -116,17 +125,19 @@ class _3D_EXPORT QgsMaterialSettingsMetadata : public QgsMaterialSettingsAbstrac
     /**
      * Constructor for QgsMaterialSettingsMetadata, with the specified \a type and \a visibleName.
      *
-     * The \a pfCreate and \a pfWidget arguments are used to specify
+     * The \a pfCreate, \a pfSupportsTechnique and \a pfWidget arguments are used to specify
      * static functions for creating the material settings type and configuration widget.
      *
      * An optional \a icon can be specified to represent the material type.
      */
     QgsMaterialSettingsMetadata( const QString &type, const QString &visibleName,
                                  QgsMaterialSettingsCreateFunc pfCreate,
+                                 QgsMaterialSettingsSupportsTechniqueFunc pfSupportsTechnique,
                                  QgsMaterialSettingsWidgetFunc pfWidget = nullptr,
                                  const QIcon &icon = QIcon() )
       : QgsMaterialSettingsAbstractMetadata( type, visibleName, icon )
       , mCreateFunc( pfCreate )
+      , mSupportsTechniqueFunc( pfSupportsTechnique )
       , mWidgetFunc( pfWidget )
     {}
 
@@ -150,10 +161,12 @@ class _3D_EXPORT QgsMaterialSettingsMetadata : public QgsMaterialSettingsAbstrac
     void setWidgetFunction( QgsMaterialSettingsWidgetFunc function ) { mWidgetFunc = function; }
 
     QgsAbstractMaterialSettings *create() override SIP_FACTORY { return mCreateFunc ? mCreateFunc() : nullptr; }
+    bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique ) const override { return mSupportsTechniqueFunc ? mSupportsTechniqueFunc( technique ) : true; }
     QgsMaterialSettingsWidget *createWidget() override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc() : nullptr; }
 
   private:
     QgsMaterialSettingsCreateFunc mCreateFunc;
+    QgsMaterialSettingsSupportsTechniqueFunc mSupportsTechniqueFunc;
     QgsMaterialSettingsWidgetFunc mWidgetFunc;
 
 };

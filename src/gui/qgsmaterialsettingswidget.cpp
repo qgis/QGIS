@@ -18,3 +18,8 @@
 QgsMaterialSettingsWidget::QgsMaterialSettingsWidget( QWidget *parent )
   : QWidget( parent )
 {}
+
+void QgsMaterialSettingsWidget::setTechnique( QgsMaterialSettingsRenderingTechnique )
+{
+
+}

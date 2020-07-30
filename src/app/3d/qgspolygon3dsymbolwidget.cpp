@@ -42,6 +42,8 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   connect( groupEdges, &QGroupBox::clicked, this, &QgsPolygon3DSymbolWidget::changed );
   connect( btnEdgeColor, &QgsColorButton::colorChanged, this, &QgsPolygon3DSymbolWidget::changed );
   connect( spinEdgeWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::changed );
+
+  widgetMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::Triangles );
 }
 
 Qgs3DSymbolWidget *QgsPolygon3DSymbolWidget::create( QgsVectorLayer * )
@@ -65,7 +67,6 @@ void QgsPolygon3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, Qgs
   chkAddBackFaces->setChecked( polygonSymbol->addBackFaces() );
   chkInvertNormals->setChecked( polygonSymbol->invertNormals() );
 
-  // todo -- handle other subclasses
   widgetMaterial->setSettings( polygonSymbol->material(), layer );
 
   btnHeightDD->init( QgsAbstract3DSymbol::PropertyHeight, polygonSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );

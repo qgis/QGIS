@@ -17,6 +17,7 @@
 #define QGSPHONGMATERIALWIDGET_H
 
 #include "qgsmaterialsettingswidget.h"
+#include "qgsabstractmaterialsettings.h"
 
 #include <ui_phongmaterialwidget.h>
 
@@ -31,6 +32,8 @@ class QgsPhongMaterialWidget : public QgsMaterialSettingsWidget, private Ui::Pho
     explicit QgsPhongMaterialWidget( QWidget *parent = nullptr );
 
     static QgsMaterialSettingsWidget *create();
+
+    void setTechnique( QgsMaterialSettingsRenderingTechnique technique );
 
     void setDiffuseVisible( bool visible );
     bool isDiffuseVisible() const;

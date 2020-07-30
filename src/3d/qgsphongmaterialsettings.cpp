@@ -33,6 +33,19 @@ QString QgsPhongMaterialSettings::type() const
   return QStringLiteral( "phong" );
 }
 
+bool QgsPhongMaterialSettings::supportsTechnique( QgsMaterialSettingsRenderingTechnique technique )
+{
+  switch ( technique )
+  {
+    case QgsMaterialSettingsRenderingTechnique::Triangles:
+    case QgsMaterialSettingsRenderingTechnique::Lines:
+    case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
+    case QgsMaterialSettingsRenderingTechnique::Points:
+      return true;
+  }
+  return false;
+}
+
 QgsAbstractMaterialSettings *QgsPhongMaterialSettings::create()
 {
   return new QgsPhongMaterialSettings();
@@ -90,67 +103,77 @@ class QgsQImageTextureImage : public Qt3DRender::QPaintedTextureImage
 };
 
 ///@endcond
-Qt3DRender::QMaterial *QgsPhongMaterialSettings::toMaterial( const QgsMaterialContext &context ) const
+Qt3DRender::QMaterial *QgsPhongMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
-  bool fitsInCache = false;
-  QImage textureSourceImage;
-
-  if ( shouldUseDiffuseTexture() )
-    textureSourceImage = QgsApplication::imageCache()->pathAsImage( mTexturePath, QSize(), true, 1.0, fitsInCache );
-  ( void )fitsInCache;
-
-  if ( !textureSourceImage.isNull() )
+  switch ( technique )
   {
-    Qt3DExtras::QDiffuseMapMaterial *material = new Qt3DExtras::QDiffuseMapMaterial;
-
-    QgsQImageTextureImage *textureImage = new QgsQImageTextureImage( textureSourceImage );
-    material->diffuse()->addTextureImage( textureImage );
-
-    material->diffuse()->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
-    material->diffuse()->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
-    material->diffuse()->wrapMode()->setZ( Qt3DRender::QTextureWrapMode::Repeat );
-    material->setSpecular( mSpecular );
-    material->setShininess( mShininess );
-    material->setTextureScale( mTextureScale );
-
-    if ( context.isSelected() )
+    case QgsMaterialSettingsRenderingTechnique::Triangles:
+    case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
+    case QgsMaterialSettingsRenderingTechnique::Points:
     {
-      // update the material with selection colors
-      // TODO : dampen the color of diffuse texture
-//      mat->setDiffuse( context.map().selectionColor() );
-      material->setAmbient( context.selectionColor().darker() );
+
+      bool fitsInCache = false;
+      QImage textureSourceImage;
+
+      if ( shouldUseDiffuseTexture() )
+        textureSourceImage = QgsApplication::imageCache()->pathAsImage( mTexturePath, QSize(), true, 1.0, fitsInCache );
+      ( void )fitsInCache;
+
+      if ( !textureSourceImage.isNull() )
+      {
+        Qt3DExtras::QDiffuseMapMaterial *material = new Qt3DExtras::QDiffuseMapMaterial;
+
+        QgsQImageTextureImage *textureImage = new QgsQImageTextureImage( textureSourceImage );
+        material->diffuse()->addTextureImage( textureImage );
+
+        material->diffuse()->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
+        material->diffuse()->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
+        material->diffuse()->wrapMode()->setZ( Qt3DRender::QTextureWrapMode::Repeat );
+        material->setSpecular( mSpecular );
+        material->setShininess( mShininess );
+        material->setTextureScale( mTextureScale );
+
+        if ( context.isSelected() )
+        {
+          // update the material with selection colors
+          // TODO : dampen the color of diffuse texture
+          //      mat->setDiffuse( context.map().selectionColor() );
+          material->setAmbient( context.selectionColor().darker() );
+        }
+
+        return material;
+      }
+      else
+      {
+        Qt3DExtras::QPhongMaterial *material  = new Qt3DExtras::QPhongMaterial;
+        material->setDiffuse( mDiffuse );
+        material->setAmbient( mAmbient );
+        material->setSpecular( mSpecular );
+        material->setShininess( mShininess );
+
+        if ( context.isSelected() )
+        {
+          // update the material with selection colors
+          material->setDiffuse( context.selectionColor() );
+          material->setAmbient( context.selectionColor().darker() );
+        }
+        return material;
+      }
     }
 
-    return material;
-  }
-  else
-  {
-    Qt3DExtras::QPhongMaterial *material  = new Qt3DExtras::QPhongMaterial;
-    material->setDiffuse( mDiffuse );
-    material->setAmbient( mAmbient );
-    material->setSpecular( mSpecular );
-    material->setShininess( mShininess );
-
-    if ( context.isSelected() )
+    case QgsMaterialSettingsRenderingTechnique::Lines:
     {
-      // update the material with selection colors
-      material->setDiffuse( context.selectionColor() );
-      material->setAmbient( context.selectionColor().darker() );
+      QgsLineMaterial *mat = new QgsLineMaterial;
+      mat->setLineColor( mAmbient );
+      if ( context.isSelected() )
+      {
+        // update the material with selection colors
+        mat->setLineColor( context.selectionColor() );
+      }
+      return mat;
     }
-    return material;
   }
-}
-
-QgsLineMaterial *QgsPhongMaterialSettings::toLineMaterial( const QgsMaterialContext &context ) const
-{
-  QgsLineMaterial *mat = new QgsLineMaterial;
-  mat->setLineColor( mAmbient );
-  if ( context.isSelected() )
-  {
-    // update the material with selection colors
-    mat->setLineColor( context.selectionColor() );
-  }
-  return mat;
+  return nullptr;
 }
 
 QMap<QString, QString> QgsPhongMaterialSettings::toExportParameters() const

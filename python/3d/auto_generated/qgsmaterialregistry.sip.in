@@ -60,8 +60,14 @@ Creates a new instance of this material settings type.
 Caller takes ownership of the returned object.
 %End
 
+    virtual bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique ) const = 0;
+%Docstring
+Returns ``True`` if the material type supports the specified rendering ``technique``.
+%End
+
 
 };
+
 
 
 

@@ -64,7 +64,7 @@ QgsMesh3DSymbolEntity::QgsMesh3DSymbolEntity( const Qgs3DMapSettings &map,
 Qt3DRender::QMaterial *QgsMesh3DSymbolEntity::material( const QgsMesh3DSymbol &symbol ) const
 {
   QgsMaterialContext context;
-  Qt3DRender::QMaterial *material = symbol.material()->toMaterial( context );
+  Qt3DRender::QMaterial *material = symbol.material()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, context );
 
   // front/back side culling
   auto techniques = material->effect()->techniques();

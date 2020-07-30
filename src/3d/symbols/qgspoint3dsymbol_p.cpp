@@ -456,7 +456,7 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DMapSettings &map,
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( are_selected );
   materialContext.setSelectionColor( map.selectionColor() );
-  Qt3DRender::QMaterial *mat = symbol.material()->toMaterial( materialContext );
+  Qt3DRender::QMaterial *mat = symbol.material()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
 
   // get nodes
   for ( const QVector3D &position : positions )

@@ -26,6 +26,20 @@ class QDomElement;
 class QgsReadWriteContext;
 class QgsLineMaterial;
 
+
+/**
+ * Material rendering techniques
+ * \ingroup 3d
+ * \since QGIS 3.16
+ */
+enum class QgsMaterialSettingsRenderingTechnique : int
+{
+  Triangles, //!< Triangle based rendering (default)
+  Lines, //!< Line based rendering, requires line data
+  InstancedPoints, //!< Instanced based rendering, requiring triangles and point data
+  Points, //!< Point based rendering, requires point data
+};
+
 /**
  * \ingroup 3d
  * Context settings for a material.
@@ -75,6 +89,7 @@ class _3D_EXPORT QgsMaterialContext
 
 };
 
+
 /**
  * \ingroup 3d
  * Abstract base class for material settings.
@@ -112,13 +127,11 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
 
     /**
      * Creates a new QMaterial object representing the material settings.
+     *
+     * The \a technique argument specifies the rendering technique which will be used with the returned
+     * material.
      */
-    virtual Qt3DRender::QMaterial *toMaterial( const QgsMaterialContext &context ) const = 0 SIP_FACTORY;
-
-    /**
-     * Creates a new QgsLineMaterial object representing the material settings.
-     */
-    virtual QgsLineMaterial *toLineMaterial( const QgsMaterialContext &context ) const = 0 SIP_FACTORY;
+    virtual Qt3DRender::QMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const = 0 SIP_FACTORY;
 
     /**
      * Returns the parameters to be exported to .mtl file

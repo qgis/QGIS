@@ -36,6 +36,7 @@ Constructor for QgsPhongMaterialSettings.
 
     virtual QString type() const;
 
+    static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
 
     static QgsAbstractMaterialSettings *create() /Factory/;
 %Docstring
