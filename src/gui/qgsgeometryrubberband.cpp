@@ -160,7 +160,7 @@ void QgsGeometryRubberBand::setBrushStyle( Qt::BrushStyle brushStyle )
   mBrush.setStyle( brushStyle );
 }
 
-void QgsGeometryRubberBand::setIsVerticesDrawn( bool isVerticesDrawn )
+void QgsGeometryRubberBand::setVertexDrawingEnabled( bool isVerticesDrawn )
 {
   mDrawVertices = isVerticesDrawn;
 }

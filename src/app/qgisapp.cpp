@@ -9926,9 +9926,8 @@ void QgisApp::snappingOptions()
 
 void QgisApp::enableDigitizeWithCurve( bool enable )
 {
-  mMapTools.mAddFeature->setCircularDigitizingEnable( enable );
-  static_cast<QgsMapToolCapture *>( mMapTools.mSplitFeatures )->setCircularDigitizingEnable( enable );
-  static_cast<QgsMapToolCapture *>( mMapTools.mReshapeFeatures )->setCircularDigitizingEnable( enable );
+  mMapTools.mAddFeature->setCircularDigitizingEnabled( enable );
+  static_cast<QgsMapToolCapture *>( mMapTools.mSplitFeatures )->setCircularDigitizingEnabled( enable );
   QgsSettings settings;
   settings.setValue( QStringLiteral( "UI/digitizeWithCurve" ), enable ? 1 : 0 );
 }
@@ -9941,7 +9940,6 @@ void QgisApp::enableDigitizeWithCurveAction( bool enable )
   if ( sender && sender != this )
     enable &= ( sender == mActionAddFeature && mMapTools.mAddFeature->mode() != QgsMapToolCapture::CapturePoint ) ||
               sender == mActionSplitFeatures;
-
   else
     enable &= ( mMapCanvas->mapTool() == mMapTools.mAddFeature && mMapTools.mAddFeature->mode() != QgsMapToolCapture::CapturePoint ) ||
               mMapCanvas->mapTool() == mMapTools.mSplitFeatures;

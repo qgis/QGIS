@@ -34,7 +34,7 @@ class QgsSnapIndicator;
 class QgsVertexMarker;
 class QgsMapLayer;
 class QgsGeometryValidator;
-class QgsMapToolCaptureRubberband;
+class QgsMapToolCaptureRubberBand;
 
 
 #ifndef SIP_RUN
@@ -42,15 +42,15 @@ class QgsMapToolCaptureRubberband;
 ///@cond PRIVATE
 
 /**
- * Class that reprensents a rubber can that can be linear or circular.
+ * Class that reprensents a rubber band that can be linear or circular.
  *
  * \since QGIS 3.16
  */
-class QgsMapToolCaptureRubberband: public QgsGeometryRubberBand
+class QgsMapToolCaptureRubberBand: public QgsGeometryRubberBand
 {
   public:
     //! Constructor
-    QgsMapToolCaptureRubberband( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
+    QgsMapToolCaptureRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
 
     //! Returns the curve defined by the rubber band, the caller has to take the ownership, nullptr if no curve is defined.
     QgsCurve *curve();
@@ -213,7 +213,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
   public slots:
     //! Enable the digitizing with curve
-    void setCircularDigitizingEnable( bool enable );
+    void setCircularDigitizingEnabled( bool enable );
 
   private slots:
     void addError( const QgsGeometry::Error &error );
@@ -378,7 +378,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool tracingAddVertex( const QgsPointXY &point );
 
     //! create a curve rubber band
-    QgsMapToolCaptureRubberband *createCurveRubberBand() const;
+    QgsMapToolCaptureRubberBand *createCurveRubberBand() const;
 
     //! Returns extemity point of the captured curve in map coordinates
     QgsPoint firstCapturedMapPoint();
@@ -398,7 +398,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QObjectUniquePtr<QgsRubberBand> mRubberBand;
 
     //! Temporary rubber band for polylines and polygons. this connects the last added point to the mouse cursor position
-    std::unique_ptr<QgsMapToolCaptureRubberband> mTempRubberBand;
+    std::unique_ptr<QgsMapToolCaptureRubberBand> mTempRubberBand;
 
     //! List to store the points of digitized lines and polygons (in layer coordinates)
     QgsCompoundCurve mCaptureCurve;

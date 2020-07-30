@@ -119,7 +119,7 @@ transfers ownership to the caller.
 %End
 
   public slots:
-    void setCircularDigitizingEnable( bool enable );
+    void setCircularDigitizingEnabled( bool enable );
 %Docstring
 Enable the digitizing with curve
 %End

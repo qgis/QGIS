@@ -113,7 +113,7 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     //! Sets vertex marker icon type
     void setIconType( IconType iconType ) { mIconType = iconType; }
     //! Sets whether the vertices are drawn
-    void setIsVerticesDrawn( bool isVerticesDrawn );
+    void setVertexDrawingEnabled( bool isVerticesDrawn );
 
   protected:
     void paint( QPainter *painter ) override;

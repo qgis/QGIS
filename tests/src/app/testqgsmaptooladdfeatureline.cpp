@@ -283,7 +283,7 @@ void TestQgsMapToolAddFeatureLine::testNoTracing()
   mLayerLine->undoStack()->undo();
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
 
-  mCaptureTool->setCircularDigitizingEnable( true );
+  mCaptureTool->setCircularDigitizingEnabled( true );
 
   utils.mouseClick( 1, 1, Qt::LeftButton );
   utils.mouseClick( 3, 2, Qt::LeftButton );
@@ -305,7 +305,7 @@ void TestQgsMapToolAddFeatureLine::testNoTracing()
 
   mLayerLine->undoStack()->undo();
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
-  mCaptureTool->setCircularDigitizingEnable( false );
+  mCaptureTool->setCircularDigitizingEnabled( false );
 }
 
 void TestQgsMapToolAddFeatureLine::testTracing()

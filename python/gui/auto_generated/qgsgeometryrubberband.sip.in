@@ -87,7 +87,7 @@ Sets brush style
 %Docstring
 Sets vertex marker icon type
 %End
-    void setIsVerticesDrawn( bool isVerticesDrawn );
+    void setVertexDrawingEnabled( bool isVerticesDrawn );
 %Docstring
 Sets whether the vertices are drawn
 %End
