@@ -12,12 +12,13 @@
 
 
 enum class QgsMaterialSettingsRenderingTechnique
-{
+  {
   Triangles,
   Lines,
   InstancedPoints,
   Points,
 };
+
 
 class QgsMaterialContext
 {

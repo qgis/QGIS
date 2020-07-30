@@ -32,13 +32,14 @@ class QgsLineMaterial;
  * \ingroup 3d
  * \since QGIS 3.16
  */
-enum class QgsMaterialSettingsRenderingTechnique : int
-{
+enum class QgsMaterialSettingsRenderingTechnique SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAbstractMaterialSettings, RenderingTechnique ): int
+  {
   Triangles, //!< Triangle based rendering (default)
   Lines, //!< Line based rendering, requires line data
   InstancedPoints, //!< Instanced based rendering, requiring triangles and point data
   Points, //!< Point based rendering, requires point data
 };
+
 
 /**
  * \ingroup 3d
