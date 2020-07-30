@@ -1719,6 +1719,35 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         ids = styles[1]
         self.assertEqual(len(ids), 0)
 
+    def testSaveStyleInvalidXML(self):
+
+        self.execSQLCommand('DROP TABLE IF EXISTS layer_styles CASCADE')
+
+        vl = self.getEditableLayer()
+        self.assertTrue(vl.isValid())
+        self.assertTrue(
+            vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
+        self.assertTrue(vl.dataProvider().isDeleteStyleFromDatabaseSupported())
+
+        mFilePath = QDir.toNativeSeparators(
+            '%s/symbol_layer/%s.qml' % (unitTestDataPath(), "fontSymbol"))
+        status = vl.loadNamedStyle(mFilePath)
+        self.assertTrue(status)
+
+        errorMsg = vl.saveStyleToDatabase(
+            "fontSymbol", "font with invalid utf8 char", False, "")
+        self.assertEqual(errorMsg, "")
+
+        qml, errmsg = vl.getStyleFromDatabase("1")
+        self.assertTrue('v="\u001E"' in qml)
+        self.assertEqual(errmsg, "")
+
+        # Test loadStyle from metadata
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        qml = md.loadStyle(self.dbconn + " type=POINT table=\"qgis_test\".\"editData\" (geom)", 'fontSymbol')
+        self.assertTrue(qml.startswith('<!DOCTYPE qgi'), qml)
+        self.assertTrue('v="\u001E"' in qml)
+
     def testHasMetadata(self):
         # views don't have metadata
         vl = QgsVectorLayer('{} table="qgis_test"."{}" key="pk" sql='.format(self.dbconn, 'bikes_view'), "bikes_view",
