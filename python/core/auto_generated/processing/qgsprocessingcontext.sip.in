@@ -206,6 +206,8 @@ Default constructor
 
         QString name;
 
+        bool forceName;
+
         QString outputName;
 
         QgsProcessingUtils::LayerHint layerTypeHint;
