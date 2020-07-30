@@ -86,18 +86,6 @@ Returns whether the diffuse texture is used.
 .. seealso:: :py:func:`texturePath`
 %End
 
-    bool shouldUseDiffuseTexture() const;
-%Docstring
-Returns whether the diffuse texture should be used during rendering.
-
-Diffuse textures will only be used at render time if :py:func:`~QgsPhongMaterialSettings.diffuseTextureEnabled` is ``True``
-and a :py:func:`~QgsPhongMaterialSettings.texturePath` is non-empty.
-
-.. seealso:: :py:func:`diffuseTextureEnabled`
-
-.. seealso:: :py:func:`texturePath`
-%End
-
     QString texturePath() const;
 %Docstring
 Returns the diffuse texture path.
@@ -119,10 +107,10 @@ The texture scale changes the size of the displayed texture in the 3D scene
 If the texture scale is less than 1 the texture will be stretched
 %End
 
-    float textureRotation() const;
-%Docstring
-Returns the texture's rotation in degrees
-%End
+    virtual bool requiresTextureCoordinates() const;
+
+    virtual float textureRotation() const;
+
 
     void setAmbient( const QColor &ambient );
 %Docstring

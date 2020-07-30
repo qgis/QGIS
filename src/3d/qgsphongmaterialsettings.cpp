@@ -56,6 +56,16 @@ QgsPhongMaterialSettings *QgsPhongMaterialSettings::clone() const
   return new QgsPhongMaterialSettings( *this );
 }
 
+bool QgsPhongMaterialSettings::requiresTextureCoordinates() const
+{
+  return mDiffuseTextureEnabled && !mTexturePath.isEmpty();
+}
+
+float QgsPhongMaterialSettings::textureRotation() const
+{
+  return mTextureRotation;
+}
+
 void QgsPhongMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
   mAmbient = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
@@ -115,7 +125,7 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::toMaterial( QgsMaterialSettings
       bool fitsInCache = false;
       QImage textureSourceImage;
 
-      if ( shouldUseDiffuseTexture() )
+      if ( requiresTextureCoordinates() )
         textureSourceImage = QgsApplication::imageCache()->pathAsImage( mTexturePath, QSize(), true, 1.0, fitsInCache );
       ( void )fitsInCache;
 

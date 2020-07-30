@@ -133,7 +133,7 @@ Qt3DRender::QGeometryRenderer *QgsMesh3DSymbolEntityNode::renderer( const Qgs3DM
   // Polygons from mesh are already triangles, but
   // call QgsTessellatedPolygonGeometry to
   // use symbol settings for back faces, normals, etc
-  mGeometry = new QgsTessellatedPolygonGeometry( true, false, symbol.addBackFaces(), dynamic_cast< QgsPhongMaterialSettings * >( symbol.material() ) ? dynamic_cast< QgsPhongMaterialSettings * >( symbol.material() )->shouldUseDiffuseTexture() : false );
+  mGeometry = new QgsTessellatedPolygonGeometry( true, false, symbol.addBackFaces(), symbol.material()->requiresTextureCoordinates() );
   QList<float> extrusionHeightPerPolygon;
   mGeometry->setPolygons( polygons, fids, origin, 0.0, extrusionHeightPerPolygon );
 

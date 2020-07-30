@@ -124,6 +124,18 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     //! Writes settings to a DOM \a element
     virtual void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const = 0;
 
+    /**
+     * Returns true if the material requires texture coordinates to be generated
+     * during triangulation.
+     */
+    virtual bool requiresTextureCoordinates() const { return false; }
+
+    /**
+     * Returns the texture rotation (in degrees), if texture coordinates to be generated
+     * during triangulation.
+     */
+    virtual float textureRotation() const { return 0.f; }
+
 #ifndef SIP_RUN
 
     /**
