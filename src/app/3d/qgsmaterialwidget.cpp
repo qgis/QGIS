@@ -30,7 +30,8 @@ QgsMaterialWidget::QgsMaterialWidget( QWidget *parent )
   const QStringList materialTypes = Qgs3D::materialRegistry()->materialSettingsTypes();
   for ( const QString &type : materialTypes )
   {
-    mMaterialTypeComboBox->addItem( Qgs3D::materialRegistry()->materialSettingsMetadata( type )->visibleName(), type );
+    mMaterialTypeComboBox->addItem( Qgs3D::materialRegistry()->materialSettingsMetadata( type )->icon(),
+                                    Qgs3D::materialRegistry()->materialSettingsMetadata( type )->visibleName(), type );
   }
 
   connect( mMaterialTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMaterialWidget::materialTypeChanged );
