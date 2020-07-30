@@ -86,7 +86,7 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
 bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
 {
   outEdges.withAdjacency = true;
-  outEdges.init( mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), mSymbol.height(), &context.map() );
+  outEdges.init( mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), 0, &context.map() );
 
   outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(), mSymbol.addBackFaces(), false,
                                dynamic_cast< QgsPhongMaterialSettings * >( mSymbol.material() ) ? dynamic_cast< QgsPhongMaterialSettings * >( mSymbol.material() )->shouldUseDiffuseTexture() : false,
