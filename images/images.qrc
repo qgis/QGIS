@@ -881,6 +881,7 @@
         <file>themes/default/mIconAlignTop.svg</file>
         <file>themes/default/mIconAlignVCenter.svg</file>
         <file>themes/default/mIconPhongMaterial.svg</file>
+        <file>themes/default/mIconGoochMaterial.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

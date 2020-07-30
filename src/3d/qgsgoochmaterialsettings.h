@@ -49,6 +49,11 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
      */
     static QgsAbstractMaterialSettings *create() SIP_FACTORY;
 
+    /**
+     * Returns TRUE if the specified \a technique is suppored by the Gooch material.
+     */
+    static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
+
     QgsGoochMaterialSettings *clone() const override SIP_FACTORY;
 
     //! Returns warm color component
@@ -64,6 +69,12 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
     //! Returns shininess of the surface
     float shininess() const { return mShininess; }
 
+    //! Returns the alpha value
+    float alpha() const { return mAlpha; }
+
+    //! Returns the beta value
+    float beta() const { return mBeta; }
+
     //! Sets warm color component
     void setWarm( const QColor &warm ) { mWarm = warm; }
 
@@ -77,11 +88,16 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
     //! Sets shininess of the surface
     void setShininess( float shininess ) { mShininess = shininess; }
 
+    //! Sets alpha value
+    void setAlpha( float alpha ) { mAlpha = alpha; }
+
+    //! Sets beta value
+    void setBeta( float beta ) { mBeta = beta; }
+
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 #ifndef SIP_RUN
-    Qt3DRender::QMaterial *toMaterial( const QgsMaterialContext &context ) const override SIP_FACTORY;
-    QgsLineMaterial *toLineMaterial( const QgsMaterialContext &context ) const override SIP_FACTORY;
+    Qt3DRender::QMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const override;
     void addParametersToEffect( Qt3DRender::QEffect *effect ) const override;
 #endif
 
@@ -91,15 +107,19 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
              mSpecular == other.mSpecular &&
              mWarm == other.mWarm &&
              mCool == other.mCool &&
-             mShininess == other.mShininess;
+             mShininess == other.mShininess &&
+             mAlpha == other.mAlpha &&
+             mBeta == other.mBeta;
     }
 
   private:
     QColor mDiffuse{ QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) };
     QColor mSpecular{ QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
-    QColor mWarm { QColor( 107, 0, 107 )};
-    QColor mCool { QColor( 255, 130, 0 )};
-    float mShininess = 0.0f;
+    QColor mWarm {QColor( 107, 0, 107 ) };
+    QColor mCool {QColor( 255, 130, 0 )};
+    float mShininess = 100.0f;
+    float mAlpha = 0.25f;
+    float mBeta = 0.5f;
 };
 
 

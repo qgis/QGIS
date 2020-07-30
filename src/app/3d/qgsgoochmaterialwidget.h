@@ -31,10 +31,6 @@ class QgsGoochMaterialWidget : public QgsMaterialSettingsWidget, private Ui::Goo
     explicit QgsGoochMaterialWidget( QWidget *parent = nullptr );
 
     static QgsMaterialSettingsWidget *create();
-
-    void setDiffuseVisible( bool visible );
-    bool isDiffuseVisible() const;
-
     void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer ) override;
     QgsAbstractMaterialSettings *settings() override;
 

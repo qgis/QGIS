@@ -26,27 +26,25 @@ QgsGoochMaterialWidget::QgsGoochMaterialWidget( QWidget *parent )
   QgsGoochMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
 
+  spinShininess->setClearValue( 100 );
+  spinAlpha->setClearValue( 0.25 );
+  spinBeta->setClearValue( 0.5 );
+
+  btnWarm->setDefaultColor( QColor( 107, 0, 107 ) );
+  btnCool->setDefaultColor( QColor( 255, 130, 0 ) );
+
   connect( btnDiffuse, &QgsColorButton::colorChanged, this, &QgsGoochMaterialWidget::changed );
   connect( btnWarm, &QgsColorButton::colorChanged, this, &QgsGoochMaterialWidget::changed );
   connect( btnCool, &QgsColorButton::colorChanged, this, &QgsGoochMaterialWidget::changed );
   connect( btnSpecular, &QgsColorButton::colorChanged, this, &QgsGoochMaterialWidget::changed );
   connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsGoochMaterialWidget::changed );
+  connect( spinAlpha, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsGoochMaterialWidget::changed );
+  connect( spinBeta, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsGoochMaterialWidget::changed );
 }
 
 QgsMaterialSettingsWidget *QgsGoochMaterialWidget::create()
 {
   return new QgsGoochMaterialWidget();
-}
-
-void QgsGoochMaterialWidget::setDiffuseVisible( bool visible )
-{
-  lblDiffuse->setVisible( visible );
-  btnDiffuse->setVisible( visible );
-}
-
-bool QgsGoochMaterialWidget::isDiffuseVisible() const
-{
-  return btnDiffuse->isVisible();
 }
 
 void QgsGoochMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer * )
@@ -59,6 +57,8 @@ void QgsGoochMaterialWidget::setSettings( const QgsAbstractMaterialSettings *set
   btnCool->setColor( goochMaterial->cool() );
   btnSpecular->setColor( goochMaterial->specular() );
   spinShininess->setValue( goochMaterial->shininess() );
+  spinAlpha->setValue( goochMaterial->alpha() );
+  spinBeta->setValue( goochMaterial->beta() );
 }
 
 QgsAbstractMaterialSettings *QgsGoochMaterialWidget::settings()
@@ -69,5 +69,7 @@ QgsAbstractMaterialSettings *QgsGoochMaterialWidget::settings()
   m->setCool( btnCool->color() );
   m->setSpecular( btnSpecular->color() );
   m->setShininess( spinShininess->value() );
+  m->setAlpha( spinAlpha->value() );
+  m->setBeta( spinBeta->value() );
   return m.release();
 }
