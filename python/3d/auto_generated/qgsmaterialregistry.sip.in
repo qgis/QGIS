@@ -29,9 +29,11 @@ Stores metadata about one 3D material settings class.
 %End
   public:
 
-    QgsMaterialSettingsAbstractMetadata( const QString &type, const QString &visibleName );
+    QgsMaterialSettingsAbstractMetadata( const QString &type, const QString &visibleName, const QIcon &icon = QIcon() );
 %Docstring
 Constructor for QgsMaterialSettingsAbstractMetadata, with the specified ``type`` and ``visibleName``.
+
+An optional ``icon`` can be specified to represent the material type.
 %End
 
     virtual ~QgsMaterialSettingsAbstractMetadata();
@@ -44,6 +46,11 @@ Returns the unique material type string.
     QString visibleName() const;
 %Docstring
 Returns the material's visible (translated) name.
+%End
+
+    QIcon icon() const;
+%Docstring
+Returns an icon representing the material type, if available.
 %End
 
     virtual QgsAbstractMaterialSettings *create() = 0 /Factory/;

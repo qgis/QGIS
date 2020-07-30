@@ -66,7 +66,7 @@ void Qgs3D::initialize()
       &QgsPolygon3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForPolygon3DSymbol ) );
 
   instance()->materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "phong" ), QObject::tr( "Realistic (Phong)" ),
-      QgsPhongMaterialSettings::create, nullptr ) );
+      QgsPhongMaterialSettings::create, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconPhongMaterial.svg" ) ) ) );
 
   // because we are usually populating the 3d registry AFTER QgsApplication initialisation, we need to defer creation
   // of 3d symbols in the default style until now
