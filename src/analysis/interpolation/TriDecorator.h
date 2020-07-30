@@ -33,6 +33,7 @@ class ANALYSIS_EXPORT TriDecorator : public QgsTriangulation
   public:
     //! Constructor for TriDecorator
     TriDecorator() = default;
+    //! Constructor for TriDecorator with an existing triangulation
     explicit TriDecorator( QgsTriangulation *t );
     void addLine( const QVector< QgsPoint> &points, QgsInterpolator::SourceType lineType ) override;
     int addPoint( const QgsPoint &p ) override;

@@ -79,7 +79,7 @@ void QgsTinInterpolator::setTriangulationSink( QgsFeatureSink *sink )
 
 void QgsTinInterpolator::initialize()
 {
-  QgsDualEdgeTriangulation *dualEdgeTriangulation = new QgsDualEdgeTriangulation( 100000, nullptr );
+  QgsDualEdgeTriangulation *dualEdgeTriangulation = new QgsDualEdgeTriangulation( 100000 );
   if ( mInterpolation == CloughTocher )
   {
     NormVecDecorator *dec = new NormVecDecorator();

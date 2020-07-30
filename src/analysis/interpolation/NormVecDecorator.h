@@ -39,6 +39,7 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     //! Enumeration for the state of a point. Normal means, that the point is not on a BreakLine, BreakLine means that the point is on a breakline (but not an end point of it) and EndPoint means, that it is an endpoint of a breakline.
     enum PointState {Normal, BreakLine, EndPoint};
     NormVecDecorator();
+    //! Constructor for TriDecorator with an existing triangulation
     NormVecDecorator( QgsTriangulation *tin );
     ~NormVecDecorator() override;
     int addPoint( const QgsPoint &p ) override;
