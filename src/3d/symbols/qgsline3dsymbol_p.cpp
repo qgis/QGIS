@@ -79,8 +79,14 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context,
 {
   Q_UNUSED( attributeNames )
 
-  outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true ) );
-  outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true ) );
+  outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true,
+                               false, false, false, mSymbol.material()->requiresTextureCoordinates(),
+                               3,
+                               mSymbol.material()->textureRotation() ) );
+  outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true,
+                                 false, false, false, mSymbol.material()->requiresTextureCoordinates(),
+                                 3,
+                                 mSymbol.material()->textureRotation() ) );
 
   return true;
 }
@@ -165,7 +171,8 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
   QByteArray data( ( const char * )out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
   int nVerts = data.count() / out.tessellator->stride();
 
-  QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, false, false, false );
+  QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, false, false,
+      mSymbol.material()->requiresTextureCoordinates() );
   geometry->setData( data, nVerts, out.triangleIndexFids, out.triangleIndexStartingIndices );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
