@@ -70,6 +70,9 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Open configuration tab
     void openConfigTab();
 
+    //! Copy measurements to the clipboard
+    void copyMeasurements();
+
     void crsChanged();
 
     void projChanged();
