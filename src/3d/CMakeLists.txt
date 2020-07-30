@@ -27,6 +27,7 @@ SET(QGIS_3D_SRCS
   qgsvectorlayerchunkloader_p.cpp
   qgsmeshlayer3drenderer.cpp
   qgswindow3dengine.cpp
+  qgsskyboxentity.cpp
 
   chunks/qgschunkboundsentity_p.cpp
   chunks/qgschunkedentity_p.cpp
@@ -68,7 +69,6 @@ SET(QGIS_3D_SRCS
   mesh/qgsmesh3dentity_p.cpp
   mesh/qgsmesh3dmaterial_p.cpp
   mesh/qgsmeshterraingenerator.cpp
-
 )
 
 SET(QGIS_3D_HDRS
@@ -96,6 +96,7 @@ SET(QGIS_3D_HDRS
   qgstilingscheme.h
   qgsvectorlayer3drenderer.h
   qgswindow3dengine.h
+  qgsskyboxentity.h
   symbols/qgsbillboardgeometry.h
   symbols/qgsline3dsymbol.h
   symbols/qgsmesh3dsymbol.h

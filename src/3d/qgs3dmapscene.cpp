@@ -30,6 +30,13 @@
 #include <Qt3DExtras/QSkyboxEntity>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DLogic/QFrameAction>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QRenderPass>
+#include <Qt3DRender/QRenderState>
+#include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QDepthTest>
+#include <QSurface>
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
@@ -60,6 +67,8 @@
 #include "qgsmaplayertemporalproperties.h"
 
 #include "qgslinematerial_p.h"
+
+#include "qgsskyboxentity.h"
 
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
@@ -192,21 +201,20 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   meshEntity->setParent( this );
 #endif
 
-  if ( map.hasSkyboxEnabled() )
-  {
-    Qt3DExtras::QSkyboxEntity *skybox = new Qt3DExtras::QSkyboxEntity;
-    skybox->setBaseName( map.skyboxFileBase() );
-    skybox->setExtension( map.skyboxFileExtension() );
-    skybox->setParent( this );
+//  if ( map.hasSkyboxEnabled() )
+//  {
+//    mSkybox = new QgsSkyboxEntity("file:///home/nedjima/dev/cpp/qt3d/examples/qt3d/exampleresources/assets/cubemaps/default/default_specular", ".dds", this);
+  mSkybox = new QgsSkyboxEntity( "file:///home/nedjima/dev/cpp/Standard-Cube-Map2/cube_map", ".png", this );
 
-    // docs say frustum culling must be disabled for skybox.
-    // it _somehow_ works even when frustum culling is enabled with some camera positions,
-    // but then when zoomed in more it would disappear - so let's keep frustum culling disabled
-    mEngine->setFrustumCullingEnabled( false );
+//     docs say frustum culling must be disabled for skybox.
+//     it _somehow_ works even when frustum culling is enabled with some camera positions,
+//     but then when zoomed in more it would disappear - so let's keep frustum culling disabled
+  mEngine->setFrustumCullingEnabled( false );
+  mEngine->setClearColor( QColor( 255, 0, 0 ) );
 
-    // cppcheck wrongly believes skyBox will leak
-    // cppcheck-suppress memleak
-  }
+  // cppcheck wrongly believes skyBox will leak
+  // cppcheck-suppress memleak
+//  }
 
   // force initial update of chunked entities
   onCameraChanged();
@@ -321,7 +329,6 @@ void Qgs3DMapScene::onCameraChanged()
 
 void Qgs3DMapScene::updateScene()
 {
-  QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
 
   for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
   {

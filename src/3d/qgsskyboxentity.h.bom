@@ -1,0 +1,64 @@
+﻿#ifndef QGSSKYBOXENTITY_H
+#define QGSSKYBOXENTITY_H
+
+#include <Qt3DCore/QEntity>
+#include <QVector3D>
+#include <Qt3DRender/QTexture>
+#include <Qt3DExtras/QCuboidMesh>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QShaderProgram>
+#include <Qt3DRender/QFilterKey>
+#include <Qt3DRender/QRenderPass>
+#include <Qt3DExtras/QCuboidMesh>
+#include <Qt3DExtras/QPlaneMesh>
+#include <Qt3DRender/QParameter>
+
+class QgsSkyboxEntity : public Qt3DCore::QEntity
+{
+    Q_OBJECT
+  public:
+    QgsSkyboxEntity(const QString &baseName, const QString &extension, QNode *parent = nullptr);
+
+    QString baseName() const { return mBaseName; };
+    QString extension() const { return mExtension; };
+    bool isGammaCorrectEnabled() const { return !qFuzzyIsNull(mGammaStrengthParameter->value().toFloat()); }
+
+  public slots:
+    void setBaseName(const QString &path);
+    void setExtension(const QString &extension);
+    void setGammaCorrectEnabled(bool enabled);
+
+  signals:
+    void baseNameChanged(const QString &path);
+    void extensionChanged(const QString &extension);
+    void gammaCorrectEnabledChanged(bool enabled);
+
+  private:
+    void reloadTexture();
+
+  private:
+    Qt3DRender::QEffect *mEffect;
+    Qt3DRender::QMaterial *mMaterial;
+    Qt3DRender::QTextureCubeMap *mSkyboxTexture;
+    Qt3DRender::QTextureLoader *mLoadedTexture;
+    Qt3DRender::QShaderProgram *mGl3Shader;
+    Qt3DRender::QTechnique *mGl3Technique;
+    Qt3DRender::QFilterKey *mFilterKey;
+    Qt3DRender::QRenderPass *mGl3RenderPass;
+    Qt3DExtras::QCuboidMesh *mMesh;
+    Qt3DRender::QParameter *mGammaStrengthParameter;
+    Qt3DRender::QParameter *mTextureParameter;
+    Qt3DRender::QTextureImage *mPosXImage = nullptr;
+    Qt3DRender::QTextureImage *mPosYImage = nullptr;
+    Qt3DRender::QTextureImage *mPosZImage = nullptr;
+    Qt3DRender::QTextureImage *mNegXImage = nullptr;
+    Qt3DRender::QTextureImage *mNegYImage = nullptr;
+    Qt3DRender::QTextureImage *mNegZImage = nullptr;
+    QString mExtension;
+    QString mBaseName;
+    QVector3D mPosition;
+    bool mHasPendingReloadTextureCall;
+};
+
+#endif // QGSSKYBOXENTITY_H

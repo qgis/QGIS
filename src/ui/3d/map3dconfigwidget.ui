@@ -40,7 +40,7 @@
         <x>0</x>
         <y>0</y>
         <width>541</width>
-        <height>763</height>
+        <height>753</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
@@ -364,15 +364,11 @@
         </spacer>
        </item>
        <item row="6" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="SkyboxGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="groupSkyboxSettings">
          <property name="title">
           <string>Skybox rendering</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="0">
-           <widget class="QgsSkyboxRenderingSettingsWidget" name="skyboxRenderingSettingsWidget" native="true"/>
-          </item>
-         </layout>
+         <layout class="QGridLayout" name="gridLayout_3"/>
         </widget>
        </item>
       </layout>
@@ -419,12 +415,6 @@
    <class>QgsLightsWidget</class>
    <extends>QWidget</extends>
    <header>qgslightswidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSkyboxRenderingSettingsWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsskyboxrenderingsettingswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

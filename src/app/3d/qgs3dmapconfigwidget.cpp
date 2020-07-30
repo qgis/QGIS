@@ -28,6 +28,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsproject.h"
 #include "qgsmesh3dsymbolwidget.h"
+#include "qgsskyboxrenderingsettingswidget.h"
 
 Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, QWidget *parent )
   : QWidget( parent )
@@ -116,6 +117,9 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   connect( spinMapResolution, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
   connect( spinGroundError, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
 
+  mSkyboxSettingsWidget = new QgsSkyboxRenderingSettingsWidget( map, this );
+  groupSkyboxSettings->layout()->addWidget( mSkyboxSettingsWidget );
+  connect( mSkyboxSettingsWidget, &QgsSkyboxRenderingSettingsWidget::skyboxSettingsChanged, this, &Qgs3DMapConfigWidget::onSkyboxSettingsChanged );
 
   groupMeshTerrainShading->layout()->addWidget( mMeshSymbolWidget );
 
@@ -307,4 +311,9 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
   double tile0width = std::max( te.width(), te.height() );
   int zoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, spinMapResolution->value(), spinGroundError->value() );
   labelZoomLevels->setText( QStringLiteral( "0 - %1" ).arg( zoomLevel ) );
+}
+
+void Qgs3DMapConfigWidget::onSkyboxSettingsChanged()
+{
+
 }
