@@ -71,6 +71,11 @@ void QgsGoochMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteCo
   elem.setAttribute( QStringLiteral( "beta" ), mBeta );
 }
 
+QMap<QString, QString> QgsGoochMaterialSettings::toExportParameters() const
+{
+  return QMap<QString, QString>();
+}
+
 Qt3DRender::QMaterial *QgsGoochMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
   switch ( technique )
