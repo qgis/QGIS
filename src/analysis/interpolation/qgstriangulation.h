@@ -35,6 +35,8 @@ class QgsFeedback;
  * \ingroup analysis
  * Interface for Triangulation classes.
  * \note Not available in Python bindings.
+ *
+ * \since QGIS 3.16
 */
 class ANALYSIS_EXPORT QgsTriangulation
 {

@@ -43,14 +43,16 @@
  * \ingroup analysis
  * DualEdgeTriangulation is an implementation of a triangulation class based on the dual edge data structure.
  * \note Not available in Python bindings.
+ *
+ * \since QGIS 3.16
 */
 class ANALYSIS_EXPORT QgsDualEdgeTriangulation: public QgsTriangulation
 {
   public:
     QgsDualEdgeTriangulation();
-    QgsDualEdgeTriangulation( int nop, QgsTriangulation *decorator );
+    //! Constructor with a number of points to reserve
+    QgsDualEdgeTriangulation( int nop );
     ~QgsDualEdgeTriangulation() override;
-    void setDecorator( QgsTriangulation *d ) {mDecorator = d;}
     void addLine( const QVector< QgsPoint > &points, QgsInterpolator::SourceType lineType ) override;
     int addPoint( const QgsPoint &p ) override;
     //! Performs a consistency check, remove this later
@@ -116,8 +118,6 @@ class ANALYSIS_EXPORT QgsDualEdgeTriangulation: public QgsTriangulation
     TriangleInterpolator *mTriangleInterpolator = nullptr;
     //! Member to store the behavior in case of crossing forced segments
     QgsTriangulation::ForcedCrossBehavior mForcedCrossBehavior = QgsTriangulation::DeleteFirst;
-    //! Pointer to the decorator using this triangulation. It it is used directly, mDecorator equals this
-    QgsTriangulation *mDecorator = nullptr;
     //! Inserts an edge and makes sure, everything is OK with the storage of the edge. The number of the HalfEdge is returned
     unsigned int insertEdge( int dual, int next, int point, bool mbreak, bool forced );
     //! Inserts a forced segment between the points with the numbers p1 and p2 into the triangulation and returns the number of a HalfEdge belonging to this forced edge or -100 in case of failure
@@ -167,14 +167,12 @@ class ANALYSIS_EXPORT QgsDualEdgeTriangulation: public QgsTriangulation
 #ifndef SIP_RUN
 
 inline QgsDualEdgeTriangulation::QgsDualEdgeTriangulation()
-  : mDecorator( this )
 {
   mPointVector.reserve( DEFAULT_STORAGE_FOR_POINTS );
   mHalfEdge.reserve( DEFAULT_STORAGE_FOR_HALF_EDGES );
 }
 
-inline QgsDualEdgeTriangulation::QgsDualEdgeTriangulation( int nop, QgsTriangulation *decorator )
-  : mDecorator( decorator ? decorator : this )
+inline QgsDualEdgeTriangulation::QgsDualEdgeTriangulation( int nop )
 {
   mPointVector.reserve( nop );
   mHalfEdge.reserve( nop );

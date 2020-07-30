@@ -74,7 +74,7 @@ void QgsDualEdgeTriangulation::addLine( const QVector<QgsPoint> &points, QgsInte
   int i = 0;
   for ( const QgsPoint &point : points )
   {
-    actpoint = mDecorator->addPoint( point );
+    actpoint = addPoint( point );
     i++;
     if ( actpoint != -100 )
     {
@@ -89,7 +89,7 @@ void QgsDualEdgeTriangulation::addLine( const QVector<QgsPoint> &points, QgsInte
 
   for ( ; i < points.size(); ++i )
   {
-    currentpoint = mDecorator->addPoint( points.at( i ) );
+    currentpoint = addPoint( points.at( i ) );
     if ( currentpoint != -100 && actpoint != -100 && currentpoint != actpoint )//-100 is the return value if the point could not be not inserted
     {
       insertForcedSegment( actpoint, currentpoint, lineType );
@@ -2102,8 +2102,8 @@ void QgsDualEdgeTriangulation::ruppertRefinement()
     /*******otherwise, try to add the circumcenter to the triangulation************************************************************************************************/
 
     QgsPoint p( 0, 0, 0 );
-    mDecorator->calcPoint( circumcenter.x(), circumcenter.y(), p );
-    int pointno = mDecorator->addPoint( p );
+    calcPoint( circumcenter.x(), circumcenter.y(), p );
+    int pointno = addPoint( p );
 
     if ( pointno == -100 || pointno == mTwiceInsPoint )
     {
@@ -3022,7 +3022,6 @@ QgsMesh QgsDualEdgeTriangulation::triangulationToMesh() const
 {
   QVector<bool> alreadyVisitedEdges( mHalfEdge.count(), false );
 
-  //QSet<HalfEdge *> edgeToTreat = QSet<HalfEdge *>::fromList( mHalfEdge.toList() );
   QVector< bool> edgeToTreat( mHalfEdge.count(), true );
   QHash<HalfEdge *, int > edgesHash;
   for ( int i = 0; i < mHalfEdge.count(); ++i )
@@ -3114,7 +3113,7 @@ int QgsDualEdgeTriangulation::splitHalfEdge( int edge, float position )
 
   //calculate the z-value of the point to insert
   QgsPoint zvaluepoint( 0, 0, 0 );
-  mDecorator->calcPoint( p->x(), p->y(), zvaluepoint );
+  calcPoint( p->x(), p->y(), zvaluepoint );
   p->setZ( zvaluepoint.z() );
 
   //insert p into mPointVector
@@ -3151,7 +3150,7 @@ int QgsDualEdgeTriangulation::splitHalfEdge( int edge, float position )
   checkSwap( mHalfEdge[dualedge]->getNext(), 0 );
   checkSwap( mHalfEdge[edge3]->getNext(), 0 );
 
-  mDecorator->addPoint( QgsPoint( p->x(), p->y(), 0 ) );//dirty hack to enforce update of decorators
+  addPoint( QgsPoint( p->x(), p->y(), 0 ) );//dirty hack to enforce update of decorators
 
   return mPointVector.count() - 1;
 }
