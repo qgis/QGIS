@@ -188,6 +188,7 @@ Returns which facade of the buildings is rendered (0 for None, 1 for Walls, 2 fo
 .. versionadded:: 3.16
 %End
 
+
 };
 
 

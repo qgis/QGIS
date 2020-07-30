@@ -284,6 +284,7 @@ IF (WITH_3D)
     3d/qgsvectorlayer3dpropertieswidget.cpp
     3d/qgsvectorlayer3drendererwidget.cpp
     3d/qgsmeshlayer3drendererwidget.cpp
+    3d/qgsmap3dexportwidget.cpp
     layout/qgslayout3dmapwidget.cpp
   )
 ENDIF (WITH_3D)

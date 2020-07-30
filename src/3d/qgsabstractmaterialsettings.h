@@ -121,6 +121,11 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     virtual QgsLineMaterial *toLineMaterial( const QgsMaterialContext &context ) const = 0 SIP_FACTORY;
 
     /**
+     * Returns the parameters to be exported to .mtl file
+     */
+    virtual QMap<QString, QString> toExportParameters() const = 0;
+
+    /**
      * Adds parameters from the material to a destination \a effect.
      */
     virtual void addParametersToEffect( Qt3DRender::QEffect *effect ) const = 0;

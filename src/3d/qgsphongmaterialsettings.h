@@ -60,6 +60,8 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     //! Returns shininess of the surface
     float shininess() const { return mShininess; }
 
+    QMap<QString, QString> toExportParameters() const override;
+
     /**
      * Returns whether the diffuse texture is used.
      *

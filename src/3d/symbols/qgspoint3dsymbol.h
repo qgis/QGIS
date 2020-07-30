@@ -115,6 +115,11 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
     //! Returns transform for billboards
     QMatrix4x4 billboardTransform() const;
 
+    /**
+     * Exports the geometries contained withing the hierarchy of entity.
+     * Returns whether any objects were exported
+     */
+    bool exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const override SIP_SKIP;
   private:
     //! how to handle altitude of vector features
     Qgs3DTypes::AltitudeClamping mAltClamping = Qgs3DTypes::AltClampRelative;

@@ -25,6 +25,7 @@
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QEffect>
+#include <QMap>
 
 
 QString QgsPhongMaterialSettings::type() const
@@ -87,6 +88,7 @@ class QgsQImageTextureImage : public Qt3DRender::QPaintedTextureImage
     QImage mImage;
 
 };
+
 ///@endcond
 Qt3DRender::QMaterial *QgsPhongMaterialSettings::toMaterial( const QgsMaterialContext &context ) const
 {
@@ -149,6 +151,16 @@ QgsLineMaterial *QgsPhongMaterialSettings::toLineMaterial( const QgsMaterialCont
     mat->setLineColor( context.selectionColor() );
   }
   return mat;
+}
+
+QMap<QString, QString> QgsPhongMaterialSettings::toExportParameters() const
+{
+  QMap<QString, QString> parameters;
+  parameters[ QStringLiteral( "Kd" ) ] = QStringLiteral( "%1 %2 %3" ).arg( mDiffuse.redF() ).arg( mDiffuse.greenF() ).arg( mDiffuse.blueF() );
+  parameters[ QStringLiteral( "Ka" ) ] = QStringLiteral( "%1 %2 %3" ).arg( mAmbient.redF() ).arg( mAmbient.greenF() ).arg( mAmbient.blueF() );
+  parameters[ QStringLiteral( "Ks" ) ] = QStringLiteral( "%1 %2 %3" ).arg( mSpecular.redF() ).arg( mSpecular.greenF() ).arg( mSpecular.blueF() );
+  parameters[ QStringLiteral( "Ns" ) ] = QStringLiteral( "%1" ).arg( mShininess );
+  return parameters;
 }
 
 void QgsPhongMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effect ) const

@@ -15,10 +15,13 @@
 
 #include "qgspolygon3dsymbol.h"
 
+#include <Qt3DCore/QEntity>
+
 #include "qgs3dutils.h"
 #include "qgssymbollayerutils.h"
 #include "qgs3d.h"
 #include "qgsmaterialregistry.h"
+#include "qgs3dsceneexporter.h"
 
 QgsPolygon3DSymbol::QgsPolygon3DSymbol()
   : mMaterial( qgis::make_unique< QgsPhongMaterialSettings >() )
@@ -135,4 +138,17 @@ void QgsPolygon3DSymbol::setMaterial( QgsAbstractMaterialSettings *material )
     return;
 
   mMaterial.reset( material );
+}
+
+bool QgsPolygon3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const
+{
+  QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
+  for ( Qt3DRender::QGeometryRenderer *r : renderers )
+  {
+    Qgs3DExportObject *object = exporter->processGeometryRenderer( r, objectNamePrefix );
+    if ( object == nullptr ) continue;
+    exporter->processEntityMaterial( entity, object );
+    exporter->mObjects.push_back( object );
+  }
+  return renderers.size() != 0;
 }

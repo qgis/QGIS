@@ -117,6 +117,7 @@ Sets the ``material`` settings used for shading of the symbol.
 Ownership of ``material`` is transferred to the symbol.
 %End
 
+
 };
 
 

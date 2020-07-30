@@ -25,6 +25,8 @@ class QDomElement;
 class QString;
 
 class QgsReadWriteContext;
+class Qgs3DSceneExporter;
+namespace Qt3DCore { class QEntity; } SIP_SKIP
 
 
 /**
@@ -80,6 +82,13 @@ class CORE_EXPORT QgsAbstract3DSymbol
 
     //! Sets the symbol layer's property collection, used for data defined overrides.
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
+
+    /**
+     * Exports the geometries contained withing the hierarchy of entity.
+     * Returns whether any objects were exported
+     * If this function is not overloaded we don't try to export anything
+     */
+    virtual bool exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const SIP_SKIP;
 
   protected:
 

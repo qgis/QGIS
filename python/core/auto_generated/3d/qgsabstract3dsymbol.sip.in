@@ -85,6 +85,7 @@ Returns a reference to the symbol layer's property collection, used for data def
 Sets the symbol layer's property collection, used for data defined overrides.
 %End
 
+
   protected:
 
     void copyBaseSettings( QgsAbstract3DSymbol *destination ) const;

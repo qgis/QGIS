@@ -41,6 +41,8 @@
 #include "qgslinevertexdata_p.h"
 #include "qgslinematerial_p.h"
 
+#include "qgsimagetexture.h"
+
 /// @cond PRIVATE
 
 
