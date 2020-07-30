@@ -12,10 +12,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "Triangulation.h"
+#include "qgstriangulation.h"
 #include "qgsfields.h"
 
-QgsFields Triangulation::triangulationFields()
+QgsFields QgsTriangulation::triangulationFields()
 {
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "type" ), QVariant::String, QStringLiteral( "String" ) ) );
