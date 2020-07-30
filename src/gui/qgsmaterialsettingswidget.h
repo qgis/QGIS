@@ -23,6 +23,7 @@
 #define SIP_NO_FILE
 
 class QgsAbstractMaterialSettings SIP_EXTERNAL;
+enum class QgsMaterialSettingsRenderingTechnique SIP_EXTERNAL;
 class QgsVectorLayer;
 
 /**
@@ -47,6 +48,12 @@ class GUI_EXPORT QgsMaterialSettingsWidget : public QWidget
      * Sets the material \a settings to show in the widget.
      */
     virtual void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer ) = 0;
+
+    /**
+     * Sets the rendering technique which will be used for the symbol. Allows the widget to adapt
+     * available settings for the specified \a technique.
+     */
+    virtual void setTechnique( QgsMaterialSettingsRenderingTechnique technique );
 
     /**
      * Returns a new instance of the material settings defined by the widget.

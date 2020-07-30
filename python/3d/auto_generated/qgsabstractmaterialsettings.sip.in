@@ -10,6 +10,15 @@
 
 
 
+
+enum class QgsMaterialSettingsRenderingTechnique
+{
+  Triangles,
+  Lines,
+  InstancedPoints,
+  Points,
+};
+
 class QgsMaterialContext
 {
 %Docstring
@@ -57,6 +66,7 @@ Sets the color for representing materials in a selected state.
 %End
 
 };
+
 
 class QgsAbstractMaterialSettings /Abstract/
 {

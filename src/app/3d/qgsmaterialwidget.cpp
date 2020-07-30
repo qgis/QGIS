@@ -24,6 +24,7 @@
 QgsMaterialWidget::QgsMaterialWidget( QWidget *parent )
   : QWidget( parent )
   , mCurrentSettings( qgis::make_unique< QgsPhongMaterialSettings >() )
+  , mTechnique( QgsMaterialSettingsRenderingTechnique::Triangles )
 {
   setupUi( this );
 
@@ -35,6 +36,36 @@ QgsMaterialWidget::QgsMaterialWidget( QWidget *parent )
   }
 
   connect( mMaterialTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMaterialWidget::materialTypeChanged );
+}
+
+void QgsMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique technique )
+{
+  mTechnique = technique;
+  const QString prevType = mMaterialTypeComboBox->currentData().toString();
+  mMaterialTypeComboBox->blockSignals( true );
+  mMaterialTypeComboBox->clear();
+
+  const QStringList materialTypes = Qgs3D::materialRegistry()->materialSettingsTypes();
+  for ( const QString &type : materialTypes )
+  {
+    if ( !Qgs3D::materialRegistry()->materialSettingsMetadata( type )->supportsTechnique( technique ) )
+      continue;
+
+    mMaterialTypeComboBox->addItem( Qgs3D::materialRegistry()->materialSettingsMetadata( type )->icon(),
+                                    Qgs3D::materialRegistry()->materialSettingsMetadata( type )->visibleName(), type );
+  }
+
+  const int prevIndex = mMaterialTypeComboBox->findData( prevType );
+  if ( prevIndex == -1 )
+    mMaterialTypeComboBox->setCurrentIndex( 0 );
+  else
+    mMaterialTypeComboBox->setCurrentIndex( prevIndex );
+
+  if ( QgsMaterialSettingsWidget *w = qobject_cast< QgsMaterialSettingsWidget * >( mStackedWidget->currentWidget() ) )
+    w->setTechnique( technique );
+
+  mMaterialTypeComboBox->blockSignals( false );
+  materialTypeChanged();
 }
 
 void QgsMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer * )
@@ -104,6 +135,7 @@ void QgsMaterialWidget::updateMaterialWidget()
     if ( QgsMaterialSettingsWidget *w = am->createWidget() )
     {
       w->setSettings( mCurrentSettings.get(), nullptr );
+      w->setTechnique( mTechnique );
       mStackedWidget->addWidget( w );
       mStackedWidget->setCurrentWidget( w );
       // start receiving updates from widget

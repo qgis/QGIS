@@ -21,6 +21,7 @@
 #include <ui_materialwidget.h>
 
 class QgsAbstractMaterialSettings;
+enum class QgsMaterialSettingsRenderingTechnique;
 class QgsVectorLayer;
 
 //! Widget for configuration of material settings
@@ -29,6 +30,13 @@ class QgsMaterialWidget : public QWidget, private Ui::MaterialWidgetBase
     Q_OBJECT
   public:
     explicit QgsMaterialWidget( QWidget *parent = nullptr );
+
+    /**
+     * Sets the required rendering \a technique which the material must support.
+     *
+     * This is used to filter the available material choices in the widget.
+     */
+    void setTechnique( QgsMaterialSettingsRenderingTechnique technique );
 
     void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer );
     QgsAbstractMaterialSettings *settings();
@@ -45,7 +53,7 @@ class QgsMaterialWidget : public QWidget, private Ui::MaterialWidgetBase
     void updateMaterialWidget();
 
     std::unique_ptr< QgsAbstractMaterialSettings > mCurrentSettings;
-
+    QgsMaterialSettingsRenderingTechnique mTechnique;
 
 };
 

@@ -73,6 +73,8 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   // Sync between billboard height and TY
   connect( spinBillboardHeight, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinTY,  &QDoubleSpinBox::setValue );
   connect( spinTY, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinBillboardHeight,  &QDoubleSpinBox::setValue );
+
+  widgetMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::InstancedPoints );
 }
 
 Qgs3DSymbolWidget *QgsPoint3DSymbolWidget::create( QgsVectorLayer * )
@@ -105,6 +107,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
   int index = cboShape->findData( pointSymbol->shape() );
   cboShape->setCurrentIndex( index != -1 ? index : 1 );  // use cylinder by default if shape is not set
   widgetMaterial->setEnabled( true );
+  QgsMaterialSettingsRenderingTechnique technique = QgsMaterialSettingsRenderingTechnique::InstancedPoints;
   switch ( cboShape->currentIndex() )
   {
     case 0:  // sphere
@@ -142,11 +145,12 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
       {
         btnChangeSymbol->setSymbol( pointSymbol->billboardSymbol()->clone() );
       }
+      technique = QgsMaterialSettingsRenderingTechnique::Points;
       break;
   }
 
-  //TODO - handle other subclasses
   widgetMaterial->setSettings( pointSymbol->material(), layer );
+  widgetMaterial->setTechnique( technique );
 
   // decompose the transform matrix
   // assuming the last row has values [0 0 0 1]
@@ -253,6 +257,7 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
   materialsGroupBox->show();
   transformationWidget->show();
   QList<QWidget *> activeWidgets;
+  QgsMaterialSettingsRenderingTechnique technique = QgsMaterialSettingsRenderingTechnique::InstancedPoints;
   switch ( cboShape->currentIndex() )
   {
     case 0:  // sphere
@@ -282,8 +287,11 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
       // Always hide material and transformationwidget for billboard
       materialsGroupBox->hide();
       transformationWidget->hide();
+      technique = QgsMaterialSettingsRenderingTechnique::Points;
       break;
   }
+
+  widgetMaterial->setTechnique( technique );
 
   const auto constAllWidgets = allWidgets;
   for ( QWidget *w : constAllWidgets )

@@ -45,6 +45,58 @@ QgsMaterialSettingsWidget *QgsPhongMaterialWidget::create()
   return new QgsPhongMaterialWidget();
 }
 
+void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique technique )
+{
+  switch ( technique )
+  {
+    case QgsMaterialSettingsRenderingTechnique::Triangles:
+    {
+      lblAmbient->setVisible( true );
+      btnAmbient->setVisible( true );
+      lblDiffuse->setVisible( true );
+      btnDiffuse->setVisible( true );
+      lblSpecular->setVisible( true );
+      btnSpecular->setVisible( true );
+      lblShininess->setVisible( true );
+      spinShininess->setVisible( true );
+
+      activateTexturingUI( true );
+      break;
+    }
+
+    case QgsMaterialSettingsRenderingTechnique::Lines:
+    {
+      lblAmbient->setVisible( true );
+      btnAmbient->setVisible( true );
+      lblDiffuse->setVisible( false );
+      btnDiffuse->setVisible( false );
+      lblSpecular->setVisible( false );
+      btnSpecular->setVisible( false );
+      lblShininess->setVisible( false );
+      spinShininess->setVisible( false );
+
+      activateTexturingUI( false );
+      break;
+    }
+
+    case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
+    case QgsMaterialSettingsRenderingTechnique::Points:
+    {
+      lblAmbient->setVisible( true );
+      btnAmbient->setVisible( true );
+      lblDiffuse->setVisible( true );
+      btnDiffuse->setVisible( true );
+      lblSpecular->setVisible( true );
+      btnSpecular->setVisible( true );
+      lblShininess->setVisible( true );
+      spinShininess->setVisible( true );
+
+      activateTexturingUI( false );
+      break;
+    }
+  }
+}
+
 void QgsPhongMaterialWidget::setDiffuseVisible( bool visible )
 {
   lblDiffuse->setVisible( visible );
