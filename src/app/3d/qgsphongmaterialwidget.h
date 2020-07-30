@@ -33,7 +33,7 @@ class QgsPhongMaterialWidget : public QgsMaterialSettingsWidget, private Ui::Pho
 
     static QgsMaterialSettingsWidget *create();
 
-    void setTechnique( QgsMaterialSettingsRenderingTechnique technique );
+    void setTechnique( QgsMaterialSettingsRenderingTechnique technique ) override;
 
     void setDiffuseVisible( bool visible );
     bool isDiffuseVisible() const;
