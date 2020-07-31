@@ -423,7 +423,7 @@ QString QgsZonalStatistics::displayName( QgsZonalStatistics::Statistic statistic
     case Median:
       return QObject::tr( "Median" );
     case StDev:
-      return QObject::tr( "St dev)" );
+      return QObject::tr( "St dev" );
     case Min:
       return QObject::tr( "Minimum" );
     case Max:
