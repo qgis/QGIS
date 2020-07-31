@@ -5914,6 +5914,16 @@ font-style: italic;</string>
                         </property>
                         <layout class="QVBoxLayout" name="verticalLayout_17">
                          <item>
+                           <widget class="QLabel" name="mLblNoObstacle">
+                           <property name="wordWrap">
+                            <bool>true</bool>
+                           </property>
+                           <property name="text">
+                            <string>When activated, featuring acting as obstacles discourage labels and diagrams from covering them.</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
                           <layout class="QHBoxLayout" name="horizontalLayout_16" stretch="0,0,0,0">
                            <item>
                             <widget class="QCheckBox" name="mChkNoObstacle">
@@ -5928,7 +5938,7 @@ font-style: italic;</string>
                               <bool>true</bool>
                              </property>
                              <property name="text">
-                              <string>Discourage labels and diagrams from covering features</string>
+                              <string>Features act as obstacles</string>
                              </property>
                             </widget>
                            </item>
