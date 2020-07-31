@@ -208,10 +208,12 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   mSkybox = new QgsSkyboxEntity( "file:///home/nedjima/dev/cpp/Standard-Cube-Map2/cube_map", ".png", this );
 //  mSkybox->setEnabled(false);
 
-//     docs say frustum culling must be disabled for skybox.
-//     it _somehow_ works even when frustum culling is enabled with some camera positions,
-//     but then when zoomed in more it would disappear - so let's keep frustum culling disabled
-//  mEngine->setFrustumCullingEnabled( false );
+// docs say frustum culling must be disabled for skybox.
+// it _somehow_ works even when frustum culling is enabled with some camera positions,
+// but then when zoomed in more it would disappear - so let's keep frustum culling disabled
+
+// Turns out frustum should be disaled in order to not cull the skybox faces by accident
+  mEngine->setFrustumCullingEnabled( false );
   mEngine->setClearColor( QColor( 255, 0, 0 ) );
 
   // cppcheck wrongly believes skyBox will leak

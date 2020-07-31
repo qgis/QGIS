@@ -27,26 +27,16 @@ QgsSkyboxEntity::QgsSkyboxEntity( const QString &baseName, const QString &extens
   : Qt3DCore::QEntity( parent )
   , mEffect( new Qt3DRender::QEffect( this ) )
   , mMaterial( new Qt3DRender::QMaterial( this ) )
-  , mSkyboxTexture( new Qt3DRender::QTextureCubeMap( this ) )
-  , mLoadedTexture( new Qt3DRender::QTextureLoader( this ) )
   , mGl3Shader( new Qt3DRender::QShaderProgram( this ) )
   , mGl3Technique( new Qt3DRender::QTechnique( this ) )
   , mFilterKey( new Qt3DRender::QFilterKey( this ) )
   , mGl3RenderPass( new Qt3DRender::QRenderPass( this ) )
   , mMesh( new Qt3DExtras::QCuboidMesh( this ) )
   , mGammaStrengthParameter( new Qt3DRender::QParameter( QStringLiteral( "gammaStrength" ), 0.0f ) )
-  , mTextureParameter( new Qt3DRender::QParameter( QStringLiteral( "skyboxTexture" ), mSkyboxTexture, this ) )
-  , mPosXImage( new Qt3DRender::QTextureImage( this ) )
-  , mPosYImage( new Qt3DRender::QTextureImage( this ) )
-  , mPosZImage( new Qt3DRender::QTextureImage( this ) )
-  , mNegXImage( new Qt3DRender::QTextureImage( this ) )
-  , mNegYImage( new Qt3DRender::QTextureImage( this ) )
-  , mNegZImage( new Qt3DRender::QTextureImage( this ) )
+  , mTextureParameter( new Qt3DRender::QParameter( this ) )
   , mExtension( extension )
   , mBaseName( baseName )
-  , mHasPendingReloadTextureCall( false )
 {
-  mLoadedTexture->setGenerateMipMaps( false );
   mGl3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/skybox.vert" ) ) ) );
   mGl3Shader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/skybox.frag" ) ) ) );
 
@@ -81,42 +71,18 @@ QgsSkyboxEntity::QgsSkyboxEntity( const QString &baseName, const QString &extens
   mMaterial->addParameter( mGammaStrengthParameter );
   mMaterial->addParameter( mTextureParameter );
 
-  mMesh->setXExtent( 2.0f );
-  mMesh->setYExtent( 2.0f );
-  mMesh->setZExtent( 2.0f );
+//  mMesh->setXExtent( 2.0f );
+//  mMesh->setYExtent( 2.0f );
+//  mMesh->setZExtent( 2.0f );
   mMesh->setXYMeshResolution( QSize( 2, 2 ) );
   mMesh->setXZMeshResolution( QSize( 2, 2 ) );
   mMesh->setYZMeshResolution( QSize( 2, 2 ) );
 
+//   TODO: change the kybox position according to
   Qt3DCore::QTransform *transform = new Qt3DCore::QTransform( this );
   transform->setTranslation( QVector3D( 0.0f, 0.0f, 0.0f ) );
-  transform->setScale( 1.0f );
+  transform->setScale( 1000.0f );
   addComponent( transform );
-
-  mPosXImage->setFace( Qt3DRender::QTextureCubeMap::CubeMapPositiveX );
-  mPosXImage->setMirrored( false );
-  mPosYImage->setFace( Qt3DRender::QTextureCubeMap::CubeMapPositiveY );
-  mPosYImage->setMirrored( false );
-  mPosZImage->setFace( Qt3DRender::QTextureCubeMap::CubeMapPositiveZ );
-  mPosZImage->setMirrored( false );
-  mNegXImage->setFace( Qt3DRender::QTextureCubeMap::CubeMapNegativeX );
-  mNegXImage->setMirrored( false );
-  mNegYImage->setFace( Qt3DRender::QTextureCubeMap::CubeMapNegativeY );
-  mNegYImage->setMirrored( false );
-  mNegZImage->setFace( Qt3DRender::QTextureCubeMap::CubeMapNegativeZ );
-  mNegZImage->setMirrored( false );
-
-  mSkyboxTexture->setMagnificationFilter( Qt3DRender::QTextureCubeMap::Linear );
-  mSkyboxTexture->setMinificationFilter( Qt3DRender::QTextureCubeMap::Linear );
-  mSkyboxTexture->setGenerateMipMaps( false );
-  mSkyboxTexture->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::Repeat ) );
-
-  mSkyboxTexture->addTextureImage( mPosXImage );
-  mSkyboxTexture->addTextureImage( mPosYImage );
-  mSkyboxTexture->addTextureImage( mPosZImage );
-  mSkyboxTexture->addTextureImage( mNegXImage );
-  mSkyboxTexture->addTextureImage( mNegYImage );
-  mSkyboxTexture->addTextureImage( mNegZImage );
 
   addComponent( mMesh );
   addComponent( mMaterial );
@@ -126,25 +92,19 @@ QgsSkyboxEntity::QgsSkyboxEntity( const QString &baseName, const QString &extens
 
 void QgsSkyboxEntity::reloadTexture()
 {
-  if ( !mHasPendingReloadTextureCall )
+  if ( mSkyboxTextureLoader != nullptr )
+    delete mSkyboxTextureLoader;
+  if ( mExtension == QStringLiteral( ".dds" ) )
   {
-    mHasPendingReloadTextureCall = true;
-    if ( mExtension == QStringLiteral( ".dds" ) )
-    {
-      mLoadedTexture->setSource( QUrl( mBaseName + mExtension ) );
-      mTextureParameter->setValue( QVariant::fromValue( mLoadedTexture ) );
-    }
-    else
-    {
-      mPosXImage->setSource( QUrl( mBaseName + QStringLiteral( "_posx" ) + mExtension ) );
-      mPosYImage->setSource( QUrl( mBaseName + QStringLiteral( "_posy" ) + mExtension ) );
-      mPosZImage->setSource( QUrl( mBaseName + QStringLiteral( "_posz" ) + mExtension ) );
-      mNegXImage->setSource( QUrl( mBaseName + QStringLiteral( "_negx" ) + mExtension ) );
-      mNegYImage->setSource( QUrl( mBaseName + QStringLiteral( "_negy" ) + mExtension ) );
-      mNegZImage->setSource( QUrl( mBaseName + QStringLiteral( "_negz" ) + mExtension ) );
-      mTextureParameter->setValue( QVariant::fromValue( mSkyboxTexture ) );
-    }
-    mHasPendingReloadTextureCall = false;
+    mSkyboxTextureLoader = new QgsDDSSkyboxLoader( mBaseName, mExtension, this );
+    mTextureParameter->setName( QStringLiteral( "skyboxTexture" ) );
+    mTextureParameter->setValue( mSkyboxTextureLoader->getTextureParameter() );
+  }
+  else
+  {
+    mSkyboxTextureLoader = new QgsSkyboxTextureColloectionLoader( mBaseName, mExtension, this );
+    mTextureParameter->setName( QStringLiteral( "skyboxTexture" ) );
+    mTextureParameter->setValue( mSkyboxTextureLoader->getTextureParameter() );
   }
 }
 
