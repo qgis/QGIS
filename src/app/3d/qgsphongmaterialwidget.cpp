@@ -64,6 +64,21 @@ void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
       break;
     }
 
+    case QgsMaterialSettingsRenderingTechnique::Terrain:
+    {
+      lblAmbient->setVisible( true );
+      btnAmbient->setVisible( true );
+      lblDiffuse->setVisible( false );
+      btnDiffuse->setVisible( false );
+      lblSpecular->setVisible( true );
+      btnSpecular->setVisible( true );
+      lblShininess->setVisible( true );
+      spinShininess->setVisible( true );
+
+      activateTexturingUI( false );
+      break;
+    }
+
     case QgsMaterialSettingsRenderingTechnique::Lines:
     {
       lblAmbient->setVisible( true );
@@ -95,17 +110,6 @@ void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
       break;
     }
   }
-}
-
-void QgsPhongMaterialWidget::setDiffuseVisible( bool visible )
-{
-  lblDiffuse->setVisible( visible );
-  btnDiffuse->setVisible( visible );
-}
-
-bool QgsPhongMaterialWidget::isDiffuseVisible() const
-{
-  return btnDiffuse->isVisible();
 }
 
 void QgsPhongMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer * )

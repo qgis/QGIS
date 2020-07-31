@@ -105,7 +105,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   chkShowLightSourceOrigins->setChecked( mMap->showLightSourceOrigins() );
 
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
-  widgetTerrainMaterial->setDiffuseVisible( false );
+  widgetTerrainMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::Terrain );
   QgsPhongMaterialSettings terrainShadingMaterial = mMap->terrainShadingMaterial();
   widgetTerrainMaterial->setSettings( &terrainShadingMaterial, nullptr );
 
