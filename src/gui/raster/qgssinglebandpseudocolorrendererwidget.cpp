@@ -153,6 +153,12 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
     mMinMaxWidget->setBands( QList< int >() << pr->band() );
     mColorRampShaderWidget->setRasterBand( pr->band() );
 
+    // need to set min/max properties here because if we use the raster shader below,
+    // we may set a new color ramp which needs to have min/max values defined.
+    setLineEditValue( mMinLineEdit, pr->classificationMin() );
+    setLineEditValue( mMaxLineEdit, pr->classificationMax() );
+    mMinMaxWidget->setFromMinMaxOrigin( pr->minMaxOrigin() );
+
     const QgsRasterShader *rasterShader = pr->shader();
     if ( rasterShader )
     {
@@ -162,10 +168,6 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
         mColorRampShaderWidget->setFromShader( *colorRampShader );
       }
     }
-    setLineEditValue( mMinLineEdit, pr->classificationMin() );
-    setLineEditValue( mMaxLineEdit, pr->classificationMax() );
-
-    mMinMaxWidget->setFromMinMaxOrigin( pr->minMaxOrigin() );
   }
   else
   {
