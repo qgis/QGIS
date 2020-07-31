@@ -28,12 +28,12 @@
 
 QString QgsLayoutAtlasToImageAlgorithm::name() const
 {
-  return QStringLiteral( "printlayoutatlastoimage" );
+  return QStringLiteral( "atlaslayouttoimage" );
 }
 
 QString QgsLayoutAtlasToImageAlgorithm::displayName() const
 {
-  return QObject::tr( "Export print layout atlas as image(s)" );
+  return QObject::tr( "Export atlas layout as image" );
 }
 
 QStringList QgsLayoutAtlasToImageAlgorithm::tags() const
@@ -53,23 +53,23 @@ QString QgsLayoutAtlasToImageAlgorithm::groupId() const
 
 QString QgsLayoutAtlasToImageAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Exports a print layout atlas as one or more images." );
+  return QObject::tr( "Exports an atlas layout atlas as image." );
 }
 
 QString QgsLayoutAtlasToImageAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm outputs a print layout atkas as one or more images file (e.g. PNG or JPEG images)." );
+  return QObject::tr( "This algorithm outputs an atlas layout image file (e.g. PNG or JPEG images)." );
 }
 
 void QgsLayoutAtlasToImageAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterLayout( QStringLiteral( "LAYOUT" ), QObject::tr( "Print layout" ) ) );
+  addParameter( new QgsProcessingParameterLayout( QStringLiteral( "LAYOUT" ), QObject::tr( "Atlas layout" ) ) );
 
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "COVERAGE_LAYER" ), QObject::tr( "Atlas coverage layer" ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "COVERAGE_LAYER" ), QObject::tr( "Coverage layer" ) ) );
 
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Atlas coverage layer's filter expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
+  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
 
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "SORTBY_EXPRESSION" ), QObject::tr( "Atlas coverage layer's feature sort expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
+  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "SORTBY_EXPRESSION" ), QObject::tr( "Sort expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SORTBY_REVERSE" ), QObject::tr( "Reverse sort order (used when a sort expression is provided)" ), false, true ) );
 
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILENAME_EXPRESSION" ), QObject::tr( "Output filename expression" ), QStringLiteral( "'output_'||@atlas_featurenumber" ), QStringLiteral( "COVERAGE_LAYER" ) ) );
