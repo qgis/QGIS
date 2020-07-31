@@ -344,7 +344,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           int i = 0;
           for ( const QgsCoordinateReferenceSystem &crs : recentProjections )
           {
-            QAction *action = menuSetCRS->addAction( crs.authid() );
+            QAction *action = menuSetCRS->addAction( crs.userFriendlyIdentifier() );
             action->setProperty( "layerId", layer->id() );
             action->setProperty( "crs", crs.authid() );
             i++;
