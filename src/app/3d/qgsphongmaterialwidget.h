@@ -34,12 +34,10 @@ class QgsPhongMaterialWidget : public QgsMaterialSettingsWidget, private Ui::Pho
     static QgsMaterialSettingsWidget *create();
 
     void setTechnique( QgsMaterialSettingsRenderingTechnique technique ) override;
-
-    void setDiffuseVisible( bool visible );
-    bool isDiffuseVisible() const;
-
     void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer ) override;
     QgsAbstractMaterialSettings *settings() override;
+
+  private:
 
     //! activates the texturing UI (to make sure texturing UI isn't visible when the user doesn't need it like in the 3D configuration window)
     void activateTexturingUI( bool activated );

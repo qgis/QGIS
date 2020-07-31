@@ -41,6 +41,7 @@ bool QgsPhongMaterialSettings::supportsTechnique( QgsMaterialSettingsRenderingTe
     case QgsMaterialSettingsRenderingTechnique::Lines:
     case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
     case QgsMaterialSettingsRenderingTechnique::Points:
+    case QgsMaterialSettingsRenderingTechnique::Terrain:
       return true;
   }
   return false;
@@ -120,8 +121,8 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::toMaterial( QgsMaterialSettings
     case QgsMaterialSettingsRenderingTechnique::Triangles:
     case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
     case QgsMaterialSettingsRenderingTechnique::Points:
+    case QgsMaterialSettingsRenderingTechnique::Terrain:
     {
-
       bool fitsInCache = false;
       QImage textureSourceImage;
 

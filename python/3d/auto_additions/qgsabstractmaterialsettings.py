@@ -9,5 +9,7 @@ QgsAbstractMaterialSettings.InstancedPoints = QgsMaterialSettingsRenderingTechni
 QgsAbstractMaterialSettings.InstancedPoints.__doc__ = "Instanced based rendering, requiring triangles and point data"
 QgsAbstractMaterialSettings.Points = QgsMaterialSettingsRenderingTechnique.Points
 QgsAbstractMaterialSettings.Points.__doc__ = "Point based rendering, requires point data"
-QgsMaterialSettingsRenderingTechnique.__doc__ = 'Material rendering techniques\n\n.. versionadded:: 3.16\n\n' + '* ``Triangles``: ' + QgsMaterialSettingsRenderingTechnique.Triangles.__doc__ + '\n' + '* ``Lines``: ' + QgsMaterialSettingsRenderingTechnique.Lines.__doc__ + '\n' + '* ``InstancedPoints``: ' + QgsMaterialSettingsRenderingTechnique.InstancedPoints.__doc__ + '\n' + '* ``Points``: ' + QgsMaterialSettingsRenderingTechnique.Points.__doc__
+QgsAbstractMaterialSettings.Terrain = QgsMaterialSettingsRenderingTechnique.Terrain
+QgsAbstractMaterialSettings.Terrain.__doc__ = "Terrain rendering"
+QgsMaterialSettingsRenderingTechnique.__doc__ = 'Material rendering techniques\n\n.. versionadded:: 3.16\n\n' + '* ``Triangles``: ' + QgsMaterialSettingsRenderingTechnique.Triangles.__doc__ + '\n' + '* ``Lines``: ' + QgsMaterialSettingsRenderingTechnique.Lines.__doc__ + '\n' + '* ``InstancedPoints``: ' + QgsMaterialSettingsRenderingTechnique.InstancedPoints.__doc__ + '\n' + '* ``Points``: ' + QgsMaterialSettingsRenderingTechnique.Points.__doc__ + '\n' + '* ``Terrain``: ' + QgsMaterialSettingsRenderingTechnique.Terrain.__doc__
 # --
