@@ -133,7 +133,7 @@ void QgsProcessingContext::LayerDetails::setOutputLayerName( QgsMapLayer *layer 
   const bool preferFilenameAsLayerName = QgsSettings().value( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ), true ).toBool();
 
   // note - for temporary layers, we don't use the filename, regardless of user setting (it will be meaningless!)
-  if ( ( preferFilenameAsLayerName && !layer->isTemporary() ) || name.isEmpty() )
+  if ( ( !forceName && preferFilenameAsLayerName && !layer->isTemporary() ) || name.isEmpty() )
   {
     const QVariantMap sourceParts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
     const QString layerName = sourceParts.value( QStringLiteral( "layerName" ) ).toString();

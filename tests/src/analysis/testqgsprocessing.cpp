@@ -2255,6 +2255,14 @@ void TestQgsProcessing::parameters()
   vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( TEST_DATA_DIR ) + "/points_gpkg.gpkg|layername=points_small", QString() );
   context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( vl.get() );
   QCOMPARE( vl->name(), QStringLiteral( "points_small" ) );
+  // if forced name is true, that should always be used, regardless of the user's local setting
+  QgsProcessingContext::LayerDetails details( QStringLiteral( "my name" ), context2.project(), QStringLiteral( "my name" ) );
+  details.forceName = false;
+  details.setOutputLayerName( vl.get() );
+  QCOMPARE( vl->name(), QStringLiteral( "points_small" ) );
+  details.forceName = true;
+  details.setOutputLayerName( vl.get() );
+  QCOMPARE( vl->name(), QStringLiteral( "my name" ) );
 }
 
 void TestQgsProcessing::algorithmParameters()

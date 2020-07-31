@@ -181,6 +181,13 @@ class CORE_EXPORT QgsProcessingContext
         QString name;
 
         /**
+         * Set to TRUE if LayerDetails::name should always be used as the loaded layer name, regardless
+         * of the user's local Processing settings.
+         * \since QGIS 3.16
+         */
+        bool forceName = false;
+
+        /**
          * Associated output name from algorithm which generated the layer.
          */
         QString outputName;
