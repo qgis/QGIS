@@ -376,6 +376,18 @@ void QgsColorRampShaderWidget::applyColorRamp()
   int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
   if ( topLevelItemCount > 0 )
   {
+    // We need to have valid min/max values here. If we haven't, load from colormap
+    double min, max;
+    if ( isnan( mMin ) || isnan( mMax ) )
+    {
+      colormapMinMax( min, max );
+    }
+    else
+    {
+      min = mMin;
+      max = mMax;
+    }
+
     // if the list values has been customized, maintain pre-existing values
     QTreeWidgetItem *currentItem = nullptr;
     for ( int i = 0; i < topLevelItemCount; ++i )
@@ -387,7 +399,7 @@ void QgsColorRampShaderWidget::applyColorRamp()
       }
 
       double value = QLocale().toDouble( currentItem->text( ValueColumn ) );
-      double position = ( value - mMin ) / ( mMax - mMin );
+      double position = ( value - min ) / ( max - min );
       whileBlocking( static_cast<QgsTreeWidgetItemObject *>( currentItem ) )->setData( ColorColumn, Qt::EditRole, ramp->color( position ) );
     }
 
@@ -727,9 +739,7 @@ double QgsColorRampShaderWidget::maximum() const
   return mMax;
 }
 
-
-
-void QgsColorRampShaderWidget::loadMinimumMaximumFromTree()
+void QgsColorRampShaderWidget::colormapMinMax( double &min, double &max )
 {
   QTreeWidgetItem *item = mColormapTreeWidget->topLevelItem( 0 );
   if ( !item )
@@ -737,9 +747,15 @@ void QgsColorRampShaderWidget::loadMinimumMaximumFromTree()
     return;
   }
 
-  double min = QLocale().toDouble( item->text( ValueColumn ) );
+  min = QLocale().toDouble( item->text( ValueColumn ) );
   item = mColormapTreeWidget->topLevelItem( mColormapTreeWidget->topLevelItemCount() - 1 );
-  double max = QLocale().toDouble( item->text( ValueColumn ) );
+  max = QLocale().toDouble( item->text( ValueColumn ) );
+}
+
+void QgsColorRampShaderWidget::loadMinimumMaximumFromTree()
+{
+  double min = 0, max = 0;
+  colormapMinMax( min, max );
 
   if ( !qgsDoubleNear( mMin, min ) || !qgsDoubleNear( mMax, max ) )
   {
