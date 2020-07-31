@@ -4,24 +4,24 @@
 #include <QLineEdit>
 #include "qgs3dmapsettings.h"
 
-QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( Qgs3DMapSettings *map, QWidget *parent )
-  : QWidget( parent ), mMapSettings( map )
+QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( QWidget *parent )
+  : QWidget( parent )
 {
   setupUi( this );
 
   QObject::connect( skyboxEnabledCheckBox, &QCheckBox::stateChanged, [&]( int state ) -> void
   {
     mIsSkyboxEnabled = state == 1;
-    emit skyboxSettingsChanged();
+    emit skyboxSettingsChanged( toSkyboxSettings() );
   } );
   QObject::connect( skyboxPrefixLineEdit, &QLineEdit::textChanged, [&]( const QString & newPrefix ) -> void
   {
-    mSkyboxPrefix = newPrefix;
-    emit skyboxSettingsChanged();
+    mSkyboxBaseName = newPrefix;
+    emit skyboxSettingsChanged( toSkyboxSettings() );
   } );
   connect( skyboxExtensionLineEdit, &QLineEdit::textChanged, [&]( const QString & newExt ) -> void
   {
-    mSkyboxExt = newExt;
-    emit skyboxSettingsChanged();
+    mSkyboxExtension = newExt;
+    emit skyboxSettingsChanged( toSkyboxSettings() );
   } );
 }

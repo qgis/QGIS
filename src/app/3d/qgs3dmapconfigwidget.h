@@ -24,6 +24,7 @@ class Qgs3DMapSettings;
 class QgsMapCanvas;
 class QgsMesh3dSymbolWidget;
 class QgsSkyboxRenderingSettingsWidget;
+class Qgs3DMapCanvas;
 
 
 class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
@@ -31,7 +32,7 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
     Q_OBJECT
   public:
     //! construct widget. does not take ownership of the passed map.
-    explicit Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, QWidget *parent = nullptr );
+    explicit Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, Qgs3DMapCanvas *mapCanvas3D, QWidget *parent = nullptr );
 
     void apply();
 
@@ -41,11 +42,11 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
     void onTerrainTypeChanged();
     void onTerrainLayerChanged();
     void updateMaxZoomLevel();
-    void onSkyboxSettingsChanged();
 
   private:
     Qgs3DMapSettings *mMap = nullptr;
     QgsMapCanvas *mMainCanvas = nullptr;
+    Qgs3DMapCanvas *m3DMapCanvas = nullptr;
     QgsMesh3dSymbolWidget *mMeshSymbolWidget = nullptr;
     QgsSkyboxRenderingSettingsWidget *mSkyboxSettingsWidget = nullptr;
 };

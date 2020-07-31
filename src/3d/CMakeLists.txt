@@ -97,6 +97,7 @@ SET(QGIS_3D_HDRS
   qgsvectorlayer3drenderer.h
   qgswindow3dengine.h
   qgsskyboxentity.h
+  qgsskyboxsettings.h
   symbols/qgsbillboardgeometry.h
   symbols/qgsline3dsymbol.h
   symbols/qgsmesh3dsymbol.h

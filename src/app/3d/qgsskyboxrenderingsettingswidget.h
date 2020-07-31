@@ -3,27 +3,31 @@
 
 #include "ui_skyboxrenderingsettingswidget.h"
 
-class Qgs3DMapSettings;
+#include "qgsskyboxsettings.h"
 
 class QgsSkyboxRenderingSettingsWidget : public QWidget, private Ui::SkyboxRenderingSettingsWidget
 {
     Q_OBJECT
 
   public:
-    explicit QgsSkyboxRenderingSettingsWidget( Qgs3DMapSettings *map, QWidget *parent = nullptr );
+    explicit QgsSkyboxRenderingSettingsWidget( QWidget *parent = nullptr );
 
-    bool isSkyboxEnabled() const { return mIsSkyboxEnabled; }
-    QString skyboxPrefix() const { return mSkyboxPrefix; }
-    QString skyboxExtension() const { return mSkyboxExt; }
+    QgsSkyboxSettings toSkyboxSettings()
+    {
+      QgsSkyboxSettings settings;
+      settings.setIsSkyboxEnabled( mIsSkyboxEnabled );
+      settings.setSkyboxBaseName( mSkyboxBaseName );
+      settings.setSkyboxExtension( mSkyboxExtension );
+      return settings;
+    }
 
   signals:
-    void skyboxSettingsChanged();
+    void skyboxSettingsChanged( const QgsSkyboxSettings &skyboxSettings );
 
   private:
-    Qgs3DMapSettings *mMapSettings = nullptr;
     bool mIsSkyboxEnabled = false;
-    QString mSkyboxPrefix;
-    QString mSkyboxExt;
+    QString mSkyboxBaseName;
+    QString mSkyboxExtension;
 };
 
 #endif // SKYBOXRENDERINGSETTINGSWIDGET_H

@@ -129,7 +129,6 @@ void QgsSkyboxEntity::reloadTexture()
   if ( !mHasPendingReloadTextureCall )
   {
     mHasPendingReloadTextureCall = true;
-//        QTimer::singleShot(10, [this] {
     if ( mExtension == QStringLiteral( ".dds" ) )
     {
       mLoadedTexture->setSource( QUrl( mBaseName + mExtension ) );
@@ -146,7 +145,6 @@ void QgsSkyboxEntity::reloadTexture()
       mTextureParameter->setValue( QVariant::fromValue( mSkyboxTexture ) );
     }
     mHasPendingReloadTextureCall = false;
-//        });
   }
 }
 
