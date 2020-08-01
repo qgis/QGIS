@@ -102,6 +102,7 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
   protected:
     //! Populates color ramp tree from ramp items
     void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem> &colorRampItems );
+    //! Extracts the minimal and maximal value from the colormapTreeWidget
     void colormapMinMax( double &min, double &max ) SIP_SKIP;
 
   private:
