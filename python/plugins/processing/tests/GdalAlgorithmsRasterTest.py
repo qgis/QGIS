@@ -28,7 +28,9 @@ import tempfile
 
 from qgis.core import (QgsProcessingContext,
                        QgsProcessingFeedback,
-                       QgsRectangle)
+                       QgsRectangle,
+                       QgsRasterLayer,
+                       QgsProject)
 
 from qgis.testing import (start_app,
                           unittest)
@@ -132,6 +134,40 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             ['gdal_edit.py',
              '-a_srs EPSG:3111 ' +
              source])
+
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+                     'gdal_edit.py: not found')
+    def testRunAssignProjection(self):
+        # Check that assign projection updates QgsRasterLayer info
+        # GDAL Assign Projection is based on gdal_edit.py
+
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = AssignProjection()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            fake_dem = os.path.join(outdir, 'dem-fake-crs.tif')
+
+            shutil.copy(source, fake_dem)
+            self.assertTrue(os.path.exists(fake_dem))
+
+            rlayer = QgsRasterLayer(fake_dem, "Fake dem")
+            self.assertTrue(rlayer.isValid())
+
+            self.assertEqual(rlayer.crs().authid(), 'EPSG:4326')
+
+            project = QgsProject()
+            project.setFileName(os.path.join(outdir, 'dem-fake-crs.qgs'))
+            project.addMapLayer(rlayer)
+            self.assertEqual(project.count(), 1)
+
+            context.setProject(project)
+
+            alg.run({'INPUT': fake_dem, 'CRS': 'EPSG:3111'},
+                    context, feedback)
+            self.assertEqual(rlayer.crs().authid(), 'EPSG:3111')
 
     def testGdalTranslate(self):
         context = QgsProcessingContext()
