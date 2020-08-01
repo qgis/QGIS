@@ -329,7 +329,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), &QgisApp::zoomToLayerScale );
 
         QMenu *menuSetCRS = new QMenu( tr( "Layer CRS" ), menu );
-        QAction *actionCurrentCrs = new QAction( layer->crs().authid(), menuSetCRS );
+        QAction *actionCurrentCrs = new QAction( layer->crs().userFriendlyIdentifier(), menuSetCRS );
         actionCurrentCrs->setEnabled( false );
         menuSetCRS->addAction( actionCurrentCrs );
         // assign layer crs to project
@@ -344,9 +344,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           int i = 0;
           for ( const QgsCoordinateReferenceSystem &crs : recentProjections )
           {
-            QAction *action = menuSetCRS->addAction( crs.userFriendlyIdentifier() );
+            QAction *action = menuSetCRS->addAction( tr( "Set to %1" ).arg( crs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) ) );
             action->setProperty( "layerId", layer->id() );
-            action->setProperty( "crs", crs.authid() );
+            action->setProperty( "crs", crs.toWkt() );
             i++;
             if ( i == 2 )
               break;
@@ -1028,7 +1028,7 @@ void QgsAppLayerTreeViewMenuProvider::setLayerCrs( QAction *action )
   if ( !layer )
     return;
 
-  QString authid = action->property( "crs" ).toString();
-  layer->setCrs( QgsCoordinateReferenceSystem( authid ), true );
+  QString wkt = action->property( "crs" ).toString();
+  layer->setCrs( QgsCoordinateReferenceSystem( wkt ), true );
   layer->triggerRepaint();
 }
