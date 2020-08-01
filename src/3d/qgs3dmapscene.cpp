@@ -202,26 +202,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   meshEntity->addComponent( meshTransform );
   meshEntity->setParent( this );
 #endif
-
-//  if ( map.hasSkyboxEnabled() )
-//  {
-//    mSkybox = new QgsSkyboxEntity("file:///home/nedjima/dev/cpp/qt3d/examples/qt3d/exampleresources/assets/cubemaps/default/default_specular", ".dds", this);
-//  mSkybox = new QgsCubeFacesSkyboxEntity( "file:///home/nedjima/dev/cpp/Standard-Cube-Map2/cube_map", ".png", this );
-  mSkybox = new QgsHDRSkyboxEntity( "file:///home/nedjima/dev/cpp/ballroom_8k.hdr", this );
-//  mSkybox->setEnabled(false);
-
-// docs say frustum culling must be disabled for skybox.
-// it _somehow_ works even when frustum culling is enabled with some camera positions,
-// but then when zoomed in more it would disappear - so let's keep frustum culling disabled
-
-// Turns out frustum should be disaled in order to not cull the skybox faces by accident
-  mEngine->setFrustumCullingEnabled( false );
-  mEngine->setClearColor( QColor( 255, 0, 0 ) );
-
-  // cppcheck wrongly believes skyBox will leak
-  // cppcheck-suppress memleak
-//  }
-
+  onSkyboxSettingsChanged();
   // force initial update of chunked entities
   onCameraChanged();
 }
@@ -883,18 +864,17 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
     delete mSkybox;
     mSkybox = nullptr;
   }
+
+  mEngine->setFrustumCullingEnabled( !skyboxSettings.isSkyboxEnabled() );
+
   if ( skyboxSettings.isSkyboxEnabled() )
   {
-    qDebug() << skyboxSettings.skyboxType();
     if ( skyboxSettings.skyboxType() == QStringLiteral( "Textures collection" ) )
     {
-      qDebug() << "base name: " << skyboxSettings.skyboxBaseName();
-      qDebug() << "extension: " << skyboxSettings.skyboxExtension();
       mSkybox = new QgsCubeFacesSkyboxEntity( skyboxSettings.skyboxBaseName(), skyboxSettings.skyboxExtension(), this );
     }
     if ( skyboxSettings.skyboxType() == QStringLiteral( "HDR texture" ) )
     {
-      qDebug() << "texture path: " << skyboxSettings.hdrTexturePath();
       mSkybox = new QgsHDRSkyboxEntity( skyboxSettings.hdrTexturePath(), this );
     }
     if ( skyboxSettings.skyboxType() == QStringLiteral( "Distinct Faces" ) )

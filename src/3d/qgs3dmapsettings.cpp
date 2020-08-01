@@ -207,6 +207,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDomElement elemSkybox = elem.firstChildElement( QStringLiteral( "skybox" ) );
   mSkyboxSettings.readXml( elemSkybox, context );
 
+
   QDomElement elemDebug = elem.firstChildElement( QStringLiteral( "debug" ) );
   mShowTerrainBoundingBoxes = elemDebug.attribute( QStringLiteral( "bounding-boxes" ), QStringLiteral( "0" ) ).toInt();
   mShowTerrainTileInfo = elemDebug.attribute( QStringLiteral( "terrain-tile-info" ), QStringLiteral( "0" ) ).toInt();
