@@ -139,6 +139,7 @@ class TestQgsProcessingAlgs: public QObject
     void setProjectVariable();
     void exportLayoutPdf();
     void exportLayoutPng();
+    void exportAtlasLayoutPng();
 
   private:
 
@@ -4359,6 +4360,46 @@ void TestQgsProcessingAlgs::exportLayoutPng()
   QVERIFY( ok );
 
   QVERIFY( QFile::exists( outputPdf ) );
+}
+
+void TestQgsProcessingAlgs::exportAtlasLayoutPng()
+{
+  QgsProject p;
+  p.addMapLayers( QList<QgsMapLayer *>() << mPolygonLayer );
+
+  QgsPrintLayout *layout = new QgsPrintLayout( &p );
+  layout->initializeDefaults();
+  layout->setName( QStringLiteral( "my layout" ) );
+  p.layoutManager()->addLayout( layout );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:atlaslayouttoimage" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QDir tempDir( QDir::tempPath() );
+  if ( !tempDir.mkdir( "my_atlas" ) )
+  {
+    QDir dir( QDir::tempPath() + "/my_atlas" );
+    const QStringList files = dir.entryList( QStringList() << "*.*", QDir::Files );
+    for ( const QString file : files )
+      QFile::remove( QDir::tempPath() + "/my_atlas/" + file );
+  }
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "my layout" ) );
+  parameters.insert( QStringLiteral( "COVERAGE_LAYER" ), QVariant::fromValue( mPolygonLayer ) );
+  parameters.insert( QStringLiteral( "FOLDER" ), QDir::tempPath() + "/my_atlas" );
+  parameters.insert( QStringLiteral( "FILENAME_EXPRESSION" ), QStringLiteral( "'custom_'||@atlas_featurenumber" ) );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/custom_1.png" ) );
+  QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/custom_10.png" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )

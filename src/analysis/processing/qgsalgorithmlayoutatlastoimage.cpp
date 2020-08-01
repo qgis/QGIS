@@ -59,14 +59,17 @@ QString QgsLayoutAtlasToImageAlgorithm::shortDescription() const
 
 QString QgsLayoutAtlasToImageAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm outputs an atlas layout to a set of image files (e.g. PNG or JPEG images)." );
+  return QObject::tr( "This algorithm outputs an atlas layout to a set of image files (e.g. PNG or JPEG images).\n\n"
+                      "If a coverage layer is set, the selected layout's atlas settings exposed in this algorithm "
+                      "will be overwritten. In this case, an empty filter or sort by expressing will turn those "
+                      "settings off." );
 }
 
 void QgsLayoutAtlasToImageAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterLayout( QStringLiteral( "LAYOUT" ), QObject::tr( "Atlas layout" ) ) );
 
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "COVERAGE_LAYER" ), QObject::tr( "Coverage layer" ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "COVERAGE_LAYER" ), QObject::tr( "Coverage layer" ), QList< int >(), QVariant(), true ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "SORTBY_EXPRESSION" ), QObject::tr( "Sort expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SORTBY_REVERSE" ), QObject::tr( "Reverse sort order (used when a sort expression is provided)" ), false, true ) );
@@ -125,7 +128,6 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
   if ( !layout )
     throw QgsProcessingException( QObject::tr( "Cannot find layout with name \"%1\"" ).arg( parameters.value( QStringLiteral( "LAYOUT" ) ).toString() ) );
 
-  QString error;
   QgsLayoutAtlas *atlas = layout->atlas();
 
   QgsVectorLayer *previousCoverageLayer = atlas->coverageLayer();
@@ -171,32 +173,46 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
     }
   };
 
+  QString expression, error;
   QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "COVERAGE_LAYER" ), context );
-  atlas->setEnabled( true );
-  atlas->setCoverageLayer( layer );
+  if ( layer )
+  {
+    atlas->setEnabled( true );
+    atlas->setCoverageLayer( layer );
 
-  QString expression = parameterAsString( parameters, QStringLiteral( "FILENAME_EXPRESSION" ), context );
+    expression = parameterAsString( parameters, QStringLiteral( "FILTER_EXPRESSION" ), context );
+    atlas->setFilterExpression( expression, error );
+    if ( !expression.isEmpty() && !error.isEmpty() )
+    {
+      restoreAtlas();
+      throw QgsProcessingException( QObject::tr( "Error setting atlas filter expression" ) );
+    }
+    error.clear();
+
+    expression = parameterAsString( parameters, QStringLiteral( "SORTBY_EXPRESSION" ), context );
+    if ( !expression.isEmpty() )
+    {
+      const bool sortByReverse = parameterAsBool( parameters, QStringLiteral( "SORTBY_REVERSE" ), context );
+      atlas->setSortFeatures( true );
+      atlas->setSortExpression( expression );
+      atlas->setSortAscending( !sortByReverse );
+    }
+    else
+    {
+      atlas->setSortFeatures( false );
+    }
+  }
+  else if ( !atlas->enabled() )
+  {
+    throw QgsProcessingException( QObject::tr( "Layout being export doesn't have an enabled atlas" ) );
+  }
+
+  expression = parameterAsString( parameters, QStringLiteral( "FILENAME_EXPRESSION" ), context );
   atlas->setFilenameExpression( expression, error );
   if ( !error.isEmpty() )
   {
     restoreAtlas();
     throw QgsProcessingException( QObject::tr( "Error setting atlas filename expression" ) );
-  }
-
-  expression = parameterAsString( parameters, QStringLiteral( "FILTER_EXPRESSION" ), context );
-  atlas->setFilterExpression( expression, error );
-
-  expression = parameterAsString( parameters, QStringLiteral( "SORTBY_EXPRESSION" ), context );
-  if ( !expression.isEmpty() )
-  {
-    const bool sortByReverse = parameterAsBool( parameters, QStringLiteral( "SORTBY_REVERSE" ), context );
-    atlas->setSortFeatures( true );
-    atlas->setSortExpression( expression );
-    atlas->setSortAscending( !sortByReverse );
-  }
-  else
-  {
-    atlas->setSortFeatures( false );
   }
 
   const QString directory = parameterAsFileOutput( parameters, QStringLiteral( "FOLDER" ), context );
