@@ -433,7 +433,7 @@ To enable debug prints for the current user, execute:
 
 ## 4.1. Building with Microsoft Visual Studio
 
-This section describes how to build QGIS using Visual Studio (MSVC) 2015 on Windows.
+This section describes how to build QGIS using Visual Studio (MSVC) 2019 on Windows.
 This is currently also how the binary QGIS packages are made (earlier versions used MinGW).
 
 This section describes the setup required to allow Visual Studio to be used to
@@ -601,48 +601,20 @@ Running QGIS from within MSVC:
 
 ### 4.1.6. Packaging
 
-To create a standalone installer there is a perl script named 'creatensis.pl'
+To create a standalone installer there is a perl script named 'createmsi.pl'
 in 'qgis/ms-windows/osgeo4w'.  It downloads all required packages from OSGeo4W
-and repackages them into an installer using NSIS.
+and repackages them into an installer using WiX.
 
-The script can be run on both Windows and Linux.
-
-On Debian/Ubuntu you can just install the 'nsis' package.
-
-NSIS for Windows can be downloaded at:
-
-> http://nsis.sourceforge.net
+The script can be run on both Windows and Linux (via wine and mono).
 
 And Perl for Windows (including other requirements like 'wget', 'unzip', 'tar'
 and 'bzip2') is available at:
 
 > http://cygwin.com
 
-### 4.1.7. Packaging your own build of QGIS
+### 4.1.7. OSGeo4W packaging
 
-Assuming you have completed the above packaging step, if you want to include
-your own hand built QGIS executables, you need to copy them in from your
-windows installation into the ms-windows file tree created by the creatensis
-script.
-
-```cmd
-    cd ms-windows/
-    rm -rf osgeo4w/unpacked/apps/qgis/*
-    cp -r /tmp/qgis1.7.0/* osgeo4w/unpacked/apps/qgis/
-```
-
-Now create a package.
-
-```cmd
-    ./quickpackage.sh
-```
-
-After this you should now have a nsis installer containing your own build
-of QGIS and all dependencies needed to run it on a windows machine.
-
-### 4.1.8. Osgeo4w packaging
-
-The actual packaging process is currently not documented, for now please take a
+The actual packaging process is documented in code.  Please take a
 look at:
 
 > ms-windows/osgeo4w/package.cmd

@@ -172,11 +172,6 @@ unless(@ARGV) {
 
 getDeps($_) for @ARGV;
 
-if(-f "../addons/bin/NCSEcw4_RO.dll") {
-	print "Enabling ECW support...\n" if $verbose;
-	getDeps("gdal-ecw")
-}
-
 my @lic;
 my @desc;
 foreach my $p ( keys %pkgs ) {
@@ -233,7 +228,6 @@ chdir "..";
 
 #
 # Unpack them
-# Add nircmd
 # Add addons
 #
 
@@ -292,29 +286,21 @@ unless(-d $unpacked ) {
 
 	close O;
 
-	chdir $unpacked;
-
-	mkdir "bin", 0755;
-
-	unless( -f "bin/nircmd.exe" ) {
-		unless( -f "../$packages/nircmd.zip" ) {
-			system "cd ../$packages; wget $wgetopt -c http://www.nirsoft.net/utils/nircmd.zip";
-			die "download of nircmd.zip failed" if $?;
-		}
-
-		mkdir "apps", 0755;
-		mkdir "apps/nircmd", 0755;
-		system "cd apps/nircmd; unzip ../../../$packages/nircmd.zip && mv nircmd.exe nircmdc.exe ../../bin";
-		die "unpacking of nircmd failed" if $?;
-	}
-
-	if( -d "../addons" ) {
+	if( -d "addons" ) {
+		chdir $unpacked;
 		print " Including addons...\n" if $verbose;
 		system "tar -C ../addons -cf - . | tar $taropt -xf -";
 		die "copying of addons failed" if $?;
+		chdir "..";
 	}
 
-	chdir "..";
+	if( -d "addons-$arch" ) {
+		chdir $unpacked;
+		print " Including $arch addons...\n" if $verbose;
+		system "tar -C ../addons-$arch -cf - . | tar $taropt -xf -";
+		die "copying of $arch addons failed" if $?;
+		chdir "..";
+	}
 }
 
 my($major, $minor, $patch);
@@ -355,94 +341,119 @@ unless( defined $binary ) {
 
 open F, ">$packages/postinstall.bat";
 
-# my $r = ">>\"%OSGEO4W_ROOT%\\postinstall.log\" 2>&1\r\n";
-my $l = "\"%TEMP%\\$packagename-OSGeo4W-$version-$binary-postinstall.log\"";
-my $r = ">>$l 2>&1\r\n";
+my $l = "\"%OSGEO4W_ROOT%\\var\\log\\postinstall.log\"";
+my $r = ">>$l 2>&1";
+my $b = "\"%OSGEO4W_ROOT%\\etc\\preremove-conf.bat\"";
+my $c = ">>$b";
 
-#print F "\@echo off\r\n";
-print F "set OSGEO4W_ROOT=%~dp0\r\n";
-print F "if %OSGEO4W_ROOT:~-1%==\\ set OSGEO4W_ROOT=%OSGEO4W_ROOT:~0,-1%\r\n";
-print F "set OSGEO4W_STARTMENU=%~1\r\n";
-print F "if %OSGEO4W_STARTMENU~-1%==\\ set OSGEO4W_STARTMENU=%OSGEO4W_STARTMENU~0,-1%\r\n";
-print F "set OSGEO4W_DESKTOP=%~2\r\n";
-print F "if %OSGEO4W_DESKTOP~-1%==\\ set OSGEO4W_DESKTOP=%OSGEO4W_DESKTOP~0,-1%\r\n";
-print F "if exist $l del $l\r\n";
-print F "set OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT:\\=/%\r\n";
-print F "if \"%OSGEO4W_ROOT_MSYS:~1,1%\"==\":\" set OSGEO4W_ROOT_MSYS=/%OSGEO4W_ROOT_MSYS:~0,1%/%OSGEO4W_ROOT_MSYS:~3%$r";
-print F "set OSGEO4W_MENU_LINKS=1\r\n";
-print F "set OSGEO4W_DESKTOP_LINKS=1\r\n";
+print F <<EOF;
+\@echo off
+set OSGEO4W_ROOT=%~dp0
+set OSGEO4W_ROOT=%OSGEO4W_ROOT:~0,-4%
+set OSGEO4W_STARTMENU=%~1
+set OSGEO4W_DESKTOP=%~2
+set OSGEO4W_DESKTOP_LINKS=%~3
+if not defined OSGEO4W_DESKTOP_LINKS set OSGEO4W_DESKTOP_LINKS=0
+set OSGEO4W_MENU_LINKS=%~4
+if not defined OSGEO4W_MENU_LINKS set OSGEO4W_MENU_LINKS=0
 
-my $b = "\"%OSGEO4W_ROOT%\\preremove-conf.bat\"";
-print F "if exist $b del $b$r";
+for %%i in ("%OSGEO4W_ROOT%") do set OSGEO4W_ROOT=%%~fsi
+if "%OSGEO4W_ROOT:~-1%"=="\\" set OSGEO4W_ROOT=%OSGEO4W_ROOT:~0,-1%
+if "%OSGEO4W_STARTMENU:~-1%"=="\\" set OSGEO4W_STARTMENU=%OSGEO4W_STARTMENU:~0,-1%
+if "%OSGEO4W_DESKTOP:~-1%"=="\\" set OSGEO4W_DESKTOP=%OSGEO4W_DESKTOP:~0,-1%
 
-my $c = ">>$b\r\n";
-print F "(\r\n";
-print F "echo set OSGEO4W_ROOT=%OSGEO4W_ROOT%\r\n";
-print F "echo set OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT_MSYS%\r\n";
-print F "echo set OSGEO4W_STARTMENU=%OSGEO4W_STARTMENU%\r\n";
-print F "echo set OSGEO4W_DESKTOP=%OSGEO4W_DESKTOP%\r\n";
-print F "echo set OSGEO4W_MENU_LINKS=%OSGEO4W_MENU_LINKS%\r\n";
-print F "echo set OSGEO4W_DESKTOP_LINKS=%OSGEO4W_DESKTOP_LINKS%\r\n";
-print F ")$c";
+if not %OSGEO4W_DESKTOP_LINKS%==0 if not exist "%OSGEO4W_DESKTOP%" mkdir "%OSGEO4W_DESKTOP%"
+if not %OSGEO4W_MENU_LINKS%==0 if not exist "%OSGEO4W_STARTMENU%" mkdir "%OSGEO4W_STARTMENU%"
 
-print F "(\r\n";
-print F "echo OSGEO4W_ROOT=%OSGEO4W_ROOT%\r\n";
-print F "echo OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT_MSYS%\r\n";
-print F "echo OSGEO4W_STARTMENU=%OSGEO4W_STARTMENU%\r\n";
-print F "echo OSGEO4W_DESKTOP=%OSGEO4W_DESKTOP%\r\n";
-print F "echo OSGEO4W_MENU_LINKS=%OSGEO4W_MENU_LINKS%\r\n";
-print F "echo OSGEO4W_DESKTOP_LINKS=%OSGEO4W_DESKTOP_LINKS%\r\n";
+set OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT:\\=/%
+if "%OSGEO4W_ROOT_MSYS:~1,1%"==":" set OSGEO4W_ROOT_MSYS=/%OSGEO4W_ROOT_MSYS:~0,1%/%OSGEO4W_ROOT_MSYS:~3%
 
-print F "PATH %OSGEO4W_ROOT%\\bin;%PATH%\r\n";
-print F "cd /d %OSGEO4W_ROOT%\r\n";
-print F ")$r";
+if not exist "%OSGEO4W_ROOT%\\var\\log" mkdir "%OSGEO4W_ROOT%\\var\\log"
+
+if exist $b del $b$r
+echo set OSGEO4W_ROOT=%OSGEO4W_ROOT%$c
+echo set OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT_MSYS%$c
+echo set OSGEO4W_STARTMENU=%OSGEO4W_STARTMENU%$c
+echo set OSGEO4W_DESKTOP=%OSGEO4W_DESKTOP%$c
+echo set OSGEO4W_MENU_LINKS=^%OSGEO4W_MENU_LINKS%$c
+echo set OSGEO4W_DESKTOP_LINKS=^%OSGEO4W_DESKTOP_LINKS%$c
+
+if exist $l del $l$r
+echo.$r
+echo %DATE% %TIME%: Running postinstall$r
+echo --------------------------------------------------------------------------------$r
+type $b$r
+
+PATH %OSGEO4W_ROOT%\\bin;%PATH%$r
+cd /d %OSGEO4W_ROOT%$r
+EOF
 
 chdir $unpacked;
 for my $p (<etc/postinstall/*.bat>) {
 	$p =~ s/\//\\/g;
 	my($dir,$file) = $p =~ /^(.+)\\([^\\]+)$/;
 
-	print F "echo Running postinstall $file...$r";
-	print F "%COMSPEC% /c \"%OSGEO4W_ROOT%\\$p\"$r";
-	print F "ren \"%OSGEO4W_ROOT%\\$p\" $file.done$r";
+	print F <<EOF;
+echo.$r
+echo %DATE% %TIME%: Running postinstall $file...$r
+echo --------------------------------------------------------------------------------$r
+%COMSPEC% /c "%OSGEO4W_ROOT%\\$p"$r
+ren "%OSGEO4W_ROOT%\\$p" $file.done$r
+echo --------------------------------------------------------------------------------$r
+echo %DATE% %TIME%: Done postinstall $file.$r
+echo.$r
+EOF
 }
 chdir "..";
 
-print F "ren postinstall.bat postinstall.bat.done$r";
-print F "exit /b 0\r\n";
+print F <<EOF;
+exit /b 0
+EOF
 
 close F;
 
-open F, ">$packages/preremove.bat";
-
 $r = ">>\"%TEMP%\\$packagename-OSGeo4W-$version-$binary-preremove.log\" 2>&1\r\n";
 
-print F "\@echo off\r\n";
-print F "call \"%~dp0\\preremove-conf.bat\"$r";
-print F "echo OSGEO4W_ROOT=%OSGEO4W_ROOT%$r";
-print F "echo OSGEO4W_STARTMENU=%OSGEO4W_STARTMENU%$r";
-print F "echo OSGEO4W_DESKTOP=%OSGEO4W_DESKTOP%$r";
-print F "set OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT:\\=/%$r";
-print F "if \"%OSGEO4W_ROOT_MSYS:~1,1%\"==\":\" set OSGEO4W_ROOT_MSYS=/%OSGEO4W_ROOT_MSYS:~0,1%/%OSGEO4W_ROOT_MSYS:~3%$r";
-print F "echo OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT_MSYS%$r";
-print F "PATH %OSGEO4W_ROOT%\\bin;%PATH%$r";
-print F "cd /d \"%OSGEO4W_ROOT%\"$r";
+open F, ">$packages/preremove.bat";
+print F <<EOF;
+\@echo off
+echo %DATE% %TIME%: Running preremove...$r
+echo --------------------------------------------------------------------------------$r
+call "%~dp0\\etc\\preremove-conf.bat"$r
+echo OSGEO4W_ROOT=%OSGEO4W_ROOT%$r
+echo OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT_MSYS%$r
+echo OSGEO4W_STARTMENU=%OSGEO4W_STARTMENU%$r
+echo OSGEO4W_DESKTOP=%OSGEO4W_DESKTOP%$r
+PATH %OSGEO4W_ROOT%\\bin;%PATH%$r
+cd /d \"%OSGEO4W_ROOT%\"$r
+EOF
 
 chdir $unpacked;
 for my $p (<etc/preremove/*.bat>) {
 	$p =~ s/\//\\/g;
 	my($dir,$file) = $p =~ /^(.+)\\([^\\]+)$/;
 
-	print F "echo Running preremove $file...$r";
-	print F "%COMSPEC% /c $p$r";
-	print F "ren $p $file.done$r";
+	print F <<EOF;
+echo Running preremove $file...$r
+echo %DATE% %TIME%: Running preremove $file...$r
+echo --------------------------------------------------------------------------------$r
+%COMSPEC% /c $p$r
+echo --------------------------------------------------------------------------------$r
+echo %DATE% %TIME%: Done preremove $file.$r
+EOF
 }
- 
+
 chdir "..";
 
-print F "del preremove.bat$r";
-print F "del postinstall.bat.done$r";
-print F "del preremove-conf.bat$r";
+print F <<EOF;
+rmdir /s /q "%OSGEO4W_STARTMENU%"$r
+rmdir /s /q "%OSGEO4W_DESKTOP%"$r
+del "%OSGEO4W_ROOT%\\etc\\postinstall.bat"$r
+del "%OSGEO4W_ROOT%\\etc\\preremove.bat"$r
+del "%OSGEO4W_ROOT%\\etc\\preremove-conf.bat"$r
+echo --------------------------------------------------------------------------------$r
+echo %DATE% %TIME%: Done preremove$r
+EOF
 
 close F;
 
@@ -466,7 +477,7 @@ sub out {
 	print O $m;
 }
 
-out("Lizenz\n");
+$rtf->prolog;
 
 my $i = 0;
 if( @lic ) {
@@ -677,11 +688,13 @@ print F <<EOF;
       Compressed="yes"
       SummaryCodepage="1252" />
 
-    <Media Id="1" EmbedCab="yes" Cabinet="application.cab" />
+    <Media Id="1" EmbedCab="yes" CompressionLevel="high" Cabinet="application.cab" />
     <Property Id="DiskPrompt" Value="$packagename $version Installation [1]" />
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+    <Property Id="INSTALLDESKTOPSHORTCUTS" Value="1" />
+    <Property Id="INSTALLMENUSHORTCUTS" Value="1" />
 
-    <UIRef Id="WixUI_InstallDir" />
+    <UIRef Id="QGISUI_InstallDir" />
     <UIRef Id="WixUI_ErrorProgressText" />
 
     <WixVariable Id="WixUILicenseRtf" Value="license.rtf"/>
@@ -691,18 +704,20 @@ print F <<EOF;
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="$programfilesfolder">
         <Directory Id="INSTALLDIR" Name="$packagename $version">
-          <Component Id="postinstall.bat" Guid="$postinstalluuid">
-            <File Id="postinstall.bat" Name="postinstall.bat" Source="postinstall.bat" />
-          </Component>
-          <Component Id="preremove.bat" Guid="$preremoveuuid">
-            <File Id="preremove.bat" Name="preremove.bat" Source="preremove.bat" />
-          </Component>
+	  <Directory Id="ETC" Name="etc">
+            <Component Id="postinstall.bat" Guid="$postinstalluuid">
+              <File Id="postinstall.bat" Name="postinstall.bat" Source="postinstall.bat" />
+            </Component>
+            <Component Id="preremove.bat" Guid="$preremoveuuid">
+              <File Id="preremove.bat" Name="preremove.bat" Source="preremove.bat" />
+            </Component>
+	  </Directory>
         </Directory>
 	<Directory Id="ProgramMenuFolder">
-            <Directory Id="ApplicationProgramsFolder" Name="$packagename $version"/>
+          <Directory Id="ApplicationProgramMenuFolder" Name="$packagename $version" />
         </Directory>
 	<Directory Id="DesktopFolder">
-            <Directory Id="ApplicationDesktopFolder" Name="$packagename $version"/>
+          <Directory Id="ApplicationDesktopFolder" Name="$packagename $version" />
 	</Directory>
       </Directory>
     </Directory>
@@ -719,11 +734,11 @@ print F <<EOF;
       <ComponentRef Id="preremove.bat" />
     </Feature>
 
-    <SetProperty Id="postinstall" Value="&quot;[INSTALLDIR]\\postinstall.bat&quot; &quot;[ApplicationProgramMenuFolder]&quot; &quot;[ApplicationDesktopFolder]&quot;" Before="postinstall" Sequence='execute' />
-    <CustomAction Id="postinstall" BinaryKey="WixCA" DllEntry="$WixQuietExec" Execute="deferred" Return="check" Impersonate="no" />
-    
-    <SetProperty Id="preremove" Value="&quot;[INSTALLDIR]\\preremove.bat&quot;" Before="preremove" Sequence='execute' />
-    <CustomAction Id="preremove" BinaryKey="WixCA" DllEntry="$WixQuietExec" Execute="deferred" Return="check" Impersonate="no" />
+    <SetProperty Id="postinstall" Value="&quot;[#postinstall.bat]&quot; &quot;[ApplicationProgramMenuFolder]&quot; &quot;[ApplicationDesktopFolder]&quot; &quot;[INSTALLDESKTOPSHORTCUTS]&quot; &quot;[INSTALLMENUSHORTCUTS]&quot;" Before="postinstall" Sequence='execute' />
+    <CustomAction Id="postinstall" BinaryKey="WixCA" DllEntry="$WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no" />
+
+    <SetProperty Id="preremove" Value="&quot;[#preremove.bat]&quot;" Before="preremove" Sequence='execute' />
+    <CustomAction Id="preremove" BinaryKey="WixCA" DllEntry="$WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no" />
 
     <InstallExecuteSequence>
       <Custom Action="postinstall" After="InstallFiles">(NOT Installed) AND (NOT REMOVE)</Custom>
@@ -739,21 +754,27 @@ chdir $packages;
 $ENV{'UNPACKEDDIR'} = "..\\$unpacked";
 
 my $msiarch = "-arch " . ($arch eq "x86" ? "x86" : "x64");
-	
-print "Running candle...\n" if $verbose;
-system "$run wix/candle.exe -nologo $msiarch installer.wxs";
-die "candle failed" if $?;
 
-my @files;
-for(my $i=1; $i<=$fn; $i++) {
-	system "$run wix/candle.exe -nologo $msiarch files$i.wxs";
+my @wxs;
+
+push @wxs, "installer.wxs";
+push @wxs, "../QGISInstallDirDlg.wxs";
+push @wxs, "../QGISUI_InstallDir.wxs";
+push @wxs, "files$_.wxs" foreach 1..$fn;
+
+my @wixobj;
+foreach (@wxs) {
+	system "$run wix/candle.exe -nologo $msiarch $_";
 	die "candle failed" if $?;
-	push @files, "files$i.wixobj"
+	s/\.wxs$/.wixobj/;
+	s#^.*/##;
+	push @wixobj, $_;
 }
 
 print "Running light...\n" if $verbose;
+
 # ICE09, ICE32, ICE61 produce:
-# produce "light.exe : error LGHT0217 : Error executing ICE action 'ICExx'. The most common cause of this kind of ICE failure is an incorrectly registered scripting engine. See http://wixtoolset.org/documentation/error217/ for
+# light.exe : error LGHT0217 : Error executing ICE action 'ICExx'. The most common cause of this kind of ICE failure is an incorrectly registered scripting engine. See http://wixtoolset.org/documentation/error217/ for
 # details and how to solve this problem. The following string format was not expected by the external UI message logger: "The installer has encountered an unexpected error installing this package. This may indicate a
 # problem with this package. The error code is 2738. ".
 #
@@ -761,7 +782,7 @@ print "Running light...\n" if $verbose;
 # warning LGHT1076 : ICE60: The file filXXX is not a Font, and its version is not a companion file reference. It should have a language specified in the Language column.
 #
 # ICE64: complains about the desktop and start menu folder
-my $cmd = "$run wix/light.exe -nologo -ext WixUIExtension -ext WixUtilExtension -out $installer.msi -sice:ICE09 -sice:ICE32 -sice:ICE60 -sice:ICE61 -sice:ICE64 -b ../$unpacked installer.wixobj " . join(" ", @files);
+my $cmd = "$run wix/light.exe -nologo -ext WixUIExtension -ext WixUtilExtension -out $installer.msi -sice:ICE09 -sice:ICE32 -sice:ICE60 -sice:ICE61 -sice:ICE64 -b ../$unpacked " . join(" ", @wixobj);
 print "EXEC: $cmd\n" if $verbose;
 system $cmd;
 die "light failed" if $?;
@@ -800,7 +821,7 @@ createmsi.pl - create MSI package from OSGeo4W packages
 
 =head1 SYNOPSIS
 
-creatensis.pl [options] [packages...]
+createmsi.pl [options] [packages...]
 
   Options:
     -verbose		increase verbosity
