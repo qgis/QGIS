@@ -5,8 +5,8 @@ on:
     branches:
     - master
     - release-3_10
-    - release-3_12
-    - workflows-msvc
+    - release-3_14
+    - vc16
 
 jobs:
   build:
