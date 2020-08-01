@@ -25,7 +25,7 @@ class QgsMapCanvas;
 class QgsMesh3dSymbolWidget;
 class QgsSkyboxRenderingSettingsWidget;
 class Qgs3DMapCanvas;
-
+class QgsSkyboxSettings;
 
 class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
 {

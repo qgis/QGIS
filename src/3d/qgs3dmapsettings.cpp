@@ -594,3 +594,9 @@ void Qgs3DMapSettings::setSkybox( bool enabled, const QString &fileBase, const Q
   mSkyboxFileBase = fileBase;
   mSkyboxFileExtension = fileExtension;
 }
+
+void Qgs3DMapSettings::setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings )
+{
+  mSkyboxSettings = skyboxSettings;
+  emit skyboxSettingsChanged();
+}

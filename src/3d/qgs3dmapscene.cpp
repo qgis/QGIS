@@ -122,6 +122,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::renderersChanged, this, &Qgs3DMapScene::onRenderersChanged );
+  connect( &map, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
 
   connect( QgsApplication::instance()->sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
   {
@@ -839,6 +840,10 @@ void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )
   {
     mEntityCameraViewCenter->setEnabled( mMap.showCameraViewCenter() );
   } );
+//  connect( &mMap, &Qgs3DMapSettings, this, [this]
+//  {
+//    mEntityCameraViewCenter->setEnabled( mMap.showCameraViewCenter() );
+//  } );
 }
 
 void Qgs3DMapScene::setSceneState( Qgs3DMapScene::SceneState state )
@@ -869,16 +874,37 @@ void Qgs3DMapScene::updateSceneState()
   setSceneState( Ready );
 }
 
-void Qgs3DMapScene::onSkyboxSettingsChanged( const QgsSkyboxSettings &settings )
+void Qgs3DMapScene::onSkyboxSettingsChanged()
 {
   qDebug() << __FUNCTION__;
+  QgsSkyboxSettings skyboxSettings = mMap.skyboxSettings();
   if ( mSkybox != nullptr )
   {
     delete mSkybox;
     mSkybox = nullptr;
   }
-  if ( settings.getIsSkyboxEnabled() )
+  if ( skyboxSettings.isSkyboxEnabled() )
   {
-//    mSkybox = new QgsSkyboxEntity( settings.getSkyboxBaseName(), settings.getSkyboxExtension() );
+    qDebug() << skyboxSettings.skyboxType();
+    if ( skyboxSettings.skyboxType() == QStringLiteral( "Textures collection" ) )
+    {
+      qDebug() << "base name: " << skyboxSettings.skyboxBaseName();
+      qDebug() << "extension: " << skyboxSettings.skyboxExtension();
+      mSkybox = new QgsCubeFacesSkyboxEntity( skyboxSettings.skyboxBaseName(), skyboxSettings.skyboxExtension(), this );
+    }
+    if ( skyboxSettings.skyboxType() == QStringLiteral( "HDR texture" ) )
+    {
+      qDebug() << "texture path: " << skyboxSettings.hdrTexturePath();
+      mSkybox = new QgsHDRSkyboxEntity( skyboxSettings.hdrTexturePath(), this );
+    }
+    if ( skyboxSettings.skyboxType() == QStringLiteral( "Distinct Faces" ) )
+    {
+      QMap<QString, QString> faces = skyboxSettings.cubeMapFacesPaths();
+      mSkybox = new QgsCubeFacesSkyboxEntity(
+        faces[QStringLiteral( "posX" )], faces[QStringLiteral( "posY" )], faces[QStringLiteral( "posZ" )],
+        faces[QStringLiteral( "negX" )], faces[QStringLiteral( "negY" )], faces[QStringLiteral( "negZ" )],
+        this
+      );
+    }
   }
 }

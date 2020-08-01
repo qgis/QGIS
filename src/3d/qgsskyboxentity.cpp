@@ -63,9 +63,6 @@ QgsSkyboxEntity::QgsSkyboxEntity( QNode *parent )
   mMaterial->addParameter( mGammaStrengthParameter );
   mMaterial->addParameter( mTextureParameter );
 
-//  mMesh->setXExtent( 2.0f );
-//  mMesh->setYExtent( 2.0f );
-//  mMesh->setZExtent( 2.0f );
   mMesh->setXYMeshResolution( QSize( 2, 2 ) );
   mMesh->setXZMeshResolution( QSize( 2, 2 ) );
   mMesh->setYZMeshResolution( QSize( 2, 2 ) );
@@ -101,7 +98,7 @@ QgsHDRSkyboxEntity::QgsHDRSkyboxEntity( const QString &hdrTexturePath, QNode *pa
 
 void QgsHDRSkyboxEntity::reloadTexture()
 {
-  mLoadedTexture->setSource( QUrl( mHDRTexturePath ) );
+  mLoadedTexture->setSource( QUrl::fromUserInput( mHDRTexturePath ) );
 }
 
 // 6 faces skybox
@@ -173,6 +170,6 @@ void QgsCubeFacesSkyboxEntity::reloadTexture()
   for ( auto it = mCubeFacesTextures.begin(); it != mCubeFacesTextures.end(); ++it )
   {
     Qt3DRender::QTextureImage *image = it.value();
-    image->setSource( QUrl( mCubeFacesPaths[ it.key() ] ) );
+    image->setSource( QUrl::fromUserInput( mCubeFacesPaths[ it.key() ] ) );
   }
 }

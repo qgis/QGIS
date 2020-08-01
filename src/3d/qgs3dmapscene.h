@@ -122,7 +122,6 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
   public slots:
     //! Updates the temporale entities
     void updateTemporal();
-    void onSkyboxSettingsChanged( const QgsSkyboxSettings &settings );
 
   private slots:
     void onCameraChanged();
@@ -136,6 +135,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void updateLights();
     void updateCameraLens();
     void onRenderersChanged();
+    void onSkyboxSettingsChanged();
 
   private:
     void addLayerEntity( QgsMapLayer *layer );

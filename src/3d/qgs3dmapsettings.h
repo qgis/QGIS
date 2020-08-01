@@ -30,6 +30,7 @@
 #include "qgsdirectionallightsettings.h"
 #include "qgsterraingenerator.h"
 #include "qgsvector3d.h"
+#include "qgsskyboxsettings.h"
 
 class QgsMapLayer;
 class QgsRasterLayer;
@@ -41,7 +42,6 @@ class QgsReadWriteContext;
 class QgsProject;
 
 class QDomElement;
-
 
 /**
  * \ingroup 3d
@@ -384,6 +384,16 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     double outputDpi() const { return mDpi; }
 
+    /**
+     * Returns the current configuration of the skybox
+     */
+    QgsSkyboxSettings skyboxSettings() const { return mSkyboxSettings; }
+
+    /**
+     * Sets the current configuration of the skybox
+     */
+    void setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings );
+
   signals:
     //! Emitted when the background color has changed
     void backgroundColorChanged();
@@ -458,6 +468,11 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void fieldOfViewChanged();
 
+    /*
+     * Emitted when skybox settings are changed
+     */
+    void skyboxSettingsChanged();
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -495,6 +510,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QgsPathResolver mPathResolver;
     QgsMapThemeCollection *mMapThemes = nullptr;   //!< Pointer to map themes (e.g. from the current project) to resolve map theme content from the name
     double mDpi = 96;  //!< Dot per inch value for the screen / painter
+    QgsSkyboxSettings mSkyboxSettings;
 };
 
 

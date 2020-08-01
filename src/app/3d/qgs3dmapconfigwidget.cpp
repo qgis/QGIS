@@ -126,7 +126,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   onTerrainTypeChanged();
 
   mSkyboxSettingsWidget = new QgsSkyboxRenderingSettingsWidget( this );
-  connect( mSkyboxSettingsWidget, &QgsSkyboxRenderingSettingsWidget::skyboxSettingsChanged, m3DMapCanvas->scene(), &Qgs3DMapScene::onSkyboxSettingsChanged );
+//  connect( mSkyboxSettingsWidget, &QgsSkyboxRenderingSettingsWidget::skyboxSettingsChanged, m3DMapCanvas->scene(), &Qgs3DMapScene::onSkyboxSettingsChanged );
   groupSkyboxSettings->layout()->addWidget( mSkyboxSettingsWidget );
 }
 
@@ -237,6 +237,7 @@ void Qgs3DMapConfigWidget::apply()
 
   mMap->setPointLights( widgetLights->pointLights() );
   mMap->setDirectionalLights( widgetLights->directionalLights() );
+  mMap->setSkyboxSettings( mSkyboxSettingsWidget->toSkyboxSettings() );
 }
 
 void Qgs3DMapConfigWidget::onTerrainTypeChanged()

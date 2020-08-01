@@ -15,7 +15,6 @@
 
 
 
-
 class Qgs3DMapSettings : QObject, QgsTemporalRangeObject
 {
 %Docstring
@@ -436,6 +435,16 @@ Default value is 96
 .. versionadded:: 3.10
 %End
 
+    QgsSkyboxSettings skyboxSettings() const;
+%Docstring
+Returns the current configuration of the skybox
+%End
+
+    void setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings );
+%Docstring
+Sets the current configuration of the skybox
+%End
+
   signals:
     void backgroundColorChanged();
 %Docstring
@@ -538,6 +547,11 @@ Emitted when the list of directional lights changes
 Emitted when the camera lens field of view changes
 
 .. versionadded:: 3.8
+%End
+
+    void skyboxSettingsChanged();
+%Docstring
+Emitted when skybox settings are changed
 %End
 
   private:

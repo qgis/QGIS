@@ -9,19 +9,23 @@ QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( QWidget *par
 {
   setupUi( this );
 
-  QObject::connect( skyboxEnabledCheckBox, &QCheckBox::stateChanged, [&]( int state ) -> void
+  layoutGroupBoxes.push_back( textureCollectionGroupBox );
+  layoutGroupBoxes.push_back( hdrTextureGroupBox );
+  layoutGroupBoxes.push_back( faceTexturesGroupBox );
+
+  skyboxTypeComboBox->addItem( QStringLiteral( "Textures collection" ) );
+  skyboxTypeComboBox->addItem( QStringLiteral( "HDR texture" ) );
+  skyboxTypeComboBox->addItem( QStringLiteral( "Distinct Faces" ) );
+  connect( skyboxTypeComboBox, &QComboBox::currentTextChanged, [&]( const QString & skyboxType )
   {
-    mIsSkyboxEnabled = state == 1;
-    emit skyboxSettingsChanged( toSkyboxSettings() );
+    for ( QGroupBox *groupBox : layoutGroupBoxes )
+      groupBox->setVisible( false );
+    if ( skyboxType == QStringLiteral( "Textures collection" ) )
+      textureCollectionGroupBox->setVisible( true );
+    if ( skyboxType == QStringLiteral( "HDR texture" ) )
+      hdrTextureGroupBox->setVisible( true );
+    if ( skyboxType == QStringLiteral( "Distinct Faces" ) )
+      faceTexturesGroupBox->setVisible( true );
   } );
-  QObject::connect( skyboxPrefixLineEdit, &QLineEdit::textChanged, [&]( const QString & newPrefix ) -> void
-  {
-    mSkyboxBaseName = newPrefix;
-    emit skyboxSettingsChanged( toSkyboxSettings() );
-  } );
-  connect( skyboxExtensionLineEdit, &QLineEdit::textChanged, [&]( const QString & newExt ) -> void
-  {
-    mSkyboxExtension = newExt;
-    emit skyboxSettingsChanged( toSkyboxSettings() );
-  } );
+  skyboxTypeComboBox->setCurrentIndex( 1 );
 }
