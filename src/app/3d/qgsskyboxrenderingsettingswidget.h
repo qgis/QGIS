@@ -12,6 +12,22 @@ class QgsSkyboxRenderingSettingsWidget : public QWidget, private Ui::SkyboxRende
   public:
     explicit QgsSkyboxRenderingSettingsWidget( QWidget *parent = nullptr );
 
+    void setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings )
+    {
+      skyboxEnabledCheckBox->setCheckState( skyboxSettings.isSkyboxEnabled() ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
+      skyboxTypeComboBox->setCurrentText( skyboxSettings.skyboxType() );
+      skyboxBaseNameLineEdit->setText( skyboxSettings.skyboxBaseName() );
+      skyboxExtensionLineEdit->setText( skyboxSettings.skyboxExtension() );
+      hdrTextureImageSource->setSource( skyboxSettings.hdrTexturePath() );
+      QMap<QString, QString> cubeMapFaces = skyboxSettings.cubeMapFacesPaths();
+      posXImageSource->setSource( cubeMapFaces[ QStringLiteral( "posX" ) ] );
+      posYImageSource->setSource( cubeMapFaces[ QStringLiteral( "posY" ) ] );
+      posZImageSource->setSource( cubeMapFaces[ QStringLiteral( "posZ" ) ] );
+      negXImageSource->setSource( cubeMapFaces[ QStringLiteral( "negX" ) ] );
+      negYImageSource->setSource( cubeMapFaces[ QStringLiteral( "negY" ) ] );
+      negZImageSource->setSource( cubeMapFaces[ QStringLiteral( "negZ" ) ] );
+    }
+
     QgsSkyboxSettings toSkyboxSettings()
     {
       QgsSkyboxSettings settings;

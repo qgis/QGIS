@@ -126,7 +126,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   onTerrainTypeChanged();
 
   mSkyboxSettingsWidget = new QgsSkyboxRenderingSettingsWidget( this );
-//  connect( mSkyboxSettingsWidget, &QgsSkyboxRenderingSettingsWidget::skyboxSettingsChanged, m3DMapCanvas->scene(), &Qgs3DMapScene::onSkyboxSettingsChanged );
+  mSkyboxSettingsWidget->setSkyboxSettings( map->skyboxSettings() );
   groupSkyboxSettings->layout()->addWidget( mSkyboxSettingsWidget );
 }
 
