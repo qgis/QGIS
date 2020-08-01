@@ -23,25 +23,17 @@
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QAttribute>
 
-QgsSkyboxEntity::QgsSkyboxEntity( const QString &baseName, const QString &extension, QNode *parent )
+QgsSkyboxEntity::QgsSkyboxEntity( QNode *parent )
   : Qt3DCore::QEntity( parent )
   , mEffect( new Qt3DRender::QEffect( this ) )
   , mMaterial( new Qt3DRender::QMaterial( this ) )
-  , mGl3Shader( new Qt3DRender::QShaderProgram( this ) )
   , mGl3Technique( new Qt3DRender::QTechnique( this ) )
   , mFilterKey( new Qt3DRender::QFilterKey( this ) )
   , mGl3RenderPass( new Qt3DRender::QRenderPass( this ) )
   , mMesh( new Qt3DExtras::QCuboidMesh( this ) )
   , mGammaStrengthParameter( new Qt3DRender::QParameter( QStringLiteral( "gammaStrength" ), 0.0f ) )
   , mTextureParameter( new Qt3DRender::QParameter( this ) )
-  , mExtension( extension )
-  , mBaseName( baseName )
-  , mHDRTexturePath( QString() )
-  , mIsUsingHDR( false )
 {
-  mGl3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/skybox.vert" ) ) ) );
-  mGl3Shader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/skybox.frag" ) ) ) );
-
   mGl3Technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
   mGl3Technique->graphicsApiFilter()->setMajorVersion( 3 );
   mGl3Technique->graphicsApiFilter()->setMinorVersion( 3 );
@@ -52,8 +44,6 @@ QgsSkyboxEntity::QgsSkyboxEntity( const QString &baseName, const QString &extens
   mFilterKey->setValue( QStringLiteral( "forward" ) );
 
   mGl3Technique->addFilterKey( mFilterKey );
-
-  mGl3RenderPass->setShaderProgram( mGl3Shader );
 
   Qt3DRender::QCullFace *cullFront = new Qt3DRender::QCullFace();
   cullFront->setMode( Qt3DRender::QCullFace::Front );
@@ -80,7 +70,7 @@ QgsSkyboxEntity::QgsSkyboxEntity( const QString &baseName, const QString &extens
   mMesh->setXZMeshResolution( QSize( 2, 2 ) );
   mMesh->setYZMeshResolution( QSize( 2, 2 ) );
 
-//   TODO: change the kybox position according to
+//   TODO: change the kybox position according to camera
   Qt3DCore::QTransform *transform = new Qt3DCore::QTransform( this );
   transform->setTranslation( QVector3D( 0.0f, 0.0f, 0.0f ) );
   transform->setScale( 1000.0f );
@@ -88,127 +78,101 @@ QgsSkyboxEntity::QgsSkyboxEntity( const QString &baseName, const QString &extens
 
   addComponent( mMesh );
   addComponent( mMaterial );
-
-  reloadTexture();
 }
 
-QgsSkyboxEntity::QgsSkyboxEntity( const QString &hdrTexturePath, Qt3DCore::QNode *parent )
-  : Qt3DCore::QEntity( parent )
-  , mEffect( new Qt3DRender::QEffect( this ) )
-  , mMaterial( new Qt3DRender::QMaterial( this ) )
-  , mGl3Shader( new Qt3DRender::QShaderProgram( this ) )
-  , mGl3Technique( new Qt3DRender::QTechnique( this ) )
-  , mFilterKey( new Qt3DRender::QFilterKey( this ) )
-  , mGl3RenderPass( new Qt3DRender::QRenderPass( this ) )
-  , mMesh( new Qt3DExtras::QCuboidMesh( this ) )
-  , mGammaStrengthParameter( new Qt3DRender::QParameter( QStringLiteral( "gammaStrength" ), 0.0f ) )
-  , mTextureParameter( new Qt3DRender::QParameter( this ) )
+// HDR skybox
+
+QgsHDRSkyboxEntity::QgsHDRSkyboxEntity( const QString &hdrTexturePath, QNode *parent )
+  : QgsSkyboxEntity( parent )
   , mHDRTexturePath( hdrTexturePath )
-  , mIsUsingHDR( true )
+  , mLoadedTexture( new Qt3DRender::QTextureLoader( parent ) )
+  , mGlShader( new Qt3DRender::QShaderProgram( this ) )
 {
-  mGl3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/hdr_skybox.vert" ) ) ) );
-  mGl3Shader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/hdr_skybox.frag" ) ) ) );
+  mLoadedTexture->setGenerateMipMaps( false );
+  mGlShader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/hdr_skybox.vert" ) ) ) );
+  mGlShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/hdr_skybox.frag" ) ) ) );
+  mGl3RenderPass->setShaderProgram( mGlShader );
 
-  mGl3Technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
-  mGl3Technique->graphicsApiFilter()->setMajorVersion( 3 );
-  mGl3Technique->graphicsApiFilter()->setMinorVersion( 3 );
-  mGl3Technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
-
-  mFilterKey->setParent( mEffect );
-  mFilterKey->setName( QStringLiteral( "renderingStyle" ) );
-  mFilterKey->setValue( QStringLiteral( "forward" ) );
-
-  mGl3Technique->addFilterKey( mFilterKey );
-
-  mGl3RenderPass->setShaderProgram( mGl3Shader );
-
-  Qt3DRender::QCullFace *cullFront = new Qt3DRender::QCullFace();
-  cullFront->setMode( Qt3DRender::QCullFace::Front );
-  Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest();
-  depthTest->setDepthFunction( Qt3DRender::QDepthTest::LessOrEqual );
-  Qt3DRender::QSeamlessCubemap *seamlessCubemap = new Qt3DRender::QSeamlessCubemap();
-
-  mGl3RenderPass->addRenderState( cullFront );
-  mGl3RenderPass->addRenderState( depthTest );
-  mGl3RenderPass->addRenderState( seamlessCubemap );
-
-  mGl3Technique->addRenderPass( mGl3RenderPass );
-
-  mEffect->addTechnique( mGl3Technique );
-
-  mMaterial->setEffect( mEffect );
-  mMaterial->addParameter( mGammaStrengthParameter );
-  mMaterial->addParameter( mTextureParameter );
-
-//  mMesh->setXExtent( 2.0f );
-//  mMesh->setYExtent( 2.0f );
-//  mMesh->setZExtent( 2.0f );
-  mMesh->setXYMeshResolution( QSize( 2, 2 ) );
-  mMesh->setXZMeshResolution( QSize( 2, 2 ) );
-  mMesh->setYZMeshResolution( QSize( 2, 2 ) );
-
-//   TODO: change the kybox position according to
-  Qt3DCore::QTransform *transform = new Qt3DCore::QTransform( this );
-  transform->setTranslation( QVector3D( 0.0f, 0.0f, 0.0f ) );
-  transform->setScale( 1000.0f );
-  addComponent( transform );
-
-  addComponent( mMesh );
-  addComponent( mMaterial );
+  mTextureParameter->setName( "skyboxTexture" );
+  mTextureParameter->setValue( QVariant::fromValue( mLoadedTexture ) );
 
   reloadTexture();
 }
 
-void QgsSkyboxEntity::reloadTexture()
+void QgsHDRSkyboxEntity::reloadTexture()
 {
-  if ( mSkyboxTextureLoader != nullptr )
-    delete mSkyboxTextureLoader;
-  if ( mIsUsingHDR )
-  {
-    mSkyboxTextureLoader = new QgsHDRSkyboxTextureLoader( mHDRTexturePath, this );
-    mTextureParameter->setName( QStringLiteral( "skyboxTexture" ) );
-    mTextureParameter->setValue( mSkyboxTextureLoader->getTextureParameter() );
-  }
-  else if ( mExtension == QStringLiteral( ".dds" ) )
-  {
-    mSkyboxTextureLoader = new QgsDDSSkyboxLoader( mBaseName, mExtension, this );
-    mTextureParameter->setName( QStringLiteral( "skyboxTexture" ) );
-    mTextureParameter->setValue( mSkyboxTextureLoader->getTextureParameter() );
-  }
-  else
-  {
-    mSkyboxTextureLoader = new QgsSkyboxTextureColloectionLoader( mBaseName, mExtension, this );
-    mTextureParameter->setName( QStringLiteral( "skyboxTexture" ) );
-    mTextureParameter->setValue( mSkyboxTextureLoader->getTextureParameter() );
-  }
+  mLoadedTexture->setSource( QUrl( mHDRTexturePath ) );
 }
 
-void QgsSkyboxEntity::setBaseName( const QString &baseName )
+// 6 faces skybox
+
+QgsCubeFacesSkyboxEntity::QgsCubeFacesSkyboxEntity( const QString &posX, const QString &posY, const QString &posZ, const QString &negX, const QString &negY, const QString &negZ, Qt3DCore::QNode *parent )
+  : QgsSkyboxEntity( parent )
+  , mGlShader( new Qt3DRender::QShaderProgram() )
+  , mCubeMap( new Qt3DRender::QTextureCubeMap( this ) )
 {
-  if ( baseName != mBaseName )
-  {
-    mBaseName = baseName;
-    emit baseNameChanged( baseName );
-    reloadTexture();
-  }
+  init();
+  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveX] = posX;
+  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveY] = posY;
+  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveZ] = posZ;
+  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeX] = negX;
+  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeY] = negY;
+  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeZ] = negZ;
+  reloadTexture();
 }
 
-void QgsSkyboxEntity::setExtension( const QString &extension )
+QgsCubeFacesSkyboxEntity::QgsCubeFacesSkyboxEntity( const QString &baseName, const QString &extension, Qt3DCore::QNode *parent )
+  : QgsSkyboxEntity( parent )
+  , mGlShader( new Qt3DRender::QShaderProgram() )
+  , mCubeMap( new Qt3DRender::QTextureCubeMap( this ) )
 {
-  if ( extension != mExtension )
-  {
-    mExtension = extension;
-    emit extensionChanged( extension );
-    reloadTexture();
-  }
+  init();
+  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveX] = baseName + QStringLiteral( "_posx" ) + extension;
+  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveY] = baseName + QStringLiteral( "_posy" ) + extension;
+  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveZ] = baseName + QStringLiteral( "_posz" ) + extension;
+  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeX] = baseName + QStringLiteral( "_negx" ) + extension;
+  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeY] = baseName + QStringLiteral( "_negy" ) + extension;
+  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeZ] = baseName + QStringLiteral( "_negz" ) + extension;
+  reloadTexture();
 }
 
-void QgsSkyboxEntity::setGammaCorrectEnabled( bool enabled )
+void QgsCubeFacesSkyboxEntity::init()
 {
-  if ( enabled != isGammaCorrectEnabled() )
+  mGlShader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/skybox.vert" ) ) ) );
+  mGlShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/skybox.frag" ) ) ) );
+  mGl3RenderPass->setShaderProgram( mGlShader );
+
+  mCubeMap->setMagnificationFilter( Qt3DRender::QTextureCubeMap::Linear );
+  mCubeMap->setMinificationFilter( Qt3DRender::QTextureCubeMap::Linear );
+  mCubeMap->setGenerateMipMaps( false );
+  mCubeMap->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::Repeat ) );
+
+  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveX] = QString();
+  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveY] = QString();
+  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveZ] = QString();
+  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeX] = QString();
+  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeY] = QString();
+  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeZ] = QString();
+
+  for ( auto it = mCubeFacesPaths.begin(); it != mCubeFacesPaths.end(); ++it )
   {
-    mGammaStrengthParameter->setValue( enabled ? 1.0f : 0.0f );
-    emit gammaCorrectEnabledChanged( enabled );
+    Qt3DRender::QTextureCubeMap::CubeMapFace face = it.key();
+    Qt3DRender::QTextureImage *image = new Qt3DRender::QTextureImage( this );
+    image->setFace( face );
+    image->setMirrored( false );
+    mCubeFacesTextures[ face ] = image;
+    mCubeMap->addTextureImage( image );
   }
+
+  mTextureParameter->setName( "skyboxTexture" );
+  mTextureParameter->setValue( QVariant::fromValue( mCubeMap ) );
 }
 
+void QgsCubeFacesSkyboxEntity::reloadTexture()
+{
+  for ( auto it = mCubeFacesTextures.begin(); it != mCubeFacesTextures.end(); ++it )
+  {
+    Qt3DRender::QTextureImage *image = it.value();
+    image->setSource( QUrl( mCubeFacesPaths[ it.key() ] ) );
+  }
+}
