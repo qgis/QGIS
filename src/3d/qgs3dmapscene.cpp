@@ -205,7 +205,8 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
 //  if ( map.hasSkyboxEnabled() )
 //  {
 //    mSkybox = new QgsSkyboxEntity("file:///home/nedjima/dev/cpp/qt3d/examples/qt3d/exampleresources/assets/cubemaps/default/default_specular", ".dds", this);
-  mSkybox = new QgsSkyboxEntity( "file:///home/nedjima/dev/cpp/Standard-Cube-Map2/cube_map", ".png", this );
+//  mSkybox = new QgsSkyboxEntity( "file:///home/nedjima/dev/cpp/Standard-Cube-Map2/cube_map", ".png", this );
+  mSkybox = new QgsSkyboxEntity( "file:///home/nedjima/dev/cpp/abandoned_tank_farm_04_1k.hdr", this );
 //  mSkybox->setEnabled(false);
 
 // docs say frustum culling must be disabled for skybox.

@@ -93,11 +93,28 @@ class QgsSkyboxTextureColloectionLoader : public QgsSkyboxTexturesLoader
     Qt3DRender::QTextureImage *mNegZImage = nullptr;
 };
 
+class QgsHDRSkyboxTextureLoader : public QgsSkyboxTexturesLoader
+{
+  public:
+    QgsHDRSkyboxTextureLoader( const QString &textureFilePath, Qt3DCore::QNode *parent = nullptr )
+      : QgsSkyboxTexturesLoader( parent )
+    {
+      mLoadedTexture = new Qt3DRender::QTextureLoader( this );
+      mLoadedTexture->setGenerateMipMaps( false );
+      mLoadedTexture->setSource( QUrl( textureFilePath ) );
+    }
+
+    QVariant getTextureParameter() override { return QVariant::fromValue( mLoadedTexture ); }
+  private:
+    Qt3DRender::QTextureLoader *mLoadedTexture;
+};
+
 class QgsSkyboxEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
   public:
     QgsSkyboxEntity( const QString &baseName, const QString &extension, Qt3DCore::QNode *parent = nullptr );
+    QgsSkyboxEntity( const QString &hdrTexturePath, Qt3DCore::QNode *parent = nullptr );
 
     QString baseName() const { return mBaseName; };
     QString extension() const { return mExtension; };
@@ -128,6 +145,8 @@ class QgsSkyboxEntity : public Qt3DCore::QEntity
     Qt3DRender::QParameter *mTextureParameter;
     QString mExtension;
     QString mBaseName;
+    QString mHDRTexturePath;
+    bool mIsUsingHDR;
     QVector3D mPosition;
 };
 

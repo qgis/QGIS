@@ -14,5 +14,7 @@
         <file>shaders/mesh/mesh.frag</file>
         <file>shaders/skybox.frag</file>
         <file>shaders/skybox.vert</file>
+        <file>shaders/hdr_skybox.frag</file>
+        <file>shaders/hdr_skybox.vert</file>
     </qresource>
 </RCC>
