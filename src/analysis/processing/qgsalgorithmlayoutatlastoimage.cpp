@@ -18,6 +18,7 @@
 #include "qgsalgorithmlayoutatlastoimage.h"
 #include "qgslayout.h"
 #include "qgslayoutatlas.h"
+#include "qgslayoutitemmap.h"
 #include "qgsprintlayout.h"
 #include "qgsprocessingoutputs.h"
 #include "qgslayoutexporter.h"
@@ -53,12 +54,12 @@ QString QgsLayoutAtlasToImageAlgorithm::groupId() const
 
 QString QgsLayoutAtlasToImageAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Exports an atlas layout atlas as image." );
+  return QObject::tr( "Exports an atlas layout as a set of image." );
 }
 
 QString QgsLayoutAtlasToImageAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm outputs an atlas layout image file (e.g. PNG or JPEG images)." );
+  return QObject::tr( "This algorithm outputs an atlas layout to a set of image files (e.g. PNG or JPEG images)." );
 }
 
 void QgsLayoutAtlasToImageAlgorithm::initAlgorithm( const QVariantMap & )
@@ -66,15 +67,17 @@ void QgsLayoutAtlasToImageAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterLayout( QStringLiteral( "LAYOUT" ), QObject::tr( "Atlas layout" ) ) );
 
   addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "COVERAGE_LAYER" ), QObject::tr( "Coverage layer" ) ) );
-
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
-
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "SORTBY_EXPRESSION" ), QObject::tr( "Sort expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SORTBY_REVERSE" ), QObject::tr( "Reverse sort order (used when a sort expression is provided)" ), false, true ) );
 
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILENAME_EXPRESSION" ), QObject::tr( "Output filename expression" ), QStringLiteral( "'output_'||@atlas_featurenumber" ), QStringLiteral( "COVERAGE_LAYER" ) ) );
-
   addParameter( new QgsProcessingParameterFile( QStringLiteral( "FOLDER" ), QObject::tr( "Output folder" ), QgsProcessingParameterFile::Folder ) );
+
+
+  std::unique_ptr< QgsProcessingParameterMultipleLayers > layersParam = qgis::make_unique< QgsProcessingParameterMultipleLayers>( QStringLiteral( "LAYERS" ), QObject::tr( "Map layers to assign to unlocked map item(s)" ), QgsProcessing::TypeMapLayer, QVariant(), true );
+  layersParam->setFlags( layersParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( layersParam.release() );
 
   QStringList imageFormats;
   const auto supportedImageFormats { QImageWriter::supportedImageFormats() };
@@ -132,15 +135,17 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
   const bool previousSortFeatures = atlas->sortFeatures();
   const bool previousSortAscending = atlas->sortAscending();
   const QString previousSortExpression = atlas->sortExpression();
+  QStringList previousMapItemLayersReset;
 
-  auto restoreAtlas = [ atlas,
-                        previousCoverageLayer,
-                        previousEnabled,
-                        previousFilenameExpression,
-                        previousFilterExpression,
-                        previousSortFeatures,
-                        previousSortAscending,
-                        previousSortExpression ]()
+  auto restoreAtlas = [ layout, atlas,
+                                previousCoverageLayer,
+                                previousEnabled,
+                                previousFilenameExpression,
+                                previousFilterExpression,
+                                previousSortFeatures,
+                                previousSortAscending,
+                                previousSortExpression,
+                                previousMapItemLayersReset ]()
   {
     QString error;
     atlas->setEnabled( previousEnabled );
@@ -150,6 +155,20 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
     atlas->setSortFeatures( previousSortFeatures );
     atlas->setSortAscending( previousSortAscending );
     atlas->setSortExpression( previousSortExpression );
+
+    if ( previousMapItemLayersReset.size() > 0 )
+    {
+      const QList<QGraphicsItem *> items = layout->items();
+      for ( QGraphicsItem *graphicsItem : items )
+      {
+        QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
+        QgsLayoutItemMap *map = dynamic_cast<QgsLayoutItemMap *>( item );
+        if ( map && previousMapItemLayersReset.contains( map->uuid() ) )
+        {
+          map->setLayers( QList<QgsMapLayer *>() );
+        }
+      }
+    }
   };
 
   QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "COVERAGE_LAYER" ), context );
@@ -209,6 +228,22 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagAntialiasing;
   else
     settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagAntialiasing;
+
+  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  if ( layers.size() > 0 )
+  {
+    const QList<QGraphicsItem *> items = layout->items();
+    for ( QGraphicsItem *graphicsItem : items )
+    {
+      QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
+      QgsLayoutItemMap *map = dynamic_cast<QgsLayoutItemMap *>( item );
+      if ( map && !map->followVisibilityPreset() && !map->keepLayerSet() )
+      {
+        previousMapItemLayersReset << map->uuid();
+        map->setLayers( layers );
+      }
+    }
+  }
 
   QgsLayoutExporter::ExportResult result = exporter.exportToImage( atlas, fileName, extension, settings, error, feedback );
   restoreAtlas();
