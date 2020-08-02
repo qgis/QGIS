@@ -101,7 +101,7 @@ QgsHDRSkyboxEntity::QgsHDRSkyboxEntity( const QString &hdrTexturePath, QNode *pa
   , mGlShader( new Qt3DRender::QShaderProgram( this ) )
 {
   mLoadedTexture->setGenerateMipMaps( false );
-  mGlShader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/hdr_skybox.vert" ) ) ) );
+  mGlShader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/skybox.vert" ) ) ) );
   mGlShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/hdr_skybox.frag" ) ) ) );
   mGl3RenderPass->setShaderProgram( mGlShader );
 
