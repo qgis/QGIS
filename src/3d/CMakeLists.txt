@@ -29,6 +29,7 @@ SET(QGIS_3D_SRCS
   qgsmeshlayer3drenderer.cpp
   qgswindow3dengine.cpp
   qgsskyboxentity.cpp
+  qgsskyboxsettings.cpp
 
   chunks/qgschunkboundsentity_p.cpp
   chunks/qgschunkedentity_p.cpp
