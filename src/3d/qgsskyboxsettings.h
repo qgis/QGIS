@@ -72,12 +72,13 @@ class QgsSkyboxSettings
     //! Sets whether the skybox is enabled
     void setIsSkyboxEnabled( bool enabled ) { mIsSkyboxEnabled = enabled; }
 
-    /*
+    /**
      * Returns the type of the skybox
      * This can be one of 3 types: "Textures collection", "HDR texture", "Distinct Faces"
      */
     QString skyboxType() const { return mSkyboxType; }
-    /*
+
+    /**
      * Sets the type of the skybox
      * the type can be one of 3 types: "Textures collection", "HDR texture", "Distinct Faces"
      */
