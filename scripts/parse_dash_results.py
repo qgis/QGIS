@@ -34,6 +34,7 @@ import urllib.parse
 import urllib.error
 import re
 import json
+from PyQt5.QtCore import (Qt)
 from PyQt5.QtGui import (
     QImage, QColor, qRed, qBlue, qGreen, qAlpha, qRgb, QPixmap)
 from PyQt5.QtWidgets import (QDialog,
@@ -88,6 +89,7 @@ class SelectReferenceImageDialog(QDialog):
         super().__init__(parent)
 
         self.setWindowTitle('Select reference image')
+        self.setWindowFlags(Qt.Window)
 
         self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         self.button_box.accepted.connect(self.accept)
@@ -112,8 +114,9 @@ class SelectReferenceImageDialog(QDialog):
 class ResultHandler(QDialog):
 
     def __init__(self, parent=None):
-        super(ResultHandler, self).__init__()
+        super().__init__(parent)
         self.setWindowTitle('Dash results')
+        self.setWindowFlags(Qt.Window)
         self.control_label = QLabel()
         self.rendered_label = QLabel()
         self.diff_label = QLabel()
