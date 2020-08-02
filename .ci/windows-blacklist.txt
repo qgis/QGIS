@@ -75,6 +75,7 @@ PyQgsTextRenderer
 PyQgsVectorFileWriter
 PyQgsVectorLayer
 PyQgsVectorLayerUtils
+PyQgsVirtualLayerDefinition
 PyQgsVirtualLayerProvider
 PyQgsWFSProviderGUI
 PyQgsZipUtils
