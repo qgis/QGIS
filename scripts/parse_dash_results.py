@@ -339,7 +339,7 @@ class ResultHandler(QDialog):
                 rendered_rgb = struct.unpack(
                     'I', rendered_scanline[x * 4:x * 4 + 4])[0]
                 difference = min(
-                    255, colorDiff(expected_rgb, rendered_rgb) * overload)
+                    255, int(colorDiff(expected_rgb, rendered_rgb) * overload))
 
                 if difference > currentTolerance:
                     # update mask image
