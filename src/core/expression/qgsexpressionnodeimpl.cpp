@@ -89,6 +89,8 @@ QString QgsExpressionNode::NodeList::cleanNamedNodeName( const QString &name )
   // upgrade older argument names to standard versions
   if ( cleaned == QLatin1String( "geom" ) )
     cleaned = QStringLiteral( "geometry" );
+  else if ( cleaned == QLatin1String( "val" ) )
+    cleaned = QStringLiteral( "value" );
 
   return cleaned;
 }
