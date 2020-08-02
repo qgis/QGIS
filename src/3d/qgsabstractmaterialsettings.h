@@ -38,7 +38,7 @@ enum class QgsMaterialSettingsRenderingTechnique SIP_MONKEYPATCH_SCOPEENUM_UNNES
   Lines, //!< Line based rendering, requires line data
   InstancedPoints, //!< Instanced based rendering, requiring triangles and point data
   Points, //!< Point based rendering, requires point data
-  Terrain, //!< Terrain rendering
+  TrianglesWithFixedTexture, //!< Triangle based rendering, using a fixed, non-user-configurable texture (e.g. for terrain rendering)
 };
 
 
