@@ -2,7 +2,7 @@
   "name": "to_dms",
   "type": "function",
   "groups": ["Conversions"],
-  "description": "Convert a coordinate to degree, minute, second.",
+  "description": "Converts a coordinate to degree, minute, second.",
   "arguments": [
     {"arg":"coordinate","description":"A latitude or longitude value."},
     {"arg":"axis","description":"The axis of the coordinate. Either 'x' or 'y'."},
