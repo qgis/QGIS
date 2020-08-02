@@ -346,7 +346,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           {
             QAction *action = menuSetCRS->addAction( tr( "Set to %1" ).arg( crs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) ) );
             action->setProperty( "layerId", layer->id() );
-            action->setProperty( "crs", crs.toWkt() );
+            action->setProperty( "crs", crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
             i++;
             if ( i == 2 )
               break;
