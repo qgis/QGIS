@@ -64,7 +64,7 @@ void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
       break;
     }
 
-    case QgsMaterialSettingsRenderingTechnique::Terrain:
+    case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
     {
       lblAmbient->setVisible( true );
       btnAmbient->setVisible( true );

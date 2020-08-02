@@ -34,7 +34,7 @@ bool QgsGoochMaterialSettings::supportsTechnique( QgsMaterialSettingsRenderingTe
   switch ( technique )
   {
     case QgsMaterialSettingsRenderingTechnique::Triangles:
-    case QgsMaterialSettingsRenderingTechnique::Terrain:
+    case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
       return true;
 
     case QgsMaterialSettingsRenderingTechnique::Lines:
@@ -82,7 +82,7 @@ Qt3DRender::QMaterial *QgsGoochMaterialSettings::toMaterial( QgsMaterialSettings
   switch ( technique )
   {
     case QgsMaterialSettingsRenderingTechnique::Triangles:
-    case QgsMaterialSettingsRenderingTechnique::Terrain:
+    case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
     {
       Qt3DExtras::QGoochMaterial *material  = new Qt3DExtras::QGoochMaterial;
       material->setDiffuse( mDiffuse );
