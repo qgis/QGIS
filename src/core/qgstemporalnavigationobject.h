@@ -309,7 +309,6 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
 
     //! Frame duration
     double mFrameTimeStep;
-    bool mFrameTimeStepIsFractional;
     QgsUnitTypes::TemporalUnit mFrameTimeStepUnit;
 
     //! Member for frame rate

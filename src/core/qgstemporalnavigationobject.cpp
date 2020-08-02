@@ -17,6 +17,7 @@
 
 #include "qgstemporalnavigationobject.h"
 #include "qgis.h"
+#include "qgstemporalutils.h"
 
 QgsTemporalNavigationObject::QgsTemporalNavigationObject( QObject *parent )
   : QgsTemporalController( parent )
@@ -75,7 +76,7 @@ QgsExpressionContextScope *QgsTemporalNavigationObject::createExpressionContextS
   scope->setVariable( QStringLiteral( "frame_rate" ), mFramesPerSecond, true );
   scope->setVariable( QStringLiteral( "frame_number" ), mCurrentFrameNumber, true );
   scope->setVariable( QStringLiteral( "frame_timestep" ), mFrameTimeStep, true );
-  scope->setVariable( QStringLiteral( "frame_timestepunit" ), mFrameTimeStepUnit, true );
+  scope->setVariable( QStringLiteral( "frame_timestep_unit" ), mFrameTimeStepUnit, true );
   scope->setVariable( QStringLiteral( "animation_start_time" ), mTemporalExtents.begin(), true );
   scope->setVariable( QStringLiteral( "animation_end_time" ), mTemporalExtents.end(), true );
   scope->setVariable( QStringLiteral( "animation_interval" ), mTemporalExtents.end() - mTemporalExtents.begin(), true );
@@ -91,70 +92,8 @@ QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long 
 
   const long long nextFrame = frame + 1;
 
-  QDateTime begin;
-  QDateTime end;
-
-  // If mFrameTimeStep is fractional, we use QgsInterval to determine the
-  // duration of the frame, which uses average durations for months and years.
-  // Otherwise, we use QDateTime to advance by the exact duration of the current
-  // month or year. So a time step of 1.5 months will result in a duration of 45
-  // days, but a time step of 1 month will result in a duration that depends upon
-  // the number of days in the current month.
-  if ( mFrameTimeStepIsFractional )
-  {
-    double duration = QgsInterval( mFrameTimeStep, mFrameTimeStepUnit ).seconds();
-    begin = start.addSecs( frame * duration );
-    end = start.addSecs( nextFrame * duration );
-  }
-  else
-  {
-    switch ( mFrameTimeStepUnit )
-    {
-      case QgsUnitTypes::TemporalUnit::TemporalMilliseconds:
-        begin = start.addMSecs( frame * mFrameTimeStep );
-        end = start.addMSecs( nextFrame * mFrameTimeStep );
-        break;
-      case QgsUnitTypes::TemporalUnit::TemporalSeconds:
-        begin = start.addSecs( frame * mFrameTimeStep );
-        end = start.addSecs( nextFrame * mFrameTimeStep );
-        break;
-      case QgsUnitTypes::TemporalUnit::TemporalMinutes:
-        begin = start.addSecs( 60 * frame * mFrameTimeStep );
-        end = start.addSecs( 60 * nextFrame * mFrameTimeStep );
-        break;
-      case QgsUnitTypes::TemporalUnit::TemporalHours:
-        begin = start.addSecs( 3600 * frame * mFrameTimeStep );
-        end = start.addSecs( 3600 * nextFrame * mFrameTimeStep );
-        break;
-      case QgsUnitTypes::TemporalUnit::TemporalDays:
-        begin = start.addDays( frame * mFrameTimeStep );
-        end = start.addDays( nextFrame * mFrameTimeStep );
-        break;
-      case QgsUnitTypes::TemporalUnit::TemporalWeeks:
-        begin = start.addDays( 7 * frame * mFrameTimeStep );
-        end = start.addDays( 7 * nextFrame * mFrameTimeStep );
-        break;
-      case QgsUnitTypes::TemporalUnit::TemporalMonths:
-        begin = start.addMonths( frame * mFrameTimeStep );
-        end = start.addMonths( nextFrame * mFrameTimeStep );
-        break;
-      case QgsUnitTypes::TemporalUnit::TemporalYears:
-        begin = start.addYears( frame * mFrameTimeStep );
-        end = start.addYears( nextFrame * mFrameTimeStep );
-        break;
-      case QgsUnitTypes::TemporalUnit::TemporalDecades:
-        begin = start.addYears( 10 * frame * mFrameTimeStep );
-        end = start.addYears( 10 * nextFrame * mFrameTimeStep );
-        break;
-      case QgsUnitTypes::TemporalUnit::TemporalCenturies:
-        begin = start.addYears( 100 * frame * mFrameTimeStep );
-        end = start.addYears( 100 * nextFrame * mFrameTimeStep );
-        break;
-      case QgsUnitTypes::TemporalUnit::TemporalUnknownUnit:
-        Q_ASSERT( false );
-        break;
-    }
-  }
+  QDateTime begin = QgsTemporalUtils::calculateFrameTime( start, frame, mFrameTimeStep, mFrameTimeStepUnit );
+  QDateTime end = QgsTemporalUtils::calculateFrameTime( start, nextFrame, mFrameTimeStep, mFrameTimeStepUnit );
 
   QDateTime frameStart = begin;
 
@@ -236,8 +175,6 @@ long long QgsTemporalNavigationObject::currentFrameNumber() const
 void QgsTemporalNavigationObject::setFrameTimeStep( double timeStep )
 {
   mFrameTimeStep = timeStep;
-  double unused;
-  mFrameTimeStepIsFractional = fabs( modf( mFrameTimeStep, &unused ) ) > 0.00001;
   setCurrentFrameNumber( 0 );
 }
 
