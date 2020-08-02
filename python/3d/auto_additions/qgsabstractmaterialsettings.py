@@ -1,4 +1,4 @@
-# The following has been generated automatically from src/3d/qgsabstractmaterialsettings.h
+# The following has been generated automatically from src/3d/materials/qgsabstractmaterialsettings.h
 QgsAbstractMaterialSettings.RenderingTechnique = QgsMaterialSettingsRenderingTechnique
 # monkey patching scoped based enum
 QgsAbstractMaterialSettings.Triangles = QgsMaterialSettingsRenderingTechnique.Triangles
