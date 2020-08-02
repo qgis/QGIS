@@ -378,7 +378,6 @@ ADD_BISON_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalcparser.yy)
 IF(NOT MSVC)
   SET_SOURCE_FILES_PROPERTIES(
     ${CMAKE_BINARY_DIR}/src/analysis/qgsrastercalcparser.cpp
-    ${CMAKE_BINARY_DIR}/src/analysis/qgsmeshcalcparser.cpp
     PROPERTIES COMPILE_FLAGS "-w"
   )
 ELSE(NOT MSVC)
@@ -387,7 +386,6 @@ ELSE(NOT MSVC)
     # 4702 unreachable code
     SET_SOURCE_FILES_PROPERTIES(
       ${CMAKE_BINARY_DIR}/src/analysis/qgsrastercalcparser.cpp
-      ${CMAKE_BINARY_DIR}/src/analysis/qgsmeshcalcparser.cpp
       PROPERTIES COMPILE_FLAGS "-wd4127 -wd4702"
     )
   ENDIF(PEDANTIC)

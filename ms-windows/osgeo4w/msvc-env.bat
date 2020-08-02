@@ -67,7 +67,7 @@ for %%e in (Community Professional Enterprise) do if exist "%PF86%\Microsoft Vis
 if not defined vcdir (echo Visual C++ not found & goto error)
 
 set VS160COMNTOOLS=%vcdir%\Common7\Tools
-call "%vcdir%\VC\Auxiliary\Build\vcvarsall.bat" %VCARCH%
+call "%vcdir%\VC\Auxiliary\Build\vcvarsall.bat" %VCARCH% %VCSDK%
 path %path%;%vcdir%\VC\bin
 
 set GRASS7=

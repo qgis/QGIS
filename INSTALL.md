@@ -445,7 +445,7 @@ The free (as in free beer) Community installer is available under:
 
 > https://download.visualstudio.microsoft.com/download/pr/68d6b204-9df0-4fcc-abcc-08ee0eff9cb2/b029547488a9383b0c8d8a9c813e246feb3ec19e0fe55020d4878fde5f0983fe/vs_Community.exe
 
-Select "Desktop Development with C++"
+Select "Desktop Development with C++", "Windows Driver Kit" and "MSVC v142 - VS 2019 C++ x64/x86 Spectre-mitigated libs (v14.23)"
 
 ### 4.1.2. Other tools and dependencies
 

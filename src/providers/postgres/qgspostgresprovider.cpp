@@ -962,7 +962,7 @@ bool QgsPostgresProvider::loadFields()
 
     QString fieldComment = descrMap[tableoid][attnum];
 
-    QVariant::Type fieldType;
+    QVariant::Type fieldType = QVariant::Invalid;
     QVariant::Type fieldSubType = QVariant::Invalid;
 
     if ( fieldTType == QLatin1String( "b" ) )
