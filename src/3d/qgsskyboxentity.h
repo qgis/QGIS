@@ -55,8 +55,8 @@ class QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
     void reloadTexture();
   private:
     QMap<Qt3DRender::QTextureCubeMap::CubeMapFace, QString> mCubeFacesPaths;
-    QMap<Qt3DRender::QTextureCubeMap::CubeMapFace, Qt3DRender::QTextureImage *> mCubeFacesTextures;
     Qt3DRender::QShaderProgram *mGlShader;
+    QVector<Qt3DRender::QTextureImage *> mFacesTextureImages;
     Qt3DRender::QTextureCubeMap *mCubeMap;
 };
 

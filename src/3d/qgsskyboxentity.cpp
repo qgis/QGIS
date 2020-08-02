@@ -151,25 +151,28 @@ void QgsCubeFacesSkyboxEntity::init()
   mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeY] = QString();
   mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeZ] = QString();
 
-  for ( auto it = mCubeFacesPaths.begin(); it != mCubeFacesPaths.end(); ++it )
-  {
-    Qt3DRender::QTextureCubeMap::CubeMapFace face = it.key();
-    Qt3DRender::QTextureImage *image = new Qt3DRender::QTextureImage( this );
-    image->setFace( face );
-    image->setMirrored( false );
-    mCubeFacesTextures[ face ] = image;
-    mCubeMap->addTextureImage( image );
-  }
-
   mTextureParameter->setName( "skyboxTexture" );
   mTextureParameter->setValue( QVariant::fromValue( mCubeMap ) );
 }
 
 void QgsCubeFacesSkyboxEntity::reloadTexture()
 {
-  for ( auto it = mCubeFacesTextures.begin(); it != mCubeFacesTextures.end(); ++it )
+  for ( Qt3DRender::QAbstractTextureImage *textureImage : mFacesTextureImages )
   {
-    Qt3DRender::QTextureImage *image = it.value();
+    mCubeMap->removeTextureImage( textureImage );
+    delete textureImage;
+  }
+  mFacesTextureImages.clear();
+
+  for ( auto it = mCubeFacesPaths.begin(); it != mCubeFacesPaths.end(); ++it )
+  {
+    Qt3DRender::QTextureCubeMap::CubeMapFace face = it.key();
+    QString texturePath = it.value();
+    Qt3DRender::QTextureImage *image = new Qt3DRender::QTextureImage( this );
+    image->setFace( face );
+    image->setMirrored( false );
     image->setSource( QUrl::fromUserInput( mCubeFacesPaths[ it.key() ] ) );
+    mCubeMap->addTextureImage( image );
+    mFacesTextureImages.push_back( image );
   }
 }
