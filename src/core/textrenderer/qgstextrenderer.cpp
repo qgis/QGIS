@@ -358,8 +358,9 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
   if ( buffer.paintEffect() && buffer.paintEffect()->enabled() )
   {
     context.setPainter( &buffp );
+    std::unique_ptr< QgsPaintEffect > tmpEffect( buffer.paintEffect()->clone() );
 
-    buffer.paintEffect()->begin( context );
+    tmpEffect->begin( context );
     context.painter()->setPen( pen );
     context.painter()->setBrush( tmpColor );
     if ( scaleFactor != 1.0 )
@@ -367,7 +368,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
     context.painter()->drawPath( path );
     if ( scaleFactor != 1.0 )
       context.painter()->scale( scaleFactor, scaleFactor );
-    buffer.paintEffect()->end( context );
+    tmpEffect->end( context );
 
     context.setPainter( p );
   }
@@ -700,9 +701,11 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
 
   QPainter *prevP = context.painter();
   QPainter *p = context.painter();
+  std::unique_ptr< QgsPaintEffect > tmpEffect;
   if ( background.paintEffect() && background.paintEffect()->enabled() )
   {
-    background.paintEffect()->begin( context );
+    tmpEffect.reset( background.paintEffect()->clone() );
+    tmpEffect->begin( context );
     p = context.painter();
   }
 
@@ -1062,9 +1065,9 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
     }
   }
 
-  if ( background.paintEffect() && background.paintEffect()->enabled() )
+  if ( tmpEffect )
   {
-    background.paintEffect()->end( context );
+    tmpEffect->end( context );
     context.setPainter( prevP );
   }
 }

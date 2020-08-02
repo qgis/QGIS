@@ -78,6 +78,11 @@ Abstract base class for material settings.
 
     virtual ~QgsAbstractMaterialSettings();
 
+    virtual QString type() const = 0;
+%Docstring
+Returns the unique type name for the material.
+%End
+
     virtual QgsAbstractMaterialSettings *clone() const = 0 /Factory/;
 %Docstring
 Clones the material settings.

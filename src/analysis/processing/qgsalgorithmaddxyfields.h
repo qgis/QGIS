@@ -58,11 +58,16 @@ class QgsAddXYFieldsAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
   private:
 
+    bool mIsInPlace = false;
     QString mPrefix;
     mutable QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransform mTransform;
     bool mTransformNeedsInitialization = true;
+    QString mInPlaceXField;
+    QString mInPlaceYField;
+    mutable int mInPlaceXFieldIndex = -1;
+    mutable int mInPlaceYFieldIndex = -1;
 
 };
 

@@ -24,6 +24,8 @@
 class QgsExpressionContextGenerator;
 class QgsMapCanvas;
 class QgsMessageBar;
+class QgsTextFormatPanelWidget;
+
 
 /**
  * \ingroup gui
@@ -329,6 +331,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     bool mShowNoFormat = false;
     QString mNullFormatString;
     QPointer< QAction > mNullFormatAction;
+    QPointer< QgsTextFormatPanelWidget > mActivePanel;
 
     /**
      * Attempts to parse \a mimeData as a text format.

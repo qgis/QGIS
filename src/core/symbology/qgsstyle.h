@@ -1140,7 +1140,7 @@ class CORE_EXPORT QgsStyleSymbolEntity : public QgsStyleEntityInterface
      *
      * Ownership of \a symbol is NOT transferred.
      */
-    QgsStyleSymbolEntity( const QgsSymbol *symbol )
+    QgsStyleSymbolEntity( QgsSymbol *symbol )
       : mSymbol( symbol )
     {}
 
@@ -1149,11 +1149,11 @@ class CORE_EXPORT QgsStyleSymbolEntity : public QgsStyleEntityInterface
     /**
      * Returns the entity's symbol.
      */
-    const QgsSymbol *symbol() const { return mSymbol; }
+    QgsSymbol *symbol() const { return mSymbol; }
 
   private:
 
-    const QgsSymbol *mSymbol = nullptr;
+    QgsSymbol *mSymbol = nullptr;
 
 };
 
@@ -1172,7 +1172,7 @@ class CORE_EXPORT QgsStyleColorRampEntity : public QgsStyleEntityInterface
      *
      * Ownership of \a ramp is NOT transferred.
      */
-    QgsStyleColorRampEntity( const QgsColorRamp *ramp )
+    QgsStyleColorRampEntity( QgsColorRamp *ramp )
       : mRamp( ramp )
     {}
 
@@ -1181,11 +1181,11 @@ class CORE_EXPORT QgsStyleColorRampEntity : public QgsStyleEntityInterface
     /**
      * Returns the entity's color ramp.
      */
-    const QgsColorRamp *ramp() const { return mRamp; }
+    QgsColorRamp *ramp() const { return mRamp; }
 
   private:
 
-    const QgsColorRamp *mRamp = nullptr;
+    QgsColorRamp *mRamp = nullptr;
 };
 
 /**

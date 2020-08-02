@@ -27,6 +27,16 @@
 #include <Qt3DRender/QEffect>
 
 
+QString QgsPhongMaterialSettings::type() const
+{
+  return QStringLiteral( "phong" );
+}
+
+QgsAbstractMaterialSettings *QgsPhongMaterialSettings::create()
+{
+  return new QgsPhongMaterialSettings();
+}
+
 QgsPhongMaterialSettings *QgsPhongMaterialSettings::clone() const
 {
   return new QgsPhongMaterialSettings( *this );

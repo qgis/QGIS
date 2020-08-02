@@ -113,6 +113,152 @@ Emitted when the atlas clipping settings are changed.
 };
 
 
+class QgsLayoutItemMapItemClipPathSettings : QObject
+{
+%Docstring
+Contains settings relating to clipping a layout map by another layout item.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgslayoutitemmap.h"
+%End
+  public:
+
+    QgsLayoutItemMapItemClipPathSettings( QgsLayoutItemMap *map /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLayoutItemMapItemClipPathSettings, with the specified ``map`` parent.
+%End
+
+    bool isActive() const;
+%Docstring
+Returns ``True`` if the item clipping is enabled and set to a valid source item.
+
+.. seealso:: :py:func:`enabled`
+
+.. seealso:: :py:func:`sourceItem`
+%End
+
+    bool enabled() const;
+%Docstring
+Returns ``True`` if the map content should be clipped to the associated item.
+
+.. seealso:: :py:func:`setEnabled`
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Sets whether the map content should be clipped to the associated item.
+
+.. seealso:: :py:func:`enabled`
+%End
+
+    QgsGeometry clippedMapExtent() const;
+%Docstring
+Returns the geometry to use for clipping the parent map, in the map item's CRS.
+
+.. seealso:: :py:func:`clipPathInMapItemCoordinates`
+%End
+
+    QgsGeometry clipPathInMapItemCoordinates() const;
+%Docstring
+Returns the clipping path geometry, in the map item's coordinate space.
+
+.. warning::
+
+   The return path is not in geographic coordinates, rather the map
+   layout item's QGraphicsItem coordinate space. Use :py:func:`~QgsLayoutItemMapItemClipPathSettings.clippedMapExtent` to retrieve
+   the clip path in the map's CRS.
+
+.. seealso:: :py:func:`clippedMapExtent`
+%End
+
+    QgsMapClippingRegion toMapClippingRegion() const;
+%Docstring
+Returns the clip path as a map clipping region.
+%End
+
+    void setSourceItem( QgsLayoutItem *item );
+%Docstring
+Sets the source ``item`` which will provide the clipping path for the map.
+
+The specified ``item`` must return the QgsLayoutItem.FlagProvidesClipPath flag.
+
+.. seealso:: :py:func:`sourceItem`
+%End
+
+    QgsLayoutItem *sourceItem();
+%Docstring
+Returns the source item which will provide the clipping path for the map, or ``None``
+if no item is set.
+
+.. seealso:: :py:func:`setSourceItem`
+%End
+
+    QgsMapClippingRegion::FeatureClippingType featureClippingType() const;
+%Docstring
+Returns the feature clipping type to apply when clipping to the associated item.
+
+.. seealso:: :py:func:`setFeatureClippingType`
+%End
+
+    void setFeatureClippingType( QgsMapClippingRegion::FeatureClippingType type );
+%Docstring
+Sets the feature clipping ``type`` to apply when clipping to the associated item.
+
+.. seealso:: :py:func:`featureClippingType`
+%End
+
+    bool forceLabelsInsideClipPath() const;
+%Docstring
+Returns ``True`` if labels should only be placed inside the clip path geometry.
+
+.. seealso:: :py:func:`setForceLabelsInsideClipPath`
+%End
+
+    void setForceLabelsInsideClipPath( bool forceInside );
+%Docstring
+Sets whether labels should only be placed inside the clip path geometry.
+
+.. seealso:: :py:func:`forceLabelsInsideClipPath`
+%End
+
+    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+Stores settings in a DOM element, where ``element`` is the DOM element
+corresponding to a 'LayoutMap' tag.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context );
+%Docstring
+Sets the setting's state from a DOM document, where ``element`` is the DOM
+node corresponding to a 'LayoutMap' tag.
+
+.. seealso:: :py:func:`writeXml`
+
+.. seealso:: :py:func:`finalizeRestoreFromXml`
+%End
+
+    void finalizeRestoreFromXml();
+%Docstring
+To be called after all pending items have been restored from XML.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the item clipping settings are changed.
+%End
+
+};
+
+
 class QgsLayoutItemMap : QgsLayoutItem, QgsTemporalRangeObject
 {
 %Docstring
@@ -734,6 +880,13 @@ Returns the map's atlas clipping settings.
 .. versionadded:: 3.16
 %End
 
+    QgsLayoutItemMapItemClipPathSettings *itemClippingSettings();
+%Docstring
+Returns the map's item based clip path settings.
+
+.. versionadded:: 3.16
+%End
+
   protected:
 
     virtual void draw( QgsLayoutItemRenderContext &context );
@@ -741,6 +894,8 @@ Returns the map's atlas clipping settings.
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+
+    virtual QPainterPath framePath() const;
 
 
     bool isDrawing() const;

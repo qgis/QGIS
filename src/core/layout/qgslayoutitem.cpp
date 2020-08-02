@@ -589,6 +589,9 @@ bool QgsLayoutItem::shouldBlockUndoCommands() const
 
 bool QgsLayoutItem::shouldDrawItem() const
 {
+  if ( mLayout && QgsLayoutUtils::itemIsAClippingSource( this ) )
+    return false;
+
   if ( !mLayout || mLayout->renderContext().isPreviewRender() )
   {
     //preview mode so OK to draw item
@@ -1165,6 +1168,11 @@ bool QgsLayoutItem::accept( QgsStyleEntityVisitorInterface *visitor ) const
   return true;
 }
 
+QgsGeometry QgsLayoutItem::clipPath() const
+{
+  return QgsGeometry();
+}
+
 void QgsLayoutItem::refresh()
 {
   QgsLayoutObject::refresh();
@@ -1202,6 +1210,13 @@ void QgsLayoutItem::drawDebugRect( QPainter *painter )
   painter->drawRect( rect() );
 }
 
+QPainterPath QgsLayoutItem::framePath() const
+{
+  QPainterPath path;
+  path.addRect( QRectF( 0, 0, rect().width(), rect().height() ) );
+  return path;
+}
+
 void QgsLayoutItem::drawFrame( QgsRenderContext &context )
 {
   if ( !mFrame || !context.painter() )
@@ -1215,7 +1230,7 @@ void QgsLayoutItem::drawFrame( QgsRenderContext &context )
   p->setBrush( Qt::NoBrush );
   context.setPainterFlagsUsingContext( p );
 
-  p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
+  p->drawPath( framePath() );
 }
 
 void QgsLayoutItem::drawBackground( QgsRenderContext &context )
@@ -1230,7 +1245,7 @@ void QgsLayoutItem::drawBackground( QgsRenderContext &context )
   p->setPen( Qt::NoPen );
   context.setPainterFlagsUsingContext( p );
 
-  p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
+  p->drawPath( framePath() );
 }
 
 void QgsLayoutItem::setFixedSize( const QgsLayoutSize &size )

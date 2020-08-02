@@ -94,12 +94,12 @@ void QgsFontButton::showSettingsDialog()
       QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
       if ( panel && panel->dockMode() )
       {
-        QgsTextFormatPanelWidget *formatWidget = new QgsTextFormatPanelWidget( mFormat, mMapCanvas, this, mLayer.data() );
-        formatWidget->setPanelTitle( mDialogTitle );
-        formatWidget->setContext( symbolContext );
+        mActivePanel = new QgsTextFormatPanelWidget( mFormat, mMapCanvas, this, mLayer.data() );
+        mActivePanel->setPanelTitle( mDialogTitle );
+        mActivePanel->setContext( symbolContext );
 
-        connect( formatWidget, &QgsTextFormatPanelWidget::widgetChanged, this, [ this, formatWidget ] { this->setTextFormat( formatWidget->format() ); } );
-        panel->openPanel( formatWidget );
+        connect( mActivePanel, &QgsTextFormatPanelWidget::widgetChanged, this, [ this ] { setTextFormat( mActivePanel->format() ); } );
+        panel->openPanel( mActivePanel );
         return;
       }
 
@@ -154,8 +154,14 @@ QgsMessageBar *QgsFontButton::messageBar() const
 
 void QgsFontButton::setTextFormat( const QgsTextFormat &format )
 {
+  if ( mActivePanel && !format.isValid() )
+    mActivePanel->acceptPanel();
+
   mFormat = format;
   updatePreview();
+
+  if ( mActivePanel && format.isValid() )
+    mActivePanel->setFormat( format );
   emit changed();
 }
 

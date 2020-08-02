@@ -143,7 +143,7 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
     QgsAllLayersFeaturesLocatorFilter( QObject *parent = nullptr );
     QgsAllLayersFeaturesLocatorFilter *clone() const override;
     QString name() const override { return QStringLiteral( "allfeatures" ); }
-    QString displayName() const override { return tr( "Features In All Layers" ); }
+    QString displayName() const override { return tr( "Features in All Layers" ); }
     Priority priority() const override { return Medium; }
     QString prefix() const override { return QStringLiteral( "af" ); }
 
@@ -217,6 +217,25 @@ class APP_EXPORT QgsSettingsLocatorFilter : public QgsLocatorFilter
   private:
 
     QMap<QString, QString> settingsPage( const QString &type,  const QString &page );
+};
+
+class APP_EXPORT QgsGotoLocatorFilter : public QgsLocatorFilter
+{
+    Q_OBJECT
+
+  public:
+
+
+    QgsGotoLocatorFilter( QObject *parent = nullptr );
+    QgsGotoLocatorFilter *clone() const override;
+    virtual QString name() const override { return QStringLiteral( "goto" ); }
+    virtual QString displayName() const override { return tr( "Go to Coordinate" ); }
+    virtual Priority priority() const override { return Medium; }
+    QString prefix() const override { return QStringLiteral( "goto" ); }
+
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
+    void triggerResult( const QgsLocatorResult &result ) override;
+
 };
 
 #endif // QGSINBUILTLOCATORFILTERS_H

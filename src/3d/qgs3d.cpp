@@ -29,6 +29,7 @@
 #include "qgspoint3dsymbol.h"
 #include "qgsline3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
+#include "qgsmaterialregistry.h"
 
 #include "qgspolygon3dsymbol_p.h"
 #include "qgspoint3dsymbol_p.h"
@@ -61,8 +62,17 @@ void Qgs3D::initialize()
       &QgsLine3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForLine3DSymbol ) );
   QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "polygon" ), QObject::tr( "Polygon" ),
       &QgsPolygon3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForPolygon3DSymbol ) );
+
+  instance()->materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "phong" ), QObject::tr( "Realistic (Phong)" ),
+      QgsPhongMaterialSettings::create, nullptr ) );
+}
+
+QgsMaterialRegistry *Qgs3D::materialRegistry()
+{
+  return instance()->mMaterialRegistry;
 }
 
 Qgs3D::Qgs3D()
 {
+  mMaterialRegistry = new QgsMaterialRegistry();
 }

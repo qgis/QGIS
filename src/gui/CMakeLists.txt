@@ -479,6 +479,7 @@ SET(QGIS_GUI_SRCS
   qgsmaptoolpan.cpp
   qgsmaptoolzoom.cpp
   qgsmaplayerconfigwidget.cpp
+  qgsmaterialsettingswidget.cpp
   qgsmenuheader.cpp
   qgsmessagebar.cpp
   qgsmessagebaritem.cpp
@@ -715,6 +716,7 @@ SET(QGIS_GUI_HDRS
   qgsmaptoolpan.h
   qgsmaptoolzoom.h
   qgsmaskingwidget.h
+  qgsmaterialsettingswidget.h
   qgsmenuheader.h
   qgsmessagebar.h
   qgsmessagebaritem.h
