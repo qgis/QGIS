@@ -40,8 +40,17 @@ class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
   public:
+    enum SkyboxType
+    {
+      HDRSkybox,
+      TexturesCollectionSkybox,
+      DistinctTexturesSkybox
+    };
+  public:
     //! Constructor
     QgsSkyboxEntity( QNode *parent = nullptr );
+
+    virtual SkyboxType type() const = 0;
 
   protected:
     Qt3DRender::QEffect *mEffect = nullptr;
@@ -67,6 +76,9 @@ class _3D_EXPORT QgsHDRSkyboxEntity : public QgsSkyboxEntity
 
     //! Returns the path of the current texture in use
     QString hdrTexturePath() const { return mHDRTexturePath; }
+    //! Returns the type of the current skybox
+    SkyboxType type() const override { return SkyboxType::HDRSkybox; }
+
   private:
     void reloadTexture();
   private:
@@ -93,10 +105,14 @@ class _3D_EXPORT QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
      */
     QgsCubeFacesSkyboxEntity( const QString &baseName, const QString &extension, Qt3DCore::QNode *parent = nullptr );
 
+    //! Returns the type of the current skybox
+    SkyboxType type() const override { return mType; }
+
   private:
     void init();
     void reloadTexture();
   private:
+    SkyboxType mType;
     QMap<Qt3DRender::QTextureCubeMap::CubeMapFace, QString> mCubeFacesPaths;
     Qt3DRender::QShaderProgram *mGlShader;
     QVector<Qt3DRender::QTextureImage *> mFacesTextureImages;

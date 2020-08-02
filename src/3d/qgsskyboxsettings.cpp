@@ -24,7 +24,13 @@ void QgsSkyboxSettings::readXml( const QDomElement &element, const QgsReadWriteC
 {
   Q_UNUSED( context );
   mIsSkyboxEnabled = element.attribute( QStringLiteral( "skybox-enabled" ) ).toInt();
-  mSkyboxType = element.attribute( QStringLiteral( "skybox-type" ) );
+  QString skyboxTypeStr = element.attribute( QStringLiteral( "skybox-type" ) );
+  if ( skyboxTypeStr == QStringLiteral( "Textures collection" ) )
+    mSkyboxType = QgsSkyboxEntity::TexturesCollectionSkybox;
+  else if ( skyboxTypeStr == QStringLiteral( "Distinct Faces" ) )
+    mSkyboxType = QgsSkyboxEntity::DistinctTexturesSkybox;
+  else if ( skyboxTypeStr == QStringLiteral( "HDR texture" ) )
+    mSkyboxType = QgsSkyboxEntity::HDRSkybox;
   mSkyboxBaseName = element.attribute( QStringLiteral( "base-name" ) );
   mSkyboxExt = element.attribute( QStringLiteral( "extension" ) );
   mHDRTexturePath = element.attribute( QStringLiteral( "HDR-texture-path" ) );
@@ -41,7 +47,18 @@ void QgsSkyboxSettings::writeXml( QDomElement &element, const QgsReadWriteContex
 {
   Q_UNUSED( context );
   element.setAttribute( QStringLiteral( "skybox-enabled" ), mIsSkyboxEnabled );
-  element.setAttribute( QStringLiteral( "skybox-type" ), mSkyboxType );
+  switch ( mSkyboxType )
+  {
+    case QgsSkyboxEntity::TexturesCollectionSkybox:
+      element.setAttribute( QStringLiteral( "skybox-type" ), QStringLiteral( "Textures collection" ) );
+      break;
+    case QgsSkyboxEntity::DistinctTexturesSkybox:
+      element.setAttribute( QStringLiteral( "skybox-type" ), QStringLiteral( "Distinct Faces" ) );
+      break;
+    case QgsSkyboxEntity::HDRSkybox:
+      element.setAttribute( QStringLiteral( "skybox-type" ), QStringLiteral( "HDR texture" ) );
+      break;
+  }
   element.setAttribute( QStringLiteral( "base-name" ), mSkyboxBaseName );
   element.setAttribute( QStringLiteral( "extension" ), mSkyboxExt );
   element.setAttribute( QStringLiteral( "HDR-texture-path" ), mHDRTexturePath );

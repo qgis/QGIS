@@ -120,6 +120,7 @@ void QgsHDRSkyboxEntity::reloadTexture()
 
 QgsCubeFacesSkyboxEntity::QgsCubeFacesSkyboxEntity( const QString &posX, const QString &posY, const QString &posZ, const QString &negX, const QString &negY, const QString &negZ, Qt3DCore::QNode *parent )
   : QgsSkyboxEntity( parent )
+  , mType( SkyboxType::DistinctTexturesSkybox )
   , mGlShader( new Qt3DRender::QShaderProgram() )
   , mCubeMap( new Qt3DRender::QTextureCubeMap( this ) )
 {
@@ -135,6 +136,7 @@ QgsCubeFacesSkyboxEntity::QgsCubeFacesSkyboxEntity( const QString &posX, const Q
 
 QgsCubeFacesSkyboxEntity::QgsCubeFacesSkyboxEntity( const QString &baseName, const QString &extension, Qt3DCore::QNode *parent )
   : QgsSkyboxEntity( parent )
+  , mType( SkyboxType::TexturesCollectionSkybox )
   , mGlShader( new Qt3DRender::QShaderProgram() )
   , mCubeMap( new Qt3DRender::QTextureCubeMap( this ) )
 {

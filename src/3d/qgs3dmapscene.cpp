@@ -868,22 +868,23 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
 
   if ( skyboxSettings.isSkyboxEnabled() )
   {
-    if ( skyboxSettings.skyboxType() == QStringLiteral( "Textures collection" ) )
+    QMap<QString, QString> faces;
+    switch ( skyboxSettings.skyboxType() )
     {
-      mSkybox = new QgsCubeFacesSkyboxEntity( skyboxSettings.skyboxBaseName(), skyboxSettings.skyboxExtension(), this );
-    }
-    if ( skyboxSettings.skyboxType() == QStringLiteral( "HDR texture" ) )
-    {
-      mSkybox = new QgsHDRSkyboxEntity( skyboxSettings.hdrTexturePath(), this );
-    }
-    if ( skyboxSettings.skyboxType() == QStringLiteral( "Distinct Faces" ) )
-    {
-      QMap<QString, QString> faces = skyboxSettings.cubeMapFacesPaths();
-      mSkybox = new QgsCubeFacesSkyboxEntity(
-        faces[QStringLiteral( "posX" )], faces[QStringLiteral( "posY" )], faces[QStringLiteral( "posZ" )],
-        faces[QStringLiteral( "negX" )], faces[QStringLiteral( "negY" )], faces[QStringLiteral( "negZ" )],
-        this
-      );
+      case QgsSkyboxEntity::TexturesCollectionSkybox:
+        mSkybox = new QgsCubeFacesSkyboxEntity( skyboxSettings.skyboxBaseName(), skyboxSettings.skyboxExtension(), this );
+        break;
+      case QgsSkyboxEntity::DistinctTexturesSkybox:
+        mSkybox = new QgsHDRSkyboxEntity( skyboxSettings.hdrTexturePath(), this );
+        break;
+      case QgsSkyboxEntity::HDRSkybox:
+        faces = skyboxSettings.cubeMapFacesPaths();
+        mSkybox = new QgsCubeFacesSkyboxEntity(
+          faces[QStringLiteral( "posX" )], faces[QStringLiteral( "posY" )], faces[QStringLiteral( "posZ" )],
+          faces[QStringLiteral( "negX" )], faces[QStringLiteral( "negY" )], faces[QStringLiteral( "negZ" )],
+          this
+        );
+        break;
     }
   }
 }

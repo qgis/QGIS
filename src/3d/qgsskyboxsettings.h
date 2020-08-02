@@ -20,6 +20,7 @@
 #include <QMap>
 
 #include "qgis_3d.h"
+#include "qgsskyboxentity.h"
 
 class QgsReadWriteContext;
 class QDomElement;
@@ -35,7 +36,6 @@ class _3D_EXPORT QgsSkyboxSettings
 
     //! Reads settings from a DOM \a element
     void readXml( const QDomElement &element, const QgsReadWriteContext &context );
-
     //! Writes settings to a DOM \a element
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 
@@ -44,17 +44,10 @@ class _3D_EXPORT QgsSkyboxSettings
     //! Sets whether the skybox is enabled
     void setIsSkyboxEnabled( bool enabled ) { mIsSkyboxEnabled = enabled; }
 
-    /**
-     * Returns the type of the skybox
-     * This can be one of 3 types: "Textures collection", "HDR texture", "Distinct Faces"
-     */
-    QString skyboxType() const { return mSkyboxType; }
-
-    /**
-     * Sets the type of the skybox
-     * the type can be one of 3 types: "Textures collection", "HDR texture", "Distinct Faces"
-     */
-    void setSkyboxType( const QString &type ) { mSkyboxType = type; }
+    //! Returns the type of the skybox
+    QgsSkyboxEntity::SkyboxType skyboxType() const { return mSkyboxType; }
+    //! Sets the type of the skybox
+    void setSkyboxType( QgsSkyboxEntity::SkyboxType type ) { mSkyboxType = type; }
 
     //! Returns the base name of a skybox of type "Textures collection"
     QString skyboxBaseName() const { return mSkyboxBaseName; }
@@ -85,7 +78,7 @@ class _3D_EXPORT QgsSkyboxSettings
 
   private:
     bool mIsSkyboxEnabled = false;
-    QString mSkyboxType;
+    QgsSkyboxEntity::SkyboxType mSkyboxType;
     //
     QString mSkyboxBaseName;
     QString mSkyboxExt;

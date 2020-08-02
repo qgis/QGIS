@@ -48,7 +48,20 @@ QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( QWidget *par
 void QgsSkyboxRenderingSettingsWidget::setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings )
 {
   skyboxEnabledCheckBox->setCheckState( skyboxSettings.isSkyboxEnabled() ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
-  skyboxTypeComboBox->setCurrentText( skyboxSettings.skyboxType() );
+
+  switch ( skyboxSettings.skyboxType() )
+  {
+    case QgsSkyboxEntity::TexturesCollectionSkybox:
+      skyboxTypeComboBox->setCurrentText( QStringLiteral( "Textures collection" ) );
+      break;
+    case QgsSkyboxEntity::DistinctTexturesSkybox:
+      skyboxTypeComboBox->setCurrentText( QStringLiteral( "Distinct Faces" ) );
+      break;
+    case QgsSkyboxEntity::HDRSkybox:
+      skyboxTypeComboBox->setCurrentText( QStringLiteral( "HDR texture" ) );
+      break;
+  }
+
   skyboxBaseNameLineEdit->setText( skyboxSettings.skyboxBaseName() );
   skyboxExtensionLineEdit->setText( skyboxSettings.skyboxExtension() );
   hdrTextureImageSource->setSource( skyboxSettings.hdrTexturePath() );
@@ -65,7 +78,14 @@ QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
 {
   QgsSkyboxSettings settings;
   settings.setIsSkyboxEnabled( skyboxEnabledCheckBox->checkState() == Qt::CheckState::Checked );
-  settings.setSkyboxType( skyboxTypeComboBox->currentText() );
+
+  if ( skyboxTypeComboBox->currentText() == QStringLiteral( "Textures collection" ) )
+    settings.setSkyboxType( QgsSkyboxEntity::TexturesCollectionSkybox );
+  else if ( skyboxTypeComboBox->currentText() == QStringLiteral( "Distinct Faces" ) )
+    settings.setSkyboxType( QgsSkyboxEntity::DistinctTexturesSkybox );
+  else if ( skyboxTypeComboBox->currentText() == QStringLiteral( "HDR texture" ) )
+    settings.setSkyboxType( QgsSkyboxEntity::HDRSkybox );
+
   settings.setSkyboxBaseName( skyboxBaseNameLineEdit->text() );
   settings.setSkyboxExtension( skyboxExtensionLineEdit->text() );
   settings.setHdrTexturePath( hdrTextureImageSource->source() );
