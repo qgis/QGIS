@@ -28,6 +28,7 @@
 #include <Qt3DExtras/QPlaneMesh>
 #include <Qt3DRender/QParameter>
 
+#include "qgis_3d.h"
 
 /**
  * \brief base class for all skybox types
@@ -35,7 +36,7 @@
  * \ingroup 3d
  * \since QGIS 3.16
  */
-class QgsSkyboxEntity : public Qt3DCore::QEntity
+class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
   public:
@@ -58,7 +59,7 @@ class QgsSkyboxEntity : public Qt3DCore::QEntity
  * \ingroup 3d
  * \since QGIS 3.16
  */
-class QgsHDRSkyboxEntity : public QgsSkyboxEntity
+class _3D_EXPORT QgsHDRSkyboxEntity : public QgsSkyboxEntity
 {
   public:
     //! Construct a skybox from a high resolution 360 image
@@ -79,7 +80,7 @@ class QgsHDRSkyboxEntity : public QgsSkyboxEntity
  * \ingroup 3d
  * \since QGIS 3.16
  */
-class QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
+class _3D_EXPORT QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
 {
   public:
     //! Constructs a skybox from 6 different images

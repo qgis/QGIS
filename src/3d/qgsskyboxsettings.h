@@ -22,13 +22,14 @@
 
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
+#include "qgis_3d.h"
 
 /**
  * \brief class containing the configuration of a skybox entity
  * \ingroup 3d
  * \since QGIS 3.16
  */
-class QgsSkyboxSettings
+class _3D_EXPORT QgsSkyboxSettings
 {
   public:
 
