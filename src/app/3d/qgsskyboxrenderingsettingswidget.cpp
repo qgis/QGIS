@@ -68,7 +68,7 @@ QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
   settings.setSkyboxType( skyboxTypeComboBox->currentText() );
   settings.setSkyboxBaseName( skyboxBaseNameLineEdit->text() );
   settings.setSkyboxExtension( skyboxExtensionLineEdit->text() );
-  settings.setHDRTexturePath( hdrTextureImageSource->source() );
+  settings.setHdrTexturePath( hdrTextureImageSource->source() );
   settings.setCubeMapFace( QStringLiteral( "posX" ), posXImageSource->source() );
   settings.setCubeMapFace( QStringLiteral( "posY" ), posYImageSource->source() );
   settings.setCubeMapFace( QStringLiteral( "posZ" ), posZImageSource->source() );

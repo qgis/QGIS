@@ -69,7 +69,7 @@ class _3D_EXPORT QgsSkyboxSettings
     //! Returns the HDR texture path of a skybox of type "HDR texture"
     QString hdrTexturePath() const { return mHDRTexturePath; }
     //! Sets the HDR texture path of a skybox of type "HDR texture"
-    void setHDRTexturePath( const QString &texturePath ) { mHDRTexturePath = texturePath; }
+    void setHdrTexturePath( const QString &texturePath ) { mHDRTexturePath = texturePath; }
 
     /**
      * Returns a map containing the path of each texture specified by the user.

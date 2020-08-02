@@ -44,14 +44,14 @@ class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
     QgsSkyboxEntity( QNode *parent = nullptr );
 
   protected:
-    Qt3DRender::QEffect *mEffect;
-    Qt3DRender::QMaterial *mMaterial;
-    Qt3DRender::QTechnique *mGl3Technique;
-    Qt3DRender::QFilterKey *mFilterKey;
-    Qt3DRender::QRenderPass *mGl3RenderPass;
-    Qt3DExtras::QCuboidMesh *mMesh;
-    Qt3DRender::QParameter *mGammaStrengthParameter;
-    Qt3DRender::QParameter *mTextureParameter;
+    Qt3DRender::QEffect *mEffect = nullptr;
+    Qt3DRender::QMaterial *mMaterial = nullptr;
+    Qt3DRender::QTechnique *mGl3Technique = nullptr;
+    Qt3DRender::QFilterKey *mFilterKey = nullptr;
+    Qt3DRender::QRenderPass *mGl3RenderPass = nullptr;
+    Qt3DExtras::QCuboidMesh *mMesh = nullptr;
+    Qt3DRender::QParameter *mGammaStrengthParameter = nullptr;
+    Qt3DRender::QParameter *mTextureParameter = nullptr;
 };
 
 /**
@@ -66,7 +66,7 @@ class _3D_EXPORT QgsHDRSkyboxEntity : public QgsSkyboxEntity
     QgsHDRSkyboxEntity( const QString &hdrTexturePath, Qt3DCore::QNode *parent = nullptr );
 
     //! Returns the path of the current texture in use
-    QString getHDRTexturePath() const { return mHDRTexturePath; }
+    QString hdrTexturePath() const { return mHDRTexturePath; }
   private:
     void reloadTexture();
   private:

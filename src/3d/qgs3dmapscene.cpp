@@ -320,7 +320,7 @@ void Qgs3DMapScene::onCameraChanged()
 
 void Qgs3DMapScene::updateScene()
 {
-
+  QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
   for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() )
@@ -825,10 +825,6 @@ void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )
   {
     mEntityCameraViewCenter->setEnabled( mMap.showCameraViewCenter() );
   } );
-//  connect( &mMap, &Qgs3DMapSettings, this, [this]
-//  {
-//    mEntityCameraViewCenter->setEnabled( mMap.showCameraViewCenter() );
-//  } );
 }
 
 void Qgs3DMapScene::setSceneState( Qgs3DMapScene::SceneState state )
@@ -861,7 +857,6 @@ void Qgs3DMapScene::updateSceneState()
 
 void Qgs3DMapScene::onSkyboxSettingsChanged()
 {
-  qDebug() << __FUNCTION__;
   QgsSkyboxSettings skyboxSettings = mMap.skyboxSettings();
   if ( mSkybox != nullptr )
   {

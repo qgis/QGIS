@@ -82,7 +82,7 @@ QgsSkyboxEntity::QgsSkyboxEntity( QNode *parent )
   mMesh->setXZMeshResolution( QSize( 2, 2 ) );
   mMesh->setYZMeshResolution( QSize( 2, 2 ) );
 
-//   TODO: change the kybox position according to camera
+  //   TODO: change the skybox position according to camera
   Qt3DCore::QTransform *transform = new Qt3DCore::QTransform( this );
   transform->setTranslation( QVector3D( 0.0f, 0.0f, 0.0f ) );
   transform->setScale( 1000.0f );
