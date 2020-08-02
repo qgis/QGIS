@@ -465,6 +465,7 @@ Architecture: any
 Depends:
  qgis-server-dummy (= ${binary:Version}),
  qgis-server-wms (= ${binary:Version}),
+ qgis-server-wmts (= ${binary:Version}),
  qgis-server-wcs (= ${binary:Version}),
  qgis-server-wfs (= ${binary:Version}),
  qgis-server-wfs3 (= ${binary:Version}),
@@ -501,6 +502,18 @@ Description: QGIS server providing various OGC services
  display databases of geographic information.
  .
  This package contains the wms service.
+
+Package: qgis-server-wmts
+Architecture: any
+Depends:
+ qgis-server-common (= ${binary:Version}),
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS server providing various OGC services
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the wmts service.
 
 Package: qgis-server-wfs
 Architecture: any
