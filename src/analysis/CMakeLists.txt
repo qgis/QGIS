@@ -10,14 +10,14 @@ SET(QGIS_ANALYSIS_SRCS
   interpolation/qgstininterpolator.cpp
   interpolation/Bezier3D.cpp
   interpolation/CloughTocherInterpolator.cpp
-  interpolation/DualEdgeTriangulation.cpp
+  interpolation/qgsdualedgetriangulation.cpp
   interpolation/HalfEdge.cpp
   interpolation/LinTriangleInterpolator.cpp
   interpolation/MathUtils.cpp
   interpolation/NormVecDecorator.cpp
   interpolation/ParametricLine.cpp
   interpolation/TriangleInterpolator.cpp
-  interpolation/Triangulation.cpp
+  interpolation/qgstriangulation.cpp
   interpolation/TriDecorator.cpp
   interpolation/Vector3D.cpp
 
@@ -127,6 +127,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrandompointsinpolygons.cpp
   processing/qgsalgorithmrandompointsonlines.cpp
   processing/qgsalgorithmrandomraster.cpp
+  processing/qgsalgorithmrasterfrequencybycomparisonoperator.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmrasterlogicalop.cpp
   processing/qgsalgorithmrasterize.cpp
@@ -272,7 +273,7 @@ SET(QGIS_ANALYSIS_HDRS
 
   interpolation/Bezier3D.h
   interpolation/CloughTocherInterpolator.h
-  interpolation/DualEdgeTriangulation.h
+  interpolation/qgsdualedgetriangulation.h
   interpolation/HalfEdge.h
   interpolation/LinTriangleInterpolator.h
   interpolation/MathUtils.h
@@ -280,7 +281,7 @@ SET(QGIS_ANALYSIS_HDRS
   interpolation/ParametricLine.h
   interpolation/TriDecorator.h
   interpolation/TriangleInterpolator.h
-  interpolation/Triangulation.h
+  interpolation/qgstriangulation.h
   interpolation/Vector3D.h
   interpolation/qgsgridfilewriter.h
   interpolation/qgsidwinterpolator.h

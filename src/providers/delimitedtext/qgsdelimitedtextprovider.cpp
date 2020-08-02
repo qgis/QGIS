@@ -29,6 +29,7 @@
 #include <QUrlQuery>
 
 #include "qgsapplication.h"
+#include "qgscoordinateutils.h"
 #include "qgsdataprovider.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
@@ -910,45 +911,6 @@ QgsGeometry QgsDelimitedTextProvider::geomFromWkt( QString &sWkt, bool wktHasPre
   return geom;
 }
 
-double QgsDelimitedTextProvider::dmsStringToDouble( const QString &sX, bool *xOk )
-{
-  static QString negative( QStringLiteral( "swSW-" ) );
-  QRegExp re( sCrdDmsRegexp );
-  double x = 0.0;
-
-  *xOk = re.indexIn( sX ) == 0;
-  if ( ! *xOk )
-    return 0.0;
-  QString dms1 = re.capturedTexts().at( 2 );
-  QString dms2 = re.capturedTexts().at( 3 );
-  QString dms3 = re.capturedTexts().at( 4 );
-  x = dms3.toDouble( xOk );
-  // Allow for Degrees/minutes format as well as DMS
-  if ( ! dms2.isEmpty() )
-  {
-    x = dms2.toInt( xOk ) + x / 60.0;
-  }
-  x = dms1.toInt( xOk ) + x / 60.0;
-  QString sign1 = re.capturedTexts().at( 1 );
-  QString sign2 = re.capturedTexts().at( 5 );
-
-  if ( sign1.isEmpty() )
-  {
-    if ( ! sign2.isEmpty() && negative.contains( sign2 ) )
-      x = -x;
-  }
-  else if ( sign2.isEmpty() )
-  {
-    if ( ! sign1.isEmpty() && negative.contains( sign1 ) )
-      x = -x;
-  }
-  else
-  {
-    *xOk = false;
-  }
-  return x;
-}
-
 void QgsDelimitedTextProvider::appendZM( QString &sZ, QString &sM, QgsPoint &point, const QString &decimalPoint )
 {
   if ( ! decimalPoint.isEmpty() )
@@ -985,8 +947,8 @@ bool QgsDelimitedTextProvider::pointFromXY( QString &sX, QString &sY, QgsPoint &
   double x, y;
   if ( xyDms )
   {
-    x = dmsStringToDouble( sX, &xOk );
-    y = dmsStringToDouble( sY, &yOk );
+    x = QgsCoordinateUtils::dmsToDecimal( sX, &xOk );
+    y = QgsCoordinateUtils::dmsToDecimal( sY, &yOk );
   }
   else
   {

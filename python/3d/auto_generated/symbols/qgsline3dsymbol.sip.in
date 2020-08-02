@@ -48,6 +48,8 @@ Caller takes ownership of the returned symbol.
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
+    virtual QList< QgsWkbTypes::GeometryType > compatibleGeometryTypes() const;
+
 
     Qgs3DTypes::AltitudeClamping altitudeClamping() const;
 %Docstring
@@ -114,6 +116,7 @@ Sets the ``material`` settings used for shading of the symbol.
 
 Ownership of ``material`` is transferred to the symbol.
 %End
+
 
 };
 

@@ -956,9 +956,29 @@ void TestQgsProcessing::context()
   context.setFlags( QgsProcessingContext::Flags( nullptr ) );
   QCOMPARE( context.flags(), QgsProcessingContext::Flags( nullptr ) );
 
+  QCOMPARE( context.ellipsoid(), QString() );
+  QCOMPARE( context.distanceUnit(), QgsUnitTypes::DistanceUnknownUnit );
+  QCOMPARE( context.areaUnit(), QgsUnitTypes::AreaUnknownUnit );
+
   QgsProject p;
+  p.setCrs( QgsCoordinateReferenceSystem( "EPSG:4536" ) );
+  p.setEllipsoid( QStringLiteral( "WGS84" ) );
+  p.setDistanceUnits( QgsUnitTypes::DistanceFeet );
+  p.setAreaUnits( QgsUnitTypes::AreaHectares );
   context.setProject( &p );
   QCOMPARE( context.project(), &p );
+  QCOMPARE( context.ellipsoid(), QStringLiteral( "WGS84" ) );
+  QCOMPARE( context.distanceUnit(), QgsUnitTypes::DistanceFeet );
+  QCOMPARE( context.areaUnit(), QgsUnitTypes::AreaHectares );
+
+  // if context ellipsoid/units are already set then setting the project shouldn't overwrite them
+  p.setEllipsoid( QStringLiteral( "WGS84v2" ) );
+  p.setDistanceUnits( QgsUnitTypes::DistanceMiles );
+  p.setAreaUnits( QgsUnitTypes::AreaAcres );
+  context.setProject( &p );
+  QCOMPARE( context.ellipsoid(), QStringLiteral( "WGS84" ) );
+  QCOMPARE( context.distanceUnit(), QgsUnitTypes::DistanceFeet );
+  QCOMPARE( context.areaUnit(), QgsUnitTypes::AreaHectares );
 
   context.setInvalidGeometryCheck( QgsFeatureRequest::GeometrySkipInvalid );
   QCOMPARE( context.invalidGeometryCheck(), QgsFeatureRequest::GeometrySkipInvalid );
@@ -2255,6 +2275,14 @@ void TestQgsProcessing::parameters()
   vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( TEST_DATA_DIR ) + "/points_gpkg.gpkg|layername=points_small", QString() );
   context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( vl.get() );
   QCOMPARE( vl->name(), QStringLiteral( "points_small" ) );
+  // if forced name is true, that should always be used, regardless of the user's local setting
+  QgsProcessingContext::LayerDetails details( QStringLiteral( "my name" ), context2.project(), QStringLiteral( "my name" ) );
+  details.forceName = false;
+  details.setOutputLayerName( vl.get() );
+  QCOMPARE( vl->name(), QStringLiteral( "points_small" ) );
+  details.forceName = true;
+  details.setOutputLayerName( vl.get() );
+  QCOMPARE( vl->name(), QStringLiteral( "my name" ) );
 }
 
 void TestQgsProcessing::algorithmParameters()

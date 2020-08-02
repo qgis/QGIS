@@ -51,6 +51,7 @@ class QgsTerrainEntity;
 class QgsChunkedEntity;
 class QgsSkyboxEntity;
 class QgsSkyboxSettings;
+class Qgs3DMapExportSettings;
 
 #define SIP_NO_FILE
 
@@ -105,6 +106,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      */
     float worldSpaceError( float epsilon, float distance );
 
+    //! Exports the scene according to the scene export settings
+    void exportScene( const Qgs3DMapExportSettings &exportSettings );
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
     void terrainEntityChanged();

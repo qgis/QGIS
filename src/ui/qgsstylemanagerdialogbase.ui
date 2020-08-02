@@ -382,6 +382,15 @@
              <string>Legend Patch Shapes</string>
             </attribute>
            </widget>
+           <widget class="QWidget" name="tab3DSymbols">
+            <attribute name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/3d.svg</normaloff>:/images/themes/default/3d.svg</iconset>
+            </attribute>
+            <attribute name="title">
+             <string>3D Symbols</string>
+            </attribute>
+           </widget>
           </widget>
          </item>
          <item>
@@ -668,8 +677,6 @@
   <tabstop>searchBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

@@ -1000,6 +1000,17 @@ bool QgsLayoutProxyModel::allowEmptyItem() const
   return mAllowEmpty;
 }
 
+void QgsLayoutProxyModel::setItemFlags( QgsLayoutItem::Flags flags )
+{
+  mItemFlags = flags;
+  invalidateFilter();
+}
+
+QgsLayoutItem::Flags QgsLayoutProxyModel::itemFlags() const
+{
+  return mItemFlags;
+}
+
 void QgsLayoutProxyModel::setFilterType( QgsLayoutItemRegistry::ItemType filter )
 {
   mItemTypeFilter = filter;
@@ -1031,6 +1042,11 @@ bool QgsLayoutProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &so
   // filter by type
   if ( mItemTypeFilter != QgsLayoutItemRegistry::LayoutItem && item->type() != mItemTypeFilter )
     return false;
+
+  if ( mItemFlags && !( item->itemFlags() & mItemFlags ) )
+  {
+    return false;
+  }
 
   return true;
 }

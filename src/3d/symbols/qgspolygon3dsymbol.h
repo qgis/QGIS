@@ -46,6 +46,7 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+    QList< QgsWkbTypes::GeometryType > compatibleGeometryTypes() const override;
 
     /**
      * Creates a new QgsPolygon3DSymbol.
@@ -153,6 +154,13 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
      * \since QGIS 3.16
      */
     int renderedFacade() const { return mRenderedFacade; }
+
+    /**
+     * Exports the geometries contained withing the hierarchy of entity.
+     * Returns whether any objects were exported
+     * \since QGIS 3.16
+     */
+    bool exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const override SIP_SKIP;
 
   private:
     //! how to handle altitude of vector features

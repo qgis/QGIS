@@ -1,9 +1,9 @@
 /***************************************************************************
-    Triangulation.cpp
-    -----------------
-    begin                : September 2009
-    copyright            : (C) 2009 by Marco Hugentobler
-    email                : marco dot hugentobler at sourcepole dot ch
+  qgs3dsceneexporter.h
+  --------------------------------------
+  Date                 : July 2020
+  Copyright            : (C) 2020 by Belgacem Nedjima
+  Email                : gb underscore nedjima at esi dot dz
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -12,12 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "Triangulation.h"
-#include "qgsfields.h"
 
-QgsFields Triangulation::triangulationFields()
+#include "qgsimagetexture.h"
+
+
+QgsImageTexture::QgsImageTexture( const QImage &image, Qt3DCore::QNode *parent )
+  : Qt3DRender::QPaintedTextureImage( parent )
+  , mImage( image )
 {
-  QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "type" ), QVariant::String, QStringLiteral( "String" ) ) );
-  return fields;
+  setSize( mImage.size() );
 }

@@ -39,7 +39,7 @@ class QgsSingleSymbol3DRendererWidget : public QWidget
 {
     Q_OBJECT
   public:
-    QgsSingleSymbol3DRendererWidget( QWidget *parent = nullptr );
+    QgsSingleSymbol3DRendererWidget( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     //! no transfer of ownership
     void setLayer( QgsVectorLayer *layer );
@@ -52,6 +52,7 @@ class QgsSingleSymbol3DRendererWidget : public QWidget
 
   private:
     QgsSymbol3DWidget *widgetSymbol = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
 
 };
 

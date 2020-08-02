@@ -56,6 +56,13 @@ Writes symbol configuration to the given DOM element
 Reads symbol configuration from the given DOM element
 %End
 
+    virtual QList< QgsWkbTypes::GeometryType > compatibleGeometryTypes() const;
+%Docstring
+Returns the list of the vector layer geometry types which are compatible with this symbol.
+
+.. versionadded:: 3.16
+%End
+
     enum Property
     {
       PropertyHeight,
@@ -77,6 +84,7 @@ Returns a reference to the symbol layer's property collection, used for data def
 %Docstring
 Sets the symbol layer's property collection, used for data defined overrides.
 %End
+
 
   protected:
 

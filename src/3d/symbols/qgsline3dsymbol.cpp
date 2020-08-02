@@ -17,6 +17,8 @@
 #include "qgs3dutils.h"
 #include "qgs3d.h"
 #include "qgsmaterialregistry.h"
+#include "qgs3dexportobject.h"
+#include "qgs3dsceneexporter.h"
 
 QgsLine3DSymbol::QgsLine3DSymbol()
   : mMaterial( qgis::make_unique< QgsPhongMaterialSettings >() )
@@ -94,7 +96,35 @@ void QgsLine3DSymbol::setMaterial( QgsAbstractMaterialSettings *material )
   mMaterial.reset( material );
 }
 
+QList<QgsWkbTypes::GeometryType> QgsLine3DSymbol::compatibleGeometryTypes() const
+{
+  return QList< QgsWkbTypes::GeometryType >() << QgsWkbTypes::LineGeometry;
+}
+
 QgsAbstract3DSymbol *QgsLine3DSymbol::create()
 {
   return new QgsLine3DSymbol();
+}
+
+bool QgsLine3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const
+{
+  if ( renderAsSimpleLines() )
+  {
+    QVector<Qgs3DExportObject *> objs = exporter->processLines( entity, objectNamePrefix );
+    exporter->mObjects << objs;
+    return objs.size() != 0;
+  }
+  else
+  {
+    QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
+    for ( Qt3DRender::QGeometryRenderer *r : renderers )
+    {
+      Qgs3DExportObject *object = exporter->processGeometryRenderer( r, objectNamePrefix );
+      if ( object == nullptr ) continue;
+      object->setupMaterial( material() );
+      exporter->mObjects.push_back( object );
+    }
+    return renderers.size() != 0;
+  }
+  return false;
 }

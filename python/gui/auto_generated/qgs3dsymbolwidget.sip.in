@@ -38,6 +38,52 @@ Returns a new instance of the symbol defined by the widget.
 
 Caller takes ownership of the returned symbol.
 %End
+
+    virtual QString symbolType() const = 0;
+%Docstring
+Returns the symbol type handled by the widget.
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the symbol is changed.
+%End
+};
+
+
+
+class Qgs3DSymbolDialog : QDialog
+{
+%Docstring
+A dialog for configuring a 3D symbol.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgs3dsymbolwidget.h"
+%End
+  public:
+
+    Qgs3DSymbolDialog( const QgsAbstract3DSymbol *symbol, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for Qgs3DSymbolDialog, initially showing the specified ``symbol``.
+%End
+
+    QgsAbstract3DSymbol *symbol() const /Factory/;
+%Docstring
+Returns a new instance of the symbol defined by the dialog.
+
+Caller takes ownership of the returned symbol.
+%End
+
+    QDialogButtonBox *buttonBox() const;
+%Docstring
+Returns a reference to the dialog's button box.
+%End
+
 };
 
 /************************************************************************

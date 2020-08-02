@@ -128,12 +128,14 @@ class TestQgsRenderContext(unittest.TestCase):
         ms.setExtent(QgsRectangle(10000, 20000, 30000, 40000))
         ms.setFlag(QgsMapSettings.Antialiasing, True)
         ms.setFlag(QgsMapSettings.LosslessImageRendering, True)
+        ms.setFlag(QgsMapSettings.Render3DMap, True)
 
         ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysText)
         rc = QgsRenderContext.fromMapSettings(ms)
         self.assertEqual(rc.textRenderFormat(), QgsRenderContext.TextFormatAlwaysText)
         self.assertTrue(rc.testFlag(QgsRenderContext.Antialiasing))
         self.assertTrue(rc.testFlag(QgsRenderContext.LosslessImageRendering))
+        self.assertTrue(rc.testFlag(QgsRenderContext.Render3DMap))
 
         ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
         rc = QgsRenderContext.fromMapSettings(ms)

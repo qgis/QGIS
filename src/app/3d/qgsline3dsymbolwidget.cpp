@@ -75,6 +75,11 @@ QgsAbstract3DSymbol *QgsLine3DSymbolWidget::symbol()
   return sym.release();
 }
 
+QString QgsLine3DSymbolWidget::symbolType() const
+{
+  return QStringLiteral( "line" );
+}
+
 void QgsLine3DSymbolWidget::updateGuiState()
 {
   bool simple = chkSimpleLines->isChecked();

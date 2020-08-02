@@ -33,9 +33,7 @@ class QgsPoint3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Point3DSymb
 
     void setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer ) override;
     QgsAbstract3DSymbol *symbol() override;
-
-  signals:
-    void changed();
+    QString symbolType() const override;
 
   private slots:
     void onShapeChanged();

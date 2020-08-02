@@ -25,6 +25,8 @@ class QDomElement;
 class QString;
 
 class QgsReadWriteContext;
+class Qgs3DSceneExporter;
+namespace Qt3DCore { class QEntity; } SIP_SKIP
 
 
 /**
@@ -55,6 +57,13 @@ class CORE_EXPORT QgsAbstract3DSymbol
     //! Reads symbol configuration from the given DOM element
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) = 0;
 
+    /**
+     * Returns the list of the vector layer geometry types which are compatible with this symbol.
+     *
+     * \since QGIS 3.16
+     */
+    virtual QList< QgsWkbTypes::GeometryType > compatibleGeometryTypes() const;
+
     //! Data definable properties.
     enum Property
     {
@@ -73,6 +82,13 @@ class CORE_EXPORT QgsAbstract3DSymbol
 
     //! Sets the symbol layer's property collection, used for data defined overrides.
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
+
+    /**
+     * Exports the geometries contained withing the hierarchy of entity.
+     * Returns whether any objects were exported
+     * If this function is not overloaded we don't try to export anything
+     */
+    virtual bool exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const SIP_SKIP;
 
   protected:
 

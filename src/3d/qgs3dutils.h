@@ -172,6 +172,10 @@ class _3D_EXPORT Qgs3DUtils
     //! Returns expression context for use in preparation of 3D data of a layer
     static QgsExpressionContext globalProjectLayerExpressionContext( QgsVectorLayer *layer );
 
+    //! Returns phong material object based on the material settings
+    static Qt3DExtras::QPhongMaterial *phongMaterial( const QgsPhongMaterialSettings &settings );
+    //! Returns phong material settings object based on the Qt3D material
+    static QgsPhongMaterialSettings phongMaterialFromQt3DComponent( Qt3DExtras::QPhongMaterial *material );
 };
 
 #endif // QGS3DUTILS_H

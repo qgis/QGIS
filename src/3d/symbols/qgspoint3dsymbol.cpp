@@ -21,6 +21,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgs3d.h"
 #include "qgsmaterialregistry.h"
+#include "qgs3dexportobject.h"
+#include "qgs3dsceneexporter.h"
 
 QgsAbstract3DSymbol *QgsPoint3DSymbol::clone() const
 {
@@ -109,6 +111,11 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
   setBillboardSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ) );
 }
 
+QList<QgsWkbTypes::GeometryType> QgsPoint3DSymbol::compatibleGeometryTypes() const
+{
+  return QList< QgsWkbTypes::GeometryType >() << QgsWkbTypes::PointGeometry;
+}
+
 QgsPoint3DSymbol::Shape QgsPoint3DSymbol::shapeFromString( const QString &shape )
 {
   if ( shape ==  QStringLiteral( "sphere" ) )
@@ -169,3 +176,50 @@ void QgsPoint3DSymbol::setMaterial( QgsAbstractMaterialSettings *material )
   mMaterial.reset( material );
 }
 
+bool QgsPoint3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const
+{
+  if ( shape() == QgsPoint3DSymbol::Model )
+  {
+    Qt3DRender::QSceneLoader *sceneLoader = entity->findChild<Qt3DRender::QSceneLoader *>();
+    if ( sceneLoader != nullptr )
+    {
+      QVector<Qgs3DExportObject *> objects = exporter->processSceneLoaderGeometries( sceneLoader, objectNamePrefix );
+      for ( Qgs3DExportObject *obj : objects )
+      {
+        obj->setSmoothEdges( exporter->smoothEdges() );
+        obj->setupMaterial( material() );
+      }
+      exporter->mObjects << objects;
+    }
+    else
+    {
+      QList<Qt3DRender::QMesh *> meshes = entity->findChildren<Qt3DRender::QMesh *>();
+      for ( Qt3DRender::QMesh *mesh : meshes )
+      {
+        Qgs3DExportObject *object = exporter->processGeometryRenderer( mesh, objectNamePrefix );
+        if ( object == nullptr ) continue;
+        object->setSmoothEdges( exporter->smoothEdges() );
+        object->setupMaterial( material() );
+        exporter->mObjects << object;
+      }
+    }
+    return true;
+  }
+  else if ( shape() == QgsPoint3DSymbol::Billboard )
+  {
+    Qgs3DExportObject *obj = exporter->processPoints( entity, objectNamePrefix );
+    if ( obj != nullptr ) exporter->mObjects << obj;
+    if ( obj != nullptr ) return true;
+  }
+  else
+  {
+    QVector<Qgs3DExportObject *> objects = exporter->processInstancedPointGeometry( entity, objectNamePrefix );
+    for ( Qgs3DExportObject *obj : objects )
+    {
+      obj->setupMaterial( material() );
+      exporter->mObjects << obj;
+    }
+    return true;
+  }
+  return false;
+}
