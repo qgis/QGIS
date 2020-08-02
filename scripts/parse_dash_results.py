@@ -73,12 +73,12 @@ def colorDiff(c1, c2):
 def imageFromPath(path):
     if (path[:8] == 'https://' or path[:7] == 'file://'):
         # fetch remote image
-        print('fetching remote ({})'.format(path))
+        print('Fetching remote ({})'.format(path))
         data = urllib.request.urlopen(path).read()
         image = QImage()
         image.loadFromData(data)
     else:
-        print('using local ({})'.format(path))
+        print('Using local ({})'.format(path))
         image = QImage(path)
     return image
 
