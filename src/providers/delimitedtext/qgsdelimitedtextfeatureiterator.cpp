@@ -513,7 +513,7 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature &feature, int f
     }
     case QVariant::Time:
     {
-      val = QVariant( QTime::fromString( value ) );
+      val = QVariant( QTime::fromString( value, Qt::ISODate ) );
       break;
     }
     default:

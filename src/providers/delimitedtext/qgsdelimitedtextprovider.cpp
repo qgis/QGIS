@@ -659,7 +659,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
       if ( couldBeTime[i] && !couldBeDateTime[i] )
       {
-        QTime t = QTime::fromString( value );
+        QTime t = QTime::fromString( value, Qt::ISODate );
         couldBeTime[i] = t.isValid();
       }
     }
