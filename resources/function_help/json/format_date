@@ -9,6 +9,6 @@
  {"arg":"language","optional":true,"description":"language (lowercase, two- or three-letter, ISO 639 language code) used to format the date into a custom string"}
   ],
   "examples": [ { "expression":"format_date('2012-05-15','dd.MM.yyyy')", "returns":"'15.05.2012'"},
-                { "expression":"format_date('2012-05-15','d MMMM yyyy','fr')", "returns":"'15 juin 2012'"}
+                { "expression":"format_date('2012-05-15','d MMMM yyyy','fr')", "returns":"'15 mai 2012'"}
   ]
 }
