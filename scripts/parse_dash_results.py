@@ -166,12 +166,17 @@ class ResultHandler(QDialog):
         save_mask_button.setText('Save New Mask')
         save_mask_button.pressed.connect(self.save_mask)
 
+        add_ref_image_button = QPushButton()
+        add_ref_image_button.setText('Add Reference Image')
+        add_ref_image_button.pressed.connect(self.add_reference_image)
+
         button_layout = QHBoxLayout()
         button_layout.addWidget(next_image_button)
         button_layout.addWidget(QLabel('Mask diff multiplier:'))
         button_layout.addWidget(self.overload_spin)
         button_layout.addWidget(preview_mask_button)
         button_layout.addWidget(save_mask_button)
+        button_layout.addWidget(add_ref_image_button)
         button_layout.addStretch()
         v_layout.addLayout(button_layout)
         self.setLayout(v_layout)
@@ -280,6 +285,27 @@ class ResultHandler(QDialog):
         self.new_mask_image.save(self.mask_image_path, "png")
         self.load_next()
 
+    def add_reference_image(self):
+        if os.path.abspath(self.control_images_base_path) == os.path.abspath(self.found_control_image_path):
+            images = glob.glob(os.path.join(self.found_control_image_path, '*.png'))
+            default_path = os.path.join(self.found_control_image_path, 'set1')
+            os.makedirs(default_path)
+            for image in images:
+                imgname = os.path.basename(image)
+                os.rename(image, os.path.join(default_path, imgname))
+
+        for i in range(2, 100):
+            new_path = os.path.join(self.control_images_base_path, 'set' + str(i))
+            if not os.path.exists(new_path):
+                break
+        else:
+            raise RuntimeError('Could not find a suitable directory for another set of reference images')
+
+        os.makedirs(new_path)
+        control_image_name = os.path.basename(self.found_image)
+        self.rendered_image.save(os.path.join(new_path, control_image_name))
+        self.load_next()
+
     def create_mask(self, control_image, rendered_image, mask_image, overload=1):
         max_width = min(rendered_image.width(), control_image.width())
         max_height = min(rendered_image.height(), control_image.height())
@@ -336,6 +362,9 @@ class ResultHandler(QDialog):
 
         matching_control_images = [x[0]
                                    for x in os.walk(control_images_folder) if test_name + '/' in x[0] or x[0].endswith(test_name)]
+
+        self.control_images_base_path = os.path.commonprefix(matching_control_images)
+
         if len(matching_control_images) > 1:
             for item in matching_control_images:
                 print(' -  ' + item)
@@ -344,15 +373,15 @@ class ResultHandler(QDialog):
             if not dlg.exec_():
                 return None
 
-            found_control_image_path = dlg.selected_image()
+            self.found_control_image_path = dlg.selected_image()
         elif len(matching_control_images) == 0:
             print(termcolor.colored('No matching control images found for {}'.format(test_name), 'yellow'))
             return None
         else:
-            found_control_image_path = matching_control_images[0]
+            self.found_control_image_path = matching_control_images[0]
 
         # check for a single matching expected image
-        images = glob.glob(os.path.join(found_control_image_path, '*.png'))
+        images = glob.glob(os.path.join(self.found_control_image_path, '*.png'))
         filtered_images = [i for i in images if not i[-9:] == '_mask.png']
         if len(filtered_images) > 1:
             error(
@@ -360,9 +389,9 @@ class ResultHandler(QDialog):
         elif len(filtered_images) == 0:
             error('No matching control images found for {}'.format(test_name))
 
-        found_image = filtered_images[0]
-        print('Found matching control image: {}'.format(found_image))
-        return found_image
+        self.found_image = filtered_images[0]
+        print('Found matching control image: {}'.format(self.found_image))
+        return self.found_image
 
     def create_diff_image(self, control_image, rendered_image, mask_image):
         # loop through pixels in rendered image and compare
