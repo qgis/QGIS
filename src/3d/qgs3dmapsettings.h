@@ -454,7 +454,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void fieldOfViewChanged();
 
-    /*
+    /**
      * Emitted when skybox settings are changed
      */
     void skyboxSettingsChanged();

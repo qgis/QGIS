@@ -32,17 +32,15 @@
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
 
-Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, Qgs3DMapCanvas *mapCanvas3D, QWidget *parent )
+Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, QWidget *parent )
   : QWidget( parent )
   , mMap( map )
   , mMainCanvas( mainCanvas )
-  , m3DMapCanvas( mapCanvas3D )
 {
   setupUi( this );
 
   Q_ASSERT( map );
   Q_ASSERT( mainCanvas );
-  Q_ASSERT( mapCanvas3D );
 
   mMeshSymbolWidget = new QgsMesh3dSymbolWidget( nullptr, groupMeshTerrainShading );
   mMeshSymbolWidget->configureForTerrain();
