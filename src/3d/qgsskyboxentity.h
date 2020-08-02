@@ -28,10 +28,18 @@
 #include <Qt3DExtras/QPlaneMesh>
 #include <Qt3DRender/QParameter>
 
+
+/**
+ * \brief base class for all skybox types
+ * It holds the commun member data between different skybox entity types
+ * \ingroup 3d
+ * \since QGIS 3.16
+ */
 class QgsSkyboxEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
   public:
+    //! Constructor
     QgsSkyboxEntity( QNode *parent = nullptr );
 
   protected:
@@ -45,11 +53,18 @@ class QgsSkyboxEntity : public Qt3DCore::QEntity
     Qt3DRender::QParameter *mTextureParameter;
 };
 
+/**
+ * \brief a skybox constructed from a 360 HDR image
+ * \ingroup 3d
+ * \since QGIS 3.16
+ */
 class QgsHDRSkyboxEntity : public QgsSkyboxEntity
 {
   public:
+    //! Construct a skybox from a high resolution 360 image
     QgsHDRSkyboxEntity( const QString &hdrTexturePath, Qt3DCore::QNode *parent = nullptr );
 
+    //! Returns the path of the current texture in use
     QString getHDRTexturePath() const { return mHDRTexturePath; }
   private:
     void reloadTexture();
@@ -59,10 +74,22 @@ class QgsHDRSkyboxEntity : public QgsSkyboxEntity
     Qt3DRender::QShaderProgram *mGlShader;
 };
 
+/**
+ * \brief a skybox constructed from a 6 cube faces
+ * \ingroup 3d
+ * \since QGIS 3.16
+ */
 class QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
 {
   public:
+    //! Constructs a skybox from 6 different images
     QgsCubeFacesSkyboxEntity( const QString &posX, const QString &posY, const QString &posZ, const QString &negX, const QString &negY, const QString &negZ, Qt3DCore::QNode *parent = nullptr );
+
+    /**
+     * Constructs a skybox from a collection of images
+     * The images in the source directory should match the pattern:
+     * baseName + * "_posx|_posy|_posz|_negx|_negy|_negz" + extension
+     */
     QgsCubeFacesSkyboxEntity( const QString &baseName, const QString &extension, Qt3DCore::QNode *parent = nullptr );
 
   private:
