@@ -789,12 +789,14 @@ bool QgsPostgresProvider::loadFields()
   // Clear cached information about enum values support
   mShared->clearSupportsEnumValuesCache();
 
+  QString sql;
+
   if ( !mIsQuery )
   {
     QgsDebugMsgLevel( QStringLiteral( "Loading fields for table %1" ).arg( mTableName ), 2 );
 
     // Get the relation oid for use in later queries
-    QString sql = QStringLiteral( "SELECT regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
+    sql = QStringLiteral( "SELECT regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
     QgsPostgresResult tresult( connectionRO()->PQexec( sql ) );
     QString tableoid = tresult.PQgetvalue( 0, 0 );
 
@@ -806,23 +808,6 @@ bool QgsPostgresProvider::loadFields()
       mDataComment = tresult.PQgetvalue( 0, 0 );
       mLayerMetadata.setAbstract( mDataComment );
     }
-  }
-
-  // Collect type info
-  QString sql = QStringLiteral( "SELECT oid,typname,typtype,typelem,typlen FROM pg_type" );
-  QgsPostgresResult typeResult( connectionRO()->PQexec( sql ) );
-
-  QMap<Oid, PGTypeInfo> typeMap;
-  for ( int i = 0; i < typeResult.PQntuples(); ++i )
-  {
-    PGTypeInfo typeInfo =
-    {
-      /* typeName = */ typeResult.PQgetvalue( i, 1 ),
-      /* typeType = */ typeResult.PQgetvalue( i, 2 ),
-      /* typeElem = */ typeResult.PQgetvalue( i, 3 ),
-      /* typeLen = */ typeResult.PQgetvalue( i, 4 ).toInt()
-    };
-    typeMap.insert( typeResult.PQgetvalue( i, 0 ).toUInt(), typeInfo );
   }
 
   // Populate the field vector for this layer. The field vector contains
@@ -902,6 +887,23 @@ bool QgsPostgresProvider::loadFields()
         generatedMap[attrelid][attnum] = attGenerated.isEmpty() ? "" : defVal;
       }
     }
+  }
+
+  // Collect type info
+  sql = QStringLiteral( "SELECT oid,typname,typtype,typelem,typlen FROM pg_type" );
+  QgsPostgresResult typeResult( connectionRO()->PQexec( sql ) );
+
+  QMap<Oid, PGTypeInfo> typeMap;
+  for ( int i = 0; i < typeResult.PQntuples(); ++i )
+  {
+    PGTypeInfo typeInfo =
+    {
+      /* typeName = */ typeResult.PQgetvalue( i, 1 ),
+      /* typeType = */ typeResult.PQgetvalue( i, 2 ),
+      /* typeElem = */ typeResult.PQgetvalue( i, 3 ),
+      /* typeLen = */ typeResult.PQgetvalue( i, 4 ).toInt()
+    };
+    typeMap.insert( typeResult.PQgetvalue( i, 0 ).toUInt(), typeInfo );
   }
 
   QSet<QString> fields;
