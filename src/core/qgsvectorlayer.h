@@ -1548,6 +1548,29 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Q_INVOKABLE QgsGeometry::OperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false );
 
     /**
+     * Splits features cut by the given curve
+     * \param curve curve that splits the layer features
+     * \param preserveCircular whether if circular strings are preserved after splitting
+     * \param topologicalEditing TRUE if topological editing is enabled
+     * \returns QgsGeometry::OperationResult
+     *
+     * - Success
+     * - NothingHappened
+     * - LayerNotEditable
+     * - InvalidInputGeometryType
+     * - InvalidBaseGeometry
+     * - GeometryEngineError
+     * - SplitCannotSplitPoint
+     *
+     * \note Calls to splitFeatures() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     * \since QGIS 3.16
+     */
+    Q_INVOKABLE QgsGeometry::OperationResult splitFeatures( const QgsCurve *curve, bool preserveCircular = false, bool topologicalEditing = false );
+
+    /**
      * Adds topological points for every vertex of the geometry.
      * \param geom the geometry where each vertex is added to segments of other features
      * \returns 0 in case of success

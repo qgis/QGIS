@@ -464,6 +464,13 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     QgsPointXY layerToMapCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
 
     /**
+     * \brief transform point coordinates from layer's CRS to output CRS
+     * \returns the transformed point
+     * \since QGIS 3.16
+     */
+    QgsPoint layerToMapCoordinates( const QgsMapLayer *layer, QgsPoint point ) const;
+
+    /**
      * \brief transform rectangle from layer's CRS to output CRS
      * \see layerExtentToOutputExtent() if you want to transform a bounding box
      * \returns the transformed rectangle
@@ -475,6 +482,13 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \returns the transformed point
      */
     QgsPointXY mapToLayerCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
+
+    /**
+     * \brief transform point coordinates from output CRS to layer's CRS
+     * \returns the transformed point
+     * \since QGIS 3.16
+     */
+    QgsPoint mapToLayerCoordinates( const QgsMapLayer *layer, QgsPoint point ) const;
 
     /**
      * \brief transform rectangle from output CRS to layer's CRS

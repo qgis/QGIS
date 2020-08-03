@@ -285,7 +285,7 @@ void TestQgsMapToolReshape::reshapeWithBindingLine()
   QgsCompoundCurve curve0( *cl0.toCurveType() );
 
   QgsMapToolReshape tool0( mQgisApp->mapCanvas() );
-  tool0.mCaptureCurve = curve0;
+  tool0.addCurve( curve0.clone() );
 
   vl->startEditing();
   tool0.reshape( vl.get() );
@@ -305,7 +305,7 @@ void TestQgsMapToolReshape::reshapeWithBindingLine()
   QgsCompoundCurve curve1( *cl1.toCurveType() );
 
   QgsMapToolReshape tool1( mQgisApp->mapCanvas() );
-  tool1.mCaptureCurve = curve1;
+  tool1.addCurve( curve1.clone() );
 
   vl->startEditing();
   tool1.reshape( vl.get() );

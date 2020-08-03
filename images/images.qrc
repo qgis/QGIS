@@ -284,6 +284,7 @@
         <file>themes/default/mActionDeleteTable.svg</file>
         <file>themes/default/mActionDeselectAll.svg</file>
         <file>themes/default/mActionDeselectActiveLayer.svg</file>
+        <file>themes/default/mActionDigitizeWithCurve.svg</file>
         <file>themes/default/mActionDuplicateLayer.svg</file>
         <file>themes/default/mActionDuplicateComposer.svg</file>
         <file>themes/default/mActionEditCopy.svg</file>
