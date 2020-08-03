@@ -29,6 +29,8 @@
 #include "qgsmultipolygon.h"
 #include "qgsgeos.h"
 
+#include "qgsphongtexturedmaterialsettings.h"
+
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
@@ -79,14 +81,16 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context,
 {
   Q_UNUSED( attributeNames )
 
+  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol.material() );
+
   outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true,
-                               false, false, false, mSymbol.material()->requiresTextureCoordinates(),
+                               false, false, false, texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false,
                                3,
-                               mSymbol.material()->textureRotation() ) );
+                               texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
   outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true,
-                                 false, false, false, mSymbol.material()->requiresTextureCoordinates(),
+                                 false, false, false, texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false,
                                  3,
-                                 mSymbol.material()->textureRotation() ) );
+                                 texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
 
   return true;
 }
@@ -171,8 +175,10 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
   QByteArray data( ( const char * )out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
   int nVerts = data.count() / out.tessellator->stride();
 
+  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol.material() );
+
   QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, false, false,
-      mSymbol.material()->requiresTextureCoordinates() );
+      texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false );
   geometry->setData( data, nVerts, out.triangleIndexFids, out.triangleIndexStartingIndices );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;

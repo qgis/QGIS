@@ -36,6 +36,7 @@
 #include "qgsline3dsymbol_p.h"
 #include "qgsgoochmaterialsettings.h"
 #include "qgssimplelinematerialsettings.h"
+#include "qgsphongtexturedmaterialsettings.h"
 
 #include "qgsstyle.h"
 
@@ -69,6 +70,8 @@ void Qgs3D::initialize()
 
   instance()->materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "phong" ), QObject::tr( "Realistic (Phong)" ),
       QgsPhongMaterialSettings::create, QgsPhongMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconPhongMaterial.svg" ) ) ) );
+  instance()->materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "phongtextured" ), QObject::tr( "Realistic Textured (Phong)" ),
+      QgsPhongTexturedMaterialSettings::create, QgsPhongMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconPhongTexturedMaterial.svg" ) ) ) );
   instance()->materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "simpleline" ), QObject::tr( "Simple Lines" ),
       QgsSimpleLineMaterialSettings::create, QgsSimpleLineMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconSimpleLineMaterial.svg" ) ) ) );
   instance()->materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "gooch" ), QObject::tr( "CAD (Gooch)" ),

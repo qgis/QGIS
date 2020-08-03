@@ -40,6 +40,7 @@ SET(QGIS_3D_SRCS
   materials/qgsgoochmaterialsettings.cpp
   materials/qgsmaterialregistry.cpp
   materials/qgsphongmaterialsettings.cpp
+  materials/qgsphongtexturedmaterialsettings.cpp
   materials/qgssimplelinematerialsettings.cpp
 
   processing/qgs3dalgorithms.cpp
@@ -107,6 +108,7 @@ SET(QGIS_3D_HDRS
   materials/qgsgoochmaterialsettings.h
   materials/qgsmaterialregistry.h
   materials/qgsphongmaterialsettings.h
+  materials/qgsphongtexturedmaterialsettings.h
   materials/qgssimplelinematerialsettings.h
 
   symbols/qgsbillboardgeometry.h

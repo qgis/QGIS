@@ -14,6 +14,7 @@
 %Include auto_generated/materials/qgsgoochmaterialsettings.sip
 %Include auto_generated/materials/qgsmaterialregistry.sip
 %Include auto_generated/materials/qgsphongmaterialsettings.sip
+%Include auto_generated/materials/qgsphongtexturedmaterialsettings.sip
 %Include auto_generated/materials/qgssimplelinematerialsettings.sip
 %Include auto_generated/symbols/qgsline3dsymbol.sip
 %Include auto_generated/symbols/qgspoint3dsymbol.sip
