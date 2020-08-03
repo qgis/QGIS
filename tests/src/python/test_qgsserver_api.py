@@ -182,14 +182,14 @@ class QgsServerAPITestBase(QgsServerTestBase):
         result.append(bytes(response.body()).decode('utf8'))
         return '\n'.join(result)
 
-    def compareApi(self, request, project, reference_file):
+    def compareApi(self, request, project, reference_file, subdir='api'):
         response = QgsBufferServerResponse()
         # Add json to accept it reference_file is JSON
         if reference_file.endswith('.json'):
             request.setHeader('Accept', 'application/json')
         self.server.handleRequest(request, response, project)
         result = bytes(response.body()).decode('utf8') if reference_file.endswith('html') else self.dump(response)
-        path = unitTestDataPath('qgis_server') + '/api/' + reference_file
+        path = os.path.join(unitTestDataPath('qgis_server'), subdir, reference_file)
         if self.regeregenerate_api_reference:
             # Try to change timestamp
             try:
