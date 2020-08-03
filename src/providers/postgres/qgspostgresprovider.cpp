@@ -817,7 +817,6 @@ bool QgsPostgresProvider::loadFields()
   QgsPostgresResult result( connectionRO()->PQexec( sql ) );
 
   QMap<Oid, QMap<int, QString> > fmtFieldTypeMap, descrMap, defValMap, identityMap, generatedMap;
-  QMap<Oid, QMap<int, Oid> > attTypeIdMap;
   QMap<Oid, QMap<int, bool> > notNullMap, uniqueMap;
   if ( result.PQnfields() > 0 )
   {
@@ -865,7 +864,6 @@ bool QgsPostgresProvider::loadFields()
         QString formatType = fmtFieldTypeResult.PQgetvalue( i, 2 );
         QString descr = fmtFieldTypeResult.PQgetvalue( i, 3 );
         QString defVal = fmtFieldTypeResult.PQgetvalue( i, 4 );
-        Oid attType = fmtFieldTypeResult.PQgetvalue( i, 5 ).toUInt();
         bool attNotNull = fmtFieldTypeResult.PQgetvalue( i, 6 ).toInt();
         bool uniqueConstraint = fmtFieldTypeResult.PQgetvalue( i, 7 ).toInt();
         QString attIdentity = connectionRO()->pgVersion() >= 100000 ? fmtFieldTypeResult.PQgetvalue( i, 8 ) : " ";
@@ -880,7 +878,6 @@ bool QgsPostgresProvider::loadFields()
         fmtFieldTypeMap[attrelid][attnum] = formatType;
         descrMap[attrelid][attnum] = descr;
         defValMap[attrelid][attnum] = defVal;
-        attTypeIdMap[attrelid][attnum] = attType;
         notNullMap[attrelid][attnum] = attNotNull;
         uniqueMap[attrelid][attnum] = uniqueConstraint;
         identityMap[attrelid][attnum] = attIdentity.isEmpty() ? " " : attIdentity;
@@ -920,14 +917,13 @@ bool QgsPostgresProvider::loadFields()
     int fieldPrec = -1;
     Oid tableoid = result.PQftable( i );
     int attnum = result.PQftablecol( i );
-    Oid atttypid = attTypeIdMap[tableoid][attnum];
 
     const PGTypeInfo &typeInfo = typeMap.value( fldtyp );
     QString fieldTypeName = typeInfo.typeName;
     QString fieldTType = typeInfo.typeType;
     int fieldSize = typeInfo.typeLen;
 
-    bool isDomain = ( typeMap.value( atttypid ).typeType == QLatin1String( "d" ) );
+    bool isDomain = ( fieldTType == QLatin1String( "d" ) );
 
     QString formattedFieldType = fmtFieldTypeMap[tableoid][attnum];
     QString originalFormattedFieldType = formattedFieldType;
