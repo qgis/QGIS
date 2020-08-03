@@ -78,6 +78,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfilterbygeometry.cpp
   processing/qgsalgorithmfiltervertices.cpp
   processing/qgsalgorithmfixgeometries.cpp
+  processing/qgsalgorithmflattenrelationships.cpp
   processing/qgsalgorithmforcerhr.cpp
   processing/qgsalgorithmfuzzifyraster.cpp
   processing/qgsalgorithmgeometrybyexpression.cpp
