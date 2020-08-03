@@ -18,7 +18,7 @@ QGIS. The software and hardware descriptions named in this
 document are in most cases registered trademarks and are therefore subject
 to the legal requirements. QGIS is subject to the GNU General Public
 License. Find more information on the QGIS Homepage:
-http://qgis.org
+https://qgis.org
 
 The details, that are given in this document have been written and verified
 to the best of knowledge and responsibility of the editors. Nevertheless,
@@ -29,11 +29,11 @@ always welcome for indicating possible mistakes.
 
 Because the code of QGIS evolves from release to release, These instructions are
 regularly updated to match the corresponding release. Instructions for the current
-master branch are available at https://raw.github.com/qgis/QGIS/master/doc/INSTALL.md.
+master branch are available at https://github.com/qgis/QGIS/blob/master/INSTALL.md.
 If you wish to build another version of QGIS, ensure to checkout the appropriate
 release branch. The QGIS source code can be found [in the repository](https://github.com/qgis/QGIS).
 
-Please visit http://qgis.org for information on joining our mailing lists
+Please visit https://qgis.org for information on joining our mailing lists
 and getting involved in the project further.
 
 **Note to document writers:** Please use this document as the central
@@ -42,7 +42,7 @@ place for describing build procedures. Please do not remove this notice.
 # 2. Overview
 
 QGIS, like a number of major projects (e.g., KDE 4.0),
-uses [CMake](http://www.cmake.org) for building from source.
+uses [CMake](https://www.cmake.org) for building from source.
 
 Following a summary of the required dependencies for building:
 
@@ -85,7 +85,7 @@ Indirect dependencies:
 Some proprietary formats (e.g., ECW and MrSid) supported by GDAL require
 proprietary third party libraries.  QGIS doesn't need any of those itself to
 build, but will only support those formats if GDAL is built accordingly.  Refer
-to [format list](http://gdal.org/formats_list.html) for instructions how to include
+to [format list](https://gdal.org/index.html) for instructions how to include
 those formats in GDAL.
 
 # 3. Building on GNU/Linux
@@ -102,7 +102,7 @@ These notes are for Ubuntu - other versions and Debian derived distros may
 require slight variations in package names.
 
 These notes are for if you want to build QGIS from source. One of the major
-aims here is to show how this can be done using binary packages for***all***
+aims here is to show how this can be done using binary packages for ***all***
 dependencies - building only the core QGIS stuff from source. I prefer this
 approach because it means we can leave the business of managing system packages
 to apt and only concern ourselves with coding QGIS!
@@ -141,8 +141,8 @@ Now update your local sources database:
 
 (extracted from the control.in file in `debian/`)
 
-See [debian-ubuntu](http://qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu) for
-currently supported distributions (plain xenial's GDAL for instance is to old
+See [debian-ubuntu](https://qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu) for
+currently supported distributions (plain xenial's GDAL for instance is too old
 and we build with GDAL2 from ubuntugis).
 
 ## 3.4. Setup ccache (Optional, but recommended)
@@ -212,19 +212,21 @@ Now we create a build directory and run ccmake:
 ```
 
 When you run ccmake (note the .. is required!), a menu will appear where
-you can configure various aspects of the build. If you want QGIS to have
-debugging capabilities then set CMAKE_BUILD_TYPE to Debug. If you do not have
-root access or do not want to overwrite existing QGIS installs (by your
-package manager for example), set the CMAKE_INSTALL_PREFIX to somewhere you
-have write access to (I usually use ${HOME}/apps). Now press
-'c' to configure, 'e' to dismiss any error messages that may appear.
+you can configure various aspects of the build:
+
+* If you want QGIS to have debugging capabilities then set CMAKE_BUILD_TYPE to Debug.
+* If you do not have root access or do not want to overwrite existing QGIS
+  installs (by your package manager for example), set the CMAKE_INSTALL_PREFIX
+  to somewhere you have write access to (I usually use ${HOME}/apps).
+
+Now press 'c' to configure, 'e' to dismiss any error messages that may appear.
 and 'g' to generate the make files. Note that sometimes 'c' needs to
 be pressed several times before the 'g' option becomes available.
 After the 'g' generation is complete, press 'q' to exit the ccmake
 interactive dialog.
 
 **Warning:** Make sure that your build directory is completely empty when you
-enter the command. Do never try to "re-use" an existing**Qt5** build directory.
+enter the command. Do never try to "re-use" an existing **Qt5** build directory.
 If you want to use `ccmake` or other interactive tools, run the command in
 the empty build directory once before starting to use the interactive tools.
 
@@ -357,7 +359,7 @@ using `dpkg -r libqgis1-dev`.  Otherwise `dpkg-buildpackage` will complain about
 build conflict.
 
 **Note:** By default tests are run in the process of building and their
-results are uploaded to http://cdash.orfeo-toolbox.org/index.php?project=QGIS.
+results are uploaded to https://cdash.orfeo-toolbox.org/index.php?project=QGIS.
 You can turn the tests off using DEB_BUILD_OPTIONS=nocheck in front of the
 build command. The upload of results can be avoided with DEB_TEST_TARGET=test.
 
@@ -375,9 +377,10 @@ new subdirectory called `build` or `build-qt5` in it.
 
 ### 3.11.1. Install build dependencies
 
-```bash
-    dnf install qt5-qtbase-private-devel qt5-qtwebkit-devel qt5-qtlocation-devel qt5-qttools-static qca-qt5-devel qca-qt5-ossl qt5-qt3d-devel python3-qt5-devel python3-qscintilla-qt5-devel qscintilla-qt5-devel python3-qscintilla-devel python3-qscintilla-qt5 clang flex bison geos-devel gdal-devel sqlite-devel libspatialite-devel qt5-qtsvg-devel spatialindex-devel expat-devel proj-devel qwt-qt5-devel gsl-devel postgresql-devel cmake python3-future gdal-python3 python3-psycopg2 python3-PyYAML python3-pygments python3-jinja2 python3-OWSLib qca-qt5-ossl qwt-qt5-devel qtkeychain-qt5-devel qwt-devel sip-devel libzip-devel exiv2-devel
-```
+|Install command for dependencies|
+|--------------------------------|
+|dnf install qt5-qtbase-private-devel qt5-qtwebkit-devel qt5-qtlocation-devel qt5-qttools-static qca-qt5-devel qca-qt5-ossl qt5-qt3d-devel python3-qt5-devel python3-qscintilla-qt5-devel qscintilla-qt5-devel python3-qscintilla-devel python3-qscintilla-qt5 clang flex bison geos-devel gdal-devel sqlite-devel libspatialite-devel qt5-qtsvg-devel spatialindex-devel expat-devel proj-devel qwt-qt5-devel gsl-devel postgresql-devel cmake python3-future gdal-python3 python3-psycopg2 python3-PyYAML python3-pygments python3-jinja2 python3-OWSLib qca-qt5-ossl qwt-qt5-devel qtkeychain-qt5-devel qwt-devel sip-devel libzip-devel exiv2-devel|
+
 
 To build QGIS server additional dependencies are required:
 
@@ -443,7 +446,7 @@ build QGIS.
 
 The free (as in free beer) Community installer is available under:
 
-> http://download.microsoft.com/download/D/2/3/D23F4D0F-BA2D-4600-8725-6CCECEA05196/vs_community_ENU.exe
+https://download.microsoft.com/download/D/2/3/D23F4D0F-BA2D-4600-8725-6CCECEA05196/vs_community_ENU.exe
 
 Select "Custom" install and add the following packages:
 
@@ -457,8 +460,8 @@ Download and install following packages:
 | Tool |Website|
 |---------------|---------------|
 |CMake |https://cmake.org/files/v3.12/cmake-3.12.3-win64-x64.msi|
-|GNU flex, GNU bison and GIT |http://cygwin.com/setup-x86.exe (32bit) or http://cygwin.com/setup-x86_64.exe (64bit)|
-|OSGeo4W |http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86.exe (32bit) or http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe (64bit)|
+|GNU flex, GNU bison and GIT |https://cygwin.com/setup-x86.exe (32bit) or https://cygwin.com/setup-x86_64.exe (64bit)|
+|OSGeo4W |https://download.osgeo.org/osgeo4w/osgeo4w-setup-x86.exe (32bit) or https://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe (64bit)|
 |ninja |https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-win.zip|
 
 For the QGIS build you need to install following packages from cygwin:
@@ -467,7 +470,7 @@ For the QGIS build you need to install following packages from cygwin:
 * flex
 * git (even if you already have Git for Windows installed)
 
-and from OSGeo4W (select*Advanced Install*):
+and from OSGeo4W (select *Advanced Install*):
 
 * qgis-dev-deps
 
@@ -614,12 +617,12 @@ On Debian/Ubuntu you can just install the 'nsis' package.
 
 NSIS for Windows can be downloaded at:
 
-> http://nsis.sourceforge.net
+https://nsis.sourceforge.io/Main_Page
 
 And Perl for Windows (including other requirements like 'wget', 'unzip', 'tar'
 and 'bzip2') is available at:
 
-> http://cygwin.com
+http://cygwin.com
 
 ### 4.1.7. Packaging your own build of QGIS
 
@@ -652,7 +655,7 @@ look at:
 
 ## 4.2. Building using MinGW
 
-**Note:** This section might be outdated as nowadays Visual C++ is use to build
+**Note:** This section might be outdated as nowadays Visual C++ is used to build
 the "official" packages.
 
 **Note:** For a detailed account of building all the dependencies yourself you
@@ -730,7 +733,7 @@ a necessary dependency for building QGIS.
 
 (It doesn't matter to what folder you'll install it)
 
-http://python.org/download/
+https://python.org/download/
 
 #### 4.2.4.2. Download SIP and PyQt5 sources
 
@@ -838,7 +841,8 @@ When configuration is done, click 'OK' to exit the setup utility.
 ### 4.2.10. Compilation and installation
 
 ```cmd
-     make make install
+     make
+     make install
 ```
 
 ### 4.2.11. Run qgis.exe from the directory where it's installed (CMAKE_INSTALL_PREFIX)
@@ -869,7 +873,7 @@ by many dependencies to be able to compile.
 
 Download from here:
 
-> http://puzzle.dl.sourceforge.net/sourceforge/mingw/MSYS-1.0.11-2004.04.30-1.exe
+http://puzzle.dl.sourceforge.net/sourceforge/mingw/MSYS-1.0.11-2004.04.30-1.exe
 
 Install to `c:\msys`
 
@@ -879,7 +883,7 @@ All stuff we're going to compile is going to get to this directory (resp. its su
 
 Download from here:
 
-> http://puzzle.dl.sourceforge.net/sourceforge/mingw/MinGW-5.1.3.exe
+http://puzzle.dl.sourceforge.net/sourceforge/mingw/MinGW-5.1.3.exe
 
 Install to `c:\msys\mingw`
 
@@ -891,9 +895,9 @@ Flex and Bison are tools for generation of parsers, they're needed for GRASS and
 
 Download the following packages:
 
-> http://gnuwin32.sourceforge.net/downlinks/flex-bin-zip.php
-> http://gnuwin32.sourceforge.net/downlinks/bison-bin-zip.php
-> http://gnuwin32.sourceforge.net/downlinks/bison-dep-zip.php
+* http://gnuwin32.sourceforge.net/downlinks/flex-bin-zip.php
+* http://gnuwin32.sourceforge.net/downlinks/bison-bin-zip.php
+* http://gnuwin32.sourceforge.net/downlinks/bison-dep-zip.php
 
 Unpack them all to `c:\msys\local`
 
@@ -915,11 +919,11 @@ The package currently includes:
 
 It's available for download here:
 
-> http://www.stjohnspoint.co.uk/grass/wingrass-extralibs.tar.gz
+http://www.stjohnspoint.co.uk/grass/wingrass-extralibs.tar.gz
 
 Moreover he also left the notes how to compile it (for those interested):
 
-> http://www.stjohnspoint.co.uk/grass/README.extralibs
+http://www.stjohnspoint.co.uk/grass/README.extralibs
 
 Unpack the whole package to `c:\msys\local`
 
@@ -927,7 +931,7 @@ Unpack the whole package to `c:\msys\local`
 
 Grab sources from CVS or use a weekly snapshot, see:
 
-> http://grass.itc.it/devel/cvs.php
+http://grass.itc.it/devel/cvs.php
 
 In MSYS console go to the directory where you've unpacked or checked out sources
 (e.g. `c:\msys\local\src\grass-6.3.cvs`)
@@ -955,7 +959,7 @@ By the way, these pages might be useful:
 
 Download the sources:
 
-> http://geos.refractions.net/geos-2.2.3.tar.bz2
+http://geos.refractions.net/geos-2.2.3.tar.bz2
 
 Unpack to e.g. `c:\msys\local\src`
 
@@ -982,13 +986,13 @@ You can use precompiled DLL, no need to compile from source:
 
 Download this archive:
 
-> http://www.sqlite.org/sqlitedll-3_3_17.zip
+http://www.sqlite.org/sqlitedll-3_3_17.zip
 
 and copy sqlite3.dll from it to `c:\msys\local\lib`
 
 Then download this archive:
 
-> http://www.sqlite.org/sqlite-source-3_3_17.zip
+http://www.sqlite.org/sqlite-source-3_3_17.zip
 
 and copy sqlite3.h to `c:\msys\local\include`
 
@@ -996,7 +1000,7 @@ and copy sqlite3.h to `c:\msys\local\include`
 
 Download sources:
 
-> ftp://ftp.gnu.org/gnu/gsl/gsl-1.9.tar.gz
+ftp://ftp.gnu.org/gnu/gsl/gsl-1.9.tar.gz
 
 Unpack to `c:\msys\local\src`
 
@@ -1012,7 +1016,7 @@ Run from MSYS console in the source directory:
 
 Download sources:
 
-> http://dfn.dl.sourceforge.net/sourceforge/expat/expat-2.0.0.tar.gz
+http://dfn.dl.sourceforge.net/sourceforge/expat/expat-2.0.0.tar.gz
 
 Unpack to `c:\msys\local\src`
 
@@ -1028,7 +1032,7 @@ Run from MSYS console in the source directory:
 
 We're going to use precompiled binaries. Use the link below for download:
 
-> http://wwwmaster.postgresql.org/download/mirrors-ftp?file=%2Fbinary%2Fv8.2.4%2Fwin32%2Fpostgresql-8.2.4-1-binaries-no-installer.zip
+http://wwwmaster.postgresql.org/download/mirrors-ftp?file=%2Fbinary%2Fv8.2.4%2Fwin32%2Fpostgresql-8.2.4-1-binaries-no-installer.zip
 
 copy contents of pgsql directory from the archive to `c:\msys\local`
 
