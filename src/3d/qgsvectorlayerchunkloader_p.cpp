@@ -156,7 +156,7 @@ QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity( QgsVectorLayer *vl, do
                       -1, // rootError (negative error means that the node does not contain anything)
                       -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
                       tilingSettings.zoomLevelsCount() - 1,
-                      new QgsVectorLayerChunkLoaderFactory( map, vl, symbol, tilingSettings.zoomLevelsCount() - 1 ) )
+                      new QgsVectorLayerChunkLoaderFactory( map, vl, symbol, tilingSettings.zoomLevelsCount() - 1 ), true )
 {
   setShowBoundingBoxes( tilingSettings.showBoundingBoxes() );
 }
