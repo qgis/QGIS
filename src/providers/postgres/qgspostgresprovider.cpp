@@ -818,6 +818,7 @@ bool QgsPostgresProvider::loadFields()
 
   QMap<Oid, QMap<int, QString> > fmtFieldTypeMap, descrMap, defValMap, identityMap, generatedMap;
   QMap<Oid, QMap<int, bool> > notNullMap, uniqueMap;
+  QString attroidsFilter;
   if ( result.PQnfields() > 0 )
   {
     // Collect table oids
@@ -884,10 +885,29 @@ bool QgsPostgresProvider::loadFields()
         generatedMap[attrelid][attnum] = attGenerated.isEmpty() ? "" : defVal;
       }
     }
+
+    // Collect attribiute oids
+    QSet<Oid> attroids;
+    for ( int i = 0; i < result.PQnfields(); i++ )
+    {
+      Oid attroid = result.PQftype( i );
+      attroids.insert( attroid );
+    }
+
+    if ( !attroids.isEmpty() )
+    {
+      QStringList attroidsList;
+      const auto constAttroids = attroids;
+      for ( Oid attroid : constAttroids )
+      {
+        attroidsList.append( QString::number( attroid ) );
+      }
+      attroidsFilter = QStringLiteral( "WHERE oid in (" ) + attroidsList.join( QStringLiteral( "," ) ) + QStringLiteral( ")" );
+    }
   }
 
   // Collect type info
-  sql = QStringLiteral( "SELECT oid,typname,typtype,typelem,typlen FROM pg_type" );
+  sql = QStringLiteral( "SELECT oid,typname,typtype,typelem,typlen FROM pg_type %1" ).arg( attroidsFilter );
   QgsPostgresResult typeResult( connectionRO()->PQexec( sql ) );
 
   QMap<Oid, PGTypeInfo> typeMap;
