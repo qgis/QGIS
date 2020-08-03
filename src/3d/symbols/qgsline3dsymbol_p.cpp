@@ -28,6 +28,7 @@
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgsgeos.h"
+#include "qgssimplelinematerialsettings.h"
 
 #include "qgsphongtexturedmaterialsettings.h"
 
@@ -398,6 +399,12 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
   materialContext.setIsSelected( selected );
   materialContext.setSelectionColor( context.map().selectionColor() );
   Qt3DRender::QMaterial *mat = mSymbol.material()->toMaterial( QgsMaterialSettingsRenderingTechnique::Lines, materialContext );
+  if ( !mat )
+  {
+    QgsSimpleLineMaterialSettings defaultMaterial;
+    mat = defaultMaterial.toMaterial( QgsMaterialSettingsRenderingTechnique::Lines, materialContext );
+  }
+
   if ( QgsLineMaterial *lineMaterial = dynamic_cast< QgsLineMaterial * >( mat ) )
     lineMaterial->setLineWidth( mSymbol.width() );
 
