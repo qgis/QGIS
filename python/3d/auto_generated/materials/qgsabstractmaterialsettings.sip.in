@@ -86,6 +86,28 @@ Abstract base class for material settings.
 %TypeHeaderCode
 #include "qgsabstractmaterialsettings.h"
 %End
+%ConvertToSubClassCode
+    if ( sipCpp->type() == QLatin1String( "gooch" ) )
+    {
+      sipType = sipType_QgsGoochMaterialSettings;
+    }
+    else if ( sipCpp->type() == QLatin1String( "phong" ) )
+    {
+      sipType = sipType_QgsPhongMaterialSettings;
+    }
+    else if ( sipCpp->type() == "phongtextured" )
+    {
+      sipType = sipType_QgsPhongTexturedMaterialSettings;
+    }
+    else if ( sipCpp->type() == "simpleline" )
+    {
+      sipType = sipType_QgsSimpleLineMaterialSettings;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
   public:
 
     virtual ~QgsAbstractMaterialSettings();
