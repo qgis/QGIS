@@ -6277,6 +6277,7 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
                       << QgsProcessingParameterFile::typeName(),
                       QStringList() << QgsProcessingOutputFile::typeName()
                       << QgsProcessingOutputRasterLayer::typeName()
+                      << QgsProcessingOutputMapLayer::typeName()
                       << QgsProcessingOutputMultipleLayers::typeName() );
       break;
     }
@@ -6287,6 +6288,7 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
                       << QgsProcessingParameterMultipleLayers::typeName()
                       << QgsProcessingParameterFile::typeName(),
                       QStringList() << QgsProcessingOutputFile::typeName()
+                      << QgsProcessingOutputMapLayer::typeName()
                       << QgsProcessingOutputMultipleLayers::typeName() );
       break;
     }
@@ -6299,6 +6301,7 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
                       << QgsProcessingParameterMultipleLayers::typeName(),
                       QStringList() << QgsProcessingOutputFile::typeName()
                       << QgsProcessingOutputVectorLayer::typeName()
+                      << QgsProcessingOutputMapLayer::typeName()
                       << QgsProcessingOutputMultipleLayers::typeName(),
                       QList< int >() << QgsProcessing::TypeVector );
       break;
@@ -6312,6 +6315,7 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
                       << QgsProcessingParameterMultipleLayers::typeName(),
                       QStringList() << QgsProcessingOutputFile::typeName()
                       << QgsProcessingOutputVectorLayer::typeName()
+                      << QgsProcessingOutputMapLayer::typeName()
                       << QgsProcessingOutputMultipleLayers::typeName() );
       break;
     }
@@ -6324,6 +6328,7 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
                       << QgsProcessingParameterMultipleLayers::typeName(),
                       QStringList() << QgsProcessingOutputFile::typeName()
                       << QgsProcessingOutputVectorLayer::typeName()
+                      << QgsProcessingOutputMapLayer::typeName()
                       << QgsProcessingOutputMultipleLayers::typeName(),
                       QList< int >() << QgsProcessing::TypeVectorAnyGeometry << QgsProcessing::TypeVectorPoint );
       break;
@@ -6337,6 +6342,7 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
                       << QgsProcessingParameterMultipleLayers::typeName(),
                       QStringList() << QgsProcessingOutputFile::typeName()
                       << QgsProcessingOutputVectorLayer::typeName()
+                      << QgsProcessingOutputMapLayer::typeName()
                       << QgsProcessingOutputMultipleLayers::typeName(),
                       QList< int >() << QgsProcessing::TypeVectorAnyGeometry << QgsProcessing::TypeVectorLine );
       break;
@@ -6350,7 +6356,8 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
                       << QgsProcessingParameterMultipleLayers::typeName(),
                       QStringList() << QgsProcessingOutputFile::typeName()
                       << QgsProcessingOutputVectorLayer::typeName()
-                      << QgsProcessingOutputMultipleLayers::typeName(),
+                      << QgsProcessingOutputMultipleLayers::typeName()
+                      << QgsProcessingOutputMapLayer::typeName(),
                       QList< int >() << QgsProcessing::TypeVectorAnyGeometry << QgsProcessing::TypeVectorPolygon );
       break;
     }
@@ -6364,6 +6371,7 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
                       << QgsProcessingParameterFile::typeName()
                       << QgsProcessingParameterMultipleLayers::typeName(),
                       QStringList() << QgsProcessingOutputFile::typeName()
+                      << QgsProcessingOutputMapLayer::typeName()
                       << QgsProcessingOutputVectorLayer::typeName()
                       << QgsProcessingOutputRasterLayer::typeName()
                       // << QgsProcessingOutputMeshLayer::typeName()
