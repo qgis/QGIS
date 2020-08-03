@@ -162,11 +162,7 @@ void QgsFeatureListView::editSelectionChanged( const QItemSelection &deselected,
     QItemSelection localSelected = mModel->mapSelectionFromMaster( selected );
     viewport()->update( visualRegionForSelection( localDeselected ) | visualRegionForSelection( localSelected ) );
   }
-  updateEditSelectionDependencies();
-}
 
-void QgsFeatureListView::updateEditSelectionDependencies()
-{
   QItemSelection currentSelection = mCurrentEditSelectionModel->selection();
   if ( currentSelection.size() == 1 )
   {
@@ -177,6 +173,19 @@ void QgsFeatureListView::updateEditSelectionDependencies()
       mModel->featureByIndex( mModel->mapFromMaster( indexList.first() ), feat );
 
       emit currentEditSelectionChanged( feat );
+      emit currentEditSelectionProgressChanged( mModel->mapFromMaster( indexList.first() ).row(), mModel->rowCount() );
+    }
+  }
+}
+
+void QgsFeatureListView::updateEditSelectionDependencies( )
+{
+  QItemSelection currentSelection = mCurrentEditSelectionModel->selection();
+  if ( currentSelection.size() == 1 )
+  {
+    QModelIndexList indexList = currentSelection.indexes();
+    if ( !indexList.isEmpty() )
+    {
       emit currentEditSelectionProgressChanged( mModel->mapFromMaster( indexList.first() ).row(), mModel->rowCount() );
     }
   }
@@ -468,7 +477,13 @@ void QgsFeatureListView::ensureEditSelection( bool inSelection )
     }
     mUpdateEditSelectionTimer.start();
   }
-  updateEditSelectionDependencies();
+  else
+  {
+    //update edit selection dependencies although unchanged selection
+    mUpdateEditSelectionDependenciesTimer.setSingleShot( true );
+    connect( &mUpdateEditSelectionDependenciesTimer, &QTimer::timeout, this, &QgsFeatureListView::updateEditSelectionDependencies, Qt::UniqueConnection );
+    mUpdateEditSelectionDependenciesTimer.start( 100 );
+  }
 }
 
 void QgsFeatureListView::setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager )

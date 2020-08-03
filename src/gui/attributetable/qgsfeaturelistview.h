@@ -215,7 +215,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     void editSelectionChanged( const QItemSelection &deselected, const QItemSelection &selected );
 
     /**
-     * Emits the signal for the feature and the selection information
+     * Emits the signal to change the information for position and count
      */
     void updateEditSelectionDependencies();
 
@@ -252,6 +252,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     QItemSelectionModel::SelectionFlags mCtrlDragSelectionFlag;
 
     QTimer mUpdateEditSelectionTimer;
+    QTimer mUpdateEditSelectionDependenciesTimer;
 
     friend class QgsDualView;
 };
