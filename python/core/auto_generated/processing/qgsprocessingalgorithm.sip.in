@@ -49,6 +49,8 @@ Abstract base class for processing algorithms.
       FlagCustomException,
       FlagPruneModelBranchesBasedOnAlgorithmResults,
       FlagSkipGenericModelLogging,
+      FlagNotAvailableInStandaloneTool,
+      FlagRequiresProject,
       FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
@@ -662,7 +664,7 @@ Evaluates the parameter with matching ``name`` to a static boolean value.
 %End
 
     QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier /Out/,
-                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() ) const throw( QgsProcessingException ) /Factory/;
+                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) const throw( QgsProcessingException ) /Factory/;
 %Docstring
 Evaluates the parameter with matching ``name`` to a feature sink.
 
@@ -674,6 +676,10 @@ of the resulting feature sink.
 
 The ``destinationIdentifier`` argument will be set to a string which can be used to retrieve the layer corresponding
 to the sink, e.g. via calling :py:func:`QgsProcessingUtils.mapLayerFromString()`.
+
+The ``createOptions`` argument is used to pass on creation options such as layer name.
+
+The ``datasourceOptions`` and ``layerOptions`` arguments is used to pass on GDAL-specific format driver options.
 
 This function creates a new object and the caller takes responsibility for deleting the returned object.
 

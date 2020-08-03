@@ -58,7 +58,7 @@ Sets the ``type`` of symbols to show in the widget.
 Sets the layer ``type`` to show in the widget. Set ``type`` to QgsWkbTypes.UnknownGeometry if no
 layer type filter is desired.
 
-This setting only applies to label settings style entities.
+This setting only applies to label settings and 3d style entities.
 %End
 
     QString currentTagFilter() const;

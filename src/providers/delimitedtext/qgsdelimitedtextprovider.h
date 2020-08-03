@@ -156,7 +156,6 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     static QgsGeometry geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp );
     static bool pointFromXY( QString &sX, QString &sY, QgsPoint &point, const QString &decimalPoint, bool xyDms );
     static void appendZM( QString &sZ, QString &sM, QgsPoint &point, const QString &decimalPoint );
-    static double dmsStringToDouble( const QString &sX, bool *xOk );
 
     // mLayerValid defines whether the layer has been loaded as a valid layer
     bool mLayerValid = false;

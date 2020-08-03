@@ -106,6 +106,13 @@ class CORE_EXPORT QgsFeatureSink
      * \returns FALSE if any buffered features could not be added to the sink.
      */
     virtual bool flushBuffer() { return true; }
+
+    /**
+     * Returns the most recent error encountered by the sink, e.g. when a call to addFeatures() returns FALSE.
+     *
+     * \since QGIS 3.16
+     */
+    virtual QString lastError() const { return QString(); }
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureSink::Flags )

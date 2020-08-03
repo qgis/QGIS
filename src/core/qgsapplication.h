@@ -60,6 +60,7 @@ class QgsStyleModel;
 class QgsNumericFormatRegistry;
 class QgsConnectionRegistry;
 class QgsScaleBarRendererRegistry;
+class Qgs3DSymbolRegistry;
 
 /**
  * \ingroup core
@@ -786,6 +787,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static Qgs3DRendererRegistry *renderer3DRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns registry of available 3D symbols.
+     * \since QGIS 3.16
+     */
+    static Qgs3DSymbolRegistry *symbol3DRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Gets the registry of available scalebar renderers.
      *
      * \since QGIS 3.14
@@ -928,6 +935,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     struct ApplicationMembers
     {
       Qgs3DRendererRegistry *m3DRendererRegistry = nullptr;
+      Qgs3DSymbolRegistry *m3DSymbolRegistry = nullptr;
       QgsActionScopeRegistry *mActionScopeRegistry = nullptr;
       QgsAnnotationRegistry *mAnnotationRegistry = nullptr;
       QgsColorSchemeRegistry *mColorSchemeRegistry = nullptr;

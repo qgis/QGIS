@@ -279,6 +279,13 @@ Constructor for QgsTextFormatPanelWidget.
 Returns the current formatting settings defined by the widget.
 %End
 
+    void setFormat( const QgsTextFormat &format );
+%Docstring
+Sets the ``format`` to show in the widget.
+
+.. versionadded:: 3.16
+%End
+
     void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
 Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.

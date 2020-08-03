@@ -16,7 +16,8 @@
 #ifndef QGSPHONGMATERIALWIDGET_H
 #define QGSPHONGMATERIALWIDGET_H
 
-#include <QWidget>
+#include "qgsmaterialsettingswidget.h"
+#include "qgsabstractmaterialsettings.h"
 
 #include <ui_phongmaterialwidget.h>
 
@@ -24,24 +25,18 @@ class QgsPhongMaterialSettings;
 
 
 //! Widget for configuration of Phong material settings
-class QgsPhongMaterialWidget : public QWidget, private Ui::PhongMaterialWidget
+class QgsPhongMaterialWidget : public QgsMaterialSettingsWidget, private Ui::PhongMaterialWidget
 {
     Q_OBJECT
   public:
     explicit QgsPhongMaterialWidget( QWidget *parent = nullptr );
 
-    void setDiffuseVisible( bool visible );
-    bool isDiffuseVisible() const;
+    static QgsMaterialSettingsWidget *create();
 
-    void setMaterial( const QgsPhongMaterialSettings &material );
-    QgsPhongMaterialSettings material() const;
+    void setTechnique( QgsMaterialSettingsRenderingTechnique technique ) override;
+    void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer ) override;
+    QgsAbstractMaterialSettings *settings() override;
 
-    //! activates the texturing UI (to make sure texturing UI isn't visible when the user doesn't need it like in the 3D configuration window)
-    void activateTexturingUI( bool activated );
-  signals:
-    void changed();
-
-  public slots:
 };
 
 #endif // QGSPHONGMATERIALWIDGET_H

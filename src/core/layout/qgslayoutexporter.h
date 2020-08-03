@@ -336,7 +336,7 @@ class CORE_EXPORT QgsLayoutExporter
        *
        * \since QGIS 3.14
        */
-      bool exportLayersAsSeperateFiles = false;
+      bool exportLayersAsSeperateFiles = false; // TODO QGIS 4 fix typo
 
       /**
        * TRUE if ISO3200 extension format georeferencing should be used.

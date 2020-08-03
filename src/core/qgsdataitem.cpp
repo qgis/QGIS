@@ -232,7 +232,7 @@ QIcon QgsFieldItem::icon()
 
 QIcon QgsFavoritesItem::iconFavorites()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavourites.svg" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavorites.svg" ) );
 }
 
 QVariant QgsFavoritesItem::sortKey() const
@@ -1396,7 +1396,7 @@ QgsFavoritesItem::QgsFavoritesItem( QgsDataItem *parent, const QString &name, co
   Q_UNUSED( path )
   mCapabilities |= Fast;
   mType = Favorites;
-  mIconName = QStringLiteral( "/mIconFavourites.svg" );
+  mIconName = QStringLiteral( "/mIconFavorites.svg" );
   populate();
 }
 
@@ -1405,6 +1405,7 @@ QVector<QgsDataItem *> QgsFavoritesItem::createChildren()
   QVector<QgsDataItem *> children;
 
   QgsSettings settings;
+
   const QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ), QVariant() ).toStringList();
 
   for ( const QString &favDir : favDirs )

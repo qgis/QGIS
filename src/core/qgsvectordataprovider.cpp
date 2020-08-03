@@ -89,6 +89,11 @@ bool QgsVectorDataProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   return false;
 }
 
+QString QgsVectorDataProvider::lastError() const
+{
+  return mErrors.last();
+}
+
 bool QgsVectorDataProvider::deleteFeatures( const QgsFeatureIds &ids )
 {
   Q_UNUSED( ids )

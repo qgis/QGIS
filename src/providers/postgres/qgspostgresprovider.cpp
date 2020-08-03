@@ -659,6 +659,34 @@ QString QgsPostgresUtils::andWhereClauses( const QString &c1, const QString &c2 
   return QStringLiteral( "(%1) AND (%2)" ).arg( c1, c2 );
 }
 
+void QgsPostgresUtils::replaceInvalidXmlChars( QString &xml )
+{
+  static const QRegularExpression replaceRe { QStringLiteral( "([\x00-\x08\x0B-\x1F\x7F])" ) };
+  QRegularExpressionMatchIterator it {replaceRe.globalMatch( xml ) };
+  while ( it.hasNext() )
+  {
+    const QRegularExpressionMatch match { it.next() };
+    const QChar c { match.captured( 1 ).at( 0 ) };
+    xml.replace( c, QStringLiteral( "UTF-8[%1]" ).arg( c.unicode() ) );
+  }
+}
+
+void QgsPostgresUtils::restoreInvalidXmlChars( QString &xml )
+{
+  static const QRegularExpression replaceRe { QStringLiteral( R"raw(UTF-8\[(\d+)\])raw" ) };
+  QRegularExpressionMatchIterator it {replaceRe.globalMatch( xml ) };
+  while ( it.hasNext() )
+  {
+    const QRegularExpressionMatch match { it.next() };
+    bool ok;
+    const ushort code { match.captured( 1 ).toUShort( &ok ) };
+    if ( ok )
+    {
+      xml.replace( QStringLiteral( "UTF-8[%1]" ).arg( code ), QChar( code ) );
+    }
+  }
+}
+
 QString QgsPostgresProvider::filterWhereClause() const
 {
   QString where;
@@ -3511,14 +3539,13 @@ long QgsPostgresProvider::featureCount() const
     {
       // parse explain output to estimate feature count
       // we don't use pg_class reltuples because it returns 0 for view
-      sql = QStringLiteral( "EXPLAIN (FORMAT JSON) SELECT count(*) FROM %1%2" ).arg( mQuery, filterWhereClause() );
+      sql = QStringLiteral( "EXPLAIN (FORMAT JSON) SELECT 1 FROM %1%2" ).arg( mQuery, filterWhereClause() );
       QgsPostgresResult result( connectionRO()->PQexec( sql ) );
 
       const QString json = result.PQgetvalue( 0, 0 );
       const QVariantList explain = QgsJsonUtils::parseJson( json ).toList();
-      const QVariantMap countPlan = explain.count() ? explain[0].toMap().value( "Plan" ).toMap() : QVariantMap();
-      const QVariantList queryPlan = countPlan.value( "Plans" ).toList();
-      const QVariant nbRows = queryPlan.count() ? queryPlan[0].toMap().value( "Plan Rows" ) : QVariant();
+      const QVariantMap countPlan = !explain.isEmpty() ? explain[0].toMap().value( "Plan" ).toMap() : QVariantMap();
+      const QVariant nbRows = countPlan.value( "Plan Rows" );
 
       if ( nbRows.isValid() )
         num = nbRows.toInt();
@@ -4936,11 +4963,17 @@ QgsVectorLayerExporter::ExportError QgsPostgresProviderMetadata::createEmptyLaye
          );
 }
 
-bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
+bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &qmlStyleIn, const QString &sldStyleIn,
     const QString &styleName, const QString &styleDescription,
     const QString &uiFileContent, bool useAsDefault, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
+
+  // Replace invalid XML characters
+  QString qmlStyle { qmlStyleIn };
+  QgsPostgresUtils::replaceInvalidXmlChars( qmlStyle );
+  QString sldStyle { sldStyleIn };
+  QgsPostgresUtils::replaceInvalidXmlChars( sldStyle );
 
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
@@ -5187,6 +5220,8 @@ QString QgsPostgresProviderMetadata::loadStyle( const QString &uri, QString &err
   QString style = result.PQntuples() == 1 ? result.PQgetvalue( 0, 0 ) : QString();
   conn->unref();
 
+  QgsPostgresUtils::restoreInvalidXmlChars( style );
+
   return style;
 }
 
@@ -5333,6 +5368,8 @@ QString QgsPostgresProviderMetadata::getStyleById( const QString &uri, QString s
   }
 
   conn->unref();
+
+  QgsPostgresUtils::restoreInvalidXmlChars( style );
 
   return style;
 }

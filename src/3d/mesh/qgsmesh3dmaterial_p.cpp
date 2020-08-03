@@ -234,11 +234,11 @@ class ArrowsGridTexture: public Qt3DRender::QAbstractTextureImage
 QgsMesh3dMaterial::QgsMesh3dMaterial( QgsMeshLayer *layer,
                                       const QgsDateTimeRange &timeRange,
                                       const QgsVector3D &origin,
-                                      const QgsMesh3DSymbol &symbol,
-                                      MagnitudeType magnitudeType ):
-  mSymbol( symbol ),
-  mMagnitudeType( magnitudeType ),
-  mOrigin( origin )
+                                      const QgsMesh3DSymbol *symbol,
+                                      MagnitudeType magnitudeType )
+  : mSymbol( symbol->clone() )
+  , mMagnitudeType( magnitudeType )
+  , mOrigin( origin )
 {
   Qt3DRender::QEffect *eff = new Qt3DRender::QEffect( this );
 
@@ -253,18 +253,18 @@ void QgsMesh3dMaterial::configure()
 {
   // Create the texture to pass the color ramp
   Qt3DRender::QTexture1D *colorRampTexture = nullptr;
-  if ( mSymbol.colorRampShader().colorRampItemList().count() > 0 )
+  if ( mSymbol->colorRampShader().colorRampItemList().count() > 0 )
   {
     colorRampTexture = new Qt3DRender::QTexture1D( this );
     switch ( mMagnitudeType )
     {
       case QgsMesh3dMaterial::ZValue:
         // if the color shading is done with the Z value of vertices, the color ramp has to be adapted with vertical scale
-        colorRampTexture->addTextureImage( new ColorRampTexture( mSymbol.colorRampShader(), mSymbol.verticalScale() ) );
+        colorRampTexture->addTextureImage( new ColorRampTexture( mSymbol->colorRampShader(), mSymbol->verticalScale() ) );
         break;
       case QgsMesh3dMaterial::ScalarDataSet:
         // if the color shading is done with scalar dataset, no vertical scale to use
-        colorRampTexture->addTextureImage( new ColorRampTexture( mSymbol.colorRampShader(), 1 ) );
+        colorRampTexture->addTextureImage( new ColorRampTexture( mSymbol->colorRampShader(), 1 ) );
         break;
     }
 
@@ -298,18 +298,18 @@ void QgsMesh3dMaterial::configure()
   mTechnique->addRenderPass( renderPass );
 
   // Parameters
-  mTechnique->addParameter( new Qt3DRender::QParameter( "flatTriangles", ( !mSymbol.smoothedTriangles() ) ) );
-  QColor wireframecolor = mSymbol.wireframeLineColor();
-  mTechnique->addParameter( new Qt3DRender::QParameter( "lineWidth", float( mSymbol.wireframeLineWidth() ) ) );
+  mTechnique->addParameter( new Qt3DRender::QParameter( "flatTriangles", ( !mSymbol->smoothedTriangles() ) ) );
+  QColor wireframecolor = mSymbol->wireframeLineColor();
+  mTechnique->addParameter( new Qt3DRender::QParameter( "lineWidth", float( mSymbol->wireframeLineWidth() ) ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "lineColor", QVector4D( wireframecolor.redF(), wireframecolor.greenF(), wireframecolor.blueF(), 1.0f ) ) );
-  mTechnique->addParameter( new Qt3DRender::QParameter( "wireframeEnabled", mSymbol.wireframeEnabled() ) );
-  mTechnique->addParameter( new Qt3DRender::QParameter( "textureType", int( mSymbol.renderingStyle() ) ) );
+  mTechnique->addParameter( new Qt3DRender::QParameter( "wireframeEnabled", mSymbol->wireframeEnabled() ) );
+  mTechnique->addParameter( new Qt3DRender::QParameter( "textureType", int( mSymbol->renderingStyle() ) ) );
   if ( colorRampTexture )
     mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampTexture", colorRampTexture ) ) ;
-  mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampCount", mSymbol.colorRampShader().colorRampItemList().count() ) );
-  int colorRampType = mSymbol.colorRampShader().colorRampType();
+  mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampCount", mSymbol->colorRampShader().colorRampItemList().count() ) );
+  int colorRampType = mSymbol->colorRampShader().colorRampType();
   mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampType", colorRampType ) );
-  QColor meshColor = mSymbol.singleMeshColor();
+  QColor meshColor = mSymbol->singleMeshColor();
   mTechnique->addParameter( new Qt3DRender::QParameter( "meshColor", QVector4D( meshColor.redF(), meshColor.greenF(), meshColor.blueF(), 1.0f ) ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "isScalarMagnitude", ( mMagnitudeType == QgsMesh3dMaterial::ScalarDataSet ) ) );
 }
@@ -321,7 +321,7 @@ void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
 
   QgsMeshDatasetIndex datasetIndex = layer->activeVectorDatasetAtTime( timeRange );
 
-  mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsSpacing", float( mSymbol.arrowsSpacing() ) ) ) ;
+  mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsSpacing", float( mSymbol->arrowsSpacing() ) ) ) ;
   QColor arrowsColor = layer->rendererSettings().vectorSettings( datasetIndex.group() ).color();
   mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsColor", QVector4D( arrowsColor.redF(), arrowsColor.greenF(), arrowsColor.blueF(), 1.0f ) ) ) ;
 
@@ -331,17 +331,17 @@ void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
   QSize gridSize;
   QgsPointXY minCorner;
   std::unique_ptr< Qt3DRender::QParameter > arrowsEnabledParameter = qgis::make_unique< Qt3DRender::QParameter >( "arrowsEnabled", nullptr );
-  if ( mMagnitudeType != MagnitudeType::ScalarDataSet || !mSymbol.arrowsEnabled() || meta.isScalar() || !datasetIndex.isValid() )
+  if ( mMagnitudeType != MagnitudeType::ScalarDataSet || !mSymbol->arrowsEnabled() || meta.isScalar() || !datasetIndex.isValid() )
     arrowsEnabledParameter->setValue( false );
   else
   {
     arrowsEnabledParameter->setValue( true );
-    int maxSize = mSymbol.maximumTextureSize();
+    int maxSize = mSymbol->maximumTextureSize();
     // construct grid
     QgsRectangle gridExtent = layer->triangularMesh()->extent();
     gridSize = QSize( maxSize, maxSize );
-    double xSpacing = mSymbol.arrowsSpacing();
-    double ySpacing = mSymbol.arrowsSpacing();
+    double xSpacing = mSymbol->arrowsSpacing();
+    double ySpacing = mSymbol->arrowsSpacing();
     // check the size of the grid and adjust the spacing if needed
     int desiredXSize = int( gridExtent.width() / xSpacing );
     if ( desiredXSize > maxSize )
@@ -374,7 +374,7 @@ void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
   mTechnique->addParameter( arrowsEnabledParameter.release() )  ;
 
   Qt3DRender::QTexture2D *arrowsGridTexture = new Qt3DRender::QTexture2D( this );
-  arrowsGridTexture->addTextureImage( new ArrowsGridTexture( vectors, gridSize, mSymbol.arrowsFixedSize(), meta.maximum() ) );
+  arrowsGridTexture->addTextureImage( new ArrowsGridTexture( vectors, gridSize, mSymbol->arrowsFixedSize(), meta.maximum() ) );
   arrowsGridTexture->setMinificationFilter( Qt3DRender::QTexture2D::Nearest );
   arrowsGridTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Nearest );
 

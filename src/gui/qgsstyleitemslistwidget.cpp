@@ -204,6 +204,13 @@ void QgsStyleItemsListWidget::setEntityType( QgsStyle::StyleEntity type )
         groupsCombo->setItemText( allGroup, tr( "All Legend Patch Shapes" ) );
       break;
 
+    case QgsStyle::Symbol3DEntity:
+      btnSaveSymbol->setText( tr( "Save 3D Symbol…" ) );
+      btnSaveSymbol->setToolTip( tr( "Save 3D symbol to styles" ) );
+      if ( allGroup >= 0 )
+        groupsCombo->setItemText( allGroup, tr( "All 3D Symbols" ) );
+      break;
+
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
       break;
@@ -328,6 +335,10 @@ void QgsStyleItemsListWidget::populateGroups()
 
       case QgsStyle::LegendPatchShapeEntity:
         allText = tr( "All Legend Patch Shapes" );
+        break;
+
+      case QgsStyle::Symbol3DEntity:
+        allText = tr( "All 3D Symbols" );
         break;
 
       case QgsStyle::TagEntity:

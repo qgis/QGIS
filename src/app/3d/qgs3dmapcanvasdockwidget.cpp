@@ -44,7 +44,10 @@
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgs3dutils.h"
 
-
+#include "qgs3dsceneexporter.h"
+#include "qgsabstract3drenderer.h"
+#include "qgsmap3dexportwidget.h"
+#include "qgs3dmapexportsettings.h"
 
 Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   : QgsDockWidget( parent )
@@ -99,6 +102,9 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSaveMapAsImage.svg" ) ),
                       tr( "Save as Image…" ), this, &Qgs3DMapCanvasDockWidget::saveAsImage );
 
+  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ),
+                      tr( "Export 3D Scene" ), this, &Qgs3DMapCanvasDockWidget::exportScene );
+
   toolBar->addSeparator();
 
   // Map Theme Menu
@@ -117,7 +123,6 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
 
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ),
                       tr( "Configure…" ), this, &Qgs3DMapCanvasDockWidget::configure );
-
 
   mCanvas = new Qgs3DMapCanvas( contentsWidget );
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
@@ -291,9 +296,34 @@ void Qgs3DMapCanvasDockWidget::configure()
   mBtnMapThemes->setDisabled( map->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
 }
 
+void Qgs3DMapCanvasDockWidget::exportScene()
+{
+
+  QDialog dlg;
+  dlg.setWindowTitle( tr( "Export 3D Scene" ) );
+  dlg.setObjectName( QStringLiteral( "3DSceneExportDialog" ) );
+  dlg.setMinimumSize( 380, 460 );
+//  QgsGui::instance()->enableAutoGeometryRestore( &dlg );
+
+  Qgs3DMapExportSettings exportSettings;
+  QgsMap3DExportWidget w( mCanvas->scene(), &exportSettings );
+
+  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg );
+
+  connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+  connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+
+  QVBoxLayout *layout = new QVBoxLayout( &dlg );
+  layout->addWidget( &w, 1 );
+  layout->addWidget( buttons );
+  if ( dlg.exec() )
+    w.exportScene();
+}
+
 void Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged()
 {
   mCanvas->map()->setLayers( mMainCanvas->layers() );
+  mCanvas->map()->setTerrainLayers( mMainCanvas->layers() );
 }
 
 void Qgs3DMapCanvasDockWidget::onMainCanvasColorChanged()

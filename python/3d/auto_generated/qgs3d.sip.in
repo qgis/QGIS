@@ -9,6 +9,7 @@
 
 
 
+
 class Qgs3D
 {
 %Docstring
@@ -31,6 +32,16 @@ Returns a pointer to the singleton instance.
 %End
 
     ~Qgs3D();
+
+    static void initialize();
+%Docstring
+Initializes the 3D framework.
+%End
+
+    static QgsMaterialRegistry *materialRegistry();
+%Docstring
+Returns the material registry, used for managing 3D materials.
+%End
 
   private:
     Qgs3D( const Qgs3D &other );

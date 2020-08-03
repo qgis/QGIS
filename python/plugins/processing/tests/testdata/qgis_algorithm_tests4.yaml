@@ -2501,5 +2501,46 @@ tests:
         hash: 63610fb1f7ec3d6530591b1eb479355b52cedfebf6331cec77f2b35c
         type: rasterhash
 
+  - algorithm: native:angletonearest
+    name: Align points to nearest line, no max distance
+    params:
+      APPLY_SYMBOLOGY: true
+      FIELD_NAME: rotation
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      REFERENCE_LAYER:
+        name: custom/snap_lines_3857.gml|layername=snap_lines_3857
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/rotated_points_no_max.gml
+        type: vector
+        compare:
+          fields:
+            rotation:
+              precision: 2
+
+  - algorithm: native:angletonearest
+    name: Align points to nearest line, max distance
+    params:
+      APPLY_SYMBOLOGY: true
+      FIELD_NAME: angle
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      MAX_DISTANCE: 1.0
+      REFERENCE_LAYER:
+        name: custom/snap_lines_3857.gml|layername=snap_lines_3857
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/rotated_points_max.gml
+        type: vector
+        compare:
+          fields:
+            angle:
+              precision: 2
+
 
 # See ../README.md for a description of the file format

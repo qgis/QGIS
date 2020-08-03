@@ -62,7 +62,7 @@ class QgsMesh3dGeometry: public  Qt3DRender::QGeometry
     //! Constructor
     explicit QgsMesh3dGeometry( QgsMeshLayer *layer,
                                 const QgsVector3D &origin,
-                                const QgsMesh3DSymbol &symbol,
+                                const QgsMesh3DSymbol *symbol,
                                 QNode *parent );
     virtual ~QgsMesh3dGeometry() = default;
     void prepareVerticesPositionAttribute( Qt3DRender::QBuffer *buffer, int count, int stride, int offset );
@@ -87,7 +87,7 @@ class QgsMeshDataset3dGeometry: public  QgsMesh3dGeometry
     explicit QgsMeshDataset3dGeometry( QgsMeshLayer *layer,
                                        const QgsDateTimeRange &timeRange,
                                        const QgsVector3D &origin,
-                                       const QgsMesh3DSymbol &symbol,
+                                       const QgsMesh3DSymbol *symbol,
                                        QNode *parent );
 
   private:
@@ -112,7 +112,7 @@ class QgsMeshTerrain3dGeometry: public  QgsMesh3dGeometry
     //! Constructs a mesh layer geometry from triangular mesh.
     explicit QgsMeshTerrain3dGeometry( QgsMeshLayer *layer,
                                        const QgsVector3D &origin,
-                                       const QgsMesh3DSymbol &symbol,
+                                       const QgsMesh3DSymbol *symbol,
                                        QNode *parent );
   private:
     void init();

@@ -60,6 +60,10 @@
 #include "qgsmaplayertemporalproperties.h"
 
 #include "qgslinematerial_p.h"
+#include "qgs3dsceneexporter.h"
+#include "qgsabstract3drenderer.h"
+#include "qgs3dmapexportsettings.h"
+#include "qgsmessageoutput.h"
 
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
@@ -688,7 +692,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 
       // Before entity creation, set the maximum texture size
       // Not very clean, but for now, only place found in the workflow to do that simple
-      QgsMesh3DSymbol *sym = new QgsMesh3DSymbol( *meshRenderer->symbol() );
+      QgsMesh3DSymbol *sym = meshRenderer->symbol()->clone();
       sym->setMaximumTextureSize( maximumTextureSize() );
       meshRenderer->setSymbol( sym );
     }
@@ -855,4 +859,56 @@ void Qgs3DMapScene::updateSceneState()
   }
 
   setSceneState( Ready );
+}
+
+void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
+{
+  QVector<QString> notParsedLayers;
+  Qgs3DSceneExporter exporter;
+
+  exporter.setTerrainResolution( exportSettings.terrrainResolution() );
+  exporter.setSmoothEdges( exportSettings.smoothEdges() );
+  exporter.setExportNormals( exportSettings.exportNormals() );
+  exporter.setExportTextures( exportSettings.exportTextures() );
+  exporter.setTerrainTextureResolution( exportSettings.terrainTextureResolution() );
+  exporter.setScale( exportSettings.scale() );
+
+  for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); ++it )
+  {
+    QgsMapLayer *layer = it.key();
+    Qt3DCore::QEntity *rootEntity = it.value();
+    QgsMapLayerType layerType =  layer->type();
+    switch ( layerType )
+    {
+      case QgsMapLayerType::VectorLayer:
+        if ( !exporter.parseVectorLayerEntity( rootEntity, qobject_cast<QgsVectorLayer *>( layer ) ) )
+          notParsedLayers.push_back( layer->name() );
+        break;
+      case QgsMapLayerType::RasterLayer:
+        notParsedLayers.push_back( layer->name() );
+        break;
+      case QgsMapLayerType::PluginLayer:
+        notParsedLayers.push_back( layer->name() );
+        break;
+      case QgsMapLayerType::MeshLayer:
+        notParsedLayers.push_back( layer->name() );
+        break;
+      case QgsMapLayerType::VectorTileLayer:
+        notParsedLayers.push_back( layer->name() );
+        break;
+    }
+  }
+
+  if ( mTerrain )
+    exporter.parseTerrain( mTerrain, "Terrain" );
+
+  exporter.save( exportSettings.sceneName(), exportSettings.sceneFolderPath() );
+
+  if ( !notParsedLayers.empty() )
+  {
+    QString message = tr( "The following layers were not exported:" ) + "\n";
+    for ( const QString &layerName : notParsedLayers )
+      message += layerName + "\n";
+    QgsMessageOutput::showMessage( tr( "3D exporter warning" ), message, QgsMessageOutput::MessageText );
+  }
 }

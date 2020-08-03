@@ -7,33 +7,24 @@
     <x>0</x>
     <y>0</y>
     <width>394</width>
-    <height>248</height>
+    <height>133</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="3" column="0">
+    <widget class="QLabel" name="lblShininess">
+     <property name="text">
+      <string>Shininess</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="lblDiffuse">
      <property name="text">
       <string>Diffuse</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QgsColorButton" name="btnDiffuse">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
      </property>
     </widget>
    </item>
@@ -60,13 +51,6 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="lblSpecular">
-     <property name="text">
-      <string>Specular</string>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="1">
     <widget class="QgsColorButton" name="btnSpecular">
      <property name="sizePolicy">
@@ -83,13 +67,6 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="lblShininess">
-     <property name="text">
-      <string>Shininess</string>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="1">
     <widget class="QgsDoubleSpinBox" name="spinShininess">
      <property name="maximum">
@@ -97,62 +74,26 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QCheckBox" name="useDiffuseCheckBox">
+   <item row="0" column="1">
+    <widget class="QgsColorButton" name="btnDiffuse">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="lblSpecular">
      <property name="text">
-      <string>Use diffuse texture</string>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QgsImageSourceLineEdit" name="textureFile" native="true"/>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="lblTextureScale">
-     <property name="text">
-      <string>Texture scale</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QgsDoubleSpinBox" name="textureScaleSpinBox">
-     <property name="minimum">
-      <double>0.010000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>100.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>1.000000000000000</double>
-     </property>
-     <property name="value">
-      <double>1.000000000000000</double>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="lblTextureRotation">
-     <property name="text">
-      <string>Texture rotation</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1">
-    <widget class="QgsDoubleSpinBox" name="textureRotationSpinBox">
-     <property name="suffix">
-      <string> °</string>
-     </property>
-     <property name="minimum">
-      <double>-360.000000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>360.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.500000000000000</double>
+      <string>Specular</string>
      </property>
     </widget>
    </item>
@@ -168,12 +109,6 @@
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsImageSourceLineEdit</class>
-   <extends>QWidget</extends>
-   <header>qgsfilecontentsourcelineedit.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

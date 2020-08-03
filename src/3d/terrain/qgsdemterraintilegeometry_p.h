@@ -67,6 +67,11 @@ class DemTerrainTileGeometry : public Qt3DRender::QGeometry
 
     bool rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint );
 
+    Qt3DRender::QAttribute *positionAttribute() { return mPositionAttribute; }
+    Qt3DRender::QAttribute *normalAttribute() { return mNormalAttribute; }
+    Qt3DRender::QAttribute *texCoordsAttribute() { return mTexCoordAttribute; }
+    Qt3DRender::QAttribute *indexAttribute() { return mIndexAttribute; }
+
   private:
     void init();
 

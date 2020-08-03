@@ -21,6 +21,8 @@
 #include "qgis_3d.h"
 #include "qgis_sip.h"
 
+class QgsMaterialRegistry;
+
 /**
  * \ingroup gui
  * Qgs3D is a singleton class containing various registries and other global members
@@ -45,6 +47,16 @@ class _3D_EXPORT Qgs3D
 
     ~Qgs3D();
 
+    /**
+     * Initializes the 3D framework.
+     */
+    static void initialize();
+
+    /**
+     * Returns the material registry, used for managing 3D materials.
+     */
+    static QgsMaterialRegistry *materialRegistry();
+
   private:
 
     Qgs3D();
@@ -52,6 +64,10 @@ class _3D_EXPORT Qgs3D
 #ifdef SIP_RUN
     Qgs3D( const Qgs3D &other );
 #endif
+
+    bool mInitialized = false;
+
+    QgsMaterialRegistry *mMaterialRegistry = nullptr;
 
 };
 

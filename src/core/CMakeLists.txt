@@ -605,6 +605,10 @@ SET(QGIS_CORE_SRCS
   mesh/qgsmeshtracerenderer.cpp
   mesh/qgsmeshvectorrenderer.cpp
   mesh/qgstriangularmesh.cpp
+  mesh/qgsmeshcalcnode.cpp
+  mesh/qgsmeshcalculator.cpp
+  mesh/qgsmeshcalcutils.cpp
+  mesh/qgsmeshvirtualdatasetgroup.cpp
 
   labeling/qgslabelfeature.cpp
   labeling/qgslabelingengine.cpp
@@ -654,6 +658,8 @@ SET(QGIS_CORE_SRCS
   geometry/qgswkbtypes.cpp
 
   3d/qgs3drendererregistry.cpp
+  3d/qgs3dsymbolregistry.cpp
+  3d/qgsabstract3dsymbol.cpp
   3d/qgsabstract3drenderer.cpp
 
   fieldformatter/qgscheckboxfieldformatter.cpp
@@ -730,11 +736,13 @@ ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
 
 ADD_FLEX_FILES_PREFIX(QGIS_CORE_SRCS exp_ qgsexpressionlexer.ll)
 ADD_FLEX_FILES_PREFIX(QGIS_CORE_SRCS sqlstatement_ qgssqlstatementlexer.ll)
+ADD_FLEX_FILES_PREFIX(QGIS_CORE_SRCS mesh mesh/qgsmeshcalclexer.ll)
 ADD_BISON_FILES_PREFIX(QGIS_CORE_SRCS exp_ qgsexpressionparser.yy)
 ADD_BISON_FILES_PREFIX(QGIS_CORE_SRCS sqlstatement_ qgssqlstatementparser.yy)
+ADD_BISON_FILES_PREFIX(QGIS_CORE_SRCS mesh mesh/qgsmeshcalcparser.yy)
 
 IF(NOT MSVC)
-  SET_SOURCE_FILES_PROPERTIES(qgsexpressionparser.cpp qgssqlstatementparser.cpp PROPERTIES COMPILE_FLAGS -w)
+  SET_SOURCE_FILES_PROPERTIES(qgsexpressionparser.cpp qgssqlstatementparser.cpp qgsmeshcalcparser.cpp PROPERTIES COMPILE_FLAGS -w)
 ELSE(NOT MSVC)
   # -wd4702 unreachable code
   SET_SOURCE_FILES_PROPERTIES(
@@ -1032,6 +1040,8 @@ SET(QGIS_CORE_HDRS
   qobjectuniqueptr.h
 
   3d/qgs3drendererregistry.h
+  3d/qgs3dsymbolregistry.h
+  3d/qgsabstract3dsymbol.h
   3d/qgsabstract3drenderer.h
 
   annotations/qgsannotation.h
@@ -1247,6 +1257,10 @@ SET(QGIS_CORE_HDRS
   mesh/qgsmeshtracerenderer.h
   mesh/qgsmeshvectorrenderer.h
   mesh/qgstriangularmesh.h
+  mesh/qgsmeshcalcnode.h
+  mesh/qgsmeshcalculator.h
+  mesh/qgsmeshcalcutils.h
+  mesh/qgsmeshvirtualdatasetgroup.h
 
   metadata/qgsabstractmetadatabase.h
   metadata/qgslayermetadata.h

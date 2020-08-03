@@ -52,7 +52,7 @@ QgsExpressionNode::NodeList::~NodeList()
 void QgsExpressionNode::NodeList::append( QgsExpressionNode::NamedNode *node )
 {
   mList.append( node->node );
-  mNameList.append( node->name.toLower() );
+  mNameList.append( cleanNamedNodeName( node->name ) );
   mHasNamedNodes = true;
   delete node;
 }
@@ -80,6 +80,17 @@ QString QgsExpressionNode::NodeList::dump() const
     msg += n->dump();
   }
   return msg;
+}
+
+QString QgsExpressionNode::NodeList::cleanNamedNodeName( const QString &name )
+{
+  QString cleaned = name.toLower();
+
+  // upgrade older argument names to standard versions
+  if ( cleaned == QLatin1String( "geom" ) )
+    cleaned = QStringLiteral( "geometry" );
+
+  return cleaned;
 }
 
 
@@ -1307,8 +1318,13 @@ QVariant QgsExpressionNodeColumnRef::evalNode( QgsExpression *parent, const QgsE
       else
         return feature.attribute( mName );
     }
+    else
+    {
+      parent->setEvalErrorString( tr( "No feature available for field '%1' evaluation" ).arg( mName ) );
+    }
   }
-  parent->setEvalErrorString( tr( "Field '%1' not found" ).arg( mName ) );
+  if ( index < 0 )
+    parent->setEvalErrorString( tr( "Field '%1' not found" ).arg( mName ) );
   return QVariant();
 }
 

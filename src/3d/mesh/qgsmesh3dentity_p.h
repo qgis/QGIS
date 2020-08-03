@@ -55,7 +55,7 @@ class QgsMesh3dEntity
     //! Constructor
     QgsMesh3dEntity( const Qgs3DMapSettings &map,
                      QgsMeshLayer *meshLayer,
-                     const QgsMesh3DSymbol &symbol );
+                     const QgsMesh3DSymbol *symbol );
 
     virtual ~QgsMesh3dEntity() = default;
 
@@ -63,7 +63,7 @@ class QgsMesh3dEntity
 
     Qgs3DMapSettings mMapSettings;
     QgsMapLayerRef mLayerRef;
-    QgsMesh3DSymbol mSymbol;
+    std::unique_ptr< QgsMesh3DSymbol > mSymbol;
 
   private:
     virtual void buildGeometry() = 0;
@@ -77,7 +77,7 @@ class QgsMeshDataset3dEntity: public QgsMesh3dEntity, public Qt3DCore::QEntity
     //! Constructor
     QgsMeshDataset3dEntity( const Qgs3DMapSettings &map,
                             QgsMeshLayer *meshLayer,
-                            const QgsMesh3DSymbol &symbol );
+                            const QgsMesh3DSymbol *symbol );
 
   private:
     virtual void buildGeometry();
@@ -91,7 +91,7 @@ class QgsMesh3dTerrainTileEntity: public QgsMesh3dEntity, public QgsTerrainTileE
   public:
     QgsMesh3dTerrainTileEntity( const Qgs3DMapSettings &map,
                                 QgsMeshLayer *meshLayer,
-                                const QgsMesh3DSymbol &symbol,
+                                const QgsMesh3DSymbol *symbol,
                                 QgsChunkNodeId nodeId,
                                 Qt3DCore::QNode *parent = nullptr );
 

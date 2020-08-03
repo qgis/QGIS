@@ -425,16 +425,17 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
     // Check attribute conversion
     bool conversionError { false };
+    QString errorMessage;
     for ( int i = 0; i < mFields.count(); ++i )
     {
       QVariant attrValue { it->attribute( i ) };
-      if ( ! attrValue.isNull() && ! mFields.at( i ).convertCompatible( attrValue ) )
+      if ( ! attrValue.isNull() && ! mFields.at( i ).convertCompatible( attrValue, &errorMessage ) )
       {
         // Push first conversion error only
         if ( result )
         {
-          pushError( tr( "Could not add feature with attribute %1 having type %2, cannot convert to type %3" )
-                     .arg( mFields.at( i ).name(), it->attribute( i ).typeName(), mFields.at( i ).typeName() ) );
+          pushError( tr( "Could not store attribute \"%1\": %2" )
+                     .arg( mFields.at( i ).name(), errorMessage ) );
         }
         result = false;
         conversionError = true;
@@ -598,6 +599,7 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
 
   QgsChangedAttributesMap rollBackMap;
 
+  QString errorMessage;
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
     QgsFeatureMap::iterator fit = mFeatures.find( it.key() );
@@ -613,15 +615,15 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
       QVariant attrValue { it2.value() };
       // Check attribute conversion
       const bool conversionError { ! attrValue.isNull()
-                                   && ! mFields.at( it2.key() ).convertCompatible( attrValue ) };
+                                   && ! mFields.at( it2.key() ).convertCompatible( attrValue, &errorMessage ) };
       if ( conversionError )
       {
         // Push first conversion error only
         if ( result )
         {
-          pushError( tr( "Could not change attribute %1 having type %2 for feature %4, cannot convert to type %3" )
+          pushError( tr( "Could not change attribute %1 having type %2 for feature %4: %3" )
                      .arg( mFields.at( it2.key() ).name(), it2.value( ).typeName(),
-                           mFields.at( it2.key() ).typeName() ).arg( it.key() ) );
+                           errorMessage ).arg( it.key() ) );
         }
         result = false;
         break;

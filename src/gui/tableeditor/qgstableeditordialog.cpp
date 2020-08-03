@@ -20,6 +20,7 @@
 #include "qgsdockwidget.h"
 #include "qgspanelwidgetstack.h"
 #include "qgstableeditorformattingwidget.h"
+#include "qgssettings.h"
 
 #include <QClipboard>
 #include <QMessageBox>
@@ -135,6 +136,22 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
     mTableWidget->setIncludeTableHeader( checked );
     emit includeHeaderChanged( checked );
   } );
+
+  // restore the toolbar and dock widgets positions using Qt settings API
+  QgsSettings settings;
+
+  const QByteArray state = settings.value( QStringLiteral( "LayoutDesigner/tableEditorState" ), QByteArray(), QgsSettings::App ).toByteArray();
+  if ( !state.isEmpty() && !restoreState( state ) )
+  {
+    QgsDebugMsg( QStringLiteral( "restore of table editor dialog UI state failed" ) );
+  }
+}
+
+void QgsTableEditorDialog::closeEvent( QCloseEvent * )
+{
+  QgsSettings settings;
+  // store the toolbar/dock widget settings using Qt settings API
+  settings.setValue( QStringLiteral( "LayoutDesigner/tableEditorState" ), saveState(), QgsSettings::App );
 }
 
 bool QgsTableEditorDialog::setTableContentsFromClipboard()

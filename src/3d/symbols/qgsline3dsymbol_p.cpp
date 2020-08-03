@@ -29,26 +29,14 @@
 #include "qgsmultipolygon.h"
 #include "qgsgeos.h"
 
+#include "qgsphongtexturedmaterialsettings.h"
+
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometryRenderer>
 
 /// @cond PRIVATE
-
-
-static Qt3DExtras::QPhongMaterial *_material( const QgsLine3DSymbol &symbol )
-{
-  Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial;
-
-  material->setAmbient( symbol.material().ambient() );
-  material->setDiffuse( symbol.material().diffuse() );
-  material->setSpecular( symbol.material().specular() );
-  material->setShininess( symbol.material().shininess() );
-
-  return material;
-}
-
 
 // -----------
 
@@ -93,8 +81,16 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context,
 {
   Q_UNUSED( attributeNames )
 
-  outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true ) );
-  outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true ) );
+  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol.material() );
+
+  outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true,
+                               false, false, false, texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false,
+                               3,
+                               texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
+  outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true,
+                                 false, false, false, texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false,
+                                 3,
+                                 texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
 
   return true;
 }
@@ -170,19 +166,19 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
   if ( out.tessellator->dataVerticesCount() == 0 )
     return;  // nothing to show - no need to create the entity
 
-  Qt3DExtras::QPhongMaterial *mat = _material( mSymbol );
-  if ( selected )
-  {
-    // update the material with selection colors
-    mat->setDiffuse( context.map().selectionColor() );
-    mat->setAmbient( context.map().selectionColor().darker() );
-  }
+  QgsMaterialContext materialContext;
+  materialContext.setIsSelected( selected );
+  materialContext.setSelectionColor( context.map().selectionColor() );
+  Qt3DRender::QMaterial *mat = mSymbol.material()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
 
   // extract vertex buffer data from tessellator
   QByteArray data( ( const char * )out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
   int nVerts = data.count() / out.tessellator->stride();
 
-  QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( false, false, false, false );
+  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol.material() );
+
+  QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, false, false,
+      texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false );
   geometry->setData( data, nVerts, out.triangleIndexFids, out.triangleIndexStartingIndices );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
@@ -286,12 +282,10 @@ void QgsSimpleLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 
   // material (only ambient color is used for the color)
 
-  Qt3DExtras::QPhongMaterial *mat = _material( mSymbol );
-  if ( selected )
-  {
-    // update the material with selection colors
-    mat->setAmbient( context.map().selectionColor() );
-  }
+  QgsMaterialContext materialContext;
+  materialContext.setIsSelected( selected );
+  materialContext.setSelectionColor( context.map().selectionColor() );
+  Qt3DRender::QMaterial *mat = mSymbol.material()->toMaterial( QgsMaterialSettingsRenderingTechnique::Lines, materialContext );
 
   // geometry renderer
 
@@ -400,15 +394,12 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
     return;
 
   // material (only ambient color is used for the color)
-
-  QgsLineMaterial *mat = new QgsLineMaterial;
-  mat->setLineColor( mSymbol.material().ambient() );
-  mat->setLineWidth( mSymbol.width() );
-  if ( selected )
-  {
-    // update the material with selection colors
-    mat->setLineColor( context.map().selectionColor() );
-  }
+  QgsMaterialContext materialContext;
+  materialContext.setIsSelected( selected );
+  materialContext.setSelectionColor( context.map().selectionColor() );
+  Qt3DRender::QMaterial *mat = mSymbol.material()->toMaterial( QgsMaterialSettingsRenderingTechnique::Lines, materialContext );
+  if ( QgsLineMaterial *lineMaterial = dynamic_cast< QgsLineMaterial * >( mat ) )
+    lineMaterial->setLineWidth( mSymbol.width() );
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
 
@@ -433,18 +424,22 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
 namespace Qgs3DSymbolImpl
 {
 
-  QgsFeature3DHandler *handlerForLine3DSymbol( QgsVectorLayer *layer, const QgsLine3DSymbol &symbol )
+  QgsFeature3DHandler *handlerForLine3DSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
   {
-    if ( symbol.renderAsSimpleLines() )
-      return new QgsThickLine3DSymbolHandler( symbol, layer->selectedFeatureIds() );
+    const QgsLine3DSymbol *lineSymbol = dynamic_cast< const QgsLine3DSymbol * >( symbol );
+    if ( !lineSymbol )
+      return nullptr;
+
+    if ( lineSymbol->renderAsSimpleLines() )
+      return new QgsThickLine3DSymbolHandler( *lineSymbol, layer->selectedFeatureIds() );
     //return new QgsSimpleLine3DSymbolHandler( symbol, layer->selectedFeatureIds() );
     else
-      return new QgsBufferedLine3DSymbolHandler( symbol, layer->selectedFeatureIds() );
+      return new QgsBufferedLine3DSymbolHandler( *lineSymbol, layer->selectedFeatureIds() );
   }
 
   Qt3DCore::QEntity *entityForLine3DSymbol( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol )
   {
-    QgsFeature3DHandler *handler = handlerForLine3DSymbol( layer, symbol );
+    QgsFeature3DHandler *handler = handlerForLine3DSymbol( layer, &symbol );
     Qt3DCore::QEntity *e = entityFromHandler( handler, map, layer );
     delete handler;
     return e;

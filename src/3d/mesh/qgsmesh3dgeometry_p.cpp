@@ -314,24 +314,23 @@ QgsMeshLayer *QgsMesh3dGeometry::meshLayer() const
 
 QgsMesh3dGeometry::QgsMesh3dGeometry( QgsMeshLayer *layer,
                                       const QgsVector3D &origin,
-                                      const QgsMesh3DSymbol &symbol,
-                                      Qt3DCore::QNode *parent ):
-  Qt3DRender::QGeometry( parent ),
-  mOrigin( origin ),
-  mVertScale( symbol.verticalScale() ),
-  mLayerRef( layer )
+                                      const QgsMesh3DSymbol *symbol,
+                                      Qt3DCore::QNode *parent )
+  : Qt3DRender::QGeometry( parent )
+  , mOrigin( origin )
+  , mVertScale( symbol->verticalScale() )
+  , mLayerRef( layer )
 {}
 
-QgsMeshDataset3dGeometry::QgsMeshDataset3dGeometry(
-  QgsMeshLayer *layer,
-  const QgsDateTimeRange &timeRange,
-  const QgsVector3D &origin,
-  const QgsMesh3DSymbol &symbol,
-  Qt3DCore::QNode *parent ):
-  QgsMesh3dGeometry( layer, origin, symbol, parent ),
-  mIsVerticalMagnitudeRelative( symbol.isVerticalMagnitudeRelative() ),
-  mVerticalGroupDatasetIndex( symbol.verticalDatasetGroupIndex() ),
-  mTimeRange( timeRange )
+QgsMeshDataset3dGeometry::QgsMeshDataset3dGeometry( QgsMeshLayer *layer,
+    const QgsDateTimeRange &timeRange,
+    const QgsVector3D &origin,
+    const QgsMesh3DSymbol *symbol,
+    Qt3DCore::QNode *parent )
+  : QgsMesh3dGeometry( layer, origin, symbol, parent )
+  , mIsVerticalMagnitudeRelative( symbol->isVerticalMagnitudeRelative() )
+  , mVerticalGroupDatasetIndex( symbol->verticalDatasetGroupIndex() )
+  , mTimeRange( timeRange )
 {
   init();
 }
@@ -451,12 +450,11 @@ int QgsMeshDataset3dGeometry::extractDataset( QVector<double> &verticalMagnitude
 }
 
 
-QgsMeshTerrain3dGeometry::QgsMeshTerrain3dGeometry(
-  QgsMeshLayer *layer,
-  const QgsVector3D &origin,
-  const QgsMesh3DSymbol &symbol,
-  Qt3DCore::QNode *parent ):
-  QgsMesh3dGeometry( layer, origin, symbol, parent )
+QgsMeshTerrain3dGeometry::QgsMeshTerrain3dGeometry( QgsMeshLayer *layer,
+    const QgsVector3D &origin,
+    const QgsMesh3DSymbol *symbol,
+    Qt3DCore::QNode *parent )
+  : QgsMesh3dGeometry( layer, origin, symbol, parent )
 {
   init();
 }

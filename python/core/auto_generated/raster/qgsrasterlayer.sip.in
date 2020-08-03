@@ -25,6 +25,10 @@ corresponding to the provider type, and passes it the url. The data provider
 connects to the data source.
 
 Sample usage of the QgsRasterLayer class:
+
+.. code-block:: python
+
+         my_raster_layer = QgsRasterLayer("/path/to/file.tif", "my layer")
 %End
 
 %TypeHeaderCode

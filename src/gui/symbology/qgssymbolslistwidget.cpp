@@ -218,10 +218,11 @@ void QgsSymbolsListWidget::saveSymbol()
   QStringList symbolTags = saveDlg.tags().split( ',' );
 
   // add new symbol to style and re-populate the list
-  mStyle->addSymbol( saveDlg.name(), mSymbol->clone() );
+  QgsSymbol *newSymbol = mSymbol->clone();
+  mStyle->addSymbol( saveDlg.name(), newSymbol );
 
   // make sure the symbol is stored
-  mStyle->saveSymbol( saveDlg.name(), mSymbol->clone(), saveDlg.isFavorite(), symbolTags );
+  mStyle->saveSymbol( saveDlg.name(), newSymbol, saveDlg.isFavorite(), symbolTags );
 }
 
 void QgsSymbolsListWidget::clipFeaturesToggled( bool checked )

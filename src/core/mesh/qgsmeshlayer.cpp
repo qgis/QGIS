@@ -42,7 +42,7 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &providerKey,
                             const QgsMeshLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath ),
-    mDatasetGroupStore( new QgsMeshDatasetGroupStore ),
+    mDatasetGroupStore( new QgsMeshDatasetGroupStore( this ) ),
     mTemporalProperties( new QgsMeshLayerTemporalProperties( this ) )
 
 {
@@ -519,6 +519,20 @@ QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtTime( const QgsDateTimeRange &ti
   return  mDatasetGroupStore->datasetIndexAtTime( startTime, datasetGroupIndex, mTemporalProperties->matchingMethod() );
 }
 
+QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtRelativeTime( const QgsInterval &relativeTime, int datasetGroupIndex ) const
+{
+  qint64 usedRelativeTime = relativeTime.seconds() * 1000;
+
+  //adjust relative time if layer reference time is different from provider reference time
+  if ( mTemporalProperties->referenceTime().isValid() &&
+       mDataProvider &&
+       mDataProvider->isValid() &&
+       mTemporalProperties->referenceTime() != mDataProvider->temporalCapabilities()->referenceTime() )
+    usedRelativeTime = usedRelativeTime + mTemporalProperties->referenceTime().msecsTo( mDataProvider->temporalCapabilities()->referenceTime() );
+
+  return  mDatasetGroupStore->datasetIndexAtTime( relativeTime.seconds() * 1000, datasetGroupIndex, mTemporalProperties->matchingMethod() );
+}
+
 void QgsMeshLayer::applyClassificationOnScalarSettings( const QgsMeshDatasetGroupMetadata &meta, QgsMeshRendererScalarSettings &scalarSettings ) const
 {
   if ( meta.extraOptions().contains( QStringLiteral( "classification" ) ) )
@@ -817,6 +831,11 @@ QgsInterval QgsMeshLayer::datasetRelativeTime( const QgsMeshDatasetIndex &index 
     return QgsInterval();
   else
     return QgsInterval( time, QgsUnitTypes::TemporalMilliseconds );
+}
+
+qint64 QgsMeshLayer::datasetRelativeTimeInMilliseconds( const QgsMeshDatasetIndex &index )
+{
+  return mDatasetGroupStore->datasetRelativeTime( index );
 }
 
 void QgsMeshLayer::updateActiveDatasetGroups()
@@ -1222,13 +1241,6 @@ QStringList QgsMeshLayer::subLayers() const
     return QStringList();
 }
 
-bool QgsMeshLayer::isTemporary() const
-{
-  if ( mDatasetGroupStore && mDatasetGroupStore->extraDatasetGroupCount() > 0 )
-    return true;
-
-  return false;
-}
 
 bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
 {

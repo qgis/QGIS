@@ -93,7 +93,11 @@ bool QgsBookmarksToLayerAlgorithm::prepareAlgorithm( const QVariantMap &paramete
 {
   QList< int > sources = parameterAsEnums( parameters, QStringLiteral( "SOURCE" ), context );
   if ( sources.contains( 0 ) )
+  {
+    if ( !context.project() )
+      throw QgsProcessingException( QObject::tr( "No project is available for bookmark extraction" ) );
     mBookmarks.append( context.project()->bookmarkManager()->bookmarks() );
+  }
   if ( sources.contains( 1 ) )
     mBookmarks.append( QgsApplication::bookmarkManager()->bookmarks() );
 

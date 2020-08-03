@@ -71,6 +71,7 @@ void QgsProcessingAggregatePanelWidget::setLayer( QgsVectorLayer *layer )
     return;
 
   mLayer = layer;
+  mFieldsView->setSourceLayer( mLayer );
   if ( mModel->rowCount() == 0 )
   {
     loadFieldsFromLayer();

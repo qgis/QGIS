@@ -115,7 +115,7 @@ QString QgsRandomPointsInPolygonsAlgorithm::shortHelpString() const
                       "With <i>Minimum distance between points</i>, only points in the same "
                       "polygon feature are considered, while for <i>Global minimum distance "
                       "between points</i> all previously generated points are considered. "
-                      "If the <i>Global minimum distance between points</i> is set equalt to "
+                      "If the <i>Global minimum distance between points</i> is set equal to "
                       "or larger than the (local) <i>Minimum distance between points</i>, the "
                       "latter has no effect.<br> "
                       "If the <i>Minimum distance between points</i> is too large, "
@@ -375,8 +375,8 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
   } // while features
   missedPoints = desiredNumberOfPoints - totNPoints;
   feedback->pushInfo( QObject::tr( "Total number of points generated: "
-                                   "%1\nNumber of missed points: %2\n "
-                                   "Polygons with missing points: "
+                                   "%1\nNumber of missed points: "
+                                   "%2\nPolygons with missing points: "
                                    "%3\nFeatures with empty or missing "
                                    "geometries: %4"
                                  ).arg( totNPoints ).arg( missedPoints ).arg( missedPolygons ).arg( emptyOrNullGeom ) );

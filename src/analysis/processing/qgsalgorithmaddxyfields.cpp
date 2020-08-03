@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmaddxyfields.h"
 #include "qgsfeaturerequest.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -75,21 +76,39 @@ QgsProcessingFeatureSource::Flag QgsAddXYFieldsAlgorithm::sourceFlags() const
   return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
 }
 
-void QgsAddXYFieldsAlgorithm::initParameters( const QVariantMap & )
+void QgsAddXYFieldsAlgorithm::initParameters( const QVariantMap &configuration )
 {
+  mIsInPlace = configuration.value( QStringLiteral( "IN_PLACE" ) ).toBool();
+
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Coordinate system" ), QStringLiteral( "EPSG:4326" ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "PREFIX" ), QObject::tr( "Field prefix" ), QVariant(), false, true ) );
+
+  if ( !mIsInPlace )
+    addParameter( new QgsProcessingParameterString( QStringLiteral( "PREFIX" ), QObject::tr( "Field prefix" ), QVariant(), false, true ) );
+  else
+  {
+    addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD_X" ), QObject::tr( "X field" ), QVariant(), QStringLiteral( "INPUT" ) ) );
+    addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD_Y" ), QObject::tr( "Y field" ), QVariant(), QStringLiteral( "INPUT" ) ) );
+  }
 }
 
 QgsFields QgsAddXYFieldsAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
-  const QString xFieldName = mPrefix + 'x';
-  const QString yFieldName = mPrefix + 'y';
+  if ( mIsInPlace )
+  {
+    mInPlaceXFieldIndex = inputFields.lookupField( mInPlaceXField );
+    mInPlaceYFieldIndex = inputFields.lookupField( mInPlaceYField );
+    return inputFields;
+  }
+  else
+  {
+    const QString xFieldName = mPrefix + 'x';
+    const QString yFieldName = mPrefix + 'y';
 
-  QgsFields outFields = inputFields;
-  outFields.append( QgsField( xFieldName, QVariant::Double, QString(), 20, 10 ) );
-  outFields.append( QgsField( yFieldName, QVariant::Double, QString(), 20, 10 ) );
-  return outFields;
+    QgsFields outFields = inputFields;
+    outFields.append( QgsField( xFieldName, QVariant::Double, QString(), 20, 10 ) );
+    outFields.append( QgsField( yFieldName, QVariant::Double, QString(), 20, 10 ) );
+    return outFields;
+  }
 }
 
 QgsCoordinateReferenceSystem QgsAddXYFieldsAlgorithm::outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const
@@ -100,7 +119,14 @@ QgsCoordinateReferenceSystem QgsAddXYFieldsAlgorithm::outputCrs( const QgsCoordi
 
 bool QgsAddXYFieldsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mPrefix = parameterAsString( parameters, QStringLiteral( "PREFIX" ), context );
+  if ( !mIsInPlace )
+    mPrefix = parameterAsString( parameters, QStringLiteral( "PREFIX" ), context );
+  else
+  {
+    mInPlaceXField = parameterAsString( parameters, QStringLiteral( "FIELD_X" ), context );
+    mInPlaceYField = parameterAsString( parameters, QStringLiteral( "FIELD_Y" ), context );
+  }
+
   mCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
   return true;
 }
@@ -111,6 +137,10 @@ QgsFeatureList QgsAddXYFieldsAlgorithm::processFeature( const QgsFeature &featur
   {
     mTransform = QgsCoordinateTransform( mSourceCrs, mCrs, context.transformContext() );
     mTransformNeedsInitialization = false;
+  }
+  if ( mIsInPlace && mInPlaceXFieldIndex == -1 )
+  {
+    throw QgsProcessingException( QObject::tr( "Destination field not found" ) );
   }
 
   QVariant x;
@@ -134,14 +164,25 @@ QgsFeatureList QgsAddXYFieldsAlgorithm::processFeature( const QgsFeature &featur
   }
   QgsFeature f =  feature;
   QgsAttributes attributes = f.attributes();
-  attributes << x << y;
+  if ( !mIsInPlace )
+  {
+    attributes << x << y;
+  }
+  else
+  {
+    attributes[mInPlaceXFieldIndex] = x;
+    attributes[mInPlaceYFieldIndex] = y;
+  }
   f.setAttributes( attributes );
   return QgsFeatureList() << f;
 }
 
 bool QgsAddXYFieldsAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  Q_UNUSED( layer )
+  if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
+  {
+    return vl->geometryType() == QgsWkbTypes::PointGeometry;
+  }
   return false;
 }
 

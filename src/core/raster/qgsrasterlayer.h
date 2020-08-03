@@ -63,10 +63,8 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *
  *  Sample usage of the QgsRasterLayer class:
  *
- * \code{.cpp}
- *     QString myFileNameQString = "/path/to/file";
- *     QString myBaseNameQString = "my layer";
- *     QgsRasterLayer *myRasterLayer = new QgsRasterLayer(myFileNameQString, myBaseNameQString);
+ * \code{.py}
+ *     my_raster_layer = QgsRasterLayer("/path/to/file.tif", "my layer")
  * \endcode
  */
 class CORE_EXPORT QgsRasterLayer : public QgsMapLayer

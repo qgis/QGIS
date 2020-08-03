@@ -83,7 +83,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
     cboTerrainLayer->setLayer( meshTerrain->meshLayer() );
     mMeshSymbolWidget->setLayer( meshTerrain->meshLayer(), false );
     mMeshSymbolWidget->setSymbol( meshTerrain->symbol() );
-    spinTerrainScale->setValue( meshTerrain->symbol().verticalScale() );
+    spinTerrainScale->setValue( meshTerrain->symbol()->verticalScale() );
   }
   else
   {
@@ -105,8 +105,9 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   chkShowLightSourceOrigins->setChecked( mMap->showLightSourceOrigins() );
 
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
-  widgetTerrainMaterial->setDiffuseVisible( false );
-  widgetTerrainMaterial->setMaterial( mMap->terrainShadingMaterial() );
+  widgetTerrainMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture );
+  QgsPhongMaterialSettings terrainShadingMaterial = mMap->terrainShadingMaterial();
+  widgetTerrainMaterial->setSettings( &terrainShadingMaterial, nullptr );
 
   widgetLights->setPointLights( mMap->pointLights() );
   widgetLights->setDirectionalLights( mMap->directionalLights() );
@@ -194,9 +195,9 @@ void Qgs3DMapConfigWidget::apply()
       QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( cboTerrainLayer->currentLayer() );
       QgsMeshTerrainGenerator *newTerrainGenerator = new QgsMeshTerrainGenerator;
       newTerrainGenerator->setLayer( meshLayer );
-      QgsMesh3DSymbol symbol = mMeshSymbolWidget->symbol();
-      symbol.setVerticalScale( spinTerrainScale->value() );
-      newTerrainGenerator->setSymbol( symbol );
+      std::unique_ptr< QgsMesh3DSymbol > symbol = mMeshSymbolWidget->symbol();
+      symbol->setVerticalScale( spinTerrainScale->value() );
+      newTerrainGenerator->setSymbol( symbol.release() );
       mMap->setTerrainGenerator( newTerrainGenerator );
       needsUpdateOrigin = true;
     }
@@ -225,7 +226,10 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setShowCameraViewCenter( chkShowCameraViewCenter->isChecked() );
   mMap->setShowLightSourceOrigins( chkShowLightSourceOrigins->isChecked() );
   mMap->setTerrainShadingEnabled( groupTerrainShading->isChecked() );
-  mMap->setTerrainShadingMaterial( widgetTerrainMaterial->material() );
+
+  std::unique_ptr< QgsAbstractMaterialSettings > terrainMaterial( widgetTerrainMaterial->settings() );
+  if ( QgsPhongMaterialSettings *phongMaterial = dynamic_cast< QgsPhongMaterialSettings * >( terrainMaterial.get() ) )
+    mMap->setTerrainShadingMaterial( *phongMaterial );
 
   mMap->setPointLights( widgetLights->pointLights() );
   mMap->setDirectionalLights( widgetLights->directionalLights() );

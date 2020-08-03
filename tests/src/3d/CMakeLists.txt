@@ -11,6 +11,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/tests/core #for render checker class
   ${CMAKE_SOURCE_DIR}/src/3d
   ${CMAKE_SOURCE_DIR}/src/3d/chunks
+  ${CMAKE_SOURCE_DIR}/src/3d/materials
   ${CMAKE_SOURCE_DIR}/src/3d/mesh
   ${CMAKE_SOURCE_DIR}/src/3d/symbols
   ${CMAKE_SOURCE_DIR}/src/3d/terrain
@@ -78,4 +79,6 @@ ENDMACRO (ADD_QGIS_TEST)
 ADD_QGIS_TEST(3dutilstest testqgs3dutils.cpp)
 ADD_QGIS_TEST(3drenderingtest testqgs3drendering.cpp)
 ADD_QGIS_TEST(layout3dmaptest testqgslayout3dmap.cpp)
+ADD_QGIS_TEST(materialregistrytest testqgsmaterialregistry.cpp)
 ADD_QGIS_TEST(tessellatortest testqgstessellator.cpp)
+ADD_QGIS_TEST(3dsymbolregistrytest testqgs3dsymbolregistry.cpp)

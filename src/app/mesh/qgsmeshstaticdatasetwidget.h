@@ -26,7 +26,7 @@ class QgsMeshDataProvider;
 
 
 /**
- * List mdel for dataset contained in dataset group,
+ * List model for dataset contained in dataset group,
  * used to display by time dataset in widget
  */
 class APP_NO_EXPORT QgsMeshDatasetListModel: public QAbstractListModel

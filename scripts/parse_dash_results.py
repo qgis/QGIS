@@ -44,9 +44,12 @@ from PyQt5.QtWidgets import (QDialog,
                              QGridLayout,
                              QPushButton,
                              QDoubleSpinBox,
-                             QMessageBox,
                              QWidget,
-                             QScrollArea)
+                             QScrollArea,
+                             QLayout,
+                             QDialogButtonBox,
+                             QListWidget)
+import termcolor
 import struct
 import glob
 
@@ -54,7 +57,7 @@ dash_url = 'https://cdash.orfeo-toolbox.org'
 
 
 def error(msg):
-    print(msg)
+    print(termcolor.colored(msg, 'red'))
     sys.exit(1)
 
 
@@ -67,17 +70,43 @@ def colorDiff(c1, c2):
 
 
 def imageFromPath(path):
-    print(path)
     if (path[:8] == 'https://' or path[:7] == 'file://'):
         # fetch remote image
-        print('fetching remote!')
+        print('fetching remote ({})'.format(path))
         data = urllib.request.urlopen(path).read()
         image = QImage()
         image.loadFromData(data)
     else:
-        print('using local!')
+        print('using local ({})'.format(path))
         image = QImage(path)
     return image
+
+
+class SelectReferenceImageDialog(QDialog):
+
+    def __init__(self, parent, test_name, images):
+        super().__init__(parent)
+
+        self.setWindowTitle('Select reference image')
+
+        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+
+        layout = QVBoxLayout()
+        layout.addWidget(QLabel('Found multiple matching reference images for {}'.format(test_name)))
+
+        self.list = QListWidget()
+        layout.addWidget(self.list, 1)
+
+        layout.addWidget(self.button_box)
+        self.setLayout(layout)
+
+        for image in images:
+            self.list.addItem(image)
+
+    def selected_image(self):
+        return self.list.currentItem().text()
 
 
 class ResultHandler(QDialog):
@@ -108,6 +137,7 @@ class ResultHandler(QDialog):
         grid.addWidget(QLabel('New Mask'), 3, 1)
         grid.addWidget(self.mask_label, 4, 0)
         grid.addWidget(self.new_mask_label, 4, 1)
+        grid.setSizeConstraint(QLayout.SetFixedSize)
 
         self.widget.setLayout(grid)
         self.scrollArea.setWidget(self.widget)
@@ -164,9 +194,11 @@ class ResultHandler(QDialog):
             images[test_name] = '{}/{}'.format(dash_url, rendered_image)
 
         if images:
-            print('found images:\n{}'.format(images))
+            print('Found images:\n')
+            for title, url in images.items():
+                print('  ' + termcolor.colored(title, attrs=['bold']) + ' : ' + url)
         else:
-            print('no images found\n')
+            print(termcolor.colored('No images found\n', 'yellow'))
         self.images = images
         self.load_next()
 
@@ -178,6 +210,7 @@ class ResultHandler(QDialog):
 
         test_name, rendered_image = self.images.popitem()
         self.test_name_label.setText(test_name)
+        print(termcolor.colored('\n' + test_name, attrs=['bold']))
         control_image = self.get_control_image_path(test_name)
         if not control_image:
             self.load_next()
@@ -225,15 +258,20 @@ class ResultHandler(QDialog):
             return
 
         self.control_label.setPixmap(QPixmap.fromImage(self.control_image))
+        self.control_label.setFixedSize(self.control_image.size())
         self.rendered_label.setPixmap(QPixmap.fromImage(self.rendered_image))
+        self.rendered_label.setFixedSize(self.rendered_image.size())
         self.mask_label.setPixmap(QPixmap.fromImage(self.mask_image))
+        self.mask_label.setFixedSize(self.mask_image.size())
         self.diff_label.setPixmap(QPixmap.fromImage(self.diff_image))
+        self.diff_label.setFixedSize(self.diff_image.size())
         self.preview_mask()
 
     def preview_mask(self):
         self.new_mask_image = self.create_mask(
             self.control_image, self.rendered_image, self.mask_image, self.overload_spin.value())
         self.new_mask_label.setPixmap(QPixmap.fromImage(self.new_mask_image))
+        self.new_mask_label.setFixedSize(self.new_mask_image.size())
 
     def save_mask(self):
         self.new_mask_image.save(self.mask_image_path, "png")
@@ -294,17 +332,21 @@ class ResultHandler(QDialog):
             script_folder, '../tests/testdata/control_images')
 
         matching_control_images = [x[0]
-                                   for x in os.walk(control_images_folder) if test_name in x[0]]
+                                   for x in os.walk(control_images_folder) if test_name + '/' in x[0] or x[0].endswith(test_name)]
         if len(matching_control_images) > 1:
-            QMessageBox.warning(
-                self, 'Result', 'Found multiple matching control images for {}'.format(test_name))
-            return None
-        elif len(matching_control_images) == 0:
-            QMessageBox.warning(
-                self, 'Result', 'No matching control images found for {}'.format(test_name))
-            return None
+            for item in matching_control_images:
+                print(' -  ' + item)
 
-        found_control_image_path = matching_control_images[0]
+            dlg = SelectReferenceImageDialog(self, test_name, matching_control_images)
+            if not dlg.exec_():
+                return None
+
+            found_control_image_path = dlg.selected_image()
+        elif len(matching_control_images) == 0:
+            print(termcolor.colored('No matching control images found for {}'.format(test_name), 'yellow'))
+            return None
+        else:
+            found_control_image_path = matching_control_images[0]
 
         # check for a single matching expected image
         images = glob.glob(os.path.join(found_control_image_path, '*.png'))
@@ -359,7 +401,7 @@ class ResultHandler(QDialog):
         if mismatch_count:
             return diff_image
         else:
-            print('No mismatches')
+            print(termcolor.colored('No mismatches', 'green'))
             return None
 
 

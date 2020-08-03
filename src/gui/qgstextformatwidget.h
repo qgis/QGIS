@@ -396,6 +396,13 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
     QgsTextFormat format() const;
 
     /**
+     * Sets the \a format to show in the widget.
+     *
+     * \since QGIS 3.16
+     */
+    void setFormat( const QgsTextFormat &format );
+
+    /**
      * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
      * \since QGIS 3.10
      */
@@ -406,6 +413,7 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
   private:
 
     QgsTextFormatWidget *mFormatWidget = nullptr;
+    bool mBlockSignals = false;
 };
 
 #endif //QGSTEXTFORMATWIDGET_H

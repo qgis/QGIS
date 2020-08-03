@@ -3,6 +3,6 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns a point guaranteed to lie on the surface of a geometry.",
-  "arguments": [ {"arg":"geom","description":"a geometry"}],
+  "arguments": [ {"arg":"geometry","description":"a geometry"}],
   "examples": [ { "expression":"point_on_surface($geometry)", "returns":"a point geometry"}]
 }

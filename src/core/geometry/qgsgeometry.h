@@ -1558,7 +1558,7 @@ class CORE_EXPORT QgsGeometry
     }
     else
     {
-      const sipMappedType *qvector_type = sipFindMappedType( "QVector<QgsPointXY>" );
+      const sipTypeDef *qvector_type = sipFindType( "QVector<QgsPointXY>" );
       sipRes = sipConvertFromNewType( new QVector< QgsPointXY >( sipCpp->randomPointsInPolygon( a0, a1 ) ), qvector_type, Py_None );
     }
     % End
@@ -1731,7 +1731,7 @@ class CORE_EXPORT QgsGeometry
     }
     else
     {
-      const sipMappedType *qvector_type = sipFindMappedType( "QVector< QgsPointXY >" );
+      const sipTypeDef *qvector_type = sipFindType( "QVector< QgsPointXY >" );
       sipRes = sipConvertFromNewType( new QgsPolylineXY( sipCpp->asPolyline() ), qvector_type, Py_None );
     }
     % End
@@ -1775,7 +1775,7 @@ class CORE_EXPORT QgsGeometry
     }
     else
     {
-      const sipMappedType *qvector_type = sipFindMappedType( "QVector<QVector<QgsPointXY>>" );
+      const sipTypeDef *qvector_type = sipFindType( "QVector<QVector<QgsPointXY>>" );
       sipRes = sipConvertFromNewType( new QgsPolygonXY( sipCpp->asPolygon() ), qvector_type, Py_None );
     }
     % End
@@ -1817,7 +1817,7 @@ class CORE_EXPORT QgsGeometry
     }
     else
     {
-      const sipMappedType *qvector_type = sipFindMappedType( "QVector< QgsPointXY >" );
+      const sipTypeDef *qvector_type = sipFindType( "QVector< QgsPointXY >" );
       sipRes = sipConvertFromNewType( new QgsPolylineXY( sipCpp->asMultiPoint() ), qvector_type, Py_None );
     }
     % End
@@ -1861,7 +1861,7 @@ class CORE_EXPORT QgsGeometry
     }
     else
     {
-      const sipMappedType *qvector_type = sipFindMappedType( "QVector<QVector<QgsPointXY>>" );
+      const sipTypeDef *qvector_type = sipFindType( "QVector<QVector<QgsPointXY>>" );
       sipRes = sipConvertFromNewType( new QgsMultiPolylineXY( sipCpp->asMultiPolyline() ), qvector_type, Py_None );
     }
     % End
@@ -1905,7 +1905,7 @@ class CORE_EXPORT QgsGeometry
     }
     else
     {
-      const sipMappedType *qvector_type = sipFindMappedType( "QVector<QVector<QVector<QgsPointXY>>>" );
+      const sipTypeDef *qvector_type = sipFindType( "QVector<QVector<QVector<QgsPointXY>>>" );
       sipRes = sipConvertFromNewType( new QgsMultiPolygonXY( sipCpp->asMultiPolygon() ), qvector_type, Py_None );
     }
     % End

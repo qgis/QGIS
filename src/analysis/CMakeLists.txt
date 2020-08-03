@@ -10,14 +10,14 @@ SET(QGIS_ANALYSIS_SRCS
   interpolation/qgstininterpolator.cpp
   interpolation/Bezier3D.cpp
   interpolation/CloughTocherInterpolator.cpp
-  interpolation/DualEdgeTriangulation.cpp
+  interpolation/qgsdualedgetriangulation.cpp
   interpolation/HalfEdge.cpp
   interpolation/LinTriangleInterpolator.cpp
   interpolation/MathUtils.cpp
   interpolation/NormVecDecorator.cpp
   interpolation/ParametricLine.cpp
   interpolation/TriangleInterpolator.cpp
-  interpolation/Triangulation.cpp
+  interpolation/qgstriangulation.cpp
   interpolation/TriDecorator.cpp
   interpolation/Vector3D.cpp
 
@@ -26,6 +26,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmaddxyfields.cpp
   processing/qgsalgorithmaffinetransform.cpp
   processing/qgsalgorithmaggregate.cpp
+  processing/qgsalgorithmangletonearest.cpp
   processing/qgsalgorithmapplylayerstyle.cpp
   processing/qgsalgorithmarraytranslatedfeatures.cpp
   processing/qgsalgorithmaspect.cpp
@@ -126,6 +127,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrandompointsinpolygons.cpp
   processing/qgsalgorithmrandompointsonlines.cpp
   processing/qgsalgorithmrandomraster.cpp
+  processing/qgsalgorithmrasterfrequencybycomparisonoperator.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmrasterlogicalop.cpp
   processing/qgsalgorithmrasterize.cpp
@@ -147,6 +149,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrotate.cpp
   processing/qgsalgorithmroundrastervalues.cpp
   processing/qgsalgorithmruggedness.cpp
+  processing/qgsalgorithmsavefeatures.cpp
   processing/qgsalgorithmsavelog.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp
   processing/qgsalgorithmsegmentize.cpp
@@ -218,9 +221,6 @@ SET(QGIS_ANALYSIS_SRCS
   vector/qgsgeometrysnappersinglesource.cpp
   vector/qgszonalstatistics.cpp
 
-  mesh/qgsmeshcalcnode.cpp
-  mesh/qgsmeshcalculator.cpp
-  mesh/qgsmeshcalcutils.cpp
   mesh/qgsmeshcontours.cpp
 
   network/qgsgraph.cpp
@@ -273,7 +273,7 @@ SET(QGIS_ANALYSIS_HDRS
 
   interpolation/Bezier3D.h
   interpolation/CloughTocherInterpolator.h
-  interpolation/DualEdgeTriangulation.h
+  interpolation/qgsdualedgetriangulation.h
   interpolation/HalfEdge.h
   interpolation/LinTriangleInterpolator.h
   interpolation/MathUtils.h
@@ -281,16 +281,13 @@ SET(QGIS_ANALYSIS_HDRS
   interpolation/ParametricLine.h
   interpolation/TriDecorator.h
   interpolation/TriangleInterpolator.h
-  interpolation/Triangulation.h
+  interpolation/qgstriangulation.h
   interpolation/Vector3D.h
   interpolation/qgsgridfilewriter.h
   interpolation/qgsidwinterpolator.h
   interpolation/qgsinterpolator.h
   interpolation/qgstininterpolator.h
 
-  mesh/qgsmeshcalcnode.h
-  mesh/qgsmeshcalculator.h
-  mesh/qgsmeshcalcutils.h
   mesh/qgsmeshcontours.h
 
   network/qgsgraph.h
@@ -374,10 +371,7 @@ INCLUDE_DIRECTORIES(BEFORE raster)
 INCLUDE_DIRECTORIES(BEFORE mesh)
 
 ADD_FLEX_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalclexer.ll)
-ADD_FLEX_FILES_PREFIX(QGIS_ANALYSIS_SRCS mesh mesh/qgsmeshcalclexer.ll)
-
 ADD_BISON_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalcparser.yy)
-ADD_BISON_FILES_PREFIX(QGIS_ANALYSIS_SRCS mesh mesh/qgsmeshcalcparser.yy)
 
 IF(NOT MSVC)
   SET_SOURCE_FILES_PROPERTIES(
