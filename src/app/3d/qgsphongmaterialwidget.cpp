@@ -23,21 +23,13 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent )
 {
   setupUi( this );
 
-  activateTexturingUI( true );
-
   QgsPhongMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
-  textureScaleSpinBox->setClearValue( 0 );
-  textureRotationSpinBox->setClearValue( 0 );
 
   connect( btnDiffuse, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
   connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
   connect( btnSpecular, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
   connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongMaterialWidget::changed );
-  connect( useDiffuseCheckBox, &QCheckBox::stateChanged, this, &QgsPhongMaterialWidget::changed );
-  connect( textureFile, &QgsImageSourceLineEdit::sourceChanged, this, &QgsPhongMaterialWidget::changed );
-  connect( textureScaleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongMaterialWidget::changed );
-  connect( textureRotationSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongMaterialWidget::changed );
 }
 
 QgsMaterialSettingsWidget *QgsPhongMaterialWidget::create()
@@ -50,65 +42,24 @@ void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
   switch ( technique )
   {
     case QgsMaterialSettingsRenderingTechnique::Triangles:
+    case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
+    case QgsMaterialSettingsRenderingTechnique::Points:
     {
-      lblAmbient->setVisible( true );
-      btnAmbient->setVisible( true );
       lblDiffuse->setVisible( true );
       btnDiffuse->setVisible( true );
-      lblSpecular->setVisible( true );
-      btnSpecular->setVisible( true );
-      lblShininess->setVisible( true );
-      spinShininess->setVisible( true );
-
-      activateTexturingUI( true );
       break;
     }
 
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
     {
-      lblAmbient->setVisible( true );
-      btnAmbient->setVisible( true );
       lblDiffuse->setVisible( false );
       btnDiffuse->setVisible( false );
-      lblSpecular->setVisible( true );
-      btnSpecular->setVisible( true );
-      lblShininess->setVisible( true );
-      spinShininess->setVisible( true );
-
-      activateTexturingUI( false );
       break;
     }
 
     case QgsMaterialSettingsRenderingTechnique::Lines:
-    {
-      lblAmbient->setVisible( true );
-      btnAmbient->setVisible( true );
-      lblDiffuse->setVisible( false );
-      btnDiffuse->setVisible( false );
-      lblSpecular->setVisible( false );
-      btnSpecular->setVisible( false );
-      lblShininess->setVisible( false );
-      spinShininess->setVisible( false );
-
-      activateTexturingUI( false );
+      // not supported
       break;
-    }
-
-    case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
-    case QgsMaterialSettingsRenderingTechnique::Points:
-    {
-      lblAmbient->setVisible( true );
-      btnAmbient->setVisible( true );
-      lblDiffuse->setVisible( true );
-      btnDiffuse->setVisible( true );
-      lblSpecular->setVisible( true );
-      btnSpecular->setVisible( true );
-      lblShininess->setVisible( true );
-      spinShininess->setVisible( true );
-
-      activateTexturingUI( false );
-      break;
-    }
   }
 }
 
@@ -121,10 +72,6 @@ void QgsPhongMaterialWidget::setSettings( const QgsAbstractMaterialSettings *set
   btnAmbient->setColor( phongMaterial->ambient() );
   btnSpecular->setColor( phongMaterial->specular() );
   spinShininess->setValue( phongMaterial->shininess() );
-  useDiffuseCheckBox->setCheckState( phongMaterial->diffuseTextureEnabled() ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
-  textureFile->setSource( phongMaterial->texturePath() );
-  textureScaleSpinBox->setValue( phongMaterial->textureScale() );
-  textureRotationSpinBox->setValue( phongMaterial->textureRotation() );
 }
 
 QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()
@@ -134,19 +81,5 @@ QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()
   m->setAmbient( btnAmbient->color() );
   m->setSpecular( btnSpecular->color() );
   m->setShininess( spinShininess->value() );
-  m->setDiffuseTextureEnabled( useDiffuseCheckBox->checkState() == Qt::CheckState::Checked );
-  m->setTexturePath( textureFile->source() );
-  m->setTextureScale( textureScaleSpinBox->value() );
-  m->setTextureRotation( textureRotationSpinBox->value() );
   return m.release();
-}
-
-void QgsPhongMaterialWidget::activateTexturingUI( bool activated )
-{
-  lblTextureScale->setVisible( activated );
-  lblTextureRotation->setVisible( activated );
-  textureScaleSpinBox->setVisible( activated );
-  textureRotationSpinBox->setVisible( activated );
-  useDiffuseCheckBox->setVisible( activated );
-  textureFile->setVisible( activated );
 }

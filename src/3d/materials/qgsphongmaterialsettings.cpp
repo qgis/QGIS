@@ -20,8 +20,6 @@
 #include "qgsimagecache.h"
 #include <Qt3DExtras/QDiffuseMapMaterial>
 #include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DRender/QPaintedTextureImage>
-#include <Qt3DRender/QTexture>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QEffect>
 #include <QMap>
@@ -58,26 +56,12 @@ QgsPhongMaterialSettings *QgsPhongMaterialSettings::clone() const
   return new QgsPhongMaterialSettings( *this );
 }
 
-bool QgsPhongMaterialSettings::requiresTextureCoordinates() const
-{
-  return mDiffuseTextureEnabled && !mTexturePath.isEmpty();
-}
-
-float QgsPhongMaterialSettings::textureRotation() const
-{
-  return mTextureRotation;
-}
-
 void QgsPhongMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
   mAmbient = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
   mDiffuse = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "diffuse" ), QStringLiteral( "178,178,178" ) ) );
   mSpecular = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "specular" ), QStringLiteral( "255,255,255" ) ) );
   mShininess = elem.attribute( QStringLiteral( "shininess" ) ).toFloat();
-  mDiffuseTextureEnabled = elem.attribute( QStringLiteral( "is_using_diffuse_texture" ), QStringLiteral( "0" ) ).toInt();
-  mTexturePath = elem.attribute( QStringLiteral( "diffuse_texture_path" ), QString() );
-  mTextureScale = elem.attribute( QStringLiteral( "texture_scale" ), QString( "1.0" ) ).toFloat();
-  mTextureRotation = elem.attribute( QStringLiteral( "texture-rotation" ), QString( "0.0" ) ).toFloat();
 }
 
 void QgsPhongMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext & ) const
@@ -86,35 +70,9 @@ void QgsPhongMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteCo
   elem.setAttribute( QStringLiteral( "diffuse" ), QgsSymbolLayerUtils::encodeColor( mDiffuse ) );
   elem.setAttribute( QStringLiteral( "specular" ), QgsSymbolLayerUtils::encodeColor( mSpecular ) );
   elem.setAttribute( QStringLiteral( "shininess" ), mShininess );
-  elem.setAttribute( QStringLiteral( "is_using_diffuse_texture" ), mDiffuseTextureEnabled );
-  elem.setAttribute( QStringLiteral( "diffuse_texture_path" ), mTexturePath );
-  elem.setAttribute( QStringLiteral( "texture_scale" ), mTextureScale );
-  elem.setAttribute( QStringLiteral( "texture-rotation" ), mTextureRotation );
 }
 
-///@cond PRIVATE
-class QgsQImageTextureImage : public Qt3DRender::QPaintedTextureImage
-{
-  public:
-    QgsQImageTextureImage( const QImage &image, Qt3DCore::QNode *parent = nullptr )
-      : Qt3DRender::QPaintedTextureImage( parent )
-      , mImage( image )
-    {
-      setSize( mImage.size() );
-    }
 
-    void paint( QPainter *painter ) override
-    {
-      painter->drawImage( mImage.rect(), mImage, mImage.rect() );
-    }
-
-  private:
-
-    QImage mImage;
-
-};
-
-///@endcond
 Qt3DRender::QMaterial *QgsPhongMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
   switch ( technique )
@@ -124,53 +82,19 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::toMaterial( QgsMaterialSettings
     case QgsMaterialSettingsRenderingTechnique::Points:
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
     {
-      bool fitsInCache = false;
-      QImage textureSourceImage;
+      Qt3DExtras::QPhongMaterial *material  = new Qt3DExtras::QPhongMaterial;
+      material->setDiffuse( mDiffuse );
+      material->setAmbient( mAmbient );
+      material->setSpecular( mSpecular );
+      material->setShininess( mShininess );
 
-      if ( requiresTextureCoordinates() )
-        textureSourceImage = QgsApplication::imageCache()->pathAsImage( mTexturePath, QSize(), true, 1.0, fitsInCache );
-      ( void )fitsInCache;
-
-      if ( !textureSourceImage.isNull() )
+      if ( context.isSelected() )
       {
-        Qt3DExtras::QDiffuseMapMaterial *material = new Qt3DExtras::QDiffuseMapMaterial;
-
-        QgsQImageTextureImage *textureImage = new QgsQImageTextureImage( textureSourceImage );
-        material->diffuse()->addTextureImage( textureImage );
-
-        material->diffuse()->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
-        material->diffuse()->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
-        material->diffuse()->wrapMode()->setZ( Qt3DRender::QTextureWrapMode::Repeat );
-        material->setSpecular( mSpecular );
-        material->setShininess( mShininess );
-        material->setTextureScale( mTextureScale );
-
-        if ( context.isSelected() )
-        {
-          // update the material with selection colors
-          // TODO : dampen the color of diffuse texture
-          //      mat->setDiffuse( context.map().selectionColor() );
-          material->setAmbient( context.selectionColor().darker() );
-        }
-
-        return material;
+        // update the material with selection colors
+        material->setDiffuse( context.selectionColor() );
+        material->setAmbient( context.selectionColor().darker() );
       }
-      else
-      {
-        Qt3DExtras::QPhongMaterial *material  = new Qt3DExtras::QPhongMaterial;
-        material->setDiffuse( mDiffuse );
-        material->setAmbient( mAmbient );
-        material->setSpecular( mSpecular );
-        material->setShininess( mShininess );
-
-        if ( context.isSelected() )
-        {
-          // update the material with selection colors
-          material->setDiffuse( context.selectionColor() );
-          material->setAmbient( context.selectionColor().darker() );
-        }
-        return material;
-      }
+      return material;
     }
 
     case QgsMaterialSettingsRenderingTechnique::Lines:

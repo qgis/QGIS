@@ -112,18 +112,6 @@ Reads settings from a DOM ``element``
 Writes settings to a DOM ``element``
 %End
 
-    virtual bool requiresTextureCoordinates() const;
-%Docstring
-Returns true if the material requires texture coordinates to be generated
-during triangulation.
-%End
-
-    virtual float textureRotation() const;
-%Docstring
-Returns the texture rotation (in degrees), if texture coordinates to be generated
-during triangulation.
-%End
-
 
 };
 

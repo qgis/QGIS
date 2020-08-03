@@ -20,6 +20,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgstessellator.h"
+#include "qgsphongtexturedmaterialsettings.h"
 
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QMaterial>
@@ -88,15 +89,17 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   outEdges.withAdjacency = true;
   outEdges.init( mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), 0, &context.map() );
 
+  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol.material() );
+
   outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(), mSymbol.addBackFaces(), false,
-                               mSymbol.material()->requiresTextureCoordinates(),
+                               texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates(),
                                mSymbol.renderedFacade(),
-                               mSymbol.material()->textureRotation() ) );
+                               texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
   outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(),
                                  mSymbol.addBackFaces(), false,
-                                 mSymbol.material()->requiresTextureCoordinates(),
+                                 texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates(),
                                  mSymbol.renderedFacade(),
-                                 mSymbol.material()->textureRotation() ) );
+                                 texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
 
   QSet<QString> attrs = mSymbol.dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );
@@ -240,8 +243,10 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   QByteArray data( ( const char * )out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
   int nVerts = data.count() / out.tessellator->stride();
 
+  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol.material() );
+
   QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, mSymbol.invertNormals(), mSymbol.addBackFaces(),
-      mSymbol.material()->requiresTextureCoordinates() );
+      texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
   geometry->setData( data, nVerts, out.triangleIndexFids, out.triangleIndexStartingIndices );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;

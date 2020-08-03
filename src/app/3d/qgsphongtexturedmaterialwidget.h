@@ -1,9 +1,9 @@
 /***************************************************************************
-  qgsphongmaterialwidget.h
+  qgsphongtexturedmaterialwidget.h
   --------------------------------------
-  Date                 : July 2017
-  Copyright            : (C) 2017 by Martin Dobias
-  Email                : wonder dot sk at gmail dot com
+  Date                 : July 2020
+  Copyright            : (C) 2020 by Nyall Dawson
+  Email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,30 +13,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPHONGMATERIALWIDGET_H
-#define QGSPHONGMATERIALWIDGET_H
+#ifndef QGSPHONGTEXTUREDMATERIALWIDGET_H
+#define QGSPHONGTEXTUREDMATERIALWIDGET_H
 
 #include "qgsmaterialsettingswidget.h"
 #include "qgsabstractmaterialsettings.h"
 
-#include <ui_phongmaterialwidget.h>
+#include <ui_phongtexturedmaterialwidgetbase.h>
 
 class QgsPhongMaterialSettings;
 
 
-//! Widget for configuration of Phong material settings
-class QgsPhongMaterialWidget : public QgsMaterialSettingsWidget, private Ui::PhongMaterialWidget
+//! Widget for configuration of textured Phong material settings
+class QgsPhongTexturedMaterialWidget : public QgsMaterialSettingsWidget, private Ui::PhongTexturedMaterialWidgetBase
 {
     Q_OBJECT
   public:
-    explicit QgsPhongMaterialWidget( QWidget *parent = nullptr );
+    explicit QgsPhongTexturedMaterialWidget( QWidget *parent = nullptr );
 
     static QgsMaterialSettingsWidget *create();
 
-    void setTechnique( QgsMaterialSettingsRenderingTechnique technique ) override;
     void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer ) override;
     QgsAbstractMaterialSettings *settings() override;
 
+
 };
 
-#endif // QGSPHONGMATERIALWIDGET_H
+#endif // QGSPHONGTEXTUREDMATERIALWIDGET_H
