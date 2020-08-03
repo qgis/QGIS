@@ -405,7 +405,13 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
     env.add_callback( "static", 1, [ = ]( Arguments & args )
     {
       auto asset( args.at( 0 )->get<std::string>( ) );
-      return context.matchedPath().toStdString() + "/static/" + asset;
+      QString matchedPath { context.matchedPath() };
+      // If its the root path '/' strip it!
+      if ( matchedPath == '/' )
+      {
+        matchedPath.clear();
+      }
+      return matchedPath.toStdString() + "/static/" + asset;
     } );
 
     context.response()->write( env.render_file( pathInfo.fileName().toStdString(), data ) );
