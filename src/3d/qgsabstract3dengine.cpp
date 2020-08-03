@@ -14,3 +14,9 @@
  ***************************************************************************/
 
 #include "qgsabstract3dengine.h"
+
+QgsAbstract3DEngine::QgsAbstract3DEngine( QObject *parent )
+  : QObject( parent )
+{
+
+}
