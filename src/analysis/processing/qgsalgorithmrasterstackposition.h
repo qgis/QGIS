@@ -39,12 +39,12 @@ class QgsRasterStackPositionAlgorithmBase : public QgsProcessingAlgorithm
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    virtual int getPosition( std::vector<QgsRasterBlock>inputBlocks ) = 0;
+    virtual int findPosition( std::vector< std::unique_ptr< QgsRasterBlock > > &rasterBlockStack, int &row, int &col, bool &noDataInRasterBlockStack ) = 0;
+    double mNoDataValue = -9999;
 
   private:
     std::vector< QgsRasterAnalysisUtils::RasterLogicInput > mInputs;
     bool mIgnoreNoData;
-    double mNoDataValue = -9999;
     int mLayerWidth;
     int mLayerHeight;
     QgsRectangle mExtent;
@@ -64,7 +64,7 @@ class QgsRasterStackLowestPositionAlgorithm : public QgsRasterStackPositionAlgor
     QgsRasterStackLowestPositionAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    int getPosition( std::vector<QgsRasterBlock>inputBlocks ) override;
+    int findPosition( std::vector< std::unique_ptr< QgsRasterBlock > > &rasterBlockStack, int &row, int &col, bool &noDataInRasterBlockStack ) override;
 };
 
 class QgsRasterStackHighestPositionAlgorithm : public QgsRasterStackPositionAlgorithmBase
@@ -78,7 +78,7 @@ class QgsRasterStackHighestPositionAlgorithm : public QgsRasterStackPositionAlgo
     QgsRasterStackHighestPositionAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    int getPosition( std::vector<QgsRasterBlock>inputBlocks ) override;
+    int findPosition( std::vector< std::unique_ptr< QgsRasterBlock > > &rasterBlockStack, int &row, int &col, bool &noDataInRasterBlockStack ) override;
 };
 
 ///@endcond PRIVATE
