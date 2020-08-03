@@ -53,6 +53,7 @@
 #include "qgsstyle.h"
 #include "qgsbookmarkmanager.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsrenderchecker.h"
 
 class TestQgsProcessingAlgs: public QObject
 {
@@ -142,6 +143,8 @@ class TestQgsProcessingAlgs: public QObject
     void exportAtlasLayoutPng();
 
   private:
+
+    bool imageCheck( const QString &testName, const QString &renderedImage );
 
     QString mPointLayerPath;
     QgsVectorLayer *mPointsLayer = nullptr;
@@ -4370,6 +4373,14 @@ void TestQgsProcessingAlgs::exportAtlasLayoutPng()
   QgsPrintLayout *layout = new QgsPrintLayout( &p );
   layout->initializeDefaults();
   layout->setName( QStringLiteral( "my layout" ) );
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( layout );
+  map->setBackgroundEnabled( false );
+  map->setFrameEnabled( false );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  layout->addLayoutItem( map );
+  map->setExtent( mPolygonLayer->extent() );
+
   p.layoutManager()->addLayout( layout );
 
   std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:atlaslayouttoimage" ) ) );
@@ -4388,7 +4399,8 @@ void TestQgsProcessingAlgs::exportAtlasLayoutPng()
   parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "my layout" ) );
   parameters.insert( QStringLiteral( "COVERAGE_LAYER" ), QVariant::fromValue( mPolygonLayer ) );
   parameters.insert( QStringLiteral( "FOLDER" ), QDir::tempPath() + "/my_atlas" );
-  parameters.insert( QStringLiteral( "FILENAME_EXPRESSION" ), QStringLiteral( "'custom_'||@atlas_featurenumber" ) );
+  parameters.insert( QStringLiteral( "FILENAME_EXPRESSION" ), QStringLiteral( "'export_'||@atlas_featurenumber" ) );
+  parameters.insert( QStringLiteral( "DPI" ), 96 );
 
   bool ok = false;
   std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
@@ -4398,8 +4410,32 @@ void TestQgsProcessingAlgs::exportAtlasLayoutPng()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
+  QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/export_1.png" ) );
+  QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/export_10.png" ) );
+  QVERIFY( imageCheck( "export_atlas", QDir::tempPath() + "/my_atlas/export_1.png" ) );
+
+  parameters[QStringLiteral( "FILENAME_EXPRESSION" )] = QStringLiteral( "'custom_'||@atlas_featurenumber" );
+  parameters.insert( QStringLiteral( "LAYERS" ), QVariantList() << QVariant::fromValue( mPointsLayer ) );
+
+  ok = false;
+  results.clear();
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
   QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/custom_1.png" ) );
   QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/custom_10.png" ) );
+  QVERIFY( imageCheck( "export_atlas_custom_layers", QDir::tempPath() + "/my_atlas/custom_1.png" ) );
+}
+
+bool TestQgsProcessingAlgs::imageCheck( const QString &testName, const QString &renderedImage )
+{
+  QgsRenderChecker checker;
+  checker.setControlPathPrefix( QStringLiteral( "processing_algorithm" ) );
+  checker.setControlName( "expected_" + testName );
+  checker.setRenderedImage( renderedImage );
+  checker.setSizeTolerance( 3, 3 );
+  bool equal = checker.compareImages( testName, 500 );
+  return equal;
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )
