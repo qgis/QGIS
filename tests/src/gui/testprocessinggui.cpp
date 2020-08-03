@@ -3140,6 +3140,28 @@ void TestProcessingGui::testMultipleSelectionDialog()
   QCOMPARE( dlg->mModel->item( 1 )->text(), QStringLiteral( "6_" ) );
   QCOMPARE( dlg->mModel->item( 2 )->text(), QStringLiteral( "6.2_" ) );
 
+  // mix of fixed + model choices
+  availableOptions = QVariantList() << QVariant( "a" ) << 6 << 6.2
+                     << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "alg" ), QStringLiteral( "out" ) ) )
+                     << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "input" ) ) );
+  dlg = qgis::make_unique< QgsProcessingMultipleSelectionPanelWidget >( availableOptions, QVariantList() << 6
+        << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "alg" ), QStringLiteral( "out" ) ) )
+        << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "input" ) ) ) );
+
+  // when any selected option is a model child parameter source, then we require that all options are upgraded in place to model child parameter sources
+  QVariantList res = dlg->selectedOptions();
+  QCOMPARE( res.size(), 3 );
+  QCOMPARE( res.at( 0 ).value< QgsProcessingModelChildParameterSource >(), QgsProcessingModelChildParameterSource::fromStaticValue( 6 ) );
+  QCOMPARE( res.at( 1 ).value< QgsProcessingModelChildParameterSource >(), QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "alg" ), QStringLiteral( "out" ) ) );
+  QCOMPARE( res.at( 2 ).value< QgsProcessingModelChildParameterSource >(), QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "input" ) ) );
+  dlg->selectAll( true );
+  res = dlg->selectedOptions();
+  QCOMPARE( res.size(), 5 );
+  QCOMPARE( res.at( 0 ).value< QgsProcessingModelChildParameterSource >(), QgsProcessingModelChildParameterSource::fromStaticValue( 6 ) );
+  QCOMPARE( res.at( 1 ).value< QgsProcessingModelChildParameterSource >(), QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "alg" ), QStringLiteral( "out" ) ) );
+  QCOMPARE( res.at( 2 ).value< QgsProcessingModelChildParameterSource >(), QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "input" ) ) );
+  QCOMPARE( res.at( 3 ).value< QgsProcessingModelChildParameterSource >(), QgsProcessingModelChildParameterSource::fromStaticValue( QStringLiteral( "a" ) ) );
+  QCOMPARE( res.at( 4 ).value< QgsProcessingModelChildParameterSource >(), QgsProcessingModelChildParameterSource::fromStaticValue( 6.2 ) );
 }
 
 void TestProcessingGui::testMultipleFileSelectionDialog()
