@@ -91,7 +91,7 @@ void QgsServerOgcApi::executeRequest( const QgsServerApiContext &context ) const
     {
       hasMatch = true;
       // Execute handler
-      QgsMessageLog::logMessage( QStringLiteral( "Found API handler %1" ).arg( QString::fromStdString( h->operationId() ) ), QStringLiteral( "Server" ), Qgis::Info );
+      QgsMessageLog::logMessage( QStringLiteral( "API %1: found handler %2" ).arg( name(), QString::fromStdString( h->operationId() ) ), QStringLiteral( "Server" ), Qgis::Info );
       // May throw QgsServerApiBadRequestException or JSON exceptions on serializing
       try
       {
