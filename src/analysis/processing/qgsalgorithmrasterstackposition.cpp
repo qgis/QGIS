@@ -164,18 +164,17 @@ QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVarian
       for ( int col = 0; col < iterCols; col++ )
       {
         bool noDataInStack = false;
-        //rewrite getCellValuesFromBlock
-        std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, noDataInStack );
+        int position = findPosition( inputBlocks, row, col, noDataInStack );
 
-        if ( noDataInStack && !mIgnoreNoData )
+        if ( position == -1 || ( noDataInStack && !mIgnoreNoData ) )
         {
-          //output cell will always be NoData if NoData occurs the cellValueStack and NoData is not ignored
+          //output cell will always be NoData if NoData occurs the current raster cell
+          //of the input blocks and NoData is not ignored
           //this saves unnecessary iterations on the cellValueStack
           outputBlock->setValue( row, col, mNoDataValue );
         }
         else
         {
-          int position = getPosition( cellValues );
           outputBlock->setValue( row, col, position );
         }
       }
@@ -215,7 +214,7 @@ QStringList QgsRasterStackLowestPositionAlgorithm::tags() const
 
 QString QgsRasterStackLowestPositionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Lowest position algorithm evaluates on a cell-by-cell basis the position "
+  return QObject::tr( "The lowest position algorithm evaluates on a cell-by-cell basis the position "
                       "of the raster with the highest value in a stack of rasters. Position counts start "
                       "with 1 and range to the total number input rasters. The order of the input "
                       "rasters is relevant for the algorithm. If multiple rasters feature the lowest value, "
@@ -233,10 +232,68 @@ QgsRasterStackLowestPositionAlgorithm *QgsRasterStackLowestPositionAlgorithm::cr
   return new QgsRasterStackLowestPositionAlgorithm();
 }
 
-int QgsRasterStackLowestPositionAlgorithm::getPosition( std::vector<QgsRasterBlock> inputBlocks )
+int QgsRasterStackLowestPositionAlgorithm::findPosition( std::vector< std::unique_ptr<QgsRasterBlock> > &inputBlocks, int &row, int &col, bool &noDataInRasterBlockStack )
 {
+  int lowestPosition = 0;
+
+  //auxiliary variables
+  int inputBlocksCount = inputBlocks.size();
+  int currentPosition = 0;
+  int noDataCount = 0;
+  double firstValue = mNoDataValue;
+  bool firstValueIsNoData = true;
+
+  while( firstValueIsNoData && ( currentPosition < inputBlocksCount ) )
+  {
+    //check if all blocks are nodata/invalid
+    std::unique_ptr<QgsRasterBlock> &firstBlock = inputBlocks.at(currentPosition);
+    firstValue = firstBlock->valueAndNoData(row, col, firstValueIsNoData);
+
+    if( !firstBlock->isValid() || firstValueIsNoData )
+    {
+      noDataInRasterBlockStack = true;
+      noDataCount++;
+    }
+    else
+    {
+      lowestPosition = currentPosition;
+    }
+    currentPosition++;
+  }
+
+  if( noDataCount == inputBlocksCount )
+  {
+    noDataInRasterBlockStack = true;
+    return -1; //all blocks are NoData
+  }
+  else
+  {
+    //scan for the lowest value
+    while( currentPosition < inputBlocksCount)
+    {
+      std::unique_ptr< QgsRasterBlock > &currentBlock = inputBlocks.at(currentPosition);
+
+      bool currentValueIsNoData = false;
+      double currentValue = currentBlock->valueAndNoData(row, col, currentValueIsNoData);
+
+      if(!currentBlock->isValid() || currentValueIsNoData)
+      {
+        noDataInRasterBlockStack = true;
+        noDataCount++;
+      }
+      else
+      {
+        if(currentValue < firstValue)
+        {
+          firstValue = currentValue;
+          lowestPosition = currentPosition;
+        }
+      }
+      currentPosition++;
+    }
+  }
   //the ArcGIS implementation uses 1 for first position value instead of 0 as in standard c++
-  return static_cast<int>( std::min_element( cellValueStack.begin(), cellValueStack.end() ) - cellValueStack.begin() ) + 1; //therefore... index + 1
+  return ++lowestPosition; //therefore ++
 }
 
 //
@@ -260,7 +317,7 @@ QStringList QgsRasterStackHighestPositionAlgorithm::tags() const
 
 QString QgsRasterStackHighestPositionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Highest position algorithm evaluates on a cell-by-cell basis the position "
+  return QObject::tr( "The highest position algorithm evaluates on a cell-by-cell basis the position "
                       "of the raster with the highest value in a stack of rasters. Position counts start "
                       "with 1 and range to the total number input rasters. The order of the input "
                       "rasters is relevant for the algorithm. If multiple rasters feature the highest value, "
@@ -278,10 +335,69 @@ QgsRasterStackHighestPositionAlgorithm *QgsRasterStackHighestPositionAlgorithm::
   return new QgsRasterStackHighestPositionAlgorithm();
 }
 
-int QgsRasterStackHighestPositionAlgorithm::getPosition( std::vector<QgsRasterBlock> inputBlocks )
+int QgsRasterStackHighestPositionAlgorithm::findPosition( std::vector< std::unique_ptr< QgsRasterBlock> > &inputBlocks, int &row, int &col, bool &noDataInRasterBlockStack )
 {
+  int highestPosition = 0;
+
+  //auxiliary variables
+  int inputBlocksCount = inputBlocks.size();
+  int currentPosition = 0;
+  int noDataCount = 0;
+  double firstValue = mNoDataValue;
+  bool firstValueIsNoData = true;
+
+  while( firstValueIsNoData && ( currentPosition < inputBlocksCount ) )
+  {
+    //check if all blocks are nodata/invalid
+    std::unique_ptr<QgsRasterBlock> &firstBlock = inputBlocks.at(currentPosition);
+    firstValue = firstBlock->valueAndNoData(row, col, firstValueIsNoData);
+
+    if( !firstBlock->isValid() || firstValueIsNoData )
+    {
+      noDataInRasterBlockStack = true;
+      noDataCount++;
+    }
+    else
+    {
+      highestPosition = currentPosition;
+    }
+
+    currentPosition++;
+  }
+
+  if( noDataCount == inputBlocksCount )
+  {
+    noDataInRasterBlockStack = true;
+    return -1; //all blocks are NoData
+  }
+  else
+  {
+    //scan for the lowest value
+    while( currentPosition < inputBlocksCount)
+    {
+      std::unique_ptr< QgsRasterBlock > &currentBlock = inputBlocks.at(currentPosition);
+
+      bool currentValueIsNoData = false;
+      double currentValue = currentBlock->valueAndNoData(row, col, currentValueIsNoData);
+
+      if(!currentBlock->isValid() || currentValueIsNoData)
+      {
+        noDataInRasterBlockStack = true;
+        noDataCount++;
+      }
+      else
+      {
+        if(currentValue > firstValue)
+        {
+          firstValue = currentValue;
+          highestPosition = currentPosition;
+        }
+      }
+      currentPosition++;
+    }
+  }
   //the ArcGIS implementation uses 1 for first position value instead of 0 as in standard c++
-  return static_cast<int>( std::max_element( cellValueStack.begin(), cellValueStack.end() ) - cellValueStack.begin() ) + 1; //therefore... index + 1
+  return ++highestPosition; //therefore ++
 }
 
 ///@endcond
