@@ -60,7 +60,8 @@ void QgsTemporalControllerDockWidget::exportAnimation()
     dlg->applyMapSettings( s );
 
     const QgsDateTimeRange animationRange = dlg->animationRange();
-    const QgsInterval frameDuration = dlg->frameInterval();
+    const double frameTimeStep = dlg->frameTimeStep();
+    const QgsUnitTypes::TemporalUnit frameTimeStepUnit = dlg->frameTimeStepUnit();
     const QString outputDir = dlg->outputDirectory();
     const QString fileNameExpression = dlg->fileNameExpression();
 
@@ -89,7 +90,8 @@ void QgsTemporalControllerDockWidget::exportAnimation()
       decorations = QgisApp::instance()->activeDecorations();
 
     QgsTemporalUtils::AnimationExportSettings animationSettings;
-    animationSettings.frameDuration = frameDuration;
+    animationSettings.frameTimeStep = frameTimeStep;
+    animationSettings.frameTimeStepUnit = frameTimeStepUnit;
     animationSettings.animationRange = animationRange;
     animationSettings.outputDirectory = outputDir;
     animationSettings.fileNameTemplate = fileNameExpression;

@@ -35,7 +35,9 @@ returns the maximal combined temporal extent of these layers.
     {
       QgsDateTimeRange animationRange;
 
-      QgsInterval frameDuration;
+      double frameTimeStep;
+
+      QgsUnitTypes::TemporalUnit frameTimeStepUnit;
 
       QString outputDirectory;
 

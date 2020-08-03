@@ -222,9 +222,14 @@ QgsDateTimeRange QgsAnimationExportDialog::animationRange() const
   return QgsDateTimeRange( mStartDateTime->dateTime(), mEndDateTime->dateTime() );
 }
 
-QgsInterval QgsAnimationExportDialog::frameInterval() const
+double QgsAnimationExportDialog::frameTimeStep() const
 {
-  return QgsInterval( mFrameDurationSpinBox->value(), static_cast< QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->currentData().toInt() ) );
+  return mFrameDurationSpinBox->value();
+}
+
+QgsUnitTypes::TemporalUnit QgsAnimationExportDialog::frameTimeStepUnit() const
+{
+  return static_cast< QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->currentData().toInt() );
 }
 
 void QgsAnimationExportDialog::applyMapSettings( QgsMapSettings &mapSettings )

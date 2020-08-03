@@ -63,8 +63,11 @@ class APP_EXPORT QgsAnimationExportDialog: public QDialog, private Ui::QgsAnimat
     //! Returns the overall animation range
     QgsDateTimeRange animationRange() const;
 
-    //! Returns the duration of each individual frame
-    QgsInterval frameInterval() const;
+    //! Returns the time step of each individual frame
+    double frameTimeStep() const;
+
+    //! Returns the time step unit of each individual frame
+    QgsUnitTypes::TemporalUnit frameTimeStepUnit() const;
 
     //! configure a map settings object
     void applyMapSettings( QgsMapSettings &mapSettings );
