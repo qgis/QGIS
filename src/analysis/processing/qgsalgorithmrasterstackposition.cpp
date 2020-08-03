@@ -243,13 +243,13 @@ int QgsRasterStackLowestPositionAlgorithm::findPosition( std::vector< std::uniqu
   double firstValue = mNoDataValue;
   bool firstValueIsNoData = true;
 
-  while( firstValueIsNoData && ( currentPosition < inputBlocksCount ) )
+  while ( firstValueIsNoData && ( currentPosition < inputBlocksCount ) )
   {
     //check if all blocks are nodata/invalid
-    std::unique_ptr<QgsRasterBlock> &firstBlock = inputBlocks.at(currentPosition);
-    firstValue = firstBlock->valueAndNoData(row, col, firstValueIsNoData);
+    std::unique_ptr<QgsRasterBlock> &firstBlock = inputBlocks.at( currentPosition );
+    firstValue = firstBlock->valueAndNoData( row, col, firstValueIsNoData );
 
-    if( !firstBlock->isValid() || firstValueIsNoData )
+    if ( !firstBlock->isValid() || firstValueIsNoData )
     {
       noDataInRasterBlockStack = true;
       noDataCount++;
@@ -261,7 +261,7 @@ int QgsRasterStackLowestPositionAlgorithm::findPosition( std::vector< std::uniqu
     currentPosition++;
   }
 
-  if( noDataCount == inputBlocksCount )
+  if ( noDataCount == inputBlocksCount )
   {
     noDataInRasterBlockStack = true;
     return -1; //all blocks are NoData
@@ -269,21 +269,21 @@ int QgsRasterStackLowestPositionAlgorithm::findPosition( std::vector< std::uniqu
   else
   {
     //scan for the lowest value
-    while( currentPosition < inputBlocksCount)
+    while ( currentPosition < inputBlocksCount )
     {
-      std::unique_ptr< QgsRasterBlock > &currentBlock = inputBlocks.at(currentPosition);
+      std::unique_ptr< QgsRasterBlock > &currentBlock = inputBlocks.at( currentPosition );
 
       bool currentValueIsNoData = false;
-      double currentValue = currentBlock->valueAndNoData(row, col, currentValueIsNoData);
+      double currentValue = currentBlock->valueAndNoData( row, col, currentValueIsNoData );
 
-      if(!currentBlock->isValid() || currentValueIsNoData)
+      if ( !currentBlock->isValid() || currentValueIsNoData )
       {
         noDataInRasterBlockStack = true;
         noDataCount++;
       }
       else
       {
-        if(currentValue < firstValue)
+        if ( currentValue < firstValue )
         {
           firstValue = currentValue;
           lowestPosition = currentPosition;
@@ -346,13 +346,13 @@ int QgsRasterStackHighestPositionAlgorithm::findPosition( std::vector< std::uniq
   double firstValue = mNoDataValue;
   bool firstValueIsNoData = true;
 
-  while( firstValueIsNoData && ( currentPosition < inputBlocksCount ) )
+  while ( firstValueIsNoData && ( currentPosition < inputBlocksCount ) )
   {
     //check if all blocks are nodata/invalid
-    std::unique_ptr<QgsRasterBlock> &firstBlock = inputBlocks.at(currentPosition);
-    firstValue = firstBlock->valueAndNoData(row, col, firstValueIsNoData);
+    std::unique_ptr<QgsRasterBlock> &firstBlock = inputBlocks.at( currentPosition );
+    firstValue = firstBlock->valueAndNoData( row, col, firstValueIsNoData );
 
-    if( !firstBlock->isValid() || firstValueIsNoData )
+    if ( !firstBlock->isValid() || firstValueIsNoData )
     {
       noDataInRasterBlockStack = true;
       noDataCount++;
@@ -365,7 +365,7 @@ int QgsRasterStackHighestPositionAlgorithm::findPosition( std::vector< std::uniq
     currentPosition++;
   }
 
-  if( noDataCount == inputBlocksCount )
+  if ( noDataCount == inputBlocksCount )
   {
     noDataInRasterBlockStack = true;
     return -1; //all blocks are NoData
@@ -373,21 +373,21 @@ int QgsRasterStackHighestPositionAlgorithm::findPosition( std::vector< std::uniq
   else
   {
     //scan for the lowest value
-    while( currentPosition < inputBlocksCount)
+    while ( currentPosition < inputBlocksCount )
     {
-      std::unique_ptr< QgsRasterBlock > &currentBlock = inputBlocks.at(currentPosition);
+      std::unique_ptr< QgsRasterBlock > &currentBlock = inputBlocks.at( currentPosition );
 
       bool currentValueIsNoData = false;
-      double currentValue = currentBlock->valueAndNoData(row, col, currentValueIsNoData);
+      double currentValue = currentBlock->valueAndNoData( row, col, currentValueIsNoData );
 
-      if(!currentBlock->isValid() || currentValueIsNoData)
+      if ( !currentBlock->isValid() || currentValueIsNoData )
       {
         noDataInRasterBlockStack = true;
         noDataCount++;
       }
       else
       {
-        if(currentValue > firstValue)
+        if ( currentValue > firstValue )
         {
           firstValue = currentValue;
           highestPosition = currentPosition;
