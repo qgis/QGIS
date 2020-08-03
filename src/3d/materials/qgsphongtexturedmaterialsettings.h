@@ -67,7 +67,7 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
     /**
      * Returns the diffuse texture path.
      *
-     * \see setTexturePath()
+     * \see setDiffuseTexturePath()
      */
     QString diffuseTexturePath() const { return mDiffuseTexturePath; }
 
