@@ -103,6 +103,32 @@ class _3D_EXPORT QgsMaterialContext
  */
 class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->type() == QLatin1String( "gooch" ) )
+    {
+      sipType = sipType_QgsGoochMaterialSettings;
+    }
+    else if ( sipCpp->type() == QLatin1String( "phong" ) )
+    {
+      sipType = sipType_QgsPhongMaterialSettings;
+    }
+    else if ( sipCpp->type() == "phongtextured" )
+    {
+      sipType = sipType_QgsPhongTexturedMaterialSettings;
+    }
+    else if ( sipCpp->type() == "simpleline" )
+    {
+      sipType = sipType_QgsSimpleLineMaterialSettings;
+    }
+    else
+    {
+      sipType = 0;
+    }
+    SIP_END
+#endif
+
   public:
 
     virtual ~QgsAbstractMaterialSettings() = default;
