@@ -20,7 +20,8 @@
 #include <Qt3DExtras/QForwardRenderer>
 
 
-QgsWindow3DEngine::QgsWindow3DEngine()
+QgsWindow3DEngine::QgsWindow3DEngine( QObject *parent )
+  : QgsAbstract3DEngine( parent )
 {
   mWindow3D = new Qt3DExtras::Qt3DWindow;
 
