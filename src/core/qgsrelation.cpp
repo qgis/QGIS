@@ -205,7 +205,7 @@ QgsFeatureIterator QgsRelation::getRelatedFeatures( const QgsFeature &feature ) 
 QgsFeatureRequest QgsRelation::getRelatedFeaturesRequest( const QgsFeature &feature ) const
 {
   QString filter = getRelatedFeaturesFilter( feature );
-  QgsDebugMsg( QStringLiteral( "Filter conditions: '%1'" ).arg( filter ) );
+  QgsDebugMsgLevel( QStringLiteral( "Filter conditions: '%1'" ).arg( filter ), 2 );
 
   QgsFeatureRequest myRequest;
   myRequest.setFilterExpression( filter );
@@ -237,7 +237,7 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes 
 
   QgsFeatureRequest myRequest;
 
-  QgsDebugMsg( QStringLiteral( "Filter conditions: '%1'" ).arg( conditions.join( " AND " ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "Filter conditions: '%1'" ).arg( conditions.join( " AND " ) ), 2 );
 
   myRequest.setFilterExpression( conditions.join( QStringLiteral( " AND " ) ) );
 
