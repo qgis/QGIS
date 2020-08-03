@@ -51,6 +51,7 @@
 #include "qgssymbol.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsfillsymbollayer.h"
+#include "qgssimplelinematerialsettings.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -444,7 +445,7 @@ void TestQgs3DRendering::testLineRendering()
   QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
   lineSymbol->setRenderAsSimpleLines( true );
   lineSymbol->setWidth( 10 );
-  QgsPhongMaterialSettings mat;
+  QgsSimpleLineMaterialSettings mat;
   mat.setAmbient( Qt::red );
   lineSymbol->setMaterial( mat.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );

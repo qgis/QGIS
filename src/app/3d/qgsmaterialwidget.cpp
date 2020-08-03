@@ -57,7 +57,14 @@ void QgsMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique tech
 
   const int prevIndex = mMaterialTypeComboBox->findData( prevType );
   if ( prevIndex == -1 )
-    mMaterialTypeComboBox->setCurrentIndex( 0 );
+  {
+    // if phong material type is available, default to it (for now?)
+    const int phongIndex = mMaterialTypeComboBox->findData( QStringLiteral( "phong" ) );
+    if ( phongIndex >= 0 )
+      mMaterialTypeComboBox->setCurrentIndex( phongIndex );
+    else
+      mMaterialTypeComboBox->setCurrentIndex( 0 );
+  }
   else
     mMaterialTypeComboBox->setCurrentIndex( prevIndex );
 

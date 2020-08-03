@@ -23,6 +23,7 @@
 #include "qgsline3dsymbolwidget.h"
 #include "qgsphongmaterialwidget.h"
 #include "qgsgoochmaterialwidget.h"
+#include "qgssimplelinematerialwidget.h"
 #include "qgs3dicongenerator.h"
 
 void Qgs3DAppUtils::initialize()
@@ -33,6 +34,7 @@ void Qgs3DAppUtils::initialize()
 
   dynamic_cast< QgsMaterialSettingsMetadata * >( Qgs3D::materialRegistry()->materialSettingsMetadata( QStringLiteral( "phong" ) ) )->setWidgetFunction( QgsPhongMaterialWidget::create );
   dynamic_cast< QgsMaterialSettingsMetadata * >( Qgs3D::materialRegistry()->materialSettingsMetadata( QStringLiteral( "gooch" ) ) )->setWidgetFunction( QgsGoochMaterialWidget::create );
+  dynamic_cast< QgsMaterialSettingsMetadata * >( Qgs3D::materialRegistry()->materialSettingsMetadata( QStringLiteral( "simpleline" ) ) )->setWidgetFunction( QgsSimpleLineMaterialWidget::create );
 
   QgsStyleModel::setIconGenerator( new Qgs3DIconGenerator( QgsApplication::defaultStyleModel() ) );
 }

@@ -16,7 +16,6 @@
 #include "qgsphongmaterialsettings.h"
 
 #include "qgssymbollayerutils.h"
-#include "qgslinematerial_p.h"
 #include "qgsapplication.h"
 #include "qgsimagecache.h"
 #include <Qt3DExtras/QDiffuseMapMaterial>
@@ -38,11 +37,13 @@ bool QgsPhongMaterialSettings::supportsTechnique( QgsMaterialSettingsRenderingTe
   switch ( technique )
   {
     case QgsMaterialSettingsRenderingTechnique::Triangles:
-    case QgsMaterialSettingsRenderingTechnique::Lines:
     case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
     case QgsMaterialSettingsRenderingTechnique::Points:
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
       return true;
+
+    case QgsMaterialSettingsRenderingTechnique::Lines:
+      return false;
   }
   return false;
 }
@@ -173,16 +174,8 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::toMaterial( QgsMaterialSettings
     }
 
     case QgsMaterialSettingsRenderingTechnique::Lines:
-    {
-      QgsLineMaterial *mat = new QgsLineMaterial;
-      mat->setLineColor( mAmbient );
-      if ( context.isSelected() )
-      {
-        // update the material with selection colors
-        mat->setLineColor( context.selectionColor() );
-      }
-      return mat;
-    }
+      return nullptr;
+
   }
   return nullptr;
 }

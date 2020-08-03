@@ -11,6 +11,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/tests/core #for render checker class
   ${CMAKE_SOURCE_DIR}/src/3d
   ${CMAKE_SOURCE_DIR}/src/3d/chunks
+  ${CMAKE_SOURCE_DIR}/src/3d/materials
   ${CMAKE_SOURCE_DIR}/src/3d/mesh
   ${CMAKE_SOURCE_DIR}/src/3d/symbols
   ${CMAKE_SOURCE_DIR}/src/3d/terrain
