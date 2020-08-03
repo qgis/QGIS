@@ -69,7 +69,7 @@ Returns shininess of the surface
 %Docstring
 Returns the diffuse texture path.
 
-.. seealso:: :py:func:`setTexturePath`
+.. seealso:: :py:func:`setDiffuseTexturePath`
 %End
 
     float textureScale() const;
