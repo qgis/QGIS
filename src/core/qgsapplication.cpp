@@ -2427,6 +2427,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mRendererRegistry;
   delete mSvgCache;
   delete mImageCache;
+  delete mSourceCache;
   delete mCalloutRegistry;
   delete mSymbolLayerRegistry;
   delete mTaskManager;
