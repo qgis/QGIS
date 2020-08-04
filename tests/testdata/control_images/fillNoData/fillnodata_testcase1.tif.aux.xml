@@ -5,6 +5,7 @@
       <MDI key="STATISTICS_MEAN">1887.7</MDI>
       <MDI key="STATISTICS_MINIMUM">-32111</MDI>
       <MDI key="STATISTICS_STDDEV">17198.274992278</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">100</MDI>
     </Metadata>
   </PAMRasterBand>
 </PAMDataset>
