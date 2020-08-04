@@ -308,8 +308,8 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     long long mCurrentFrameNumber = 0;
 
     //! Frame duration
-    double mFrameTimeStep;
-    QgsUnitTypes::TemporalUnit mFrameTimeStepUnit;
+    double mFrameTimeStep = 1.0;
+    QgsUnitTypes::TemporalUnit mFrameTimeStepUnit = QgsUnitTypes::TemporalUnit::TemporalHours;
 
     //! Member for frame rate
     double mFramesPerSecond = 1;
