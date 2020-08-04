@@ -92,9 +92,10 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     deleteTempRubberBand();
 
     //bring up dialog if a split was not possible (polygon) or only done once (line)
-    int topologicalEditing = QgsProject::instance()->topologicalEditing();
+    bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+    QgsPointSequence topologyTestPoints;
     vlayer->beginEditCommand( tr( "Features split" ) );
-    QgsGeometry::OperationResult returnCode = vlayer->splitFeatures( captureCurve(), true, topologicalEditing );
+    QgsGeometry::OperationResult returnCode = vlayer->splitFeatures( captureCurve(), topologyTestPoints, true, topologicalEditing );
     if ( returnCode == QgsGeometry::OperationResult::Success )
     {
       vlayer->endEditCommand();
@@ -135,6 +136,37 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         tr( "An error occurred during splitting." ),
         Qgis::Warning,
         QgisApp::instance()->messageTimeout() );
+    }
+    else if ( returnCode == QgsGeometry::OperationResult::Success &&
+              topologicalEditing == true &&
+              ! topologyTestPoints.isEmpty() )
+    {
+      //success, check if we need to add topological points to other layers
+      QList<QgsVectorLayer *> editableLayers;
+      const auto layers = canvas()->layers();
+      for ( QgsMapLayer *layer : layers )
+      {
+        QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+        if ( vectorLayer &&
+             vectorLayer->isEditable() &&
+             vectorLayer->isSpatial() &&
+             vectorLayer != vlayer &&
+             ( vectorLayer->geometryType() == QgsWkbTypes::LineGeometry ||
+               vectorLayer->geometryType() == QgsWkbTypes::PolygonGeometry ) )
+        {
+          vectorLayer->beginEditCommand( tr( "Topological points from Features split" ) );
+          int returnValue = vectorLayer->addTopologicalPoints( topologyTestPoints );
+          if ( returnValue == 0 )
+          {
+            vectorLayer->endEditCommand();
+          }
+          else
+          {
+            // the layer was not modified, leave the undo buffer intact
+            vectorLayer->destroyEditCommand();
+          }
+        }
+      }
     }
 
     stopCapturing();

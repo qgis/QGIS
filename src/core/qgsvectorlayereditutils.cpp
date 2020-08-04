@@ -297,10 +297,12 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QVect
 QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing )
 {
   QgsLineString lineString( splitLine );
-  return splitFeatures( &lineString, false, topologicalEditing );
+  QgsPointSequence topologyTestPoints;
+  bool preserveCircular = false;
+  return splitFeatures( &lineString, topologyTestPoints, preserveCircular, topologicalEditing );
 }
 
-QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsCurve *curve, bool preserveCircular, bool topologicalEditing )
+QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsCurve *curve, QgsPointSequence &topologyTestPoints, bool preserveCircular, bool topologicalEditing )
 {
   if ( !mLayer->isSpatial() )
     return QgsGeometry::InvalidBaseGeometry;
@@ -362,9 +364,10 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsCu
       continue;
     }
     QVector<QgsGeometry> newGeometries;
-    QgsPointSequence topologyTestPoints;
+    QgsPointSequence featureTopologyTestPoints;
     QgsGeometry featureGeom = feat.geometry();
-    splitFunctionReturn = featureGeom.splitGeometry( curve, newGeometries, preserveCircular, topologicalEditing, topologyTestPoints );
+    splitFunctionReturn = featureGeom.splitGeometry( curve, newGeometries, preserveCircular, topologicalEditing, featureTopologyTestPoints );
+    topologyTestPoints.append( featureTopologyTestPoints );
     if ( splitFunctionReturn == QgsGeometry::OperationResult::Success )
     {
       //change this geometry
@@ -380,8 +383,8 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsCu
 
       if ( topologicalEditing )
       {
-        QgsPointSequence::const_iterator topol_it = topologyTestPoints.constBegin();
-        for ( ; topol_it != topologyTestPoints.constEnd(); ++topol_it )
+        QgsPointSequence::const_iterator topol_it = featureTopologyTestPoints.constBegin();
+        for ( ; topol_it != featureTopologyTestPoints.constEnd(); ++topol_it )
         {
           addTopologicalPoints( *topol_it );
         }
@@ -598,6 +601,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
   if ( segments.isEmpty() )
     return 2;
 
+  bool pointsAdded = false;
   for ( QMap<QgsFeatureId, int>::const_iterator it = segments.constBegin(); it != segments.constEnd(); ++it )
   {
     QgsFeatureId fid = it.key();
@@ -615,9 +619,38 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
     {
       QgsDebugMsg( QStringLiteral( "failed to insert topo point" ) );
     }
+    else
+    {
+      pointsAdded = true;
+    }
   }
 
-  return 0;
+  return pointsAdded ? 0 : 2;
+}
+
+int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointSequence &ps )
+{
+  if ( !mLayer->isSpatial() )
+    return 1;
+
+  if ( ps.isEmpty() )
+  {
+    return 1;
+  }
+
+  bool pointsAdded = false;
+
+  QgsPointSequence::const_iterator it = ps.constBegin();
+  while ( it != ps.constEnd() )
+  {
+    if ( addTopologicalPoints( *it ) == 0 )
+    {
+      pointsAdded = true;
+    }
+    it++;
+  }
+
+  return pointsAdded ? 0 : 2;
 }
 
 int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointXY &p )
