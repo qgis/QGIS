@@ -284,6 +284,7 @@
         <file>themes/default/mActionDeleteTable.svg</file>
         <file>themes/default/mActionDeselectAll.svg</file>
         <file>themes/default/mActionDeselectActiveLayer.svg</file>
+        <file>themes/default/mActionDigitizeWithCurve.svg</file>
         <file>themes/default/mActionDuplicateLayer.svg</file>
         <file>themes/default/mActionDuplicateComposer.svg</file>
         <file>themes/default/mActionEditCopy.svg</file>
@@ -880,6 +881,10 @@
         <file>themes/default/mIconAlignBottom.svg</file>
         <file>themes/default/mIconAlignTop.svg</file>
         <file>themes/default/mIconAlignVCenter.svg</file>
+        <file>themes/default/mIconPhongMaterial.svg</file>
+        <file>themes/default/mIconGoochMaterial.svg</file>
+        <file>themes/default/mIconSimpleLineMaterial.svg</file>
+        <file>themes/default/mIconPhongTexturedMaterial.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

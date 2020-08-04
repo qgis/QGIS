@@ -489,6 +489,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="mActionDigitizeWithCurve"/>
    <addaction name="mActionRotateFeature"/>
    <addaction name="mActionSimplifyFeature"/>
    <addaction name="mActionAddRing"/>
@@ -3361,6 +3362,27 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="toolTip">
     <string>Increase Gamma</string>
+   </property>
+  </action>
+  <action name="mActionDigitizeWithCurve">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDigitizeWithCurve.svg</normaloff>:/images/themes/default/mActionDigitizeWithCurve.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Digitize with curve</string>
+   </property>
+   <property name="toolTip">
+    <string>Digitize with curve</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+G</string>
    </property>
   </action>
  </widget>

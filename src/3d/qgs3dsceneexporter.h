@@ -47,6 +47,9 @@ class QgsMeshEntity;
 /**
  * \brief The Qgs3DSceneExporter class
  * Entity that handles the exporting of 3D scene
+ *
+ * \note Not available in Python bindings
+ *
  * \ingroup 3d
  * \since QGIS 3.16
  */

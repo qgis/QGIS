@@ -29,6 +29,7 @@
 #include "qgsmeshlayer.h"
 #include "qgstriangularmesh.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsphongtexturedmaterialsettings.h"
 
 static QgsExpressionContext _expressionContext3D()
 {
@@ -64,7 +65,7 @@ QgsMesh3DSymbolEntity::QgsMesh3DSymbolEntity( const Qgs3DMapSettings &map,
 Qt3DRender::QMaterial *QgsMesh3DSymbolEntity::material( const QgsMesh3DSymbol &symbol ) const
 {
   QgsMaterialContext context;
-  Qt3DRender::QMaterial *material = symbol.material()->toMaterial( context );
+  Qt3DRender::QMaterial *material = symbol.material()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, context );
 
   // front/back side culling
   auto techniques = material->effect()->techniques();
@@ -133,7 +134,10 @@ Qt3DRender::QGeometryRenderer *QgsMesh3DSymbolEntityNode::renderer( const Qgs3DM
   // Polygons from mesh are already triangles, but
   // call QgsTessellatedPolygonGeometry to
   // use symbol settings for back faces, normals, etc
-  mGeometry = new QgsTessellatedPolygonGeometry( true, false, symbol.addBackFaces(), dynamic_cast< QgsPhongMaterialSettings * >( symbol.material() ) ? dynamic_cast< QgsPhongMaterialSettings * >( symbol.material() )->shouldUseDiffuseTexture() : false );
+
+  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( symbol.material() );
+
+  mGeometry = new QgsTessellatedPolygonGeometry( true, false, symbol.addBackFaces(), texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false );
   QList<float> extrusionHeightPerPolygon;
   mGeometry->setPolygons( polygons, fids, origin, 0.0, extrusionHeightPerPolygon );
 

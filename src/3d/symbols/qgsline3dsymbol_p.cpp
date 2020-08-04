@@ -28,6 +28,9 @@
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgsgeos.h"
+#include "qgssimplelinematerialsettings.h"
+
+#include "qgsphongtexturedmaterialsettings.h"
 
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QAttribute>
@@ -79,8 +82,16 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context,
 {
   Q_UNUSED( attributeNames )
 
-  outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true ) );
-  outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true ) );
+  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol.material() );
+
+  outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true,
+                               false, false, false, texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false,
+                               3,
+                               texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
+  outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true,
+                                 false, false, false, texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false,
+                                 3,
+                                 texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
 
   return true;
 }
@@ -159,13 +170,16 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( selected );
   materialContext.setSelectionColor( context.map().selectionColor() );
-  Qt3DRender::QMaterial *mat = mSymbol.material()->toMaterial( materialContext );
+  Qt3DRender::QMaterial *mat = mSymbol.material()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
 
   // extract vertex buffer data from tessellator
   QByteArray data( ( const char * )out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
   int nVerts = data.count() / out.tessellator->stride();
 
-  QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, false, false, false );
+  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol.material() );
+
+  QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, false, false,
+      texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false );
   geometry->setData( data, nVerts, out.triangleIndexFids, out.triangleIndexStartingIndices );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
@@ -272,7 +286,7 @@ void QgsSimpleLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( selected );
   materialContext.setSelectionColor( context.map().selectionColor() );
-  Qt3DRender::QMaterial *mat = mSymbol.material()->toMaterial( materialContext );
+  Qt3DRender::QMaterial *mat = mSymbol.material()->toMaterial( QgsMaterialSettingsRenderingTechnique::Lines, materialContext );
 
   // geometry renderer
 
@@ -384,8 +398,15 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( selected );
   materialContext.setSelectionColor( context.map().selectionColor() );
-  QgsLineMaterial *mat = mSymbol.material()->toLineMaterial( materialContext );
-  mat->setLineWidth( mSymbol.width() );
+  Qt3DRender::QMaterial *mat = mSymbol.material()->toMaterial( QgsMaterialSettingsRenderingTechnique::Lines, materialContext );
+  if ( !mat )
+  {
+    QgsSimpleLineMaterialSettings defaultMaterial;
+    mat = defaultMaterial.toMaterial( QgsMaterialSettingsRenderingTechnique::Lines, materialContext );
+  }
+
+  if ( QgsLineMaterial *lineMaterial = dynamic_cast< QgsLineMaterial * >( mat ) )
+    lineMaterial->setLineWidth( mSymbol.width() );
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
 

@@ -1855,6 +1855,18 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Enable or disable event tracing (for debugging)
     void toggleEventTracing();
 
+    /**
+     * Enables or disables digitizing with curve for map tool that support this capabilities
+     * \since QGIS 3.16
+     */
+    void enableDigitizeWithCurve( bool enable );
+
+    /**
+     * Enables the action that allows to enable or disable digitizing with curve
+     * \since QGIS 3.16
+     */
+    void enableDigitizeWithCurveAction( bool enable );
+
 #ifdef HAVE_GEOREFERENCER
     void showGeoreferencer();
 #endif

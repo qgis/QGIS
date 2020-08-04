@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/3d/qgsmaterialregistry.h                                         *
+ * src/3d/materials/qgsmaterialregistry.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -29,9 +29,11 @@ Stores metadata about one 3D material settings class.
 %End
   public:
 
-    QgsMaterialSettingsAbstractMetadata( const QString &type, const QString &visibleName );
+    QgsMaterialSettingsAbstractMetadata( const QString &type, const QString &visibleName, const QIcon &icon = QIcon() );
 %Docstring
 Constructor for QgsMaterialSettingsAbstractMetadata, with the specified ``type`` and ``visibleName``.
+
+An optional ``icon`` can be specified to represent the material type.
 %End
 
     virtual ~QgsMaterialSettingsAbstractMetadata();
@@ -46,6 +48,11 @@ Returns the unique material type string.
 Returns the material's visible (translated) name.
 %End
 
+    QIcon icon() const;
+%Docstring
+Returns an icon representing the material type, if available.
+%End
+
     virtual QgsAbstractMaterialSettings *create() = 0 /Factory/;
 %Docstring
 Creates a new instance of this material settings type.
@@ -53,8 +60,14 @@ Creates a new instance of this material settings type.
 Caller takes ownership of the returned object.
 %End
 
+    virtual bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique ) const = 0;
+%Docstring
+Returns ``True`` if the material type supports the specified rendering ``technique``.
+%End
+
 
 };
+
 
 
 
@@ -112,7 +125,7 @@ Returns ``None`` if the specified type is not found in the registry.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/3d/qgsmaterialregistry.h                                         *
+ * src/3d/materials/qgsmaterialregistry.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

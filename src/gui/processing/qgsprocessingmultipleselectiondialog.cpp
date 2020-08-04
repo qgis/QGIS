@@ -88,11 +88,34 @@ QVariantList QgsProcessingMultipleSelectionPanelWidget::selectedOptions() const
 {
   QVariantList options;
   options.reserve( mModel->rowCount() );
+  bool hasModelSources = false;
   for ( int i = 0; i < mModel->rowCount(); ++i )
   {
     if ( mModel->item( i )->checkState() == Qt::Checked )
-      options << mModel->item( i )->data( Qt::UserRole );
+    {
+      const QVariant option = mModel->item( i )->data( Qt::UserRole );
+
+      if ( option.canConvert< QgsProcessingModelChildParameterSource >() )
+        hasModelSources = true;
+
+      options << option;
+    }
   }
+
+  if ( hasModelSources )
+  {
+    // if any selected value is a QgsProcessingModelChildParameterSource, then we need to upgrade them all
+    QVariantList originalOptions = options;
+    options.clear();
+    for ( const QVariant &option : originalOptions )
+    {
+      if ( option.canConvert< QgsProcessingModelChildParameterSource >() )
+        options << option;
+      else
+        options << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromStaticValue( option ) );
+    }
+  }
+
   return options;
 }
 

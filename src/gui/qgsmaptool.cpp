@@ -38,7 +38,6 @@ QgsMapTool::~QgsMapTool()
     mCanvas->unsetMapTool( this );
 }
 
-
 QgsPointXY QgsMapTool::toMapCoordinates( QPoint point )
 {
   return mCanvas->getCoordinateTransform()->toMapCoordinates( point );
@@ -46,10 +45,8 @@ QgsPointXY QgsMapTool::toMapCoordinates( QPoint point )
 
 QgsPoint QgsMapTool::toMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point )
 {
-  QgsPointXY result = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPointXY( point.x(), point.y() ) );
-  return QgsPoint( result );
+  return mCanvas->mapSettings().layerToMapCoordinates( layer, point );
 }
-
 
 QgsPointXY QgsMapTool::toLayerCoordinates( const QgsMapLayer *layer, QPoint point )
 {

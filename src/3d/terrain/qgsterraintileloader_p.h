@@ -68,7 +68,7 @@ class QgsTerrainTileLoader : public QgsChunkLoader
     //! Creates a new texture thaht is linked to the entity
     Qt3DRender::QTexture2D *createTexture( QgsTerrainTileEntity *entity );
     //! Creates material component for the entity with the rendered map as a texture
-    void createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial );
+    void createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial, bool useTexture );
     //! Gives access to the terain entity
     QgsTerrainEntity *terrain() { return mTerrain; }
 

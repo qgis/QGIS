@@ -38,6 +38,8 @@ QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
   connect( chkSimpleLines, &QCheckBox::clicked, this, &QgsLine3DSymbolWidget::changed );
   connect( chkSimpleLines, &QCheckBox::clicked, this, &QgsLine3DSymbolWidget::updateGuiState );
   connect( widgetMaterial, &QgsMaterialWidget::changed, this, &QgsLine3DSymbolWidget::changed );
+
+  widgetMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::Triangles );
 }
 
 Qgs3DSymbolWidget *QgsLine3DSymbolWidget::create( QgsVectorLayer * )
@@ -57,8 +59,9 @@ void QgsLine3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVec
   cboAltClamping->setCurrentIndex( static_cast<int>( lineSymbol->altitudeClamping() ) );
   cboAltBinding->setCurrentIndex( static_cast<int>( lineSymbol->altitudeBinding() ) );
   chkSimpleLines->setChecked( lineSymbol->renderAsSimpleLines() );
-  // TODO -- make material widget generic!
   widgetMaterial->setSettings( lineSymbol->material(), layer );
+  widgetMaterial->setTechnique( chkSimpleLines->isChecked() ? QgsMaterialSettingsRenderingTechnique::Lines
+                                : QgsMaterialSettingsRenderingTechnique::Triangles );
   updateGuiState();
 }
 
@@ -85,5 +88,7 @@ void QgsLine3DSymbolWidget::updateGuiState()
   bool simple = chkSimpleLines->isChecked();
   //spinWidth->setEnabled( !simple );
   spinExtrusion->setEnabled( !simple );
+  widgetMaterial->setTechnique( chkSimpleLines->isChecked() ? QgsMaterialSettingsRenderingTechnique::Lines
+                                : QgsMaterialSettingsRenderingTechnique::Triangles );
 }
 

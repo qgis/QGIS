@@ -10,11 +10,16 @@
 
 
 
+
 class Qgs3DExportObject
 {
 %Docstring
 The Qgs3DExportObject class
 Manages the data of each object of the scene (positions, normals, texture coordinates ...) since each object
+
+.. note::
+
+   Not available in Python bindings
 
 .. versionadded:: 3.16
 %End

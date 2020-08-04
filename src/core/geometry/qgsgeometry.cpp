@@ -881,6 +881,26 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsPointSequence 
   return QgsGeometry::NothingHappened;
 }
 
+QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsCurve *curve, QVector<QgsGeometry> &newGeometries, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints, bool splitFeature )
+{
+  std::unique_ptr<QgsLineString> segmentizedLine( curve->curveToLine() );
+  QgsPointSequence points;
+  segmentizedLine->points( points );
+  QgsGeometry::OperationResult result = splitGeometry( points, newGeometries, topological, topologyTestPoints, splitFeature );
+
+  if ( result == QgsGeometry::Success )
+  {
+    if ( preserveCircular )
+    {
+      for ( int i = 0; i < newGeometries.count(); ++i )
+        newGeometries[i] = newGeometries[i].convertToCurves();
+      *this = convertToCurves();
+    }
+  }
+
+  return result;
+}
+
 QgsGeometry::OperationResult QgsGeometry::reshapeGeometry( const QgsLineString &reshapeLineString )
 {
   if ( !d->geometry )

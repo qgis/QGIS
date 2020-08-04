@@ -45,6 +45,11 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     QString type() const override;
 
     /**
+     * Returns TRUE if the specified \a technique is suppored by the Phong material.
+     */
+    static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
+
+    /**
      * Returns a new instance of QgsPhongMaterialSettings.
      */
     static QgsAbstractMaterialSettings *create() SIP_FACTORY;
@@ -62,50 +67,6 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
 
     QMap<QString, QString> toExportParameters() const override;
 
-    /**
-     * Returns whether the diffuse texture is used.
-     *
-     * \note Diffuse textures will only be used at render time if diffuseTextureEnabled() is TRUE
-     * and a texturePath() is non-empty.
-     *
-     * \see shouldUseDiffuseTexture()
-     * \see setDiffuseTextureEnabled()
-     * \see texturePath()
-     */
-    bool diffuseTextureEnabled() const { return mDiffuseTextureEnabled; }
-
-    /**
-     * Returns whether the diffuse texture should be used during rendering.
-     *
-     * Diffuse textures will only be used at render time if diffuseTextureEnabled() is TRUE
-     * and a texturePath() is non-empty.
-     *
-     * \see diffuseTextureEnabled()
-     * \see texturePath()
-     */
-    bool shouldUseDiffuseTexture() const { return mDiffuseTextureEnabled && !mTexturePath.isEmpty(); }
-
-    /**
-     * Returns the diffuse texture path.
-     *
-     * \note Diffuse textures will only be used at render time if diffuseTextureEnabled() is TRUE
-     * and a texturePath() is non-empty.
-     *
-     * \see setTexturePath()
-     * \see diffuseTextureEnabled()
-     */
-    QString texturePath() const { return mTexturePath; }
-
-    /**
-     * Returns the texture scale
-     * The texture scale changes the size of the displayed texture in the 3D scene
-     * If the texture scale is less than 1 the texture will be stretched
-     */
-    float textureScale() const { return mTextureScale; }
-
-    //! Returns the texture's rotation in degrees
-    float textureRotation() const { return mTextureRotation; }
-
     //! Sets ambient color component
     void setAmbient( const QColor &ambient ) { mAmbient = ambient; }
     //! Sets diffuse color component
@@ -115,43 +76,10 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     //! Sets shininess of the surface
     void setShininess( float shininess ) { mShininess = shininess; }
 
-    /**
-     * Sets whether the diffuse texture is enabled.
-     *
-     * \note Diffuse textures will only be used at render time if diffuseTextureEnabled() is TRUE
-     * and a texturePath() is non-empty.
-     *
-     * \see diffuseTextureEnabled()
-     * \see setTexturePath()
-     */
-    void setDiffuseTextureEnabled( bool used ) { mDiffuseTextureEnabled = used; }
-
-    /**
-     * Sets the \a path of the texture.
-     *
-     * \note Diffuse textures will only be used at render time if diffuseTextureEnabled() is TRUE
-     * and a texturePath() is non-empty.
-     *
-     * \see texturePath()
-     * \see setDiffuseTextureEnabled()
-     */
-    void setTexturePath( const QString &path ) { mTexturePath = path; }
-
-    /**
-     * Sets the texture scale
-     * The texture scale changes the size of the displayed texture in the 3D scene
-     * If the texture scale is less than 1 the texture will be stretched
-     */
-    void setTextureScale( float scale ) { mTextureScale = scale; }
-
-    //! Sets the texture rotation in degrees
-    void setTextureRotation( float rotation ) { mTextureRotation = rotation; }
-
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 #ifndef SIP_RUN
-    Qt3DRender::QMaterial *toMaterial( const QgsMaterialContext &context ) const override SIP_FACTORY;
-    QgsLineMaterial *toLineMaterial( const QgsMaterialContext &context ) const override SIP_FACTORY;
+    Qt3DRender::QMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
     void addParametersToEffect( Qt3DRender::QEffect *effect ) const override;
 #endif
 
@@ -160,11 +88,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
       return mAmbient == other.mAmbient &&
              mDiffuse == other.mDiffuse &&
              mSpecular == other.mSpecular &&
-             mShininess == other.mShininess &&
-             mDiffuseTextureEnabled == other.mDiffuseTextureEnabled &&
-             mTexturePath == other.mTexturePath &&
-             mTextureScale == other.mTextureScale &&
-             mTextureRotation == other.mTextureRotation;
+             mShininess == other.mShininess;
     }
 
   private:
@@ -172,10 +96,6 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     QColor mDiffuse{ QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) };
     QColor mSpecular{ QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
     float mShininess = 0.0f;
-    bool mDiffuseTextureEnabled{ false };
-    QString mTexturePath;
-    float mTextureScale{ 1.0f };
-    float mTextureRotation{ 0.0f };
 };
 
 

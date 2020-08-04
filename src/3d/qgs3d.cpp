@@ -34,6 +34,9 @@
 #include "qgspolygon3dsymbol_p.h"
 #include "qgspoint3dsymbol_p.h"
 #include "qgsline3dsymbol_p.h"
+#include "qgsgoochmaterialsettings.h"
+#include "qgssimplelinematerialsettings.h"
+#include "qgsphongtexturedmaterialsettings.h"
 
 #include "qgsstyle.h"
 
@@ -66,7 +69,13 @@ void Qgs3D::initialize()
       &QgsPolygon3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForPolygon3DSymbol ) );
 
   instance()->materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "phong" ), QObject::tr( "Realistic (Phong)" ),
-      QgsPhongMaterialSettings::create, nullptr ) );
+      QgsPhongMaterialSettings::create, QgsPhongMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconPhongMaterial.svg" ) ) ) );
+  instance()->materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "phongtextured" ), QObject::tr( "Realistic Textured (Phong)" ),
+      QgsPhongTexturedMaterialSettings::create, QgsPhongMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconPhongTexturedMaterial.svg" ) ) ) );
+  instance()->materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "simpleline" ), QObject::tr( "Single Color (Unlit)" ),
+      QgsSimpleLineMaterialSettings::create, QgsSimpleLineMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconSimpleLineMaterial.svg" ) ) ) );
+  instance()->materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "gooch" ), QObject::tr( "CAD (Gooch)" ),
+      QgsGoochMaterialSettings::create, QgsGoochMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconGoochMaterial.svg" ) ) ) );
 
   // because we are usually populating the 3d registry AFTER QgsApplication initialisation, we need to defer creation
   // of 3d symbols in the default style until now

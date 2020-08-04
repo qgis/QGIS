@@ -38,7 +38,7 @@ QgsProfilerPanelWidget::QgsProfilerPanelWidget( QgsRuntimeProfiler *profiler, QW
   //mTreeView->resizeColumnToContents( 0 );
   //mTreeView->resizeColumnToContents( 1 );
 
-  mTreeView->setItemDelegateForColumn( 1, new CostDelegate( QgsRuntimeProfilerNode::Elapsed, QgsRuntimeProfilerNode::ParentElapsed ) );
+  mTreeView->setItemDelegateForColumn( 1, new CostDelegate( QgsRuntimeProfilerNode::Elapsed, QgsRuntimeProfilerNode::ParentElapsed, mTreeView ) );
 
   connect( mProfiler, &QgsRuntimeProfiler::groupAdded, this, [ = ]( const QString & group )
   {
