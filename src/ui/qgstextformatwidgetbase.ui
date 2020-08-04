@@ -5933,7 +5933,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item>
-                            <widget class="QLabel" name="mLblNoObstacle">
+                            <widget class="QLabel" name="mLblNoObstacle1">
                              <property name="wordWrap">
                               <bool>true</bool>
                              </property>
