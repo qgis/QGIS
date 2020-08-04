@@ -115,7 +115,7 @@ QString QgsClassificationLogarithmic::valueToLabel( double value ) const
   }
   else
   {
-    if ( isnan( value ) )
+    if ( std::isnan( value ) )
     {
       return QObject::tr( "invalid (0 or negative values in the data)" );
     }
