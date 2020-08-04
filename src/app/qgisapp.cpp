@@ -14164,6 +14164,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionDecreaseBrightness->setEnabled( false );
     mActionIncreaseContrast->setEnabled( false );
     mActionDecreaseContrast->setEnabled( false );
+    mActionIncreaseGamma->setEnabled( false );
+    mActionDecreaseGamma->setEnabled( false );
     mActionZoomActualSize->setEnabled( false );
     mActionZoomToLayer->setEnabled( false );
 
@@ -14202,6 +14204,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionDecreaseBrightness->setEnabled( false );
       mActionIncreaseContrast->setEnabled( false );
       mActionDecreaseContrast->setEnabled( false );
+      mActionIncreaseGamma->setEnabled( false );
+      mActionDecreaseGamma->setEnabled( false );
       mActionZoomActualSize->setEnabled( false );
       mActionZoomToLayer->setEnabled( isSpatial );
       mActionZoomToSelected->setEnabled( isSpatial );
@@ -14443,6 +14447,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionDecreaseBrightness->setEnabled( true );
       mActionIncreaseContrast->setEnabled( true );
       mActionDecreaseContrast->setEnabled( true );
+      mActionIncreaseGamma->setEnabled( true );
+      mActionDecreaseGamma->setEnabled( true );
 
       mActionLayerSubsetString->setEnabled( false );
       mActionFeatureAction->setEnabled( false );
@@ -14551,6 +14557,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionDecreaseBrightness->setEnabled( false );
       mActionIncreaseContrast->setEnabled( false );
       mActionDecreaseContrast->setEnabled( false );
+      mActionIncreaseGamma->setEnabled( false );
+      mActionDecreaseGamma->setEnabled( false );
       mActionLayerSubsetString->setEnabled( false );
       mActionFeatureAction->setEnabled( false );
       mActionSelectFeatures->setEnabled( false );
@@ -14614,6 +14622,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionDecreaseBrightness->setEnabled( false );
       mActionIncreaseContrast->setEnabled( false );
       mActionDecreaseContrast->setEnabled( false );
+      mActionIncreaseGamma->setEnabled( false );
+      mActionDecreaseGamma->setEnabled( false );
       mActionLayerSubsetString->setEnabled( false );
       mActionFeatureAction->setEnabled( false );
       mActionSelectFeatures->setEnabled( false );
