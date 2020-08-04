@@ -885,15 +885,10 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
           notParsedLayers.push_back( layer->name() );
         break;
       case QgsMapLayerType::RasterLayer:
-        notParsedLayers.push_back( layer->name() );
-        break;
       case QgsMapLayerType::PluginLayer:
-        notParsedLayers.push_back( layer->name() );
-        break;
       case QgsMapLayerType::MeshLayer:
-        notParsedLayers.push_back( layer->name() );
-        break;
       case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::AnnotationLayer:
         notParsedLayers.push_back( layer->name() );
         break;
     }
