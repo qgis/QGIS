@@ -164,18 +164,26 @@ QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVarian
       for ( int col = 0; col < iterCols; col++ )
       {
         bool noDataInStack = false;
-        int position = findPosition( inputBlocks, row, col, noDataInStack );
 
-        if ( position == -1 || ( noDataInStack && !mIgnoreNoData ) )
+        if ( !inputBlocks.empty() )
         {
-          //output cell will always be NoData if NoData occurs the current raster cell
-          //of the input blocks and NoData is not ignored
-          //this saves unnecessary iterations on the cellValueStack
-          outputBlock->setValue( row, col, mNoDataValue );
+          int position = findPosition( inputBlocks, row, col, noDataInStack );
+
+          if ( position == -1 || ( noDataInStack && !mIgnoreNoData ) )
+          {
+            //output cell will always be NoData if NoData occurs the current raster cell
+            //of the input blocks and NoData is not ignored
+            //this saves unnecessary iterations on the cellValueStack
+            outputBlock->setValue( row, col, mNoDataValue );
+          }
+          else
+          {
+            outputBlock->setValue( row, col, position );
+          }
         }
         else
         {
-          outputBlock->setValue( row, col, position );
+          outputBlock->setValue( row, col, mNoDataValue );
         }
       }
     }
