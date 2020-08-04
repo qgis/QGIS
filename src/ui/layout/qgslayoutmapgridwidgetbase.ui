@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>423</width>
-    <height>734</height>
+    <width>880</width>
+    <height>1205</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -47,9 +47,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>409</width>
-        <height>1416</height>
+        <y>-822</y>
+        <width>866</width>
+        <height>2027</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -471,7 +471,7 @@
             <property name="suffix">
              <string> mm</string>
             </property>
-            <property name="showClearButton">
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>
@@ -508,7 +508,7 @@
             <property name="suffix">
              <string> mm</string>
             </property>
-            <property name="showClearButton">
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>
@@ -545,7 +545,7 @@
             <property name="suffix">
              <string> mm</string>
             </property>
-            <property name="showClearButton">
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>
@@ -764,7 +764,7 @@
           <item row="18" column="0">
            <widget class="QLabel" name="label_10">
             <property name="text">
-             <string>Rotated annotations alignement</string>
+             <string>Rotated annotations alignment</string>
             </property>
            </widget>
           </item>
@@ -781,7 +781,7 @@
           <item row="14" column="0">
            <widget class="QLabel" name="mCoordinatePrecisionLabel">
             <property name="text">
-             <string>Coordinate precision</string>
+             <string>Distance to map frame</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -862,9 +862,6 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationPositionLeftComboBox"/>
-          </item>
           <item row="4" column="1" colspan="2">
            <widget class="QComboBox" name="mAnnotationDisplayRightComboBox"/>
           </item>
@@ -909,7 +906,7 @@
           </item>
           <item row="16" column="1" colspan="2">
            <widget class="QgsSpinBox" name="mCoordinatePrecisionSpinBox">
-            <property name="showClearButton">
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>
@@ -937,6 +934,13 @@
             </property>
             <property name="text">
              <string>Font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="mAnnotationPositionLabelRight">
+            <property name="text">
+             <string>Right</string>
             </property>
            </widget>
           </item>
@@ -1039,7 +1043,6 @@
   <tabstop>mAnnotationFormatComboBox</tabstop>
   <tabstop>mAnnotationFormatButton</tabstop>
   <tabstop>mAnnotationDisplayLeftComboBox</tabstop>
-  <tabstop>mAnnotationPositionLeftComboBox</tabstop>
   <tabstop>mAnnotationDirectionComboBoxLeft</tabstop>
   <tabstop>mAnnotationDisplayRightComboBox</tabstop>
   <tabstop>mAnnotationPositionRightComboBox</tabstop>
