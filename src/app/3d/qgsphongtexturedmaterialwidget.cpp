@@ -25,7 +25,7 @@ QgsPhongTexturedMaterialWidget::QgsPhongTexturedMaterialWidget( QWidget *parent 
 
   QgsPhongTexturedMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
-  textureScaleSpinBox->setClearValue( 0 );
+  textureScaleSpinBox->setClearValue( 100 );
   textureRotationSpinBox->setClearValue( 0 );
 
   connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsPhongTexturedMaterialWidget::changed );
@@ -50,7 +50,7 @@ void QgsPhongTexturedMaterialWidget::setSettings( const QgsAbstractMaterialSetti
   btnSpecular->setColor( phongMaterial->specular() );
   spinShininess->setValue( phongMaterial->shininess() );
   textureFile->setSource( phongMaterial->diffuseTexturePath() );
-  textureScaleSpinBox->setValue( phongMaterial->textureScale() );
+  textureScaleSpinBox->setValue( 100.0 / phongMaterial->textureScale() );
   textureRotationSpinBox->setValue( phongMaterial->textureRotation() );
 }
 
@@ -61,7 +61,7 @@ QgsAbstractMaterialSettings *QgsPhongTexturedMaterialWidget::settings()
   m->setSpecular( btnSpecular->color() );
   m->setShininess( spinShininess->value() );
   m->setDiffuseTexturePath( textureFile->source() );
-  m->setTextureScale( textureScaleSpinBox->value() );
+  m->setTextureScale( 100.0 / textureScaleSpinBox->value() );
   m->setTextureRotation( textureRotationSpinBox->value() );
   return m.release();
 }

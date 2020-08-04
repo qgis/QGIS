@@ -69,17 +69,20 @@
    </item>
    <item row="4" column="1">
     <widget class="QgsDoubleSpinBox" name="textureScaleSpinBox">
+     <property name="suffix">
+      <string> %</string>
+     </property>
      <property name="minimum">
       <double>0.010000000000000</double>
      </property>
      <property name="maximum">
-      <double>100.000000000000000</double>
+      <double>100000.000000000000000</double>
      </property>
      <property name="singleStep">
       <double>1.000000000000000</double>
      </property>
      <property name="value">
-      <double>1.000000000000000</double>
+      <double>100.000000000000000</double>
      </property>
     </widget>
    </item>
@@ -134,15 +137,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsImageSourceLineEdit</class>
