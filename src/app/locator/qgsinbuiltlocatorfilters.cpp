@@ -926,9 +926,11 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
 
 void QgsGotoLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-  QVariantMap data = result.userData.toMap();
   QgsMapCanvas *mapCanvas = QgisApp::instance()->mapCanvas();
-  mapCanvas->setCenter( data[QStringLiteral( "point" )].value<QgsPointXY>() );
+
+  QVariantMap data = result.userData.toMap();
+  QgsPointXY point = data[QStringLiteral( "point" )].value<QgsPointXY>();
+  mapCanvas->setCenter( point );
   if ( data.contains( QStringLiteral( "scale" ) ) )
   {
     mapCanvas->zoomScale( data[QStringLiteral( "scale" )].toDouble() );
@@ -937,4 +939,6 @@ void QgsGotoLocatorFilter::triggerResult( const QgsLocatorResult &result )
   {
     mapCanvas->refresh();
   }
+
+  mapCanvas->flashGeometries( QList< QgsGeometry >() << QgsGeometry::fromPointXY( point ) );
 }
