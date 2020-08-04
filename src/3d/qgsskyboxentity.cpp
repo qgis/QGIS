@@ -37,6 +37,10 @@
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QAttribute>
+#include <Qt3DRender/QTextureImage>
+
+#include "qgsimagecache.h"
+#include "qgsimagetexture.h"
 
 QgsSkyboxEntity::QgsSkyboxEntity( QNode *parent )
   : Qt3DCore::QEntity( parent )

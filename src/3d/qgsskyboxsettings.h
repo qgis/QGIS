@@ -25,6 +25,8 @@
 class QgsReadWriteContext;
 class QDomElement;
 
+#define SIP_NO_FILE
+
 /**
  * \brief class containing the configuration of a skybox entity
  * \ingroup 3d

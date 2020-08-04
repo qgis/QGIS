@@ -42,13 +42,15 @@ class QgsLine3DSymbol;
 class QgsPoint3DSymbol;
 class QgsMeshEntity;
 
+#define SIP_NO_FILE
+
 /**
  * \brief The Qgs3DSceneExporter class
  * Entity that handles the exporting of 3D scene
  * \ingroup 3d
  * \since QGIS 3.16
  */
-class Qgs3DSceneExporter : public Qt3DCore::QEntity
+class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
 {
   public:
     //! Constructor

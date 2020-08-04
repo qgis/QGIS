@@ -875,15 +875,15 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
         mSkybox = new QgsCubeFacesSkyboxEntity( skyboxSettings.skyboxBaseName(), skyboxSettings.skyboxExtension(), this );
         break;
       case QgsSkyboxEntity::DistinctTexturesSkybox:
-        mSkybox = new QgsHDRSkyboxEntity( skyboxSettings.hdrTexturePath(), this );
-        break;
-      case QgsSkyboxEntity::HDRSkybox:
         faces = skyboxSettings.cubeMapFacesPaths();
         mSkybox = new QgsCubeFacesSkyboxEntity(
           faces[QStringLiteral( "posX" )], faces[QStringLiteral( "posY" )], faces[QStringLiteral( "posZ" )],
           faces[QStringLiteral( "negX" )], faces[QStringLiteral( "negY" )], faces[QStringLiteral( "negZ" )],
           this
         );
+        break;
+      case QgsSkyboxEntity::HDRSkybox:
+        mSkybox = new QgsHDRSkyboxEntity( skyboxSettings.hdrTexturePath(), this );
         break;
     }
   }

@@ -30,6 +30,10 @@
 
 #include "qgis_3d.h"
 
+class QgsImageTexture;
+
+#define SIP_NO_FILE
+
 /**
  * \brief base class for all skybox types
  * It holds the commun member data between different skybox entity types
@@ -50,6 +54,7 @@ class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
     //! Constructor
     QgsSkyboxEntity( QNode *parent = nullptr );
 
+    //! Returns the type of the current skybox
     virtual SkyboxType type() const = 0;
 
   protected:
@@ -83,8 +88,8 @@ class _3D_EXPORT QgsHDRSkyboxEntity : public QgsSkyboxEntity
     void reloadTexture();
   private:
     QString mHDRTexturePath;
-    Qt3DRender::QTextureLoader *mLoadedTexture;
-    Qt3DRender::QShaderProgram *mGlShader;
+    Qt3DRender::QTextureLoader *mLoadedTexture = nullptr;
+    Qt3DRender::QShaderProgram *mGlShader = nullptr;
 };
 
 /**
@@ -114,9 +119,9 @@ class _3D_EXPORT QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
   private:
     SkyboxType mType;
     QMap<Qt3DRender::QTextureCubeMap::CubeMapFace, QString> mCubeFacesPaths;
-    Qt3DRender::QShaderProgram *mGlShader;
+    Qt3DRender::QShaderProgram *mGlShader = nullptr;
     QVector<Qt3DRender::QTextureImage *> mFacesTextureImages;
-    Qt3DRender::QTextureCubeMap *mCubeMap;
+    Qt3DRender::QTextureCubeMap *mCubeMap = nullptr;
 };
 
 #endif // QGSSKYBOXENTITY_H

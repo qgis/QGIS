@@ -373,12 +373,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     /**
      * Returns the current configuration of the skybox
      */
-    QgsSkyboxSettings skyboxSettings() const { return mSkyboxSettings; }
+    QgsSkyboxSettings skyboxSettings() const SIP_SKIP { return mSkyboxSettings; }
 
     /**
      * Sets the current configuration of the skybox
      */
-    void setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings );
+    void setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings ) SIP_SKIP;
 
   signals:
     //! Emitted when the background color has changed
