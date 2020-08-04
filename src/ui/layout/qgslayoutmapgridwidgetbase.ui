@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>880</width>
+    <width>436</width>
     <height>1205</height>
    </rect>
   </property>
@@ -47,9 +47,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-822</y>
-        <width>866</width>
-        <height>2027</height>
+        <y>0</y>
+        <width>423</width>
+        <height>1600</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -201,7 +201,7 @@
           <item row="5" column="0" colspan="3">
            <widget class="QStackedWidget" name="mIntervalStackedWidget">
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="page">
              <layout class="QGridLayout" name="gridLayout_7" columnstretch="0,1,0">
@@ -779,7 +779,7 @@
            </widget>
           </item>
           <item row="14" column="0">
-           <widget class="QLabel" name="mCoordinatePrecisionLabel">
+           <widget class="QLabel" name="mDistanceToMapFrameLabel">
             <property name="text">
              <string>Distance to map frame</string>
             </property>
@@ -1006,11 +1006,17 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
+  <tabstop>mEnabledCheckBox</tabstop>
+  <tabstop>mEnabledDDBtn</tabstop>
   <tabstop>mGridTypeComboBox</tabstop>
   <tabstop>mMapGridCRSButton</tabstop>
   <tabstop>mMapGridUnitComboBox</tabstop>
   <tabstop>mMinWidthSpinBox</tabstop>
   <tabstop>mMaxWidthSpinBox</tabstop>
+  <tabstop>mIntervalXSpinBox</tabstop>
+  <tabstop>mIntervalXDDBtn</tabstop>
+  <tabstop>mIntervalYSpinBox</tabstop>
+  <tabstop>mIntervalYDDBtn</tabstop>
   <tabstop>mOffsetXSpinBox</tabstop>
   <tabstop>mOffsetXDDBtn</tabstop>
   <tabstop>mOffsetYSpinBox</tabstop>
@@ -1039,6 +1045,9 @@
   <tabstop>mCheckGridRightSide</tabstop>
   <tabstop>mCheckGridTopSide</tabstop>
   <tabstop>mCheckGridBottomSide</tabstop>
+  <tabstop>mRotatedTicksCheckBox</tabstop>
+  <tabstop>mRotatedTicksLengthModeComboBox</tabstop>
+  <tabstop>mRotatedTicksThresholdSpinBox</tabstop>
   <tabstop>mDrawAnnotationGroupBox</tabstop>
   <tabstop>mAnnotationFormatComboBox</tabstop>
   <tabstop>mAnnotationFormatButton</tabstop>
@@ -1058,12 +1067,9 @@
   <tabstop>mDistanceToMapFrameSpinBox</tabstop>
   <tabstop>mLabelDistDDBtn</tabstop>
   <tabstop>mCoordinatePrecisionSpinBox</tabstop>
-  <tabstop>mEnabledCheckBox</tabstop>
-  <tabstop>mEnabledDDBtn</tabstop>
-  <tabstop>mIntervalXSpinBox</tabstop>
-  <tabstop>mIntervalYDDBtn</tabstop>
-  <tabstop>mIntervalYSpinBox</tabstop>
-  <tabstop>mIntervalXDDBtn</tabstop>
+  <tabstop>mRotatedAnnotationsCheckBox</tabstop>
+  <tabstop>mRotatedAnnotationsLengthModeComboBox</tabstop>
+  <tabstop>mRotatedAnnotationsThresholdSpinBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
