@@ -66,8 +66,26 @@ QList<double> QgsClassificationLogarithmic::calculateBreaks( double minimum, dou
 
 QString QgsClassificationLogarithmic::valueToLabel( double value ) const
 {
+<<<<<<< HEAD
   QString label = QString( QStringLiteral( "10^%1" ) ).arg( std::log10( value ) );
   return label;
+=======
+  if ( value <= 0 )
+  {
+    return QString( QStringLiteral( "%1" ) ).arg( value );
+  }
+  else
+  {
+    if ( std::isnan( value ) )
+    {
+      return QObject::tr( "invalid (0 or negative values in the data)" );
+    }
+    else
+    {
+      return QString( QStringLiteral( "10^%1" ) ).arg( std::log10( value ) );
+    }
+  }
+>>>>>>> 12a1a0d8bd... warn with 0 or negative values when using log scale in graduated renderer (#38128)
 }
 
 QString QgsClassificationLogarithmic::labelForRange( double lowerValue, double upperValue, QgsClassificationMethod::ClassPosition position ) const
