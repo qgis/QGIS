@@ -44,6 +44,7 @@ class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
   public:
+    //! Skybox type enumeration
     enum SkyboxType
     {
       HDRSkybox,
