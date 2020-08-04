@@ -1043,6 +1043,7 @@
   <tabstop>mAnnotationFormatComboBox</tabstop>
   <tabstop>mAnnotationFormatButton</tabstop>
   <tabstop>mAnnotationDisplayLeftComboBox</tabstop>
+  <tabstop>mAnnotationPositionLeftComboBox</tabstop>
   <tabstop>mAnnotationDirectionComboBoxLeft</tabstop>
   <tabstop>mAnnotationDisplayRightComboBox</tabstop>
   <tabstop>mAnnotationPositionRightComboBox</tabstop>
