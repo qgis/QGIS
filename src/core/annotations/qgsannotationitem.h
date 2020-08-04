@@ -40,15 +40,15 @@ class CORE_EXPORT QgsAnnotationItem
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->type() == "marker" )
+    if ( sipCpp->type() == QLatin1String( "marker" ) )
     {
       sipType = sipType_QgsAnnotationMarkerItem;
     }
-    else if ( sipCpp->type() == "linestring" )
+    else if ( sipCpp->type() == QLatin1String( "linestring" ) )
     {
       sipType = sipType_QgsAnnotationLineStringItem;
     }
-    else if ( sipCpp->type() == "polygon" )
+    else if ( sipCpp->type() == QLatin1String( "polygon" ) )
     {
       sipType = sipType_QgsAnnotationPolygonItem;
     }
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsAnnotationItem
     virtual void render( QgsRenderContext &context, QgsFeedback *feedback ) = 0;
 
     /**
-     * Writes the item's state the an XML \a element.
+     * Writes the item's state into an XML \a element.
      */
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const = 0;
 

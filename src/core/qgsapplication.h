@@ -685,7 +685,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the application's annotation item registry, used for annotation item types.
-     * \since QGIS 3.12
+     * \since QGIS 3.16
      */
     static QgsAnnotationItemRegistry *annotationItemRegistry() SIP_KEEPREFERENCE;
 

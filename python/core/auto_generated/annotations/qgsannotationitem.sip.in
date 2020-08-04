@@ -22,15 +22,15 @@ Abstract base class for annotation items which are drawn with QgsAnnotationLayer
 #include "qgsannotationitem.h"
 %End
 %ConvertToSubClassCode
-    if ( sipCpp->type() == "marker" )
+    if ( sipCpp->type() == QLatin1String( "marker" ) )
     {
       sipType = sipType_QgsAnnotationMarkerItem;
     }
-    else if ( sipCpp->type() == "linestring" )
+    else if ( sipCpp->type() == QLatin1String( "linestring" ) )
     {
       sipType = sipType_QgsAnnotationLineStringItem;
     }
-    else if ( sipCpp->type() == "polygon" )
+    else if ( sipCpp->type() == QLatin1String( "polygon" ) )
     {
       sipType = sipType_QgsAnnotationPolygonItem;
     }
@@ -91,7 +91,7 @@ render operations.
 
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const = 0;
 %Docstring
-Writes the item's state the an XML ``element``.
+Writes the item's state into an XML ``element``.
 %End
 
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;

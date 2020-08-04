@@ -78,7 +78,7 @@ class CORE_EXPORT QgsAnnotationPolygonItem : public QgsAnnotationItem
     const QgsFillSymbol *symbol() const;
 
     /**
-     * Sets the \a symbol used to render the marker item.
+     * Sets the \a symbol used to render the polygon item.
      *
      * The item takes ownership of the symbol.
      *

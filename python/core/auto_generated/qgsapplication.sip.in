@@ -743,7 +743,7 @@ Returns the application's layout item registry, used for layout item types.
 %Docstring
 Returns the application's annotation item registry, used for annotation item types.
 
-.. versionadded:: 3.12
+.. versionadded:: 3.16
 %End
 
     static QgsGpsConnectionRegistry *gpsConnectionRegistry() /KeepReference/;
