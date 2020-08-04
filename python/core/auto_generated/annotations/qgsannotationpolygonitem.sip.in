@@ -75,7 +75,7 @@ Returns the symbol used to render the item.
 
     void setSymbol( QgsFillSymbol *symbol /Transfer/ );
 %Docstring
-Sets the ``symbol`` used to render the marker item.
+Sets the ``symbol`` used to render the polygon item.
 
 The item takes ownership of the symbol.
 
