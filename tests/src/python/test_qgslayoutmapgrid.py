@@ -305,6 +305,119 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         self.report += checker.report()
         assert myTestResult, myMessage
 
+    def testAnnotationsVariations(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        map_configs = [
+            (10, 30, QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.InteriorTicks, 0),
+            (10, 120, QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.InteriorTicks, 3),
+            (90, 30, QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.ExteriorTicks, 0),
+            (90, 120, QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.ExteriorTicks, 3),
+            (170, 30, QgsLayoutItemMapGrid.InsideMapFrame, QgsLayoutItemMapGrid.InteriorTicks, 0),
+            (170, 120, QgsLayoutItemMapGrid.InsideMapFrame, QgsLayoutItemMapGrid.InteriorTicks, 3),
+            (250, 30, QgsLayoutItemMapGrid.InsideMapFrame, QgsLayoutItemMapGrid.ExteriorTicks, 0),
+            (250, 120, QgsLayoutItemMapGrid.InsideMapFrame, QgsLayoutItemMapGrid.ExteriorTicks, 3),
+        ]
+
+        for x, y, pos, style, dist in map_configs:
+
+            map = QgsLayoutItemMap(layout)
+            layout.addLayoutItem(map)
+            map.attemptSetSceneRect(QRectF(x, y, 50, 50))
+            map.setBackgroundColor(QColor(200, 200, 200))
+            map.setExtent(QgsRectangle(5, 5, 15, 15))
+            map.setFrameEnabled(True)
+            map.grid().setFrameStyle(style)
+            map.grid().setFrameWidth(7)
+            map.grid().setFramePenSize(1)
+            map.grid().setFramePenColor(QColor(255, 0, 0))
+            map.grid().setEnabled(True)
+            map.grid().setIntervalX(10)
+            map.grid().setIntervalY(10)
+            map.grid().setAnnotationEnabled(True)
+            map.grid().setGridLineColor(QColor(0, 255, 0))
+            map.grid().setGridLineWidth(0.5)
+            map.grid().setAnnotationFont(getTestFont('Bold', 20))
+            map.grid().setAnnotationFontColor(QColor(0, 0, 255, 150))
+            map.grid().setAnnotationPrecision(0)
+            map.grid().setAnnotationFrameDistance(dist)
+
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Top)
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Right)
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Bottom)
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Left)
+
+            map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.Vertical, QgsLayoutItemMapGrid.Top)
+            map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Right)
+            map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.BoundaryDirection, QgsLayoutItemMapGrid.Bottom)
+            map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.VerticalDescending, QgsLayoutItemMapGrid.Left)
+
+            map.updateBoundingRect()
+
+        checker = QgsLayoutChecker('composermap_annotations_variations', layout)
+        checker.setControlPathPrefix("composer_mapgrid")
+        myTestResult, myMessage = checker.testLayout()
+        self.assertTrue(myTestResult, myMessage)
+
+    def testAnnotationsVariationsRotated(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        map_configs = [
+            (10, 30, QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.InteriorTicks, 0),
+            (10, 120, QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.InteriorTicks, 3),
+            (90, 30, QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.ExteriorTicks, 0),
+            (90, 120, QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.ExteriorTicks, 3),
+            (170, 30, QgsLayoutItemMapGrid.InsideMapFrame, QgsLayoutItemMapGrid.InteriorTicks, 0),
+            (170, 120, QgsLayoutItemMapGrid.InsideMapFrame, QgsLayoutItemMapGrid.InteriorTicks, 3),
+            (250, 30, QgsLayoutItemMapGrid.InsideMapFrame, QgsLayoutItemMapGrid.ExteriorTicks, 0),
+            (250, 120, QgsLayoutItemMapGrid.InsideMapFrame, QgsLayoutItemMapGrid.ExteriorTicks, 3),
+        ]
+
+        for x, y, pos, style, dist in map_configs:
+
+            map = QgsLayoutItemMap(layout)
+            layout.addLayoutItem(map)
+            map.attemptSetSceneRect(QRectF(x, y, 50, 50))
+            map.setBackgroundColor(QColor(200, 200, 200))
+            map.setExtent(QgsRectangle(5, 5, 15, 15))
+            map.setMapRotation(30)
+            map.setFrameEnabled(True)
+            map.grid().setFrameStyle(style)
+            map.grid().setFrameWidth(7)
+            map.grid().setFramePenSize(1)
+            map.grid().setFramePenColor(QColor(255, 0, 0))
+            map.grid().setEnabled(True)
+            map.grid().setIntervalX(10)
+            map.grid().setIntervalY(10)
+            map.grid().setAnnotationEnabled(True)
+            map.grid().setGridLineColor(QColor(0, 255, 0))
+            map.grid().setGridLineWidth(0.5)
+            map.grid().setAnnotationFont(getTestFont('Bold', 20))
+            map.grid().setAnnotationFontColor(QColor(0, 0, 255, 150))
+            map.grid().setAnnotationPrecision(0)
+            map.grid().setAnnotationFrameDistance(dist)
+            map.grid().setRotatedTicksEnabled(True)
+            map.grid().setRotatedAnnotationsEnabled(True)
+
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Top)
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Right)
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Bottom)
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Left)
+
+            map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.AboveTick, QgsLayoutItemMapGrid.Top)
+            map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.OnTick, QgsLayoutItemMapGrid.Right)
+            map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.UnderTick, QgsLayoutItemMapGrid.Bottom)
+            map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.BoundaryDirection, QgsLayoutItemMapGrid.Left)
+
+            map.updateBoundingRect()
+
+        checker = QgsLayoutChecker('composermap_annotations_variations_rotated', layout)
+        checker.setControlPathPrefix("composer_mapgrid")
+        myTestResult, myMessage = checker.testLayout()
+        self.assertTrue(myTestResult, myMessage)
+
     def testExpressionContext(self):
         layout = QgsLayout(QgsProject.instance())
         layout.initializeDefaults()
