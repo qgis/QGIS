@@ -215,14 +215,14 @@ QStringList QgsRasterStackLowestPositionAlgorithm::tags() const
 QString QgsRasterStackLowestPositionAlgorithm::shortHelpString() const
 {
   return QObject::tr( "The lowest position algorithm evaluates on a cell-by-cell basis the position "
-                      "of the raster with the highest value in a stack of rasters. Position counts start "
-                      "with 1 and range to the total number input rasters. The order of the input "
+                      "of the raster with the lowest value in a stack of rasters. Position counts start "
+                      "with 1 and range to the total number of input rasters. The order of the input "
                       "rasters is relevant for the algorithm. If multiple rasters feature the lowest value, "
                       "the first raster will be used for the position value.\n "
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
                       "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis. "
                       "Any NoData cells in the raster layer stack will result in a NoData cell "
-                      "in the output raster unless the ignore NoData parameter is checked. "
+                      "in the output raster unless the \"ignore NoData\" parameter is checked. "
                       "The output NoData value can be set manually. The output rasters extent and resolution "
                       "is defined by a reference raster layer and is always of int32 type." );
 }
@@ -319,13 +319,13 @@ QString QgsRasterStackHighestPositionAlgorithm::shortHelpString() const
 {
   return QObject::tr( "The highest position algorithm evaluates on a cell-by-cell basis the position "
                       "of the raster with the highest value in a stack of rasters. Position counts start "
-                      "with 1 and range to the total number input rasters. The order of the input "
+                      "with 1 and range to the total number of input rasters. The order of the input "
                       "rasters is relevant for the algorithm. If multiple rasters feature the highest value, "
                       "the first raster will be used for the position value.\n "
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
                       "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis. "
                       "Any NoData cells in the raster layer stack will result in a NoData cell "
-                      "in the output raster unless the ignore NoData parameter is checked. "
+                      "in the output raster unless the \"ignore NoData\" parameter is checked. "
                       "The output NoData value can be set manually. The output rasters extent and resolution "
                       "is defined by a reference raster layer and is always of int32 type." );
 }
