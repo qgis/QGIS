@@ -104,7 +104,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.runsource(line)
 
         self.history = []
-        self.softHistory = []
+        self.softHistory = ['']
         self.softHistoryIndex = 0
         # Read history command file
         self.readHistoryFile()
