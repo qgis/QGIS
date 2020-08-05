@@ -528,6 +528,11 @@ bool QgsGpsInformationWidget::blockCanvasInteraction( QgsMapCanvasInteractionBlo
   return false;
 }
 
+void QgsGpsInformationWidget::setConnection( QgsGpsConnection *connection )
+{
+  connected( connection );
+}
+
 void QgsGpsInformationWidget::mSpinTrackWidth_valueChanged( int value )
 {
   if ( mRubberBand )

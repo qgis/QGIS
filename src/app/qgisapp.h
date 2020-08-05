@@ -110,6 +110,7 @@ class QgsUserProfileManagerWidgetFactory;
 class Qgs3DMapCanvasDockWidget;
 class QgsHandleBadLayersHandler;
 class QgsNetworkAccessManager;
+class QgsGpsConnection;
 
 class QDomDocument;
 class QNetworkReply;
@@ -801,6 +802,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 );
 
     QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() const;
+
+    /**
+     * Sets a GPS \a connection to use within the GPS Panel widget.
+     *
+     * Any existing GPS connection used by the widget will be disconnect and replaced with this connection. The connection
+     * is automatically registered within the QgsApplication::gpsConnectionRegistry().
+     */
+    void setGpsPanelConnection( QgsGpsConnection *connection );
 
   public slots:
     //! save current vector layer
