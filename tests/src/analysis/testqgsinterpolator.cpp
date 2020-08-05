@@ -274,11 +274,12 @@ void TestQgsInterpolator::dualEdge()
   QCOMPARE( mesh.vertex( 3 ), QgsMeshVertex( 2.0, 4.0, 6.0 ) );
   QCOMPARE( mesh.vertex( 4 ), QgsMeshVertex( 2.0, 2.0, 7.0 ) );
 
-  QCOMPARE( mesh.face( 0 ), QgsMeshFace( {0, 4, 3} ) );
-  QCOMPARE( mesh.face( 1 ), QgsMeshFace( {1, 4, 0} ) );
-  QCOMPARE( mesh.face( 2 ), QgsMeshFace( {2, 4, 1} ) );
-  QCOMPARE( mesh.face( 3 ), QgsMeshFace( {4, 2, 3} ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 4, 3} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {4, 2, 3} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( {1, 4, 0} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 3 ), QgsMeshFace( {2, 4, 1} ) ) );
 }
+
 
 QGSTEST_MAIN( TestQgsInterpolator )
 #include "testqgsinterpolator.moc"
