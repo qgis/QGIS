@@ -263,6 +263,7 @@ IF (WITH_3D)
     ${CMAKE_SOURCE_DIR}/src/3d/symbols
     ${CMAKE_SOURCE_DIR}/src/3d/terrain
     ${CMAKE_BINARY_DIR}/src/3d
+    ${QT5_3DEXTRA_INCLUDE_DIR}
   )
   SET(PY_MODULES ${PY_MODULES} 3d)
 
