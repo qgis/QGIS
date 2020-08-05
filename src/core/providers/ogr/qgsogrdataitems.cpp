@@ -580,10 +580,12 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
       QStringLiteral( "gdb" ),
       QStringLiteral( "kml" ),
       QStringLiteral( "osm" ),
+      QStringLiteral( "mdb" ),
       QStringLiteral( "pbf" ) };
   static QStringList sOgrSupportedDbDriverNames { QStringLiteral( "GPKG" ),
       QStringLiteral( "db" ),
-      QStringLiteral( "gdb" ) };
+      QStringLiteral( "gdb" ),
+      QStringLiteral( "pgdb" )};
 
   // these extensions are trivial to read, so there's no need to rely on
   // the extension only scan here -- avoiding it always gives us the correct data type
