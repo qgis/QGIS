@@ -860,3 +860,8 @@ QgsLayerTreeRegistryBridge::InsertionPoint QgisAppInterface::layerTreeInsertionP
 {
   return qgis->layerTreeInsertionPoint();
 }
+
+void QgisAppInterface::setGpsPanelConnection( QgsGpsConnection *connection )
+{
+  qgis->setGpsPanelConnection( connection );
+}

@@ -309,7 +309,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 ) override;
     QgsBrowserGuiModel *browserModel() override;
     QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() override;
-
+    void setGpsPanelConnection( QgsGpsConnection *connection ) override;
 
   private slots:
 

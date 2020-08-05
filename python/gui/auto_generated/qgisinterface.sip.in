@@ -1397,6 +1397,16 @@ creating a new browser model for every use.
 .. versionadded:: 3.4
 %End
 
+    virtual void setGpsPanelConnection( QgsGpsConnection *connection ) = 0;
+%Docstring
+Sets a GPS ``connection`` to use within the GPS Panel widget.
+
+Any existing GPS connection used by the widget will be disconnect and replaced with this connection. The connection
+is automatically registered within the :py:func:`QgsApplication.gpsConnectionRegistry()`.
+
+.. versionadded:: 3.16
+%End
+
   signals:
 
     void currentLayerChanged( QgsMapLayer *layer );
