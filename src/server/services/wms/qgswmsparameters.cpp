@@ -1885,7 +1885,7 @@ namespace QgsWms
     for ( ; paramIt != paramMap.constEnd(); ++paramIt )
     {
       QString paramName = paramIt.key().toLower();
-      if ( paramName == "layers" || paramName == "styles" )
+      if ( paramName == QLatin1String( "layers" ) || paramName == QLatin1String( "styles" ) )
       {
         QStringList values = paramIt.value().split( "," );
         QStringList::const_iterator valuesIt = values.constBegin();
