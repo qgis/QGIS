@@ -29,18 +29,18 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
   // common configs
   mShowLabelCheckBox->setChecked( itemData.showLabel() );
 
+
   switch ( itemData.type() )
   {
     case QgsAttributesFormProperties::DnDTreeItemData::Relation:
     {
-      showRelationButtons( true );
-      mRelationShowLinkCheckBox->setChecked( itemData.relationEditorConfiguration().buttons.testFlag( QgsAttributeEditorRelation::Button::Link ) );
-      mRelationShowUnlinkCheckBox->setChecked( itemData.relationEditorConfiguration().buttons.testFlag( QgsAttributeEditorRelation::Button::Unlink ) );
-      mRelationShowAddChildCheckBox->setChecked( itemData.relationEditorConfiguration().buttons.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) );
-      mRelationShowDuplicateChildFeatureCheckBox->setChecked( itemData.relationEditorConfiguration().buttons.testFlag( QgsAttributeEditorRelation::Button::DuplicateChildFeature ) );
-      mRelationShowZoomToFeatureCheckBox->setChecked( itemData.relationEditorConfiguration().buttons.testFlag( QgsAttributeEditorRelation::Button::ZoomToChildFeature ) );
-      mRelationDeleteChildFeatureCheckBox->setChecked( itemData.relationEditorConfiguration().buttons.testFlag( QgsAttributeEditorRelation::Button::DeleteChildFeature ) );
-      mRelationShowSaveChildEditsCheckBox->setChecked( itemData.relationEditorConfiguration().buttons.testFlag( QgsAttributeEditorRelation::Button::SaveChildEdits ) );
+      QGridLayout *layout = new QGridLayout;
+      QgsAttributeWidgetRelationEditWidget *editWidget = new QgsAttributeWidgetRelationEditWidget( this );
+      editWidget->setRelationEditorConfiguration( itemData.relationEditorConfiguration() );
+      mSpecificEditWidget = editWidget;
+      layout->addWidget( mSpecificEditWidget );
+      mWidgetSpecificConfigGroupBox->setLayout( layout );
+
     }
     break;
 
@@ -49,11 +49,9 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
     case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
     case QgsAttributesFormProperties::DnDTreeItemData::HtmlWidget:
     case QgsAttributesFormProperties::DnDTreeItemData::WidgetType:
-      showRelationButtons( false );
+      mWidgetSpecificConfigGroupBox->hide();
       break;
   }
-
-
 }
 
 void QgsAttributeWidgetEdit::updateItemData()
@@ -68,17 +66,11 @@ void QgsAttributeWidgetEdit::updateItemData()
   {
     case QgsAttributesFormProperties::DnDTreeItemData::Relation:
     {
-      QgsAttributesFormProperties::RelationEditorConfiguration relEdCfg;
-      QgsAttributeEditorRelation::Buttons buttons;
-      buttons.setFlag( QgsAttributeEditorRelation::Button::Link, mRelationShowLinkCheckBox->isChecked() );
-      buttons.setFlag( QgsAttributeEditorRelation::Button::Unlink, mRelationShowUnlinkCheckBox->isChecked() );
-      buttons.setFlag( QgsAttributeEditorRelation::Button::AddChildFeature, mRelationShowAddChildCheckBox->isChecked() );
-      buttons.setFlag( QgsAttributeEditorRelation::Button::DuplicateChildFeature, mRelationShowDuplicateChildFeatureCheckBox->isChecked() );
-      buttons.setFlag( QgsAttributeEditorRelation::Button::ZoomToChildFeature, mRelationShowZoomToFeatureCheckBox->isChecked() );
-      buttons.setFlag( QgsAttributeEditorRelation::Button::DeleteChildFeature, mRelationDeleteChildFeatureCheckBox->isChecked() );
-      buttons.setFlag( QgsAttributeEditorRelation::Button::SaveChildEdits, mRelationShowSaveChildEditsCheckBox->isChecked() );
-      relEdCfg.buttons = buttons;
-      itemData.setRelationEditorConfiguration( relEdCfg );
+      QgsAttributeWidgetRelationEditWidget *editWidget = qobject_cast<QgsAttributeWidgetRelationEditWidget *>( mWidgetSpecificConfigGroupBox );
+      if ( editWidget )
+      {
+        itemData.setRelationEditorConfiguration( editWidget->relationEditorConfiguration() );
+      }
     }
     break;
 
@@ -93,9 +85,37 @@ void QgsAttributeWidgetEdit::updateItemData()
   mTreeItem->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
 }
 
-void QgsAttributeWidgetEdit::showRelationButtons( bool show )
+
+// Relation Widget Specific Edit
+
+QgsAttributeWidgetRelationEditWidget::QgsAttributeWidgetRelationEditWidget( QWidget *parent )
+  : QWidget( parent )
 {
-  const QList<QAbstractButton *> buttons = mRelationButtonGroup->buttons();
-  for ( QAbstractButton *button : buttons )
-    button->setVisible( show );
+  setupUi( this );
+}
+
+void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const QgsAttributesFormProperties::RelationEditorConfiguration &config )
+{
+  mRelationShowLinkCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::Link ) );
+  mRelationShowUnlinkCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::Unlink ) );
+  mRelationShowAddChildCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) );
+  mRelationShowDuplicateChildFeatureCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::DuplicateChildFeature ) );
+  mRelationShowZoomToFeatureCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::ZoomToChildFeature ) );
+  mRelationDeleteChildFeatureCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::DeleteChildFeature ) );
+  mRelationShowSaveChildEditsCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::SaveChildEdits ) );
+}
+
+QgsAttributesFormProperties::RelationEditorConfiguration QgsAttributeWidgetRelationEditWidget::relationEditorConfiguration() const
+{
+  QgsAttributesFormProperties::RelationEditorConfiguration relEdCfg;
+  QgsAttributeEditorRelation::Buttons buttons;
+  buttons.setFlag( QgsAttributeEditorRelation::Button::Link, mRelationShowLinkCheckBox->isChecked() );
+  buttons.setFlag( QgsAttributeEditorRelation::Button::Unlink, mRelationShowUnlinkCheckBox->isChecked() );
+  buttons.setFlag( QgsAttributeEditorRelation::Button::AddChildFeature, mRelationShowAddChildCheckBox->isChecked() );
+  buttons.setFlag( QgsAttributeEditorRelation::Button::DuplicateChildFeature, mRelationShowDuplicateChildFeatureCheckBox->isChecked() );
+  buttons.setFlag( QgsAttributeEditorRelation::Button::ZoomToChildFeature, mRelationShowZoomToFeatureCheckBox->isChecked() );
+  buttons.setFlag( QgsAttributeEditorRelation::Button::DeleteChildFeature, mRelationDeleteChildFeatureCheckBox->isChecked() );
+  buttons.setFlag( QgsAttributeEditorRelation::Button::SaveChildEdits, mRelationShowSaveChildEditsCheckBox->isChecked() );
+  relEdCfg.buttons = buttons;
+  return relEdCfg;
 }
