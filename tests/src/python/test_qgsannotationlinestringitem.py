@@ -52,16 +52,12 @@ class TestQgsAnnotationLineStringItem(unittest.TestCase):
             report_file.write(cls.report)
 
     def testBasic(self):
-        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]),
-                                           QgsCoordinateReferenceSystem('EPSG:4326'))
+        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
 
-        self.assertEqual(item.crs().authid(), 'EPSG:4326')
         self.assertEqual(item.lineString().asWkt(), 'LineString (12 13, 14 13, 14 15)')
 
-        item.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         item.setLineString(QgsLineString([QgsPoint(22, 23), QgsPoint(24, 23), QgsPoint(24, 25)]))
         item.setZIndex(11)
-        self.assertEqual(item.crs().authid(), 'EPSG:3111')
         self.assertEqual(item.lineString().asWkt(), 'LineString (22 23, 24 23, 24 25)')
         self.assertEqual(item.zIndex(), 11)
 
@@ -72,8 +68,7 @@ class TestQgsAnnotationLineStringItem(unittest.TestCase):
         doc = QDomDocument("testdoc")
         elem = doc.createElement('test')
 
-        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]),
-                                           QgsCoordinateReferenceSystem('EPSG:4326'))
+        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
         item.setZIndex(11)
 
@@ -82,26 +77,22 @@ class TestQgsAnnotationLineStringItem(unittest.TestCase):
         s2 = QgsAnnotationLineStringItem.create()
         self.assertTrue(s2.readXml(elem, QgsReadWriteContext()))
 
-        self.assertEqual(s2.crs().authid(), 'EPSG:4326')
         self.assertEqual(s2.lineString().asWkt(), 'LineString (12 13, 14 13, 14 15)')
         self.assertEqual(s2.symbol()[0].color(), QColor(255, 255, 0))
         self.assertEqual(s2.zIndex(), 11)
 
     def testClone(self):
-        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]),
-                                           QgsCoordinateReferenceSystem('EPSG:4326'))
+        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
         item.setZIndex(11)
 
         item2 = item.clone()
-        self.assertEqual(item2.crs().authid(), 'EPSG:4326')
         self.assertEqual(item2.lineString().asWkt(), 'LineString (12 13, 14 13, 14 15)')
         self.assertEqual(item2.symbol()[0].color(), QColor(255, 255, 0))
         self.assertEqual(item2.zIndex(), 11)
 
     def testRenderLineString(self):
-        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]),
-                                           QgsCoordinateReferenceSystem('EPSG:4326'))
+        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
 
         settings = QgsMapSettings()
@@ -127,8 +118,7 @@ class TestQgsAnnotationLineStringItem(unittest.TestCase):
         self.assertTrue(self.imageCheck('linestring_item', 'linestring_item', image))
 
     def testRenderWithTransform(self):
-        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]),
-                                           QgsCoordinateReferenceSystem('EPSG:4326'))
+        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
 
         settings = QgsMapSettings()
@@ -139,7 +129,7 @@ class TestQgsAnnotationLineStringItem(unittest.TestCase):
         settings.setFlag(QgsMapSettings.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
-        rc.setCoordinateTransform(QgsCoordinateTransform(item.crs(), settings.destinationCrs(), QgsProject.instance()))
+        rc.setCoordinateTransform(QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'), settings.destinationCrs(), QgsProject.instance()))
         image = QImage(200, 200, QImage.Format_ARGB32)
         image.setDotsPerMeterX(96 / 25.4 * 1000)
         image.setDotsPerMeterY(96 / 25.4 * 1000)

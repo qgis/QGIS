@@ -77,14 +77,13 @@ QgsRectangle QgsAnnotationLayer::extent() const
   QgsRectangle rect;
   for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )
   {
-    QgsCoordinateTransform trans( it.value()->crs(), crs(), mTransformContext );
     if ( rect.isNull() )
     {
-      rect = trans.transform( it.value()->boundingBox() );
+      rect = it.value()->boundingBox();
     }
     else
     {
-      rect.combineExtentWith( trans.transform( it.value()->boundingBox() ) );
+      rect.combineExtentWith( it.value()->boundingBox() );
     }
   }
   return rect;

@@ -23,9 +23,9 @@ An annotation item which renders a fill symbol for a polygon geometry.
 %End
   public:
 
-    QgsAnnotationPolygonItem( const QgsPolygon &polygon, const QgsCoordinateReferenceSystem &crs );
+    QgsAnnotationPolygonItem( const QgsPolygon &polygon );
 %Docstring
-Constructor for QgsAnnotationPolygonItem, with the specified ``polygon`` in the given ``crs``.
+Constructor for QgsAnnotationPolygonItem, with the specified ``polygon`` geometry.
 %End
     ~QgsAnnotationPolygonItem();
 
@@ -52,7 +52,7 @@ Creates a new polygon annotation item.
 %Docstring
 Returns the polygon geometry of the item.
 
-The coordinate reference system for the polygon can be retrieved through :py:func:`~QgsAnnotationPolygonItem.crs`.
+The coordinate reference system for the polygon will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
 
 .. seealso:: :py:func:`setPolygon`
 %End
@@ -61,7 +61,7 @@ The coordinate reference system for the polygon can be retrieved through :py:fun
 %Docstring
 Sets the ``polygon`` geometry of the item.
 
-The coordinate reference system for the polygon can be set through :py:func:`~QgsAnnotationPolygonItem.setCrs`.
+The coordinate reference system for the polygon will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
 
 .. seealso:: :py:func:`polygon`
 %End

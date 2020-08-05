@@ -20,8 +20,8 @@
 #include "qgssymbollayerutils.h"
 
 
-QgsAnnotationPolygonItem::QgsAnnotationPolygonItem( const QgsPolygon &polygon, const QgsCoordinateReferenceSystem &crs )
-  : QgsAnnotationItem( crs )
+QgsAnnotationPolygonItem::QgsAnnotationPolygonItem( const QgsPolygon &polygon )
+  : QgsAnnotationItem()
   , mPolygon( polygon )
   , mSymbol( qgis::make_unique< QgsFillSymbol >() )
 {
@@ -86,7 +86,6 @@ void QgsAnnotationPolygonItem::render( QgsRenderContext &context, QgsFeedback * 
 bool QgsAnnotationPolygonItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   element.setAttribute( QStringLiteral( "wkt" ), mPolygon.asWkt() );
-  crs().writeXml( element, document );
 
   element.setAttribute( QStringLiteral( "zIndex" ), zIndex() );
   element.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "lineSymbol" ), mSymbol.get(), document, context ) );
@@ -96,7 +95,7 @@ bool QgsAnnotationPolygonItem::writeXml( QDomElement &element, QDomDocument &doc
 
 QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::create()
 {
-  return new QgsAnnotationPolygonItem( QgsPolygon(), QgsCoordinateReferenceSystem() );
+  return new QgsAnnotationPolygonItem( QgsPolygon() );
 }
 
 bool QgsAnnotationPolygonItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
@@ -104,9 +103,6 @@ bool QgsAnnotationPolygonItem::readXml( const QDomElement &element, const QgsRea
   const QString wkt = element.attribute( QStringLiteral( "wkt" ) );
   mPolygon.fromWkt( wkt );
 
-  QgsCoordinateReferenceSystem crs;
-  crs.readXml( element );
-  setCrs( crs );
   setZIndex( element.attribute( QStringLiteral( "zIndex" ) ).toInt() );
 
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
@@ -118,7 +114,7 @@ bool QgsAnnotationPolygonItem::readXml( const QDomElement &element, const QgsRea
 
 QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::clone()
 {
-  std::unique_ptr< QgsAnnotationPolygonItem > item = qgis::make_unique< QgsAnnotationPolygonItem >( mPolygon, crs() );
+  std::unique_ptr< QgsAnnotationPolygonItem > item = qgis::make_unique< QgsAnnotationPolygonItem >( mPolygon );
   item->setSymbol( mSymbol->clone() );
   item->setZIndex( zIndex() );
   return item.release();

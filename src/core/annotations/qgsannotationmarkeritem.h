@@ -34,9 +34,9 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
   public:
 
     /**
-     * Constructor for QgsAnnotationMarkerItem, at the specified \a point in the given \a crs.
+     * Constructor for QgsAnnotationMarkerItem, at the specified \a point.
      */
-    QgsAnnotationMarkerItem( QgsPointXY point, const QgsCoordinateReferenceSystem &crs );
+    QgsAnnotationMarkerItem( QgsPointXY point );
     ~QgsAnnotationMarkerItem() override;
 
     QString type() const override;
@@ -55,7 +55,7 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
     /**
      * Returns the point location of the marker.
      *
-     * The coordinate reference system for the point can be retrieved through crs().
+     * The coordinate reference system for the point will be the parent layer's QgsAnnotationLayer::crs().
      *
      * \see setPoint()
      */
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
     /**
      * Sets the \a point location of the marker.
      *
-     * The coordinate reference system for the point can be set through setCrs().
+     * The coordinate reference system for the point will be the parent layer's QgsAnnotationLayer::crs().
      *
      * \see point()
      */

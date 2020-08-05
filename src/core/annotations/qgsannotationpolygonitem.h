@@ -34,9 +34,9 @@ class CORE_EXPORT QgsAnnotationPolygonItem : public QgsAnnotationItem
   public:
 
     /**
-     * Constructor for QgsAnnotationPolygonItem, with the specified \a polygon in the given \a crs.
+     * Constructor for QgsAnnotationPolygonItem, with the specified \a polygon geometry.
      */
-    QgsAnnotationPolygonItem( const QgsPolygon &polygon, const QgsCoordinateReferenceSystem &crs );
+    QgsAnnotationPolygonItem( const QgsPolygon &polygon );
     ~QgsAnnotationPolygonItem() override;
 
     QString type() const override;
@@ -55,7 +55,7 @@ class CORE_EXPORT QgsAnnotationPolygonItem : public QgsAnnotationItem
     /**
      * Returns the polygon geometry of the item.
      *
-     * The coordinate reference system for the polygon can be retrieved through crs().
+     * The coordinate reference system for the polygon will be the parent layer's QgsAnnotationLayer::crs().
      *
      * \see setPolygon()
      */
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsAnnotationPolygonItem : public QgsAnnotationItem
     /**
      * Sets the \a polygon geometry of the item.
      *
-     * The coordinate reference system for the polygon can be set through setCrs().
+     * The coordinate reference system for the polygon will be the parent layer's QgsAnnotationLayer::crs().
      *
      * \see polygon()
      */

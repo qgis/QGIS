@@ -19,8 +19,8 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 
-QgsAnnotationLineStringItem::QgsAnnotationLineStringItem( const QgsLineString &linestring, const QgsCoordinateReferenceSystem &crs )
-  : QgsAnnotationItem( crs )
+QgsAnnotationLineStringItem::QgsAnnotationLineStringItem( const QgsLineString &linestring )
+  : QgsAnnotationItem()
   , mLineString( linestring )
   , mSymbol( qgis::make_unique< QgsLineSymbol >() )
 {
@@ -72,7 +72,6 @@ void QgsAnnotationLineStringItem::render( QgsRenderContext &context, QgsFeedback
 bool QgsAnnotationLineStringItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   element.setAttribute( QStringLiteral( "wkt" ), mLineString.asWkt() );
-  crs().writeXml( element, document );
   element.setAttribute( QStringLiteral( "zIndex" ), zIndex() );
 
   element.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "lineSymbol" ), mSymbol.get(), document, context ) );
@@ -82,7 +81,7 @@ bool QgsAnnotationLineStringItem::writeXml( QDomElement &element, QDomDocument &
 
 QgsAnnotationLineStringItem *QgsAnnotationLineStringItem::create()
 {
-  return new QgsAnnotationLineStringItem( QgsLineString(), QgsCoordinateReferenceSystem() );
+  return new QgsAnnotationLineStringItem( QgsLineString() );
 }
 
 bool QgsAnnotationLineStringItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
@@ -91,9 +90,6 @@ bool QgsAnnotationLineStringItem::readXml( const QDomElement &element, const Qgs
   QgsLineString ls;
   mLineString.fromWkt( wkt );
 
-  QgsCoordinateReferenceSystem crs;
-  crs.readXml( element );
-  setCrs( crs );
   setZIndex( element.attribute( QStringLiteral( "zIndex" ) ).toInt() );
 
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
@@ -110,7 +106,7 @@ QgsRectangle QgsAnnotationLineStringItem::boundingBox() const
 
 QgsAnnotationLineStringItem *QgsAnnotationLineStringItem::clone()
 {
-  std::unique_ptr< QgsAnnotationLineStringItem > item = qgis::make_unique< QgsAnnotationLineStringItem >( mLineString, crs() );
+  std::unique_ptr< QgsAnnotationLineStringItem > item = qgis::make_unique< QgsAnnotationLineStringItem >( mLineString );
   item->setSymbol( mSymbol->clone() );
   item->setZIndex( zIndex() );
   return item.release();
