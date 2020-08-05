@@ -44,7 +44,6 @@ class GUI_EXPORT QgsAttributeWidgetEdit : public QgsCollapsibleGroupBox, private
 
     void updateItemData();
 
-
   private:
     void showRelationButtons( bool show );
 
@@ -67,6 +66,8 @@ class GUI_EXPORT QgsAttributeWidgetRelationEditWidget : public QWidget, private 
     void setRelationEditorConfiguration( const QgsAttributesFormProperties::RelationEditorConfiguration &config );
 
     QgsAttributesFormProperties::RelationEditorConfiguration relationEditorConfiguration() const;
+
+    static QString title() { return tr( "Relation" ); }
 
 };
 

@@ -40,6 +40,7 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
       mSpecificEditWidget = editWidget;
       layout->addWidget( mSpecificEditWidget );
       mWidgetSpecificConfigGroupBox->setLayout( layout );
+      mWidgetSpecificConfigGroupBox->setTitle( editWidget->title() );
 
     }
     break;
