@@ -1006,11 +1006,15 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     QString localDir = metadata->value( QStringLiteral( "library" ) );
     if ( QFileInfo( localDir ).isFile() )
     {
-      localDir = QFileInfo( localDir ).absolutePath();
+      localDir = QFileInfo( localDir ).canonicalFilePath();
+    }
+    else
+    {
+      localDir = QDir( localDir ).canonicalPath();
     }
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%3'>%4</a></td></tr>"
                           ).arg( tr( "Installed version" ),
-                                 metadata->value( QStringLiteral( "library" ) ),
+                                 QDir::toNativeSeparators( localDir ),
                                  QUrl::fromLocalFile( localDir ).toString(),
                                  ver );
   }
