@@ -53,16 +53,12 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
             report_file.write(cls.report)
 
     def testBasic(self):
-        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])),
-                                        QgsCoordinateReferenceSystem('EPSG:4326'))
+        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
 
-        self.assertEqual(item.crs().authid(), 'EPSG:4326')
         self.assertEqual(item.polygon().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
 
-        item.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         item.setPolygon(QgsPolygon(QgsLineString([QgsPoint(22, 23), QgsPoint(24, 23), QgsPoint(24, 25), QgsPoint(22, 23)])))
         item.setZIndex(11)
-        self.assertEqual(item.crs().authid(), 'EPSG:3111')
         self.assertEqual(item.polygon().asWkt(), 'Polygon ((22 23, 24 23, 24 25, 22 23))')
         self.assertEqual(item.zIndex(), 11)
 
@@ -73,8 +69,7 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
         doc = QDomDocument("testdoc")
         elem = doc.createElement('test')
 
-        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])),
-                                        QgsCoordinateReferenceSystem('EPSG:4326'))
+        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
         item.setSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black'}))
         item.setZIndex(11)
 
@@ -83,26 +78,22 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
         s2 = QgsAnnotationPolygonItem.create()
         self.assertTrue(s2.readXml(elem, QgsReadWriteContext()))
 
-        self.assertEqual(s2.crs().authid(), 'EPSG:4326')
         self.assertEqual(s2.polygon().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
         self.assertEqual(s2.symbol()[0].color(), QColor(200, 100, 100))
         self.assertEqual(s2.zIndex(), 11)
 
     def testClone(self):
-        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])),
-                                        QgsCoordinateReferenceSystem('EPSG:4326'))
+        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
         item.setSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black'}))
         item.setZIndex(11)
 
         item2 = item.clone()
-        self.assertEqual(item2.crs().authid(), 'EPSG:4326')
         self.assertEqual(item2.polygon().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
         self.assertEqual(item2.symbol()[0].color(), QColor(200, 100, 100))
         self.assertEqual(item2.zIndex(), 11)
 
     def testRenderPolygon(self):
-        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])),
-                                        QgsCoordinateReferenceSystem('EPSG:4326'))
+        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
         item.setSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
 
         settings = QgsMapSettings()
@@ -128,8 +119,7 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
         self.assertTrue(self.imageCheck('polygon_item', 'polygon_item', image))
 
     def testRenderWithTransform(self):
-        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(11.5, 13), QgsPoint(12, 13), QgsPoint(12, 13.5), QgsPoint(11.5, 13)])),
-                                        QgsCoordinateReferenceSystem('EPSG:4326'))
+        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(11.5, 13), QgsPoint(12, 13), QgsPoint(12, 13.5), QgsPoint(11.5, 13)])))
         item.setSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
 
         settings = QgsMapSettings()
@@ -140,7 +130,7 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
         settings.setFlag(QgsMapSettings.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
-        rc.setCoordinateTransform(QgsCoordinateTransform(item.crs(), settings.destinationCrs(), QgsProject.instance()))
+        rc.setCoordinateTransform(QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'), settings.destinationCrs(), QgsProject.instance()))
         image = QImage(200, 200, QImage.Format_ARGB32)
         image.setDotsPerMeterX(96 / 25.4 * 1000)
         image.setDotsPerMeterY(96 / 25.4 * 1000)

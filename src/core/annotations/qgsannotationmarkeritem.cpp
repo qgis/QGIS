@@ -19,8 +19,8 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 
-QgsAnnotationMarkerItem::QgsAnnotationMarkerItem( QgsPointXY point, const QgsCoordinateReferenceSystem &crs )
-  : QgsAnnotationItem( crs )
+QgsAnnotationMarkerItem::QgsAnnotationMarkerItem( QgsPointXY point )
+  : QgsAnnotationItem()
   , mPoint( point )
   , mSymbol( qgis::make_unique< QgsMarkerSymbol >() )
 {
@@ -60,7 +60,6 @@ bool QgsAnnotationMarkerItem::writeXml( QDomElement &element, QDomDocument &docu
   element.setAttribute( QStringLiteral( "x" ), qgsDoubleToString( mPoint.x() ) );
   element.setAttribute( QStringLiteral( "y" ), qgsDoubleToString( mPoint.y() ) );
   element.setAttribute( QStringLiteral( "zIndex" ), zIndex() );
-  crs().writeXml( element, document );
 
   element.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "markerSymbol" ), mSymbol.get(), document, context ) );
 
@@ -69,7 +68,7 @@ bool QgsAnnotationMarkerItem::writeXml( QDomElement &element, QDomDocument &docu
 
 QgsAnnotationMarkerItem *QgsAnnotationMarkerItem::create()
 {
-  return new QgsAnnotationMarkerItem( QgsPointXY(), QgsCoordinateReferenceSystem() );
+  return new QgsAnnotationMarkerItem( QgsPointXY() );
 }
 
 bool QgsAnnotationMarkerItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
@@ -78,9 +77,6 @@ bool QgsAnnotationMarkerItem::readXml( const QDomElement &element, const QgsRead
   const double y = element.attribute( QStringLiteral( "y" ) ).toDouble();
   mPoint = QgsPointXY( x, y );
 
-  QgsCoordinateReferenceSystem crs;
-  crs.readXml( element );
-  setCrs( crs );
   setZIndex( element.attribute( QStringLiteral( "zIndex" ) ).toInt() );
 
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
@@ -92,7 +88,7 @@ bool QgsAnnotationMarkerItem::readXml( const QDomElement &element, const QgsRead
 
 QgsAnnotationMarkerItem *QgsAnnotationMarkerItem::clone()
 {
-  std::unique_ptr< QgsAnnotationMarkerItem > item = qgis::make_unique< QgsAnnotationMarkerItem >( mPoint, crs() );
+  std::unique_ptr< QgsAnnotationMarkerItem > item = qgis::make_unique< QgsAnnotationMarkerItem >( mPoint );
   item->setSymbol( mSymbol->clone() );
   item->setZIndex( zIndex() );
   return item.release();

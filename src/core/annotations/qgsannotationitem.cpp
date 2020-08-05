@@ -19,13 +19,3 @@
 #include "qgssymbollayerutils.h"
 
 
-QgsAnnotationItem::QgsAnnotationItem( const QgsCoordinateReferenceSystem &crs )
-  : mCrs( crs )
-{
-
-}
-
-void QgsAnnotationItem::setCrs( const QgsCoordinateReferenceSystem &crs )
-{
-  mCrs = crs;
-}

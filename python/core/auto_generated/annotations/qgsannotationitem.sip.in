@@ -41,10 +41,9 @@ Abstract base class for annotation items which are drawn with QgsAnnotationLayer
 %End
   public:
 
-    QgsAnnotationItem( const QgsCoordinateReferenceSystem &crs );
+    QgsAnnotationItem();
 %Docstring
-Constructor for an annotation item, with the specified ``crs`` for storing
-its geographic location.
+Constructor for an annotation item.
 %End
 
 
@@ -62,23 +61,7 @@ Returns a unique (untranslated) string identifying the type of item.
 
     virtual QgsRectangle boundingBox() const = 0;
 %Docstring
-Returns the bounding box of the item's geographic location.
-
-The coordinate reference system for the bounding box is retrieved via :py:func:`~QgsAnnotationItem.crs`.
-%End
-
-    QgsCoordinateReferenceSystem crs() const;
-%Docstring
-Returns the CRS used for storing the location of the item.
-
-.. seealso:: :py:func:`setCrs`
-%End
-
-    void setCrs( const QgsCoordinateReferenceSystem &crs );
-%Docstring
-Sets the ``crs`` used for storing the location of the item.
-
-.. seealso:: :py:func:`crs`
+Returns the bounding box of the item's geographic location, in the parent layer's coordinate reference system.
 %End
 
     virtual void render( QgsRenderContext &context, QgsFeedback *feedback ) = 0;

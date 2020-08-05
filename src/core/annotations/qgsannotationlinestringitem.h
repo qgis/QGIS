@@ -34,9 +34,9 @@ class CORE_EXPORT QgsAnnotationLineStringItem : public QgsAnnotationItem
   public:
 
     /**
-     * Constructor for QgsAnnotationLineStringItem, with the specified \a linestring in the given \a crs.
+     * Constructor for QgsAnnotationLineStringItem, with the specified \a linestring.
      */
-    QgsAnnotationLineStringItem( const QgsLineString &linestring, const QgsCoordinateReferenceSystem &crs );
+    QgsAnnotationLineStringItem( const QgsLineString &linestring );
     ~QgsAnnotationLineStringItem() override;
 
     QString type() const override;
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsAnnotationLineStringItem : public QgsAnnotationItem
     /**
      * Returns the line string geometry of the item.
      *
-     * The coordinate reference system for the line can be retrieved through crs().
+     * The coordinate reference system for the line will be the parent layer's QgsAnnotationLayer::crs().
      *
      * \see setLineString()
      */
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsAnnotationLineStringItem : public QgsAnnotationItem
     /**
      * Sets the \a lineString geometry of the item.
      *
-     * The coordinate reference system for the line can be set through setCrs().
+     * The coordinate reference system for the line will be the parent layer's QgsAnnotationLayer::crs().
      *
      * \see lineString()
      */

@@ -23,9 +23,9 @@ An annotation item which renders a marker symbol at a point location.
 %End
   public:
 
-    QgsAnnotationMarkerItem( QgsPointXY point, const QgsCoordinateReferenceSystem &crs );
+    QgsAnnotationMarkerItem( QgsPointXY point );
 %Docstring
-Constructor for QgsAnnotationMarkerItem, at the specified ``point`` in the given ``crs``.
+Constructor for QgsAnnotationMarkerItem, at the specified ``point``.
 %End
     ~QgsAnnotationMarkerItem();
 
@@ -52,7 +52,7 @@ Creates a new marker annotation item.
 %Docstring
 Returns the point location of the marker.
 
-The coordinate reference system for the point can be retrieved through :py:func:`~QgsAnnotationMarkerItem.crs`.
+The coordinate reference system for the point will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
 
 .. seealso:: :py:func:`setPoint`
 %End
@@ -61,7 +61,7 @@ The coordinate reference system for the point can be retrieved through :py:func:
 %Docstring
 Sets the ``point`` location of the marker.
 
-The coordinate reference system for the point can be set through :py:func:`~QgsAnnotationMarkerItem.setCrs`.
+The coordinate reference system for the point will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
 
 .. seealso:: :py:func:`point`
 %End

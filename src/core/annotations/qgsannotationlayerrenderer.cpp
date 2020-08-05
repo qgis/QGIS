@@ -53,7 +53,6 @@ bool QgsAnnotationLayerRenderer::render()
     if ( mFeedback->isCanceled() )
       break;
 
-    renderContext()->setCoordinateTransform( QgsCoordinateTransform( item->crs(), context.coordinateTransform().destinationCrs(), context.transformContext() ) );
     item->render( context, mFeedback.get() );
   }
   return true;

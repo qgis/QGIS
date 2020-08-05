@@ -62,10 +62,9 @@ class CORE_EXPORT QgsAnnotationItem
   public:
 
     /**
-     * Constructor for an annotation item, with the specified \a crs for storing
-     * its geographic location.
+     * Constructor for an annotation item.
      */
-    QgsAnnotationItem( const QgsCoordinateReferenceSystem &crs );
+    QgsAnnotationItem() = default;
 
 #ifndef SIP_RUN
     //! QgsAnnotationItem cannot be copied
@@ -87,25 +86,9 @@ class CORE_EXPORT QgsAnnotationItem
     virtual QString type() const = 0;
 
     /**
-     * Returns the bounding box of the item's geographic location.
-     *
-     * The coordinate reference system for the bounding box is retrieved via crs().
+     * Returns the bounding box of the item's geographic location, in the parent layer's coordinate reference system.
      */
     virtual QgsRectangle boundingBox() const = 0;
-
-    /**
-     * Returns the CRS used for storing the location of the item.
-     *
-     * \see setCrs()
-     */
-    QgsCoordinateReferenceSystem crs() const { return mCrs; }
-
-    /**
-     * Sets the \a crs used for storing the location of the item.
-     *
-     * \see crs()
-     */
-    void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Renders the item to the specified render \a context.
@@ -143,7 +126,6 @@ class CORE_EXPORT QgsAnnotationItem
 
   private:
 
-    QgsCoordinateReferenceSystem mCrs;
     int mZIndex = 0;
 
 #ifdef SIP_RUN

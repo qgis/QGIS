@@ -62,11 +62,9 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
         self.assertTrue(layer.isValid())
 
-        polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])),
-                                                                 QgsCoordinateReferenceSystem('EPSG:4326')))
-        linestring_item_id = layer.addItem(QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]),
-                                                                       QgsCoordinateReferenceSystem('EPSG:4326')))
-        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPointXY(12, 13), QgsCoordinateReferenceSystem('EPSG:4326')))
+        polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
+        linestring_item_id = layer.addItem(QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
+        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPointXY(12, 13)))
 
         self.assertEqual(len(layer.items()), 3)
 
@@ -93,25 +91,23 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
         self.assertTrue(layer.isValid())
 
-        polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])),
-                                                                 QgsCoordinateReferenceSystem('EPSG:4326')))
-        linestring_item_id = layer.addItem(QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]),
-                                                                       QgsCoordinateReferenceSystem('EPSG:4326')))
-        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPointXY(12, 13), QgsCoordinateReferenceSystem('EPSG:4326')))
+        layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
+        layer.addItem(QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
+        layer.addItem(QgsAnnotationMarkerItem(QgsPointXY(12, 13)))
 
-        # no crs set, so item bounds are taken direct...
         extent = layer.extent()
         self.assertEqual(extent.xMinimum(), 11.0)
         self.assertEqual(extent.xMaximum(), 14.0)
         self.assertEqual(extent.yMinimum(), 13.0)
         self.assertEqual(extent.yMaximum(), 15.0)
 
+        # should have no effect -- item geometries are in layer crs
         layer.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
         extent = layer.extent()
-        self.assertAlmostEqual(extent.xMinimum(), 1224514.0, -3)
-        self.assertAlmostEqual(extent.xMaximum(), 1558472.0, -3)
-        self.assertAlmostEqual(extent.yMinimum(), 1459732.0, -3)
-        self.assertAlmostEqual(extent.yMaximum(), 1689200.0, -3)
+        self.assertEqual(extent.xMinimum(), 11.0)
+        self.assertEqual(extent.xMaximum(), 14.0)
+        self.assertEqual(extent.yMinimum(), 13.0)
+        self.assertEqual(extent.yMaximum(), 15.0)
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
@@ -119,17 +115,17 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
         self.assertTrue(layer.isValid())
 
-        polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])),
-                                                                 QgsCoordinateReferenceSystem('EPSG:4326')))
-        linestring_item_id = layer.addItem(QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]),
-                                                                       QgsCoordinateReferenceSystem('EPSG:4326')))
-        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPointXY(12, 13), QgsCoordinateReferenceSystem('EPSG:4326')))
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
+        linestring_item_id = layer.addItem(QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
+        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPointXY(12, 13)))
 
         elem = doc.createElement("maplayer")
         self.assertTrue(layer.writeLayerXml(elem, doc, QgsReadWriteContext()))
 
         layer2 = QgsAnnotationLayer('test2', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
         self.assertTrue(layer2.readLayerXml(elem, QgsReadWriteContext()))
+        self.assertEqual(layer2.crs().authid(), 'EPSG:4326')
 
         self.assertEqual(len(layer2.items()), 3)
         self.assertIsInstance(layer2.items()[polygon_item_id], QgsAnnotationPolygonItem)
@@ -140,11 +136,9 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
         self.assertTrue(layer.isValid())
 
-        polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])),
-                                                                 QgsCoordinateReferenceSystem('EPSG:4326')))
-        linestring_item_id = layer.addItem(QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]),
-                                                                       QgsCoordinateReferenceSystem('EPSG:4326')))
-        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPointXY(12, 13), QgsCoordinateReferenceSystem('EPSG:4326')))
+        polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
+        linestring_item_id = layer.addItem(QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
+        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPointXY(12, 13)))
 
         layer2 = layer.clone()
 
@@ -157,22 +151,21 @@ class TestQgsAnnotationLayer(unittest.TestCase):
 
     def testRenderLayer(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         self.assertTrue(layer.isValid())
 
-        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])),
-                                        QgsCoordinateReferenceSystem('EPSG:4326'))
+        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
         item.setSymbol(
             QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
         item.setZIndex(3)
         layer.addItem(item)
 
-        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]),
-                                           QgsCoordinateReferenceSystem('EPSG:4326'))
+        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
         item.setZIndex(2)
         layer.addItem(item)
 
-        item = QgsAnnotationMarkerItem(QgsPointXY(12, 13), QgsCoordinateReferenceSystem('EPSG:4326'))
+        item = QgsAnnotationMarkerItem(QgsPointXY(12, 13))
         item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '6', 'outline_color': 'black'}))
         item.setZIndex(1)
         layer.addItem(item)
@@ -204,23 +197,23 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
         self.assertTrue(layer.isValid())
 
-        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(11.5, 13), QgsPoint(12, 13), QgsPoint(12, 13.5), QgsPoint(11.5, 13)])),
-                                        QgsCoordinateReferenceSystem('EPSG:4326'))
+        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(11.5, 13), QgsPoint(12, 13), QgsPoint(12, 13.5), QgsPoint(11.5, 13)])))
         item.setSymbol(
             QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
         item.setZIndex(1)
         layer.addItem(item)
 
-        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]),
-                                           QgsCoordinateReferenceSystem('EPSG:4326'))
+        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
         item.setZIndex(2)
         layer.addItem(item)
 
-        item = QgsAnnotationMarkerItem(QgsPointXY(12, 13), QgsCoordinateReferenceSystem('EPSG:4326'))
+        item = QgsAnnotationMarkerItem(QgsPointXY(12, 13))
         item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '6', 'outline_color': 'black'}))
         item.setZIndex(3)
         layer.addItem(item)
+
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
 
         settings = QgsMapSettings()
         settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
@@ -230,7 +223,7 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         settings.setFlag(QgsMapSettings.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
-        rc.setCoordinateTransform(QgsCoordinateTransform(item.crs(), settings.destinationCrs(), QgsProject.instance()))
+        rc.setCoordinateTransform(QgsCoordinateTransform(layer.crs(), settings.destinationCrs(), QgsProject.instance()))
         image = QImage(200, 200, QImage.Format_ARGB32)
         image.setDotsPerMeterX(96 / 25.4 * 1000)
         image.setDotsPerMeterY(96 / 25.4 * 1000)

@@ -34,7 +34,7 @@ class TestItem : public QgsAnnotationItem
 
   public:
 
-    TestItem() : QgsAnnotationItem( QgsCoordinateReferenceSystem() )
+    TestItem() : QgsAnnotationItem()
     {
     }
 
