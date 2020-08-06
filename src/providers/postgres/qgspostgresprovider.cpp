@@ -789,40 +789,21 @@ bool QgsPostgresProvider::loadFields()
   // Clear cached information about enum values support
   mShared->clearSupportsEnumValuesCache();
 
+  QString sql;
+  QString attroidsFilter;
+
   if ( !mIsQuery )
   {
     QgsDebugMsgLevel( QStringLiteral( "Loading fields for table %1" ).arg( mTableName ), 2 );
 
-    // Get the relation oid for use in later queries
-    QString sql = QStringLiteral( "SELECT regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
-    QgsPostgresResult tresult( connectionRO()->PQexec( sql ) );
-    QString tableoid = tresult.PQgetvalue( 0, 0 );
-
     // Get the table description
-    sql = QStringLiteral( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=0" ).arg( tableoid );
-    tresult = connectionRO()->PQexec( sql );
+    sql = QStringLiteral( "SELECT description FROM pg_description WHERE objoid=regclass(%1)::oid AND objsubid=0" ).arg( quotedValue( mQuery ) );
+    QgsPostgresResult tresult( connectionRO()->PQexec( sql ) );
     if ( tresult.PQntuples() > 0 )
     {
       mDataComment = tresult.PQgetvalue( 0, 0 );
       mLayerMetadata.setAbstract( mDataComment );
     }
-  }
-
-  // Collect type info
-  QString sql = QStringLiteral( "SELECT oid,typname,typtype,typelem,typlen FROM pg_type" );
-  QgsPostgresResult typeResult( connectionRO()->PQexec( sql ) );
-
-  QMap<Oid, PGTypeInfo> typeMap;
-  for ( int i = 0; i < typeResult.PQntuples(); ++i )
-  {
-    PGTypeInfo typeInfo =
-    {
-      /* typeName = */ typeResult.PQgetvalue( i, 1 ),
-      /* typeType = */ typeResult.PQgetvalue( i, 2 ),
-      /* typeElem = */ typeResult.PQgetvalue( i, 3 ),
-      /* typeLen = */ typeResult.PQgetvalue( i, 4 ).toInt()
-    };
-    typeMap.insert( typeResult.PQgetvalue( i, 0 ).toUInt(), typeInfo );
   }
 
   // Populate the field vector for this layer. The field vector contains
@@ -836,6 +817,14 @@ bool QgsPostgresProvider::loadFields()
   QMap<Oid, QMap<int, bool> > notNullMap, uniqueMap;
   if ( result.PQnfields() > 0 )
   {
+    // Collect attribiute oids
+    QSet<Oid> attroids;
+    for ( int i = 0; i < result.PQnfields(); i++ )
+    {
+      Oid attroid = result.PQftype( i );
+      attroids.insert( attroid );
+    }
+
     // Collect table oids
     QSet<Oid> tableoids;
     for ( int i = 0; i < result.PQnfields(); i++ )
@@ -900,8 +889,39 @@ bool QgsPostgresProvider::loadFields()
         uniqueMap[attrelid][attnum] = uniqueConstraint;
         identityMap[attrelid][attnum] = attIdentity.isEmpty() ? " " : attIdentity;
         generatedMap[attrelid][attnum] = attGenerated.isEmpty() ? "" : defVal;
+
+        // Also include atttype oid from pg_attribute, because PQnfields only returns basic type for for domains
+        attroids.insert( attType );
       }
     }
+
+    // Prepare filter for fetching pg_type info
+    if ( !attroids.isEmpty() )
+    {
+      QStringList attroidsList;
+      for ( Oid attroid : qgis::as_const( attroids ) )
+      {
+        attroidsList.append( QString::number( attroid ) );
+      }
+      attroidsFilter = QStringLiteral( "WHERE oid in (%1)" ).arg( attroidsList.join( ',' ) );
+    }
+  }
+
+  // Collect type info
+  sql = QStringLiteral( "SELECT oid,typname,typtype,typelem,typlen FROM pg_type %1" ).arg( attroidsFilter );
+  QgsPostgresResult typeResult( connectionRO()->PQexec( sql ) );
+
+  QMap<Oid, PGTypeInfo> typeMap;
+  for ( int i = 0; i < typeResult.PQntuples(); ++i )
+  {
+    PGTypeInfo typeInfo =
+    {
+      /* typeName = */ typeResult.PQgetvalue( i, 1 ),
+      /* typeType = */ typeResult.PQgetvalue( i, 2 ),
+      /* typeElem = */ typeResult.PQgetvalue( i, 3 ),
+      /* typeLen = */ typeResult.PQgetvalue( i, 4 ).toInt()
+    };
+    typeMap.insert( typeResult.PQgetvalue( i, 0 ).toUInt(), typeInfo );
   }
 
   QSet<QString> fields;
