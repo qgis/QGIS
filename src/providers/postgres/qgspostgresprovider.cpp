@@ -796,14 +796,9 @@ bool QgsPostgresProvider::loadFields()
   {
     QgsDebugMsgLevel( QStringLiteral( "Loading fields for table %1" ).arg( mTableName ), 2 );
 
-    // Get the relation oid for use in later queries
-    sql = QStringLiteral( "SELECT regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
-    QgsPostgresResult tresult( connectionRO()->PQexec( sql ) );
-    QString tableoid = tresult.PQgetvalue( 0, 0 );
-
     // Get the table description
-    sql = QStringLiteral( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=0" ).arg( tableoid );
-    tresult = connectionRO()->PQexec( sql );
+    sql = QStringLiteral( "SELECT description FROM pg_description WHERE objoid=regclass(%1)::oid AND objsubid=0" ).arg( quotedValue( mQuery ) );
+    QgsPostgresResult tresult( connectionRO()->PQexec( sql ) );
     if ( tresult.PQntuples() > 0 )
     {
       mDataComment = tresult.PQgetvalue( 0, 0 );
