@@ -27,15 +27,15 @@ QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( QWidget *par
   layoutGroupBoxes.push_back( panoramicTextureGroupBox );
   layoutGroupBoxes.push_back( faceTexturesGroupBox );
 
-  skyboxTypeComboBox->addItem( QStringLiteral( "Panoramic texture" ) );
-  skyboxTypeComboBox->addItem( QStringLiteral( "Distinct Faces" ) );
+  skyboxTypeComboBox->addItem( tr( "Panoramic texture" ) );
+  skyboxTypeComboBox->addItem( tr( "Distinct Faces" ) );
   connect( skyboxTypeComboBox, &QComboBox::currentTextChanged, [&]( const QString & skyboxType )
   {
     for ( QGroupBox *groupBox : layoutGroupBoxes )
       groupBox->setVisible( false );
-    if ( skyboxType == QStringLiteral( "Panoramic texture" ) )
+    if ( skyboxType == tr( "Panoramic texture" ) )
       panoramicTextureGroupBox->setVisible( true );
-    if ( skyboxType == QStringLiteral( "Distinct Faces" ) )
+    if ( skyboxType == tr( "Distinct Faces" ) )
       faceTexturesGroupBox->setVisible( true );
   } );
   skyboxTypeComboBox->setCurrentIndex( 1 );
@@ -47,11 +47,11 @@ void QgsSkyboxRenderingSettingsWidget::setSkyboxSettings( const QgsSkyboxSetting
 
   switch ( skyboxSettings.skyboxType() )
   {
-    case QgsSkyboxEntity::DistinctTexturesSkybox:
-      skyboxTypeComboBox->setCurrentText( QStringLiteral( "Distinct Faces" ) );
-      break;
     case QgsSkyboxEntity::PanoramicSkybox:
-      skyboxTypeComboBox->setCurrentText( QStringLiteral( "Panoramic texture" ) );
+      skyboxTypeComboBox->setCurrentText( tr( "Panoramic texture" ) );
+      break;
+    case QgsSkyboxEntity::DistinctTexturesSkybox:
+      skyboxTypeComboBox->setCurrentText( tr( "Distinct Faces" ) );
       break;
   }
 
@@ -70,10 +70,10 @@ QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
   QgsSkyboxSettings settings;
   settings.setIsSkyboxEnabled( skyboxEnabledCheckBox->checkState() == Qt::CheckState::Checked );
 
-  if ( skyboxTypeComboBox->currentText() == QStringLiteral( "Distinct Faces" ) )
-    settings.setSkyboxType( QgsSkyboxEntity::DistinctTexturesSkybox );
-  else if ( skyboxTypeComboBox->currentText() == QStringLiteral( "Panoramic texture" ) )
+  if ( skyboxTypeComboBox->currentText() == tr( "Panoramic texture" ) )
     settings.setSkyboxType( QgsSkyboxEntity::PanoramicSkybox );
+  else if ( skyboxTypeComboBox->currentText() == tr( "Distinct Faces" ) )
+    settings.setSkyboxType( QgsSkyboxEntity::DistinctTexturesSkybox );
 
   settings.setPanoramicTexturePath( panoramicTextureImageSource->source() );
   settings.setCubeMapFace( QStringLiteral( "posX" ), posXImageSource->source() );
