@@ -50,7 +50,6 @@
 class QgsAttributesDnDTree;
 class QgsAttributeFormContainerEdit;
 class QgsAttributeTypeDialog;
-class QgsAttributeRelationEdit;
 class QgsAttributeWidgetEdit;
 
 class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpressionContextGenerator, private Ui_QgsAttributesFormProperties
@@ -63,7 +62,6 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     {
       DnDTreeRole = Qt::UserRole,
       FieldConfigRole,
-      RelationConfigRole,
       FieldNameRole
     };
 
@@ -180,25 +178,6 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
       operator QVariant();
     };
 
-
-    /**
-     * Holds the configuration for a relation
-     */
-    struct RelationConfig
-    {
-      RelationConfig();
-      RelationConfig( QgsVectorLayer *layer, const QString &relationId );
-
-      QVariant mCardinality;
-
-      /**
-       * Force suppress form popup open overriding other options.
-       */
-      bool mForceSuppressFormPopup;
-
-      operator QVariant();
-    };
-
   public:
     explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
@@ -221,8 +200,6 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
   protected:
     void updateButtons();
 
-    RelationConfig configForRelation( const QString &relationName );
-
     //QList<QgsRelation> mRelations;
     QgsVectorLayer *mLayer = nullptr;
 
@@ -231,7 +208,6 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     QgsAttributeWidgetEdit *mAttributeWidgetEdit = nullptr;
     QgsAttributeTypeDialog *mAttributeTypeDialog = nullptr;
-    QgsAttributeRelationEdit *mAttributeRelationEdit = nullptr;
     QgsAttributeFormContainerEdit *mAttributeContainerEdit = nullptr;
 
   private slots:
@@ -250,9 +226,6 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     void loadAttributeTypeDialog();
     void storeAttributeTypeDialog( );
-
-    void loadAttributeRelationEdit();
-    void storeAttributeRelationEdit( );
 
     void storeAttributeContainerEdit();
     void loadAttributeContainerEdit();
@@ -335,7 +308,6 @@ class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget
 
 
 Q_DECLARE_METATYPE( QgsAttributesFormProperties::FieldConfig )
-Q_DECLARE_METATYPE( QgsAttributesFormProperties::RelationConfig )
 Q_DECLARE_METATYPE( QgsAttributesFormProperties::DnDTreeItemData )
 
 #endif // QGSATTRIBUTESFORMPROPERTIES_H
