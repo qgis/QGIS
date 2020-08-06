@@ -182,14 +182,25 @@ class QgsServerAPITestBase(QgsServerTestBase):
         result.append(bytes(response.body()).decode('utf8'))
         return '\n'.join(result)
 
+    def assertLinesEqual(self, actual, expected, reference_file):
+        """Break on first different line"""
+
+        actual_lines = actual.split('\n')
+        expected_lines = expected.split('\n')
+        for i in range(len(actual_lines)):
+            self.assertEqual(actual_lines[i], expected_lines[i], "File: %s\nLine: %s\nActual  : %s\nExpected: %s" % (
+                reference_file, i, actual_lines[i], expected_lines[i]))
+
     def compareApi(self, request, project, reference_file, subdir='api'):
         response = QgsBufferServerResponse()
         # Add json to accept it reference_file is JSON
         if reference_file.endswith('.json'):
             request.setHeader('Accept', 'application/json')
         self.server.handleRequest(request, response, project)
-        result = bytes(response.body()).decode('utf8') if reference_file.endswith('html') else self.dump(response)
-        path = os.path.join(unitTestDataPath('qgis_server'), subdir, reference_file)
+        result = bytes(response.body()).decode(
+            'utf8') if reference_file.endswith('html') else self.dump(response)
+        path = os.path.join(unitTestDataPath(
+            'qgis_server'), subdir, reference_file)
         if self.regeregenerate_api_reference:
             # Try to change timestamp
             try:
@@ -197,7 +208,8 @@ class QgsServerAPITestBase(QgsServerTestBase):
                 j = ''.join(content[content.index('') + 1:])
                 j = json.loads(j)
                 j['timeStamp'] = '2019-07-05T12:27:07Z'
-                result = '\n'.join(content[:2]) + '\n' + json.dumps(j, ensure_ascii=False, indent=2)
+                result = '\n'.join(content[:2]) + '\n' + \
+                    json.dumps(j, ensure_ascii=False, indent=2)
             except:
                 pass
             f = open(path.encode('utf8'), 'w+', encoding='utf8')
@@ -221,13 +233,17 @@ class QgsServerAPITestBase(QgsServerTestBase):
                 j['extent']['spatial']['bbox'][0] = bbox
             except:
                 pass
-            json_content = json.dumps(j)
-            headers_content = '\n'.join(reference_content[:reference_content.index('') + 1])
+            json_content = json.dumps(j, indent=4)
+            # Rounding errors
+            json_content = re.sub(r'(\d+\.\d{6})\d+', r'\1', json_content)
+            headers_content = '\n'.join(
+                reference_content[:reference_content.index('') + 1])
             return headers_content + '\n' + json_content
 
         with open(path.encode('utf8'), 'r', encoding='utf8') as f:
             if reference_file.endswith('json'):
-                self.assertEqual(__normalize_json(result), __normalize_json(f.read()))
+                self.assertLinesEqual(__normalize_json(
+                    result), __normalize_json(f.read()), path.encode('utf8'))
             else:
                 self.assertEqual(f.read(), result)
 
