@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
-                          DualEdgeTriangulation.cpp
+                          QgsDualEdgeTriangulation.cpp
                           -------------------------
     copyright            : (C) 2004 by Marco Hugentobler
     email                : mhugent@geo.unizh.ch
@@ -2663,6 +2663,7 @@ bool QgsDualEdgeTriangulation::pointInside( double x, double y )
         break;
       }
     }
+
     else//point is on the right side
     {
       actedge = mHalfEdge[actedge]->getDual();
