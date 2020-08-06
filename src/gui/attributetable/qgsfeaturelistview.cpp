@@ -162,11 +162,7 @@ void QgsFeatureListView::editSelectionChanged( const QItemSelection &deselected,
     QItemSelection localSelected = mModel->mapSelectionFromMaster( selected );
     viewport()->update( visualRegionForSelection( localDeselected ) | visualRegionForSelection( localSelected ) );
   }
-  updateEditSelectionDependencies();
-}
 
-void QgsFeatureListView::updateEditSelectionDependencies()
-{
   QItemSelection currentSelection = mCurrentEditSelectionModel->selection();
   if ( currentSelection.size() == 1 )
   {
@@ -468,7 +464,6 @@ void QgsFeatureListView::ensureEditSelection( bool inSelection )
     }
     mUpdateEditSelectionTimer.start();
   }
-  updateEditSelectionDependencies();
 }
 
 void QgsFeatureListView::setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager )
