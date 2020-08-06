@@ -55,7 +55,7 @@ struct QgsLandingPageUtils
   /**
    * Returns the layer tree information for the given \a project
    */
-  static json layerTree( const QgsProject &project, const QStringList &wmsLayersQueryable, const QStringList &wmsLayersSearchable );
+  static json layerTree( const QgsProject &project, const QStringList &wmsLayersQueryable, const QStringList &wmsLayersSearchable, const QStringList &wmsRestrictedLayers );
 
   /**
    * Extracts the project hash from the URL and returns the (possibly empty) project path.
@@ -66,6 +66,17 @@ struct QgsLandingPageUtils
    * PROJECTS_RE regex to extract project hash from URL
    */
   static const QRegularExpression PROJECT_HASH_RE;
+
+  /**
+   * Available projects cache
+   */
+  static QMap<QString, QString> AVAILABLE_PROJECTS;
+
+  /**
+   * Extracts and returns the (possibly empty) project URI from the \a url path
+   * by examining the project hash.
+   */
+  static QString projectUriFromUrl( const QString &url );
 
 };
 

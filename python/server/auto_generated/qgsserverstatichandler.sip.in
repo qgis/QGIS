@@ -22,7 +22,7 @@ The QgsServerStaticHandler class serves static files from the static path (resou
 %End
   public:
 
-    QgsServerStaticHandler( const QString &pathRegExp = QStringLiteral( R"re(/static/(?<staticFilePath>.*)$)re" ), const QString &staticPathSuffix = QString( ) );
+    QgsServerStaticHandler( const QString &pathRegExp = QStringLiteral( "/static/(?<staticFilePath>.*)$" ), const QString &staticPathSuffix = QString( ) );
 %Docstring
 Creates QgsServerStaticHandler
 

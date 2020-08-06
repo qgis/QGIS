@@ -53,7 +53,7 @@ class QgsLandingPageApi: public QgsServerOgcApi
              // Statics:
              || url.path().startsWith( QStringLiteral( "/css/" ) )
              || url.path().startsWith( QStringLiteral( "/js/" ) )
-             || url.path().startsWith( QStringLiteral( "/public/" ) ) );
+             || url.path() == QStringLiteral( "/favicon.ico" ) );
     }
 };
 
@@ -77,7 +77,7 @@ class QgsProjectLoaderFilter: public QgsServerFilter
       const auto handler { serverInterface()->requestHandler() };
       if ( handler->path().startsWith( QStringLiteral( "/project/" ) ) )
       {
-        const QString projectPath { QgsLandingPageUtils::projectPathFromUrl( handler->url() ) };
+        const QString projectPath { QgsLandingPageUtils::projectUriFromUrl( handler->url() ) };
         if ( ! projectPath.isEmpty() )
         {
           qputenv( "QGIS_PROJECT_FILE", projectPath.toUtf8() );
@@ -108,7 +108,7 @@ class QgsLandingPageModule: public QgsServiceModule
                                                                  QStringLiteral( "1.0.0" )
                                                                };
       // Register handlers
-      landingPageApi->registerHandler<QgsServerStaticHandler>( QStringLiteral( "/(?<staticFilePath>(public|css|js)/.*)$" ), QStringLiteral( "landingpage" ) );
+      landingPageApi->registerHandler<QgsServerStaticHandler>( QStringLiteral( "/(?<staticFilePath>((css|js)/.*)|favicon.ico)$" ), QStringLiteral( "landingpage" ) );
       landingPageApi->registerHandler<QgsLandingPageHandler>();
       landingPageApi->registerHandler<QgsLandingPageMapHandler>();
 

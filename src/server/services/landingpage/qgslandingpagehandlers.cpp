@@ -86,7 +86,7 @@ void QgsLandingPageMapHandler::handleRequest( const QgsServerApiContext &context
 {
   json data;
   data[ "links" ] = json::array();
-  const QString projectPath { QgsLandingPageUtils::projectPathFromUrl( context.request()->url().path() ) };
+  const QString projectPath { QgsLandingPageUtils::projectUriFromUrl( context.request()->url().path() ) };
   if ( projectPath.isEmpty() )
   {
     throw QgsServerApiNotFoundError( QStringLiteral( "Requested project hash not found!" ) );
