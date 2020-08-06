@@ -52,6 +52,10 @@ class CORE_EXPORT QgsAnnotationItem
     {
       sipType = sipType_QgsAnnotationPolygonItem;
     }
+    else if ( sipCpp->type() == QLatin1String( "pointtext" ) )
+    {
+      sipType = sipType_QgsAnnotationPointTextItem;
+    }
     else
     {
       sipType = 0;

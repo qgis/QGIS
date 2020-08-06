@@ -34,6 +34,10 @@ Abstract base class for annotation items which are drawn with QgsAnnotationLayer
     {
       sipType = sipType_QgsAnnotationPolygonItem;
     }
+    else if ( sipCpp->type() == QLatin1String( "pointtext" ) )
+    {
+      sipType = sipType_QgsAnnotationPointTextItem;
+    }
     else
     {
       sipType = 0;
