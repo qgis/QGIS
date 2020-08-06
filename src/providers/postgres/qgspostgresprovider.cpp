@@ -904,8 +904,7 @@ bool QgsPostgresProvider::loadFields()
     if ( !attroids.isEmpty() )
     {
       QStringList attroidsList;
-      const auto constAttroids = attroids;
-      for ( Oid attroid : constAttroids )
+      for ( Oid attroid : qgis::as_const( attroids ) )
       {
         attroidsList.append( QString::number( attroid ) );
       }
