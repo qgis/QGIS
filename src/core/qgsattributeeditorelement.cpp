@@ -97,6 +97,8 @@ QgsAttributeEditorElement *QgsAttributeEditorRelation::clone( QgsAttributeEditor
   QgsAttributeEditorRelation *element = new QgsAttributeEditorRelation( mRelationId, parent );
   element->mRelation = mRelation;
   element->mButtons = mButtons;
+  element->mForceSuppressFormPopup = mForceSuppressFormPopup;
+  element->mCardinality = mCardinality;
 
   return element;
 }
@@ -133,6 +135,8 @@ void QgsAttributeEditorRelation::saveConfiguration( QDomElement &elem ) const
 {
   elem.setAttribute( QStringLiteral( "relation" ), mRelation.id() );
   elem.setAttribute( QStringLiteral( "buttons" ), qgsFlagValueToKeys( mButtons ) );
+  elem.setAttribute( QStringLiteral( "forceSuppressFormPopup" ), mForceSuppressFormPopup );
+  elem.setAttribute( QStringLiteral( "cardinality" ), mCardinality.toString() );
 }
 
 QString QgsAttributeEditorRelation::typeIdentifier() const
@@ -173,6 +177,26 @@ bool QgsAttributeEditorRelation::showSaveChildEditsButton() const
 void QgsAttributeEditorRelation::setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons )
 {
   mButtons = buttons;
+}
+
+void QgsAttributeEditorRelation::setForceSuppressFormPopup( bool forceSuppressFormPopup )
+{
+  mForceSuppressFormPopup = mForceSuppressFormPopup;
+}
+
+bool QgsAttributeEditorRelation::forceSuppressFormPopup() const
+{
+  return mForceSuppressFormPopup;
+}
+
+void QgsAttributeEditorRelation::setCardinality( const QVariant &cardinality )
+{
+  mCardinality = cardinality;
+}
+
+QVariant QgsAttributeEditorRelation::cardinality() const
+{
+  return mCardinality;
 }
 
 QgsAttributeEditorElement *QgsAttributeEditorQmlElement::clone( QgsAttributeEditorElement *parent ) const

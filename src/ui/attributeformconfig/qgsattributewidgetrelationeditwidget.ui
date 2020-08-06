@@ -7,61 +7,98 @@
     <x>0</x>
     <y>0</y>
     <width>340</width>
-    <height>163</height>
+    <height>293</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="5" column="0">
-    <widget class="QCheckBox" name="mRelationDeleteChildFeatureCheckBox">
-     <property name="text">
-      <string>Delete child feature</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QCheckBox" name="mRelationShowDuplicateChildFeatureCheckBox">
-     <property name="text">
-      <string>Duplicate child feature</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QCheckBox" name="mRelationShowAddChildCheckBox">
-     <property name="text">
-      <string>Add child feature</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
     <widget class="QCheckBox" name="mRelationShowLinkCheckBox">
      <property name="text">
       <string>Show link button</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item>
     <widget class="QCheckBox" name="mRelationShowUnlinkCheckBox">
      <property name="text">
       <string>Show unlink button</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
+   <item>
+    <widget class="QCheckBox" name="mRelationShowSaveChildEditsCheckBox">
+     <property name="text">
+      <string>Show save child layer edits button</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="mRelationShowAddChildCheckBox">
+     <property name="text">
+      <string>Add child feature</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="mRelationShowDuplicateChildFeatureCheckBox">
+     <property name="text">
+      <string>Duplicate child feature</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="mRelationDeleteChildFeatureCheckBox">
+     <property name="text">
+      <string>Delete child feature</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QCheckBox" name="mRelationShowZoomToFeatureCheckBox">
      <property name="text">
       <string>Zoom to child feature</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QCheckBox" name="mRelationShowSaveChildEditsCheckBox">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="cardinalityLabel">
+       <property name="text">
+        <string>Cardinality</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mRelationCardinalityCombo"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="mRelationForceSuppressFormPopupCheckBox">
+     <property name="statusTip">
+      <string>Do not open a new attribute form after digitizing a new feature, overrides all other options</string>
+     </property>
      <property name="text">
-      <string>Show save child layer edits button</string>
+      <string>Force hide form on add feature</string>
      </property>
     </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>

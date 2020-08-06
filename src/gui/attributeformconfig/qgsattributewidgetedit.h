@@ -69,6 +69,10 @@ class GUI_EXPORT QgsAttributeWidgetRelationEditWidget : public QWidget, private 
 
     static QString title() { return tr( "Relation" ); }
 
+  private:
+    void setCardinalityCombo( const QString &cardinalityComboItem, const QVariant &auserData = QVariant() );
+    void setCardinality( const QVariant &auserData = QVariant() );
+
 };
 
 #endif // QGSATTRIBUTEWIDGETEDIT_H

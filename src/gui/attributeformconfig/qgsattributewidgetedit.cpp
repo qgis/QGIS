@@ -67,7 +67,7 @@ void QgsAttributeWidgetEdit::updateItemData()
   {
     case QgsAttributesFormProperties::DnDTreeItemData::Relation:
     {
-      QgsAttributeWidgetRelationEditWidget *editWidget = qobject_cast<QgsAttributeWidgetRelationEditWidget *>( mWidgetSpecificConfigGroupBox );
+      QgsAttributeWidgetRelationEditWidget *editWidget = qobject_cast<QgsAttributeWidgetRelationEditWidget *>( mSpecificEditWidget );
       if ( editWidget )
       {
         itemData.setRelationEditorConfiguration( editWidget->relationEditorConfiguration() );
@@ -86,7 +86,6 @@ void QgsAttributeWidgetEdit::updateItemData()
   mTreeItem->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
 }
 
-
 // Relation Widget Specific Edit
 
 QgsAttributeWidgetRelationEditWidget::QgsAttributeWidgetRelationEditWidget( QWidget *parent )
@@ -104,6 +103,21 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
   mRelationShowZoomToFeatureCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::ZoomToChildFeature ) );
   mRelationDeleteChildFeatureCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::DeleteChildFeature ) );
   mRelationShowSaveChildEditsCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::SaveChildEdits ) );
+
+  //load the combo mRelationCardinalityCombo
+  setCardinalityCombo( tr( "Many to one relation" ) );
+
+  QgsRelation relation = QgsProject::instance()->relationManager()->relation( config.relationId );
+  const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencingRelations( relation.referencingLayer() );
+  for ( const QgsRelation &nmrel : relations )
+  {
+    if ( nmrel.fieldPairs().at( 0 ).referencingField() != relation.fieldPairs().at( 0 ).referencingField() )
+      setCardinalityCombo( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
+  }
+
+  mRelationCardinalityCombo->setToolTip( tr( "For a many to many (N:M) relation, the direct link has to be selected. The in-between table will be hidden." ) );
+  setCardinality( config.cardinality );
+  mRelationForceSuppressFormPopupCheckBox->setChecked( config.forceSuppressFormPopup );
 }
 
 QgsAttributesFormProperties::RelationEditorConfiguration QgsAttributeWidgetRelationEditWidget::relationEditorConfiguration() const
@@ -118,5 +132,20 @@ QgsAttributesFormProperties::RelationEditorConfiguration QgsAttributeWidgetRelat
   buttons.setFlag( QgsAttributeEditorRelation::Button::DeleteChildFeature, mRelationDeleteChildFeatureCheckBox->isChecked() );
   buttons.setFlag( QgsAttributeEditorRelation::Button::SaveChildEdits, mRelationShowSaveChildEditsCheckBox->isChecked() );
   relEdCfg.buttons = buttons;
+  relEdCfg.cardinality = mRelationCardinalityCombo->currentData();
+  relEdCfg.forceSuppressFormPopup = mRelationForceSuppressFormPopupCheckBox->isChecked();
   return relEdCfg;
+}
+
+void QgsAttributeWidgetRelationEditWidget::setCardinalityCombo( const QString &cardinalityComboItem, const QVariant &auserData )
+{
+  mRelationCardinalityCombo->addItem( cardinalityComboItem, auserData );
+}
+
+void QgsAttributeWidgetRelationEditWidget::setCardinality( const QVariant &auserData )
+{
+  int idx = mRelationCardinalityCombo->findData( auserData );
+
+  if ( idx != -1 )
+    mRelationCardinalityCombo->setCurrentIndex( idx );
 }

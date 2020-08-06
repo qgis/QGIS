@@ -1955,6 +1955,8 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       // below directly alter the widget and check for it.
       rww->setVisibleButtons( relDef->visibleButtons() );
       rww->setShowLabel( relDef->showLabel() );
+      rww->setCardinality( relDef->cardinality() );
+      rww->setForceSuppressFormPopup( relDef->forceSuppressFormPopup() );
 
       mWidgets.append( rww );
       mFormWidgets.append( formWidget );

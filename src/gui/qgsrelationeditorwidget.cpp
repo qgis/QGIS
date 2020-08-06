@@ -985,6 +985,26 @@ QgsAttributeEditorRelation::Buttons QgsRelationEditorWidget::visibleButtons() co
   return buttons;
 }
 
+void QgsRelationEditorWidget::setForceSuppressFormPopup( bool forceSuppressFormPopup )
+{
+  mForceSuppressFormPopup = mForceSuppressFormPopup;
+}
+
+bool QgsRelationEditorWidget::forceSuppressFormPopup() const
+{
+  return mForceSuppressFormPopup;
+}
+
+void QgsRelationEditorWidget::setCardinality( const QVariant &cardinality )
+{
+  mCardinality = cardinality;
+}
+
+QVariant QgsRelationEditorWidget::cardinality() const
+{
+  return mCardinality;
+}
+
 void QgsRelationEditorWidget::setShowUnlinkButton( bool showUnlinkButton )
 {
   mUnlinkFeatureButton->setVisible( showUnlinkButton );

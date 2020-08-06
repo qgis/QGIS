@@ -467,6 +467,31 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      */
     QgsAttributeEditorRelation::Buttons visibleButtons() const {return mButtons;}
 
+    /**
+     * Determines the force suppress form popup status.
+     * \since QGIS 3.16
+     */
+    bool forceSuppressFormPopup() const;
+
+    /**
+     * Sets force suppress form popup status to \a forceSuppressFormPopup.
+     * This flag will override the layer and general settings regarding the automatic
+     * opening of the attribute form dialog when digitizing is completed.
+     * \since QGIS 3.16
+     */
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+
+    /**
+     * Sets combo cardinality to \a cardinality
+     * \since QGIS 3.16
+     */
+    void setCardinality( const QVariant &cardinality = QVariant() );
+
+    /**
+     * Determines combo cardinality
+     * \since QGIS 3.16
+     */
+    QVariant cardinality() const;
 
   private:
     void saveConfiguration( QDomElement &elem ) const override;
@@ -474,6 +499,8 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     QString mRelationId;
     QgsRelation mRelation;
     Buttons mButtons = Buttons( Button::AllButtons );
+    bool mForceSuppressFormPopup;
+    QVariant mCardinality;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAttributeEditorRelation::Buttons )

@@ -222,6 +222,30 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QgsAttributeEditorRelation::Buttons visibleButtons() const;
 
     /**
+     * Returns the force suppress form popup status.
+     * \since QGIS 3.16
+     */
+    bool forceSuppressFormPopup() const;
+
+    /**
+     * Defines the force suppress form popup status
+     * \since QGIS 3.16
+     */
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+
+    /**
+     * Defines the cardinality
+     * \since QGIS 3.16
+     */
+    void setCardinality( const QVariant &cardinality = QVariant() );
+
+    /**
+     * Returns the cardinality
+     * \since QGIS 3.16
+     */
+    QVariant cardinality() const;
+
+    /**
      * Returns the widget's current feature
      *
      * \since QGIS 3.14
@@ -292,6 +316,9 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
 
     bool mShowLabel = true;
     bool mVisible = false;
+
+    bool mForceSuppressFormPopup;
+    QVariant mCardinality;
 
     /**
      * Deletes the features

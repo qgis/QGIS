@@ -113,6 +113,34 @@ Returns the buttons which are shown
 .. versionadded:: 3.16
 %End
 
+    bool forceSuppressFormPopup() const;
+%Docstring
+Returns the force suppress form popup status.
+
+.. versionadded:: 3.16
+%End
+
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+%Docstring
+Defines the force suppress form popup status
+
+.. versionadded:: 3.16
+%End
+
+    void setCardinality( const QVariant &cardinality = QVariant() );
+%Docstring
+Defines the cardinality
+
+.. versionadded:: 3.16
+%End
+
+    QVariant cardinality() const;
+%Docstring
+Returns the cardinality
+
+.. versionadded:: 3.16
+%End
+
     QgsRelation relation() const;
 %Docstring
 The relation for which this wrapper is created.

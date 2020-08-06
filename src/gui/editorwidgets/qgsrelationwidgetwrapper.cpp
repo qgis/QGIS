@@ -154,7 +154,7 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
 
   QgsAttributeEditorContext myContext( QgsAttributeEditorContext( context(), mRelation, QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed ) );
 
-  if ( config( QStringLiteral( "force-suppress-popup" ), false ).toBool() )
+  if ( forceSuppressFormPopup() )
   {
     const_cast<QgsVectorLayerTools *>( myContext.vectorLayerTools() )->setForceSuppressFormPopup( true );
   }
@@ -168,7 +168,7 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
 
   w->setEditorContext( myContext );
 
-  mNmRelation = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "nm-rel" ) ).toString() );
+  mNmRelation = QgsProject::instance()->relationManager()->relation( cardinality().toString() );
 
   // If this widget is already embedded by the same relation, reduce functionality
   const QgsAttributeEditorContext *ctx = &context();
@@ -221,4 +221,32 @@ void QgsRelationWidgetWrapper::setVisibleButtons( const QgsAttributeEditorRelati
 QgsAttributeEditorRelation::Buttons QgsRelationWidgetWrapper::visibleButtons() const
 {
   return mWidget->visibleButtons();
+}
+
+void QgsRelationWidgetWrapper::setForceSuppressFormPopup( bool forceSuppressFormPopup )
+{
+  if ( mWidget )
+    mWidget->setForceSuppressFormPopup( forceSuppressFormPopup );
+}
+
+bool QgsRelationWidgetWrapper::forceSuppressFormPopup() const
+{
+  if ( mWidget )
+    return mWidget->forceSuppressFormPopup();
+  else
+    return false;
+}
+
+void QgsRelationWidgetWrapper::setCardinality( const QVariant &cardinality )
+{
+  if ( mWidget )
+    mWidget->setCardinality( cardinality );
+}
+
+QVariant QgsRelationWidgetWrapper::cardinality() const
+{
+  if ( mWidget )
+    return mWidget->cardinality();
+  else
+    return QVariant();
 }

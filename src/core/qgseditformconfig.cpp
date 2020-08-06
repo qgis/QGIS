@@ -629,6 +629,23 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
       buttons.setFlag( QgsAttributeEditorRelation::Button::SaveChildEdits, elem.attribute( QStringLiteral( "showSaveChildEditsButton" ), QStringLiteral( "1" ) ).toInt() );
       relElement->setVisibleButtons( buttons );
     }
+    if ( elem.hasAttribute( QStringLiteral( "forceSuppressFormPopup" ) ) )
+    {
+      relElement->setForceSuppressFormPopup( elem.attribute( QStringLiteral( "forceSuppressFormPopup" ) ).toInt() );
+    }
+    else
+    {
+      // pre QGIS 3.16 compatibility todo
+    }
+
+    if ( elem.hasAttribute( QStringLiteral( "cardinality" ) ) )
+    {
+      relElement->setCardinality( elem.attribute( QStringLiteral( "cardinality" ) ) );
+    }
+    else
+    {
+      // pre QGIS 3.16 compatibility todo
+    }
     newElement = relElement;
   }
   else if ( elem.tagName() == QLatin1String( "attributeEditorQmlElement" ) )

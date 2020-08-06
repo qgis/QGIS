@@ -107,6 +107,30 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     QgsAttributeEditorRelation::Buttons visibleButtons() const;
 
     /**
+     * Returns the force suppress form popup status.
+     * \since QGIS 3.16
+     */
+    bool forceSuppressFormPopup() const;
+
+    /**
+     * Defines the force suppress form popup status
+     * \since QGIS 3.16
+     */
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+
+    /**
+     * Defines the cardinality
+     * \since QGIS 3.16
+     */
+    void setCardinality( const QVariant &cardinality = QVariant() );
+
+    /**
+     * Returns the cardinality
+     * \since QGIS 3.16
+     */
+    QVariant cardinality() const;
+
+    /**
      * The relation for which this wrapper is created.
      *
      * \since QGIS 3.0
