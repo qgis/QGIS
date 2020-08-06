@@ -41,6 +41,7 @@
 
 #include "qgsimagecache.h"
 #include "qgsimagetexture.h"
+#include "qgsproject.h"
 
 QgsSkyboxEntity::QgsSkyboxEntity( QNode *parent )
   : Qt3DCore::QEntity( parent )
@@ -96,11 +97,11 @@ QgsSkyboxEntity::QgsSkyboxEntity( QNode *parent )
   addComponent( mMaterial );
 }
 
-// HDR skybox
+// Panoramic skybox
 
-QgsHDRSkyboxEntity::QgsHDRSkyboxEntity( const QString &hdrTexturePath, QNode *parent )
+QgsPanoramicSkyboxEntity::QgsPanoramicSkyboxEntity( const QString &texturePath, QNode *parent )
   : QgsSkyboxEntity( parent )
-  , mHDRTexturePath( hdrTexturePath )
+  , mTexturePath( texturePath )
   , mLoadedTexture( new Qt3DRender::QTextureLoader( parent ) )
   , mGlShader( new Qt3DRender::QShaderProgram( this ) )
 {
@@ -115,9 +116,9 @@ QgsHDRSkyboxEntity::QgsHDRSkyboxEntity( const QString &hdrTexturePath, QNode *pa
   reloadTexture();
 }
 
-void QgsHDRSkyboxEntity::reloadTexture()
+void QgsPanoramicSkyboxEntity::reloadTexture()
 {
-  mLoadedTexture->setSource( QUrl::fromUserInput( mHDRTexturePath ) );
+  mLoadedTexture->setSource( QUrl::fromUserInput( mTexturePath ) );
 }
 
 // 6 faces skybox
@@ -192,7 +193,7 @@ void QgsCubeFacesSkyboxEntity::reloadTexture()
     Qt3DRender::QTextureImage *image = new Qt3DRender::QTextureImage( this );
     image->setFace( face );
     image->setMirrored( false );
-    image->setSource( QUrl::fromUserInput( mCubeFacesPaths[ it.key() ] ) );
+    image->setSource( QUrl::fromUserInput( texturePath ) );
     mCubeMap->addTextureImage( image );
     mFacesTextureImages.push_back( image );
   }

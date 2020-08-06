@@ -25,11 +25,11 @@ QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( QWidget *par
   setupUi( this );
 
   layoutGroupBoxes.push_back( textureCollectionGroupBox );
-  layoutGroupBoxes.push_back( hdrTextureGroupBox );
+  layoutGroupBoxes.push_back( panoramicTextureGroupBox );
   layoutGroupBoxes.push_back( faceTexturesGroupBox );
 
   skyboxTypeComboBox->addItem( QStringLiteral( "Textures collection" ) );
-  skyboxTypeComboBox->addItem( QStringLiteral( "HDR texture" ) );
+  skyboxTypeComboBox->addItem( QStringLiteral( "Panoramic texture" ) );
   skyboxTypeComboBox->addItem( QStringLiteral( "Distinct Faces" ) );
   connect( skyboxTypeComboBox, &QComboBox::currentTextChanged, [&]( const QString & skyboxType )
   {
@@ -37,8 +37,8 @@ QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( QWidget *par
       groupBox->setVisible( false );
     if ( skyboxType == QStringLiteral( "Textures collection" ) )
       textureCollectionGroupBox->setVisible( true );
-    if ( skyboxType == QStringLiteral( "HDR texture" ) )
-      hdrTextureGroupBox->setVisible( true );
+    if ( skyboxType == QStringLiteral( "Panoramic texture" ) )
+      panoramicTextureGroupBox->setVisible( true );
     if ( skyboxType == QStringLiteral( "Distinct Faces" ) )
       faceTexturesGroupBox->setVisible( true );
   } );
@@ -57,14 +57,14 @@ void QgsSkyboxRenderingSettingsWidget::setSkyboxSettings( const QgsSkyboxSetting
     case QgsSkyboxEntity::DistinctTexturesSkybox:
       skyboxTypeComboBox->setCurrentText( QStringLiteral( "Distinct Faces" ) );
       break;
-    case QgsSkyboxEntity::HDRSkybox:
-      skyboxTypeComboBox->setCurrentText( QStringLiteral( "HDR texture" ) );
+    case QgsSkyboxEntity::PanoramicSkybox:
+      skyboxTypeComboBox->setCurrentText( QStringLiteral( "Panoramic texture" ) );
       break;
   }
 
   skyboxBaseNameLineEdit->setText( skyboxSettings.skyboxBaseName() );
   skyboxExtensionLineEdit->setText( skyboxSettings.skyboxExtension() );
-  hdrTextureImageSource->setSource( skyboxSettings.hdrTexturePath() );
+  panoramicTextureImageSource->setSource( skyboxSettings.panoramicTexturePath() );
   QMap<QString, QString> cubeMapFaces = skyboxSettings.cubeMapFacesPaths();
   posXImageSource->setSource( cubeMapFaces[ QStringLiteral( "posX" ) ] );
   posYImageSource->setSource( cubeMapFaces[ QStringLiteral( "posY" ) ] );
@@ -83,12 +83,12 @@ QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
     settings.setSkyboxType( QgsSkyboxEntity::TexturesCollectionSkybox );
   else if ( skyboxTypeComboBox->currentText() == QStringLiteral( "Distinct Faces" ) )
     settings.setSkyboxType( QgsSkyboxEntity::DistinctTexturesSkybox );
-  else if ( skyboxTypeComboBox->currentText() == QStringLiteral( "HDR texture" ) )
-    settings.setSkyboxType( QgsSkyboxEntity::HDRSkybox );
+  else if ( skyboxTypeComboBox->currentText() == QStringLiteral( "Panoramic texture" ) )
+    settings.setSkyboxType( QgsSkyboxEntity::PanoramicSkybox );
 
   settings.setSkyboxBaseName( skyboxBaseNameLineEdit->text() );
   settings.setSkyboxExtension( skyboxExtensionLineEdit->text() );
-  settings.setHdrTexturePath( hdrTextureImageSource->source() );
+  settings.setPanoramicTexturePath( panoramicTextureImageSource->source() );
   settings.setCubeMapFace( QStringLiteral( "posX" ), posXImageSource->source() );
   settings.setCubeMapFace( QStringLiteral( "posY" ), posYImageSource->source() );
   settings.setCubeMapFace( QStringLiteral( "posZ" ), posZImageSource->source() );

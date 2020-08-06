@@ -12,9 +12,9 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="1" column="0">
-    <widget class="QGroupBox" name="hdrTextureGroupBox">
+    <widget class="QGroupBox" name="panoramicTextureGroupBox">
      <property name="title">
-      <string>360 image:</string>
+      <string>Panoramic image:</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="0" column="0">
@@ -22,12 +22,12 @@
         <item row="0" column="0">
          <widget class="QLabel" name="label_4">
           <property name="text">
-           <string>HDR Texture File:</string>
+           <string>Panoramic Texture File:</string>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QgsImageSourceLineEdit" name="hdrTextureImageSource" native="true"/>
+         <widget class="QgsImageSourceLineEdit" name="panoramicTextureImageSource" native="true"/>
         </item>
        </layout>
       </item>

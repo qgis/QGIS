@@ -47,7 +47,7 @@ class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
     //! Skybox type enumeration
     enum SkyboxType
     {
-      HDRSkybox,
+      PanoramicSkybox,
       TexturesCollectionSkybox,
       DistinctTexturesSkybox
     };
@@ -70,25 +70,25 @@ class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
 };
 
 /**
- * \brief a skybox constructed from a 360 HDR image
+ * \brief a skybox constructed from a panoramic image
  * \ingroup 3d
  * \since QGIS 3.16
  */
-class _3D_EXPORT QgsHDRSkyboxEntity : public QgsSkyboxEntity
+class _3D_EXPORT QgsPanoramicSkyboxEntity : public QgsSkyboxEntity
 {
   public:
-    //! Construct a skybox from a high resolution 360 image
-    QgsHDRSkyboxEntity( const QString &hdrTexturePath, Qt3DCore::QNode *parent = nullptr );
+    //! Construct a skybox from a panoramic 360 image
+    QgsPanoramicSkyboxEntity( const QString &texturePath, Qt3DCore::QNode *parent = nullptr );
 
     //! Returns the path of the current texture in use
-    QString hdrTexturePath() const { return mHDRTexturePath; }
+    QString texturePath() const { return mTexturePath; }
     //! Returns the type of the current skybox
-    SkyboxType type() const override { return SkyboxType::HDRSkybox; }
+    SkyboxType type() const override { return SkyboxType::PanoramicSkybox; }
 
   private:
     void reloadTexture();
   private:
-    QString mHDRTexturePath;
+    QString mTexturePath;
     Qt3DRender::QTextureLoader *mLoadedTexture = nullptr;
     Qt3DRender::QShaderProgram *mGlShader = nullptr;
 };

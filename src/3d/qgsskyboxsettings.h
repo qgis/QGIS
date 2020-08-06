@@ -61,10 +61,10 @@ class _3D_EXPORT QgsSkyboxSettings
     //! Sets the extension of a skybox of type "Textures collection"
     void setSkyboxExtension( const QString &extension ) { mSkyboxExt = extension; }
 
-    //! Returns the HDR texture path of a skybox of type "HDR texture"
-    QString hdrTexturePath() const { return mHDRTexturePath; }
-    //! Sets the HDR texture path of a skybox of type "HDR texture"
-    void setHdrTexturePath( const QString &texturePath ) { mHDRTexturePath = texturePath; }
+    //! Returns the panoramic texture path of a skybox of type "Panormaic skybox"
+    QString panoramicTexturePath() const { return mPanoramicTexturePath; }
+    //! Sets the panoramic texture path of a skybox of type "Panoramic skybox"
+    void setPanoramicTexturePath( const QString &texturePath ) { mPanoramicTexturePath = texturePath; }
 
     /**
      * Returns a map containing the path of each texture specified by the user.
@@ -85,7 +85,7 @@ class _3D_EXPORT QgsSkyboxSettings
     QString mSkyboxBaseName;
     QString mSkyboxExt;
     //
-    QString mHDRTexturePath;
+    QString mPanoramicTexturePath;
     //
     QMap<QString, QString> mCubeMapFacesPaths;
 };

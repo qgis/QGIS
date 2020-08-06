@@ -29,18 +29,18 @@ void QgsSkyboxSettings::readXml( const QDomElement &element, const QgsReadWriteC
     mSkyboxType = QgsSkyboxEntity::TexturesCollectionSkybox;
   else if ( skyboxTypeStr == QStringLiteral( "Distinct Faces" ) )
     mSkyboxType = QgsSkyboxEntity::DistinctTexturesSkybox;
-  else if ( skyboxTypeStr == QStringLiteral( "HDR texture" ) )
-    mSkyboxType = QgsSkyboxEntity::HDRSkybox;
+  else if ( skyboxTypeStr == QStringLiteral( "Panoramic texture" ) )
+    mSkyboxType = QgsSkyboxEntity::PanoramicSkybox;
   mSkyboxBaseName = element.attribute( QStringLiteral( "base-name" ) );
   mSkyboxExt = element.attribute( QStringLiteral( "extension" ) );
-  mHDRTexturePath = element.attribute( pathResolver.readPath( QStringLiteral( "HDR-texture-path" ) ) );
+  mPanoramicTexturePath = pathResolver.readPath( element.attribute( QStringLiteral( "panoramic-texture-path" ) ) );
   mCubeMapFacesPaths.clear();
-  mCubeMapFacesPaths[ QStringLiteral( "posX" ) ] = element.attribute( pathResolver.readPath( QStringLiteral( "posX-texture-path" ) ) );
-  mCubeMapFacesPaths[ QStringLiteral( "posY" ) ] = element.attribute( pathResolver.readPath( QStringLiteral( "posY-texture-path" ) ) );
-  mCubeMapFacesPaths[ QStringLiteral( "posZ" ) ] = element.attribute( pathResolver.readPath( QStringLiteral( "posZ-texture-path" ) ) );
-  mCubeMapFacesPaths[ QStringLiteral( "negX" ) ] = element.attribute( pathResolver.readPath( QStringLiteral( "negX-texture-path" ) ) );
-  mCubeMapFacesPaths[ QStringLiteral( "negY" ) ] = element.attribute( pathResolver.readPath( QStringLiteral( "negY-texture-path" ) ) );
-  mCubeMapFacesPaths[ QStringLiteral( "negZ" ) ] = element.attribute( pathResolver.readPath( QStringLiteral( "negZ-texture-path" ) ) );
+  mCubeMapFacesPaths[ QStringLiteral( "posX" ) ] = pathResolver.readPath( element.attribute( QStringLiteral( "posX-texture-path" ) ) );
+  mCubeMapFacesPaths[ QStringLiteral( "posY" ) ] = pathResolver.readPath( element.attribute( QStringLiteral( "posY-texture-path" ) ) );
+  mCubeMapFacesPaths[ QStringLiteral( "posZ" ) ] = pathResolver.readPath( element.attribute( QStringLiteral( "posZ-texture-path" ) ) );
+  mCubeMapFacesPaths[ QStringLiteral( "negX" ) ] = pathResolver.readPath( element.attribute( QStringLiteral( "negX-texture-path" ) ) );
+  mCubeMapFacesPaths[ QStringLiteral( "negY" ) ] = pathResolver.readPath( element.attribute( QStringLiteral( "negY-texture-path" ) ) );
+  mCubeMapFacesPaths[ QStringLiteral( "negZ" ) ] = pathResolver.readPath( element.attribute( QStringLiteral( "negZ-texture-path" ) ) );
 }
 
 void QgsSkyboxSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
@@ -54,15 +54,15 @@ void QgsSkyboxSettings::writeXml( QDomElement &element, const QgsReadWriteContex
     case QgsSkyboxEntity::DistinctTexturesSkybox:
       element.setAttribute( QStringLiteral( "skybox-type" ), QStringLiteral( "Distinct Faces" ) );
       break;
-    case QgsSkyboxEntity::HDRSkybox:
-      element.setAttribute( QStringLiteral( "skybox-type" ), QStringLiteral( "HDR texture" ) );
+    case QgsSkyboxEntity::PanoramicSkybox:
+      element.setAttribute( QStringLiteral( "skybox-type" ), QStringLiteral( "Panoramic texture" ) );
       break;
   }
 
   const QgsPathResolver &pathResolver = context.pathResolver();
   element.setAttribute( QStringLiteral( "base-name" ), mSkyboxBaseName );
   element.setAttribute( QStringLiteral( "extension" ), mSkyboxExt );
-  element.setAttribute( QStringLiteral( "HDR-texture-path" ), pathResolver.writePath( mHDRTexturePath ) );
+  element.setAttribute( QStringLiteral( "panoramic-texture-path" ), pathResolver.writePath( mPanoramicTexturePath ) );
   element.setAttribute( QStringLiteral( "posX-texture-path" ), pathResolver.writePath( mCubeMapFacesPaths[ QStringLiteral( "posX" ) ] ) );
   element.setAttribute( QStringLiteral( "posY-texture-path" ), pathResolver.writePath( mCubeMapFacesPaths[ QStringLiteral( "posY" ) ] ) );
   element.setAttribute( QStringLiteral( "posZ-texture-path" ), pathResolver.writePath( mCubeMapFacesPaths[ QStringLiteral( "posZ" ) ] ) );

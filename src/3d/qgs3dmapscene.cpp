@@ -881,8 +881,8 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
           this
         );
         break;
-      case QgsSkyboxEntity::HDRSkybox:
-        mSkybox = new QgsHDRSkyboxEntity( skyboxSettings.hdrTexturePath(), this );
+      case QgsSkyboxEntity::PanoramicSkybox:
+        mSkybox = new QgsPanoramicSkyboxEntity( skyboxSettings.panoramicTexturePath(), this );
         break;
     }
   }
