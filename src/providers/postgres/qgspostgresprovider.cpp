@@ -909,7 +909,7 @@ bool QgsPostgresProvider::loadFields()
       {
         attroidsList.append( QString::number( attroid ) );
       }
-      attroidsFilter = QStringLiteral( "WHERE oid in (" ) + attroidsList.join( QStringLiteral( "," ) ) + QStringLiteral( ")" );
+      attroidsFilter = QStringLiteral( "WHERE oid in (%1)" ).arg( attroidsList.join( ',' ) );
     }
   }
 
