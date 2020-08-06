@@ -635,7 +635,8 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
     }
     else
     {
-      // pre QGIS 3.16 compatibility todo
+      // pre QGIS 3.16 compatibility - the widgets section is read before
+      relElement->setForceSuppressFormPopup( widgetConfig( elem.attribute( QStringLiteral( "relation" ) ) ).value( QStringLiteral( "force-suppress-popup" ), false ).toBool() );
     }
 
     if ( elem.hasAttribute( QStringLiteral( "cardinality" ) ) )
@@ -644,7 +645,8 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
     }
     else
     {
-      // pre QGIS 3.16 compatibility todo
+      // pre QGIS 3.16 compatibility - the widgets section is read before
+      relElement->setCardinality( widgetConfig( elem.attribute( QStringLiteral( "relation" ) ) ).value( QStringLiteral( "nm-rel" ) ) );
     }
     newElement = relElement;
   }
