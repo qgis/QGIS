@@ -18,6 +18,7 @@
 #include <QCheckBox>
 #include <QLineEdit>
 #include "qgs3dmapsettings.h"
+#include "qgis.h"
 
 QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( QWidget *parent )
   : QWidget( parent )
@@ -30,7 +31,7 @@ QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( QWidget *par
   // To future maintainers: make sure the order of added items is the same as the order at QgsSkyboxEntity::SkyboxType
   skyboxTypeComboBox->addItem( tr( "Panoramic texture" ) );
   skyboxTypeComboBox->addItem( tr( "Distinct Faces" ) );
-  connect( skyboxTypeComboBox, QOverload<int>::of( &QComboBox::currentIndexChanged ), [&]( int index )
+  connect( skyboxTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), [&]( int index )
   {
     for ( QGroupBox *groupBox : layoutGroupBoxes )
       groupBox->setVisible( false );
