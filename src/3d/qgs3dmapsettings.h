@@ -414,11 +414,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     /**
      * Returns the current configuration of the skybox
+     * \since QGIS 3.16
      */
     QgsSkyboxSettings skyboxSettings() const SIP_SKIP { return mSkyboxSettings; }
 
     /**
      * Sets the current configuration of the skybox
+     * \since QGIS 3.16
      */
     void setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings ) SIP_SKIP;
 
@@ -517,6 +519,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     /**
      * Emitted when skybox settings are changed
+     * \since QGIS 3.16
      */
     void skyboxSettingsChanged();
 

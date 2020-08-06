@@ -605,6 +605,8 @@ Emitted when the camera lens field of view changes
     void skyboxSettingsChanged();
 %Docstring
 Emitted when skybox settings are changed
+
+.. versionadded:: 3.16
 %End
 
   private:

@@ -22,7 +22,7 @@
 
 void QgsSkyboxSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( context );
+  const QgsPathResolver &pathResolver = context.pathResolver();
   mIsSkyboxEnabled = element.attribute( QStringLiteral( "skybox-enabled" ) ).toInt();
   QString skyboxTypeStr = element.attribute( QStringLiteral( "skybox-type" ) );
   if ( skyboxTypeStr == QStringLiteral( "Textures collection" ) )
@@ -33,19 +33,18 @@ void QgsSkyboxSettings::readXml( const QDomElement &element, const QgsReadWriteC
     mSkyboxType = QgsSkyboxEntity::HDRSkybox;
   mSkyboxBaseName = element.attribute( QStringLiteral( "base-name" ) );
   mSkyboxExt = element.attribute( QStringLiteral( "extension" ) );
-  mHDRTexturePath = element.attribute( QStringLiteral( "HDR-texture-path" ) );
+  mHDRTexturePath = element.attribute( pathResolver.readPath( QStringLiteral( "HDR-texture-path" ) ) );
   mCubeMapFacesPaths.clear();
-  mCubeMapFacesPaths[ QStringLiteral( "posX" ) ] = element.attribute( QStringLiteral( "posX-texture-path" ) );
-  mCubeMapFacesPaths[ QStringLiteral( "posY" ) ] = element.attribute( QStringLiteral( "posY-texture-path" ) );
-  mCubeMapFacesPaths[ QStringLiteral( "posZ" ) ] = element.attribute( QStringLiteral( "posZ-texture-path" ) );
-  mCubeMapFacesPaths[ QStringLiteral( "negX" ) ] = element.attribute( QStringLiteral( "negX-texture-path" ) );
-  mCubeMapFacesPaths[ QStringLiteral( "negY" ) ] = element.attribute( QStringLiteral( "negY-texture-path" ) );
-  mCubeMapFacesPaths[ QStringLiteral( "negZ" ) ] = element.attribute( QStringLiteral( "negZ-texture-path" ) );
+  mCubeMapFacesPaths[ QStringLiteral( "posX" ) ] = element.attribute( pathResolver.readPath( QStringLiteral( "posX-texture-path" ) ) );
+  mCubeMapFacesPaths[ QStringLiteral( "posY" ) ] = element.attribute( pathResolver.readPath( QStringLiteral( "posY-texture-path" ) ) );
+  mCubeMapFacesPaths[ QStringLiteral( "posZ" ) ] = element.attribute( pathResolver.readPath( QStringLiteral( "posZ-texture-path" ) ) );
+  mCubeMapFacesPaths[ QStringLiteral( "negX" ) ] = element.attribute( pathResolver.readPath( QStringLiteral( "negX-texture-path" ) ) );
+  mCubeMapFacesPaths[ QStringLiteral( "negY" ) ] = element.attribute( pathResolver.readPath( QStringLiteral( "negY-texture-path" ) ) );
+  mCubeMapFacesPaths[ QStringLiteral( "negZ" ) ] = element.attribute( pathResolver.readPath( QStringLiteral( "negZ-texture-path" ) ) );
 }
 
 void QgsSkyboxSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( context );
   element.setAttribute( QStringLiteral( "skybox-enabled" ), mIsSkyboxEnabled );
   switch ( mSkyboxType )
   {
@@ -59,13 +58,15 @@ void QgsSkyboxSettings::writeXml( QDomElement &element, const QgsReadWriteContex
       element.setAttribute( QStringLiteral( "skybox-type" ), QStringLiteral( "HDR texture" ) );
       break;
   }
+
+  const QgsPathResolver &pathResolver = context.pathResolver();
   element.setAttribute( QStringLiteral( "base-name" ), mSkyboxBaseName );
   element.setAttribute( QStringLiteral( "extension" ), mSkyboxExt );
-  element.setAttribute( QStringLiteral( "HDR-texture-path" ), mHDRTexturePath );
-  element.setAttribute( QStringLiteral( "posX-texture-path" ), mCubeMapFacesPaths[ QStringLiteral( "posX" ) ] );
-  element.setAttribute( QStringLiteral( "posY-texture-path" ), mCubeMapFacesPaths[ QStringLiteral( "posY" ) ] );
-  element.setAttribute( QStringLiteral( "posZ-texture-path" ), mCubeMapFacesPaths[ QStringLiteral( "posZ" ) ] );
-  element.setAttribute( QStringLiteral( "negX-texture-path" ), mCubeMapFacesPaths[ QStringLiteral( "negX" ) ] );
-  element.setAttribute( QStringLiteral( "negY-texture-path" ), mCubeMapFacesPaths[ QStringLiteral( "negY" ) ] );
-  element.setAttribute( QStringLiteral( "negZ-texture-path" ), mCubeMapFacesPaths[ QStringLiteral( "negZ" ) ] );
+  element.setAttribute( QStringLiteral( "HDR-texture-path" ), pathResolver.writePath( mHDRTexturePath ) );
+  element.setAttribute( QStringLiteral( "posX-texture-path" ), pathResolver.writePath( mCubeMapFacesPaths[ QStringLiteral( "posX" ) ] ) );
+  element.setAttribute( QStringLiteral( "posY-texture-path" ), pathResolver.writePath( mCubeMapFacesPaths[ QStringLiteral( "posY" ) ] ) );
+  element.setAttribute( QStringLiteral( "posZ-texture-path" ), pathResolver.writePath( mCubeMapFacesPaths[ QStringLiteral( "posZ" ) ] ) );
+  element.setAttribute( QStringLiteral( "negX-texture-path" ), pathResolver.writePath( mCubeMapFacesPaths[ QStringLiteral( "negX" ) ] ) );
+  element.setAttribute( QStringLiteral( "negY-texture-path" ), pathResolver.writePath( mCubeMapFacesPaths[ QStringLiteral( "negY" ) ] ) );
+  element.setAttribute( QStringLiteral( "negZ-texture-path" ), pathResolver.writePath( mCubeMapFacesPaths[ QStringLiteral( "negZ" ) ] ) );
 }

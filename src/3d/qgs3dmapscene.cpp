@@ -27,7 +27,6 @@
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DExtras/QSkyboxEntity>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DLogic/QFrameAction>
 #include <Qt3DRender/QEffect>
@@ -860,7 +859,7 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
   QgsSkyboxSettings skyboxSettings = mMap.skyboxSettings();
   if ( mSkybox != nullptr )
   {
-    delete mSkybox;
+    mSkybox->deleteLater();
     mSkybox = nullptr;
   }
 

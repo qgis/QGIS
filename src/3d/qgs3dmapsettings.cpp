@@ -325,7 +325,6 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemRenderers );
 
   QDomElement elemSkybox = doc.createElement( QStringLiteral( "skybox" ) );
-  // TODO: use context for relative paths, maybe explicitly list all files(?)
   mSkyboxSettings.writeXml( elemSkybox, context );
   elem.appendChild( elemSkybox );
 
