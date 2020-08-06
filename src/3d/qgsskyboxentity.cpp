@@ -16,8 +16,6 @@
 #include "qgsskyboxentity.h"
 
 #include <Qt3DCore/QEntity>
-#include <QVector3D>
-#include <Qt3DRender/QTexture>
 #include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QMaterial>
@@ -29,14 +27,7 @@
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QSeamlessCubemap>
-#include <QTimer>
 #include <Qt3DRender/QParameter>
-#include <QSurfaceFormat>
-#include <Qt3DExtras/QPlaneMesh>
-#include <Qt3DExtras/QDiffuseSpecularMaterial>
-#include <Qt3DCore/QTransform>
-#include <Qt3DRender/QGeometry>
-#include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QTextureImage>
 
 #include "qgsimagecache.h"
@@ -86,12 +77,6 @@ QgsSkyboxEntity::QgsSkyboxEntity( QNode *parent )
   mMesh->setXYMeshResolution( QSize( 2, 2 ) );
   mMesh->setXZMeshResolution( QSize( 2, 2 ) );
   mMesh->setYZMeshResolution( QSize( 2, 2 ) );
-
-  //   TODO: change the skybox position according to camera
-  Qt3DCore::QTransform *transform = new Qt3DCore::QTransform( this );
-  transform->setTranslation( QVector3D( 0.0f, 0.0f, 0.0f ) );
-  transform->setScale( 1000.0f );
-  addComponent( transform );
 
   addComponent( mMesh );
   addComponent( mMaterial );
