@@ -261,6 +261,7 @@
 %Include auto_generated/annotations/qgsannotationlinestringitem.sip
 %Include auto_generated/annotations/qgsannotationmarkeritem.sip
 %Include auto_generated/annotations/qgsannotationmanager.sip
+%Include auto_generated/annotations/qgsannotationpointtextitem.sip
 %Include auto_generated/annotations/qgsannotationpolygonitem.sip
 %Include auto_generated/annotations/qgshtmlannotation.sip
 %Include auto_generated/annotations/qgssvgannotation.sip
