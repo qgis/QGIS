@@ -566,7 +566,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
 
   // Older versions of GDAL incorrectly report that shapefiles support
   // DateTime.
-#if GDAL_VERSION_NUM <= GDAL_COMPUTE_VERSION(3,1,2)
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,2,0)
   if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
   {
     supportsDateTime = false;
