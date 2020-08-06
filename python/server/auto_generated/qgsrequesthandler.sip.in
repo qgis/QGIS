@@ -120,7 +120,7 @@ Returns the request url
 
     QString path() const;
 %Docstring
-Returns the path component of the requet URL
+Returns the path component of the request URL
 
 .. versionadded:: 3.16
 %End

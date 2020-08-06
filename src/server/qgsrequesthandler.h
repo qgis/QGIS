@@ -103,7 +103,7 @@ class SERVER_EXPORT QgsRequestHandler
     QString url() const;
 
     /**
-     * Returns the path component of the requet URL
+     * Returns the path component of the request URL
      * \since QGIS 3.16
      */
     QString path() const;
