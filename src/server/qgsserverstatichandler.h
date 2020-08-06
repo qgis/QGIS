@@ -20,6 +20,7 @@
 #include "qgis_server.h"
 
 /**
+ * \ingroup server
  * The QgsServerStaticHandler class serves static files from the static path (resources/server/api/wfs3/static)
  * \see QgsServerOgcApiHandler::staticPath()
  * \since QGIS 3.16
@@ -32,8 +33,8 @@ class SERVER_EXPORT QgsServerStaticHandler: public QgsServerOgcApiHandler
      * Creates QgsServerStaticHandler
      * \param pathRegExp optional regular expression to capture static file names, defaults to "/static/(?<staticFilePath>.*)$",
      *        note that the file path is captured in a named group "staticFilePath"
-     * \param staticPathSuffix optional path suffix to use when static files are stored in a subpath of the default staticPath()
-     * \see staticPath()
+     * \param staticPathSuffix optional path suffix to use when static files are stored in a subdirectory of the default staticPath()
+     * \see QgsServerOgcApiHandler::staticPath()
      */
     QgsServerStaticHandler( const QString &pathRegExp = QStringLiteral( R"re(/static/(?<staticFilePath>.*)$)re" ), const QString &staticPathSuffix = QString( ) );
 
