@@ -870,9 +870,6 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
     QMap<QString, QString> faces;
     switch ( skyboxSettings.skyboxType() )
     {
-      case QgsSkyboxEntity::TexturesCollectionSkybox:
-        mSkybox = new QgsCubeFacesSkyboxEntity( skyboxSettings.skyboxBaseName(), skyboxSettings.skyboxExtension(), this );
-        break;
       case QgsSkyboxEntity::DistinctTexturesSkybox:
         faces = skyboxSettings.cubeMapFacesPaths();
         mSkybox = new QgsCubeFacesSkyboxEntity(

@@ -48,7 +48,6 @@ class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
     enum SkyboxType
     {
       PanoramicSkybox,
-      TexturesCollectionSkybox,
       DistinctTexturesSkybox
     };
   public:
@@ -104,21 +103,13 @@ class _3D_EXPORT QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
     //! Constructs a skybox from 6 different images
     QgsCubeFacesSkyboxEntity( const QString &posX, const QString &posY, const QString &posZ, const QString &negX, const QString &negY, const QString &negZ, Qt3DCore::QNode *parent = nullptr );
 
-    /**
-     * Constructs a skybox from a collection of images
-     * The images in the source directory should match the pattern:
-     * baseName + * "_posx|_posy|_posz|_negx|_negy|_negz" + extension
-     */
-    QgsCubeFacesSkyboxEntity( const QString &baseName, const QString &extension, Qt3DCore::QNode *parent = nullptr );
-
     //! Returns the type of the current skybox
-    SkyboxType type() const override { return mType; }
+    SkyboxType type() const override { return SkyboxType::DistinctTexturesSkybox; }
 
   private:
     void init();
     void reloadTexture();
   private:
-    SkyboxType mType;
     QMap<Qt3DRender::QTextureCubeMap::CubeMapFace, QString> mCubeFacesPaths;
     Qt3DRender::QShaderProgram *mGlShader = nullptr;
     QVector<Qt3DRender::QTextureImage *> mFacesTextureImages;

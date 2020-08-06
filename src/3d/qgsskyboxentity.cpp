@@ -125,7 +125,6 @@ void QgsPanoramicSkyboxEntity::reloadTexture()
 
 QgsCubeFacesSkyboxEntity::QgsCubeFacesSkyboxEntity( const QString &posX, const QString &posY, const QString &posZ, const QString &negX, const QString &negY, const QString &negZ, Qt3DCore::QNode *parent )
   : QgsSkyboxEntity( parent )
-  , mType( SkyboxType::DistinctTexturesSkybox )
   , mGlShader( new Qt3DRender::QShaderProgram() )
   , mCubeMap( new Qt3DRender::QTextureCubeMap( this ) )
 {
@@ -136,22 +135,6 @@ QgsCubeFacesSkyboxEntity::QgsCubeFacesSkyboxEntity( const QString &posX, const Q
   mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeX] = negX;
   mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeY] = negY;
   mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeZ] = negZ;
-  reloadTexture();
-}
-
-QgsCubeFacesSkyboxEntity::QgsCubeFacesSkyboxEntity( const QString &baseName, const QString &extension, Qt3DCore::QNode *parent )
-  : QgsSkyboxEntity( parent )
-  , mType( SkyboxType::TexturesCollectionSkybox )
-  , mGlShader( new Qt3DRender::QShaderProgram() )
-  , mCubeMap( new Qt3DRender::QTextureCubeMap( this ) )
-{
-  init();
-  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveX] = baseName + QStringLiteral( "_posx" ) + extension;
-  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveY] = baseName + QStringLiteral( "_posy" ) + extension;
-  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveZ] = baseName + QStringLiteral( "_posz" ) + extension;
-  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeX] = baseName + QStringLiteral( "_negx" ) + extension;
-  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeY] = baseName + QStringLiteral( "_negy" ) + extension;
-  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeZ] = baseName + QStringLiteral( "_negz" ) + extension;
   reloadTexture();
 }
 

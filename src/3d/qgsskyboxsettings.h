@@ -51,16 +51,6 @@ class _3D_EXPORT QgsSkyboxSettings
     //! Sets the type of the skybox
     void setSkyboxType( QgsSkyboxEntity::SkyboxType type ) { mSkyboxType = type; }
 
-    //! Returns the base name of a skybox of type "Textures collection"
-    QString skyboxBaseName() const { return mSkyboxBaseName; }
-    //! Sets the base name of a skybox of type  "Textures collection"
-    void setSkyboxBaseName( const QString &baseName ) { mSkyboxBaseName = baseName; }
-
-    //! Returns the extension of a skybox of type "Textures collection"
-    QString skyboxExtension() const { return mSkyboxExt; }
-    //! Sets the extension of a skybox of type "Textures collection"
-    void setSkyboxExtension( const QString &extension ) { mSkyboxExt = extension; }
-
     //! Returns the panoramic texture path of a skybox of type "Panormaic skybox"
     QString panoramicTexturePath() const { return mPanoramicTexturePath; }
     //! Sets the panoramic texture path of a skybox of type "Panoramic skybox"
@@ -81,9 +71,6 @@ class _3D_EXPORT QgsSkyboxSettings
   private:
     bool mIsSkyboxEnabled = false;
     QgsSkyboxEntity::SkyboxType mSkyboxType;
-    //
-    QString mSkyboxBaseName;
-    QString mSkyboxExt;
     //
     QString mPanoramicTexturePath;
     //
