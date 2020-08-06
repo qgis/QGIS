@@ -263,7 +263,7 @@ void Qgs3DMapCanvasDockWidget::configure()
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, &dlg );
   connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
   connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-  connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#d-map-view" ) ); } );
+  connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#scene-configuration" ) ); } );
 
   QVBoxLayout *layout = new QVBoxLayout( &dlg );
   layout->addWidget( w, 1 );
@@ -302,16 +302,16 @@ void Qgs3DMapCanvasDockWidget::exportScene()
   QDialog dlg;
   dlg.setWindowTitle( tr( "Export 3D Scene" ) );
   dlg.setObjectName( QStringLiteral( "3DSceneExportDialog" ) );
-  dlg.setMinimumSize( 380, 460 );
-//  QgsGui::instance()->enableAutoGeometryRestore( &dlg );
+  QgsGui::instance()->enableAutoGeometryRestore( &dlg );
 
   Qgs3DMapExportSettings exportSettings;
   QgsMap3DExportWidget w( mCanvas->scene(), &exportSettings );
 
-  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg );
+  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, &dlg );
 
   connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
   connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+  connect( buttons, &QDialogButtonBox::helpRequested, &dlg, [ = ] { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#d-map-view" ) ); } );
 
   QVBoxLayout *layout = new QVBoxLayout( &dlg );
   layout->addWidget( &w, 1 );
