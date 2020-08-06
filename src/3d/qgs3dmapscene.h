@@ -38,6 +38,7 @@ namespace Qt3DLogic
 namespace Qt3DExtras
 {
   class QForwardRenderer;
+  class QSkyboxEntity;
 }
 
 class QgsAbstract3DEngine;
@@ -48,6 +49,8 @@ class Qgs3DMapScenePickHandler;
 class Qgs3DMapSettings;
 class QgsTerrainEntity;
 class QgsChunkedEntity;
+class QgsSkyboxEntity;
+class QgsSkyboxSettings;
 class Qgs3DMapExportSettings;
 
 #define SIP_NO_FILE
@@ -135,6 +138,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void updateLights();
     void updateCameraLens();
     void onRenderersChanged();
+    void onSkyboxSettingsChanged();
+
   private:
     void addLayerEntity( QgsMapLayer *layer );
     void removeLayerEntity( QgsMapLayer *layer );
@@ -168,6 +173,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! List of light origins in the scene
     QList<Qt3DCore::QEntity *> mLightOriginEntities;
     QList<QgsMapLayer *> mModelVectorLayers;
+    QgsSkyboxEntity *mSkybox = nullptr;
+
 };
 
 #endif // QGS3DMAPSCENE_H

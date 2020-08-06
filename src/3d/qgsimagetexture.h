@@ -21,6 +21,8 @@
 #include <Qt3DCore/QNode>
 #include <Qt3DRender/QPaintedTextureImage>
 
+#include "qgis_3d.h"
+
 #define SIP_NO_FILE
 
 /**
@@ -32,7 +34,7 @@
  * \ingroup 3d
  * \since QGIS 3.16
  */
-class QgsImageTexture : public Qt3DRender::QPaintedTextureImage
+class _3D_EXPORT QgsImageTexture : public Qt3DRender::QPaintedTextureImage
 {
   public:
     //! Constructor

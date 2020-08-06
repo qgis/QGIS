@@ -27,9 +27,15 @@
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DExtras/QSkyboxEntity>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DLogic/QFrameAction>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QRenderPass>
+#include <Qt3DRender/QRenderState>
+#include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QDepthTest>
+#include <QSurface>
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
@@ -64,6 +70,9 @@
 #include "qgsabstract3drenderer.h"
 #include "qgs3dmapexportsettings.h"
 #include "qgsmessageoutput.h"
+
+#include "qgsskyboxentity.h"
+#include "qgsskyboxsettings.h"
 
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
@@ -116,6 +125,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::renderersChanged, this, &Qgs3DMapScene::onRenderersChanged );
+  connect( &map, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
 
   connect( QgsApplication::instance()->sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
   {
@@ -195,23 +205,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   meshEntity->addComponent( meshTransform );
   meshEntity->setParent( this );
 #endif
-
-  if ( map.hasSkyboxEnabled() )
-  {
-    Qt3DExtras::QSkyboxEntity *skybox = new Qt3DExtras::QSkyboxEntity;
-    skybox->setBaseName( map.skyboxFileBase() );
-    skybox->setExtension( map.skyboxFileExtension() );
-    skybox->setParent( this );
-
-    // docs say frustum culling must be disabled for skybox.
-    // it _somehow_ works even when frustum culling is enabled with some camera positions,
-    // but then when zoomed in more it would disappear - so let's keep frustum culling disabled
-    mEngine->setFrustumCullingEnabled( false );
-
-    // cppcheck wrongly believes skyBox will leak
-    // cppcheck-suppress memleak
-  }
-
+  onSkyboxSettingsChanged();
   // force initial update of chunked entities
   onCameraChanged();
 }
@@ -326,7 +320,6 @@ void Qgs3DMapScene::onCameraChanged()
 void Qgs3DMapScene::updateScene()
 {
   QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
-
   for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() )
@@ -859,6 +852,37 @@ void Qgs3DMapScene::updateSceneState()
   }
 
   setSceneState( Ready );
+}
+
+void Qgs3DMapScene::onSkyboxSettingsChanged()
+{
+  QgsSkyboxSettings skyboxSettings = mMap.skyboxSettings();
+  if ( mSkybox != nullptr )
+  {
+    mSkybox->deleteLater();
+    mSkybox = nullptr;
+  }
+
+  mEngine->setFrustumCullingEnabled( !skyboxSettings.isSkyboxEnabled() );
+
+  if ( skyboxSettings.isSkyboxEnabled() )
+  {
+    QMap<QString, QString> faces;
+    switch ( skyboxSettings.skyboxType() )
+    {
+      case QgsSkyboxEntity::DistinctTexturesSkybox:
+        faces = skyboxSettings.cubeMapFacesPaths();
+        mSkybox = new QgsCubeFacesSkyboxEntity(
+          faces[QStringLiteral( "posX" )], faces[QStringLiteral( "posY" )], faces[QStringLiteral( "posZ" )],
+          faces[QStringLiteral( "negX" )], faces[QStringLiteral( "negY" )], faces[QStringLiteral( "negZ" )],
+          this
+        );
+        break;
+      case QgsSkyboxEntity::PanoramicSkybox:
+        mSkybox = new QgsPanoramicSkyboxEntity( skyboxSettings.panoramicTexturePath(), this );
+        break;
+    }
+  }
 }
 
 void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )

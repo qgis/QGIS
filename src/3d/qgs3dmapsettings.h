@@ -30,6 +30,7 @@
 #include "qgsdirectionallightsettings.h"
 #include "qgsterraingenerator.h"
 #include "qgsvector3d.h"
+#include "qgsskyboxsettings.h"
 
 class QgsMapLayer;
 class QgsRasterLayer;
@@ -41,7 +42,6 @@ class QgsReadWriteContext;
 class QgsProject;
 
 class QDomElement;
-
 
 /**
  * \ingroup 3d
@@ -323,20 +323,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     //! Returns list of extra 3D renderers
     QList<QgsAbstract3DRenderer *> renderers() const { return mRenderers; }
 
-    /**
-     * Sets skybox configuration. When enabled, map scene will try to load six texture files
-     * using the following syntax of filenames: "[base]_[side][extension]" where [side] is one
-     * of the following: posx/posy/posz/negx/negy/negz and [base] and [extension] are the arguments
-     * passed this method.
-     */
-    void setSkybox( bool enabled, const QString &fileBase = QString(), const QString &fileExtension = QString() );
-    //! Returns whether skybox is enabled
-    bool hasSkyboxEnabled() const { return mSkyboxEnabled; }
-    //! Returns base part of filenames of skybox (see setSkybox())
-    QString skyboxFileBase() const { return mSkyboxFileBase; }
-    //! Returns extension part of filenames of skybox (see setSkybox())
-    QString skyboxFileExtension() const { return mSkyboxFileExtension; }
-
     //! Sets whether to display bounding boxes of terrain tiles (for debugging)
     void setShowTerrainBoundingBoxes( bool enabled );
     //! Returns whether to display bounding boxes of terrain tiles (for debugging)
@@ -425,6 +411,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \since QGIS 3.10
      */
     double outputDpi() const { return mDpi; }
+
+    /**
+     * Returns the current configuration of the skybox
+     * \since QGIS 3.16
+     */
+    QgsSkyboxSettings skyboxSettings() const SIP_SKIP { return mSkyboxSettings; }
+
+    /**
+     * Sets the current configuration of the skybox
+     * \since QGIS 3.16
+     */
+    void setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings ) SIP_SKIP;
 
   signals:
     //! Emitted when the background color has changed
@@ -519,6 +517,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void fieldOfViewChanged();
 
+    /**
+     * Emitted when skybox settings are changed
+     * \since QGIS 3.16
+     */
+    void skyboxSettingsChanged();
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -549,14 +553,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsMapLayerRef> mTerrainLayers;   //!< Terrain layers to be rendered
     QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object
-    bool mSkyboxEnabled = false;  //!< Whether to render skybox
-    QString mSkyboxFileBase; //!< Base part of the files with skybox textures
-    QString mSkyboxFileExtension; //!< Extension part of the files with skybox textures
     //! Coordinate transform context
     QgsCoordinateTransformContext mTransformContext;
     QgsPathResolver mPathResolver;
     QgsMapThemeCollection *mMapThemes = nullptr;   //!< Pointer to map themes (e.g. from the current project) to resolve map theme content from the name
     double mDpi = 96;  //!< Dot per inch value for the screen / painter
+
+    QgsSkyboxSettings mSkyboxSettings; //!< Skybox realted configuration
 };
 
 

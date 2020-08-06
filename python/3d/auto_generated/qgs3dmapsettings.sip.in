@@ -15,7 +15,6 @@
 
 
 
-
 class Qgs3DMapSettings : QObject, QgsTemporalRangeObject
 {
 %Docstring
@@ -362,26 +361,6 @@ Sets list of extra 3D renderers to use in the scene. Takes ownership of the obje
 Returns list of extra 3D renderers
 %End
 
-    void setSkybox( bool enabled, const QString &fileBase = QString(), const QString &fileExtension = QString() );
-%Docstring
-Sets skybox configuration. When enabled, map scene will try to load six texture files
-using the following syntax of filenames: "[base]_[side][extension]" where [side] is one
-of the following: posx/posy/posz/negx/negy/negz and [base] and [extension] are the arguments
-passed this method.
-%End
-    bool hasSkyboxEnabled() const;
-%Docstring
-Returns whether skybox is enabled
-%End
-    QString skyboxFileBase() const;
-%Docstring
-Returns base part of filenames of skybox (see :py:func:`~Qgs3DMapSettings.setSkybox`)
-%End
-    QString skyboxFileExtension() const;
-%Docstring
-Returns extension part of filenames of skybox (see :py:func:`~Qgs3DMapSettings.setSkybox`)
-%End
-
     void setShowTerrainBoundingBoxes( bool enabled );
 %Docstring
 Sets whether to display bounding boxes of terrain tiles (for debugging)
@@ -495,6 +474,8 @@ Default value is 96
 
 .. versionadded:: 3.10
 %End
+
+
 
   signals:
     void backgroundColorChanged();
@@ -619,6 +600,13 @@ Emitted when the list of directional lights changes
 Emitted when the camera lens field of view changes
 
 .. versionadded:: 3.8
+%End
+
+    void skyboxSettingsChanged();
+%Docstring
+Emitted when skybox settings are changed
+
+.. versionadded:: 3.16
 %End
 
   private:
