@@ -839,6 +839,14 @@ class CORE_EXPORT QgsSQLStatement
     QString mStatement;
     QString mParserErrorString;
 
+    /**
+     * Constructor for QgsSQLStatement, with the specified \a statement.
+     *
+     * If \a allowFragments is TRUE then the parser will allow SQL fragments,
+     * such as a expression or filter where clause alone.
+     *
+     * \since QGIS 3.16
+     */
     QgsSQLStatement( const QString &statement, bool allowFragments );
 };
 

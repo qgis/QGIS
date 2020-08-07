@@ -1008,6 +1008,14 @@ Entry function for the visitor pattern
   protected:
 
     QgsSQLStatement( const QString &statement, bool allowFragments );
+%Docstring
+Constructor for QgsSQLStatement, with the specified ``statement``.
+
+If ``allowFragments`` is ``True`` then the parser will allow SQL fragments,
+such as a expression or filter where clause alone.
+
+.. versionadded:: 3.16
+%End
 };
 
 
