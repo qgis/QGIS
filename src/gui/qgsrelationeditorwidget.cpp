@@ -987,7 +987,7 @@ QgsAttributeEditorRelation::Buttons QgsRelationEditorWidget::visibleButtons() co
 
 void QgsRelationEditorWidget::setForceSuppressFormPopup( bool forceSuppressFormPopup )
 {
-  mForceSuppressFormPopup = mForceSuppressFormPopup;
+  mForceSuppressFormPopup = forceSuppressFormPopup;
 }
 
 bool QgsRelationEditorWidget::forceSuppressFormPopup() const
