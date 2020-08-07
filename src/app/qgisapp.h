@@ -1950,7 +1950,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * This method will open a dialog so the user can select OGR sublayers to load,
      * and then returns a list of these layers.
      */
-    QList< QgsMapLayer * > askUserForOGRSublayers( QgsVectorLayer *layer );
+    QList< QgsMapLayer * > askUserForOGRSublayers( QgsVectorLayer *layer, const QStringList &subLayers );
 
     /**
      * Add a raster layer to the map (passed in as a ptr).
