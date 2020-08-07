@@ -144,7 +144,10 @@ class QgsServerTestBase(unittest.TestCase):
         """"Cleanup env"""
 
         super().tearDown()
-        del os.environ["QGIS_SERVER_DISABLED_APIS"]
+        try:
+            del os.environ["QGIS_SERVER_DISABLED_APIS"]
+        except KeyError:
+            pass
 
     def strip_version_xmlns(self, text):
         """Order of attributes is random, strip version and xmlns"""
