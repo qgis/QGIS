@@ -49,7 +49,7 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
     """ QGIS Server Landing Page tests"""
 
     # Set to True in child classes to re-generate reference files for this class
-    #regeregenerate_api_reference = True
+    # regeregenerate_api_reference = True
 
     @classmethod
     def setUpClass(cls):
