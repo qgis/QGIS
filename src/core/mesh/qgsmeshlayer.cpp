@@ -199,7 +199,7 @@ bool QgsMeshLayer::addDatasets( const QString &path, const QDateTime &defaultRef
       {
         QDateTime referenceTime = defaultReferenceTime;
         if ( !defaultReferenceTime.isValid() ) // If project reference time is invalid, use current date
-          referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) );
+          referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ), Qt::UTC );
         temporalProperties->setReferenceTime( referenceTime, dataProvider()->temporalCapabilities() );
       }
 
