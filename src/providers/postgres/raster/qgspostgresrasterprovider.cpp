@@ -554,7 +554,7 @@ QVariantMap QgsPostgresRasterProviderMetadata::decodeUri( const QString &uri )
   }
   if ( ! dsUri.port().isEmpty() )
   {
-    decoded[ QStringLiteral( "port" ) ] = dsUri.host();
+    decoded[ QStringLiteral( "port" ) ] = dsUri.port();
   }
   if ( ! dsUri.service().isEmpty() )
   {
