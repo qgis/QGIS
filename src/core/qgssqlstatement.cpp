@@ -106,6 +106,16 @@ QString QgsSQLStatement::stripQuotedIdentifier( QString text )
   return text;
 }
 
+QString QgsSQLStatement::stripMsQuotedIdentifier( QString text )
+{
+  if ( text.length() >= 2 && text[0] == '[' && text[text.length() - 1] == ']' )
+  {
+    // strip square brackets on start,end
+    text = text.mid( 1, text.length() - 2 );
+  }
+  return text;
+}
+
 QString QgsSQLStatement::quotedString( QString text )
 {
   text.replace( '\'', QLatin1String( "''" ) );

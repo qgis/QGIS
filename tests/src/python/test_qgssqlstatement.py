@@ -218,6 +218,19 @@ class TestQgsSQLStatementCustomFunctions(unittest.TestCase):
         self.checkFragmentError("FROM b")
         self.checkFragmentError("ORDER BY a")
 
+    def testMsFragment(self):
+        # Microsoft style identifiers can have a bunch of weird characters in them!
+        exp = QgsSQLStatementFragment('[col$_# :]')
+        self.assertFalse(exp.hasParserError())
+        self.assertIsInstance(exp.rootNode(), QgsSQLStatement.NodeColumnRef)
+        self.assertEqual(exp.rootNode().name(), 'col$_# :')
+
+        exp = QgsSQLStatementFragment('[table$_# :].[col$_# :]')
+        self.assertFalse(exp.hasParserError())
+        self.assertIsInstance(exp.rootNode(), QgsSQLStatement.NodeColumnRef)
+        self.assertEqual(exp.rootNode().name(), 'col$_# :')
+        self.assertEqual(exp.rootNode().tableName(), 'table$_# :')
+
 
 if __name__ == "__main__":
     unittest.main()

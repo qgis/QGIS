@@ -108,6 +108,12 @@ class CORE_EXPORT QgsSQLStatement
     static QString stripQuotedIdentifier( QString text );
 
     /**
+     * Remove double quotes from an Microsoft style identifier.
+     * \see quotedIdentifier()
+     */
+    static QString stripMsQuotedIdentifier( QString text );
+
+    /**
      * Returns a quoted version of a string (in single quotes)
      * \see quotedIdentifier(), quotedIdentifierIfNeeded()
      */
