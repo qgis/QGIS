@@ -36,7 +36,7 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
     {
       QGridLayout *layout = new QGridLayout;
       QgsAttributeWidgetRelationEditWidget *editWidget = new QgsAttributeWidgetRelationEditWidget( this );
-      editWidget->setRelationEditorConfiguration( itemData.relationEditorConfiguration() );
+      editWidget->setRelationEditorConfiguration( itemData.relationEditorConfiguration(), itemData.name() );
       mSpecificEditWidget = editWidget;
       layout->addWidget( mSpecificEditWidget );
       mWidgetSpecificConfigGroupBox->setLayout( layout );
@@ -94,7 +94,7 @@ QgsAttributeWidgetRelationEditWidget::QgsAttributeWidgetRelationEditWidget( QWid
   setupUi( this );
 }
 
-void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const QgsAttributesFormProperties::RelationEditorConfiguration &config )
+void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const QgsAttributesFormProperties::RelationEditorConfiguration &config, const QString &relationId )
 {
   mRelationShowLinkCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::Link ) );
   mRelationShowUnlinkCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::Unlink ) );
@@ -107,7 +107,7 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
   //load the combo mRelationCardinalityCombo
   setCardinalityCombo( tr( "Many to one relation" ) );
 
-  QgsRelation relation = QgsProject::instance()->relationManager()->relation( config.relationId );
+  QgsRelation relation = QgsProject::instance()->relationManager()->relation( relationId );
   const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencingRelations( relation.referencingLayer() );
   for ( const QgsRelation &nmrel : relations )
   {

@@ -404,7 +404,6 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       itemData.setShowLabel( widgetDef->showLabel() );
       RelationEditorConfiguration relEdConfig;
       relEdConfig.buttons = relationEditor->visibleButtons();
-      relEdConfig.relationId = relationEditor->relation().id();
       relEdConfig.cardinality = relationEditor->cardinality();
       relEdConfig.forceSuppressFormPopup = relationEditor->forceSuppressFormPopup();
       itemData.setRelationEditorConfiguration( relEdConfig );
@@ -507,7 +506,7 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
     {
       case DnDTreeItemData::Relation:
       {
-        receiver->selectFirstMatchingItem( itemData );
+        receiver->clearSelection();
         if ( layout == QgsEditFormConfig::EditorLayout::TabLayout )
           loadAttributeWidgetEdit();
         break;

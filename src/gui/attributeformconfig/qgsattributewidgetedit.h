@@ -63,7 +63,7 @@ class GUI_EXPORT QgsAttributeWidgetRelationEditWidget : public QWidget, private 
   public:
     explicit QgsAttributeWidgetRelationEditWidget( QWidget *parent = nullptr );
 
-    void setRelationEditorConfiguration( const QgsAttributesFormProperties::RelationEditorConfiguration &config );
+    void setRelationEditorConfiguration( const QgsAttributesFormProperties::RelationEditorConfiguration &config, const QString &relationId );
 
     QgsAttributesFormProperties::RelationEditorConfiguration relationEditorConfiguration() const;
 
@@ -72,7 +72,6 @@ class GUI_EXPORT QgsAttributeWidgetRelationEditWidget : public QWidget, private 
   private:
     void setCardinalityCombo( const QString &cardinalityComboItem, const QVariant &auserData = QVariant() );
     void setCardinality( const QVariant &auserData = QVariant() );
-
 };
 
 #endif // QGSATTRIBUTEWIDGETEDIT_H
