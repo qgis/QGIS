@@ -54,10 +54,9 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        os.environ['QGIS_SERVER_PROJECTS_DIRECTORIES'] = os.path.join(unitTestDataPath('qgis_server'), 'landingpage', 'projects') \
-            + '||' \
-            + os.path.join(unitTestDataPath('qgis_server'),
-                           'landingpage', 'projects2')
+        directories = [os.path.join(unitTestDataPath('qgis_server'), 'landingpage', 'projects')]
+        directories.append(os.path.join(unitTestDataPath('qgis_server'), 'landingpage', 'projects2'))
+        os.environ['QGIS_SERVER_PROJECTS_DIRECTORIES'] = '||'.join(directories)
 
         if not os.environ.get('TRAVIS', False):
             os.environ['QGIS_SERVER_PROJECTS_PG_CONNECTIONS'] = "postgresql://localhost:5432?sslmode=disable&dbname=landing_page_test&schema=public"
@@ -83,43 +82,66 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
         self.assertEqual(response.headers()[
                          'Location'], 'http://server.qgis.org/index.html')
 
+    def compareProjects(self, actual, expected, expected_path):
+        """Order-agnostic project comparison"""
+
+        actual_raw = self.normalize_json(actual).split('\n')
+        expected_raw = self.normalize_json(expected).split('\n')
+        actual_raw = '\n'.join(actual_raw[actual_raw.index('') + 1:])
+        expected_raw = '\n'.join(expected_raw[expected_raw.index('') + 1:])
+        actual_j = json.loads(actual_raw)
+        expected_j = json.loads(expected_raw)
+        actual_projects = {p['title']: p for p in actual_j['projects']}
+        expected_projects = {p['title']: p for p in expected_j['projects']}
+
+        if self.regeregenerate_api_reference:
+            # Try to change timestamp
+            try:
+                content = actual.split('\n')
+                j = ''.join(content[content.index('') + 1:])
+                j = json.loads(j)
+                j['timeStamp'] = '2019-07-05T12:27:07Z'
+                actual = '\n'.join(content[:2]) + '\n' + \
+                    json.dumps(j, ensure_ascii=False, indent=2)
+            except:
+                pass
+            f = open(expected_path.encode('utf8'), 'w+', encoding='utf8')
+            f.write(actual)
+            f.close()
+            print("Reference file %s regenerated!" % expected_path.encode('utf8'))
+
+        for title in expected_projects.keys():
+            self.assertEqual(actual_projects[title], expected_projects[title])
+
     def test_landing_page_json(self):
         """Test landing page in JSON format"""
 
         request = QgsBufferServerRequest('http://server.qgis.org/index.json')
-        if os.environ.get('TRAVIS', False):
-            self.compareApi(
-                request, None, 'test_landing_page_index.json', subdir='landingpage')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response)
+        j_actual = 'Content-Type: application/json\n\n'
+        j_actual += bytes(response.body()).decode('utf8)')
+
+        if not os.environ.get('TRAVIS', False):
+            expected_path = os.path.join(unitTestDataPath('qgis_server'), 'landingpage', 'test_landing_page_with_pg_index.json')
         else:
-            self.compareApi(
-                request, None, 'test_landing_page_with_pg_index.json', subdir='landingpage')
+            expected_path = os.path.join(unitTestDataPath('qgis_server'), 'landingpage', 'test_landing_page_index.json')
+
+        j_expected = open(expected_path).read()
+        self.compareProjects(j_actual, j_expected, expected_path)
 
     def test_project_json(self):
         """Test landing page project call in JSON format"""
 
-        test_projects = {
-            'de8d9e4e8b448f0bf0a0eb1e0806b763': 'Project1.qgs',
-            '471b5bb5dbe79f72149529f700d948a3': 'Project2.qgz',
-            '9124ec69db7f0687f760504aa10e3362': 'test_project_wms_grouped_nested_layers.qgs',
-            '3b4a3e5d9025926cb673805b914646fa': 'project3.qgz',
-        }
+        # Get hashes for test projects
+        request = QgsBufferServerRequest('http://server.qgis.org/index.json')
+        request.setHeader('Accept', 'application/json')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response)
 
-        for identifier, name in test_projects.items():
-            request = QgsBufferServerRequest(
-                'http://server.qgis.org/map/' + identifier)
-            request.setHeader('Accept', 'application/json')
-            self.compareApi(
-                request, None, 'test_project_{}.json'.format(name.replace('.', '_')), subdir='landingpage')
+        j = json.loads(bytes(response.body()))
+        test_projects = {p['id']: p['title'].replace(' ', '_') for p in j['projects']}
 
-    @unittest.skipIf(os.environ.get('TRAVIS'), False)
-    def test_pg_project_json(self):
-        """Test landing page PG project call in JSON format"""
-
-        test_projects = {
-            '056e0bc472fc60eb32a223acf0d9d897': 'PGProject1',
-            'c404d3c20fdd5e81bf1c8c2ef895901e': 'PGProject2',
-            'e152c153073a7e6d3ad669448f85e552': 'my as areas project'
-        }
         for identifier, name in test_projects.items():
             request = QgsBufferServerRequest(
                 'http://server.qgis.org/map/' + identifier)

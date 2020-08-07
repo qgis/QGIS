@@ -191,6 +191,34 @@ class QgsServerAPITestBase(QgsServerTestBase):
             self.assertEqual(actual_lines[i], expected_lines[i], "File: %s\nLine: %s\nActual  : %s\nExpected: %s" % (
                 reference_file, i, actual_lines[i], expected_lines[i]))
 
+    def normalize_json(self, content):
+        """Normalize a json string"""
+
+        reference_content = content.split('\n')
+        j = ''.join(reference_content[reference_content.index('') + 1:])
+        # Do not test timeStamp
+        j = json.loads(j)
+        try:
+            j['timeStamp'] = '2019-07-05T12:27:07Z'
+        except:
+            pass
+        # Fix coordinate precision differences in Travis
+        try:
+            bbox = j['extent']['spatial']['bbox'][0]
+            bbox = [round(c, 4) for c in bbox]
+            j['extent']['spatial']['bbox'][0] = bbox
+        except:
+            pass
+        json_content = json.dumps(j, indent=4)
+        # Rounding errors
+        json_content = re.sub(r'(\d{5})\d+\.\d+', r'\1', json_content)
+        json_content = re.sub(r'(\d+\.\d{4})\d+', r'\1', json_content)
+        # Poject hash
+        json_content = re.sub(r'[a-f0-9]{32}', r'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF', json_content)
+        headers_content = '\n'.join(
+            reference_content[:reference_content.index('') + 1])
+        return headers_content + '\n' + json_content
+
     def compareApi(self, request, project, reference_file, subdir='api'):
         response = QgsBufferServerResponse()
         # Add json to accept it reference_file is JSON
@@ -217,33 +245,10 @@ class QgsServerAPITestBase(QgsServerTestBase):
             f.close()
             print("Reference file %s regenerated!" % path.encode('utf8'))
 
-        def __normalize_json(content):
-            reference_content = content.split('\n')
-            j = ''.join(reference_content[reference_content.index('') + 1:])
-            # Do not test timeStamp
-            j = json.loads(j)
-            try:
-                j['timeStamp'] = '2019-07-05T12:27:07Z'
-            except:
-                pass
-            # Fix coordinate precision differences in Travis
-            try:
-                bbox = j['extent']['spatial']['bbox'][0]
-                bbox = [round(c, 4) for c in bbox]
-                j['extent']['spatial']['bbox'][0] = bbox
-            except:
-                pass
-            json_content = json.dumps(j, indent=4)
-            # Rounding errors
-            json_content = re.sub(r'(\d+\.\d{6})\d+', r'\1', json_content)
-            headers_content = '\n'.join(
-                reference_content[:reference_content.index('') + 1])
-            return headers_content + '\n' + json_content
-
         with open(path.encode('utf8'), 'r', encoding='utf8') as f:
             if reference_file.endswith('json'):
-                self.assertLinesEqual(__normalize_json(
-                    result), __normalize_json(f.read()), path.encode('utf8'))
+                self.assertLinesEqual(self.normalize_json(
+                    result), self.normalize_json(f.read()), path.encode('utf8'))
             else:
                 self.assertEqual(f.read(), result)
 
