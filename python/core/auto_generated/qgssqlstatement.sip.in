@@ -94,6 +94,13 @@ Remove double quotes from an identifier.
 .. seealso:: :py:func:`quotedIdentifier`
 %End
 
+    static QString stripMsQuotedIdentifier( QString text );
+%Docstring
+Remove double quotes from an Microsoft style identifier.
+
+.. seealso:: :py:func:`quotedIdentifier`
+%End
+
     static QString quotedString( QString text );
 %Docstring
 Returns a quoted version of a string (in single quotes)

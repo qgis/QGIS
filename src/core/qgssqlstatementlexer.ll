@@ -94,6 +94,8 @@ identifier  {identifier_first}{identifier_next}*
 identifier_str_char  "\"\""|[^\"]
 identifier_quoted  "\""{identifier_str_char}*"\""
 
+ms_identifier_quoted  "\["[^.]*"\]"
+
 dig         [0-9]
 num_int     [-]?{dig}+{identifier_first}*
 num_float   [-]?{dig}*(\.{dig}+([eE][-+]?{dig}+)?|[eE][-+]?{dig}+)
@@ -189,6 +191,8 @@ string      "'"{str_char}*"'"
 {identifier}         { TEXT; return IDENTIFIER; }
 
 {identifier_quoted}  { TEXT_FILTER(QgsSQLStatement::stripQuotedIdentifier); return IDENTIFIER; }
+
+{ms_identifier_quoted}  { TEXT_FILTER(QgsSQLStatement::stripMsQuotedIdentifier); return IDENTIFIER; }
 
 {white}    /* skip blanks and tabs */
 
