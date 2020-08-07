@@ -125,9 +125,10 @@ void QgsRelationWidgetWrapper::setShowSaveChildEditsButton( bool showSaveChildEd
 bool QgsRelationWidgetWrapper::showLabel() const
 {
   if ( mWidget )
+  {
     return mWidget->showLabel();
-  else
-    return false;
+  }
+  return false;
 }
 
 void QgsRelationWidgetWrapper::setShowLabel( bool showLabel )
@@ -154,11 +155,6 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
 
   QgsAttributeEditorContext myContext( QgsAttributeEditorContext( context(), mRelation, QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed ) );
 
-  if ( forceSuppressFormPopup() )
-  {
-    const_cast<QgsVectorLayerTools *>( myContext.vectorLayerTools() )->setForceSuppressFormPopup( true );
-  }
-
   /* TODO: this seems to have no effect
   if ( config( QStringLiteral( "hide-save-child-edits" ), false ).toBool() )
   {
@@ -167,24 +163,6 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
   */
 
   w->setEditorContext( myContext );
-
-  mNmRelation = QgsProject::instance()->relationManager()->relation( cardinality().toString() );
-
-  // If this widget is already embedded by the same relation, reduce functionality
-  const QgsAttributeEditorContext *ctx = &context();
-  do
-  {
-    if ( ( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
-         || ( mNmRelation.isValid() && ctx->relation().name() == mNmRelation.name() ) )
-    {
-      w->setVisible( false );
-      break;
-    }
-    ctx = ctx->parentContext();
-  }
-  while ( ctx );
-
-  w->setRelations( mRelation, mNmRelation );
 
   mWidget = w;
 }
@@ -226,27 +204,51 @@ QgsAttributeEditorRelation::Buttons QgsRelationWidgetWrapper::visibleButtons() c
 void QgsRelationWidgetWrapper::setForceSuppressFormPopup( bool forceSuppressFormPopup )
 {
   if ( mWidget )
+  {
     mWidget->setForceSuppressFormPopup( forceSuppressFormPopup );
+    if ( forceSuppressFormPopup )
+    {
+      const_cast<QgsVectorLayerTools *>( mWidget->editorContext().vectorLayerTools() )->setForceSuppressFormPopup( true );
+    }
+  }
 }
 
 bool QgsRelationWidgetWrapper::forceSuppressFormPopup() const
 {
   if ( mWidget )
     return mWidget->forceSuppressFormPopup();
-  else
-    return false;
+  return false;
 }
 
 void QgsRelationWidgetWrapper::setCardinality( const QVariant &cardinality )
 {
   if ( mWidget )
+  {
     mWidget->setCardinality( cardinality );
+
+    mNmRelation = QgsProject::instance()->relationManager()->relation( cardinality.toString() );
+
+    // If this widget is already embedded by the same relation, reduce functionality
+    const QgsAttributeEditorContext *ctx = &context();
+    do
+    {
+      if ( ( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
+           || ( mNmRelation.isValid() && ctx->relation().name() == mNmRelation.name() ) )
+      {
+        mWidget->setVisible( false );
+        break;
+      }
+      ctx = ctx->parentContext();
+    }
+    while ( ctx );
+
+    mWidget->setRelations( mRelation, mNmRelation );
+  }
 }
 
 QVariant QgsRelationWidgetWrapper::cardinality() const
 {
   if ( mWidget )
     return mWidget->cardinality();
-  else
-    return QVariant();
+  return QVariant();
 }
