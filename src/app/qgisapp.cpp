@@ -12422,14 +12422,18 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
 
   if ( authok && layer->isValid() )
   {
-    QStringList sublayers = layer->dataProvider()->subLayers();
-    QgsDebugMsgLevel( QStringLiteral( "got valid layer with %1 sublayers" ).arg( sublayers.count() ), 2 );
+    const bool layerIsSpecified = vectorLayerPath.contains( QLatin1String( "layerid=" ) ) ||
+                                  vectorLayerPath.contains( QLatin1String( "layername=" ) );
+
+    const QStringList sublayers = layer->dataProvider()->subLayers();
+    if ( !layerIsSpecified )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "got valid layer with %1 sublayers" ).arg( sublayers.count() ), 2 );
+    }
 
     // If the newly created layer has more than 1 layer of data available, we show the
     // sublayers selection dialog so the user can select the sublayers to actually load.
-    if ( sublayers.count() > 1 &&
-         ! vectorLayerPath.contains( QStringLiteral( "layerid=" ) ) &&
-         ! vectorLayerPath.contains( QStringLiteral( "layername=" ) ) )
+    if ( !layerIsSpecified && sublayers.count() > 1 )
     {
       QList< QgsMapLayer * > addedLayers = askUserForOGRSublayers( layer, sublayers );
 
@@ -12446,7 +12450,6 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
       QList<QgsMapLayer *> myList;
 
       //set friendly name for datasources with only one layer
-      QStringList sublayers = layer->dataProvider()->subLayers();
       if ( !sublayers.isEmpty() )
       {
         setupVectorLayer( vectorLayerPath, sublayers, layer,
