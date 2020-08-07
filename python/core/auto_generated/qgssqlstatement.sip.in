@@ -9,7 +9,6 @@
 
 
 
-
 class QgsSQLStatement
 {
 %Docstring
@@ -33,7 +32,7 @@ Creates a new statement based on the provided string.
 Create a copy of this statement.
 %End
 
-    ~QgsSQLStatement();
+    virtual ~QgsSQLStatement();
 
     bool hasParserError() const;
 %Docstring
@@ -1000,6 +999,29 @@ Entry function for the visitor pattern
 %End
 
   protected:
+
+    QgsSQLStatement( const QString &statement, bool allowFragments );
+};
+
+
+class QgsSQLStatementFragment : QgsSQLStatement
+{
+%Docstring
+Class for parsing fragments of SQL statements, such as an expression or where clause.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgssqlstatement.h"
+%End
+  public:
+
+    QgsSQLStatementFragment( const QString &fragment );
+%Docstring
+Constructor for QgsSQLStatementFragment of the specified ``fragment``.
+%End
+
 };
 
 
