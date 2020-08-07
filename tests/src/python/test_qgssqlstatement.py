@@ -231,6 +231,26 @@ class TestQgsSQLStatementCustomFunctions(unittest.TestCase):
         self.assertEqual(exp.rootNode().name(), 'col$_# :')
         self.assertEqual(exp.rootNode().tableName(), 'table$_# :')
 
+    def testMsDateLiteral(self):
+        # Microsoft style date reference
+        exp = QgsSQLStatementFragment('#05-30-2020#')
+        self.assertFalse(exp.hasParserError())
+        self.assertIsInstance(exp.rootNode(), QgsSQLStatement.NodeLiteral)
+        self.assertEqual(exp.rootNode().value(), '05-30-2020')
+        exp = QgsSQLStatementFragment('#05/30/2020#')
+        self.assertFalse(exp.hasParserError())
+        self.assertIsInstance(exp.rootNode(), QgsSQLStatement.NodeLiteral)
+        self.assertEqual(exp.rootNode().value(), '05/30/2020')
+        exp = QgsSQLStatementFragment('#05/30/2020 13:45:55#')
+        self.assertFalse(exp.hasParserError())
+        self.assertIsInstance(exp.rootNode(), QgsSQLStatement.NodeLiteral)
+        self.assertEqual(exp.rootNode().value(), '05/30/2020 13:45:55')
+        exp = QgsSQLStatementFragment('[date] = #05/30/2020 13:45:55#')
+        self.assertFalse(exp.hasParserError())
+        self.assertIsInstance(exp.rootNode(), QgsSQLStatement.NodeBinaryOperator)
+        self.assertEqual(exp.rootNode().opLeft().name(), 'date')
+        self.assertEqual(exp.rootNode().opRight().value(), '05/30/2020 13:45:55')
+
 
 if __name__ == "__main__":
     unittest.main()

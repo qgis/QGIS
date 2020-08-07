@@ -102,7 +102,7 @@ num_float   [-]?{dig}*(\.{dig}+([eE][-+]?{dig}+)?|[eE][-+]?{dig}+)
 boolean     "TRUE"|"FALSE"
 
 str_char    ('')|(\\.)|[^'\\]
-string      "'"{str_char}*"'"
+string      "'"{str_char}*"'"|"#"{str_char}*"#"
 
 %%
 
