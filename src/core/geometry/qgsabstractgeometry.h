@@ -855,8 +855,8 @@ class CORE_EXPORT QgsAbstractGeometry
           int index = 0;               //!< Ptr in the current geometry
         };
 
-        Level levels[3];  //!< Stack of levels - three levels should be sufficient (e.g. part index, ring index, vertex index)
-        int depth = -1;        //!< At what depth level are we right now
+        std::array<Level, 3> levels;  //!< Stack of levels - three levels should be sufficient (e.g. part index, ring index, vertex index)
+        int depth = -1;               //!< At what depth level are we right now
 
         void digDown();   //!< Prepare the stack of levels so that it points to a leaf child geometry
 
