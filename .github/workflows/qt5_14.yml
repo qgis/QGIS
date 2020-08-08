@@ -3,7 +3,12 @@ name: Build QGIS with Qt 5.14
 on:
   push:
     branches:
-      - '**'
+      - master
+      - release-**
+  pull_request:
+    branches:
+      - master
+      - release-**
 
 jobs:
   build:
