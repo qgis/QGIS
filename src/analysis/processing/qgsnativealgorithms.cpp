@@ -88,6 +88,7 @@
 #include "qgsalgorithmintersection.h"
 #include "qgsalgorithmkmeansclustering.h"
 #include "qgsalgorithmlayoutatlastoimage.h"
+#include "qgsalgorithmlayoutatlastopdf.h"
 #include "qgsalgorithmlayouttoimage.h"
 #include "qgsalgorithmlayouttopdf.h"
 #include "qgsalgorithmlinedensity.h"
@@ -316,6 +317,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsLayerToBookmarksAlgorithm() );
   addAlgorithm( new QgsLayoutMapExtentToLayerAlgorithm() );
   addAlgorithm( new QgsLayoutAtlasToImageAlgorithm() );
+  addAlgorithm( new QgsLayoutAtlasToPdfAlgorithm() );
   addAlgorithm( new QgsLayoutToImageAlgorithm() );
   addAlgorithm( new QgsLayoutToPdfAlgorithm() );
   addAlgorithm( new QgsLineDensityAlgorithm() );
