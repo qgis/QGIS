@@ -87,6 +87,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_PROPERTY( int autoRefreshInterval READ autoRefreshInterval WRITE setAutoRefreshInterval NOTIFY autoRefreshIntervalChanged )
     Q_PROPERTY( QgsLayerMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs NOTIFY crsChanged )
+    Q_PROPERTY( QgsMapLayerType type READ type CONSTANT )
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
