@@ -64,6 +64,7 @@
 #include "qgsserverexception.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturestore.h"
+#include "qgsmapthemecollection.h"
 
 #include <QImage>
 #include <QPainter>
@@ -602,8 +603,62 @@ namespace QgsWms
         }
       }
 
+      QList<QgsMapLayer *> renderLayers, auxHighlightLayers;
+
       if ( !map->keepLayerSet() )
       {
+
+        static const QRegularExpression RE_HIGHLIGHT_LAYER = QRegularExpression( "^highlight_\\d+$" );
+
+        QString presetName = map->followVisibilityPresetName();
+
+        QString newPresetName;
+        if ( !presetName.isEmpty() )
+        {
+          // get layers from theme
+          if ( c->project()->mapThemeCollection()->hasMapTheme( presetName ) )
+            renderLayers = c->project()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
+          else
+            renderLayers = c->project()->mapThemeCollection()->masterVisibleLayers();
+
+          // get highlight layers, if any
+          bool has_highlight_layer = false;
+          for ( auto layer : mapSettings.layers() )
+          {
+
+            if ( RE_HIGHLIGHT_LAYER.match( layer->name() ).hasMatch() )
+            {
+              has_highlight_layer = true;
+              auxHighlightLayers << layer;
+              c->project()->layerTreeRoot()->insertLayer( 0, layer );
+            }
+
+          }
+
+          if ( has_highlight_layer )
+          {
+
+            // create a new theme with all layers
+            QgsMapThemeCollection::MapThemeRecord rec;
+            // layers from the theme
+            for ( auto layer : renderLayers )
+            {
+              rec.addLayerRecord( QgsMapThemeCollection::MapThemeLayerRecord( layer ) );
+            }
+            // highlight layers
+            for ( auto layer : auxHighlightLayers )
+            {
+              rec.addLayerRecord( QgsMapThemeCollection::MapThemeLayerRecord( layer ) );
+            }
+
+            // Add the theme and set it
+            newPresetName = presetName + QStringLiteral( "__highlight" );
+            c->project()->mapThemeCollection()->insert( newPresetName, rec );
+            map->setFollowVisibilityPresetName( newPresetName );
+          }
+
+        }
+
         if ( cMapParams.mLayers.isEmpty() && cMapParams.mExternalLayers.isEmpty() )
         {
           map->setLayers( mapSettings.layers() );

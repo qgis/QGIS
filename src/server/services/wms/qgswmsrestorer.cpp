@@ -23,6 +23,8 @@
 #include "qgsrasterrenderer.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsreadwritecontext.h"
+#include "qgsmapthemecollection.h"
+
 
 QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
 {
@@ -138,10 +140,33 @@ QgsLayerRestorer::~QgsLayerRestorer()
   }
 }
 
+QgsProjectRestorer::QgsProjectRestorer( const QgsProject *project )
+{
+  mThemeCollection = const_cast<QgsProject *>( project )->mapThemeCollection( );
+}
+
+QgsProjectRestorer::~QgsProjectRestorer()
+{
+
+  QStringList themes = mThemeCollection->mapThemes();
+
+  static const QRegularExpression RE_THEME_WITH_HIGHLIGHT_LAYER = QRegularExpression( ".*__highlight$" );
+
+  for ( int i = 0 ; i < themes.length() ; i++ )
+  {
+    if ( RE_THEME_WITH_HIGHLIGHT_LAYER.match( themes.at( i ) ).hasMatch() )
+    {
+      mThemeCollection->removeMapTheme( themes.at( i ) );
+    }
+  }
+
+}
+
 namespace QgsWms
 {
   QgsWmsRestorer::QgsWmsRestorer( const QgsWmsRenderContext &context )
-    : mLayerRestorer( context.layers() )
+    : mLayerRestorer( context.layers() ),
+      mProjectRestorer( context.project() )
   {
   }
 }

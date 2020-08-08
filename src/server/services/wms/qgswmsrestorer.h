@@ -63,6 +63,35 @@ class QgsLayerRestorer
     };
 
     QMap<QgsMapLayer *, QgsLayerSettings> mLayerSettings;
+
+};
+
+/**
+ * \ingroup server
+ * RAII class to restore project configuration on destruction
+ * \since QGIS 3.0
+ */
+class QgsProjectRestorer
+{
+  public:
+
+    /**
+     * Constructor for QgsProjectRestorer.
+     * \param project
+     */
+    QgsProjectRestorer( const QgsProject *project );
+
+    /**
+     * Destructor.
+     *
+     * Restore project to its initial state.
+     */
+    ~QgsProjectRestorer();
+
+  private:
+
+    QgsMapThemeCollection *mThemeCollection;
+
 };
 
 namespace QgsWms
@@ -91,6 +120,9 @@ namespace QgsWms
     private:
 
       QgsLayerRestorer mLayerRestorer;
+
+      QgsProjectRestorer mProjectRestorer;
+
   };
 };
 
