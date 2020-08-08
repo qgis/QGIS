@@ -4613,8 +4613,9 @@ void TestQgsProcessingAlgs::exportLayoutPng()
 
 void TestQgsProcessingAlgs::exportAtlasLayoutPdf()
 {
+  QgsMapLayer *polygonLayer = mPolygonLayer->clone();
   QgsProject p;
-  p.addMapLayers( QList<QgsMapLayer *>() << mPolygonLayer );
+  p.addMapLayers( QList<QgsMapLayer *>() << polygonLayer );
 
   QgsPrintLayout *layout = new QgsPrintLayout( &p );
   layout->initializeDefaults();
@@ -4625,7 +4626,7 @@ void TestQgsProcessingAlgs::exportAtlasLayoutPdf()
   map->setFrameEnabled( false );
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   layout->addLayoutItem( map );
-  map->setExtent( mPolygonLayer->extent() );
+  map->setExtent( polygonLayer->extent() );
 
   p.layoutManager()->addLayout( layout );
 
@@ -4638,7 +4639,7 @@ void TestQgsProcessingAlgs::exportAtlasLayoutPdf()
 
   QVariantMap parameters;
   parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "my layout" ) );
-  parameters.insert( QStringLiteral( "COVERAGE_LAYER" ), QVariant::fromValue( mPolygonLayer ) );
+  parameters.insert( QStringLiteral( "COVERAGE_LAYER" ), QVariant::fromValue( polygonLayer ) );
   parameters.insert( QStringLiteral( "OUTPUT" ), outputPdf );
   parameters.insert( QStringLiteral( "DPI" ), 96 );
 
@@ -4655,8 +4656,9 @@ void TestQgsProcessingAlgs::exportAtlasLayoutPdf()
 
 void TestQgsProcessingAlgs::exportAtlasLayoutPng()
 {
+  QgsMapLayer *polygonLayer = mPolygonLayer->clone();
   QgsProject p;
-  p.addMapLayers( QList<QgsMapLayer *>() << mPolygonLayer );
+  p.addMapLayers( QList<QgsMapLayer *>() << polygonLayer );
 
   QgsPrintLayout *layout = new QgsPrintLayout( &p );
   layout->initializeDefaults();
@@ -4667,7 +4669,7 @@ void TestQgsProcessingAlgs::exportAtlasLayoutPng()
   map->setFrameEnabled( false );
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   layout->addLayoutItem( map );
-  map->setExtent( mPolygonLayer->extent() );
+  map->setExtent( polygonLayer->extent() );
 
   p.layoutManager()->addLayout( layout );
 
@@ -4685,7 +4687,7 @@ void TestQgsProcessingAlgs::exportAtlasLayoutPng()
 
   QVariantMap parameters;
   parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "my layout" ) );
-  parameters.insert( QStringLiteral( "COVERAGE_LAYER" ), QVariant::fromValue( mPolygonLayer ) );
+  parameters.insert( QStringLiteral( "COVERAGE_LAYER" ), QVariant::fromValue( polygonLayer ) );
   parameters.insert( QStringLiteral( "FOLDER" ), QDir::tempPath() + "/my_atlas" );
   parameters.insert( QStringLiteral( "FILENAME_EXPRESSION" ), QStringLiteral( "'export_'||@atlas_featurenumber" ) );
   parameters.insert( QStringLiteral( "DPI" ), 96 );
