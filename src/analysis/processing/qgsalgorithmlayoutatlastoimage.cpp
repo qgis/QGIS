@@ -147,7 +147,7 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
                                 previousSortFeatures,
                                 previousSortAscending,
                                 previousSortExpression,
-                                previousMapItemLayersReset ]()
+                                &previousMapItemLayersReset ]()
   {
     QString error;
     atlas->setEnabled( previousEnabled );
@@ -167,6 +167,7 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
         QgsLayoutItemMap *map = dynamic_cast<QgsLayoutItemMap *>( item );
         if ( map && previousMapItemLayersReset.contains( map->uuid() ) )
         {
+          map->setKeepLayerSet( false );
           map->setLayers( QList<QgsMapLayer *>() );
         }
       }
@@ -256,6 +257,7 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
       if ( map && !map->followVisibilityPreset() && !map->keepLayerSet() )
       {
         previousMapItemLayersReset << map->uuid();
+        map->setKeepLayerSet( true );
         map->setLayers( layers );
       }
     }
