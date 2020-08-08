@@ -1769,7 +1769,11 @@ bool QgsMapLayer::isTemporary() const
 
 void QgsMapLayer::setValid( bool valid )
 {
+  if ( mValid == valid )
+    return;
+
   mValid = valid;
+  emit isValidChanged();
 }
 
 void QgsMapLayer::setLegend( QgsMapLayerLegend *legend )

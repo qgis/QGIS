@@ -87,6 +87,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_PROPERTY( int autoRefreshInterval READ autoRefreshInterval WRITE setAutoRefreshInterval NOTIFY autoRefreshIntervalChanged )
     Q_PROPERTY( QgsLayerMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs NOTIFY crsChanged )
+    Q_PROPERTY( QgsMapLayerType type READ type CONSTANT )
+    Q_PROPERTY( bool isValid READ isValid NOTIFY isValidChanged )
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -1413,6 +1415,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void styleLoaded( QgsMapLayer::StyleCategories categories );
 
+    /**
+     * Emitted when the validity of this layer changed.
+     *
+     * \since QGIS 3.16
+     */
+    void isValidChanged();
+
 
   private slots:
 
@@ -1430,7 +1439,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Sets the extent
     virtual void setExtent( const QgsRectangle &rect );
 
-    //! Sets whether layer is valid or not - should be used in constructor.
+    //! Sets whether layer is valid or not
     void setValid( bool valid );
 
     /**
