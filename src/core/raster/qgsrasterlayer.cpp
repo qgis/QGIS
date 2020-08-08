@@ -107,7 +107,7 @@ QgsRasterLayer::QgsRasterLayer()
 
 {
   init();
-  mValid = false;
+  setValid( false );
 }
 
 QgsRasterLayer::QgsRasterLayer( const QString &uri,
@@ -129,7 +129,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
 
   setDataSource( uri, baseName, providerKey, providerOptions, options.loadDefaultStyle );
 
-  if ( mValid )
+  if ( isValid() )
   {
     mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
   }
@@ -140,7 +140,7 @@ QgsRasterLayer::~QgsRasterLayer()
 {
   emit willBeDeleted();
 
-  mValid = false;
+  setValid( false );
   // Note: provider and other interfaces are owned and deleted by pipe
 }
 
@@ -606,7 +606,7 @@ void QgsRasterLayer::init()
 void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
-  mValid = false; // assume the layer is invalid until we determine otherwise
+  setValid( false ); // assume the layer is invalid until we determine otherwise
 
   mPipe.remove( mDataProvider ); // deletes if exists
   mDataProvider = nullptr;
@@ -849,7 +849,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   connect( mDataProvider, &QgsRasterDataProvider::statusChanged, this, &QgsRasterLayer::statusChanged );
 
   //mark the layer as valid
-  mValid = true;
+  setValid( true );
 
   if ( mDataProvider->supportsSubsetString() )
     connect( this, &QgsRasterLayer::subsetStringChanged, this, &QgsMapLayer::configChanged, Qt::UniqueConnection );
@@ -912,7 +912,7 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
   if ( mDataProvider )
     mDataProvider->setDataSourceUri( mDataSource );
 
-  if ( mValid )
+  if ( isValid() )
   {
     // load default style
     bool defaultLoadedFlag = false;
@@ -951,7 +951,7 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
 
 void QgsRasterLayer::closeDataProvider()
 {
-  mValid = false;
+  setValid( false );
   mPipe.remove( mDataProvider );
   mDataProvider = nullptr;
 }
@@ -1291,7 +1291,7 @@ void QgsRasterLayer::refreshRenderer( QgsRasterRenderer *rasterRenderer, const Q
 
 QString QgsRasterLayer::subsetString() const
 {
-  if ( !mValid || !mDataProvider )
+  if ( !isValid() || !mDataProvider )
   {
     QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider" ), 3 );
     return customProperty( QStringLiteral( "storedSubsetString" ) ).toString();
@@ -1305,7 +1305,7 @@ QString QgsRasterLayer::subsetString() const
 
 bool QgsRasterLayer::setSubsetString( const QString &subset )
 {
-  if ( !mValid || !mDataProvider )
+  if ( !isValid() || !mDataProvider )
   {
     QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider or while editing" ), 3 );
     setCustomProperty( QStringLiteral( "storedSubsetString" ), subset );
@@ -1987,7 +1987,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
       closeDataProvider();
       init();
       setDataProvider( mProviderKey );
-      if ( !mValid ) return false;
+      if ( !isValid() ) return false;
     }
   }
 #endif
@@ -2469,5 +2469,5 @@ bool QgsRasterLayer::update()
     setDataProvider( mProviderKey, providerOptions );
     emit dataChanged();
   }
-  return mValid;
+  return isValid();
 }

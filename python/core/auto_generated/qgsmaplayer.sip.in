@@ -1584,6 +1584,13 @@ Emitted when a style has been loaded
 .. versionadded:: 3.12
 %End
 
+    void isValidChanged();
+%Docstring
+Emitted when the validity of this layer changed.
+
+.. versionadded:: 3.16
+%End
+
 
   protected:
 
@@ -1603,7 +1610,7 @@ Sets the extent
 
     void setValid( bool valid );
 %Docstring
-Sets whether layer is valid or not - should be used in constructor.
+Sets whether layer is valid or not
 %End
 
     virtual bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context );
