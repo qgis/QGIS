@@ -854,6 +854,8 @@ class CORE_EXPORT QgsAbstractGeometry
         {
           const QgsAbstractGeometry *g = nullptr;  //!< Current geometry
           int index = 0;               //!< Ptr in the current geometry
+
+          bool operator==( const Level &other ) const;
         };
 
         std::array<Level, 3> levels;  //!< Stack of levels - three levels should be sufficient (e.g. part index, ring index, vertex index)

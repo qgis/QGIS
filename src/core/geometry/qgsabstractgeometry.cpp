@@ -536,3 +536,8 @@ const QgsAbstractGeometry *QgsGeometryConstPartIterator::next()
   n = i++;
   return *n;
 }
+
+bool QgsAbstractGeometry::vertex_iterator::Level::operator==( const QgsAbstractGeometry::vertex_iterator::Level &other ) const
+{
+  return g == other.g && index == other.index;
+}
