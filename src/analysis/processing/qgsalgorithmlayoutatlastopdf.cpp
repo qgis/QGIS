@@ -149,7 +149,7 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
                                 previousSortFeatures,
                                 previousSortAscending,
                                 previousSortExpression,
-                                previousMapItemLayersReset ]()
+                                &previousMapItemLayersReset ]()
   {
     QString error;
     atlas->setEnabled( previousEnabled );
@@ -168,6 +168,7 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
         QgsLayoutItemMap *map = dynamic_cast<QgsLayoutItemMap *>( item );
         if ( map && previousMapItemLayersReset.contains( map->uuid() ) )
         {
+          map->setKeepLayerSet( false );
           map->setLayers( QList<QgsMapLayer *>() );
         }
       }
@@ -237,6 +238,7 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
       if ( map && !map->followVisibilityPreset() && !map->keepLayerSet() )
       {
         previousMapItemLayersReset << map->uuid();
+        map->setKeepLayerSet( true );
         map->setLayers( layers );
       }
     }
