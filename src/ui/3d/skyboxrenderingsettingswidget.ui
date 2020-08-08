@@ -37,7 +37,7 @@
    <item row="2" column="0">
     <widget class="QGroupBox" name="faceTexturesGroupBox">
      <property name="title">
-      <string>6 seperate faces:</string>
+      <string>6 separate faces:</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_5">
       <item row="0" column="0">

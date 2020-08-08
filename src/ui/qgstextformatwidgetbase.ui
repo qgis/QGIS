@@ -5919,7 +5919,7 @@ font-style: italic;</string>
                             <bool>true</bool>
                            </property>
                            <property name="text">
-                            <string>When activated, featuring acting as obstacles discourage labels and diagrams from covering them.</string>
+                            <string>When activated, features acting as obstacles discourage labels and diagrams from covering them.</string>
                            </property>
                           </widget>
                          </item>

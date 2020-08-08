@@ -1916,7 +1916,7 @@ bool QgsStyleManagerDialog::addSymbol3D( const QString &type )
     if ( name.isEmpty() )
     {
       QMessageBox::warning( this, tr( "Save 3D Symbol" ),
-                            tr( "Cannot save 3d symbols without a name. Enter a name." ) );
+                            tr( "Cannot save 3D symbols without a name. Enter a name." ) );
     }
     else if ( mStyle->symbol3DNames().contains( name ) )
     {

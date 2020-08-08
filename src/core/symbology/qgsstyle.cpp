@@ -778,7 +778,7 @@ bool QgsStyle::load( const QString &filename )
   }
 
   {
-    QgsScopedRuntimeProfile profile( tr( "Load 3d symbols shapes" ) );
+    QgsScopedRuntimeProfile profile( tr( "Load 3D symbols shapes" ) );
     query = QgsSqlite3Mprintf( "SELECT * FROM symbol3d" );
     statement = mCurrentDB.prepare( query, rc );
 
