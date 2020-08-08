@@ -101,6 +101,12 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBa
   connect( mLayerCombo, &QgsMapLayerComboBox::layerChanged, this, &QgsLayerStylingWidget::setLayer );
   connect( mLiveApplyCheck, &QAbstractButton::toggled, this, &QgsLayerStylingWidget::liveApplyToggled );
 
+  mLayerCombo->setFilters( QgsMapLayerProxyModel::Filter::HasGeometry
+                           | QgsMapLayerProxyModel::Filter::RasterLayer
+                           | QgsMapLayerProxyModel::Filter::PluginLayer
+                           | QgsMapLayerProxyModel::Filter::MeshLayer
+                           | QgsMapLayerProxyModel::Filter::VectorTileLayer );
+
   mStackedWidget->setCurrentIndex( 0 );
 }
 
@@ -245,8 +251,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       break;
   }
 
-  const auto constMPageFactories = mPageFactories;
-  for ( QgsMapLayerConfigWidgetFactory *factory : constMPageFactories )
+  for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mPageFactories ) )
   {
     if ( factory->supportsStyleDock() && factory->supportsLayer( layer ) )
     {
