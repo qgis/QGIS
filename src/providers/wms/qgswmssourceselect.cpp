@@ -288,8 +288,8 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
 
   bool first = true;
   QSet<QString> alreadyAddedLabels;
-  const auto constSupportedImageEncodings = capabilities.supportedImageEncodings();
-  for ( const QString &encoding : constSupportedImageEncodings )
+  const auto supportedImageEncodings = capabilities.supportedImageEncodings();
+  for ( const QString &encoding : supportedImageEncodings )
   {
     int id = mMimeMap.value( encoding, -1 );
     if ( id < 0 )
@@ -540,8 +540,7 @@ void QgsWMSSourceSelect::addButtonClicked()
 
     const QgsWmtsTileLayer *layer = nullptr;
 
-    const auto constMTileLayers = mTileLayers;
-    for ( const QgsWmtsTileLayer &l : constMTileLayers )
+    for ( const QgsWmtsTileLayer &l : qgis::as_const( mTileLayers ) )
     {
       if ( l.identifier == layers.join( QStringLiteral( "," ) ) )
       {
@@ -1032,7 +1031,7 @@ void QgsWMSSourceSelect::collectSelectedLayers( QStringList &layers, QStringList
 
 void QgsWMSSourceSelect::collectDimensions( QStringList &layers, QgsDataSourceUri &uri )
 {
-  for ( const QgsWmsLayerProperty layerProperty : mLayerProperties )
+  for ( const QgsWmsLayerProperty &layerProperty : qgis::as_const( mLayerProperties ) )
   {
     if ( layerProperty.name == layers.join( ',' ) )
     {
