@@ -28,8 +28,8 @@ cmake -GNinja \
  -DCMAKE_C_COMPILER=/usr/bin/clang \
  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
  -DADD_CLAZY_CHECKS=ON \
+ -DWERROR=TRUE \
  ..
 
- # -DWERROR=TRUE \
 
 ninja
