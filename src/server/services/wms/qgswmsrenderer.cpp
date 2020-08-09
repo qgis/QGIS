@@ -622,31 +622,32 @@ namespace QgsWms
             renderLayers = c->project()->mapThemeCollection()->masterVisibleLayers();
 
           // get highlight layers, if any
-          bool has_highlight_layer = false;
-          for ( auto layer : mapSettings.layers() )
+          bool hasHighlightLayer = false;
+          const QList<QgsMapLayer *> layers = mapSettings.layers();
+          for ( QgsMapLayer *layer : layers )
           {
 
             if ( RE_HIGHLIGHT_LAYER.match( layer->name() ).hasMatch() )
             {
-              has_highlight_layer = true;
+              hasHighlightLayer = true;
               auxHighlightLayers << layer;
               c->project()->layerTreeRoot()->insertLayer( 0, layer );
             }
 
           }
 
-          if ( has_highlight_layer )
+          if ( hasHighlightLayer )
           {
 
             // create a new theme with all layers
             QgsMapThemeCollection::MapThemeRecord rec;
             // layers from the theme
-            for ( auto layer : renderLayers )
+            for ( QgsMapLayer *layer : qgis::as_const( renderLayers ) )
             {
               rec.addLayerRecord( QgsMapThemeCollection::MapThemeLayerRecord( layer ) );
             }
             // highlight layers
-            for ( auto layer : auxHighlightLayers )
+            for ( QgsMapLayer *layer : qgis::as_const( auxHighlightLayers ) )
             {
               rec.addLayerRecord( QgsMapThemeCollection::MapThemeLayerRecord( layer ) );
             }

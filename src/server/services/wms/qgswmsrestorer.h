@@ -31,7 +31,7 @@ class QgsMapLayer;
  * \ingroup server
  * RAII class to restore layer configuration on destruction (opacity,
  * filters, ...)
- * \since QGIS 3.0
+ * \since QGIS 3.14
  */
 class QgsLayerRestorer
 {
@@ -69,7 +69,7 @@ class QgsLayerRestorer
 /**
  * \ingroup server
  * RAII class to restore project configuration on destruction
- * \since QGIS 3.0
+ * \since QGIS 3.16
  */
 class QgsProjectRestorer
 {
@@ -77,9 +77,8 @@ class QgsProjectRestorer
 
     /**
      * Constructor for QgsProjectRestorer.
-     * \param project
      */
-    QgsProjectRestorer( const QgsProject *project );
+    QgsProjectRestorer( QgsProject *project );
 
     /**
      * Destructor.

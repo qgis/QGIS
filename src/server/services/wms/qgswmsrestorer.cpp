@@ -140,9 +140,9 @@ QgsLayerRestorer::~QgsLayerRestorer()
   }
 }
 
-QgsProjectRestorer::QgsProjectRestorer( const QgsProject *project )
+QgsProjectRestorer::QgsProjectRestorer( QgsProject *project )
+  : mThemeCollection( project->mapThemeCollection() )
 {
-  mThemeCollection = const_cast<QgsProject *>( project )->mapThemeCollection( );
 }
 
 QgsProjectRestorer::~QgsProjectRestorer()
@@ -166,7 +166,7 @@ namespace QgsWms
 {
   QgsWmsRestorer::QgsWmsRestorer( const QgsWmsRenderContext &context )
     : mLayerRestorer( context.layers() ),
-      mProjectRestorer( context.project() )
+      mProjectRestorer( const_cast<QgsProject *>( context.project() ) )
   {
   }
 }
