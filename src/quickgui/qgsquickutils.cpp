@@ -334,11 +334,12 @@ void QgsQuickUtils::formatToUSCSDistance( double srcDistance,
 
 QString QgsQuickUtils::dumpScreenInfo() const
 {
-  QRect rec = QApplication::desktop()->screenGeometry();
-  int dpiX = QApplication::desktop()->physicalDpiX();
-  int dpiY = QApplication::desktop()->physicalDpiY();
-  int height = rec.height();
-  int width = rec.width();
+  // take the first top level window
+  QScreen *screen = QGuiApplication::topLevelWindows().at( 0 )->screen();
+  double dpiX = screen->physicalDotsPerInchX();
+  double dpiY = screen->physicalDotsPerInchY();
+  int height = screen->geometry().height();
+  int width = screen->geometry().width();
   double sizeX = static_cast<double>( width ) / dpiX * 25.4;
   double sizeY = static_cast<double>( height ) / dpiY * 25.4;
 
