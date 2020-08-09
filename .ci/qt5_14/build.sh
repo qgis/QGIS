@@ -25,10 +25,11 @@ cmake -GNinja \
  -DWITH_ORACLE=OFF \
  -DDISABLE_DEPRECATED=ON \
  -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \
- -DWERROR=TRUE \
  -DCMAKE_C_COMPILER=/usr/bin/clang \
  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
  -DADD_CLAZY_CHECKS=ON \
  ..
+
+ # -DWERROR=TRUE \
 
 ninja
