@@ -54,14 +54,14 @@ QString QgsLayoutAtlasToImageAlgorithm::groupId() const
 
 QString QgsLayoutAtlasToImageAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Exports an atlas layout as a set of image." );
+  return QObject::tr( "Exports an atlas layout as a set of images." );
 }
 
 QString QgsLayoutAtlasToImageAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm outputs an atlas layout to a set of image files (e.g. PNG or JPEG images).\n\n"
                       "If a coverage layer is set, the selected layout's atlas settings exposed in this algorithm "
-                      "will be overwritten. In this case, an empty filter or sort by expressing will turn those "
+                      "will be overwritten. In this case, an empty filter or sort by expression will turn those "
                       "settings off." );
 }
 
