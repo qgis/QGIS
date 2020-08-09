@@ -83,8 +83,8 @@ void QgsLayoutAtlasToImageAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( layersParam.release() );
 
   QStringList imageFormats;
-  const auto supportedImageFormats { QImageWriter::supportedImageFormats() };
-  for ( const auto format : QImageWriter::supportedImageFormats() )
+  const QList<QByteArray> supportedImageFormats { QImageWriter::supportedImageFormats() };
+  for ( const QByteArray &format : supportedImageFormats )
   {
     if ( format == QByteArray( "svg" ) )
       continue;
@@ -219,8 +219,8 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
   QString fileName = QDir( directory ).filePath( QStringLiteral( "atlas" ) );
 
   QStringList imageFormats;
-  const auto supportedImageFormats { QImageWriter::supportedImageFormats() };
-  for ( const auto format : QImageWriter::supportedImageFormats() )
+  const QList<QByteArray> supportedImageFormats { QImageWriter::supportedImageFormats() };
+  for ( const QByteArray &format : supportedImageFormats )
   {
     if ( format == QByteArray( "svg" ) )
       continue;
