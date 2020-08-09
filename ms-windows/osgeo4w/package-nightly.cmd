@@ -174,6 +174,7 @@ cmake --build %BUILDDIR% --target %TARGET%Build --config %BUILDCONF%
 set /P tag=<%BUILDDIR%\Testing\TAG
 findstr "<Error>" %BUILDDIR%\Testing\%tag%\Build.xml >nul
 if not errorlevel 1 (
+	type %BUILDDIR%\Testing\Temporary\LastTest.log
 	cmake --build %BUILDDIR% --target %TARGET%Submit --config %BUILDCONF%
 	if errorlevel 1 echo SUBMITTING BUILD ERRORS WAS NOT SUCCESSFUL.
 	echo build failed
