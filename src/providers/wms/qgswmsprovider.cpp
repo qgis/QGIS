@@ -178,6 +178,19 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
         temporalCapabilities()->setAvailableReferenceTemporalRange( mSettings.mFixedReferenceRange );
       }
     }
+
+    if ( mSettings.mCrsId.isEmpty() && !mSettings.mActiveSubLayers.empty() )
+    {
+      // if crs not specified via layer uri, use the first available from server capabilities
+      for ( const QgsWmsLayerProperty &property : qgis::as_const( mCaps.mLayersSupported ) )
+      {
+        if ( property.name == mSettings.mActiveSubLayers[0] )
+        {
+          mSettings.mCrsId = property.preferredAvailableCrs();
+          break;
+        }
+      }
+    }
   }
 
   // setImageCrs is using mTiled !!!
