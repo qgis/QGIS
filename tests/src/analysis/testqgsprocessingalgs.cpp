@@ -4535,7 +4535,7 @@ void TestQgsProcessingAlgs::exportAtlasLayoutPng()
   {
     QDir dir( QDir::tempPath() + "/my_atlas" );
     const QStringList files = dir.entryList( QStringList() << "*.*", QDir::Files );
-    for ( const QString file : files )
+    for ( const QString &file : files )
       QFile::remove( QDir::tempPath() + "/my_atlas/" + file );
   }
 
