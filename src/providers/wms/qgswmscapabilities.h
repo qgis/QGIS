@@ -367,6 +367,24 @@ struct QgsWmsLayerProperty
 
     return false;
   }
+
+  /**
+   * Attempts to return a preferred CRS from the list of available CRS definitions.
+   *
+   * Prioritises the first listed CRS, unless it's a block listed value.
+   */
+  QString preferredAvailableCrs() const
+  {
+    static QSet< QString > sSkipList { QStringLiteral( "EPSG:900913" ) };
+    for ( const QString &candidate : crs )
+    {
+      if ( sSkipList.contains( candidate ) )
+        continue;
+
+      return candidate;
+    }
+    return crs.value( 0 );
+  }
 };
 
 /**
