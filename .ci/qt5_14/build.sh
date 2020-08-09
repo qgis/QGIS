@@ -3,7 +3,7 @@
 mkdir /usr/src/qgis/build
 cd /usr/src/qgis/build || exit -1
 
-ccache -S
+ccache -s
 
 cmake -GNinja \
  -DUSE_CCACHE=ON \
@@ -34,4 +34,4 @@ cmake -GNinja \
 
 ninja
 
-ccache -S
+ccache -s
