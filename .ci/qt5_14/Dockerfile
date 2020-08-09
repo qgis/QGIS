@@ -3,6 +3,7 @@ MAINTAINER Matthias Kuhn <matthias@opengis.ch>
 
 RUN dnf -y install \
     bison \
+    ccache \
     clang \
     clazy \
     exiv2-devel \

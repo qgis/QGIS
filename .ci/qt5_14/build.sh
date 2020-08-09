@@ -3,9 +3,10 @@
 mkdir /usr/src/qgis/build
 cd /usr/src/qgis/build || exit -1
 
+ccache -S
 
 cmake -GNinja \
- -DUSE_CCACHE=OFF \
+ -DUSE_CCACHE=ON \
  -DWITH_QUICK=ON \
  -DWITH_3D=ON \
  -DWITH_STAGED_PLUGINS=ON \
@@ -31,5 +32,6 @@ cmake -GNinja \
  -DWERROR=TRUE \
  ..
 
-
 ninja
+
+ccache -S

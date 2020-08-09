@@ -21,6 +21,14 @@ jobs:
         run: |
           docker build -t qgis_build_deps -f .ci/qt5_14/Dockerfile .
 
+
+      - name: Cache
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.ccache
+          key: qt514
+
       - name: Run build
         run: |
-          docker run -v $(pwd):/usr/src/qgis qgis_build_deps /usr/src/qgis/.ci/qt5_14/build.sh
+          docker run -v ~/.ccache:/root/ccache -v $(pwd):/usr/src/qgis qgis_build_deps /usr/src/qgis/.ci/qt5_14/build.sh
