@@ -14,7 +14,8 @@
  ***************************************************************************/
 
 #include <QApplication>
-#include <QDesktopWidget>
+#include <QWindow>
+#include <QScreen>
 #include <QString>
 
 #include "qgis.h"
