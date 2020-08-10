@@ -21,8 +21,8 @@ namespace MDAL
 
   typedef struct
   {
-    double x;
-    double y;
+    double x = std::numeric_limits<double>::quiet_NaN();
+    double y = std::numeric_limits<double>::quiet_NaN();
     double z = 0.0; // Bed elevation
 
   } Vertex;
