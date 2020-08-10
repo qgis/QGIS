@@ -506,7 +506,7 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
     {
       case DnDTreeItemData::Relation:
       {
-        receiver->clearSelection();
+        receiver->selectFirstMatchingItem( itemData );
         if ( layout == QgsEditFormConfig::EditorLayout::TabLayout )
           loadAttributeWidgetEdit();
         break;
@@ -826,6 +826,32 @@ void QgsAttributesFormProperties::apply()
   editFormConfig.setInitCode( mInitCode );
 
   editFormConfig.setSuppress( static_cast<QgsEditFormConfig::FeatureFormSuppress>( mFormSuppressCmbBx->currentIndex() ) );
+
+  // write the legacy config of relation widgets to support settings read by the API
+  QTreeWidgetItem *relationContainer = mAvailableWidgetsTree->invisibleRootItem()->child( 1 );
+
+  for ( int i = 0; i < relationContainer->childCount(); i++ )
+  {
+    QTreeWidgetItem *relationItem = relationContainer->child( i );
+    DnDTreeItemData itemData = relationItem->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
+
+    for ( int t = 0; t < mFormLayoutTree->invisibleRootItem()->childCount(); t++ )
+    {
+      QTreeWidgetItem *tabItem = mFormLayoutTree->invisibleRootItem()->child( t );
+      const DnDTreeItemData tabItemData = tabItem->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
+
+      if ( tabItemData.type() == itemData.type() && tabItemData.name() == itemData.name() )
+      {
+        QVariantMap cfg;
+
+        cfg[QStringLiteral( "nm-rel" )] = tabItemData.relationEditorConfiguration().cardinality;
+        cfg[QStringLiteral( "force-suppress-popup" )] = tabItemData.relationEditorConfiguration().forceSuppressFormPopup;
+
+        editFormConfig.setWidgetConfig( tabItemData.name(), cfg );
+        break;
+      }
+    }
+  }
 
   mLayer->setEditFormConfig( editFormConfig );
 }

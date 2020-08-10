@@ -155,12 +155,37 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
 
   QgsAttributeEditorContext myContext( QgsAttributeEditorContext( context(), mRelation, QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed ) );
 
+  // read the legacy config of force-suppress-popup to support settings made by the API
+  if ( config( QStringLiteral( "force-suppress-popup" ), false ).toBool() )
+  {
+    const_cast<QgsVectorLayerTools *>( myContext.vectorLayerTools() )->setForceSuppressFormPopup( true );
+  }
+
   /* TODO: this seems to have no effect
   if ( config( QStringLiteral( "hide-save-child-edits" ), false ).toBool() )
   {
     w->setShowSaveChildEditsButton( false );
   }
   */
+
+  // read the legacy config of nm-rel to support settings made by the API
+  mNmRelation = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "nm-rel" ) ).toString() );
+
+  // If this widget is already embedded by the same relation, reduce functionality
+  const QgsAttributeEditorContext *ctx = &context();
+  do
+  {
+    if ( ( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
+         || ( mNmRelation.isValid() && ctx->relation().name() == mNmRelation.name() ) )
+    {
+      w->setVisible( false );
+      break;
+    }
+    ctx = ctx->parentContext();
+  }
+  while ( ctx );
+
+  w->setRelations( mRelation, mNmRelation );
 
   w->setEditorContext( myContext );
 
