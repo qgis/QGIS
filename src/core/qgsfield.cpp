@@ -252,6 +252,13 @@ QString QgsField::displayString( const QVariant &v ) const
   // Special treatment for numeric types if group separator is set or decimalPoint is not a dot
   if ( d->type == QVariant::Double )
   {
+    // if value doesn't contain a double (a default value expression for instance),
+    // apply no transformation
+    bool ok;
+    v.toDouble( &ok );
+    if ( !ok )
+      return v.toString();
+
     // Locales with decimal point != '.' or that require group separator: use QLocale
     if ( QLocale().decimalPoint() != '.' ||
          !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
