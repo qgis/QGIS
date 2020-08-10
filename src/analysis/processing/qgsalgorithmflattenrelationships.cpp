@@ -29,7 +29,7 @@ QString QgsFlattenRelationshipsAlgorithm::name() const
 
 QString QgsFlattenRelationshipsAlgorithm::displayName() const
 {
-  return QObject::tr( "Flatten relationships" );
+  return QObject::tr( "Flatten relationship" );
 }
 
 QStringList QgsFlattenRelationshipsAlgorithm::tags() const
@@ -49,12 +49,12 @@ QString QgsFlattenRelationshipsAlgorithm::groupId() const
 
 QString QgsFlattenRelationshipsAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Flattens all relationships for a vector layer." );
+  return QObject::tr( "Flatten a relationship for a vector layer." );
 }
 
 QString QgsFlattenRelationshipsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm flattens all relationships for a vector layer, exporting a single layer "
+  return QObject::tr( "This algorithm flattens a relationship for a vector layer, exporting a single layer "
                       "containing one master feature per related feature. This master feature contains all "
                       "the attributes for the related features." );
 }
@@ -90,8 +90,7 @@ bool QgsFlattenRelationshipsAlgorithm::prepareAlgorithm( const QVariantMap &para
   const QList<QgsRelation> relations = project->relationManager()->referencedRelations( layer );
   if ( relations.size() > 1 )
     throw QgsProcessingException( QObject::tr( "Found %1 relations. This algorithm currently supports only a single relation." ).arg( relations.size() ) );
-
-  if ( relations.empty() )
+  else if ( relations.empty() )
     throw QgsProcessingException( QObject::tr( "No relations found." ) );
 
   mRelation = relations.at( 0 );
