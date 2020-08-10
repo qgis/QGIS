@@ -163,6 +163,17 @@ void QgsServerSettings::initSettings()
                                    };
   mSettings[ sIgnoreBadLayers.envVar ] = sIgnoreBadLayers;
 
+  // trust layer metadata
+  const Setting sTrustLayerMetadata = { QgsServerSettingsEnv::QGIS_SERVER_TRUST_LAYER_METADATA,
+                                        QgsServerSettingsEnv::DEFAULT_VALUE,
+                                        QStringLiteral( "Trust layer metadata" ),
+                                        QString(),
+                                        QVariant::Bool,
+                                        QVariant( false ),
+                                        QVariant()
+                                      };
+  mSettings[ sTrustLayerMetadata.envVar ] = sTrustLayerMetadata;
+
   // show group separator
   const Setting sShowGroupSeparator = { QgsServerSettingsEnv::QGIS_SERVER_SHOW_GROUP_SEPARATOR,
                                         QgsServerSettingsEnv::DEFAULT_VALUE,
@@ -433,4 +444,9 @@ qlonglong QgsServerSettings::apiWfs3MaxLimit() const
 bool QgsServerSettings::ignoreBadLayers() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_IGNORE_BAD_LAYERS ).toBool();
+}
+
+bool QgsServerSettings::trustLayerMetadata() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_TRUST_LAYER_METADATA ).toBool();
 }

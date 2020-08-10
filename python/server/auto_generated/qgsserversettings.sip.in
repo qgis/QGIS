@@ -186,6 +186,16 @@ variable QGIS_SERVER_IGNORE_BAD_LAYERS.
 .. versionadded:: 3.10.5
 %End
 
+    bool trustLayerMetadata() const;
+%Docstring
+Returns ``True`` if the reading flag trust layer metadata is activated.
+
+The default value is ``False``, this value can be changed by setting the environment
+variable QGIS_SERVER_TRUST_LAYER_METADATA.
+
+.. versionadded:: 3.16
+%End
+
 };
 
 /************************************************************************

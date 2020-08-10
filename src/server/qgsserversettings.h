@@ -67,7 +67,8 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_WMS_MAX_HEIGHT, //!< Maximum height for a WMS request. The most conservative between this and the project one is used (since QGIS 3.6.2)
       QGIS_SERVER_WMS_MAX_WIDTH, //!< Maximum width for a WMS request. The most conservative between this and the project one is used (since QGIS 3.6.2)
       QGIS_SERVER_API_RESOURCES_DIRECTORY, //!< Base directory where HTML templates and static assets (e.g. images, js and css files) are searched for (since QGIS 3.10).
-      QGIS_SERVER_API_WFS3_MAX_LIMIT //!< Maximum value for "limit" in a features request, defaults to 10000 (since QGIS 3.10).
+      QGIS_SERVER_API_WFS3_MAX_LIMIT, //!< Maximum value for "limit" in a features request, defaults to 10000 (since QGIS 3.10).
+      QGIS_SERVER_TRUST_LAYER_METADATA //!< Trust layer metadata (since QGIS 3.16).
     };
     Q_ENUM( EnvVar )
 };
@@ -233,6 +234,16 @@ class SERVER_EXPORT QgsServerSettings
      * \since QGIS 3.10.5
      */
     bool ignoreBadLayers() const;
+
+    /**
+     * Returns TRUE if the reading flag trust layer metadata is activated.
+     *
+     * The default value is FALSE, this value can be changed by setting the environment
+     * variable QGIS_SERVER_TRUST_LAYER_METADATA.
+     *
+     * \since QGIS 3.16
+     */
+    bool trustLayerMetadata() const;
 
   private:
     void initSettings();
