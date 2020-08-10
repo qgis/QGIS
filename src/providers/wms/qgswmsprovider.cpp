@@ -3790,6 +3790,14 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh, const 
 
 QgsImageFetcher *QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings *mapSettings )
 {
+  if ( mLegendGraphicFetchErrored && !mSettings.mEnableContextualLegend )
+  {
+    // if a previous request to fetch the legend failed, don't bother trying to fetch it again!
+    // Otherwise misconfigured services which return flawed images will just keep retrying to
+    // fetch on every map extent change operation...
+    return nullptr;
+  }
+
   double scale;
   QgsRectangle mapExtent;
   if ( mapSettings && mSettings.mEnableContextualLegend )
@@ -3836,6 +3844,10 @@ QgsImageFetcher *QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings *
     fetcher->setProperty( "legendScale", QVariant::fromValue( scale ) );
     fetcher->setProperty( "legendExtent", QVariant::fromValue( mapExtent.toRectF() ) );
     connect( fetcher, &QgsImageFetcher::finish, this, &QgsWmsProvider::getLegendGraphicReplyFinished );
+    connect( fetcher, &QgsImageFetcher::error, this, [ = ]( const QString & )
+    {
+      mLegendGraphicFetchErrored = true;
+    } );
     return fetcher;
   }
 }
