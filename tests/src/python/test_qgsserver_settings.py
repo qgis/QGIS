@@ -131,6 +131,21 @@ class TestQgsServerSettings(unittest.TestCase):
         self.assertEqual(self.settings.cacheDirectory(), "/tmp/fake")
         os.environ.pop(env)
 
+    def test_env_trust_layer_metadata(self):
+        env = "QGIS_SERVER_TRUST_LAYER_METADATA"
+
+        self.assertFalse(self.settings.trustLayerMetadata())
+
+        os.environ[env] = "1"
+        self.settings.load()
+        self.assertTrue(self.settings.trustLayerMetadata())
+        os.environ.pop(env)
+
+        os.environ[env] = "0"
+        self.settings.load()
+        self.assertFalse(self.settings.trustLayerMetadata())
+        os.environ.pop(env)
+
     def test_priority(self):
         env = "QGIS_OPTIONS_PATH"
         dpath = "conf0"
