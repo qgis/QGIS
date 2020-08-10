@@ -23,8 +23,6 @@
 #include "qgsprocessingoutputs.h"
 #include "qgslayoutexporter.h"
 
-#include <QImageWriter>
-
 ///@cond PRIVATE
 
 QString QgsLayoutAtlasToPdfAlgorithm::name() const
@@ -128,52 +126,12 @@ QgsLayoutAtlasToPdfAlgorithm *QgsLayoutAtlasToPdfAlgorithm::createInstance() con
 QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   // this needs to be done in main thread, layouts are not thread safe
-  QgsPrintLayout *layout = parameterAsLayout( parameters, QStringLiteral( "LAYOUT" ), context );
-  if ( !layout )
+  QgsPrintLayout *l = parameterAsLayout( parameters, QStringLiteral( "LAYOUT" ), context );
+  if ( !l )
     throw QgsProcessingException( QObject::tr( "Cannot find layout with name \"%1\"" ).arg( parameters.value( QStringLiteral( "LAYOUT" ) ).toString() ) );
 
+  std::unique_ptr< QgsPrintLayout > layout( l->clone() );
   QgsLayoutAtlas *atlas = layout->atlas();
-
-  QgsVectorLayer *previousCoverageLayer = atlas->coverageLayer();
-  const bool previousEnabled = atlas->enabled();
-  const QString previousFilterExpression = atlas->filterExpression();
-  const bool previousSortFeatures = atlas->sortFeatures();
-  const bool previousSortAscending = atlas->sortAscending();
-  const QString previousSortExpression = atlas->sortExpression();
-  QStringList previousMapItemLayersReset;
-
-  auto restoreAtlas = [ layout, atlas,
-                                previousCoverageLayer,
-                                previousEnabled,
-                                previousFilterExpression,
-                                previousSortFeatures,
-                                previousSortAscending,
-                                previousSortExpression,
-                                &previousMapItemLayersReset ]()
-  {
-    QString error;
-    atlas->setEnabled( previousEnabled );
-    atlas->setCoverageLayer( previousCoverageLayer );
-    atlas->setFilterExpression( previousFilterExpression, error );
-    atlas->setSortFeatures( previousSortFeatures );
-    atlas->setSortAscending( previousSortAscending );
-    atlas->setSortExpression( previousSortExpression );
-
-    if ( previousMapItemLayersReset.size() > 0 )
-    {
-      const QList<QGraphicsItem *> items = layout->items();
-      for ( QGraphicsItem *graphicsItem : items )
-      {
-        QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
-        QgsLayoutItemMap *map = dynamic_cast<QgsLayoutItemMap *>( item );
-        if ( map && previousMapItemLayersReset.contains( map->uuid() ) )
-        {
-          map->setKeepLayerSet( false );
-          map->setLayers( QList<QgsMapLayer *>() );
-        }
-      }
-    }
-  };
 
   QString expression, error;
   QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "COVERAGE_LAYER" ), context );
@@ -186,7 +144,6 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
     atlas->setFilterExpression( expression, error );
     if ( !expression.isEmpty() && !error.isEmpty() )
     {
-      restoreAtlas();
       throw QgsProcessingException( QObject::tr( "Error setting atlas filter expression" ) );
     }
     error.clear();
@@ -209,7 +166,7 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
     throw QgsProcessingException( QObject::tr( "Layout being export doesn't have an enabled atlas" ) );
   }
 
-  QgsLayoutExporter exporter( layout );
+  QgsLayoutExporter exporter( layout.get() );
   QgsLayoutExporter::PdfExportSettings settings;
 
   if ( parameters.value( QStringLiteral( "DPI" ) ).isValid() )
@@ -237,7 +194,6 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
       QgsLayoutItemMap *map = dynamic_cast<QgsLayoutItemMap *>( item );
       if ( map && !map->followVisibilityPreset() && !map->keepLayerSet() )
       {
-        previousMapItemLayersReset << map->uuid();
         map->setKeepLayerSet( true );
         map->setLayers( layers );
       }
@@ -245,11 +201,7 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
   }
 
   const QString dest = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
-
-  QgsLayoutExporter::ExportResult result = exporter.exportToPdf( atlas, dest, settings, error, feedback );
-  restoreAtlas();
-
-  switch ( result )
+  switch ( exporter.exportToPdf( atlas, dest, settings, error, feedback ) )
   {
     case QgsLayoutExporter::Success:
     {
