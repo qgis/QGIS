@@ -4509,7 +4509,7 @@ void QgsWmsLegendDownloadHandler::startUrl( const QUrl &url )
 
 void QgsWmsLegendDownloadHandler::sendError( const QString &msg )
 {
-  QgsDebugMsgLevel( QStringLiteral( "emitting error: %1" ).arg( msg ), 2 );
+  QgsMessageLog::logMessage( msg, tr( "WMS" ) );
   Q_ASSERT( mReply );
   mReply->deleteLater();
   mReply = nullptr;
