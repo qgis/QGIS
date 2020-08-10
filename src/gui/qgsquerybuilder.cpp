@@ -74,12 +74,12 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
 
   pbn = new QPushButton( tr( "&Save…" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
-  pbn->setToolTip( tr( "Save query to an xml file" ) );
+  pbn->setToolTip( tr( "Save query to QQF file" ) );
   connect( pbn, &QAbstractButton::clicked, this, &QgsQueryBuilder::saveQuery );
 
   pbn = new QPushButton( tr( "&Load…" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
-  pbn->setToolTip( tr( "Load query from xml file" ) );
+  pbn->setToolTip( tr( "Load query from QQF file" ) );
   connect( pbn, &QAbstractButton::clicked, this, &QgsQueryBuilder::loadQuery );
 
   setupGuiViews();
@@ -530,58 +530,6 @@ void QgsQueryBuilder::loadQuery()
     return;
   }
 
-  QString newQueryText = query;
-
-#if 0
-  // TODO: implement with visitor pattern in QgsExpression
-
-  QStringList attributes = searchTree->referencedColumns();
-  QMap< QString, QString> attributesToReplace;
-  QStringList existingAttributes;
-
-  //get all existing fields
-  QMap<QString, int>::const_iterator fieldIt = mFieldMap.constBegin();
-  for ( ; fieldIt != mFieldMap.constEnd(); ++fieldIt )
-  {
-    existingAttributes.push_back( fieldIt.key() );
-  }
-
-  //if a field does not exist, ask what field should be used instead
-  QStringList::const_iterator attIt = attributes.constBegin();
-  for ( ; attIt != attributes.constEnd(); ++attIt )
-  {
-    //test if attribute is there
-    if ( !mFieldMap.contains( attIt ) )
-    {
-      bool ok;
-      QString replaceAttribute = QInputDialog::getItem( 0, tr( "Select Attribute" ), tr( "There is no attribute '%1' in the current vector layer. Please select an existing attribute." ).arg( *attIt ),
-                                 existingAttributes, 0, false, &ok );
-      if ( !ok || replaceAttribute.isEmpty() )
-      {
-        return;
-      }
-      attributesToReplace.insert( *attIt, replaceAttribute );
-    }
-  }
-
-  //Now replace all the string in the query
-  QList<QgsSearchTreeNode *> columnRefList = searchTree->columnRefNodes();
-  QList<QgsSearchTreeNode *>::iterator columnIt = columnRefList.begin();
-  for ( ; columnIt != columnRefList.end(); ++columnIt )
-  {
-    QMap< QString, QString>::const_iterator replaceIt = attributesToReplace.find( ( *columnIt )->columnRef() );
-    if ( replaceIt != attributesToReplace.constEnd() )
-    {
-      ( *columnIt )->setColumnRef( replaceIt.value() );
-    }
-  }
-
-  if ( attributesToReplace.size() > 0 )
-  {
-    newQueryText = query;
-  }
-#endif
-
   txtSQL->clear();
-  txtSQL->insertText( newQueryText );
+  txtSQL->insertText( query );
 }
