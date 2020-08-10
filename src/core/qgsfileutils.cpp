@@ -191,7 +191,7 @@ QStringList QgsFileUtils::findFile( const QString &file, const QString &basePath
 
 
     const QFileInfoList subdirs = folder.entryInfoList( QDir::AllDirs );
-    for ( const QFileInfo subdir : subdirs )
+    for ( const QFileInfo &subdir : subdirs )
     {
       if ( ! searchedFolder.contains( subdir.absolutePath() ) )
       {

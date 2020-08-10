@@ -472,7 +472,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
       }
 
       double round = std::round( dbl );
-      if ( round  > std::numeric_limits<long long>::max() || round < -std::numeric_limits<long long>::max() )
+      if ( round  > static_cast<double>( std::numeric_limits<long long>::max() ) || round < static_cast<double>( -std::numeric_limits<long long>::max() ) )
       {
         //double too large to fit in longlong
         v = QVariant( d->type );

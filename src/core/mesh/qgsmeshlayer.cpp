@@ -546,11 +546,11 @@ void QgsMeshLayer::applyClassificationOnScalarSettings( const QgsMeshDatasetGrou
       units = meta.extraOptions()[ QStringLiteral( "units" )];
 
     QVector<QVector<double>> bounds;
-    for ( const QString classe : classes )
+    for ( const QString &classe : classes )
     {
       QStringList boundsStr = classe.split( ',' );
       QVector<double> bound;
-      for ( const QString boundStr : boundsStr )
+      for ( const QString &boundStr : boundsStr )
         bound.append( boundStr.toDouble() );
       bounds.append( bound );
     }

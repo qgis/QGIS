@@ -683,7 +683,7 @@ QMenu *QgsMeshDatasetGroupSaveMenu::createSaveMenu( int groupIndex, QMenu *paren
   if ( providerMetadata )
   {
     const QList<QgsMeshDriverMetadata> allDrivers = providerMetadata->meshDriversMetadata();
-    for ( const QgsMeshDriverMetadata driver : allDrivers )
+    for ( const QgsMeshDriverMetadata &driver : allDrivers )
     {
       QString driverName = driver.name();
       QString suffix = driver.writeDatasetOnFileSuffix();
