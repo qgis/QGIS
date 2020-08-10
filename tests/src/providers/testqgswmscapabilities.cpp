@@ -79,6 +79,23 @@ class TestQgsWmsCapabilities: public QObject
                 QString( "http://www.example.com/fb.png" ) );
     }
 
+    void guessCrs()
+    {
+      QgsWmsCapabilities capabilities;
+
+      QFile file( QStringLiteral( TEST_DATA_DIR ) + "/provider/GetCapabilities2.xml" );
+      QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
+      const QByteArray content = file.readAll();
+      QVERIFY( content.size() > 0 );
+      const QgsWmsParserSettings config;
+
+      QVERIFY( capabilities.parseResponse( content, config ) );
+      QCOMPARE( capabilities.supportedLayers().size(), 5 );
+
+      QCOMPARE( capabilities.supportedLayers().at( 0 ).preferredAvailableCrs(), QStringLiteral( "EPSG:3857" ) );
+
+    }
+
     void wmstSettings()
     {
       QgsWmsSettings settings = QgsWmsSettings();
