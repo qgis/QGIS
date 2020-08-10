@@ -79,6 +79,179 @@ class TestQgsWmsCapabilities: public QObject
                 QString( "http://www.example.com/fb.png" ) );
     }
 
+<<<<<<< HEAD
+=======
+    void guessCrs()
+    {
+      QgsWmsCapabilities capabilities;
+
+      QFile file( QStringLiteral( TEST_DATA_DIR ) + "/provider/GetCapabilities2.xml" );
+      QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
+      const QByteArray content = file.readAll();
+      QVERIFY( content.size() > 0 );
+      const QgsWmsParserSettings config;
+
+      QVERIFY( capabilities.parseResponse( content, config ) );
+      QCOMPARE( capabilities.supportedLayers().size(), 5 );
+
+      QCOMPARE( capabilities.supportedLayers().at( 0 ).preferredAvailableCrs(), QStringLiteral( "EPSG:3857" ) );
+
+    }
+
+    void wmstSettings()
+    {
+      QgsWmsSettings settings = QgsWmsSettings();
+
+      QMap<QString, QString> map = { { "2020-02-13T12:00:00Z", "yyyy-MM-ddThh:mm:ssZ" },
+        { "2020-02-13", "yyyy-MM-dd" }
+      };
+      QMapIterator<QString, QString> iterator( map );
+
+      while ( iterator.hasNext() )
+      {
+        iterator.next();
+        QDateTime date = settings.parseWmstDateTimes( iterator.key() );
+        QCOMPARE( date.toString( iterator.value() ), iterator.key() );
+      }
+
+      QList<QString> resolutionList =
+      {
+        "P1D", "P1Y", "PT5M", "P1DT1H",
+        "P1Y1DT3S", "P1MT1M", "PT23H3M", "P26DT23H3M", "PT30S"
+      };
+
+      for ( QString resolutionText : resolutionList )
+      {
+        QgsWmstResolution resolution = settings.parseWmstResolution( resolutionText );
+        QCOMPARE( resolution.text(), resolutionText );
+      }
+
+      QgsWmstDimensionExtent extent = settings.parseTemporalExtent( QStringLiteral( "2020-01-02T00:00:00.000Z/2020-01-09T00:00:00.000Z/P1D" ) );
+      settings.setTimeDimensionExtent( extent );
+
+      QDateTime start = QDateTime( QDate( 2020, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC );
+      QDateTime end = QDateTime( QDate( 2020, 1, 9 ), QTime( 0, 0, 0 ), Qt::UTC );
+
+      QgsWmstResolution res;
+      res.day = 1;
+      QgsWmstResolution extentResolution = extent.datesResolutionList.at( 0 ).resolution;
+
+      QCOMPARE( extent.datesResolutionList.at( 0 ).dates.dateTimes.at( 0 ), start );
+      QCOMPARE( extent.datesResolutionList.at( 0 ).dates.dateTimes.at( 1 ), end );
+
+      QCOMPARE( extentResolution.text(), res.text() );
+
+      QDateTime firstClosest = settings.findLeastClosestDateTime( QDateTime( QDate( 2020, 1, 3 ), QTime( 16, 0, 0 ), Qt::UTC ) );
+      QDateTime firstExpected = QDateTime( QDate( 2020, 1, 3 ), QTime( 0, 0, 0 ), Qt::UTC );
+
+      QCOMPARE( firstClosest, firstExpected );
+
+      QDateTime secondClosest = settings.findLeastClosestDateTime( QDateTime( QDate( 2020, 1, 3 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QDateTime secondExpected = QDateTime( QDate( 2020, 1, 3 ), QTime( 0, 0, 0 ), Qt::UTC );
+
+      QCOMPARE( secondClosest, secondExpected );
+
+      QgsWmstDimensionExtent secondExtent = settings.parseTemporalExtent( QStringLiteral( "2020-01-02T00:00:00.000Z/2020-01-04T00:00:00.000Z/PT4H" ) );
+      settings.setTimeDimensionExtent( secondExtent );
+
+      QDateTime thirdClosest = settings.findLeastClosestDateTime( QDateTime( QDate( 2020, 1, 2 ), QTime( 5, 0, 0 ), Qt::UTC ) );
+      QDateTime thirdExpected = QDateTime( QDate( 2020, 1, 2 ), QTime( 4, 0, 0 ), Qt::UTC );
+
+      QCOMPARE( thirdClosest, thirdExpected );
+
+      QDateTime fourthClosest = settings.findLeastClosestDateTime( QDateTime( QDate( 2020, 1, 2 ), QTime( 3, 0, 0 ), Qt::UTC ) );
+      QDateTime fourthExpected = QDateTime( QDate( 2020, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC );
+
+      QCOMPARE( fourthClosest, fourthExpected );
+
+      QDateTime fifthClosest = settings.findLeastClosestDateTime( QDateTime( QDate( 2020, 1, 4 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QDateTime fifthExpected = QDateTime( QDate( 2020, 1, 4 ), QTime( 0, 0, 0 ), Qt::UTC );
+
+      QCOMPARE( fifthClosest, fifthExpected );
+
+      QDateTime outOfBoundsClosest = settings.findLeastClosestDateTime( QDateTime( QDate( 2020, 1, 5 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QDateTime outofBoundsExpected = QDateTime( QDate( 2020, 1, 5 ), QTime( 0, 0, 0 ), Qt::UTC );
+
+      QCOMPARE( outOfBoundsClosest, outofBoundsExpected );
+    }
+
+    void wmst11extent()
+    {
+      // test parsing WMS1.1 temporal extent
+      const QString layer = R"""(<Layer queryable="0" opaque="0" cascaded="0">
+                            <Name>danger_index</Name>
+                            <Title>danger_index</Title>
+                            <SRS>EPSG:4326</SRS>
+                            <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90" />
+                            <BoundingBox SRS="EPSG:4326"
+                                        minx="-180" miny="-90" maxx="180" maxy="90" />
+                            <Dimension name="time" units="ISO8601"/>
+                            <Extent name="time" default="2019-01-01" nearestValue="0">2018-01-01/2019-12-31</Extent>
+                        </Layer>)""";
+
+      QDomDocument doc;
+      doc.setContent( layer );
+      QgsWmsCapabilities cap;
+      QgsWmsLayerProperty prop;
+      cap.parseLayer( doc.documentElement(), prop );
+
+      QCOMPARE( prop.name, QStringLiteral( "danger_index" ) );
+      QCOMPARE( prop.dimensions.size(), 1 );
+      QCOMPARE( prop.dimensions.at( 0 ).name, QStringLiteral( "time" ) );
+      QCOMPARE( prop.dimensions.at( 0 ).defaultValue, QStringLiteral( "2019-01-01" ) );
+      QCOMPARE( prop.dimensions.at( 0 ).extent, QStringLiteral( "2018-01-01/2019-12-31" ) );
+      QCOMPARE( prop.dimensions.at( 0 ).units, QStringLiteral( "ISO8601" ) );
+    }
+
+    void wmsTemporalDimension_data()
+    {
+      QTest::addColumn<QString>( "dimension" );
+      QTest::addColumn<QString>( "extent" );
+
+      QTest::newRow( "single instant" ) << R"""(<Dimension name="time" units="ISO8601">
+                                           2020-01-01
+                                           </Dimension>)"""
+                                        << "2020-01-01";
+
+      QTest::newRow( "interval" ) << R"""(<Dimension name="time" units="ISO8601">
+                                     2020-01-01/2020-12-31/P1M
+                                     </Dimension>)"""
+                                  << "2020-01-01/2020-12-31/P1M";
+
+      QTest::newRow( "list" )     << R"""(<Dimension name="time" units="ISO8601">
+                                     2020-01-01,2020-06-31,2020-12-31
+                                     </Dimension>)"""
+                                  << "2020-01-01,2020-06-31,2020-12-31";
+
+      QTest::newRow( "continuous" ) << R"""(<Dimension name="time" units="ISO8601">
+                                     2020-01-01/2020-06-31
+                                     </Dimension>)"""
+                                    << "2020-01-01/2020-06-31";
+
+      QTest::newRow( "interval with internal newline characters" )
+          << R"""(<Dimension name="time" units="ISO8601">
+             2020-01-01/2020-06-31/P1M,
+             2020-07-01/2020-12-31/P1D
+             </Dimension>)"""
+          << "2020-01-01/2020-06-31/P1M, 2020-07-01/2020-12-31/P1D";
+    }
+
+    void wmsTemporalDimension()
+    {
+      QFETCH( QString, dimension );
+      QFETCH( QString, extent );
+
+      QDomDocument doc;
+      doc.setContent( dimension );
+      QgsWmsCapabilities cap;
+      QgsWmsDimensionProperty dimensionProperty;
+
+      cap.parseDimension( doc.documentElement(), dimensionProperty );
+
+      QCOMPARE( dimensionProperty.extent, extent );
+    }
+
+>>>>>>> c7c38e14de... [wms] If an explicit CRS is not set in a layer's URI, then take the
 };
 
 QGSTEST_MAIN( TestQgsWmsCapabilities )

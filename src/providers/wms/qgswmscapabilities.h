@@ -298,6 +298,209 @@ struct QgsWmsLayerProperty
   bool               noSubsets;
   int                fixedWidth;
   int                fixedHeight;
+<<<<<<< HEAD
+=======
+
+  // TODO need to expand this to cover more of layer properties
+  bool equal( const QgsWmsLayerProperty &layerProperty )
+  {
+    if ( !( name == layerProperty.name ) )
+      return false;
+    if ( !( title == layerProperty.title ) )
+      return false;
+    if ( !( abstract == layerProperty.abstract ) )
+      return false;
+
+    return true;
+  }
+
+  /**
+   * Returns true if it the struct has the dimension with the passed name
+   */
+  bool hasDimension( QString dimensionName ) const
+  {
+    if ( dimensions.isEmpty() )
+      return false;
+
+    for ( const QgsWmsDimensionProperty &dimension : qgis::as_const( dimensions ) )
+    {
+      if ( dimension.name == dimensionName )
+        return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Attempts to return a preferred CRS from the list of available CRS definitions.
+   *
+   * Prioritises the first listed CRS, unless it's a block listed value.
+   */
+  QString preferredAvailableCrs() const
+  {
+    static QSet< QString > sSkipList { QStringLiteral( "EPSG:900913" ) };
+    for ( const QString &candidate : crs )
+    {
+      if ( sSkipList.contains( candidate ) )
+        continue;
+
+      return candidate;
+    }
+    return crs.value( 0 );
+  }
+};
+
+/**
+ * Stores the dates parts from the WMS-T dimension extent.
+ *
+ */
+struct QgsWmstDates
+{
+  QgsWmstDates( QList< QDateTime > dates )
+  {
+    dateTimes = dates;
+  }
+  QgsWmstDates()
+  {
+
+  }
+
+  bool operator== ( const QgsWmstDates &other )
+  {
+    return dateTimes == other.dateTimes;
+  }
+
+  QList< QDateTime > dateTimes;
+};
+
+/**
+ * Stores resolution part of the WMS-T dimension extent.
+ *
+ * If resolution does not exist, active() will return false;
+ */
+struct QgsWmstResolution
+{
+  int year = -1;
+  int month = -1;
+  int day = -1;
+
+  int hour = -1;
+  int minutes = -1;
+  int seconds = -1;
+
+  long long interval()
+  {
+    long long secs = 0.0;
+
+    if ( year != -1 )
+      secs += year * QgsInterval::YEARS ;
+    if ( month != -1 )
+      secs += month * QgsInterval::MONTHS;
+    if ( day != -1 )
+      secs += day * QgsInterval::DAY;
+    if ( hour != -1 )
+      secs += hour * QgsInterval::HOUR;
+    if ( minutes != -1 )
+      secs += minutes * QgsInterval::MINUTE;
+    if ( seconds != -1 )
+      secs += seconds;
+
+    return secs;
+  }
+
+  bool active()
+  {
+    return year != -1 || month != -1 || day != -1 ||
+           hour != -1 || minutes != -1 || seconds != -1;
+  }
+
+  QString text()
+  {
+    QString text( "P" );
+
+    if ( year != -1 )
+    {
+      text.append( QString::number( year ) );
+      text.append( 'Y' );
+    }
+    if ( month != -1 )
+    {
+      text.append( QString::number( month ) );
+      text.append( 'M' );
+    }
+    if ( day != -1 )
+    {
+      text.append( QString::number( day ) );
+      text.append( 'D' );
+    }
+
+    if ( hour != -1 )
+    {
+      if ( !text.contains( 'T' ) )
+        text.append( 'T' );
+      text.append( QString::number( hour ) );
+      text.append( 'H' );
+    }
+    if ( minutes != -1 )
+    {
+      if ( !text.contains( 'T' ) )
+        text.append( 'T' );
+      text.append( QString::number( minutes ) );
+      text.append( 'M' );
+    }
+    if ( seconds != -1 )
+    {
+      if ( !text.contains( 'T' ) )
+        text.append( 'T' );
+      text.append( QString::number( seconds ) );
+      text.append( 'S' );
+    }
+    return text;
+  }
+
+  bool operator== ( const QgsWmstResolution &other )
+  {
+    return year == other.year && month == other.month &&
+           day == other.day && hour == other.hour &&
+           minutes == other.minutes && seconds == other.seconds;
+  }
+
+};
+
+
+/**
+ * Stores dates and resolution structure pair.
+ */
+struct QgsWmstExtentPair
+{
+  QgsWmstExtentPair()
+  {
+  }
+
+  QgsWmstExtentPair( QgsWmstDates otherDates, QgsWmstResolution otherResolution )
+  {
+    dates = otherDates;
+    resolution = otherResolution;
+  }
+
+  bool operator ==( const QgsWmstExtentPair &other )
+  {
+    return dates == other.dates &&
+           resolution == other.resolution;
+  }
+
+  QgsWmstDates dates;
+  QgsWmstResolution resolution;
+};
+
+
+/**
+ * Stores  the WMS-T dimension extent.
+ */
+struct QgsWmstDimensionExtent
+{
+  QList <QgsWmstExtentPair> datesResolutionList;
+>>>>>>> c7c38e14de... [wms] If an explicit CRS is not set in a layer's URI, then take the
 };
 
 struct QgsWmtsTheme

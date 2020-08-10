@@ -140,6 +140,37 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
     {
       return;
     }
+<<<<<<< HEAD
+=======
+
+    // Setup temporal properties for layers in WMS-T
+    if ( mSettings.mIsTemporal )
+    {
+      Q_ASSERT_X( temporalCapabilities(), "QgsWmsProvider::QgsWmsProvider()", "Data provider temporal capabilities object does not exist" );
+      temporalCapabilities()->setHasTemporalCapabilities( true );
+      temporalCapabilities()->setAvailableTemporalRange( mSettings.mFixedRange );
+      temporalCapabilities()->setIntervalHandlingMethod(
+        QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange );
+
+      if ( mSettings.mIsBiTemporal )
+      {
+        temporalCapabilities()->setAvailableReferenceTemporalRange( mSettings.mFixedReferenceRange );
+      }
+    }
+
+    if ( mSettings.mCrsId.isEmpty() && !mSettings.mActiveSubLayers.empty() )
+    {
+      // if crs not specified via layer uri, use the first available from server capabilities
+      for ( const QgsWmsLayerProperty &property : qgis::as_const( mCaps.mLayersSupported ) )
+      {
+        if ( property.name == mSettings.mActiveSubLayers[0] )
+        {
+          mSettings.mCrsId = property.preferredAvailableCrs();
+          break;
+        }
+      }
+    }
+>>>>>>> c7c38e14de... [wms] If an explicit CRS is not set in a layer's URI, then take the
   }
 
   // setImageCrs is using mTiled !!!
