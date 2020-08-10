@@ -363,6 +363,13 @@ void QgsAttributesFormProperties::loadAttributeWidgetEdit()
   mAttributeTypeFrame->layout()->addWidget( mAttributeWidgetEdit );
 }
 
+void QgsAttributesFormProperties::loadInfoWidget( const QString &infoText )
+{
+  mInfoTextWidget = new QLabel( infoText );
+  mAttributeTypeFrame->layout()->setMargin( 0 );
+  mAttributeTypeFrame->layout()->addWidget( mInfoTextWidget );
+}
+
 void QgsAttributesFormProperties::storeAttributeContainerEdit()
 {
   if ( !mAttributeContainerEdit )
@@ -508,7 +515,13 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
       {
         receiver->selectFirstMatchingItem( itemData );
         if ( layout == QgsEditFormConfig::EditorLayout::TabLayout )
+        {
           loadAttributeWidgetEdit();
+        }
+        else
+        {
+          loadInfoWidget( tr( "This configuration is available in the Drag and Drop Designer" ) );
+        }
         break;
       }
       case DnDTreeItemData::Field:
@@ -525,10 +538,19 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
         loadAttributeContainerEdit();
         break;
       }
-
-      case DnDTreeItemData::WidgetType:
       case DnDTreeItemData::QmlWidget:
       case DnDTreeItemData::HtmlWidget:
+      {
+        if ( layout != QgsEditFormConfig::EditorLayout::TabLayout )
+        {
+          loadInfoWidget( tr( "This configuration is available with double click in the Drag and Drop Designer" ) );
+        }
+        else
+        {
+          loadInfoWidget( tr( "This configuration is available with double click" ) );
+        }
+      }
+      case DnDTreeItemData::WidgetType:
       {
         receiver->clearSelection();
         break;
@@ -556,6 +578,12 @@ void QgsAttributesFormProperties::clearAttributeTypeFrame()
     mAttributeTypeFrame->layout()->removeWidget( mAttributeContainerEdit );
     mAttributeContainerEdit->deleteLater();
     mAttributeContainerEdit = nullptr;
+  }
+  if ( mInfoTextWidget )
+  {
+    mAttributeTypeFrame->layout()->removeWidget( mInfoTextWidget );
+    mInfoTextWidget->deleteLater();
+    mInfoTextWidget = nullptr;
   }
 }
 
@@ -1010,6 +1038,8 @@ bool QgsAttributesDnDTree::dropMimeData( QTreeWidgetItem *parent, int index, con
       {
         onItemDoubleClicked( newItem, 0 );
       }
+      clearSelection();
+      newItem->setSelected( true );
     }
   }
 
@@ -1068,6 +1098,7 @@ QMimeData *QgsAttributesDnDTree::mimeData( const QList<QTreeWidgetItem *> items 
 void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
 {
   Q_UNUSED( column )
+
   QgsAttributesFormProperties::DnDTreeItemData itemData = item->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributesFormProperties::DnDTreeItemData>();
 
   QGroupBox *baseData = new QGroupBox( tr( "Base configuration" ) );
@@ -1084,11 +1115,15 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
   {
     case QgsAttributesFormProperties::DnDTreeItemData::Container:
     case QgsAttributesFormProperties::DnDTreeItemData::WidgetType:
-    case  QgsAttributesFormProperties::DnDTreeItemData::Relation:
+    case QgsAttributesFormProperties::DnDTreeItemData::Relation:
+    case QgsAttributesFormProperties::DnDTreeItemData::Field:
       break;
 
     case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
     {
+      if ( mType == QgsAttributesDnDTree::Type::Drag )
+        return;
+
       QDialog dlg;
       dlg.setWindowTitle( tr( "Configure QML Widget" ) );
 
@@ -1250,6 +1285,8 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
 
     case QgsAttributesFormProperties::DnDTreeItemData::HtmlWidget:
     {
+      if ( mType == QgsAttributesDnDTree::Type::Drag )
+        return;
       QDialog dlg;
       dlg.setWindowTitle( tr( "Configure HTML Widget" ) );
 
@@ -1323,30 +1360,6 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
 
         item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
         item->setText( 0, title->text() );
-      }
-    }
-    break;
-
-    case QgsAttributesFormProperties::DnDTreeItemData::Field:
-    {
-      QDialog dlg;
-      dlg.setWindowTitle( tr( "Configure Field" ) );
-      dlg.setLayout( new QGridLayout() );
-      dlg.layout()->addWidget( baseWidget );
-
-      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
-          | QDialogButtonBox::Cancel );
-
-      connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
-      connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-
-      dlg.layout()->addWidget( buttonBox );
-
-      if ( dlg.exec() )
-      {
-        itemData.setShowLabel( showLabelCheckbox->isChecked() );
-
-        item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
       }
     }
     break;

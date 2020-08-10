@@ -208,6 +208,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QgsAttributeWidgetEdit *mAttributeWidgetEdit = nullptr;
     QgsAttributeTypeDialog *mAttributeTypeDialog = nullptr;
     QgsAttributeFormContainerEdit *mAttributeContainerEdit = nullptr;
+    QLabel *mInfoTextWidget = nullptr;
 
   private slots:
 
@@ -228,6 +229,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     void storeAttributeContainerEdit();
     void loadAttributeContainerEdit();
+
+    void loadInfoWidget( const QString &infoText );
 
     QgsEditFormConfig::PythonInitCodeSource mInitCodeSource = QgsEditFormConfig::CodeSourceNone;
     QString mInitFunction;
