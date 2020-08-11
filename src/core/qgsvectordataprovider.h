@@ -94,6 +94,10 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
       CancelSupport = 1 << 23, //!< Supports interruption of pending queries from a separated thread. Since QGIS 3.2
       CreateRenderer = 1 << 24, //!< Provider can create feature renderers using backend-specific formatting information. Since QGIS 3.2. See QgsVectorDataProvider::createRenderer().
       CreateLabeling = 1 << 25, //!< Provider can set labeling settings using backend-specific formatting information. Since QGIS 3.6. See QgsVectorDataProvider::createLabeling().
+      CanDisableSelectAtId = 1 << 26, //!< Provider can disable select at id. Since QGIS 3.16
+      CanUseEstimatedMetadata = 1 << 27, //!< Provider can use estimated metadata. Since QGIS 3.16
+      CanDisableCheckPrimaryKeyUnicity = 1 << 28, //!< Provider can disable check primary key unicity. Since QGIS 3.16
+      CanUseMultiFieldPrimaryKey = 1 << 29, //!< Provider can use multi-field for primary key. Since QGIS 3.16
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )

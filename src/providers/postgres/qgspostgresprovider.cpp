@@ -1499,6 +1499,12 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
     mEnabledCapabilities |= QgsVectorDataProvider::ChangeFeatures;
   }
 
+  // QgsDatasourceUri capabilities
+  mEnabledCapabilities |= QgsVectorDataProvider::CanDisableSelectAtId;
+  mEnabledCapabilities |= QgsVectorDataProvider::CanUseEstimatedMetadata;
+  mEnabledCapabilities |= QgsVectorDataProvider::CanDisableCheckPrimaryKeyUnicity;
+  mEnabledCapabilities |= QgsVectorDataProvider::CanUseMultiFieldPrimaryKey;
+
   return true;
 }
 

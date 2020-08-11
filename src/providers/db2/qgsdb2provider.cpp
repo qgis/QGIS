@@ -1213,7 +1213,8 @@ QgsVectorDataProvider::Capabilities QgsDb2Provider::capabilities() const
       cap |= ChangeGeometries;
 
     return cap | DeleteFeatures | ChangeAttributeValues |
-           QgsVectorDataProvider::SelectAtId;
+           QgsVectorDataProvider::SelectAtId |
+           QgsVectorDataProvider::CanUseEstimatedMetadata;
   }
 }
 

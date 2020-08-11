@@ -885,6 +885,9 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
 
   qry.finish();
 
+  // QgsDatasourceUri capabilities
+  mEnabledCapabilities |= QgsVectorDataProvider::CanUseEstimatedMetadata;
+
   return true;
 }
 
