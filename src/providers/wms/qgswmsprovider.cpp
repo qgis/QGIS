@@ -404,8 +404,6 @@ void QgsWmsProvider::setConnectionName( QString const &connName )
 
 void QgsWmsProvider::setLayerOrder( QStringList const &layers )
 {
-  QgsDebugMsg( QStringLiteral( "Entering." ) );
-
   if ( layers.size() != mSettings.mActiveSubLayers.size() )
   {
     QgsDebugMsg( QStringLiteral( "Invalid layer list length" ) );
@@ -433,8 +431,6 @@ void QgsWmsProvider::setLayerOrder( QStringList const &layers )
   {
     mSettings.mActiveSubStyles.append( styleMap[ layers[i] ] );
   }
-
-  QgsDebugMsg( QStringLiteral( "Exiting." ) );
 }
 
 
@@ -1022,8 +1018,8 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
 
   bool changeXY = mCaps.shouldInvertAxisOrientation( mImageCrs );
 
-  QgsDebugMsg( "Active layer list of "  + mSettings.mActiveSubLayers.join( ", " )
-               + " and style list of "  + mSettings.mActiveSubStyles.join( ", " ) );
+  QgsDebugMsgLevel( "Active layer list of "  + mSettings.mActiveSubLayers.join( ", " )
+                    + " and style list of "  + mSettings.mActiveSubStyles.join( ", " ), 2 );
 
   QStringList visibleLayers = QStringList();
   QStringList visibleStyles = QStringList();
@@ -1048,7 +1044,7 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
   QString styles = visibleStyles.join( ',' );
   styles = styles.isNull() ? QString() : styles;
 
-  QgsDebugMsg( "Visible layer list of " + layers + " and style list of " + styles );
+  QgsDebugMsgLevel( "Visible layer list of " + layers + " and style list of " + styles, 2 );
 
   QString bbox = toParamValue( viewExtent, changeXY );
 
@@ -1093,7 +1089,7 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
 
   url.setQuery( query );
 
-  QgsDebugMsg( QStringLiteral( "getmap: %1" ).arg( url.toString() ) );
+  QgsDebugMsgLevel( QStringLiteral( "getmap: %1" ).arg( url.toString() ), 2 );
   return url;
 }
 
@@ -1243,7 +1239,7 @@ void QgsWmsProvider::createTileRequestsWMSC( const QgsWmtsTileMatrix *tm, const 
                   qgsDoubleToString( bbox.xMaximum() ),
                   qgsDoubleToString( bbox.yMaximum() ) );
 
-    QgsDebugMsg( QStringLiteral( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i ).arg( tiles.count() ).arg( tile.row ).arg( tile.col ).arg( turl ) );
+    QgsDebugMsgLevel( QStringLiteral( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i ).arg( tiles.count() ).arg( tile.row ).arg( tile.col ).arg( turl ), 2 );
     requests << TileRequest( turl, tm->tileRect( tile.col, tile.row ), i );
     ++i;
   }
@@ -1285,7 +1281,7 @@ void QgsWmsProvider::createTileRequestsWMTS( const QgsWmtsTileMatrix *tm, const 
       turl += url.toString();
       turl += QStringLiteral( "&TILEROW=%1&TILECOL=%2" ).arg( tile.row ).arg( tile.col );
 
-      QgsDebugMsg( QStringLiteral( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i ).arg( tiles.count() ).arg( tile.row ).arg( tile.col ).arg( turl ) );
+      QgsDebugMsgLevel( QStringLiteral( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i ).arg( tiles.count() ).arg( tile.row ).arg( tile.col ).arg( turl ), 2 );
       requests << TileRequest( turl, tm->tileRect( tile.col, tile.row ), i );
       ++i;
     }
@@ -1374,8 +1370,6 @@ void QgsWmsProvider::createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const Q
 
 bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 {
-  QgsDebugMsg( QStringLiteral( "entering: forceRefresh=%1" ).arg( forceRefresh ) );
-
   if ( !mCaps.isValid() )
   {
     QgsWmsCapabilitiesDownload downloadCaps( mSettings.baseUrl(), mSettings.authorization(), forceRefresh );
@@ -1398,8 +1392,6 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
   }
 
   Q_ASSERT( mCaps.isValid() );
-
-  QgsDebugMsg( QStringLiteral( "exiting." ) );
 
   return true;
 }
@@ -1622,7 +1614,7 @@ bool QgsWmsProvider::extentForNonTiledLayer( const QString &layerName, const QSt
 
   QgsCoordinateTransform xform( wgs, dst, transformContext() );
 
-  QgsDebugMsg( QStringLiteral( "transforming layer extent %1" ).arg( extent.toString( true ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "transforming layer extent %1" ).arg( extent.toString( true ) ), 2 );
   try
   {
     extent = xform.transformBoundingBox( extent );
@@ -1632,7 +1624,7 @@ bool QgsWmsProvider::extentForNonTiledLayer( const QString &layerName, const QSt
     Q_UNUSED( cse )
     return false;
   }
-  QgsDebugMsg( QStringLiteral( "transformed layer extent %1" ).arg( extent.toString( true ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "transformed layer extent %1" ).arg( extent.toString( true ) ), 2 );
 
   //make sure extent does not contain 'inf' or 'nan'
   if ( !extent.isFinite() )
@@ -1650,7 +1642,7 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const &xml, QStr
 #ifdef QGISDEBUG
   //test the content of the QByteArray
   QString responsestring( xml );
-  QgsDebugMsg( "received the following data: " + responsestring );
+  QgsDebugMsgLevel( "received the following data: " + responsestring, 2 );
 #endif
 
   // Convert completed document into a Dom
@@ -1688,7 +1680,7 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const &xml, QStr
     QDomElement e = n.toElement(); // try to convert the node to an element.
     if ( !e.isNull() )
     {
-      QgsDebugMsg( e.tagName() ); // the node really is an element.
+      QgsDebugMsgLevel( e.tagName(), 2 ); // the node really is an element.
 
       QString tagName = e.tagName();
       if ( tagName.startsWith( QLatin1String( "wms:" ) ) ||
@@ -1704,8 +1696,6 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const &xml, QStr
     }
     n = n.nextSibling();
   }
-
-  QgsDebugMsg( QStringLiteral( "exiting." ) );
 
   return true;
 }
@@ -1794,7 +1784,7 @@ void QgsWmsProvider::parseServiceException( QDomElement const &e, QString &error
 
   // TODO = e.attribute("locator");
 
-  QgsDebugMsg( QStringLiteral( "exiting with composed error message '%1'." ).arg( errorText ) );
+  QgsDebugMsgLevel( QStringLiteral( "exiting with composed error message '%1'." ).arg( errorText ), 2 );
 }
 
 QgsRectangle QgsWmsProvider::extent() const
@@ -1844,7 +1834,9 @@ bool QgsWmsProvider::calculateExtent() const
     {
       int i;
       for ( i = 0; i < mTileLayer->boundingBoxes.size() && mTileLayer->boundingBoxes[i].crs != mImageCrs; i++ )
-        QgsDebugMsg( QStringLiteral( "Skip %1 [%2]" ).arg( mTileLayer->boundingBoxes.at( i ).crs, mImageCrs ) );
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Skip %1 [%2]" ).arg( mTileLayer->boundingBoxes.at( i ).crs, mImageCrs ), 2 );
+      }
 
       if ( i < mTileLayer->boundingBoxes.size() )
       {
@@ -1861,7 +1853,7 @@ bool QgsWmsProvider::calculateExtent() const
 
           QgsCoordinateTransform ct( qgisSrsSource, qgisSrsDest, transformContext() );
 
-          QgsDebugMsg( QStringLiteral( "ct: %1 => %2" ).arg( mTileLayer->boundingBoxes.at( i ).crs, mImageCrs ) );
+          QgsDebugMsgLevel( QStringLiteral( "ct: %1 => %2" ).arg( mTileLayer->boundingBoxes.at( i ).crs, mImageCrs ), 2 );
 
           try
           {
@@ -1886,7 +1878,7 @@ bool QgsWmsProvider::calculateExtent() const
       return true;
     }
 
-    QgsDebugMsg( QStringLiteral( "no extent returned" ) );
+    QgsDebugMsgLevel( QStringLiteral( "no extent returned" ), 2 );
     return false;
   }
   else
@@ -1896,16 +1888,16 @@ bool QgsWmsProvider::calculateExtent() const
           it != mSettings.mActiveSubLayers.constEnd();
           ++it )
     {
-      QgsDebugMsg( "Sublayer iterator: " + *it );
+      QgsDebugMsgLevel( "Sublayer iterator: " + *it, 2 );
 
       QgsRectangle extent;
       if ( !extentForNonTiledLayer( *it, mImageCrs, extent ) )
       {
-        QgsDebugMsg( "extent for " + *it + " is invalid! (ignoring)" );
+        QgsDebugMsgLevel( "extent for " + *it + " is invalid! (ignoring)", 2 );
         continue;
       }
 
-      QgsDebugMsg( "extent for " + *it  + " is " + extent.toString( 3 )  + '.' );
+      QgsDebugMsgLevel( "extent for " + *it  + " is " + extent.toString( 3 )  + '.', 2 );
 
       // add to the combined extent of all the active sublayers
       if ( firstLayer )
@@ -1919,12 +1911,12 @@ bool QgsWmsProvider::calculateExtent() const
 
       firstLayer = false;
 
-      QgsDebugMsg( "combined extent is '"  + mLayerExtent.toString()
-                   + "' after '"  + ( *it ) + "'." );
+      QgsDebugMsgLevel( "combined extent is '"  + mLayerExtent.toString()
+                        + "' after '"  + ( *it ) + "'.", 2 );
 
     }
 
-    QgsDebugMsg( "exiting with '"  + mLayerExtent.toString() + "'." );
+    QgsDebugMsgLevel( "exiting with '"  + mLayerExtent.toString() + "'.", 2 );
     return true;
   }
 }
@@ -1954,7 +1946,7 @@ int QgsWmsProvider::capabilities() const
         // Is sublayer queryable?
         if ( mCaps.mQueryableForLayer.find( *it ).value() )
         {
-          QgsDebugMsg( '\''  + ( *it )  + "' is queryable." );
+          QgsDebugMsgLevel( '\''  + ( *it )  + "' is queryable.", 2 );
           canIdentify = true;
         }
       }
@@ -2741,7 +2733,7 @@ QString QgsWmsProvider::htmlMetadata()
 
 QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
-  QgsDebugMsg( QStringLiteral( "format = %1" ).arg( format ) );
+  QgsDebugMsgLevel( QStringLiteral( "format = %1" ).arg( format ), 2 );
 
   QString formatStr;
   formatStr = mCaps.mIdentifyFormats.value( format );
@@ -2750,7 +2742,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
     return QgsRasterIdentifyResult( QGS_ERROR( tr( "Format not supported" ) ) );
   }
 
-  QgsDebugMsg( QStringLiteral( "format = %1 format = %2" ).arg( format ).arg( formatStr ) );
+  QgsDebugMsgLevel( QStringLiteral( "format = %1 format = %2" ).arg( format ).arg( formatStr ), 2 );
 
   QMap<int, QVariant> results;
   if ( !extent().contains( point ) )
@@ -2834,17 +2826,17 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
     myExtent.setYMaximum( myExtent.yMaximum() + yRes );
   }
 
-  QgsDebugMsg( "myExtent = " + myExtent.toString() );
-  QgsDebugMsg( QStringLiteral( "theWidth = %1 height = %2" ).arg( width ).arg( height ) );
-  QgsDebugMsg( QStringLiteral( "xRes = %1 yRes = %2" ).arg( xRes ).arg( yRes ) );
+  QgsDebugMsgLevel( "myExtent = " + myExtent.toString(), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "theWidth = %1 height = %2" ).arg( width ).arg( height ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "xRes = %1 yRes = %2" ).arg( xRes ).arg( yRes ), 2 );
 
   QgsPointXY finalPoint;
   finalPoint.setX( std::floor( ( point.x() - myExtent.xMinimum() ) / xRes ) );
   finalPoint.setY( std::floor( ( myExtent.yMaximum() - point.y() ) / yRes ) );
 
-  QgsDebugMsg( QStringLiteral( "point = %1 %2" ).arg( finalPoint.x() ).arg( finalPoint.y() ) );
+  QgsDebugMsgLevel( QStringLiteral( "point = %1 %2" ).arg( finalPoint.x() ).arg( finalPoint.y() ), 2 );
 
-  QgsDebugMsg( QStringLiteral( "recalculated orig point (corner) = %1 %2" ).arg( myExtent.xMinimum() + finalPoint.x()*xRes ).arg( myExtent.yMaximum() - finalPoint.y()*yRes ) );
+  QgsDebugMsgLevel( QStringLiteral( "recalculated orig point (corner) = %1 %2" ).arg( myExtent.xMinimum() + finalPoint.x()*xRes ).arg( myExtent.yMaximum() - finalPoint.y()*yRes ), 2 );
 
   // Collect which layers to query on
   //according to the WMS spec for 1.3, the order of x - and y - coordinates is inverted for geographical CRS
@@ -2895,7 +2887,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
         continue;
       }
 
-      QgsDebugMsg( "Layer '" + *layers + "' is queryable." );
+      QgsDebugMsgLevel( "Layer '" + *layers + "' is queryable.", 2 );
 
       QUrl requestUrl( mSettings.mIgnoreGetFeatureInfoUrl ? mSettings.mBaseUrl : getFeatureInfoUrl() );
       QUrlQuery query( requestUrl );
@@ -2958,7 +2950,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
     QMap<double, QgsWmtsTileMatrix>::const_iterator prev, it = m.constBegin();
     while ( it != m.constEnd() && it.key() < vres )
     {
-      QgsDebugMsg( QStringLiteral( "res:%1 >= %2" ).arg( it.key() ).arg( vres ) );
+      QgsDebugMsgLevel( QStringLiteral( "res:%1 >= %2" ).arg( it.key() ).arg( vres ), 2 );
       prev = it;
       ++it;
     }
@@ -2966,43 +2958,43 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
     if ( it == m.constEnd() ||
          ( it != m.constBegin() && vres - prev.key() < it.key() - vres ) )
     {
-      QgsDebugMsg( QStringLiteral( "back to previous res" ) );
+      QgsDebugMsgLevel( QStringLiteral( "back to previous res" ), 2 );
       it = prev;
     }
 
     tres = it.key();
     tm = &it.value();
 
-    QgsDebugMsg( QStringLiteral( "layer extent: %1,%2,%3,%4 %5x%6" )
-                 .arg( qgsDoubleToString( mLayerExtent.xMinimum() ),
-                       qgsDoubleToString( mLayerExtent.yMinimum() ) )
-                 .arg( qgsDoubleToString( mLayerExtent.xMaximum() ),
-                       qgsDoubleToString( mLayerExtent.yMaximum() ) )
-                 .arg( mLayerExtent.width() )
-                 .arg( mLayerExtent.height() )
-               );
+    QgsDebugMsgLevel( QStringLiteral( "layer extent: %1,%2,%3,%4 %5x%6" )
+                      .arg( qgsDoubleToString( mLayerExtent.xMinimum() ),
+                            qgsDoubleToString( mLayerExtent.yMinimum() ) )
+                      .arg( qgsDoubleToString( mLayerExtent.xMaximum() ),
+                            qgsDoubleToString( mLayerExtent.yMaximum() ) )
+                      .arg( mLayerExtent.width() )
+                      .arg( mLayerExtent.height() ), 2
+                    );
 
-    QgsDebugMsg( QStringLiteral( "view extent: %1,%2,%3,%4 %5x%6  res:%7" )
-                 .arg( qgsDoubleToString( boundingBox.xMinimum() ),
-                       qgsDoubleToString( boundingBox.yMinimum() ) )
-                 .arg( qgsDoubleToString( boundingBox.xMaximum() ),
-                       qgsDoubleToString( boundingBox.yMaximum() ) )
-                 .arg( boundingBox.width() )
-                 .arg( boundingBox.height() )
-                 .arg( vres, 0, 'f' )
-               );
+    QgsDebugMsgLevel( QStringLiteral( "view extent: %1,%2,%3,%4 %5x%6  res:%7" )
+                      .arg( qgsDoubleToString( boundingBox.xMinimum() ),
+                            qgsDoubleToString( boundingBox.yMinimum() ) )
+                      .arg( qgsDoubleToString( boundingBox.xMaximum() ),
+                            qgsDoubleToString( boundingBox.yMaximum() ) )
+                      .arg( boundingBox.width() )
+                      .arg( boundingBox.height() )
+                      .arg( vres, 0, 'f' ), 2
+                    );
 
-    QgsDebugMsg( QStringLiteral( "tile matrix %1,%2 res:%3 tilesize:%4x%5 matrixsize:%6x%7 id:%8" )
-                 .arg( tm->topLeft.x() ).arg( tm->topLeft.y() ).arg( tres )
-                 .arg( tm->tileWidth ).arg( tm->tileHeight )
-                 .arg( tm->matrixWidth ).arg( tm->matrixHeight )
-                 .arg( tm->identifier )
-               );
+    QgsDebugMsgLevel( QStringLiteral( "tile matrix %1,%2 res:%3 tilesize:%4x%5 matrixsize:%6x%7 id:%8" )
+                      .arg( tm->topLeft.x() ).arg( tm->topLeft.y() ).arg( tres )
+                      .arg( tm->tileWidth ).arg( tm->tileHeight )
+                      .arg( tm->matrixWidth ).arg( tm->matrixHeight )
+                      .arg( tm->identifier ), 2
+                    );
 
     // calculate tile coordinates
     double twMap = tm->tileWidth * tres;
     double thMap = tm->tileHeight * tres;
-    QgsDebugMsg( QStringLiteral( "tile map size: %1,%2" ).arg( qgsDoubleToString( twMap ), qgsDoubleToString( thMap ) ) );
+    QgsDebugMsgLevel( QStringLiteral( "tile map size: %1,%2" ).arg( qgsDoubleToString( twMap ), qgsDoubleToString( thMap ) ), 2 );
 
     int col = ( int ) std::floor( ( point.x() - tm->topLeft.x() ) / twMap );
     int row = ( int ) std::floor( ( tm->topLeft.y() - point.y() ) / thMap );
@@ -3011,7 +3003,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
     int i   = ( point.x() - tx ) / tres;
     int j   = ( ty - point.y() ) / tres;
 
-    QgsDebugMsg( QStringLiteral( "col=%1 row=%2 i=%3 j=%4 tx=%5 ty=%6" ).arg( col ).arg( row ).arg( i ).arg( j ).arg( tx, 0, 'f', 1 ).arg( ty, 0, 'f', 1 ) );
+    QgsDebugMsgLevel( QStringLiteral( "col=%1 row=%2 i=%3 j=%4 tx=%5 ty=%6" ).arg( col ).arg( row ).arg( i ).arg( j ).arg( tx, 0, 'f', 1 ).arg( ty, 0, 'f', 1 ), 2 );
 
     if ( mTileLayer->getFeatureInfoURLs.contains( formatStr ) )
     {
@@ -3075,7 +3067,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
   {
     const QUrl &requestUrl = urls[count];
 
-    QgsDebugMsg( QStringLiteral( "getfeatureinfo: %1" ).arg( requestUrl.toString() ) );
+    QgsDebugMsgLevel( QStringLiteral( "getfeatureinfo: %1" ).arg( requestUrl.toString() ), 2 );
     QNetworkRequest request( requestUrl );
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWmsProvider" ) );
     QgsSetRequestInitiatorId( request, QStringLiteral( "identify %1,%2" ).arg( point.x() ).arg( point.y() ) );
@@ -3200,12 +3192,12 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
           xsdPart = 1;
         }
       }
-      QgsDebugMsg( QStringLiteral( "jsonPart = %1 gmlPart = %2 xsdPart = %3" ).arg( jsonPart ).arg( gmlPart ).arg( xsdPart ) );
+      QgsDebugMsgLevel( QStringLiteral( "jsonPart = %1 gmlPart = %2 xsdPart = %3" ).arg( jsonPart ).arg( gmlPart ).arg( xsdPart ), 2 );
 
       if ( gmlPart >= 0 )
       {
         QByteArray gmlByteArray = mIdentifyResultBodies.value( gmlPart );
-        QgsDebugMsg( "GML (first 2000 bytes):\n" + gmlByteArray.left( 2000 ) );
+        QgsDebugMsgLevel( "GML (first 2000 bytes):\n" + gmlByteArray.left( 2000 ), 2 );
 
         // QgsGmlSchema.guessSchema() and QgsGml::getFeatures() are using Expat
         // which only accepts UTF-8, UTF-16, ISO-8859-1
@@ -3217,14 +3209,14 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
         stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
         dom.save( stream, 4, QDomNode::EncodingFromTextStream );
 
-        QgsDebugMsg( "GML UTF-8 (first 2000 bytes):\n" + gmlByteArray.left( 2000 ) );
+        QgsDebugMsgLevel( "GML UTF-8 (first 2000 bytes):\n" + gmlByteArray.left( 2000 ), 2 );
 
         QgsWkbTypes::Type wkbType;
         QgsGmlSchema gmlSchema;
 
         if ( xsdPart >= 0 )  // XSD available
         {
-          QgsDebugMsg( "GML XSD (first 4000 bytes):\n" + QString::fromUtf8( mIdentifyResultBodies.value( xsdPart ).left( 4000 ) ) );
+          QgsDebugMsgLevel( "GML XSD (first 4000 bytes):\n" + QString::fromUtf8( mIdentifyResultBodies.value( xsdPart ).left( 4000 ) ), 2 );
           gmlSchema.parseXSD( mIdentifyResultBodies.value( xsdPart ) );
         }
         else
@@ -3241,7 +3233,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
         }
 
         QStringList featureTypeNames = gmlSchema.typeNames();
-        QgsDebugMsg( QStringLiteral( "%1 featureTypeNames found" ).arg( featureTypeNames.size() ) );
+        QgsDebugMsgLevel( QStringLiteral( "%1 featureTypeNames found" ).arg( featureTypeNames.size() ), 2 );
 
         // Each sublayer may have more features of different types, for example
         // if GROUP of multiple vector layers is used with UMN MapServer
@@ -3255,11 +3247,11 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
         const auto constFeatureTypeNames = featureTypeNames;
         for ( const QString &featureTypeName : constFeatureTypeNames )
         {
-          QgsDebugMsg( QStringLiteral( "featureTypeName = %1" ).arg( featureTypeName ) );
+          QgsDebugMsgLevel( QStringLiteral( "featureTypeName = %1" ).arg( featureTypeName ), 2 );
 
           QString geometryAttribute = gmlSchema.geometryAttributes( featureTypeName ).value( 0 );
           QList<QgsField> fieldList = gmlSchema.fields( featureTypeName );
-          QgsDebugMsg( QStringLiteral( "%1 fields found" ).arg( fieldList.size() ) );
+          QgsDebugMsgLevel( QStringLiteral( "%1 fields found" ).arg( fieldList.size() ), 2 );
           QgsFields fields;
           for ( int i = 0; i < fieldList.size(); i++ )
           {
@@ -3269,7 +3261,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
           // TODO: avoid converting to string and back
           int ret = gml.getFeatures( gmlByteArray, &wkbType );
 #ifdef QGISDEBUG
-          QgsDebugMsg( QStringLiteral( "parsing result = %1" ).arg( ret ) );
+          QgsDebugMsgLevel( QStringLiteral( "parsing result = %1" ).arg( ret ), 2 );
 #else
           Q_UNUSED( ret )
 #endif
@@ -3278,7 +3270,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
           // for results -> verify CRS and reprojects if necessary
           QMap<QgsFeatureId, QgsFeature * > features = gml.featuresMap();
           QgsCoordinateReferenceSystem featuresCrs = gml.crs();
-          QgsDebugMsg( QStringLiteral( "%1 features read, crs: %2" ).arg( features.size() ).arg( featuresCrs.userFriendlyIdentifier() ) );
+          QgsDebugMsgLevel( QStringLiteral( "%1 features read, crs: %2" ).arg( features.size() ).arg( featuresCrs.userFriendlyIdentifier() ), 2 );
           QgsCoordinateTransform coordinateTransform;
           if ( featuresCrs.isValid() && featuresCrs != crs() )
           {
@@ -3295,7 +3287,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
           {
             QgsFeature *feature = featIt.value();
 
-            QgsDebugMsg( QStringLiteral( "feature id = %1 : %2 attributes" ).arg( featIt.key() ).arg( feature->attributes().size() ) );
+            QgsDebugMsgLevel( QStringLiteral( "feature id = %1 : %2 attributes" ).arg( featIt.key() ).arg( feature->attributes().size() ), 2 );
 
             if ( coordinateTransform.isValid() && feature->hasGeometry() )
             {
@@ -3376,7 +3368,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
             const QJsonValue props = f.value( QLatin1String( "properties" ) );
             if ( !props.isObject() )
             {
-              QgsDebugMsg( QStringLiteral( "no properties found" ) );
+              QgsDebugMsgLevel( QStringLiteral( "no properties found" ), 2 );
               continue;
             }
 
@@ -3465,12 +3457,12 @@ void QgsWmsProvider::identifyReplyFinished()
     QVariant redirect = mIdentifyReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
     if ( !redirect.isNull() )
     {
-      QgsDebugMsg( QStringLiteral( "identify request redirected to %1" ).arg( redirect.toString() ) );
+      QgsDebugMsgLevel( QStringLiteral( "identify request redirected to %1" ).arg( redirect.toString() ), 2 );
       emit statusChanged( tr( "identify request redirected." ) );
 
       mIdentifyReply->deleteLater();
 
-      QgsDebugMsg( QStringLiteral( "redirected getfeatureinfo: %1" ).arg( redirect.toString() ) );
+      QgsDebugMsgLevel( QStringLiteral( "redirected getfeatureinfo: %1" ).arg( redirect.toString() ), 2 );
       mIdentifyReply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( redirect.toUrl() ) );
       mSettings.authorization().setAuthorizationReply( mIdentifyReply );
       mIdentifyReply->setProperty( "eventLoop", QVariant::fromValue( qobject_cast<QObject *>( loop ) ) );
@@ -3498,7 +3490,7 @@ void QgsWmsProvider::identifyReplyFinished()
     else
     {
       // TODO: check headers, xsd ...
-      QgsDebugMsg( QStringLiteral( "%1 parts" ).arg( parser.parts() ) );
+      QgsDebugMsgLevel( QStringLiteral( "%1 parts" ).arg( parser.parts() ), 2 );
       mIdentifyResultBodies = parser.bodies();
       mIdentifyResultHeaders = parser.headers();
     }
@@ -3533,7 +3525,6 @@ QString QgsWmsProvider::lastErrorTitle()
 
 QString QgsWmsProvider::lastError()
 {
-  QgsDebugMsg( "returning '" + mError  + "'." );
   return mError;
 }
 
@@ -3664,18 +3655,18 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle &
 
   if ( lurl.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "getLegendGraphic url is empty" ) );
+    QgsDebugMsgLevel( QStringLiteral( "getLegendGraphic url is empty" ), 2 );
     return QUrl();
   }
 
-  QgsDebugMsg( QStringLiteral( "visibleExtent is %1" ).arg( visibleExtent.toString() ) );
+  QgsDebugMsgLevel( QStringLiteral( "visibleExtent is %1" ).arg( visibleExtent.toString() ), 2 );
 
   QUrl url( lurl );
   QUrlQuery query( url );
 
   if ( isUrlForWMTS( dataSourceUri() ) )
   {
-    QgsDebugMsg( QString( "getlegendgraphicrequest: %1" ).arg( url.toString() ) );
+    QgsDebugMsgLevel( QString( "getlegendgraphicrequest: %1" ).arg( url.toString() ), 2 );
     return url;
   }
 
@@ -3706,7 +3697,7 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle &
   // add config parameter related to resolution
   QgsSettings s;
   int defaultLegendGraphicResolution = s.value( QStringLiteral( "qgis/defaultLegendGraphicResolution" ), 0 ).toInt();
-  QgsDebugMsg( QStringLiteral( "defaultLegendGraphicResolution: %1" ).arg( defaultLegendGraphicResolution ) );
+  QgsDebugMsgLevel( QStringLiteral( "defaultLegendGraphicResolution: %1" ).arg( defaultLegendGraphicResolution ), 2 );
   if ( defaultLegendGraphicResolution )
   {
     if ( mSettings.mDpiMode & DpiQGIS )
@@ -3731,7 +3722,7 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle &
   }
   url.setQuery( query );
 
-  QgsDebugMsg( QStringLiteral( "getlegendgraphicrequest: %1" ).arg( url.toString() ) );
+  QgsDebugMsgLevel( QStringLiteral( "getlegendgraphicrequest: %1" ).arg( url.toString() ), 2 );
   return QUrl( url );
 }
 
@@ -3745,7 +3736,7 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh, const 
 
   if ( lurl.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "getLegendGraphic url is empty" ) );
+    QgsDebugMsgLevel( QStringLiteral( "getLegendGraphic url is empty" ), 2 );
     return QImage();
   }
 
@@ -3779,13 +3770,19 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh, const 
   mLegendGraphicFetcher->setProperty( "legendExtent", QVariant::fromValue( mapExtent.toRectF() ) );
   loop.exec( QEventLoop::ExcludeUserInputEvents );
 
-  QgsDebugMsg( QStringLiteral( "exiting." ) );
-
   return mGetLegendGraphicImage;
 }
 
 QgsImageFetcher *QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings *mapSettings )
 {
+  if ( mLegendGraphicFetchErrored && !mSettings.mEnableContextualLegend )
+  {
+    // if a previous request to fetch the legend failed, don't bother trying to fetch it again!
+    // Otherwise misconfigured services which return flawed images will just keep retrying to
+    // fetch on every map extent change operation...
+    return nullptr;
+  }
+
   double scale;
   QgsRectangle mapExtent;
   if ( mapSettings && mSettings.mEnableContextualLegend )
@@ -3822,7 +3819,7 @@ QgsImageFetcher *QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings *
        scale == mGetLegendGraphicScale &&
        !mGetLegendGraphicImage.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "Emitting cached image fetcher" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Emitting cached image fetcher" ), 2 );
     // return a cached image, skipping the load
     return new QgsCachedImageFetcher( mGetLegendGraphicImage );
   }
@@ -3832,6 +3829,10 @@ QgsImageFetcher *QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings *
     fetcher->setProperty( "legendScale", QVariant::fromValue( scale ) );
     fetcher->setProperty( "legendExtent", QVariant::fromValue( mapExtent.toRectF() ) );
     connect( fetcher, &QgsImageFetcher::finish, this, &QgsWmsProvider::getLegendGraphicReplyFinished );
+    connect( fetcher, &QgsImageFetcher::error, this, [ = ]( const QString & )
+    {
+      mLegendGraphicFetchErrored = true;
+    } );
     return fetcher;
   }
 }
@@ -3847,10 +3848,10 @@ void QgsWmsProvider::getLegendGraphicReplyFinished( const QImage &img )
     mGetLegendGraphicExtent = QgsRectangle( reply->property( "legendExtent" ).toRectF() );
     mGetLegendGraphicScale = reply->property( "legendScale" ).value<double>();
 
-#ifdef QGISDEBUG
+#if 0
     QString filename = QDir::tempPath() + "/GetLegendGraphic.png";
     mGetLegendGraphicImage.save( filename );
-    QgsDebugMsg( "saved GetLegendGraphic result in debug file: " + filename );
+    QgsDebugMsgLevel( "saved GetLegendGraphic result in debug file: " + filename, 2 );
 #endif
   }
 
@@ -3866,7 +3867,7 @@ void QgsWmsProvider::getLegendGraphicReplyFinished( const QImage &img )
 void QgsWmsProvider::getLegendGraphicReplyErrored( const QString &message )
 {
   Q_UNUSED( message )
-  QgsDebugMsg( QStringLiteral( "get legend failed: %1" ).arg( message ) );
+  QgsDebugMsgLevel( QStringLiteral( "get legend failed: %1" ).arg( message ), 2 );
 
   QObject *reply = sender();
 
@@ -3882,7 +3883,7 @@ void QgsWmsProvider::getLegendGraphicReplyErrored( const QString &message )
 void QgsWmsProvider::getLegendGraphicReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
   QString msg = tr( "%1 of %2 bytes of GetLegendGraphic downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) );
-  QgsDebugMsg( msg );
+  QgsDebugMsgLevel( msg, 2 );
   emit statusChanged( msg );
 }
 
@@ -3952,7 +3953,7 @@ void QgsWmsImageDownloadHandler::cacheReplyFinished()
     {
       mCacheReply->deleteLater();
 
-      QgsDebugMsg( QStringLiteral( "redirected getmap: %1" ).arg( redirect.toString() ) );
+      QgsDebugMsgLevel( QStringLiteral( "redirected getmap: %1" ).arg( redirect.toString() ), 2 );
       mCacheReply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( redirect.toUrl() ) );
       connect( mCacheReply, &QNetworkReply::finished, this, &QgsWmsImageDownloadHandler::cacheReplyFinished );
       return;
@@ -3976,7 +3977,7 @@ void QgsWmsImageDownloadHandler::cacheReplyFinished()
     }
 
     QString contentType = mCacheReply->header( QNetworkRequest::ContentTypeHeader ).toString();
-    QgsDebugMsg( "contentType: " + contentType );
+    QgsDebugMsgLevel( "contentType: " + contentType, 2 );
     QByteArray text = mCacheReply->readAll();
     QImage myLocalImage = QImage::fromData( text );
     if ( !myLocalImage.isNull() )
@@ -4049,16 +4050,16 @@ void QgsWmsImageDownloadHandler::cacheReplyProgress( qint64 bytesReceived, qint6
 {
   Q_UNUSED( bytesReceived )
   Q_UNUSED( bytesTotal )
-  QgsDebugMsg( QStringLiteral( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ), 2 );
 }
 
 void QgsWmsImageDownloadHandler::canceled()
 {
-  QgsDebugMsg( QStringLiteral( "Caught canceled() signal" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Caught canceled() signal" ), 2 );
   if ( mCacheReply )
   {
     // abort the reply if it is still active
-    QgsDebugMsg( QStringLiteral( "Aborting WMS network request" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Aborting WMS network request" ), 2 );
     mCacheReply->abort();
   }
 }
@@ -4204,7 +4205,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
       mReplies.removeOne( reply );
       reply->deleteLater();
 
-      QgsDebugMsg( QStringLiteral( "redirected gettile: %1" ).arg( redirect.toString() ) );
+      QgsDebugMsgLevel( QStringLiteral( "redirected gettile: %1" ).arg( redirect.toString() ), 2 );
       reply = QgsNetworkAccessManager::instance()->get( request );
       mReplies << reply;
 
@@ -4314,7 +4315,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Reply too late [%1]" ).arg( reply->url().toString() ) );
+      QgsDebugMsgLevel( QStringLiteral( "Reply too late [%1]" ).arg( reply->url().toString() ), 2 );
     }
 
     mReplies.removeOne( reply );
@@ -4405,7 +4406,7 @@ void QgsWmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
     QgsMessageLog::logMessage( tr( "repeat tileRequest %1 tile %2(retry %3)" )
                                .arg( tileReqNo ).arg( tileNo ).arg( retry ), tr( "WMS" ), Qgis::Info );
   }
-  QgsDebugMsg( QStringLiteral( "repeat tileRequest %1 %2(retry %3) for url: %4" ).arg( tileReqNo ).arg( tileNo ).arg( retry ).arg( url ) );
+  QgsDebugMsgLevel( QStringLiteral( "repeat tileRequest %1 %2(retry %3) for url: %4" ).arg( tileReqNo ).arg( tileNo ).arg( retry ).arg( url ), 2 );
   request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), retry );
 
   QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
@@ -4462,23 +4463,19 @@ QgsWmsLegendDownloadHandler::~QgsWmsLegendDownloadHandler()
   if ( mReply )
   {
     // Send finished if not done yet ?
-    QgsDebugMsg( QStringLiteral( "WMSLegendDownloader destroyed while still processing reply" ) );
+    QgsDebugMsgLevel( QStringLiteral( "WMSLegendDownloader destroyed while still processing reply" ), 2 );
     mReply->deleteLater();
   }
   mReply = nullptr;
 }
 
-/* public */
-void
-QgsWmsLegendDownloadHandler::start()
+void QgsWmsLegendDownloadHandler::start()
 {
   Q_ASSERT( mVisitedUrls.empty() );
   startUrl( mInitialUrl );
 }
 
-/* private */
-void
-QgsWmsLegendDownloadHandler::startUrl( const QUrl &url )
+void QgsWmsLegendDownloadHandler::startUrl( const QUrl &url )
 {
   Q_ASSERT( !mReply );  // don't call me twice from outside !
   Q_ASSERT( url.isValid() );
@@ -4492,7 +4489,7 @@ QgsWmsLegendDownloadHandler::startUrl( const QUrl &url )
   }
   mVisitedUrls.insert( url );
 
-  QgsDebugMsg( QStringLiteral( "legend url: %1" ).arg( url.toString() ) );
+  QgsDebugMsgLevel( QStringLiteral( "legend url: %1" ).arg( url.toString() ), 2 );
 
   QNetworkRequest request( url );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWmsLegendDownloadHandler" ) );
@@ -4507,28 +4504,25 @@ QgsWmsLegendDownloadHandler::startUrl( const QUrl &url )
   connect( mReply, &QNetworkReply::downloadProgress, this, &QgsWmsLegendDownloadHandler::progressed );
 }
 
-void
-QgsWmsLegendDownloadHandler::sendError( const QString &msg )
+void QgsWmsLegendDownloadHandler::sendError( const QString &msg )
 {
-  QgsDebugMsg( QStringLiteral( "emitting error: %1" ).arg( msg ) );
+  QgsMessageLog::logMessage( msg, tr( "WMS" ) );
   Q_ASSERT( mReply );
   mReply->deleteLater();
   mReply = nullptr;
   emit error( msg );
 }
 
-void
-QgsWmsLegendDownloadHandler::sendSuccess( const QImage &img )
+void QgsWmsLegendDownloadHandler::sendSuccess( const QImage &img )
 {
-  QgsDebugMsg( QStringLiteral( "emitting finish: %1x%2 image" ).arg( img.width() ).arg( img.height() ) );
+  QgsDebugMsgLevel( QStringLiteral( "emitting finish: %1x%2 image" ).arg( img.width() ).arg( img.height() ), 2 );
   Q_ASSERT( mReply );
   mReply->deleteLater();
   mReply = nullptr;
   emit finish( img );
 }
 
-void
-QgsWmsLegendDownloadHandler::errored( QNetworkReply::NetworkError /* code */ )
+void QgsWmsLegendDownloadHandler::errored( QNetworkReply::NetworkError )
 {
   if ( !mReply )
     return;
@@ -4536,8 +4530,7 @@ QgsWmsLegendDownloadHandler::errored( QNetworkReply::NetworkError /* code */ )
   sendError( mReply->errorString() );
 }
 
-void
-QgsWmsLegendDownloadHandler::finished()
+void QgsWmsLegendDownloadHandler::finished()
 {
   if ( !mReply )
     return;
@@ -4545,7 +4538,7 @@ QgsWmsLegendDownloadHandler::finished()
   // or ::errored() should have been called before ::finished
   Q_ASSERT( mReply->error() == QNetworkReply::NoError );
 
-  QgsDebugMsg( QStringLiteral( "reply OK" ) );
+  QgsDebugMsgLevel( QStringLiteral( "reply OK" ), 2 );
   QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
   if ( !redirect.isNull() )
   {
@@ -4578,8 +4571,7 @@ QgsWmsLegendDownloadHandler::finished()
   sendSuccess( myLocalImage );
 }
 
-void
-QgsWmsLegendDownloadHandler::progressed( qint64 recv, qint64 tot )
+void QgsWmsLegendDownloadHandler::progressed( qint64 recv, qint64 tot )
 {
   emit progress( recv, tot );
 }
