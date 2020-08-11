@@ -939,7 +939,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     if ( std::isfinite( info.hacc ) )
     {
       mTxtHacc->setEnabled( true );
-      mTxtHacc->setText( QString::number( info.hacc, 'f', 1 ) + "m" );
+      mTxtHacc->setText( QString::number( info.hacc, 'f', 2 ) + "m" );
     }
     else
     {
@@ -949,7 +949,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     if ( std::isfinite( info.vacc ) )
     {
       mTxtVacc->setEnabled( true );
-      mTxtVacc->setText( QString::number( info.vacc, 'f', 1 ) + "m" );
+      mTxtVacc->setText( QString::number( info.vacc, 'f', 2 ) + "m" );
     }
     else
     {
