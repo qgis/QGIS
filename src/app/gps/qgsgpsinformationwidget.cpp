@@ -958,7 +958,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     }
     mTxtFixMode->setText( info.fixMode == 'A' ? tr( "Automatic" ) : info.fixMode == 'M' ? tr( "Manual" ) : QString() ); // A=automatic 2d/3d, M=manual; allowing for anything else
     mTxtFixType->setText( info.fixType == 3 ? tr( "3D" ) : info.fixType == 2 ? tr( "2D" ) : info.fixType == 1 ? tr( "No fix" ) : QString::number( info.fixType ) ); // 1=no fix, 2=2D, 3=3D; allowing for anything else
-    mTxtQuality->setText( info.quality == 2 ? tr( "Differential" ) : info.quality == 1 ? tr( "Non-differential" ) : info.quality == 0 ? tr( "No position" ) : info.quality > 2 ? QString::number( info.quality ) : QString() ); // allowing for anything else
+    mTxtQuality->setText( info.quality == 8 ? tr( "Simulation mode") : info.quality == 7 ? tr( "Manual input mode") : info.quality == 6 ? tr( "Estimated" ) : info.quality == 5 ? tr( "Float RTK") : info.quality == 4 ? tr( "Fixed RTK" ) : info.quality == 3 ? tr( "PPS" ) : info.quality == 2 ? tr( "DGPS" ) : info.quality == 1 ? tr( "Autonomous" ) : info.quality == 0 ? tr( "Invalid" ) : info.quality > 8 ? QString::number( info.quality ) : QString() ); // allowing for anything else
     mTxtSatellitesUsed->setText( QString::number( info.satellitesUsed ) );
     mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" ) : QString() );
   } //position
