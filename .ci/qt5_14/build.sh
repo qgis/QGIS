@@ -5,8 +5,10 @@ cd /usr/src/qgis/build || exit -1
 
 ccache -s
 
+ln -s /../../bin/ccache /usr/lib64/ccache/clang
+ln -s /../../bin/ccache /usr/lib64/ccache/clang++
+
 cmake -GNinja \
- -DUSE_CCACHE=ON \
  -DWITH_QUICK=OFF \
  -DWITH_3D=ON \
  -DWITH_STAGED_PLUGINS=ON \
@@ -26,8 +28,8 @@ cmake -GNinja \
  -DWITH_ORACLE=OFF \
  -DDISABLE_DEPRECATED=ON \
  -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \
- -DCMAKE_C_COMPILER=/usr/bin/clang \
- -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+ -DCMAKE_C_COMPILER=/usr/lib64/ccache/clang \
+ -DCMAKE_CXX_COMPILER=/usr/lib64/ccache/clang++ \
  -DADD_CLAZY_CHECKS=ON \
  -DWERROR=TRUE \
  ..
