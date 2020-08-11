@@ -288,9 +288,78 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       // other providers do not use mEncoding, so hide the group completely
       mDataSourceEncodingFrame->hide();
     }
+
+    // Datasource capabilities
+    cbxUseEstimatedMetadata->setEnabled( false );
+    mPrimaryKeyComboBox->setEnabled( false );
+    cbxSelectAtId->setEnabled( false );
+    cbxCheckPrimaryKeyUnicity->setEnabled( false );
+    pbnDcUnlock->setEnabled( true );
+    pbnDcCancel->setEnabled( false );
+    pbnDcApply->setEnabled( false );
+    if ( !( capabilities & QgsVectorDataProvider::CanDisableSelectAtId ) &&
+         !( capabilities & QgsVectorDataProvider::CanUseEstimatedMetadata ) &&
+         !( capabilities & QgsVectorDataProvider::CanDisableCheckPrimaryKeyUnicity ) )
+    {
+      // No datasource capabilities available
+      mDatasourceCapabilities->hide();
+    }
+    else
+    {
+      const QgsDataSourceUri uri = mLayer->dataProvider()->uri();
+      mDatasourceCapabilities->show();
+      // Datasource primary key capabilities
+      if ( !( capabilities & QgsVectorDataProvider::CanDisableSelectAtId ) &&
+           !( capabilities & QgsVectorDataProvider::CanDisableCheckPrimaryKeyUnicity ) )
+      {
+        // No datasource primary key capabilities
+        mPrimaryKeyWidget->hide();
+      }
+      else
+      {
+        // Display datasource primary key capabilities
+        mPrimaryKeyWidget->show();
+        mPrimaryKeyComboBox->setLayer( mLayer );
+        mPrimaryKeyComboBox->setField( uri.keyColumn() );
+        if ( !( capabilities & QgsVectorDataProvider::CanDisableSelectAtId ) )
+        {
+          cbxSelectAtId->hide();
+        }
+        else
+        {
+          cbxSelectAtId->show();
+          cbxSelectAtId->setChecked( !uri.selectAtIdDisabled() );
+        }
+        if ( !( capabilities & QgsVectorDataProvider::CanDisableCheckPrimaryKeyUnicity ) )
+        {
+          cbxCheckPrimaryKeyUnicity->hide();
+        }
+        else
+        {
+          cbxCheckPrimaryKeyUnicity->show();
+          const QString checkUnicityKey { QStringLiteral( "checkPrimaryKeyUnicity" ) };
+          cbxUseEstimatedMetadata->setChecked( uri.hasParam( checkUnicityKey ) &&
+                                               uri.param( checkUnicityKey ).compare( QLatin1String( "1" ) ) == 0 );
+        }
+      }
+      // Datasource use estimated metadata capability
+      if ( !( capabilities & QgsVectorDataProvider::CanUseEstimatedMetadata ) )
+      {
+        cbxUseEstimatedMetadata->hide();
+      }
+      else
+      {
+        cbxUseEstimatedMetadata->show();
+        cbxUseEstimatedMetadata->setChecked( uri.useEstimatedMetadata() );
+      }
+    }
   }
+  connect( pbnDcUnlock, &QAbstractButton::clicked, this, &QgsVectorLayerProperties::pbnDcUnlock_clicked );
+  connect( pbnDcCancel, &QAbstractButton::clicked, this, &QgsVectorLayerProperties::pbnDcCancel_clicked );
+  connect( pbnDcApply, &QAbstractButton::clicked, this, &QgsVectorLayerProperties::pbnDcApply_clicked );
 
   mCrsSelector->setCrs( mLayer->crs() );
+
 
   //insert existing join info
   const QList< QgsVectorLayerJoinInfo > &joins = mLayer->vectorJoins();
@@ -1800,6 +1869,73 @@ void QgsVectorLayerProperties::pbnUpdateExtents_clicked()
 {
   mLayer->updateExtents( true ); // force update whatever options activated
   mMetadataFilled = false;
+}
+
+void QgsVectorLayerProperties::pbnDcUnlock_clicked()
+{
+  cbxUseEstimatedMetadata->setEnabled( true );
+  cbxSelectAtId->setEnabled( true );
+  cbxCheckPrimaryKeyUnicity->setEnabled( true );
+  pbnDcCancel->setEnabled( true );
+  pbnDcApply->setEnabled( true );
+  pbnDcUnlock->setEnabled( false );
+}
+
+void QgsVectorLayerProperties::pbnDcCancel_clicked()
+{
+  const QgsDataSourceUri uri = mLayer->dataProvider()->uri();
+  QgsVectorDataProvider::Capabilities capabilities = mLayer->dataProvider()->capabilities();
+  // Datasource primary key disable select at id
+  if ( capabilities & QgsVectorDataProvider::CanDisableSelectAtId )
+  {
+    cbxSelectAtId->setChecked( !uri.selectAtIdDisabled() );
+  }
+  // Datasource primary key disable check unicity
+  if ( capabilities & QgsVectorDataProvider::CanDisableCheckPrimaryKeyUnicity )
+  {
+    const QString checkUnicityKey { QStringLiteral( "checkPrimaryKeyUnicity" ) };
+    cbxUseEstimatedMetadata->setChecked( uri.hasParam( checkUnicityKey ) &&
+                                         uri.param( checkUnicityKey ).compare( QLatin1String( "1" ) ) == 0 );
+  }
+  // Datasource use estimated metadata capability
+  if ( capabilities & QgsVectorDataProvider::CanUseEstimatedMetadata )
+  {
+    cbxUseEstimatedMetadata->setChecked( uri.useEstimatedMetadata() );
+  }
+
+  cbxUseEstimatedMetadata->setEnabled( false );
+  cbxSelectAtId->setEnabled( false );
+  cbxCheckPrimaryKeyUnicity->setEnabled( false );
+  pbnDcUnlock->setEnabled( true );
+  pbnDcCancel->setEnabled( false );
+  pbnDcApply->setEnabled( false );
+}
+
+void QgsVectorLayerProperties::pbnDcApply_clicked()
+{
+  // Clone QgsDataSourceUri
+  QgsDataSourceUri uri( mLayer->dataProvider()->uri().uri( false ) );
+  QgsVectorDataProvider::Capabilities capabilities = mLayer->dataProvider()->capabilities();
+  // Datasource primary key disable select at id
+  if ( capabilities & QgsVectorDataProvider::CanDisableSelectAtId )
+  {
+    uri.disableSelectAtId( !cbxSelectAtId->isChecked() );
+  }
+  // Datasource primary key disable check unicity
+  if ( capabilities & QgsVectorDataProvider::CanDisableCheckPrimaryKeyUnicity )
+  {
+    const QString checkUnicityKey { QStringLiteral( "checkPrimaryKeyUnicity" ) };
+    uri.setParam( checkUnicityKey, cbxUseEstimatedMetadata->isChecked() ? "1" : "0" );
+  }
+  // Datasource use estimated metadata capability
+  if ( capabilities & QgsVectorDataProvider::CanUseEstimatedMetadata )
+  {
+    uri.setUseEstimatedMetadata( cbxUseEstimatedMetadata->isChecked() );
+  }
+
+  mLayer->dataProvider()->setUri( uri );
+
+  pbnDcCancel_clicked();
 }
 
 void QgsVectorLayerProperties::optionsStackedWidget_CurrentChanged( int index )

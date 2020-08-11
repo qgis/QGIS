@@ -108,6 +108,10 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void loadDefaultMetadata();
     void pbnUpdateExtents_clicked();
 
+    void pbnDcUnlock_clicked();
+    void pbnDcCancel_clicked();
+    void pbnDcApply_clicked();
+
     void mButtonAddJoin_clicked();
     void mButtonEditJoin_clicked();
     void mJoinTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );

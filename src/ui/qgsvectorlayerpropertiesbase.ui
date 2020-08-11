@@ -439,8 +439,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>644</width>
-                <height>664</height>
+                <width>653</width>
+                <height>681</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -566,7 +566,7 @@ border-radius: 2px;</string>
                  <property name="checkable">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">vectorgeneral</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -658,6 +658,109 @@ border-radius: 2px;</string>
                      <enum>Qt::Vertical</enum>
                     </property>
                    </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="mDatasourceCapabilities">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="title">
+                  <string>Datasource capabilities</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_31">
+                  <item>
+                   <widget class="QCheckBox" name="cbxUseEstimatedMetadata">
+                    <property name="text">
+                     <string>Use estimated Metadata</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QWidget" name="mPrimaryKeyWidget" native="true">
+                    <layout class="QHBoxLayout" name="mPrimaryKeyLayout">
+                     <item>
+                      <widget class="QLabel" name="label">
+                       <property name="text">
+                        <string>Primary Key</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QgsFieldComboBox" name="mPrimaryKeyComboBox"/>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="cbxSelectAtId">
+                       <property name="text">
+                        <string>Select at Id</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="cbxCheckPrimaryKeyUnicity">
+                       <property name="text">
+                        <string>Check unicity</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_10">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_11">
+                    <item>
+                     <widget class="QPushButton" name="pbnDcUnlock">
+                      <property name="text">
+                       <string>Unlock</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="pbnDcCancel">
+                      <property name="text">
+                       <string>Cancel</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="pbnDcApply">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="text">
+                       <string>Apply</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_11">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </widget>
@@ -966,8 +1069,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>199</width>
-                <height>119</height>
+                <width>104</width>
+                <height>102</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1111,7 +1214,7 @@ border-radius: 2px;</string>
                 <property name="checkable">
                  <bool>false</bool>
                 </property>
-                <property name="syncGroup" stdset="0">
+                <property name="syncGroup">
                  <string notr="true">vectormeta</string>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_11">
@@ -1445,7 +1548,7 @@ border-radius: 2px;</string>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_50">
                  <item row="0" column="0">
-                  <widget class="QgsFieldExpressionWidget" name="mDisplayExpressionWidget" native="true">
+                  <widget class="QgsFieldExpressionWidget" name="mDisplayExpressionWidget">
                    <property name="focusPolicy">
                     <enum>Qt::StrongFocus</enum>
                    </property>
@@ -1509,7 +1612,7 @@ border-radius: 2px;</string>
                   </widget>
                  </item>
                  <item row="1" column="0" colspan="2">
-                  <widget class="QgsFieldExpressionWidget" name="mMapTipExpressionFieldWidget" native="true">
+                  <widget class="QgsFieldExpressionWidget" name="mMapTipExpressionFieldWidget">
                    <property name="focusPolicy">
                     <enum>Qt::StrongFocus</enum>
                    </property>
@@ -1563,8 +1666,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>652</width>
-                <height>368</height>
+                <width>695</width>
+                <height>424</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1590,7 +1693,7 @@ border-radius: 2px;</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_6">
                   <item row="0" column="0">
-                   <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true">
+                   <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
                     </property>
@@ -2055,8 +2158,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>644</width>
-                <height>808</height>
+                <width>370</width>
+                <height>769</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2077,7 +2180,7 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>Description</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_5">
@@ -2219,7 +2322,7 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>Attribution</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_7">
@@ -2265,7 +2368,7 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>MetadataUrl</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_9">
@@ -2583,6 +2686,17 @@ border-radius: 2px;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsfieldcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
@@ -2597,6 +2711,12 @@ border-radius: 2px;</string>
    <class>QgsScaleRangeWidget</class>
    <extends>QWidget</extends>
    <header>qgsscalerangewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsLayerTreeEmbeddedConfigWidget</class>
@@ -2614,12 +2734,6 @@ border-radius: 2px;</string>
    <class>QgsScaleComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsscalecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsfieldexpressionwidget.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsCodeEditorHTML</class>
