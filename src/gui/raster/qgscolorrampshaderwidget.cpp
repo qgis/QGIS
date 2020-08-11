@@ -739,23 +739,28 @@ double QgsColorRampShaderWidget::maximum() const
   return mMax;
 }
 
-void QgsColorRampShaderWidget::colormapMinMax( double &min, double &max ) const
+bool QgsColorRampShaderWidget::colormapMinMax( double &min, double &max ) const
 {
   QTreeWidgetItem *item = mColormapTreeWidget->topLevelItem( 0 );
   if ( !item )
   {
-    return;
+    return false;
   }
 
   min = QLocale().toDouble( item->text( ValueColumn ) );
   item = mColormapTreeWidget->topLevelItem( mColormapTreeWidget->topLevelItemCount() - 1 );
   max = QLocale().toDouble( item->text( ValueColumn ) );
+
+  return true;
 }
 
 void QgsColorRampShaderWidget::loadMinimumMaximumFromTree()
 {
   double min = 0, max = 0;
-  colormapMinMax( min, max );
+  if ( ! colormapMinMax( min, max ) )
+  {
+    return;
+  }
 
   if ( !qgsDoubleNear( mMin, min ) || !qgsDoubleNear( mMax, max ) )
   {
