@@ -1,7 +1,7 @@
 /***************************************************************************
     qgsannotationpointtextitem.cpp
     ----------------
-    begin                : July 2020
+    begin                : August 2020
     copyright            : (C) 2020 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
