@@ -1121,7 +1121,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
     // apply specific settings to vector layer
     if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
     {
-      vl->setReadExtentFromXml( mTrustLayerMetadata );
+      vl->setReadExtentFromXml( mTrustLayerMetadata || ( flags & QgsProject::ReadFlag::FlagTrustLayerMetadata ) );
     }
   }
   else if ( type == QLatin1String( "raster" ) )
@@ -1497,6 +1497,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
       mEvaluateDefaultValues = true;
   }
 
+  // Read trust layer metadata config in the project
   nl = doc->elementsByTagName( QStringLiteral( "trust" ) );
   if ( nl.count() )
   {
