@@ -138,12 +138,6 @@ int nmea_pack_type( const char *buff, int buff_sz )
     "GNRMC",
     "GPGST",
   };
-  
-  // BUFFER_SIZE = size(P_HEADS) - 1;
-  int buffer_size = 6;
-
-  // BUFFER_SIZE = size(P_HEADS) - 1;
-  int buffer_size = 8;
 
   // BUFFER_SIZE = size(P_HEADS) - 1;
   int buffer_size = 8;
