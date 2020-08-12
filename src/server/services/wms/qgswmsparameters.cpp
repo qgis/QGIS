@@ -1884,7 +1884,17 @@ namespace QgsWms
     QMap<QString, QString>::const_iterator paramIt = paramMap.constBegin();
     for ( ; paramIt != paramMap.constEnd(); ++paramIt )
     {
-      wmsUri.setParam( paramIt.key().toLower(), paramIt.value() );
+      QString paramName = paramIt.key().toLower();
+      if ( paramName == QLatin1String( "layers" ) || paramName == QLatin1String( "styles" ) )
+      {
+        const QStringList values = paramIt.value().split( ',' );
+        for ( const QString &value : values )
+          wmsUri.setParam( paramName, value );
+      }
+      else
+      {
+        wmsUri.setParam( paramName, paramIt.value() );
+      }
     }
     return wmsUri.encodedUri();
   }
