@@ -146,6 +146,21 @@ class TestQgsServerSettings(unittest.TestCase):
         self.assertFalse(self.settings.trustLayerMetadata())
         os.environ.pop(env)
 
+    def test_env_dont_load_layouts(self):
+        env = "QGIS_SERVER_DONT_LOAD_LAYOUTS"
+
+        self.assertFalse(self.settings.dontLoadLayouts())
+
+        os.environ[env] = "1"
+        self.settings.load()
+        self.assertTrue(self.settings.dontLoadLayouts())
+        os.environ.pop(env)
+
+        os.environ[env] = "0"
+        self.settings.load()
+        self.assertFalse(self.settings.dontLoadLayouts())
+        os.environ.pop(env)
+
     def test_priority(self):
         env = "QGIS_OPTIONS_PATH"
         dpath = "conf0"
