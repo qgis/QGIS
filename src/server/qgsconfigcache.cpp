@@ -49,7 +49,7 @@ const QgsProject *QgsConfigCache::project( const QString &path, QgsServerSetting
     prj->setBadLayerHandler( badLayerHandler );
 
     QgsProject::ReadFlags readFlags = QgsProject::ReadFlag();
-    if ( ! settings || ! settings->trustLayerMetadata() )
+    if ( settings && settings->trustLayerMetadata() )
     {
       readFlags |= QgsProject::ReadFlag::FlagTrustLayerMetadata;
     }
