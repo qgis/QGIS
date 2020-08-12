@@ -76,38 +76,6 @@ typedef struct _nmeaGPGST
 } nmeaGPGST;
 
 /**
- * GST packet information structure (GPS Pseudorange Noise Statistics)
- */
-typedef struct _nmeaGPGST
-{
-  nmeaTIME utc;       //!< UTC of position fix
-  double  rms_pr;     //!< RMS value of the pseudorange residuals;
-  double  err_major;  //!< Error ellipse semi-major axis 1 sigma error, in meters
-  double  err_minor;  //!< Error ellipse semi-minor axis 1 sigma error, in meters
-  double  err_ori;    //!< Error ellipse orientation, degrees from true north
-  double  sig_lat;    //!< Latitude 1 sigma error, in meters
-  double  sig_lon;    //!< Longitude 1 sigma error, in meters
-  double  sig_alt;    //!< Height 1 sigma error, in meters
-
-} nmeaGPGST;
-
-/**
- * GST packet information structure (GPS Pseudorange Noise Statistics)
- */
-typedef struct _nmeaGPGST
-{
-  nmeaTIME utc;       //!< UTC of position fix
-  double  rms_pr;     //!< RMS value of the pseudorange residuals;
-  double  err_major;  //!< Error ellipse semi-major axis 1 sigma error, in meters
-  double  err_minor;  //!< Error ellipse semi-minor axis 1 sigma error, in meters
-  double  err_ori;    //!< Error ellipse orientation, degrees from true north
-  double  sig_lat;    //!< Latitude 1 sigma error, in meters
-  double  sig_lon;    //!< Longitude 1 sigma error, in meters
-  double  sig_alt;    //!< Height 1 sigma error, in meters
-
-} nmeaGPGST;
-
-/**
  * GSA packet information structure (Satellite status)
  */
 typedef struct _nmeaGPGSA
