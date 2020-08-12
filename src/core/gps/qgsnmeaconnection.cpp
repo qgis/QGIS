@@ -22,7 +22,6 @@
 #include <QApplication>
 #include <QStringList>
 
-
 //from libnmea
 #include "parse.h"
 #include "gmath.h"
