@@ -196,6 +196,16 @@ variable QGIS_SERVER_TRUST_LAYER_METADATA.
 .. versionadded:: 3.16
 %End
 
+    bool dontLoadLayouts() const;
+%Docstring
+Returns ``True`` if the reading flag don't load layouts is activated.
+
+The default value is ``False``, this value can be changed by setting the environment
+variable QGIS_SERVER_DONT_LOAD_LAYOUTS.
+
+.. versionadded:: 3.16
+%End
+
 };
 
 /************************************************************************
