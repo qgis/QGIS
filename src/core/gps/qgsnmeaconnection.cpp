@@ -46,6 +46,7 @@ void QgsNmeaConnection::parseData()
 
   //print out the data as a test
   qint64 numBytes = 0;
+
   if ( ! mSource->isSequential() ) //necessary because of a bug in QExtSerialPort   //SLM - bytesAvailable() works on Windows, so I reversed the logic (added ! ); this is what QIODevice docs say to do; the orig impl of win_qextserialport had an (unsigned int)-1 return on error - it should be (qint64)-1, which was fixed by ?
   {
     numBytes = mSource->size();
@@ -79,13 +80,12 @@ void QgsNmeaConnection::processStringBuffer()
   while ( ( endSentenceIndex = mStringBuffer.indexOf( QLatin1String( "\r\n" ) ) ) && endSentenceIndex != -1 )
   {
     endSentenceIndex = mStringBuffer.indexOf( QLatin1String( "\r\n" ) );
-
     dollarIndex = mStringBuffer.indexOf( QLatin1String( "$" ) );
+
     if ( endSentenceIndex == -1 )
     {
       break;
     }
-
 
     if ( endSentenceIndex >= dollarIndex )
     {
@@ -93,6 +93,7 @@ void QgsNmeaConnection::processStringBuffer()
       {
         QString substring = mStringBuffer.mid( dollarIndex, endSentenceIndex );
         QByteArray ba = substring.toLocal8Bit();
+
         if ( substring.startsWith( QLatin1String( "$GPGGA" ) ) || substring.startsWith( QLatin1String( "$GNGGA" ) ) )
         {
           QgsDebugMsgLevel( substring, 2 );
@@ -160,9 +161,11 @@ void QgsNmeaConnection::processStringBuffer()
         {
           QgsDebugMsgLevel( QStringLiteral( "unknown nmea sentence: %1" ).arg( substring ), 2 );
         }
+
         emit nmeaSentenceReceived( substring );  // added to be able to save raw data
       }
     }
+
     mStringBuffer.remove( 0, endSentenceIndex + 2 );
   }
 }
@@ -170,15 +173,19 @@ void QgsNmeaConnection::processStringBuffer()
 void QgsNmeaConnection::processGgaSentence( const char *data, int len )
 {
   nmeaGPGGA result;
+
   if ( nmea_parse_GPGGA( data, len, &result ) )
   {
     //update mLastGPSInformation
     double longitude = result.lon;
+
     if ( result.ew == 'W' )
     {
       longitude = -longitude;
     }
+
     double latitude = result.lat;
+
     if ( result.ns == 'S' )
     {
       latitude = -latitude;
@@ -195,6 +202,7 @@ void QgsNmeaConnection::processGgaSentence( const char *data, int len )
 void QgsNmeaConnection::processGstSentence( const char *data, int len )
 {
   nmeaGPGST result;
+
   if ( nmea_parse_GPGST( data, len, &result ) )
   {
     //update mLastGPSInformation
@@ -211,6 +219,7 @@ void QgsNmeaConnection::processGstSentence( const char *data, int len )
 void QgsNmeaConnection::processHdtSentence( const char *data, int len )
 {
   nmeaGPHDT result;
+
   if ( nmea_parse_GPHDT( data, len, &result ) )
   {
     mLastGPSInformation.direction = result.heading;
@@ -220,9 +229,11 @@ void QgsNmeaConnection::processHdtSentence( const char *data, int len )
 void QgsNmeaConnection::processHchdgSentence( const char *data, int len )
 {
   nmeaHCHDG result;
+
   if ( nmea_parse_HCHDG( data, len, &result ) )
   {
     mLastGPSInformation.direction = result.mag_heading;
+
     if ( result.ew_variation == 'E' )
       mLastGPSInformation.direction += result.mag_variation;
     else
@@ -233,6 +244,7 @@ void QgsNmeaConnection::processHchdgSentence( const char *data, int len )
 void QgsNmeaConnection::processHchdtSentence( const char *data, int len )
 {
   nmeaHCHDT result;
+
   if ( nmea_parse_HCHDT( data, len, &result ) )
   {
     mLastGPSInformation.direction = result.direction;
@@ -242,28 +254,35 @@ void QgsNmeaConnection::processHchdtSentence( const char *data, int len )
 void QgsNmeaConnection::processRmcSentence( const char *data, int len )
 {
   nmeaGPRMC result;
+
   if ( nmea_parse_GPRMC( data, len, &result ) )
   {
     double longitude = result.lon;
+
     if ( result.ew == 'W' )
     {
       longitude = -longitude;
     }
+
     double latitude = result.lat;
+
     if ( result.ns == 'S' )
     {
       latitude = -latitude;
     }
+
     mLastGPSInformation.longitude = nmea_ndeg2degree( longitude );
     mLastGPSInformation.latitude = nmea_ndeg2degree( latitude );
     mLastGPSInformation.speed = KNOTS_TO_KMH * result.speed;
+
     if ( !std::isnan( result.direction ) )
       mLastGPSInformation.direction = result.direction;
-    mLastGPSInformation.status = result.status;  // A,V
 
+    mLastGPSInformation.status = result.status;  // A,V
     //date and time
     QDate date( result.utc.year + 1900, result.utc.mon + 1, result.utc.day );
     QTime time( result.utc.hour, result.utc.min, result.utc.sec, result.utc.msec ); // added msec part
+
     if ( date.isValid() && time.isValid() )
     {
       mLastGPSInformation.utcDateTime.setTimeSpec( Qt::UTC );
@@ -280,6 +299,7 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
 void QgsNmeaConnection::processGsvSentence( const char *data, int len )
 {
   nmeaGPGSV result;
+
   if ( nmea_parse_GPGSV( data, len, &result ) )
   {
     //clear satellite information when a new series of packs arrives
@@ -302,13 +322,13 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
       satelliteInfo.signal = currentSatellite.sig;
       mLastGPSInformation.satellitesInView.append( satelliteInfo );
     }
-
   }
 }
 
 void QgsNmeaConnection::processVtgSentence( const char *data, int len )
 {
   nmeaGPVTG result;
+
   if ( nmea_parse_GPVTG( data, len, &result ) )
   {
     mLastGPSInformation.speed = result.spk;
@@ -318,6 +338,7 @@ void QgsNmeaConnection::processVtgSentence( const char *data, int len )
 void QgsNmeaConnection::processGsaSentence( const char *data, int len )
 {
   nmeaGPGSA result;
+
   if ( nmea_parse_GPGSA( data, len, &result ) )
   {
     mLastGPSInformation.satPrn.clear();
@@ -326,6 +347,7 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
     mLastGPSInformation.vdop = result.VDOP;
     mLastGPSInformation.fixMode = result.fix_mode;
     mLastGPSInformation.fixType = result.fix_type;
+
     for ( int i = 0; i < NMEA_MAXSAT; i++ )
     {
       mLastGPSInformation.satPrn.append( result.sat_prn[ i ] );
