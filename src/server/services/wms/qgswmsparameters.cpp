@@ -1887,7 +1887,7 @@ namespace QgsWms
       QString paramName = paramIt.key().toLower();
       if ( paramName == QLatin1String( "layers" ) || paramName == QLatin1String( "styles" ) )
       {
-        QStringList values = paramIt.value().split( ',' );
+        const QStringList values = paramIt.value().split( ',' );
         for ( const QString &value : values )
           wmsUri.setParam( paramName, value );
       }
