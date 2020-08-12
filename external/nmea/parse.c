@@ -133,18 +133,17 @@ int nmea_pack_type( const char *buff, int buff_sz )
     "GPGSV",
     "GPRMC",
     "GPVTG",
-<<<<<<< HEAD
-    "GNRMC",    
-=======
     "HCHDG",
     "HCHDT",
     "GNRMC",
->>>>>>> 39bed8938e75277a66d19b0c2e6599b6963cef7b
     "GPGST",
   };
   
   // BUFFER_SIZE = size(P_HEADS) - 1;
   int buffer_size = 6;
+
+  // BUFFER_SIZE = size(P_HEADS) - 1;
+  int buffer_size = 8;
 
   // BUFFER_SIZE = size(P_HEADS) - 1;
   int buffer_size = 8;
@@ -164,17 +163,12 @@ int nmea_pack_type( const char *buff, int buff_sz )
   else if ( 0 == memcmp( buff, P_HEADS[4], buffer_size ) )
     return GPVTG;
   else if ( 0 == memcmp( buff, P_HEADS[5], buffer_size ) )
-<<<<<<< HEAD
-    return GPRMC;
-  else if ( 0 == memcmp( buff, P_HEADS[6], buffer_size ) )
-=======
     return HCHDG;
   else if ( 0 == memcmp( buff, P_HEADS[6], buffer_size ) )
     return HCHDT;
   else if ( 0 == memcmp( buff, P_HEADS[7], buffer_size ) )
     return GPRMC;
   else if ( 0 == memcmp( buff, P_HEADS[8], buffer_size ) )
->>>>>>> 39bed8938e75277a66d19b0c2e6599b6963cef7b
     return GPGST;
 
   return GPNON;
@@ -294,16 +288,6 @@ int nmea_parse_GPGST( const char *buff, int buff_sz, nmeaGPGST *pack )
   memset( pack, 0, sizeof( nmeaGPGST ) );
 
   nmea_trace_buff( buff, buff_sz );
-
-<<<<<<< HEAD
-  if ( 8 != nmea_scanf( buff, buff_sz,
-                         "$GPGST,%s,%f,%f,%f,%f,%f,%f,%f*",
-                         &( time_buff[0] ),
-                         &( pack->rms_pr ), &( pack->err_major ), &( pack->err_minor ), &( pack->err_ori ),
-                         &( pack->sig_lat ), &( pack->sig_lon ), &( pack->sig_alt ) ) )
-  {
-    nmea_error( "GPGST parse error!" );
-=======
   char type;
 
   if ( 9 != nmea_scanf( buff, buff_sz,
@@ -320,17 +304,12 @@ int nmea_parse_GPGST( const char *buff, int buff_sz, nmeaGPGST *pack )
   if ( type != 'P' && type != 'N' )
   {
     nmea_error( "G?GST invalid type " );
->>>>>>> 39bed8938e75277a66d19b0c2e6599b6963cef7b
     return 0;
   }
 
   if ( 0 != _nmea_parse_time( &time_buff[0], ( int )strlen( &time_buff[0] ), &( pack->utc ) ) )
   {
-<<<<<<< HEAD
-    nmea_error( "GPGST time parse error!" );
-=======
     nmea_error( "G?GST time parse error!" );
->>>>>>> 39bed8938e75277a66d19b0c2e6599b6963cef7b
     return 0;
   }
 
