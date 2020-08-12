@@ -57,10 +57,14 @@ class CORE_EXPORT QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputNumber;
     else if ( sipCpp->type() == QgsProcessingOutputString::typeName() )
       sipType = sipType_QgsProcessingOutputString;
+    else if ( sipCpp->type() == QgsProcessingOutputBoolean::typeName() )
+      sipType = sipType_QgsProcessingOutputBoolean;
     else if ( sipCpp->type() == QgsProcessingOutputFolder::typeName() )
       sipType = sipType_QgsProcessingOutputFolder;
     else if ( sipCpp->type() == QgsProcessingOutputFile::typeName() )
       sipType = sipType_QgsProcessingOutputFile;
+    else if ( sipCpp->type() == QgsProcessingOutputConditionalBranch::typeName() )
+      sipType = sipType_QgsProcessingOutputConditionalBranch;
     else
       sipType = nullptr;
     SIP_END
@@ -108,6 +112,21 @@ class CORE_EXPORT QgsProcessingOutputDefinition
      */
     void setDescription( const QString &description ) { mDescription = description; }
 
+    /**
+     * Sets whether an output was automatically created when adding a parameter.
+     * \param autoCreated set to TRUE if the output is to be considered as automatically created.
+     * \see autoCreated()
+     * \since QGIS 3.14
+     */
+    void setAutoCreated( bool autoCreated ) { mAutoCreated = autoCreated; }
+
+    /**
+     * Returns TRUE if the output was automatically created when adding a parameter.
+     * \see setAutoCreated()
+     * \since QGIS 3.14
+     */
+    bool autoCreated() const { return mAutoCreated; }
+
   protected:
 
     //! Output name
@@ -115,6 +134,8 @@ class CORE_EXPORT QgsProcessingOutputDefinition
 
     //! Output description
     QString mDescription;
+
+    bool mAutoCreated = false;
 
 };
 
@@ -310,6 +331,28 @@ class CORE_EXPORT QgsProcessingOutputString : public QgsProcessingOutputDefiniti
 };
 
 /**
+ * \class QgsProcessingOutputBoolean
+ * \ingroup core
+ * A boolean output for processing algorithms.
+  * \since QGIS 3.8
+ */
+class CORE_EXPORT QgsProcessingOutputBoolean : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputNumber.
+     */
+    QgsProcessingOutputBoolean( const QString &name, const QString &description = QString() );
+
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputBoolean" ); }
+    QString type() const override { return typeName(); }
+};
+
+/**
  * \class QgsProcessingOutputFolder
  * \ingroup core
  * A folder output for processing algorithms.
@@ -352,6 +395,30 @@ class CORE_EXPORT QgsProcessingOutputFile : public QgsProcessingOutputDefinition
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputFile" ); }
+    QString type() const override { return typeName(); }
+
+};
+
+/**
+ * \class QgsProcessingOutputConditionalBranch
+ * \ingroup core
+ * A conditional branch output for processing algorithms, which represents a possible model logic
+ * flow which branches out from this algorithm.
+  * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsProcessingOutputConditionalBranch : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputConditionalBranch.
+     */
+    QgsProcessingOutputConditionalBranch( const QString &name, const QString &description = QString() );
+
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputBranch" ); }
     QString type() const override { return typeName(); }
 
 };

@@ -17,6 +17,7 @@
 #include "qgsoracleprovider.h"
 #include "qgsoracleconnpool.h"
 #include "qgsoracleexpressioncompiler.h"
+#include "qgsoracletransaction.h"
 
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -29,7 +30,15 @@
 QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>( source, ownSource, request )
 {
-  mConnection = QgsOracleConnPool::instance()->acquireConnection( QgsOracleConn::toPoolName( mSource->mUri ), request.timeout(), request.requestMayBeNested() );
+  if ( !source->mTransactionConnection )
+  {
+    mConnection = QgsOracleConnPool::instance()->acquireConnection( QgsOracleConn::toPoolName( mSource->mUri ), request.timeout(), request.requestMayBeNested() );
+  }
+  else
+  {
+    mConnection = source->mTransactionConnection;
+    mIsTransactionConnection = true;
+  }
   if ( !mConnection )
   {
     close();
@@ -57,29 +66,26 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
     mAttributeList = mRequest.subsetOfAttributes();
-    if ( mAttributeList.isEmpty() )
-      mAttributeList = mSource->mFields.allAttributesList();
 
     // ensure that all attributes required for expression filter are being fetched
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
     {
-      const auto constReferencedColumns = mRequest.filterExpression()->referencedColumns();
-      for ( const QString &field : constReferencedColumns )
+      const QSet<int> attributeIndexes = mRequest.filterExpression()->referencedAttributeIndexes( mSource->mFields );
+      for ( int attrIdx : attributeIndexes )
       {
-        int attrIdx = mSource->mFields.lookupField( field );
         if ( !mAttributeList.contains( attrIdx ) )
           mAttributeList << attrIdx;
       }
     }
 
     // ensure that all attributes required for order by are fetched
-    const QSet< QString > orderByAttributes = mRequest.orderBy().usedAttributes();
-    for ( const QString &attr : orderByAttributes )
+    const auto orderByAttributes = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
+    for ( int attrIdx : orderByAttributes )
     {
-      int attrIndex = mSource->mFields.lookupField( attr );
-      if ( !mAttributeList.contains( attrIndex ) )
-        mAttributeList << attrIndex;
+      if ( !mAttributeList.contains( attrIdx ) )
+        mAttributeList << attrIdx;
     }
+
   }
   else
     mAttributeList = mSource->mFields.allAttributesList();
@@ -137,7 +143,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   }
   else if ( !mFilterRect.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "filterRect without geometry ignored" ) );
+    QgsDebugMsgLevel( QStringLiteral( "filterRect without geometry ignored" ), 2 );
   }
 
   switch ( mRequest.filterType() )
@@ -275,7 +281,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
     if ( mRewind )
     {
       mRewind = false;
-      if ( !QgsOracleProvider::exec( mQry, mSql, mArgs ) )
+      if ( !execQuery( mSql, mArgs, 1 ) )
       {
         QgsMessageLog::logMessage( QObject::tr( "Fetching features failed.\nSQL: %1\nError: %2" )
                                    .arg( mQry.lastQuery(),
@@ -444,7 +450,7 @@ bool QgsOracleFeatureIterator::close()
   if ( mQry.isActive() )
     mQry.finish();
 
-  if ( mConnection )
+  if ( mConnection && !mIsTransactionConnection )
     QgsOracleConnPool::instance()->releaseConnection( mConnection );
   mConnection = nullptr;
 
@@ -505,10 +511,10 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
     if ( !whereClause.isEmpty() )
       query += QStringLiteral( " WHERE %1" ).arg( whereClause );
 
-    QgsDebugMsg( QStringLiteral( "Fetch features: %1" ).arg( query ) );
+    QgsDebugMsgLevel( QStringLiteral( "Fetch features: %1" ).arg( query ), 2 );
     mSql = query;
     mArgs = args;
-    if ( !QgsOracleProvider::exec( mQry, query, args ) )
+    if ( !execQuery( query, args, 1 ) )
     {
       if ( showLog )
       {
@@ -528,6 +534,50 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
   return true;
 }
 
+bool QgsOracleFeatureIterator::execQuery( const QString &query, const QVariantList &args, int retryCount )
+{
+  lock();
+  if ( !QgsOracleProvider::exec( mQry, query, args ) )
+  {
+    unlock();
+    if ( retryCount != 0 )
+    {
+      // If the connection has been closed try again N times in case of timeout
+      // ORA-12170: TNS:Connect timeout occurred
+      // Or if  there is a problem with the network connectivity try again N times
+      // ORA-03114: Not Connected to Oracle
+      if ( mQry.lastError().nativeErrorCode() == QLatin1String( "12170" ) ||
+           mQry.lastError().nativeErrorCode().compare( QLatin1String( "ORA-12170" ), Qt::CaseInsensitive ) == 0 ||
+           mQry.lastError().nativeErrorCode() == QLatin1String( "3114" ) ||
+           mQry.lastError().nativeErrorCode().compare( QLatin1String( "ORA-3114" ), Qt::CaseInsensitive ) == 0 )
+      {
+        // restart connection
+        mConnection->reconnect();
+        // redo execute query
+        return execQuery( query, args, retryCount - 1 );
+      }
+    }
+    return false;
+  }
+  else
+  {
+    unlock();
+  }
+  return true;
+}
+
+void QgsOracleFeatureIterator::lock()
+{
+  if ( mIsTransactionConnection )
+    mConnection->lock();
+}
+
+void QgsOracleFeatureIterator::unlock()
+{
+  if ( mIsTransactionConnection )
+    mConnection->unlock();
+}
+
 // -----------
 
 QgsOracleFeatureSource::QgsOracleFeatureSource( const QgsOracleProvider *p )
@@ -545,6 +595,19 @@ QgsOracleFeatureSource::QgsOracleFeatureSource( const QgsOracleProvider *p )
   , mCrs( p->crs() )
   , mShared( p->mShared )
 {
+  if ( p->mTransaction )
+  {
+    mTransactionConnection = p->mTransaction->connection();
+    mTransactionConnection->ref();
+  }
+}
+
+QgsOracleFeatureSource::~QgsOracleFeatureSource()
+{
+  if ( mTransactionConnection )
+  {
+    mTransactionConnection->unref();
+  }
 }
 
 QgsFeatureIterator QgsOracleFeatureSource::getFeatures( const QgsFeatureRequest &request )

@@ -142,7 +142,7 @@ void QgsGrassRegionEdit::transform( QgsMapCanvas *, QVector<QgsPointXY> &points,
   }
   catch ( QgsCsException &cse )
   {
-    Q_UNUSED( cse );
+    Q_UNUSED( cse )
     QgsDebugMsg( QString( "transformation failed: %1" ).arg( cse.what() ) );
   }
 }

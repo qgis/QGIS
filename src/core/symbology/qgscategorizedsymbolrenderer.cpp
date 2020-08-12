@@ -20,6 +20,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
+#include "qgsgraduatedsymbolrenderer.h"
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgspainteffect.h"
@@ -34,6 +35,7 @@
 #include "qgsfieldformatterregistry.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsstyleentityvisitor.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -177,6 +179,8 @@ QgsCategorizedSymbolRenderer::QgsCategorizedSymbolRenderer( const QString &attrN
   }
 }
 
+QgsCategorizedSymbolRenderer::~QgsCategorizedSymbolRenderer() = default;
+
 void QgsCategorizedSymbolRenderer::rebuildHash()
 {
   mSymbolHash.clear();
@@ -184,7 +188,6 @@ void QgsCategorizedSymbolRenderer::rebuildHash()
   for ( const QgsRendererCategory &cat : qgis::as_const( mCategories ) )
   {
     const QVariant val = cat.value();
-    QString valAsString;
     if ( val.type() == QVariant::List )
     {
       const QVariantList list = val.toList();
@@ -619,7 +622,7 @@ QString QgsCategorizedSymbolRenderer::filter( const QgsFields &fields )
 
 QgsSymbolList QgsCategorizedSymbolRenderer::symbols( QgsRenderContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   QgsSymbolList lst;
   lst.reserve( mCategories.count() );
   for ( const QgsRendererCategory &cat : mCategories )
@@ -627,6 +630,25 @@ QgsSymbolList QgsCategorizedSymbolRenderer::symbols( QgsRenderContext &context )
     lst.append( cat.symbol() );
   }
   return lst;
+}
+
+bool QgsCategorizedSymbolRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  for ( const QgsRendererCategory &cat : mCategories )
+  {
+    QgsStyleSymbolEntity entity( cat.symbol() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, cat.value().toString(), cat.label() ) ) )
+      return false;
+  }
+
+  if ( mSourceColorRamp )
+  {
+    QgsStyleColorRampEntity entity( mSourceColorRamp.get() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity ) ) )
+      return false;
+  }
+
+  return true;
 }
 
 QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
@@ -933,12 +955,23 @@ QgsSymbol *QgsCategorizedSymbolRenderer::sourceSymbol()
 {
   return mSourceSymbol.get();
 }
+
+const QgsSymbol *QgsCategorizedSymbolRenderer::sourceSymbol() const
+{
+  return mSourceSymbol.get();
+}
+
 void QgsCategorizedSymbolRenderer::setSourceSymbol( QgsSymbol *sym )
 {
   mSourceSymbol.reset( sym );
 }
 
 QgsColorRamp *QgsCategorizedSymbolRenderer::sourceColorRamp()
+{
+  return mSourceColorRamp.get();
+}
+
+const QgsColorRamp *QgsCategorizedSymbolRenderer::sourceColorRamp() const
 {
   return mSourceColorRamp.get();
 }
@@ -1018,22 +1051,37 @@ void QgsCategorizedSymbolRenderer::checkLegendSymbolItem( const QString &key, bo
 
 QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
-  QgsCategorizedSymbolRenderer *r = nullptr;
+  std::unique_ptr< QgsCategorizedSymbolRenderer > r;
   if ( renderer->type() == QLatin1String( "categorizedSymbol" ) )
   {
-    r = dynamic_cast<QgsCategorizedSymbolRenderer *>( renderer->clone() );
+    r.reset( static_cast<QgsCategorizedSymbolRenderer *>( renderer->clone() ) );
+  }
+  else if ( renderer->type() == QLatin1String( "graduatedSymbol" ) )
+  {
+    const QgsGraduatedSymbolRenderer *graduatedSymbolRenderer = dynamic_cast<const QgsGraduatedSymbolRenderer *>( renderer );
+    if ( graduatedSymbolRenderer )
+    {
+      r.reset( new QgsCategorizedSymbolRenderer( QString(), QgsCategoryList() ) );
+      if ( graduatedSymbolRenderer->sourceSymbol() )
+        r->setSourceSymbol( graduatedSymbolRenderer->sourceSymbol()->clone() );
+      if ( graduatedSymbolRenderer->sourceColorRamp() )
+      {
+        r->setSourceColorRamp( graduatedSymbolRenderer->sourceColorRamp()->clone() );
+      }
+      r->setClassAttribute( graduatedSymbolRenderer->classAttribute() );
+    }
   }
   else if ( renderer->type() == QLatin1String( "pointDisplacement" ) || renderer->type() == QLatin1String( "pointCluster" ) )
   {
     const QgsPointDistanceRenderer *pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer *>( renderer );
     if ( pointDistanceRenderer )
-      r = convertFromRenderer( pointDistanceRenderer->embeddedRenderer() );
+      r.reset( convertFromRenderer( pointDistanceRenderer->embeddedRenderer() ) );
   }
   else if ( renderer->type() == QLatin1String( "invertedPolygonRenderer" ) )
   {
     const QgsInvertedPolygonRenderer *invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer *>( renderer );
     if ( invertedPolygonRenderer )
-      r = convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
+      r.reset( convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() ) );
   }
 
   // If not one of the specifically handled renderers, then just grab the symbol from the renderer
@@ -1041,7 +1089,7 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
 
   if ( !r )
   {
-    r = new QgsCategorizedSymbolRenderer( QString(), QgsCategoryList() );
+    r = qgis::make_unique< QgsCategorizedSymbolRenderer >( QString(), QgsCategoryList() );
     QgsRenderContext context;
     QgsSymbolList symbols = const_cast<QgsFeatureRenderer *>( renderer )->symbols( context );
     if ( !symbols.isEmpty() )
@@ -1053,7 +1101,7 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
   r->setOrderBy( renderer->orderBy() );
   r->setOrderByEnabled( renderer->orderByEnabled() );
 
-  return r;
+  return r.release();
 }
 
 void QgsCategorizedSymbolRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings )
@@ -1073,7 +1121,7 @@ int QgsCategorizedSymbolRenderer::matchToSymbols( QgsStyle *style, const QgsSymb
 
   int matched = 0;
   unmatchedSymbols = style->symbolNames();
-  const QSet< QString > allSymbolNames = unmatchedSymbols.toSet();
+  const QSet< QString > allSymbolNames = qgis::listToSet( unmatchedSymbols );
 
   const QRegularExpression tolerantMatchRe( QStringLiteral( "[^\\w\\d ]" ), QRegularExpression::UseUnicodePropertiesOption );
 

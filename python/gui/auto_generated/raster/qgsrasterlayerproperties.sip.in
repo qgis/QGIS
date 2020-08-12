@@ -1,0 +1,48 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrasterlayerproperties.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsRasterLayerProperties : QgsOptionsDialogBase
+{
+%Docstring
+Property sheet for a raster map layer
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsrasterlayerproperties.h"
+%End
+  public:
+
+
+    QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = 0, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+Constructor
+
+:param lyr: Map layer for which properties will be displayed
+:param canvas: the QgsMapCanvas instance
+:param parent: the parent of this widget
+:param fl: windows flag
+%End
+
+  protected slots:
+
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrasterlayerproperties.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -110,7 +110,7 @@ void QgsWidgetWrapper::initWidget( QWidget *editor )
 
 void QgsWidgetWrapper::setEnabled( bool enabled )
 {
-  Q_UNUSED( enabled );
+  Q_UNUSED( enabled )
 }
 
 void QgsWidgetWrapper::aboutToSave()

@@ -27,16 +27,17 @@
 #include "qgssearchwidgetwrapper.h"
 #include "qgsdockwidget.h"
 #include "qgis_app.h"
+#include "qgsstoredexpressionmanager.h"
 
 class QDialogButtonBox;
 class QPushButton;
 class QLineEdit;
 class QComboBox;
 class QMenu;
-class QSignalMapper;
 class QgsAttributeTableModel;
 class QgsAttributeTableFilterModel;
 class QgsRubberBand;
+struct QgsStoredExpression;
 
 class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDialog, private QgsExpressionContextGenerator
 {
@@ -52,8 +53,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * \param flags window flags
      */
     QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode = QgsAttributeTableFilterModel::ShowAll, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
-
-    ~QgsAttributeTableDialog() override;
 
     QgsExpressionContext createExpressionContext() const override;
 
@@ -155,6 +154,11 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void mActionDeleteSelected_triggered();
 
     /**
+     * Opens organize columns dialog
+     */
+    void mActionOrganizeColumns_triggered();
+
+    /**
      * Called when the current index changes in the main view
      * i.e. when the view mode is switched from table to form view
      * or vice versa.
@@ -169,14 +173,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void mActionAddFeature_triggered();
 
     void mActionExpressionSelect_triggered();
-    void filterColumnChanged( QObject *filterAction );
-    void filterExpressionBuilder();
-    void filterShowAll();
-    void filterSelected();
-    void filterVisible();
-    void filterEdited();
-    void filterQueryChanged( const QString &query );
-    void filterQueryAccepted();
+
     void openConditionalStyles();
 
     /**
@@ -185,9 +182,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void updateTitle();
 
     void updateButtonStatus( const QString &fieldName, bool isValid );
-
-    /* replace the search widget with a new one */
-    void replaceSearchWidget( QWidget *oldw, QWidget *neww );
 
     void layerActionTriggered();
   signals:
@@ -210,11 +204,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
   private slots:
 
-    /**
-     * Initialize column box
-     */
-    void columnBoxInit();
-
     void runFieldCalculation( QgsVectorLayer *layer, const QString &fieldName, const QString &expression, const QgsFeatureIds &filteredIds = QgsFeatureIds() );
     void updateFieldFromExpression();
     void updateFieldFromExpressionSelected();
@@ -222,6 +211,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void formFilterSet( const QString &filter, QgsAttributeForm::FilterType type );
     void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
     void toggleDockMode( bool docked );
+    void updateLayerModifiedActions();
 
   private:
     QMenu *mMenuActions = nullptr;
@@ -229,16 +219,9 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     QgsDockWidget *mDock = nullptr;
     QDialog *mDialog = nullptr;
-    QgsDistanceArea *myDa = nullptr;
-
-
-    QMenu *mFilterColumnsMenu = nullptr;
-    QSignalMapper *mFilterActionMapper = nullptr;
 
     QPointer< QgsVectorLayer > mLayer = nullptr;
-    QgsSearchWidgetWrapper *mCurrentSearchWidgetWrapper = nullptr;
     QStringList mVisibleFields;
-    QgsAttributeEditorContext mEditorContext;
 
     void updateMultiEditButtonState();
     void deleteFeature( QgsFeatureId fid );
@@ -252,7 +235,7 @@ class QgsAttributeTableDock : public QgsDockWidget
     Q_OBJECT
 
   public:
-    QgsAttributeTableDock( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsAttributeTableDock( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 
     void closeEvent( QCloseEvent *ev ) override;
 };

@@ -40,7 +40,7 @@ namespace QgsWms
   QDomDocument describeLayer( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                               const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QgsServerRequest::Parameters parameters = request.parameters();
 
@@ -191,7 +191,9 @@ namespace QgsWms
         }
 
         case QgsMapLayerType::MeshLayer:
+        case QgsMapLayerType::VectorTileLayer:
         case QgsMapLayerType::PluginLayer:
+        case QgsMapLayerType::AnnotationLayer:
           break;
       }
       layerNode.appendChild( typeNode );

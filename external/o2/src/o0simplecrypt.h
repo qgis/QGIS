@@ -82,7 +82,7 @@ public:
         ProtectionHash     /*!< A cryptographic hash is used to verify the integrity of the data. This method produces a much stronger, but longer check */
     };
     /**
-      Error describes the type of error that occured.
+      Error describes the type of error that occurred.
       */
     enum Error {
         ErrorNoError,         /*!< No error occurred. */
@@ -175,7 +175,7 @@ public:
       Decrypts a cyphertext string encrypted with this class with the set key back to the
       plain text version.
 
-      If an error occured, such as non-matching keys between encryption and decryption,
+      If an error occurred, such as non-matching keys between encryption and decryption,
       an empty string or a string containing nonsense may be returned.
       */
     QString decryptToString(const QString& cyphertext) ;
@@ -183,7 +183,7 @@ public:
       Decrypts a cyphertext string encrypted with this class with the set key back to the
       plain text version.
 
-      If an error occured, such as non-matching keys between encryption and decryption,
+      If an error occurred, such as non-matching keys between encryption and decryption,
       an empty string or a string containing nonsense may be returned.
       */
     QByteArray decryptToByteArray(const QString& cyphertext) ;
@@ -191,7 +191,7 @@ public:
       Decrypts a cyphertext binary encrypted with this class with the set key back to the
       plain text version.
 
-      If an error occured, such as non-matching keys between encryption and decryption,
+      If an error occurred, such as non-matching keys between encryption and decryption,
       an empty string or a string containing nonsense may be returned.
       */
     QString decryptToString(QByteArray cypher) ;
@@ -199,7 +199,7 @@ public:
       Decrypts a cyphertext binary encrypted with this class with the set key back to the
       plain text version.
 
-      If an error occured, such as non-matching keys between encryption and decryption,
+      If an error occurred, such as non-matching keys between encryption and decryption,
       an empty string or a string containing nonsense may be returned.
       */
     QByteArray decryptToByteArray(QByteArray cypher) ;

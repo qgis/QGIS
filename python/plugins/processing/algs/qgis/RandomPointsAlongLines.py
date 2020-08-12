@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import random
 
 from qgis.PyQt.QtCore import QVariant
@@ -52,7 +48,6 @@ from processing.tools import vector
 
 
 class RandomPointsAlongLines(QgisAlgorithm):
-
     INPUT = 'INPUT'
     POINTS_NUMBER = 'POINTS_NUMBER'
     MIN_DISTANCE = 'MIN_DISTANCE'
@@ -115,18 +110,20 @@ class RandomPointsAlongLines(QgisAlgorithm):
 
         da = QgsDistanceArea()
         da.setSourceCrs(source.sourceCrs(), context.transformContext())
-        da.setEllipsoid(context.project().ellipsoid())
+        da.setEllipsoid(context.ellipsoid())
 
         request = QgsFeatureRequest()
 
         random.seed()
+
+        ids = source.allFeatureIds()
 
         while nIterations < maxIterations and nPoints < pointCount:
             if feedback.isCanceled():
                 break
 
             # pick random feature
-            fid = random.randint(0, featureCount - 1)
+            fid = random.choice(ids)
             f = next(source.getFeatures(request.setFilterFid(fid).setSubsetOfAttributes([])))
             fGeom = f.geometry()
 
@@ -148,25 +145,24 @@ class RandomPointsAlongLines(QgisAlgorithm):
             length = da.measureLine(startPoint, endPoint)
             dist = length * random.random()
 
-            if dist > minDistance:
-                d = dist / (length - dist)
-                rx = (startPoint.x() + d * endPoint.x()) / (1 + d)
-                ry = (startPoint.y() + d * endPoint.y()) / (1 + d)
+            d = dist / (length - dist)
+            rx = (startPoint.x() + d * endPoint.x()) / (1 + d)
+            ry = (startPoint.y() + d * endPoint.y()) / (1 + d)
 
-                # generate random point
-                p = QgsPointXY(rx, ry)
-                geom = QgsGeometry.fromPointXY(p)
-                if vector.checkMinDistance(p, index, minDistance, points):
-                    f = QgsFeature(nPoints)
-                    f.initAttributes(1)
-                    f.setFields(fields)
-                    f.setAttribute('id', nPoints)
-                    f.setGeometry(geom)
-                    sink.addFeature(f, QgsFeatureSink.FastInsert)
-                    index.addFeature(f)
-                    points[nPoints] = p
-                    nPoints += 1
-                    feedback.setProgress(int(nPoints * total))
+            # generate random point
+            p = QgsPointXY(rx, ry)
+            geom = QgsGeometry.fromPointXY(p)
+            if vector.checkMinDistance(p, index, minDistance, points):
+                f = QgsFeature(nPoints)
+                f.initAttributes(1)
+                f.setFields(fields)
+                f.setAttribute('id', nPoints)
+                f.setGeometry(geom)
+                sink.addFeature(f, QgsFeatureSink.FastInsert)
+                index.addFeature(f)
+                points[nPoints] = p
+                nPoints += 1
+                feedback.setProgress(int(nPoints * total))
             nIterations += 1
 
         if nPoints < pointCount:

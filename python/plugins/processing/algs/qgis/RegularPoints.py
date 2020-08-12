@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'September 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from random import seed, uniform
 from math import sqrt
@@ -53,7 +49,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class RegularPoints(QgisAlgorithm):
-
     EXTENT = 'EXTENT'
     SPACING = 'SPACING'
     INSET = 'INSET'

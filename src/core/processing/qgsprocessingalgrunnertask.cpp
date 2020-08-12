@@ -77,7 +77,7 @@ bool QgsProcessingAlgRunnerTask::run()
 
 void QgsProcessingAlgRunnerTask::finished( bool result )
 {
-  Q_UNUSED( result );
+  Q_UNUSED( result )
   QVariantMap ppResults;
   if ( result )
   {

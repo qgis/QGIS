@@ -36,7 +36,7 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   , mMousePrecisionDecimalPlaces( 0 )
 {
   // calculate the size of two chars
-  mTwoCharSize = fontMetrics().width( QStringLiteral( "OO" ) );
+  mTwoCharSize = fontMetrics().boundingRect( 'O' ).width();
   mMinimumWidth = mTwoCharSize * 4;
 
   // add a label to show current position
@@ -227,7 +227,7 @@ void QgsStatusBarCoordinatesWidget::world()
   {
     return;
   }
-  QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.shp" );
+  QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
   QFileInfo fileInfo = QFileInfo( fileName );
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
@@ -269,7 +269,7 @@ void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool flag )
     mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "tracking.svg" ) ) );
     mLineEdit->setToolTip( tr( "Map coordinates at mouse cursor position" ) );
     mLineEdit->setReadOnly( false );
-    mLabel->setText( tr( "Coordinate:" ) );
+    mLabel->setText( tr( "Coordinate" ) );
   }
 }
 
@@ -280,7 +280,7 @@ void QgsStatusBarCoordinatesWidget::refreshMapCanvas()
 
   //stop any current rendering
   mMapCanvas->stopRendering();
-  mMapCanvas->refreshAllLayers();
+  mMapCanvas->redrawAllLayers();
 }
 
 void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &p )
@@ -306,7 +306,7 @@ void QgsStatusBarCoordinatesWidget::showExtent()
 
   // update the statusbar with the current extents.
   QgsRectangle myExtents = mMapCanvas->extent();
-  mLabel->setText( tr( "Extents:" ) );
+  mLabel->setText( tr( "Extents" ) );
   mLineEdit->setText( myExtents.toString( true ) );
 
   ensureCoordinatesVisible();
@@ -316,7 +316,7 @@ void QgsStatusBarCoordinatesWidget::ensureCoordinatesVisible()
 {
 
   //ensure the label is big (and small) enough
-  int width = std::max( mLineEdit->fontMetrics().width( mLineEdit->text() ) + 16, mMinimumWidth );
+  int width = std::max( mLineEdit->fontMetrics().boundingRect( mLineEdit->text() ).width() + 16, mMinimumWidth );
   if ( mLineEdit->minimumWidth() < width || ( mLineEdit->minimumWidth() - width ) > mTwoCharSize )
   {
     mLineEdit->setMinimumWidth( width );

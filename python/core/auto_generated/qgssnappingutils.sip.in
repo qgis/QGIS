@@ -17,9 +17,11 @@ This class has all the configuration of snapping and can return answers to snapp
 Internally, it keeps a cache of QgsPointLocator instances for multiple layers.
 
 Currently it supports the following queries:
-- snapToMap() - has multiple modes of operation
-- snapToCurrentLayer()
-For more complex queries it is possible to use locatorForLayer() method that returns
+
+- :py:func:`~snapToMap` - has multiple modes of operation
+- :py:func:`~snapToCurrentLayer`
+
+For more complex queries it is possible to use :py:func:`~locatorForLayer` method that returns
 point locator instance with layer's indexed data.
 
 Indexing strategy determines how fast the queries will be and how much memory will be used.
@@ -38,6 +40,9 @@ which keeps the configuration in sync with map canvas (e.g. current view, active
     QgsSnappingUtils( QObject *parent /TransferThis/ = 0, bool enableSnappingForInvisibleFeature = true );
 %Docstring
 Constructor for QgsSnappingUtils
+
+:param parent: parent object
+:param enableSnappingForInvisibleFeature: ``True`` if we want to snap feature even if there are not visible
 %End
     ~QgsSnappingUtils();
 
@@ -45,14 +50,27 @@ Constructor for QgsSnappingUtils
     QgsPointLocator *locatorForLayer( QgsVectorLayer *vl );
 %Docstring
 Gets a point locator for the given layer. If such locator does not exist, it will be created
+
+:param vl: the vector layer
 %End
 
-    QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter = 0 );
+    QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
 %Docstring
-Snap to map according to the current configuration. Optional filter allows discarding unwanted matches.
-%End
-    QgsPointLocator::Match snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = 0 );
+Snap to map according to the current configuration.
 
+:param point: point in canvas coordinates
+:param filter: allows discarding unwanted matches.
+:param relaxed: ``True`` if this method is non blocking and the matching result can be invalid while indexing
+%End
+
+    QgsPointLocator::Match snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
+%Docstring
+Snap to map according to the current configuration.
+
+:param pointMap: point in map coordinates
+:param filter: allows discarding unwanted matches.
+:param relaxed: ``True`` if this method is non blocking and the matching result can be invalid while indexing
+%End
 
     QgsPointLocator::Match snapToCurrentLayer( QPoint point, QgsPointLocator::Types type, QgsPointLocator::MatchFilter *filter = 0 );
 %Docstring
@@ -100,14 +118,14 @@ Find out which strategy is used for indexing - by default hybrid indexing is use
 %Docstring
 Create a new configuration for a snapping layer.
 
-```py
-snapper = QgsMapCanvasSnappingUtils(mapCanvas)
+.. code-block:: python
 
-snapping_layer1 = QgsSnappingUtils.LayerConfig(layer1, QgsPointLocator.Vertex, 10, QgsTolerance.Pixels)
-snapping_layer2 = QgsSnappingUtils.LayerConfig(layer2, QgsPointLocator.Vertex and QgsPointLocator.Edge, 10, QgsTolerance.Pixels)
+     snapper = QgsMapCanvasSnappingUtils(mapCanvas)
 
-snapper.setLayers([snapping_layer1, snapping_layer2])
-```
+     snapping_layer1 = QgsSnappingUtils.LayerConfig(layer1, QgsPointLocator.Vertex, 10, QgsTolerance.Pixels)
+     snapping_layer2 = QgsSnappingUtils.LayerConfig(layer2, QgsPointLocator.Vertex and QgsPointLocator.Edge, 10, QgsTolerance.Pixels)
+
+     snapper.setLayers([snapping_layer1, snapping_layer2])
 
 :param l: The vector layer for which this configuration is
 :param t: Which parts of the geometry should be snappable
@@ -150,6 +168,42 @@ Set if invisible features must be snapped or not.
 .. versionadded:: 3.2
 %End
 
+    void addExtraSnapLayer( QgsVectorLayer *vl );
+%Docstring
+Supply an extra snapping layer (typically a memory layer).
+This can be used by map tools to provide additional
+snappings points.
+
+.. seealso:: :py:func:`removeExtraSnapLayer`
+
+.. seealso:: :py:func:`getExtraSnapLayers`
+
+.. versionadded:: 3.14
+%End
+
+    void removeExtraSnapLayer( QgsVectorLayer *vl );
+%Docstring
+Removes an extra snapping layer
+
+.. seealso:: :py:func:`addExtraSnapLayer`
+
+.. seealso:: :py:func:`getExtraSnapLayers`
+
+.. versionadded:: 3.14
+%End
+
+    QSet<QgsVectorLayer *> getExtraSnapLayers();
+%Docstring
+Returns the list of extra snapping layers
+
+.. seealso:: :py:func:`addExtraSnapLayer`
+
+.. seealso:: :py:func:`removeExtraSnapLayer`
+
+.. versionadded:: 3.14
+%End
+
+
   public slots:
 
     void setConfig( const QgsSnappingConfig &snappingConfig );
@@ -172,13 +226,14 @@ Emitted when the snapping settings object changes.
 %End
 
   protected:
+
     virtual void prepareIndexStarting( int count );
 %Docstring
-Called when starting to index - can be overridden and e.g. progress dialog can be provided
+Called when starting to index with snapToMap - can be overridden and e.g. progress dialog can be provided
 %End
     virtual void prepareIndexProgress( int index );
 %Docstring
-Called when finished indexing a layer. When index == count the indexing is complete
+Called when finished indexing a layer with snapToMap. When index == count the indexing is complete
 %End
 
     void clearAllLocators();

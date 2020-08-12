@@ -80,6 +80,10 @@ Returns the minimum value.
 
 
 
+
+
+  private:
+    QgsContrastEnhancementFunction &operator=( const QgsContrastEnhancementFunction & );
 };
 
 /************************************************************************

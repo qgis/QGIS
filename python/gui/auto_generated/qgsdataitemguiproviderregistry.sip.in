@@ -16,7 +16,7 @@ This class keeps a list of data item GUI providers that may affect how QgsDataIt
 behave within the application GUI.
 
 QgsDataItemGuiProviderRegistry is not usually directly created, but rather accessed through
-QgsGui.instance()->dataItemGuiProviderRegistry().
+:py:func:`QgsGui.instance()`->:py:func:`~dataItemGuiProviderRegistry`.
 
 .. versionadded:: 3.6
 %End
@@ -25,9 +25,7 @@ QgsGui.instance()->dataItemGuiProviderRegistry().
 #include "qgsdataitemguiproviderregistry.h"
 %End
   public:
-
     QgsDataItemGuiProviderRegistry();
-
     ~QgsDataItemGuiProviderRegistry();
 
 
@@ -46,6 +44,14 @@ is transferred to the registry.
 %Docstring
 Removes a ``provider`` implementation from the registry.
 The provider object is automatically deleted.
+%End
+
+    void initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
+%Docstring
+Initializes the registry. The registry needs to be passed explicitly
+(instead of using singleton) because this gets called from QgsGui constructor.
+
+.. versionadded:: 3.10
 %End
 
   private:

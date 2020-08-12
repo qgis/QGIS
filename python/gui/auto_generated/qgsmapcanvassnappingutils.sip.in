@@ -23,7 +23,15 @@ Snapping utils instance that is connected to a canvas and updates the configurat
 #include "qgsmapcanvassnappingutils.h"
 %End
   public:
+
     QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent = 0 );
+%Docstring
+Construct map canvas snapping utils object
+
+:param canvas: map canvas
+:param parent: parent object
+               if ``False`` it will block until indexing is done
+%End
 
   protected:
     virtual void prepareIndexStarting( int count );

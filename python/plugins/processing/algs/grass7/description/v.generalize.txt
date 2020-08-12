@@ -13,7 +13,7 @@ QgsProcessingParameterNumber|slide|Slide of computed point toward the original p
 QgsProcessingParameterNumber|angle_thresh|Minimum angle between two consecutive segments in Hermite method|QgsProcessingParameterNumber.Double|3.0|True|0.0|180.0
 QgsProcessingParameterNumber|degree_thresh|Degree threshold in network generalization|QgsProcessingParameterNumber.Integer|0|True|0|None
 QgsProcessingParameterNumber|closeness_thresh|Closeness threshold in network generalization|QgsProcessingParameterNumber.Double|0.0|True|0.0|1.0
-QgsProcessingParameterNumber|betweeness_thresh|Betweeness threshold in network generalization|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterNumber|betweeness_thresh|Betweenness threshold in network generalization|QgsProcessingParameterNumber.Double|0.0|True|None|None
 QgsProcessingParameterNumber|alpha|Snakes alpha parameter|QgsProcessingParameterNumber.Double|1.0|True|None|None
 QgsProcessingParameterNumber|beta|Snakes beta parameter|QgsProcessingParameterNumber.Double|1.0|True|None|None
 QgsProcessingParameterNumber|iterations|Number of iterations|QgsProcessingParameterNumber.Integer|1|True|1|None

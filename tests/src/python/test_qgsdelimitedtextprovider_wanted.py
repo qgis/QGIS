@@ -20,8 +20,6 @@
 __author__ = 'Chris Crook'
 __date__ = 'May 2013'
 __copyright__ = '(C) 2013, Chris Crook'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 
 def test_002_load_csv_file():

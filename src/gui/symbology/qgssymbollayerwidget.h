@@ -153,6 +153,8 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     //creates a new icon for the 'change pattern' button
     void updatePatternIcon();
 
+    void resizeEvent( QResizeEvent *event ) override;
+
   private slots:
 
     void updateAssistantSymbol();
@@ -160,12 +162,14 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     void colorChanged( const QColor &color );
     void penStyleChanged();
     void offsetChanged();
+    void patternOffsetChanged();
     void mCustomCheckBox_stateChanged( int state );
     void mChangePatternButton_clicked();
     void mPenWidthUnitWidget_changed();
     void mOffsetUnitWidget_changed();
     void mDashPatternUnitWidget_changed();
     void mDrawInsideCheckBox_stateChanged( int state );
+    void patternOffsetUnitChanged();
 
   private:
 
@@ -791,6 +795,9 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, priv
     void mStrokeWidthSpinBox_valueChanged( double d );
     void mTextureWidthUnitWidget_changed();
     void mSvgStrokeWidthUnitWidget_changed();
+
+  private:
+    int mIconSize = 30;
 };
 
 //////////
@@ -886,6 +893,55 @@ class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerWidg
     void mVerticalOffsetUnitWidget_changed();
 };
 
+
+//////////
+
+#include "ui_widget_randommarkerfill.h"
+
+class QgsRandomMarkerFillSymbolLayer;
+
+/**
+ * \ingroup gui
+ * \class QgsRandomMarkerFillSymbolLayerWidget
+ *
+ * Widget for controlling the properties of a QgsRandomMarkerFillSymbolLayer.
+ *
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsRandomMarkerFillSymbolLayerWidget: public QgsSymbolLayerWidget, private Ui::WidgetRandomMarkerFill
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsRandomMarkerFillSymbolLayerWidget.
+     * \param vl associated vector layer
+     * \param parent parent widget
+     */
+    QgsRandomMarkerFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Creates a new QgsRandomMarkerFillSymbolLayerWidget.
+     * \param vl associated vector layer
+     */
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsRandomMarkerFillSymbolLayerWidget( vl ); }
+
+    void setSymbolLayer( QgsSymbolLayer *layer ) override;
+    QgsSymbolLayer *symbolLayer() override;
+
+  private:
+    QgsRandomMarkerFillSymbolLayer *mLayer = nullptr;
+
+  private slots:
+
+    void countMethodChanged( int );
+    void countChanged( int d );
+    void densityAreaChanged( double d );
+    void densityAreaUnitChanged();
+    void seedChanged( int d );
+};
+
 /////////
 
 #include "ui_widget_fontmarker.h"
@@ -930,18 +986,41 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
     void setColorStroke( const QColor &color );
     void setSize( double size );
     void setAngle( double angle );
+
+    /**
+     * Set the font marker character from char.
+     * \param chr the char
+     */
     void setCharacter( QChar chr );
+
+    /**
+     * Set the font marker character from a text string.
+     * \param text the text string
+     * \since QGIS 3.8
+     */
+    void setCharacterFromText( const QString &text );
 
   protected:
     QgsFontMarkerSymbolLayer *mLayer = nullptr;
     CharacterWidget *widgetChar = nullptr;
 
   private slots:
+
+    /**
+     * Sets the font \a style.
+     * \since QGIS 3.14
+     */
+    void setFontStyle( const QString &style );
+
     void setOffset();
     void mSizeUnitWidget_changed();
     void mOffsetUnitWidget_changed();
     void mStrokeWidthUnitWidget_changed();
     void mStrokeWidthSpinBox_valueChanged( double d );
+
+    void populateFontStyleComboBox();
+    void mFontStyleComboBox_currentIndexChanged( int index );
+
     void mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void mVerticalAnchorComboBox_currentIndexChanged( int index );
     void penJoinStyleChanged();
@@ -950,6 +1029,9 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
   private:
 
     std::shared_ptr< QgsMarkerSymbol > mAssistantPreviewSymbol;
+
+    QFont mRefFont;
+    QFontDatabase mFontDB;
 
 };
 
@@ -993,7 +1075,8 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerWidget : public QgsSymbolLayerWidget,
   private slots:
     void mDrawInsideCheckBox_stateChanged( int state );
     void mDrawAllPartsCheckBox_stateChanged( int state );
-
+    void mClipPointsCheckBox_stateChanged( int state );
+    void mClipOnCurrentPartOnlyCheckBox_stateChanged( int state );
 };
 
 

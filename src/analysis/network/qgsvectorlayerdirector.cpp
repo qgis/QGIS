@@ -85,7 +85,7 @@ QgsAttributeList QgsVectorLayerDirector::requiredAttributes() const
   {
     attrs.unite( strategy->requiredAttributes() );
   }
-  return attrs.toList();
+  return qgis::setToList( attrs );
 }
 
 QgsVectorLayerDirector::Direction QgsVectorLayerDirector::directionForFeature( const QgsFeature &feature ) const
@@ -120,7 +120,7 @@ class QgsNetworkVisitor : public SpatialIndex::IVisitor
       : mPoints( pointIndexes ) {}
 
     void visitNode( const INode &n ) override
-    { Q_UNUSED( n ); }
+    { Q_UNUSED( n ) }
 
     void visitData( const IData &d ) override
     {
@@ -128,7 +128,7 @@ class QgsNetworkVisitor : public SpatialIndex::IVisitor
     }
 
     void visitData( std::vector<const IData *> &v ) override
-    { Q_UNUSED( v ); }
+    { Q_UNUSED( v ) }
 
   private:
     QVector< int > &mPoints;

@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import math
 
@@ -184,7 +180,7 @@ class PointDistance(QgisAlgorithm):
 
         distArea = QgsDistanceArea()
         distArea.setSourceCrs(source.sourceCrs(), context.transformContext())
-        distArea.setEllipsoid(context.project().ellipsoid())
+        distArea.setEllipsoid(context.ellipsoid())
 
         features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([inIdx]))
         total = 100.0 / source.featureCount() if source.featureCount() else 0
@@ -239,7 +235,7 @@ class PointDistance(QgisAlgorithm):
 
         distArea = QgsDistanceArea()
         distArea.setSourceCrs(source.sourceCrs(), context.transformContext())
-        distArea.setEllipsoid(context.project().ellipsoid())
+        distArea.setEllipsoid(context.ellipsoid())
 
         inIdx = source.fields().lookupField(inField)
         targetIdx = target_source.fields().lookupField(targetField)

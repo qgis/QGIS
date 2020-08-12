@@ -38,6 +38,14 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connNa
   connect( btnConnect, &QPushButton::clicked, this, &QgsDb2NewConnection::btnConnect_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDb2NewConnection::showHelp );
 
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  connect( txtName, &QLineEdit::textChanged, this, &QgsDb2NewConnection::updateOkButtonState );
+  connect( txtService, &QLineEdit::textChanged, this, &QgsDb2NewConnection::updateOkButtonState );
+  connect( txtDriver, &QLineEdit::textChanged, this, &QgsDb2NewConnection::updateOkButtonState );
+  connect( txtHost, &QLineEdit::textChanged, this, &QgsDb2NewConnection::updateOkButtonState );
+  connect( txtPort, &QLineEdit::textChanged, this, &QgsDb2NewConnection::updateOkButtonState );
+  connect( txtDatabase, &QLineEdit::textChanged, this, &QgsDb2NewConnection::updateOkButtonState );
+
   mAuthSettings->setDataprovider( QStringLiteral( "db2" ) );
   mAuthSettings->showStoreCheckboxes( true );
 
@@ -199,4 +207,12 @@ void QgsDb2NewConnection::listDatabases()
 void QgsDb2NewConnection::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-db2-spatial" ) );
+}
+
+void QgsDb2NewConnection::updateOkButtonState()
+{
+  bool enabled = !txtName->text().isEmpty() && (
+                   ( !txtService->text().isEmpty() && !txtDatabase->text().isEmpty() ) ||
+                   ( !txtDriver->text().isEmpty() && !txtHost->text().isEmpty() && !txtPort->text().isEmpty() && !txtDatabase->text().isEmpty() ) );
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }

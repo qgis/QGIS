@@ -61,12 +61,25 @@ class GUI_EXPORT QgsScrollArea : public QScrollArea
      */
     bool hasScrolled() const;
 
+    /**
+     * Sets whether the scroll area only applies vertical.
+     *
+     * If set to TRUE, then scroll area children will resize horizontally to match the width of
+     * the scroll area widget.
+     *
+     * \since QGIS 3.8
+     */
+    void setVerticalOnly( bool verticalOnly );
+
   protected:
     void wheelEvent( QWheelEvent *event ) override;
+    void resizeEvent( QResizeEvent *event ) override;
 
   private:
     QTimer mTimer;
     ScrollAreaFilter *mFilter = nullptr;
+    bool mVerticalOnly = false;
+
 };
 
 #ifndef SIP_RUN

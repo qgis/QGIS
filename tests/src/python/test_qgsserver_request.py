@@ -13,8 +13,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '29/04/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 
 import os
@@ -195,6 +193,21 @@ class QgsServerRequestTest(QgsServerTestBase):
         params['SERVICE'] = 'WMTS'
         _check_links(params)
         _check_links(params, 'POST')
+
+    def test_fcgiRequestBody(self):
+        """Test request body"""
+        data = '<Literal>+1</Literal>'
+        self._set_env({
+            'SERVER_NAME': 'www.myserver.com',
+            'SERVICE': 'WFS',
+            'REQUEST_BODY': data,
+            'CONTENT_LENGTH': str(len(data)),
+            'REQUEST_METHOD': 'POST',
+        })
+        request = QgsFcgiServerRequest()
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response)
+        self.assertEqual(request.parameter('REQUEST_BODY'), '<Literal>+1</Literal>')
 
     def test_add_parameters(self):
         request = QgsServerRequest()

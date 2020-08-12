@@ -38,14 +38,17 @@ the rules and draws features with symbols from rules that match.
 
     struct RenderJob
     {
-      RenderJob( QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s );
+        RenderJob( QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s );
 
-      QgsRuleBasedRenderer::FeatureToRender &ftr;
+        QgsRuleBasedRenderer::FeatureToRender &ftr;
 %Docstring
 Feature to render
 %End
 
-      QgsSymbol *symbol;
+        QgsSymbol *symbol;
+
+      private:
+        RenderJob &operator=( const RenderJob & );
     };
 
     struct RenderLevel
@@ -113,7 +116,7 @@ Returns the attributes used to evaluate the expression of this rule
 
         bool needsGeometry() const;
 %Docstring
-Returns ``True`` if this rule or one of its chilren needs the geometry to be applied.
+Returns ``True`` if this rule or one of its children needs the geometry to be applied.
 %End
 
         QgsSymbolList symbols( const QgsRenderContext &context = QgsRenderContext() ) const;
@@ -423,6 +426,17 @@ Check if this rule is an ELSE rule
 :return: ``True`` if this rule is an else rule
 %End
 
+        bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified symbology ``visitor``, causing it to visit all child rules associated
+with the rule.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
+%End
+
       protected:
         void initFilter();
 
@@ -453,7 +467,7 @@ Constructor for convenience. Creates a root rule and adds a default rule with sy
 Returns symbol for current feature. Should not be used individually: there could be more symbols for a feature
 %End
 
-    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
 
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
@@ -506,6 +520,8 @@ Returns symbol for current feature. Should not be used individually: there could
     virtual QSet<QString> legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
 
 
     QgsRuleBasedRenderer::Rule *rootRule();

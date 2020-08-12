@@ -21,6 +21,7 @@
 #include "qgis_app.h"
 #include "ui_qgsoffsetuserinputwidget.h"
 #include "qgspointlocator.h"
+#include "qgsfeature.h"
 
 class QGridLayout;
 
@@ -79,8 +80,8 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     //! Snapping indicators
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
-    //! The layer being maniuplated
-    QgsVectorLayer *mLayer = nullptr;
+    //! The layer being manipulated
+    QgsVectorLayer *mSourceLayer = nullptr;
 
     //! Geometry to manipulate
     QgsGeometry mOriginalGeometry;
@@ -102,7 +103,9 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     //! Forces geometry copy (no modification of geometry in current layer)
     bool mCtrlHeldOnFirstClick = false;
 
-    double calculateOffset( QgsPointXY mapPoint );
+    QgsFeature mSourceFeature;
+
+    double calculateOffset( const QgsPointXY &mapPoint );
 
     void createUserInputWidget();
     void deleteUserInputWidget();

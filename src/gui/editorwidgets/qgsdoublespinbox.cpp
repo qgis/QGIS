@@ -29,7 +29,11 @@
 // This is required because private implementation of
 // QAbstractSpinBoxPrivate checks for specialText emptiness
 // and skips specialText handling if it's empty
-QString QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY = QChar( 0x2063 );
+#ifdef _MSC_VER
+static QChar SPECIAL_TEXT_WHEN_EMPTY = QChar( 0x2063 );
+#else
+static constexpr QChar SPECIAL_TEXT_WHEN_EMPTY = QChar( 0x2063 );
+#endif
 
 
 QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
@@ -91,6 +95,17 @@ void QgsDoubleSpinBox::wheelEvent( QWheelEvent *event )
   }
   QDoubleSpinBox::wheelEvent( event );
   setSingleStep( step );
+}
+
+void QgsDoubleSpinBox::timerEvent( QTimerEvent *event )
+{
+  // Process all events, which may include a mouse release event
+  // Only allow the timer to trigger additional value changes if the user
+  // has in fact held the mouse button, rather than the timer expiry
+  // simply appearing before the mouse release in the event queue
+  qApp->processEvents();
+  if ( QApplication::mouseButtons() & Qt::LeftButton )
+    QDoubleSpinBox::timerEvent( event );
 }
 
 void QgsDoubleSpinBox::paintEvent( QPaintEvent *event )
@@ -164,7 +179,7 @@ void QgsDoubleSpinBox::setSpecialValueText( const QString &txt )
   else
   {
     QDoubleSpinBox::setSpecialValueText( txt );
-    mLineEdit->setNullValue( SPECIAL_TEXT_WHEN_EMPTY );
+    mLineEdit->setNullValue( txt );
   }
 }
 

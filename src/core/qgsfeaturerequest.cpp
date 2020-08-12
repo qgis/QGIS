@@ -63,6 +63,9 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh )
 
 QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
 {
+  if ( &rh == this )
+    return *this;
+
   mFlags = rh.mFlags;
   mFilter = rh.mFilter;
   mFilterRect = rh.mFilterRect;
@@ -84,6 +87,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mLimit = rh.mLimit;
   mOrderBy = rh.mOrderBy;
   mCrs = rh.mCrs;
+  mTransformContext = rh.mTransformContext;
   mTransformErrorCallback = rh.mTransformErrorCallback;
   mTimeout = rh.mTimeout;
   mRequestMayBeNested = rh.mRequestMayBeNested;
@@ -273,7 +277,13 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
 {
   if ( !mFilterRect.isNull() )
   {
-    if ( !feature.hasGeometry() || !feature.geometry().intersects( mFilterRect ) )
+    if ( !feature.hasGeometry() ||
+         (
+           ( mFlags & ExactIntersect && !feature.geometry().intersects( mFilterRect ) )
+           ||
+           ( !( mFlags & ExactIntersect ) && !feature.geometry().boundingBoxIntersects( mFilterRect ) )
+         )
+       )
       return false;
   }
 
@@ -338,7 +348,7 @@ QgsAbstractFeatureSource::~QgsAbstractFeatureSource()
   while ( !mActiveIterators.empty() )
   {
     QgsAbstractFeatureIterator *it = *mActiveIterators.begin();
-    QgsDebugMsg( QStringLiteral( "closing active iterator" ) );
+    QgsDebugMsgLevel( QStringLiteral( "closing active iterator" ), 2 );
     it->close();
   }
 }

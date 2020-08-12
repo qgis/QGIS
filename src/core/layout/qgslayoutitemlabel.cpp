@@ -66,20 +66,31 @@ QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   //otherwise fields in the label aren't correctly evaluated until atlas preview feature changes (#9457)
   refreshExpressionContext();
 
-  mWebPage.reset( new QgsWebPage( this ) );
-  mWebPage->setIdentifier( tr( "Layout label item" ) );
-  mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
+  // only possible on the main thread!
+  if ( QThread::currentThread() == QApplication::instance()->thread() )
+  {
+    mWebPage.reset( new QgsWebPage( this ) );
+  }
+  else
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Cannot load HTML based item label in background threads" ) );
+  }
+  if ( mWebPage )
+  {
+    mWebPage->setIdentifier( tr( "Layout label item" ) );
+    mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
 
-  //This makes the background transparent. Found on http://blog.qt.digia.com/blog/2009/06/30/transparent-qwebview-or-qwebpage/
-  QPalette palette = mWebPage->palette();
-  palette.setBrush( QPalette::Base, Qt::transparent );
-  mWebPage->setPalette( palette );
+    //This makes the background transparent. Found on http://blog.qt.digia.com/blog/2009/06/30/transparent-qwebview-or-qwebpage/
+    QPalette palette = mWebPage->palette();
+    palette.setBrush( QPalette::Base, Qt::transparent );
+    mWebPage->setPalette( palette );
 
-  mWebPage->mainFrame()->setZoomFactor( 10.0 );
-  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
-  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
+    mWebPage->mainFrame()->setZoomFactor( 10.0 );
+    mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+    mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
 
-  connect( mWebPage.get(), &QWebPage::loadFinished, this, &QgsLayoutItemLabel::loadingHtmlFinished );
+    connect( mWebPage.get(), &QWebPage::loadFinished, this, &QgsLayoutItemLabel::loadingHtmlFinished );
+  }
 }
 
 QgsLayoutItemLabel *QgsLayoutItemLabel::create( QgsLayout *layout )
@@ -100,7 +111,7 @@ QIcon QgsLayoutItemLabel::icon() const
 void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
 {
   QPainter *painter = context.renderContext().painter();
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
 
   // painter is scaled to dots, so scale back to layout units
   painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
@@ -119,10 +130,14 @@ void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
         contentChanged();
         mFirstRender = false;
       }
-      painter->scale( 1.0 / mHtmlUnitsToLayoutUnits / 10.0, 1.0 / mHtmlUnitsToLayoutUnits / 10.0 );
-      mWebPage->setViewportSize( QSize( painterRect.width() * mHtmlUnitsToLayoutUnits * 10.0, painterRect.height() * mHtmlUnitsToLayoutUnits * 10.0 ) );
-      mWebPage->settings()->setUserStyleSheetUrl( createStylesheetUrl() );
-      mWebPage->mainFrame()->render( painter );
+
+      if ( mWebPage )
+      {
+        painter->scale( 1.0 / mHtmlUnitsToLayoutUnits / 10.0, 1.0 / mHtmlUnitsToLayoutUnits / 10.0 );
+        mWebPage->setViewportSize( QSize( painterRect.width() * mHtmlUnitsToLayoutUnits * 10.0, painterRect.height() * mHtmlUnitsToLayoutUnits * 10.0 ) );
+        mWebPage->settings()->setUserStyleSheetUrl( createStylesheetUrl() );
+        mWebPage->mainFrame()->render( painter );
+      }
       break;
     }
 
@@ -134,8 +149,6 @@ void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
       break;
     }
   }
-
-  painter->restore();
 }
 
 void QgsLayoutItemLabel::contentChanged()
@@ -145,6 +158,11 @@ void QgsLayoutItemLabel::contentChanged()
     case ModeHtml:
     {
       const QString textToDraw = currentText();
+      if ( !mWebPage )
+      {
+        mHtmlLoaded = true;
+        return;
+      }
 
       //mHtmlLoaded tracks whether the QWebPage has completed loading
       //its html contents, set it initially to false. The loadingHtmlFinished slot will
@@ -157,7 +175,10 @@ void QgsLayoutItemLabel::contentChanged()
       //For very basic html labels with no external assets, the html load will already be
       //complete before we even get a chance to start the QEventLoop. Make sure we check
       //this before starting the loop
-      if ( !mHtmlLoaded )
+
+      // important -- we CAN'T do this when it's a render inside the designer, otherwise the
+      // event loop will mess with the paint event and cause it to be deleted, and BOOM!
+      if ( !mHtmlLoaded && ( !mLayout || !mLayout->renderContext().isPreviewRender() ) )
       {
         //Setup event loop and timeout for rendering html
         QEventLoop loop;
@@ -183,8 +204,10 @@ void QgsLayoutItemLabel::contentChanged()
 
 void QgsLayoutItemLabel::loadingHtmlFinished( bool result )
 {
-  Q_UNUSED( result );
+  Q_UNUSED( result )
   mHtmlLoaded = true;
+  invalidateCache();
+  update();
 }
 
 double QgsLayoutItemLabel::htmlUnitsToLayoutUnits()
@@ -333,7 +356,7 @@ QSizeF QgsLayoutItemLabel::sizeForText() const
 
   double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
 
-  double width = textWidth + 2 * mMarginX + 2 * penWidth + 1;
+  double width = textWidth + 2 * mMarginX + 2 * penWidth;
   double height = fontHeight + 2 * mMarginY + 2 * penWidth;
 
   return mLayout->convertToLayoutUnits( QgsLayoutSize( width, height, QgsUnitTypes::LayoutMillimeters ) );
@@ -363,6 +386,7 @@ bool QgsLayoutItemLabel::writePropertiesToElement( QDomElement &layoutLabelElem,
   fontColorElem.setAttribute( QStringLiteral( "red" ), mFontColor.red() );
   fontColorElem.setAttribute( QStringLiteral( "green" ), mFontColor.green() );
   fontColorElem.setAttribute( QStringLiteral( "blue" ), mFontColor.blue() );
+  fontColorElem.setAttribute( QStringLiteral( "alpha" ), mFontColor.alpha() );
   layoutLabelElem.appendChild( fontColorElem );
 
   return true;
@@ -408,7 +432,8 @@ bool QgsLayoutItemLabel::readPropertiesFromElement( const QDomElement &itemElem,
     int red = fontColorElem.attribute( QStringLiteral( "red" ), QStringLiteral( "0" ) ).toInt();
     int green = fontColorElem.attribute( QStringLiteral( "green" ), QStringLiteral( "0" ) ).toInt();
     int blue = fontColorElem.attribute( QStringLiteral( "blue" ), QStringLiteral( "0" ) ).toInt();
-    mFontColor = QColor( red, green, blue );
+    int alpha = fontColorElem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "255" ) ).toInt();
+    mFontColor = QColor( red, green, blue, alpha );
   }
   else
   {
@@ -484,6 +509,7 @@ void QgsLayoutItemLabel::setFrameStrokeWidth( const QgsLayoutMeasurement strokeW
 
 void QgsLayoutItemLabel::refresh()
 {
+  invalidateCache();
   QgsLayoutItem::refresh();
   refreshExpressionContext();
 }
@@ -580,7 +606,7 @@ QUrl QgsLayoutItemLabel::createStylesheetUrl() const
   QString stylesheet;
   stylesheet += QStringLiteral( "body { margin: %1 %2;" ).arg( std::max( mMarginY * mHtmlUnitsToLayoutUnits, 0.0 ) ).arg( std::max( mMarginX * mHtmlUnitsToLayoutUnits, 0.0 ) );
   stylesheet += QgsFontUtils::asCSS( mFont, 0.352778 * mHtmlUnitsToLayoutUnits );
-  stylesheet += QStringLiteral( "color: %1;" ).arg( mFontColor.name() );
+  stylesheet += QStringLiteral( "color: rgba(%1,%2,%3,%4);" ).arg( mFontColor.red() ).arg( mFontColor.green() ).arg( mFontColor.blue() ).arg( QString::number( mFontColor.alphaF(), 'f', 4 ) );
   stylesheet += QStringLiteral( "text-align: %1; }" ).arg( mHAlignment == Qt::AlignLeft ? QStringLiteral( "left" ) : mHAlignment == Qt::AlignRight ? QStringLiteral( "right" ) : mHAlignment == Qt::AlignHCenter ? QStringLiteral( "center" ) : QStringLiteral( "justify" ) );
 
   QByteArray ba;

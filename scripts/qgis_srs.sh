@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 ###########################################################################
 #    qgis_srs.sh
 #    ---------------------
@@ -199,7 +199,7 @@ for i in $(awk 'NR>1' ${gdal_share}/pcs.csv | cut -d, -f1); do
 
   raw=$(epsg_tr.py -proj4 $i 2>&1 | tr "\n" " " | sed 's/  <> $//' | grep -v "^ERROR 6: ")
 
-  if [ -n "$raw" ]; then
+  if [[ -n "$raw" ]]; then
 
    no=$((no + 1))
    name=$(echo $raw | sed 's/^# //' | grep -o "^.\{1,\} <[[:digit:]]\{1,\}>" | sed 's/ <[[:digit:]]\{1,\}>//' | sed "s/'/''/g")
@@ -222,7 +222,7 @@ for i in $(awk 'NR>1' ${gdal_share}/gcs.csv | cut -d, -f1); do
 
   raw=$(epsg_tr.py -proj4 $i 2>&1 | tr "\n" " " | sed 's/  <> $//' | grep -v "^ERROR 6: ")
 
-  if [ -n "$raw" ]; then
+  if [[ -n "$raw" ]]; then
 
    no=$((no + 1))
    name=$(echo $raw | sed 's/^# //' | grep -o "^.\{1,\} <[[:digit:]]\{1,\}>" | sed 's/ <[[:digit:]]\{1,\}>//' | sed "s/'/''/g")

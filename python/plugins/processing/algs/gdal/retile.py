@@ -21,10 +21,6 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (QgsProcessing,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterMultipleLayers,
@@ -41,7 +37,6 @@ from processing.tools.system import isWindows
 
 
 class retile(GdalAlgorithm):
-
     INPUT = 'INPUT'
     TILE_SIZE_X = 'TILE_SIZE_X'
     TILE_SIZE_Y = 'TILE_SIZE_Y'
@@ -52,6 +47,7 @@ class retile(GdalAlgorithm):
     FORMAT = 'FORMAT'
     RESAMPLING = 'RESAMPLING'
     OPTIONS = 'OPTIONS'
+    EXTRA = 'EXTRA'
     DATA_TYPE = 'DATA_TYPE'
     DELIMITER = 'DELIMITER'
     ONLY_PYRAMIDS = 'ONLY_PYRAMIDS'
@@ -65,11 +61,11 @@ class retile(GdalAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.methods = ((self.tr('Nearest neighbour'), 'near'),
+        self.methods = ((self.tr('Nearest Neighbour'), 'near'),
                         (self.tr('Bilinear'), 'bilinear'),
                         (self.tr('Cubic'), 'cubic'),
-                        (self.tr('Cubic spline'), 'cubicspline'),
-                        (self.tr('Lanczos windowed sinc'), 'lanczos'),)
+                        (self.tr('Cubic Spline'), 'cubicspline'),
+                        (self.tr('Lanczos Windowed Sinc'), 'lanczos'),)
 
         self.addParameter(QgsProcessingParameterMultipleLayers(self.INPUT,
                                                                self.tr('Input files'),
@@ -117,6 +113,11 @@ class retile(GdalAlgorithm):
             'widget_wrapper': {
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
         params.append(options_param)
+
+        params.append(QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True))
 
         params.append(QgsProcessingParameterEnum(self.DATA_TYPE,
                                                  self.tr('Output data type'),
@@ -187,6 +188,10 @@ class retile(GdalAlgorithm):
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         if self.parameterAsBoolean(parameters, self.DIR_FOR_ROW, context):
             arguments.append('-pyramidOnly')

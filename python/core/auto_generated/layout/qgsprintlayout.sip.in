@@ -58,6 +58,9 @@ Returns the print layout's atlas.
     virtual void updateSettings();
 
 
+    virtual bool layoutAccept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+
   signals:
 
     void nameChanged( const QString &name );

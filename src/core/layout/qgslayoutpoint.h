@@ -154,6 +154,14 @@ class CORE_EXPORT QgsLayoutPoint
      */
     QgsLayoutPoint operator/=( double v );
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsLayoutPoint: %1, %2 %3 >" ).arg( sipCpp->x() ).arg( sipCpp->y() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   private:
 
     double mX = 0.0;

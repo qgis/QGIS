@@ -18,6 +18,12 @@
 #include "qgsapplication.h"
 #include "qgsscalewidget.h"
 #include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgslayoutmanager.h"
+#include "qgslayoutitemmap.h"
+#include "qgsprintlayout.h"
+
+#include <QMenu>
 
 QgsScaleWidget::QgsScaleWidget( QWidget *parent )
   : QWidget( parent )
@@ -32,6 +38,12 @@ QgsScaleWidget::QgsScaleWidget( QWidget *parent )
   mCurrentScaleButton = new QToolButton( this );
   mCurrentScaleButton->setToolTip( tr( "Set to current canvas scale" ) );
   mCurrentScaleButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
+
+  mMenu = new QMenu( this );
+  mCurrentScaleButton->setMenu( mMenu );
+  mCurrentScaleButton->setPopupMode( QToolButton::MenuButtonPopup );
+  connect( mMenu, &QMenu::aboutToShow, this, &QgsScaleWidget::menuAboutToShow );
+
   layout->addWidget( mCurrentScaleButton );
   mCurrentScaleButton->hide();
 
@@ -82,4 +94,43 @@ void QgsScaleWidget::setNull()
 void QgsScaleWidget::setScale( double scale )
 {
   mScaleComboBox->setScale( scale );
+}
+
+void QgsScaleWidget::menuAboutToShow()
+{
+  mMenu->clear();
+
+  double scale = mCanvas->scale();
+  QAction *canvasScaleAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ),
+      tr( "Current Canvas Scale (1:%1)" ).arg( qgsDoubleToString( scale, 0 ) ), mMenu );
+  connect( canvasScaleAction, &QAction::triggered, this, [this, scale] { setScale( scale ); } );
+  mMenu->addAction( canvasScaleAction );
+
+  bool first = true;
+  if ( QgsLayoutManager *manager = QgsProject::instance()->layoutManager() )
+  {
+    const QList<QgsPrintLayout *> layouts = manager->printLayouts();
+    for ( const QgsPrintLayout *layout : layouts )
+    {
+      QList< QgsLayoutItemMap * > maps;
+      layout->layoutItems( maps );
+      if ( maps.empty() )
+        continue;
+
+      if ( first )
+        mMenu->addSeparator();
+
+      first = false;
+
+      QMenu *layoutMenu = new QMenu( layout->name(), mMenu );
+      for ( const QgsLayoutItemMap *map : qgis::as_const( maps ) )
+      {
+        scale = map->scale();
+        QAction *mapScaleAction = new QAction( tr( "%1 (1:%2)" ).arg( map->displayName(), qgsDoubleToString( scale, 0 ) ), mMenu );
+        connect( mapScaleAction, &QAction::triggered, this, [this, scale] { setScale( scale ); } );
+        layoutMenu->addAction( mapScaleAction );
+      }
+      mMenu->addMenu( layoutMenu );
+    }
+  }
 }

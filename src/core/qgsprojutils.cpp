@@ -15,7 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprojutils.h"
+#include "qgis.h"
+#include "qgscoordinatetransform.h"
+
 #include <QString>
+#include <QSet>
+#include <QRegularExpression>
 
 #if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
@@ -42,6 +47,10 @@ QgsProjContext::QgsProjContext()
 QgsProjContext::~QgsProjContext()
 {
 #if PROJ_VERSION_MAJOR>=6
+  // Call removeFromCacheObjectsBelongingToCurrentThread() before
+  // destroying the context
+  QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread( mContext );
+  QgsCoordinateReferenceSystem::removeFromCacheObjectsBelongingToCurrentThread( mContext );
   proj_context_destroy( mContext );
 #else
   pj_ctx_free( mContext );
@@ -143,5 +152,189 @@ bool QgsProjUtils::axisOrderIsSwapped( const PJ *crs )
   return false;
 }
 
+
+QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToSingleCrs( const PJ *crs )
+{
+  if ( !crs )
+    return nullptr;
+
+  PJ_CONTEXT *context = QgsProjContext::get();
+  switch ( proj_get_type( crs ) )
+  {
+    case PJ_TYPE_BOUND_CRS:
+      return QgsProjUtils::proj_pj_unique_ptr( proj_get_source_crs( context, crs ) );
+
+    case PJ_TYPE_COMPOUND_CRS:
+    {
+      int i = 0;
+      QgsProjUtils::proj_pj_unique_ptr res( proj_crs_get_sub_crs( context, crs, i ) );
+      while ( res && ( proj_get_type( res.get() ) == PJ_TYPE_VERTICAL_CRS || proj_get_type( res.get() ) == PJ_TYPE_TEMPORAL_CRS ) )
+      {
+        i++;
+        res.reset( proj_crs_get_sub_crs( context, crs, i ) );
+      }
+      return res;
+    }
+
+    // maybe other types to handle??
+
+    default:
+      return QgsProjUtils::proj_pj_unique_ptr( proj_clone( context, crs ) );
+  }
+
+#ifndef _MSC_VER  // unreachable
+  return nullptr;
+#endif
+}
+
+bool QgsProjUtils::identifyCrs( const PJ *crs, QString &authName, QString &authCode, IdentifyFlags flags )
+{
+  authName.clear();
+  authCode.clear();
+
+  if ( !crs )
+    return false;
+
+  int *confidence = nullptr;
+  if ( PJ_OBJ_LIST *crsList = proj_identify( QgsProjContext::get(), crs, nullptr, nullptr, &confidence ) )
+  {
+    const int count = proj_list_get_count( crsList );
+    int bestConfidence = 0;
+    QgsProjUtils::proj_pj_unique_ptr matchedCrs;
+    for ( int i = 0; i < count; ++i )
+    {
+      if ( confidence[i] >= bestConfidence )
+      {
+        QgsProjUtils::proj_pj_unique_ptr candidateCrs( proj_list_get( QgsProjContext::get(), crsList, i ) );
+        switch ( proj_get_type( candidateCrs.get() ) )
+        {
+          case PJ_TYPE_BOUND_CRS:
+            // proj_identify also matches bound CRSes to the source CRS. But they are not the same as the source CRS, so we don't
+            // consider them a candidate for a match here (depending on the identify flags, that is!)
+            if ( flags & FlagMatchBoundCrsToUnderlyingSourceCrs )
+              break;
+            else
+              continue;
+
+          default:
+            break;
+        }
+
+        candidateCrs = QgsProjUtils::crsToSingleCrs( candidateCrs.get() );
+        const QString authName( proj_get_id_auth_name( candidateCrs.get(), 0 ) );
+        // if a match is identical confidence, we prefer EPSG codes for compatibility with earlier qgis conversions
+        if ( confidence[i] > bestConfidence || ( confidence[i] == bestConfidence && authName == QLatin1String( "EPSG" ) ) )
+        {
+          bestConfidence = confidence[i];
+          matchedCrs = std::move( candidateCrs );
+        }
+      }
+    }
+    proj_list_destroy( crsList );
+    proj_int_list_destroy( confidence );
+    if ( matchedCrs && bestConfidence >= 70 )
+    {
+      authName = QString( proj_get_id_auth_name( matchedCrs.get(), 0 ) );
+      authCode = QString( proj_get_id_code( matchedCrs.get(), 0 ) );
+    }
+  }
+  return !authName.isEmpty() && !authCode.isEmpty();
+}
+
+bool QgsProjUtils::coordinateOperationIsAvailable( const QString &projDef )
+{
+  if ( projDef.isEmpty() )
+    return true;
+
+  PJ_CONTEXT *context = QgsProjContext::get();
+  QgsProjUtils::proj_pj_unique_ptr coordinateOperation( proj_create( context, projDef.toUtf8().constData() ) );
+  if ( !coordinateOperation )
+    return false;
+
+  return static_cast< bool >( proj_coordoperation_is_instantiable( context, coordinateOperation.get() ) );
+}
+
+QList<QgsDatumTransform::GridDetails> QgsProjUtils::gridsUsed( const QString &proj )
+{
+  static QRegularExpression sRegex( QStringLiteral( "\\+(?:nad)?grids=(.*?)\\s" ) );
+
+  QList< QgsDatumTransform::GridDetails > grids;
+  QRegularExpressionMatchIterator matches = sRegex.globalMatch( proj );
+  while ( matches.hasNext() )
+  {
+    const QRegularExpressionMatch match = matches.next();
+    const QString gridName = match.captured( 1 );
+    QgsDatumTransform::GridDetails grid;
+    grid.shortName = gridName;
+    const char *fullName = nullptr;
+    const char *packageName = nullptr;
+    const char *url = nullptr;
+    int directDownload = 0;
+    int openLicense = 0;
+    int available = 0;
+    proj_grid_get_info_from_database( QgsProjContext::get(), gridName.toUtf8().constData(), &fullName, &packageName, &url, &directDownload, &openLicense, &available );
+    grid.fullName = QString( fullName );
+    grid.packageName = QString( packageName );
+    grid.url = QString( url );
+    grid.directDownload = directDownload;
+    grid.openLicense = openLicense;
+    grid.isAvailable = available;
+    grids.append( grid );
+  }
+  return grids;
+}
+
+#if 0
+QStringList QgsProjUtils::nonAvailableGrids( const QString &projDef )
+{
+  if ( projDef.isEmpty() )
+    return QStringList();
+
+  PJ_CONTEXT *context = QgsProjContext::get();
+  QgsProjUtils::proj_pj_unique_ptr op( proj_create( context, projDef.toUtf8().constData() ) ); < ---- - this always fails if grids are missing
+  if ( !op )
+      return QStringList();
+
+  QStringList res;
+  for ( int j = 0; j < proj_coordoperation_get_grid_used_count( context, op.get() ); ++j )
+  {
+    const char *shortName = nullptr;
+    int isAvailable = 0;
+    proj_coordoperation_get_grid_used( context, op.get(), j, &shortName, nullptr, nullptr, nullptr, nullptr, nullptr, &isAvailable );
+    if ( !isAvailable )
+      res << QString( shortName );
+  }
+  return res;
+}
 #endif
 
+#endif
+
+QStringList QgsProjUtils::searchPaths()
+{
+#if PROJ_VERSION_MAJOR>=6
+  const QString path( proj_info().searchpath );
+  QStringList paths;
+#ifdef Q_OS_WIN
+  paths = path.split( ';' );
+#else
+  paths = path.split( ':' );
+#endif
+
+  QSet<QString> existing;
+  // thin out duplicates from paths -- see https://github.com/OSGeo/proj.4/pull/1498
+  QStringList res;
+  res.reserve( paths.count() );
+  for ( const QString &p : qgis::as_const( paths ) )
+  {
+    if ( existing.contains( p ) )
+      continue;
+
+    existing.insert( p );
+    res << p;
+  }
+  return res;
+#else
+  return QStringList();
+#endif
+}

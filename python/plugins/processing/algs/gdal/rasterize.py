@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -47,7 +43,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class rasterize(GdalAlgorithm):
-
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     BURN = 'BURN'
@@ -61,6 +56,7 @@ class rasterize(GdalAlgorithm):
     ALL_TOUCH = 'ALL_TOUCH'
     OPTIONS = 'OPTIONS'
     DATA_TYPE = 'DATA_TYPE'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
 
     TYPES = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
@@ -137,6 +133,13 @@ class rasterize(GdalAlgorithm):
         invert_param.setFlags(invert_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(invert_param)
 
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
+
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
                                                                   self.tr('Rasterized')))
 
@@ -211,10 +214,14 @@ class rasterize(GdalAlgorithm):
         self.setOutputValue(self.OUTPUT, out)
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
-        options = self.parameterAsString(parameters, self.OPTIONS, context)
 
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         arguments.append(ogrLayer)
         arguments.append(out)

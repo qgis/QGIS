@@ -372,9 +372,12 @@ void QgsBlockingNetworkRequest::replyFinished()
     }
     else
     {
-      mErrorMessage = mReply->errorString();
-      mErrorCode = ServerExceptionError;
-      QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+      if ( mReply->error() != QNetworkReply::OperationCanceledError )
+      {
+        mErrorMessage = mReply->errorString();
+        mErrorCode = ServerExceptionError;
+        QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+      }
       mReplyContent = QgsNetworkReplyContent( mReply );
     }
   }

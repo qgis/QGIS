@@ -25,10 +25,13 @@
 #include "qgspanelwidget.h"
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgssymbollayerutils.h"
+#include "qgstemporalcontroller.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QMenu>
+#include <QClipboard>
 
 QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
   : mLayer( layer )
@@ -36,10 +39,19 @@ QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
 {
   contextMenu = new QMenu( tr( "Renderer Options" ), this );
 
-  mCopyAction = contextMenu->addAction( tr( "Copy" ), this, SLOT( copy() ) );
+  mCopyAction = new QAction( tr( "Copy" ), this );
+  connect( mCopyAction, &QAction::triggered, this, &QgsRendererWidget::copy );
   mCopyAction->setShortcut( QKeySequence( QKeySequence::Copy ) );
-  mPasteAction = contextMenu->addAction( tr( "Paste" ), this, SLOT( paste() ) );
+  mPasteAction = new QAction( tr( "Paste" ), this );
   mPasteAction->setShortcut( QKeySequence( QKeySequence::Paste ) );
+  connect( mPasteAction, &QAction::triggered, this, &QgsRendererWidget::paste );
+
+  mCopySymbolAction = new QAction( tr( "Copy Symbol" ), this );
+  contextMenu->addAction( mCopySymbolAction );
+  connect( mCopySymbolAction, &QAction::triggered, this, &QgsRendererWidget::copySymbol );
+  mPasteSymbolAction = new QAction( tr( "Paste Symbol" ), this );
+  contextMenu->addAction( mPasteSymbolAction );
+  connect( mPasteSymbolAction, &QAction::triggered, this, &QgsRendererWidget::pasteSymbolToSelection );
 
   contextMenu->addSeparator();
   contextMenu->addAction( tr( "Change Color…" ), this, SLOT( changeSymbolColor() ) );
@@ -55,6 +67,12 @@ QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
     contextMenu->addAction( tr( "Change Size…" ), this, SLOT( changeSymbolSize() ) );
     contextMenu->addAction( tr( "Change Angle…" ), this, SLOT( changeSymbolAngle() ) );
   }
+
+  connect( contextMenu, &QMenu::aboutToShow, this, [ = ]
+  {
+    std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+    mPasteSymbolAction->setEnabled( static_cast< bool >( tempSymbol ) );
+  } );
 }
 
 void QgsRendererWidget::contextMenuViewCategories( QPoint )
@@ -64,15 +82,14 @@ void QgsRendererWidget::contextMenuViewCategories( QPoint )
 
 void QgsRendererWidget::changeSymbolColor()
 {
-  QList<QgsSymbol *> symbolList = selectedSymbols();
+  const QList<QgsSymbol *> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
   }
 
   QgsSymbol *firstSymbol = nullptr;
-  const auto constSymbolList = symbolList;
-  for ( QgsSymbol *symbol : constSymbolList )
+  for ( QgsSymbol *symbol : symbolList )
   {
     if ( symbol )
     {
@@ -83,16 +100,38 @@ void QgsRendererWidget::changeSymbolColor()
   if ( !firstSymbol )
     return;
 
-  QColor color = QgsColorDialog::getColor( firstSymbol->color(), this, QStringLiteral( "Change Symbol Color" ), true );
-  if ( color.isValid() )
+  QColor currentColor = firstSymbol->color();
+
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
+  if ( panel && panel->dockMode() )
   {
-    const auto constSymbolList = symbolList;
-    for ( QgsSymbol *symbol : constSymbolList )
+    QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, currentColor, QgsCompoundColorWidget::LayoutVertical );
+    colorWidget->setPanelTitle( tr( "Change Symbol Color" ) );
+    colorWidget->setAllowOpacity( true );
+    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [ = ]( const QColor & color )
     {
-      if ( symbol )
-        symbol->setColor( color );
+      for ( QgsSymbol *symbol : symbolList )
+      {
+        if ( symbol )
+          symbol->setColor( color );
+      }
+      refreshSymbolView();
+    } );
+    panel->openPanel( colorWidget );
+  }
+  else
+  {
+    // modal dialog version... yuck
+    QColor color = QgsColorDialog::getColor( firstSymbol->color(), this, QStringLiteral( "Change Symbol Color" ), true );
+    if ( color.isValid() )
+    {
+      for ( QgsSymbol *symbol : symbolList )
+      {
+        if ( symbol )
+          symbol->setColor( color );
+      }
+      refreshSymbolView();
     }
-    refreshSymbolView();
   }
 }
 
@@ -258,6 +297,22 @@ void QgsRendererWidget::changeSymbolAngle()
   }
 }
 
+void QgsRendererWidget::pasteSymbolToSelection()
+{
+
+}
+
+void QgsRendererWidget::copySymbol()
+{
+  QList<QgsSymbol *> symbolList = selectedSymbols();
+  if ( symbolList.isEmpty() )
+  {
+    return;
+  }
+
+  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( symbolList.at( 0 ) ) );
+}
+
 void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer *r )
 {
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
@@ -266,7 +321,7 @@ void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer *r )
     QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( r, r->usingSymbolLevels(), panel );
     widget->setPanelTitle( tr( "Symbol Levels" ) );
     connect( widget, &QgsPanelWidget::widgetChanged, widget, &QgsSymbolLevelsWidget::apply );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ]() { emit widgetChanged(); emit symbolLevelsChanged(); } );
     panel->openPanel( widget );
     return;
   }
@@ -275,6 +330,7 @@ void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer *r )
   if ( dlg.exec() )
   {
     emit widgetChanged();
+    emit symbolLevelsChanged();
   }
 }
 
@@ -291,6 +347,19 @@ QgsSymbolWidgetContext QgsRendererWidget::context() const
 void QgsRendererWidget::applyChanges()
 {
   apply();
+}
+
+void QgsRendererWidget::setDockMode( bool dockMode )
+{
+  if ( dockMode )
+  {
+    // when in dock mode, these shortcuts conflict with the main window shortcuts and cannot be used
+    if ( mCopyAction )
+      mCopyAction->setShortcut( QKeySequence() );
+    if ( mPasteAction )
+      mPasteAction->setShortcut( QKeySequence() );
+  }
+  QgsPanelWidget::setDockMode( dockMode );
 }
 
 QgsDataDefinedSizeLegendWidget *QgsRendererWidget::createDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend )
@@ -342,6 +411,11 @@ QgsExpressionContext QgsDataDefinedValueDialog::createExpressionContext() const
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
                << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+
+    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( mContext.mapCanvas()->temporalController() ) )
+    {
+      expContext << generator->createExpressionContextScope();
+    }
   }
   else
   {

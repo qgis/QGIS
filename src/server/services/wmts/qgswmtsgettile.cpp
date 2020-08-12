@@ -27,7 +27,7 @@ namespace QgsWmts
                      const QString &version, const QgsServerRequest &request,
                      QgsServerResponse &response )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
     const QgsWmtsParameters params( QUrlQuery( request.url() ) );
 
     // WMS query

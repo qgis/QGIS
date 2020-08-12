@@ -16,14 +16,19 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSABSTRACTGEOMETRYV2
 #define QGSABSTRACTGEOMETRYV2
 
+#include <array>
 #include <functional>
-
 #include <QString>
 
 #include "qgis_core.h"
 #include "qgscoordinatetransform.h"
 #include "qgswkbtypes.h"
 #include "qgswkbptr.h"
+
+#ifndef SIP_RUN
+#include "json_fwd.hpp"
+using namespace nlohmann;
+#endif
 
 class QgsMapToPixel;
 class QgsCurve;
@@ -38,6 +43,7 @@ class QDomElement;
 class QgsGeometryPartIterator;
 class QgsGeometryConstPartIterator;
 class QgsConstWkbPtr;
+class QPainterPath;
 
 typedef QVector< QgsPoint > QgsPointSequence;
 #ifndef SIP_RUN
@@ -48,10 +54,20 @@ typedef QVector< QVector< QgsPoint > > QgsRingSequence;
 typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
 #endif
 
+
 /**
  * \ingroup core
  * \class QgsAbstractGeometry
  * \brief Abstract base class for all geometries
+ *
+ * \note QgsAbstractGeometry objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
+ * of the methods or properties exposed from the QgsAbstractGeometry API (or QgsGeometry API) utilize
+ * geodesic calculations. Accordingly, properties like length() and area() and spatial operations like centroid()
+ * are always calculated using strictly Cartesian mathematics. In contrast, the QgsDistanceArea class exposes
+ * methods for working with geodesic calculations and spatial operations on geometries,
+ * and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
+ * are required.
+ *
  * \since QGIS 2.10
  */
 class CORE_EXPORT QgsAbstractGeometry
@@ -225,14 +241,27 @@ class CORE_EXPORT QgsAbstractGeometry
     //export
 
     /**
+     * WKB export flags.
+     * \since QGIS 3.14
+     */
+    enum WkbFlag
+    {
+      FlagExportTrianglesAsPolygons = 1 << 0, //!< Triangles should be exported as polygon geometries
+    };
+    Q_DECLARE_FLAGS( WkbFlags, WkbFlag )
+
+    /**
      * Returns a WKB representation of the geometry.
+     *
+     * The optional \a flags argument specifies flags controlling WKB export behavior (since QGIS 3.14).
+     *
      * \see asWkt
      * \see asGml2
      * \see asGml3
      * \see asJson()
      * \since QGIS 3.0
      */
-    virtual QByteArray asWkb() const = 0;
+    virtual QByteArray asWkb( WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const = 0;
 
     /**
      * Returns a WKT representation of the geometry.
@@ -271,14 +300,34 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const = 0;
 
     /**
-     * Returns a GeoJSON representation of the geometry.
+     * Returns a GeoJSON representation of the geometry as a QString.
      * \param precision number of decimal places for coordinates
      * \see asWkb()
      * \see asWkt()
      * \see asGml2()
      * \see asGml3()
+     * \see asJsonObject()
      */
-    virtual QString asJson( int precision = 17 ) const = 0;
+    QString asJson( int precision = 17 );
+
+    /**
+     * Returns a json object representation of the geometry.
+     * \see asWkb()
+     * \see asWkt()
+     * \see asGml2()
+     * \see asGml3()
+     * \see asJson()
+     * \note not available in Python bindings
+     * \since QGIS 3.10
+     */
+    virtual json asJsonObject( int precision = 17 ) SIP_SKIP const;
+
+    /**
+     * Returns a KML representation of the geometry.
+     * \since QGIS 3.12
+     */
+    virtual QString asKml( int precision = 17 ) const = 0;
+
 
     //render pipeline
 
@@ -308,6 +357,16 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param p destination QPainter
      */
     virtual void draw( QPainter &p ) const = 0;
+
+    /**
+     * Returns the geometry represented as a QPainterPath.
+     *
+     * \warning not all geometry subclasses can be represented by a QPainterPath, e.g.
+     * points and multipoint geometries will return an empty path.
+     *
+     * \since QGIS 3.16
+     */
+    virtual QPainterPath asQPainterPath() const = 0;
 
     /**
      * Returns the vertex number corresponding to a vertex \a id.
@@ -400,21 +459,42 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool deleteVertex( QgsVertexId position ) = 0;
 
     /**
-     * Returns the length of the geometry.
+     * Returns the planar, 2-dimensional length of the geometry.
+     *
+     * \warning QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the length
+     * returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+     * the QgsDistanceArea class exposes methods for calculating the lengths of geometries using
+     * geodesic calculations which account for the curvature of the Earth (or any other
+     * celestial body).
+     *
      * \see area()
      * \see perimeter()
      */
     virtual double length() const;
 
     /**
-     * Returns the perimeter of the geometry.
+     * Returns the planar, 2-dimensional perimeter of the geometry.
+     *
+     * \warning QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the perimeter
+     * returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+     * the QgsDistanceArea class exposes methods for calculating the perimeters of geometries using
+     * geodesic calculations which account for the curvature of the Earth (or any other
+     * celestial body).
+     *
      * \see area()
      * \see length()
      */
     virtual double perimeter() const;
 
     /**
-     * Returns the area of the geometry.
+     * Returns the planar, 2-dimensional area of the geometry.
+     *
+     * \warning QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the area
+     * returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+     * the QgsDistanceArea class exposes methods for calculating the areas of geometries using
+     * geodesic calculations which account for the curvature of the Earth (or any other
+     * celestial body).
+     *
      * \see length()
      * \see perimeter()
      */
@@ -422,6 +502,10 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * Returns the length of the segment of the geometry which begins at \a startVertex.
+     *
+     * \warning QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the lengths
+     * returned by this method are calculated using strictly Cartesian mathematics.
+     *
      * \since QGIS 3.0
      */
     virtual double segmentLength( QgsVertexId startVertex ) const = 0;
@@ -462,10 +546,13 @@ class CORE_EXPORT QgsAbstractGeometry
      * If the gridified geometry could not be calculated NULLPTR will be returned.
      * It may generate an invalid geometry (in some corner cases).
      * It can also be thought as rounding the edges and it may be useful for removing errors.
+     *
      * Example:
-     * \code{.cpp}
-     * geometry->snappedToGrid(1, 1);
+     *
+     * \code{.py}
+     *   geometry.snappedToGrid(1, 1)
      * \endcode
+     *
      * In this case we use a 2D grid of 1x1 to gridify.
      * In this case, it can be thought like rounding the x and y of all the points/vertices to full units (remove all decimals).
      * \param hSpacing Horizontal spacing of the grid (x axis). 0 to disable.
@@ -767,10 +854,12 @@ class CORE_EXPORT QgsAbstractGeometry
         {
           const QgsAbstractGeometry *g = nullptr;  //!< Current geometry
           int index = 0;               //!< Ptr in the current geometry
+
+          bool operator==( const Level &other ) const;
         };
 
-        Level levels[3];  //!< Stack of levels - three levels should be sufficient (e.g. part index, ring index, vertex index)
-        int depth = -1;        //!< At what depth level are we right now
+        std::array<Level, 3> levels;  //!< Stack of levels - three levels should be sufficient (e.g. part index, ring index, vertex index)
+        int depth = -1;               //!< At what depth level are we right now
 
         void digDown();   //!< Prepare the stack of levels so that it points to a leaf child geometry
 
@@ -831,7 +920,8 @@ class CORE_EXPORT QgsAbstractGeometry
      * Returns Java-style iterator for traversal of parts of the geometry. This iterator
      * can safely be used to modify parts of the geometry.
      *
-     * * Example:
+     * Example
+     *
      * \code{.py}
      *   # print the WKT representation of each part in a multi-point geometry
      *   geometry = QgsMultiPoint.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
@@ -868,7 +958,8 @@ class CORE_EXPORT QgsAbstractGeometry
      * \warning The iterator returns a copy of individual vertices, and accordingly geometries cannot be
      * modified using the iterator. See transformVertices() for a safe method to modify vertices "in-place".
      *
-     * * Example:
+     * Example
+     *
      * \code{.py}
      *   # print the x and y coordinate for each vertex in a LineString
      *   geometry = QgsLineString.fromWkt( 'LineString( 0 0, 1 1, 2 2)' )
@@ -915,7 +1006,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \note used for vertex_iterator implementation
      * \since QGIS 3.0
      */
-    virtual QgsAbstractGeometry *childGeometry( int index ) const { Q_UNUSED( index ); return nullptr; }
+    virtual QgsAbstractGeometry *childGeometry( int index ) const { Q_UNUSED( index ) return nullptr; }
 
     /**
      * Returns point at index (for geometries without child geometries - i.e. curve / point)
@@ -1004,6 +1095,15 @@ struct CORE_EXPORT QgsVertexId
   int ring;
   int vertex;
   VertexType type;
+
+#ifdef SIP_RUN
+  SIP_PYOBJECT __repr__();
+  % MethodCode
+  QString str = QStringLiteral( "<QgsVertexId: %1,%2,%3%4>" ).arg( sipCpp->part ).arg( sipCpp->ring ).arg( sipCpp->vertex ).arg( sipCpp->type == QgsVertexId::CurveVertex ? QStringLiteral( " CurveVertex" ) : QString() );
+  sipRes = PyUnicode_FromString( str.toUtf8().data() );
+  % End
+#endif
+
 };
 
 #ifndef SIP_RUN
@@ -1165,5 +1265,7 @@ class CORE_EXPORT QgsGeometryConstPartIterator
     QgsAbstractGeometry::const_part_iterator i, n;
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractGeometry::WkbFlags )
 
 #endif //QGSABSTRACTGEOMETRYV2

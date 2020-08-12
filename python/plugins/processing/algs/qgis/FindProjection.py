@@ -21,10 +21,6 @@ __author__ = 'Nyall Dawson'
 __date__ = 'February 2017'
 __copyright__ = '(C) 2017, Nyall Dawson'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.core import (QgsGeometry,
@@ -50,7 +46,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class FindProjection(QgisAlgorithm):
-
     INPUT = 'INPUT'
     TARGET_AREA = 'TARGET_AREA'
     TARGET_AREA_CRS = 'TARGET_AREA_CRS'

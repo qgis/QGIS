@@ -420,7 +420,7 @@ int QgsRandomColorRamp::count() const
 
 double QgsRandomColorRamp::value( int index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   return 0.0;
 }
 
@@ -552,7 +552,7 @@ double QgsColorBrewerColorRamp::value( int index ) const
 
 QColor QgsColorBrewerColorRamp::color( double value ) const
 {
-  if ( mPalette.isEmpty() || value < 0 || value > 1 )
+  if ( mPalette.isEmpty() || value < 0 || value > 1 || std::isnan( value ) )
     return QColor();
 
   int paletteEntry = static_cast< int >( value * mPalette.count() );
@@ -739,7 +739,7 @@ bool QgsCptCityColorRamp::loadFile()
   mFileLoaded = false;
   mStops.clear();
   QMap<double, QPair<QColor, QColor> >::const_iterator it, prev;
-  // first detect if file is gradient is continuous or dicrete
+  // first detect if file is gradient is continuous or discrete
   // discrete: stop contains 2 colors and first color is identical to previous second
   // multi: stop contains 2 colors and no relation with previous stop
   mDiscrete = false;

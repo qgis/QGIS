@@ -39,13 +39,9 @@ class APP_EXPORT QgsDecorationGridDialog : public QDialog, private Ui::QgsDecora
     void buttonBox_accepted();
     void buttonBox_rejected();
     void showHelp();
-    void mGridTypeComboBox_currentIndexChanged( int index );
+    void updateSymbolButtons();
     void mPbtnUpdateFromExtents_clicked();
     void mPbtnUpdateFromLayer_clicked();
-
-    // from composer map
-    /* void on_mLineColorButton_clicked(); */
-    void annotationFontChanged();
 
   private:
     QgsDecorationGrid &mDeco;

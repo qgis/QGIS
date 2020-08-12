@@ -211,13 +211,31 @@ bool QgsFilterLineEdit::event( QEvent *event )
   if ( event->type() == QEvent::ReadOnlyChange || event->type() == QEvent::EnabledChange )
     updateClearIcon();
 
-  return QLineEdit::event( event );;
+  return QLineEdit::event( event );
+}
+
+void QgsFilterLineEdit::storeState()
+{
+  mLineEditState.text = text();
+  mLineEditState.selectionStart = selectionStart();
+  mLineEditState.selectionLength = selectedText().length();
+  mLineEditState.cursorPosition = cursorPosition();
+  mLineEditState.hasStateStored = true;
+}
+
+void QgsFilterLineEdit::restoreState()
+{
+  setText( mLineEditState.text );
+  setCursorPosition( mLineEditState.cursorPosition );
+  if ( mLineEditState.selectionStart > -1 )
+    setSelection( mLineEditState.selectionStart, mLineEditState.selectionLength );
+  mLineEditState.hasStateStored = false;
 }
 
 /// @cond PRIVATE
 void QgsSpinBoxLineEdit::focusInEvent( QFocusEvent *e )
 {
-  QLineEdit::focusInEvent( e );
+  QgsFilterLineEdit::focusInEvent( e );
   if ( isNull() )
   {
     clear();

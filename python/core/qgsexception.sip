@@ -33,3 +33,16 @@
   SIP_UNBLOCK_THREADS
 %End
 };
+
+
+%Exception QgsProviderConnectionException(SIP_Exception) /PyName=QgsProviderConnectionException/
+{
+%TypeHeaderCode
+#include <qgsexception.h>
+%End
+%RaiseCode
+  SIP_BLOCK_THREADS
+  PyErr_SetString(sipException_QgsProviderConnectionException, sipExceptionRef.what().toUtf8().constData() );
+  SIP_UNBLOCK_THREADS
+%End
+};

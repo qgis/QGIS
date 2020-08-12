@@ -21,10 +21,6 @@ __author__ = 'Nyall Dawson'
 __date__ = 'September 2017'
 __copyright__ = '(C) 2017, Nyall Dawson'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import math
 
@@ -39,6 +35,7 @@ from qgis.core import (NULL,
                        QgsFeatureSink,
                        QgsFeatureRequest,
                        QgsGeometry,
+                       QgsFeatureSource,
                        QgsCoordinateTransform,
                        QgsStatisticalSummary,
                        QgsDateTimeStatisticalSummary,
@@ -163,6 +160,9 @@ class SpatialJoinSummary(QgisAlgorithm):
         join_source = self.parameterAsSource(parameters, self.JOIN, context)
         if join_source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.JOIN))
+
+        if join_source.hasSpatialIndex() == QgsFeatureSource.SpatialIndexNotPresent:
+            feedback.reportError(self.tr("No spatial index exists for join layer, performance will be severely degraded"))
 
         join_fields = self.parameterAsFields(parameters, self.JOIN_FIELDS, context)
         discard_nomatch = self.parameterAsBoolean(parameters, self.DISCARD_NONMATCHING, context)

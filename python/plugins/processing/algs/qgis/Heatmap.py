@@ -21,10 +21,6 @@ __author__ = 'Nyall Dawson'
 __date__ = 'November 2016'
 __copyright__ = '(C) 2016, Nyall Dawson'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from collections import OrderedDict
 
@@ -51,7 +47,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class Heatmap(QgisAlgorithm):
-
     INPUT = 'INPUT'
     RADIUS = 'RADIUS'
     RADIUS_FIELD = 'RADIUS_FIELD'

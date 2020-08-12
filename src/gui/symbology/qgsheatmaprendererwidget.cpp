@@ -16,6 +16,7 @@
 #include "qgsheatmaprenderer.h"
 #include "qgsrendererregistry.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgstemporalcontroller.h"
 
 #include "qgssymbol.h"
 
@@ -45,6 +46,10 @@ QgsExpressionContext QgsHeatmapRendererWidget::createExpressionContext() const
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
                << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( mContext.mapCanvas()->temporalController() ) )
+    {
+      expContext << generator->createExpressionContextScope();
+    }
   }
   else
   {
@@ -80,6 +85,8 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
     QLabel *label = new QLabel( tr( "The heatmap renderer only applies to point and multipoint layers. \n"
                                     "'%1' is not a point layer and cannot be rendered as a heatmap." )
                                 .arg( layer->name() ), this );
+    if ( !layout() )
+      setLayout( new QGridLayout() );
     layout()->addWidget( label );
     return;
   }
@@ -94,6 +101,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
   mRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mWeightExpressionWidget->registerExpressionContextGenerator( this );
+  mWeightExpressionWidget->setAllowEmptyFieldName( true );
 
   if ( renderer )
   {

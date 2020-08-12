@@ -32,7 +32,7 @@ The layers can be filtered and/or ordered.
 
     void setFilters( QgsMapLayerProxyModel::Filters filters );
 %Docstring
-setFilters allows fitering according to layer type and/or geometry type.
+setFilters allows filtering according to layer type and/or geometry type.
 %End
 
     QgsMapLayerProxyModel::Filters filters() const;
@@ -153,6 +153,17 @@ setLayer set the current layer selected in the combo
 %Docstring
 Emitted whenever the currently selected layer changes.
 %End
+
+  protected:
+
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+
+    virtual void dragLeaveEvent( QDragLeaveEvent *event );
+
+    virtual void dropEvent( QDropEvent *event );
+
+    virtual void paintEvent( QPaintEvent *e );
+
 
   protected slots:
     void indexChanged( int i );

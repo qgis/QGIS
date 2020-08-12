@@ -79,6 +79,8 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
      */
     void applyChanges();
 
+    void setDockMode( bool dockMode ) override;
+
   signals:
 
     /**
@@ -88,12 +90,29 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
      */
     void layerVariablesChanged();
 
+    /**
+     * Emitted when the symbol levels settings have been changed.
+     */
+    void symbolLevelsChanged();
+
   protected:
     QgsVectorLayer *mLayer = nullptr;
     QgsStyle *mStyle = nullptr;
     QMenu *contextMenu = nullptr;
     QAction *mCopyAction = nullptr;
     QAction *mPasteAction = nullptr;
+
+    /**
+     * Copy symbol action.
+     * \since QGIS 3.10
+     */
+    QAction *mCopySymbolAction = nullptr;
+
+    /**
+     * Paste symbol action.
+     * \since QGIS 3.10
+     */
+    QAction *mPasteSymbolAction = nullptr;
 
     //! Context in which widget is shown
     QgsSymbolWidgetContext mContext;
@@ -126,8 +145,20 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     //! Change marker angles of selected symbols
     void changeSymbolAngle();
 
+
     virtual void copy() {}
     virtual void paste() {}
+
+    /**
+      * Pastes the clipboard symbol over selected items.
+      *
+      * \since QGIS 3.10
+     */
+    virtual void pasteSymbolToSelection();
+
+  private slots:
+
+    void copySymbol();
 
   private:
 

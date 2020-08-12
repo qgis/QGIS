@@ -80,7 +80,7 @@ void QgsSegmentizeByMaximumDistanceAlgorithm::initParameters( const QVariantMap 
 
 bool QgsSegmentizeByMaximumDistanceAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
   return false;
 }
 
@@ -175,7 +175,7 @@ void QgsSegmentizeByMaximumAngleAlgorithm::initParameters( const QVariantMap & )
 
 bool QgsSegmentizeByMaximumAngleAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
   return false;
 }
 

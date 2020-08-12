@@ -83,19 +83,28 @@ Returns the list of symbol layers contained in the symbol.
 .. versionadded:: 2.7
 %End
 
-    QgsSymbolLayer *symbolLayer( int layer );
+
+    SIP_PYOBJECT symbolLayer( int layer ) /TypeHint="QgsSymbolLayer"/;
 %Docstring
-Returns a specific symbol layer contained in the symbol.
-
-:param layer: layer number
-
-:return: corresponding symbol layer
+Returns the symbol layer at the specified index. An IndexError will be raised if no layer with the specified index exists.
 
 .. seealso:: :py:func:`symbolLayers`
 
 .. seealso:: :py:func:`symbolLayerCount`
 
 .. versionadded:: 2.7
+%End
+%MethodCode
+    const int count = sipCpp->symbolLayerCount();
+    if ( a0 < 0 || a0 >= count )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipRes = sipConvertFromType( sipCpp->symbolLayer( a0 ), sipType_QgsSymbolLayer, NULL );
+    }
 %End
 
     int symbolLayerCount() const;
@@ -109,6 +118,69 @@ Returns the total number of symbol layers contained in the symbol.
 .. seealso:: :py:func:`symbolLayer`
 
 .. versionadded:: 2.7
+%End
+
+
+    int __len__() const;
+%Docstring
+Returns the number of symbol layers contained in the symbol.
+%End
+%MethodCode
+    sipRes = sipCpp->symbolLayerCount();
+%End
+
+    //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
+    int __bool__() const;
+%MethodCode
+    sipRes = true;
+%End
+
+    SIP_PYOBJECT __getitem__( int index ) /TypeHint="QgsSymbolLayer"/;
+%Docstring
+Returns the symbol layer at the specified ``index``. An IndexError will be raised if no layer with the specified ``index`` exists.
+
+Indexes can be less than 0, in which case they correspond to layers from the end of the symbol. E.g. an index of -1
+corresponds to the last layer in the symbol.
+
+.. versionadded:: 3.10
+%End
+%MethodCode
+    const int count = sipCpp->symbolLayerCount();
+    if ( a0 < -count || a0 >= count )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else if ( a0 >= 0 )
+    {
+      return sipConvertFromType( sipCpp->symbolLayer( a0 ), sipType_QgsSymbolLayer, NULL );
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->symbolLayer( count + a0 ), sipType_QgsSymbolLayer, NULL );
+    }
+%End
+
+    void __delitem__( int index );
+%Docstring
+Deletes the layer at the specified ``index``. A layer at the ``index`` must already exist or an IndexError will be raised.
+
+Indexes can be less than 0, in which case they correspond to layers from the end of the symbol. E.g. an index of -1
+corresponds to the last layer in the symbol.
+
+.. versionadded:: 3.10
+%End
+%MethodCode
+    const int count = sipCpp->symbolLayerCount();
+    if ( a0 >= 0 && a0 < count )
+      sipCpp->deleteSymbolLayer( a0 );
+    else if ( a0 < 0 && a0 >= -count )
+      sipCpp->deleteSymbolLayer( count + a0 );
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
 %End
 
     bool insertSymbolLayer( int index, QgsSymbolLayer *layer /Transfer/ );
@@ -128,7 +200,7 @@ Appends a symbol ``layer`` at the end of the current symbol layer list.
 Ownership of ``layer`` is transferred to the symbol.
 
 :return: ``True`` if the layer was successfully added, ``False`` if the layer is not compatible with the
-         symbol's type().
+         symbol's :py:func:`~QgsSymbol.type`.
 %End
 
     bool deleteSymbolLayer( int index );
@@ -151,14 +223,14 @@ Ownership of the layer is handed to the caller.
 Deletes the current layer at the specified ``index`` and replaces it with ``layer``.
 Ownership of ``layer`` is transferred to the symbol.
 
-Returns ``False`` if ``layer`` is not compatible with the symbol's type(), or
+Returns ``False`` if ``layer`` is not compatible with the symbol's :py:func:`~QgsSymbol.type`, or
 ``True`` if the layer was successfully replaced.
 %End
 
     void startRender( QgsRenderContext &context, const QgsFields &fields = QgsFields() );
 %Docstring
-Begins the rendering process for the symbol. This must be called before renderFeature(),
-and should be followed by a call to stopRender().
+Begins the rendering process for the symbol. This must be called before :py:func:`~QgsSymbol.renderFeature`,
+and should be followed by a call to :py:func:`~QgsSymbol.stopRender`.
 
 :param context: render context which symbol will be drawn using
 :param fields: fields for features to be rendered (usually the associated
@@ -172,7 +244,7 @@ and should be followed by a call to stopRender().
 %Docstring
 Ends the rendering process. This should be called after rendering all desired features.
 
-:param context: render context, must match the context specified when startRender()
+:param context: render context, must match the context specified when :py:func:`~QgsSymbol.startRender`
                 was called.
 
 .. seealso:: :py:func:`startRender`
@@ -200,16 +272,28 @@ layer.
 .. seealso:: :py:func:`setColor`
 %End
 
-    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = 0 );
+    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = 0, bool selected = false, const QgsExpressionContext *expressionContext = 0,
+                          const QgsLegendPatchShape *patchShape = 0 );
 %Docstring
 Draws an icon of the symbol that occupies an area given by ``size`` using the specified ``painter``.
 
 Optionally a custom render context may be given in order to ensure that the preview icon exactly
 matches the settings from that context.
 
+:param painter: destination painter
+:param size: size of the icon
+:param customContext: the context in which the rendering happens
+:param selected: set to ``True`` to render the symbol in a selected state
+:param expressionContext: optional custom expression context
+:param patchShape: optional patch shape to use for symbol preview. If not specified a default shape will be used instead.
+
 .. seealso:: :py:func:`exportImage`
 
 .. seealso:: :py:func:`asImage`
+
+.. note::
+
+   Parameter selected added in QGIS 3.10
 
 .. versionadded:: 2.6
 %End
@@ -419,19 +503,21 @@ Returns whether the symbol utilizes any data defined properties.
 
    the layer will be ``None`` after stopRender
 
-.. deprecated:: Will be removed in QGIS 4.0
+.. deprecated::
+   Will be removed in QGIS 4.0
 %End
 
  const QgsVectorLayer *layer() const /Deprecated/;
 %Docstring
 
-.. deprecated:: Will be removed in QGIS 4.0
+.. deprecated::
+   Will be removed in QGIS 4.0
 %End
 
-    void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, double currentVertexMarkerSize = 0.0 );
+    void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, double currentVertexMarkerSize = 0.0 ) throw( QgsCsException );
 %Docstring
-Render a feature. Before calling this the startRender() method should be called to initialize
-the rendering process. After rendering all features stopRender() must be called.
+Render a feature. Before calling this the :py:func:`~QgsSymbol.startRender` method should be called to initialize
+the rendering process. After rendering all features :py:func:`~QgsSymbol.stopRender` must be called.
 %End
 
     QgsSymbolRenderContext *symbolRenderContext();
@@ -462,7 +548,7 @@ If ``correctRingOrientation`` is ``True`` then the ring will be oriented to matc
 clockwise for exterior rings and counter-clockwise for interior rings.
 %End
 
-    static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent = true, bool correctRingOrientation = false );
+    static void _getPolygon( QPolygonF &pts, QVector<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent = true, bool correctRingOrientation = false );
 %Docstring
 Creates a polygon in screen coordinates from a QgsPolygonXYin map coordinates
 
@@ -529,6 +615,8 @@ Constructor for QgsSymbolRenderContext
 :param mapUnitScale:
 %End
 
+    ~QgsSymbolRenderContext();
+
 
     QgsRenderContext &renderContext();
 %Docstring
@@ -550,26 +638,30 @@ Sets the original value variable value for data defined symbology
 %Docstring
 Returns the output unit for the context.
 
-.. deprecated:: No longer used and will be removed in QGIS 4.0
+.. deprecated::
+   No longer used and will be removed in QGIS 4.0
 %End
 
  void setOutputUnit( QgsUnitTypes::RenderUnit u ) /Deprecated/;
 %Docstring
 Sets the output unit for the context.
 
-.. deprecated:: No longer used and will be removed in QGIS 4.0
+.. deprecated::
+   No longer used and will be removed in QGIS 4.0
 %End
 
  QgsMapUnitScale mapUnitScale() const /Deprecated/;
 %Docstring
 
-.. deprecated:: Will be removed in QGIS 4.0
+.. deprecated::
+   Will be removed in QGIS 4.0
 %End
 
  void setMapUnitScale( const QgsMapUnitScale &scale ) /Deprecated/;
 %Docstring
 
-.. deprecated:: Will be removed in QGIS 4.0
+.. deprecated::
+   Will be removed in QGIS 4.0
 %End
 
     qreal opacity() const;
@@ -648,9 +740,9 @@ simple line style will look different if the simple line is rendering a polygon 
 
     QgsFields fields() const;
 %Docstring
-Fields of the layer. Currently only available in startRender() calls
+Fields of the layer. Currently only available in :py:func:`~QgsSymbolRenderContext.startRender` calls
 to allow symbols with data-defined properties prepare the expressions
-(other times fields() returns an empty QgsFields object).
+(other times :py:func:`~QgsSymbolRenderContext.fields` returns an empty QgsFields object).
 
 .. versionadded:: 2.4
 %End
@@ -686,13 +778,15 @@ Sets the part number of current geometry
  double outputLineWidth( double width ) const /Deprecated/;
 %Docstring
 
-.. deprecated:: Use the size conversion methods in QgsRenderContext instead.
+.. deprecated::
+   Use the size conversion methods in QgsRenderContext instead.
 %End
 
  double outputPixelSize( double size ) const /Deprecated/;
 %Docstring
 
-.. deprecated:: Use the size conversion methods in QgsRenderContext instead.
+.. deprecated::
+   Use the size conversion methods in QgsRenderContext instead.
 %End
 
 
@@ -710,6 +804,24 @@ Set an expression scope for this symbol.
 Will take ownership.
 
 :param contextScope: An expression scope for details about this symbol
+%End
+
+    const QgsLegendPatchShape *patchShape() const;
+%Docstring
+Returns the symbol patch shape, to use if rendering symbol preview icons.
+
+.. seealso:: :py:func:`setPatchShape`
+
+.. versionadded:: 3.14
+%End
+
+    void setPatchShape( const QgsLegendPatchShape &shape );
+%Docstring
+Sets the symbol patch ``shape``, to use if rendering symbol preview icons.
+
+.. seealso:: :py:func:`patchShape`
+
+.. versionadded:: 3.14
 %End
 
   private:
@@ -948,8 +1060,8 @@ style and colors instead of the symbol's normal style.
     QRectF bounds( QPointF point, QgsRenderContext &context, const QgsFeature &feature = QgsFeature() ) const;
 %Docstring
 Returns the approximate bounding box of the marker symbol, which includes the bounding box
-of all symbol layers for the symbol. It is recommended to use this method only between startRender()
-and stopRender() calls, or data defined rotation and offset will not be correctly calculated.
+of all symbol layers for the symbol. It is recommended to use this method only between :py:func:`~QgsMarkerSymbol.startRender`
+and :py:func:`~QgsMarkerSymbol.stopRender` calls, or data defined rotation and offset will not be correctly calculated.
 
 :param point: location of rendered point in painter units
 :param context: render context
@@ -999,6 +1111,16 @@ will be scaled to maintain their current relative size to the whole symbol size.
 
 .. seealso:: :py:func:`width`
 %End
+
+    void setWidthUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the width units for the whole symbol (including all symbol layers).
+
+:param unit: size units
+
+.. versionadded:: 3.16
+%End
+
 
     double width() const;
 %Docstring
@@ -1094,7 +1216,7 @@ Ownership of the ``layers`` are transferred to the symbol.
 %End
     void setAngle( double angle );
 
-    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 %Docstring
 Renders the symbol using the given render ``context``.
 

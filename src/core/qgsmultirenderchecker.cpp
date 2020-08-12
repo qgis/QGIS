@@ -47,10 +47,12 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
 
   QVector<QgsDartMeasurement> dartMeasurements;
 
-  const auto constSubDirs = subDirs;
-  for ( const QString &suffix : constSubDirs )
+  for ( const QString &suffix : qgis::as_const( subDirs ) )
   {
-    qDebug() << "Checking subdir " << suffix;
+    if ( subDirs.count() > 1 )
+    {
+      qDebug() << "Checking subdir " << suffix;
+    }
     bool result;
     QgsRenderChecker checker;
     checker.enableDashBuffering( true );
@@ -119,6 +121,9 @@ QgsLayoutChecker::QgsLayoutChecker( const QString &testName, QgsLayout *layout )
 
 bool QgsLayoutChecker::testLayout( QString &checkedReport, int page, int pixelDiff, bool createReferenceImage )
 {
+#ifdef QT_NO_PRINTER
+  return false;
+#else
   if ( !mLayout )
   {
     return false;
@@ -169,7 +174,9 @@ bool QgsLayoutChecker::testLayout( QString &checkedReport, int page, int pixelDi
   checkedReport += report();
 
   return testResult;
+#endif // QT_NO_PRINTER
 }
+
 
 
 ///@endcond

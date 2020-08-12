@@ -29,7 +29,9 @@ QgsPanelWidgetStack::QgsPanelWidgetStack( QWidget *parent )
   setupUi( this );
   clear();
 
-  connect( mBackButton, &QAbstractButton::pressed, this, &QgsPanelWidgetStack::acceptCurrentPanel );
+  connect( mBackButton, &QAbstractButton::clicked, this, &QgsPanelWidgetStack::acceptCurrentPanel );
+
+  mMenuButton->setStyleSheet( QStringLiteral( "QToolButton::menu-indicator { image: none; }" ) );
 }
 
 void QgsPanelWidgetStack::setMainPanel( QgsPanelWidget *panel )
@@ -79,6 +81,7 @@ void QgsPanelWidgetStack::clear()
   mTitles.clear();
   mTitleText->hide();
   mBackButton->hide();
+  mMenuButton->hide();
   this->updateBreadcrumb();
 }
 
@@ -126,7 +129,8 @@ void QgsPanelWidgetStack::showPanel( QgsPanelWidget *panel )
   mBackButton->show();
   mTitleText->show();
 
-  this->updateBreadcrumb();
+  updateMenuButton();
+  updateBreadcrumb();
 }
 
 void QgsPanelWidgetStack::closePanel( QgsPanelWidget *panel )
@@ -143,6 +147,11 @@ void QgsPanelWidgetStack::closePanel( QgsPanelWidget *panel )
   {
     mBackButton->hide();
     mTitleText->hide();
+    mMenuButton->hide();
+  }
+  else
+  {
+    updateMenuButton();
   }
   this->updateBreadcrumb();
 }
@@ -174,4 +183,18 @@ void QgsPanelWidgetStack::updateBreadcrumb()
   // Remove the last
   breadcrumb.chop( 1 );
   mTitleText->setText( breadcrumb );
+}
+
+void QgsPanelWidgetStack::updateMenuButton()
+{
+  if ( QMenu *menu = currentPanel()->menuButtonMenu() )
+  {
+    mMenuButton->setVisible( true );
+    mMenuButton->setToolTip( currentPanel()->menuButtonTooltip() );
+    mMenuButton->setMenu( menu );
+  }
+  else
+  {
+    mMenuButton->setVisible( false );
+  }
 }

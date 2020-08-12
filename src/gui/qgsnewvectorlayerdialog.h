@@ -42,7 +42,7 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
      *
      * \returns fileName on success, empty string use aborted, QString() if creation failed
      *
-     * \deprecated in QGIS 3.4.5 - use execAndCreateLayer() instead.
+     * \deprecated since QGIS 3.4.5 - use execAndCreateLayer() instead.
      */
     Q_DECL_DEPRECATED static QString runAndCreateLayer( QWidget *parent = nullptr, QString *enc = nullptr, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
         const QString &initialPath = QString() ) SIP_DEPRECATED;
@@ -74,7 +74,6 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
      * New dialog constructor.
      */
     QgsNewVectorLayerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-    ~QgsNewVectorLayerDialog() override;
     //! Returns the selected geometry type
     QgsWkbTypes::Type selectedType() const;
     //! Appends the chosen attribute names and types to at

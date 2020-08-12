@@ -620,7 +620,8 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
              << QObject::tr( "QgsProcessingFeatureSourceDefinition: Extent of source is used" )
              << QStringLiteral( "QgsProperty" )
              << QStringLiteral( "QgsRectangle" )
-             << QStringLiteral( "QgsReferencedRectangle" );
+             << QStringLiteral( "QgsReferencedRectangle" )
+             << QStringLiteral( "QgsGeometry: bounding box of geometry is used" );;
     }
 
     QStringList acceptedStringValues() const override
@@ -1621,6 +1622,379 @@ class CORE_EXPORT QgsProcessingParameterTypeLayoutItem : public QgsProcessingPar
       return QStringList() << QObject::tr( "UUID or item id of layout item" );
     }
 
+
+};
+
+
+/**
+ * A color parameter for Processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('color')
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsProcessingParameterTypeColor : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterColor( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A color parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Color" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "color" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterColor" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterColor" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: string representation of color, e.g #ff0000 or rgba(200,100,50,0.8)" )
+             << QStringLiteral( "QColor" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "String representation of color, e.g #ff0000 or rgba(200,100,50,0.8)" );
+    }
+
+
+};
+
+/**
+ * A coordinate operation parameter for Processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('coordinateoperation')
+ * \since QGIS 3.12
+ */
+class CORE_EXPORT QgsProcessingParameterTypeCoordinateOperation : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterCoordinateOperation( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A coordinate operation parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Coordinate Operation" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "coordinateoperation" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterCoordinateOperation" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterCoordinateOperation" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: string representation of a Proj coordinate operation" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "String representation of Proj coordinate operation" );
+    }
+
+
+};
+
+
+/**
+ * A map theme parameter for Processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('maptheme')
+ * \since QGIS 3.12
+ */
+class CORE_EXPORT QgsProcessingParameterTypeMapTheme: public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterMapTheme( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A map theme parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Map Theme" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "maptheme" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterMapTheme" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterMapTheme" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: name of an existing map theme" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Name of an existing map theme" );
+    }
+
+};
+
+/**
+ * A datetime parameter for processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('datetime')
+ * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsProcessingParameterTypeDateTime : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterDateTime( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A datetime parameter, including datetime, date or time values." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Datetime" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "datetime" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterDateTime" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterDateTime" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QDateTime" )
+             << QStringLiteral( "QDate" )
+             << QStringLiteral( "QTime" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "A datetime value in ISO format" );
+    }
+
+};
+
+
+/**
+ * A provider connection name parameter for processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('providerconnection')
+ * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsProcessingParameterTypeProviderConnection : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterProviderConnection( name, QString(), QString() );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A connection name parameter, for registered database connections." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Connection Name" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "providerconnection" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterProviderConnection" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterProviderConnection" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Name of registered database connection" );
+    }
+
+};
+
+/**
+ * A database schema name parameter for processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('databaseschema')
+ * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsProcessingParameterTypeDatabaseSchema : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterDatabaseSchema( name, QString(), QString() );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A database schema parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Database Schema" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "databaseschema" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterDatabaseSchema" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterDatabaseSchema" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Name of existing database schema" );
+    }
+
+};
+
+
+/**
+ * A database table name parameter for processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('databasetable')
+ * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsProcessingParameterTypeDatabaseTable: public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterDatabaseTable( name, QString(), QString(), QString() );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A database table parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Database Table" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "databasetable" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterDatabaseTable" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterDatabaseTable" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Name of existing database table" );
+    }
 
 };
 #endif // QGSPROCESSINGPARAMETERTYPEIMPL_H

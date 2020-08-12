@@ -27,6 +27,7 @@
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
 #include "qgsproperty.h"
+#include "qgsstyleentityvisitor.h"
 
 #include <QSet>
 
@@ -155,6 +156,34 @@ void QgsRuleBasedRenderer::Rule::setIsElse( bool iselse )
   mFilter.reset();
 }
 
+bool QgsRuleBasedRenderer::Rule::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  // NOTE: if visitEnter returns false it means "don't visit the rule", not "abort all further visitations"
+  if ( mParent && !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::SymbolRule, mRuleKey, mLabel ) ) )
+    return true;
+
+  if ( mSymbol )
+  {
+    QgsStyleSymbolEntity entity( mSymbol.get() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity ) ) )
+      return false;
+  }
+
+  if ( !mChildren.empty() )
+  {
+    for ( const Rule *rule : mChildren )
+    {
+
+      if ( !rule->accept( visitor ) )
+        return false;
+    }
+  }
+
+  if ( mParent && !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::SymbolRule, mRuleKey, mLabel ) ) )
+    return false;
+
+  return true;
+}
 
 QString QgsRuleBasedRenderer::Rule::dump( int indent ) const
 {
@@ -423,7 +452,7 @@ bool QgsRuleBasedRenderer::Rule::startRender( QgsRenderContext &context, const Q
       sf = QStringLiteral( "TRUE" );
     }
     // If we have more than 50 rules (to stay on the safe side) make a binary tree or SQLITE will fail,
-    // see: http://issues.qgis.org/issues/19441
+    // see: https://github.com/qgis/QGIS/issues/27269
     else if ( subfilters.count() > 50 )
     {
       std::function<QString( const QStringList & )>bt = [ &bt ]( const QStringList & subf )
@@ -904,7 +933,7 @@ bool QgsRuleBasedRenderer::renderFeature( const QgsFeature &feature,
     bool selected,
     bool drawVertexMarker )
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
 
   int flags = ( selected ? FeatIsSelected : 0 ) | ( drawVertexMarker ? FeatDrawMarkers : 0 );
   mCurrentFeatures.append( FeatureToRender( feature, flags ) );
@@ -922,7 +951,7 @@ void QgsRuleBasedRenderer::startRender( QgsRenderContext &context, const QgsFiel
   mRootRule->startRender( context, fields, mFilter );
 
   QSet<int> symbolZLevelsSet = mRootRule->collectZLevels();
-  QList<int> symbolZLevels = symbolZLevelsSet.toList();
+  QList<int> symbolZLevels = qgis::setToList( symbolZLevelsSet );
   std::sort( symbolZLevels.begin(), symbolZLevels.end() );
 
   // create mapping from unnormalized levels [unlimited range] to normalized levels [0..N-1]
@@ -949,27 +978,30 @@ void QgsRuleBasedRenderer::stopRender( QgsRenderContext &context )
   //
 
   // go through all levels
-  const auto constMRenderQueue = mRenderQueue;
-  for ( const RenderLevel &level : constMRenderQueue )
+  if ( !context.renderingStopped() )
   {
-    //QgsDebugMsg(QString("level %1").arg(level.zIndex));
-    // go through all jobs at the level
-    for ( const RenderJob *job : qgis::as_const( level.jobs ) )
+    const auto constMRenderQueue = mRenderQueue;
+    for ( const RenderLevel &level : constMRenderQueue )
     {
-      context.expressionContext().setFeature( job->ftr.feat );
-      //QgsDebugMsg(QString("job fid %1").arg(job->f->id()));
-      // render feature - but only with symbol layers with specified zIndex
-      QgsSymbol *s = job->symbol;
-      int count = s->symbolLayerCount();
-      for ( int i = 0; i < count; i++ )
+      //QgsDebugMsg(QString("level %1").arg(level.zIndex));
+      // go through all jobs at the level
+      for ( const RenderJob *job : qgis::as_const( level.jobs ) )
       {
-        // TODO: better solution for this
-        // renderFeatureWithSymbol asks which symbol layer to draw
-        // but there are multiple transforms going on!
-        if ( s->symbolLayer( i )->renderingPass() == level.zIndex )
+        context.expressionContext().setFeature( job->ftr.feat );
+        //QgsDebugMsg(QString("job fid %1").arg(job->f->id()));
+        // render feature - but only with symbol layers with specified zIndex
+        QgsSymbol *s = job->symbol;
+        int count = s->symbolLayerCount();
+        for ( int i = 0; i < count; i++ )
         {
-          int flags = job->ftr.flags;
-          renderFeatureWithSymbol( job->ftr.feat, job->symbol, context, i, flags & FeatIsSelected, flags & FeatDrawMarkers );
+          // TODO: better solution for this
+          // renderFeatureWithSymbol asks which symbol layer to draw
+          // but there are multiple transforms going on!
+          if ( s->symbolLayer( i )->renderingPass() == level.zIndex )
+          {
+            int flags = job->ftr.flags;
+            renderFeatureWithSymbol( job->ftr.feat, job->symbol, context, i, flags & FeatIsSelected, flags & FeatDrawMarkers );
+          }
         }
       }
     }
@@ -1259,6 +1291,11 @@ QgsSymbolList QgsRuleBasedRenderer::originalSymbolsForFeature( const QgsFeature 
 QSet< QString > QgsRuleBasedRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   return mRootRule->legendKeysForFeature( feature, &context );
+}
+
+bool QgsRuleBasedRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  return mRootRule->accept( visitor );
 }
 
 QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )

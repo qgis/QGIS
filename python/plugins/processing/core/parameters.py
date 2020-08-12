@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import sys
 
 from qgis.core import (QgsRasterLayer,
@@ -60,7 +56,8 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingParameterMapLayer,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterNumber)
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterColor)
 
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -81,7 +78,7 @@ PARAMETER_CRS = 'crs'
 PARAMETER_MULTIPLE = 'multilayer'
 PARAMETER_BAND = 'band'
 PARAMETER_LAYOUTITEM = 'layoutitem'
-PARAMETER_MAP_LAYER = 'Map Layer'
+PARAMETER_MAP_LAYER = 'layer'
 PARAMETER_RANGE = 'range'
 PARAMETER_ENUM = 'enum'
 PARAMETER_MATRIX = 'matrix'
@@ -91,7 +88,7 @@ PARAMETER_FOLDER_DESTINATION = 'folderDestination'
 PARAMETER_RASTER_DESTINATION = 'rasterDestination'
 
 
-def getParameterFromString(s, context):
+def getParameterFromString(s, context=''):
     # Try the parameter definitions used in description files
     if '|' in s and (s.startswith("QgsProcessingParameter") or s.startswith("*QgsProcessingParameter") or s.startswith('Parameter') or s.startswith('*Parameter')):
         isAdvanced = False
@@ -108,8 +105,10 @@ def getParameterFromString(s, context):
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
             elif clazz == QgsProcessingParameterBand:
-                if len(params) > 3:
-                    params[3] = True if params[3].lower() == 'true' else False
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
+                if len(params) > 5:
+                    params[5] = True if params[5].lower() == 'true' else False
             elif clazz == QgsProcessingParameterVectorLayer:
                 if len(params) > 2:
                     params[2] = [int(p) for p in params[2].split(';')]
@@ -118,6 +117,10 @@ def getParameterFromString(s, context):
             elif clazz == QgsProcessingParameterMapLayer:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
+                    try:
+                        params[4] = [int(p) for p in params[4].split(';')]
+                    except:
+                        params[4] = [getattr(QgsProcessing, p.split(".")[1]) for p in params[4].split(';')]
             elif clazz == QgsProcessingParameterBoolean:
                 if len(params) > 2:
                     params[2] = True if params[2].lower() == 'true' else False
@@ -150,7 +153,7 @@ def getParameterFromString(s, context):
                     params[3] = True if params[3].lower() == 'true' else False
                 if len(params) > 4:
                     # For multiple values; default value is a list of int
-                    if params[3] == True:
+                    if params[3] is True:
                         params[4] = [int(v) for v in params[4].split(',')] if params[4] is not None else None
                     else:
                         params[4] = int(params[4]) if params[4] is not None else None
@@ -218,6 +221,11 @@ def getParameterFromString(s, context):
                     params[3] = True if params[3].lower() == 'true' else False
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterColor:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
             elif clazz == QgsProcessingParameterFileDestination:
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
@@ -226,6 +234,8 @@ def getParameterFromString(s, context):
             elif clazz == QgsProcessingParameterFolderDestination:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
             elif clazz == QgsProcessingParameterRasterDestination:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False

@@ -61,7 +61,7 @@ const QgsAttributeTableModel *QgsAttributeTableDelegate::masterModel( const QAbs
 
 QWidget *QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
+  Q_UNUSED( option )
   QgsVectorLayer *vl = layer( index.model() );
   if ( !vl )
     return nullptr;
@@ -107,25 +107,33 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
   QgsFeatureId fid = model->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
   QVariant oldValue = model->data( index, Qt::EditRole );
 
-  QVariant newValue;
   QgsEditorWidgetWrapper *eww = QgsEditorWidgetWrapper::fromWidget( editor );
   if ( !eww )
     return;
 
-  newValue = eww->value();
-
-  if ( ( oldValue != newValue && newValue.isValid() ) || oldValue.isNull() != newValue.isNull() )
+  QList<int> indexes = QList<int>() << fieldIdx;
+  QVariantList newValues = QVariantList() << eww->value();
+  const QStringList additionalFields = eww->additionalFields();
+  for ( const QString &fieldName : additionalFields )
   {
-    // This fixes https://issues.qgis.org/issues/16492
+    indexes << eww->layer()->fields().lookupField( fieldName );
+  }
+  newValues.append( eww->additionalFieldValues() );
+
+  if ( ( oldValue != newValues.at( 0 ) && newValues.at( 0 ).isValid() )
+       || oldValue.isNull() != newValues.at( 0 ).isNull()
+       || newValues.count() > 1 )
+  {
+    // This fixes https://github.com/qgis/QGIS/issues/24398
     QgsFeatureRequest request( fid );
     request.setFlags( QgsFeatureRequest::NoGeometry );
-    request.setNoAttributes();
     QgsFeature feature;
     vl->getFeatures( request ).nextFeature( feature );
     if ( feature.isValid() )
     {
       vl->beginEditCommand( tr( "Attribute changed" ) );
-      vl->changeAttributeValue( fid, fieldIdx, newValue, oldValue );
+      for ( int i = 0; i < newValues.count(); i++ )
+        vl->changeAttributeValue( fid, indexes.at( i ), newValues.at( i ), feature.attribute( indexes.at( i ) ) );
       vl->endEditCommand();
     }
   }
@@ -137,7 +145,27 @@ void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelInde
   if ( !eww )
     return;
 
-  eww->setValue( index.model()->data( index, Qt::EditRole ) );
+  QVariant value = index.model()->data( index, Qt::EditRole );
+  const QStringList additionalFields = eww->additionalFields();
+
+  if ( !additionalFields.empty() )
+  {
+    const QgsAttributeTableModel *model = masterModel( index.model() );
+    if ( model )
+    {
+      QgsFeature feat = model->feature( index );
+      QVariantList additionalFieldValues;
+      for ( QString fieldName : additionalFields )
+      {
+        additionalFieldValues << feat.attribute( fieldName );
+      }
+      eww->setValues( value, additionalFieldValues );
+    }
+  }
+  else
+  {
+    eww->setValues( value, QVariantList() );
+  }
 }
 
 void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionModel *featureSelectionModel )
@@ -174,10 +202,9 @@ void QgsAttributeTableDelegate::paint( QPainter *painter, const QStyleOptionView
     {
       QRect r = option.rect.adjusted( 1, 1, -1, -1 );
       QPen p( QBrush( QColor( 0, 255, 127 ) ), 2 );
-      painter->save();
+      QgsScopedQPainterState painterState( painter );
       painter->setPen( p );
       painter->drawRect( r );
-      painter->restore();
     }
   }
 }

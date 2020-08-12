@@ -129,7 +129,6 @@ QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode, QRect
     linearGrad.setColorAt( 1, Qt::white );
 
     // create image and fill it with gradient
-    QImage image( pixmap.width(), pixmap.height(), QImage::Format_ARGB32 );
     QPainter painter( &img );
     painter.fillRect( img.rect(), linearGrad );
     pixmap = QPixmap::fromImage( img );
@@ -237,7 +236,7 @@ void QgsAppScreenShots::setGradientSize( int size )
 void QgsAppScreenShots::takeVectorLayerProperties()
 {
   QString folder = QStringLiteral( "working_with_vector/img/auto_generated/vector_layer_properties" );
-  QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( mLineLayer, QgisApp::instance() );
+  QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( QgisApp::instance()->mapCanvas(), QgisApp::instance()->visibleMessageBar(), mLineLayer, QgisApp::instance() );
   dlg->show();
   dlg->mJoinTreeWidget->expandAll(); // expand join tree
   // ----------------
@@ -274,7 +273,7 @@ void QgsAppScreenShots::takeVectorLayerProperties()
 void QgsAppScreenShots::takeVectorLayerProperties25DSymbol()
 {
   QString folder = QStringLiteral( "working_with_vector/img/auto_generated/vector_layer_properties/" );
-  QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( mPolygonLayer, QgisApp::instance() );
+  QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( QgisApp::instance()->mapCanvas(), QgisApp::instance()->visibleMessageBar(), mPolygonLayer, QgisApp::instance() );
   dlg->show();
   dlg->mOptionsListWidget->setCurrentRow( 2 );
   Q_ASSERT( dlg->mOptionsListWidget->currentItem()->icon().pixmap( 24, 24 ).toImage()
@@ -283,7 +282,7 @@ void QgsAppScreenShots::takeVectorLayerProperties25DSymbol()
   Q_ASSERT( idx >= 0 );
   dlg->mRendererDialog->cboRenderers->setCurrentIndex( idx );
   QCoreApplication::processEvents();
-  Qgs25DRendererWidget *w = dynamic_cast<Qgs25DRendererWidget *>( dlg->mRendererDialog->mActiveWidget );
+  Qgs25DRendererWidget *w = qobject_cast<Qgs25DRendererWidget *>( dlg->mRendererDialog->mActiveWidget );
   w->mHeightWidget->setField( QStringLiteral( "height" ) );
   Q_ASSERT( w->mHeightWidget->expression() == QLatin1String( "\"height\"" ) );
   QCoreApplication::processEvents();

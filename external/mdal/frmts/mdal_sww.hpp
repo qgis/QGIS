@@ -40,8 +40,8 @@ namespace MDAL
       ~DriverSWW( ) override = default;
       DriverSWW *create() override;
 
-      std::unique_ptr< Mesh > load( const std::string &resultsFile, MDAL_Status *status ) override;
-      bool canRead( const std::string &uri ) override;
+      std::unique_ptr< Mesh > load( const std::string &resultsFile, const std::string &meshName = "" ) override;
+      bool canReadMesh( const std::string &uri ) override;
 
     private:
       size_t getVertexCount( const NetCDFFile &ncFile ) const;

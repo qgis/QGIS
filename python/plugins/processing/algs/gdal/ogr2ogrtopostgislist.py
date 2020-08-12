@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (QgsProcessing,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
@@ -32,12 +28,18 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterField,
                        QgsProcessingParameterExtent,
-                       QgsProcessingParameterBoolean)
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterProviderConnection,
+                       QgsProcessingParameterDatabaseSchema,
+                       QgsProcessingParameterDatabaseTable,
+                       QgsProviderRegistry,
+                       QgsProcessingException,
+                       QgsProviderConnectionException,
+                       QgsDataSourceUri)
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
-from processing.tools.postgis import uri_from_name, GeoDB
 from processing.tools.system import isWindows
 
 
@@ -84,12 +86,9 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
 
     def initAlgorithm(self, config=None):
 
-        db_param = QgsProcessingParameterString(
+        db_param = QgsProcessingParameterProviderConnection(
             self.DATABASE,
-            self.tr('Database (connection name)'))
-        db_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}})
+            self.tr('Database (connection name)'), 'postgres')
         self.addParameter(db_param)
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer'),
@@ -100,29 +99,22 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
                                                      self.tr('Output geometry type'), options=self.GEOMTYPE,
                                                      defaultValue=0))
         self.addParameter(QgsProcessingParameterCrs(self.A_SRS,
-                                                    self.tr('Assign an output CRS'), defaultValue='', optional=False))
+                                                    self.tr('Assign an output CRS'), defaultValue='', optional=True))
         self.addParameter(QgsProcessingParameterCrs(self.T_SRS,
                                                     self.tr('Reproject to this CRS on output '), defaultValue='',
                                                     optional=True))
         self.addParameter(QgsProcessingParameterCrs(self.S_SRS,
                                                     self.tr('Override source CRS'), defaultValue='', optional=True))
 
-        schema_param = QgsProcessingParameterString(
+        schema_param = QgsProcessingParameterDatabaseSchema(
             self.SCHEMA,
-            self.tr('Schema (schema name)'), 'public', False, True)
-        schema_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.gui.wrappers_postgis.SchemaWidgetWrapper',
-                'connection_param': self.DATABASE}})
+            self.tr('Schema (schema name)'), defaultValue='public', connectionParameterName=self.DATABASE, optional=True)
         self.addParameter(schema_param)
 
-        table_param = QgsProcessingParameterString(
+        table_param = QgsProcessingParameterDatabaseTable(
             self.TABLE,
-            self.tr('Table to import to (leave blank to use layer name)'), '', False, True)
-        table_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.gui.wrappers_postgis.TableWidgetWrapper',
-                'schema_param': self.SCHEMA}})
+            self.tr('Table to import to (leave blank to use layer name)'), defaultValue=None, connectionParameterName=self.DATABASE,
+            schemaParameterName=self.SCHEMA, optional=True, allowNewTableNames=True)
         self.addParameter(table_param)
 
         self.addParameter(QgsProcessingParameterString(self.PK,
@@ -206,19 +198,27 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         return 'vectormiscellaneous'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        connection = self.parameterAsString(parameters, self.DATABASE, context)
-        uri = uri_from_name(connection)
-        if executing:
-            # to get credentials input when needed
-            uri = GeoDB(uri=uri).uri
+        connection_name = self.parameterAsConnectionName(parameters, self.DATABASE, context)
+        if not connection_name:
+            raise QgsProcessingException(
+                self.tr('No connection specified'))
+
+        # resolve connection details to uri
+        try:
+            md = QgsProviderRegistry.instance().providerMetadata('postgres')
+            conn = md.createConnection(connection_name)
+        except QgsProviderConnectionException:
+            raise QgsProcessingException(self.tr('Could not retrieve connection details for {}').format(connection_name))
+
+        uri = conn.uri()
 
         ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         shapeEncoding = self.parameterAsString(parameters, self.SHAPE_ENCODING, context)
         ssrs = self.parameterAsCrs(parameters, self.S_SRS, context)
         tsrs = self.parameterAsCrs(parameters, self.T_SRS, context)
         asrs = self.parameterAsCrs(parameters, self.A_SRS, context)
-        table = self.parameterAsString(parameters, self.TABLE, context)
-        schema = self.parameterAsString(parameters, self.SCHEMA, context)
+        table = self.parameterAsDatabaseTableName(parameters, self.TABLE, context)
+        schema = self.parameterAsSchema(parameters, self.SCHEMA, context)
         pk = self.parameterAsString(parameters, self.PK, context)
         pkstring = "-lco FID=" + pk
         primary_key = self.parameterAsString(parameters, self.PRIMARY_KEY, context)
@@ -255,7 +255,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         arguments.append('-f')
         arguments.append('PostgreSQL')
         arguments.append('PG:"')
-        for token in uri.connectionInfo(executing).split(' '):
+        for token in QgsDataSourceUri(uri).connectionInfo(executing).split(' '):
             arguments.append(token)
         arguments.append('active_schema={}'.format(schema or 'public'))
         arguments.append('"')

@@ -15,15 +15,23 @@
 
 #include "qgsxyzconnectiondialog.h"
 #include "qgsxyzconnection.h"
+#include "qgsgui.h"
+
+#include <QMessageBox>
 
 QgsXyzConnectionDialog::QgsXyzConnectionDialog( QWidget *parent )
   : QDialog( parent )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   // Behavior for min and max zoom checkbox
   connect( mCheckBoxZMin, &QCheckBox::toggled, mSpinZMin, &QSpinBox::setEnabled );
   connect( mCheckBoxZMax, &QCheckBox::toggled, mSpinZMax, &QSpinBox::setEnabled );
+
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  connect( mEditName, &QLineEdit::textChanged, this, &QgsXyzConnectionDialog::updateOkButtonState );
+  connect( mEditUrl, &QLineEdit::textChanged, this, &QgsXyzConnectionDialog::updateOkButtonState );
 }
 
 void QgsXyzConnectionDialog::setConnection( const QgsXyzConnection &conn )
@@ -66,4 +74,20 @@ QgsXyzConnection QgsXyzConnectionDialog::connection() const
     conn.tilePixelRatio = 0;  // unknown
   conn.authCfg = mAuthSettings->configId( );
   return conn;
+}
+
+void QgsXyzConnectionDialog::updateOkButtonState()
+{
+  bool enabled = !mEditName->text().isEmpty() && !mEditUrl->text().isEmpty();
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
+}
+
+void QgsXyzConnectionDialog::accept()
+{
+  if ( mCheckBoxZMin->isChecked() && mCheckBoxZMax->isChecked() && mSpinZMax->value() < mSpinZMin->value() )
+  {
+    QMessageBox::warning( this, tr( "Connection Properties" ), tr( "The maximum zoom level (%1) cannot be lower than the minimum zoom level (%2)." ).arg( mSpinZMax->value() ).arg( mSpinZMin->value() ) );
+    return;
+  }
+  QDialog::accept();
 }

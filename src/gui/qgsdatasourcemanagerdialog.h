@@ -32,7 +32,7 @@ class QgsBrowserDockWidget;
 class QgsRasterLayer;
 class QgsMapCanvas;
 class QgsAbstractDataSourceWidget;
-class QgsBrowserModel;
+class QgsBrowserGuiModel;
 class QgsMessageBar;
 
 /**
@@ -57,7 +57,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
       * \param canvas a pointer to the map canvas
       * \param fl window flags
       */
-    explicit QgsDataSourceManagerDialog( QgsBrowserModel *browserModel, QWidget *parent = nullptr, QgsMapCanvas *canvas = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    explicit QgsDataSourceManagerDialog( QgsBrowserGuiModel *browserModel, QWidget *parent = nullptr, QgsMapCanvas *canvas = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     ~QgsDataSourceManagerDialog() override;
 
     /**
@@ -75,9 +75,10 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     //! Sync current page with the leftbar list
     void setCurrentPage( int index );
 
+    // TODO: use this with an internal source select dialog instead of forwarding the whole raster selection to app
+
     /**
      * A raster layer was added: for signal forwarding to QgisApp
-     * TODO: use this with an internal source select dialog instead of forwarding the whole raster selection to app
      */
     void rasterLayerAdded( QString const &uri, QString const &baseName, QString const &providerKey );
     //! A vector layer was added: for signal forwarding to QgisApp
@@ -88,6 +89,15 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void setPreviousPage();
     //! Refresh the browser view
     void refresh();
+
+    /**
+     * Resets the interface of the datasource manager after reopening the dialog.
+     *
+     * Will clear the selection of embedded all source selection widgets.
+     *
+     * \since QGIS 3.10
+     */
+    void reset();
 
   protected:
     void showEvent( QShowEvent *event ) override;
@@ -101,10 +111,17 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
 
     /**
-     * Emitted when a mesh layer was selected for addition: for signal forwarding to QgisApp\
+     * Emitted when a mesh layer was selected for addition: for signal forwarding to QgisApp
      * \since QGIS 3.4
      */
     void addMeshLayer( const QString &uri, const QString &baseName, const QString &providerKey );
+
+    /**
+     * Emitted when a vector tile layer was selected for addition: for signal forwarding to QgisApp
+     * \since QGIS 3.14
+     */
+    void addVectorTileLayer( const QString &uri, const QString &baseName );
+
     //! Replace the selected layer by a vector layer defined by uri, layer name, data source uri
     void replaceSelectedVectorLayer( const QString &oldId, const QString &uri, const QString &layerName, const QString &provider );
     //! Emitted when a one or more layer were selected for addition: for signal forwarding to QgisApp

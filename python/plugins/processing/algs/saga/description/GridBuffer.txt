@@ -1,6 +1,6 @@
 Grid Buffer
 grid_tools
 QgsProcessingParameterRasterLayer|FEATURES|Features Grid|None|False
-QgsProcessingParameterNumber|DIST|Distance|QgsProcessingParameterNumber.Integer|1000|False|None|None
-QgsProcessingParameterEnum|BUFFERTYPE|Buffer Distance|[0] Fixed;[1] Cell value
+QgsProcessingParameterNumber|DISTANCE|Distance|QgsProcessingParameterNumber.Double|1000.0|False|0.0|None
+QgsProcessingParameterEnum|TYPE|Buffer Distance|[0] fixed;[1] cell's value
 QgsProcessingParameterRasterDestination|BUFFER|Buffer Grid

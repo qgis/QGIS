@@ -87,7 +87,7 @@ int QgsSvgCacheEntry::dataSize() const
 
 void QgsSvgCacheEntry::dump() const
 {
-  QgsDebugMsg( QStringLiteral( "path: %1, size %2, width scale factor %3" ).arg( path ).arg( size ).arg( widthScaleFactor ) );
+  QgsDebugMsgLevel( QStringLiteral( "path: %1, size %2, width scale factor %3" ).arg( path ).arg( size ).arg( widthScaleFactor ), 4 );
 }
 ///@endcond
 
@@ -120,12 +120,12 @@ QgsSvgCache::QgsSvgCache( QObject *parent )
 }
 
 QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio )
+                                double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio, bool blocking )
 {
   QMutexLocker locker( &mMutex );
 
   fitsInCache = true;
-  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio );
+  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio, blocking );
 
   QImage result;
 
@@ -180,11 +180,11 @@ QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &
 }
 
 QPicture QgsSvgCache::svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                    double widthScaleFactor, bool forceVectorOutput, double fixedAspectRatio )
+                                    double widthScaleFactor, bool forceVectorOutput, double fixedAspectRatio, bool blocking )
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio );
+  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio, blocking );
 
   //if current entry picture is 0: cache picture for entry
   //update stats for memory usage
@@ -204,25 +204,26 @@ QPicture QgsSvgCache::svgAsPicture( const QString &path, double size, const QCol
 }
 
 QByteArray QgsSvgCache::svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                    double widthScaleFactor, double fixedAspectRatio )
+                                    double widthScaleFactor, double fixedAspectRatio, bool blocking, bool *isMissingImage )
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio );
+  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio, blocking, isMissingImage );
 
   return currentEntry->svgContent;
 }
 
-QSizeF QgsSvgCache::svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor, double fixedAspectRatio )
+QSizeF QgsSvgCache::svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
+                                    double widthScaleFactor, double fixedAspectRatio, bool blocking )
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio );
+  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio, blocking );
   return currentEntry->viewboxSize;
 }
 
 void QgsSvgCache::containsParams( const QString &path, bool &hasFillParam, QColor &defaultFillColor, bool &hasStrokeParam, QColor &defaultStrokeColor,
-                                  bool &hasStrokeWidthParam, double &defaultStrokeWidth ) const
+                                  bool &hasStrokeWidthParam, double &defaultStrokeWidth, bool blocking ) const
 {
   bool hasDefaultFillColor = false;
   bool hasFillOpacityParam = false;
@@ -238,7 +239,8 @@ void QgsSvgCache::containsParams( const QString &path, bool &hasFillParam, QColo
                   hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
                   hasStrokeParam, hasDefaultStrokeColor, defaultStrokeColor,
                   hasStrokeWidthParam, hasDefaultStrokeWidth, defaultStrokeWidth,
-                  hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity );
+                  hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity,
+                  blocking );
 }
 
 void QgsSvgCache::containsParams( const QString &path,
@@ -246,7 +248,8 @@ void QgsSvgCache::containsParams( const QString &path,
                                   bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity,
                                   bool &hasStrokeParam, bool &hasDefaultStrokeColor, QColor &defaultStrokeColor,
                                   bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth,
-                                  bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity ) const
+                                  bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity,
+                                  bool blocking ) const
 {
   hasFillParam = false;
   hasFillOpacityParam = false;
@@ -266,7 +269,7 @@ void QgsSvgCache::containsParams( const QString &path,
   hasDefaultStrokeOpacity = false;
 
   QDomDocument svgDoc;
-  if ( !svgDoc.setContent( getContent( path, mMissingSvg, mFetchingSvg ) ) )
+  if ( !svgDoc.setContent( getContent( path, mMissingSvg, mFetchingSvg, blocking ) ) )
   {
     return;
   }
@@ -279,15 +282,17 @@ void QgsSvgCache::containsParams( const QString &path,
                       hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity );
 }
 
-void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry )
+void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry, bool blocking )
 {
   if ( !entry )
   {
     return;
   }
 
+  const QByteArray content = getContent( entry->path, mMissingSvg, mFetchingSvg, blocking ) ;
+  entry->isMissingImage = content == mMissingSvg;
   QDomDocument svgDoc;
-  if ( !svgDoc.setContent( getContent( entry->path, mMissingSvg, mFetchingSvg ) ) )
+  if ( !svgDoc.setContent( content ) )
   {
     return;
   }
@@ -301,6 +306,7 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry )
   replaceElemParams( docElem, entry->fill, entry->stroke, entry->strokeWidth * sizeScaleFactor );
 
   entry->svgContent = svgDoc.toByteArray( 0 );
+
 
   // toByteArray screws up tspans inside text by adding new lines before and after each span... this should help, at the
   // risk of potentially breaking some svgs where the newline is desired
@@ -365,9 +371,9 @@ double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry *entry, const QDomElem
 }
 
 
-QByteArray QgsSvgCache::getImageData( const QString &path ) const
+QByteArray QgsSvgCache::getImageData( const QString &path, bool blocking ) const
 {
-  return getContent( path, mMissingSvg, mFetchingSvg );
+  return getContent( path, mMissingSvg, mFetchingSvg, blocking );
 };
 
 bool QgsSvgCache::checkReply( QNetworkReply *reply, const QString &path ) const
@@ -401,6 +407,8 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry *entry )
   std::unique_ptr< QImage > image = qgis::make_unique< QImage >( imageSize, QImage::Format_ARGB32_Premultiplied );
   image->fill( 0 ); // transparent background
 
+  const bool isFixedAR = entry->fixedAspectRatio > 0;
+
   QPainter p( image.get() );
   QSvgRenderer r( entry->svgContent );
   if ( qgsDoubleNear( viewBoxSize.width(), viewBoxSize.height() ) )
@@ -410,7 +418,7 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry *entry )
   else
   {
     QSizeF s( viewBoxSize );
-    s.scale( scaledSize.width(), scaledSize.height(), Qt::KeepAspectRatio );
+    s.scale( scaledSize.width(), scaledSize.height(), isFixedAR ? Qt::IgnoreAspectRatio : Qt::KeepAspectRatio );
     QRectF rect( ( imageSize.width() - s.width() ) / 2, ( imageSize.height() - s.height() ) / 2, s.width(), s.height() );
     r.render( &p, rect );
   }
@@ -421,7 +429,7 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry *entry )
 
 void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput )
 {
-  Q_UNUSED( forceVectorOutput );
+  Q_UNUSED( forceVectorOutput )
   if ( !entry )
   {
     return;
@@ -462,14 +470,17 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
 }
 
 QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-    double widthScaleFactor, double fixedAspectRatio )
+    double widthScaleFactor, double fixedAspectRatio, bool blocking, bool *isMissingImage )
 {
   QgsSvgCacheEntry *currentEntry = findExistingEntry( new QgsSvgCacheEntry( path, size, strokeWidth, widthScaleFactor, fill, stroke, fixedAspectRatio ) );
 
   if ( currentEntry->svgContent.isEmpty() )
   {
-    replaceParamsAndCacheSvg( currentEntry );
+    replaceParamsAndCacheSvg( currentEntry, blocking );
   }
+
+  if ( isMissingImage )
+    *isMissingImage = currentEntry->isMissingImage;
 
   return currentEntry;
 }
@@ -503,40 +514,43 @@ void QgsSvgCache::replaceElemParams( QDomElement &elem, const QColor &fill, cons
         {
           continue;
         }
-        QString key = keyValueSplit.at( 0 );
+        const QString key = keyValueSplit.at( 0 );
         QString value = keyValueSplit.at( 1 );
+        QString newValue = value;
+        value = value.trimmed().toLower();
+
         if ( value.startsWith( QLatin1String( "param(fill)" ) ) )
         {
-          value = fill.name();
+          newValue = fill.name();
         }
         else if ( value.startsWith( QLatin1String( "param(fill-opacity)" ) ) )
         {
-          value = fill.alphaF();
+          newValue = QString::number( fill.alphaF() );
         }
         else if ( value.startsWith( QLatin1String( "param(outline)" ) ) )
         {
-          value = stroke.name();
+          newValue = stroke.name();
         }
         else if ( value.startsWith( QLatin1String( "param(outline-opacity)" ) ) )
         {
-          value = stroke.alphaF();
+          newValue = QString::number( stroke.alphaF() );
         }
         else if ( value.startsWith( QLatin1String( "param(outline-width)" ) ) )
         {
-          value = QString::number( strokeWidth );
+          newValue = QString::number( strokeWidth );
         }
 
         if ( entryIt != entryList.constBegin() )
         {
           newAttributeString.append( ';' );
         }
-        newAttributeString.append( key + ':' + value );
+        newAttributeString.append( key + ':' + newValue );
       }
       elem.setAttribute( attribute.name(), newAttributeString );
     }
     else
     {
-      QString value = attribute.value();
+      const QString value = attribute.value().trimmed().toLower();
       if ( value.startsWith( QLatin1String( "param(fill)" ) ) )
       {
         elem.setAttribute( attribute.name(), fill.name() );

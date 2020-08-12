@@ -18,6 +18,9 @@
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingalgorithmconfigurationwidget.h"
 #include "qgsprocessingconfigurationwidgets.h"
+#include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
+#include "qgsprocessingfieldmapwidgetwrapper.h"
+#include "qgsprocessingaggregatewidgetwrapper.h"
 #include "qgsprocessingwidgetwrapperimpl.h"
 #include "qgsprocessingparameters.h"
 #include "qgis.h"
@@ -26,6 +29,7 @@
 QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
 {
   addAlgorithmConfigurationWidgetFactory( new QgsFilterAlgorithmConfigurationWidgetFactory() );
+  addAlgorithmConfigurationWidgetFactory( new QgsConditionalBranchAlgorithmConfigurationWidgetFactory() );
 
   addParameterWidgetFactory( new QgsProcessingBooleanWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingCrsWidgetWrapper() );
@@ -42,6 +46,30 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingLayoutWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingLayoutItemWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingPointWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingColorWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingCoordinateOperationWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFieldWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingMapThemeWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingDateTimeWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingProviderConnectionWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingDatabaseSchemaWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingDatabaseTableWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingExtentWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingMapLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingVectorLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFeatureSourceWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingRasterLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingMeshLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingBandWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingMultipleLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingVectorTileWriterLayersWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFeatureSinkWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingVectorDestinationWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingRasterDestinationWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFileDestinationWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFolderDestinationWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFieldMapWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingAggregateWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()
@@ -127,5 +155,17 @@ QgsProcessingModelerParameterWidget *QgsProcessingGuiRegistry::createModelerPara
     return nullptr;
 
   return mParameterWidgetFactories.value( parameterType )->createModelerWidgetWrapper( model, childId, parameter, context );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingGuiRegistry::createParameterDefinitionWidget( const QString &type,
+    QgsProcessingContext &context,
+    const QgsProcessingParameterWidgetContext &widgetContext,
+    const QgsProcessingParameterDefinition *definition,
+    const QgsProcessingAlgorithm *algorithm )
+{
+  if ( !mParameterWidgetFactories.contains( type ) )
+    return nullptr;
+
+  return mParameterWidgetFactories.value( type )->createParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 

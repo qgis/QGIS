@@ -1,6 +1,6 @@
 # mac bundling must happen at end, so all binaries installed
 # and install_names can be adjusted
-IF (APPLE)
+IF (APPLE AND QGIS_MACAPP_BUNDLE GREATER -1)
   # for included scripts that set policies (ie OS X bundling)
   INSTALL (CODE "cmake_policy(SET CMP0011 NEW)")
   CONFIGURE_FILE (cmake/0vars.cmake.in 0vars.cmake @ONLY)
@@ -8,8 +8,6 @@ IF (APPLE)
   INSTALL (SCRIPT ${CMAKE_BINARY_DIR}/mac/0qgis.cmake)
   IF (QGIS_MACAPP_BUNDLE GREATER 0)
     # start with Qt
-    CONFIGURE_FILE (cmake/1osg.cmake.in 1osg.cmake @ONLY)
-    INSTALL (SCRIPT ${CMAKE_BINARY_DIR}/mac/1osg.cmake)
     CONFIGURE_FILE (cmake/1qt.cmake.in 1qt.cmake @ONLY)
     INSTALL (SCRIPT ${CMAKE_BINARY_DIR}/mac/1qt.cmake)
     IF (QGIS_MACAPP_BUNDLE GREATER 1)
@@ -30,4 +28,4 @@ IF (APPLE)
   ENDIF (QGIS_MACAPP_BUNDLE_USER)
   # tickle app bundle
   INSTALL (CODE "EXECUTE_PROCESS(COMMAND touch \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/../../.\")")
-ENDIF (APPLE)
+ENDIF (APPLE AND QGIS_MACAPP_BUNDLE GREATER -1)

@@ -26,20 +26,24 @@
 
 class Qgs3DRendererRegistry;
 class QgsActionScopeRegistry;
+class QgsAnnotationItemRegistry;
 class QgsRuntimeProfiler;
 class QgsTaskManager;
 class QgsFieldFormatterRegistry;
 class QgsColorSchemeRegistry;
 class QgsPaintEffectRegistry;
 class QgsProjectStorageRegistry;
+class QgsLocalizedDataPathRegistry;
 class QgsRendererRegistry;
 class QgsSvgCache;
 class QgsImageCache;
+class QgsSourceCache;
 class QgsSymbolLayerRegistry;
 class QgsRasterRendererRegistry;
 class QgsGpsConnectionRegistry;
 class QgsDataItemProviderRegistry;
 class QgsPluginLayerRegistry;
+class QgsClassificationMethodRegistry;
 class QgsMessageLog;
 class QgsProcessingRegistry;
 class QgsAnnotationRegistry;
@@ -51,6 +55,13 @@ class QgsAuthManager;
 class QgsNetworkContentFetcherRegistry;
 class QgsValidityCheckRegistry;
 class QTranslator;
+class QgsCalloutRegistry;
+class QgsBookmarkManager;
+class QgsStyleModel;
+class QgsNumericFormatRegistry;
+class QgsConnectionRegistry;
+class QgsScaleBarRendererRegistry;
+class Qgs3DSymbolRegistry;
 
 /**
  * \ingroup core
@@ -121,6 +132,20 @@ class CORE_EXPORT QgsApplication : public QApplication
     Q_OBJECT
 
   public:
+
+    /**
+     * The StyleSheetType enum represents the stylesheet type that
+     * a widget supports.
+     *
+     * Is is used by widgets that display HTML content to retrieve
+     * the standard QGIS stylesheet, maintained according to QGIS
+     * visual guidelines.
+     */
+    enum StyleSheetType
+    {
+      Qt, //! StyleSheet for Qt GUI widgets (based on QLabel or QTextBrowser), supports basic CSS and Qt extensions
+      WebBrowser, //! StyleSheet for embedded browsers (QtWebKit), supports full standard CSS
+    };
 
     static const char *QGIS_ORGANIZATION_NAME;
     static const char *QGIS_ORGANIZATION_DOMAIN;
@@ -297,7 +322,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QStringList layoutTemplatePaths();
 
     //! Returns the system environment variables passed to application.
-    static QMap<QString, QString> systemEnvVars() { return ABISYM( mSystemEnvVars ); }
+    static QMap<QString, QString> systemEnvVars();
 
     //! Returns the path to the application prefix directory.
     static QString prefixPath();
@@ -459,17 +484,20 @@ class CORE_EXPORT QgsApplication : public QApplication
     static endian_t endian();
 
     /**
-     * Returns a standard css style sheet for reports.
+     * Returns a css style sheet for reports, the \a styleSheetType argument
+     * determines what type of stylesheet is supported by the widget.
      *
      * Typically you will use this method by doing:
      * QString myStyle = QgsApplication::reportStyleSheet();
      * textBrowserReport->document()->setDefaultStyleSheet(myStyle);
+     * if you are using a QgsWebView you will need to manually inject
+     * the CSS into a head -> script tag instead.
      *
-     * \returns QString containing the CSS 2.1 compliant stylesheet.
-     * \note you can use the special Qt extensions too, for example
-     * the gradient fills for backgrounds.
+     * \returns the stylesheet CSS rules.
+     * \note if styleSheetType equals StyleSheetType::Qt you can use the special Qt extensions too,
+     * for example the gradient fills for backgrounds.
      */
-    static QString reportStyleSheet();
+    static QString reportStyleSheet( QgsApplication::StyleSheetType styleSheetType = QgsApplication::StyleSheetType::Qt );
 
     /**
      * Convenience function to get a summary of the paths used in this
@@ -493,12 +521,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Indicates whether running from build directory (not installed)
     static bool isRunningFromBuildDir() { return ABISYM( mRunningFromBuildDir ); }
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
-    static QString cfgIntDir() { return ABISYM( mCfgIntDir ); } SIP_SKIP
+    static QString cfgIntDir() SIP_SKIP;
 #endif
     //! Returns path to the source directory. Valid only when running from build directory
-    static QString buildSourcePath() { return ABISYM( mBuildSourcePath ); }
+    static QString buildSourcePath();
     //! Returns path to the build output directory. Valid only when running from build directory
-    static QString buildOutputPath() { return ABISYM( mBuildOutputPath ); }
+    static QString buildOutputPath();
 
     /**
      * Sets the GDAL_SKIP environment variable to include the specified driver
@@ -511,26 +539,50 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Sets the GDAL_SKIP environment variable to exclude the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
-     */
+    */
     static void restoreGdalDriver( const QString &driver );
 
     /**
      * Returns the list of gdal drivers that should be skipped (based on
      * GDAL_SKIP environment variable)
      */
-    static QStringList skippedGdalDrivers() { return ABISYM( mGdalSkipList ); }
+    static QStringList skippedGdalDrivers();
 
     /**
      * Apply the skipped drivers list to gdal
      * \see skipGdalDriver
      * \see restoreGdalDriver
-     * \see skippedGdalDrivers */
+     * \see skippedGdalDrivers
+     */
     static void applyGdalSkippedDrivers();
+
+    /**
+     * Register gdal drivers, excluding the ones mentioned in "gdal/skipList" setting.
+     * \since QGIS 3.10
+     */
+    static void registerGdalDriversFromSettings();
+
+    /**
+     * Returns the list of gdal drivers that have been disabled in the current session,
+     * and thus, for safety, should not be disabled right now, but at the
+     * next application restart.
+     * \since QGIS 3.10
+     */
+    static QStringList deferredSkippedGdalDrivers();
+
+    /**
+     * Sets the list of gdal drivers that should be disabled (\a skippedGdalDrivers),
+     * but excludes for now the ones defines in \a deferredSkippedGdalDrivers.
+     * This writes the "gdal/skipList" setting.
+     * \since QGIS 3.10
+     */
+    static void setSkippedGdalDrivers( const QStringList &skippedGdalDrivers,
+                                       const QStringList &deferredSkippedGdalDrivers );
 
     /**
      * Gets maximum concurrent thread count
      * \since QGIS 2.4 */
-    static int maxThreads() { return ABISYM( mMaxThreads ); }
+    static int maxThreads();
 
     /**
      * Set maximum concurrent thread count
@@ -595,6 +647,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsImageCache *imageCache();
 
     /**
+     * Returns the application's source cache, used for caching embedded and remote source strings as local files
+     *
+     * \since QGIS 3.16
+     */
+    static QgsSourceCache *sourceCache();
+
+    /**
      * Returns the application's network content registry used for fetching temporary files during QGIS session
      * \since QGIS 3.2
      */
@@ -610,25 +669,58 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Returns the application's symbol layer registry, used for managing symbol layers.
      * \since QGIS 3.0
      */
-    static QgsSymbolLayerRegistry *symbolLayerRegistry();
+    static QgsSymbolLayerRegistry *symbolLayerRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the application's callout registry, used for managing callout types.
+     * \since QGIS 3.10
+     */
+    static QgsCalloutRegistry *calloutRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's layout item registry, used for layout item types.
      * \since QGIS 3.0
      */
-    static QgsLayoutItemRegistry *layoutItemRegistry();
+    static QgsLayoutItemRegistry *layoutItemRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the application's annotation item registry, used for annotation item types.
+     * \since QGIS 3.16
+     */
+    static QgsAnnotationItemRegistry *annotationItemRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's GPS connection registry, used for managing GPS connections.
      * \since QGIS 3.0
      */
-    static QgsGpsConnectionRegistry *gpsConnectionRegistry();
+    static QgsGpsConnectionRegistry *gpsConnectionRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's plugin layer registry, used for managing plugin layer types.
      * \since QGIS 3.0
      */
-    static QgsPluginLayerRegistry *pluginLayerRegistry();
+    static QgsPluginLayerRegistry *pluginLayerRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the application's classification methods registry, used in graduated renderer
+     * \since QGIS 3.10
+     */
+    static QgsClassificationMethodRegistry *classificationMethodRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the application's bookmark manager, used for storing installation-wide bookmarks.
+     * \since QGIS 3.10
+     */
+    static QgsBookmarkManager *bookmarkManager();
+
+    /**
+     * Returns a shared QgsStyleModel containing the default style library (see QgsStyle::defaultStyle()).
+     *
+     * Using this shared model instead of creating a new QgsStyleModel improves performance.
+     *
+     * \since QGIS 3.10
+     */
+    static QgsStyleModel *defaultStyleModel();
 
     /**
      * Returns the application's message log.
@@ -655,7 +747,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Returns the application's page size registry, used for managing layout page sizes.
      * \since QGIS 3.0
      */
-    static QgsPageSizeRegistry *pageSizeRegistry();
+    static QgsPageSizeRegistry *pageSizeRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's annotation registry, used for managing annotation types.
@@ -672,10 +764,23 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsActionScopeRegistry *actionScopeRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the application's connection registry, used for managing saved data provider connections.
+     * \since QGIS 3.14
+     */
+    static QgsConnectionRegistry *connectionRegistry();
+
+    /**
      * Returns the application runtime profiler.
      * \since QGIS 3.0
      */
     static QgsRuntimeProfiler *profiler();
+
+    /**
+     * Gets the registry of available numeric formats.
+     *
+     * \since QGIS 3.12
+     */
+    static QgsNumericFormatRegistry *numericFormatRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Gets the registry of available field formatters.
@@ -689,10 +794,32 @@ class CORE_EXPORT QgsApplication : public QApplication
     static Qgs3DRendererRegistry *renderer3DRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns registry of available 3D symbols.
+     * \since QGIS 3.16
+     */
+    static Qgs3DSymbolRegistry *symbol3DRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Gets the registry of available scalebar renderers.
+     *
+     * \since QGIS 3.14
+     */
+    static QgsScaleBarRendererRegistry *scaleBarRendererRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Returns registry of available project storage implementations.
      * \since QGIS 3.2
      */
     static QgsProjectStorageRegistry *projectStorageRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the registry of data repositories
+     * These are used as paths for basemaps, logos, etc. which can be referenced
+     * differently across work stations.
+     * \see QgsLocalizedDataPathRegistry
+     * \since QGIS 3.14
+     */
+    static QgsLocalizedDataPathRegistry *localizedDataPathRegistry() SIP_KEEPREFERENCE;
 
     /**
      * This string is used to represent the value `NULL` throughout QGIS.
@@ -749,7 +876,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      *
      * \since QGIS 3.4
      */
-    static void setTranslation( const QString &translation ) { sTranslation = translation; }
+    static void setTranslation( const QString &translation );
 
     /**
      * Emits the signal to collect all the strings of .qgs to be included in ts file
@@ -793,52 +920,15 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     static void copyPath( const QString &src, const QString &dst );
     static QObject *ABISYM( mFileOpenEventReceiver );
-    static QStringList ABISYM( mFileOpenEventList );
-
-    static QString ABISYM( mProfilePath );
-    static QString ABISYM( mUIThemeName );
-    static QString ABISYM( mPrefixPath );
-    static QString ABISYM( mPluginPath );
-    static QString ABISYM( mPkgDataPath );
-    static QString ABISYM( mLibraryPath );
-    static QString ABISYM( mLibexecPath );
-    static QString ABISYM( mQmlImportPath );
-    static QString ABISYM( mThemeName );
-    static QStringList ABISYM( mDefaultSvgPaths );
-    static QMap<QString, QString> ABISYM( mSystemEnvVars );
-
-    static QString ABISYM( mConfigPath );
 
     static bool ABISYM( mInitialized );
 
     //! True when running from build directory, i.e. without 'make install'
     static bool ABISYM( mRunningFromBuildDir );
-    //! Path to the source directory. valid only when running from build directory.
-    static QString ABISYM( mBuildSourcePath );
-#if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
-    //! Configuration internal dir
-    static QString ABISYM( mCfgIntDir );
-#endif
-    //! Path to the output directory of the build. valid only when running from build directory
-    static QString ABISYM( mBuildOutputPath );
-
-    /**
-     * List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
-     * \see skipGdalDriver, restoreGdalDriver */
-    static QStringList ABISYM( mGdalSkipList );
 
     /**
      * \since QGIS 2.4 */
-    static int ABISYM( mMaxThreads );
-
-    /**
-     * \since QGIS 2.12 */
-    static QString ABISYM( mAuthDbDirPath );
-
-    static QString sUserName;
-    static QString sUserFullName;
-    static QString sPlatformName;
-    static QString sTranslation;
+    static int ABISYM( sMaxThreads );
 
     QMap<QString, QIcon> mIconCache;
     QMap<Cursor, QCursor> mCursorCache;
@@ -852,28 +942,38 @@ class CORE_EXPORT QgsApplication : public QApplication
     struct ApplicationMembers
     {
       Qgs3DRendererRegistry *m3DRendererRegistry = nullptr;
+      Qgs3DSymbolRegistry *m3DSymbolRegistry = nullptr;
       QgsActionScopeRegistry *mActionScopeRegistry = nullptr;
       QgsAnnotationRegistry *mAnnotationRegistry = nullptr;
       QgsColorSchemeRegistry *mColorSchemeRegistry = nullptr;
+      QgsLocalizedDataPathRegistry *mLocalizedDataPathRegistry = nullptr;
+      QgsNumericFormatRegistry *mNumericFormatRegistry = nullptr;
       QgsFieldFormatterRegistry *mFieldFormatterRegistry = nullptr;
       QgsGpsConnectionRegistry *mGpsConnectionRegistry = nullptr;
       QgsNetworkContentFetcherRegistry *mNetworkContentFetcherRegistry = nullptr;
+      QgsScaleBarRendererRegistry *mScaleBarRendererRegistry = nullptr;
       QgsValidityCheckRegistry *mValidityCheckRegistry = nullptr;
       QgsMessageLog *mMessageLog = nullptr;
       QgsPaintEffectRegistry *mPaintEffectRegistry = nullptr;
       QgsPluginLayerRegistry *mPluginLayerRegistry = nullptr;
+      QgsClassificationMethodRegistry *mClassificationMethodRegistry = nullptr;
       QgsProcessingRegistry *mProcessingRegistry = nullptr;
+      QgsConnectionRegistry *mConnectionRegistry = nullptr;
       QgsProjectStorageRegistry *mProjectStorageRegistry = nullptr;
       QgsPageSizeRegistry *mPageSizeRegistry = nullptr;
       QgsRasterRendererRegistry *mRasterRendererRegistry = nullptr;
       QgsRendererRegistry *mRendererRegistry = nullptr;
-      QgsRuntimeProfiler *mProfiler = nullptr;
       QgsSvgCache *mSvgCache = nullptr;
       QgsImageCache *mImageCache = nullptr;
+      QgsSourceCache *mSourceCache = nullptr;
       QgsSymbolLayerRegistry *mSymbolLayerRegistry = nullptr;
+      QgsCalloutRegistry *mCalloutRegistry = nullptr;
       QgsTaskManager *mTaskManager = nullptr;
       QgsLayoutItemRegistry *mLayoutItemRegistry = nullptr;
+      QgsAnnotationItemRegistry *mAnnotationItemRegistry = nullptr;
       QgsUserProfileManager *mUserConfigManager = nullptr;
+      QgsBookmarkManager *mBookmarkManager = nullptr;
+      QgsStyleModel *mStyleModel = nullptr;
       QString mNullRepresentation;
 
       ApplicationMembers();
@@ -888,6 +988,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsAuthManager *sAuthManager;
 
     static ApplicationMembers *members();
+
+    static void invalidateCaches();
 };
 
 // clazy:excludeall=qstring-allocations

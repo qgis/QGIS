@@ -79,6 +79,11 @@ namespace QgsWms
     {
       return JPEG;
     }
+    else if ( format.compare( QLatin1String( "webp" ), Qt::CaseInsensitive ) == 0  ||
+              format.compare( QLatin1String( "image/webp" ), Qt::CaseInsensitive ) == 0 )
+    {
+      return WEBP;
+    }
     else
     {
       // lookup for png with mode
@@ -116,10 +121,15 @@ namespace QgsWms
       case PNG8:
       {
         QVector<QRgb> colorTable;
-        medianCut( colorTable, 256, img );
-        result = img.convertToFormat( QImage::Format_Indexed8, colorTable,
-                                      Qt::ColorOnly | Qt::ThresholdDither |
-                                      Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
+
+        // Rendering is made with the format QImage::Format_ARGB32_Premultiplied
+        // So we need to convert it in QImage::Format_ARGB32 in order to properly build
+        // the color table.
+        QImage img256 = img.convertToFormat( QImage::Format_ARGB32 );
+        medianCut( colorTable, 256, img256 );
+        result = img256.convertToFormat( QImage::Format_Indexed8, colorTable,
+                                         Qt::ColorOnly | Qt::ThresholdDither |
+                                         Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
       }
       contentType = "image/png";
       saveFormat = "PNG";
@@ -141,16 +151,24 @@ namespace QgsWms
         contentType = "image/jpeg";
         saveFormat = "JPEG";
         break;
+      case WEBP:
+        contentType = QStringLiteral( "image/webp" );
+        saveFormat = QStringLiteral( "WEBP" );
+        break;
       default:
         QgsMessageLog::logMessage( QString( "Unsupported format string %1" ).arg( formatStr ) );
         saveFormat = UNKN;
         break;
     }
 
+    // Preserve DPI, some conversions, in particular the one for 8bit will drop this information
+    result.setDotsPerMeterX( img.dotsPerMeterX() );
+    result.setDotsPerMeterY( img.dotsPerMeterY() );
+
     if ( outputFormat != UNKN )
     {
       response.setHeader( "Content-Type", contentType );
-      if ( saveFormat == "JPEG" )
+      if ( saveFormat == QLatin1String( "JPEG" ) || saveFormat == QLatin1String( "WEBP" ) )
       {
         result.save( response.io(), qPrintable( saveFormat ), imageQuality );
       }

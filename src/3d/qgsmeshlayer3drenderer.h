@@ -27,6 +27,8 @@
 
 #include <QObject>
 
+#define SIP_NO_FILE
+
 class QgsMeshLayer;
 
 
@@ -36,6 +38,7 @@ class QgsMeshLayer;
  *
  * \warning This is not considered stable API, and may change in future QGIS releases
  *
+ * \note Not available in Python bindings
  * \since QGIS 3.6
  */
 class _3D_EXPORT QgsMeshLayer3DRendererMetadata : public Qgs3DRendererAbstractMetadata
@@ -79,7 +82,7 @@ class _3D_EXPORT QgsMeshLayer3DRenderer : public QgsAbstract3DRenderer
 
 
   private:
-    QgsMapLayerRef mLayerRef; //!< Layer used to extract polygons from
+    QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
     std::unique_ptr<QgsMesh3DSymbol> mSymbol;  //!< 3D symbol that defines appearance
 
   private:

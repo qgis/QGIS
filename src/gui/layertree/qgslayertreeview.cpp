@@ -22,10 +22,14 @@
 #include "qgslayertreeutils.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayer.h"
+#include "qgsmessagebar.h"
+
 #include "qgsgui.h"
 
 #include <QMenu>
 #include <QContextMenuEvent>
+#include <QHeaderView>
+#include <QScrollBar>
 
 #include "qgslayertreeviewindicator.h"
 #include "qgslayertreeviewitemdelegate.h"
@@ -43,6 +47,13 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   setEditTriggers( EditKeyPressed );
   setExpandsOnDoubleClick( false ); // normally used for other actions
 
+  // Ensure legend graphics are scrollable
+  header()->setStretchLastSection( false );
+  header()->setSectionResizeMode( QHeaderView::ResizeToContents );
+
+  // If vertically scrolling by item, legend graphics can get clipped
+  setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+
   setSelectionMode( ExtendedSelection );
   setDefaultDropAction( Qt::MoveAction );
 
@@ -50,8 +61,12 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   setItemDelegate( new QgsLayerTreeViewItemDelegate( this ) );
   setStyle( new QgsLayerTreeViewProxyStyle( this ) );
 
+  setLayerMarkWidth( static_cast< int >( QFontMetricsF( font() ).width( 'l' ) * Qgis::UI_SCALE_FACTOR ) );
+
   connect( this, &QTreeView::collapsed, this, &QgsLayerTreeView::updateExpandedStateToNode );
   connect( this, &QTreeView::expanded, this, &QgsLayerTreeView::updateExpandedStateToNode );
+
+  connect( horizontalScrollBar(), &QScrollBar::valueChanged, this, &QgsLayerTreeView::onHorizontalScroll );
 }
 
 QgsLayerTreeView::~QgsLayerTreeView()
@@ -66,6 +81,12 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
 
   connect( model, &QAbstractItemModel::rowsInserted, this, &QgsLayerTreeView::modelRowsInserted );
   connect( model, &QAbstractItemModel::rowsRemoved, this, &QgsLayerTreeView::modelRowsRemoved );
+
+  if ( mMessageBar )
+    connect( layerTreeModel(), &QgsLayerTreeModel::messageEmitted,
+             [ = ]( const QString & message, Qgis::MessageLevel level = Qgis::Info, int duration = 5 )
+  {mMessageBar->pushMessage( message, level, duration );}
+         );
 
   QTreeView::setModel( model );
 
@@ -117,6 +138,15 @@ void QgsLayerTreeView::setCurrentLayer( QgsMapLayer *layer )
   setCurrentIndex( layerTreeModel()->node2index( nodeLayer ) );
 }
 
+void QgsLayerTreeView::setLayerVisible( QgsMapLayer *layer, bool visible )
+{
+  if ( !layer )
+    return;
+  QgsLayerTreeLayer *nodeLayer = layerTreeModel()->rootGroup()->findLayer( layer->id() );
+  if ( !nodeLayer )
+    return;
+  nodeLayer->setItemVisibilityChecked( visible );
+}
 
 void QgsLayerTreeView::contextMenuEvent( QContextMenuEvent *event )
 {
@@ -154,7 +184,24 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
         if ( QgsLayerTreeEmbeddedWidgetProvider *provider = QgsGui::layerTreeEmbeddedWidgetRegistry()->provider( providerId ) )
         {
           QModelIndex index = layerTreeModel()->legendNode2index( legendNodes[i] );
-          setIndexWidget( index, provider->createWidget( layer, i ) );
+          QWidget *wdgt = provider->createWidget( layer, i );
+          // Since column is resized to contents, limit the expanded width of embedded
+          //  widgets, if they are not already limited, e.g. have the default MAX value.
+          // Else, embedded widget may grow very wide due to large legend graphics.
+          // NOTE: This approach DOES NOT work right. It causes horizontal scroll
+          //       bar to disappear if the embedded widget is expanded and part
+          //       of the last layer in the panel, even if much wider legend items
+          //       are expanded above it. The correct width-limiting method should
+          //       be setting fixed-width, hidpi-aware embedded widget items in a
+          //       layout and appending an expanding QSpacerItem to end. This ensures
+          //       full width is always created in the column by the embedded widget.
+          //       See QgsLayerTreeOpacityWidget
+          //if ( wdgt->maximumWidth() == QWIDGETSIZE_MAX )
+          //{
+          //  wdgt->setMaximumWidth( 250 );
+          //}
+
+          setIndexWidget( index, wdgt );
         }
       }
     }
@@ -252,7 +299,7 @@ void QgsLayerTreeView::onCustomPropertyChanged( QgsLayerTreeNode *node, const QS
   if ( key != QStringLiteral( "expandedLegendNodes" ) || !QgsLayerTree::isLayer( node ) )
     return;
 
-  QSet<QString> expandedLegendNodes = node->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList().toSet();
+  QSet<QString> expandedLegendNodes = qgis::listToSet( node->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList() );
 
   const QList<QgsLayerTreeModelLegendNode *> legendNodes = layerTreeModel()->layerLegendNodes( QgsLayerTree::toLayer( node ), true );
   for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
@@ -365,18 +412,26 @@ QList<QgsMapLayer *> QgsLayerTreeView::selectedLayersRecursive() const
 {
   const QList<QgsLayerTreeNode *> nodes = layerTreeModel()->indexes2nodes( selectionModel()->selectedIndexes(), false );
   QSet<QgsMapLayer *> layersSet = QgsLayerTreeUtils::collectMapLayersRecursive( nodes );
-  return layersSet.toList();
+  return qgis::setToList( layersSet );
 }
 
 void QgsLayerTreeView::addIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator )
 {
   if ( !mIndicators[node].contains( indicator ) )
+  {
     mIndicators[node].append( indicator );
+    connect( indicator, &QgsLayerTreeViewIndicator::changed, this, [ = ]
+    {
+      update();
+    } );
+    update();
+  }
 }
 
 void QgsLayerTreeView::removeIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator )
 {
   mIndicators[node].removeOne( indicator );
+  update();
 }
 
 QList<QgsLayerTreeViewIndicator *> QgsLayerTreeView::indicators( QgsLayerTreeNode *node ) const
@@ -446,6 +501,20 @@ void QgsLayerTreeView::collapseAllNodes()
   collapseAll();
 }
 
+void QgsLayerTreeView::setMessageBar( QgsMessageBar *messageBar )
+{
+  if ( mMessageBar == messageBar )
+    return;
+
+  mMessageBar = messageBar;
+
+  if ( mMessageBar )
+    connect( layerTreeModel(), &QgsLayerTreeModel::messageEmitted,
+             [ = ]( const QString & message, Qgis::MessageLevel level = Qgis::Info, int duration = 5 )
+  {mMessageBar->pushMessage( message, level, duration );}
+         );
+}
+
 void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
   // we need to keep last mouse position in order to know whether to emit an indicator's clicked() signal
@@ -463,6 +532,23 @@ void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
 
 void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
 {
+  if ( event->key() == Qt::Key_Space )
+  {
+    const auto constSelectedNodes = selectedNodes();
+
+    if ( ! constSelectedNodes.isEmpty() )
+    {
+      bool isFirstNodeChecked = constSelectedNodes[0]->itemVisibilityChecked();
+      for ( QgsLayerTreeNode *node : constSelectedNodes )
+      {
+        node->setItemVisibilityChecked( ! isFirstNodeChecked );
+      }
+
+      // if we call the original keyPress handler, the current item will be checked to the original state yet again
+      return;
+    }
+  }
+
   const QgsLayerTreeModel::Flags oldFlags = layerTreeModel()->flags();
   if ( event->modifiers() & Qt::ControlModifier )
     layerTreeModel()->setFlags( oldFlags | QgsLayerTreeModel::ActionHierarchical );
@@ -479,4 +565,24 @@ void QgsLayerTreeView::dropEvent( QDropEvent *event )
     event->accept();
   }
   QTreeView::dropEvent( event );
+}
+
+void QgsLayerTreeView::resizeEvent( QResizeEvent *event )
+{
+  // Since last column is resized to content (instead of stretched), the active
+  // selection rectangle ends at width of widest visible item in tree,
+  // regardless of which item is selected. This causes layer indicators to
+  // become 'inactive' (not clickable and no tool tip) unless their rectangle
+  // enters the view item's selection (active) rectangle.
+  // Always resetting the minimum section size relative to the viewport ensures
+  // the view item's selection rectangle extends to the right edge of the
+  // viewport, which allows indicators to become active again.
+  header()->setMinimumSectionSize( viewport()->width() );
+  QTreeView::resizeEvent( event );
+}
+
+void QgsLayerTreeView::onHorizontalScroll( int value )
+{
+  Q_UNUSED( value )
+  viewport()->update();
 }

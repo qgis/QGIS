@@ -35,8 +35,10 @@ class QgsFieldsPrivate;
  * Container of fields for a vector layer.
  *
  * In addition to storing a list of QgsField instances, it also:
+ *
  * - allows quick lookups of field names to index in the list
  * - keeps track of where the field definition comes from (vector data provider, joined layer or newly added from an editing operation)
+ *
  * \note QgsFields objects are implicitly shared.
  */
 class CORE_EXPORT  QgsFields
@@ -219,7 +221,7 @@ class CORE_EXPORT  QgsFields
     int fieldIdx = sipCpp->indexFromName( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -336,6 +338,13 @@ class CORE_EXPORT  QgsFields
     % End
 #endif
 
+
+    /**
+     * Returns an icon corresponding to a field \a type
+     * \since QGIS 3.16
+     */
+    static QIcon iconForFieldType( const QVariant::Type &type ) SIP_FACTORY;
+
     //! Allows direct construction of QVariants from fields.
     operator QVariant() const
     {
@@ -432,6 +441,8 @@ class CORE_EXPORT  QgsFields
         inline const_iterator operator+( difference_type j ) const { return const_iterator( d + j ); }
         inline const_iterator operator-( difference_type j ) const { return const_iterator( d - j ); }
         inline int operator-( const_iterator j ) const { return int( d - j.d ); } // clazy:exclude=function-args-by-ref
+      private:
+        const_iterator &operator= ( const const_iterator & ) = delete;
     };
     friend class const_iterator;
     ///@endcond

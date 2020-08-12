@@ -11,7 +11,7 @@
 
 
 
-class QgsProcessingAlgorithmDialogBase : QDialog
+class QgsProcessingAlgorithmDialogBase : QDialog, QgsProcessingParametersGenerator
 {
 %Docstring
 Base class for processing algorithm dialogs.
@@ -34,7 +34,7 @@ Base class for processing algorithm dialogs.
       FormatHtml,
     };
 
-    QgsProcessingAlgorithmDialogBase( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = 0 );
+    QgsProcessingAlgorithmDialogBase( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsProcessingAlgorithmDialogBase.
 %End
@@ -56,14 +56,14 @@ Returns the algorithm running in the dialog.
 .. seealso:: :py:func:`setAlgorithm`
 %End
 
-    void setMainWidget( QWidget *widget /Transfer/ );
+    void setMainWidget( QgsPanelWidget *widget /Transfer/ );
 %Docstring
 Sets the main ``widget`` for the dialog, usually a panel for configuring algorithm parameters.
 
 .. seealso:: :py:func:`mainWidget`
 %End
 
-    QWidget *mainWidget();
+    QgsPanelWidget *mainWidget();
 %Docstring
 Returns the main widget for the dialog, usually a panel for configuring algorithm parameters.
 
@@ -97,11 +97,6 @@ Returns the results returned by the algorithm executed.
 %Docstring
 Creates a new processing feedback object, automatically connected to the appropriate
 slots in this dialog.
-%End
-
-    virtual QVariantMap getParameterValues() const;
-%Docstring
-Returns the parameter values for the algorithm to run in the dialog.
 %End
 
     void saveLogToFile( const QString &path, LogFormat format = FormatPlainText );
@@ -182,6 +177,14 @@ Copies the current log contents to the clipboard.
 .. versionadded:: 3.2
 %End
 
+    void showParameters();
+%Docstring
+Switches the dialog to the parameters page.
+%End
+
+    virtual void reject();
+
+
   protected:
 
     virtual void closeEvent( QCloseEvent *e );
@@ -195,6 +198,11 @@ Returns the dialog's run button.
     QPushButton *cancelButton();
 %Docstring
 Returns the dialog's cancel button.
+%End
+
+    QPushButton *changeParametersButton();
+%Docstring
+Returns the dialog's change parameters button.
 %End
 
     QDialogButtonBox *buttonBox();
@@ -221,6 +229,11 @@ Sets whether the algorithm was executed through the dialog.
 .. seealso:: :py:func:`setResults`
 %End
 
+    void setExecutedAnyResult( bool executedAnyResult );
+%Docstring
+Sets whether the algorithm was executed through the dialog (no matter the result).
+%End
+
     void setResults( const QVariantMap &results );
 %Docstring
 Sets the algorithm results.
@@ -238,6 +251,29 @@ Displays an info ``message`` in the dialog's log.
     void resetGui();
 %Docstring
 Resets the dialog's gui, ready for another algorithm execution.
+%End
+
+    virtual void resetAdditionalGui();
+%Docstring
+For subclasses to register their own GUI controls to be reset, ready
+for another algorithm execution.
+%End
+
+    void updateRunButtonVisibility();
+%Docstring
+Sets visibility for mutually exclusive buttons Run and Change Parameters.
+%End
+
+    void blockControlsWhileRunning();
+%Docstring
+Blocks run and changeParameters buttons and parameters tab while the
+algorithm is running.
+%End
+
+    virtual void blockAdditionalControlsWhileRunning();
+%Docstring
+For subclasses to register their own GUI controls to be blocked while
+the algorithm is running.
 %End
 
     QgsMessageBar *messageBar();
@@ -261,6 +297,15 @@ by the dialog. Ownership of ``task`` is transferred to the dialog.
 Formats an input ``string`` for display in the log tab.
 
 .. versionadded:: 3.0.1
+%End
+
+  signals:
+
+    void algorithmFinished( bool successful, const QVariantMap &result );
+%Docstring
+Emitted whenever an algorithm has finished executing in the dialog.
+
+.. versionadded:: 3.14
 %End
 
   protected slots:

@@ -74,7 +74,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
                           QgsNewHttpConnection::ConnectionTypes types = ConnectionWms,
                           const QString &baseKey = "qgis/connections-wms/",
                           const QString &connectionName = QString(),
-                          QgsNewHttpConnection::Flags flags = nullptr,
+                          QgsNewHttpConnection::Flags flags = QgsNewHttpConnection::Flags(),
                           Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     /**
@@ -103,6 +103,16 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
 
   protected:
 
+    //! Index of wfsVersionComboBox
+    enum WfsVersionIndex
+    {
+      WFS_VERSION_MAX = 0,
+      WFS_VERSION_1_0 = 1,
+      WFS_VERSION_1_1 = 2,
+      WFS_VERSION_2_0 = 3,
+      WFS_VERSION_API_FEATURES_1_0 = 4,
+    };
+
     /**
      * Returns TRUE if dialog settings are valid, or FALSE if current
      * settings are not valid and the dialog should not be acceptable.
@@ -115,6 +125,12 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      * \since QGIS 3.0
      */
     QPushButton *testConnectButton();
+
+    /**
+     * Returns the current authentication settings widget.
+     * \since QGIS 3.8
+     */
+    QgsAuthSettingsWidget *authSettingsWidget() SIP_SKIP;
 
     /**
      * Returns the "WFS version detect" button.

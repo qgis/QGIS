@@ -23,7 +23,7 @@
 # fi
 
 # extensions or files that should be excluded from file list if :% is appended in the spelling.dat file
-EXCLUDE_SCRIPT_LIST='(\.(xml|svg|sip|t2t|pl|sh|qgs|badquote|cmake(\.in)?)|^(debian/copyright|cmake_templates/.*|INSTALL|NEWS|tests/testdata/labeling/README.rst|tests/testdata/font/QGIS-Vera/COPYRIGHT.TXT|doc/(news|INSTALL)\.html|debian/build/))$'
+EXCLUDE_SCRIPT_LIST='(\.(xml|svg|sip|pl|sh|qgs|badquote|cmake(\.in)?)|^(debian/copyright|cmake_templates/.*|tests/testdata/labeling/README.rst|tests/testdata/font/QGIS-Vera/COPYRIGHT.TXT|doc/NEWS\.html|debian/build/))$'
 
 DIR=$(git rev-parse --show-toplevel)/scripts/spell_check
 
@@ -85,7 +85,7 @@ declare -A GLOBREP_IGNORE=()
 ERRORFOUND=NO
 
 for I in $(seq -f '%02g' 0  $((SPLIT-1)) ) ; do
-  ( [[ "$INTERACTIVE" =~ YES ]] || [[ "$TRAVIS" =~ true ]] ) && printf "Progress: %d/%d\r" $(( I + 1 )) $SPLIT
+  { [[ "$INTERACTIVE" =~ YES ]] || [[ "$TRAVIS" =~ true ]]; } && printf "Progress: %d/%d\r" $(( I + 1 )) $SPLIT
   SPELLFILE=spelling$I~
   ${GP}sed -i '/^#/d' $SPELLFILE
 
@@ -136,10 +136,10 @@ for I in $(seq -f '%02g' 0  $((SPLIT-1)) ) ; do
   RUN_IGNORECASE=OFF
   RUN_CASEMATCH=OFF
 
-  if [[ ! -z "${IGNORECASE}" ]]; then
+  if [[ -n "${IGNORECASE}" ]]; then
     RUN_IGNORECASE=ON
   fi
-  if [[ ! -z "${CASEMATCH}"  ]]; then
+  if [[ -n "${CASEMATCH}"  ]]; then
     RUN_CASEMATCH=ON
   fi
 
@@ -336,7 +336,7 @@ for I in $(seq -f '%02g' 0  $((SPLIT-1)) ) ; do
 
 done
 
-( [[ "$INTERACTIVE" =~ YES ]] || [[ "$TRAVIS" =~ true ]] ) && echo
+{ [[ "$INTERACTIVE" =~ YES ]] || [[ "$TRAVIS" =~ true ]]; } && echo
 
 if [[ "$ERRORFOUND" =~ YES ]]; then
   echo -e "\x1B[1msome errors have been found.\x1B[0m" >&2

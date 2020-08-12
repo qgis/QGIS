@@ -26,6 +26,9 @@
 #include "qgsmenuheader.h"
 #include "qgsfontutils.h"
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsvectorlayer.h"
+#include "qgstextrenderer.h"
 #include <QMenu>
 #include <QClipboard>
 #include <QDrag>
@@ -35,7 +38,7 @@
 QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
   , mDialogTitle( dialogTitle.isEmpty() ? tr( "Text Format" ) : dialogTitle )
-
+  , mNullFormatString( tr( "No Format" ) )
 {
   setText( tr( "Font" ) );
 
@@ -51,7 +54,11 @@ QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   //make sure height of button looks good under different platforms
   QSize size = QToolButton::minimumSizeHint();
   int fontHeight = Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.4;
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   int minWidth = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 20;
+#else
+  int minWidth = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 20;
+#endif
   mSizeHint = QSize( std::max( minWidth, size.width() ), std::max( size.height(), fontHeight ) );
 }
 
@@ -71,19 +78,34 @@ void QgsFontButton::showSettingsDialog()
   {
     case ModeTextRenderer:
     {
+      QgsExpressionContext context;
+      if ( mExpressionContextGenerator )
+        context  = mExpressionContextGenerator->createExpressionContext();
+      else
+      {
+        context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer.data() ) );
+      }
+
+      QgsSymbolWidgetContext symbolContext;
+      symbolContext.setExpressionContext( &context );
+      symbolContext.setMapCanvas( mMapCanvas );
+      symbolContext.setMessageBar( mMessageBar );
+
       QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
       if ( panel && panel->dockMode() )
       {
-        QgsTextFormatPanelWidget *formatWidget = new QgsTextFormatPanelWidget( mFormat, mMapCanvas, this );
-        formatWidget->setPanelTitle( mDialogTitle );
+        mActivePanel = new QgsTextFormatPanelWidget( mFormat, mMapCanvas, this, mLayer.data() );
+        mActivePanel->setPanelTitle( mDialogTitle );
+        mActivePanel->setContext( symbolContext );
 
-        connect( formatWidget, &QgsTextFormatPanelWidget::widgetChanged, this, [ this, formatWidget ] { this->setTextFormat( formatWidget->format() ); } );
-        panel->openPanel( formatWidget );
+        connect( mActivePanel, &QgsTextFormatPanelWidget::widgetChanged, this, [ this ] { setTextFormat( mActivePanel->format() ); } );
+        panel->openPanel( mActivePanel );
         return;
       }
 
-      QgsTextFormatDialog dialog( mFormat, mMapCanvas, this );
+      QgsTextFormatDialog dialog( mFormat, mMapCanvas, this, QgsGuiUtils::ModalDialogFlags, mLayer.data() );
       dialog.setWindowTitle( mDialogTitle );
+      dialog.setContext( symbolContext );
       if ( dialog.exec() )
       {
         setTextFormat( dialog.format() );
@@ -120,9 +142,32 @@ void QgsFontButton::setMapCanvas( QgsMapCanvas *mapCanvas )
   mMapCanvas = mapCanvas;
 }
 
+void QgsFontButton::setMessageBar( QgsMessageBar *bar )
+{
+  mMessageBar = bar;
+}
+
+QgsMessageBar *QgsFontButton::messageBar() const
+{
+  return mMessageBar;
+}
+
 void QgsFontButton::setTextFormat( const QgsTextFormat &format )
 {
+  if ( mActivePanel && !format.isValid() )
+    mActivePanel->acceptPanel();
+
   mFormat = format;
+  updatePreview();
+
+  if ( mActivePanel && format.isValid() )
+    mActivePanel->setFormat( format );
+  emit changed();
+}
+
+void QgsFontButton::setToNullFormat()
+{
+  mFormat = QgsTextFormat();
   updatePreview();
   emit changed();
 }
@@ -131,6 +176,9 @@ void QgsFontButton::setColor( const QColor &color )
 {
   QColor opaque = color;
   opaque.setAlphaF( 1.0 );
+
+  if ( mNullFormatAction )
+    mNullFormatAction->setChecked( false );
 
   if ( mFormat.color() != opaque )
   {
@@ -187,7 +235,7 @@ bool QgsFontButton::event( QEvent *e )
         fontSize = mFont.pointSizeF();
         break;
     }
-    toolTip = QStringLiteral( "<b>%1</b><br>%2<br>Size: %3" ).arg( text(), mFormat.font().family() ).arg( fontSize );
+    toolTip = QStringLiteral( "<b>%1</b><br>%2<br>Size: %3" ).arg( text(), mMode == ModeTextRenderer ? mFormat.font().family() : mFont.family() ).arg( fontSize );
     QToolTip::showText( helpEvent->globalPos(), toolTip );
   }
   return QToolButton::event( e );
@@ -288,7 +336,7 @@ void QgsFontButton::dragEnterEvent( QDragEnterEvent *e )
 
 void QgsFontButton::dragLeaveEvent( QDragLeaveEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   //reset button color
   updatePreview();
 }
@@ -344,7 +392,7 @@ void QgsFontButton::wheelEvent( QWheelEvent *event )
       break;
   }
 
-  double increment = event->modifiers() & Qt::ControlModifier ? 0.1 : 1;
+  double increment = ( event->modifiers() & Qt::ControlModifier ) ? 0.1 : 1;
   if ( event->delta() > 0 )
   {
     size += increment;
@@ -489,6 +537,17 @@ void QgsFontButton::prepareMenu()
   //menu is opened, otherwise color schemes like the recent color scheme grid are meaningless
   mMenu->clear();
 
+  if ( mMode == ModeTextRenderer && mShowNoFormat )
+  {
+    mNullFormatAction = new QAction( mNullFormatString, this );
+    mMenu->addAction( mNullFormatAction );
+    connect( mNullFormatAction, &QAction::triggered, this, &QgsFontButton::setToNullFormat );
+    if ( !mFormat.isValid() )
+    {
+      mNullFormatAction->setCheckable( true );
+      mNullFormatAction->setChecked( true );
+    }
+  }
 
   QWidgetAction *sizeAction = new QWidgetAction( mMenu );
   QWidget *sizeWidget = new QWidget();
@@ -523,6 +582,8 @@ void QgsFontButton::prepareMenu()
     switch ( mMode )
     {
       case ModeTextRenderer:
+        if ( mNullFormatAction )
+          mNullFormatAction->setChecked( false );
         mFormat.setSize( value );
         break;
       case ModeQFont:
@@ -640,6 +701,8 @@ void QgsFontButton::prepareMenu()
       double opacity = color.alphaF();
       mFormat.setOpacity( opacity );
       updatePreview();
+      if ( mNullFormatAction )
+        mNullFormatAction->setChecked( false );
       emit changed();
     } );
     connect( colorAction, &QgsColorWidgetAction::colorChanged, alphaRamp, [alphaRamp]( const QColor & color ) { alphaRamp->setColor( color, false ); }
@@ -690,6 +753,21 @@ void QgsFontButton::addRecentColor( const QColor &color )
 QFont QgsFontButton::currentFont() const
 {
   return mFont;
+}
+
+QgsVectorLayer *QgsFontButton::layer() const
+{
+  return mLayer;
+}
+
+void QgsFontButton::setLayer( QgsVectorLayer *layer )
+{
+  mLayer = layer;
+}
+
+void QgsFontButton::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
+{
+  mExpressionContextGenerator = generator;
 }
 
 void QgsFontButton::setCurrentFont( const QFont &font )
@@ -749,6 +827,12 @@ void QgsFontButton::resizeEvent( QResizeEvent *event )
 
 void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, QFont *font )
 {
+  if ( mShowNoFormat && !mFormat.isValid() )
+  {
+    setIcon( QPixmap() );
+    return;
+  }
+
   QgsTextFormat tempFormat;
   QFont tempFont;
 
@@ -820,6 +904,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
 
       context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
       context.setUseAdvancedEffects( true );
+      context.setFlag( QgsRenderContext::Antialiasing, true );
       context.setPainter( &p );
 
       // slightly inset text to account for buffer/background

@@ -668,6 +668,9 @@ private:
     int lastPos;
 
     static Character defaultChar;
+
+    Screen (const Screen&) = delete;
+    Screen& operator= (const Screen&) = delete;
 };
 
 }

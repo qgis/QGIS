@@ -333,6 +333,142 @@ class CORE_EXPORT QgsCoordinateTransform
     bool isShortCircuited() const;
 
     /**
+     * Returns a Proj string representing the coordinate operation which will be used to transform
+     * coordinates.
+     *
+     * \note The string returned by this method gives the desired coordinate operation string, based on
+     * the state of the QgsCoordinateTransformContext object given in the QgsCoordinateTransform's constructor.
+     * It may be an empty string if no explicit coordinate operation is required. In order to determine the
+     * ACTUAL coordinate operation which is being used by the transform, use the instantiatedCoordinateOperationDetails() call instead.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return
+     * an empty string, and the deprecated sourceDatumTransformId() or destinationDatumTransformId() methods should be used instead.
+     *
+     * \see instantiatedCoordinateOperationDetails()
+     * \see setCoordinateOperation()
+     * \since QGIS 3.8
+     */
+    QString coordinateOperation() const;
+
+    /**
+     * Returns the transform details representing the coordinate operation which is being used to transform
+     * coordinates.
+     *
+     * This may differ from the result returned by coordinateOperation() if the desired coordinate
+     * operation was not successfully instantiated.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return
+     * an empty result, and the deprecated sourceDatumTransformId() or destinationDatumTransformId() methods should be used instead.
+     *
+     * \see coordinateOperation()
+     * \since QGIS 3.10.2
+     */
+    QgsDatumTransform::TransformDetails instantiatedCoordinateOperationDetails() const;
+
+    /**
+     * Sets a Proj string representing the coordinate \a operation which will be used to transform
+     * coordinates.
+     *
+     * \warning It is the caller's responsibility to ensure that \a operation is a valid Proj
+     * coordinate operation string.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting,
+     * and the deprecated setSourceDatumTransformId() or setDestinationDatumTransformId() methods should be used instead.
+     *
+     * \see coordinateOperation()
+     * \since QGIS 3.8
+     */
+    void setCoordinateOperation( const QString &operation ) const;
+
+    /**
+     * Sets whether "ballpark" fallback transformations can be used in the case that the specified
+     * coordinate operation fails (such as when coordinates from outside a required grid shift file
+     * are transformed). See fallbackOperationOccurred() for further details.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
+     *
+     * \warning If setBallparkTransformsAreAppropriate() is set to TRUE, this setting will be ignored
+     * and fallback transformations will always be permitted.
+     *
+     * \see allowFallbackTransforms()
+     * \see setBallparkTransformsAreAppropriate()
+     * \since QGIS 3.12
+     */
+    void setAllowFallbackTransforms( bool allowed );
+
+    /**
+     * Returns whether "ballpark" fallback transformations will be used in the case that the specified
+     * coordinate operation fails (such as when coordinates from outside a required grid shift file
+     * are transformed). See fallbackOperationOccurred() for further details.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
+     *
+     * \see setAllowFallbackTransforms()
+     * \see setBallparkTransformsAreAppropriate()
+     * \since QGIS 3.12
+     */
+    bool allowFallbackTransforms() const;
+
+    /**
+     * Sets whether approximate "ballpark" results are appropriate for this coordinate transform.
+     *
+     * When a coordinate transform is only being used to generate ballpark results then the
+     * \a appropriate argument should be set to TRUE. This indicates that its perfectable
+     * acceptable (and even expected!) for the transform to use fallback coordinate operations
+     * in the case that the preferred or user-specified operation fails (such as when coordinates
+     * from outside of a grid shift file's extent are transformed).
+     *
+     * When \a appropriate is TRUE, then no warnings will be generated when the transform
+     * falls back to a default operation, which may introduce inaccuracies when compared to
+     * the default/specified coordinate operation.
+     *
+     * This should be set when a transform expects that coordinates outside of the direct
+     * area of use while be transformed, e.g. when transforming from a global extent to a
+     * CRS with a localized area of use.
+     *
+     * If \a appropriate is FALSE (the default behavior), then transforms MAY STILL fallback to default operations
+     * when the preferred or user-specified operation fails, however whenever this occurs
+     * a user-visible warning will be generated.
+     *
+     * If \a appropriate is TRUE, then this setting overrides allowFallbackTransforms()
+     * and fallback transforms will always be allowed when required.
+     *
+     * \warning This setting applies to a single instance of a coordinate transform only,
+     * and is not copied when a coordinate transform object is copied or assigned.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
+     *
+     * \since QGIS 3.12
+     */
+    void setBallparkTransformsAreAppropriate( bool appropriate );
+
+    /**
+     * Sets whether the default fallback operation handler is disabled for this transform instance.
+     *
+     * If the default handler is \a disabled then it is possible to determine whether a fallback
+     * operation occurred by testing fallbackOperationOccurred() immediately after a transformation.
+     *
+     * \warning This setting applies to a single instance of a coordinate transform only,
+     * and is not copied when a coordinate transform object is copied or assigned.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will never perform fallback operations.
+     *
+     * \see fallbackOperationOccurred()
+     * \since QGIS 3.12
+     */
+    void disableFallbackOperationHandler( bool disabled );
+
+    /**
+     * Returns TRUE if a fallback operation occurred for the most recent transform.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will never perform fallback operations.
+     *
+     * \see disableFallbackOperationHandler()
+     * \since QGIS 3.12
+     */
+    bool fallbackOperationOccurred() const;
+
+    /**
      * Returns the ID of the datum transform to use when projecting from the source
      * CRS.
      *
@@ -342,8 +478,10 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see QgsDatumTransform
      * \see setSourceDatumTransformId()
      * \see destinationDatumTransformId()
+     *
+     * \deprecated Unused on builds based on Proj 6.0 or later
      */
-    int sourceDatumTransformId() const;
+    Q_DECL_DEPRECATED int sourceDatumTransformId() const SIP_DEPRECATED;
 
     /**
      * Sets the \a datumId ID of the datum transform to use when projecting from the source
@@ -355,8 +493,10 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see QgsDatumTransform
      * \see sourceDatumTransformId()
      * \see setDestinationDatumTransformId()
+     *
+     * \deprecated Unused on builds based on Proj 6.0 or later
      */
-    void setSourceDatumTransformId( int datumId );
+    Q_DECL_DEPRECATED void setSourceDatumTransformId( int datumId ) SIP_DEPRECATED;
 
     /**
      * Returns the ID of the datum transform to use when projecting to the destination
@@ -368,8 +508,10 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see QgsDatumTransform
      * \see setDestinationDatumTransformId()
      * \see sourceDatumTransformId()
+     *
+     * \deprecated Unused on builds based on Proj 6.0 or later
      */
-    int destinationDatumTransformId() const;
+    Q_DECL_DEPRECATED int destinationDatumTransformId() const SIP_DEPRECATED;
 
     /**
      * Sets the \a datumId ID of the datum transform to use when projecting to the destination
@@ -381,16 +523,35 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see QgsDatumTransform
      * \see destinationDatumTransformId()
      * \see setSourceDatumTransformId()
+     *
+     * \deprecated Unused on builds based on Proj 6.0 or later
      */
-    void setDestinationDatumTransformId( int datumId );
+    Q_DECL_DEPRECATED void setDestinationDatumTransformId( int datumId ) SIP_DEPRECATED;
+
+#ifndef SIP_RUN
 
     /**
      * Clears the internal cache used to initialize QgsCoordinateTransform objects.
      * This should be called whenever the srs database has
      * been modified in order to ensure that outdated CRS transforms are not created.
+     *
+     * If \a disableCache is TRUE then the inbuilt cache will be completely disabled. This
+     * argument is for internal use only.
+     *
      * \since QGIS 3.0
      */
-    static void invalidateCache();
+    static void invalidateCache( bool disableCache = false );
+#else
+
+    /**
+     * Clears the internal cache used to initialize QgsCoordinateTransform objects.
+     * This should be called whenever the srs database has
+     * been modified in order to ensure that outdated CRS transforms are not created.
+     *
+     * \since QGIS 3.0
+     */
+    static void invalidateCache( bool disableCache SIP_PYARGREMOVE = false );
+#endif
 
     /**
      * Computes an *estimated* conversion factor between source and destination units:
@@ -403,6 +564,108 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     double scaleFactor( const QgsRectangle &referenceExtent ) const;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsCoordinateTransform: %1 to %2>" ).arg( sipCpp->sourceCrs().isValid() ? sipCpp->sourceCrs().authid() : QStringLiteral( "NULL" ),
+                  sipCpp->destinationCrs().isValid() ? sipCpp->destinationCrs().authid() : QStringLiteral( "NULL" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+     * Sets a custom handler to use when a coordinate transform is created between \a sourceCrs and
+     * \a destinationCrs, yet the coordinate operation requires a transform \a grid which is not present
+     * on the system.
+     *
+     * \see setCustomMissingPreferredGridHandler()
+     * \see setCustomCoordinateOperationCreationErrorHandler()
+     * \see setCustomMissingGridUsedByContextHandler()
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.8
+     */
+    static void setCustomMissingRequiredGridHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        const QgsDatumTransform::GridDetails &grid )> &handler );
+
+    /**
+     * Sets a custom handler to use when a coordinate transform is created between \a sourceCrs and
+     * \a destinationCrs, yet a preferred (more accurate?) operation is available which could not
+     * be created on the system (e.g. due to missing transform grids).
+     *
+     * \a preferredOperation gives the details of the preferred coordinate operation, and
+     * \a availableOperation gives the details of the actual operation to be used during the
+     * transform.
+     *
+     * \see setCustomMissingRequiredGridHandler()
+     * \see setCustomCoordinateOperationCreationErrorHandler()
+     * \see setCustomMissingGridUsedByContextHandler()
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.8
+     */
+    static void setCustomMissingPreferredGridHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        const QgsDatumTransform::TransformDetails &preferredOperation,
+        const QgsDatumTransform::TransformDetails &availableOperation )> &handler );
+
+    /**
+     * Sets a custom handler to use when a coordinate transform was required between \a sourceCrs and
+     * \a destinationCrs, yet the coordinate operation could not be created. The \a error argument
+     * specifies the error message obtained.
+     *
+     * \see setCustomMissingRequiredGridHandler()
+     * \see setCustomMissingPreferredGridHandler()
+     * \see setCustomMissingGridUsedByContextHandler()
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.8
+     */
+    static void setCustomCoordinateOperationCreationErrorHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        const QString &error )> &handler );
+
+    /**
+     * Sets a custom handler to use when a coordinate operation was specified for use between \a sourceCrs and
+     * \a destinationCrs by the transform context, yet the coordinate operation could not be created. The \a desiredOperation argument
+     * specifies the desired transform details as specified by the context.
+     *
+     * \see setCustomMissingRequiredGridHandler()
+     * \see setCustomMissingPreferredGridHandler()
+     * \see setCustomCoordinateOperationCreationErrorHandler()
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.8
+     */
+    static void setCustomMissingGridUsedByContextHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        const QgsDatumTransform::TransformDetails &desiredOperation )> &handler );
+
+
+    /**
+     * Sets a custom \a handler to use when the desired coordinate operation for use between \a sourceCrs and
+     * \a destinationCrs failed and an alternative fallback operation was utilized instead.
+     *
+     * \since QGIS 3.10.3
+     */
+    static void setFallbackOperationOccurredHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        const QString &desiredOperation )> &handler );
+
+#endif
+
+#ifndef SIP_RUN
+#if PROJ_VERSION_MAJOR>=6
+  protected:
+    friend class QgsProjContext;
+
+    // Only meant to be called by QgsProjContext::~QgsProjContext()
+    static void removeFromCacheObjectsBelongingToCurrentThread( void *pj_context );
+#endif
+#endif
   private:
 
     mutable QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;
@@ -414,15 +677,32 @@ class CORE_EXPORT QgsCoordinateTransform
     bool mHasContext = false;
 #endif
 
+    mutable QString mLastError;
+    bool mBallparkTransformsAreAppropriate = false;
+    bool mDisableFallbackHandler = false;
+    mutable bool mFallbackOperationOccurred = false;
+
+#if PROJ_VERSION_MAJOR>=6
+    bool setFromCache( const QgsCoordinateReferenceSystem &src,
+                       const QgsCoordinateReferenceSystem &dest,
+                       const QString &coordinateOperationProj, bool allowFallback );
+#else
     bool setFromCache( const QgsCoordinateReferenceSystem &src,
                        const QgsCoordinateReferenceSystem &dest,
                        int srcDatumTransform,
                        int destDatumTransform );
+#endif
     void addToCache();
 
     // cache
     static QReadWriteLock sCacheLock;
     static QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > sTransforms; //same auth_id pairs might have different datum transformations
+    static bool sDisableCache;
+
+
+    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                const QgsCoordinateReferenceSystem &destinationCrs,
+                                const QString &desiredOperation )> sFallbackOperationOccurredHandler;
 
 };
 

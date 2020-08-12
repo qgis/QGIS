@@ -28,6 +28,8 @@
 #include "qgswfsfeatureiterator.h"
 #include "qgswfsdatasourceuri.h"
 
+#include "qgsprovidermetadata.h"
+
 class QgsRectangle;
 class QgsWFSSharedData;
 
@@ -40,12 +42,14 @@ class QgsWFSSharedData;
  * Below quick design notes on the whole provider.
  *
  * QgsWFSProvider class purpose:
+ *
  * - in constructor, do a GetCapabilities request to determine server-side feature limit,
      paging capabilities, WFS version, edition capabilities. Do a DescribeFeatureType request
      to determine fields, geometry name and type.
  * - in other methods, mostly WFS-T related operations.
  *
  * QgsWFSSharedData class purpose:
+ *
  * - contains logic shared by QgsWFSProvider, QgsWFSFeatureIterator and QgsWFSFeatureDownloader.
  * - one of its main function is to maintain a on-disk cache of the features retrieved
  *   from the server. This cache is a SpatiaLite database.
@@ -58,10 +62,13 @@ class QgsWFSSharedData;
  * the specific attributes of a WFS URI.
  *
  */
-class QgsWFSProvider : public QgsVectorDataProvider
+class QgsWFSProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
   public:
+
+    static const QString WFS_PROVIDER_KEY;
+    static const QString WFS_PROVIDER_DESCRIPTION;
 
     explicit QgsWFSProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, const QgsWfsCapabilities::Capabilities &caps = QgsWfsCapabilities::Capabilities() );
     ~QgsWFSProvider() override;
@@ -93,6 +100,8 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     QgsVectorDataProvider::Capabilities capabilities() const override;
 
+    QString storageType() const override { return QStringLiteral( "OGC WFS (Web Feature Service)" ); }
+
     /* new functions */
 
     QString geometryAttribute() const;
@@ -103,7 +112,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     //Editing operations
 
-    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
@@ -113,19 +122,21 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     bool empty() const override;
 
-  public slots:
-
-    void reloadData() override;
-
   private slots:
 
-    void featureReceivedAnalyzeOneFeature( QVector<QgsWFSFeatureGmlIdPair> );
+    void featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueIdPair> );
 
     void pushErrorSlot( const QString &errorMsg );
+
 
   private:
     //! Mutable data shared between provider and feature sources
     std::shared_ptr<QgsWFSSharedData> mShared;
+
+    /**
+     * Invalidates cache of shared object
+    */
+    void reloadProviderData() override;
 
     friend class QgsWFSFeatureSource;
 
@@ -187,5 +198,14 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     bool processSQL( const QString &sqlString, QString &errorMsg, QString &warningMsg );
 };
+
+class QgsWfsProviderMetadata final: public QgsProviderMetadata
+{
+  public:
+    QgsWfsProviderMetadata();
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
+    QgsWFSProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+};
+
 
 #endif /* QGSWFSPROVIDER_H */

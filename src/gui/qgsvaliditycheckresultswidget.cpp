@@ -110,6 +110,14 @@ void QgsValidityCheckResultsWidget::setResults( const QList<QgsValidityCheckResu
 
   connect( mResultsListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsValidityCheckResultsWidget::selectionChanged );
 
+  if ( mResultsModel->rowCount() > 0 )
+  {
+    // auto select first result in list
+    const QModelIndex firstResult( mResultsModel->index( 0, 0, QModelIndex() ) );
+    mResultsListView->selectionModel()->select( firstResult, QItemSelectionModel::ClearAndSelect );
+    selectionChanged( firstResult, QModelIndex() );
+  }
+
   mDescriptionLabel->hide();
 }
 
@@ -135,12 +143,10 @@ bool QgsValidityCheckResultsWidget::runChecks( int type, const QgsValidityCheckC
     proxyTask->setProxyProgress( progress );
 
 #ifdef Q_OS_LINUX
-    // For some reason on Windows hasPendingEvents() always return true,
-    // but one iteration is actually enough on Windows to get good interactivity
+    // One iteration is actually enough on Windows to get good interactivity
     // whereas on Linux we must allow for far more iterations.
-    // For safety limit the number of iterations
     int nIters = 0;
-    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+    while ( ++nIters < 100 )
 #endif
     {
       QCoreApplication::processEvents();

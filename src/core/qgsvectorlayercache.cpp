@@ -100,7 +100,7 @@ void QgsVectorLayerCache::setFullCache( bool fullCache )
 
     int i = 0;
 
-    QTime t;
+    QElapsedTimer t;
     t.start();
 
     QgsFeature f;
@@ -353,7 +353,7 @@ bool QgsVectorLayerCache::canUseCacheForRequest( const QgsFeatureRequest &featur
     }
     case QgsFeatureRequest::FilterFids:
     {
-      if ( mCache.keys().toSet().contains( featureRequest.filterFids() ) )
+      if ( qgis::listToSet( mCache.keys() ).contains( featureRequest.filterFids() ) )
       {
         it = QgsFeatureIterator( new QgsCachedFeatureIterator( this, featureRequest ) );
         return true;
@@ -378,7 +378,7 @@ bool QgsVectorLayerCache::canUseCacheForRequest( const QgsFeatureRequest &featur
 QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &featureRequest )
 {
   QgsFeatureIterator it;
-  bool requiresWriterIt = true; // If a not yet cached, but cachable request is made, this stays true.
+  bool requiresWriterIt = true; // If a not yet cached, but cacheable request is made, this stays true.
 
   if ( checkInformationCovered( featureRequest ) )
   {
@@ -412,8 +412,8 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
       myRequest.setFlags( featureRequest.flags() & ~QgsFeatureRequest::NoGeometry );
 
     // Make sure, all the cached attributes are requested as well
-    QSet<int> attrs = featureRequest.subsetOfAttributes().toSet() + mCachedAttributes.toSet();
-    myRequest.setSubsetOfAttributes( attrs.toList() );
+    QSet<int> attrs = qgis::listToSet( featureRequest.subsetOfAttributes() ) + qgis::listToSet( mCachedAttributes );
+    myRequest.setSubsetOfAttributes( qgis::setToList( attrs ) );
 
     it = QgsFeatureIterator( new QgsCachedFeatureWriterIterator( this, myRequest ) );
   }

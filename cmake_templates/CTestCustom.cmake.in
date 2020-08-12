@@ -27,18 +27,7 @@ SET(CTEST_CUSTOM_COVERAGE_EXCLUDE
 
  # Exclude try_compile sources from coverage results:
  "/CMakeFiles/CMakeTmp/"
-
- # Exclude files from the Examples directories
- #".*/Examples/.*"
-
- # Exclude files from the ThirdParty Utilities directories
- ".*/Testing/Utilities/.*"
- ".*/Utilities/.*"
- 
- # Exclude SWIG wrappers files
- ".*/Code/Wrappers/SWIG/otbApplicationPYTHON_wrap.*"
- ".*/Code/Wrappers/SWIG/otbApplicationJAVA_wrap.*"
- )
+)
 
 # warning to ignore via regex expressions
 SET(CTEST_CUSTOM_WARNING_EXCEPTION
@@ -56,3 +45,5 @@ SET(CTEST_CUSTOM_WARNING_EXCEPTION
   "ld.*warning.*duplicate dylib.*"
   "pyconfig.h:.*warning:.*XOPEN.*SOURCE.*redefined"
   )
+
+SET(CTEST_CUSTOM_TESTS_IGNORE ${CTEST_CUSTOM_TESTS_IGNORE} $ENV{CTEST_CUSTOM_TESTS_IGNORE})

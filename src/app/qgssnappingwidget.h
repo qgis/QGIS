@@ -23,6 +23,7 @@ class QDoubleSpinBox;
 class QFont;
 class QToolButton;
 class QTreeView;
+class QCheckBox;
 
 class QgsDoubleSpinBox;
 class QgsFloatingWidget;
@@ -31,6 +32,7 @@ class QgsLayerTreeNode;
 class QgsLayerTreeView;
 class QgsMapCanvas;
 class QgsProject;
+class QgsScaleWidget;
 
 
 #include "qgssnappingconfig.h"
@@ -42,7 +44,7 @@ class QgsProject;
 /**
   * A widget which lets the user defines settings for snapping on a project
   * The widget can be displayed as a toolbar, in the status bar or as dialog/widget.
-  * The display mode is automatically chose based on the parent widget type.
+  * The display mode is automatically chosen based on the parent widget type.
   */
 class APP_EXPORT QgsSnappingWidget : public QWidget
 {
@@ -91,6 +93,8 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
   private slots:
     void projectSnapSettingsChanged();
 
+    void projectAvoidIntersectionModeChanged();
+
     void projectTopologicalEditingChanged();
 
     void enableSnapping( bool checked );
@@ -100,14 +104,22 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     void changeTolerance( double tolerance );
 
+    void changeMinScale( double minScale );
+
+    void changeMaxScale( double maxScale );
+
     void changeUnit( int idx );
 
     void enableTopologicalEditing( bool enabled );
 
     void enableIntersectionSnapping( bool enabled );
 
+    void enableSelfSnapping( bool enabled );
+
     void modeButtonTriggered( QAction *action );
+    void avoidIntersectionsModeButtonTriggered( QAction *action );
     void typeButtonTriggered( QAction *action );
+    void snappingScaleModeTriggered( QAction *action );
 
     //! number of decimals of the tolerance spin box depends on map units
     void updateToleranceDecimals();
@@ -130,6 +142,11 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QgsMapCanvas *mCanvas = nullptr;
 
     QAction *mEnabledAction = nullptr;
+    QToolButton *mAvoidIntersectionsModeButton = nullptr;
+    QAction *mAvoidIntersectionsModeAction = nullptr; // hide widget does not work on toolbar, action needed
+    QAction *mAllowIntersectionsAction = nullptr;
+    QAction *mAvoidIntersectionsCurrentLayerAction = nullptr;
+    QAction *mAvoidIntersectionsLayersAction = nullptr;
     QToolButton *mModeButton = nullptr;
     QAction *mModeAction = nullptr; // hide widget does not work on toolbar, action needed
     QAction *mAllLayersAction = nullptr;
@@ -140,15 +157,24 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *mTypeAction = nullptr; // hide widget does not work on toolbar, action needed
     QAction *mVertexAction = nullptr;
     QAction *mSegmentAction = nullptr;
-    QAction *mVertexAndSegmentAction = nullptr;
+    QAction *mAreaAction = nullptr;
+    QAction *mCentroidAction = nullptr;
+    QAction *mMiddleAction = nullptr;
     QDoubleSpinBox *mToleranceSpinBox = nullptr;
+    QgsScaleWidget *mMinScaleWidget = nullptr;
+    QgsScaleWidget *mMaxScaleWidget = nullptr;
     QAction *mToleranceAction = nullptr; // hide widget does not work on toolbar, action needed
+    QToolButton *mSnappingScaleModeButton = nullptr;
+    QAction *mDefaultSnappingScaleAct = nullptr;
+    QAction *mGlobalSnappingScaleAct = nullptr;
+    QAction *mPerLayerSnappingScaleAct = nullptr;
     QComboBox *mUnitsComboBox = nullptr;
     QAction *mUnitAction = nullptr; // hide widget does not work on toolbar, action needed
     QAction *mTopologicalEditingAction = nullptr;
     QAction *mIntersectionSnappingAction = nullptr;
     QAction *mEnableTracingAction = nullptr;
     QgsDoubleSpinBox *mTracingOffsetSpinBox = nullptr;
+    QAction *mSelfSnappingAction = nullptr;
     QTreeView *mLayerTreeView = nullptr;
     QWidget *mAdvancedConfigWidget = nullptr;
     QgsFloatingWidget *mAdvancedConfigContainer = nullptr;

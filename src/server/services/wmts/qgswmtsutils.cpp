@@ -24,7 +24,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgslayertree.h"
 #include "qgssettings.h"
-
+#include "qgsprojectviewsettings.h"
 
 namespace QgsWmts
 {
@@ -32,7 +32,7 @@ namespace QgsWmts
   {
     QMap< QString, tileMatrixInfo> populateFixedTileMatrixInfoMap();
 
-    QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+    QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
 
     // Constant
     int tileSize = 256;
@@ -95,7 +95,7 @@ namespace QgsWmts
     }
     catch ( QgsCsException &cse )
     {
-      Q_UNUSED( cse );
+      Q_UNUSED( cse )
     }
 
     tmi.unit = crs.mapUnits();
@@ -199,26 +199,30 @@ namespace QgsWmts
 
     // default scales
     QgsSettings settings;
-    QStringList scaleList = settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString().split( ',' );
+    QStringList scaleList = settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString().split( ',' );
     //load project scales
-    bool projectScales = project->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) );
-    if ( projectScales )
+    bool useProjectScales = project->viewSettings()->useProjectScales();
+    const QVector< double >projectScales = project->viewSettings()->mapScales();
+    if ( useProjectScales && projectScales.empty() )
     {
-      scaleList = project->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) );
+      scale = *std::min_element( projectScales.begin(), projectScales.end() );
     }
-    // get min and max scales
-    if ( !scaleList.isEmpty() )
+    else
     {
-      for ( const QString &scaleText : scaleList )
+      // get min and max scales
+      if ( !scaleList.isEmpty() )
       {
-        double scaleValue = scaleText.toDouble();
-        if ( scale == -1.0 )
+        for ( const QString &scaleText : scaleList )
         {
-          scale = scaleValue;
-        }
-        else if ( scaleValue < scale )
-        {
-          scale = scaleValue;
+          double scaleValue = scaleText.toDouble();
+          if ( scale == -1.0 )
+          {
+            scale = scaleValue;
+          }
+          else if ( scaleValue < scale )
+          {
+            scale = scaleValue;
+          }
         }
       }
     }
@@ -286,7 +290,7 @@ namespace QgsWmts
           tmi.unit = crs.mapUnits();
           tmi.hasAxisInverted = crs.hasAxisInverted();
 
-          QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID ), crs, project );
+          QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() ), crs, project );
           try
           {
             // firstly transform CRS bounds expressed in WGS84 to CRS
@@ -303,7 +307,7 @@ namespace QgsWmts
           }
           catch ( QgsCsException &cse )
           {
-            Q_UNUSED( cse );
+            Q_UNUSED( cse )
             continue;
           }
         }
@@ -798,6 +802,7 @@ namespace QgsWmts
       query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::TRANSPARENT ), QStringLiteral( "true" ) );
     }
     query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::DPI ), QStringLiteral( "96" ) );
+    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::TILED ), QStringLiteral( "true" ) );
 
     return query;
   }

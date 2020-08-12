@@ -27,6 +27,8 @@
 // version without notice, or even be removed.
 //
 
+#define SIP_NO_FILE
+
 #include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DRender/qgeometry.h>
 #include <QSize>
@@ -53,6 +55,8 @@ namespace QgsRayCastingUtils
  */
 class DemTerrainTileGeometry : public Qt3DRender::QGeometry
 {
+    Q_OBJECT
+
   public:
 
     /**
@@ -62,6 +66,11 @@ class DemTerrainTileGeometry : public Qt3DRender::QGeometry
     explicit DemTerrainTileGeometry( int resolution, float side, float vertScale, float skirtHeight, const QByteArray &heightMap, QNode *parent = nullptr );
 
     bool rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint );
+
+    Qt3DRender::QAttribute *positionAttribute() { return mPositionAttribute; }
+    Qt3DRender::QAttribute *normalAttribute() { return mNormalAttribute; }
+    Qt3DRender::QAttribute *texCoordsAttribute() { return mTexCoordAttribute; }
+    Qt3DRender::QAttribute *indexAttribute() { return mIndexAttribute; }
 
   private:
     void init();

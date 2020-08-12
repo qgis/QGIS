@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '26/04/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 import os
@@ -29,7 +27,7 @@ start_app()
 
 
 def createLayerWithFivePoints():
-    layer = QgsVectorLayer("Point?field=id:integer&field=fldtxt:string&field=fldint:integer",
+    layer = QgsVectorLayer("Point?crs=EPSG:4326&field=id:integer&field=fldtxt:string&field=fldint:integer",
                            "addfeat", "memory")
     pr = layer.dataProvider()
     f = QgsFeature()

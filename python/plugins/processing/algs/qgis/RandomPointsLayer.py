@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import random
 
@@ -55,7 +51,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class RandomPointsLayer(QgisAlgorithm):
-
     INPUT = 'INPUT'
     POINTS_NUMBER = 'POINTS_NUMBER'
     MIN_DISTANCE = 'MIN_DISTANCE'

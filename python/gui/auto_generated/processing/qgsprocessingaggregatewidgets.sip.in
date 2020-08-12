@@ -1,0 +1,237 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingaggregatewidgets.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsAggregateMappingModel: QAbstractTableModel
+{
+%Docstring
+The QgsAggregateMappingModel holds mapping information for defining sets of aggregates of
+fields from a QgsFields object.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingaggregatewidgets.h"
+%End
+  public:
+
+    enum class ColumnDataIndex
+    {
+      SourceExpression,
+      Aggregate,
+      Delimiter,
+      DestinationName,
+      DestinationType,
+      DestinationLength,
+      DestinationPrecision,
+    };
+
+
+    struct Aggregate
+    {
+      QString source;
+
+      QString aggregate;
+
+      QString delimiter;
+
+      QgsField field;
+
+    };
+
+    QgsAggregateMappingModel( const QgsFields &sourceFields = QgsFields(),
+                              QObject *parent = 0 );
+%Docstring
+Constructs a QgsAggregateMappingModel from a set of ``sourceFields``.
+A ``parent`` object can be also specified.
+%End
+
+    QgsFields sourceFields() const;
+%Docstring
+Returns a list of source fields
+%End
+
+    QList<QgsAggregateMappingModel::Aggregate> mapping() const;
+%Docstring
+Returns a list of Aggregate objects representing the current status of the model
+%End
+
+    void setMapping( const QList<QgsAggregateMappingModel::Aggregate> &mapping );
+%Docstring
+Sets the ``mapping`` to show in the model.
+%End
+
+    void appendField( const QgsField &field, const QString &source = QString(), const QString &aggregate = QString() );
+%Docstring
+Appends a new ``field`` to the model, with an optional ``source`` and ``aggregate``
+%End
+
+    bool removeField( const QModelIndex &index );
+%Docstring
+Removes the field at ``index`` from the model, returns ``True`` on success
+%End
+
+    bool moveUp( const QModelIndex &index );
+%Docstring
+Moves down the field at ``index``
+%End
+
+    bool moveDown( const QModelIndex &index );
+%Docstring
+Moves up the field at ``index``
+%End
+
+    void setSourceFields( const QgsFields &sourceFields );
+%Docstring
+Set source fields to ``sourceFields``
+%End
+
+    QgsExpressionContextGenerator *contextGenerator() const;
+%Docstring
+Returns the context generator with the source fields
+%End
+
+    void setBaseExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
+%Docstring
+Sets the base expression context ``generator``, which will generate the expression
+contexts for expression based widgets used by the model.
+%End
+
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role );
+
+
+};
+
+class QgsAggregateMappingWidget : QgsPanelWidget
+{
+%Docstring
+The QgsAggregateMappingWidget class creates a mapping for defining sets of aggregates of
+fields from a QgsFields object.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingaggregatewidgets.h"
+%End
+  public:
+
+    explicit QgsAggregateMappingWidget( QWidget *parent = 0,
+                                        const QgsFields &sourceFields = QgsFields() );
+%Docstring
+Constructs a QgsAggregateMappingWidget from a set of ``sourceFields``. A ``parent`` object
+can also be specified.
+%End
+
+    QgsAggregateMappingModel *model() const;
+%Docstring
+Returns the underlying mapping model
+%End
+
+    QList<QgsAggregateMappingModel::Aggregate> mapping() const;
+%Docstring
+Returns a list of Aggregate objects representing the current status of the underlying mapping model
+%End
+
+    void setMapping( const QList<QgsAggregateMappingModel::Aggregate> &mapping );
+%Docstring
+Sets the ``mapping`` to show in the model.
+%End
+
+    QItemSelectionModel *selectionModel();
+%Docstring
+Returns the selection model
+%End
+
+    void setSourceFields( const QgsFields &sourceFields );
+%Docstring
+Set source fields of the underlying mapping model to ``sourceFields``
+%End
+
+    void setSourceLayer( QgsVectorLayer *layer );
+%Docstring
+Sets a source ``layer`` to use when generating expression previews in the widget.
+
+.. versionadded:: 3.16
+%End
+
+    QgsVectorLayer *sourceLayer();
+%Docstring
+Returns the source layer for use when generating expression previews.
+
+Returned value may be ``None``.
+
+.. versionadded:: 3.16
+%End
+
+    void scrollTo( const QModelIndex &index ) const;
+%Docstring
+Scroll the fields view to ``index``
+%End
+
+    void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
+%Docstring
+Register an expression context ``generator`` class that will be used to retrieve
+an expression context for the widget.
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the aggregates defined in the widget are changed.
+%End
+
+  public slots:
+
+    void appendField( const QgsField &field, const QString &source = QString(), const QString &aggregate = QString() );
+%Docstring
+Appends a new ``field`` to the model, with an optional ``source`` and ``aggregate``
+%End
+
+    bool removeSelectedFields( );
+%Docstring
+Removes the currently selected field from the model
+%End
+
+    bool moveSelectedFieldsUp( );
+%Docstring
+Moves up currently selected field
+%End
+
+    bool moveSelectedFieldsDown( );
+%Docstring
+Moves down currently selected field
+%End
+
+      public:
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingaggregatewidgets.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

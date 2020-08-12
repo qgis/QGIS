@@ -21,11 +21,12 @@
 #include <QObject>
 #include <QList>
 #include <QPair>
+#include <memory>
 
 #include "qgis_core.h"
 
 class QgsGpsConnection;
-struct QgsGpsInformation;
+class QgsGpsInformation;
 
 /**
  * \ingroup core
@@ -46,16 +47,25 @@ class CORE_EXPORT QgsGpsDetector : public QObject
     void connDestroyed( QObject * );
 
   signals:
-    void detected( QgsGpsConnection * );
+
+    // TODO QGIS 4.0 - this is horrible, fragile, leaky and crash prone API.
+    // don't transfer ownership with this signal, and add an explicit takeConnection member!
+
+    /**
+     * Emitted when the GPS connection has been detected. A single connection must listen for this signal and
+     * immediately take ownership of the \a connection object.
+     */
+    void detected( QgsGpsConnection *connection );
+
     void detectionFailed();
 
   private:
-    int mPortIndex;
-    int mBaudIndex;
+    int mPortIndex = 0;
+    int mBaudIndex = -1;
     QList< QPair< QString, QString > > mPortList;
     QList<qint32> mBaudList;
 
-    QgsGpsConnection *mConn = nullptr;
+    std::unique_ptr< QgsGpsConnection > mConn;
 };
 
 #endif // QGSGPSDETECTOR_H

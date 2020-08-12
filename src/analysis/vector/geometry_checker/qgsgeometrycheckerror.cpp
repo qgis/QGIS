@@ -85,6 +85,11 @@ QgsGeometry QgsGeometryCheckError::geometry() const
   return mGeometry;
 }
 
+QgsRectangle QgsGeometryCheckError::contextBoundingBox() const
+{
+  return QgsRectangle();
+}
+
 QgsRectangle QgsGeometryCheckError::affectedAreaBBox() const
 {
   return mGeometry.boundingBox();
@@ -93,8 +98,12 @@ QgsRectangle QgsGeometryCheckError::affectedAreaBBox() const
 void QgsGeometryCheckError::setFixed( int method )
 {
   mStatus = StatusFixed;
-  const QStringList methods = mCheck->resolutionMethods();
-  mResolutionMessage = methods[method];
+  const QList<QgsGeometryCheckResolutionMethod> methods = mCheck->availableResolutionMethods();
+  for ( const QgsGeometryCheckResolutionMethod &fix : methods )
+  {
+    if ( fix.id() == method )
+      mResolutionMessage = fix.name();
+  }
 }
 
 void QgsGeometryCheckError::setFixFailed( const QString &reason )
@@ -206,7 +215,7 @@ void QgsGeometryCheckError::update( const QgsGeometryCheckError *other )
   mGeometry = other->mGeometry;
 }
 
-QgsGeometryCheck::LayerFeatureIds::LayerFeatureIds( const QMap<QString, QgsFeatureIds> &ids )
-  : ids( ids )
+QgsGeometryCheck::LayerFeatureIds::LayerFeatureIds( const QMap<QString, QgsFeatureIds> &idsIn )
+  : ids( idsIn )
 {
 }

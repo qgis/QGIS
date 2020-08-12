@@ -87,8 +87,8 @@ QString QgsDensifyGeometriesByIntervalAlgorithm::outputName() const
 
 QgsFeatureList QgsDensifyGeometriesByIntervalAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( feedback );
+  Q_UNUSED( context )
+  Q_UNUSED( feedback )
   QgsFeature modifiedFeature = feature;
 
   double interval = mInterval;
@@ -96,14 +96,14 @@ QgsFeatureList QgsDensifyGeometriesByIntervalAlgorithm::processFeature( const Qg
     interval = mIntervalProperty.valueAsDouble( context.expressionContext(), interval );
 
   if ( feature.hasGeometry() )
-    modifiedFeature.setGeometry( feature.geometry().densifyByDistance( mInterval ) );
+    modifiedFeature.setGeometry( feature.geometry().densifyByDistance( interval ) );
 
   return QgsFeatureList() << modifiedFeature;
 }
 
 bool QgsDensifyGeometriesByIntervalAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  Q_UNUSED( feedback );
+  Q_UNUSED( feedback )
   mInterval = parameterAsDouble( parameters, QStringLiteral( "INTERVAL" ), context );
 
   mDynamicInterval = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "INTERVAL" ) );

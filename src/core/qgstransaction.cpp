@@ -14,9 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-#include <QLibrary>
-
 #include "qgstransaction.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
@@ -27,21 +24,9 @@
 #include "qgsmessagelog.h"
 #include <QUuid>
 
-typedef QgsTransaction *createTransaction_t( const QString &connString );
-
 QgsTransaction *QgsTransaction::create( const QString &connString, const QString &providerKey )
 {
-  std::unique_ptr< QLibrary > lib( QgsProviderRegistry::instance()->createProviderLibrary( providerKey ) );
-  if ( !lib )
-    return nullptr;
-
-  createTransaction_t *createTransaction = reinterpret_cast< createTransaction_t * >( cast_to_fptr( lib->resolve( "createTransaction" ) ) );
-  if ( !createTransaction )
-    return nullptr;
-
-  QgsTransaction *ts = createTransaction( connString );
-
-  return ts;
+  return QgsProviderRegistry::instance()->createTransaction( providerKey, connString );
 }
 
 QgsTransaction *QgsTransaction::create( const QSet<QgsVectorLayer *> &layers )
@@ -52,7 +37,7 @@ QgsTransaction *QgsTransaction::create( const QSet<QgsVectorLayer *> &layers )
   QgsVectorLayer *firstLayer = *layers.constBegin();
 
   QString connStr = connectionString( firstLayer->source() );
-  QString providerKey = firstLayer->dataProvider()->name();
+  QString providerKey = firstLayer->providerType();
   std::unique_ptr<QgsTransaction> transaction( QgsTransaction::create( connStr, providerKey ) );
   if ( transaction )
   {
@@ -235,7 +220,7 @@ QString QgsTransaction::createSavepoint( QString &error SIP_OUT )
   if ( !mLastSavePointIsDirty && !mSavepoints.isEmpty() )
     return mSavepoints.top();
 
-  const QString name( QUuid::createUuid().toString() );
+  const QString name( QStringLiteral( "qgis" ) + ( QUuid::createUuid().toString().mid( 1, 24 ).replace( '-', QString() ) ) );
 
   if ( !executeSql( QStringLiteral( "SAVEPOINT %1" ).arg( QgsExpression::quotedColumnRef( name ) ), error ) )
   {

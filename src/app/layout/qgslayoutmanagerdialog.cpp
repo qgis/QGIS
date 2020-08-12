@@ -71,6 +71,11 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   mProxyModel->setSourceModel( mModel );
   mLayoutListView->setModel( mProxyModel );
 
+  mSearchLineEdit->setShowSearchIcon( true );
+  mSearchLineEdit->setShowClearButton( true );
+  mSearchLineEdit->setFocus();
+  connect( mSearchLineEdit, &QgsFilterLineEdit::textChanged, mProxyModel, &QgsLayoutManagerProxyModel::setFilterString );
+
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutManagerDialog::showHelp );
   connect( mLayoutListView->selectionModel(), &QItemSelectionModel::selectionChanged,
@@ -88,18 +93,21 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   connect( mWindowAction, &QAction::triggered, this, &QgsLayoutManagerDialog::activate );
 #endif
 
-  mTemplate->addItem( tr( "Empty layout" ) );
-  mTemplate->addItem( tr( "Empty report" ) );
+  mTemplate->addItem( tr( "Empty Layout" ) );
+  mTemplate->addItem( tr( "Empty Report" ) );
   mTemplate->addItem( tr( "Specific" ) );
 
   mUserTemplatesDir = QgsApplication::qgisSettingsDirPath() + "/composer_templates";
   QMap<QString, QString> userTemplateMap = defaultTemplates( true );
-  this->addTemplates( userTemplateMap );
+  addTemplates( userTemplateMap );
 
+  // TODO QGIS 4: Remove this, default templates should not be shipped in the application folder
   mDefaultTemplatesDir = QgsApplication::pkgDataPath() + "/composer_templates";
   QMap<QString, QString> defaultTemplateMap = defaultTemplates( false );
-  this->addTemplates( defaultTemplateMap );
-  this->addTemplates( this->otherTemplates() );
+  addTemplates( defaultTemplateMap );
+  addTemplates( otherTemplates() );
+
+  mTemplatesDefaultDirBtn->setToolTip( tr( "Use <i>Settings --> Options --> Layouts --> Layout Paths</i> to configure the folders in which QGIS will search for print layout templates." ) );
 
   toggleButtons();
 }
@@ -148,6 +156,7 @@ void QgsLayoutManagerDialog::addTemplates( const QMap<QString, QString> &templat
 
 void QgsLayoutManagerDialog::activate()
 {
+  updateTemplateButtonEnabledState();
   raise();
   setWindowState( windowState() & ~Qt::WindowMinimized );
   activateWindow();
@@ -163,9 +172,8 @@ QMap<QString, QString> QgsLayoutManagerDialog::defaultTemplates( bool fromUser )
 QMap<QString, QString> QgsLayoutManagerDialog::otherTemplates() const
 {
   QMap<QString, QString> templateMap;
-  QStringList paths = QgsApplication::layoutTemplatePaths();
-  const auto constPaths = paths;
-  for ( const QString &path : constPaths )
+  const QStringList paths = QgsApplication::layoutTemplatePaths();
+  for ( const QString &path : paths )
   {
     QMap<QString, QString> templates = templatesFromPath( path );
     QMap<QString, QString>::const_iterator templateIt = templates.constBegin();
@@ -187,13 +195,12 @@ QMap<QString, QString> QgsLayoutManagerDialog::templatesFromPath( const QString 
     return templateMap;
   }
 
-  QFileInfoList fileInfoList = templateDir.entryInfoList( QDir::Files );
-  QFileInfoList::const_iterator infoIt = fileInfoList.constBegin();
-  for ( ; infoIt != fileInfoList.constEnd(); ++infoIt )
+  const QFileInfoList fileInfoList = templateDir.entryInfoList( QDir::Files );
+  for ( const QFileInfo &info : fileInfoList )
   {
-    if ( infoIt->suffix().compare( QLatin1String( "qpt" ), Qt::CaseInsensitive ) == 0 )
+    if ( info.suffix().compare( QLatin1String( "qpt" ), Qt::CaseInsensitive ) == 0 )
     {
-      templateMap.insert( infoIt->baseName(), infoIt->absoluteFilePath() );
+      templateMap.insert( info.baseName(), info.absoluteFilePath() );
     }
   }
   return templateMap;
@@ -286,7 +293,14 @@ void QgsLayoutManagerDialog::mTemplate_currentIndexChanged( int indx )
 
 void QgsLayoutManagerDialog::mTemplatesDefaultDirBtn_pressed()
 {
-  openLocalDirectory( mDefaultTemplatesDir );
+  if ( QDir( mDefaultTemplatesDir ).exists() )
+    openLocalDirectory( mDefaultTemplatesDir );
+  else
+  {
+    const QStringList paths = QgsApplication::layoutTemplatePaths();
+    if ( !paths.empty() )
+      openLocalDirectory( paths.at( 0 ) );
+  }
 }
 
 void QgsLayoutManagerDialog::mTemplatesUserDirBtn_pressed()
@@ -330,6 +344,11 @@ void QgsLayoutManagerDialog::openLocalDirectory( const QString &localDirPath )
   {
     QDesktopServices::openUrl( QUrl::fromLocalFile( localDirPath ) );
   }
+}
+
+void QgsLayoutManagerDialog::updateTemplateButtonEnabledState()
+{
+  mTemplatesDefaultDirBtn->setEnabled( QDir( mDefaultTemplatesDir ).exists() || !QgsApplication::layoutTemplatePaths().empty() );
 }
 
 #ifdef Q_OS_MAC
@@ -429,7 +448,7 @@ void QgsLayoutManagerDialog::duplicateClicked()
   QString currentTitle = currentLayout->name();
 
   QString newTitle;
-  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, currentLayout->layoutType(), tr( "%1 copy" ).arg( currentTitle ) ) )
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, true, currentLayout->layoutType(), tr( "%1 copy" ).arg( currentTitle ) ) )
   {
     return;
   }
@@ -469,7 +488,7 @@ void QgsLayoutManagerDialog::renameClicked()
 
   QString currentTitle = currentLayout->name();
   QString newTitle;
-  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, currentLayout->layoutType(), currentTitle ) )
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, true, currentLayout->layoutType(), currentTitle ) )
   {
     return;
   }

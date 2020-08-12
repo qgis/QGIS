@@ -207,7 +207,7 @@ public:
      * respective functions provided by QProcess.
      *
      * If KProcess determines that the command does not really need a
-     * shell, it will trasparently execute it without one for performance
+     * shell, it will transparently execute it without one for performance
      * reasons.
      *
      * This function must be called before starting the process, obviously.
@@ -362,10 +362,10 @@ protected:
 
     QString prog;
     QStringList args;
-    KProcess::OutputChannelMode outputChannelMode;
+    KProcess::OutputChannelMode outputChannelMode = KProcess::SeparateChannels; // arbitrary value
     QIODevice::OpenMode openMode;
 
-    KProcess *q_ptr;
+    KProcess *q_ptr = nullptr;
 };
 /* ------------------------------------------- */
 #endif

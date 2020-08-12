@@ -32,7 +32,7 @@ namespace QgsGuiUtils
       QString const &filters, QStringList &selectedFiles, QString &enc, QString &title,
       bool cancelAll )
   {
-    Q_UNUSED( enc );
+    Q_UNUSED( enc )
 
     QgsSettings settings;
     QString lastUsedFilter = settings.value( "/UI/" + filterName, "" ).toString();
@@ -101,10 +101,10 @@ namespace QgsGuiUtils
     }
 
 #ifdef QGISDEBUG
-    QgsDebugMsg( QStringLiteral( "Available Filters Map: " ) );
+    QgsDebugMsgLevel( QStringLiteral( "Available Filters Map: " ), 2 );
     for ( QMap<QString, QString>::iterator it = filterMap.begin(); it != filterMap.end(); ++it )
     {
-      QgsDebugMsg( it.key() + "  :  " + it.value() );
+      QgsDebugMsgLevel( it.key() + "  :  " + it.value(), 2 );
     }
 #endif
 

@@ -11,8 +11,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Larry Shaffer'
 __date__ = '2014/11/05'
 __copyright__ = 'Copyright 2014, Boundless Spatial, Inc.'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import tempfile
@@ -138,7 +136,7 @@ class TestQgsAuthManager(unittest.TestCase):
         full_chain = 'chains_subissuer-issuer-root_issuer2-root2.pem'
         full_chain_path = os.path.join(PKIDATA, full_chain)
 
-        # load CA file authorities for later comaprison
+        # load CA file authorities for later comparison
         # noinspection PyTypeChecker
         # ca_certs = QSslCertificate.fromPath(full_chain_path)
         ca_certs = QgsAuthCertUtils.certsFromFile(full_chain_path)

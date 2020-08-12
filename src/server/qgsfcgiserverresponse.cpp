@@ -132,7 +132,7 @@ void QgsFcgiServerResponse::flush()
 #ifdef QGISDEBUG
     qDebug() << QStringLiteral( "Sent %1 blocks of %2 bytes" ).arg( count ).arg( ba.size() );
 #else
-    Q_UNUSED( count );
+    Q_UNUSED( count )
 #endif
     // Reset the internal buffer
     ba.clear();
@@ -166,5 +166,5 @@ void QgsFcgiServerResponse::truncate()
 
 void QgsFcgiServerResponse::setDefaultHeaders()
 {
-  setHeader( QStringLiteral( "Server" ), QStringLiteral( " Qgis FCGI server - QGis version %1" ).arg( Qgis::QGIS_VERSION ) );
+  setHeader( QStringLiteral( "Server" ), QStringLiteral( " QGIS FCGI server - QGIS version %1" ).arg( Qgis::version() ) );
 }

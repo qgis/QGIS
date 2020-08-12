@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'February 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import posixpath
 import re
@@ -61,7 +57,7 @@ from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QMessageBox
 
 def extractSchemaPath(filepath):
     """
-    Trys to find where the file is relative to the QGIS source code directory.
+    Tries to find where the file is relative to the QGIS source code directory.
     If it is already placed in the processing or QGIS testdata directory it will
     return an appropriate schema and relative filepath
 

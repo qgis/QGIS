@@ -19,11 +19,11 @@
 #include "qgsmaptoolcapture.h"
 
 //! A map tool that draws a line and splits the parts cut by the line
-class QgsMapToolSplitParts: public QgsMapToolCapture
+class APP_EXPORT QgsMapToolSplitParts: public QgsMapToolCapture
 {
     Q_OBJECT
   public:
-    explicit QgsMapToolSplitParts( QgsMapCanvas *canvas );
+    QgsMapToolSplitParts( QgsMapCanvas *canvas );
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 };
 

@@ -17,6 +17,7 @@
 
 #include <QOffscreenSurface>
 #include <QSurfaceFormat>
+#include <QOpenGLFunctions>
 
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DLogic/QLogicAspect>
@@ -122,7 +123,7 @@ void QgsOffscreen3DEngine::setClearColor( const QColor &color )
 void QgsOffscreen3DEngine::setFrustumCullingEnabled( bool enabled )
 {
   // TODO
-  Q_UNUSED( enabled );
+  Q_UNUSED( enabled )
 }
 
 void QgsOffscreen3DEngine::createRenderTarget()
@@ -227,6 +228,11 @@ Qt3DRender::QCamera *QgsOffscreen3DEngine::camera()
 QSize QgsOffscreen3DEngine::size() const
 {
   return mSize;
+}
+
+QSurface *QgsOffscreen3DEngine::surface() const
+{
+  return mOffscreenSurface;
 }
 
 void QgsOffscreen3DEngine::requestCaptureImage()

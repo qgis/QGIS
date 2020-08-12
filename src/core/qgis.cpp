@@ -29,46 +29,14 @@
 #include "qgslogger.h"
 #include "qgswkbtypes.h"
 
+#include <gdal.h>
 #include <ogr_api.h>
 
 // Version constants
 //
 
-// Version string
-const QString Qgis::QGIS_VERSION( QStringLiteral( VERSION ) );
-
 // development version
 const char *Qgis::QGIS_DEV_VERSION = QGSVERSION;
-
-// Version number used for comparing versions using the
-// "Check QGIS Version" function
-const int Qgis::QGIS_VERSION_INT = VERSION_INT;
-
-// Release name
-const QString Qgis::QGIS_RELEASE_NAME( QStringLiteral( RELEASE_NAME ) );
-
-const QString GEOPROJ4 = QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" );
-
-const QString GEOWKT =
-  "GEOGCS[\"WGS 84\", "
-  "  DATUM[\"WGS_1984\", "
-  "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
-  "      AUTHORITY[\"EPSG\",\"7030\"]], "
-  "    TOWGS84[0,0,0,0,0,0,0], "
-  "    AUTHORITY[\"EPSG\",\"6326\"]], "
-  "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]], "
-  "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]], "
-  "  AXIS[\"Lat\",NORTH], "
-  "  AXIS[\"Long\",EAST], "
-  "  AUTHORITY[\"EPSG\",\"4326\"]]";
-
-const QString PROJECT_SCALES =
-  "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
-  "1:10000,1:5000,1:2500,1:1000,1:500";
-
-const QString GEO_EPSG_CRS_AUTHID = QStringLiteral( "EPSG:4326" );
-
-const QString GEO_NONE = QStringLiteral( "NONE" );
 
 const double Qgis::DEFAULT_SEARCH_RADIUS_MM = 2.;
 
@@ -225,8 +193,16 @@ bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs )
 
 QString qgsVsiPrefix( const QString &path )
 {
-  if ( path.startsWith( QLatin1String( "/vsizip/" ), Qt::CaseInsensitive ) ||
-       path.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )
+  if ( path.startsWith( QLatin1String( "/vsizip/" ), Qt::CaseInsensitive ) )
+    return QStringLiteral( "/vsizip/" );
+  else if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) )
+  {
+    // GDAL 3.1 Shapefile driver directly handles .shp.zip files
+    if ( GDALIdentifyDriver( path.toUtf8().constData(), nullptr ) )
+      return QString();
+    return QStringLiteral( "/vsizip/" );
+  }
+  else if ( path.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )
     return QStringLiteral( "/vsizip/" );
   else if ( path.startsWith( QLatin1String( "/vsitar/" ), Qt::CaseInsensitive ) ||
             path.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) ||
@@ -288,5 +264,41 @@ uint qHash( const QVariant &variant )
 
 bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs )
 {
-  return lhs.isNull() == rhs.isNull() && lhs == rhs;
+  return ( lhs.isNull() == rhs.isNull() && lhs == rhs ) || ( lhs.isNull() && rhs.isNull() && lhs.isValid() && rhs.isValid() );
+}
+
+QString Qgis::defaultProjectScales()
+{
+  return QStringLiteral( "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
+                         "1:10000,1:5000,1:2500,1:1000,1:500" );
+}
+
+QString Qgis::version()
+{
+  return QString::fromUtf8( VERSION );
+}
+
+int Qgis::versionInt()
+{
+  // Version number used for comparing versions using the
+  // "Check QGIS Version" function
+  return VERSION_INT;
+}
+
+QString Qgis::releaseName()
+{
+  return QString::fromUtf8( RELEASE_NAME );
+}
+
+QString Qgis::devVersion()
+{
+  return QString::fromUtf8( QGIS_DEV_VERSION );
+}
+
+template<>
+bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 )
+{
+  // qt's built in qMapLessThanKey for QVariantList is broken and does a case-insensitive operation.
+  // this breaks QMap< QVariantList, ... >, where key matching incorrectly becomes case-insensitive..!!?!
+  return qgsVariantGreaterThan( key1, key2 ) && key1 != key2;
 }

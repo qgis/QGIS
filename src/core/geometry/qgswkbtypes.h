@@ -45,16 +45,16 @@ class CORE_EXPORT QgsWkbTypes
     /**
      * The WKB type describes the number of dimensions a geometry has
      *
-     *  - Point
-     *  - LineString
-     *  - Polygon
+     * - Point
+     * - LineString
+     * - Polygon
      *
      * as well as the number of dimensions for each individual vertex
      *
-     *  - X (always)
-     *  - Y (always)
-     *  - Z (optional)
-     *  - M (measurement value, optional)
+     * - X (always)
+     * - Y (always)
+     * - Z (optional)
+     * - M (measurement value, optional)
      *
      * it also has values for multi types, collections, unknown geometry,
      * null geometry, no geometry and curve support.
@@ -150,6 +150,7 @@ class CORE_EXPORT QgsWkbTypes
      * Returns the single type for a WKB type. For example, for MultiPolygon WKB types the single type would be Polygon.
      * \see isSingleType()
      * \see multiType()
+     * \see curveType()
      * \see flatType()
      */
     static Type singleType( Type type )
@@ -294,6 +295,7 @@ class CORE_EXPORT QgsWkbTypes
      * Returns the multi type for a WKB type. For example, for Polygon WKB types the multi type would be MultiPolygon.
      * \see isMultiType()
      * \see singleType()
+     * \see curveType()
      * \see flatType()
      */
     static Type multiType( Type type )
@@ -301,11 +303,20 @@ class CORE_EXPORT QgsWkbTypes
       switch ( type )
       {
         case Unknown:
-        case Triangle:
-        case TriangleZ:
-        case TriangleM:
-        case TriangleZM:
           return Unknown;
+
+        // until we support TIN types, use multipolygon
+        case Triangle:
+          return MultiPolygon;
+
+        case TriangleZ:
+          return MultiPolygonZ;
+
+        case TriangleM:
+          return MultiPolygonM;
+
+        case TriangleZM:
+          return MultiPolygonZM;
 
         case GeometryCollection:
           return GeometryCollection;
@@ -421,11 +432,271 @@ class CORE_EXPORT QgsWkbTypes
       return Unknown;
     }
 
+
+    /**
+     * Returns the curve type for a WKB type. For example, for Polygon WKB types the curve type would be CurvePolygon.
+     *
+     * \note Returns `CompoundCurve` for `CircularString` (and its Z/M variants)
+     *
+     * \see linearType()
+     * \see isMultiType()
+     * \see isCurvedType()
+     * \see singleType()
+     * \see flatType()
+     * \see multiType()
+     *
+     * \since QGIS 3.10
+     */
+    static Type curveType( Type type )
+    {
+      switch ( type )
+      {
+        case Unknown:
+        case Triangle:
+        case TriangleZ:
+        case TriangleM:
+        case TriangleZM:
+          return Unknown;
+
+        case GeometryCollection:
+          return GeometryCollection;
+
+        case GeometryCollectionZ:
+          return GeometryCollectionZ;
+
+        case GeometryCollectionM:
+          return GeometryCollectionM;
+
+        case GeometryCollectionZM:
+          return GeometryCollectionZM;
+
+        case Point:
+          return Point;
+
+        case MultiPoint:
+          return MultiPoint;
+
+        case PointZ:
+          return PointZ;
+
+        case MultiPointZ:
+          return MultiPointZ;
+
+        case PointM:
+          return PointM;
+
+        case MultiPointM:
+          return MultiPointM;
+
+        case PointZM:
+          return PointZM;
+
+        case MultiPointZM:
+          return MultiPointZM;
+
+        case LineString:
+        case CompoundCurve:
+        case CircularString:
+          return CompoundCurve;
+
+        case MultiLineString:
+        case MultiCurve:
+          return MultiCurve;
+
+        case LineStringZ:
+        case CompoundCurveZ:
+        case CircularStringZ:
+        case LineString25D:
+          return CompoundCurveZ;
+
+        case MultiLineStringZ:
+        case MultiCurveZ:
+        case MultiLineString25D:
+          return MultiCurveZ;
+
+        case LineStringM:
+        case CompoundCurveM:
+        case CircularStringM:
+          return CompoundCurveM;
+
+        case MultiLineStringM:
+        case MultiCurveM:
+          return MultiCurveM;
+
+        case LineStringZM:
+        case CompoundCurveZM:
+        case CircularStringZM:
+          return CompoundCurveZM;
+
+        case MultiLineStringZM:
+        case MultiCurveZM:
+          return MultiCurveZM;
+
+        case Polygon:
+        case CurvePolygon:
+          return CurvePolygon;
+
+        case MultiPolygon:
+        case MultiSurface:
+          return MultiSurface;
+
+        case PolygonZ:
+        case CurvePolygonZ:
+        case Polygon25D:
+          return CurvePolygonZ;
+
+        case MultiPolygonZ:
+        case MultiSurfaceZ:
+        case MultiPolygon25D:
+          return MultiSurfaceZ;
+
+        case PolygonM:
+        case CurvePolygonM:
+          return CurvePolygonM;
+
+        case MultiPolygonM:
+        case MultiSurfaceM:
+          return MultiSurfaceM;
+
+        case PolygonZM:
+        case CurvePolygonZM:
+          return CurvePolygonZM;
+
+        case MultiPolygonZM:
+        case MultiSurfaceZM:
+          return MultiSurfaceZM;
+
+        case NoGeometry:
+          return NoGeometry;
+
+        case Point25D:
+        case MultiPoint25D:
+          return MultiPoint25D;
+      }
+      return Unknown;
+    }
+
+    /**
+     * Returns the linear type for a WKB type. For example, for a CompoundCurve, the linear type would be LineString.
+     *
+     * \see curveType()
+     * \see isMultiType()
+     * \see isCurvedType()
+     * \see singleType()
+     * \see flatType()
+     * \see multiType()
+     *
+     * \since QGIS 3.14
+     */
+    static Type linearType( Type type )
+    {
+      switch ( type )
+      {
+
+        case CircularString:
+        case CompoundCurve:
+          return LineString;
+
+        case CircularStringM:
+        case CompoundCurveM:
+          return LineStringM;
+
+        case CircularStringZ:
+        case CompoundCurveZ:
+          return LineStringZ;
+
+        case CircularStringZM:
+        case CompoundCurveZM:
+          return LineStringZM;
+
+        case MultiCurve:
+          return MultiLineString;
+
+        case MultiCurveM:
+          return MultiLineStringM;
+
+        case MultiCurveZ:
+          return MultiLineStringZ;
+
+        case MultiCurveZM:
+          return MultiLineStringZM;
+
+        case CurvePolygon:
+          return Polygon;
+
+        case CurvePolygonM:
+          return PolygonM;
+
+        case CurvePolygonZ:
+          return PolygonZ;
+
+        case CurvePolygonZM:
+          return PolygonZM;
+
+        case MultiSurface:
+          return MultiPolygon;
+
+        case MultiSurfaceM:
+          return MultiPolygonM;
+
+        case MultiSurfaceZ:
+          return MultiPolygonZ;
+
+        case MultiSurfaceZM:
+          return MultiPolygonZM;
+
+        case GeometryCollection:
+        case GeometryCollectionM:
+        case GeometryCollectionZ:
+        case GeometryCollectionZM:
+        case LineString:
+        case LineString25D:
+        case LineStringM:
+        case LineStringZ:
+        case LineStringZM:
+        case MultiLineString:
+        case MultiLineString25D:
+        case MultiLineStringM:
+        case MultiLineStringZ:
+        case MultiLineStringZM:
+        case MultiPoint:
+        case MultiPoint25D:
+        case MultiPointM:
+        case MultiPointZ:
+        case MultiPointZM:
+        case MultiPolygon:
+        case MultiPolygon25D:
+        case MultiPolygonM:
+        case MultiPolygonZ:
+        case MultiPolygonZM:
+        case NoGeometry:
+        case Point:
+        case Point25D:
+        case PointM:
+        case PointZ:
+        case PointZM:
+        case Polygon:
+        case Polygon25D:
+        case PolygonM:
+        case PolygonZ:
+        case PolygonZM:
+        case Triangle:
+        case TriangleM:
+        case TriangleZ:
+        case TriangleZM:
+        case Unknown:
+          return type;
+
+      }
+      return Unknown;
+    }
+
     /**
      * Returns the flat type for a WKB type. This is the WKB type minus any Z or M dimensions.
      * For example, for PolygonZM WKB types the single type would be Polygon.
      * \see singleType()
      * \see multiType()
+     * \see curveType()
      */
     static Type flatType( Type type )
     {
@@ -959,39 +1230,13 @@ class CORE_EXPORT QgsWkbTypes
       QgsWkbTypes::Type flat = flatType( type );
 
       if ( flat >= Point && flat <= MultiPolygon )
-        return static_cast< QgsWkbTypes::Type >( flat + 0x80000000 );
+        return static_cast< QgsWkbTypes::Type >( static_cast<unsigned>( flat ) + 0x80000000U );
       else if ( type == QgsWkbTypes::NoGeometry )
         return QgsWkbTypes::NoGeometry;
       else
         return Unknown;
     }
 
-  private:
-
-    struct wkbEntry
-    {
-      wkbEntry( const QString &name, bool isMultiType, Type multiType, Type singleType, Type flatType, GeometryType geometryType,
-                bool hasZ, bool hasM )
-        : mName( name )
-        , mIsMultiType( isMultiType )
-        , mMultiType( multiType )
-        , mSingleType( singleType )
-        , mFlatType( flatType )
-        , mGeometryType( geometryType )
-        , mHasZ( hasZ )
-        , mHasM( hasM )
-      {}
-      QString mName;
-      bool mIsMultiType;
-      Type mMultiType;
-      Type mSingleType;
-      Type mFlatType;
-      GeometryType mGeometryType;
-      bool mHasZ;
-      bool mHasM;
-    };
-
-    static const QMap<Type, wkbEntry> ENTRIES;
 };
 
 #endif // QGSWKBTYPES_H

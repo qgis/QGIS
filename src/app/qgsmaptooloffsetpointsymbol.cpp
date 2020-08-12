@@ -33,7 +33,9 @@ QgsMapToolOffsetPointSymbol::QgsMapToolOffsetPointSymbol( QgsMapCanvas *canvas )
   : QgsMapToolPointSymbol( canvas )
   , mOffsetting( false )
   , mSymbolRotation( 0.0 )
-{}
+{
+  mToolName = tr( "Map tool offset point symbol" );
+}
 
 QgsMapToolOffsetPointSymbol::~QgsMapToolOffsetPointSymbol()
 {
@@ -75,7 +77,7 @@ void QgsMapToolOffsetPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolOffsetPointSymbol::canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   mClickedFeature = feature;
   createPreviewItem( mMarkerSymbol.get() );
   mOffsetItem->setPointLocation( snappedPoint );
@@ -130,7 +132,7 @@ void QgsMapToolOffsetPointSymbol::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolOffsetPointSymbol::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 
   if ( mOffsetting && mActiveLayer )
   {
@@ -174,9 +176,9 @@ void QgsMapToolOffsetPointSymbol::createPreviewItem( QgsMarkerSymbol *markerSymb
     return;
   }
 
-  mOffsetItem = new QgsPointMarkerItem( mCanvas );
+  mOffsetItem = new QgsMapCanvasMarkerSymbolItem( mCanvas );
   mOffsetItem->setOpacity( 0.7 );
-  mOffsetItem->setSymbol( markerSymbol->clone() );
+  mOffsetItem->setSymbol( std::unique_ptr< QgsSymbol >( markerSymbol->clone() ) );
 }
 
 QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( const QgsPointXY &startPoint, const QgsPointXY &endPoint ) const

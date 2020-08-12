@@ -70,7 +70,7 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QComboBox" name="mDatabaseComboBox">
+        <widget class="QgsProviderConnectionComboBox" name="mDatabaseComboBox">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -446,6 +446,12 @@
    <class>QgsCollapsibleGroupBox</class>
    <extends>QWidget</extends>
    <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsProviderConnectionComboBox</class>
+   <extends>QWidget</extends>
+   <header>qgsproviderconnectioncombobox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -31,7 +31,7 @@ typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 class QgsSpatialIndex;
 
 
-class QgsMemoryFeatureSource : public QgsAbstractFeatureSource
+class QgsMemoryFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsMemoryFeatureSource( const QgsMemoryProvider *p );
@@ -50,7 +50,7 @@ class QgsMemoryFeatureSource : public QgsAbstractFeatureSource
 };
 
 
-class QgsMemoryFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsMemoryFeatureSource>
+class QgsMemoryFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsMemoryFeatureSource>
 {
   public:
     QgsMemoryFeatureIterator( QgsMemoryFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );

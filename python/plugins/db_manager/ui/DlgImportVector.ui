@@ -208,7 +208,7 @@
       <item row="7" column="0" colspan="2">
        <widget class="QCheckBox" name="chkSinglePart">
         <property name="text">
-         <string>Create single-part geometries instead of multi-part</string>
+         <string>Do not promote to multi-part</string>
         </property>
        </widget>
       </item>

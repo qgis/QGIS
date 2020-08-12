@@ -26,6 +26,7 @@ class QgsGeometry;
 class QgsAbstractGeometry;
 class QgsLineString;
 class QgsLineSegment2D;
+class QgsFeedback;
 
 /**
  * \ingroup core
@@ -47,6 +48,13 @@ class QgsInternalGeometryEngine
      * \param geometry
      */
     explicit QgsInternalGeometryEngine( const QgsGeometry &geometry );
+
+    /**
+     * Returns an error string referring to the last error encountered.
+     *
+     * \since QGIS 3.16
+     */
+    QString lastError() const;
 
     /**
      * Will extrude a line or (segmentized) curve by a given offset and return a polygon
@@ -148,8 +156,62 @@ class QgsInternalGeometryEngine
      */
     QgsGeometry variableWidthBufferByM( int segments ) const;
 
+    /**
+     * Returns a list of \a count random points generated inside a \a polygon geometry
+     * (if \a acceptPoint is specified, and restrictive, the number of points returned may
+     * be less than \a count).
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * The \a acceptPoint function is used to filter result candidates. If the function returns
+     * FALSE, then the point will not be accepted and another candidate generated.
+     *
+     * The optional \a feedback argument can be used to provide cancellation support during
+     * the point generation.
+     *
+     * When \a acceptPoint is specified, \a maxTriesPerPoint
+     * defines how many attempts to perform before giving up generating
+     * a point.
+     *
+     * \since QGIS 3.10
+     */
+    static QVector< QgsPointXY > randomPointsInPolygon( const QgsGeometry &polygon, int count,
+        const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr, int maxTriesPerPoint = 0 );
+
+    /**
+     * Attempts to convert a non-curved geometry into a curved geometry type (e.g.
+     * LineString to CompoundCurve, Polygon to CurvePolygon).
+     *
+     * The \a distanceTolerance specifies the maximum deviation allowed between the original location
+     * of vertices and where they would fall on the candidate curved geometry.
+     *
+     * This method only consider a segments as suitable for replacing with an arc if the points are all
+     * regularly spaced on the candidate arc. The \a pointSpacingAngleTolerance parameter specifies the maximum
+     * angular deviation (in radians) allowed when testing for regular point spacing.
+     *
+     * \note The API is considered EXPERIMENTAL and can be changed without a notice
+     *
+     * \since QGIS 3.14
+     */
+    QgsGeometry convertToCurves( double distanceTolerance, double angleTolerance ) const;
+
+    /**
+     * Returns the oriented minimum bounding box for the geometry, which is the smallest (by area)
+     * rotated rectangle which fully encompasses the geometry. The area, angle (clockwise in degrees from North),
+     * width and height of the rotated bounding box will also be returned.
+     *
+     * If an error was encountered while creating the result, more information can be retrieved
+     * by calling lastError().
+     *
+     * \since QGIS 3.16
+     */
+    QgsGeometry orientedMinimumBoundingBox( double &area SIP_OUT, double &angle SIP_OUT, double &width SIP_OUT, double &height SIP_OUT ) const;
+
   private:
     const QgsAbstractGeometry *mGeometry = nullptr;
+
+    mutable QString mLastError;
 };
 
 /**

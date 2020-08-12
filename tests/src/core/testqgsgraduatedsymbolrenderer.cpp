@@ -19,7 +19,10 @@
 #include <QSettings>
 
 #include "qgsgraduatedsymbolrenderer.h"
+#include "qgsclassificationequalinterval.h"
 #include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsclassificationquantile.h"
 
 /**
  * \ingroup UnitTests
@@ -38,7 +41,7 @@ class TestQgsGraduatedSymbolRenderer: public QObject
     void rangesOverlap();
     void rangesHaveGaps();
     void classifySymmetric();
-
+    void testMatchingRangeForValue();
 
   private:
 };
@@ -176,7 +179,7 @@ void TestQgsGraduatedSymbolRenderer::classifySymmetric()
         // with astride = false
         astride = false;
         breaks = unchanged_breaks;
-        QgsGraduatedSymbolRenderer::makeBreaksSymmetric( breaks, symmetryPoint, astride );
+        QgsClassificationMethod::makeBreaksSymmetric( breaks, symmetryPoint, astride );
         QCOMPARE( breaks.count() % 2, 0 );
         // because the minimum is not in the breaks
         int newPosOfSymmetryPoint = breaks.count() / 2;
@@ -185,7 +188,7 @@ void TestQgsGraduatedSymbolRenderer::classifySymmetric()
         // with astride = true
         astride = true;
         breaks = unchanged_breaks;
-        QgsGraduatedSymbolRenderer::makeBreaksSymmetric( breaks, symmetryPoint, astride );
+        QgsClassificationMethod::makeBreaksSymmetric( breaks, symmetryPoint, astride );
         QCOMPARE( breaks.count() % 2, 1 );
         QVERIFY( !breaks.contains( symmetryPoint ) );
       }
@@ -195,7 +198,10 @@ void TestQgsGraduatedSymbolRenderer::classifySymmetric()
 
       // with astride = false
       astride = false;
-      breaks = QgsGraduatedSymbolRenderer::calcEqualIntervalBreaks( minimum[valTest], maximum[valTest], nclasses, useSymmetricMode, symmetryPointForEqualInterval[valTest], astride );
+      QgsClassificationEqualInterval method;
+      method.setSymmetricMode( useSymmetricMode, symmetryPointForEqualInterval[valTest], astride );
+      QList<QgsClassificationRange> ranges = method.classes( minimum[valTest], maximum[valTest], nclasses );
+      breaks = QgsClassificationMethod::rangesToBreaks( ranges );
       QCOMPARE( breaks.count() % 2, 0 );
       // because the minimum is not in the breaks
       newPosOfSymmetryPoint = breaks.count() / 2 ;
@@ -203,11 +209,110 @@ void TestQgsGraduatedSymbolRenderer::classifySymmetric()
 
       // with astride = true
       astride = true;
-      breaks = QgsGraduatedSymbolRenderer::calcEqualIntervalBreaks( minimum[valTest], maximum[valTest], nclasses, useSymmetricMode, symmetryPointForEqualInterval[valTest], astride );
+      method.setSymmetricMode( useSymmetricMode, symmetryPointForEqualInterval[valTest], astride );
+      ranges = method.classes( minimum[valTest], maximum[valTest], nclasses );
+      breaks = QgsClassificationMethod::rangesToBreaks( ranges );
       QCOMPARE( breaks.count() % 2, 1 );
       QVERIFY( !breaks.contains( symmetryPointForEqualInterval[valTest] ) );
     }
   }
+}
+
+void TestQgsGraduatedSymbolRenderer::testMatchingRangeForValue()
+{
+  QgsGraduatedSymbolRenderer renderer;
+  //test with no ranges
+  QVERIFY( !renderer.rangeForValue( 1 ) );
+  QVERIFY( !renderer.rangeForValue( 12 ) );
+  QVERIFY( !renderer.rangeForValue( -1 ) );
+  QVERIFY( !renderer.symbolForValue( 1 ) );
+  QVERIFY( renderer.legendKeyForValue( 1 ).isEmpty() );
+
+  QgsMarkerSymbol ms;
+  ms.setColor( QColor( 255, 0, 0 ) );
+  QgsRendererRange r1( 1.1, 3.2, ms.clone(), QStringLiteral( "r1" ) );
+  renderer.addClass( r1 );
+
+  QVERIFY( !renderer.rangeForValue( 1 ) );
+  QVERIFY( !renderer.rangeForValue( 12 ) );
+  QVERIFY( !renderer.rangeForValue( -1 ) );
+  QCOMPARE( renderer.rangeForValue( 1.1 )->label(), QStringLiteral( "r1" ) );
+  QCOMPARE( renderer.rangeForValue( 2.1 )->label(), QStringLiteral( "r1" ) );
+  QCOMPARE( renderer.rangeForValue( 3.2 )->label(), QStringLiteral( "r1" ) );
+  QVERIFY( !renderer.symbolForValue( 1 ) );
+  QCOMPARE( renderer.symbolForValue( 2.1 )->color().name(), QStringLiteral( "#ff0000" ) );
+  QVERIFY( renderer.legendKeyForValue( 1 ).isEmpty() );
+  QCOMPARE( renderer.legendKeyForValue( 2.1 ), QStringLiteral( "0" ) );
+
+  ms.setColor( QColor( 255, 255, 0 ) );
+  QgsRendererRange r2( 3.2, 3.3, ms.clone(), QStringLiteral( "r2" ) );
+  renderer.addClass( r2 );
+
+  QVERIFY( !renderer.rangeForValue( 1 ) );
+  QVERIFY( !renderer.rangeForValue( 12 ) );
+  QVERIFY( !renderer.rangeForValue( -1 ) );
+  QCOMPARE( renderer.rangeForValue( 1.1 )->label(), QStringLiteral( "r1" ) );
+  QCOMPARE( renderer.rangeForValue( 2.1 )->label(), QStringLiteral( "r1" ) );
+  QCOMPARE( renderer.rangeForValue( 3.2 )->label(), QStringLiteral( "r1" ) );
+  QCOMPARE( renderer.rangeForValue( 3.25 )->label(), QStringLiteral( "r2" ) );
+  QCOMPARE( renderer.rangeForValue( 3.3 )->label(), QStringLiteral( "r2" ) );
+  QVERIFY( !renderer.symbolForValue( 1 ) );
+  QCOMPARE( renderer.symbolForValue( 2.1 )->color().name(), QStringLiteral( "#ff0000" ) );
+  QCOMPARE( renderer.symbolForValue( 3.25 )->color().name(), QStringLiteral( "#ffff00" ) );
+  QVERIFY( renderer.legendKeyForValue( 1 ).isEmpty() );
+  QCOMPARE( renderer.legendKeyForValue( 2.1 ), QStringLiteral( "0" ) );
+  QCOMPARE( renderer.legendKeyForValue( 3.25 ), QStringLiteral( "1" ) );
+
+  // disabled range
+  ms.setColor( QColor( 255, 0, 255 ) );
+  QgsRendererRange r3( 3.3, 3.6, ms.clone(), QStringLiteral( "r3" ), false );
+  renderer.addClass( r3 );
+  QVERIFY( !renderer.rangeForValue( 1 ) );
+  QVERIFY( !renderer.rangeForValue( 12 ) );
+  QVERIFY( !renderer.rangeForValue( -1 ) );
+  QCOMPARE( renderer.rangeForValue( 1.1 )->label(), QStringLiteral( "r1" ) );
+  QCOMPARE( renderer.rangeForValue( 2.1 )->label(), QStringLiteral( "r1" ) );
+  QCOMPARE( renderer.rangeForValue( 3.2 )->label(), QStringLiteral( "r1" ) );
+  QCOMPARE( renderer.rangeForValue( 3.25 )->label(), QStringLiteral( "r2" ) );
+  QCOMPARE( renderer.rangeForValue( 3.3 )->label(), QStringLiteral( "r2" ) );
+  QVERIFY( !renderer.rangeForValue( 3.5 ) );
+  QVERIFY( !renderer.symbolForValue( 1 ) );
+  QCOMPARE( renderer.symbolForValue( 2.1 )->color().name(), QStringLiteral( "#ff0000" ) );
+  QCOMPARE( renderer.symbolForValue( 3.25 )->color().name(), QStringLiteral( "#ffff00" ) );
+  QVERIFY( !renderer.symbolForValue( 3.5 ) );
+  QVERIFY( renderer.legendKeyForValue( 1 ).isEmpty() );
+  QCOMPARE( renderer.legendKeyForValue( 2.1 ), QStringLiteral( "0" ) );
+  QCOMPARE( renderer.legendKeyForValue( 3.25 ), QStringLiteral( "1" ) );
+  QVERIFY( renderer.legendKeyForValue( 3.5 ).isEmpty() );
+
+  // zero width range
+  ms.setColor( QColor( 0, 255, 255 ) );
+  QgsRendererRange r4( 3.7, 3.7, ms.clone(), QStringLiteral( "r4" ) );
+  renderer.addClass( r4 );
+  QVERIFY( !renderer.rangeForValue( 1 ) );
+  QVERIFY( !renderer.rangeForValue( 12 ) );
+  QVERIFY( !renderer.rangeForValue( -1 ) );
+  QCOMPARE( renderer.rangeForValue( 1.1 )->label(), QStringLiteral( "r1" ) );
+  QCOMPARE( renderer.rangeForValue( 2.1 )->label(), QStringLiteral( "r1" ) );
+  QCOMPARE( renderer.rangeForValue( 3.2 )->label(), QStringLiteral( "r1" ) );
+  QCOMPARE( renderer.rangeForValue( 3.25 )->label(), QStringLiteral( "r2" ) );
+  QCOMPARE( renderer.rangeForValue( 3.3 )->label(), QStringLiteral( "r2" ) );
+  QCOMPARE( renderer.rangeForValue( 3.7 )->label(), QStringLiteral( "r4" ) );
+  QVERIFY( !renderer.rangeForValue( 3.5 ) );
+  QVERIFY( !renderer.symbolForValue( 1 ) );
+  QCOMPARE( renderer.symbolForValue( 2.1 )->color().name(), QStringLiteral( "#ff0000" ) );
+  QCOMPARE( renderer.symbolForValue( 3.25 )->color().name(), QStringLiteral( "#ffff00" ) );
+  QCOMPARE( renderer.symbolForValue( 3.7 )->color().name(), QStringLiteral( "#00ffff" ) );
+  QVERIFY( !renderer.symbolForValue( 3.5 ) );
+  QVERIFY( renderer.legendKeyForValue( 1 ).isEmpty() );
+  QCOMPARE( renderer.legendKeyForValue( 2.1 ), QStringLiteral( "0" ) );
+  QCOMPARE( renderer.legendKeyForValue( 3.25 ), QStringLiteral( "1" ) );
+  QCOMPARE( renderer.legendKeyForValue( 3.7 ), QStringLiteral( "3" ) );
+  QVERIFY( renderer.legendKeyForValue( 3.5 ).isEmpty() );
+
+  // test values which fall just outside ranges, e.g. due to double precision (refs https://github.com/qgis/QGIS/issues/27420)
+  QCOMPARE( renderer.rangeForValue( 1.1 - std::numeric_limits<double>::epsilon() * 2 )->label(), QStringLiteral( "r1" ) );
+  QCOMPARE( renderer.rangeForValue( 3.7 + std::numeric_limits<double>::epsilon() * 2 )->label(), QStringLiteral( "r4" ) );
 }
 
 QGSTEST_MAIN( TestQgsGraduatedSymbolRenderer )

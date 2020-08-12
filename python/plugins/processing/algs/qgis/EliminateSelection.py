@@ -21,10 +21,6 @@ __author__ = 'Bernhard Ströbl'
 __date__ = 'January 2017'
 __copyright__ = '(C) 2017, Bernhard Ströbl'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -48,7 +44,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class EliminateSelection(QgisAlgorithm):
-
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     MODE = 'MODE'
@@ -73,7 +68,7 @@ class EliminateSelection(QgisAlgorithm):
         super().__init__()
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool
 
     def initAlgorithm(self, config=None):
         self.modes = [self.tr('Largest Area'),

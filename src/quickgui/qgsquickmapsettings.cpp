@@ -185,6 +185,11 @@ void QgsQuickMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
 
 void QgsQuickMapSettings::onReadProject( const QDomDocument &doc )
 {
+  if ( mProject )
+  {
+    mMapSettings.setBackgroundColor( mProject->backgroundColor() );
+  }
+
   QDomNodeList nodes = doc.elementsByTagName( "mapcanvas" );
   if ( nodes.count() )
   {
@@ -214,4 +219,18 @@ void QgsQuickMapSettings::setRotation( double rotation )
 {
   if ( !qgsDoubleNear( rotation, 0 ) )
     QgsMessageLog::logMessage( tr( "Map Canvas rotation is not supported. Resetting from %1 to 0." ).arg( rotation ) );
+}
+
+QColor QgsQuickMapSettings::backgroundColor() const
+{
+  return mMapSettings.backgroundColor();
+}
+
+void QgsQuickMapSettings::setBackgroundColor( const QColor &color )
+{
+  if ( mMapSettings.backgroundColor() == color )
+    return;
+
+  mMapSettings.setBackgroundColor( color );
+  emit backgroundColorChanged();
 }

@@ -4,14 +4,19 @@
 */
 
 #include "mdal_3di.hpp"
+#include "mdal_logger.hpp"
+#include <cmath>
 #include <netcdf.h>
 #include <assert.h>
+#include "mdal_sqlite3.hpp"
+
 
 MDAL::Driver3Di::Driver3Di()
   : DriverCF(
       "3Di",
       "3Di Results",
-      "results_3di.nc" )
+      "results_3di.nc",
+      Capability::ReadMesh )
 {
 }
 
@@ -20,49 +25,114 @@ MDAL::Driver3Di *MDAL::Driver3Di::create()
   return new Driver3Di();
 }
 
-MDAL::CFDimensions MDAL::Driver3Di::populateDimensions( const NetCDFFile &ncFile )
+std::string MDAL::Driver3Di::buildUri( const std::string &meshFile )
+{
+  mNcFile.reset( new NetCDFFile );
+
+  try
+  {
+    mNcFile->openFile( meshFile );
+  }
+  catch ( MDAL::Error &err )
+  {
+    err.setDriver( name() );
+    MDAL::Log::error( err );
+    return std::string();
+  }
+
+  std::vector<std::string> meshNames;
+
+  CFDimensions dims;
+  bool sqliteFileExist = check1DConnection( meshFile );
+  if ( sqliteFileExist )
+  {
+    populate1DMeshDimensions( dims );
+    if ( dims.size( CFDimensions::Vertex ) > 0 && dims.size( CFDimensions::Edge ) > 0 )
+    {
+      meshNames.push_back( "Mesh1D" );
+    }
+  }
+
+  populate2DMeshDimensions( dims );
+  if ( dims.size( CFDimensions::Face ) > 0 )
+    meshNames.push_back( "Mesh2D" );
+
+  if ( !meshNames.size() )
+  {
+    MDAL::Log::error( MDAL_Status::Err_UnknownFormat, name(), "No meshes found in file" + meshFile );
+    return std::string( "" );
+  }
+
+  return MDAL::buildAndMergeMeshUris( meshFile, meshNames, name() );
+}
+
+void MDAL::Driver3Di::populate2DMeshDimensions( MDAL::CFDimensions &dims )
+{
+  size_t count;
+  int ncid;
+
+  // 2D Mesh
+  mNcFile->getDimension( "nMesh2D_nodes", &count, &ncid );
+  dims.setDimension( CFDimensions::Face, count, ncid );
+
+  mNcFile->getDimension( "nCorner_Nodes", &count, &ncid );
+  dims.setDimension( CFDimensions::MaxVerticesInFace, count, ncid );
+
+  // Vertices count is populated later in populateElements
+  // it is not known from the array dimensions
+}
+
+MDAL::CFDimensions MDAL::Driver3Di::populateDimensions( )
 {
   CFDimensions dims;
   size_t count;
   int ncid;
 
-  // 2D Mesh
-  ncFile.getDimension( "nMesh2D_nodes", &count, &ncid );
-  dims.setDimension( CFDimensions::Face2D, count, ncid );
-
-  ncFile.getDimension( "nCorner_Nodes", &count, &ncid );
-  dims.setDimension( CFDimensions::MaxVerticesInFace, count, ncid );
-
-  // Vertices count is populated later in populateFacesAndVertices
-  // it is not known from the array dimensions
+  if ( mRequestedMeshName == "Mesh1D" )
+  {
+    populate1DMeshDimensions( dims );
+  }
+  else
+  {
+    // Default loaded mesh is the 2D mesh
+    populate2DMeshDimensions( dims );
+  }
 
   // Time
-  ncFile.getDimension( "time", &count, &ncid );
+  mNcFile->getDimension( "time", &count, &ncid );
   dims.setDimension( CFDimensions::Time, count, ncid );
 
   return dims;
 }
 
-void MDAL::Driver3Di::populateFacesAndVertices( Vertices &vertices, Faces &faces )
+void MDAL::Driver3Di::populateElements( Vertices &vertices, Edges &edges, Faces &faces )
+{
+  if ( mRequestedMeshName == "Mesh1D" )
+    populateMesh1DElements( vertices, edges );
+  else
+    populateMesh2DElements( vertices, faces );
+}
+
+void MDAL::Driver3Di::populateMesh2DElements( MDAL::Vertices &vertices, MDAL::Faces &faces )
 {
   assert( vertices.empty() );
-  size_t faceCount = mDimensions.size( CFDimensions::Face2D );
+  size_t faceCount = mDimensions.size( CFDimensions::Face );
   faces.resize( faceCount );
   size_t verticesInFace = mDimensions.size( CFDimensions::MaxVerticesInFace );
   size_t arrsize = faceCount * verticesInFace;
   std::map<std::string, size_t> xyToVertex2DId;
 
   // X coordinate
-  int ncidX = mNcFile.getVarId( "Mesh2DContour_x" );
-  double fillX = mNcFile.getFillValue( ncidX );
+  int ncidX = mNcFile->getVarId( "Mesh2DContour_x" );
+  double fillX = mNcFile->getFillValue( ncidX );
   std::vector<double> faceVerticesX( arrsize );
-  if ( nc_get_var_double( mNcFile.handle(), ncidX, faceVerticesX.data() ) ) throw MDAL_Status::Err_UnknownFormat;
+  if ( nc_get_var_double( mNcFile->handle(), ncidX, faceVerticesX.data() ) ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unknown format" );
 
   // Y coordinate
-  int ncidY = mNcFile.getVarId( "Mesh2DContour_y" );
-  double fillY = mNcFile.getFillValue( ncidY );
+  int ncidY = mNcFile->getVarId( "Mesh2DContour_y" );
+  double fillY = mNcFile->getFillValue( ncidY );
   std::vector<double> faceVerticesY( arrsize );
-  if ( nc_get_var_double( mNcFile.handle(), ncidY, faceVerticesY.data() ) ) throw MDAL_Status::Err_UnknownFormat;
+  if ( nc_get_var_double( mNcFile->handle(), ncidY, faceVerticesY.data() ) ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unknown format" );
 
   // now populate create faces and backtrack which vertices
   // are used in multiple faces
@@ -108,10 +178,10 @@ void MDAL::Driver3Di::populateFacesAndVertices( Vertices &vertices, Faces &faces
 
   // Only now we have number of vertices, since we identified vertices that
   // are used in multiple faces
-  mDimensions.setDimension( CFDimensions::Vertex2D, vertices.size() );
+  mDimensions.setDimension( CFDimensions::Vertex, vertices.size() );
 }
 
-void MDAL::Driver3Di::addBedElevation( MDAL::Mesh *mesh )
+void MDAL::Driver3Di::addBedElevation( MemoryMesh *mesh )
 {
   assert( mesh );
   if ( 0 == mesh->facesCount() )
@@ -120,10 +190,10 @@ void MDAL::Driver3Di::addBedElevation( MDAL::Mesh *mesh )
   size_t faceCount = mesh->facesCount();
 
   // read Z coordinate of 3di computation nodes centers
-  int ncidZ = mNcFile.getVarId( "Mesh2DFace_zcc" );
-  double fillZ = mNcFile.getFillValue( ncidZ );
+  int ncidZ = mNcFile->getVarId( "Mesh2DFace_zcc" );
+  double fillZ = mNcFile->getFillValue( ncidZ );
   std::vector<double> coordZ( faceCount );
-  if ( nc_get_var_double( mNcFile.handle(), ncidZ, coordZ.data() ) )
+  if ( nc_get_var_double( mNcFile->handle(), ncidZ, coordZ.data() ) )
     return; //error reading the array
 
 
@@ -134,15 +204,14 @@ void MDAL::Driver3Di::addBedElevation( MDAL::Mesh *mesh )
                                           "Bed Elevation"
                                         );
 
-  group->setIsOnVertices( false );
+  group->setDataLocation( MDAL_DataLocation::DataOnFaces );
   group->setIsScalar( true );
 
-  std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MemoryDataset >( group.get() );
-  dataset->setTime( 0.0 );
-  double *values = dataset->values();
+  std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group.get() );
+  dataset->setTime( MDAL::RelativeTimestamp() );
   for ( size_t i = 0; i < faceCount; ++i )
   {
-    values[i] = MDAL::safeValue( coordZ[i], fillZ );
+    dataset->setScalarValue( i, MDAL::safeValue( coordZ[i], fillZ ) );
   }
   dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
   group->setStatistics( MDAL::calculateStatistics( group ) );
@@ -153,6 +222,11 @@ void MDAL::Driver3Di::addBedElevation( MDAL::Mesh *mesh )
 std::string MDAL::Driver3Di::getCoordinateSystemVariableName()
 {
   return "projected_coordinate_system";
+}
+
+std::string MDAL::Driver3Di::getTimeVariableName() const
+{
+  return "time";
 }
 
 std::set<std::string> MDAL::Driver3Di::ignoreNetCDFVariables()
@@ -189,27 +263,30 @@ std::set<std::string> MDAL::Driver3Di::ignoreNetCDFVariables()
   return ignore_variables;
 }
 
-std::string MDAL::Driver3Di::nameSuffix( MDAL::CFDimensions::Type type )
-{
-  MDAL_UNUSED( type );
-  return "";
-}
-
-void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid, const std::string &variableName, std::string &name, bool *is_vector, bool *is_x )
+void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid,
+    std::string &variableName,
+    std::string &name,
+    bool *is_vector,
+    bool *isPolar,
+    bool *invertedDirection,
+    bool *is_x )
 {
   *is_vector = false;
   *is_x = true;
+  *isPolar = false;
+  MDAL_UNUSED( invertedDirection )
 
-  std::string long_name = mNcFile.getAttrStr( "long_name", varid );
+  std::string long_name = mNcFile->getAttrStr( "long_name", varid );
   if ( long_name.empty() )
   {
-    std::string standard_name = mNcFile.getAttrStr( "standard_name", varid );
+    std::string standard_name = mNcFile->getAttrStr( "standard_name", varid );
     if ( standard_name.empty() )
     {
       name = variableName;
     }
     else
     {
+      variableName = standard_name;
       if ( MDAL::contains( standard_name, "_x_" ) )
       {
         *is_vector = true;
@@ -229,6 +306,7 @@ void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid, const std::string 
   }
   else
   {
+    variableName = long_name;
     if ( MDAL::contains( long_name, " in x direction" ) )
     {
       *is_vector = true;
@@ -243,6 +321,138 @@ void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid, const std::string 
     else
     {
       name = long_name;
+    }
+  }
+}
+
+std::vector<std::pair<double, double>> MDAL::Driver3Di::parseClassification( int varid ) const
+{
+  MDAL_UNUSED( varid );
+  return std::vector<std::pair<double, double>>();
+}
+
+void MDAL::Driver3Di::populate1DMeshDimensions( MDAL::CFDimensions &dims )
+{
+  size_t count;
+  int ncid;
+
+  mNcFile->getDimension( "nMesh1D_nodes", &count, &ncid );
+  dims.setDimension( CFDimensions::Vertex, count, ncid );
+
+  mNcFile->getDimension( "nMesh1D_lines", &count, &ncid );
+  dims.setDimension( CFDimensions::Edge, count, ncid );
+}
+
+void MDAL::Driver3Di::populateMesh1DElements( MDAL::Vertices &vertices, MDAL::Edges &edges )
+{
+  assert( vertices.empty() && edges.empty() );
+  size_t vertexCount = mDimensions.size( CFDimensions::Vertex );
+  size_t edgesCount = mDimensions.size( CFDimensions::Edge );
+  vertices.resize( vertexCount );
+  edges.resize( edgesCount );
+
+  // X coordinate
+  int ncidX = mNcFile->getVarId( "Mesh1DNode_xcc" );
+  double fillX = mNcFile->getFillValue( ncidX );
+  std::vector<double> verticesX( vertexCount );
+  if ( nc_get_var_double( mNcFile->handle(), ncidX, verticesX.data() ) ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unknown format" );
+
+  // Y coordinate
+  int ncidY = mNcFile->getVarId( "Mesh1DNode_ycc" );
+  double fillY = mNcFile->getFillValue( ncidY );
+  std::vector<double> verticesY( vertexCount );
+  if ( nc_get_var_double( mNcFile->handle(), ncidY, verticesY.data() ) ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unknown format" );
+
+  // Z coordinate
+  int ncidZ = mNcFile->getVarId( "Mesh1DNode_zcc" );
+  double fillZ = mNcFile->getFillValue( ncidZ );
+  std::vector<double> verticesZ( vertexCount );
+  if ( nc_get_var_double( mNcFile->handle(), ncidZ, verticesZ.data() ) ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unknown format" );
+
+  // Node Id
+  int ncidNodeId = mNcFile->getVarId( "Mesh1DNode_id" );
+  std::vector<int> verticesId( vertexCount );
+  if ( nc_get_var_int( mNcFile->handle(), ncidNodeId, verticesId.data() ) ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unknown format" );
+
+  // Edge Id
+  int ncidEgeId = mNcFile->getVarId( "Mesh1DLine_id" );
+  std::vector<int> edgesId( edgesCount );
+  if ( nc_get_var_int( mNcFile->handle(), ncidEgeId, edgesId.data() ) ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unknown format" );
+
+  for ( size_t i = 0; i < vertexCount; ++i )
+  {
+    Vertex vertex;
+    vertex.x = verticesX[i];
+    if ( vertex.x == fillX )
+      vertex.x = std::numeric_limits<double>::quiet_NaN();
+    vertex.y = verticesY[i];
+    if ( vertex.y == fillY )
+      vertex.y = std::numeric_limits<double>::quiet_NaN();
+    vertex.z = verticesZ[i];
+    if ( vertex.z == fillZ )
+      vertex.z = std::numeric_limits<double>::quiet_NaN();
+    vertices[i] = vertex;
+  }
+
+  parse1DConnection( verticesId, edgesId, edges );
+}
+
+
+bool MDAL::Driver3Di::check1DConnection( std::string fileName )
+{
+  std::string sqliteFile = dirName( fileName ) + "/gridadmin.sqlite";
+
+  if ( !fileExists( sqliteFile ) )
+    return false;
+
+  Sqlite3Db sqliteDb;
+  return sqliteDb.open( sqliteFile );
+
+}
+
+void MDAL::Driver3Di::parse1DConnection( const std::vector<int> &nodesId,
+    const std::vector<int> &edgesId,
+    Edges &edges )
+{
+  std::string sqliteFileName = dirName( mNcFile->getFileName() ) + "/gridadmin.sqlite";
+
+  //construct id map
+  std::map<int, size_t> edgeMap;
+  std::map<int, size_t> nodeMap;
+  for ( size_t edgeIndex = 0; edgeIndex < edges.size(); ++edgeIndex )
+    edgeMap[edgesId.at( edgeIndex )] = edgeIndex;
+
+  for ( size_t nodeIndex = 0; nodeIndex < nodesId.size(); ++nodeIndex )
+    nodeMap[nodesId.at( nodeIndex )] = nodeIndex;
+
+
+  Sqlite3Db db;
+  if ( !db.open( sqliteFileName ) || !( db.get() ) )
+    throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to open sqlite database" );
+
+  Sqlite3Statement stmt;
+
+  if ( ! stmt.prepare( &db, "SELECT id, start_node_idx, end_node_idx FROM flowlines" ) )
+    throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to read edges connectivity from sqlite database" );
+
+  if ( stmt.columnCount() < 0 || stmt.columnCount() != 3 )
+    throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Invalid edges connectivity schema in sqlite database" );
+
+  while ( stmt.next() )
+  {
+    int idEdge, idStartNode, idEndNode;
+    idEdge = stmt.getInt( 0 );
+    idStartNode = stmt.getInt( 1 );
+    idEndNode = stmt.getInt( 2 );
+
+    auto itEdge = edgeMap.find( idEdge );
+    auto itStart = nodeMap.find( idStartNode );
+    auto itEnd = nodeMap.find( idEndNode );
+
+    if ( itEdge != edgeMap.end() && itStart != nodeMap.end() && itEnd != nodeMap.end() )
+    {
+      edges[itEdge->second].startVertex = itStart->second;
+      edges[itEdge->second].endVertex = itEnd->second;
     }
   }
 }

@@ -17,6 +17,7 @@
 
 #include "qgswmsparameters.h"
 #include "qgsdatasourceuri.h"
+#include "qgsvectorlayerserverproperties.h"
 #include "qgsmessagelog.h"
 #include "qgswmsserviceexception.h"
 
@@ -58,7 +59,7 @@ namespace QgsWms
 
     if ( !ok )
     {
-      const QString msg = QString( "%1 ('%2') cannot be converted into a list of geometries" ).arg( name( mName ), toString(), typeName() );
+      const QString msg = QString( "%1 ('%2') cannot be converted into a list of geometries" ).arg( name( mName ), toString() );
       QgsServerParameterDefinition::raiseError( msg );
     }
 
@@ -72,7 +73,7 @@ namespace QgsWms
 
     if ( !ok )
     {
-      const QString msg = QString( "%1 ('%2') cannot be converted into a rectangle" ).arg( name( mName ), toString(), typeName() );
+      const QString msg = QString( "%1 ('%2') cannot be converted into a rectangle" ).arg( name( mName ), toString() );
       QgsServerParameterDefinition::raiseError( msg );
     }
 
@@ -142,7 +143,7 @@ namespace QgsWms
 
     if ( !ok )
     {
-      const QString msg = QString( "%1 ('%2') cannot be converted into a list of colors" ).arg( name( mName ), toString(), typeName() );
+      const QString msg = QString( "%1 ('%2') cannot be converted into a list of colors" ).arg( name( mName ), toString() );
       QgsServerParameterDefinition::raiseError( msg );
     }
 
@@ -156,7 +157,7 @@ namespace QgsWms
 
     if ( !ok )
     {
-      const QString msg = QString( "%1 ('%2') cannot be converted into a list of int" ).arg( name( mName ), toString(), typeName() );
+      const QString msg = QString( "%1 ('%2') cannot be converted into a list of int" ).arg( name( mName ), toString() );
       QgsServerParameterDefinition::raiseError( msg );
     }
 
@@ -170,7 +171,7 @@ namespace QgsWms
 
     if ( !ok )
     {
-      const QString msg = QString( "%1 ('%2') cannot be converted into a list of float" ).arg( name( mName ), toString(), typeName() );
+      const QString msg = QString( "%1 ('%2') cannot be converted into a list of float" ).arg( name( mName ), toString() );
       QgsServerParameterDefinition::raiseError( msg );
     }
 
@@ -222,6 +223,11 @@ namespace QgsWms
                                     QVariant::Int,
                                     QVariant( 0 ) );
     save( pQuality );
+
+    const QgsWmsParameter pTiled( QgsWmsParameter::TILED,
+                                  QVariant::Bool,
+                                  QVariant( false ) );
+    save( pTiled );
 
     const QgsWmsParameter pBoxSpace( QgsWmsParameter::BOXSPACE,
                                      QVariant::Double,
@@ -552,6 +558,11 @@ namespace QgsWms
     return mWmsParameters[name];
   }
 
+  void QgsWmsParameters::set( QgsWmsParameter::Name name, const QVariant &value )
+  {
+    mWmsParameters[name].mValue = value;
+  }
+
   bool QgsWmsParameters::loadParameter( const QString &key, const QString &value )
   {
     bool loaded = false;
@@ -803,7 +814,11 @@ namespace QgsWms
     {
       f = Format::PDF;
     }
-
+    else if ( fStr.compare( QLatin1String( "application/json" ), Qt::CaseInsensitive ) == 0 ||
+              fStr.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 )
+    {
+      f = Format::JSON;
+    }
     return f;
   }
 
@@ -937,6 +952,16 @@ namespace QgsWms
   int QgsWmsParameters::imageQualityAsInt() const
   {
     return mWmsParameters[ QgsWmsParameter::IMAGE_QUALITY ].toInt();
+  }
+
+  QString QgsWmsParameters::tiled() const
+  {
+    return mWmsParameters[ QgsWmsParameter::TILED ].toString();
+  }
+
+  bool QgsWmsParameters::tiledAsBool() const
+  {
+    return mWmsParameters[ QgsWmsParameter::TILED ].toBool();
   }
 
   QString QgsWmsParameters::showFeatureCount() const
@@ -1431,16 +1456,18 @@ namespace QgsWms
       {
         // filter format: "LayerName,LayerName2:filterString;LayerName3:filterString2;..."
         // several filters can be defined for one layer
-        const QStringList splits = f.split( ':' );
-        if ( splits.size() == 2 )
+        const int colonIndex = f.indexOf( ':' );
+        if ( colonIndex != -1 )
         {
-          const QStringList layers = splits[0].split( ',' );
-          for ( const QString &layer : layers )
+          const QString layers = f.section( ':', 0, 0 );
+          const QString filter = f.section( ':', 1 );
+          const QStringList layersList = layers.split( ',' );
+          for ( const QString &layer : layersList )
           {
-            QgsWmsParametersFilter filter;
-            filter.mFilter = splits[1];
-            filter.mType = QgsWmsParametersFilter::SQL;
-            filters.insert( layer, filter );
+            QgsWmsParametersFilter parametersFilter;
+            parametersFilter.mFilter = filter;
+            parametersFilter.mType = QgsWmsParametersFilter::SQL;
+            filters.insert( layer, parametersFilter );
           }
         }
         else
@@ -1451,6 +1478,32 @@ namespace QgsWms
       }
     }
     return filters;
+  }
+
+  bool QgsWmsParameters::isForce2D() const
+  {
+    bool force2D = false;
+    const QMap<DxfFormatOption, QString> options = dxfFormatOptions();
+
+    if ( options.contains( DxfFormatOption::FORCE_2D ) )
+    {
+      force2D = QVariant( options[ DxfFormatOption::FORCE_2D ] ).toBool();
+    }
+
+    return force2D;
+  }
+
+  bool QgsWmsParameters::noMText() const
+  {
+    bool noMText = false;
+    const QMap<DxfFormatOption, QString> options = dxfFormatOptions();
+
+    if ( options.contains( DxfFormatOption::NO_MTEXT ) )
+    {
+      noMText = QVariant( options[ DxfFormatOption::NO_MTEXT ] ).toBool();
+    }
+
+    return noMText;
   }
 
   QList<QgsWmsParametersLayer> QgsWmsParameters::layersParameters() const
@@ -1508,8 +1561,8 @@ namespace QgsWms
       if ( layerSelections.contains( layer ) )
       {
         QMultiMap<QString, QString>::const_iterator it;
-        it = layerSelections.find( layer );
-        while ( it != layerSelections.end() && it.key() == layer )
+        it = layerSelections.constFind( layer );
+        while ( it != layerSelections.constEnd() && it.key() == layer )
         {
           param.mSelection << it.value().split( ',' );
           ++it;
@@ -1577,9 +1630,9 @@ namespace QgsWms
     QList<QgsWmsParametersExternalLayer> externalLayers;
 
     QStringList layers = allLayersNickname();
-    QStringList::const_iterator rit = std::remove_if( layers.begin(), layers.end(), notExternalLayer );
+    QStringList::iterator rit = std::remove_if( layers.begin(), layers.end(), notExternalLayer );
 
-    for ( QStringList::const_iterator it = layers.begin(); it != rit; ++it )
+    for ( QStringList::iterator it = layers.begin(); it != rit; ++it )
     {
       externalLayers << externalLayerParameter( *it );
     }
@@ -1988,5 +2041,24 @@ namespace QgsWms
     }
 
     return options;
+  }
+
+  QMap<QString, QString> QgsWmsParameters::dimensionValues() const
+  {
+    QMap<QString, QString> dimValues;
+    const QMetaEnum pnMetaEnum( QMetaEnum::fromType<QgsVectorLayerServerProperties::PredefinedWmsDimensionName>() );
+    const QStringList unmanagedNames = mUnmanagedParameters.keys();
+    for ( const QString &key : unmanagedNames )
+    {
+      if ( key.startsWith( QStringLiteral( "DIM_" ) ) )
+      {
+        dimValues[key.mid( 4 )] = mUnmanagedParameters[key];
+      }
+      else if ( pnMetaEnum.keyToValue( key.toUpper().toStdString().c_str() ) != -1 )
+      {
+        dimValues[key] = mUnmanagedParameters[key];
+      }
+    }
+    return dimValues;
   }
 }

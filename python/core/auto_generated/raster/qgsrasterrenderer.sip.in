@@ -35,7 +35,7 @@ Constructor for QgsRasterRenderer.
     virtual QgsRasterRenderer *clone() const = 0 /Factory/;
 
 %Docstring
-QgsRasterRenderer cannot be copied. Use clone() instead.
+QgsRasterRenderer cannot be copied. Use :py:func:`~QgsRasterRenderer.clone` instead.
 %End
 
     virtual int bandCount() const;
@@ -73,6 +73,32 @@ and 1.0 (fully opaque).
 .. seealso:: :py:func:`setOpacity`
 %End
 
+    QColor nodataColor() const;
+%Docstring
+Returns the color to use for shading nodata pixels.
+
+If the returned value is an invalid color then the default transparent rendering of
+nodata values will be used.
+
+.. seealso:: :py:func:`renderColorForNodataPixel`
+
+.. seealso:: :py:func:`setNodataColor`
+
+.. versionadded:: 3.12
+%End
+
+    void setNodataColor( const QColor &color );
+%Docstring
+Sets the ``color`` to use for shading nodata pixels.
+
+If ``color`` is an invalid color then the default transparent rendering of
+nodata values will be used.
+
+.. seealso:: :py:func:`nodataColor`
+
+.. versionadded:: 3.12
+%End
+
     void setRasterTransparency( QgsRasterTransparency *t /Transfer/ );
     const QgsRasterTransparency *rasterTransparency() const;
 
@@ -87,7 +113,7 @@ Gets symbology items if provided by renderer
     virtual void readXml( const QDomElement &rendererElem );
 
 %Docstring
-Sets base class members from xml. Usually called from create() methods of subclasses
+Sets base class members from xml. Usually called from :py:func:`~QgsRasterRenderer.create` methods of subclasses
 %End
 
     void copyCommonProperties( const QgsRasterRenderer *other, bool copyMinMaxOrigin = true );
@@ -120,6 +146,17 @@ Used from subclasses to create SLD Rule elements following SLD v1.0 specs
 .. versionadded:: 3.6
 %End
 
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified symbology ``visitor``, causing it to visit all symbols associated
+with the renderer.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
+%End
+
   protected:
 
     void _writeXml( QDomDocument &doc, QDomElement &rasterRendererElem ) const;
@@ -130,6 +167,16 @@ Write upper class info into rasterrenderer element (called by writeXml method of
 
 
 
+
+    QRgb renderColorForNodataPixel() const;
+%Docstring
+Returns the color for the renderer to use to represent nodata pixels.
+
+Subclasses should use this rather then :py:func:`~QgsRasterRenderer.nodataColor` to determine the color to use for nodata pixels
+during an actual rendering operation.
+
+.. versionadded:: 3.10
+%End
 
   private:
     QgsRasterRenderer( const QgsRasterRenderer & );

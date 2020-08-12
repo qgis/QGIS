@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '2017-01'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 
 import qgis  # NOQA
@@ -89,6 +87,82 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
         painter.end()
 
         self.assertTrue(self.imageCheck('symbol_layer', 'simpleline_offset', image))
+
+    def testSimpleLineWithCustomDashPattern(self):
+        """ test that rendering a simple line symbol with custom dash pattern"""
+        layer = QgsSimpleLineSymbolLayer(QColor(0, 0, 0))
+        layer.setWidth(0.5)
+        layer.setCustomDashVector([2, 5])
+        layer.setUseCustomDashPattern(True)
+
+        symbol = QgsLineSymbol()
+        symbol.changeSymbolLayer(0, layer)
+
+        image = QImage(200, 200, QImage.Format_RGB32)
+        painter = QPainter()
+        ms = QgsMapSettings()
+
+        geom = QgsGeometry.fromWkt('LineString (0 0, 10 0, 10 10, 0 10, 0 0)')
+        f = QgsFeature()
+        f.setGeometry(geom)
+
+        extent = geom.constGet().boundingBox()
+        # buffer extent by 10%
+        extent = extent.buffered((extent.height() + extent.width()) / 20.0)
+
+        ms.setExtent(extent)
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        painter.begin(image)
+        image.fill(QColor(255, 255, 255))
+
+        symbol.startRender(context)
+        symbol.renderFeature(f, context)
+        symbol.stopRender(context)
+        painter.end()
+
+        self.assertTrue(self.imageCheck('symbol_layer_simpleline_customdashpattern', 'simpleline_customdashpattern', image))
+
+    def testSimpleLineWithCustomDashPatternHairline(self):
+        """ test that rendering a simple line symbol with custom dash pattern"""
+        layer = QgsSimpleLineSymbolLayer(QColor(0, 0, 0))
+        layer.setWidth(0)
+        layer.setCustomDashVector([3, 3, 2, 2])
+        layer.setUseCustomDashPattern(True)
+
+        symbol = QgsLineSymbol()
+        symbol.changeSymbolLayer(0, layer)
+
+        image = QImage(200, 200, QImage.Format_RGB32)
+        painter = QPainter()
+        ms = QgsMapSettings()
+
+        geom = QgsGeometry.fromWkt('LineString (0 0, 10 0, 10 10, 0 10, 0 0)')
+        f = QgsFeature()
+        f.setGeometry(geom)
+
+        extent = geom.constGet().boundingBox()
+        # buffer extent by 10%
+        extent = extent.buffered((extent.height() + extent.width()) / 20.0)
+
+        ms.setExtent(extent)
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        painter.begin(image)
+        image.fill(QColor(255, 255, 255))
+
+        symbol.startRender(context)
+        symbol.renderFeature(f, context)
+        symbol.stopRender(context)
+        painter.end()
+
+        self.assertTrue(self.imageCheck('symbol_layer_simpleline_customdashpattern_hairline', 'simpleline_customdashpattern_hairline', image))
 
 
 if __name__ == '__main__':

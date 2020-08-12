@@ -126,7 +126,7 @@ class dwgBuffer
 
     //X, U, SN,
 
-    DRW_Coord getExtrusion( bool b_R2000_style ); //BE
+    DRW_Coord getExtrusion( bool b_R2000_style, bool &haveExtrusion ); //BE
     double getDefaultDouble( double d ); //DD
     double getThickness( bool b_R2000_style );//BT
     //3DD

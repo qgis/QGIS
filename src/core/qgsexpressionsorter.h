@@ -141,21 +141,21 @@ class QgsExpressionSorter
 
       QVector<QgsIndexedFeature> indexedFeatures;
 
-      QgsIndexedFeature indexedFeature;
+      QgsIndexedFeature indexedFeatureToAppend;
 
       for ( const QgsFeature &f : qgis::as_const( features ) )
       {
-        indexedFeature.mIndexes.resize( mPreparedOrderBys.size() );
-        indexedFeature.mFeature = f;
+        indexedFeatureToAppend.mIndexes.resize( mPreparedOrderBys.size() );
+        indexedFeatureToAppend.mFeature = f;
 
-        expressionContext->setFeature( indexedFeature.mFeature );
+        expressionContext->setFeature( indexedFeatureToAppend.mFeature );
 
         int i = 0;
         for ( const QgsFeatureRequest::OrderByClause &orderBy : qgis::as_const( mPreparedOrderBys ) )
         {
-          indexedFeature.mIndexes.replace( i++, orderBy.expression().evaluate( expressionContext ) );
+          indexedFeatureToAppend.mIndexes.replace( i++, orderBy.expression().evaluate( expressionContext ) );
         }
-        indexedFeatures.append( indexedFeature );
+        indexedFeatures.append( indexedFeatureToAppend );
       }
 
       delete expressionContext->popScope();

@@ -19,7 +19,7 @@ It is designed on top of another feature renderer, which is called "embedded"
 Most of the methods are then only proxies to the embedded renderer.
 
 Features are collected to form one "inverted" polygon
-during renderFeature() and rendered on stopRender().
+during :py:func:`~renderFeature` and rendered on :py:func:`~stopRender`.
 
 .. versionadded:: 2.4
 %End
@@ -41,16 +41,16 @@ Constructor
     virtual QgsInvertedPolygonRenderer *clone() const /Factory/;
 
 %Docstring
-Direct copies are forbidden. Use clone() instead.
+Direct copies are forbidden. Use :py:func:`~QgsInvertedPolygonRenderer.clone` instead.
 %End
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 
 
-    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
 
 %Docstring
 Renders a given feature.
-This will here collect features. The actual rendering will be postponed to stopRender()
+This will here collect features. The actual rendering will be postponed to :py:func:`~QgsInvertedPolygonRenderer.stopRender`
 
 :param feature: the feature to render
 :param context: the rendering context
@@ -65,66 +65,33 @@ This will here collect features. The actual rendering will be postponed to stopR
 
 %Docstring
 The actual rendering will take place here.
-Features collected during renderFeature() are rendered using the embedded feature renderer
+Features collected during :py:func:`~QgsInvertedPolygonRenderer.renderFeature` are rendered using the embedded feature renderer
 %End
 
     virtual QString dump() const;
 
-
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
-%Docstring
-Proxy that will call this method on the embedded renderer.
-%End
     virtual bool filterNeedsGeometry() const;
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
 
-%Docstring
-Proxy that will call this method on the embedded renderer.
-%End
-
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
-
-%Docstring
-Proxy that will call this method on the embedded renderer.
-%End
 
     virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
-%Docstring
-Proxy that will call this method on the embedded renderer.
-%End
-
     virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
-
-%Docstring
-Proxy that will call this method on the embedded renderer.
-%End
 
     virtual QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
-%Docstring
-Proxy that will call this method on the embedded renderer.
-%End
-
     virtual QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
-%Docstring
-Proxy that will call this method on the embedded renderer.
-%End
+    virtual QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     virtual QgsLegendSymbolList legendSymbolItems() const;
 
-%Docstring
-Proxy that will call this method on the embedded renderer.
-%End
-
     virtual bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
-%Docstring
-Proxy that will call this method on the embedded renderer.
-%End
 
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
@@ -147,6 +114,8 @@ Creates a renderer out of an XML, for loading
     virtual bool legendSymbolItemChecked( const QString &key );
 
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
     bool preprocessingEnabled() const;

@@ -9,10 +9,10 @@
 
 
 
-class QgsDataSourceSelectDialog: QDialog
+class QgsDataSourceSelectWidget: QgsPanelWidget
 {
 %Docstring
-The QgsDataSourceSelectDialog class embeds the browser view to
+The QgsDataSourceSelectWidget class embeds the browser view to
 select an existing data source.
 
 By default any layer type can be chosen, the valid layer
@@ -20,10 +20,10 @@ type can be restricted by setting a layer type filter with
 setLayerTypeFilter(layerType) or by activating the filter
 directly from the constructor.
 
-To retrieve the selected data source, uri() can be called and it
+To retrieve the selected data source, :py:func:`~uri` can be called and it
 will return a (possibly invalid) QgsMimeDataUtils.Uri.
 
-.. versionadded:: 3.6
+.. versionadded:: 3.14
 %End
 
 %TypeHeaderCode
@@ -31,12 +31,12 @@ will return a (possibly invalid) QgsMimeDataUtils.Uri.
 %End
   public:
 
-    QgsDataSourceSelectDialog( QgsBrowserModel *browserModel = 0,
+    QgsDataSourceSelectWidget( QgsBrowserGuiModel *browserModel = 0,
                                bool setFilterByLayerType = false,
-                               const QgsMapLayerType &layerType = QgsMapLayerType::VectorLayer,
+                               QgsMapLayerType layerType = QgsMapLayerType::VectorLayer,
                                QWidget *parent = 0 );
 %Docstring
-Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
+Constructs a QgsDataSourceSelectWidget, optionally filtering by layer type
 
 :param browserModel: an existing browser model (typically from app), if ``None`` an instance will be created
 :param setFilterByLayerType: activates filtering by layer type
@@ -45,11 +45,24 @@ Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
 %End
 
 
-    ~QgsDataSourceSelectDialog();
+    ~QgsDataSourceSelectWidget();
 
     void setLayerTypeFilter( QgsMapLayerType layerType );
 %Docstring
 Sets layer type filter to ``layerType`` and activates the filtering
+%End
+
+    void setDescription( const QString &description );
+%Docstring
+Sets a description label
+
+:param description: a description string
+
+.. note::
+
+   the description will be displayed at the bottom of the dialog
+
+.. versionadded:: 3.8
 %End
 
     QgsMimeDataUtils::Uri uri() const;
@@ -77,6 +90,103 @@ Apply filter to the model
 
 %Docstring
 Scroll to last selected index and expand it's children
+%End
+
+  signals:
+
+    void validationChanged( bool isValid );
+%Docstring
+This signal is emitted whenever the validation status of the widget changes.
+
+:param isValid: ``True`` if the current status of the widget is valid
+%End
+
+    void selectionChanged();
+%Docstring
+Emitted when the current selection changes in the widget.
+%End
+
+    void itemTriggered( const QgsMimeDataUtils::Uri &uri );
+%Docstring
+Emitted when an item is triggered, e.g. via a double-click.
+%End
+
+};
+
+
+class QgsDataSourceSelectDialog: QDialog
+{
+%Docstring
+The QgsDataSourceSelectDialog class embeds the browser view to
+select an existing data source.
+
+By default any layer type can be chosen, the valid layer
+type can be restricted by setting a layer type filter with
+setLayerTypeFilter(layerType) or by activating the filter
+directly from the constructor.
+
+To retrieve the selected data source, :py:func:`~QgsDataSourceSelectWidget.uri` can be called and it
+will return a (possibly invalid) QgsMimeDataUtils.Uri.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsdatasourceselectdialog.h"
+%End
+  public:
+
+    QgsDataSourceSelectDialog( QgsBrowserGuiModel *browserModel = 0,
+                               bool setFilterByLayerType = false,
+                               QgsMapLayerType layerType = QgsMapLayerType::VectorLayer,
+                               QWidget *parent = 0 );
+%Docstring
+Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
+
+:param browserModel: an existing browser model (typically from app), if ``None`` an instance will be created
+:param setFilterByLayerType: activates filtering by layer type
+:param layerType: sets the layer type filter, this is in effect only if filtering by layer type is also active
+:param parent: the object
+%End
+
+    void setLayerTypeFilter( QgsMapLayerType layerType );
+%Docstring
+Sets layer type filter to ``layerType`` and activates the filtering
+%End
+
+    void setDescription( const QString &description );
+%Docstring
+Sets a description label
+
+:param description: a description string
+
+.. note::
+
+   the description will be displayed at the bottom of the dialog
+
+.. versionadded:: 3.8
+%End
+
+    QgsMimeDataUtils::Uri uri() const;
+%Docstring
+Returns the (possibly invalid) uri of the selected data source
+%End
+
+    void showFilterWidget( bool visible );
+%Docstring
+Show/hide filter widget
+%End
+    void setFilterSyntax( QAction * );
+%Docstring
+Sets filter syntax
+%End
+    void setCaseSensitive( bool caseSensitive );
+%Docstring
+Sets filter case sensitivity
+%End
+    void setFilter();
+%Docstring
+Apply filter to the model
 %End
 
 };

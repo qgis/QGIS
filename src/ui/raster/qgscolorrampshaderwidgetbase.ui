@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
@@ -288,7 +288,7 @@ suffix</string>
   <tabstop>mClipCheckBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>
 </ui>

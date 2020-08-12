@@ -29,6 +29,8 @@
 #include <QFileDialog>
 #include <QPlainTextDocumentLayout>
 #include <QSortFilterProxyModel>
+#include <QDesktopServices>
+#include <QDragEnterEvent>
 
 #include "qgsbrowsermodel.h"
 #include "qgsbrowsertreeview.h"
@@ -42,13 +44,12 @@
 #include "qgsnative.h"
 #include "qgsmaptoolpan.h"
 #include "qgsvectorlayercache.h"
+#include "qgsvectortilelayer.h"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsapplication.h"
-#include <QDesktopServices>
-
-#include <QDragEnterEvent>
-
+#include "qgsdataitemguiproviderregistry.h"
+#include "qgsdataitemguiprovider.h"
 
 /// @cond PRIVATE
 
@@ -71,7 +72,7 @@ QgsBrowserPropertiesWrapLabel::QgsBrowserPropertiesWrapLabel( const QString &tex
 
 void QgsBrowserPropertiesWrapLabel::adjustHeight( QSizeF size )
 {
-  int height = size.height() + 2 * frameWidth();
+  int height = static_cast<int>( size.height() ) + 2 * frameWidth();
   setMinimumHeight( height );
   setMaximumHeight( height );
 }
@@ -84,11 +85,12 @@ QgsBrowserPropertiesWidget::QgsBrowserPropertiesWidget( QWidget *parent )
 void QgsBrowserPropertiesWidget::setWidget( QWidget *paramWidget )
 {
   QVBoxLayout *layout = new QVBoxLayout( this );
+  layout->setContentsMargins( 0, 0, 0, 0 );
   paramWidget->setParent( this );
   layout->addWidget( paramWidget );
 }
 
-QgsBrowserPropertiesWidget *QgsBrowserPropertiesWidget::createWidget( QgsDataItem *item, QWidget *parent )
+QgsBrowserPropertiesWidget *QgsBrowserPropertiesWidget::createWidget( QgsDataItem *item, const QgsDataItemGuiContext &context, QWidget *parent )
 {
   QgsBrowserPropertiesWidget *propertiesWidget = nullptr;
   // In general, we would like to show all items' paramWidget, but top level items like
@@ -98,16 +100,32 @@ QgsBrowserPropertiesWidget *QgsBrowserPropertiesWidget::createWidget( QgsDataIte
     propertiesWidget = new QgsBrowserDirectoryProperties( parent );
     propertiesWidget->setItem( item );
   }
-  else if ( item->type() == QgsDataItem::Layer )
+  else if ( item->type() == QgsDataItem::Layer || item->type() == QgsDataItem::Custom )
   {
+    // try new infrastructure of creation of layer widgets
+    QWidget *paramWidget = nullptr;
+    const QList< QgsDataItemGuiProvider * > providers = QgsGui::instance()->dataItemGuiProviderRegistry()->providers();
+    for ( QgsDataItemGuiProvider *provider : providers )
+    {
+      paramWidget = provider->createParamWidget( item, context );
+      if ( paramWidget )
+        break;
+    }
+    if ( !paramWidget )
+    {
+      // try old infrastructure
+      Q_NOWARN_DEPRECATED_PUSH
+      paramWidget = item->paramWidget();
+      Q_NOWARN_DEPRECATED_POP
+    }
+
     // prefer item's widget over standard layer widget
-    QWidget *paramWidget = item->paramWidget();
     if ( paramWidget )
     {
       propertiesWidget = new QgsBrowserPropertiesWidget( parent );
       propertiesWidget->setWidget( paramWidget );
     }
-    else
+    else if ( item->type() == QgsDataItem::Layer )
     {
       propertiesWidget = new QgsBrowserLayerProperties( parent );
       propertiesWidget->setItem( item );
@@ -145,26 +163,6 @@ QgsBrowserLayerProperties::QgsBrowserLayerProperties( QWidget *parent )
   } );
 }
 
-class ProjectionSettingRestorer
-{
-  public:
-
-    ProjectionSettingRestorer()
-    {
-      QgsSettings settings;
-      previousSetting = settings.value( QStringLiteral( "/Projections/defaultBehavior" ) ).toString();
-      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), QStringLiteral( "useProject" ) );
-    }
-
-    ~ProjectionSettingRestorer()
-    {
-      QgsSettings settings;
-      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), previousSetting );
-    }
-
-    QString previousSetting;
-};
-
 void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
 {
   QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
@@ -175,13 +173,6 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
 
   QgsMapLayerType type = layerItem->mapLayerType();
   QString layerMetadata = tr( "Error" );
-  QgsCoordinateReferenceSystem layerCrs;
-
-  QString defaultProjectionOption = QgsSettings().value( QStringLiteral( "Projections/defaultBehavior" ), "prompt" ).toString();
-  // temporarily override /Projections/defaultBehavior to avoid dialog prompt
-  // TODO - remove when there is a cleaner way to block the unknown projection dialog!
-  ProjectionSettingRestorer restorer;
-  ( void )restorer; // no warnings
 
   mLayer.reset();
 
@@ -195,14 +186,17 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     {
       QgsDebugMsg( QStringLiteral( "creating raster layer" ) );
       // should copy code from addLayer() to split uri ?
-      mLayer = qgis::make_unique< QgsRasterLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
+      QgsRasterLayer::LayerOptions options;
+      options.skipCrsValidation = true;
+      mLayer = qgis::make_unique< QgsRasterLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
 
     case QgsMapLayerType::MeshLayer:
     {
       QgsDebugMsg( QStringLiteral( "creating mesh layer" ) );
-      const QgsMeshLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      QgsMeshLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      options.skipCrsValidation = true;
       mLayer = qgis::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
@@ -210,12 +204,21 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     case QgsMapLayerType::VectorLayer:
     {
       QgsDebugMsg( QStringLiteral( "creating vector layer" ) );
-      const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      options.skipCrsValidation = true;
       mLayer = qgis::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
 
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      QgsDebugMsgLevel( QStringLiteral( "creating vector tile layer" ), 2 );
+      mLayer = qgis::make_unique< QgsVectorTileLayer >( layerItem->uri(), layerItem->name() );
+      break;
+    }
+
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::AnnotationLayer:
     {
       // TODO: support display of properties for plugin layers
       return;
@@ -233,7 +236,6 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   {
     bool ok = false;
     mLayer->loadDefaultMetadata( ok );
-    layerCrs = mLayer->crs();
     layerMetadata = mLayer->htmlMetadata();
 
     mMapCanvas->setDestinationCrs( mLayer->crs() );
@@ -250,15 +252,6 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   QString myStyle = QgsApplication::reportStyleSheet();
   mMetadataTextBrowser->document()->setDefaultStyleSheet( myStyle );
   mMetadataTextBrowser->setHtml( layerMetadata );
-
-// report if layer was set to to project crs without prompt (may give a false positive)
-  if ( defaultProjectionOption == QLatin1String( "prompt" ) )
-  {
-    QgsCoordinateReferenceSystem defaultCrs =
-      QgsProject::instance()->crs();
-    if ( layerCrs == defaultCrs )
-      mNoticeLabel->setText( "NOTICE: Layer CRS set from project (" + defaultCrs.authid() + ')' );
-  }
 
   if ( mNoticeLabel->text().isEmpty() )
   {
@@ -339,22 +332,15 @@ QgsBrowserPropertiesDialog::QgsBrowserPropertiesDialog( const QString &settingsS
   , mSettingsSection( settingsSection )
 {
   setupUi( this );
-  QgsSettings settings;
-  restoreGeometry( settings.value( mSettingsSection + "/propertiesDialog/geometry" ).toByteArray() );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 }
 
-QgsBrowserPropertiesDialog::~QgsBrowserPropertiesDialog()
-{
-  QgsSettings settings;
-  settings.setValue( mSettingsSection + "/propertiesDialog/geometry", saveGeometry() );
-}
-
-void QgsBrowserPropertiesDialog::setItem( QgsDataItem *item )
+void QgsBrowserPropertiesDialog::setItem( QgsDataItem *item, const QgsDataItemGuiContext &context )
 {
   if ( !item )
     return;
 
-  mPropertiesWidget = QgsBrowserPropertiesWidget::createWidget( item, this );
+  mPropertiesWidget = QgsBrowserPropertiesWidget::createWidget( item, context, this );
   mLayout->addWidget( mPropertiesWidget );
   setWindowTitle( item->type() == QgsDataItem::Layer ? tr( "Layer Properties" ) : tr( "Directory Properties" ) );
 }

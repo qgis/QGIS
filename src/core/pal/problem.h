@@ -36,7 +36,9 @@
 #include "qgis_core.h"
 #include <list>
 #include <QList>
-#include "rtree.hpp"
+#include "palrtree.h"
+#include <memory>
+#include <vector>
 
 namespace pal
 {
@@ -49,54 +51,14 @@ namespace pal
    * \ingroup core
    * \note not available in Python bindings
    */
-  class Sol
-  {
-    public:
-      int *s = nullptr;
-      double cost;
-  };
 
-  typedef struct _subpart
-  {
-
-    /**
-     * # of features in problem
-     */
-    int probSize;
-
-    /**
-     * # of features bounding the problem
-     */
-    int borderSize;
-
-    /**
-     *  total # features (prob + border)
-     */
-    int subSize;
-
-    /**
-     * wrap bw sub feat and main feat
-     */
-    int *sub = nullptr;
-
-    /**
-     * sub solution
-     */
-    int *sol = nullptr;
-
-    /**
-     * first feat in sub part
-     */
-    int seed;
-  } SubPart;
-
-  typedef struct _chain
+  struct Chain
   {
     int degree;
     double delta;
     int *feat = nullptr;
     int *label = nullptr;
-  } Chain;
+  };
 
   /**
    * \ingroup core
@@ -106,11 +68,16 @@ namespace pal
    */
   class CORE_EXPORT Problem
   {
-
       friend class Pal;
 
     public:
-      Problem();
+
+      /**
+       * Constructor for Problem.
+       *
+       * The \a extent argument specifies the bounds of the incoming coordinates.
+       */
+      Problem( const QgsRectangle &extent );
 
       //Problem(char *lorena_file, bool displayAll);
 
@@ -126,72 +93,71 @@ namespace pal
        * \param position label candidate position. Ownership is transferred to Problem.
        * \since QGIS 2.12
        */
-      void addCandidatePosition( LabelPosition *position ) { mLabelPositions.append( position ); }
-
-      /////////////////
-      // problem inspection functions
-      int getNumFeatures() { return nbft; }
-      // features counted 0...n-1
-      int getFeatureCandidateCount( int i ) { return featNbLp[i]; }
-      // both features and candidates counted 0..n-1
-      LabelPosition *getFeatureCandidate( int fi, int ci ) { return mLabelPositions.at( featStartId[fi] + ci ); }
-      /////////////////
-
-
-      void reduce();
+      void addCandidatePosition( std::unique_ptr< LabelPosition > position ) { mLabelPositions.emplace_back( std::move( position ) ); }
 
       /**
-       * \brief popmusic framework
+       * Returns the total number of features considered during the labeling problem.
        */
-      void popmusic();
+      std::size_t featureCount() const { return mFeatureCount; }
+
+      /**
+       * Returns the number of candidates generated for the \a feature at the specified index.
+       */
+      int featureCandidateCount( int feature ) const { return mFeatNbLp[feature]; }
+
+      /**
+       * Returns the candidate corresponding to the specified \a feature and \a candidate index.
+       */
+      LabelPosition *featureCandidate( int feature, int candidate ) const { return mLabelPositions[ mFeatStartId[feature] + candidate ].get(); }
+
+      void reduce();
 
       /**
        * \brief Test with very-large scale neighborhood
        */
       void chain_search();
 
-      QList<LabelPosition *> getSolution( bool returnInactive );
-
-      PalStat *getStats();
+      /**
+       * Solves the labeling problem, selecting the best candidate locations for all labels and returns a list of these
+       * calculated label positions.
+       *
+       * If \a returnInactive is true, then the best positions for ALL labels will be returned, regardless of whether these
+       * labels overlap other labels.
+       *
+       * If the optional \a unlabeled list is specified, it will be filled with a list of all feature labels which could
+       * not be placed in the returned solution (e.g. due to overlaps or other constraints).
+       *
+       * Ownership of the returned labels is not transferred - it resides with the pal object.
+       */
+      QList<LabelPosition *> getSolution( bool returnInactive, QList<LabelPosition *> *unlabeled = nullptr );
 
       /* useful only for postscript post-conversion*/
       //void toFile(char *label_file);
 
-      SubPart *subPart( int r, int featseed, int *isIn );
-
-      void initialization();
-
-      double compute_feature_cost( SubPart *part, int feat_id, int label_id, int *nbOverlap );
-      double compute_subsolution_cost( SubPart *part, int *s, int *nbOverlap );
-
-      /**
-       *  POPMUSIC, chain
-       */
-      double popmusic_chain( SubPart *part );
-
-      double popmusic_tabu( SubPart *part );
-
-      /**
-       *
-       * POPMUSIC, Tabu search with  chain'
-       *
-       */
-      double popmusic_tabu_chain( SubPart *part );
-
-      /**
-       * \brief Basic initial solution : every feature to -1
-       */
-      void init_sol_empty();
       void init_sol_falp();
 
-      static bool compareLabelArea( pal::LabelPosition *l1, pal::LabelPosition *l2 );
+      /**
+       * Returns a reference to the list of label positions which correspond to
+       * features with no candidates.
+       *
+       * Ownership of positions added to this list is transferred to the problem.
+       */
+      std::vector< std::unique_ptr< LabelPosition > > *positionsWithNoCandidates()
+      {
+        return &mPositionsWithNoCandidates;
+      }
+
+      /**
+       * Returns the index containing all label candidates.
+       */
+      PalRtree< LabelPosition > &allCandidatesIndex() { return mAllCandidatesIndex; }
 
     private:
 
       /**
-       * How many layers are labelled ?
+       * Total number of layers containing labels
        */
-      int nbLabelledLayers = 0;
+      int mLayerCount = 0;
 
       /**
        * Names of the labelled layers
@@ -199,60 +165,65 @@ namespace pal
       QStringList labelledLayersName;
 
       /**
-       * # active candidates (remaining after reduce())
+       * Total number of active candidates (remaining after reduce())
        */
-      int nblp = 0;
+      int mTotalCandidates = 0;
 
       /**
-       * # candidates (all, including)
+       * Number of candidates (all, including)
        */
-      int all_nblp = 0;
+      int mAllNblp = 0;
 
       /**
-       * # feature to label
+       * Total number of features to label.
        */
-      int nbft = 0;
-
+      std::size_t mFeatureCount = 0;
 
       /**
        * if TRUE, special value -1 is prohibited
        */
-      bool displayAll = false;
+      bool mDisplayAll = false;
 
       /**
        * Map extent (xmin, ymin, xmax, ymax)
        */
-      double bbox[4];
+      double mMapExtentBounds[4] = {0, 0, 0, 0};
 
-      double *labelPositionCost = nullptr;
-      int *nbOlap = nullptr;
+      std::vector< std::unique_ptr< LabelPosition > > mLabelPositions;
 
-      QList< LabelPosition * > mLabelPositions;
+      PalRtree<LabelPosition> mAllCandidatesIndex;
+      PalRtree<LabelPosition> mActiveCandidatesIndex;
 
-      RTree<LabelPosition *, double, 2, double> *candidates = nullptr; // index all candidates
-      RTree<LabelPosition *, double, 2, double> *candidates_sol = nullptr; // index active candidates
-      RTree<LabelPosition *, double, 2, double> *candidates_subsol = nullptr; // idem for subparts
+      std::vector< std::unique_ptr< LabelPosition > > mPositionsWithNoCandidates;
 
-      //int *feat;        // [nblp]
-      int *featStartId = nullptr; // [nbft]
-      int *featNbLp = nullptr;    // [nbft]
-      double *inactiveCost = nullptr; //
+      std::vector< int > mFeatStartId;
+      std::vector< int > mFeatNbLp;
+      std::vector< double > mInactiveCost;
 
-      Sol *sol = nullptr;         // [nbft]
-      int nbActive = 0;
+      class Sol
+      {
+        public:
 
-      double nbOverlap = 0.0;
+          //! Placeholder list for active labels. Will contain label id for active labels, or -1 for empty positions in list
+          std::vector< int > activeLabelIds;
 
-      int *featWrap = nullptr;
+          double totalCost = 0;
 
-      Chain *chain( SubPart *part, int seed );
+          void init( std::size_t featureCount )
+          {
+            activeLabelIds.resize( featureCount, -1 );
+            totalCost = 0;
+          }
+      };
+
+      Sol mSol;
+      double mNbOverlap = 0.0;
 
       Chain *chain( int seed );
 
       Pal *pal = nullptr;
 
       void solution_cost();
-      void check_solution();
   };
 
 } // namespace

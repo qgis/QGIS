@@ -1,0 +1,84 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/scalebar/qgsscalebarrendererregistry.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsScaleBarRendererRegistry
+{
+%Docstring
+The QgsScaleBarRendererRegistry manages registered scalebar renderers.
+
+A reference to the QgsScaleBarRendererRegistry can be obtained from
+:py:func:`QgsApplication.scalebarRendererRegistry()`.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsscalebarrendererregistry.h"
+%End
+  public:
+
+    explicit QgsScaleBarRendererRegistry();
+%Docstring
+You should not normally need to create your own scalebar renderer registry.
+
+Use the one provided by `:py:func:`QgsApplication.scalebarRendererRegistry()`` instead.
+%End
+    ~QgsScaleBarRendererRegistry();
+
+    QStringList renderers() const;
+%Docstring
+Returns a list of the renderer ids currently contained in the registry.
+%End
+
+    QStringList sortedRendererList() const;
+%Docstring
+Returns a list of the renderer ids currently contained in the registry,
+sorted in an order respecting the renderer's sort keys and display strings.
+%End
+
+    void addRenderer( QgsScaleBarRenderer *renderer /Transfer/ );
+%Docstring
+Adds a new ``renderer`` to the registry.
+
+Ownership is transferred to the registry.
+%End
+
+    void removeRenderer( const QString &id );
+%Docstring
+Removes the renderer with matching ``id`` from the registry.
+%End
+
+    QgsScaleBarRenderer *renderer( const QString &id ) const /TransferBack/;
+%Docstring
+Creates a new scalebar renderer by ``id``. If there is no such ``id`` registered,
+``None`` will be returned instead.
+
+The caller takes ownership of the returned object.
+%End
+
+    QString visibleName( const QString &id ) const;
+%Docstring
+Returns the translated, user-visible name for the renderer with matching ``id``.
+%End
+
+    int sortKey( const QString &id ) const;
+%Docstring
+Returns the sorting key for the renderer with matching ``id``.
+%End
+
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/scalebar/qgsscalebarrendererregistry.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

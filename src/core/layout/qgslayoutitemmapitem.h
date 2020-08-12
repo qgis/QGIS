@@ -115,7 +115,7 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
      * Controls whether the item will be drawn. Set \a enabled to TRUE to enable drawing of the item.
      * \see enabled()
      */
-    void setEnabled( bool enabled );
+    virtual void setEnabled( bool enabled );
 
     /**
      * Returns whether the item will be drawn.
@@ -177,6 +177,26 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
      * \since QGIS 3.6
      */
     void setStackingLayer( QgsMapLayer *layer );
+
+    /**
+     * Accepts the specified style entity \a visitor, causing it to visit all style entities associated
+     * with the map item.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+    /**
+     * Returns the internal map layer used by this item, if available.
+     *
+     * \since QGIS 3.10.1
+     */
+    virtual QgsMapLayer *mapLayer();
+
+    QgsExpressionContext createExpressionContext() const override;
 
   protected:
 
@@ -263,6 +283,18 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
      */
     bool containsAdvancedEffects() const;
 
+    /**
+     * Returns TRUE if the stack has any currently enabled items.
+     *
+     * \since QGIS 3.10
+     */
+    bool hasEnabledItems() const;
+
+    /**
+     * Returns a reference to the item at the specified \a index within the stack.
+     */
+    QgsLayoutItemMapItem *item( int index ) const;
+
   protected:
 
     /**
@@ -303,11 +335,6 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
      * Returns a reference to an item which matching \a itemId within the stack.
      */
     QgsLayoutItemMapItem *item( const QString &itemId ) const;
-
-    /**
-     * Returns a reference to the item at the specified \a index within the stack.
-     */
-    QgsLayoutItemMapItem *item( int index ) const;
 
     /**
      * Returns a reference to an item at the specified \a index within the stack.

@@ -48,7 +48,7 @@ class QgsLayoutManagerDialog: public QDialog, private Ui::QgsLayoutManagerBase
 
     /**
      * Returns the default templates (key: template name, value: absolute path to template file)
-     * \param fromUser whether to return user templates from ~/.qgis/composer_templates
+     * \param fromUser whether to return user templates from [profile folder]/composer_templates
      */
     QMap<QString, QString> defaultTemplates( bool fromUser = false ) const;
     QMap<QString, QString> otherTemplates() const;
@@ -56,9 +56,11 @@ class QgsLayoutManagerDialog: public QDialog, private Ui::QgsLayoutManagerBase
     QMap<QString, QString> templatesFromPath( const QString &path ) const;
 
     /**
-     * Open local directory with user's system, creating it if not present
+     * Opens local directory with user's system and tries to create it if not present
      */
     void openLocalDirectory( const QString &localDirPath );
+
+    void updateTemplateButtonEnabledState();
 
     QString mDefaultTemplatesDir;
     QString mUserTemplatesDir;

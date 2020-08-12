@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/qgis/QGIS.svg?branch=master)](https://travis-ci.org/qgis/QGIS)
 [![Docker Status](https://img.shields.io/docker/automated/qgis/qgis.svg)](https://cloud.docker.com/app/qgis/repository/docker/qgis/qgis/general)
+[![Build Status](https://dev.azure.com/qgis/QGIS/_apis/build/status/qgis.QGIS?branchName=master)](https://dev.azure.com/qgis/QGIS/_build/latest?definitionId=1&branchName=master)
+![Windows cross build with MXE](https://github.com/qgis/QGIS/workflows/Windows%20cross%20build%20with%20MXE/badge.svg)
 
 QGIS is an Open Source Geographic Information System. The project was born in
 May of 2002 and was established as a project on SourceForge in June of the same
@@ -53,20 +55,17 @@ modified.
 
  * NetCDF
  * GRIB
- * 2DM 
+ * 2DM
  * [Other MDAL supported formats](https://github.com/lutraconsulting/MDAL#supported-formats)
 
 ## Note
 
 Please follow the installation instructions carefully.
-After extracting the distribution, you can find the HTML version of the
-installation document in `qgis/doc/index.html`. The installation document is
-also available as PDF in the same directory.
+After extracting the distribution, please check the
+[documentation](https://qgis.org/en/docs/index.html)
 
 ## Help us
-Please submit bug reports using the [QGIS bug tracker](https://issues.qgis.org/).
-When reporting a bug, either login or, if you don't have a qgis trac, provide
-an email address where we can request additional information.
+Please submit bug reports using the [QGIS bug tracker](https://github.com/qgis/QGIS/issues/).
 
 ## Support
 You can get support in the following ways:
@@ -86,8 +85,12 @@ You can get support in the following ways:
 
 QGIS is on GitHub at https://github.com/qgis/QGIS. If you wish to contribute
 patches you can [fork the project](https://help.github.com/forking/), make your changes, commit to your
-repository, and then [create a pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/). The development team can then
-review your contribution and commit it upstream as appropriate.
+repository, and then [create a pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/). The development team can then review your contribution and commit it upstream as appropriate.
+
 If you commit a new feature, add [FEATURE] to your commit message AND give a clear description of the new feature. A webhook will automatically create an issue on the QGIS-Documentation repo to tell people to write documentation about it.
 
 If you are not a developer, there are many other possibilities which do not require programming skills to help QGIS to evolve. Check our [project homepage for more information](http://qgis.org/en/site/getinvolved/index.html).
+
+### Building from source
+
+The [building guide](INSTALL.md) can be used to get started with building QGIS from source.

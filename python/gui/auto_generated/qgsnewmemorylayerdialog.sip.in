@@ -31,7 +31,6 @@ Runs the dialog and creates a new memory layer
 %Docstring
 New dialog constructor.
 %End
-    ~QgsNewMemoryLayerDialog();
 
     QgsWkbTypes::Type selectedType() const;
 %Docstring
@@ -57,6 +56,13 @@ Returns the selected CRS for the new layer.
     QString layerName() const;
 %Docstring
 Returns the layer name
+%End
+
+    QgsFields fields() const;
+%Docstring
+Returns attributes for the new layer.
+
+.. versionadded:: 3.14
 %End
 
 };

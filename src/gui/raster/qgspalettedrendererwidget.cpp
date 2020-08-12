@@ -66,7 +66,12 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
 
   mSwatchDelegate = new QgsColorSwatchDelegate( this );
   mTreeView->setItemDelegateForColumn( QgsPalettedRendererModel::ColorColumn, mSwatchDelegate );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   mTreeView->setColumnWidth( QgsPalettedRendererModel::ColorColumn, Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 6.6 );
+#else
+  mTreeView->setColumnWidth( QgsPalettedRendererModel::ColorColumn, Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 6.6 );
+#endif
   mTreeView->setContextMenuPolicy( Qt::CustomContextMenu );
   mTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
   mTreeView->setDragEnabled( true );
@@ -544,7 +549,7 @@ QModelIndex QgsPalettedRendererModel::index( int row, int column, const QModelIn
 
 QModelIndex QgsPalettedRendererModel::parent( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   //all items are top level
   return QModelIndex();
@@ -722,7 +727,7 @@ bool QgsPalettedRendererModel::insertRows( int row, int count, const QModelIndex
   beginInsertRows( QModelIndex(), row, row + count - 1 );
   for ( int i = row; i < row + count; ++i, ++nextValue )
   {
-    mData.insert( i, QgsPalettedRasterRenderer::Class( nextValue, QColor( 200, 200, 200 ), QString::number( nextValue ) ) );
+    mData.insert( i, QgsPalettedRasterRenderer::Class( nextValue, QColor( 200, 200, 200 ), QLocale().toString( nextValue ) ) );
   }
   endInsertRows();
   emit classesChanged();
@@ -763,7 +768,7 @@ QMimeData *QgsPalettedRendererModel::mimeData( const QModelIndexList &indexes ) 
 
 bool QgsPalettedRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex & )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
   if ( action != Qt::MoveAction ) return true;
 
   if ( !data->hasFormat( QStringLiteral( "application/x-qgspalettedrenderermodel" ) ) )

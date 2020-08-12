@@ -116,8 +116,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void newVector();
     //! Read project
     void projectRead();
-    //! New project
-    void newProject();
     //! update plugin icons when the app tells us its theme is changed
     void setCurrentTheme( QString themeName );
     void setTransform();

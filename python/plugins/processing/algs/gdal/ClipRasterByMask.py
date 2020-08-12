@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -48,7 +44,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class ClipRasterByMask(GdalAlgorithm):
-
     INPUT = 'INPUT'
     MASK = 'MASK'
     SOURCE_CRS = 'SOURCE_CRS'
@@ -63,14 +58,16 @@ class ClipRasterByMask(GdalAlgorithm):
     OPTIONS = 'OPTIONS'
     DATA_TYPE = 'DATA_TYPE'
     MULTITHREADING = 'MULTITHREADING'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
-
-    TYPES = ['Use input layer data type', 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
+
+        self.TYPES = [self.tr('Use Input Layer Data Type'), 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
+
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
                                                             self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterFeatureSource(self.MASK,
@@ -109,11 +106,13 @@ class ClipRasterByMask(GdalAlgorithm):
                                                        type=QgsProcessingParameterNumber.Double,
                                                        defaultValue=None,
                                                        optional=True))
+
         multithreading_param = QgsProcessingParameterBoolean(self.MULTITHREADING,
                                                              self.tr('Use multithreaded warping implementation'),
                                                              defaultValue=False)
         multithreading_param.setFlags(multithreading_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(multithreading_param)
+
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
@@ -131,6 +130,13 @@ class ClipRasterByMask(GdalAlgorithm):
                                                     defaultValue=0)
         dataType_param.setFlags(dataType_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(dataType_param)
+
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
                                                                   self.tr('Clipped (mask)')))
@@ -210,6 +216,8 @@ class ClipRasterByMask(GdalAlgorithm):
 
         arguments.append('-cutline')
         arguments.append(maskLayer)
+        arguments.append('-cl')
+        arguments.append(maskLayerName)
 
         if self.parameterAsBoolean(parameters, self.CROP_TO_CUTLINE, context):
             arguments.append('-crop_to_cutline')
@@ -225,6 +233,10 @@ class ClipRasterByMask(GdalAlgorithm):
 
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         arguments.append(inLayer.source())
         arguments.append(out)

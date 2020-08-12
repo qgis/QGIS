@@ -58,6 +58,7 @@ namespace QgsWfs
     }
 #else
     doc = createDescribeFeatureTypeDocument( serverIface, project, version, request );
+    describeDocument = &doc;
 #endif
     response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
     response.write( describeDocument->toByteArray() );
@@ -67,7 +68,7 @@ namespace QgsWfs
   QDomDocument createDescribeFeatureTypeDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
       const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QDomDocument doc;
 
@@ -110,7 +111,7 @@ namespace QgsWfs
     QStringList typeNameList;
     QDomDocument queryDoc;
     QString errorMsg;
-    if ( queryDoc.setContent( parameters.value( QStringLiteral( "REQUEST_BODY" ) ), true, &errorMsg ) )
+    if ( queryDoc.setContent( request.data(), true, &errorMsg ) )
     {
       //read doc
       QDomElement queryDocElem = queryDoc.documentElement();
@@ -141,10 +142,6 @@ namespace QgsWfs
     {
       QgsMapLayer *layer = project->mapLayer( wfsLayerIds.at( i ) );
       if ( !layer )
-      {
-        continue;
-      }
-      if ( layer->type() != QgsMapLayerType::VectorLayer )
       {
         continue;
       }
@@ -239,9 +236,15 @@ namespace QgsWfs
         case QgsWkbTypes::MultiPoint:
           geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiPointPropertyType" ) );
           break;
+        case QgsWkbTypes::MultiCurve:
+          geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiCurveType" ) );
+          break;
         case QgsWkbTypes::MultiLineString25D:
         case QgsWkbTypes::MultiLineString:
           geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiLineStringPropertyType" ) );
+          break;
+        case QgsWkbTypes::MultiSurface:
+          geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiSurfaceType" ) );
           break;
         case QgsWkbTypes::MultiPolygon25D:
         case QgsWkbTypes::MultiPolygon:
@@ -254,113 +257,113 @@ namespace QgsWfs
       geomElem.setAttribute( QStringLiteral( "minOccurs" ), QStringLiteral( "0" ) );
       geomElem.setAttribute( QStringLiteral( "maxOccurs" ), QStringLiteral( "1" ) );
       sequenceElem.appendChild( geomElem );
+    }
 
-      //Attributes
-      QgsFields fields = layer->fields();
-      //hidden attributes for this layer
-      const QSet<QString> &layerExcludedAttributes = layer->excludeAttributesWfs();
-      for ( int idx = 0; idx < fields.count(); ++idx )
+    //Attributes
+    QgsFields fields = layer->fields();
+    //hidden attributes for this layer
+    const QSet<QString> &layerExcludedAttributes = layer->excludeAttributesWfs();
+    for ( int idx = 0; idx < fields.count(); ++idx )
+    {
+      const QgsField field = fields.at( idx );
+      QString attributeName = field.name();
+      //skip attribute if excluded from WFS publication
+      if ( layerExcludedAttributes.contains( attributeName ) )
       {
-        const QgsField field = fields.at( idx );
-        QString attributeName = field.name();
-        //skip attribute if excluded from WFS publication
-        if ( layerExcludedAttributes.contains( attributeName ) )
-        {
-          continue;
-        }
+        continue;
+      }
 
-        //xsd:element
-        QDomElement attElem = doc.createElement( QStringLiteral( "element" )/*xsd:element*/ );
-        attElem.setAttribute( QStringLiteral( "name" ), attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
-        QVariant::Type attributeType = field.type();
-        if ( attributeType == QVariant::Int )
-        {
-          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
-        }
-        else if ( attributeType == QVariant::UInt )
-        {
-          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "unsignedInt" ) );
-        }
-        else if ( attributeType == QVariant::LongLong )
-        {
-          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "long" ) );
-        }
-        else if ( attributeType == QVariant::ULongLong )
-        {
-          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "unsignedLong" ) );
-        }
-        else if ( attributeType == QVariant::Double )
-        {
-          if ( field.length() != 0 && field.precision() == 0 )
-            attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "integer" ) );
-          else
-            attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "decimal" ) );
-        }
-        else if ( attributeType == QVariant::Bool )
-        {
-          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "boolean" ) );
-        }
-        else if ( attributeType == QVariant::Date )
-        {
-          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "date" ) );
-        }
-        else if ( attributeType == QVariant::Time )
-        {
-          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "time" ) );
-        }
-        else if ( attributeType == QVariant::DateTime )
-        {
-          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "dateTime" ) );
-        }
+      //xsd:element
+      QDomElement attElem = doc.createElement( QStringLiteral( "element" )/*xsd:element*/ );
+      attElem.setAttribute( QStringLiteral( "name" ), attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
+      QVariant::Type attributeType = field.type();
+      if ( attributeType == QVariant::Int )
+      {
+        attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
+      }
+      else if ( attributeType == QVariant::UInt )
+      {
+        attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "unsignedInt" ) );
+      }
+      else if ( attributeType == QVariant::LongLong )
+      {
+        attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "long" ) );
+      }
+      else if ( attributeType == QVariant::ULongLong )
+      {
+        attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "unsignedLong" ) );
+      }
+      else if ( attributeType == QVariant::Double )
+      {
+        if ( field.length() > 0 && field.precision() == 0 )
+          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "integer" ) );
         else
-        {
-          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "string" ) );
-        }
+          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "decimal" ) );
+      }
+      else if ( attributeType == QVariant::Bool )
+      {
+        attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "boolean" ) );
+      }
+      else if ( attributeType == QVariant::Date )
+      {
+        attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "date" ) );
+      }
+      else if ( attributeType == QVariant::Time )
+      {
+        attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "time" ) );
+      }
+      else if ( attributeType == QVariant::DateTime )
+      {
+        attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "dateTime" ) );
+      }
+      else
+      {
+        attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "string" ) );
+      }
 
-        const QgsEditorWidgetSetup setup = field.editorWidgetSetup();
-        if ( setup.type() ==  QStringLiteral( "DateTime" ) )
+      const QgsEditorWidgetSetup setup = field.editorWidgetSetup();
+      if ( setup.type() ==  QStringLiteral( "DateTime" ) )
+      {
+        QgsDateTimeFieldFormatter fieldFormatter;
+        const QVariantMap config = setup.config();
+        const QString fieldFormat = config.value( QStringLiteral( "field_format" ), fieldFormatter.defaultFormat( field.type() ) ).toString();
+        if ( fieldFormat == QStringLiteral( "yyyy-MM-dd" ) )
+          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "date" ) );
+        else if ( fieldFormat == QStringLiteral( "HH:mm:ss" ) )
+          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "time" ) );
+        else
+          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "dateTime" ) );
+      }
+      else if ( setup.type() ==  QStringLiteral( "Range" ) )
+      {
+        const QVariantMap config = setup.config();
+        if ( config.contains( QStringLiteral( "Precision" ) ) )
         {
-          QgsDateTimeFieldFormatter fieldFormatter;
-          const QVariantMap config = setup.config();
-          const QString fieldFormat = config.value( QStringLiteral( "field_format" ), fieldFormatter.defaultFormat( field.type() ) ).toString();
-          if ( fieldFormat == QStringLiteral( "yyyy-MM-dd" ) )
-            attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "date" ) );
-          else if ( fieldFormat == QStringLiteral( "HH:mm:ss" ) )
-            attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "time" ) );
-          else
-            attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "dateTime" ) );
-        }
-        else if ( setup.type() ==  QStringLiteral( "Range" ) )
-        {
-          const QVariantMap config = setup.config();
-          if ( config.contains( QStringLiteral( "Precision" ) ) )
+          // if precision in range config is not the same as the attributePrec
+          // we need to update type
+          bool ok;
+          int configPrec( config[ QStringLiteral( "Precision" ) ].toInt( &ok ) );
+          if ( ok && configPrec != field.precision() )
           {
-            // if precision in range config is not the same as the attributePrec
-            // we need to update type
-            bool ok;
-            int configPrec( config[ QStringLiteral( "Precision" ) ].toInt( &ok ) );
-            if ( ok && configPrec != field.precision() )
-            {
-              if ( configPrec == 0 )
-                attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "integer" ) );
-              else
-                attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "decimal" ) );
-            }
+            if ( configPrec == 0 )
+              attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "integer" ) );
+            else
+              attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "decimal" ) );
           }
         }
+      }
 
-        if ( !( field.constraints().constraints() & QgsFieldConstraints::Constraint::ConstraintNotNull ) )
-        {
-          attElem.setAttribute( QStringLiteral( "nillable" ), QStringLiteral( "true" ) );
-        }
+      if ( !( field.constraints().constraints() & QgsFieldConstraints::Constraint::ConstraintNotNull ) )
+      {
+        attElem.setAttribute( QStringLiteral( "nillable" ), QStringLiteral( "true" ) );
+      }
 
-        sequenceElem.appendChild( attElem );
+      sequenceElem.appendChild( attElem );
 
-        QString alias = field.alias();
-        if ( !alias.isEmpty() )
-        {
-          attElem.setAttribute( QStringLiteral( "alias" ), alias );
-        }
+      QString alias = field.alias();
+      if ( !alias.isEmpty() )
+      {
+        attElem.setAttribute( QStringLiteral( "alias" ), alias );
       }
     }
   }

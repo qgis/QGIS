@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '05/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 from qgis.PyQt import sip
@@ -107,11 +105,11 @@ class TestQgsLayoutView(unittest.TestCase):
         view.selectAll()
         self.assertTrue(item1.isSelected())
         self.assertTrue(item2.isSelected())
-        self.assertFalse(item3.isSelected()) # locked
+        self.assertFalse(item3.isSelected())  # locked
 
         self.assertEqual(len(focused_item_spy), 1)
 
-        item3.setSelected(True) # locked item selection should be cleared
+        item3.setSelected(True)  # locked item selection should be cleared
         view.selectAll()
         self.assertTrue(item1.isSelected())
         self.assertTrue(item2.isSelected())
@@ -177,11 +175,11 @@ class TestQgsLayoutView(unittest.TestCase):
         view.invertSelection()
         self.assertTrue(item1.isSelected())
         self.assertTrue(item2.isSelected())
-        self.assertFalse(item3.isSelected()) # locked
+        self.assertFalse(item3.isSelected())  # locked
 
         self.assertEqual(len(focused_item_spy), 1)
 
-        item3.setSelected(True) # locked item selection should be cleared
+        item3.setSelected(True)  # locked item selection should be cleared
         view.invertSelection()
         self.assertFalse(item1.isSelected())
         self.assertFalse(item2.isSelected())
@@ -235,7 +233,7 @@ class TestQgsLayoutView(unittest.TestCase):
         self.assertTrue(item3.isSelected())
         self.assertEqual(len(focused_item_spy), 3)
 
-        view.selectNextItemAbove() # already top most
+        view.selectNextItemAbove()  # already top most
         self.assertFalse(item1.isSelected())
         self.assertFalse(item2.isSelected())
         self.assertTrue(item3.isSelected())
@@ -253,7 +251,7 @@ class TestQgsLayoutView(unittest.TestCase):
         self.assertFalse(item3.isSelected())
         self.assertEqual(len(focused_item_spy), 5)
 
-        view.selectNextItemBelow() # back to bottom most
+        view.selectNextItemBelow()  # back to bottom most
         self.assertTrue(item1.isSelected())
         self.assertFalse(item2.isSelected())
         self.assertFalse(item3.isSelected())
@@ -698,10 +696,10 @@ class TestQgsLayoutView(unittest.TestCase):
         multiframe1.addFrame(frame1)
         frame1b = QgsLayoutFrame(l, multiframe1)
         frame1b.setId('frame1b')
-        multiframe1.addFrame(frame1b) # not selected
+        multiframe1.addFrame(frame1b)  # not selected
         frame1c = QgsLayoutFrame(l, multiframe1)
         frame1c.setId('frame1b')
-        multiframe1.addFrame(frame1c) # not selected
+        multiframe1.addFrame(frame1c)  # not selected
 
         multiframe2 = QgsLayoutItemHtml(l)
         multiframe2.setHtml('mf2')

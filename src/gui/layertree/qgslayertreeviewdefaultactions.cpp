@@ -138,6 +138,13 @@ QAction *QgsLayerTreeViewDefaultActions::actionMoveToTop( QObject *parent )
   return a;
 }
 
+QAction *QgsLayerTreeViewDefaultActions::actionMoveToBottom( QObject *parent )
+{
+  QAction *a = new QAction( tr( "Move to &Bottom" ), parent );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::moveToBottom );
+  return a;
+}
+
 QAction *QgsLayerTreeViewDefaultActions::actionGroupSelected( QObject *parent )
 {
   QAction *a = new QAction( tr( "&Group Selected" ), parent );
@@ -222,6 +229,11 @@ void QgsLayerTreeViewDefaultActions::checkAndAllParents()
 
 void QgsLayerTreeViewDefaultActions::addGroup()
 {
+  if ( mView->selectedNodes( true ).count() >= 2 )
+  {
+    groupSelected();
+    return;
+  }
   QgsLayerTreeGroup *group = mView->currentGroupNode();
   if ( !group )
     group = mView->layerTreeModel()->rootGroup();
@@ -369,7 +381,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas, const Q
   extent.scale( 1.05 );
 
   //zoom to bounding box
-  canvas->setExtent( extent );
+  canvas->setExtent( extent, true );
   canvas->refresh();
 }
 
@@ -424,26 +436,40 @@ void QgsLayerTreeViewDefaultActions::moveOutOfGroup()
 
 void QgsLayerTreeViewDefaultActions::moveToTop()
 {
-  QMap <QgsLayerTreeGroup *, int> groupInsertIdx;
-  int insertIdx;
-  const QList< QgsLayerTreeNode * >  selectedNodes = mView->selectedNodes();
-  for ( QgsLayerTreeNode *n : selectedNodes )
+  QList< QgsLayerTreeNode * >  selectedNodes = mView->selectedNodes();
+  std::reverse( selectedNodes.begin(), selectedNodes.end() );
+  // sort the nodes by depth first to avoid moving a group before its contents
+  std::stable_sort( selectedNodes.begin(), selectedNodes.end(), []( const QgsLayerTreeNode * a, const QgsLayerTreeNode * b )
+  {
+    return a->depth() > b->depth();
+  } );
+  for ( QgsLayerTreeNode *n : qgis::as_const( selectedNodes ) )
   {
     QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( n->parent() );
     QgsLayerTreeNode *clonedNode = n->clone();
-    if ( groupInsertIdx.contains( parentGroup ) )
-    {
-      insertIdx = groupInsertIdx.value( parentGroup );
-    }
-    else
-    {
-      insertIdx = 0;
-    }
-    parentGroup->insertChildNode( insertIdx, clonedNode );
+    parentGroup->insertChildNode( 0, clonedNode );
     parentGroup->removeChildNode( n );
-    groupInsertIdx.insert( parentGroup, insertIdx + 1 );
   }
 }
+
+
+void QgsLayerTreeViewDefaultActions::moveToBottom()
+{
+  QList< QgsLayerTreeNode * > selectedNodes = mView->selectedNodes();
+  // sort the nodes by depth first to avoid moving a group before its contents
+  std::stable_sort( selectedNodes.begin(), selectedNodes.end(), []( const QgsLayerTreeNode * a, const QgsLayerTreeNode * b )
+  {
+    return a->depth() > b->depth();
+  } );
+  for ( QgsLayerTreeNode *n : qgis::as_const( selectedNodes ) )
+  {
+    QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( n->parent() );
+    QgsLayerTreeNode *clonedNode = n->clone();
+    parentGroup->insertChildNode( -1, clonedNode );
+    parentGroup->removeChildNode( n );
+  }
+}
+
 
 void QgsLayerTreeViewDefaultActions::groupSelected()
 {

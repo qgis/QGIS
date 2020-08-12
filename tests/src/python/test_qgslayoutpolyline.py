@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = '(C) 2016 by Paul Blottiere'
 __date__ = '14/03/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -279,7 +277,7 @@ class TestQgsLayoutPolyline(unittest.TestCase, LayoutItemTestCase):
         style = QgsLineSymbol.createSimple(props)
         shape.setSymbol(style)
 
-        #save original item to xml
+        # save original item to xml
         doc = QDomDocument("testdoc")
         elem = doc.createElement("test")
         self.assertTrue(shape.writeXml(elem, doc, QgsReadWriteContext()))

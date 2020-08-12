@@ -11,8 +11,6 @@ from builtins import range
 __author__ = 'Alessandro Pasotti'
 __date__ = '20/10/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import filecmp
@@ -58,9 +56,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         :rtype: QgsMapSettings
         """
         ms = QgsMapSettings()
-        crs = QgsCoordinateReferenceSystem()
-        """:type: QgsCoordinateReferenceSystem"""
-        crs.createFromSrid(4326)
+        crs = QgsCoordinateReferenceSystem('epsg:4326')
         ms.setBackgroundColor(QColor(152, 219, 249))
         ms.setOutputSize(QSize(420, 280))
         ms.setOutputDpi(72)

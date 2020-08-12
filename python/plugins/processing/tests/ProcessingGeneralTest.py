@@ -21,10 +21,6 @@ __author__ = 'Nyall Dawson'
 __date__ = 'January 2019'
 __copyright__ = '(C) 2019, Nyall Dawson'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = ':%H$'
-
 import nose2
 import shutil
 import gc

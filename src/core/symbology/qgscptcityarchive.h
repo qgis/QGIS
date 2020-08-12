@@ -78,17 +78,13 @@ class CORE_EXPORT QgsCptCityArchive
     QVector< QgsCptCityDataItem * > rootItems() const { return mRootItems; }
     QVector< QgsCptCityDataItem * > selectionItems() const { return mSelectionItems; }
 
-  protected:
+  private:
 
     QString mArchiveName;
     QString mBaseDir;
-    static QString sDefaultArchiveName;
-    static QMap< QString, QgsCptCityArchive * > sArchiveRegistry;
     // root items, namely directories at root of archive
     QVector< QgsCptCityDataItem * > mRootItems;
     QVector<QgsCptCityDataItem *> mSelectionItems;
-    // mapping of copyinginfo, key is fileName
-    static QMap< QString, QMap< QString, QString > > sCopyingInfoMap;
 
   private:
 #ifdef SIP_RUN
@@ -170,7 +166,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     void setParent( QgsCptCityDataItem *parent ) { mParent = parent; }
     QVector<QgsCptCityDataItem *> children() const { return mChildren; }
     virtual QIcon icon() { return mIcon; }
-    virtual QIcon icon( QSize size ) { Q_UNUSED( size ) ; return icon(); }
+    virtual QIcon icon( QSize size ) { Q_UNUSED( size ) return icon(); }
     QString name() const { return mName; }
     QString path() const { return mPath; }
     QString info() const { return mInfo; }

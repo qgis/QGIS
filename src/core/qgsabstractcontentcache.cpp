@@ -23,9 +23,7 @@
 
 QgsAbstractContentCacheEntry::QgsAbstractContentCacheEntry( const QString &path )
   : path( path )
-  , fileModified( QFileInfo( path ).lastModified() )
 {
-  fileModifiedLastCheckTimer.start();
 }
 
 //

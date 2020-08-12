@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication
@@ -32,7 +28,8 @@ from qgis.core import (Qgis,
                        QgsProcessingProvider,
                        QgsProcessingUtils,
                        QgsApplication,
-                       QgsMessageLog)
+                       QgsMessageLog,
+                       QgsRuntimeProfiler)
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.tools.system import isWindows, isMac
 
@@ -44,6 +41,7 @@ pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 REQUIRED_VERSION = '2.3.'
+BETA_SUPPORT_VERSION = '7.'
 
 
 class SagaAlgorithmProvider(QgsProcessingProvider):
@@ -53,20 +51,22 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
         self.algs = []
 
     def load(self):
-        ProcessingConfig.settingIcons[self.name()] = self.icon()
-        ProcessingConfig.addSetting(Setting("SAGA", 'ACTIVATE_SAGA',
-                                            self.tr('Activate'), True))
-        ProcessingConfig.addSetting(Setting("SAGA",
-                                            SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION,
-                                            self.tr('Enable SAGA Import/Export optimizations'), False))
-        ProcessingConfig.addSetting(Setting("SAGA",
-                                            SagaUtils.SAGA_LOG_COMMANDS,
-                                            self.tr('Log execution commands'), True))
-        ProcessingConfig.addSetting(Setting("SAGA",
-                                            SagaUtils.SAGA_LOG_CONSOLE,
-                                            self.tr('Log console output'), True))
-        ProcessingConfig.readSettings()
-        self.refreshAlgorithms()
+        with QgsRuntimeProfiler.profile('SAGA Provider'):
+            ProcessingConfig.settingIcons[self.name()] = self.icon()
+            ProcessingConfig.addSetting(Setting("SAGA", 'ACTIVATE_SAGA',
+                                                self.tr('Activate'), True))
+            ProcessingConfig.addSetting(Setting("SAGA",
+                                                SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION,
+                                                self.tr('Enable SAGA Import/Export optimizations'), False))
+            ProcessingConfig.addSetting(Setting("SAGA",
+                                                SagaUtils.SAGA_LOG_COMMANDS,
+                                                self.tr('Log execution commands'), True))
+            ProcessingConfig.addSetting(Setting("SAGA",
+                                                SagaUtils.SAGA_LOG_CONSOLE,
+                                                self.tr('Log console output'), True))
+            ProcessingConfig.readSettings()
+            self.refreshAlgorithms()
+
         return True
 
     def unload(self):
@@ -82,9 +82,15 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
 
     def canBeActivated(self):
         version = SagaUtils.getInstalledVersion(True)
-        if version is not None and version.startswith(REQUIRED_VERSION):
+        if version is not None and (version.startswith(REQUIRED_VERSION) or version.startswith(BETA_SUPPORT_VERSION)):
             return True
         return False
+
+    def warningMessage(self):
+        version = SagaUtils.getInstalledVersion(True)
+        if version is not None and version.startswith(BETA_SUPPORT_VERSION):
+            return self.tr('SAGA version {} is not officially supported - algorithms may encounter issues').format(version)
+        return ''
 
     def loadAlgorithms(self):
         version = SagaUtils.getInstalledVersion(True)
@@ -93,7 +99,7 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
                                      self.tr('Processing'), Qgis.Critical)
             return
 
-        if not version.startswith(REQUIRED_VERSION):
+        if not version.startswith(REQUIRED_VERSION) and not version.startswith(BETA_SUPPORT_VERSION):
             QgsMessageLog.logMessage(self.tr('Problem with SAGA installation: unsupported SAGA version (found: {}, required: {}).').format(version, REQUIRED_VERSION),
                                      self.tr('Processing'),
                                      Qgis.Critical)
@@ -142,6 +148,11 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
 
     def supportedOutputTableExtensions(self):
         return ['dbf']
+
+    def flags(self):
+        # push users towards alternative algorithms instead, SAGA algorithms should only be used by experienced
+        # users who understand and can workaround the frequent issues encountered here
+        return QgsProcessingProvider.FlagDeemphasiseSearchResults
 
     def supportsNonFileBasedOutput(self):
         """

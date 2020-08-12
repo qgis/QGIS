@@ -33,7 +33,7 @@ from qgis.PyQt.QtNetwork import QNetworkRequest
 
 import qgis
 from qgis.core import Qgis, QgsApplication, QgsNetworkAccessManager, QgsSettings, QgsNetworkRequestParameters
-from qgis.gui import QgsMessageBar, QgsPasswordLineEdit
+from qgis.gui import QgsMessageBar, QgsPasswordLineEdit, QgsHelp
 from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin,
                         reloadPlugin, updateAvailablePlugins, plugins_metadata_parser)
 from .installer_data import (repositories, plugins, officialRepo,
@@ -119,7 +119,7 @@ class QgsPluginInstaller(QObject):
 
         for key in repositories.allEnabled():
             if reloadMode or repositories.all()[key]["state"] == 3:  # if state = 3 (error or not fetched yet), try to fetch once again
-                repositories.requestFetching(key)
+                repositories.requestFetching(key, force_reload=reloadMode)
 
         if repositories.fetchingInProgress():
             fetchDlg = QgsPluginInstallerFetchingDialog(iface.mainWindow())
@@ -220,14 +220,25 @@ class QgsPluginInstaller(QObject):
                 "installed": plugin["installed"] and "true" or "false",
                 "available": plugin["available"] and "true" or "false",
                 "status": plugin["status"],
+                "status_exp": plugin["status_exp"],
                 "error": plugin["error"],
                 "error_details": plugin["error_details"],
+                "create_date": plugin["create_date"],
+                "update_date": plugin["update_date"],
+                "create_date_stable": plugin["create_date_stable"],
+                "update_date_stable": plugin["update_date_stable"],
+                "create_date_experimental": plugin["create_date_experimental"],
+                "update_date_experimental": plugin["update_date_experimental"],
                 "experimental": plugin["experimental"] and "true" or "false",
                 "deprecated": plugin["deprecated"] and "true" or "false",
                 "trusted": plugin["trusted"] and "true" or "false",
                 "version_available": plugin["version_available"],
+                "version_available_stable": plugin["version_available_stable"] or "",
+                "version_available_experimental": plugin["version_available_experimental"] or "",
                 "zip_repository": plugin["zip_repository"],
                 "download_url": plugin["download_url"],
+                "download_url_stable": plugin["download_url_stable"],
+                "download_url_experimental": plugin["download_url_experimental"],
                 "filename": plugin["filename"],
                 "downloads": plugin["downloads"],
                 "average_vote": plugin["average_vote"],
@@ -282,27 +293,36 @@ class QgsPluginInstaller(QObject):
             self.installPlugin(key, quiet=True)
 
     # ----------------------------------------- #
-    def installPlugin(self, key, quiet=False):
+    def installPlugin(self, key, quiet=False, stable=True):
         """ Install given plugin """
         error = False
+        status_key = 'status' if stable else 'status_exp'
         infoString = ('', '')
         plugin = plugins.all()[key]
-        previousStatus = plugin["status"]
+        previousStatus = plugin[status_key]
         if not plugin:
             return
-        if plugin["status"] == "newer" and not plugin["error"]:  # ask for confirmation if user downgrades an usable plugin
+        if plugin[status_key] == "newer" and not plugin["error"]:  # ask for confirmation if user downgrades an usable plugin
             if QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), self.tr("Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!"), QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
                 return
 
-        dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin)
+        dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin, stable=stable)
         dlg.exec_()
 
+        plugin_path = qgis.utils.home_plugin_path + "/" + key
         if dlg.result():
             error = True
             infoString = (self.tr("Plugin installation failed"), dlg.result())
-        elif not QDir(qgis.utils.home_plugin_path + "/" + key).exists():
+        elif not QDir(plugin_path).exists():
             error = True
-            infoString = (self.tr("Plugin has disappeared"), self.tr("The plugin seems to have been installed but I don't know where. Probably the plugin package contained a wrong named directory.\nPlease search the list of installed plugins. I'm nearly sure you'll find the plugin there, but I just can't determine which of them it is. It also means that I won't be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue."))
+            infoString = (
+                self.tr("Plugin has disappeared"),
+                self.tr(
+                    "The plugin seems to have been installed but it's not possible to know where. The directory \"{}\" "
+                    "has not been found. Probably the plugin package contained a wrong named directory.\nPlease search "
+                    "the list of installed plugins. You should find the plugin there, but it's not possible to "
+                    "determine which of them it is and it's also not possible to inform you about available updates. "
+                    "Please contact the plugin author and submit this issue.").format(plugin_path))
             QApplication.setOverrideCursor(Qt.WaitCursor)
             plugins.getAllInstalled()
             plugins.rebuild()
@@ -554,6 +574,18 @@ class QgsPluginInstaller(QObject):
             pluginName = os.path.split(zf.namelist()[0])[0]
 
         pluginFileName = os.path.splitext(os.path.basename(filePath))[0]
+
+        if not pluginName:
+            msg_box = QMessageBox()
+            msg_box.setIcon(QMessageBox.Warning)
+            msg_box.setWindowTitle(self.tr("QGIS Python Install from ZIP Plugin Installer"))
+            msg_box.setText(self.tr("The Zip file is not a valid QGIS python plugin. No root folder was found inside."))
+            msg_box.setStandardButtons(QMessageBox.Ok)
+            more_info_btn = msg_box.addButton(self.tr("More Information"), QMessageBox.HelpRole)
+            msg_box.exec()
+            if msg_box.clickedButton() == more_info_btn:
+                QgsHelp.openHelp("plugins/plugins.html#the-install-from-zip-tab")
+            return
 
         pluginsDirectory = qgis.utils.home_plugin_path
         if not QDir(pluginsDirectory).exists():

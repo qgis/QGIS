@@ -21,12 +21,7 @@ __author__ = 'Alexander Bruy'
 __date__ = 'November 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
-import numpy
 import csv
 
 from osgeo import gdal, ogr, osr
@@ -45,9 +40,10 @@ from qgis.core import (QgsRectangle,
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import raster
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 class HypsometricCurves(QgisAlgorithm):
-
     INPUT_DEM = 'INPUT_DEM'
     BOUNDARY_LAYER = 'BOUNDARY_LAYER'
     STEP = 'STEP'
@@ -83,6 +79,11 @@ class HypsometricCurves(QgisAlgorithm):
         return self.tr('Hypsometric curves')
 
     def processAlgorithm(self, parameters, context, feedback):
+        try:
+            import numpy
+        except ImportError:
+            raise QgsProcessingException(QCoreApplication.translate('HypsometricCurves', 'This algorithm requires the Python “numpy” library. Please install this library and try again.'))
+
         raster_layer = self.parameterAsRasterLayer(parameters, self.INPUT_DEM, context)
         target_crs = raster_layer.crs()
         rasterPath = raster_layer.source()
@@ -115,7 +116,7 @@ class HypsometricCurves(QgisAlgorithm):
         rasterGeom = QgsGeometry.fromRect(rasterBBox)
 
         crs = osr.SpatialReference()
-        crs.ImportFromProj4(str(target_crs.toProj4()))
+        crs.ImportFromProj4(str(target_crs.toProj()))
 
         memVectorDriver = ogr.GetDriverByName('Memory')
         memRasterDriver = gdal.GetDriverByName('MEM')

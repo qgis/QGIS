@@ -800,13 +800,13 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
 class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 {
   public:
+
+    //! Constructs a font marker symbol layer.
     QgsFontMarkerSymbolLayer( const QString &fontFamily = DEFAULT_FONTMARKER_FONT,
-                              QChar chr = DEFAULT_FONTMARKER_CHR,
+                              QString chr = DEFAULT_FONTMARKER_CHR,
                               double pointSize = DEFAULT_FONTMARKER_SIZE,
                               const QColor &color = DEFAULT_FONTMARKER_COLOR,
                               double angle = DEFAULT_FONTMARKER_ANGLE );
-
-    ~QgsFontMarkerSymbolLayer() override;
 
     // static stuff
 
@@ -853,18 +853,34 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setFontFamily( const QString &family ) { mFontFamily = family; }
 
     /**
-     * Returns the character used when rendering points.
+     * Returns the font style for the associated font which will be used to render the point.
+     *
+     * \see setFontStyle()
+     * \since QGIS 3.14
+     */
+    QString fontStyle() const { return mFontStyle; }
+
+    /**
+     * Sets the font \a style for the font which will be used to render the point.
+     *
+     * \see fontStyle()
+     * \since QGIS 3.14
+     */
+    void setFontStyle( const QString &style ) { mFontStyle = style; }
+
+    /**
+     * Returns the character(s) used when rendering points.
      *
      * \see setCharacter()
      */
-    QChar character() const { return mChr; }
+    QString character() const { return mString; }
 
     /**
-     * Sets the character used when rendering points.
+     * Sets the character(s) used when rendering points.
      *
      * \see character()
      */
-    void setCharacter( QChar ch ) { mChr = ch; }
+    void setCharacter( QString chr ) { mString = chr; }
 
     QColor strokeColor() const override { return mStrokeColor; }
     void setStrokeColor( const QColor &color ) override { mStrokeColor = color; }
@@ -954,18 +970,18 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
 
-  protected:
+  private:
 
     QString mFontFamily;
-    QFontMetrics *mFontMetrics = nullptr;
-    QChar mChr;
+    QString mFontStyle;
+    QFont mFont;
+    std::unique_ptr< QFontMetrics >mFontMetrics;
+
+    QString mString;
 
     double mChrWidth = 0;
     QPointF mChrOffset;
-    QFont mFont;
     double mOrigSize;
-
-  private:
 
     QColor mStrokeColor;
     double mStrokeWidth;
@@ -975,6 +991,12 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     QPen mPen;
     QBrush mBrush;
+
+    bool mUseCachedPath = false;
+    QPainterPath mCachedPath;
+
+    // If font has a zero (or nearly zero) size, we skip rendering altogether..
+    bool mNonZeroFontSize = true;
 
     QString characterToRender( QgsSymbolRenderContext &context, QPointF &charOffset, double &charWidth );
     void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const;

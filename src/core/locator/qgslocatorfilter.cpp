@@ -35,13 +35,18 @@ QgsLocatorFilter::Flags QgsLocatorFilter::flags() const
 
 void QgsLocatorFilter::triggerResultFromAction( const QgsLocatorResult &result, const int actionId )
 {
-  Q_UNUSED( result );
-  Q_UNUSED( actionId );
+  Q_UNUSED( result )
+  Q_UNUSED( actionId )
 }
 
 bool QgsLocatorFilter::stringMatches( const QString &candidate, const QString &search )
 {
   return !search.isEmpty() && candidate.contains( search, Qt::CaseInsensitive );
+}
+
+double QgsLocatorFilter::fuzzyScore( const QString &candidate, const QString &search )
+{
+  return QgsStringUtils::fuzzyScore( candidate, search );
 }
 
 bool QgsLocatorFilter::enabled() const
@@ -61,7 +66,7 @@ bool QgsLocatorFilter::hasConfigWidget() const
 
 void QgsLocatorFilter::openConfigWidget( QWidget *parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
 }
 
 bool QgsLocatorFilter::useWithoutPrefix() const

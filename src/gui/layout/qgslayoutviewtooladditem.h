@@ -77,6 +77,9 @@ class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
     //! Start position for mouse press
     QPoint mMousePressStartPos;
 
+    //! Start position for mouse press in layout coordinates
+    QPointF mMousePressStartLayoutPos;
+
     //! Start of rubber band creation
     QPointF mRubberBandStartPos;
 

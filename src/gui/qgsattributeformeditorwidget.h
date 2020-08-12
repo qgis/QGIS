@@ -63,8 +63,9 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
      * Resets the widget to an initial value.
      * \param initialValue initial value to show in widget
      * \param mixedValues set to TRUE to initially show the mixed values state
+     * \param additionalFieldValues a variant map of additional field names with their corresponding values
      */
-    void initialize( const QVariant &initialValue, bool mixedValues = false );
+    void initialize( const QVariant &initialValue, bool mixedValues = false, const QVariantList &additionalFieldValues = QVariantList() );
 
     /**
      * Returns TRUE if the widget's value has been changed since it was initialized.
@@ -87,6 +88,12 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
      */
     void setConstraintResultVisible( bool editable );
 
+    /**
+     * Returns the editor widget wrapper
+     * \since QGIS 3.10
+     */
+    QgsEditorWidgetWrapper *editorWidget() const;
+
   public slots:
 
     /**
@@ -105,13 +112,22 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     /**
      * Emitted when the widget's value changes
      * \param value new widget value
+     * \deprecated since QGIS 3.10 use valuesChanged instead
      */
-    void valueChanged( const QVariant &value );
+    Q_DECL_DEPRECATED void valueChanged( const QVariant &value );
+
+    /**
+     * Emitted when the widget's value changes
+     * \param value new widget value
+     * \param additionalFieldValues of the potential additional fields
+     * \since QGIS 3.10
+     */
+    void valuesChanged( const QVariant &value, const QVariantList &additionalFieldValues );
 
   private slots:
 
     //! Triggered when editor widget's value changes
-    void editorWidgetChanged( const QVariant &value );
+    void editorWidgetValuesChanged( const QVariant &value, const QVariantList &additionalFieldValues );
 
     //! Triggered when multi edit tool button requests value reset
     void resetValue();
@@ -123,18 +139,21 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
 
   private:
     QString mWidgetType;
-    QgsEditorWidgetWrapper *mWidget = nullptr;
+    QgsEditorWidgetWrapper *mEditorWidget = nullptr;
     QgsAttributeForm *mForm = nullptr;
     QLabel *mConstraintResultLabel = nullptr;
 
     QgsMultiEditToolButton *mMultiEditButton = nullptr;
     QgsAggregateToolButton *mAggregateButton = nullptr;
     QVariant mPreviousValue;
+    QVariantList mPreviousAdditionalValues;
     bool mBlockValueUpdate;
     bool mIsMixed;
     bool mIsChanged;
 
     void updateWidgets() override;
+
+    friend class TestQgsAttributeForm;
 };
 
 #endif // QGSATTRIBUTEFORMEDITORWIDGET_H

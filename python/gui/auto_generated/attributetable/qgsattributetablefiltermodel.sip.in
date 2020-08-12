@@ -94,6 +94,16 @@ Set the filter mode the filter will use.
 :param filterMode: Sets the current mode of the filter
 %End
 
+    void disconnectFilterModeConnections();
+%Docstring
+Disconnect the connections set for the current filterMode
+%End
+
+    void connectFilterModeConnections( FilterMode filterMode );
+%Docstring
+Disconnect the connections set for the new ``filterMode``
+%End
+
     FilterMode filterMode();
 %Docstring
 The current filterModel
@@ -198,6 +208,14 @@ in which order they are shown as well as if and where an action column
 is shown.
 %End
 
+    void setFilterExpression( const QgsExpression &expression, const QgsExpressionContext &context );
+%Docstring
+Set the ``expression`` and the ``context`` to be stored in case of the features
+need to be filtered again (like on filter or on main model data change).
+
+.. versionadded:: 3.10.3
+%End
+
   signals:
 
     void sortColumnChanged( int column, Qt::SortOrder order );
@@ -206,6 +224,16 @@ Emitted whenever the sort column is changed
 
 :param column: The sort column
 :param order: The sort order
+%End
+
+    void featuresFiltered();
+%Docstring
+Emitted when the filtering of the features has been done
+%End
+
+    void visibleReloaded();
+%Docstring
+Emitted when the the visible features on extend are reloaded (the list is created)
 %End
 
   protected:
@@ -234,10 +262,21 @@ selection state of the feature in case selected features are to be shown on top.
 
   public slots:
 
-    void extentsChanged();
+ void extentsChanged();
 %Docstring
 Is called upon every change of the visible extents on the map canvas.
 When a change is signalled, the filter is updated and invalidated if needed.
+
+.. deprecated:: QGIS 3.10.3
+   - made private as reloadVisible()
+%End
+
+    void filterFeatures();
+%Docstring
+Updates the filtered features in the filter model. It is called when the data of the
+main table or the filter expression changed.
+
+.. versionadded:: 3.10.3
 %End
 
 };

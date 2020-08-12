@@ -1,0 +1,999 @@
+Content-Type: application/geo+json
+
+{
+  "features": [
+    {
+      "bbox": [
+        10.718177,
+        52.430925,
+        10.722378,
+        52.434965
+      ],
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              [
+                10.7186,
+                52.430925
+              ],
+              [
+                10.718177,
+                52.434965
+              ],
+              [
+                10.722216,
+                52.434679
+              ],
+              [
+                10.722378,
+                52.431291
+              ],
+              [
+                10.7186,
+                52.430925
+              ]
+            ],
+            [
+              [
+                10.719799,
+                52.432294
+              ],
+              [
+                10.719666,
+                52.432287
+              ],
+              [
+                10.719477,
+                52.432326
+              ],
+              [
+                10.719358,
+                52.432291
+              ],
+              [
+                10.719353,
+                52.432184
+              ],
+              [
+                10.719452,
+                52.432074
+              ],
+              [
+                10.71967,
+                52.432017
+              ],
+              [
+                10.719961,
+                52.431923
+              ],
+              [
+                10.720321,
+                52.43172
+              ],
+              [
+                10.720824,
+                52.431425
+              ],
+              [
+                10.721292,
+                52.431346
+              ],
+              [
+                10.721675,
+                52.431368
+              ],
+              [
+                10.721725,
+                52.43152
+              ],
+              [
+                10.721818,
+                52.432013
+              ],
+              [
+                10.721766,
+                52.432193
+              ],
+              [
+                10.721627,
+                52.432393
+              ],
+              [
+                10.721548,
+                52.432646
+              ],
+              [
+                10.721519,
+                52.433024
+              ],
+              [
+                10.721463,
+                52.433484
+              ],
+              [
+                10.721392,
+                52.433925
+              ],
+              [
+                10.721108,
+                52.434181
+              ],
+              [
+                10.72056,
+                52.434081
+              ],
+              [
+                10.72019,
+                52.434024
+              ],
+              [
+                10.720174,
+                52.433997
+              ],
+              [
+                10.720094,
+                52.433818
+              ],
+              [
+                10.719869,
+                52.433714
+              ],
+              [
+                10.719509,
+                52.433539
+              ],
+              [
+                10.7194,
+                52.43337
+              ],
+              [
+                10.719364,
+                52.433208
+              ],
+              [
+                10.719182,
+                52.433076
+              ],
+              [
+                10.719211,
+                52.43268
+              ],
+              [
+                10.719351,
+                52.432489
+              ],
+              [
+                10.719799,
+                52.432294
+              ]
+            ]
+          ]
+        ],
+        "type": "MultiPolygon"
+      },
+      "id": 1,
+      "properties": {
+        "bearbeiter": "scholle-b",
+        "bemerkung": "",
+        "beschriftung": "",
+        "datum": "2013-06-07",
+        "farbe": "255 0 0",
+        "fid": 1,
+        "flaeche": 71379.115,
+        "flaechentyp": "Schraffur",
+        "gid": 22,
+        "last_change": "2013-06-07 12:10:44.84292+02",
+        "name": "",
+        "schraff_size": "20",
+        "schraff_size_prt": "60.00",
+        "schraff_width": "5",
+        "schraff_width_prt": "15.00",
+        "schraff_winkel": "90",
+        "umfang": 2224.3285,
+        "umrissfarbe": "0 0 0",
+        "umrissstaerke": "1",
+        "umrissstaerke_prt": "3.00",
+        "umrisstyp": "durchgezogen",
+        "veranstaltung": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "bbox": [
+        10.727562,
+        52.442465,
+        10.728709,
+        52.443317
+      ],
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              [
+                10.727562,
+                52.443096
+              ],
+              [
+                10.727865,
+                52.443317
+              ],
+              [
+                10.728512,
+                52.443307
+              ],
+              [
+                10.728709,
+                52.443079
+              ],
+              [
+                10.728708,
+                52.442675
+              ],
+              [
+                10.728273,
+                52.442465
+              ],
+              [
+                10.727736,
+                52.442644
+              ],
+              [
+                10.727562,
+                52.443096
+              ]
+            ]
+          ]
+        ],
+        "type": "MultiPolygon"
+      },
+      "id": 2,
+      "properties": {
+        "bearbeiter": "",
+        "bemerkung": "",
+        "beschriftung": "",
+        "datum": "2013-06-10",
+        "farbe": "255 0 0",
+        "fid": 2,
+        "flaeche": 5682.0,
+        "flaechentyp": "Vollflächig",
+        "gid": 23,
+        "last_change": "2013-06-10 07:21:28.296581+02",
+        "name": "",
+        "schraff_size": "",
+        "schraff_size_prt": null,
+        "schraff_width": "",
+        "schraff_width_prt": null,
+        "schraff_winkel": "",
+        "umfang": 280.5785,
+        "umrissfarbe": "0 0 0",
+        "umrissstaerke": "1",
+        "umrissstaerke_prt": "3.00",
+        "umrisstyp": "durchgezogen",
+        "veranstaltung": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "bbox": [
+        10.725747,
+        52.438478,
+        10.72812,
+        52.439962
+      ],
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              [
+                10.725747,
+                52.439589
+              ],
+              [
+                10.726704,
+                52.439962
+              ],
+              [
+                10.727987,
+                52.439682
+              ],
+              [
+                10.72812,
+                52.438925
+              ],
+              [
+                10.726072,
+                52.438478
+              ],
+              [
+                10.725747,
+                52.439589
+              ]
+            ]
+          ]
+        ],
+        "type": "MultiPolygon"
+      },
+      "id": 3,
+      "properties": {
+        "bearbeiter": "scholle-b",
+        "bemerkung": null,
+        "beschriftung": "F1",
+        "datum": "2013-06-05",
+        "farbe": "255 170 0",
+        "fid": 3,
+        "flaeche": 18430.5,
+        "flaechentyp": "Schraffur",
+        "gid": 6,
+        "last_change": "2013-06-05 11:13:05.193224+02",
+        "name": null,
+        "schraff_size": "25",
+        "schraff_size_prt": "75.00",
+        "schraff_width": "2",
+        "schraff_width_prt": "6.00",
+        "schraff_winkel": "45",
+        "umfang": 527.8188,
+        "umrissfarbe": "0 0 0",
+        "umrissstaerke": "2",
+        "umrissstaerke_prt": "6.00",
+        "umrisstyp": "durchgezogen",
+        "veranstaltung": null
+      },
+      "type": "Feature"
+    },
+    {
+      "bbox": [
+        10.72691,
+        52.442433,
+        10.727835,
+        52.443349
+      ],
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              [
+                10.72691,
+                52.443349
+              ],
+              [
+                10.727317,
+                52.443217
+              ],
+              [
+                10.727825,
+                52.443056
+              ],
+              [
+                10.727835,
+                52.442921
+              ],
+              [
+                10.727827,
+                52.442733
+              ],
+              [
+                10.727655,
+                52.442465
+              ],
+              [
+                10.727433,
+                52.442433
+              ],
+              [
+                10.72704,
+                52.442546
+              ],
+              [
+                10.72691,
+                52.443349
+              ]
+            ]
+          ]
+        ],
+        "type": "MultiPolygon"
+      },
+      "id": 4,
+      "properties": {
+        "bearbeiter": "scholle-b",
+        "bemerkung": "",
+        "beschriftung": "",
+        "datum": "2013-06-10",
+        "farbe": "0 0 255",
+        "fid": 4,
+        "flaeche": 4419.5,
+        "flaechentyp": "Vollflächig",
+        "gid": 24,
+        "last_change": "2013-06-10 07:21:53.193582+02",
+        "name": "",
+        "schraff_size": "",
+        "schraff_size_prt": null,
+        "schraff_width": "",
+        "schraff_width_prt": null,
+        "schraff_winkel": "",
+        "umfang": 272.9494,
+        "umrissfarbe": "0 0 0",
+        "umrissstaerke": "1",
+        "umrissstaerke_prt": "3.00",
+        "umrisstyp": "durchgezogen",
+        "veranstaltung": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "bbox": [
+        10.69253,
+        52.448676,
+        10.700326,
+        52.454419
+      ],
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              [
+                10.693453,
+                52.454419
+              ],
+              [
+                10.700326,
+                52.453777
+              ],
+              [
+                10.698658,
+                52.448676
+              ],
+              [
+                10.69253,
+                52.449418
+              ],
+              [
+                10.693453,
+                52.454419
+              ]
+            ]
+          ]
+        ],
+        "type": "MultiPolygon"
+      },
+      "id": 5,
+      "properties": {
+        "bearbeiter": "scholle-b",
+        "bemerkung": "",
+        "beschriftung": "",
+        "datum": "2013-06-20",
+        "farbe": "0 255 0",
+        "fid": 5,
+        "flaeche": 255067.6299,
+        "flaechentyp": "Schraffur",
+        "gid": 36,
+        "last_change": "2013-06-20 10:04:27.528814+02",
+        "name": "",
+        "schraff_size": "10",
+        "schraff_size_prt": "30.00",
+        "schraff_width": "2",
+        "schraff_width_prt": "6.00",
+        "schraff_winkel": "90",
+        "umfang": 2035.8331,
+        "umrissfarbe": "0 0 0",
+        "umrissstaerke": "5",
+        "umrissstaerke_prt": "15.00",
+        "umrisstyp": "durchgezogen",
+        "veranstaltung": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "bbox": [
+        10.726464,
+        52.438916,
+        10.727486,
+        52.439521
+      ],
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              [
+                10.726564,
+                52.439397
+              ],
+              [
+                10.726731,
+                52.439521
+              ],
+              [
+                10.727201,
+                52.439505
+              ],
+              [
+                10.727486,
+                52.439285
+              ],
+              [
+                10.727316,
+                52.439054
+              ],
+              [
+                10.726883,
+                52.438916
+              ],
+              [
+                10.726464,
+                52.439093
+              ],
+              [
+                10.726564,
+                52.439397
+              ]
+            ]
+          ]
+        ],
+        "type": "MultiPolygon"
+      },
+      "id": 6,
+      "properties": {
+        "bearbeiter": "scholle-b",
+        "bemerkung": "",
+        "beschriftung": "",
+        "datum": "2013-06-07",
+        "farbe": "0 0 255",
+        "fid": 6,
+        "flaeche": 3257.5,
+        "flaechentyp": "Schraffur",
+        "gid": 17,
+        "last_change": "2013-06-07 11:24:20.639802+02",
+        "name": "",
+        "schraff_size": "10",
+        "schraff_size_prt": "30.00",
+        "schraff_width": "2",
+        "schraff_width_prt": "6.00",
+        "schraff_winkel": "-45",
+        "umfang": 211.6085,
+        "umrissfarbe": "0 0 0",
+        "umrissstaerke": "1",
+        "umrissstaerke_prt": "3.00",
+        "umrisstyp": "durchgezogen",
+        "veranstaltung": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "bbox": [
+        10.72691,
+        52.442433,
+        10.728709,
+        52.443349
+      ],
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              [
+                10.72691,
+                52.443349
+              ],
+              [
+                10.727317,
+                52.443217
+              ],
+              [
+                10.727603,
+                52.443126
+              ],
+              [
+                10.727865,
+                52.443317
+              ],
+              [
+                10.728512,
+                52.443307
+              ],
+              [
+                10.728709,
+                52.443079
+              ],
+              [
+                10.728708,
+                52.442675
+              ],
+              [
+                10.728273,
+                52.442465
+              ],
+              [
+                10.727764,
+                52.442635
+              ],
+              [
+                10.727655,
+                52.442465
+              ],
+              [
+                10.727433,
+                52.442433
+              ],
+              [
+                10.72704,
+                52.442546
+              ],
+              [
+                10.72691,
+                52.443349
+              ]
+            ]
+          ]
+        ],
+        "type": "MultiPolygon"
+      },
+      "id": 7,
+      "properties": {
+        "bearbeiter": "scholle-b",
+        "bemerkung": "",
+        "beschriftung": "",
+        "datum": "2013-06-10",
+        "farbe": "0 255 197",
+        "fid": 7,
+        "flaeche": 9504.9512,
+        "flaechentyp": "Schraffur",
+        "gid": 25,
+        "last_change": "2013-06-10 07:22:28.519133+02",
+        "name": "",
+        "schraff_size": "10",
+        "schraff_size_prt": "30.00",
+        "schraff_width": "2",
+        "schraff_width_prt": "6.00",
+        "schraff_winkel": "45",
+        "umfang": 430.5526,
+        "umrissfarbe": "0 0 0",
+        "umrissstaerke": "1",
+        "umrissstaerke_prt": "3.00",
+        "umrisstyp": "durchgezogen",
+        "veranstaltung": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "bbox": [
+        10.703822,
+        52.445732,
+        10.704856,
+        52.446194
+      ],
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              [
+                10.703839,
+                52.445897
+              ],
+              [
+                10.703822,
+                52.445915
+              ],
+              [
+                10.703948,
+                52.446184
+              ],
+              [
+                10.70398,
+                52.446194
+              ],
+              [
+                10.704845,
+                52.446033
+              ],
+              [
+                10.704856,
+                52.446014
+              ],
+              [
+                10.704743,
+                52.445742
+              ],
+              [
+                10.70471,
+                52.445732
+              ],
+              [
+                10.703839,
+                52.445897
+              ]
+            ]
+          ]
+        ],
+        "type": "MultiPolygon"
+      },
+      "id": 8,
+      "properties": {
+        "bearbeiter": "scholle-b",
+        "bemerkung": null,
+        "beschriftung": "F2",
+        "datum": "2013-06-05",
+        "farbe": "0 0 255",
+        "fid": 8,
+        "flaeche": 2242.73,
+        "flaechentyp": "Vollflächig",
+        "gid": 9,
+        "last_change": "2013-06-05 13:36:58.366035+02",
+        "name": null,
+        "schraff_size": null,
+        "schraff_size_prt": null,
+        "schraff_width": null,
+        "schraff_width_prt": null,
+        "schraff_winkel": null,
+        "umfang": 195.3386,
+        "umrissfarbe": "0 0 0",
+        "umrissstaerke": "1",
+        "umrissstaerke_prt": "3.00",
+        "umrisstyp": "durchgezogen",
+        "veranstaltung": null
+      },
+      "type": "Feature"
+    },
+    {
+      "bbox": [
+        10.718177,
+        52.430925,
+        10.722378,
+        52.434965
+      ],
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              [
+                10.7186,
+                52.430925
+              ],
+              [
+                10.718177,
+                52.434965
+              ],
+              [
+                10.722216,
+                52.434679
+              ],
+              [
+                10.722378,
+                52.431291
+              ],
+              [
+                10.7186,
+                52.430925
+              ]
+            ]
+          ]
+        ],
+        "type": "MultiPolygon"
+      },
+      "id": 9,
+      "properties": {
+        "bearbeiter": "scholle-b",
+        "bemerkung": null,
+        "beschriftung": null,
+        "datum": "2013-06-05",
+        "farbe": "0 0 255",
+        "fid": 9,
+        "flaeche": 109919.115,
+        "flaechentyp": "Schraffur",
+        "gid": 10,
+        "last_change": "2013-06-05 15:41:36.951661+02",
+        "name": null,
+        "schraff_size": "20",
+        "schraff_size_prt": "60.00",
+        "schraff_width": "5",
+        "schraff_width_prt": "15.00",
+        "schraff_winkel": "45",
+        "umfang": 1364.1616,
+        "umrissfarbe": "0 0 0",
+        "umrissstaerke": "1",
+        "umrissstaerke_prt": "3.00",
+        "umrisstyp": "durchgezogen",
+        "veranstaltung": null
+      },
+      "type": "Feature"
+    },
+    {
+      "bbox": [
+        10.719182,
+        52.431346,
+        10.721818,
+        52.434181
+      ],
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              [
+                10.719799,
+                52.432294
+              ],
+              [
+                10.719351,
+                52.432489
+              ],
+              [
+                10.719211,
+                52.43268
+              ],
+              [
+                10.719182,
+                52.433076
+              ],
+              [
+                10.719364,
+                52.433208
+              ],
+              [
+                10.7194,
+                52.43337
+              ],
+              [
+                10.719509,
+                52.433539
+              ],
+              [
+                10.719869,
+                52.433714
+              ],
+              [
+                10.720094,
+                52.433818
+              ],
+              [
+                10.720174,
+                52.433997
+              ],
+              [
+                10.72019,
+                52.434024
+              ],
+              [
+                10.72056,
+                52.434081
+              ],
+              [
+                10.721108,
+                52.434181
+              ],
+              [
+                10.721392,
+                52.433925
+              ],
+              [
+                10.721463,
+                52.433484
+              ],
+              [
+                10.721519,
+                52.433024
+              ],
+              [
+                10.721548,
+                52.432646
+              ],
+              [
+                10.721627,
+                52.432393
+              ],
+              [
+                10.721766,
+                52.432193
+              ],
+              [
+                10.721818,
+                52.432013
+              ],
+              [
+                10.721725,
+                52.43152
+              ],
+              [
+                10.721675,
+                52.431368
+              ],
+              [
+                10.721292,
+                52.431346
+              ],
+              [
+                10.720824,
+                52.431425
+              ],
+              [
+                10.720321,
+                52.43172
+              ],
+              [
+                10.719961,
+                52.431923
+              ],
+              [
+                10.71967,
+                52.432017
+              ],
+              [
+                10.719452,
+                52.432074
+              ],
+              [
+                10.719353,
+                52.432184
+              ],
+              [
+                10.719358,
+                52.432291
+              ],
+              [
+                10.719477,
+                52.432326
+              ],
+              [
+                10.719666,
+                52.432287
+              ],
+              [
+                10.719799,
+                52.432294
+              ]
+            ]
+          ]
+        ],
+        "type": "MultiPolygon"
+      },
+      "id": 10,
+      "properties": {
+        "bearbeiter": "scholle-b",
+        "bemerkung": null,
+        "beschriftung": null,
+        "datum": "2013-06-05",
+        "farbe": "0 255 0",
+        "fid": 10,
+        "flaeche": 38540.0,
+        "flaechentyp": "Schraffur",
+        "gid": 11,
+        "last_change": "2013-06-05 15:44:57.930124+02",
+        "name": null,
+        "schraff_size": "20",
+        "schraff_size_prt": "60.00",
+        "schraff_width": "2",
+        "schraff_width_prt": "6.00",
+        "schraff_winkel": "-45",
+        "umfang": 860.1669,
+        "umrissfarbe": "0 0 0",
+        "umrissstaerke": "1",
+        "umrissstaerke_prt": "3.00",
+        "umrisstyp": "durchgezogen",
+        "veranstaltung": null
+      },
+      "type": "Feature"
+    }
+  ],
+  "links": [
+    {
+      "href": "http://server.qgis.org/wfs3/collections/as-areas-short-name/items.geojson?crs=http%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FEPSG%2F9.6.2%2F4326",
+      "rel": "self",
+      "title": "Retrieve the features of the collection as GEOJSON",
+      "type": "application/geo+json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?crs=http%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FEPSG%2F9.6.2%2F4326",
+      "rel": "alternate",
+      "title": "Retrieve the features of the collection as HTML",
+      "type": "text/html"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/as-areas-short-name/items?crs=http10A10F10Fwww.opengis.net10Fdef10Fcrs10FEPSG10F9.6.210F4326&offset=10&limit=10",
+      "name": "Next page",
+      "rel": "next",
+      "title": "Retrieve the features of the collection as GEOJSON",
+      "type": "application/geo+json"
+    }
+  ],
+  "numberMatched": 38,
+  "numberReturned": 10,
+  "timeStamp": "2019-07-05T12:27:07Z",
+  "type": "FeatureCollection"
+}

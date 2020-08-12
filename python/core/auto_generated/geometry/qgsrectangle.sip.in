@@ -210,7 +210,7 @@ Gets rectangle enlarged by buffer.
 
 .. note::
 
-   In earlier QGIS releases this method was named buffer().
+   In earlier QGIS releases this method was named :py:func:`~QgsRectangle.buffer`.
 
 .. seealso:: :py:func:`grow`
 
@@ -254,6 +254,13 @@ Expands the rectangle so that it covers both the original rectangle and the give
 .. versionadded:: 3.2
 %End
 
+    double distance( const QgsPointXY &point ) const;
+%Docstring
+Returns the distance from ``point`` to the nearest point on the boundary of the rectangle.
+
+.. versionadded:: 3.14
+%End
+
     QgsRectangle operator-( QgsVector v ) const;
 
     QgsRectangle operator+( QgsVector v ) const;
@@ -270,7 +277,7 @@ An empty rectangle may still be non-null if it contains valid information (e.g. 
 
     bool isNull() const;
 %Docstring
-Test if the rectangle is null (all coordinates zero or after call to setMinimal()).
+Test if the rectangle is null (all coordinates zero or after call to :py:func:`~QgsRectangle.setMinimal`).
 A null rectangle is also an empty rectangle.
 
 .. versionadded:: 2.4

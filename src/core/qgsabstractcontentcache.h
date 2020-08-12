@@ -88,11 +88,7 @@ class CORE_EXPORT QgsAbstractContentCacheEntry
 
     bool operator==( const QgsAbstractContentCacheEntry &other ) const
     {
-      bool equal = other.path == path;
-      if ( equal && ( mFileModifiedCheckTimeout <= 0 || fileModifiedLastCheckTimer.hasExpired( mFileModifiedCheckTimeout ) ) )
-        equal = other.fileModified == fileModified;
-
-      return equal;
+      return other.path == path;
     }
 
     /**
@@ -157,8 +153,8 @@ class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
      */
     virtual bool checkReply( QNetworkReply *reply, const QString &path ) const
     {
-      Q_UNUSED( reply );
-      Q_UNUSED( path );
+      Q_UNUSED( reply )
+      Q_UNUSED( path )
       return true;
     }
 
@@ -256,8 +252,12 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
      * The \a missingContent byte array is returned if the \a path could not be resolved or is broken. If
      * the \a path corresponds to a remote URL, then \a fetchingContent will be returned while the content
      * is in the process of being fetched.
+     * The \a blocking boolean forces to wait for loading before returning result. The content is loaded
+     * in the same thread to ensure provided the remote content. WARNING: the \a blocking parameter must NEVER
+     * be TRUE from GUI based applications (like the main QGIS application) or crashes will result. Only for
+     * use in external scripts or QGIS server.
      */
-    QByteArray getContent( const QString &path, const QByteArray &missingContent, const QByteArray &fetchingContent ) const
+    QByteArray getContent( const QString &path, const QByteArray &missingContent, const QByteArray &fetchingContent, bool blocking = false ) const
     {
       // is it a path to local file?
       QFile file( path );
@@ -312,7 +312,43 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
 
       // already a request in progress for this url
       if ( mPendingRemoteUrls.contains( path ) )
-        return fetchingContent;
+      {
+        // it's a non blocking request so return fetching content
+        if ( !blocking )
+        {
+          return fetchingContent;
+        }
+
+        // it's a blocking request so try to find the task and wait for task finished
+        const auto constActiveTasks = QgsApplication::taskManager()->activeTasks();
+        for ( QgsTask *task : constActiveTasks )
+        {
+          // the network content fetcher task's description ends with the path
+          if ( !task->description().endsWith( path ) )
+          {
+            continue;
+          }
+
+          // cast task to network content fetcher task
+          QgsNetworkContentFetcherTask *ncfTask = qobject_cast<QgsNetworkContentFetcherTask *>( task );
+          if ( ncfTask )
+          {
+            // wait for task finished
+            if ( waitForTaskFinished( ncfTask ) )
+            {
+              if ( mRemoteContentCache.contains( path ) )
+              {
+                // We got the file!
+                return *mRemoteContentCache[ path ];
+              }
+            }
+          }
+          // task found, no needs to continue
+          break;
+        }
+        // if no content returns the content is probably in remote content cache
+        // or a new task will be created
+      }
 
       if ( mRemoteContentCache.contains( path ) )
       {
@@ -366,12 +402,30 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
         if ( ok )
         {
           // read the content data
-          mRemoteContentCache.insert( path, new QByteArray( reply->readAll() ) );
+          const QByteArray ba = reply->readAll();
+
+          // because of the fragility listed below in waitForTaskFinished, this slot may get called twice. In that case
+          // the second time will have an empty reply (we've already read it all...)
+          if ( !ba.isEmpty() )
+            mRemoteContentCache.insert( path, new QByteArray( ba ) );
         }
         QMetaObject::invokeMethod( const_cast< QgsAbstractContentCacheBase * >( qobject_cast< const QgsAbstractContentCacheBase * >( this ) ), "onRemoteContentFetched", Qt::QueuedConnection, Q_ARG( QString, path ), Q_ARG( bool, true ) );
       } );
 
       QgsApplication::taskManager()->addTask( task );
+
+      // if blocking, wait for finished
+      if ( blocking )
+      {
+        if ( waitForTaskFinished( task ) )
+        {
+          if ( mRemoteContentCache.contains( path ) )
+          {
+            // We got the file!
+            return *mRemoteContentCache[ path ];
+          }
+        }
+      }
       return fetchingContent;
     }
 
@@ -395,6 +449,35 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
 
       if ( success )
         emit remoteContentFetched( url );
+    }
+
+    /**
+     * Blocks the current thread until the \a task finishes (or user's preset network timeout expires)
+     *
+     * \warning this method must NEVER be used from GUI based applications (like the main QGIS application)
+     * or crashes will result. Only for use in external scripts or QGIS server.
+     *
+     * The result will be FALSE if the wait timed out and TRUE in any other case.
+     *
+     * \since QGIS 3.10
+     */
+    bool waitForTaskFinished( QgsNetworkContentFetcherTask *task ) const
+    {
+      // Wait up to timeout seconds for task finished
+      if ( task->waitForFinished( QgsNetworkAccessManager::timeout() ) )
+      {
+        // The wait did not time out
+        // Third step, check status as complete
+        if ( task->status() == QgsTask::Complete )
+        {
+          // Fourth step, force the signal fetched to be sure reply has been checked
+
+          // ARGH this is BAD BAD BAD. The connection will get called twice as a result!!!
+          task->fetched();
+          return true;
+        }
+      }
+      return false;
     }
 
     /**
@@ -424,6 +507,8 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
 
             if ( cacheEntry->fileModified != modified )
               continue;
+            else
+              cacheEntry->fileModifiedLastCheckTimer.restart();
           }
           currentEntry = cacheEntry;
           break;
@@ -439,6 +524,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
       {
         delete entryTemplate;
         entryTemplate = nullptr;
+        ( void )entryTemplate;
         takeEntryFromList( currentEntry );
         if ( !mMostRecentEntry ) //list is empty
         {
@@ -477,6 +563,12 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
     T *insertCacheEntry( T *entry )
     {
       entry->mFileModifiedCheckTimeout = mFileModifiedCheckTimeout;
+
+      if ( !entry->path.startsWith( QStringLiteral( "base64:" ) ) )
+      {
+        entry->fileModified = QFileInfo( entry->path ).lastModified();
+        entry->fileModifiedLastCheckTimer.start();
+      }
 
       mEntryLookup.insert( entry->path, entry );
 

@@ -24,7 +24,6 @@
 using namespace QgsWms;
 
 const double OGC_PX_M = 0.00028; // OGC reference pixel size in meter
-
 QgsWmsRenderContext::QgsWmsRenderContext( const QgsProject *project, QgsServerInterface *interface )
   : mProject( project )
   , mInterface( interface )
@@ -130,6 +129,18 @@ int QgsWmsRenderContext::imageQuality() const
   }
 
   return imageQuality;
+}
+
+int QgsWmsRenderContext::tileBuffer() const
+{
+  int tileBuffer = 0;
+
+  if ( mParameters.tiledAsBool() )
+  {
+    tileBuffer = QgsServerProjectUtils::wmsTileBuffer( *mProject );
+  }
+
+  return tileBuffer;
 }
 
 int QgsWmsRenderContext::precision() const
@@ -276,6 +287,11 @@ bool QgsWmsRenderContext::isValidLayer( const QString &nickname ) const
   return layer( nickname ) != nullptr;
 }
 
+QList<QgsMapLayer *> QgsWmsRenderContext::layersFromGroup( const QString &nickname ) const
+{
+  return mLayerGroups.value( nickname );
+}
+
 bool QgsWmsRenderContext::isValidGroup( const QString &name ) const
 {
   return mLayerGroups.contains( name );
@@ -285,7 +301,7 @@ void QgsWmsRenderContext::initNicknameLayers()
 {
   for ( QgsMapLayer *ml : mProject->mapLayers() )
   {
-    mNicknameLayers[ layerNickname( *ml ) ] = ml;
+    mNicknameLayers.insert( layerNickname( *ml ), ml );
   }
 
   // init groups
@@ -300,9 +316,33 @@ void QgsWmsRenderContext::initLayerGroupsRecursive( const QgsLayerTreeGroup *gro
   if ( !groupName.isEmpty() )
   {
     mLayerGroups[groupName] = QList<QgsMapLayer *>();
-    for ( QgsLayerTreeLayer *layer : group->findLayers() )
+    const auto projectLayerTreeRoot { mProject->layerTreeRoot() };
+    const auto treeGroupLayers { group->findLayers() };
+    // Fast track if there is no custom layer order,
+    // otherwise reorder layers.
+    if ( ! projectLayerTreeRoot->hasCustomLayerOrder() )
     {
-      mLayerGroups[groupName].append( layer->layer() );
+      for ( const auto &tl : treeGroupLayers )
+      {
+        mLayerGroups[groupName].push_back( tl->layer() );
+      }
+    }
+    else
+    {
+      const auto projectLayerOrder { projectLayerTreeRoot->layerOrder() };
+      // Flat list containing the layers from the tree nodes
+      QList<QgsMapLayer *> groupLayersList;
+      for ( const auto &tl : treeGroupLayers )
+      {
+        groupLayersList << tl->layer();
+      }
+      for ( const auto &l : projectLayerOrder )
+      {
+        if ( groupLayersList.contains( l ) )
+        {
+          mLayerGroups[groupName].push_back( l );
+        }
+      }
     }
   }
 
@@ -377,14 +417,15 @@ void QgsWmsRenderContext::searchLayersToRender()
 
   if ( mFlags & AddQueryLayers )
   {
-    const auto constLayers { flattenedQueryLayers() };
-    for ( const QString &layer : constLayers )
+    const QStringList queryLayerNames { flattenedQueryLayers() };
+    for ( const QString &layerName : queryLayerNames )
     {
-      if ( mNicknameLayers.contains( layer )
-           && !mLayersToRender.contains( mNicknameLayers[layer] ) )
-      {
-        mLayersToRender.append( mNicknameLayers[layer] );
-      }
+      const QList<QgsMapLayer *> layers = mNicknameLayers.values( layerName );
+      for ( QgsMapLayer *lyr : layers )
+        if ( !mLayersToRender.contains( lyr ) )
+        {
+          mLayersToRender.append( lyr );
+        }
     }
   }
 }
@@ -417,11 +458,10 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
     if ( !names.isEmpty() )
     {
       QString lname = names.item( 0 ).toElement().text();
-      QString err;
       if ( mNicknameLayers.contains( lname ) )
       {
         mSlds[lname] = namedElem;
-        mLayersToRender.append( mNicknameLayers[ lname ] );
+        mLayersToRender.append( mNicknameLayers.values( lname ) );
       }
       else if ( mLayerGroups.contains( lname ) )
       {
@@ -457,7 +497,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
         mStyles[nickname] = style;
       }
 
-      mLayersToRender.append( mNicknameLayers[ nickname ] );
+      mLayersToRender.append( mNicknameLayers.values( nickname ) );
     }
     else if ( mLayerGroups.contains( nickname ) )
     {
@@ -475,7 +515,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
 
       for ( const auto &name : layersFromGroup )
       {
-        mLayersToRender.append( mNicknameLayers[ name ] );
+        mLayersToRender.append( mNicknameLayers.values( name ) );
       }
     }
     else
@@ -497,13 +537,16 @@ bool QgsWmsRenderContext::layerScaleVisibility( const QString &name ) const
     return visible;
   }
 
-  const QgsMapLayer *layer = mNicknameLayers[ name ];
-  bool scaleBasedVisibility = layer->hasScaleBasedVisibility();
-  bool useScaleConstraint = ( scaleDenominator() > 0 && scaleBasedVisibility );
-
-  if ( !useScaleConstraint || layer->isInScaleRange( scaleDenominator() ) )
+  const QList<QgsMapLayer *>layers = mNicknameLayers.values( name );
+  for ( QgsMapLayer *layer : layers )
   {
-    visible = true;
+    bool scaleBasedVisibility = layer->hasScaleBasedVisibility();
+    bool useScaleConstraint = ( scaleDenominator() > 0 && scaleBasedVisibility );
+
+    if ( !useScaleConstraint || layer->isInScaleRange( scaleDenominator() ) )
+    {
+      visible = true;
+    }
   }
 
   return visible;
@@ -512,6 +555,184 @@ bool QgsWmsRenderContext::layerScaleVisibility( const QString &name ) const
 QMap<QString, QList<QgsMapLayer *> > QgsWmsRenderContext::layerGroups() const
 {
   return mLayerGroups;
+}
+
+int QgsWmsRenderContext::mapWidth() const
+{
+  int width = mParameters.widthAsInt();
+
+  // May use SRCWIDTH to define image map size
+  if ( ( mFlags & UseSrcWidthHeight ) && mParameters.srcWidthAsInt() > 0 )
+  {
+    width = mParameters.srcWidthAsInt();
+  }
+
+  return width;
+}
+
+int QgsWmsRenderContext::mapHeight() const
+{
+  int height = mParameters.heightAsInt();
+
+  // May use SRCHEIGHT to define image map size
+  if ( ( mFlags & UseSrcWidthHeight ) && mParameters.srcHeightAsInt() > 0 )
+  {
+    height = mParameters.srcHeightAsInt();
+  }
+
+  return height;
+}
+
+bool QgsWmsRenderContext::isValidWidthHeight() const
+{
+  //test if maxWidth / maxHeight are set in the project or as an env variable
+  //and WIDTH / HEIGHT parameter is in the range allowed range
+  //WIDTH
+  const int wmsMaxWidthProj = QgsServerProjectUtils::wmsMaxWidth( *mProject );
+  const int wmsMaxWidthEnv = settings().wmsMaxWidth();
+  int wmsMaxWidth;
+  if ( wmsMaxWidthEnv != -1 && wmsMaxWidthProj != -1 )
+  {
+    // both are set, so we take the more conservative one
+    wmsMaxWidth = std::min( wmsMaxWidthProj, wmsMaxWidthEnv );
+  }
+  else
+  {
+    // none or one are set, so we take the bigger one which is the one set or -1
+    wmsMaxWidth = std::max( wmsMaxWidthProj, wmsMaxWidthEnv );
+  }
+
+  if ( wmsMaxWidth != -1 && mapWidth() > wmsMaxWidth )
+  {
+    return false;
+  }
+
+  //HEIGHT
+  const int wmsMaxHeightProj = QgsServerProjectUtils::wmsMaxHeight( *mProject );
+  const int wmsMaxHeightEnv = settings().wmsMaxHeight();
+  int wmsMaxHeight;
+  if ( wmsMaxHeightEnv != -1 && wmsMaxHeightProj != -1 )
+  {
+    // both are set, so we take the more conservative one
+    wmsMaxHeight = std::min( wmsMaxHeightProj, wmsMaxHeightEnv );
+  }
+  else
+  {
+    // none or one are set, so we take the bigger one which is the one set or -1
+    wmsMaxHeight = std::max( wmsMaxHeightProj, wmsMaxHeightEnv );
+  }
+
+  if ( wmsMaxHeight != -1 && mapHeight() > wmsMaxHeight )
+  {
+    return false;
+  }
+
+  // Sanity check from internal QImage checks (see qimage.cpp)
+  // this is to report a meaningful error message in case of
+  // image creation failure and to differentiate it from out
+  // of memory conditions.
+
+  // depth for now it cannot be anything other than 32, but I don't like
+  // to hardcode it: I hope we will support other depths in the future.
+  uint depth = 32;
+  switch ( mParameters.format() )
+  {
+    case QgsWmsParameters::Format::JPG:
+    case QgsWmsParameters::Format::PNG:
+    default:
+      depth = 32;
+  }
+
+  const int bytes_per_line = ( ( mapWidth() * depth + 31 ) >> 5 ) << 2; // bytes per scanline (must be multiple of 4)
+
+  if ( std::numeric_limits<int>::max() / depth < static_cast<uint>( mapWidth() )
+       || bytes_per_line <= 0
+       || mapHeight() <= 0
+       || std::numeric_limits<int>::max() / static_cast<uint>( bytes_per_line ) < static_cast<uint>( mapHeight() )
+       || std::numeric_limits<int>::max() / sizeof( uchar * ) < static_cast<uint>( mapHeight() ) )
+  {
+    return false;
+  }
+
+  return true;
+}
+
+double QgsWmsRenderContext::mapTileBuffer( const int mapWidth ) const
+{
+  double buffer;
+  if ( mFlags & UseTileBuffer )
+  {
+    const QgsRectangle extent = mParameters.bboxAsRectangle();
+    if ( !mParameters.bbox().isEmpty() && extent.isEmpty() )
+    {
+      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                    mParameters[QgsWmsParameter::BBOX] );
+    }
+    buffer = tileBuffer() * ( extent.width() / mapWidth );
+  }
+  else
+  {
+    buffer = 0;
+  }
+  return buffer;
+}
+
+QSize QgsWmsRenderContext::mapSize( const bool aspectRatio ) const
+{
+  int width = mapWidth();
+  int height = mapHeight();
+
+  // Adapt width / height if the aspect ratio does not correspond with the BBOX.
+  // Required by WMS spec. 1.3.
+  if ( aspectRatio
+       && mParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) )
+  {
+    QgsRectangle extent = mParameters.bboxAsRectangle();
+    if ( !mParameters.bbox().isEmpty() && extent.isEmpty() )
+    {
+      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                    mParameters[QgsWmsParameter::BBOX] );
+    }
+
+    QString crs = mParameters.crs();
+    if ( crs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
+    {
+      crs = QString( "EPSG:4326" );
+      extent.invert();
+    }
+
+    QgsCoordinateReferenceSystem outputCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
+    if ( outputCrs.hasAxisInverted() )
+    {
+      extent.invert();
+    }
+
+    if ( !extent.isEmpty() && height > 0 && width > 0 )
+    {
+      const double mapRatio = extent.width() / extent.height();
+      const double imageRatio = static_cast<double>( width ) / static_cast<double>( height );
+      if ( !qgsDoubleNear( mapRatio, imageRatio, 0.0001 ) )
+      {
+        // inspired by MapServer, mapdraw.c L115
+        const double cellsize = ( extent.width() / static_cast<double>( width ) ) * 0.5 + ( extent.height() / static_cast<double>( height ) ) * 0.5;
+        width = extent.width() / cellsize;
+        height = extent.height() / cellsize;
+      }
+    }
+  }
+
+  if ( width <= 0 )
+  {
+    throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                  mParameters[QgsWmsParameter::WIDTH] );
+  }
+  else if ( height <= 0 )
+  {
+    throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                  mParameters[QgsWmsParameter::HEIGHT] );
+  }
+
+  return QSize( width, height );
 }
 
 void QgsWmsRenderContext::removeUnwantedLayers()

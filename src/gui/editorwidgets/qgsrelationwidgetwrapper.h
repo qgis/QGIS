@@ -54,31 +54,57 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
 
     /**
      * Determines if the "link feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
-    bool showLinkButton() const;
+    Q_DECL_DEPRECATED bool showLinkButton() const SIP_DEPRECATED;
 
     /**
      * Determines if the "link feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
-    void setShowLinkButton( bool showLinkButton );
+    Q_DECL_DEPRECATED void setShowLinkButton( bool showLinkButton ) SIP_DEPRECATED;
 
     /**
      * Determines if the "unlink feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
-    bool showUnlinkButton() const;
+    Q_DECL_DEPRECATED bool showUnlinkButton() const SIP_DEPRECATED;
 
     /**
      * Determines if the "unlink feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
-    void setShowUnlinkButton( bool showUnlinkButton );
+    Q_DECL_DEPRECATED void setShowUnlinkButton( bool showUnlinkButton ) SIP_DEPRECATED;
+
+    /**
+     * Determines if the "Save child layer edits" button should be shown
+     * \since QGIS 3.14
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
+     */
+    Q_DECL_DEPRECATED void setShowSaveChildEditsButton( bool showChildEdits ) SIP_DEPRECATED;
+
+    /**
+     * Determines if the "Save child layer edits" button should be shown
+     * \since QGIS 3.14
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
+     */
+    Q_DECL_DEPRECATED bool showSaveChildEditsButton() const SIP_DEPRECATED;
+
+    /**
+     * Defines the buttons which are shown
+     * \since QGIS 3.16
+     */
+    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+
+    /**
+     * Returns the buttons which are shown
+     * \since QGIS 3.16
+     */
+    QgsAttributeEditorRelation::Buttons visibleButtons() const;
 
     /**
      * The relation for which this wrapper is created.
@@ -86,6 +112,20 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
      * \since QGIS 3.0
      */
     QgsRelation relation() const;
+
+    /**
+     * Will be called when a value in the current edited form or table row
+     * changes
+     *
+     * Forward the signal to the embedded form
+     *
+     * \param attribute The name of the attribute that changed.
+     * \param newValue     The new value of the attribute.
+     * \param attributeChanged If TRUE, it corresponds to an actual change of the feature attribute
+     * \since QGIS 3.14
+     */
+    void widgetValueChanged( const QString &attribute, const QVariant &newValue, bool attributeChanged );
+
 
   protected:
     QWidget *createWidget( QWidget *parent ) override;

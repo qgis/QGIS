@@ -114,13 +114,15 @@ bool QgsRegularPolygon::operator !=( const QgsRegularPolygon &rp ) const
 bool QgsRegularPolygon::isEmpty() const
 {
   return ( ( mNumberSides < 3 ) ||
+           ( mCenter.isEmpty() ) ||
+           ( mFirstVertex.isEmpty() ) ||
            ( mCenter == mFirstVertex )
          );
 }
 
 void QgsRegularPolygon::setCenter( const QgsPoint &center )
 {
-  double azimuth = mCenter.azimuth( mFirstVertex );
+  double azimuth = mFirstVertex.isEmpty() ? 0 : mCenter.azimuth( mFirstVertex );
   // TODO: double inclination = mCenter.inclination(mFirstVertex);
   mCenter = center;
   mFirstVertex = center.project( mRadius, azimuth );
@@ -129,7 +131,7 @@ void QgsRegularPolygon::setCenter( const QgsPoint &center )
 void QgsRegularPolygon::setRadius( const double radius )
 {
   mRadius = std::fabs( radius );
-  double azimuth = mCenter.azimuth( mFirstVertex );
+  double azimuth = mFirstVertex.isEmpty() ? 0 : mCenter.azimuth( mFirstVertex );
   // TODO: double inclination = mCenter.inclination(mFirstVertex);
   mFirstVertex = mCenter.project( mRadius, azimuth );
 }

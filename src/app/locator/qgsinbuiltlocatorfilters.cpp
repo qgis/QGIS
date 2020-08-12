@@ -15,15 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QToolButton>
 #include <QClipboard>
+#include <QMap>
+#include <QString>
+#include <QToolButton>
+#include <QUrl>
 
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
+#include "qgscoordinateutils.h"
 #include "qgsinbuiltlocatorfilters.h"
 #include "qgsproject.h"
 #include "qgslayertree.h"
 #include "qgsfeedback.h"
 #include "qgisapp.h"
-#include "qgsstringutils.h"
 #include "qgsmaplayermodel.h"
 #include "qgslayoutmanager.h"
 #include "qgsmapcanvas.h"
@@ -47,15 +53,26 @@ void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLo
   const QList<QgsLayerTreeLayer *> layers = tree->findLayers();
   for ( QgsLayerTreeLayer *layer : layers )
   {
-    if ( layer->layer() && ( stringMatches( layer->layer()->name(), string ) || ( context.usingPrefix && string.isEmpty() ) ) )
+    // if the layer is broken, don't include it in the results
+    if ( ! layer->layer() )
+      continue;
+
+    QgsLocatorResult result;
+    result.displayString = layer->layer()->name();
+    result.userData = layer->layerId();
+    result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
+
+    // return all the layers in case the string query is empty using an equal default score
+    if ( context.usingPrefix && string.isEmpty() )
     {
-      QgsLocatorResult result;
-      result.displayString = layer->layer()->name();
-      result.userData = layer->layerId();
-      result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
-      result.score = static_cast< double >( string.length() ) / layer->layer()->name().length();
       emit resultFetched( result );
+      continue;
     }
+
+    result.score = fuzzyScore( result.displayString, string );
+
+    if ( result.score > 0 )
+      emit resultFetched( result );
   }
 }
 
@@ -84,15 +101,24 @@ void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocat
   const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
   for ( QgsMasterLayoutInterface *layout : layouts )
   {
-    if ( layout && ( stringMatches( layout->name(), string ) || ( context.usingPrefix && string.isEmpty() ) ) )
+    // if the layout is broken, don't include it in the results
+    if ( ! layout )
+      continue;
+
+    QgsLocatorResult result;
+    result.displayString = layout->name();
+    result.userData = layout->name();
+
+    if ( context.usingPrefix && string.isEmpty() )
     {
-      QgsLocatorResult result;
-      result.displayString = layout->name();
-      result.userData = layout->name();
-      //result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
-      result.score = static_cast< double >( string.length() ) / layout->name().length();
       emit resultFetched( result );
+      continue;
     }
+
+    result.score = fuzzyScore( result.displayString, string );
+
+    if ( result.score > 0 )
+      emit resultFetched( result );
   }
 }
 
@@ -105,9 +131,6 @@ void QgsLayoutLocatorFilter::triggerResult( const QgsLocatorResult &result )
 
   QgisApp::instance()->openLayoutDesignerDialog( layout );
 }
-
-
-
 
 QgsActionLocatorFilter::QgsActionLocatorFilter( const QList<QWidget *> &parentObjectsForActions, QObject *parent )
   : QgsLocatorFilter( parent )
@@ -130,7 +153,7 @@ void QgsActionLocatorFilter::fetchResults( const QString &string, const QgsLocat
 
   for ( QWidget *object : qgis::as_const( mActionParents ) )
   {
-    searchActions( string,  object, found );
+    searchActions( string, object, found );
   }
 }
 
@@ -177,9 +200,9 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
       tooltip = match.captured( 1 );
     }
     tooltip.replace( QStringLiteral( "..." ), QString() );
-    tooltip.replace( QStringLiteral( "…" ), QString() );
+    tooltip.replace( QString( QChar( 0x2026 ) ), QString() );
     searchText.replace( QStringLiteral( "..." ), QString() );
-    searchText.replace( QStringLiteral( "…" ), QString() );
+    searchText.replace( QString( QChar( 0x2026 ) ), QString() );
     bool uniqueTooltip = searchText.trimmed().compare( tooltip.trimmed(), Qt::CaseInsensitive ) != 0;
     if ( action->isChecked() )
     {
@@ -190,15 +213,16 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
       searchText += QStringLiteral( " (%1)" ).arg( tooltip.trimmed() );
     }
 
-    if ( stringMatches( searchText, string ) )
+    QgsLocatorResult result;
+    result.displayString = searchText;
+    result.userData = QVariant::fromValue( action );
+    result.icon = action->icon();
+    result.score = fuzzyScore( result.displayString, string );
+
+    if ( result.score > 0 )
     {
-      QgsLocatorResult result;
-      result.displayString = searchText;
-      result.userData = QVariant::fromValue( action );
-      result.icon = action->icon();
-      result.score = static_cast< double >( string.length() ) / searchText.length();
-      emit resultFetched( result );
       found << action;
+      emit resultFetched( result );
     }
   }
 }
@@ -352,7 +376,7 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
   for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
     QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( it.value() );
-    if ( !layer || !layer->flags().testFlag( QgsMapLayer::Searchable ) )
+    if ( !layer || !layer->dataProvider() || !layer->flags().testFlag( QgsMapLayer::Searchable ) )
       continue;
 
     QgsExpression expression( layer->displayExpression() );
@@ -361,14 +385,19 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
     expression.prepare( &context );
 
     QgsFeatureRequest req;
-    req.setSubsetOfAttributes( expression.referencedAttributeIndexes( layer->fields() ).toList() );
+    req.setSubsetOfAttributes( qgis::setToList( expression.referencedAttributeIndexes( layer->fields() ) ) );
     if ( !expression.needsGeometry() )
       req.setFlags( QgsFeatureRequest::NoGeometry );
     QString enhancedSearch = string;
     enhancedSearch.replace( ' ', '%' );
     req.setFilterExpression( QStringLiteral( "%1 ILIKE '%%2%'" )
                              .arg( layer->displayExpression(), enhancedSearch ) );
-    req.setLimit( 30 );
+    req.setLimit( 6 );
+
+    QgsFeatureRequest exactMatchRequest = req;
+    exactMatchRequest.setFilterExpression( QStringLiteral( "%1 ILIKE '%2'" )
+                                           .arg( layer->displayExpression(), enhancedSearch ) );
+    exactMatchRequest.setLimit( 10 );
 
     std::shared_ptr<PreparedLayer> preparedLayer( new PreparedLayer() );
     preparedLayer->expression = expression;
@@ -377,6 +406,7 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
     preparedLayer->layerName = layer->name();
     preparedLayer->featureSource.reset( new QgsVectorLayerFeatureSource( layer ) );
     preparedLayer->request = req;
+    preparedLayer->exactMatchRequest = exactMatchRequest;
     preparedLayer->layerIcon = QgsMapLayerModel::iconForLayer( layer );
 
     mPreparedLayers.append( preparedLayer );
@@ -393,11 +423,46 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
   for ( auto preparedLayer : qgis::as_const( mPreparedLayers ) )
   {
     foundInCurrentLayer = 0;
+
+    QgsFeatureIds foundFeatureIds;
+
+    QgsFeatureIterator exactMatchIt = preparedLayer->featureSource->getFeatures( preparedLayer->exactMatchRequest );
+    while ( exactMatchIt.nextFeature( f ) )
+    {
+      if ( feedback->isCanceled() )
+        return;
+
+      QgsLocatorResult result;
+      result.group = preparedLayer->layerName;
+
+      preparedLayer->context.setFeature( f );
+
+      result.displayString = preparedLayer->expression.evaluate( &( preparedLayer->context ) ).toString();
+
+      result.userData = QVariantList() << f.id() << preparedLayer->layerId;
+      foundFeatureIds << f.id();
+      result.icon = preparedLayer->layerIcon;
+      result.score = static_cast< double >( string.length() ) / result.displayString.size();
+
+      result.actions << QgsLocatorResult::ResultAction( OpenForm, tr( "Open form…" ) );
+      emit resultFetched( result );
+
+      foundInCurrentLayer++;
+      foundInTotal++;
+      if ( foundInCurrentLayer >= mMaxResultsPerLayer )
+        break;
+    }
+    if ( foundInTotal >= mMaxTotalResults )
+      break;
+
     QgsFeatureIterator it = preparedLayer->featureSource->getFeatures( preparedLayer->request );
     while ( it.nextFeature( f ) )
     {
       if ( feedback->isCanceled() )
         return;
+
+      if ( foundFeatureIds.contains( f.id() ) )
+        continue;
 
       QgsLocatorResult result;
       result.group = preparedLayer->layerName;
@@ -523,30 +588,21 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
   for ( auto optionsPagesIterator = optionsPagesMap.constBegin(); optionsPagesIterator != optionsPagesMap.constEnd(); ++optionsPagesIterator )
   {
     QString title = optionsPagesIterator.key();
-    if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
-    {
-      matchingSettingsPagesMap.insert( title + " (" + tr( "Options" ) + ")", settingsPage( QStringLiteral( "optionpage" ), QString::number( optionsPagesIterator.value() ) ) );
-    }
+    matchingSettingsPagesMap.insert( title + " (" + tr( "Options" ) + ")", settingsPage( QStringLiteral( "optionpage" ), QString::number( optionsPagesIterator.value() ) ) );
   }
 
   QMap<QString, QString> projectPropertyPagesMap = QgisApp::instance()->projectPropertiesPagesMap();
   for ( auto projectPropertyPagesIterator = projectPropertyPagesMap.constBegin(); projectPropertyPagesIterator != projectPropertyPagesMap.constEnd(); ++projectPropertyPagesIterator )
   {
     QString title = projectPropertyPagesIterator.key();
-    if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
-    {
-      matchingSettingsPagesMap.insert( title + " (" + tr( "Project Properties" ) + ")", settingsPage( QStringLiteral( "projectpropertypage" ), projectPropertyPagesIterator.value() ) );
-    }
+    matchingSettingsPagesMap.insert( title + " (" + tr( "Project Properties" ) + ")", settingsPage( QStringLiteral( "projectpropertypage" ), projectPropertyPagesIterator.value() ) );
   }
 
   QMap<QString, QString> settingPagesMap = QgisApp::instance()->settingPagesMap();
   for ( auto settingPagesIterator = settingPagesMap.constBegin(); settingPagesIterator != settingPagesMap.constEnd(); ++settingPagesIterator )
   {
     QString title = settingPagesIterator.key();
-    if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
-    {
-      matchingSettingsPagesMap.insert( title, settingsPage( QStringLiteral( "settingspage" ), settingPagesIterator.value() ) );
-    }
+    matchingSettingsPagesMap.insert( title, settingsPage( QStringLiteral( "settingspage" ), settingPagesIterator.value() ) );
   }
 
   for ( auto matchingSettingsPagesIterator = matchingSettingsPagesMap.constBegin(); matchingSettingsPagesIterator != matchingSettingsPagesMap.constEnd(); ++matchingSettingsPagesIterator )
@@ -557,8 +613,17 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
     result.filter = this;
     result.displayString = title;
     result.userData.setValue( settingsPage );
-    result.score = static_cast< double >( string.length() ) / title.length();
-    emit resultFetched( result );
+
+    if ( context.usingPrefix && string.isEmpty() )
+    {
+      emit resultFetched( result );
+      continue;
+    }
+
+    result.score = fuzzyScore( result.displayString, string );;
+
+    if ( result.score > 0 )
+      emit resultFetched( result );
   }
 }
 
@@ -613,23 +678,28 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
   while ( i.hasNext() )
   {
     i.next();
+
     if ( feedback->isCanceled() )
       return;
 
     QString name = i.key();
+    QModelIndex index = i.value();
+    QgsLocatorResult result;
+    result.filter = this;
+    result.displayString = name;
+    result.userData = index;
+    result.icon = QgsApplication::getThemeIcon( QStringLiteral( "/mItemBookmark.svg" ) );
 
-    if ( stringMatches( name, string ) || ( context.usingPrefix && string.isEmpty() ) )
+    if ( context.usingPrefix && string.isEmpty() )
     {
-      QModelIndex index = i.value();
-      QgsLocatorResult result;
-      result.filter = this;
-      result.displayString = name;
-      result.userData = index;
-      //TODO Create svg for "Bookmark"
-      //TODO result.icon =
-      result.score = static_cast< double >( string.length() ) / name.length();
       emit resultFetched( result );
+      continue;
     }
+
+    result.score = fuzzyScore( result.displayString, string );
+
+    if ( result.score > 0 )
+      emit resultFetched( result );
   }
 }
 
@@ -637,4 +707,238 @@ void QgsBookmarkLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
   QModelIndex index = qvariant_cast<QModelIndex>( result.userData );
   QgisApp::instance()->zoomToBookmarkIndex( index );
+}
+
+//
+// QgsGotoLocatorFilter
+//
+
+QgsGotoLocatorFilter::QgsGotoLocatorFilter( QObject *parent )
+  : QgsLocatorFilter( parent )
+{}
+
+QgsGotoLocatorFilter *QgsGotoLocatorFilter::clone() const
+{
+  return new QgsGotoLocatorFilter();
+}
+
+void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
+{
+  if ( feedback->isCanceled() )
+    return;
+
+  const QgsCoordinateReferenceSystem currentCrs = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs();
+  const QgsCoordinateReferenceSystem wgs84Crs( QStringLiteral( "EPSG:4326" ) );
+
+  bool okX = false;
+  bool okY = false;
+  double posX = 0.0;
+  double posY = 0.0;
+  bool posIsDms = false;
+  QLocale locale;
+
+  // Coordinates such as 106.8468,-6.3804
+  QRegularExpression separatorRx( QStringLiteral( "^([0-9\\-\\%1\\%2]*)[\\s%3]*([0-9\\-\\%1\\%2]*)$" ).arg( locale.decimalPoint(),
+                                  locale.groupSeparator(),
+                                  locale.decimalPoint() != ',' && locale.groupSeparator() != ',' ? QStringLiteral( "\\," ) : QString() ) );
+  QRegularExpressionMatch match = separatorRx.match( string.trimmed() );
+  if ( match.hasMatch() )
+  {
+    posX = locale.toDouble( match.captured( 1 ), &okX );
+    posY = locale.toDouble( match.captured( 2 ), &okY );
+  }
+
+  if ( !match.hasMatch() || !okX || !okY )
+  {
+    // Digit detection using user locale failed, use default C decimal separators
+    separatorRx = QRegularExpression( QStringLiteral( "^([0-9\\-\\.]*)[\\s\\,]*([0-9\\-\\.]*)$" ) );
+    match = separatorRx.match( string.trimmed() );
+    if ( match.hasMatch() )
+    {
+      posX = match.captured( 1 ).toDouble( &okX );
+      posY = match.captured( 2 ).toDouble( &okY );
+    }
+  }
+
+  if ( !match.hasMatch() )
+  {
+    // Check if the string is a pair of degree minute second
+    separatorRx = QRegularExpression( QStringLiteral( "^((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:\\.\\d+)?[^0-9.]*[-+nsew]?)\\s+((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:\\.\\d+)?[^0-9.]*[-+nsew]?)$" ) );
+    match = separatorRx.match( string.trimmed() );
+    if ( match.hasMatch() )
+    {
+      posIsDms = true;
+      posX = QgsCoordinateUtils::dmsToDecimal( match.captured( 1 ), &okX );
+      posY = QgsCoordinateUtils::dmsToDecimal( match.captured( 3 ), &okY );
+    }
+  }
+
+  if ( okX && okY )
+  {
+    QVariantMap data;
+    QgsPointXY point( posX, posY );
+    data.insert( QStringLiteral( "point" ), point );
+
+    bool withinWgs84 = wgs84Crs.bounds().contains( point );
+    if ( !posIsDms && currentCrs != wgs84Crs )
+    {
+      QgsLocatorResult result;
+      result.filter = this;
+      result.displayString = tr( "Go to %1 %2 (Map CRS, %3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), currentCrs.userFriendlyIdentifier() );
+      result.userData = data;
+      result.score = 0.9;
+      emit resultFetched( result );
+    }
+
+    if ( withinWgs84 )
+    {
+      if ( currentCrs != wgs84Crs )
+      {
+        QgsCoordinateTransform transform( wgs84Crs, currentCrs, QgsProject::instance()->transformContext() );
+        QgsPointXY transformedPoint;
+        try
+        {
+          transformedPoint = transform.transform( point );
+        }
+        catch ( const QgsException &e )
+        {
+          Q_UNUSED( e )
+          return;
+        }
+        data[QStringLiteral( "point" )] = transformedPoint;
+      }
+
+      QgsLocatorResult result;
+      result.filter = this;
+      result.displayString = tr( "Go to %1° %2° (%3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), wgs84Crs.userFriendlyIdentifier() );
+      result.userData = data;
+      result.score = 1.0;
+      emit resultFetched( result );
+    }
+    return;
+  }
+
+  QMap<int, double> scales;
+  scales[0] = 739571909;
+  scales[1] = 369785954;
+  scales[2] = 184892977;
+  scales[3] = 92446488;
+  scales[4] = 46223244;
+  scales[5] = 23111622;
+  scales[6] = 11555811;
+  scales[7] = 5777905;
+  scales[8] = 2888952;
+  scales[9] = 1444476;
+  scales[10] = 722238;
+  scales[11] = 361119;
+  scales[12] = 180559;
+  scales[13] = 90279;
+  scales[14] = 45139;
+  scales[15] = 22569;
+  scales[16] = 11284;
+  scales[17] = 5642;
+  scales[18] = 2821;
+  scales[19] = 1500;
+  scales[20] = 1000;
+
+  QUrl url( string );
+  if ( url.isValid() )
+  {
+    double scale = 0.0;
+    okX = false;
+    okY = false;
+    posX = 0.0;
+    posY = 0.0;
+    if ( url.hasFragment() )
+    {
+      // Check for OSM/Leaflet/OpenLayers pattern (e.g. http://www.openstreetmap.org/#map=6/46.423/4.746)
+      QStringList fragments = url.fragment().split( '&' );
+      for ( const QString &fragment : fragments )
+      {
+        if ( fragment.startsWith( QStringLiteral( "map=" ) ) )
+        {
+          QStringList params = fragment.mid( 4 ).split( '/' );
+          if ( params.size() >= 3 )
+          {
+            if ( scales.contains( params.at( 0 ).toInt() ) )
+            {
+              scale = scales.value( params.at( 0 ).toInt() );
+            }
+            posX = params.at( 2 ).toDouble( &okX );
+            posY = params.at( 1 ).toDouble( &okY );
+          }
+          break;
+        }
+      }
+    }
+
+    if ( !okX && !okY )
+    {
+      QRegularExpression locationRx( QStringLiteral( "google.*\\/@([0-9\\-\\.\\,]*)z" ) );
+      match = locationRx.match( string );
+      if ( match.hasMatch() )
+      {
+        QStringList params = match.captured( 1 ).split( ',' );
+        if ( params.size() == 3 )
+        {
+          if ( scales.contains( params.at( 2 ).toInt() ) )
+          {
+            scale = scales.value( params.at( 2 ).toInt() );
+          }
+          posX = params.at( 1 ).toDouble( &okX );
+          posY = params.at( 0 ).toDouble( &okY );
+        }
+      }
+    }
+
+    if ( okX && okY )
+    {
+      QVariantMap data;
+      if ( scale > 0.0 )
+      {
+        data.insert( QStringLiteral( "scale" ), scale );
+      }
+
+      QgsPointXY point( posX, posY );
+      bool withinWgs84 = wgs84Crs.bounds().contains( point );
+      if ( withinWgs84 && currentCrs != wgs84Crs )
+      {
+        QgsCoordinateTransform transform( wgs84Crs, currentCrs, QgsProject::instance()->transformContext() );
+        QgsPointXY transformedPoint = transform.transform( point );
+        data.insert( QStringLiteral( "point" ), transformedPoint );
+      }
+      else
+      {
+        data.insert( QStringLiteral( "point" ), point );
+      }
+
+      QgsLocatorResult result;
+      result.filter = this;
+      result.displayString = tr( "Go to %1° %2° %3(%4)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ),
+                             scale > 0.0 ? tr( "at scale 1:%1 " ).arg( scale ) : QString(),
+                             wgs84Crs.userFriendlyIdentifier() );
+      result.userData = data;
+      result.score = 1.0;
+      emit resultFetched( result );
+    }
+  }
+}
+
+void QgsGotoLocatorFilter::triggerResult( const QgsLocatorResult &result )
+{
+  QgsMapCanvas *mapCanvas = QgisApp::instance()->mapCanvas();
+
+  QVariantMap data = result.userData.toMap();
+  QgsPointXY point = data[QStringLiteral( "point" )].value<QgsPointXY>();
+  mapCanvas->setCenter( point );
+  if ( data.contains( QStringLiteral( "scale" ) ) )
+  {
+    mapCanvas->zoomScale( data[QStringLiteral( "scale" )].toDouble() );
+  }
+  else
+  {
+    mapCanvas->refresh();
+  }
+
+  mapCanvas->flashGeometries( QList< QgsGeometry >() << QgsGeometry::fromPointXY( point ) );
 }

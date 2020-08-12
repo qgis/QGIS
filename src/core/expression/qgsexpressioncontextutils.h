@@ -32,6 +32,7 @@ class QgsLayoutItem;
 class QgsProcessingAlgorithm;
 class QgsProcessingModelAlgorithm;
 class QgsProcessingContext;
+class QgsLayoutMultiFrame;
 
 /**
  * \ingroup core
@@ -53,12 +54,20 @@ class CORE_EXPORT QgsExpressionContextUtils
     static QgsExpressionContextScope *globalScope() SIP_FACTORY;
 
     /**
-     * Creates a new scope which contains functions and variables from the current attribute form/table \a feature.
+     * Creates a new scope which contains functions and variables from the current attribute form/table \a formFeature.
      * The variables and values in this scope will reflect the current state of the form/row being edited.
      * The \a formMode (SingleEditMode etc.) is passed as text
      * \since QGIS 3.2
      */
     static QgsExpressionContextScope *formScope( const QgsFeature &formFeature = QgsFeature( ), const QString &formMode = QString() ) SIP_FACTORY;
+
+    /**
+     * Creates a new scope which contains functions and variables from the current parent attribute form/table \a formFeature.
+     * The variables and values in this scope will reflect the current state of the parent form/row being edited.
+     * The \a formMode (SingleEditMode etc.) is passed as text
+     * \since QGIS 3.14
+     */
+    static QgsExpressionContextScope *parentFormScope( const QgsFeature &formFeature = QgsFeature( ), const QString &formMode = QString() ) SIP_FACTORY;
 
     /**
      * Sets a global context variable. This variable will be contained within scopes retrieved via
@@ -221,7 +230,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * For instance, current page name and number.
      * \param atlas source atlas. If NULLPTR, a set of default atlas variables will be added to the scope.
      */
-    static QgsExpressionContextScope *atlasScope( QgsLayoutAtlas *atlas ) SIP_FACTORY;
+    static QgsExpressionContextScope *atlasScope( const QgsLayoutAtlas *atlas ) SIP_FACTORY;
 
     /**
      * Creates a new scope which contains variables and functions relating to a QgsLayoutItem.
@@ -250,6 +259,33 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \since QGIS 3.0
      */
     static void setLayoutItemVariables( QgsLayoutItem *item, const QVariantMap &variables );
+
+    /**
+     * Creates a new scope which contains variables and functions relating to a QgsLayoutMultiFrame.
+     * \see setLayoutMultiFrameVariable()
+     * \see setLayoutMultiFrameVariables()
+     * \since QGIS 3.10
+     */
+    static QgsExpressionContextScope *multiFrameScope( const QgsLayoutMultiFrame *frame ) SIP_FACTORY;
+
+    /**
+     * Sets a layout multi \a frame context variable, with the given \a name and \a value.
+     * This variable will be contained within scopes retrieved via
+     * multiFrameScope().
+     * \see setLayoutItemVariables()
+     * \see multiFrameScope()
+     * \since QGIS 3.10
+     */
+    static void setLayoutMultiFrameVariable( QgsLayoutMultiFrame *frame, const QString &name, const QVariant &value );
+
+    /**
+     * Sets all layout multiframe context variables for an \a frame. Existing variables will be removed and replaced
+     * with the \a variables specified.
+     * \see setLayoutMultiFrameVariable()
+     * \see multiFrameScope()
+     * \since QGIS 3.10
+     */
+    static void setLayoutMultiFrameVariables( QgsLayoutMultiFrame *frame, const QVariantMap &variables );
 
     /**
      * Helper function for creating an expression context which contains just a feature and fields
@@ -290,18 +326,57 @@ class CORE_EXPORT QgsExpressionContextUtils
     class GetLayerVisibility : public QgsScopedExpressionFunction
     {
       public:
-        GetLayerVisibility( const QList<QgsMapLayer *> &layers );
+        GetLayerVisibility( const QList<QgsMapLayer *> &layers, double scale = 0 );
         QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
         QgsScopedExpressionFunction *clone() const override;
 
       private:
+        GetLayerVisibility();
 
-        const QList< QPointer< QgsMapLayer > > mLayers;
+        QList< QPointer< QgsMapLayer > > mLayers;
+        QMap< QPointer< QgsMapLayer >, QPair< double, double > > mScaleBasedVisibilityDetails;
+        double mScale = 0.0;
 
     };
 
     friend class QgsLayoutItemMap; // needs access to GetLayerVisibility
 
 };
+
+#ifndef SIP_RUN
+
+/**
+ * \class QgsExpressionContextScopePopper
+ * RAII class to pop scope from an expression context on destruction
+ * \ingroup core
+ * \since QGIS 3.10
+ */
+class QgsExpressionContextScopePopper
+{
+  public:
+
+    /**
+     * Constructor for QgsExpressionContextScopePopper. Appends the specified \a scope to the
+     * end of \a context. \a scope will be automatically popped and deleted when this QgsExpressionContextScopePopper
+     * is destroyed.
+     *
+     * Ownership of \a scope is transferred to the popper, but it is guaranteed to exist of the lifetime
+     * of the popper.
+     */
+    QgsExpressionContextScopePopper( QgsExpressionContext &context, QgsExpressionContextScope *scope )
+      : mContext( context )
+    {
+      mContext.appendScope( scope );
+    }
+
+    ~QgsExpressionContextScopePopper()
+    {
+      delete mContext.popScope();
+    }
+
+  private:
+    QgsExpressionContext &mContext;
+};
+#endif
 
 #endif // QGSEXPRESSIONCONTEXTUTILS_H

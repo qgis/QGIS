@@ -92,11 +92,11 @@ Sets if the currently shown form has received any edit events so far.
 :param state: The state
 %End
 
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager /Transfer/ );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
 %Docstring
 setFeatureSelectionManager
 
-:param featureSelectionManager: We will take ownership
+:param featureSelectionManager:
 %End
 
   protected:
@@ -118,6 +118,16 @@ setFeatureSelectionManager
 Emitted whenever the current edit selection has been changed.
 
 :param feat: the feature, which will be edited.
+%End
+
+    void currentEditSelectionProgressChanged( int progress, int count );
+%Docstring
+Emitted whenever the current edit selection has been changed.
+
+:param progress: the position of the feature in the list
+:param count: the number of features in the list
+
+.. versionadded:: 3.8
 %End
 
     void displayExpressionChanged( const QString &expression );
@@ -161,6 +171,36 @@ Select all currently visible features
 
     void repaintRequested( const QModelIndexList &indexes );
     void repaintRequested();
+
+    void editFirstFeature();
+%Docstring
+editFirstFeature will try to edit the first feature of the list
+
+.. versionadded:: 3.8
+%End
+
+    void editNextFeature();
+%Docstring
+editNextFeature will try to edit next feature of the list
+
+.. versionadded:: 3.8
+%End
+
+    void editPreviousFeature();
+%Docstring
+editPreviousFeature will try to edit previous feature of the list
+
+.. versionadded:: 3.8
+%End
+
+    void editLastFeature();
+%Docstring
+editLastFeature will try to edit the last feature of the list
+
+.. versionadded:: 3.8
+%End
+
+
 
 };
 

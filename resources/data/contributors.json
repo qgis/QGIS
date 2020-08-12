@@ -811,6 +811,23 @@
     {
       "type": "Feature",
       "properties": {
+        "Name": "Clemens Raffler",
+        "Committer": "No",
+        "First Commit Message": "[feature][processing] Initial Port of Create Grid algorithm to C++",
+        "First Commit Date": "30-09-2019",
+        "GIT Nickname": "root676"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.3302,
+          48.1779
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "Name": "Even Rouault",
         "Committer": "Yes",
         "First Commit Message": "OGR provider: don't segfault when the layer cannot be retrieved (e.g. datasource with 0 layer)",
@@ -905,6 +922,91 @@
         "coordinates": [
           6.63055,
           45.93943
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Jan Caha",
+        "Committer": "Yes",
+        "First Commit Message": "ascii expression",
+        "First Commit Date": "18-04-2020",
+        "GIT Nickname": "jancaha"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.98311,
+          49.281418
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Samweli Mwakisambwe",
+        "Committer": "Yes",
+        "First Commit Message": "Deselecting tables after addition in Data Source Manager",
+        "First Commit Date": "10-12-2019",
+        "GIT Nickname": "Samweli"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          39.220558,
+          -6.784386
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "José de Paula R. N. Assis",
+        "Committer": "No",
+        "First Commit Message": "Fixes empty tracebacks for user Python code",
+        "First Commit Date": "09-02-2020",
+        "GIT Nickname": "espinafre"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.94110,
+          -15.814729
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Stefanos Natsis",
+        "Committer": "No",
+        "First Commit Message": "Quick fix for a bug in QgsGeos::reshapeLine that causes QGIS to crash because of an unhandled geos exception.",
+        "First Commit Date": "23-02-2019",
+        "GIT Nickname": "uclaros"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.74146,
+          38.00278
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Vincent Cloarec",
+        "Committer": "No",
+        "First Commit Message": "fix the QgsMeshLayerProperties constructor",
+        "First Commit Date": "15-04-2019",
+        "GIT Nickname": "vcloarec"
+        },
+        "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -61.52506,
+          16.26555
         ]
       }
     }

@@ -20,6 +20,7 @@
 #include "qgsvectorlayerref.h"
 #include "qgslayoutserializableobject.h"
 #include "qgsabstractlayoutiterator.h"
+#include "qgsexpressioncontextgenerator.h"
 #include <QObject>
 
 class QgsLayout;
@@ -37,7 +38,7 @@ class QgsLayout;
  *
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutIterator, public QgsLayoutSerializableObject
+class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutIterator, public QgsLayoutSerializableObject, public QgsExpressionContextGenerator
 {
     Q_OBJECT
   public:
@@ -131,7 +132,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * Sets the \a expression (or field name) used for calculating the page name.
      * \see pageNameExpression()
      */
-    void setPageNameExpression( const QString &expression ) { mPageNameExpression = expression; }
+    void setPageNameExpression( const QString &expression );
 
     /**
      * Returns the calculated name for a specified atlas \a page number. Page numbers start at 0.
@@ -153,7 +154,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see setSortAscending()
      * \see setSortExpression()
      */
-    void setSortFeatures( bool enabled ) { mSortFeatures = enabled; }
+    void setSortFeatures( bool enabled );
 
     /**
      * Returns TRUE if features should be sorted in an ascending order.
@@ -175,7 +176,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see sortAscending()
      * \see setSortExpression()
      */
-    void setSortAscending( bool ascending ) { mSortAscending = ascending; }
+    void setSortAscending( bool ascending );
 
     /**
      * Returns the expression (or field name) to use for sorting features.
@@ -197,7 +198,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see setSortAscending()
      * \see sortExpression()
      */
-    void setSortExpression( const QString &expression ) { mSortExpression = expression; }
+    void setSortExpression( const QString &expression );
 
     /**
      * Returns TRUE if features should be filtered in the coverage layer.
@@ -211,7 +212,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see filterFeatures()
      * \see setFilterExpression()
      */
-    void setFilterFeatures( bool filtered ) { mFilterFeatures = filtered; }
+    void setFilterFeatures( bool filtered );
 
     /**
      * Returns the expression used for filtering features in the coverage layer.
@@ -244,13 +245,15 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
 
     bool beginRender() override;
     bool endRender() override;
-    int count() override;
+    int count() const override;
     QString filePath( const QString &baseFilePath, const QString &extension ) override;
 
     /**
      * Returns the current feature number, where a value of 0 corresponds to the first feature.
      */
     int currentFeatureNumber() const { return mCurrentFeatureNo; }
+
+    QgsExpressionContext createExpressionContext() const override;
 
   public slots:
 
@@ -390,7 +393,6 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     int mCurrentFeatureNo = -1;
     QgsFeature mCurrentFeature;
 
-    QgsExpressionContext createExpressionContext();
 
     friend class AtlasFeatureSorter;
 };

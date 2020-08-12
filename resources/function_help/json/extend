@@ -1,6 +1,7 @@
 {
   "name": "extend",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Extends the start and end of a linestring geometry by a specified amount. Lines are extended using the bearing of the first and last segment in the line. Distances are in the Spatial Reference System of this geometry.",
   "arguments": [ {"arg":"geometry","description":"a (multi)linestring geometry"},
                  {"arg":"start_distance","description":"distance to extend the start of the line"},

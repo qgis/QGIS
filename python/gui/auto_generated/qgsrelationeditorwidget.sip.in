@@ -17,6 +17,9 @@
 #include <qgsrelationeditorwidget.h>
 %End
 
+
+
+
 class QgsRelationEditorWidget : QgsCollapsibleGroupBox
 {
 
@@ -30,6 +33,7 @@ class QgsRelationEditorWidget : QgsCollapsibleGroupBox
       sipType = NULL;
 %End
   public:
+
 
     QgsRelationEditorWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
@@ -48,6 +52,9 @@ Gets the view mode for the dual view
 %End
 
     void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );
+%Docstring
+Sets the ``relation`` and the ``feature``
+%End
 
     void setRelations( const QgsRelation &relation, const QgsRelation &nmrelation );
 %Docstring
@@ -60,9 +67,27 @@ inserting and deleting entries on the intermediate table as required.
 :param nmrelation: Optional reference from the referencing table to a 3rd N:M table
 %End
 
-    void setFeature( const QgsFeature &feature );
+    void setFeature( const QgsFeature &feature, bool update = true );
+%Docstring
+Sets the ``feature`` being edited and updates the UI unless ``update`` is set to ``False``
+%End
 
     void setEditorContext( const QgsAttributeEditorContext &context );
+%Docstring
+Sets the editor ``context``
+
+.. note::
+
+   if context cadDockWidget is null, it won't be possible to digitize
+   the geometry of a referencing feature from this widget
+%End
+
+    QgsAttributeEditorContext editorContext( ) const;
+%Docstring
+Returns the attribute editor context.
+
+.. versionadded:: 3.14
+%End
 
     QgsIFeatureSelectionManager *featureSelectionManager();
 %Docstring
@@ -84,35 +109,98 @@ Defines if a title label should be shown for this widget.
 .. versionadded:: 2.18
 %End
 
-    bool showLinkButton() const;
+ bool showLinkButton() const /Deprecated/;
 %Docstring
 Determines if the "link feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
 %End
 
-    void setShowLinkButton( bool showLinkButton );
+ void setShowLinkButton( bool showLinkButton ) /Deprecated/;
 %Docstring
 Determines if the "link feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
 %End
 
-    bool showUnlinkButton() const;
+ bool showUnlinkButton() const /Deprecated/;
 %Docstring
 Determines if the "unlink feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
 %End
 
-    void setShowUnlinkButton( bool showUnlinkButton );
+ void setShowUnlinkButton( bool showUnlinkButton ) /Deprecated/;
 %Docstring
 Determines if the "unlink feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
+%End
+
+ void setShowSaveChildEditsButton( bool showChildEdits ) /Deprecated/;
+%Docstring
+Determines if the "Save child layer edits" button should be shown
+
+.. versionadded:: 3.14
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
+%End
+
+ bool showSaveChildEditsButton() const /Deprecated/;
+%Docstring
+Determines if the "Save child layer edits" button should be shown
+
+.. versionadded:: 3.14
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
+%End
+
+    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+%Docstring
+Defines the buttons which are shown
+
+.. versionadded:: 3.16
+%End
+
+    QgsAttributeEditorRelation::Buttons visibleButtons() const;
+%Docstring
+Returns the buttons which are shown
+
+.. versionadded:: 3.16
+%End
+
+    QgsFeature feature() const;
+%Docstring
+Returns the widget's current feature
+
+.. versionadded:: 3.14
+%End
+
+  public slots:
+
+    void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
+%Docstring
+Called when an ``attribute`` value in the parent widget has changed to ``newValue``
+
+.. versionadded:: 3.14
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

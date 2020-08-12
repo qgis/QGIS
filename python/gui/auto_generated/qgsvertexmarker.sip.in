@@ -39,6 +39,8 @@ A class for marking vertices of features using e.g. circles or 'x'.
       ICON_BOX,
       ICON_CIRCLE,
       ICON_DOUBLE_TRIANGLE,
+      ICON_TRIANGLE,
+      ICON_RHOMBUS,
     };
 
     QgsVertexMarker( QgsMapCanvas *mapCanvas /TransferThis/ );

@@ -918,7 +918,7 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
 
   // GRASS commands usually output text in system default encoding.
   // Let's use the System codec whether Qt doesn't recognize the encoding
-  // of the interface description (see https://issues.qgis.org/issues/4547)
+  // of the interface description (see https://github.com/qgis/QGIS/issues/14461)
   QTextCodec *codec = nullptr;
 
   QgsDebugMsg( "trying to get encoding name from XML interface description..." );

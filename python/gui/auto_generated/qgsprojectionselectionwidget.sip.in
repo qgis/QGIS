@@ -68,7 +68,7 @@ Returns whether the specified CRS option is visible in the widget.
     void setNotSetText( const QString &text );
 %Docstring
 Sets the text to show for the not set option. Note that this option is not shown
-by default and must be set visible by calling setOptionVisible().
+by default and must be set visible by calling :py:func:`~QgsProjectionSelectionWidget.setOptionVisible`.
 
 .. versionadded:: 3.0
 %End
@@ -118,6 +118,15 @@ to the preset CRSes shown in the widget.
 %Docstring
 Opens the dialog for selecting a new CRS
 %End
+
+  protected:
+
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+
+    virtual void dragLeaveEvent( QDragLeaveEvent *event );
+
+    virtual void dropEvent( QDropEvent *event );
+
 
 };
 

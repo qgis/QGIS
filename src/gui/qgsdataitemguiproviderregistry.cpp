@@ -12,32 +12,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #include "qgsdataitemguiproviderregistry.h"
-#include "qgsdataitemguiprovider.h"
+
 #include "qgsproviderregistry.h"
 
-typedef QList<QgsDataItemGuiProvider *> *dataItemGuiProviders_t();
+#include "qgsdataitemguiprovider.h"
+#include "qgsproviderguiregistry.h"
 
-QgsDataItemGuiProviderRegistry::QgsDataItemGuiProviderRegistry()
-{
-  const QStringList providersList = QgsProviderRegistry::instance()->providerList();
-
-  for ( const QString &key : providersList )
-  {
-    std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->createProviderLibrary( key ) );
-    if ( !library )
-      continue;
-
-    if ( dataItemGuiProviders_t *dataItemGuiProvidersFn = reinterpret_cast< dataItemGuiProviders_t * >( cast_to_fptr( library->resolve( "dataItemGuiProviders" ) ) ) )
-    {
-      const QList<QgsDataItemGuiProvider *> *providerList = dataItemGuiProvidersFn();
-      // the function is a factory - we keep ownership of the returned providers
-      mProviders << *providerList;
-      delete providerList;
-    }
-  }
-}
+QgsDataItemGuiProviderRegistry::QgsDataItemGuiProviderRegistry() = default;
 
 QgsDataItemGuiProviderRegistry::~QgsDataItemGuiProviderRegistry()
 {
@@ -54,4 +36,19 @@ void QgsDataItemGuiProviderRegistry::removeProvider( QgsDataItemGuiProvider *pro
   int index = mProviders.indexOf( provider );
   if ( index >= 0 )
     delete mProviders.takeAt( index );
+}
+
+void QgsDataItemGuiProviderRegistry::initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry )
+{
+  if ( !providerGuiRegistry )
+    return;
+
+  const QStringList providersList = providerGuiRegistry->providerList();
+
+  for ( const QString &key : providersList )
+  {
+    const QList<QgsDataItemGuiProvider *> providerList = providerGuiRegistry->dataItemGuiProviders( key );
+    // the function is a factory - we keep ownership of the returned providers
+    mProviders << providerList;
+  }
 }

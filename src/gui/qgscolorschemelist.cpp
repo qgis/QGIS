@@ -81,7 +81,7 @@ void QgsColorSchemeList::removeSelection()
     rows << index.row();
   }
   //remove duplicates
-  QList<int> rowsToRemove = QList<int>::fromSet( rows.toSet() );
+  QList<int> rowsToRemove = qgis::setToList( qgis::listToSet( rows ) );
 
   //remove rows in descending order
   std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );
@@ -124,7 +124,7 @@ void QgsColorSchemeList::copyColors()
     rows << index.row();
   }
   //remove duplicates
-  QList<int> rowsToCopy = QList<int>::fromSet( rows.toSet() );
+  QList<int> rowsToCopy = qgis::setToList( qgis::listToSet( rows ) );
 
   QgsNamedColorList colorsToCopy;
   const auto constRowsToCopy = rowsToCopy;
@@ -208,7 +208,7 @@ void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
       rows << index.row();
     }
     //remove duplicates
-    QList<int> rowsToRemove = QList<int>::fromSet( rows.toSet() );
+    QList<int> rowsToRemove = qgis::setToList( qgis::listToSet( rows ) );
 
     //remove rows in descending order
     std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );
@@ -336,7 +336,7 @@ QModelIndex QgsColorSchemeModel::index( int row, int column, const QModelIndex &
 
 QModelIndex QgsColorSchemeModel::parent( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   //all items are top level
   return QModelIndex();
@@ -357,7 +357,7 @@ int QgsColorSchemeModel::rowCount( const QModelIndex &parent ) const
 
 int QgsColorSchemeModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 2;
 }
 
@@ -414,7 +414,7 @@ Qt::ItemFlags QgsColorSchemeModel::flags( const QModelIndex &index ) const
 
 bool QgsColorSchemeModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  Q_UNUSED( role );
+  Q_UNUSED( role )
 
   if ( !mScheme || !mScheme->isEditable() )
     return false;
@@ -522,7 +522,7 @@ QMimeData *QgsColorSchemeModel::mimeData( const QModelIndexList &indexes ) const
 
 bool QgsColorSchemeModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
 
   if ( !mScheme || !mScheme->isEditable() )
   {
@@ -627,7 +627,7 @@ bool QgsColorSchemeModel::removeRows( int row, int count, const QModelIndex &par
 
 bool QgsColorSchemeModel::insertRows( int row, int count, const QModelIndex &parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
 
   if ( !mScheme || !mScheme->isEditable() )
   {
@@ -710,7 +710,12 @@ void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewIte
   }
 
   QRect rect = option.rect;
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   const int iconSize = Qgis::UI_SCALE_FACTOR * option.fontMetrics.width( 'X' ) * 4;
+#else
+  const int iconSize = Qgis::UI_SCALE_FACTOR * option.fontMetrics.horizontalAdvance( 'X' ) * 4;
+#endif
+
   const int cornerSize = iconSize / 6;
   //center it
   rect.setLeft( option.rect.center().x() - iconSize / 2 );
@@ -718,7 +723,7 @@ void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewIte
   rect.setSize( QSize( iconSize, iconSize ) );
   rect.adjust( 0, 1, 0, 1 );
   //create an icon pixmap
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->setRenderHint( QPainter::Antialiasing );
   painter->setPen( Qt::NoPen );
   if ( color.alpha() < 255 )
@@ -732,7 +737,6 @@ void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewIte
   //draw semi-transparent color on top
   painter->setBrush( color );
   painter->drawRoundedRect( rect, cornerSize, cornerSize );
-  painter->restore();
 }
 
 QPixmap QgsColorSwatchDelegate::transparentBackground() const
@@ -747,15 +751,19 @@ QPixmap QgsColorSwatchDelegate::transparentBackground() const
 
 QSize QgsColorSwatchDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   const int iconSize = Qgis::UI_SCALE_FACTOR * option.fontMetrics.width( 'X' ) * 4;
+#else
+  const int iconSize = Qgis::UI_SCALE_FACTOR * option.fontMetrics.horizontalAdvance( 'X' ) * 4;
+#endif
   return QSize( iconSize, iconSize * 32 / 30.0 );
 }
 
 bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index )
 {
-  Q_UNUSED( option );
+  Q_UNUSED( option )
   if ( event->type() == QEvent::MouseButtonDblClick )
   {
     if ( !index.model()->flags( index ).testFlag( Qt::ItemIsEditable ) )

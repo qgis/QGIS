@@ -273,6 +273,9 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
     double maxFrameWidth() const;
 
     void refreshExpressionContext();
+
+    QgsLayoutItemHtml( const QgsLayoutItemHtml & ) = delete;
+    QgsLayoutItemHtml &operator=( const QgsLayoutItemHtml & ) = delete;
 };
 
 ///@cond PRIVATE
@@ -284,6 +287,7 @@ class JavascriptExecutorLoop : public QEventLoop
 
     void done();
     void execIfNotDone();
+    void reportError( const QString &error );
 
   private:
 

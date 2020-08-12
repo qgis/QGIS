@@ -198,8 +198,9 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     /**
      * Adds attributes that don't source from the provider but are added inside QGIS
      * Includes
-     *  - Joined fields
-     *  - Expression fields
+     *
+     * - Joined fields
+     * - Expression fields
      *
      * \param f The feature will be modified
      * \note not available in Python bindings
@@ -256,6 +257,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QgsVectorLayerFeatureIterator( const QgsVectorLayerFeatureIterator &rhs );
 #endif
 
+    void createExpressionContext();
     std::unique_ptr<QgsExpressionContext> mExpressionContext;
 
     QgsFeedback *mInterruptionChecker = nullptr;
@@ -286,6 +288,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      * Checks a feature's geometry for validity, if requested in feature request.
      */
     bool checkGeometryValidity( const QgsFeature &feature );
+
+    bool mDelegatedOrderByToProvider = false;
 };
 
 
@@ -314,7 +318,7 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource,
     long featureCount() const override;
     QString sourceName() const override;
     QgsExpressionContextScope *createExpressionContextScope() const override;
-
+    SpatialIndexPresence hasSpatialIndex() const override;
 
   private:
 

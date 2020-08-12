@@ -19,6 +19,7 @@
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingrecentalgorithmlog.h"
 #include <functional>
+#include <QPalette>
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -320,7 +321,7 @@ QString QgsProcessingToolboxModel::toolTipForAlgorithm( const QgsProcessingAlgor
            algorithm->displayName(),
            !algorithm->shortDescription().isEmpty() ? QStringLiteral( "<p>%1</p>" ).arg( algorithm->shortDescription() ) : QString(),
            QObject::tr( "Algorithm ID: ‘%1’" ).arg( QStringLiteral( "<i>%1</i>" ).arg( algorithm->id() ) ),
-           algorithm->flags() & QgsProcessingAlgorithm::FlagKnownIssues ? QStringLiteral( "<b style=\"color:red\">%1</b>" ).arg( QObject::tr( "Warning: Algorithm has known issues" ) ) : QString()
+           ( algorithm->flags() & QgsProcessingAlgorithm::FlagKnownIssues ) ? QStringLiteral( "<b style=\"color:red\">%1</b>" ).arg( QObject::tr( "Warning: Algorithm has known issues" ) ) : QString()
          );
 }
 
@@ -442,6 +443,26 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
       }
       break;
 
+    case RoleProviderFlags:
+      switch ( index.column() )
+      {
+        case 0:
+        {
+          if ( provider )
+            return static_cast< int >( provider->flags() );
+          else if ( algorithm && algorithm->provider() )
+            return static_cast< int >( algorithm->provider()->flags() );
+          else if ( index.parent().data( RoleProviderFlags ).isValid() ) // group node
+            return static_cast< int >( index.parent().data( RoleProviderFlags ).toInt() );
+          else
+            return QVariant();
+        }
+
+        default:
+          return QVariant();
+      }
+      break;
+
     case RoleAlgorithmId:
       switch ( index.column() )
       {
@@ -509,8 +530,9 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
     default:
       return QVariant();
   }
-
+#ifndef _MSC_VER  // avoid warning
   return QVariant();
+#endif
 }
 
 int QgsProcessingToolboxModel::rowCount( const QModelIndex &parent ) const
@@ -661,6 +683,11 @@ QgsProcessingToolboxProxyModel::QgsProcessingToolboxProxyModel( QObject *parent,
 }
 
 QgsProcessingToolboxModel *QgsProcessingToolboxProxyModel::toolboxModel()
+{
+  return mModel;
+}
+
+const QgsProcessingToolboxModel *QgsProcessingToolboxProxyModel::toolboxModel() const
 {
   return mModel;
 }
@@ -818,4 +845,22 @@ bool QgsProcessingToolboxProxyModel::lessThan( const QModelIndex &left, const QM
   QString leftStr = sourceModel()->data( left ).toString();
   QString rightStr = sourceModel()->data( right ).toString();
   return QString::localeAwareCompare( leftStr, rightStr ) < 0;
+}
+
+QVariant QgsProcessingToolboxProxyModel::data( const QModelIndex &index, int role ) const
+{
+  if ( role == Qt::ForegroundRole && !mFilterString.isEmpty() )
+  {
+    QModelIndex sourceIndex = mapToSource( index );
+    const QVariant flags = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleProviderFlags );
+    if ( flags.isValid() && flags.toInt() & QgsProcessingProvider::FlagDeemphasiseSearchResults )
+    {
+      QBrush brush( qApp->palette().color( QPalette::Text ), Qt::SolidPattern );
+      QColor fadedTextColor = brush.color();
+      fadedTextColor.setAlpha( 100 );
+      brush.setColor( fadedTextColor );
+      return brush;
+    }
+  }
+  return QSortFilterProxyModel::data( index, role );
 }

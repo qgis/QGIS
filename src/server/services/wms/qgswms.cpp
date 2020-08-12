@@ -62,11 +62,6 @@ namespace QgsWms
       QString name()    const override { return QStringLiteral( "WMS" ); }
       QString version() const override { return mVersion; }
 
-      bool allowMethod( QgsServerRequest::Method method ) const override
-      {
-        return method == QgsServerRequest::GetMethod;
-      }
-
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
                            const QgsProject *project ) override
       {
@@ -91,12 +86,12 @@ namespace QgsWms
         if ( req.isEmpty() )
         {
           throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
-                                     QStringLiteral( "Please check the value of the REQUEST parameter" ), 501 );
+                                     QStringLiteral( "Please add or check the value of the REQUEST parameter" ), 501 );
         }
 
         if ( ( mVersion.compare( QLatin1String( "1.1.1" ) ) == 0 \
-               && req.compare( QLatin1String( "capabilities" ) ) == 0 )
-             || req.compare( QLatin1String( "GetCapabilities" ) ) == 0 )
+               && QSTR_COMPARE( req, "capabilities" ) )
+             || QSTR_COMPARE( req, "GetCapabilities" ) )
         {
           writeGetCapabilities( mServerIface, project, version, request, response, false );
         }
@@ -128,7 +123,7 @@ namespace QgsWms
         }
         else if ( QSTR_COMPARE( req, "GetSchemaExtension" ) )
         {
-          writeGetSchemaExtension( mServerIface, version, request, response );
+          writeGetSchemaExtension( response );
         }
         else if ( QSTR_COMPARE( req, "GetStyle" ) )
         {
@@ -154,7 +149,7 @@ namespace QgsWms
         {
           // Operation not supported
           throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
-                                     QString( "Request %1 is not supported" ).arg( req ), 501 );
+                                     QStringLiteral( "Request %1 is not supported" ).arg( req ), 501 );
         }
       }
 

@@ -149,6 +149,7 @@ Returns ``False`` if the QgsQuadrilateral is not valid.
 %Docstring
 Set all points
 Returns ``False`` if the QgsQuadrilateral is not valid:
+
 - The points do not have the same type
 - The quadrilateral would have auto intersections
 - The quadrilateral has double points

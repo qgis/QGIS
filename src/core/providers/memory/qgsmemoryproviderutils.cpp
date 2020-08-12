@@ -65,7 +65,10 @@ QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, 
   QStringList parts;
   if ( crs.isValid() )
   {
-    parts << QStringLiteral( "crs=" ) + crs.authid();
+    if ( !crs.authid().isEmpty() )
+      parts << QStringLiteral( "crs=%1" ).arg( crs.authid() );
+    else
+      parts << QStringLiteral( "crs=wkt:%1" ).arg( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
   }
   for ( const auto &field : fields )
   {
@@ -74,5 +77,7 @@ QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, 
   }
 
   QString uri = geomType + '?' + parts.join( '&' );
-  return new QgsVectorLayer( uri, name, QStringLiteral( "memory" ), QgsVectorLayer::LayerOptions( QgsCoordinateTransformContext() ) );
+  QgsVectorLayer::LayerOptions options{ QgsCoordinateTransformContext() };
+  options.skipCrsValidation = true;
+  return new QgsVectorLayer( uri, name, QStringLiteral( "memory" ), options );
 }

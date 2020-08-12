@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspluginitemdelegate.h"
+#include "qgsrendercontext.h"
 #include <QPainter>
 #include <QFont>
 #include <QStyleOptionViewItem>
@@ -29,8 +30,8 @@ QgsPluginItemDelegate::QgsPluginItemDelegate( QObject *parent ) : QStyledItemDel
 
 QSize QgsPluginItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
-  Q_UNUSED( index );
+  Q_UNUSED( option )
+  Q_UNUSED( index )
   // Calculate row height, adds some 20% padding
   int pixelsHigh = QApplication::fontMetrics().height() * 1.4;
   return QSize( pixelsHigh, pixelsHigh );
@@ -39,7 +40,7 @@ QSize QgsPluginItemDelegate::sizeHint( const QStyleOptionViewItem &option, const
 
 void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->setRenderHint( QPainter::SmoothPixmapTransform );
   QStyle *style = QApplication::style();
   int pixelsHigh = QApplication::fontMetrics().height();
@@ -100,6 +101,4 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     painter->setFont( font );
   }
   painter->drawText( option.rect.left() + pixelsHigh * 2.4, option.rect.bottom() - pixelsHigh * 0.4, index.data( Qt::DisplayRole ).toString() );
-
-  painter->restore();
 }

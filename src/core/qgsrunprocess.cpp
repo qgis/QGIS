@@ -40,7 +40,7 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
 
   if ( capture )
   {
-    connect( mProcess, static_cast < void ( QProcess::* )( QProcess::ProcessError ) >( &QProcess::error ), this, &QgsRunProcess::processError );
+    connect( mProcess, &QProcess::errorOccurred, this, &QgsRunProcess::processError );
     connect( mProcess, &QProcess::readyReadStandardOutput, this, &QgsRunProcess::stdoutAvailable );
     connect( mProcess, &QProcess::readyReadStandardError, this, &QgsRunProcess::stderrAvailable );
     // We only care if the process has finished if we are capturing
@@ -141,7 +141,7 @@ void QgsRunProcess::dialogGone()
 
   mOutput = nullptr;
 
-  disconnect( mProcess, static_cast < void ( QProcess::* )( QProcess::ProcessError ) >( &QProcess::error ), this, &QgsRunProcess::processError );
+  disconnect( mProcess, &QProcess::errorOccurred, this, &QgsRunProcess::processError );
   disconnect( mProcess, &QProcess::readyReadStandardOutput, this, &QgsRunProcess::stdoutAvailable );
   disconnect( mProcess, &QProcess::readyReadStandardError, this, &QgsRunProcess::stderrAvailable );
   disconnect( mProcess, static_cast < void ( QProcess::* )( int, QProcess::ExitStatus ) >( &QProcess::finished ), this, &QgsRunProcess::processExit );

@@ -97,6 +97,16 @@ Returns a geometry from within the collection.
     virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
 
 
+    void reserve( int size );
+%Docstring
+Attempts to allocate memory for at least ``size`` geometries.
+
+If the number of geometries is known in advance, calling this function prior to adding geometries will prevent
+reallocations and memory fragmentation.
+
+.. versionadded:: 3.10
+%End
+
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 %Docstring
 Adds a geometry and takes ownership. Returns ``True`` in case of success.
@@ -139,12 +149,14 @@ An IndexError will be raised if no geometry with the specified index exists.
 
     virtual void draw( QPainter &p ) const;
 
+    virtual QPainterPath asQPainterPath() const;
+
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
 
     virtual bool fromWkt( const QString &wkt );
 
-    virtual QByteArray asWkb() const;
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 
     virtual QString asWkt( int precision = 17 ) const;
 
@@ -152,7 +164,7 @@ An IndexError will be raised if no geometry with the specified index exists.
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
-    virtual QString asJson( int precision = 17 ) const;
+    virtual QString asKml( int precision = 17 ) const;
 
 
     virtual QgsRectangle boundingBox() const;

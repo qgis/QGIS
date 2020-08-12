@@ -21,10 +21,13 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer *vl )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   if ( vl )
   {
     bool canDeleteAttributes = vl->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
@@ -57,15 +60,6 @@ QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer *vl )
     mEditModeInfo->setVisible( !vl->isEditable() );
     mCanDeleteAttributesInfo->setVisible( !canDeleteAttributes );
   }
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/QgsDelAttrDialog/geometry" ) ).toByteArray() );
-}
-
-QgsDelAttrDialog::~QgsDelAttrDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/QgsDelAttrDialog/geometry" ), saveGeometry() );
 }
 
 QList<int> QgsDelAttrDialog::selectedAttributes()

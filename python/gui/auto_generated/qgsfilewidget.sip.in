@@ -98,6 +98,20 @@ setFilter sets the filter used by the model to filters. The filter is used to sp
 :param filter: Only files that match the given filter are shown, it may be an empty string. If you want multiple filters, separate them with ';;',
 %End
 
+    QFileDialog::Options options() const;
+%Docstring
+Returns additional options used for QFileDialog
+
+.. versionadded:: 3.14
+%End
+
+    void setOptions( QFileDialog::Options options );
+%Docstring
+setOptions sets additional options used for QFileDialog. These options affect the look and feel of the QFileDialog
+
+.. versionadded:: 3.14
+%End
+
     void setSelectedFilter( const QString &selectedFilter );
 %Docstring
 Sets the selected filter when the file dialog opens.
@@ -184,9 +198,10 @@ the appearance and behavior of the line edit portion of the widget.
 %End
 
   signals:
-    void fileChanged( const QString & );
+
+    void fileChanged( const QString &path );
 %Docstring
-emitted as soon as the current file or directory is changed
+Emitted whenever the current file or directory ``path`` is changed.
 %End
 
 };

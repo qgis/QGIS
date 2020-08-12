@@ -25,12 +25,14 @@
 
 #include <QString>
 
+#include "qgsprovidermetadata.h"
+
 /**
 
-  \brief Data provider for GDAL layers.
+  \brief Data provider for OWS layers.
 
   This provider implements the interface defined in the QgsDataProvider class
-  to provide access to spatial data residing in a GDAL layers.
+  to provide access to spatial data residing in a OWS layers.
 
 */
 class QgsOwsProvider : public QgsDataProvider
@@ -60,6 +62,14 @@ class QgsOwsProvider : public QgsDataProvider
     QgsRectangle extent() const override { return QgsRectangle(); }
 
     bool isValid() const override { return false; }
+};
+
+class QgsOwsProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsOwsProviderMetadata();
+    QgsOwsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QList< QgsDataItemProvider * > dataItemProviders() const override;
 };
 
 #endif // QGSOWSPROVIDER_H

@@ -54,9 +54,8 @@ class TestQgsInvertedPolygon : public QObject
     void checkSymbolItem();
     void preprocess();
     void projectionTest();
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_MAJOR >= 2
     void curvedPolygons();
-#endif
+    void rotationTest();
 
   private:
     bool mTestHasError =  false ;
@@ -153,26 +152,33 @@ void TestQgsInvertedPolygon::projectionTest()
   QVERIFY( imageCheck( "inverted_polys_projection", &extent ) );
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_preprocess.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_projection2", &extent ) );
+  mMapSettings.setDestinationCrs( mpPolysLayer->crs() );
 }
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_MAJOR >= 2
-// This test relies on GDAL support of curved polygons
 void TestQgsInvertedPolygon::curvedPolygons()
 {
   QString myCurvedPolysFileName = mTestDataDir + "curved_polys.gpkg";
   QFileInfo myCurvedPolyFileInfo( myCurvedPolysFileName );
   QgsVectorLayer *curvedLayer = new QgsVectorLayer( myCurvedPolyFileInfo.filePath() + "|layername=polys",
       myCurvedPolyFileInfo.completeBaseName(), "ogr" );
-  curvedLayer->setSimplifyMethod( simplifyMethod );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << curvedLayer );
 
   mReport += "<h2>Inverted polygon renderer, curved polygons test</h2>\n";
-  mMapSettings.setLayers( QStringList() << curvedLayer->id() );
-  QVERIFY( setQml( mpCurvedPolysLayer, "inverted_polys_single.qml" ) );
+  mMapSettings.setLayers( QList< QgsMapLayer * >() << curvedLayer );
+  QVERIFY( setQml( curvedLayer, "inverted_polys_single.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_curved" ) );
-  mMapSettings.setLayers( QStringList() << curvedLayer->id() );
+  mMapSettings.setLayers( QList< QgsMapLayer * >() << mpPolysLayer );
 }
-#endif
+
+void TestQgsInvertedPolygon::rotationTest()
+{
+  mReport += QLatin1String( "<h2>Inverted polygon renderer, rotation test</h2>\n" );
+  mMapSettings.setRotation( 45 );
+  QVERIFY( setQml( mpPolysLayer, "inverted_polys_single.qml" ) );
+  QVERIFY( imageCheck( "inverted_polys_rotation" ) );
+  mMapSettings.setRotation( 0 );
+}
+
 
 //
 // Private helper functions not called directly by CTest

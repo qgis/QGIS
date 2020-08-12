@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import operator
 import os
 import warnings
@@ -237,7 +233,10 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             dlg.exec_()
 
     def executeAlgorithm(self):
-        alg = self.algorithmTree.selectedAlgorithm().create() if self.algorithmTree.selectedAlgorithm() is not None else None
+        config = {}
+        if self.in_place_mode:
+            config['IN_PLACE'] = True
+        alg = self.algorithmTree.selectedAlgorithm().create(config) if self.algorithmTree.selectedAlgorithm() is not None else None
         if alg is not None:
             ok, message = alg.canExecute()
             if not ok:

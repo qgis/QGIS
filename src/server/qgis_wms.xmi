@@ -239,14 +239,14 @@
         <widgets>
          <classwidget usesdiagramfillcolour="0" width="425" showattsigs="601" usesdiagramusefillcolour="0" x="70" y="211" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="123" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="12" showoperations="1" showpackage="0" showscope="1" font="DejaVu Sans,11,-1,5,75,0,0,0,0,0" linecolor="#ff0000" />
          <classwidget usesdiagramfillcolour="0" width="718" showattsigs="601" usesdiagramusefillcolour="0" x="334" y="422" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="171" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="13" showoperations="1" showpackage="0" showscope="1" font="DejaVu Sans,11,-1,5,75,0,0,0,0,0" linecolor="#ff0000" />
-         <notewidget usesdiagramfillcolour="1" width="367" usesdiagramusefillcolour="1" x="563" y="620" linewidth="none" fillcolour="none" height="175" usefillcolor="1" isinstance="0" xmi.id="91" text="Responsabilities:
+         <notewidget usesdiagramfillcolour="1" width="367" usesdiagramusefillcolour="1" x="563" y="620" linewidth="none" fillcolour="none" height="175" usefillcolor="1" isinstance="0" xmi.id="91" text="Responsibilities:
 
 create capabilities xml for all layers
 
 create (symbolised ) QgsMapLayers from xml blocks
 
 turn symbolisation into renderers" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" linecolor="none" />
-         <notewidget usesdiagramfillcolour="1" width="264" usesdiagramusefillcolour="1" x="4" y="354" linewidth="none" fillcolour="none" height="265" usefillcolor="1" isinstance="0" xmi.id="108" text="Responsabilities:
+         <notewidget usesdiagramfillcolour="1" width="264" usesdiagramusefillcolour="1" x="4" y="354" linewidth="none" fillcolour="none" height="265" usefillcolor="1" isinstance="0" xmi.id="108" text="Responsibilities:
 
 Create Parser Objects
 
@@ -256,7 +256,7 @@ Create Output (e.g. xml, image), depending on operation)
 
 Throws service exceptions in getCapabilities(), getMap(), getFeatureInfo(), getLegendGraphics()" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" linecolor="none" />
          <classwidget usesdiagramfillcolour="0" width="52" showattsigs="601" usesdiagramusefillcolour="0" x="330" y="27" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="37" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="522" showoperations="1" showpackage="0" showscope="1" font="DejaVu Sans,11,-1,5,75,0,0,0,0,0" linecolor="#ff0000" />
-         <notewidget usesdiagramfillcolour="1" width="217" usesdiagramusefillcolour="1" x="0" y="0" linewidth="none" fillcolour="none" height="177" usefillcolor="1" isinstance="0" xmi.id="580" text="Responsabilities:
+         <notewidget usesdiagramfillcolour="1" width="217" usesdiagramusefillcolour="1" x="0" y="0" linewidth="none" fillcolour="none" height="177" usefillcolor="1" isinstance="0" xmi.id="580" text="Responsibilities:
 
 Evaluate variable 'REQUEST'
 
@@ -264,7 +264,7 @@ Create subclass of QgsWMSRequestHandler
 
 Create QgsWMSServer" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" linecolor="none" />
          <classwidget usesdiagramfillcolour="0" width="445" showattsigs="601" usesdiagramusefillcolour="0" x="401" y="34" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="104" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="2099" showoperations="1" showpackage="0" showscope="1" font="DejaVu Sans,11,-1,5,50,1,0,0,0,0" linecolor="#ff0000" />
-         <notewidget usesdiagramfillcolour="1" width="181" usesdiagramusefillcolour="1" x="984" y="21" linewidth="none" fillcolour="none" height="124" usefillcolor="1" isinstance="0" xmi.id="2729" text="Responsabilities:
+         <notewidget usesdiagramfillcolour="1" width="181" usesdiagramusefillcolour="1" x="984" y="21" linewidth="none" fillcolour="none" height="124" usefillcolor="1" isinstance="0" xmi.id="2729" text="Responsibilities:
 
 Hide details of request/response technology (e.g. Get/Post/SOAP)" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" linecolor="none" />
          <classwidget usesdiagramfillcolour="1" width="207" showattsigs="601" usesdiagramusefillcolour="1" x="813" y="167" showopsigs="601" linewidth="none" fillcolour="none" height="37" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="2978" showoperations="1" showpackage="0" showscope="1" font="DejaVu Sans,11,-1,5,75,0,0,0,0,0" linecolor="none" />

@@ -1,10 +1,10 @@
 /***************************************************************************
-                              qgstextannotation.cpp
-                              ------------------------
-  begin                : February 9, 2010
-  copyright            : (C) 2010 by Marco Hugentobler
-  email                : marco dot hugentobler at hugis dot net
- ***************************************************************************/
+                          qgstextannotation.cpp
+                          ------------------------
+begin                : February 9, 2010
+copyright            : (C) 2010 by Marco Hugentobler
+email                : marco dot hugentobler at hugis dot net
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -55,6 +55,12 @@ void QgsTextAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size
   {
     return;
   }
+
+  // scale painter back to 96 dpi, so layout prints match screen rendering
+  QgsScopedQPainterState painterState( context.painter() );
+  const double scaleFactor = context.painter()->device()->logicalDpiX() / 96.0;
+  context.painter()->scale( scaleFactor, scaleFactor );
+  size /= scaleFactor;
 
   mDocument->setTextWidth( size.width() );
 

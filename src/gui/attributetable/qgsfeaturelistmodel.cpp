@@ -31,10 +31,15 @@ QgsFeatureListModel::QgsFeatureListModel( QgsAttributeTableFilterModel *sourceMo
 
 void QgsFeatureListModel::setSourceModel( QgsAttributeTableFilterModel *sourceModel )
 {
+  if ( mSourceLayer )
+    disconnect( mSourceLayer->conditionalStyles(), &QgsConditionalLayerStyles::changed, this, &QgsFeatureListModel::conditionalStylesChanged );
+
   QSortFilterProxyModel::setSourceModel( sourceModel );
   mExpressionContext = sourceModel->layer()->createExpressionContext();
   mFilterModel = sourceModel;
 
+  mSourceLayer = sourceModel->layer();
+  connect( mSourceLayer->conditionalStyles(), &QgsConditionalLayerStyles::changed, this, &QgsFeatureListModel::conditionalStylesChanged );
 }
 
 QgsVectorLayerCache *QgsFeatureListModel::layerCache()
@@ -151,11 +156,11 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
     if ( style.isValid() )
     {
       if ( role == Qt::BackgroundColorRole && style.validBackgroundColor() )
-        return style.backgroundColor();
+        return style.backgroundColor().isValid() ? style.backgroundColor() : QVariant();
       if ( role == Qt::TextColorRole && style.validTextColor() )
-        return style.textColor();
+        return style.textColor().isValid() ? style.textColor() : QVariant();
       if ( role == Qt::DecorationRole )
-        return style.icon();
+        return style.icon().isNull() ? QVariant() : style.icon();
       if ( role == Qt::FontRole )
         return style.font();
     }
@@ -265,22 +270,28 @@ void QgsFeatureListModel::onEndInsertRows( const QModelIndex &parent, int first,
   endInsertRows();
 }
 
+void QgsFeatureListModel::conditionalStylesChanged()
+{
+  mRowStylesMap.clear();
+  emit dataChanged( index( 0, 0 ), index( rowCount() - 1, columnCount() - 1 ) );
+}
+
 bool QgsFeatureListModel::sortByDisplayExpression() const
 {
   return mSortByDisplayExpression;
 }
 
-void QgsFeatureListModel::setSortByDisplayExpression( bool sortByDisplayExpression )
+void QgsFeatureListModel::setSortByDisplayExpression( bool sortByDisplayExpression, Qt::SortOrder order )
 {
   mSortByDisplayExpression = sortByDisplayExpression;
 
   // If we are sorting by display expression, we do not support injected null
-  if ( sortByDisplayExpression )
+  if ( mSortByDisplayExpression )
     setInjectNull( false );
 
   setSortRole( QgsAttributeTableModel::SortRole + 1 );
   setDynamicSortFilter( mSortByDisplayExpression );
-  sort( 0 );
+  sort( 0, order );
 }
 
 QModelIndex QgsFeatureListModel::mapToMaster( const QModelIndex &proxyIndex ) const

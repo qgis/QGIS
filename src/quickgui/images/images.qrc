@@ -12,5 +12,6 @@
         <file>ic_camera.svg</file>
         <file>ic_gallery.svg</file>
         <file>ic_today.svg</file>
+        <file>ic_back.svg</file>
     </qresource>
 </RCC>

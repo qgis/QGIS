@@ -74,13 +74,13 @@ and help text for the associated property.
     void changed();
 %Docstring
 Should be emitted whenever configuration changes happened on this symbol layer configuration.
-If the subsymbol is changed, symbolChanged() should be emitted instead.
+If the subsymbol is changed, :py:func:`~QgsSymbolLayerWidget.symbolChanged` should be emitted instead.
 %End
 
     void symbolChanged();
 %Docstring
 Should be emitted whenever the sub symbol changed on this symbol layer configuration.
-Normally changed() should be preferred.
+Normally :py:func:`~QgsSymbolLayerWidget.changed` should be preferred.
 
 .. seealso:: :py:func:`changed`
 %End
@@ -124,6 +124,9 @@ Creates a new QgsSimpleLineSymbolLayerWidget.
   protected:
 
     void updatePatternIcon();
+
+    virtual void resizeEvent( QResizeEvent *event );
+
 
 };
 
@@ -652,6 +655,46 @@ Creates a new QgsPointPatternFillSymbolLayerWidget.
 
 
 
+
+class QgsRandomMarkerFillSymbolLayerWidget: QgsSymbolLayerWidget
+{
+%Docstring
+
+Widget for controlling the properties of a :py:class:`QgsRandomMarkerFillSymbolLayer`.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
+  public:
+
+    QgsRandomMarkerFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsRandomMarkerFillSymbolLayerWidget.
+
+:param vl: associated vector layer
+:param parent: parent widget
+%End
+
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
+%Docstring
+Creates a new QgsRandomMarkerFillSymbolLayerWidget.
+
+:param vl: associated vector layer
+%End
+
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
+    virtual QgsSymbolLayer *symbolLayer();
+
+
+};
+
+
+
+
 class QgsFontMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
 
@@ -692,7 +735,22 @@ Set stroke color.
 %End
     void setSize( double size );
     void setAngle( double angle );
+
     void setCharacter( QChar chr );
+%Docstring
+Set the font marker character from char.
+
+:param chr: the char
+%End
+
+    void setCharacterFromText( const QString &text );
+%Docstring
+Set the font marker character from a text string.
+
+:param text: the text string
+
+.. versionadded:: 3.8
+%End
 
   protected:
 

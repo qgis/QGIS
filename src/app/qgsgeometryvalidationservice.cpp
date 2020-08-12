@@ -27,6 +27,7 @@ email                : matthias@opengis.ch
 #include "qgsreadwritelocker.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
+#include "qgsmessagelog.h"
 
 #include <QtConcurrent>
 #include <QFutureWatcher>
@@ -99,7 +100,10 @@ void QgsGeometryValidationService::onLayersAdded( const QList<QgsMapLayer *> &la
         mLayerChecks.remove( vectorLayer );
       } );
 
-      enableLayerChecks( vectorLayer );
+      connect( vectorLayer, &QgsMapLayer::beforeResolveReferences, this, [this, vectorLayer]()
+      {
+        enableLayerChecks( vectorLayer );
+      } );
     }
   }
 }
@@ -223,7 +227,7 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
       precision = 8;
   }
 
-  checkInformation.context = qgis::make_unique<QgsGeometryCheckContext>( precision, mProject->crs(), mProject->transformContext() );
+  checkInformation.context = qgis::make_unique<QgsGeometryCheckContext>( precision, mProject->crs(), mProject->transformContext(), mProject );
 
   QList<QgsGeometryCheck *> layerChecks;
 
@@ -269,6 +273,21 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
     {
       const QVariantMap checkConfiguration = layer->geometryOptions()->checkConfiguration( checkId );
       topologyChecks.append( factory->createGeometryCheck( checkInformation.context.get(), checkConfiguration ) );
+
+      if ( checkConfiguration.value( QStringLiteral( "allowedGapsEnabled" ) ).toBool() )
+      {
+        QgsVectorLayer *gapsLayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( checkConfiguration.value( "allowedGapsLayer" ).toString() );
+        if ( gapsLayer )
+        {
+          connect( layer, &QgsVectorLayer::editingStarted, gapsLayer, [gapsLayer] { gapsLayer->startEditing(); } );
+          connect( layer, &QgsVectorLayer::beforeRollBack, gapsLayer, [gapsLayer] { gapsLayer->rollBack(); } );
+          connect( layer, &QgsVectorLayer::editingStopped, gapsLayer, [gapsLayer] { gapsLayer->commitChanges(); } );
+        }
+        else
+        {
+          QgsMessageLog::logMessage( tr( "Allowed gaps layer %1 configured but not loaded. Allowed gaps not working." ).arg( checkConfiguration.value( "allowedGapsLayer" ).toString() ), tr( "Geometry validation" ) );
+        }
+      }
     }
   }
 
@@ -346,11 +365,17 @@ void QgsGeometryValidationService::invalidateTopologyChecks( QgsVectorLayer *lay
 
 void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFeatureId fid )
 {
+  if ( !mLayerChecks.contains( layer ) )
+    return;
+
+  const QList< QgsSingleGeometryCheck * > checks = mLayerChecks[layer].singleFeatureChecks;
+  if ( checks.empty() )
+    return;
+
   emit geometryCheckStarted( layer, fid );
 
   QgsGeometry geometry = layer->getGeometry( fid );
 
-  const auto &checks = mLayerChecks[layer].singleFeatureChecks;
   mLayerChecks[layer].singleFeatureCheckErrors.remove( fid );
 
   // The errors are going to be sent out via a signal. We cannot keep ownership in here (or can we?)
@@ -389,8 +414,8 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
   QgsFeatureIds affectedFeatureIds;
   if ( layer->editBuffer() )
   {
-    affectedFeatureIds = layer->editBuffer()->changedGeometries().keys().toSet();
-    affectedFeatureIds.unite( layer->editBuffer()->addedFeatures().keys().toSet() );
+    affectedFeatureIds = qgis::listToSet( layer->editBuffer()->changedGeometries().keys() );
+    affectedFeatureIds.unite( qgis::listToSet( layer->editBuffer()->addedFeatures().keys() ) );
   }
 
   const QString layerId = layer->id();
@@ -422,9 +447,12 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
 
   const QList<QgsGeometryCheck *> checks = mLayerChecks[layer].topologyChecks;
 
-  QMap<const QgsGeometryCheck *, QgsFeedback *> feedbacks;
+  QHash<const QgsGeometryCheck *, QgsFeedback *> feedbacks;
   for ( QgsGeometryCheck *check : checks )
+  {
     feedbacks.insert( check, new QgsFeedback() );
+    check->prepare( mLayerChecks[layer].context.get(), layer->geometryOptions()->checkConfiguration( check->id() ) );
+  }
 
   mLayerChecks[layer].topologyCheckFeedbacks = feedbacks.values();
 
@@ -481,7 +509,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
     QgsReadWriteLocker errorLocker( mTopologyCheckLock, QgsReadWriteLocker::Read );
     layer->setAllowCommit( allErrors.empty() && mLayerChecks[layer].singleFeatureCheckErrors.empty() );
     errorLocker.unlock();
-    qDeleteAll( feedbacks.values() );
+    qDeleteAll( feedbacks );
     futureWatcher->deleteLater();
     if ( mLayerChecks[layer].topologyCheckFutureWatcher == futureWatcher )
       mLayerChecks[layer].topologyCheckFutureWatcher = nullptr;

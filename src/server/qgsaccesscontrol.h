@@ -61,6 +61,19 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
       delete mPluginsAccessControls;
     }
 
+    //! Assignment operator
+    QgsAccessControl &operator= ( const QgsAccessControl &other )
+    {
+      if ( this != &other )
+      {
+        delete mPluginsAccessControls;
+        mPluginsAccessControls = new QgsAccessControlFilterMap( *other.mPluginsAccessControls );
+        mFilterFeaturesExpressions = other.mFilterFeaturesExpressions;
+        mResolved = other.mResolved;
+      }
+      return *this;
+    }
+
     /**
      * Resolve features' filter of layers
      * \param layers to filter

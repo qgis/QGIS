@@ -32,6 +32,8 @@
 #include "qgsproviderregistry.h"
 #include "qgsmeshlayer.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsrasterfilewriter.h"
+#include "qgsvectortilelayer.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
@@ -132,6 +134,25 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   return layers;
 }
 
+QString QgsProcessingUtils::encodeProviderKeyAndUri( const QString &providerKey, const QString &uri )
+{
+  return QStringLiteral( "%1://%2" ).arg( providerKey, uri );
+}
+
+bool QgsProcessingUtils::decodeProviderKeyAndUri( const QString &string, QString &providerKey, QString &uri )
+{
+  QRegularExpression re( QStringLiteral( "^(\\w+?):\\/\\/(.+)$" ) );
+  const QRegularExpressionMatch match = re.match( string );
+  if ( !match.hasMatch() )
+    return false;
+
+  providerKey = match.captured( 1 );
+  uri = match.captured( 2 );
+
+  // double check that provider is valid
+  return QgsProviderRegistry::instance()->providerMetadata( providerKey );
+}
+
 QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMapLayerStore *store, QgsProcessingUtils::LayerHint typeHint )
 {
   if ( !store || string.isEmpty() )
@@ -151,6 +172,10 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
         return true;
       case QgsMapLayerType::MeshLayer:
         return !canUseLayer( qobject_cast< QgsMeshLayer * >( layer ) );
+      case QgsMapLayerType::VectorTileLayer:
+        return !canUseLayer( qobject_cast< QgsVectorTileLayer * >( layer ) );
+      case QgsMapLayerType::AnnotationLayer:
+        return true;
     }
     return true;
   } ), layers.end() );
@@ -192,54 +217,53 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
   return nullptr;
 }
 
-///@cond PRIVATE
-class ProjectionSettingRestorer
-{
-  public:
-
-    ProjectionSettingRestorer()
-    {
-      QgsSettings settings;
-      previousSetting = settings.value( QStringLiteral( "/Projections/defaultBehavior" ) ).toString();
-      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), QStringLiteral( "useProject" ) );
-    }
-
-    ~ProjectionSettingRestorer()
-    {
-      QgsSettings settings;
-      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), previousSetting );
-    }
-
-    QString previousSetting;
-};
-///@endcond PRIVATE
-
 QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, const QgsCoordinateTransformContext &transformContext, LayerHint typeHint )
 {
-  QStringList components = string.split( '|' );
-  if ( components.isEmpty() )
-    return nullptr;
+  QString provider;
+  QString uri;
+  const bool useProvider = decodeProviderKeyAndUri( string, provider, uri );
+  if ( !useProvider )
+    uri = string;
 
-  QFileInfo fi;
-  if ( QFileInfo::exists( string ) )
-    fi = QFileInfo( string );
-  else if ( QFileInfo::exists( components.at( 0 ) ) )
-    fi = QFileInfo( components.at( 0 ) );
+  QString name;
+  // for disk based sources, we use the filename to determine a layer name
+  if ( !useProvider || ( provider == QLatin1String( "ogr" ) || provider == QLatin1String( "gdal" ) || provider == QLatin1String( "mdal" ) ) )
+  {
+    QStringList components = uri.split( '|' );
+    if ( components.isEmpty() )
+      return nullptr;
+
+    QFileInfo fi;
+    if ( QFileInfo::exists( uri ) )
+      fi = QFileInfo( uri );
+    else if ( QFileInfo::exists( components.at( 0 ) ) )
+      fi = QFileInfo( components.at( 0 ) );
+    else
+      return nullptr;
+    name = fi.baseName();
+  }
   else
-    return nullptr;
-
-  // TODO - remove when there is a cleaner way to block the unknown projection dialog!
-  ProjectionSettingRestorer restorer;
-  ( void )restorer; // no warnings
-
-  QString name = fi.baseName();
+  {
+    name = QgsDataSourceUri( uri ).table();
+  }
 
   // brute force attempt to load a matching layer
   if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Vector )
   {
     QgsVectorLayer::LayerOptions options { transformContext };
     options.loadDefaultStyle = false;
-    std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( string, name, QStringLiteral( "ogr" ), options );
+    options.skipCrsValidation = true;
+
+    std::unique_ptr< QgsVectorLayer > layer;
+    if ( useProvider )
+    {
+      layer = qgis::make_unique<QgsVectorLayer>( uri, name, provider, options );
+    }
+    else
+    {
+      // fallback to ogr
+      layer = qgis::make_unique<QgsVectorLayer>( uri, name, QStringLiteral( "ogr" ), options );
+    }
     if ( layer->isValid() )
     {
       return layer.release();
@@ -249,7 +273,19 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   {
     QgsRasterLayer::LayerOptions rasterOptions;
     rasterOptions.loadDefaultStyle = false;
-    std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, name, QStringLiteral( "gdal" ), rasterOptions ) );
+    rasterOptions.skipCrsValidation = true;
+
+    std::unique_ptr< QgsRasterLayer > rasterLayer;
+    if ( useProvider )
+    {
+      rasterLayer = qgis::make_unique< QgsRasterLayer >( uri, name, provider, rasterOptions );
+    }
+    else
+    {
+      // fallback to gdal
+      rasterLayer = qgis::make_unique< QgsRasterLayer >( uri, name, QStringLiteral( "gdal" ), rasterOptions );
+    }
+
     if ( rasterLayer->isValid() )
     {
       return rasterLayer.release();
@@ -258,7 +294,17 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Mesh )
   {
     QgsMeshLayer::LayerOptions meshOptions;
-    std::unique_ptr< QgsMeshLayer > meshLayer( new QgsMeshLayer( string, name, QStringLiteral( "mdal" ), meshOptions ) );
+    meshOptions.skipCrsValidation = true;
+
+    std::unique_ptr< QgsMeshLayer > meshLayer;
+    if ( useProvider )
+    {
+      meshLayer = qgis::make_unique< QgsMeshLayer >( uri, name, provider, meshOptions );
+    }
+    else
+    {
+      meshLayer = qgis::make_unique< QgsMeshLayer >( uri, name, QStringLiteral( "mdal" ), meshOptions );
+    }
     if ( meshLayer->isValid() )
     {
       return meshLayer.release();
@@ -304,12 +350,18 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
 {
   QVariant val = value;
   bool selectedFeaturesOnly = false;
+  long long featureLimit = -1;
+  bool overrideGeometryCheck = false;
+  QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid;
   if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
   {
     // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
     selectedFeaturesOnly = fromVar.selectedFeaturesOnly;
+    featureLimit = fromVar.featureLimit;
     val = fromVar.source;
+    overrideGeometryCheck = fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck;
+    geometryCheck = fromVar.geometryCheck;
   }
   else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
   {
@@ -320,7 +372,10 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
 
   if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( val ) ) )
   {
-    return new QgsProcessingFeatureSource( layer, context );
+    std::unique_ptr< QgsProcessingFeatureSource> source = qgis::make_unique< QgsProcessingFeatureSource >( layer, context, false, featureLimit );
+    if ( overrideGeometryCheck )
+      source->setInvalidGeometryCheck( geometryCheck );
+    return source.release();
   }
 
   QString layerRef;
@@ -333,7 +388,10 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
     // fall back to default
     if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( fallbackValue ) ) )
     {
-      return new QgsProcessingFeatureSource( layer, context );
+      std::unique_ptr< QgsProcessingFeatureSource> source = qgis::make_unique< QgsProcessingFeatureSource >( layer, context, false, featureLimit );
+      if ( overrideGeometryCheck )
+        source->setInvalidGeometryCheck( geometryCheck );
+      return source.release();
     }
 
     layerRef = fallbackValue.toString();
@@ -350,19 +408,90 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
   if ( !vl )
     return nullptr;
 
+  std::unique_ptr< QgsProcessingFeatureSource> source;
   if ( selectedFeaturesOnly )
   {
-    return new QgsProcessingFeatureSource( new QgsVectorLayerSelectedFeatureSource( vl ), context, true );
+    source = qgis::make_unique< QgsProcessingFeatureSource>( new QgsVectorLayerSelectedFeatureSource( vl ), context, true, featureLimit );
   }
   else
   {
-    return new QgsProcessingFeatureSource( vl, context );
+    source = qgis::make_unique< QgsProcessingFeatureSource >( vl, context, false, featureLimit );
   }
+
+  if ( overrideGeometryCheck )
+    source->setInvalidGeometryCheck( geometryCheck );
+  return source.release();
+}
+
+QgsCoordinateReferenceSystem QgsProcessingUtils::variantToCrs( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue )
+{
+  QVariant val = value;
+
+  if ( val.canConvert<QgsCoordinateReferenceSystem>() )
+  {
+    // input is a QgsCoordinateReferenceSystem - done!
+    return val.value< QgsCoordinateReferenceSystem >();
+  }
+  else if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
+    val = fromVar.source;
+  }
+  else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
+    val = fromVar.sink;
+  }
+
+  if ( val.canConvert<QgsProperty>() && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+  {
+    val = val.value< QgsProperty >().staticValue();
+  }
+
+  // maybe a map layer
+  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) ) )
+    return layer->crs();
+
+  if ( val.canConvert<QgsProperty>() )
+    val = val.value< QgsProperty >().valueAsString( context.expressionContext(), fallbackValue.toString() );
+
+  if ( !val.isValid() )
+  {
+    // fall back to default
+    val = fallbackValue;
+  }
+
+  QString crsText = val.toString();
+  if ( crsText.isEmpty() )
+    crsText = fallbackValue.toString();
+
+  if ( crsText.isEmpty() )
+    return QgsCoordinateReferenceSystem();
+
+  // maybe special string
+  if ( context.project() && crsText.compare( QLatin1String( "ProjectCrs" ), Qt::CaseInsensitive ) == 0 )
+    return context.project()->crs();
+
+  // maybe a map layer reference
+  if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( crsText, context ) )
+    return layer->crs();
+
+  // else CRS from string
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromString( crsText );
+  return crs;
 }
 
 bool QgsProcessingUtils::canUseLayer( const QgsMeshLayer *layer )
 {
   return layer && layer->dataProvider();
+}
+
+bool QgsProcessingUtils::canUseLayer( const QgsVectorTileLayer *layer )
+{
+  return layer && layer->isValid();
 }
 
 bool QgsProcessingUtils::canUseLayer( const QgsRasterLayer *layer )
@@ -460,6 +589,18 @@ QString QgsProcessingUtils::variantToPythonLiteral( const QVariant &value )
       return parts.join( ',' ).prepend( '[' ).append( ']' );
     }
 
+    case QVariant::Map:
+    {
+      const QVariantMap map = value.toMap();
+      QStringList parts;
+      parts.reserve( map.size() );
+      for ( auto it = map.constBegin(); it != map.constEnd(); ++it )
+      {
+        parts << QStringLiteral( "%1: %2" ).arg( stringToPythonLiteral( it.key() ), variantToPythonLiteral( it.value() ) );
+      }
+      return parts.join( ',' ).prepend( '{' ).append( '}' );
+    }
+
     default:
       break;
   }
@@ -483,16 +624,26 @@ QString QgsProcessingUtils::stringToPythonLiteral( const QString &string )
 void QgsProcessingUtils::parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter, QString &extension )
 {
   extension.clear();
-  QRegularExpression splitRx( QStringLiteral( "^(.{3,}?):(.*)$" ) );
-  QRegularExpressionMatch match = splitRx.match( destination );
-  if ( match.hasMatch() )
+  bool matched = decodeProviderKeyAndUri( destination, providerKey, uri );
+
+  if ( !matched )
   {
-    providerKey = match.captured( 1 );
+    QRegularExpression splitRx( QStringLiteral( "^(.{3,}?):(.*)$" ) );
+    QRegularExpressionMatch match = splitRx.match( destination );
+    if ( match.hasMatch() )
+    {
+      providerKey = match.captured( 1 );
+      uri = match.captured( 2 );
+      matched = true;
+    }
+  }
+
+  if ( matched )
+  {
     if ( providerKey == QStringLiteral( "postgis" ) ) // older processing used "postgis" instead of "postgres"
     {
       providerKey = QStringLiteral( "postgres" );
     }
-    uri = match.captured( 2 );
     if ( providerKey == QLatin1String( "ogr" ) )
     {
       QgsDataSourceUri dsUri( uri );
@@ -519,6 +670,7 @@ void QgsProcessingUtils::parseDestinationString( QString &destination, QString &
   {
     useWriter = true;
     providerKey = QStringLiteral( "ogr" );
+
     QRegularExpression splitRx( QStringLiteral( "^(.*)\\.(.*?)$" ) );
     QRegularExpressionMatch match = splitRx.match( destination );
     if ( match.hasMatch() )
@@ -538,7 +690,7 @@ void QgsProcessingUtils::parseDestinationString( QString &destination, QString &
   }
 }
 
-QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, QgsProcessingContext &context, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions, QgsFeatureSink::SinkFlags sinkFlags )
+QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, QgsProcessingContext &context, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions, const QStringList &datasourceOptions, const QStringList &layerOptions, QgsFeatureSink::SinkFlags sinkFlags, QgsRemappingSinkDefinition *remappingDefinition )
 {
   QVariantMap options = createOptions;
   if ( !options.contains( QStringLiteral( "fileEncoding" ) ) )
@@ -588,35 +740,98 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       // use QgsVectorFileWriter for OGR destinations instead of QgsVectorLayerImport, as that allows
       // us to use any OGR format which supports feature addition
       QString finalFileName;
-      std::unique_ptr< QgsVectorFileWriter > writer = qgis::make_unique< QgsVectorFileWriter >( destination, options.value( QStringLiteral( "fileEncoding" ) ).toString(), newFields, geometryType, crs, format, QgsVectorFileWriter::defaultDatasetOptions( format ),
-          QgsVectorFileWriter::defaultLayerOptions( format ), &finalFileName, QgsVectorFileWriter::NoSymbology, sinkFlags );
-
+      QString finalLayerName;
+      QgsVectorFileWriter::SaveVectorOptions saveOptions;
+      saveOptions.fileEncoding = options.value( QStringLiteral( "fileEncoding" ) ).toString();
+      saveOptions.layerName = !layerName.isEmpty() ? layerName : options.value( QStringLiteral( "layerName" ) ).toString();
+      saveOptions.driverName = format;
+      saveOptions.datasourceOptions = !datasourceOptions.isEmpty() ? datasourceOptions : QgsVectorFileWriter::defaultDatasetOptions( format );
+      saveOptions.layerOptions = !layerOptions.isEmpty() ? layerOptions : QgsVectorFileWriter::defaultLayerOptions( format );
+      saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
+      if ( remappingDefinition )
+      {
+        saveOptions.actionOnExistingFile = QgsVectorFileWriter::AppendToLayerNoNewFields;
+        // sniff destination file to get correct wkb type and crs
+        std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( destination );
+        if ( vl->isValid() )
+        {
+          remappingDefinition->setDestinationWkbType( vl->wkbType() );
+          remappingDefinition->setDestinationCrs( vl->crs() );
+          newFields = vl->fields();
+          remappingDefinition->setDestinationFields( newFields );
+        }
+        context.expressionContext().setFields( fields );
+      }
+      else
+      {
+        saveOptions.actionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
+      }
+      std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( destination, newFields, geometryType, crs, context.transformContext(), saveOptions, sinkFlags, &finalFileName, &finalLayerName ) );
       if ( writer->hasError() )
       {
         throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, writer->errorMessage() ) );
       }
       destination = finalFileName;
-      return new QgsProcessingFeatureSink( writer.release(), destination, context, true );
+      if ( !saveOptions.layerName.isEmpty() && !finalLayerName.isEmpty() )
+        destination += QStringLiteral( "|layername=%1" ).arg( finalLayerName );
+
+      if ( remappingDefinition )
+      {
+        std::unique_ptr< QgsRemappingProxyFeatureSink > remapSink = qgis::make_unique< QgsRemappingProxyFeatureSink >( *remappingDefinition, writer.release(), true );
+        remapSink->setExpressionContext( context.expressionContext() );
+        remapSink->setTransformContext( context.transformContext() );
+        return new QgsProcessingFeatureSink( remapSink.release(), destination, context, true );
+      }
+      else
+        return new QgsProcessingFeatureSink( writer.release(), destination, context, true );
     }
     else
     {
-      //create empty layer
       const QgsVectorLayer::LayerOptions layerOptions { context.transformContext() };
-      std::unique_ptr< QgsVectorLayerExporter > exporter = qgis::make_unique<QgsVectorLayerExporter>( uri, providerKey, newFields, geometryType, crs, true, options, sinkFlags );
-      if ( exporter->errorCode() )
+      if ( remappingDefinition )
       {
-        throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, exporter->errorMessage() ) );
+        //write to existing layer
+
+        // use destination string as layer name (eg "postgis:..." )
+        if ( !layerName.isEmpty() )
+          uri += QStringLiteral( "|layername=%1" ).arg( layerName );
+
+        std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( uri, destination, providerKey, layerOptions );
+        // update destination to layer ID
+        destination = layer->id();
+        if ( layer->isValid() )
+        {
+          remappingDefinition->setDestinationWkbType( layer->wkbType() );
+          remappingDefinition->setDestinationCrs( layer->crs() );
+          remappingDefinition->setDestinationFields( layer->fields() );
+        }
+
+        std::unique_ptr< QgsRemappingProxyFeatureSink > remapSink = qgis::make_unique< QgsRemappingProxyFeatureSink >( *remappingDefinition, layer->dataProvider(), false );
+        context.temporaryLayerStore()->addMapLayer( layer.release() );
+        remapSink->setExpressionContext( context.expressionContext() );
+        remapSink->setTransformContext( context.transformContext() );
+        context.expressionContext().setFields( fields );
+        return new QgsProcessingFeatureSink( remapSink.release(), destination, context, true );
       }
+      else
+      {
+        //create empty layer
+        std::unique_ptr< QgsVectorLayerExporter > exporter = qgis::make_unique<QgsVectorLayerExporter>( uri, providerKey, newFields, geometryType, crs, true, options, sinkFlags );
+        if ( exporter->errorCode() )
+        {
+          throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, exporter->errorMessage() ) );
+        }
 
-      // use destination string as layer name (eg "postgis:..." )
-      if ( !layerName.isEmpty() )
-        uri += QStringLiteral( "|layername=%1" ).arg( layerName );
-      std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( uri, destination, providerKey, layerOptions );
-      // update destination to layer ID
-      destination = layer->id();
+        // use destination string as layer name (eg "postgis:..." )
+        if ( !layerName.isEmpty() )
+          uri += QStringLiteral( "|layername=%1" ).arg( layerName );
+        std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( uri, destination, providerKey, layerOptions );
+        // update destination to layer ID
+        destination = layer->id();
 
-      context.temporaryLayerStore()->addMapLayer( layer.release() );
-      return new QgsProcessingFeatureSink( exporter.release(), destination, context, true );
+        context.temporaryLayerStore()->addMapLayer( layer.release() );
+        return new QgsProcessingFeatureSink( exporter.release(), destination, context, true );
+      }
     }
   }
 }
@@ -686,7 +901,12 @@ QVariant QgsProcessingUtils::generateIteratingDestination( const QVariant &input
   else
   {
     QString res = input.toString();
-    if ( res.startsWith( QLatin1String( "memory:" ) ) )
+    if ( res == QgsProcessing::TEMPORARY_OUTPUT )
+    {
+      // temporary outputs map to temporary outputs!
+      return QgsProcessing::TEMPORARY_OUTPUT;
+    }
+    else if ( res.startsWith( QLatin1String( "memory:" ) ) )
     {
       return res + '_' + id.toString();
     }
@@ -702,17 +922,36 @@ QVariant QgsProcessingUtils::generateIteratingDestination( const QVariant &input
 
 QString QgsProcessingUtils::tempFolder()
 {
+  // we maintain a list of temporary folders -- this allows us to append additional
+  // folders when a setting change causes the base temp folder to change, while deferring
+  // cleanup of ALL these temp folders until session end (we can't cleanup older folders immediately,
+  // because we don't know whether they have data in them which is still wanted)
+  static std::vector< std::unique_ptr< QTemporaryDir > > sTempFolders;
   static QString sFolder;
   static QMutex sMutex;
-  sMutex.lock();
-  if ( sFolder.isEmpty() )
+  QMutexLocker locker( &sMutex );
+  const QString basePath = QgsSettings().value( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ) ).toString();
+  if ( basePath.isEmpty() )
   {
-    QString subPath = QUuid::createUuid().toString().remove( '-' ).remove( '{' ).remove( '}' );
-    sFolder = QDir::tempPath() + QStringLiteral( "/processing_" ) + subPath;
-    if ( !QDir( sFolder ).exists() )
-      QDir().mkpath( sFolder );
+    // default setting -- automatically create a temp folder
+    if ( sTempFolders.empty() )
+    {
+      const QString templatePath = QStringLiteral( "%1/processing_XXXXXX" ).arg( QDir::tempPath() );
+      std::unique_ptr< QTemporaryDir > tempFolder = qgis::make_unique< QTemporaryDir >( templatePath );
+      sFolder = tempFolder->path();
+      sTempFolders.emplace_back( std::move( tempFolder ) );
+    }
   }
-  sMutex.unlock();
+  else if ( sFolder.isEmpty() || !sFolder.startsWith( basePath ) || sTempFolders.empty() )
+  {
+    if ( !QDir().exists( basePath ) )
+      QDir().mkpath( basePath );
+
+    const QString templatePath = QStringLiteral( "%1/processing_XXXXXX" ).arg( basePath );
+    std::unique_ptr< QTemporaryDir > tempFolder = qgis::make_unique< QTemporaryDir >( templatePath );
+    sFolder = tempFolder->path();
+    sTempFolders.emplace_back( std::move( tempFolder ) );
+  }
   return sFolder;
 }
 
@@ -773,7 +1012,8 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
   return s;
 }
 
-QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QString convertToCompatibleFormatInternal( const QgsVectorLayer *vl, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback, QString *layerName,
+    long long featureLimit )
 {
   bool requiresTranslation = false;
 
@@ -781,20 +1021,27 @@ QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl,
   // as we need to subset only selected features, a concept which doesn't exist outside QGIS!
   requiresTranslation = requiresTranslation || selectedFeaturesOnly;
 
+  // if we are limiting the feature count, we better export
+  requiresTranslation = requiresTranslation || featureLimit != -1;
+
   // if the data provider is NOT ogr, then we HAVE to convert. Otherwise we run into
   // issues with data providers like spatialite, delimited text where the format can be
   // opened outside of QGIS, but with potentially very different behavior!
-  requiresTranslation = requiresTranslation || vl->dataProvider()->name() != QLatin1String( "ogr" );
+  requiresTranslation = requiresTranslation || vl->providerType() != QLatin1String( "ogr" );
 
   // if the layer has a feature filter set, then we HAVE to convert. Feature filters are
   // a purely QGIS concept.
   requiresTranslation = requiresTranslation || !vl->subsetString().isEmpty();
 
+  // if the layer opened using GDAL's virtual I/O mechanism (/vsizip/, etc.), then
+  // we HAVE to convert as other tools may not work with it
+  requiresTranslation = requiresTranslation || vl->source().startsWith( QLatin1String( "/vsi" ) );
+
   // Check if layer is a disk based format and if so if the layer's path has a compatible filename suffix
   QString diskPath;
   if ( !requiresTranslation )
   {
-    const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( vl->dataProvider()->name(), vl->source() );
+    const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( vl->providerType(), vl->source() );
     if ( parts.contains( QStringLiteral( "path" ) ) )
     {
       diskPath = parts.value( QStringLiteral( "path" ) ).toString();
@@ -803,8 +1050,17 @@ QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl,
 
       // if the layer name doesn't match the filename, we need to convert the layer. This method can only return
       // a filename, and cannot handle layernames as well as file paths
-      const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
-      requiresTranslation = requiresTranslation || ( !layerName.isEmpty() && layerName != fi.baseName() );
+      const QString srcLayerName = parts.value( QStringLiteral( "layerName" ) ).toString();
+      if ( layerName )
+      {
+        // differing layer names are acceptable
+        *layerName = srcLayerName;
+      }
+      else
+      {
+        // differing layer names are NOT acceptable
+        requiresTranslation = requiresTranslation || ( !srcLayerName.isEmpty() && srcLayerName != fi.baseName() );
+      }
     }
     else
     {
@@ -816,20 +1072,32 @@ QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl,
   {
     QString temp = QgsProcessingUtils::generateTempFilename( baseName + '.' + preferredFormat );
 
-    QgsVectorFileWriter writer( temp, context.defaultEncoding(),
-                                vl->fields(), vl->wkbType(), vl->crs(), QgsVectorFileWriter::driverForExtension( preferredFormat ) );
+    QgsVectorFileWriter::SaveVectorOptions saveOptions;
+    saveOptions.fileEncoding = context.defaultEncoding();
+    saveOptions.driverName = QgsVectorFileWriter::driverForExtension( preferredFormat );
+    std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( temp, vl->fields(), vl->wkbType(), vl->crs(), context.transformContext(), saveOptions ) );
     QgsFeature f;
     QgsFeatureIterator it;
-    if ( selectedFeaturesOnly )
-      it = vl->getSelectedFeatures();
+    if ( featureLimit != -1 )
+    {
+      if ( selectedFeaturesOnly )
+        it = vl->getSelectedFeatures( QgsFeatureRequest().setLimit( featureLimit ) );
+      else
+        it = vl->getFeatures( QgsFeatureRequest().setLimit( featureLimit ) );
+    }
     else
-      it = vl->getFeatures();
+    {
+      if ( selectedFeaturesOnly )
+        it = vl->getSelectedFeatures( QgsFeatureRequest().setLimit( featureLimit ) );
+      else
+        it = vl->getFeatures();
+    }
 
     while ( it.nextFeature( f ) )
     {
       if ( feedback->isCanceled() )
         return QString();
-      writer.addFeature( f, QgsFeatureSink::FastInsert );
+      writer->addFeature( f, QgsFeatureSink::FastInsert );
     }
     return temp;
   }
@@ -839,7 +1107,18 @@ QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl,
   }
 }
 
-QgsFields QgsProcessingUtils::combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB )
+QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long long featureLimit )
+{
+  return convertToCompatibleFormatInternal( vl, selectedFeaturesOnly, baseName, compatibleFormats, preferredFormat, context, feedback, nullptr, featureLimit );
+}
+
+QString QgsProcessingUtils::convertToCompatibleFormatAndLayerName( const QgsVectorLayer *layer, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback, QString &layerName, long long featureLimit )
+{
+  layerName.clear();
+  return convertToCompatibleFormatInternal( layer, selectedFeaturesOnly, baseName, compatibleFormats, preferredFormat, context, feedback, &layerName, featureLimit );
+}
+
+QgsFields QgsProcessingUtils::combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB, const QString &fieldsBPrefix )
 {
   QgsFields outFields = fieldsA;
   QSet< QString > usedNames;
@@ -850,25 +1129,25 @@ QgsFields QgsProcessingUtils::combineFields( const QgsFields &fieldsA, const Qgs
 
   for ( const QgsField &f : fieldsB )
   {
-    if ( usedNames.contains( f.name().toLower() ) )
+    QgsField newField = f;
+    newField.setName( fieldsBPrefix + f.name() );
+    if ( usedNames.contains( newField.name().toLower() ) )
     {
       int idx = 2;
-      QString newName = f.name() + '_' + QString::number( idx );
+      QString newName = newField.name() + '_' + QString::number( idx );
       while ( usedNames.contains( newName.toLower() ) )
       {
         idx++;
-        newName = f.name() + '_' + QString::number( idx );
+        newName = newField.name() + '_' + QString::number( idx );
       }
-      QgsField newField = f;
       newField.setName( newName );
       outFields.append( newField );
-      usedNames.insert( newName.toLower() );
     }
     else
     {
-      usedNames.insert( f.name().toLower() );
-      outFields.append( f );
+      outFields.append( newField );
     }
+    usedNames.insert( newField.name() );
   }
 
   return outFields;
@@ -906,11 +1185,29 @@ QgsFields QgsProcessingUtils::indicesToFields( const QList<int> &indices, const 
   return fieldsSubset;
 }
 
+QString QgsProcessingUtils::defaultVectorExtension()
+{
+  QgsSettings settings;
+  const int setting = settings.value( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ), -1 ).toInt();
+  if ( setting == -1 )
+    return QStringLiteral( "gpkg" );
+  return QgsVectorFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "gpkg" ) );
+}
+
+QString QgsProcessingUtils::defaultRasterExtension()
+{
+  QgsSettings settings;
+  const int setting = settings.value( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ), -1 ).toInt();
+  if ( setting == -1 )
+    return QStringLiteral( "tif" );
+  return QgsRasterFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "tif" ) );
+}
+
 //
 // QgsProcessingFeatureSource
 //
 
-QgsProcessingFeatureSource::QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource )
+QgsProcessingFeatureSource::QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource, long long featureLimit )
   : mSource( originalSource )
   , mOwnsSource( ownsOriginalSource )
   , mInvalidGeometryCheck( QgsWkbTypes::geometryType( mSource->wkbType() ) == QgsWkbTypes::PointGeometry
@@ -918,6 +1215,9 @@ QgsProcessingFeatureSource::QgsProcessingFeatureSource( QgsFeatureSource *origin
                            : context.invalidGeometryCheck() )
   , mInvalidGeometryCallback( context.invalidGeometryCallback() )
   , mTransformErrorCallback( context.transformErrorCallback() )
+  , mInvalidGeometryCallbackSkip( context.defaultInvalidGeometryCallbackForCheck( QgsFeatureRequest::GeometrySkipInvalid ) )
+  , mInvalidGeometryCallbackAbort( context.defaultInvalidGeometryCallbackForCheck( QgsFeatureRequest::GeometryAbortOnInvalid ) )
+  , mFeatureLimit( featureLimit )
 {}
 
 QgsProcessingFeatureSource::~QgsProcessingFeatureSource()
@@ -938,6 +1238,11 @@ QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequ
     req.setInvalidGeometryCheck( mInvalidGeometryCheck );
     req.setInvalidGeometryCallback( mInvalidGeometryCallback );
   }
+
+  if ( mFeatureLimit != -1 && req.limit() != -1 )
+    req.setLimit( std::min( static_cast< long long >( req.limit() ), mFeatureLimit ) );
+  else if ( mFeatureLimit != -1 )
+    req.setLimit( mFeatureLimit );
 
   return mSource->getFeatures( req );
 }
@@ -960,6 +1265,12 @@ QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequ
   req.setInvalidGeometryCheck( mInvalidGeometryCheck );
   req.setInvalidGeometryCallback( mInvalidGeometryCallback );
   req.setTransformErrorCallback( mTransformErrorCallback );
+
+  if ( mFeatureLimit != -1 && req.limit() != -1 )
+    req.setLimit( std::min( static_cast< long long >( req.limit() ), mFeatureLimit ) );
+  else if ( mFeatureLimit != -1 )
+    req.setLimit( mFeatureLimit );
+
   return mSource->getFeatures( req );
 }
 
@@ -980,7 +1291,10 @@ QgsWkbTypes::Type QgsProcessingFeatureSource::wkbType() const
 
 long QgsProcessingFeatureSource::featureCount() const
 {
-  return mSource->featureCount();
+  if ( mFeatureLimit == -1 )
+    return mSource->featureCount();
+  else
+    return std::min( mFeatureLimit, static_cast< long long >( mSource->featureCount() ) );
 }
 
 QString QgsProcessingFeatureSource::sourceName() const
@@ -1014,6 +1328,11 @@ QgsFeatureIds QgsProcessingFeatureSource::allFeatureIds() const
   return mSource->allFeatureIds();
 }
 
+QgsFeatureSource::SpatialIndexPresence QgsProcessingFeatureSource::hasSpatialIndex() const
+{
+  return mSource->hasSpatialIndex();
+}
+
 QgsExpressionContextScope *QgsProcessingFeatureSource::createExpressionContextScope() const
 {
   QgsExpressionContextScope *expressionContextScope = nullptr;
@@ -1023,6 +1342,26 @@ QgsExpressionContextScope *QgsProcessingFeatureSource::createExpressionContextSc
     expressionContextScope = generator->createExpressionContextScope();
   }
   return expressionContextScope;
+}
+
+void QgsProcessingFeatureSource::setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck method )
+{
+  mInvalidGeometryCheck = method;
+  switch ( mInvalidGeometryCheck )
+  {
+    case QgsFeatureRequest::GeometryNoCheck:
+      mInvalidGeometryCallback = nullptr;
+      break;
+
+    case QgsFeatureRequest::GeometrySkipInvalid:
+      mInvalidGeometryCallback = mInvalidGeometryCallbackSkip;
+      break;
+
+    case QgsFeatureRequest::GeometryAbortOnInvalid:
+      mInvalidGeometryCallback = mInvalidGeometryCallbackAbort;
+      break;
+
+  }
 }
 
 
@@ -1045,23 +1384,41 @@ QgsProcessingFeatureSink::~QgsProcessingFeatureSink()
 bool QgsProcessingFeatureSink::addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags )
 {
   bool result = QgsProxyFeatureSink::addFeature( feature, flags );
-  if ( !result )
-    mContext.feedback()->reportError( QObject::tr( "Feature could not be written to %1" ).arg( mSinkName ) );
+  if ( !result && mContext.feedback() )
+  {
+    const QString error = lastError();
+    if ( !error.isEmpty() )
+      mContext.feedback()->reportError( QObject::tr( "Feature could not be written to %1: %2" ).arg( mSinkName, error ) );
+    else
+      mContext.feedback()->reportError( QObject::tr( "Feature could not be written to %1" ).arg( mSinkName ) );
+  }
   return result;
 }
 
 bool QgsProcessingFeatureSink::addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags )
 {
   bool result = QgsProxyFeatureSink::addFeatures( features, flags );
-  if ( !result )
-    mContext.feedback()->reportError( QObject::tr( "%1 feature(s) could not be written to %2" ).arg( features.count() ).arg( mSinkName ) );
+  if ( !result && mContext.feedback() )
+  {
+    const QString error = lastError();
+    if ( !error.isEmpty() )
+      mContext.feedback()->reportError( QObject::tr( "%1 feature(s) could not be written to %2: %3" ).arg( features.count() ).arg( mSinkName, error ) );
+    else
+      mContext.feedback()->reportError( QObject::tr( "%1 feature(s) could not be written to %2" ).arg( features.count() ).arg( mSinkName ) );
+  }
   return result;
 }
 
 bool QgsProcessingFeatureSink::addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags )
 {
-  bool result = !QgsProxyFeatureSink::addFeatures( iterator, flags );
-  if ( !result )
-    mContext.feedback()->reportError( QObject::tr( "Features could not be written to %1" ).arg( mSinkName ) );
+  bool result = QgsProxyFeatureSink::addFeatures( iterator, flags );
+  if ( !result && mContext.feedback() )
+  {
+    const QString error = lastError();
+    if ( !error.isEmpty() )
+      mContext.feedback()->reportError( QObject::tr( "Features could not be written to %1: %2" ).arg( mSinkName, error ) );
+    else
+      mContext.feedback()->reportError( QObject::tr( "Features could not be written to %1" ).arg( mSinkName ) );
+  }
   return result;
 }

@@ -21,10 +21,6 @@ __author__ = 'Pedro Venancio'
 __date__ = 'February 2015'
 __copyright__ = '(C) 2015, Pedro Venancio'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -47,7 +43,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class gdaltindex(GdalAlgorithm):
-
     LAYERS = 'LAYERS'
     PATH_FIELD_NAME = 'PATH_FIELD_NAME'
     ABSOLUTE_PATH = 'ABSOLUTE_PATH'

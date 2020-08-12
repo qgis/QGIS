@@ -30,6 +30,7 @@
 #include <Qt3DExtras/QTorusGeometry>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QSceneLoader>
+#include <Qt3DRender/QPaintedTextureImage>
 
 #include <Qt3DRender/QMesh>
 
@@ -43,9 +44,17 @@
 #include "qgspoint3dsymbol.h"
 #include "qgs3dmapsettings.h"
 
+#include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgspoint.h"
 #include "qgs3dutils.h"
+#include "qgsbillboardgeometry.h"
+#include "qgspoint3dbillboardmaterial.h"
+#include "qgslogger.h"
+#include "qgssourcecache.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbollayer.h"
 
 /// @cond PRIVATE
 
@@ -90,8 +99,8 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
 
 bool QgsInstancedPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( attributeNames );
+  Q_UNUSED( context )
+  Q_UNUSED( attributeNames )
   return true;
 }
 
@@ -109,6 +118,14 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 {
   makeEntity( parent, context, outNormal, false );
   makeEntity( parent, context, outSelected, true );
+
+  updateZRangeFromPositions( outNormal.positions );
+  updateZRangeFromPositions( outSelected.positions );
+
+  // the elevation offset is applied in the vertex shader so let's account for it as well
+  float symbolHeight = mSymbol.transform().data()[13];
+  mZMin += symbolHeight;
+  mZMax += symbolHeight;
 }
 
 void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
@@ -133,6 +150,9 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   entity->addComponent( renderer( mSymbol, out.positions ) );
   entity->addComponent( mat );
   entity->setParent( parent );
+
+// cppcheck wrongly believes entity will leak
+// cppcheck-suppress memleak
 }
 
 
@@ -161,16 +181,6 @@ Qt3DRender::QMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoin
   technique->graphicsApiFilter()->setMajorVersion( 3 );
   technique->graphicsApiFilter()->setMinorVersion( 2 );
 
-  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ka" ), QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) );
-  Qt3DRender::QParameter *diffuseParameter = new Qt3DRender::QParameter( QStringLiteral( "kd" ), QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) );
-  Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( QStringLiteral( "ks" ), QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) );
-  Qt3DRender::QParameter *shininessParameter = new Qt3DRender::QParameter( QStringLiteral( "shininess" ), 150.0f );
-
-  diffuseParameter->setValue( symbol.material().diffuse() );
-  ambientParameter->setValue( symbol.material().ambient() );
-  specularParameter->setValue( symbol.material().specular() );
-  shininessParameter->setValue( symbol.material().shininess() );
-
   QMatrix4x4 transformMatrix = symbol.transform();
   QMatrix3x3 normalMatrix = transformMatrix.normalMatrix();  // transponed inverse of 3x3 sub-matrix
 
@@ -195,10 +205,7 @@ Qt3DRender::QMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoin
   effect->addParameter( paramInst );
   effect->addParameter( paramInstNormal );
 
-  effect->addParameter( ambientParameter );
-  effect->addParameter( diffuseParameter );
-  effect->addParameter( specularParameter );
-  effect->addParameter( shininessParameter );
+  symbol.material()->addParametersToEffect( effect );
 
   Qt3DRender::QMaterial *material = new Qt3DRender::QMaterial;
   material->setEffect( effect );
@@ -214,7 +221,11 @@ Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const
   ba.resize( byteCount );
   memcpy( ba.data(), positions.constData(), byteCount );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
   Qt3DRender::QBuffer *instanceBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer );
+#else
+  Qt3DRender::QBuffer *instanceBuffer = new Qt3DRender::QBuffer();
+#endif
   instanceBuffer->setData( ba );
 
   Qt3DRender::QAttribute *instanceDataAttribute = new Qt3DRender::QAttribute;
@@ -222,6 +233,7 @@ Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const
   instanceDataAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
   instanceDataAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
   instanceDataAttribute->setVertexSize( 3 );
+  instanceDataAttribute->setByteOffset( 0 );
   instanceDataAttribute->setDivisor( 1 );
   instanceDataAttribute->setBuffer( instanceBuffer );
   instanceDataAttribute->setCount( count );
@@ -362,8 +374,8 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
 
 bool QgsModelPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( attributeNames );
+  Q_UNUSED( context )
+  Q_UNUSED( attributeNames )
   return true;
 }
 
@@ -381,6 +393,14 @@ void QgsModelPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qg
 {
   makeEntity( parent, context, outNormal, false );
   makeEntity( parent, context, outSelected, true );
+
+  updateZRangeFromPositions( outNormal.positions );
+  updateZRangeFromPositions( outSelected.positions );
+
+  // the elevation offset is applied separately in QTransform added to sub-entities
+  float symbolHeight = mSymbol.transform().data()[13];
+  mZMin += symbolHeight;
+  mZMax += symbolHeight;
 }
 
 void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
@@ -406,47 +426,59 @@ void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 
 void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent )
 {
-  Q_UNUSED( map );
+  Q_UNUSED( map )
   for ( const QVector3D &position : positions )
   {
-    // build the entity
-    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+    const QString source = QgsApplication::instance()->sourceCache()->localFilePath( symbol.shapeProperties()[QStringLiteral( "model" )].toString() );
+    // if the source is remote, the Qgs3DMapScene will take care of refreshing this 3D symbol when the source is fetched
+    if ( !source.isEmpty() )
+    {
+      // build the entity
+      Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
 
-    QUrl url = QUrl::fromLocalFile( symbol.shapeProperties()[QStringLiteral( "model" )].toString() );
-    Qt3DRender::QSceneLoader *modelLoader = new Qt3DRender::QSceneLoader;
-    modelLoader->setSource( url );
+      QUrl url = QUrl::fromLocalFile( source );
+      Qt3DRender::QSceneLoader *modelLoader = new Qt3DRender::QSceneLoader;
+      modelLoader->setSource( url );
 
-    entity->addComponent( modelLoader );
-    entity->addComponent( transform( position, symbol ) );
-    entity->setParent( parent );
+      entity->addComponent( modelLoader );
+      entity->addComponent( transform( position, symbol ) );
+      entity->setParent( parent );
+
+// cppcheck wrongly believes entity will leak
+// cppcheck-suppress memleak
+    }
   }
 }
 
 void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent, bool are_selected )
 {
   // build the default material
-  Qt3DExtras::QPhongMaterial *mat = Qgs3DUtils::phongMaterial( symbol.material() );
-
-  if ( are_selected )
-  {
-    mat->setDiffuse( map.selectionColor() );
-    mat->setAmbient( map.selectionColor().darker() );
-  }
+  QgsMaterialContext materialContext;
+  materialContext.setIsSelected( are_selected );
+  materialContext.setSelectionColor( map.selectionColor() );
+  Qt3DRender::QMaterial *mat = symbol.material()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
 
   // get nodes
   for ( const QVector3D &position : positions )
   {
-    // build the entity
-    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+    const QString source = QgsApplication::instance()->sourceCache()->localFilePath( symbol.shapeProperties()[QStringLiteral( "model" )].toString() );
+    if ( !source.isEmpty() )
+    {
+      // build the entity
+      Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
 
-    QUrl url = QUrl::fromLocalFile( symbol.shapeProperties()[QStringLiteral( "model" )].toString() );
-    Qt3DRender::QMesh *mesh = new Qt3DRender::QMesh;
-    mesh->setSource( url );
+      QUrl url = QUrl::fromLocalFile( source );
+      Qt3DRender::QMesh *mesh = new Qt3DRender::QMesh;
+      mesh->setSource( url );
 
-    entity->addComponent( mesh );
-    entity->addComponent( mat );
-    entity->addComponent( transform( position, symbol ) );
-    entity->setParent( parent );
+      entity->addComponent( mesh );
+      entity->addComponent( mat );
+      entity->addComponent( transform( position, symbol ) );
+      entity->setParent( parent );
+
+// cppcheck wrongly believes entity will leak
+// cppcheck-suppress memleak
+    }
   }
 }
 
@@ -460,21 +492,132 @@ Qt3DCore::QTransform *QgsModelPoint3DSymbolHandler::transform( QVector3D positio
 
 // --------------
 
+//* BILLBOARD RENDERING *//
+
+class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
+{
+  public:
+    QgsPoint3DBillboardSymbolHandler( const QgsPoint3DSymbol &symbol, const QgsFeatureIds &selectedIds )
+      : mSymbol( symbol ), mSelectedIds( selectedIds ) {}
+
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames ) override;
+    void processFeature( QgsFeature &feature, const Qgs3DRenderContext &context ) override;
+    void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
+
+  private:
+
+    //! temporary data we will pass to the tessellator
+    struct PointData
+    {
+      QVector<QVector3D> positions;  // contains triplets of float x,y,z for each point
+    };
+
+    void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
+
+    // input specific for this class
+    const QgsPoint3DSymbol &mSymbol;
+    // inputs - generic
+    QgsFeatureIds mSelectedIds;
+
+    // outputs
+    PointData outNormal;  //!< Features that are not selected
+    PointData outSelected;  //!< Features that are selected
+};
+
+bool QgsPoint3DBillboardSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
+{
+  Q_UNUSED( context )
+  Q_UNUSED( attributeNames )
+  return true;
+}
+
+void QgsPoint3DBillboardSymbolHandler::processFeature( QgsFeature &feature, const Qgs3DRenderContext &context )
+{
+  PointData &out = mSelectedIds.contains( feature.id() ) ? outSelected : outNormal;
+
+  if ( feature.geometry().isNull() )
+    return;
+
+  Qgs3DUtils::extractPointPositions( feature, context.map(), mSymbol.altitudeClamping(), out.positions );
+}
+
+void QgsPoint3DBillboardSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
+{
+  makeEntity( parent, context, outNormal, false );
+  makeEntity( parent, context, outSelected, true );
+
+  updateZRangeFromPositions( outNormal.positions );
+  updateZRangeFromPositions( outSelected.positions );
+
+  // the elevation offset is applied externally through a QTransform of QEntity so let's account for it
+  float billboardHeight = mSymbol.transform().data()[13];
+  mZMin += billboardHeight;
+  mZMax += billboardHeight;
+}
+
+void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
+{
+  // Billboard Geometry
+  QgsBillboardGeometry *billboardGeometry = new QgsBillboardGeometry();
+  billboardGeometry->setPoints( out.positions );
+
+  // Billboard Geometry Renderer
+  Qt3DRender::QGeometryRenderer *billboardGeometryRenderer = new Qt3DRender::QGeometryRenderer;
+  billboardGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Points );
+  billboardGeometryRenderer->setGeometry( billboardGeometry );
+  billboardGeometryRenderer->setVertexCount( billboardGeometry->count() );
+
+  // Billboard Material
+  QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial();
+  QgsMarkerSymbol *symbol = mSymbol.billboardSymbol();
+
+  if ( symbol )
+  {
+    billboardMaterial->setTexture2DFromSymbol( symbol, context.map(), selected );
+  }
+  else
+  {
+    billboardMaterial->useDefaultSymbol( context.map(), selected );
+  }
+
+  // Billboard Transform
+  Qt3DCore::QTransform *billboardTransform = new Qt3DCore::QTransform();
+  billboardTransform->setMatrix( mSymbol.billboardTransform() );
+
+  // Build the entity
+  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+
+  entity->addComponent( billboardMaterial );
+  entity->addComponent( billboardTransform );
+  entity->addComponent( billboardGeometryRenderer );
+  entity->setParent( parent );
+
+// cppcheck wrongly believes entity will leak
+// cppcheck-suppress memleak
+}
+
 
 namespace Qgs3DSymbolImpl
 {
 
-  QgsFeature3DHandler *handlerForPoint3DSymbol( QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol )
+  QgsFeature3DHandler *handlerForPoint3DSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
   {
-    if ( symbol.shape() == QgsPoint3DSymbol::Model )
-      return new QgsModelPoint3DSymbolHandler( symbol, layer->selectedFeatureIds() );
+    const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol * >( symbol );
+    if ( !pointSymbol )
+      return nullptr;
+
+    if ( pointSymbol->shape() == QgsPoint3DSymbol::Model )
+      return new QgsModelPoint3DSymbolHandler( *pointSymbol, layer->selectedFeatureIds() );
+    // Add proper handler for billboard
+    else if ( pointSymbol->shape() == QgsPoint3DSymbol::Billboard )
+      return new QgsPoint3DBillboardSymbolHandler( *pointSymbol, layer->selectedFeatureIds() );
     else
-      return new QgsInstancedPoint3DSymbolHandler( symbol, layer->selectedFeatureIds() );
+      return new QgsInstancedPoint3DSymbolHandler( *pointSymbol, layer->selectedFeatureIds() );
   }
 
   Qt3DCore::QEntity *entityForPoint3DSymbol( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol )
   {
-    QgsFeature3DHandler *handler = handlerForPoint3DSymbol( layer, symbol );
+    QgsFeature3DHandler *handler = handlerForPoint3DSymbol( layer, &symbol );
     Qt3DCore::QEntity *e = entityFromHandler( handler, map, layer );
     delete handler;
     return e;

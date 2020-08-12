@@ -17,6 +17,9 @@ class QgsServerRequest
 #include "qgsserverrequest.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     typedef QMap<QString, QString> Parameters;
     typedef QMap<QString, QString> Headers;
@@ -27,7 +30,8 @@ class QgsServerRequest
       PutMethod,
       GetMethod,
       PostMethod,
-      DeleteMethod
+      DeleteMethod,
+      PatchMethod
     };
 
 
@@ -55,6 +59,14 @@ Constructor
 %End
 
     virtual ~QgsServerRequest();
+
+    static QString methodToString( const Method &method );
+%Docstring
+Returns a string representation of an HTTP request ``method``.
+
+.. versionadded:: 3.12
+%End
+
 
     QUrl url() const;
 %Docstring
@@ -87,7 +99,7 @@ Returns parameters
 Set a parameter
 %End
 
-    QString parameter( const QString &key ) const;
+    QString parameter( const QString &key, const QString &defaultValue = QString() ) const;
 %Docstring
 Gets a parameter value
 %End
@@ -153,6 +165,13 @@ by default this is equal to the url seen by QGIS server
     void setMethod( QgsServerRequest::Method method );
 %Docstring
 Set the request method
+%End
+
+    const QString queryParameter( const QString &name, const QString &defaultValue = QString( ) ) const;
+%Docstring
+Returns the query string parameter with the given ``name`` from the request URL, a ``defaultValue`` can be specified.
+
+.. versionadded:: 3.10
 %End
 
   protected:

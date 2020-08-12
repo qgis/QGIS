@@ -21,15 +21,14 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
+
+from osgeo import gdal
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsApplication,
-                       QgsProcessingProvider)
+                       QgsProcessingProvider,
+                       QgsRuntimeProfiler)
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from .GdalUtils import GdalUtils
 
@@ -39,7 +38,8 @@ from .buildvrt import buildvrt
 from .ClipRasterByExtent import ClipRasterByExtent
 from .ClipRasterByMask import ClipRasterByMask
 from .ColorRelief import ColorRelief
-from .contour import contour
+from .contour import contour, contour_polygon
+from .Datasources2Vrt import Datasources2Vrt
 from .fillnodata import fillnodata
 from .gdalinfo import gdalinfo
 from .gdal2tiles import gdal2tiles
@@ -71,9 +71,11 @@ from .tpi import tpi
 from .tri import tri
 from .warp import warp
 from .pansharp import pansharp
+from .rasterize_over_fixed_value import rasterize_over_fixed_value
+from .viewshed import viewshed
 
 from .extractprojection import ExtractProjection
-# from .rasterize_over import rasterize_over
+from .rasterize_over import rasterize_over
 
 from .Buffer import Buffer
 from .ClipVectorByExtent import ClipVectorByExtent
@@ -99,13 +101,15 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
     def __init__(self):
         super().__init__()
         self.algs = []
+        QgsApplication.processingRegistry().addAlgorithmAlias('qgis:buildvirtualvector', 'gdal:buildvirtualvector')
 
     def load(self):
-        ProcessingConfig.settingIcons[self.name()] = self.icon()
-        ProcessingConfig.addSetting(Setting(self.name(), 'ACTIVATE_GDAL',
-                                            self.tr('Activate'), True))
-        ProcessingConfig.readSettings()
-        self.refreshAlgorithms()
+        with QgsRuntimeProfiler.profile('GDAL Provider'):
+            ProcessingConfig.settingIcons[self.name()] = self.icon()
+            ProcessingConfig.addSetting(Setting(self.name(), 'ACTIVATE_GDAL',
+                                                self.tr('Activate'), True))
+            ProcessingConfig.readSettings()
+            self.refreshAlgorithms()
         return True
 
     def unload(self):
@@ -145,6 +149,8 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             ClipRasterByMask(),
             ColorRelief(),
             contour(),
+            contour_polygon(),
+            Datasources2Vrt(),
             fillnodata(),
             gdalinfo(),
             gdal2tiles(),
@@ -178,7 +184,8 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             pansharp(),
             # rasterize(),
             ExtractProjection(),
-            # rasterize_over(),
+            rasterize_over(),
+            rasterize_over_fixed_value(),
             # ----- OGR tools -----
             Buffer(),
             ClipVectorByExtent(),
@@ -194,6 +201,10 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             PointsAlongLines(),
             # Ogr2OgrTableToPostGisList(),
         ]
+
+        if int(gdal.VersionInfo()) > 3010000:
+            self.algs.append(viewshed())
+
         for a in self.algs:
             self.addAlgorithm(a)
 

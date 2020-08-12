@@ -29,7 +29,6 @@ extern "C"
 #include "qgsvirtuallayerfeatureiterator.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include "qgsdatasourceuri.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 
@@ -91,11 +90,13 @@ QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri, const QgsD
 
   if ( mDefinition.geometrySrid() != -1 )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     mCrs = QgsCoordinateReferenceSystem( mDefinition.geometrySrid() );
+    Q_NOWARN_DEPRECATED_POP
   }
 }
 
-void QgsVirtualLayerProvider::reloadData()
+void QgsVirtualLayerProvider::reloadProviderData()
 {
   if ( mDefinition.sourceLayers().empty() && !mDefinition.filePath().isEmpty() && mDefinition.query().isEmpty() )
   {
@@ -316,7 +317,10 @@ bool QgsVirtualLayerProvider::createIt()
       provider.replace( QLatin1String( "'" ), QLatin1String( "''" ) );
       QString source = mLayers.at( i ).source;
       source.replace( QLatin1String( "'" ), QLatin1String( "''" ) );
-      QString encoding = mLayers.at( i ).encoding;
+      // the encoding might be an empty string, which breaks the SQL query below
+      QString encoding = mLayers.at( i ).encoding.isEmpty()
+                         ? QStringLiteral( "System" )
+                         : mLayers.at( i ).encoding;
       QString createStr = QStringLiteral( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer('%2','%4',%3)" )
                           .arg( vname,
                                 provider,
@@ -554,11 +558,17 @@ QgsRectangle QgsVirtualLayerProvider::extent() const
 void QgsVirtualLayerProvider::updateStatistics() const
 {
   bool hasGeometry = mDefinition.geometryWkbType() != QgsWkbTypes::NoGeometry;
-  QString subset = mSubset.isEmpty() ? QString() : " WHERE " + mSubset;
+  QString subset = mSubset.isEmpty() ? QString() : QStringLiteral( " WHERE %1" ).arg( mSubset );
+
+  // `mTableName` might be a null string if the layer creation failed. Assert such situations at least during development.
+  Q_ASSERT( ! mTableName.isNull() );
+
   QString sql = QStringLiteral( "SELECT Count(*)%1 FROM %2%3" )
-                .arg( hasGeometry ? QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : QString(),
-                      mTableName,
-                      subset );
+                .arg(
+                  hasGeometry ? QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : QString(),
+                  mTableName,
+                  subset
+                );
   Sqlite::Query q( mSqlite.get(), sql );
   if ( q.step() == SQLITE_ROW )
   {
@@ -643,42 +653,11 @@ QSet<QgsMapLayerDependency> QgsVirtualLayerProvider::dependencies() const
   return deps;
 }
 
-/**
- * Class factory to return a pointer to a newly created
- * QgsSpatiaLiteProvider object
- */
-QGISEXTERN QgsVirtualLayerProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsVirtualLayerProvider *QgsVirtualLayerProviderMetadata::createProvider(
+  const QString &uri,
+  const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsVirtualLayerProvider( *uri, options );
-}
-
-/**
- * Required key function (used to map the plugin to a data store type)
-*/
-QGISEXTERN QString providerKey()
-{
-  return VIRTUAL_LAYER_KEY;
-}
-
-/**
- * Required description function
- */
-QGISEXTERN QString description()
-{
-  return VIRTUAL_LAYER_DESCRIPTION;
-}
-
-/**
- * Required isProvider function. Used to determine if this shared library
- * is a data provider plugin
- */
-QGISEXTERN bool isProvider()
-{
-  return true;
-}
-
-QGISEXTERN void cleanupProvider()
-{
+  return new QgsVirtualLayerProvider( uri, options );
 }
 
 
@@ -701,13 +680,34 @@ class QgsVirtualSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+QgsVirtualLayerProviderGuiMetadata::QgsVirtualLayerProviderGuiMetadata()
+  : QgsProviderGuiMetadata( VIRTUAL_LAYER_KEY )
 {
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+}
 
-  *providers
-      << new QgsVirtualSourceSelectProvider;
-
+QList<QgsSourceSelectProvider *> QgsVirtualLayerProviderGuiMetadata::sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> providers;
+  providers << new QgsVirtualSourceSelectProvider;
   return providers;
 }
 #endif
+
+QgsVirtualLayerProviderMetadata::QgsVirtualLayerProviderMetadata():
+  QgsProviderMetadata( VIRTUAL_LAYER_KEY, VIRTUAL_LAYER_DESCRIPTION )
+{
+}
+
+
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
+{
+  return new QgsVirtualLayerProviderMetadata();
+}
+
+#ifdef HAVE_GUI
+QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
+{
+  return new QgsVirtualLayerProviderGuiMetadata();
+}
+#endif
+

@@ -65,10 +65,10 @@ void QgsCentroidAlgorithm::initParameters( const QVariantMap & )
 {
   std::unique_ptr< QgsProcessingParameterBoolean> allParts = qgis::make_unique< QgsProcessingParameterBoolean >(
         QStringLiteral( "ALL_PARTS" ),
-        QObject::tr( "Create point on surface for each part" ),
+        QObject::tr( "Create centroid for each part" ),
         false );
   allParts->setIsDynamic( true );
-  allParts->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "All parts" ), QObject::tr( "Create point on surface for each part" ), QgsPropertyDefinition::Boolean ) );
+  allParts->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "All parts" ), QObject::tr( "Create centroid for each part" ), QgsPropertyDefinition::Boolean ) );
   allParts->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( allParts.release() );
 }

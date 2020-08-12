@@ -21,10 +21,6 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'April 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from processing.tools.system import (isWindows, getTempFilename)
 from processing.algs.grass7.Grass7Utils import Grass7Utils
@@ -43,7 +39,7 @@ def orderedInput(alg, parameters, context, src, tgt, numSeq=None):
     :param numSeq: List of a sequence for naming layers.
     """
     rootFilename = 'rast_{}.'.format(os.path.basename(getTempFilename()))
-    #parameters[tgt] = rootFilename
+    # parameters[tgt] = rootFilename
     param = QgsProcessingParameterString(tgt, 'virtual input',
                                          rootFilename, False, False)
     alg.addParameter(param)

@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import math
 import warnings
@@ -59,7 +55,6 @@ with warnings.catch_warnings():
 
 
 class ModelerNumberInputPanel(BASE, WIDGET):
-
     """
     Number input panel for use inside the modeler - this input panel
     is based off the base input panel and includes a text based line input
@@ -131,7 +126,6 @@ class ModelerNumberInputPanel(BASE, WIDGET):
 
 
 class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
-
     """
     Number input panel for use outside the modeler - this input panel
     contains a user friendly spin box for entering values.
@@ -258,7 +252,6 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
 
 
 class DistanceInputPanel(NumberInputPanel):
-
     """
     Distance input panel for use outside the modeler - this input panel
     contains a label showing the distance unit.

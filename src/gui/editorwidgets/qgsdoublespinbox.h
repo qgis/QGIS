@@ -146,6 +146,10 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
   protected:
     void changeEvent( QEvent *event ) override;
     void wheelEvent( QWheelEvent *event ) override;
+    // This is required because private implementation of
+    // QAbstractSpinBoxPrivate may trigger a second
+    // undesired event from the auto-repeat mouse timer
+    void timerEvent( QTimerEvent *event ) override;
 
   private slots:
     void changed( double value );
@@ -163,11 +167,6 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     bool mExpressionsEnabled = true;
 
     QString stripped( const QString &originalText ) const;
-
-    // This is required because private implementation of
-    // QAbstractSpinBoxPrivate checks for specialText emptiness
-    // and skips specialText handling if it's empty
-    static QString SPECIAL_TEXT_WHEN_EMPTY;
 
     friend class TestQgsRangeWidgetWrapper;
 };

@@ -29,10 +29,9 @@
 #include "qgslayermetadata.h"
 #include "qgserror.h"
 
-typedef int dataCapabilities_t(); // SIP_SKIP
-
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
+class QgsDataProviderTemporalCapabilities;
 
 
 /**
@@ -66,6 +65,11 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
   public:
 
+    // TODO QGIS 4: (re)move DataCapability as this enum is really meant for data items rather than data providers
+
+    /**
+     * Used in browser model to understand which items for which providers should be populated
+     */
     enum DataCapability
     {
       NoDataCapabilities  = 0,
@@ -74,7 +78,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
       Database            = 1 << 2,
       Net                 = 1 << 3  // Internet source
     };
-    Q_ENUM( DataCapability )
+    Q_DECLARE_FLAGS( DataCapabilities, DataCapability )
 
     /**
      * Properties are used to pass custom configuration options into data providers.
@@ -139,7 +143,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     {
       if ( expandAuthConfig && mDataSourceURI.contains( QLatin1String( "authcfg" ) ) )
       {
-        QgsDataSourceUri uri( mDataSourceURI );
+        const QgsDataSourceUri uri( mDataSourceURI );
         return uri.uri( expandAuthConfig );
       }
       else
@@ -147,6 +151,16 @@ class CORE_EXPORT QgsDataProvider : public QObject
         return mDataSourceURI;
       }
     }
+
+    /**
+     * Returns a short comment for the data that this provider is
+     * providing access to (e.g. the comment for postgres table).
+     *
+     * \note The default implementation returns an empty string.
+     * \since QGIS 3.14
+     */
+    virtual QString dataComment() const { return QString(); };
+
 
     /**
      * Set the data source specification.
@@ -167,6 +181,24 @@ class CORE_EXPORT QgsDataProvider : public QObject
     {
       return QgsDataSourceUri( mDataSourceURI );
     }
+
+    /**
+     * Returns the provider's temporal capabilities.
+     *
+     * This may be NULLPTR, depending on the data provider.
+     *
+     * \since QGIS 3.14
+     */
+    virtual QgsDataProviderTemporalCapabilities *temporalCapabilities();
+
+    /**
+     * Returns the provider's temporal capabilities.
+     *
+     * This may be NULLPTR, depending on the data provider.
+     *
+     * \since QGIS 3.14
+     */
+    virtual const QgsDataProviderTemporalCapabilities *temporalCapabilities() const SIP_SKIP;
 
     /**
      * Returns the extent of the layer
@@ -200,8 +232,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = true )
     {
       // NOP by default
-      Q_UNUSED( subset );
-      Q_UNUSED( updateFeatureCount );
+      Q_UNUSED( subset )
+      Q_UNUSED( updateFeatureCount )
       return false;
     }
 
@@ -235,13 +267,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
     {
       return QStringList();  // Empty
     }
-
-    /**
-     * String sequence used for separating components of sublayers strings.
-     * \see subLayers()
-     * \since QGIS 3.0
-     */
-    static QString SUBLAYER_SEPARATOR;
 
     /**
      * Sub-layer styles for each sub-layer handled by this provider,
@@ -360,10 +385,12 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
     /**
-     * Reloads the data from the source. Needs to be implemented by providers with data caches to
-     * synchronize with changes in the data source
+     * Reloads the data from the source by calling reloadProviderData() implemented
+     * by providers with data caches to synchronize, changes in the data source, feature
+     * counts and other specific actions.
+     * Emits the `dataChanged` signal
      */
-    virtual void reloadData() {}
+    virtual void reloadData();
 
     //! Time stamp of data source in the moment when data/metadata were loaded by provider
     virtual QDateTime timestamp() const { return mTimestamp; }
@@ -382,7 +409,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Invalidate connections corresponding to specified name
      * \since QGIS 2.16
      */
-    virtual void invalidateConnections( const QString &connection ) { Q_UNUSED( connection ); }
+    virtual void invalidateConnections( const QString &connection ) { Q_UNUSED( connection ) }
 
     /**
      * Enter update mode.
@@ -520,7 +547,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * \see layerMetadata()
      * \since QGIS 3.0
     */
-    virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata ) { Q_UNUSED( metadata ); return false; }
+    virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata ) { Q_UNUSED( metadata ) return false; }
 
     /**
      * Returns data provider coordinate transform context
@@ -542,6 +569,14 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * \since QGIS 3.8
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) SIP_SKIP;
+
+    /**
+     * String sequence used for separating components of sublayers strings.
+     * \note Replaces the static const SUBLAYER_SEPARATOR
+     * \see subLayers()
+     * \since QGIS 3.12
+     */
+    static QString sublayerSeparator();
 
   signals:
 
@@ -610,6 +645,11 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     mutable QMutex mOptionsMutex;
 
+    /**
+     * Reloads the data according to the provider
+     * \since QGIS 3.12
+    */
+    virtual void reloadProviderData() {}
 };
 
 

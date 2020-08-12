@@ -17,6 +17,20 @@
 
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingutils.h"
+#include "qgsproviderregistry.h"
+#include "qgssettings.h"
+
+QgsProcessingContext::QgsProcessingContext()
+  : mPreferredVectorFormat( QgsProcessingUtils::defaultVectorExtension() )
+  , mPreferredRasterFormat( QgsProcessingUtils::defaultRasterExtension() )
+{
+  auto callback = [ = ]( const QgsFeature & feature )
+  {
+    if ( mFeedback )
+      mFeedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( feature.id() ) );
+  };
+  mTransformErrorCallback = callback;
+}
 
 QgsProcessingContext::~QgsProcessingContext()
 {
@@ -47,8 +61,12 @@ void QgsProcessingContext::addLayerToLoadOnCompletion( const QString &layer, con
 void QgsProcessingContext::setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck check )
 {
   mInvalidGeometryCheck = check;
+  mInvalidGeometryCallback = defaultInvalidGeometryCallbackForCheck( check );
+}
 
-  switch ( mInvalidGeometryCheck )
+std::function<void ( const QgsFeature & )> QgsProcessingContext::defaultInvalidGeometryCallbackForCheck( QgsFeatureRequest::InvalidGeometryCheck check ) const
+{
+  switch ( check )
   {
     case  QgsFeatureRequest::GeometryAbortOnInvalid:
     {
@@ -56,8 +74,7 @@ void QgsProcessingContext::setInvalidGeometryCheck( QgsFeatureRequest::InvalidGe
       {
         throw QgsProcessingException( QObject::tr( "Feature (%1) has invalid geometry. Please fix the geometry or change the Processing setting to the \"Ignore invalid input features\" option." ).arg( feature.id() ) );
       };
-      mInvalidGeometryCallback = callback;
-      break;
+      return callback;
     }
 
     case QgsFeatureRequest::GeometrySkipInvalid:
@@ -67,13 +84,13 @@ void QgsProcessingContext::setInvalidGeometryCheck( QgsFeatureRequest::InvalidGe
         if ( mFeedback )
           mFeedback->reportError( QObject::tr( "Feature (%1) has invalid geometry and has been skipped. Please fix the geometry or change the Processing setting to the \"Ignore invalid input features\" option." ).arg( feature.id() ) );
       };
-      mInvalidGeometryCallback = callback;
-      break;
+      return callback;
     }
 
-    default:
-      break;
+    case QgsFeatureRequest::GeometryNoCheck:
+      return nullptr;
   }
+  return nullptr;
 }
 
 void QgsProcessingContext::takeResultsFrom( QgsProcessingContext &context )
@@ -93,7 +110,35 @@ QgsMapLayer *QgsProcessingContext::takeResultLayer( const QString &id )
   return tempLayerStore.takeMapLayer( tempLayerStore.mapLayer( id ) );
 }
 
+QString QgsProcessingContext::ellipsoid() const
+{
+  return mEllipsoid;
+}
 
+void QgsProcessingContext::setEllipsoid( const QString &ellipsoid )
+{
+  mEllipsoid = ellipsoid;
+}
+
+QgsUnitTypes::DistanceUnit QgsProcessingContext::distanceUnit() const
+{
+  return mDistanceUnit;
+}
+
+void QgsProcessingContext::setDistanceUnit( QgsUnitTypes::DistanceUnit unit )
+{
+  mDistanceUnit = unit;
+}
+
+QgsUnitTypes::AreaUnit QgsProcessingContext::areaUnit() const
+{
+  return mAreaUnit;
+}
+
+void QgsProcessingContext::setAreaUnit( QgsUnitTypes::AreaUnit areaUnit )
+{
+  mAreaUnit = areaUnit;
+}
 
 QgsProcessingLayerPostProcessorInterface *QgsProcessingContext::LayerDetails::postProcessor() const
 {
@@ -106,4 +151,40 @@ void QgsProcessingContext::LayerDetails::setPostProcessor( QgsProcessingLayerPos
     delete mPostProcessor;
 
   mPostProcessor = processor;
+}
+
+void QgsProcessingContext::LayerDetails::setOutputLayerName( QgsMapLayer *layer ) const
+{
+  if ( !layer )
+    return;
+
+  const bool preferFilenameAsLayerName = QgsSettings().value( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ), true ).toBool();
+
+  // note - for temporary layers, we don't use the filename, regardless of user setting (it will be meaningless!)
+  if ( ( !forceName && preferFilenameAsLayerName && !layer->isTemporary() ) || name.isEmpty() )
+  {
+    const QVariantMap sourceParts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
+    const QString layerName = sourceParts.value( QStringLiteral( "layerName" ) ).toString();
+    // if output layer name exists, use that!
+    if ( !layerName.isEmpty() )
+      layer->setName( layerName );
+    else
+    {
+      const QString path = sourceParts.value( QStringLiteral( "path" ) ).toString();
+      if ( !path.isEmpty() )
+      {
+        const QFileInfo fi( path );
+        layer->setName( fi.baseName() );
+      }
+      else if ( !name.isEmpty() )
+      {
+        // fallback to parameter's name -- shouldn't happen!
+        layer->setName( name );
+      }
+    }
+  }
+  else
+  {
+    layer->setName( name );
+  }
 }

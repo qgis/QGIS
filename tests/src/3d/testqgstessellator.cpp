@@ -21,6 +21,8 @@
 #include "qgspolygon.h"
 #include "qgstessellator.h"
 #include "qgsmultipolygon.h"
+#include "qgslogger.h"
+#include "qgsgeometry.h"
 
 static bool qgsVectorNear( const QVector3D &v1, const QVector3D &v2, double eps )
 {
@@ -101,6 +103,7 @@ bool checkTriangleOutput( const QVector<float> &data, bool withNormals, const QL
     TriangleCoords out( dataRaw, withNormals );
     if ( exp != out )
     {
+      qDebug() << i;
       qDebug() << "expected:";
       exp.dump();
       qDebug() << "got:";
@@ -135,6 +138,11 @@ class TestQgsTessellator : public QObject
     void testIssue17745();
     void testCrashSelfIntersection();
     void testCrashEmptyPolygon();
+    void testBoundsScaling();
+    void testNoZ();
+    void testTriangulationDoesNotCrash();
+    void testCrash2DTriangle();
+    void narrowPolygon();
 
   private:
 };
@@ -348,6 +356,73 @@ void TestQgsTessellator::testCrashEmptyPolygon()
   t.addPolygon( p, 0 );  // must not crash - that's all we test here
 }
 
+void TestQgsTessellator::testBoundsScaling()
+{
+  QgsPolygon polygon;
+  polygon.fromWkt( "POLYGON((1 1, 1.00000001 1, 1.00000001 1.00000001, 1 1.0000000001, 1 1))" );
+
+  QList<TriangleCoords> tc;
+  tc << TriangleCoords( QVector3D( 0, 1e-10f, 0 ), QVector3D( 1e-08f, 0, 0 ), QVector3D( 1e-08f, 1e-08f, 0 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ) );
+  tc << TriangleCoords( QVector3D( 0, 1e-10f, 0 ), QVector3D( 0, 0, 0 ), QVector3D( 1e-08f, 0, 0 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ) );
+
+  // without using bounds -- numerically unstable, expect no result
+  QgsTessellator t( 0, 0, true );
+  t.addPolygon( polygon, 0 );
+  QCOMPARE( t.data().size(), 0 );
+
+  // using bounds scaling, expect good result
+  QgsTessellator t2( polygon.boundingBox(), true );
+  t2.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( t2.data(), true, tc ) );
+}
+
+void TestQgsTessellator::testNoZ()
+{
+  // test tessellation with no z support
+  QgsPolygon polygonZ;
+  polygonZ.fromWkt( "POLYGONZ((1 1 1, 2 1 1, 3 2 1, 1 2 1, 1 1 1))" );
+
+  QList<TriangleCoords> tc;
+  tc << TriangleCoords( QVector3D( 0, 1, 0 ), QVector3D( 1, 0, 0 ), QVector3D( 2, 1, 0 ) );
+  tc << TriangleCoords( QVector3D( 0, 1, 0 ), QVector3D( 0, 0, 0 ), QVector3D( 1, 0, 0 ) );
+
+  QgsTessellator t( polygonZ.boundingBox(), false, false, false, true );
+  t.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( t.data(), false, tc ) );
+}
+
+void TestQgsTessellator::testTriangulationDoesNotCrash()
+{
+  // a commit in poly2tri has caused a crashing regression - https://github.com/jhasse/poly2tri/issues/11
+  // this code only makes sure that the crash does not come back during another update of poly2tri
+  QgsPolygon polygon;
+  polygon.fromWkt( "Polygon((0 0, -5 -3e-10, -10 -2e-10, -10 -4, 0 -4))" );
+  QgsTessellator t( 0, 0, true );
+  t.addPolygon( polygon, 0 );
+}
+
+void TestQgsTessellator::testCrash2DTriangle()
+{
+  // test tessellation of a 2D triangle - https://github.com/qgis/QGIS/issues/36024
+  QgsPolygon polygon;
+  polygon.fromWkt( "Polygon((0 0, 42 0, 42 42, 0 0))" );
+  QgsTessellator t( 0, 0, true, false, false, true );
+  t.addPolygon( polygon, 0 ); // must not crash - that's all we test here
+}
+
+void TestQgsTessellator::narrowPolygon()
+{
+  // test that tessellation of a long narrow polygon results in a "nice" tesselation (i.e. not lots of long thin triangles)
+  // refs https://github.com/qgis/QGIS/issues/37077
+  QgsPolygon polygon;
+  polygon.fromWkt( "Polygon ((383393.53728186257649213 4902093.79335568379610777, 383383.73728171654511243 4902092.99335567187517881, 383375.25399118528002873 4902092.8891992112621665, 383368.08741026872303337 4902093.48088630195707083, 383362.87084332120139152 4902093.91129046399146318, 383359.60429034277331084 4902094.18041169829666615, 383357.23274148383643478 4902093.6530067715793848, 383355.75619674433255568 4902092.32907568290829659, 383355.57501344417687505 4902090.56084021460264921, 383356.68919158342760056 4902088.34830036386847496, 383361.07830215193098411 4902086.48156050778925419, 383368.74234514962881804 4902084.96062064450234175, 383380.44909519288921729 4902084.10479906108230352, 383396.19855228182859719 4902083.91409575659781694, 383406.97328086948255077 4902084.21874411031603813, 383412.77328095590928569 4902085.01874412223696709, 383416.70496230950811878 4902086.31405469868332148, 383418.76832493022084236 4902088.1046758396551013, 383419.69647055567475036 4902089.60464367642998695, 383419.48939918575342745 4902090.81395820714533329, 383418.40130056580528617 4902092.01381655503064394, 383416.43217469577211887 4902093.20421871729195118, 383411.19502930447924882 4902093.89790377207100391, 383402.68986439192667603 4902094.09487171657383442, 383393.53728186257649213 4902093.79335568379610777))" );
+  QgsTessellator t( polygon.boundingBox(), false );
+  t.addPolygon( polygon, 0 );
+  QgsGeometry res( t.asMultiPolygon() );
+  res.translate( polygon.boundingBox().xMinimum(), polygon.boundingBox().yMinimum() );
+  QgsDebugMsg( res.asWkt( 0 ) );
+  QCOMPARE( res.asWkt( 0 ), QStringLiteral( "MultiPolygonZ (((383357 4902094 0, 383356 4902092 0, 383356 4902091 0, 383357 4902094 0)),((383357 4902088 0, 383357 4902094 0, 383356 4902091 0, 383357 4902088 0)),((383357 4902088 0, 383361 4902086 0, 383357 4902094 0, 383357 4902088 0)),((383357 4902094 0, 383361 4902086 0, 383360 4902094 0, 383357 4902094 0)),((383363 4902094 0, 383360 4902094 0, 383361 4902086 0, 383363 4902094 0)),((383368 4902093 0, 383363 4902094 0, 383361 4902086 0, 383368 4902093 0)),((383368 4902093 0, 383361 4902086 0, 383369 4902085 0, 383368 4902093 0)),((383368 4902093 0, 383369 4902085 0, 383375 4902093 0, 383368 4902093 0)),((383375 4902093 0, 383369 4902085 0, 383380 4902084 0, 383375 4902093 0)),((383375 4902093 0, 383380 4902084 0, 383384 4902093 0, 383375 4902093 0)),((383384 4902093 0, 383380 4902084 0, 383396 4902084 0, 383384 4902093 0)),((383394 4902094 0, 383384 4902093 0, 383396 4902084 0, 383394 4902094 0)),((383403 4902094 0, 383394 4902094 0, 383396 4902084 0, 383403 4902094 0)),((383396 4902084 0, 383407 4902084 0, 383403 4902094 0, 383396 4902084 0)),((383411 4902094 0, 383403 4902094 0, 383407 4902084 0, 383411 4902094 0)),((383411 4902094 0, 383407 4902084 0, 383413 4902085 0, 383411 4902094 0)),((383411 4902094 0, 383413 4902085 0, 383416 4902093 0, 383411 4902094 0)),((383416 4902093 0, 383413 4902085 0, 383417 4902086 0, 383416 4902093 0)),((383419 4902088 0, 383416 4902093 0, 383417 4902086 0, 383419 4902088 0)),((383418 4902092 0, 383416 4902093 0, 383419 4902088 0, 383418 4902092 0)),((383418 4902092 0, 383419 4902088 0, 383419 4902091 0, 383418 4902092 0)),((383419 4902091 0, 383419 4902088 0, 383420 4902090 0, 383419 4902091 0)))" ) );
+}
 
 QGSTEST_MAIN( TestQgsTessellator )
 #include "testqgstessellator.moc"

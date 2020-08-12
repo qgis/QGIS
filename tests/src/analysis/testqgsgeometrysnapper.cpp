@@ -623,7 +623,7 @@ void TestQgsGeometrySnapper::snapMultiPolygonToPolygon()
   flist << ff;
   rl->dataProvider()->addFeatures( flist );
 
-  // test MultiPolygon that could be removed in the process https://issues.qgis.org/issues/18497
+  // test MultiPolygon that could be removed in the process https://github.com/qgis/QGIS/issues/26385
   QgsGeometry polygonGeom = QgsGeometry::fromWkt( QStringLiteral( "MultiPolygon(((0.1 -0.1, 5 0.1, 9.9 0.1, 0.1 -0.1)))" ) );
   QgsGeometrySnapper snapper( rl );
   QgsGeometry result = snapper.snapGeometry( polygonGeom, 1 );

@@ -26,13 +26,14 @@ Point geometry type, with support for z-dimension and m-values.
 
   public:
 
-    QgsPoint( double x = 0.0, double y = 0.0, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
+    QgsPoint( SIP_PYOBJECT x = Py_None, SIP_PYOBJECT y = Py_None, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, SIP_PYOBJECT wkbType = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
 %Docstring
 Construct a point with the provided initial coordinate values.
 
 If ``wkbType`` is set to `QgsWkbTypes.Point`, `QgsWkbTypes.PointZ`, `QgsWkbTypes.PointM` or `QgsWkbTypes.PointZM`
 the type will be set accordingly. If it is left to the default `QgsWkbTypes.Unknown`, the type will be set
 based on the following rules:
+
 - If only x and y are specified, the type will be a 2D point.
 - If any or both of the Z and M are specified, the appropriate type will be created.
 
@@ -53,39 +54,57 @@ based on the following rules:
        pt.wkbType() # QgsWkbTypes.PointZ
 %End
 %MethodCode
-    double z;
-    double m;
+    if ( sipCanConvertToType( a0, sipType_QgsPointXY, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
+    {
+      int state;
+      sipIsErr = 0;
 
-    if ( a2 == Py_None )
-    {
-      z = std::numeric_limits<double>::quiet_NaN();
+      QgsPointXY *p = reinterpret_cast<QgsPointXY *>( sipConvertToType( a0, sipType_QgsPointXY, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+      if ( sipIsErr )
+      {
+        sipReleaseType( p, sipType_QgsPointXY, state );
+      }
+      else
+      {
+        sipCpp = new sipQgsPoint( QgsPoint( *p ) );
+      }
     }
-    else
+    else if ( sipCanConvertToType( a0, sipType_QPointF, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
     {
-      z = PyFloat_AsDouble( a2 );
-    }
+      int state;
+      sipIsErr = 0;
 
-    if ( a3 == Py_None )
-    {
-      m = std::numeric_limits<double>::quiet_NaN();
+      QPointF *p = reinterpret_cast<QPointF *>( sipConvertToType( a0, sipType_QPointF, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+      if ( sipIsErr )
+      {
+        sipReleaseType( p, sipType_QPointF, state );
+      }
+      else
+      {
+        sipCpp = new sipQgsPoint( QgsPoint( *p ) );
+      }
     }
-    else
+    else if (
+      ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a1 == Py_None || PyFloat_AsDouble( a1 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a2 == Py_None || PyFloat_AsDouble( a2 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a3 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) )
     {
-      m = PyFloat_AsDouble( a3 );
+      double x = a0 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a0 );
+      double y = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
+      double z = a2 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a2 );
+      double m = a3 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a3 );
+      QgsWkbTypes::Type wkbType = a4 == Py_None ? QgsWkbTypes::Unknown : static_cast<QgsWkbTypes::Type>( sipConvertToEnum( a4, sipType_QgsWkbTypes_Type ) );
+      sipCpp = new sipQgsPoint( QgsPoint( x, y, z, m, wkbType ) );
     }
-
-    sipCpp = new sipQgsPoint( a0, a1, z, m, a4 );
+    else // Invalid ctor arguments
+    {
+      PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type in constructor arguments." ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
 %End
 
-    explicit QgsPoint( const QgsPointXY &p );
-%Docstring
-Construct a QgsPoint from a QgsPointXY object
-%End
 
-    explicit QgsPoint( QPointF p );
-%Docstring
-Construct a QgsPoint from a QPointF
-%End
 
 
     virtual bool operator==( const QgsAbstractGeometry &other ) const;
@@ -156,7 +175,7 @@ Sets the point's z-coordinate.
 
 .. note::
 
-   calling this will have no effect if the point does not contain a z-dimension. Use addZValue() to
+   calling this will have no effect if the point does not contain a z-dimension. Use :py:func:`~QgsPoint.addZValue` to
    add a z value and force the point to have a z dimension.
 
 .. seealso:: z
@@ -170,7 +189,7 @@ Sets the point's m-value.
 
 .. note::
 
-   calling this will have no effect if the point does not contain a m-dimension. Use addMValue() to
+   calling this will have no effect if the point does not contain a m-dimension. Use :py:func:`~QgsPoint.addMValue` to
    add a m value and force the point to have an m dimension.
 
 .. seealso:: m
@@ -187,8 +206,8 @@ Returns the point as a QPointF.
 
     double distance( double x, double y ) const;
 %Docstring
-Returns the distance between this point and a specified x, y coordinate. In certain
-cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+Returns the Cartesian 2D distance between this point and a specified x, y coordinate. In certain
+cases it may be more appropriate to call the faster :py:func:`~QgsPoint.distanceSquared` method, e.g.,
 when comparing distances.
 
 .. seealso:: :py:func:`distanceSquared`
@@ -198,8 +217,8 @@ when comparing distances.
 
     double distance( const QgsPoint &other ) const;
 %Docstring
-Returns the 2D distance between this point and another point. In certain
-cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+Returns the Cartesian 2D distance between this point and another point. In certain
+cases it may be more appropriate to call the faster :py:func:`~QgsPoint.distanceSquared` method, e.g.,
 when comparing distances.
 
 .. versionadded:: 3.0
@@ -207,9 +226,9 @@ when comparing distances.
 
     double distanceSquared( double x, double y ) const;
 %Docstring
-Returns the squared distance between this point a specified x, y coordinate. Calling
-this is faster than calling distance(), and may be useful in use cases such as comparing
-distances where the extra expense of calling distance() is not required.
+Returns the Cartesian 2D squared distance between this point a specified x, y coordinate. Calling
+this is faster than calling :py:func:`~QgsPoint.distance`, and may be useful in use cases such as comparing
+distances where the extra expense of calling :py:func:`~QgsPoint.distance` is not required.
 
 .. seealso:: :py:func:`distance`
 
@@ -218,9 +237,9 @@ distances where the extra expense of calling distance() is not required.
 
     double distanceSquared( const QgsPoint &other ) const;
 %Docstring
-Returns the squared distance between this point another point. Calling
-this is faster than calling distance(), and may be useful in use cases such as comparing
-distances where the extra expense of calling distance() is not required.
+Returns the Cartesian 2D squared distance between this point another point. Calling
+this is faster than calling :py:func:`~QgsPoint.distance`, and may be useful in use cases such as comparing
+distances where the extra expense of calling :py:func:`~QgsPoint.distance` is not required.
 
 .. seealso:: :py:func:`distance`
 
@@ -229,8 +248,8 @@ distances where the extra expense of calling distance() is not required.
 
     double distance3D( double x, double y, double z ) const;
 %Docstring
-Returns the 3D distance between this point and a specified x, y, z coordinate. In certain
-cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+Returns the Cartesian 3D distance between this point and a specified x, y, z coordinate. In certain
+cases it may be more appropriate to call the faster :py:func:`~QgsPoint.distanceSquared` method, e.g.,
 when comparing distances.
 
 .. seealso:: :py:func:`distanceSquared`
@@ -240,8 +259,8 @@ when comparing distances.
 
     double distance3D( const QgsPoint &other ) const;
 %Docstring
-Returns the 3D distance between this point and another point. In certain
-cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+Returns the Cartesian 3D distance between this point and another point. In certain
+cases it may be more appropriate to call the faster :py:func:`~QgsPoint.distanceSquared` method, e.g.,
 when comparing distances.
 
 .. versionadded:: 3.0
@@ -249,9 +268,9 @@ when comparing distances.
 
     double distanceSquared3D( double x, double y, double z ) const;
 %Docstring
-Returns the 3D squared distance between this point a specified x, y, z coordinate. Calling
-this is faster than calling distance(), and may be useful in use cases such as comparing
-distances where the extra expense of calling distance() is not required.
+Returns the Cartesian 3D squared distance between this point and a specified x, y, z coordinate. Calling
+this is faster than calling :py:func:`~QgsPoint.distance`, and may be useful in use cases such as comparing
+distances where the extra expense of calling :py:func:`~QgsPoint.distance` is not required.
 
 .. seealso:: :py:func:`distance`
 
@@ -260,9 +279,9 @@ distances where the extra expense of calling distance() is not required.
 
     double distanceSquared3D( const QgsPoint &other ) const;
 %Docstring
-Returns the 3D squared distance between this point another point. Calling
-this is faster than calling distance(), and may be useful in use cases such as comparing
-distances where the extra expense of calling distance() is not required.
+Returns the Cartesian 3D squared distance between this point and another point. Calling
+this is faster than calling :py:func:`~QgsPoint.distance`, and may be useful in use cases such as comparing
+distances where the extra expense of calling :py:func:`~QgsPoint.distance` is not required.
 
 .. seealso:: :py:func:`distance`
 
@@ -271,14 +290,14 @@ distances where the extra expense of calling distance() is not required.
 
     double azimuth( const QgsPoint &other ) const;
 %Docstring
-Calculates azimuth between this point and other one (clockwise in degree, starting from north)
+Calculates Cartesian azimuth between this point and other one (clockwise in degree, starting from north)
 
 .. versionadded:: 3.0
 %End
 
     double inclination( const QgsPoint &other ) const;
 %Docstring
-Calculates inclination between this point and other one (starting from zenith = 0 to nadir = 180. Horizon = 90)
+Calculates Cartesian inclination between this point and other one (starting from zenith = 0 to nadir = 180. Horizon = 90)
 Returns 90.0 if the distance between this point and other one is equal to 0 (same point).
 
 .. versionadded:: 3.0
@@ -287,7 +306,7 @@ Returns 90.0 if the distance between this point and other one is equal to 0 (sam
     QgsPoint project( double distance, double azimuth, double inclination = 90.0 ) const;
 %Docstring
 Returns a new point which correspond to this point projected by a specified distance
-with specified angles (azimuth and inclination).
+with specified angles (azimuth and inclination), using Cartesian mathematics.
 M value is preserved.
 
 :param distance: distance to project
@@ -296,7 +315,10 @@ M value is preserved.
 
 :return: The point projected. If a 2D point is projected a 3D point will be returned except if
          inclination is 90. A 3D point is always returned if a 3D point is projected.
-         Example:
+
+Example
+-------
+
 .. code-block:: python
 
        p = QgsPoint( 1, 2 ) # 2D point
@@ -347,7 +369,7 @@ M value is preserved.
 
     virtual bool fromWkt( const QString &wkt );
 
-    virtual QByteArray asWkb() const;
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags = 0 ) const;
 
     virtual QString asWkt( int precision = 17 ) const;
 
@@ -355,9 +377,11 @@ M value is preserved.
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
-    virtual QString asJson( int precision = 17 ) const;
+    virtual QString asKml( int precision = 17 ) const;
 
     virtual void draw( QPainter &p ) const;
+
+    virtual QPainterPath asQPainterPath() const;
 
     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException );
 

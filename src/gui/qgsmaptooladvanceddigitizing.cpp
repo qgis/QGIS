@@ -25,6 +25,7 @@ QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas
   : QgsMapToolEdit( canvas )
   , mCadDockWidget( cadDockWidget )
 {
+  Q_ASSERT( cadDockWidget );
   connect( canvas, &QgsMapCanvas::currentLayerChanged, this, &QgsMapToolAdvancedDigitizing::onCurrentLayerChanged );
 }
 
@@ -143,7 +144,7 @@ void QgsMapToolAdvancedDigitizing::deactivate()
 
 void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPointXY &point )
 {
-  Q_UNUSED( point );
+  Q_UNUSED( point )
   QMouseEvent *ev = new QMouseEvent( QEvent::MouseMove, mCanvas->mouseLastXY(), Qt::NoButton, Qt::NoButton, Qt::NoModifier );
   qApp->postEvent( mCanvas->viewport(), ev );  // event queue will delete the event when processed
 }

@@ -256,6 +256,7 @@ of this model.
       RoleAlgorithmName,
       RoleAlgorithmShortDescription,
       RoleAlgorithmTags,
+      RoleProviderFlags,
     };
 
     QgsProcessingToolboxModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0,
@@ -265,7 +266,7 @@ Constructor for QgsProcessingToolboxModel, with the given ``parent`` object.
 
 If ``registry`` is specified then the model will show providers and algorithms
 from the given registry. If no registry is specified, then the processing
-registry attached to QgsApplication.processingRegistry() will be used
+registry attached to :py:func:`QgsApplication.processingRegistry()` will be used
 by the model.
 
 If ``recentLog`` is specified then it will be used to create a "Recently used" top
@@ -393,7 +394,7 @@ Constructor for QgsProcessingToolboxProxyModel, with the given ``parent`` object
 
 If ``registry`` is specified then the model will show providers and algorithms
 from the given registry. If no registry is specified, then the processing
-registry attached to QgsApplication.processingRegistry() will be used
+registry attached to :py:func:`QgsApplication.processingRegistry()` will be used
 by the model.
 
 If ``recentLog`` is specified then it will be used to create a "Recently used" top
@@ -404,6 +405,7 @@ level group containing recently used algorithms.
 %Docstring
 Returns the underlying source Processing toolbox model.
 %End
+
 
     void setFilters( QgsProcessingToolboxProxyModel::Filters filters );
 %Docstring
@@ -445,6 +447,8 @@ Returns the current filter string, if set.
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 
     virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
 
 
 };

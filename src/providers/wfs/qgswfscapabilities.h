@@ -108,10 +108,23 @@ class QgsWfsCapabilities : public QgsWfsRequest
 
       void clear();
       QString addPrefixIfNeeded( const QString &name ) const;
+      QString getNamespaceForTypename( const QString &name ) const;
+      QString getNamespaceParameterValue( const QString &WFSVersion, const QString &typeName ) const;
+    };
+
+    //! Application level error
+    enum class ApplicationLevelError
+    {
+      NoError,
+      XmlError,
+      VersionNotSupported,
     };
 
     //! Returns parsed capabilities - requestCapabilities() must be called before
     const Capabilities &capabilities() const { return mCaps; }
+
+    //! Returns application level error
+    ApplicationLevelError applicationLevelError() const { return mAppLevelError; }
 
   signals:
     //! emitted when the capabilities have been fully parsed, or an error occurred */
@@ -128,6 +141,8 @@ class QgsWfsCapabilities : public QgsWfsRequest
     Capabilities mCaps;
 
     QgsDataProvider::ProviderOptions mOptions;
+
+    ApplicationLevelError mAppLevelError = ApplicationLevelError::NoError;
 
     //! Takes <Operations> element and updates the capabilities
     void parseSupportedOperations( const QDomElement &operationsElem,

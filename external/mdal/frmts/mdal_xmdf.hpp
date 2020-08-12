@@ -31,7 +31,7 @@ namespace MDAL
    *   2D arrays (time, x) for scalar datasets
    *   2D arrays (time, active) for active flags
    */
-  class XmdfDataset: public Dataset
+  class XmdfDataset: public Dataset2D
   {
     public:
       XmdfDataset( DatasetGroup *grp,
@@ -82,8 +82,8 @@ namespace MDAL
       ~DriverXmdf( ) override = default;
       DriverXmdf *create() override;
 
-      bool canRead( const std::string &uri ) override;
-      void load( const std::string &datFile, Mesh *mesh, MDAL_Status *status ) override;
+      bool canReadDatasets( const std::string &uri ) override;
+      void load( const std::string &datFile, Mesh *mesh ) override;
 
     private:
       MDAL::Mesh *mMesh = nullptr;

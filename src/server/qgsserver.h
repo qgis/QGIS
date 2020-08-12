@@ -84,7 +84,7 @@ class SERVER_EXPORT QgsServer
 
     /**
      * Initialize Python
-     * Note: not in Python bindings
+     * \note not available in Python bindings
      */
     void initPython();
 #endif
@@ -124,12 +124,6 @@ class SERVER_EXPORT QgsServer
      */
     static void setupNetworkAccessManager();
 
-    //! Create and return a request handler instance
-    static QgsRequestHandler *createRequestHandler( const QgsServerRequest &request, QgsServerResponse &response );
-
-    // Return the server name
-    static QString &serverName();
-
     // Status
     static QString *sConfigFilePath;
     static QgsCapabilitiesCache *sCapabilitiesCache;
@@ -139,8 +133,6 @@ class SERVER_EXPORT QgsServer
 
     //! service registry
     static QgsServiceRegistry *sServiceRegistry;
-
-    static QgsServerSettings sSettings;
 
     //! cache
     QgsConfigCache *mConfigCache = nullptr;

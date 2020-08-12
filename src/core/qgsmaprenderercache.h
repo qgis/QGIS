@@ -97,6 +97,13 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      */
     void clearCacheImage( const QString &cacheKey );
 
+    /**
+     * Invalidates cached images which relate to the specified map \a layer.
+     *
+     * \since QGIS 3.14
+     */
+    void invalidateCacheForLayer( QgsMapLayer *layer );
+
   private slots:
     //! Remove layer (that emitted the signal) from the cache
     void layerRequestedRepaint();

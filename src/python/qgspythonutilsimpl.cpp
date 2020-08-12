@@ -60,6 +60,7 @@ bool QgsPythonUtilsImpl::checkSystemImports()
   // isolating/loading the initial environ without requiring a virt env, e.g. homebrew or MacPorts installs on Mac
   runString( QStringLiteral( "pyqgstart = os.getenv('PYQGIS_STARTUP')\n" ) );
   runString( QStringLiteral( "if pyqgstart is not None and os.path.exists(pyqgstart):\n    with open(pyqgstart) as f:\n        exec(f.read())\n" ) );
+  runString( QStringLiteral( "if pyqgstart is not None and os.path.exists(os.path.join('%1', pyqgstart)):\n    with open(os.path.join('%1', pyqgstart)) as f:\n        exec(f.read())\n" ).arg( pythonPath() ) );
 
 #ifdef Q_OS_WIN
   runString( "oldhome=None" );
@@ -294,30 +295,38 @@ void QgsPythonUtilsImpl::uninstallErrorHook()
   runString( QStringLiteral( "qgis.utils.uninstallErrorHook()" ) );
 }
 
-bool QgsPythonUtilsImpl::runStringUnsafe( const QString &command, bool single )
+QString QgsPythonUtilsImpl::runStringUnsafe( const QString &command, bool single )
 {
   // acquire global interpreter lock to ensure we are in a consistent state
   PyGILState_STATE gstate;
   gstate = PyGILState_Ensure();
+  QString ret;
 
   // TODO: convert special characters from unicode strings u"…" to \uXXXX
   // so that they're not mangled to utf-8
   // (non-unicode strings can be mangled)
   PyObject *obj = PyRun_String( command.toUtf8().constData(), single ? Py_single_input : Py_file_input, mMainDict, mMainDict );
-  bool res = nullptr == PyErr_Occurred();
+  PyObject *errobj = PyErr_Occurred();
+  if ( nullptr != errobj )
+  {
+    ret = getTraceback();
+  }
   Py_XDECREF( obj );
 
   // we are done calling python API, release global interpreter lock
   PyGILState_Release( gstate );
 
-  return res;
+  return ret;
 }
 
 bool QgsPythonUtilsImpl::runString( const QString &command, QString msgOnError, bool single )
 {
-  bool res = runStringUnsafe( command, single );
-  if ( res )
+  bool res = true;
+  QString traceback = runStringUnsafe( command, single );
+  if ( traceback.isEmpty() )
     return true;
+  else
+    res = false;
 
   if ( msgOnError.isEmpty() )
   {
@@ -327,14 +336,13 @@ bool QgsPythonUtilsImpl::runString( const QString &command, QString msgOnError, 
 
   // TODO: use python implementation
 
-  QString traceback = getTraceback();
   QString path, version;
   evalString( QStringLiteral( "str(sys.path)" ), path );
   evalString( QStringLiteral( "sys.version" ), version );
 
   QString str = "<font color=\"red\">" + msgOnError + "</font><br><pre>\n" + traceback + "\n</pre>"
                 + QObject::tr( "Python version:" ) + "<br>" + version + "<br><br>"
-                + QObject::tr( "QGIS version:" ) + "<br>" + QStringLiteral( "%1 '%2', %3" ).arg( Qgis::QGIS_VERSION, Qgis::QGIS_RELEASE_NAME, Qgis::QGIS_DEV_VERSION ) + "<br><br>"
+                + QObject::tr( "QGIS version:" ) + "<br>" + QStringLiteral( "%1 '%2', %3" ).arg( Qgis::version(), Qgis::releaseName(), Qgis::devVersion() ) + "<br><br>"
                 + QObject::tr( "Python path:" ) + "<br>" + path;
   str.replace( '\n', QLatin1String( "<br>" ) ).replace( QLatin1String( "  " ), QLatin1String( "&nbsp; " ) );
 
@@ -352,10 +360,6 @@ QString QgsPythonUtilsImpl::getTraceback()
 {
 #define TRACEBACK_FETCH_ERROR(what) {errMsg = what; goto done;}
 
-  // acquire global interpreter lock to ensure we are in a consistent state
-  PyGILState_STATE gstate;
-  gstate = PyGILState_Ensure();
-
   QString errMsg;
   QString result;
 
@@ -364,7 +368,7 @@ QString QgsPythonUtilsImpl::getTraceback()
   PyObject *obStringIO = nullptr;
   PyObject *obResult = nullptr;
 
-  PyObject *type, *value, *traceback;
+  PyObject *type = nullptr, *value = nullptr, *traceback = nullptr;
 
   PyErr_Fetch( &type, &value, &traceback );
   PyErr_NormalizeException( &type, &value, &traceback );
@@ -422,9 +426,6 @@ done:
   Py_XDECREF( value );
   Py_XDECREF( traceback );
   Py_XDECREF( type );
-
-  // we are done calling python API, release global interpreter lock
-  PyGILState_Release( gstate );
 
   return result;
 }

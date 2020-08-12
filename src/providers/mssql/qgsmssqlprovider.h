@@ -25,9 +25,12 @@
 
 #include <QStringList>
 #include <QFile>
+#include <QVariantMap>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
+
+#include "qgsprovidermetadata.h"
 
 class QgsFeature;
 class QgsField;
@@ -45,11 +48,15 @@ class QgsMssqlFeatureIterator;
 \brief Data provider for mssql server.
 *
 */
-class QgsMssqlProvider : public QgsVectorDataProvider
+class QgsMssqlProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
   public:
+
+    static const QString MSSQL_PROVIDER_KEY;
+    static const QString MSSQL_PROVIDER_DESCRIPTION;
+
     explicit QgsMssqlProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
     ~QgsMssqlProvider() override;
@@ -101,7 +108,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
 
-    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
     bool deleteFeatures( const QgsFeatureIds &id ) override;
 
@@ -122,6 +129,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     //! Convert values to quoted values for database work *
     static QString quotedValue( const QVariant &value );
+    static QString quotedIdentifier( const QString &value );
 
     QString defaultValueClause( int fieldId ) const override;
 
@@ -220,5 +228,43 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     static int sConnectionId;
 };
+
+class QgsMssqlProviderMetadata final: public QgsProviderMetadata
+{
+  public:
+    QgsMssqlProviderMetadata();
+    QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
+    int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
+    QString loadStyle( const QString &uri, QString &errCause ) override;
+    bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
+                    const QString &styleName, const QString &styleDescription,
+                    const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
+
+    QgsVectorLayerExporter::ExportError createEmptyLayer(
+      const QString &uri,
+      const QgsFields &fields,
+      QgsWkbTypes::Type wkbType,
+      const QgsCoordinateReferenceSystem &srs,
+      bool overwrite,
+      QMap<int, int> &oldToNewAttrIdxMap,
+      QString &errorMessage,
+      const QMap<QString, QVariant> *options ) override;
+    QgsMssqlProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    virtual QList< QgsDataItemProvider * > dataItemProviders() const override;
+
+    // Connections API
+    QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &name ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) override;
+    void deleteConnection( const QString &name ) override;
+    void saveConnection( const QgsAbstractProviderConnection *createConnection, const QString &name ) override;
+
+    // Data source URI API
+    QVariantMap decodeUri( const QString &uri ) override;
+    QString encodeUri( const QVariantMap &parts ) override;
+
+};
+
+
 
 #endif // QGSMSSQLPROVIDER_H

@@ -108,6 +108,13 @@ being shown.
 .. versionadded:: 3.6
 %End
 
+    virtual void setMasterLayout( QgsMasterLayoutInterface *masterLayout );
+%Docstring
+Sets the master layout associated with the item.
+
+.. versionadded:: 3.10
+%End
+
   protected:
 
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property );
@@ -182,6 +189,20 @@ Determines if the frame of the group box shall be shown
     void setItem( QgsLayoutItem *item );
 %Docstring
 Sets the layout item
+%End
+
+    void setMasterLayout( QgsMasterLayoutInterface *masterLayout );
+%Docstring
+Sets the master layout associated with the item.
+
+.. versionadded:: 3.10
+%End
+
+    void updateVariables();
+%Docstring
+Updates the variables widget, refreshing the values of variables shown.
+
+.. versionadded:: 3.10
 %End
 
   protected slots:

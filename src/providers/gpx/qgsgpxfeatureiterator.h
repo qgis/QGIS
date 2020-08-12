@@ -23,7 +23,7 @@
 class QgsGPXProvider;
 
 
-class QgsGPXFeatureSource : public QgsAbstractFeatureSource
+class QgsGPXFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsGPXFeatureSource( const QgsGPXProvider *p );
@@ -43,7 +43,7 @@ class QgsGPXFeatureSource : public QgsAbstractFeatureSource
 };
 
 
-class QgsGPXFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsGPXFeatureSource>
+class QgsGPXFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsGPXFeatureSource>
 {
   public:
     QgsGPXFeatureIterator( QgsGPXFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );

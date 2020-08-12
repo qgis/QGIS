@@ -143,13 +143,66 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
      */
     void setLayerType( QgsMapLayerType type );
 
+    /**
+     * Sets a filter to hide data items based on QgsDataItem::providerKey() associated with the item.
+     *
+     * By default browser model shows all items from all available data item providers and few special
+     * items (e.g. Favorites).
+     * To customize the behavior, set the filter to not load certain data items.
+     * The items that are not based on data item providers have prefix "special:", for example
+     * "special:Favorites", "special:Home", "PostGIS", "MSSQL"
+     *
+     * All items created by the providers listed in filter are hidden from the layer tree.
+     * This filter is always evaluated.
+     *
+     * \param hiddenItemsFilter a list of data provider prefixes that will be hidden.
+     *
+     * \since QGIS 3.12
+     */
+    void setHiddenDataItemProviderKeyFilter( const QStringList &hiddenItemsFilter );
+
+    /**
+     * Sets a filter to show data items based on QgsDataItem::providerKey() associated with the item.
+     *
+     * By default browser model shows all items from all available data item providers and few special
+     * items (e.g. Favorites).
+     * To customize the behavior, set the filter to load only certain data items.
+     * The items that are not based on data item providers have prefix "special:", for example
+     * "special:Favorites", "special:Home", "PostGIS", "MSSQL"
+     *
+     * Only the items created by the providers listed in filter are shown in the layer tree.
+     * This filter is always evaluated.
+     *
+     * \param shownItemsFilter a list of data provider prefixes that will be hidden.
+     *
+     * \since QGIS 3.14
+     */
+    void setShownDataItemProviderKeyFilter( const QStringList &shownItemsFilter );
+
+    /**
+     * Returns TRUE if layers must be shown, this flag is TRUE by default.
+     *
+     * \see setShowLayers()
+     * \since QGIS 3.14
+     */
+    bool showLayers() const;
+
+    /**
+     * Sets show layers to \a showLayers
+     *
+     * \see showLayers()
+     * \since QGIS 3.14
+     */
+    void setShowLayers( bool showLayers );
+
   protected:
 
     // It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
-
+    QStringList mHiddenDataItemsKeys;
+    QStringList mShownDataItemsKeys;
     QgsBrowserModel *mModel = nullptr;
     QString mFilter; //filter string provided
     QVector<QRegExp> mREList; //list of filters, separated by "|"
@@ -157,6 +210,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     Qt::CaseSensitivity mCaseSensitivity = Qt::CaseInsensitive;
 
     bool mFilterByLayerType = false;
+    bool mShowLayers = true;
     QgsMapLayerType mLayerType = QgsMapLayerType::VectorLayer;
 
     //! Update filter
@@ -168,11 +222,23 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     //! Returns TRUE if at least one ancestor is accepted by filter
     bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const;
 
-    //! Returns TRUE if at least one descendant s accepted by filter
+    //! Returns TRUE if at least one descendant is accepted by filter
     bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const;
 
     //! Filter accepts item name
     bool filterAcceptsItem( const QModelIndex &sourceIndex ) const;
+
+    //! Filter accepts provider key.
+    bool filterAcceptsProviderKey( const QModelIndex &sourceIndex ) const;
+
+    //! Root item accepts provider key.
+    bool filterRootAcceptsProviderKey( const QModelIndex &sourceIndex ) const;
+
+
+
+    // QAbstractItemModel interface
+  public:
+    bool hasChildren( const QModelIndex &parent = QModelIndex() ) const override;
 };
 
 #endif // QGSBROWSERPROXYMODEL_H

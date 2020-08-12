@@ -202,11 +202,12 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /**
      * Sets whether a set to null (clear) option is shown in the button's drop-down menu.
      * \param showNull set to TRUE to show a null option
+     * \param nullString translated string to use for the null option. If not set, a default "Clear Color" string will be used.
      * \see showNull()
      * \see isNull()
      * \since QGIS 2.16
      */
-    void setShowNull( bool showNull );
+    void setShowNull( bool showNull, const QString &nullString = QString() );
 
     /**
      * Returns whether the set to null (clear) option is shown in the button's drop-down menu.
@@ -362,6 +363,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * Sets color to null.
      * \see setToDefaultColor()
      * \see setToNoColor()
+     * \see cleared()
      * \since QGIS 2.16
      */
     void setToNull();
@@ -392,6 +394,14 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \see behavior
      */
     void colorClicked( const QColor &color );
+
+    /**
+     * Emitted when the color is cleared (set to null).
+     *
+     * \see setToNull()
+     * \since QGIS 3.12
+     */
+    void cleared();
 
     /**
      * Emitted when the color is unlinked, e.g. when it was previously set to link
@@ -453,10 +463,6 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
   private:
 
-
-    QColor sampleColor( QPoint point ) const;
-
-    static QScreen *findScreenAt( QPoint pos );
     Behavior mBehavior = QgsColorButton::ShowDialog;
     QString mColorDialogTitle;
     QColor mColor;
@@ -476,6 +482,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     bool mShowNoColorOption = false;
     QString mNoColorString;
     bool mShowNull = false;
+    QString mNullColorString;
 
     QPoint mDragStartPosition;
     bool mPickingColor = false;

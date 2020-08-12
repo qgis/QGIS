@@ -274,7 +274,12 @@ QgsFields::iterator QgsFields::end()
 
 QIcon QgsFields::iconForField( int fieldIdx ) const
 {
-  switch ( d->fields.at( fieldIdx ).field.type() )
+  return QgsFields::iconForFieldType( d->fields.at( fieldIdx ).field.type() );
+}
+
+QIcon QgsFields::iconForFieldType( const QVariant::Type &type )
+{
+  switch ( type )
   {
     case QVariant::Bool:
       return QgsApplication::getThemeIcon( "/mIconFieldBool.svg" );
@@ -350,8 +355,10 @@ int QgsFields::lookupField( const QString &fieldName ) const
 
 QgsAttributeList QgsFields::allAttributesList() const
 {
+  const int count = d->fields.count();
   QgsAttributeList lst;
-  for ( int i = 0; i < d->fields.count(); ++i )
+  lst.reserve( count );
+  for ( int i = 0; i < count; ++i )
     lst.append( i );
   return lst;
 }

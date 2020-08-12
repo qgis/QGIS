@@ -4,7 +4,6 @@
 __author__ = 'Eric Lemoine'
 __date__ = '11/09/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-__revision__ = '$Format:%H$'
 
 import os
 

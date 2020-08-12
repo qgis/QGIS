@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "polygon_rule_based",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::32613" } },
+"features": [
+{ "type": "Feature", "properties": { "pkuid": 1, "ftype": null, "text": "Polygon" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 606835.983981693396345, 4826969.782608695328236 ], [ 606880.675057208281942, 4823387.048054919578135 ], [ 612184.016018306603655, 4823327.459954232908785 ], [ 612161.670480549219064, 4826984.679633866995573 ], [ 606835.983981693396345, 4826969.782608695328236 ] ] ] } }
+]
+}

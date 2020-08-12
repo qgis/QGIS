@@ -57,6 +57,8 @@ class QgsGeometryCheckerSetupTab : public QWidget
   private slots:
     void runChecks();
     void updateLayers();
+    void selectAllLayers();
+    void deselectAllLayers();
     void validateInput();
     void selectOutputDirectory();
     void showCancelFeedback();

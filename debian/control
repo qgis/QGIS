@@ -72,7 +72,6 @@ Build-Depends:
  git,
  doxygen,
  graphviz,
- txt2tags,
  xvfb,
  xauth,
  xfonts-base,
@@ -115,9 +114,9 @@ Description: Geographic Information System (GIS)
 Package: qgis-common
 Architecture: all
 Depends:
-  libjs-jquery,
-  libjs-leaflet,
-  ${misc:Depends}
+ libjs-jquery,
+ libjs-leaflet,
+ ${misc:Depends}
 Description: QGIS - architecture-independent data
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -402,7 +401,6 @@ Architecture: all
 Section: python
 Depends:
  gdal-bin,
- python-gdal,
  python3-gdal,
  python3-matplotlib,
  libqgis-customwidgets (>= ${source:Version}),

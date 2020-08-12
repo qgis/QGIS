@@ -20,8 +20,12 @@
 
 # add some __repr__ methods to processing classes
 def processing_source_repr(self):
-    return "<QgsProcessingFeatureSourceDefinition {{'source':{}, 'selectedFeaturesOnly': {}}}>".format(
-        self.source.staticValue(), self.selectedFeaturesOnly)
+    if self.featureLimit != -1:
+        return "<QgsProcessingFeatureSourceDefinition {{'source':{}, 'selectedFeaturesOnly': {}, 'featureLimit': {}}}>".format(
+            self.source.staticValue(), self.selectedFeaturesOnly, self.featureLimit)
+    else:
+        return "<QgsProcessingFeatureSourceDefinition {{'source':{}, 'selectedFeaturesOnly': {}}}>".format(
+            self.source.staticValue(), self.selectedFeaturesOnly)
 
 
 def processing_output_layer_repr(self):

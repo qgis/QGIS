@@ -27,6 +27,7 @@ class QgsProperty;
 class QgsReadWriteContext;
 class QgsRenderContext;
 class QgsSizeScaleTransformer;
+class QgsLineSymbol;
 
 
 /**
@@ -44,7 +45,9 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     /**
      * Constructor for QgsDataDefinedSizeLegend.
      */
-    QgsDataDefinedSizeLegend() = default;
+    QgsDataDefinedSizeLegend();
+
+    ~QgsDataDefinedSizeLegend();
 
     //! Copy constructor
     QgsDataDefinedSizeLegend( const QgsDataDefinedSizeLegend &other );
@@ -82,6 +85,23 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     void setSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
     //! Returns marker symbol that will be used to draw markers in legend
     QgsMarkerSymbol *symbol() const;
+
+    /**
+     * Sets the line \a symbol that will be used to draw callout lines in legend.
+     *
+     * Ownership of \a symbol is transferred.
+     *
+     * \see lineSymbol()
+     * \since QGIS 3.14
+     */
+    void setLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+    * Returns the line symbol that will be used to draw callout lines in legend.
+    * \see setLineSymbol()
+    * \since QGIS 3.14
+    */
+    QgsLineSymbol *lineSymbol() const;
 
     //! Sets transformer for scaling of symbol sizes. Takes ownership of the object. Accepts NULLPTR to set no transformer.
     void setSizeScaleTransformer( QgsSizeScaleTransformer *transformer SIP_TRANSFER );
@@ -131,7 +151,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
      * If the painter in context is NULLPTR, it only does size calculation without actual rendering.
      * Does nothing if legend is not configured as collapsed.
      */
-    void drawCollapsedLegend( QgsRenderContext &context, QSize *outputSize SIP_OUT = nullptr, int *labelXOffset SIP_OUT = nullptr ) const;
+    void drawCollapsedLegend( QgsRenderContext &context, QSizeF *outputSize SIP_OUT = nullptr, double *labelXOffset SIP_OUT = nullptr ) const;
 
     //! Returns output image that would be shown in the legend. Returns invalid image if legend is not configured as collapsed.
     QImage collapsedLegendImage( QgsRenderContext &context, const QColor &backgroundColor = Qt::transparent, double paddingMM = 1 ) const;
@@ -147,6 +167,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     QString mTitleLabel;  //!< Title label for the following size-based item(s)
     QList< SizeClass > mSizeClasses;  //!< List of classes: symbol size (in whatever units symbol uses) + label
     std::unique_ptr<QgsMarkerSymbol> mSymbol;
+    std::unique_ptr<QgsLineSymbol> mLineSymbol;
     std::unique_ptr<QgsSizeScaleTransformer> mSizeScaleTransformer;  //!< Optional transformer for classes
     VerticalAlignment mVAlign = AlignBottom;
     QFont mFont;

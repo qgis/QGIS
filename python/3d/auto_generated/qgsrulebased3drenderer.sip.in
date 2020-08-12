@@ -39,7 +39,7 @@ Creates an instance of a 3D renderer based on a DOM element with renderer config
 };
 
 
-class QgsRuleBased3DRenderer : QgsAbstract3DRenderer
+class QgsRuleBased3DRenderer : QgsAbstractVectorLayer3DRenderer
 {
 %Docstring
 Rule-based 3D renderer.
@@ -60,7 +60,7 @@ Similar to rule-based 2D renderer and rule-based labeling, it allows specificati
   public:
 
     typedef QList<QgsRuleBased3DRenderer::Rule *> RuleList;
-    typedef QMap<const QgsRuleBased3DRenderer::Rule *, QgsFeature3DHandler *> RuleToHandlerMap;
+    typedef QHash<const QgsRuleBased3DRenderer::Rule *, QgsFeature3DHandler *> RuleToHandlerMap;
 
     class Rule
 {
@@ -244,15 +244,6 @@ Construct renderer with the given root rule (takes ownership)
 %End
     ~QgsRuleBased3DRenderer();
 
-    void setLayer( QgsVectorLayer *layer );
-%Docstring
-Sets vector layer associated with the renderer
-%End
-    QgsVectorLayer *layer() const;
-%Docstring
-Returns vector layer associated with the renderer
-%End
-
     QgsRuleBased3DRenderer::Rule *rootRule();
 %Docstring
 Returns pointer to the root rule
@@ -265,8 +256,6 @@ Returns pointer to the root rule
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
-
-    virtual void resolveReferences( const QgsProject &project );
 
 
 };

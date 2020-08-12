@@ -35,7 +35,7 @@ class QgsMapToolCircle2TangentsPoint: public QgsMapToolAddCircle
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
   public slots:
-    void radiusSpinBoxChanged( int radius );
+    void radiusSpinBoxChanged( double radius );
 
   private:
     //! Compute 4 possible centers
@@ -46,9 +46,9 @@ class QgsMapToolCircle2TangentsPoint: public QgsMapToolAddCircle
     //! delete the spin box to enter the radius of the circle, if it exists
     void deleteRadiusSpinBox();
 
-    QSpinBox *mRadiusSpinBox = nullptr;
+    QDoubleSpinBox *mRadiusSpinBox = nullptr;
 
-    int mRadius = 0;
+    double mRadius = 0.0;
     QVector<QgsPoint> mCenters;
     QVector<QgsGeometryRubberBand *> mRubberBands;
 };

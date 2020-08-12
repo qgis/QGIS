@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import re
 
@@ -36,7 +32,8 @@ from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm,
                        QgsProcessingContext,
                        QgsProcessingFeedback,
-                       QgsProviderRegistry)
+                       QgsProviderRegistry,
+                       QgsDataSourceUri)
 
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -67,7 +64,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
         return GdalAlgorithmDialog(self, parent=parent)
 
     def flags(self):
-        return QgsProcessingAlgorithm.FlagSupportsBatch # cannot cancel!
+        return QgsProcessingAlgorithm.FlagSupportsBatch  # cannot cancel!
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         return None
@@ -92,16 +89,18 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
                 # and extract selection if required
                 ogr_data_path = self.parameterAsCompatibleSourceLayerPath(parameters, parameter_name, context,
                                                                           QgsVectorFileWriter.supportedFormatExtensions(),
+                                                                          QgsVectorFileWriter.supportedFormatExtensions()[0],
                                                                           feedback=feedback)
                 ogr_layer_name = GdalUtils.ogrLayerName(ogr_data_path)
             else:
-                #not executing - don't waste time converting incompatible sources, just return dummy strings
-                #for the command preview (since the source isn't compatible with OGR, it has no meaning anyway and can't
-                #be run directly in the command line)
+                # not executing - don't waste time converting incompatible sources, just return dummy strings
+                # for the command preview (since the source isn't compatible with OGR, it has no meaning anyway and can't
+                # be run directly in the command line)
                 ogr_data_path = 'path_to_data_file'
                 ogr_layer_name = 'layer_name'
         elif input_layer.dataProvider().name() == 'ogr':
-            if executing and isinstance(parameters[parameter_name], QgsProcessingFeatureSourceDefinition) and parameters[parameter_name].selectedFeaturesOnly:
+            if executing and (isinstance(parameters[parameter_name], QgsProcessingFeatureSourceDefinition) and parameters[parameter_name].selectedFeaturesOnly) \
+                    or input_layer.subsetString():
                 # parameter is a vector layer, with OGR data provider
                 # so extract selection if required
                 ogr_data_path = self.parameterAsCompatibleSourceLayerPath(parameters, parameter_name, context,
@@ -114,11 +113,16 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
                 else:
                     ogr_layer_name = GdalUtils.ogrLayerName(ogr_data_path)
             else:
-                #either not using the selection, or
-                #not executing - don't worry about 'selected features only' handling. It has no meaning
-                #for the command line preview since it has no meaning outside of a QGIS session!
+                # either not using the selection, or
+                # not executing - don't worry about 'selected features only' handling. It has no meaning
+                # for the command line preview since it has no meaning outside of a QGIS session!
                 ogr_data_path = GdalUtils.ogrConnectionStringAndFormatFromLayer(input_layer)[0]
                 ogr_layer_name = GdalUtils.ogrLayerName(input_layer.dataProvider().dataSourceUri())
+        elif input_layer.dataProvider().name().lower() == 'wfs':
+            uri = QgsDataSourceUri(input_layer.source())
+            baseUrl = uri.param('url').split('?')[0]
+            ogr_data_path = "WFS:{}".format(baseUrl)
+            ogr_layer_name = uri.param('typename')
         else:
             # vector layer, but not OGR - get OGR compatible path
             # TODO - handle "selected features only" mode!!

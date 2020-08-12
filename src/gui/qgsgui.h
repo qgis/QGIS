@@ -35,6 +35,10 @@ class QgsProcessingGuiRegistry;
 class QgsProcessingRecentAlgorithmLog;
 class QgsWindowManagerInterface;
 class QgsDataItemGuiProviderRegistry;
+class QgsProviderGuiRegistry;
+class QgsProjectStorageGuiRegistry;
+class QgsNumericFormatGuiRegistry;
+class QgsMessageBar;
 
 /**
  * \ingroup gui
@@ -42,9 +46,21 @@ class QgsDataItemGuiProviderRegistry;
  * related to GUI classes.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsGui
+class GUI_EXPORT QgsGui : public QObject
 {
+    Q_OBJECT
+
   public:
+
+    /**
+     * Defines the behavior to use when setting the CRS for a newly created project.
+     */
+    enum ProjectCrsBehavior
+    {
+      UseCrsOfFirstLayerAdded = 1, //!< Set the project CRS to the CRS of the first layer added to a new project
+      UsePresetCrs = 2, //!< Always set new projects to use a preset default CRS
+    };
+    Q_ENUM( ProjectCrsBehavior )
 
     //! QgsGui cannot be copied
     QgsGui( const QgsGui &other ) = delete;
@@ -101,6 +117,12 @@ class GUI_EXPORT QgsGui
     static QgsProcessingGuiRegistry *processingGuiRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the global numeric format gui registry, used for registering the GUI widgets associated with QgsNumericFormats.
+     * \since QGIS 3.12
+     */
+    static QgsNumericFormatGuiRegistry *numericFormatGuiRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Returns the global processing recent algorithm log, used for tracking recently used processing algorithms.
      * \since QGIS 3.4
      */
@@ -112,6 +134,18 @@ class GUI_EXPORT QgsGui
      * \since QGIS 3.6
      */
     static QgsDataItemGuiProviderRegistry *dataItemGuiProviderRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the global GUI-related project storage registry
+     * \since QGIS 3.10
+     */
+    static QgsProjectStorageGuiRegistry *projectStorageGuiRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the registry of GUI-related components of data providers
+     * \since QGIS 3.10
+     */
+    static QgsProviderGuiRegistry *providerGuiRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Register the widget to allow its position to be automatically saved and restored when open and closed.
@@ -152,10 +186,36 @@ class GUI_EXPORT QgsGui
 
     ~QgsGui();
 
+    /**
+     * Samples the color on screen at the specified global \a point (pixel).
+     *
+     * \since QGIS 3.10
+     */
+    static QColor sampleColor( QPoint point );
+
+    /**
+     * Returns the screen at the given global \a point (pixel).
+     *
+     * \since QGIS 3.10
+     */
+    static QScreen *findScreenAt( QPoint point );
+
+    /**
+     * Returns true if python macros are currently allowed to be run
+     * If the global option is to ask user, a modal dialog will be shown
+     * \param lambda a pointer to a lambda method. If specified, the dialog is not modal,
+     * a message is shown with a button to enable macro.
+     * The lambda will be run either if macros are currently allowed or if the user accepts the message.
+     * The \a messageBar must be given in such case.
+     * \param messageBar the message bar must be provided if a lambda method is used.
+     */
+    static bool pythonMacroAllowed( void ( *lambda )() = nullptr, QgsMessageBar *messageBar = nullptr ) SIP_SKIP;
+
   private:
 
     QgsGui();
 
+    QgsProviderGuiRegistry *mProviderGuiRegistry = nullptr;
     QgsWidgetStateHelper *mWidgetStateHelper = nullptr;
     QgsNative *mNative = nullptr;
     QgsEditorWidgetRegistry *mEditorWidgetRegistry = nullptr;
@@ -166,7 +226,9 @@ class GUI_EXPORT QgsGui
     QgsLayoutItemGuiRegistry *mLayoutItemGuiRegistry = nullptr;
     QgsProcessingGuiRegistry *mProcessingGuiRegistry = nullptr;
     QgsProcessingRecentAlgorithmLog *mProcessingRecentAlgorithmLog = nullptr;
+    QgsNumericFormatGuiRegistry *mNumericFormatGuiRegistry = nullptr;
     QgsDataItemGuiProviderRegistry *mDataItemGuiProviderRegistry = nullptr;
+    QgsProjectStorageGuiRegistry *mProjectStorageGuiRegistry = nullptr;
     std::unique_ptr< QgsWindowManagerInterface > mWindowManager;
 
 #ifdef SIP_RUN

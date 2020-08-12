@@ -108,6 +108,7 @@ QgsFeatureList QgsReverseLineDirectionAlgorithm ::processFeature( const QgsFeatu
       std::unique_ptr< QgsAbstractGeometry > dest( geom.constGet()->createEmptyWithSameType() );
       const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() );
       QgsGeometryCollection *destCollection = qgsgeometry_cast< QgsGeometryCollection * >( dest.get() );
+      destCollection->reserve( collection->numGeometries() );
       for ( int i = 0; i < collection->numGeometries(); ++i )
       {
         const QgsCurve *curve = qgsgeometry_cast< const QgsCurve *>( collection->geometryN( i ) );

@@ -25,8 +25,6 @@ to the core QGIS c++ Processing classes.
 __author__ = 'Nathan Woodrow'
 __date__ = 'November 2018'
 __copyright__ = '(C) 2018, Nathan Woodrow'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from .algfactory import ProcessingAlgFactory
 

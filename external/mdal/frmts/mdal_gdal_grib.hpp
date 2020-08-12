@@ -26,8 +26,10 @@ namespace MDAL
     private:
       bool parseBandInfo( const MDAL::GdalDataset *cfGDALDataset,
                           const metadata_hash &metadata, std::string &band_name,
-                          double *time, bool *is_vector, bool *is_x
+                          RelativeTimestamp *time, bool *is_vector, bool *is_x
                         ) override;
+
+      MDAL::DateTime referenceTime() const override;
 
       /**
        * ref time (UTC sec)
@@ -36,7 +38,7 @@ namespace MDAL
        * some GRIB files do not use FORECAST_SEC, but VALID_TIME
        * metadata, so ref time varies with dataset-to-dataset
        */
-      double mRefTime;
+      DateTime mRefTime;
   };
 
 } // namespace MDAL

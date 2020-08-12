@@ -368,7 +368,7 @@
                     </property>
                     <property name="url" stdset="0">
                      <url>
-                      <string>about:blank</string>
+                      <string notr="true">about:blank</string>
                      </url>
                     </property>
                    </widget>
@@ -501,6 +501,32 @@
                    </property>
                    <property name="text">
                     <string>Reinstall Plugin</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="buttonInstallExperimental">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>160</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>Install, reinstall or upgrade the experimental version of selected plugin</string>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">background-color: #EEEEBB</string>
+                   </property>
+                   <property name="text">
+                    <string>Reinstall Experimental</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../../images/images.qrc">
+                     <normaloff>:/images/themes/default/pluginExperimental.png</normaloff>:/images/themes/default/pluginExperimental.png</iconset>
                    </property>
                   </widget>
                  </item>
@@ -996,7 +1022,7 @@ p, li { white-space: pre-wrap; }
                   <item>
                    <widget class="QGroupBox" name="groupBox">
                     <property name="title">
-                     <string>Plugin repositories</string>
+                     <string>Plugin Repositories</string>
                     </property>
                     <property name="flat">
                      <bool>true</bool>

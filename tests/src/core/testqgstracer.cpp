@@ -69,7 +69,7 @@ static QgsFeature make_feature( const QString &wkt )
 
 static QgsVectorLayer *make_layer( const QStringList &wkts )
 {
-  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:4326" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
   Q_ASSERT( vl->isValid() );
 
   vl->startEditing();

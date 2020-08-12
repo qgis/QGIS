@@ -21,10 +21,6 @@ __author__ = 'Mathieu Pellerin'
 __date__ = 'October 2016'
 __copyright__ = '(C) 2012, Mathieu Pellerin'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (QgsDataSourceUri,
                        QgsFeatureSink,
                        QgsProcessingAlgorithm,
@@ -36,10 +32,12 @@ from qgis.core import (QgsDataSourceUri,
                        QgsProcessingParameterField,
                        QgsProcessingParameterString,
                        QgsProcessingParameterBoolean,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsProviderRegistry,
+                       QgsProviderConnectionException,
+                       QgsAbstractDatabaseProviderConnection)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import spatialite
 
 
 class ImportIntoSpatialite(QgisAlgorithm):
@@ -102,15 +100,21 @@ class ImportIntoSpatialite(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         database = self.parameterAsVectorLayer(parameters, self.DATABASE, context)
+
         databaseuri = database.dataProvider().dataSourceUri()
         uri = QgsDataSourceUri(databaseuri)
-        if uri.database() is '':
+        if uri.database() == '':
             if '|layername' in databaseuri:
                 databaseuri = databaseuri[:databaseuri.find('|layername')]
             elif '|layerid' in databaseuri:
                 databaseuri = databaseuri[:databaseuri.find('|layerid')]
             uri = QgsDataSourceUri('dbname=\'%s\'' % (databaseuri))
-        db = spatialite.GeoDB(uri)
+
+        try:
+            md = QgsProviderRegistry.instance().providerMetadata('spatialite')
+            conn = md.createConnection(uri.uri(), {})
+        except QgsProviderConnectionException:
+            raise QgsProcessingException(self.tr('Could not connect to {}').format(uri.uri()))
 
         overwrite = self.parameterAsBoolean(parameters, self.OVERWRITE, context)
         createIndex = self.parameterAsBoolean(parameters, self.CREATEINDEX, context)
@@ -152,7 +156,6 @@ class ImportIntoSpatialite(QgisAlgorithm):
         if source.wkbType() == QgsWkbTypes.NoGeometry:
             geomColumn = None
 
-        uri = db.uri
         uri.setDataSource('', table, geomColumn, '', primaryKeyField)
 
         if encoding:
@@ -182,6 +185,11 @@ class ImportIntoSpatialite(QgisAlgorithm):
                 self.tr('Error importing to Spatialite\n{0}').format(exporter.errorMessage()))
 
         if geomColumn and createIndex:
-            db.create_spatial_index(table, geomColumn)
+            try:
+                options = QgsAbstractDatabaseProviderConnection.SpatialIndexOptions()
+                options.geometryColumnName = geomColumn
+                conn.createSpatialIndex('', table, options)
+            except QgsProviderConnectionException as e:
+                raise QgsProcessingException(self.tr('Error creating spatial index:\n{0}').format(e))
 
         return {}

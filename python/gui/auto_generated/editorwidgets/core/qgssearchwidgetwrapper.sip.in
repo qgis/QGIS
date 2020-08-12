@@ -188,6 +188,13 @@ the filter expression. Is a Null String if none.
 .. versionadded:: 3.0
 %End
 
+    int fieldIndex() const;
+%Docstring
+Returns the field index
+
+.. versionadded:: 3.10
+%End
+
   public slots:
 
     virtual void clearWidget();

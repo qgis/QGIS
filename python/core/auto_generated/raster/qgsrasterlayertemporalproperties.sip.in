@@ -1,0 +1,121 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterlayertemporalproperties.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsRasterLayerTemporalProperties : QgsMapLayerTemporalProperties
+{
+%Docstring
+Implementation of map layer temporal properties for raster layers.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsrasterlayertemporalproperties.h"
+%End
+  public:
+
+    QgsRasterLayerTemporalProperties( QObject *parent /TransferThis/ = 0, bool enabled = false );
+%Docstring
+Constructor for QgsRasterLayerTemporalProperties, with the specified ``parent`` object.
+
+The ``enabled`` argument specifies whether the temporal properties are initially enabled or not (see :py:func:`~QgsRasterLayerTemporalProperties.isActive`).
+%End
+
+    virtual bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const;
+
+
+    enum TemporalMode
+    {
+      ModeFixedTemporalRange,
+      ModeTemporalRangeFromDataProvider,
+    };
+
+    TemporalMode mode() const;
+%Docstring
+Returns the temporal properties mode.
+
+.. seealso:: :py:func:`setMode`
+%End
+
+    void setMode( TemporalMode mode );
+%Docstring
+Sets the temporal properties ``mode``.
+
+.. seealso:: :py:func:`mode`
+%End
+
+    virtual QgsTemporalProperty::Flags flags() const;
+
+%Docstring
+Returns flags associated to the temporal property.
+%End
+
+    QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod intervalHandlingMethod() const;
+%Docstring
+Returns the desired method to use when resolving a temporal interval to matching
+layers or bands in the data provider.
+
+.. seealso:: :py:func:`setIntervalHandlingMethod`
+%End
+
+    void setIntervalHandlingMethod( QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod method );
+%Docstring
+Sets the desired ``method`` to use when resolving a temporal interval to matching
+layers or bands in the data provider.
+
+.. seealso:: :py:func:`intervalHandlingMethod`
+%End
+
+    void setFixedTemporalRange( const QgsDateTimeRange &range );
+%Docstring
+Sets a temporal ``range`` to apply to the whole layer. All bands from
+the raster layer will be rendered whenever the current datetime range of
+a render context intersects the specified ``range``.
+
+.. warning::
+
+   This setting is only effective when :py:func:`~QgsRasterLayerTemporalProperties.mode` is
+   QgsRasterLayerTemporalProperties.ModeFixedTemporalRange
+
+.. seealso:: :py:func:`fixedTemporalRange`
+%End
+
+    const QgsDateTimeRange &fixedTemporalRange() const;
+%Docstring
+Returns the fixed temporal range for the layer.
+
+.. warning::
+
+   To be used only when :py:func:`~QgsRasterLayerTemporalProperties.mode` is
+   QgsRasterLayerTemporalProperties.ModeFixedTemporalRange
+
+.. seealso:: :py:func:`setFixedTemporalRange`
+%End
+
+    virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
+
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+
+    virtual void setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterlayertemporalproperties.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

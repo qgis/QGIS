@@ -24,6 +24,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsabstractgeometry.h"
 #include "qgsvector3d.h"
 
+#include <QJsonArray>
 
 class QgsLineString;
 
@@ -115,7 +116,9 @@ class CORE_EXPORT QgsGeometryUtils
      * \param tolerance The tolerance to use
      * \param acceptImproperIntersection By default, this method returns true only if segments have proper intersection. If set true, returns also TRUE if segments have improper intersection (end of one segment on other segment ; continuous segments).
      * \returns  Whether the segments intersect
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ) )
      *   ret[0], ret[1].asWkt(), ret[2]
@@ -261,7 +264,7 @@ class CORE_EXPORT QgsGeometryUtils
     static QVector<SelfIntersection> selfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
 
     /**
-     * Returns a value < 0 if the point (\a x, \a y) is left of the line from (\a x1, \a y1) -> ( \a x2, \a y2).
+     * Returns a value < 0 if the point (\a x, \a y) is left of the line from (\a x1, \a y1) -> (\a x2, \a y2).
      * A positive return value indicates the point is to the right of the line.
      *
      * If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
@@ -372,6 +375,24 @@ class CORE_EXPORT QgsGeometryUtils
                                bool hasZ = false, bool hasM = false );
 
     /**
+     * Returns true if point \a b is on the arc formed by points \a a1, \a a2, and \a a3, but not within
+     * that arc portion already described by \a a1, \a a2 and \a a3.
+     *
+     * The \a distanceTolerance specifies the maximum deviation allowed between the original location
+     * of point \b and where it would fall on the candidate arc.
+     *
+     * This method only consider a segments as continuing an arc if the points are all regularly spaced
+     * on the candidate arc. The \a pointSpacingAngleTolerance parameter specifies the maximum
+     * angular deviation (in radians) allowed when testing for regular point spacing.
+     *
+     * \note The API is considered EXPERIMENTAL and can be changed without a notice
+     *
+     * \since QGIS 3.14
+     */
+    static bool pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2, const QgsPoint &a3, const QgsPoint &b, double distanceTolerance,
+                                   double pointSpacingAngleTolerance );
+
+    /**
      * For line defined by points pt1 and pt3, find out on which side of the line is point pt3.
      * Returns -1 if pt3 on the left side, 1 if pt3 is on the right side or 0 if pt3 lies on the line.
      * \since 3.0
@@ -419,6 +440,12 @@ class CORE_EXPORT QgsGeometryUtils
      * \note not available in Python bindings
      */
     static QString pointsToJSON( const QgsPointSequence &points, int precision ) SIP_SKIP;
+
+    /**
+     * Returns coordinates as json object.
+     * \note not available in Python bindings
+     */
+    static json pointsToJson( const QgsPointSequence &points, int precision ) SIP_SKIP;
 
     /**
      * Ensures that an angle is in the range 0 <= angle < 2 pi.
@@ -498,7 +525,9 @@ class CORE_EXPORT QgsGeometryUtils
      * \param pt1 first point.
      * \param pt2 second point.
      * \returns New point at middle between points pt1 and pt2.
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   p = QgsPoint( 4, 6 ) # 2D point
      *   pr = midpoint ( p, QgsPoint( 2, 2 ) )
@@ -626,7 +655,9 @@ class CORE_EXPORT QgsGeometryUtils
      * \param Lb2 is the second point on the second line,
      * \param intersection is the result intersection, of it can be found.
      * \return TRUE if the intersection can be found, FALSE - otherwise.
-     * example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,3,0))
      *   # (True, PyQt5.QtGui.QgsVector3D(2.0, 0.0, 0.0))
@@ -655,6 +686,34 @@ class CORE_EXPORT QgsGeometryUtils
     static bool linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
                                      const QgsVector3D &Lb1, const QgsVector3D &Lb2,
                                      QgsVector3D &intersection  SIP_OUT );
+
+    /**
+     * Returns the area of the triangle denoted by the points (\a aX, \a aY), (\a bX, \a bY) and
+     * (\a cX, \a cY).
+     *
+     * \since QGIS 3.10
+     */
+    static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY );
+
+    /**
+     * Returns a weighted point inside the triangle denoted by the points (\a aX, \a aY), (\a bX, \a bY) and
+     * (\a cX, \a cY).
+     *
+     * \param aX x-coordinate of first vertex in triangle
+     * \param aY y-coordinate of first vertex in triangle
+     * \param bX x-coordinate of second vertex in triangle
+     * \param bY y-coordinate of second vertex in triangle
+     * \param cX x-coordinate of third vertex in triangle
+     * \param cY y-coordinate of third vertex in triangle
+     * \param weightB weighting factor along axis A-B (between 0 and 1)
+     * \param weightC weighting factor along axis A-C (between 0 and 1)
+     * \param pointX x-coordinate of generated point
+     * \param pointY y-coordinate of generated point
+     *
+     * \since QGIS 3.10
+     */
+    static void weightedPointInTriangle( double aX, double aY, double bX, double bY, double cX, double cY,
+                                         double weightB, double weightC, double &pointX SIP_OUT, double &pointY SIP_OUT );
 
     /**
      * A Z dimension is added to \a point if one of the point in the list

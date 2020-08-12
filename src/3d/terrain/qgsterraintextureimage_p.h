@@ -27,6 +27,8 @@
 // version without notice, or even be removed.
 //
 
+#define SIP_NO_FILE
+
 #include <Qt3DRender/QAbstractTextureImage>
 
 #include "qgsrectangle.h"
@@ -54,6 +56,8 @@ class QgsTerrainTextureImage : public Qt3DRender::QAbstractTextureImage
     void invalidate();
     //! Stores a new map image and emits signal that data generator has changed
     void setImage( const QImage &image );
+    //! Returns the stored image
+    QImage getImage() const { return mImage; }
 
     //! Returns extent of the image in map coordinates
     QgsRectangle imageExtent() const { return mExtent; }

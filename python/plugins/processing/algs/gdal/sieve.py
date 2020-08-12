@@ -21,19 +21,17 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingException,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
+                       QgsProcessingParameterString,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.tools.system import isWindows
@@ -43,12 +41,12 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class sieve(GdalAlgorithm):
-
     INPUT = 'INPUT'
     THRESHOLD = 'THRESHOLD'
     EIGHT_CONNECTEDNESS = 'EIGHT_CONNECTEDNESS'
     NO_MASK = 'NO_MASK'
     MASK_LAYER = 'MASK_LAYER'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
@@ -70,6 +68,13 @@ class sieve(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterRasterLayer(self.MASK_LAYER,
                                                             self.tr('Validity mask'),
                                                             optional=True))
+
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Sieved')))
 
@@ -106,12 +111,17 @@ class sieve(GdalAlgorithm):
 
         mask = self.parameterAsRasterLayer(parameters, self.MASK_LAYER, context)
         if mask:
-            arguments.append('-mask {}'.format(mask.source()))
+            arguments.append('-mask')
+            arguments.append(mask.source())
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if raster is None:

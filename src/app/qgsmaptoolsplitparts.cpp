@@ -53,7 +53,7 @@ void QgsMapToolSplitParts::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   if ( e->button() == Qt::LeftButton )
   {
     //If we snap the first point on a vertex of a line layer, we directly split the feature at this point
-    if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry && points().isEmpty() )
+    if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry && pointsZM().isEmpty() )
     {
       QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Vertex );
       if ( m.isValid() )
@@ -92,7 +92,7 @@ void QgsMapToolSplitParts::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     //bring up dialog if a split was not possible (polygon) or only done once (line)
     bool topologicalEditing = QgsProject::instance()->topologicalEditing();
     vlayer->beginEditCommand( tr( "Parts split" ) );
-    QgsGeometry::OperationResult returnCode = vlayer->splitParts( points(), topologicalEditing );
+    QgsGeometry::OperationResult returnCode = vlayer->splitParts( pointsZM(), topologicalEditing );
     vlayer->endEditCommand();
     if ( returnCode == QgsGeometry::OperationResult::NothingHappened )
     {

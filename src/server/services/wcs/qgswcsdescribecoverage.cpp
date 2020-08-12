@@ -57,6 +57,7 @@ namespace QgsWcs
     }
 #else
     doc = createDescribeCoverageDocument( serverIface, project, version, request );
+    describeDocument = &doc;
 #endif
     response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
     response.write( describeDocument->toByteArray() );
@@ -66,7 +67,7 @@ namespace QgsWcs
   QDomDocument createDescribeCoverageDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
       const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QDomDocument doc;
 

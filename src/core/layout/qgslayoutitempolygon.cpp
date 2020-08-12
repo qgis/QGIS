@@ -23,6 +23,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
 #include "qgsmapsettings.h"
+#include "qgsstyleentityvisitor.h"
+
 #include <limits>
 
 QgsLayoutItemPolygon::QgsLayoutItemPolygon( QgsLayout *layout )
@@ -56,7 +58,7 @@ bool QgsLayoutItemPolygon::_addNode( const int indexPoint,
                                      QPointF newPoint,
                                      const double radius )
 {
-  Q_UNUSED( radius );
+  Q_UNUSED( radius )
   mPolygon.insert( indexPoint + 1, newPoint );
   return true;
 }
@@ -97,13 +99,41 @@ QString QgsLayoutItemPolygon::displayName() const
   return tr( "<Polygon>" );
 }
 
+bool QgsLayoutItemPolygon::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( mPolygonStyleSymbol )
+  {
+    QgsStyleSymbolEntity entity( mPolygonStyleSymbol.get() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, uuid(), displayName() ) ) )
+      return false;
+  }
+
+  return true;
+}
+
+QgsLayoutItem::Flags QgsLayoutItemPolygon::itemFlags() const
+{
+  QgsLayoutItem::Flags flags = QgsLayoutNodesItem::itemFlags();
+  flags |= QgsLayoutItem::FlagProvidesClipPath;
+  return flags;
+}
+
+QgsGeometry QgsLayoutItemPolygon::clipPath() const
+{
+  QPolygonF path = mapToScene( mPolygon );
+  // ensure polygon is closed
+  if ( path.at( 0 ) != path.constLast() )
+    path << path.at( 0 );
+  return QgsGeometry::fromQPolygonF( path );
+}
+
 void QgsLayoutItemPolygon::_draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem * )
 {
   //setup painter scaling to dots so that raster symbology is drawn to scale
   double scale = context.renderContext().convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
   QTransform t = QTransform::fromScale( scale, scale );
 
-  QList<QPolygonF> rings; //empty
+  QVector<QPolygonF> rings; //empty
   QPainterPath polygonPath;
   polygonPath.addPolygon( mPolygon );
 

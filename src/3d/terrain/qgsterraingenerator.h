@@ -30,6 +30,8 @@ class QDomElement;
 class QDomDocument;
 class QgsProject;
 
+#define SIP_NO_FILE
+
 
 /**
  * \ingroup 3d
@@ -37,6 +39,9 @@ class QgsProject;
  * to support hierarchical level of detail. Tiling scheme of a generator is defined
  * by the generator itself. Terrain generators are asked to produce new terrain tiles
  * whenever that is deemed necessary by the terrain controller (that caches generated tiles).
+ *
+ * \note Not available in Python bindings
+ *
  * \since QGIS 3.0
  */
 class _3D_EXPORT QgsTerrainGenerator : public QgsChunkLoaderFactory
@@ -49,6 +54,7 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsChunkLoaderFactory
       Flat,           //!< The whole terrain is flat area
       Dem,            //!< Terrain is built from raster layer with digital elevation model
       Online,         //!< Terrain is built from downloaded tiles with digital elevation model
+      Mesh            //!< Terrain is built from mesh layer with z value on vertices
     };
 
     //! Sets terrain entity for the generator (does not transfer ownership)
@@ -82,7 +88,7 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsChunkLoaderFactory
     virtual void readXml( const QDomElement &elem ) = 0;
 
     //! After read of XML, resolve references to any layers that have been read as layer IDs
-    virtual void resolveReferences( const QgsProject &project ) { Q_UNUSED( project ); }
+    virtual void resolveReferences( const QgsProject &project ) { Q_UNUSED( project ) }
 
     //! Converts terrain generator type enumeration into a string
     static QString typeToString( Type type );
@@ -93,9 +99,14 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsChunkLoaderFactory
     //! Returns CRS of the terrain
     QgsCoordinateReferenceSystem crs() const { return mTerrainTilingScheme.crs(); }
 
+    //! Returns whether the terrain generator is valid
+    bool isValid() const;
+
   protected:
     QgsTilingScheme mTerrainTilingScheme;   //!< Tiling scheme of the terrain
     QgsTerrainEntity *mTerrain = nullptr;
+
+    bool mIsValid = true;
 };
 
 

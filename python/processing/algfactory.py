@@ -20,8 +20,6 @@
 __author__ = 'Nathan Woodrow'
 __date__ = 'November 2018'
 __copyright__ = '(C) 2018, Nathan Woodrow'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from collections import OrderedDict
 from functools import partial
@@ -56,7 +54,18 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterMeshLayer,
+                       QgsProcessingParameterColor,
+                       QgsProcessingParameterScale,
+                       QgsProcessingParameterLayout,
+                       QgsProcessingParameterLayoutItem,
+                       QgsProcessingParameterDateTime,
+                       QgsProcessingParameterMapTheme,
+                       QgsProcessingParameterProviderConnection,
+                       QgsProcessingParameterDatabaseSchema,
+                       QgsProcessingParameterDatabaseTable,
+                       QgsProcessingParameterCoordinateOperation,
                        QgsProcessingOutputString,
+                       QgsProcessingOutputBoolean,
                        QgsProcessingOutputFile,
                        QgsProcessingOutputFolder,
                        QgsProcessingOutputHtml,
@@ -66,7 +75,8 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingOutputNumber,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingOutputVectorLayer,
-                       QgsMessageLog)
+                       QgsMessageLog,
+                       QgsApplication)
 
 
 def _log(*args, **kw):
@@ -131,7 +141,7 @@ class AlgWrapper(QgsProcessingAlgorithm):
             raise NotImplementedError()
 
     # Wrapper logic
-    def define(self, name, label, group, group_label, help=None, icon=None):
+    def define(self, name, label, group, group_label, help=None, icon=QgsApplication.iconPath("processingScript.svg")):
         self._name = name
         self._display = label
         self._group = group_label
@@ -181,7 +191,7 @@ class AlgWrapper(QgsProcessingAlgorithm):
                 raise ProcessingAlgFactoryException("Can't find parent named {}".format(parentname))
 
         kwargs['description'] = kwargs.pop("label", "")
-        kwargs['defaultValue'] = kwargs.pop("default", "")
+        kwargs['defaultValue'] = kwargs.pop("default", None)
         advanced = kwargs.pop("advanced", False)
         try:
             if output:
@@ -318,6 +328,16 @@ class ProcessingAlgFactory():
     POINT = "POINT",
     RANGE = "RANGE",
     AUTH_CFG = "AUTH_CFG"
+    SCALE = "SCALE"
+    COLOR = "COLOR"
+    LAYOUT = "LAYOUT"
+    LAYOUT_ITEM = "LAYOUT_ITEM"
+    DATETIME = "DATETIME"
+    MAP_THEME = "MAP_THEME"
+    PROVIDER_CONNECTION = "PROVIDER_CONNECTION"
+    DATABASE_SCHEMA = "DATABASE_SCHEMA"
+    DATABASE_TABLE = "DATABASE_TABLE"
+    COORDINATE_OPERATION = "COORDINATE_OPERATION"
 
     def __init__(self):
         self._current = None
@@ -380,6 +400,7 @@ class ProcessingAlgFactory():
             alg.MULTILAYER:  QgsProcessingOutputMultipleLayers
             alg.RASTER_LAYER: QgsProcessingOutputRasterLayer
             alg.VECTOR_LAYER: QgsProcessingOutputVectorLayer
+            alg.BOOL: QgsProcessingOutputBoolean
 
         :param type: The type of the input. This should be a type define on `alg` like alg.STRING, alg.DISTANCE
         :keyword label: The label of the output. Will convert into `description` arg.
@@ -445,7 +466,16 @@ class ProcessingAlgFactory():
             alg.VECTOR_LAYER: QgsProcessingParameterVectorLayer
             alg.AUTH_CFG: QgsProcessingParameterAuthConfig
             alg.MESH_LAYER: QgsProcessingParameterMeshLayer
-
+            alg.SCALE: QgsProcessingParameterScale
+            alg.LAYOUT: QgsProcessingParameterLayout
+            alg.LAYOUT_ITEM: QgsProcessingParameterLayoutItem
+            alg.COLOR: QgsProcessingParameterColor
+            alg.DATETIME: QgsProcessingParameterDateTime
+            alg.MAP_THEME: QgsProcessingParameterMapTheme
+            alg.PROVIDER_CONNECTION: QgsProcessingParameterProviderConnection
+            alg.DATABASE_SCHEMA: QgsProcessingParameterDatabaseSchema
+            alg.DATABASE_TABLE: QgsProcessingParameterDatabaseTable
+            alg.COORDINATE_OPERATION: QgsProcessingParameterCoordinateOperation
 
         :param type: The type of the input. This should be a type define on `alg` like alg.STRING, alg.DISTANCE
         :keyword label: The label of the output. Translates into `description` arg.
@@ -493,6 +523,16 @@ input_type_mapping = {
     ProcessingAlgFactory.VECTOR_LAYER: QgsProcessingParameterVectorLayer,
     ProcessingAlgFactory.AUTH_CFG: QgsProcessingParameterAuthConfig,
     ProcessingAlgFactory.MESH_LAYER: QgsProcessingParameterMeshLayer,
+    ProcessingAlgFactory.SCALE: QgsProcessingParameterScale,
+    ProcessingAlgFactory.LAYOUT: QgsProcessingParameterLayout,
+    ProcessingAlgFactory.LAYOUT_ITEM: QgsProcessingParameterLayoutItem,
+    ProcessingAlgFactory.COLOR: QgsProcessingParameterColor,
+    ProcessingAlgFactory.DATETIME: QgsProcessingParameterDateTime,
+    ProcessingAlgFactory.MAP_THEME: QgsProcessingParameterMapTheme,
+    ProcessingAlgFactory.PROVIDER_CONNECTION: QgsProcessingParameterProviderConnection,
+    ProcessingAlgFactory.DATABASE_SCHEMA: QgsProcessingParameterDatabaseSchema,
+    ProcessingAlgFactory.DATABASE_TABLE: QgsProcessingParameterDatabaseTable,
+    ProcessingAlgFactory.COORDINATE_OPERATION: QgsProcessingParameterCoordinateOperation
 }
 
 output_type_mapping = {
@@ -511,4 +551,5 @@ output_type_mapping = {
     ProcessingAlgFactory.MULTILAYER: partial(_make_output, cls=QgsProcessingOutputMultipleLayers),
     ProcessingAlgFactory.RASTER_LAYER: partial(_make_output, cls=QgsProcessingOutputRasterLayer),
     ProcessingAlgFactory.VECTOR_LAYER: partial(_make_output, cls=QgsProcessingOutputVectorLayer),
+    ProcessingAlgFactory.BOOL: partial(_make_output, cls=QgsProcessingOutputBoolean),
 }

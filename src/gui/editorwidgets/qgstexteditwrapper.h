@@ -21,6 +21,7 @@
 #include <QLineEdit>
 #include <QPlainTextEdit>
 #include <QTextBrowser>
+#include "qgsattributeform.h"
 #include "qgis_gui.h"
 
 SIP_NO_FILE
@@ -59,6 +60,13 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
     QVariant value() const override;
     void showIndeterminateState() override;
 
+
+    /**
+     * Returns whether the text edit widget contains Invalid JSON
+     * \since QGIS 3.12
+     */
+    bool isInvalidJSON();
+
     /**
      * Add a hint text on the widget
      * \param hintText The hint text to display
@@ -72,13 +80,17 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
     bool valid() const override;
 
   public slots:
-    void setValue( const QVariant &value ) override;
     void setEnabled( bool enabled ) override;
+    void setFeature( const QgsFeature &feature ) override;
 
   private slots:
     void textChanged( const QString &text );
 
   private:
+    bool mutable mInvalidJSON = false;
+    QgsAttributeForm *mForm = nullptr;
+    void updateValues( const QVariant &val, const QVariantList & = QVariantList() ) override;
+
     QTextBrowser *mTextBrowser = nullptr;
     QTextEdit *mTextEdit = nullptr;
     QPlainTextEdit *mPlainTextEdit = nullptr;

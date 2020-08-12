@@ -21,6 +21,9 @@
 #include "qgspointlocator.h"
 #include "qgscompoundcurve.h"
 #include "qgsgeometry.h"
+#include "qobjectuniqueptr.h"
+#include "qgssnappingutils.h"
+#include "qgsgeometryrubberband.h"
 
 #include <QPoint>
 #include <QList>
@@ -31,6 +34,86 @@ class QgsSnapIndicator;
 class QgsVertexMarker;
 class QgsMapLayer;
 class QgsGeometryValidator;
+class QgsMapToolCaptureRubberBand;
+
+
+#ifndef SIP_RUN
+
+///@cond PRIVATE
+
+/**
+ * Class that reprensents a rubber band that can be linear or circular.
+ *
+ * \since QGIS 3.16
+ */
+class QgsMapToolCaptureRubberBand: public QgsGeometryRubberBand
+{
+  public:
+    //! Constructor
+    QgsMapToolCaptureRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
+
+    //! Returns the curve defined by the rubber band, the caller has to take the ownership, nullptr if no curve is defined.
+    QgsCurve *curve();
+
+    /**
+     * Returns if the curve defined by the rubber band is complete :
+     * has more than 2 points for circular string and more than 1 point for linear string
+     */
+    bool curveIsComplete() const;
+
+    /**
+     * Resets the rubber band with the specified geometry type
+     * that must be line geometry or polygon geometry.
+     * \a firstPolygonPoint is the first point that will be used to render the polygon rubber band (if \a geomType is PolygonGeometry)
+     */
+    void reset( QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry, QgsWkbTypes::Type stringType = QgsWkbTypes::LineString, const QgsPoint &firstPolygonPoint = QgsPoint() );
+
+    //! Sets the geometry type of the rubberband without removing already existing points
+    void setRubberBandGeometryType( QgsWkbTypes::GeometryType geomType );
+
+    //! Adds point to the rubber band
+    void addPoint( const QgsPoint &point, bool doUpdate = true );
+
+    //! Moves the last point to the \a point position
+    void movePoint( const QgsPoint &point );
+
+    //! Moves the point with \a index to the \a point position
+    void movePoint( int index, const QgsPoint &point );
+
+    //! Returns the points count in the rubber band (except the first point if polygon)
+    int pointsCount();
+
+    //! Returns the type of the curve (linear string or circular string)
+    QgsWkbTypes::Type stringType() const;
+
+    //! Sets the type of the curve (linear string or circular string)
+    void setStringType( const QgsWkbTypes::Type &type );
+
+    //! Returns the last point of the rubber band
+    QgsPoint lastPoint() const;
+
+    //! Returns the point of the rubber band at position from end
+    QgsPoint pointFromEnd( int posFromEnd ) const;
+
+    //! Removes the last point of the rrubber band
+    void removeLastPoint();
+
+  private:
+    QgsWkbTypes::Type mStringType = QgsWkbTypes::LineString;
+
+    void setGeometry( QgsAbstractGeometry *geom ) override;
+    void updateCurve();
+
+    QgsCurve *createLinearString();
+    QgsCurve *createCircularString();
+
+    QgsPointSequence mPoints;
+    QgsPoint mFirstPolygonPoint;
+};
+
+/// @endcond
+
+#endif //SIP_RUN
 
 /**
  * \ingroup gui
@@ -51,10 +134,24 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
       CapturePolygon  //!< Capture polygons
     };
 
+    //! Specific capabilities of the tool
+    enum Capability
+    {
+      NoCapabilities = 0,       //!< No specific capabilities
+      SupportsCurves = 1,       //!< Supports curved geometries input
+    };
+
+    Q_DECLARE_FLAGS( Capabilities, Capability )
+
     //! constructor
     QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
 
     ~QgsMapToolCapture() override;
+
+    /**
+     * Returns flags containing the supported capabilities
+     */
+    virtual QgsMapToolCapture::Capabilities capabilities() const;
 
     void activate() override;
     void deactivate() override;
@@ -106,9 +203,23 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! convenient method to clean members
     void clean() override;
 
+    /**
+     * Returns the rubberBand currently owned by this map tool and
+     * transfers ownership to the caller.
+     *
+     * \since QGIS 3.8
+     */
+    QgsRubberBand *takeRubberBand() SIP_FACTORY;
+
+  public slots:
+    //! Enable the digitizing with curve
+    void setCircularDigitizingEnabled( bool enable );
+
   private slots:
     void addError( const QgsGeometry::Error &error );
     void currentLayerChanged( QgsMapLayer *layer );
+    //! Update the extra snap layer, this should be called whenever the capturecurve changes
+    void updateExtraSnapLayer();
 
   protected:
 
@@ -215,15 +326,34 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * List of digitized points
      * \returns List of points
+     * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant returns QgsPoint objects instead of QgsPointXY.
      */
-    QVector<QgsPointXY> points() const;
+    Q_DECL_DEPRECATED QVector<QgsPointXY> points() const SIP_DEPRECATED;
+
+    // TODO QGIS 4.0 rename it to points()
+
+    /**
+     * List of digitized points
+     * \returns List of points
+     * \since QGIS 3.12
+     */
+    QgsPointSequence pointsZM() const;
 
     /**
      * Set the points on which to work
      *
      * \param pointList A list of points
+     * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
-    void setPoints( const QVector<QgsPointXY> &pointList );
+    Q_DECL_DEPRECATED void setPoints( const QVector<QgsPointXY> &pointList ) SIP_DEPRECATED;
+
+    /**
+     * Set the points on which to work
+     *
+     * \param pointList A list of points
+     * \since QGIS 3.12
+     */
+    void setPoints( const QgsPointSequence &pointList );
 
     /**
      * Close an open polygon
@@ -247,6 +377,16 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! handle of addition of clicked point (with the rest of the trace) when tracing enabled
     bool tracingAddVertex( const QgsPointXY &point );
 
+    //! create a curve rubber band
+    QgsMapToolCaptureRubberBand *createCurveRubberBand() const;
+
+    //! Returns extemity point of the captured curve in map coordinates
+    QgsPoint firstCapturedMapPoint();
+    QgsPoint lastCapturedMapPoint();
+
+    //! Reset the
+    void resetRubberBand();
+
   private:
     //! The capture mode in which this tool operates
     CaptureMode mCaptureMode;
@@ -255,20 +395,27 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool mCapturing = false;
 
     //! Rubber band for polylines and polygons
-    QgsRubberBand *mRubberBand = nullptr;
+    QObjectUniquePtr<QgsRubberBand> mRubberBand;
 
     //! Temporary rubber band for polylines and polygons. this connects the last added point to the mouse cursor position
-    QgsRubberBand *mTempRubberBand = nullptr;
+    std::unique_ptr<QgsMapToolCaptureRubberBand> mTempRubberBand;
 
     //! List to store the points of digitized lines and polygons (in layer coordinates)
     QgsCompoundCurve mCaptureCurve;
 
     QList<QgsPointLocator::Match> mSnappingMatches;
+    QgsPointLocator::Match mCircularIntermediateMatch;
+    QgsPoint mCircularItermediatePoint;
 
     void validateGeometry();
     QgsGeometryValidator *mValidator = nullptr;
     QList< QgsGeometry::Error > mGeomErrors;
     QList< QgsVertexMarker * > mGeomErrorMarkers;
+
+    //! A layer containing the current capture curve to provide additional snapping
+    QgsVectorLayer *mExtraSnapLayer = nullptr;
+    //! The feature in that layer (for updating)
+    QgsFeatureId mExtraSnapFeatureId;
 
     bool mCaptureModeFromLayer = false;
 
@@ -282,8 +429,10 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     QgsPointXY mTracingStartPoint;
 
-    friend class TestQgsMapToolReshape;
-
+    //! Used to store the state of digitizing type (linear or circular)
+    QgsWkbTypes::Type mDigitizingType = QgsWkbTypes::LineString;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolCapture::Capabilities )
 
 #endif

@@ -26,13 +26,9 @@
 #include "qgscredentials.h"
 #include "qgsapplication.h"
 
-#ifdef HAVE_GUI
-#include "qgsdb2sourceselect.h"
-#include "qgssourceselectprovider.h"
-#endif
 
-static const QString PROVIDER_KEY = QStringLiteral( "DB2" );
-static const QString PROVIDER_DESCRIPTION = QStringLiteral( "DB2 Spatial Extender provider" );
+const QString QgsDb2Provider::DB2_PROVIDER_KEY = QStringLiteral( "DB2" );
+const QString QgsDb2Provider::DB2_PROVIDER_DESCRIPTION = QStringLiteral( "DB2 Spatial Extender provider" );
 
 int QgsDb2Provider::sConnectionId = 0;
 QMutex QgsDb2Provider::sMutex{ QMutex::Recursive };
@@ -72,7 +68,7 @@ QgsDb2Provider::QgsDb2Provider( const QString &uri, const ProviderOptions &optio
   mDatabase = getDatabase( uri, errMsg );
   mConnInfo = anUri.connectionInfo();
   QgsCoordinateReferenceSystem layerCrs = crs();
-  QgsDebugMsg( "CRS: " + layerCrs.toWkt() );
+  QgsDebugMsg( "CRS: " + layerCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
 
   if ( !errMsg.isEmpty() )
   {
@@ -552,12 +548,6 @@ QgsCoordinateReferenceSystem QgsDb2Provider::crs() const
 {
   if ( !mCrs.isValid() && mSRId > 0 )
   {
-    mCrs.createFromSrid( mSRId );
-    if ( mCrs.isValid() )
-    {
-      return mCrs;
-    }
-
     // try to load crs from the database tables as a fallback
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
@@ -1313,7 +1303,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
   // srs->posgisSrid() seems to return the authority id which is
   // most often the EPSG id.  Hopefully DB2 has defined an SRS using this
   // value as the srid / srs_id.  If not, we are out of luck.
-  QgsDebugMsg( "srs: " + srs.toWkt() );
+  QgsDebugMsg( "srs: " + srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
   long srid = srs.postgisSrid();
   QgsDebugMsg( QStringLiteral( "srid: %1" ).arg( srid ) );
   if ( srid >= 0 )
@@ -1706,12 +1696,12 @@ bool QgsDb2Provider::convertField( QgsField &field )
 
 QString QgsDb2Provider::name() const
 {
-  return PROVIDER_KEY;
+  return DB2_PROVIDER_KEY;
 }
 
 QString QgsDb2Provider::description() const
 {
-  return PROVIDER_DESCRIPTION;
+  return DB2_PROVIDER_DESCRIPTION;
 }
 
 QgsAttributeList QgsDb2Provider::pkAttributeIndexes() const
@@ -1722,58 +1712,37 @@ QgsAttributeList QgsDb2Provider::pkAttributeIndexes() const
   return list;
 }
 
-QGISEXTERN QgsDb2Provider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsDb2Provider *QgsDb2ProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsDb2Provider( *uri, options );
+  return new QgsDb2Provider( uri, options );
 }
 
-QGISEXTERN bool isProvider()
+QgsDb2ProviderMetadata::QgsDb2ProviderMetadata()
+  : QgsProviderMetadata( QgsDb2Provider::DB2_PROVIDER_KEY, QgsDb2Provider::DB2_PROVIDER_DESCRIPTION )
 {
-  return true;
+
 }
 
-QGISEXTERN QString description()
+QList< QgsDataItemProvider * > QgsDb2ProviderMetadata::dataItemProviders() const
 {
-  return PROVIDER_DESCRIPTION;
+  QList<QgsDataItemProvider *> providers;
+  providers << new QgsDb2DataItemProvider;
+  return providers;
 }
 
-QGISEXTERN QString providerKey()
-{
-  return PROVIDER_KEY;
-}
-
-QGISEXTERN int dataCapabilities()
-{
-  return QgsDataProvider::Database;
-}
-
-#ifdef HAVE_GUI
-QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-{
-  return new QgsDb2SourceSelect( parent, fl, widgetMode );
-}
-#endif
-
-QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
-{
-  Q_UNUSED( path );
-  QgsDebugMsg( QStringLiteral( "DB2: Browser Panel; data item detected." ) );
-  return new QgsDb2RootItem( parentItem, PROVIDER_KEY, QStringLiteral( "DB2:" ) );
-}
-
-
-QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
+QgsVectorLayerExporter::ExportError QgsDb2ProviderMetadata::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
   const QgsCoordinateReferenceSystem &srs,
   bool overwrite,
-  QMap<int, int> *oldToNewAttrIdxMap,
-  QString *errorMessage )
+  QMap<int, int> &oldToNewAttrIdxMap,
+  QString &errorMessage,
+  const QMap<QString, QVariant> * )
 {
   return QgsDb2Provider::createEmptyLayer(
            uri, fields, wkbType, srs, overwrite,
-           oldToNewAttrIdxMap, errorMessage
+           &oldToNewAttrIdxMap, &errorMessage
          );
 }
 
@@ -1785,32 +1754,8 @@ QString QgsDb2Provider::dbConnectionName( const QString &name )
   return QStringLiteral( "%1:0x%2" ).arg( name ).arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) );
 }
 
-#ifdef HAVE_GUI
 
-//! Provider for DB2 source select
-class QgsDb2SourceSelectProvider : public QgsSourceSelectProvider
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "DB2" ); }
-    QString text() const override { return QObject::tr( "DB2" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 50; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDb2Layer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsDb2SourceSelect( parent, fl, widgetMode );
-    }
-};
-
-
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
-
-  *providers
-      << new QgsDb2SourceSelectProvider;
-
-  return providers;
+  return new QgsDb2ProviderMetadata();
 }
-
-#endif

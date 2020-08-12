@@ -78,16 +78,6 @@ public:
    */
   ColorEntry() : transparent(false), fontWeight(UseCurrentFormat) {}
 
-  /**
-   * Sets the color, transparency and boldness of this color to those of @p rhs.
-   */
-  void operator=(const ColorEntry& rhs)
-  {
-       color = rhs.color;
-       transparent = rhs.transparent;
-       fontWeight = rhs.fontWeight;
-  }
-
   /** The color value of this entry for display. */
   QColor color;
 

@@ -21,12 +21,7 @@ __author__ = 'Victor Olaya'
 __date__ = 'July 2014'
 __copyright__ = '(C) 2014, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from operator import itemgetter
-
 
 from qgis.core import (QgsGeometry,
                        QgsFeatureSink,
@@ -41,7 +36,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class KeepNBiggestParts(QgisAlgorithm):
-
     POLYGONS = 'POLYGONS'
     PARTS = 'PARTS'
     OUTPUT = 'OUTPUT'

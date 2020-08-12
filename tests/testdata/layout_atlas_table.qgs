@@ -1,0 +1,539 @@
+<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
+<qgis version="3.7.0-Master" projectname="">
+  <homePath path=""/>
+  <title></title>
+  <autotransaction active="0"/>
+  <evaluateDefaultValues active="0"/>
+  <trust active="0"/>
+  <projectCrs>
+    <spatialrefsys>
+      <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
+      <srsid>3452</srsid>
+      <srid>4326</srid>
+      <authid>EPSG:4326</authid>
+      <description>WGS 84</description>
+      <projectionacronym>longlat</projectionacronym>
+      <ellipsoidacronym>WGS84</ellipsoidacronym>
+      <geographicflag>true</geographicflag>
+    </spatialrefsys>
+  </projectCrs>
+  <layer-tree-group>
+    <customproperties/>
+    <layer-tree-layer providerKey="ogr" expanded="1" id="points_ce766da2_f70f_4fc6_b852_4550b40ed354" checked="Qt::Checked" name="points" source="./points.shp">
+      <customproperties/>
+    </layer-tree-layer>
+    <custom-order enabled="0">
+      <item>points_ce766da2_f70f_4fc6_b852_4550b40ed354</item>
+    </custom-order>
+  </layer-tree-group>
+  <snapping-settings mode="2" enabled="0" type="1" unit="1" intersection-snapping="0" tolerance="12">
+    <individual-layer-settings>
+      <layer-setting id="points_ce766da2_f70f_4fc6_b852_4550b40ed354" enabled="0" type="1" units="1" tolerance="12"/>
+    </individual-layer-settings>
+  </snapping-settings>
+  <relations/>
+  <mapcanvas name="theMapCanvas" annotationsVisible="1">
+    <units>degrees</units>
+    <extent>
+      <xmin>-119.77777777777767199</xmin>
+      <ymin>22.19841269841290199</ymin>
+      <xmax>-82.44444444444427234</xmax>
+      <ymax>47.4737750172535371</ymax>
+    </extent>
+    <rotation>0</rotation>
+    <destinationsrs>
+      <spatialrefsys>
+        <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
+        <srsid>3452</srsid>
+        <srid>4326</srid>
+        <authid>EPSG:4326</authid>
+        <description>WGS 84</description>
+        <projectionacronym>longlat</projectionacronym>
+        <ellipsoidacronym>WGS84</ellipsoidacronym>
+        <geographicflag>true</geographicflag>
+      </spatialrefsys>
+    </destinationsrs>
+    <rendermaptile>0</rendermaptile>
+    <expressionContextScope/>
+  </mapcanvas>
+  <projectModels/>
+  <legend updateDrawingOrder="true">
+    <legendlayer open="true" showFeatureCount="0" drawingOrder="-1" checked="Qt::Checked" name="points">
+      <filegroup open="true" hidden="false">
+        <legendlayerfile visible="1" isInOverview="0" layerid="points_ce766da2_f70f_4fc6_b852_4550b40ed354"/>
+      </filegroup>
+    </legendlayer>
+  </legend>
+  <mapViewDocks/>
+  <mapViewDocks3D/>
+  <projectlayers>
+    <maplayer simplifyDrawingHints="0" wkbType="Point" simplifyLocal="1" hasScaleBasedVisibilityFlag="0" type="vector" minScale="1e+08" refreshOnNotifyMessage="" styleCategories="AllStyleCategories" refreshOnNotifyEnabled="0" autoRefreshEnabled="0" simplifyAlgorithm="0" autoRefreshTime="0" simplifyMaxScale="1" simplifyDrawingTol="1" maxScale="1" readOnly="0" labelsEnabled="1" geometry="Point">
+      <extent>
+        <xmin>-118.88888888888877204</xmin>
+        <ymin>22.80020703933767834</ymin>
+        <xmax>-83.33333333333315807</xmax>
+        <ymax>46.87198067632875365</ymax>
+      </extent>
+      <id>points_ce766da2_f70f_4fc6_b852_4550b40ed354</id>
+      <datasource>./points.shp</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>points</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
+          <srsid>3452</srsid>
+          <srid>4326</srid>
+          <authid>EPSG:4326</authid>
+          <description>WGS 84</description>
+          <projectionacronym>longlat</projectionacronym>
+          <ellipsoidacronym>WGS84</ellipsoidacronym>
+          <geographicflag>true</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type>dataset</type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <renderer-v2 forceraster="0" attr="Class" enableorderby="0" symbollevels="0" type="categorizedSymbol">
+        <categories>
+          <category label="B52" value="B52" symbol="0" render="true"/>
+          <category label="Biplane" value="Biplane" symbol="1" render="true"/>
+          <category label="Jet" value="Jet" symbol="2" render="true"/>
+        </categories>
+        <symbols>
+          <symbol clip_to_extent="1" type="marker" force_rhr="0" name="0" alpha="1">
+            <layer enabled="1" pass="0" class="SvgMarker" locked="0">
+              <prop v="0" k="angle"/>
+              <prop v="0,0,0,255" k="color"/>
+              <prop v="0" k="fixedAspectRatio"/>
+              <prop v="1" k="horizontal_anchor_point"/>
+              <prop v="gpsicons/plane.svg" k="name"/>
+              <prop v="0,0" k="offset"/>
+              <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+              <prop v="MM" k="offset_unit"/>
+              <prop v="0,0,0,255" k="outline_color"/>
+              <prop v="0.2" k="outline_width"/>
+              <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+              <prop v="MM" k="outline_width_unit"/>
+              <prop v="diameter" k="scale_method"/>
+              <prop v="11" k="size"/>
+              <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+              <prop v="MM" k="size_unit"/>
+              <prop v="1" k="vertical_anchor_point"/>
+              <data_defined_properties>
+                <Option type="Map">
+                  <Option value="" type="QString" name="name"/>
+                  <Option name="properties"/>
+                  <Option value="collection" type="QString" name="type"/>
+                </Option>
+              </data_defined_properties>
+            </layer>
+          </symbol>
+          <symbol clip_to_extent="1" type="marker" force_rhr="0" name="1" alpha="1">
+            <layer enabled="1" pass="0" class="SvgMarker" locked="0">
+              <prop v="0" k="angle"/>
+              <prop v="0,0,0,255" k="color"/>
+              <prop v="0" k="fixedAspectRatio"/>
+              <prop v="1" k="horizontal_anchor_point"/>
+              <prop v="gpsicons/plane_orange.svg" k="name"/>
+              <prop v="0,0" k="offset"/>
+              <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+              <prop v="MM" k="offset_unit"/>
+              <prop v="0,0,0,255" k="outline_color"/>
+              <prop v="0.2" k="outline_width"/>
+              <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+              <prop v="MM" k="outline_width_unit"/>
+              <prop v="diameter" k="scale_method"/>
+              <prop v="18" k="size"/>
+              <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+              <prop v="MM" k="size_unit"/>
+              <prop v="1" k="vertical_anchor_point"/>
+              <data_defined_properties>
+                <Option type="Map">
+                  <Option value="" type="QString" name="name"/>
+                  <Option name="properties"/>
+                  <Option value="collection" type="QString" name="type"/>
+                </Option>
+              </data_defined_properties>
+            </layer>
+          </symbol>
+          <symbol clip_to_extent="1" type="marker" force_rhr="0" name="2" alpha="1">
+            <layer enabled="1" pass="0" class="SvgMarker" locked="0">
+              <prop v="0" k="angle"/>
+              <prop v="0,0,0,255" k="color"/>
+              <prop v="0" k="fixedAspectRatio"/>
+              <prop v="1" k="horizontal_anchor_point"/>
+              <prop v="gpsicons/plane.svg" k="name"/>
+              <prop v="0,0" k="offset"/>
+              <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+              <prop v="MM" k="offset_unit"/>
+              <prop v="0,0,0,255" k="outline_color"/>
+              <prop v="0.2" k="outline_width"/>
+              <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+              <prop v="MM" k="outline_width_unit"/>
+              <prop v="diameter" k="scale_method"/>
+              <prop v="11" k="size"/>
+              <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+              <prop v="MM" k="size_unit"/>
+              <prop v="1" k="vertical_anchor_point"/>
+              <data_defined_properties>
+                <Option type="Map">
+                  <Option value="" type="QString" name="name"/>
+                  <Option name="properties"/>
+                  <Option value="collection" type="QString" name="type"/>
+                </Option>
+              </data_defined_properties>
+            </layer>
+          </symbol>
+        </symbols>
+        <rotation/>
+        <sizescale/>
+      </renderer-v2>
+      <customproperties>
+        <property key="embeddedWidgets/count" value="0"/>
+        <property key="variableNames"/>
+        <property key="variableValues"/>
+      </customproperties>
+      <blendMode>0</blendMode>
+      <featureBlendMode>0</featureBlendMode>
+      <layerOpacity>1</layerOpacity>
+      <SingleCategoryDiagramRenderer diagramType="Histogram" attributeLegend="1">
+        <DiagramCategory scaleBasedVisibility="0" opacity="1" penColor="#000000" width="15" height="15" backgroundColor="#ffffff" minScaleDenominator="1" penAlpha="255" enabled="0" maxScaleDenominator="1e+08" minimumSize="0" sizeScale="3x:0,0,0,0,0,0" diagramOrientation="Up" backgroundAlpha="255" penWidth="0" barWidth="5" lineSizeType="MM" sizeType="MM" labelPlacementMethod="XHeight" lineSizeScale="3x:0,0,0,0,0,0" scaleDependency="Area" rotationOffset="270">
+          <fontProperties description="Noto Sans,10,-1,5,50,0,0,0,0,0" style=""/>
+          <attribute color="#000000" label="" field=""/>
+        </DiagramCategory>
+      </SingleCategoryDiagramRenderer>
+      <DiagramLayerSettings linePlacementFlags="10" dist="0" priority="0" placement="0" zIndex="0" obstacle="0" showAll="1">
+        <properties>
+          <Option type="Map">
+            <Option value="" type="QString" name="name"/>
+            <Option name="properties"/>
+            <Option value="collection" type="QString" name="type"/>
+          </Option>
+        </properties>
+      </DiagramLayerSettings>
+      <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="Class">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Heading">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Importance">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Pilots">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Cabin Crew">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Staff">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias index="0" field="Class" name=""/>
+        <alias index="1" field="Heading" name=""/>
+        <alias index="2" field="Importance" name=""/>
+        <alias index="3" field="Pilots" name=""/>
+        <alias index="4" field="Cabin Crew" name=""/>
+        <alias index="5" field="Staff" name=""/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default applyOnUpdate="0" field="Class" expression=""/>
+        <default applyOnUpdate="0" field="Heading" expression=""/>
+        <default applyOnUpdate="0" field="Importance" expression=""/>
+        <default applyOnUpdate="0" field="Pilots" expression=""/>
+        <default applyOnUpdate="0" field="Cabin Crew" expression=""/>
+        <default applyOnUpdate="0" field="Staff" expression=""/>
+      </defaults>
+      <constraints>
+        <constraint exp_strength="0" field="Class" constraints="0" notnull_strength="0" unique_strength="0"/>
+        <constraint exp_strength="0" field="Heading" constraints="0" notnull_strength="0" unique_strength="0"/>
+        <constraint exp_strength="0" field="Importance" constraints="0" notnull_strength="0" unique_strength="0"/>
+        <constraint exp_strength="0" field="Pilots" constraints="0" notnull_strength="0" unique_strength="0"/>
+        <constraint exp_strength="0" field="Cabin Crew" constraints="0" notnull_strength="0" unique_strength="0"/>
+        <constraint exp_strength="0" field="Staff" constraints="0" notnull_strength="0" unique_strength="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint exp="" field="Class" desc=""/>
+        <constraint exp="" field="Heading" desc=""/>
+        <constraint exp="" field="Importance" desc=""/>
+        <constraint exp="" field="Pilots" desc=""/>
+        <constraint exp="" field="Cabin Crew" desc=""/>
+        <constraint exp="" field="Staff" desc=""/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions>
+        <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
+      </attributeactions>
+      <attributetableconfig sortExpression="" actionWidgetStyle="dropDown" sortOrder="0">
+        <columns>
+          <column hidden="0" type="field" name="Class" width="-1"/>
+          <column hidden="0" type="field" name="Heading" width="-1"/>
+          <column hidden="0" type="field" name="Importance" width="-1"/>
+          <column hidden="0" type="field" name="Pilots" width="-1"/>
+          <column hidden="0" type="field" name="Cabin Crew" width="-1"/>
+          <column hidden="0" type="field" name="Staff" width="-1"/>
+          <column hidden="1" type="actions" width="-1"/>
+        </columns>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+"""
+QGIS forms can have a Python function that is called when the form is
+opened.
+
+Use this function to add extra logic to your forms.
+
+Enter the name of the function in the "Python Init function"
+field.
+An example follows:
+"""
+from qgis.PyQt.QtWidgets import QWidget
+
+def my_form_open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget, "MyLineEdit")
+]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>generatedlayout</editorlayout>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression>"Class"</previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+  </projectlayers>
+  <layerorder>
+    <layer id="points_ce766da2_f70f_4fc6_b852_4550b40ed354"/>
+  </layerorder>
+  <properties>
+    <Gui>
+      <CanvasColorBluePart type="int">255</CanvasColorBluePart>
+      <CanvasColorGreenPart type="int">255</CanvasColorGreenPart>
+      <CanvasColorRedPart type="int">255</CanvasColorRedPart>
+      <SelectionColorAlphaPart type="int">255</SelectionColorAlphaPart>
+      <SelectionColorBluePart type="int">0</SelectionColorBluePart>
+      <SelectionColorGreenPart type="int">255</SelectionColorGreenPart>
+      <SelectionColorRedPart type="int">255</SelectionColorRedPart>
+    </Gui>
+    <Legend>
+      <filterByMap type="bool">false</filterByMap>
+    </Legend>
+    <Measure>
+      <Ellipsoid type="QString">WGS84</Ellipsoid>
+    </Measure>
+    <Measurement>
+      <AreaUnits type="QString">m2</AreaUnits>
+      <DistanceUnits type="QString">meters</DistanceUnits>
+    </Measurement>
+    <PAL>
+      <CandidatesLine type="int">50</CandidatesLine>
+      <CandidatesPoint type="int">16</CandidatesPoint>
+      <CandidatesPolygon type="int">30</CandidatesPolygon>
+      <DrawRectOnly type="bool">false</DrawRectOnly>
+      <SearchMethod type="int">0</SearchMethod>
+      <ShowingAllLabels type="bool">false</ShowingAllLabels>
+      <ShowingCandidates type="bool">false</ShowingCandidates>
+      <ShowingPartialsLabels type="bool">true</ShowingPartialsLabels>
+      <TextFormat type="int">0</TextFormat>
+    </PAL>
+    <Paths>
+      <Absolute type="bool">false</Absolute>
+    </Paths>
+    <PositionPrecision>
+      <Automatic type="bool">true</Automatic>
+      <DecimalPlaces type="int">2</DecimalPlaces>
+    </PositionPrecision>
+    <SpatialRefSys>
+      <ProjectionsEnabled type="int">1</ProjectionsEnabled>
+    </SpatialRefSys>
+  </properties>
+  <visibility-presets/>
+  <transformContext/>
+  <projectMetadata>
+    <identifier></identifier>
+    <parentidentifier></parentidentifier>
+    <language></language>
+    <type></type>
+    <title></title>
+    <abstract></abstract>
+    <links/>
+    <author>Nyall</author>
+    <creation>2019-05-22T07:55:49</creation>
+  </projectMetadata>
+  <Annotations/>
+  <Layouts>
+    <Layout worldFileMap="" printResolution="300" units="mm" name="Layout 1">
+      <Snapper snapToGuides="1" snapToItems="1" snapToGrid="0" tolerance="5"/>
+      <Grid offsetX="0" offsetUnits="mm" resolution="10" offsetY="0" resUnits="mm"/>
+      <PageCollection>
+        <symbol clip_to_extent="1" type="fill" force_rhr="0" name="" alpha="1">
+          <layer enabled="1" pass="0" class="SimpleFill" locked="0">
+            <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
+            <prop v="255,255,255,255" k="color"/>
+            <prop v="miter" k="joinstyle"/>
+            <prop v="0,0" k="offset"/>
+            <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+            <prop v="MM" k="offset_unit"/>
+            <prop v="35,35,35,255" k="outline_color"/>
+            <prop v="no" k="outline_style"/>
+            <prop v="0.26" k="outline_width"/>
+            <prop v="MM" k="outline_width_unit"/>
+            <prop v="solid" k="style"/>
+            <data_defined_properties>
+              <Option type="Map">
+                <Option value="" type="QString" name="name"/>
+                <Option name="properties"/>
+                <Option value="collection" type="QString" name="type"/>
+              </Option>
+            </data_defined_properties>
+          </layer>
+        </symbol>
+        <LayoutItem positionOnPage="0,0,mm" opacity="1" frameJoinStyle="miter" visibility="1" positionLock="false" position="0,0,mm" type="65638" referencePoint="0" uuid="{f100fece-ec6a-4cf2-ba16-7d961ba0e0fd}" size="297,210,mm" excludeFromExports="0" outlineWidthM="0.3,mm" zValue="0" templateUuid="{f100fece-ec6a-4cf2-ba16-7d961ba0e0fd}" background="true" frame="false" id="" groupUuid="" itemRotation="0" blendMode="0">
+          <FrameColor green="0" red="0" blue="0" alpha="255"/>
+          <BackgroundColor green="255" red="255" blue="255" alpha="255"/>
+          <LayoutObject>
+            <dataDefinedProperties>
+              <Option type="Map">
+                <Option value="" type="QString" name="name"/>
+                <Option name="properties"/>
+                <Option value="collection" type="QString" name="type"/>
+              </Option>
+            </dataDefinedProperties>
+            <customproperties/>
+          </LayoutObject>
+        </LayoutItem>
+        <GuideCollection visible="1"/>
+      </PageCollection>
+      <LayoutItem positionOnPage="63.455,26.5388,mm" opacity="1" sectionY="0" frameJoinStyle="miter" hidePageIfEmpty="0" visibility="1" hideBackgroundIfEmpty="0" positionLock="false" position="63.455,26.5388,mm" multiFrameTemplateUuid="{25741952-c242-4d17-942e-21f550d35b81}" type="65647" referencePoint="0" uuid="{c213c327-3a06-4ec3-82c3-de8a8ed4ebdd}" sectionHeight="113.811" size="28.4375,113.811,mm" excludeFromExports="0" outlineWidthM="0.3,mm" zValue="1" templateUuid="{c213c327-3a06-4ec3-82c3-de8a8ed4ebdd}" background="false" sectionX="0" frame="false" id="" multiFrame="{25741952-c242-4d17-942e-21f550d35b81}" groupUuid="" sectionWidth="28.4375" itemRotation="0" blendMode="0">
+        <FrameColor green="0" red="0" blue="0" alpha="255"/>
+        <BackgroundColor green="255" red="255" blue="255" alpha="255"/>
+        <LayoutObject>
+          <dataDefinedProperties>
+            <Option type="Map">
+              <Option value="" type="QString" name="name"/>
+              <Option name="properties"/>
+              <Option value="collection" type="QString" name="type"/>
+            </Option>
+          </dataDefinedProperties>
+          <customproperties/>
+        </LayoutObject>
+      </LayoutItem>
+      <LayoutMultiFrame vectorLayerSource="/home/nyall/dev/QGIS/tests/testdata/points.shp" wrapBehavior="0" vectorLayerName="points" showUniqueRowsOnly="0" resizeMode="0" backgroundColor="255,255,255,255" type="65649" showGrid="1" uuid="{25741952-c242-4d17-942e-21f550d35b81}" headerMode="0" cellMargin="1" filterFeatures="false" gridColor="0,0,0,255" horizontalGrid="1" headerHAlignment="0" emptyTableMessage="" relationId="" vectorLayer="points_ce766da2_f70f_4fc6_b852_4550b40ed354" emptyTableMode="0" gridStrokeWidth="0.5" templateUuid="{25741952-c242-4d17-942e-21f550d35b81}" showOnlyVisibleFeatures="0" maxFeatures="30" featureFilter="" vectorLayerProvider="ogr" wrapString="" contentFontColor="0,0,0,255" verticalGrid="1" headerFontColor="0,0,0,255" showEmptyRows="0" filterToAtlasIntersection="0" source="1">
+        <childFrame templateUuid="{c213c327-3a06-4ec3-82c3-de8a8ed4ebdd}" uuid="{c213c327-3a06-4ec3-82c3-de8a8ed4ebdd}"/>
+        <LayoutObject>
+          <dataDefinedProperties>
+            <Option type="Map">
+              <Option value="" type="QString" name="name"/>
+              <Option name="properties"/>
+              <Option value="collection" type="QString" name="type"/>
+            </Option>
+          </dataDefinedProperties>
+          <customproperties/>
+        </LayoutObject>
+        <headerFontProperties description="Cantarell,11,-1,5,50,0,0,0,0,0" style=""/>
+        <contentFontProperties description="Cantarell,11,-1,5,50,0,0,0,0,0" style=""/>
+        <displayColumns>
+          <column vAlignment="128" heading="Heading" hAlignment="1" sortByRank="0" attribute="Heading" sortOrder="0" width="0">
+            <backgroundColor green="0" red="0" blue="0" alpha="0"/>
+          </column>
+          <column vAlignment="128" heading="Staff" hAlignment="1" sortByRank="0" attribute="Staff" sortOrder="0" width="0">
+            <backgroundColor green="0" red="0" blue="0" alpha="0"/>
+          </column>
+        </displayColumns>
+        <cellStyles>
+          <oddColumns cellBackgroundColor="255,255,255,255" enabled="0"/>
+          <evenColumns cellBackgroundColor="255,255,255,255" enabled="0"/>
+          <oddRows cellBackgroundColor="255,255,255,255" enabled="0"/>
+          <evenRows cellBackgroundColor="255,255,255,255" enabled="0"/>
+          <firstColumn cellBackgroundColor="255,255,255,255" enabled="0"/>
+          <lastColumn cellBackgroundColor="255,255,255,255" enabled="0"/>
+          <headerRow cellBackgroundColor="255,255,255,255" enabled="0"/>
+          <firstRow cellBackgroundColor="255,255,255,255" enabled="0"/>
+          <lastRow cellBackgroundColor="255,255,255,255" enabled="0"/>
+        </cellStyles>
+      </LayoutMultiFrame>
+      <customproperties>
+        <property key="atlasRasterFormat" value="png"/>
+      </customproperties>
+      <Atlas coverageLayerProvider="ogr" coverageLayerName="points" pageNameExpression="" sortFeatures="0" hideCoverage="0" enabled="1" filenamePattern="'output_'||@atlas_featurenumber" coverageLayer="points_ce766da2_f70f_4fc6_b852_4550b40ed354" coverageLayerSource="/home/nyall/dev/QGIS/tests/testdata/points.shp" filterFeatures="0"/>
+    </Layout>
+  </Layouts>
+</qgis>

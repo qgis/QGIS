@@ -21,6 +21,8 @@
 #include "qgsspatialindex.h"
 #include "qgsmultipoint.h"
 #include "qgslogger.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -47,9 +49,9 @@ void QgsPointDistanceRenderer::toSld( QDomDocument &doc, QDomElement &element, c
 
 bool QgsPointDistanceRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
-  Q_UNUSED( drawVertexMarker );
-  Q_UNUSED( context );
-  Q_UNUSED( layer );
+  Q_UNUSED( drawVertexMarker )
+  Q_UNUSED( context )
+  Q_UNUSED( layer )
 
   /*
    * IMPORTANT: This algorithm is ported to Python in the processing "Points Displacement" algorithm.
@@ -150,9 +152,8 @@ void QgsPointDistanceRenderer::drawGroup( const ClusteredGroup &group, QgsRender
   QPointF pt = centroid.asQPointF();
   context.mapToPixel().transformInPlace( pt.rx(), pt.ry() );
 
-  context.expressionContext().appendScope( createGroupScope( group ) );
+  QgsExpressionContextScopePopper scopePopper( context.expressionContext(), createGroupScope( group ) );
   drawGroup( pt, context, group );
-  delete context.expressionContext().popScope();
 }
 
 void QgsPointDistanceRenderer::setEmbeddedRenderer( QgsFeatureRenderer *r )
@@ -203,6 +204,15 @@ QString QgsPointDistanceRenderer::filter( const QgsFields &fields )
     return QgsFeatureRenderer::filter( fields );
   else
     return mRenderer->filter( fields );
+}
+
+bool QgsPointDistanceRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( mRenderer )
+    if ( !mRenderer->accept( visitor ) )
+      return false;
+
+  return true;
 }
 
 QSet<QString> QgsPointDistanceRenderer::usedAttributes( const QgsRenderContext &context ) const
@@ -327,10 +337,13 @@ void QgsPointDistanceRenderer::stopRender( QgsRenderContext &context )
 
   //printInfoDisplacementGroups(); //just for debugging
 
-  const auto constMClusteredGroups = mClusteredGroups;
-  for ( const ClusteredGroup &group : constMClusteredGroups )
+  if ( !context.renderingStopped() )
   {
-    drawGroup( group, context );
+    const auto constMClusteredGroups = mClusteredGroups;
+    for ( const ClusteredGroup &group : constMClusteredGroups )
+    {
+      drawGroup( group, context );
+    }
   }
 
   mClusteredGroups.clear();
@@ -360,14 +373,14 @@ void QgsPointDistanceRenderer::printGroupInfo() const
 {
 #ifdef QGISDEBUG
   int nGroups = mClusteredGroups.size();
-  QgsDebugMsg( "number of displacement groups:" + QString::number( nGroups ) );
+  QgsDebugMsgLevel( "number of displacement groups:" + QString::number( nGroups ), 3 );
   for ( int i = 0; i < nGroups; ++i )
   {
-    QgsDebugMsg( "***************displacement group " + QString::number( i ) );
+    QgsDebugMsgLevel( "***************displacement group " + QString::number( i ), 3 );
     const auto constAt = mClusteredGroups.at( i );
     for ( const GroupedFeature &feature : constAt )
     {
-      QgsDebugMsg( FID_TO_STRING( feature.feature.id() ) );
+      QgsDebugMsgLevel( FID_TO_STRING( feature.feature.id() ), 3 );
     }
   }
 #endif
@@ -423,10 +436,9 @@ void QgsPointDistanceRenderer::drawLabels( QPointF centerPoint, QgsSymbolRenderC
     }
 
     QPointF drawingPoint( centerPoint + currentLabelShift );
-    p->save();
+    QgsScopedQPainterState painterState( p );
     p->translate( drawingPoint.x(), drawingPoint.y() );
     p->drawText( QPointF( 0, 0 ), groupIt->label );
-    p->restore();
   }
 }
 

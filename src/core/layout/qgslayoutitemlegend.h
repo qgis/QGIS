@@ -24,11 +24,13 @@
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
 #include "qgslayertreegroup.h"
+#include "qgsexpressioncontext.h"
 
 class QgsLayerTreeModel;
 class QgsSymbol;
 class QgsLayoutItemMap;
 class QgsLegendRenderer;
+class QgsLayoutItemLegend;
 
 /**
  * \ingroup core
@@ -44,11 +46,61 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 
   public:
     //! Construct the model based on the given layer tree
-    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = nullptr, QgsLayoutItemLegend *layout = nullptr );
+
+    //! Alternative constructor.
+    QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *layout );
 
     QVariant data( const QModelIndex &index, int role ) const override;
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+    /**
+     * Returns filtered list of active legend nodes attached to a particular layer node
+     * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
+     * \note Parameter skipNodeEmbeddedInParent added in QGIS 2.18
+     * \note Not available in Python bindings
+     * \see layerOriginalLegendNodes()
+     * \since QGIS 3.10
+     */
+    QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false ) const SIP_SKIP;
+
+    /**
+     * Clears any previously cached data for the specified \a node.
+     * \since QGIS 3.14
+     */
+    void clearCachedData( QgsLayerTreeNode *node ) const;
+
+  signals:
+
+    /**
+     * Emitted to refresh the legend.
+     * \since QGIS 3.10
+     */
+    void refreshLegend();
+
+  private slots:
+
+    /**
+     * Handle incoming signal to refresh the legend.
+     * \since QGIS 3.10
+     */
+    void forceRefresh();
+
+  private:
+
+    /**
+     * Pointer to the QgsLayoutItemLegend class that made the model.
+     * \since QGIS 3.10
+     */
+    QgsLayoutItemLegend *mLayoutLegend = nullptr;
+
+    /**
+     * Evaluate the expression or symbol expressions of a given layer node.
+     * \since QGIS 3.14
+     */
+    QString evaluateLayerExpressions( QgsLayerTreeLayer *nodeLayer ) const;
+
 };
 
 
@@ -267,6 +319,62 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void setSymbolWidth( double width );
 
     /**
+     * Returns the maximum symbol size (in mm). 0.0 means there is no maximum set.
+     *
+     * \see setMaximumSymbolSize()
+     * \since QGIS 3.16
+     */
+    double maximumSymbolSize() const;
+
+    /**
+     * Set the maximum symbol \a size for symbol (in millimeters).
+     *
+     * A symbol size of 0.0 indicates no maximum is set.
+     *
+     * \see maximumSymbolSize()
+     * \since QGIS 3.16
+     */
+    void setMaximumSymbolSize( double size );
+
+    /**
+     * Returns the minimum symbol size (in mm). A value 0.0 means there is no minimum set.
+     *
+     * \see setMinimumSymbolSize
+     * \since QGIS 3.16
+     */
+    double minimumSymbolSize() const;
+
+    /**
+     * Set the minimum symbol \a size for symbol (in millimeters).
+     *
+     * A symbol size of 0.0 indicates no minimum is set.
+     *
+     * \see minimumSymbolSize()
+     * \since QGIS 3.16
+     */
+    void setMinimumSymbolSize( double size );
+
+    /**
+     * Sets the \a alignment for placement of legend symbols.
+     *
+     * Only Qt::AlignLeft or Qt::AlignRight are supported values.
+     *
+     * \see symbolAlignment()
+     * \since QGIS 3.10
+     */
+    void setSymbolAlignment( Qt::AlignmentFlag alignment );
+
+    /**
+     * Returns the alignment for placement of legend symbols.
+     *
+     * Only Qt::AlignLeft or Qt::AlignRight are supported values.
+     *
+     * \see setSymbolAlignment()
+     * \since QGIS 3.10
+     */
+    Qt::AlignmentFlag symbolAlignment() const;
+
+    /**
      * Returns the legend symbol height.
      * \see setSymbolHeight()
      */
@@ -418,6 +526,15 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     QgsLayoutItemMap *linkedMap() const { return mMap; }
 
     /**
+     * Returns the name of the theme currently linked to the legend.
+     *
+     * This usually equates to the theme rendered in the linkedMap().
+     *
+     * \since QGIS 3.14
+     */
+    QString themeName() const;
+
+    /**
      * Updates the model and all legend entries.
      */
     void updateLegend();
@@ -437,7 +554,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void finalizeRestoreFromXml() override;
 
     QgsExpressionContext createExpressionContext() const override;
-
+    ExportLayerBehavior exportLayerBehavior() const override;
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
   public slots:
 
@@ -459,12 +577,17 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     //! update legend in case style of associated map has changed
     void mapLayerStyleOverridesChanged();
+    //! update legend in case theme of associated map has changed
+    void mapThemeChanged( const QString &theme );
 
     //! react to atlas
     void onAtlasEnded();
     void onAtlasFeature();
 
     void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
+
+    //! Clears any data cached for the legend model
+    void clearLegendCachedData();
 
   private:
     QgsLayoutItemLegend() = delete;
@@ -473,6 +596,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void setCustomLayerTree( QgsLayerTree *rootGroup );
 
     void setupMapConnections( QgsLayoutItemMap *map, bool connect = true );
+
+    void setModelStyleOverrides( const QMap<QString, QString> &overrides );
 
     std::unique_ptr< QgsLegendModel > mLegendModel;
     std::unique_ptr< QgsLayerTreeGroup > mCustomLayerTree;
@@ -506,6 +631,9 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     //! Will be TRUE if the legend should be resized automatically to fit contents
     bool mSizeToContents = true;
+
+    //! Name of theme for legend -- usually the theme associated with the linked map.
+    QString mThemeName;
 
     friend class QgsCompositionConverter;
 

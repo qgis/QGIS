@@ -39,6 +39,7 @@ class TestQgsMapLayerStyleManager : public QObject
     void testStyle();
     void testReadWrite();
     void testSwitchingStyles();
+    void testCopyStyles();
 
   private:
     QgsVectorLayer *mVL = nullptr;
@@ -88,7 +89,7 @@ void TestQgsMapLayerStyleManager::testStyle()
   st1.readFromLayer( mVL );
   QCOMPARE( st1.isValid(), true );
 
-  qDebug( "CNT-1: %s", st1.xmlData().toAscii().data() );
+  qDebug( "CNT-1: %s", st1.xmlData().toLatin1().data() );
 
   QgsLineSymbol *sym2 = new QgsLineSymbol();
   sym2->setColor( Qt::red );
@@ -97,7 +98,7 @@ void TestQgsMapLayerStyleManager::testStyle()
   QgsMapLayerStyle st2;
   st2.readFromLayer( mVL );
 
-  qDebug( "CNT-2: %s", st2.xmlData().toAscii().data() );
+  qDebug( "CNT-2: %s", st2.xmlData().toLatin1().data() );
 
   st1.writeToLayer( mVL );
 
@@ -139,7 +140,7 @@ void TestQgsMapLayerStyleManager::testReadWrite()
   QString xml;
   QTextStream ts( &xml );
   doc.save( ts, 2 );
-  qDebug( "%s", xml.toAscii().data() );
+  qDebug( "%s", xml.toLatin1().data() );
 
   QgsMapLayerStyleManager sm1( mVL );
   sm1.readXml( mgrElem );
@@ -198,6 +199,25 @@ void TestQgsMapLayerStyleManager::testSwitchingStyles()
 
   mVL->styleManager()->setCurrentStyle( QStringLiteral( "s1" ) );
   QCOMPARE( _getVLColor( mVL ), QColor( Qt::blue ) );
+}
+
+void TestQgsMapLayerStyleManager::testCopyStyles()
+{
+  std::unique_ptr<QgsVectorLayer> lines = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> lines2 = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
+
+  QgsMapLayerStyleManager *sm = lines->styleManager();
+
+  sm->addStyleFromLayer( QStringLiteral( "style2" ) );
+
+  QgsMapLayerStyleManager *sm2 = lines2->styleManager();
+
+  sm2->copyStylesFrom( sm );
+  sm2->addStyleFromLayer( "style3" );
+
+  QVERIFY( sm2->styles().contains( "style2" ) );
+  QVERIFY( sm2->styles().contains( "style3" ) );
+  QVERIFY( sm2->styles().contains( "default" ) );
 }
 
 

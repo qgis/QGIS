@@ -122,8 +122,8 @@ void QgsAuthSslConfigWidget::setUpSslConfigTree()
                            static_cast<int>( QSsl::SecureProtocols ) );
   mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::TlsV1SslV3 ),
                            static_cast<int>( QSsl::TlsV1SslV3 ) );
-  mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::TlsV1 ),
-                           static_cast<int>( QSsl::TlsV1 ) );
+  mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::TlsV1_0 ),
+                           static_cast<int>( QSsl::TlsV1_0 ) );
   mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::SslV3 ),
                            static_cast<int>( QSsl::SslV3 ) );
   mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::SslV2 ),
@@ -140,9 +140,9 @@ void QgsAuthSslConfigWidget::setUpSslConfigTree()
 
   mVerifyModeItem = addRootItem( tr( "Peer verification" ) );
   mVerifyPeerCmbBx = new QComboBox( treeSslConfig );
-  mVerifyPeerCmbBx->addItem( tr( "Verify peer certs" ),
+  mVerifyPeerCmbBx->addItem( tr( "Verify Peer Certs" ),
                              static_cast<int>( QSslSocket::VerifyPeer ) );
-  mVerifyPeerCmbBx->addItem( tr( "Do not verify peer certs" ),
+  mVerifyPeerCmbBx->addItem( tr( "Do Not Verify Peer Certs" ),
                              static_cast<int>( QSslSocket::VerifyNone ) );
   mVerifyPeerCmbBx->setMaximumWidth( 300 );
   mVerifyPeerCmbBx->setCurrentIndex( 0 );

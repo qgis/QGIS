@@ -34,13 +34,13 @@
  * Typically you will use this when you want to prompt the user for
  * a coordinate system identifier e.g. from a plugin you might do this
  * to get an epsg code:
- * \code{.cpp}
- * QgsProjectionSelectionDialog mySelector( mQGisIface->mainWindow() );
- * mySelector.setCrs( crs );
- * if ( mySelector.exec() )
- * {
- *   mCrs = mySelector.crs();
- * }
+ *
+ * \code{.py}
+ *     crs = QgsCoordinateReferenceSystem()
+ *     mySelector = QgsProjectionSelectionDialog( iface.mainWindow() )
+ *     mySelector.setCrs( crs )
+ *     if mySelector.exec():
+ *       mCrs = mySelector.crs()
  * \endcode
  *
  * If you wish to embed the projection selector into an existing dialog
@@ -105,7 +105,7 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
      * by the given Coordinate Reference Systems.
      *
      * \param crsFilter a list of OGC Coordinate Reference Systems to filter the
-     *                  list of projections by.  This is useful in (e.g.) WMS situations
+     *                  list of projections by. This is useful in (e.g.) WMS situations
      *                  where you just want to offer what the WMS server can support.
      *
      * \warning This function's behavior is undefined if it is called after the dialog is shown.

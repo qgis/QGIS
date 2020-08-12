@@ -30,6 +30,9 @@ extern "C"
 #if defined(_MSC_VER) && defined(M_PI_4)
 #undef M_PI_4 //avoid redefinition warning
 #endif
+#if defined(PROJ_VERSION_MAJOR) && PROJ_VERSION_MAJOR>=6
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
+#endif
 #include <grass/gprojects.h>
 #include <grass/gis.h>
 #include <grass/dbmi.h>
@@ -673,7 +676,7 @@ void QgsGrassVectorMapLayer::addColumn( const QgsField &field, QString &error )
       return;
     }
   }
-  else // the table alread exists
+  else // the table already exists
   {
     QString type = field.typeName();
     if ( type == QLatin1String( "varchar" ) )

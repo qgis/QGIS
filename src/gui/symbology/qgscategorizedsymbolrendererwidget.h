@@ -99,6 +99,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     ~QgsCategorizedSymbolRendererWidget() override;
 
     QgsFeatureRenderer *renderer() override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
 
     /**
      * Replaces category symbols with the symbols from a style that have a matching
@@ -148,10 +149,15 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
      */
     void matchToSymbolsFromXml();
 
+  protected slots:
+
+    void pasteSymbolToSelection() override;
+
   private slots:
 
     void cleanUpSymbolSelector( QgsPanelWidget *container );
     void updateSymbolsFromWidget();
+    void updateSymbolsFromButton();
     void dataDefinedSizeLegend();
 
     /**
@@ -170,11 +176,11 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
 
     void showContextMenu( QPoint p );
 
+    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
+
   protected:
 
     void updateUiFromRenderer();
-
-    void updateCategorizedSymbolIcon();
 
     // Called by virtual refreshSymbolView()
     void populateCategories();

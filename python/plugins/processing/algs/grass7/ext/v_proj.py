@@ -21,10 +21,6 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'November 2017'
 __copyright__ = '(C) 2017, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import QgsProcessingParameterString
 
 
@@ -32,7 +28,7 @@ def processInputs(alg, parameters, context, feedback):
     # Grab the projection from the input vector layer
     layer = alg.parameterAsLayer(parameters, 'input', context)
     alg.setSessionProjectionFromLayer(layer)
-    layerCrs = layer.crs().toProj4()
+    layerCrs = layer.crs().toProj()
 
     # Creates a new location with this Crs
     newLocation = 'newProj{}'.format(alg.uniqueSuffix)
@@ -52,8 +48,7 @@ def processInputs(alg, parameters, context, feedback):
 
     # Grab the projected Crs
     crs = alg.parameterAsCrs(parameters, 'crs', context)
-    alg.commands.append('g.proj -c proj4="{}"'.format(
-        crs.toProj4(), newLocation))
+    alg.commands.append('g.proj -c proj4="{}"'.format(crs.toProj()))
 
     # Remove crs parameter
     alg.removeParameter('crs')

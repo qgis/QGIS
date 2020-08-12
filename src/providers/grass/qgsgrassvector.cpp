@@ -31,6 +31,9 @@ extern "C"
 #if defined(_MSC_VER) && defined(M_PI_4)
 #undef M_PI_4 //avoid redefinition warning
 #endif
+#if defined(PROJ_VERSION_MAJOR) && PROJ_VERSION_MAJOR>=6
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
+#endif
 #include <grass/gprojects.h>
 #include <grass/vector.h>
 #include <grass/raster.h>
@@ -104,7 +107,7 @@ QgsFields QgsGrassVectorLayer::fields()
   {
     QgsDebugMsg( "dbln does not exist" );
     mFields.clear();
-    mFieldsTimeStamp.setTime_t( 0 );
+    mFieldsTimeStamp.setSecsSinceEpoch( 0 );
     return mFields;
   }
   if ( dblnFileInfo.lastModified() >  mFieldsTimeStamp && !mDriver.isEmpty()

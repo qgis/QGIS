@@ -21,7 +21,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgswfscapabilities.h"
 
-class QgsWfsRootItem : public QgsDataCollectionItem
+class QgsWfsRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:
@@ -32,14 +32,12 @@ class QgsWfsRootItem : public QgsDataCollectionItem
     QVariant sortKey() const override { return 9; }
 
 #ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override;
     QWidget *paramWidget() override;
 #endif
 
   public slots:
 #ifdef HAVE_GUI
     void onConnectionsChanged();
-    void newConnection();
 #endif
 };
 
@@ -54,20 +52,14 @@ class QgsWfsConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     //virtual bool equal( const QgsDataItem *other );
 
-#ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override;
-#endif
-
-  private slots:
-#ifdef HAVE_GUI
-    void editConnection();
-    void deleteConnection();
-#endif
-
   private:
     QString mUri;
 
-    QgsWfsCapabilities *mWfsCapabilities = nullptr;
+    QVector<QgsDataItem *> createChildrenOapif();
+
+    // QgsDataItem interface
+  public:
+    bool layerCollection() const override;
 };
 
 
@@ -76,7 +68,7 @@ class QgsWfsLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString );
+    QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString, const QString &providerKey );
 
     QList<QMenu *> menus( QWidget *parent ) override;
 
@@ -101,9 +93,9 @@ class QgsWfsLayerItem : public QgsLayerItem
 class QgsWfsDataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "WFS" ); }
-
-    int capabilities() override { return QgsDataProvider::Net; }
+    QString name() override;
+    QString dataProviderKey() const override;
+    int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 

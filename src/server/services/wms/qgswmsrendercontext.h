@@ -46,7 +46,9 @@ namespace QgsWms
         SetAccessControl       = 0x40,
         AddQueryLayers         = 0x80,
         UseWfsLayersOnly       = 0x100,
-        AddExternalLayers      = 0x200
+        AddExternalLayers      = 0x200,
+        UseSrcWidthHeight      = 0x400,
+        UseTileBuffer          = 0x800
       };
       Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -148,6 +150,13 @@ namespace QgsWms
       int imageQuality() const;
 
       /**
+       * Returns the tile buffer value to use for rendering according to the
+       * current configuration.
+       * \since QGIS 3.10
+       */
+      int tileBuffer() const;
+
+      /**
        * Returns the precision to use according to the current configuration.
        */
       int precision() const;
@@ -168,6 +177,12 @@ namespace QgsWms
        * Returns true if the layer has to be rendered, false otherwise.
        */
       bool isValidLayer( const QString &nickname ) const;
+
+      /**
+       * Returns the group's layers list corresponding to the nickname, or
+       * an empty list if not found.
+       */
+      QList<QgsMapLayer *> layersFromGroup( const QString &nickname ) const;
 
       /**
        * Returns true if \a name is a group.
@@ -199,6 +214,36 @@ namespace QgsWms
        */
       QMap<QString, QList<QgsMapLayer *> > layerGroups() const;
 
+      /**
+       * Returns the tile buffer in geographical units for the given map width in pixels.
+       * \since QGIS 3.10
+       */
+      double mapTileBuffer( int mapWidth ) const;
+
+      /**
+       * Returns the size (in pixels) of the map to render, according to width
+       * and height WMS parameters as well as the \a aspectRatio option.
+       * \since QGIS 3.8
+       */
+      QSize mapSize( bool aspectRatio = true ) const;
+
+      /**
+       * Returns true if width and height are valid according to the maximum
+       * values defined within the project, false otherwise.
+       * \since QGIS 3.8
+       */
+      bool isValidWidthHeight() const;
+
+      /**
+       * Returns WIDTH or SRCWIDTH according to \a UseSrcWidthHeight flag.
+       */
+      int mapWidth() const;
+
+      /**
+       * Returns HEIGHT or SRCHEIGHT according to \a UseSrcWidthHeight flag.
+       */
+      int mapHeight() const;
+
     private:
       void initNicknameLayers();
       void initRestrictedLayers();
@@ -216,11 +261,11 @@ namespace QgsWms
       const QgsProject *mProject = nullptr;
       QgsServerInterface *mInterface = nullptr;
       QgsWmsParameters mParameters;
-      Flags mFlags = nullptr;
+      Flags mFlags = Flags();
       double mScaleDenominator = -1.0;
 
       // nickname of all layers defined within the project
-      QMap<QString, QgsMapLayer *> mNicknameLayers;
+      QMultiMap<QString, QgsMapLayer *> mNicknameLayers;
 
       // map of layers to use for rendering
       QList<QgsMapLayer *> mLayersToRender;

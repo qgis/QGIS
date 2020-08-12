@@ -27,10 +27,18 @@ it to users via the GUI.
 %End
   public:
 
+    QgsProcessingFeedback( bool logFeedback = true );
+%Docstring
+Constructor for QgsProcessingFeedback.
+
+If ``logFeedback`` is ``True``, then all feedback received will be directed
+to :py:class:`QgsMessageLog`.
+%End
+
     virtual void setProgressText( const QString &text );
 %Docstring
 Sets a progress report text string. This can be used in conjunction with
-setProgress() to provide detailed progress reports, such as "Transformed
+:py:func:`~QgsProcessingFeedback.setProgress` to provide detailed progress reports, such as "Transformed
 4 of 5 layers".
 
 .. seealso:: :py:func:`setProgress`
@@ -100,6 +108,24 @@ Pushes a summary of the QGIS (and underlying library) version information to the
 .. versionadded:: 3.4.7
 %End
 
+    virtual QString htmlLog() const;
+%Docstring
+Returns the HTML formatted contents of the log, which contains all messages pushed to the feedback object.
+
+.. seealso:: :py:func:`textLog`
+
+.. versionadded:: 3.14
+%End
+
+    virtual QString textLog() const;
+%Docstring
+Returns the plain text contents of the log, which contains all messages pushed to the feedback object.
+
+.. seealso:: :py:func:`htmlLog`
+
+.. versionadded:: 3.14
+%End
+
 };
 
 
@@ -136,7 +162,7 @@ to scale the current progress to account for progress through the overall proces
 
     virtual void setProgressText( const QString &text );
 
-    virtual void reportError( const QString &error, bool fatalError );
+    virtual void reportError( const QString &error, bool fatalError = false );
 
     virtual void pushInfo( const QString &info );
 
@@ -146,6 +172,9 @@ to scale the current progress to account for progress through the overall proces
 
     virtual void pushConsoleInfo( const QString &info );
 
+    virtual QString htmlLog() const;
+
+    virtual QString textLog() const;
 
 };
 

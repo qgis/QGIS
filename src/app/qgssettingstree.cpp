@@ -198,8 +198,7 @@ void QgsSettingsTree::showContextMenu( QPoint pos )
 
 
         mSettings->remove( itemPath );
-        if ( mAutoRefresh )
-          refresh();
+        refresh();
 
       } );
       mContextMenu->addAction( deleteAction );
@@ -217,8 +216,7 @@ void QgsSettingsTree::showContextMenu( QPoint pos )
           return;
 
         mSettings->remove( itemPath );
-        if ( mAutoRefresh )
-          refresh();
+        refresh();
       } );
 
       mContextMenu->addAction( deleteSetting );

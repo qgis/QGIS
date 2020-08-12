@@ -230,7 +230,7 @@ void QgsExternalResourceWidget::loadDocument( const QString &path )
 #ifdef WITH_QTWEBKIT
     if ( mDocumentViewerContent == Web )
     {
-      mWebView->setUrl( QUrl::fromEncoded( resolvedPath.toUtf8() ) );
+      mWebView->load( QUrl::fromEncoded( resolvedPath.toUtf8() ) );
       mWebView->page()->settings()->setAttribute( QWebSettings::LocalStorageEnabled, true );
     }
 #endif
@@ -241,10 +241,11 @@ void QgsExternalResourceWidget::loadDocument( const QString &path )
       QImageReader ir( resolvedPath );
       ir.setAutoTransform( true );
       QPixmap pm = QPixmap::fromImage( ir.read() );
-      mPixmapLabel->setPixmap( pm );
+      if ( !pm.isNull() )
+        mPixmapLabel->setPixmap( pm );
+      else
+        mPixmapLabel->clear();
       updateDocumentViewer();
     }
   }
 }
-
-

@@ -48,7 +48,7 @@ namespace MathUtils
   bool ANALYSIS_EXPORT inCircle( QgsPoint *testp, QgsPoint *p1, QgsPoint *p2, QgsPoint *p3 );
   //! Tests, whether 'point' is inside the diametral circle through 'p1' and 'p2'
   bool ANALYSIS_EXPORT inDiametral( QgsPoint *p1, QgsPoint *p2, QgsPoint *point );
-  //! Returns whether 'thepoint' is left or right of the line from 'p1' to 'p2'. Negativ values mean left and positiv values right. There may be numerical instabilities, so a threshold may be useful
+  //! Returns whether 'thepoint' is left or right of the line from 'p1' to 'p2'. Negative values mean left and positive values right. There may be numerical instabilities, so a threshold may be useful
   double ANALYSIS_EXPORT leftOf( const QgsPoint &thepoint, const QgsPoint *p1, const QgsPoint *p2 );
   //! Returns TRUE, if line1 (p1 to p2) and line2 (p3 to p4) intersect. If the lines have an endpoint in common, FALSE is returned
   bool ANALYSIS_EXPORT lineIntersection( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint *p4 );
@@ -56,7 +56,7 @@ namespace MathUtils
   bool ANALYSIS_EXPORT lineIntersection( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint *p4, QgsPoint *intersection_point );
   //! Lower function
   int ANALYSIS_EXPORT lower( int n, int i );
-  //! Returns the area of a triangle. If the points are ordered counterclockwise, the value will be positiv. If they are ordered clockwise, the value will be negativ
+  //! Returns the area of a triangle. If the points are ordered counterclockwise, the value will be positive. If they are ordered clockwise, the value will be negative
   double ANALYSIS_EXPORT triArea( QgsPoint *pa, QgsPoint *pb, QgsPoint *pc );
   //! Calculates the z-component of a vector with coordinates 'x' and 'y'which is in the same tangent plane as the tangent vectors 'v1' and 'v2'. The result is assigned to 'result'
   bool ANALYSIS_EXPORT derVec( const Vector3D *v1, const Vector3D *v2, Vector3D *result, double x, double y );

@@ -57,23 +57,14 @@ void QgsDecorationItem::update()
 
 void QgsDecorationItem::projectRead()
 {
-  mEnabled = QgsProject::instance()->readBoolEntry( mNameConfig, QStringLiteral( "/Enabled" ), false );
-  mPlacement = static_cast< Placement >( QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/Placement" ), static_cast< int >( mPlacement ) ) );
-  mMarginUnit = QgsUnitTypes::decodeRenderUnit( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/MarginUnit" ), QgsUnitTypes::encodeUnit( mMarginUnit ) ) );
+  mEnabled = QgsProject::instance()->readBoolEntry( mConfigurationName, QStringLiteral( "/Enabled" ), false );
+  mPlacement = static_cast< Placement >( QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/Placement" ), static_cast< int >( mPlacement ) ) );
+  mMarginUnit = QgsUnitTypes::decodeRenderUnit( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/MarginUnit" ), QgsUnitTypes::encodeUnit( mMarginUnit ) ) );
 }
 
 void QgsDecorationItem::saveToProject()
 {
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Enabled" ), mEnabled );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Placement" ), static_cast< int >( mPlacement ) );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginUnit" ), QgsUnitTypes::encodeUnit( mMarginUnit ) );
-}
-
-void QgsDecorationItem::setName( const char *name )
-{
-  mName = name;
-  mNameConfig = name;
-  mNameConfig.remove( ' ' );
-  mNameTranslated = tr( name );
-  QgsDebugMsg( QStringLiteral( "name=%1 nameconfig=%2 nametrans=%3" ).arg( mName, mNameConfig, mNameTranslated ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Enabled" ), mEnabled );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Placement" ), static_cast< int >( mPlacement ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginUnit" ), QgsUnitTypes::encodeUnit( mMarginUnit ) );
 }

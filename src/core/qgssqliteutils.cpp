@@ -20,6 +20,13 @@
 #include <sqlite3.h>
 #include <cstdarg>
 #include <QVariant>
+#include <QSet>
+
+// Temporary solution until GDAL Unique support is available
+#include <regex>
+#include <sstream>
+#include <algorithm>
+// end temporary
 
 void QgsSqlite3Closer::operator()( sqlite3 *database )
 {
@@ -54,6 +61,13 @@ int sqlite3_statement_unique_ptr::columnCount() const
 QString sqlite3_statement_unique_ptr::columnAsText( int column ) const
 {
   return QString::fromUtf8( reinterpret_cast<const char *>( sqlite3_column_text( get(), column ) ) );
+}
+
+QByteArray sqlite3_statement_unique_ptr::columnAsBlob( int column ) const
+{
+  const void *blob = sqlite3_column_blob( get(), column );
+  int size = sqlite3_column_bytes( get(), column );
+  return QByteArray( reinterpret_cast<const char *>( blob ), size );
 }
 
 qlonglong sqlite3_statement_unique_ptr::columnAsInt64( int column ) const
@@ -105,6 +119,131 @@ int sqlite3_database_unique_ptr::exec( const QString &sql, QString &errorMessage
   }
 
   return ret;
+}
+
+QSet<QString> QgsSqliteUtils::uniqueFields( sqlite3 *connection, const QString &tableName, QString &errorMessage )
+{
+  QSet<QString> uniqueFieldsResults;
+  char *zErrMsg = 0;
+  std::vector<std::string> rows;
+  QByteArray tableNameUtf8 = quotedIdentifier( tableName ).toUtf8();
+  QString sql = QgsSqlite3Mprintf( "select sql from sqlite_master "
+                                   "where type='table' and name=%q", tableNameUtf8.constData() );
+  auto cb = [ ](
+              void *data /* Data provided in the 4th argument of sqlite3_exec() */,
+              int /* The number of columns in row */,
+              char **argv /* An array of strings representing fields in the row */,
+              char ** /* An array of strings representing column names */ ) -> int
+  {
+    static_cast<std::vector<std::string>*>( data )->push_back( argv[0] );
+    return 0;
+  };
+
+  int rc = sqlite3_exec( connection, sql.toUtf8(), cb, ( void * )&rows, &zErrMsg );
+  if ( rc != SQLITE_OK )
+  {
+    errorMessage = zErrMsg;
+    sqlite3_free( zErrMsg );
+    return uniqueFieldsResults;
+  }
+
+  // Match identifiers with " or ` or no delimiter (and no spaces).
+  std::smatch uniqueFieldMatch;
+  static const std::regex sFieldIdentifierRe { R"raw(\s*(["`]([^"`]+)["`])|(([^\s]+)\s).*)raw" };
+  for ( auto tableDefinition : rows )
+  {
+    tableDefinition = tableDefinition.substr( tableDefinition.find( '(' ), tableDefinition.rfind( ')' ) );
+    std::stringstream tableDefinitionStream { tableDefinition };
+    while ( tableDefinitionStream.good() )
+    {
+      std::string fieldStr;
+      std::getline( tableDefinitionStream, fieldStr, ',' );
+      std::string upperCaseFieldStr { fieldStr };
+      std::transform( upperCaseFieldStr.begin(), upperCaseFieldStr.end(), upperCaseFieldStr.begin(), ::toupper );
+      if ( upperCaseFieldStr.find( "UNIQUE" ) != std::string::npos )
+      {
+        if ( std::regex_search( fieldStr, uniqueFieldMatch, sFieldIdentifierRe ) )
+        {
+          const std::string quoted { uniqueFieldMatch.str( 2 ) };
+          uniqueFieldsResults.insert( QString::fromStdString( quoted.length() ? quoted :  uniqueFieldMatch.str( 4 ) ) );
+        }
+      }
+    }
+  }
+  rows.clear();
+
+  // Search indexes:
+  sql = QgsSqlite3Mprintf( "SELECT sql FROM sqlite_master WHERE type='index' AND"
+                           " tbl_name='%q' AND sql LIKE 'CREATE UNIQUE INDEX%%'", tableNameUtf8.constData() );
+  rc = sqlite3_exec( connection, sql.toUtf8(), cb, ( void * )&rows, &zErrMsg );
+  if ( rc != SQLITE_OK )
+  {
+    errorMessage = zErrMsg;
+    sqlite3_free( zErrMsg );
+    return uniqueFieldsResults;
+  }
+
+  if ( rows.size() > 0 )
+  {
+    static const std::regex sFieldIndexIdentifierRe { R"raw(\(\s*[`"]?([^",`\)]+)["`]?\s*\))raw" };
+    for ( auto indexDefinition : rows )
+    {
+      std::string upperCaseIndexDefinition { indexDefinition };
+      std::transform( upperCaseIndexDefinition.begin(), upperCaseIndexDefinition.end(), upperCaseIndexDefinition.begin(), ::toupper );
+      if ( upperCaseIndexDefinition.find( "UNIQUE" ) != std::string::npos )
+      {
+        indexDefinition = indexDefinition.substr( indexDefinition.find( '(' ), indexDefinition.rfind( ')' ) );
+        if ( std::regex_search( indexDefinition, uniqueFieldMatch, sFieldIndexIdentifierRe ) )
+        {
+          uniqueFieldsResults.insert( QString::fromStdString( uniqueFieldMatch.str( 1 ) ) );
+        }
+      }
+    }
+  }
+  return uniqueFieldsResults;
+}
+
+long long QgsSqliteUtils::nextSequenceValue( sqlite3 *connection, const QString &tableName, QString errorMessage )
+{
+  long long result { -1 };
+  sqlite3_database_unique_ptr dsPtr;
+  dsPtr.reset( connection );
+  const QString quotedTableName { QgsSqliteUtils::quotedValue( tableName ) };
+
+  int resultCode;
+  sqlite3_statement_unique_ptr stmt { dsPtr.prepare( QStringLiteral( "SELECT seq FROM sqlite_sequence WHERE name = %1" )
+                                      .arg( quotedTableName ), resultCode )};
+  if ( resultCode == SQLITE_OK )
+  {
+    stmt.step();
+    result = sqlite3_column_int64( stmt.get(), 0 );
+    // Try to create the sequence in case this is an empty layer
+    if ( sqlite3_column_count( stmt.get() ) == 0 )
+    {
+      dsPtr.exec( QStringLiteral( "INSERT INTO sqlite_sequence (name, seq) VALUES (%1, 1)" ).arg( quotedTableName ), errorMessage );
+      if ( errorMessage.isEmpty() )
+      {
+        result = 1;
+      }
+      else
+      {
+        errorMessage = QObject::tr( "Error retrieving default value for %1" ).arg( tableName );
+      }
+    }
+    else // increment
+    {
+      if ( dsPtr.exec( QStringLiteral( "UPDATE sqlite_sequence SET seq = %1 WHERE name = %2" )
+                       .arg( QString::number( ++result ), quotedTableName ),
+                       errorMessage ) != SQLITE_OK )
+      {
+        errorMessage = QObject::tr( "Error retrieving default value for %1" ).arg( tableName );
+        result = -1;
+      }
+    }
+  }
+
+  dsPtr.release();
+  return result;
 }
 
 QString QgsSqliteUtils::quotedString( const QString &value )

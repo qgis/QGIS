@@ -24,6 +24,7 @@
 #include "qgsgeometry.h" //each feature needs a geometry
 #include "qgspointxy.h" //we will use point geometry
 #include "qgscoordinatereferencesystem.h" //needed for creating a srs
+#include "qgscoordinatetransformcontext.h"
 #include "qgsapplication.h" //search path for srs.db
 #include "qgslogger.h"
 #include "qgsfield.h"
@@ -62,6 +63,12 @@ class TestQgsVectorFileWriter: public QObject
   public:
     TestQgsVectorFileWriter();
 
+    void _testExportToGpx( const QString &geomTypeName,
+                           const QString &wkt,
+                           const QString &expectedLayerName,
+                           const QString &inputLayerName = QStringLiteral( "test" ),
+                           const QStringList &layerOptions = QStringList() );
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void init() {} // will be called before each testfunction is executed.
@@ -78,12 +85,26 @@ class TestQgsVectorFileWriter: public QObject
     void polygonGridTest();
     //! As above but using a projected CRS
     void projectedPlygonGridTest();
-    //! This is a regression test ticket 1141 (broken Polish characters support since r8592) https://issues.qgis.org/issues/1141
+    //! This is a regression test ticket 1141 (broken Polish characters support since r8592) https://github.com/qgis/QGIS/issues/11201
     void regression1141();
     //! Test prepareWriteAsVectorFormat
     void prepareWriteAsVectorFormat();
     //! Test regression #21714 (Exported GeoPackages have wrong field definitions)
     void testTextFieldLength();
+    //! Test https://github.com/qgis/QGIS/issues/29819
+    void testExportToGpxPoint();
+    //! Test https://github.com/qgis/QGIS/issues/29819
+    void testExportToGpxPointTrackPoints();
+    //! Test https://github.com/qgis/QGIS/issues/29819
+    void testExportToGpxPointRoutePoints();
+    //! Test https://github.com/qgis/QGIS/issues/29819
+    void testExportToGpxLineString();
+    //! Test https://github.com/qgis/QGIS/issues/29819
+    void testExportToGpxLineStringForceTrack();
+    //! Test https://github.com/qgis/QGIS/issues/29819
+    void testExportToGpxMultiLineString();
+    //! Test https://github.com/qgis/QGIS/issues/29819
+    void testExportToGpxMultiLineStringForceRoute();
 
   private:
     // a little util fn used by all tests
@@ -116,7 +137,7 @@ void TestQgsVectorFileWriter::initTestCase()
   mEncoding = QStringLiteral( "UTF-8" );
   QgsField myField1( QStringLiteral( "Field1" ), QVariant::String, QStringLiteral( "String" ), 10, 0, QStringLiteral( "Field 1 comment" ) );
   mFields.append( myField1 );
-  mCRS = QgsCoordinateReferenceSystem( GEOWKT );
+  mCRS = QgsCoordinateReferenceSystem( geoWkt() );
   mPoint1 = QgsPointXY( 10.0, 10.0 );
   mPoint2 = QgsPointXY( 15.0, 10.0 );
   mPoint3 = QgsPointXY( 15.0, 12.0 );
@@ -138,11 +159,10 @@ void TestQgsVectorFileWriter::createPoint()
   QString myFileName = QStringLiteral( "/testpt.shp" );
   myFileName = QDir::tempPath() + myFileName;
   QVERIFY( QgsVectorFileWriter::deleteShapeFile( myFileName ) );
-  QgsVectorFileWriter myWriter( myFileName,
-                                mEncoding,
-                                mFields,
-                                QgsWkbTypes::Point,
-                                mCRS );
+
+  QgsVectorFileWriter::SaveVectorOptions saveOptions;
+  saveOptions.fileEncoding = mEncoding;
+  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, QgsWkbTypes::Point, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
   //
   // Create a feature
   //
@@ -156,8 +176,8 @@ void TestQgsVectorFileWriter::createPoint()
   // Write the feature to the filewriter
   // and check for errors
   //
-  QVERIFY( myWriter.addFeature( myFeature ) );
-  mError = myWriter.hasError();
+  QVERIFY( writer->addFeature( myFeature ) );
+  mError = writer->hasError();
   if ( mError == QgsVectorFileWriter::ErrDriverNotFound )
   {
     std::cout << "Driver not found error" << std::endl;
@@ -181,11 +201,10 @@ void TestQgsVectorFileWriter::createLine()
   QString myFileName = QStringLiteral( "/testln.shp" );
   myFileName = QDir::tempPath() + myFileName;
   QVERIFY( QgsVectorFileWriter::deleteShapeFile( myFileName ) );
-  QgsVectorFileWriter myWriter( myFileName,
-                                mEncoding,
-                                mFields,
-                                QgsWkbTypes::LineString,
-                                mCRS );
+
+  QgsVectorFileWriter::SaveVectorOptions saveOptions;
+  saveOptions.fileEncoding = mEncoding;
+  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, QgsWkbTypes::LineString, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
   //
   // Create a feature
   //
@@ -200,8 +219,8 @@ void TestQgsVectorFileWriter::createLine()
   // Write the feature to the filewriter
   // and check for errors
   //
-  QVERIFY( myWriter.addFeature( myFeature ) );
-  mError = myWriter.hasError();
+  QVERIFY( writer->addFeature( myFeature ) );
+  mError = writer->hasError();
   if ( mError == QgsVectorFileWriter::ErrDriverNotFound )
   {
     std::cout << "Driver not found error" << std::endl;
@@ -226,11 +245,10 @@ void TestQgsVectorFileWriter::createPolygon()
   QString myFileName = QStringLiteral( "/testply.shp" );
   myFileName = QDir::tempPath() + myFileName;
   QVERIFY( QgsVectorFileWriter::deleteShapeFile( myFileName ) );
-  QgsVectorFileWriter myWriter( myFileName,
-                                mEncoding,
-                                mFields,
-                                QgsWkbTypes::Polygon,
-                                mCRS );
+
+  QgsVectorFileWriter::SaveVectorOptions saveOptions;
+  saveOptions.fileEncoding = mEncoding;
+  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, QgsWkbTypes::Polygon, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
   //
   // Create a polygon feature
   //
@@ -250,8 +268,8 @@ void TestQgsVectorFileWriter::createPolygon()
   // Write the feature to the filewriter
   // and check for errors
   //
-  QVERIFY( myWriter.addFeature( myFeature ) );
-  mError = myWriter.hasError();
+  QVERIFY( writer->addFeature( myFeature ) );
+  mError = writer->hasError();
   if ( mError == QgsVectorFileWriter::ErrDriverNotFound )
   {
     std::cout << "Driver not found error" << std::endl;
@@ -274,11 +292,10 @@ void TestQgsVectorFileWriter::polygonGridTest()
   QString myFileName = QStringLiteral( "/testgrid.shp" );
   myFileName = QDir::tempPath() + myFileName;
   QVERIFY( QgsVectorFileWriter::deleteShapeFile( myFileName ) );
-  QgsVectorFileWriter myWriter( myFileName,
-                                mEncoding,
-                                mFields,
-                                QgsWkbTypes::Polygon,
-                                mCRS );
+
+  QgsVectorFileWriter::SaveVectorOptions saveOptions;
+  saveOptions.fileEncoding = mEncoding;
+  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, QgsWkbTypes::Polygon, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
   double myInterval = 5.0;
   for ( double i = -180.0; i <= 180.0; i += myInterval )
   {
@@ -307,8 +324,8 @@ void TestQgsVectorFileWriter::polygonGridTest()
       // Write the feature to the filewriter
       // and check for errors
       //
-      QVERIFY( myWriter.addFeature( myFeature ) );
-      mError = myWriter.hasError();
+      QVERIFY( writer->addFeature( myFeature ) );
+      mError = writer->hasError();
       if ( mError == QgsVectorFileWriter::ErrDriverNotFound )
       {
         std::cout << "Driver not found error" << std::endl;
@@ -334,21 +351,14 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
   QString myFileName = QStringLiteral( "/testprjgrid.shp" );
   myFileName = QDir::tempPath() + myFileName;
   QVERIFY( QgsVectorFileWriter::deleteShapeFile( myFileName ) );
-  //
+
   // We are testing projected coordinate
-  // system vector writing to lets use something fun...
-  // Jamaica National Grid
-  // QGIS CRSID: 1286
-  // PostGIS SRID: 24200
-  // +proj=lcc +lat_1=18 +lat_0=18 +lon_0=-77 +k_0=1 +x_0=250000
-  // +y_0=150000 +ellps=clrk66 +units=m +no_defs
-  //
-  mCRS = QgsCoordinateReferenceSystem( 1286, QgsCoordinateReferenceSystem::InternalCrsId );
-  QgsVectorFileWriter myWriter( myFileName,
-                                mEncoding,
-                                mFields,
-                                QgsWkbTypes::Polygon,
-                                mCRS );
+  // system vector writing...
+  mCRS = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3328" ) );
+
+  QgsVectorFileWriter::SaveVectorOptions saveOptions;
+  saveOptions.fileEncoding = mEncoding;
+  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, QgsWkbTypes::Polygon, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
   double myInterval = 1000.0; //1km2
   for ( double i = 0.0; i <= 10000.0; i += myInterval ) //10km
   {
@@ -377,8 +387,8 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
       // Write the feature to the filewriter
       // and check for errors
       //
-      QVERIFY( myWriter.addFeature( myFeature ) );
-      mError = myWriter.hasError();
+      QVERIFY( writer->addFeature( myFeature ) );
+      mError = writer->hasError();
       if ( mError == QgsVectorFileWriter::ErrDriverNotFound )
       {
         std::cout << "Driver not found error" << std::endl;
@@ -414,7 +424,7 @@ void TestQgsVectorFileWriter::regression1141()
   QgsFields fields;
   fields.append( myField );
   QgsCoordinateReferenceSystem crs;
-  crs = QgsCoordinateReferenceSystem( GEOWKT );
+  crs = QgsCoordinateReferenceSystem( geoWkt() );
   QString tmpDir = QDir::tempPath() + '/';
   QString fileName = tmpDir +  "ąęćń.shp";
 
@@ -423,11 +433,9 @@ void TestQgsVectorFileWriter::regression1141()
   qDebug( "Creating test dataset: " );
 
   {
-    QgsVectorFileWriter myWriter( fileName,
-                                  encoding,
-                                  fields,
-                                  QgsWkbTypes::Point,
-                                  crs );
+    QgsVectorFileWriter::SaveVectorOptions saveOptions;
+    saveOptions.fileEncoding = encoding;
+    std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( fileName, fields, QgsWkbTypes::Point, crs, QgsCoordinateTransformContext(), saveOptions ) );
 
     QgsPointXY myPoint = QgsPointXY( 10.0, 10.0 );
     QgsGeometry mypPointGeometry = QgsGeometry::fromPointXY( myPoint );
@@ -439,8 +447,8 @@ void TestQgsVectorFileWriter::regression1141()
     // Write the feature to the filewriter
     // and check for errors
     //
-    QVERIFY( myWriter.addFeature( myFeature ) );
-    QgsVectorFileWriter::WriterError error = myWriter.hasError();
+    QVERIFY( writer->addFeature( myFeature ) );
+    QgsVectorFileWriter::WriterError error = writer->hasError();
 
     if ( error == QgsVectorFileWriter::ErrDriverNotFound )
     {
@@ -477,15 +485,16 @@ void TestQgsVectorFileWriter::prepareWriteAsVectorFormat()
   QString fileName( tmpFile.fileName( ) );
   options.driverName = "GPKG";
   options.layerName = "test";
-  QString errorMessage;
-  QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormat(
+  QString newFilename;
+  QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV2(
       &ml,
       fileName,
+      ml.transformContext(),
       options,
-      &errorMessage ) );
+      &newFilename ) );
 
   QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
-  QCOMPARE( errorMessage, fileName );
+  QCOMPARE( newFilename, fileName );
   QgsVectorLayer vl( QStringLiteral( "%1|layername=test" ).arg( fileName ), "src_test", "ogr" );
   QVERIFY( vl.isValid() );
   QgsVectorFileWriter::prepareWriteAsVectorFormat( &vl, options, details );
@@ -500,11 +509,6 @@ void TestQgsVectorFileWriter::testTextFieldLength()
   QString fileName( tmpFile.fileName( ) );
   QgsVectorLayer vl( "Point?field=firstfield:string(1024)", "test", "memory" );
   QCOMPARE( vl.fields().at( 0 ).length(), 1024 );
-  QgsVectorFileWriter w( fileName,
-                         QStringLiteral( "UTF-8" ),
-                         vl.fields(),
-                         QgsWkbTypes::Point,
-                         vl.crs() );
   QgsFeature f { vl.fields() };
   f.setAttribute( 0, QString( 1024, 'x' ) );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "point(9 45)" ) ) );
@@ -513,20 +517,127 @@ void TestQgsVectorFileWriter::testTextFieldLength()
   QgsVectorFileWriter::SaveVectorOptions options;
   options.driverName = "GPKG";
   options.layerName = "test";
-  QString errorMessage;
-  QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormat(
+  QString newFilename;
+  QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV2(
       &vl,
       fileName,
+      vl.transformContext(),
       options,
-      &errorMessage ) );
+      &newFilename ) );
   QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
-  QCOMPARE( errorMessage, fileName );
+  QCOMPARE( newFilename, fileName );
   QgsVectorLayer vl2( QStringLiteral( "%1|layername=test" ).arg( fileName ), "src_test", "ogr" );
   QVERIFY( vl2.isValid() );
   QCOMPARE( vl2.featureCount(), 1L );
   QCOMPARE( vl2.fields().at( 1 ).length(), 1024 );
   QCOMPARE( vl2.getFeature( 1 ).attribute( 1 ).toString(), QString( 1024, 'x' ) );
 
+}
+
+void TestQgsVectorFileWriter::_testExportToGpx( const QString &geomTypeName,
+    const QString &wkt,
+    const QString &expectedLayerName,
+    const QString &inputLayerName,
+    const QStringList &layerOptions )
+{
+  QTemporaryFile tmpFile( QDir::tempPath() +  "/test_qgsvectorfilewriter_testExportToGpx" + geomTypeName + "_XXXXXX.gpx" );
+  tmpFile.open();
+  QString fileName( tmpFile.fileName( ) );
+  QString memLayerDef( geomTypeName );
+  if ( inputLayerName == QLatin1String( "track_points" ) )
+  {
+    memLayerDef += QStringLiteral( "?field=track_fid:int&field=track_seg_id:int" );
+  }
+  else if ( inputLayerName == QLatin1String( "route_points" ) )
+  {
+    memLayerDef += QStringLiteral( "?field=route_fid:int" );
+  }
+  QgsVectorLayer vl( memLayerDef, "test", "memory" );
+  QgsFeature f { vl.fields() };
+  if ( inputLayerName == QLatin1String( "track_points" ) )
+  {
+    f.setAttribute( 0, 1 );
+    f.setAttribute( 1, 1 );
+  }
+  else if ( inputLayerName == QLatin1String( "route_points" ) )
+  {
+    f.setAttribute( 0, 1 );
+  }
+  f.setGeometry( QgsGeometry::fromWkt( wkt ) );
+  QVERIFY( vl.startEditing() );
+  QVERIFY( vl.addFeature( f ) );
+  QgsVectorFileWriter::SaveVectorOptions options;
+  options.driverName = "GPX";
+  options.layerName = inputLayerName;
+  options.layerOptions = layerOptions;
+  QString outLayerName;
+  QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV2(
+      &vl,
+      fileName,
+      vl.transformContext(),
+      options,
+      nullptr, // newFilename
+      &outLayerName ) );
+  QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
+  QCOMPARE( outLayerName, expectedLayerName );
+  QgsVectorLayer vl2( QStringLiteral( "%1|layername=%2" ).arg( fileName ).arg( outLayerName ), "src_test", "ogr" );
+  QVERIFY( vl2.isValid() );
+  QCOMPARE( vl2.featureCount(), 1L );
+}
+
+void TestQgsVectorFileWriter::testExportToGpxPoint()
+{
+  _testExportToGpx( QStringLiteral( "Point" ),
+                    QStringLiteral( "point(9 45)" ),
+                    QStringLiteral( "waypoints" ) );
+}
+
+void TestQgsVectorFileWriter::testExportToGpxPointTrackPoints()
+{
+  _testExportToGpx( QStringLiteral( "Point" ),
+                    QStringLiteral( "point(9 45)" ),
+                    QStringLiteral( "track_points" ),
+                    QStringLiteral( "track_points" ) );
+}
+
+void TestQgsVectorFileWriter::testExportToGpxPointRoutePoints()
+{
+  _testExportToGpx( QStringLiteral( "Point" ),
+                    QStringLiteral( "point(9 45)" ),
+                    QStringLiteral( "route_points" ),
+                    QStringLiteral( "route_points" ) );
+}
+
+void TestQgsVectorFileWriter::testExportToGpxLineString()
+{
+  _testExportToGpx( QStringLiteral( "LineString" ),
+                    QStringLiteral( "linestring(9 45,10 46)" ),
+                    QStringLiteral( "routes" ) );
+}
+
+void TestQgsVectorFileWriter::testExportToGpxLineStringForceTrack()
+{
+  _testExportToGpx( QStringLiteral( "LineString" ),
+                    QStringLiteral( "linestring(9 45,10 46)" ),
+                    QStringLiteral( "tracks" ),
+                    QStringLiteral( "test" ),
+                    QStringList() << QStringLiteral( "FORCE_GPX_TRACK=YES" ) );
+}
+
+void TestQgsVectorFileWriter::testExportToGpxMultiLineString()
+{
+  _testExportToGpx( QStringLiteral( "MultiLineString" ),
+                    QStringLiteral( "multilinestring((9 45,10 46))" ),
+                    QStringLiteral( "tracks" ) );
+}
+
+void TestQgsVectorFileWriter::testExportToGpxMultiLineStringForceRoute()
+{
+  _testExportToGpx( QStringLiteral( "MultiLineString" ),
+                    QStringLiteral( "multilinestring((9 45,10 46))" ),
+                    QStringLiteral( "routes" ),
+                    QStringLiteral( "test" ),
+                    QStringList() << QStringLiteral( "FORCE_GPX_ROUTE=YES" ) );
 }
 
 QGSTEST_MAIN( TestQgsVectorFileWriter )

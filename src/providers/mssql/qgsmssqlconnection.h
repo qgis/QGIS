@@ -21,6 +21,9 @@
 #include <QStringList>
 #include <QMutex>
 
+#include "qgsdatasourceuri.h"
+#include "qgsvectordataprovider.h"
+
 class QString;
 class QSqlDatabase;
 
@@ -127,6 +130,11 @@ class QgsMssqlConnection
     static bool dropTable( const QString &uri, QString *errorMessage );
 
     /**
+     * Drops the view referenced by \a uri.
+     */
+    static bool dropView( const QString &uri, QString *errorMessage );
+
+    /**
      * Truncates the table referenced by \a uri.
      */
     static bool truncateTable( const QString &uri, QString *errorMessage );
@@ -145,6 +153,23 @@ class QgsMssqlConnection
      * Returns true if the given \a schema is a system schema.
      */
     static bool isSystemSchema( const QString &schema );
+
+    /**
+     * Reads a connection named \a connName from the settings and returns the datasource uri
+     */
+    static QgsDataSourceUri connUri( const QString &connName );
+
+    /**
+     * Reads MSSQL connections from the settings and return a list of connection names
+     */
+    static QStringList connectionList();
+
+    /**
+     * Returns the list of native types
+     * \since QGIS 3.16
+     */
+    static QList<QgsVectorDataProvider::NativeType> nativeTypes();
+
 
   private:
 

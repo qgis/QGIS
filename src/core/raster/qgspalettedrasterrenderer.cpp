@@ -19,6 +19,7 @@
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
 #include "qgssymbollayerutils.h"
+#include "qgsstyleentityvisitor.h"
 
 #include <QColor>
 #include <QDomDocument>
@@ -161,10 +162,11 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle  const &exte
     return outputBlock.release();
   }
 
-  QRgb myDefaultColor = NODATA_COLOR;
+  const QRgb myDefaultColor = renderColorForNodataPixel();
 
   //use direct data access instead of QgsRasterBlock::setValue
   //because of performance
+  Q_ASSERT( outputBlock ); // to make cppcheck happy
   unsigned int *outputData = ( unsigned int * )( outputBlock->bits() );
 
   qgssize rasterSize = ( qgssize )width * height;
@@ -248,8 +250,6 @@ void QgsPalettedRasterRenderer::writeXml( QDomDocument &doc, QDomElement &parent
 
 void QgsPalettedRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
 {
-  QgsStringMap newProps = props;
-
   // create base structure
   QgsRasterRenderer::toSld( doc, element, props );
 
@@ -299,6 +299,18 @@ void QgsPalettedRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, 
       colorMapEntryElem.setAttribute( QStringLiteral( "opacity" ), QString::number( classDataIt->color.alphaF() ) );
     }
   }
+}
+
+bool QgsPalettedRasterRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( mSourceColorRamp )
+  {
+    QgsStyleColorRampEntity entity( mSourceColorRamp.get() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity ) ) )
+      return false;
+  }
+
+  return true;
 }
 
 void QgsPalettedRasterRenderer::legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const
@@ -487,7 +499,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
     int count = histogram.histogramVector.at( idx );
     if ( count > 0 )
     {
-      data << Class( currentValue, QColor(), QString::number( currentValue ) );
+      data << Class( currentValue, QColor(), QLocale().toString( currentValue ) );
       presentValues++;
     }
     currentValue += interval;

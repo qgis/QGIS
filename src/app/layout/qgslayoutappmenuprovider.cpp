@@ -20,6 +20,7 @@
 #include "qgslayout.h"
 #include "qgslayoutundostack.h"
 #include "qgslayoutpagecollection.h"
+#include "qgslayoutguidewidget.h"
 #include <QMenu>
 #include <QMessageBox>
 
@@ -109,12 +110,28 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
   QgsLayoutItemPage *page = layout->pageCollection()->pageAtPoint( layoutPoint );
   if ( page )
   {
+    const int pageNumber = layout->pageCollection()->pageNumber( page );
     QAction *pagePropertiesAction = new QAction( tr( "Page Properties…" ), menu );
     connect( pagePropertiesAction, &QAction::triggered, this, [this, page]()
     {
       mDesigner->showItemOptions( page, true );
     } );
     menu->addAction( pagePropertiesAction );
+
+    if ( mDesigner->guideWidget() )
+    {
+      QAction *manageGuidesAction = new QAction( tr( "Manage Guides for Page…" ), menu );
+      QPointer< QgsLayoutGuideWidget > guideManager( mDesigner->guideWidget() );
+      connect( manageGuidesAction, &QAction::triggered, this, [this, pageNumber, guideManager]()
+      {
+        if ( guideManager )
+        {
+          guideManager->setCurrentPage( pageNumber );
+          mDesigner->showGuideDock( true );
+        }
+      } );
+      menu->addAction( manageGuidesAction );
+    }
     QAction *removePageAction = new QAction( tr( "Remove Page" ), menu );
     connect( removePageAction, &QAction::triggered, this, [layout, page]()
     {
@@ -125,6 +142,8 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
         layout->pageCollection()->deletePage( page );
       }
     } );
+    if ( layout->pageCollection()->pageCount() < 2 )
+      removePageAction->setEnabled( false );
     menu->addAction( removePageAction );
 
     menu->addSeparator();

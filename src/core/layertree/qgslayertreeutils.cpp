@@ -369,7 +369,10 @@ QStringList QgsLayerTreeUtils::invisibleLayerList( QgsLayerTreeNode *node )
     const auto constChildren = QgsLayerTree::toGroup( node )->children();
     for ( QgsLayerTreeNode *child : constChildren )
     {
-      list << invisibleLayerList( child );
+      if ( child->itemVisibilityChecked() == Qt::Unchecked )
+      {
+        list << invisibleLayerList( child );
+      }
     }
   }
   else if ( QgsLayerTree::isLayer( node ) )
@@ -426,14 +429,15 @@ void QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup *grou
 void QgsLayerTreeUtils::setLegendFilterByExpression( QgsLayerTreeLayer &layer, const QString &expr, bool enabled )
 {
   layer.setCustomProperty( QStringLiteral( "legend/expressionFilter" ), expr );
-  layer.setCustomProperty( QStringLiteral( "legend/expressionFilterEnabled" ), enabled );
+  layer.setCustomProperty( QStringLiteral( "legend/expressionFilterEnabled" ), enabled && !expr.isEmpty() );
 }
 
 QString QgsLayerTreeUtils::legendFilterByExpression( const QgsLayerTreeLayer &layer, bool *enabled )
 {
+  const QString expression = layer.customProperty( QStringLiteral( "legend/expressionFilter" ), QString() ).toString();
   if ( enabled )
-    *enabled = layer.customProperty( QStringLiteral( "legend/expressionFilterEnabled" ), "" ).toBool();
-  return layer.customProperty( QStringLiteral( "legend/expressionFilter" ), "" ).toString();
+    *enabled = !expression.isEmpty() && layer.customProperty( QStringLiteral( "legend/expressionFilterEnabled" ), QString() ).toBool();
+  return expression;
 }
 
 bool QgsLayerTreeUtils::hasLegendFilterExpression( const QgsLayerTreeGroup &group )
@@ -511,4 +515,20 @@ int QgsLayerTreeUtils::countMapLayerInTree( QgsLayerTreeNode *tree, QgsMapLayer 
   for ( QgsLayerTreeNode *child : children )
     cnt += countMapLayerInTree( child, layer );
   return cnt;
+}
+
+QgsLayerTreeGroup *QgsLayerTreeUtils::firstGroupWithoutCustomProperty( QgsLayerTreeGroup *group, const QString &property )
+{
+  // if the group is embedded go to the first non-embedded group, at worst the top level item
+  while ( group->customProperty( property ).toInt() )
+  {
+    if ( !group->parent() )
+      break;
+
+    if ( QgsLayerTree::isGroup( group->parent() ) )
+      group = QgsLayerTree::toGroup( group->parent() );
+    else
+      Q_ASSERT( false );
+  }
+  return group;
 }

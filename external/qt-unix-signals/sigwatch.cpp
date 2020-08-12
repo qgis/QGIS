@@ -71,7 +71,7 @@ private:
 
 int UnixSignalWatcherPrivate::sockpair[2];
 
-UnixSignalWatcherPrivate::UnixSignalWatcherPrivate(UnixSignalWatcher *q) :
+UnixSignalWatcherPrivate::UnixSignalWatcherPrivate(UnixSignalWatcher *q) : QObject( q ),
     q_ptr(q)
 {
 #if HAS_UNIX_SIGNALS

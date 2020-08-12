@@ -127,7 +127,7 @@ Number of features in the layer
 
     virtual bool empty() const;
 %Docstring
-Returns ``True`` if the layer contains at least one feature.
+Returns ``True`` if the layer does not contain any feature.
 
 .. versionadded:: 3.4
 %End
@@ -138,7 +138,7 @@ Returns ``True`` if the layer contains at least one feature.
 Will always return FeatureAvailability.FeaturesAvailable or
 FeatureAvailability.NoFeaturesAvailable.
 
-Calls empty() internally. Providers should override empty()
+Calls :py:func:`~QgsVectorDataProvider.empty` internally. Providers should override :py:func:`~QgsVectorDataProvider.empty`
 instead if they provide an optimized version of this call.
 
 .. seealso:: :py:func:`empty`
@@ -206,7 +206,8 @@ matching is done in a case-insensitive manner.
                                 int index,
                                 const QgsAggregateCalculator::AggregateParameters &parameters,
                                 QgsExpressionContext *context,
-                                bool &ok ) const;
+                                bool &ok,
+                                QgsFeatureIds *fids = 0 ) const;
 %Docstring
 Calculates an aggregated value from the layer's features. The base implementation does nothing,
 but subclasses can override this method to handoff calculation of aggregates to the provider.
@@ -216,6 +217,7 @@ but subclasses can override this method to handoff calculation of aggregates to 
 :param parameters: parameters controlling aggregate calculation
 :param context: expression context for filter
 :param ok: will be set to ``True`` if calculation was successfully performed by the data provider
+:param fids: list of fids to filter, otherwise will use all fids
 
 :return: calculated aggregate value
 
@@ -230,7 +232,9 @@ or if the given attribute is not an enum type.
 :param index: the index of the attribute
 %End
 
-    virtual bool addFeatures( QgsFeatureList &flist /In,Out/, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeatures( QgsFeatureList &flist /In,Out/, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
+
+    virtual QString lastError() const;
 
 
     virtual bool deleteFeatures( const QgsFeatureIds &id );
@@ -270,14 +274,14 @@ Cancels the current reloading of data.
     virtual bool addAttributes( const QList<QgsField> &attributes );
 %Docstring
 Adds new ``attributes`` to the provider. Returns ``True`` in case of success and ``False`` in case of failure.
-If attributes are added using this method then QgsVectorLayer.updateFields() must be called
+If attributes are added using this method then :py:func:`QgsVectorLayer.updateFields()` must be called
 manually to ensure that the layer's field are correctly reported.
 %End
 
     virtual bool deleteAttributes( const QgsAttributeIds &attributes );
 %Docstring
 Deletes existing ``attributes`` from the provider.
-If attributes are deleted using this method then QgsVectorLayer.updateFields() must be called
+If attributes are deleted using this method then :py:func:`QgsVectorLayer.updateFields()` must be called
 manually to ensure that the layer's field are correctly reported.
 
 :param attributes: a set containing indices of attributes
@@ -288,7 +292,7 @@ manually to ensure that the layer's field are correctly reported.
     virtual bool renameAttributes( const QgsFieldNameMap &renamedAttributes );
 %Docstring
 Renames existing attributes.
-If attributes are renamed using this method then QgsVectorLayer.updateFields() must be called
+If attributes are renamed using this method then :py:func:`QgsVectorLayer.updateFields()` must be called
 manually to ensure that the layer's field are correctly reported.
 
 :param renamedAttributes: map of attribute index to new attribute name
@@ -302,6 +306,8 @@ manually to ensure that the layer's field are correctly reported.
 %Docstring
 Changes attribute values of existing features. This should
 succeed if the provider reports the ChangeAttributeValues capability.
+The method returns ``False`` if the provider does not have ChangeAttributeValues
+capability or if any of the changes could not be successfully applied.
 
 :param attr_map: a map containing changed attributes
 
@@ -362,7 +368,7 @@ field index.
     virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const;
 %Docstring
 Returns ``True`` if a constraint check should be skipped for a specified field (e.g., if
-the value returned by defaultValue() is trusted implicitly. An optional attribute value can be
+the value returned by :py:func:`~QgsVectorDataProvider.defaultValue` is trusted implicitly. An optional attribute value can be
 passed which can help refine the skip constraint check.
 
 .. seealso:: :py:func:`fieldConstraints`
@@ -408,12 +414,25 @@ Returns the above in friendly format.
 
     virtual void setEncoding( const QString &e );
 %Docstring
-Set encoding used for accessing data from layer
+Set encoding used for accessing data from layer.
+
+An empty encoding string indicates that the provider should automatically
+select the most appropriate encoding for the data source.
+
+.. warning::
+
+   Support for setting the provider encoding depends on the underlying data
+   provider. Check :py:func:`~QgsVectorDataProvider.capabilities` for the QgsVectorDataProvider.SelectEncoding
+   capability in order to determine if the provider supports this ability.
+
+.. seealso:: :py:func:`encoding`
 %End
 
     QString encoding() const;
 %Docstring
-Gets encoding which is used for accessing data
+Returns the encoding which is used for accessing data.
+
+.. seealso:: :py:func:`setEncoding`
 %End
 
     int fieldNameIndex( const QString &fieldName ) const;
@@ -428,7 +447,7 @@ Returns a map where the key is the name of the field and the value is its index
 
     virtual QgsAttributeList attributeIndexes() const;
 %Docstring
-Returns list of indexes to fetch all attributes in nextFeature()
+Returns list of indexes to fetch all attributes in :py:func:`~QgsVectorDataProvider.nextFeature`
 %End
 
     virtual QgsAttributeList pkAttributeIndexes() const;
@@ -544,13 +563,11 @@ providers will return ``None``.
 Returns the transaction this data provider is included in, if any.
 %End
 
-    virtual void forceReload();
+ virtual void forceReload() /Deprecated/;
 %Docstring
-Forces a reload of the underlying datasource if the provider implements this
-method.
-In particular on the OGR provider, a pooled connection will be invalidated.
-This forces QGIS to reopen a file or connection.
-This can be required if the underlying file is replaced.
+
+.. deprecated::
+   QGIS 3.12 - will be removed in QGIS 4.0 - use reloadData instead
 %End
 
     virtual QSet<QgsMapLayerDependency> dependencies() const;
@@ -605,6 +622,17 @@ Returns ``True`` if the data source has metadata, ``False`` otherwise.
 .. versionadded:: 3.0
 %End
 
+    virtual void handlePostCloneOperations( QgsVectorDataProvider *source );
+%Docstring
+Handles any post-clone operations required after this vector data provider was cloned
+from the ``source`` provider.
+
+.. versionadded:: 3.8.1
+%End
+
+    virtual QgsVectorDataProviderTemporalCapabilities *temporalCapabilities();
+
+
   signals:
 
     void raiseError( const QString &msg ) const;
@@ -633,7 +661,7 @@ Push a notification about errors that happened in this providers scope.
 Errors should be translated strings that require the users immediate
 attention.
 
-For general debug information use QgsMessageLog.logMessage() instead.
+For general debug information use :py:func:`QgsMessageLog.logMessage()` instead.
 
 .. versionadded:: 3.0
 %End

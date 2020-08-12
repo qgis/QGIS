@@ -21,6 +21,11 @@
 #include "qgsmessagelog.h"
 #include "qgsauxiliarystorage.h"
 
+
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
 #include <QStandardPaths>
 #include <QUuid>
 
@@ -38,7 +43,10 @@ QgsArchive::QgsArchive( const QgsArchive &other )
 QgsArchive &QgsArchive::operator=( const QgsArchive &other )
 {
   if ( this != &other )
+  {
     mFiles = other.mFiles;
+    mDir.reset( new QTemporaryDir() );
+  }
 
   return *this;
 }
@@ -71,6 +79,13 @@ bool QgsArchive::zip( const QString &filename )
   // remove existing zip file
   if ( QFile::exists( filename ) )
     QFile::remove( filename );
+
+#ifdef Q_OS_WIN
+  // Clear temporary flag (see GH #32118)
+  DWORD dwAttrs;
+  dwAttrs = GetFileAttributes( tmpFile.fileName().toLocal8Bit( ).data( ) );
+  SetFileAttributes( tmpFile.fileName().toLocal8Bit( ).data( ), dwAttrs & ~ FILE_ATTRIBUTE_TEMPORARY );
+#endif // Q_OS_WIN
 
   // save zip archive
   if ( ! tmpFile.rename( filename ) )

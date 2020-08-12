@@ -28,12 +28,13 @@
 #include "qgsexception.h"
 #include "qgsvectorlayer.h"
 #include "qgssinglesymbolrenderer.h"
+#include "qgsstyleentityvisitor.h"
 
 #include <QPainter>
 
 QgsLayoutItemMapOverview::QgsLayoutItemMapOverview( const QString &name, QgsLayoutItemMap *map )
   : QgsLayoutItemMapItem( name, map )
-  , mExtentLayer( qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=EPSG:4326" ), QStringLiteral( "overview" ), QStringLiteral( "memory" ), QgsVectorLayer::LayerOptions( map && map->layout() && map->layout()->project() ? map->layout()->project()->transformContext() : QgsCoordinateTransformContext() ) ) )
+  , mExtentLayer( qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=EPSG:4326" ), tr( "Overview" ), QStringLiteral( "memory" ), QgsVectorLayer::LayerOptions( map && map->layout() && map->layout()->project() ? map->layout()->project()->transformContext() : QgsCoordinateTransformContext() ) ) )
 {
   createDefaultFrameSymbol();
 }
@@ -104,11 +105,12 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
+  context.setPainterFlagsUsingContext( painter );
+
   painter->setCompositionMode( mBlendMode );
   painter->translate( mMap->mXOffset, mMap->mYOffset );
   painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
-  painter->setRenderHint( QPainter::Antialiasing );
 
   mFrameSymbol->startRender( context );
 
@@ -126,7 +128,7 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
   QPolygonF intersectPolygon;
   intersectPolygon = mapTransform.map( intersectExtent );
 
-  QList<QPolygonF> rings; //empty list
+  QVector<QPolygonF> rings; //empty list
   if ( !mInverted )
   {
     //Render the intersecting map extent
@@ -149,7 +151,6 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
   }
 
   mFrameSymbol->stopRender( context );
-  painter->restore();
 }
 
 bool QgsLayoutItemMapOverview::writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -177,7 +178,7 @@ bool QgsLayoutItemMapOverview::writeXml( QDomElement &elem, QDomDocument &doc, c
 
 bool QgsLayoutItemMapOverview::readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( doc );
+  Q_UNUSED( doc )
   if ( itemElem.isNull() )
   {
     return false;
@@ -306,6 +307,23 @@ QgsVectorLayer *QgsLayoutItemMapOverview::asMapLayer()
   mExtentLayer->dataProvider()->addFeature( f );
 
   return mExtentLayer.get();
+}
+
+QgsMapLayer *QgsLayoutItemMapOverview::mapLayer()
+{
+  return mExtentLayer.get();
+}
+
+bool QgsLayoutItemMapOverview::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( mFrameSymbol )
+  {
+    QgsStyleSymbolEntity entity( mFrameSymbol.get() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "overview" ), QObject::tr( "Overview" ) ) ) )
+      return false;
+  }
+
+  return true;
 }
 
 void QgsLayoutItemMapOverview::setFrameSymbol( QgsFillSymbol *symbol )

@@ -53,6 +53,12 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
      */
     virtual bool shouldTriggerLayerRepaint() const { return true; }
 
+    /**
+     * Reset to original (vector layer) values
+     * \since QGIS 3.14
+     */
+    virtual void syncToLayer( QgsMapLayer *layer ) { Q_UNUSED( layer ) }
+
   public slots:
 
     /**

@@ -19,11 +19,15 @@
 #include "qgssqliteutils.h"
 
 #include <QFileInfo>
+#include <QRegularExpression>
 #include <cstdlib> // atoi
 
 #ifdef _MSC_VER
 #define strcasecmp(a,b) stricmp(a,b)
 #endif
+
+const QString QgsSpatiaLiteConnection::SPATIALITE_ARRAY_PREFIX = QStringLiteral( "json" );
+const QString QgsSpatiaLiteConnection::SPATIALITE_ARRAY_SUFFIX = QStringLiteral( "list" );
 
 QStringList QgsSpatiaLiteConnection::connectionList()
 {
@@ -100,6 +104,21 @@ bool QgsSpatiaLiteConnection::updateStatistics()
   ret = update_layer_statistics( database.get(), nullptr, nullptr );
 
   return ret;
+}
+
+QList<QgsVectorDataProvider::NativeType> QgsSpatiaLiteConnection::nativeTypes()
+{
+  return QList<QgsVectorDataProvider::NativeType>()
+         << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "BLOB" ), QVariant::ByteArray )
+         << QgsVectorDataProvider::NativeType( tr( "Text" ), QStringLiteral( "TEXT" ), QVariant::String )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "FLOAT" ), QVariant::Double )
+         << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "INTEGER" ), QVariant::LongLong )
+         << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "DATE" ), QVariant::Date )
+         << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "TIMESTAMP" ), QVariant::DateTime )
+
+         << QgsVectorDataProvider::NativeType( tr( "Array of text" ), SPATIALITE_ARRAY_PREFIX.toUpper() + "TEXT" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::StringList, 0, 0, 0, 0, QVariant::String )
+         << QgsVectorDataProvider::NativeType( tr( "Array of decimal numbers (double)" ), SPATIALITE_ARRAY_PREFIX.toUpper() + "REAL" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::Double )
+         << QgsVectorDataProvider::NativeType( tr( "Array of whole numbers (integer)" ), SPATIALITE_ARRAY_PREFIX.toUpper() + "INTEGER" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::LongLong );
 }
 
 int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3 *handle )
@@ -640,6 +659,17 @@ error:
 
 
 
+static void fcnRegexp( sqlite3_context *ctx, int /*argc*/, sqlite3_value *argv[] )
+{
+  QRegularExpression re( reinterpret_cast<const char *>( sqlite3_value_text( argv[0] ) ) );
+  QString string( reinterpret_cast<const char *>( sqlite3_value_text( argv[1] ) ) );
+
+  if ( !re.isValid() )
+    return sqlite3_result_error( ctx, "invalid operand", -1 );
+
+  sqlite3_result_int( ctx, string.contains( re ) );
+}
+
 
 
 
@@ -702,6 +732,10 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
     QgsDebugMsg( QStringLiteral( "Failure while connecting to: %1\n\ninvalid metadata tables" ).arg( dbPath ) );
     return nullptr;
   }
+
+  // add REGEXP function
+  sqlite3_create_function( database.get(), "REGEXP", 2, SQLITE_UTF8, nullptr, fcnRegexp, nullptr, nullptr );
+
   // activating Foreign Key constraints
   ( void )sqlite3_exec( database.get(), "PRAGMA foreign_keys = 1", nullptr, nullptr, nullptr );
 

@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '3/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -54,7 +52,9 @@ class TestQgsJsonUtils(unittest.TestCase):
         self.assertEqual(features, [])
 
         # geojson string with 1 feature
-        features = QgsJsonUtils.stringToFeatureList('{\n"type": "Feature","geometry": {"type": "Point","coordinates": [125, 10]},"properties": {"name": "Dinagat Islands"}}', fields, codec)
+        features = QgsJsonUtils.stringToFeatureList(
+            '{\n"type": "Feature","geometry": {"type": "Point","coordinates": [125, 10]},"properties": {"name": "Dinagat Islands"}}',
+            fields, codec)
         self.assertEqual(len(features), 1)
         self.assertFalse(features[0].geometry().isNull())
         self.assertEqual(features[0].geometry().wkbType(), QgsWkbTypes.Point)
@@ -64,7 +64,9 @@ class TestQgsJsonUtils(unittest.TestCase):
         self.assertEqual(features[0]['name'], "Dinagat Islands")
 
         # geojson string with 2 features
-        features = QgsJsonUtils.stringToFeatureList('{ "type": "FeatureCollection","features":[{\n"type": "Feature","geometry": {"type": "Point","coordinates": [125, 10]},"properties": {"name": "Dinagat Islands"}}, {\n"type": "Feature","geometry": {"type": "Point","coordinates": [110, 20]},"properties": {"name": "Henry Gale Island"}}]}', fields, codec)
+        features = QgsJsonUtils.stringToFeatureList(
+            '{ "type": "FeatureCollection","features":[{\n"type": "Feature","geometry": {"type": "Point","coordinates": [125, 10]},"properties": {"name": "Dinagat Islands"}}, {\n"type": "Feature","geometry": {"type": "Point","coordinates": [110, 20]},"properties": {"name": "Henry Gale Island"}}]}',
+            fields, codec)
         self.assertEqual(len(features), 2)
         self.assertFalse(features[0].geometry().isNull())
         self.assertEqual(features[0].geometry().wkbType(), QgsWkbTypes.Point)
@@ -91,7 +93,19 @@ class TestQgsJsonUtils(unittest.TestCase):
         self.assertEqual(fields.count(), 0)
 
         # geojson string
-        fields = QgsJsonUtils.stringToFields('{\n"type": "Feature","geometry": {"type": "Point","coordinates": [125, 10]},"properties": {"name": "Dinagat Islands","height":5.5}}', codec)
+        fields = QgsJsonUtils.stringToFields(
+            '{\n"type": "Feature","geometry": {"type": "Point","coordinates": [125, 10]},"properties": {"name": "Dinagat Islands","height":5.5}}',
+            codec)
+        self.assertEqual(fields.count(), 2)
+        self.assertEqual(fields[0].name(), "name")
+        self.assertEqual(fields[0].type(), QVariant.String)
+        self.assertEqual(fields[1].name(), "height")
+        self.assertEqual(fields[1].type(), QVariant.Double)
+
+        # geojson string with 2 features
+        fields = QgsJsonUtils.stringToFields(
+            '{ "type": "FeatureCollection","features":[{\n"type": "Feature","geometry": {"type": "Point","coordinates": [125, 10]},"properties": {"name": "Dinagat Islands","height":5.5}}, {\n"type": "Feature","geometry": {"type": "Point","coordinates": [110, 20]},"properties": {"name": "Henry Gale Island","height":6.5}}]}',
+            codec)
         self.assertEqual(fields.count(), 2)
         self.assertEqual(fields[0].name(), "name")
         self.assertEqual(fields[0].type(), QVariant.String)
@@ -121,7 +135,8 @@ class TestQgsJsonUtils(unittest.TestCase):
         enc_str = QgsJsonUtils.encodeValue({'key': 'value', 'key2': 5})
         self.assertTrue(enc_str == '{"key":"value",\n"key2":5}' or enc_str == '{"key":"value","key2":5}')
         enc_str = QgsJsonUtils.encodeValue({'key': [1, 2, 3], 'key2': {'nested': 'nested\\result'}})
-        self.assertTrue(enc_str == '{"key":[1,2,3],\n"key2":{"nested":"nested\\\\result"}}' or enc_str == '{"key":[1,2,3],"key2":{"nested":"nested\\\\result"}}')
+        self.assertTrue(
+            enc_str == '{"key":[1,2,3],\n"key2":{"nested":"nested\\\\result"}}' or enc_str == '{"key":[1,2,3],"key2":{"nested":"nested\\\\result"}}')
 
     def testExportAttributes(self):
         """ test exporting feature's attributes to JSON object """
@@ -174,17 +189,22 @@ class TestQgsJsonUtils(unittest.TestCase):
         exporter = QgsJsonExporter()
 
         expected = """{
-   "type":"Feature",
-   "id":5,
-   "geometry":
-   {"type": "Point", "coordinates": [5, 6]},
-   "properties":{
-      "name":"Valsier Peninsula",
-      "cost":6.8,
-      "population":198
-   }
+  "geometry": {
+    "coordinates": [
+      5.0,
+      6.0
+    ],
+    "type": "Point"
+  },
+  "id": 5,
+  "properties": {
+    "cost": 6.8,
+    "name": "Valsier Peninsula",
+    "population": 198
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(feature), expected)
+        self.assertEqual(exporter.exportFeature(feature, indent=2), expected)
 
         # test with linestring for bbox inclusion
         l = QgsLineString()
@@ -192,35 +212,56 @@ class TestQgsJsonUtils(unittest.TestCase):
         feature.setGeometry(QgsGeometry(QgsLineString(l)))
 
         expected = """{
-   "type":"Feature",
-   "id":5,
-   "bbox":[5, 6, 15, 16],
-   "geometry":
-   {"type": "LineString", "coordinates": [ [5, 6], [15, 16]]},
-   "properties":{
-      "name":"Valsier Peninsula",
-      "cost":6.8,
-      "population":198
-   }
+  "bbox": [
+    5.0,
+    6.0,
+    15.0,
+    16.0
+  ],
+  "geometry": {
+    "coordinates": [
+      [
+        5.0,
+        6.0
+      ],
+      [
+        15.0,
+        16.0
+      ]
+    ],
+    "type": "LineString"
+  },
+  "id": 5,
+  "properties": {
+    "cost": 6.8,
+    "name": "Valsier Peninsula",
+    "population": 198
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(feature), expected)
+        self.assertEqual(exporter.exportFeature(feature, indent=2), expected)
 
         # test that precision is respected
         feature.setGeometry(QgsGeometry(QgsPoint(5.444444444, 6.333333333)))
         exporter.setPrecision(3)
         self.assertEqual(exporter.precision(), 3)
         expected = """{
-   "type":"Feature",
-   "id":5,
-   "geometry":
-   {"type": "Point", "coordinates": [5.444, 6.333]},
-   "properties":{
-      "name":"Valsier Peninsula",
-      "cost":6.8,
-      "population":198
-   }
+  "geometry": {
+    "coordinates": [
+      5.444,
+      6.333
+    ],
+    "type": "Point"
+  },
+  "id": 5,
+  "properties": {
+    "cost": 6.8,
+    "name": "Valsier Peninsula",
+    "population": 198
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(feature), expected)
+        self.assertEqual(exporter.exportFeature(feature, indent=2), expected)
         feature.setGeometry(QgsGeometry(QgsPoint(5, 6)))
         exporter.setPrecision(17)
 
@@ -228,29 +269,39 @@ class TestQgsJsonUtils(unittest.TestCase):
         exporter.setAttributes([0, 2])
         self.assertEqual(exporter.attributes(), [0, 2])
         expected = """{
-   "type":"Feature",
-   "id":5,
-   "geometry":
-   {"type": "Point", "coordinates": [5, 6]},
-   "properties":{
-      "name":"Valsier Peninsula",
-      "population":198
-   }
+  "geometry": {
+    "coordinates": [
+      5.0,
+      6.0
+    ],
+    "type": "Point"
+  },
+  "id": 5,
+  "properties": {
+    "name": "Valsier Peninsula",
+    "population": 198
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(feature), expected)
+        self.assertEqual(exporter.exportFeature(feature, indent=2), expected)
 
         exporter.setAttributes([1])
         self.assertEqual(exporter.attributes(), [1])
         expected = """{
-   "type":"Feature",
-   "id":5,
-   "geometry":
-   {"type": "Point", "coordinates": [5, 6]},
-   "properties":{
-      "cost":6.8
-   }
+  "geometry": {
+    "coordinates": [
+      5.0,
+      6.0
+    ],
+    "type": "Point"
+  },
+  "id": 5,
+  "properties": {
+    "cost": 6.8
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(feature), expected)
+        self.assertEqual(exporter.exportFeature(feature, indent=2), expected)
         exporter.setAttributes([])
 
         # text excluding attributes
@@ -258,55 +309,75 @@ class TestQgsJsonUtils(unittest.TestCase):
         exporter.setExcludedAttributes([1])
         self.assertEqual(exporter.excludedAttributes(), [1])
         expected = """{
-   "type":"Feature",
-   "id":5,
-   "geometry":
-   {"type": "Point", "coordinates": [5, 6]},
-   "properties":{
-      "name":"Valsier Peninsula",
-      "population":198
-   }
+  "geometry": {
+    "coordinates": [
+      5.0,
+      6.0
+    ],
+    "type": "Point"
+  },
+  "id": 5,
+  "properties": {
+    "name": "Valsier Peninsula",
+    "population": 198
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(feature), expected)
+        self.assertEqual(exporter.exportFeature(feature, indent=2), expected)
 
         exporter.setExcludedAttributes([1, 2])
         self.assertEqual(exporter.excludedAttributes(), [1, 2])
         expected = """{
-   "type":"Feature",
-   "id":5,
-   "geometry":
-   {"type": "Point", "coordinates": [5, 6]},
-   "properties":{
-      "name":"Valsier Peninsula"
-   }
+  "geometry": {
+    "coordinates": [
+      5.0,
+      6.0
+    ],
+    "type": "Point"
+  },
+  "id": 5,
+  "properties": {
+    "name": "Valsier Peninsula"
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(feature), expected)
+        self.assertEqual(exporter.exportFeature(feature, indent=2), expected)
 
         exporter.setExcludedAttributes([0, 1, 2])
         self.assertEqual(exporter.excludedAttributes(), [0, 1, 2])
         expected = """{
-   "type":"Feature",
-   "id":5,
-   "geometry":
-   {"type": "Point", "coordinates": [5, 6]},
-   "properties":null
+  "geometry": {
+    "coordinates": [
+      5.0,
+      6.0
+    ],
+    "type": "Point"
+  },
+  "id": 5,
+  "properties": null,
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(feature), expected)
+        self.assertEqual(exporter.exportFeature(feature, indent=2), expected)
 
         # test that excluded attributes take precedence over included
 
         exporter.setAttributes([1, 2])
         exporter.setExcludedAttributes([0, 1])
         expected = """{
-   "type":"Feature",
-   "id":5,
-   "geometry":
-   {"type": "Point", "coordinates": [5, 6]},
-   "properties":{
-      "population":198
-   }
+  "geometry": {
+    "coordinates": [
+      5.0,
+      6.0
+    ],
+    "type": "Point"
+  },
+  "id": 5,
+  "properties": {
+    "population": 198
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(feature), expected)
+        self.assertEqual(exporter.exportFeature(feature, indent=2), expected)
 
         exporter.setAttributes([])
         exporter.setExcludedAttributes([])
@@ -317,16 +388,16 @@ class TestQgsJsonUtils(unittest.TestCase):
         feature.setGeometry(QgsGeometry(QgsLineString(l)))
 
         expected = """{
-   "type":"Feature",
-   "id":5,
-   "geometry":null,
-   "properties":{
-      "name":"Valsier Peninsula",
-      "cost":6.8,
-      "population":198
-   }
+  "geometry": null,
+  "id": 5,
+  "properties": {
+    "cost": 6.8,
+    "name": "Valsier Peninsula",
+    "population": 198
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(feature), expected)
+        self.assertEqual(exporter.exportFeature(feature, indent=2), expected)
         exporter.setIncludeGeometry(True)
 
         feature.setGeometry(QgsGeometry(QgsPoint(5, 6)))
@@ -335,76 +406,93 @@ class TestQgsJsonUtils(unittest.TestCase):
         exporter.setIncludeAttributes(False)
         self.assertEqual(exporter.includeAttributes(), False)
         expected = """{
-   "type":"Feature",
-   "id":5,
-   "geometry":
-   {"type": "Point", "coordinates": [5, 6]},
-   "properties":null
+  "geometry": {
+    "coordinates": [
+      5.0,
+      6.0
+    ],
+    "type": "Point"
+  },
+  "id": 5,
+  "properties": null,
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(feature), expected)
+        self.assertEqual(exporter.exportFeature(feature, indent=2), expected)
 
         exporter.setIncludeGeometry(False)
         expected = """{
-   "type":"Feature",
-   "id":5,
-   "geometry":null,
-   "properties":null
+  "geometry": null,
+  "id": 5,
+  "properties": null,
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(feature), expected)
+        self.assertEqual(exporter.exportFeature(feature, indent=2), expected)
         exporter.setIncludeAttributes(True)
 
         # test overriding ID
         expected = """{
-   "type":"Feature",
-   "id":29,
-   "geometry":null,
-   "properties":{
-      "name":"Valsier Peninsula",
-      "cost":6.8,
-      "population":198
-   }
+  "geometry": null,
+  "id": 29,
+  "properties": {
+    "cost": 6.8,
+    "name": "Valsier Peninsula",
+    "population": 198
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(feature, id=29), expected)
+        self.assertEqual(exporter.exportFeature(feature, id=29, indent=2), expected)
+
+        expected = """{
+  "geometry": null,
+  "id": "mylayer.29",
+  "properties": {
+    "cost": 6.8,
+    "name": "Valsier Peninsula",
+    "population": 198
+  },
+  "type": "Feature"
+}"""
+        self.assertEqual(exporter.exportFeature(feature, id="mylayer.29", indent=2), expected)
 
         # test injecting extra attributes
         expected = """{
-   "type":"Feature",
-   "id":5,
-   "geometry":null,
-   "properties":{
-      "name":"Valsier Peninsula",
-      "cost":6.8,
-      "population":198,
-      "extra":"val1",
-      "extra2":2
-   }
+  "geometry": null,
+  "id": 5,
+  "properties": {
+    "cost": 6.8,
+    "extra": "val1",
+    "extra2": 2,
+    "name": "Valsier Peninsula",
+    "population": 198
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(feature, extraProperties={"extra": "val1", "extra2": 2}), expected)
+        self.assertEqual(exporter.exportFeature(feature, extraProperties={"extra": "val1", "extra2": 2}, indent=2),
+                         expected)
 
         exporter.setIncludeAttributes(False)
         expected = """{
-   "type":"Feature",
-   "id":5,
-   "geometry":null,
-   "properties":{
-      "extra":"val1",
-      "extra2":{"nested_map":5,
-"nested_map2":"val"},
-      "extra3":[1,2,3]
-   }
+  "geometry": null,
+  "id": 5,
+  "properties": {
+    "extra": "val1",
+    "extra2": {
+      "nested_map": 5,
+      "nested_map2": "val"
+    },
+    "extra3": [
+      1,
+      2,
+      3
+    ]
+  },
+  "type": "Feature"
 }"""
-        expected2 = """{
-   "type":"Feature",
-   "id":5,
-   "geometry":null,
-   "properties":{
-      "extra":"val1",
-      "extra2":{"nested_map":5,"nested_map2":"val"},
-      "extra3":[1,2,3]
-   }
-}"""
-        exp_f = exporter.exportFeature(feature, extraProperties={"extra": "val1", "extra2": {"nested_map": 5, "nested_map2": "val"}, "extra3": [1, 2, 3]})
-        self.assertTrue(exp_f == expected or exp_f == expected2)
+
+        exp_f = exporter.exportFeature(feature, extraProperties={"extra": "val1",
+                                                                 "extra2": {"nested_map": 5, "nested_map2": "val"},
+                                                                 "extra3": [1, 2, 3]}, indent=2)
+        self.assertEqual(exp_f, expected)
         exporter.setIncludeGeometry(True)
 
     def testExportFeatureFieldFormatter(self):
@@ -414,7 +502,7 @@ class TestQgsJsonUtils(unittest.TestCase):
         source = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
                                 "parent", "memory")
         pr = source.dataProvider()
-        pf1 = QgsFeature()
+        pf1 = QgsFeature(123)
         pf1.setFields(source.fields())
         pf1.setAttributes(["test1", 1])
         pf2 = QgsFeature()
@@ -429,15 +517,15 @@ class TestQgsJsonUtils(unittest.TestCase):
         exporter.setVectorLayer(source)
 
         expected = """{
-   "type":"Feature",
-   "id":0,
-   "geometry":null,
-   "properties":{
-      "fldtxt":"test1",
-      "fldint":"one"
-   }
+  "geometry": null,
+  "id": 123,
+  "properties": {
+    "fldint": "one",
+    "fldtxt": "test1"
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(pf1), expected)
+        self.assertEqual(exporter.exportFeature(pf1, indent=2), expected)
 
     def testExportFeatureCrs(self):
         """ Test CRS transform when exporting features """
@@ -445,7 +533,7 @@ class TestQgsJsonUtils(unittest.TestCase):
         exporter = QgsJsonExporter()
         self.assertFalse(exporter.sourceCrs().isValid())
 
-        #test layer
+        # test layer
         layer = QgsVectorLayer("Point?crs=epsg:3111&field=fldtxt:string",
                                "parent", "memory")
         exporter = QgsJsonExporter(layer)
@@ -468,32 +556,37 @@ class TestQgsJsonUtils(unittest.TestCase):
         # low precision, only need rough coordinate to check and don't want to deal with rounding errors
         exporter.setPrecision(1)
         expected = """{
-   "type":"Feature",
-   "id":5,
-   "geometry":
-   {"type": "Point", "coordinates": [145, -37.9]},
-   "properties":{
-      "fldtxt":"test point"
-   }
+  "geometry": {
+    "coordinates": [
+      145.0,
+      -37.9
+    ],
+    "type": "Point"
+  },
+  "id": 5,
+  "properties": {
+    "fldtxt": "test point"
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(feature), expected)
+        self.assertEqual(exporter.exportFeature(feature, indent=2), expected)
 
     def testExportFeatureRelations(self):
         """ Test exporting a feature with relations """
 
-        #parent layer
+        # parent layer
         parent = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=foreignkey:integer",
                                 "parent", "memory")
         pr = parent.dataProvider()
-        pf1 = QgsFeature()
+        pf1 = QgsFeature(432)
         pf1.setFields(parent.fields())
         pf1.setAttributes(["test1", 67, 123])
-        pf2 = QgsFeature()
+        pf2 = QgsFeature(876)
         pf2.setFields(parent.fields())
         pf2.setAttributes(["test2", 68, 124])
         assert pr.addFeatures([pf1, pf2])
 
-        #child layer
+        # child layer
         child = QgsVectorLayer(
             "Point?field=x:string&field=y:integer&field=z:integer",
             "referencedlayer", "memory")
@@ -528,90 +621,107 @@ class TestQgsJsonUtils(unittest.TestCase):
         self.assertEqual(exporter.includeRelated(), True)
 
         expected = """{
-   "type":"Feature",
-   "id":0,
-   "geometry":null,
-   "properties":{
-      "fldtxt":"test1",
-      "fldint":67,
-      "foreignkey":123,
-      "relation one":[{"x":"foo",
-"y":123,
-"z":321},
-{"x":"bar",
-"y":123,
-"z":654}]
-   }
+  "geometry": null,
+  "id": 432,
+  "properties": {
+    "fldint": 67,
+    "fldtxt": "test1",
+    "foreignkey": 123,
+    "relation one": [
+      {
+        "x": "foo",
+        "y": 123,
+        "z": 321
+      },
+      {
+        "x": "bar",
+        "y": 123,
+        "z": 654
+      }
+    ]
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(pf1), expected)
+        self.assertEqual(exporter.exportFeature(pf1, indent=2), expected)
 
         expected = """{
-   "type":"Feature",
-   "id":0,
-   "geometry":null,
-   "properties":{
-      "fldtxt":"test2",
-      "fldint":68,
-      "foreignkey":124,
-      "relation one":[{"x":"foobar",
-"y":124,
-"z":554}]
-   }
+  "geometry": null,
+  "id": 876,
+  "properties": {
+    "fldint": 68,
+    "fldtxt": "test2",
+    "foreignkey": 124,
+    "relation one": [
+      {
+        "x": "foobar",
+        "y": 124,
+        "z": 554
+      }
+    ]
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(pf2), expected)
+
+        self.assertEqual(exporter.exportFeature(pf2, indent=2), expected)
 
         # with field formatter
         setup = QgsEditorWidgetSetup('ValueMap', {"map": {"apples": 123, "bananas": 124}})
         child.setEditorWidgetSetup(1, setup)
         expected = """{
-   "type":"Feature",
-   "id":0,
-   "geometry":null,
-   "properties":{
-      "fldtxt":"test1",
-      "fldint":67,
-      "foreignkey":123,
-      "relation one":[{"x":"foo",
-"y":"apples",
-"z":321},
-{"x":"bar",
-"y":"apples",
-"z":654}]
-   }
+  "geometry": null,
+  "id": 432,
+  "properties": {
+    "fldint": 67,
+    "fldtxt": "test1",
+    "foreignkey": 123,
+    "relation one": [
+      {
+        "x": "foo",
+        "y": "apples",
+        "z": 321
+      },
+      {
+        "x": "bar",
+        "y": "apples",
+        "z": 654
+      }
+    ]
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(pf1), expected)
+        self.assertEqual(exporter.exportFeature(pf1, indent=2), expected)
 
         # test excluding related attributes
         exporter.setIncludeRelated(False)
         self.assertEqual(exporter.includeRelated(), False)
 
         expected = """{
-   "type":"Feature",
-   "id":0,
-   "geometry":null,
-   "properties":{
-      "fldtxt":"test2",
-      "fldint":68,
-      "foreignkey":124
-   }
+  "geometry": null,
+  "id": 876,
+  "properties": {
+    "fldint": 68,
+    "fldtxt": "test2",
+    "foreignkey": 124
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(pf2), expected)
+        self.assertEqual(exporter.exportFeature(pf2, indent=2), expected)
 
         # test without vector layer set
         exporter.setIncludeRelated(True)
         exporter.setVectorLayer(None)
 
         expected = """{
-   "type":"Feature",
-   "id":0,
-   "geometry":null,
-   "properties":{
-      "fldtxt":"test2",
-      "fldint":68,
-      "foreignkey":124
-   }
+  "geometry": null,
+  "id": 876,
+  "properties": {
+    "fldint": 68,
+    "fldtxt": "test2",
+    "foreignkey": 124
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(pf2), expected)
+        self.assertEqual(exporter.exportFeature(pf2, indent=2), expected)
 
     def testExportFeatures(self):
         """ Test exporting feature collections """
@@ -628,57 +738,76 @@ class TestQgsJsonUtils(unittest.TestCase):
         exporter = QgsJsonExporter()
 
         # single feature
-        expected = """{ "type": "FeatureCollection",
-    "features":[
-{
-   "type":"Feature",
-   "id":5,
-   "geometry":
-   {"type": "Point", "coordinates": [5, 6]},
-   "properties":{
-      "name":"Valsier Peninsula",
-      "cost":6.8,
-      "population":198
-   }
-}
-]}"""
-        self.assertEqual(exporter.exportFeatures([feature]), expected)
+        expected = """{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          5.0,
+          6.0
+        ],
+        "type": "Point"
+      },
+      "id": 5,
+      "properties": {
+        "cost": 6.8,
+        "name": "Valsier Peninsula",
+        "population": 198
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}"""
+        self.assertEqual(exporter.exportFeatures([feature], 2), expected)
 
         # multiple features
         feature2 = QgsFeature(fields, 6)
         feature2.setGeometry(QgsGeometry(QgsPoint(7, 8)))
         feature2.setAttributes(['Henry Gale Island', 9.7, 38])
 
-        expected = """{ "type": "FeatureCollection",
-    "features":[
-{
-   "type":"Feature",
-   "id":5,
-   "geometry":
-   {"type": "Point", "coordinates": [5, 6]},
-   "properties":{
-      "name":"Valsier Peninsula",
-      "cost":6.8,
-      "population":198
-   }
-},
-{
-   "type":"Feature",
-   "id":6,
-   "geometry":
-   {"type": "Point", "coordinates": [7, 8]},
-   "properties":{
-      "name":"Henry Gale Island",
-      "cost":9.7,
-      "population":38
-   }
-}
-]}"""
-        self.assertEqual(exporter.exportFeatures([feature, feature2]), expected)
+        expected = """{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          5.0,
+          6.0
+        ],
+        "type": "Point"
+      },
+      "id": 5,
+      "properties": {
+        "cost": 6.8,
+        "name": "Valsier Peninsula",
+        "population": 198
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.0,
+          8.0
+        ],
+        "type": "Point"
+      },
+      "id": 6,
+      "properties": {
+        "cost": 9.7,
+        "name": "Henry Gale Island",
+        "population": 38
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}"""
+        self.assertEqual(exporter.exportFeatures([feature, feature2], 2), expected)
 
     def testExportFeaturesWithLocale_regression20053(self):
         """ Test exporting feature export with range widgets and locale different than C
-        Regression: https://issues.qgis.org/issues/20053 - decimal separator in csv files
+        Regression: https://github.com/qgis/QGIS/issues/27875 - decimal separator in csv files
         """
 
         source = QgsVectorLayer("Point?field=name:string&field=cost:double&field=population:int&field=date:date",
@@ -693,22 +822,29 @@ class TestQgsJsonUtils(unittest.TestCase):
         exporter = QgsJsonExporter()
 
         # single feature
-        expected = """{ "type": "FeatureCollection",
-    "features":[
-{
-   "type":"Feature",
-   "id":5,
-   "geometry":
-   {"type": "Point", "coordinates": [5, 6]},
-   "properties":{
-      "name":"Valsier Peninsula",
-      "cost":6.8,
-      "population":198000,
-      "date":"2018-09-10"
-   }
-}
-]}"""
-        self.assertEqual(exporter.exportFeatures([feature]), expected)
+        expected = """{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          5.0,
+          6.0
+        ],
+        "type": "Point"
+      },
+      "id": 5,
+      "properties": {
+        "cost": 6.8,
+        "date": "2018-09-10",
+        "name": "Valsier Peninsula",
+        "population": 198000
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}"""
+        self.assertEqual(exporter.exportFeatures([feature], 2), expected)
 
         setup = QgsEditorWidgetSetup('Range', {
             'AllowNull': True,
@@ -724,7 +860,7 @@ class TestQgsJsonUtils(unittest.TestCase):
 
         QLocale.setDefault(QLocale('it'))
         exporter.setVectorLayer(source)
-        self.assertEqual(exporter.exportFeatures([feature]), expected)
+        self.assertEqual(exporter.exportFeatures([feature], 2), expected)
 
     def testExportFieldAlias(self):
         """ Test exporting a feature with fields' alias """
@@ -739,7 +875,8 @@ class TestQgsJsonUtils(unittest.TestCase):
         pf2 = QgsFeature()
         pf2.setFields(source.fields())
         pf2.setAttributes(["test2", 2])
-        assert pr.addFeatures([pf1, pf2])
+        result, features = pr.addFeatures([pf1, pf2])
+        self.assertTrue(result)
 
         source.setFieldAlias(0, "alias_fldtxt")
         source.setFieldAlias(1, "alias_fldint")
@@ -749,15 +886,15 @@ class TestQgsJsonUtils(unittest.TestCase):
         exporter.setVectorLayer(source)
 
         expected = """{
-   "type":"Feature",
-   "id":0,
-   "geometry":null,
-   "properties":{
-      "alias_fldtxt":"test1",
-      "alias_fldint":1
-   }
+  "geometry": null,
+  "id": 1,
+  "properties": {
+    "alias_fldint": 1,
+    "alias_fldtxt": "test1"
+  },
+  "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(pf1), expected)
+        self.assertEqual(exporter.exportFeature(features[0], indent=2), expected)
 
 
 if __name__ == "__main__":

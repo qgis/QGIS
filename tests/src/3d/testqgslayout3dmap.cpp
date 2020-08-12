@@ -100,7 +100,7 @@ void TestQgsLayout3DMap::testBasic()
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map->setLayers( QList<QgsMapLayer *>() << mLayerDtm );
+  map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerDtm );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -124,7 +124,20 @@ void TestQgsLayout3DMap::testBasic()
   checker.setControlPathPrefix( QStringLiteral( "composer_3d" ) );
   bool result = checker.testLayout( mReport, 0, 100 );
   QVERIFY( result );
+
+  QVERIFY( !map->isTemporal() );
+
+  QDateTime begin( QDate( 2020, 01, 01 ), QTime( 10, 0, 0, Qt::UTC ) );
+  QDateTime end = begin.addSecs( 3600 );
+  map3dItem->setTemporalRange( QgsDateTimeRange( begin, end ) );
+
+  map3dItem->refresh();
+  checker.testLayout( mReport, 0, 100 );
+
+  QVERIFY( map->isTemporal() );
+  QCOMPARE( map->temporalRange(), QgsDateTimeRange( begin, end ) );
 }
+
 
 
 QGSTEST_MAIN( TestQgsLayout3DMap )

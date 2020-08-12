@@ -102,7 +102,6 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  QgsSpatialIndex spatialIndex;
   QMap< QgsFeatureId, QgsGeometry > splitGeoms;
   QgsFeatureRequest request;
   request.setNoAttributes();
@@ -110,16 +109,17 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
 
   QgsFeatureIterator splitLines = linesSource->getFeatures( request );
   QgsFeature aSplitFeature;
-  while ( splitLines.nextFeature( aSplitFeature ) )
+
+  QgsSpatialIndex spatialIndex( splitLines, [&]( const QgsFeature & aSplitFeature )-> bool
   {
     if ( feedback->isCanceled() )
     {
-      break;
+      return false;
     }
 
     splitGeoms.insert( aSplitFeature.id(), aSplitFeature.geometry() );
-    spatialIndex.addFeature( aSplitFeature );
-  }
+    return true;
+  } );
 
   QgsFeature outFeat;
   QgsFeatureIterator features = source->getFeatures();
@@ -146,7 +146,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
 
     QVector< QgsGeometry > inGeoms = inGeom.asGeometryCollection();
 
-    const QgsFeatureIds lines = spatialIndex.intersects( inGeom.boundingBox() ).toSet();
+    const QgsFeatureIds lines = qgis::listToSet( spatialIndex.intersects( inGeom.boundingBox() ) );
     if ( !lines.empty() ) // has intersection of bounding boxes
     {
       QVector< QgsGeometry > splittingLines;
@@ -178,7 +178,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
       {
         for ( const QgsGeometry &splitGeom : qgis::as_const( splittingLines ) )
         {
-          QVector<QgsPointXY> splitterPList;
+          QgsPointSequence splitterPList;
           QVector< QgsGeometry > outGeoms;
 
           // use prepared geometries for faster intersection tests
@@ -207,14 +207,14 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
                   {
                     for ( const QgsPoint &pt : ring )
                     {
-                      splitterPList << QgsPointXY( pt );
+                      splitterPList << pt;
                     }
                   }
                 }
               }
 
               QVector< QgsGeometry > newGeometries;
-              QVector<QgsPointXY> topologyTestPoints;
+              QgsPointSequence topologyTestPoints;
               QgsGeometry::OperationResult result = inGeom.splitGeometry( splitterPList, newGeometries, false, topologyTestPoints );
 
               // splitGeometry: If there are several intersections

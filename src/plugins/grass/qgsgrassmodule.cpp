@@ -90,7 +90,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   , mSuccess( false )
   , mDirect( direct )
 {
-  Q_UNUSED( f );
+  Q_UNUSED( f )
   QgsDebugMsg( "called" );
 
   setupUi( this );
@@ -579,7 +579,7 @@ void QgsGrassModule::run()
      * if  G_get_gisrc_mode() == G_GISRC_MODE_FILE. Because QGIS GRASS provider starts drivers in
      * G_GISRC_MODE_MEMORY mode, the variable remains set in variable when a module is run
      * -> unset GISRC_MODE_MEMORY. Remove later once 6.1.x / 6.0.1 is widespread.
-    *   */
+    */
     putenv( ( char * ) "GISRC_MODE_MEMORY" ); // unset
 
     mOutputTextBrowser->clear();
@@ -613,7 +613,7 @@ void QgsGrassModule::run()
       environment.insert( QStringLiteral( "QGIS_PREFIX_PATH" ), QgsApplication::prefixPath() );
       if ( crs.isValid() ) // it should always be valid
       {
-        environment.insert( QStringLiteral( "QGIS_GRASS_CRS" ), crs.toProj4() );
+        environment.insert( QStringLiteral( "QGIS_GRASS_CRS" ), crs.toProj() );
       }
       // Suppress debug output
       environment.insert( QStringLiteral( "QGIS_DEBUG" ), QStringLiteral( "-1" ) );

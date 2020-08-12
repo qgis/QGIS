@@ -53,9 +53,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-627</y>
+        <y>0</y>
         <width>297</width>
-        <height>1063</height>
+        <height>953</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -473,7 +473,7 @@
   <customwidget>
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
-   <header location="global">qgsvariableeditorwidget.h</header>
+   <header>qgsvariableeditorwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

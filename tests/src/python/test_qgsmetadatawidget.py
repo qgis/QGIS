@@ -11,8 +11,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '20/03/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -58,7 +56,7 @@ class TestQgsMetadataWidget(unittest.TestCase):
             'GEMET': ['kw1', 'kw2'],
             'gmd:topicCategory': ['natural'],
         })
-        #m.setEncoding('utf-8')
+        # m.setEncoding('utf-8')
         m.setCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326'))
 
         e = QgsLayerMetadata.Extent()
@@ -134,7 +132,7 @@ class TestQgsMetadataWidget(unittest.TestCase):
         self.assertEqual(m.rights(), ['Copyright foo 2017'])
         self.assertEqual(m.licenses(), ['WTFPL'])
         self.assertEqual(m.history(), ['history a', 'history b'])
-        #self.assertEqual(m.encoding(), 'utf-8')
+        # self.assertEqual(m.encoding(), 'utf-8')
         self.assertEqual(
             m.keywords(),
             {'GEMET': ['kw1', 'kw2'], 'gmd:topicCategory': ['natural']})

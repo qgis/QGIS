@@ -20,8 +20,6 @@
 __author__ = 'David Marteau'
 __date__ = 'December 2016'
 __copyright__ = '(C) 2016, David Marteau'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 """ QGIS test for server services
 """

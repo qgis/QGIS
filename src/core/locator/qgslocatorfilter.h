@@ -220,7 +220,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * tasks are required in order to allow a subsequent search to safely execute
      * on a background thread.
      */
-    virtual void prepare( const QString &string, const QgsLocatorContext &context ) { Q_UNUSED( string ); Q_UNUSED( context ); }
+    virtual void prepare( const QString &string, const QgsLocatorContext &context ) { Q_UNUSED( string ) Q_UNUSED( context ); }
 
     /**
      * Retrieves the filter results for a specified search \a string. The \a context
@@ -304,6 +304,13 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * of directly using QString::contains() or Python 'in' checks.
      */
     static bool stringMatches( const QString &candidate, const QString &search );
+
+    /**
+     * Tests a \a candidate string to see how likely it is a match for
+     * a specified \a search string.
+     * \since 3.14
+     */
+    static double fuzzyScore( const QString &candidate, const QString &search );
 
     /**
      * Returns TRUE if the filter is enabled.

@@ -19,13 +19,13 @@
 #include <QLineEdit>
 #include <QToolButton>
 #include <QLabel>
-#include <QFileDialog>
 #include <QGridLayout>
 #include <QUrl>
 #include <QDropEvent>
 
 #include "qgssettings.h"
 #include "qgsfilterlineedit.h"
+#include "qgsfocuskeeper.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
@@ -51,15 +51,21 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   mLinkLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
   mLinkLabel->setTextFormat( Qt::RichText );
   mLinkLabel->hide(); // do not show by default
+  mLinkEditButton = new QToolButton( this );
+  mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
+  connect( mLinkEditButton, &QToolButton::clicked, this, &QgsFileWidget::editLink );
+  mLinkEditButton->hide(); // do not show by default
 
   // otherwise, use the traditional QLineEdit subclass
   mLineEdit = new QgsFileDropEdit( this );
   mLineEdit->setDragEnabled( true );
+  mLineEdit->setToolTip( tr( "Full path to the file(s), including name and extension" ) );
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsFileWidget::textEdited );
   mLayout->addWidget( mLineEdit );
 
   mFileWidgetButton = new QToolButton( this );
   mFileWidgetButton->setText( QChar( 0x2026 ) );
+  mFileWidgetButton->setToolTip( tr( "Browse" ) );
   connect( mFileWidgetButton, &QAbstractButton::clicked, this, &QgsFileWidget::openFileDialog );
   mLayout->addWidget( mFileWidgetButton );
 
@@ -98,8 +104,12 @@ void QgsFileWidget::setFilePath( QString path )
 
 void QgsFileWidget::setReadOnly( bool readOnly )
 {
-  mFileWidgetButton->setEnabled( !readOnly );
-  mLineEdit->setEnabled( !readOnly );
+  if ( mReadOnly == readOnly )
+    return;
+
+  mReadOnly = readOnly;
+
+  updateLayout();
 }
 
 QString QgsFileWidget::dialogTitle() const
@@ -121,6 +131,16 @@ void QgsFileWidget::setFilter( const QString &filters )
 {
   mFilter = filters;
   mLineEdit->setFilters( filters );
+}
+
+QFileDialog::Options QgsFileWidget::options() const
+{
+  return mOptions;
+}
+
+void QgsFileWidget::setOptions( QFileDialog::Options options )
+{
+  mOptions = options;
 }
 
 bool QgsFileWidget::fileWidgetButtonVisible() const
@@ -150,6 +170,15 @@ void QgsFileWidget::textEdited( const QString &path )
   emit fileChanged( mFilePath );
 }
 
+void QgsFileWidget::editLink()
+{
+  if ( !mUseLink || mReadOnly )
+    return;
+
+  mIsLinkEdited = !mIsLinkEdited;
+  updateLayout();
+}
+
 bool QgsFileWidget::useLink() const
 {
   return mUseLink;
@@ -157,19 +186,11 @@ bool QgsFileWidget::useLink() const
 
 void QgsFileWidget::setUseLink( bool useLink )
 {
+  if ( mUseLink == useLink )
+    return;
+
   mUseLink = useLink;
-  mLinkLabel->setVisible( mUseLink );
-  mLineEdit->setVisible( !mUseLink );
-  if ( mUseLink )
-  {
-    mLayout->removeWidget( mLineEdit );
-    mLayout->insertWidget( 0, mLinkLabel );
-  }
-  else
-  {
-    mLayout->removeWidget( mLinkLabel );
-    mLayout->insertWidget( 0, mLineEdit );
-  }
+  updateLayout();
 }
 
 bool QgsFileWidget::fullUrl() const
@@ -218,6 +239,43 @@ QgsFilterLineEdit *QgsFileWidget::lineEdit()
   return mLineEdit;
 }
 
+void QgsFileWidget::updateLayout()
+{
+  mLayout->removeWidget( mLineEdit );
+  mLayout->removeWidget( mLinkLabel );
+  mLayout->removeWidget( mLinkEditButton );
+
+  mLinkEditButton->setVisible( mUseLink && !mReadOnly );
+
+  mFileWidgetButton->setEnabled( !mReadOnly );
+  mLineEdit->setEnabled( !mReadOnly );
+
+  if ( mUseLink && !mIsLinkEdited )
+  {
+    mLayout->insertWidget( 0, mLinkLabel );
+    mLineEdit->setVisible( false );
+    mLinkLabel->setVisible( true );
+
+    if ( !mReadOnly )
+    {
+      mLayout->insertWidget( 1, mLinkEditButton );
+      mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
+    }
+  }
+  else
+  {
+    mLayout->insertWidget( 0, mLineEdit );
+    mLineEdit->setVisible( true );
+    mLinkLabel->setVisible( false );
+
+    if ( mIsLinkEdited )
+    {
+      mLayout->insertWidget( 1, mLinkEditButton );
+      mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveEdits.svg" ) ) );
+    }
+  }
+}
+
 void QgsFileWidget::openFileDialog()
 {
   QgsSettings settings;
@@ -253,37 +311,40 @@ void QgsFileWidget::openFileDialog()
   QStringList fileNames;
   QString title;
 
-  switch ( mStorageMode )
   {
-    case GetFile:
-      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a file" );
-      fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter );
-      break;
-    case GetMultipleFiles:
-      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select one or more files" );
-      fileNames = QFileDialog::getOpenFileNames( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter );
-      break;
-    case GetDirectory:
-      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a directory" );
-      fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(),  QFileDialog::ShowDirsOnly );
-      break;
-    case SaveFile:
+    QgsFocusKeeper focusKeeper;
+    switch ( mStorageMode )
     {
-      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Create or select a file" );
-      if ( !confirmOverwrite() )
+      case GetFile:
+        title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a file" );
+        fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions );
+        break;
+      case GetMultipleFiles:
+        title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select one or more files" );
+        fileNames = QFileDialog::getOpenFileNames( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions );
+        break;
+      case GetDirectory:
+        title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a directory" );
+        fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(), mOptions | QFileDialog::ShowDirsOnly );
+        break;
+      case SaveFile:
       {
-        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, QFileDialog::DontConfirmOverwrite );
-      }
-      else
-      {
-        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter );
-      }
+        title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Create or select a file" );
+        if ( !confirmOverwrite() )
+        {
+          fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions | QFileDialog::DontConfirmOverwrite );
+        }
+        else
+        {
+          fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions );
+        }
 
-      // make sure filename ends with filter. This isn't automatically done by
-      // getSaveFileName on some platforms (e.g. gnome)
-      fileName = QgsFileUtils::addExtensionFromFilter( fileName, mSelectedFilter );
+        // make sure filename ends with filter. This isn't automatically done by
+        // getSaveFileName on some platforms (e.g. gnome)
+        fileName = QgsFileUtils::addExtensionFromFilter( fileName, mSelectedFilter );
+      }
+      break;
     }
-    break;
   }
 
   if ( fileName.isEmpty() && fileNames.isEmpty( ) )
@@ -404,9 +465,8 @@ QString QgsFileWidget::toUrl( const QString &path ) const
 
 
 QgsFileDropEdit::QgsFileDropEdit( QWidget *parent )
-  : QgsFilterLineEdit( parent )
+  : QgsHighlightableLineEdit( parent )
 {
-  mDragActive = false;
   setAcceptDrops( true );
 }
 
@@ -506,8 +566,7 @@ void QgsFileDropEdit::dragEnterEvent( QDragEnterEvent *event )
   if ( !filePath.isEmpty() )
   {
     event->acceptProposedAction();
-    mDragActive = true;
-    update();
+    setHighlighted( true );
   }
   else
   {
@@ -519,8 +578,7 @@ void QgsFileDropEdit::dragLeaveEvent( QDragLeaveEvent *event )
 {
   QgsFilterLineEdit::dragLeaveEvent( event );
   event->accept();
-  mDragActive = false;
-  update();
+  setHighlighted( false );
 }
 
 void QgsFileDropEdit::dropEvent( QDropEvent *event )
@@ -532,21 +590,7 @@ void QgsFileDropEdit::dropEvent( QDropEvent *event )
     selectAll();
     setFocus( Qt::MouseFocusReason );
     event->acceptProposedAction();
-    mDragActive = false;
-    update();
-  }
-}
-
-void QgsFileDropEdit::paintEvent( QPaintEvent *e )
-{
-  QgsFilterLineEdit::paintEvent( e );
-  if ( mDragActive )
-  {
-    QPainter p( this );
-    int width = 2;  // width of highlight rectangle inside frame
-    p.setPen( QPen( palette().highlight(), width ) );
-    QRect r = rect().adjusted( width, width, -width, -width );
-    p.drawRect( r );
+    setHighlighted( false );
   }
 }
 

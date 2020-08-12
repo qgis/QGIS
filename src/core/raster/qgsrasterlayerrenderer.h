@@ -19,6 +19,8 @@
 #define SIP_NO_FILE
 
 #include "qgsmaplayerrenderer.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsmapclippingregion.h"
 
 class QPainter;
 
@@ -72,20 +74,20 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
     ~QgsRasterLayerRenderer() override;
 
     bool render() override;
-
     QgsFeedback *feedback() const override;
 
   private:
 
-    QPainter *mPainter = nullptr;
-    const QgsMapToPixel *mMapToPixel = nullptr;
     QgsRasterViewPort *mRasterViewPort = nullptr;
 
     QgsRasterPipe *mPipe = nullptr;
-    QgsRenderContext &mContext;
+
+    QgsRasterDataProvider::Capability mProviderCapabilities;
 
     //! feedback class for cancellation and preview generation
     QgsRasterLayerRendererFeedback *mFeedback = nullptr;
+
+    QList< QgsMapClippingRegion > mClippingRegions;
 
     friend class QgsRasterLayerRendererFeedback;
 };

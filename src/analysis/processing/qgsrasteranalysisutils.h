@@ -57,6 +57,12 @@ namespace QgsRasterAnalysisUtils
   //! Tests whether a pixel's value should be included in the result
   bool validPixel( double value );
 
+  //! Converts real-world map coordinates to raster row/col coordinates
+  void mapToPixel( const double x, const double y, const QgsRectangle bounds, const double unitsPerPixelX, const double unitsPerPixelY, int &px, int &py );
+
+  //! Converts raster row-col coordinates to real-world map coordinates
+  void pixelToMap( const int px, const int py, const QgsRectangle bounds, const double unitsPerPixelX, const double unitsPerPixelY, double &x, double &y );
+
   /**
    * Returns a new processing enum parameter for choice of raster data types.
    * \see rasterTypeChoiceToDataType()
@@ -84,6 +90,80 @@ namespace QgsRasterAnalysisUtils
       int width, int height, const QgsRectangle &extent, QgsFeedback *feedback,
       std::function<void( const std::vector< std::unique_ptr< QgsRasterBlock > > &, bool &, bool &, int, int, bool )> &applyLogicFunc,
       qgssize &noDataCount, qgssize &trueCount, qgssize &falseCount );
+
+  /**
+   * Returns a vector of double values obtained from a stack of input QgsRasterBlocks
+   */
+  std::vector<double> getCellValuesFromBlockStack( const std::vector< std::unique_ptr< QgsRasterBlock > > &inputBlocks, int &row, int &col, bool &noDataInStack );
+
+  /**
+   * Enum of cell value statistic methods to be used with QgsProcessingParameterEnum
+   */
+  enum CellValueStatisticMethods
+  {
+    Sum,
+    Count,
+    Mean,
+    Median,
+    StandardDeviation,
+    Variance,
+    Minimum,
+    Maximum,
+    Minority,
+    Majority,
+    Range,
+    Variety
+  };
+
+  /**
+   * Returns the arithmetic mean from a vector of cell values
+   */
+  double meanFromCellValues( std::vector<double> cellValues, int stackSize );
+
+  /**
+   * Returns the median from a vector of cell values
+   */
+  double medianFromCellValues( std::vector<double> cellValues, int stackSize );
+
+  /**
+   * Returns the standard deviation from a vector of cell values
+   */
+  double stddevFromCellValues( std::vector<double> cellValues, int stackSize );
+
+  /**
+   * Returns the variance from a vector of cell values
+   */
+  double varianceFromCellValues( std::vector<double> cellValues, int stackSize );
+
+  /**
+   * Returns the maximum value from a vector of cell values
+   */
+  double maximumFromCellValues( std::vector<double> cellValues );
+
+  /**
+   * Returns the minimum value from a vector of cell values
+   */
+  double minimumFromCellValues( std::vector<double> cellValues );
+
+  /**
+   * Returns the majority value from a vector of cell values
+   */
+  double majorityFromCellValues( std::vector<double> cellValues, const double noDataValue, int stackSize );
+
+  /**
+   * Returns the minority value from a vector of cell values
+   */
+  double minorityFromCellValues( std::vector<double> cellValues, const double noDataValue, int stackSize );
+
+  /**
+   * Returns the range from a vector of cell values
+   */
+  double rangeFromCellValues( std::vector<double> cellValues );
+
+  /**
+   * Returns the variety from a vector of cell values
+   */
+  double varietyFromCellValues( std::vector<double> cellValues );
 
 }
 

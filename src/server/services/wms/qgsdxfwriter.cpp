@@ -38,8 +38,8 @@ namespace QgsWms
 
     // Write output
     QgsRenderer renderer( context );
-    QgsDxfExport dxf = renderer.getDxf();
+    std::unique_ptr<QgsDxfExport> dxf = renderer.getDxf();
     response.setHeader( "Content-Type", "application/dxf" );
-    dxf.writeToFile( response.io(), parameters.dxfCodec() );
+    dxf->writeToFile( response.io(), parameters.dxfCodec() );
   }
 } // namespace QgsWms

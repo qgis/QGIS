@@ -6,7 +6,7 @@ set -e
 # Setup ccache
 ##############
 export CCACHE_TEMPDIR=/tmp
-ccache -M 1G
+ccache -M 1.2G
 
 # Temporarily uncomment to debug ccache issues
 # export CCACHE_LOGFILE=/tmp/cache.debug
@@ -29,6 +29,10 @@ pushd build > /dev/null
 
 echo "travis_fold:start:cmake"
 echo "${bold}Running cmake...${endbold}"
+
+export CC=/usr/lib/ccache/clang
+export CXX=/usr/lib/ccache/clang++
+
 cmake \
  -GNinja \
  -DUSE_CCACHE=OFF \
@@ -39,6 +43,7 @@ cmake \
  -DSUPPRESS_QT_WARNINGS=ON \
  -DENABLE_MODELTEST=ON \
  -DENABLE_PGTEST=ON \
+ -DENABLE_SAGA_TESTS=ON \
  -DENABLE_MSSQLTEST=ON \
  -DWITH_QSPATIALITE=ON \
  -DWITH_QWTPOLAR=OFF \
@@ -47,10 +52,15 @@ cmake \
  -DWITH_DESKTOP=ON \
  -DWITH_BINDINGS=ON \
  -DWITH_SERVER=ON \
+ -DWITH_ORACLE=ON \
+ -DENABLE_ORACLETEST=ON \
+ -DORACLE_INCLUDEDIR="/instantclient_19_3/sdk/include/" \
+ -DORACLE_LIBDIR="/instantclient_19_3/" \
  -DDISABLE_DEPRECATED=ON \
  -DPYTHON_TEST_WRAPPER="timeout -sSIGSEGV 55s"\
  -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \
  -DWERROR=TRUE \
+ -DADD_CLAZY_CHECKS=ON \
  -DQT5_3DEXTRA_LIBRARY="/usr/lib/x86_64-linux-gnu/libQt53DExtras.so" \
  -DQT5_3DEXTRA_INCLUDE_DIR="/root/QGIS/external/qt3dextra-headers" \
  -DCMAKE_PREFIX_PATH="/root/QGIS/external/qt3dextra-headers/cmake" \

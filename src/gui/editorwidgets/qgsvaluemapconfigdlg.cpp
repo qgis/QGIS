@@ -33,7 +33,7 @@ QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
 
   tableWidget->insertRow( 0 );
 
-  tableWidget->horizontalHeader()->setClickable( true );
+  tableWidget->horizontalHeader()->setSectionsClickable( true );
   tableWidget->setSortingEnabled( true );
 
   connect( addNullButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::addNullButtonPushed );
@@ -112,7 +112,7 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
 
 void QgsValueMapConfigDlg::vCellChanged( int row, int column )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
   if ( row == tableWidget->rowCount() - 1 )
   {
     tableWidget->insertRow( row + 1 );
@@ -148,6 +148,18 @@ void QgsValueMapConfigDlg::removeSelectedButtonPushed()
 
 void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool insertNull )
 {
+  QList<QPair<QString, QVariant>> orderedMap;
+  auto end = map.constEnd();
+  for ( auto it = map.constBegin(); it != end; ++it )
+  {
+    orderedMap.append( qMakePair( it.key(), it.value() ) );
+  }
+
+  updateMap( orderedMap, insertNull );
+}
+
+void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &list, bool insertNull )
+{
   tableWidget->clearContents();
   for ( int i = tableWidget->rowCount() - 1; i > 0; i-- )
   {
@@ -161,12 +173,13 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
     ++row;
   }
 
-  for ( QMap<QString, QVariant>::const_iterator mit = map.begin(); mit != map.end(); ++mit, ++row )
+  for ( const auto &pair : list )
   {
-    if ( mit.value().isNull() )
-      setRow( row, mit.key(), QString() );
+    if ( pair.second.isNull() )
+      setRow( row, pair.first, QString() );
     else
-      setRow( row, mit.key(), mit.value().toString() );
+      setRow( row, pair.first, pair.second.toString() );
+    ++row;
   }
 }
 
@@ -202,12 +215,13 @@ void QgsValueMapConfigDlg::populateComboBox( QComboBox *comboBox, const QVariant
 bool QgsValueMapConfigDlg::eventFilter( QObject *watched, QEvent *event )
 {
   Q_UNUSED( watched )
-  if ( event->type() == QEvent::KeyRelease )
+  if ( event->type() == QEvent::KeyPress )
   {
     QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
     if ( keyEvent->matches( QKeySequence::Copy ) )
     {
       copySelectionToClipboard();
+      event->accept();
       return true;
     }
   }
@@ -282,7 +296,7 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
 {
   QgsSettings settings;
 
-  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Select a File" ), QDir::homePath() );
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Value Map from File" ), QDir::homePath() );
   if ( fileName.isNull() )
     return;
 
@@ -304,15 +318,16 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
   re0.setMinimal( true );
   QRegExp re1( "^([^,]*),(.*)$" );
   re1.setMinimal( true );
-  QMap<QString, QVariant> map;
 
-  s.readLine();
+  QList<QPair<QString, QVariant>> map;
 
   while ( !s.atEnd() )
   {
     QString l = s.readLine().trimmed();
 
-    QString key, val;
+    QString key;
+    QString val;
+
     if ( re0.indexIn( l ) >= 0 && re0.captureCount() == 2 )
     {
       key = re0.cap( 1 ).trimmed();
@@ -341,7 +356,7 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
     if ( key == QgsApplication::nullRepresentation() )
       key = QgsValueMapFieldFormatter::NULL_VALUE;
 
-    map[ key ] = val;
+    map.append( qMakePair( key, val ) );
   }
 
   updateMap( map, false );

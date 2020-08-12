@@ -16,14 +16,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QFont>
+#include <QStyle>
+
 #include "qgisappstylesheet.h"
 #include "qgsapplication.h"
 #include "qgisapp.h"
+#include "qgsproxystyle.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-
-#include <QFont>
-#include <QStyle>
+#include "qgsguiutils.h"
 
 QgisAppStyleSheet::QgisAppStyleSheet( QObject *parent )
   : QObject( parent )
@@ -56,7 +58,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   {
     fontSize = oldFontPointSize.toInt();
   }
-  QgsDebugMsg( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ) );
+  QgsDebugMsgLevel( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ), 2 );
   opts.insert( QStringLiteral( "fontPointSize" ), settings.value( QStringLiteral( "fontPointSize" ), QVariant( fontSize ) ) );
 
   QString fontFamily = mDefaultFont.family();
@@ -75,7 +77,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
       fontFamily = mDefaultFont.family();
     }
   }
-  QgsDebugMsg( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ) );
+  QgsDebugMsgLevel( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ), 2 );
   opts.insert( QStringLiteral( "fontFamily" ), QVariant( fontFamily ) );
 
   opts.insert( QStringLiteral( "toolbarSpacing" ), settings.value( QStringLiteral( "toolbarSpacing" ), QString() ) );
@@ -94,11 +96,11 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
 
   // QgisApp-wide font
   QString fontSize = opts.value( QStringLiteral( "fontPointSize" ) ).toString();
-  QgsDebugMsg( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ) );
+  QgsDebugMsgLevel( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ), 2 );
   if ( fontSize.isEmpty() ) { return; }
 
   QString fontFamily = opts.value( QStringLiteral( "fontFamily" ) ).toString();
-  QgsDebugMsg( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ) );
+  QgsDebugMsgLevel( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ), 2 );
   if ( fontFamily.isEmpty() ) { return; }
 
   const QString defaultSize = QString::number( mDefaultFont.pointSize() );
@@ -106,17 +108,23 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
   if ( fontSize != defaultSize || fontFamily != defaultFamily )
     ss += QStringLiteral( "* { font: %1pt \"%2\"} " ).arg( fontSize, fontFamily );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 12, 2)
   // Fix for macOS Qt 5.9+, where close boxes do not show on document mode tab bar tabs
-  // See: https://bugreports.qt.io/browse/QTBUG-61092
-  //      https://bugreports.qt.io/browse/QTBUG-61742
+  // See: https://bugreports.qt.io/browse/QTBUG-61092 => fixed in 5.12.2 / 5.14
+  //      https://bugreports.qt.io/browse/QTBUG-61742 => fixed in 5.9.2
   // Setting any stylesheet makes the default close button disappear.
   // Specifically setting a custom close button temporarily works around issue.
-  // TODO: Remove when regression is fixed (Qt 5.9.3 or 5.10?); though hard to tell,
-  //       since we are overriding the default close button image now.
   if ( mMacStyle )
   {
     ss += QLatin1String( "QTabBar::close-button{ image: url(:/images/themes/default/mIconCloseTab.svg); }" );
     ss += QLatin1String( "QTabBar::close-button:hover{ image: url(:/images/themes/default/mIconCloseTabHover.svg); }" );
+  }
+#endif
+  if ( mMacStyle )
+  {
+    ss += QLatin1String( "QWidget#QgsTextFormatWidgetBase QTabWidget#mOptionsTab QTabBar::tab," );
+    ss += QLatin1String( "QWidget#QgsRendererMeshPropsWidgetBase QTabWidget#mStyleOptionsTab" );
+    ss += QLatin1String( "QTabBar::tab { width: 1.2em; }" );
   }
 
   ss += QLatin1String( "QGroupBox{ font-weight: 600; }" );
@@ -125,22 +133,24 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
   if ( themeName == QStringLiteral( "default" ) || !QgsApplication::uiThemes().contains( themeName ) )
   {
     //sidebar style
-    QString style = "QListWidget#mOptionsListWidget {"
-                    "    background-color: rgb(69, 69, 69, 0);"
-                    "    outline: 0;"
-                    "}"
-                    "QFrame#mOptionsListFrame {"
-                    "    background-color: rgb(69, 69, 69, 220);"
-                    "}"
-                    "QListWidget#mOptionsListWidget::item {"
-                    "    color: white;"
-                    "    padding: 3px;"
-                    "}"
-                    "QListWidget#mOptionsListWidget::item::selected {"
-                    "    color: black;"
-                    "    background-color:palette(Window);"
-                    "    padding-right: 0px;"
-                    "}";
+    const int frameMargin = QgsGuiUtils::scaleIconSize( 3 );
+
+    QString style = QStringLiteral( "QListWidget#mOptionsListWidget {"
+                                    "    background-color: rgba(69, 69, 69, 0);"
+                                    "    outline: 0;"
+                                    "}"
+                                    "QFrame#mOptionsListFrame {"
+                                    "    background-color: rgba(69, 69, 69, 220);"
+                                    "}"
+                                    "QListWidget#mOptionsListWidget::item {"
+                                    "    color: white;"
+                                    "    padding: %1px;"
+                                    "}"
+                                    "QListWidget#mOptionsListWidget::item::selected {"
+                                    "    color: black;"
+                                    "    background-color:palette(Window);"
+                                    "    padding-right: 0px;"
+                                    "}" ).arg( frameMargin );
 
     QString toolbarSpacing = opts.value( QStringLiteral( "toolbarSpacing" ), QString() ).toString();
     if ( !toolbarSpacing.isEmpty() )
@@ -170,7 +180,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
 #endif
   }
 
-  QgsDebugMsg( QStringLiteral( "Stylesheet built: %1" ).arg( ss ) );
+  QgsDebugMsgLevel( QStringLiteral( "Stylesheet built: %1" ).arg( ss ), 2 );
 
   emit appStyleSheetChanged( ss );
 }
@@ -191,8 +201,9 @@ void QgisAppStyleSheet::saveToSettings( const QMap<QString, QVariant> &opts )
 
 void QgisAppStyleSheet::setActiveValues()
 {
-  mStyle = qApp->style()->objectName(); // active style name (lowercase)
-  QgsDebugMsg( QStringLiteral( "Style name: %1" ).arg( mStyle ) );
+  QgsAppStyle *style = dynamic_cast<QgsAppStyle *>( qApp->style() );
+  mStyle = style ? style->baseStyle() : qApp->style()->objectName(); // active style name (lowercase)
+  QgsDebugMsgLevel( QStringLiteral( "Style name: %1" ).arg( mStyle ), 2 );
 
   mMacStyle = mStyle.contains( QLatin1String( "macintosh" ) ); // macintosh (aqua)
   mOxyStyle = mStyle.contains( QLatin1String( "oxygen" ) ); // oxygen

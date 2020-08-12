@@ -15,13 +15,14 @@
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************
+
+From build dir, run: ctest -R PyQgsPointDisplacementRenderer -V
+
 """
 
 __author__ = 'Nyall Dawson'
 __date__ = 'September 2016'
 __copyright__ = '(C) 2016, Nyall Dawson'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -47,7 +48,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsMapSettings,
                        QgsProperty,
                        QgsReadWriteContext,
-                       QgsSymbolLayer
+                       QgsSymbolLayer,
+                       QgsRenderContext
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -92,13 +94,8 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         return layer, renderer, mapsettings
 
     def _tearDown(self, layer):
-        #QgsProject.instance().removeAllMapLayers()
+        # QgsProject.instance().removeAllMapLayers()
         QgsProject.instance().removeMapLayer(layer)
-
-    @classmethod
-    def tearDownClass(cls):
-        # avoid crash on finish, probably related to https://bugreports.qt.io/browse/QTBUG-35760
-        QThreadPool.globalInstance().waitForDone()
 
     def _setProperties(self, r):
         """ set properties for a renderer for testing with _checkProperties"""
@@ -233,8 +230,10 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         old_marker = layer.renderer().centerSymbol().clone()
 
         new_marker = QgsMarkerSymbol.createSimple({'color': '#ffff00', 'size': '3', 'outline_style': 'no'})
-        new_marker.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression('@cluster_color'))
-        new_marker.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertySize, QgsProperty.fromExpression('@cluster_size*2'))
+        new_marker.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor,
+                                                         QgsProperty.fromExpression('@cluster_color'))
+        new_marker.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertySize,
+                                                         QgsProperty.fromExpression('@cluster_size*2'))
         layer.renderer().setCenterSymbol(new_marker)
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(mapsettings)
@@ -429,6 +428,12 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.report += renderchecker.report()
         self.assertTrue(res)
         self._tearDown(layer)
+
+    def testUsedAttributes(self):
+        layer, renderer, mapsettings = self._setUp()
+        ctx = QgsRenderContext.fromMapSettings(mapsettings)
+
+        self.assertCountEqual(renderer.usedAttributes(ctx), {})
 
 
 if __name__ == '__main__':

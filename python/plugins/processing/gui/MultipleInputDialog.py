@@ -21,12 +21,9 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import warnings
+from pathlib import Path
 
 from qgis.core import (QgsSettings,
                        QgsProcessing,
@@ -37,7 +34,6 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox, QFileDialog
 from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 with warnings.catch_warnings():
@@ -77,6 +73,11 @@ class MultipleInputDialog(BASE, WIDGET):
             btnAddFile = QPushButton(QCoreApplication.translate("MultipleInputDialog", 'Add File(s)…'))
             btnAddFile.clicked.connect(self.addFiles)
             self.buttonBox.addButton(btnAddFile,
+                                     QDialogButtonBox.ActionRole)
+
+            btnAddDir = QPushButton(QCoreApplication.translate("MultipleInputDialog", 'Add Directory…'))
+            btnAddDir.clicked.connect(self.addDirectory)
+            self.buttonBox.addButton(btnAddDir,
                                      QDialogButtonBox.ActionRole)
 
         self.btnSelectAll.clicked.connect(lambda: self.selectAll(True))
@@ -179,6 +180,44 @@ class MultipleInputDialog(BASE, WIDGET):
             files = list(ret)
             settings.setValue('/Processing/LastInputPath',
                               os.path.dirname(str(files[0])))
+            for filename in files:
+                item = QStandardItem(filename)
+                item.setData(filename, Qt.UserRole)
+                item.setCheckState(Qt.Checked)
+                item.setCheckable(True)
+                item.setDropEnabled(False)
+                self.model.appendRow(item)
+
+    def addDirectory(self):
+        settings = QgsSettings()
+        path = str(settings.value('/Processing/LastInputPath'))
+
+        ret = QFileDialog.getExistingDirectory(self, self.tr('Select File(s)'), path)
+        if ret:
+            exts = []
+
+            if self.datatype == QgsProcessing.TypeVector:
+                exts = QgsVectorFileWriter.supportedFormatExtensions()
+            elif self.datatype == QgsProcessing.TypeRaster:
+                for t in QgsProviderRegistry.instance().fileRasterFilters().split(';;')[1:]:
+                    for e in t[t.index('(') + 1:-1].split(' '):
+                        if e != "*.*" and e.startswith("*."):
+                            exts.append(e[2:])
+
+            files = []
+            for pp in Path(ret).rglob("*"):
+                if not pp.is_file():
+                    continue
+
+                if exts and pp.suffix[1:] not in exts:
+                    continue
+
+                p = pp.as_posix()
+
+                files.append(p)
+
+            settings.setValue('/Processing/LastInputPath', ret)
+
             for filename in files:
                 item = QStandardItem(filename)
                 item.setData(filename, Qt.UserRole)

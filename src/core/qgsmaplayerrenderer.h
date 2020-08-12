@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 
 class QgsFeedback;
+class QgsRenderContext;
 
 /**
  * \ingroup core
@@ -35,20 +36,29 @@ class QgsFeedback;
  * Qt containers and various Qt classes use implicit sharing.
  *
  * The scenario will be:
- * 1. renderer job (doing preparation in the GUI thread) calls
- *    QgsMapLayer::createMapRenderer() and gets instance of this class.
- *    The instance is initialized at that point and should not need
- *    additional calls to QgsVectorLayer.
- * 2. renderer job (still in GUI thread) stores the renderer for later use.
- * 3. renderer job (in worker thread) calls QgsMapLayerRenderer::render()
- * 4. renderer job (again in GUI thread) will check errors() and report them
+ *
+ * # renderer job (doing preparation in the GUI thread) calls
+ *   QgsMapLayer::createMapRenderer() and gets instance of this class.
+ *   The instance is initialized at that point and should not need
+ *   additional calls to QgsVectorLayer.
+ * # renderer job (still in GUI thread) stores the renderer for later use.
+ * # renderer job (in worker thread) calls QgsMapLayerRenderer::render()
+ * # renderer job (again in GUI thread) will check errors() and report them
  *
  * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapLayerRenderer
 {
   public:
-    QgsMapLayerRenderer( const QString &layerID ) : mLayerID( layerID ) {}
+
+    /**
+     * Constructor for QgsMapLayerRenderer, with the associated \a layerID and render \a context.
+     */
+    QgsMapLayerRenderer( const QString &layerID, QgsRenderContext *context = nullptr )
+      : mLayerID( layerID )
+      , mContext( context )
+    {}
+
     virtual ~QgsMapLayerRenderer() = default;
 
     //! Do the rendering (based on data stored in the class)
@@ -66,9 +76,27 @@ class CORE_EXPORT QgsMapLayerRenderer
     //! Gets access to the ID of the layer rendered by this class
     QString layerId() const { return mLayerID; }
 
+    /**
+     * Returns the render context associated with the renderer.
+     *
+     * \since QGIS 3.10
+     */
+    QgsRenderContext *renderContext() { return mContext; }
+
   protected:
     QStringList mErrors;
     QString mLayerID;
+
+  private:
+
+    // TODO QGIS 4.0 - make reference instead of pointer!
+
+    /**
+     * Associated render context.
+     *
+     * \since QGIS 3.10
+     */
+    QgsRenderContext *mContext = nullptr;
 };
 
 #endif // QGSMAPLAYERRENDERER_H

@@ -16,12 +16,12 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
-IF(EXISTS QSCI_MOD_VERSION_STR)
+IF(QSCI_MOD_VERSION_STR)
   # Already in cache, be silent
   SET(QSCI_FOUND TRUE)
-ELSE(EXISTS QSCI_MOD_VERSION_STR)
+ELSE(QSCI_MOD_VERSION_STR)
 
-  FIND_FILE(_find_qsci_py FindQsci.py PATHS ${CMAKE_MODULE_PATH})
+  FIND_FILE(_find_qsci_py FindQsci.py PATHS ${CMAKE_MODULE_PATH} NO_CMAKE_FIND_ROOT_PATH)
 
   SET(QSCI_VER 5)
 
@@ -47,4 +47,4 @@ ELSE(EXISTS QSCI_MOD_VERSION_STR)
     ENDIF(QSCI_FIND_REQUIRED)
   ENDIF(QSCI_FOUND)
 
-ENDIF(EXISTS QSCI_MOD_VERSION_STR)
+ENDIF(QSCI_MOD_VERSION_STR)

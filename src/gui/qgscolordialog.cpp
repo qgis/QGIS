@@ -20,6 +20,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QPushButton>
 #include <QMenu>
@@ -35,12 +36,13 @@ QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColo
   , mPreviousColor( color )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsColorDialog::mButtonBox_accepted );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsColorDialog::mButtonBox_rejected );
   connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsColorDialog::mButtonBox_clicked );
 
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/ColorDialog/geometry" ) ).toByteArray() );
+  connect( mColorWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
 
   if ( mPreviousColor.isValid() )
   {
@@ -110,13 +112,11 @@ QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, co
 
 void QgsColorDialog::mButtonBox_accepted()
 {
-  saveSettings();
   accept();
 }
 
 void QgsColorDialog::mButtonBox_rejected()
 {
-  saveSettings();
   reject();
 }
 
@@ -131,12 +131,6 @@ void QgsColorDialog::mButtonBox_clicked( QAbstractButton *button )
 void QgsColorDialog::discardColor()
 {
   mColorWidget->setDiscarded( true );
-}
-
-void QgsColorDialog::saveSettings()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/ColorDialog/geometry" ), saveGeometry() );
 }
 
 void QgsColorDialog::setColor( const QColor &color )
@@ -159,7 +153,6 @@ void QgsColorDialog::setColor( const QColor &color )
 
 void QgsColorDialog::closeEvent( QCloseEvent *e )
 {
-  saveSettings();
   QDialog::closeEvent( e );
 }
 

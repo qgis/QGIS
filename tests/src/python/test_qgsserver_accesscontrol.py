@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Stephane Brunner'
 __date__ = '28/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -202,11 +200,16 @@ class TestQgsServerAccessControl(QgsServerTestBase):
         self._server.putenv("QGIS_PROJECT_FILE", '')
         return result
 
-    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize(), outputJpg=False):
+    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize(), outputFormat='PNG'):
 
-        extFile = 'png'
-        if outputJpg:
+        if outputFormat == 'PNG':
+            extFile = 'png'
+        elif outputFormat == 'JPG':
             extFile = 'jpg'
+        elif outputFormat == 'WEBP':
+            extFile = 'webp'
+        else:
+            raise RuntimeError('Yeah, new format implemented')
 
         temp_image = os.path.join(tempfile.gettempdir(), "%s_result.%s" % (control_image, extFile))
 

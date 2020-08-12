@@ -16,9 +16,13 @@ The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/read
 .. warning::
 
    You should use the signal valueChanged of this subclass
-   rather than QDateTimeEdit.dateTimeChanged. If you consequently connect parent's
-   dateTimeChanged signal and call dateTime() afterwards there is no warranty to
-   have a proper NULL value handling.
+   rather than QDateTimeEdit.dateTimeChanged. (If you consequently connect parent's
+   dateTimeChanged signal and call :py:func:`~dateTime` afterwards there is no guarantee that
+   NULL values will be correctly handled).
+
+.. seealso:: :py:class:`QgsDateEdit`
+
+.. seealso:: :py:class:`QgsTimeEdit`
 %End
 
 %TypeHeaderCode
@@ -28,41 +32,70 @@ The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/read
 
     explicit QgsDateTimeEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsDateTimeEdit
+Constructor for QgsDateTimeEdit.
+The current date and time is used by default.
+The widget is allowing null by default.
+If allow null is disabled, you should check allowNull before getting values from the widget.
 %End
 
     void setAllowNull( bool allowNull );
 %Docstring
 Determines if the widget allows setting null date/time.
+
+.. seealso:: :py:func:`allowNull`
 %End
+
     bool allowNull() const;
+%Docstring
+If the widget allows setting null date/time.
+
+.. seealso:: :py:func:`setAllowNull`
+%End
 
     void setDateTime( const QDateTime &dateTime );
 %Docstring
-setDateTime set the date time in the widget and handles null date times.
+Set the date time in the widget and handles null date times.
 
 .. note::
 
-   since QDateTimeEdit.setDateTime() is not virtual, setDateTime must be called for QgsDateTimeEdit.
+   Since QDateTimeEdit.setDateTime() is not virtual, setDateTime must be called for QgsDateTimeEdit.
 %End
 
     QDateTime dateTime() const;
 %Docstring
-dateTime returns the date time which can eventually be a null date/time
+Returns the date time which can be a null date/time.
 
 .. note::
 
-   since QDateTimeEdit.dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit.
+   Before QGIS 3.10, you mustn't call :py:func:`~QgsDateTimeEdit.date` or :py:func:`~QgsDateTimeEdit.time` because they can't return a NULL value.
+
+.. note::
+
+   Since QDateTimeEdit.dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit.
+%End
+
+    QTime time() const;
+%Docstring
+Returns the time which can be a null time.
+
+.. versionadded:: 3.10
+%End
+
+    QDate date() const;
+%Docstring
+Returns the date which can be a null date.
+
+.. versionadded:: 3.10
 %End
 
     virtual void clear();
 
 %Docstring
-Set the current date as NULL
+Set the current date as NULL.
 
 .. note::
 
-   if the widget is not configured to accept NULL dates, this will have no effect
+   If the widget is not configured to accept NULL dates, this will have no effect.
 %End
 
     void setEmpty();
@@ -72,13 +105,33 @@ Resets the widget to show no value (ie, an "unknown" state).
 .. versionadded:: 2.16
 %End
 
+    QString nullRepresentation() const;
+%Docstring
+Returns the widget's NULL representation, which defaults
+to :py:func:`QgsApplication.nullRepresentation()`.
+
+.. seealso:: :py:func:`setNullRepresentation`
+
+.. versionadded:: 3.14
+%End
+
+    void setNullRepresentation( const QString &null );
+%Docstring
+Sets the widget's ``null`` representation, which defaults
+to :py:func:`QgsApplication.nullRepresentation()`.
+
+.. seealso:: :py:func:`nullRepresentation`
+
+.. versionadded:: 3.14
+%End
+
   signals:
 
     void valueChanged( const QDateTime &date );
 %Docstring
-signal emitted whenever the value changes.
+Signal emitted whenever the value changes.
 
-:param date: the new date/time value.
+:param date: The new date/time value.
 %End
 
   protected:
@@ -86,9 +139,145 @@ signal emitted whenever the value changes.
 
     virtual void focusOutEvent( QFocusEvent *event );
 
+    virtual void focusInEvent( QFocusEvent *event );
+
     virtual void wheelEvent( QWheelEvent *event );
 
     virtual void showEvent( QShowEvent *event );
+
+
+
+
+
+    void displayNull( bool updateCalendar = false );
+%Docstring
+write the null value representation to the line edit without changing the value
+
+:param updateCalendar: Flag if calendar is open and minimum date needs to be set
+%End
+
+    virtual void emitValueChanged( const QVariant &value );
+%Docstring
+Emits the widget's correct value changed signal.
+%End
+
+    bool isNull() const;
+%Docstring
+Returns ``True`` if the widget is currently set to a null value
+%End
+
+  protected slots:
+
+
+};
+
+
+class QgsTimeEdit : QgsDateTimeEdit
+{
+%Docstring
+The QgsTimeEdit class is a QTimeEdit widget with the capability of setting/reading null date/times.
+
+.. warning::
+
+   You should use the signal valueChanged of this subclass
+   rather than QDateTimeEdit.timeChanged. (If you consequently connect parent's
+   timeChanged signal and call :py:func:`~QgsDateTimeEdit.time` afterwards there is no guarantee that
+   NULL values will be correctly handled).
+
+.. seealso:: :py:class:`QgsDateTimeEdit`
+
+.. seealso:: :py:class:`QgsDateEdit`
+
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsdatetimeedit.h"
+%End
+  public:
+
+    explicit QgsTimeEdit( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsTimeEdit.
+The current time is used by default.
+The widget is allowing null by default.
+If allow null is disabled, you should check allowNull before getting values from the widget.
+%End
+
+    void setTime( const QTime &time );
+%Docstring
+Sets the ``time`` for the widget and handles null times.
+
+.. note::
+
+   Since QDateTimeEdit.setTime() is not virtual, setTime must be called for QgsTimeEdit.
+%End
+
+  signals:
+
+    void timeValueChanged( const QTime &time );
+%Docstring
+Signal emitted whenever the time changes.
+%End
+
+  protected:
+    virtual void emitValueChanged( const QVariant &value );
+
+
+};
+
+class QgsDateEdit : QgsDateTimeEdit
+{
+%Docstring
+The QgsDateEdit class is a QDateEdit widget with the capability of setting/reading null dates.
+
+.. warning::
+
+   You should use the signal valueChanged of this subclass
+   rather than QDateTimeEdit.dateChanged. (If you consequently connect parent's
+   dateChanged signal and call :py:func:`~QgsTimeEdit.date` afterwards there is no guarantee that
+   NULL values will be correctly handled).
+
+.. seealso:: :py:class:`QgsDateTimeEdit`
+
+.. seealso:: :py:class:`QgsTimeEdit`
+
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsdatetimeedit.h"
+%End
+  public:
+
+    explicit QgsDateEdit( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDateEdit.
+The current time is used by default.
+The widget is allowing null by default.
+If allow null is disabled, you should check allowNull before getting values from the widget.
+%End
+
+    void setDate( const QDate &date );
+%Docstring
+Sets the ``date`` for the widget and handles null dates.
+
+.. note::
+
+   Since QDateTimeEdit.setDate() is not virtual, setDate must be called for QgsDateEdit.
+%End
+
+  signals:
+
+    void dateValueChanged( const QDate &date );
+%Docstring
+Signal emitted whenever the date changes.
+%End
+
+  protected:
+    virtual void emitValueChanged( const QVariant &value );
 
 
 };

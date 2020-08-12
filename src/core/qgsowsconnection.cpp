@@ -54,14 +54,14 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
   if ( !username.isEmpty() )
   {
     // check for a password, if none prompt to get it
-    mUri.setParam( QStringLiteral( "username" ), username );
-    mUri.setParam( QStringLiteral( "password" ), password );
+    mUri.setUsername( username );
+    mUri.setPassword( password );
   }
 
   QString authcfg = settings.value( credentialsKey + "/authcfg" ).toString();
   if ( !authcfg.isEmpty() )
   {
-    mUri.setParam( QStringLiteral( "authcfg" ), authcfg );
+    mUri.setAuthConfigId( authcfg );
   }
   mConnectionInfo.append( ",authcfg=" + authcfg );
 
@@ -126,6 +126,10 @@ QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUr
   if ( settings.value( settingsKey + QStringLiteral( "/smoothPixmapTransform" ), false ).toBool() )
   {
     uri.setParam( QStringLiteral( "SmoothPixmapTransform" ), QStringLiteral( "1" ) );
+  }
+  if ( settings.value( settingsKey + QStringLiteral( "/ignoreReportedLayerExtents" ), false ).toBool() )
+  {
+    uri.setParam( QStringLiteral( "IgnoreReportedLayerExtents" ), QStringLiteral( "1" ) );
   }
   QString dpiMode = settings.value( settingsKey + QStringLiteral( "/dpiMode" ), QStringLiteral( "all" ) ).toString();
   if ( !dpiMode.isEmpty() )

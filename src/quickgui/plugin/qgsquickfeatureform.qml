@@ -42,6 +42,13 @@ Item {
   property var externalResourceHandler: QtObject {
 
         /**
+         * Called when clicked on the camera icon to capture an image.
+         * \param itemWidget editorWidget for modified field to send valueChanged signal.
+         */
+        property var capturePhoto: function captureImage(itemWidget) {
+        }
+
+        /**
          * Called when clicked on the gallery icon to choose a file in a gallery.
          * \param itemWidget editorWidget for modified field to send valueChanged signal.
          */
@@ -61,6 +68,17 @@ Item {
           * \param imagePath Absolute path to the image.
           */
         property var removeImage: function removeImage(itemWidget, imagePath) {
+        }
+
+        /**
+          * Called when clicked on the OK icon after taking a photo with the Photo panel.
+          * \param itemWidget editorWidget for modified field to send valueChanged signal.
+          * \param prefixToRelativePath Together with the value creates absolute path
+          * \param value Relative path of taken photo.
+          */
+        property var confirmImage: function confirmImage(itemWidget, prefixToRelativePath, value) {
+          itemWidget.image.source = prefixToRelativePath + "/" + value
+          itemWidget.valueChanged(value, value === "" || value === null)
         }
     }
 
@@ -85,7 +103,7 @@ Item {
   property QgsQuick.Project project
 
   /**
-   * The function used for a component loader to find qml edit widget componets used in form.
+   * The function used for a component loader to find qml edit widget components used in form.
    */
   property var loadWidgetFn: QgsQuick.Utils.getEditorComponentSource
 
@@ -376,6 +394,8 @@ Item {
           property var customStyle: form.style
           property var externalResourceHandler: form.externalResourceHandler
           property bool readOnly: form.state == "ReadOnly" || !AttributeEditable
+          property var featurePair: form.model.attributeModel.featureLayerPair
+          property var activeProject: form.project
 
           active: widget !== 'Hidden'
 

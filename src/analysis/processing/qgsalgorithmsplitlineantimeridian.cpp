@@ -100,11 +100,7 @@ QgsCoordinateReferenceSystem QgsSplitGeometryAtAntimeridianAlgorithm::outputCrs(
 
 bool QgsSplitGeometryAtAntimeridianAlgorithm::prepareAlgorithm( const QVariantMap &, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  if ( context.project() )
-  {
-    mDa.setEllipsoid( context.project()->ellipsoid() );
-  }
-
+  mDa.setEllipsoid( context.ellipsoid() );
   mTransformContext = context.transformContext();
   return true;
 }

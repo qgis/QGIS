@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>334</width>
-    <height>572</height>
+    <width>536</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -60,275 +60,239 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>318</width>
-        <height>949</height>
+        <y>-4</y>
+        <width>520</width>
+        <height>881</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mPreviewGroupBox">
-         <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+        <widget class="QRadioButton" name="mRadioSVG">
+         <property name="text">
+          <string>SVG image</string>
          </property>
-         <property name="title">
-          <string>Main Properties</string>
-         </property>
-         <property name="syncGroup" stdset="0">
-          <string notr="true">composeritem</string>
-         </property>
-         <property name="collapsed" stdset="0">
-          <bool>false</bool>
-         </property>
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Image source</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QLineEdit" name="mPictureLineEdit"/>
-            </item>
-            <item>
-             <widget class="QPushButton" name="mPictureBrowseButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>30</width>
-                <height>32767</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>…</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QgsPropertyOverrideButton" name="mSourceDDBtn">
-              <property name="text">
-               <string>…</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Resize mode</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QComboBox" name="mResizeModeComboBox">
-            <item>
-             <property name="text">
-              <string>Zoom</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Stretch</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Clip</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Zoom and resize frame</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Resize frame to image size</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Placement</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QComboBox" name="mAnchorPointComboBox">
-            <item>
-             <property name="text">
-              <string>Top left</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Top center</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Top right</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Middle left</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Middle</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Middle right</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Bottom left</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Bottom center</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Bottom right</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mSearchDirectoriesGroupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
-         </property>
-         <property name="title">
-          <string>Search Directories</string>
-         </property>
-         <property name="syncGroup" stdset="0">
-          <string notr="true">composeritem</string>
-         </property>
-         <property name="collapsed" stdset="0">
+         <property name="checked">
           <bool>true</bool>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="mRadioRaster">
+         <property name="text">
+          <string>Raster image</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="mRasterFrame">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,0">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item>
-           <widget class="QLabel" name="mPreviewsLoadingLabel">
-            <property name="font">
-             <font>
-              <italic>true</italic>
-             </font>
-            </property>
-            <property name="text">
-             <string>Loading previews…</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
+           <widget class="QgsImageSourceLineEdit" name="mImageSourceLineEdit" native="true">
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QListWidget" name="mPreviewListWidget">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>200</height>
-             </size>
+           <widget class="QFrame" name="mRasterDDBtnFrame">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
             </property>
-            <property name="showDropIndicator" stdset="0">
-             <bool>false</bool>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
             </property>
-            <property name="dragDropMode">
-             <enum>QAbstractItemView::DragDrop</enum>
-            </property>
-            <property name="movement">
-             <enum>QListView::Free</enum>
-            </property>
-            <property name="flow">
-             <enum>QListView::LeftToRight</enum>
-            </property>
-            <property name="isWrapping" stdset="0">
-             <bool>true</bool>
-            </property>
-            <property name="resizeMode">
-             <enum>QListView::Adjust</enum>
-            </property>
-            <property name="gridSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="viewMode">
-             <enum>QListView::IconMode</enum>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QgsPropertyOverrideButton" name="mSourceDDBtn">
+               <property name="text">
+                <string>…</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>Image search paths</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="mSearchDirectoriesComboBox">
-            <property name="sizeAdjustPolicy">
-             <enum>QComboBox::AdjustToMinimumContentsLength</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QPushButton" name="mRemoveDirectoryButton">
-              <property name="text">
-               <string>Remove</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="mAddDirectoryButton">
-              <property name="text">
-               <string>Add…</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
           </item>
          </layout>
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+        <widget class="QFrame" name="mSVGFrame">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,0">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item row="1" column="0">
+           <widget class="QgsSvgSourceLineEdit" name="mSvgSourceLineEdit" native="true">
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QFrame" name="mSvgDDBtnFrame">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_5">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+            </layout>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QSplitter" name="splitter">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <widget class="QWidget" name="layoutWidget">
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <item>
+               <widget class="QLabel" name="label_9">
+                <property name="text">
+                 <string>SVG Groups</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTreeView" name="viewGroups">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                  <horstretch>3</horstretch>
+                  <verstretch>1</verstretch>
+                 </sizepolicy>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="layoutWidget1">
+             <layout class="QVBoxLayout" name="verticalLayout_4">
+              <item>
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>SVG Image</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QListView" name="viewImages">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                  <horstretch>5</horstretch>
+                  <verstretch>1</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>250</height>
+                 </size>
+                </property>
+                <property name="editTriggers">
+                 <set>QAbstractItemView::NoEditTriggers</set>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>32</width>
+                  <height>32</height>
+                 </size>
+                </property>
+                <property name="movement">
+                 <enum>QListView::Static</enum>
+                </property>
+                <property name="resizeMode">
+                 <enum>QListView::Adjust</enum>
+                </property>
+                <property name="layoutMode">
+                 <enum>QListView::Batched</enum>
+                </property>
+                <property name="spacing">
+                 <number>2</number>
+                </property>
+                <property name="gridSize">
+                 <size>
+                  <width>36</width>
+                  <height>36</height>
+                 </size>
+                </property>
+                <property name="viewMode">
+                 <enum>QListView::IconMode</enum>
+                </property>
+                <property name="uniformItemSizes">
+                 <bool>true</bool>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mSVGParamsGroupBox">
          <property name="title">
           <string>SVG Parameters</string>
          </property>
@@ -470,6 +434,44 @@
         </widget>
        </item>
        <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mPreviewGroupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
+         <property name="title">
+          <string>Size and Placement</string>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="1" column="0">
+           <widget class="QComboBox" name="mResizeModeComboBox"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Placement</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Resize mode</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QComboBox" name="mAnchorPointComboBox"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mRotationGroupBox">
          <property name="focusPolicy">
           <enum>Qt::StrongFocus</enum>
@@ -587,26 +589,36 @@
    <extends>QComboBox</extends>
    <header>qgslayoutitemcombobox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsImageSourceLineEdit</class>
+   <extends>QWidget</extends>
+   <header>qgsfilecontentsourcelineedit.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSvgSourceLineEdit</class>
+   <extends>QWidget</extends>
+   <header>qgsfilecontentsourcelineedit.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
-  <tabstop>mPreviewGroupBox</tabstop>
-  <tabstop>mPictureLineEdit</tabstop>
-  <tabstop>mPictureBrowseButton</tabstop>
-  <tabstop>mSourceDDBtn</tabstop>
-  <tabstop>mResizeModeComboBox</tabstop>
-  <tabstop>mAnchorPointComboBox</tabstop>
-  <tabstop>mSearchDirectoriesGroupBox</tabstop>
-  <tabstop>mPreviewListWidget</tabstop>
-  <tabstop>mSearchDirectoriesComboBox</tabstop>
-  <tabstop>mRemoveDirectoryButton</tabstop>
-  <tabstop>mAddDirectoryButton</tabstop>
+  <tabstop>mRadioSVG</tabstop>
+  <tabstop>mRadioRaster</tabstop>
+  <tabstop>mImageSourceLineEdit</tabstop>
+  <tabstop>viewGroups</tabstop>
+  <tabstop>viewImages</tabstop>
+  <tabstop>mSvgSourceLineEdit</tabstop>
   <tabstop>mFillColorButton</tabstop>
   <tabstop>mFillColorDDBtn</tabstop>
   <tabstop>mStrokeColorButton</tabstop>
   <tabstop>mStrokeColorDDBtn</tabstop>
   <tabstop>mStrokeWidthSpinBox</tabstop>
   <tabstop>mStrokeWidthDDBtn</tabstop>
+  <tabstop>mPreviewGroupBox</tabstop>
+  <tabstop>mResizeModeComboBox</tabstop>
+  <tabstop>mAnchorPointComboBox</tabstop>
   <tabstop>mRotationGroupBox</tabstop>
   <tabstop>mPictureRotationSpinBox</tabstop>
   <tabstop>mRotationFromComposerMapCheckBox</tabstop>

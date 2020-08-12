@@ -29,8 +29,6 @@ from functools import partial
 __author__ = 'Alessandro Pasotti'
 __date__ = '18/09/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from shutil import rmtree
 
@@ -56,7 +54,6 @@ try:
     QGIS_SERVER_ENDPOINT_PORT = os.environ['QGIS_SERVER_ENDPOINT_PORT']
 except:
     QGIS_SERVER_ENDPOINT_PORT = '0'  # Auto
-
 
 QGIS_AUTH_DB_DIR_PATH = tempfile.mkdtemp()
 
@@ -107,7 +104,7 @@ class TestAuthManager(unittest.TestCase):
                                       env=os.environ, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         line = cls.server.stdout.readline()
-        cls.port = int(re.findall(b':(\d+)', line)[0])
+        cls.port = int(re.findall(br':(\d+)', line)[0])
         assert cls.port != 0
         # Wait for the server process to start
         assert waitServer('%s://%s:%s' % (cls.protocol, cls.hostname, cls.port)), "Server is not responding! %s://%s:%s" % (cls.protocol, cls.hostname, cls.port)
@@ -162,7 +159,7 @@ class TestAuthManager(unittest.TestCase):
             'layers': urllib.parse.quote(layers.replace('_', ' ')),
             'styles': '',
             'version': 'auto',
-            #'sql': '',
+            # 'sql': '',
         }
         if authcfg is not None:
             parms.update({'authcfg': authcfg})
@@ -281,7 +278,7 @@ class TestAuthManager(unittest.TestCase):
             self.assertTrue(b'PNG' in f.read())  # is a PNG
 
     def _set_slot(self, *args, **kwargs):
-        #print('_set_slot(%s) called' % args[0])
+        # print('_set_slot(%s) called' % args[0])
         setattr(self, args[0] + '_was_called', True)
         setattr(self, args[0] + '_args', args)
 

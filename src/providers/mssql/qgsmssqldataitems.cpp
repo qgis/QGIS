@@ -33,18 +33,15 @@
 
 #ifdef HAVE_GUI
 #include "qgsmssqlsourceselect.h"
-#include "qgsmssqlnewconnection.h"
 #endif
 
 #include <QMessageBox>
 #include <QSqlDatabase>
 #include <QSqlError>
-#include <QProgressDialog>
-#include <QInputDialog>
 
 // ---------------------------------------------------------------------------
 QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "MSSQL" ) )
   , mUseGeometryColumns( false )
   , mUseEstimatedMetadata( false )
   , mAllowGeometrylessTables( true )
@@ -99,7 +96,7 @@ void QgsMssqlConnectionItem::stop()
 
 void QgsMssqlConnectionItem::refresh()
 {
-  QgsDebugMsg( "mPath = " + mPath );
+  QgsDebugMsgLevel( "mPath = " + mPath, 3 );
   stop();
 
   // read up the schemas and layers from database
@@ -146,16 +143,16 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
   QString query( QStringLiteral( "select " ) );
   if ( mUseGeometryColumns )
   {
-    query += QLatin1String( "f_table_schema, f_table_name, f_geometry_column, srid, geometry_type from geometry_columns" );
+    query += QLatin1String( "f_table_schema, f_table_name, f_geometry_column, srid, geometry_type, 0 from geometry_columns" );
   }
   else
   {
-    query += QLatin1String( "sys.schemas.name, sys.objects.name, sys.columns.name, null, 'GEOMETRY' from sys.columns join sys.types on sys.columns.system_type_id = sys.types.system_type_id and sys.columns.user_type_id = sys.types.user_type_id join sys.objects on sys.objects.object_id = sys.columns.object_id join sys.schemas on sys.objects.schema_id = sys.schemas.schema_id where (sys.types.name = 'geometry' or sys.types.name = 'geography') and (sys.objects.type = 'U' or sys.objects.type = 'V')" );
+    query += QLatin1String( "sys.schemas.name, sys.objects.name, sys.columns.name, null, 'GEOMETRY', case when sys.objects.type = 'V' then 1 else 0 end from sys.columns join sys.types on sys.columns.system_type_id = sys.types.system_type_id and sys.columns.user_type_id = sys.types.user_type_id join sys.objects on sys.objects.object_id = sys.columns.object_id join sys.schemas on sys.objects.schema_id = sys.schemas.schema_id where (sys.types.name = 'geometry' or sys.types.name = 'geography') and (sys.objects.type = 'U' or sys.objects.type = 'V')" );
   }
 
   if ( mAllowGeometrylessTables )
   {
-    query += QLatin1String( " union all select sys.schemas.name, sys.objects.name, null, null, 'NONE' from sys.objects join sys.schemas on sys.objects.schema_id = sys.schemas.schema_id where not exists (select * from sys.columns sc1 join sys.types on sc1.system_type_id = sys.types.system_type_id where (sys.types.name = 'geometry' or sys.types.name = 'geography') and sys.objects.object_id = sc1.object_id) and (sys.objects.type = 'U' or sys.objects.type = 'V')" );
+    query += QLatin1String( " union all select sys.schemas.name, sys.objects.name, null, null, 'NONE', case when sys.objects.type = 'V' then 1 else 0 end from sys.objects join sys.schemas on sys.objects.schema_id = sys.schemas.schema_id where not exists (select * from sys.columns sc1 join sys.types on sc1.system_type_id = sys.types.system_type_id where (sys.types.name = 'geometry' or sys.types.name = 'geography') and sys.objects.object_id = sc1.object_id) and (sys.objects.type = 'U' or sys.objects.type = 'V')" );
   }
 
   const bool disableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( mName );
@@ -178,6 +175,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
       layer.geometryColName = q.value( 2 ).toString();
       layer.srid = q.value( 3 ).toString();
       layer.type = q.value( 4 ).toString();
+      layer.isView = q.value( 5 ).toBool();
       layer.pkCols = QStringList(); //TODO
       layer.isGeography = false;
 
@@ -314,6 +312,13 @@ void QgsMssqlConnectionItem::setAsPopulated()
   setState( Populated );
 }
 
+void QgsMssqlConnectionItem::setAllowGeometrylessTables( const bool allow )
+{
+  mAllowGeometrylessTables = allow;
+  QgsMssqlConnection::setAllowGeometrylessTables( mName, allow );
+  refresh();
+}
+
 void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
 {
   QgsMssqlSchemaItem *schemaItem = nullptr;
@@ -377,106 +382,6 @@ bool QgsMssqlConnectionItem::equal( const QgsDataItem *other )
 
   const QgsMssqlConnectionItem *o = qobject_cast<const QgsMssqlConnectionItem *>( other );
   return ( mPath == o->mPath && mName == o->mName );
-}
-
-#ifdef HAVE_GUI
-QList<QAction *> QgsMssqlConnectionItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionRefresh = new QAction( tr( "Refresh" ), parent );
-  connect( actionRefresh, &QAction::triggered, this, [ = ]
-  {
-    refresh();
-    if ( mParent )
-      mParent->refreshConnections();
-  } );
-  lst.append( actionRefresh );
-
-  QAction *separator = new QAction( parent );
-  separator->setSeparator( true );
-  lst.append( separator );
-
-
-  QAction *actionEdit = new QAction( tr( "Edit Connection…" ), parent );
-  connect( actionEdit, &QAction::triggered, this, &QgsMssqlConnectionItem::editConnection );
-  lst.append( actionEdit );
-
-  QAction *actionDelete = new QAction( tr( "Delete Connection" ), parent );
-  connect( actionDelete, &QAction::triggered, this, &QgsMssqlConnectionItem::deleteConnection );
-  lst.append( actionDelete );
-
-  QAction *sep = new QAction( parent );
-  sep->setSeparator( true );
-  lst << sep;
-
-  QAction *actionShowNoGeom = new QAction( tr( "Show Non-spatial Tables" ), parent );
-  actionShowNoGeom->setCheckable( true );
-  actionShowNoGeom->setChecked( mAllowGeometrylessTables );
-  connect( actionShowNoGeom, &QAction::toggled, this, &QgsMssqlConnectionItem::setAllowGeometrylessTables );
-  lst.append( actionShowNoGeom );
-
-  QAction *actionCreateSchema = new QAction( tr( "Create Schema…" ), parent );
-  connect( actionCreateSchema, &QAction::triggered, this, &QgsMssqlConnectionItem::createSchema );
-  lst.append( actionCreateSchema );
-
-  return lst;
-}
-
-void QgsMssqlConnectionItem::setAllowGeometrylessTables( const bool allow )
-{
-  mAllowGeometrylessTables = allow;
-  QgsMssqlConnection::setAllowGeometrylessTables( mName, allow );
-  refresh();
-}
-
-void QgsMssqlConnectionItem::createSchema()
-{
-  QString schemaName = QInputDialog::getText( nullptr, tr( "Create Schema" ), tr( "Schema name:" ) );
-  if ( schemaName.isEmpty() )
-    return;
-
-  QString uri = connInfo();
-  QString error;
-  if ( !QgsMssqlConnection::createSchema( uri, schemaName, &error ) )
-  {
-    QMessageBox::warning( nullptr, tr( "Create Schema" ), tr( "Unable to create schema %1\n%2" ).arg( schemaName,
-                          error ) );
-    return;
-  }
-
-  refresh();
-  // the parent should be updated
-  if ( mParent )
-    mParent->refreshConnections();
-}
-
-void QgsMssqlConnectionItem::editConnection()
-{
-  QgsMssqlNewConnection nc( nullptr, mName );
-  if ( nc.exec() )
-  {
-    // the parent should be updated
-    mParent->refreshConnections();
-  }
-}
-
-void QgsMssqlConnectionItem::deleteConnection()
-{
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Connection" ),
-                              QObject::tr( "Are you sure you want to delete the connection to %1?" ).arg( mName ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
-
-  QgsMssqlSourceSelect::deleteConnection( mName );
-  // the parent should be updated
-  mParent->refreshConnections();
-}
-#endif
-
-bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
-{
-  return handleDrop( data, QString() );
 }
 
 bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &toSchema )
@@ -576,67 +481,9 @@ QgsMssqlLayerItem::QgsMssqlLayerItem( QgsDataItem *parent, const QString &name, 
 {
   mCapabilities |= Delete;
   mUri = createUri();
-  setState( Populated );
+  setState( NotPopulated );
 }
 
-#ifdef HAVE_GUI
-QList<QAction *> QgsMssqlLayerItem::actions( QWidget *actionParent )
-{
-  QList<QAction *> lst;
-
-  // truncate
-  QAction *actionTruncateLayer = new QAction( tr( "Truncate Table" ), actionParent );
-  connect( actionTruncateLayer, &QAction::triggered, this, [ = ]
-  {
-    truncateTable();
-  } );
-  lst.append( actionTruncateLayer );
-  return lst;
-}
-
-bool QgsMssqlLayerItem::deleteLayer()
-{
-  QgsMssqlConnectionItem *connItem = qobject_cast<QgsMssqlConnectionItem *>( parent() ? parent()->parent() : nullptr );
-
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Table" ),
-                              QObject::tr( "Are you sure you want to delete [%1].[%2]?" ).arg( mLayerProperty.schemaName, mLayerProperty.tableName ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return true;
-
-  QString errCause;
-  bool res = QgsMssqlConnection::dropTable( mUri, &errCause );
-  if ( !res )
-  {
-    QMessageBox::warning( nullptr, tr( "Delete Table" ), errCause );
-  }
-  else
-  {
-    QMessageBox::information( nullptr, tr( "Delete Table" ), tr( "Table deleted successfully." ) );
-    if ( connItem )
-      connItem->refresh();
-  }
-  return true;
-}
-
-void QgsMssqlLayerItem::truncateTable()
-{
-  if ( QMessageBox::question( nullptr, QObject::tr( "Truncate Table" ),
-                              QObject::tr( "Are you sure you want to truncate [%1].[%2]?\n\nThis will delete all data within the table." ).arg( mLayerProperty.schemaName, mLayerProperty.tableName ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
-
-  QString errCause;
-  bool res = QgsMssqlConnection::truncateTable( mUri, &errCause );
-  if ( !res )
-  {
-    QMessageBox::warning( nullptr, tr( "Truncate Table" ), errCause );
-  }
-  else
-  {
-    QMessageBox::information( nullptr, tr( "Truncate Table" ), tr( "Table truncated successfully." ) );
-  }
-}
-#endif
 
 QgsMssqlLayerItem *QgsMssqlLayerItem::createClone()
 {
@@ -667,13 +514,13 @@ QString QgsMssqlLayerItem::createUri()
   mDisableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( connItem->name() );
   uri.setParam( QStringLiteral( "disableInvalidGeometryHandling" ), mDisableInvalidGeometryHandling ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
-  QgsDebugMsg( QStringLiteral( "layer uri: %1" ).arg( uri.uri() ) );
+  QgsDebugMsgLevel( QStringLiteral( "layer uri: %1" ).arg( uri.uri() ), 3 );
   return uri.uri();
 }
 
 // ---------------------------------------------------------------------------
 QgsMssqlSchemaItem::QgsMssqlSchemaItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDatabaseSchemaItem( parent, name, path, QStringLiteral( "MSSQL" ) )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
   //not fertile, since children are created by QgsMssqlConnectionItem
@@ -685,22 +532,6 @@ QVector<QgsDataItem *> QgsMssqlSchemaItem::createChildren()
   return QVector<QgsDataItem *>();
 }
 
-#ifdef HAVE_GUI
-QList<QAction *> QgsMssqlSchemaItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionRefresh = new QAction( tr( "Refresh" ), parent );
-  connect( actionRefresh, &QAction::triggered, this, [ = ]
-  {
-    if ( mParent )
-      mParent->refresh();
-  } );
-  lst.append( actionRefresh );
-
-  return lst;
-}
-#endif
 
 void QgsMssqlSchemaItem::addLayers( QgsDataItem *newLayers )
 {
@@ -716,15 +547,6 @@ void QgsMssqlSchemaItem::addLayers( QgsDataItem *newLayers )
     QgsMssqlLayerItem *layer = static_cast< QgsMssqlLayerItem * >( child )->createClone();
     addChildItem( layer, true );
   }
-}
-
-bool QgsMssqlSchemaItem::handleDrop( const QMimeData *data, Qt::DropAction )
-{
-  QgsMssqlConnectionItem *conn = qobject_cast<QgsMssqlConnectionItem *>( parent() );
-  if ( !conn )
-    return false;
-
-  return conn->handleDrop( data, mName );
 }
 
 QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &layerProperty, bool refresh )
@@ -770,14 +592,31 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
   if ( refresh )
     addChildItem( layerItem, true );
   else
+  {
     addChild( layerItem );
+    layerItem->setParent( this );
+  }
 
   return layerItem;
 }
 
+void QgsMssqlSchemaItem::refresh()
+{
+  if ( parent() )
+    parent()->refresh();
+}
+
+
+QVector<QgsDataItem *> QgsMssqlLayerItem::createChildren()
+{
+  QVector<QgsDataItem *> children;
+  children.push_back( new QgsFieldsItem( this, uri() + QStringLiteral( "/columns/ " ), createUri(), providerKey(), mLayerProperty.schemaName, mLayerProperty.tableName ) );
+  return children;
+}
+
 // ---------------------------------------------------------------------------
 QgsMssqlRootItem::QgsMssqlRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "MSSQL" ) )
 {
   mIconName = QStringLiteral( "mIconMssql.svg" );
   populate();
@@ -797,17 +636,6 @@ QVector<QgsDataItem *> QgsMssqlRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsMssqlRootItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
-  connect( actionNew, &QAction::triggered, this, &QgsMssqlRootItem::newConnection );
-  lst.append( actionNew );
-
-  return lst;
-}
-
 QWidget *QgsMssqlRootItem::paramWidget()
 {
   QgsMssqlSourceSelect *select = new QgsMssqlSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
@@ -819,13 +647,31 @@ void QgsMssqlRootItem::onConnectionsChanged()
 {
   refresh();
 }
-
-void QgsMssqlRootItem::newConnection()
-{
-  QgsMssqlNewConnection nc( nullptr );
-  if ( nc.exec() )
-  {
-    refreshConnections();
-  }
-}
 #endif
+
+QString QgsMssqlDataItemProvider::name()
+{
+  return QStringLiteral( "MSSQL" );
+}
+
+QString QgsMssqlDataItemProvider::dataProviderKey() const
+{
+  return QStringLiteral( "mssql" );
+}
+
+int QgsMssqlDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Database;
+}
+
+QgsDataItem *QgsMssqlDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
+{
+  Q_UNUSED( pathIn )
+  return new QgsMssqlRootItem( parentItem, QStringLiteral( "MSSQL" ), QStringLiteral( "mssql:" ) );
+}
+
+
+bool QgsMssqlSchemaItem::layerCollection() const
+{
+  return true;
+}

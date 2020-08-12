@@ -53,7 +53,7 @@ bool QgsUuidWidgetWrapper::valid() const
   return mLineEdit || mLabel;
 }
 
-void QgsUuidWidgetWrapper::setValue( const QVariant &value )
+void QgsUuidWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   if ( value.isNull() )
   {

@@ -19,6 +19,8 @@
 namespace QgsServerProjectUtils
 {
 
+
+
   bool owsServiceCapabilities( const QgsProject &project );
 %Docstring
 Returns if owsService capabilities are enabled.
@@ -152,6 +154,17 @@ Returns the quality for WMS images defined in a QGIS project.
 :param project: the QGIS project
 
 :return: quality if defined in project, -1 otherwise.
+%End
+
+  int wmsTileBuffer( const QgsProject &project );
+%Docstring
+Returns the tile buffer in pixels for WMS images defined in a QGIS project.
+
+:param project: the QGIS project
+
+:return: tile buffer if defined in project, 0 otherwise.
+
+.. versionadded:: 3.10
 %End
 
   int wmsMaxAtlasFeatures( const QgsProject &project );

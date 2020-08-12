@@ -44,7 +44,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     void exitPython() override;
     bool isEnabled() override;
     bool runString( const QString &command, QString msgOnError = QString(), bool single = true ) override;
-    bool runStringUnsafe( const QString &command, bool single = true ) override;
+    QString runStringUnsafe( const QString &command, bool single = true ) override; // returns error traceback on failure, empty QString on success
     bool evalString( const QString &command, QString &result ) override;
     bool getError( QString &errorClassName, QString &errorText ) override;
 

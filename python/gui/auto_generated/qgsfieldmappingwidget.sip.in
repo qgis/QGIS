@@ -1,0 +1,160 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfieldmappingwidget.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsFieldMappingWidget : QgsPanelWidget
+{
+%Docstring
+The QgsFieldMappingWidget class creates a mapping from one set of QgsFields to another,
+for each set of "destination" fields an expression defines how to obtain the values of the
+"destination" fields.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsfieldmappingwidget.h"
+%End
+  public:
+
+    explicit QgsFieldMappingWidget( QWidget *parent = 0,
+                                    const QgsFields &sourceFields = QgsFields(),
+                                    const QgsFields &destinationFields = QgsFields(),
+                                    const QMap<QString, QString> &expressions = QMap<QString, QString>() );
+%Docstring
+Constructs a QgsFieldMappingWidget from a set of ``sourceFields``
+and ``destinationFields``, initial values for the expressions can be
+optionally specified through ``expressions`` which is a map from the original
+field name to the corresponding expression. A ``parent`` object
+can also be specified.
+%End
+
+    void setDestinationEditable( bool editable );
+%Docstring
+Sets the destination fields editable state to ``editable``
+%End
+
+    bool destinationEditable() const;
+%Docstring
+Returns ``True`` if the destination fields are editable in the model
+%End
+
+    QgsFieldMappingModel *model() const;
+%Docstring
+Returns the underlying mapping model
+%End
+
+    QList<QgsFieldMappingModel::Field> mapping() const;
+%Docstring
+Returns a list of Field objects representing the current status of the underlying mapping model
+%End
+
+    QMap< QString, QgsProperty > fieldPropertyMap() const;
+%Docstring
+Returns a map of destination field name to QgsProperty definition for field value,
+representing the current status of the widget.
+
+.. seealso:: :py:func:`setFieldPropertyMap`
+%End
+
+    void setFieldPropertyMap( const QMap< QString, QgsProperty > &map );
+%Docstring
+Sets a map of destination field name to QgsProperty definition for field value.
+
+.. seealso:: :py:func:`fieldPropertyMap`
+%End
+
+    QItemSelectionModel *selectionModel();
+%Docstring
+Returns the selection model
+%End
+
+    void setSourceFields( const QgsFields &sourceFields );
+%Docstring
+Set source fields of the underlying mapping model to ``sourceFields``
+%End
+
+    void setSourceLayer( QgsVectorLayer *layer );
+%Docstring
+Sets a source ``layer`` to use when generating expression previews in the widget.
+
+.. versionadded:: 3.16
+%End
+
+    QgsVectorLayer *sourceLayer();
+%Docstring
+Returns the source layer for use when generating expression previews.
+
+Returned value may be ``None``.
+
+.. versionadded:: 3.16
+%End
+
+    void setDestinationFields( const QgsFields &destinationFields,
+                               const QMap<QString, QString> &expressions = QMap<QString, QString>() );
+%Docstring
+Set destination fields to ``destinationFields`` in the underlying model,
+initial values for the expressions can be optionally specified through
+``expressions`` which is a map from the original field name to the
+corresponding expression.
+%End
+
+    void scrollTo( const QModelIndex &index ) const;
+%Docstring
+Scroll the fields view to ``index``
+%End
+
+    void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
+%Docstring
+Register an expression context ``generator`` class that will be used to retrieve
+an expression context for the widget.
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the fields defined in the widget are changed.
+%End
+
+  public slots:
+
+    void appendField( const QgsField &field, const QString &expression = QString() );
+%Docstring
+Appends a new ``field`` to the model, with an optional ``expression``
+%End
+
+    bool removeSelectedFields( );
+%Docstring
+Removes the currently selected field from the model
+%End
+
+    bool moveSelectedFieldsUp( );
+%Docstring
+Moves up currently selected field
+%End
+
+    bool moveSelectedFieldsDown( );
+%Docstring
+Moves down the currently selected field
+%End
+
+      public:
+      public:
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfieldmappingwidget.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

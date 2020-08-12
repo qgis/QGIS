@@ -9,7 +9,7 @@
 
 
 
-class QgsTextDiagram: QgsDiagram
+class QgsTextDiagram: QgsDiagram /NoDefaultCtors/
 {
 
 %TypeHeaderCode

@@ -26,7 +26,27 @@ QgsReferencedRectangle::QgsReferencedRectangle( const QgsRectangle &rect, const 
   , QgsReferencedGeometryBase( crs )
 {}
 
+bool QgsReferencedRectangle::operator==( const QgsReferencedRectangle &other )
+{
+  return QgsRectangle::operator==( other ) && crs() == other.crs();
+}
+
+bool QgsReferencedRectangle::operator!=( const QgsReferencedRectangle &other )
+{
+  return !( *this == other );
+}
+
 QgsReferencedPointXY::QgsReferencedPointXY( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs )
   : QgsPointXY( point )
   , QgsReferencedGeometryBase( crs )
 {}
+
+bool QgsReferencedPointXY::operator==( const QgsReferencedPointXY &other )
+{
+  return QgsPointXY::operator==( other ) && crs() == other.crs();
+}
+
+bool QgsReferencedPointXY::operator!=( const QgsReferencedPointXY &other )
+{
+  return !( *this == other );
+}

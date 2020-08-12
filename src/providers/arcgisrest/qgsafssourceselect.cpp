@@ -29,16 +29,13 @@
 QgsAfsSourceSelect::QgsAfsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsArcGisServiceSourceSelect( QStringLiteral( "ARCGISFEATURESERVER" ), QgsArcGisServiceSourceSelect::FeatureService, parent, fl, widgetMode )
 {
-  // import/export of connections not supported yet
-  btnLoad->hide();
-  btnSave->hide();
 }
 
 bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
 {
   QString errorTitle, errorMessage;
 
-  const QString authcfg = connection.uri().param( QStringLiteral( "authcfg" ) );
+  const QString authcfg = connection.uri().authConfigId();
   const QString baseUrl = connection.uri().param( QStringLiteral( "url" ) );
   const QString referer = connection.uri().param( QStringLiteral( "referer" ) );
   QgsStringMap headers;
@@ -82,12 +79,12 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
 
       if ( !visitItemsRecursive( url, nameItem ) )
         res = false;
-    }, serviceInfoMap, baseUrl );
+    }, serviceInfoMap, baseUrl, QgsArcGisRestUtils::Vector );
 
     QMap< QString, QList<QStandardItem *> > layerItems;
     QMap< QString, QString > parents;
 
-    QgsArcGisRestUtils::addLayerItems( [ =, &layerItems, &parents]( const QString & parentLayerId, const QString & layerId, const QString & name, const QString & description, const QString & url, bool isParentLayer, const QString & authid )
+    QgsArcGisRestUtils::addLayerItems( [ =, &layerItems, &parents]( const QString & parentLayerId, const QString & layerId, const QString & name, const QString & description, const QString & url, bool isParentLayer, const QString & authid, const QString & )
     {
       if ( !parentLayerId.isEmpty() )
         parents.insert( layerId, parentLayerId );
@@ -111,6 +108,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
         }
         idItem->setData( url, UrlRole );
         idItem->setData( true, IsLayerRole );
+        idItem->setData( layerId, IdRole );
         QStandardItem *nameItem = new QStandardItem( name );
         QStandardItem *abstractItem = new QStandardItem( description );
         abstractItem->setToolTip( description );
@@ -120,7 +118,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
 
         layerItems.insert( layerId, QList<QStandardItem *>() << idItem << nameItem << abstractItem << filterItem );
       }
-    }, serviceInfoMap, baseItemUrl );
+    }, serviceInfoMap, baseItemUrl, QgsArcGisRestUtils::Vector );
 
     // create layer groups
     for ( auto it = layerItems.constBegin(); it != layerItems.constEnd(); ++it )
@@ -178,7 +176,7 @@ void QgsAfsSourceSelect::buildQuery( const QgsOwsConnection &connection, const Q
 
   //add available attributes to expression builder
   QgsExpressionBuilderWidget *w = d.expressionBuilder();
-  w->loadFieldNames( provider.fields() );
+  w->initWithFields( provider.fields() );
 
   if ( d.exec() == QDialog::Accepted )
   {
@@ -191,7 +189,7 @@ QString QgsAfsSourceSelect::getLayerURI( const QgsOwsConnection &connection,
     const QString &layerTitle, const QString & /*layerName*/,
     const QString &crs,
     const QString &filter,
-    const QgsRectangle &bBox ) const
+    const QgsRectangle &bBox, const QString & ) const
 {
   QgsDataSourceUri ds = connection.uri();
   QString url = layerTitle;

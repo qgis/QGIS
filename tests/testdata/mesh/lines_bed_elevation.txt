@@ -1,0 +1,9 @@
+Vertex Scalar Elevation
+---
+description: Bed Elevation
+---
+0
+20
+30
+40
+50

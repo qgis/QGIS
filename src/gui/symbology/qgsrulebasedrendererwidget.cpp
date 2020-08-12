@@ -38,6 +38,7 @@
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
 #include <QMessageBox>
+#include <QClipboard>
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -51,6 +52,7 @@ QgsRendererWidget *QgsRuleBasedRendererWidget::create( QgsVectorLayer *layer, Qg
 
 QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
+  , mContextMenu( new QMenu( this ) )
 {
   mRenderer = nullptr;
   // try to recognize the previous renderer
@@ -81,16 +83,15 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
   mDeleteAction = new QAction( tr( "Remove Rule" ), this );
   mDeleteAction->setShortcut( QKeySequence( QKeySequence::Delete ) );
 
-  viewRules->addAction( mDeleteAction );
   viewRules->addAction( mCopyAction );
   viewRules->addAction( mPasteAction );
+  viewRules->addAction( mDeleteAction );
 
   mRefineMenu = new QMenu( tr( "Refine Current Rule" ), btnRefineRule );
   mRefineMenu->addAction( tr( "Add Scales to Rule" ), this, SLOT( refineRuleScales() ) );
   mRefineMenu->addAction( tr( "Add Categories to Rule" ), this, SLOT( refineRuleCategories() ) );
   mRefineMenu->addAction( tr( "Add Ranges to Rule" ), this, SLOT( refineRuleRanges() ) );
   btnRefineRule->setMenu( mRefineMenu );
-  contextMenu->addMenu( mRefineMenu );
 
   btnAddRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
   btnEditRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.svg" ) ) );
@@ -99,7 +100,7 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
   connect( viewRules, &QAbstractItemView::doubleClicked, this, static_cast < void ( QgsRuleBasedRendererWidget::* )( const QModelIndex &index ) > ( &QgsRuleBasedRendererWidget::editRule ) );
 
   // support for context menu (now handled generically)
-  connect( viewRules, &QWidget::customContextMenuRequested,  this, &QgsRuleBasedRendererWidget::contextMenuViewCategories );
+  connect( viewRules, &QWidget::customContextMenuRequested,  this, &QgsRuleBasedRendererWidget::showContextMenu );
 
   connect( viewRules->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsRuleBasedRendererWidget::currentRuleChanged );
   connect( viewRules->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsRuleBasedRendererWidget::selectedRulesChanged );
@@ -124,6 +125,11 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
 
   restoreSectionWidths();
 
+  connect( mContextMenu, &QMenu::aboutToShow, this, [ = ]
+  {
+    std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+    mPasteSymbolAction->setEnabled( static_cast< bool >( tempSymbol ) );
+  } );
 }
 
 QgsRuleBasedRendererWidget::~QgsRuleBasedRendererWidget()
@@ -135,6 +141,17 @@ QgsRuleBasedRendererWidget::~QgsRuleBasedRendererWidget()
 QgsFeatureRenderer *QgsRuleBasedRendererWidget::renderer()
 {
   return mRenderer;
+}
+
+void QgsRuleBasedRendererWidget::setDockMode( bool dockMode )
+{
+  if ( dockMode )
+  {
+    // when in dock mode, these shortcuts conflict with the main window shortcuts and cannot be used
+    if ( mDeleteAction )
+      mDeleteAction->setShortcut( QKeySequence() );
+  }
+  QgsRendererWidget::setDockMode( dockMode );
 }
 
 void QgsRuleBasedRendererWidget::addRule()
@@ -221,7 +238,7 @@ void QgsRuleBasedRendererWidget::removeRule()
 
 void QgsRuleBasedRendererWidget::currentRuleChanged( const QModelIndex &current, const QModelIndex &previous )
 {
-  Q_UNUSED( previous );
+  Q_UNUSED( previous )
   btnEditRule->setEnabled( current.isValid() );
 }
 
@@ -437,7 +454,7 @@ void QgsRuleBasedRendererWidget::setRenderingOrder()
 
 void QgsRuleBasedRendererWidget::saveSectionWidth( int section, int oldSize, int newSize )
 {
-  Q_UNUSED( oldSize );
+  Q_UNUSED( oldSize )
   // skip last section, as it stretches
   if ( section == 5 )
     return;
@@ -481,6 +498,26 @@ void QgsRuleBasedRendererWidget::paste()
   else
     index = indexlist.first();
   mModel->dropMimeData( mime, Qt::CopyAction, index.row(), index.column(), index.parent() );
+}
+
+void QgsRuleBasedRendererWidget::pasteSymbolToSelection()
+{
+  std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+  if ( !tempSymbol )
+    return;
+
+  const QModelIndexList indexList = viewRules->selectionModel()->selectedRows();
+  for ( const QModelIndex &index : indexList )
+  {
+    if ( QgsRuleBasedRenderer::Rule *rule = mModel->ruleForIndex( index ) )
+    {
+      if ( !rule->symbol() || rule->symbol()->type() != tempSymbol->type() )
+        continue;
+
+      mModel->setSymbol( index, tempSymbol->clone() );
+    }
+  }
+  emit widgetChanged();
 }
 
 void QgsRuleBasedRendererWidget::refineRuleCategoriesAccepted( QgsPanelWidget *panel )
@@ -533,6 +570,23 @@ void QgsRuleBasedRendererWidget::ruleWidgetPanelAccepted( QgsPanelWidget *panel 
 void QgsRuleBasedRendererWidget::liveUpdateRuleFromPanel()
 {
   ruleWidgetPanelAccepted( qobject_cast<QgsPanelWidget *>( sender() ) );
+}
+
+void QgsRuleBasedRendererWidget::showContextMenu( QPoint )
+{
+  mContextMenu->clear();
+  mContextMenu->addAction( mCopyAction );
+  mContextMenu->addAction( mPasteAction );
+
+  const QList< QAction * > actions = contextMenu->actions();
+  for ( QAction *act : actions )
+  {
+    mContextMenu->addAction( act );
+  }
+
+  mContextMenu->addMenu( mRefineMenu );
+
+  mContextMenu->exec( QCursor::pos() );
 }
 
 
@@ -659,8 +713,8 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   if ( mRule->dependsOnScale() )
   {
     groupScale->setChecked( true );
-    mScaleRangeWidget->setMaximumScale( std::max( rule->maximumScale(), 0.0 ) );
-    mScaleRangeWidget->setMinimumScale( std::max( rule->minimumScale(), 0.0 ) );
+    mScaleRangeWidget->setScaleRange( std::max( rule->minimumScale(), 0.0 ),
+                                      std::max( rule->maximumScale(), 0.0 ) );
   }
   mScaleRangeWidget->setMapCanvas( mContext.mapCanvas() );
 
@@ -708,6 +762,7 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Ru
 
   QVBoxLayout *layout = new QVBoxLayout( this );
   QgsVScrollArea *scrollArea = new QgsVScrollArea( this );
+  scrollArea->setFrameShape( QFrame::NoFrame );
   layout->addWidget( scrollArea );
 
   buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
@@ -716,19 +771,11 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Ru
   scrollArea->setWidget( mPropsWidget );
   layout->addWidget( buttonBox );
   this->setWindowTitle( "Edit Rule" );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsRendererRulePropsDialog::accept );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsRendererRulePropsDialog::showHelp );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/QgsRendererRulePropsDialog/geometry" ) ).toByteArray() );
-}
-
-QgsRendererRulePropsDialog::~QgsRendererRulePropsDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/QgsRendererRulePropsDialog/geometry" ), saveGeometry() );
 }
 
 void QgsRendererRulePropsDialog::testFilter()
@@ -982,7 +1029,7 @@ QVariant QgsRuleBasedRendererModel::headerData( int section, Qt::Orientation ori
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 7 )
   {
     QStringList lst;
-    lst << tr( "Label" ) << tr( "Rule" ) << tr( "Min. scale" ) << tr( "Max. scale" ) << tr( "Count" ) << tr( "Duplicate count" );
+    lst << tr( "Label" ) << tr( "Rule" ) << tr( "Min. Scale" ) << tr( "Max. Scale" ) << tr( "Count" ) << tr( "Duplicate Count" );
     return lst[section];
   }
   else if ( orientation == Qt::Horizontal && role == Qt::ToolTipRole )
@@ -1152,7 +1199,7 @@ void _labeling2rendererRules( QDomElement &ruleElem )
 bool QgsRuleBasedRendererModel::dropMimeData( const QMimeData *data,
     Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
 
   if ( action == Qt::IgnoreAction )
     return true;
@@ -1281,6 +1328,13 @@ void QgsRuleBasedRendererModel::removeRule( const QModelIndex &index )
   rule->parent()->removeChild( rule );
 
   endRemoveRows();
+}
+
+void QgsRuleBasedRendererModel::setSymbol( const QModelIndex &index, QgsSymbol *symbol )
+{
+  QgsRuleBasedRenderer::Rule *rule = ruleForIndex( index );
+  rule->setSymbol( symbol );
+  emit dataChanged( index, index );
 }
 
 void QgsRuleBasedRendererModel::willAddRules( const QModelIndex &parent, int count )

@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <math.h>
+
 #include "qgstest.h"
 #include <QObject>
 #include "qgsgeometryutils.h"
@@ -71,6 +73,14 @@ class TestQgsGeometryUtils: public QObject
     void testInterpolatePointOnLineByValue();
     void testPointOnLineWithDistance();
     void interpolatePointOnArc();
+    void testSegmentizeArcHalfCircle();
+    void testSegmentizeArcHalfCircleOtherDirection();
+    void testSegmentizeArcFullCircle();
+    void testTriangleArea_data();
+    void testTriangleArea();
+    void testWeightedPointInTriangle_data();
+    void testWeightedPointInTriangle();
+    void testPointContinuesArc();
 };
 
 
@@ -193,11 +203,12 @@ void TestQgsGeometryUtils::testSegmentMidPoint_data()
   QTest::addColumn<double>( "pt2x" );
   QTest::addColumn<double>( "pt2y" );
   QTest::addColumn<double>( "radius" );
-  QTest::addColumn<bool>( "left" );
+  QTest::addColumn<double>( "mouseX" );
+  QTest::addColumn<double>( "mouseY" );
   QTest::addColumn<double>( "expectedX" );
   QTest::addColumn<double>( "expectedY" );
 
-  QTest::newRow( "testSegmentMidPoint1" ) << 0.0 << 0.0 << 1.0 << 0.0 << 0.5 << true << 0.5 << 0.5;
+  QTest::newRow( "testSegmentMidPoint1" ) << 0.0 << 0.0 << 1.0 << 0.0 << 0.5 << 1.0 << 0.0 << 0.5 << 0.5;
 }
 
 void TestQgsGeometryUtils::testSegmentMidPoint()
@@ -207,13 +218,14 @@ void TestQgsGeometryUtils::testSegmentMidPoint()
   QFETCH( double, pt2x );
   QFETCH( double, pt2y );
   QFETCH( double, radius );
-  QFETCH( bool, left );
+  QFETCH( double, mouseX );
+  QFETCH( double, mouseY );
   QFETCH( double, expectedX );
   QFETCH( double, expectedY );
 
   QgsPoint midPoint;
   bool ok = QgsGeometryUtils::segmentMidPoint( QgsPoint( pt1x, pt1y ), QgsPoint( pt2x, pt2y ),
-            midPoint, radius, left );
+            midPoint, radius, QgsPoint( mouseX, mouseY ) );
 
   QVERIFY( ok );
   QGSCOMPARENEAR( midPoint.x(), expectedX, 4 * std::numeric_limits<double>::epsilon() );
@@ -500,6 +512,48 @@ void TestQgsGeometryUtils::testVerticesAtDistance()
   QCOMPARE( previous, QgsVertexId( 0, 0, 4 ) );
   QCOMPARE( next, QgsVertexId( 0, 0, 4 ) );
 
+  // with ring
+  QgsLineString *ring1 = new QgsLineString();
+  ring1->setPoints( QVector<QgsPoint>() << QgsPoint( 1.1, 1.1 ) << QgsPoint( 1.1, 1.2 ) << QgsPoint( 1.2, 1.2 ) << QgsPoint( 1.2, 1.1 ) << QgsPoint( 1.1, 1.1 ) );
+  polygon1.addInteriorRing( ring1 );
+  QVERIFY( QgsGeometryUtils::verticesAtDistance( polygon1, 4, previous, next ) );
+  QCOMPARE( previous, QgsVertexId( 0, 0, 4 ) );
+  QCOMPARE( next, QgsVertexId( 0, 0, 4 ) );
+  QVERIFY( QgsGeometryUtils::verticesAtDistance( polygon1, 4.01, previous, next ) );
+  QCOMPARE( previous, QgsVertexId( 0, 1, 0 ) );
+  QCOMPARE( next, QgsVertexId( 0, 1, 1 ) );
+  QVERIFY( QgsGeometryUtils::verticesAtDistance( polygon1, 4.11, previous, next ) );
+  QCOMPARE( previous, QgsVertexId( 0, 1, 1 ) );
+  QCOMPARE( next, QgsVertexId( 0, 1, 2 ) );
+
+  // multipolygon
+  outerRing1 = new QgsLineString();
+  outerRing1->setPoints( QVector<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
+  QgsPolygon *polygon2 = new QgsPolygon();
+  polygon2->setExteriorRing( outerRing1 );
+
+  QgsLineString *outerRing2 = new QgsLineString();
+  outerRing2->setPoints( QVector<QgsPoint>() << QgsPoint( 10, 10 ) << QgsPoint( 10, 20 ) << QgsPoint( 20, 20 ) << QgsPoint( 20, 10 ) << QgsPoint( 10, 10 ) );
+  QgsPolygon *polygon3 = new QgsPolygon();
+  polygon3->setExteriorRing( outerRing2 );
+
+  QgsLineString *innerRing2 = new QgsLineString();
+  innerRing2->setPoints( QVector<QgsPoint>() << QgsPoint( 14, 14 ) << QgsPoint( 14, 16 ) << QgsPoint( 16, 16 ) << QgsPoint( 16, 14 ) << QgsPoint( 14, 14 ) );
+  polygon3->setInteriorRings( QVector<QgsCurve *>() << innerRing2 );
+
+  QgsMultiPolygon mpg;
+  mpg.addGeometry( polygon2 );
+  mpg.addGeometry( polygon3 );
+  QVERIFY( QgsGeometryUtils::verticesAtDistance( mpg, 0.1, previous, next ) );
+  QCOMPARE( previous, QgsVertexId( 0, 0, 0 ) );
+  QCOMPARE( next, QgsVertexId( 0, 0, 1 ) );
+  QVERIFY( QgsGeometryUtils::verticesAtDistance( mpg, 5, previous, next ) );
+  QCOMPARE( previous, QgsVertexId( 1, 0, 0 ) );
+  QCOMPARE( next, QgsVertexId( 1, 0, 1 ) );
+  QVERIFY( QgsGeometryUtils::verticesAtDistance( mpg, 45, previous, next ) );
+  QCOMPARE( previous, QgsVertexId( 1, 1, 0 ) );
+  QCOMPARE( next, QgsVertexId( 1, 1, 1 ) );
+
   //test with point
   QgsPoint point( 1, 2 );
   QVERIFY( !QgsGeometryUtils::verticesAtDistance( point, .5, previous, next ) );
@@ -544,7 +598,7 @@ void TestQgsGeometryUtils::testCircleCenterRadius()
 void TestQgsGeometryUtils::testSqrDistToLine()
 {
 
-  // See https://issues.qgis.org/issues/13952#note-26
+  // See https://github.com/qgis/QGIS/issues/21967#issuecomment-495853991
   QgsPointXY qp( 771938, 6.95593e+06 );
   QgsPointXY p1( 771946, 6.95593e+06 );
   QgsPointXY p2( 771904, 6.95595e+06 );
@@ -1269,6 +1323,178 @@ void TestQgsGeometryUtils::interpolatePointOnArc()
   p = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( 10, 0 ), QgsPoint( 8, 2 ), QgsPoint( 6, 0 ), 3.141592 * 3 );
   QGSCOMPARENEAR( p.x(), 8.0, 0.00001 );
   QGSCOMPARENEAR( p.y(), -2.0, 0.00001 );
+}
+
+void TestQgsGeometryUtils::testSegmentizeArcHalfCircle()
+{
+  QgsPointSequence points;
+  const double xoff = 1;
+  const double yoff = 100;
+  QgsGeometryUtils::segmentizeArc( QgsPoint( xoff + 0, yoff + 0 ),
+                                   QgsPoint( xoff + 1, yoff + 1 ),
+                                   QgsPoint( xoff + 2, yoff + 0 ),
+                                   points, 0.1,
+                                   QgsAbstractGeometry::MaximumDifference, false, false );
+  QCOMPARE( points.size(), 5 );
+  QGSCOMPARENEAR( points[0].x(), xoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[0].y(), yoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[1].x(), xoff + 1 - sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[1].y(), yoff + sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[2].x(), xoff + 1.0, 0.00001 );
+  QGSCOMPARENEAR( points[2].y(), yoff + 1.0, 0.00001 );
+  QGSCOMPARENEAR( points[3].x(), xoff + 1 + sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[3].y(), yoff + sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[4].x(), xoff + 2.0, 0.00001 );
+  QGSCOMPARENEAR( points[4].y(), yoff + 0.0, 0.00001 );
+}
+
+void TestQgsGeometryUtils::testSegmentizeArcHalfCircleOtherDirection()
+{
+  QgsPointSequence points;
+  const double xoff = 1;
+  const double yoff = 100;
+  QgsGeometryUtils::segmentizeArc( QgsPoint( xoff + 0, yoff + 0 ),
+                                   QgsPoint( xoff + 1, yoff - 1 ),
+                                   QgsPoint( xoff + 2, yoff + 0 ),
+                                   points, 0.1,
+                                   QgsAbstractGeometry::MaximumDifference, false, false );
+  QCOMPARE( points.size(), 5 );
+  QGSCOMPARENEAR( points[0].x(), xoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[0].y(), yoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[1].x(), xoff + 1 - sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[1].y(), yoff + -sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[2].x(), xoff + 1.0, 0.00001 );
+  QGSCOMPARENEAR( points[2].y(), yoff + -1.0, 0.00001 );
+  QGSCOMPARENEAR( points[3].x(), xoff + 1 + sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[3].y(), yoff + -sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[4].x(), xoff + 2.0, 0.00001 );
+  QGSCOMPARENEAR( points[4].y(), yoff + 0.0, 0.00001 );
+}
+
+void TestQgsGeometryUtils::testSegmentizeArcFullCircle()
+{
+  QgsPointSequence points;
+  const double xoff = 1;
+  const double yoff = 100;
+  QgsGeometryUtils::segmentizeArc( QgsPoint( xoff + 0, yoff + 0 ),
+                                   QgsPoint( xoff + 2, yoff + 0 ),
+                                   QgsPoint( xoff + 0, yoff + 0 ),
+                                   points, 0.4,
+                                   QgsAbstractGeometry::MaximumDifference, false, false );
+  QCOMPARE( points.size(), 5 );
+  QGSCOMPARENEAR( points[0].x(), xoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[0].y(), yoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[1].x(), xoff + 1.0, 0.00001 );
+  QGSCOMPARENEAR( points[1].y(), yoff + -1.0, 0.00001 );
+  QGSCOMPARENEAR( points[2].x(), xoff + 2.0, 0.00001 );
+  QGSCOMPARENEAR( points[2].y(), yoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[3].x(), xoff + 1.0, 0.00001 );
+  QGSCOMPARENEAR( points[3].y(), yoff + 1.0, 0.00001 );
+  QGSCOMPARENEAR( points[4].x(), xoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[4].y(), yoff + 0.0, 0.00001 );
+}
+
+void TestQgsGeometryUtils::testTriangleArea_data()
+{
+  QTest::addColumn<double>( "aX" );
+  QTest::addColumn<double>( "aY" );
+  QTest::addColumn<double>( "bX" );
+  QTest::addColumn<double>( "bY" );
+  QTest::addColumn<double>( "cX" );
+  QTest::addColumn<double>( "cY" );
+  QTest::addColumn<double>( "expectedResult" );
+
+  QTest::newRow( "area 1" ) << 15.0 << 15.0 << 23.0 << 30.0 << 50.0 << 25.0 << 222.5;
+  QTest::newRow( "area 2" ) << 23.0 << 30.0 << 15.0 << 15.0 << 50.0 << 25.0 << 222.5;
+  QTest::newRow( "area 3" ) << 15.0 << 15.0 << 50.0 << 25.0 << 23.0 << 30.0 << 222.5;
+  QTest::newRow( "area 4" ) << -15.0 << 15.0 << -50.0 << 25.0 << -23.0 << 30.0 << 222.5;
+  QTest::newRow( "area 5" ) << 15.0 << 15.0 << 15.0 << 15.0 << 15.0 << 15.0 << 0.0;
+  QTest::newRow( "area 6" ) << 29.0 << 23.0 << 35.0 << 18.0 << 29.0 << 10.0 << 39.0;
+}
+
+void TestQgsGeometryUtils::testTriangleArea()
+{
+  QFETCH( double, aX );
+  QFETCH( double, aY );
+  QFETCH( double, bX );
+  QFETCH( double, bY );
+  QFETCH( double, cX );
+  QFETCH( double, cY );
+  QFETCH( double, expectedResult );
+
+  QGSCOMPARENEAR( QgsGeometryUtils::triangleArea( aX, aY, bX, bY, cX, cY ), expectedResult, 0.0000001 );
+}
+
+void TestQgsGeometryUtils::testWeightedPointInTriangle_data()
+{
+  QTest::addColumn<double>( "aX" );
+  QTest::addColumn<double>( "aY" );
+  QTest::addColumn<double>( "bX" );
+  QTest::addColumn<double>( "bY" );
+  QTest::addColumn<double>( "cX" );
+  QTest::addColumn<double>( "cY" );
+  QTest::addColumn<double>( "weightB" );
+  QTest::addColumn<double>( "weightC" );
+  QTest::addColumn<double>( "expectedX" );
+  QTest::addColumn<double>( "expectedY" );
+
+  QTest::newRow( "weighted 1" ) << 15.0 << 15.0 << 23.0 << 30.0 << 50.0 << 25.0 << 0.0 << 0.0 << 15.0 << 15.0;
+  QTest::newRow( "weighted 2" ) << 15.0 << 15.0 << 23.0 << 30.0 << 50.0 << 25.0 << 0.5 << 0.0 << 19.0 << 22.5;
+  QTest::newRow( "weighted 3" ) << 15.0 << 15.0 << 23.0 << 30.0 << 50.0 << 25.0 << 1.0 << 0.0 << 23.0 << 30.0;
+  QTest::newRow( "weighted 4" ) << 15.0 << 15.0 << 23.0 << 30.0 << 50.0 << 25.0 << 0.0 << 0.5 << 32.5 << 20.0;
+  QTest::newRow( "weighted 5" ) << 15.0 << 15.0 << 23.0 << 30.0 << 50.0 << 25.0 << 0.0 << 1.0 << 50.0 << 25.0;
+  QTest::newRow( "weighted 6" ) << 15.0 << 15.0 << 23.0 << 30.0 << 50.0 << 25.0 << 0.5 << 0.5 << 36.5 << 27.5;
+  QTest::newRow( "weighted 7" ) << 15.0 << 15.0 << 23.0 << 30.0 << 50.0 << 25.0 << 1.0 << 1.0 << 15.0 << 15.0;
+  QTest::newRow( "weighted 8" ) << 15.0 << 16.0 << 15.0 << 16.0 << 15.0 << 25.0 << 0.0 << 0.0 << 15.0 << 16.0;
+  QTest::newRow( "weighted 9" ) << 15.0 << 16.0 << 15.0 << 16.0 << 15.0 << 25.0 << 1.0 << 0.0 << 15.0 << 16.0;
+  QTest::newRow( "weighted 10" ) << 15.0 << 16.0 << 15.0 << 16.0 << 15.0 << 16.0 << 0.0 << 1.0 << 15.0 << 16.0;
+  QTest::newRow( "weighted 11" ) << 15.0 << 16.0 << 15.0 << 16.0 << 15.0 << 16.0 << 1.0 << 1.0 << 15.0 << 16.0;
+  QTest::newRow( "weighted 12" ) << -15.0 << -15.0 << -23.0 << -30.0 << -50.0 << -25.0 << 0.5 << 0.5 << -36.5 << -27.5;
+}
+
+void TestQgsGeometryUtils::testWeightedPointInTriangle()
+{
+  QFETCH( double, aX );
+  QFETCH( double, aY );
+  QFETCH( double, bX );
+  QFETCH( double, bY );
+  QFETCH( double, cX );
+  QFETCH( double, cY );
+  QFETCH( double, weightB );
+  QFETCH( double, weightC );
+  QFETCH( double, expectedX );
+  QFETCH( double, expectedY );
+
+  double x, y;
+  QgsGeometryUtils::weightedPointInTriangle( aX, aY, bX, bY, cX, cY, weightB, weightC, x, y );
+  QGSCOMPARENEAR( x, expectedX, 0.0000001 );
+  QGSCOMPARENEAR( y, expectedY, 0.0000001 );
+}
+
+void TestQgsGeometryUtils::testPointContinuesArc()
+{
+  // normal arcs
+  QVERIFY( QgsGeometryUtils::pointContinuesArc( QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, 0 ), QgsPoint( 1, -1 ), 0.000000001, 0.000001 ) );
+  QVERIFY( QgsGeometryUtils::pointContinuesArc( QgsPoint( 2, 0 ), QgsPoint( 1, 1 ), QgsPoint( 0, 0 ), QgsPoint( 1, -1 ), 0.000000001, 0.000001 ) );
+  QVERIFY( !QgsGeometryUtils::pointContinuesArc( QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, 0 ), QgsPoint( 3, 0 ), 0.000000001, 0.000001 ) );
+  QVERIFY( QgsGeometryUtils::pointContinuesArc( QgsPoint( 0, 0 ), QgsPoint( 0.29289321881, 0.707106781 ), QgsPoint( 1, 1 ), QgsPoint( 1.707106781, 0.707106781 ), 0.00001, 0.00001 ) );
+
+  // irregular spacing
+  QVERIFY( !QgsGeometryUtils::pointContinuesArc( QgsPoint( 0, 0 ), QgsPoint( 0.29289321881, 0.707106781 ), QgsPoint( 1, 1 ), QgsPoint( 1, -1 ), 0.00001, 0.00001 ) );
+
+  // inside current arc
+  QVERIFY( !QgsGeometryUtils::pointContinuesArc( QgsPoint( 0, 0 ), QgsPoint( 0.29289321881, 0.707106781 ), QgsPoint( 1, 1 ), QgsPoint( 0.29289321881, 0.707106781 ), 0.00001, 0.00001 ) );
+  QVERIFY( !QgsGeometryUtils::pointContinuesArc( QgsPoint( 0, 0 ), QgsPoint( 0.29289321881, 0.707106781 ), QgsPoint( 1, 1 ), QgsPoint( 1, 1 ), 0.00001, 0.00001 ) );
+  QVERIFY( !QgsGeometryUtils::pointContinuesArc( QgsPoint( 0, 0 ), QgsPoint( 0.29289321881, 0.707106781 ), QgsPoint( 1, 1 ), QgsPoint( 0, 0 ), 0.00001, 0.00001 ) );
+
+  // colinear points
+  QVERIFY( !QgsGeometryUtils::pointContinuesArc( QgsPoint( 0, 0 ), QgsPoint( 0.5, 0.5 ), QgsPoint( 1, 1 ), QgsPoint( 1.5, 1.5 ), 0.00001, 0.00001 ) );
+
+  // with a bit more tolerance
+  QVERIFY( !QgsGeometryUtils::pointContinuesArc( QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, 0 ), QgsPoint( 1.01, -1 ), 0.000000001, 0.05 ) );
+  QVERIFY( QgsGeometryUtils::pointContinuesArc( QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, 0 ), QgsPoint( 1.01, -1 ), 0.1, 0.05 ) );
+  QVERIFY( !QgsGeometryUtils::pointContinuesArc( QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, 0 ), QgsPoint( 1.01, -1 ), 0.1, 0.000001 ) );
+  QVERIFY( !QgsGeometryUtils::pointContinuesArc( QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, 0 ), QgsPoint( 1.01, -1 ), 0.000000001, 0.05 ) );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

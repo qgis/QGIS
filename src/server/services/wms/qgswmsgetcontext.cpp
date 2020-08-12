@@ -79,6 +79,7 @@ namespace QgsWms
     }
 #else
     doc = getContext( serverIface, project, version, request );
+    contextDocument = &doc;
 #endif
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( contextDocument->toByteArray() );
@@ -88,7 +89,7 @@ namespace QgsWms
   QDomDocument getContext( QgsServerInterface *serverIface, const QgsProject *project,
                            const QString &version, const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QDomDocument doc;
     QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( QStringLiteral( "xml" ),
@@ -282,11 +283,11 @@ namespace QgsWms
           // visibility
           if ( treeLayer->itemVisibilityChecked() )
           {
-            layerElem.setAttribute( QStringLiteral( "hidden" ), QStringLiteral( "true" ) );
+            layerElem.setAttribute( QStringLiteral( "hidden" ), QStringLiteral( "false" ) );
           }
           else
           {
-            layerElem.setAttribute( QStringLiteral( "hidden" ), QStringLiteral( "false" ) );
+            layerElem.setAttribute( QStringLiteral( "hidden" ), QStringLiteral( "true" ) );
           }
 
           // layer group
@@ -441,7 +442,7 @@ namespace QgsWms
           }
           catch ( const QgsCsException &cse )
           {
-            Q_UNUSED( cse );
+            Q_UNUSED( cse )
           }
 
           if ( parentLayer.hasChildNodes() )

@@ -155,6 +155,9 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
 
 void QgsFeatureSelectionModel::setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager )
 {
+  if ( mFeatureSelectionManager )
+    disconnect( mFeatureSelectionManager, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsFeatureSelectionModel::layerSelectionChanged );
+
   mFeatureSelectionManager = featureSelectionManager;
 
   connect( mFeatureSelectionManager, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsFeatureSelectionModel::layerSelectionChanged );

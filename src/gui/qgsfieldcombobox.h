@@ -25,6 +25,7 @@
 
 class QgsMapLayer;
 class QgsVectorLayer;
+class QgsFields;
 
 /**
  * \ingroup gui
@@ -48,7 +49,7 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
      */
     explicit QgsFieldComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! setFilters allows fitering according to the type of field
+    //! setFilters allows filtering according to the type of field
     void setFilters( QgsFieldProxyModel::Filters filters );
 
     //! currently used filter on list of fields
@@ -76,6 +77,28 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
      * \see setLayer()
      */
     QgsVectorLayer *layer() const;
+
+    /**
+     * Manually sets the \a fields to use for the combo box.
+     *
+     * This method should only be used when the combo box ISN'T associated with a layer()
+     * and needs to show the fields from an arbitrary field collection instead. Calling
+     * setFields() will automatically clear any existing layer().
+     *
+     * \see fields()
+     * \since QGIS 3.14
+     */
+    void setFields( const QgsFields &fields );
+
+    /**
+     * Returns the fields currently shown in the combobox.
+     *
+     * This will either be fields from the associated layer() or the fields
+     * manually set by a call to setFields().
+     *
+     * \since QGIS 3.14
+     */
+    QgsFields fields() const;
 
   signals:
     //! Emitted when the currently selected field changes.

@@ -21,11 +21,6 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingException,
                        QgsProcessingParameterDefinition,
@@ -42,7 +37,6 @@ from processing.tools.system import isWindows
 
 
 class gdal2tiles(GdalAlgorithm):
-
     INPUT = 'INPUT'
     PROFILE = 'PROFILE'
     RESAMPLING = 'RESAMPLING'

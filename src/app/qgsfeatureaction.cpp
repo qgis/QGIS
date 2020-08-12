@@ -53,7 +53,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 {
   QgsFeature *f = cloneFeature ? new QgsFeature( *mFeature ) : mFeature;
 
-  QgsAttributeEditorContext context;
+  QgsAttributeEditorContext context( QgisApp::instance()->createAttributeEditorContext() );
 
   QgsDistanceArea myDa;
 
@@ -61,12 +61,11 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   context.setDistanceArea( myDa );
-  context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
-  context.setMapCanvas( QgisApp::instance()->mapCanvas() );
   context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
 
   QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, parentWidget(), true, context );
   dialog->setWindowFlags( dialog->windowFlags() | Qt::Tool );
+
   dialog->setObjectName( QStringLiteral( "featureactiondlg:%1:%2" ).arg( mLayer->id() ).arg( f->id() ) );
 
   QList<QgsAction> actions = mLayer->actions()->actions( QStringLiteral( "Feature" ) );
@@ -246,26 +245,32 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
     {
       mLayer->destroyEditCommand();
     }
+    emit addFeatureFinished();
   }
   else
   {
+
     QgsAttributeDialog *dialog = newDialog( false );
     // delete the dialog when it is closed
     dialog->setAttribute( Qt::WA_DeleteOnClose );
     dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
     dialog->setEditCommandMessage( text() );
+    if ( scope )
+      dialog->setExtraContextScope( new QgsExpressionContextScope( *scope ) );
 
     connect( dialog->attributeForm(), &QgsAttributeForm::featureSaved, this, &QgsFeatureAction::onFeatureSaved );
 
     if ( !showModal )
     {
       setParent( dialog ); // keep dialog until the dialog is closed and destructed
+      connect( dialog, &QgsAttributeDialog::finished, this, &QgsFeatureAction::addFeatureFinished );
       dialog->show();
       mFeature = nullptr;
       return true;
     }
 
     dialog->exec();
+    emit addFeatureFinished();
   }
 
   // Will be set in the onFeatureSaved SLOT

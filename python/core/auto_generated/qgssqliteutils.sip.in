@@ -52,6 +52,9 @@ Returns a string list of SQLite (and spatialite) system tables
 
 .. versionadded:: 3.8
 %End
+
+
+
 };
 
 /************************************************************************

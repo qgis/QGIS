@@ -30,7 +30,7 @@
 class QgsGeometryCheck;
 class QgsSingleGeometryCheck;
 
-struct QgsGeometryCheckContext;
+class QgsGeometryCheckContext;
 
 /**
  * \ingroup analysis

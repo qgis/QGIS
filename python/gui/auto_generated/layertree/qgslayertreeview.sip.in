@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLayerTreeView : QTreeView
 {
 %Docstring
@@ -48,7 +49,7 @@ Constructor for QgsLayerTreeView
     virtual void setModel( QAbstractItemModel *model );
 
 %Docstring
-Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable model.
+Overridden :py:func:`~QgsLayerTreeView.setModel` from base class. Only QgsLayerTreeModel is an acceptable model.
 %End
 
     QgsLayerTreeModel *layerTreeModel() const;
@@ -75,6 +76,15 @@ Returns pointer to the context menu provider. May be ``None``
 Returns the currently selected layer, or ``None`` if no layers is selected.
 
 .. seealso:: :py:func:`setCurrentLayer`
+%End
+
+    void setLayerVisible( QgsMapLayer *layer, bool visible );
+%Docstring
+Convenience methods which sets the visible state of the specified map ``layer``.
+
+.. seealso:: :py:func:`QgsLayerTreeNode.setItemVisibilityChecked`
+
+.. versionadded:: 3.10
 %End
 
     void setCurrentLayer( QgsMapLayer *layer );
@@ -122,7 +132,7 @@ Gets list of selected layers
 %Docstring
 Gets list of selected layers, including those that are not directly selected, but their
 ancestor groups is selected. If we have a group with two layers L1, L2 and just the group
-node is selected, this method returns L1 and L2, while selectedLayers() returns an empty list.
+node is selected, this method returns L1 and L2, while :py:func:`~QgsLayerTreeView.selectedLayers` returns an empty list.
 
 .. versionadded:: 3.4
 %End
@@ -164,6 +174,15 @@ Returns list of indicators associated with a particular layer tree node.
 .. versionadded:: 3.2
 %End
 
+    int layerMarkWidth() const;
+%Docstring
+Returns width of contextual menu mark, at right of layer node items.
+
+.. seealso:: :py:func:`setLayerMarkWidth`
+
+.. versionadded:: 3.8
+%End
+
 
 
   public slots:
@@ -184,6 +203,22 @@ Enhancement of QTreeView.expandAll() that also records expanded state in layer t
 Enhancement of QTreeView.collapseAll() that also records expanded state in layer tree nodes
 
 .. versionadded:: 2.18
+%End
+
+    void setLayerMarkWidth( int width );
+%Docstring
+Set width of contextual menu mark, at right of layer node items.
+
+.. seealso:: :py:func:`layerMarkWidth`
+
+.. versionadded:: 3.8
+%End
+
+    void setMessageBar( QgsMessageBar *messageBar );
+%Docstring
+Set the message bar to display messages from the layer tree
+
+.. versionadded:: 3.14
 %End
 
   signals:
@@ -208,6 +243,9 @@ Emitted when a current layer is changed
     virtual void dropEvent( QDropEvent *event );
 
 
+    virtual void resizeEvent( QResizeEvent *event );
+
+
   protected slots:
 
     void modelRowsInserted( const QModelIndex &index, int start, int end );
@@ -220,6 +258,7 @@ Emitted when a current layer is changed
     void onModelReset();
 
   protected:
+
 
 };
 

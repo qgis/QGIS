@@ -21,10 +21,12 @@
 #include "qgspathresolver.h"
 #include "qgsproject.h"
 #include "qgssinglesymbolrenderer.h"
+#include "qgslayertree.h"
 #include "qgssettings.h"
 #include "qgsunittypes.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgslayoutmanager.h"
 
 class TestQgsProject : public QObject
 {
@@ -43,6 +45,11 @@ class TestQgsProject : public QObject
     void testLayerFlags();
     void testLocalFiles();
     void testLocalUrlFiles();
+    void testReadFlags();
+    void testSetGetCrs();
+    void testEmbeddedLayerGroupFromQgz();
+    void projectSaveUser();
+    void testCrsExpressions();
 };
 
 void TestQgsProject::init()
@@ -65,6 +72,7 @@ void TestQgsProject::initTestCase()
 
   QgsApplication::init();
   QgsApplication::initQgis();
+  QgsSettings().clear();
 }
 
 
@@ -427,6 +435,233 @@ void TestQgsProject::testLocalUrlFiles()
 
 }
 
+void TestQgsProject::testReadFlags()
+{
+  QString project1Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project1.qgs" );
+  QgsProject p;
+  QVERIFY( p.read( project1Path, QgsProject::ReadFlag::FlagDontResolveLayers ) );
+  auto layers = p.mapLayers();
+  QCOMPARE( layers.count(), 3 );
+  // layers should be invalid - we skipped loading them!
+  QVERIFY( !layers.value( QStringLiteral( "points20170310142652246" ) )->isValid() );
+  QVERIFY( !layers.value( QStringLiteral( "lines20170310142652255" ) )->isValid() );
+  QVERIFY( !layers.value( QStringLiteral( "polys20170310142652234" ) )->isValid() );
+
+  // but they should have renderers (and other stuff!)
+  QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "points20170310142652246" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
+  QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "lines20170310142652255" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
+  QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "polys20170310142652234" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
+
+  // project with embedded groups
+  QString project2Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project2.qgs" );
+  QgsProject p2;
+  QVERIFY( p2.read( project2Path, QgsProject::ReadFlag::FlagDontResolveLayers ) );
+  // layers should be invalid - we skipped loading them!
+  layers = p2.mapLayers();
+  QCOMPARE( layers.count(), 2 );
+  QVERIFY( !layers.value( QStringLiteral( "lines20170310142652255" ) )->isValid() );
+  QVERIFY( !layers.value( QStringLiteral( "polys20170310142652234" ) )->isValid() );
+  QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "lines20170310142652255" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
+  QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "polys20170310142652234" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
+
+
+  QString project3Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/layouts/layout_casting.qgs" );
+  QgsProject p3;
+  QVERIFY( p3.read( project3Path, QgsProject::ReadFlag::FlagDontLoadLayouts ) );
+  QCOMPARE( p3.layoutManager()->layouts().count(), 0 );
+}
+
+void TestQgsProject::testEmbeddedLayerGroupFromQgz()
+{
+  QString path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project1.qgz" );
+  QList<QDomNode> brokenNodes;
+
+  QgsProject p0;
+  p0.read( path );
+  QgsMapLayer *points = p0.mapLayersByName( "points" )[0];
+  QgsMapLayer *polys = p0.mapLayersByName( "polys" )[0];
+
+  QgsProject p1;
+  p1.createEmbeddedLayer( points->id(), p0.fileName(), brokenNodes );
+  p1.createEmbeddedGroup( "group1", p0.fileName(), QStringList() );
+
+  QCOMPARE( p1.layerIsEmbedded( points->id() ), path );
+  QCOMPARE( p1.layerIsEmbedded( polys->id() ), path );
+
+  // test embedded layers when origin project is something like ../XXX
+  path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_layers/project.qgz" );
+  QgsProject p2;
+  p2.read( path );
+
+  QgsMapLayer *points2 = p0.mapLayersByName( "points" )[0];
+  bool saveFlag = p2.mEmbeddedLayers[points2->id()].second;
+  QCOMPARE( saveFlag, true );
+
+  bool valid = p2.loadEmbeddedNodes( p2.layerTreeRoot() );
+  QCOMPARE( valid, true );
+}
+
+void TestQgsProject::projectSaveUser()
+{
+  QgsProject p;
+  QVERIFY( p.saveUser().isEmpty() );
+  QVERIFY( p.saveUserFullName().isEmpty() );
+  QVERIFY( !p.lastSaveDateTime().isValid() );
+
+  QTemporaryFile f;
+  QVERIFY( f.open() );
+  f.close();
+  p.setFileName( f.fileName() );
+  p.write();
+
+  QCOMPARE( p.saveUser(), QgsApplication::userLoginName() );
+  QCOMPARE( p.saveUserFullName(), QgsApplication::userFullName() );
+  QCOMPARE( p.lastSaveDateTime().date(), QDateTime::currentDateTime().date() );
+  QCOMPARE( p.lastSaveVersion().text(), QgsProjectVersion( Qgis::version() ).text() );
+
+  QgsSettings s;
+  s.setValue( QStringLiteral( "projects/anonymize_saved_projects" ), true, QgsSettings::Core );
+
+  p.write();
+
+  QVERIFY( p.saveUser().isEmpty() );
+  QVERIFY( p.saveUserFullName().isEmpty() );
+  QVERIFY( !p.lastSaveDateTime().isValid() );
+
+  s.setValue( QStringLiteral( "projects/anonymize_saved_projects" ), false, QgsSettings::Core );
+
+  p.write();
+  QCOMPARE( p.saveUser(), QgsApplication::userLoginName() );
+  QCOMPARE( p.saveUserFullName(), QgsApplication::userFullName() );
+  QCOMPARE( p.lastSaveDateTime().date(), QDateTime::currentDateTime().date() );
+
+  QgsProject p2;
+  QVERIFY( p2.read( QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project1.qgs" ) ) );
+  QCOMPARE( p2.lastSaveVersion().text(), QStringLiteral( "2.99.0-Master" ) );
+  p2.clear();
+  QVERIFY( p2.lastSaveVersion().isNull() );
+}
+
+void TestQgsProject::testSetGetCrs()
+{
+  QgsProject p;
+
+  // Set 4326
+  //  - CRS changes
+  //  - ellipsoid stays as NONE
+  QSignalSpy crsChangedSpy( &p, &QgsProject::crsChanged );
+  QSignalSpy ellipsoidChangedSpy( &p, &QgsProject::ellipsoidChanged );
+
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+
+  QCOMPARE( crsChangedSpy.count(), 1 );
+  QCOMPARE( ellipsoidChangedSpy.count(), 0 );
+
+  QCOMPARE( p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+  QCOMPARE( p.ellipsoid(), QStringLiteral( "NONE" ) );
+
+  crsChangedSpy.clear();
+  ellipsoidChangedSpy.clear();
+
+  // Set 21781
+  //  - CRS changes
+  //  - ellipsoid stays as NONE
+
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 21781 ) );
+
+  QCOMPARE( crsChangedSpy.count(), 1 );
+  QCOMPARE( ellipsoidChangedSpy.count(), 0 );
+
+  QCOMPARE( p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 21781 ) );
+  QCOMPARE( p.ellipsoid(), QStringLiteral( "NONE" ) );
+
+  crsChangedSpy.clear();
+  ellipsoidChangedSpy.clear();
+
+  // Set 21781 again, including adjustEllipsoid flag
+  //  - CRS changes
+  //  - ellipsoid changes to Bessel
+
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 21781 ), true );
+
+  QCOMPARE( crsChangedSpy.count(), 0 );
+  QCOMPARE( ellipsoidChangedSpy.count(), 1 );
+
+  QCOMPARE( p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 21781 ) );
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( p.ellipsoid(), QStringLiteral( "EPSG:7004" ) );
+#else
+  QCOMPARE( p.ellipsoid(), QStringLiteral( "bessel" ) );
+#endif
+
+  crsChangedSpy.clear();
+  ellipsoidChangedSpy.clear();
+
+  // Set 2056, including adjustEllipsoid flag
+  //  - CRS changes
+  //  - ellipsoid stays
+
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 2056 ), true );
+
+  QCOMPARE( crsChangedSpy.count(), 1 );
+  QCOMPARE( ellipsoidChangedSpy.count(), 0 );
+
+  QCOMPARE( p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 2056 ) );
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( p.ellipsoid(), QStringLiteral( "EPSG:7004" ) );
+#else
+  QCOMPARE( p.ellipsoid(), QStringLiteral( "bessel" ) );
+#endif
+
+  crsChangedSpy.clear();
+  ellipsoidChangedSpy.clear();
+}
+
+void TestQgsProject::testCrsExpressions()
+{
+  QgsProject p;
+  QVariant r;
+
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+
+  QgsExpressionContext c = p.createExpressionContext();
+
+  QgsExpression e2( QStringLiteral( "@project_crs" ) );
+  r = e2.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "EPSG:4326" ) );
+
+  QgsExpression e3( QStringLiteral( "@project_crs_definition" ) );
+  r = e3.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
+
+  QgsExpression e4( QStringLiteral( "@project_units" ) );
+  r = e4.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "degrees" ) );
+
+  QgsExpression e5( QStringLiteral( "@project_crs_description" ) );
+  r = e5.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "WGS 84" ) );
+
+  QgsExpression e6( QStringLiteral( "@project_crs_acronym" ) );
+  r = e6.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "longlat" ) );
+
+  QgsExpression e7( QStringLiteral( "@project_crs_proj4" ) );
+  r = e7.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
+
+  QgsExpression e8( QStringLiteral( "@project_crs_wkt" ) );
+  r = e8.evaluate( &c );
+  QVERIFY( r.toString().length() >= 15 );
+
+  QgsExpression e9( QStringLiteral( "@project_crs_ellipsoid" ) );
+  r = e9.evaluate( &c );
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( r.toString(), QString( "EPSG:7030" ) );
+#else
+  QCOMPARE( r.toString(), QString( "WGS84" ) );
+#endif
+}
 
 QGSTEST_MAIN( TestQgsProject )
 #include "testqgsproject.moc"

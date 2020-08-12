@@ -35,6 +35,9 @@ extern "C"
 #if defined(_MSC_VER) && defined(M_PI_4)
 #undef M_PI_4 //avoid redefinition warning
 #endif
+#if defined(PROJ_VERSION_MAJOR) && PROJ_VERSION_MAJOR>=6
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
+#endif
 #include <grass/gprojects.h>
 #include <grass/gis.h>
 #include <grass/dbmi.h>
@@ -238,7 +241,7 @@ bool QgsGrassVectorMap::startEdit()
   }
   G_CATCH( QgsGrass::Exception & e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     QgsDebugMsg( QString( "Cannot open GRASS vector for update: %1" ).arg( e.what() ) );
   }
 
@@ -256,7 +259,7 @@ bool QgsGrassVectorMap::startEdit()
     }
     G_CATCH( QgsGrass::Exception & e )
     {
-      Q_UNUSED( e );
+      Q_UNUSED( e )
       QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( e.what() ) );
     }
 
@@ -289,7 +292,7 @@ bool QgsGrassVectorMap::startEdit()
 
 bool QgsGrassVectorMap::closeEdit( bool newMap )
 {
-  Q_UNUSED( newMap );
+  Q_UNUSED( newMap )
   QgsDebugMsg( toString() );
   if ( !mValid || !mIsEdited )
   {

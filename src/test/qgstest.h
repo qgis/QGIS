@@ -17,6 +17,7 @@
 #define QGSTEST_H
 
 #include <QtTest/QtTest>
+#include "qgsrectangle.h"
 #include "qgsapplication.h"
 
 #define QGSTEST_MAIN(TestObject) \
@@ -43,7 +44,7 @@
       qDebug( "Expecting %f got %f (diff %f > %f)", static_cast< double >( expected ), static_cast< double >( value ), std::fabs( static_cast< double >( expected ) - value ), static_cast< double >( epsilon ) ); \
     } \
     QVERIFY( qgsDoubleNear( value, expected, epsilon ) ); \
-  }
+  }(void)(0)
 
 #define QGSCOMPARENOTNEAR(value,not_expected,epsilon) { \
     bool _xxxresult = qgsDoubleNear( value, not_expected, epsilon ); \
@@ -52,7 +53,7 @@
       qDebug( "Expecting %f to be differerent from %f (diff %f > %f)", static_cast< double >( value ), static_cast< double >( not_expected ), std::fabs( static_cast< double >( not_expected ) - value ), static_cast< double >( epsilon ) ); \
     } \
     QVERIFY( !qgsDoubleNear( value, not_expected, epsilon ) ); \
-  }
+  }(void)(0)
 
 #define QGSCOMPARENEARPOINT(point1,point2,epsilon) { \
     QGSCOMPARENEAR( point1.x(), point2.x(), epsilon ); \
@@ -89,5 +90,14 @@ namespace QgsTest
     return qgetenv( "RUN_FLAKY_TESTS" ) == QStringLiteral( "true" );
   }
 }
+
+/**
+ * Formatting QgsRectangle for QCOMPARE pretty printing
+ */
+char *toString( const QgsRectangle &r )
+{
+  return QTest::toString( QStringLiteral( "QgsRectangle(%1, %2, %3, %4)" ).arg( QString::number( r.xMinimum() ), QString::number( r.yMinimum() ), QString::number( r.xMaximum() ), QString::number( r.yMaximum() ) ) );
+}
+
 
 #endif // QGSTEST_H

@@ -11,9 +11,9 @@
 #include <sstream>
 #include <math.h>
 #include <assert.h>
-#include <cmath>
 #include <string.h>
 #include <stdio.h>
+#include <ctime>
 
 bool MDAL::fileExists( const std::string &filename )
 {
@@ -21,10 +21,21 @@ bool MDAL::fileExists( const std::string &filename )
   return in.good();
 }
 
+std::string MDAL::readFileToString( const std::string &filename )
+{
+  if ( MDAL::fileExists( filename ) )
+  {
+    std::ifstream t( filename );
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+    return buffer.str();
+  }
+  return "";
+}
 
 bool MDAL::startsWith( const std::string &str, const std::string &substr, ContainsBehaviour behaviour )
 {
-  if ( str.size() < substr.size() )
+  if ( ( str.size() < substr.size() ) || substr.empty() )
     return false;
 
   if ( behaviour == ContainsBehaviour::CaseSensitive )
@@ -35,7 +46,7 @@ bool MDAL::startsWith( const std::string &str, const std::string &substr, Contai
 
 bool MDAL::endsWith( const std::string &str, const std::string &substr, ContainsBehaviour behaviour )
 {
-  if ( str.size() < substr.size() )
+  if ( ( str.size() < substr.size() ) || substr.empty() )
     return false;
 
   if ( behaviour == ContainsBehaviour::CaseSensitive )
@@ -113,18 +124,12 @@ double MDAL::toDouble( const std::string &str )
   return atof( str.c_str() );
 }
 
-bool MDAL::isNumber( const std::string &str )
-{
-  // https://stackoverflow.com/a/16465826/2838364
-  return ( strspn( str.c_str(), "-.0123456789" ) == str.size() );
-}
-
 int MDAL::toInt( const std::string &str )
 {
   return atoi( str.c_str() );
 }
 
-std::string MDAL::baseName( const std::string &filename )
+std::string MDAL::baseName( const std::string &filename, bool keepExtension )
 {
   // https://stackoverflow.com/a/8520815/2838364
   std::string fname( filename );
@@ -137,13 +142,31 @@ std::string MDAL::baseName( const std::string &filename )
     fname.erase( 0, last_slash_idx + 1 );
   }
 
-  // Remove extension if present.
-  const size_t period_idx = fname.rfind( '.' );
-  if ( std::string::npos != period_idx )
+  if ( !keepExtension )
   {
-    fname.erase( period_idx );
+    // Remove extension if present.
+    const size_t period_idx = fname.rfind( '.' );
+    if ( std::string::npos != period_idx )
+    {
+      fname.erase( period_idx );
+    }
   }
   return fname;
+}
+
+std::string MDAL::fileExtension( const std::string &path )
+{
+  std::string filename = MDAL::baseName( path, true );
+
+  const size_t lastDotIx = filename.find_last_of( "." );
+  if ( std::string::npos == lastDotIx )
+  {
+    return std::string();
+  }
+
+  std::string extension = filename.substr( lastDotIx );
+
+  return extension;
 }
 
 std::string MDAL::pathJoin( const std::string &path1, const std::string &path2 )
@@ -187,15 +210,6 @@ bool MDAL::contains( const std::string &str, const std::string &substr, Contains
               );
     return ( it != str.end() );
   }
-}
-
-void MDAL::debug( const std::string &message )
-{
-#ifdef NDEBUG
-  MDAL_UNUSED( message );
-#else
-  std::cout << message << std::endl;
-#endif
 }
 
 bool MDAL::toBool( const std::string &str )
@@ -275,22 +289,60 @@ std::string MDAL::replace( const std::string &str, const std::string &substr, co
   return res;
 }
 
+std::string MDAL::removeFrom( const std::string &str, const std::string &substr )
+{
+  std::string res( str );
+  size_t pos = res.rfind( substr );
+  if ( pos != std::string::npos )
+  {
+    res = res.substr( 0, pos );
+  }
+  return res;
+
+}
+
 // http://www.cplusplus.com/faq/sequences/strings/trim/
 std::string MDAL::trim( const std::string &s, const std::string &delimiters )
 {
+  if ( s.empty() )
+    return s;
+
   return ltrim( rtrim( s, delimiters ), delimiters );
 }
 
 // http://www.cplusplus.com/faq/sequences/strings/trim/
 std::string MDAL::ltrim( const std::string &s, const std::string &delimiters )
 {
-  return s.substr( s.find_first_not_of( delimiters ) );
+  if ( s.empty() )
+    return s;
+
+  size_t found = s.find_first_not_of( delimiters );
+
+  if ( found == std::string::npos )
+  {
+    return "";
+  }
+  else
+  {
+    return s.substr( found );
+  }
 }
 
 // http://www.cplusplus.com/faq/sequences/strings/trim/
 std::string MDAL::rtrim( const std::string &s, const std::string &delimiters )
 {
-  return s.substr( 0, s.find_last_not_of( delimiters ) + 1 );
+  if ( s.empty() )
+    return s;
+
+  size_t found = s.find_last_not_of( delimiters );
+  if ( found == std::string::npos )
+  {
+    return "";
+  }
+  else
+  {
+    return s.substr( 0, found + 1 );
+  }
 }
 
 MDAL::BBox MDAL::computeExtent( const MDAL::Vertices &vertices )
@@ -316,49 +368,66 @@ MDAL::BBox MDAL::computeExtent( const MDAL::Vertices &vertices )
   return b;
 }
 
-bool MDAL::equals( double val1, double val2, double eps )
-{
-  return fabs( val1 - val2 ) < eps;
-}
-
 double MDAL::safeValue( double val, double nodata, double eps )
 {
-  if ( equals( val, nodata, eps ) )
-  {
-    return std::numeric_limits<double>::quiet_NaN();
-  }
-  else
-  {
+  if ( std::isnan( val ) )
     return val;
-  }
+
+  if ( std::isnan( nodata ) )
+    return val;
+
+  if ( equals( val, nodata, eps ) )
+    return std::numeric_limits<double>::quiet_NaN();
+
+  return val;
 }
 
 double MDAL::parseTimeUnits( const std::string &units )
 {
   double divBy = 1;
   // We are trying to parse strings like
+  //
   // "seconds since 2001-05-05 00:00:00"
   // "hours since 1900-01-01 00:00:0.0"
   // "days since 1961-01-01 00:00:00"
+  //
+  // or simply
+  // hours, days, seconds, ...
+
   const std::vector<std::string> units_list = MDAL::split( units, " since " );
-  if ( units_list.size() == 2 )
+  std::string unit_definition = units;
+  if ( !units_list.empty() )
   {
-    // Give me hours
-    if ( units_list[0] == "seconds" )
-    {
-      divBy = 3600.0;
-    }
-    else if ( units_list[0] == "minutes" )
-    {
-      divBy = 60.0;
-    }
-    else if ( units_list[0] == "days" )
-    {
-      divBy = 1.0 / 24.0;
-    }
+    unit_definition = units_list[0];
+  }
+
+  // Give me hours
+  if ( units_list[0] == "seconds" )
+  {
+    divBy = 3600.0;
+  }
+  else if ( units_list[0] == "minutes" )
+  {
+    divBy = 60.0;
+  }
+  else if ( units_list[0] == "days" )
+  {
+    divBy = 1.0 / 24.0;
   }
 
   return divBy;
+}
+
+std::string MDAL::getCurrentTimeStamp()
+{
+  time_t t ;
+  struct tm *tmp ;
+  char MY_TIME[50];
+  time( &t );
+  tmp = localtime( &t );
+  strftime( MY_TIME, sizeof( MY_TIME ), "%Y-%m-%dT%H:%M:%S%z", tmp );
+  std::string s = MDAL::trim( MY_TIME );
+  return s;
 }
 
 MDAL::Statistics _calculateStatistics( const std::vector<double> &values, size_t count, bool isVector )
@@ -438,6 +507,7 @@ MDAL::Statistics MDAL::calculateStatistics( std::shared_ptr<Dataset> dataset )
     return ret;
 
   bool isVector = !dataset->group()->isScalar();
+  bool is3D = dataset->group()->dataLocation() == MDAL_DataLocation::DataOnVolumes;
   size_t bufLen = 2000;
   std::vector<double> buffer( isVector ? bufLen * 2 : bufLen );
 
@@ -445,13 +515,27 @@ MDAL::Statistics MDAL::calculateStatistics( std::shared_ptr<Dataset> dataset )
   while ( i < dataset->valuesCount() )
   {
     size_t valsRead;
-    if ( isVector )
+    if ( is3D )
     {
-      valsRead = dataset->vectorData( i, bufLen, buffer.data() );
+      if ( isVector )
+      {
+        valsRead = dataset->vectorVolumesData( i, bufLen, buffer.data() );
+      }
+      else
+      {
+        valsRead = dataset->scalarVolumesData( i, bufLen, buffer.data() );
+      }
     }
     else
     {
-      valsRead = dataset->scalarData( i, bufLen, buffer.data() );
+      if ( isVector )
+      {
+        valsRead = dataset->vectorData( i, bufLen, buffer.data() );
+      }
+      else
+      {
+        valsRead = dataset->scalarData( i, bufLen, buffer.data() );
+      }
     }
     if ( valsRead == 0 )
       return ret;
@@ -484,7 +568,7 @@ void MDAL::addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertic
   if ( !mesh )
     return;
 
-  if ( 0 == mesh->facesCount() )
+  if ( 0 == mesh->verticesCount() )
     return;
 
   std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(
@@ -493,15 +577,14 @@ void MDAL::addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertic
                                           mesh->uri(),
                                           "Bed Elevation"
                                         );
-  group->setIsOnVertices( true );
+  group->setDataLocation( MDAL_DataLocation::DataOnVertices );
   group->setIsScalar( true );
 
-  std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MemoryDataset >( group.get() );
+  std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group.get() );
   dataset->setTime( 0.0 );
-  double *vals = dataset->values();
   for ( size_t i = 0; i < vertices.size(); ++i )
   {
-    vals[i] = vertices[i].z;
+    dataset->setScalarValue( i, vertices[i].z );
   }
   dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
   group->datasets.push_back( dataset );
@@ -530,14 +613,310 @@ void MDAL::addFaceScalarDatasetGroup( MDAL::Mesh *mesh,
                                           mesh->uri(),
                                           name
                                         );
-  group->setIsOnVertices( false );
+  group->setDataLocation( MDAL_DataLocation::DataOnFaces );
   group->setIsScalar( true );
 
-  std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MemoryDataset >( group.get() );
+  std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group.get() );
   dataset->setTime( 0.0 );
   memcpy( dataset->values(), values.data(), sizeof( double )*values.size() );
   dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
   group->datasets.push_back( dataset );
   group->setStatistics( MDAL::calculateStatistics( group ) );
   mesh->datasetGroups.push_back( group );
+}
+
+bool MDAL::isNativeLittleEndian()
+{
+  // https://stackoverflow.com/a/4181991/2838364
+  int n = 1;
+  return ( *( char * )&n == 1 );
+}
+
+std::string MDAL::coordinateToString( double coordinate, int precision )
+{
+
+  std::ostringstream oss;
+  oss.setf( std::ios::fixed );
+  if ( fabs( coordinate ) > 180 )
+    oss.precision( precision ); //seems to not be a geographic coordinate, so 'precision' digits after the digital point
+  else
+    oss.precision( 6 + precision ); //could be a geographic coordinate, so 'precision'+6 digits after the digital point
+
+  oss << coordinate;
+
+  std::string returnString = oss.str();
+  returnString.back();
+
+  //remove unnecessary '0' or '.'
+  if ( returnString.size() > 0 )
+  {
+    while ( '0' == returnString.back() )
+    {
+      returnString.pop_back();
+    }
+
+    if ( '.' == returnString.back() )
+      returnString.pop_back();
+  }
+
+  return returnString;
+}
+
+std::string MDAL::doubleToString( double value, int precision )
+{
+  std::ostringstream oss;
+  oss.precision( precision );
+  oss << value;
+  return oss.str();
+}
+
+std::string MDAL::prependZero( const std::string &str, size_t length )
+{
+  if ( length <= str.size() )
+    return  str;
+
+  return std::string( length - str.size(), '0' ).append( str );
+}
+
+MDAL::RelativeTimestamp::Unit MDAL::parseDurationTimeUnit( const std::string &timeUnit )
+{
+  MDAL::RelativeTimestamp::Unit unit = MDAL::RelativeTimestamp::hours; //default unit
+
+  if ( timeUnit == "millisec" ||
+       timeUnit == "msec" ||
+       timeUnit == "millisecs" ||
+       timeUnit == "msecs"
+     )
+  {
+    unit = MDAL::RelativeTimestamp::milliseconds;
+  }
+  else if ( timeUnit == "second" ||
+            timeUnit == "seconds" ||
+            timeUnit == "Seconds" ||
+            timeUnit == "sec" ||
+            timeUnit == "secs" ||
+            timeUnit == "s" ||
+            timeUnit == "se" || // ascii_dat format
+            timeUnit == "2" )  // ascii_dat format
+  {
+    unit = MDAL::RelativeTimestamp::seconds;
+  }
+  else if ( timeUnit == "minute" ||
+            timeUnit == "minutes" ||
+            timeUnit == "Minutes" ||
+            timeUnit == "min" ||
+            timeUnit == "mins" ||
+            timeUnit == "mi" || // ascii_dat format
+            timeUnit == "1" ) // ascii_dat format
+  {
+    unit = MDAL::RelativeTimestamp::minutes;
+  }
+  else if ( timeUnit == "day" ||
+            timeUnit == "days" ||
+            timeUnit == "Days" )
+  {
+    unit = MDAL::RelativeTimestamp::days;
+  }
+  else if ( timeUnit == "week" ||
+            timeUnit == "weeks" )
+  {
+    unit = MDAL::RelativeTimestamp::weeks;
+  }
+
+
+  return unit;
+}
+
+MDAL::RelativeTimestamp::Unit MDAL::parseCFTimeUnit( std::string timeInformation )
+{
+  auto strings = MDAL::split( timeInformation, ' ' );
+  if ( strings.size() < 3 )
+    return MDAL::RelativeTimestamp::hours; //default value
+
+  if ( strings[1] == "since" )
+  {
+    std::string timeUnit = strings[0];
+    if ( timeUnit == "month" ||
+         timeUnit == "months" ||
+         timeUnit == "mon" ||
+         timeUnit == "mons" )
+    {
+      return MDAL::RelativeTimestamp::months_CF;
+    }
+    else if ( timeUnit == "year" ||
+              timeUnit == "years" ||
+              timeUnit == "yr" ||
+              timeUnit == "yrs" )
+    {
+      return MDAL::RelativeTimestamp::exact_years;
+    }
+
+    return MDAL::parseDurationTimeUnit( strings[0] );
+  }
+
+  return MDAL::RelativeTimestamp::hours;//default value
+}
+
+MDAL::DateTime MDAL::parseCFReferenceTime( const std::string &timeInformation, const std::string &calendarString )
+{
+  auto strings = MDAL::split( timeInformation, ' ' );
+  if ( strings.size() < 3 )
+    return MDAL::DateTime();
+
+  if ( strings[1] != "since" )
+    return MDAL::DateTime();
+
+  std::string dateString = strings[2];
+
+  auto dateStringValues = MDAL::split( dateString, '-' );
+  if ( dateStringValues.size() != 3 )
+    return MDAL::DateTime();
+
+  int year = MDAL::toInt( dateStringValues[0] );
+  int month = MDAL::toInt( dateStringValues[1] );
+  int day = MDAL::toInt( dateStringValues[2] );
+
+  int hours = 0;
+  int minutes = 0;
+  double seconds = 0;
+
+  if ( strings.size() > 3 )
+  {
+    std::string timeString = strings[3];
+    auto timeStringsValue = MDAL::split( timeString, ":" );
+    if ( timeStringsValue.size() == 3 )
+    {
+      hours = MDAL::toInt( timeStringsValue[0] );
+      minutes = MDAL::toInt( timeStringsValue[1] );
+      seconds = MDAL::toDouble( timeStringsValue[2] );
+    }
+  }
+
+  MDAL::DateTime::Calendar calendar;
+  if ( calendarString == "gregorian" || calendarString == "standard" || calendarString.empty() )
+    calendar = MDAL::DateTime::Gregorian;
+  else if ( calendarString == "proleptic_gregorian" )
+    calendar = MDAL::DateTime::ProlepticGregorian;
+  else if ( calendarString == "julian" )
+    calendar = MDAL::DateTime::Julian;
+  else
+    return MDAL::DateTime();
+
+  return MDAL::DateTime( year, month, day, hours, minutes, seconds, calendar );
+}
+
+bool MDAL::getHeaderLine( std::ifstream &stream, std::string &line )
+{
+  if ( !stream.is_open() ) return false;
+  char b[100] = "";
+  if ( ! stream.get( b, sizeof( b ) - 1, '\n' ) ) return false;
+  line = std::string( b );
+  return true;
+}
+
+MDAL::Error::Error( MDAL_Status status, std::string message, std::string driverName ): status( status ), mssg( message ), driver( driverName ) {}
+
+void MDAL::Error::setDriver( std::string driverName )
+{
+  driver = driverName;
+}
+
+void MDAL::parseDriverFromUri( const std::string &uri, std::string &driver )
+{
+  bool hasDriverSet = ( uri.find( ":\"" ) != std::string::npos );
+  driver = "";
+
+  if ( !hasDriverSet )
+    return;
+
+  driver = MDAL::split( uri, ":\"" )[0];
+}
+
+void MDAL::parseMeshFileFromUri( const std::string &uri, std::string &meshFile )
+{
+  bool hasDriverSet = ( uri.find( ":\"" ) != std::string::npos );
+  bool hasSpecificMeshSet = ( uri.find( "\":" ) != std::string::npos );
+  meshFile = "";
+
+  if ( !hasDriverSet && !hasSpecificMeshSet )
+    meshFile = MDAL::trim( uri, "\"" );
+  else if ( hasDriverSet && hasSpecificMeshSet )
+  {
+    std::string token = MDAL::split( uri, ":\"" )[1]; // split from driver
+    token = MDAL::split( token, "\":" )[0]; // split from specific mesh
+    meshFile = MDAL::trim( token, "\"" );
+  }
+  else if ( hasDriverSet )
+  {
+    std::string token = MDAL::split( uri, ":\"" )[1]; // split from driver
+    meshFile = MDAL::trim( token, "\"" );
+  }
+  else if ( hasSpecificMeshSet )
+  {
+    std::string token = MDAL::split( uri, "\":" )[0]; // split from specific mesh
+    meshFile = MDAL::trim( token, "\"" );
+  }
+}
+
+void parseSpecificMeshFromUri( const std::string &uri, std::string &meshName )
+{
+  bool hasSpecificMeshSet = ( uri.find( "\":" ) != std::string::npos );
+  meshName = "";
+
+  if ( !hasSpecificMeshSet )
+    return;
+
+  std::vector<std::string> tokens = MDAL::split( uri, "\":" );
+  if ( tokens.size() > 1 )
+  {
+    meshName = MDAL::trim( tokens.at( 1 ), "\"" );
+  }
+}
+
+void MDAL::parseDriverAndMeshFromUri( const std::string &uri, std::string &driver, std::string &meshFile, std::string &meshName )
+{
+  parseDriverFromUri( uri, driver );
+  parseMeshFileFromUri( uri, meshFile );
+  parseSpecificMeshFromUri( uri, meshName );
+}
+
+std::string MDAL::buildMeshUri( const std::string &meshFile, const std::string &meshName, const std::string &driver )
+{
+  if ( meshFile.empty() )
+    return std::string();
+
+  std::string uri( "" );
+
+  bool hasDriverName = !driver.empty();
+  bool hasMeshName = !meshName.empty();
+
+  if ( hasDriverName && hasMeshName )
+    uri = driver + ":\"" + meshFile + "\":" + meshName;
+  else if ( !hasDriverName && !hasMeshName )
+    uri = meshFile;
+  else if ( hasDriverName ) // only driver
+    uri = driver + ":\"" + meshFile + "\"";
+  else if ( hasMeshName ) // only mesh name
+    uri = "\"" + meshFile + "\":" + meshName;
+
+  return uri;
+}
+
+std::string MDAL::buildAndMergeMeshUris( const std::string &meshFile, const std::vector<std::string> &meshNames, const std::string &driver )
+{
+  std::string mergedUris;
+  size_t meshNamesCount = meshNames.size();
+
+  for ( size_t i = 0; i < meshNamesCount; ++i )
+  {
+    mergedUris += buildMeshUri( meshFile, meshNames.at( i ), driver );
+
+    if ( ( i + 1 ) < meshNamesCount ) // If this is not the last mesh in array, add separator
+      mergedUris += ";;";
+  }
+
+  if ( meshNamesCount == 0 )
+    mergedUris = buildMeshUri( meshFile, "", driver );
+
+  return mergedUris;
 }

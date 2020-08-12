@@ -1,15 +1,34 @@
 ## Description
-Include a few sentences describing the overall goals for this PR (pull request). If applicable also add screenshots.
 
-## Checklist
+[Replace this with some text explaining the rationale and details about this pull request]
 
-> Reviewing is a process done by project maintainers, mostly on a volunteer basis. We try to keep the overhead as small as possible and appreciate if you help us to do so by completing the following items. Feel free to ask in a comment if you have troubles with any of them.
+<!--
+  IMPORTANT NOTES FOR FIRST TIME CONTRIBUTORS
+  ===========================================
 
-- [ ] Commit messages are descriptive and explain the rationale for changes
-- [ ] Commits which fix bugs include `fixes #11111` in the commit message next to the description
-- [ ] Commits which add new features are tagged with `[FEATURE]` in the commit message
-- [ ] Commits which change the UI or existing user workflows are tagged with `[needs-docs]` in the commit message and contain sufficient information in the commit message to be documented
-- [ ] I have read the [QGIS Coding Standards](https://docs.qgis.org/testing/en/docs/developers_guide/codingstandards.html) and this PR complies with them
-- [ ] This PR passes all existing unit tests (test results will be reported by travis-ci after opening this PR)
-- [ ] New unit tests have been added for core changes
-- [ ] I have run [the `scripts/prepare-commit.sh` script](https://github.com/qgis/QGIS/blob/master/.github/CONTRIBUTING.md#contributing-to-qgis) before each commit
+  Congratulations, you are about to make a pull request to QGIS! To make this as easy and pleasurable for everyone, please take the time to read these lines before opening the pull request.
+
+  Include a few sentences describing the overall goals for this pull request (PR). If applicable also add screenshots or - even better - screencasts.
+  Include both: *what* you changed and *why* you changed it.
+
+  If this is a pull request that adds new functionality which needs documentation, give an especially detailed explanation.
+  In this case, start with a short abstract and then write some text that can be copied 1:1 to the documentation in the best case.
+
+  Also mention if you think this PR needs to be backported. And list relevant or fixed issues.
+
+------------------------
+
+  Reviewing is a process done by project maintainers, mostly on a volunteer basis. We try to keep the overhead as small as possible and appreciate if you help us to do so by checking the following list.
+  Feel free to ask in a comment if you have troubles with any of them.
+
+  - Commit messages are descriptive and explain the rationale for changes.
+
+  - Commits which fix bugs include `Fixes #11111` at the bottom of the commit message. If this is your first pull request and you forgot to do this, write the same statement into this text field with the pull request description.
+
+  - New unit tests have been added for relevant changes
+
+  - You have run the `scripts/prepare_commit.sh` script (https://github.com/qgis/QGIS/blob/master/.github/CONTRIBUTING.md#contributing-to-qgis) before each commit.
+    If you didn't do this, you can also run `./scripts/astyle_all.sh` from your source folder.
+
+  - You have read the QGIS Coding Standards (https://docs.qgis.org/testing/en/docs/developers_guide/codingstandards.html) and this PR complies with them
+-->

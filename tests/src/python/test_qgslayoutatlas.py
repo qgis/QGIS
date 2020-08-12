@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '19/12/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 from qgis.PyQt import sip
@@ -51,7 +49,8 @@ from qgis.core import (QgsUnitTypes,
                        QgsCategorizedSymbolRenderer,
                        QgsRendererCategory,
                        QgsMarkerSymbol,
-                       QgsLayoutItemLegend)
+                       QgsLayoutItemLegend,
+                       QgsLegendStyle)
 from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
@@ -88,8 +87,7 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         # create layout with layout map
 
         # select epsg:2154
-        crs = QgsCoordinateReferenceSystem()
-        crs.createFromSrid(2154)
+        crs = QgsCoordinateReferenceSystem('epsg:2154')
         QgsProject.instance().setCrs(crs)
 
         self.layout = QgsPrintLayout(QgsProject.instance())
@@ -368,7 +366,7 @@ class TestQgsLayoutAtlas(unittest.TestCase):
             self.assertEqual(self.atlas.currentFilename(), expected)
         self.atlas.endRender()
 
-        # using feature attribute (refs https://issues.qgis.org/issues/19552)
+        # using feature attribute (refs https://github.com/qgis/QGIS/issues/27379)
 
         self.atlas.setFilenameExpression("'output_' || attribute(@atlas_feature,'NAME_1')")
         expected = ['output_Basse-Normandie',
@@ -432,8 +430,8 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Predefined)
 
         scales = [1800000, 5000000]
-        self.layout.reportContext().setPredefinedScales(scales)
-        for i, s in enumerate(self.layout.reportContext().predefinedScales()):
+        self.layout.renderContext().setPredefinedScales(scales)
+        for i, s in enumerate(self.layout.renderContext().predefinedScales()):
             self.assertEqual(s, scales[i])
 
         self.atlas.beginRender()
@@ -518,6 +516,62 @@ class TestQgsLayoutAtlas(unittest.TestCase):
             self.assertTrue(myTestResult, myMessage)
         self.atlas.endRender()
 
+    def test_clipping(self):
+        vectorFileInfo = QFileInfo(unitTestDataPath() + "/france_parts.shp")
+        vectorLayer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
+
+        p = QgsProject()
+        p.addMapLayers([vectorLayer])
+
+        # create layout with layout map
+
+        # select epsg:2154
+        crs = QgsCoordinateReferenceSystem('epsg:2154')
+        p.setCrs(crs)
+
+        layout = QgsPrintLayout(p)
+        layout.initializeDefaults()
+
+        # fix the renderer, fill with green
+        props = {"color": "0,127,0", 'outline_style': 'no'}
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        renderer = QgsSingleSymbolRenderer(fillSymbol)
+        vectorLayer.setRenderer(renderer)
+
+        # the atlas map
+        atlas_map = QgsLayoutItemMap(layout)
+        atlas_map.attemptSetSceneRect(QRectF(20, 20, 130, 130))
+        atlas_map.setFrameEnabled(False)
+        atlas_map.setLayers([vectorLayer])
+        layout.addLayoutItem(atlas_map)
+
+        # the atlas
+        atlas = layout.atlas()
+        atlas.setCoverageLayer(vectorLayer)
+        atlas.setEnabled(True)
+
+        atlas_map.setExtent(
+            QgsRectangle(332719.06221504929, 6765214.5887386119, 560957.85090677091, 6993453.3774303338))
+
+        atlas_map.setAtlasDriven(True)
+        atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Auto)
+        atlas_map.setAtlasMargin(0.10)
+
+        atlas_map.atlasClippingSettings().setEnabled(True)
+
+        atlas.beginRender()
+
+        for i in range(0, 2):
+            atlas.seekTo(i)
+
+            checker = QgsLayoutChecker('atlas_clipping%d' % (i + 1), layout)
+            checker.setControlPathPrefix("atlas")
+            myTestResult, myMessage = checker.testLayout(0, 200)
+            self.report += checker.report()
+
+            self.assertTrue(myTestResult, myMessage)
+        atlas.endRender()
+
     def legend_test(self):
         self.atlas_map.setAtlasDriven(True)
         self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Auto)
@@ -554,6 +608,11 @@ class TestQgsLayoutAtlas(unittest.TestCase):
 
         # add a legend
         legend = QgsLayoutItemLegend(self.layout)
+        legend.rstyle(QgsLegendStyle.Title).setFont(QgsFontUtils.getStandardTestFont('Bold', 20))
+        legend.rstyle(QgsLegendStyle.Group).setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
+        legend.rstyle(QgsLegendStyle.Subgroup).setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
+        legend.rstyle(QgsLegendStyle.SymbolLabel).setFont(QgsFontUtils.getStandardTestFont('Bold', 14))
+
         legend.setTitle("Legend")
         legend.attemptMove(QgsLayoutPoint(200, 100))
         # sets the legend filter parameter
@@ -670,6 +729,51 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         self.assertEqual(map.extent(), QgsRectangle(44, 49.5, 66, 60.5))
 
         QgsProject.instance().removeMapLayer(polygonLayer)
+
+    def testChangedSignal(self):
+        layout = QgsPrintLayout(QgsProject.instance())
+        atlas = layout.atlas()
+        s = QSignalSpy(atlas.changed)
+
+        atlas.setPageNameExpression('1+2')
+        self.assertEqual(len(s), 1)
+        atlas.setPageNameExpression('1+2')
+        self.assertEqual(len(s), 1)
+
+        atlas.setSortFeatures(True)
+        self.assertEqual(len(s), 2)
+        atlas.setSortFeatures(True)
+        self.assertEqual(len(s), 2)
+
+        atlas.setSortAscending(False)
+        self.assertEqual(len(s), 3)
+        atlas.setSortAscending(False)
+        self.assertEqual(len(s), 3)
+
+        atlas.setSortExpression('1+2')
+        self.assertEqual(len(s), 4)
+        atlas.setSortExpression('1+2')
+        self.assertEqual(len(s), 4)
+
+        atlas.setFilterFeatures(True)
+        self.assertEqual(len(s), 5)
+        atlas.setFilterFeatures(True)
+        self.assertEqual(len(s), 5)
+
+        atlas.setFilterExpression('1+2')
+        self.assertEqual(len(s), 6)
+        atlas.setFilterExpression('1+2')
+        self.assertEqual(len(s), 6)
+
+        atlas.setHideCoverage(True)
+        self.assertEqual(len(s), 7)
+        atlas.setHideCoverage(True)
+        self.assertEqual(len(s), 7)
+
+        atlas.setFilenameExpression('1+2')
+        self.assertEqual(len(s), 8)
+        atlas.setFilenameExpression('1+2')
+        self.assertEqual(len(s), 8)
 
 
 if __name__ == '__main__':

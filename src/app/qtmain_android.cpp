@@ -56,7 +56,7 @@ static void *startMainMethod( void * /*data*/ )
 
   qDebug() << "MainMethod finished, it's time to cleanup";
   free( params );
-  Q_UNUSED( ret );
+  Q_UNUSED( ret )
 
   JNIEnv *env = nullptr;
   if ( m_javaVM->AttachCurrentThread( &env, NULL ) < 0 )

@@ -48,15 +48,10 @@ namespace QgsWmts
       QString name()    const override { return QStringLiteral( "WMTS" ); }
       QString version() const override { return implementationVersion(); }
 
-      bool allowMethod( QgsServerRequest::Method method ) const override
-      {
-        return method == QgsServerRequest::GetMethod || method == QgsServerRequest::PostMethod;
-      }
-
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
                            const QgsProject *project ) override
       {
-        Q_UNUSED( project );
+        Q_UNUSED( project )
 
         const QgsWmtsParameters params( QUrlQuery( request.url() ) );
 
@@ -72,7 +67,7 @@ namespace QgsWmts
         if ( req.isEmpty() )
         {
           throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),
-                                     QStringLiteral( "Please check the value of the REQUEST parameter" ), 501 );
+                                     QStringLiteral( "Please add or check the value of the REQUEST parameter" ), 501 );
         }
 
         if ( QSTR_COMPARE( req, "GetCapabilities" ) )

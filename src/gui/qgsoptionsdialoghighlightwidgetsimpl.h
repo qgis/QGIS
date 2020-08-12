@@ -138,7 +138,6 @@ class GUI_EXPORT QgsOptionsDialogHighlightTree : public QgsOptionsDialogHighligh
     void reset() override;
     QPointer<QTreeView> mTreeView;
     // a map to save the tree state (backouground, font, expanded) before highlighting items
-    QMap<QTreeWidgetItem *, QPair<QBrush, QBrush>> mTreeInitialStyle = QMap<QTreeWidgetItem *, QPair<QBrush, QBrush>>();
     QMap<QTreeWidgetItem *, bool> mTreeInitialExpand = QMap<QTreeWidgetItem *, bool>();
     QMap<QTreeWidgetItem *, bool> mTreeInitialVisible = QMap<QTreeWidgetItem *, bool>();
 };

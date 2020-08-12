@@ -46,16 +46,23 @@ bool QgsCurve::isClosed() const
   QgsPoint start = startPoint();
   QgsPoint end = endPoint();
 
-  bool closed = qgsDoubleNear( start.x(), end.x(), 1E-8 ) &&
-                qgsDoubleNear( start.y(), end.y(), 1E-8 );
+  bool closed = qgsDoubleNear( start.x(), end.x() ) &&
+                qgsDoubleNear( start.y(), end.y() );
   if ( is3D() && closed )
-    closed &= qgsDoubleNear( start.z(), end.z(), 1E-8 ) || ( std::isnan( start.z() ) && std::isnan( end.z() ) );
+    closed &= qgsDoubleNear( start.z(), end.z() ) || ( std::isnan( start.z() ) && std::isnan( end.z() ) );
   return closed;
 }
 
 bool QgsCurve::isRing() const
 {
   return ( isClosed() && numPoints() >= 4 );
+}
+
+QPainterPath QgsCurve::asQPainterPath() const
+{
+  QPainterPath p;
+  addToPainterPath( p );
+  return p;
 }
 
 QgsCoordinateSequence QgsCurve::coordinateSequence() const
@@ -139,9 +146,21 @@ QgsAbstractGeometry *QgsCurve::boundary() const
     return nullptr;
 
   QgsMultiPoint *multiPoint = new QgsMultiPoint();
+  multiPoint->reserve( 2 );
   multiPoint->addGeometry( new QgsPoint( startPoint() ) );
   multiPoint->addGeometry( new QgsPoint( endPoint() ) );
   return multiPoint;
+}
+
+QString QgsCurve::asKml( int precision ) const
+{
+  std::unique_ptr<QgsLineString> lineString( curveToLine() );
+  if ( !lineString )
+  {
+    return QString();
+  }
+  QString kml = lineString->asKml( precision );
+  return kml;
 }
 
 QgsCurve *QgsCurve::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
@@ -151,14 +170,14 @@ QgsCurve *QgsCurve::segmentize( double tolerance, SegmentationToleranceType tole
 
 int QgsCurve::vertexCount( int part, int ring ) const
 {
-  Q_UNUSED( part );
-  Q_UNUSED( ring );
+  Q_UNUSED( part )
+  Q_UNUSED( ring )
   return numPoints();
 }
 
 int QgsCurve::ringCount( int part ) const
 {
-  Q_UNUSED( part );
+  Q_UNUSED( part )
   return numPoints() > 0 ? 1 : 0;
 }
 
@@ -260,7 +279,7 @@ QgsPoint QgsCurve::childPoint( int index ) const
   QgsVertexId::VertexType type;
   bool res = pointAt( index, point, type );
   Q_ASSERT( res );
-  Q_UNUSED( res );
+  Q_UNUSED( res )
   return point;
 }
 

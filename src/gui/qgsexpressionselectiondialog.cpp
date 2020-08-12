@@ -42,7 +42,7 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
   connect( mButtonZoomToFeatures, &QToolButton::clicked, this, &QgsExpressionSelectionDialog::mButtonZoomToFeatures_clicked );
   connect( mPbnClose, &QPushButton::clicked, this, &QgsExpressionSelectionDialog::mPbnClose_clicked );
 
-  setWindowTitle( QStringLiteral( "Select by Expression - %1" ).arg( layer->name() ) );
+  setWindowTitle( tr( "%1 — Select by Expression" ).arg( layer->name() ) );
 
   mActionSelect->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionSelect.svg" ) ) );
   mActionAddToSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectAdd.svg" ) ) );
@@ -55,13 +55,9 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
   mButtonSelect->addAction( mActionSelectIntersect );
   mButtonSelect->setDefaultAction( mActionSelect );
 
-  mExpressionBuilder->setLayer( layer );
-  mExpressionBuilder->setExpressionText( startText );
-  mExpressionBuilder->loadFieldNames();
-  mExpressionBuilder->loadRecent( QStringLiteral( "Selection" ) );
-
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
-  mExpressionBuilder->setExpressionContext( context );
+  mExpressionBuilder->initWithLayer( layer, context, QStringLiteral( "selection" ) );
+  mExpressionBuilder->setExpressionText( startText );
 
   // by default, zoom to features is hidden, shown only if canvas is set
   mButtonZoomToFeatures->setVisible( false );
@@ -224,7 +220,7 @@ void QgsExpressionSelectionDialog::done( int r )
 
 void QgsExpressionSelectionDialog::saveRecent()
 {
-  mExpressionBuilder->saveToRecent( QStringLiteral( "Selection" ) );
+  mExpressionBuilder->expressionTree()->saveToRecent( mExpressionBuilder->expressionText(), QStringLiteral( "selection" ) );
 }
 
 void QgsExpressionSelectionDialog::showHelp()

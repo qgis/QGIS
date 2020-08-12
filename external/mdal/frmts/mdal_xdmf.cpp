@@ -19,9 +19,13 @@
 #include "mdal_utils.hpp"
 #include "mdal_data_model.hpp"
 #include "mdal_xml.hpp"
+#include "mdal_logger.hpp"
 
-MDAL::XdmfDataset::XdmfDataset( MDAL::DatasetGroup *grp, const MDAL::HyperSlab &slab, const HdfDataset &valuesDs, double time )
-  : MDAL::Dataset( grp )
+MDAL::XdmfDataset::XdmfDataset( MDAL::DatasetGroup *grp,
+                                const MDAL::HyperSlab &slab,
+                                const HdfDataset &valuesDs,
+                                RelativeTimestamp time )
+  : MDAL::Dataset2D( grp )
   , mHdf5DatasetValues( valuesDs )
   , mHyperSlab( slab )
 {
@@ -101,13 +105,6 @@ size_t MDAL::XdmfDataset::vectorData( size_t indexStart, size_t count, double *b
   return copyValues;
 }
 
-size_t MDAL::XdmfDataset::activeData( size_t indexStart, size_t count, int *buffer )
-{
-  MDAL_UNUSED( indexStart );
-  memset( buffer, 1, count * sizeof( int ) );
-  return count;
-}
-
 // //////////////////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////////////////
@@ -116,20 +113,23 @@ size_t MDAL::XdmfDataset::activeData( size_t indexStart, size_t count, int *buff
 MDAL::XdmfFunctionDataset::XdmfFunctionDataset(
   MDAL::DatasetGroup *grp,
   MDAL::XdmfFunctionDataset::FunctionType type,
-  double time )
-  : MDAL::Dataset( grp )
+  const RelativeTimestamp &time )
+  : MDAL::Dataset2D( grp )
   , mType( type )
   , mBaseReferenceGroup( "XDMF", grp->mesh(), grp->uri() )
 {
   setTime( time );
   mBaseReferenceGroup.setIsScalar( true );
-  mBaseReferenceGroup.setIsOnVertices( grp->isOnVertices() );
+  mBaseReferenceGroup.setDataLocation( grp->dataLocation() );
   mBaseReferenceGroup.setName( "Base group for reference datasets" );
 }
 
 MDAL::XdmfFunctionDataset::~XdmfFunctionDataset() = default;
 
-void MDAL::XdmfFunctionDataset::addReferenceDataset( const HyperSlab &slab, const HdfDataset &hdfDataset, double time )
+void MDAL::XdmfFunctionDataset::addReferenceDataset(
+  const HyperSlab &slab,
+  const HdfDataset &hdfDataset,
+  const MDAL::RelativeTimestamp &time )
 {
   std::shared_ptr<MDAL::XdmfDataset> xdmfDataset = std::make_shared<MDAL::XdmfDataset>(
         &mBaseReferenceGroup,
@@ -167,13 +167,6 @@ size_t MDAL::XdmfFunctionDataset::vectorData( size_t indexStart, size_t count, d
   assert( mType == FunctionType::Join );
 
   return joinFunction( indexStart, count, buffer );
-}
-
-size_t MDAL::XdmfFunctionDataset::activeData( size_t indexStart, size_t count, int *buffer )
-{
-  MDAL_UNUSED( indexStart );
-  memset( buffer, 1, count * sizeof( int ) );
-  return count;
 }
 
 size_t MDAL::XdmfFunctionDataset::subtractFunction( size_t indexStart, size_t count, double *buffer )
@@ -270,8 +263,7 @@ MDAL::HyperSlab MDAL::DriverXdmf::parseHyperSlab( const std::string &str, size_t
   }
   if ( i != 3 * dimX )
   {
-    MDAL::debug( "hyperSlab dimensions mismatch" );
-    throw MDAL_Status::Err_UnknownFormat;
+    throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "hyperSlab dimensions mismatch" );
   }
 
   MDAL::HyperSlab slab;
@@ -282,12 +274,11 @@ MDAL::HyperSlab MDAL::DriverXdmf::parseHyperSlab( const std::string &str, size_t
 
   if ( ( data[1][0] != 1 ) || ( data[1][1] != 1 ) )
   {
-    MDAL::debug( " only hyperSlab with stride 1 are supported " );
-    throw MDAL_Status::Err_UnknownFormat;
+    throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "only hyperSlab with stride 1 are supported" );
   }
 
   // sort
-  if ( ( countX < countY ) && ( countY = ! 3 ) )
+  if ( ( countX < countY ) && ( countY != 3 ) )
   {
     std::swap( countX, countY );
     slab.countInFirstColumn = false;
@@ -308,8 +299,7 @@ MDAL::HyperSlab MDAL::DriverXdmf::parseHyperSlab( const std::string &str, size_t
   }
   else
   {
-    MDAL::debug( "hyperSlab dimensions mismatch, not scalar or vector" );
-    throw MDAL_Status::Err_UnknownFormat;
+    throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "hyperSlab dimensions mismatch, not scalar or vector" );
   }
 
   return slab;
@@ -321,8 +311,7 @@ MDAL::HyperSlab MDAL::DriverXdmf::parseHyperSlabNode( const XMLFile &xmfFile, xm
   std::vector<size_t> slabDim = parseDimensions2D( slabDimS );
   if ( slabDim[0] != 3 || ( slabDim[1] != 2 && slabDim[1] != 3 ) )
   {
-    MDAL::debug( "Only two-dimensional slab array with dim 3x3 is supported (1)" );
-    throw MDAL_Status::Err_UnknownFormat;
+    throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Only two-dimensional slab array with dim 3x3 is supported (1)" );
   }
 
   std::string slabS = xmfFile.content( node );
@@ -341,7 +330,7 @@ HdfDataset MDAL::DriverXdmf::parseHdf5Node( const XMLFile &xmfFile, xmlNodePtr n
   std::shared_ptr<HdfFile> hdfFile;
   if ( mHdfFiles.count( hdf5Name ) == 0 )
   {
-    hdfFile = std::make_shared<HdfFile>( hdf5Name );
+    hdfFile = std::make_shared<HdfFile>( hdf5Name, HdfFile::ReadOnly );
     mHdfFiles[hdf5Name] = hdfFile;
   }
   else
@@ -371,8 +360,7 @@ void MDAL::DriverXdmf::hdf5NamePath( const std::string &dataItemPath, std::strin
   std::vector<std::string> chunks = MDAL::split( path, ":" );
   if ( chunks.size() != 2 )
   {
-    MDAL::debug( "must be in format fileName:hdfPath" );
-    throw MDAL_Status::Err_UnknownFormat;
+    throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "must be in format fileName:hdfPath" );
   }
 
   filePath = dirName + "/" + chunks[0];
@@ -388,8 +376,7 @@ std::vector<size_t> MDAL::DriverXdmf::parseDimensions2D( const std::string &data
     slabDim.push_back( number );
   if ( slabDim.size() != 2 )
   {
-    MDAL::debug( "Only two-dimensional slab array is supported" );
-    throw MDAL_Status::Err_UnknownFormat;
+    throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Only two-dimensional slab array is supported" );
   }
   return slabDim;
 }
@@ -403,8 +390,7 @@ std::pair<HdfDataset, MDAL::HyperSlab> MDAL::DriverXdmf::parseXdmfDataset(
   size_t dim = xmfFile.querySizeTAttribute( itemNod, "Dimensions" );
   if ( dim != facesCount )
   {
-    MDAL::debug( "Dataset dimensions should correspond to the number of mesh elements" );
-    throw MDAL_Status::Err_UnknownFormat;
+    throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Dataset dimensions should correspond to the number of mesh elements" );
   }
 
   xmlNodePtr node1 = xmfFile.getCheckChild( itemNod, "DataItem" );
@@ -421,8 +407,7 @@ std::pair<HdfDataset, MDAL::HyperSlab> MDAL::DriverXdmf::parseXdmfDataset(
   }
   else
   {
-    MDAL::debug( "Only XML hyperSlab and HDF dataset Format supported" );
-    throw MDAL_Status::Err_UnknownFormat;
+    throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Only XML hyperSlab and HDF dataset Format supported" );
   }
 }
 
@@ -449,8 +434,7 @@ MDAL::DatasetGroups MDAL::DriverXdmf::parseXdmfXml( )
   {
     ++nTimesteps;
     xmlNodePtr timeNod = xmfFile.getCheckChild( gridNod, "Time" );
-    double time = xmfFile.queryDoubleAttribute( timeNod, "Value" );
-
+    RelativeTimestamp time( xmfFile.queryDoubleAttribute( timeNod, "Value" ), RelativeTimestamp::hours ); //units, supposed to be hours
     xmlNodePtr scalarNod = xmfFile.getCheckChild( gridNod, "Attribute" );
 
     for ( ;
@@ -461,14 +445,12 @@ MDAL::DatasetGroups MDAL::DriverXdmf::parseXdmfXml( )
       if ( !xmfFile.checkAttribute( scalarNod, "AttributeType", "Scalar" ) &&
            !xmfFile.checkAttribute( scalarNod, "AttributeType", "Vector" ) )
       {
-        MDAL::debug( "Only scalar and vector data are currently supported" );
-        throw MDAL_Status::Err_UnknownFormat;
+        throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Only scalar and vector data are currently supported" );
       }
       std::string groupName = xmfFile.attribute( scalarNod, "Name" );
       if ( groupName.empty() )
       {
-        MDAL::debug( "Group name cannot be empty" );
-        throw MDAL_Status::Err_UnknownFormat;
+        throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Group name cannot be empty" );
       }
 
       xmlNodePtr itemNod = xmfFile.getCheckChild( scalarNod, "DataItem" );
@@ -520,8 +502,7 @@ MDAL::DatasetGroups MDAL::DriverXdmf::parseXdmfXml( )
           }
           else
           {
-            MDAL::debug( "Expecting HyperSlab Types under Function" );
-            throw MDAL_Status::Err_UnknownFormat;
+            throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Expecting HyperSlab Types under Function" );
           }
         }
 
@@ -554,8 +535,7 @@ MDAL::DatasetGroups MDAL::DriverXdmf::parseXdmfXml( )
       }
       else
       {
-        MDAL::debug( "Expecting Function or HyperSlab Type" );
-        throw MDAL_Status::Err_UnknownFormat;
+        throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Expecting Function or HyperSlab Type" );
       }
     }
   }
@@ -567,8 +547,7 @@ MDAL::DatasetGroups MDAL::DriverXdmf::parseXdmfXml( )
     std::shared_ptr<MDAL::DatasetGroup> grp = group.second;
     if ( grp->datasets.size() != nTimesteps )
     {
-      MDAL::debug( "Invalid group, missing timesteps" );
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Invalid group, missing timesteps" );
     }
 
     const MDAL::Statistics stats = MDAL::calculateStatistics( grp );
@@ -595,7 +574,7 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXdmf::findGroup( std::map<std::s
               groupName
             );
     group->setIsScalar( isScalar );
-    group->setIsOnVertices( false ); //only center-based implemented
+    group->setDataLocation( MDAL_DataLocation::DataOnFaces ); //only center-based implemented
     groups[groupName] = group;
   }
   else
@@ -603,8 +582,7 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXdmf::findGroup( std::map<std::s
     group = groups[groupName];
     if ( group->isScalar() != isScalar )
     {
-      MDAL::debug( "Inconsistent groups" );
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat,  "Inconsistent groups" );
     }
   }
   return group;
@@ -626,7 +604,7 @@ MDAL::DriverXdmf *MDAL::DriverXdmf::create()
   return new DriverXdmf();
 }
 
-bool MDAL::DriverXdmf::canRead( const std::string &uri )
+bool MDAL::DriverXdmf::canReadDatasets( const std::string &uri )
 {
   XMLFile xmfFile;
   try
@@ -639,23 +617,26 @@ bool MDAL::DriverXdmf::canRead( const std::string &uri )
   {
     return false;
   }
+  catch ( MDAL::Error )
+  {
+    return false;
+  }
   return true;
 }
 
 void MDAL::DriverXdmf::load( const std::string &datFile,
-                             MDAL::Mesh *mesh,
-                             MDAL_Status *status )
+                             MDAL::Mesh *mesh )
 {
   assert( mesh );
 
   mDatFile = datFile;
   mMesh = mesh;
 
-  if ( status ) *status = MDAL_Status::None;
+  MDAL::Log::resetLastStatus();
 
   if ( !MDAL::fileExists( mDatFile ) )
   {
-    if ( status ) *status = MDAL_Status::Err_FileNotFound;
+    MDAL::Log::error( MDAL_Status::Err_FileNotFound, name(), "File could not be found " + mDatFile );
     return;
   }
 
@@ -671,6 +652,10 @@ void MDAL::DriverXdmf::load( const std::string &datFile,
   }
   catch ( MDAL_Status err )
   {
-    if ( status ) *status = err;
+    MDAL::Log::error( err, "Error occurred while loading file " + mDatFile );
+  }
+  catch ( MDAL::Error err )
+  {
+    MDAL::Log::error( err, name() );
   }
 }

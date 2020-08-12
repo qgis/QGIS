@@ -65,7 +65,12 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   QgsSettings settings;
 
   mSchemeList->header()->hide();
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   mSchemeList->setColumnWidth( 0, static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 6 ) );
+#else
+  mSchemeList->setColumnWidth( 0, static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 6 ) );
+#endif
+
 
   //get schemes with ShowInColorDialog set
   refreshSchemeComboBox();
@@ -287,7 +292,6 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
 
 QgsCompoundColorWidget::~QgsCompoundColorWidget()
 {
-  saveSettings();
   if ( !mDiscarded )
   {
     QgsRecentColorScheme::addRecentColor( color() );
@@ -519,7 +523,7 @@ void QgsCompoundColorWidget::schemeIndexChanged( int index )
 
 void QgsCompoundColorWidget::listSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
-  Q_UNUSED( deselected );
+  Q_UNUSED( deselected )
   mActionCopyColors->setEnabled( selected.length() > 0 );
 }
 
@@ -734,6 +738,12 @@ void QgsCompoundColorWidget::setPreviousColor( const QColor &color )
 {
   mOldColorLabel->setVisible( color.isValid() );
   mColorPreview->setColor2( color );
+}
+
+void QgsCompoundColorWidget::hideEvent( QHideEvent *e )
+{
+  saveSettings();
+  QWidget::hideEvent( e );
 }
 
 void QgsCompoundColorWidget::mousePressEvent( QMouseEvent *e )

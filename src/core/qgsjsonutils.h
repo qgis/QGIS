@@ -22,7 +22,13 @@
 #include "qgscoordinatetransform.h"
 #include "qgsfields.h"
 
+#ifndef SIP_RUN
+#include <json_fwd.hpp>
+using namespace nlohmann;
+#endif
+
 #include <QPointer>
+#include <QJsonObject>
 
 class QTextCodec;
 
@@ -148,6 +154,13 @@ class CORE_EXPORT QgsJsonExporter
     QgsCoordinateReferenceSystem sourceCrs() const;
 
     /**
+     * Sets whether geometries should be transformed in EPSG 4326 (default
+     * behavior) or just keep as it is.
+     * \since QGIS 3.12
+     */
+    void setTransformGeometries( bool activate ) { mTransformGeometries = activate; }
+
+    /**
      * Sets the list of attributes to include in the JSON exports.
      * \param attributes list of attribute indexes, or an empty list to include all
      * attributes
@@ -191,21 +204,47 @@ class CORE_EXPORT QgsJsonExporter
      * \param extraProperties map of extra attributes to include in feature's properties
      * \param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
      * ID is used.
+     * \param indent number of indentation spaces for generated JSON (defaults to none)
      * \returns GeoJSON string
      * \see exportFeatures()
+     * \see exportFeatureToJsonObject()
      */
     QString exportFeature( const QgsFeature &feature,
                            const QVariantMap &extraProperties = QVariantMap(),
-                           const QVariant &id = QVariant() ) const;
+                           const QVariant &id = QVariant(),
+                           int indent = -1 ) const;
+
+    /**
+     * Returns a QJsonObject representation of a feature.
+     * \param feature feature to convert
+     * \param extraProperties map of extra attributes to include in feature's properties
+     * \param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
+     * ID is used.
+     * \returns json object
+     * \see exportFeatures()
+     */
+    json exportFeatureToJsonObject( const QgsFeature &feature,
+                                    const QVariantMap &extraProperties = QVariantMap(),
+                                    const QVariant &id = QVariant() ) const SIP_SKIP;
 
 
     /**
      * Returns a GeoJSON string representation of a list of features (feature collection).
      * \param features features to convert
+     * \param indent number of indentation spaces for generated JSON (defaults to none)
      * \returns GeoJSON string
      * \see exportFeature()
      */
-    QString exportFeatures( const QgsFeatureList &features ) const;
+    QString exportFeatures( const QgsFeatureList &features, int indent = -1 ) const;
+
+    /**
+     * Returns a JSON object representation of a list of features (feature collection).
+     * \param features features to convert
+     * \returns json object
+     * \see exportFeatures()
+     * \since QGIS 3.10
+     */
+    json exportFeaturesToJsonObject( const QgsFeatureList &features ) const SIP_SKIP;
 
   private:
 
@@ -238,6 +277,8 @@ class CORE_EXPORT QgsJsonExporter
     QgsCoordinateTransform mTransform;
 
     bool mAttributeDisplayName = false;
+
+    bool mTransformGeometries = true;
 };
 
 /**
@@ -252,25 +293,23 @@ class CORE_EXPORT QgsJsonUtils
   public:
 
     /**
-     * Attempts to parse a GeoJSON string to a collection of features.
-     * \param string GeoJSON string to parse
-     * \param fields fields collection to use for parsed features
-     * \param encoding text encoding
-     * \returns list of parsed features, or an empty list if no features could be parsed
+     * Attempts to parse a GeoJSON \a string to a collection of features.
+     * It is possible to specify \a fields to parse specific fields, if not provided, no fields will be included.
+     * An \a encoding can be specified which defaults to UTF-8 if it is `nullptr`.
+     * \returns a list of parsed features, or an empty list if no features could be parsed
      * \see stringToFields()
      * \note this function is a wrapper around QgsOgrUtils::stringToFeatureList()
      */
-    static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding );
+    static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields = QgsFields(), QTextCodec *encoding = nullptr );
 
     /**
-     * Attempts to retrieve the fields from a GeoJSON string representing a collection of features.
-     * \param string GeoJSON string to parse
-     * \param encoding text encoding
+     * Attempts to retrieve the fields from a GeoJSON  \a string representing a collection of features.
+     * An \a encoding can be specified which defaults to UTF-8 if it is `nullptr`.
      * \returns retrieved fields collection, or an empty list if no fields could be determined from the string
      * \see stringToFeatureList()
      * \note this function is a wrapper around QgsOgrUtils::stringToFields()
      */
-    static QgsFields stringToFields( const QString &string, QTextCodec *encoding );
+    static QgsFields stringToFields( const QString &string, QTextCodec *encoding = nullptr );
 
     /**
      * Encodes a value to a JSON string representation, adding appropriate quotations and escaping
@@ -292,12 +331,50 @@ class CORE_EXPORT QgsJsonUtils
                                      const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
 
     /**
-     * Parse a simple array (depth=1).
+     * Exports all attributes from a QgsFeature as a json object.
+     * \param feature feature to export
+     * \param layer optional associated vector layer. If specified, this allows
+     * richer export utilising settings like the layer's fields widget configuration.
+     * \param attributeWidgetCaches optional widget configuration cache. Can be used
+     * to speed up exporting the attributes for multiple features from the same layer.
+     * \note Not available in Python bindings
+     * \since QGIS 3.8
+     */
+    static json exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer = nullptr,
+        const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() ) SIP_SKIP;
+
+    /**
+     * Parse a simple array (depth=1)
      * \param json the JSON to parse
-     * \param type the type of the elements
+     * \param type optional variant type of the elements, if specified (and not Invalid),
+     *        the array items will be converted to the type, and discarded if
+     *        the conversion is not possible.
      * \since QGIS 3.0
      */
-    static QVariantList parseArray( const QString &json, QVariant::Type type );
+    static QVariantList parseArray( const QString &json, QVariant::Type type = QVariant::Invalid );
+
+
+    /**
+     * Converts a QVariant \a v to a json object
+     * \note Not available in Python bindings
+     * \since QGIS 3.8
+     */
+    static json jsonFromVariant( const QVariant &v ) SIP_SKIP;
+
+    /**
+     * Converts JSON \a jsonString to a QVariant, in case of parsing error an invalid QVariant is returned.
+     * \note Not available in Python bindings
+     * \since QGIS 3.8
+     */
+    static QVariant parseJson( const std::string &jsonString ) SIP_SKIP;
+
+    /**
+     * Converts JSON \a jsonString to a QVariant, in case of parsing error an invalid QVariant is returned.
+     * \note Not available in Python bindings
+     * \since QGIS 3.8
+     */
+    static QVariant parseJson( const QString &jsonString ) SIP_SKIP;
+
 };
 
 #endif // QGSJSONUTILS_H

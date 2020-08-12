@@ -1,0 +1,17 @@
+<!-- template for the WFS3 API landing page -->
+{% include "header.html" %}
+
+    <h1>QGIS Server</h1>
+
+    <h2>Available services</h2>
+    <ul>
+    {% for link in links %}
+        {% if link.rel != "alternate" %}
+        {% if link.rel != "self" %}
+        <li><a rel="{{ link.rel }}" href="{{ link.href }}">{{ link.title }}</a></li>
+        {% endif %}
+        {% endif %}
+    {% endfor %}
+    </ul>
+
+{% include "footer.html" %}

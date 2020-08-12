@@ -23,7 +23,7 @@ tests:
         name: raster.tif
         type: file
       type: gaussian
-      type.gaussian.radius: 4.0
+      type.gaussian.stdev: 4.0
     results:
       out:
         hash: b3fbccd6f41052317a435567a2633dae1d9b66772a4d8a3323d9b1c5

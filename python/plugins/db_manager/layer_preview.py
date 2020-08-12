@@ -65,6 +65,7 @@ class LayerPreview(QgsMapCanvas):
             # update the preview, but first let the manager chance to show the canvas
             def runPrev():
                 return self._loadTablePreview(item)
+
             QTimer.singleShot(50, runPrev)
         else:
             return

@@ -14,7 +14,8 @@
 class QgsFieldModel : QAbstractItemModel
 {
 %Docstring
-The QgsFieldModel class is a model to display the list of fields of a layer in widgets.
+The QgsFieldModel class is a model to display the list of fields in widgets
+(optionally associated with a vector layer).
 If allowed, expressions might be added to the end of the model.
 It can be associated with a QgsMapLayerModel to dynamically display a layer and its fields.
 
@@ -36,6 +37,9 @@ It can be associated with a QgsMapLayerModel to dynamically display a layer and 
       FieldTypeRole,
       FieldOriginRole,
       IsEmptyRole,
+      EditorWidgetType,
+      JoinedFieldIsEditable,
+      FieldIsWidgetEditable,
     };
 
     explicit QgsFieldModel( QObject *parent /TransferThis/ = 0 );
@@ -132,6 +136,37 @@ Returns a HTML formatted tooltip string for a ``field``, containing details
 like the field name, alias and type.
 
 .. versionadded:: 3.0
+%End
+
+    static QString fieldToolTipExtended( const QgsField &field, const QgsVectorLayer *layer );
+%Docstring
+Returns a HTML formatted tooltip string for a ``field``, containing details
+like the field name, alias, type and expression.
+
+.. versionadded:: 3.14
+%End
+
+    void setFields( const QgsFields &fields );
+%Docstring
+Manually sets the ``fields`` to use for the model.
+
+This method should only be used when the model ISN'T associated with a :py:func:`~QgsFieldModel.layer`
+and needs to show the fields from an arbitrary field collection instead. Calling
+:py:func:`~QgsFieldModel.setFields` will automatically clear any existing :py:func:`~QgsFieldModel.layer`.
+
+.. seealso:: :py:func:`fields`
+
+.. versionadded:: 3.14
+%End
+
+    QgsFields fields() const;
+%Docstring
+Returns the fields currently shown in the model.
+
+This will either be fields from the associated :py:func:`~QgsFieldModel.layer` or the fields
+manually set by a call to :py:func:`~QgsFieldModel.setFields`.
+
+.. versionadded:: 3.14
 %End
 
   public slots:

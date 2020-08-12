@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -43,26 +39,26 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class gdaladdo(GdalAlgorithm):
-
     INPUT = 'INPUT'
     LEVELS = 'LEVELS'
     CLEAN = 'CLEAN'
     RESAMPLING = 'RESAMPLING'
     FORMAT = 'FORMAT'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.methods = ((self.tr('Nearest neighbour'), 'nearest'),
+        self.methods = ((self.tr('Nearest Neighbour (default)'), 'nearest'),
                         (self.tr('Average'), 'average'),
                         (self.tr('Gaussian'), 'gauss'),
-                        (self.tr('Cubic convolution.'), 'cubic'),
-                        (self.tr('B-Spline convolution'), 'cubicspline'),
-                        (self.tr('Lanczos windowed sinc'), 'lanczos'),
+                        (self.tr('Cubic Convolution'), 'cubic'),
+                        (self.tr('B-Spline Convolution'), 'cubicspline'),
+                        (self.tr('Lanczos Windowed Sinc'), 'lanczos'),
                         (self.tr('Average MP'), 'average_mp'),
-                        (self.tr('Average in mag/phase space'), 'average_magphase'),
+                        (self.tr('Average in Mag/Phase Space'), 'average_magphase'),
                         (self.tr('Mode'), 'mode'))
 
         self.formats = (self.tr('Internal (if possible)'),
@@ -71,19 +67,26 @@ class gdaladdo(GdalAlgorithm):
 
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
                                                             self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterString(self.LEVELS,
-                                                       self.tr('Overview levels'),
-                                                       defaultValue='2 4 8 16'))
         self.addParameter(QgsProcessingParameterBoolean(self.CLEAN,
                                                         self.tr('Remove all existing overviews'),
                                                         defaultValue=False))
 
+        if GdalUtils.version() < 230000:
+            self.addParameter(QgsProcessingParameterString(self.LEVELS,
+                                                           self.tr('Overview levels'),
+                                                           defaultValue='2 4 8 16'))
+
         params = []
+        if GdalUtils.version() >= 230000:
+            params.append(QgsProcessingParameterString(self.LEVELS,
+                                                       self.tr('Overview levels (e.g. 2 4 8 16)'),
+                                                       defaultValue=None,
+                                                       optional=True))
         params.append(QgsProcessingParameterEnum(self.RESAMPLING,
                                                  self.tr('Resampling method'),
                                                  options=[i[0] for i in self.methods],
                                                  allowMultiple=False,
-                                                 defaultValue=0,
+                                                 defaultValue=None,
                                                  optional=True))
         params.append(QgsProcessingParameterEnum(self.FORMAT,
                                                  self.tr('Overviews format'),
@@ -91,6 +94,10 @@ class gdaladdo(GdalAlgorithm):
                                                  allowMultiple=False,
                                                  defaultValue=0,
                                                  optional=True))
+        params.append(QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True))
         for p in params:
             p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(p)
@@ -125,8 +132,9 @@ class gdaladdo(GdalAlgorithm):
         arguments = []
         arguments.append(fileName)
 
-        arguments.append('-r')
-        arguments.append(self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1])
+        if self.RESAMPLING in parameters and parameters[self.RESAMPLING] is not None:
+            arguments.append('-r')
+            arguments.append(self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1])
 
         ovrFormat = self.parameterAsEnum(parameters, self.FORMAT, context)
         if ovrFormat == 1:
@@ -136,6 +144,10 @@ class gdaladdo(GdalAlgorithm):
 
         if self.parameterAsBoolean(parameters, self.CLEAN, context):
             arguments.append('-clean')
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         arguments.extend(self.parameterAsString(parameters, self.LEVELS, context).split(' '))
 

@@ -1,0 +1,49 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrasterlayertemporalpropertieswidget.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsRasterLayerTemporalPropertiesWidget : QWidget
+{
+%Docstring
+A widget for configuring the temporal properties for a raster layer.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsrasterlayertemporalpropertieswidget.h"
+%End
+  public:
+
+    QgsRasterLayerTemporalPropertiesWidget( QWidget *parent = 0, QgsRasterLayer *layer = 0 );
+%Docstring
+Constructor for QgsRasterLayerTemporalPropertiesWidget.
+%End
+
+    void saveTemporalProperties();
+%Docstring
+Save widget temporal properties inputs.
+%End
+
+    void syncToLayer();
+%Docstring
+Updates the widget state to match the current layer state.
+%End
+
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrasterlayertemporalpropertieswidget.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

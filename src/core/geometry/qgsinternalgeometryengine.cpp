@@ -20,20 +20,30 @@
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
 #include "qgsmulticurve.h"
+#include "qgscircularstring.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
 #include "qgslinesegment.h"
 #include "qgscircle.h"
 #include "qgslogger.h"
+#include "qgstessellator.h"
+#include "qgsfeedback.h"
+#include "qgsgeometryengine.h"
 #include <QTransform>
 #include <functional>
 #include <memory>
 #include <queue>
+#include <random>
 
 QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry &geometry )
   : mGeometry( geometry.constGet() )
 {
 
+}
+
+QString QgsInternalGeometryEngine::lastError() const
+{
+  return mLastError;
 }
 
 /***************************************************************************
@@ -44,6 +54,7 @@ QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry &geometr
 
 QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
 {
+  mLastError.clear();
   QVector<QgsLineString *> linesToProcess;
 
   const QgsMultiCurve *multiCurve = qgsgeometry_cast< const QgsMultiCurve * >( mGeometry );
@@ -234,6 +245,7 @@ QgsPoint surfacePoleOfInaccessibility( const QgsSurface *surface, double precisi
 
 QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, double *distanceFromBoundary ) const
 {
+  mLastError.clear();
   if ( distanceFromBoundary )
     *distanceFromBoundary = std::numeric_limits<double>::max();
 
@@ -489,6 +501,7 @@ QgsAbstractGeometry *orthogonalizeGeom( const QgsAbstractGeometry *geom, int max
 
 QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxIterations, double angleThreshold ) const
 {
+  mLastError.clear();
   if ( !mGeometry || ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) != QgsWkbTypes::LineGeometry
                        && QgsWkbTypes::geometryType( mGeometry->wkbType() ) != QgsWkbTypes::PolygonGeometry ) )
   {
@@ -646,6 +659,7 @@ QgsAbstractGeometry *densifyGeometry( const QgsAbstractGeometry *geom, int extra
 
 QgsGeometry QgsInternalGeometryEngine::densifyByCount( int extraNodesPerSegment ) const
 {
+  mLastError.clear();
   if ( !mGeometry )
   {
     return QgsGeometry();
@@ -681,6 +695,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByCount( int extraNodesPerSegment 
 
 QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) const
 {
+  mLastError.clear();
   if ( !mGeometry )
   {
     return QgsGeometry();
@@ -887,6 +902,7 @@ QVector<QgsPointXY> generateSegmentCurve( const QgsPoint &center1, const double 
 
 QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const std::function< std::unique_ptr< double[] >( const QgsLineString *line ) > &widthFunction ) const
 {
+  mLastError.clear();
   if ( !mGeometry )
   {
     return QgsGeometry();
@@ -992,6 +1008,7 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const 
 
 QgsGeometry QgsInternalGeometryEngine::taperedBuffer( double start, double end, int segments ) const
 {
+  mLastError.clear();
   start = std::fabs( start );
   end = std::fabs( end );
 
@@ -1024,6 +1041,7 @@ QgsGeometry QgsInternalGeometryEngine::taperedBuffer( double start, double end, 
 
 QgsGeometry QgsInternalGeometryEngine::variableWidthBufferByM( int segments ) const
 {
+  mLastError.clear();
   auto widthByM = []( const QgsLineString * line )->std::unique_ptr< double [] >
   {
     std::unique_ptr< double [] > widths( new double[ line->nCoordinates() ] );
@@ -1035,4 +1053,461 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBufferByM( int segments ) co
   };
 
   return variableWidthBuffer( segments, widthByM );
+}
+
+QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( const QgsGeometry &polygon, int count,
+    const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed, QgsFeedback *feedback, int maxTriesPerPoint )
+{
+  if ( polygon.type() != QgsWkbTypes::PolygonGeometry || count == 0 )
+    return QVector< QgsPointXY >();
+
+  // step 1 - tessellate the polygon to triangles
+  QgsRectangle bounds = polygon.boundingBox();
+  QgsTessellator t( bounds, false, false, false, true );
+
+  if ( polygon.isMultipart() )
+  {
+    const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( polygon.constGet() );
+    for ( int i = 0; i < ms->numGeometries(); ++i )
+    {
+      if ( feedback && feedback->isCanceled() )
+        return QVector< QgsPointXY >();
+
+      if ( QgsPolygon *poly = qgsgeometry_cast< QgsPolygon * >( ms->geometryN( i ) ) )
+      {
+        t.addPolygon( *poly, 0 );
+      }
+      else
+      {
+        std::unique_ptr< QgsPolygon > p( qgsgeometry_cast< QgsPolygon * >( ms->geometryN( i )->segmentize() ) );
+        t.addPolygon( *p, 0 );
+      }
+    }
+  }
+  else
+  {
+    if ( const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon * >( polygon.constGet() ) )
+    {
+      t.addPolygon( *poly, 0 );
+    }
+    else
+    {
+      std::unique_ptr< QgsPolygon > p( qgsgeometry_cast< QgsPolygon * >( polygon.constGet()->segmentize() ) );
+      t.addPolygon( *p, 0 );
+    }
+  }
+
+  if ( feedback && feedback->isCanceled() )
+    return QVector< QgsPointXY >();
+
+  const QVector<float> triangleData = t.data();
+  if ( triangleData.empty() )
+    return QVector< QgsPointXY >(); //hm
+
+  // calculate running sum of triangle areas
+  std::vector< double > cumulativeAreas;
+  cumulativeAreas.reserve( t.dataVerticesCount() / 3 );
+  double totalArea = 0;
+  for ( auto it = triangleData.constBegin(); it != triangleData.constEnd(); )
+  {
+    if ( feedback && feedback->isCanceled() )
+      return QVector< QgsPointXY >();
+
+    const float aX = *it++;
+    ( void )it++; // z
+    const float aY = -( *it++ );
+    const float bX = *it++;
+    ( void )it++; // z
+    const float bY = -( *it++ );
+    const float cX = *it++;
+    ( void )it++; // z
+    const float cY = -( *it++ );
+
+    const double area = QgsGeometryUtils::triangleArea( aX, aY, bX, bY, cX, cY );
+    totalArea += area;
+    cumulativeAreas.emplace_back( totalArea );
+  }
+
+  std::random_device rd;
+  std::mt19937 mt( seed == 0 ? rd() : seed );
+  std::uniform_real_distribution<> uniformDist( 0, 1 );
+
+  // selects a random triangle, weighted by triangle area
+  auto selectRandomTriangle = [&cumulativeAreas, totalArea]( double random )->int
+  {
+    int triangle = 0;
+    const double target = random * totalArea;
+    for ( auto it = cumulativeAreas.begin(); it != cumulativeAreas.end(); ++it, triangle++ )
+    {
+      if ( *it > target )
+        return triangle;
+    }
+    Q_ASSERT_X( false, "QgsInternalGeometryEngine::randomPointsInPolygon", "Invalid random triangle index" );
+    return 0; // no warnings
+  };
+
+
+  QVector<QgsPointXY> result;
+  result.reserve( count );
+  int tries = 0;
+  for ( int i = 0; i < count; )
+  {
+    if ( feedback && feedback->isCanceled() )
+      return QVector< QgsPointXY >();
+
+    const double triangleIndexRnd = uniformDist( mt );
+    // pick random triangle, weighted by triangle area
+    const int triangleIndex = selectRandomTriangle( triangleIndexRnd );
+
+    // generate a random point inside this triangle
+    const double weightB = uniformDist( mt );
+    const double weightC = uniformDist( mt );
+    double x;
+    double y;
+
+    // get triangle
+    const double aX = triangleData.at( triangleIndex * 9 ) + bounds.xMinimum();
+    const double aY = -triangleData.at( triangleIndex * 9 + 2 ) + bounds.yMinimum();
+    const double bX = triangleData.at( triangleIndex * 9 + 3 ) + bounds.xMinimum();
+    const double bY = -triangleData.at( triangleIndex * 9 + 5 ) + bounds.yMinimum();
+    const double cX = triangleData.at( triangleIndex * 9 + 6 ) + bounds.xMinimum();
+    const double cY = -triangleData.at( triangleIndex * 9 + 8 ) + bounds.yMinimum();
+    QgsGeometryUtils::weightedPointInTriangle( aX, aY, bX, bY, cX, cY, weightB, weightC, x, y );
+
+    QgsPointXY candidate( x, y );
+    if ( acceptPoint( candidate ) )
+    {
+      result << QgsPointXY( x, y );
+      i++;
+      tries = 0;
+    }
+    else if ( maxTriesPerPoint != 0 )
+    {
+      tries++;
+      // Skip this point if maximum tries is reached
+      if ( tries == maxTriesPerPoint )
+      {
+        tries = 0;
+        i++;
+      }
+    }
+  }
+  return result;
+}
+
+// ported from PostGIS' lwgeom pta_unstroke
+
+std::unique_ptr< QgsCompoundCurve > lineToCurve( const QgsLineString *lineString, double distanceTolerance,
+    double pointSpacingAngleTolerance )
+{
+  std::unique_ptr< QgsCompoundCurve > out = qgis::make_unique< QgsCompoundCurve >();
+
+  /* Minimum number of edges, per quadrant, required to define an arc */
+  const unsigned int minQuadEdges = 2;
+
+  /* Die on null input */
+  if ( !lineString )
+    return nullptr;
+
+  /* Null on empty input? */
+  if ( lineString->nCoordinates() == 0 )
+    return nullptr;
+
+  /* We can't desegmentize anything shorter than four points */
+  if ( lineString->nCoordinates() < 4 )
+  {
+    out->addCurve( lineString->clone() );
+    return out;
+  }
+
+  /* Allocate our result array of vertices that are part of arcs */
+  int numEdges = lineString->nCoordinates() - 1;
+  QVector< int > edgesInArcs( numEdges + 1, 0 );
+
+  auto arcAngle = []( const QgsPoint & a, const QgsPoint & b, const QgsPoint & c )->double
+  {
+    double abX = b.x() - a.x();
+    double abY = b.y() - a.y();
+
+    double cbX = b.x() - c.x();
+    double cbY = b.y() - c.y();
+
+    double dot = ( abX * cbX + abY * cbY ); /* dot product */
+    double cross = ( abX * cbY - abY * cbX ); /* cross product */
+
+    double alpha = std::atan2( cross, dot );
+
+    return alpha;
+  };
+
+  /* We make a candidate arc of the first two edges, */
+  /* And then see if the next edge follows it */
+  int i = 0;
+  int j = 0;
+  int k = 0;
+  int currentArc = 1;
+  QgsPoint a1;
+  QgsPoint a2;
+  QgsPoint a3;
+  QgsPoint b;
+  double centerX = 0.0;
+  double centerY = 0.0;
+  double radius = 0;
+
+  while ( i < numEdges - 2 )
+  {
+    unsigned int arcEdges = 0;
+    double numQuadrants = 0;
+    double angle;
+
+    bool foundArc = false;
+    /* Make candidate arc */
+    a1 = lineString->pointN( i );
+    a2 = lineString->pointN( i + 1 );
+    a3 = lineString->pointN( i + 2 );
+    QgsPoint first = a1;
+
+    for ( j = i + 3; j < numEdges + 1; j++ )
+    {
+      b = lineString->pointN( j );
+
+      /* Does this point fall on our candidate arc? */
+      if ( QgsGeometryUtils::pointContinuesArc( a1, a2, a3, b, distanceTolerance, pointSpacingAngleTolerance ) )
+      {
+        /* Yes. Mark this edge and the two preceding it as arc components */
+        foundArc = true;
+        for ( k = j - 1; k > j - 4; k-- )
+          edgesInArcs[k] = currentArc;
+      }
+      else
+      {
+        /* No. So we're done with this candidate arc */
+        currentArc++;
+        break;
+      }
+
+      a1 = a2;
+      a2 = a3;
+      a3 = b;
+    }
+    /* Jump past all the edges that were added to the arc */
+    if ( foundArc )
+    {
+      /* Check if an arc was composed by enough edges to be
+       * really considered an arc
+       * See http://trac.osgeo.org/postgis/ticket/2420
+       */
+      arcEdges = j - 1 - i;
+      if ( first.x() == b.x() && first.y() == b.y() )
+      {
+        numQuadrants = 4;
+      }
+      else
+      {
+        QgsGeometryUtils::circleCenterRadius( first, b, a1, radius, centerX, centerY );
+
+        angle = arcAngle( first, QgsPoint( centerX, centerY ), b );
+        int p2Side = QgsGeometryUtils::leftOfLine( b.x(), b.y(), first.x(), first.y(), a1.x(), a1.y() );
+        if ( p2Side >= 0 )
+          angle = -angle;
+
+        if ( angle < 0 )
+          angle = 2 * M_PI + angle;
+        numQuadrants = ( 4 * angle ) / ( 2 * M_PI );
+      }
+      /* a1 is first point, b is last point */
+      if ( arcEdges < minQuadEdges * numQuadrants )
+      {
+        // LWDEBUGF( 4, "Not enough edges for a %g quadrants arc, %g needed", num_quadrants, min_quad_edges * num_quadrants );
+        for ( k = j - 1; k >= i; k-- )
+          edgesInArcs[k] = 0;
+      }
+
+      i = j - 1;
+    }
+    else
+    {
+      /* Mark this edge as a linear edge */
+      edgesInArcs[i] = 0;
+      i = i + 1;
+    }
+  }
+
+  int start = 0;
+  int end = 0;
+  /* non-zero if edge is part of an arc */
+  int edgeType = edgesInArcs[0];
+
+  auto addPointsToCurve = [ lineString, &out ]( int start, int end, int type )
+  {
+    if ( type == 0 )
+    {
+      // straight segment
+      QVector< QgsPoint > points;
+      for ( int j = start; j < end + 2; ++ j )
+      {
+        points.append( lineString->pointN( j ) );
+      }
+      std::unique_ptr< QgsCurve > straightSegment = qgis::make_unique< QgsLineString >( points );
+      out->addCurve( straightSegment.release() );
+    }
+    else
+    {
+      // curved segment
+      QVector< QgsPoint > points;
+      points.append( lineString->pointN( start ) );
+      points.append( lineString->pointN( ( start + end + 1 ) / 2 ) );
+      points.append( lineString->pointN( end + 1 ) );
+      std::unique_ptr< QgsCircularString > curvedSegment = qgis::make_unique< QgsCircularString >();
+      curvedSegment->setPoints( points );
+      out->addCurve( curvedSegment.release() );
+    }
+  };
+
+  for ( int i = 1; i < numEdges; i++ )
+  {
+    if ( edgeType != edgesInArcs[i] )
+    {
+      end = i - 1;
+      addPointsToCurve( start, end, edgeType );
+      start = i;
+      edgeType = edgesInArcs[i];
+    }
+  }
+
+  /* Roll out last item */
+  end = numEdges - 1;
+  addPointsToCurve( start, end, edgeType );
+
+  return out;
+}
+
+std::unique_ptr< QgsAbstractGeometry > convertGeometryToCurves( const QgsAbstractGeometry *geom, double distanceTolerance, double angleTolerance )
+{
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  {
+    return lineToCurve( static_cast< const QgsLineString * >( geom ), distanceTolerance, angleTolerance );
+  }
+  else
+  {
+    // polygon
+    const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
+    std::unique_ptr< QgsCurvePolygon > result = qgis::make_unique< QgsCurvePolygon>();
+
+    result->setExteriorRing( lineToCurve( static_cast< const QgsLineString * >( polygon->exteriorRing() ),
+                                          distanceTolerance, angleTolerance ).release() );
+    for ( int i = 0; i < polygon->numInteriorRings(); ++i )
+    {
+      result->addInteriorRing( lineToCurve( static_cast< const QgsLineString * >( polygon->interiorRing( i ) ),
+                                            distanceTolerance, angleTolerance ).release() );
+    }
+
+    return result;
+  }
+}
+
+QgsGeometry QgsInternalGeometryEngine::convertToCurves( double distanceTolerance, double angleTolerance ) const
+{
+  mLastError.clear();
+  if ( !mGeometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  {
+    return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
+  }
+
+  if ( QgsWkbTypes::isCurvedType( mGeometry->wkbType() ) )
+  {
+    // already curved. In future we may want to allow this, and convert additional candidate segments
+    // in an already curved geometry to curves
+    return QgsGeometry( mGeometry->clone() );
+  }
+
+  if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
+  {
+    int numGeom = gc->numGeometries();
+    QVector< QgsAbstractGeometry * > geometryList;
+    geometryList.reserve( numGeom );
+    for ( int i = 0; i < numGeom; ++i )
+    {
+      geometryList << convertGeometryToCurves( gc->geometryN( i ), distanceTolerance, angleTolerance ).release();
+    }
+
+    QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
+    for ( QgsAbstractGeometry *g : qgis::as_const( geometryList ) )
+    {
+      first.addPart( g );
+    }
+    return first;
+  }
+  else
+  {
+    return QgsGeometry( convertGeometryToCurves( mGeometry, distanceTolerance, angleTolerance ) );
+  }
+}
+
+QgsGeometry QgsInternalGeometryEngine::orientedMinimumBoundingBox( double &area, double &angle, double &width, double &height ) const
+{
+  mLastError.clear();
+
+  QgsRectangle minRect;
+  area = std::numeric_limits<double>::max();
+  angle = 0;
+  width = std::numeric_limits<double>::max();
+  height = std::numeric_limits<double>::max();
+
+  if ( !mGeometry || mGeometry->nCoordinates() < 2 )
+    return QgsGeometry();
+
+  std::unique_ptr< QgsGeometryEngine >engine( QgsGeometry::createGeometryEngine( mGeometry ) );
+  QString error;
+  std::unique_ptr< QgsAbstractGeometry > hull( engine->convexHull( &mLastError ) );
+  if ( !hull )
+    return QgsGeometry();
+
+  QgsVertexId vertexId;
+  QgsPoint pt0;
+  QgsPoint pt1;
+  QgsPoint pt2;
+  // get first point
+  hull->nextVertex( vertexId, pt0 );
+  pt1 = pt0;
+  double totalRotation = 0;
+  while ( hull->nextVertex( vertexId, pt2 ) )
+  {
+    double currentAngle = QgsGeometryUtils::lineAngle( pt1.x(), pt1.y(), pt2.x(), pt2.y() );
+    double rotateAngle = 180.0 / M_PI * currentAngle;
+    totalRotation += rotateAngle;
+
+    QTransform t = QTransform::fromTranslate( pt0.x(), pt0.y() );
+    t.rotate( rotateAngle );
+    t.translate( -pt0.x(), -pt0.y() );
+
+    hull->transform( t );
+
+    QgsRectangle bounds = hull->boundingBox();
+    double currentArea = bounds.width() * bounds.height();
+    if ( currentArea  < area )
+    {
+      minRect = bounds;
+      area = currentArea;
+      angle = totalRotation;
+      width = bounds.width();
+      height = bounds.height();
+    }
+
+    pt1 = hull->vertexAt( vertexId );
+  }
+
+  QgsGeometry minBounds = QgsGeometry::fromRect( minRect );
+  minBounds.rotate( angle, QgsPointXY( pt0.x(), pt0.y() ) );
+
+  // constrain angle to 0 - 180
+  if ( angle > 180.0 )
+    angle = std::fmod( angle, 180.0 );
+
+  return minBounds;
 }

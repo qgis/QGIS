@@ -17,7 +17,6 @@ MDAL::Driver::Driver( const std::string &name,
   , mFilters( filters )
   , mCapabilityFlags( capabilityFlags )
 {
-
 }
 
 MDAL::Driver::~Driver() = default;
@@ -37,27 +36,52 @@ std::string MDAL::Driver::filters() const
   return mFilters;
 }
 
+std::string MDAL::Driver::writeDatasetOnFileSuffix() const
+{
+
+  return std::string();
+}
+
 bool MDAL::Driver::hasCapability( MDAL::Capability capability ) const
 {
   return capability == ( mCapabilityFlags & capability );
 }
 
-std::unique_ptr< MDAL::Mesh > MDAL::Driver::load( const std::string &uri, MDAL_Status *status )
+bool MDAL::Driver::canReadMesh( const std::string & ) { return false; }
+
+bool MDAL::Driver::canReadDatasets( const std::string & ) { return false; }
+
+bool MDAL::Driver::hasWriteDatasetCapability( MDAL_DataLocation location ) const
 {
-  MDAL_UNUSED( uri );
-  MDAL_UNUSED( status );
-  return std::unique_ptr< MDAL::Mesh >();
+  switch ( location )
+  {
+    case MDAL_DataLocation::DataOnVertices:
+      return hasCapability( MDAL::Capability::WriteDatasetsOnVertices );
+    case MDAL_DataLocation::DataOnFaces:
+      return hasCapability( MDAL::Capability::WriteDatasetsOnFaces );
+    case MDAL_DataLocation::DataOnVolumes:
+      return hasCapability( MDAL::Capability::WriteDatasetsOnVolumes );
+    case MDAL_DataLocation::DataOnEdges:
+      return hasCapability( MDAL::Capability::WriteDatasetsOnEdges );
+    default:
+      return false;
+  }
 }
 
-void MDAL::Driver::load( const std::string &uri, Mesh *mesh, MDAL_Status *status )
+int MDAL::Driver::faceVerticesMaximumCount() const { return -1; }
+
+std::string MDAL::Driver::buildUri( const std::string &meshFile )
 {
-  MDAL_UNUSED( uri );
-  MDAL_UNUSED( mesh );
-  MDAL_UNUSED( status );
-  return;
+  return MDAL::buildMeshUri( meshFile, "", this->name() );
 }
 
-void MDAL::Driver::createDatasetGroup( MDAL::Mesh *mesh, const std::string &groupName, bool isOnVertices, bool hasScalarData, const std::string &datasetGroupFile )
+std::unique_ptr< MDAL::Mesh > MDAL::Driver::load( const std::string &, const std::string & ) { return std::unique_ptr< MDAL::Mesh >(); }
+
+void MDAL::Driver::load( const std::string &, Mesh * ) {}
+
+void MDAL::Driver::save( const std::string &, MDAL::Mesh * ) {}
+
+void MDAL::Driver::createDatasetGroup( MDAL::Mesh *mesh, const std::string &groupName, MDAL_DataLocation dataLocation, bool hasScalarData, const std::string &datasetGroupFile )
 {
   std::shared_ptr<MDAL::DatasetGroup> grp(
     new MDAL::DatasetGroup( name(),
@@ -65,25 +89,27 @@ void MDAL::Driver::createDatasetGroup( MDAL::Mesh *mesh, const std::string &grou
                             datasetGroupFile )
   );
   grp->setName( groupName );
-  grp->setIsOnVertices( isOnVertices );
+  grp->setDataLocation( dataLocation );
   grp->setIsScalar( hasScalarData );
   grp->startEditing();
   mesh->datasetGroups.push_back( grp );
 }
 
-void MDAL::Driver::createDataset( MDAL::DatasetGroup *group, double time, const double *values, const int *active )
+void MDAL::Driver::createDataset( MDAL::DatasetGroup *group, MDAL::RelativeTimestamp time, const double *values, const int *active )
 {
-  std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MemoryDataset >( group );
+  bool supportsActiveFlag = ( active != nullptr );
+  std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group, supportsActiveFlag );
   dataset->setTime( time );
-  memcpy( dataset->values(), values, sizeof( double ) * dataset->valuesCount() );
-  if ( active && dataset->active() )
-    memcpy( dataset->active(), active, sizeof( int ) * dataset->mesh()->facesCount() );
+  size_t count = dataset->valuesCount();
+
+  if ( !group->isScalar() )
+    count *= 2;
+
+  memcpy( dataset->values(), values, sizeof( double ) * count );
+  if ( dataset->supportsActiveFlag() )
+    dataset->setActive( active );
   dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
   group->datasets.push_back( dataset );
 }
 
-bool MDAL::Driver::persist( MDAL::DatasetGroup *group )
-{
-  MDAL_UNUSED( group );
-  return true; // failure
-}
+bool MDAL::Driver::persist( MDAL::DatasetGroup * ) { return true; } // failure

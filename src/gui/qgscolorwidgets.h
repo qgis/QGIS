@@ -176,7 +176,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     int hue() const;
 
     /**
-     * Alters a color by modifiying the value of a specific color component
+     * Alters a color by modifying the value of a specific color component
      * \param color color to alter
      * \param component color component to alter
      * \param newValue new value of color component. Values are automatically clipped to a

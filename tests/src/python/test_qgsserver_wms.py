@@ -13,10 +13,9 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '25/05/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
+import json
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
@@ -49,7 +48,8 @@ class TestQgsServerWMSTestBase(QgsServerTestBase):
     regenerate_reference = False
 
     def wms_request(self, request, extra=None, project='test_project.qgs', version='1.3.0'):
-        project = self.testdata_path + project
+        if not os.path.exists(project):
+            project = os.path.join(self.testdata_path, project)
         assert os.path.exists(project), "Project file not found: " + project
         query_string = 'https://www.qgis.org/?MAP=%s&SERVICE=WMS&VERSION=%s&REQUEST=%s' % (urllib.parse.quote(project), version, request)
         if extra is not None:
@@ -57,13 +57,26 @@ class TestQgsServerWMSTestBase(QgsServerTestBase):
         header, body = self._execute_request(query_string)
         return (header, body, query_string)
 
-    def wms_request_compare(self, request, extra=None, reference_file=None, project='test_project.qgs', version='1.3.0', ignoreExtent=False):
+    def wms_request_compare(self, request, extra=None, reference_file=None, project='test_project.qgs', version='1.3.0', ignoreExtent=False, normalizeJson=False):
         response_header, response_body, query_string = self.wms_request(request, extra, project, version)
         response = response_header + response_body
-        reference_path = self.testdata_path + (request.lower() if not reference_file else reference_file) + '.txt'
+        reference_path = os.path.join(self.testdata_path, (request.lower() if not reference_file else reference_file) + '.txt')
         self.store_reference(reference_path, response)
         f = open(reference_path, 'rb')
         expected = f.read()
+
+        def _n(r):
+            lines = r.split(b'\n')
+            b = lines[2:]
+            h = lines[:2]
+            try:
+                return b'\n'.join(h) + json.dumps(json.loads(b'\n'.join(b))).encode('utf8')
+            except:
+                return r
+
+        response = _n(response)
+        expected = _n(expected)
+
         f.close()
         response = re.sub(RE_STRIP_UNCHECKABLE, b'*****', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'*****', expected)
@@ -82,8 +95,15 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
     def test_getcapabilities(self):
         self.wms_request_compare('GetCapabilities')
 
+    def test_getcapabilities_case_insensitive(self):
+        self.wms_request_compare('getcapabilities')
+        self.wms_request_compare('GETCAPABILITIES')
+
     def test_getprojectsettings(self):
         self.wms_request_compare('GetProjectSettings')
+
+    def test_getprojectsettings_opacity(self):
+        self.wms_request_compare('GetProjectSettings', None, 'getprojectsettings_opacity', 'test_opacity_project.qgs')
 
     def test_getcontext(self):
         self.wms_request_compare('GetContext')
@@ -105,13 +125,19 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
                                  '&layers=testlayer%20%C3%A8%C3%A9&',
                                  'getstyles')
 
+        # Test GetStyles with labeling
+        self.wms_request_compare('GetStyles',
+                                 '&layers=pointlabel',
+                                 'getstyles_pointlabel',
+                                 project=self.projectPath)
+
     def test_wms_getschemaextension(self):
         self.wms_request_compare('GetSchemaExtension',
                                  '',
                                  'getschemaextension')
 
-    def wms_request_compare_project(self, request, extra=None, reference_file=None):
-        projectPath = self.testdata_path + "test_project.qgs"
+    def wms_request_compare_project(self, request, extra=None, reference_file=None, project_name="test_project.qgs"):
+        projectPath = self.testdata_path + project_name
         assert os.path.exists(projectPath), "Project file not found: " + projectPath
 
         project = QgsProject()
@@ -136,6 +162,10 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         """WMS GetCapabilities without map parameter"""
         self.wms_request_compare_project('GetCapabilities')
         # reference_file='getcapabilities_without_map_param' could be the right response
+
+    def test_wms_getcapabilities_project_empty_layer(self):
+        """WMS GetCapabilities with empty layer different CRS: wrong bbox - Regression GH 30264"""
+        self.wms_request_compare_project('GetCapabilities', reference_file='wms_getcapabilities_empty_layer', project_name='bug_gh30264_empty_layer_wrong_bbox.qgs')
 
     def wms_inspire_request_compare(self, request):
         """WMS INSPIRE tests"""
@@ -297,7 +327,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         f.close()
 
         # clean header in doc
-        doc = doc.replace('Content-Length: 6575\n', '')
+        doc = doc.replace('Content-Length: 15066\n', '')
         doc = doc.replace('Content-Type: text/xml; charset=utf-8\n\n', '')
         doc = doc.replace('<?xml version="1.0" encoding="utf-8"?>\n', '')
 

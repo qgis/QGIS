@@ -49,7 +49,7 @@ Reset block
 %Docstring
 Returns ``True`` if the block is valid (correctly filled with data).
 An empty block may still be valid (if zero size block was requested).
-If the block is not valid, error may be retrieved by error() method.
+If the block is not valid, error may be retrieved by :py:func:`~QgsRasterBlock.error` method.
 %End
 
     void setValid( bool valid );
@@ -101,7 +101,7 @@ For given data type returns wider type and sets no data value
 %Docstring
 Returns ``True`` if the block may contain no data. It does not guarantee
 that it really contains any no data. It can be used to speed up processing.
-Not the difference between this method and hasNoDataValue().
+Not the difference between this method and :py:func:`~QgsRasterBlock.hasNoDataValue`.
 
 :return: ``True`` if the block may contain no data
 %End

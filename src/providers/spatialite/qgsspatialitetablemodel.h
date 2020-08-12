@@ -15,6 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSSPATIALITETABLEMODEL_H
+#define QGSSPATIALITETABLEMODEL_H
+
 #include <QStandardItemModel>
 class QIcon;
 #include "qgswkbtypes.h"
@@ -58,3 +61,5 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
     //! Returns qgis wkbtype from database typename
     QgsWkbTypes::Type qgisTypeFromDbType( const QString &dbType ) const;
 };
+
+#endif // QGSSPATIALITETABLEMODEL_H

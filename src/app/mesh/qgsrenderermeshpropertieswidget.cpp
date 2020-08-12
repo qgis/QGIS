@@ -22,6 +22,7 @@
 #include "qgsmeshrendererscalarsettingswidget.h"
 #include "qgsmeshdatasetgrouptreeview.h"
 #include "qgsmeshrendereractivedatasetwidget.h"
+#include "qgsmeshlayerutils.h"
 
 QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -39,9 +40,11 @@ QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *
 
   mMeshRendererActiveDatasetWidget->setLayer( mMeshLayer );
   mMeshRendererScalarSettingsWidget->setLayer( mMeshLayer );
-  mNativeMeshSettingsWidget->setLayer( mMeshLayer, false );
-  mTriangularMeshSettingsWidget->setLayer( mMeshLayer, true );
+  mNativeMeshSettingsWidget->setLayer( mMeshLayer, QgsMeshRendererMeshSettingsWidget::MeshType::Native );
+  mTriangularMeshSettingsWidget->setLayer( mMeshLayer, QgsMeshRendererMeshSettingsWidget::MeshType::Triangular );
+  mEdgeMeshSettingsWidget->setLayer( mMeshLayer, QgsMeshRendererMeshSettingsWidget::MeshType::Edge );
   mMeshRendererVectorSettingsWidget->setLayer( mMeshLayer );
+  m3dAveragingSettingsWidget->setLayer( mMeshLayer );
   syncToLayer();
 
   //blend mode
@@ -54,6 +57,7 @@ QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *
            this, &QgsRendererMeshPropertiesWidget::onActiveVectorGroupChanged );
 
   connect( mNativeMeshGroup, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
+  connect( mEdgeMeshGroup, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
   connect( mTriangularMeshGroup, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
   connect( mContoursGroupBox, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
   connect( mVectorsGroupBox, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
@@ -64,6 +68,9 @@ QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *
            this, &QgsPanelWidget::widgetChanged );
   connect( mTriangularMeshSettingsWidget, &QgsMeshRendererMeshSettingsWidget::widgetChanged,
            this, &QgsPanelWidget::widgetChanged );
+  connect( mEdgeMeshSettingsWidget, &QgsMeshRendererMeshSettingsWidget::widgetChanged,
+           this, &QgsPanelWidget::widgetChanged );
+  connect( m3dAveragingSettingsWidget, &QgsMeshRenderer3dAveragingWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
 }
 
 void QgsRendererMeshPropertiesWidget::apply()
@@ -71,43 +78,59 @@ void QgsRendererMeshPropertiesWidget::apply()
   if ( !mMeshLayer )
     return;
 
-  // MESH
-  bool meshRenderingIsEnabled = mNativeMeshGroup->isChecked();
-  QgsMeshRendererMeshSettings meshSettings = mNativeMeshSettingsWidget->settings();
-  meshSettings.setEnabled( meshRenderingIsEnabled );
+  // 1D EDGE MESH
+  bool edgeMeshRenderingIsEnabled = mEdgeMeshGroup->isChecked();
+  QgsMeshRendererMeshSettings edgeMeshSettings = mEdgeMeshSettingsWidget->settings();
+  edgeMeshSettings.setEnabled( edgeMeshRenderingIsEnabled );
 
-  // TRIANGULAR MESH
+  // 2D NATIVE MESH
+  bool nativeMeshRenderingIsEnabled = mNativeMeshGroup->isChecked();
+  QgsMeshRendererMeshSettings nativeMeshSettings = mNativeMeshSettingsWidget->settings();
+  nativeMeshSettings.setEnabled( nativeMeshRenderingIsEnabled );
+
+  // 2D TRIANGULAR MESH
   bool triangularMeshRenderingIsEnabled = mTriangularMeshGroup->isChecked();
   QgsMeshRendererMeshSettings triangularMeshSettings = mTriangularMeshSettingsWidget->settings();
   triangularMeshSettings.setEnabled( triangularMeshRenderingIsEnabled );
 
   // SCALAR
-  QgsMeshDatasetIndex activeScalarDatasetIndex = mMeshRendererActiveDatasetWidget->activeScalarDataset();
+  int activeScalarDatasetGroupIndex = mMeshRendererActiveDatasetWidget->activeScalarDatasetGroup();
   if ( !mContoursGroupBox->isChecked() )
-    activeScalarDatasetIndex = QgsMeshDatasetIndex();
+    activeScalarDatasetGroupIndex = -1;
 
   // VECTOR
-  QgsMeshDatasetIndex activeVectorDatasetIndex = mMeshRendererActiveDatasetWidget->activeVectorDataset();
+  int activeVectorDatasetGroupIndex = mMeshRendererActiveDatasetWidget->activeVectorDatasetGroup();
   if ( !mVectorsGroupBox->isChecked() )
-    activeVectorDatasetIndex = QgsMeshDatasetIndex();
+    activeVectorDatasetGroupIndex = -1;
 
   QgsMeshRendererSettings settings = mMeshLayer->rendererSettings();
-  settings.setNativeMeshSettings( meshSettings );
+  settings.setEdgeMeshSettings( edgeMeshSettings );
+  settings.setNativeMeshSettings( nativeMeshSettings );
   settings.setTriangularMeshSettings( triangularMeshSettings );
 
-  settings.setActiveScalarDataset( activeScalarDatasetIndex );
-  if ( activeScalarDatasetIndex.isValid() )
-    settings.setScalarSettings( activeScalarDatasetIndex.group(), mMeshRendererScalarSettingsWidget->settings() );
+  settings.setActiveScalarDatasetGroup( activeScalarDatasetGroupIndex );
+  if ( activeScalarDatasetGroupIndex > -1 )
+    settings.setScalarSettings( activeScalarDatasetGroupIndex, mMeshRendererScalarSettingsWidget->settings() );
 
-  settings.setActiveVectorDataset( activeVectorDatasetIndex );
-  if ( activeVectorDatasetIndex.isValid() )
-    settings.setVectorSettings( activeVectorDatasetIndex.group(), mMeshRendererVectorSettingsWidget->settings() );
+  settings.setActiveVectorDatasetGroup( activeVectorDatasetGroupIndex );
+  if ( activeVectorDatasetGroupIndex > -1 )
+    settings.setVectorSettings( activeVectorDatasetGroupIndex, mMeshRendererVectorSettingsWidget->settings() );
+
+  QgsMeshDatasetIndex staticScalarDatasetIndex( activeScalarDatasetGroupIndex, mMeshLayer->staticScalarDatasetIndex().dataset() );
+  QgsMeshDatasetIndex staticVectorDatasetIndex( activeVectorDatasetGroupIndex, mMeshLayer->staticVectorDatasetIndex().dataset() );
+  mMeshLayer->setStaticScalarDatasetIndex( staticScalarDatasetIndex );
+  mMeshLayer->setStaticVectorDatasetIndex( staticVectorDatasetIndex );
 
   //set the blend mode for the layer
   mMeshLayer->setBlendMode( mBlendModeComboBox->blendMode() );
-
+  //set the averaging method for the layer
+  std::unique_ptr<QgsMesh3dAveragingMethod> averagingMethod( m3dAveragingSettingsWidget->averagingMethod() );
+  settings.setAveragingMethod( averagingMethod.get() );
   mMeshLayer->setRendererSettings( settings );
   mMeshLayer->triggerRepaint();
+
+  QgsSettings windowsSettings;
+  windowsSettings.setValue( QStringLiteral( "/Windows/RendererMeshProperties/tab" ), mStyleOptionsTab->currentIndex() );
 }
 
 void QgsRendererMeshPropertiesWidget::syncToLayer()
@@ -115,12 +138,29 @@ void QgsRendererMeshPropertiesWidget::syncToLayer()
   mMeshRendererActiveDatasetWidget->syncToLayer();
   mNativeMeshSettingsWidget->syncToLayer();
   mTriangularMeshSettingsWidget->syncToLayer();
+  mEdgeMeshSettingsWidget->syncToLayer();
+  m3dAveragingSettingsWidget->syncToLayer();
 
   mNativeMeshGroup->setChecked( mMeshLayer ? mMeshLayer->rendererSettings().nativeMeshSettings().isEnabled() : false );
   mTriangularMeshGroup->setChecked( mMeshLayer ? mMeshLayer->rendererSettings().triangularMeshSettings().isEnabled() : false );
+  mEdgeMeshGroup->setChecked( mMeshLayer ? mMeshLayer->rendererSettings().edgeMeshSettings().isEnabled() : false );
 
-  onActiveScalarGroupChanged( mMeshRendererActiveDatasetWidget->activeScalarDatasetGroup() );
-  onActiveVectorGroupChanged( mMeshRendererActiveDatasetWidget->activeVectorDatasetGroup() );
+  onActiveScalarGroupChanged( mMeshLayer->rendererSettings().activeScalarDatasetGroup() );
+  onActiveVectorGroupChanged( mMeshLayer->rendererSettings().activeVectorDatasetGroup() );
+
+  bool hasFaces = ( mMeshLayer->dataProvider() &&
+                    mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Face ) );
+  mFaceMeshGroupBox->setVisible( hasFaces );
+
+  bool hasEdges = ( mMeshLayer->dataProvider() &&
+                    mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) );
+  mEdgeMeshGroupBox->setVisible( hasEdges );
+
+  QgsSettings settings;
+  if ( !settings.contains( QStringLiteral( "/Windows/RendererMeshProperties/tab" ) ) )
+    settings.setValue( QStringLiteral( "/Windows/RendererMeshProperties/tab" ), 0 );
+  else
+    mStyleOptionsTab->setCurrentIndex( settings.value( QStringLiteral( "/Windows/RendererMeshProperties/tab" ) ).toInt() );
 }
 
 void QgsRendererMeshPropertiesWidget::onActiveScalarGroupChanged( int groupIndex )
@@ -133,7 +173,7 @@ void QgsRendererMeshPropertiesWidget::onActiveScalarGroupChanged( int groupIndex
 
 void QgsRendererMeshPropertiesWidget::onActiveVectorGroupChanged( int groupIndex )
 {
-  if ( groupIndex >= 0 && !mMeshLayer->dataProvider()->datasetGroupMetadata( groupIndex ).isVector() )
+  if ( groupIndex >= 0 && !mMeshLayer->datasetGroupMetadata( groupIndex ).isVector() )
     groupIndex = -1;
   mMeshRendererVectorSettingsWidget->setActiveDatasetGroup( groupIndex );
   mMeshRendererVectorSettingsWidget->syncToLayer();

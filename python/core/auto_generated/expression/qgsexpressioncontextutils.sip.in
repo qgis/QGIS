@@ -33,17 +33,26 @@ For instance, QGIS version numbers and variables specified through QGIS options.
 
     static QgsExpressionContextScope *formScope( const QgsFeature &formFeature = QgsFeature( ), const QString &formMode = QString() ) /Factory/;
 %Docstring
-Creates a new scope which contains functions and variables from the current attribute form/table ``feature``.
+Creates a new scope which contains functions and variables from the current attribute form/table ``formFeature``.
 The variables and values in this scope will reflect the current state of the form/row being edited.
 The ``formMode`` (SingleEditMode etc.) is passed as text
 
 .. versionadded:: 3.2
 %End
 
+    static QgsExpressionContextScope *parentFormScope( const QgsFeature &formFeature = QgsFeature( ), const QString &formMode = QString() ) /Factory/;
+%Docstring
+Creates a new scope which contains functions and variables from the current parent attribute form/table ``formFeature``.
+The variables and values in this scope will reflect the current state of the parent form/row being edited.
+The ``formMode`` (SingleEditMode etc.) is passed as text
+
+.. versionadded:: 3.14
+%End
+
     static void setGlobalVariable( const QString &name, const QVariant &value );
 %Docstring
 Sets a global context variable. This variable will be contained within scopes retrieved via
-globalScope().
+:py:func:`~QgsExpressionContextUtils.globalScope`.
 
 :param name: variable name
 :param value: variable value
@@ -95,7 +104,7 @@ For instance, project path and title, and variables specified through the projec
     static void setProjectVariable( QgsProject *project, const QString &name, const QVariant &value );
 %Docstring
 Sets a project context variable. This variable will be contained within scopes retrieved via
-projectScope().
+:py:func:`~QgsExpressionContextUtils.projectScope`.
 
 :param project: Project to apply changes to
 :param name: variable name
@@ -153,7 +162,7 @@ Creates a list of three scopes: global, layer's project and layer.
     static void setLayerVariable( QgsMapLayer *layer, const QString &name, const QVariant &value );
 %Docstring
 Sets a layer context variable. This variable will be contained within scopes retrieved via
-layerScope().
+:py:func:`~QgsExpressionContextUtils.layerScope`.
 
 :param layer: map layer
 :param name: variable name
@@ -212,7 +221,7 @@ For instance, number of pages and page sizes.
     static void setLayoutVariable( QgsLayout *layout, const QString &name, const QVariant &value );
 %Docstring
 Sets a layout context variable. This variable will be contained within scopes retrieved via
-layoutScope().
+:py:func:`~QgsExpressionContextUtils.layoutScope`.
 
 :param layout: target layout
 :param name: variable name
@@ -240,7 +249,7 @@ with the variables specified.
 .. versionadded:: 3.0
 %End
 
-    static QgsExpressionContextScope *atlasScope( QgsLayoutAtlas *atlas ) /Factory/;
+    static QgsExpressionContextScope *atlasScope( const QgsLayoutAtlas *atlas ) /Factory/;
 %Docstring
 Creates a new scope which contains variables and functions relating to a :py:class:`QgsLayoutAtlas`.
 For instance, current page name and number.
@@ -264,7 +273,7 @@ For instance, item size and position.
 %Docstring
 Sets a layout ``item`` context variable, with the given ``name`` and ``value``.
 This variable will be contained within scopes retrieved via
-layoutItemScope().
+:py:func:`~QgsExpressionContextUtils.layoutItemScope`.
 
 .. seealso:: :py:func:`setLayoutItemVariables`
 
@@ -283,6 +292,42 @@ with the ``variables`` specified.
 .. seealso:: :py:func:`layoutItemScope`
 
 .. versionadded:: 3.0
+%End
+
+    static QgsExpressionContextScope *multiFrameScope( const QgsLayoutMultiFrame *frame ) /Factory/;
+%Docstring
+Creates a new scope which contains variables and functions relating to a :py:class:`QgsLayoutMultiFrame`.
+
+.. seealso:: :py:func:`setLayoutMultiFrameVariable`
+
+.. seealso:: :py:func:`setLayoutMultiFrameVariables`
+
+.. versionadded:: 3.10
+%End
+
+    static void setLayoutMultiFrameVariable( QgsLayoutMultiFrame *frame, const QString &name, const QVariant &value );
+%Docstring
+Sets a layout multi ``frame`` context variable, with the given ``name`` and ``value``.
+This variable will be contained within scopes retrieved via
+:py:func:`~QgsExpressionContextUtils.multiFrameScope`.
+
+.. seealso:: :py:func:`setLayoutItemVariables`
+
+.. seealso:: :py:func:`multiFrameScope`
+
+.. versionadded:: 3.10
+%End
+
+    static void setLayoutMultiFrameVariables( QgsLayoutMultiFrame *frame, const QVariantMap &variables );
+%Docstring
+Sets all layout multiframe context variables for an ``frame``. Existing variables will be removed and replaced
+with the ``variables`` specified.
+
+.. seealso:: :py:func:`setLayoutMultiFrameVariable`
+
+.. seealso:: :py:func:`multiFrameScope`
+
+.. versionadded:: 3.10
 %End
 
     static QgsExpressionContext createFeatureBasedContext( const QgsFeature &feature, const QgsFields &fields );
@@ -324,6 +369,7 @@ Registers all known core functions provided by QgsExpressionContextScope objects
 
       public:
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -27,8 +27,7 @@ QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root,
   , mRegistryRemovingLayers( false )
   , mEnabled( true )
   , mNewLayersVisible( true )
-  , mInsertionPointGroup( root )
-  , mInsertionPointIndex( 0 )
+  , mInsertionPoint( root, 0 )
 {
   connect( mProject, &QgsProject::legendLayersAdded, this, &QgsLayerTreeRegistryBridge::layersAdded );
   connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsLayerTreeRegistryBridge::layersWillBeRemoved );
@@ -39,8 +38,13 @@ QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root,
 
 void QgsLayerTreeRegistryBridge::setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index )
 {
-  mInsertionPointGroup = parentGroup;
-  mInsertionPointIndex = index;
+  mInsertionPoint.group = parentGroup;
+  mInsertionPoint.position = index;
+}
+
+void QgsLayerTreeRegistryBridge::setLayerInsertionPoint( const InsertionPoint &insertionPoint )
+{
+  mInsertionPoint = insertionPoint;
 }
 
 void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers )
@@ -67,7 +71,7 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
   }
 
   // add new layers to the right place
-  mInsertionPointGroup->insertChildNodes( mInsertionPointIndex, nodes );
+  mInsertionPoint.group->insertChildNodes( mInsertionPoint.position, nodes );
 
   // tell other components that layers have been added - this signal is used in QGIS to auto-select the first layer
   emit addedLayersToLayerTree( layers );

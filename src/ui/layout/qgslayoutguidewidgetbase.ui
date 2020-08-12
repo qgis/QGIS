@@ -55,18 +55,34 @@
         <x>0</x>
         <y>0</y>
         <width>217</width>
-        <height>526</height>
+        <height>527</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
+      <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
+       <item row="0" column="0">
         <widget class="QLabel" name="mPageLabel">
          <property name="text">
-          <string>Guides for page 1</string>
+          <string>Page</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item row="5" column="0">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="mPageNumberComboBox"/>
+       </item>
+       <item row="1" column="0" colspan="2">
         <widget class="QgsCollapsibleGroupBoxBasic" name="mSnapToGridGroupCheckBox">
          <property name="focusPolicy">
           <enum>Qt::StrongFocus</enum>
@@ -158,7 +174,7 @@
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="2" column="0" colspan="2">
         <widget class="QgsCollapsibleGroupBoxBasic" name="mSnapToGridGroupCheckBox_2">
          <property name="focusPolicy">
           <enum>Qt::StrongFocus</enum>
@@ -250,7 +266,7 @@
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="3" column="0" colspan="2">
         <widget class="QPushButton" name="mApplyToAllButton">
          <property name="toolTip">
           <string>Resets all other pages' guides to match this page</string>
@@ -260,7 +276,7 @@
          </property>
         </widget>
        </item>
-       <item>
+       <item row="4" column="0" colspan="2">
         <widget class="QPushButton" name="mClearAllButton">
          <property name="toolTip">
           <string>Removes all guides from the current page</string>
@@ -269,19 +285,6 @@
           <string>Clear All Guides</string>
          </property>
         </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
@@ -306,7 +309,17 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
+  <tabstop>mPageNumberComboBox</tabstop>
   <tabstop>mSnapToGridGroupCheckBox</tabstop>
+  <tabstop>mHozGuidesTableView</tabstop>
+  <tabstop>mAddHozGuideButton</tabstop>
+  <tabstop>mDeleteHozGuideButton</tabstop>
+  <tabstop>mSnapToGridGroupCheckBox_2</tabstop>
+  <tabstop>mVertGuidesTableView</tabstop>
+  <tabstop>mAddVertGuideButton</tabstop>
+  <tabstop>mDeleteVertGuideButton</tabstop>
+  <tabstop>mApplyToAllButton</tabstop>
+  <tabstop>mClearAllButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -529,12 +529,17 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
     mDefineMenu->addAction( mActionExpDialog );
     mDefineMenu->addAction( mActionCopyExpr );
     mDefineMenu->addAction( mActionPasteExpr );
-    mDefineMenu->addAction( mActionClearExpr );
   }
   else
   {
     mDefineMenu->addAction( mActionExpDialog );
     mDefineMenu->addAction( mActionPasteExpr );
+  }
+
+  if ( hasExp || !mFieldName.isEmpty() )
+  {
+    mDefineMenu->addSeparator();
+    mDefineMenu->addAction( mActionClearExpr );
   }
 
   if ( !mDefinition.name().isEmpty() && mDefinition.supportsAssistant() )
@@ -665,7 +670,7 @@ void QgsPropertyOverrideButton::showExpressionDialog()
 {
   QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : QgsExpressionContext();
 
-  // build sensible initial expression text - see https://issues.qgis.org/issues/18638
+  // build sensible initial expression text - see https://github.com/qgis/QGIS/issues/26526
   QString currentExpression = ( mProperty.propertyType() == QgsProperty::StaticProperty && !mProperty.staticValue().isValid() ) ? QString()
                               : mProperty.asExpression();
 
@@ -708,6 +713,9 @@ void QgsPropertyOverrideButton::showAssistant()
       updateSiblingWidgets( isActive() );
       this->emit changed();
     } );
+
+    // if the source layer is removed, we need to dismiss the assistant immediately
+    connect( mVectorLayer, &QObject::destroyed, widget, &QgsPanelWidget::acceptPanel );
 
     connect( widget, &QgsPropertyAssistantWidget::panelAccepted, this, [ = ] { updateGui(); } );
 

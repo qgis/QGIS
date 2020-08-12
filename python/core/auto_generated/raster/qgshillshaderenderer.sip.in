@@ -51,7 +51,7 @@ Factory method to create a new renderer
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
 
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 );
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 
 
     virtual QList<int> usesBands() const;

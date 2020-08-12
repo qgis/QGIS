@@ -244,6 +244,44 @@ void QgsLayoutItem::setParentGroup( QgsLayoutItemGroup *group )
   setFlag( QGraphicsItem::ItemIsSelectable, !static_cast< bool>( group ) ); //item in groups cannot be selected
 }
 
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItem::exportLayerBehavior() const
+{
+  return CanGroupWithAnyOtherItem;
+}
+
+int QgsLayoutItem::numberExportLayers() const
+{
+  return 0;
+}
+
+void QgsLayoutItem::startLayeredExport()
+{
+
+}
+
+void QgsLayoutItem::stopLayeredExport()
+{
+
+}
+
+bool QgsLayoutItem::nextExportPart()
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  if ( !mLayout || mLayout->renderContext().currentExportLayer() == -1 )
+    return false;
+
+  // QGIS 4- return false from base class implementation
+
+  const int layers = numberExportLayers();
+  return mLayout->renderContext().currentExportLayer() < layers;
+  Q_NOWARN_DEPRECATED_POP
+}
+
+QgsLayoutItem::ExportLayerDetail QgsLayoutItem::exportLayerDetails() const
+{
+  return QgsLayoutItem::ExportLayerDetail();
+}
+
 void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )
 {
   if ( !painter || !painter->device() || !shouldDrawItem() )
@@ -304,13 +342,12 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
     {
       // can reuse last cached image
       QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter, destinationDpi );
-      painter->save();
+      QgsScopedQPainterState painterState( painter );
       preparePainter( painter );
       double cacheScale = destinationDpi / mItemCacheDpi;
       painter->scale( cacheScale / context.scaleFactor(), cacheScale / context.scaleFactor() );
       painter->drawImage( boundingRect().x() * context.scaleFactor() / cacheScale,
                           boundingRect().y() * context.scaleFactor() / cacheScale, mItemCachedImage );
-      painter->restore();
       return;
     }
     else
@@ -341,12 +378,11 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
 
       QgsImageOperation::multiplyOpacity( image, mEvaluatedOpacity );
 
-      painter->save();
+      QgsScopedQPainterState painterState( painter );
       // scale painter from mm to dots
       painter->scale( 1.0 / context.scaleFactor(), 1.0 / context.scaleFactor() );
       painter->drawImage( boundingRect().x() * context.scaleFactor(),
                           boundingRect().y() * context.scaleFactor(), image );
-      painter->restore();
 
       if ( previewRender )
       {
@@ -358,7 +394,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
   else
   {
     // no caching or flattening
-    painter->save();
+    QgsScopedQPainterState painterState( painter );
     preparePainter( painter );
     QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter, destinationDpi );
     context.setExpressionContext( createExpressionContext() );
@@ -372,8 +408,6 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
 
     painter->scale( context.scaleFactor(), context.scaleFactor() );
     drawFrame( context );
-
-    painter->restore();
   }
 }
 
@@ -555,6 +589,9 @@ bool QgsLayoutItem::shouldBlockUndoCommands() const
 
 bool QgsLayoutItem::shouldDrawItem() const
 {
+  if ( mLayout && QgsLayoutUtils::itemIsAClippingSource( this ) )
+    return false;
+
   if ( !mLayout || mLayout->renderContext().isPreviewRender() )
   {
     //preview mode so OK to draw item
@@ -1125,6 +1162,16 @@ QgsExpressionContext QgsLayoutItem::createExpressionContext() const
   return context;
 }
 
+bool QgsLayoutItem::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  Q_UNUSED( visitor );
+  return true;
+}
+
+QgsGeometry QgsLayoutItem::clipPath() const
+{
+  return QgsGeometry();
+}
 
 void QgsLayoutItem::refresh()
 {
@@ -1156,12 +1203,18 @@ void QgsLayoutItem::drawDebugRect( QPainter *painter )
     return;
   }
 
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->setRenderHint( QPainter::Antialiasing, false );
   painter->setPen( Qt::NoPen );
   painter->setBrush( QColor( 100, 255, 100, 200 ) );
   painter->drawRect( rect() );
-  painter->restore();
+}
+
+QPainterPath QgsLayoutItem::framePath() const
+{
+  QPainterPath path;
+  path.addRect( QRectF( 0, 0, rect().width(), rect().height() ) );
+  return path;
 }
 
 void QgsLayoutItem::drawFrame( QgsRenderContext &context )
@@ -1170,11 +1223,14 @@ void QgsLayoutItem::drawFrame( QgsRenderContext &context )
     return;
 
   QPainter *p = context.painter();
-  p->save();
+
+  QgsScopedQPainterState painterState( p );
+
   p->setPen( pen() );
   p->setBrush( Qt::NoBrush );
-  p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
-  p->restore();
+  context.setPainterFlagsUsingContext( p );
+
+  p->drawPath( framePath() );
 }
 
 void QgsLayoutItem::drawBackground( QgsRenderContext &context )
@@ -1182,12 +1238,14 @@ void QgsLayoutItem::drawBackground( QgsRenderContext &context )
   if ( !mBackground || !context.painter() )
     return;
 
+  QgsScopedQPainterState painterState( context.painter() );
+
   QPainter *p = context.painter();
-  p->save();
   p->setBrush( brush() );
   p->setPen( Qt::NoPen );
-  p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
-  p->restore();
+  context.setPainterFlagsUsingContext( p );
+
+  p->drawPath( framePath() );
 }
 
 void QgsLayoutItem::setFixedSize( const QgsLayoutSize &size )
@@ -1290,6 +1348,10 @@ void QgsLayoutItem::preparePainter( QPainter *painter )
   }
 
   painter->setRenderHint( QPainter::Antialiasing, shouldDrawAntialiased() );
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  painter->setRenderHint( QPainter::LosslessImageRendering, mLayout && mLayout->renderContext().testFlag( QgsLayoutRenderContext::FlagLosslessImageRendering ) );
+#endif
 }
 
 bool QgsLayoutItem::shouldDrawAntialiased() const

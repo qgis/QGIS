@@ -29,7 +29,7 @@ class QgsFeatureSelectionDlg : QDialog
 %End
   public:
 
-    explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, QgsAttributeEditorContext &context, QWidget *parent /TransferThis/ = 0 );
+    explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, const QgsAttributeEditorContext &context, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFeatureSelectionDlg
 %End
@@ -50,11 +50,15 @@ Set the selected features
 
   protected:
 
+    virtual void keyPressEvent( QKeyEvent *evt );
+
+
     virtual void showEvent( QShowEvent *event );
 
 %Docstring
 Make sure the dialog does not grow too much
 %End
+
 };
 
 /************************************************************************

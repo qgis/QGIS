@@ -26,6 +26,7 @@
 #include "qgsguiutils.h"
 #include "qgsexpressioncontext.h"
 #include "qgsapplication.h"
+#include "qgsfilterlineedit.h"
 #include <QHBoxLayout>
 #include <QToolButton>
 #include <QStackedWidget>
@@ -108,12 +109,25 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsPro
   hWidget3->setLayout( hLayout3 );
   mStackedWidget->addWidget( hWidget3 );
 
+  if ( mParameterDefinition->isDestination() )
+  {
+    mModelOutputName = new QgsFilterLineEdit();
+    mModelOutputName->setPlaceholderText( tr( "[Enter name if this is a final result]" ) );
+    QHBoxLayout *hLayout4 = new QHBoxLayout();
+    hLayout4->setMargin( 0 );
+    hLayout4->setContentsMargins( 0, 0, 0, 0 );
+    hLayout4->addWidget( mModelOutputName );
+    QWidget *hWidget4 = new QWidget();
+    hWidget4->setLayout( hLayout4 );
+    mStackedWidget->addWidget( hWidget4 );
+  }
+
   hLayout->setMargin( 0 );
   hLayout->setContentsMargins( 0, 0, 0, 0 );
   hLayout->addWidget( mStackedWidget, 1 );
 
   setLayout( hLayout );
-  setSourceType( QgsProcessingModelChildParameterSource::StaticValue );
+  setSourceType( mParameterDefinition->isDestination() ? QgsProcessingModelChildParameterSource::ModelOutput : QgsProcessingModelChildParameterSource::StaticValue );
 }
 
 QgsProcessingModelerParameterWidget::~QgsProcessingModelerParameterWidget() = default;
@@ -157,27 +171,77 @@ void QgsProcessingModelerParameterWidget::setWidgetValue( const QgsProcessingMod
   setSourceType( value.source() );
 }
 
-QgsProcessingModelChildParameterSource QgsProcessingModelerParameterWidget::value() const
+void QgsProcessingModelerParameterWidget::setWidgetValue( const QList<QgsProcessingModelChildParameterSource> &values )
+{
+  if ( values.size() == 1 )
+    setWidgetValue( values.at( 0 ) );
+  else
+  {
+    QVariantList r;
+    for ( const QgsProcessingModelChildParameterSource &v : values )
+      r << QVariant::fromValue( v );
+    mStaticValue = r;
+    updateUi();
+    setSourceType( QgsProcessingModelChildParameterSource::StaticValue );
+  }
+}
+
+void QgsProcessingModelerParameterWidget::setToModelOutput( const QString &value )
+{
+  if ( mModelOutputName )
+    mModelOutputName->setText( value );
+  setSourceType( QgsProcessingModelChildParameterSource::ModelOutput );
+}
+
+bool QgsProcessingModelerParameterWidget::isModelOutput() const
+{
+  return currentSourceType() == ModelOutput;
+}
+
+QString QgsProcessingModelerParameterWidget::modelOutputName() const
+{
+  return mModelOutputName ? mModelOutputName->text().trimmed() : QString();
+}
+
+QVariant QgsProcessingModelerParameterWidget::value() const
 {
   switch ( currentSourceType() )
   {
     case StaticValue:
-      return QgsProcessingModelChildParameterSource::fromStaticValue( mStaticWidgetWrapper->parameterValue() );
+    {
+      const QVariant v = mStaticWidgetWrapper->parameterValue();
+
+      if ( v.type() == QVariant::List )
+      {
+        const QVariantList vList = v.toList();
+        if ( std::all_of( vList.begin(), vList.end(), []( const QVariant & val )
+      {
+        return val.canConvert< QgsProcessingModelChildParameterSource >();
+        } ) )
+        {
+          return v;
+        }
+      }
+      return QVariant::fromValue( QgsProcessingModelChildParameterSource::fromStaticValue( v ) );
+    }
 
     case Expression:
-      return QgsProcessingModelChildParameterSource::fromExpression( mExpressionWidget->expression() );
+      return QVariant::fromValue( QgsProcessingModelChildParameterSource::fromExpression( mExpressionWidget->expression() ) );
 
     case ModelParameter:
-      return QgsProcessingModelChildParameterSource::fromModelParameter( mModelInputCombo->currentData().toString() );
+      return QVariant::fromValue( QgsProcessingModelChildParameterSource::fromModelParameter( mModelInputCombo->currentData().toString() ) );
 
     case ChildOutput:
     {
       const QStringList parts = mChildOutputCombo->currentData().toStringList();
-      return QgsProcessingModelChildParameterSource::fromChildOutput( parts.value( 0, QString() ), parts.value( 1, QString() ) );
+      return QVariant::fromValue( QgsProcessingModelChildParameterSource::fromChildOutput( parts.value( 0, QString() ), parts.value( 1, QString() ) ) );
     }
+
+    case ModelOutput:
+      return mModelOutputName ? ( mModelOutputName->text().trimmed().isEmpty() ? QVariant() :  mModelOutputName->text() ) : QVariant();
   }
 
-  return QgsProcessingModelChildParameterSource();
+  return QVariant::fromValue( QgsProcessingModelChildParameterSource() );
 }
 
 void QgsProcessingModelerParameterWidget::setDialog( QDialog *dialog )
@@ -218,6 +282,14 @@ void QgsProcessingModelerParameterWidget::sourceMenuAboutToShow()
   mSourceMenu->clear();
 
   const SourceType currentSource = currentSourceType();
+
+  if ( mParameterDefinition->isDestination() )
+  {
+    QAction *modelOutputAction = mSourceMenu->addAction( tr( "Model Output" ) );
+    modelOutputAction->setCheckable( currentSource == ModelOutput );
+    modelOutputAction->setChecked( currentSource == ModelOutput );
+    modelOutputAction->setData( QgsProcessingModelChildParameterSource::ModelOutput );
+  }
 
   if ( mHasStaticWrapper )
   {
@@ -288,6 +360,14 @@ void QgsProcessingModelerParameterWidget::setSourceType( QgsProcessingModelChild
       break;
     }
 
+    case QgsProcessingModelChildParameterSource::ModelOutput:
+    {
+      mSourceButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconModelOutput.svg" ) ) );
+      mStackedWidget->setCurrentIndex( static_cast< int >( ModelOutput ) );
+      mSourceButton->setToolTip( tr( "Model Output" ) );
+      break;
+    }
+
     case QgsProcessingModelChildParameterSource::ExpressionText:
       break;
   }
@@ -342,6 +422,7 @@ void QgsProcessingModelerParameterWidget::populateSources( const QStringList &co
       case QgsProcessingModelChildParameterSource::StaticValue:
       case QgsProcessingModelChildParameterSource::Expression:
       case QgsProcessingModelChildParameterSource::ExpressionText:
+      case QgsProcessingModelChildParameterSource::ModelOutput:
         break;
     }
 

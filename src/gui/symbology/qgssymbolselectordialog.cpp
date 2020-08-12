@@ -38,6 +38,7 @@
 #include "qgsimagecache.h"
 #include "qgsproject.h"
 #include "qgsguiutils.h"
+#include "qgsgui.h"
 
 #include <QColorDialog>
 #include <QPainter>
@@ -190,11 +191,11 @@ class SymbolLayerItem : public QStandardItem
           switch ( mSymbol->type() )
           {
             case QgsSymbol::Marker :
-              return QCoreApplication::translate( "SymbolLayerItem", "Marker", nullptr, QCoreApplication::UnicodeUTF8 );
+              return QCoreApplication::translate( "SymbolLayerItem", "Marker" );
             case QgsSymbol::Fill   :
-              return QCoreApplication::translate( "SymbolLayerItem", "Fill", nullptr, QCoreApplication::UnicodeUTF8 );
+              return QCoreApplication::translate( "SymbolLayerItem", "Fill" );
             case QgsSymbol::Line   :
-              return QCoreApplication::translate( "SymbolLayerItem", "Line", nullptr, QCoreApplication::UnicodeUTF8 );
+              return QCoreApplication::translate( "SymbolLayerItem", "Line" );
             default:
               return "Symbol";
           }
@@ -244,6 +245,7 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
 
   layersTree->setMaximumHeight( static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 7 ) );
   layersTree->setMinimumHeight( layersTree->maximumHeight() );
+  lblPreview->setMaximumWidth( layersTree->maximumHeight() );
 
   // setup icons
   btnAddLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
@@ -383,6 +385,16 @@ QgsSymbolWidgetContext QgsSymbolSelectorWidget::context() const
 
 void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent )
 {
+  if ( !symbol )
+    return;
+
+  if ( !parent )
+  {
+    mSymbol = symbol;
+    model->clear();
+    parent = static_cast<SymbolLayerItem *>( model->invisibleRootItem() );
+  }
+
   SymbolLayerItem *symbolItem = new SymbolLayerItem( symbol );
   QFont boldFont = symbolItem->font();
   boldFont.setBold( true );
@@ -405,7 +417,7 @@ void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *pa
 }
 
 
-void QgsSymbolSelectorWidget::loadSymbol()
+void QgsSymbolSelectorWidget::reloadSymbol()
 {
   model->clear();
   loadSymbol( mSymbol, static_cast<SymbolLayerItem *>( model->invisibleRootItem() ) );
@@ -440,6 +452,9 @@ void QgsSymbolSelectorWidget::updateUi()
 
 void QgsSymbolSelectorWidget::updatePreview()
 {
+  if ( !mSymbol )
+    return;
+
   std::unique_ptr< QgsSymbol > symbolClone( mSymbol->clone() );
   QImage preview = symbolClone->bigSymbolPreviewImage( &mPreviewExpressionContext );
   lblPreview->setPixmap( QPixmap::fromImage( preview ) );
@@ -544,7 +559,7 @@ void QgsSymbolSelectorWidget::symbolChanged()
   else
   {
     //it is the symbol itself
-    loadSymbol();
+    reloadSymbol();
     QModelIndex newIndex = layersTree->model()->index( 0, 0 );
     layersTree->setCurrentIndex( newIndex );
   }
@@ -757,6 +772,7 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
   : QDialog( parent )
 {
   setLayout( new QVBoxLayout() );
+
   mSelectorWidget = new QgsSymbolSelectorWidget( symbol, style, vl, this );
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
 
@@ -767,10 +783,13 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
   layout()->addWidget( mSelectorWidget );
   layout()->addWidget( mButtonBox );
 
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/SymbolSelectorWidget/geometry" ) ).toByteArray() );
+  connect( mSelectorWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
 
-  // can be embedded in renderer properties dialog
+  mSelectorWidget->setMinimumSize( 460, 560 );
+  setObjectName( QStringLiteral( "SymbolSelectorDialog" ) );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
+  // Can be embedded in renderer properties dialog
   if ( embedded )
   {
     mButtonBox->hide();
@@ -781,12 +800,6 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
     setWindowTitle( tr( "Symbol Selector" ) );
   }
   mSelectorWidget->setDockMode( embedded );
-}
-
-QgsSymbolSelectorDialog::~QgsSymbolSelectorDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/SymbolSelectorWidget/geometry" ), saveGeometry() );
 }
 
 QMenu *QgsSymbolSelectorDialog::advancedMenu()
@@ -822,9 +835,9 @@ void QgsSymbolSelectorDialog::keyPressEvent( QKeyEvent *e )
   }
 }
 
-void QgsSymbolSelectorDialog::loadSymbol()
+void QgsSymbolSelectorDialog::reloadSymbol()
 {
-  mSelectorWidget->loadSymbol();
+  mSelectorWidget->reloadSymbol();
 }
 
 void QgsSymbolSelectorDialog::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent )
@@ -917,7 +930,12 @@ void QgsSymbolSelectorDialog::changeLayer( QgsSymbolLayer *layer )
   mSelectorWidget->changeLayer( layer );
 }
 
+QDialogButtonBox *QgsSymbolSelectorDialog::buttonBox() const
+{
+  return mButtonBox;
+}
+
 void QgsSymbolSelectorDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#the-symbol-selector" ) );
+  QgsHelp::openHelp( QStringLiteral( "style_library/symbol_selector.html" ) );
 }

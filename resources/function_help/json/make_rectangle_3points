@@ -1,6 +1,7 @@
 {
   "name": "make_rectangle_3points",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Creates a rectangle from 3 points.",
   "variableLenArguments": true,
   "arguments": [

@@ -77,6 +77,13 @@ void QgsRubberBand::setIcon( IconType icon )
   mIconType = icon;
 }
 
+void QgsRubberBand::setSvgIcon( const QString &path, QPoint drawOffset )
+{
+  setIcon( ICON_SVG );
+  mSvgRenderer = qgis::make_unique<QSvgRenderer>( path );
+  mSvgOffset = drawOffset;
+}
+
 void QgsRubberBand::setIconSize( int iconSize )
 {
   mIconSize = iconSize;
@@ -100,7 +107,7 @@ void QgsRubberBand::reset( QgsWkbTypes::GeometryType geometryType )
   update();
 }
 
-void QgsRubberBand::addPoint( const QgsPointXY &p, bool doUpdate /* = true */, int geometryIndex )
+void QgsRubberBand::addPoint( const QgsPointXY &p, bool doUpdate /* = true */, int geometryIndex, int ringIndex )
 {
   if ( geometryIndex < 0 )
   {
@@ -114,17 +121,38 @@ void QgsRubberBand::addPoint( const QgsPointXY &p, bool doUpdate /* = true */, i
 
   if ( geometryIndex == mPoints.size() )
   {
-    mPoints.push_back( QList<QgsPointXY>() << p );
+    // since we're adding a geometry, ringIndex must be 0 or negative for last ring
+    if ( ringIndex > 0 )
+      return;
+    mPoints.append( QgsPolygonXY() );
   }
 
-  if ( mPoints.at( geometryIndex ).size() == 2 &&
-       mPoints.at( geometryIndex ).at( 0 ) == mPoints.at( geometryIndex ).at( 1 ) )
+  // negative ringIndex means last ring
+  if ( ringIndex < 0 )
   {
-    mPoints[geometryIndex].last() = p;
+    if ( mPoints.at( geometryIndex ).isEmpty() )
+      ringIndex = 0;
+    else
+      ringIndex = mPoints.at( geometryIndex ).size() - 1;
+  }
+
+  if ( ringIndex > mPoints.at( geometryIndex ).size() )
+    return;
+
+  if ( ringIndex == mPoints.at( geometryIndex ).size() )
+  {
+    mPoints[geometryIndex].append( QgsPolylineXY() );
+    mPoints[geometryIndex][ringIndex].append( p );
+  }
+
+  if ( mPoints.at( geometryIndex ).at( ringIndex ).size() == 2 &&
+       mPoints.at( geometryIndex ).at( ringIndex ).at( 0 ) == mPoints.at( geometryIndex ).at( ringIndex ).at( 1 ) )
+  {
+    mPoints[geometryIndex][ringIndex].last() = p;
   }
   else
   {
-    mPoints[geometryIndex] << p;
+    mPoints[geometryIndex][ringIndex].append( p );
   }
 
 
@@ -136,16 +164,19 @@ void QgsRubberBand::addPoint( const QgsPointXY &p, bool doUpdate /* = true */, i
   }
 }
 
-void QgsRubberBand::closePoints( bool doUpdate, int geometryIndex )
+void QgsRubberBand::closePoints( bool doUpdate, int geometryIndex, int ringIndex )
 {
-  if ( geometryIndex < 0 || geometryIndex >= mPoints.size() )
+  if ( geometryIndex < 0 || ringIndex < 0 ||
+       mPoints.size() <= geometryIndex ||
+       mPoints.at( geometryIndex ).size() <= ringIndex ||
+       mPoints.at( geometryIndex ).at( ringIndex ).isEmpty() )
   {
     return;
   }
 
-  if ( mPoints.at( geometryIndex ).at( 0 ) != mPoints.at( geometryIndex ).at( mPoints.at( geometryIndex ).size() - 1 ) )
+  if ( mPoints.at( geometryIndex ).at( ringIndex ).constFirst() != mPoints.at( geometryIndex ).at( ringIndex ).constLast() )
   {
-    mPoints[geometryIndex] << mPoints.at( geometryIndex ).at( 0 );
+    mPoints[geometryIndex][ringIndex].append( mPoints.at( geometryIndex ).at( ringIndex ).constFirst() );
   }
 
   if ( doUpdate )
@@ -157,24 +188,25 @@ void QgsRubberBand::closePoints( bool doUpdate, int geometryIndex )
 }
 
 
-void QgsRubberBand::removePoint( int index, bool doUpdate/* = true*/, int geometryIndex/* = 0*/ )
+void QgsRubberBand::removePoint( int index, bool doUpdate/* = true*/, int geometryIndex/* = 0*/, int ringIndex/* = 0*/ )
 {
 
-  if ( mPoints.size() < geometryIndex + 1 )
+  if ( geometryIndex < 0 || ringIndex < 0 ||
+       mPoints.size() <= geometryIndex ||
+       mPoints.at( geometryIndex ).size() <= ringIndex ||
+       mPoints.at( geometryIndex ).at( ringIndex ).size() <= index ||
+       mPoints.at( geometryIndex ).at( ringIndex ).size() < -index ||
+       mPoints.at( geometryIndex ).at( ringIndex ).isEmpty() )
   {
     return;
   }
 
-
-  if ( !mPoints[geometryIndex].isEmpty() )
+  // negative index removes from end, e.g., -1 removes last one
+  if ( index < 0 )
   {
-    // negative index removes from end, e.g., -1 removes last one
-    if ( index < 0 )
-    {
-      index = mPoints.at( geometryIndex ).size() + index;
-    }
-    mPoints[geometryIndex].removeAt( index );
+    index = mPoints.at( geometryIndex ).at( ringIndex ).size() + index;
   }
+  mPoints[geometryIndex][ringIndex].removeAt( index );
 
   if ( doUpdate )
   {
@@ -183,42 +215,38 @@ void QgsRubberBand::removePoint( int index, bool doUpdate/* = true*/, int geomet
   }
 }
 
-void QgsRubberBand::removeLastPoint( int geometryIndex, bool doUpdate/* = true*/ )
+void QgsRubberBand::removeLastPoint( int geometryIndex, bool doUpdate/* = true*/, int ringIndex/* = 0*/ )
 {
-  removePoint( -1, doUpdate, geometryIndex );
+  removePoint( -1, doUpdate, geometryIndex, ringIndex );
 }
 
-void QgsRubberBand::movePoint( const QgsPointXY &p, int geometryIndex )
+void QgsRubberBand::movePoint( const QgsPointXY &p, int geometryIndex, int ringIndex )
 {
-  if ( mPoints.size() < geometryIndex + 1 )
+  if ( geometryIndex < 0 || ringIndex < 0 ||
+       mPoints.size() <= geometryIndex ||
+       mPoints.at( geometryIndex ).size() <= ringIndex ||
+       mPoints.at( geometryIndex ).at( ringIndex ).isEmpty() )
   {
     return;
   }
 
-  if ( mPoints.at( geometryIndex ).empty() )
-  {
-    return;
-  }
-
-  mPoints[geometryIndex].last() = p;
+  mPoints[geometryIndex][ringIndex].last() = p;
 
   updateRect();
   update();
 }
 
-void QgsRubberBand::movePoint( int index, const QgsPointXY &p, int geometryIndex )
+void QgsRubberBand::movePoint( int index, const QgsPointXY &p, int geometryIndex, int ringIndex )
 {
-  if ( mPoints.size() < geometryIndex + 1 )
+  if ( geometryIndex < 0 || ringIndex < 0 || index < 0 ||
+       mPoints.size() <= geometryIndex ||
+       mPoints.at( geometryIndex ).size() <= ringIndex ||
+       mPoints.at( geometryIndex ).at( ringIndex ).size() <= index )
   {
     return;
   }
 
-  if ( mPoints.at( geometryIndex ).size() < index )
-  {
-    return;
-  }
-
-  mPoints[geometryIndex][index] = p;
+  mPoints[geometryIndex][ringIndex][index] = p;
 
   updateRect();
   update();
@@ -330,10 +358,14 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
   else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PolygonGeometry && !QgsWkbTypes::isMultiType( geomType ) )
   {
     const QgsPolygonXY poly = geom.asPolygon();
-    const QgsPolylineXY line = poly.at( 0 );
-    for ( const QgsPointXY &pt : line )
+    int ringIdx = 0;
+    for ( const QgsPolylineXY &ring : poly )
     {
-      addPoint( pt, false, idx );
+      for ( const QgsPointXY &pt : ring )
+      {
+        addPoint( pt, false, idx, ringIdx );
+      }
+      ringIdx++;
     }
   }
   else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PolygonGeometry && QgsWkbTypes::isMultiType( geomType ) )
@@ -341,13 +373,17 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
     const QgsMultiPolygonXY multipoly = geom.asMultiPolygon();
     for ( const QgsPolygonXY &poly : multipoly )
     {
-      if ( poly.empty() )
+      if ( poly.isEmpty() )
         continue;
 
-      const QgsPolylineXY line = poly.at( 0 );
-      for ( const QgsPointXY &pt : line )
+      int ringIdx = 0;
+      for ( const QgsPolylineXY &ring : poly )
       {
-        addPoint( pt, false, idx );
+        for ( const QgsPointXY &pt : ring )
+        {
+          addPoint( pt, false, idx, ringIdx );
+        }
+        ringIdx++;
       }
       idx++;
     }
@@ -387,17 +423,25 @@ void QgsRubberBand::paint( QPainter *p )
   if ( mPoints.isEmpty() )
     return;
 
-  QVector< QVector<QPointF> > shapes;
-  for ( const QList<QgsPointXY> &line : qgis::as_const( mPoints ) )
+  QVector< QVector<QPolygonF> > shapes;
+  shapes.reserve( mPoints.size() );
+  for ( const QgsPolygonXY &poly : qgis::as_const( mPoints ) )
   {
-    QVector<QPointF> pts;
-    for ( const QgsPointXY &pt : line )
+    QVector<QPolygonF> rings;
+    rings.reserve( poly.size() );
+    for ( const QgsPolylineXY &line : poly )
     {
-      const QPointF cur = toCanvasCoordinates( QgsPointXY( pt.x() + mTranslationOffsetX, pt.y() + mTranslationOffsetY ) ) - pos();
-      if ( pts.empty() || std::abs( pts.back().x() - cur.x() ) > 1 ||  std::abs( pts.back().y() - cur.y() ) > 1 )
-        pts.append( cur );
+      QVector<QPointF> pts;
+      pts.reserve( line.size() );
+      for ( const QgsPointXY &pt : line )
+      {
+        const QPointF cur = toCanvasCoordinates( QgsPointXY( pt.x() + mTranslationOffsetX, pt.y() + mTranslationOffsetY ) ) - pos();
+        if ( pts.isEmpty() || std::abs( pts.last().x() - cur.x() ) > 1 ||  std::abs( pts.last().y() - cur.y() ) > 1 )
+          pts.append( cur );
+      }
+      rings.append( pts );
     }
-    shapes << pts;
+    shapes.append( rings );
   }
 
   int iterations = mSecondaryPen.color().isValid() ? 2 : 1;
@@ -417,10 +461,27 @@ void QgsRubberBand::paint( QPainter *p )
       p->setPen( mPen );
     }
 
-    for ( const QVector<QPointF> &shape : qgis::as_const( shapes ) )
+    for ( const QVector<QPolygonF> &shape : qgis::as_const( shapes ) )
     {
       drawShape( p, shape );
     }
+  }
+}
+
+void QgsRubberBand::drawShape( QPainter *p, const QVector<QPolygonF> &rings )
+{
+  if ( rings.size() == 1 )
+  {
+    drawShape( p, rings.at( 0 ) );
+  }
+  else
+  {
+    QPainterPath path;
+    for ( const QPolygonF &poly : rings )
+    {
+      path.addPolygon( poly );
+    }
+    p->drawPath( path );
   }
 }
 
@@ -467,11 +528,11 @@ void QgsRubberBand::drawShape( QPainter *p, const QVector<QPointF> &pts )
             break;
 
           case ICON_FULL_BOX:
-            p->drawRect( x - s, y - s, mIconSize, mIconSize );
+            p->drawRect( static_cast< int>( x - s ), static_cast< int >( y - s ), mIconSize, mIconSize );
             break;
 
           case ICON_CIRCLE:
-            p->drawEllipse( x - s, y - s, mIconSize, mIconSize );
+            p->drawEllipse( static_cast< int >( x - s ), static_cast< int >( y - s ), mIconSize, mIconSize );
             break;
 
           case ICON_DIAMOND:
@@ -488,6 +549,17 @@ void QgsRubberBand::drawShape( QPainter *p, const QVector<QPointF> &pts )
               p->drawPolygon( pts, 4 );
             else
               p->drawPolyline( pts, 4 );
+            break;
+          }
+
+          case ICON_SVG:
+          {
+            QRectF viewBox = mSvgRenderer->viewBoxF();
+            QRectF r( mSvgOffset.x(), mSvgOffset.y(), viewBox.width(), viewBox.height() );
+            QgsScopedQPainterState painterState( p );
+            p->translate( pt );
+            mSvgRenderer->render( p, r );
+            break;
           }
         }
       }
@@ -505,7 +577,7 @@ void QgsRubberBand::drawShape( QPainter *p, const QVector<QPointF> &pts )
 
 void QgsRubberBand::updateRect()
 {
-  if ( mPoints.empty() )
+  if ( mPoints.isEmpty() )
   {
     setRect( QgsRectangle() );
     setVisible( false );
@@ -514,16 +586,23 @@ void QgsRubberBand::updateRect()
 
   const QgsMapToPixel &m2p = *( mMapCanvas->getCoordinateTransform() );
 
+#if 0 // unused?
+  double iconSize = ( mIconSize + 1 ) / 2.;
+  if ( mSvgRenderer )
+  {
+    QRectF viewBox = mSvgRenderer->viewBoxF();
+    iconSize = std::max( std::fabs( mSvgOffset.x() ) + .5 * viewBox.width(), std::fabs( mSvgOffset.y() ) + .5 * viewBox.height() );
+  }
+#endif
+
   qreal w = ( ( mIconSize - 1 ) / 2 + mPen.width() ); // in canvas units
 
   QgsRectangle r;  // in canvas units
-  for ( int i = 0; i < mPoints.size(); ++i )
+  for ( const QgsPolygonXY &poly : qgis::as_const( mPoints ) )
   {
-    QList<QgsPointXY>::const_iterator it = mPoints.at( i ).constBegin(),
-                                      itE = mPoints.at( i ).constEnd();
-    for ( ; it != itE; ++it )
+    for ( const QgsPointXY &point : poly.at( 0 ) )
     {
-      QgsPointXY p( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY );
+      QgsPointXY p( point.x() + mTranslationOffsetX, point.y() + mTranslationOffsetY );
       p = m2p.transform( p );
       QgsRectangle rect( p.x() - w, p.y() - w, p.x() + w, p.y() + w );
 
@@ -551,7 +630,7 @@ void QgsRubberBand::updateRect()
 void QgsRubberBand::updatePosition()
 {
   // re-compute rectangle
-  // See https://issues.qgis.org/issues/12392
+  // See https://github.com/qgis/QGIS/issues/20566
   // NOTE: could be optimized by saving map-extent
   //       of rubberband and simply re-projecting
   //       that to device-rectangle on "updatePosition"
@@ -572,31 +651,35 @@ int QgsRubberBand::size() const
 
 int QgsRubberBand::partSize( int geometryIndex ) const
 {
-  if ( geometryIndex < 0 || geometryIndex >= mPoints.size() ) return 0;
-  return mPoints[geometryIndex].size();
+  if ( geometryIndex < 0 ||
+       geometryIndex >= mPoints.size() ||
+       mPoints.at( geometryIndex ).isEmpty() )
+    return 0;
+  return mPoints.at( geometryIndex ).at( 0 ).size();
 }
 
 int QgsRubberBand::numberOfVertices() const
 {
   int count = 0;
-  QList<QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
-  for ( ; it != mPoints.constEnd(); ++it )
+  for ( const QgsPolygonXY &poly : qgis::as_const( mPoints ) )
   {
-    QList<QgsPointXY>::const_iterator iter = it->constBegin();
-    for ( ; iter != it->constEnd(); ++iter )
+    for ( const QgsPolylineXY &ring : poly )
     {
-      ++count;
+      count += ring.size();
     }
   }
   return count;
 }
 
-const QgsPointXY *QgsRubberBand::getPoint( int i, int j ) const
+const QgsPointXY *QgsRubberBand::getPoint( int i, int j, int ringIndex ) const
 {
-  if ( i < mPoints.size() && j < mPoints[i].size() )
-    return &mPoints[i][j];
-  else
+  if ( i < 0 || ringIndex < 0 || j < 0 ||
+       mPoints.size() <= i ||
+       mPoints.at( i ).size() <= ringIndex ||
+       mPoints.at( i ).at( ringIndex ).size() <= j )
     return nullptr;
+  else
+    return &mPoints[i][ringIndex][j];
 }
 
 QgsGeometry QgsRubberBand::asGeometry() const
@@ -607,13 +690,7 @@ QgsGeometry QgsRubberBand::asGeometry() const
   {
     case QgsWkbTypes::PolygonGeometry:
     {
-      QgsPolygonXY polygon;
-      QList< QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
-      for ( ; it != mPoints.constEnd(); ++it )
-      {
-        polygon.append( getPolyline( *it ) );
-      }
-      geom = QgsGeometry::fromPolygonXY( polygon );
+      geom = QgsGeometry::fromMultiPolygonXY( mPoints );
       break;
     }
 
@@ -621,10 +698,11 @@ QgsGeometry QgsRubberBand::asGeometry() const
     {
       QgsMultiPointXY multiPoint;
 
-      QList< QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
-      for ( ; it != mPoints.constEnd(); ++it )
+      for ( const QgsPolygonXY &poly : qgis::as_const( mPoints ) )
       {
-        multiPoint += getPolyline( *it );
+        if ( poly.isEmpty() )
+          continue;
+        multiPoint.append( poly.at( 0 ) );
       }
       geom = QgsGeometry::fromMultiPointXY( multiPoint );
       break;
@@ -638,31 +716,24 @@ QgsGeometry QgsRubberBand::asGeometry() const
         if ( mPoints.size() > 1 )
         {
           QgsMultiPolylineXY multiPolyline;
-          QList< QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
-          for ( ; it != mPoints.constEnd(); ++it )
+          for ( const QgsPolygonXY &poly : qgis::as_const( mPoints ) )
           {
-            multiPolyline.append( getPolyline( *it ) );
+            if ( poly.isEmpty() )
+              continue;
+            multiPolyline.append( poly.at( 0 ) );
           }
           geom = QgsGeometry::fromMultiPolylineXY( multiPolyline );
         }
         else
         {
-          geom = QgsGeometry::fromPolylineXY( getPolyline( mPoints.at( 0 ) ) );
+          if ( !mPoints.at( 0 ).isEmpty() )
+            geom = QgsGeometry::fromPolylineXY( mPoints.at( 0 ).at( 0 ) );
+          else
+            geom = QgsGeometry::fromPolylineXY( QgsPolylineXY() );
         }
       }
       break;
     }
   }
   return geom;
-}
-
-QgsPolylineXY QgsRubberBand::getPolyline( const QList<QgsPointXY> &points )
-{
-  QgsPolylineXY polyline;
-  QList<QgsPointXY>::const_iterator iter = points.constBegin();
-  for ( ; iter != points.constEnd(); ++iter )
-  {
-    polyline.append( *iter );
-  }
-  return polyline;
 }

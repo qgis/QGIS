@@ -154,7 +154,7 @@ bool QgsAbstractFeatureIterator::compileFailed() const
 
 bool QgsAbstractFeatureIterator::prepareSimplification( const QgsSimplifyMethod &simplifyMethod )
 {
-  Q_UNUSED( simplifyMethod );
+  Q_UNUSED( simplifyMethod )
   return false;
 }
 

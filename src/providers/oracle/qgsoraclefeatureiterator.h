@@ -28,11 +28,11 @@ class QgsOracleConn;
 class QgsOracleProvider;
 
 
-class QgsOracleFeatureSource : public QgsAbstractFeatureSource
+class QgsOracleFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsOracleFeatureSource( const QgsOracleProvider *p );
-
+    ~QgsOracleFeatureSource() override;
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   protected:
@@ -52,12 +52,20 @@ class QgsOracleFeatureSource : public QgsAbstractFeatureSource
 
     std::shared_ptr<QgsOracleSharedData> mShared;
 
+    /* The transaction connection (if any) gets refed/unrefed when creating/
+     * destroying the QgsOracleFeatureSource, to ensure that the transaction
+     * connection remains valid during the life time of the feature source
+     * even if the QgsOracleFeatureSource object which initially created the
+     * connection has since been destroyed. */
+    QgsOracleConn *mTransactionConnection = nullptr;
+
+
     friend class QgsOracleFeatureIterator;
     friend class QgsOracleExpressionCompiler;
 };
 
 
-class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>
+class QgsOracleFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>
 {
   public:
     QgsOracleFeatureIterator( QgsOracleFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
@@ -73,6 +81,11 @@ class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
 
     bool openQuery( const QString &whereClause, const QVariantList &args, bool showLog = true );
 
+    bool execQuery( const QString &query, const QVariantList &args, int retryCount = 0 );
+
+    inline void lock();
+    inline void unlock();
+
     QgsOracleConn *mConnection = nullptr;
     QSqlQuery mQry;
     bool mRewind = false;
@@ -84,6 +97,7 @@ class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
 
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
+    bool mIsTransactionConnection = false;
 };
 
 #endif // QGSORACLEFEATUREITERATOR_H

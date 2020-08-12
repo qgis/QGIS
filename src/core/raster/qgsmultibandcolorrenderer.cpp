@@ -133,7 +133,7 @@ QgsRasterRenderer *QgsMultiBandColorRenderer::create( const QDomElement &elem, Q
 
 QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  Q_UNUSED( bandNo );
+  Q_UNUSED( bandNo )
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
   if ( !mInput )
   {
@@ -189,7 +189,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     bandBlocks[*bandIt] = mInput->block( *bandIt, extent, width, height, feedback );
     if ( !bandBlocks[*bandIt] )
     {
-      // We should free the alloced mem from block().
+      // We should free the allocated mem from block().
       QgsDebugMsg( QStringLiteral( "No input band" ) );
       --bandIt;
       for ( ; bandIt != bands.constBegin(); --bandIt )
@@ -238,7 +238,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     blueData = blueBlock->byteData();
   }
 
-  QRgb myDefaultColor = NODATA_COLOR;
+  const QRgb myDefaultColor = renderColorForNodataPixel();
 
   if ( fastDraw )
   {
@@ -420,8 +420,6 @@ QList<int> QgsMultiBandColorRenderer::usesBands() const
 
 void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
 {
-  QgsStringMap newProps = props;
-
   // create base structure
   QgsRasterRenderer::toSld( doc, element, props );
 
@@ -429,7 +427,7 @@ void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
 #if 0
   // TODO: the following jumped code is necessary to avoid to export channelSelection in
   // case it's set as default value. The drawback is that it's necessary to calc band
-  // statistics that can be really slow depending on dataProvider and rastr localtion.
+  // statistics that can be really slow depending on dataProvider and rastr location.
   // this is the reason this part of code is commented and the channelSelection is
   // always exported.
   //

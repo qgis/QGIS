@@ -185,14 +185,28 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
     {
       mQgsWidget->fileWidget()->setFilter( cfg.value( QStringLiteral( "FileWidgetFilter" ) ).toString() );
     }
+    if ( cfg.contains( QStringLiteral( "DocumentViewerHeight" ) ) )
+    {
+      mQgsWidget->setDocumentViewerHeight( cfg.value( QStringLiteral( "DocumentViewerHeight" ) ).toInt( ) );
+    }
+    if ( cfg.contains( QStringLiteral( "DocumentViewerWidth" ) ) )
+    {
+      mQgsWidget->setDocumentViewerWidth( cfg.value( QStringLiteral( "DocumentViewerWidth" ) ).toInt( ) );
+    }
   }
 
   if ( mLineEdit )
-    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valueChanged( value ); } );
+    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
+    emit valueChanged( value );
+    Q_NOWARN_DEPRECATED_POP
+    emit valuesChanged( value );
+  } );
 
 }
 
-void QgsExternalResourceWidgetWrapper::setValue( const QVariant &value )
+void QgsExternalResourceWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   if ( mLineEdit )
   {
@@ -209,7 +223,10 @@ void QgsExternalResourceWidgetWrapper::setValue( const QVariant &value )
   if ( mLabel )
   {
     mLabel->setText( value.toString() );
-    emit valueChanged( value.toString() ); // emit signal that value has changed, do not do it for other widgets
+    Q_NOWARN_DEPRECATED_PUSH
+    emit valueChanged( value.toString() );
+    Q_NOWARN_DEPRECATED_POP
+    emit valuesChanged( value.toString() ); // emit signal that value has changed, do not do it for other widgets
   }
 
   if ( mQgsWidget )

@@ -43,7 +43,7 @@ FieldSelectorDelegate::FieldSelectorDelegate( QObject *parent )
 
 QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
+  Q_UNUSED( option )
 
   const QgsVectorLayerAndAttributeModel *m = qobject_cast< const QgsVectorLayerAndAttributeModel *>( index.model() );
   if ( !m )
@@ -61,7 +61,7 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
 
 void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  const QgsVectorLayerAndAttributeModel *m = dynamic_cast< const QgsVectorLayerAndAttributeModel *>( index.model() );
+  const QgsVectorLayerAndAttributeModel *m = qobject_cast< const QgsVectorLayerAndAttributeModel *>( index.model() );
   if ( !m )
     return;
 
@@ -102,7 +102,7 @@ QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTree *
 
 int QgsVectorLayerAndAttributeModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 2;
 }
 
@@ -141,7 +141,7 @@ QVariant QgsVectorLayerAndAttributeModel::headerData( int section, Qt::Orientati
       if ( section == 0 )
         return tr( "Layer" );
       else if ( section == 1 )
-        return tr( "Output layer attribute" );
+        return tr( "Output Layer Attribute" );
     }
     else if ( role == Qt::ToolTipRole )
     {
@@ -168,7 +168,7 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role
       int n;
       for ( n = 0; !hasChecked || !hasUnchecked; n++ )
       {
-        QVariant v = data( idx.child( n, 0 ), role );
+        QVariant v = data( index( n, 0, idx ), role );
         if ( !v.isValid() )
           break;
 
@@ -237,7 +237,7 @@ bool QgsVectorLayerAndAttributeModel::setData( const QModelIndex &index, const Q
     int i = 0;
     for ( i = 0; ; i++ )
     {
-      QModelIndex child = index.child( i, 0 );
+      QModelIndex child = QgsVectorLayerAndAttributeModel::index( i, 0, index );
       if ( !child.isValid() )
         break;
 
@@ -281,14 +281,13 @@ QList< QgsDxfExport::DxfLayer > QgsVectorLayerAndAttributeModel::layers() const
   QList< QgsDxfExport::DxfLayer > layers;
   QHash< QString, int > layerIdx;
 
-  const auto constMCheckedLeafs = mCheckedLeafs;
-  for ( const QModelIndex &idx : constMCheckedLeafs )
+  for ( const QModelIndex &idx : qgis::as_const( mCheckedLeafs ) )
   {
     QgsLayerTreeNode *node = index2node( idx );
     if ( QgsLayerTree::isGroup( node ) )
     {
-      const auto constFindLayers = QgsLayerTree::toGroup( node )->findLayers();
-      for ( QgsLayerTreeLayer *treeLayer : constFindLayers )
+      const auto childLayers = QgsLayerTree::toGroup( node )->findLayers();
+      for ( QgsLayerTreeLayer *treeLayer : childLayers )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( treeLayer->layer() );
         Q_ASSERT( vl );
@@ -351,7 +350,7 @@ void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name
   }
   else
   {
-    visibleLayers = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayerIds( name ).toSet();
+    visibleLayers = qgis::listToSet( QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayerIds( name ) );
   }
 
   if ( visibleLayers.isEmpty() )
@@ -507,7 +506,7 @@ QgsDxfExportDialog::~QgsDxfExportDialog()
 
 void QgsDxfExportDialog::mVisibilityPresets_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   QgsVectorLayerAndAttributeModel *model = qobject_cast< QgsVectorLayerAndAttributeModel * >( mTreeView->model() );
   Q_ASSERT( model );
   model->applyVisibilityPreset( mVisibilityPresets->currentText() );
@@ -558,7 +557,7 @@ void QgsDxfExportDialog::deSelectAll()
 
 QList< QgsDxfExport::DxfLayer > QgsDxfExportDialog::layers() const
 {
-  const QgsVectorLayerAndAttributeModel *model = dynamic_cast< const QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
+  const QgsVectorLayerAndAttributeModel *model = qobject_cast< const QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
   Q_ASSERT( model );
   return model->layers();
 }

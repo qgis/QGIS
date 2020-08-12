@@ -10,84 +10,7 @@
 
 
 
-class QgsExpressionItem : QStandardItem
-{
-%Docstring
-An expression item that can be used in the QgsExpressionBuilderWidget tree.
-%End
 
-%TypeHeaderCode
-#include "qgsexpressionbuilderwidget.h"
-%End
-  public:
-    enum ItemType
-    {
-      Header,
-      Field,
-      ExpressionNode
-    };
-
-    QgsExpressionItem( const QString &label,
-                       const QString &expressionText,
-                       const QString &helpText,
-                       QgsExpressionItem::ItemType itemType = ExpressionNode );
-
-    QgsExpressionItem( const QString &label,
-                       const QString &expressionText,
-                       QgsExpressionItem::ItemType itemType = ExpressionNode );
-
-    QString getExpressionText() const;
-
-    QString getHelpText() const;
-%Docstring
-Gets the help text that is associated with this expression item.
-
-:return: The help text.
-%End
-
-    void setHelpText( const QString &helpText );
-%Docstring
-Set the help text for the current item
-
-.. note::
-
-   The help text can be set as a html string.
-%End
-
-    QgsExpressionItem::ItemType getItemType() const;
-%Docstring
-Gets the type of expression item, e.g., header, field, ExpressionNode.
-
-:return: The QgsExpressionItem.ItemType
-%End
-
-    static const int CUSTOM_SORT_ROLE;
-    static const int ITEM_TYPE_ROLE;
-
-};
-
-class QgsExpressionItemSearchProxy : QSortFilterProxyModel
-{
-%Docstring
-Search proxy used to filter the QgsExpressionBuilderWidget tree.
-The default search for a tree model only searches top level this will handle one
-level down
-%End
-
-%TypeHeaderCode
-#include "qgsexpressionbuilderwidget.h"
-%End
-  public:
-    QgsExpressionItemSearchProxy();
-
-    virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
-
-
-  protected:
-
-    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
-
-};
 
 
 class QgsExpressionBuilderWidget : QWidget
@@ -102,11 +25,43 @@ See QgsExpressionBuilderDialog for example of usage.
 %End
   public:
 
+    enum Flag
+    {
+      LoadNothing,
+      LoadRecent,
+      LoadUserExpressions,
+      LoadAll,
+    };
+    typedef QFlags<QgsExpressionBuilderWidget::Flag> Flags;
+
+
+
     QgsExpressionBuilderWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Create a new expression builder widget with an optional parent.
 %End
     ~QgsExpressionBuilderWidget();
+
+    void init( const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), const Flags &flags = LoadAll );
+%Docstring
+Initialize without any layer
+
+.. versionadded:: 3.14
+%End
+
+    void initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), const Flags &flags = LoadAll );
+%Docstring
+Initialize with a layer
+
+.. versionadded:: 3.14
+%End
+
+    void initWithFields( const QgsFields &fields, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), const Flags &flags = LoadAll );
+%Docstring
+Initialize with given fields without any layer
+
+.. versionadded:: 3.14
+%End
 
     void setLayer( QgsVectorLayer *layer );
 %Docstring
@@ -114,26 +69,36 @@ Sets layer in order to get the fields and values
 
 .. note::
 
-   this needs to be called before calling loadFieldNames().
+   this needs to be called before calling :py:func:`~QgsExpressionBuilderWidget.loadFieldNames`.
 %End
 
-    void loadFieldNames();
+    QgsVectorLayer *layer() const;
 %Docstring
-Loads all the field names from the layer.
-@remarks Should this really be public couldn't we just do this for the user?
+Returns the current layer or a None.
 %End
 
-    void loadFieldNames( const QgsFields &fields );
+ void loadFieldNames();
+%Docstring
 
-    void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues );
+.. deprecated:: QGIS 3.14
+   this is now done automatically
+%End
+
+ void loadFieldNames( const QgsFields &fields );
+%Docstring
+
+.. deprecated:: QGIS 3.14
+   use expressionTree()->loadFieldNames() instead
+%End
+
+ void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues ) /Deprecated/;
 %Docstring
 Loads field names and values from the specified map.
 
-.. note::
-
-   The field values must be quoted appropriately if they are strings.
-
 .. versionadded:: 2.12
+
+.. deprecated:: QGIS 3.14
+   this will not do anything, use setLayer() instead
 %End
 
     void setGeomCalculator( const QgsDistanceArea &da );
@@ -186,7 +151,7 @@ preview result and for populating the list of available functions and variables.
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
 Sets the expression context for the widget. The context is used for the expression
-preview result and for populating the list of available functions and variables.
+preview result and to populate the list of available functions and variables.
 
 :param context: expression context
 
@@ -195,69 +160,99 @@ preview result and for populating the list of available functions and variables.
 .. versionadded:: 2.12
 %End
 
-    void registerItem( const QString &group, const QString &label, const QString &expressionText,
-                       const QString &helpText = QString(),
-                       QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
-                       bool highlightedItem = false, int sortOrder = 1,
-                       QIcon icon = QIcon() );
-%Docstring
-Registers a node item for the expression builder.
-
-:param group: The group the item will be show in the tree view.  If the group doesn't exsit it will be created.
-:param label: The label that is show to the user for the item in the tree.
-:param expressionText: The text that is inserted into the expression area when the user double clicks on the item.
-:param helpText: The help text that the user will see when item is selected.
-:param type: The type of the expression item.
-:param highlightedItem: set to ``True`` to make the item highlighted, which inserts a bold copy of the item at the top level
-:param sortOrder: sort ranking for item
-:param icon: custom icon to show for item
-%End
-
     bool isExpressionValid();
-
-    void saveToRecent( const QString &collection = "generic" );
 %Docstring
-Adds the current expression to the given collection.
-By default it is saved to the collection "generic".
+Returns if the expression is valid
 %End
 
-    void loadRecent( const QString &collection = "generic" );
+ void saveToRecent( const QString &collection = "generic" ) /Deprecated/;
 %Docstring
-Loads the recent expressions from the given collection.
+Adds the current expression to the given ``collection``.
+By default it is saved to the collection "generic".
+
+.. deprecated:: QGIS 3.14
+   use expressionTree()->saveRecent() instead
+%End
+
+ void loadRecent( const QString &collection = QStringLiteral( "generic" ) )/Deprecated/;
+%Docstring
+Loads the recent expressions from the given ``collection``.
 By default it is loaded from the collection "generic".
+
+.. deprecated:: QGIS 3.14
+   use expressionTree()->loadRecent() instead
+%End
+
+    QgsExpressionTreeView *expressionTree() const;
+%Docstring
+Returns the expression tree
+
+.. versionadded:: 3.14
+%End
+
+ void loadUserExpressions() /Deprecated/;
+%Docstring
+Loads the user expressions.
+
+.. deprecated:: QGIS 3.14
+   use expressionTree()->loadUserExpressions() instead
+
+.. versionadded:: 3.12
+%End
+
+ void saveToUserExpressions( const QString &label, const QString expression, const QString &helpText ) /Deprecated/;
+%Docstring
+Stores the user ``expression`` with given ``label`` and ``helpText``.
+
+.. deprecated:: QGIS 3.14
+   use expressionTree()->saveToUserExpressions() instead
+
+.. versionadded:: 3.12
+%End
+
+ void removeFromUserExpressions( const QString &label ) /Deprecated/;
+%Docstring
+Removes the expression ``label`` from the user stored expressions.
+
+.. deprecated:: QGIS 3.14
+   use expressionTree()->removeFromUserExpressions() instead
+
+.. versionadded:: 3.12
 %End
 
     void newFunctionFile( const QString &fileName = "scratch" );
 %Docstring
-Create a new file in the function editor
+Creates a new file in the function editor
 %End
 
     void saveFunctionFile( QString fileName );
 %Docstring
-Save the current function editor text to the given file.
+Saves the current function editor text to the given file.
 %End
 
     void loadCodeFromFile( QString path );
 %Docstring
-Load code from the given file into the function editor
+Loads code from the given file into the function editor
 %End
 
     void loadFunctionCode( const QString &code );
 %Docstring
-Load code into the function editor
+Loads code into the function editor
 %End
 
     void updateFunctionFileList( const QString &path );
 %Docstring
-Update the list of function files found at the given path
+Updates the list of function files found at the given path
 %End
 
-    QStandardItemModel *model();
+ QStandardItemModel *model() /Deprecated/;
 %Docstring
 Returns a pointer to the dialog's function item model.
 This method is exposed for testing purposes only - it should not be used to modify the model.
 
 .. versionadded:: 3.0
+
+.. deprecated:: QGIS 3.14
 %End
 
     QgsProject *project();
@@ -299,12 +294,34 @@ with the context.
 
     void loadSampleValues();
 %Docstring
-Load sample values into the sample value area
+Load sample values into the sample value area.
+Including available values, in case the formatter can
+provide them (eg. RelationReference).
 %End
 
     void loadAllValues();
 %Docstring
-Load all unique values from the set layer into the sample area
+Load all unique values from the set layer into the sample area.
+Including all available values, in case the formatter can
+provide them (eg. RelationReference).
+%End
+
+    void loadSampleUsedValues();
+%Docstring
+Load used sample values into the sample value area.
+Only the used ones. Without available values, even if the
+formatter can provide them (eg. RelationReference).
+
+.. versionadded:: 3.12
+%End
+
+    void loadAllUsedValues();
+%Docstring
+Load all unique values from the set layer into the sample area.
+Only the used ones. Without available values, even if the
+formatter can provide them (eg. RelationReference).
+
+.. versionadded:: 3.12
 %End
 
     void autosave();
@@ -319,6 +336,40 @@ when text changes.
 
 :param enabled: ``True`` to enable auto saving.
 %End
+
+    void storeCurrentUserExpression( );
+%Docstring
+Adds the current expressions to the stored user expressions.
+
+.. versionadded:: 3.12
+%End
+
+    void removeSelectedUserExpression( );
+%Docstring
+Removes the selected expression from the stored user expressions,
+the selected expression must be a user stored expression.
+
+.. versionadded:: 3.12
+%End
+
+    void editSelectedUserExpression();
+%Docstring
+Edits the selected expression from the stored user expressions,
+the selected expression must be a user stored expression.
+
+.. versionadded:: 3.14
+%End
+
+    const QList<QgsExpressionItem *> findExpressions( const QString &label );
+%Docstring
+Returns the list of expression items matching a ``label``.
+
+.. versionadded:: 3.12
+
+.. deprecated:: QGIS 3.14
+   use expressionTree()->findExpressions instead
+%End
+
 
   signals:
 
@@ -351,6 +402,7 @@ with the context.
     virtual void showEvent( QShowEvent *e );
 
 
+      public:
 };
 
 

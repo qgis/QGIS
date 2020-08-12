@@ -60,11 +60,13 @@ struct sqlstatement_parser_context
 
   QgsSQLStatement::Node* whereExp;
 
+  QgsSQLStatement::Node* expression;
+
   QList<QgsSQLStatement::NodeJoin*> joinList;
 
   QList<QgsSQLStatement::NodeColumnSorted*> orderByList;
 
-  sqlstatement_parser_context() : rootNode( nullptr ), whereExp( nullptr ) {}
+  sqlstatement_parser_context() : rootNode( nullptr ), whereExp( nullptr ), expression( nullptr ) {}
 
   void setWhere( QgsSQLStatement::Node* whereExp ) { this->whereExp = whereExp; }
 
@@ -86,8 +88,6 @@ struct sqlstatement_parser_context
 %define api.pure
 %lex-param {void * scanner}
 %parse-param {sqlstatement_parser_context* parser_ctx}
-
-%name-prefix "sqlstatement_"
 
 %union
 {
@@ -164,7 +164,7 @@ struct sqlstatement_parser_context
 %type <boolVal> select_type;
 
 // debugging
-%error-verbose
+%define parse.error verbose
 
 //
 // operator precedence
@@ -205,6 +205,7 @@ struct sqlstatement_parser_context
 %%
 
 root: select_statement { parser_ctx->rootNode = $1; }
+      | expr { parser_ctx->expression = $1; }
    ;
 
 /* We have to separate expr from expr_non_logical to avoid */
@@ -376,7 +377,7 @@ selected_column:
             delete $1;
             QgsSQLStatement::NodeList* nodeList = new QgsSQLStatement::NodeList();
             nodeList->append( new QgsSQLStatement::NodeColumnRef("*", true) );
-            $$ = new QgsSQLStatement::NodeSelectedColumn( 
+            $$ = new QgsSQLStatement::NodeSelectedColumn(
                     new QgsSQLStatement::NodeFunction( "COUNT", nodeList) );
         }
 
@@ -393,7 +394,7 @@ selected_column:
             delete $1;
             QgsSQLStatement::NodeList* nodeList = new QgsSQLStatement::NodeList();
             nodeList->append( new QgsSQLStatement::NodeColumnRef("*", true) );
-            $$ = new QgsSQLStatement::NodeSelectedColumn( 
+            $$ = new QgsSQLStatement::NodeSelectedColumn(
                     new QgsSQLStatement::NodeFunction( "COUNT", nodeList) );
             $$->setAlias(*$5);
             delete $5;
@@ -414,7 +415,7 @@ selected_column:
             QgsSQLStatement::NodeList* nodeList = new QgsSQLStatement::NodeList();
             $4->setDistinct();
             nodeList->append( $4 );
-            $$ = new QgsSQLStatement::NodeSelectedColumn( 
+            $$ = new QgsSQLStatement::NodeSelectedColumn(
                     new QgsSQLStatement::NodeFunction( "COUNT", nodeList) );
         }
 
@@ -434,7 +435,7 @@ selected_column:
             QgsSQLStatement::NodeList* nodeList = new QgsSQLStatement::NodeList();
             $4->setDistinct();
             nodeList->append( $4 );
-            $$ = new QgsSQLStatement::NodeSelectedColumn( 
+            $$ = new QgsSQLStatement::NodeSelectedColumn(
                     new QgsSQLStatement::NodeFunction( "COUNT", nodeList) );
             $$->setAlias(*$6);
             delete $6;
@@ -596,7 +597,7 @@ table_list:
 
 
 // returns parsed tree, otherwise returns nullptr and sets parserErrorMsg
-QgsSQLStatement::Node* parse(const QString& str, QString& parserErrorMsg)
+QgsSQLStatement::Node* parse(const QString& str, QString& parserErrorMsg, bool allowFragments )
 {
   sqlstatement_parser_context ctx;
   ctx.rootNode = 0;
@@ -607,16 +608,24 @@ QgsSQLStatement::Node* parse(const QString& str, QString& parserErrorMsg)
   sqlstatement_lex_destroy(ctx.flex_scanner);
 
   // list should be empty when parsing was OK
-  if (res == 0) // success?
+  if ( res == 0 && ( ctx.rootNode || ( allowFragments && ctx.expression ) ) ) // success?
   {
-    ctx.rootNode->setWhere(ctx.whereExp);
-    ctx.rootNode->setJoins(ctx.joinList);
-    ctx.rootNode->setOrderBy(ctx.orderByList);
-    return ctx.rootNode;
+    if ( ctx.rootNode )
+    {
+      ctx.rootNode->setWhere(ctx.whereExp);
+      ctx.rootNode->setJoins(ctx.joinList);
+      ctx.rootNode->setOrderBy(ctx.orderByList);
+      return ctx.rootNode;
+    }
+    else
+    {
+      //fragment
+      return ctx.expression;
+    }
   }
   else // error?
   {
-    parserErrorMsg = ctx.errorMsg;
+    parserErrorMsg = !allowFragments && !ctx.rootNode ? QStringLiteral("Expression must begin with SELECT") :  ctx.errorMsg;
     delete ctx.rootNode;
     delete ctx.whereExp;
     qDeleteAll(ctx.joinList);

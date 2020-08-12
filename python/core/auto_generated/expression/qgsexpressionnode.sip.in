@@ -169,7 +169,7 @@ the original expression, it's just guaranteed to behave the same way.
 %Docstring
 Evaluate this node with the given context and parent.
 This will return a cached value if it has been determined to be static
-during the prepare() execution.
+during the :py:func:`~QgsExpressionNode.prepare` execution.
 
 .. versionadded:: 2.12
 %End
@@ -209,7 +209,7 @@ Returns a set of all functions which are used in this expression.
 Abstract virtual method which returns if the geometry is required to evaluate
 this expression.
 
-This needs to call `needsGeometry()` recursively on any child nodes.
+This needs to call `:py:func:`~QgsExpressionNode.needsGeometry`` recursively on any child nodes.
 
 :return: ``True`` if a geometry is required to evaluate this expression
 %End
@@ -217,9 +217,9 @@ This needs to call `needsGeometry()` recursively on any child nodes.
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const = 0;
 %Docstring
 Returns ``True`` if this node can be evaluated for a static value. This is used during
-the prepare() step and in case it returns ``True``, the value of this node will already
+the :py:func:`~QgsExpressionNode.prepare` step and in case it returns ``True``, the value of this node will already
 be evaluated and the result cached (and therefore not re-evaluated in subsequent calls
-to eval()). In case this returns ``True``, prepareNode() will never be called.
+to :py:func:`~QgsExpressionNode.eval`). In case this returns ``True``, :py:func:`~QgsExpressionNode.prepareNode` will never be called.
 
 .. versionadded:: 3.0
 %End
@@ -228,7 +228,7 @@ to eval()). In case this returns ``True``, prepareNode() will never be called.
 %Docstring
 Prepare this node for evaluation.
 This will check if the node content is static and in this case cache the value.
-If it's not static it will call prepareNode() to allow the node to do initialization
+If it's not static it will call :py:func:`~QgsExpressionNode.prepareNode` to allow the node to do initialization
 work like for example resolving a column name to an attribute index.
 
 .. versionadded:: 2.12

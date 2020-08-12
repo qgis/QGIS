@@ -32,11 +32,13 @@ class QgsMapLayer;
  * layer tree indicator providers.
  *
  * Subclasses must override:
+ *
  * - iconName()
  * - tooltipText()
  * - acceptLayer() filter function to determine whether the indicator must be added for the layer
  *
  * Subclasses may override:
+ *
  * - onIndicatorClicked() default implementation does nothing
  * - connectSignals() default implementation connects layers to dataSourceChanged()
  * - disconnectSignals() default implementation disconnects layers from dataSourceChanged()
@@ -55,6 +57,11 @@ class QgsLayerTreeViewIndicatorProvider : public QObject
     virtual void connectSignals( QgsMapLayer *layer );
     //! Disconnect signals, default implementation disconnects layers from dataSourceChanged()
     virtual void disconnectSignals( QgsMapLayer *layer );
+
+    /**
+     * Updates the state of a the indicator for the given \a layer.
+     */
+    void updateLayerIndicator( QgsMapLayer *layer );
 
   protected slots:
 

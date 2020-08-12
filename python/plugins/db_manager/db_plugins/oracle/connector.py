@@ -46,7 +46,6 @@ def classFactory():
 
 
 class OracleDBConnector(DBConnector):
-
     ORGeomTypes = {
         2001: QgsWkbTypes.Point,
         2002: QgsWkbTypes.LineString,
@@ -108,6 +107,8 @@ class OracleDBConnector(DBConnector):
                 self.cache_connection = sqlite3.connect(sqlite_cache_file)
             except sqlite3.Error:
                 self.cache_connection = False
+        else:
+            self.cache_connection = False
 
         # Find if there is cache for our connection:
         if self.cache_connection:
@@ -198,7 +199,7 @@ class OracleDBConnector(DBConnector):
         return False
 
     def hasCustomQuerySupport(self):
-        """From Qgis v2.2 Oracle custom queries are supported."""
+        """From QGIS v2.2 onwards Oracle custom queries are supported."""
         return Qgis.QGIS_VERSION_INT >= 20200
 
     def hasTableColumnEditingSupport(self):
@@ -305,7 +306,7 @@ class OracleDBConnector(DBConnector):
         if self.hasCache():
             return self.getSchemasCache()
 
-        # Use cache if avalaible:
+        # Use cache if available:
         metatable = (u"all_objects WHERE object_type IN "
                      u"('TABLE','VIEW','SYNONYM')")
         if self.geometryColumnsOnly:
@@ -426,7 +427,7 @@ class OracleDBConnector(DBConnector):
         return sorted(items, key=cmp_to_key(lambda x, y: (x[1] > y[1]) - (x[1] < y[1])))
 
     def updateCache(self, tableList, schema=None):
-        """Update the SQLite cache of table list for a schema."""
+        """Updates the SQLite cache of table list for a schema."""
 
         data = []
         # First, we treat the list
@@ -1017,7 +1018,7 @@ class OracleDBConnector(DBConnector):
         self._execute_and_commit(sql)
 
     def deleteTableTrigger(self, trigger, table):
-        """Delete the trigger on a table."""
+        """Deletes the trigger on a table."""
         schema, tablename = self.getSchemaTableName(table)
         trigger = u".".join([self.quoteId(schema), self.quoteId(trigger)])
         sql = u"DROP TRIGGER {}".format(trigger)
@@ -1194,7 +1195,7 @@ class OracleDBConnector(DBConnector):
         return False
 
     def createTable(self, table, field_defs, pkey):
-        """Create ordinary table
+        """Creates ordinary table
         'fields' is array containing field definitions
         'pkey' is the primary key name
         """
@@ -1211,7 +1212,7 @@ class OracleDBConnector(DBConnector):
         return True
 
     def deleteTable(self, table):
-        """Delete table and its reference in sdo_geom_metadata."""
+        """Deletes table and its reference in sdo_geom_metadata."""
 
         schema, tablename = self.getSchemaTableName(table)
 
@@ -1222,13 +1223,13 @@ class OracleDBConnector(DBConnector):
         self._execute_and_commit(sql)
 
     def emptyTable(self, table):
-        """Delete all the rows of a table."""
+        """Deletes all the rows of a table."""
 
         sql = u"TRUNCATE TABLE {}".format(self.quoteId(table))
         self._execute_and_commit(sql)
 
     def renameTable(self, table, new_table):
-        """Rename a table inside the database."""
+        """Renames a table inside the database."""
         schema, tablename = self.getSchemaTableName(table)
         if new_table == tablename:
             return
@@ -1246,7 +1247,7 @@ class OracleDBConnector(DBConnector):
         self._commit()
 
     def createView(self, view, query):
-        """Create a view as defined."""
+        """Creates a view as defined."""
         sql = u"CREATE VIEW {0} AS {1}".format(self.quoteId(view),
                                                query)
         self._execute_and_commit(sql)
@@ -1281,7 +1282,7 @@ class OracleDBConnector(DBConnector):
         return True
 
     def deleteView(self, view):
-        """Delete a view."""
+        """Deletes a view."""
         schema, tablename = self.getSchemaTableName(view)
 
         if self.isVectorTable(view):
@@ -1291,30 +1292,30 @@ class OracleDBConnector(DBConnector):
         self._execute_and_commit(sql)
 
     def createSchema(self, schema):
-        """Create a new empty schema in database."""
+        """Creates a new empty schema in database."""
         # Not tested
         sql = u"CREATE SCHEMA AUTHORIZATION {}".format(
             self.quoteId(schema))
         self._execute_and_commit(sql)
 
     def deleteSchema(self, schema):
-        """Drop (empty) schema from database."""
+        """Drops (empty) schema from database."""
         sql = u"DROP USER {} CASCADE".format(self.quoteId(schema))
         self._execute_and_commit(sql)
 
     def renameSchema(self, schema, new_schema):
-        """Rename a schema in the database."""
+        """Renames a schema in the database."""
         # Unsupported in Oracle
         pass
 
     def addTableColumn(self, table, field_def):
-        """Add a column to a table."""
+        """Adds a column to a table."""
         sql = u"ALTER TABLE {0} ADD {1}".format(self.quoteId(table),
                                                 field_def)
         self._execute_and_commit(sql)
 
     def deleteTableColumn(self, table, column):
-        """Delete column from a table."""
+        """Deletes column from a table."""
         # Delete all the constraints for this column
         constraints = [f[0] for f in self.getTableConstraints(table)
                        if f[2] == column]
@@ -1337,7 +1338,7 @@ class OracleDBConnector(DBConnector):
     def updateTableColumn(self, table, column, new_name=None,
                           data_type=None, not_null=None,
                           default=None, comment=None):
-        """Update properties of a column in a table."""
+        """Updates properties of a column in a table."""
 
         schema, tablename = self.getSchemaTableName(table)
 
@@ -1378,19 +1379,19 @@ class OracleDBConnector(DBConnector):
         self._commit()
 
     def renameTableColumn(self, table, column, new_name):
-        """Rename column in a table."""
+        """Renames column in a table."""
         return self.updateTableColumn(table, column, new_name)
 
     def setTableColumnType(self, table, column, data_type):
-        """Change column type."""
+        """Changes column type."""
         return self.updateTableColumn(table, column, None, data_type)
 
     def setTableColumnNull(self, table, column, is_null):
-        """Change whether column can contain null values."""
+        """Changes whether column can contain null values."""
         return self.updateTableColumn(table, column, None, None, not is_null)
 
     def setTableColumnDefault(self, table, column, default):
-        """Change column's default value.
+        """Changes column's default value.
         If default=None or an empty string drop default value.
         """
         return self.updateTableColumn(table, column, None, None, None, default)
@@ -1417,7 +1418,7 @@ class OracleDBConnector(DBConnector):
         return res
 
     def refreshMView(self, table):
-        """Refresh an MVIEW"""
+        """Refreshes an MVIEW"""
         schema, tablename = self.getSchemaTableName(table)
         mview = u"{}.{}".format(schema, tablename) if schema else tablename
         sql = u"""
@@ -1429,7 +1430,7 @@ class OracleDBConnector(DBConnector):
         self._execute_and_commit(sql)
 
     def deleteMetadata(self, table, geom_column=None):
-        """Delete the metadata entry for a table"""
+        """Deletes the metadata entry for a table"""
         schema, tablename = self.getSchemaTableName(table)
         if not (self.getRawTablePrivileges('USER_SDO_GEOM_METADATA',
                                            'MDSYS',
@@ -1448,7 +1449,7 @@ class OracleDBConnector(DBConnector):
 
     def updateMetadata(self, table, geom_column, new_geom_column=None,
                        new_table=None, extent=None, srid=None):
-        """update the metadata table with the new information"""
+        """Updates the metadata table with the new information"""
 
         schema, tablename = self.getSchemaTableName(table)
         if not (self.getRawTablePrivileges('USER_SDO_GEOM_METADATA',
@@ -1499,7 +1500,7 @@ class OracleDBConnector(DBConnector):
         self._execute_and_commit(sql)
 
     def insertMetadata(self, table, geom_column, extent, srid, dim=2):
-        """ Insert a line for the table in Oracle Metadata table."""
+        """Inserts a line for the table in Oracle Metadata table."""
         schema, tablename = self.getSchemaTableName(table)
         if not (self.getRawTablePrivileges('USER_SDO_GEOM_METADATA',
                                            'MDSYS',
@@ -1542,7 +1543,7 @@ class OracleDBConnector(DBConnector):
 
     def addGeometryColumn(self, table, geom_column='GEOM',
                           geom_type=None, srid=-1, dim=2):
-        """Add a geometry column and update Oracle Spatial
+        """Adds a geometry column and update Oracle Spatial
         metadata.
         """
 
@@ -1565,48 +1566,48 @@ class OracleDBConnector(DBConnector):
                             srid, dim)
 
     def deleteGeometryColumn(self, table, geom_column):
-        """Delete a geometric column."""
+        """Deletes a geometric column."""
         return self.deleteTableColumn(table, geom_column)
 
     def addTableUniqueConstraint(self, table, column):
-        """Add a unique constraint to a table."""
+        """Adds a unique constraint to a table."""
         sql = u"ALTER TABLE {0} ADD UNIQUE ({1})".format(
             self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
     def deleteTableConstraint(self, table, constraint):
-        """Delete constraint in a table."""
+        """Deletes constraint in a table."""
         sql = u"ALTER TABLE {0} DROP CONSTRAINT {1}".format(
             self.quoteId(table), self.quoteId(constraint))
         self._execute_and_commit(sql)
 
     def addTablePrimaryKey(self, table, column):
-        """Add a primary key (with one column) to a table."""
+        """Adds a primary key (with one column) to a table."""
         sql = u"ALTER TABLE {0} ADD PRIMARY KEY ({1})".format(
             self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
     def createTableIndex(self, table, name, column):
-        """Create index on one column using default options."""
+        """Creates index on one column using default options."""
         sql = u"CREATE INDEX {0} ON {1} ({2})".format(
             self.quoteId(name), self.quoteId(table),
             self.quoteId(column))
         self._execute_and_commit(sql)
 
     def rebuildTableIndex(self, table, name):
-        """Rebuild a table index"""
+        """Rebuilds a table index"""
         schema, tablename = self.getSchemaTableName(table)
         sql = u"ALTER INDEX {} REBUILD".format(self.quoteId((schema, name)))
         self._execute_and_commit(sql)
 
     def deleteTableIndex(self, table, name):
-        """Delete an index on a table."""
+        """Deletes an index on a table."""
         schema, tablename = self.getSchemaTableName(table)
         sql = u"DROP INDEX {}".format(self.quoteId((schema, name)))
         self._execute_and_commit(sql)
 
     def createSpatialIndex(self, table, geom_column='GEOM'):
-        """Create a spatial index on a geometric column."""
+        """Creates a spatial index on a geometric column."""
         geom_column = geom_column.upper()
         schema, tablename = self.getSchemaTableName(table)
         idx_name = self.quoteId(u"sidx_{0}_{1}".format(tablename,
@@ -1620,7 +1621,7 @@ class OracleDBConnector(DBConnector):
         self._execute_and_commit(sql)
 
     def deleteSpatialIndex(self, table, geom_column='GEOM'):
-        """Delete a spatial index of a geometric column."""
+        """Deletes a spatial index of a geometric column."""
         schema, tablename = self.getSchemaTableName(table)
         idx_name = self.quoteId(u"sidx_{0}_{1}".format(tablename,
                                                        geom_column))

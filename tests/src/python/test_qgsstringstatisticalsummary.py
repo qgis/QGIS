@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '07/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -26,14 +24,14 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
         # added one-at-a-time
         s = QgsStringStatisticalSummary()
         self.assertEqual(s.statistics(), QgsStringStatisticalSummary.All)
-        strings = ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', 'eeee', '', 'eeee', '', 'dddd']
+        strings = ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', 'eeee', '', 'eeee', 'aaaa', '', 'dddd']
         s.calculate(strings)
         s2 = QgsStringStatisticalSummary()
         for string in strings:
             s2.addString(string)
         s2.finalize()
-        self.assertEqual(s.count(), 9)
-        self.assertEqual(s2.count(), 9)
+        self.assertEqual(s.count(), 10)
+        self.assertEqual(s2.count(), 10)
         self.assertEqual(s.countDistinct(), 6)
         self.assertEqual(s2.countDistinct(), 6)
         self.assertEqual(set(s.distinctValues()), set(['cc', 'aaaa', 'bbbbbbbb', 'eeee', 'dddd', '']))
@@ -48,24 +46,30 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
         self.assertEqual(s2.minLength(), 0)
         self.assertEqual(s.maxLength(), 8)
         self.assertEqual(s2.maxLength(), 8)
-        self.assertEqual(s.meanLength(), 3.33333333333333333333333)
-        self.assertEqual(s2.meanLength(), 3.33333333333333333333333)
+        self.assertEqual(s.meanLength(), 3.4)
+        self.assertEqual(s2.meanLength(), 3.4)
+        self.assertEqual(s.minority(), 'bbbbbbbb')
+        self.assertEqual(s2.minority(), 'bbbbbbbb')
+        self.assertEqual(s.majority(), 'aaaa')
+        self.assertEqual(s2.majority(), 'aaaa')
 
-        #extra check for minLength without empty strings
+        # extra check for minLength without empty strings
         s.calculate(['1111111', '111', '11111'])
         self.assertEqual(s.minLength(), 3)
 
     def testIndividualStats(self):
         # tests calculation of statistics one at a time, to make sure statistic calculations are not
         # dependent on each other
-        tests = [{'stat': QgsStringStatisticalSummary.Count, 'expected': 9},
+        tests = [{'stat': QgsStringStatisticalSummary.Count, 'expected': 10},
                  {'stat': QgsStringStatisticalSummary.CountDistinct, 'expected': 6},
                  {'stat': QgsStringStatisticalSummary.CountMissing, 'expected': 2},
                  {'stat': QgsStringStatisticalSummary.Min, 'expected': 'aaaa'},
                  {'stat': QgsStringStatisticalSummary.Max, 'expected': 'eeee'},
                  {'stat': QgsStringStatisticalSummary.MinimumLength, 'expected': 0},
                  {'stat': QgsStringStatisticalSummary.MaximumLength, 'expected': 8},
-                 {'stat': QgsStringStatisticalSummary.MeanLength, 'expected': 3.3333333333333335},
+                 {'stat': QgsStringStatisticalSummary.MeanLength, 'expected': 3.4},
+                 {'stat': QgsStringStatisticalSummary.Minority, 'expected': 'bbbbbbbb'},
+                 {'stat': QgsStringStatisticalSummary.Majority, 'expected': 'aaaa'},
                  ]
 
         s = QgsStringStatisticalSummary()
@@ -79,7 +83,7 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
             s3.setStatistics(t['stat'])
             self.assertEqual(s.statistics(), t['stat'])
 
-            strings = ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', 'eeee', '', 'eeee', '', 'dddd']
+            strings = ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', 'eeee', '', 'eeee', 'aaaa', '', 'dddd']
             s.calculate(strings)
             s3.reset()
             for string in strings:

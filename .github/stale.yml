@@ -7,6 +7,10 @@ exemptLabels:
   - Merge After Thaw
 # Label to use when marking an issue as stale
 staleLabel: stale
+
+# # Limit to only `issues` or `pulls`
+only: pulls
+
 # Comment to post when marking an issue as stale. Set to `false` to disable
 markComment: >
   The QGIS project highly values your contribution and would love to see

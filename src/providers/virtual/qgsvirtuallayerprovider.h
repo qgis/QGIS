@@ -23,9 +23,14 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvirtuallayerdefinition.h"
 #include "qgsvirtuallayersqlitehelper.h"
 
+#include "qgsprovidermetadata.h"
+#ifdef HAVE_GUI
+#include "qgsproviderguimetadata.h"
+#endif
+
 class QgsVirtualLayerFeatureIterator;
 
-class QgsVirtualLayerProvider: public QgsVectorDataProvider
+class QgsVirtualLayerProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
   public:
@@ -55,7 +60,6 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     QgsAttributeList pkAttributeIndexes() const override;
     QSet<QgsMapLayerDependency> dependencies() const override;
     bool cancelReload() override;
-    void reloadData() override;
 
   private:
 
@@ -113,12 +117,33 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     bool loadSourceLayers();
     void createVirtualTable( QgsVectorLayer *vlayer, const QString &name );
 
+    /**
+     * Opens or creates file
+    */
+    void reloadProviderData() override;
+
     friend class QgsVirtualLayerFeatureSource;
 
   private slots:
     void invalidateStatistics();
 
 };
+
+class QgsVirtualLayerProviderMetadata final: public QgsProviderMetadata
+{
+  public:
+    QgsVirtualLayerProviderMetadata();
+    QgsVirtualLayerProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+};
+
+#ifdef HAVE_GUI
+class QgsVirtualLayerProviderGuiMetadata final: public QgsProviderGuiMetadata
+{
+  public:
+    QgsVirtualLayerProviderGuiMetadata();
+    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
+};
+#endif
 
 // clazy:excludeall=qstring-allocations
 

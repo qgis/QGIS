@@ -27,7 +27,7 @@
 
 class QgsMssqlProvider;
 
-class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
+class QgsMssqlFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsMssqlFeatureSource( const QgsMssqlProvider *p );
@@ -72,7 +72,7 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
     friend class QgsMssqlExpressionCompiler;
 };
 
-class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>
+class QgsMssqlFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>
 {
   public:
     QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
@@ -94,6 +94,9 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
   private:
 
     bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
+
+    double validLat( double latitude ) const;
+    double validLon( double longitude ) const;
 
     // The current database
     QSqlDatabase mDatabase;

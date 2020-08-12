@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import shutil
 import os
 import sys
@@ -126,7 +122,7 @@ class ProcessingModelItem(QgsDataItem):
         ProcessingDropHandler.runAlg(self.path())
 
     def editModel(self):
-        dlg = ModelerDialog()
+        dlg = ModelerDialog.create()
         dlg.loadModel(self.path())
         dlg.show()
 
@@ -217,11 +213,11 @@ class ProcessingPlugin:
 
         self.modelerAction = QAction(
             QgsApplication.getThemeIcon("/processingModel.svg"),
-            QCoreApplication.translate('ProcessingPlugin', 'Graphical &Modeler…'), self.iface.mainWindow())
+            QCoreApplication.translate('ProcessingPlugin', '&Graphical Modeler…'), self.iface.mainWindow())
         self.modelerAction.setObjectName('modelerAction')
         self.modelerAction.triggered.connect(self.openModeler)
         self.iface.registerMainWindowAction(self.modelerAction,
-                                            QKeySequence('Ctrl+Alt+M').toString(QKeySequence.NativeText))
+                                            QKeySequence('Ctrl+Alt+G').toString(QKeySequence.NativeText))
         self.menu.addAction(self.modelerAction)
 
         self.historyAction = QAction(
@@ -237,6 +233,7 @@ class ProcessingPlugin:
         self.resultsAction = QAction(
             QgsApplication.getThemeIcon("/processingResult.svg"),
             self.tr('&Results Viewer'), self.iface.mainWindow())
+        self.resultsAction.setObjectName('resultsViewer')
         self.resultsAction.setCheckable(True)
         self.iface.registerMainWindowAction(self.resultsAction,
                                             QKeySequence('Ctrl+Alt+R').toString(QKeySequence.NativeText))
@@ -309,11 +306,6 @@ class ProcessingPlugin:
         self.toolbox.deleteLater()
         self.menu.deleteLater()
 
-        # delete temporary output files
-        folder = QgsProcessingUtils.tempFolder()
-        if QDir(folder).exists():
-            shutil.rmtree(folder, True)
-
         # also delete temporary help files
         folder = tempHelpFolder()
         if QDir(folder).exists():
@@ -340,7 +332,7 @@ class ProcessingPlugin:
         self.toolboxAction.setChecked(visible)
 
     def openModeler(self):
-        dlg = ModelerDialog()
+        dlg = ModelerDialog.create()
         dlg.update_model.connect(self.updateModel)
         dlg.show()
 

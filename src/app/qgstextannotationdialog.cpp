@@ -38,7 +38,7 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *it
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
   connect( mEmbeddedWidget, &QgsAnnotationWidget::backgroundColorChanged, this, &QgsTextAnnotationDialog::backgroundColorChanged );
-  mTextEdit->setAttribute( Qt::WA_TranslucentBackground );
+
   if ( mItem && mItem->annotation() )
   {
     QgsTextAnnotation *annotation = static_cast< QgsTextAnnotation * >( mItem->annotation() );
@@ -53,6 +53,7 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *it
   mFontColorButton->setContext( QStringLiteral( "symbology" ) );
 
   setCurrentFontPropertiesToGui();
+  backgroundColorChanged( mEmbeddedWidget->backgroundColor() );
 
   QObject::connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsTextAnnotationDialog::applyTextToItem );
   QObject::connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsTextAnnotationDialog::showHelp );
@@ -86,6 +87,7 @@ void QgsTextAnnotationDialog::backgroundColorChanged( const QColor &color )
   QPalette p = mTextEdit->viewport()->palette();
   p.setColor( QPalette::Base, color );
   mTextEdit->viewport()->setPalette( p );
+  mTextEdit->setStyleSheet( QStringLiteral( "QTextEdit { background-color: %1; }" ).arg( color.name() ) );
 }
 
 void QgsTextAnnotationDialog::applyTextToItem()

@@ -21,12 +21,8 @@ __author__ = 'Nyall Dawson'
 __date__ = 'February 2019'
 __copyright__ = '(C) 2019, Nyall Dawson'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsProcessingModelAlgorithm, QgsProcessing, QgsApplication
+from qgis.core import QgsProcessingAlgorithm, QgsProcessing, QgsApplication
 from processing.gui.ContextAction import ContextAction
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 
@@ -38,7 +34,7 @@ class ExportModelAsPythonScriptAction(ContextAction):
         self.name = QCoreApplication.translate('ExportModelAsPythonScriptAction', 'Export Model as Python Algorithm…')
 
     def isEnabled(self):
-        return isinstance(self.itemData, QgsProcessingModelAlgorithm)
+        return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() in ("model", "project")
 
     def icon(self):
         return QgsApplication.getThemeIcon('/mActionSaveAsPython.svg')

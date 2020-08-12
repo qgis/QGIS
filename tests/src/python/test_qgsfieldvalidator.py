@@ -9,10 +9,11 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '31/01/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
+import tempfile
+import os
+import shutil
 
 from qgis.PyQt.QtCore import QVariant, QLocale
 from qgis.PyQt.QtGui import QValidator
@@ -23,7 +24,6 @@ from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 
-
 start_app()
 
 
@@ -31,8 +31,12 @@ class TestQgsFieldValidator(unittest.TestCase):
 
     def setUp(self):
         """Run before each test."""
-        testPath = TEST_DATA_DIR + '/' + 'bug_17878.gpkg|layername=bug_17878'
-        self.vl = QgsVectorLayer(testPath, "test_data", "ogr")
+        testPath = TEST_DATA_DIR + '/' + 'bug_17878.gpkg'
+        # Copy it
+        tempdir = tempfile.mkdtemp()
+        testPathCopy = os.path.join(tempdir, 'bug_17878.gpkg')
+        shutil.copy(testPath, testPathCopy)
+        self.vl = QgsVectorLayer(testPathCopy + '|layername=bug_17878', "test_data", "ogr")
         assert self.vl.isValid()
 
     def tearDown(self):
@@ -85,8 +89,8 @@ class TestQgsFieldValidator(unittest.TestCase):
         _test('onetwothree', QValidator.Invalid)
 
         int_field = self.vl.fields()[self.vl.fields().indexFromName('int_field')]
-        self.assertEqual(int_field.precision(), 0) # this is what the provider reports :(
-        self.assertEqual(int_field.length(), 0) # not set
+        self.assertEqual(int_field.precision(), 0)  # this is what the provider reports :(
+        self.assertEqual(int_field.length(), 0)  # not set
         self.assertEqual(int_field.type(), QVariant.Int)
 
         validator = QgsFieldValidator(None, int_field, '0', '')
@@ -104,8 +108,8 @@ class TestQgsFieldValidator(unittest.TestCase):
     def test_doubleValidator(self):
         """Test the double with default (system) locale"""
         field = self.vl.fields()[self.vl.fields().indexFromName('double_field')]
-        self.assertEqual(field.precision(), 0) # this is what the provider reports :(
-        self.assertEqual(field.length(), 0) # not set
+        self.assertEqual(field.precision(), 0)  # this is what the provider reports :(
+        self.assertEqual(field.length(), 0)  # not set
         self.assertEqual(field.type(), QVariant.Double)
         self._fld_checker(field)
 

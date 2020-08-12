@@ -21,17 +21,14 @@ __author__ = 'Nyall Dawson'
 __date__ = 'July 2018'
 __copyright__ = '(C) 2018, Nyall Dawson'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsProcessingProvider,
                        QgsMessageLog,
                        QgsProcessingModelAlgorithm,
                        QgsProject,
-                       QgsXmlUtils)
+                       QgsXmlUtils,
+                       QgsRuntimeProfiler)
 
 PROJECT_PROVIDER_ID = 'project'
 
@@ -45,7 +42,7 @@ class ProjectProvider(QgsProcessingProvider):
         else:
             self.project = project
 
-        self.model_definitions = {} # dict of models in project
+        self.model_definitions = {}  # dict of models in project
         self.is_loading = False
 
         # must reload models if providers list is changed - previously unavailable algorithms
@@ -60,7 +57,9 @@ class ProjectProvider(QgsProcessingProvider):
         self.refreshAlgorithms()
 
     def load(self):
-        self.refreshAlgorithms()
+        with QgsRuntimeProfiler.profile('Project Provider'):
+            self.refreshAlgorithms()
+
         return True
 
     def clear(self):

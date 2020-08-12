@@ -79,7 +79,7 @@ static QString stripText(QString text)
 }
 
 // C locale for correct parsing of numbers even if the system locale is different
-static QLocale cLocale("C");
+Q_GLOBAL_STATIC_WITH_ARGS(QLocale, cLocale, ("C") )
 
 %}
 
@@ -94,13 +94,15 @@ identifier  {identifier_first}{identifier_next}*
 identifier_str_char  "\"\""|[^\"]
 identifier_quoted  "\""{identifier_str_char}*"\""
 
+ms_identifier_quoted  "\["[^.]*"\]"
+
 dig         [0-9]
 num_int     [-]?{dig}+{identifier_first}*
 num_float   [-]?{dig}*(\.{dig}+([eE][-+]?{dig}+)?|[eE][-+]?{dig}+)
 boolean     "TRUE"|"FALSE"
 
 str_char    ('')|(\\.)|[^'\\]
-string      "'"{str_char}*"'"
+string      "'"{str_char}*"'"|"#"{str_char}*"#"
 
 %%
 
@@ -164,18 +166,18 @@ string      "'"{str_char}*"'"
 
 ","                 { return COMMA; }
 
-{num_float}  { yylval->numberFloat = cLocale.toDouble( QString::fromLatin1(yytext) ); return NUMBER_FLOAT; }
+{num_float}  { yylval->numberFloat = cLocale()->toDouble( QString::fromLatin1(yytext) ); return NUMBER_FLOAT; }
 {num_int}  {
         bool ok;
-        yylval->numberInt = cLocale.toInt( QString::fromLatin1(yytext), &ok );
+        yylval->numberInt = cLocale()->toInt( QString::fromLatin1(yytext), &ok );
         if( ok )
                 return NUMBER_INT;
 
-        yylval->numberInt64 = cLocale.toLongLong( QString::fromLatin1(yytext), &ok );
+        yylval->numberInt64 = cLocale()->toLongLong( QString::fromLatin1(yytext), &ok );
         if( ok )
                 return NUMBER_INT64;
 
-        yylval->numberFloat = cLocale.toDouble( QString::fromLatin1(yytext), &ok );
+        yylval->numberFloat = cLocale()->toDouble( QString::fromLatin1(yytext), &ok );
         if( ok )
                 return NUMBER_FLOAT;
 
@@ -189,6 +191,8 @@ string      "'"{str_char}*"'"
 {identifier}         { TEXT; return IDENTIFIER; }
 
 {identifier_quoted}  { TEXT_FILTER(QgsSQLStatement::stripQuotedIdentifier); return IDENTIFIER; }
+
+{ms_identifier_quoted}  { TEXT_FILTER(QgsSQLStatement::stripMsQuotedIdentifier); return IDENTIFIER; }
 
 {white}    /* skip blanks and tabs */
 

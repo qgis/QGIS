@@ -23,6 +23,7 @@
 
 #include "qgssymbollayer.h"
 #include "qgssymbollayerregistry.h"
+#include "qgspainteffectregistry.h"
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -34,9 +35,13 @@
 #include "qgssymbol.h" //for the unit
 #include "qgspanelwidget.h"
 #include "qgsmapcanvas.h"
+#include "qgspainteffect.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmasksymbollayerwidget.h"
+#include "qgstemporalcontroller.h"
+#include "qgssymbollayerutils.h"
 
 static bool _initWidgetFunction( const QString &name, QgsSymbolLayerWidgetFunc f )
 {
@@ -76,6 +81,7 @@ static void _initWidgetFunctions()
   _initWidgetFunction( QStringLiteral( "FontMarker" ), QgsFontMarkerSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "EllipseMarker" ), QgsEllipseSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "VectorField" ), QgsVectorFieldSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "MaskMarker" ), QgsMaskMarkerSymbolLayerWidget::create );
 
   _initWidgetFunction( QStringLiteral( "SimpleFill" ), QgsSimpleFillSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "GradientFill" ), QgsGradientFillSymbolLayerWidget::create );
@@ -85,6 +91,7 @@ static void _initWidgetFunctions()
   _initWidgetFunction( QStringLiteral( "CentroidFill" ), QgsCentroidFillSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "LinePatternFill" ), QgsLinePatternFillSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "PointPatternFill" ), QgsPointPatternFillSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "RandomMarkerFill" ), QgsRandomMarkerFillSymbolLayerWidget::create );
 
   _initWidgetFunction( QStringLiteral( "GeometryGenerator" ), QgsGeometryGeneratorSymbolLayerWidget::create );
 
@@ -110,7 +117,7 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const
   //
   // 3. populate the combo box with the supported layer type
   // 4. set the present layer type
-  // 5. create the widget for the present layer type and set inn stacked widget
+  // 5. create the widget for the present layer type and set in stacked widget
   // 6. connect comboBox type changed to two things
   //     1. emit signal that type has beed changed
   //     2. remove the widget and place the new widget corresponding to the changed layer type
@@ -131,6 +138,11 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const
 
   this->connectChildPanel( mEffectWidget );
 
+  if ( !mLayer->paintEffect() )
+  {
+    mLayer->setPaintEffect( QgsPaintEffectRegistry::defaultStack() );
+    mLayer->paintEffect()->setEnabled( false );
+  }
   mEffectWidget->setPaintEffect( mLayer->paintEffect() );
 
   registerDataDefinedButton( mEnabledDDBtn, QgsSymbolLayer::PropertyLayerEnabled );
@@ -228,6 +240,10 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
                << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( mContext.mapCanvas()->temporalController() ) )
+    {
+      expContext << generator->createExpressionContextScope();
+    }
   }
   else
   {
@@ -248,6 +264,10 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT, 1, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_layer_count" ), 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_layer_index" ), 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_marker_row" ), 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_marker_column" ), 1, true ) );
 
   // additional scopes
   const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
@@ -262,7 +282,8 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
   expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR
                                       << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM
                                       << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
-                                      << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE );
+                                      << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE
+                                      << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" ) );
 
   return expContext;
 }
@@ -312,7 +333,17 @@ void QgsLayerPropertiesWidget::emitSignalChanged()
   emit changed();
 
   // also update paint effect preview
-  mEffectWidget->setPreviewPicture( QgsSymbolLayerUtils::symbolLayerPreviewPicture( mLayer, QgsUnitTypes::RenderMillimeters, QSize( 80, 80 ) ) );
+  bool paintEffectToggled = false;
+  if ( mLayer->paintEffect() && mLayer->paintEffect()->enabled() )
+  {
+    mLayer->paintEffect()->setEnabled( false );
+    paintEffectToggled = true;
+  }
+  mEffectWidget->setPreviewPicture( QgsSymbolLayerUtils::symbolLayerPreviewPicture( mLayer, QgsUnitTypes::RenderMillimeters, QSize( 60, 60 ) ) );
+  if ( paintEffectToggled )
+  {
+    mLayer->paintEffect()->setEnabled( true );
+  }
   emit widgetChanged();
 }
 

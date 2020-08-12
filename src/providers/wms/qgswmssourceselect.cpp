@@ -37,6 +37,7 @@
 #include "qgswmscapabilities.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QButtonGroup>
 #include <QFileDialog>
@@ -55,9 +56,11 @@
 
 QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
-  , mDefaultCRS( GEO_EPSG_CRS_AUTHID )
+  , mDefaultCRS( geoEpsgCrsAuthId() )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( btnNew, &QPushButton::clicked, this, &QgsWMSSourceSelect::btnNew_clicked );
   connect( btnEdit, &QPushButton::clicked, this, &QgsWMSSourceSelect::btnEdit_clicked );
   connect( btnDelete, &QPushButton::clicked, this, &QgsWMSSourceSelect::btnDelete_clicked );
@@ -67,14 +70,13 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( btnChangeSpatialRefSys, &QPushButton::clicked, this, &QgsWMSSourceSelect::btnChangeSpatialRefSys_clicked );
   connect( lstLayers, &QTreeWidget::itemSelectionChanged, this, &QgsWMSSourceSelect::lstLayers_itemSelectionChanged );
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsWMSSourceSelect::cmbConnections_activated );
-  connect( btnAddDefault, &QPushButton::clicked, this, &QgsWMSSourceSelect::btnAddDefault_clicked );
-  connect( btnSearch, &QPushButton::clicked, this, &QgsWMSSourceSelect::btnSearch_clicked );
-  connect( btnAddWMS, &QPushButton::clicked, this, &QgsWMSSourceSelect::btnAddWMS_clicked );
-  connect( tableWidgetWMSList, &QTableWidget::itemSelectionChanged, this, &QgsWMSSourceSelect::tableWidgetWMSList_itemSelectionChanged );
   connect( lstTilesets, &QTableWidget::itemClicked, this, &QgsWMSSourceSelect::lstTilesets_itemClicked );
   connect( mLayerUpButton, &QPushButton::clicked, this, &QgsWMSSourceSelect::mLayerUpButton_clicked );
   connect( mLayerDownButton, &QPushButton::clicked, this, &QgsWMSSourceSelect::mLayerDownButton_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWMSSourceSelect::showHelp );
+
+  connect( mLayersFilterLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsWMSSourceSelect::filterLayers );
+  connect( mTilesetsFilterLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsWMSSourceSelect::filterTiles );
 
   // Creates and connects standard ok/apply buttons
   setupButtons( buttonBox );
@@ -144,22 +146,13 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   // set up the WMS connections we already know about
   populateConnectionList();
 
-  QgsSettings settings;
-  QgsDebugMsg( QStringLiteral( "restoring geometry" ) );
-  restoreGeometry( settings.value( QStringLiteral( "Windows/WMSSourceSelect/geometry" ) ).toByteArray() );
 }
 
-QgsWMSSourceSelect::~QgsWMSSourceSelect()
-{
-  QgsSettings settings;
-  QgsDebugMsg( QStringLiteral( "saving geometry" ) );
-  settings.setValue( QStringLiteral( "Windows/WMSSourceSelect/geometry" ), saveGeometry() );
-}
 
 void QgsWMSSourceSelect::refresh()
 {
   // Reload WMS connections and update the GUI
-  QgsDebugMsg( QStringLiteral( "Refreshing WMS connections ..." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Refreshing WMS connections ..." ), 2 );
   populateConnectionList();
 }
 
@@ -169,12 +162,19 @@ void QgsWMSSourceSelect::populateConnectionList()
   cmbConnections->clear();
   cmbConnections->addItems( QgsWMSConnection::connectionList() );
 
+  btnConnect->setDisabled( cmbConnections->count() == 0 );
+  btnEdit->setDisabled( cmbConnections->count() == 0 );
+  btnDelete->setDisabled( cmbConnections->count() == 0 );
+  btnSave->setDisabled( cmbConnections->count() == 0 );
+  cmbConnections->setDisabled( cmbConnections->count() == 0 );
+
   setConnectionListPosition();
 }
 
 void QgsWMSSourceSelect::btnNew_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "qgis/connections-wms/" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
+
 
   if ( nc->exec() )
   {
@@ -187,7 +187,7 @@ void QgsWMSSourceSelect::btnNew_clicked()
 
 void QgsWMSSourceSelect::btnEdit_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "qgis/connections-wms/" ), cmbConnections->currentText() );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "qgis/connections-wms/" ), cmbConnections->currentText(), QgsNewHttpConnection::FlagShowHttpSettings );
 
   if ( nc->exec() )
   {
@@ -256,6 +256,7 @@ QgsTreeWidgetItem *QgsWMSSourceSelect::createItem(
   item->setText( 0, QString::number( ++layerAndStyleCount ) );
   item->setText( 1, names[0].simplified() );
   item->setText( 2, names[1].simplified() );
+  item->setToolTip( 2, "<font color=black>" + names[1].simplified()  + "</font>" );
   item->setText( 3, names[2].simplified() );
   item->setToolTip( 3, "<font color=black>" + names[2].simplified()  + "</font>" );
 
@@ -282,12 +283,13 @@ void QgsWMSSourceSelect::clear()
 
 bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabilities )
 {
-  QVector<QgsWmsLayerProperty> layers = capabilities.supportedLayers();
+  const QVector<QgsWmsLayerProperty> layers = capabilities.supportedLayers();
+  mLayerProperties = layers;
 
   bool first = true;
   QSet<QString> alreadyAddedLabels;
-  const auto constSupportedImageEncodings = capabilities.supportedImageEncodings();
-  for ( const QString &encoding : constSupportedImageEncodings )
+  const auto supportedImageEncodings = capabilities.supportedImageEncodings();
+  for ( const QString &encoding : supportedImageEncodings )
   {
     int id = mMimeMap.value( encoding, -1 );
     if ( id < 0 )
@@ -322,32 +324,30 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
 
   int layerAndStyleCount = -1;
 
-  for ( QVector<QgsWmsLayerProperty>::iterator layer = layers.begin();
-        layer != layers.end();
-        ++layer )
+  for ( const QgsWmsLayerProperty &layer : layers )
   {
-    QgsTreeWidgetItem *lItem = createItem( layer->orderId, QStringList() << layer->name << layer->title << layer->abstract, items, layerAndStyleCount, layerParents, layerParentNames );
+    QgsTreeWidgetItem *lItem = createItem( layer.orderId, QStringList() << layer.name << layer.title << layer.abstract, items, layerAndStyleCount, layerParents, layerParentNames );
 
-    lItem->setData( 0, Qt::UserRole + 0, layer->name );
+    lItem->setData( 0, Qt::UserRole + 0, layer.name );
     lItem->setData( 0, Qt::UserRole + 1, "" );
-    lItem->setData( 0, Qt::UserRole + 2, layer->crs );
-    lItem->setData( 0, Qt::UserRole + 3, layer->title.isEmpty() ? layer->name : layer->title );
+    lItem->setData( 0, Qt::UserRole + 2, layer.crs );
+    lItem->setData( 0, Qt::UserRole + 3, layer.title.isEmpty() ? layer.name : layer.title );
 
     // Also insert the styles
     // Layer Styles
-    for ( int j = 0; j < layer->style.size(); j++ )
+    for ( const QgsWmsStyleProperty &property : layer.style )
     {
-      QgsDebugMsg( QStringLiteral( "got style name %1 and title '%2'." ).arg( layer->style.at( j ).name, layer->style.at( j ).title ) );
+      QgsDebugMsgLevel( QStringLiteral( "got style name %1 and title '%2'." ).arg( property.name, property.title ), 2 );
 
       QgsTreeWidgetItem *lItem2 = new QgsTreeWidgetItem( lItem );
       lItem2->setText( 0, QString::number( ++layerAndStyleCount ) );
-      lItem2->setText( 1, layer->style.at( j ).name.simplified() );
-      lItem2->setText( 2, layer->style.at( j ).title.simplified() );
-      lItem2->setText( 3, layer->style.at( j ).abstract.simplified() );
+      lItem2->setText( 1, property.name.simplified() );
+      lItem2->setText( 2, property.title.simplified() );
+      lItem2->setText( 3, property.abstract.simplified() );
 
-      lItem2->setData( 0, Qt::UserRole + 0, layer->name );
-      lItem2->setData( 0, Qt::UserRole + 1, layer->style.at( j ).name );
-      lItem2->setData( 0, Qt::UserRole + 3, layer->style.at( j ).title.isEmpty() ? layer->style.at( j ).name : layer->style.at( j ).title );
+      lItem2->setData( 0, Qt::UserRole + 0, layer.name );
+      lItem2->setData( 0, Qt::UserRole + 1, property.name );
+      lItem2->setData( 0, Qt::UserRole + 3, property.title.isEmpty() ? property.name : property.title );
     }
   }
 
@@ -523,6 +523,8 @@ void QgsWMSSourceSelect::addButtonClicked()
     collectSelectedLayers( layers, styles, titles );
     crs = mCRS;
     format = mFormats[ mImageFormatGroup->checkedId()].format;
+
+    collectDimensions( layers, uri );
   }
   else
   {
@@ -538,8 +540,7 @@ void QgsWMSSourceSelect::addButtonClicked()
 
     const QgsWmtsTileLayer *layer = nullptr;
 
-    const auto constMTileLayers = mTileLayers;
-    for ( const QgsWmtsTileLayer &l : constMTileLayers )
+    for ( const QgsWmtsTileLayer &l : qgis::as_const( mTileLayers ) )
     {
       if ( l.identifier == layers.join( QStringLiteral( "," ) ) )
       {
@@ -584,7 +585,7 @@ void QgsWMSSourceSelect::addButtonClicked()
   uri.setParam( QStringLiteral( "styles" ), styles );
   uri.setParam( QStringLiteral( "format" ), format );
   uri.setParam( QStringLiteral( "crs" ), crs );
-  QgsDebugMsg( QStringLiteral( "crs=%2 " ).arg( crs ) );
+  QgsDebugMsgLevel( QStringLiteral( "crs=%2 " ).arg( crs ), 2 );
 
   if ( mFeatureCount->text().toInt() > 0 )
   {
@@ -596,6 +597,11 @@ void QgsWMSSourceSelect::addButtonClicked()
   emit addRasterLayer( uri.encodedUri(),
                        leLayerName->text().isEmpty() ? titles.join( QStringLiteral( "/" ) ) : leLayerName->text(),
                        QStringLiteral( "wms" ) );
+}
+
+void QgsWMSSourceSelect::reset()
+{
+  lstLayers->clearSelection();
 }
 
 void QgsWMSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )
@@ -779,9 +785,9 @@ void QgsWMSSourceSelect::collectNamedLayers( QTreeWidgetItem *item, QStringList 
     titles << titleName;
 
     if ( mCRSs.isEmpty() )
-      mCRSs = item->data( 0, Qt::UserRole + 2 ).toStringList().toSet();
+      mCRSs = qgis::listToSet( item->data( 0, Qt::UserRole + 2 ).toStringList() );
     else
-      mCRSs.intersect( item->data( 0, Qt::UserRole + 2 ).toStringList().toSet() );
+      mCRSs.intersect( qgis::listToSet( item->data( 0, Qt::UserRole + 2 ).toStringList() ) );
   }
 }
 
@@ -825,9 +831,9 @@ void QgsWMSSourceSelect::lstLayers_itemSelectionChanged()
       styles << QString();
       titles << titleName;
       if ( mCRSs.isEmpty() )
-        mCRSs = item->data( 0, Qt::UserRole + 2 ).toStringList().toSet();
+        mCRSs = qgis::listToSet( item->data( 0, Qt::UserRole + 2 ).toStringList() );
       else
-        mCRSs.intersect( item->data( 0, Qt::UserRole + 2 ).toStringList().toSet() );
+        mCRSs.intersect( qgis::listToSet( item->data( 0, Qt::UserRole + 2 ).toStringList() ) );
     }
     else
     {
@@ -836,9 +842,9 @@ void QgsWMSSourceSelect::lstLayers_itemSelectionChanged()
       styles << styleName;
       titles << titleName;
       if ( mCRSs.isEmpty() )
-        mCRSs = item->parent()->data( 0, Qt::UserRole + 2 ).toStringList().toSet();
+        mCRSs = qgis::listToSet( item->parent()->data( 0, Qt::UserRole + 2 ).toStringList() );
       else
-        mCRSs.intersect( item->parent()->data( 0, Qt::UserRole + 2 ).toStringList().toSet() );
+        mCRSs.intersect( qgis::listToSet( item->parent()->data( 0, Qt::UserRole + 2 ).toStringList() ) );
     }
   }
 
@@ -886,7 +892,7 @@ void QgsWMSSourceSelect::lstLayers_itemSelectionChanged()
 
 void QgsWMSSourceSelect::lstTilesets_itemClicked( QTableWidgetItem *item )
 {
-  Q_UNUSED( item );
+  Q_UNUSED( item )
 
   QTableWidgetItem *rowItem = lstTilesets->item( lstTilesets->currentRow(), 0 );
   bool wasSelected = mCurrentTileset == rowItem;
@@ -895,7 +901,7 @@ void QgsWMSSourceSelect::lstTilesets_itemClicked( QTableWidgetItem *item )
   lstTilesets->clearSelection();
   if ( !wasSelected )
   {
-    QgsDebugMsg( QStringLiteral( "selecting current row %1" ).arg( lstTilesets->currentRow() ) );
+    QgsDebugMsgLevel( QStringLiteral( "selecting current row %1" ).arg( lstTilesets->currentRow() ), 2 );
     lstTilesets->selectRow( lstTilesets->currentRow() );
     mCurrentTileset = rowItem;
   }
@@ -1023,6 +1029,39 @@ void QgsWMSSourceSelect::collectSelectedLayers( QStringList &layers, QStringList
   }
 }
 
+void QgsWMSSourceSelect::collectDimensions( QStringList &layers, QgsDataSourceUri &uri )
+{
+  for ( const QgsWmsLayerProperty &layerProperty : qgis::as_const( mLayerProperties ) )
+  {
+    if ( layerProperty.name == layers.join( ',' ) )
+    {
+      // Check for layer dimensions
+      for ( const QgsWmsDimensionProperty &dimension : qgis::as_const( layerProperty.dimensions ) )
+      {
+        // add temporal dimensions only
+        if ( dimension.name == QLatin1String( "time" ) ||
+             dimension.name == QLatin1String( "reference_time" ) )
+        {
+          QString name = dimension.name == QLatin1String( "time" ) ?
+                         QStringLiteral( "timeDimensionExtent" ) : QStringLiteral( "referenceTimeDimensionExtent" );
+
+          if ( !( uri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) ) )
+            uri.setParam( QLatin1String( "type" ), QLatin1String( "wmst" ) );
+          uri.setParam( name, dimension.extent );
+        }
+      }
+
+      // WMS-T defaults settings
+      if ( uri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) )
+      {
+        uri.setParam( QLatin1String( "temporalSource" ), QLatin1String( "provider" ) );
+        uri.setParam( QLatin1String( "allowTemporalUpdates" ), QLatin1String( "true" ) );
+      }
+
+    }
+  }
+}
+
 QString QgsWMSSourceSelect::selectedImageEncoding()
 {
   // TODO: Match this hard coded list to the list of formats Qt reports it can actually handle.
@@ -1050,23 +1089,6 @@ void QgsWMSSourceSelect::setConnectionListPosition()
       cmbConnections->setCurrentIndex( 0 );
     else
       cmbConnections->setCurrentIndex( cmbConnections->count() - 1 );
-  }
-
-  if ( cmbConnections->count() == 0 )
-  {
-    // No connections - disable various buttons
-    btnConnect->setEnabled( false );
-    btnEdit->setEnabled( false );
-    btnDelete->setEnabled( false );
-    btnSave->setEnabled( false );
-  }
-  else
-  {
-    // Connections - enable various buttons
-    btnConnect->setEnabled( true );
-    btnEdit->setEnabled( true );
-    btnDelete->setEnabled( true );
-    btnSave->setEnabled( true );
   }
 }
 
@@ -1101,9 +1123,75 @@ void QgsWMSSourceSelect::cmbConnections_activated( int )
   QgsWMSConnection::setSelectedConnection( cmbConnections->currentText() );
 }
 
-void QgsWMSSourceSelect::btnAddDefault_clicked()
+void QgsWMSSourceSelect::filterLayers( const QString &searchText )
 {
-  addDefaultServers();
+  std::function< void( QTreeWidgetItem *, bool ) > setChildrenVisible;
+  setChildrenVisible = [&setChildrenVisible]( QTreeWidgetItem * item, bool visible )
+  {
+    for ( int i = 0; i < item->childCount(); ++i )
+      setChildrenVisible( item->child( i ), visible );
+    item->setHidden( !visible );
+  };
+
+
+  if ( searchText.isEmpty() )
+  {
+    // show everything and reset tree nesting
+    setChildrenVisible( lstLayers->invisibleRootItem(), true );
+    for ( QTreeWidgetItem *item : mTreeInitialExpand.keys() )
+      if ( item )
+        item->setExpanded( mTreeInitialExpand.value( item ) );
+    mTreeInitialExpand.clear();
+  }
+  else
+  {
+    // hide all
+    setChildrenVisible( lstLayers->invisibleRootItem(), false );
+    // find and show matching items in name and title columns
+    QSet<QTreeWidgetItem *> items = qgis::listToSet( lstLayers->findItems( searchText, Qt::MatchContains | Qt::MatchRecursive, 1 ) );
+    items.unite( qgis::listToSet( lstLayers->findItems( searchText, Qt::MatchContains | Qt::MatchRecursive, 2 ) ) );
+
+    // if nothing found, search in abstract too
+    if ( items.isEmpty() )
+    {
+      items = qgis::listToSet( lstLayers->findItems( searchText, Qt::MatchContains | Qt::MatchRecursive, 3 ) );
+    }
+
+    mTreeInitialExpand.clear();
+    for ( QTreeWidgetItem *item : qgis::as_const( items ) )
+    {
+      setChildrenVisible( item, true );
+
+      QTreeWidgetItem *parent = item;
+      while ( parent )
+      {
+        if ( mTreeInitialExpand.contains( parent ) )
+          break;
+        mTreeInitialExpand.insert( parent, parent->isExpanded() );
+        parent->setExpanded( true );
+        parent->setHidden( false );
+        parent = parent->parent();
+      }
+    }
+  }
+}
+
+void QgsWMSSourceSelect::filterTiles( const QString &searchText )
+{
+  QList<int> rowsShown;
+  if ( !searchText.isEmpty() )
+  {
+    const QList<QTableWidgetItem *> items = lstTilesets->findItems( searchText, Qt::MatchContains );
+    for ( const QTableWidgetItem *item : items )
+    {
+      rowsShown << item->row();
+    }
+  }
+  for ( int r = 0; r < lstTilesets->rowCount(); r++ )
+  {
+    bool visible = rowsShown.isEmpty() || rowsShown.contains( r );
+    lstTilesets->setRowHidden( r, !visible );
+  }
 }
 
 QString QgsWMSSourceSelect::descriptionForAuthId( const QString &authId )
@@ -1112,162 +1200,8 @@ QString QgsWMSSourceSelect::descriptionForAuthId( const QString &authId )
     return mCrsNames[ authId ];
 
   QgsCoordinateReferenceSystem qgisSrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authId );
-  mCrsNames.insert( authId, qgisSrs.description() );
-  return qgisSrs.description();
-}
-
-void QgsWMSSourceSelect::addDefaultServers()
-{
-  QMap<QString, QString> exampleServers;
-  exampleServers[QStringLiteral( "QGIS Server Demo - Alaska" )] = QStringLiteral( "http://demo.qgis.org/cgi-bin/qgis_mapserv.fcgi?map=/web/demos/alaska/alaska_map.qgs" );
-  exampleServers[QStringLiteral( "Geoserver Demo" )] = QStringLiteral( "https://demo.geo-solutions.it/geoserver/wms/" );
-  exampleServers[QStringLiteral( "Mapserver Demo" )] = QStringLiteral( "http://demo.mapserver.org/cgi-bin/wms" );
-
-  QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "qgis/connections-wms" ) );
-  QMap<QString, QString>::const_iterator i = exampleServers.constBegin();
-  for ( ; i != exampleServers.constEnd(); ++i )
-  {
-    // Only do a server if it's name doesn't already exist.
-    QStringList keys = settings.childGroups();
-    if ( !keys.contains( i.key() ) )
-    {
-      QString path = i.key();
-      settings.setValue( path + "/url", i.value() );
-    }
-  }
-  settings.endGroup();
-  populateConnectionList();
-
-  QMessageBox::information( this, tr( "WMS proxies" ), "<p>" + tr( "Several WMS servers have "
-                            "been added to the server list. Note that if "
-                            "you access the internet via a web proxy, you will "
-                            "need to set the proxy settings in the QGIS options dialog." ) + "</p>" );
-}
-
-void QgsWMSSourceSelect::addWMSListRow( const QDomElement &item, int row )
-{
-  QDomElement title = item.firstChildElement( QStringLiteral( "title" ) );
-  addWMSListItem( title, row, 0 );
-  QDomElement description = item.firstChildElement( QStringLiteral( "description" ) );
-  addWMSListItem( description, row, 1 );
-  QDomElement link = item.firstChildElement( QStringLiteral( "link" ) );
-  addWMSListItem( link, row, 2 );
-}
-
-void QgsWMSSourceSelect::addWMSListItem( const QDomElement &el, int row, int column )
-{
-  if ( !el.isNull() )
-  {
-    QTableWidgetItem *tableItem = new QTableWidgetItem( el.text() );
-    // TODO: add linebreaks to long tooltips?
-    tableItem->setToolTip( el.text() );
-    tableWidgetWMSList->setItem( row, column, tableItem );
-  }
-}
-
-void QgsWMSSourceSelect::btnSearch_clicked()
-{
-  // clear results
-  tableWidgetWMSList->clearContents();
-  tableWidgetWMSList->setRowCount( 0 );
-
-  // disable Add WMS button
-  btnAddWMS->setEnabled( false );
-
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-
-  QgsSettings settings;
-  QString mySearchUrl = settings.value( QStringLiteral( "qgis/WMSSearchUrl" ), "http://geopole.org/wms/search?search=%1&type=rss" ).toString();
-  QUrl url( mySearchUrl.arg( leSearchTerm->text() ) );
-  QgsDebugMsg( url.toString() );
-
-  QNetworkRequest request( url );
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWMSSourceSelect" ) );
-  QNetworkReply *r = QgsNetworkAccessManager::instance()->get( request );
-  connect( r, &QNetworkReply::finished, this, &QgsWMSSourceSelect::searchFinished );
-}
-
-void QgsWMSSourceSelect::searchFinished()
-{
-  QApplication::restoreOverrideCursor();
-
-  QNetworkReply *r = qobject_cast<QNetworkReply *>( sender() );
-  if ( !r )
-    return;
-
-  if ( r->error() == QNetworkReply::NoError )
-  {
-    // parse results
-    QDomDocument doc( QStringLiteral( "RSS" ) );
-    QByteArray res = r->readAll();
-    QString error;
-    int line, column;
-    if ( doc.setContent( res, &error, &line, &column ) )
-    {
-      QDomNodeList list = doc.elementsByTagName( QStringLiteral( "item" ) );
-      tableWidgetWMSList->setRowCount( list.size() );
-      for ( int i = 0; i < list.size(); i++ )
-      {
-        if ( list.item( i ).isElement() )
-        {
-          QDomElement item = list.item( i ).toElement();
-          addWMSListRow( item, i );
-        }
-      }
-
-      tableWidgetWMSList->resizeColumnsToContents();
-    }
-    else
-    {
-      QgsDebugMsg( QStringLiteral( "setContent failed" ) );
-      showStatusMessage( tr( "parse error at row %1, column %2: %3" ).arg( line ).arg( column ).arg( error ) );
-    }
-  }
-  else
-  {
-    showStatusMessage( tr( "network error: %1" ).arg( r->error() ) );
-  }
-
-  r->deleteLater();
-}
-
-void QgsWMSSourceSelect::btnAddWMS_clicked()
-{
-  // TODO: deactivate button if dialog is open?
-  // TODO: remove from config on close?
-
-  int selectedRow = tableWidgetWMSList->currentRow();
-  if ( selectedRow == -1 )
-  {
-    return;
-  }
-
-  QString wmsTitle = tableWidgetWMSList->item( selectedRow, 0 )->text();
-  QString wmsUrl = tableWidgetWMSList->item( selectedRow, 2 )->text();
-
-  QgsSettings settings;
-  if ( settings.contains( QStringLiteral( "qgis/connections-wms/%1/url" ).arg( wmsTitle ) ) )
-  {
-    QString msg = tr( "The %1 connection already exists. Do you want to overwrite it?" ).arg( wmsTitle );
-    QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Overwrite" ), msg, QMessageBox::Yes | QMessageBox::No );
-    if ( result != QMessageBox::Yes )
-    {
-      return;
-    }
-  }
-
-  // add selected WMS to config and mark as current
-  settings.setValue( QStringLiteral( "qgis/connections-wms/%1/url" ).arg( wmsTitle ), wmsUrl );
-  QgsWMSConnection::setSelectedConnection( wmsTitle );
-  populateConnectionList();
-
-  tabServers->setCurrentIndex( 0 );
-}
-
-void QgsWMSSourceSelect::tableWidgetWMSList_itemSelectionChanged()
-{
-  btnAddWMS->setEnabled( tableWidgetWMSList->currentRow() != -1 );
+  mCrsNames.insert( authId, qgisSrs.userFriendlyIdentifier() );
+  return qgisSrs.userFriendlyIdentifier();
 }
 
 void QgsWMSSourceSelect::mLayerUpButton_clicked()

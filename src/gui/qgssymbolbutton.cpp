@@ -27,6 +27,8 @@
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsgui.h"
+#include "qgscolordialog.h"
 
 #include <QMenu>
 #include <QClipboard>
@@ -110,6 +112,7 @@ void QgsSymbolButton::showSettingsDialog()
   if ( panel && panel->dockMode() )
   {
     QgsSymbolSelectorWidget *d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), mLayer, nullptr );
+    d->setPanelTitle( mDialogTitle );
     d->setContext( symbolContext );
     connect( d, &QgsPanelWidget::widgetChanged, this, &QgsSymbolButton::updateSymbolFromWidget );
     connect( d, &QgsPanelWidget::panelAccepted, this, &QgsSymbolButton::cleanUpSymbolSelector );
@@ -117,7 +120,7 @@ void QgsSymbolButton::showSettingsDialog()
   }
   else
   {
-    QgsSymbolSelectorDialog dialog( newSymbol, QgsStyle::defaultStyle(), mLayer, nullptr );
+    QgsSymbolSelectorDialog dialog( newSymbol, QgsStyle::defaultStyle(), mLayer, this );
     dialog.setWindowTitle( mDialogTitle );
     dialog.setContext( symbolContext );
     if ( dialog.exec() )
@@ -235,6 +238,13 @@ void QgsSymbolButton::pasteColor()
 
 void QgsSymbolButton::mousePressEvent( QMouseEvent *e )
 {
+  if ( mPickingColor )
+  {
+    //don't show dialog if in color picker mode
+    e->accept();
+    return;
+  }
+
   if ( e->button() == Qt::RightButton )
   {
     QToolButton::showMenu();
@@ -249,6 +259,13 @@ void QgsSymbolButton::mousePressEvent( QMouseEvent *e )
 
 void QgsSymbolButton::mouseMoveEvent( QMouseEvent *e )
 {
+  if ( mPickingColor )
+  {
+    updatePreview( QgsGui::sampleColor( e->globalPos() ) );
+    e->accept();
+    return;
+  }
+
   //handle dragging colors/symbols from button
 
   if ( !( e->buttons() & Qt::LeftButton ) )
@@ -273,6 +290,32 @@ void QgsSymbolButton::mouseMoveEvent( QMouseEvent *e )
   setDown( false );
 }
 
+void QgsSymbolButton::mouseReleaseEvent( QMouseEvent *e )
+{
+  if ( mPickingColor )
+  {
+    //end color picking operation by sampling the color under cursor
+    stopPicking( e->globalPos() );
+    e->accept();
+    return;
+  }
+
+  QToolButton::mouseReleaseEvent( e );
+}
+
+void QgsSymbolButton::keyPressEvent( QKeyEvent *e )
+{
+  if ( !mPickingColor )
+  {
+    //if not picking a color, use default tool button behavior
+    QToolButton::keyPressEvent( e );
+    return;
+  }
+
+  //cancel picking, sampling the color if space was pressed
+  stopPicking( QCursor::pos(), e->key() == Qt::Key_Space );
+}
+
 void QgsSymbolButton::dragEnterEvent( QDragEnterEvent *e )
 {
   //is dragged data valid color data?
@@ -291,7 +334,7 @@ void QgsSymbolButton::dragEnterEvent( QDragEnterEvent *e )
 
 void QgsSymbolButton::dragLeaveEvent( QDragLeaveEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   //reset button color
   updatePreview();
 }
@@ -404,11 +447,29 @@ void QgsSymbolButton::prepareMenu()
   }
   mMenu->addAction( pasteColorAction );
   connect( pasteColorAction, &QAction::triggered, this, &QgsSymbolButton::pasteColor );
+
+  QAction *pickColorAction = new QAction( tr( "Pick Color" ), this );
+  mMenu->addAction( pickColorAction );
+  connect( pickColorAction, &QAction::triggered, this, &QgsSymbolButton::activatePicker );
+
+  QAction *chooseColorAction = new QAction( tr( "Choose Color…" ), this );
+  mMenu->addAction( chooseColorAction );
+  connect( chooseColorAction, &QAction::triggered, this, &QgsSymbolButton::showColorDialog );
 }
 
 void QgsSymbolButton::addRecentColor( const QColor &color )
 {
   QgsRecentColorScheme::addRecentColor( color );
+}
+
+void QgsSymbolButton::activatePicker()
+{
+  //activate picker color
+  QApplication::setOverrideCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Sampler ) );
+  grabMouse();
+  grabKeyboard();
+  mPickingColor = true;
+  setMouseTracking( true );
 }
 
 
@@ -489,7 +550,12 @@ void QgsSymbolButton::updatePreview( const QColor &color, QgsSymbol *tempSymbol 
 
   // set tooltip
   // create very large preview image
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 23 );
+#else
+  int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
+#endif
   int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
 
   QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( previewSymbol.get(), QSize( width, height ), height / 20 );
@@ -532,6 +598,66 @@ QPixmap QgsSymbolButton::createColorIcon( const QColor &color ) const
   p.drawRect( 0, 0, iconSize - 1, iconSize - 1 );
   p.end();
   return pixmap;
+}
+
+void QgsSymbolButton::stopPicking( QPoint eventPos, bool samplingColor )
+{
+  //release mouse and keyboard, and reset cursor
+  releaseMouse();
+  releaseKeyboard();
+  QgsApplication::restoreOverrideCursor();
+  setMouseTracking( false );
+  mPickingColor = false;
+
+  if ( !samplingColor )
+  {
+    //not sampling color, restore old icon
+    updatePreview();
+    return;
+  }
+
+  const QColor newColor = QgsGui::sampleColor( eventPos );
+  setColor( newColor );
+  addRecentColor( newColor );
+}
+
+void QgsSymbolButton::showColorDialog()
+{
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QColor currentColor = mSymbol->color();
+    QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, currentColor, QgsCompoundColorWidget::LayoutVertical );
+    colorWidget->setPanelTitle( tr( "Symbol Color" ) );
+    colorWidget->setAllowOpacity( true );
+
+    if ( currentColor.isValid() )
+    {
+      colorWidget->setPreviousColor( currentColor );
+    }
+
+    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [ = ]( const QColor & newColor )
+    {
+      if ( newColor.isValid() )
+      {
+        setColor( newColor );
+      }
+    } );
+    panel->openPanel( colorWidget );
+    return;
+  }
+
+  QgsColorDialog dialog( this, nullptr, mSymbol->color() );
+  dialog.setTitle( tr( "Symbol Color" ) );
+  dialog.setAllowOpacity( true );
+
+  if ( dialog.exec() && dialog.color().isValid() )
+  {
+    setColor( dialog.color() );
+  }
+
+  // reactivate button's window
+  activateWindow();
 }
 
 void QgsSymbolButton::setDialogTitle( const QString &title )

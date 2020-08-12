@@ -22,7 +22,6 @@
 #include <QFileSystemWatcher>
 #include <QFutureWatcher>
 #include <QIcon>
-#include <QLibrary>
 #include <QObject>
 #include <QPixmap>
 #include <QString>
@@ -38,6 +37,7 @@
 class QgsDataProvider;
 class QgsDataItem;
 class QgsAnimatedIcon;
+class QgsBookmarkManager;
 
 typedef QgsDataItem *dataItem_t( QString, QgsDataItem * ) SIP_SKIP;
 
@@ -82,15 +82,35 @@ class CORE_EXPORT QgsDataItem : public QObject
       Favorites, //!< Represents a favorite item
       Project, //!< Represents a QGIS project
       Custom, //!< Custom item type
+      Fields, //!< Collection of fields
+      Field, //!< Vector layer field
     };
 
     Q_ENUM( Type )
 
-    //! Create new data item.
-    QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path );
+    /**
+     * Constructor for QgsDataItem, with the specified \a parent item.
+     *
+     * The \a name argument specifies the text to show in the model for the item. A translated string should
+     * be used wherever appropriate.
+     *
+     * The \a path argument gives the item path in the browser tree. The \a path string can take any form,
+     * but QgsDataItem items pointing to different logical locations should always use a different item \a path.
+     *
+     * The optional \a providerKey string (added in QGIS 3.12) can be used to specify the key for the QgsDataItemProvider that created this item.
+     */
+    QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path, const QString &providerKey = QString() );
+
     ~QgsDataItem() override;
 
     bool hasChildren();
+
+    /**
+     * Returns TRUE if the data item is a collection of layers
+     * The default implementation returns FALSE, subclasses must implement this method if their children are layers.
+     * \since QGIS 3.14
+     */
+    virtual bool layerCollection() const;
 
     int rowCount();
 
@@ -144,7 +164,14 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     virtual bool equal( const QgsDataItem *other );
 
-    virtual QWidget *paramWidget() SIP_FACTORY { return nullptr; }
+    /**
+     * Returns source widget from data item for QgsBrowserPropertiesWidget
+     *
+     * Use QgsDataItemGuiProvider::createParamWidget() instead
+     *
+     * \deprecated QGIS 3.10
+     */
+    Q_DECL_DEPRECATED virtual QWidget *paramWidget() SIP_FACTORY SIP_DEPRECATED { return nullptr; }
 
     /**
      * Returns the list of actions available for this item. This is usually used for the popup menu on right-clicking
@@ -169,15 +196,21 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
      * Subclasses should override this and handleDrop() to accept dropped layers.
      * \see handleDrop()
+     * \see QgsDataItemGuiProvider::handleDrop()
+     *
+     * \deprecated QGIS 3.10
      */
-    virtual bool acceptDrop() { return false; }
+    Q_DECL_DEPRECATED virtual bool acceptDrop() SIP_DEPRECATED { return false; }
 
     /**
      * Attempts to process the mime data dropped on this item. Subclasses must override this and acceptDrop() if they
      * accept dropped layers.
      * \see acceptDrop()
+     * \see QgsDataItemGuiProvider::handleDrop()
+     *
+     * \deprecated QGIS 3.10
      */
-    virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) { return false; }
+    Q_DECL_DEPRECATED virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) SIP_DEPRECATED { return false; }
 
     /**
      * Called when a user double clicks on the item. Subclasses should return TRUE
@@ -207,7 +240,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     enum Capability
     {
       NoCapabilities    = 0,
-      SetCrs            = 1 << 0, //!< Can set CRS on layer or group of layers. \deprecated in QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0
+      SetCrs            = 1 << 0, //!< Can set CRS on layer or group of layers. \deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0
       Fertile           = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
       Fast              = 1 << 2, //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
       Collapse          = 1 << 3, //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
@@ -224,7 +257,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     Q_DECL_DEPRECATED virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) SIP_DEPRECATED
     {
-      Q_UNUSED( crs );
+      Q_UNUSED( crs )
       return false;
     }
 
@@ -235,9 +268,12 @@ class CORE_EXPORT QgsDataItem : public QObject
      *
      * The default implementation does nothing.
      *
+     * Use QgsDataItemGuiProvider:
+     *
      * \since QGIS 3.4
+     * \deprecated QGIS 3.10
      */
-    virtual bool rename( const QString &name );
+    Q_DECL_DEPRECATED virtual bool rename( const QString &name ) SIP_DEPRECATED;
 
     // ### QGIS 4 - rename to capabilities()
 
@@ -292,6 +328,27 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     QString path() const { return mPath; }
     void setPath( const QString &path ) { mPath = path; }
+
+    /**
+     * Returns the provider key that created this item (e.g. "PostGIS")
+     *
+     * If key has a prefix "special:", it marks that the item was not created with a provider,
+     * but manually. For example "special:Favorites", "special:Home"
+     *
+     * \since QGIS 3.12
+     */
+    QString providerKey() const;
+
+    /**
+     * Sets the provider key that created this item (e.g. "PostGIS")
+     *
+     * If key has a prefix "special:", it marks that the item was not created with a provider,
+     * but manually. For example "special:Favorites"
+     *
+     * \since QGIS 3.12
+     */
+    void setProviderKey( const QString &value );
+
     //! Create path component replacing path separators
     static QString pathComponent( const QString &component );
 
@@ -353,6 +410,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     QVector<QgsDataItem *> mChildren; // easier to have it always
     State mState;
     QString mName;
+    QString mProviderKey;
     // Path is slash ('/') separated chain of item identifiers which are usually item names, but may be different if it is
     // necessary to distinguish paths of two providers to the same source (e.g GRASS location and standard directory have the same
     // name but different paths). Identifiers in path must not contain '/' characters.
@@ -370,11 +428,12 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     /**
      * Safely delete the item:
-     *   - disconnects parent
-     *   - unsets parent (but does not remove itself)
-     *   - deletes all its descendants recursively
-     *   - waits until Populating state (createChildren() in thread) finished without blocking main thread
-     *   - calls QObject::deleteLater()
+     *
+     * - disconnects parent
+     * - unsets parent (but does not remove itself)
+     * - deletes all its descendants recursively
+     * - waits until Populating state (createChildren() in thread) finished without blocking main thread
+     * - calls QObject::deleteLater()
      */
     virtual void deleteLater();
 
@@ -387,8 +446,13 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     virtual void refresh();
 
-    //! Refresh connections: update GUI and emit signal
-    virtual void refreshConnections();
+    /**
+     * Causes a data item provider to refresh all registered connections.
+     *
+     * If \a providerKey is specified then only the matching provider will be refreshed. Otherwise,
+     * all providers will be refreshed (which is potentially very expensive!).
+     */
+    virtual void refreshConnections( const QString &providerKey = QString() );
 
     virtual void childrenCreated();
 
@@ -401,12 +465,13 @@ class CORE_EXPORT QgsDataItem : public QObject
     void stateChanged( QgsDataItem *item, QgsDataItem::State oldState );
 
     /**
-     * Emitted when the provider's connections of the child items have changed
+     * Emitted when the connections of the provider with the specified \a providerKey have changed.
+     *
      * This signal is normally forwarded to the app in order to refresh the connection
      * item in the provider dialogs and to refresh the connection items in the other
-     * open browsers
+     * open browsers.
      */
-    void connectionsChanged();
+    void connectionsChanged( const QString &providerKey = QString() );
 
   protected slots:
 
@@ -450,7 +515,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
       Database,
       Table,
       Plugin,    //!< Added in 2.10
-      Mesh       //!< Added in 3.2
+      Mesh,      //!< Added in 3.2
+      VectorTile //!< Added in 3.14
     };
 
     Q_ENUM( LayerType )
@@ -512,13 +578,15 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
      */
     static QString iconName( LayerType layerType );
 
-    //! Delete this layer item
-    virtual bool deleteLayer();
+    /**
+     * Delete this layer item
+     * Use QgsDataItemGuiProvider::deleteLayer instead
+     *
+     * \deprecated QGIS 3.10
+     */
+    Q_DECL_DEPRECATED virtual bool deleteLayer() SIP_DEPRECATED;
 
   protected:
-
-    //! The provider key
-    QString mProviderKey;
     //! The URI
     QString mUri;
     //! The layer type
@@ -537,6 +605,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconDefault();
     //! Returns icon for mesh layer type
     static QIcon iconMesh();
+    //! Returns icon for vector tile layer
+    static QIcon iconVectorTile();
 
     //! \returns the layer name
     virtual QString layerName() const { return name(); }
@@ -551,7 +621,20 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 {
     Q_OBJECT
   public:
-    QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString() );
+
+    /**
+     * Constructor for QgsDataCollectionItem, with the specified \a parent item.
+     *
+     * The \a name argument specifies the text to show in the model for the item. A translated string should
+     * be used wherever appropriate.
+     *
+     * The \a path argument gives the item path in the browser tree. The \a path string can take any form,
+     * but QgsDataCollectionItem items pointing to different logical locations should always use a different item \a path.
+     *
+     * The optional \a providerKey string can be used to specify the key for the QgsDataItemProvider that created this item.
+     */
+    QgsDataCollectionItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
+
     ~QgsDataCollectionItem() override;
 
     void addChild( QgsDataItem *item SIP_TRANSFER ) { mChildren.append( item ); }
@@ -583,6 +666,70 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
     static QIcon homeDirIcon();
 };
 
+
+/**
+ * \ingroup core
+ * A Collection that represents a database schema item
+ * \since QGIS 3.16
+*/
+class CORE_EXPORT QgsDatabaseSchemaItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Constructor for QgsDatabaseSchemaItem, with the specified \a parent item.
+     *
+     * The \a name argument specifies the text to show in the model for the item. A translated string should
+     * be used wherever appropriate.
+     *
+     * The \a path argument gives the item path in the browser tree. The \a path string can take any form,
+     * but QgsSchemaItem items pointing to different logical locations should always use a different item \a path.
+     *
+     * The optional \a providerKey string can be used to specify the key for the QgsDataItemProvider that created this item.
+     */
+    QgsDatabaseSchemaItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
+
+    ~QgsDatabaseSchemaItem() override;
+
+
+    /**
+     * Returns the standard browser data collection icon.
+     * \see iconDir()
+     */
+    static QIcon iconDataCollection();
+
+};
+
+
+
+/**
+ * \ingroup core
+ * A Collection that represents a root group of connections from a single data provider
+ * \since QGIS 3.16
+*/
+class CORE_EXPORT QgsConnectionsRootItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Constructor for QgsConnectionsRootItem, with the specified \a parent item.
+     *
+     * The \a name argument specifies the text to show in the model for the item. A translated string should
+     * be used wherever appropriate.
+     *
+     * The \a path argument gives the item path in the browser tree. The \a path string can take any form,
+     * but QgsSchemaItem items pointing to different logical locations should always use a different item \a path.
+     *
+     * The optional \a providerKey string can be used to specify the key for the QgsDataItemProvider that created this item.
+     */
+    QgsConnectionsRootItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
+
+    ~QgsConnectionsRootItem() override = default;
+};
+
+
 /**
  * \ingroup core
  * A directory: contains subdirectories and layers
@@ -592,15 +739,39 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
 
-    QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &path );
+    /**
+     * Constructor for QgsDirectoryItem, with the specified \a parent item.
+     *
+     * The \a name argument specifies the text to show in the model for the item. This is usually
+     * the directory name, but in certain cases may differ for special directories (e.g. "Home").
+     * If a non-directory-name text is used, it should be a translated string when appropriate.
+     *
+     * The \a path argument specifies the directory path in the file system (e.g. "/home/gsherman/stuff"). A valid
+     * directory path must be specified.
+     */
+    QgsDirectoryItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path );
+
+
+    // TODO QGIS 4.0 -- rename "name" to "title" or "text" or something more descriptive, and "path" to something
+    // else to clarify the role of dirPath vs path
 
     /**
-     * Constructor.
-     * \param parent
-     * \param name directory name
-     * \param dirPath path to directory in file system
-     * \param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favorites: */
-    QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path );
+     * Constructor for QgsDirectoryItem, with the specified \a parent item.
+     *
+     * The \a name argument specifies the text to show in the model for the item. This is usually
+     * the directory name, but in certain cases may differ for special directories (e.g. "Home").
+     * If a non-directory-name text is used, it should be a translated string when appropriate.
+     *
+     * The \a dirPath argument specifies the directory path in the file system (e.g. "/home/gsherman/stuff"). A valid
+     * directory path must be specified.
+     *
+     * The \a path argument gives the item path in the browser tree. The \a path string can take any form, but is usually
+     * the same as \a dirPath or \a dirPath with a prefix, e.g. "favorites:/home/gsherman/Downloads"). QgsDirectoryItem
+     * items pointing to different \a dirPaths should always use a different item \a path.
+     *
+     * The optional \a providerKey string can be used to specify the key for the QgsDataItemProvider that created this item.
+     */
+    QgsDirectoryItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &dirPath, const QString &path, const QString &providerKey = QString() );
 
     void setState( State state ) override;
 
@@ -613,7 +784,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
     bool equal( const QgsDataItem *other ) override;
     QIcon icon() override;
-    QWidget *paramWidget() override SIP_FACTORY;
+    Q_DECL_DEPRECATED QWidget *paramWidget() override SIP_FACTORY SIP_DEPRECATED;
     bool hasDragEnabled() const override { return true; }
     QgsMimeDataUtils::Uri mimeUri() const override;
 
@@ -648,8 +819,9 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
      * \param parent The parent data item.
      * \param name The name of the of the project. Displayed to the user.
      * \param path The full path to the project.
+     * \param providerKey key of the provider that created this item
      */
-    QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path );
+    QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &providerKey = QString() );
 
     bool hasDragEnabled() const override { return true; }
 
@@ -670,12 +842,15 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
 
 };
 
-
 // ---------
+
+// TODO: move to qgis_gui for QGIS 4
 
 /**
  * \ingroup core
  * \class QgsDirectoryParamWidget
+ *
+ * Browser parameter widget implementation for directory items.
  */
 class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
 {
@@ -753,8 +928,11 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     QStringList mZipFileList;
 
   public:
+    //! Constructor
     QgsZipItem( QgsDataItem *parent, const QString &name, const QString &path );
-    QgsZipItem( QgsDataItem *parent, const QString &name, const QString &filePath, const QString &path );
+
+    //! Constructor
+    QgsZipItem( QgsDataItem *parent, const QString &name, const QString &filePath, const QString &path, const QString &providerKey = QString() );
 
     QVector<QgsDataItem *> createChildren() override;
     QStringList getZipFileList();
@@ -783,6 +961,102 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 };
 
 
+/**
+ * \ingroup core
+ * A collection of field items with some internal logic to retrieve
+ * the fields and a the vector layer instance from a connection URI,
+ * the schema and the table name.
+ * \since QGIS 3.16
+*/
+class CORE_EXPORT QgsFieldsItem : public QgsDataItem
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsFieldsItem, with the specified \a parent item.
+     *
+     * The \a path argument gives the item path in the browser tree. The \a path string can take any form,
+     * but QgsDataItem items pointing to different logical locations should always use a different item \a path.
+     * The \connectionUri argument is the connection part of the layer URI that it is used internally to create
+     * a connection and retrieve fields information.
+     * The \a providerKey string can be used to specify the key for the QgsDataItemProvider that created this item.
+     * The \a schema and \a tableName are used to retrieve the layer and field information from the \a connectionUri.
+     */
+    QgsFieldsItem( QgsDataItem *parent SIP_TRANSFERTHIS,
+                   const QString &path,
+                   const QString &connectionUri,
+                   const QString &providerKey,
+                   const QString &schema,
+                   const QString &tableName );
+
+    ~QgsFieldsItem() override;
+
+    QVector<QgsDataItem *> createChildren() override;
+
+    QIcon icon() override;
+
+    /**
+     * Returns the schema name
+     */
+    QString schema() const;
+
+    /**
+     * Returns the table name
+     */
+    QString tableName() const;
+
+    /**
+     * Returns the connection URI
+     */
+    QString connectionUri() const;
+
+    /**
+     * Creates and returns a (possibly NULL) layer from the connection URI and schema/table information
+     */
+    QgsVectorLayer *layer() SIP_FACTORY;
+
+
+  private:
+
+    QString mSchema;
+    QString mTableName;
+    QString mConnectionUri;
+};
+
+
+/**
+ * \ingroup core
+ * A layer field item, information about the connection URI, the schema and the
+ * table as well as the layer instance the field belongs to can be retrieved
+ * from the parent QgsFieldsItem object.
+ * \since QGIS 3.16
+*/
+class CORE_EXPORT QgsFieldItem : public QgsDataItem
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Constructor for QgsFieldItem, with the specified \a parent item and \a field.
+     * \note parent item must be a QgsFieldsItem
+     */
+    QgsFieldItem( QgsDataItem *parent SIP_TRANSFERTHIS,
+                  const QgsField &field );
+
+    ~QgsFieldItem() override;
+
+    QIcon icon() override;
+
+  private:
+
+    const QgsField mField;
+
+};
+
+
+
 ///@cond PRIVATE
 #ifndef SIP_RUN
 
@@ -809,6 +1083,7 @@ class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
  * A directory item showing the a single favorite directory.
  * \since QGIS 3.0
 */
+Q_NOWARN_DEPRECATED_PUSH  // rename is deprecated
 class CORE_EXPORT QgsFavoriteItem : public QgsDirectoryItem
 {
     Q_OBJECT
@@ -823,6 +1098,7 @@ class CORE_EXPORT QgsFavoriteItem : public QgsDirectoryItem
 
     QgsFavoritesItem *mFavorites = nullptr;
 };
+Q_NOWARN_DEPRECATED_POP
 
 #endif
 ///@endcond

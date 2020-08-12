@@ -30,6 +30,17 @@ from the map layer registry.
 #include "qgslayertreeregistrybridge.h"
 %End
   public:
+
+    struct InsertionPoint
+    {
+      InsertionPoint( QgsLayerTreeGroup *group, int position );
+%Docstring
+Constructs an insertion point as layer tree group with its corresponding position.
+%End
+      QgsLayerTreeGroup *group;
+      int position;
+    };
+
     explicit QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QgsProject *project, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Create the instance that synchronizes given project with a layer tree root
@@ -41,10 +52,21 @@ Create the instance that synchronizes given project with a layer tree root
     void setNewLayersVisible( bool enabled );
     bool newLayersVisible() const;
 
-    void setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index );
+ void setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index ) /Deprecated/;
 %Docstring
 Set where the new layers should be inserted - can be used to follow current selection.
 By default it is root group with zero index.
+
+.. deprecated:: QGIS 3.10
+   use setLayerInsertionPoint( const InsertionPoint &insertionPoint ) instead
+%End
+
+    void setLayerInsertionPoint( const InsertionPoint &insertionPoint );
+%Docstring
+Set where the new layers should be inserted - can be used to follow current selection.
+By default it is root group with zero index.
+
+.. versionadded:: 3.10
 %End
 
   signals:

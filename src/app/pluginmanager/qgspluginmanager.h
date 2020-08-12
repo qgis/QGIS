@@ -127,6 +127,9 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Install selected plugin
     void buttonInstall_clicked();
 
+    //! Install selected plugin
+    void buttonInstallExperimental_clicked();
+
     //! Uninstall selected plugin
     void buttonUninstall_clicked();
 

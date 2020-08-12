@@ -1,0 +1,59 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsproxyfeaturesink.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProxyFeatureSink : QgsFeatureSink
+{
+%Docstring
+A simple feature sink which proxies feature addition on to another feature sink.
+
+This class is designed to allow factory methods which always return new QgsFeatureSink
+objects. Since it is not always possible to create an entirely new QgsFeatureSink
+(e.g. if the feature sink is a layer's data provider), a new QgsProxyFeatureSink
+can instead be returned which forwards features on to the destination sink. The
+proxy sink can be safely deleted without affecting the destination sink.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsproxyfeaturesink.h"
+%End
+  public:
+
+    QgsProxyFeatureSink( QgsFeatureSink *sink );
+%Docstring
+Constructs a new QgsProxyFeatureSink which forwards features onto a destination ``sink``.
+%End
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
+    virtual bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
+    virtual QString lastError() const;
+
+    QgsFeatureSink *destinationSink();
+%Docstring
+Returns the destination QgsFeatureSink which the proxy will forward features to.
+%End
+
+};
+
+
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsproxyfeaturesink.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

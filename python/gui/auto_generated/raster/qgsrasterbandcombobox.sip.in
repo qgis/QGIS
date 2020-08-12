@@ -58,6 +58,11 @@ a ``string``.
 .. seealso:: :py:func:`setShowNotSetOption`
 %End
 
+    static QString displayBandName( QgsRasterDataProvider *provider, int band );
+%Docstring
+Returns a user-friendly band name for the specified ``band``.
+%End
+
   public slots:
 
     void setLayer( QgsMapLayer *layer );

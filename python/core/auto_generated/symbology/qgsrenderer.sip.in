@@ -25,8 +25,17 @@ class QgsSymbolLevelItem
 %End
   public:
     QgsSymbolLevelItem( QgsSymbol *symbol, int layer );
-    QgsSymbol *symbol();
-    int layer();
+
+    QgsSymbol *symbol() const;
+%Docstring
+The symbol of this symbol level
+%End
+
+    int layer() const;
+%Docstring
+The layer of this symbol level
+%End
+
   protected:
 };
 
@@ -82,7 +91,7 @@ Returns a new renderer - used by default in vector layers
 %Docstring
 To be overridden
 
-Must be called between startRender() and stopRender() calls.
+Must be called between :py:func:`~QgsFeatureRenderer.startRender` and :py:func:`~QgsFeatureRenderer.stopRender` calls.
 
 :param feature: feature
 :param context: render context
@@ -94,7 +103,7 @@ Must be called between startRender() and stopRender() calls.
 
     virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 %Docstring
-Returns symbol for feature. The difference compared to symbolForFeature() is that it returns original
+Returns symbol for feature. The difference compared to :py:func:`~QgsFeatureRenderer.symbolForFeature` is that it returns original
 symbol which can be used as an identifier for renderer's rule - the former may return a temporary replacement
 of a symbol for use in rendering.
 
@@ -110,8 +119,8 @@ Returns legend keys matching a specified feature.
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 %Docstring
-Must be called when a new render cycle is started. A call to startRender() must always
-be followed by a corresponding call to stopRender() after all features have been rendered.
+Must be called when a new render cycle is started. A call to :py:func:`~QgsFeatureRenderer.startRender` must always
+be followed by a corresponding call to :py:func:`~QgsFeatureRenderer.stopRender` after all features have been rendered.
 
 :param context: Additional information passed to the renderer about the job which will be rendered
 :param fields: The fields available for rendering
@@ -121,20 +130,20 @@ be followed by a corresponding call to stopRender() after all features have been
 
 .. warning::
 
-   This method is not thread safe. Before calling startRender() in a non-main thread,
-   the renderer should instead be cloned and startRender()/stopRender() called on the clone.
+   This method is not thread safe. Before calling :py:func:`~QgsFeatureRenderer.startRender` in a non-main thread,
+   the renderer should instead be cloned and :py:func:`~QgsFeatureRenderer.startRender`/:py:func:`~QgsFeatureRenderer.stopRender` called on the clone.
 %End
 
     virtual void stopRender( QgsRenderContext &context );
 %Docstring
 Must be called when a render cycle has finished, to allow the renderer to clean up.
 
-Calls to stopRender() must always be preceded by a call to startRender().
+Calls to :py:func:`~QgsFeatureRenderer.stopRender` must always be preceded by a call to :py:func:`~QgsFeatureRenderer.startRender`.
 
 .. warning::
 
-   This method is not thread safe. Before calling startRender() in a non-main thread,
-   the renderer should instead be cloned and startRender()/stopRender() called on the clone.
+   This method is not thread safe. Before calling :py:func:`~QgsFeatureRenderer.startRender` in a non-main thread,
+   the renderer should instead be cloned and :py:func:`~QgsFeatureRenderer.startRender`/:py:func:`~QgsFeatureRenderer.stopRender` called on the clone.
 
 .. seealso:: :py:func:`startRender`
 %End
@@ -143,8 +152,8 @@ Calls to stopRender() must always be preceded by a call to startRender().
 %Docstring
 If a renderer does not require all the features this method may be overridden
 and return an expression used as where clause.
-This will be called once after startRender() and before the first call
-to renderFeature().
+This will be called once after :py:func:`~QgsFeatureRenderer.startRender` and before the first call
+to :py:func:`~QgsFeatureRenderer.renderFeature`.
 By default this returns a null string and all features will be requested.
 You do not need to specify the extent in here, this is taken care of separately and
 will be combined with a filter returned from this method.
@@ -175,11 +184,11 @@ and generate a proper subclass.
 :return: A copy of this renderer
 %End
 
-    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
 %Docstring
 Render a feature using this renderer in the given context.
-Must be called between startRender() and stopRender() calls.
-Default implementation renders a symbol as determined by symbolForFeature() call.
+Must be called between :py:func:`~QgsFeatureRenderer.startRender` and :py:func:`~QgsFeatureRenderer.stopRender` calls.
+Default implementation renders a symbol as determined by :py:func:`~QgsFeatureRenderer.symbolForFeature` call.
 Returns ``True`` if the feature has been returned (this is used for example
 to determine whether the feature may be labelled).
 
@@ -323,8 +332,8 @@ Sets type and size of editing vertex markers for subsequent rendering
     virtual bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 %Docstring
 Returns whether the renderer will render a feature or not.
-Must be called between startRender() and stopRender() calls.
-Default implementation uses symbolForFeature().
+Must be called between :py:func:`~QgsFeatureRenderer.startRender` and :py:func:`~QgsFeatureRenderer.stopRender` calls.
+Default implementation uses :py:func:`~QgsFeatureRenderer.symbolForFeature`.
 
 .. versionadded:: 2.12
 %End
@@ -333,15 +342,15 @@ Default implementation uses symbolForFeature().
 %Docstring
 Returns list of symbols used for rendering the feature.
 For renderers that do not support MoreSymbolsPerFeature it is more efficient
-to use symbolForFeature()
+to use :py:func:`~QgsFeatureRenderer.symbolForFeature`
 
 .. versionadded:: 2.12
 %End
 
     virtual QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 %Docstring
-Equivalent of originalSymbolsForFeature() call
-extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
+Equivalent of :py:func:`~QgsFeatureRenderer.originalSymbolsForFeature` call
+extended to support renderers that may use more symbols per feature - similar to :py:func:`~QgsFeatureRenderer.symbolsForFeature`
 
 .. versionadded:: 2.12
 %End
@@ -407,7 +416,7 @@ Gets the order in which features shall be processed by this renderer.
 
 .. note::
 
-   this property has no effect if orderByEnabled() is ``False``
+   this property has no effect if :py:func:`~QgsFeatureRenderer.orderByEnabled` is ``False``
 
 .. seealso:: :py:func:`orderByEnabled`
 
@@ -420,7 +429,7 @@ Define the order in which features shall be processed by this renderer.
 
 .. note::
 
-   this property has no effect if orderByEnabled() is ``False``
+   this property has no effect if :py:func:`~QgsFeatureRenderer.orderByEnabled` is ``False``
 
 .. seealso:: :py:func:`setOrderByEnabled`
 
@@ -473,15 +482,21 @@ implementation does not use subrenderers and will always return ``None``.
 .. versionadded:: 2.16
 %End
 
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified symbology ``visitor``, causing it to visit all symbols associated
+with the renderer.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
+%End
+
   protected:
     QgsFeatureRenderer( const QString &type );
 
-    void renderFeatureWithSymbol( const QgsFeature &feature,
-                                  QgsSymbol *symbol,
-                                  QgsRenderContext &context,
-                                  int layer,
-                                  bool selected,
-                                  bool drawVertexMarker );
+    void renderFeatureWithSymbol( const QgsFeature &feature, QgsSymbol *symbol, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker ) throw( QgsCsException );
 %Docstring
 Render the ``feature`` with the ``symbol`` using ``context``.
 Use ``layer`` to specify the symbol layer, ``selected`` to
@@ -512,8 +527,9 @@ coordinates
 %Docstring
 Clones generic renderer data to another renderer.
 Currently clones
-* Order By
-* Paint Effect
+
+- Order By
+- Paint Effect
 
 :param destRenderer: destination renderer for copied effect
 %End

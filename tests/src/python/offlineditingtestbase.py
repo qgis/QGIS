@@ -24,8 +24,6 @@ from builtins import object
 __author__ = 'Alessandro Pasotti'
 __date__ = '2016-06-30'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from time import sleep
 
@@ -39,9 +37,8 @@ from qgis.core import (
     QgsOfflineEditing,
 )
 
-
 # Tet features, fields: [id, name, geometry]
-# "id" is used as a pk to retriev features by attribute
+# "id" is used as a pk to retrieve features by attribute
 TEST_FEATURES = [
     (1, 'name 1', QgsPointXY(9, 45)),
     (2, 'name 2', QgsPointXY(9.5, 45.5)),
@@ -57,7 +54,6 @@ TEST_FEATURES_INSERT = [
 
 
 class OfflineTestBase(object):
-
     """Generic test methods for all online providers"""
 
     def _setUp(self):
@@ -82,7 +78,7 @@ class OfflineTestBase(object):
     def _tearDown(self):
         """Called by tearDown: run after each test."""
         # Delete the sqlite db
-        #os.unlink(os.path.join(self.temp_path, 'offlineDbFile.sqlite'))
+        # os.unlink(os.path.join(self.temp_path, 'offlineDbFile.sqlite'))
         pass
 
     @classmethod

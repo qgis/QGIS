@@ -145,9 +145,15 @@ QList< QgsMapLayer * > QgsMapRendererCache::dependentLayers( const QString &cach
   return QList< QgsMapLayer * >();
 }
 
+
 void QgsMapRendererCache::layerRequestedRepaint()
 {
   QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
+  invalidateCacheForLayer( layer );
+}
+
+void QgsMapRendererCache::invalidateCacheForLayer( QgsMapLayer *layer )
+{
   if ( !layer )
     return;
 
@@ -175,3 +181,4 @@ void QgsMapRendererCache::clearCacheImage( const QString &cacheKey )
   mCachedImages.remove( cacheKey );
   dropUnusedConnections();
 }
+

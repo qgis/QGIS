@@ -101,6 +101,12 @@ QgsLayout3DMapWidget::QgsLayout3DMapWidget( QgsLayoutItem3DMap *map3D )
   updateCameraPoseWidgetsFromItem();
 }
 
+void QgsLayout3DMapWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
+{
+  if ( mItemPropertiesWidget )
+    mItemPropertiesWidget->setMasterLayout( masterLayout );
+}
+
 void QgsLayout3DMapWidget::updateCameraPoseWidgetsFromItem()
 {
   QgsCameraPose pose = mMap3D->cameraPose();

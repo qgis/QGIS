@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_7">
    <property name="leftMargin">
@@ -90,14 +90,52 @@
               <number>2</number>
              </property>
              <item>
-              <widget class="QListWidget" name="listWidgetInputLayers"/>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="checkBoxInputSelectedOnly">
-               <property name="text">
-                <string>Only selected features</string>
+              <widget class="QListWidget" name="listWidgetInputLayers">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>150</height>
+                </size>
                </property>
               </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <widget class="QCheckBox" name="checkBoxInputSelectedOnly">
+                 <property name="text">
+                  <string>Only selected features</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButtonSelectAllLayers">
+                 <property name="text">
+                  <string>Select All</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButtonDeselectAllLayers">
+                 <property name="text">
+                  <string>Deselect All</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
             </layout>
            </widget>

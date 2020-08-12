@@ -77,6 +77,15 @@ Constructor for QgsReferencedRectangle.
 
     operator QVariant() const;
 
+    bool operator==( const QgsReferencedRectangle &other );
+    bool operator!=( const QgsReferencedRectangle &other );
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsReferencedRectangle: %1 (%2)>" ).arg( sipCpp->asWktCoordinates(), sipCpp->crs().authid() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
 };
 
 
@@ -105,6 +114,15 @@ Constructor for QgsReferencedPointXY.
 %End
 
     operator QVariant() const;
+
+    bool operator==( const QgsReferencedPointXY &other );
+    bool operator!=( const QgsReferencedPointXY &other );
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsReferencedPointXY: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
 };
 

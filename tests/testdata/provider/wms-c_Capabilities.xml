@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<WMT_MS_Capabilities version="1.1.1">
+  <Service>
+    <Name>OGC:WMS</Name>
+    <Title>Service title</Title>
+    <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://example.com/ows?" />
+  </Service>
+  <Capability>
+    <Request>
+      <GetCapabilities>
+        <Format>application/vnd.ogc.wms_xml</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://example.com/ows?" />
+            </Get>
+          </HTTP>
+        </DCPType>
+      </GetCapabilities>
+      <GetMap>
+        <Format>image/png</Format>
+        <Format>image/jpeg</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://example.com/ows?" />
+            </Get>
+          </HTTP>
+        </DCPType>
+      </GetMap>
+      <GetFeatureInfo>
+        <Format>text/plain</Format>
+        <Format>application/vnd.ogc.gml</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://example.com/ows?" />
+            </Get>
+          </HTTP>
+        </DCPType>
+      </GetFeatureInfo>
+    </Request>
+    <Exception>
+      <Format>text/plain</Format>
+    </Exception>
+    <VendorSpecificCapabilities>
+      <TileSet>
+        <SRS>EPSG:3059</SRS>
+        <BoundingBox SRS="EPSG:3059" minx="295000.0" miny="150000.0" maxx="785000.0" maxy="460000.0" />
+        <Resolutions>603.400 301.700</Resolutions>
+        <Width>256</Width>
+        <Height>256</Height>
+        <Format>image/png</Format>
+        <Layers>layerwtwa</Layers>
+        <Styles />
+      </TileSet>
+      <TileSet>
+        <SRS>EPSG:3059</SRS>
+        <BoundingBox SRS="EPSG:3059" minx="295000.0" miny="150000.0" maxx="785000.0" maxy="460000.0" />
+        <Resolutions>603.400 301.700 </Resolutions>
+        <Width>256</Width>
+        <Height>256</Height>
+        <Format>image/png</Format>
+        <Layers>layerwtna</Layers>
+        <Styles />
+      </TileSet>
+      <TileSet>
+        <SRS>EPSG:3059</SRS>
+        <BoundingBox SRS="EPSG:3059" minx="295000.0" miny="150000.0" maxx="785000.0" maxy="460000.0" />
+        <Resolutions>603.400 301.700 </Resolutions>
+        <Width>256</Width>
+        <Height>256</Height>
+        <Format>image/png</Format>
+        <Layers>layerntwa</Layers>
+        <Styles />
+      </TileSet>
+      <TileSet>
+        <SRS>EPSG:3059</SRS>
+        <BoundingBox SRS="EPSG:3059" minx="295000.0" miny="150000.0" maxx="785000.0" maxy="460000.0" />
+        <Resolutions>603.400 301.700 </Resolutions>
+        <Width>256</Width>
+        <Height>256</Height>
+        <Format>image/png</Format>
+        <Layers>layerntna</Layers>
+        <Styles />
+      </TileSet>
+    </VendorSpecificCapabilities>
+    <Layer>
+      <Title>Layer set title</Title>
+      <SRS>EPSG:3059</SRS>
+      <Layer cascaded="1" queryable="0">
+        <Name>layerwtwa</Name>
+        <Title>This is a layer title</Title>
+        <Abstract>This is a layer abstract</Abstract>
+        <BoundingBox SRS="EPSG:3059" minx="295000.0" miny="150000.0" maxx="785000.0" maxy="460000.0" />
+        <SRS>EPSG:3059</SRS>
+      </Layer>
+      <Layer cascaded="1" queryable="0">
+        <Name>layerwtna</Name>
+        <Title>A layer with a title and without an abstract</Title>
+        <BoundingBox SRS="EPSG:3059" minx="295000.0" miny="150000.0" maxx="785000.0" maxy="460000.0" />
+        <SRS>EPSG:3059</SRS>
+      </Layer>
+      <Layer cascaded="1" queryable="0">
+        <Name>layerntwa</Name>
+        <Abstract>A layer without a title and with an abstract</Abstract>
+        <BoundingBox SRS="EPSG:3059" minx="295000.0" miny="150000.0" maxx="785000.0" maxy="460000.0" />
+        <SRS>EPSG:3059</SRS>
+      </Layer>
+      <Layer cascaded="1" queryable="0">
+        <Name>layerntna</Name>
+        <BoundingBox SRS="EPSG:3059" minx="295000.0" miny="150000.0" maxx="785000.0" maxy="460000.0" />
+        <SRS>EPSG:3059</SRS>
+      </Layer>
+    </Layer>
+  </Capability>
+</WMT_MS_Capabilities>

@@ -250,6 +250,23 @@ so strings with similar sounds should be represented by the same Soundex code.
 :return: 4 letter Soundex code
 %End
 
+    static double fuzzyScore( const QString &candidate, const QString &search );
+%Docstring
+Tests a ``candidate`` string to see how likely it is a match for
+a specified ``search`` string. Values are normalized between 0 and 1.
+
+:param candidate: candidate string
+:param search: search term string
+
+:return: Normalized value of how likely is the ``search`` to be in the ``candidate``
+
+.. note::
+
+   Use this function only to calculate the fuzzy score between two strings and later compare these values, but do not depend on the actual numbers. They are implementation detail that may change in a future release.
+
+.. versionadded:: 3.14
+%End
+
     static QString insertLinks( const QString &string, bool *foundLinks = 0 );
 %Docstring
 Returns a string with any URL (e.g., http(s)/ftp) and mailto: text converted to valid HTML <a ...>
@@ -276,6 +293,29 @@ A custom delimiter can be specified to use instead of space characters.
 
 .. versionadded:: 3.4
 %End
+
+    static QString substituteVerticalCharacters( QString string );
+%Docstring
+Returns a string with characters having vertical representation form substituted.
+
+:param string: input string
+
+:return: string with substitution applied
+
+.. versionadded:: 3.10
+%End
+
+    static QString htmlToMarkdown( const QString &html );
+%Docstring
+Convert simple HTML to markdown. Only br, b and link are supported.
+
+:param html: HTML to convert to markdown
+
+:return: String formatted as markdown
+
+.. versionadded:: 3.10
+%End
+
 };
 
 /************************************************************************

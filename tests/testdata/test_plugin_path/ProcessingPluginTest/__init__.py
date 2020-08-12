@@ -20,8 +20,6 @@
 __author__ = 'Hugo Mercier'
 __date__ = 'July 2013'
 __copyright__ = '(C) 2013, Hugo Mercier'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 
@@ -39,6 +37,7 @@ class Test:
 
     def unload(self):
         pass
+
 
 def classFactory(iface):
     # load Test class from file Test

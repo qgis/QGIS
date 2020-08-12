@@ -34,8 +34,13 @@ class QgsXyzConnectionDialog : public QDialog, public Ui::QgsXyzConnectionDialog
 
     QgsXyzConnection connection() const;
 
-  private:
+    void accept() override;
 
+  private slots:
+    //! Updates state of the OK button depending of the filled fields
+    void updateOkButtonState();
+
+  private:
     QString mBaseKey;
     QString mCredentialsBaseKey;
 };

@@ -53,6 +53,7 @@ my $ACTUAL_CLASS = '';
 my $PYTHON_SIGNATURE = '';
 
 my $INDENT = '';
+my $PREV_INDENT = '';
 my $COMMENT = '';
 my $COMMENT_PARAM_LIST = 0;
 my $COMMENT_LAST_LINE_NOTE_WARNING = 0;
@@ -184,18 +185,41 @@ sub processDoxygenLine {
     # replace nullptr with None (nullptr means nothing to Python devs)
     $line =~ s/\bnullptr\b/None/g;
 
+    if ( $line =~ m/^\\(?<SUB>sub)?section/) {
+      my $sep = "-";
+      $sep = "~" if defined $+{SUB};
+      $line =~ s/^\\(sub)?section \w+ //;
+      my $sep_line = $line =~ s/[\w ()]/$sep/gr;
+      $line .= "\n".$sep_line;
+    }
+
+    # convert ### style headings
+    if ( $line =~ m/^###\s+(.*)$/) {
+      $line = "$1\n".('-' x length($1));
+    }
+    if ( $line =~ m/^##\s+(.*)$/) {
+      $line = "$1\n".('=' x length($1));
+    }
+
     if ( $line eq '*' ) {
         $line = '';
     }
 
-    # if inside multi-line parameter, ensure additional lines are indented
+    # handle multi-line parameters/returns/lists
     if ($line ne '') {
-        if ( $line !~ m/^\s*[\\:]+(param|note|since|return|deprecated|warning)/ ) {
+        if ( $line =~ m/^\s*[\-#]/ ){
+            # start of a list item, ensure following lines are correctly indented
+            $line = "$PREV_INDENT$line";
+            $INDENT = $PREV_INDENT."  ";
+        }
+        elsif ( $line !~ m/^\s*[\\:]+(param|note|since|return|deprecated|warning|throws)/ ) {
+            # if inside multi-line parameter, ensure additional lines are indented
             $line = "$INDENT$line";
         }
     }
     else
     {
+        $PREV_INDENT = $INDENT;
         $INDENT = '';
     }
     # replace \returns with :return:
@@ -234,17 +258,23 @@ sub processDoxygenLine {
     }
 
     if ( $line =~ m/[\\@](ingroup|class)/ ) {
+        $PREV_INDENT = $INDENT;
         $INDENT = '';
         return "";
     }
     if ( $line =~ m/\\since .*?([\d\.]+)/i ) {
+        $PREV_INDENT = $INDENT;
         $INDENT = '';
         $FOUND_SINCE = 1;
         return "\n.. versionadded:: $1\n";
     }
-    if ( $line =~ m/\\deprecated(.*)/i ) {
+    if ( $line =~ m/\\deprecated(?:\s+since\s+(?:QGIS\s+)(?<DEPR_VERSION>[0-9.]+)(,\s*)?)?(?<DEPR_MESSAGE>.*)?/i ) {
+        $PREV_INDENT = $INDENT;
         $INDENT = '';
-        return "\n.. deprecated::$1\n";
+        my $depr_line = "\n.. deprecated::";
+        $depr_line .= " QGIS $+{DEPR_VERSION}" if (defined $+{DEPR_VERSION});
+        $depr_line .= "\n  $+{DEPR_MESSAGE}\n" if (defined $+{DEPR_MESSAGE});
+        return $depr_line;
     }
 
     # create links in see also
@@ -286,18 +316,32 @@ sub processDoxygenLine {
                 $line =~ s/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/:py:class:`$1`$2/g;
             }
         }
-        $line =~ s/\b(Qgs[A-Z]\w+\.[a-z]\w+\(\))(\.|\b|$)/:py:func:`$1`/g;
+        $line =~ s/\b(Qgs[A-Z]\w+\.[a-z]\w+\(\))(?!\w)/:py:func:`$1`/g;
+        if ( defined $ACTUAL_CLASS && $ACTUAL_CLASS) {
+          $line =~ s/(?<!\.)\b(?:([a-z]\w+)\(\))(?!\w)/:py:func:`~$ACTUAL_CLASS.$1`/g;
+        }
+        else {
+          $line =~ s/(?<!\.)\b(?:([a-z]\w+)\(\))(?!\w)/:py:func:`~$1`/g;
+        }
     }
 
     if ( $line =~ m/[\\@]note (.*)/ ) {
         $COMMENT_LAST_LINE_NOTE_WARNING = 1;
+        $PREV_INDENT = $INDENT;
         $INDENT = '';
         return "\n.. note::\n\n   $1\n";
     }
     if ( $line =~ m/[\\@]warning (.*)/ ) {
+        $PREV_INDENT = $INDENT;
         $INDENT = '';
         $COMMENT_LAST_LINE_NOTE_WARNING = 1;
         return "\n.. warning::\n\n   $1\n";
+    }
+    if ( $line =~ m/[\\@]throws (.+?)\b\s*(.*)/ ) {
+        $PREV_INDENT = $INDENT;
+        $INDENT = '';
+        $COMMENT_LAST_LINE_NOTE_WARNING = 1;
+        return "\n:raises $1: $2\n";
     }
 
     if ( $line !~ m/^\s*$/ ){
@@ -405,6 +449,7 @@ sub fix_annotations {
     $line =~ s/\bSIP_TRANSFER\b/\/Transfer\//g;
     $line =~ s/\bSIP_TRANSFERBACK\b/\/TransferBack\//;
     $line =~ s/\bSIP_TRANSFERTHIS\b/\/TransferThis\//;
+    $line =~ s/\bSIP_GETWRAPPER\b/\/GetWrapper\//;
 
     $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
     $line =~ s/SIP_TYPEHINT\(\s*(\w+)\s*\)/\/TypeHint="$1"\//;
@@ -472,6 +517,7 @@ sub detect_comment_block{
     # dbg_info("detect comment strict:" . $args{strict_mode} );
     $COMMENT_PARAM_LIST = 0;
     $INDENT = '';
+    $PREV_INDENT = '';
     $COMMENT_CODE_SNIPPET = 0;
     $COMMENT_LAST_LINE_NOTE_WARNING = 0;
     $FOUND_SINCE = 0;
@@ -519,6 +565,10 @@ while ($LINE_IDX < $LINE_COUNT){
 
     if ($LINE =~ m/^\s*SIP_FEATURE\( (\w+) \)(.*)$/){
         write_output("SF1", "%Feature $1$2\n");
+        next;
+    }
+    if ($LINE =~ m/^\s*SIP_PROPERTY\((.*)\)$/){
+        write_output("SF1", "%Property($1)\n");
         next;
     }
     if ($LINE =~ m/^\s*SIP_IF_FEATURE\( (\!?\w+) \)(.*)$/){
@@ -778,8 +828,8 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # class declaration started
-    # https://regex101.com/r/6FWntP/10
-    if ( $LINE =~ m/^(\s*class)\s+([A-Z0-9_]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*\/?\/?\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
+    # https://regex101.com/r/6FWntP/16
+    if ( $LINE =~ m/^(\s*(class))(\s+Q_DECL_DEPRECATED)?\s+([A-Z0-9_]+_EXPORT\s+)?(?<classname>\w+)(?<domain>\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*\/?\/?\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
         dbg_info("class definition started");
         push @ACCESS, PUBLIC;
         push @EXPORTED, 0;
@@ -787,7 +837,7 @@ while ($LINE_IDX < $LINE_COUNT){
         my @template_inheritance_template = ();
         my @template_inheritance_class = ();
         do {no warnings 'uninitialized';
-            push @CLASSNAME, $3;
+            push @CLASSNAME, $+{classname};
             if ($#CLASSNAME == 0){
                 # might be worth to add in-class classes later on
                 # in case of a tamplate based class declaration
@@ -801,10 +851,10 @@ while ($LINE_IDX < $LINE_COUNT){
                 $EXPORTED[-1]++;
             }
         };
-        $LINE = "$1 $3";
+        $LINE = "$1 $+{classname}";
         # Inheritance
-        if ($4){
-            my $m = $4;
+        if (defined $+{domain}){
+            my $m = $+{domain};
             $m =~ s/public +(\w+, *)*(Ui::\w+,? *)+//g; # remove Ui::xxx public inheritance as the namespace is causing troubles
             $m =~ s/public +//g;
             $m =~ s/[,:]?\s*private +\w+(::\w+)?//g;
@@ -937,6 +987,7 @@ while ($LINE_IDX < $LINE_COUNT){
         if ( $LINE =~ m/^\s*\/\// ){
             if ($LINE =~ m/^\s*\/\/\!\s*(.*?)\n?$/){
                 $COMMENT_PARAM_LIST = 0;
+                $PREV_INDENT = $INDENT;
                 $INDENT = '';
                 $COMMENT_LAST_LINE_NOTE_WARNING = 0;
                 $COMMENT = processDoxygenLine( $1 );
@@ -951,13 +1002,15 @@ while ($LINE_IDX < $LINE_COUNT){
 
     # Enum declaration
     # For scoped and type based enum, the type has to be removed
-    if ( $LINE =~ m/^(\s*enum\s+(class\s+)?(\w+))(:?\s+SIP_.*)?(\s*:\s*\w+)?(?<oneliner>.*)$/ ){
-        write_output("ENU1", "$1");
+    if ( $LINE =~ m/^(\s*enum(\s+Q_DECL_DEPRECATED)?\s+(?<isclass>class\s+)?(?<enum_qualname>\w+))(:?\s+SIP_.*)?(\s*:\s*\w+)?(?<oneliner>.*)$/ ){
+        my $enum_decl = $1;
+        $enum_decl =~ s/\s*\bQ_DECL_DEPRECATED\b//;
+        write_output("ENU1", "$enum_decl");
         write_output("ENU1", $+{oneliner}) if defined $+{oneliner};
         write_output("ENU1", "\n");
-        my $enum_qualname = $3;
+        my $enum_qualname = $+{enum_qualname};
         my $is_scope_based = "0";
-        $is_scope_based = "1" if defined $2;
+        $is_scope_based = "1" if defined $+{isclass};
         my $monkeypatch = "0";
         $monkeypatch = "1" if defined $is_scope_based eq "1" and $LINE =~ m/SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?(:?\(\s*(?<emkb>\w+)\s*,\s*(?<emkf>\w+)\s*\))?/;
         my $enum_mk_base = "";
@@ -990,17 +1043,18 @@ while ($LINE_IDX < $LINE_COUNT){
                     my $enum_member = $+{em};
                     my $comment = $+{co};
                     dbg_info("is_scope_based:$is_scope_based enum_mk_base:$enum_mk_base monkeypatch:$monkeypatch");
-                    if ($is_scope_based eq "1") {
-                        if ( $monkeypatch eq 1 ){
-                            if ($enum_mk_base ne "") {
-                                push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member = $enum_qualname.$enum_member\n";
-                                push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member.__doc__ = \"$comment\"\n" ;
-                                push @enum_members_doc, "'* ``$enum_member``: ' + $enum_qualname.$enum_member.__doc__";
-                            } else {
+                    if ($is_scope_based eq "1" and $enum_member ne "") {
+                        if ( $monkeypatch eq 1 and $enum_mk_base ne ""){
+		                    push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member = $enum_qualname.$enum_member\n";
+		                    push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member.__doc__ = \"$comment\"\n" ;
+		                    push @enum_members_doc, "'* ``$enum_member``: ' + $enum_qualname.$enum_member.__doc__";
+                        } else {
+                            if ( $monkeypatch eq 1 )
+                            {
                                 push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_member = $ACTUAL_CLASS.$enum_qualname.$enum_member\n";
-                                push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__ = \"$comment\"\n";
-                                push @enum_members_doc, "'* ``$enum_member``: ' + $ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__";
                             }
+                            push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__ = \"$comment\"\n";
+                            push @enum_members_doc, "'* ``$enum_member``: ' + $ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__";
                         }
                     }
                     $enum_decl = fix_annotations($enum_decl);
@@ -1194,8 +1248,8 @@ while ($LINE_IDX < $LINE_COUNT){
     # multiline definition (parenthesis left open)
     if ( $MULTILINE_DEFINITION != MULTILINE_NO ){
         dbg_info("on multiline");
-        # https://regex101.com/r/DN01iM/2
-        if ( $LINE =~ m/^([^()]+(\((?:[^()]++|(?1))*\)))*[^()]*\)[^()]*$/){
+        # https://regex101.com/r/DN01iM/4
+        if ( $LINE =~ m/^([^()]+(\((?:[^()]++|(?1))*\)))*[^()]*\)([^()](throw\([^()]+\))?)*$/){
             dbg_info("ending multiline");
             # remove potential following body
             if ( $MULTILINE_DEFINITION != MULTILINE_CONDITIONAL_STATEMENT && $LINE !~ m/(\{.*\}|;)\s*(\/\/.*)?$/ ){

@@ -45,7 +45,7 @@ bool QgsHiddenWidgetWrapper::valid() const
   return true;
 }
 
-void QgsHiddenWidgetWrapper::setValue( const QVariant &value )
+void QgsHiddenWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   mValue = value;
 }

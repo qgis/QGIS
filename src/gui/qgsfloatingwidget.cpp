@@ -91,7 +91,7 @@ void QgsFloatingWidget::showEvent( QShowEvent *e )
 
 void QgsFloatingWidget::paintEvent( QPaintEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   QStyleOption opt;
   opt.init( this );
   QPainter p( this );
@@ -202,7 +202,7 @@ QgsFloatingWidgetEventFilter::QgsFloatingWidgetEventFilter( QWidget *parent )
 
 bool QgsFloatingWidgetEventFilter::eventFilter( QObject *object, QEvent *event )
 {
-  Q_UNUSED( object );
+  Q_UNUSED( object )
   switch ( event->type() )
   {
     case QEvent::Move:

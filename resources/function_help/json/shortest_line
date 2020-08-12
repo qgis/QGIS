@@ -1,6 +1,7 @@
 {
   "name": "shortest_line",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns the shortest line joining geometry1 to geometry2. The resultant line will start at geometry1 and end at geometry2.",
   "arguments": [
     {"arg":"geometry1","description":"geometry to find shortest line from"},

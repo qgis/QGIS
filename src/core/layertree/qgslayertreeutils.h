@@ -115,6 +115,15 @@ class CORE_EXPORT QgsLayerTreeUtils
      * \since QGIS 3.4
      */
     static int countMapLayerInTree( QgsLayerTreeNode *tree, QgsMapLayer *layer );
+
+    /**
+     * Returns the first parent which doesn't have the given custom property
+     * or the group itself if it doesn't hold the property
+     * \param group the layer tree group
+     * \param property the property
+     * \since QGIS 3.8
+     */
+    static QgsLayerTreeGroup *firstGroupWithoutCustomProperty( QgsLayerTreeGroup *group, const QString &property );
 };
 
 #endif // QGSLAYERTREEUTILS_H

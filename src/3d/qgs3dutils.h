@@ -38,11 +38,12 @@ namespace Qt3DExtras
 
 #include <memory>
 
-#ifndef SIP_RUN
+#define SIP_NO_FILE
 
 /**
  * \ingroup 3d
  * Miscellaneous utility functions used from 3D code.
+ * \note Not available in Python bindings
  * \since QGIS 3.0
  */
 class _3D_EXPORT Qgs3DUtils
@@ -131,20 +132,48 @@ class _3D_EXPORT Qgs3DUtils
     //! Converts 3D world coordinates to map coordinates (applies offset and turns (x,y,z) into (x,-z,y))
     static QgsVector3D worldToMapCoordinates( const QgsVector3D &worldCoords, const QgsVector3D &origin );
 
+    /**
+     * Converts extent (in map layer's CRS) to axis aligned bounding box in 3D world coordinates
+     * \since QGIS 3.12
+     */
+    static QgsAABB layerToWorldExtent( const QgsRectangle &extent, double zMin, double zMax, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context );
+
+    /**
+     * Converts axis aligned bounding box in 3D world coordinates to extent in map layer CRS
+     * \since QGIS 3.12
+     */
+    static QgsRectangle worldToLayerExtent( const QgsAABB &bbox, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context );
+
+    /**
+     * Converts map extent to axis aligned bounding box in 3D world coordinates
+     * \since QGIS 3.12
+     */
+    static QgsAABB mapToWorldExtent( const QgsRectangle &extent, double zMin, double zMax, const QgsVector3D &mapOrigin );
+
+    /**
+     * Converts axis aligned bounding box in 3D world coordinates to extent in map coordinates
+     * \since QGIS 3.12
+     */
+    static QgsRectangle worldToMapExtent( const QgsAABB &bbox, const QgsVector3D &mapOrigin );
+
     //! Transforms a world point from (origin1, crs1) to (origin2, crs2)
     static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2,
         const QgsCoordinateTransformContext &context );
 
-    //! Returns a new 3D symbol based on given geometry type (or NULLPTR if geometry type is not supported)
-    static std::unique_ptr<QgsAbstract3DSymbol> symbolForGeometryType( QgsWkbTypes::GeometryType geomType );
+    /**
+     * Try to estimate range of Z values used in the given vector layer and store that in zMin and zMax.
+     * The implementation scans a small amount of features and looks at the Z values of geometries
+     * (we don't need exact range, just a rough estimate is fine to know where to expect the data to be).
+     * For layers with geometries without Z values, the returned range will be [0, 0].
+     * \since QGIS 3.12
+     */
+    static void estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin, double &zMax );
 
     //! Returns expression context for use in preparation of 3D data of a layer
     static QgsExpressionContext globalProjectLayerExpressionContext( QgsVectorLayer *layer );
 
-    //! Returns phong material object based on the material settings
-    static Qt3DExtras::QPhongMaterial *phongMaterial( const QgsPhongMaterialSettings &settings );
+    //! Returns phong material settings object based on the Qt3D material
+    static QgsPhongMaterialSettings phongMaterialFromQt3DComponent( Qt3DExtras::QPhongMaterial *material );
 };
-
-#endif
 
 #endif // QGS3DUTILS_H

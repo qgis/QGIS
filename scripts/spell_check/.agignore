@@ -1,8 +1,8 @@
 # Folders
 .build*/
 ci/
+debian/build/
 debian/build.*/
-debian/build*/
 debian/.*/usr/
 i18n/
 external/*
@@ -14,7 +14,7 @@ src/app/gps/qwtpolar-1.0/
 src/app/gps/qwtpolar-1.1.1/
 src/core/pal
 src/plugins/grass/qtermwidget/
-
+tests/testdata/provider/postgresraster/
 
 #Extensions
 *.*.orig
@@ -22,9 +22,8 @@ src/plugins/grass/qtermwidget/
 *.*.png
 *.*.prepare
 *.sld
+*.lintian-overrides
 .agignore
-
-
 
 #Specific files
 ChangeLog
@@ -32,6 +31,7 @@ debian/qgis.desktop
 debian/qgis-plugin-grass.lintian-overrides
 debian/qgis-provider-grass.lintian-overrides
 doc/contributors.json
+doc/TRANSLATORS
 Exception_to_GPL_for_Qt.txt
 images/svg/symbol/blue-marker.svg
 images/svg/symbol/red-marker.svg
@@ -45,6 +45,7 @@ LexerR.py
 linux/org.qgis.qgis.appdata.xml.in
 python/plugins/MetaSearch/resources/connections-default.xml
 python/plugins/processing/algs/grass7/description/i.landsat.toar.txt
+python/plugins/processing/algs/grass7/description/v.generalize.txt
 python/plugins/processing/gui/algnames.txt
 python/plugins/processing/tests/testdata/expected/orthagonal_lines.gfs
 python/plugins/processing/tests/testdata/expected/orthagonal_lines.gml
@@ -56,13 +57,17 @@ resources/cpt-city-qgis-min/ocal/portugese-flag.svg
 resources/cpt-city-qgis-min/selections/div.xml
 resources/cpt-city-qgis-min/selections/reds.xml
 resources/cpt-city-qgis-min/wkp/schwarzwald/COPYING.xml
+resources/data/world_map_generalize.model3
 scripts/spell_check/spelling.dat
 scripts/spell_check/test.sh
 src/server/qgis_wms.xmi
+src/plugins/grass/modules/v.generalize.qgm
 tests/testdata/qgis_server_accesscontrol/Hello.qml
 tests/testdata/qgis_server_accesscontrol/project.qgs
 tests/testdata/qgis_server/ets-wms13/project.qgs
+tests/testdata/qgis_server/test_project_contextual_legend.qgs
 tests/testdata/layouts/sample_project.qgs
 tests/testdata/layouts/2x_template_attributetable.qpt
 tests/testdata/plugindependencies_data.json
-
+tests/testdata/projects/test-project-with-relations.qgs
+mac/development.md

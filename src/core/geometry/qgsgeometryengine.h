@@ -260,11 +260,11 @@ class CORE_EXPORT QgsGeometryEngine
         bool topological,
         QgsPointSequence &topologyTestPoints, QString *errorMsg = nullptr ) const
     {
-      Q_UNUSED( splitLine );
-      Q_UNUSED( newGeometries );
-      Q_UNUSED( topological );
-      Q_UNUSED( topologyTestPoints );
-      Q_UNUSED( errorMsg );
+      Q_UNUSED( splitLine )
+      Q_UNUSED( newGeometries )
+      Q_UNUSED( topological )
+      Q_UNUSED( topologyTestPoints )
+      Q_UNUSED( errorMsg )
       return MethodNotImplemented;
     }
 

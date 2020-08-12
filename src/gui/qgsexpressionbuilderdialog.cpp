@@ -31,8 +31,8 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, c
   builder->setExpressionContext( context );
   builder->setLayer( layer );
   builder->setExpressionText( startText );
-  builder->loadFieldNames();
-  builder->loadRecent( mRecentKey );
+  builder->expressionTree()->loadRecent( mRecentKey );
+  builder->expressionTree()->loadUserExpressions( );
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsExpressionBuilderDialog::showHelp );
 }
@@ -79,7 +79,7 @@ void QgsExpressionBuilderDialog::done( int r )
 
 void QgsExpressionBuilderDialog::accept()
 {
-  builder->saveToRecent( mRecentKey );
+  builder->expressionTree()->saveToRecent( builder->expressionText(), mRecentKey );
   QDialog::accept();
 }
 

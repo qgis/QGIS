@@ -48,12 +48,6 @@ class APP_EXPORT QgsMapThemes : public QObject
     //! Update existing preset using the current state of project's layer tree
     void updatePreset( const QString &name );
 
-    /**
-     * Returns list of layer IDs that should be visible for particular preset.
-     * The order will match the layer order from the map canvas
-     */
-    QList<QgsMapLayer *> orderedPresetVisibleLayers( const QString &name ) const;
-
     //! Convenience menu that lists available presets and actions for management
     QMenu *menu();
 
@@ -71,8 +65,14 @@ class APP_EXPORT QgsMapThemes : public QObject
     //! Handles removal of current preset from the project's collection
     void removeCurrentPreset();
 
+    //! Handles renaming of the current map theme
+    void renameCurrentPreset();
+
     //! Handles creation of preset menu
     void menuAboutToShow();
+
+  private slots:
+    void showHelp();
 
   protected:
     QgsMapThemes(); // singleton
@@ -97,6 +97,7 @@ class APP_EXPORT QgsMapThemes : public QObject
     QAction *mMenuSeparator = nullptr;
     QAction *mActionAddPreset = nullptr;
     QAction *mActionRemoveCurrentPreset = nullptr;
+    QAction *mActionRenameCurrentPreset = nullptr;
     QList<QAction *> mMenuPresetActions;
     QList<QAction *> mMenuReplaceActions;
 };

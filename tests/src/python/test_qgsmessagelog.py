@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '18/06/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -68,26 +66,26 @@ class TestQgsMessageLog(unittest.TestCase):
         # block notifications
         b = QgsMessageLogNotifyBlocker()
         QgsMessageLog.logMessage('test', 'tag', Qgis.Warning, notifyUser=True)
-        self.assertEqual(len(spy), 2) # should not be blocked
-        self.assertEqual(len(spy_received), 1) # should be blocked
+        self.assertEqual(len(spy), 2)  # should not be blocked
+        self.assertEqual(len(spy_received), 1)  # should be blocked
 
         # another blocker
         b2 = QgsMessageLogNotifyBlocker()
         QgsMessageLog.logMessage('test', 'tag', Qgis.Warning, notifyUser=True)
-        self.assertEqual(len(spy), 3) # should not be blocked
-        self.assertEqual(len(spy_received), 1) # should be blocked
+        self.assertEqual(len(spy), 3)  # should not be blocked
+        self.assertEqual(len(spy_received), 1)  # should be blocked
 
         del b
         # still blocked because of b2
         QgsMessageLog.logMessage('test', 'tag', Qgis.Warning, notifyUser=True)
-        self.assertEqual(len(spy), 4) # should not be blocked
-        self.assertEqual(len(spy_received), 1) # should be blocked
+        self.assertEqual(len(spy), 4)  # should not be blocked
+        self.assertEqual(len(spy_received), 1)  # should be blocked
 
         del b2
         # not blocked
         QgsMessageLog.logMessage('test', 'tag', Qgis.Warning, notifyUser=True)
-        self.assertEqual(len(spy), 5) # should not be blocked
-        self.assertEqual(len(spy_received), 2) # should not be blocked
+        self.assertEqual(len(spy), 5)  # should not be blocked
+        self.assertEqual(len(spy_received), 2)  # should not be blocked
 
 
 if __name__ == '__main__':

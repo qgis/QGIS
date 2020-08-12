@@ -27,12 +27,14 @@ extern "C"
 class QgsSqliteHandle;
 class QgsSpatiaLiteProvider;
 
-class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
+class QgsSpatiaLiteFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider *p );
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+
+    sqlite3 *transactionHandle();
 
   private:
     QString mGeometryColumn;
@@ -49,12 +51,13 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
     bool mSpatialIndexMbrCache;
     QString mSqlitePath;
     QgsCoordinateReferenceSystem mCrs;
+    sqlite3 *mTransactionHandle = nullptr;
 
     friend class QgsSpatiaLiteFeatureIterator;
     friend class QgsSpatiaLiteExpressionCompiler;
 };
 
-class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>
+class QgsSpatiaLiteFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>
 {
   public:
     QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
@@ -81,8 +84,10 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     QVariant getFeatureAttribute( sqlite3_stmt *stmt, int ic, QVariant::Type type, QVariant::Type subType );
     void getFeatureGeometry( sqlite3_stmt *stmt, int ic, QgsFeature &feature );
 
-    //! wrapper of the SQLite database connection
+    //! QGIS wrapper of the SQLite database connection
     QgsSqliteHandle *mHandle = nullptr;
+    //! The low level connection
+    sqlite3 *mSqliteHandle = nullptr;
 
     /**
       * SQLite statement handle

@@ -203,8 +203,8 @@ void QgsAuthConfigEditor::refreshTableView()
 
 void QgsAuthConfigEditor::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
-  Q_UNUSED( selected );
-  Q_UNUSED( deselected );
+  Q_UNUSED( selected )
+  Q_UNUSED( deselected )
   checkSelection();
 }
 

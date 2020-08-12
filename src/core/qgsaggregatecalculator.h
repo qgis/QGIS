@@ -22,7 +22,9 @@
 #include "qgsstatisticalsummary.h"
 #include "qgsdatetimestatisticalsummary.h"
 #include "qgsstringstatisticalsummary.h"
+#include "qgsfeaturerequest.h"
 #include <QVariant>
+#include "qgsfeatureid.h"
 
 
 class QgsFeatureIterator;
@@ -72,8 +74,8 @@ class CORE_EXPORT QgsAggregateCalculator
       StDev, //!< Standard deviation of values (numeric fields only)
       StDevSample, //!< Sample standard deviation of values (numeric fields only)
       Range, //!< Range of values (max - min) (numeric and datetime fields only)
-      Minority, //!< Minority of values (numeric fields only)
-      Majority, //!< Majority of values (numeric fields only)
+      Minority, //!< Minority of values
+      Majority, //!< Majority of values
       FirstQuartile, //!< First quartile (numeric fields only)
       ThirdQuartile, //!< Third quartile (numeric fields only)
       InterQuartileRange, //!< Inter quartile range (IQR) (numeric fields only)
@@ -103,6 +105,12 @@ class CORE_EXPORT QgsAggregateCalculator
        * \see QgsAggregateCalculator::delimiter()
        */
       QString delimiter;
+
+      /**
+       * Optional order by clauses.
+       * \since QGIS 3.8
+       */
+      QgsFeatureRequest::OrderBy orderBy;
     };
 
     /**
@@ -128,6 +136,14 @@ class CORE_EXPORT QgsAggregateCalculator
      * \see filter()
      */
     void setFilter( const QString &filterExpression ) { mFilterExpression = filterExpression; }
+
+    /**
+     * Sets a filter to limit the features used during the aggregate calculation.
+     * If an expression filter is set, it will override this filter.
+     * \param  fids feature ids for feature filtering, and empty list will return no features.
+     * \see filter()
+     */
+    void setFidsFilter( const QgsFeatureIds &fids );
 
     /**
      * Returns the filter which limits the features used during the aggregate calculation.
@@ -183,8 +199,17 @@ class CORE_EXPORT QgsAggregateCalculator
     //! Filter expression, or empty for no filter
     QString mFilterExpression;
 
+    //! Order by clause
+    QgsFeatureRequest::OrderBy mOrderBy;
+
     //! Delimiter to use for concatenate aggregate
     QString mDelimiter;
+
+    //!list of fids to filter
+    QgsFeatureIds mFidsFilter;
+
+    //trigger variable
+    bool mFidsSet = false;
 
     static QgsStatisticalSummary::Statistic numericStatFromAggregate( Aggregate aggregate, bool *ok = nullptr );
     static QgsStringStatisticalSummary::Statistic stringStatFromAggregate( Aggregate aggregate, bool *ok = nullptr );
@@ -214,4 +239,3 @@ class CORE_EXPORT QgsAggregateCalculator
 };
 
 #endif //QGSAGGREGATECALCULATOR_H
-

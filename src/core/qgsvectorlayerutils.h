@@ -19,6 +19,10 @@
 #include "qgis_core.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgssymbollayerreference.h"
+
+class QgsFeatureRenderer;
+class QgsSymbolLayer;
 
 /**
  * \ingroup core
@@ -251,13 +255,14 @@ class CORE_EXPORT QgsVectorLayerUtils
      * converting a multi part geometry to single part
      *
      * The following operations will be performed to convert the input features:
-     *  - convert single geometries to multi part
-     *  - drop additional attributes
-     *  - drop geometry if layer is geometry-less
-     *  - add missing attribute fields
-     *  - add back M/Z values (initialized to 0)
-     *  - drop Z/M
-     *  - convert multi part geometries to single part
+     *
+     * - convert single geometries to multi part
+     * - drop additional attributes
+     * - drop geometry if layer is geometry-less
+     * - add missing attribute fields
+     * - add back M/Z values (initialized to 0)
+     * - drop Z/M
+     * - convert multi part geometries to single part
      *
      * \since QGIS 3.4
      */
@@ -271,17 +276,59 @@ class CORE_EXPORT QgsVectorLayerUtils
      * of input features.
      *
      * The following operations will be performed to convert the input features:
-     *  - convert single geometries to multi part
-     *  - drop additional attributes
-     *  - drop geometry if layer is geometry-less
-     *  - add missing attribute fields
-     *  - add back M/Z values (initialized to 0)
-     *  - drop Z/M
-     *  - convert multi part geometries to single part
+     *
+     * - convert single geometries to multi part
+     * - drop additional attributes
+     * - drop geometry if layer is geometry-less
+     * - add missing attribute fields
+     * - add back M/Z values (initialized to 0)
+     * - drop Z/M
+     * - convert multi part geometries to single part
      *
      * \since QGIS 3.4
      */
     static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer );
+
+    /**
+     * \return true if the \param feature field at index \param fieldIndex from \param layer
+     * is editable, false if the field is readonly
+     *
+     * \since QGIS 3.10
+     */
+    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature );
+
+    /**
+      * Returns masks defined in labeling options of a layer.
+      * The returned type associates a labeling rule identifier to a set of layers that are masked given by their layer id,
+      * and a set of masked symbol layers if associated to each masked layers.
+      * \note Not available in Python bindings
+      * \since QGIS 3.12
+      */
+    static QHash<QString, QHash<QString, QSet<QgsSymbolLayerId>>> labelMasks( const QgsVectorLayer * ) SIP_SKIP;
+
+    /**
+     * Returns all masks that may be defined on symbol layers for a given vector layer.
+     * The hash key is a layer id.
+     * The hash value is the set of symbol layers masked in the key's layer.
+     * \note Not available in Python bindings
+     * \since QGIS 3.12
+     */
+    static QHash<QString, QSet<QgsSymbolLayerId>> symbolLayerMasks( const QgsVectorLayer * ) SIP_SKIP;
+
+    /**
+     * \returns a descriptive string for a \a feature, suitable for displaying to the user.
+     *         The definition is taken from the ``displayExpression`` property of \a layer.
+     * \since QGIS 3.12
+     */
+    static QString getFeatureDisplayString( const QgsVectorLayer *layer, const QgsFeature &feature );
+
+    /**
+     * \returns TRUE if at least one feature of the \a fids on \a layer is connected as parent in at
+     * least one composition relation of the \a project or contains joins, where cascade delete is set.
+     * Details about cascading effects will be written to \a context.
+     * \since QGIS 3.14
+     */
+    static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context SIP_OUT );
 
 };
 

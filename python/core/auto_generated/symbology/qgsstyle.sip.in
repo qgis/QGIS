@@ -11,18 +11,67 @@
 
 
 
-
 typedef QMap<QString, QgsColorRamp * > QgsVectorColorRampMap;
 typedef QMap<int, QString> QgsSymbolGroupMap;
+
+typedef QMap<QString, QgsTextFormat > QgsTextFormatMap;
+
+typedef QMap<QString, QgsPalLayerSettings > QgsLabelSettingsMap;
 
 
 typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 
-enum SymbolTable { SymbolId, SymbolName, SymbolXML, SymbolFavoriteId };
-enum TagTable { TagId, TagName };
-enum TagmapTable { TagmapTagId, TagmapSymbolId };
-enum ColorrampTable { ColorrampId, ColorrampName, ColorrampXML, ColorrampFavoriteId };
-enum SmartgroupTable { SmartgroupId, SmartgroupName, SmartgroupXML };
+
+enum SymbolTable
+{
+  SymbolId,
+  SymbolName,
+  SymbolXML,
+  SymbolFavoriteId,
+};
+
+enum TagTable
+{
+  TagId,
+  TagName,
+};
+
+enum TagmapTable
+{
+  TagmapTagId,
+  TagmapSymbolId,
+};
+
+enum ColorrampTable
+{
+  ColorrampId,
+  ColorrampName,
+  ColorrampXML,
+  ColorrampFavoriteId,
+};
+
+enum TextFormatTable
+{
+  TextFormatId,
+  TextFormatName,
+  TextFormatXML,
+  TextFormatFavoriteId,
+};
+
+enum LabelSettingsTable
+{
+  LabelSettingsId,
+  LabelSettingsName,
+  LabelSettingsXML,
+  LabelSettingsFavoriteId,
+};
+
+enum SmartgroupTable
+{
+  SmartgroupId,
+  SmartgroupName,
+  SmartgroupXML,
+};
 
 class QgsStyle : QObject
 {
@@ -43,8 +92,27 @@ Constructor for QgsStyle.
       SymbolEntity,
       TagEntity,
       ColorrampEntity,
-      SmartgroupEntity
+      SmartgroupEntity,
+      TextFormatEntity,
+      LabelSettingsEntity,
+      LegendPatchShapeEntity,
+      Symbol3DEntity,
     };
+
+    bool addEntity( const QString &name, const QgsStyleEntityInterface *entity, bool update = false );
+%Docstring
+Adds an ``entity`` to the style, with the specified ``name``. Ownership is not transferred.
+
+If ``update`` is ``True`` then the style database is updated automatically as a result.
+
+Returns ``True`` if the add operation was successful.
+
+.. note::
+
+   Adding an entity with the name of existing one replaces the existing one automatically.
+
+.. versionadded:: 3.10
+%End
 
     bool addSymbol( const QString &name, QgsSymbol *symbol /Transfer/, bool update = false );
 %Docstring
@@ -56,7 +124,7 @@ Adds a symbol to style and takes symbol's ownership
 
 :param name: is the name of the symbol being added or updated
 :param symbol: is the Vector symbol
-:param update: set to ``True`` when the style DB has to be updated, by default it is ``False``
+:param update: set to ``True`` when the style database has to be updated, by default it is ``False``
 
 :return: success status of the operation
 %End
@@ -71,9 +139,69 @@ Adds a color ramp to the style. Calling this method takes the ramp's ownership.
 
 :param name: is the name of the color ramp being added or updated
 :param colorRamp: is the color ramp. Ownership is transferred.
-:param update: set to ``True`` when the style DB has to be updated, by default it is ``False``
+:param update: set to ``True`` when the style database has to be updated, by default it is ``False``
 
 :return: success status of the operation
+%End
+
+    bool addTextFormat( const QString &name, const QgsTextFormat &format, bool update = false );
+%Docstring
+Adds a text ``format`` with the specified ``name`` to the style.
+
+If ``update`` is set to ``True``, the style database will be automatically updated with the new text format.
+
+Returns ``True`` if the operation was successful.
+
+.. note::
+
+   Adding a text format with the name of existing one replaces it.
+
+.. versionadded:: 3.10
+%End
+
+    bool addLabelSettings( const QString &name, const QgsPalLayerSettings &settings, bool update = false );
+%Docstring
+Adds label ``settings`` with the specified ``name`` to the style.
+
+If ``update`` is set to ``True``, the style database will be automatically updated with the new text format.
+
+Returns ``True`` if the operation was successful.
+
+.. note::
+
+   Adding label settings with the name of existing ones replaces them.
+
+.. versionadded:: 3.10
+%End
+
+    bool addLegendPatchShape( const QString &name, const QgsLegendPatchShape &shape, bool update = false );
+%Docstring
+Adds a legend patch ``shape`` with the specified ``name`` to the style.
+
+If ``update`` is set to ``True``, the style database will be automatically updated with the new legend patch shape.
+
+Returns ``True`` if the operation was successful.
+
+.. note::
+
+   Adding legend patch shapes with the name of existing ones replaces them.
+
+.. versionadded:: 3.14
+%End
+
+    bool addSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol /Transfer/, bool update = false );
+%Docstring
+Adds a 3d ``symbol`` with the specified ``name`` to the style. Ownership of ``symbol`` is transferred.
+
+If ``update`` is set to ``True``, the style database will be automatically updated with the new legend patch shape.
+
+Returns ``True`` if the operation was successful.
+
+.. note::
+
+   Adding 3d symbols with the name of existing ones replaces them.
+
+.. versionadded:: 3.16
 %End
 
     int addTag( const QString &tagName );
@@ -82,7 +210,7 @@ Adds a new tag and returns the tag's id
 
 :param tagName: the name of the new tag to be created
 
-:return: returns an int, which is the DB id of the new tag created, 0 if the tag couldn't be created
+:return: returns an int, which is the database id of the new tag created, 0 if the tag couldn't be created
 %End
 
 
@@ -126,7 +254,7 @@ takes responsibility for deleting the returned object.
 Returns count of color ramps
 %End
 
-    QStringList colorRampNames();
+    QStringList colorRampNames() const;
 %Docstring
 Returns a list of names of color ramps
 %End
@@ -140,6 +268,118 @@ Returns a const pointer to a symbol (doesn't create new instance)
 %Docstring
 Returns the id in the style database for the given colorramp name
 returns 0 if not found
+%End
+
+    QgsTextFormat textFormat( const QString &name ) const;
+%Docstring
+Returns the text format with the specified ``name``.
+
+.. versionadded:: 3.10
+%End
+
+    int textFormatCount() const;
+%Docstring
+Returns count of text formats in the style.
+
+.. versionadded:: 3.10
+%End
+
+    QStringList textFormatNames() const;
+%Docstring
+Returns a list of names of text formats in the style.
+
+.. versionadded:: 3.10
+%End
+
+    int textFormatId( const QString &name );
+%Docstring
+Returns the ID in the style database for the given text format by ``name``.
+Returns 0 if the text format was not found.
+
+.. versionadded:: 3.10
+%End
+
+    QgsPalLayerSettings labelSettings( const QString &name ) const;
+%Docstring
+Returns the label settings with the specified ``name``.
+
+.. versionadded:: 3.10
+%End
+
+    QgsLegendPatchShape legendPatchShape( const QString &name ) const;
+%Docstring
+Returns the legend patch shape with the specified ``name``.
+
+.. versionadded:: 3.14
+%End
+
+    int legendPatchShapesCount() const;
+%Docstring
+Returns count of legend patch shapes in the style.
+
+.. versionadded:: 3.14
+%End
+
+    QgsSymbol::SymbolType legendPatchShapeSymbolType( const QString &name ) const;
+%Docstring
+Returns the symbol type corresponding to the legend patch shape
+with the specified ``name``, or QgsSymbol.Hybrid
+if a matching legend patch shape is not present.
+
+.. versionadded:: 3.14
+%End
+
+    QgsAbstract3DSymbol *symbol3D( const QString &name ) const /Factory/;
+%Docstring
+Returns a new copy of the 3D symbol with the specified ``name``.
+
+.. versionadded:: 3.16
+%End
+
+    int symbol3DCount() const;
+%Docstring
+Returns count of 3D symbols in the style.
+
+.. versionadded:: 3.16
+%End
+
+    QList< QgsWkbTypes::GeometryType > symbol3DCompatibleGeometryTypes( const QString &name ) const;
+%Docstring
+Returns the list of the vector layer geometry types which are compatible with the 3D symbol
+with the specified ``name``, or an empty list if a matching 3d symbol is not present.
+
+.. versionadded:: 3.16
+%End
+
+    QgsWkbTypes::GeometryType labelSettingsLayerType( const QString &name ) const;
+%Docstring
+Returns the layer geometry type corresponding to the label settings
+with the specified ``name``, or QgsWkbTypes.UnknownGeometry
+if matching label settings are not present.
+
+.. versionadded:: 3.10
+%End
+
+    int labelSettingsCount() const;
+%Docstring
+Returns count of label settings in the style.
+
+.. versionadded:: 3.10
+%End
+
+    QStringList labelSettingsNames() const;
+%Docstring
+Returns a list of names of label settings in the style.
+
+.. versionadded:: 3.10
+%End
+
+    int labelSettingsId( const QString &name );
+%Docstring
+Returns the ID in the style database for the given label settings by ``name``.
+Returns 0 if the label settings were not found.
+
+.. versionadded:: 3.10
 %End
 
     static QgsStyle *defaultStyle();
@@ -191,6 +431,15 @@ Removes all tags for the specified symbol or colorramp
 Removes symbol from style (and delete it)
 %End
 
+    bool renameEntity( StyleEntity type, const QString &oldName, const QString &newName );
+%Docstring
+Renames an entity of the specified ``type`` from ``oldName`` to ``newName``.
+
+Returns ``True`` if the entity was successfully renamed.
+
+.. versionadded:: 3.14
+%End
+
     bool renameSymbol( const QString &oldName, const QString &newName );
 %Docstring
 Renames a symbol from ``oldName`` to ``newName``.
@@ -213,7 +462,7 @@ Returns a const pointer to a symbol (doesn't create new instance)
 Returns count of symbols in style
 %End
 
-    QStringList symbolNames();
+    QStringList symbolNames() const;
 %Docstring
 Returns a list of names of symbols
 %End
@@ -223,13 +472,27 @@ Returns a list of names of symbols
 Returns the id in the style database for the given symbol name
 returns 0 if not found
 %End
+
+    int entityId( StyleEntity type, const QString &name );
+%Docstring
+Returns the id in the style database for the given ``name`` of the specified entity ``type``.
+Returns 0 if not found.
+%End
+
     int tagId( const QString &tag );
 %Docstring
-Returns the DB id for the given tag name
+Returns the database id for the given tag name
 %End
     int smartgroupId( const QString &smartgroup );
 %Docstring
-Returns the DB id for the given smartgroup name
+Returns the database id for the given smartgroup name
+%End
+
+    QStringList allNames( StyleEntity type ) const;
+%Docstring
+Returns a list of the names of all existing entities of the specified ``type``.
+
+.. versionadded:: 3.10
 %End
 
     QStringList symbolsOfFavorite( StyleEntity type ) const;
@@ -276,21 +539,32 @@ Removes the specified symbol from favorites
 Renames the given entity with the specified id
 
 :param type: is any of the style entities. Refer enum StyleEntity.
-:param id: is the DB id of the entity which is to be renamed
+:param id: is the database id of the entity which is to be renamed
 :param newName: is the new name of the entity
 %End
 
     bool remove( StyleEntity type, int id );
 %Docstring
-Removes the specified entity from the db
+Removes the specified entity from the database.
 
 :param type: is any of the style entities. Refer enum StyleEntity.
-:param id: is the DB id of the entity to be removed
+:param id: is the database id of the entity to be removed
+
+.. seealso:: :py:func:`removeEntityByName`
+%End
+
+    bool removeEntityByName( StyleEntity type, const QString &name );
+%Docstring
+Removes the entry of the specified ``type`` with matching ``name`` from the database.
+
+.. seealso:: :py:func:`remove`
+
+.. versionadded:: 3.14
 %End
 
     bool saveSymbol( const QString &name, QgsSymbol *symbol, bool favorite, const QStringList &tags );
 %Docstring
-Adds the symbol to the DB with the tags
+Adds the symbol to the database with tags.
 
 :param name: is the name of the symbol as QString
 :param symbol: is the pointer to the new QgsSymbol being saved
@@ -302,7 +576,7 @@ Adds the symbol to the DB with the tags
 
     bool saveColorRamp( const QString &name, QgsColorRamp *ramp, bool favorite, const QStringList &tags );
 %Docstring
-Adds the colorramp to the DB
+Adds the colorramp to the database.
 
 :param name: is the name of the colorramp as QString
 :param ramp: is the pointer to the new QgsColorRamp being saved
@@ -320,6 +594,141 @@ Removes color ramp from style (and delete it)
     bool renameColorRamp( const QString &oldName, const QString &newName );
 %Docstring
 Changes ramp's name
+%End
+
+    bool saveTextFormat( const QString &name, const QgsTextFormat &format, bool favorite, const QStringList &tags );
+%Docstring
+Adds a text ``format`` to the database.
+
+:param name: is the name of the text format
+:param format: text format to save
+:param favorite: is a boolean value to specify whether the text format should be added to favorites
+:param tags: is a list of tags that are associated with the text format
+
+:return: returns the success state of the save operation
+%End
+
+    bool removeTextFormat( const QString &name );
+%Docstring
+Removes a text format from the style.
+
+.. versionadded:: 3.10
+%End
+
+    bool renameTextFormat( const QString &oldName, const QString &newName );
+%Docstring
+Changes a text format's name.
+
+.. versionadded:: 3.10
+%End
+
+    bool saveLabelSettings( const QString &name, const QgsPalLayerSettings &settings, bool favorite, const QStringList &tags );
+%Docstring
+Adds label ``settings`` to the database.
+
+:param name: is the name of the label settings
+:param settings: label settings to save
+:param favorite: is a boolean value to specify whether the label settings should be added to favorites
+:param tags: is a list of tags that are associated with the label settings
+
+:return: returns the success state of the save operation
+%End
+
+    bool removeLabelSettings( const QString &name );
+%Docstring
+Removes label settings from the style.
+
+.. versionadded:: 3.10
+%End
+
+    bool renameLabelSettings( const QString &oldName, const QString &newName );
+%Docstring
+Changes a label setting's name.
+
+.. versionadded:: 3.10
+%End
+
+    bool saveLegendPatchShape( const QString &name, const QgsLegendPatchShape &shape, bool favorite, const QStringList &tags );
+%Docstring
+Adds a legend patch ``shape`` to the database.
+
+:param name: is the name of the legend patch shape
+:param shape: legend patch shape to save
+:param favorite: is a boolean value to specify whether the legend patch shape should be added to favorites
+:param tags: is a list of tags that are associated with the legend patch shape
+
+:return: returns the success state of the save operation
+
+.. versionadded:: 3.14
+%End
+
+    bool renameLegendPatchShape( const QString &oldName, const QString &newName );
+%Docstring
+Changes a legend patch shape's name.
+
+.. versionadded:: 3.14
+%End
+
+    QStringList legendPatchShapeNames() const;
+%Docstring
+Returns a list of names of legend patch shapes in the style.
+
+.. versionadded:: 3.14
+%End
+
+    const QgsSymbol *previewSymbolForPatchShape( const QgsLegendPatchShape &shape ) const;
+%Docstring
+Returns a symbol to use for rendering preview icons for a patch ``shape``.
+
+Ownership of the symbol is not transferred.
+
+.. versionadded:: 3.14
+%End
+
+    QgsLegendPatchShape defaultPatch( QgsSymbol::SymbolType type, QSizeF size ) const;
+%Docstring
+Returns the default legend patch shape for the given symbol ``type``.
+
+.. seealso:: :py:func:`defaultPatchAsQPolygonF`
+
+.. versionadded:: 3.14
+%End
+
+    QList< QList< QPolygonF > > defaultPatchAsQPolygonF( QgsSymbol::SymbolType type, QSizeF size ) const;
+%Docstring
+Returns the default patch geometry for the given symbol ``type`` and ``size`` as a set of QPolygonF objects (parts and rings).
+
+.. seealso:: :py:func:`defaultPatch`
+
+.. versionadded:: 3.14
+%End
+
+    bool saveSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol /Transfer/, bool favorite, const QStringList &tags );
+%Docstring
+Adds a 3d ``symbol`` to the database.
+
+:param name: is the name of the 3d symbol
+:param symbol: 3d symbol to save. Ownership is transferred.
+:param favorite: is a boolean value to specify whether the 3d symbol should be added to favorites
+:param tags: is a list of tags that are associated with the 3d symbol
+
+:return: returns the success state of the save operation
+
+.. versionadded:: 3.16
+%End
+
+    bool renameSymbol3D( const QString &oldName, const QString &newName );
+%Docstring
+Changes a 3d symbol's name.
+
+.. versionadded:: 3.16
+%End
+
+    QStringList symbol3DNames() const;
+%Docstring
+Returns a list of names of 3d symbols in the style.
+
+.. versionadded:: 3.16
 %End
 
     bool createDatabase( const QString &filename );
@@ -409,6 +818,14 @@ Returns the tags associated with the symbol
 :return: A QStringList of the tags that have been applied to that symbol/colorramp
 %End
 
+    bool isFavorite( StyleEntity type, const QString &name );
+%Docstring
+Returns ``True`` if the symbol with matching ``type`` and ``name`` is
+marked as a favorite.
+
+.. versionadded:: 3.10
+%End
+
     bool symbolHasTag( StyleEntity type, const QString &symbol, const QString &tag );
 %Docstring
 Returns whether a given tag is associated with the symbol
@@ -430,7 +847,7 @@ Returns the tag name for the given id
 Returns the smart groups map with id as key and name as value
 %End
 
-    QStringList smartgroupNames();
+    QStringList smartgroupNames() const;
 %Docstring
 Returns the smart groups list
 %End
@@ -442,8 +859,7 @@ Returns the QgsSmartConditionMap for the given id
 
     QString smartgroupOperator( int id );
 %Docstring
-Returns the operator for the smartgroup
-clumsy implementation TODO create a class for smartgroups
+Returns the operator for the smartgroup.
 %End
 
     QStringList symbolsOfSmartgroup( StyleEntity type, int id );
@@ -515,6 +931,36 @@ Emitted whenever an ``entity`` is either favorited or un-favorited.
 .. versionadded:: 3.4
 %End
 
+    void entityAdded( QgsStyle::StyleEntity entity, const QString &name );
+%Docstring
+Emitted every time a new entity has been added to the database.
+
+.. versionadded:: 3.14
+%End
+
+    void entityRemoved( QgsStyle::StyleEntity entity, const QString &name );
+%Docstring
+Emitted whenever an entity of the specified type is removed from the style and the database
+has been updated as a result.
+
+.. versionadded:: 3.14
+%End
+
+    void entityRenamed( QgsStyle::StyleEntity entity, const QString &oldName, const QString &newName );
+%Docstring
+Emitted whenever a entity of the specified type has been renamed from ``oldName`` to ``newName``
+
+.. versionadded:: 3.14
+%End
+
+    void entityChanged( QgsStyle::StyleEntity entity, const QString &name );
+%Docstring
+Emitted whenever an entity's definition is changed. This does not include
+name or tag changes.
+
+.. versionadded:: 3.14
+%End
+
     void symbolRemoved( const QString &name );
 %Docstring
 Emitted whenever a symbol has been removed from the style and the database
@@ -577,6 +1023,316 @@ name or tag changes.
 .. seealso:: :py:func:`rampAdded`
 
 .. versionadded:: 3.4
+%End
+
+
+    void textFormatRenamed( const QString &oldName, const QString &newName );
+%Docstring
+Emitted whenever a text format has been renamed from ``oldName`` to ``newName``
+
+.. seealso:: :py:func:`symbolRenamed`
+
+.. versionadded:: 3.10
+%End
+
+    void textFormatAdded( const QString &name );
+%Docstring
+Emitted whenever a text format has been added to the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`textFormatRemoved`
+
+.. seealso:: :py:func:`symbolSaved`
+
+.. versionadded:: 3.10
+%End
+
+    void textFormatRemoved( const QString &name );
+%Docstring
+Emitted whenever a text format has been removed from the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`textFormatAdded`
+
+.. seealso:: :py:func:`symbolRemoved`
+
+.. versionadded:: 3.10
+%End
+
+    void textFormatChanged( const QString &name );
+%Docstring
+Emitted whenever a text format's definition is changed. This does not include
+name or tag changes.
+
+.. seealso:: :py:func:`textFormatAdded`
+
+.. versionadded:: 3.10
+%End
+
+    void labelSettingsRenamed( const QString &oldName, const QString &newName );
+%Docstring
+Emitted whenever label settings have been renamed from ``oldName`` to ``newName``
+
+.. seealso:: :py:func:`symbolRenamed`
+
+.. versionadded:: 3.10
+%End
+
+    void labelSettingsAdded( const QString &name );
+%Docstring
+Emitted whenever label settings have been added to the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`labelSettingsRemoved`
+
+.. seealso:: :py:func:`symbolSaved`
+
+.. versionadded:: 3.10
+%End
+
+    void labelSettingsRemoved( const QString &name );
+%Docstring
+Emitted whenever label settings have been removed from the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`labelSettingsAdded`
+
+.. seealso:: :py:func:`symbolRemoved`
+
+.. versionadded:: 3.10
+%End
+
+    void labelSettingsChanged( const QString &name );
+%Docstring
+Emitted whenever a label setting's definition is changed. This does not include
+name or tag changes.
+
+.. seealso:: :py:func:`labelSettingsAdded`
+
+.. versionadded:: 3.10
+%End
+
+};
+
+class QgsStyleEntityInterface
+{
+%Docstring
+An interface for entities which can be placed in a QgsStyle database.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsstyle.h"
+%End
+%ConvertToSubClassCode
+    switch ( sipCpp->type() )
+    {
+      case QgsStyle::SymbolEntity:
+        sipType = sipType_QgsStyleSymbolEntity;
+        break;
+
+      case QgsStyle::ColorrampEntity:
+        sipType = sipType_QgsStyleColorRampEntity;
+        break;
+
+      case QgsStyle::TextFormatEntity:
+        sipType = sipType_QgsStyleTextFormatEntity;
+        break;
+
+      case QgsStyle::LabelSettingsEntity:
+        sipType = sipType_QgsStyleLabelSettingsEntity;
+        break;
+
+      case QgsStyle::SmartgroupEntity:
+      case QgsStyle::TagEntity:
+        sipType = 0;
+        break;
+    }
+%End
+  public:
+
+    virtual ~QgsStyleEntityInterface();
+
+    virtual QgsStyle::StyleEntity type() const = 0;
+%Docstring
+Returns the type of style entity.
+%End
+
+};
+
+class QgsStyleSymbolEntity : QgsStyleEntityInterface
+{
+%Docstring
+A symbol entity for QgsStyle databases.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsstyle.h"
+%End
+  public:
+
+    QgsStyleSymbolEntity( QgsSymbol *symbol );
+%Docstring
+Constructor for QgsStyleSymbolEntity, with the specified ``symbol``.
+
+Ownership of ``symbol`` is NOT transferred.
+%End
+
+    virtual QgsStyle::StyleEntity type() const;
+
+
+    QgsSymbol *symbol() const;
+%Docstring
+Returns the entity's symbol.
+%End
+
+};
+
+class QgsStyleColorRampEntity : QgsStyleEntityInterface
+{
+%Docstring
+A color ramp entity for QgsStyle databases.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsstyle.h"
+%End
+  public:
+
+    QgsStyleColorRampEntity( QgsColorRamp *ramp );
+%Docstring
+Constructor for QgsStyleColorRampEntity, with the specified color ``ramp``.
+
+Ownership of ``ramp`` is NOT transferred.
+%End
+
+    virtual QgsStyle::StyleEntity type() const;
+
+
+    QgsColorRamp *ramp() const;
+%Docstring
+Returns the entity's color ramp.
+%End
+
+};
+
+class QgsStyleTextFormatEntity : QgsStyleEntityInterface
+{
+%Docstring
+A text format entity for QgsStyle databases.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsstyle.h"
+%End
+  public:
+
+    QgsStyleTextFormatEntity( const QgsTextFormat &format );
+%Docstring
+Constructor for QgsStyleTextFormatEntity, with the specified text ``format``.
+%End
+
+    virtual QgsStyle::StyleEntity type() const;
+
+
+    QgsTextFormat format() const;
+%Docstring
+Returns the entity's text format.
+%End
+
+};
+
+class QgsStyleLabelSettingsEntity : QgsStyleEntityInterface
+{
+%Docstring
+A label settings entity for QgsStyle databases.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsstyle.h"
+%End
+  public:
+
+    QgsStyleLabelSettingsEntity( const QgsPalLayerSettings &settings );
+%Docstring
+Constructor for QgsStyleLabelSettingsEntity, with the specified label ``settings``.
+%End
+
+    virtual QgsStyle::StyleEntity type() const;
+
+
+
+    const QgsPalLayerSettings &settings() const;
+%Docstring
+Returns the entity's label settings.
+%End
+
+};
+
+class QgsStyleLegendPatchShapeEntity : QgsStyleEntityInterface
+{
+%Docstring
+A legend patch shape entity for QgsStyle databases.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsstyle.h"
+%End
+  public:
+
+    QgsStyleLegendPatchShapeEntity( const QgsLegendPatchShape &shape );
+%Docstring
+Constructor for QgsStyleLegendPatchShapeEntity, with the specified legend patch ``shape``.
+%End
+
+    virtual QgsStyle::StyleEntity type() const;
+
+
+
+    const QgsLegendPatchShape &shape() const;
+%Docstring
+Returns the entity's legend patch shape.
+%End
+
+};
+
+class QgsStyleSymbol3DEntity : QgsStyleEntityInterface
+{
+%Docstring
+A 3d symbol entity for QgsStyle databases.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsstyle.h"
+%End
+  public:
+
+    QgsStyleSymbol3DEntity( const QgsAbstract3DSymbol *symbol );
+%Docstring
+Constructor for QgsStyleSymbol3DEntity, with the specified ``symbol``.
+
+Ownership of ``symbol`` is NOT transferred.
+%End
+
+    virtual QgsStyle::StyleEntity type() const;
+
+
+    const QgsAbstract3DSymbol *symbol() const;
+%Docstring
+Returns the entity's symbol.
 %End
 
 };

@@ -214,7 +214,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   }
   catch ( QgsCsException &cse )
   {
-    Q_UNUSED( cse );
+    Q_UNUSED( cse )
     // catch exception for 'invalid' point and leave existing selection unchanged
     QgsDebugMsg( QStringLiteral( "Caught CRS exception " ) );
     QgisApp::instance()->messageBar()->pushMessage(
@@ -293,7 +293,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   if ( r )
     r->stopRender( context );
 
-  QgsDebugMsg( "Number of new selected features: " + QString::number( newSelectedFeatures.size() ) );
+  QgsDebugMsgLevel( "Number of new selected features: " + QString::number( newSelectedFeatures.size() ), 2 );
 
   return newSelectedFeatures;
 }

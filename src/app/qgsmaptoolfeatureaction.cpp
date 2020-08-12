@@ -45,12 +45,12 @@ QgsMapToolFeatureAction::QgsMapToolFeatureAction( QgsMapCanvas *canvas )
 
 void QgsMapToolFeatureAction::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 }
 
 void QgsMapToolFeatureAction::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 }
 
 void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent *e )
@@ -117,7 +117,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
   }
   catch ( QgsCsException &cse )
   {
-    Q_UNUSED( cse );
+    Q_UNUSED( cse )
     // catch exception for 'invalid' point and proceed with no features found
     QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
   }
@@ -182,7 +182,7 @@ void QgsMapToolFeatureAction::doActionForFeature( QgsVectorLayer *layer, const Q
     QgsMapLayerAction *mapLayerAction = QgsGui::mapLayerActionRegistry()->defaultActionForLayer( layer );
     if ( mapLayerAction )
     {
-      mapLayerAction->triggerForFeature( layer, &feature );
+      mapLayerAction->triggerForFeature( layer, feature );
     }
   }
 }

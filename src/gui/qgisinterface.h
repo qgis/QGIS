@@ -25,6 +25,7 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgslayertreeregistrybridge.h"
 
 class QAction;
 class QDialog;
@@ -38,10 +39,12 @@ class QWidget;
 class QgsAdvancedDigitizingDockWidget;
 class QgsAttributeDialog;
 class QgsCustomDropHandler;
+class QgsCustomProjectOpenHandler;
 class QgsLayoutCustomDropHandler;
 class QgsFeature;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
+class QgsLayerTreeGroup;
 class QgsLayout;
 class QgsMasterLayoutInterface;
 class QgsLayoutDesignerInterface;
@@ -54,11 +57,14 @@ class QgsPluginManagerInterface;
 class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
+class QgsVectorTileLayer;
 class QgsOptionsWidgetFactory;
 class QgsLocatorFilter;
 class QgsStatusBar;
 class QgsMeshLayer;
-class QgsBrowserModel;
+class QgsBrowserGuiModel;
+class QgsDevToolWidgetFactory;
+class QgsGpsConnection;
 
 
 /**
@@ -235,6 +241,16 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QMenu *pluginMenu() = 0;
 
     /**
+     * Returns a reference to the main window "Plugin Help" sub-menu.
+     *
+     * Plugins are encouraged to insert help and about actions in this submenu instead of creating
+     * a submenu under the pluginMenu() which solely contains Plugin Help or About actions.
+     *
+     * \since QGIS 3.10
+     */
+    virtual QMenu *pluginHelpMenu() = 0;
+
+    /**
      * Returns a reference to the main window "Raster" menu.
      */
     virtual QMenu *rasterMenu() = 0;
@@ -316,6 +332,12 @@ class GUI_EXPORT QgisInterface : public QObject
      * Returns a reference to the main window "Attributes" toolbar.
      */
     virtual QToolBar *attributesToolBar() = 0;
+
+    /**
+     * Returns a reference to the main window "Selection" toolbar.
+     * \since QGIS 3.14
+     */
+    virtual QToolBar *selectionToolBar() = 0;
 
     /**
      * Returns a reference to the main window "Plugin" toolbar.
@@ -465,6 +487,18 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionAddRasterLayer() = 0;
     virtual QAction *actionAddPgLayer() = 0;
     virtual QAction *actionAddWmsLayer() = 0;
+
+    /**
+     * Returns the native Add XYZ Layer action.
+     * \since QGIS 3.14
+     */
+    virtual QAction *actionAddXyzLayer() = 0;
+
+    /**
+     * Returns the native Add Vector Tile Layer action.
+     * \since QGIS 3.14
+     */
+    virtual QAction *actionAddVectorTileLayer() = 0;
     //! Returns the native Add ArcGIS FeatureServer action.
     virtual QAction *actionAddAfsLayer() = 0;
     //! Returns the native Add ArcGIS MapServer action.
@@ -500,6 +534,18 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionHideSelectedLayers() = 0;
 
     /**
+     * Returns the Toggle Selected Layers action.
+     * \since QGIS 3.14
+     */
+    virtual QAction *actionToggleSelectedLayers() = 0;
+
+    /**
+     * Returns the Toggle Selected Layers Independently action.
+     * \since QGIS 3.14
+     */
+    virtual QAction *actionToggleSelectedLayersIndependently() = 0;
+
+    /**
      * Returns the Hide Deselected Layers action.
      * \since QGIS 3.0
      */
@@ -521,6 +567,40 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionQgisHomePage() = 0;
     virtual QAction *actionCheckQgisVersion() = 0;
     virtual QAction *actionAbout() = 0;
+
+    // Shape digitize actions
+    //! Returns the native add circle from 2 points action. Call trigger() on it to set the map tool.
+    virtual QAction *actionCircle2Points()  = 0;
+    //! Returns the native add circle from 3 points action. Call trigger() on it to set the map tool.
+    virtual QAction *actionCircle3Points()  = 0;
+    //! Returns the native add circle from 3 tangents action. Call trigger() on it to set the map tool.
+    virtual QAction *actionCircle3Tangents()  = 0;
+    //! Returns the native add circle from 2 tangents and a point action. Call trigger() on it to set the map tool.
+    virtual QAction *actionCircle2TangentsPoint()  = 0;
+    //! Returns the native add circle from center action. Call trigger() on it to set the map tool.
+    virtual QAction *actionCircleCenterPoint()  = 0;
+    //! Returns the native add ellipse from center and 2 points action. Call trigger() on it to set the map tool.
+    virtual QAction *actionEllipseCenter2Points()  = 0;
+    //! Returns the native add ellipse from center and a point action. Call trigger() on it to set the map tool.
+    virtual QAction *actionEllipseCenterPoint()  = 0;
+    //! Returns the native add ellipse from an extent action. Call trigger() on it to set the map tool.
+    virtual QAction *actionEllipseExtent()  = 0;
+    //! Returns the native add ellipse from foci action. Call trigger() on it to set the map tool.
+    virtual QAction *actionEllipseFoci()  = 0;
+    //! Returns the native add rectangle from center and a point action. Call trigger() on it to set the map tool.
+    virtual QAction *actionRectangleCenterPoint()  = 0;
+    //! Returns the native add rectangle from extent action. Call trigger() on it to set the map tool.
+    virtual QAction *actionRectangleExtent()  = 0;
+    //! Returns the native add rectangle from 3 points (distance from 2nd and 3rd points) action. Call trigger() on it to set the map tool.
+    virtual QAction *actionRectangle3PointsDistance()  = 0;
+    //! Returns the native add rectangle from 3 points (distance from projected 3rd point on segment p1 and p2) action. Call trigger() on it to set the map tool.
+    virtual QAction *actionRectangle3PointsProjected()  = 0;
+    //! Returns the native add regular polygon from 2 points action. Call trigger() on it to set the map tool.
+    virtual QAction *actionRegularPolygon2Points()  = 0;
+    //! Returns the native add regular polygon from center and a point action. Call trigger() on it to set the map tool.
+    virtual QAction *actionRegularPolygonCenterPoint()  = 0;
+    //! Returns the native add regular polygon from center and a corner action. Call trigger() on it to set the map tool.
+    virtual QAction *actionRegularPolygonCenterCorner()  = 0;
 
     /**
      * Access the vector layer tools instance.
@@ -549,7 +629,14 @@ class GUI_EXPORT QgisInterface : public QObject
      * \param categories an int as a flag value of QgsAppScreenShots::Categories
      * \since QGIS 3.4
      */
-    virtual void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 ) {Q_UNUSED( saveDirectory ); Q_UNUSED( categories );}
+    virtual void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 ) {Q_UNUSED( saveDirectory ) Q_UNUSED( categories );}
+
+    /**
+     * Returns the insertion point.
+     * This represents the current layer tree group and index where newly added map layers should be inserted into.
+     * \since QGIS 3.10
+     */
+    virtual QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() = 0;
 
   public slots: // TODO: do these functions really need to be slots?
 
@@ -595,10 +682,26 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
 
+    /**
+     * Adds a vector tile layer to the current project.
+     * \since QGIS 3.14
+     */
+    virtual QgsVectorTileLayer *addVectorTileLayer( const QString &url, const QString &baseName ) = 0;
+
     //! Adds (opens) a project
     virtual bool addProject( const QString &project ) = 0;
-    //! Starts a new blank project
-    virtual void newProject( bool promptToSaveFlag = false ) = 0;
+
+    /**
+     * Starts a new blank project.
+     *
+     * If \a promptToSaveFlag is TRUE then users will be prompted to save any currently open
+     * project (if that project has changes). If the flag is FALSE, then the current project will
+     * be closed without prompting to save (possibly resulting in data loss).
+     *
+     * Since QGIS 3.10.1, returns TRUE if a new project was created, or FALSE if the operation was not successful (e.g.
+     * the user opted to cancel when prompted to save the current project).
+     */
+    virtual bool newProject( bool promptToSaveFlag = false ) = 0;
 
     /**
      * Triggered when connections have changed.
@@ -793,9 +896,26 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Adds a \a dock widget to the main window, in the specified dock \a area.
      *
+     * \see addTabifiedDockWidget()
      * \see removeDockWidget()
      */
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
+
+    /**
+     * Add a dock widget to the given area and tabify it (if other dock widgets
+     * exist in the same \a area). The new tab will be below other tabs unless
+     * \a raiseTab is passed as true.
+     *
+     * \a tabifyWith is a list of dock widget object names, ordered by
+     * priority, with which the new dock widget should be tabified. Only the
+     * first matching object name will be picked. If none of the given object
+     * names is found in that \a area (or if \a tabifyWith is not given at
+     * all), the new dock widget will be created anyways, but its location
+     * within that \a area will be unpredictable.
+     *
+     * \since QGIS 3.14
+     */
+    virtual void addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget, const QStringList &tabifyWith = QStringList(), bool raiseTab = false ) = 0;
 
     /**
      * Removes the specified \a dock widget from main window (without deleting it).
@@ -829,7 +949,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual bool unregisterMainWindowAction( QAction *action ) = 0;
 
     /**
-     * Register a new tab in the vector layer properties dialog.
+     * Register a new tab in the map layer properties dialog.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * \see QgsMapLayerConfigWidgetFactory
@@ -839,7 +959,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 
     /**
-     * Unregister a previously registered tab in the vector layer properties dialog.
+     * Unregister a previously registered tab in the map layer properties dialog.
      * \see QgsMapLayerConfigWidgetFactory
      * \see registerMapLayerConfigWidgetFactory()
      * \since QGIS 2.16
@@ -865,8 +985,24 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
     /**
-     * Register a new custom drop handler.
+     * Register a new tool in the development/debugging tools dock.
      * \note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * \see unregisterDevToolWidgetFactory()
+     * \since QGIS 3.14
+     */
+    virtual void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
+
+    /**
+     * Unregister a previously registered tool factory from the development/debugging tools dock.
+     * \see registerDevToolWidgetFactory()
+     * \since QGIS 3.14
+    */
+    virtual void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
+
+    /**
+     * Register a new custom drop \a handler.
+     * \note Ownership of \a handler is not transferred, and the handler must
      *       be unregistered when plugin is unloaded.
      * \see QgsCustomDropHandler
      * \see unregisterCustomDropHandler()
@@ -875,7 +1011,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
     /**
-     * Unregister a previously registered custom drop handler.
+     * Unregister a previously registered custom drop \a handler.
      * \see QgsCustomDropHandler
      * \see registerCustomDropHandler()
      * \since QGIS 3.0
@@ -883,8 +1019,26 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
     /**
+     * Register a new custom project open \a handler.
+     * \note Ownership of \a handler is not transferred, and the handler must
+     *       be unregistered when plugin is unloaded.
+     * \see QgsCustomProjectOpenHandler
+     * \see unregisterCustomProjectOpenHandler()
+     * \since QGIS 3.14
+     */
+    virtual void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;
+
+    /**
+     * Unregister a previously registered custom project open \a handler.
+     * \see QgsCustomDropHandler
+     * \see registerCustomProjectOpenHandler()
+     * \since QGIS 3.14
+     */
+    virtual void unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;
+
+    /**
      * Register a new custom drop \a handler for layout windows.
-     * \note Ownership of the factory is not transferred, and the factory must
+     * \note Ownership of \a handler is not transferred, and the handler must
      *       be unregistered when plugin is unloaded.
      * \see QgsLayoutCustomDropHandler
      * \see unregisterCustomLayoutDropHandler()
@@ -951,6 +1105,14 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void preloadForm( const QString &uifile ) = 0;
 
     /**
+     * This will perform a search in the locator bar
+     * by setting the line edit text to \a searchText
+     * and automatically displaying any results.
+     * \since QGIS 3.10
+     */
+    virtual void locatorSearch( const QString &searchText ) = 0;
+
+    /**
      * Registers a locator \a filter for the app's locator bar. Ownership of the filter is transferred to the
      * locator.
      * \warning Plugins which register filters to the locator bar must take care to correctly call
@@ -994,7 +1156,17 @@ class GUI_EXPORT QgisInterface : public QObject
      * creating a new browser model for every use.
      * \since QGIS 3.4
      */
-    virtual QgsBrowserModel *browserModel() = 0;
+    virtual QgsBrowserGuiModel *browserModel() = 0;
+
+    /**
+     * Sets a GPS \a connection to use within the GPS Panel widget.
+     *
+     * Any existing GPS connection used by the widget will be disconnect and replaced with this connection. The connection
+     * is automatically registered within the QgsApplication::gpsConnectionRegistry().
+     *
+     * \since QGIS 3.16
+     */
+    virtual void setGpsPanelConnection( QgsGpsConnection *connection ) = 0;
 
   signals:
 

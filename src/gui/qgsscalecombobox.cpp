@@ -45,7 +45,7 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
   if ( scales.isEmpty() )
   {
     QgsSettings settings;
-    QString myScales = settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
+    QString myScales = settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString();
     if ( !myScales.isEmpty() )
     {
       myScalesList = myScales.split( ',' );
@@ -216,7 +216,7 @@ QString QgsScaleComboBox::toString( double scale )
   }
   else
   {
-    return QStringLiteral( "1:%1" ).arg( QLocale().toString( static_cast< int >( std::round( scale ) ) ) );
+    return QStringLiteral( "1:%1" ).arg( QLocale().toString( static_cast< float >( std::round( scale ) ), 'f', 0 ) );
   }
 }
 

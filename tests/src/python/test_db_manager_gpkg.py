@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Even Rouault'
 __date__ = '2016-10-17'
 __copyright__ = 'Copyright 2016, Even Rouault'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -25,6 +23,8 @@ from qgis.testing import start_app, unittest
 
 from plugins.db_manager.db_plugins import supportedDbTypes, createDbPlugin
 from plugins.db_manager.db_plugins.plugin import TableField
+
+from utilities import unitTestDataPath
 
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
@@ -139,7 +139,8 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
 
         connection.remove()
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test flaky') # see https://travis-ci.org/qgis/QGIS/jobs/502556996
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+                     'Test flaky')  # see https://travis-ci.org/qgis/QGIS/jobs/502556996
     def testCreateRenameDeleteTable(self):
         connection_name = 'testCreateRenameDeleteTable'
         plugin = createDbPlugin('gpkg')
@@ -197,6 +198,10 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
 
         self.assertTrue(new_table.createSpatialIndex())
         self.assertTrue(new_table.hasSpatialIndex())
+
+        # Test delete spatial index
+        self.assertTrue(new_table.deleteSpatialIndex())
+        self.assertFalse(new_table.hasSpatialIndex())
 
         self.assertTrue(new_table.delete())
 
@@ -295,7 +300,8 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
         sr.ImportFromEPSG(4326)
         mem_ds.SetProjection(sr.ExportToWkt())
         mem_ds.GetRasterBand(1).Fill(255)
-        gdal.GetDriverByName('GPKG').CreateCopy(test_gpkg_new, mem_ds, options=['APPEND_SUBDATASET=YES', 'RASTER_TABLE=raster_table'])
+        gdal.GetDriverByName('GPKG').CreateCopy(test_gpkg_new, mem_ds,
+                                                options=['APPEND_SUBDATASET=YES', 'RASTER_TABLE=raster_table'])
         mem_ds = None
 
         uri.setDatabase(test_gpkg_new)
@@ -316,7 +322,7 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
                 break
         self.assertIsNotNone(table)
         info = table.info()
-        expected_html = """<div class="section"><h2>General info</h2><div><table><tr><td>Relation type:&nbsp;</td><td>Table&nbsp;</td></tr><tr><td>Rows:&nbsp;</td><td>Unknown (<a href="action:rows/count">find out</a>)&nbsp;</td></tr></table></div></div><div class="section"><h2>GeoPackage</h2><div><table><tr><td>Column:&nbsp;</td><td>&nbsp;</td></tr><tr><td>Geometry:&nbsp;</td><td>RASTER&nbsp;</td></tr><tr><td>Spatial ref:&nbsp;</td><td>WGS 84 geodetic (4326)&nbsp;</td></tr><tr><td>Extent:&nbsp;</td><td>2.00000, 48.80000 - 2.20000, 49.00000&nbsp;</td></tr></table></div></div><div class="section"><h2>Fields</h2><div><table class="header"><tr><th>#&nbsp;</th><th>Name&nbsp;</th><th>Type&nbsp;</th><th>Null&nbsp;</th><th>Default&nbsp;</th></tr><tr><td>0&nbsp;</td><td class="underline">id&nbsp;</td><td>INTEGER&nbsp;</td><td>Y&nbsp;</td><td>&nbsp;</td></tr><tr><td>1&nbsp;</td><td>zoom_level&nbsp;</td><td>INTEGER&nbsp;</td><td>N&nbsp;</td><td>&nbsp;</td></tr><tr><td>2&nbsp;</td><td>tile_column&nbsp;</td><td>INTEGER&nbsp;</td><td>N&nbsp;</td><td>&nbsp;</td></tr><tr><td>3&nbsp;</td><td>tile_row&nbsp;</td><td>INTEGER&nbsp;</td><td>N&nbsp;</td><td>&nbsp;</td></tr><tr><td>4&nbsp;</td><td>tile_data&nbsp;</td><td>BLOB&nbsp;</td><td>N&nbsp;</td><td>&nbsp;</td></tr></table></div></div><div class="section"><h2>Indexes</h2><div><table class="header"><tr><th>Name&nbsp;</th><th>Column(s)&nbsp;</th></tr><tr><td>sqlite_autoindex_raster_table_1&nbsp;</td><td>zoom_level<br>tile_column<br>tile_row&nbsp;</td></tr></table></div></div>"""
+        expected_html = """<div class="section"><h2>General info</h2><div><table><tr><td>Relation type:&nbsp;</td><td>Table&nbsp;</td></tr><tr><td>Rows:&nbsp;</td><td>Unknown (<a href="action:rows/count">find out</a>)&nbsp;</td></tr></table></div></div><div class="section"><h2>GeoPackage</h2><div><table><tr><td>Column:&nbsp;</td><td>&nbsp;</td></tr><tr><td>Geometry:&nbsp;</td><td>RASTER&nbsp;</td></tr><tr><td>Spatial ref:&nbsp;</td><td>WGS 84 (4326)&nbsp;</td></tr><tr><td>Extent:&nbsp;</td><td>2.00000, 48.80000 - 2.20000, 49.00000&nbsp;</td></tr></table></div></div><div class="section"><h2>Fields</h2><div><table class="header"><tr><th>#&nbsp;</th><th>Name&nbsp;</th><th>Type&nbsp;</th><th>Null&nbsp;</th><th>Default&nbsp;</th></tr><tr><td>0&nbsp;</td><td class="underline">id&nbsp;</td><td>INTEGER&nbsp;</td><td>Y&nbsp;</td><td>&nbsp;</td></tr><tr><td>1&nbsp;</td><td>zoom_level&nbsp;</td><td>INTEGER&nbsp;</td><td>N&nbsp;</td><td>&nbsp;</td></tr><tr><td>2&nbsp;</td><td>tile_column&nbsp;</td><td>INTEGER&nbsp;</td><td>N&nbsp;</td><td>&nbsp;</td></tr><tr><td>3&nbsp;</td><td>tile_row&nbsp;</td><td>INTEGER&nbsp;</td><td>N&nbsp;</td><td>&nbsp;</td></tr><tr><td>4&nbsp;</td><td>tile_data&nbsp;</td><td>BLOB&nbsp;</td><td>N&nbsp;</td><td>&nbsp;</td></tr></table></div></div><div class="section"><h2>Indexes</h2><div><table class="header"><tr><th>Name&nbsp;</th><th>Column(s)&nbsp;</th></tr><tr><td>sqlite_autoindex_raster_table_1&nbsp;</td><td>zoom_level<br>tile_column<br>tile_row&nbsp;</td></tr></table></div></div>"""
 
         self.assertEqual(info.toHtml(), expected_html)
 
@@ -340,7 +346,9 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
         mem_ds.SetProjection(sr.ExportToWkt())
         mem_ds.GetRasterBand(1).Fill(255)
         for i in range(2):
-            gdal.GetDriverByName('GPKG').CreateCopy(test_gpkg_new, mem_ds, options=['APPEND_SUBDATASET=YES', 'RASTER_TABLE=raster_table%d' % (i + 1)])
+            gdal.GetDriverByName('GPKG').CreateCopy(test_gpkg_new, mem_ds, options=['APPEND_SUBDATASET=YES',
+                                                                                    'RASTER_TABLE=raster_table%d' % (
+                                                                                        i + 1)])
         mem_ds = None
 
         uri.setDatabase(test_gpkg_new)
@@ -440,6 +448,24 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
         #     table = tables[i]
         #     info = table.info()
 
+        connection.remove()
+
+    def testAmphibiousMode(self, ):
+        connectionName = 'geopack1'
+        plugin = createDbPlugin('gpkg')
+        uri = QgsDataSourceUri()
+        test_gpkg = os.path.join(os.path.join(unitTestDataPath(), 'provider'), 'test_json.gpkg')
+
+        uri.setDatabase(test_gpkg)
+        plugin.addConnection(connectionName, uri)
+        connection = createDbPlugin('gpkg', connectionName)
+        connection.connect()
+        db = connection.database()
+        res = db.connector._execute(None, "SELECT St_area({}) from foo".format(db.tables()[0].fields()[1].name))
+        results = [row for row in res]
+        self.assertEqual(results,
+                         [(215229.265625,), (247328.171875,), (261752.78125,), (547597.2109375,), (15775.7578125,),
+                          (101429.9765625,), (268597.625,), (1634833.390625,), (596610.3359375,), (5268.8125,)])
         connection.remove()
 
 

@@ -50,7 +50,7 @@ QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget *parent,
     enc = settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString();
   }
 
-  // The specified decoding is added if not existing alread, and then set current.
+  // The specified decoding is added if not existing already, and then set current.
   // This should select it.
   int encindex = mEncodingComboBox->findText( enc );
   if ( encindex < 0 )
@@ -153,7 +153,7 @@ QString QgsEncodingSelectionDialog::encoding() const
 
 void QgsEncodingSelectionDialog::setEncoding( const QString &encoding )
 {
-  // The specified decoding is added if not existing alread, and then set current.
+  // The specified decoding is added if not existing already, and then set current.
   // This should select it.
 
   int encindex = mEncodingComboBox->findText( encoding );

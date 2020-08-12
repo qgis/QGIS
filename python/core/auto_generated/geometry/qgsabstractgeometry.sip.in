@@ -16,10 +16,21 @@ typedef QVector< QgsPoint > QgsPointSequence;
 typedef QVector< QVector< QgsPoint > > QgsRingSequence;
 typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
 
+
 class QgsAbstractGeometry
 {
 %Docstring
 Abstract base class for all geometries
+
+.. note::
+
+   QgsAbstractGeometry objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
+   of the methods or properties exposed from the QgsAbstractGeometry API (or QgsGeometry API) utilize
+   geodesic calculations. Accordingly, properties like :py:func:`~length` and :py:func:`~area` and spatial operations like :py:func:`~centroid`
+   are always calculated using strictly Cartesian mathematics. In contrast, the QgsDistanceArea class exposes
+   methods for working with geodesic calculations and spatial operations on geometries,
+   and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
+   are required.
 
 .. versionadded:: 2.10
 %End
@@ -178,9 +189,18 @@ Sets the geometry from a WKT string.
 %End
 
 
-    virtual QByteArray asWkb() const = 0;
+    enum WkbFlag
+    {
+      FlagExportTrianglesAsPolygons,
+    };
+    typedef QFlags<QgsAbstractGeometry::WkbFlag> WkbFlags;
+
+
+    virtual QByteArray asWkb( WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const = 0;
 %Docstring
 Returns a WKB representation of the geometry.
+
+The optional ``flags`` argument specifies flags controlling WKB export behavior (since QGIS 3.14).
 
 .. seealso:: :py:func:`asWkt`
 
@@ -244,9 +264,9 @@ Returns a GML3 representation of the geometry.
 .. seealso:: :py:func:`asJson`
 %End
 
-    virtual QString asJson( int precision = 17 ) const = 0;
+    QString asJson( int precision = 17 );
 %Docstring
-Returns a GeoJSON representation of the geometry.
+Returns a GeoJSON representation of the geometry as a QString.
 
 :param precision: number of decimal places for coordinates
 
@@ -257,7 +277,18 @@ Returns a GeoJSON representation of the geometry.
 .. seealso:: :py:func:`asGml2`
 
 .. seealso:: :py:func:`asGml3`
+
+.. seealso:: :py:func:`asJsonObject`
 %End
+
+
+    virtual QString asKml( int precision = 17 ) const = 0;
+%Docstring
+Returns a KML representation of the geometry.
+
+.. versionadded:: 3.12
+%End
+
 
 
     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException ) = 0;
@@ -287,6 +318,18 @@ Similarly, m-values can be scaled via ``mScale`` and translated via ``mTranslate
 Draws the geometry using the specified QPainter.
 
 :param p: destination QPainter
+%End
+
+    virtual QPainterPath asQPainterPath() const = 0;
+%Docstring
+Returns the geometry represented as a QPainterPath.
+
+.. warning::
+
+   not all geometry subclasses can be represented by a QPainterPath, e.g.
+   points and multipoint geometries will return an empty path.
+
+.. versionadded:: 3.16
 %End
 
     virtual int vertexNumberFromVertexId( QgsVertexId id ) const = 0;
@@ -395,7 +438,15 @@ Deletes a vertex within the geometry
 
     virtual double length() const;
 %Docstring
-Returns the length of the geometry.
+Returns the planar, 2-dimensional length of the geometry.
+
+.. warning::
+
+   QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the length
+   returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+   the QgsDistanceArea class exposes methods for calculating the lengths of geometries using
+   geodesic calculations which account for the curvature of the Earth (or any other
+   celestial body).
 
 .. seealso:: :py:func:`area`
 
@@ -404,7 +455,15 @@ Returns the length of the geometry.
 
     virtual double perimeter() const;
 %Docstring
-Returns the perimeter of the geometry.
+Returns the planar, 2-dimensional perimeter of the geometry.
+
+.. warning::
+
+   QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the perimeter
+   returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+   the QgsDistanceArea class exposes methods for calculating the perimeters of geometries using
+   geodesic calculations which account for the curvature of the Earth (or any other
+   celestial body).
 
 .. seealso:: :py:func:`area`
 
@@ -413,7 +472,15 @@ Returns the perimeter of the geometry.
 
     virtual double area() const;
 %Docstring
-Returns the area of the geometry.
+Returns the planar, 2-dimensional area of the geometry.
+
+.. warning::
+
+   QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the area
+   returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+   the QgsDistanceArea class exposes methods for calculating the areas of geometries using
+   geodesic calculations which account for the curvature of the Earth (or any other
+   celestial body).
 
 .. seealso:: :py:func:`length`
 
@@ -423,6 +490,11 @@ Returns the area of the geometry.
     virtual double segmentLength( QgsVertexId startVertex ) const = 0;
 %Docstring
 Returns the length of the segment of the geometry which begins at ``startVertex``.
+
+.. warning::
+
+   QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the lengths
+   returned by this method are calculated using strictly Cartesian mathematics.
 
 .. versionadded:: 3.0
 %End
@@ -468,7 +540,12 @@ Ownership is transferred to the caller.
 If the gridified geometry could not be calculated ``None`` will be returned.
 It may generate an invalid geometry (in some corner cases).
 It can also be thought as rounding the edges and it may be useful for removing errors.
+
 Example:
+
+.. code-block:: python
+
+       geometry.snappedToGrid(1, 1)
 
 In this case we use a 2D grid of 1x1 to gridify.
 In this case, it can be thought like rounding the x and y of all the points/vertices to full units (remove all decimals).
@@ -627,7 +704,8 @@ Checks validity of the geometry, and returns ``True`` if the geometry is valid.
 Returns Java-style iterator for traversal of parts of the geometry. This iterator
 can safely be used to modify parts of the geometry.
 
-* Example:
+Example
+
 .. code-block:: python
 
        # print the WKT representation of each part in a multi-point geometry
@@ -664,9 +742,10 @@ Returns a read-only, Java-style iterator for traversal of vertices of all the ge
 .. warning::
 
    The iterator returns a copy of individual vertices, and accordingly geometries cannot be
-   modified using the iterator. See transformVertices() for a safe method to modify vertices "in-place".
+   modified using the iterator. See :py:func:`~QgsAbstractGeometry.transformVertices` for a safe method to modify vertices "in-place".
 
-* Example:
+Example
+
 .. code-block:: python
 
        # print the x and y coordinate for each vertex in a LineString
@@ -787,6 +866,13 @@ Returns ``True`` if the vertex id is valid
   int ring;
   int vertex;
   VertexType type;
+
+  SIP_PYOBJECT __repr__();
+%MethodCode
+  QString str = QStringLiteral( "<QgsVertexId: %1,%2,%3%4>" ).arg( sipCpp->part ).arg( sipCpp->ring ).arg( sipCpp->vertex ).arg( sipCpp->type == QgsVertexId::CurveVertex ? QStringLiteral( " CurveVertex" ) : QString() );
+  sipRes = PyUnicode_FromString( str.toUtf8().data() );
+%End
+
 };
 
 
@@ -820,7 +906,7 @@ Find out whether there are more vertices
 
     QgsPoint next();
 %Docstring
-Returns next vertex of the geometry (undefined behavior if hasNext() returns ``False`` before calling next())
+Returns next vertex of the geometry (undefined behavior if :py:func:`~QgsVertexIterator.hasNext` returns ``False`` before calling :py:func:`~QgsVertexIterator.next`)
 %End
 
     QgsVertexIterator *__iter__();
@@ -867,7 +953,7 @@ Find out whether there are more parts
 
     QgsAbstractGeometry *next();
 %Docstring
-Returns next part of the geometry (undefined behavior if hasNext() returns ``False`` before calling next())
+Returns next part of the geometry (undefined behavior if :py:func:`~QgsGeometryPartIterator.hasNext` returns ``False`` before calling :py:func:`~QgsGeometryPartIterator.next`)
 %End
 
     QgsGeometryPartIterator *__iter__();
@@ -915,7 +1001,7 @@ Find out whether there are more parts
 
     const QgsAbstractGeometry *next();
 %Docstring
-Returns next part of the geometry (undefined behavior if hasNext() returns ``False`` before calling next())
+Returns next part of the geometry (undefined behavior if :py:func:`~QgsGeometryConstPartIterator.hasNext` returns ``False`` before calling :py:func:`~QgsGeometryConstPartIterator.next`)
 %End
 
     QgsGeometryConstPartIterator *__iter__();
@@ -932,6 +1018,9 @@ Returns next part of the geometry (undefined behavior if hasNext() returns ``Fal
 %End
 
 };
+
+QFlags<QgsAbstractGeometry::WkbFlag> operator|(QgsAbstractGeometry::WkbFlag f1, QFlags<QgsAbstractGeometry::WkbFlag> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

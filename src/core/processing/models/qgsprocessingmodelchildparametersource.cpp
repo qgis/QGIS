@@ -18,6 +18,7 @@
 #include "qgsprocessingmodelchildparametersource.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingcontext.h"
+#include "qgsprocessingmodelalgorithm.h"
 
 ///@cond NOT_STABLE
 
@@ -38,6 +39,8 @@ bool QgsProcessingModelChildParameterSource::operator==( const QgsProcessingMode
       return mExpression == other.mExpression;
     case ExpressionText:
       return mExpressionText == other.mExpressionText;
+    case ModelOutput:
+      return true;
   }
   return false;
 }
@@ -88,6 +91,11 @@ QgsProcessingModelChildParameterSource::Source QgsProcessingModelChildParameterS
   return mSource;
 }
 
+void QgsProcessingModelChildParameterSource::setSource( QgsProcessingModelChildParameterSource::Source source )
+{
+  mSource = source;
+}
+
 QVariant QgsProcessingModelChildParameterSource::toVariant() const
 {
   QVariantMap map;
@@ -113,6 +121,9 @@ QVariant QgsProcessingModelChildParameterSource::toVariant() const
 
     case ExpressionText:
       map.insert( QStringLiteral( "expression_text" ), mExpressionText );
+      break;
+
+    case ModelOutput:
       break;
   }
   return map;
@@ -143,6 +154,9 @@ bool QgsProcessingModelChildParameterSource::loadVariant( const QVariantMap &map
     case ExpressionText:
       mExpressionText = map.value( QStringLiteral( "expression_text" ) ).toString();
       break;
+
+    case ModelOutput:
+      break;
   }
   return true;
 }
@@ -169,12 +183,95 @@ QString QgsProcessingModelChildParameterSource::asPythonCode( const QgsProcessin
       }
 
     case Expression:
-      return QStringLiteral( "QgsExpression('%1').evaluate()" ).arg( mExpression );
+      return QStringLiteral( "QgsExpression(%1).evaluate()" ).arg( QgsProcessingUtils::stringToPythonLiteral( mExpression ) );
 
     case ExpressionText:
       return mExpressionText;
+
+    case ModelOutput:
+      return QString();
   }
   return QString();
+}
+
+QString QgsProcessingModelChildParameterSource::friendlyIdentifier( QgsProcessingModelAlgorithm *model ) const
+{
+  switch ( mSource )
+  {
+    case ModelParameter:
+      return model ? model->parameterDefinition( mParameterName )->description() : mParameterName;
+
+    case ChildOutput:
+    {
+      if ( model )
+      {
+        const QgsProcessingModelChildAlgorithm &alg = model->childAlgorithm( mChildId );
+        QString outputName = alg.algorithm() && alg.algorithm()->outputDefinition( mOutputName ) ? alg.algorithm()->outputDefinition( mOutputName )->description() : mOutputName;
+        // see if this output has been named by the model designer -- if so, we use that friendly name
+        const QMap<QString, QgsProcessingModelOutput> outputs = alg.modelOutputs();
+        for ( auto it = outputs.constBegin(); it != outputs.constEnd(); ++it )
+        {
+          if ( it.value().childOutputName() == mOutputName )
+          {
+            outputName = it.key();
+            break;
+          }
+        }
+        return QObject::tr( "'%1' from algorithm '%2'" ).arg( outputName, alg.description() );
+      }
+      else
+      {
+        return QObject::tr( "'%1' from algorithm '%2'" ).arg( mOutputName, mChildId );
+      }
+    }
+
+    case StaticValue:
+      return mStaticValue.toString();
+
+    case Expression:
+      return mExpression;
+
+    case ExpressionText:
+      return mExpressionText;
+
+    case ModelOutput:
+      return QString();
+  }
+  return QString();
+}
+
+QDataStream &operator<<( QDataStream &out, const QgsProcessingModelChildParameterSource &source )
+{
+  out << source.source();
+  out << source.staticValue();
+  out << source.parameterName();
+  out << source.outputChildId();
+  out << source.outputName();
+  out << source.expression();
+  out << source.expressionText();
+  return out;
+}
+
+QDataStream &operator>>( QDataStream &in, QgsProcessingModelChildParameterSource &source )
+{
+  int sourceType;
+  QVariant staticValue;
+  QString parameterName;
+  QString outputChildId;
+  QString outputName;
+  QString expression;
+  QString expressionText;
+
+  in >> sourceType >> staticValue >> parameterName >> outputChildId >> outputName >> expression >> expressionText;
+
+  source.setStaticValue( staticValue );
+  source.setParameterName( parameterName );
+  source.setOutputChildId( outputChildId );
+  source.setOutputName( outputName );
+  source.setExpression( expression );
+  source.setExpressionText( expressionText );
+  source.setSource( static_cast<QgsProcessingModelChildParameterSource::Source>( sourceType ) );
+  return in;
 }
 
 ///@endcond

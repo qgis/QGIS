@@ -24,12 +24,13 @@ QgsOnlineTerrainGenerator::~QgsOnlineTerrainGenerator() = default;
 
 QgsChunkLoader *QgsOnlineTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
-  return new QgsDemTerrainTileLoader( mTerrain, node );
+  return new QgsDemTerrainTileLoader( mTerrain, node, const_cast<QgsOnlineTerrainGenerator *>( this ) );
 }
 
 QgsTerrainGenerator *QgsOnlineTerrainGenerator::clone() const
 {
   QgsOnlineTerrainGenerator *cloned = new QgsOnlineTerrainGenerator;
+  cloned->setTerrain( mTerrain );
   cloned->mCrs = mCrs;
   cloned->mExtent = mExtent;
   cloned->mResolution = mResolution;
@@ -50,7 +51,7 @@ QgsRectangle QgsOnlineTerrainGenerator::extent() const
 
 float QgsOnlineTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettings &map ) const
 {
-  Q_UNUSED( map );
+  Q_UNUSED( map )
   if ( mHeightMapGenerator )
     return mHeightMapGenerator->heightAt( x, y );
   else

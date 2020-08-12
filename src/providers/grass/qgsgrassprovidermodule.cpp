@@ -22,11 +22,12 @@
 #include "qgsrasterprojector.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-
+#include "qgsdataitemprovider.h"
 #include "qgsgrassprovidermodule.h"
 #include "qgsgrassprovider.h"
 #include "qgsgrass.h"
 #include "qgsgrassvector.h"
+#include "qgsprovidermetadata.h"
 
 #ifdef HAVE_GUI
 #include "qgsnewnamedialog.h"
@@ -55,7 +56,7 @@ QList<QAction *> QgsGrassItemActions::actions( QWidget *parent )
 {
   QList<QAction *> list;
 
-  QAction *optionsAction = new QAction( tr( "GRASS Options" ), parent );
+  QAction *optionsAction = new QAction( tr( "GRASS Options…" ), parent );
   connect( optionsAction, &QAction::triggered, QgsGrass::instance(), &QgsGrass::openOptions );
   list << optionsAction;
 
@@ -65,14 +66,14 @@ QList<QAction *> QgsGrassItemActions::actions( QWidget *parent )
   // TODO: check ownership
   if ( mGrassObject.type() == QgsGrassObject::Location )
   {
-    QAction *newMapsetAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "grass_new_mapset.png" ) ), tr( "New mapset" ), parent );
+    QAction *newMapsetAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "grass_new_mapset.png" ) ), tr( "New Mapset…" ), parent );
     connect( newMapsetAction, &QAction::triggered, this, &QgsGrassItemActions::newMapset );
     list << newMapsetAction;
   }
 
   if ( mGrassObject.type() == QgsGrassObject::Mapset && isMapsetOwner )
   {
-    QAction *openMapsetAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "grass_open_mapset.png" ) ), tr( "Open mapset" ), parent );
+    QAction *openMapsetAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "grass_open_mapset.png" ) ), tr( "Open Mapset" ), parent );
     connect( openMapsetAction, &QAction::triggered, this, &QgsGrassItemActions::openMapset );
     list << openMapsetAction;
   }
@@ -82,13 +83,13 @@ QList<QAction *> QgsGrassItemActions::actions( QWidget *parent )
   {
     if ( !QgsGrass::instance()->isMapsetInSearchPath( mGrassObject.mapset() ) )
     {
-      QAction *openMapsetAction = new QAction( tr( "Add mapset to search path" ), parent );
+      QAction *openMapsetAction = new QAction( tr( "Add Mapset to Search Path" ), parent );
       connect( openMapsetAction, &QAction::triggered, this, &QgsGrassItemActions::addMapsetToSearchPath );
       list << openMapsetAction;
     }
     else
     {
-      QAction *openMapsetAction = new QAction( tr( "Remove mapset from search path" ), parent );
+      QAction *openMapsetAction = new QAction( tr( "Remove Mapset from Search Path" ), parent );
       connect( openMapsetAction, &QAction::triggered, this, &QgsGrassItemActions::removeMapsetFromSearchPath );
       list << openMapsetAction;
     }
@@ -97,11 +98,11 @@ QList<QAction *> QgsGrassItemActions::actions( QWidget *parent )
   if ( ( mGrassObject.type() == QgsGrassObject::Raster || mGrassObject.type() == QgsGrassObject::Vector
          ||  mGrassObject.type() == QgsGrassObject::Group ) && isMapsetOwner )
   {
-    QAction *renameAction = new QAction( tr( "Rename" ), parent );
+    QAction *renameAction = new QAction( tr( "Rename…" ), parent );
     connect( renameAction, &QAction::triggered, this, &QgsGrassItemActions::renameGrassObject );
     list << renameAction;
 
-    QAction *deleteAction = new QAction( tr( "Delete" ), parent );
+    QAction *deleteAction = new QAction( tr( "Delete…" ), parent );
     connect( deleteAction, &QAction::triggered, this, &QgsGrassItemActions::deleteGrassObject );
     list << deleteAction;
   }
@@ -110,15 +111,15 @@ QList<QAction *> QgsGrassItemActions::actions( QWidget *parent )
        && mValid && isMapsetOwner )
   {
     // TODO: disable new layer actions on maps currently being edited
-    QAction *newPointAction = new QAction( tr( "New Point Layer" ), parent );
+    QAction *newPointAction = new QAction( tr( "New Point Layer…" ), parent );
     connect( newPointAction, &QAction::triggered, this, &QgsGrassItemActions::newPointLayer );
     list << newPointAction;
 
-    QAction *newLineAction = new QAction( tr( "New Line Layer" ), parent );
+    QAction *newLineAction = new QAction( tr( "New Line Layer…" ), parent );
     connect( newLineAction, &QAction::triggered, this, &QgsGrassItemActions::newLineLayer );
     list << newLineAction;
 
-    QAction *newPolygonAction = new QAction( tr( "New Polygon Layer" ), parent );
+    QAction *newPolygonAction = new QAction( tr( "New Polygon Layer…" ), parent );
     connect( newPolygonAction, &QAction::triggered, this, &QgsGrassItemActions::newPolygonLayer );
     list << newPolygonAction;
   }
@@ -1156,7 +1157,7 @@ void QgsGrassImportItemWidget::setHtml( const QString &html )
 
 void QgsGrassImportItemWidget::onProgressChanged( const QString &recentHtml, const QString &allHtml, int min, int max, int value )
 {
-  Q_UNUSED( allHtml );
+  Q_UNUSED( allHtml )
   if ( !recentHtml.isEmpty() )
   {
     mTextEdit->append( recentHtml );
@@ -1247,75 +1248,73 @@ QIcon QgsGrassImportItem::icon()
 
 //-------------------------------------------------------------------------
 
-QGISEXTERN int dataCapabilities()
-{
-  return QgsDataProvider::Dir;
-}
+static const QString PROVIDER_KEY = QStringLiteral( "grass" );
+static const QString PROVIDER_DESCRIPTION = QStringLiteral( "GRASS %1 vector provider" ).arg( GRASS_VERSION_MAJOR );
 
-QGISEXTERN QgsDataItem *dataItem( QString dirPath, QgsDataItem *parentItem )
+class QgsGrassDataItemProvider : public QgsDataItemProvider
 {
-  if ( !QgsGrass::init() )
-  {
-    return nullptr;
-  }
-  if ( QgsGrass::isLocation( dirPath ) )
-  {
-    QString path;
-    QDir dir( dirPath );
-    QString dirName = dir.dirName();
-    if ( parentItem )
+  public:
+    QString name() override { return QStringLiteral( "GRASS" ); }
+
+    int capabilities() const override { return QgsDataProvider::Dir; }
+
+    QgsDataItem *createDataItem( const QString &dirPath, QgsDataItem *parentItem ) override
     {
-      path = parentItem->path();
+      if ( !QgsGrass::init() )
+      {
+        return nullptr;
+      }
+      if ( QgsGrass::isLocation( dirPath ) )
+      {
+        QString path;
+        QDir dir( dirPath );
+        QString dirName = dir.dirName();
+        if ( parentItem )
+        {
+          path = parentItem->path();
+        }
+        else
+        {
+          dir.cdUp();
+          path = dir.path();
+        }
+        path = path + "/" + "grass:" + dirName;
+        QgsGrassLocationItem *location = new QgsGrassLocationItem( parentItem, dirPath, path );
+        return location;
+      }
+      return nullptr;
     }
-    else
+};
+
+class QgsGrassProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsGrassProviderMetadata(): QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION ) {}
+    QgsGrassProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override
     {
-      dir.cdUp();
-      path = dir.path();
+      Q_UNUSED( options );
+      return new QgsGrassProvider( uri );
     }
-    path = path + "/" + "grass:" + dirName;
-    QgsGrassLocationItem *location = new QgsGrassLocationItem( parentItem, dirPath, path );
-    return location;
-  }
-  return nullptr;
-}
+    QList< QgsDataItemProvider * > dataItemProviders() const override
+    {
+      QList< QgsDataItemProvider * > providers;
+      providers << new QgsGrassDataItemProvider;
+      return providers;
+    }
 
-/**
-* Class factory to return a pointer to a newly created
-* QgsGrassProvider object
-*/
-QGISEXTERN QgsGrassProvider *classFactory( const QString *uri )
-{
-  return new QgsGrassProvider( *uri );
-}
+    void initProvider() override
+    {
+      // Init GRASS in the first function called by provider registry so that it is called
+      // on main thread, not sure but suspicious that init in thread is causing problems,
+      // at least on Windows, not that dataItem() is called in thread
+      if ( !QgsGrass::init() )
+      {
+        QgsDebugMsg( "init failed" );
+      }
+    }
+};
 
-/**
- * Required key function (used to map the plugin to a data store type)
-*/
-QGISEXTERN QString providerKey()
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
-  return QStringLiteral( "grass" );
-}
-
-/**
-* Required description function
-*/
-QGISEXTERN QString description()
-{
-  return QStringLiteral( "GRASS %1 vector provider" ).arg( GRASS_VERSION_MAJOR );
-}
-
-/**
-* Required isProvider function. Used to determine if this shared library
-* is a data provider plugin
-*/
-QGISEXTERN bool isProvider()
-{
-  // Init GRASS in the first function called by provider registry so that it is called
-  // on main thread, not sure but suspicious that init in thread is causing problems,
-  // at least on Windows, not that dataItem() is called in thread
-  if ( !QgsGrass::init() )
-  {
-    QgsDebugMsg( "init failed" );
-  }
-  return true;
+  return new QgsGrassProviderMetadata();
 }

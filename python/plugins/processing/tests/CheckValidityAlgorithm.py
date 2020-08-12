@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '2018-09'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.core import (
@@ -64,7 +62,7 @@ class TestQgsProcessingCheckValidity(unittest.TestCase):
         wkb_type = getattr(QgsWkbTypes, layer_wkb_name)
         fields.append(QgsField('int_f', QVariant.Int))
         layer = QgsMemoryProviderUtils.createMemoryLayer(
-            '%s_layer' % layer_wkb_name, fields, wkb_type, QgsCoordinateReferenceSystem(4326))
+            '%s_layer' % layer_wkb_name, fields, wkb_type, QgsCoordinateReferenceSystem("EPSG:4326"))
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.wkbType(), wkb_type)
         return layer

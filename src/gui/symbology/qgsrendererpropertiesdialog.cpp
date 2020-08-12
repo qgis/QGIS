@@ -56,7 +56,7 @@ static bool _initRenderer( const QString &name, QgsRendererWidgetFunc f, const Q
     m->setIcon( QgsApplication::getThemeIcon( iconName ) );
   }
 
-  QgsDebugMsg( "Set for " + name );
+  QgsDebugMsgLevel( "Set for " + name, 2 );
   return true;
 }
 
@@ -86,6 +86,7 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
 
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
   mLayerRenderingGroupBox->setSettingGroup( QStringLiteral( "layerRenderingGroupBox" ) );
 
   // can be embedded in vector layer properties
@@ -315,15 +316,12 @@ void QgsRendererPropertiesDialog::onOK()
 
 void QgsRendererPropertiesDialog::openPanel( QgsPanelWidget *panel )
 {
-  QgsDebugMsg( QStringLiteral( "Open panel!!!" ) );
   if ( mDockMode )
   {
-    QgsDebugMsg( QStringLiteral( "DOCK MODE" ) );
     emit showPanel( panel );
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "DIALOG MODE" ) );
     // Show the dialog version if no one is connected
     QDialog *dlg = new QDialog();
     QString key = QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );

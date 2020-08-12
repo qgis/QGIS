@@ -13,8 +13,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '11/03/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 
@@ -40,8 +38,9 @@ from qgis.core import QgsProject
 
 
 class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
-
     """QGIS Server WMS Tests for GetFeatureInfo request"""
+
+    # regenerate_reference = True
 
     def testGetFeatureInfo(self):
         # Test getfeatureinfo response xml
@@ -442,6 +441,26 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'wms_getfeatureinfo_polygon_tolerance_20_text_xml',
                                  'test_project_values.qgz')
 
+    def testGetFeatureInfoGML(self):
+        # Test getfeatureinfo response gml
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'info_format=application%2Fvnd.ogc.gml&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
+                                 'wms_getfeatureinfo-text-gml')
+
+        # Test getfeatureinfo response gml with gml
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'info_format=application%2Fvnd.ogc.gml&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320&' +
+                                 'with_geometry=true',
+                                 'wms_getfeatureinfo-text-gml-geometry')
+
     def testGetFeatureInfoJSON(self):
         # simple test without geometry and info_format=application/json
         self.wms_request_compare('GetFeatureInfo',
@@ -450,7 +469,8 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
                                  '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
                                  'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
-                                 'wms_getfeatureinfo_json')
+                                 'wms_getfeatureinfo_json',
+                                 normalizeJson=True)
 
         # simple test without geometry and info_format=application/geo+json
         self.wms_request_compare('GetFeatureInfo',
@@ -459,7 +479,8 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
                                  '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
                                  'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
-                                 'wms_getfeatureinfo_geojson')
+                                 'wms_getfeatureinfo_geojson',
+                                 normalizeJson=True)
 
         # test with several features and several layers
         self.wms_request_compare('GetFeatureInfo',
@@ -469,9 +490,10 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
                                  'query_layers=testlayer%20%C3%A8%C3%A9,fields_alias,exclude_attribute&' +
                                  'X=190&Y=320&FEATURE_COUNT=2&FI_POINT_TOLERANCE=200',
-                                 'wms_getfeatureinfo_multiple_json')
+                                 'wms_getfeatureinfo_multiple_json',
+                                 normalizeJson=True)
 
-        # simple test with geometry
+        # simple test with geometry with underlying layer in 3857
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
                                  'info_format=application%2Fjson&transparent=true&' +
@@ -479,7 +501,21 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
                                  'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320&' +
                                  'with_geometry=true',
-                                 'wms_getfeatureinfo_geometry_json')
+                                 'wms_getfeatureinfo_geometry_json',
+                                 'test_project_epsg3857.qgs',
+                                 normalizeJson=True)
+
+        # simple test with geometry with underlying layer in 4326
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'info_format=application%2Fjson&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320&' +
+                                 'with_geometry=true',
+                                 'wms_getfeatureinfo_geometry_json',
+                                 'test_project.qgs',
+                                 normalizeJson=True)
 
         # test with alias
         self.wms_request_compare('GetFeatureInfo',
@@ -488,7 +524,8 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
                                  '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
                                  'query_layers=fields_alias&X=190&Y=320',
-                                 'wms_getfeatureinfo_alias_json')
+                                 'wms_getfeatureinfo_alias_json',
+                                 normalizeJson=True)
 
         # test with excluded attributes
         self.wms_request_compare('GetFeatureInfo',
@@ -497,7 +534,8 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
                                  '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
                                  'query_layers=exclude_attribute&X=190&Y=320',
-                                 'wms_getfeatureinfo_exclude_attribute_json')
+                                 'wms_getfeatureinfo_exclude_attribute_json',
+                                 normalizeJson=True)
 
         # test with raster layer
         self.wms_request_compare('GetFeatureInfo',
@@ -506,7 +544,8 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'width=500&height=500&srs=EPSG%3A3857&' +
                                  'bbox=1989139.6,3522745.0,2015014.9,3537004.5&' +
                                  'query_layers=landsat&X=250&Y=250',
-                                 'wms_getfeatureinfo_raster_json')
+                                 'wms_getfeatureinfo_raster_json',
+                                 normalizeJson=True)
 
     def testGetFeatureInfoPostgresTypes(self):
         # compare json list output with file
@@ -518,7 +557,8 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&FILTER=json' +
                                  urllib.parse.quote(':"pk" = 1'),
                                  'get_postgres_types_json_list',
-                                 'test_project_postgres_types.qgs')
+                                 'test_project_postgres_types.qgs',
+                                 normalizeJson=True)
 
         # compare dict output with file
         self.wms_request_compare('GetFeatureInfo',
@@ -529,7 +569,8 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&FILTER=json' +
                                  urllib.parse.quote(':"pk" = 2'),
                                  'get_postgres_types_json_dict',
-                                 'test_project_postgres_types.qgs')
+                                 'test_project_postgres_types.qgs',
+                                 normalizeJson=True)
 
         # compare decoded json field list
         response_header, response_body, query_string = self.wms_request('GetFeatureInfo',
@@ -604,7 +645,8 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&I=0&J=1' +
                                  '&FEATURE_COUNT=10',
                                  'wms_getfeatureinfo_group_name_areas',
-                                 'test_project_wms_grouped_layers.qgs')
+                                 'test_project_wms_grouped_layers.qgs',
+                                 normalizeJson=True)
 
         # areas+and+symbols (nested)
         self.wms_request_compare('GetFeatureInfo',
@@ -615,8 +657,9 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&INFO_FORMAT=application/json' +
                                  '&I=0&J=1' +
                                  '&FEATURE_COUNT=10',
-                                 'wms_getfeatureinfo_group_name_areas',
-                                 'test_project_wms_grouped_nested_layers.qgs')
+                                 'wms_getfeatureinfo_group_name_areas_nested',
+                                 'test_project_wms_grouped_nested_layers.qgs',
+                                 normalizeJson=True)
 
         # as-areas-short-name
         self.wms_request_compare('GetFeatureInfo',
@@ -627,8 +670,9 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&INFO_FORMAT=application/json' +
                                  '&I=0&J=1' +
                                  '&FEATURE_COUNT=10',
-                                 'wms_getfeatureinfo_group_name_areas',
-                                 'test_project_wms_grouped_nested_layers.qgs')
+                                 'wms_getfeatureinfo_group_name_areas_nested',
+                                 'test_project_wms_grouped_nested_layers.qgs',
+                                 normalizeJson=True)
 
         # Top level:  QGIS Server - Grouped Layer
         self.wms_request_compare('GetFeatureInfo',
@@ -640,7 +684,8 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&I=0&J=1' +
                                  '&FEATURE_COUNT=10',
                                  'wms_getfeatureinfo_group_name_top',
-                                 'test_project_wms_grouped_nested_layers.qgs')
+                                 'test_project_wms_grouped_nested_layers.qgs',
+                                 normalizeJson=True)
 
         # Multiple matches from 2 layer groups
         self.wms_request_compare('GetFeatureInfo',
@@ -652,7 +697,8 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&I=0&J=1' +
                                  '&FEATURE_COUNT=10',
                                  'wms_getfeatureinfo_group_name_areas_cities',
-                                 'test_project_wms_grouped_nested_layers.qgs')
+                                 'test_project_wms_grouped_nested_layers.qgs',
+                                 normalizeJson=True)
 
         # no_query group (nested)
         self.wms_request_compare('GetFeatureInfo',
@@ -664,7 +710,8 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&I=0&J=1' +
                                  '&FEATURE_COUNT=10',
                                  'wms_getfeatureinfo_group_no_query',
-                                 'test_project_wms_grouped_nested_layers.qgs')
+                                 'test_project_wms_grouped_nested_layers.qgs',
+                                 normalizeJson=True)
 
         # query_child group (nested)
         self.wms_request_compare('GetFeatureInfo',
@@ -676,7 +723,8 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&I=0&J=1' +
                                  '&FEATURE_COUNT=10',
                                  'wms_getfeatureinfo_group_query_child',
-                                 'test_project_wms_grouped_nested_layers.qgs')
+                                 'test_project_wms_grouped_nested_layers.qgs',
+                                 normalizeJson=True)
 
         # child_ok group (nested)
         self.wms_request_compare('GetFeatureInfo',
@@ -688,7 +736,8 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&I=0&J=1' +
                                  '&FEATURE_COUNT=10',
                                  'wms_getfeatureinfo_group_query_child',
-                                 'test_project_wms_grouped_nested_layers.qgs')
+                                 'test_project_wms_grouped_nested_layers.qgs',
+                                 normalizeJson=True)
 
         # as_areas_query_copy == as-areas-short-name-query-copy (nested)
         self.wms_request_compare('GetFeatureInfo',
@@ -700,7 +749,58 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&I=0&J=1' +
                                  '&FEATURE_COUNT=10',
                                  'wms_getfeatureinfo_group_query_child',
-                                 'test_project_wms_grouped_nested_layers.qgs')
+                                 'test_project_wms_grouped_nested_layers.qgs',
+                                 normalizeJson=True)
+
+    def testGetFeatureInfoJsonUseIdAsLayerName(self):
+        """Test GH #36262 where json response + use layer id"""
+
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=44.90139177500000045,8.20335906129666981,44.90148522499999473,8.20364693870333284' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=1568&HEIGHT=509' +
+                                 '&LAYERS=testlayer_%C3%A8%C3%A9_cf86cf11_222f_4b62_929c_12cfc82b9774' +
+                                 '&STYLES=' +
+                                 '&FORMAT=image/jpeg' +
+                                 '&QUERY_LAYERS=testlayer_%C3%A8%C3%A9_cf86cf11_222f_4b62_929c_12cfc82b9774' +
+                                 '&INFO_FORMAT=application/json' +
+                                 '&I=1022&J=269' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_json_layer_ids',
+                                 'test_project_use_layer_ids.qgs',
+                                 normalizeJson=True)
+
+        # Raster
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=30.1492201749999964,17.81444988978388722,30.2599248249999988,18.15548111021611533' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=1568&HEIGHT=509' +
+                                 '&LAYERS=landsat_a7d15b35_ca83_4b23_a9fb_af3fbdd60d15' +
+                                 '&STYLES=' +
+                                 '&FORMAT=image/jpeg' +
+                                 '&QUERY_LAYERS=landsat_a7d15b35_ca83_4b23_a9fb_af3fbdd60d15' +
+                                 '&INFO_FORMAT=application/json' +
+                                 '&I=769&J=275&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_json_layer_ids_raster',
+                                 'test_project_use_layer_ids.qgs',
+                                 normalizeJson=True)
+
+        @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+                         "This test cannot run in TRAVIS because it relies on cascading external services")
+        def testGetFeatureInfoCascadingLayers(self):
+            """Test that we can get feature info on cascading WMS layers"""
+
+            project_name = 'bug_gh31177_gfi_cascading_wms.qgs'
+            self.wms_request_compare('GetFeatureInfo',
+                                     '&BBOX=852729.31,5631138.51,853012.18,5631346.17' +
+                                     '&CRS=EPSG:3857' +
+                                     '&WIDTH=850&HEIGHT=624' +
+                                     '&QUERY_LAYERS=Alberate' +
+                                     '&INFO_FORMAT=application/vnd.ogc.gml' +
+                                     '&I=509&J=289' +
+                                     '&FEATURE_COUNT=10',
+                                     'wms_getfeatureinfo_cascading_issue31177',
+                                     project_name)
 
 
 if __name__ == '__main__':

@@ -28,6 +28,8 @@
 #include "qgsexception.h"
 #include "qgssettings.h"
 #include "qgsmapcanvas.h"
+#include "qgshelp.h"
+#include "qgsgui.h"
 
 #include <QButtonGroup>
 #include <QListWidgetItem>
@@ -35,7 +37,6 @@
 #include <QFileDialog>
 #include <QRadioButton>
 #include <QImageReader>
-#include "qgshelp.h"
 
 QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
@@ -43,6 +44,8 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
   , mServiceType( serviceType )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsArcGisServiceSourceSelect::cmbConnections_activated );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsArcGisServiceSourceSelect::showHelp );
@@ -60,6 +63,8 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
   connect( btnEdit, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::modifyEntryOfServerList );
   connect( btnDelete, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::deleteEntryOfServerList );
   connect( btnConnect, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::connectToServer );
+  connect( btnSave, &QPushButton::clicked, this, &QgsArcGisServiceSourceSelect::btnSave_clicked );
+  connect( btnLoad, &QPushButton::clicked, this, &QgsArcGisServiceSourceSelect::btnLoad_clicked );
   connect( btnChangeSpatialRefSys, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::changeCrs );
   connect( lineFilter, &QLineEdit::textChanged, this, &QgsArcGisServiceSourceSelect::filterChanged );
   populateConnectionList();
@@ -69,7 +74,6 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
   treeView->setItemDelegate( new QgsAbstractDataSourceWidgetItemDelegate( treeView ) );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/SourceSelectDialog/geometry" ) ).toByteArray() );
   cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "Windows/SourceSelectDialog/UseTitleLayerName" ), false ).toBool() );
 
   mModel = new QStandardItemModel();
@@ -100,7 +104,6 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
 QgsArcGisServiceSourceSelect::~QgsArcGisServiceSourceSelect()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/SourceSelectDialog/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "Windows/SourceSelectDialog/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
 
   delete mProjectionSelector;
@@ -192,9 +195,9 @@ QString QgsArcGisServiceSourceSelect::getPreferredCrs( const QSet<QString> &crsS
   }
 
   //second: WGS84
-  if ( crsSet.contains( GEO_EPSG_CRS_AUTHID ) )
+  if ( crsSet.contains( geoEpsgCrsAuthId() ) )
   {
-    return GEO_EPSG_CRS_AUTHID;
+    return geoEpsgCrsAuthId();
   }
 
   //third: first entry in set
@@ -338,6 +341,7 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
     QString layerTitle = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->text();  //layer title/id
     QString layerName = mModel->itemFromIndex( mModel->index( row, 1, idx.parent() ) )->text(); //layer name
     const QString layerUri = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->data( UrlRole ).toString();
+    const QString layerId = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->data( IdRole ).toString();
     QString filter = mServiceType == FeatureService ? mModel->itemFromIndex( mModel->index( row, 3, idx.parent() ) )->text() : QString(); //optional filter specified by user
     if ( cbxUseTitleLayerName->isChecked() && !layerTitle.isEmpty() )
     {
@@ -348,7 +352,7 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
     {
       layerExtent = extent;
     }
-    QString uri = getLayerURI( connection, layerUri.isEmpty() ? layerTitle : layerUri, layerName, pCrsString, filter, layerExtent );
+    QString uri = getLayerURI( connection, layerUri.isEmpty() ? layerTitle : layerUri, layerName, pCrsString, filter, layerExtent, layerId );
 
     QgsDebugMsg( "Layer " + layerName + ", uri: " + uri );
     addServiceLayer( uri, layerName );
@@ -402,7 +406,7 @@ void QgsArcGisServiceSourceSelect::changeCrsFilter()
 
 void QgsArcGisServiceSourceSelect::cmbConnections_activated( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   QgsOwsConnection::setSelectedConnection( mServiceName, cmbConnections->currentText() );
 }
 
@@ -457,4 +461,26 @@ QSize QgsAbstractDataSourceWidgetItemDelegate::sizeHint( const QStyleOptionViewI
 void QgsArcGisServiceSourceSelect::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/index.html" ) );
+}
+
+void QgsArcGisServiceSourceSelect::btnSave_clicked()
+{
+  QgsManageConnectionsDialog::Type serverType = mServiceType == FeatureService ? QgsManageConnectionsDialog::ArcgisFeatureServer : QgsManageConnectionsDialog::ArcgisMapServer;
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, serverType );
+  dlg.exec();
+}
+
+void QgsArcGisServiceSourceSelect::btnLoad_clicked()
+{
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QgsManageConnectionsDialog::Type serverType = mServiceType == FeatureService ? QgsManageConnectionsDialog::ArcgisFeatureServer : QgsManageConnectionsDialog::ArcgisMapServer;
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Import, serverType, fileName );
+  dlg.exec();
+  populateConnectionList();
 }

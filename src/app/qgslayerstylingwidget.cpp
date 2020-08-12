@@ -22,6 +22,7 @@
 
 #include "qgsapplication.h"
 #include "qgslabelingwidget.h"
+#include "qgsmaskingwidget.h"
 #include "qgslayerstylingwidget.h"
 #include "qgsrastertransparencywidget.h"
 #include "qgsrendererpropertiesdialog.h"
@@ -34,6 +35,9 @@
 #include "qgsmaplayer.h"
 #include "qgsstyle.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
+#include "qgsvectortilebasiclabelingwidget.h"
+#include "qgsvectortilebasicrendererwidget.h"
 #include "qgsmeshlayer.h"
 #include "qgsproject.h"
 #include "qgsundowidget.h"
@@ -96,6 +100,12 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBa
   connect( mButtonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsLayerStylingWidget::apply );
   connect( mLayerCombo, &QgsMapLayerComboBox::layerChanged, this, &QgsLayerStylingWidget::setLayer );
   connect( mLiveApplyCheck, &QAbstractButton::toggled, this, &QgsLayerStylingWidget::liveApplyToggled );
+
+  mLayerCombo->setFilters( QgsMapLayerProxyModel::Filter::HasGeometry
+                           | QgsMapLayerProxyModel::Filter::RasterLayer
+                           | QgsMapLayerProxyModel::Filter::PluginLayer
+                           | QgsMapLayerProxyModel::Filter::MeshLayer
+                           | QgsMapLayerProxyModel::Filter::VectorTileLayer );
 
   mStackedWidget->setCurrentIndex( 0 );
 }
@@ -175,6 +185,10 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       labelItem->setData( Qt::UserRole, VectorLabeling );
       labelItem->setToolTip( tr( "Labels" ) );
       mOptionsListWidget->addItem( labelItem );
+      QListWidgetItem *maskItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labelmask.svg" ) ), QString() );
+      maskItem->setData( Qt::UserRole, VectorLabeling );
+      maskItem->setToolTip( tr( "Masks" ) );
+      mOptionsListWidget->addItem( maskItem );
 
 #ifdef HAVE_3D
       QListWidgetItem *symbol3DItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ), QString() );
@@ -195,7 +209,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       transparencyItem->setData( Qt::UserRole, RasterTransparency );
       mOptionsListWidget->addItem( transparencyItem );
 
-      if ( static_cast<QgsRasterLayer *>( layer )->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
+      if ( static_cast<QgsRasterLayer *>( layer )->dataProvider() && static_cast<QgsRasterLayer *>( layer )->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
       {
         QListWidgetItem *histogramItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/histogram.svg" ) ), QString() );
         histogramItem->setData( Qt::UserRole, RasterHistogram );
@@ -220,12 +234,25 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       break;
     }
 
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      QListWidgetItem *symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ), QString() );
+      symbolItem->setData( Qt::UserRole, Symbology );
+      symbolItem->setToolTip( tr( "Symbology" ) );
+      mOptionsListWidget->addItem( symbolItem );
+      QListWidgetItem *labelItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), QString() );
+      labelItem->setData( Qt::UserRole, VectorLabeling );
+      labelItem->setToolTip( tr( "Labels" ) );
+      mOptionsListWidget->addItem( labelItem );
+      break;
+    }
+
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::AnnotationLayer:
       break;
   }
 
-  const auto constMPageFactories = mPageFactories;
-  for ( QgsMapLayerConfigWidgetFactory *factory : constMPageFactories )
+  for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mPageFactories ) )
   {
     if ( factory->supportsStyleDock() && factory->supportsLayer( layer ) )
     {
@@ -278,6 +305,12 @@ void QgsLayerStylingWidget::apply()
     widget->apply();
     styleWasChanged = true;
     undoName = QStringLiteral( "Label Change" );
+  }
+  if ( QgsMaskingWidget *widget = qobject_cast<QgsMaskingWidget *>( current ) )
+  {
+    widget->apply();
+    styleWasChanged = true;
+    undoName = QStringLiteral( "Mask Change" );
   }
   if ( QgsPanelWidgetWrapper *wrapper = qobject_cast<QgsPanelWidgetWrapper *>( current ) )
   {
@@ -360,6 +393,10 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     {
       mLabelingWidget = widget;
     }
+    else if ( QgsMaskingWidget *widget = qobject_cast<QgsMaskingWidget *>( current ) )
+    {
+      mMaskingWidget = widget;
+    }
     else if ( QgsUndoWidget *widget = qobject_cast<QgsUndoWidget *>( current ) )
     {
       mUndoWidget = widget;
@@ -433,7 +470,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
           {
             if ( !mLabelingWidget )
             {
-              mLabelingWidget = new QgsLabelingWidget( nullptr, mMapCanvas, mWidgetStack );
+              mLabelingWidget = new QgsLabelingWidget( nullptr, mMapCanvas, mWidgetStack, mMessageBar );
               mLabelingWidget->setDockMode( true );
               connect( mLabelingWidget, &QgsLabelingWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             }
@@ -441,16 +478,28 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             mWidgetStack->setMainPanel( mLabelingWidget );
             break;
           }
+          case 2: // Masks
+          {
+            if ( !mMaskingWidget )
+            {
+              mMaskingWidget = new QgsMaskingWidget( mWidgetStack );
+              mMaskingWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
+              connect( mMaskingWidget, &QgsMaskingWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            }
+            mMaskingWidget->setLayer( vlayer );
+            mWidgetStack->setMainPanel( mMaskingWidget );
+            break;
+          }
 #ifdef HAVE_3D
-          case 2:  // 3D View
+          case 3:  // 3D View
           {
             if ( !mVector3DWidget )
             {
-              mVector3DWidget = new QgsVectorLayer3DRendererWidget( nullptr, mMapCanvas, mWidgetStack );
+              mVector3DWidget = new QgsVectorLayer3DRendererWidget( vlayer, mMapCanvas, mWidgetStack );
               mVector3DWidget->setDockMode( true );
               connect( mVector3DWidget, &QgsVectorLayer3DRendererWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             }
-            mVector3DWidget->setLayer( vlayer );
+            mVector3DWidget->syncToLayer( vlayer );
             mWidgetStack->setMainPanel( mVector3DWidget );
             break;
           }
@@ -574,7 +623,35 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         break;
       }
 
+      case QgsMapLayerType::VectorTileLayer:
+      {
+        QgsVectorTileLayer *vtLayer = qobject_cast<QgsVectorTileLayer *>( mCurrentLayer );
+        switch ( row )
+        {
+          case 0: // Style
+          {
+            mVectorTileStyleWidget = new QgsVectorTileBasicRendererWidget( vtLayer, mMapCanvas, mMessageBar, mWidgetStack );
+            mVectorTileStyleWidget->setDockMode( true );
+            connect( mVectorTileStyleWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            mWidgetStack->setMainPanel( mVectorTileStyleWidget );
+            break;
+          }
+          case 1: // Labeling
+          {
+            mVectorTileLabelingWidget = new QgsVectorTileBasicLabelingWidget( vtLayer, mMapCanvas, mMessageBar, mWidgetStack );
+            mVectorTileLabelingWidget->setDockMode( true );
+            connect( mVectorTileLabelingWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            mWidgetStack->setMainPanel( mVectorTileLabelingWidget );
+            break;
+          }
+          default:
+            break;
+        }
+        break;
+      }
+
       case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::AnnotationLayer:
       {
         mStackedWidget->setCurrentIndex( mNotSupportedPage );
         break;
@@ -684,7 +761,7 @@ QgsLayerStyleManagerWidgetFactory::QgsLayerStyleManagerWidgetFactory()
 
 QgsMapLayerConfigWidget *QgsLayerStyleManagerWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockMode, QWidget *parent ) const
 {
-  Q_UNUSED( dockMode );
+  Q_UNUSED( dockMode )
   return new QgsMapLayerStyleManagerWidget( layer,  canvas, parent );
 
 }
@@ -698,7 +775,11 @@ bool QgsLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer *layer ) cons
     case QgsMapLayerType::MeshLayer:
       return true;
 
+    case QgsMapLayerType::VectorTileLayer:
+      return false;  // TODO
+
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::AnnotationLayer:
       return false;
   }
   return false; // no warnings

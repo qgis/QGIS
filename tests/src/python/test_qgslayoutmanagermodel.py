@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = '(C) 2019 by Nyall Dawson'
 __date__ = '11/03/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -189,7 +187,7 @@ class TestQgsLayoutManagerModel(unittest.TestCase):
         self.assertEqual(proxy.data(proxy.index(2, 0, QModelIndex()), QgsLayoutManagerModel.LayoutRole), layout2)
 
         r = QgsReport(project)
-        r.setName('ddd')
+        r.setName('bbb2')
         manager.addLayout(r)
         self.assertEqual(proxy.rowCount(QModelIndex()), 4)
         self.assertEqual(proxy.data(proxy.index(0, 0, QModelIndex()), Qt.DisplayRole), None)
@@ -198,8 +196,22 @@ class TestQgsLayoutManagerModel(unittest.TestCase):
         self.assertEqual(proxy.data(proxy.index(1, 0, QModelIndex()), QgsLayoutManagerModel.LayoutRole), layout)
         self.assertEqual(proxy.data(proxy.index(2, 0, QModelIndex()), Qt.DisplayRole), 'bbb')
         self.assertEqual(proxy.data(proxy.index(2, 0, QModelIndex()), QgsLayoutManagerModel.LayoutRole), layout2)
-        self.assertEqual(proxy.data(proxy.index(3, 0, QModelIndex()), Qt.DisplayRole), 'ddd')
+        self.assertEqual(proxy.data(proxy.index(3, 0, QModelIndex()), Qt.DisplayRole), 'bbb2')
         self.assertEqual(proxy.data(proxy.index(3, 0, QModelIndex()), QgsLayoutManagerModel.LayoutRole), r)
+
+        proxy.setFilterString('xx')
+        self.assertEqual(proxy.rowCount(QModelIndex()), 1)
+        self.assertEqual(proxy.data(proxy.index(0, 0, QModelIndex()), Qt.DisplayRole), None)
+        self.assertEqual(proxy.data(proxy.index(0, 0, QModelIndex()), QgsLayoutManagerModel.LayoutRole), None)
+        proxy.setFilterString('bb')
+        self.assertEqual(proxy.rowCount(QModelIndex()), 3)
+        self.assertEqual(proxy.data(proxy.index(0, 0, QModelIndex()), Qt.DisplayRole), None)
+        self.assertEqual(proxy.data(proxy.index(0, 0, QModelIndex()), QgsLayoutManagerModel.LayoutRole), None)
+        self.assertEqual(proxy.data(proxy.index(1, 0, QModelIndex()), Qt.DisplayRole), 'bbb')
+        self.assertEqual(proxy.data(proxy.index(1, 0, QModelIndex()), QgsLayoutManagerModel.LayoutRole), layout2)
+        self.assertEqual(proxy.data(proxy.index(2, 0, QModelIndex()), Qt.DisplayRole), 'bbb2')
+        self.assertEqual(proxy.data(proxy.index(2, 0, QModelIndex()), QgsLayoutManagerModel.LayoutRole), r)
+        proxy.setFilterString('')
 
         proxy.setFilters(QgsLayoutManagerProxyModel.FilterPrintLayouts)
         self.assertEqual(proxy.filters(), QgsLayoutManagerProxyModel.FilterPrintLayouts)
@@ -210,14 +222,33 @@ class TestQgsLayoutManagerModel(unittest.TestCase):
         self.assertEqual(proxy.data(proxy.index(1, 0, QModelIndex()), QgsLayoutManagerModel.LayoutRole), layout)
         self.assertEqual(proxy.data(proxy.index(2, 0, QModelIndex()), Qt.DisplayRole), 'bbb')
         self.assertEqual(proxy.data(proxy.index(2, 0, QModelIndex()), QgsLayoutManagerModel.LayoutRole), layout2)
+        proxy.setFilterString('bb')
+        self.assertEqual(proxy.rowCount(QModelIndex()), 2)
+        self.assertEqual(proxy.data(proxy.index(0, 0, QModelIndex()), Qt.DisplayRole), None)
+        self.assertEqual(proxy.data(proxy.index(0, 0, QModelIndex()), QgsLayoutManagerModel.LayoutRole), None)
+        self.assertEqual(proxy.data(proxy.index(1, 0, QModelIndex()), Qt.DisplayRole), 'bbb')
+        self.assertEqual(proxy.data(proxy.index(1, 0, QModelIndex()), QgsLayoutManagerModel.LayoutRole), layout2)
+        proxy.setFilterString('')
 
         proxy.setFilters(QgsLayoutManagerProxyModel.FilterReports)
         self.assertEqual(proxy.filters(), QgsLayoutManagerProxyModel.FilterReports)
         self.assertEqual(proxy.rowCount(QModelIndex()), 2)
         self.assertEqual(proxy.data(proxy.index(0, 0, QModelIndex()), Qt.DisplayRole), None)
         self.assertEqual(proxy.data(proxy.index(0, 0, QModelIndex()), QgsLayoutManagerModel.LayoutRole), None)
-        self.assertEqual(proxy.data(proxy.index(1, 0, QModelIndex()), Qt.DisplayRole), 'ddd')
+        self.assertEqual(proxy.data(proxy.index(1, 0, QModelIndex()), Qt.DisplayRole), 'bbb2')
         self.assertEqual(proxy.data(proxy.index(1, 0, QModelIndex()), QgsLayoutManagerModel.LayoutRole), r)
+
+        proxy.setFilterString('bb')
+        self.assertEqual(proxy.rowCount(QModelIndex()), 2)
+        self.assertEqual(proxy.data(proxy.index(0, 0, QModelIndex()), Qt.DisplayRole), None)
+        self.assertEqual(proxy.data(proxy.index(0, 0, QModelIndex()), QgsLayoutManagerModel.LayoutRole), None)
+        self.assertEqual(proxy.data(proxy.index(1, 0, QModelIndex()), Qt.DisplayRole), 'bbb2')
+        self.assertEqual(proxy.data(proxy.index(1, 0, QModelIndex()), QgsLayoutManagerModel.LayoutRole), r)
+        proxy.setFilterString('aaa')
+        self.assertEqual(proxy.rowCount(QModelIndex()), 1)
+        self.assertEqual(proxy.data(proxy.index(0, 0, QModelIndex()), Qt.DisplayRole), None)
+        self.assertEqual(proxy.data(proxy.index(0, 0, QModelIndex()), QgsLayoutManagerModel.LayoutRole), None)
+        proxy.setFilterString('')
 
         proxy.setFilters(QgsLayoutManagerProxyModel.FilterPrintLayouts | QgsLayoutManagerProxyModel.FilterReports)
         self.assertEqual(proxy.filters(), QgsLayoutManagerProxyModel.FilterPrintLayouts | QgsLayoutManagerProxyModel.FilterReports)

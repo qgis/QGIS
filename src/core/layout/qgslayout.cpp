@@ -30,6 +30,8 @@
 #include "qgscompositionconverter.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgsruntimeprofiler.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )
@@ -784,6 +786,21 @@ QList<QgsLayoutItem *> QgsLayout::ungroupItems( QgsLayoutItemGroup *group )
   return ungroupedItems;
 }
 
+bool QgsLayout::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  const QList< QGraphicsItem * > constItems = items();
+  for ( const QGraphicsItem *item : constItems )
+  {
+    const QgsLayoutItem *layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
+    if ( !layoutItem )
+      continue;
+
+    if ( !layoutItem->accept( visitor ) )
+      return false;
+  }
+  return true;
+}
+
 void QgsLayout::refresh()
 {
   mUndoStack->blockCommands( true );
@@ -830,7 +847,8 @@ QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteConte
   //save multiframes
   for ( QgsLayoutMultiFrame *mf : mMultiFrames )
   {
-    mf->writeXml( element, document, context );
+    if ( mf->frameCount() > 0 )
+      mf->writeXml( element, document, context );
   }
 
   writeXmlLayoutSettings( element, document, context );
@@ -853,6 +871,7 @@ void QgsLayout::addLayoutItemPrivate( QgsLayoutItem *item )
   addItem( item );
   updateBounds();
   mItemsModel->rebuildZList();
+  connect( item, &QgsLayoutItem::backgroundTaskCountChanged, this, &QgsLayout::itemBackgroundTaskCountChanged );
 }
 
 void QgsLayout::removeLayoutItemPrivate( QgsLayoutItem *item )
@@ -939,13 +958,26 @@ bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &d
     return object->readXml( layoutElement, document, context );
   };
 
+  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
+    profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Read layout settings" ), QStringLiteral( "projectload" ) );
+
   blockSignals( true ); // defer changed signal to end
   readXmlLayoutSettings( layoutElement, document, context );
   blockSignals( false );
 
+  if ( profile )
+    profile->switchTask( tr( "Load pages" ) );
   restore( mPageCollection.get() );
+  if ( profile )
+    profile->switchTask( tr( "Load snapping settings" ) );
   restore( &mSnapper );
+  if ( profile )
+    profile->switchTask( tr( "Load grid settings" ) );
   restore( &mGridSettings );
+
+  if ( profile )
+    profile->switchTask( tr( "Restore items" ) );
   addItemsFromXml( layoutElement, document, context );
 
   emit changed();
@@ -979,6 +1011,11 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
       pageNumber = mPageCollection->pageNumberForPoint( *position );
     }
   }
+
+  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
+    profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Read items" ), QStringLiteral( "projectload" ) );
+
   // multiframes
 
   //TODO - fix this. pasting multiframe frame items has no effect
@@ -987,6 +1024,15 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
   {
     const QDomElement multiFrameElem = multiFrameList.at( i ).toElement();
     const int itemType = multiFrameElem.attribute( QStringLiteral( "type" ) ).toInt();
+
+    if ( profile )
+    {
+      if ( QgsLayoutMultiFrameAbstractMetadata *metadata = QgsApplication::layoutItemRegistry()->multiFrameMetadata( itemType ) )
+      {
+        profile->switchTask( tr( "Load %1" ).arg( metadata->visibleName() ) );
+      }
+    }
+
     std::unique_ptr< QgsLayoutMultiFrame > mf( QgsApplication::layoutItemRegistry()->createMultiFrame( itemType, this ) );
     if ( !mf )
     {
@@ -1022,6 +1068,15 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
       continue;
 
     const int itemType = currentItemElem.attribute( QStringLiteral( "type" ) ).toInt();
+
+    if ( profile )
+    {
+      if ( QgsLayoutItemAbstractMetadata *metadata = QgsApplication::layoutItemRegistry()->itemMetadata( itemType ) )
+      {
+        profile->switchTask( tr( "Load %1" ).arg( metadata->visibleName() ) );
+      }
+    }
+
     std::unique_ptr< QgsLayoutItem > item( QgsApplication::layoutItemRegistry()->createItem( itemType, this ) );
     if ( !item )
     {
@@ -1053,13 +1108,26 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
   // to other items in the layout, which may not have existed at the time the
   // item's state was restored. E.g. a scalebar may have been restored before the map
   // it is linked to
+  std::unique_ptr< QgsScopedRuntimeProfile > itemProfile;
+  if ( profile )
+  {
+    profile->switchTask( tr( "Finalize restore" ) );
+  }
   for ( QgsLayoutItem *item : qgis::as_const( newItems ) )
   {
+    if ( profile )
+      itemProfile = qgis::make_unique< QgsScopedRuntimeProfile >( item->displayName(), QStringLiteral( "projectload" ) );
     item->finalizeRestoreFromXml();
+    if ( itemProfile )
+      itemProfile.reset();
   }
   for ( QgsLayoutMultiFrame *mf : qgis::as_const( newMultiFrames ) )
   {
+    if ( profile )
+      itemProfile = qgis::make_unique< QgsScopedRuntimeProfile >( mf->displayName(), QStringLiteral( "projectload" ) );
     mf->finalizeRestoreFromXml();
+    if ( itemProfile )
+      itemProfile.reset();
   }
 
   for ( QgsLayoutItem *item : qgis::as_const( newItems ) )
@@ -1074,6 +1142,9 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
   //Since this function adds items in an order which isn't the z-order, and each item is added to end of
   //z order list in turn, it will now be inconsistent with the actual order of items in the scene.
   //Make sure z order list matches the actual order of items in the scene.
+
+  if ( profile )
+    profile->switchTask( tr( "Update model" ) );
   mItemsModel->rebuildZList();
 
   return newItems;
@@ -1082,4 +1153,25 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
 void QgsLayout::updateBounds()
 {
   setSceneRect( layoutBounds( false, 0.05 ) );
+}
+
+void QgsLayout::itemBackgroundTaskCountChanged( int count )
+{
+  QgsLayoutItem *item = qobject_cast<QgsLayoutItem *>( sender() );
+  if ( !item )
+    return;
+
+  if ( count > 0 )
+    mBackgroundTaskCount.insert( item, count );
+  else
+    mBackgroundTaskCount.remove( item );
+
+  // sum up new count of background tasks
+  int total = 0;
+  for ( auto it = mBackgroundTaskCount.constBegin(); it != mBackgroundTaskCount.constEnd(); ++it )
+  {
+    total += it.value();
+  }
+
+  emit backgroundTaskCountChanged( total );
 }

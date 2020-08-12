@@ -165,7 +165,7 @@ then
 fi
 
 srpm=$(grep -e 'Wrote: .*\.src\.rpm' $OUTDIR/build.log 2>/dev/null |
-       sed 's_Wrote: /builddir/build/SRPMS/\(.*\)_\1_')
+       sed 's_Wrote: /builddir/build/SRPMS/\(.*\.rpm\).*_\1_')
 
 if [ "$srpm_only" -eq "1" ]
 then

@@ -163,6 +163,7 @@ class CORE_EXPORT QgsQuadrilateral
     /**
      * Set all points
      * Returns FALSE if the QgsQuadrilateral is not valid:
+     *
      * - The points do not have the same type
      * - The quadrilateral would have auto intersections
      * - The quadrilateral has double points

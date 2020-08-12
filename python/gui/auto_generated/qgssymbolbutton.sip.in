@@ -145,7 +145,7 @@ button.
 
     void setColor( const QColor &color );
 %Docstring
-Sets the current ``color`` for the symbol. Will emit a changed() signal if the color is different
+Sets the current ``color`` for the symbol. Will emit a :py:func:`~QgsSymbolButton.changed` signal if the color is different
 to the previous symbol color.
 %End
 
@@ -202,6 +202,10 @@ Emitted when the symbol's settings are changed.
     virtual void mousePressEvent( QMouseEvent *e );
 
     virtual void mouseMoveEvent( QMouseEvent *e );
+
+    virtual void mouseReleaseEvent( QMouseEvent *e );
+
+    virtual void keyPressEvent( QKeyEvent *e );
 
     virtual void dragEnterEvent( QDragEnterEvent *e );
 

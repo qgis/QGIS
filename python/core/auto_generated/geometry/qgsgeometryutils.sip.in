@@ -116,7 +116,10 @@ Compute the intersection between two segments
 
 :return: - Whether the segments intersect
          - intersectionPoint: Output parameter, the intersection point
-         * Example:
+
+Example
+-------
+
 .. code-block:: python
 
        ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ) )
@@ -242,7 +245,7 @@ Project the point on a segment
 
     static int leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 );
 %Docstring
-Returns a value < 0 if the point (``x``, ``y``) is left of the line from (``x1``, ``y1``) -> ( ``x2``, ``y2``).
+Returns a value < 0 if the point (``x``, ``y``) is left of the line from (``x1``, ``y1``) -> (``x2``, ``y2``).
 A positive return value indicates the point is to the right of the line.
 
 If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
@@ -354,6 +357,26 @@ Convert circular arc defined by p1, p2, p3 (p1/p3 being start resp. end point, p
 .. versionadded:: 3.0
 %End
 
+    static bool pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2, const QgsPoint &a3, const QgsPoint &b, double distanceTolerance,
+                                   double pointSpacingAngleTolerance );
+%Docstring
+Returns true if point ``b`` is on the arc formed by points ``a1``, ``a2``, and ``a3``, but not within
+that arc portion already described by ``a1``, ``a2`` and ``a3``.
+
+The ``distanceTolerance`` specifies the maximum deviation allowed between the original location
+of point \b and where it would fall on the candidate arc.
+
+This method only consider a segments as continuing an arc if the points are all regularly spaced
+on the candidate arc. The ``pointSpacingAngleTolerance`` parameter specifies the maximum
+angular deviation (in radians) allowed when testing for regular point spacing.
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.14
+%End
+
     static int segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, const QgsPoint &pt2 );
 %Docstring
 For line defined by points pt1 and pt3, find out on which side of the line is point pt3.
@@ -368,6 +391,7 @@ Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) 
 
 .. versionadded:: 3.0
 %End
+
 
 
 
@@ -453,7 +477,10 @@ M value is computed if one of this point have M.
 :param pt2: second point.
 
 :return: New point at middle between points pt1 and pt2.
-         * Example:
+
+Example
+-------
+
 .. code-block:: python
 
        p = QgsPoint( 4, 6 ) # 2D point
@@ -599,7 +626,10 @@ An algorithm to calculate an (approximate) intersection of two lines in 3D.
 
 :return: - ``True`` if the intersection can be found, ``False`` - otherwise.
          - intersection: is the result intersection, of it can be found.
-         example:
+
+Example
+-------
+
 .. code-block:: python
 
        QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,3,0))
@@ -624,6 +654,33 @@ An algorithm to calculate an (approximate) intersection of two lines in 3D.
        # (True, PyQt5.QtGui.QgsVector3D(2.5, 2.5, 2.5))
        QgsGeometryUtils.linesIntersection3D(QgsVector3D(2.5,2.5,2.5), QgsVector3D(5,0,0), QgsVector3D(0,5,5), QgsVector3D(5,5,5))
        # (True, PyQt5.QtGui.QgsVector3D(0.0, 5.0, 5.0))
+%End
+
+    static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY );
+%Docstring
+Returns the area of the triangle denoted by the points (``aX``, ``aY``), (``bX``, ``bY``) and
+(``cX``, ``cY``).
+
+.. versionadded:: 3.10
+%End
+
+    static void weightedPointInTriangle( double aX, double aY, double bX, double bY, double cX, double cY,
+                                         double weightB, double weightC, double &pointX /Out/, double &pointY /Out/ );
+%Docstring
+Returns a weighted point inside the triangle denoted by the points (``aX``, ``aY``), (``bX``, ``bY``) and
+(``cX``, ``cY``).
+
+:param aX: x-coordinate of first vertex in triangle
+:param aY: y-coordinate of first vertex in triangle
+:param bX: x-coordinate of second vertex in triangle
+:param bY: y-coordinate of second vertex in triangle
+:param cX: x-coordinate of third vertex in triangle
+:param cY: y-coordinate of third vertex in triangle
+:param weightB: weighting factor along axis A-B (between 0 and 1)
+:param weightC: weighting factor along axis A-C (between 0 and 1)
+:param pointY: y-coordinate of generated point
+
+.. versionadded:: 3.10
 %End
 
     static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );

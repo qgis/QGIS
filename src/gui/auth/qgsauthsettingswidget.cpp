@@ -104,7 +104,7 @@ const QString QgsAuthSettingsWidget::dataprovider() const
 
 const QString QgsAuthSettingsWidget::formattedWarning( WarningType warning )
 {
-  QString out = tr( "<div>Warning: credentials stored as plain text in %1.</div>" );
+  QString out = tr( "Warning: credentials stored as plain text in %1." );
   switch ( warning )
   {
     case ProjectFile:
@@ -187,13 +187,13 @@ bool QgsAuthSettingsWidget::convertToEncrypted( )
 
 void QgsAuthSettingsWidget::userNameTextChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   updateConvertBtnState();
 }
 
 void QgsAuthSettingsWidget::passwordTextChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   updateConvertBtnState();
 }
 

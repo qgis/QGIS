@@ -116,7 +116,7 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "HUBS" ) ) );
 
   std::unique_ptr< QgsProcessingFeatureSource > spokeSource( parameterAsSource( parameters, QStringLiteral( "SPOKES" ), context ) );
-  if ( !hubSource || !spokeSource )
+  if ( !spokeSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "SPOKES" ) ) );
 
   QString fieldHubName = parameterAsString( parameters, QStringLiteral( "HUB_FIELD" ), context );
@@ -143,7 +143,7 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
   const bool splitAntimeridian = parameterAsBoolean( parameters, QStringLiteral( "ANTIMERIDIAN_SPLIT" ), context );
   QgsDistanceArea da;
   da.setSourceCrs( hubSource->sourceCrs(), context.transformContext() );
-  da.setEllipsoid( context.project()->ellipsoid() );
+  da.setEllipsoid( context.ellipsoid() );
 
   QgsFields hubOutFields;
   QgsAttributeList hubFieldIndices;

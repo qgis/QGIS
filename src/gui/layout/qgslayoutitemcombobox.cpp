@@ -74,7 +74,7 @@ QgsLayoutItem *QgsLayoutItemComboBox::currentItem() const
 
 void QgsLayoutItemComboBox::indexChanged( int i )
 {
-  Q_UNUSED( i );
+  Q_UNUSED( i )
   emit itemChanged( currentItem() );
 }
 
@@ -119,6 +119,16 @@ void QgsLayoutItemComboBox::setAllowEmptyItem( bool allowEmpty )
 bool QgsLayoutItemComboBox::allowEmptyItem() const
 {
   return mProxyModel->allowEmptyItem();
+}
+
+void QgsLayoutItemComboBox::setItemFlags( QgsLayoutItem::Flags flags )
+{
+  mProxyModel->setItemFlags( flags );
+}
+
+QgsLayoutItem::Flags QgsLayoutItemComboBox::itemFlags() const
+{
+  return mProxyModel->itemFlags();
 }
 
 QgsLayoutItem *QgsLayoutItemComboBox::item( int index ) const

@@ -7,5 +7,5 @@ docker  run  \
     -v $(pwd):$(pwd) \
     -w $(pwd) --rm  \
     --user $(id -u):$(id -g) \
-    -it elpaso/mxe-qt5-builder \
+    elpaso/mxe-qt5-builder \
     ${DIR}/build-mxe.sh

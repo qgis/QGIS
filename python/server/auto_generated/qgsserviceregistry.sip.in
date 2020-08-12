@@ -57,16 +57,55 @@ Register a service by its name and version
 This method is intended to  be called by modules for registering
 services. A module may register multiple services.
 
-The registry gain ownership of services and will call 'delete' on cleanup
+The registry takes ownership of services and will call 'delete' on cleanup
 
 :param service: a QgsService to be registered
+%End
+
+    bool registerApi( QgsServerApi *api /Transfer/ );
+%Docstring
+Registers the :py:class:`QgsServerApi` ``api``
+
+The registry takes ownership of services and will call 'delete' on cleanup
+
+.. versionadded:: 3.10
+%End
+
+    int unregisterApi( const QString &name, const QString &version = QString() );
+%Docstring
+Unregisters API from its name and version
+
+:param name: the name of the service
+:param version: (optional) the specific version to unload
+
+:return: the number of APIs unregistered
+
+If the version is not specified then all versions from the specified API
+are unloaded
+
+.. versionadded:: 3.10
+%End
+
+
+    QgsServerApi *getApi( const QString &name, const QString &version = QString() );
+%Docstring
+Retrieves an API from its name
+
+If the version is not provided the higher version of the service is returned
+
+:param name: the name of the API
+:param version: the version string (optional)
+
+:return: :py:class:`QgsServerApi`
+
+.. versionadded:: 3.10
 %End
 
     int unregisterService( const QString &name, const QString &version = QString() );
 %Docstring
 Unregister service from its name and version
 
-:param name: the tame of the service
+:param name: the name of the service
 :param version: (optional) the specific version to unload
 
 :return: the number of services unregistered

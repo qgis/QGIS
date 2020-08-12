@@ -32,7 +32,14 @@ Class to detect the GPS port
     void connDestroyed( QObject * );
 
   signals:
-    void detected( QgsGpsConnection * );
+
+
+    void detected( QgsGpsConnection *connection );
+%Docstring
+Emitted when the GPS connection has been detected. A single connection must listen for this signal and
+immediately take ownership of the ``connection`` object.
+%End
+
     void detectionFailed();
 
 };

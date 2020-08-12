@@ -41,6 +41,14 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
   public:
 
     /**
+     * Constructor for QgsProcessingFeedback.
+     *
+     * If \a logFeedback is TRUE, then all feedback received will be directed
+     * to QgsMessageLog.
+     */
+    QgsProcessingFeedback( bool logFeedback = true );
+
+    /**
      * Sets a progress report text string. This can be used in conjunction with
      * setProgress() to provide detailed progress reports, such as "Transformed
      * 4 of 5 layers".
@@ -99,6 +107,27 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      */
     void pushVersionInfo( const QgsProcessingProvider *provider = nullptr );
 
+    /**
+     * Returns the HTML formatted contents of the log, which contains all messages pushed to the feedback object.
+     *
+     * \see textLog()
+     * \since QGIS 3.14
+     */
+    virtual QString htmlLog() const;
+
+    /**
+     * Returns the plain text contents of the log, which contains all messages pushed to the feedback object.
+     *
+     * \see htmlLog()
+     * \since QGIS 3.14
+     */
+    virtual QString textLog() const;
+
+  private:
+    bool mLogFeedback = true;
+    QString mHtmlLog;
+    QString mTextLog;
+
 };
 
 
@@ -134,12 +163,13 @@ class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
     void setCurrentStep( int step );
 
     void setProgressText( const QString &text ) override;
-    void reportError( const QString &error, bool fatalError ) override;
+    void reportError( const QString &error, bool fatalError = false ) override;
     void pushInfo( const QString &info ) override;
     void pushCommandInfo( const QString &info ) override;
     void pushDebugInfo( const QString &info ) override;
     void pushConsoleInfo( const QString &info ) override;
-
+    QString htmlLog() const override;
+    QString textLog() const override;
   private slots:
 
     void updateOverallProgress( double progress );

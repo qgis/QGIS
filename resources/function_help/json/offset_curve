@@ -1,6 +1,7 @@
 {
   "name": "offset_curve",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns a geometry formed by offsetting a linestring geometry to the side. Distances are in the Spatial Reference System of this geometry.",
   "arguments": [ {"arg":"geometry","description":"a (multi)linestring geometry"},
                  {"arg":"distance","description":"offset distance. Positive values will be buffered to the left of lines, negative values to the right"},

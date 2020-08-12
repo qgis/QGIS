@@ -73,7 +73,7 @@ void QgsAuthIdentCertEdit::clearConfig()
 
 void QgsAuthIdentCertEdit::populateIdentityComboBox()
 {
-  cmbIdentityCert->addItem( tr( "Select identity…" ), "" );
+  cmbIdentityCert->addItem( tr( "Select Identity…" ), "" );
 
   const QList<QSslCertificate> certs( QgsApplication::authManager()->certIdentities() );
   if ( !certs.isEmpty() )
@@ -99,6 +99,6 @@ void QgsAuthIdentCertEdit::populateIdentityComboBox()
 
 void QgsAuthIdentCertEdit::cmbIdentityCert_currentIndexChanged( int indx )
 {
-  Q_UNUSED( indx );
+  Q_UNUSED( indx )
   validateConfig();
 }

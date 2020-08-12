@@ -40,7 +40,7 @@ class CORE_EXPORT QgsRasterTransparency
     QgsRasterTransparency() = default;
 
     //
-    // Structs to hold transparent pixel vlaues
+    // Structs to hold transparent pixel values
     //
     struct TransparentThreeValuePixel
     {

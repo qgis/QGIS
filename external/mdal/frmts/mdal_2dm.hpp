@@ -14,15 +14,15 @@
 #include "mdal.h"
 #include "mdal_driver.hpp"
 
+
+#define MAX_VERTICES_PER_FACE_2DM 4
+
 namespace MDAL
 {
   class Mesh2dm: public MemoryMesh
   {
     public:
-      Mesh2dm( size_t verticesCount,
-               size_t facesCount,
-               size_t faceVerticesMaximumCount,
-               BBox extent,
+      Mesh2dm( size_t faceVerticesMaximumCount,
                const std::string &uri,
                const std::map<size_t, size_t> vertexIDtoIndex
              );
@@ -51,17 +51,23 @@ namespace MDAL
    * 2DM format specification used in TUFLOW, HYDRO_AS-2D and BASEMENET solvers
    * Text file format representing mesh vertices (ND) and faces (E**)
    * ND id x y z
-   * Supports lines, triangles and polygons up to 9 vertices (implemented triangles and quads)
+   * The format supports lines, triangles and quads, where the elememts could be
+   * stored with some intermediate points (e.g. triangle defined by 6 vertices, vertices
+   * and the middle of the edges) We do support only simple definition, so E6T, E8Q and E9Q
+   * are not supported.
    * E3T id 1 2 3 mat_id -> face type, id, vertex indices ..., material index
    *
    * full specification here: https://www.xmswiki.com/wiki/SMS:2D_Mesh_Files_*.2dm
    *
-   * Exception for the official specification is for recognition of cell-centered
-   * elevation values supported by BASEMENT 3.x releases
-   * If face definition has extra column, it is parsed and recognized as
-   * elevation, e.g. format for triangle
-   * E3T id 1 2 3 mat_id elevation
-   * and added automatically as "Bed Elevation (Face)"
+   * This will process as many material IDs as promised by the NUM_MATERIALS_PER_ELEM tag and add them as face
+   * dataset groups. The naming for these groups is "Material ID" for the first, "Bed Elevation (Face)" for the
+   * second, and finally "Auxiliary Material ID <X>" for any subsequent materials, X being a counter to ensure
+   * unique group names:
+   * E** id 1 2 3 [Material ID] [Bed Elevation (Face)] [Auxiliary Material ID 1] [Auxiliary Material ID 2] ...
+   * If the NUM_MATERIALS_PER_ELEM tag is not provided, a fallback mode is used that will only check for the
+   * second MATID column and add it under the name "Bed Elevation (Face)" if found.
+   * Noe that this is purely a compatibility mode for BASEMENT 3.x releases; NUM_MATERIALS_... is a required
+   * tag according to the 2DM specification.
    *
    * Note that some 2dm formats do have some extra columns after mat_id column with
    * data with unknown origin/name (e.g. tests/data/2dm/regular_grid.2dm)
@@ -80,8 +86,12 @@ namespace MDAL
       ~Driver2dm() override;
       Driver2dm *create() override;
 
-      bool canRead( const std::string &uri ) override;
-      std::unique_ptr< Mesh > load( const std::string &meshFile, MDAL_Status *status ) override;
+      int faceVerticesMaximumCount() const override
+      {return MAX_VERTICES_PER_FACE_2DM;}
+
+      bool canReadMesh( const std::string &uri ) override;
+      std::unique_ptr< Mesh > load( const std::string &meshFile, const std::string &meshName = "" ) override;
+      void save( const std::string &uri, Mesh *mesh ) override;
 
     private:
       std::string mMeshFile;

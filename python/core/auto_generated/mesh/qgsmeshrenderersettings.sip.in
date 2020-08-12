@@ -10,7 +10,6 @@
 
 
 
-
 class QgsMeshRendererMeshSettings
 {
 %Docstring
@@ -55,6 +54,20 @@ Returns color used for rendering
 Sets color used for rendering of the mesh
 %End
 
+    QgsUnitTypes::RenderUnit lineWidthUnit() const;
+%Docstring
+Returns units of the width of the mesh frame
+
+.. versionadded:: 3.14
+%End
+
+    void setLineWidthUnit( const QgsUnitTypes::RenderUnit &lineWidthUnit );
+%Docstring
+Sets units of the width of the mesh frame
+
+.. versionadded:: 3.14
+%End
+
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
 Writes configuration to a new DOM element
@@ -83,6 +96,15 @@ Represents a mesh renderer settings for scalar datasets
 #include "qgsmeshrenderersettings.h"
 %End
   public:
+
+    enum DataResamplingMethod
+    {
+
+      None,
+
+      NeighbourAverage,
+    };
+
     QgsColorRampShader colorRampShader() const;
 %Docstring
 Returns color ramp shader function
@@ -114,6 +136,50 @@ Returns opacity
 Sets opacity
 %End
 
+    DataResamplingMethod dataResamplingMethod() const;
+%Docstring
+Returns the type of interpolation to use to
+convert face defined datasets to
+values on vertices
+
+.. versionadded:: 3.12
+%End
+
+    void setDataResamplingMethod( const DataResamplingMethod &dataResamplingMethod );
+%Docstring
+Sets data interpolation method
+
+.. versionadded:: 3.12
+%End
+
+    QgsInterpolatedLineWidth edgeStrokeWidth() const;
+%Docstring
+Returns the stroke width used to render edges scalar dataset
+
+.. versionadded:: 3.14
+%End
+
+    void setEdgeStrokeWidth( const QgsInterpolatedLineWidth &strokeWidth );
+%Docstring
+Sets the stroke width used to render edges scalar dataset
+
+.. versionadded:: 3.14
+%End
+
+    QgsUnitTypes::RenderUnit edgeStrokeWidthUnit() const;
+%Docstring
+Returns the stroke width unit used to render edges scalar dataset
+
+.. versionadded:: 3.14
+%End
+
+    void setEdgeStrokeWidthUnit( const QgsUnitTypes::RenderUnit &edgeStrokeWidthUnit );
+%Docstring
+Sets the stroke width unit used to render edges scalar dataset
+
+.. versionadded:: 3.14
+%End
+
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
 Writes configuration to a new DOM element
@@ -125,17 +191,17 @@ Reads configuration from the given DOM element
 
 };
 
-class QgsMeshRendererVectorSettings
+class QgsMeshRendererVectorArrowSettings
 {
 %Docstring
 
-Represents a mesh renderer settings for vector datasets
+Represents a mesh renderer settings for vector datasets displayed with arrows
 
 .. note::
 
    The API is considered EXPERIMENTAL and can be changed without a notice
 
-.. versionadded:: 3.2
+.. versionadded:: 3.12
 %End
 
 %TypeHeaderCode
@@ -153,55 +219,7 @@ Represents a mesh renderer settings for vector datasets
       Fixed
     };
 
-    double lineWidth() const;
-%Docstring
-Returns line width of the arrow (in millimeters)
-%End
-    void setLineWidth( double lineWidth );
-%Docstring
-Sets line width of the arrow in pixels (in millimeters)
-%End
-
-    QColor color() const;
-%Docstring
-Returns color used for drawing arrows
-%End
-    void setColor( const QColor &color );
-%Docstring
-Sets color used for drawing arrows
-%End
-
-    double filterMin() const;
-%Docstring
-Returns filter value for vector magnitudes.
-
-If magnitude of the vector is lower than this value, the vector is not
-drawn. -1 represents that filtering is not active.
-%End
-
-    void setFilterMin( double filterMin );
-%Docstring
-Sets filter value for vector magnitudes.
-
-.. seealso:: :py:func:`filterMin`
-%End
-
-    double filterMax() const;
-%Docstring
-Returns filter value for vector magnitudes.
-
-If magnitude of the vector is higher than this value, the vector is not
-drawn. -1 represents that filtering is not active.
-%End
-
-    void setFilterMax( double filterMax );
-%Docstring
-Sets filter value for vector magnitudes.
-
-.. seealso:: :py:func:`filterMax`
-%End
-
-    QgsMeshRendererVectorSettings::ArrowScalingMethod shaftLengthMethod() const;
+    QgsMeshRendererVectorArrowSettings::ArrowScalingMethod shaftLengthMethod() const;
 %Docstring
 Returns method used for drawing arrows
 %End
@@ -284,6 +302,201 @@ Returns ratio of the head length of the arrow (range 0-1)
 Sets ratio of the head length of the arrow (range 0-1)
 %End
 
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+};
+
+class QgsMeshRendererVectorStreamlineSettings
+{
+%Docstring
+
+Represents a streamline renderer settings for vector datasets displayed by streamlines
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsmeshrenderersettings.h"
+%End
+  public:
+    enum SeedingStartPointsMethod
+    {
+
+      MeshGridded,
+
+      Random
+    };
+
+    SeedingStartPointsMethod seedingMethod() const;
+%Docstring
+Returns the method used for seeding start points of strealines
+%End
+    void setSeedingMethod( const SeedingStartPointsMethod &seedingMethod );
+%Docstring
+Sets the method used for seeding start points of strealines
+%End
+    double seedingDensity() const;
+%Docstring
+Returns the density used for seeding start points
+%End
+    void setSeedingDensity( double seedingDensity );
+%Docstring
+Sets the density used for seeding start points
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+
+};
+
+class QgsMeshRendererVectorTracesSettings
+{
+%Docstring
+
+Represents a trace renderer settings for vector datasets displayed by particle traces
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsmeshrenderersettings.h"
+%End
+  public:
+
+    double maximumTailLength() const;
+%Docstring
+Returns the maximum tail length
+%End
+    void setMaximumTailLength( double maximumTailLength );
+%Docstring
+Sets the maximums tail length
+%End
+    int particlesCount() const;
+%Docstring
+Returns particles count
+%End
+    void setParticlesCount( int value );
+%Docstring
+Sets particles count
+%End
+    QgsUnitTypes::RenderUnit maximumTailLengthUnit() const;
+%Docstring
+Returns the maximum tail length unit
+%End
+    void setMaximumTailLengthUnit( const QgsUnitTypes::RenderUnit &maximumTailLengthUnit );
+%Docstring
+Sets the maximum tail length unit
+%End
+
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+
+
+
+};
+
+class QgsMeshRendererVectorSettings
+{
+%Docstring
+
+Represents a renderer settings for vector datasets
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmeshrenderersettings.h"
+%End
+  public:
+
+    enum Symbology
+    {
+      //! Displaying vector dataset with arrows
+      Arrows,
+      //! Displaying vector dataset with streamlines
+      Streamlines,
+      //! Displaying vector dataset with particle traces
+      Traces
+    };
+
+    double lineWidth() const;
+%Docstring
+Returns line width of the arrow (in millimeters)
+%End
+    void setLineWidth( double lineWidth );
+%Docstring
+Sets line width of the arrow in pixels (in millimeters)
+%End
+
+    QColor color() const;
+%Docstring
+Returns color used for drawing arrows
+%End
+    void setColor( const QColor &color );
+%Docstring
+Sets color used for drawing arrows
+%End
+
+    double filterMin() const;
+%Docstring
+Returns filter value for vector magnitudes.
+
+If magnitude of the vector is lower than this value, the vector is not
+drawn. -1 represents that filtering is not active.
+%End
+
+    void setFilterMin( double filterMin );
+%Docstring
+Sets filter value for vector magnitudes.
+
+.. seealso:: :py:func:`filterMin`
+%End
+
+    double filterMax() const;
+%Docstring
+Returns filter value for vector magnitudes.
+
+If magnitude of the vector is higher than this value, the vector is not
+drawn. -1 represents that filtering is not active.
+%End
+
+    void setFilterMax( double filterMax );
+%Docstring
+Sets filter value for vector magnitudes.
+
+.. seealso:: :py:func:`filterMax`
+%End
+
     bool isOnUserDefinedGrid() const;
 %Docstring
 Returns whether vectors are drawn on user-defined grid
@@ -309,6 +522,97 @@ Returns height in pixels of user grid cell
 Sets height of user grid cell (in pixels)
 %End
 
+    Symbology symbology() const;
+%Docstring
+Returns the displaying method used to render vector datasets
+
+.. versionadded:: 3.12
+%End
+
+    void setSymbology( const Symbology &symbology );
+%Docstring
+Sets the displaying method used to render vector datasets
+
+.. versionadded:: 3.12
+%End
+
+    QgsInterpolatedLineColor::ColoringMethod coloringMethod() const;
+%Docstring
+Returns the coloring method used to render vector datasets
+
+.. versionadded:: 3.14
+%End
+
+    void setColoringMethod( const QgsInterpolatedLineColor::ColoringMethod &coloringMethod );
+%Docstring
+Sets the coloring method used to render vector datasets
+
+.. versionadded:: 3.14
+%End
+
+    QgsColorRampShader colorRampShader() const;
+%Docstring
+Sets the color ramp shader used to render vector datasets
+
+.. versionadded:: 3.14
+%End
+
+    void setColorRampShader( const QgsColorRampShader &colorRampShader );
+%Docstring
+Returns the color ramp shader used to render vector datasets
+
+.. versionadded:: 3.14
+%End
+
+    QgsInterpolatedLineColor vectorStrokeColoring() const;
+%Docstring
+Returns the stroke coloring used to render vector datasets
+
+.. versionadded:: 3.14
+%End
+
+    QgsMeshRendererVectorArrowSettings arrowSettings() const;
+%Docstring
+Returns settings for vector rendered with arrows
+
+.. versionadded:: 3.12
+%End
+
+    void setArrowsSettings( const QgsMeshRendererVectorArrowSettings &arrowSettings );
+%Docstring
+Sets settings for vector rendered with arrows
+
+.. versionadded:: 3.12
+%End
+
+    QgsMeshRendererVectorStreamlineSettings streamLinesSettings() const;
+%Docstring
+Returns settings for vector rendered with streamlines
+
+.. versionadded:: 3.12
+%End
+
+    void setStreamLinesSettings( const QgsMeshRendererVectorStreamlineSettings &streamLinesSettings );
+%Docstring
+Sets settings for vector rendered with streamlines
+
+.. versionadded:: 3.12
+%End
+
+    QgsMeshRendererVectorTracesSettings tracesSettings() const;
+%Docstring
+Returns settings for vector rendered with traces
+
+.. versionadded:: 3.12
+%End
+
+    void setTracesSettings( const QgsMeshRendererVectorTracesSettings &tracesSettings );
+%Docstring
+Sets settings for vector rendered with traces
+
+.. versionadded:: 3.12
+%End
+
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
 Writes configuration to a new DOM element
@@ -319,7 +623,6 @@ Reads configuration from the given DOM element
 %End
 
 };
-
 
 class QgsMeshRendererSettings
 {
@@ -339,22 +642,42 @@ Represents all mesh renderer settings
 %End
   public:
 
+    QgsMeshRendererSettings();
+%Docstring
+Constructs renderer with default single layer averaging method
+%End
+    ~QgsMeshRendererSettings();
+
     QgsMeshRendererMeshSettings nativeMeshSettings() const;
 %Docstring
-Returns renderer settings
+Returns native mesh renderer settings
 %End
     void setNativeMeshSettings( const QgsMeshRendererMeshSettings &settings );
 %Docstring
-Sets new renderer settings, triggers repaint
+Sets new native mesh  renderer settings, triggers repaint
 %End
 
     QgsMeshRendererMeshSettings triangularMeshSettings() const;
 %Docstring
-Returns renderer settings
+Returns triangular mesh renderer settings
 %End
     void setTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings );
 %Docstring
-Sets new renderer settings
+Sets new triangular mesh renderer settings
+%End
+
+    QgsMeshRendererMeshSettings edgeMeshSettings() const;
+%Docstring
+Returns edge mesh renderer settings
+
+.. versionadded:: 3.14
+%End
+
+    void setEdgeMeshSettings( const QgsMeshRendererMeshSettings &settings );
+%Docstring
+Sets new edge mesh renderer settings
+
+.. versionadded:: 3.14
 %End
 
     QgsMeshRendererScalarSettings scalarSettings( int groupIndex ) const;
@@ -375,22 +698,18 @@ Returns renderer settings
 Sets new renderer settings
 %End
 
-    QgsMeshDatasetIndex activeScalarDataset() const;
+    QgsMesh3dAveragingMethod *averagingMethod() const;
 %Docstring
-Returns active scalar dataset
-%End
-    void setActiveScalarDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
-%Docstring
-Sets active scalar dataset for rendering
+Returns averaging method for conversion of 3d stacked mesh data to 2d data
+
+Caller does not own the resulting pointer
 %End
 
-    QgsMeshDatasetIndex activeVectorDataset() const;
+    void setAveragingMethod( QgsMesh3dAveragingMethod *method );
 %Docstring
-Returns active vector dataset
-%End
-    void setActiveVectorDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
-%Docstring
-Sets active vector dataset for rendering.
+Sets averaging method for conversion of 3d stacked mesh data to 2d data
+
+Ownership of the method is not transferred.
 %End
 
     QDomElement writeXml( QDomDocument &doc ) const;
@@ -400,6 +719,34 @@ Writes configuration to a new DOM element
     void readXml( const QDomElement &elem );
 %Docstring
 Reads configuration from the given DOM element
+%End
+
+    int activeScalarDatasetGroup() const;
+%Docstring
+Returns the active scalar dataset group
+
+.. versionadded:: 3.14
+%End
+
+    void setActiveScalarDatasetGroup( int activeScalarDatasetGroup );
+%Docstring
+Sets the active scalar dataset group
+
+.. versionadded:: 3.14
+%End
+
+    int activeVectorDatasetGroup() const;
+%Docstring
+Returns the active vector dataset group
+
+.. versionadded:: 3.14
+%End
+
+    void setActiveVectorDatasetGroup( int activeVectorDatasetGroup );
+%Docstring
+Sets the active vector dataset group
+
+.. versionadded:: 3.14
 %End
 
 };

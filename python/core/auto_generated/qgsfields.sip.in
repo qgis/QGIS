@@ -16,6 +16,7 @@ class QgsFields
 Container of fields for a vector layer.
 
 In addition to storing a list of QgsField instances, it also:
+
 - allows quick lookups of field names to index in the list
 - keeps track of where the field definition comes from (vector data provider, joined layer or newly added from an editing operation)
 
@@ -187,7 +188,7 @@ Gets field with matching name
     int fieldIdx = sipCpp->indexFromName( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -306,6 +307,14 @@ Returns an icon corresponding to a field index, based on the field's type and so
     {
       sipRes = new QIcon( sipCpp->iconForField( a0 ) );
     }
+%End
+
+
+    static QIcon iconForFieldType( const QVariant::Type &type ) /Factory/;
+%Docstring
+Returns an icon corresponding to a field ``type``
+
+.. versionadded:: 3.16
 %End
 
     operator QVariant() const;

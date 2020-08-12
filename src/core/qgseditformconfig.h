@@ -36,6 +36,9 @@ class QgsEditFormConfigPrivate;
  */
 class CORE_EXPORT QgsEditFormConfig
 {
+
+    Q_GADGET
+
   public:
 
     //! The different types to layout the attribute editor.
@@ -45,6 +48,7 @@ class CORE_EXPORT QgsEditFormConfig
       TabLayout = 1,       //!< Use a layout with tabs and group boxes. Needs to be configured.
       UiFileLayout = 2     //!< Load a .ui file for the layout. Needs to be configured.
     };
+    Q_ENUM( EditorLayout )
 
     struct GroupData
     {
@@ -81,6 +85,7 @@ class CORE_EXPORT QgsEditFormConfig
       SuppressOn = 1,      //!< Suppress feature form
       SuppressOff = 2      //!< Do not suppress feature form
     };
+    Q_ENUM( FeatureFormSuppress )
 
     /**
      * The Python init code source options.
@@ -91,6 +96,21 @@ class CORE_EXPORT QgsEditFormConfig
       CodeSourceFile = 1,             //!< Load the Python code from an external file
       CodeSourceDialog = 2,           //!< Use the Python code provided in the dialog
       CodeSourceEnvironment = 3       //!< Use the Python code available in the Python environment
+    };
+    Q_ENUM( PythonInitCodeSource )
+
+    /**
+     * Data defined properties.
+     * Form data defined overrides are stored in a property collection
+     * and they can be retrieved using the indexes specified in this
+     * enum.
+     * \since QGIS 3.14
+     */
+    enum DataDefinedProperty
+    {
+      NoProperty = 0, //!< No property
+      AllProperties = 1, //!< All properties for item
+      Alias = 2, //!< Alias
     };
 
     /**
@@ -153,7 +173,8 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Set the editor widget config for a widget which is not for a simple field.
      *
-     * Example:
+     * ### Example
+     *
      * \code{.py}
      *   editFormConfig = layer.editFormConfig()
      *   editFormConfig.setWidgetConfig( 'relation_id', { 'nm-rel': 'other_relation' } )
@@ -202,7 +223,7 @@ class CORE_EXPORT QgsEditFormConfig
      * If this returns TRUE, the widget at the given index will receive its label on the previous line
      * while if it returns FALSE, the widget will receive its label on the left hand side.
      * Labeling on top leaves more horizontal space for the widget itself.
-     **/
+     */
     bool labelOnTop( int idx ) const;
 
     /**
@@ -210,7 +231,7 @@ class CORE_EXPORT QgsEditFormConfig
      * the previous line while if it is set to FALSE, the widget will receive its label
      * on the left hand side.
      * Labeling on top leaves more horizontal space for the widget itself.
-     **/
+     */
     void setLabelOnTop( int idx, bool onTop );
 
 
@@ -294,6 +315,25 @@ class CORE_EXPORT QgsEditFormConfig
      * Create a new edit form config. Normally invoked by QgsVectorLayer
      */
     explicit QgsEditFormConfig();
+
+    /**
+     * Set data defined properties for \a fieldName to \a properties
+     * \since QGIS 3.14
+     */
+    void setDataDefinedFieldProperties( const QString &fieldName, const QgsPropertyCollection &properties );
+
+    /**
+     * Returns data defined properties for \a fieldName
+     * \since QGIS 3.14
+     */
+    QgsPropertyCollection dataDefinedFieldProperties( const QString &fieldName ) const;
+
+
+    /**
+     * Returns data defined property definitions.
+     * \since QGIS 3.14
+     */
+    static const QgsPropertiesDefinition &propertyDefinitions();
 
   private:
 

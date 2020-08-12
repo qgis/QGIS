@@ -83,6 +83,8 @@ segments in a full circle)
 %Docstring
 Adds a curve to a painter path.
 %End
+    virtual QPainterPath asQPainterPath() const;
+
 
     virtual void drawAsPolygon( QPainter &p ) const = 0;
 %Docstring
@@ -148,6 +150,9 @@ Returns a reversed copy of the curve, where the direction of the curve has been 
 %End
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
+
+
+    virtual QString asKml( int precision = 17 ) const;
 
 
     virtual QgsCurve *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
@@ -236,11 +241,11 @@ between the first and last vertex of the curve. (Also known as
 
     double sinuosity() const;
 %Docstring
-Returns the curve sinuosity, which is the ratio of the curve length() to curve
-straightDistance2d(). Larger numbers indicate a more "sinuous" curve (i.e. more
+Returns the curve sinuosity, which is the ratio of the curve :py:func:`~QgsCurve.length` to curve
+:py:func:`~QgsCurve.straightDistance2d`. Larger numbers indicate a more "sinuous" curve (i.e. more
 "bendy"). The minimum value returned of 1.0 indicates a perfectly straight curve.
 
-If a curve isClosed(), it has infinite sinuosity and will return NaN.
+If a curve :py:func:`~QgsCurve.isClosed`, it has infinite sinuosity and will return NaN.
 
 .. versionadded:: 3.2
 %End

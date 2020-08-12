@@ -63,7 +63,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
         bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const
         {
-          return mLayer == other.mLayer &&
+          return mLayer == other.mLayer && isVisible == other.isVisible &&
                  usingCurrentStyle == other.usingCurrentStyle && currentStyle == other.currentStyle &&
                  usingLegendItems == other.usingLegendItems && checkedLegendItems == other.checkedLegendItems &&
                  expandedLegendItems == other.expandedLegendItems && expandedLayerNode == other.expandedLayerNode;
@@ -78,6 +78,12 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
         //! Sets the map layer for this record
         void setLayer( QgsMapLayer *layer );
+
+        /**
+         * TRUE if the layer is visible in the associated theme.
+         * \since QGIS 3.14
+         */
+        bool isVisible = true;
 
         //! Whether current style is valid and should be applied
         bool usingCurrentStyle = false;
@@ -118,7 +124,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         bool operator==( const QgsMapThemeCollection::MapThemeRecord &other ) const
         {
           return validLayerRecords() == other.validLayerRecords() &&
-                 mHasExpandedStateInfo == other.mHasExpandedStateInfo && mExpandedGroupNodes == other.mExpandedGroupNodes;
+                 mHasExpandedStateInfo == other.mHasExpandedStateInfo &&
+                 mExpandedGroupNodes == other.mExpandedGroupNodes && mCheckedGroupNodes == other.mCheckedGroupNodes;
         }
         bool operator!=( const QgsMapThemeCollection::MapThemeRecord &other ) const
         {
@@ -139,7 +146,6 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
         /**
          * Returns set with only records for valid layers
-         * \note not available in Python bindings
          */
         QHash<QgsMapLayer *, QgsMapThemeCollection::MapThemeLayerRecord> validLayerRecords() const SIP_SKIP;
 
@@ -151,10 +157,25 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         bool hasExpandedStateInfo() const { return mHasExpandedStateInfo; }
 
         /**
+         * Returns whether information about checked/unchecked state of groups has been recorded
+         * and thus whether checkedGroupNodes() is valid.
+         * \note Not available in Python bindings
+         * \since QGIS 3.10.1
+         */
+        bool hasCheckedStateInfo() const { return mHasCheckedStateInfo; } SIP_SKIP;
+
+        /**
          * Sets whether the map theme contains valid expanded/collapsed state of nodes
          * \since QGIS 3.2
          */
         void setHasExpandedStateInfo( bool hasInfo ) { mHasExpandedStateInfo = hasInfo; }
+
+        /**
+         * Sets whether the map theme contains valid checked/unchecked state of group nodes
+         * \note Not available in Python bindings
+         * \since QGIS 3.10.1
+         */
+        void setHasCheckedStateInfo( bool hasInfo ) { mHasCheckedStateInfo = hasInfo; } SIP_SKIP;
 
         /**
          * Returns a set of group identifiers for group nodes that should have expanded state (other group nodes should be collapsed).
@@ -166,10 +187,25 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         QSet<QString> expandedGroupNodes() const { return mExpandedGroupNodes; }
 
         /**
+         * Returns a set of group identifiers for group nodes that should have checked state (other group nodes should be unchecked).
+         * The returned value is valid only when hasCheckedStateInfo() returns TRUE.
+         * Group identifiers are built using group names, a sub-group name is prepended by parent group's identifier
+         * and a forward slash, e.g. "level1/level2"
+         * \since QGIS 3.10.1
+         */
+        QSet<QString> checkedGroupNodes() const { return mCheckedGroupNodes; }
+
+        /**
          * Sets a set of group identifiers for group nodes that should have expanded state. See expandedGroupNodes().
          * \since QGIS 3.2
          */
         void setExpandedGroupNodes( const QSet<QString> &expandedGroupNodes ) { mExpandedGroupNodes = expandedGroupNodes; }
+
+        /**
+         * Sets a set of group identifiers for group nodes that should have checked state. See checkedGroupNodes().
+         * \since QGIS 3.10.1
+         */
+        void setCheckedGroupNodes( const QSet<QString> &checkedGroupNodes ) { mCheckedGroupNodes = checkedGroupNodes; }
 
       private:
         //! Layer-specific records for the theme. Only visible layers are listed.
@@ -177,12 +213,20 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
         //! Whether the information about expanded/collapsed state of groups, layers and legend items has been stored
         bool mHasExpandedStateInfo = false;
+        //! Whether the information about checked/unchecked state of groups, layers and legend items has been stored
+        bool mHasCheckedStateInfo = false;
 
         /**
          * Which groups should be expanded. Each group is identified by its name (sub-groups IDs are prepended with parent
          * group and forward slash - e.g. "level1/level2/level3").
          */
         QSet<QString> mExpandedGroupNodes;
+
+        /**
+         * Which groups should be checked. Each group is identified by its name (sub-groups IDs are prepended with parent
+         * group and forward slash - e.g. "level1/level2/level3").
+         */
+        QSet<QString> mCheckedGroupNodes;
 
         friend class QgsMapThemeCollection;
     };
@@ -213,12 +257,19 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     void update( const QString &name, const QgsMapThemeCollection::MapThemeRecord &state );
 
     /**
-     * Remove an existing map theme from collection.
+     * Removes an existing map theme from collection.
      * \since QGIS 3.0
      */
     void removeMapTheme( const QString &name );
 
-    //! Remove all map themes from the collection.
+    /**
+     * Renames the existing map theme called \a name to \a newName.
+     * Returns TRUE if the rename was successful, or FALSE if it failed (e.g. due to a duplicate name for \a newName).
+     * \since QGIS 3.14
+     */
+    bool renameMapTheme( const QString &name, const QString &newName );
+
+    //! Removes all map themes from the collection.
     void clear();
 
     /**
@@ -328,6 +379,12 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * \since QGIS 3.0
      */
     void mapThemeChanged( const QString &theme );
+
+    /**
+     * Emitted when a map theme within the collection is renamed.
+     * \since QGIS 3.14
+     */
+    void mapThemeRenamed( const QString &name, const QString &newName );
 
     /**
      * Emitted when the project changes

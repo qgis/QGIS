@@ -24,6 +24,7 @@
 #include "qgsgeometry.h"
 #include "qgssymbol.h" // for OutputUnit enum
 #include "qgsmapsettings.h"
+#include "qgslabelsink.h"
 
 #include <QColor>
 #include <QList>
@@ -34,29 +35,40 @@ class QgsPointXY;
 class QgsSymbolLayer;
 class QIODevice;
 class QgsPalLayerSettings;
+class QgsCurve;
+class QgsCurvePolygon;
+class QgsCircularString;
+class QgsCompoundCurve;
+struct DxfLayerJob;
 
 #define DXF_HANDSEED 100
 #define DXF_HANDMAX 9999999
 #define DXF_HANDPLOTSTYLE 0xf
 
-namespace pal SIP_SKIP
+namespace pal // SIP_SKIP
 {
   class LabelPosition;
 }
+
 
 /**
  * \ingroup core
  * \class QgsDxfExport
  */
+#ifdef SIP_RUN
 class CORE_EXPORT QgsDxfExport
 {
+#else
+class CORE_EXPORT QgsDxfExport : public QgsLabelSink
+{
+#endif
   public:
 
     /**
      * Layers and optional attribute index to split
      * into multiple layers using attribute value as layer name.
      */
-    struct DxfLayer
+    struct CORE_EXPORT DxfLayer
     {
         DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1 )
           : mLayer( vl )
@@ -69,8 +81,17 @@ class CORE_EXPORT QgsDxfExport
         /**
          * Returns the attribute index used to split into multiple layers.
          * The attribute value is used for layer names.
+         * \see splitLayerAttribute
          */
         int layerOutputAttributeIndex() const {return mLayerOutputAttributeIndex;}
+
+        /**
+         * If the split layer attribute is set, the vector layer
+         * will be split into several dxf layers, one per each
+         * unique value.
+         * \since QGIS 3.12
+         */
+        QString splitLayerAttribute() const;
 
       private:
         QgsVectorLayer *mLayer = nullptr;
@@ -92,11 +113,67 @@ class CORE_EXPORT QgsDxfExport
     Q_DECLARE_FLAGS( Flags, Flag )
 
     /**
+     * The result of an export as dxf operation
+     *
+     * \since QGIS 3.10.1
+     */
+    enum class ExportResult
+    {
+      Success = 0, //!< Successful export
+      InvalidDeviceError, //!< Invalid device error
+      DeviceNotWritableError, //!< Device not writable error
+      EmptyExtentError //!< Empty extent, no extent given and no extent could be derived from layers
+    };
+
+    /**
+     * Vertical alignments.
+     */
+    enum class VAlign : int
+    {
+      VBaseLine = 0,    //!< Top (0)
+      VBottom = 1,      //!< Bottom (1)
+      VMiddle = 2,      //!< Middle (2)
+      VTop = 3,         //!< Top (3)
+      Undefined = 9999  //!< Undefined
+    };
+
+    //! Horizontal alignments.
+    enum class HAlign : int
+    {
+      HLeft = 0,       //!< Left (0)
+      HCenter = 1,     //!< Centered (1)
+      HRight = 2,      //!< Right (2)
+      HAligned = 3,    //!< Aligned = (3) (if VAlign==0)
+      HMiddle = 4,     //!< Middle = (4) (if VAlign==0)
+      HFit = 5,        //!< Fit into point = (5) (if VAlign==0)
+      Undefined = 9999 //!< Undefined
+    };
+
+    /**
+     * Flags for polylines
+     *
+     * \since QGIS 3.12
+     */
+    enum DxfPolylineFlag
+    {
+      Closed = 1, //!< This is a closed polyline (or a polygon mesh closed in the M direction)
+      Curve = 2, //!< Curve-fit vertices have been added
+      Spline = 4, //! < Spline-fit vertices have been added
+      Is3DPolyline = 8, //!< This is a 3D polyline
+      Is3DPolygonMesh = 16, //!< This is a 3D polygon mesh
+      PolygonMesh = 32, //!< The polygon mesh is closed in the N direction
+      PolyfaceMesh = 64, //!< The polyline is a polyface mesh
+      ContinuousPattern = 128, //!< The linetype pattern is generated continuously around the vertices of this polyline
+    };
+
+    Q_DECLARE_FLAGS( DxfPolylineFlags, DxfPolylineFlag )
+
+    /**
      * Constructor for QgsDxfExport.
      */
-    QgsDxfExport() = default;
-    QgsDxfExport( const QgsDxfExport &dxfExport ) SIP_SKIP;
-    QgsDxfExport &operator=( const QgsDxfExport &dxfExport );
+    QgsDxfExport();
+
+    ~QgsDxfExport() override;
 
     /**
      * Set map settings and assign layer name attributes
@@ -129,9 +206,9 @@ class CORE_EXPORT QgsDxfExport
      * Export to a dxf file in the given encoding
      * \param d device
      * \param codec encoding
-     * \returns 0 on success, 1 on invalid device, 2 when devices is not writable
+     * \returns an ExportResult
      */
-    int writeToFile( QIODevice *d, const QString &codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
+    ExportResult writeToFile( QIODevice *d, const QString &codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
 
     /**
      * Set reference \a scale for output.
@@ -333,6 +410,18 @@ class CORE_EXPORT QgsDxfExport
     void writePolyline( const QgsPointSequence &line, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 ) SIP_SKIP;
 
     /**
+     * Draw dxf primitives (LWPOLYLINE)
+     * \param curve polyline (including curved)
+     * \param layer layer name to use
+     * \param lineStyleName line type to use
+     * \param color color to use
+     * \param width line width to use
+     * \note not available in Python bindings
+     * \since QGIS 3.8
+     */
+    void writePolyline( const QgsCurve &curve, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 ) SIP_SKIP;
+
+    /**
      * Draw dxf filled polygon (HATCH)
      * \param polygon polygon
      * \param layer layer name to use
@@ -342,6 +431,17 @@ class CORE_EXPORT QgsDxfExport
      * \since QGIS 2.15
      */
     void writePolygon( const QgsRingSequence &polygon, const QString &layer, const QString &hatchPattern, const QColor &color ) SIP_SKIP;
+
+    /**
+     * Draw dxf curved filled polygon (HATCH)
+     * \param polygon polygon (including curves)
+     * \param layer layer name to use
+     * \param hatchPattern hatchPattern to use
+     * \param color color to use
+     * \note not available in Python bindings
+     * \since QGIS 3.8
+     */
+    void writePolygon( const QgsCurvePolygon &polygon, const QString &layer, const QString &hatchPattern, const QColor &color ) SIP_SKIP;
 
     /**
      * Write line (as a polyline)
@@ -375,7 +475,7 @@ class CORE_EXPORT QgsDxfExport
      * \note available in Python bindings as writeTextV2
      * \since QGIS 2.15
      */
-    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color ) SIP_PYNAME( writeTextV2 );
+    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color, QgsDxfExport::HAlign hali = QgsDxfExport::HAlign::Undefined, QgsDxfExport::VAlign vali = QgsDxfExport::VAlign::Undefined ) SIP_PYNAME( writeTextV2 );
 
     /**
      * Write mtext (MTEXT)
@@ -411,24 +511,28 @@ class CORE_EXPORT QgsDxfExport
     static QStringList encodings();
 
     /**
-     * Output the label
-     * \param layerId id of the layer
-     * \param context render context
-     * \param label position of label
-     * \param settings label settings
+     * Add a label to the dxf output.
+     *
      * \note not available in Python bindings
      */
-    void drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings ) SIP_SKIP;
+    void drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings ) SIP_SKIP override;
 
     /**
      * Register name of layer for feature
      * \param layerId id of layer
      * \param fid id of feature
      * \param layer dxf layer of feature
+     *
+     * \deprecated Will be made private in QGIS 4
      */
-    void registerDxfLayer( const QString &layerId, QgsFeatureId fid, const QString &layer );
+    Q_DECL_DEPRECATED void registerDxfLayer( const QString &layerId, QgsFeatureId fid, const QString &layer );
 
   private:
+
+#ifdef SIP_RUN
+    QgsDxfExport( const QgsDxfExport &other );
+    QgsDxfExport &operator=( const QgsDxfExport & );
+#endif
     //! Extent for export, only intersecting features are exported. If the extent is an empty rectangle, all features are exported
     QgsRectangle mExtent;
     //! Scale for symbology export (used if symbols units are mm)
@@ -439,9 +543,6 @@ class CORE_EXPORT QgsDxfExport
 
     QTextStream mTextStream;
 
-    static int sDxfColors[][3];
-    static const char *DXF_ENCODINGS[][2];
-
     int mSymbolLayerCounter = 0; //internal counter
     int mNextHandleId = DXF_HANDSEED;
     int mBlockCounter = 0;
@@ -451,10 +552,12 @@ class CORE_EXPORT QgsDxfExport
 
     //AC1009
     void writeHeader( const QString &codepage );
+    void prepareRenderers();
     void writeTables();
     void writeBlocks();
     void writeEntities();
-    void writeEntitiesSymbolLevels( QgsVectorLayer *layer );
+    void writeEntitiesSymbolLevels( DxfLayerJob *job );
+    void stopRenderers();
     void writeEndFile();
 
     void startSection();
@@ -464,6 +567,11 @@ class CORE_EXPORT QgsDxfExport
     void writeDefaultLinetypes();
     void writeSymbolLayerLinetype( const QgsSymbolLayer *symbolLayer );
     void writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsUnitTypes::RenderUnit u );
+
+    /**
+     * Helper method to calculate text properties from (PAL) label
+     */
+    void writeText( const QString &layer, const QString &text, pal::LabelPosition *label, const QgsPalLayerSettings &layerSettings, const QgsExpressionContext &expressionContext );
 
     /**
      * Writes geometry generator symbol layer
@@ -511,8 +619,18 @@ class CORE_EXPORT QgsDxfExport
 
     QgsDxfExport::Flags mFlags = nullptr;
 
+    void appendCurve( const QgsCurve &c, QVector<QgsPoint> &points, QVector<double> &bulges );
+    void appendLineString( const QgsLineString &ls, QVector<QgsPoint> &points, QVector<double> &bulges );
+    void appendCircularString( const QgsCircularString &cs, QVector<QgsPoint> &points, QVector<double> &bulges );
+    void appendCompoundCurve( const QgsCompoundCurve &cc, QVector<QgsPoint> &points, QVector<double> &bulges );
+
+    QgsRenderContext mRenderContext;
+    // Internal cache for layer related information required during rendering
+    QList<DxfLayerJob *> mJobs;
+    std::unique_ptr<QgsLabelingEngine> mLabelingEngine;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDxfExport::Flags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDxfExport::DxfPolylineFlags )
 
 #endif // QGSDXFEXPORT_H

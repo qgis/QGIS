@@ -9,13 +9,13 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '25/10/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import qgis  # NOQA
+import shutil
+import tempfile
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, QDate
 from qgis.core import (QgsProject,
                        QgsVectorLayer,
                        QgsVectorLayerUtils,
@@ -31,10 +31,11 @@ from qgis.core import (QgsProject,
                        QgsMemoryProviderUtils,
                        QgsWkbTypes,
                        QgsCoordinateReferenceSystem,
+                       QgsVectorLayerJoinInfo,
                        NULL
                        )
 from qgis.testing import start_app, unittest
-
+from utilities import unitTestDataPath
 
 start_app()
 
@@ -93,6 +94,43 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         self.assertFalse(QgsVectorLayerUtils.valueExists(layer, 1, 125, [99999, 3]))
         self.assertFalse(QgsVectorLayerUtils.valueExists(layer, 1, 125, [2, 4, 5, 3]))
 
+    def test_value_exists_joins(self):
+        """Test that unique values in fields from joined layers, see GH #36167"""
+
+        p = QgsProject()
+        main_layer = QgsVectorLayer("Point?field=fid:integer",
+                                    "main_layer", "memory")
+        self.assertTrue(main_layer.isValid())
+        # Attr layer is joined with layer on fk ->
+        attr_layer = QgsVectorLayer("Point?field=id:integer&field=fk:integer",
+                                    "attr_layer", "memory")
+        self.assertTrue(attr_layer.isValid())
+
+        p.addMapLayers([main_layer, attr_layer])
+        join_info = QgsVectorLayerJoinInfo()
+        join_info.setJoinLayer(attr_layer)
+        join_info.setJoinFieldName('fk')
+        join_info.setTargetFieldName('fid')
+        join_info.setUsingMemoryCache(True)
+        main_layer.addJoin(join_info)
+        main_layer.updateFields()
+        join_buffer = main_layer.joinBuffer()
+        self.assertTrue(join_buffer.containsJoins())
+        self.assertEqual(main_layer.fields().names(), ['fid', 'attr_layer_id'])
+
+        f = QgsFeature(main_layer.fields())
+        f.setAttributes([1])
+        main_layer.dataProvider().addFeatures([f])
+
+        f = QgsFeature(attr_layer.fields())
+        f.setAttributes([1, 1])
+        attr_layer.dataProvider().addFeatures([f])
+
+        self.assertTrue(QgsVectorLayerUtils.valueExists(main_layer, 0, 1))
+        self.assertTrue(QgsVectorLayerUtils.valueExists(main_layer, 1, 1))
+        self.assertFalse(QgsVectorLayerUtils.valueExists(main_layer, 0, 2))
+        self.assertFalse(QgsVectorLayerUtils.valueExists(main_layer, 1, 2))
+
     def test_validate_attribute(self):
         """ test validating attributes against constraints """
         layer = createLayerWithOnePoint()
@@ -111,7 +149,8 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         self.assertEqual(len(errors), 1)
         print(errors)
         # checking only for provider constraints
-        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1, origin=QgsFieldConstraints.ConstraintOriginProvider)
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1,
+                                                            origin=QgsFieldConstraints.ConstraintOriginProvider)
         self.assertTrue(res)
         self.assertEqual(len(errors), 0)
 
@@ -137,7 +176,8 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         print(errors)
 
         # checking only for provider constraints
-        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1, origin=QgsFieldConstraints.ConstraintOriginProvider)
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1,
+                                                            origin=QgsFieldConstraints.ConstraintOriginProvider)
         self.assertTrue(res)
         self.assertEqual(len(errors), 0)
 
@@ -154,13 +194,15 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         print(errors)
 
         # checking only for provider constraints
-        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1, origin=QgsFieldConstraints.ConstraintOriginProvider)
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1,
+                                                            origin=QgsFieldConstraints.ConstraintOriginProvider)
         self.assertTrue(res)
         self.assertEqual(len(errors), 0)
 
         # checking only for soft constraints
         layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintUnique, QgsFieldConstraints.ConstraintStrengthHard)
-        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1, strength=QgsFieldConstraints.ConstraintStrengthSoft)
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1,
+                                                            strength=QgsFieldConstraints.ConstraintStrengthSoft)
         self.assertTrue(res)
         self.assertEqual(len(errors), 0)
         # checking for hard constraints
@@ -263,10 +305,14 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         # we do not expect the default value expression to take precedence over the attribute map
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'a', 2: 6.0})
         self.assertEqual(f.attributes(), ['a', NULL, 6.0])
+        # default value takes precedence if it's apply on update
+        layer.setDefaultValueDefinition(2, QgsDefaultValue('3*4', True))
+        f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'a', 2: 6.0})
+        self.assertEqual(f.attributes(), ['a', NULL, 12.0])
         # layer with default value expression based on geometry
         layer.setDefaultValueDefinition(2, QgsDefaultValue('3*$x'))
         f = QgsVectorLayerUtils.createFeature(layer, g)
-        #adjusted so that input value and output feature are the same
+        # adjusted so that input value and output feature are the same
         self.assertEqual(f.attributes(), [NULL, NULL, 300.0])
         layer.setDefaultValueDefinition(2, QgsDefaultValue(None))
 
@@ -303,7 +349,7 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
                                "addfeat", "memory")
 
         # init connection string
-        dbconn = 'dbname=\'qgis_test\''
+        dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             dbconn = os.environ['QGIS_PGTEST_DB']
 
@@ -579,7 +625,8 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         features_data = []
         context = vl.createExpressionContext()
         for i in range(2):
-            features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: 'test_%s' % i, 1: 123}))
+            features_data.append(
+                QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: 'test_%s' % i, 1: 123}))
         features = QgsVectorLayerUtils.createFeatures(vl, features_data, context)
 
         self.assertEqual(features[0].attributes()[1], 124)
@@ -593,9 +640,12 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
 
         features_data = []
         context = vl.createExpressionContext()
-        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: 'test_1', 1: None}))
-        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 45)'), {0: 'test_2', 1: QVariant()}))
-        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {0: 'test_3', 1: QVariant(QVariant.Int)}))
+        features_data.append(
+            QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: 'test_1', 1: None}))
+        features_data.append(
+            QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 45)'), {0: 'test_2', 1: QVariant()}))
+        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'),
+                                                                {0: 'test_3', 1: QVariant(QVariant.Int)}))
         features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {0: 'test_4'}))
         features = QgsVectorLayerUtils.createFeatures(vl, features_data, context)
 
@@ -609,12 +659,36 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         context = vl.createExpressionContext()
         features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: None}))
         features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 45)'), {0: QVariant()}))
-        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {0: QVariant(QVariant.String)}))
+        features_data.append(
+            QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {0: QVariant(QVariant.String)}))
         features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {}))
         features = QgsVectorLayerUtils.createFeatures(vl, features_data, context)
 
         for f in features:
             self.assertEqual(f.attributes()[0], 'my_default', f.id())
+
+    def test_unique_pk_when_subset(self):
+        """Test unique values on filtered layer GH #30062"""
+
+        src = unitTestDataPath('points_gpkg.gpkg')
+        dest = tempfile.mktemp() + '.gpkg'
+        shutil.copy(src, dest)
+        vl = QgsVectorLayer(dest, 'vl', 'ogr')
+        self.assertTrue(vl.isValid())
+        features_data = []
+        it = vl.getFeatures()
+        for _ in range(3):
+            f = next(it)
+            features_data.append(
+                QgsVectorLayerUtils.QgsFeatureData(f.geometry(), dict(zip(range(f.fields().count()), f.attributes()))))
+        # Set a filter
+        vl.setSubsetString('"fid" in (4,5,6)')
+        self.assertTrue(vl.isValid())
+        context = vl.createExpressionContext()
+        features = QgsVectorLayerUtils.createFeatures(vl, features_data, context)
+        self.assertTrue(vl.startEditing())
+        vl.addFeatures(features)
+        self.assertTrue(vl.commitChanges())
 
 
 if __name__ == '__main__':

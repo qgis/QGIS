@@ -50,7 +50,7 @@ Create a new empty layer tree
 %Docstring
 The order in which layers will be rendered on the canvas.
 Will only be used if the property hasCustomLayerOrder is ``True``.
-If you need the current layer order that is active, prefer using layerOrder().
+If you need the current layer order that is active, prefer using :py:func:`~QgsLayerTree.layerOrder`.
 
 .. seealso:: :py:func:`setCustomLayerOrder`
 
@@ -65,7 +65,7 @@ If you need the current layer order that is active, prefer using layerOrder().
 %Docstring
 The order in which layers will be rendered on the canvas.
 Will only be used if the property hasCustomLayerOrder is ``True``.
-If you need the current layer order that is active, prefer using layerOrder().
+If you need the current layer order that is active, prefer using :py:func:`~QgsLayerTree.layerOrder`.
 
 .. seealso:: :py:func:`customLayerOrder`
 
@@ -80,7 +80,7 @@ If you need the current layer order that is active, prefer using layerOrder().
 %Docstring
 The order in which layers will be rendered on the canvas.
 Will only be used if the property hasCustomLayerOrder is ``True``.
-If you need the current layer order that is active, prefer using layerOrder().
+If you need the current layer order that is active, prefer using :py:func:`~QgsLayerTree.layerOrder`.
 
 .. seealso:: :py:func:`customLayerOrder`
 
@@ -127,7 +127,7 @@ or if a custom override order shall be used instead.
 %Docstring
 Load the layer tree from an XML element.
 It is not required that layers are loaded at this point.
-resolveReferences() needs to be called after loading the layers and
+:py:func:`~QgsLayerTree.resolveReferences` needs to be called after loading the layers and
 before using the tree.
 
 .. versionadded:: 3.0

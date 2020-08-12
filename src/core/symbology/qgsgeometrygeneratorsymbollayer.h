@@ -49,8 +49,9 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     QgsSymbol::SymbolType symbolType() const { return mSymbolType; }
 
     void startRender( QgsSymbolRenderContext &context ) override;
-
     void stopRender( QgsSymbolRenderContext &context ) override;
+    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
 
     QgsSymbolLayer *clone() const override SIP_FACTORY;
 
@@ -104,15 +105,18 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
 #endif
 
     std::unique_ptr<QgsExpression> mExpression;
-    QgsFillSymbol *mFillSymbol = nullptr;
-    QgsLineSymbol *mLineSymbol = nullptr;
-    QgsMarkerSymbol *mMarkerSymbol = nullptr;
+    std::unique_ptr<QgsFillSymbol> mFillSymbol;
+    std::unique_ptr<QgsLineSymbol> mLineSymbol;
+    std::unique_ptr<QgsMarkerSymbol> mMarkerSymbol;
     QgsSymbol *mSymbol = nullptr;
 
     /**
      * The type of the sub symbol.
      */
     QgsSymbol::SymbolType mSymbolType;
+
+    bool mRenderingFeature = false;
+    bool mHasRenderedFeature = false;
 };
 
 #endif // QGSGEOMETRYGENERATORSYMBOLLAYER_H

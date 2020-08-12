@@ -70,8 +70,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsRasterLayer *addRasterLayer( const QString &rasterLayerPath, const QString &baseName ) override;
     QgsRasterLayer *addRasterLayer( const QString &url, const QString &baseName, const QString &providerKey ) override;
     QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) override;
+    QgsVectorTileLayer *addVectorTileLayer( const QString &url, const QString &baseName ) override;
     bool addProject( const QString &projectName ) override;
-    void newProject( bool promptToSaveFlag = false ) override;
+    bool newProject( bool promptToSaveFlag = false ) override;
     void reloadConnections( ) override;
     QgsMapLayer *activeLayer() override;
     bool setActiveLayer( QgsMapLayer *layer ) override;
@@ -131,6 +132,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void insertAddLayerAction( QAction *action ) override;
     void removeAddLayerAction( QAction *action ) override;
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) override;
+    void addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget, const QStringList &tabifyWith = QStringList(), bool raiseTab = false ) override;
     void removeDockWidget( QDockWidget *dockwidget ) override;
     QgsAdvancedDigitizingDockWidget *cadDockWidget() override;
     void showLayerProperties( QgsMapLayer *l ) override;
@@ -143,8 +145,12 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) override;
     void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
     void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
+    void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) override;
+    void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) override;
     void registerCustomDropHandler( QgsCustomDropHandler *handler ) override;
     void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) override;
+    void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) override;
+    void unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) override;
     void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
     void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
     QMenu *projectMenu() override;
@@ -155,6 +161,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QMenu *addLayerMenu() override;
     QMenu *settingsMenu() override;
     QMenu *pluginMenu() override;
+    QMenu *pluginHelpMenu() override;
     QMenu *rasterMenu() override;
     QMenu *vectorMenu() override;
     QMenu *databaseMenu() override;
@@ -170,6 +177,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QToolBar *advancedDigitizeToolBar() override;
     QToolBar *shapeDigitizeToolBar() override;
     QToolBar *attributesToolBar() override;
+    QToolBar *selectionToolBar() override;
     QToolBar *pluginToolBar() override;
     QToolBar *helpToolBar() override;
     QToolBar *rasterToolBar() override;
@@ -228,6 +236,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionAddRasterLayer() override;
     QAction *actionAddPgLayer() override;
     QAction *actionAddWmsLayer() override;
+    QAction *actionAddXyzLayer() override;
+    QAction *actionAddVectorTileLayer() override;
     QAction *actionAddAfsLayer() override;
     QAction *actionAddAmsLayer() override;
     QAction *actionCopyLayerStyle() override;
@@ -253,6 +263,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionHideAllLayers() override;
     QAction *actionShowAllLayers() override;
     QAction *actionHideSelectedLayers() override;
+    QAction *actionToggleSelectedLayers() override;
+    QAction *actionToggleSelectedLayersIndependently() override;
     QAction *actionHideDeselectedLayers() override;
     QAction *actionShowSelectedLayers() override;
     QAction *actionManagePlugins() override;
@@ -265,6 +277,23 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionQgisHomePage() override;
     QAction *actionCheckQgisVersion() override;
     QAction *actionAbout() override;
+    QAction *actionCircle2Points() override;
+    QAction *actionCircle3Points() override;
+    QAction *actionCircle3Tangents() override;
+    QAction *actionCircle2TangentsPoint() override;
+    QAction *actionCircleCenterPoint() override;
+    QAction *actionEllipseCenter2Points() override;
+    QAction *actionEllipseCenterPoint() override;
+    QAction *actionEllipseExtent() override;
+    QAction *actionEllipseFoci() override;
+    QAction *actionRectangleCenterPoint() override;
+    QAction *actionRectangleExtent() override;
+    QAction *actionRectangle3PointsDistance() override;
+    QAction *actionRectangle3PointsProjected() override;
+    QAction *actionRegularPolygon2Points() override;
+    QAction *actionRegularPolygonCenterPoint() override;
+    QAction *actionRegularPolygonCenterCorner() override;
+
     bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) override;
     QgsAttributeDialog *getFeatureForm( QgsVectorLayer *layer, QgsFeature &feature ) override;
     QgsVectorLayerTools *vectorLayerTools() override;
@@ -272,12 +301,15 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QList<QgsMapLayer *> editableLayers( bool modified = false ) const override;
     int messageTimeout() override;
     QgsStatusBar *statusBarIface() override;
+    void locatorSearch( const QString &searchText ) override;
     void registerLocatorFilter( QgsLocatorFilter *filter ) override;
     void deregisterLocatorFilter( QgsLocatorFilter *filter ) override;
     void invalidateLocatorResults() override;
     bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs ) override;
     void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 ) override;
-    QgsBrowserModel *browserModel() override;
+    QgsBrowserGuiModel *browserModel() override;
+    QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() override;
+    void setGpsPanelConnection( QgsGpsConnection *connection ) override;
 
   private slots:
 

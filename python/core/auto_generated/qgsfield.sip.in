@@ -12,6 +12,7 @@
 
 
 
+
 class QgsField
 {
 %Docstring
@@ -86,6 +87,33 @@ field alias if set, otherwise the field name.
 .. seealso:: :py:func:`alias`
 
 .. versionadded:: 3.0
+%End
+
+    QString displayNameWithAlias() const;
+%Docstring
+Returns the name to use when displaying this field and adds the alias in parenthesis if it is defined.
+
+This will be used when working close to the data structure (i.e. building expressions and queries),
+when the real field name must be shown but the alias is also useful to understand what the field
+represents.
+
+.. seealso:: :py:func:`name`
+
+.. seealso:: :py:func:`alias`
+
+.. versionadded:: 3.12
+%End
+
+
+    QString displayType( bool showConstraints = false ) const;
+%Docstring
+Returns the type to use when displaying this field, including the length and precision of the datatype if applicable.
+
+This will be used when the full datatype with details has to displayed to the user.
+
+.. seealso:: :py:func:`type`
+
+.. versionadded:: 3.14
 %End
 
     QVariant::Type type() const;
@@ -260,6 +288,7 @@ Sets the alias for the field (the friendly displayed name of the field ).
 Formats string for display
 %End
 
+
     bool convertCompatible( QVariant &v ) const;
 %Docstring
 Converts the provided variant to a compatible format
@@ -279,13 +308,12 @@ Converts the provided variant to a compatible format
       if ( sipParseArgs( &sipParseErr, sipArgs, "BJ1", &sipSelf, sipType_QgsField, &sipCpp, sipType_QVariant, &a0, &a0State ) )
       {
         bool sipRes;
+        QString errorMessage;
 
         Py_BEGIN_ALLOW_THREADS
         try
         {
-          QgsDebugMsg( a0->toString() );
-          sipRes = sipCpp->convertCompatible( *a0 );
-          QgsDebugMsg( a0->toString() );
+          sipRes = sipCpp->convertCompatible( *a0, &errorMessage );
         }
         catch ( ... )
         {
@@ -298,24 +326,28 @@ Converts the provided variant to a compatible format
 
         Py_END_ALLOW_THREADS
 
-        PyObject *res = sipConvertFromType( a0, sipType_QVariant, NULL );
-        sipReleaseType( a0, sipType_QVariant, a0State );
-
         if ( !sipRes )
         {
           PyErr_SetString( PyExc_ValueError,
-                           QString( "Value %1 (%2) could not be converted to field type %3." ).arg( a0->toString(), a0->typeName() ).arg( sipCpp->type() ).toUtf8().constData() );
-          sipError = sipErrorFail;
+                           QString( "Value could not be converted to field type %1: %2" ).arg( QMetaType::typeName( sipCpp->type() ), errorMessage ).toUtf8().constData() );
+          sipIsErr = 1;
         }
+        else
+        {
+          PyObject *res = sipConvertFromType( a0, sipType_QVariant, NULL );
+          sipReleaseType( a0, sipType_QVariant, a0State );
+          return res;
+        }
+      }
+      else
+      {
+        // Raise an exception if the arguments couldn't be parsed.
+        sipNoMethod( sipParseErr, sipName_QgsField, sipName_convertCompatible, doc_QgsField_convertCompatible );
 
-        return res;
+        return nullptr;
       }
     }
 
-    // Raise an exception if the arguments couldn't be parsed.
-    sipNoMethod( sipParseErr, sipName_QgsField, sipName_convertCompatible, doc_QgsField_convertCompatible );
-
-    return nullptr;
 %End
 
     operator QVariant() const;

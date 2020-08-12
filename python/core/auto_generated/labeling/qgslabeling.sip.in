@@ -1,0 +1,56 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabeling.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsLabeling
+{
+%Docstring
+
+Contains constants and enums relating to labeling.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgslabeling.h"
+%End
+  public:
+
+    enum LinePlacementFlag
+    {
+      OnLine,
+      AboveLine,
+      BelowLine,
+      MapOrientation,
+    };
+    typedef QFlags<QgsLabeling::LinePlacementFlag> LinePlacementFlags;
+
+
+    enum PolygonPlacementFlag
+    {
+      AllowPlacementOutsideOfPolygon,
+      AllowPlacementInsideOfPolygon,
+    };
+    typedef QFlags<QgsLabeling::PolygonPlacementFlag> PolygonPlacementFlags;
+
+
+};
+
+QFlags<QgsLabeling::LinePlacementFlag> operator|(QgsLabeling::LinePlacementFlag f1, QFlags<QgsLabeling::LinePlacementFlag> f2);
+
+QFlags<QgsLabeling::PolygonPlacementFlag> operator|(QgsLabeling::PolygonPlacementFlag f1, QFlags<QgsLabeling::PolygonPlacementFlag> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabeling.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

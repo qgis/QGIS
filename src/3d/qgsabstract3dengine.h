@@ -20,8 +20,11 @@
 
 #include <QObject>
 
+#define SIP_NO_FILE
+
 class QColor;
 class QRect;
+class QSurface;
 
 namespace Qt3DCore
 {
@@ -38,19 +41,27 @@ namespace Qt3DRender
  * \ingroup 3d
  * Base class for 3D engine implementation. A 3D engine is responsible for setting up
  * rendering with Qt3D. This means mainly:
+ *
  * - creating Qt3D aspect engine and registering rendering aspect
  * - setting up a camera, render settings and frame graph
  *
  * We have two implementations:
+ *
  * - QgsWindow3DEngine - used for rendering on display (has a QWindow that can be embedded into QWidget)
  * - QgsOffscreen3DEngine - renders scene to images
  *
+ * \note Not available in Python bindings
  * \since QGIS 3.4
  */
 class _3D_EXPORT QgsAbstract3DEngine : public QObject
 {
     Q_OBJECT
   public:
+
+    /**
+     * Constructor for QgsAbstract3DEngine with the specified \a parent object.
+     */
+    QgsAbstract3DEngine( QObject *parent = nullptr );
 
     //! Sets background color of the scene
     virtual void setClearColor( const QColor &color ) = 0;
@@ -72,6 +83,13 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
      * Only one image request can be active at a time.
      */
     virtual void requestCaptureImage() = 0;
+
+    /**
+     * Returns the surface of the engine
+     *
+     * \since QGIS 3.14
+     */
+    virtual QSurface *surface() const = 0;
 
   signals:
     //! Emitted after a call to requestCaptureImage() to return the captured image.

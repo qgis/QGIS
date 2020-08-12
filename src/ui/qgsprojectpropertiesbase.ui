@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>857</width>
-    <height>830</height>
+    <height>730</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -197,6 +197,15 @@
             <normaloff>:/images/themes/default/propertyicons/overlay.svg</normaloff>:/images/themes/default/propertyicons/overlay.svg</iconset>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Temporal</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/temporal.svg</normaloff>:/images/themes/default/propertyicons/temporal.svg</iconset>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -236,7 +245,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>8</number>
+          <number>4</number>
          </property>
          <widget class="QWidget" name="mProjOptsGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -265,17 +274,11 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>590</width>
-                <height>777</height>
+                <width>671</width>
+                <height>847</height>
                </rect>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_8">
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
+              <layout class="QVBoxLayout" name="verticalLayout">
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="titleBox">
                  <property name="title">
@@ -285,8 +288,8 @@
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_26">
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_30">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_4">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -294,10 +297,26 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>&amp;Project home</string>
+                     <string>Pro&amp;ject file</string>
                     </property>
                     <property name="buddy">
                      <cstring>titleEdit</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="textLabel1">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Selection color</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>pbnSelectionColor</cstring>
                     </property>
                    </widget>
                   </item>
@@ -317,22 +336,48 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="1">
-                   <widget class="QComboBox" name="cbxAbsolutePath">
+                  <item row="1" column="1" colspan="3">
+                   <layout class="QHBoxLayout" name="horizontalLayout_14">
                     <item>
-                     <property name="text">
-                      <string>absolute</string>
-                     </property>
+                     <widget class="QgsFilterLineEdit" name="mProjectHomeLineEdit">
+                      <property name="toolTip">
+                       <string>Project home path. Leave blank to use the current project file location.</string>
+                      </property>
+                      <property name="readOnly">
+                       <bool>false</bool>
+                      </property>
+                      <property name="clearButtonEnabled">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
                     </item>
                     <item>
-                     <property name="text">
-                      <string>relative</string>
-                     </property>
+                     <widget class="QToolButton" name="mButtonSetProjectHome">
+                      <property name="toolTip">
+                       <string>Set the project home path</string>
+                      </property>
+                      <property name="text">
+                       <string>…</string>
+                      </property>
+                      <property name="autoRaise">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
                     </item>
+                   </layout>
+                  </item>
+                  <item row="2" column="1" colspan="3">
+                   <widget class="QLineEdit" name="titleEdit">
+                    <property name="toolTip">
+                     <string>Descriptive project name</string>
+                    </property>
+                    <property name="text">
+                     <string>Default project title</string>
+                    </property>
                    </widget>
                   </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="textLabel1">
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_2">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -340,10 +385,17 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>Selection color</string>
+                     <string>Project title</string>
                     </property>
-                    <property name="buddy">
-                     <cstring>pbnSelectionColor</cstring>
+                   </widget>
+                  </item>
+                  <item row="5" column="0" colspan="4">
+                   <widget class="QCheckBox" name="mMapTileRenderingCheckBox">
+                    <property name="toolTip">
+                     <string>Checking this setting avoids visible edge artifacts when rendering this project as separate map tiles. Rendering performance will be degraded.</string>
+                    </property>
+                    <property name="text">
+                     <string>Avoid artifacts when project is rendered as map tiles (degrades performance)</string>
                     </property>
                    </widget>
                   </item>
@@ -375,18 +427,22 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="5" column="0" colspan="4">
-                   <widget class="QCheckBox" name="mMapTileRenderingCheckBox">
-                    <property name="toolTip">
-                     <string>Checking this setting avoids visible edge artifacts when rendering this project as separate map tiles. Rendering performance will be degraded.</string>
-                    </property>
-                    <property name="text">
-                     <string>Avoid artifacts when project is rendered as map tiles (degrades performance)</string>
-                    </property>
+                  <item row="4" column="1">
+                   <widget class="QComboBox" name="cbxAbsolutePath">
+                    <item>
+                     <property name="text">
+                      <string>absolute</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>relative</string>
+                     </property>
+                    </item>
                    </widget>
                   </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_4">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_30">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -394,35 +450,25 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>Pro&amp;ject file</string>
+                     <string>&amp;Project home</string>
                     </property>
                     <property name="buddy">
                      <cstring>titleEdit</cstring>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="1" colspan="3">
-                   <widget class="QLineEdit" name="titleEdit">
-                    <property name="toolTip">
-                     <string>Descriptive project name</string>
+                  <item row="4" column="2" colspan="2">
+                   <spacer>
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
                     </property>
-                    <property name="text">
-                     <string>Default project title</string>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
                     </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_2">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Project title</string>
-                    </property>
-                   </widget>
+                   </spacer>
                   </item>
                   <item row="3" column="1" colspan="3">
                    <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -495,49 +541,6 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="4" column="2" colspan="2">
-                   <spacer>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="1" column="1" colspan="3">
-                   <layout class="QHBoxLayout" name="horizontalLayout_14">
-                    <item>
-                     <widget class="QgsFilterLineEdit" name="mProjectHomeLineEdit">
-                      <property name="toolTip">
-                       <string>Project home path. Leave blank to use the current project file location.</string>
-                      </property>
-                      <property name="readOnly">
-                       <bool>false</bool>
-                      </property>
-                      <property name="clearButtonEnabled">
-                       <bool>false</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QToolButton" name="mButtonSetProjectHome">
-                      <property name="toolTip">
-                       <string>Set the project home path</string>
-                      </property>
-                      <property name="text">
-                       <string>…</string>
-                      </property>
-                      <property name="autoRaise">
-                       <bool>false</bool>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
                  </layout>
                 </widget>
                </item>
@@ -550,23 +553,8 @@
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayoutMeasureTool">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="textLabel1_8">
-                    <property name="text">
-                     <string>Ellipsoid
-(for distance and area calculations)</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="2" column="1" colspan="4">
                    <widget class="QComboBox" name="mDistanceUnitsCombo"/>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QLabel" name="label_41">
-                    <property name="text">
-                     <string>Semi-major</string>
-                    </property>
-                   </widget>
                   </item>
                   <item row="2" column="0">
                    <widget class="QLabel" name="label_28">
@@ -575,14 +563,29 @@
                     </property>
                    </widget>
                   </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="textLabel1_8">
+                    <property name="text">
+                     <string>Ellipsoid
+(for distance and area calculations)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QLineEdit" name="leSemiMajor"/>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLabel" name="label_41">
+                    <property name="text">
+                     <string>Semi-major</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="0" column="1" colspan="4">
                    <widget class="QComboBox" name="cmbEllipsoid"/>
                   </item>
                   <item row="1" column="4">
                    <widget class="QLineEdit" name="leSemiMinor"/>
-                  </item>
-                  <item row="1" column="2">
-                   <widget class="QLineEdit" name="leSemiMajor"/>
                   </item>
                   <item row="1" column="3">
                    <widget class="QLabel" name="label_42">
@@ -613,7 +616,7 @@
                   </sizepolicy>
                  </property>
                  <property name="title">
-                  <string>Coordinate Display</string>
+                  <string>Coordinate and Bearing Display</string>
                  </property>
                  <property name="syncGroup" stdset="0">
                   <string notr="true">projgeneral</string>
@@ -622,7 +625,7 @@
                   <item row="1" column="0">
                    <widget class="QLabel" name="label_26">
                     <property name="text">
-                     <string>Precision</string>
+                     <string>Coordinate precision</string>
                     </property>
                    </widget>
                   </item>
@@ -684,6 +687,37 @@
                      </item>
                     </layout>
                    </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_34">
+                    <property name="text">
+                     <string>Bearing format</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <layout class="QHBoxLayout" name="horizontalLayout_19" stretch="3,6">
+                    <item>
+                     <widget class="QPushButton" name="mCustomizeBearingFormatButton">
+                      <property name="text">
+                       <string>Customize…</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_8">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </widget>
@@ -863,8 +897,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>603</width>
-                <height>161</height>
+                <width>685</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -938,8 +972,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>290</width>
-                <height>543</height>
+                <width>685</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1358,7 +1392,7 @@
            <item row="0" column="0" colspan="2">
             <widget class="QCheckBox" name="mAutoTransaction">
              <property name="toolTip">
-              <string>When enabled, layers from the same database connection will be put into a transaction group. Their edit state will be synchronized and changes to these layers will be sent to the provider immediately. Only supported on postgres provider.</string>
+              <string>When enabled, layers from the same database connection will be put into a transaction group. Their edit state will be synchronized and changes to these layers will be sent to the provider immediately. Only supported for postgres, GPKG, spatialite and oracle.</string>
              </property>
              <property name="text">
               <string>Automatically create transaction groups where possible</string>
@@ -1368,7 +1402,7 @@
            <item row="1" column="0" colspan="2">
             <widget class="QCheckBox" name="mEvaluateDefaultValues">
              <property name="toolTip">
-              <string>When enabled, default values will be evaluated as early as possible. This will fill default values in the add feature form already and not only create them on commit. Only supported for postgres provider.</string>
+              <string>When enabled, default values will be evaluated as early as possible. This will fill default values in the add feature form already and not only create them on commit. Only supported for postgres, GPKG, spatialite and oracle.</string>
              </property>
              <property name="text">
               <string>Evaluate default values on provider side</string>
@@ -1378,7 +1412,7 @@
            <item row="3" column="0">
             <widget class="QCheckBox" name="mTrustProjectCheckBox">
              <property name="toolTip">
-              <string>Speed up project loading by skipping data checks. Useful in qgis server context or project with huge database views or materialized views.</string>
+              <string>Speed up project loading by skipping data checks in PostgreSQL layers. Useful in QGIS server context or project with huge database views or materialized views.</string>
              </property>
              <property name="text">
               <string>Trust project when data source has no metadata</string>
@@ -1514,8 +1548,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>178</width>
-                <height>54</height>
+                <width>167</width>
+                <height>55</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1575,9 +1609,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-975</y>
+                <y>0</y>
                 <width>671</width>
-                <height>2682</height>
+                <height>3139</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1608,202 +1642,17 @@
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_6">
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_10">
-                    <property name="text">
-                     <string>Title</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>mWMSTitle</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="1">
-                   <widget class="QLineEdit" name="mWMSOnlineResourceLineEdit">
-                    <property name="toolTip">
-                     <string>The web site URL of the service provider.</string>
-                    </property>
-                    <property name="placeholderText">
-                     <string>The web site URL of the service provider.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="mWMSOnlineResourceLabel">
-                    <property name="text">
-                     <string>Online resource</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="4" column="0">
-                   <widget class="QLabel" name="label_9">
-                    <property name="text">
-                     <string>&amp;Person</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>mWMSContactPerson</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="6" column="1">
-                   <widget class="QLineEdit" name="mWMSContactMail">
-                    <property name="toolTip">
-                     <string>The contact person e-mail for the service.</string>
-                    </property>
-                    <property name="placeholderText">
-                     <string>The contact person e-mail for the service.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="4" column="1">
-                   <widget class="QLineEdit" name="mWMSContactPerson">
-                    <property name="toolTip">
-                     <string>The contact person name for the service.</string>
-                    </property>
-                    <property name="placeholderText">
-                     <string>The contact person name for the service.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="6" column="0">
-                   <widget class="QLabel" name="label_13">
-                    <property name="text">
-                     <string>E-Mail</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <widget class="QLineEdit" name="mWMSContactOrganization">
-                    <property name="toolTip">
-                     <string>The name of the service provider.</string>
-                    </property>
-                    <property name="placeholderText">
-                     <string>The name of the service provider.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="7" column="0">
-                   <widget class="QLabel" name="label_12">
-                    <property name="text">
-                     <string>Phone</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>mWMSContactPhone</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QLineEdit" name="mWMSTitle">
-                    <property name="toolTip">
-                     <string>The title should be brief yet descriptive enough to identify this service.</string>
-                    </property>
-                    <property name="placeholderText">
-                     <string>The title should be brief yet descriptive enough to identify this service.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="8" column="0">
-                   <widget class="QLabel" name="label_15">
-                    <property name="text">
-                     <string>Abstract</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>mWMSAbstract</cstring>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="7" column="1">
-                   <widget class="QLineEdit" name="mWMSContactPhone">
+                   <widget class="QLineEdit" name="mWMSName">
                     <property name="toolTip">
-                     <string>The contact person phone for the service.</string>
+                     <string>A name used to identify the root layer. The short name is a text string used for machine-to-machine communication.</string>
                     </property>
                     <property name="placeholderText">
-                     <string>The contact person phone for the service.</string>
+                     <string>A name used to identify the root layer. The short name is a text string used for machine-to-machine communication.</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="8" column="1">
-                   <widget class="QTextEdit" name="mWMSAbstract">
-                    <property name="toolTip">
-                     <string>The abstract is a descriptive narrative providing more information about the service.</string>
-                    </property>
-                    <property name="whatsThis">
-                     <string/>
-                    </property>
-                    <property name="documentTitle">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="11" column="0">
-                   <widget class="QLabel" name="mWMSKeywordListLabel">
-                    <property name="text">
-                     <string>Keyword list</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="11" column="1">
-                   <widget class="QLineEdit" name="mWMSKeywordList">
-                    <property name="toolTip">
-                     <string>List of keywords separated by comma to help catalog searching.</string>
-                    </property>
-                    <property name="placeholderText">
-                     <string>List of keywords separated by comma to help catalog searching.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_11">
-                    <property name="text">
-                     <string>Or&amp;ganization</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>mWMSContactOrganization</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="10" column="0">
-                   <widget class="QLabel" name="mWMSAccessConstraintsLabel">
-                    <property name="text">
-                     <string>Access constraints</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="9" column="0">
-                   <widget class="QLabel" name="mWMSFeesLabel">
-                    <property name="text">
-                     <string>Fees</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="9" column="1">
-                   <widget class="QComboBox" name="mWMSFeesCb">
-                    <property name="toolTip">
-                     <string>Fees applied to the service.</string>
-                    </property>
-                    <property name="editable">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="10" column="1">
-                   <widget class="QComboBox" name="mWMSAccessConstraintsCb">
-                    <property name="toolTip">
-                     <string>Access constraints applied to the service.</string>
-                    </property>
-                    <property name="editable">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="5" column="0">
-                   <widget class="QLabel" name="label_20">
-                    <property name="text">
-                     <string>Position</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="5" column="1">
+                  <item row="16" column="1">
                    <widget class="QComboBox" name="mWMSContactPositionCb">
                     <property name="toolTip">
                      <string>The contact person position for the service.</string>
@@ -1816,17 +1665,265 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="1">
-                   <widget class="QLineEdit" name="mWMSName">
+                  <item row="21" column="1">
+                   <widget class="QComboBox" name="mWMSAccessConstraintsCb">
                     <property name="toolTip">
-                     <string>A name used to identify the root layer. The short name is a text string used for machine-to-machine communication.</string>
+                     <string>Access constraints applied to the service.</string>
                     </property>
-                    <property name="placeholderText">
-                     <string>A name used to identify the root layer. The short name is a text string used for machine-to-machine communication.</string>
+                    <property name="editable">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="0">
+                  <item row="15" column="1">
+                   <widget class="QLineEdit" name="mWMSContactPerson">
+                    <property name="toolTip">
+                     <string>The contact person name for the service.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>The contact person name for the service.</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="11" column="1">
+                   <layout class="QGridLayout" name="wmsOnlineResourceGrid">
+                    <item row="0" column="0">
+                     <widget class="QLineEdit" name="mWMSOnlineResourceLineEdit">
+                      <property name="toolTip">
+                       <string>The web site URL of the service provider.</string>
+                      </property>
+                      <property name="placeholderText">
+                       <string>The web site URL of the service provider.</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QgsPropertyOverrideButton" name="mWMSOnlineResourceExpressionButton" native="true">
+                      <property name="text" stdset="0">
+                       <string>...</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="16" column="0">
+                   <widget class="QLabel" name="label_20">
+                    <property name="text">
+                     <string>Position</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="1">
+                   <widget class="QLineEdit" name="mWMSTitle">
+                    <property name="toolTip">
+                     <string>The title should be brief yet descriptive enough to identify this service.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>The title should be brief yet descriptive enough to identify this service.</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="20" column="1">
+                   <widget class="QComboBox" name="mWMSFeesCb">
+                    <property name="toolTip">
+                     <string>Fees applied to the service.</string>
+                    </property>
+                    <property name="editable">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="17" column="1">
+                   <widget class="QLineEdit" name="mWMSContactMail">
+                    <property name="toolTip">
+                     <string>The contact person e-mail for the service.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>The contact person e-mail for the service.</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="19" column="1">
+                   <widget class="QTextEdit" name="mWMSAbstract">
+                    <property name="toolTip">
+                     <string>The abstract is a descriptive narrative providing more information about the service.</string>
+                    </property>
+                    <property name="whatsThis">
+                     <string/>
+                    </property>
+                    <property name="documentTitle">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="9" column="0">
+                   <widget class="QLabel" name="label_11">
+                    <property name="text">
+                     <string>Or&amp;ganization</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>mWMSContactOrganization</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="21" column="0">
+                   <widget class="QLabel" name="mWMSAccessConstraintsLabel">
+                    <property name="text">
+                     <string>Access constraints</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="18" column="0">
+                   <widget class="QLabel" name="label_12">
+                    <property name="text">
+                     <string>Phone</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>mWMSContactPhone</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="18" column="1">
+                   <widget class="QLineEdit" name="mWMSContactPhone">
+                    <property name="toolTip">
+                     <string>The contact person phone for the service.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>The contact person phone for the service.</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="0">
+                   <widget class="QLabel" name="label_10">
+                    <property name="text">
+                     <string>Title</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>mWMSTitle</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0" colspan="2">
+                   <widget class="QFrame" name="wmsWarningBox">
+                    <property name="autoFillBackground">
+                     <bool>false</bool>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true"/>
+                    </property>
+                    <property name="frameShape">
+                     <enum>QFrame::StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_23">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="warningLabel">
+                       <property name="styleSheet">
+                        <string notr="true">background-color: rgba(255,165,0,0.3);</string>
+                       </property>
+                       <property name="frameShape">
+                        <enum>QFrame::NoFrame</enum>
+                       </property>
+                       <property name="text">
+                        <string>These parameters are used to generate the GetCapabilities document and shall be chosen carefully to avoid interoperability and security issues.</string>
+                       </property>
+                       <property name="textFormat">
+                        <enum>Qt::AutoText</enum>
+                       </property>
+                       <property name="wordWrap">
+                        <bool>true</bool>
+                       </property>
+                       <property name="margin">
+                        <number>9</number>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="22" column="1">
+                   <widget class="QLineEdit" name="mWMSKeywordList">
+                    <property name="toolTip">
+                     <string>List of keywords separated by comma to help catalog searching.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>List of keywords separated by comma to help catalog searching.</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="17" column="0">
+                   <widget class="QLabel" name="label_13">
+                    <property name="text">
+                     <string>E-Mail</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="19" column="0">
+                   <widget class="QLabel" name="label_15">
+                    <property name="text">
+                     <string>Abstract</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>mWMSAbstract</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="22" column="0">
+                   <widget class="QLabel" name="mWMSKeywordListLabel">
+                    <property name="text">
+                     <string>Keyword list</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="15" column="0">
+                   <widget class="QLabel" name="label_9">
+                    <property name="text">
+                     <string>&amp;Person</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>mWMSContactPerson</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="9" column="1">
+                   <widget class="QLineEdit" name="mWMSContactOrganization">
+                    <property name="toolTip">
+                     <string>The name of the service provider.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>The name of the service provider.</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="20" column="0">
+                   <widget class="QLabel" name="mWMSFeesLabel">
+                    <property name="text">
+                     <string>Fees</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="11" column="0">
+                   <widget class="QLabel" name="mWMSOnlineResourceLabel">
+                    <property name="text">
+                     <string>Online resource</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="0">
                    <widget class="QLabel" name="label_6">
                     <property name="text">
                      <string>Short name</string>
@@ -1975,14 +2072,14 @@
                      <bool>true</bool>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_5">
-                     <item row="1" column="0">
-                      <widget class="QToolButton" name="pbnWMSAddSRS">
+                     <item row="1" column="1">
+                      <widget class="QToolButton" name="pbnWMSRemoveSRS">
                        <property name="toolTip">
-                        <string>Add new CRS</string>
+                        <string>Remove selected CRS</string>
                        </property>
                        <property name="icon">
                         <iconset resource="../../images/images.qrc">
-                         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                        </property>
                       </widget>
                      </item>
@@ -1999,14 +2096,14 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="1" column="1">
-                      <widget class="QToolButton" name="pbnWMSRemoveSRS">
+                     <item row="1" column="0">
+                      <widget class="QToolButton" name="pbnWMSAddSRS">
                        <property name="toolTip">
-                        <string>Remove selected CRS</string>
+                        <string>Add new CRS</string>
                        </property>
                        <property name="icon">
                         <iconset resource="../../images/images.qrc">
-                         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                        </property>
                       </widget>
                      </item>
@@ -2094,16 +2191,6 @@
                      <bool>true</bool>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_4">
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label_16">
-                       <property name="text">
-                        <string>Min. &amp;X</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>mWMSExtMinX</cstring>
-                       </property>
-                      </widget>
-                     </item>
                      <item row="0" column="1">
                       <widget class="QLineEdit" name="mWMSExtMinX">
                        <property name="text">
@@ -2118,6 +2205,29 @@
                        </property>
                        <property name="buddy">
                         <cstring>mWMSExtMinY</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="0" colspan="2">
+                      <spacer name="verticalSpacer_3">
+                       <property name="orientation">
+                        <enum>Qt::Vertical</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>20</width>
+                         <height>40</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_16">
+                       <property name="text">
+                        <string>Min. &amp;X</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>mWMSExtMinX</cstring>
                        </property>
                       </widget>
                      </item>
@@ -2138,10 +2248,10 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="2" column="1">
-                      <widget class="QLineEdit" name="mWMSExtMaxX">
+                     <item row="4" column="0" colspan="2">
+                      <widget class="QPushButton" name="pbnWMSExtCanvas">
                        <property name="text">
-                        <string/>
+                        <string>Use Current Canvas Extent</string>
                        </property>
                       </widget>
                      </item>
@@ -2162,25 +2272,12 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="4" column="0" colspan="2">
-                      <widget class="QPushButton" name="pbnWMSExtCanvas">
+                     <item row="2" column="1">
+                      <widget class="QLineEdit" name="mWMSExtMaxX">
                        <property name="text">
-                        <string>Use Current Canvas Extent</string>
+                        <string/>
                        </property>
                       </widget>
-                     </item>
-                     <item row="5" column="0" colspan="2">
-                      <spacer name="verticalSpacer_3">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
                      </item>
                     </layout>
                    </widget>
@@ -2434,6 +2531,23 @@
                        <number>90</number>
                       </property>
                      </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="11" column="0" colspan="3">
+                   <layout class="QHBoxLayout" name="horizontalLayout_18">
+                    <item>
+                     <widget class="QLabel" name="label_33">
+                      <property name="toolTip">
+                       <string>When using tiles set this to the size of the larger symbols to avoid cut symbols at tile boundaries. This works by drawing features that are outside the tile extent.</string>
+                      </property>
+                      <property name="text">
+                       <string>Tile buffer in pixels</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QSpinBox" name="mWMSTileBufferSpinBox"/>
                     </item>
                    </layout>
                   </item>
@@ -2823,6 +2937,73 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mTemporalOptions">
+          <layout class="QVBoxLayout" name="verticalLayout_20">
+           <item>
+            <widget class="QGroupBox" name="mTemporalOptionsGroup">
+             <property name="title">
+              <string>Temporal Options</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_22" columnstretch="0,1">
+              <item row="0" column="1">
+               <widget class="QgsDateTimeEdit" name="mStartDateTimeEdit">
+                <property name="displayFormat">
+                 <string>M/d/yyyy h:mm AP</string>
+                </property>
+                <property name="timeSpec">
+                 <enum>Qt::UTC</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_35">
+                <property name="text">
+                 <string>Start date</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QPushButton" name="mCalculateFromLayerButton">
+                <property name="text">
+                 <string>Calculate from Layers</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_36">
+                <property name="text">
+                 <string>End date</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QgsDateTimeEdit" name="mEndDateTimeEdit">
+                <property name="displayFormat">
+                 <string>M/d/yyyy h:mm AP</string>
+                </property>
+                <property name="timeSpec">
+                 <enum>Qt::UTC</enum>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -2879,15 +3060,32 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsVariableEditorWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsvariableeditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsOpacityWidget</class>
@@ -2899,18 +3097,6 @@
    <class>QgsColorSchemeList</class>
    <extends>QWidget</extends>
    <header location="global">qgscolorschemelist.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsVariableEditorWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsvariableeditorwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2930,6 +3116,11 @@
    <extends>QWidget</extends>
    <header>qgsprojectionselectiontreewidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QWidget</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -2989,7 +3180,6 @@
   <tabstop>mWMSName</tabstop>
   <tabstop>mWMSTitle</tabstop>
   <tabstop>mWMSContactOrganization</tabstop>
-  <tabstop>mWMSOnlineResourceLineEdit</tabstop>
   <tabstop>mWMSContactPerson</tabstop>
   <tabstop>mWMSContactPositionCb</tabstop>
   <tabstop>mWMSContactMail</tabstop>

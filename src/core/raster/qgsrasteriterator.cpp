@@ -35,7 +35,7 @@ QgsRasterIterator::QgsRasterIterator( QgsRasterInterface *input )
   }
 }
 
-void QgsRasterIterator::startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback )
+void QgsRasterIterator::startRasterRead( int bandNumber, qgssize nCols, qgssize nRows, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback )
 {
   if ( !mInput )
   {
@@ -109,8 +109,8 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
   }
 
   //read data block
-  nCols = std::min( mMaximumTileWidth, pInfo.nCols - pInfo.currentCol );
-  nRows = std::min( mMaximumTileHeight, pInfo.nRows - pInfo.currentRow );
+  nCols = static_cast< int >( std::min( static_cast< qgssize >( mMaximumTileWidth ), pInfo.nCols - pInfo.currentCol ) );
+  nRows = static_cast< int >( std::min( static_cast< qgssize >( mMaximumTileHeight ), pInfo.nRows - pInfo.currentRow ) );
   QgsDebugMsgLevel( QStringLiteral( "nCols = %1 nRows = %2" ).arg( nCols ).arg( nRows ), 4 );
 
   //get subrectangle

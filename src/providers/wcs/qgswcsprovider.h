@@ -32,6 +32,8 @@
 #include "qgsogrutils.h"
 #include "qgsapplication.h"
 
+#include "qgsprovidermetadata.h"
+
 #include <QString>
 #include <QStringList>
 #include <QDomElement>
@@ -103,11 +105,14 @@ struct QgsWcsAuthorization
   data residing in a OGC Web Map Service.
 
 */
-class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
+class QgsWcsProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 {
     Q_OBJECT
 
   public:
+
+    static QString WCS_KEY;
+    static QString WCS_DESCRIPTION;
 
     /**
      * Constructor for the provider.
@@ -118,6 +123,8 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     explicit QgsWcsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
+    //! copy constructor
+    explicit QgsWcsProvider( const QgsWcsProvider &other, const QgsDataProvider::ProviderOptions &providerOptions );
 
     ~QgsWcsProvider() override;
 
@@ -144,9 +151,9 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     // TODO: Document this better.
 
-    void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    void readBlock( int bandNo, int xBlock, int yBlock, void *block ) override;
+    bool readBlock( int bandNo, int xBlock, int yBlock, void *block ) override;
 
     //! Download cache
     void getCache( int bandNo, QgsRectangle  const &viewExtent, int width, int height, QString crs = QString(), QgsRasterBlockFeedback *feedback = nullptr ) const;
@@ -180,7 +187,6 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString lastErrorFormat() override;
     QString name() const override;
     QString description() const override;
-    void reloadData() override;
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
 
     int colorInterpretation( int bandNo ) const override;
@@ -393,6 +399,11 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     QNetworkRequest::CacheLoadControl mCacheLoadControl = QNetworkRequest::PreferNetwork;
 
+    /**
+     * Clears cache
+    */
+    void reloadProviderData() override;
+
 };
 
 //! Handler for downloading of coverage data - output is written to mCachedData
@@ -427,6 +438,13 @@ class QgsWcsDownloadHandler : public QObject
     static int sErrors; // this should be ideally per-provider...?
 };
 
+class QgsWcsProviderMetadata final: public QgsProviderMetadata
+{
+  public:
+    QgsWcsProviderMetadata();
+    QgsWcsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
+};
 
 #endif
 

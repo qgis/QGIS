@@ -73,6 +73,17 @@ Sets the model ``group``.
 .. seealso:: :py:func:`group`
 %End
 
+    bool validate( QStringList &issues /Out/ ) const;
+%Docstring
+Validates the model, returning ``True`` if all child algorithms in the model are valid.
+
+
+:return: - ``True`` if the child is valid
+         - issues: will be set to a list of issues encountered during the validation
+
+.. versionadded:: 3.14
+%End
+
     QMap<QString, QgsProcessingModelChildAlgorithm> childAlgorithms() const;
 %Docstring
 Returns the map of child algorithms contained in the model. The keys
@@ -166,10 +177,14 @@ then the child will not be activated and ``False`` will be returned.
 .. seealso:: :py:func:`deactivateChildAlgorithm`
 %End
 
-    QSet< QString > dependentChildAlgorithms( const QString &childId ) const;
+    QSet< QString > dependentChildAlgorithms( const QString &childId, const QString &conditionalBranch = QString() ) const;
 %Docstring
 Returns a list of the child algorithm IDs depending on the child
 algorithm with the specified ``childId``.
+
+Optionally, a specific conditional branch which is created by the child algorithm
+can be specified in order to restrict the returned list to algorithms which depend
+on this specific branch.
 
 .. seealso:: :py:func:`dependsOnChildAlgorithms`
 %End
@@ -180,6 +195,26 @@ Returns a list of the child algorithm IDs on which the child
 algorithm with the specified ``childId`` depends upon.
 
 .. seealso:: :py:func:`dependentChildAlgorithms`
+%End
+
+    QList< QgsProcessingModelChildDependency > availableDependenciesForChildAlgorithm( const QString &childId ) const;
+%Docstring
+Returns details of available dependencies for the child algorithm with matching id.
+
+.. versionadded:: 3.14
+%End
+
+    bool validateChildAlgorithm( const QString &childId, QStringList &issues /Out/ ) const;
+%Docstring
+Validates the child algorithm with matching ID, returning ``True`` if
+all mandatory inputs to the algorithm have valid values.
+
+:param childId: ID for child to validate
+
+:return: - ``True`` if the child is valid
+         - issues: will be set to a list of issues encountered during the validation
+
+.. versionadded:: 3.14
 %End
 
     void addModelParameter( QgsProcessingParameterDefinition *definition /Transfer/, const QgsProcessingModelParameter &component );
@@ -232,7 +267,7 @@ is the parent layer parameter).
     QMap<QString, QgsProcessingModelParameter> parameterComponents() const;
 %Docstring
 Returns the map of parameter components used by the model. The keys
-should match the algorithm's parameter names (see parameterDefinitions() ).
+should match the algorithm's parameter names (see :py:func:`~QgsProcessingModelAlgorithm.parameterDefinitions` ).
 
 .. seealso:: :py:func:`setParameterComponent`
 
@@ -242,7 +277,7 @@ should match the algorithm's parameter names (see parameterDefinitions() ).
     void setParameterComponents( const QMap<QString, QgsProcessingModelParameter> &parameterComponents );
 %Docstring
 Sets the map of parameter components used by the model. The keys
-should match the algorithm's parameter names (see parameterDefinitions() ).
+should match the algorithm's parameter names (see :py:func:`~QgsProcessingModelAlgorithm.parameterDefinitions` ).
 All existing parameter components will be replaced.
 
 .. seealso:: :py:func:`parameterComponents`
@@ -276,11 +311,63 @@ this name a new component will be added to the model and returned.
 .. seealso:: :py:func:`setParameterComponent`
 %End
 
+    QList< QgsProcessingModelParameter > orderedParameters() const;
+%Docstring
+Returns an ordered list of parameters for the model.
+
+.. seealso:: :py:func:`setParameterOrder`
+
+.. versionadded:: 3.14
+%End
+
+    void setParameterOrder( const QStringList &order );
+%Docstring
+Sets the ``order`` for showing parameters for the model.
+
+The ``order`` list should consist of parameter names corresponding to existing
+model :py:func:`~QgsProcessingModelAlgorithm.parameterComponents`.
+
+.. seealso:: :py:func:`orderedParameters`
+
+.. versionadded:: 3.14
+%End
+
     void updateDestinationParameters();
 %Docstring
 Updates the model's parameter definitions to include all relevant destination
 parameters as required by child algorithm ModelOutputs.
 Must be called whenever child algorithm ModelOutputs are altered.
+%End
+
+    void addGroupBox( const QgsProcessingModelGroupBox &groupBox );
+%Docstring
+Adds a new group ``box`` to the model.
+
+If an existing group box with the same uuid already exists then its definition will be replaced.
+
+.. seealso:: :py:func:`groupBoxes`
+
+.. versionadded:: 3.14
+%End
+
+    QList< QgsProcessingModelGroupBox > groupBoxes() const;
+%Docstring
+Returns a list of the group boxes within the model.
+
+.. seealso:: :py:func:`addGroupBox`
+
+.. versionadded:: 3.14
+%End
+
+    void removeGroupBox( const QString &uuid );
+%Docstring
+Removes the group box with matching ``uuid`` from the model.
+
+.. seealso:: :py:func:`addGroupBox`
+
+.. seealso:: :py:func:`groupBoxes`
+
+.. versionadded:: 3.14
 %End
 
     bool toFile( const QString &path ) const;
@@ -362,8 +449,8 @@ The ``indentSize`` arguments specifies the size of indented lines.
 %Docstring
 Returns a list of possible sources which can be used for the parameters for a child
 algorithm in the model. Returned sources are those which match either one of the
-specified ``parameterTypes`` (see QgsProcessingParameterDefinition.type() ) or
-one of the specified ``outputTypes`` (see QgsProcessingOutputDefinition.type() ).
+specified ``parameterTypes`` (see :py:func:`QgsProcessingParameterDefinition.type()` ) or
+one of the specified ``outputTypes`` (see :py:func:`QgsProcessingOutputDefinition.type()` ).
 If specified, an optional list of ``dataTypes`` can be used to filter the returned
 sources to those with compatible data types for the parameter/outputs.
 %End
@@ -441,6 +528,32 @@ These variables are added to the model's expression context scope, allowing for 
 .. seealso:: :py:func:`variables`
 
 .. versionadded:: 3.8
+%End
+
+    QVariantMap designerParameterValues() const;
+%Docstring
+Returns the parameter values to use as default values when running this model through the
+designer dialog.
+
+This usually corresponds to the last set of parameter values used when the model was
+run through the designer.
+
+.. seealso:: :py:func:`setDesignerParameterValues`
+
+.. versionadded:: 3.14
+%End
+
+    void setDesignerParameterValues( const QVariantMap &values );
+%Docstring
+Sets the parameter ``values`` to use as default values when running this model through the
+designer dialog.
+
+This usually corresponds to the last set of parameter values used when the model was
+run through the designer.
+
+.. seealso:: :py:func:`designerParameterValues`
+
+.. versionadded:: 3.14
 %End
 
   protected:

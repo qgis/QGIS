@@ -53,6 +53,7 @@ Gets the simplification hints of the vector layer managed
       Distance,
       SnapToGrid,
       Visvalingam,
+      SnappedToGridGlobal,
     };
 
     void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm );

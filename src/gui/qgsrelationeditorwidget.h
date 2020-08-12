@@ -20,17 +20,21 @@
 #include <QToolButton>
 #include <QButtonGroup>
 #include <QGridLayout>
+#include "qobjectuniqueptr.h"
 
+#include "qobjectuniqueptr.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgscollapsiblegroupbox.h"
 #include "qgsdualview.h"
 #include "qgsrelation.h"
+#include "qgsvectorlayerselectionmanager.h"
 #include "qgis_gui.h"
 
 class QgsFeature;
-class QgsGenericFeatureSelectionManager;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
+class QgsMapTool;
+class QgsMapToolDigitizeFeature;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -40,6 +44,37 @@ class QgsVectorLayerTools;
 #include <qgsrelationeditorwidget.h>
 % End
 #endif
+
+
+/// @cond PRIVATE
+#ifndef SIP_RUN
+
+/**
+ * This class is used to filter the current vector layer selection to features matching the given request.
+ * Relation editor widget use it in order to get selected feature for the current relation.
+ */
+class QgsFilteredSelectionManager : public QgsVectorLayerSelectionManager
+{
+    Q_OBJECT
+
+  public:
+    QgsFilteredSelectionManager( QgsVectorLayer *layer, const QgsFeatureRequest &request, QObject *parent = nullptr );
+
+    const QgsFeatureIds &selectedFeatureIds() const override;
+    int selectedFeatureCount() override;
+
+  private slots:
+
+    void onSelectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect ) override;
+
+  private:
+
+    QgsFeatureRequest mRequest;
+    QgsFeatureIds mSelectedFeatureIds;
+};
+#endif
+/// @endcond
+
 
 /**
  * \ingroup gui
@@ -62,8 +97,10 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     Q_OBJECT
     Q_PROPERTY( QgsDualView::ViewMode viewMode READ viewMode WRITE setViewMode )
     Q_PROPERTY( bool showLabel READ showLabel WRITE setShowLabel )
+    Q_PROPERTY( QgsAttributeEditorRelation::Buttons visibleButtons READ visibleButtons WRITE setVisibleButtons )
 
   public:
+
 
     /**
      * \param parent parent widget
@@ -76,6 +113,9 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     //! Gets the view mode for the dual view
     QgsDualView::ViewMode viewMode() {return mViewMode;}
 
+    /**
+     * Sets the \a relation and the \a feature
+     */
     void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );
 
     /**
@@ -89,9 +129,23 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      */
     void setRelations( const QgsRelation &relation, const QgsRelation &nmrelation );
 
-    void setFeature( const QgsFeature &feature );
+    /**
+     * Sets the \a feature being edited and updates the UI unless \a update is set to FALSE
+     */
+    void setFeature( const QgsFeature &feature, bool update = true );
 
+    /**
+     * Sets the editor \a context
+     * \note if context cadDockWidget is null, it won't be possible to digitize
+     * the geometry of a referencing feature from this widget
+     */
     void setEditorContext( const QgsAttributeEditorContext &context );
+
+    /**
+     * Returns the attribute editor context.
+     * \since QGIS 3.14
+     */
+    QgsAttributeEditorContext editorContext( ) const;
 
     /**
      * The feature selection manager is responsible for the selected features
@@ -115,37 +169,80 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
 
     /**
      * Determines if the "link feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
-    bool showLinkButton() const;
+    Q_DECL_DEPRECATED bool showLinkButton() const SIP_DEPRECATED;
 
     /**
      * Determines if the "link feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
-    void setShowLinkButton( bool showLinkButton );
+    Q_DECL_DEPRECATED void setShowLinkButton( bool showLinkButton ) SIP_DEPRECATED;
 
     /**
      * Determines if the "unlink feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
-    bool showUnlinkButton() const;
+    Q_DECL_DEPRECATED bool showUnlinkButton() const SIP_DEPRECATED;
 
     /**
      * Determines if the "unlink feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
-    void setShowUnlinkButton( bool showUnlinkButton );
+    Q_DECL_DEPRECATED void setShowUnlinkButton( bool showUnlinkButton ) SIP_DEPRECATED;
+
+    /**
+     * Determines if the "Save child layer edits" button should be shown
+     * \since QGIS 3.14
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
+     */
+    Q_DECL_DEPRECATED void setShowSaveChildEditsButton( bool showChildEdits ) SIP_DEPRECATED;
+
+    /**
+     * Determines if the "Save child layer edits" button should be shown
+     * \since QGIS 3.14
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
+     */
+    Q_DECL_DEPRECATED bool showSaveChildEditsButton() const SIP_DEPRECATED;
+
+    /**
+     * Defines the buttons which are shown
+     * \since QGIS 3.16
+     */
+    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+
+    /**
+     * Returns the buttons which are shown
+     * \since QGIS 3.16
+     */
+    QgsAttributeEditorRelation::Buttons visibleButtons() const;
+
+    /**
+     * Returns the widget's current feature
+     *
+     * \since QGIS 3.14
+     */
+    QgsFeature feature() const;
+
+  public slots:
+
+    /**
+     * Called when an \a attribute value in the parent widget has changed to \a newValue
+     *
+     * \since QGIS 3.14
+     */
+    void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
 
   private slots:
     void setViewMode( int mode ) {setViewMode( static_cast<QgsDualView::ViewMode>( mode ) );}
     void updateButtons();
 
-    void addFeature();
+    void addFeature( const QgsGeometry &geometry = QgsGeometry() );
+    void addFeatureGeometry();
     void duplicateFeature();
     void linkFeature();
     void deleteFeature( QgsFeatureId featureid = QgsFeatureId() );
@@ -157,13 +254,22 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void toggleEditing( bool state );
     void onCollapsedStateChanged( bool collapsed );
     void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
+    void mapToolDeactivated();
+    void onKeyPressed( QKeyEvent *e );
+    void onDigitizingCompleted( const QgsFeature &feature );
+    void onLinkFeatureDlgAccepted();
 
   private:
     void updateUi();
+    void initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request );
+    void setMapTool( QgsMapTool *mapTool );
+    void unsetMapTool();
+    void updateTitle();
 
     QgsDualView *mDualView = nullptr;
+    QPointer<QgsMessageBarItem> mMessageBarItem;
     QgsDualView::ViewMode mViewMode = QgsDualView::AttributeEditor;
-    QgsGenericFeatureSelectionManager *mFeatureSelectionMgr = nullptr;
+    QgsVectorLayerSelectionManager *mFeatureSelectionMgr = nullptr;
     QgsAttributeEditorContext mEditorContext;
     QgsRelation mRelation;
     QgsRelation mNmRelation;
@@ -179,7 +285,9 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QToolButton *mZoomToFeatureButton = nullptr;
     QToolButton *mFormViewButton = nullptr;
     QToolButton *mTableViewButton = nullptr;
+    QToolButton *mAddFeatureGeometryButton = nullptr;
     QGridLayout *mRelationLayout = nullptr;
+    QObjectUniquePtr<QgsMapToolDigitizeFeature> mMapToolDigitize;
     QButtonGroup *mViewModeButtonGroup = nullptr;
 
     bool mShowLabel = true;
@@ -199,5 +307,6 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      */
     void unlinkFeatures( const QgsFeatureIds &featureids );
 };
+
 
 #endif // QGSRELATIONEDITOR_H

@@ -24,6 +24,13 @@ to a common area of analysis.
 %End
   public:
 
+    enum Flag
+    {
+      FlagDeemphasiseSearchResults,
+    };
+    typedef QFlags<QgsProcessingProvider::Flag> Flags;
+
+
     QgsProcessingProvider( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingProvider.
@@ -44,6 +51,14 @@ Returns an icon for the provider.
 Returns a path to an SVG version of the provider's icon.
 
 .. seealso:: :py:func:`icon`
+%End
+
+    virtual Flags flags() const;
+%Docstring
+Returns the flags indicating how and when the provider operates and should be exposed to users.
+Default is no flags.
+
+.. versionadded:: 3.14
 %End
 
     virtual QString id() const = 0;
@@ -82,7 +97,7 @@ Returns the longer version of the provider name, which can include extra details
 such as version numbers. E.g. "Lastools LIDAR tools (version 2.2.1)".
 This string should be localised.
 
-The default implementation returns the same string as name().
+The default implementation returns the same string as :py:func:`~QgsProcessingProvider.name`.
 
 .. seealso:: :py:func:`name`
 
@@ -105,6 +120,18 @@ Returns ``True`` if the provider can be activated, or ``False`` if it cannot be 
 missing external dependencies).
 
 .. seealso:: :py:func:`isActive`
+%End
+
+    virtual QString warningMessage() const;
+%Docstring
+Returns an optional warning message to show users when running algorithms from this provider.
+
+This can be used to return a translated warning message which should be shown to users
+of this provider. It's intended for use in cases such as a provider which relies on a 3rd-party
+backend, where the version of the backend software is not officially supported, or for
+alerting users to providers in a "beta" or "untrustworthy" state.
+
+.. versionadded:: 3.10.1
 %End
 
     virtual bool isActive() const;
@@ -136,7 +163,7 @@ Returns a list of the vector format file extensions supported by this provider.
 %Docstring
 Returns a list of the table (geometry-less vector layers) file extensions supported by this provider.
 
-By default this is the same as supportedOutputVectorLayerExtensions(). Providers which utilize different
+By default this is the same as :py:func:`~QgsProcessingProvider.supportedOutputVectorLayerExtensions`. Providers which utilize different
 formats for geometry-less layers can override this method to return a different list of supported formats.
 
 .. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
@@ -168,7 +195,7 @@ If ``hasGeometry`` is ``True`` then the output file format must have support for
 geometry. If ``hasGeometry`` is ``False`` then non-spatial formats can be used.
 
 The default implementation returns the user's default Processing vector output format
-setting, if it's supported by the provider (see supportedOutputVectorLayerExtensions()).
+setting, if it's supported by the provider (see :py:func:`~QgsProcessingProvider.supportedOutputVectorLayerExtensions`).
 Otherwise the first reported supported vector format will be used.
 
 .. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
@@ -182,7 +209,7 @@ Returns the default file extension to use for raster outputs created by the
 provider.
 
 The default implementation returns the user's default Processing raster output format
-setting, if it's supported by the provider (see supportedOutputRasterLayerExtensions()).
+setting, if it's supported by the provider (see :py:func:`~QgsProcessingProvider.supportedOutputRasterLayerExtensions`).
 Otherwise the first reported supported raster format will be used.
 
 .. seealso:: :py:func:`supportedOutputRasterLayerExtensions`
@@ -209,9 +236,9 @@ or external dependencies) will automatically support this.
 %Docstring
 Loads the provider. This will be called when the plugin is being loaded, and any general
 setup actions should occur in an overridden version of this method.
-Subclasses should not individually load any algorithms in their load() implementations, as that must
-occur within the loadAlgorithms() method. Instead, subclasses should call refreshAlgorithms()
-from any overloaded load() method to trigger an initial load of the provider's algorithms.
+Subclasses should not individually load any algorithms in their :py:func:`~QgsProcessingProvider.load` implementations, as that must
+occur within the :py:func:`~QgsProcessingProvider.loadAlgorithms` method. Instead, subclasses should call :py:func:`~QgsProcessingProvider.refreshAlgorithms`
+from any overloaded :py:func:`~QgsProcessingProvider.load` method to trigger an initial load of the provider's algorithms.
 
 :return: ``True`` if provider could be successfully loaded
 
@@ -260,7 +287,7 @@ algorithms.
     virtual void loadAlgorithms() = 0;
 %Docstring
 Loads all algorithms belonging to this provider. Subclasses should implement this, calling
-addAlgorithm() to register all their associated algorithms.
+:py:func:`~QgsProcessingProvider.addAlgorithm` to register all their associated algorithms.
 %End
 
     bool addAlgorithm( QgsProcessingAlgorithm *algorithm /Transfer/ );
@@ -271,6 +298,9 @@ Adds an ``algorithm`` to the provider. Ownership of the algorithm is transferred
   private:
     QgsProcessingProvider( const QgsProcessingProvider &other );
 };
+
+QFlags<QgsProcessingProvider::Flag> operator|(QgsProcessingProvider::Flag f1, QFlags<QgsProcessingProvider::Flag> f2);
+
 
 
 

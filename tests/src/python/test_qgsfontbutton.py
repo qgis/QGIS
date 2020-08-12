@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '04/06/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -104,6 +102,21 @@ class TestQgsFontButton(unittest.TestCase):
         button.setColor(QColor(0, 255, 0, 100))
         r = button.textFormat()
         self.assertEqual(r.color(), QColor(0, 255, 0))
+
+    def testNull(self):
+        button = QgsFontButton()
+        self.assertFalse(button.showNullFormat())
+        button.setShowNullFormat(True)
+        self.assertTrue(button.showNullFormat())
+
+        s = QgsTextFormat()
+        s.setFont(getTestFont())
+        button.setTextFormat(s)
+        self.assertTrue(button.textFormat().isValid())
+        button.setToNullFormat()
+        self.assertFalse(button.textFormat().isValid())
+        button.setTextFormat(s)
+        self.assertTrue(button.textFormat().isValid())
 
 
 if __name__ == '__main__':

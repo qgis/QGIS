@@ -73,6 +73,11 @@ QgsBoundaryAlgorithm *QgsBoundaryAlgorithm::createInstance() const
   return new QgsBoundaryAlgorithm();
 }
 
+QgsProcessingFeatureSource::Flag QgsBoundaryAlgorithm::sourceFlags() const
+{
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
 QgsWkbTypes::Type QgsBoundaryAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
 {
   QgsWkbTypes::Type outputWkb = QgsWkbTypes::Unknown;

@@ -27,7 +27,7 @@ class QgsQuickMapSettings;
 /**
  * \ingroup quick
  *
- * The class QgsQuickScaleBarKit encapsulates the utilies to calculate
+ * The class QgsQuickScaleBarKit encapsulates the utilities to calculate
  * scale bar properties
  *
  * It requires connection to mapSettings of the active canvas to automatically

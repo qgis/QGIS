@@ -46,7 +46,7 @@ Curve polygon geometry type
     virtual bool fromWkt( const QString &wkt );
 
 
-    virtual QByteArray asWkb() const;
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 
     virtual QString asWkt( int precision = 17 ) const;
 
@@ -54,7 +54,7 @@ Curve polygon geometry type
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
-    virtual QString asJson( int precision = 17 ) const;
+    virtual QString asKml( int precision = 17 ) const;
 
 
     virtual double area() const;
@@ -191,6 +191,8 @@ direction.
 
 .. versionadded:: 3.6
 %End
+
+    virtual QPainterPath asQPainterPath() const;
 
     virtual void draw( QPainter &p ) const;
 

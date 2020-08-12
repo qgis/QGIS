@@ -37,6 +37,12 @@ QString QgsNetworkAnalysisAlgorithmBase::groupId() const
   return QStringLiteral( "networkanalysis" );
 }
 
+QgsProcessingAlgorithm::Flags QgsNetworkAnalysisAlgorithmBase::flags() const
+{
+  // TODO -- remove the dependancy on the project from these algorithms, it shouldn't be required
+  return QgsProcessingAlgorithm::flags() | FlagRequiresProject;
+}
+
 void QgsNetworkAnalysisAlgorithmBase::addCommonParams()
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Vector layer representing network" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
@@ -83,7 +89,7 @@ void QgsNetworkAnalysisAlgorithmBase::addCommonParams()
 
 void QgsNetworkAnalysisAlgorithmBase::loadCommonParams( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  Q_UNUSED( feedback );
+  Q_UNUSED( feedback )
 
   mNetwork.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !mNetwork )

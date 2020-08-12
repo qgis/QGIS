@@ -21,7 +21,7 @@
 
 #include "qgsmeshlayer.h"
 #include "qgsxmlutils.h"
-
+#include "qgsmesh3dentity_p.h"
 
 QgsMeshLayer3DRendererMetadata::QgsMeshLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( QStringLiteral( "mesh" ) )
@@ -34,7 +34,6 @@ QgsAbstract3DRenderer *QgsMeshLayer3DRendererMetadata::createRenderer( QDomEleme
   r->readXml( elem, context );
   return r;
 }
-
 
 // ---------
 
@@ -73,12 +72,28 @@ const QgsMesh3DSymbol *QgsMeshLayer3DRenderer::symbol() const
 
 Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( const Qgs3DMapSettings &map ) const
 {
-  QgsMeshLayer *vl = layer();
+  QgsMeshLayer *meshLayer = layer();
 
-  if ( !mSymbol || !vl )
+  if ( !meshLayer || !meshLayer->dataProvider() )
     return nullptr;
 
-  return new QgsMesh3DSymbolEntity( map, vl, *static_cast<QgsMesh3DSymbol *>( mSymbol.get() ) );
+  if ( meshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) ||
+       !mSymbol->isEnabled() )
+  {
+    // 3D not implemented for 1D meshes
+    return nullptr;
+  }
+
+  Qt3DCore::QEntity *entity = nullptr;
+
+
+  QgsCoordinateTransform coordTrans( meshLayer->crs(), map.crs(), map.transformContext() );
+  meshLayer->updateTriangularMesh( coordTrans );
+  QgsMeshDataset3dEntity *meshEntity = new QgsMeshDataset3dEntity( map, meshLayer, mSymbol.get() );
+  meshEntity->build();
+  entity = meshEntity;
+
+  return entity;
 }
 
 void QgsMeshLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

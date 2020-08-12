@@ -20,9 +20,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
-QgsFieldFormatter::QgsFieldFormatter() //NOLINT
-{
-}
 
 QString QgsFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
@@ -33,7 +30,14 @@ QString QgsFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex
   if ( layer->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginProvider && layer->dataProvider() )
     defVal = layer->dataProvider()->defaultValueClause( layer->fields().fieldOriginIndex( fieldIndex ) );
 
-  return value == defVal ? defVal : layer->fields().at( fieldIndex ).displayString( value );
+  if ( ! layer->fields().exists( fieldIndex ) )
+  {
+    return defVal;
+  }
+  else
+  {
+    return layer->fields().at( fieldIndex ).displayString( value.isNull() ? defVal : value );
+  }
 }
 
 QVariant QgsFieldFormatter::sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
@@ -48,7 +52,7 @@ QVariant QgsFieldFormatter::sortValue( QgsVectorLayer *layer, int fieldIndex, co
 
 Qt::AlignmentFlag QgsFieldFormatter::alignmentFlag( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const
 {
-  Q_UNUSED( config );
+  Q_UNUSED( config )
 
   QgsField field = layer->fields().at( fieldIndex );
   if ( field.isNumeric() || field.isDateOrTime() )
@@ -64,4 +68,24 @@ QVariant QgsFieldFormatter::createCache( QgsVectorLayer *layer, int fieldIndex, 
   Q_UNUSED( config )
 
   return QVariant();
+}
+
+QList<QgsVectorLayerRef> QgsFieldFormatter::layerDependencies( const QVariantMap &config ) const
+{
+  Q_UNUSED( config )
+  return QList<QgsVectorLayerRef>();
+}
+
+QVariantList QgsFieldFormatter::availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const
+{
+  Q_UNUSED( config )
+  Q_UNUSED( countLimit )
+  Q_UNUSED( context )
+
+  return QVariantList();
+}
+
+void QgsFieldFormatter::setFlags( const Flags &flags )
+{
+  mFlags = flags;
 }

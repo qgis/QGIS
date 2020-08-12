@@ -21,14 +21,13 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
-from qgis.core import (QgsApplication,
-                       QgsProcessingProvider)
+from qgis.core import (Qgis,
+                       QgsMessageLog,
+                       QgsApplication,
+                       QgsProcessingProvider,
+                       QgsRuntimeProfiler)
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 
@@ -42,6 +41,7 @@ from processing.script.DeleteScriptAction import DeleteScriptAction
 from processing.script.EditScriptAction import EditScriptAction
 from processing.script.OpenScriptFromFileAction import OpenScriptFromFileAction
 from processing.script import ScriptUtils
+from processing.tools.system import userFolder
 
 
 class ScriptAlgorithmProvider(QgsProcessingProvider):
@@ -59,18 +59,19 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
                                    DeleteScriptAction()]
 
     def load(self):
-        ProcessingConfig.settingIcons[self.name()] = self.icon()
-        ProcessingConfig.addSetting(Setting(self.name(),
-                                            ScriptUtils.SCRIPTS_FOLDERS,
-                                            self.tr("Scripts folder(s)"),
-                                            ScriptUtils.defaultScriptsFolder(),
-                                            valuetype=Setting.MULTIPLE_FOLDERS))
+        with QgsRuntimeProfiler.profile('Script Provider'):
+            ProcessingConfig.settingIcons[self.name()] = self.icon()
+            ProcessingConfig.addSetting(Setting(self.name(),
+                                                ScriptUtils.SCRIPTS_FOLDERS,
+                                                self.tr("Scripts folder(s)"),
+                                                ScriptUtils.defaultScriptsFolder(),
+                                                valuetype=Setting.MULTIPLE_FOLDERS))
 
-        ProviderActions.registerProviderActions(self, self.actions)
-        ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
+            ProviderActions.registerProviderActions(self, self.actions)
+            ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
 
-        ProcessingConfig.readSettings()
-        self.refreshAlgorithms()
+            ProcessingConfig.readSettings()
+            self.refreshAlgorithms()
 
         return True
 
@@ -102,15 +103,24 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
     def loadAlgorithms(self):
         self.algs = []
         folders = ScriptUtils.scriptsFolders()
+        # always add default script folder to the list
+        defaultScriptFolder = ScriptUtils.defaultScriptsFolder()
+        if defaultScriptFolder not in folders:
+            folders.append(defaultScriptFolder)
+        # load all scripts
         for folder in folders:
-            items = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
-            for entry in items:
-                if entry.lower().endswith(".py"):
-                    moduleName = os.path.splitext(os.path.basename(entry))[0]
-                    filePath = os.path.abspath(os.path.join(folder, entry))
-                    alg = ScriptUtils.loadAlgorithm(moduleName, filePath)
-                    if alg is not None:
-                        self.algs.append(alg)
+            folder = ScriptUtils.resetScriptFolder(folder)
+            if not folder:
+                continue
+
+            for path, subdirs, files in os.walk(folder):
+                for entry in files:
+                    if entry.lower().endswith(".py"):
+                        moduleName = os.path.splitext(os.path.basename(entry))[0]
+                        filePath = os.path.abspath(os.path.join(path, entry))
+                        alg = ScriptUtils.loadAlgorithm(moduleName, filePath)
+                        if alg is not None:
+                            self.algs.append(alg)
 
         for a in self.algs:
             self.addAlgorithm(a)

@@ -30,6 +30,7 @@ email                : sherman at mrcc.com
 #include "qgssettings.h"
 #include "qgsproxyprogresstask.h"
 #include "qgsproject.h"
+#include "qgsgui.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -39,10 +40,11 @@ email                : sherman at mrcc.com
 #include <QStringList>
 #include <QStyledItemDelegate>
 
+
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
+  Q_UNUSED( option )
 
   QString tableName = index.sibling( index.row(), QgsPgTableModel::DbtmTable ).data( Qt::DisplayRole ).toString();
   if ( tableName.isEmpty() )
@@ -56,15 +58,14 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
   if ( index.column() == QgsPgTableModel::DbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    Q_FOREACH ( QgsWkbTypes::Type type,
-                QList<QgsWkbTypes::Type>()
-                << QgsWkbTypes::Point
-                << QgsWkbTypes::LineString
-                << QgsWkbTypes::Polygon
-                << QgsWkbTypes::MultiPoint
-                << QgsWkbTypes::MultiLineString
-                << QgsWkbTypes::MultiPolygon
-                << QgsWkbTypes::NoGeometry )
+    static const QList<QgsWkbTypes::Type> types { QgsWkbTypes::Point
+        , QgsWkbTypes::LineString
+        , QgsWkbTypes::Polygon
+        , QgsWkbTypes::MultiPoint
+        , QgsWkbTypes::MultiLineString
+        , QgsWkbTypes::MultiPolygon
+        , QgsWkbTypes::NoGeometry };
+    for ( QgsWkbTypes::Type type : types )
     {
       cb->addItem( QgsPgTableModel::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), type );
     }
@@ -73,7 +74,7 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
 
   if ( index.column() == QgsPgTableModel::DbtmPkCol )
   {
-    QStringList values = index.data( Qt::UserRole + 1 ).toStringList();
+    const QStringList values = index.data( Qt::UserRole + 1 ).toStringList();
 
     if ( !values.isEmpty() )
     {
@@ -83,8 +84,7 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
       QStandardItemModel *model = new QStandardItemModel( values.size(), 1, cb );
 
       int row = 0;
-      const auto constValues = values;
-      for ( const QString &value : constValues )
+      for ( const QString &value : values )
       {
         QStandardItem *item = new QStandardItem( value );
         item->setFlags( Qt::ItemIsUserCheckable | Qt::ItemIsEnabled );
@@ -145,7 +145,7 @@ void QgsPgSourceSelectDelegate::setEditorData( QWidget *editor, const QModelInde
   if ( le )
   {
     bool ok;
-    value.toInt( &ok );
+    ( void )value.toInt( &ok );
     if ( index.column() == QgsPgTableModel::DbtmSrid && !ok )
       value.clear();
 
@@ -160,7 +160,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
   {
     if ( index.column() == QgsPgTableModel::DbtmType )
     {
-      QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->currentData().toInt();
+      QgsWkbTypes::Type type = static_cast< QgsWkbTypes::Type >( cb->currentData().toInt() );
 
       model->setData( index, QgsPgTableModel::iconForWkbType( type ), Qt::DecorationRole );
       model->setData( index, type != QgsWkbTypes::Unknown ? QgsPostgresConn::displayStringForWkbType( type ) : tr( "Select…" ) );
@@ -200,6 +200,8 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   connect( btnConnect, &QPushButton::clicked, this, &QgsPgSourceSelect::btnConnect_clicked );
   connect( cbxAllowGeometrylessTables, &QCheckBox::stateChanged, this, &QgsPgSourceSelect::cbxAllowGeometrylessTables_stateChanged );
   connect( btnNew, &QPushButton::clicked, this, &QgsPgSourceSelect::btnNew_clicked );
@@ -209,9 +211,9 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
   connect( btnLoad, &QPushButton::clicked, this, &QgsPgSourceSelect::btnLoad_clicked );
   connect( mSearchGroupBox, &QGroupBox::toggled, this, &QgsPgSourceSelect::mSearchGroupBox_toggled );
   connect( mSearchTableEdit, &QLineEdit::textChanged, this, &QgsPgSourceSelect::mSearchTableEdit_textChanged );
-  connect( mSearchColumnComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsPgSourceSelect::mSearchColumnComboBox_currentIndexChanged );
-  connect( mSearchModeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsPgSourceSelect::mSearchModeComboBox_currentIndexChanged );
-  connect( cmbConnections, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsPgSourceSelect::cmbConnections_currentIndexChanged );
+  connect( mSearchColumnComboBox, &QComboBox::currentTextChanged, this, &QgsPgSourceSelect::mSearchColumnComboBox_currentIndexChanged );
+  connect( mSearchModeComboBox, &QComboBox::currentTextChanged, this, &QgsPgSourceSelect::mSearchModeComboBox_currentIndexChanged );
+  connect( cmbConnections, &QComboBox::currentTextChanged, this, &QgsPgSourceSelect::cmbConnections_currentIndexChanged );
   connect( mTablesTreeView, &QTreeView::clicked, this, &QgsPgSourceSelect::mTablesTreeView_clicked );
   connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsPgSourceSelect::mTablesTreeView_doubleClicked );
   setupButtons( buttonBox );
@@ -263,21 +265,19 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
 
   mTablesTreeView->setModel( &mProxyModel );
   mTablesTreeView->setSortingEnabled( true );
+  mTablesTreeView->setUniformRowHeights( true );
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
   mTablesTreeView->setItemDelegate( new QgsPgSourceSelectDelegate( this ) );
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsPgSourceSelect::treeWidgetSelectionChanged );
 
-  QgsSettings settings;
-  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addPostgisDC" ), false ).toBool() ?
-                                     QAbstractItemView::ExtendedSelection :
-                                     QAbstractItemView::MultiSelection );
+  mTablesTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
   //for Qt < 4.3.2, passing -1 to include all model columns
   //in search does not seem to work
   mSearchColumnComboBox->setCurrentIndex( 2 );
 
-  restoreGeometry( settings.value( QStringLiteral( "Windows/PgSourceSelect/geometry" ) ).toByteArray() );
+  QgsSettings settings;
   mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/PgSourceSelect/HoldDialogOpen" ), false ).toBool() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
@@ -345,6 +345,7 @@ void QgsPgSourceSelect::btnLoad_clicked()
 void QgsPgSourceSelect::btnEdit_clicked()
 {
   QgsPgNewConnection *nc = new QgsPgNewConnection( this, cmbConnections->currentText() );
+  nc->setWindowTitle( tr( "Edit PostGIS Connection" ) );
   if ( nc->exec() )
   {
     populateConnectionList();
@@ -381,17 +382,9 @@ void QgsPgSourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
   mBuildQueryButton->setEnabled( index.parent().isValid() );
 }
 
-void QgsPgSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsPgSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex & )
 {
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/addPostgisDC" ), false ).toBool() )
-  {
-    addButtonClicked();
-  }
-  else
-  {
-    setSql( index );
-  }
+  addButtonClicked();
 }
 
 void QgsPgSourceSelect::mSearchGroupBox_toggled( bool checked )
@@ -456,7 +449,7 @@ void QgsPgSourceSelect::mSearchColumnComboBox_currentIndexChanged( const QString
 
 void QgsPgSourceSelect::mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
@@ -475,7 +468,6 @@ QgsPgSourceSelect::~QgsPgSourceSelect()
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/PgSourceSelect/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "Windows/PgSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
@@ -491,18 +483,22 @@ void QgsPgSourceSelect::populateConnectionList()
   cmbConnections->addItems( QgsPostgresConn::connectionList() );
   cmbConnections->blockSignals( false );
 
-  setConnectionListPosition();
-
+  btnConnect->setDisabled( cmbConnections->count() == 0 );
   btnEdit->setDisabled( cmbConnections->count() == 0 );
   btnDelete->setDisabled( cmbConnections->count() == 0 );
-  btnConnect->setDisabled( cmbConnections->count() == 0 );
+  btnSave->setDisabled( cmbConnections->count() == 0 );
   cmbConnections->setDisabled( cmbConnections->count() == 0 );
+
+  setConnectionListPosition();
 }
 
 // Slot for performing action when the Add button is clicked
 void QgsPgSourceSelect::addButtonClicked()
 {
   mSelectedTables.clear();
+
+  QStringList dbTables;
+  QList<QPair<QString, QString>> rasterTables;
 
   const auto constIndexes = mTablesTreeView->selectionModel()->selection().indexes();
   for ( const QModelIndex &idx : constIndexes )
@@ -515,6 +511,14 @@ void QgsPgSourceSelect::addButtonClicked()
       continue;
 
     mSelectedTables << uri;
+    if ( uri.startsWith( QStringLiteral( "PG: " ) ) )
+    {
+      rasterTables.append( QPair<QString, QString>( idx.data().toString(), uri ) );
+    }
+    else
+    {
+      dbTables.append( uri );
+    }
   }
 
   if ( mSelectedTables.empty() )
@@ -523,11 +527,27 @@ void QgsPgSourceSelect::addButtonClicked()
   }
   else
   {
-    emit addDatabaseLayers( mSelectedTables, QStringLiteral( "postgres" ) );
+    if ( ! dbTables.isEmpty() )
+    {
+      emit addDatabaseLayers( dbTables, QStringLiteral( "postgres" ) );
+    }
+    if ( ! rasterTables.isEmpty() )
+    {
+      for ( const auto &u : qgis::as_const( rasterTables ) )
+      {
+        // Use "gdal" to proxy rasters to GDAL provider, or "postgresraster" for native PostGIS raster provider
+        emit addRasterLayer( u.second, u.first, QLatin1String( "postgresraster" ) );
+      }
+    }
+
     if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::None )
     {
       accept();
     }
+
+    // Clear selection after layers have been added
+    mTablesTreeView->selectionModel()->clearSelection();
+
   }
 }
 
@@ -592,6 +612,11 @@ void QgsPgSourceSelect::columnThreadFinished()
   mColumnTypeTask = nullptr;
 
   finishList();
+}
+
+void QgsPgSourceSelect::reset()
+{
+  mTablesTreeView->clearSelection();
 }
 
 QStringList QgsPgSourceSelect::selectedTables()
@@ -678,7 +703,7 @@ void QgsPgSourceSelect::setConnectionListPosition()
 
 void QgsPgSourceSelect::setSearchExpression( const QString &regexp )
 {
-  Q_UNUSED( regexp );
+  Q_UNUSED( regexp )
 }
 
 void QgsPgSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )

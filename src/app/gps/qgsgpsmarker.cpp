@@ -14,12 +14,15 @@
  ***************************************************************************/
 
 #include <QPainter>
+#include <QObject>
 
 #include "qgsgpsmarker.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"
 #include "qgsexception.h"
 #include "qgsproject.h"
+#include "qgsmessagelog.h"
+
 
 QgsGpsMarker::QgsGpsMarker( QgsMapCanvas *mapCanvas )
   : QgsMapCanvasItem( mapCanvas )
@@ -27,10 +30,7 @@ QgsGpsMarker::QgsGpsMarker( QgsMapCanvas *mapCanvas )
   mSize = 16;
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
   mSvg.load( QStringLiteral( ":/images/north_arrows/gpsarrow2.svg" ) );
-  if ( ! mSvg.isValid() )
-  {
-    qDebug( "GPS marker not found!" );
-  }
+  setZValue( 200 );
 }
 
 void QgsGpsMarker::setSize( int size )
@@ -38,7 +38,7 @@ void QgsGpsMarker::setSize( int size )
   mSize = size;
 }
 
-void QgsGpsMarker::setCenter( const QgsPointXY &point )
+void QgsGpsMarker::setGpsPosition( const QgsPointXY &point )
 {
   //transform to map crs
   if ( mMapCanvas )
@@ -50,7 +50,7 @@ void QgsGpsMarker::setCenter( const QgsPointXY &point )
     }
     catch ( QgsCsException &e ) //silently ignore transformation exceptions
     {
-      Q_UNUSED( e );
+      QgsMessageLog::logMessage( QObject::tr( "Error transforming the map center point: %1" ).arg( e.what() ), QStringLiteral( "GPS" ), Qgis::Warning );
       return;
     }
   }
@@ -75,18 +75,19 @@ void QgsGpsMarker::paint( QPainter *p )
   QPointF pt = toCanvasCoordinates( mCenter );
   setPos( pt );
 
-  float myHalfSize = mSize / 2.0;
-  mSvg.render( p, QRectF( 0 - myHalfSize, 0 - myHalfSize, mSize, mSize ) );
+  double halfSize = mSize / 2.0;
+  mSvg.render( p, QRectF( 0 - halfSize, 0 - halfSize, mSize, mSize ) );
 }
 
 
 QRectF QgsGpsMarker::boundingRect() const
 {
-  float myHalfSize = mSize / 2.0;
-  return QRectF( -myHalfSize, -myHalfSize, 2.0 * myHalfSize, 2.0 * myHalfSize );
+  double halfSize = mSize / 2.0;
+  return QRectF( -halfSize, -halfSize, 2.0 * halfSize, 2.0 * halfSize );
 }
 
 void QgsGpsMarker::updatePosition()
 {
-  setCenter( mCenter );
+  QPointF pt = toCanvasCoordinates( mCenter );
+  setPos( pt );
 }

@@ -27,8 +27,6 @@ from builtins import str
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import sys
@@ -121,10 +119,12 @@ class OtbUtils:
     def getAuxiliaryDataDirectories():
         gdal_data_dir = None
         gtiff_csv_dir = None
+        proj_dir = None
         otb_folder = OtbUtils.otbFolder()
         if os.name == 'nt':
             gdal_data_dir = os.path.join(otb_folder, 'share', 'data')
             gtiff_csv_dir = os.path.join(otb_folder, 'share', 'epsg_csv')
+            proj_dir = os.path.join(otb_folder, 'share', 'proj')
         else:
             env_profile = os.path.join(otb_folder, 'otbenv.profile')
             try:
@@ -137,14 +137,16 @@ class OtbUtils:
                                 continue
                             if 'GDAL_DATA=' in line:
                                 gdal_data_dir = line.split("GDAL_DATA=")[1]
-                            if 'GEOTIFF_CSV='in line:
+                            if 'GEOTIFF_CSV=' in line:
                                 gtiff_csv_dir = line.split("GEOTIFF_CSV=")[1]
+                            if 'PROJ_LIB=' in line:
+                                proj_dir = line.split("PROJ_LIB=")[1]
             except BaseException as exc:
                 errmsg = "Cannot find gdal and geotiff data directory." + str(exc)
                 QgsMessageLog.logMessage(errmsg, OtbUtils.tr('Processing'), Qgis.Info)
                 pass
 
-        return gdal_data_dir, gtiff_csv_dir
+        return gdal_data_dir, gtiff_csv_dir, proj_dir
 
     @staticmethod
     def executeOtb(commands, feedback, addToLog=True):
@@ -152,11 +154,13 @@ class OtbUtils:
             'LC_NUMERIC': 'C',
             'GDAL_DRIVER_PATH': 'disable'
         }
-        gdal_data_dir, gtiff_csv_dir = OtbUtils.getAuxiliaryDataDirectories()
+        gdal_data_dir, gtiff_csv_dir, proj_dir = OtbUtils.getAuxiliaryDataDirectories()
         if gdal_data_dir and os.path.exists(gdal_data_dir):
             otb_env['GDAL_DATA'] = gdal_data_dir
         if gtiff_csv_dir and os.path.exists(gtiff_csv_dir):
             otb_env['GEOTIFF_CSV'] = gtiff_csv_dir
+        if proj_dir and os.path.exists(proj_dir):
+            otb_env['PROJ_LIB'] = proj_dir
 
         otb_env['OTB_LOGGER_LEVEL'] = OtbUtils.loggerLevel()
         max_ram_hint = OtbUtils.maxRAMHint()
@@ -182,7 +186,7 @@ class OtbUtils:
 
             for line in iter(proc.stdout.readline, ''):
                 line = line.strip()
-                #'* ]' and '  ]' says its some progress update
+                # '* ]' and '  ]' says its some progress update
                 if '% [' in line:
                     part = line.split(':')[1]
                     percent = part.split('%')[0]

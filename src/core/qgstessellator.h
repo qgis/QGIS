@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsrectangle.h"
 
 class QgsPolygon;
 class QgsMultiPolygon;
@@ -40,7 +41,20 @@ class CORE_EXPORT QgsTessellator
 {
   public:
     //! Creates tessellator with a specified origin point of the world (in map coordinates)
-    QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false );
+    QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
+                    bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f );
+
+    /**
+     * Creates tessellator with a specified \a bounds of input geometry coordinates.
+     * This constructor allows the tessellator to map input coordinates to a desirable range for numerical
+     * stability during calculations.
+     *
+     * If \a noZ is TRUE, then a 2-dimensional tessellation only will be performed and all z coordinates will be ignored.
+     *
+     * \since QGIS 3.10
+     */
+    QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
+                    bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f );
 
     //! Tessellates a triangle and adds its vertex entries to the output data array
     void addPolygon( const QgsPolygon &polygon, float extrusionHeight );
@@ -63,13 +77,35 @@ class CORE_EXPORT QgsTessellator
      */
     std::unique_ptr< QgsMultiPolygon > asMultiPolygon() const SIP_SKIP;
 
+    /**
+     * Returns minimal Z value of the data (in world coordinates)
+     * \since QGIS 3.12
+     */
+    float zMinimum() const { return mZMin; }
+
+    /**
+     * Returns maximal Z value of the data (in world coordinates)
+     * \since QGIS 3.12
+     */
+    float zMaximum() const { return mZMax; }
+
   private:
+    void init();
+
+    QgsRectangle mBounds;
     double mOriginX = 0, mOriginY = 0;
     bool mAddNormals = false;
     bool mInvertNormals = false;
     bool mAddBackFaces = false;
+    bool mAddTextureCoords = false;
     QVector<float> mData;
     int mStride;
+    bool mNoZ = false;
+    int mTessellatedFacade = 3;
+    float mTextureRotation = 0.0f;
+
+    float mZMin = std::numeric_limits<float>::max();
+    float mZMax = std::numeric_limits<float>::min();
 };
 
 #endif // QGSTESSELLATOR_H

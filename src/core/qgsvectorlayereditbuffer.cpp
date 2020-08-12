@@ -20,6 +20,8 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsmessagelog.h"
+
 
 //! populate two lists (ks, vs) from map - in reverse order
 template <class Key, class T> void mapToReversedLists( const QMap< Key, T > &map, QList<Key> &ks, QList<T> &vs )
@@ -50,7 +52,7 @@ bool QgsVectorLayerEditBuffer::isModified() const
 void QgsVectorLayerEditBuffer::undoIndexChanged( int index )
 {
   QgsDebugMsgLevel( QStringLiteral( "undo index changed %1" ).arg( index ), 4 );
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   emit layerModified();
 }
 
@@ -119,7 +121,10 @@ bool QgsVectorLayerEditBuffer::addFeature( QgsFeature &f )
     return false;
   }
   if ( L->mFields.count() != f.attributes().count() )
+  {
+    QgsMessageLog::logMessage( tr( "cannot add feature, wrong field count: layer: %1 feature: %2:" ).arg( L->mFields.count() ).arg( f.attributes().count() ) );
     return false;
+  }
 
   // TODO: check correct geometry type
 
@@ -333,7 +338,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   // no                 yes                   => changeAttributeValues
   // yes                yes                   => changeFeatures
 
-  // to fix https://issues.qgis.org/issues/15741
+  // to fix https://github.com/qgis/QGIS/issues/23663
   // first of all check if feature to add is compatible with provider type
   // this check have to be done before all checks to avoid to clear internal
   // buffer if some of next steps success.
@@ -392,7 +397,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   bool attributesChanged = false;
   if ( !mDeletedAttributeIds.isEmpty() )
   {
-    if ( ( cap & QgsVectorDataProvider::DeleteAttributes ) && provider->deleteAttributes( mDeletedAttributeIds.toSet() ) )
+    if ( ( cap & QgsVectorDataProvider::DeleteAttributes ) && provider->deleteAttributes( qgis::listToSet( mDeletedAttributeIds ) ) )
     {
       commitErrors << tr( "SUCCESS: %n attribute(s) deleted.", "deleted attributes count", mDeletedAttributeIds.size() );
 
@@ -623,7 +628,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
           QgsVectorLayerUtils::matchAttributesToFields( featuresToAdd[i], provider->fields() );
         }
 
-        if ( provider->addFeatures( featuresToAdd ) )
+        if ( provider->addFeatures( featuresToAdd, QgsFeatureSink::Flag::RollBackOnErrors ) )
         {
           commitErrors << tr( "SUCCESS: %n feature(s) added.", "added features count", featuresToAdd.size() );
 

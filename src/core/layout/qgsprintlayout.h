@@ -61,6 +61,8 @@ class CORE_EXPORT QgsPrintLayout : public QgsLayout, public QgsMasterLayoutInter
     QgsExpressionContext createExpressionContext() const override;
     void updateSettings() override;
 
+    bool layoutAccept( QgsStyleEntityVisitorInterface *visitor ) const override;
+
   signals:
 
     /**
@@ -74,6 +76,8 @@ class CORE_EXPORT QgsPrintLayout : public QgsLayout, public QgsMasterLayoutInter
     QString mName;
     QgsLayoutAtlas *mAtlas = nullptr;
 
+    QgsPrintLayout( const QgsPrintLayout & ) = delete;
+    QgsPrintLayout &operator=( const QgsPrintLayout & ) = delete;
 };
 
 #endif //QGSPRINTLAYOUT_H

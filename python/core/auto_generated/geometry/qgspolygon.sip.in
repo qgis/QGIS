@@ -9,6 +9,7 @@
 
 
 
+
 class QgsPolygon: QgsCurvePolygon
 {
 %Docstring
@@ -23,6 +24,15 @@ Polygon geometry type.
   public:
     QgsPolygon();
 
+    QgsPolygon( QgsLineString *exterior /Transfer/, const QList< QgsLineString * > &rings /Transfer/ = QList< QgsLineString * >() );
+%Docstring
+Constructor for QgsPolygon, with the specified ``exterior`` ring and interior ``rings``.
+
+Ownership of ``exterior`` and ``rings`` is transferred to the polygon.
+
+.. versionadded:: 3.14
+%End
+
     virtual QString geometryType() const;
 
     virtual QgsPolygon *clone() const /Factory/;
@@ -31,7 +41,7 @@ Polygon geometry type.
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
 
-    virtual QByteArray asWkb() const;
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 
     virtual QgsPolygon *surfaceToPolygon() const /Factory/;
 

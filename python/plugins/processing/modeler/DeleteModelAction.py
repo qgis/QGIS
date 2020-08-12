@@ -21,13 +21,9 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from qgis.core import (QgsApplication,
-                       QgsProcessingModelAlgorithm,
+                       QgsProcessingAlgorithm,
                        QgsProject)
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.PyQt.QtCore import QCoreApplication
@@ -42,12 +38,12 @@ class DeleteModelAction(ContextAction):
         self.name = QCoreApplication.translate('DeleteModelAction', 'Delete Model…')
 
     def isEnabled(self):
-        return isinstance(self.itemData, QgsProcessingModelAlgorithm)
+        return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() in ("model", "project")
 
     def execute(self):
         model = self.itemData
         if model is None:
-            return # shouldn't happen, but let's be safe
+            return  # shouldn't happen, but let's be safe
 
         project_provider = model.provider().id() == PROJECT_PROVIDER_ID
 

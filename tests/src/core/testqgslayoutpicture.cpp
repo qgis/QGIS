@@ -37,6 +37,8 @@ class TestQgsLayoutPicture : public QObject
     void cleanup();// will be called after every testfunction.
 
     void pictureRender();
+    void pictureRaster();
+    void pictureSvg();
     void pictureRotation(); //test if picture pictureRotation is functioning
     void pictureItemRotation(); //test if composer picture item rotation is functioning
 
@@ -76,6 +78,7 @@ void TestQgsLayoutPicture::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+  QgsApplication::showSettings();
 
   mPngImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_image.png";
   mSvgImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_svg.svg";
@@ -128,6 +131,39 @@ void TestQgsLayoutPicture::pictureRender()
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 
   mLayout->removeItem( mPicture );
+}
+
+void TestQgsLayoutPicture::pictureRaster()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemPicture *p = new QgsLayoutItemPicture( &l );
+  p->setPicturePath( mPngImage, QgsLayoutItemPicture::FormatRaster );
+  p->attemptSetSceneRect( QRectF( 70, 70, 100, 100 ) );
+  p->setFrameEnabled( true );
+
+  l.addLayoutItem( p );
+
+  QgsLayoutChecker checker( QStringLiteral( "composerpicture_render" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+}
+
+void TestQgsLayoutPicture::pictureSvg()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemPicture *p = new QgsLayoutItemPicture( &l );
+  p->setResizeMode( QgsLayoutItemPicture::Zoom );
+  p->setPicturePath( mSvgImage, QgsLayoutItemPicture::FormatSVG );
+  p->attemptSetSceneRect( QRectF( 70, 70, 100, 100 ) );
+  p->setFrameEnabled( true );
+
+  l.addLayoutItem( p );
+
+  QgsLayoutChecker checker( QStringLiteral( "composerpicture_svg_zoom" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 }
 
 void TestQgsLayoutPicture::pictureRotation()
@@ -397,6 +433,7 @@ void TestQgsLayoutPicture::pictureExpression()
   QString expr = QStringLiteral( "'%1' || '/sample_svg.svg'" ).arg( TEST_DATA_DIR );
   mPicture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( expr ) );
   mPicture->refreshPicture();
+  QVERIFY( !mPicture->isMissingImage() );
 
   QgsLayoutChecker checker( QStringLiteral( "composerpicture_expression" ), mLayout );
   checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
@@ -414,10 +451,11 @@ void TestQgsLayoutPicture::pictureInvalidExpression()
   QString expr = QStringLiteral( "bad expression" );
   mPicture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( expr ) );
   mPicture->refreshPicture();
+  QVERIFY( mPicture->isMissingImage() );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_badexpression" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  mPicture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromValue( QString() ) );
+  mPicture->refreshPicture();
+  QVERIFY( !mPicture->isMissingImage() );
 
   mLayout->removeItem( mPicture );
   mPicture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty() );

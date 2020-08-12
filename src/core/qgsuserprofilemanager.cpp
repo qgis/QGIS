@@ -142,7 +142,7 @@ QgsError QgsUserProfileManager::createUserProfile( const QString &name )
   QDir folder( mRootProfilePath + QDir::separator() + name );
   if ( !folder.exists() )
   {
-    QDir().mkdir( folder.absolutePath() );
+    QDir().mkpath( folder.absolutePath() );
   }
 
   QFile qgisPrivateDbFile( folder.absolutePath() + QDir::separator() + "qgis.db" );
@@ -156,6 +156,17 @@ QgsError QgsUserProfileManager::createUserProfile( const QString &name )
 
     //now copy the master file into the users .qgis dir
     masterFile.copy( qgisPrivateDbFile.fileName() );
+
+    // In some packaging systems, the master can be read-only. Make sure to make
+    // the copy user writable.
+    const QFile::Permissions perms = QFile( qgisPrivateDbFile.fileName() ).permissions();
+    if ( !( perms & QFile::WriteOwner ) )
+    {
+      if ( !qgisPrivateDbFile.setPermissions( perms | QFile::WriteOwner ) )
+      {
+        error.append( tr( "Can not make '%1' user writable" ).arg( qgisPrivateDbFile.fileName() ) );
+      }
+    }
   }
 
   if ( error.isEmpty() )

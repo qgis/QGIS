@@ -41,16 +41,21 @@ from qgis.PyQt.QtGui import QColor, QCursor
 from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform, QgsGeometry, QgsPointXY,
                        QgsProviderRegistry, QgsSettings, QgsProject)
-from qgis.gui import QgsRubberBand
+from qgis.gui import QgsRubberBand, QgsGui
 from qgis.utils import OverrideCursor
 
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=ResourceWarning)
     warnings.filterwarnings("ignore", category=ImportWarning)
-    from owslib.csw import CatalogueServiceWeb # spellok
+    from owslib.csw import CatalogueServiceWeb  # spellok
 
 from owslib.fes import BBox, PropertyIsLike
 from owslib.ows import ExceptionReport
+
+try:
+    from owslib.util import Authentication
+except ImportError:
+    pass
 
 from MetaSearch import link_types
 from MetaSearch.dialogs.manageconnectionsdialog import ManageConnectionsDialog
@@ -66,7 +71,6 @@ BASE_CLASS = get_ui_class('maindialog.ui')
 
 
 class MetaSearchDialog(QDialog, BASE_CLASS):
-
     """main dialogue"""
 
     def __init__(self, iface):
@@ -97,6 +101,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.startfrom = 0
         self.maxrecords = 10
         self.timeout = 10
+        self.disable_ssl_verification = False
         self.constraints = []
 
         # Servers tab
@@ -280,6 +285,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             self.textMetadata.document().setDefaultStyleSheet(style)
             self.textMetadata.setHtml(metadata)
 
+            # clear results in Search tab
+            self.clear_results()
+
     def add_connection(self):
         """add new service"""
 
@@ -392,7 +400,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         if crsid != 4326:  # reproject to EPSG:4326
             src = QgsCoordinateReferenceSystem(crsid)
-            dest = QgsCoordinateReferenceSystem(4326)
+            dest = QgsCoordinateReferenceSystem("EPSG:4326")
             xform = QgsCoordinateTransform(src, dest, QgsProject.instance())
             minxy = xform.transform(QgsPointXY(extent.xMinimum(),
                                                extent.yMinimum()))
@@ -536,6 +544,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.btnNext.setEnabled(disabled)
         self.btnLast.setEnabled(disabled)
 
+    def clear_results(self):
+        """clear search results"""
+
+        self.treeRecords.clear()
+
     def record_clicked(self):
         """record clicked signal"""
 
@@ -562,7 +575,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         if record.bbox is not None:
             points = bbox_to_polygon(record.bbox)
             if points is not None:
-                src = QgsCoordinateReferenceSystem(4326)
+                src = QgsCoordinateReferenceSystem("EPSG:4326")
                 dst = self.map.mapSettings().destinationCrs()
                 geom = QgsGeometry.fromWkt(points)
                 if src.postgisSrid() != dst.postgisSrid():
@@ -735,9 +748,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         if sname in keys:  # duplicate found
             msg = self.tr('Connection {0} exists. Overwrite?').format(sname)
             res = QMessageBox.warning(self, self.tr('Saving server'), msg,
-                                      QMessageBox.Yes | QMessageBox.No)
-            if res != QMessageBox.Yes:  # assign new name with serial
+                                      QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+            if res == QMessageBox.No:  # assign new name with serial
                 sname = serialize_string(sname)
+            elif res == QMessageBox.Cancel:
+                return
 
         # no dups detected or overwrite is allowed
         if caller in ['mActionAddAms', 'mActionAddAfs']:
@@ -748,8 +763,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.settings.endGroup()
 
         # open provider window
-        ows_provider = QgsProviderRegistry.instance().createSelectionWidget(stype[2],
-                                                                            self)
+        ows_provider = QgsGui.sourceSelectProviderRegistry().createSelectionWidget(
+            stype[2],
+            self,
+            Qt.Widget,
+            QgsProviderRegistry.WidgetMode.Embedded)
         service_type = stype[0]
 
         # connect dialog signals to iface slots
@@ -760,6 +778,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         elif service_type == 'OGC:WFS':
             def addVectorLayer(path, name):
                 self.iface.mainWindow().addVectorLayer(path, name, 'WFS')
+
             ows_provider.addVectorLayer.connect(addVectorLayer)
             conn_cmb = ows_provider.findChild(QWidget, 'cmbConnections')
             connect = 'connectToServer'
@@ -774,9 +793,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         elif service_type == 'ESRI:ArcGIS:FeatureServer':
             def addAfsLayer(path, name):
                 self.iface.mainWindow().addVectorLayer(path, name, 'afs')
+
             ows_provider.addVectorLayer.connect(addAfsLayer)
             conn_cmb = ows_provider.findChild(QComboBox)
             connect = 'connectToServer'
+
         ows_provider.setModal(False)
         ows_provider.show()
 
@@ -819,11 +840,21 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         identifier = get_item_data(item, 'identifier')
 
+        self.disable_ssl_verification = self.disableSSLVerification.isChecked()
+        auth = None
+
+        if self.disable_ssl_verification:
+            try:
+                auth = Authentication(verify=False)
+            except NameError:
+                pass
+
         try:
             with OverrideCursor(Qt.WaitCursor):
-                cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout, # spellok
+                cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout,  # spellok
                                           username=self.catalog_username,
-                                          password=self.catalog_password)
+                                          password=self.catalog_password,
+                                          auth=auth)
                 cat.getrecordbyid(
                     [self.catalog.records[identifier].identifier])
         except ExceptionReport as err:
@@ -896,15 +927,25 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.rubber_band.reset()
 
     def _get_csw(self):
-        """convenience function to init owslib.csw.CatalogueServiceWeb""" # spellok
+        """convenience function to init owslib.csw.CatalogueServiceWeb"""  # spellok
+
+        self.disable_ssl_verification = self.disableSSLVerification.isChecked()
+        auth = None
+
+        if self.disable_ssl_verification:
+            try:
+                auth = Authentication(verify=False)
+            except NameError:
+                pass
 
         # connect to the server
         with OverrideCursor(Qt.WaitCursor):
             try:
-                self.catalog = CatalogueServiceWeb(self.catalog_url, # spellok
+                self.catalog = CatalogueServiceWeb(self.catalog_url,  # spellok
                                                    timeout=self.timeout,
                                                    username=self.catalog_username,
-                                                   password=self.catalog_password)
+                                                   password=self.catalog_password,
+                                                   auth=auth)
                 return True
             except ExceptionReport as err:
                 msg = self.tr('Error connecting to service: {0}').format(err)

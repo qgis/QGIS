@@ -1,0 +1,23 @@
+DATASET
+OBJTYPE "mesh2d"
+RT_JULIAN 2433282.500000
+BEGSCL
+ND 6
+NC 2
+NAME "VertexScalarDataset"
+TIMEUNITS se
+TS 0        0.000000
+1
+2
+3
+2
+1
+0
+TS 0        3600.000000
+2
+3
+4
+3
+2
+0
+ENDDS

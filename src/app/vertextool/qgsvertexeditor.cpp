@@ -41,7 +41,7 @@ QgsVertexEditorModel::QgsVertexEditorModel( QgsMapCanvas *canvas, QObject *paren
   : QAbstractTableModel( parent )
   , mCanvas( canvas )
 {
-  QWidget *parentWidget = dynamic_cast< QWidget * >( parent );
+  QWidget *parentWidget = qobject_cast< QWidget * >( parent );
   if ( parentWidget )
     mWidgetFont = parentWidget->font();
 }
@@ -81,7 +81,7 @@ int QgsVertexEditorModel::rowCount( const QModelIndex &parent ) const
 
 int QgsVertexEditorModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   if ( !mLockedFeature )
     return 0;
   else
@@ -433,9 +433,10 @@ void QgsVertexEditor::updateVertexSelection( const QItemSelection &, const QItem
     try
     {
       QgsRectangle transformedBbox = t.transform( *bbox );
-      QgsRectangle canvasExtent = mCanvas->mapSettings().extent();
+      const QgsRectangle canvasExtent = mCanvas->mapSettings().visibleExtent();
       transformedBbox.combineExtentWith( canvasExtent );
-      mCanvas->setExtent( transformedBbox );
+      mCanvas->setExtent( transformedBbox, true );
+      mCanvas->refresh();
     }
     catch ( QgsCsException &cse )
     {
@@ -498,4 +499,11 @@ void CoordinateItemDelegate::setModelData( QWidget *editor, QAbstractItemModel *
   }
 }
 
-
+void CoordinateItemDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+{
+  QLineEdit *lineEdit = qobject_cast<QLineEdit *>( editor );
+  if ( lineEdit && index.isValid() )
+  {
+    lineEdit->setText( QLocale().toString( index.data( ).toDouble( ), 'f', 4 ) );
+  }
+}

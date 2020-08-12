@@ -9,6 +9,7 @@
 
 
 
+
 class QgsBrowserModel : QAbstractItemModel
 {
 %Docstring
@@ -21,7 +22,15 @@ items for the different data providers and folders accessible to users.
 
 QgsBrowserModel models are not initially populated and use a deferred initialization
 approach. After constructing a QgsBrowserModel, a call must be made
-to initialize() in order to populate the model.
+to :py:func:`~initialize` in order to populate the model.
+
+.. note::
+
+   Since QGIS 3.10 it is recommended to use QgsBrowserGuiModel from GUI library.
+   Implementation of data items used from QgsBrowserModel should not trigger any GUI
+   operations such as opening of widgets/dialogs or showing message boxes. Such actions
+   should be implemented in a new QgsDataItemGuiProvider subclass which is used
+   by QgsBrowserGuiModel (but not by QgsBrowserModel).
 %End
 
 %TypeHeaderCode
@@ -37,7 +46,7 @@ Constructor for QgsBrowserModel, with the specified ``parent`` object.
 
    QgsBrowserModel models are not initially populated and use a deferred initialization
    approach. After constructing a QgsBrowserModel, a call must be made
-   to initialize() in order to populate the model.
+   to :py:func:`~QgsBrowserModel.initialize` in order to populate the model.
 %End
 
     ~QgsBrowserModel();
@@ -47,6 +56,7 @@ Constructor for QgsBrowserModel, with the specified ``parent`` object.
       PathRole,
       CommentRole,
       SortRole,
+      ProviderKeyRole,
     };
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
@@ -133,7 +143,8 @@ items, i.e. it does not fetch children.
  void connectItem( QgsDataItem *item ) /Deprecated/;
 %Docstring
 
-.. deprecated:: Deprecated since QGIS 3.4 -- this method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!).
+.. deprecated::
+   Deprecated since QGIS 3.4 -- this method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!).
 %End
 
     bool initialized() const;
@@ -152,17 +163,18 @@ and on Linux the "/" root directory.
 
 .. versionadded:: 3.6
 %End
-
   signals:
+
     void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
 %Docstring
 Emitted when item children fetch was finished
 %End
 
-    void connectionsChanged();
+    void connectionsChanged( const QString &providerKey );
 %Docstring
-Connections changed in the browser, forwarded to the widget and used to
-notify the provider dialogs of a changed connection
+Emitted when connections for the specified ``providerKey`` have changed in the browser.
+
+Forwarded to the widget and used to notify the provider dialogs of a changed connection.
 %End
 
   public slots:

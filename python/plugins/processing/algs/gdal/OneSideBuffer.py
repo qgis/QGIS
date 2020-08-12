@@ -21,10 +21,6 @@ __author__ = 'Giovanni Manghi'
 __date__ = 'January 2015'
 __copyright__ = '(C) 2015, Giovanni Manghi'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterDefinition,
@@ -41,7 +37,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class OneSideBuffer(GdalAlgorithm):
-
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     BUFFER_SIDE = 'BUFFER_SIDE'
@@ -134,7 +129,7 @@ class OneSideBuffer(GdalAlgorithm):
         for f in fields:
             if f.name() == geometry:
                 continue
-            other_fields.append(f.name())
+            other_fields.append('"{}"'.format(f.name()))
 
         if other_fields:
             other_fields = ',*'
@@ -149,12 +144,12 @@ class OneSideBuffer(GdalAlgorithm):
         arguments.append('-sql')
 
         if dissolve or fieldName:
-            sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})) AS {}{} FROM '{}'".format(geometry, distance, side, geometry, other_fields, layerName)
+            sql = 'SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})) AS {}{} FROM "{}"'.format(geometry, distance, side, geometry, other_fields, layerName)
         else:
-            sql = "SELECT ST_SingleSidedBuffer({}, {}, {}) AS {}{} FROM '{}'".format(geometry, distance, side, geometry, other_fields, layerName)
+            sql = 'SELECT ST_SingleSidedBuffer({}, {}, {}) AS {}{} FROM "{}"'.format(geometry, distance, side, geometry, other_fields, layerName)
 
         if fieldName:
-            sql = '"{} GROUP BY {}"'.format(sql, fieldName)
+            sql = '{} GROUP BY "{}"'.format(sql, fieldName)
 
         arguments.append(sql)
 

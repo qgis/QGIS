@@ -1,0 +1,100 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverapicontext.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsServerApiContext
+{
+%Docstring
+The QgsServerApiContext class encapsulates the resources for a particular client
+request: the request and response objects, the project (might be NULL) and
+the server interface, the API root path that matched the request is also added.
+
+QgsServerApiContext is lightweight copyable object meant to be passed along the
+request handlers chain.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsserverapicontext.h"
+%End
+  public:
+
+    QgsServerApiContext( const QString &apiRootPath, const QgsServerRequest *request, QgsServerResponse *response,
+                         const QgsProject *project, QgsServerInterface *serverInterface );
+%Docstring
+QgsServerApiContext constructor
+
+:param apiRootPath: is the API root path, this information is used by the
+                    handlers to build the href links to the resources and to the HTML templates.
+:param request: the incoming request
+:param response: the response
+:param project: the project (might be NULL)
+:param serverInterface: the server interface
+%End
+
+    const QgsServerRequest *request() const;
+%Docstring
+Returns the server request object
+%End
+
+    QgsServerResponse *response() const;
+%Docstring
+Returns the server response object
+%End
+
+    const QgsProject *project() const;
+%Docstring
+Returns the (possibly NULL) project
+
+.. seealso:: :py:func:`setProject`
+%End
+
+    void setProject( const QgsProject *project );
+%Docstring
+Sets the project to ``project``
+
+.. seealso:: :py:func:`project`
+%End
+
+    QgsServerInterface *serverInterface() const;
+%Docstring
+Returns the server interface
+%End
+
+    const QString matchedPath( ) const;
+%Docstring
+Returns the initial part of the incoming request URL path that matches the
+API root path.
+If there is no match returns an empty string (it should never happen).
+
+I.e. for an API with root path "/wfs3" and an incoming request
+"https://www.qgis.org/services/wfs3/collections"
+this method will return "/resources/wfs3"
+%End
+
+    QString apiRootPath() const;
+%Docstring
+Returns the API root path
+%End
+
+    void setRequest( const QgsServerRequest *request );
+%Docstring
+Sets context request to ``request``
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverapicontext.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

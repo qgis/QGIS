@@ -65,6 +65,21 @@ qint64 QgsServerResponse::write( const char *data )
   return 0;
 }
 
+void QgsServerResponse::finish()
+{
+
+}
+
+void QgsServerResponse::flush()
+{
+
+}
+
+qint64 QgsServerResponse::write( const std::string data )
+{
+  return write( data.c_str() );
+}
+
 void QgsServerResponse::write( const QgsServerException &ex )
 {
   QString responseFormat;

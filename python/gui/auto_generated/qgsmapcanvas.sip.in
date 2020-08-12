@@ -18,6 +18,9 @@
 
 
 
+
+
+
 class QgsMapCanvas : QGraphicsView
 {
 %Docstring
@@ -54,9 +57,9 @@ Returns the magnification factor
 Sets the list of ``layers`` that should be shown in the canvas.
 
 If the map canvas has been associated with a map theme via a call
-to setTheme(), then any calls to setLayers() are ignored. It is necessary
-to first clear the theme association by calling setTheme() with an
-empty string before setLayers() calls can be made.
+to :py:func:`~QgsMapCanvas.setTheme`, then any calls to :py:func:`~QgsMapCanvas.setLayers` are ignored. It is necessary
+to first clear the theme association by calling :py:func:`~QgsMapCanvas.setTheme` with an
+empty string before :py:func:`~QgsMapCanvas.setLayers` calls can be made.
 
 .. seealso:: :py:func:`layers`
 
@@ -70,6 +73,22 @@ empty string before setLayers() calls can be made.
 Gets access to properties used for map rendering
 
 .. versionadded:: 2.4
+%End
+
+    void setTemporalController( QgsTemporalController *controller );
+%Docstring
+Sets the temporal controller, tQgsMapCanvasInteractionBlockerhis controller will be used to
+update the canvas temporal range.
+
+.. versionadded:: 3.14
+%End
+
+    const QgsTemporalController *temporalController() const;
+%Docstring
+Gets access to the temporal controller that will be used to
+update the canvas temporal range.
+
+.. versionadded:: 3.14
 %End
 
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
@@ -175,7 +194,26 @@ Returns the combined extent for all layers on the map canvas
 
     void setExtent( const QgsRectangle &r, bool magnified = false );
 %Docstring
-Sets the extent of the map canvas
+Sets the extent of the map canvas to the specified rectangle.
+
+The ``magnified`` argument dictates whether existing canvas constraints such
+as a scale lock should be respected or not during the operation. If ``magnified`` is
+``True`` then an existing scale lock constraint will be applied. This means that the final
+visible canvas extent may not match the specified extent.
+
+If ``magnified`` is ``False`` then scale lock settings will be ignored, and the specified
+rectangle will ALWAYS be visible in the canvas.
+%End
+
+    bool setReferencedExtent( const QgsReferencedRectangle &extent ) throw( QgsCsException );
+%Docstring
+Sets the canvas to the specified ``extent``.
+
+:return: ``True`` if the zoom was successful.
+
+:raises QgsCsException: if a transformation error occurred.
+
+.. versionadded:: 3.10
 %End
 
     double rotation() const;
@@ -232,12 +270,13 @@ Set canvas extent to the bounding box of a set of features
 :param ids: the feature ids*
 %End
 
-    void panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids );
+    void panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids, bool alwaysRecenter = true );
 %Docstring
 Centers canvas extent to feature ids
 
 :param layer: the vector layer
-:param ids: the feature ids*
+:param ids: the feature ids
+:param alwaysRecenter: if false, the canvas is recentered only if the bounding box is not contained within the current extent
 %End
 
     void panToSelected( QgsVectorLayer *layer = 0 );
@@ -257,7 +296,7 @@ The ``startColor`` and ``endColor`` can be specified, along with the number of
 
 .. note::
 
-   If the features or geometries are already available, flashGeometries() is much more efficient.
+   If the features or geometries are already available, :py:func:`~QgsMapCanvas.flashGeometries` is much more efficient.
 
 .. seealso:: :py:func:`flashGeometries`
 
@@ -298,6 +337,21 @@ You don't have to call it manually, QgsMapTool takes care of it.
     QgsMapTool *mapTool();
 %Docstring
 Returns the currently active tool
+%End
+
+    void setProject( QgsProject *project );
+%Docstring
+Sets the ``project`` linked to this canvas.
+
+.. versionadded:: 3.14
+%End
+
+    QgsProject *project();
+%Docstring
+Returns the project linked to this canvas.
+The returned value may be ``None``.
+
+.. versionadded:: 3.14
 %End
 
     void setCanvasColor( const QColor &_newVal );
@@ -356,7 +410,7 @@ responding to events while layers are being added/removed etc.
 .. seealso:: :py:func:`isFrozen`
 
 .. seealso:: :py:func:`setRenderFlag`
-               while setRenderFlag() should only be used when users disable rendering via GUI.
+               while :py:func:`~QgsMapCanvas.setRenderFlag` should only be used when users disable rendering via GUI.
 %End
 
     bool isFrozen() const;
@@ -364,7 +418,7 @@ responding to events while layers are being added/removed etc.
 Returns ``True`` if canvas is frozen.
 
 .. seealso:: :py:func:`renderFlag`
-have been halted programmatically, while renderFlag() should be used to
+have been halted programmatically, while :py:func:`~QgsMapCanvas.renderFlag` should be used to
 determine whether a user has disabled rendering via GUI.
 
 .. seealso:: :py:func:`freeze`
@@ -378,14 +432,14 @@ renders via the GUI.
 .. seealso:: :py:func:`setRenderFlag`
 
 .. seealso:: :py:func:`isFrozen`
-have been halted programmatically, while renderFlag() should be used to
+have been halted programmatically, while :py:func:`~QgsMapCanvas.renderFlag` should be used to
 determine whether a user has disabled rendering via GUI.
 %End
 
     QgsUnitTypes::DistanceUnit mapUnits() const;
 %Docstring
 Convenience function for returning the current canvas map units. The map units
-are dictated by the canvas' destinationCrs() map units.
+are dictated by the canvas' :py:func:`~QgsMapCanvas.destinationCrs` map units.
 %End
 
     QMap<QString, QString> layerStyleOverrides() const;
@@ -402,9 +456,9 @@ Returns the stored overrides of styles for layers.
 Sets the stored overrides of styles for rendering layers.
 
 If the map canvas has been associated with a map theme via a call
-to setTheme(), then any calls to setLayerStyleOverrides() are ignored. It is necessary
-to first clear the theme association by calling setTheme() with an
-empty string before setLayerStyleOverrides() calls can be made.
+to :py:func:`~QgsMapCanvas.setTheme`, then any calls to :py:func:`~QgsMapCanvas.setLayerStyleOverrides` are ignored. It is necessary
+to first clear the theme association by calling :py:func:`~QgsMapCanvas.setTheme` with an
+empty string before :py:func:`~QgsMapCanvas.setLayerStyleOverrides` calls can be made.
 
 .. seealso:: :py:func:`layerStyleOverrides`
 
@@ -417,12 +471,12 @@ Sets a map ``theme`` to show in the canvas. The theme name must match
 a theme present in the associated project's :py:class:`QgsMapThemeCollection`.
 
 When the canvas is associated to a map theme, it will automatically follow
-the layer selection and layer styles from that theme. Calls to setLayers()
-or setLayerStyleOverrides() will have no effect, and canvases associated
+the layer selection and layer styles from that theme. Calls to :py:func:`~QgsMapCanvas.setLayers`
+or :py:func:`~QgsMapCanvas.setLayerStyleOverrides` will have no effect, and canvases associated
 with a QgsLayerTreeMapCanvasBridge will no longer synchronize their
 state with the layer tree. In these cases it is necessary to call
-setTheme() with an empty string to clear the theme association and
-allow map updates with setLayers(), setLayerStyleOverrides(), or via
+:py:func:`~QgsMapCanvas.setTheme` with an empty string to clear the theme association and
+allow map updates with :py:func:`~QgsMapCanvas.setLayers`, :py:func:`~QgsMapCanvas.setLayerStyleOverrides`, or via
 :py:class:`QgsLayerTreeMapCanvasBridge`.
 
 If an empty string is passed then the current theme association will be
@@ -462,16 +516,22 @@ returns current layer (set by legend widget)
 Sets wheel zoom factor (should be greater than 1)
 %End
 
-    void zoomScale( double scale );
+    void zoomScale( double scale, bool ignoreScaleLock = false );
 %Docstring
 Zooms the canvas to a specific ``scale``.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+
+If ``ignoreScaleLock`` is set to ``True``, then any existing constraint on the map scale
+of the canvas will be ignored during the zoom operation.
 %End
 
-    void zoomByFactor( double scaleFactor, const QgsPointXY *center = 0 );
+    void zoomByFactor( double scaleFactor, const QgsPointXY *center = 0, bool ignoreScaleLock = false );
 %Docstring
 Zoom with the factor supplied. Factor > 1 zooms out, interval (0,1) zooms in
-If point is given, re-center on it
+If point is given, re-center on it.
+
+If ``ignoreScaleLock`` is set to ``True``, then any existing constraint on the map scale
+of the canvas will be ignored during the zoom operation.
 %End
 
     void zoomWithCenter( int x, int y, bool zoomIn );
@@ -501,7 +561,7 @@ used to determine if anti-aliasing is enabled or not
 
     bool antiAliasingEnabled() const;
 %Docstring
-``True`` if antialising is enabled
+``True`` if antialiasing is enabled
 %End
 
     void enableMapTileRendering( bool flag );
@@ -513,6 +573,7 @@ sets map tile rendering flag
 %Docstring
 Ends pan action and redraws the canvas.
 %End
+
 
     void panAction( QMouseEvent *event );
 %Docstring
@@ -718,6 +779,64 @@ for the canvas.
 .. versionadded:: 3.0
 %End
 
+
+    void setTemporalRange( const QgsDateTimeRange &range );
+%Docstring
+Set datetime ``range`` for the map canvas.
+
+The :py:func:`~QgsMapCanvas.temporalRangeChanged` signal will be emitted if the temporal range has been changed.
+
+.. note::
+
+   Calling :py:func:`~QgsMapCanvas.setTemporalRange` does not automatically trigger a map refresh.
+
+.. seealso:: :py:func:`temporalRange`
+
+.. versionadded:: 3.14
+%End
+
+    const QgsDateTimeRange &temporalRange() const;
+%Docstring
+Returns map canvas datetime range.
+
+.. seealso:: :py:func:`setTemporalRange`
+
+.. versionadded:: 3.14
+%End
+
+    void installInteractionBlocker( QgsMapCanvasInteractionBlocker *blocker );
+%Docstring
+Installs an interaction ``blocker`` onto the canvas, which may prevent certain map canvas
+interactions from occurring.
+
+The caller retains ownership of ``blocker``, and must correctly call :py:func:`~QgsMapCanvas.removeInteractionBlocker`
+before deleting the object.
+
+.. seealso:: :py:func:`allowInteraction`
+
+.. seealso:: :py:func:`removeInteractionBlocker`
+
+.. versionadded:: 3.14
+%End
+
+    void removeInteractionBlocker( QgsMapCanvasInteractionBlocker *blocker );
+%Docstring
+Removes an interaction ``blocker`` from the canvas.
+
+.. seealso:: :py:func:`allowInteraction`
+
+.. seealso:: :py:func:`installInteractionBlocker`
+
+.. versionadded:: 3.14
+%End
+
+    bool allowInteraction( QgsMapCanvasInteractionBlocker::Interaction interaction ) const;
+%Docstring
+Returns ``True`` if the specified ``interaction`` is currently permitted on the canvas.
+
+.. versionadded:: 3.14
+%End
+
   public slots:
 
     void refresh();
@@ -727,9 +846,27 @@ Repaints the canvas map
 
     void refreshAllLayers();
 %Docstring
-Reload all layers, clear the cache and refresh the canvas
+Reload all layers (including refreshing layer properties from their data sources),
+clears the cache and refreshes the canvas.
+
+.. note::
+
+   Consider using the less expensive :py:func:`~QgsMapCanvas.redrawAllLayers` method if a layer reload
+   from the data provider is not required.
 
 .. versionadded:: 2.9
+%End
+
+    void redrawAllLayers();
+%Docstring
+Clears all cached images and redraws all layers.
+
+.. note::
+
+   Unlike :py:func:`~QgsMapCanvas.refreshAllLayers`, this does NOT reload layers themselves, and accordingly
+   is more "lightweight". Use this method when only an update of the layer's renderers is required.
+
+.. versionadded:: 3.10
 %End
 
     void selectionChangedSlot();
@@ -756,7 +893,7 @@ Sets whether a user has disabled canvas renders via the GUI.
 .. seealso:: :py:func:`renderFlag`
 
 .. seealso:: :py:func:`freeze`
-             while setRenderFlag() should only be used when users disable rendering via GUI.
+             while :py:func:`~QgsMapCanvas.setRenderFlag` should only be used when users disable rendering via GUI.
 %End
 
     void stopRendering();
@@ -776,11 +913,14 @@ called to read map canvas settings from project
 called to write map canvas settings to project
 %End
 
-    void setMagnificationFactor( double factor );
+    void setMagnificationFactor( double factor, const QgsPointXY *center = 0 );
 %Docstring
 Sets the factor of magnification to apply to the map canvas. Indeed, we
 increase/decrease the DPI of the map settings according to this factor
 in order to render marker point, labels, ... bigger.
+
+:param factor: The factor of magnification
+:param center: Optional point to re-center the map
 
 .. versionadded:: 2.16
 %End
@@ -809,6 +949,25 @@ Zoom out with fixed factor
 Zoom to the extent of the selected features of provided (vector) layer.
 
 :param layer: optionally specify different than current layer
+%End
+
+    void setZoomResolutions( const QList<double> &resolutions );
+%Docstring
+Set a list of resolutions (map units per pixel) to which to "snap to" when zooming the map
+
+:param resolutions: A list of resolutions
+
+.. versionadded:: 3.12
+%End
+
+    const QList<double> &zoomResolutions() const;
+%Docstring
+
+:return: List of resolutions to which to "snap to" when zooming the map
+
+.. seealso:: :py:func:`setZoomResolutions`
+
+.. versionadded:: 3.12
 %End
 
   signals:
@@ -854,9 +1013,9 @@ Emitted when canvas background color changes
 %End
 
 
+
     void renderComplete( QPainter * );
 %Docstring
-TODO: deprecate when decorations are reimplemented as map canvas items
 - anything related to rendering progress is not visible outside of map canvas
 - additional drawing shall be done directly within the renderer job or independently as a map canvas item
 %End
@@ -951,78 +1110,84 @@ Emitted when the canvas has been assigned a different map theme.
 emit a message (usually to be displayed in a message bar)
 %End
 
+    void renderErrorOccurred( const QString &error, QgsMapLayer *layer );
+%Docstring
+Emitted whenever an error is encountered during a map render operation.
+
+The ``layer`` argument indicates the associated map layer, if available.
+
+.. versionadded:: 3.10.0
+%End
+
+    void panDistanceBearingChanged( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );
+%Docstring
+Emitted whenever the distance or bearing of an in-progress panning
+operation is changed.
+
+This signal will be emitted during a pan operation as the user moves the map,
+giving the total distance and bearing between the map position at the
+start of the pan and the current pan position.
+
+.. versionadded:: 3.12
+%End
+
+    void tapAndHoldGestureOccurred( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
+%Docstring
+Emitted whenever a tap and hold ``gesture`` occurs at the specified map point.
+
+.. versionadded:: 3.12
+%End
+
+    void temporalRangeChanged();
+%Docstring
+Emitted when the map canvas temporal range changes.
+
+.. versionadded:: 3.14
+%End
+
+
+    void contextMenuAboutToShow( QMenu *menu, QgsMapMouseEvent *event );
+%Docstring
+Emitted before the map canvas context menu will be shown.
+Can be used to extend the context menu.
+
+.. versionadded:: 3.16
+%End
+
+
   protected:
 
     virtual bool event( QEvent *e );
 
-%Docstring
-Overridden standard event to be gestures aware
-%End
-
     virtual void keyPressEvent( QKeyEvent *e );
-
-%Docstring
-Overridden key press event
-%End
 
     virtual void keyReleaseEvent( QKeyEvent *e );
 
-%Docstring
-Overridden key release event
-%End
-
     virtual void mouseDoubleClickEvent( QMouseEvent *e );
-
-%Docstring
-Overridden mouse double-click event
-%End
 
     virtual void mouseMoveEvent( QMouseEvent *e );
 
-%Docstring
-Overridden mouse move event
-%End
-
     virtual void mousePressEvent( QMouseEvent *e );
-
-%Docstring
-Overridden mouse press event
-%End
 
     virtual void mouseReleaseEvent( QMouseEvent *e );
 
-%Docstring
-Overridden mouse release event
-%End
-
     virtual void wheelEvent( QWheelEvent *e );
-
-%Docstring
-Overridden mouse wheel event
-%End
 
     virtual void resizeEvent( QResizeEvent *e );
 
-%Docstring
-Overridden resize event
-%End
-
     virtual void paintEvent( QPaintEvent *e );
-
-%Docstring
-Overridden paint event
-%End
 
     virtual void dragEnterEvent( QDragEnterEvent *e );
 
-%Docstring
-Overridden drag enter event
-%End
 
     void moveCanvasContents( bool reset = false );
 %Docstring
 called when panning is in action, reset indicates end of panning
 %End
+
+    virtual void dropEvent( QDropEvent *event );
+
+
 
 
 

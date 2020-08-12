@@ -19,6 +19,7 @@
 #include "qgslayout.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgslayoutitemgroup.h"
 #include <QApplication>
 #include <QGraphicsItem>
 #include <QDomDocument>
@@ -88,7 +89,7 @@ void QgsLayoutModel::refreshItemsInScene()
 
 QModelIndex QgsLayoutModel::parent( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   //all items are top level for now
   return QModelIndex();
@@ -101,22 +102,23 @@ int QgsLayoutModel::rowCount( const QModelIndex &parent ) const
     return mItemsInScene.size() + 1;
   }
 
+#if 0
   QGraphicsItem *parentItem = itemFromIndex( parent );
 
-  if ( !parentItem )
+  if ( parentItem )
   {
-    return mItemsInScene.size() + 1;
-  }
-  else
-  {
-    //no children for now
+    // return child count for item
     return 0;
   }
+#endif
+
+  //no children for now
+  return 0;
 }
 
 int QgsLayoutModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 3;
 }
 
@@ -168,7 +170,7 @@ QVariant QgsLayoutModel::data( const QModelIndex &index, int role ) const
       return item->uuid();
     case Qt::UserRole+1:
       //user role stores reference in column object
-      return qVariantFromValue( qobject_cast<QObject *>( item ) );
+      return QVariant::fromValue( qobject_cast<QObject *>( item ) );
 
     case Qt::TextAlignmentRole:
       return Qt::AlignLeft & Qt::AlignVCenter;
@@ -193,7 +195,7 @@ QVariant QgsLayoutModel::data( const QModelIndex &index, int role ) const
 
 bool QgsLayoutModel::setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole )
 {
-  Q_UNUSED( role );
+  Q_UNUSED( role )
 
   if ( !index.isValid() )
     return false;
@@ -242,11 +244,11 @@ QVariant QgsLayoutModel::headerData( int section, Qt::Orientation orientation, i
     {
       if ( section == Visibility )
       {
-        return qVariantFromValue( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayersGray.svg" ) ) );
+        return QVariant::fromValue( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayersGray.svg" ) ) );
       }
       else if ( section == LockStatus )
       {
-        return qVariantFromValue( QgsApplication::getThemeIcon( QStringLiteral( "/lockedGray.svg" ) ) );
+        return QVariant::fromValue( QgsApplication::getThemeIcon( QStringLiteral( "/lockedGray.svg" ) ) );
       }
 
       return QVariant();
@@ -410,7 +412,7 @@ bool QgsLayoutModel::dropMimeData( const QMimeData *data,
 
 bool QgsLayoutModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-  Q_UNUSED( count );
+  Q_UNUSED( count )
   if ( parent.isValid() )
   {
     return false;
@@ -924,7 +926,18 @@ void QgsLayoutModel::setSelected( const QModelIndex &index )
     return;
   }
 
+  // find top level group this item is contained within, and mark the group as selected
+  QgsLayoutItemGroup *group = item->parentGroup();
+  while ( group && group->parentGroup() )
+  {
+    group = group->parentGroup();
+  }
+
+  // but the actual main selected item is the item itself (allows editing of item properties)
   mLayout->setSelectedItem( item );
+
+  if ( group && group != item )
+    group->setSelected( true );
 }
 ///@endcond
 
@@ -987,6 +1000,17 @@ bool QgsLayoutProxyModel::allowEmptyItem() const
   return mAllowEmpty;
 }
 
+void QgsLayoutProxyModel::setItemFlags( QgsLayoutItem::Flags flags )
+{
+  mItemFlags = flags;
+  invalidateFilter();
+}
+
+QgsLayoutItem::Flags QgsLayoutProxyModel::itemFlags() const
+{
+  return mItemFlags;
+}
+
 void QgsLayoutProxyModel::setFilterType( QgsLayoutItemRegistry::ItemType filter )
 {
   mItemTypeFilter = filter;
@@ -1018,6 +1042,11 @@ bool QgsLayoutProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &so
   // filter by type
   if ( mItemTypeFilter != QgsLayoutItemRegistry::LayoutItem && item->type() != mItemTypeFilter )
     return false;
+
+  if ( mItemFlags && !( item->itemFlags() & mItemFlags ) )
+  {
+    return false;
+  }
 
   return true;
 }

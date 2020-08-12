@@ -302,7 +302,6 @@ class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
                           Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
                           QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
                           Qt::Orientation orientation = Qt::Horizontal );
-    ~QgsSvgSelectorDialog() override;
 
     //! Returns pointer to the embedded SVG selector widget
     QgsSvgSelectorWidget *svgSelector() { return mSvgSelector; }

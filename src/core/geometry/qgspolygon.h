@@ -22,6 +22,8 @@
 #include "qgis_sip.h"
 #include "qgscurvepolygon.h"
 
+class QgsLineString;
+
 /**
  * \ingroup core
  * \class QgsPolygon
@@ -33,11 +35,20 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
   public:
     QgsPolygon();
 
+    /**
+     * Constructor for QgsPolygon, with the specified \a exterior ring and interior \a rings.
+     *
+     * Ownership of \a exterior and \a rings is transferred to the polygon.
+     *
+     * \since QGIS 3.14
+     */
+    QgsPolygon( QgsLineString *exterior SIP_TRANSFER, const QList< QgsLineString * > &rings SIP_TRANSFER = QList< QgsLineString * >() );
+
     QString geometryType() const override;
     QgsPolygon *clone() const override SIP_FACTORY;
     void clear() override;
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
-    QByteArray asWkb() const override;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
     QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
 
     /**

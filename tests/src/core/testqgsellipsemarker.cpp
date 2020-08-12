@@ -54,9 +54,11 @@ class TestQgsEllipseMarkerSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void ellipseMarkerSymbol();
+    void ellipseMarkerSymbolSize();
     void ellipseMarkerSymbolBevelJoin();
     void ellipseMarkerSymbolMiterJoin();
     void ellipseMarkerSymbolRoundJoin();
+    void selected();
     void bounds();
 
   private:
@@ -137,6 +139,21 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbol()
   QVERIFY( imageCheck( "ellipsemarker" ) );
 }
 
+void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolSize()
+{
+  mReport += QLatin1String( "<h2>Ellipse marker symbol layer setSize / size test</h2>\n" );
+
+  mEllipseMarkerLayer->setSymbolHeight( 3 );
+  mEllipseMarkerLayer->setSymbolWidth( 6 );
+  // Verify size value derived from width/height (largest value)
+  QCOMPARE( mEllipseMarkerLayer->size(), 6.0 );
+
+  mEllipseMarkerLayer->setSize( 2 );
+  // Verify width / height values adjusted from setSize
+  QCOMPARE( mEllipseMarkerLayer->symbolHeight(), 1.0 );
+  QCOMPARE( mEllipseMarkerLayer->symbolWidth(), 2.0 );
+}
+
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolBevelJoin()
 {
   mReport += QLatin1String( "<h2>Ellipse marker symbol layer test</h2>\n" );
@@ -177,6 +194,22 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolRoundJoin()
   mEllipseMarkerLayer->setStrokeWidth( 3 );
   mEllipseMarkerLayer->setPenJoinStyle( Qt::RoundJoin );
   QVERIFY( imageCheck( "ellipsemarker_roundjoin" ) );
+}
+
+void TestQgsEllipseMarkerSymbol::selected()
+{
+  mEllipseMarkerLayer->setFillColor( Qt::blue );
+  mEllipseMarkerLayer->setStrokeColor( Qt::black );
+  mEllipseMarkerLayer->setSymbolName( QStringLiteral( "triangle" ) );
+  mEllipseMarkerLayer->setSymbolHeight( 25 );
+  mEllipseMarkerLayer->setSymbolWidth( 20 );
+  mEllipseMarkerLayer->setStrokeWidth( 3 );
+  mEllipseMarkerLayer->setPenJoinStyle( Qt::RoundJoin );
+
+  mpPointsLayer->selectAll();
+  const bool res = imageCheck( "ellipsemarker_selected" );
+  mpPointsLayer->removeSelection();
+  QVERIFY( res );
 }
 
 void TestQgsEllipseMarkerSymbol::bounds()

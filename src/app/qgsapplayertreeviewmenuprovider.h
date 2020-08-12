@@ -63,11 +63,16 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
 
   private slots:
 
-    void editVectorSymbol();
+    void editVectorSymbol( const QString &layerId );
+    void copyVectorSymbol( const QString &layerId );
+    void pasteVectorSymbol( const QString &layerId );
     void setVectorSymbolColor( const QColor &color );
-    void editSymbolLegendNodeSymbol();
+    void editSymbolLegendNodeSymbol( const QString &layerId, const QString &ruleKey );
+    void copySymbolLegendNodeSymbol( const QString &layerId, const QString &ruleKey );
+    void pasteSymbolLegendNodeSymbol( const QString &layerId, const QString &ruleKey );
     void setSymbolLegendNodeColor( const QColor &color );
-
+    // Set layer CRS corresponding to the text of the given action
+    void setLayerCrs( QAction *action );
   private:
     bool removeActionEnabled();
 };

@@ -16,11 +16,24 @@ class QgsSublayersDialog : QDialog
 %End
   public:
 
+    enum PromptMode
+    {
+
+      PromptAlways,
+
+      PromptIfNeeded,
+
+      PromptNever,
+
+      PromptLoadAll
+    };
+
     enum ProviderType
     {
       Ogr,
       Gdal,
-      Vsifile
+      Vsifile,
+      Mdal
     };
 
     struct LayerDefinition
@@ -29,16 +42,25 @@ class QgsSublayersDialog : QDialog
       QString layerName;  //!< Name of the layer (not necessarily unique)
       int count;
       QString type;       //!< Extra type depending on the use (e.g. geometry type for vector sublayers)
+      QString description;  //!< Description. Added in QGIS 3.10
     };
 
     typedef QList<QgsSublayersDialog::LayerDefinition> LayerDefinitionList;
 
+
     QgsSublayersDialog( ProviderType providerType,
                         const QString &name,
                         QWidget *parent /TransferThis/ = 0,
-                        Qt::WindowFlags fl = 0 );
+                        Qt::WindowFlags fl = 0,
+                        const QString &dataSourceUri = QString() );
 %Docstring
-Constructor for QgsSublayersDialog
+Construct a new QgsSublayersDialog object - a dialog to select which sub layers to be imported from a data source (e.g. from geopackage or zipfile)
+
+:param providerType: provider type
+:param name: provider type name
+:param parent: parent widget of the dialog
+:param fl: window flags
+:param dataSourceUri: data source URI
 %End
 
     ~QgsSublayersDialog();
@@ -90,6 +112,7 @@ Returns column with count or -1
 
 
   protected:
+
 
 };
 

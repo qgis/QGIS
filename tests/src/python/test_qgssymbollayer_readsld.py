@@ -20,8 +20,6 @@
 __author__ = 'Jorge Gustavo Rocha'
 __date__ = 'January 2017'
 __copyright__ = '(C) 2017, Jorge Gustavo Rocha'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -80,13 +78,14 @@ def createLayerWithOnePolygon():
     assert layer.isValid()
     f1 = QgsFeature(layer.dataProvider().fields(), 1)
     f1.setAttribute("pk", 1)
-    f1.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(2484588, 2425722), QgsPointXY(2482767, 2398853), QgsPointXY(2520109, 2397715), QgsPointXY(2520792, 2425494), QgsPointXY(2484588, 2425722)]]))
+    f1.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(2484588, 2425722), QgsPointXY(2482767, 2398853),
+                                               QgsPointXY(2520109, 2397715), QgsPointXY(2520792, 2425494),
+                                               QgsPointXY(2484588, 2425722)]]))
     assert layer.dataProvider().addFeatures([f1])
     return layer
 
 
 class TestQgsSymbolLayerReadSld(unittest.TestCase):
-
     """
     This class checks if SLD styles are properly applied
     """
@@ -128,19 +127,21 @@ class TestQgsSymbolLayerReadSld(unittest.TestCase):
         <se:Rotation><ogc:Literal>50</ogc:Literal></se:Rotation>
         """
         # technically it's not necessary to use a real shape, but a empty memory
-        # layer. In case these tests will upgrate to a rendering where to
+        # layer. In case these tests will upgrade to a rendering where to
         # compare also rendering not only properties
-        #myShpFile = os.path.join(unitTestDataPath(), 'points.shp')
-        #layer = QgsVectorLayer(myShpFile, 'points', 'ogr')
+        # myShpFile = os.path.join(unitTestDataPath(), 'points.shp')
+        # layer = QgsVectorLayer(myShpFile, 'points', 'ogr')
         layer = QgsVectorLayer("Point", "addfeat", "memory")
-        assert(layer.isValid())
+        assert (layer.isValid())
         # test if able to read <sld:Rotation>50.0</sld:Rotation>
-        mFilePath = os.path.join(unitTestDataPath(), 'symbol_layer/external_sld/testSimpleMarkerRotation-directValue.sld')
+        mFilePath = os.path.join(unitTestDataPath(),
+                                 'symbol_layer/external_sld/testSimpleMarkerRotation-directValue.sld')
         layer.loadSldStyle(mFilePath)
         props = layer.renderer().symbol().symbolLayers()[0].properties()
         self.assertEqual(props['angle'], '50')
         # test if able to read <se:Rotation><ogc:Literal>50</ogc:Literal></se:Rotation>
-        mFilePath = os.path.join(unitTestDataPath(), 'symbol_layer/external_sld/testSimpleMarkerRotation-ogcLiteral.sld')
+        mFilePath = os.path.join(unitTestDataPath(),
+                                 'symbol_layer/external_sld/testSimpleMarkerRotation-ogcLiteral.sld')
         layer.loadSldStyle(mFilePath)
         props = layer.renderer().symbol().symbolLayers()[0].properties()
         self.assertEqual(props['angle'], '50')
@@ -402,6 +403,59 @@ class TestQgsSymbolLayerReadSld(unittest.TestCase):
         # sld description
         self.assertEqual(first_size, second_size)
         self.assertEqual(first_unit, second_unit)
+
+    def test_Literal_within_CSSParameter_and_Text(self):
+        layer = createLayerWithOneLine()
+        mFilePath = os.path.join(TEST_DATA_DIR, 'symbol_layer/external_sld/simple_line_with_text.sld')
+        layer.loadSldStyle(mFilePath)
+        props = layer.renderer().symbol().symbolLayers()[0].properties()
+
+        def testLineColor():
+            # stroke SvgParameter within ogc:Literal
+            # expected color is #003EBA, RGB 0,62,186
+            self.assertEqual(layer.renderer().symbol().symbolLayers()[0].color().name(), '#003eba')
+
+        def testLineWidth():
+            # stroke-width SvgParameter within ogc:Literal
+            self.assertEqual(props['line_width'], '2')
+
+        def testLineOpacity():
+            # stroke-opacity SvgParameter NOT within ogc:Literal
+            # stroke-opacity=0.1
+            self.assertEqual(props['line_color'], '0,62,186,24')
+
+        testLineColor()
+        testLineWidth()
+        testLineOpacity()
+
+        from qgis.core import QgsPalLayerSettings
+
+        self.assertTrue(layer.labelsEnabled())
+        self.assertEqual(layer.labeling().type(), 'simple')
+
+        settings = layer.labeling().settings()
+        self.assertEqual(settings.fieldName, 'name')
+
+        format = settings.format()
+        self.assertEqual(format.color().name(), '#ff0000')
+
+        font = format.font()
+        self.assertEqual(font.family(), 'QGIS Vera Sans')
+        self.assertTrue(font.bold())
+        self.assertFalse(font.italic())
+
+        self.assertEqual(format.size(), 18)
+        self.assertEqual(format.sizeUnit(), QgsUnitTypes.RenderPixels)
+
+        # the layer contains lines
+        # from qgis.core import QgsWkbTypes
+        # self.assertEqual(layer.geometryType(), QgsWkbTypes.LineGeometry)
+        # the placement should be QgsPalLayerSettings.Line
+        self.assertEqual(settings.placement, QgsPalLayerSettings.AroundPoint)
+
+        self.assertEqual(settings.xOffset, 1)
+        self.assertEqual(settings.yOffset, 0)
+        self.assertEqual(settings.offsetUnits, QgsUnitTypes.RenderPixels)
 
 
 if __name__ == '__main__':

@@ -22,6 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssymbol3dwidget.h"
 #include "qgsapplication.h"
+#include "qgs3dsymbolregistry.h"
 
 #include <QAction>
 #include <QClipboard>
@@ -44,9 +45,9 @@ QgsRuleBased3DRendererWidget::QgsRuleBased3DRendererWidget( QWidget *parent )
   mDeleteAction = new QAction( tr( "Remove Rule" ), this );
   mDeleteAction->setShortcut( QKeySequence( QKeySequence::Delete ) );
 
-  viewRules->addAction( mDeleteAction );
   viewRules->addAction( mCopyAction );
   viewRules->addAction( mPasteAction );
+  viewRules->addAction( mDeleteAction );
 
   connect( viewRules, &QAbstractItemView::doubleClicked, this, static_cast<void ( QgsRuleBased3DRendererWidget::* )( const QModelIndex & )>( &QgsRuleBased3DRendererWidget::editRule ) );
 
@@ -88,10 +89,25 @@ void QgsRuleBased3DRendererWidget::setLayer( QgsVectorLayer *layer )
   connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsRuleBased3DRendererWidget::widgetChanged );
 }
 
+void QgsRuleBased3DRendererWidget::setDockMode( bool dockMode )
+{
+  if ( dockMode )
+  {
+    // when in dock mode, these shortcuts conflict with the main window shortcuts and cannot be used
+    if ( mCopyAction )
+      mCopyAction->setShortcut( QKeySequence() );
+    if ( mPasteAction )
+      mPasteAction->setShortcut( QKeySequence() );
+    if ( mDeleteAction )
+      mDeleteAction->setShortcut( QKeySequence() );
+  }
+  QgsPanelWidget::setDockMode( dockMode );
+}
+
 
 void QgsRuleBased3DRendererWidget::addRule()
 {
-  QgsRuleBased3DRenderer::Rule *newrule = new QgsRuleBased3DRenderer::Rule( Qgs3DUtils::symbolForGeometryType( mLayer->geometryType() ).release() );
+  QgsRuleBased3DRenderer::Rule *newrule = new QgsRuleBased3DRenderer::Rule( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() ) );
 
   QgsRuleBased3DRenderer::Rule *current = currentRule();
   if ( current )
@@ -288,7 +304,7 @@ QVariant QgsRuleBased3DRendererModel::headerData( int section, Qt::Orientation o
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 2 )
   {
     QStringList lst;
-    lst << tr( "Label" ) << tr( "Rule" ); // << tr( "Count" ) << tr( "Duplicate count" );
+    lst << tr( "Label" ) << tr( "Rule" ); // << tr( "Count" ) << tr( "Duplicate Count" );
     return lst[section];
   }
 
@@ -435,7 +451,7 @@ QMimeData *QgsRuleBased3DRendererModel::mimeData( const QModelIndexList &indexes
 
 bool QgsRuleBased3DRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
 
   if ( action == Qt::IgnoreAction )
     return true;
@@ -553,10 +569,10 @@ Qgs3DRendererRulePropsWidget::Qgs3DRendererRulePropsWidget( QgsRuleBased3DRender
   else
   {
     groupSymbol->setChecked( false );
-    mSymbol = Qgs3DUtils::symbolForGeometryType( layer->geometryType() );
+    mSymbol.reset( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( layer->geometryType() ) );
   }
 
-  mSymbolWidget = new QgsSymbol3DWidget( this );
+  mSymbolWidget = new QgsSymbol3DWidget( layer, this );
   mSymbolWidget->setSymbol( mSymbol.get(), layer );
   QVBoxLayout *l = new QVBoxLayout;
   l->addWidget( mSymbolWidget );
@@ -632,5 +648,8 @@ void Qgs3DRendererRulePropsWidget::apply()
   QString filter = mElseRadio->isChecked() ? QStringLiteral( "ELSE" ) : editFilter->text();
   mRule->setFilterExpression( filter );
   mRule->setDescription( editDescription->text() );
-  mRule->setSymbol( groupSymbol->isChecked() ? mSymbolWidget->symbol() : nullptr );
+  std::unique_ptr< QgsAbstract3DSymbol > newSymbol;
+  if ( groupSymbol->isChecked() )
+    newSymbol = mSymbolWidget->symbol();
+  mRule->setSymbol( newSymbol.release() );
 }

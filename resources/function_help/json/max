@@ -1,6 +1,7 @@
 {
   "name": "max",
   "type": "function",
+  "groups": ["Math"],
   "description": "Returns the largest value in a set of values.",
   "variableLenArguments": true,
   "arguments": [

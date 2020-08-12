@@ -34,8 +34,8 @@ Constructor for QgsLayoutUndoStack, for the specified parent ``layout``.
 Starts a macro command, with the given descriptive ``commandText``.
 
 Any commands added to the stack (either via direct manipulation of
-stack() or via beginCommand()/endCommand() calls) between a
-beginMacro() and endMacro() block are collapsed into a single
+:py:func:`~QgsLayoutUndoStack.stack` or via :py:func:`~QgsLayoutUndoStack.beginCommand`/:py:func:`~QgsLayoutUndoStack.endCommand` calls) between a
+:py:func:`~QgsLayoutUndoStack.beginMacro` and :py:func:`~QgsLayoutUndoStack.endMacro` block are collapsed into a single
 undo command, which will be applied or rolled back in a single step.
 
 .. seealso:: :py:func:`endMacro`
@@ -43,12 +43,12 @@ undo command, which will be applied or rolled back in a single step.
 
     void endMacro();
 %Docstring
-Ends a macro command. This must be called after beginMacro(), when
+Ends a macro command. This must be called after :py:func:`~QgsLayoutUndoStack.beginMacro`, when
 all child undo commands which form part of the macro have been completed.
 
 Any commands added to the stack (either via direct manipulation of
-stack() or via beginCommand()/endCommand() calls) between a
-beginMacro() and endMacro() block are collapsed into a single
+:py:func:`~QgsLayoutUndoStack.stack` or via :py:func:`~QgsLayoutUndoStack.beginCommand`/:py:func:`~QgsLayoutUndoStack.endCommand` calls) between a
+:py:func:`~QgsLayoutUndoStack.beginMacro` and :py:func:`~QgsLayoutUndoStack.endMacro` block are collapsed into a single
 undo command, which will be applied or rolled back in a single step.
 
 .. seealso:: :py:func:`beginMacro`
@@ -58,7 +58,7 @@ undo command, which will be applied or rolled back in a single step.
 %Docstring
 Begins a new undo command for the specified ``object``.
 
-This must be followed by a call to endCommand() or cancelCommand() after the desired changes
+This must be followed by a call to :py:func:`~QgsLayoutUndoStack.endCommand` or :py:func:`~QgsLayoutUndoStack.cancelCommand` after the desired changes
 have been made to ``object``.
 
 The ``id`` argument can be used to specify an id number for the source event - this is used to determine whether QUndoCommand

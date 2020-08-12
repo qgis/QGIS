@@ -43,6 +43,7 @@
 #include <string.h>
 #include <limits.h>
 #include <locale.h>
+#include <math.h>
 
 #define NMEA_TOKS_COMPARE   (1)
 #define NMEA_TOKS_PERCENT   (2)
@@ -241,6 +242,10 @@ int nmea_scanf( const char *buff, int buff_sz, const char *format, ... )
             parg_target = ( void * )va_arg( arg_ptr, double * );
             if ( width && 0 != ( parg_target ) )
               *( ( double * )parg_target ) = nmea_atof( beg_tok, width );
+            else if ( width == 0 && 0 != ( parg_target ) )
+            {
+              *( ( double * )parg_target ) = NAN;
+            }
             break;
         };
 

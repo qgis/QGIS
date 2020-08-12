@@ -31,6 +31,8 @@ legend nodes or whether to collapse them into one legend node.
 Constructor for QgsDataDefinedSizeLegend.
 %End
 
+    ~QgsDataDefinedSizeLegend();
+
     QgsDataDefinedSizeLegend( const QgsDataDefinedSizeLegend &other );
 %Docstring
 Copy constructor
@@ -72,6 +74,26 @@ Sets marker symbol that will be used to draw markers in legend
     QgsMarkerSymbol *symbol() const;
 %Docstring
 Returns marker symbol that will be used to draw markers in legend
+%End
+
+    void setLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` that will be used to draw callout lines in legend.
+
+Ownership of ``symbol`` is transferred.
+
+.. seealso:: :py:func:`lineSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    QgsLineSymbol *lineSymbol() const;
+%Docstring
+Returns the line symbol that will be used to draw callout lines in legend.
+
+.. seealso:: :py:func:`setLineSymbol`
+
+.. versionadded:: 3.14
 %End
 
     void setSizeScaleTransformer( QgsSizeScaleTransformer *transformer /Transfer/ );
@@ -148,7 +170,7 @@ Updates the list of classes, source symbol and title label from given symbol and
 Generates legend symbol items according to the configuration
 %End
 
-    void drawCollapsedLegend( QgsRenderContext &context, QSize *outputSize /Out/ = 0, int *labelXOffset /Out/ = 0 ) const;
+    void drawCollapsedLegend( QgsRenderContext &context, QSizeF *outputSize /Out/ = 0, double *labelXOffset /Out/ = 0 ) const;
 %Docstring
 Draw the legend if using LegendOneNodeForAll and optionally output size of the legend and x offset of labels (in painter units).
 If the painter in context is ``None``, it only does size calculation without actual rendering.

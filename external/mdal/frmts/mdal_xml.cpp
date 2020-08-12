@@ -9,6 +9,7 @@
 #include "mdal_xml.hpp"
 #include "mdal.h"
 #include "mdal_utils.hpp"
+#include "mdal_logger.hpp"
 
 class XMLString
 {
@@ -47,8 +48,7 @@ XMLFile::~XMLFile()
 
 void XMLFile::error( const std::string &str ) const
 {
-  MDAL::debug( str + "(" + mFileName + ")" );
-  throw MDAL_Status::Err_UnknownFormat;
+  throw MDAL::Error( MDAL_Status::Err_UnknownFormat, str + "(" + mFileName + ")" );
 }
 
 void XMLFile::openFile( const std::string &fileName )

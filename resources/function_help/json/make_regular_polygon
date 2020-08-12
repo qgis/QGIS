@@ -1,6 +1,7 @@
 {
   "name": "make_regular_polygon",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Creates a regular polygon.",
   "variableLenArguments": true,
   "arguments": [

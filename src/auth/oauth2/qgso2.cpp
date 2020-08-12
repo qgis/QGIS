@@ -25,6 +25,7 @@
 #include <QDir>
 #include <QSettings>
 #include <QUrl>
+#include <QUrlQuery>
 
 
 QString QgsO2::O2_OAUTH2_STATE = QStringLiteral( "state" );
@@ -32,7 +33,7 @@ QString QgsO2::O2_OAUTH2_STATE = QStringLiteral( "state" );
 QgsO2::QgsO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config,
               QObject *parent, QNetworkAccessManager *manager )
   : O2( parent, manager )
-  , mTokenCacheFile( QString::null )
+  , mTokenCacheFile( QString() )
   , mAuthcfg( authcfg )
   , mOAuth2Config( oauth2config )
 {
@@ -80,24 +81,23 @@ void QgsO2::initOAuthConfig()
   setApiKey( mOAuth2Config->apiKey() );
   setExtraRequestParams( mOAuth2Config->queryPairs() );
 
-  O2::GrantFlow o2flow;
   switch ( mOAuth2Config->grantFlow() )
   {
     case QgsAuthOAuth2Config::AuthCode:
-      o2flow = O2::GrantFlowAuthorizationCode;
+      setGrantFlow( O2::GrantFlowAuthorizationCode );
       setRequestUrl( mOAuth2Config->requestUrl() );
       setClientId( mOAuth2Config->clientId() );
       setClientSecret( mOAuth2Config->clientSecret() );
 
       break;
     case QgsAuthOAuth2Config::Implicit:
-      o2flow = O2::GrantFlowImplicit;
+      setGrantFlow( O2::GrantFlowImplicit );
       setRequestUrl( mOAuth2Config->requestUrl() );
       setClientId( mOAuth2Config->clientId() );
 
       break;
     case QgsAuthOAuth2Config::ResourceOwner:
-      o2flow = O2::GrantFlowResourceOwnerPasswordCredentials;
+      setGrantFlow( O2::GrantFlowResourceOwnerPasswordCredentials );
       setClientId( mOAuth2Config->clientId() );
       setClientSecret( mOAuth2Config->clientSecret() );
       setUsername( mOAuth2Config->username() );
@@ -105,7 +105,6 @@ void QgsO2::initOAuthConfig()
 
       break;
   }
-  setGrantFlow( o2flow );
 
   setSettingsStore( mOAuth2Config->persistToken() );
 
@@ -192,7 +191,7 @@ void QgsO2::link()
     parameters.append( qMakePair( O2_OAUTH2_STATE, state_ ) );
     parameters.append( qMakePair( QString( O2_OAUTH2_API_KEY ), apiKey_ ) );
 
-    for ( QVariantMap::const_iterator iter = extraReqParams_.begin(); iter != extraReqParams_.end(); ++iter )
+    for ( auto iter = extraReqParams_.constBegin(); iter != extraReqParams_.constEnd(); ++iter )
     {
       parameters.append( qMakePair( iter.key(), iter.value().toString() ) );
     }
@@ -221,7 +220,7 @@ void QgsO2::link()
     parameters.append( O0RequestParameter( O2_OAUTH2_API_KEY, apiKey_.toUtf8() ) );
 
 
-    for ( QVariantMap::const_iterator iter = extraReqParams_.begin(); iter != extraReqParams_.end(); ++iter )
+    for ( auto iter = extraReqParams_.constBegin(); iter != extraReqParams_.constEnd(); ++iter )
     {
       parameters.append( O0RequestParameter( iter.key().toUtf8(), iter.value().toString().toUtf8() ) );
     }
@@ -232,8 +231,8 @@ void QgsO2::link()
     QUrl url( tokenUrl_ );
     QNetworkRequest tokenRequest( url );
     QgsSetRequestInitiatorClass( tokenRequest, QStringLiteral( "QgsO2" ) );
-    tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1Literal( "application/x-www-form-urlencoded" ) );
-    QNetworkReply *tokenReply = manager_->post( tokenRequest, payload );
+    tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/x-www-form-urlencoded" ) );
+    QNetworkReply *tokenReply = getManager()->post( tokenRequest, payload );
 
     connect( tokenReply, SIGNAL( finished() ), this, SLOT( onTokenReplyFinished() ), Qt::QueuedConnection );
     connect( tokenReply, SIGNAL( error( QNetworkReply::NetworkError ) ), this, SLOT( onTokenReplyError( QNetworkReply::NetworkError ) ), Qt::QueuedConnection );
@@ -302,7 +301,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     parameters.insert( O2_OAUTH2_REDIRECT_URI, redirectUri_ );
     parameters.insert( O2_OAUTH2_GRANT_TYPE, O2_AUTHORIZATION_CODE );
     QByteArray data = buildRequestBody( parameters );
-    QNetworkReply *tokenReply = manager_->post( tokenRequest, data );
+    QNetworkReply *tokenReply = getManager()->post( tokenRequest, data );
     timedReplies_.add( tokenReply );
     connect( tokenReply, &QNetworkReply::finished, this, &QgsO2::onTokenReplyFinished, Qt::QueuedConnection );
     connect( tokenReply, qgis::overload<QNetworkReply::NetworkError>::of( &QNetworkReply::error ), this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
@@ -338,4 +337,9 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     setToken( response.value( O2_OAUTH2_ACCESS_TOKEN ) );
     setRefreshToken( response.value( O2_OAUTH2_REFRESH_TOKEN ) );
   }
+}
+
+QNetworkAccessManager *QgsO2::getManager()
+{
+  return QgsNetworkAccessManager::instance();
 }

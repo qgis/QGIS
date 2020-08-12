@@ -20,8 +20,6 @@
 __author__ = 'Nyall Dawson'
 __date__ = 'March 2019'
 __copyright__ = '(C) 2019, Nyall Dawson'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -335,6 +333,27 @@ class TestQgsHashedLineSymbolLayer(unittest.TestCase):
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
         assert self.imageCheck('line_dd_size', 'line_dd_size', rendered_image)
+
+    def testSegmentCenter(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        hash_line = QgsHashedLineSymbolLayer(True)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.SegmentCenter)
+        simple_line = QgsSimpleLineSymbolLayer()
+        simple_line.setColor(QColor(0, 255, 0))
+        simple_line.setWidth(1)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, simple_line)
+        hash_line.setSubSymbol(line_symbol)
+        hash_line.setHashLength(10)
+        hash_line.setAverageAngleLength(0)
+
+        s.appendSymbolLayer(hash_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 0 10)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('line_hash_segmentcenter', 'line_hash_segmentcenter', rendered_image)
 
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()

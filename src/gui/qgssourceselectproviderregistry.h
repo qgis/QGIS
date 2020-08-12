@@ -16,10 +16,17 @@
 #ifndef QGSSOURCESELECTPROVIDERREGISTRY_H
 #define QGSSOURCESELECTPROVIDERREGISTRY_H
 
+#include <QList>
+#include <QWidget>
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
+#include "qgsproviderregistry.h"
+
 class QgsSourceSelectProvider;
+class QgsProviderGuiRegistry;
+class QgsAbstractDataSourceWidget;
 
 /**
  * \ingroup gui
@@ -29,21 +36,13 @@ class QgsSourceSelectProvider;
  * QgsSourceSelectProviderRegistry is not usually directly created, but rather accessed through
  * QgsGui::sourceSelectProviderRegistry().
  *
- * \note This class access to QgsProviderRegistry instance to initialize, but QgsProviderRegistry is
- * typically initialized after QgsGui is constructed, for this reason a delayed initialization has been
- * implemented in the class.
- *
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsSourceSelectProviderRegistry
 {
   public:
 
-    /**
-     * Constructor for QgsSourceSelectProviderRegistry.
-     */
-    QgsSourceSelectProviderRegistry() = default;
-
+    QgsSourceSelectProviderRegistry();
     ~QgsSourceSelectProviderRegistry();
 
     //! QgsDataItemProviderRegistry cannot be copied.
@@ -63,21 +62,34 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry
      */
     bool removeProvider( QgsSourceSelectProvider *provider SIP_TRANSFER );
 
+    /**
+     * Initializes the registry. The registry needs to be passed explicitly
+     * (instead of using singleton) because this gets called from QgsGui constructor.
+     * \since QGIS 3.10
+     */
+    void initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
+
     //! Returns a provider by \a name or NULLPTR if not found
     QgsSourceSelectProvider *providerByName( const QString &name );
 
     //! Returns a (possibly empty) list of providers by data \a providerkey
     QList<QgsSourceSelectProvider *> providersByKey( const QString &providerKey );
 
+    /**
+     * Gets select widget from provider with \a name
+     *
+     * The function is replacement of  QgsProviderRegistry::createSelectionWidget() from QGIS 3.8
+     *
+     * \since QGIS 3.10
+     */
+    QgsAbstractDataSourceWidget *createSelectionWidget(
+      const QString &name,
+      QWidget *parent,
+      Qt::WindowFlags fl,
+      QgsProviderRegistry::WidgetMode widgetMode
+    );
 
   private:
-
-    /**
-     * Populate the providers list, this needs to happen after the data provider
-     * registry has been initialized.
-     */
-    void init();
-    bool mInitialized = false;
 #ifdef SIP_RUN
     QgsSourceSelectProviderRegistry( const QgsSourceSelectProviderRegistry &rh );
 #endif

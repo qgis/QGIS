@@ -24,6 +24,7 @@
 #include "qgssymbol.h"
 #include "qgsfields.h"
 #include "qgsfeaturerequest.h"
+#include "qgssymbollayerreference.h"
 
 #include <QList>
 #include <QString>
@@ -37,6 +38,7 @@ class QgsFeature;
 class QgsVectorLayer;
 class QgsPaintEffect;
 class QgsReadWriteContext;
+class QgsStyleEntityVisitorInterface;
 
 typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 
@@ -62,8 +64,18 @@ class CORE_EXPORT QgsSymbolLevelItem
       : mSymbol( symbol )
       , mLayer( layer )
     {}
-    QgsSymbol *symbol() { return mSymbol; }
-    int layer() { return mLayer; }
+
+    /**
+     * The symbol of this symbol level
+     */
+    QgsSymbol *symbol() const;
+
+    /**
+     * The layer of this symbol level
+     */
+    int layer() const;
+
+    // TODO QGIS 4.0 -> make private
   protected:
     QgsSymbol *mSymbol = nullptr;
     int mLayer;
@@ -190,7 +202,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * \returns An expression used as where clause
      */
-    virtual QString filter( const QgsFields &fields = QgsFields() ) { Q_UNUSED( fields ); return QString(); }
+    virtual QString filter( const QgsFields &fields = QgsFields() ) { Q_UNUSED( fields ) return QString(); }
 
     /**
      * Returns a list of attributes required by this renderer. Attributes not listed in here may
@@ -228,7 +240,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * \see startRender()
      * \see stopRender()
      */
-    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) SIP_THROW( QgsCsException );
 
     //! Returns debug information about this renderer
     virtual QString dump() const;
@@ -259,7 +271,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *     skip_the_curren_feature()
      * \endcode
      */
-    virtual QgsFeatureRenderer::Capabilities capabilities() { return nullptr; }
+    virtual QgsFeatureRenderer::Capabilities capabilities() { return QgsFeatureRenderer::Capabilities(); }
 
     /**
      * Returns list of symbols used by the renderer.
@@ -459,6 +471,17 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     virtual const QgsFeatureRenderer *embeddedRenderer() const;
 
+    /**
+     * Accepts the specified symbology \a visitor, causing it to visit all symbols associated
+     * with the renderer.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
   protected:
     QgsFeatureRenderer( const QString &type );
 
@@ -468,12 +491,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * specify if it should be rendered as selected and \a drawVertexMarker
      * to specify if vertex markers should be rendered.
      */
-    void renderFeatureWithSymbol( const QgsFeature &feature,
-                                  QgsSymbol *symbol,
-                                  QgsRenderContext &context,
-                                  int layer,
-                                  bool selected,
-                                  bool drawVertexMarker );
+    void renderFeatureWithSymbol( const QgsFeature &feature, QgsSymbol *symbol, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker ) SIP_THROW( QgsCsException );
 
     //! render editing vertex marker at specified point
     void renderVertexMarker( QPointF pt, QgsRenderContext &context );
@@ -491,8 +509,9 @@ class CORE_EXPORT QgsFeatureRenderer
     /**
      * Clones generic renderer data to another renderer.
      * Currently clones
-     *  * Order By
-     *  * Paint Effect
+     *
+     * - Order By
+     * - Paint Effect
      *
      * \param destRenderer destination renderer for copied effect
      */

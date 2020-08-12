@@ -227,7 +227,7 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns the center point of the rectangle.
      */
-    QgsPointXY center() const { return QgsPointXY( mXmin + width() / 2, mYmin + height() / 2 ); }
+    QgsPointXY center() const { return QgsPointXY( mXmax * 0.5 + mXmin * 0.5, mYmin * 0.5 + mYmax * 0.5 ); }
 
     /**
      * Scale the rectangle around its center point.
@@ -393,6 +393,17 @@ class CORE_EXPORT QgsRectangle
     void combineExtentWith( const QgsPointXY &point )
     {
       combineExtentWith( point.x(), point.y() );
+    }
+
+    /**
+     * Returns the distance from \a point to the nearest point on the boundary of the rectangle.
+     * \since QGIS 3.14
+     */
+    double distance( const QgsPointXY &point ) const
+    {
+      const double dx = std::max( std::max( mXmin - point.x(), 0.0 ), point.x() - mXmax );
+      const double dy = std::max( std::max( mYmin - point.y(), 0.0 ), point.y() - mYmax );
+      return std::sqrt( dx * dx + dy * dy );
     }
 
     /**

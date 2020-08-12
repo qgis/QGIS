@@ -24,6 +24,7 @@
 #include "qgssettings.h"
 #include "qgsproject.h"
 #include "qgsguiutils.h"
+#include "qgsgui.h"
 
 #include <QPainter>
 #include <QMouseEvent>
@@ -159,6 +160,7 @@ void QgsColorButton::setToDefaultColor()
 void QgsColorButton::setToNull()
 {
   setColor( QColor() );
+  emit cleared();
 }
 
 void QgsColorButton::unlink()
@@ -182,7 +184,11 @@ bool QgsColorButton::event( QEvent *e )
     int saturation = c.saturation();
 
     // create very large preview swatch
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
     int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 23 );
+#else
+    int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
+#endif
     int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
 
     int margin = static_cast< int >( height * 0.1 );
@@ -224,12 +230,9 @@ bool QgsColorButton::event( QEvent *e )
 
 void QgsColorButton::setToNoColor()
 {
-  if ( mAllowOpacity )
-  {
-    QColor noColor = QColor( mColor );
-    noColor.setAlpha( 0 );
-    setColor( noColor );
-  }
+  QColor noColor = QColor( mColor );
+  noColor.setAlpha( 0 );
+  setColor( noColor );
 }
 
 void QgsColorButton::mousePressEvent( QMouseEvent *e )
@@ -282,7 +285,7 @@ void QgsColorButton::mouseMoveEvent( QMouseEvent *e )
 {
   if ( mPickingColor )
   {
-    setButtonBackground( sampleColor( e->globalPos() ) );
+    setButtonBackground( QgsGui::sampleColor( e->globalPos() ) );
     e->accept();
     return;
   }
@@ -343,7 +346,7 @@ void QgsColorButton::stopPicking( QPoint eventPos, bool samplingColor )
     return;
   }
 
-  setColor( sampleColor( eventPos ) );
+  setColor( QgsGui::sampleColor( eventPos ) );
   addRecentColor( mColor );
 }
 
@@ -402,7 +405,7 @@ void QgsColorButton::dragEnterEvent( QDragEnterEvent *e )
 
 void QgsColorButton::dragLeaveEvent( QDragLeaveEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   //reset button color
   setButtonBackground();
 }
@@ -422,30 +425,6 @@ void QgsColorButton::dropEvent( QDropEvent *e )
     setColor( mimeColor );
     addRecentColor( mimeColor );
   }
-}
-
-QColor QgsColorButton::sampleColor( QPoint point ) const
-{
-  QScreen *screen = findScreenAt( point );
-  if ( ! screen )
-  {
-    return QColor();
-  }
-  QPixmap snappedPixmap = screen->grabWindow( QApplication::desktop()->winId(), point.x(), point.y(), 1, 1 );
-  QImage snappedImage = snappedPixmap.toImage();
-  return snappedImage.pixel( 0, 0 );
-}
-
-QScreen *QgsColorButton::findScreenAt( QPoint pos )
-{
-  for ( QScreen *screen : QGuiApplication::screens() )
-  {
-    if ( screen->geometry().contains( pos ) )
-    {
-      return screen;
-    }
-  }
-  return nullptr;
 }
 
 void QgsColorButton::setValidColor( const QColor &newColor )
@@ -529,7 +508,7 @@ void QgsColorButton::prepareMenu()
   {
     if ( mShowNull )
     {
-      QAction *nullAction = new QAction( tr( "Clear Color" ), this );
+      QAction *nullAction = new QAction( mNullColorString.isEmpty() ? tr( "Clear Color" ) : mNullColorString, this );
       nullAction->setIcon( createMenuIcon( Qt::transparent, false ) );
       mMenu->addAction( nullAction );
       connect( nullAction, &QAction::triggered, this, &QgsColorButton::setToNull );
@@ -544,7 +523,7 @@ void QgsColorButton::prepareMenu()
       connect( defaultColorAction, &QAction::triggered, this, &QgsColorButton::setToDefaultColor );
     }
 
-    if ( mShowNoColorOption && mAllowOpacity )
+    if ( mShowNoColorOption )
     {
       QAction *noColorAction = new QAction( mNoColorString, this );
       noColorAction->setIcon( createMenuIcon( Qt::transparent, false ) );
@@ -846,9 +825,10 @@ void QgsColorButton::setDefaultColor( const QColor &color )
   mDefaultColor = color;
 }
 
-void QgsColorButton::setShowNull( bool showNull )
+void QgsColorButton::setShowNull( bool showNull, const QString &nullString )
 {
   mShowNull = showNull;
+  mNullColorString = nullString;
 }
 
 bool QgsColorButton::showNull() const

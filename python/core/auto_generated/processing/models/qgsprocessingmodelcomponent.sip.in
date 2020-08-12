@@ -10,6 +10,7 @@
 
 
 
+
 class QgsProcessingModelComponent
 {
 %Docstring
@@ -22,6 +23,8 @@ Represents a component of a model algorithm.
 #include "qgsprocessingmodelcomponent.h"
 %End
   public:
+
+    virtual ~QgsProcessingModelComponent();
 
     QString description() const;
 %Docstring
@@ -51,6 +54,82 @@ Sets the ``position`` of the model component within the graphical modeler.
 .. seealso:: :py:func:`position`
 %End
 
+    QSizeF size() const;
+%Docstring
+Returns the size of the model component within the graphical modeler.
+
+.. seealso:: :py:func:`setSize`
+
+.. versionadded:: 3.14
+%End
+
+    void setSize( QSizeF size );
+%Docstring
+Sets the ``size`` of the model component within the graphical modeler.
+
+.. seealso:: :py:func:`size`
+
+.. versionadded:: 3.14
+%End
+
+    QColor color() const;
+%Docstring
+Returns the color of the model component within the graphical modeler.
+
+An invalid color indicates that the default color for the component should be used.
+
+.. seealso:: :py:func:`setColor`
+
+.. versionadded:: 3.14
+%End
+
+    void setColor( const QColor &color );
+%Docstring
+Sets the ``color`` of the model component within the graphical modeler. An invalid ``color``
+indicates that the default color for the component should be used.
+
+.. seealso:: :py:func:`color`
+
+.. versionadded:: 3.14
+%End
+
+    bool linksCollapsed( Qt::Edge edge ) const;
+%Docstring
+Returns ``True`` if the link points for the specified ``edge`` should be shown collapsed or not.
+
+.. seealso:: :py:func:`setLinksCollapsed`
+%End
+
+    void setLinksCollapsed( Qt::Edge edge, bool collapsed );
+%Docstring
+Sets whether the link points for the specified ``edge`` for this component should be shown collapsed
+in the graphical modeler.
+
+.. seealso:: :py:func:`linksCollapsed`
+%End
+
+
+    virtual QgsProcessingModelComment *comment();
+%Docstring
+Returns the comment attached to this component (may be ``None``)
+
+.. seealso:: :py:func:`setComment`
+%End
+
+    virtual void setComment( const QgsProcessingModelComment &comment );
+%Docstring
+Sets the ``comment`` attached to this component.
+
+.. seealso:: :py:func:`comment`
+%End
+
+    virtual QgsProcessingModelComponent *clone() const = 0 /Factory/;
+%Docstring
+Clones the component.
+
+Ownership is transferred to the caller.
+%End
+
   protected:
 
     QgsProcessingModelComponent( const QString &description = QString() );
@@ -76,6 +155,16 @@ Saves the component properties to a QVariantMap.
 Restores the component properties from a QVariantMap.
 
 .. seealso:: :py:func:`saveCommonProperties`
+%End
+
+    void copyNonDefinitionProperties( const QgsProcessingModelComponent &other );
+%Docstring
+Copies all non-specific definition properties from the ``other`` component definition.
+
+This includes properties like the size and position of the component, but not properties
+like the specific algorithm or input details.
+
+.. versionadded:: 3.14
 %End
 
 };

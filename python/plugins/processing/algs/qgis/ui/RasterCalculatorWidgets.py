@@ -20,8 +20,6 @@
 __author__ = 'Victor Olaya'
 __date__ = 'November 2016'
 __copyright__ = '(C) 2016, Victor Olaya'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 from functools import partial
@@ -49,7 +47,7 @@ from processing.tools.system import userFolder
 
 from processing.gui.wrappers import InvalidParameterValue
 
-from qgis.analysis import QgsRasterCalculatorEntry
+from qgis.analysis import QgsRasterCalculatorEntry, QgsRasterCalcNode
 
 pluginPath = os.path.dirname(__file__)
 WIDGET_ADD_NEW, BASE_ADD_NEW = uic.loadUiType(
@@ -123,8 +121,7 @@ WIDGET, BASE = uic.loadUiType(
 
 
 class ExpressionWidget(BASE, WIDGET):
-
-    _expressions = {"NDVI": "([NIR] - [Red]) % ([NIR] + [Red])"}
+    _expressions = {"NDVI": "([NIR] - [Red]) / ([NIR] + [Red])"}
 
     def __init__(self, options):
         super(ExpressionWidget, self).__init__(None)
@@ -156,6 +153,25 @@ class ExpressionWidget(BASE, WIDGET):
         self.buttonAddPredefined.clicked.connect(self.addPredefined)
 
         self.buttonSavePredefined.clicked.connect(self.savePredefined)
+        self.text.textChanged.connect(self.expressionValid)
+
+    def expressionValid(self):
+        errorString = ''
+        testNode = QgsRasterCalcNode.parseRasterCalcString(self.text.toPlainText(), errorString)
+
+        if not self.text.toPlainText():
+            self.expressionErrorLabel.setText(self.tr('Expression is empty'))
+            self.expressionErrorLabel.setStyleSheet("QLabel { color: black; }")
+            return False
+
+        if testNode:
+            self.expressionErrorLabel.setText(self.tr('Expression is valid'))
+            self.expressionErrorLabel.setStyleSheet("QLabel { color: green; font-weight: bold; }")
+            return True
+
+        self.expressionErrorLabel.setText(self.tr('Expression is not valid ') + errorString)
+        self.expressionErrorLabel.setStyleSheet("QLabel { color : red; font-weight: bold; }")
+        return False
 
     def expsFile(self):
         return os.path.join(userFolder(), 'rastercalcexpressions.json')

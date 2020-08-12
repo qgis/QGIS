@@ -12,6 +12,7 @@
 #include "ogr_srs_api.h"
 #include "gdal_alg.h"
 #include "mdal_utils.hpp"
+#include "mdal_logger.hpp"
 
 #define MDAL_NODATA -9999
 
@@ -21,7 +22,7 @@ void MDAL::GdalDataset::init( const std::string &dsName )
 
   // Open dataset
   mHDataset = GDALOpen( dsName.data(), GA_ReadOnly );
-  if ( !mHDataset ) throw MDAL_Status::Err_UnknownFormat;
+  if ( !mHDataset ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to open dataset " + mDatasetName + " (unknown format)" );
 
   // Now parse it
   parseParameters();
@@ -31,15 +32,15 @@ void MDAL::GdalDataset::init( const std::string &dsName )
 void MDAL::GdalDataset::parseParameters()
 {
   mNBands = static_cast<unsigned int>( GDALGetRasterCount( mHDataset ) );
-  if ( mNBands == 0 ) throw MDAL_Status::Err_InvalidData;
+  if ( mNBands == 0 ) throw MDAL::Error( MDAL_Status::Err_InvalidData, "Unable to get parameters from dataset" );
 
   GDALGetGeoTransform( mHDataset, mGT ); // in case of error it returns Identid
 
   mXSize = static_cast<unsigned int>( GDALGetRasterXSize( mHDataset ) ); //raster width in pixels
-  if ( mXSize == 0 ) throw MDAL_Status::Err_InvalidData;
+  if ( mXSize == 0 ) throw MDAL::Error( MDAL_Status::Err_InvalidData, "Raster width is zero" );
 
   mYSize = static_cast<unsigned int>( GDALGetRasterYSize( mHDataset ) ); //raster height in pixels
-  if ( mYSize == 0 ) throw MDAL_Status::Err_InvalidData;
+  if ( mYSize == 0 ) throw MDAL::Error( MDAL_Status::Err_InvalidData, "Raster height is zero" );
 
   mNPoints = mXSize * mYSize;
   mNVolumes = ( mXSize - 1 ) * ( mYSize - 1 );
@@ -203,7 +204,7 @@ void MDAL::DriverGdal::parseRasterBands( const MDAL::GdalDataset *cfGDALDataset 
     GDALRasterBandH gdalBand = GDALGetRasterBand( cfGDALDataset->mHDataset, static_cast<int>( i ) );
     if ( !gdalBand )
     {
-      throw MDAL_Status::Err_InvalidData;
+      throw MDAL::Error( MDAL_Status::Err_InvalidData, "Invalid GDAL band" );
     }
 
     // Reference time
@@ -214,7 +215,7 @@ void MDAL::DriverGdal::parseRasterBands( const MDAL::GdalDataset *cfGDALDataset 
     metadata_hash metadata = parseMetadata( gdalBand );
 
     std::string band_name;
-    double time = std::numeric_limits<double>::min();
+    MDAL::RelativeTimestamp time;
     bool is_vector;
     bool is_x;
     if ( parseBandInfo( cfGDALDataset, metadata, band_name, &time, &is_vector, &is_x ) )
@@ -235,7 +236,6 @@ void MDAL::DriverGdal::parseRasterBands( const MDAL::GdalDataset *cfGDALDataset 
       raster_bands[data_index] = gdalBand;
       qMap[time] = raster_bands;
       mBands[band_name] = qMap;
-
     }
     else
     {
@@ -247,7 +247,6 @@ void MDAL::DriverGdal::parseRasterBands( const MDAL::GdalDataset *cfGDALDataset 
         std::vector<GDALRasterBandH> raster_bands( data_count );
         raster_bands[data_index] = gdalBand;
         mBands[band_name][time] = raster_bands;
-
       }
       else
       {
@@ -313,7 +312,12 @@ void MDAL::DriverGdal::fixRasterBands()
   }
 }
 
-void MDAL::DriverGdal::addDataToOutput( GDALRasterBandH raster_band, std::shared_ptr<MemoryDataset> tos, bool is_vector, bool is_x )
+MDAL::DateTime MDAL::DriverGdal::referenceTime() const
+{
+  return MDAL::DateTime();
+}
+
+void MDAL::DriverGdal::addDataToOutput( GDALRasterBandH raster_band, std::shared_ptr<MemoryDataset2D> tos, bool is_vector, bool is_x )
 {
   assert( raster_band );
 
@@ -342,8 +346,6 @@ void MDAL::DriverGdal::addDataToOutput( GDALRasterBandH raster_band, std::shared
   unsigned int mXSize = meshGDALDataset()->mXSize;
   unsigned int mYSize = meshGDALDataset()->mYSize;
 
-  double *values = tos->values();
-
   for ( unsigned int y = 0; y < mYSize; ++y )
   {
     // buffering per-line
@@ -363,7 +365,7 @@ void MDAL::DriverGdal::addDataToOutput( GDALRasterBandH raster_band, std::shared
                  );
     if ( err != CE_None )
     {
-      throw MDAL_Status::Err_InvalidData;
+      throw MDAL::Error( MDAL_Status::Err_InvalidData, "Error while buffering data to output" );
     }
 
     for ( unsigned int x = 0; x < mXSize; ++x )
@@ -380,57 +382,16 @@ void MDAL::DriverGdal::addDataToOutput( GDALRasterBandH raster_band, std::shared
         {
           if ( is_x )
           {
-            values[2 * idx] = val;
+            tos->setValueX( idx, val );
           }
           else
           {
-            values[2 * idx + 1] = val;
+            tos->setValueY( idx, val );
           }
         }
         else
         {
-          values[idx] = val;
-        }
-      }
-    }
-  }
-}
-
-void MDAL::DriverGdal::activateFaces( std::shared_ptr<MemoryDataset> tos )
-{
-  // only for data on vertices
-  if ( !tos->group()->isOnVertices() )
-    return;
-
-  bool isScalar = tos->group()->isScalar();
-
-  // Activate only Faces that do all Vertex's outputs with some data
-  int *active = tos->active();
-  const double *values = tos->constValues();
-
-  for ( unsigned int idx = 0; idx < meshGDALDataset()->mNVolumes; ++idx )
-  {
-    Face elem = mMesh->faces.at( idx );
-    for ( size_t i = 0; i < 4; ++i )
-    {
-      const size_t vertexIndex = elem[i];
-      if ( isScalar )
-      {
-        double val = values[vertexIndex];
-        if ( std::isnan( val ) )
-        {
-          active[idx] = 0; //NOT ACTIVE
-          break;
-        }
-      }
-      else
-      {
-        double x = values[2 * vertexIndex];
-        double y = values[2 * vertexIndex + 1];
-        if ( std::isnan( x ) || std::isnan( y ) )
-        {
-          active[idx] = 0; //NOT ACTIVE
-          break;
+          tos->setScalarValue( idx, val );
         }
       }
     }
@@ -451,27 +412,28 @@ void MDAL::DriverGdal::addDatasetGroups()
                                             mFileName,
                                             band->first
                                           );
-    group->setIsOnVertices( true );
+    group->setDataLocation( MDAL_DataLocation::DataOnVertices );
     bool is_vector = ( band->second.begin()->second.size() > 1 );
     group->setIsScalar( !is_vector );
 
     for ( timestep_map::const_iterator time_step = band->second.begin(); time_step != band->second.end(); time_step++ )
     {
       std::vector<GDALRasterBandH> raster_bands = time_step->second;
-      std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MDAL::MemoryDataset >( group.get() );
+      std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MDAL::MemoryDataset2D >( group.get(), true );
 
       dataset->setTime( time_step->first );
       for ( std::vector<GDALRasterBandH>::size_type i = 0; i < raster_bands.size(); ++i )
       {
         addDataToOutput( raster_bands[i], dataset, is_vector, i == 0 );
       }
-      activateFaces( dataset );
+      dataset->activateFaces( mMesh.get() );
       dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
       group->datasets.push_back( dataset );
     }
 
     // TODO use GDALComputeRasterMinMax
     group->setStatistics( MDAL::calculateStatistics( group ) );
+    group->setReferenceTime( referenceTime() );
     mMesh->datasetGroups.push_back( group );
   }
 }
@@ -486,15 +448,12 @@ void MDAL::DriverGdal::createMesh()
 
   mMesh.reset( new MemoryMesh(
                  name(),
-                 vertices.size(),
-                 faces.size(),
                  4, //maximum quads
-                 computeExtent( vertices ),
                  mFileName
                )
              );
-  mMesh->vertices = vertices;
-  mMesh->faces = faces;
+  mMesh->setVertices( std::move( vertices ) );
+  mMesh->setFaces( std::move( faces ) );
   bool proj_added = addSrcProj();
   if ( ( !proj_added ) && is_longitude_shifted )
   {
@@ -520,7 +479,7 @@ std::vector<std::string> MDAL::DriverGdal::parseDatasetNames( const std::string 
   std::vector<std::string> ret;
 
   GDALDatasetH hDataset = GDALOpen( gdal_name.data(), GA_ReadOnly );
-  if ( hDataset == nullptr ) throw MDAL_Status::Err_UnknownFormat;
+  if ( hDataset == nullptr ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to open dataset " + gdal_name );
 
   metadata_hash metadata = parseMetadata( hDataset, "SUBDATASETS" );
 
@@ -551,7 +510,7 @@ void MDAL::DriverGdal::registerDriver()
   GDALAllRegister();
   // check that our driver exists
   GDALDriverH hDriver = GDALGetDriverByName( mGdalDriverName.data() );
-  if ( !hDriver ) throw MDAL_Status::Err_MissingDriver;
+  if ( !hDriver ) throw MDAL::Error( MDAL_Status::Err_MissingDriver, "No such driver with name " + mGdalDriverName );
 }
 
 const MDAL::GdalDataset *MDAL::DriverGdal::meshGDALDataset()
@@ -569,24 +528,32 @@ MDAL::DriverGdal::DriverGdal( const std::string &name,
   mPafScanline( nullptr )
 {}
 
-bool MDAL::DriverGdal::canRead( const std::string &uri )
+bool MDAL::DriverGdal::canReadMesh( const std::string &uri )
 {
   try
   {
     registerDriver();
     parseDatasetNames( uri );
+
+    if ( !MDAL::contains( filters(), MDAL::fileExtension( uri ) ) )
+      return false;
   }
   catch ( MDAL_Status )
   {
     return false;
   }
+  catch ( MDAL::Error )
+  {
+    return false;
+  }
+
   return true;
 }
 
-std::unique_ptr<MDAL::Mesh> MDAL::DriverGdal::load( const std::string &fileName, MDAL_Status *status )
+std::unique_ptr<MDAL::Mesh> MDAL::DriverGdal::load( const std::string &fileName, const std::string & )
 {
   mFileName = fileName;
-  if ( status ) *status = MDAL_Status::None ;
+  MDAL::Log::resetLastStatus();
 
   mPafScanline = nullptr;
   mMesh.reset();
@@ -641,7 +608,12 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverGdal::load( const std::string &fileName,
   }
   catch ( MDAL_Status error )
   {
-    if ( status ) *status = ( error );
+    MDAL::Log::error( error, name(), "error occurred while loading " + fileName );
+    mMesh.reset();
+  }
+  catch ( MDAL::Error err )
+  {
+    MDAL::Log::error( err, name() );
     mMesh.reset();
   }
 
@@ -652,7 +624,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverGdal::load( const std::string &fileName,
   // do not allow mesh without any valid datasets
   if ( mMesh && ( mMesh->datasetGroups.empty() ) )
   {
-    if ( status ) *status = MDAL_Status::Err_InvalidData;
+    MDAL::Log::error( MDAL_Status::Err_InvalidData, name(), "Mesh does not have any valid dataset" );
     mMesh.reset();
   }
   return std::unique_ptr<Mesh>( mMesh.release() );
@@ -667,6 +639,7 @@ void MDAL::DriverGdal::parseBandIsVector( std::string &band_name, bool *is_vecto
        MDAL::contains( band_name, "u-component", MDAL::CaseInsensitive ) ||
        MDAL::contains( band_name, "u component", MDAL::CaseInsensitive ) ||
        MDAL::contains( band_name, "U wind component", MDAL::CaseInsensitive ) ||
+       MDAL::startsWith( band_name, "Northward", MDAL::CaseInsensitive ) ||
        MDAL::contains( band_name, "x-component", MDAL::CaseInsensitive ) ||
        MDAL::contains( band_name, "x component", MDAL::CaseInsensitive ) )
   {
@@ -678,6 +651,7 @@ void MDAL::DriverGdal::parseBandIsVector( std::string &band_name, bool *is_vecto
             MDAL::contains( band_name, "v-component", MDAL::CaseInsensitive ) ||
             MDAL::contains( band_name, "v component", MDAL::CaseInsensitive ) ||
             MDAL::contains( band_name, "V wind component", MDAL::CaseInsensitive ) ||
+            MDAL::startsWith( band_name, "Eastward", MDAL::CaseInsensitive ) ||
             MDAL::contains( band_name, "y-component", MDAL::CaseInsensitive ) ||
             MDAL::contains( band_name, "y component", MDAL::CaseInsensitive ) )
   {
@@ -696,6 +670,8 @@ void MDAL::DriverGdal::parseBandIsVector( std::string &band_name, bool *is_vecto
     band_name = MDAL::replace( band_name, "v-component of", "", MDAL::CaseInsensitive );
     band_name = MDAL::replace( band_name, "U wind component", "wind", MDAL::CaseInsensitive );
     band_name = MDAL::replace( band_name, "V wind component", "wind", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "Northward", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "Eastward", "", MDAL::CaseInsensitive );
     band_name = MDAL::replace( band_name, "x-component of", "", MDAL::CaseInsensitive );
     band_name = MDAL::replace( band_name, "y-component of", "", MDAL::CaseInsensitive );
     band_name = MDAL::replace( band_name, "u-component", "", MDAL::CaseInsensitive );

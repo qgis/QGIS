@@ -1,15 +1,32 @@
 version: '3'
 services:
   postgres:
-    image: kartoza/postgis:9.5-2.2
+    build:
+      dockerfile: Dockerfile-postgis
+      context: ../../../tests/testdata
     environment:
       - ALLOW_IP_RANGE="172.18.0.0/16"
+# The following files are added in Dockerfile-postgis
+      - SSL_CERT_FILE=/etc/ssl/certs/postgres_cert.crt
+      - SSL_KEY_FILE=/etc/ssl/private/postgres_key.key
+      - SSL_CA_FILE=/etc/ssl/certs/issuer_ca_cert.pem
 
-  mssql:
-    image: microsoft/mssql-server-linux:2017-latest
+  oracle:
+    image: oslandia/oracle-for-qgis-tests:18.4.0-xe
     environment:
-      ACCEPT_EULA: Y
-      SA_PASSWORD: <YourStrong!Passw0rd>
+      - ORACLE_SID=XE
+      - ORACLE_PWD=adminpass
+      - ORACLE_PDB=ORCLPDBTEST
+      - ORACLE_CHARACTERSET=AL32UTF8
+    ports:
+      - 1521:1521
+
+# Proving very fragile!
+#  mssql:
+#    image: microsoft/mssql-server-linux:2017-latest
+#    environment:
+#      ACCEPT_EULA: Y
+#      SA_PASSWORD: <YourStrong!Passw0rd>
 
   qgis-deps:
     tty: true
@@ -18,7 +35,7 @@ services:
       - ${TRAVIS_BUILD_DIR}:/root/QGIS
     links:
       - postgres
-      - mssql
+      - oracle
+    #  - mssql
     env_file:
       - docker-variables.env
-

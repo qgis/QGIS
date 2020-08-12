@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstringutils.h"
+#include "qgslogger.h"
 #include <QVector>
 #include <QRegExp>
 #include <QStringList>
@@ -407,6 +408,111 @@ QString QgsStringUtils::soundex( const QString &string )
   return tmp;
 }
 
+
+double QgsStringUtils::fuzzyScore( const QString &candidate, const QString &search )
+{
+  QString candidateNormalized = candidate.simplified().normalized( QString:: NormalizationForm_C ).toLower();
+  QString searchNormalized = search.simplified().normalized( QString:: NormalizationForm_C ).toLower();
+
+  int candidateLength = candidateNormalized.length();
+  int searchLength = searchNormalized.length();
+  int score = 0;
+
+  // if the candidate and the search term are empty, no other option than 0 score
+  if ( candidateLength == 0 || searchLength == 0 )
+    return score;
+
+  int candidateIdx = 0;
+  int searchIdx = 0;
+  // there is always at least one word
+  int maxScore = FUZZY_SCORE_WORD_MATCH;
+
+  bool isPreviousIndexMatching = false;
+  bool isWordOpen = true;
+
+  // loop trough each candidate char and calculate the potential max score
+  while ( candidateIdx < candidateLength )
+  {
+    QChar candidateChar = candidateNormalized[ candidateIdx++ ];
+    bool isCandidateCharWordEnd = candidateChar == ' ' || candidateChar.isPunct();
+
+    // the first char is always the default score
+    if ( candidateIdx == 1 )
+      maxScore += FUZZY_SCORE_NEW_MATCH;
+    // every space character or underscore is a opportunity for a new word
+    else if ( isCandidateCharWordEnd )
+      maxScore += FUZZY_SCORE_WORD_MATCH;
+    // potentially we can match every other character
+    else
+      maxScore += FUZZY_SCORE_CONSECUTIVE_MATCH;
+
+    // we looped through all the characters
+    if ( searchIdx >= searchLength )
+      continue;
+
+    QChar searchChar = searchNormalized[ searchIdx ];
+    bool isSearchCharWordEnd = searchChar == ' ' || searchChar.isPunct();
+
+    // match!
+    if ( candidateChar == searchChar || ( isCandidateCharWordEnd && isSearchCharWordEnd ) )
+    {
+      searchIdx++;
+
+      // if we have just successfully finished a word, give higher score
+      if ( isSearchCharWordEnd )
+      {
+        if ( isWordOpen )
+          score += FUZZY_SCORE_WORD_MATCH;
+        else if ( isPreviousIndexMatching )
+          score += FUZZY_SCORE_CONSECUTIVE_MATCH;
+        else
+          score += FUZZY_SCORE_NEW_MATCH;
+
+        isWordOpen = true;
+      }
+      // if we have consecutive characters matching, give higher score
+      else if ( isPreviousIndexMatching )
+      {
+        score += FUZZY_SCORE_CONSECUTIVE_MATCH;
+      }
+      // normal score for new independent character that matches
+      else
+      {
+        score += FUZZY_SCORE_NEW_MATCH;
+      }
+
+      isPreviousIndexMatching = true;
+    }
+    // if the current character does NOT match, we are sure we cannot build a word for now
+    else
+    {
+      isPreviousIndexMatching = false;
+      isWordOpen = false;
+    }
+
+    // if the search string is covered, check if the last match is end of word
+    if ( searchIdx >= searchLength )
+    {
+      bool isEndOfWord = ( candidateIdx >= candidateLength )
+                         ? true
+                         : candidateNormalized[candidateIdx] == ' ' || candidateNormalized[candidateIdx].isPunct();
+
+      if ( isEndOfWord )
+        score += FUZZY_SCORE_WORD_MATCH;
+    }
+
+    // QgsLogger::debug( QStringLiteral( "TMP: %1 | %2 | %3 | %4 | %5" ).arg( candidateChar, searchChar, QString::number(score), QString::number(isCandidateCharWordEnd), QString::number(isSearchCharWordEnd) ) + QStringLiteral( __FILE__ ) );
+  }
+
+  // QgsLogger::debug( QStringLiteral( "RES: %1 | %2" ).arg( QString::number(maxScore),  QString::number(score) ) + QStringLiteral( __FILE__ ) );
+  // we didn't loop through all the search chars, it means, that they are not present in the current candidate
+  if ( searchIdx < searchLength )
+    score = 0;
+
+  return static_cast<float>( std::max( score, 0 ) ) / std::max( maxScore, 1 );
+}
+
+
 QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
 {
   QString converted = string;
@@ -414,7 +520,7 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
   // http://alanstorm.com/url_regex_explained
   // note - there's more robust implementations available, but we need one which works within the limitation of QRegExp
   static QRegExp urlRegEx( "(\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/))))" );
-  static QRegExp protoRegEx( "^(?:f|ht)tps?://" );
+  static QRegExp protoRegEx( "^(?:f|ht)tps?://|file://" );
   static QRegExp emailRegEx( "([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)" );
 
   int offset = 0;
@@ -444,6 +550,29 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
 
   if ( foundLinks )
     *foundLinks = found;
+
+  return converted;
+}
+
+QString QgsStringUtils::htmlToMarkdown( const QString &html )
+{
+  // Any changes in this function must be copied to qgscrashreport.cpp too
+  QString converted = html;
+  converted.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
+  converted.replace( QLatin1String( "<b>" ), QLatin1String( "**" ) );
+  converted.replace( QLatin1String( "</b>" ), QLatin1String( "**" ) );
+
+  static QRegExp hrefRegEx( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" );
+  int offset = 0;
+  while ( hrefRegEx.indexIn( converted, offset ) != -1 )
+  {
+    QString url = hrefRegEx.cap( 1 ).replace( QStringLiteral( "\"" ), QString() );
+    url.replace( '\'', QString() );
+    QString name = hrefRegEx.cap( 2 );
+    QString anchor = QStringLiteral( "[%1](%2)" ).arg( name, url );
+    converted.replace( hrefRegEx, anchor );
+    offset = hrefRegEx.pos( 1 ) + anchor.length();
+  }
 
   return converted;
 }
@@ -516,6 +645,28 @@ QString QgsStringUtils::wordWrap( const QString &string, const int length, const
   }
 
   return newstr;
+}
+
+QString QgsStringUtils::substituteVerticalCharacters( QString string )
+{
+  string = string.replace( ',', QChar( 65040 ) ).replace( QChar( 8229 ), QChar( 65072 ) ); // comma & two-dot leader
+  string = string.replace( QChar( 12289 ), QChar( 65041 ) ).replace( QChar( 12290 ), QChar( 65042 ) ); // ideographic comma & full stop
+  string = string.replace( ':', QChar( 65043 ) ).replace( ';', QChar( 65044 ) );
+  string = string.replace( '!', QChar( 65045 ) ).replace( '?', QChar( 65046 ) );
+  string = string.replace( QChar( 12310 ), QChar( 65047 ) ).replace( QChar( 12311 ), QChar( 65048 ) ); // white lenticular brackets
+  string = string.replace( QChar( 8230 ), QChar( 65049 ) ); // three-dot ellipse
+  string = string.replace( QChar( 8212 ), QChar( 65073 ) ).replace( QChar( 8211 ), QChar( 65074 ) ); // em & en dash
+  string = string.replace( '_', QChar( 65075 ) ).replace( QChar( 65103 ), QChar( 65076 ) ); // low line & wavy low line
+  string = string.replace( '(', QChar( 65077 ) ).replace( ')', QChar( 65078 ) );
+  string = string.replace( '{', QChar( 65079 ) ).replace( '}', QChar( 65080 ) );
+  string = string.replace( '<', QChar( 65087 ) ).replace( '>', QChar( 65088 ) );
+  string = string.replace( '[', QChar( 65095 ) ).replace( ']', QChar( 65096 ) );
+  string = string.replace( QChar( 12308 ), QChar( 65081 ) ).replace( QChar( 12309 ), QChar( 65082 ) );   // tortoise shell brackets
+  string = string.replace( QChar( 12304 ), QChar( 65083 ) ).replace( QChar( 12305 ), QChar( 65084 ) );   // black lenticular brackets
+  string = string.replace( QChar( 12298 ), QChar( 65085 ) ).replace( QChar( 12299 ), QChar( 65086 ) ); // double angle brackets
+  string = string.replace( QChar( 12300 ), QChar( 65089 ) ).replace( QChar( 12301 ), QChar( 65090 ) );   // corner brackets
+  string = string.replace( QChar( 12302 ), QChar( 65091 ) ).replace( QChar( 12303 ), QChar( 65092 ) );   // white corner brackets
+  return string;
 }
 
 QgsStringReplacement::QgsStringReplacement( const QString &match, const QString &replacement, bool caseSensitive, bool wholeWordOnly )

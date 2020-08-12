@@ -19,6 +19,7 @@
 #include "qgscodeeditor.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgsfeature.h"
 #include <Qsci/qscilexersql.h>
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
@@ -38,10 +39,23 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
     //! Constructor for QgsCodeEditorSQL
     QgsCodeEditorSQL( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    /**
+     * Set field names to be added to the lexer API.
+     *
+     * \since QGIS 3.14
+     */
+    void setFields( const QgsFields &fields );
+
   private:
     //QgsCodeEditor *mSciWidget;
     //QWidget *mWidget;
     void setSciLexerSQL();
+    void initializeLexer();
+    void updateApis();
+    QsciAPIs *mApis = nullptr;
+    QsciLexerSQL *mSqlLexer;
+
+    QStringList mFieldNames;
 };
 
 #ifndef SIP_RUN

@@ -32,6 +32,8 @@ class QTextCodec;
 #include "qgsrelation.h"
 #include "qgsfeaturesink.h"
 #include "qgsfeaturesource.h"
+#include "qgsfeaturerequest.h"
+#include "qgsvectordataprovidertemporalcapabilities.h"
 
 typedef QList<int> QgsAttributeList SIP_SKIP;
 typedef QSet<int> QgsAttributeIds SIP_SKIP;
@@ -43,7 +45,6 @@ class QgsFeedback;
 class QgsFeatureRenderer;
 class QgsAbstractVectorLayerLabeling;
 
-#include "qgsfeaturerequest.h"
 
 /**
  * \ingroup core
@@ -166,7 +167,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     long featureCount() const override = 0;
 
     /**
-     * Returns TRUE if the layer contains at least one feature.
+     * Returns TRUE if the layer does not contain any feature.
      *
      * \since QGIS 3.4
      */
@@ -197,7 +198,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Returns a short comment for the data that this provider is
      * providing access to (e.g. the comment for postgres table).
      */
-    virtual QString dataComment() const;
+    virtual QString dataComment() const override;
 
     /**
      * Returns the minimum value of an attribute
@@ -239,6 +240,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \param parameters parameters controlling aggregate calculation
      * \param context expression context for filter
      * \param ok will be set to TRUE if calculation was successfully performed by the data provider
+     * \param fids list of fids to filter, otherwise will use all fids
      * \returns calculated aggregate value
      * \since QGIS 2.16
      */
@@ -246,7 +248,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
                                 int index,
                                 const QgsAggregateCalculator::AggregateParameters &parameters,
                                 QgsExpressionContext *context,
-                                bool &ok ) const;
+                                bool &ok,
+                                QgsFeatureIds *fids = nullptr ) const;
 
     /**
      * Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
@@ -254,9 +257,10 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \param index the index of the attribute
      * \param enumList reference to the list to fill
      */
-    virtual void enumValues( int index, QStringList &enumList SIP_OUT ) const { Q_UNUSED( index ); enumList.clear(); }
+    virtual void enumValues( int index, QStringList &enumList SIP_OUT ) const { Q_UNUSED( index ) enumList.clear(); }
 
-    bool addFeatures( QgsFeatureList &flist SIP_INOUT, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &flist SIP_INOUT, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+    QString lastError() const override;
 
     /**
      * Deletes one or more features from the provider. This requires the DeleteFeatures capability.
@@ -312,6 +316,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     /**
      * Changes attribute values of existing features. This should
      * succeed if the provider reports the ChangeAttributeValues capability.
+     * The method returns FALSE if the provider does not have ChangeAttributeValues
+     * capability or if any of the changes could not be successfully applied.
      * \param attr_map a map containing changed attributes
      * \returns TRUE in case of success and FALSE in case of failure
      */
@@ -402,12 +408,23 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     QString capabilitiesString() const;
 
     /**
-     * Set encoding used for accessing data from layer
+     * Set encoding used for accessing data from layer.
+     *
+     * An empty encoding string indicates that the provider should automatically
+     * select the most appropriate encoding for the data source.
+     *
+     * \warning Support for setting the provider encoding depends on the underlying data
+     * provider. Check capabilities() for the QgsVectorDataProvider::SelectEncoding
+     * capability in order to determine if the provider supports this ability.
+     *
+     * \see encoding()
      */
     virtual void setEncoding( const QString &e );
 
     /**
-     * Gets encoding which is used for accessing data
+     * Returns the encoding which is used for accessing data.
+     *
+     * \see setEncoding()
      */
     QString encoding() const;
 
@@ -547,13 +564,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual QgsTransaction *transaction() const;
 
     /**
-     * Forces a reload of the underlying datasource if the provider implements this
-     * method.
-     * In particular on the OGR provider, a pooled connection will be invalidated.
-     * This forces QGIS to reopen a file or connection.
-     * This can be required if the underlying file is replaced.
+     * \deprecated QGIS 3.12 - will be removed in QGIS 4.0 - use reloadData instead
      */
-    virtual void forceReload();
+    Q_DECL_DEPRECATED virtual void forceReload() SIP_DEPRECATED { reloadData(); }
 
     /**
      * Gets the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
@@ -588,7 +601,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \param value The metadata value
      * \returns The translated metadata value
      */
-    virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const { Q_UNUSED( mdKey ); return value.toString(); }
+    virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const { Q_UNUSED( mdKey ) return value.toString(); }
 
     /**
      * Returns TRUE if the data source has metadata, FALSE otherwise.
@@ -598,6 +611,17 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \since QGIS 3.0
      */
     virtual bool hasMetadata() const { return true; }
+
+    /**
+     * Handles any post-clone operations required after this vector data provider was cloned
+     * from the \a source provider.
+     *
+     * \since QGIS 3.8.1
+     */
+    virtual void handlePostCloneOperations( QgsVectorDataProvider *source );
+
+    QgsVectorDataProviderTemporalCapabilities *temporalCapabilities() override;
+    const QgsVectorDataProviderTemporalCapabilities *temporalCapabilities() const override SIP_SKIP;
 
   signals:
 
@@ -669,13 +693,14 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     //! List of errors
     mutable QStringList mErrors;
 
+    std::unique_ptr< QgsVectorDataProviderTemporalCapabilities > mTemporalCapabilities;
+
     static QStringList sEncodings;
 
     /**
      * Includes this data provider in the specified transaction. Ownership of transaction is not transferred.
      */
     virtual void setTransaction( QgsTransaction * /*transaction*/ ) {}
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorDataProvider::Capabilities )

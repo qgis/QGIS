@@ -97,6 +97,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
       ShowLegendAsTree           = 0x0004,  //!< For legends that support it, will show them in a tree instead of a list (needs also ShowLegend). Added in 2.8
       DeferredLegendInvalidation = 0x0008,  //!< Defer legend model invalidation
       UseEmbeddedWidgets         = 0x0010,  //!< Layer nodes may optionally include extra embedded widgets (if used in QgsLayerTreeView). Added in 2.16
+      UseTextFormatting          = 0x0020,  //!< Layer nodes will alter text appearance based on layer properties, such as scale based visibility
 
       // behavioral flags
       AllowNodeReorder           = 0x1000,  //!< Allow reordering with drag'n'drop
@@ -250,7 +251,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     /**
      * Give the layer tree model hints about the currently associated map view
-     * so that legend nodes that use map units can be scaled currectly
+     * so that legend nodes that use map units can be scaled correctly
      * \since QGIS 2.6
      */
     void setLegendMapViewData( double mapUnitsPerPixel, int dpi, double scale );
@@ -284,6 +285,14 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * \since QGIS 3.6
      */
     static int scaleIconSize( int standardSize );
+
+  signals:
+
+    /**
+     * Emits a message than can be displayed to the user in a GUI class
+     * \since QGIS 3.14
+     */
+    void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::Info, int duration = 5 );
 
   protected slots:
     void nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
@@ -365,8 +374,10 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     /**
      * Structure that stores tree representation of map layer's legend.
      * This structure is used only when the following requirements are met:
-     * 1. tree legend representation is enabled in model (ShowLegendAsTree flag)
-     * 2. some legend nodes have non-null parent rule key (accessible via data(ParentRuleKeyRole) method)
+     *
+     * # tree legend representation is enabled in model (ShowLegendAsTree flag)
+     * # some legend nodes have non-null parent rule key (accessible via data(ParentRuleKeyRole) method)
+     *
      * The tree structure (parents and children of each node) is extracted by analyzing nodes' parent rules.
      * \note not available in Python bindings
      */
@@ -422,7 +433,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     QMap<QString, QString> mLayerStyleOverrides;
 
     //! Per layer data about layer's legend nodes
-    QMap<QgsLayerTreeLayer *, LayerLegendData> mLegend;
+    QHash<QgsLayerTreeLayer *, LayerLegendData> mLegend;
 
     QFont mFontLayer;
     QFont mFontGroup;

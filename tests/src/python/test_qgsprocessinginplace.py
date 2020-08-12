@@ -9,22 +9,37 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '2018-09'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import re
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+import os
+from qgis.PyQt.QtCore import QCoreApplication, QVariant, QTemporaryDir
 from qgis.core import (
-    QgsFeature, QgsGeometry, QgsSettings, QgsApplication, QgsMemoryProviderUtils, QgsWkbTypes, QgsField, QgsFields, QgsProcessingFeatureSourceDefinition, QgsProcessingContext, QgsProcessingFeedback, QgsCoordinateReferenceSystem, QgsProject, QgsProcessingException
+    QgsFeature,
+    QgsGeometry,
+    QgsSettings,
+    QgsApplication,
+    QgsMemoryProviderUtils,
+    QgsWkbTypes,
+    QgsField,
+    QgsFields,
+    QgsProcessingFeatureSourceDefinition,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
+    QgsCoordinateReferenceSystem,
+    QgsProject,
+    QgsProcessingException,
+    QgsVectorLayer
 )
 from processing.core.Processing import Processing
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools import dataobjects
 from processing.gui.AlgorithmExecutor import execute_in_place_run
 from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import QgsVectorLayerUtils, QgsFeatureRequest
+import shutil
 
 start_app()
 
@@ -98,9 +113,11 @@ class TestQgsProcessingInPlace(unittest.TestCase):
             'mymultiplayer', fields, QgsWkbTypes.MultiPolygon, QgsCoordinateReferenceSystem(4326))
 
         f3 = QgsFeature(cls.multipoly_vl.fields())
-        f3.setGeometry(QgsGeometry.fromWkt('MultiPolygon (((2.81856297539240419 41.98170998812887689, 2.81874467773035464 41.98167537995160359, 2.81879535908157752 41.98154066615795443, 2.81866433873670452 41.98144056064155905, 2.81848263699778379 41.98147516865246587, 2.81843195500470811 41.98160988234612034, 2.81856297539240419 41.98170998812887689)),((2.81898589063455907 41.9815711567298635, 2.81892080450418803 41.9816030048432367, 2.81884192631866437 41.98143737613141724, 2.8190679469505846 41.98142270931093378, 2.81898589063455907 41.9815711567298635)))'))
+        f3.setGeometry(QgsGeometry.fromWkt(
+            'MultiPolygon (((2.81856297539240419 41.98170998812887689, 2.81874467773035464 41.98167537995160359, 2.81879535908157752 41.98154066615795443, 2.81866433873670452 41.98144056064155905, 2.81848263699778379 41.98147516865246587, 2.81843195500470811 41.98160988234612034, 2.81856297539240419 41.98170998812887689)),((2.81898589063455907 41.9815711567298635, 2.81892080450418803 41.9816030048432367, 2.81884192631866437 41.98143737613141724, 2.8190679469505846 41.98142270931093378, 2.81898589063455907 41.9815711567298635)))'))
         f4 = QgsFeature(cls.multipoly_vl.fields())
-        f4.setGeometry(QgsGeometry.fromWkt('MultiPolygon (((2.81823679385631332 41.98133290154246566, 2.81830770255185703 41.98123540208609228, 2.81825871989355159 41.98112524362621656, 2.81813882853970243 41.98111258462271422, 2.81806791984415872 41.98121008407908761, 2.81811690250246416 41.98132024253896333, 2.81823679385631332 41.98133290154246566)),((2.81835835162010895 41.98123286963267731, 2.8183127674586852 41.98108725356146209, 2.8184520523963692 41.98115436357689134, 2.81835835162010895 41.98123286963267731)))'))
+        f4.setGeometry(QgsGeometry.fromWkt(
+            'MultiPolygon (((2.81823679385631332 41.98133290154246566, 2.81830770255185703 41.98123540208609228, 2.81825871989355159 41.98112524362621656, 2.81813882853970243 41.98111258462271422, 2.81806791984415872 41.98121008407908761, 2.81811690250246416 41.98132024253896333, 2.81823679385631332 41.98133290154246566)),((2.81835835162010895 41.98123286963267731, 2.8183127674586852 41.98108725356146209, 2.8184520523963692 41.98115436357689134, 2.81835835162010895 41.98123286963267731)))'))
         cls.multipoly_vl.dataProvider().addFeatures([f3, f4])
 
         assert cls.multipoly_vl.isValid()
@@ -123,8 +140,9 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         alg = self.registry.createAlgorithmById(alg_name)
         for layer_wkb_name, supported in expected.items():
             layer = self._make_layer(layer_wkb_name)
-            #print("Checking %s ( %s ) : %s" % (alg_name, layer_wkb_name, supported))
-            self.assertEqual(alg.supportInPlaceEdit(layer), supported, "Expected: %s - %s = supported: %s" % (alg_name, layer_wkb_name, supported))
+            # print("Checking %s ( %s ) : %s" % (alg_name, layer_wkb_name, supported))
+            self.assertEqual(alg.supportInPlaceEdit(layer), supported,
+                             "Expected: %s - %s = supported: %s" % (alg_name, layer_wkb_name, supported))
 
     def test_support_in_place_edit(self):
 
@@ -139,9 +157,13 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         POLYGON_ONLY_NOT_M_NOT_Z = {t: t in ('Polygon', 'MultiPolygon') for t in _all_true().keys()}
         MULTI_ONLY = {t: t.find('Multi') == 0 for t in _all_true().keys()}
         SINGLE_ONLY = {t: t.find('Multi') == -1 for t in _all_true().keys()}
-        LINESTRING_AND_POLYGON_ONLY = {t: (t.find('LineString') >= 0 or t.find('Polygon') >= 0) for t in _all_true().keys()}
-        LINESTRING_AND_POLYGON_ONLY_NOT_M = {t: (t.rfind('M') < 1 and (t.find('LineString') >= 0 or t.find('Polygon') >= 0)) for t in _all_true().keys()}
-        LINESTRING_AND_POLYGON_ONLY_NOT_M_NOT_Z = {t: (t.rfind('M') < 1 and t.find('Z') == -1 and (t.find('LineString') >= 0 or t.find('Polygon') >= 0)) for t in _all_true().keys()}
+        LINESTRING_AND_POLYGON_ONLY = {t: (t.find('LineString') >= 0 or t.find('Polygon') >= 0) for t in
+                                       _all_true().keys()}
+        LINESTRING_AND_POLYGON_ONLY_NOT_M = {
+            t: (t.rfind('M') < 1 and (t.find('LineString') >= 0 or t.find('Polygon') >= 0)) for t in _all_true().keys()}
+        LINESTRING_AND_POLYGON_ONLY_NOT_M_NOT_Z = {
+            t: (t.rfind('M') < 1 and t.find('Z') == -1 and (t.find('LineString') >= 0 or t.find('Polygon') >= 0)) for t
+            in _all_true().keys()}
 
         self._support_inplace_edit_tester('native:smoothgeometry', LINESTRING_AND_POLYGON_ONLY)
         self._support_inplace_edit_tester('native:arrayoffsetlines', LINESTRING_ONLY)
@@ -179,6 +201,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self._support_inplace_edit_tester('native:splitlinesbylength', LINESTRING_ONLY)
         self._support_inplace_edit_tester('native:buffer', POLYGON_ONLY_NOT_M_NOT_Z)
         self._support_inplace_edit_tester('native:antimeridiansplit', LINESTRING_ONLY)
+        self._support_inplace_edit_tester('native:affinetransform', GEOMETRY_ONLY)
 
     def _make_compatible_tester(self, feature_wkt, layer_wkb_name, attrs=[1]):
         layer = self._make_layer(layer_wkb_name)
@@ -216,11 +239,11 @@ class TestQgsProcessingInPlace(unittest.TestCase):
 
         # Adding Z back
         l, f = self._make_compatible_tester('Point (1 1)', 'PointZ')
-        self.assertEqual(f[0].geometry().get().z(), 0)
+        self.assertEqual(f[0].geometry().constGet().z(), 0)
 
         # Adding M back
         l, f = self._make_compatible_tester('Point (1 1)', 'PointM')
-        self.assertEqual(f[0].geometry().get().m(), 0)
+        self.assertEqual(f[0].geometry().constGet().m(), 0)
 
         self._make_compatible_tester('Point m (1 1 3)', 'Point')
         self._make_compatible_tester('Point(1 3)', 'MultiPoint')
@@ -234,14 +257,14 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         # Adding Z back
         l, f = self._make_compatible_tester('Polygon ((1 1, 2 2, 3 3, 1 1))', 'PolygonZ')
         g = f[0].geometry()
-        g2 = g.get()
+        g2 = g.constGet()
         for v in g2.vertices():
             self.assertEqual(v.z(), 0)
 
         # Adding M back
         l, f = self._make_compatible_tester('Polygon ((1 1, 2 2, 3 3, 1 1))', 'PolygonM')
         g = f[0].geometry()
-        g2 = g.get()
+        g2 = g.constGet()
         for v in g2.vertices():
             self.assertEqual(v.m(), 0)
 
@@ -260,14 +283,14 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         # Adding Z back
         l, f = self._make_compatible_tester('LineString (1 1, 2 2, 3 3, 1 1))', 'LineStringZ')
         g = f[0].geometry()
-        g2 = g.get()
+        g2 = g.constGet()
         for v in g2.vertices():
             self.assertEqual(v.z(), 0)
 
         # Adding M back
         l, f = self._make_compatible_tester('LineString (1 1, 2 2, 3 3, 1 1))', 'LineStringM')
         g = f[0].geometry()
-        g2 = g.get()
+        g2 = g.constGet()
         for v in g2.vertices():
             self.assertEqual(v.m(), 0)
 
@@ -275,7 +298,8 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self._make_compatible_tester('MultiLineString((1 1, 2 2, 3 3, 1 1), (1 1, 2 2, 3 3, 1 1))', 'MultiLineString')
 
         # Test Multi -> Single
-        l, f = self._make_compatible_tester('MultiLineString((1 1, 2 2, 3 3, 1 1), (10 1, 20 2, 30 3, 10 1))', 'LineString')
+        l, f = self._make_compatible_tester('MultiLineString((1 1, 2 2, 3 3, 1 1), (10 1, 20 2, 30 3, 10 1))',
+                                            'LineString')
         self.assertEqual(len(f), 2)
         self.assertEqual(f[0].geometry().asWkt(), 'LineString (1 1, 2 2, 3 3, 1 1)')
         self.assertEqual(f[1].geometry().asWkt(), 'LineString (10 1, 20 2, 30 3, 10 1)')
@@ -348,7 +372,8 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self.assertEqual(f[4].geometry().asWkt(), 'Point (4 3)')
         self.assertEqual(f[5].geometry().asWkt(), 'Point (4 4)')
 
-        l, f = self._make_compatible_tester('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))', 'MultiPoint')
+        l, f = self._make_compatible_tester('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))',
+                                            'MultiPoint')
         self.assertEqual(len(f), 1)
         self.assertEqual(f[0].geometry().asWkt(), 'MultiPoint ((1 1),(1 2),(2 2),(3 3),(4 3),(4 4))')
 
@@ -361,12 +386,14 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self.assertEqual(len(f), 1)
         self.assertEqual(f[0].geometry().asWkt(), 'MultiLineString ((1 1, 1 2, 2 2, 1 1))')
 
-        l, f = self._make_compatible_tester('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))', 'LineString')
+        l, f = self._make_compatible_tester('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))',
+                                            'LineString')
         self.assertEqual(len(f), 2)
         self.assertEqual(f[0].geometry().asWkt(), 'LineString (1 1, 1 2, 2 2, 1 1)')
         self.assertEqual(f[1].geometry().asWkt(), 'LineString (3 3, 4 3, 4 4, 3 3)')
 
-        l, f = self._make_compatible_tester('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))', 'MultiLineString')
+        l, f = self._make_compatible_tester('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))',
+                                            'MultiLineString')
         self.assertEqual(len(f), 1)
         self.assertEqual(f[0].geometry().asWkt(), 'MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4, 3 3))')
 
@@ -512,8 +539,10 @@ class TestQgsProcessingInPlace(unittest.TestCase):
 
         # First feature was selected and modified
         self.assertEqual(new_features[0].id(), old_features[0].id())
-        self.assertAlmostEqual(new_features[0].geometry().asPoint().x(), old_features[0].geometry().asPoint().x() + 1.1, delta=0.01)
-        self.assertAlmostEqual(new_features[0].geometry().asPoint().y(), old_features[0].geometry().asPoint().y() + 1.1, delta=0.01)
+        self.assertAlmostEqual(new_features[0].geometry().asPoint().x(), old_features[0].geometry().asPoint().x() + 1.1,
+                               delta=0.01)
+        self.assertAlmostEqual(new_features[0].geometry().asPoint().y(), old_features[0].geometry().asPoint().y() + 1.1,
+                               delta=0.01)
 
         # Second feature was not selected and not modified
         self.assertEqual(new_features[1].id(), old_features[1].id())
@@ -636,8 +665,8 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         )
 
         g = [f.geometry() for f in new_features][0]
-        self.assertAlmostEqual(g.get().x(), 1001875.4, 1)
-        self.assertAlmostEqual(g.get().y(), 5621521.5, 1)
+        self.assertAlmostEqual(g.constGet().x(), 1001875.4, 1)
+        self.assertAlmostEqual(g.constGet().y(), 5621521.5, 1)
 
         # Check selected
         self.assertEqual(self.vl.selectedFeatureIds(), [1])
@@ -846,6 +875,42 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self.assertEqual(len(new_features), 1)
         old_features, new_features = self._test_difference_on_invalid_geometries(2)
         self.assertEqual(len(new_features), 1)
+
+    def test_unique_constraints(self):
+        """Test issue #31634"""
+        temp_dir = QTemporaryDir()
+        temp_path = temp_dir.path()
+        gpkg_name = 'bug_31634_Multi_to_Singleparts_FID.gpkg'
+        gpkg_path = os.path.join(temp_path, gpkg_name)
+        shutil.copyfile(os.path.join(unitTestDataPath(), gpkg_name), gpkg_path)
+
+        gpkg_layer = QgsVectorLayer(gpkg_path + '|layername=Multi_to_Singleparts_FID_bug', 'lyr', 'ogr')
+        self.assertTrue(gpkg_layer.isValid())
+        QgsProject.instance().addMapLayers([gpkg_layer])
+
+        # Test that makeFeaturesCompatible set to NULL unique constraint fields
+        feature = next(gpkg_layer.getFeatures())
+
+        feedback = ConsoleFeedBack()
+        context = dataobjects.createContext(feedback)
+        context.setProject(QgsProject.instance())
+
+        alg = self.registry.createAlgorithmById('native:multiparttosingleparts')
+        self.assertIsNotNone(alg)
+
+        parameters = {
+            'INPUT': gpkg_layer,
+            'OUTPUT': ':memory',
+        }
+
+        ok, _ = execute_in_place_run(
+            alg, parameters, context=context, feedback=feedback, raise_exceptions=True)
+
+        pks = set()
+        for f in gpkg_layer.getFeatures():
+            pks.add(f.attribute(0))
+
+        self.assertTrue(gpkg_layer.commitChanges())
 
 
 if __name__ == '__main__':

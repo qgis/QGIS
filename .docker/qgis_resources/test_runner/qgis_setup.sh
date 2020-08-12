@@ -38,13 +38,18 @@ printf "[qgis]\n" >> $CONF_MASTER_FILE
 SHOW_TIPS=$(qgis --help 2>&1 | head -2 | grep 'QGIS - ' | perl -npe 'chomp; s/QGIS - (\d+)\.(\d+).*/showTips\1\2=false/')
 printf "%s\n\n" "$SHOW_TIPS" >> $CONF_MASTER_FILE
 
-if [ -n "$PLUGIN_NAME" ]; then
+if [[ -n "$PLUGIN_NAME" ]]; then
     # Enable plugin
     printf '[PythonPlugins]\n' >> $CONF_MASTER_FILE
     printf "%s=true\n\n" "$PLUGIN_NAME" >> $CONF_MASTER_FILE
     # Install the plugin
     if [ ! -d "${PLUGIN_MASTER_FOLDER}/${PLUGIN_NAME}" ]; then
-        ln -s "/tests_directory/${PLUGIN_NAME}" "${PLUGIN_MASTER_FOLDER}"
+        plugin_dir="/tests_directory/${PLUGIN_NAME}"
+        if [ ! -d "${plugin_dir}" ]; then
+          echo "ERROR: ${plugin_dir} does not exist" >&2
+          exit 1
+        fi
+        ln -s "${plugin_dir}" "${PLUGIN_MASTER_FOLDER}"
         echo "Plugin master folder linked in ${PLUGIN_MASTER_FOLDER}/${PLUGIN_NAME}"
     fi
 fi

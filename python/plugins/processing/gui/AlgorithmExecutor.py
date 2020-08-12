@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import sys
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (Qgis,
@@ -157,19 +153,25 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
         if hasattr(alg, 'processFeature'):  # in-place feature editing
             # Make a clone or it will crash the second time the dialog
             # is opened and run
-            alg = alg.create()
+            alg = alg.create({'IN_PLACE': True})
             if not alg.prepare(parameters, context, feedback):
                 raise QgsProcessingException(tr("Could not prepare selected algorithm."))
             # Check again for compatibility after prepare
             if not alg.supportInPlaceEdit(active_layer):
                 raise QgsProcessingException(tr("Selected algorithm and parameter configuration are not compatible with in-place modifications."))
+
+            # some algorithms have logic in outputFields/outputCrs/outputWkbType which they require to execute before
+            # they can start processing features
+            _ = alg.outputFields(active_layer.fields())
+            _ = alg.outputWkbType(active_layer.wkbType())
+            _ = alg.outputCrs(active_layer.crs())
+
             field_idxs = range(len(active_layer.fields()))
             iterator_req = QgsFeatureRequest(active_layer.selectedFeatureIds())
             iterator_req.setInvalidGeometryCheck(context.invalidGeometryCheck())
             feature_iterator = active_layer.getFeatures(iterator_req)
             step = 100 / len(active_layer.selectedFeatureIds()) if active_layer.selectedFeatureIds() else 1
             for current, f in enumerate(feature_iterator):
-                feedback.setProgress(current * step)
                 if feedback.isCanceled():
                     break
 
@@ -192,10 +194,18 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
                     active_layer.deleteFeature(f.id())
                     # Get the new ids
                     old_ids = set([f.id() for f in active_layer.getFeatures(req)])
+                    # If multiple new features were created, we need to pass
+                    # them to createFeatures to manage constraints correctly
+                    features_data = []
+                    for f in new_features:
+                        features_data.append(QgsVectorLayerUtils.QgsFeatureData(f.geometry(), dict(enumerate(f.attributes()))))
+                    new_features = QgsVectorLayerUtils.createFeatures(active_layer, features_data, context.expressionContext())
                     if not active_layer.addFeatures(new_features):
                         raise QgsProcessingException(tr("Error adding processed features back into the layer."))
                     new_ids = set([f.id() for f in active_layer.getFeatures(req)])
                     new_feature_ids += list(new_ids - old_ids)
+
+                feedback.setProgress(int((current + 1) * step))
 
             results, ok = {}, True
 
@@ -208,7 +218,7 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
             else:
                 selected_ids = []
 
-            results, ok = alg.run(parameters, context, feedback)
+            results, ok = alg.run(parameters, context, feedback, configuration={'IN_PLACE': True})
 
             if ok:
                 result_layer = QgsProcessingUtils.mapLayerFromString(results['OUTPUT'], context)
@@ -281,7 +291,7 @@ def execute_in_place(alg, parameters, context=None, feedback=None):
     if context is None:
         context = dataobjects.createContext(feedback)
 
-    if not 'INPUT' in parameters or not parameters['INPUT']:
+    if 'INPUT' not in parameters or not parameters['INPUT']:
         parameters['INPUT'] = iface.activeLayer()
     ok, results = execute_in_place_run(alg, parameters, context=context, feedback=feedback)
     if ok:
@@ -305,7 +315,7 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
     if iter_source.featureCount() == 0:
         return False
 
-    total = 100.0 / iter_source.featureCount()
+    step = 100.0 / iter_source.featureCount()
     for current, feat in enumerate(iter_source.getFeatures()):
         if feedback.isCanceled():
             return False
@@ -315,7 +325,7 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
         sink.addFeature(feat, QgsFeatureSink.FastInsert)
         del sink
 
-        feedback.setProgress(int(current * total))
+        feedback.setProgress(int((current + 1) * step))
 
     # store output values to use them later as basenames for all outputs
     outputs = {}
@@ -336,7 +346,7 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
             o = outputs[out.name()]
             parameters[out.name()] = QgsProcessingUtils.generateIteratingDestination(o, i, context)
         feedback.setProgressText(QCoreApplication.translate('AlgorithmExecutor', 'Executing iteration {0}/{1}…').format(i + 1, len(sink_list)))
-        feedback.setProgress(i * 100 / len(sink_list))
+        feedback.setProgress(int((i + 1) * 100 / len(sink_list)))
         ret, results = execute(alg, parameters, context, feedback)
         if not ret:
             return False

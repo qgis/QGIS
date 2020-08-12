@@ -20,6 +20,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include <QNetworkReply>
 #include <QTextCodec>
 
@@ -30,19 +31,27 @@ QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
     //cancel running request
     mReply->abort();
   }
-  if ( mReply )
+  delete mReply;
+}
+
+void QgsNetworkContentFetcher::fetchContent( const QUrl &url, const QString &authcfg )
+{
+  QNetworkRequest req( url );
+  QgsSetRequestInitiatorClass( req, QStringLiteral( "QgsNetworkContentFetcher" ) );
+
+  fetchContent( req, authcfg );
+}
+
+void QgsNetworkContentFetcher::fetchContent( const QNetworkRequest &r, const QString &authcfg )
+{
+  QNetworkRequest request( r );
+
+  mAuthCfg = authcfg;
+  if ( !mAuthCfg.isEmpty() )
   {
-    mReply->deleteLater();
+    QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
   }
-}
 
-void QgsNetworkContentFetcher::fetchContent( const QUrl &url )
-{
-  fetchContent( QNetworkRequest( url ) );
-}
-
-void QgsNetworkContentFetcher::fetchContent( const QNetworkRequest &request )
-{
   mContentLoaded = false;
   mIsCanceled = false;
 
@@ -55,6 +64,10 @@ void QgsNetworkContentFetcher::fetchContent( const QNetworkRequest &request )
   }
 
   mReply = QgsNetworkAccessManager::instance()->get( request );
+  if ( !mAuthCfg.isEmpty() )
+  {
+    QgsApplication::authManager()->updateNetworkReply( mReply, mAuthCfg );
+  }
   mReply->setParent( nullptr ); // we don't want thread locale QgsNetworkAccessManagers to delete the reply - we want ownership of it to belong to this object
   connect( mReply, &QNetworkReply::finished, this, [ = ] { contentLoaded(); } );
   connect( mReply, &QNetworkReply::downloadProgress, this, &QgsNetworkContentFetcher::downloadProgress );
@@ -95,6 +108,11 @@ void QgsNetworkContentFetcher::cancel()
     mReply->deleteLater();
     mReply = nullptr;
   }
+}
+
+bool QgsNetworkContentFetcher::wasCanceled() const
+{
+  return mIsCanceled;
 }
 
 QTextCodec *QgsNetworkContentFetcher::codecForHtml( QByteArray &array ) const
@@ -138,7 +156,7 @@ QTextCodec *QgsNetworkContentFetcher::codecForHtml( QByteArray &array ) const
 
 void QgsNetworkContentFetcher::contentLoaded( bool ok )
 {
-  Q_UNUSED( ok );
+  Q_UNUSED( ok )
 
   if ( mIsCanceled )
   {
@@ -170,7 +188,7 @@ void QgsNetworkContentFetcher::contentLoaded( bool ok )
 
   //redirect, so fetch redirect target
   mReply->deleteLater();
-  fetchContent( redirect.toUrl() );
+  fetchContent( redirect.toUrl(), mAuthCfg );
 }
 
 

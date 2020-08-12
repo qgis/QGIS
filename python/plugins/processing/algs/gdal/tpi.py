@@ -21,11 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-
 import os
 
 from qgis.core import (QgsProcessingException,
@@ -42,7 +37,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class tpi(GdalAlgorithm):
-
     INPUT = 'INPUT'
     BAND = 'BAND'
     COMPUTE_EDGES = 'COMPUTE_EDGES'
@@ -72,7 +66,7 @@ class tpi(GdalAlgorithm):
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
         self.addParameter(options_param)
 
-        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Terrain Ruggedness Index')))
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Topographic Position Index')))
 
     def name(self):
         return 'tpitopographicpositionindex'

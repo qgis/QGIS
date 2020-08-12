@@ -35,17 +35,18 @@ QgsMapThemeCollection::QgsMapThemeCollection( QgsProject *project )
 QgsMapThemeCollection::MapThemeLayerRecord QgsMapThemeCollection::createThemeLayerRecord( QgsLayerTreeLayer *nodeLayer, QgsLayerTreeModel *model )
 {
   MapThemeLayerRecord layerRec( nodeLayer->layer() );
+  layerRec.isVisible = nodeLayer->isVisible();
   layerRec.usingCurrentStyle = true;
   layerRec.currentStyle = nodeLayer->layer()->styleManager()->currentStyle();
   layerRec.expandedLayerNode = nodeLayer->isExpanded();
-  layerRec.expandedLegendItems = nodeLayer->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList().toSet();
+  layerRec.expandedLegendItems = qgis::listToSet( nodeLayer->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList() );
 
   // get checked legend items
   bool hasCheckableItems = false;
   bool someItemsUnchecked = false;
   QSet<QString> checkedItems;
-  const auto constLayerLegendNodes = model->layerLegendNodes( nodeLayer, true );
-  for ( QgsLayerTreeModelLegendNode *legendNode : constLayerLegendNodes )
+  const QList<QgsLayerTreeModelLegendNode *> layerLegendNodes = model->layerLegendNodes( nodeLayer, true );
+  for ( QgsLayerTreeModelLegendNode *legendNode : layerLegendNodes )
   {
     if ( legendNode->flags() & Qt::ItemIsUserCheckable )
     {
@@ -79,7 +80,7 @@ static QString _groupId( QgsLayerTreeNode *node )
 
 void QgsMapThemeCollection::createThemeFromCurrentState( QgsLayerTreeGroup *parent, QgsLayerTreeModel *model, QgsMapThemeCollection::MapThemeRecord &rec )
 {
-  const auto constChildren = parent->children();
+  const QList<QgsLayerTreeNode *> constChildren = parent->children();
   for ( QgsLayerTreeNode *node : constChildren )
   {
     if ( QgsLayerTree::isGroup( node ) )
@@ -87,11 +88,13 @@ void QgsMapThemeCollection::createThemeFromCurrentState( QgsLayerTreeGroup *pare
       createThemeFromCurrentState( QgsLayerTree::toGroup( node ), model, rec );
       if ( node->isExpanded() )
         rec.mExpandedGroupNodes.insert( _groupId( node ) );
+      if ( node->itemVisibilityChecked() != Qt::Unchecked )
+        rec.mCheckedGroupNodes.insert( _groupId( node ) );
     }
     else if ( QgsLayerTree::isLayer( node ) )
     {
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-      if ( nodeLayer->isVisible() )
+      if ( node->itemVisibilityChecked() != Qt::Unchecked && nodeLayer->layer() )
         rec.mLayerRecords << createThemeLayerRecord( nodeLayer, model );
     }
   }
@@ -101,6 +104,7 @@ QgsMapThemeCollection::MapThemeRecord QgsMapThemeCollection::createThemeFromCurr
 {
   QgsMapThemeCollection::MapThemeRecord rec;
   rec.setHasExpandedStateInfo( true );  // all newly created theme records have expanded state info
+  rec.setHasCheckedStateInfo( true );  // all newly created theme records have checked state info
   createThemeFromCurrentState( root, model, rec );
   return rec;
 }
@@ -121,15 +125,20 @@ bool QgsMapThemeCollection::findRecordForLayer( QgsMapLayer *layer, const QgsMap
 void QgsMapThemeCollection::applyThemeToLayer( QgsLayerTreeLayer *nodeLayer, QgsLayerTreeModel *model, const QgsMapThemeCollection::MapThemeRecord &rec )
 {
   MapThemeLayerRecord layerRec;
-  bool isVisible = findRecordForLayer( nodeLayer->layer(), rec, layerRec );
+  const bool recordExists = findRecordForLayer( nodeLayer->layer(), rec, layerRec );
 
   // Make sure the whole tree is visible
-  if ( isVisible )
-    nodeLayer->setItemVisibilityCheckedParentRecursive( isVisible );
+  if ( recordExists )
+  {
+    if ( rec.hasCheckedStateInfo() )
+      nodeLayer->setItemVisibilityChecked( true );
+    else
+      nodeLayer->setItemVisibilityCheckedParentRecursive( true );
+  }
   else
-    nodeLayer->setItemVisibilityChecked( isVisible );
+    nodeLayer->setItemVisibilityChecked( false );
 
-  if ( !isVisible )
+  if ( !recordExists )
     return;
 
   if ( layerRec.usingCurrentStyle )
@@ -141,7 +150,7 @@ void QgsMapThemeCollection::applyThemeToLayer( QgsLayerTreeLayer *nodeLayer, Qgs
   if ( layerRec.usingLegendItems )
   {
     // some nodes are not checked
-    const auto constLayerLegendNodes = model->layerLegendNodes( nodeLayer, true );
+    const QList<QgsLayerTreeModelLegendNode *> constLayerLegendNodes = model->layerLegendNodes( nodeLayer, true );
     for ( QgsLayerTreeModelLegendNode *legendNode : constLayerLegendNodes )
     {
       QString ruleKey = legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
@@ -154,7 +163,7 @@ void QgsMapThemeCollection::applyThemeToLayer( QgsLayerTreeLayer *nodeLayer, Qgs
   else
   {
     // all nodes should be checked
-    const auto constLayerLegendNodes = model->layerLegendNodes( nodeLayer, true );
+    const QList<QgsLayerTreeModelLegendNode *> constLayerLegendNodes = model->layerLegendNodes( nodeLayer, true );
     for ( QgsLayerTreeModelLegendNode *legendNode : constLayerLegendNodes )
     {
       if ( ( legendNode->flags() & Qt::ItemIsUserCheckable ) &&
@@ -167,14 +176,14 @@ void QgsMapThemeCollection::applyThemeToLayer( QgsLayerTreeLayer *nodeLayer, Qgs
   if ( rec.hasExpandedStateInfo() )
   {
     nodeLayer->setExpanded( layerRec.expandedLayerNode );
-    nodeLayer->setCustomProperty( QStringLiteral( "expandedLegendNodes" ), QStringList( layerRec.expandedLegendItems.toList() ) );
+    nodeLayer->setCustomProperty( QStringLiteral( "expandedLegendNodes" ), QStringList( qgis::setToList( layerRec.expandedLegendItems ) ) );
   }
 }
 
 
 void QgsMapThemeCollection::applyThemeToGroup( QgsLayerTreeGroup *parent, QgsLayerTreeModel *model, const QgsMapThemeCollection::MapThemeRecord &rec )
 {
-  const auto constChildren = parent->children();
+  const QList<QgsLayerTreeNode *> constChildren = parent->children();
   for ( QgsLayerTreeNode *node : constChildren )
   {
     if ( QgsLayerTree::isGroup( node ) )
@@ -182,6 +191,8 @@ void QgsMapThemeCollection::applyThemeToGroup( QgsLayerTreeGroup *parent, QgsLay
       applyThemeToGroup( QgsLayerTree::toGroup( node ), model, rec );
       if ( rec.hasExpandedStateInfo() )
         node->setExpanded( rec.expandedGroupNodes().contains( _groupId( node ) ) );
+      if ( rec.hasCheckedStateInfo() )
+        node->setItemVisibilityChecked( rec.checkedGroupNodes().contains( _groupId( node ) ) );
     }
     else if ( QgsLayerTree::isLayer( node ) )
       applyThemeToLayer( QgsLayerTree::toLayer( node ), model, rec );
@@ -223,8 +234,8 @@ QList<QgsMapLayer *> QgsMapThemeCollection::masterLayerOrder() const
 
 QList<QgsMapLayer *> QgsMapThemeCollection::masterVisibleLayers() const
 {
-  QList< QgsMapLayer *> allLayers = masterLayerOrder();
-  QList< QgsMapLayer * > visibleLayers = mProject->layerTreeRoot()->checkedLayers();
+  const QList< QgsMapLayer *> allLayers = masterLayerOrder();
+  const QList< QgsMapLayer * > visibleLayers = mProject->layerTreeRoot()->checkedLayers();
 
   if ( allLayers.isEmpty() )
   {
@@ -234,8 +245,7 @@ QList<QgsMapLayer *> QgsMapThemeCollection::masterVisibleLayers() const
   else
   {
     QList< QgsMapLayer * > orderedVisibleLayers;
-    const auto constAllLayers = allLayers;
-    for ( QgsMapLayer *layer : constAllLayers )
+    for ( QgsMapLayer *layer : allLayers )
     {
       if ( visibleLayers.contains( layer ) )
         orderedVisibleLayers << layer;
@@ -271,6 +281,19 @@ void QgsMapThemeCollection::update( const QString &name, const MapThemeRecord &s
   emit mapThemesChanged();
 }
 
+bool QgsMapThemeCollection::renameMapTheme( const QString &name,  const QString &newName )
+{
+  if ( !mMapThemes.contains( name ) || mMapThemes.contains( newName ) )
+    return false;
+
+  const MapThemeRecord state = mMapThemes[name];
+  const MapThemeRecord newState = state;
+  insert( newName, newState );
+  emit mapThemeRenamed( name, newName );
+  removeMapTheme( name );
+  return true;
+}
+
 void QgsMapThemeCollection::removeMapTheme( const QString &name )
 {
   if ( !mMapThemes.contains( name ) )
@@ -298,7 +321,7 @@ QStringList QgsMapThemeCollection::mapThemes() const
 QStringList QgsMapThemeCollection::mapThemeVisibleLayerIds( const QString &name ) const
 {
   QStringList layerIds;
-  const auto constMapThemeVisibleLayers = mapThemeVisibleLayers( name );
+  const QList<QgsMapLayer *> constMapThemeVisibleLayers = mapThemeVisibleLayers( name );
   for ( QgsMapLayer *layer : constMapThemeVisibleLayers )
   {
     layerIds << layer->id();
@@ -309,27 +332,25 @@ QStringList QgsMapThemeCollection::mapThemeVisibleLayerIds( const QString &name 
 QList<QgsMapLayer *> QgsMapThemeCollection::mapThemeVisibleLayers( const QString &name ) const
 {
   QList<QgsMapLayer *> layers;
-  const QList<MapThemeLayerRecord> &recs = mMapThemes.value( name ).mLayerRecords;
-  QList<QgsMapLayer *> layerOrder = masterLayerOrder();
+  const QList<MapThemeLayerRecord> recs = mMapThemes.value( name ).mLayerRecords;
+  const QList<QgsMapLayer *> layerOrder = masterLayerOrder();
   if ( layerOrder.isEmpty() )
   {
     // no master layer order - so we have to just use the stored theme layer order as a fallback
-    const auto records {mMapThemes.value( name ).mLayerRecords};
+    const QList<MapThemeLayerRecord> records { mMapThemes.value( name ).mLayerRecords };
     for ( const MapThemeLayerRecord &layerRec : records )
     {
-      if ( layerRec.layer() )
+      if ( layerRec.isVisible && layerRec.layer() )
         layers << layerRec.layer();
     }
   }
   else
   {
-    const auto constLayerOrder = layerOrder;
-    for ( QgsMapLayer *layer : constLayerOrder )
+    for ( QgsMapLayer *layer : layerOrder )
     {
-      const auto constRecs = recs;
-      for ( const MapThemeLayerRecord &layerRec : constRecs )
+      for ( const MapThemeLayerRecord &layerRec : recs )
       {
-        if ( layerRec.layer() == layer )
+        if ( layerRec.isVisible && layerRec.layer() == layer )
           layers << layerRec.layer();
       }
     }
@@ -368,7 +389,7 @@ QMap<QString, QString> QgsMapThemeCollection::mapThemeStyleOverrides( const QStr
   if ( !mMapThemes.contains( presetName ) )
     return styleOverrides;
 
-  const auto records {mMapThemes.value( presetName ).mLayerRecords};
+  const QList<MapThemeLayerRecord> records {mMapThemes.value( presetName ).mLayerRecords};
   for ( const MapThemeLayerRecord &layerRec : records )
   {
     if ( !layerRec.layer() )
@@ -397,8 +418,7 @@ void QgsMapThemeCollection::reconnectToLayersStyleManager()
   // disconnect( 0, 0, this, SLOT( layerStyleRenamed( QString, QString ) ) );
 
   QSet<QgsMapLayer *> layers;
-  const auto constMMapThemes = mMapThemes;
-  for ( const MapThemeRecord &rec : constMMapThemes )
+  for ( const MapThemeRecord &rec : qgis::as_const( mMapThemes ) )
   {
     for ( const MapThemeLayerRecord &layerRec : qgis::as_const( rec.mLayerRecords ) )
     {
@@ -407,7 +427,7 @@ void QgsMapThemeCollection::reconnectToLayersStyleManager()
     }
   }
 
-  const auto constLayers = layers;
+  const QSet<QgsMapLayer *> constLayers = layers;
   for ( QgsMapLayer *ml : constLayers )
   {
     connect( ml->styleManager(), &QgsMapLayerStyleManager::styleRenamed, this, &QgsMapThemeCollection::layerStyleRenamed );
@@ -431,6 +451,10 @@ void QgsMapThemeCollection::readXml( const QDomDocument &doc )
     if ( visPresetElem.hasAttribute( QStringLiteral( "has-expanded-info" ) ) )
       expandedStateInfo = visPresetElem.attribute( QStringLiteral( "has-expanded-info" ) ).toInt();
 
+    bool checkedStateInfo = false;
+    if ( visPresetElem.hasAttribute( QStringLiteral( "has-checked-group-info" ) ) )
+      checkedStateInfo = visPresetElem.attribute( QStringLiteral( "has-checked-group-info" ) ).toInt();
+
     QString presetName = visPresetElem.attribute( QStringLiteral( "name" ) );
     QDomElement visPresetLayerElem = visPresetElem.firstChildElement( QStringLiteral( "layer" ) );
     while ( !visPresetLayerElem.isNull() )
@@ -439,6 +463,7 @@ void QgsMapThemeCollection::readXml( const QDomDocument &doc )
       if ( QgsMapLayer *layer = mProject->mapLayer( layerID ) )
       {
         layerRecords[layerID] = MapThemeLayerRecord( layer );
+        layerRecords[layerID].isVisible = visPresetLayerElem.attribute( QStringLiteral( "visible" ), QStringLiteral( "1" ) ).toInt();
 
         if ( visPresetLayerElem.hasAttribute( QStringLiteral( "style" ) ) )
         {
@@ -510,10 +535,28 @@ void QgsMapThemeCollection::readXml( const QDomDocument &doc )
       }
     }
 
+    QSet<QString> checkedGroupNodes;
+    if ( checkedStateInfo )
+    {
+      // expanded state of legend nodes
+      QDomElement checkedGroupNodesElem = visPresetElem.firstChildElement( QStringLiteral( "checked-group-nodes" ) );
+      if ( !checkedGroupNodesElem.isNull() )
+      {
+        QDomElement checkedGroupNodeElem = checkedGroupNodesElem.firstChildElement( QStringLiteral( "checked-group-node" ) );
+        while ( !checkedGroupNodeElem.isNull() )
+        {
+          checkedGroupNodes << checkedGroupNodeElem.attribute( QStringLiteral( "id" ) );
+          checkedGroupNodeElem = checkedGroupNodeElem.nextSiblingElement( QStringLiteral( "checked-group-node" ) );
+        }
+      }
+    }
+
     MapThemeRecord rec;
     rec.setLayerRecords( layerRecords.values() );
     rec.setHasExpandedStateInfo( expandedStateInfo );
     rec.setExpandedGroupNodes( expandedGroupNodes );
+    rec.setHasCheckedStateInfo( checkedStateInfo );
+    rec.setCheckedGroupNodes( checkedGroupNodes );
     mMapThemes.insert( presetName, rec );
     emit mapThemeChanged( presetName );
 
@@ -528,7 +571,7 @@ void QgsMapThemeCollection::writeXml( QDomDocument &doc )
 {
   QDomElement visPresetsElem = doc.createElement( QStringLiteral( "visibility-presets" ) );
 
-  auto keys = mMapThemes.keys();
+  QList< QString > keys = mMapThemes.keys();
 
   std::sort( keys.begin(), keys.end() );
 
@@ -539,6 +582,8 @@ void QgsMapThemeCollection::writeXml( QDomDocument &doc )
     visPresetElem.setAttribute( QStringLiteral( "name" ), grpName );
     if ( rec.hasExpandedStateInfo() )
       visPresetElem.setAttribute( QStringLiteral( "has-expanded-info" ), QStringLiteral( "1" ) );
+    if ( rec.hasCheckedStateInfo() )
+      visPresetElem.setAttribute( QStringLiteral( "has-checked-group-info" ), QStringLiteral( "1" ) );
     for ( const MapThemeLayerRecord &layerRec : qgis::as_const( rec.mLayerRecords ) )
     {
       if ( !layerRec.layer() )
@@ -546,6 +591,7 @@ void QgsMapThemeCollection::writeXml( QDomDocument &doc )
       QString layerID = layerRec.layer()->id();
       QDomElement layerElem = doc.createElement( QStringLiteral( "layer" ) );
       layerElem.setAttribute( QStringLiteral( "id" ), layerID );
+      layerElem.setAttribute( QStringLiteral( "visible" ), layerRec.isVisible ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
       if ( layerRec.usingCurrentStyle )
         layerElem.setAttribute( QStringLiteral( "style" ), layerRec.currentStyle );
       visPresetElem.appendChild( layerElem );
@@ -577,6 +623,19 @@ void QgsMapThemeCollection::writeXml( QDomDocument &doc )
         }
         visPresetElem.appendChild( expandedLegendNodesElem );
       }
+    }
+
+    if ( rec.hasCheckedStateInfo() )
+    {
+      QDomElement checkedGroupElems = doc.createElement( QStringLiteral( "checked-group-nodes" ) );
+      const QSet<QString> checkedGroupNodes = rec.checkedGroupNodes();
+      for ( const QString &groupId : checkedGroupNodes )
+      {
+        QDomElement checkedGroupElem = doc.createElement( QStringLiteral( "checked-group-node" ) );
+        checkedGroupElem.setAttribute( QStringLiteral( "id" ), groupId );
+        checkedGroupElems.appendChild( checkedGroupElem );
+      }
+      visPresetElem.appendChild( checkedGroupElems );
     }
 
     if ( rec.hasExpandedStateInfo() )
@@ -618,8 +677,7 @@ void QgsMapThemeCollection::registryLayersRemoved( const QStringList &layerIDs )
     }
   }
 
-  const auto constChangedThemes = changedThemes;
-  for ( const QString &theme : constChangedThemes )
+  for ( const QString &theme : qgis::as_const( changedThemes ) )
   {
     emit mapThemeChanged( theme );
   }
@@ -651,8 +709,8 @@ void QgsMapThemeCollection::layerStyleRenamed( const QString &oldName, const QSt
       }
     }
   }
-  const auto constChangedThemes = changedThemes;
-  for ( const QString &theme : constChangedThemes )
+
+  for ( const QString &theme : qgis::as_const( changedThemes ) )
   {
     emit mapThemeChanged( theme );
   }
@@ -676,8 +734,7 @@ void QgsMapThemeCollection::MapThemeRecord::addLayerRecord( const QgsMapThemeCol
 QHash<QgsMapLayer *, QgsMapThemeCollection::MapThemeLayerRecord> QgsMapThemeCollection::MapThemeRecord::validLayerRecords() const
 {
   QHash<QgsMapLayer *, MapThemeLayerRecord> validSet;
-  const auto constMLayerRecords = mLayerRecords;
-  for ( const MapThemeLayerRecord &layerRec : constMLayerRecords )
+  for ( const MapThemeLayerRecord &layerRec : mLayerRecords )
   {
     if ( layerRec.layer() )
       validSet.insert( layerRec.layer(), layerRec );

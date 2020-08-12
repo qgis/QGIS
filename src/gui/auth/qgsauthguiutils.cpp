@@ -327,7 +327,7 @@ void QgsAuthGuiUtils::passwordHelperEnable( bool enabled, QgsMessageBar *msgbar,
 
 void QgsAuthGuiUtils::passwordHelperLoggingEnable( bool enabled, QgsMessageBar *msgbar, int timeout )
 {
-  Q_UNUSED( msgbar );
-  Q_UNUSED( timeout );
+  Q_UNUSED( msgbar )
+  Q_UNUSED( timeout )
   QgsApplication::authManager()->setPasswordHelperLoggingEnabled( enabled );
 }

@@ -53,7 +53,7 @@ class GUI_EXPORT QgsCustomLayerOrderWidget : public QWidget
   private slots:
     void bridgeHasCustomLayerOrderChanged( bool state );
     void bridgeCustomLayerOrderChanged();
-    //! Slot triggered when the ivsibility of a node changes
+    //! Slot triggered when the visibility of a node changes
     void nodeVisibilityChanged( QgsLayerTreeNode *node );
 
     void modelUpdated();

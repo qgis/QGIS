@@ -10,12 +10,13 @@
 
 
 
-class QgsLayoutTableColumn : QObject
+class QgsLayoutTableColumn
 {
 %Docstring
-Stores properties of a column for a QgsLayoutTable. Some properties of aQgsLayoutTableColumn
-are applicable only in certain contexts. For instance, the attribute and setAttribute methods only
-have an effect for QgsLayoutItemAttributeTables, and have no effect for QgsLayoutItemTextTables.
+Stores properties of a column for a QgsLayoutTable.
+Some properties of a QgsLayoutTableColumn are applicable only in certain contexts.
+For instance, the attribute and setAttribute methods only have an effect
+for QgsLayoutItemAttributeTables, and have no effect for QgsLayoutItemTextTables.
 
 .. versionadded:: 3.0
 %End
@@ -163,7 +164,7 @@ is part of a QgsLayoutItemAttributeTable and when sortByRank is > 0.
     void setSortOrder( Qt::SortOrder order );
 %Docstring
 Sets the sort ``order`` for the column. This property is only used when the column
-is part of a QgsLayoutItemAttributeTable and when sortByRank() is > 0.
+is part of a QgsLayoutItemAttributeTable and when :py:func:`~QgsLayoutTableColumn.sortByRank` is > 0.
 
 .. note::
 
@@ -174,7 +175,7 @@ is part of a QgsLayoutItemAttributeTable and when sortByRank() is > 0.
 .. seealso:: :py:func:`setSortByRank`
 %End
 
-    int sortByRank() const;
+ int sortByRank() const /Deprecated/;
 %Docstring
 Returns the sort rank for the column. If the sort rank is > 0 then the column
 will be sorted in the table. The sort rank specifies the priority given to the
@@ -191,15 +192,18 @@ If sort rank is <= 0 then the column is not being sorted.
 .. seealso:: :py:func:`setSortByRank`
 
 .. seealso:: :py:func:`sortOrder`
+
+.. deprecated:: QGIS 3.14
+   the order is now hold in a dedicated model
 %End
 
-    void setSortByRank( int rank );
+ void setSortByRank( int rank ) /Deprecated/;
 %Docstring
 Sets the sort ``rank`` for the column. If the sort rank is > 0 then the column
 will be sorted in the table. The sort rank specifies the priority given to the
 column when the table is sorted by multiple columns, with lower sort ranks
 having higher priority. This property is only used when the column
-is part of a :py:class:`QgsComposerAttributeTable`.
+is part of a :py:class:`QgsLayoutItemAttributeTable`.
 If the sort ``rank`` is <= 0 then the column is not being sorted.
 
 .. note::
@@ -209,17 +213,24 @@ If the sort ``rank`` is <= 0 then the column is not being sorted.
 .. seealso:: :py:func:`sortByRank`
 
 .. seealso:: :py:func:`setSortOrder`
+
+.. deprecated:: QGIS 3.14
+   the order is now hold in a dedicated model
 %End
 
-    QgsLayoutTableColumn *clone() /Factory/;
+ QgsLayoutTableColumn *clone() /Deprecated,Factory/;
 %Docstring
 Creates a duplicate column which is a deep copy of this column.
 
 :return: a new QgsLayoutTableColumn with same properties as this column.
+
+.. deprecated:: QGIS 3.14
+   use a copy instead
 %End
 
-};
+    bool operator==( const QgsLayoutTableColumn &other );
 
+};
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

@@ -25,6 +25,8 @@
 class QgsDirectoryItem;
 class QgsFavoriteItem;
 class QgsLayerItem;
+class QgsFieldsItem;
+class QgsFieldItem;
 
 class QgsAppDirectoryItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
@@ -46,7 +48,7 @@ class QgsAppDirectoryItemGuiProvider : public QObject, public QgsDataItemGuiProv
     void renameFavorite( QgsFavoriteItem *favorite );
     void hideDirectory( QgsDirectoryItem *item );
     void toggleFastScan( QgsDirectoryItem *item );
-    void showProperties( QgsDirectoryItem *item );
+    void showProperties( QgsDirectoryItem *item, QgsDataItemGuiContext context );
 };
 
 
@@ -99,10 +101,59 @@ class QgsLayerItemGuiProvider : public QObject, public QgsDataItemGuiProvider
   private:
 
     void addLayersFromItems( const QList<QgsDataItem *> &items );
-    void showPropertiesForItem( QgsLayerItem *item );
-    void deleteLayers( const QStringList &itemPath );
+    void showPropertiesForItem( QgsLayerItem *item, QgsDataItemGuiContext context );
+    void deleteLayers( const QStringList &itemPath, QgsDataItemGuiContext context );
 
 };
+
+
+class QgsFieldsItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+{
+    Q_OBJECT
+
+  public:
+
+    QgsFieldsItemGuiProvider() = default;
+
+    QString name() override;
+
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+
+};
+
+
+class QgsFieldItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+{
+    Q_OBJECT
+
+  public:
+
+    QgsFieldItemGuiProvider() = default;
+
+    QString name() override;
+
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+
+};
+
+
+class QgsDatabaseItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+{
+    Q_OBJECT
+
+  public:
+
+    QgsDatabaseItemGuiProvider() = default;
+
+    QString name() override;
+
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+
+};
+
 
 
 class QgsProjectItemGuiProvider : public QObject, public QgsDataItemGuiProvider

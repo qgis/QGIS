@@ -20,8 +20,6 @@
 #include "qgis_gui.h"
 #include "qgscoordinatereferencesystem.h"
 
-
-class QgsVertexMarker;
 class QResizeEvent;
 
 /**
@@ -92,7 +90,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * Returns TRUE if the current selection in the widget is a valid choice. Valid
      * selections include any projection and also the "no/invalid projection" option
      * (if setShowNoProjection() was called). Invalid selections are the group
-     * headers (such as "Geographic Coordinate Systems"
+     * headers (such as "Geographic Coordinate Systems")
      */
     bool hasValidSelection() const;
 
@@ -184,6 +182,9 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      */
     void loadCrsList( QSet<QString> *crsFilter = nullptr );
 
+
+    void loadUnknownCrs( const QgsCoordinateReferenceSystem &crs );
+
     /**
      * \brief Makes a \a string safe for use in SQL statements.
      *  This involves escaping single quotes, double quotes, backslashes,
@@ -228,8 +229,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     QString selectedName();
 
-    QString selectedProj4String();
-
     //! Gets the current QGIS projection identfier
     long selectedCrsId();
 
@@ -239,6 +238,8 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     enum Roles
     {
       RoleDeprecated = Qt::UserRole,
+      RoleWkt,
+      RoleProj
     };
 
     // List view nodes for the tree view of projections
@@ -248,6 +249,8 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     QTreeWidgetItem *mGeoList = nullptr;
     //! PROJCS node
     QTreeWidgetItem *mProjList = nullptr;
+
+    QTreeWidgetItem *mUnknownList = nullptr;
 
     //! Users custom coordinate system file
     QString mCustomCsFile;
@@ -260,14 +263,13 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     long getLargestCrsIdMatch( const QString &sql );
 
     //! add recently used CRS
-    void insertRecent( long crsId );
+    void insertRecent( const QgsCoordinateReferenceSystem &crs );
 
     //! Has the Projection List been populated?
     bool mProjListDone = false;
 
     //! Has the User Projection List been populated?
     bool mUserProjListDone = false;
-
 
     //! Has the Recent Projection List been populated?
     bool mRecentProjListDone = false;
@@ -281,22 +283,17 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     //! The set of OGC WMS CRSs that want to be applied to this widget
     QSet<QString> mCrsFilter;
 
-    //! Most recently used projections (trimmed at 25 entries)
-    QStringList mRecentProjections;
+    //! Most recently used projections
+    QList< QgsCoordinateReferenceSystem > mRecentProjections;
 
     //! Hide deprecated CRSes
     void hideDeprecated( QTreeWidgetItem *item );
 
-    QgsRubberBand *mPreviewBand;
-    QgsRubberBand *mPreviewBand2;
-    QgsVertexMarker *mVertexMarker;
-
     bool mShowMap = true;
 
-    QList<QgsMapLayer *> mLayers;
-
-    QgsRectangle mPreviewRect;
-
+    bool mInitialized = false;
+    QgsCoordinateReferenceSystem mDeferredLoadCrs;
+    bool mBlockSignals = false;
 
   private slots:
     //! Gets list of authorities

@@ -24,8 +24,9 @@
 #include "qgis_analysis.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
-#include "geometry/qgsgeometry.h"
+#include "qgsgeometry.h"
 #include "qgsgeometrycheckerutils.h"
+#include "qgsgeometrycheckresolutionmethod.h"
 #include "qgssettings.h"
 
 class QgsGeometryCheckError;
@@ -46,33 +47,15 @@ class QgsFeaturePool;
  * A new subclass of QgsGeometryCheck needs to be written and at least the following
  * abstract methods need to be implemented:
  *
- *  - `compatibleGeometryTypes()`
- *
- *    A list of geometry types to which this check applies
- *
- *  - `resolutionMethods()`
- *
- *    A list of names for (automated) resolution methods that can be used to fix errors of this type
- *
- *  - `description()`
- *
- *    A description for the geometry check.
- *
- *  - `id()`
- *
- *    A unique id for this check.
- *
- *  - `checkType()`
- *
- *    One of QgsGeometryCheck.LayerCheck, QgsGeometryCheck.FeatureCheck,QgsGeometryCheck.FeatureNodeCheck
- *
- *  - \link collectErrors() `collectErrors(featurePools, errors, messages, feedback, ids)`\endlink
- *
- *    This method will be called to validate geometries. All geometries which should be validated are passed
- *    into this method with the parameter ids and should be retrieved from the available featurePools to make
- *    use of caching. New errors should be appended to the error list and other message strings to messages.
- *    The method needs to return a tuple (errors, messages).
- *
+ * - compatibleGeometryTypes(): A list of geometry types to which this check applies
+ * - resolutionMethods(): A list of names for (automated) resolution methods that can be used to fix errors of this type
+ * - description(): A description for the geometry check.
+ * - id(): A unique id for this check.
+ * - checkType(): One of QgsGeometryCheck.LayerCheck, QgsGeometryCheck.FeatureCheck,QgsGeometryCheck.FeatureNodeCheck
+ * - collectErrors(): This method will be called to validate geometries. All geometries which should be validated are passed
+ *   into this method with the parameter ids and should be retrieved from the available featurePools to make
+ *   use of caching. New errors should be appended to the error list and other message strings to messages.
+ *   The method needs to return a tuple (errors, messages).
  *
  * ### Creating a geometry check factory
  *
@@ -83,30 +66,13 @@ class QgsFeaturePool;
  * A new subclass of QgsGeometryCheckFactory needs to be written and at least the following
  * abstract methods need to be implemented:
  *
- *  - \link QgsGeometryCheckFactory::createGeometryCheck() `createGeometryCheck(context, configuration)`\endlink
- *
- *    Needs to return a new subclassed QgsGeometryCheck object that has been written in the previous step.
- *
- *  - \link QgsGeometryCheckFactory::id() `id()\endlink
- *
- *    A unique id for this geometry check.
- *
- *  - \link QgsGeometryCheckFactory::description() `description()\endlink
- *
- *    A description for this geometry check that can be presented to the user for more explanation.
- *
- *  - \link QgsGeometryCheckFactory::isCompatible() `QgsGeometryCheckFactory::isCompatible(layer)`\endlink
- *
- *    Returns a boolean that determines if this check is available for a given layer. This often
- *    checks for the geometry type of the layer.
- *
- *  - \link QgsGeometryCheckFactory::flags() `flags()`\endlink
- *
- *    Returns additional flags for a geometry check. If unsure return QgsGeometryCheck.AvailableInValidation.
- *
- *  - \link QgsGeometryCheckFactory::checkType() `checkType()`\endlink
- *
- *    Returns the type of this geometry check.
+ * - QgsGeometryCheckFactory::createGeometryCheck(): Needs to return a new subclassed QgsGeometryCheck object that has been written in the previous step.
+ * - QgsGeometryCheckFactory::id(): A unique id for this geometry check.
+ * - QgsGeometryCheckFactory::description(): A description for this geometry check that can be presented to the user for more explanation.
+ * - QgsGeometryCheckFactory::isCompatible(): Returns a boolean that determines if this check is available for a given layer. This often
+ *   checks for the geometry type of the layer.
+ * - QgsGeometryCheckFactory::flags(): Returns additional flags for a geometry check. If unsure return QgsGeometryCheck.AvailableInValidation.
+ * - QgsGeometryCheckFactory::checkType(): Returns the type of this geometry check.
  *
  * ### Registering the geometry check
  *
@@ -139,7 +105,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     struct ANALYSIS_EXPORT LayerFeatureIds
     {
       LayerFeatureIds() = default;
-      LayerFeatureIds( const QMap<QString, QgsFeatureIds> &ids ) SIP_SKIP;
+      LayerFeatureIds( const QMap<QString, QgsFeatureIds> &idsIn ) SIP_SKIP;
 
       QMap<QString, QgsFeatureIds> ids SIP_SKIP;
 
@@ -253,6 +219,13 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     QgsGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
     virtual ~QgsGeometryCheck() = default;
 
+    /**
+     * Will be run in the main thread before collectErrors is called (which may be run from a background thread).
+     *
+     * \since QGIS 3.10
+     */
+    virtual void prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
+
 #ifndef SIP_RUN
 
     /**
@@ -297,18 +270,29 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors SIP_INOUT, QStringList &messages SIP_INOUT, QgsFeedback *feedback, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
 
     /**
-     * Fix the error \a error with the specified \a method.
+     * Fixes the error \a error with the specified \a method.
+     * Is executed on the main thread.
      *
+     * \see availableResolutionMethods()
      * \since QGIS 3.4
      */
     virtual void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes SIP_INOUT ) const SIP_SKIP;
 
     /**
-     * Returns a list of descriptions for available resolutions for errors. The index will be passed as ``method`` to \see fixError().
+     * Returns a list of available resolution methods.
      *
+     * \since QGIS 3.12
+     */
+    virtual QList<QgsGeometryCheckResolutionMethod> availableResolutionMethods() const;
+
+    /**
+     * Returns a list of descriptions for available resolutions for errors.
+     * The index will be passed as ``method`` to \see fixError().
+     *
+     * \deprecated since QGIS 3.12, use availableResolutionMethods() instead
      * \since QGIS 3.4
      */
-    virtual QStringList resolutionMethods() const = 0;
+    Q_DECL_DEPRECATED virtual QStringList resolutionMethods() const SIP_DEPRECATED;
 
     /**
      * Returns a human readable description for this check.

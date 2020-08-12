@@ -42,6 +42,10 @@ void QgsObjectCustomProperties::remove( const QString &key )
   mMap.remove( key );
 }
 
+bool QgsObjectCustomProperties::contains( const QString &key ) const
+{
+  return mMap.contains( key );
+}
 
 void QgsObjectCustomProperties::readXml( const QDomNode &parentNode, const QString &keyStartsWith )
 {
@@ -135,10 +139,10 @@ void QgsObjectCustomProperties::writeXml( QDomNode &parentNode, QDomDocument &do
     else if ( value.canConvert<QStringList>() )
     {
       const auto constToStringList = value.toStringList();
-      for ( const QString &value : constToStringList )
+      for ( const QString &valueStr : constToStringList )
       {
         QDomElement itemElement = doc.createElement( QStringLiteral( "value" ) );
-        itemElement.appendChild( doc.createTextNode( value ) );
+        itemElement.appendChild( doc.createTextNode( valueStr ) );
         propElement.appendChild( itemElement );
       }
     }

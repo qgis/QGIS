@@ -13,8 +13,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'René-Luc Dhont'
 __date__ = '19/09/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 
@@ -37,8 +35,8 @@ import osgeo.gdal  # NOQA
 from test_qgsserver import QgsServerTestBase
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+|timeStamp="[^"]+"'
-RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
+RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+|timeStamp="[^"]+"'
+RE_ATTRIBUTES = br'[^>\s]+=[^>\s]+'
 
 
 class TestQgsServerWFS(QgsServerTestBase):
@@ -111,7 +109,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         header, body = self._execute_request(query_string)
 
         if requestid == 'hits':
-            body = re.sub(b'timeStamp="\d+-\d+-\d+T\d+:\d+:\d+"',
+            body = re.sub(br'timeStamp="\d+-\d+-\d+T\d+:\d+:\d+"',
                           b'timeStamp="****-**-**T**:**:**"', body)
 
         self.result_compare(
@@ -259,6 +257,62 @@ class TestQgsServerWFS(QgsServerTestBase):
 """
         tests.append(('srsname_post', srsTemplate.format("")))
 
+        # Issue https://github.com/qgis/QGIS/issues/36398
+        # Check get feature within polygon having srsName=EPSG:4326 (same as the project/layer)
+        within4326FilterTemplate = """<?xml version="1.0" encoding="UTF-8"?>
+<wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+  <wfs:Query typeName="testlayer" srsName="EPSG:4326" xmlns:feature="http://www.qgis.org/gml">
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+      <Within>
+        <PropertyName>geometry</PropertyName>
+        <Polygon xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+          <exterior>
+            <LinearRing>
+              <posList srsDimension="2">
+                8.20344131 44.90137909
+                8.20347748 44.90137909
+                8.20347748 44.90141005
+                8.20344131 44.90141005
+                8.20344131 44.90137909
+              </posList>
+            </LinearRing>
+          </exterior>
+        </Polygon>
+      </Within>
+    </ogc:Filter>
+  </wfs:Query>
+</wfs:GetFeature>
+"""
+        tests.append(('within4326FilterTemplate_post', within4326FilterTemplate.format("")))
+
+        # Check get feature within polygon having srsName=EPSG:3857 (different from the project/layer)
+        # The coordinates are converted from the one in 4326
+        within3857FilterTemplate = """<?xml version="1.0" encoding="UTF-8"?>
+<wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+  <wfs:Query typeName="testlayer" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+      <Within>
+        <PropertyName>geometry</PropertyName>
+        <Polygon xmlns="http://www.opengis.net/gml" srsName="EPSG:3857">
+          <exterior>
+            <LinearRing>
+              <posList srsDimension="2">
+              913202.90938171 5606008.98136456
+              913206.93580769 5606008.98136456
+              913206.93580769 5606013.84701639
+              913202.90938171 5606013.84701639
+              913202.90938171 5606008.98136456
+              </posList>
+            </LinearRing>
+          </exterior>
+        </Polygon>
+      </Within>
+    </ogc:Filter>
+  </wfs:Query>
+</wfs:GetFeature>
+"""
+        tests.append(('within3857FilterTemplate_post', within3857FilterTemplate.format("")))
+
         srsTwoLayersTemplate = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
   <wfs:Query typeName="testlayer" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
@@ -309,6 +363,26 @@ class TestQgsServerWFS(QgsServerTestBase):
 </wfs:GetFeature>
 """
         tests.append(('sortby_post', sortTemplate.format("")))
+
+        andTemplate = """<?xml version="1.0" encoding="UTF-8"?>
+<wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+  <wfs:Query typeName="testlayer" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:And>
+        <ogc:PropertyIsGreaterThan>
+          <ogc:PropertyName>id</ogc:PropertyName>
+          <ogc:Literal>1</ogc:Literal>
+        </ogc:PropertyIsGreaterThan>
+        <ogc:PropertyIsLessThan>
+          <ogc:PropertyName>id</ogc:PropertyName>
+          <ogc:Literal>3</ogc:Literal>
+        </ogc:PropertyIsLessThan>
+      </ogc:And>
+    </ogc:Filter>
+  </wfs:Query>
+</wfs:GetFeature>
+"""
+        tests.append(('and_post', andTemplate.format("")))
 
         andBboxTemplate = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
@@ -456,6 +530,13 @@ class TestQgsServerWFS(QgsServerTestBase):
         self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=does_not_exist&",
                                  'wfs_describeFeatureType_1_1_0_typename_wrong', project_file=project_file)
 
+    def test_describeFeatureTypeVirtualFields(self):
+        """Test DescribeFeatureType with virtual fields: bug GH-29767"""
+
+        project_file = "bug_gh29767_double_vfield.qgs"
+        self.wfs_request_compare("DescribeFeatureType", '1.1.0', "",
+                                 'wfs_describeFeatureType_1_1_0_virtual_fields', project_file=project_file)
+
     def test_getFeatureFeature_0_nulls(self):
         """Test that 0 and null in integer columns are reported correctly"""
 
@@ -527,6 +608,25 @@ class TestQgsServerWFS(QgsServerTestBase):
             else:
                 self.assertTrue(b'<TotalUpdated>0</TotalUpdated>' in body)
             self.assertTrue(b'<Message>NOT NULL constraint error on layer \'cdb_lines\', field \'name\'</Message>' in body, body)
+
+    def test_describeFeatureTypeGeometryless(self):
+        """Test DescribeFeatureType with geometryless tables - bug GH-30381"""
+
+        project_file = "test_project_geometryless_gh30381.qgs"
+        self.wfs_request_compare("DescribeFeatureType", '1.1.0',
+                                 reference_base_name='wfs_describeFeatureType_1_1_0_geometryless',
+                                 project_file=project_file)
+
+    def test_getFeatureFeatureIdJson(self):
+        """Test GetFeature with featureid JSON format and various content types"""
+
+        for ct in ('GeoJSON', 'application/vnd.geo+json', 'application/json', 'application/geo+json'):
+            self.wfs_request_compare(
+                "GetFeature",
+                '1.0.0',
+                ("OUTPUTFORMAT=%s" % ct)
+                + "&SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0",
+                'wfs_getFeature_1_0_0_featureid_0_json')
 
 
 if __name__ == '__main__':

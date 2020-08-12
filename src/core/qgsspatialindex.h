@@ -81,7 +81,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     /**
      * Constructor for QgsSpatialIndex. Creates an empty R-tree index.
      */
-    QgsSpatialIndex( QgsSpatialIndex::Flags flags = nullptr );
+    QgsSpatialIndex( QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags() );
 
     /**
      * Constructor - creates R-tree and bulk loads it with features from the iterator.
@@ -93,7 +93,24 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      *
      * \since QGIS 2.8
      */
-    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = nullptr );
+    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags() );
+
+#ifndef SIP_RUN
+
+    /**
+     * Constructor - creates R-tree and bulk loads it with features from the iterator.
+     * This is much faster approach than creating an empty index and then inserting features one by one.
+     *
+     * This construct and bulk load variant allows for a \a callback function to be specified, which is
+     * called for each added feature in turn. It allows for bulk spatial index load along with other feature
+     * based operations on a single iteration through a feature source. If \a callback returns FALSE, the
+     * load and iteration is canceled.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 2.12
+     */
+    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, const std::function< bool( const QgsFeature & ) > &callback, QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags() );
+#endif
 
     /**
      * Constructor - creates R-tree and bulk loads it with features from the source.
@@ -106,7 +123,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      *
      * \since QGIS 3.0
      */
-    explicit QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = nullptr );
+    explicit QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags() );
 
     //! Copy constructor
     QgsSpatialIndex( const QgsSpatialIndex &other );
@@ -132,7 +149,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      *
      * \since QGIS 3.4
      */
-    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
     /**
      * Adds a list of \a features to the index.
@@ -141,7 +158,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      *
      * \see addFeature()
      */
-    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
     /**
      * Add a feature \a id to the index with a specified bounding box.
@@ -254,8 +271,6 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     QAtomicInt SIP_PYALTERNATIVETYPE( int ) refs() const;
 
   private:
-
-    static SpatialIndex::Region rectToRegion( const QgsRectangle &rect );
 
     /**
      * Calculates feature info to insert into index.

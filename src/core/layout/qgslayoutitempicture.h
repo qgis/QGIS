@@ -25,6 +25,7 @@ email                : nyall dot dawson at gmail dot com
 
 class QgsLayoutItemMap;
 class QgsExpression;
+class QgsLayoutNorthArrowHandler;
 
 /**
  * \ingroup core
@@ -85,9 +86,12 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * Sets the source \a path of the image (may be svg or a raster format). Data defined
      * picture source may override this value. The path can either be a local path
      * or a remote (http) path.
+     *
+     * Ideally, the \a format argument should specify the image format.
+     *
      * \see picturePath()
      */
-    void setPicturePath( const QString &path );
+    void setPicturePath( const QString &path, Format format = FormatUnknown );
 
     /**
      * Returns the path of the source image. Data defined picture source may override
@@ -131,7 +135,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * \see setNorthMode()
      * \see northOffset()
      */
-    NorthMode northMode() const { return mNorthMode; }
+    NorthMode northMode() const;
 
     /**
      * Sets the \a mode used to align the picture to a map's North.
@@ -145,7 +149,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * \see setNorthOffset()
      * \see northMode()
      */
-    double northOffset() const { return mNorthOffset; }
+    double northOffset() const;
 
     /**
      * Sets the \a offset added to the picture's rotation from a map's North.
@@ -155,7 +159,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     void setNorthOffset( double offset );
 
     /**
-     * Returns the resize mode used for drawing the picture within the composer
+     * Returns the resize mode used for drawing the picture within the layout
      * item's frame.
      * \see setResizeMode()
      */
@@ -226,8 +230,16 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
 
     /**
      * Returns the current picture mode (image format).
+     * \see setMode()
      */
     Format mode() const { return mMode; }
+
+    /**
+     * Sets the current picture \a mode (image format).
+     * \see mode()
+     * \since QGIS 3.14
+     */
+    void setMode( Format mode );
 
     void finalizeRestoreFromXml() override;
 
@@ -313,13 +325,6 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     double mPictureRotation = 0;
 
     QString mRotationMapUuid;
-    //! Map that sets the rotation (or NULLPTR if this picture uses map independent rotation)
-    QPointer< QgsLayoutItemMap > mRotationMap;
-
-    //! Mode used to align to North
-    NorthMode mNorthMode = GridNorth;
-    //! Offset for north arrow
-    double mNorthOffset = 0.0;
 
     //! Width of the picture (in mm)
     double mPictureWidth = 0.0;
@@ -339,8 +344,10 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     bool mIsMissingImage = false;
     QString mEvaluatedPath;
 
+    QgsLayoutNorthArrowHandler *mNorthArrowHandler = nullptr;
+
     //! Loads an image file into the picture item and redraws the item
-    void loadPicture( const QString &path );
+    void loadPicture( const QVariant &data );
 
     /**
      * Returns part of a raster image which will be shown, given current picture
@@ -358,11 +365,14 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      */
     void loadLocalPicture( const QString &path );
 
-    void disconnectMap( QgsLayoutItemMap *map );
+    void loadPictureUsingCache( const QString &path );
+
+    QgsLayoutItemPicture( const QgsLayoutItemPicture & ) = delete;
+    QgsLayoutItemPicture &operator=( const QgsLayoutItemPicture & ) = delete;
 
   private slots:
 
-    void updateMapRotation();
+    void updateNorthArrowRotation( double rotation );
 
     void shapeChanged();
 

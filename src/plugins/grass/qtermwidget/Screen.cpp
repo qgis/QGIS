@@ -403,6 +403,7 @@ void Screen::updateEffectiveRendition()
 
 void Screen::copyFromHistory(Character* dest, int startLine, int count) const
 {
+    // cppcheck-suppress assertWithSideEffect
     Q_ASSERT( startLine >= 0 && count > 0 && startLine + count <= history->getLines() );
 
     for (int line = startLine; line < startLine + count; line++)
@@ -456,12 +457,13 @@ void Screen::copyFromScreen(Character* dest , int startLine , int count) const
 void Screen::getImage( Character* dest, int size, int startLine, int endLine ) const
 {
     Q_ASSERT( startLine >= 0 );
+    // cppcheck-suppress assertWithSideEffect
     Q_ASSERT( endLine >= startLine && endLine < history->getLines() + lines );
 
     const int mergedLines = endLine - startLine + 1;
 
     Q_ASSERT( size >= mergedLines * columns );
-    Q_UNUSED( size );
+    Q_UNUSED( size )
 
     const int linesInHistoryBuffer = qBound(0,history->getLines()-startLine,mergedLines);
     const int linesInScreenBuffer = mergedLines - linesInHistoryBuffer;
@@ -492,6 +494,7 @@ void Screen::getImage( Character* dest, int size, int startLine, int endLine ) c
 QVector<LineProperty> Screen::getLineProperties( int startLine , int endLine ) const
 {
     Q_ASSERT( startLine >= 0 );
+    // cppcheck-suppress assertWithSideEffect
     Q_ASSERT( endLine >= startLine && endLine < history->getLines() + lines );
 
     const int mergedLines = endLine-startLine+1;
@@ -526,7 +529,7 @@ QVector<LineProperty> Screen::getLineProperties( int startLine , int endLine ) c
 void Screen::reset(bool clearScreen)
 {
     setMode(MODE_Wrap  ); saveMode(MODE_Wrap  );  // wrap at end of margin
-    resetMode(MODE_Origin); saveMode(MODE_Origin);  // position refere to [1,1]
+    resetMode(MODE_Origin); saveMode(MODE_Origin);  // position refers to [1,1]
     resetMode(MODE_Insert); saveMode(MODE_Insert);  // overstroke
     setMode(MODE_Cursor);                         // cursor visible
     resetMode(MODE_Screen);                         // screen not inverse
@@ -1204,6 +1207,7 @@ int Screen::copyLineToStream(int line ,
         // safety checks
         assert( start >= 0 );
         assert( count >= 0 );
+        // cppcheck-suppress assertWithSideEffect
         assert( (start+count) <= history->getLineLen(line) );
 
         history->getCells(line,start,count,characterBuffer);

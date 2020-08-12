@@ -30,11 +30,8 @@
 class QgsStyle;
 class QgsStyleGroupSelectionDialog;
 class QgsTemporaryCursorOverride;
-class QgsStyleModel;
+class QgsStyleProxyModel;
 class QTemporaryFile;
-class QProgressDialog;
-class QNetworkAccessManager;
-class QNetworkReply;
 
 /**
  * \ingroup gui
@@ -100,6 +97,18 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     void clearSelection();
 
     /**
+     * Selects favorite symbols
+     * \since QGIS 3.14
+     */
+    void selectFavorites();
+
+    /**
+     * Deselects favorite symbols
+     * \since QGIS 3.14
+     */
+    void deselectFavorites();
+
+    /**
      * Select the symbols belonging to the given tag
      * \param tagName the name of the group to be selected
      */
@@ -126,10 +135,6 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     void importTypeChanged( int );
 
   private slots:
-    void httpFinished();
-    void fileReadyRead();
-    void updateProgress( qint64, qint64 );
-    void downloadCanceled();
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     void showHelp();
 
@@ -149,16 +154,13 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     bool populateStyles();
     void moveStyles( QModelIndexList *selection, QgsStyle *src, QgsStyle *dst );
 
-    QProgressDialog *mProgressDlg = nullptr;
     QgsStyleGroupSelectionDialog *mGroupSelectionDlg = nullptr;
     QTemporaryFile *mTempFile = nullptr;
-    QNetworkAccessManager *mNetManager = nullptr;
-    QNetworkReply *mNetReply = nullptr;
 
     QString mFileName;
     Mode mDialogMode;
 
-    QgsStyleModel *mModel = nullptr;
+    QgsStyleProxyModel *mModel = nullptr;
 
     QgsStyle *mStyle = nullptr;
     std::unique_ptr< QgsStyle > mTempStyle;

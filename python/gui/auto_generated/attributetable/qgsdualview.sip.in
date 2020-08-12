@@ -35,14 +35,25 @@ and the attributes for the currently selected feature are shown in a form.
     };
 
 
+    enum FeatureListBrowsingAction
+    {
+      NoAction,
+      PanToFeature,
+      ZoomToFeature,
+    };
+
     explicit QgsDualView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
 
 :param parent: The parent widget
 %End
+    ~QgsDualView();
 
-    void init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request = QgsFeatureRequest(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
+    void init( QgsVectorLayer *layer,
+               QgsMapCanvas *mapCanvas,
+               const QgsFeatureRequest &request = QgsFeatureRequest(),
+               const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
                bool loadFeatures = true );
 %Docstring
 Has to be called to initialize the dual view.
@@ -53,7 +64,7 @@ Has to be called to initialize the dual view.
 :param request: Use a modified request to limit the shown features
 :param context: The context in which this view is shown
 :param loadFeatures: whether to initially load all features into the view. If set to
-                     ``False``, limited features can later be loaded using setFilterMode()
+                     ``False``, limited features can later be loaded using :py:func:`~QgsDualView.setFilterMode`
 %End
 
     void setView( ViewMode view );
@@ -111,11 +122,22 @@ filter restrictions
 :return: Number of features
 %End
 
-    void setFilteredFeatures( const QgsFeatureIds &filteredFeatures );
+ void setFilteredFeatures( const QgsFeatureIds &filteredFeatures );
 %Docstring
 Set a list of currently visible features
 
 :param filteredFeatures: A list of feature ids
+
+.. deprecated::
+   since filterFeatures is handled in the attribute filter model itself
+%End
+
+    void filterFeatures( const QgsExpression &filterExpression, const QgsExpressionContext &context );
+%Docstring
+Sets the expression and Updates the filtered features in the filter model.
+It is called when the filter expression changed.
+
+.. versionadded:: 3.10.3
 %End
 
     QgsFeatureIds filteredFeatures();
@@ -221,6 +243,16 @@ Copy the content of the selected cell in the clipboard.
 Cancel the progress dialog (if any)
 
 .. versionadded:: 3.0
+%End
+
+    void parentFormValueChanged( const QString &attribute, const QVariant &value );
+%Docstring
+Called in embedded forms when an ``attribute`` ``value`` in the parent form has changed.
+
+Notify the form widgets that something has changed in case they
+have filter expression that depend on the parent form scope.
+
+.. versionadded:: 3.14
 %End
 
   signals:

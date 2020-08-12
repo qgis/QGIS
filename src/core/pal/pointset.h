@@ -37,8 +37,11 @@
 #include <cmath>
 #include <QLinkedList>
 #include <geos_c.h>
+#include <memory>
+#include <vector>
 
 #include "qgis_core.h"
+#include "qgsrectangle.h"
 
 namespace pal
 {
@@ -49,7 +52,7 @@ namespace pal
 
   class PointSet;
 
-  typedef struct _cHullBox
+  struct CHullBox
   {
     double x[4];
     double y[4];
@@ -58,7 +61,7 @@ namespace pal
 
     double width;
     double length;
-  } CHullBox;
+  };
 
   /**
    * \class pal::PointSet
@@ -78,7 +81,15 @@ namespace pal
       PointSet( int nbPoints, double *x, double *y );
       virtual ~PointSet();
 
-      PointSet *extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
+      /**
+       * Does... something completely inscrutable.
+       */
+      std::unique_ptr< PointSet > extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
+
+      /**
+       * Returns a copy of the point set.
+       */
+      std::unique_ptr< PointSet > clone() const;
 
       /**
        * Tests whether point set contains a specified point.
@@ -99,14 +110,28 @@ namespace pal
        */
       bool containsLabelCandidate( double x, double y, double width, double height, double alpha = 0 ) const;
 
-      CHullBox *compute_chull_bbox();
+      /**
+       * Computes a con???? hull. Maybe convex, maybe concave. The person who wrote this
+       * had no care for anyone else ever reading their code.
+       */
+      CHullBox compute_chull_bbox();
 
       /**
        * Split a concave shape into several convex shapes.
        */
-      static void splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
-                                 QLinkedList<PointSet *> &shapes_final,
+      static void splitPolygons( QLinkedList<PointSet *> &inputShapes,
+                                 QLinkedList<PointSet *> &outputShapes,
                                  double xrm, double yrm );
+
+      /**
+       * Extends linestrings by the specified amount at the start and end of the line,
+       * by extending the existing lines following the same direction as the original line
+       * start or end.
+       *
+       * The \a smoothDistance argument specifies the distance over which to smooth the direction
+       * of the line at its start and end points.
+       */
+      void extendLineByDistance( double startDistance, double endDistance, double smoothDistance );
 
       /**
        * Returns the squared minimum distance between the point set geometry and the point (px,py)
@@ -123,16 +148,22 @@ namespace pal
 
       int getGeosType() const { return type; }
 
-      void getBoundingBox( double min[2], double max[2] ) const
+      /**
+       * Returns the point set bounding box.
+       */
+      QgsRectangle boundingBox() const
       {
-        min[0] = xmin;
-        min[1] = ymin;
-        max[0] = xmax;
-        max[1] = ymax;
+        return QgsRectangle( xmin, ymin, xmax, ymax );
       }
 
+      /**
+       * Returns TRUE if the bounding box of this pointset intersects the bounding box
+       * of another pointset.
+       */
+      bool boundingBoxIntersects( const PointSet *other ) const;
+
       //! Returns NULLPTR if this isn't a hole. Otherwise returns pointer to parent pointset.
-      PointSet *getHoleOf() { return holeOf; }
+      PointSet *getHoleOf() const { return holeOf; }
 
       int getNumPoints() const { return nbPoints; }
 
@@ -157,25 +188,34 @@ namespace pal
       double length() const;
 
       /**
+       * Returns area of polygon geometry.
+       */
+      double area() const;
+
+      /**
        * Returns TRUE if pointset is closed.
        */
       bool isClosed() const;
+
+      int nbPoints;
+      std::vector< double > x;
+      std::vector< double > y;   // points order is counterclockwise
 
     protected:
       mutable GEOSGeometry *mGeos = nullptr;
       mutable bool mOwnsGeom = false;
 
-      int nbPoints;
-      double *x = nullptr;
-      double *y = nullptr;   // points order is counterclockwise
-
       int *cHull = nullptr;
-      int cHullSize;
+      int cHullSize = 0;
 
       int type;
 
       PointSet *holeOf = nullptr;
       PointSet *parent = nullptr;
+
+      mutable double mArea = -1;
+      mutable double mLength = -1;
+
 
       PointSet( double x, double y );
 
@@ -194,6 +234,8 @@ namespace pal
     private:
 
       mutable const GEOSPreparedGeometry *mPreparedGeom = nullptr;
+
+      PointSet &operator= ( const PointSet & ) = delete;
 
   };
 

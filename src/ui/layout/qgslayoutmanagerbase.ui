@@ -25,9 +25,9 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QGridLayout" name="gridLayout_2">
-     <item row="1" column="1">
-      <widget class="QToolButton" name="mDuplicateButton">
+    <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0">
+     <item row="1" column="2">
+      <widget class="QToolButton" name="mRemoveButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -35,7 +35,47 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>&amp;Duplicate…</string>
+        <string>&amp;Remove…</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" colspan="4">
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QgsFilterLineEdit" name="mSearchLineEdit">
+         <property name="placeholderText">
+          <string>Search…</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QListView" name="mLayoutListView">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <widget class="QToolButton" name="mShowButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>&amp;Show</string>
        </property>
       </widget>
      </item>
@@ -52,8 +92,8 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="2">
-      <widget class="QToolButton" name="mRemoveButton">
+     <item row="1" column="1">
+      <widget class="QToolButton" name="mDuplicateButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -61,30 +101,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>&amp;Remove…</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0" colspan="4">
-      <widget class="QListView" name="mLayoutListView">
-       <property name="selectionMode">
-        <enum>QAbstractItemView::ExtendedSelection</enum>
-       </property>
-       <property name="selectionBehavior">
-        <enum>QAbstractItemView::SelectRows</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QToolButton" name="mShowButton">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>&amp;Show</string>
+        <string>&amp;Duplicate…</string>
        </property>
       </widget>
      </item>
@@ -215,8 +232,14 @@
    <header>qgsfilewidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mSearchLineEdit</tabstop>
   <tabstop>mLayoutListView</tabstop>
   <tabstop>mShowButton</tabstop>
   <tabstop>mDuplicateButton</tabstop>

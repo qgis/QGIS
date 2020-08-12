@@ -63,6 +63,7 @@ Performs raster layer calculations.
       ParserError,
       MemoryError,
       BandError,
+      CalculationError,
     };
 
 
@@ -120,7 +121,8 @@ QgsRasterCalculator constructor.
 :param nOutputRows: number of rows in output raster
 :param rasterEntries: list of referenced raster layers
 
-.. deprecated:: since QGIS 3.8, use the version with transformContext instead
+.. deprecated:: QGIS 3.8
+  use the version with transformContext instead
 %End
 
  QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
@@ -137,7 +139,8 @@ QgsRasterCalculator constructor.
 :param nOutputRows: number of rows in output raster
 :param rasterEntries: list of referenced raster layers
 
-.. deprecated:: since QGIS 3.8, use the version with transformContext instead
+.. deprecated:: QGIS 3.8
+  use the version with transformContext instead
 
 .. versionadded:: 2.10
 %End
@@ -149,7 +152,7 @@ Starts the calculation and writes a new raster.
 The optional ``feedback`` argument can be used for progress reporting and cancellation support.
 
 :return: QgsRasterCalculator.Success in case of success. If an error is encountered then
-         a description of the error can be obtained by calling lastError().
+         a description of the error can be obtained by calling :py:func:`~QgsRasterCalculator.lastError`.
 %End
 
     QString lastError() const;

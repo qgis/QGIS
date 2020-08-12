@@ -28,14 +28,14 @@ class QgisApp;
 class QgsVectorLayer;
 
 /**
- * @brief The QgsGeometryValidationDock class
+ * \brief The QgsGeometryValidationDock class
  */
 class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryValidationDockBase
 {
     Q_OBJECT
 
   public:
-    QgsGeometryValidationDock( const QString &title, QgsMapCanvas *mapCanvas, QgisApp *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsGeometryValidationDock( const QString &title, QgsMapCanvas *mapCanvas, QgisApp *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 
     QgsGeometryValidationModel *geometryValidationModel() const;
     void setGeometryValidationModel( QgsGeometryValidationModel *geometryValidationModel );

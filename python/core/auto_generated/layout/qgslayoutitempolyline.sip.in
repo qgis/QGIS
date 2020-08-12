@@ -211,6 +211,9 @@ Returns the pen width in millimeters for the stroke of the arrow head.
 .. seealso:: :py:func:`arrowHeadStrokeColor`
 %End
 
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+
   protected:
 
     virtual bool _addNode( int indexPoint, QPointF newPoint, double radius );

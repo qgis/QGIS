@@ -62,7 +62,7 @@ bool QgsCollapsibleGroupBoxPlugin::isInitialized() const
 
 void QgsCollapsibleGroupBoxPlugin::initialize( QDesignerFormEditorInterface *core )
 {
-  Q_UNUSED( core );
+  Q_UNUSED( core )
   if ( mInitialized )
     return;
   mInitialized = true;

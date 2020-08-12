@@ -40,11 +40,12 @@ QgsMapSettings::QgsMapSettings()
   , mSegmentationTolerance( M_PI_2 / 90 )
 {
   mScaleCalculator.setMapUnits( QgsUnitTypes::DistanceUnknownUnit );
+  mSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 
   updateDerived();
 }
 
-void QgsMapSettings::setMagnificationFactor( double factor )
+void QgsMapSettings::setMagnificationFactor( double factor, const QgsPointXY *center )
 {
   double ratio = mMagnificationFactor / factor;
 
@@ -54,13 +55,13 @@ void QgsMapSettings::setMagnificationFactor( double factor )
   setRotation( 0.0 );
 
   QgsRectangle ext = visibleExtent();
-  ext.scale( ratio );
+  ext.scale( ratio, center );
 
   mRotation = rot;
   mExtent = ext;
   mDpi = mDpi / ratio;
 
-  QgsDebugMsg( QStringLiteral( "Magnification factor: %1  dpi: %2  ratio: %3" ).arg( factor ).arg( mDpi ).arg( ratio ) );
+  QgsDebugMsgLevel( QStringLiteral( "Magnification factor: %1  dpi: %2  ratio: %3" ).arg( factor ).arg( mDpi ).arg( ratio ), 3 );
 
   updateDerived();
 }
@@ -85,6 +86,16 @@ void QgsMapSettings::setExtent( const QgsRectangle &extent, bool magnified )
   mExtent = magnifiedExtent;
 
   updateDerived();
+}
+
+double QgsMapSettings::extentBuffer() const
+{
+  return mExtentBuffer;
+}
+
+void QgsMapSettings::setExtentBuffer( const double buffer )
+{
+  mExtentBuffer = buffer;
 }
 
 double QgsMapSettings::rotation() const
@@ -213,6 +224,8 @@ void QgsMapSettings::updateDerived()
   QgsDebugMsgLevel( QStringLiteral( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / mMapUnitsPerPixel ), qgsDoubleToString( mVisibleExtent.height() / mMapUnitsPerPixel ) ), 5 );
   QgsDebugMsgLevel( QStringLiteral( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mScale ) ), 5 );
   QgsDebugMsgLevel( QStringLiteral( "Rotation: %1 degrees" ).arg( mRotation ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Extent: %1" ).arg( mExtent.asWktCoordinates() ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Visible Extent: %1" ).arg( mVisibleExtent.asWktCoordinates() ), 5 );
 
   mValid = true;
 }
@@ -426,6 +439,7 @@ QgsRectangle QgsMapSettings::layerExtentToOutputExtent( const QgsMapLayer *layer
       QgsDebugMsgLevel( QStringLiteral( "sourceCrs = %1" ).arg( ct.sourceCrs().authid() ), 3 );
       QgsDebugMsgLevel( QStringLiteral( "destCRS = %1" ).arg( ct.destinationCrs().authid() ), 3 );
       QgsDebugMsgLevel( QStringLiteral( "extent %1" ).arg( extent.toString() ), 3 );
+      ct.setBallparkTransformsAreAppropriate( true );
       extent = ct.transformBoundingBox( extent );
     }
   }
@@ -445,6 +459,7 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( const QgsMapLayer *layer
   try
   {
     QgsCoordinateTransform ct = layerTransform( layer );
+    ct.setBallparkTransformsAreAppropriate( true );
     if ( ct.isValid() )
     {
       QgsDebugMsgLevel( QStringLiteral( "sourceCrs = %1" ).arg( ct.sourceCrs().authid() ), 3 );
@@ -480,6 +495,26 @@ QgsPointXY QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, QgsP
   return point;
 }
 
+QgsPoint QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, QgsPoint point ) const
+{
+  double x = point.x();
+  double y = point.y();
+  double z = point.z();
+
+  try
+  {
+    QgsCoordinateTransform ct = layerTransform( layer );
+    if ( ct.isValid() )
+      ct.transformInPlace( x, y, z, QgsCoordinateTransform::ForwardTransform );
+  }
+  catch ( QgsCsException &cse )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
+  }
+
+  return QgsPoint( x, y, z );
+}
+
 
 QgsRectangle QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const
 {
@@ -512,6 +547,26 @@ QgsPointXY QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, QgsP
   }
 
   return point;
+}
+
+QgsPoint QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, QgsPoint point ) const
+{
+  double x = point.x();
+  double y = point.y();
+  double z = point.z();
+
+  try
+  {
+    QgsCoordinateTransform ct = layerTransform( layer );
+    if ( ct.isValid() )
+      ct.transformInPlace( x, y, z, QgsCoordinateTransform::ReverseTransform );
+  }
+  catch ( QgsCsException &cse )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
+  }
+
+  return QgsPoint( x, y, z );
 }
 
 
@@ -665,4 +720,29 @@ QgsGeometry QgsMapSettings::labelBoundaryGeometry() const
 void QgsMapSettings::setLabelBoundaryGeometry( const QgsGeometry &boundary )
 {
   mLabelBoundaryGeometry = boundary;
+}
+
+void QgsMapSettings::addClippingRegion( const QgsMapClippingRegion &region )
+{
+  mClippingRegions.append( region );
+}
+
+void QgsMapSettings::setClippingRegions( const QList<QgsMapClippingRegion> &regions )
+{
+  mClippingRegions = regions;
+}
+
+QList<QgsMapClippingRegion> QgsMapSettings::clippingRegions() const
+{
+  return mClippingRegions;
+}
+
+void QgsMapSettings::addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler )
+{
+  mRenderedFeatureHandlers.append( handler );
+}
+
+QList<QgsRenderedFeatureHandlerInterface *> QgsMapSettings::renderedFeatureHandlers() const
+{
+  return mRenderedFeatureHandlers;
 }

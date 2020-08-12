@@ -392,13 +392,17 @@ QgsColorWheel::~QgsColorWheel()
 
 QSize QgsColorWheel::sizeHint() const
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   int size = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) );
+#else
+  int size = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 22;
+#endif
   return QSize( size, size );
 }
 
 void QgsColorWheel::paintEvent( QPaintEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QPainter painter( this );
 
   if ( !mWidgetImage || !mWheelImage || !mTriangleImage )
@@ -621,7 +625,7 @@ void QgsColorWheel::mousePressEvent( QMouseEvent *event )
 
 void QgsColorWheel::mouseReleaseEvent( QMouseEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   mClickedPart = QgsColorWheel::None;
 }
 
@@ -750,13 +754,17 @@ QgsColorBox::~QgsColorBox()
 
 QSize QgsColorBox::sizeHint() const
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   int size = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) );
+#else
+  int size = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 22;
+#endif
   return QSize( size, size );
 }
 
 void QgsColorBox::paintEvent( QPaintEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QPainter painter( this );
 
   QStyleOptionFrame option;
@@ -981,18 +989,26 @@ QSize QgsColorRampWidget::sizeHint() const
   if ( mOrientation == QgsColorRampWidget::Horizontal )
   {
     //horizontal
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
     return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ), Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.3 );
+#else
+    return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 22, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.3 );
+#endif
   }
   else
   {
     //vertical
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
     return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.3, Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ) );
+#else
+    return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.3, Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 22 );
+#endif
   }
 }
 
 void QgsColorRampWidget::paintEvent( QPaintEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QPainter painter( this );
 
   if ( mShowFrame )
@@ -1022,7 +1038,7 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
     // we need to set pen width to 1,
     // since on retina displays
     // pen.setWidth(0) <=> pen.width = 0.5
-    // see https://issues.qgis.org/issues/15984
+    // see https://github.com/qgis/QGIS/issues/23900
     pen.setWidth( 1 );
     painter.setPen( pen );
     painter.setBrush( Qt::NoBrush );
@@ -1277,7 +1293,11 @@ QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponen
 
   mSpinBox = new QSpinBox();
   //set spinbox to a reasonable width
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   int largestCharWidth = mSpinBox->fontMetrics().width( QStringLiteral( "888%" ) );
+#else
+  int largestCharWidth = mSpinBox->fontMetrics().horizontalAdvance( QStringLiteral( "888%" ) );
+#endif
   mSpinBox->setMinimumWidth( largestCharWidth + 35 );
   mSpinBox->setMinimum( 0 );
   mSpinBox->setMaximum( convertRealToDisplay( componentRange() ) );
@@ -1431,7 +1451,7 @@ void QgsColorTextWidget::setColor( const QColor &color, const bool emitSignals )
 
 void QgsColorTextWidget::resizeEvent( QResizeEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QSize sz = mMenuButton->sizeHint();
   int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
   mMenuButton->move( mLineEdit->rect().right() - frameWidth - sz.width(),
@@ -1568,7 +1588,7 @@ void QgsColorPreviewWidget::drawColor( const QColor &color, QRect rect, QPainter
 
 void QgsColorPreviewWidget::paintEvent( QPaintEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QPainter painter( this );
 
   if ( mColor2.isValid() )
@@ -1588,7 +1608,11 @@ void QgsColorPreviewWidget::paintEvent( QPaintEvent *event )
 
 QSize QgsColorPreviewWidget::sizeHint() const
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   return QSize( Qgis::UI_SCALE_FACTOR *  fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ), Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ) * 0.75 );
+#else
+  return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 22, Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 22 * 0.75 );
+#endif
 }
 
 void QgsColorPreviewWidget::setColor2( const QColor &color )

@@ -6,39 +6,30 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>334</width>
-    <height>252</height>
+    <width>394</width>
+    <height>133</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
-  <layout class="QFormLayout" name="formLayout">
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="3" column="0">
+    <widget class="QLabel" name="lblShininess">
+     <property name="text">
+      <string>Shininess</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="lblDiffuse">
      <property name="text">
       <string>Diffuse</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QgsColorButton" name="btnDiffuse">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0">
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="lblAmbient">
      <property name="text">
       <string>Ambient</string>
      </property>
@@ -60,13 +51,6 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Specular</string>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="1">
     <widget class="QgsColorButton" name="btnSpecular">
      <property name="sizePolicy">
@@ -83,17 +67,33 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Shininess</string>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="1">
     <widget class="QgsDoubleSpinBox" name="spinShininess">
      <property name="maximum">
       <double>1000.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QgsColorButton" name="btnDiffuse">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="lblSpecular">
+     <property name="text">
+      <string>Specular</string>
      </property>
     </widget>
    </item>

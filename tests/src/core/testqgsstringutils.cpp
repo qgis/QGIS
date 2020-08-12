@@ -39,6 +39,7 @@ class TestQgsStringUtils : public QObject
     void camelCase();
     void ampersandEncode_data();
     void ampersandEncode();
+    void htmlToMarkdown();
     void wordWrap_data();
     void wordWrap();
 
@@ -159,6 +160,8 @@ void TestQgsStringUtils::insertLinks()
   QVERIFY( found );
   QCOMPARE( QgsStringUtils::insertLinks( QString( "is a@a an email?" ), &found ), QString( "is a@a an email?" ) );
   QVERIFY( !found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "Load file:///this/is/path/to.file?query=1#anchor" ), &found ), QString( "Load <a href=\"file:///this/is/path/to.file?query=1#anchor\">file:///this/is/path/to.file?query=1#anchor</a>" ) );
+  QVERIFY( found );
 }
 
 void TestQgsStringUtils::titleCase_data()
@@ -196,6 +199,12 @@ void TestQgsStringUtils::camelCase()
   QCOMPARE( QgsStringUtils::capitalize( QString( "ABC DEF" ), QgsStringUtils::UpperCamelCase ), QString( "AbcDef" ) );
   QCOMPARE( QgsStringUtils::capitalize( QString( "àbc def" ), QgsStringUtils::UpperCamelCase ), QString( "ÀbcDef" ) );
   QCOMPARE( QgsStringUtils::capitalize( QString( "àbc dÉf" ), QgsStringUtils::UpperCamelCase ), QString( "ÀbcDéf" ) );
+}
+
+void TestQgsStringUtils::htmlToMarkdown()
+{
+  QCOMPARE( QgsStringUtils::htmlToMarkdown( QString( "<b>Visit</b> <a href=\"http://qgis.org\">!</a>" ) ), QString( "**Visit** [!](http://qgis.org)" ) );
+  QCOMPARE( QgsStringUtils::htmlToMarkdown( QString( "<b>Visit</b><br><a href='http://qgis.org'>QGIS</a>" ) ), QString( "**Visit**\n[QGIS](http://qgis.org)" ) );
 }
 
 void TestQgsStringUtils::ampersandEncode_data()

@@ -35,7 +35,8 @@
 
 #include "qgis_core.h"
 #include "pal.h" // for LineArrangementFlags enum
-#include "rtree.hpp"
+#include "qgsgeos.h"
+#include "qgsgenericspatialindex.h"
 #include <QMutex>
 #include <QLinkedList>
 #include <QHash>
@@ -46,11 +47,8 @@ class QgsLabelFeature;
 namespace pal
 {
 
-  /// @cond PRIVATE
-  template<class DATATYPE, class ELEMTYPE, int NUMDIMS, class ELEMTYPEREAL, int TMAXNODES, int TMINNODES> class RTree;
-  /// @endcond
-
   class FeaturePart;
+
   class Pal;
   class LabelInfo;
 
@@ -70,13 +68,27 @@ namespace pal
       friend class LabelPosition;
 
     public:
-      enum LabelMode { LabelPerFeature, LabelPerFeaturePart };
       enum UpsideDownLabels
       {
         Upright, // upside-down labels (90 <= angle < 270) are shown upright
         ShowDefined, // show upside down when rotation is layer- or data-defined
         ShowAll // show upside down for all labels, including dynamic ones
       };
+
+      /**
+       * \brief Create a new layer
+       *
+       * \param provider Associated provider
+       * \param name Name of the layer (for stats, debugging - does not need to be unique)
+       * \param arrangement Arrangement mode : how to place candidates
+       * \param defaultPriority layer's prioriry (0 is the best, 1 the worst)
+       * \param active is the layer is active (currently displayed)
+       * \param toLabel the layer will be labeled whether toLablel is TRUE
+       * \param pal pointer to the pal object
+       * \param displayAll if TRUE, all features will be labelled even though overlaps occur
+       *
+       */
+      Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
 
       virtual ~Layer();
 
@@ -86,6 +98,69 @@ namespace pal
        * Returns the number of features in layer.
        */
       int featureCount() { return mHashtable.size(); }
+
+      /**
+       * Returns the maximum number of point label candidates to generate for features
+       * in this layer.
+       */
+      std::size_t maximumPointLabelCandidates() const
+      {
+        // when an extreme number of features exist in the layer, we limit the number of candidates
+        // to avoid the engine processing endlessly...
+        const int size = mHashtable.size();
+        if ( size > 1000 )
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 4 ) : 4 );
+        else if ( size > 500 )
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 6 ) : 6 );
+        else if ( size > 200 )
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 8 ) : 8 );
+        else if ( size > 100 )
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 12 ) : 12 );
+        else
+          return static_cast< std::size_t >( std::max( mPal->globalCandidatesLimitPoint(), 0 ) );
+      }
+
+      /**
+       * Returns the maximum number of line label candidates to generate for features
+       * in this layer.
+       */
+      std::size_t maximumLineLabelCandidates() const
+      {
+        // when an extreme number of features exist in the layer, we limit the number of candidates
+        // to avoid the engine processing endlessly...
+        const int size = mHashtable.size();
+        if ( size > 1000 )
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 5 ) : 5 );
+        else if ( size > 500 )
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 10 ) : 10 );
+        else if ( size > 200 )
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 20 ) : 20 );
+        else if ( size > 100 )
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 40 ) : 40 );
+        else
+          return static_cast< std::size_t >( std::max( mPal->globalCandidatesLimitLine(), 0 ) );
+      }
+
+      /**
+       * Returns the maximum number of polygon label candidates to generate for features
+       * in this layer.
+       */
+      std::size_t maximumPolygonLabelCandidates() const
+      {
+        // when an extreme number of features exist in the layer, we limit the number of candidates
+        // to avoid the engine processing endlessly...
+        const int size = mHashtable.size();
+        if ( size > 1000 )
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 5 ) : 5 );
+        else if ( size > 500 )
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 15 ) : 15 );
+        else if ( size > 200 )
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 20 ) : 20 );
+        else if ( size > 100 )
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 25 ) : 25 );
+        else
+          return static_cast< std::size_t >( std::max( mPal->globalCandidatesLimitPolygon(), 0 ) );
+      }
 
       //! Returns pointer to the associated provider
       QgsAbstractLabelProvider *provider() const { return mProvider; }
@@ -112,19 +187,6 @@ namespace pal
        * \see arrangement
        */
       void setArrangement( QgsPalLayerSettings::Placement arrangement ) { mArrangement = arrangement; }
-
-      /**
-       * Returns the layer's arrangement flags.
-       * \see setArrangementFlags
-       */
-      LineArrangementFlags arrangementFlags() const { return mArrangementFlags; }
-
-      /**
-       * Sets the layer's arrangement flags.
-       * \param flags arrangement flags
-       * \see arrangementFlags
-       */
-      void setArrangementFlags( LineArrangementFlags flags ) { mArrangementFlags = flags; }
 
       /**
        * \brief Sets whether the layer is currently active.
@@ -164,7 +226,7 @@ namespace pal
        * act as obstacles for labels.
        * \see setObstacleType
        */
-      QgsPalLayerSettings::ObstacleType obstacleType() const { return mObstacleType; }
+      QgsLabelObstacleSettings::ObstacleType obstacleType() const { return mObstacleType; }
 
       /**
        * Sets the obstacle type, which controls how features within the layer
@@ -172,7 +234,7 @@ namespace pal
        * \param obstacleType new obstacle type
        * \see obstacleType
        */
-      void setObstacleType( QgsPalLayerSettings::ObstacleType obstacleType ) { mObstacleType = obstacleType; }
+      void setObstacleType( QgsLabelObstacleSettings::ObstacleType obstacleType ) { mObstacleType = obstacleType; }
 
       /**
        * Sets the layer's priority.
@@ -188,19 +250,6 @@ namespace pal
        * \see setPriority
        */
       double priority() const { return mDefaultPriority; }
-
-      /**
-       * Sets the layer's labeling mode.
-       * \param mode label mode
-       * \see labelMode
-       */
-      void setLabelMode( LabelMode mode ) { mMode = mode; }
-
-      /**
-       * Returns the layer's labeling mode.
-       * \see setLabelMode
-       */
-      LabelMode labelMode() const { return mMode; }
 
       /**
        * Sets whether connected lines should be merged before labeling
@@ -278,11 +327,13 @@ namespace pal
       //! List of obstacle parts
       QList<FeaturePart *> mObstacleParts;
 
-      Pal *pal = nullptr;
+      std::vector< geos::unique_ptr > mGeosObstacleGeometries;
+
+      Pal *mPal = nullptr;
 
       double mDefaultPriority;
 
-      QgsPalLayerSettings::ObstacleType mObstacleType;
+      QgsLabelObstacleSettings::ObstacleType mObstacleType = QgsLabelObstacleSettings::PolygonBoundary;
       bool mActive;
       bool mLabelLayer;
       bool mDisplayAll;
@@ -290,40 +341,18 @@ namespace pal
 
       //! Optional flags used for some placement methods
       QgsPalLayerSettings::Placement mArrangement;
-      LineArrangementFlags mArrangementFlags;
-      LabelMode mMode;
+
       bool mMergeLines;
 
       UpsideDownLabels mUpsidedownLabels;
 
-      // indexes (spatial and id)
-      RTree<FeaturePart *, double, 2, double, 8, 4> *mFeatureIndex;
       //! Lookup table of label features (owned by the label feature provider that created them)
       QHash< QgsFeatureId, QgsLabelFeature *> mHashtable;
 
-      //obstacle r-tree
-      RTree<FeaturePart *, double, 2, double, 8, 4> *mObstacleIndex;
-
-      QHash< QString, QLinkedList<FeaturePart *>* > mConnectedHashtable;
-      QStringList mConnectedTexts;
+      QHash< QString, QVector<FeaturePart *> > mConnectedHashtable;
       QHash< QgsFeatureId, int > mConnectedFeaturesIds;
 
       QMutex mMutex;
-
-      /**
-       * \brief Create a new layer
-       *
-       * \param provider Associated provider
-       * \param name Name of the layer (for stats, debugging - does not need to be unique)
-       * \param arrangement Arrangement mode : how to place candidates
-       * \param defaultPriority layer's prioriry (0 is the best, 1 the worst)
-       * \param active is the layer is active (currently displayed)
-       * \param toLabel the layer will be labeled whether toLablel is TRUE
-       * \param pal pointer to the pal object
-       * \param displayAll if TRUE, all features will be labelled even though overlaps occur
-       *
-       */
-      Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
 
       //! Add newly created feature part into r tree and to the list
       void addFeaturePart( FeaturePart *fpart, const QString &labelText = QString() );
@@ -334,5 +363,6 @@ namespace pal
   };
 
 } // end namespace pal
+
 
 #endif

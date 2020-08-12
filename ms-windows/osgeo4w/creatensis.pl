@@ -549,7 +549,7 @@ creatensis.pl [options] [packages...]
     -verbose		increase verbosity
     -releasename=name	name of release (defaults to CMakeLists.txt setting)
     -keep		don't start with a fresh unpacked directory
-    -signwith=cert.p12	optionall sign package with certificate (requires osslsigncode)
+    -signwith=cert.p12	optionally sign package with certificate (requires osslsigncode)
     -signpass=password	password of certificate
     -version=m.m.p	package version (defaults to CMakeLists.txt setting)
     -binary=b		binary version of package

@@ -22,6 +22,7 @@
 #include "ui_qgsprocessingalgorithmprogressdialogbase.h"
 #include "processing/qgsprocessingcontext.h"
 #include "processing/qgsprocessingfeedback.h"
+#include "qgsprocessingwidgetwrapper.h"
 
 ///@cond NOT_STABLE
 
@@ -49,7 +50,7 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
     /**
      * Constructor for QgsProcessingAlgorithmDialogFeedback.
      */
-    QgsProcessingAlgorithmDialogFeedback() = default;
+    QgsProcessingAlgorithmDialogFeedback();
 
   signals:
 
@@ -69,7 +70,6 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
     void pushDebugInfo( const QString &info ) override;
     void pushConsoleInfo( const QString &info ) override;
 
-
 };
 #endif
 
@@ -79,7 +79,7 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
  * \note This is not considered stable API and may change in future QGIS versions.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::QgsProcessingDialogBase
+class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsProcessingParametersGenerator, private Ui::QgsProcessingDialogBase
 {
     Q_OBJECT
 
@@ -98,7 +98,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     /**
      * Constructor for QgsProcessingAlgorithmDialogBase.
      */
-    QgsProcessingAlgorithmDialogBase( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsProcessingAlgorithmDialogBase( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
     ~QgsProcessingAlgorithmDialogBase() override;
 
     /**
@@ -120,13 +120,13 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * Sets the main \a widget for the dialog, usually a panel for configuring algorithm parameters.
      * \see mainWidget()
      */
-    void setMainWidget( QWidget *widget SIP_TRANSFER );
+    void setMainWidget( QgsPanelWidget *widget SIP_TRANSFER );
 
     /**
      * Returns the main widget for the dialog, usually a panel for configuring algorithm parameters.
      * \see setMainWidget()
      */
-    QWidget *mainWidget();
+    QgsPanelWidget *mainWidget();
 
     /**
      * Switches the dialog to the log page.
@@ -152,11 +152,6 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * slots in this dialog.
      */
     QgsProcessingFeedback *createFeedback() SIP_FACTORY;
-
-    /**
-     * Returns the parameter values for the algorithm to run in the dialog.
-     */
-    virtual QVariantMap getParameterValues() const;
 
     /**
      * Saves the log contents to a text file (specified by the file \a path), in
@@ -230,6 +225,13 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      */
     void copyLogToClipboard();
 
+    /**
+     * Switches the dialog to the parameters page.
+     */
+    void showParameters();
+
+    void reject() override;
+
   protected:
 
     void closeEvent( QCloseEvent *e ) override;
@@ -243,6 +245,11 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * Returns the dialog's cancel button.
      */
     QPushButton *cancelButton();
+
+    /**
+     * Returns the dialog's change parameters button.
+     */
+    QPushButton *changeParametersButton();
 
     /**
      * Returns the dialog's button box.
@@ -267,6 +274,11 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     void setExecuted( bool executed );
 
     /**
+     * Sets whether the algorithm was executed through the dialog (no matter the result).
+     */
+    void setExecutedAnyResult( bool executedAnyResult );
+
+    /**
      * Sets the algorithm results.
      * \see results()
      * \see setExecuted()
@@ -282,6 +294,29 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * Resets the dialog's gui, ready for another algorithm execution.
      */
     void resetGui();
+
+    /**
+     * For subclasses to register their own GUI controls to be reset, ready
+     * for another algorithm execution.
+     */
+    virtual void resetAdditionalGui();
+
+    /**
+     * Sets visibility for mutually exclusive buttons Run and Change Parameters.
+     */
+    void updateRunButtonVisibility();
+
+    /**
+     * Blocks run and changeParameters buttons and parameters tab while the
+     * algorithm is running.
+     */
+    void blockControlsWhileRunning();
+
+    /**
+     * For subclasses to register their own GUI controls to be blocked while
+     * the algorithm is running.
+     */
+    virtual void blockAdditionalControlsWhileRunning();
 
     /**
      * Returns the dialog's message bar.
@@ -306,6 +341,15 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      */
     static QString formatStringForLog( const QString &string );
 
+  signals:
+
+    /**
+     * Emitted whenever an algorithm has finished executing in the dialog.
+     *
+     * \since QGIS 3.14
+     */
+    void algorithmFinished( bool successful, const QVariantMap &result );
+
   protected slots:
 
     /**
@@ -324,6 +368,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     void toggleCollapsed();
 
     void splitterChanged( int pos, int index );
+    void mTabWidget_currentChanged( int index );
     void linkClicked( const QUrl &url );
     void algExecuted( bool successful, const QVariantMap &results );
     void taskTriggered( QgsTask *task );
@@ -333,13 +378,15 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
 
     QPushButton *mButtonRun = nullptr;
     QPushButton *mButtonClose = nullptr;
+    QPushButton *mButtonChangeParameters = nullptr;
     QByteArray mSplitterState;
     QToolButton *mButtonCollapse = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
 
     bool mExecuted = false;
+    bool mExecutedAnyResult = false;
     QVariantMap mResults;
-    QWidget *mMainWidget = nullptr;
+    QgsPanelWidget *mMainWidget = nullptr;
     std::unique_ptr< QgsProcessingAlgorithm > mAlgorithm;
     QgsProcessingAlgRunnerTask *mAlgorithmTask = nullptr;
 

@@ -200,14 +200,25 @@ void TestQgsNetworkAccessManager::testProxyExcludeList()
 {
   QgsNetworkAccessManager manager;
   QNetworkProxy fallback( QNetworkProxy::HttpProxy, QStringLiteral( "babies_first_proxy" ) );
-  manager.setFallbackProxyAndExcludes( fallback, QStringList() << QStringLiteral( "intranet" ) << QStringLiteral( "something_else" ) );
+  manager.setFallbackProxyAndExcludes( fallback, QStringList() << QStringLiteral( "intranet" ) << QStringLiteral( "something_else" ), QStringList() << QStringLiteral( "noProxyUrl" ) );
   QCOMPARE( manager.fallbackProxy().hostName(), QStringLiteral( "babies_first_proxy" ) );
   QCOMPARE( manager.excludeList(), QStringList() << QStringLiteral( "intranet" ) << QStringLiteral( "something_else" ) );
+  QCOMPARE( manager.noProxyList(), QStringList() << QStringLiteral( "noProxyUrl" ) );
 
   QgsNetworkAccessManager manager2;
-  manager2.setFallbackProxyAndExcludes( fallback, QStringList() << QStringLiteral( "intranet" ) << "" );
+  manager2.setFallbackProxyAndExcludes( fallback, QStringList() << QStringLiteral( "intranet" ) << "", QStringList() << QStringLiteral( "noProxyUrl" ) << "" );
   // empty strings MUST be filtered from this list - otherwise they match all hosts!
   QCOMPARE( manager2.excludeList(), QStringList() << QStringLiteral( "intranet" ) );
+  QCOMPARE( manager2.noProxyList(), QStringList() << QStringLiteral( "noProxyUrl" ) );
+
+  // check that when we query an exclude URL, the returned proxy is no proxy
+  QgsNetworkAccessManager::instance()->setFallbackProxyAndExcludes( fallback, QStringList() << QStringLiteral( "intranet" ) << "", QStringList() << QStringLiteral( "noProxy" ) );
+  QList<QNetworkProxy> proxies = QgsNetworkAccessManager::instance()->proxyFactory()->queryProxy( QNetworkProxyQuery( QUrl( "intranet/mystuff" ) ) );
+  QCOMPARE( proxies.count(), 1 );
+  QCOMPARE( proxies.at( 0 ).type(),  QNetworkProxy::DefaultProxy );
+  proxies = QgsNetworkAccessManager::instance()->proxyFactory()->queryProxy( QNetworkProxyQuery( QUrl( "noProxy/mystuff" ) ) );
+  QCOMPARE( proxies.count(), 1 );
+  QCOMPARE( proxies.at( 0 ).type(),  QNetworkProxy::NoProxy );
 }
 
 void TestQgsNetworkAccessManager::fetchEmptyUrl()

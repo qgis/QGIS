@@ -23,27 +23,22 @@ __author__ = 'Anita Graser'
 __date__ = 'May 2018'
 __copyright__ = '(C) 2018, Anita Graser'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-from qgis.core import (Qgis,
-                       QgsProcessingException,
+from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterString,
-                       QgsApplication,
                        QgsVectorLayer,
-                       QgsProject,
+                       QgsDataSourceUri,
                        QgsProcessing,
-                       QgsProcessingException,
                        QgsProcessingOutputVectorLayer,
                        QgsProcessingContext,
-                       QgsProcessingFeedback)
+                       QgsProcessingParameterProviderConnection,
+                       QgsProviderRegistry,
+                       QgsProviderConnectionException,
+                       QgsProcessingAlgorithm
+                       )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import postgis
 
 
 class PostGISExecuteAndLoadSQL(QgisAlgorithm):
-
     DATABASE = 'DATABASE'
     SQL = 'SQL'
     OUTPUT = 'OUTPUT'
@@ -59,13 +54,13 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool | QgsProcessingAlgorithm.FlagRequiresProject
+
     def initAlgorithm(self, config=None):
-        db_param = QgsProcessingParameterString(
+        db_param = QgsProcessingParameterProviderConnection(
             self.DATABASE,
-            self.tr('Database (connection name)'))
-        db_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}})
+            self.tr('Database (connection name)'), 'postgres')
         self.addParameter(db_param)
         self.addParameter(QgsProcessingParameterString(
             self.SQL,
@@ -98,14 +93,23 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
         return self.tr('postgis,table,database').split(',')
 
     def processAlgorithm(self, parameters, context, feedback):
-        connection = self.parameterAsString(parameters, self.DATABASE, context)
+        connection_name = self.parameterAsConnectionName(parameters, self.DATABASE, context)
         id_field = self.parameterAsString(parameters, self.ID_FIELD, context)
         geom_field = self.parameterAsString(
             parameters, self.GEOMETRY_FIELD, context)
-        uri = postgis.uri_from_name(connection)
+
+        # resolve connection details to uri
+        try:
+            md = QgsProviderRegistry.instance().providerMetadata('postgres')
+            conn = md.createConnection(connection_name)
+        except QgsProviderConnectionException:
+            raise QgsProcessingException(self.tr('Could not retrieve connection details for {}').format(connection_name))
+
+        uri = QgsDataSourceUri(conn.uri())
+
         sql = self.parameterAsString(parameters, self.SQL, context)
         sql = sql.replace('\n', ' ')
-        uri.setDataSource("", "(" + sql + ")", geom_field, "", id_field)
+        uri.setDataSource("", "(" + sql.rstrip(';') + ")", geom_field, "", id_field)
 
         vlayer = QgsVectorLayer(uri.uri(), "layername", "postgres")
 

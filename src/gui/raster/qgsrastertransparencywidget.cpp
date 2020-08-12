@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include <QWidget>
-#include <QDoubleValidator>
 #include <QIntValidator>
 #include <QFile>
 #include <QTextStream>
@@ -33,6 +32,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsrasteridentifyresult.h"
 #include "qgsmultibandcolorrenderer.h"
+#include "qgsdoublevalidator.h"
 
 
 QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
@@ -49,12 +49,15 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
   connect( pbnImportTransparentPixelValues, &QToolButton::clicked, this, &QgsRasterTransparencyWidget::pbnImportTransparentPixelValues_clicked );
   connect( pbnRemoveSelectedRow, &QToolButton::clicked, this, &QgsRasterTransparencyWidget::pbnRemoveSelectedRow_clicked );
 
+  mNodataColorButton->setShowNoColor( true );
+  mNodataColorButton->setColorDialogTitle( tr( "Select No Data Color" ) );
   syncToLayer();
 
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPanelWidget::widgetChanged );
   connect( cboxTransparencyBand, &QgsRasterBandComboBox::bandChanged, this, &QgsPanelWidget::widgetChanged );
   connect( mSrcNoDataValueCheckBox, &QCheckBox::stateChanged, this, &QgsPanelWidget::widgetChanged );
   connect( leNoDataValue, &QLineEdit::textEdited, this, &QgsPanelWidget::widgetChanged );
+  connect( mNodataColorButton, &QgsColorButton::colorChanged, this, &QgsPanelWidget::widgetChanged );
 
   mPixelSelectorTool = nullptr;
   if ( mMapCanvas )
@@ -70,8 +73,6 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
 
 void QgsRasterTransparencyWidget::syncToLayer()
 {
-  if ( ! mRasterLayer->isValid() )
-    return;
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   QgsRasterRenderer *renderer = mRasterLayer->renderer();
   if ( provider )
@@ -107,15 +108,24 @@ void QgsRasterTransparencyWidget::syncToLayer()
   mSrcNoDataValueCheckBox->setEnabled( enableSrcNoData );
   lblSrcNoDataValue->setEnabled( enableSrcNoData );
 
+  if ( renderer )
+  {
+    if ( renderer->nodataColor().isValid() )
+      mNodataColorButton->setColor( renderer->nodataColor() );
+    else
+      mNodataColorButton->setToNull();
+  }
+
   QgsRasterRangeList noDataRangeList = mRasterLayer->dataProvider()->userNoDataValues( 1 );
   QgsDebugMsg( QStringLiteral( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ) );
   if ( !noDataRangeList.isEmpty() )
   {
-    leNoDataValue->insert( QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ) );
+    double v = QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ).toDouble();
+    leNoDataValue->setText( QLocale().toString( v ) );
   }
   else
   {
-    leNoDataValue->insert( QString() );
+    leNoDataValue->setText( QString() );
   }
 
   populateTransparencyTable( mRasterLayer->renderer() );
@@ -123,7 +133,7 @@ void QgsRasterTransparencyWidget::syncToLayer()
 
 void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   QgsDebugMsg( QStringLiteral( "text = %1" ).arg( text ) );
   QgsRasterRenderer *renderer = mRasterLayer->renderer();
   if ( !renderer )
@@ -133,7 +143,7 @@ void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &tex
   int nBands = renderer->usesBands().size();
   if ( nBands == 1 )
   {
-    QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( sender() );
+    QLineEdit *lineEdit = qobject_cast<QLineEdit *>( sender() );
     if ( !lineEdit ) return;
     int row = -1;
     int column = -1;
@@ -386,7 +396,7 @@ void QgsRasterTransparencyWidget::apply()
   if ( "" != leNoDataValue->text() )
   {
     bool myDoubleOk = false;
-    double myNoDataValue = leNoDataValue->text().toDouble( &myDoubleOk );
+    double myNoDataValue = QgsDoubleValidator::toDouble( leNoDataValue->text(), &myDoubleOk );
     if ( myDoubleOk )
     {
       QgsRasterRange myNoDataRange( myNoDataValue, myNoDataValue );
@@ -404,6 +414,7 @@ void QgsRasterTransparencyWidget::apply()
   if ( rasterRenderer )
   {
     rasterRenderer->setAlphaBand( cboxTransparencyBand->currentBand() );
+    rasterRenderer->setNodataColor( mNodataColorButton->color() );
 
     //Walk through each row in table and test value. If not valid set to 0.0 and continue building transparency list
     QgsRasterTransparency *rasterTransparency = new QgsRasterTransparency();
@@ -625,10 +636,11 @@ void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, doub
     {
       case Qgis::Float32:
       case Qgis::Float64:
-        lineEdit->setValidator( new QDoubleValidator( nullptr ) );
+        lineEdit->setValidator( new QgsDoubleValidator( nullptr ) );
         if ( !std::isnan( value ) )
         {
-          valueString = QgsRasterBlock::printValue( value );
+          double v = QgsRasterBlock::printValue( value ).toDouble();
+          valueString = QLocale().toString( v );
         }
         break;
       default:
@@ -658,7 +670,7 @@ void QgsRasterTransparencyWidget::adjustTransparencyCellWidth( int row, int colu
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( tableTransparency->cellWidget( row, column ) );
   if ( !lineEdit ) return;
 
-  int width = std::max( lineEdit->fontMetrics().width( lineEdit->text() ) + 10, 100 );
+  int width = std::max( lineEdit->fontMetrics().boundingRect( lineEdit->text() ).width() + 10, 100 );
   width = std::max( width, tableTransparency->columnWidth( column ) );
 
   lineEdit->setFixedWidth( width );
@@ -678,8 +690,8 @@ double QgsRasterTransparencyWidget::transparencyCellValue( int row, int column )
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( tableTransparency->cellWidget( row, column ) );
   if ( !lineEdit || lineEdit->text().isEmpty() )
   {
-    std::numeric_limits<double>::quiet_NaN();
+    return std::numeric_limits<double>::quiet_NaN();
   }
-  return lineEdit->text().toDouble();
+  return QgsDoubleValidator::toDouble( lineEdit->text() );
 
 }

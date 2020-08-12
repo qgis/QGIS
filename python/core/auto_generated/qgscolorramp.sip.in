@@ -467,7 +467,7 @@ Constructor for QgsRandomColorRamp.
 %Docstring
 Sets the desired total number of unique colors for the resultant ramp. Calling
 this method pregenerates a set of visually distinct colors which are returned
-by subsequent calls to color().
+by subsequent calls to :py:func:`~QgsRandomColorRamp.color`.
 
 :param colorCount: number of unique colors
 
@@ -642,7 +642,7 @@ Sets the name of the color brewer color scheme.
 Sets the number of colors in the ramp.
 
 :param colors: number of colors. Must match a valid value for the scheme,
-               which can be retrieved using listSchemeVariants()
+               which can be retrieved using :py:func:`~QgsColorBrewerColorRamp.listSchemeVariants`
 
 .. seealso:: :py:func:`colors`
 %End

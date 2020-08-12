@@ -21,23 +21,18 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Matthias Kuhn'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = ':%H$'
-
-
 import qgis  # NOQA switch sip api
 
 import os
 import yaml
 import nose2
-import gdal
 import shutil
 import glob
 import hashlib
 import tempfile
 import re
 
+from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
 from numpy import nan_to_num
 from copy import deepcopy
@@ -86,7 +81,12 @@ class AlgorithmsTest(object):
         :param defs: A python dict containing a test algorithm definition
         """
         self.vector_layer_params = {}
-        QgsProject.instance().removeAllMapLayers()
+        QgsProject.instance().clear()
+
+        if 'project' in defs:
+            full_project_path = os.path.join(processingTestDataPath(), defs['project'])
+            project_read_success = QgsProject.instance().read(full_project_path)
+            self.assertTrue(project_read_success, 'Failed to load project file: ' + defs['project'])
 
         if 'project_crs' in defs:
             QgsProject.instance().setCrs(QgsCoordinateReferenceSystem(defs['project_crs']))
@@ -112,7 +112,7 @@ class AlgorithmsTest(object):
                 parameters[k] = p
 
         for r, p in list(defs['results'].items()):
-            if not 'in_place_result' in p or not p['in_place_result']:
+            if 'in_place_result' not in p or not p['in_place_result']:
                 parameters[r] = self.load_result_param(p)
 
         expectFailure = False
@@ -177,7 +177,7 @@ class AlgorithmsTest(object):
             elif param['type'] == 'interpolation':
                 prefix = processingTestDataPath()
                 tmp = ''
-                for r in param['name'].split(';'):
+                for r in param['name'].split('::|::'):
                     v = r.split('::~::')
                     tmp += '{}::~::{}::~::{}::~::{};'.format(os.path.join(prefix, v[0]),
                                                              v[1], v[2], v[3])
@@ -212,6 +212,9 @@ class AlgorithmsTest(object):
                 basename = 'raster.tif'
             filepath = os.path.join(outdir, basename)
             return filepath
+        elif param['type'] == 'directory':
+            outdir = tempfile.mkdtemp()
+            return outdir
 
         raise KeyError("Unknown type '{}' specified for parameter".format(param['type']))
 
@@ -350,6 +353,11 @@ class AlgorithmsTest(object):
                 result_filepath = results[id]
 
                 self.assertFilesEqual(expected_filepath, result_filepath)
+            elif 'directory' == expected_result['type']:
+                expected_dirpath = self.filepath_from_param(expected_result)
+                result_dirpath = results[id]
+
+                self.assertDirectoriesEqual(expected_dirpath, result_dirpath)
             elif 'regex' == expected_result['type']:
                 with open(results[id], 'r') as file:
                     data = file.read()
@@ -359,7 +367,6 @@ class AlgorithmsTest(object):
 
 
 class GenericAlgorithmsTest(unittest.TestCase):
-
     """
     General (non-provider specific) algorithm tests
     """

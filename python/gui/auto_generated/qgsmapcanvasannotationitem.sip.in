@@ -8,6 +8,11 @@
 
 
 
+%ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsmapcanvasannotationitem.h>
+%End
+
 
 
 class QgsMapCanvasAnnotationItem: QObject, QgsMapCanvasItem
@@ -20,6 +25,12 @@ An interactive map canvas item which displays a QgsAnnotation.
 
 %TypeHeaderCode
 #include "qgsmapcanvasannotationitem.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsMapCanvasAnnotationItem *>( sipCpp ) )
+      sipType = sipType_QgsMapCanvasAnnotationItem;
+    else
+      sipType = nullptr;
 %End
   public:
 

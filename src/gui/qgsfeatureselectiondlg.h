@@ -16,7 +16,7 @@
 #ifndef QGSFEATURESELECTIONDLG_H
 #define QGSFEATURESELECTIONDLG_H
 
-class QgsGenericFeatureSelectionManager;
+class QgsVectorLayerSelectionManager;
 
 #include "ui_qgsfeatureselectiondlg.h"
 #include "qgis_sip.h"
@@ -51,7 +51,7 @@ class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeature
   public:
 
     //! Constructor for QgsFeatureSelectionDlg
-    explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, QgsAttributeEditorContext &context, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, const QgsAttributeEditorContext &context, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Gets the selected features
@@ -66,15 +66,60 @@ class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeature
      */
     void setSelectedFeatures( const QgsFeatureIds &ids );
 
-  private:
-    QgsGenericFeatureSelectionManager *mFeatureSelection = nullptr;
-    QgsVectorLayer *mVectorLayer = nullptr;
-
-    // QWidget interface
   protected:
+
+    void keyPressEvent( QKeyEvent *evt ) override;
 
     //! Make sure the dialog does not grow too much
     void showEvent( QShowEvent *event ) override;
+
+  private slots:
+
+    /**
+     * Inverts selection
+     */
+    void mActionInvertSelection_triggered();
+
+    /**
+     * Clears selection
+     */
+    void mActionRemoveSelection_triggered();
+
+    /**
+     * Select all
+     */
+    void mActionSelectAll_triggered();
+
+    /**
+     * Zooms to selected features
+     */
+    void mActionZoomMapToSelectedRows_triggered();
+
+    /**
+     * Pans to selected features
+     */
+    void mActionPanMapToSelectedRows_triggered();
+
+    /**
+     * Select feature using an expression
+     */
+    void mActionExpressionSelect_triggered();
+
+    /**
+     * Set form filter expression
+     */
+    void setFilterExpression( const QString &filter, QgsAttributeForm::FilterType type );
+
+    /**
+     * View mode has changed
+     */
+    void viewModeChanged( QgsAttributeEditorContext::Mode mode );
+
+  private:
+
+    QgsVectorLayerSelectionManager *mFeatureSelection = nullptr;
+    QgsVectorLayer *mVectorLayer = nullptr;
+    QgsAttributeEditorContext mContext;
 };
 
 #endif // QGSFEATURESELECTIONDLG_H

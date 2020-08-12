@@ -75,7 +75,7 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
     void finalizeRestoreFromXml() override;
-
+    ExportLayerBehavior exportLayerBehavior() const override;
   protected:
     void draw( QgsLayoutItemRenderContext &context ) override;
     bool writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;

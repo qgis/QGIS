@@ -70,19 +70,19 @@ public:
                const TNumber minY,
                const TNumber maxX,
                const TNumber maxY,
-               const TVisitor &visitor) {
+               const TVisitor &visitor) const {
         range(minX, minY, maxX, maxY, visitor, 0, static_cast<TIndex>(points.size() - 1), 0);
     }
 
     template <typename TVisitor>
-    void within(const TNumber qx, const TNumber qy, const TNumber r, const TVisitor &visitor) {
+    void within(const TNumber qx, const TNumber qy, const TNumber r, const TVisitor &visitor) const {
         within(qx, qy, r, visitor, 0, static_cast<TIndex>(points.size() - 1), 0);
     }
 
 protected:
     //std::vector<TIndex> ids;
     std::vector<TContainer> points;
-    std::uint8_t nodeSize;
+    const std::uint8_t nodeSize;
 
     template <typename TVisitor>
     void range(const TNumber minX,
@@ -92,7 +92,7 @@ protected:
                const TVisitor &visitor,
                const TIndex left,
                const TIndex right,
-               const std::uint8_t axis) {
+               const std::uint8_t axis) const {
         if ( points.empty() )
             return;
 
@@ -125,7 +125,7 @@ protected:
                 const TVisitor &visitor,
                 const TIndex left,
                 const TIndex right,
-                const std::uint8_t axis) {
+                const std::uint8_t axis) const {
 
         if ( points.empty() )
             return;
@@ -171,8 +171,8 @@ protected:
 
         while (right > left) {
             if (right - left > 600) {
-                const double n = right - left + 1;
-                const double m = k - left + 1;
+                const double n = static_cast<double>(right - left + 1);
+                const double m = static_cast<double>(k - left + 1);
                 const double z = std::log(n);
                 const double s = 0.5 * std::exp(2 * z / 3);
                 const double r =
@@ -209,7 +209,7 @@ protected:
         std::iter_swap(points.begin() + static_cast<std::int32_t>(i), points.begin() + static_cast<std::int32_t>(j));
     }
 
-    TNumber sqDist(const TNumber ax, const TNumber ay, const TNumber bx, const TNumber by) {
+    TNumber sqDist(const TNumber ax, const TNumber ay, const TNumber bx, const TNumber by) const {
         auto dx = ax - bx;
         auto dy = ay - by;
         return dx * dx + dy * dy;

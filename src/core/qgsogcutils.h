@@ -44,11 +44,31 @@ class QgsVectorLayer;
  *   OGC (Open Geospatial Consortium) standards and QGIS internal representations.
  *
  * Currently supported standards:
+ *
  * - GML2 - Geography Markup Language (import, export)
  */
 class CORE_EXPORT QgsOgcUtils
 {
   public:
+
+    /**
+     * The Context struct stores the current layer and coordinate transform context.
+     * \since QGIS 3.14
+     */
+    struct Context
+    {
+
+      /**
+       * Constructs a Context from \a layer and \a transformContext
+       */
+      Context( const QgsMapLayer *layer = nullptr, const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() )
+        : layer( layer )
+        , transformContext( transformContext )
+      {
+      }
+      const QgsMapLayer *layer = nullptr;
+      QgsCoordinateTransformContext transformContext;
+    };
 
     /**
      *GML version
@@ -62,16 +82,17 @@ class CORE_EXPORT QgsOgcUtils
 
     /**
      * Static method that creates geometry from GML
-     \param xmlString xml representation of the geometry. GML elements are expected to be
-       in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
-       "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
+     * \param xmlString xml representation of the geometry. GML elements are expected to be
+     *  in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
+     *  "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
+     * \param context QgsOgcUtils context
      */
-    static QgsGeometry geometryFromGML( const QString &xmlString );
+    static QgsGeometry geometryFromGML( const QString &xmlString, const QgsOgcUtils::Context &context = QgsOgcUtils::Context() );
 
     /**
      * Static method that creates geometry from GML
       */
-    static QgsGeometry geometryFromGML( const QDomNode &geometryNode );
+    static QgsGeometry geometryFromGML( const QDomNode &geometryNode, const QgsOgcUtils::Context &context = QgsOgcUtils::Context() );
 
     //! Read rectangle from GML2 Box
     static QgsRectangle rectangleFromGMLBox( const QDomNode &boxNode );
@@ -279,7 +300,8 @@ class CORE_EXPORT QgsOgcUtils
      * Reads the \verbatim <gml:coordinates> \endverbatim element and extracts the coordinates as points
        \param coords list where the found coordinates are appended
        \param elem the \verbatim <gml:coordinates> \endverbatim element
-       \returns boolean for success*/
+       \returns boolean FALSE on success
+    */
     static bool readGMLCoordinates( QgsPolylineXY &coords, const QDomElement &elem );
 
     /**
@@ -288,7 +310,8 @@ class CORE_EXPORT QgsOgcUtils
        \param coords list where the found coordinates are appended
        \param elem the \verbatim <gml:pos> \endverbatim or
                     \verbatim <gml:posList> \endverbatim element
-       \returns boolean for success*/
+       \returns boolean FALSE on success
+     */
     static bool readGMLPositions( QgsPolylineXY &coords, const QDomElement &elem );
 
 

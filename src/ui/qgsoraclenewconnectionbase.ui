@@ -54,16 +54,6 @@
       <string>Connection Information</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_1">
-      <item row="4" column="0">
-       <widget class="QLabel" name="TextLabel3">
-        <property name="text">
-         <string>Username</string>
-        </property>
-        <property name="buddy">
-         <cstring>txtUsername</cstring>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="1" colspan="2">
        <widget class="QLineEdit" name="txtDatabase"/>
       </item>
@@ -81,50 +71,20 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="1" colspan="2">
-       <widget class="QgsPasswordLineEdit" name="txtPassword">
-        <property name="echoMode">
-         <enum>QLineEdit::Password</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1" colspan="2">
+      <item row="4" column="1" colspan="2">
        <widget class="QLineEdit" name="txtOptions">
         <property name="echoMode">
          <enum>QLineEdit::Normal</enum>
         </property>
        </widget>
       </item>
-      <item row="10" column="0" colspan="2">
-       <widget class="QCheckBox" name="chkStorePassword">
-        <property name="text">
-         <string>Save password</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="1" colspan="2">
        <widget class="QLineEdit" name="txtHost"/>
       </item>
-      <item row="11" column="0" colspan="3">
-       <widget class="QCheckBox" name="cb_geometryColumnsOnly">
-        <property name="toolTip">
-         <string>Restrict the displayed tables to those that are in the all_sdo_geom_metadata table</string>
-        </property>
-        <property name="whatsThis">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Restricts the displayed tables to those that are in the all_sdo_geom_metadata view. This can speed up the initial display of spatial tables.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Only look in metadata table</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0">
+      <item row="5" column="0">
        <widget class="QLabel" name="TextLabel3_4">
         <property name="text">
          <string>Workspace</string>
-        </property>
-        <property name="buddy">
-         <cstring>txtPassword</cstring>
         </property>
        </widget>
       </item>
@@ -135,20 +95,6 @@
         </property>
         <property name="buddy">
          <cstring>txtDatabase</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="2" rowspan="2">
-       <widget class="QPushButton" name="btnConnect">
-        <property name="text">
-         <string>&amp;Test Connect</string>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="0" colspan="2">
-       <widget class="QCheckBox" name="chkStoreUsername">
-        <property name="text">
-         <string>Save username</string>
         </property>
        </widget>
       </item>
@@ -165,9 +111,6 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="1" colspan="2">
-       <widget class="QLineEdit" name="txtUsername"/>
-      </item>
       <item row="12" column="0" colspan="3">
        <widget class="QCheckBox" name="cb_userTablesOnly">
         <property name="toolTip">
@@ -181,20 +124,17 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="1" colspan="2">
+      <item row="5" column="1" colspan="2">
        <widget class="QLineEdit" name="txtWorkspace">
         <property name="echoMode">
          <enum>QLineEdit::Normal</enum>
         </property>
        </widget>
       </item>
-      <item row="6" column="0">
+      <item row="4" column="0">
        <widget class="QLabel" name="TextLabel3_3">
         <property name="text">
          <string>Options</string>
-        </property>
-        <property name="buddy">
-         <cstring>txtPassword</cstring>
         </property>
        </widget>
       </item>
@@ -234,16 +174,6 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="TextLabel3_2">
-        <property name="text">
-         <string>Password</string>
-        </property>
-        <property name="buddy">
-         <cstring>txtPassword</cstring>
-        </property>
-       </widget>
-      </item>
       <item row="13" column="0" colspan="3">
        <widget class="QCheckBox" name="cb_allowGeometrylessTables">
         <property name="text">
@@ -274,23 +204,64 @@
         </property>
        </widget>
       </item>
-      <item row="8" column="0">
+      <item row="6" column="0">
        <widget class="QLabel" name="TextLabel3_5">
         <property name="text">
          <string>Schema</string>
         </property>
-        <property name="buddy">
-         <cstring>txtPassword</cstring>
-        </property>
        </widget>
       </item>
-      <item row="8" column="1" colspan="2">
+      <item row="6" column="1" colspan="2">
        <widget class="QgsFilterLineEdit" name="txtSchema">
         <property name="toolTip">
          <string>If specified, only tables from the matching schema will be fetched and listed for the provider</string>
         </property>
         <property name="echoMode">
          <enum>QLineEdit::Normal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0" colspan="3">
+       <widget class="QGroupBox" name="mAuthGroupBox">
+        <property name="title">
+         <string>Authentication</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <property name="leftMargin">
+          <number>6</number>
+         </property>
+         <property name="topMargin">
+          <number>6</number>
+         </property>
+         <property name="rightMargin">
+          <number>6</number>
+         </property>
+         <property name="bottomMargin">
+          <number>6</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QgsAuthSettingsWidget" name="mAuthSettings" native="true"/>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="10" column="0" colspan="2">
+       <widget class="QCheckBox" name="cb_geometryColumnsOnly">
+        <property name="toolTip">
+         <string>Restrict the displayed tables to those that are in the all_sdo_geom_metadata table</string>
+        </property>
+        <property name="whatsThis">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Restricts the displayed tables to those that are in the all_sdo_geom_metadata view. This can speed up the initial display of spatial tables.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Only look in metadata table</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="2">
+       <widget class="QPushButton" name="btnConnect">
+        <property name="text">
+         <string>&amp;Test Connect</string>
         </property>
        </widget>
       </item>
@@ -305,9 +276,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsPasswordLineEdit</class>
+   <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>qgspasswordlineedit.h</header>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsMessageBar</class>
@@ -316,9 +287,10 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
+   <class>QgsAuthSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>auth/qgsauthsettingswidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -326,13 +298,9 @@
   <tabstop>txtDatabase</tabstop>
   <tabstop>txtHost</tabstop>
   <tabstop>txtPort</tabstop>
-  <tabstop>txtUsername</tabstop>
-  <tabstop>txtPassword</tabstop>
   <tabstop>txtOptions</tabstop>
   <tabstop>txtWorkspace</tabstop>
   <tabstop>txtSchema</tabstop>
-  <tabstop>chkStoreUsername</tabstop>
-  <tabstop>chkStorePassword</tabstop>
   <tabstop>btnConnect</tabstop>
   <tabstop>cb_geometryColumnsOnly</tabstop>
   <tabstop>cb_userTablesOnly</tabstop>

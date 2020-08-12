@@ -24,6 +24,7 @@
 
 class QgsProject;
 class QgsReadWriteContext;
+class QgsStyleEntityVisitorInterface;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -120,6 +121,18 @@ class CORE_EXPORT QgsMasterLayoutInterface
      * Refreshes the layout when global layout related options change.
      */
     virtual void updateSettings() = 0;
+
+    /**
+     * Accepts the specified style entity \a visitor, causing it to visit all style entities associated
+     * with the layout.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    virtual bool layoutAccept( QgsStyleEntityVisitorInterface *visitor ) const { Q_UNUSED( visitor ); return true; }
+
 };
 
 #endif //QGSLAYOUTINTERFACE_H

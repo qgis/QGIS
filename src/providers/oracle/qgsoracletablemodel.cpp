@@ -334,7 +334,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
 
     srid = index.sibling( index.row(), DbtmSrid ).data( Qt::DisplayRole ).toString();
     bool ok;
-    srid.toInt( &ok );
+    ( void )srid.toInt( &ok );
     if ( !ok )
     {
       QgsDebugMsg( QStringLiteral( "srid not numeric" ) );
@@ -351,6 +351,6 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
 
-  QgsDebugMsg( QStringLiteral( "returning uri %1" ).arg( uri.uri() ) );
-  return uri.uri();
+  QgsDebugMsg( QStringLiteral( "returning uri %1" ).arg( uri.uri( false ) ) );
+  return uri.uri( false );
 }

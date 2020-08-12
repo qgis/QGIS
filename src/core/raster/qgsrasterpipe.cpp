@@ -48,6 +48,7 @@ QgsRasterPipe::QgsRasterPipe( const QgsRasterPipe &pipe )
       mRoleMap.insert( role, i );
     }
   }
+  setResamplingStage( pipe.resamplingStage() );
 }
 
 QgsRasterPipe::~QgsRasterPipe()
@@ -339,4 +340,15 @@ bool QgsRasterPipe::setOn( int idx, bool on )
 bool QgsRasterPipe::checkBounds( int idx ) const
 {
   return !( idx < 0 || idx >= mInterfaces.size() );
+}
+
+void QgsRasterPipe::setResamplingStage( ResamplingStage stage )
+{
+  mResamplingStage = stage;
+  setOn( ResamplerRole, stage == ResamplingStage::ResampleFilter );
+  QgsRasterDataProvider *l_provider = provider();
+  if ( l_provider )
+  {
+    l_provider->enableProviderResampling( stage == ResamplingStage::Provider );
+  }
 }

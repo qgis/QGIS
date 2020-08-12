@@ -26,8 +26,25 @@ from builtins import range
 
 from functools import cmp_to_key
 
-from qgis.PyQt.QtCore import QRegExp, QFile
-from qgis.core import Qgis, QgsCredentials, QgsDataSourceUri
+from qgis.PyQt.QtCore import (
+    QRegExp,
+    QFile,
+    QCoreApplication,
+    QVariant,
+    QDateTime,
+    QTime,
+    QDate,
+    Qt,
+)
+from qgis.core import (
+    Qgis,
+    QgsCoordinateReferenceSystem,
+    QgsCredentials,
+    QgsVectorLayer,
+    QgsDataSourceUri,
+    QgsProviderRegistry,
+    QgsProviderConnectionException,
+)
 
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
@@ -35,6 +52,7 @@ from ..plugin import ConnectionError, DbError, Table
 import os
 import psycopg2
 import psycopg2.extensions
+
 # use unicode!
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
@@ -44,16 +62,144 @@ def classFactory():
     return PostGisDBConnector
 
 
+class CursorAdapter():
+
+    def _debug(self, msg):
+        pass
+        # print("XXX CursorAdapter[" + hex(id(self)) + "]: " + msg)
+
+    def __init__(self, connection, sql=None):
+        self._debug("Created with sql: " + str(sql))
+        self.connection = connection
+        self.sql = sql
+        self.result = None
+        self.cursor = 0
+        self.closed = False
+        if (self.sql is not None):
+            self._execute()
+
+    def _toStrResultSet(self, res):
+        newres = []
+        for rec in res:
+            newrec = []
+            for col in rec:
+                if type(col) == type(QVariant(None)):  # noqa
+                    if (str(col) == 'NULL'):
+                        col = None
+                    else:
+                        col = str(col)  # force to string
+                if isinstance(col, QDateTime) or isinstance(col, QDate) or isinstance(col, QTime):
+                    col = col.toString(Qt.ISODate)
+                newrec.append(col)
+            newres.append(newrec)
+        return newres
+
+    def _execute(self, sql=None):
+        if self.sql == sql and self.result is not None:
+            return
+        if (sql is not None):
+            self.sql = sql
+        if (self.sql is None):
+            return
+        self._debug("execute called with sql " + self.sql)
+        try:
+            self.result = self._toStrResultSet(self.connection.executeSql(self.sql))
+        except QgsProviderConnectionException as e:
+            raise DbError(e, self.sql)
+        self._debug("execute returned " + str(len(self.result)) + " rows")
+        self.cursor = 0
+
+        self._description = None  # reset description
+
+    @property
+    def description(self):
+
+        if self._description is None:
+
+            uri = QgsDataSourceUri(self.connection.uri())
+
+            # TODO: make this part provider-agnostic
+            uri.setTable('(SELECT row_number() OVER () AS __rid__, * FROM (' + self.sql + ') as foo)')
+            uri.setKeyColumn('__rid__')
+            # TODO: fetch provider name from connection (QgsAbstractConnectionProvider)
+            # TODO: re-use the VectorLayer for fetching rows in batch mode
+            vl = QgsVectorLayer(uri.uri(False), 'dbmanager_cursor', 'postgres')
+
+            fields = vl.fields()
+            self._description = []
+            for i in range(1, len(fields)):  # skip first field (__rid__)
+                f = fields[i]
+                self._description.append([
+                    f.name(),  # name
+                    f.type(),  # type_code
+                    f.length(),  # display_size
+                    f.length(),  # internal_size
+                    f.precision(),  # precision
+                    None,  # scale
+                    True  # null_ok
+                ])
+            self._debug("get_description returned " + str(len(self._description)) + " cols")
+
+        return self._description
+
+    def fetchone(self):
+        self._execute()
+        if len(self.result) - self.cursor:
+            res = self.result[self.cursor]
+            ++self.cursor
+            return res
+        return None
+
+    def fetchmany(self, size):
+        self._execute()
+        if self.result is None:
+            self._debug("fetchmany: none result after _execute (self.sql is " + str(self.sql) + ", returning []")
+            return []
+        leftover = len(self.result) - self.cursor
+        self._debug("fetchmany: cursor: " + str(self.cursor) + " leftover: " + str(leftover) + " requested: " + str(size))
+        if leftover < 1:
+            return []
+        if size > leftover:
+            size = leftover
+        stop = self.cursor + size
+        res = self.result[self.cursor:stop]
+        self.cursor = stop
+        self._debug("fetchmany: new cursor: " + str(self.cursor) + " reslen: " + str(len(self.result)))
+        return res
+
+    def fetchall(self):
+        self._execute()
+        res = self.result[self.cursor:]
+        self.cursor = len(self.result)
+        return res
+
+    def scroll(self, pos, mode='relative'):
+        self._execute()
+        if pos < 0:
+            self._debug("scroll pos is negative: " + str(pos))
+        if mode == 'relative':
+            self.cursor = self.cursor + pos
+        elif mode == 'absolute':
+            self.cursor = pos
+
+    def close(self):
+        self.result = None
+        self.closed = True
+
+
 class PostGisDBConnector(DBConnector):
 
-    def __init__(self, uri):
+    def __init__(self, uri, connection):
+        """Creates a new PostgreSQL connector
+
+        :param uri: data source URI
+        :type uri: QgsDataSourceUri
+        :param connection: the plugin parent instance
+        :type connection: PostGisDBPlugin
+        """
         DBConnector.__init__(self, uri)
 
-        self.host = uri.host() or os.environ.get('PGHOST')
-        self.port = uri.port() or os.environ.get('PGPORT')
-
         username = uri.username() or os.environ.get('PGUSER')
-        password = uri.password() or os.environ.get('PGPASSWORD')
 
         # Do not get db and user names from the env if service is used
         if not uri.service():
@@ -62,42 +208,16 @@ class PostGisDBConnector(DBConnector):
             self.dbname = uri.database() or os.environ.get('PGDATABASE') or username
             uri.setDatabase(self.dbname)
 
-        expandedConnInfo = self._connectionInfo()
-        try:
-            self.connection = psycopg2.connect(expandedConnInfo)
-        except self.connection_error_types() as e:
-            # get credentials if cached or asking to the user no more than 3 times
-            err = str(e)
-            uri = self.uri()
-            conninfo = uri.connectionInfo(False)
+        # self.connName = connName
+        # self.user = uri.username() or os.environ.get('USER')
+        # self.passwd = uri.password()
+        self.host = uri.host()
 
-            for i in range(3):
-                (ok, username, password) = QgsCredentials.instance().get(conninfo, username, password, err)
-                if not ok:
-                    raise ConnectionError(e)
-
-                if username:
-                    uri.setUsername(username)
-
-                if password:
-                    uri.setPassword(password)
-
-                newExpandedConnInfo = uri.connectionInfo(True)
-                try:
-                    self.connection = psycopg2.connect(newExpandedConnInfo)
-                    QgsCredentials.instance().put(conninfo, username, password)
-                except self.connection_error_types() as e:
-                    if i == 2:
-                        raise ConnectionError(e)
-                    err = str(e)
-                finally:
-                    # clear certs for each time trying to connect
-                    self._clearSslTempCertsIfAny(newExpandedConnInfo)
-        finally:
-            # clear certs of the first connection try
-            self._clearSslTempCertsIfAny(expandedConnInfo)
-
-        self.connection.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+        md = QgsProviderRegistry.instance().providerMetadata(connection.providerName())
+        # QgsAbstractDatabaseProviderConnection instance
+        self.core_connection = md.findConnection(connection.connectionName())
+        if self.core_connection is None:
+            self.core_connection = md.createConnection(uri.uri(), {})
 
         c = self._execute(None, u"SELECT current_user,current_database()")
         self.user, self.dbname = self._fetchone(c)
@@ -234,7 +354,8 @@ class PostGisDBConnector(DBConnector):
             "serial", "bigserial",  # auto-incrementing ints
             "real", "double precision", "numeric",  # floats
             "varchar", "varchar(255)", "char(20)", "text",  # strings
-            "date", "time", "timestamp"  # date/time
+            "date", "time", "timestamp",  # date/time
+            "boolean"  # bool
         ]
 
     def getDatabasePrivileges(self):
@@ -488,6 +609,9 @@ class PostGisDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         schema_where = u" AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 
+        version_number = int(self.getInfo()[0].split(' ')[1].split('.')[0])
+        ad_col_name = 'adsrc' if version_number < 12 else 'adbin'
+
         sql = u"""SELECT a.attnum AS ordinal_position,
                                 a.attname AS column_name,
                                 t.typname AS data_type,
@@ -495,7 +619,7 @@ class PostGisDBConnector(DBConnector):
                                 a.atttypmod AS modifier,
                                 a.attnotnull AS notnull,
                                 a.atthasdef AS hasdefault,
-                                adef.adsrc AS default_value,
+                                adef.%s AS default_value,
                                 pg_catalog.format_type(a.atttypid,a.atttypmod) AS formatted_type
                         FROM pg_class c
                         JOIN pg_attribute a ON a.attrelid = c.oid
@@ -504,7 +628,7 @@ class PostGisDBConnector(DBConnector):
                         LEFT JOIN pg_attrdef adef ON adef.adrelid = a.attrelid AND adef.adnum = a.attnum
                         WHERE
                           a.attnum > 0 AND c.relname=%s %s
-                        ORDER BY a.attnum""" % (self.quoteString(tablename), schema_where)
+                        ORDER BY a.attnum""" % (ad_col_name, self.quoteString(tablename), schema_where)
 
         c = self._execute(None, sql)
         res = self._fetchall(c)
@@ -533,12 +657,18 @@ class PostGisDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         schema_where = u" AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 
-        sql = u"""SELECT c.conname, c.contype, c.condeferrable, c.condeferred, array_to_string(c.conkey, ' '), c.consrc,
+        version_number = int(self.getInfo()[0].split(' ')[1].split('.')[0])
+        con_col_name = 'consrc' if version_number < 12 else 'conbin'
+
+        # In the query below, we exclude rows where pg_constraint.contype whose values are equal to 't'
+        # because 't' describes a CONSTRAINT TRIGGER, which is not really a constraint in the traditional
+        # sense, but a special type of trigger, and an extension to the SQL standard.
+        sql = u"""SELECT c.conname, c.contype, c.condeferrable, c.condeferred, array_to_string(c.conkey, ' '), c.%s,
                          t2.relname, c.confupdtype, c.confdeltype, c.confmatchtype, array_to_string(c.confkey, ' ') FROM pg_constraint c
                   LEFT JOIN pg_class t ON c.conrelid = t.oid
                         LEFT JOIN pg_class t2 ON c.confrelid = t2.oid
                         JOIN pg_namespace nsp ON t.relnamespace = nsp.oid
-                        WHERE t.relname = %s %s """ % (self.quoteString(tablename), schema_where)
+                        WHERE c.contype <> 't' AND t.relname = %s %s """ % (con_col_name, self.quoteString(tablename), schema_where)
 
         c = self._execute(None, sql)
         res = self._fetchall(c)
@@ -573,7 +703,7 @@ class PostGisDBConnector(DBConnector):
         self._execute_and_commit(sql)
 
     def deleteTableTrigger(self, trigger, table):
-        """ delete trigger on table """
+        """Deletes trigger on table """
         sql = u"DROP TRIGGER %s ON %s" % (self.quoteId(trigger), self.quoteId(table))
         self._execute_and_commit(sql)
 
@@ -591,7 +721,7 @@ class PostGisDBConnector(DBConnector):
         return res
 
     def deleteTableRule(self, rule, table):
-        """ delete rule on table """
+        """Deletes rule on table """
         sql = u"DROP RULE %s ON %s" % (self.quoteId(rule), self.quoteId(table))
         self._execute_and_commit(sql)
 
@@ -613,7 +743,16 @@ class PostGisDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         schema_part = u"%s," % self.quoteString(schema) if schema is not None else ""
 
-        subquery = u"SELECT st_estimated_extent(%s%s,%s) AS extent" % (
+        pgis_versions = self.getSpatialInfo()[0].split('.')
+        pgis_major_version = int(pgis_versions[0])
+        pgis_minor_version = int(pgis_versions[1])
+        pgis_old = False
+        if pgis_major_version < 2:
+            pgis_old = True
+        elif pgis_major_version == 2 and pgis_minor_version < 1:
+            pgis_old = True
+        subquery = u"SELECT %s(%s%s,%s) AS extent" % (
+            'st_estimated_extent' if pgis_old else 'st_estimatedextent',
             schema_part, self.quoteString(tablename), self.quoteString(geom))
         sql = u"""SELECT st_xmin(extent), st_ymin(extent), st_xmax(extent), st_ymax(extent) FROM (%s) AS subquery """ % subquery
 
@@ -640,6 +779,23 @@ class PostGisDBConnector(DBConnector):
         res = self._fetchone(c)
         self._close_cursor(c)
         return res[0] if res is not None else None
+
+    def getCrs(self, srid):
+        if not self.has_spatial:
+            return QgsCoordinateReferenceSystem()
+
+        try:
+            c = self._execute(None, "SELECT proj4text FROM spatial_ref_sys WHERE srid = '%d'" % srid)
+        except DbError:
+            return QgsCoordinateReferenceSystem()
+        res = self._fetchone(c)
+        self._close_cursor(c)
+        if res is None:
+            return QgsCoordinateReferenceSystem()
+
+        proj4text = res[0]
+        crs = QgsCoordinateReferenceSystem.fromProj(proj4text)
+        return crs
 
     def getSpatialRefInfo(self, srid):
         if not self.has_spatial:
@@ -688,7 +844,7 @@ class PostGisDBConnector(DBConnector):
         return False
 
     def createTable(self, table, field_defs, pkey):
-        """ create ordinary table
+        """Creates ordinary table
                         'fields' is array containing field definitions
                         'pkey' is the primary key name
         """
@@ -705,7 +861,7 @@ class PostGisDBConnector(DBConnector):
         return True
 
     def deleteTable(self, table):
-        """ delete table and its reference in either geometry_columns or raster_columns """
+        """Deletes table and its reference in either geometry_columns or raster_columns """
         schema, tablename = self.getSchemaTableName(table)
         schema_part = u"%s, " % self.quoteString(schema) if schema is not None else ""
         if self.isVectorTable(table):
@@ -718,35 +874,31 @@ class PostGisDBConnector(DBConnector):
         self._execute_and_commit(sql)
 
     def emptyTable(self, table):
-        """ delete all rows from table """
+        """Deletes all rows from table """
         sql = u"TRUNCATE %s" % self.quoteId(table)
         self._execute_and_commit(sql)
 
     def renameTable(self, table, new_table):
-        """ rename a table in database """
+        """Renames a table in database """
         schema, tablename = self.getSchemaTableName(table)
         if new_table == tablename:
             return
 
-        c = self._get_cursor()
-
-        sql = u"ALTER TABLE %s RENAME TO %s" % (self.quoteId(table), self.quoteId(new_table))
-        self._execute(c, sql)
+        sql = u"ALTER TABLE %s RENAME  TO %s" % (self.quoteId(table), self.quoteId(new_table))
+        self._executeSql(sql)
 
         # update geometry_columns if PostGIS is enabled
         if self.has_geometry_columns and not self.is_geometry_columns_view:
             schema_where = u" AND f_table_schema=%s " % self.quoteString(schema) if schema is not None else ""
             sql = u"UPDATE geometry_columns SET f_table_name=%s WHERE f_table_name=%s %s" % (
                 self.quoteString(new_table), self.quoteString(tablename), schema_where)
-            self._execute(c, sql)
-
-        self._commit()
+            self._executeSql(sql)
 
     def commentTable(self, schema, tablename, comment=None):
         if comment is None:
             self._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS NULL;'.format(schema, tablename))
         else:
-            self._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\';'.format(schema, tablename, comment))
+            self._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS $escape${2}$escape$;'.format(schema, tablename, comment))
 
     def getComment(self, tablename, field):
         """Returns the comment for a field"""
@@ -754,14 +906,14 @@ class PostGisDBConnector(DBConnector):
         sql_cpt = "Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tablename, field)
         # SQL Query that return the comment of the field
         sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tablename, field)
-        c = self._execute(None, sql_cpt) # Execute Check query
-        res = self._fetchone(c)[0] # Store result
+        c = self._execute(None, sql_cpt)  # Execute Check query
+        res = self._fetchone(c)[0]  # Store result
         if res == 1:
             # When a comment exists
-            c = self._execute(None, sql) # Execute query
-            res = self._fetchone(c)[0] # Store result
-            self._close_cursor(c) # Close cursor
-            return res # Return comment
+            c = self._execute(None, sql)  # Execute query
+            res = self._fetchone(c)[0]  # Store result
+            self._close_cursor(c)  # Close cursor
+            return res  # Return comment
         else:
             return ''
 
@@ -797,13 +949,13 @@ class PostGisDBConnector(DBConnector):
         c = self._get_cursor()
         t = u"__new_table__"
 
-        sql = u"ALTER TABLE %s RENAME TO %s" % (self.quoteId(table), self.quoteId(t))
+        sql = u"ALTER TABLE %s RENAME  TO %s" % (self.quoteId(table), self.quoteId(t))
         self._execute(c, sql)
 
         sql = u"ALTER TABLE %s SET SCHEMA %s" % (self.quoteId((schema, t)), self.quoteId(new_schema))
         self._execute(c, sql)
 
-        sql = u"ALTER TABLE %s RENAME TO %s" % (self.quoteId((new_schema, t)), self.quoteId(table))
+        sql = u"ALTER TABLE %s RENAME  TO %s" % (self.quoteId((new_schema, t)), self.quoteId(table))
         self._execute(c, sql)
 
         # update geometry_columns if PostGIS is enabled
@@ -829,47 +981,47 @@ class PostGisDBConnector(DBConnector):
         self._execute_and_commit(sql)
 
     def renameView(self, view, new_name):
-        """ rename view in database """
+        """Renames view in database """
         self.renameTable(view, new_name)
 
     def createSchema(self, schema):
-        """ create a new empty schema in database """
+        """Creates a new empty schema in database """
         sql = u"CREATE SCHEMA %s" % self.quoteId(schema)
         self._execute_and_commit(sql)
 
     def deleteSchema(self, schema):
-        """ drop (empty) schema from database """
+        """Drops (empty) schema from database """
         sql = u"DROP SCHEMA %s" % self.quoteId(schema)
         self._execute_and_commit(sql)
 
-    def renameSchema(self, schema, new_schema):
-        """ rename a schema in database """
-        sql = u"ALTER SCHEMA %s RENAME TO %s" % (self.quoteId(schema), self.quoteId(new_schema))
+    def renamesSchema(self, schema, new_schema):
+        """Renames a schema in database """
+        sql = u"ALTER SCHEMA %s RENAME  TO %s" % (self.quoteId(schema), self.quoteId(new_schema))
         self._execute_and_commit(sql)
 
     def runVacuum(self):
-        """ run vacuum on the db """
+        """Runs vacuum on the db """
         self._execute_and_commit("VACUUM")
 
     def runVacuumAnalyze(self, table):
-        """ run vacuum analyze on a table """
+        """Runs vacuum analyze on a table """
         sql = u"VACUUM ANALYZE %s" % self.quoteId(table)
         self._execute(None, sql)
         self._commit()
 
     def runRefreshMaterializedView(self, table):
-        """ run refresh materialized view on a table """
+        """Runs refresh materialized view on a table """
         sql = u"REFRESH MATERIALIZED VIEW %s" % self.quoteId(table)
         self._execute(None, sql)
         self._commit()
 
     def addTableColumn(self, table, field_def):
-        """ add a column to table """
+        """Adds a column to table """
         sql = u"ALTER TABLE %s ADD %s" % (self.quoteId(table), field_def)
         self._execute_and_commit(sql)
 
     def deleteTableColumn(self, table, column):
-        """ delete column from a table """
+        """Deletes column from a table """
         if self.isGeometryColumn(table, column):
             # use PostGIS function to delete geometry column correctly
             schema, tablename = self.getSchemaTableName(table)
@@ -904,9 +1056,9 @@ class PostGisDBConnector(DBConnector):
                 sql += u" %s %s," % (alter_col_str, a)
             self._execute(c, sql[:-1])
 
-        # rename the column
+        # Renames the column
         if new_name is not None and new_name != column:
-            sql = u"ALTER TABLE %s RENAME %s TO %s" % (
+            sql = u"ALTER TABLE %s RENAME  %s TO %s" % (
                 self.quoteId(table), self.quoteId(column), self.quoteId(new_name))
             self._execute(c, sql)
 
@@ -921,25 +1073,26 @@ class PostGisDBConnector(DBConnector):
         # comment the column
         if comment is not None:
             schema, tablename = self.getSchemaTableName(table)
-            sql = u"COMMENT ON COLUMN %s.%s.%s is '%s'" % (schema, tablename, column, comment)
+            column_name = new_name if new_name is not None and new_name != column else column
+            sql = u"COMMENT ON COLUMN %s.%s.%s IS '%s'" % (schema, tablename, column_name, comment)
             self._execute(c, sql)
 
         self._commit()
 
-    def renameTableColumn(self, table, column, new_name):
-        """ rename column in a table """
+    def renamesTableColumn(self, table, column, new_name):
+        """Renames column in a table """
         return self.updateTableColumn(table, column, new_name)
 
     def setTableColumnType(self, table, column, data_type):
-        """ change column type """
+        """Changes column type """
         return self.updateTableColumn(table, column, None, data_type)
 
     def setTableColumnNull(self, table, column, is_null):
-        """ change whether column can contain null values """
+        """Changes whether column can contain null values """
         return self.updateTableColumn(table, column, None, None, not is_null)
 
     def setTableColumnDefault(self, table, column, default):
-        """ change column's default value.
+        """Changes column's default value.
                 If default=None or an empty string drop default value """
         return self.updateTableColumn(table, column, None, None, None, default)
 
@@ -968,22 +1121,22 @@ class PostGisDBConnector(DBConnector):
         return self.deleteTableColumn(table, geom_column)
 
     def addTableUniqueConstraint(self, table, column):
-        """ add a unique constraint to a table """
+        """Adds a unique constraint to a table """
         sql = u"ALTER TABLE %s ADD UNIQUE (%s)" % (self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
     def deleteTableConstraint(self, table, constraint):
-        """ delete constraint in a table """
+        """Deletes constraint in a table """
         sql = u"ALTER TABLE %s DROP CONSTRAINT %s" % (self.quoteId(table), self.quoteId(constraint))
         self._execute_and_commit(sql)
 
     def addTablePrimaryKey(self, table, column):
-        """ add a primery key (with one column) to a table """
+        """Adds a primery key (with one column) to a table """
         sql = u"ALTER TABLE %s ADD PRIMARY KEY (%s)" % (self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
     def createTableIndex(self, table, name, column):
-        """ create index on one column using default options """
+        """Creates index on one column using default options """
         sql = u"CREATE INDEX %s ON %s (%s)" % (self.quoteId(name), self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
@@ -1009,33 +1162,26 @@ class PostGisDBConnector(DBConnector):
     def connection_error_types(self):
         return psycopg2.InterfaceError, psycopg2.OperationalError
 
-    # moved into the parent class: DbConnector._execute()
-    # def _execute(self, cursor, sql):
-    #       pass
+    def _execute(self, cursor, sql):
+        if cursor is not None:
+            cursor._execute(sql)
+            return cursor
+        return CursorAdapter(self.core_connection, sql)
 
-    # moved into the parent class: DbConnector._execute_and_commit()
-    # def _execute_and_commit(self, sql):
-    #       pass
+    def _executeSql(self, sql):
+        return self.core_connection.executeSql(sql)
 
-    # moved into the parent class: DbConnector._get_cursor()
-    # def _get_cursor(self, name=None):
-    #       pass
+    def _get_cursor(self, name=None):
+        # if name is not None:
+        #   print("XXX _get_cursor called with a Name: " + name)
+        return CursorAdapter(self.core_connection, name)
 
-    # moved into the parent class: DbConnector._fetchall()
-    # def _fetchall(self, c):
-    #       pass
-
-    # moved into the parent class: DbConnector._fetchone()
-    # def _fetchone(self, c):
-    #       pass
-
-    # moved into the parent class: DbConnector._commit()
-    # def _commit(self):
-    #       pass
+    def _commit(self):
+        pass
 
     # moved into the parent class: DbConnector._rollback()
-    # def _rollback(self):
-    #       pass
+    def _rollback(self):
+        pass
 
     # moved into the parent class: DbConnector._get_cursor_columns()
     # def _get_cursor_columns(self, c):

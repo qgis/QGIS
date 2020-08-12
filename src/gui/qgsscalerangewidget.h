@@ -77,6 +77,11 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
      * \see minimumScale()
      * \see setMaximumScale()
      * \see setScaleRange()
+     *
+     * \warning Calling setMinimumScale() places a restriction on the acceptable maximum scale for the
+     * widget, and will alter any previously set maximum scale to pass this constraint. Always
+     * call setMinimumScale() before setMaximumScale() when restoring a scale range in the widget, or
+     * use the convenience method setScaleRange() instead.
      */
     void setMinimumScale( double scale );
 
@@ -86,6 +91,11 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
      * \see maximumScale()
      * \see setMinimumScale()
      * \see setScaleRange()
+     *
+     * \warning Calling setMinimumScale() places a restriction on the acceptable maximum scale for the
+     * widget, and will alter any previously set maximum scale to pass this constraint. Always
+     * call setMinimumScale() before setMaximumScale() when restoring a scale range in the widget, or
+     * use the convenience method setScaleRange() instead.
      */
     void setMaximumScale( double scale );
 

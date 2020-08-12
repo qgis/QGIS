@@ -15,6 +15,7 @@
 
 #include "qgstextpreview.h"
 #include "qgsapplication.h"
+#include "qgstextrenderer.h"
 #include <QDesktopWidget>
 #include <QPainter>
 
@@ -28,12 +29,16 @@ QgsTextPreview::QgsTextPreview( QWidget *parent )
 
   mContext.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
   mContext.setUseAdvancedEffects( true );
+
+  mContext.setFlag( QgsRenderContext::Antialiasing, true );
+
+  mContext.setIsGuiPreview( true );
 }
 
 
 void QgsTextPreview::paintEvent( QPaintEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   QPainter p( this );
 
   p.setRenderHint( QPainter::Antialiasing );

@@ -23,6 +23,7 @@
 #include "qgsogrhelperfunctions.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <ogr_api.h>
 #include <cpl_error.h>
@@ -33,13 +34,20 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connTy
   , mOriginalConnName( connName )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( btnConnect, &QPushButton::clicked, this, &QgsNewOgrConnection::btnConnect_clicked );
   Q_NOWARN_DEPRECATED_PUSH
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewOgrConnection::showHelp );
   Q_NOWARN_DEPRECATED_POP
 
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  connect( txtName, &QLineEdit::textChanged, this, &QgsNewOgrConnection::updateOkButtonState );
+  connect( txtHost, &QLineEdit::textChanged, this, &QgsNewOgrConnection::updateOkButtonState );
+  connect( txtDatabase, &QLineEdit::textChanged, this, &QgsNewOgrConnection::updateOkButtonState );
+  connect( txtPort, &QLineEdit::textChanged, this, &QgsNewOgrConnection::updateOkButtonState );
+
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/OGRDatabaseConnection/geometry" ) ).toByteArray() );
 
   //add database drivers
   QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ';' );
@@ -80,12 +88,6 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connTy
   mAuthSettingsDatabase->showStoreCheckboxes( true );
 }
 
-QgsNewOgrConnection::~QgsNewOgrConnection()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/OGRDatabaseConnection/geometry" ), saveGeometry() );
-}
-
 void QgsNewOgrConnection::testConnection()
 {
   QString uri;
@@ -118,6 +120,13 @@ void QgsNewOgrConnection::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#creating-a-stored-connection" ) );
 }
+
+void QgsNewOgrConnection::updateOkButtonState()
+{
+  bool enabled = !txtName->text().isEmpty() && !txtHost->text().isEmpty() && !txtDatabase->text().isEmpty() && !txtPort->text().isEmpty();
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
+}
+
 
 //! Autoconnected SLOTS *
 void QgsNewOgrConnection::accept()

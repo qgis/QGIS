@@ -26,6 +26,7 @@ QgsMapToolRegularPolygonCenterCorner::QgsMapToolRegularPolygonCenterCorner( QgsM
     QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolAddRegularPolygon( parentTool, canvas, mode )
 {
+  mToolName = tr( "Add regular polygon from center and a corner" );
 }
 
 QgsMapToolRegularPolygonCenterCorner::~QgsMapToolRegularPolygonCenterCorner()
@@ -37,30 +38,33 @@ void QgsMapToolRegularPolygonCenterCorner::cadCanvasReleaseEvent( QgsMapMouseEve
 {
   QgsPoint point = mapPoint( *e );
 
+  if ( !currentVectorLayer() )
+  {
+    notifyNotVectorLayer();
+    clean();
+    stopCapturing();
+    e->ignore();
+    return;
+  }
+
   if ( e->button() == Qt::LeftButton )
   {
-    mPoints.append( point );
+    if ( mPoints.empty() )
+      mPoints.append( point );
 
-    if ( !mPoints.isEmpty() )
+    if ( !mTempRubberBand )
     {
-      if ( !mTempRubberBand )
-      {
-        mTempRubberBand = createGeometryRubberBand( mLayerType, true );
-        mTempRubberBand->show();
+      mTempRubberBand = createGeometryRubberBand( mLayerType, true );
+      mTempRubberBand->show();
 
-        createNumberSidesSpinBox();
-      }
+      createNumberSidesSpinBox();
     }
   }
   else if ( e->button() == Qt::RightButton )
   {
     mPoints.append( point );
 
-    deactivate();
-    if ( mParentTool )
-    {
-      mParentTool->canvasReleaseEvent( e );
-    }
+    release( e );
   }
 }
 

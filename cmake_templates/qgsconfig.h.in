@@ -8,7 +8,9 @@
 // <int>.<int>.<int>-<any text>.
 // or else upgrading old project file will not work
 // reliably.
+// TODO QGIS 4: remove in favor of _QGIS_VERSION
 #define VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-${RELEASE_NAME}"
+#define _QGIS_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-${RELEASE_NAME}"
 
 //used in vim src/core/qgis.cpp
 //The way below should work but it resolves to a number like 0110 which the compiler treats as octal I think
@@ -16,7 +18,9 @@
 //As a short term fix I (Tim) am defining the version in top level cmake. It would be good to
 //reinstate this more generic approach below at some point though
 //#define VERSION_INT ${CPACK_PACKAGE_VERSION_MAJOR}${CPACK_PACKAGE_VERSION_MINOR}${CPACK_PACKAGE_VERSION_PATCH}
+// TODO QGIS 4: Remove in favor of _QGIS_VERSION_INT
 #define VERSION_INT ${QGIS_VERSION_INT}
+#define _QGIS_VERSION_INT ${QGIS_VERSION_INT}
 #define ABISYM(x) x ## ${QGIS_VERSION_INT}
 //used in main.cpp and anywhere else where the release name is needed
 #define RELEASE_NAME "${RELEASE_NAME}"
@@ -39,7 +43,6 @@
 #endif
 
 #define QT_PLUGINS_DIR "${QT_PLUGINS_DIR}"
-#define OSG_PLUGINS_PATH "${OSG_PLUGINS_PATH}"
 
 #cmakedefine USING_NMAKE
 
@@ -51,8 +54,6 @@
 
 #cmakedefine HAVE_ORACLE
 
-#cmakedefine HAVE_OSGEARTHQT
-
 #cmakedefine SERVER_SKIP_ECW
 
 #cmakedefine HAVE_SERVER_PYTHON_PLUGINS
@@ -63,6 +64,8 @@
 
 #cmakedefine HAVE_3D
 
+#cmakedefine HAVE_GEOREFERENCER
+
 #cmakedefine USE_THREAD_LOCAL
 
 #cmakedefine QGISDEBUG
@@ -70,6 +73,8 @@
 #cmakedefine HAVE_QUICK
 
 #cmakedefine HAVE_QT5SERIALPORT
+
+#cmakedefine HAVE_STATIC_PROVIDERS
 
 #endif
 

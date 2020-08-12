@@ -534,49 +534,21 @@ QString QgsGPXProvider::description() const
 
 QgsCoordinateReferenceSystem QgsGPXProvider::crs() const
 {
-  return QgsCoordinateReferenceSystem( GEOSRID, QgsCoordinateReferenceSystem::PostgisCrsId ); // use WGS84
+  return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
 }
 
-
-
-
-
-
-/**
- * Class factory to return a pointer to a newly created
- * QgsGPXProvider object
- */
-QGISEXTERN QgsGPXProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsDataProvider *QgsGpxProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsGPXProvider( *uri, options );
+  return new QgsGPXProvider( uri, options );
 }
 
 
-/**
- * Required key function (used to map the plugin to a data store type)
-*/
-QGISEXTERN QString providerKey()
+QgsGpxProviderMetadata::QgsGpxProviderMetadata():
+  QgsProviderMetadata( GPX_KEY, GPX_DESCRIPTION )
 {
-  return GPX_KEY;
 }
 
-
-/**
- * Required description function
- */
-QGISEXTERN QString description()
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
-  return GPX_DESCRIPTION;
+  return new QgsGpxProviderMetadata();
 }
-
-
-/**
- * Required isProvider function. Used to determine if this shared library
- * is a data provider plugin
- */
-QGISEXTERN bool isProvider()
-{
-  return true;
-}
-
-

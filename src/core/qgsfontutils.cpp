@@ -180,7 +180,6 @@ bool QgsFontUtils::updateFontViaStyle( QFont &f, const QString &fontstyle, bool 
     // fallback to first style found that works
     if ( !foundmatch )
     {
-      const auto constFamily = fontDB.styles( f.family() );
       for ( const QString &style : constFamily )
       {
         styledfont = fontDB.font( f.family(), style, defaultSize );
@@ -247,7 +246,7 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
 
     if ( fontFamilyHasStyle( fontFamily, fontstyle ) )
     {
-      QgsDebugMsg( QStringLiteral( "Test font '%1 %2' already available" ).arg( fontFamily, fontstyle ) );
+      QgsDebugMsgLevel( QStringLiteral( "Test font '%1 %2' already available" ).arg( fontFamily, fontstyle ), 2 );
     }
     else
     {
@@ -262,10 +261,10 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
         int fontID = QFontDatabase::addApplicationFont( fontPath );
         loaded = ( fontID != -1 );
         fontsLoaded = ( fontsLoaded || loaded );
-        QgsDebugMsg( QStringLiteral( "Test font '%1 %2' %3 from filesystem [%4]" )
-                     .arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load", fontPath ) );
+        QgsDebugMsgLevel( QStringLiteral( "Test font '%1 %2' %3 from filesystem [%4]" )
+                          .arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load", fontPath ), 2 );
         QFontDatabase db;
-        QgsDebugMsg( QStringLiteral( "font families in %1: %2" ).arg( fontID ).arg( db.applicationFontFamilies( fontID ).join( "," ) ) );
+        QgsDebugMsgLevel( QStringLiteral( "font families in %1: %2" ).arg( fontID ).arg( db.applicationFontFamilies( fontID ).join( "," ) ), 2 );
       }
       else
       {
@@ -276,8 +275,8 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
           loaded = ( fontID != -1 );
           fontsLoaded = ( fontsLoaded || loaded );
         }
-        QgsDebugMsg( QStringLiteral( "Test font '%1' (%2) %3 from testdata.qrc" )
-                     .arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Test font '%1' (%2) %3 from testdata.qrc" )
+                          .arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load" ), 2 );
       }
     }
   }
@@ -312,7 +311,7 @@ QFont QgsFontUtils::getStandardTestFont( const QString &style, int pointsize )
     QgsDebugMsg( QStringLiteral( "Inexact font match - consider installing the %1 font." ).arg( standardTestFontFamily() ) );
     QgsDebugMsg( QStringLiteral( "Requested: %1" ).arg( f.toString() ) );
     QFontInfo fi( f );
-    QgsDebugMsg( QStringLiteral( "Replaced:  %1,%2,%3,%4,%5,%6,%7,%8,%9,%10" ).arg( fi.family() ).arg( fi.pointSizeF() ).arg( fi.pixelSize() ).arg( fi.styleHint() ).arg( fi.weight() ).arg( fi.style() ).arg( fi.underline() ).arg( fi.strikeOut() ).arg( fi.fixedPitch() ).arg( fi.rawMode() ) );
+    QgsDebugMsg( QStringLiteral( "Replaced:  %1,%2,%3,%4,%5,%6,%7,%8,%9" ).arg( fi.family() ).arg( fi.pointSizeF() ).arg( fi.pixelSize() ).arg( fi.styleHint() ).arg( fi.weight() ).arg( fi.style() ).arg( fi.underline() ).arg( fi.strikeOut() ).arg( fi.fixedPitch() ) );
   }
 #endif
   // in case above statement fails to set style
@@ -435,7 +434,7 @@ QString QgsFontUtils::translateNamedStyle( const QString &namedStyle )
   QStringList words = namedStyle.split( ' ', QString::SkipEmptyParts );
   for ( int i = 0, n = words.length(); i < n; ++i )
   {
-    words[i] = QCoreApplication::translate( "QFontDatabase", words[i].toUtf8(), nullptr, QCoreApplication::UnicodeUTF8 );
+    words[i] = QCoreApplication::translate( "QFontDatabase", words[i].toLocal8Bit().constData() );
   }
   return words.join( QStringLiteral( " " ) );
 }
@@ -452,7 +451,7 @@ QString QgsFontUtils::untranslateNamedStyle( const QString &namedStyle )
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Warning: style map does not contain %1" ).arg( words[i] ) );
+      QgsDebugMsgLevel( QStringLiteral( "Warning: style map does not contain %1" ).arg( words[i] ), 2 );
     }
   }
   return words.join( QStringLiteral( " " ) );

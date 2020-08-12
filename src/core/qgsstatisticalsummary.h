@@ -241,19 +241,19 @@ class CORE_EXPORT QgsStatisticalSummary
     int variety() const { return mValueCount.count(); }
 
     /**
-     * Returns minority of values. The minority is the value with least occurrences in the list
+     * Returns minority of values. The minority is the value with least occurrences in the list.
      * This is only calculated if Statistic::Minority has been specified in the constructor
-     * or via setStatistics. A NaN value may be returned if the minority cannot
-     * be calculated.
+     * or via setStatistics. If multiple values match, return the first value relative to the
+     * initial values order. A NaN value may be returned if the minority cannot be calculated.
      * \see majority
      */
     double minority() const { return mMinority; }
 
     /**
-     * Returns majority of values. The majority is the value with most occurrences in the list
+     * Returns majority of values. The majority is the value with most occurrences in the list.
      * This is only calculated if Statistic::Majority has been specified in the constructor
-     * or via setStatistics. A NaN value may be returned if the majority cannot
-     * be calculated.
+     * or via setStatistics. If multiple values match, return the first value relative to the
+     * initial values order. A NaN value may be returned if the minority cannot be calculated.
      * \see minority
      */
     double majority() const { return mMajority; }

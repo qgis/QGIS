@@ -25,6 +25,7 @@
 #include <limits>
 
 #include "qgis.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsmessagelog.h"
 #include "qgspoint.h"
 #include "qgspointxy.h"
@@ -42,7 +43,7 @@ class QgsCoordinateReferenceSystem;
 /**
  * \ingroup quick
  *
- * Encapsulating the common utilies for QgsQuick library.
+ * Encapsulating the common utilities for QgsQuick library.
  *
  * \note QML Type: Utils (Singleton)
  *
@@ -240,6 +241,28 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
      * \since QGIS 3.6
      */
     Q_INVOKABLE static QVariantMap createValueRelationCache( const QVariantMap &config, const QgsFeature &formFeature = QgsFeature() );
+
+    /**
+     * Evaluates expression.
+     * \param pair Used to define a context scope.
+     * \param activeProject Used to define a context scope.
+     * \param expression
+     * \return Evaluated expression
+     *
+     * \since QGIS 3.10
+     */
+    Q_INVOKABLE static QString evaluateExpression( const QgsQuickFeatureLayerPair &pair, QgsProject *activeProject, const QString &expression );
+
+    /**
+     * Selects features in a layer
+     * This method is required since QML cannot perform the conversion of a feature ID to a QgsFeatureId (i.e. a qint64)
+     * \param layer the vector layer
+     * \param fids the list of feature IDs
+     * \param behavior the selection behavior
+     *
+     * \since QGIS 3.12
+     */
+    Q_INVOKABLE static void selectFeaturesInLayer( QgsVectorLayer *layer, const QList<int> &fids, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 
   private:
     static void formatToMetricDistance( double srcDistance,

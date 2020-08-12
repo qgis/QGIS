@@ -116,7 +116,7 @@ void QgsAuthCertInfo::setupError( const QString &msg )
 
 void QgsAuthCertInfo::currentCertItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
-  Q_UNUSED( previous );
+  Q_UNUSED( previous )
   updateCurrentCert( current );
 }
 
@@ -580,7 +580,7 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
                 mCurrentACert.subjectInfo().value( QCA::XMPP ),
                 LineEdit );
 
-  QMultiMap<QSsl::AlternateNameEntryType, QString> alts( mCurrentQCert.alternateSubjectNames() );
+  QMultiMap<QSsl::AlternativeNameEntryType, QString> alts( mCurrentQCert.subjectAlternativeNames() );
   QStringList altslist;
   QString email( tr( "Email: " ) );
   QStringList emails( alts.values( QSsl::EmailEntry ) );

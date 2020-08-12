@@ -32,9 +32,9 @@ if [[ "$OSTYPE" =~ darwin* ]]; then
 fi
 
 if [[ -n $1 ]]; then
-  modules=($1)
+  modules=("$1")
 else
-  modules=(core gui analysis server)
+  modules=(core gui analysis server 3d)
 fi
 sources=(HDRS MOC_HDRS SRCS)
 
@@ -66,7 +66,7 @@ for module in "${modules[@]}"; do
       sip=$(${GP}sed -r 's/(.*)\.h$/\1.sip/' <<< ${header})
       if_cond=$(grep -x -E '^(#define +)?SIP_IF_MODULE\((.*)\)$' src/${module}/${header} | \
         ${GP}sed -r -e 's/(#define +)?SIP_IF_MODULE\((.*)\)/%If (\2)/')
-      if [[ ! -z $if_cond ]]; then
+      if [[ -n $if_cond ]]; then
         echo "$if_cond" >> $file
       fi
       if [[ "$sip" == [0-9]* ]]; then
@@ -75,7 +75,7 @@ for module in "${modules[@]}"; do
         sip="./$sip"
       fi
       echo "%Include auto_generated/$sip" >> $file
-      if [[ ! -z $if_cond ]]; then
+      if [[ -n $if_cond ]]; then
         echo "%End" >> $file
       fi
     fi

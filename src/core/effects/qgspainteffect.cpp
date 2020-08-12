@@ -159,10 +159,9 @@ void QgsPaintEffect::drawSource( QPainter &painter )
 {
   if ( requiresQPainterDpiFix )
   {
-    painter.save();
+    QgsScopedQPainterState painterState( &painter );
     fixQPictureDpi( &painter );
     painter.drawPicture( 0, 0, *mPicture );
-    painter.restore();
   }
   else
   {
@@ -202,7 +201,7 @@ QPointF QgsPaintEffect::imageOffset( const QgsRenderContext &context ) const
 
 QRectF QgsPaintEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   return rect;
 }
 
@@ -250,10 +249,9 @@ void QgsDrawSourceEffect::draw( QgsRenderContext &context )
     //rasterize source and apply modifications
     QImage image = sourceAsImage( context )->copy();
     QgsImageOperation::multiplyOpacity( image, mOpacity );
-    painter->save();
+    QgsScopedQPainterState painterState( painter );
     painter->setCompositionMode( mBlendMode );
     painter->drawImage( imageOffset( context ), image );
-    painter->restore();
   }
 }
 

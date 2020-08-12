@@ -21,10 +21,6 @@ __author__ = 'Giovanni Manghi'
 __date__ = 'January 2015'
 __copyright__ = '(C) 2015, Giovanni Manghi'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (QgsProcessing,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterDistance,
@@ -38,7 +34,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class OffsetCurve(GdalAlgorithm):
-
     INPUT = 'INPUT'
     GEOMETRY = 'GEOMETRY'
     DISTANCE = 'DISTANCE'
@@ -105,7 +100,7 @@ class OffsetCurve(GdalAlgorithm):
         for f in fields:
             if f.name() == geometry:
                 continue
-            other_fields.append(f.name())
+            other_fields.append('"{}"'.format(f.name()))
 
         if other_fields:
             other_fields = ',*'
@@ -119,7 +114,7 @@ class OffsetCurve(GdalAlgorithm):
         arguments.append('sqlite')
         arguments.append('-sql')
 
-        sql = "SELECT ST_OffsetCurve({}, {}) AS {}{} FROM '{}'".format(geometry, distance, geometry, other_fields, layerName)
+        sql = 'SELECT ST_OffsetCurve({}, {}) AS {}{} FROM "{}"'.format(geometry, distance, geometry, other_fields, layerName)
         arguments.append(sql)
 
         if options:

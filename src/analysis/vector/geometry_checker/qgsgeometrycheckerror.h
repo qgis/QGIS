@@ -95,6 +95,16 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     QgsGeometry geometry() const;
 
     /**
+     * The context of the error.
+     * For topology checks like gap checks this returns the context of an error
+     * and the involved features.
+     * May be a NULL rectangle.
+     *
+     * \since QGIS 3.10
+     */
+    virtual QgsRectangle contextBoundingBox() const;
+
+    /**
      * The bounding box of the affected area of the error.
      */
     virtual QgsRectangle affectedAreaBBox() const;
@@ -224,6 +234,11 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     Status mStatus;
     QString mResolutionMessage;
 
+  private:
+
+#ifdef SIP_RUN
+    const QgsGeometryCheckError &operator=( const QgsGeometryCheckError & );
+#endif
 };
 
 Q_DECLARE_METATYPE( QgsGeometryCheckError * )

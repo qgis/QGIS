@@ -36,7 +36,11 @@ class CORE_EXPORT QgsDoubleBoxScaleBarRenderer: public QgsScaleBarRenderer
      */
     QgsDoubleBoxScaleBarRenderer() = default;
 
-    QString name() const override { return QStringLiteral( "Double Box" ); }
+    QString id() const override;
+    QString visibleName() const override;
+    Flags flags() const override;
+    int sortKey() const override;
+    QgsDoubleBoxScaleBarRenderer *clone() const override SIP_FACTORY;
 
     void draw( QgsRenderContext &context,
                const QgsScaleBarSettings &settings,

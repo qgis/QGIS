@@ -24,6 +24,9 @@
 #ifndef QGSSTRINGUTILS_H
 #define QGSSTRINGUTILS_H
 
+#define FUZZY_SCORE_WORD_MATCH 5
+#define FUZZY_SCORE_NEW_MATCH 3
+#define FUZZY_SCORE_CONSECUTIVE_MATCH 4
 
 /**
  * \ingroup core
@@ -253,6 +256,17 @@ class CORE_EXPORT QgsStringUtils
     static QString soundex( const QString &string );
 
     /**
+     * Tests a \a candidate string to see how likely it is a match for
+     * a specified \a search string. Values are normalized between 0 and 1.
+     * \param candidate candidate string
+     * \param search search term string
+     * \return Normalized value of how likely is the \a search to be in the \a candidate
+     * \note Use this function only to calculate the fuzzy score between two strings and later compare these values, but do not depend on the actual numbers. They are implementation detail that may change in a future release.
+     * \since 3.14
+     */
+    static double fuzzyScore( const QString &candidate, const QString &search );
+
+    /**
      * Returns a string with any URL (e.g., http(s)/ftp) and mailto: text converted to valid HTML <a ...>
      * links.
      * \param string string to insert links into
@@ -275,6 +289,23 @@ class CORE_EXPORT QgsStringUtils
      * \since QGIS 3.4
      */
     static QString wordWrap( const QString &string, int length, bool useMaxLineLength = true, const QString &customDelimiter = QString() );
+
+    /**
+     * Returns a string with characters having vertical representation form substituted.
+     * \param string input string
+     * \returns string with substitution applied
+     * \since QGIS 3.10
+     */
+    static QString substituteVerticalCharacters( QString string );
+
+    /**
+     * Convert simple HTML to markdown. Only br, b and link are supported.
+     * \param html HTML to convert to markdown
+     * \returns String formatted as markdown
+     * \since QGIS 3.10
+     */
+    static QString htmlToMarkdown( const QString &html );
+
 };
 
 #endif //QGSSTRINGUTILS_H

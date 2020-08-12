@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import codecs
 
@@ -53,7 +49,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class UniqueValues(QgisAlgorithm):
-
     INPUT = 'INPUT'
     FIELDS = 'FIELDS'
     TOTAL_VALUES = 'TOTAL_VALUES'
@@ -83,7 +78,7 @@ class UniqueValues(QgisAlgorithm):
                                                       self.tr('Target field(s)'),
                                                       parentLayerParameterName=self.INPUT, type=QgsProcessingParameterField.Any, allowMultiple=True))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Unique values'), optional=True, defaultValue=''))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Unique values'), optional=True, defaultValue=None))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_HTML_FILE, self.tr('HTML report'), self.tr('HTML files (*.html)'), None, True))
         self.addOutput(QgsProcessingOutputNumber(self.TOTAL_VALUES, self.tr('Total unique values')))

@@ -34,6 +34,14 @@ class GUI_EXPORT QgsMapCanvasSnappingUtils : public QgsSnappingUtils
 {
     Q_OBJECT
   public:
+
+    /**
+     * Construct map canvas snapping utils object
+     *
+     * \param canvas map canvas
+     * \param parent parent object
+     * if FALSE it will block until indexing is done
+     */
     QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent = nullptr );
 
   protected:

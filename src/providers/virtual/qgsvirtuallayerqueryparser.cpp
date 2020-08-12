@@ -212,7 +212,6 @@ namespace QgsVirtualLayerQueryParser
           qs += QLatin1String( ", " );
       }
       qs += QLatin1String( " FROM _tview LIMIT 1" );
-      qWarning() << qs;
 
       Sqlite::Query q( db, qs );
       if ( q.step() == SQLITE_ROW )

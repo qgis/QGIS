@@ -32,11 +32,11 @@ Constructor for QgsAttributeTableView
 
     virtual void setModel( QgsAttributeTableFilterModel *filterModel );
 
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager /Transfer/ );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
 %Docstring
 setFeatureSelectionManager
 
-:param featureSelectionManager: We will take ownership
+:param featureSelectionManager:
 %End
 
     virtual bool eventFilter( QObject *object, QEvent *event );
@@ -68,6 +68,7 @@ Returns the selected features in the attribute table in table sorted order.
 
 .. versionadded:: 3.4
 %End
+
 
   protected:
 
@@ -110,7 +111,7 @@ Disables selection change by only pressing an arrow key
     virtual void contextMenuEvent( QContextMenuEvent *event );
 
 %Docstring
-Is called when the context menu will be shown. Emits a willShowContextMenu() signal,
+Is called when the context menu will be shown. Emits a :py:func:`~QgsAttributeTableView.willShowContextMenu` signal,
 so the menu can be populated by other parts of the application.
 
 :param event: The associated event object.

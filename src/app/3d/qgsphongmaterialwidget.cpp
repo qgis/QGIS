@@ -16,14 +16,15 @@
 #include "qgsphongmaterialwidget.h"
 
 #include "qgsphongmaterialsettings.h"
-
+#include "qgis.h"
 
 QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent )
-  : QWidget( parent )
+  : QgsMaterialSettingsWidget( parent )
 {
   setupUi( this );
 
-  setMaterial( QgsPhongMaterialSettings() );
+  QgsPhongMaterialSettings defaultMaterial;
+  setSettings( &defaultMaterial, nullptr );
 
   connect( btnDiffuse, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
   connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
@@ -31,31 +32,54 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent )
   connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongMaterialWidget::changed );
 }
 
-void QgsPhongMaterialWidget::setDiffuseVisible( bool visible )
+QgsMaterialSettingsWidget *QgsPhongMaterialWidget::create()
 {
-  label->setVisible( visible );
-  btnDiffuse->setVisible( visible );
+  return new QgsPhongMaterialWidget();
 }
 
-bool QgsPhongMaterialWidget::isDiffuseVisible() const
+void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique technique )
 {
-  return btnDiffuse->isVisible();
+  switch ( technique )
+  {
+    case QgsMaterialSettingsRenderingTechnique::Triangles:
+    case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
+    case QgsMaterialSettingsRenderingTechnique::Points:
+    {
+      lblDiffuse->setVisible( true );
+      btnDiffuse->setVisible( true );
+      break;
+    }
+
+    case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
+    {
+      lblDiffuse->setVisible( false );
+      btnDiffuse->setVisible( false );
+      break;
+    }
+
+    case QgsMaterialSettingsRenderingTechnique::Lines:
+      // not supported
+      break;
+  }
 }
 
-void QgsPhongMaterialWidget::setMaterial( const QgsPhongMaterialSettings &material )
+void QgsPhongMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer * )
 {
-  btnDiffuse->setColor( material.diffuse() );
-  btnAmbient->setColor( material.ambient() );
-  btnSpecular->setColor( material.specular() );
-  spinShininess->setValue( material.shininess() );
+  const QgsPhongMaterialSettings *phongMaterial = dynamic_cast< const QgsPhongMaterialSettings * >( settings );
+  if ( !phongMaterial )
+    return;
+  btnDiffuse->setColor( phongMaterial->diffuse() );
+  btnAmbient->setColor( phongMaterial->ambient() );
+  btnSpecular->setColor( phongMaterial->specular() );
+  spinShininess->setValue( phongMaterial->shininess() );
 }
 
-QgsPhongMaterialSettings QgsPhongMaterialWidget::material() const
+QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()
 {
-  QgsPhongMaterialSettings m;
-  m.setDiffuse( btnDiffuse->color() );
-  m.setAmbient( btnAmbient->color() );
-  m.setSpecular( btnSpecular->color() );
-  m.setShininess( spinShininess->value() );
-  return m;
+  std::unique_ptr< QgsPhongMaterialSettings > m = qgis::make_unique< QgsPhongMaterialSettings >();
+  m->setDiffuse( btnDiffuse->color() );
+  m->setAmbient( btnAmbient->color() );
+  m->setSpecular( btnSpecular->color() );
+  m->setShininess( spinShininess->value() );
+  return m.release();
 }

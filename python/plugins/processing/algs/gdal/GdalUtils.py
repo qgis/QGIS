@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import subprocess
 import platform
@@ -45,7 +41,9 @@ from qgis.core import (Qgis,
                        QgsMessageLog,
                        QgsSettings,
                        QgsCredentials,
-                       QgsDataSourceUri)
+                       QgsDataSourceUri,
+                       QgsProjUtils,
+                       QgsCoordinateReferenceSystem)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows, isMac
 
@@ -300,7 +298,7 @@ class GdalUtils:
             ogrstr = "PG:%s" % dsUri.connectionInfo()
             format = 'PostgreSQL'
         elif provider == 'mssql':
-            #'dbname=\'db_name\' host=myHost estimatedmetadata=true
+            # 'dbname=\'db_name\' host=myHost estimatedmetadata=true
             # srid=27700 type=MultiPolygon table="dbo"."my_table"
             # #(Shape) sql='
             dsUri = layer.dataProvider().uri()
@@ -345,6 +343,11 @@ class GdalUtils:
 
             ogrstr += dsUri.table()
             format = 'OCI'
+        elif provider.lower() == "wfs":
+            uri = QgsDataSourceUri(layer.source())
+            baseUrl = uri.param('url').split('?')[0]
+            ogrstr = "WFS:{}".format(baseUrl)
+            format = 'WFS'
         else:
             ogrstr = str(layer.source()).split("|")[0]
             path, ext = os.path.splitext(ogrstr)
@@ -409,15 +412,18 @@ class GdalUtils:
     @staticmethod
     def writeLayerParameterToTextFile(filename, alg, parameters, parameter_name, context, quote=True, executing=False):
         listFile = QgsProcessingUtils.generateTempFilename(filename)
-        with open(listFile, 'w') as f:
-            if executing:
-                layers = []
-                for l in alg.parameterAsLayerList(parameters, parameter_name, context):
-                    if quote:
-                        layers.append('"' + l.source() + '"')
-                    else:
-                        layers.append(l.source())
+
+        if executing:
+            layers = []
+            for l in alg.parameterAsLayerList(parameters, parameter_name, context):
+                if quote:
+                    layers.append('"' + l.source() + '"')
+                else:
+                    layers.append(l.source())
+
+            with open(listFile, 'w') as f:
                 f.write('\n'.join(layers))
+
         return listFile
 
     @staticmethod
@@ -428,8 +434,12 @@ class GdalUtils:
         :param crs: crs to convert
         :return: gdal friendly string
         """
-        if crs.authid().upper().startswith('EPSG:'):
+        if crs.authid().upper().startswith('EPSG:') or crs.authid().upper().startswith('IGNF:') or crs.authid().upper().startswith('ESRI:'):
             return crs.authid()
 
+        if QgsProjUtils.projVersionMajor() >= 6:
+            # use WKT
+            return crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL)
+
         # fallback to proj4 string, stripping out newline characters
-        return crs.toProj4().replace('\n', ' ').replace('\r', ' ')
+        return crs.toProj().replace('\n', ' ').replace('\r', ' ')

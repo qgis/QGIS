@@ -1,6 +1,6 @@
 /*
- * Poly2Tri Copyright (c) 2009-2010, Poly2Tri Contributors
- * http://code.google.com/p/poly2tri/
+ * Poly2Tri Copyright (c) 2009-2018, Poly2Tri Contributors
+ * https://github.com/jhasse/poly2tri
  *
  * All rights reserved.
  *
@@ -120,10 +120,9 @@ Node& SweepContext::LocateNode(const Point& point)
   return *front_->LocateNode(point.x);
 }
 
-void SweepContext::CreateAdvancingFront(const std::vector<Node*>& nodes)
+void SweepContext::CreateAdvancingFront()
 {
 
-  (void) nodes;
   // Initial triangle
   Triangle* triangle = new Triangle(*points_[0], *tail_, *head_);
 

@@ -8,7 +8,7 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
-# NOTE: These is a temporary source code commit checkout, until a releas with
+# NOTE: These is a temporary source code commit checkout, until a release with
 #       recent commits is available via common platform packaging
 set(_o2_commit 31ceafb3f0c3b605110ddd20aeebd3288504ee1f)
 set(_o2_url "https://github.com/pipacs/o2/archive/${_o2_commit}.tar.gz")

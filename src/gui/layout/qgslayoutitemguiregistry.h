@@ -63,7 +63,7 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
      *
      * If \a isNodeBased is TRUE, then the corresponding item is a node based item.
      */
-    QgsLayoutItemAbstractGuiMetadata( int type, const QString &visibleName, const QString &groupId = QString(), bool isNodeBased = false, Flags flags = nullptr )
+    QgsLayoutItemAbstractGuiMetadata( int type, const QString &visibleName, const QString &groupId = QString(), bool isNodeBased = false, Flags flags = QgsLayoutItemAbstractGuiMetadata::Flags() )
       : mType( type )
       , mGroupId( groupId )
       , mIsNodeBased( isNodeBased )
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
     /**
      * Creates a configuration widget for an \a item of this type. Can return NULLPTR if no configuration GUI is required.
      */
-    virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) SIP_FACTORY { Q_UNUSED( item ); return nullptr; }
+    virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) SIP_FACTORY { Q_UNUSED( item ) return nullptr; }
 
     /**
      * Creates a rubber band for use when creating layout items of this type. Can return NULLPTR if no rubber band
@@ -184,7 +184,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
                               const QgsLayoutItemWidgetFunc &pfWidget = nullptr,
                               const QgsLayoutItemRubberBandFunc &pfRubberBand = nullptr, const QString &groupId = QString(),
                               bool isNodeBased = false,
-                              QgsLayoutItemAbstractGuiMetadata::Flags flags = nullptr,
+                              QgsLayoutItemAbstractGuiMetadata::Flags flags = QgsLayoutItemAbstractGuiMetadata::Flags(),
                               const QgsLayoutItemCreateFunc &pfCreateFunc = nullptr )
       : QgsLayoutItemAbstractGuiMetadata( type, visibleName, groupId, isNodeBased, flags )
       , mIcon( creationIcon )

@@ -24,7 +24,7 @@
 #include <QPlainTextDocumentLayout>
 #include <QSortFilterProxyModel>
 
-#include "qgsbrowsermodel.h"
+#include "qgsbrowserguimodel.h"
 #include "qgsbrowsertreeview.h"
 #include "qgslogger.h"
 #include "qgsrasterlayer.h"
@@ -45,7 +45,7 @@
 
 #include <QDragEnterEvent>
 
-QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserModel *browserModel, QWidget *parent )
+QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserGuiModel *browserModel, QWidget *parent )
   : QgsDockWidget( parent )
   , mModel( browserModel )
   , mPropertiesWidgetEnabled( false )
@@ -128,6 +128,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
   {
     mProxyModel = new QgsBrowserProxyModel( this );
     mProxyModel->setBrowserModel( mModel );
+    mProxyModel->setHiddenDataItemProviderKeyFilter( mDisabledDataItemsKeys );
     mBrowserView->setSettingsSection( objectName().toLower() ); // to distinguish 2 or more instances of the browser
     mBrowserView->setBrowserModel( mModel );
     mBrowserView->setModel( mProxyModel );
@@ -156,7 +157,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
     mPropertiesWidgetHeight = settings.value( settingsSection() + "/propertiesWidgetHeight" ).toFloat();
     QList<int> sizes = mSplitter->sizes();
     int total = sizes.value( 0 ) + sizes.value( 1 );
-    int height = static_cast<int>( total ) * mPropertiesWidgetHeight;
+    int height = static_cast<int>( total * mPropertiesWidgetHeight );
     sizes.clear();
     sizes << total - height << height;
     mSplitter->setSizes( sizes );
@@ -253,7 +254,7 @@ void QgsBrowserDockWidget::addFavorite()
   if ( !item )
     return;
 
-  QgsDirectoryItem *dirItem = dynamic_cast<QgsDirectoryItem *>( item );
+  QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( item );
   if ( !dirItem )
     return;
 
@@ -281,11 +282,22 @@ void QgsBrowserDockWidget::addFavoriteDirectory( const QString &favDir, const QS
 void QgsBrowserDockWidget::setMessageBar( QgsMessageBar *bar )
 {
   mMessageBar = bar;
+  mModel->setMessageBar( bar );
 }
 
 QgsMessageBar *QgsBrowserDockWidget::messageBar()
 {
   return mMessageBar;
+}
+
+void QgsBrowserDockWidget::setDisabledDataItemsKeys( const QStringList &filter )
+{
+  mDisabledDataItemsKeys = filter;
+
+  if ( !mProxyModel )
+    return;
+
+  mProxyModel->setHiddenDataItemProviderKeyFilter( mDisabledDataItemsKeys );
 }
 
 void QgsBrowserDockWidget::removeFavorite()
@@ -443,7 +455,7 @@ void QgsBrowserDockWidget::showProperties()
   {
     QgsBrowserPropertiesDialog *dialog = new QgsBrowserPropertiesDialog( settingsSection(), this );
     dialog->setAttribute( Qt::WA_DeleteOnClose );
-    dialog->setItem( item );
+    dialog->setItem( item, createContext() );
     dialog->show();
   }
 }
@@ -534,8 +546,8 @@ QgsDataItemGuiContext QgsBrowserDockWidget::createContext()
 
 void QgsBrowserDockWidget::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
-  Q_UNUSED( selected );
-  Q_UNUSED( deselected );
+  Q_UNUSED( selected )
+  Q_UNUSED( deselected )
   if ( mPropertiesWidgetEnabled )
   {
     setPropertiesWidget();
@@ -562,7 +574,8 @@ void QgsBrowserDockWidget::setPropertiesWidget()
     {
       QModelIndex index = mProxyModel->mapToSource( indexes.value( 0 ) );
       QgsDataItem *item = mModel->dataItem( index );
-      QgsBrowserPropertiesWidget *propertiesWidget = QgsBrowserPropertiesWidget::createWidget( item, mPropertiesWidget );
+      QgsDataItemGuiContext context = createContext();
+      QgsBrowserPropertiesWidget *propertiesWidget = QgsBrowserPropertiesWidget::createWidget( item, context, mPropertiesWidget );
       if ( propertiesWidget )
       {
         propertiesWidget->setCondensedMode( true );
@@ -583,6 +596,16 @@ void QgsBrowserDockWidget::enablePropertiesWidget( bool enable )
   else
   {
     clearPropertiesWidget();
+  }
+}
+
+void QgsBrowserDockWidget::setActiveIndex( const QModelIndex &index )
+{
+  if ( index.isValid() )
+  {
+    QModelIndex proxyIndex = mProxyModel->mapFromSource( index );
+    mBrowserView->expand( proxyIndex );
+    mBrowserView->setCurrentIndex( proxyIndex );
   }
 }
 

@@ -238,8 +238,8 @@ void QgsAuthTrustedCAsDialog::showCertInfo( QTreeWidgetItem *item )
 
 void QgsAuthTrustedCAsDialog::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
-  Q_UNUSED( selected );
-  Q_UNUSED( deselected );
+  Q_UNUSED( selected )
+  Q_UNUSED( deselected )
   checkSelection();
 }
 
@@ -265,7 +265,7 @@ void QgsAuthTrustedCAsDialog::checkSelection()
 
 void QgsAuthTrustedCAsDialog::handleDoubleClick( QTreeWidgetItem *item, int col )
 {
-  Q_UNUSED( col );
+  Q_UNUSED( col )
   bool iscert = true;
 
   switch ( ( QgsAuthTrustedCAsDialog::CaType )item->type() )

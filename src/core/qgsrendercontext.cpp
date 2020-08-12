@@ -37,12 +37,17 @@ QgsRenderContext::QgsRenderContext()
   mDistanceArea.setEllipsoid( mDistanceArea.sourceCrs().ellipsoidAcronym() );
 }
 
+QgsRenderContext::~QgsRenderContext() = default;
+
 QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
-  : mFlags( rh.mFlags )
+  : QgsTemporalRangeObject( rh )
+  , mFlags( rh.mFlags )
   , mPainter( rh.mPainter )
+  , mMaskPainter( rh.mMaskPainter )
   , mCoordTransform( rh.mCoordTransform )
   , mDistanceArea( rh.mDistanceArea )
   , mExtent( rh.mExtent )
+  , mOriginalMapExtent( rh.mOriginalMapExtent )
   , mMapToPixel( rh.mMapToPixel )
   , mRenderingStopped( rh.mRenderingStopped )
   , mScaleFactor( rh.mScaleFactor )
@@ -58,6 +63,13 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mTransformContext( rh.mTransformContext )
   , mPathResolver( rh.mPathResolver )
   , mTextRenderFormat( rh.mTextRenderFormat )
+  , mRenderedFeatureHandlers( rh.mRenderedFeatureHandlers )
+  , mHasRenderedFeatureHandlers( rh.mHasRenderedFeatureHandlers )
+  , mCustomRenderingFlags( rh.mCustomRenderingFlags )
+  , mDisabledSymbolLayers()
+  , mClippingRegions( rh.mClippingRegions )
+  , mFeatureClipGeometry( rh.mFeatureClipGeometry )
+  , mTextureOrigin( rh.mTextureOrigin )
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
@@ -68,8 +80,10 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
 {
   mFlags = rh.mFlags;
   mPainter = rh.mPainter;
+  mMaskPainter = rh.mMaskPainter;
   mCoordTransform = rh.mCoordTransform;
   mExtent = rh.mExtent;
+  mOriginalMapExtent = rh.mOriginalMapExtent;
   mMapToPixel = rh.mMapToPixel;
   mRenderingStopped = rh.mRenderingStopped;
   mScaleFactor = rh.mScaleFactor;
@@ -86,6 +100,15 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mTransformContext = rh.mTransformContext;
   mPathResolver = rh.mPathResolver;
   mTextRenderFormat = rh.mTextRenderFormat;
+  mRenderedFeatureHandlers = rh.mRenderedFeatureHandlers;
+  mHasRenderedFeatureHandlers = rh.mHasRenderedFeatureHandlers;
+  mCustomRenderingFlags = rh.mCustomRenderingFlags;
+  mClippingRegions = rh.mClippingRegions;
+  mFeatureClipGeometry = rh.mFeatureClipGeometry;
+  mTextureOrigin = rh.mTextureOrigin;
+  setIsTemporal( rh.isTemporal() );
+  if ( isTemporal() )
+    setTemporalRange( rh.temporalRange() );
 #ifdef QGISDEBUG
   mHasTransformContext = rh.mHasTransformContext;
 #endif
@@ -105,11 +128,30 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
   {
     context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
   }
+
   if ( painter && painter->renderHints() & QPainter::Antialiasing )
-  {
     context.setFlag( QgsRenderContext::Antialiasing, true );
-  }
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  if ( painter && painter->renderHints() & QPainter::LosslessImageRendering )
+    context.setFlag( QgsRenderContext::LosslessImageRendering, true );
+#endif
+
   return context;
+}
+
+void QgsRenderContext::setPainterFlagsUsingContext( QPainter *painter ) const
+{
+  if ( !painter )
+    painter = mPainter;
+
+  if ( !painter )
+    return;
+
+  painter->setRenderHint( QPainter::Antialiasing, mFlags & QgsRenderContext::Antialiasing );
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  painter->setRenderHint( QPainter::LosslessImageRendering, mFlags & QgsRenderContext::LosslessImageRendering );
+#endif
 }
 
 QgsCoordinateTransformContext QgsRenderContext::transformContext() const
@@ -155,8 +197,11 @@ bool QgsRenderContext::testFlag( QgsRenderContext::Flag flag ) const
 QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSettings )
 {
   QgsRenderContext ctx;
+  QgsRectangle extent = mapSettings.visibleExtent();
+  extent.grow( mapSettings.extentBuffer() );
   ctx.setMapToPixel( mapSettings.mapToPixel() );
-  ctx.setExtent( mapSettings.visibleExtent() );
+  ctx.setExtent( extent );
+  ctx.setMapExtent( mapSettings.visibleExtent() );
   ctx.setFlag( DrawEditingInfo, mapSettings.testFlag( QgsMapSettings::DrawEditingInfo ) );
   ctx.setFlag( ForceVectorOutput, mapSettings.testFlag( QgsMapSettings::ForceVectorOutput ) );
   ctx.setFlag( UseAdvancedEffects, mapSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) );
@@ -169,6 +214,9 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setFlag( Antialiasing, mapSettings.testFlag( QgsMapSettings::Antialiasing ) );
   ctx.setFlag( RenderPartialOutput, mapSettings.testFlag( QgsMapSettings::RenderPartialOutput ) );
   ctx.setFlag( RenderPreviewJob, mapSettings.testFlag( QgsMapSettings::RenderPreviewJob ) );
+  ctx.setFlag( RenderBlocking, mapSettings.testFlag( QgsMapSettings::RenderBlocking ) );
+  ctx.setFlag( LosslessImageRendering, mapSettings.testFlag( QgsMapSettings::LosslessImageRendering ) );
+  ctx.setFlag( Render3DMap, mapSettings.testFlag( QgsMapSettings::Render3DMap ) );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setRendererScale( mapSettings.scale() );
   ctx.setExpressionContext( mapSettings.expressionContext() );
@@ -179,9 +227,18 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setTransformContext( mapSettings.transformContext() );
   ctx.setPathResolver( mapSettings.pathResolver() );
   ctx.setTextRenderFormat( mapSettings.textRenderFormat() );
+  ctx.setVectorSimplifyMethod( mapSettings.simplifyMethod() );
+  ctx.mRenderedFeatureHandlers = mapSettings.renderedFeatureHandlers();
+  ctx.mHasRenderedFeatureHandlers = !mapSettings.renderedFeatureHandlers().isEmpty();
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   ctx.setRenderingStopped( false );
+  ctx.mCustomRenderingFlags = mapSettings.customRenderingFlags();
+  ctx.setIsTemporal( mapSettings.isTemporal() );
+  if ( ctx.isTemporal() )
+    ctx.setTemporalRange( mapSettings.temporalRange() );
+
+  ctx.mClippingRegions = mapSettings.clippingRegions();
 
   return ctx;
 }
@@ -431,6 +488,12 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
       return meters;
     case QgsUnitTypes::DistanceDegrees:
     {
+      if ( mExtent.isNull() )
+      {
+        // we don't have an extent to calculate exactly -- so just use a very rough approximation
+        return meters * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, QgsUnitTypes::DistanceDegrees );
+      }
+
       QgsPointXY pointCenter = mExtent.center();
       // The Extent is in the sourceCrs(), when different from destinationCrs()
       // - the point must be transformed, since DistanceArea uses the destinationCrs()
@@ -452,6 +515,36 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
       return ( meters * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mDistanceArea.sourceCrs().mapUnits() ) );
   }
   return meters;
+}
+
+QList<QgsRenderedFeatureHandlerInterface *> QgsRenderContext::renderedFeatureHandlers() const
+{
+  return mRenderedFeatureHandlers;
+}
+
+QList<QgsMapClippingRegion> QgsRenderContext::clippingRegions() const
+{
+  return mClippingRegions;
+}
+
+QgsGeometry QgsRenderContext::featureClipGeometry() const
+{
+  return mFeatureClipGeometry;
+}
+
+void QgsRenderContext::setFeatureClipGeometry( const QgsGeometry &geometry )
+{
+  mFeatureClipGeometry = geometry;
+}
+
+QPointF QgsRenderContext::textureOrigin() const
+{
+  return mTextureOrigin;
+}
+
+void QgsRenderContext::setTextureOrigin( const QPointF &origin )
+{
+  mTextureOrigin = origin;
 }
 
 

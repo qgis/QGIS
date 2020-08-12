@@ -27,15 +27,17 @@ namespace MDAL
       ~DriverBinaryDat( ) override;
       DriverBinaryDat *create() override;
 
-      bool canRead( const std::string &uri ) override;
-      void load( const std::string &datFile, Mesh *mesh, MDAL_Status *status ) override;
+      bool canReadDatasets( const std::string &uri ) override;
+      void load( const std::string &datFile, Mesh *mesh ) override;
       bool persist( DatasetGroup *group ) override;
+
+      std::string writeDatasetOnFileSuffix() const override;
 
     private:
       bool readVertexTimestep( const Mesh *mesh,
                                std::shared_ptr<DatasetGroup> group,
                                std::shared_ptr<DatasetGroup> groupMax,
-                               double time,
+                               RelativeTimestamp time,
                                bool hasStatus,
                                int sflg,
                                std::ifstream &in );

@@ -20,8 +20,6 @@
 __author__ = 'Nyall Dawson'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Nyall Dawson'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -55,7 +53,8 @@ from qgis.core import (QgsGeometry,
                        QgsProject,
                        QgsReadWriteContext,
                        QgsSymbolLayerUtils,
-                       QgsMarkerLineSymbolLayer
+                       QgsMarkerLineSymbolLayer,
+                       QgsSymbol
                        )
 
 from qgis.testing import unittest, start_app
@@ -77,6 +76,77 @@ class TestQgsSymbol(unittest.TestCase):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
+
+    def testPythonAdditions(self):
+        """
+        Test PyQGIS additions to QgsSymbol
+        """
+        markerSymbol = QgsMarkerSymbol()
+        markerSymbol.symbolLayer(0).setColor(QColor(255, 255, 0))
+        self.assertEqual(len(markerSymbol), 1)
+        layers = [l.color().name() for l in markerSymbol]
+        self.assertEqual(layers, ['#ffff00'])
+        self.assertEqual(markerSymbol[0].color().name(), '#ffff00')
+        self.assertEqual(markerSymbol[-1].color().name(), '#ffff00')
+        with self.assertRaises(IndexError):
+            _ = markerSymbol[1]
+        with self.assertRaises(IndexError):
+            _ = markerSymbol[-2]
+        with self.assertRaises(IndexError):
+            _ = markerSymbol.symbolLayer(1)
+        with self.assertRaises(IndexError):
+            _ = markerSymbol.symbolLayer(-1)  # negative index only supported by []
+
+        with self.assertRaises(IndexError):
+            del markerSymbol[1]
+        with self.assertRaises(IndexError):
+            del markerSymbol[-2]
+
+        del markerSymbol[0]
+        self.assertEqual(len(markerSymbol), 0)
+        self.assertTrue(markerSymbol)
+
+        with self.assertRaises(IndexError):
+            _ = markerSymbol[0]
+        with self.assertRaises(IndexError):
+            _ = markerSymbol[-1]
+
+        with self.assertRaises(IndexError):
+            del markerSymbol[0]
+        with self.assertRaises(IndexError):
+            del markerSymbol[-1]
+
+        markerSymbol.appendSymbolLayer(
+            QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 0, 0),
+                                       strokeColor=QColor(0, 255, 0), size=10))
+        markerSymbol.appendSymbolLayer(
+            QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 255, 0),
+                                       strokeColor=QColor(0, 255, 255), size=10))
+
+        self.assertEqual(len(markerSymbol), 2)
+        layers = [l.color().name() for l in markerSymbol]
+        self.assertEqual(layers, ['#ff0000', '#ffff00'])
+        self.assertEqual(markerSymbol[0].color().name(), '#ff0000')
+        self.assertEqual(markerSymbol[-1].color().name(), '#ffff00')
+        self.assertEqual(markerSymbol[1].color().name(), '#ffff00')
+        self.assertEqual(markerSymbol[-2].color().name(), '#ff0000')
+        with self.assertRaises(IndexError):
+            _ = markerSymbol[2]
+        with self.assertRaises(IndexError):
+            _ = markerSymbol[-3]
+        with self.assertRaises(IndexError):
+            _ = markerSymbol.symbolLayer(2)
+        with self.assertRaises(IndexError):
+            _ = markerSymbol.symbolLayer(-1)  # negative index only supported by []
+
+        with self.assertRaises(IndexError):
+            del markerSymbol[2]
+        with self.assertRaises(IndexError):
+            del markerSymbol[-3]
+
+        del markerSymbol[1]
+        layers = [l.color().name() for l in markerSymbol]
+        self.assertEqual(layers, ['#ff0000'])
 
     def testGeometryRendering(self):
         '''Tests rendering a bunch of different geometries, including bad/odd geometries.'''
@@ -141,7 +211,7 @@ class TestQgsSymbol(unittest.TestCase):
 
             geom = get_geom()
             rendered_image = self.renderGeometry(geom)
-            assert self.imageCheck(test['name'], test['reference_image'], rendered_image)
+            self.assertTrue(self.imageCheck(test['name'], test['reference_image'], rendered_image), test['name'])
 
             # Note - each test is repeated with the same geometry and reference image, but with added
             # z and m dimensions. This tests that presence of the dimensions does not affect rendering
@@ -438,7 +508,8 @@ class TestQgsSymbol(unittest.TestCase):
 
         painter = QPainter()
         ms = QgsMapSettings()
-        crs = QgsCoordinateReferenceSystem.fromProj4('+proj=ortho +lat_0=36.5 +lon_0=-118.8 +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs')
+        crs = QgsCoordinateReferenceSystem.fromProj(
+            '+proj=ortho +lat_0=36.5 +lon_0=-118.8 +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs')
         self.assertTrue(crs.isValid())
         ms.setDestinationCrs(crs)
         ms.setExtent(QgsRectangle(1374999.8, 3912610.7, 4724462.5, 6505499.6))
@@ -452,7 +523,8 @@ class TestQgsSymbol(unittest.TestCase):
         context.setCoordinateTransform(ct)
         context.setExtent(ct.transformBoundingBox(ms.extent(), QgsCoordinateTransform.ReverseTransform))
 
-        fill_symbol = QgsFillSymbol.createSimple({'color': '#ffffff', 'outline_color': '#ffffff', 'outline_width': '10'})
+        fill_symbol = QgsFillSymbol.createSimple(
+            {'color': '#ffffff', 'outline_color': '#ffffff', 'outline_width': '10'})
 
         painter.begin(image)
         try:
@@ -465,7 +537,7 @@ class TestQgsSymbol(unittest.TestCase):
 
         assert self.imageCheck('Reprojection errors polygon', 'reprojection_errors_polygon', image)
 
-        #also test linestring
+        # also test linestring
         linestring = QgsGeometry(geom.constGet().boundary())
         f.setGeometry(linestring)
         line_symbol = QgsLineSymbol.createSimple({'color': '#ffffff', 'outline_width': '10'})
@@ -482,10 +554,102 @@ class TestQgsSymbol(unittest.TestCase):
 
         assert self.imageCheck('Reprojection errors linestring', 'reprojection_errors_linestring', image)
 
-    def imageCheck(self, name, reference_image, image):
+    def renderCollection(self, geom, symbol):
+        f = QgsFeature()
+        f.setGeometry(geom)
+
+        image = QImage(200, 200, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        extent = geom.get().boundingBox()
+        # buffer extent by 10%
+        if extent.width() > 0:
+            extent = extent.buffered((extent.height() + extent.width()) / 20.0)
+        else:
+            extent = extent.buffered(10)
+
+        ms.setExtent(extent)
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        painter.begin(image)
+        try:
+            image.fill(QColor(0, 0, 0))
+            symbol.startRender(context)
+            symbol.renderFeature(f, context)
+            symbol.stopRender(context)
+        finally:
+            painter.end()
+
+        return image
+
+    def testGeometryCollectionRender(self):
+        tests = [{'name': 'Marker',
+                  'wkt': 'GeometryCollection (Point(1 2))',
+                  'symbol': self.marker_symbol,
+                  'reference_image': 'point'},
+                 {'name': 'MultiPoint',
+                  'wkt': 'GeometryCollection (Point(10 30),Point(40 20),Point(30 10),Point(20 10))',
+                  'symbol': self.marker_symbol,
+                  'reference_image': 'multipoint'},
+                 {'name': 'LineString',
+                  'wkt': 'GeometryCollection( LineString (0 0,3 4,4 3) )',
+                  'symbol': self.line_symbol,
+                  'reference_image': 'linestring'},
+                 {'name': 'MultiLineString',
+                  'wkt': 'GeometryCollection (LineString(0 0, 1 0, 1 1, 2 1, 2 0), LineString(3 1, 5 1, 5 0, 6 0))',
+                  'symbol': self.line_symbol,
+                  'reference_image': 'multilinestring'},
+                 {'name': 'Polygon',
+                  'wkt': 'GeometryCollection(Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5)))',
+                  'symbol': self.fill_symbol,
+                  'reference_image': 'polygon'},
+                 {'name': 'MultiPolygon',
+                  'wkt': 'GeometryCollection( Polygon((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),Polygon((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))',
+                  'symbol': self.fill_symbol,
+                  'reference_image': 'multipolygon'},
+                 {'name': 'CircularString',
+                  'wkt': 'GeometryCollection(CIRCULARSTRING(268 415,227 505,227 406))',
+                  'symbol': self.line_symbol,
+                  'reference_image': 'circular_string'},
+                 {'name': 'CompoundCurve',
+                  'wkt': 'GeometryCollection(COMPOUNDCURVE((5 3, 5 13), CIRCULARSTRING(5 13, 7 15, 9 13), (9 13, 9 3), CIRCULARSTRING(9 3, 7 1, 5 3)))',
+                  'symbol': self.line_symbol,
+                  'reference_image': 'compound_curve'},
+                 {'name': 'CurvePolygon',
+                  'wkt': 'GeometryCollection(CURVEPOLYGON(CIRCULARSTRING(1 3, 3 5, 4 7, 7 3, 1 3)))',
+                  'symbol': self.fill_symbol,
+                  'reference_image': 'curve_polygon'},
+                 {'name': 'CurvePolygon_no_arc',  # refs #14028
+                  'wkt': 'GeometryCollection(CURVEPOLYGON(LINESTRING(1 3, 3 5, 4 7, 7 3, 1 3)))',
+                  'symbol': self.fill_symbol,
+                  'reference_image': 'curve_polygon_no_arc'},
+                 {'name': 'Mixed line symbol',
+                  'wkt': 'GeometryCollection(Point(1 2), MultiPoint(3 3, 2 3), LineString (0 0,3 4,4 3), MultiLineString((3 1, 3 2, 4 2)), Polygon((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)), MultiPolygon(((4 0, 5 0, 5 1, 6 1, 6 2, 4 2, 4 0)),(( 1 4, 2 4, 1 5, 1 4))))',
+                  'symbol': self.line_symbol,
+                  'reference_image': 'collection_line_symbol'},
+                 {'name': 'Mixed fill symbol',
+                  'wkt': 'GeometryCollection(Point(1 2), MultiPoint(3 3, 2 3), LineString (0 0,3 4,4 3), MultiLineString((3 1, 3 2, 4 2)), Polygon((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)), MultiPolygon(((4 0, 5 0, 5 1, 6 1, 6 2, 4 2, 4 0)),(( 1 4, 2 4, 1 5, 1 4))))',
+                  'symbol': self.fill_symbol,
+                  'reference_image': 'collection_fill_symbol'},
+                 {'name': 'Mixed marker symbol',
+                  'wkt': 'GeometryCollection(Point(1 2), MultiPoint(3 3, 2 3), LineString (0 0,3 4,4 3), MultiLineString((3 1, 3 2, 4 2)), Polygon((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)), MultiPolygon(((4 0, 5 0, 5 1, 6 1, 6 2, 4 2, 4 0)),(( 1 4, 2 4, 1 5, 1 4))))',
+                  'symbol': self.marker_symbol,
+                  'reference_image': 'collection_marker_symbol'},
+                 ]
+
+        for test in tests:
+            geom = QgsGeometry.fromWkt(test['wkt'])
+            rendered_image = self.renderCollection(geom, test['symbol'])
+            self.assertTrue(self.imageCheck(test['name'], test['reference_image'], rendered_image, '_collection'), test['name'])
+
+    def imageCheck(self, name, reference_image, image, extra=''):
         self.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'symbol_' + name + ".png"
+        file_name = temp_dir + 'symbol_' + name + extra + ".png"
         image.save(file_name, "PNG")
         checker = QgsRenderChecker()
         checker.setControlPathPrefix("symbol")
@@ -768,7 +932,8 @@ class TestQgsFillSymbol(unittest.TestCase):
         marker_line.setSubSymbol(marker_symbol)
         s3.appendSymbolLayer(marker_line)
 
-        g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
+        g = QgsGeometry.fromWkt(
+            'Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
         assert self.imageCheck('force_rhr_off', 'polygon_forcerhr_off', rendered_image)
 

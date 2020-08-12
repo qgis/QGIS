@@ -64,7 +64,7 @@ QgsAssignProjectionAlgorithm *QgsAssignProjectionAlgorithm::createInstance() con
 
 bool QgsAssignProjectionAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
   return false;
 }
 

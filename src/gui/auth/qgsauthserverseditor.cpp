@@ -223,8 +223,8 @@ void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslS
 
 void QgsAuthServersEditor::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
-  Q_UNUSED( selected );
-  Q_UNUSED( deselected );
+  Q_UNUSED( selected )
+  Q_UNUSED( deselected )
   checkSelection();
 }
 
@@ -251,7 +251,7 @@ void QgsAuthServersEditor::checkSelection()
 
 void QgsAuthServersEditor::handleDoubleClick( QTreeWidgetItem *item, int col )
 {
-  Q_UNUSED( col );
+  Q_UNUSED( col )
   bool isconfig = true;
 
   switch ( ( QgsAuthServersEditor::ConfigType )item->type() )

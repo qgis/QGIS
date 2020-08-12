@@ -29,19 +29,8 @@ QgsGlowEffect::QgsGlowEffect()
 
 QgsGlowEffect::QgsGlowEffect( const QgsGlowEffect &other )
   : QgsPaintEffect( other )
-  , mSpread( other.spread() )
-  , mSpreadUnit( other.spreadUnit() )
-  , mSpreadMapUnitScale( other.spreadMapUnitScale() )
-  , mBlurLevel( other.blurLevel() )
-  , mOpacity( other.opacity() )
-  , mColor( other.color() )
-  , mBlendMode( other.blendMode() )
-  , mColorType( other.colorType() )
 {
-  if ( other.ramp() )
-  {
-    mRamp = other.ramp()->clone();
-  }
+  operator=( other );
 }
 
 QgsGlowEffect::~QgsGlowEffect()
@@ -78,9 +67,16 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
   dtProps.ramp = ramp;
   QgsImageOperation::distanceTransform( im, dtProps );
 
-  if ( mBlurLevel > 0 )
+  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  if ( blurLevel <= 16 )
   {
-    QgsImageOperation::stackBlur( im, mBlurLevel );
+    QgsImageOperation::stackBlur( im, blurLevel );
+  }
+  else
+  {
+    QImage *imb = QgsImageOperation::gaussianBlur( im, blurLevel );
+    im = QImage( *imb );
+    delete imb;
   }
 
   QgsImageOperation::multiplyOpacity( im, mOpacity );
@@ -96,10 +92,9 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
   }
 
   QPainter *painter = context.painter();
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->setCompositionMode( mBlendMode );
   painter->drawImage( imageOffset( context ), im );
-  painter->restore();
 }
 
 QgsStringMap QgsGlowEffect::properties() const
@@ -110,6 +105,8 @@ QgsStringMap QgsGlowEffect::properties() const
   props.insert( QStringLiteral( "blend_mode" ), QString::number( int( mBlendMode ) ) );
   props.insert( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
   props.insert( QStringLiteral( "blur_level" ), QString::number( mBlurLevel ) );
+  props.insert( QStringLiteral( "blur_unit" ), QgsUnitTypes::encodeUnit( mBlurUnit ) );
+  props.insert( QStringLiteral( "blur_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mBlurMapUnitScale ) );
   props.insert( QStringLiteral( "spread" ), QString::number( mSpread ) );
   props.insert( QStringLiteral( "spread_unit" ), QgsUnitTypes::encodeUnit( mSpreadUnit ) );
   props.insert( QStringLiteral( "spread_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mSpreadMapUnitScale ) );
@@ -150,11 +147,18 @@ void QgsGlowEffect::readProperties( const QgsStringMap &props )
   }
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
   mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
-  int level = props.value( QStringLiteral( "blur_level" ) ).toInt( &ok );
+  double level = props.value( QStringLiteral( "blur_level" ) ).toDouble( &ok );
   if ( ok )
   {
     mBlurLevel = level;
+    if ( !props.contains( QStringLiteral( "blur_unit" ) ) )
+    {
+      // deal with pre blur unit era by assuming 96 dpi and converting pixel values as millimeters
+      mBlurLevel *= 0.2645;
+    }
   }
+  mBlurUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "blur_unit" ) ) );
+  mBlurMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "blur_unit_scale" ) ) );
   double spread = props.value( QStringLiteral( "spread" ) ).toDouble( &ok );
   if ( ok )
   {
@@ -198,8 +202,12 @@ QgsGlowEffect &QgsGlowEffect::operator=( const QgsGlowEffect &rhs )
   delete mRamp;
 
   mSpread = rhs.spread();
+  mSpreadUnit = rhs.spreadUnit();
+  mSpreadMapUnitScale = rhs.spreadMapUnitScale();
   mRamp = rhs.ramp() ? rhs.ramp()->clone() : nullptr;
   mBlurLevel = rhs.blurLevel();
+  mBlurUnit = rhs.mBlurUnit;
+  mBlurMapUnitScale = rhs.mBlurMapUnitScale;
   mOpacity = rhs.opacity();
   mColor = rhs.color();
   mBlendMode = rhs.blendMode();
@@ -210,10 +218,11 @@ QgsGlowEffect &QgsGlowEffect::operator=( const QgsGlowEffect &rhs )
 
 QRectF QgsGlowEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
-  //spread size
+  //blur radius and spread size
+  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
   double spread = context.convertToPainterUnits( mSpread, mSpreadUnit, mSpreadMapUnitScale );
   //plus possible extension due to blur, with a couple of extra pixels thrown in for safety
-  spread += mBlurLevel * 2 + 10;
+  spread += blurLevel * 2 + 10;
   return rect.adjusted( -spread, -spread, spread, spread );
 }
 

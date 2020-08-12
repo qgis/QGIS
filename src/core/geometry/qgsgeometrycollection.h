@@ -120,6 +120,16 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
 
+    /**
+     * Attempts to allocate memory for at least \a size geometries.
+     *
+     * If the number of geometries is known in advance, calling this function prior to adding geometries will prevent
+     * reallocations and memory fragmentation.
+     *
+     * \since QGIS 3.10
+     */
+    void reserve( int size );
+
     //! Adds a geometry and takes ownership. Returns TRUE in case of success.
     virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER );
 
@@ -166,14 +176,16 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
 
     void draw( QPainter &p ) const override;
+    QPainterPath asQPainterPath() const override;
 
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
-    QByteArray asWkb() const override;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
     QString asWkt( int precision = 17 ) const override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
-    QString asJson( int precision = 17 ) const override;
+    json asJsonObject( int precision = 17 ) const override SIP_SKIP;
+    QString asKml( int precision = 17 ) const override;
 
     QgsRectangle boundingBox() const override;
 

@@ -27,8 +27,9 @@
  * This class models dependencies with or between map layers.
  * A dependency is defined by a layer ID, a type and an origin.
  * The two combinations of type/origin that are currently supported are:
- *  - PresenceDependency && FromProvider: virtual layers for instance which may depend on other layers already loaded to work
- *  - DataDependency && FromUser: dependencies given by the user, mainly to represent database triggers
+ *
+ * - PresenceDependency && FromProvider: virtual layers for instance which may depend on other layers already loaded to work
+ * - DataDependency && FromUser: dependencies given by the user, mainly to represent database triggers
  *
  * \since QGIS 3.0
  */

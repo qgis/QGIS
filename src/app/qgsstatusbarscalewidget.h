@@ -65,7 +65,7 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
     void setFont( const QFont &font );
 
   public slots:
-    void updateScales( const QStringList &scales = QStringList() );
+    void updateScales();
 
   private slots:
     void userScale() const;

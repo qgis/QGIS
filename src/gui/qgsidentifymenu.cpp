@@ -25,6 +25,7 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsexpressioncontextutils.h"
 
 //TODO 4.0 add explicitly qobject parent to constructor
 QgsIdentifyMenu::QgsIdentifyMenu( QgsMapCanvas *canvas )
@@ -125,7 +126,12 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
         break;
       }
 
+      case QgsMapLayerType::VectorTileLayer:
+        // TODO: add support
+        break;
+
       case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::AnnotationLayer:
       case QgsMapLayerType::MeshLayer:
         break;
     }
@@ -278,11 +284,15 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     }
   }
 
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  QgsExpression exp( layer->displayExpression() );
+  exp.prepare( &context );
+  context.setFeature( results[0].mFeature );
   // use a menu only if actions will be listed
   if ( !createMenu )
   {
     // case 1
-    QString featureTitle = results[0].mFeature.attribute( layer->displayField() ).toString();
+    QString featureTitle = exp.evaluate( &context ).toString();
     if ( featureTitle.isEmpty() )
       featureTitle = QStringLiteral( "%1" ).arg( results[0].mFeature.id() );
     layerAction = new QAction( QStringLiteral( "%1 (%2)" ).arg( layer->name(), featureTitle ), this );
@@ -304,7 +314,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
       // case 2b
       else
       {
-        QString featureTitle = results[0].mFeature.attribute( layer->displayField() ).toString();
+        QString featureTitle = exp.evaluate( &context ).toString();
         if ( featureTitle.isEmpty() )
           featureTitle = QStringLiteral( "%1" ).arg( results[0].mFeature.id() );
         layerMenu = new QMenu( QStringLiteral( "%1 (%2)" ).arg( layer->name(), featureTitle ), this );
@@ -364,7 +374,8 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     }
 
     // feature title
-    QString featureTitle = result.mFeature.attribute( layer->displayField() ).toString();
+    context.setFeature( result.mFeature );
+    QString featureTitle = exp.evaluate( &context ).toString();
     if ( featureTitle.isEmpty() )
       featureTitle = QStringLiteral( "%1" ).arg( result.mFeature.id() );
 
@@ -498,7 +509,7 @@ void QgsIdentifyMenu::triggerMapLayerAction()
       {
         if ( result.mFeature.id() == actData.mFeatureId )
         {
-          actData.mMapLayerAction->triggerForFeature( actData.mLayer, new QgsFeature( result.mFeature ) );
+          actData.mMapLayerAction->triggerForFeature( actData.mLayer, result.mFeature );
           return;
         }
       }
@@ -617,19 +628,25 @@ void QgsIdentifyMenu::handleMenuHover()
       continue;
 
     QgsHighlight *hl = new QgsHighlight( mCanvas, result.mFeature.geometry(), vl );
-    QgsSettings settings;
-    QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-    int alpha = settings.value( QStringLiteral( "Map/highlight/colorAlpha" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
-    double buffer = settings.value( QStringLiteral( "Map/highlight/buffer" ), Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
-    double minWidth = settings.value( QStringLiteral( "Map/highlight/minWidth" ), Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
-    hl->setColor( color ); // sets also fill with default alpha
-    color.setAlpha( alpha );
-    hl->setFillColor( color ); // sets fill with alpha
-    hl->setBuffer( buffer );
-    hl->setMinWidth( minWidth );
+    styleHighlight( hl );
     mRubberBands.append( hl );
     connect( vl, &QObject::destroyed, this, &QgsIdentifyMenu::layerDestroyed );
   }
+}
+
+void QgsIdentifyMenu::styleHighlight( QgsHighlight *highlight )
+{
+  QgsSettings settings;
+  QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+  int alpha = settings.value( QStringLiteral( "Map/highlight/colorAlpha" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
+  double buffer = settings.value( QStringLiteral( "Map/highlight/buffer" ), Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
+  double minWidth = settings.value( QStringLiteral( "Map/highlight/minWidth" ), Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
+
+  highlight->setColor( color ); // sets also fill with default alpha
+  color.setAlpha( alpha );
+  highlight->setFillColor( color ); // sets fill with alpha
+  highlight->setBuffer( buffer );
+  highlight->setMinWidth( minWidth );
 }
 
 void QgsIdentifyMenu::deleteRubberBands()

@@ -52,6 +52,12 @@ class Qgs3DMapTool : public QObject
      */
     virtual bool allowsCameraControls() const { return true; }
 
+    Qgs3DMapCanvas *canvas();
+
+  private slots:
+    //! Called when canvas's map setting is changed
+    virtual void onMapSettingsChanged();
+
   protected:
     Qgs3DMapCanvas *mCanvas = nullptr;
 };

@@ -222,6 +222,23 @@ class CORE_EXPORT QgsLayoutUtils
      */
     static QgsMapLayer *mapLayerFromString( const QString &string, QgsProject *project );
 
+    /**
+     * Calculates a "pretty" size which falls between the range [\a minimumSize, \a maximumSize].
+     *
+     * This method will return an optimal round number which falls within the given range, finding
+     * the largest "pretty" number possible.
+     *
+     * \since QGIS 3.10
+     */
+    static double calculatePrettySize( double minimumSize, double maximumSize );
+
+    /**
+     * Returns TRUE if an \a item is a clipping item for another layout item.
+     *
+     * \since QGIS 3.16
+     */
+    static bool itemIsAClippingSource( const QgsLayoutItem *item );
+
   private:
 
     //! Scale factor for upscaling fontsize and downscaling painter

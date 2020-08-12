@@ -192,6 +192,20 @@ class CORE_EXPORT QgsOgrUtils
     static QVariant getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, QTextCodec *encoding, bool *ok = nullptr );
 
     /**
+     * Retrieves an attribute value from an OGR feature, using a provided \a field definition.
+     * \param ogrFet OGR feature handle
+     * \param field definition of corresponding field
+     * \param attIndex index of attribute to retrieve from \a ogrFet
+     * \param encoding text encoding
+     * \param ok optional storage for success of retrieval
+     * \returns attribute converted to a QVariant object
+     * \see readOgrFeatureAttributes()
+     *
+     * \since QGIS 3.10.1
+     */
+    static QVariant getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField &field, int attIndex, QTextCodec *encoding, bool *ok = nullptr );
+
+    /**
      * Reads all attributes from an OGR feature into a QgsFeature.
      * \param ogrFet OGR feature handle
      * \param fields fields collection corresponding to feature
@@ -247,6 +261,65 @@ class CORE_EXPORT QgsOgrUtils
      * \since QGIS 3.2
      */
     static QStringList cStringListToQStringList( char **stringList );
+
+    /**
+     * Converts a OGRwkbGeometryType to QgsWkbTypes::Type
+     *
+     * \since QGIS 3.4.9
+     */
+    static QgsWkbTypes::Type ogrGeometryTypeToQgsWkbType( OGRwkbGeometryType ogrGeomType );
+
+    /**
+     * Returns a WKT string corresponding to the specified OGR \a srs object.
+     *
+     * The WKT string format will be selected using the most appropriate format (usually WKT2 if GDAL 3 is available).
+     *
+     * \since QGIS 3.10.1
+     */
+    static QString OGRSpatialReferenceToWkt( OGRSpatialReferenceH srs );
+
+    /**
+     * Returns a QgsCoordinateReferenceSystem corresponding to the specified OGR \a srs object, or an invalid
+     * QgsCoordinateReferenceSystem if \a srs could not be converted.
+     *
+     * \since QGIS 3.10.1
+     */
+    static QgsCoordinateReferenceSystem OGRSpatialReferenceToCrs( OGRSpatialReferenceH srs );
+
+    /**
+     * Reads the encoding of the shapefile at the specified \a path (where \a path is the
+     * location of the ".shp" file).
+     *
+     * This method considers both the CPG specified encoding and the DBF LDID encoding
+     * (priority goes to CPG based encoding)
+     *
+     * \see readShapefileEncodingFromCpg()
+     * \see readShapefileEncodingFromLdid()
+     * \since QGIS 3.12
+     */
+    static QString readShapefileEncoding( const QString &path );
+
+    /**
+     * Reads the encoding of the shapefile at the specified \a path (where \a path is the
+     * location of the ".shp" file), from the CPG specified encoding.
+     *
+     * Return an empty string if CPG based encoding was not found.
+     *
+     * \see readShapefileEncoding()
+     * \since QGIS 3.12
+     */
+    static QString readShapefileEncodingFromCpg( const QString &path );
+
+    /**
+     * Reads the encoding of the shapefile at the specified \a path (where \a path is the
+     * location of the ".shp" file), from the DBF LDID encoding.
+     *
+     * Return an empty string if LDID based encoding was not found.
+     *
+     * \see readShapefileEncoding()
+     * \since QGIS 3.12
+     */
+    static QString readShapefileEncodingFromLdid( const QString &path );
 };
 
 #endif // QGSOGRUTILS_H

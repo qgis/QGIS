@@ -65,16 +65,21 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
      */
     struct RenderJob
     {
-      RenderJob( QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s )
-        : ftr( _ftr )
-        , symbol( _s )
-      {}
+        RenderJob( QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s )
+          : ftr( _ftr )
+          , symbol( _s )
+        {}
 
-      //! Feature to render
-      QgsRuleBasedRenderer::FeatureToRender &ftr;
+        //! Feature to render
+        QgsRuleBasedRenderer::FeatureToRender &ftr;
 
-      //! Symbol to render feature with (not owned by this object).
-      QgsSymbol *symbol = nullptr;
+        //! Symbol to render feature with (not owned by this object).
+        QgsSymbol *symbol = nullptr;
+
+      private:
+#ifdef SIP_RUN
+        RenderJob &operator=( const RenderJob & );
+#endif
     };
 
     /**
@@ -103,7 +108,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
       }
 
       RenderLevel( const QgsRuleBasedRenderer::RenderLevel &other )
-        : zIndex( other.zIndex )
+        : zIndex( other.zIndex ), jobs()
       {
         for ( RenderJob *job : qgis::as_const( other.jobs ) )
         {
@@ -163,7 +168,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
         /**
-         * Returns TRUE if this rule or one of its chilren needs the geometry to be applied.
+         * Returns TRUE if this rule or one of its children needs the geometry to be applied.
          */
         bool needsGeometry() const;
 
@@ -428,6 +433,17 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         bool isElse() const { return mElseRule; }
 
+        /**
+         * Accepts the specified symbology \a visitor, causing it to visit all child rules associated
+         * with the rule.
+         *
+         * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+         * should be canceled.
+         *
+         * \since QGIS 3.10
+         */
+        bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
       protected:
         void initFilter();
 
@@ -476,7 +492,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     //! Returns symbol for current feature. Should not be used individually: there could be more symbols for a feature
     QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
-    bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
+    bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override SIP_THROW( QgsCsException );
 
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
 
@@ -509,6 +525,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QSet<QString> legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QgsFeatureRenderer::Capabilities capabilities() override { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     /////
 

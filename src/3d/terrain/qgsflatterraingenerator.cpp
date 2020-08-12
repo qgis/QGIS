@@ -37,7 +37,7 @@ FlatTerrainChunkLoader::FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsCh
 
 Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *parent )
 {
-  QgsTerrainTileEntity *entity = new QgsTerrainTileEntity;
+  QgsTerrainTileEntity *entity = new QgsTerrainTileEntity( mNode->tileId() );
 
   // make geometry renderer
 
@@ -53,7 +53,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
   // create material
 
   const Qgs3DMapSettings &map = terrain()->map3D();
-  createTextureComponent( entity, map.isTerrainShadingEnabled(), map.terrainShadingMaterial() );
+  createTextureComponent( entity, map.isTerrainShadingEnabled(), map.terrainShadingMaterial(), !map.terrainLayers().empty() );
 
   // create transform
 

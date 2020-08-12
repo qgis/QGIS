@@ -351,8 +351,6 @@ class CORE_EXPORT QgsExpressionContextScope
     QHash<QString, QgsScopedExpressionFunction * > mFunctions;
     bool mHasFeature = false;
     QgsFeature mFeature;
-
-    bool variableNameSort( const QString &a, const QString &b );
 };
 
 /**
@@ -667,7 +665,7 @@ class CORE_EXPORT QgsExpressionContext
 
     /**
      * Sets the original value variable value for the context.
-     * \param value value for original value variable. This usually represents the an original widget
+     * \param value value for original value variable. This usually represents an original widget
      * value before any data defined overrides have been applied.
      * \since QGIS 2.12
      */

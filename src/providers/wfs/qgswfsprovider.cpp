@@ -24,7 +24,8 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsogcutils.h"
-
+#include "qgsoapifprovider.h"
+#include "qgswfsdataitems.h"
 #include "qgswfsconstants.h"
 #include "qgswfsfeatureiterator.h"
 #include "qgswfsprovider.h"
@@ -34,11 +35,6 @@
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
 #include "qgssettings.h"
-
-#ifdef HAVE_GUI
-#include "qgswfssourceselect.h"
-#include "qgssourceselectprovider.h"
-#endif
 
 #include <QDomDocument>
 #include <QMessageBox>
@@ -53,14 +49,17 @@
 
 #include <cfloat>
 
-static const QString TEXT_PROVIDER_KEY = QStringLiteral( "WFS" );
-static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "WFS data provider" );
+const QString QgsWFSProvider::WFS_PROVIDER_KEY = QStringLiteral( "WFS" );
+const QString QgsWFSProvider::WFS_PROVIDER_DESCRIPTION = QStringLiteral( "WFS data provider" );
+
 
 QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &options, const QgsWfsCapabilities::Capabilities &caps )
   : QgsVectorDataProvider( uri, options )
   , mShared( new QgsWFSSharedData( uri ) )
 {
   mShared->mCaps = caps;
+  mShared->mServerMaxFeatures = caps.maxFeatures;
+
   connect( mShared.get(), &QgsWFSSharedData::raiseError, this, &QgsWFSProvider::pushErrorSlot );
   connect( mShared.get(), &QgsWFSSharedData::extentUpdated, this, &QgsWFSProvider::fullExtentCalculated );
 
@@ -70,14 +69,14 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     return;
   }
 
-  //create mSourceCRS from url if possible [WBC 111221] refactored from GetFeatureGET()
+  //create mSourceCrs from url if possible [WBC 111221] refactored from GetFeatureGET()
   QString srsname = mShared->mURI.SRSName();
   if ( !srsname.isEmpty() )
   {
     if ( srsname == QLatin1String( "EPSG:900913" ) )
-      mShared->mSourceCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:3857" ) );
+      mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:3857" ) );
     else
-      mShared->mSourceCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( srsname );
+      mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( srsname );
   }
 
   // Must be called first to establish the version, in case we are in auto-detection
@@ -122,14 +121,14 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
   //Failed to detect feature type from describeFeatureType -> get first feature from layer to detect type
   if ( mShared->mWKBType == QgsWkbTypes::Unknown )
   {
-    QgsWFSFeatureDownloader downloader( mShared.get() );
-    connect( &downloader, static_cast<void ( QgsWFSFeatureDownloader::* )( QVector<QgsWFSFeatureGmlIdPair> )>( &QgsWFSFeatureDownloader::featureReceived ),
+    auto downloader = qgis::make_unique<QgsFeatureDownloader>();
+    downloader->setImpl( qgis::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get() ) );
+    connect( downloader.get(),
+             qgis::overload < QVector<QgsFeatureUniqueIdPair> >::of( &QgsFeatureDownloader::featureReceived ),
              this, &QgsWFSProvider::featureReceivedAnalyzeOneFeature );
-    downloader.run( false, /* serialize features */
-                    1 /* maxfeatures */ );
+    downloader->run( false, /* serialize features */
+                     1 /* maxfeatures */ );
   }
-
-  qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
 }
 
 QgsWFSProvider::~QgsWFSProvider()
@@ -425,31 +424,16 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   }
 
   QgsWFSDescribeFeatureType describeFeatureType( mShared->mURI );
-  bool bUsePlural = false;
-  QByteArray response;
-  for ( int i = 0; i < 2; i++ )
+  if ( !describeFeatureType.requestFeatureType( mShared->mWFSVersion,
+       concatenatedTypenames, mShared->mCaps ) )
   {
-    if ( !describeFeatureType.requestFeatureType( mShared->mWFSVersion,
-         concatenatedTypenames, bUsePlural ) )
-    {
-      errorMsg = tr( "DescribeFeatureType failed for url %1: %2" ).
-                 arg( dataSourceUri(), describeFeatureType.errorMessage() );
-      return false;
-    }
-
-    response = describeFeatureType.response();
-    // "http://geoportal.samregion.ru/wfs12?SERVICE=WFS&REQUEST=DescribeFeatureType&TYPENAME=EC_1_132&VERSION=2.0.0"
-    // returns a <ExceptionText><![CDATA[Missing typeNames parameter]]></ExceptionText>
-    if ( i == 0 && response.indexOf( "<![CDATA[Missing typeNames parameter]]>" ) >= 0 )
-    {
-      QgsDebugMsg( QStringLiteral( "Server does not accept TYPENAME parameter for DescribeFeatureType. Re-trying with TYPENAMES" ) );
-      bUsePlural = true;
-    }
-    else
-    {
-      break;
-    }
+    errorMsg = tr( "DescribeFeatureType failed for url %1: %2" ).
+               arg( dataSourceUri(), describeFeatureType.errorMessage() );
+    return false;
   }
+
+  QByteArray  response = describeFeatureType.response();
+
 
   QDomDocument describeFeatureDocument;
   errorMsg.clear();
@@ -664,7 +648,7 @@ void QgsWFSProvider::pushErrorSlot( const QString &errorMsg )
   pushError( errorMsg );
 }
 
-void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsWFSFeatureGmlIdPair> list )
+void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueIdPair> list )
 {
   if ( list.size() != 0 )
   {
@@ -730,6 +714,8 @@ QString QgsWFSProvider::subsetString() const
 
 bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount )
 {
+  Q_UNUSED( updateFeatureCount )
+
   QgsDebugMsgLevel( QStringLiteral( "theSql = '%1'" ).arg( theSQL ), 4 );
 
   if ( theSQL == mSubsetString )
@@ -771,11 +757,8 @@ bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
   QString errorMsg;
   if ( !mShared->computeFilter( errorMsg ) )
     QgsMessageLog::logMessage( errorMsg, tr( "WFS" ) );
-  reloadData();
-  if ( updateFeatureCount )
-    featureCount();
 
-  emit dataChanged();
+  reloadData();
 
   return true;
 }
@@ -783,16 +766,15 @@ bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
 
 QgsAbstractFeatureSource *QgsWFSProvider::featureSource() const
 {
-  QgsWFSFeatureSource *fs = new QgsWFSFeatureSource( this );
+  auto fs = new QgsBackgroundCachedFeatureSource( mShared );
   /*connect( fs, SIGNAL( extentRequested( const QgsRectangle & ) ),
            this, SLOT( extendExtent( const QgsRectangle & ) ) );*/
   return fs;
 }
 
-void QgsWFSProvider::reloadData()
+void QgsWFSProvider::reloadProviderData()
 {
   mShared->invalidateCache();
-  QgsVectorDataProvider::reloadData();
 }
 
 QgsWkbTypes::Type QgsWFSProvider::wkbType() const
@@ -817,34 +799,12 @@ QString QgsWFSProvider::geometryAttribute() const
 
 QgsCoordinateReferenceSystem QgsWFSProvider::crs() const
 {
-  return mShared->mSourceCRS;
+  return mShared->mSourceCrs;
 }
 
 QgsRectangle QgsWFSProvider::extent() const
 {
-  // Some servers return completely buggy extent in their capabilities response
-  // so mix it with the extent actually got from the downloaded features
-  QgsRectangle computedExtent( mShared->computedExtent() );
-  QgsDebugMsgLevel( QStringLiteral( "computedExtent: " ) + computedExtent.toString(), 4 );
-  QgsDebugMsgLevel( QStringLiteral( "mCapabilityExtent: " ) + mShared->mCapabilityExtent.toString(), 4 );
-
-  // If we didn't get any feature, then return capabilities extent.
-  if ( computedExtent.isNull() )
-    return mShared->mCapabilityExtent;
-
-  // If the capabilities extent is completely off from the features, then
-  // use feature extent.
-  // Case of standplaats layer of http://geodata.nationaalgeoregister.nl/bag/wfs
-  if ( !computedExtent.intersects( mShared->mCapabilityExtent ) )
-    return computedExtent;
-
-  if ( mShared->downloadFinished() )
-  {
-    return computedExtent;
-  }
-
-  computedExtent.combineExtentWith( mShared->mCapabilityExtent );
-  return computedExtent;
+  return mShared->consolidatedExtent();
 }
 
 bool QgsWFSProvider::isValid() const
@@ -854,7 +814,7 @@ bool QgsWFSProvider::isValid() const
 
 QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest &request ) const
 {
-  return QgsFeatureIterator( new QgsWFSFeatureIterator( new QgsWFSFeatureSource( this ), true, request ) );
+  return QgsFeatureIterator( new QgsBackgroundCachedFeatureIterator( new QgsBackgroundCachedFeatureSource( mShared ), true, mShared, request ) );
 }
 
 bool QgsWFSProvider::addFeatures( QgsFeatureList &flist, Flags flags )
@@ -944,10 +904,10 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     QStringList::const_iterator idIt = idList.constBegin();
     featureIt = flist.begin();
 
-    QVector<QgsWFSFeatureGmlIdPair> serializedFeatureList;
+    QVector<QgsFeatureUniqueIdPair> serializedFeatureList;
     for ( ; idIt != idList.constEnd() && featureIt != flist.end(); ++idIt, ++featureIt )
     {
-      serializedFeatureList.push_back( QgsWFSFeatureGmlIdPair( *featureIt, *idIt ) );
+      serializedFeatureList.push_back( QgsFeatureUniqueIdPair( *featureIt, *idIt ) );
     }
     mShared->serializeFeatures( serializedFeatureList );
 
@@ -1004,7 +964,7 @@ bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
   for ( ; idIt != id.constEnd(); ++idIt )
   {
     //find out feature id
-    QString gmlid = mShared->findGmlId( *idIt );
+    QString gmlid = mShared->findUniqueId( *idIt );
     if ( gmlid.isEmpty() )
     {
       QgsDebugMsg( QStringLiteral( "Cannot identify feature of id %1" ).arg( *idIt ) );
@@ -1060,7 +1020,7 @@ bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
   QgsGeometryMap::const_iterator geomIt = geometry_map.constBegin();
   for ( ; geomIt != geometry_map.constEnd(); ++geomIt )
   {
-    QString gmlid = mShared->findGmlId( geomIt.key() );
+    QString gmlid = mShared->findUniqueId( geomIt.key() );
     if ( gmlid.isEmpty() )
     {
       QgsDebugMsg( QStringLiteral( "Cannot identify feature of id %1" ).arg( geomIt.key() ) );
@@ -1118,9 +1078,7 @@ QString QgsWFSProvider::convertToXML( const QVariant &value )
     QDateTime dt = value.toDateTime().toUTC();
     if ( !dt.isNull() )
     {
-      valueStr.sprintf( "%04d-%02d-%02dT%02d:%02d:%02d.%03dZ",
-                        dt.date().year(), dt.date().month(), dt.date().day(),
-                        dt.time().hour(), dt.time().minute(), dt.time().second(), dt.time().msec() );
+      valueStr = dt.toString( QStringLiteral( "yyyy-MM-ddThh:mm:ss.zzzZ" ) );
     }
     else
     {
@@ -1153,7 +1111,7 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   QgsChangedAttributesMap::const_iterator attIt = attr_map.constBegin();
   for ( ; attIt != attr_map.constEnd(); ++attIt )
   {
-    QString gmlid = mShared->findGmlId( attIt.key() );
+    QString gmlid = mShared->findUniqueId( attIt.key() );
     if ( gmlid.isEmpty() )
     {
       QgsDebugMsg( QStringLiteral( "Cannot identify feature of id %1" ).arg( attIt.key() ) );
@@ -1285,42 +1243,16 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields 
   fields.clear();
 
   QgsWFSDescribeFeatureType describeFeatureType( mShared->mURI );
-  bool bUsePlural = false;
-  QByteArray response;
-  for ( int i = 0; i < 2; i++ )
-  {
-    if ( !describeFeatureType.requestFeatureType( mShared->mWFSVersion,
-         mShared->mURI.typeName(), bUsePlural ) )
-    {
-      QgsMessageLog::logMessage( tr( "DescribeFeatureType network request failed for url %1: %2" ).
-                                 arg( dataSourceUri(), describeFeatureType.errorMessage() ), tr( "WFS" ) );
-      return false;
-    }
 
-    response = describeFeatureType.response();
-    // "http://geoportal.samregion.ru/wfs12?SERVICE=WFS&REQUEST=DescribeFeatureType&TYPENAME=EC_1_132&VERSION=2.0.0"
-    // returns a <ExceptionText><![CDATA[Missing typeNames parameter]]></ExceptionText>
-    if ( i == 0 && response.indexOf( "<![CDATA[Missing typeNames parameter]]>" ) >= 0 )
-    {
-      QgsDebugMsg( QStringLiteral( "Server does not accept TYPENAME parameter for DescribeFeatureType. Re-trying with TYPENAMES" ) );
-      bUsePlural = true;
-    }
-    // "http://services.cuzk.cz/wfs/inspire-cp-wfs.asp?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=cp:CadastralParcel" returns
-    // <!--Generated by Marushka, version 4.2.5.0, GEOVAP, spol. s r.o., 31.05.2018.-->
-    // <ExceptionReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="1.0.0" xml:lang="en-US" xmlns="http://www.opengis.net/ows/1.1">
-    // <Exception exceptionCode="OperationProcessingFailed" />
-    // </ExceptionReport>
-    else if ( i == 0 && response.indexOf( "<!--Generated by Marushka" ) >= 0 &&
-              response.indexOf( "OperationProcessingFailed" ) >= 0 )
-    {
-      QgsDebugMsg( QStringLiteral( "Server does not accept TYPENAME parameter for DescribeFeatureType. Re-trying with TYPENAMES" ) );
-      bUsePlural = true;
-    }
-    else
-    {
-      break;
-    }
+  if ( !describeFeatureType.requestFeatureType( mShared->mWFSVersion,
+       mShared->mURI.typeName(), mShared->mCaps ) )
+  {
+    QgsMessageLog::logMessage( tr( "DescribeFeatureType network request failed for url %1: %2" ).
+                               arg( dataSourceUri(), describeFeatureType.errorMessage() ), tr( "WFS" ) );
+    return false;
   }
+
+  QByteArray response = describeFeatureType.response();
 
   QDomDocument describeFeatureDocument;
   QString errorMsg;
@@ -1444,7 +1376,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       QgsDebugMsgLevel( QStringLiteral( "DescribeFeatureType response redirects to: %1" ).arg( schemaLocation ), 4 );
 
       QgsWFSDescribeFeatureType describeFeatureType( mShared->mURI );
-      if ( !describeFeatureType.sendGET( schemaLocation, true, false ) )
+      if ( !describeFeatureType.sendGET( schemaLocation, QString(), true, false ) )
       {
         errorMsg = tr( "Cannot find schema indicated in DescribeFeatureType response." );
         QgsMessageLog::logMessage( tr( "DescribeFeatureType network request failed for url %1: %2" ).
@@ -1519,7 +1451,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     //attribute name
     QString name = attributeElement.attribute( QStringLiteral( "name" ) );
     // Some servers like http://ogi.state.ok.us/geoserver/wfs on layer ogi:doq_centroids
-    // return attribute names padded with spaces. See https://issues.qgis.org/issues/3426
+    // return attribute names padded with spaces. See https://github.com/qgis/QGIS/issues/13486
     // I'm not completely sure how legal this
     // is but this validates with Xerces 3.1, and its schema analyzer does also the trimming.
     name = name.trimmed();
@@ -1618,12 +1550,12 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
 
 QString QgsWFSProvider::name() const
 {
-  return TEXT_PROVIDER_KEY;
+  return WFS_PROVIDER_KEY;
 }
 
 QString QgsWFSProvider::description() const
 {
-  return TEXT_PROVIDER_DESCRIPTION;
+  return WFS_PROVIDER_DESCRIPTION;
 }
 
 QgsVectorDataProvider::Capabilities QgsWFSProvider::capabilities() const
@@ -1657,10 +1589,14 @@ QDomElement QgsWFSProvider::createTransactionElement( QDomDocument &doc ) const
   if ( describeFeatureTypeURL.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
   {
     describeFeatureTypeURL = QUrl( QStringLiteral( "http://fake_qgis_http_endpoint" ) );
-    describeFeatureTypeURL.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "DescribeFeatureType" ) );
+    QUrlQuery query( describeFeatureTypeURL );
+    query.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "DescribeFeatureType" ) );
+    describeFeatureTypeURL.setQuery( query );
   }
-  describeFeatureTypeURL.addQueryItem( QStringLiteral( "VERSION" ), QStringLiteral( "1.0.0" ) );
-  describeFeatureTypeURL.addQueryItem( QStringLiteral( "TYPENAME" ), mShared->mURI.typeName() );
+  QUrlQuery query( describeFeatureTypeURL );
+  query.addQueryItem( QStringLiteral( "VERSION" ), QStringLiteral( "1.0.0" ) );
+  query.addQueryItem( QStringLiteral( "TYPENAME" ), mShared->mURI.typeName() );
+  describeFeatureTypeURL.setQuery( query );
 
   transactionElem.setAttribute( QStringLiteral( "xsi:schemaLocation" ), mApplicationNamespace + ' '
                                 + describeFeatureTypeURL.toEncoded() );
@@ -1794,7 +1730,7 @@ bool QgsWFSProvider::getCapabilities()
     {
       QgsSettings settings;
       mShared->mPageSize = settings.value( QStringLiteral( "wfs/max_feature_count_if_not_provided" ), "1000" ).toInt();
-      QgsDebugMsg( QStringLiteral( "Server declares paging but does not advertize max feature count and user did not specify it. Using %1" ).arg( mShared->mPageSize ) );
+      QgsDebugMsg( QStringLiteral( "Server declares paging but does not advertise max feature count and user did not specify it. Using %1" ).arg( mShared->mPageSize ) );
     }
   }
   else
@@ -1810,19 +1746,19 @@ bool QgsWFSProvider::getCapabilities()
     if ( thisLayerName == mShared->mCaps.featureTypes[i].name )
     {
       const QgsRectangle &r = mShared->mCaps.featureTypes[i].bbox;
-      if ( mShared->mSourceCRS.authid().isEmpty() && mShared->mCaps.featureTypes[i].crslist.size() != 0 )
+      if ( mShared->mSourceCrs.authid().isEmpty() && mShared->mCaps.featureTypes[i].crslist.size() != 0 )
       {
-        mShared->mSourceCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mShared->mCaps.featureTypes[i].crslist[0] );
+        mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mShared->mCaps.featureTypes[i].crslist[0] );
       }
       if ( !r.isNull() )
       {
         if ( mShared->mCaps.featureTypes[i].bboxSRSIsWGS84 )
         {
           QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "CRS:84" ) );
-          QgsCoordinateTransform ct( src, mShared->mSourceCRS, transformContext() );
+          QgsCoordinateTransform ct( src, mShared->mSourceCrs, transformContext() );
           QgsDebugMsgLevel( "latlon ext:" + r.toString(), 4 );
           QgsDebugMsgLevel( "src:" + src.authid(), 4 );
-          QgsDebugMsgLevel( "dst:" + mShared->mSourceCRS.authid(), 4 );
+          QgsDebugMsgLevel( "dst:" + mShared->mSourceCrs.authid(), 4 );
 
           mShared->mCapabilityExtent = ct.transformBoundingBox( r, QgsCoordinateTransform::ForwardTransform );
         }
@@ -1862,7 +1798,7 @@ bool QgsWFSProvider::getCapabilities()
 
 QgsWkbTypes::Type QgsWFSProvider::geomTypeFromPropertyType( const QString &attName, const QString &propType )
 {
-  Q_UNUSED( attName );
+  Q_UNUSED( attName )
 
   QgsDebugMsgLevel( QStringLiteral( "DescribeFeatureType geometry attribute \"%1\" type is \"%2\"" )
                     .arg( attName, propType ), 4 );
@@ -1917,61 +1853,23 @@ void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
   pushError( tr( "Unhandled response: %1" ).arg( exceptionElem.tagName() ) );
 }
 
-QGISEXTERN QgsWFSProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsWFSProvider *QgsWfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsWFSProvider( *uri, options );
+  return new QgsWFSProvider( uri, options );
 }
 
-QGISEXTERN QString providerKey()
+QList<QgsDataItemProvider *> QgsWfsProviderMetadata::dataItemProviders() const
 {
-  return TEXT_PROVIDER_KEY;
-}
-
-QGISEXTERN QString description()
-{
-  return TEXT_PROVIDER_DESCRIPTION;
-}
-
-QGISEXTERN bool isProvider()
-{
-  // This function should normally be called just once, but better check
-  // so as to avoid doing twice the initial cleanup of the temporary cache
-  // (which should normally be empty, unless QGIS was killed)
-  static bool sFirstTime = true;
-  if ( sFirstTime )
-  {
-    QgsWFSUtils::init();
-    sFirstTime = false;
-  }
-
-  return true;
-}
-
-#ifdef HAVE_GUI
-
-//! Provider for WFS layers source select
-class QgsWfsSourceSelectProvider : public QgsSourceSelectProvider
-{
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "WFS" ); }
-    QString text() const override { return QObject::tr( "WFS" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 40; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWfsLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsWFSSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
-
-  *providers
-      << new QgsWfsSourceSelectProvider;
-
+  QList<QgsDataItemProvider *> providers;
+  providers << new QgsWfsDataItemProvider;
   return providers;
 }
-#endif
+
+
+QgsWfsProviderMetadata::QgsWfsProviderMetadata():
+  QgsProviderMetadata( QgsWFSProvider::WFS_PROVIDER_KEY, QgsWFSProvider::WFS_PROVIDER_DESCRIPTION ) {}
+
+QGISEXTERN void *multipleProviderMetadataFactory()
+{
+  return new std::vector<QgsProviderMetadata *> { new QgsWfsProviderMetadata(), new QgsOapifProviderMetadata() };
+}

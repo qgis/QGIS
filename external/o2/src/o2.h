@@ -161,6 +161,8 @@ protected:
     /// Set token expiration time.
     void setExpires(int v);
 
+    virtual QNetworkAccessManager *getManager();
+
 protected:
     QString username_;
     QString password_;

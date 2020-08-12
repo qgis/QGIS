@@ -140,7 +140,7 @@ void TestQgsLayoutLabel::evaluation()
   {
     // expression evaluation (without feature)
     QString expected = QStringLiteral( "__[NAME_1]42__" );
-    label->setText( QStringLiteral( "__[%\"NAME_1\"%][%21*2%]__" ) );
+    label->setText( QStringLiteral( "__[%try(\"NAME_1\", '[NAME_1]')%][%21*2%]__" ) );
     QString evaluated = label->currentText();
     QCOMPARE( evaluated, expected );
   }
@@ -299,6 +299,7 @@ void TestQgsLayoutLabel::renderAsHtmlRelative()
 {
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
+  l.renderContext().mIsPreviewRender = false;
   QgsLayoutItemLabel *label = new QgsLayoutItemLabel( &l );
   label->setMargin( 1 );
   l.addLayoutItem( label );

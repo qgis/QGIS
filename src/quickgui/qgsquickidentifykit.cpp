@@ -111,7 +111,7 @@ static QgsQuickFeatureLayerPair _closestFeature( const QgsQuickFeatureLayerPairs
     }
     catch ( QgsCsException &e )
     {
-      Q_UNUSED( e );
+      Q_UNUSED( e )
       // Caught an error in transform
       continue;
     }
@@ -205,7 +205,7 @@ QgsFeatureList QgsQuickIdentifyKit::identifyVectorLayer( QgsVectorLayer *layer, 
   catch ( QgsCsException &cse )
   {
     QgsDebugMsg( QStringLiteral( "Invalid point, proceed without a found features." ) );
-    Q_UNUSED( cse );
+    Q_UNUSED( cse )
   }
 
   bool filter = false;

@@ -413,7 +413,6 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
                                  const QStringList &aliases = QStringList(),
                                  bool handlesNull = false );
 
-
     /**
      * Static function for evaluation against a QgsExpressionContext, using a named list of parameter values and list
      * of groups.

@@ -46,6 +46,9 @@ class APP_EXPORT QgsMapToolAddCircle: public QgsMapToolCapture
   protected:
     explicit QgsMapToolAddCircle( QgsMapCanvas *canvas ) = delete; //forbidden
 
+    //! Convenient method to release (activate/deactivate) tools
+    void release( QgsMapMouseEvent *e );
+
     /**
      * The parent map tool, e.g. the add feature tool.
      *  Completed circle will be added to this tool by calling its addCurve() method.

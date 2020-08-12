@@ -16,6 +16,7 @@
 #include "qplugin.h"
 
 #include "qgiscustomwidgets.h"
+#include "qgsauthconfigselectplugin.h"
 #include "qgscheckablecomboboxplugin.h"
 #include "qgscollapsiblegroupboxplugin.h"
 #include "qgscolorbuttonplugin.h"
@@ -25,6 +26,8 @@
 #include "qgsexpressionbuilderwidgetplugin.h"
 #include "qgsextentgroupboxplugin.h"
 #include "qgsexternalresourcewidgetplugin.h"
+#include "qgsfeaturelistcomboboxplugin.h"
+#include "qgsfeaturepickerwidgetplugin.h"
 #include "qgsfieldcomboboxplugin.h"
 #include "qgsfieldexpressionwidgetplugin.h"
 #include "qgsfilewidgetplugin.h"
@@ -47,6 +50,7 @@
 QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   : QObject( parent )
 {
+  mWidgets.append( new QgsAuthConfigSelectPlugin( this ) );
   mWidgets.append( new QgsCheckableComboBoxPlugin( this ) );
   mWidgets.append( new QgsCollapsibleGroupBoxPlugin( this ) );
   mWidgets.append( new QgsColorButtonPlugin( this ) );
@@ -56,6 +60,8 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   mWidgets.append( new QgsExpressionBuilderWidgetPlugin( this ) );
   mWidgets.append( new QgsExtentGroupBoxPlugin( this ) );
   mWidgets.append( new QgsExternalResourceWidgetPlugin( this ) );
+  mWidgets.append( new QgsFeatureListComboBoxPlugin( this ) );
+  mWidgets.append( new QgsFeaturePickerWidgetPlugin( this ) );
   mWidgets.append( new QgsFieldComboBoxPlugin( this ) );
   mWidgets.append( new QgsFieldExpressionWidgetPlugin( this ) );
   mWidgets.append( new QgsFileWidgetPlugin( this ) );

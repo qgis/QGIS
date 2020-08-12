@@ -21,6 +21,8 @@
 #include "qgspainteffectregistry.h"
 #include "qgspainteffect.h"
 #include "qgspointclusterrenderer.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgsrenderedfeaturehandlerinterface.h"
 
 #include <QPainter>
 #include <cmath>
@@ -239,6 +241,21 @@ QSet<QString> QgsPointDisplacementRenderer::usedAttributes( const QgsRenderConte
   return attr;
 }
 
+bool QgsPointDisplacementRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( !QgsPointDistanceRenderer::accept( visitor ) )
+    return false;
+
+  if ( mCenterSymbol )
+  {
+    QgsStyleSymbolEntity entity( mCenterSymbol.get() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "center" ), QObject::tr( "Center Symbol" ) ) ) )
+      return false;
+  }
+
+  return true;
+}
+
 void QgsPointDisplacementRenderer::setCenterSymbol( QgsMarkerSymbol *symbol )
 {
   mCenterSymbol.reset( symbol );
@@ -269,21 +286,18 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
   {
     case Ring:
     {
-      double minDiameterToFitSymbols = nPosition * symbolDiagonal / ( 2.0 * M_PI );
-      double radius = std::max( symbolDiagonal / 2, minDiameterToFitSymbols ) + circleAdditionPainterUnits;
+      const double minDiameterToFitSymbols = nPosition * symbolDiagonal / ( 2.0 * M_PI );
+      const double radius = std::max( symbolDiagonal / 2, minDiameterToFitSymbols ) + circleAdditionPainterUnits;
 
-      double fullPerimeter = 2 * M_PI;
-      double angleStep = fullPerimeter / nPosition;
-
-      int featureIndex;
-      double currentAngle;
-      for ( currentAngle = 0.0, featureIndex = 0; currentAngle < fullPerimeter; currentAngle += angleStep, featureIndex++ )
+      const double angleStep = 2 * M_PI / nPosition;
+      double currentAngle = 0.0;
+      for ( int featureIndex = 0; featureIndex < nPosition; currentAngle += angleStep, featureIndex++ )
       {
-        double sinusCurrentAngle = std::sin( currentAngle );
-        double cosinusCurrentAngle = std::cos( currentAngle );
-        QPointF positionShift( radius * sinusCurrentAngle, radius * cosinusCurrentAngle );
+        const double sinusCurrentAngle = std::sin( currentAngle );
+        const double cosinusCurrentAngle = std::cos( currentAngle );
+        const QPointF positionShift( radius * sinusCurrentAngle, radius * cosinusCurrentAngle );
 
-        QPointF labelShift( ( radius + diagonals.at( featureIndex ) * mLabelDistanceFactor ) * sinusCurrentAngle, ( radius + diagonals.at( featureIndex ) * mLabelDistanceFactor ) * cosinusCurrentAngle );
+        const QPointF labelShift( ( radius + diagonals.at( featureIndex ) * mLabelDistanceFactor ) * sinusCurrentAngle, ( radius + diagonals.at( featureIndex ) * mLabelDistanceFactor ) * cosinusCurrentAngle );
         symbolPositions.append( centerPoint + positionShift );
         labelShifts.append( labelShift );
       }
@@ -446,6 +460,14 @@ void QgsPointDisplacementRenderer::drawSymbols( const ClusteredGroup &group, Qgs
     context.expressionContext().setFeature( groupIt->feature );
     groupIt->symbol()->startRender( context );
     groupIt->symbol()->renderPoint( *symbolPosIt, &( groupIt->feature ), context, -1, groupIt->isSelected );
+    if ( context.hasRenderedFeatureHandlers() )
+    {
+      const QgsGeometry bounds( QgsGeometry::fromRect( QgsRectangle( groupIt->symbol()->bounds( *symbolPosIt, context, groupIt->feature ) ) ) );
+      const QList< QgsRenderedFeatureHandlerInterface * > handlers = context.renderedFeatureHandlers();
+      QgsRenderedFeatureHandlerInterface::RenderedFeatureContext featureContext( context );
+      for ( QgsRenderedFeatureHandlerInterface *handler : handlers )
+        handler->handleRenderedFeature( groupIt->feature, bounds, featureContext );
+    }
     groupIt->symbol()->stopRender( context );
   }
 }

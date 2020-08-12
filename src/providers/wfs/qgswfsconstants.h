@@ -58,12 +58,6 @@ struct QgsWFSConstants
   static const QString SETTINGS_MAXNUMFEATURES;
   static const QString SETTINGS_PAGING_ENABLED;
   static const QString SETTINGS_PAGE_SIZE;
-
-  // Special fields of the cache
-  static const QString FIELD_GEN_COUNTER;
-  static const QString FIELD_GMLID;
-  static const QString FIELD_HEXWKB_GEOM;
-  static const QString FIELD_MD5;
 };
 
 #endif // QGSWFSCONSTANTS_H

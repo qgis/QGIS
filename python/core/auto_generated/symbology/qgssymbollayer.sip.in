@@ -37,6 +37,8 @@ class QgsSymbolLayer
           sipType = sipType_QgsRasterMarkerSymbolLayer;
         else if ( sipCpp->layerType() == "VectorField" )
           sipType = sipType_QgsVectorFieldSymbolLayer;
+        else if ( sipCpp->layerType() == "MaskMarker" )
+          sipType = sipType_QgsMaskMarkerSymbolLayer;
         else
           sipType = sipType_QgsMarkerSymbolLayer;
         break;
@@ -69,6 +71,8 @@ class QgsSymbolLayer
           sipType = sipType_QgsGradientFillSymbolLayer;
         else if ( sipCpp->layerType() == "ShapeburstFill" )
           sipType = sipType_QgsShapeburstFillSymbolLayer;
+        else if ( sipCpp->layerType() == "RandomMarkerFill" )
+          sipType = sipType_QgsRandomMarkerFillSymbolLayer;
         else
           sipType = sipType_QgsFillSymbolLayer;
         break;
@@ -135,6 +139,13 @@ class QgsSymbolLayer
       PropertyArrowType,
       PropertyOffsetX,
       PropertyOffsetY,
+      PropertyPointCount,
+      PropertyRandomSeed,
+      PropertyClipPoints,
+      PropertyDensityArea,
+      PropertyFontFamily,
+      PropertyFontStyle,
+      PropertyDashPatternOffset,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -145,6 +156,8 @@ Returns the symbol layer property definitions.
 %End
 
     virtual ~QgsSymbolLayer();
+
+
 
     bool enabled() const;
 %Docstring
@@ -211,7 +224,81 @@ Should match with the string used to register this symbol layer in the registry.
 %End
 
     virtual void startRender( QgsSymbolRenderContext &context ) = 0;
+%Docstring
+Called before a set of rendering operations commences on the supplied render ``context``.
+
+This is always followed by a call to :py:func:`~QgsSymbolLayer.stopRender` after all rendering operations
+have been completed.
+
+Subclasses can use this method to prepare for a set of rendering operations, e.g. by
+pre-evaluating paths or images to render, and performing other one-time optimisations.
+
+.. seealso:: :py:func:`startFeatureRender`
+
+.. seealso:: :py:func:`stopRender`
+%End
+
     virtual void stopRender( QgsSymbolRenderContext &context ) = 0;
+%Docstring
+Called after a set of rendering operations has finished on the supplied render ``context``.
+
+This is always preceded by a call to :py:func:`~QgsSymbolLayer.startRender` before all rendering operations
+are commenced.
+
+Subclasses can use this method to cleanup after a set of rendering operations.
+
+.. seealso:: :py:func:`startRender`
+
+.. seealso:: :py:func:`stopFeatureRender`
+%End
+
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+%Docstring
+Called before the layer will be rendered for a particular ``feature``.
+
+This is always followed by a call to :py:func:`~QgsSymbolLayer.stopFeatureRender` after the feature
+has been completely rendered (i.e. all parts have been rendered).
+
+The default implementation does nothing.
+
+.. note::
+
+   In some circumstances, :py:func:`~QgsSymbolLayer.startFeatureRender` and :py:func:`~QgsSymbolLayer.stopFeatureRender` may not be called
+   before a symbol layer is rendered. E.g., when a symbol layer is being rendered in isolation
+   and not as a result of rendering a feature (for instance, when rendering a legend patch or other
+   non-feature based shape).
+
+.. seealso:: :py:func:`stopFeatureRender`
+
+.. seealso:: :py:func:`startRender`
+
+
+.. versionadded:: 3.12
+%End
+
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+%Docstring
+Called after the layer has been rendered for a particular ``feature``.
+
+This is always preceded by a call to :py:func:`~QgsSymbolLayer.startFeatureRender` just before the feature
+will be rendered.
+
+The default implementation does nothing.
+
+.. note::
+
+   In some circumstances, :py:func:`~QgsSymbolLayer.startFeatureRender` and :py:func:`~QgsSymbolLayer.stopFeatureRender` may not be called
+   before a symbol layer is rendered. E.g., when a symbol layer is being rendered in isolation
+   and not as a result of rendering a feature (for instance, when rendering a legend patch or other
+   non-feature based shape).
+
+.. seealso:: :py:func:`startFeatureRender`
+
+.. seealso:: :py:func:`stopRender`
+
+
+.. versionadded:: 3.12
+%End
 
     virtual QgsSymbolLayer *clone() const = 0 /Factory/;
 %Docstring
@@ -288,7 +375,20 @@ layer may use it to specify the units for the line width.
     virtual QgsMapUnitScale mapUnitScale() const;
 
     void setRenderingPass( int renderingPass );
+%Docstring
+Specifies the rendering pass in which this symbol layer should be rendered.
+The lower the number, the lower the symbol will be rendered.
+0: first pass, 1: second pass, ...
+Defaults to 0
+%End
+
     int renderingPass() const;
+%Docstring
+Specifies the rendering pass in which this symbol layer should be rendered.
+The lower the number, the lower the symbol will be rendered.
+0: first pass, 1: second pass, ...
+Defaults to 0
+%End
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 %Docstring
@@ -415,6 +515,14 @@ Returns ``True`` if the symbol layer (or any of its sub-symbols) contains data d
 .. versionadded:: 3.4.5
 %End
 
+    virtual QgsSymbolLayerReferenceList masks() const;
+%Docstring
+Returns masks defined by this symbol layer.
+This is a list of symbol layers of other layers that should be occluded.
+
+.. versionadded:: 3.12
+%End
+
   protected:
 
     QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked = false );
@@ -448,6 +556,8 @@ Copies paint effect of this layer to another symbol layer
 .. versionadded:: 2.9
 %End
 
+  private:
+    QgsSymbolLayer( const QgsSymbolLayer &other );
 };
 
 
@@ -476,8 +586,13 @@ Abstract base class for marker symbol layers.
       Bottom,
     };
 
+
+
     virtual void startRender( QgsSymbolRenderContext &context );
 
+%Docstring
+QgsMarkerSymbolLayer cannot be copied
+%End
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
@@ -527,11 +642,11 @@ is usually used for orienting symbols to match a line's angle.
 .. versionadded:: 2.9
 %End
 
-    void setSize( double size );
+    virtual void setSize( double size );
 %Docstring
 Sets the symbol size.
 
-:param size: symbol size. Units are specified by sizeUnit().
+:param size: symbol size. Units are specified by :py:func:`~QgsMarkerSymbolLayer.sizeUnit`.
 
 .. seealso:: :py:func:`size`
 
@@ -542,7 +657,7 @@ Sets the symbol size.
 
     double size() const;
 %Docstring
-Returns the symbol size. Units are specified by sizeUnit().
+Returns the symbol size. Units are specified by :py:func:`~QgsMarkerSymbolLayer.sizeUnit`.
 
 .. seealso:: :py:func:`setSize`
 
@@ -620,7 +735,7 @@ Returns the method to use for scaling the marker's size.
 Sets the marker's offset, which is the horizontal and vertical displacement which the rendered marker
 should have from the original feature's geometry.
 
-:param offset: marker offset. Units are specified by offsetUnit()
+:param offset: marker offset. Units are specified by :py:func:`~QgsMarkerSymbolLayer.offsetUnit`
 
 .. seealso:: :py:func:`offset`
 
@@ -632,7 +747,7 @@ should have from the original feature's geometry.
     QPointF offset() const;
 %Docstring
 Returns the marker's offset, which is the horizontal and vertical displacement which the rendered marker
-will have from the original feature's geometry. Units are specified by offsetUnit().
+will have from the original feature's geometry. Units are specified by :py:func:`~QgsMarkerSymbolLayer.offsetUnit`.
 
 .. seealso:: :py:func:`setOffset`
 
@@ -742,7 +857,7 @@ Writes the symbol layer definition as a SLD XML element.
 
 :param doc: XML document
 :param element: parent XML element
-:param props: symbol layer definition (see properties())
+:param props: symbol layer definition (see :py:func:`~QgsMarkerSymbolLayer.properties`)
 %End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
@@ -821,6 +936,8 @@ Adjusts a marker offset to account for rotation.
 %End
 
 
+  private:
+    QgsMarkerSymbolLayer( const QgsMarkerSymbolLayer &other );
 };
 
 class QgsLineSymbolLayer : QgsSymbolLayer
@@ -838,8 +955,13 @@ class QgsLineSymbolLayer : QgsSymbolLayer
       InteriorRingsOnly,
     };
 
+
+
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
+%Docstring
+QgsLineSymbolLayer cannot be copied
+%End
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
@@ -858,7 +980,7 @@ Renders the line symbol layer along the line joining ``points``, using the given
 .. seealso:: :py:func:`renderPolygonStroke`
 %End
 
-    virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 %Docstring
 Renders the line symbol layer along the outline of polygon, using the given render ``context``.
 
@@ -915,7 +1037,7 @@ width of the symbol layer using the provided render ``context``.
 %Docstring
 Returns the line's offset.
 
-Offset units can be retrieved by calling offsetUnit().
+Offset units can be retrieved by calling :py:func:`~QgsLineSymbolLayer.offsetUnit`.
 
 .. seealso:: :py:func:`setOffset`
 
@@ -928,7 +1050,7 @@ Offset units can be retrieved by calling offsetUnit().
 %Docstring
 Sets the line's ``offset``.
 
-Offset units are set via setOffsetUnit().
+Offset units are set via :py:func:`~QgsLineSymbolLayer.setOffsetUnit`.
 
 .. seealso:: :py:func:`offset`
 
@@ -1031,6 +1153,9 @@ for a polygon.
     QgsLineSymbolLayer( bool locked = false );
 
 
+
+  private:
+    QgsLineSymbolLayer( const QgsLineSymbolLayer &other );
 };
 
 class QgsFillSymbolLayer : QgsSymbolLayer
@@ -1040,7 +1165,15 @@ class QgsFillSymbolLayer : QgsSymbolLayer
 #include "qgssymbollayer.h"
 %End
   public:
-    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) = 0;
+
+
+
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) = 0;
+%Docstring
+Renders the fill symbol layer for the polygon whose outer ring is defined by ``points``, using the given render ``context``.
+
+The ``rings`` argument optionally specifies a list of polygon rings to render as holes.
+%End
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
 
@@ -1050,11 +1183,14 @@ class QgsFillSymbolLayer : QgsSymbolLayer
 
   protected:
     QgsFillSymbolLayer( bool locked = false );
-    void _renderPolygon( QPainter *p, const QPolygonF &points, const QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    void _renderPolygon( QPainter *p, const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 %Docstring
 Default method to render polygon
 %End
 
+
+  private:
+    QgsFillSymbolLayer( const QgsFillSymbolLayer &other );
 };
 
 

@@ -9,14 +9,13 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Even Rouault'
 __date__ = '2016-04-11'
 __copyright__ = 'Copyright 2016, Even Rouault'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import shutil
 import sys
 import tempfile
 import hashlib
+from datetime import datetime
 
 from osgeo import gdal, ogr  # NOQA
 from qgis.PyQt.QtCore import QVariant, QByteArray
@@ -29,6 +28,7 @@ from qgis.core import (NULL,
 from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
+from qgis.utils import spatialite_connect
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -36,6 +36,7 @@ TEST_DATA_DIR = unitTestDataPath()
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
     return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
+
 
 # Note - doesn't implement ProviderTestCase as most OGR provider is tested by the shapefile provider test
 
@@ -121,7 +122,8 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.dataProvider().subLayers()), 1)
-        self.assertEqual(vl.dataProvider().subLayers()[0], QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'testMixOfPolygonCurvePolygon', '4', 'CurvePolygon', '']))
+        self.assertEqual(vl.dataProvider().subLayers()[0], QgsDataProvider.SUBLAYER_SEPARATOR.join(
+            ['0', 'testMixOfPolygonCurvePolygon', '4', 'CurvePolygon', '', '']))
 
     def testMixOfLineStringCompoundCurve(self):
 
@@ -137,7 +139,8 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.dataProvider().subLayers()), 1)
-        self.assertEqual(vl.dataProvider().subLayers()[0], QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'testMixOfLineStringCompoundCurve', '5', 'CompoundCurve', '']))
+        self.assertEqual(vl.dataProvider().subLayers()[0], QgsDataProvider.SUBLAYER_SEPARATOR.join(
+            ['0', 'testMixOfLineStringCompoundCurve', '5', 'CompoundCurve', '', '']))
 
     def testGpxElevation(self):
         # GPX without elevation data
@@ -268,19 +271,34 @@ class PyQgsOGRProvider(unittest.TestCase):
         """ Test support for Triangles (mapped to Polygons) """
         testsets = (
             ("Triangle((0 0, 0 1, 1 1, 0 0))", QgsWkbTypes.Triangle, "Triangle ((0 0, 0 1, 1 1, 0 0))"),
-            ("Triangle Z((0 0 1, 0 1 2, 1 1 3, 0 0 1))", QgsWkbTypes.TriangleZ, "TriangleZ ((0 0 1, 0 1 2, 1 1 3, 0 0 1))"),
-            ("Triangle M((0 0 4, 0 1 5, 1 1 6, 0 0 4))", QgsWkbTypes.TriangleM, "TriangleM ((0 0 4, 0 1 5, 1 1 6, 0 0 4))"),
-            ("Triangle ZM((0 0 0 1, 0 1 2 3, 1 1 4 5, 0 0 0 1))", QgsWkbTypes.TriangleZM, "TriangleZM ((0 0 0 1, 0 1 2 3, 1 1 4 5, 0 0 0 1))"),
+            ("Triangle Z((0 0 1, 0 1 2, 1 1 3, 0 0 1))", QgsWkbTypes.TriangleZ,
+             "TriangleZ ((0 0 1, 0 1 2, 1 1 3, 0 0 1))"),
+            ("Triangle M((0 0 4, 0 1 5, 1 1 6, 0 0 4))", QgsWkbTypes.TriangleM,
+             "TriangleM ((0 0 4, 0 1 5, 1 1 6, 0 0 4))"),
+            ("Triangle ZM((0 0 0 1, 0 1 2 3, 1 1 4 5, 0 0 0 1))", QgsWkbTypes.TriangleZM,
+             "TriangleZM ((0 0 0 1, 0 1 2 3, 1 1 4 5, 0 0 0 1))"),
 
-            ("TIN (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))", QgsWkbTypes.MultiPolygon, "MultiPolygon (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))"),
-            ("TIN Z(((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))", QgsWkbTypes.MultiPolygonZ, "MultiPolygonZ (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
-            ("TIN M(((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))", QgsWkbTypes.MultiPolygonM, "MultiPolygonM (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
-            ("TIN ZM(((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))", QgsWkbTypes.MultiPolygonZM, "MultiPolygonZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))"),
+            ("TIN (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))", QgsWkbTypes.MultiPolygon,
+             "MultiPolygon (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))"),
+            ("TIN Z(((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))", QgsWkbTypes.MultiPolygonZ,
+             "MultiPolygonZ (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
+            ("TIN M(((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))", QgsWkbTypes.MultiPolygonM,
+             "MultiPolygonM (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
+            ("TIN ZM(((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))",
+             QgsWkbTypes.MultiPolygonZM,
+             "MultiPolygonZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))"),
 
-            ("PolyhedralSurface (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))", QgsWkbTypes.MultiPolygon, "MultiPolygon (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))"),
-            ("PolyhedralSurface Z(((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))", QgsWkbTypes.MultiPolygonZ, "MultiPolygonZ (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
-            ("PolyhedralSurface M(((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))", QgsWkbTypes.MultiPolygonM, "MultiPolygonM (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
-            ("PolyhedralSurface ZM(((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))", QgsWkbTypes.MultiPolygonZM, "MultiPolygonZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))")
+            ("PolyhedralSurface (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))", QgsWkbTypes.MultiPolygon,
+             "MultiPolygon (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))"),
+            ("PolyhedralSurface Z(((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))",
+             QgsWkbTypes.MultiPolygonZ,
+             "MultiPolygonZ (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
+            ("PolyhedralSurface M(((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))",
+             QgsWkbTypes.MultiPolygonM,
+             "MultiPolygonM (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
+            ("PolyhedralSurface ZM(((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))",
+             QgsWkbTypes.MultiPolygonZM,
+             "MultiPolygonZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))")
         )
         for row in testsets:
             datasource = os.path.join(self.basetestpath, 'test.csv')
@@ -329,7 +347,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXYUSERPWD"), "username")
 
     def testEditGeoJsonRemoveField(self):
-        """ Test bugfix of https://issues.qgis.org/issues/18596 (deleting an existing field)"""
+        """ Test bugfix of https://github.com/qgis/QGIS/issues/26484 (deleting an existing field)"""
 
         datasource = os.path.join(self.basetestpath, 'testEditGeoJsonRemoveField.json')
         with open(datasource, 'wt') as f:
@@ -352,7 +370,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(f['w'], 4)
 
     def testEditGeoJsonAddField(self):
-        """ Test bugfix of https://issues.qgis.org/issues/18596 (adding a new field)"""
+        """ Test bugfix of https://github.com/qgis/QGIS/issues/26484 (adding a new field)"""
 
         datasource = os.path.join(self.basetestpath, 'testEditGeoJsonAddField.json')
         with open(datasource, 'wt') as f:
@@ -379,7 +397,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(len(vl.fields()), 1)
 
     def testEditGeoJsonAddFieldAndThenAddFeatures(self):
-        """ Test bugfix of https://issues.qgis.org/issues/18596 (adding a new field)"""
+        """ Test bugfix of https://github.com/qgis/QGIS/issues/26484 (adding a new field)"""
 
         datasource = os.path.join(self.basetestpath, 'testEditGeoJsonAddField.json')
         with open(datasource, 'wt') as f:
@@ -587,6 +605,144 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(vl.fields().at(0).type(), QVariant.Bool)
         self.assertEqual([f[0] for f in vl.getFeatures()], [True, False, NULL])
         self.assertEqual([f[0].__class__.__name__ for f in vl.getFeatures()], ['bool', 'bool', 'QVariant'])
+
+    def testReloadDataAndFeatureCount(self):
+
+        filename = '/vsimem/test.json'
+        gdal.FileFromMemBuffer(filename, """{
+"type": "FeatureCollection",
+"features": [
+{ "type": "Feature", "properties": null, "geometry": { "type": "Point", "coordinates": [2, 49] } },
+{ "type": "Feature", "properties": null, "geometry": { "type": "Point", "coordinates": [3, 50] } }
+]
+}""")
+        vl = QgsVectorLayer(filename, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 2)
+        gdal.FileFromMemBuffer(filename, """{
+"type": "FeatureCollection",
+"features": [
+{ "type": "Feature", "properties": null, "geometry": { "type": "Point", "coordinates": [2, 49] } }
+]
+}""")
+        vl.reload()
+        self.assertEqual(vl.featureCount(), 1)
+        gdal.Unlink(filename)
+
+    def testSpatialiteDefaultValues(self):
+        """Test whether in spatialite table with default values like CURRENT_TIMESTAMP or
+        (datetime('now','localtime')) they are respected. See GH #33383"""
+
+        # Create the test table
+
+        dbname = os.path.join(tempfile.gettempdir(), "test.sqlite")
+        if os.path.exists(dbname):
+            os.remove(dbname)
+        con = spatialite_connect(dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = "SELECT InitSpatialMetadata()"
+        cur.execute(sql)
+
+        # simple table with primary key
+        sql = """
+        CREATE TABLE test_table_default_values (
+            id integer primary key autoincrement,
+            comment TEXT,
+            created_at_01 text DEFAULT (datetime('now','localtime')),
+            created_at_02 text DEFAULT CURRENT_TIMESTAMP,
+            anumber INTEGER DEFAULT 123,
+            atext TEXT default 'My default'
+        )
+        """
+        cur.execute(sql)
+        cur.execute("COMMIT")
+        con.close()
+
+        vl = QgsVectorLayer(dbname + '|layername=test_table_default_values', 'test_table_default_values', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        # Save it for the test
+        now = datetime.now()
+
+        # Test default values
+        dp = vl.dataProvider()
+        # FIXME: should it be None?
+        self.assertTrue(dp.defaultValue(0).isNull())
+        self.assertIsNone(dp.defaultValue(1))
+        # FIXME: This fails because there is no backend-side evaluation in this provider
+        # self.assertTrue(dp.defaultValue(2).startswith(now.strftime('%Y-%m-%d')))
+        self.assertTrue(dp.defaultValue(3).startswith(now.strftime('%Y-%m-%d')))
+        self.assertEqual(dp.defaultValue(4), 123)
+        self.assertEqual(dp.defaultValue(5), 'My default')
+
+        self.assertEqual(dp.defaultValueClause(0), 'Autogenerate')
+        self.assertEqual(dp.defaultValueClause(1), '')
+        self.assertEqual(dp.defaultValueClause(2), "datetime('now','localtime')")
+        self.assertEqual(dp.defaultValueClause(3), "CURRENT_TIMESTAMP")
+        # FIXME: ogr provider simply returns values when asked for clauses
+        # self.assertEqual(dp.defaultValueClause(4), '')
+        # self.assertEqual(dp.defaultValueClause(5), '')
+
+        feature = QgsFeature(vl.fields())
+        for idx in range(vl.fields().count()):
+            default = vl.dataProvider().defaultValue(idx)
+            if not default:
+                feature.setAttribute(idx, 'A comment')
+            else:
+                feature.setAttribute(idx, default)
+
+        self.assertTrue(vl.dataProvider().addFeature(feature))
+        del (vl)
+
+        # Verify
+        vl2 = QgsVectorLayer(dbname + '|layername=test_table_default_values', 'test_table_default_values', 'ogr')
+        self.assertTrue(vl2.isValid())
+        feature = next(vl2.getFeatures())
+        self.assertEqual(feature.attribute(1), 'A comment')
+        self.assertTrue(feature.attribute(2).startswith(now.strftime('%Y-%m-%d')))
+        self.assertTrue(feature.attribute(3).startswith(now.strftime('%Y-%m-%d')))
+        self.assertEqual(feature.attribute(4), 123)
+        self.assertEqual(feature.attribute(5), 'My default')
+
+    def testMixOfFilterExpressionAndSubsetStringWhenFilterExpressionCompilationFails(self):
+        datasource = os.path.join(unitTestDataPath(), 'filter_test.shp')
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        self.assertCountEqual([f.attributes() for f in vl.getFeatures()], [['circle', '1'],
+                                                                           ['circle', '2'],
+                                                                           ['rectangle', '1'],
+                                                                           ['rectangle', '2']])
+
+        # note - request uses wrong type for match (string vs int). This is OK for QGIS expressions,
+        # but will be rejected after we try to compile the expression for OGR to use.
+        request = QgsFeatureRequest().setFilterExpression('"color" = 1')
+        self.assertCountEqual([f.attributes() for f in vl.getFeatures(request)], [['circle', '1'],
+                                                                                  ['rectangle', '1']])
+        request = QgsFeatureRequest().setFilterExpression('"color" = 1')
+        self.assertCountEqual([f.attributes() for f in vl.getFeatures(request)], [['circle', '1'],
+                                                                                  ['rectangle', '1']])
+
+        vl.setSubsetString("\"shape\" = 'rectangle'")
+        self.assertCountEqual([f.attributes() for f in vl.getFeatures()], [['rectangle', '1'],
+                                                                           ['rectangle', '2']])
+
+        self.assertCountEqual([f.attributes() for f in vl.getFeatures(request)], [['rectangle', '1']])
+
+    @unittest.skip(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 2, 0))
+    def testFieldAliases(self):
+        """
+        Test that field aliases are taken from OGR where available (requires GDAL 3.2 or later)
+        """
+        datasource = os.path.join(unitTestDataPath(), 'field_alias.gdb')
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        fields = vl.fields()
+        self.assertEqual([f.name() for f in fields], ['OBJECTID', 'text', 'short_int', 'long_int', 'float', 'double', 'date', 'blob', 'guid', 'raster', 'SHAPE_Length', 'SHAPE_Area'])
+        self.assertEqual([f.alias() for f in fields],
+                         ['', 'My Text Field', 'My Short Int Field', 'My Long Int Field', 'My Float Field', 'My Double Field', 'My Date Field', 'My Blob Field', 'My GUID field', 'My Raster Field', '', ''])
 
 
 if __name__ == '__main__':

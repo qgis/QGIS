@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsGpsInformationWidgetBase</class>
- <widget class="QWidget" name="QgsGpsInformationWidgetBase">
+ <widget class="QgsPanelWidget" name="QgsGpsInformationWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>215</width>
+    <width>324</width>
     <height>591</height>
    </rect>
   </property>
@@ -83,7 +83,7 @@ gray = no data
         </sizepolicy>
        </property>
        <property name="text">
-        <string>&amp;Add feature</string>
+        <string>&amp;Add Feature</string>
        </property>
       </widget>
      </item>
@@ -99,7 +99,7 @@ gray = no data
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Add track point</string>
+        <string>Add Track Point</string>
        </property>
       </widget>
      </item>
@@ -157,8 +157,8 @@ gray = no data
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>214</width>
-            <height>505</height>
+            <width>114</width>
+            <height>504</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
@@ -577,9 +577,9 @@ gray = no data
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>241</width>
-            <height>696</height>
+            <y>-425</y>
+            <width>315</width>
+            <height>1183</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
@@ -598,6 +598,120 @@ gray = no data
            <property name="verticalSpacing">
             <number>4</number>
            </property>
+           <item row="7" column="0">
+            <widget class="QgsCollapsibleGroupBox" name="mLogFileGroupBox">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>save GPS data (NMEA sentences) to a file</string>
+             </property>
+             <property name="title">
+              <string>Log File</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_13" columnstretch="100,0">
+              <property name="topMargin">
+               <number>2</number>
+              </property>
+              <property name="bottomMargin">
+               <number>4</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QLineEdit" name="mTxtLogFile">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="acceptDrops">
+                 <bool>false</bool>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QPushButton" name="mBtnLogFile">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>23</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>23</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>browse for log file</string>
+                </property>
+                <property name="text">
+                 <string>…</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QgsCollapsibleGroupBox" name="groupBox_4">
+             <property name="title">
+              <string>Filtering</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_14" columnstretch="0,1">
+              <item row="1" column="1">
+               <widget class="QComboBox" name="mCboDistanceThreshold">
+                <property name="editable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_9">
+                <property name="text">
+                 <string>Distance threshold (meters)</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_8">
+                <property name="text">
+                 <string>Acquisition interval (seconds)</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QComboBox" name="mCboAcquisitionInterval">
+                <property name="editable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
            <item row="0" column="0">
             <widget class="QgsCollapsibleGroupBox" name="mDeviceGroupBox">
              <property name="title">
@@ -613,20 +727,10 @@ gray = no data
               <property name="spacing">
                <number>2</number>
               </property>
-              <item row="0" column="0">
-               <widget class="QRadioButton" name="mRadAutodetect">
+              <item row="1" column="0">
+               <widget class="QRadioButton" name="mRadInternal">
                 <property name="text">
-                 <string>Autodetect</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QRadioButton" name="mRadUserPath">
-                <property name="text">
-                 <string>Serial device</string>
+                 <string>Internal</string>
                 </property>
                </widget>
               </item>
@@ -663,6 +767,16 @@ gray = no data
                  </widget>
                 </item>
                </layout>
+              </item>
+              <item row="0" column="0">
+               <widget class="QRadioButton" name="mRadAutodetect">
+                <property name="text">
+                 <string>Autodetect</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item row="5" column="0">
                <layout class="QGridLayout" name="gridLayout_12">
@@ -756,12 +870,296 @@ gray = no data
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QRadioButton" name="mRadInternal">
+              <item row="2" column="0">
+               <widget class="QRadioButton" name="mRadUserPath">
                 <property name="text">
-                 <string>Internal</string>
+                 <string>Serial device</string>
                 </property>
                </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
+             <property name="title">
+              <string>Digitizing</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_9">
+              <property name="topMargin">
+               <number>2</number>
+              </property>
+              <property name="bottomMargin">
+               <number>4</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>2</number>
+              </property>
+              <item row="2" column="0">
+               <widget class="QGroupBox" name="groupBox_3">
+                <property name="title">
+                 <string>Track</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_16" columnstretch="0,1">
+                 <property name="topMargin">
+                  <number>2</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>4</number>
+                 </property>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_6">
+                   <property name="text">
+                    <string>Line width</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QSpinBox" name="mSpinTrackWidth">
+                   <property name="toolTip">
+                    <string>Track width in pixels</string>
+                   </property>
+                   <property name="suffix">
+                    <string> px</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0" colspan="2">
+                  <widget class="QCheckBox" name="mCbxAutoAddVertices">
+                   <property name="text">
+                    <string>Automatically add points</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="label_7">
+                   <property name="text">
+                    <string>Line color</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QgsColorButton" name="mBtnTrackColor" native="true">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="styleSheet">
+                    <string/>
+                   </property>
+                   <property name="text" stdset="0">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QCheckBox" name="mCbxAutoCommit">
+                <property name="toolTip">
+                 <string>save layer after every feature added</string>
+                </property>
+                <property name="text">
+                 <string>Automatically save added feature</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QGroupBox" name="mGboxTimestamp">
+                <property name="title">
+                 <string>Timestamp Properties</string>
+                </property>
+                <layout class="QFormLayout" name="formLayout">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_10">
+                   <property name="toolTip">
+                    <string>Specify the field where the GPS timestamp will be saved, only string or datetime fields are supported</string>
+                   </property>
+                   <property name="text">
+                    <string>Destination</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QgsFieldComboBox" name="mCboTimestampField"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="mLblTimestampFormat">
+                   <property name="text">
+                    <string>Format</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QComboBox" name="mCboTimestampFormat"/>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="mLblTimeZone">
+                   <property name="text">
+                    <string>Timezone</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QComboBox" name="mCboTimeZones"/>
+                 </item>
+                 <item row="4" column="1">
+                  <widget class="QSpinBox" name="mLeapSeconds"/>
+                 </item>
+                 <item row="4" column="0">
+                  <widget class="QCheckBox" name="mCbxLeapSeconds">
+                   <property name="toolTip">
+                    <string>Apply leap seconds correction by adding the seconds to GPS timestamp</string>
+                   </property>
+                   <property name="text">
+                    <string>Leap seconds</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QCheckBox" name="mTravelBearingCheckBox">
+                <property name="toolTip">
+                 <string>If checked, the bearing reported by the GPS device will be ignored and the bearing will instead be calculated by the angle between the previous two GPS locations</string>
+                </property>
+                <property name="text">
+                 <string>Calculate bearing from travel direction</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+             <property name="title">
+              <string>Map Centering and Rotation</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_8">
+              <property name="topMargin">
+               <number>2</number>
+              </property>
+              <property name="bottomMargin">
+               <number>4</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>2</number>
+              </property>
+              <item row="2" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <property name="leftMargin">
+                 <number>20</number>
+                </property>
+                <item>
+                 <widget class="QSpinBox" name="mSpinMapExtentMultiplier">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="suffix">
+                   <string>% of map extent</string>
+                  </property>
+                  <property name="minimum">
+                   <number>5</number>
+                  </property>
+                  <property name="maximum">
+                   <number>100</number>
+                  </property>
+                  <property name="singleStep">
+                   <number>1</number>
+                  </property>
+                  <property name="value">
+                   <number>50</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="0" column="0">
+               <widget class="QRadioButton" name="radRecenterMap">
+                <property name="text">
+                 <string>Always</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QRadioButton" name="radRecenterWhenNeeded">
+                <property name="text">
+                 <string>When leaving</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QRadioButton" name="radNeverRecenter">
+                <property name="text">
+                 <string>Never</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QCheckBox" name="mRotateMapCheckBox">
+                <property name="text">
+                 <string>Rotate map to match GPS direction</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,1">
+                <property name="leftMargin">
+                 <number>20</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_12">
+                  <property name="text">
+                   <string>Frequency</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QgsSpinBox" name="mSpinMapRotateInterval" native="true">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="specialValueText" stdset="0">
+                   <string>On GPS signal</string>
+                  </property>
+                  <property name="suffix" stdset="0">
+                   <string> s</string>
+                  </property>
+                  <property name="minimum" stdset="0">
+                   <number>0</number>
+                  </property>
+                  <property name="maximum" stdset="0">
+                   <number>1000</number>
+                  </property>
+                  <property name="singleStep" stdset="0">
+                   <number>1</number>
+                  </property>
+                  <property name="value" stdset="0">
+                   <number>0</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>
@@ -858,280 +1256,31 @@ gray = no data
             </widget>
            </item>
            <item row="6" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="mLogFileGroupBox">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="toolTip">
-              <string>save GPS data (NMEA sentences) to a file</string>
-             </property>
+            <widget class="QgsCollapsibleGroupBox" name="mShowBearingLineCheck">
              <property name="title">
-              <string>Log file</string>
+              <string>Show Bearing Line</string>
              </property>
              <property name="checkable">
               <bool>true</bool>
              </property>
-             <property name="checked">
-              <bool>false</bool>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_13" columnstretch="100,0">
-              <property name="topMargin">
-               <number>2</number>
-              </property>
-              <property name="bottomMargin">
-               <number>4</number>
-              </property>
-              <item row="0" column="0">
-               <widget class="QLineEdit" name="mTxtLogFile">
-                <property name="enabled">
-                 <bool>true</bool>
+             <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,1">
+              <item>
+               <widget class="QLabel" name="label_11">
+                <property name="text">
+                 <string>Line style</string>
                 </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QgsSymbolButton" name="mBearingLineStyleButton">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
-                <property name="acceptDrops">
-                 <bool>false</bool>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QPushButton" name="mBtnLogFile">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>23</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>23</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="toolTip">
-                 <string>browse for log file</string>
-                </property>
                 <property name="text">
-                 <string>…</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="5" column="0">
-            <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
-             <property name="title">
-              <string>Map Centering</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_8">
-              <property name="topMargin">
-               <number>2</number>
-              </property>
-              <property name="bottomMargin">
-               <number>4</number>
-              </property>
-              <property name="verticalSpacing">
-               <number>2</number>
-              </property>
-              <item row="1" column="0">
-               <widget class="QRadioButton" name="radRecenterWhenNeeded">
-                <property name="text">
-                 <string>When leaving</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout">
-                <property name="leftMargin">
-                 <number>20</number>
-                </property>
-                <item>
-                 <widget class="QSpinBox" name="mSpinMapExtentMultiplier">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="suffix">
-                   <string>% of map extent</string>
-                  </property>
-                  <property name="minimum">
-                   <number>5</number>
-                  </property>
-                  <property name="maximum">
-                   <number>100</number>
-                  </property>
-                  <property name="singleStep">
-                   <number>1</number>
-                  </property>
-                  <property name="value">
-                   <number>50</number>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="3" column="0">
-               <widget class="QRadioButton" name="radNeverRecenter">
-                <property name="text">
-                 <string>Never</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QRadioButton" name="radRecenterMap">
-                <property name="text">
-                 <string>Always</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
-             <property name="title">
-              <string>Digitizing</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_9">
-              <property name="topMargin">
-               <number>2</number>
-              </property>
-              <property name="bottomMargin">
-               <number>4</number>
-              </property>
-              <property name="verticalSpacing">
-               <number>2</number>
-              </property>
-              <item row="1" column="0">
-               <widget class="QGroupBox" name="groupBox_3">
-                <property name="title">
-                 <string>Track</string>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_16" columnstretch="0,1">
-                 <property name="topMargin">
-                  <number>2</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>4</number>
-                 </property>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label_6">
-                   <property name="text">
-                    <string>Line width</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QSpinBox" name="mSpinTrackWidth">
-                   <property name="toolTip">
-                    <string>Track width in pixels</string>
-                   </property>
-                   <property name="suffix">
-                    <string> px</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0" colspan="2">
-                  <widget class="QCheckBox" name="mCbxAutoAddVertices">
-                   <property name="text">
-                    <string>Automatically add points</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="label_7">
-                   <property name="text">
-                    <string>Line color</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="1">
-                  <widget class="QgsColorButton" name="mBtnTrackColor">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="styleSheet">
-                    <string/>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QCheckBox" name="mCbxAutoCommit">
-                <property name="toolTip">
-                 <string>save layer after every feature added</string>
-                </property>
-                <property name="text">
-                 <string>Automatically save added feature</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="groupBox_4">
-             <property name="title">
-              <string>Filtering</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_14" columnstretch="0,1">
-              <item row="1" column="1">
-               <widget class="QComboBox" name="mCboDistanceThreshold">
-                <property name="editable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_9">
-                <property name="text">
-                 <string>Distance threshold (meters)</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_8">
-                <property name="text">
-                 <string>Acquisition interval (seconds)</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QComboBox" name="mCboAcquisitionInterval">
-                <property name="editable">
-                 <bool>true</bool>
+                 <string/>
                 </property>
                </widget>
               </item>
@@ -1276,6 +1425,22 @@ gray = no data
       </spacer>
      </item>
      <item>
+      <widget class="QPushButton" name="mRecenterButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Recenter</string>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="mConnectButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -1309,15 +1474,36 @@ gray = no data
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsfieldcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPanelWidget</class>
+   <extends>QWidget</extends>
+   <header>qgspanelwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
+   <extends>QWidget</extends>
    <header>qgscolorbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QWidget</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -1352,6 +1538,7 @@ gray = no data
   <tabstop>radRecenterWhenNeeded</tabstop>
   <tabstop>mSpinMapExtentMultiplier</tabstop>
   <tabstop>radNeverRecenter</tabstop>
+  <tabstop>mRotateMapCheckBox</tabstop>
   <tabstop>mLogFileGroupBox</tabstop>
   <tabstop>mTxtLogFile</tabstop>
   <tabstop>mBtnLogFile</tabstop>
@@ -1373,6 +1560,11 @@ gray = no data
   <tabstop>mTxtQuality</tabstop>
   <tabstop>mTxtStatus</tabstop>
   <tabstop>mTxtSatellitesUsed</tabstop>
+  <tabstop>mCboTimestampField</tabstop>
+  <tabstop>mCboTimestampFormat</tabstop>
+  <tabstop>mCboTimeZones</tabstop>
+  <tabstop>mLeapSeconds</tabstop>
+  <tabstop>mCbxLeapSeconds</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

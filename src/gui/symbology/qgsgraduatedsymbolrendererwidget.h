@@ -16,14 +16,19 @@
 #ifndef QGSGRADUATEDSYMBOLRENDERERWIDGET_H
 #define QGSGRADUATEDSYMBOLRENDERERWIDGET_H
 
+#include <QStandardItem>
+
+
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgis_sip.h"
 #include "qgsrendererwidget.h"
 #include "qgsproxystyle.h"
-#include <QStandardItem>
+#include "qgsprocessingwidgetwrapper.h"
 
 #include "ui_qgsgraduatedsymbolrendererwidget.h"
+
 #include "qgis_gui.h"
+
 
 #ifndef SIP_RUN
 /// @cond PRIVATE
@@ -54,7 +59,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererModel : public QAbstractItemModel
     void deleteRows( QList<int> rows );
     void removeAllRows();
     void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
-    void updateSymbology( bool resetModel = false );
+    void updateSymbology();
     void updateLabels();
 
   signals:
@@ -94,9 +99,9 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     ~QgsGraduatedSymbolRendererWidget() override;
 
     QgsFeatureRenderer *renderer() override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
 
   public slots:
-    void changeGraduatedSymbol();
     void graduatedColumnChanged( const QString &field );
     void classifyGraduated();
     void reapplyColorRamp();
@@ -120,23 +125,34 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
 
     void rowsMoved();
     void modelDataChanged();
-    void refreshRanges( bool reset = false );
+
+    /**
+     * Refreshes the ranges for the renderer.
+     *
+     * The \a reset argument is deprecated and has no effect.
+     */
+    void refreshRanges( bool reset );
 
   private slots:
     void mSizeUnitWidget_changed();
     void methodComboBox_currentIndexChanged( int );
+    void updateMethodParameters();
     void cleanUpSymbolSelector( QgsPanelWidget *container );
     void updateSymbolsFromWidget();
-    void toggleMethodWidgets( int idx );
     void dataDefinedSizeLegend();
+    void changeGraduatedSymbol();
+    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
+    void symmetryPointEditingFinished();
+
+  protected slots:
+
+    void pasteSymbolToSelection() override;
 
   protected:
     void updateUiFromRenderer( bool updateCount = true );
     void connectUpdateHandlers();
     void disconnectUpdateHandlers();
     bool rowsOrdered();
-
-    void updateGraduatedSymbolIcon();
 
     //! Returns a list of indexes for the classes under selection
     QList<int> selectedClasses();
@@ -156,6 +172,17 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     void keyPressEvent( QKeyEvent *event ) override;
 
   private:
+    enum MethodMode
+    {
+      ColorMode,
+      SizeMode
+    };
+
+    QgsExpressionContext createExpressionContext() const override;
+    void toggleMethodWidgets( MethodMode mode );
+
+    void clearParameterWidgets();
+
     std::unique_ptr< QgsGraduatedSymbolRenderer > mRenderer;
 
     std::unique_ptr< QgsSymbol > mGraduatedSymbol;
@@ -166,7 +193,9 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
 
     QgsRangeList mCopyBuffer;
 
-    QgsExpressionContext createExpressionContext() const override;
+    QDoubleValidator *mSymmetryPointValidator;
+
+    std::vector< std::unique_ptr< QgsAbstractProcessingParameterWidgetWrapper >> mParameterWidgetWrappers;
 };
 
 

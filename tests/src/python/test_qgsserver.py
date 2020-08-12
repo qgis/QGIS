@@ -25,8 +25,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '25/05/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 
@@ -42,7 +40,7 @@ import difflib
 
 from io import StringIO
 from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
-from qgis.core import QgsRenderChecker, QgsApplication, QgsFontUtils
+from qgis.core import QgsRenderChecker, QgsApplication, QgsFontUtils, QgsMultiRenderChecker
 from qgis.testing import unittest
 from qgis.PyQt.QtCore import QSize
 from utilities import unitTestDataPath
@@ -53,9 +51,9 @@ import base64
 
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
-RE_ELEMENT = b'</*([^>\[\s]+)[ >]'
-RE_ELEMENT_CONTENT = b'<[^>\[]+>(.+)</[^>\[\s]+>'
+RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
+RE_ELEMENT = br'</*([^>\[\s]+)[ >]'
+RE_ELEMENT_CONTENT = br'<[^>\[]+>(.+)</[^>\[\s]+>'
 RE_ATTRIBUTES = rb'((?:(?!\s|=).)*)\s*?=\s*?["\']?((?:(?<=")(?:(?<=\\)"|[^"])*|(?<=\')(?:(?<=\\)\'|[^\'])*)|(?:(?!"|\')(?:(?!\/>|>|\s).)+))'
 
 
@@ -80,7 +78,7 @@ class QgsServerTestBase(unittest.TestCase):
         for expected_line in expected_lines:
             expected_line = expected_line.strip()
             response_line = response_lines[line_no - 1].strip()
-            response_line = response_line.replace(b'e+6', b'e+06')
+            response_line = response_line.replace(b'e+6', br'e+06')
             # Compare tag
             if re.match(RE_ELEMENT, expected_line):
                 expected_elements = re.findall(RE_ELEMENT, expected_line)
@@ -176,35 +174,49 @@ class QgsServerTestBase(unittest.TestCase):
 
         return data[1], headers
 
-    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize(), outputJpg=False):
+    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize(), outputFormat='PNG'):
 
-        extFile = 'png'
-        if outputJpg:
+        if outputFormat == 'PNG':
+            extFile = 'png'
+        elif outputFormat == 'JPG':
             extFile = 'jpg'
+        elif outputFormat == 'WEBP':
+            extFile = 'webp'
+        else:
+            raise RuntimeError('Yeah, new format implemented')
 
         temp_image = os.path.join(tempfile.gettempdir(), "%s_result.%s" % (control_image, extFile))
 
         with open(temp_image, "wb") as f:
             f.write(image)
 
-        if outputJpg:
-            return (True, "QgsRenderChecker can't be used for JPG images")
+        if outputFormat != 'PNG':
+            return (True, "QgsRenderChecker can only be used for PNG")
 
-        control = QgsRenderChecker()
+        control = QgsMultiRenderChecker()
         control.setControlPathPrefix("qgis_server")
         control.setControlName(control_image)
         control.setRenderedImage(temp_image)
         if max_size_diff.isValid():
             control.setSizeTolerance(max_size_diff.width(), max_size_diff.height())
-        return control.compareImages(control_image, max_diff), control.report()
+        return control.runTest(control_image, max_diff), control.report()
 
-    def _img_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize(), unittest_data_path='control_images', outputJpg=False):
+    def _img_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize(), unittest_data_path='control_images', outputFormat='PNG'):
+        """
+        :param outputFormat: PNG, JPG or WEBP
+        """
 
-        extFile = 'png'
-        contentType = 'image/png'
-        if outputJpg:
+        if outputFormat == 'PNG':
+            extFile = 'png'
+            contentType = 'image/png'
+        elif outputFormat == 'JPG':
             extFile = 'jpg'
             contentType = 'image/jpeg'
+        elif outputFormat == 'WEBP':
+            extFile = 'webp'
+            contentType = 'image/webp'
+        else:
+            raise RuntimeError('Yeah, new format implemented')
 
         reference_path = unitTestDataPath(unittest_data_path) + '/qgis_server/' + image + '/' + image + '.' + extFile
         self.store_reference(reference_path, response)
@@ -213,12 +225,12 @@ class QgsServerTestBase(unittest.TestCase):
             headers.get("Content-Type"), contentType,
             "Content type is wrong: %s instead of %s\n%s" % (headers.get("Content-Type"), contentType, response))
 
-        test, report = self._img_diff(response, image, max_diff, max_size_diff, outputJpg)
+        test, report = self._img_diff(response, image, max_diff, max_size_diff, outputFormat)
 
         with open(os.path.join(tempfile.gettempdir(), image + "_result." + extFile), "rb") as rendered_file:
             encoded_rendered_file = base64.b64encode(rendered_file.read())
             if not os.environ.get('ENCODED_OUTPUT'):
-                message = "Image is wrong\: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, extFile)
+                message = "Image is wrong: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, extFile)
             else:
                 message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.%s" % (
                     report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image, extFile
@@ -228,7 +240,7 @@ class QgsServerTestBase(unittest.TestCase):
         if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff." + extFile)):
             with open(os.path.join(tempfile.gettempdir(), image + "_result_diff." + extFile), "rb") as diff_file:
                 if not os.environ.get('ENCODED_OUTPUT'):
-                    message = "Image is wrong\: diff file %s/%s_result_diff.%s" % (tempfile.gettempdir(), image, extFile)
+                    message = "Image is wrong: diff file %s/%s_result_diff.%s" % (tempfile.gettempdir(), image, extFile)
                 else:
                     encoded_diff_file = base64.b64encode(diff_file.read())
                     message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.%s" % (
@@ -332,8 +344,8 @@ class TestQgsServer(QgsServerTestBase):
         request = QgsBufferServerRequest('http://somesite.com/somepath', QgsServerRequest.GetMethod, headers)
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response)
-        self.assertEqual(bytes(response.body()), b'<ServerException>Project file error</ServerException>\n')
-        self.assertEqual(response.headers(), {'Content-Length': '54', 'Content-Type': 'text/xml; charset=utf-8'})
+        self.assertEqual(bytes(response.body()), b'<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
+        self.assertEqual(response.headers(), {'Content-Length': '156', 'Content-Type': 'text/xml; charset=utf-8'})
         self.assertEqual(response.statusCode(), 500)
 
     def test_requestHandlerProject(self):
@@ -342,8 +354,8 @@ class TestQgsServer(QgsServerTestBase):
         request = QgsBufferServerRequest('http://somesite.com/somepath', QgsServerRequest.GetMethod, headers)
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, None)
-        self.assertEqual(bytes(response.body()), b'<ServerException>Project file error</ServerException>\n')
-        self.assertEqual(response.headers(), {'Content-Length': '54', 'Content-Type': 'text/xml; charset=utf-8'})
+        self.assertEqual(bytes(response.body()), b'<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
+        self.assertEqual(response.headers(), {'Content-Length': '156', 'Content-Type': 'text/xml; charset=utf-8'})
         self.assertEqual(response.statusCode(), 500)
 
     def test_api(self):
@@ -352,9 +364,9 @@ class TestQgsServer(QgsServerTestBase):
         # Test as a whole
         header, body = self._execute_request("")
         response = self.strip_version_xmlns(header + body)
-        expected = self.strip_version_xmlns(b'Content-Length: 54\nContent-Type: text/xml; charset=utf-8\n\n<ServerException>Project file error</ServerException>\n')
+        expected = self.strip_version_xmlns(b'Content-Length: 156\nContent-Type: text/xml; charset=utf-8\n\n<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
         self.assertEqual(response, expected)
-        expected = b'Content-Length: 54\nContent-Type: text/xml; charset=utf-8\n\n'
+        expected = b'Content-Length: 156\nContent-Type: text/xml; charset=utf-8\n\n'
         self.assertEqual(header, expected)
 
         # Test response when project is specified but without service
@@ -362,13 +374,13 @@ class TestQgsServer(QgsServerTestBase):
         qs = '?MAP=%s' % (urllib.parse.quote(project))
         header, body = self._execute_request(qs)
         response = self.strip_version_xmlns(header + body)
-        expected = self.strip_version_xmlns(b'Content-Length: 206\nContent-Type: text/xml; charset=utf-8\n\n<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="Service configuration error">Service unknown or unsupported</ServiceException>\n</ServiceExceptionReport>\n')
+        expected = self.strip_version_xmlns(b'Content-Length: 326\nContent-Type: text/xml; charset=utf-8\n\n<ServiceExceptionReport  >\n <ServiceException code="Service configuration error">Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint</ServiceException>\n</ServiceExceptionReport>\n')
         self.assertEqual(response, expected)
-        expected = b'Content-Length: 206\nContent-Type: text/xml; charset=utf-8\n\n'
+        expected = b'Content-Length: 326\nContent-Type: text/xml; charset=utf-8\n\n'
         self.assertEqual(header, expected)
 
         # Test body
-        expected = self.strip_version_xmlns(b'<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="Service configuration error">Service unknown or unsupported</ServiceException>\n</ServiceExceptionReport>\n')
+        expected = self.strip_version_xmlns(b'<ServiceExceptionReport  >\n <ServiceException code="Service configuration error">Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint</ServiceException>\n</ServiceExceptionReport>\n')
         self.assertEqual(self.strip_version_xmlns(body), expected)
 
     # WCS tests

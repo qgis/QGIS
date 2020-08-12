@@ -98,18 +98,36 @@ bool QgsQuickUtils::fileExists( const QString &path )
 
 QString QgsQuickUtils::getRelativePath( const QString &path, const QString &prefixPath )
 {
-  QString resultPath = path;
-  QString prefixPathWithSlash;
-  if ( !prefixPath.endsWith( "/" ) )
-    prefixPathWithSlash = QStringLiteral( "%1/" ).arg( prefixPath );
-  else
-    prefixPathWithSlash = prefixPath;
+  QString modPath = path;
+  QString filePrefix( "file://" );
 
-  if ( resultPath.startsWith( prefixPathWithSlash ) )
-    return resultPath.replace( prefixPathWithSlash, QString() );
-  QString filePrefixPath = QStringLiteral( "file://%1" ).arg( prefixPathWithSlash );
-  if ( resultPath.startsWith( filePrefixPath ) )
-    return resultPath.replace( filePrefixPath, QString() );
+  if ( path.startsWith( filePrefix ) )
+  {
+    modPath = modPath.replace( filePrefix, QString() );
+  }
+
+  if ( prefixPath.isEmpty() ) return modPath;
+
+  // Do not use a canonical path for non-existing path
+  if ( !QFileInfo( path ).exists() )
+  {
+    if ( !prefixPath.isEmpty() && modPath.startsWith( prefixPath ) )
+    {
+      return modPath.replace( prefixPath, QString() );
+    }
+  }
+  else
+  {
+    QDir absoluteDir( modPath );
+    QDir prefixDir( prefixPath );
+    QString canonicalPath = absoluteDir.canonicalPath();
+    QString prefixCanonicalPath = prefixDir.canonicalPath() + "/";
+
+    if ( prefixCanonicalPath.length() > 1 && canonicalPath.startsWith( prefixCanonicalPath ) )
+    {
+      return canonicalPath.replace( prefixCanonicalPath, QString() );
+    }
+  }
 
   return QString();
 }
@@ -139,7 +157,8 @@ const QUrl QgsQuickUtils::getEditorComponentSource( const QString &widgetName )
                                    QStringLiteral( "valuerelation" ),
                                    QStringLiteral( "checkbox" ),
                                    QStringLiteral( "externalresource" ),
-                                   QStringLiteral( "datetime" )
+                                   QStringLiteral( "datetime" ),
+                                   QStringLiteral( "range" )
                                  };
   if ( supportedWidgets.contains( widgetName ) )
   {
@@ -341,6 +360,27 @@ QVariantMap QgsQuickUtils::createValueRelationCache( const QVariantMap &config, 
     valueMap.insert( item.key.toString(), item.value );
   }
   return valueMap;
+}
+
+QString QgsQuickUtils::evaluateExpression( const QgsQuickFeatureLayerPair &pair, QgsProject *activeProject, const QString &expression )
+{
+  QList<QgsExpressionContextScope *> scopes;
+  scopes << QgsExpressionContextUtils::globalScope();
+  scopes << QgsExpressionContextUtils::projectScope( activeProject );
+  scopes << QgsExpressionContextUtils::layerScope( pair.layer() );
+
+  QgsExpressionContext context( scopes );
+  context.setFeature( pair.feature() );
+  QgsExpression expr( expression );
+  return expr.evaluate( &context ).toString();
+}
+
+void QgsQuickUtils::selectFeaturesInLayer( QgsVectorLayer *layer, const QList<int> &fids, QgsVectorLayer::SelectBehavior behavior )
+{
+  QgsFeatureIds qgsFids;
+  for ( const int &fid : fids )
+    qgsFids << fid;
+  layer->selectByIds( qgsFids, behavior );
 }
 
 qreal QgsQuickUtils::screenDensity() const

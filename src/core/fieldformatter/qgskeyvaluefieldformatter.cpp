@@ -25,10 +25,10 @@ QString QgsKeyValueFieldFormatter::id() const
 
 QString QgsKeyValueFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
-  Q_UNUSED( layer );
-  Q_UNUSED( fieldIndex );
-  Q_UNUSED( config );
-  Q_UNUSED( cache );
+  Q_UNUSED( layer )
+  Q_UNUSED( fieldIndex )
+  Q_UNUSED( config )
+  Q_UNUSED( cache )
 
   if ( value.isNull() )
   {

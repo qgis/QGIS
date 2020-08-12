@@ -29,6 +29,7 @@ class QgsProcessingAlgorithm;
 class QgsProcessingAlgorithmConfigurationWidget;
 class QgsProcessingAlgorithmConfigurationWidgetFactory;
 class QgsProcessingModelerParameterWidget;
+class QgsProcessingParameterWidgetContext;
 
 /**
  * The QgsProcessingGuiRegistry is a home for widgets for processing
@@ -137,6 +138,33 @@ class GUI_EXPORT QgsProcessingGuiRegistry
     QgsProcessingModelerParameterWidget *createModelerParameterWidget( QgsProcessingModelAlgorithm *model,
         const QString &childId,
         const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context ) SIP_FACTORY;
+
+    /**
+     * Creates a new parameter definition widget allowing for configuration of an instance of
+     * a specific parameter \a type.
+     *
+     * The \a context argument must specify a Processing context, which will be used
+     * by the widget to evaluate existing \a definition properties such as default values. Similarly,
+     * the \a widgetContext argument specifies the wider GUI context in which the widget
+     * will be used.
+     *
+     * The optional \a definition argument may specify an existing parameter definition which
+     * will be reflected in the initial state of the returned widget. If \a definition is NULLPTR,
+     * then the returned widget will use default settings instead.
+     *
+     * Additionally, the optional \a algorithm parameter may be used to specify the algorithm or model
+     * associated with the parameter.
+     *
+     * If NULLPTR is returned for a particular parameter \a type,
+     * it indicates that the parameter type cannot be configured via GUI.
+     *
+     * \since QGIS 3.10
+     */
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget( const QString &type,
+        QgsProcessingContext &context,
+        const QgsProcessingParameterWidgetContext &widgetContext,
+        const QgsProcessingParameterDefinition *definition = nullptr,
+        const QgsProcessingAlgorithm *algorithm = nullptr ) SIP_FACTORY;
 
   private:
 

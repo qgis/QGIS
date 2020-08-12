@@ -31,6 +31,7 @@ showing an embedded form due to relations)
     {
       SingleEditMode,
       AddFeatureMode,
+      FixAttributeMode,
       MultiEditMode,
       SearchMode,
       AggregateSearchMode,
@@ -94,6 +95,32 @@ Returns the associated map canvas (e.g. to zoom to related features).
 .. seealso:: :py:func:`setMapCanvas`
 
 .. versionadded:: 3.2
+%End
+
+    void setCadDockWidget( QgsAdvancedDigitizingDockWidget *cadDockWidget );
+%Docstring
+Sets the associated CAD dock widget, ``cadDockWidget``, (e.g. to be used in map tools).
+
+.. note::
+
+   Unstable API. This method is unstable API and may be modified or removed at any time.
+
+.. seealso:: :py:func:`cadDockWidget`
+
+.. versionadded:: 3.10
+%End
+
+    QgsAdvancedDigitizingDockWidget *cadDockWidget() const;
+%Docstring
+Returns the associated CAD dock widget (e.g. to be used in map tools).
+
+.. note::
+
+   Unstable API. This method is unstable API and may be modified or removed at any time.
+
+.. seealso:: :py:func:`setCadDockWidget`
+
+.. versionadded:: 3.10
 %End
 
     void setVectorLayerTools( QgsVectorLayerTools *vlTools );
@@ -211,6 +238,24 @@ Set current ``feature`` for the currently edited form or table row
 .. versionadded:: 3.2
 %End
 
+    QgsFeature parentFormFeature() const;
+%Docstring
+Returns the feature of the currently edited parent form in its actual state
+
+.. seealso:: :py:func:`setParentFormFeature`
+
+.. versionadded:: 3.14
+%End
+
+    void setParentFormFeature( const QgsFeature &feature );
+%Docstring
+Sets the ``feature`` of the currently edited parent form
+
+.. seealso:: :py:func:`parentFormFeature`
+
+.. versionadded:: 3.14
+%End
+
     Mode attributeFormMode() const;
 %Docstring
 Returns current attributeFormMode
@@ -232,8 +277,21 @@ Returns given ``attributeFormMode`` as string
 .. versionadded:: 3.4
 %End
 
-};
+    void setMainMessageBar( QgsMessageBar *messageBar );
+%Docstring
+Set current ``messageBar`` as the main message bar
 
+.. versionadded:: 3.12
+%End
+
+    QgsMessageBar *mainMessageBar();
+%Docstring
+Returns the main message bar
+
+.. versionadded:: 3.12
+%End
+
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *

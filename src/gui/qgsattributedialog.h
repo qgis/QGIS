@@ -28,7 +28,6 @@
 #include <QGridLayout>
 #include "qgis_gui.h"
 
-class QgsDistanceArea;
 class QgsHighlight;
 
 /**
@@ -96,6 +95,14 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      */
     bool event( QEvent *e ) override;
 
+    /**
+     * Sets \a extraScope as an additional expression context scope to be used
+     * for calculations in this form.
+     *
+     * \since QGIS 3.16
+     */
+    void setExtraContextScope( QgsExpressionContextScope *extraScope SIP_TRANSFER );
+
   public slots:
     void accept() override;
     void reject() override;
@@ -114,6 +121,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     QString mReturnvarname;
     QgsAttributeForm *mAttributeForm = nullptr;
     QgsFeature *mOwnedFeature = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
 
     QgsTrackedVectorLayerTools mTrackedVectorLayerTools;
 
@@ -123,7 +131,6 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     QgsActionMenu *mMenu;
 
     static int sFormCounter;
-    static QString sSettingsPath;
 
     void saveGeometry();
     void restoreGeometry();

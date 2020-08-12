@@ -35,7 +35,7 @@
 
 #include "qgis_core.h"
 #include "pointset.h"
-#include "rtree.hpp"
+#include "palrtree.h"
 #include <fstream>
 
 namespace pal
@@ -97,8 +97,6 @@ namespace pal
       //! Copy constructor
       LabelPosition( const LabelPosition &other );
 
-      ~LabelPosition() override { delete nextPart; }
-
       /**
        * \brief Is the labelposition in the bounding-box ? (intersect or inside????)
        *
@@ -136,7 +134,7 @@ namespace pal
        * \param ls other labelposition
        * \returns TRUE or FALSE
        */
-      bool isInConflict( LabelPosition *ls );
+      bool isInConflict( const LabelPosition *ls ) const;
 
       //! Returns bounding box - amin: xmin,ymin - amax: xmax,ymax
       void getBoundingBox( double amin[2], double amax[2] ) const;
@@ -173,10 +171,20 @@ namespace pal
       /**
        * Returns the feature corresponding to this labelposition
        */
-      FeaturePart *getFeaturePart();
+      FeaturePart *getFeaturePart() const;
 
       int getNumOverlaps() const { return nbOverlap; }
       void resetNumOverlaps() { nbOverlap = 0; } // called from problem.cpp, pal.cpp
+
+      /**
+       * Increases the number of overlaps recorded against this position by 1.
+       */
+      void incrementNumOverlaps() { nbOverlap++; }
+
+      /**
+       * Decreases the number of overlaps recorded against this position by 1.
+       */
+      void decrementNumOverlaps() { nbOverlap++; }
 
       int getProblemFeatureId() const { return probFeat; }
 
@@ -187,7 +195,7 @@ namespace pal
       {
         probFeat = probFid;
         id = lpId;
-        if ( nextPart ) nextPart->setProblemIds( probFid, lpId );
+        if ( mNextPart ) mNextPart->setProblemIds( probFid, lpId );
       }
 
       /**
@@ -217,6 +225,22 @@ namespace pal
        */
       bool conflictsWithObstacle() const { return mHasObstacleConflict; }
 
+      /**
+       * Sets whether the position is marked as having a hard conflict with an obstacle feature.
+       * A hard conflict means that the placement should (usually) not be considered, because the candidate
+       * conflicts with a obstacle of sufficient weight.
+       * \see hasHardObstacleConflict()
+       */
+      void setHasHardObstacleConflict( bool conflicts );
+
+      /**
+       * Returns whether the position is marked as having a hard conflict with an obstacle feature.
+       * A hard conflict means that the placement should (usually) not be considered, because the candidate
+       * conflicts with a obstacle of sufficient weight.
+       * \see setHasHardObstacleConflict()
+       */
+      bool hasHardObstacleConflict() const { return mHasHardConflict; }
+
       //! Make sure the cost is less than 1
       void validateCost();
 
@@ -243,8 +267,20 @@ namespace pal
       bool getUpsideDown() const { return upsideDown; }
 
       Quadrant getQuadrant() const { return quadrant; }
-      LabelPosition *getNextPart() const { return nextPart; }
-      void setNextPart( LabelPosition *next ) { nextPart = next; }
+
+      /**
+       * Returns the next part of this label position (i.e. the next character for a curved label).
+       *
+       * \see setNextPart()
+       */
+      LabelPosition *nextPart() const { return mNextPart.get(); }
+
+      /**
+       * Sets the \a next part of this label position (i.e. the next character for a curved label).
+       *
+       * \see nextPart()
+       */
+      void setNextPart( std::unique_ptr< LabelPosition > next ) { mNextPart = std::move( next ); }
 
       // -1 if not multi-part
       int getPartId() const { return partId; }
@@ -256,39 +292,15 @@ namespace pal
       //! Returns the number of upside down characters for this label position
       int upsideDownCharCount() const { return mUpsideDownCharCount; }
 
-      void removeFromIndex( RTree<LabelPosition *, double, 2, double> *index );
-      void insertIntoIndex( RTree<LabelPosition *, double, 2, double> *index );
-
-      typedef struct
-      {
-        Pal *pal = nullptr;
-        FeaturePart *obstacle = nullptr;
-      } PruneCtx;
-
-      //! Check whether the candidate in ctx overlap with obstacle feat
-      static bool pruneCallback( LabelPosition *candidatePosition, void *ctx );
-
-      // for counting number of overlaps
-      typedef struct
-      {
-        LabelPosition *lp = nullptr;
-        int *nbOv = nullptr;
-        double *cost = nullptr;
-        double *inactiveCost = nullptr;
-        //int *feat;
-      } CountContext;
-
-      /*
-       * count overlap, ctx = p_lp
+      /**
+       * Removes the label position from the specified \a index.
        */
-      static bool countOverlapCallback( LabelPosition *lp, void *ctx );
+      void removeFromIndex( PalRtree<LabelPosition> &index );
 
-      static bool countFullOverlapCallback( LabelPosition *lp, void *ctx );
-
-      static bool removeOverlapCallback( LabelPosition *lp, void *ctx );
-
-      // for polygon cost calculation
-      static bool polygonObstacleCallback( pal::FeaturePart *obstacle, void *ctx );
+      /**
+       * Inserts the label position into the specified \a index.
+       */
+      void insertIntoIndex( PalRtree<LabelPosition> &index );
 
     protected:
 
@@ -305,7 +317,6 @@ namespace pal
       double w;
       double h;
 
-      LabelPosition *nextPart = nullptr;
       int partId;
 
       //True if label direction is the same as line / polygon ring direction.
@@ -317,12 +328,13 @@ namespace pal
 
       LabelPosition::Quadrant quadrant;
 
-      bool isInConflictSinglePart( LabelPosition *lp );
-      bool isInConflictMultiPart( LabelPosition *lp );
-
     private:
+
+      std::unique_ptr< LabelPosition > mNextPart;
+
       double mCost;
       bool mHasObstacleConflict;
+      bool mHasHardConflict = false;
       int mUpsideDownCharCount;
 
       /**
@@ -336,6 +348,10 @@ namespace pal
        */
       double polygonIntersectionCostForParts( PointSet *polygon ) const;
 
+      bool isInConflictSinglePart( const LabelPosition *lp ) const;
+      bool isInConflictMultiPart( const LabelPosition *lp ) const;
+
+      LabelPosition &operator=( const LabelPosition & ) = delete;
   };
 
 } // end namespace

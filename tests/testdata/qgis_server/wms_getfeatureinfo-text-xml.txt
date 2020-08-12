@@ -7,6 +7,7 @@ Content-Type: text/xml; charset=utf-8
    <Attribute value="3" name="id"/>
    <Attribute value="three" name="name"/>
    <Attribute value="three èé↓" name="utf8nameè"/>
+   <BoundingBox maxy="5606011.4565" maxx="913204.9128" miny="5606011.4565" CRS="EPSG:3857" minx="913204.9128"/>
   </Feature>
  </Layer>
 </GetFeatureInfoResponse>

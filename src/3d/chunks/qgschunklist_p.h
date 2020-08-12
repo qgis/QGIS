@@ -27,11 +27,16 @@
 // version without notice, or even be removed.
 //
 
+#define SIP_NO_FILE
+
 class QgsChunkNode;
 
 /**
  * \ingroup 3d
  * Element of a double-linked list
+ *
+ * \note Not available in Python bindings
+ *
  * \since QGIS 3.0
  */
 struct QgsChunkListEntry

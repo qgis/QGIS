@@ -39,7 +39,6 @@ BASE_CLASS = get_ui_class('manageconnectionsdialog.ui')
 
 
 class ManageConnectionsDialog(QDialog, BASE_CLASS):
-
     """manage connections"""
 
     def __init__(self, mode):

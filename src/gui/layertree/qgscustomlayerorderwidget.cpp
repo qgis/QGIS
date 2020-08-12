@@ -132,13 +132,14 @@ QVariant CustomLayerOrderModel::data( const QModelIndex &index, int role ) const
 
 bool CustomLayerOrderModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
+  Q_UNUSED( value ); // Toggle
   if ( role == Qt::CheckStateRole )
   {
     QString id = mOrder.at( index.row() );
     QgsLayerTreeLayer *nodeLayer = mBridge->rootGroup()->findLayer( id );
     if ( nodeLayer )
     {
-      nodeLayer->setItemVisibilityChecked( static_cast< Qt::CheckState >( value.toInt() ) == Qt::Checked );
+      nodeLayer->setItemVisibilityChecked( ! nodeLayer->itemVisibilityChecked() );
       return true;
     }
   }
@@ -178,8 +179,8 @@ QMimeData *CustomLayerOrderModel::mimeData( const QModelIndexList &indexes ) con
 
 bool CustomLayerOrderModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( parent );
-  Q_UNUSED( column );
+  Q_UNUSED( parent )
+  Q_UNUSED( column )
 
   if ( action == Qt::IgnoreAction )
     return true;
@@ -203,7 +204,7 @@ bool CustomLayerOrderModel::dropMimeData( const QMimeData *data, Qt::DropAction 
 
 bool CustomLayerOrderModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   if ( count <= 0 )
     return false;
 

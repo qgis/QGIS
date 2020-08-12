@@ -145,15 +145,18 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
     for ( const QgsField &sourceField : vl->fields() )
     {
       bool found = false;
-      for ( const QgsField &destField : outputFields )
+      for ( QgsField &destField : outputFields )
       {
         if ( destField.name().compare( sourceField.name(), Qt::CaseInsensitive ) == 0 )
         {
           found = true;
           if ( destField.type() != sourceField.type() )
           {
-            throw QgsProcessingException( QObject::tr( "%1 field in layer %2 has different data type than in other layers (%3 instead of %4)" )
-                                          .arg( sourceField.name(), vl->name(), sourceField.typeName(), destField.typeName() ) );
+            feedback->pushInfo( QObject::tr( "%1 field in layer %2 has different data type than the destination layer (%3 instead of %4)" )
+                                .arg( sourceField.name(), vl->name(), sourceField.typeName(), destField.typeName() ) );
+            destField.setType( QVariant::String );
+            destField.setSubType( QVariant::Invalid );
+            destField.setLength( 0 );
           }
           break;
         }
@@ -167,13 +170,13 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
   bool addLayerField = false;
   if ( outputFields.lookupField( QStringLiteral( "layer" ) ) < 0 )
   {
-    outputFields.append( QgsField( QStringLiteral( "layer" ), QVariant::String, QString(), 100 ) );
+    outputFields.append( QgsField( QStringLiteral( "layer" ), QVariant::String, QString() ) );
     addLayerField = true;
   }
   bool addPathField = false;
   if ( outputFields.lookupField( QStringLiteral( "path" ) ) < 0 )
   {
-    outputFields.append( QgsField( QStringLiteral( "path" ), QVariant::String, QString(), 200 ) );
+    outputFields.append( QgsField( QStringLiteral( "path" ), QVariant::String, QString() ) );
     addPathField = true;
   }
 

@@ -21,14 +21,8 @@ __author__ = 'Victor Olaya  and Alexander Bruy'
 __date__ = 'February 2013'
 __copyright__ = '(C) 2013, Victor Olaya  and Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-import os
 import struct
 
-import numpy
 from osgeo import gdal
 
 from qgis.core import QgsProcessingException

@@ -24,6 +24,18 @@
 #include <QPen>
 #include "qgis_gui.h"
 
+#include "qgscompoundcurve.h"
+#include "qgscurvepolygon.h"
+#include "qgscircularstring.h"
+#include "qgslinestring.h"
+#include "qgspoint.h"
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsgeometryrubberband.h>
+% End
+#endif
 
 class QgsAbstractGeometry;
 class QgsPoint;
@@ -34,6 +46,16 @@ struct QgsVertexId;
  * A rubberband class for QgsAbstractGeometry (considering curved geometries)*/
 class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsGeometryRubberBand *>( sipCpp ) )
+      sipType = sipType_QgsGeometryRubberBand;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+
   public:
     enum IconType
     {
@@ -73,9 +95,9 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     ~QgsGeometryRubberBand() override;
 
     //! Sets geometry (takes ownership). Geometry is expected to be in map coordinates
-    void setGeometry( QgsAbstractGeometry *geom SIP_TRANSFER );
+    virtual void setGeometry( QgsAbstractGeometry *geom SIP_TRANSFER );
     //! Returns a pointer to the geometry
-    const QgsAbstractGeometry *geometry() { return mGeometry; }
+    const QgsAbstractGeometry *geometry() { return mGeometry.get(); }
     //! Moves vertex to new position (in map coordinates)
     void moveVertex( QgsVertexId id, const QgsPoint &newPos );
     //! Sets fill color for vertex markers
@@ -90,20 +112,30 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     void setBrushStyle( Qt::BrushStyle brushStyle );
     //! Sets vertex marker icon type
     void setIconType( IconType iconType ) { mIconType = iconType; }
+    //! Sets whether the vertices are drawn
+    void setVertexDrawingEnabled( bool isVerticesDrawn );
 
   protected:
     void paint( QPainter *painter ) override;
 
+    //! Returns which geometry is handled by the rubber band, polygon or line
+    QgsWkbTypes::GeometryType geometryType() const;
+
+    //! Sets which geometry is handled by the rubber band, polygon or line
+    void setGeometryType( const QgsWkbTypes::GeometryType &geometryType );
+
   private:
-    QgsAbstractGeometry *mGeometry = nullptr;
+    std::unique_ptr<QgsAbstractGeometry> mGeometry = nullptr;
     QBrush mBrush;
     QPen mPen;
     int mIconSize;
     IconType mIconType;
     QgsWkbTypes::GeometryType mGeometryType;
+    bool mDrawVertices = true;
 
     void drawVertex( QPainter *p, double x, double y );
     QgsRectangle rubberBandRectangle() const;
 };
+
 
 #endif // QGSGEOMETRYRUBBERBAND_H

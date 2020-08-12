@@ -41,6 +41,48 @@ QgsMessageLogViewer::QgsMessageLogViewer( QWidget *parent, Qt::WindowFlags fl )
            this, static_cast<void ( QgsMessageLogViewer::* )( const QString &, const QString &, Qgis::MessageLevel )>( &QgsMessageLogViewer::logMessage ) );
 
   connect( tabWidget, &QTabWidget::tabCloseRequested, this, &QgsMessageLogViewer::closeTab );
+
+  mTabBarContextMenu = new QMenu( this );
+  tabWidget->tabBar()->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( tabWidget->tabBar(), &QWidget::customContextMenuRequested, this, &QgsMessageLogViewer::showContextMenuForTabBar );
+}
+
+void QgsMessageLogViewer::showContextMenuForTabBar( QPoint point )
+{
+  if ( point.isNull() )
+  {
+    return;
+  }
+
+  mTabBarContextMenu->clear();
+
+  int tabIndex = tabWidget->tabBar()->tabAt( point );
+
+  QAction *actionCloseTab = new QAction( tr( "Close Tab" ), mTabBarContextMenu );
+  connect( actionCloseTab, &QAction::triggered, this, [this, tabIndex]
+  {
+    closeTab( tabIndex );
+  }
+         );
+  mTabBarContextMenu->addAction( actionCloseTab );
+
+  QAction *actionCloseOtherTabs = new QAction( tr( "Close Other Tabs" ), mTabBarContextMenu );
+  actionCloseOtherTabs->setEnabled( tabWidget->tabBar()->count() > 1 );
+  connect( actionCloseOtherTabs, &QAction::triggered, this, [this, tabIndex]
+  {
+    int i;
+    for ( i = tabWidget->tabBar()->count() - 1; i >= 0; i-- )
+    {
+      if ( i != tabIndex )
+      {
+        closeTab( i );
+      }
+    }
+  }
+         );
+  mTabBarContextMenu->addAction( actionCloseOtherTabs );
+
+  mTabBarContextMenu->exec( tabWidget->tabBar()->mapToGlobal( point ) );
 }
 
 void QgsMessageLogViewer::closeEvent( QCloseEvent *e )

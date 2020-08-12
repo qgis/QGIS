@@ -56,6 +56,8 @@ Note that ownership is not transferred to ``project``.
 
     virtual void updateSettings();
 
+    virtual bool layoutAccept( QgsStyleEntityVisitorInterface *visitor ) const;
+
 
   signals:
 

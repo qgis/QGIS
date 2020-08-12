@@ -22,10 +22,13 @@ Utilities for calculating bearings and directions.
 #include "qgsbearingutils.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     static double bearingTrueNorth( const QgsCoordinateReferenceSystem &crs,
-                                    const QgsCoordinateTransformContext  &transformContext,
-                                    const QgsPointXY &point );
+        const QgsCoordinateTransformContext  &transformContext,
+        const QgsPointXY &point );
 %Docstring
 Returns the direction to true north from a specified point and for a specified
 coordinate reference system. The returned value is in degrees clockwise from

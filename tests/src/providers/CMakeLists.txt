@@ -9,20 +9,28 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/effects
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/providers/wms
   ${CMAKE_SOURCE_DIR}/src/providers/postgres
   ${CMAKE_SOURCE_DIR}/src/providers/arcgisrest
   ${CMAKE_SOURCE_DIR}/src/providers/mdal
   ${CMAKE_SOURCE_DIR}/src/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/test
+  ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
+
   ${CMAKE_BINARY_DIR}/src/core
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${MDAL_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
@@ -43,7 +51,6 @@ MACRO (ADD_QGIS_TEST testname testsrc)
   SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
   ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
   ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
-  SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
   TARGET_LINK_LIBRARIES(qgis_${testname}
     ${Qt5Xml_LIBRARIES}
     ${Qt5Core_LIBRARIES}
@@ -68,33 +75,36 @@ SET_TARGET_PROPERTIES(qgis_wcsprovidertest PROPERTIES
   COMPILE_FLAGS "-DTEST_SERVER_URL=\\\"${TEST_SERVER_URL}\\\""
 )
 
-ADD_QGIS_TEST(arcgisrestutilstest testqgsarcgisrestutils.cpp)
-TARGET_LINK_LIBRARIES(qgis_arcgisrestutilstest arcgisfeatureserverprovider_a)
-
-ADD_QGIS_TEST(gdalprovidertest testqgsgdalprovider.cpp)
+IF (NOT FORCE_STATIC_PROVIDERS)
+  ADD_QGIS_TEST(arcgisrestutilstest testqgsarcgisrestutils.cpp)
+  TARGET_LINK_LIBRARIES(qgis_arcgisrestutilstest arcgisfeatureserverprovider_a)
+ENDIF (NOT FORCE_STATIC_PROVIDERS)
 
 IF(NOT MSVC)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 ENDIF(NOT MSVC)
 
-ADD_QGIS_TEST(ogrprovidertest testqgsogrprovider.cpp)
-TARGET_LINK_LIBRARIES(qgis_ogrprovidertest ogrprovider_a)
-
 ADD_QGIS_TEST(wmscapabilitiestest
               testqgswmscapabilities.cpp)
-TARGET_LINK_LIBRARIES(qgis_wmscapabilitiestest wmsprovider_a)
+TARGET_LINK_LIBRARIES(qgis_wmscapabilitiestest wmsprovider_a qgis_core)
+
+ADD_QGIS_TEST(wmsccapabilitiestest
+              testqgswmsccapabilities.cpp)
+TARGET_LINK_LIBRARIES(qgis_wmsccapabilitiestest wmsprovider_a qgis_core)
 
 ADD_QGIS_TEST(wmsprovidertest
               testqgswmsprovider.cpp)
-TARGET_LINK_LIBRARIES(qgis_wmsprovidertest wmsprovider_a)
+TARGET_LINK_LIBRARIES(qgis_wmsprovidertest wmsprovider_a qgis_core)
 
 ADD_QGIS_TEST(postgresprovidertest testqgspostgresprovider.cpp)
-TARGET_LINK_LIBRARIES(qgis_postgresprovidertest postgresprovider_a)
+TARGET_LINK_LIBRARIES(qgis_postgresprovidertest postgresprovider_a qgis_core)
 
 ADD_QGIS_TEST(postgresconntest testqgspostgresconn.cpp)
-TARGET_LINK_LIBRARIES(qgis_postgresconntest postgresprovider_a)
+TARGET_LINK_LIBRARIES(qgis_postgresconntest postgresprovider_a qgis_core)
 
-ADD_QGIS_TEST(mdalprovidertest testqgsmdalprovider.cpp)
+IF (NOT FORCE_STATIC_PROVIDERS)
+  ADD_QGIS_TEST(mdalprovidertest testqgsmdalprovider.cpp)
+ENDIF (NOT FORCE_STATIC_PROVIDERS)
 
 #############################################################
 # WCS public servers test:
@@ -104,14 +114,8 @@ IF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
         ../../../src/providers/wcs/qgswcscapabilities.cpp
         testqgswcspublicservers.cpp
   )
-  SET ( WCSTEST_MOC_HDRS
-        ../../../src/providers/wcs/qgswcscapabilities.h
-        testqgswcspublicservers.h
-  )
 
-  QT5_WRAP_CPP ( WCSTEST_MOC_SRCS  ${WCSTEST_MOC_HDRS})
-
-  ADD_EXECUTABLE ( qgis_wcstest ${WCSTEST_SRCS} ${WCSTEST_MOC_SRCS} )
+  ADD_EXECUTABLE ( qgis_wcstest ${WCSTEST_SRCS} )
 
   INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core

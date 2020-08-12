@@ -87,7 +87,7 @@ given ``project``.
 No reference to ``project`` is stored or utilized outside of the constructor,
 and it is used to retrieve the project's transform context only.
 
-Python scripts should utilize the QgsProject.instance() project
+Python scripts should utilize the :py:func:`QgsProject.instance()` project
 instance when creating QgsCoordinateTransform. This will ensure
 that any datum transforms defined in the project will be
 correctly respected during coordinate transforms. E.g.
@@ -288,22 +288,202 @@ otherwise points are transformed from destination to source CRS.
 Returns ``True`` if the transform short circuits because the source and destination are equivalent.
 %End
 
-    int sourceDatumTransformId() const;
+    QString coordinateOperation() const;
+%Docstring
+Returns a Proj string representing the coordinate operation which will be used to transform
+coordinates.
+
+.. note::
+
+   The string returned by this method gives the desired coordinate operation string, based on
+   the state of the QgsCoordinateTransformContext object given in the QgsCoordinateTransform's constructor.
+   It may be an empty string if no explicit coordinate operation is required. In order to determine the
+   ACTUAL coordinate operation which is being used by the transform, use the :py:func:`~QgsCoordinateTransform.instantiatedCoordinateOperationDetails` call instead.
+
+.. note::
+
+   Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return
+   an empty string, and the deprecated :py:func:`~QgsCoordinateTransform.sourceDatumTransformId` or :py:func:`~QgsCoordinateTransform.destinationDatumTransformId` methods should be used instead.
+
+
+.. seealso:: :py:func:`instantiatedCoordinateOperationDetails`
+
+.. seealso:: :py:func:`setCoordinateOperation`
+
+.. versionadded:: 3.8
+%End
+
+    QgsDatumTransform::TransformDetails instantiatedCoordinateOperationDetails() const;
+%Docstring
+Returns the transform details representing the coordinate operation which is being used to transform
+coordinates.
+
+This may differ from the result returned by :py:func:`~QgsCoordinateTransform.coordinateOperation` if the desired coordinate
+operation was not successfully instantiated.
+
+.. note::
+
+   Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return
+   an empty result, and the deprecated :py:func:`~QgsCoordinateTransform.sourceDatumTransformId` or :py:func:`~QgsCoordinateTransform.destinationDatumTransformId` methods should be used instead.
+
+.. seealso:: :py:func:`coordinateOperation`
+
+.. versionadded:: 3.10.2
+%End
+
+    void setCoordinateOperation( const QString &operation ) const;
+%Docstring
+Sets a Proj string representing the coordinate ``operation`` which will be used to transform
+coordinates.
+
+.. warning::
+
+   It is the caller's responsibility to ensure that ``operation`` is a valid Proj
+   coordinate operation string.
+
+.. note::
+
+   Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting,
+   and the deprecated :py:func:`~QgsCoordinateTransform.setSourceDatumTransformId` or :py:func:`~QgsCoordinateTransform.setDestinationDatumTransformId` methods should be used instead.
+
+
+.. seealso:: :py:func:`coordinateOperation`
+
+.. versionadded:: 3.8
+%End
+
+    void setAllowFallbackTransforms( bool allowed );
+%Docstring
+Sets whether "ballpark" fallback transformations can be used in the case that the specified
+coordinate operation fails (such as when coordinates from outside a required grid shift file
+are transformed). See :py:func:`~QgsCoordinateTransform.fallbackOperationOccurred` for further details.
+
+.. note::
+
+   Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
+
+.. warning::
+
+   If :py:func:`~QgsCoordinateTransform.setBallparkTransformsAreAppropriate` is set to ``True``, this setting will be ignored
+   and fallback transformations will always be permitted.
+
+
+.. seealso:: :py:func:`allowFallbackTransforms`
+
+.. seealso:: :py:func:`setBallparkTransformsAreAppropriate`
+
+.. versionadded:: 3.12
+%End
+
+    bool allowFallbackTransforms() const;
+%Docstring
+Returns whether "ballpark" fallback transformations will be used in the case that the specified
+coordinate operation fails (such as when coordinates from outside a required grid shift file
+are transformed). See :py:func:`~QgsCoordinateTransform.fallbackOperationOccurred` for further details.
+
+.. note::
+
+   Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
+
+.. seealso:: :py:func:`setAllowFallbackTransforms`
+
+.. seealso:: :py:func:`setBallparkTransformsAreAppropriate`
+
+.. versionadded:: 3.12
+%End
+
+    void setBallparkTransformsAreAppropriate( bool appropriate );
+%Docstring
+Sets whether approximate "ballpark" results are appropriate for this coordinate transform.
+
+When a coordinate transform is only being used to generate ballpark results then the
+``appropriate`` argument should be set to ``True``. This indicates that its perfectable
+acceptable (and even expected!) for the transform to use fallback coordinate operations
+in the case that the preferred or user-specified operation fails (such as when coordinates
+from outside of a grid shift file's extent are transformed).
+
+When ``appropriate`` is ``True``, then no warnings will be generated when the transform
+falls back to a default operation, which may introduce inaccuracies when compared to
+the default/specified coordinate operation.
+
+This should be set when a transform expects that coordinates outside of the direct
+area of use while be transformed, e.g. when transforming from a global extent to a
+CRS with a localized area of use.
+
+If ``appropriate`` is ``False`` (the default behavior), then transforms MAY STILL fallback to default operations
+when the preferred or user-specified operation fails, however whenever this occurs
+a user-visible warning will be generated.
+
+If ``appropriate`` is ``True``, then this setting overrides :py:func:`~QgsCoordinateTransform.allowFallbackTransforms`
+and fallback transforms will always be allowed when required.
+
+.. warning::
+
+   This setting applies to a single instance of a coordinate transform only,
+   and is not copied when a coordinate transform object is copied or assigned.
+
+.. note::
+
+   Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
+
+
+.. versionadded:: 3.12
+%End
+
+    void disableFallbackOperationHandler( bool disabled );
+%Docstring
+Sets whether the default fallback operation handler is disabled for this transform instance.
+
+If the default handler is ``disabled`` then it is possible to determine whether a fallback
+operation occurred by testing :py:func:`~QgsCoordinateTransform.fallbackOperationOccurred` immediately after a transformation.
+
+.. warning::
+
+   This setting applies to a single instance of a coordinate transform only,
+   and is not copied when a coordinate transform object is copied or assigned.
+
+.. note::
+
+   Requires Proj 6.0 or later. Builds based on earlier Proj versions will never perform fallback operations.
+
+
+.. seealso:: :py:func:`fallbackOperationOccurred`
+
+.. versionadded:: 3.12
+%End
+
+    bool fallbackOperationOccurred() const;
+%Docstring
+Returns ``True`` if a fallback operation occurred for the most recent transform.
+
+.. note::
+
+   Requires Proj 6.0 or later. Builds based on earlier Proj versions will never perform fallback operations.
+
+.. seealso:: :py:func:`disableFallbackOperationHandler`
+
+.. versionadded:: 3.12
+%End
+
+ int sourceDatumTransformId() const /Deprecated/;
 %Docstring
 Returns the ID of the datum transform to use when projecting from the source
 CRS.
 
 This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
-but can be manually overwritten by a call to setSourceDatumTransformId().
+but can be manually overwritten by a call to :py:func:`~QgsCoordinateTransform.setSourceDatumTransformId`.
 
 .. seealso:: :py:class:`QgsDatumTransform`
 
 .. seealso:: :py:func:`setSourceDatumTransformId`
 
 .. seealso:: :py:func:`destinationDatumTransformId`
+
+.. deprecated::
+   Unused on builds based on Proj 6.0 or later
 %End
 
-    void setSourceDatumTransformId( int datumId );
+ void setSourceDatumTransformId( int datumId ) /Deprecated/;
 %Docstring
 Sets the ``datumId`` ID of the datum transform to use when projecting from the source
 CRS.
@@ -316,24 +496,30 @@ Calling this method will overwrite any automatically calculated datum transform.
 .. seealso:: :py:func:`sourceDatumTransformId`
 
 .. seealso:: :py:func:`setDestinationDatumTransformId`
+
+.. deprecated::
+   Unused on builds based on Proj 6.0 or later
 %End
 
-    int destinationDatumTransformId() const;
+ int destinationDatumTransformId() const /Deprecated/;
 %Docstring
 Returns the ID of the datum transform to use when projecting to the destination
 CRS.
 
 This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
-but can be manually overwritten by a call to setDestinationDatumTransformId().
+but can be manually overwritten by a call to :py:func:`~QgsCoordinateTransform.setDestinationDatumTransformId`.
 
 .. seealso:: :py:class:`QgsDatumTransform`
 
 .. seealso:: :py:func:`setDestinationDatumTransformId`
 
 .. seealso:: :py:func:`sourceDatumTransformId`
+
+.. deprecated::
+   Unused on builds based on Proj 6.0 or later
 %End
 
-    void setDestinationDatumTransformId( int datumId );
+ void setDestinationDatumTransformId( int datumId ) /Deprecated/;
 %Docstring
 Sets the ``datumId`` ID of the datum transform to use when projecting to the destination
 CRS.
@@ -346,7 +532,11 @@ Calling this method will overwrite any automatically calculated datum transform.
 .. seealso:: :py:func:`destinationDatumTransformId`
 
 .. seealso:: :py:func:`setSourceDatumTransformId`
+
+.. deprecated::
+   Unused on builds based on Proj 6.0 or later
 %End
+
 
     static void invalidateCache();
 %Docstring
@@ -367,6 +557,14 @@ sourceUnits * scaleFactor = destinationUnits
 
 .. versionadded:: 3.4
 %End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsCoordinateTransform: %1 to %2>" ).arg( sipCpp->sourceCrs().isValid() ? sipCpp->sourceCrs().authid() : QStringLiteral( "NULL" ),
+                  sipCpp->destinationCrs().isValid() ? sipCpp->destinationCrs().authid() : QStringLiteral( "NULL" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
 
 };
 

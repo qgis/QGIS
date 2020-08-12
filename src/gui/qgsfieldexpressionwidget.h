@@ -37,7 +37,7 @@ class QgsExpressionContextGenerator;
 /**
  * \ingroup gui
  * \brief The QgsFieldExpressionWidget class reates a widget to choose fields and edit expressions
- * It contains a combo boxto display the fields and expression and a button to open the expression dialog.
+ * It contains a combo box to display the fields and expression and a button to open the expression dialog.
  * The combo box is editable, allowing expressions to be edited inline.
  * The validity of the expression is checked live on key press, invalid expressions are displayed in red.
  * The expression will be added to the model (and the fieldChanged signals emitted)
@@ -73,7 +73,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! Returns the title used for the expression dialog
     const QString expressionDialogTitle() { return mExpressionDialogTitle; }
 
-    //! setFilters allows fitering according to the type of field
+    //! setFilters allows filtering according to the type of field
     void setFilters( QgsFieldProxyModel::Filters filters );
 
     /**
@@ -200,6 +200,12 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void setField( const QString &fieldName );
 
     /**
+     * Sets the fields used in the widget to \a fields, this allows the widget to work without a layer.
+     * \since QGIS 3.14
+     */
+    void setFields( const QgsFields &fields );
+
+    /**
      * Sets the current expression text and if applicable also the field.
      * Alias for setField.
      *
@@ -244,12 +250,11 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     QToolButton *mButton = nullptr;
     QgsFieldProxyModel *mFieldProxyModel = nullptr;
     QString mExpressionDialogTitle;
-    std::shared_ptr<const QgsDistanceArea> mDa;
+    std::shared_ptr<const QgsDistanceArea> mDistanceArea;
     QgsExpressionContext mExpressionContext;
     const QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
     QString mBackupExpression;
     bool mAllowEvalErrors = false;
-    QPalette mComboPalette;
 
     friend class TestQgsFieldExpressionWidget;
 };

@@ -184,10 +184,15 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
      */
     void scaleChanged( double scale );
 
+  private slots:
+
+    void menuAboutToShow();
+
   private:
     QgsScaleComboBox *mScaleComboBox = nullptr;
     QToolButton *mCurrentScaleButton = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
+    QMenu *mMenu = nullptr;
     bool mShowCurrentScaleButton = false;
 };
 

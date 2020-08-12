@@ -23,6 +23,8 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgsaggregatetoolbutton.h"
 #include "qgsgui.h"
+#include "qgsvectorlayerjoinbuffer.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QLayout>
 #include <QLabel>
@@ -31,7 +33,7 @@
 QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget, const QString &widgetType, QgsAttributeForm *form )
   : QgsAttributeFormWidget( editorWidget, form )
   , mWidgetType( widgetType )
-  , mWidget( editorWidget )
+  , mEditorWidget( editorWidget )
   , mForm( form )
   , mMultiEditButton( new QgsMultiEditToolButton() )
   , mBlockValueUpdate( false )
@@ -42,22 +44,22 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
   mConstraintResultLabel->setObjectName( QStringLiteral( "ConstraintStatus" ) );
   mConstraintResultLabel->setSizePolicy( QSizePolicy::Fixed, mConstraintResultLabel->sizePolicy().verticalPolicy() );
 
-  mMultiEditButton->setField( mWidget->field() );
+  mMultiEditButton->setField( mEditorWidget->field() );
   mAggregateButton = new QgsAggregateToolButton();
   mAggregateButton->setType( editorWidget->field().type() );
   connect( mAggregateButton, &QgsAggregateToolButton::aggregateChanged, this, &QgsAttributeFormEditorWidget::onAggregateChanged );
 
-  if ( mWidget->widget() )
+  if ( mEditorWidget->widget() )
   {
-    mWidget->widget()->setObjectName( mWidget->field().name() );
+    mEditorWidget->widget()->setObjectName( mEditorWidget->field().name() );
   }
 
-  connect( mWidget, static_cast<void ( QgsEditorWidgetWrapper::* )( const QVariant &value )>( &QgsEditorWidgetWrapper::valueChanged ), this, &QgsAttributeFormEditorWidget::editorWidgetChanged );
+  connect( mEditorWidget, &QgsEditorWidgetWrapper::valuesChanged, this, &QgsAttributeFormEditorWidget::editorWidgetValuesChanged );
 
   connect( mMultiEditButton, &QgsMultiEditToolButton::resetFieldValueTriggered, this, &QgsAttributeFormEditorWidget::resetValue );
   connect( mMultiEditButton, &QgsMultiEditToolButton::setFieldValueTriggered, this, &QgsAttributeFormEditorWidget::setFieldTriggered );
 
-  mMultiEditButton->setField( mWidget->field() );
+  mMultiEditButton->setField( mEditorWidget->field() );
 
   updateWidgets();
 }
@@ -71,8 +73,8 @@ QgsAttributeFormEditorWidget::~QgsAttributeFormEditorWidget()
 void QgsAttributeFormEditorWidget::createSearchWidgetWrappers( const QgsAttributeEditorContext &context )
 {
   Q_ASSERT( !mWidgetType.isEmpty() );
-  const QVariantMap config = mWidget->config();
-  const int fieldIdx = mWidget->fieldIdx();
+  const QVariantMap config = mEditorWidget->config();
+  const int fieldIdx = mEditorWidget->fieldIdx();
 
   QgsSearchWidgetWrapper *sww = QgsGui::editorWidgetRegistry()->createSearchWidget( mWidgetType, layer(), fieldIdx, config,
                                 searchWidgetFrame(), context );
@@ -114,18 +116,26 @@ void QgsAttributeFormEditorWidget::setConstraintResultVisible( bool editable )
   mConstraintResultLabel->setHidden( !editable );
 }
 
+QgsEditorWidgetWrapper *QgsAttributeFormEditorWidget::editorWidget() const
+{
+  return mEditorWidget;
+}
+
 void QgsAttributeFormEditorWidget::setIsMixed( bool mixed )
 {
-  if ( mWidget && mixed )
-    mWidget->showIndeterminateState();
+  if ( mEditorWidget && mixed )
+    mEditorWidget->showIndeterminateState();
   mMultiEditButton->setIsMixed( mixed );
   mIsMixed = mixed;
 }
 
 void QgsAttributeFormEditorWidget::changesCommitted()
 {
-  if ( mWidget )
-    mPreviousValue = mWidget->value();
+  if ( mEditorWidget )
+  {
+    mPreviousValue = mEditorWidget->value();
+    mPreviousAdditionalValues = mEditorWidget->additionalFieldValues();
+  }
 
   setIsMixed( false );
   mMultiEditButton->changesCommitted();
@@ -134,28 +144,30 @@ void QgsAttributeFormEditorWidget::changesCommitted()
 
 
 
-void QgsAttributeFormEditorWidget::initialize( const QVariant &initialValue, bool mixedValues )
+void QgsAttributeFormEditorWidget::initialize( const QVariant &initialValue, bool mixedValues, const QVariantList &additionalFieldValues )
 {
-  if ( mWidget )
+  if ( mEditorWidget )
   {
     mBlockValueUpdate = true;
-    mWidget->setValue( initialValue );
+    mEditorWidget->setValues( initialValue, additionalFieldValues );
     mBlockValueUpdate = false;
   }
   mPreviousValue = initialValue;
+  mPreviousAdditionalValues = additionalFieldValues;
   setIsMixed( mixedValues );
   mMultiEditButton->setIsChanged( false );
   mIsChanged = false;
+  updateWidgets();
 }
 
 QVariant QgsAttributeFormEditorWidget::currentValue() const
 {
-  return mWidget->value();
+  return mEditorWidget->value();
 }
 
 
 
-void QgsAttributeFormEditorWidget::editorWidgetChanged( const QVariant &value )
+void QgsAttributeFormEditorWidget::editorWidgetValuesChanged( const QVariant &value, const QVariantList &additionalFieldValues )
 {
   if ( mBlockValueUpdate )
     return;
@@ -172,15 +184,18 @@ void QgsAttributeFormEditorWidget::editorWidgetChanged( const QVariant &value )
       mMultiEditButton->setIsChanged( true );
   }
 
+  Q_NOWARN_DEPRECATED_PUSH
   emit valueChanged( value );
+  Q_NOWARN_DEPRECATED_POP
+  emit valuesChanged( value, additionalFieldValues );
 }
 
 void QgsAttributeFormEditorWidget::resetValue()
 {
   mIsChanged = false;
   mBlockValueUpdate = true;
-  if ( mWidget )
-    mWidget->setValue( mPreviousValue );
+  if ( mEditorWidget )
+    mEditorWidget->setValues( mPreviousValue, mPreviousAdditionalValues );
   mBlockValueUpdate = false;
 
   switch ( mode() )
@@ -192,8 +207,8 @@ void QgsAttributeFormEditorWidget::resetValue()
     case MultiEditMode:
     {
       mMultiEditButton->setIsChanged( false );
-      if ( mWidget && mIsMixed )
-        mWidget->showIndeterminateState();
+      if ( mEditorWidget && mIsMixed )
+        mEditorWidget->showIndeterminateState();
       break;
     }
   }
@@ -214,7 +229,16 @@ void QgsAttributeFormEditorWidget::updateWidgets()
 {
   //first update the tool buttons
   bool hasMultiEditButton = ( editPage()->layout()->indexOf( mMultiEditButton ) >= 0 );
-  bool fieldReadOnly = layer()->editFormConfig().readOnly( mWidget->fieldIdx() );
+
+  const int fieldIndex = mEditorWidget->fieldIdx();
+
+  bool fieldReadOnly = false;
+  QgsFeature feature;
+  auto it = layer()->getSelectedFeatures();
+  while ( it.nextFeature( feature ) )
+  {
+    fieldReadOnly |= !QgsVectorLayerUtils::fieldIsEditable( layer(), fieldIndex, feature );
+  }
 
   if ( hasMultiEditButton )
   {

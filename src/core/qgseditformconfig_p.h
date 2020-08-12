@@ -17,7 +17,6 @@
 #define QGSEDITFORMCONFIG_P_H
 
 #include <QMap>
-
 #include "qgsfields.h"
 #include "qgseditformconfig.h"
 
@@ -36,10 +35,12 @@ class QgsEditFormConfigPrivate : public QSharedData
       , mConfiguredRootContainer( o.mConfiguredRootContainer )
       , mFieldEditables( o.mFieldEditables )
       , mLabelOnTop( o.mLabelOnTop )
+      , mDataDefinedFieldProperties( o.mDataDefinedFieldProperties )
       , mWidgetConfigs( o.mWidgetConfigs )
       , mEditorLayout( o.mEditorLayout )
       , mUiFormPath( o.mUiFormPath )
       , mInitFunction( o.mInitFunction )
+      , mInitFilePath( o.mInitFilePath )
       , mInitCodeSource( o.mInitCodeSource )
       , mInitCode( o.mInitCode )
       , mSuppressForm( o.mSuppressForm )
@@ -51,6 +52,20 @@ class QgsEditFormConfigPrivate : public QSharedData
       delete mInvisibleRootContainer;
     }
 
+    static QgsPropertiesDefinition &propertyDefinitions()
+    {
+      static QgsPropertiesDefinition sPropertyDefinitions
+      {
+        {
+          QgsEditFormConfig::DataDefinedProperty::Alias,
+          QgsPropertyDefinition( "dataDefinedAlias",
+                                 QObject::tr( "Alias" ),
+                                 QgsPropertyDefinition::String )
+        },
+      };
+      return sPropertyDefinitions;
+    };
+
     //! The invisible root container for attribute editors in the drag and drop designer
     QgsAttributeEditorContainer *mInvisibleRootContainer = nullptr;
 
@@ -59,11 +74,12 @@ class QgsEditFormConfigPrivate : public QSharedData
 
     QMap< QString, bool> mFieldEditables;
     QMap< QString, bool> mLabelOnTop;
+    QMap< QString, QgsPropertyCollection> mDataDefinedFieldProperties;
 
     QMap<QString, QVariantMap > mWidgetConfigs;
 
     //! Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated)
-    QgsEditFormConfig::EditorLayout mEditorLayout = QgsEditFormConfig::GeneratedLayout;
+    QgsEditFormConfig::EditorLayout mEditorLayout = QgsEditFormConfig::EditorLayout::GeneratedLayout;
 
     //! Path or URL to the UI form
     QString mUiFormPath;
@@ -72,15 +88,19 @@ class QgsEditFormConfigPrivate : public QSharedData
     //! Path of the Python external file to be loaded
     QString mInitFilePath;
     //! Choose the source of the init founction
-    QgsEditFormConfig::PythonInitCodeSource mInitCodeSource = QgsEditFormConfig::CodeSourceNone;
+    QgsEditFormConfig::PythonInitCodeSource mInitCodeSource = QgsEditFormConfig::PythonInitCodeSource::CodeSourceNone;
     //! Python init code provided in the dialog
     QString mInitCode;
 
     //! Type of feature form suppression after feature creation
-    QgsEditFormConfig::FeatureFormSuppress mSuppressForm = QgsEditFormConfig::SuppressDefault;
+    QgsEditFormConfig::FeatureFormSuppress mSuppressForm = QgsEditFormConfig::FeatureFormSuppress::SuppressDefault;
 
     QgsFields mFields;
+
+  private:
+    QgsEditFormConfigPrivate &operator= ( const QgsEditFormConfigPrivate & ) = delete;
 };
+
 
 /// @endcond
 

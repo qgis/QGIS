@@ -131,7 +131,7 @@ QgsFeatureIds QgsFeatureSource::allFeatureIds() const
 
 QgsVectorLayer *QgsFeatureSource::materialize( const QgsFeatureRequest &request, QgsFeedback *feedback )
 {
-  QgsWkbTypes::Type outWkbType = request.flags() & QgsFeatureRequest::NoGeometry ? QgsWkbTypes::NoGeometry : wkbType();
+  QgsWkbTypes::Type outWkbType = ( request.flags() & QgsFeatureRequest::NoGeometry ) ? QgsWkbTypes::NoGeometry : wkbType();
   QgsCoordinateReferenceSystem crs = request.destinationCrs().isValid() ? request.destinationCrs() : sourceCrs();
 
   QgsAttributeList requestedAttrs = request.subsetOfAttributes();
@@ -185,5 +185,10 @@ QgsVectorLayer *QgsFeatureSource::materialize( const QgsFeatureRequest &request,
   }
 
   return layer.release();
+}
+
+QgsFeatureSource::SpatialIndexPresence QgsFeatureSource::hasSpatialIndex() const
+{
+  return SpatialIndexUnknown;
 }
 

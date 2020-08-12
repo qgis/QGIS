@@ -16,12 +16,7 @@
 #include "qgsgeometrygeneratorsymbollayer.h"
 #include "qgsgeometry.h"
 
-QgsGeometryGeneratorSymbolLayer::~QgsGeometryGeneratorSymbolLayer()
-{
-  delete mMarkerSymbol;
-  delete mLineSymbol;
-  delete mFillSymbol;
-}
+QgsGeometryGeneratorSymbolLayer::~QgsGeometryGeneratorSymbolLayer() = default;
 
 QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::create( const QgsStringMap &properties )
 {
@@ -67,20 +62,20 @@ void QgsGeometryGeneratorSymbolLayer::setSymbolType( QgsSymbol::SymbolType symbo
   if ( symbolType == QgsSymbol::Fill )
   {
     if ( !mFillSymbol )
-      mFillSymbol = QgsFillSymbol::createSimple( QgsStringMap() );
-    mSymbol = mFillSymbol;
+      mFillSymbol.reset( QgsFillSymbol::createSimple( QgsStringMap() ) );
+    mSymbol = mFillSymbol.get();
   }
   else if ( symbolType == QgsSymbol::Line )
   {
     if ( !mLineSymbol )
-      mLineSymbol = QgsLineSymbol::createSimple( QgsStringMap() );
-    mSymbol = mLineSymbol;
+      mLineSymbol.reset( QgsLineSymbol::createSimple( QgsStringMap() ) );
+    mSymbol = mLineSymbol.get();
   }
   else if ( symbolType == QgsSymbol::Marker )
   {
     if ( !mMarkerSymbol )
-      mMarkerSymbol = QgsMarkerSymbol::createSimple( QgsStringMap() );
-    mSymbol = mMarkerSymbol;
+      mMarkerSymbol.reset( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+    mSymbol = mMarkerSymbol.get();
   }
   else
     Q_ASSERT( false );
@@ -101,16 +96,27 @@ void QgsGeometryGeneratorSymbolLayer::stopRender( QgsSymbolRenderContext &contex
     mSymbol->stopRender( context.renderContext() );
 }
 
+void QgsGeometryGeneratorSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext & )
+{
+  mRenderingFeature = true;
+  mHasRenderedFeature = false;
+}
+
+void QgsGeometryGeneratorSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRenderContext & )
+{
+  mRenderingFeature = false;
+}
+
 QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::clone() const
 {
   QgsGeometryGeneratorSymbolLayer *clone = new QgsGeometryGeneratorSymbolLayer( mExpression->expression() );
 
   if ( mFillSymbol )
-    clone->mFillSymbol = mFillSymbol->clone();
+    clone->mFillSymbol.reset( mFillSymbol->clone() );
   if ( mLineSymbol )
-    clone->mLineSymbol = mLineSymbol->clone();
+    clone->mLineSymbol.reset( mLineSymbol->clone() );
   if ( mMarkerSymbol )
-    clone->mMarkerSymbol = mMarkerSymbol->clone();
+    clone->mMarkerSymbol.reset( mMarkerSymbol->clone() );
 
   clone->setSymbolType( mSymbolType );
 
@@ -142,7 +148,7 @@ QgsStringMap QgsGeometryGeneratorSymbolLayer::properties() const
 void QgsGeometryGeneratorSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize size )
 {
   if ( mSymbol )
-    mSymbol->drawPreviewIcon( context.renderContext().painter(), size );
+    mSymbol->drawPreviewIcon( context.renderContext().painter(), size, nullptr, false, nullptr, context.patchShape() );
 }
 
 void QgsGeometryGeneratorSymbolLayer::setGeometryExpression( const QString &exp )
@@ -155,15 +161,15 @@ bool QgsGeometryGeneratorSymbolLayer::setSubSymbol( QgsSymbol *symbol )
   switch ( symbol->type() )
   {
     case QgsSymbol::Marker:
-      mMarkerSymbol = static_cast<QgsMarkerSymbol *>( symbol );
+      mMarkerSymbol.reset( static_cast<QgsMarkerSymbol *>( symbol ) );
       break;
 
     case QgsSymbol::Line:
-      mLineSymbol = static_cast<QgsLineSymbol *>( symbol );
+      mLineSymbol.reset( static_cast<QgsLineSymbol *>( symbol ) );
       break;
 
     case QgsSymbol::Fill:
-      mFillSymbol = static_cast<QgsFillSymbol *>( symbol );
+      mFillSymbol.reset( static_cast<QgsFillSymbol *>( symbol ) );
       break;
 
     default:
@@ -197,6 +203,9 @@ bool QgsGeometryGeneratorSymbolLayer::isCompatibleWithSymbol( QgsSymbol *symbol 
 }
 void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context )
 {
+  if ( mRenderingFeature && mHasRenderedFeature )
+    return;
+
   if ( context.feature() )
   {
     QgsExpressionContext &expressionContext = context.renderContext().expressionContext();
@@ -210,6 +219,9 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context )
     subSymbolExpressionContextScope->setFeature( f );
 
     mSymbol->renderFeature( f, context.renderContext(), -1, context.selected() );
+
+    if ( mRenderingFeature )
+      mHasRenderedFeature = true;
   }
 }
 

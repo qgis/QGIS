@@ -40,7 +40,7 @@ above any existing map grids already present in the stack.
 
 .. note::
 
-   After adding a grid to the stack, updateBoundingRect() and update()
+   After adding a grid to the stack, :py:func:`~QgsLayoutItemMapGridStack.updateBoundingRect` and :py:func:`~QgsLayoutItemMapGridStack.update`
    should be called for the QgsLayoutItemMap to prevent rendering artifacts.
 
 .. seealso:: :py:func:`removeGrid`
@@ -52,7 +52,7 @@ Removes a grid with matching ``gridId`` from the stack and deletes the correspon
 
 .. note::
 
-   After removing a grid from the stack, updateBoundingRect() and update()
+   After removing a grid from the stack, :py:func:`~QgsLayoutItemMapGridStack.updateBoundingRect` and :py:func:`~QgsLayoutItemMapGridStack.update`
    should be called for the QgsLayoutItemMap to prevent rendering artifacts.
 
 .. seealso:: :py:func:`addGrid`
@@ -64,7 +64,7 @@ Moves a grid with matching ``gridId`` up the stack, causing it to be rendered ab
 
 .. note::
 
-   After moving a grid within the stack, update() should be
+   After moving a grid within the stack, :py:func:`~QgsLayoutItemMapGridStack.update` should be
    called for the QgsLayoutItemMap to redraw the map with the new grid stack order.
 
 .. seealso:: :py:func:`moveGridDown`
@@ -76,7 +76,7 @@ Moves a grid with matching ``gridId`` down the stack, causing it to be rendered 
 
 .. note::
 
-   After moving a grid within the stack, update() should be
+   After moving a grid within the stack, :py:func:`~QgsLayoutItemMapGridStack.update` should be
    called for the QgsLayoutItemMap to redraw the map with the new grid stack order.
 
 .. seealso:: :py:func:`moveGridUp`
@@ -141,7 +141,8 @@ An individual grid which is drawn above the map content in a
     {
       MapUnit,
       MM,
-      CM
+      CM,
+      DynamicPageSizeBased,
     };
 
     enum GridStyle
@@ -171,7 +172,10 @@ An individual grid which is drawn above the map content in a
       Horizontal,
       Vertical,
       VerticalDescending,
-      BoundaryDirection
+      BoundaryDirection,
+      AboveTick,
+      OnTick,
+      UnderTick,
     };
 
     enum AnnotationFormat
@@ -192,7 +196,7 @@ An individual grid which is drawn above the map content in a
       Left,
       Right,
       Bottom,
-      Top
+      Top,
     };
 
     enum FrameStyle
@@ -205,6 +209,12 @@ An individual grid which is drawn above the map content in a
       LineBorder,
       LineBorderNautical,
       ZebraNautical,
+    };
+
+    enum TickLengthMode
+    {
+      OrthogonalTicks,
+      NormalizedTicks,
     };
 
     enum FrameSideFlag
@@ -284,6 +294,9 @@ map item separately.
 .. seealso:: :py:func:`maxExtension`
 %End
 
+    virtual void setEnabled( bool enabled );
+
+
 
     void setUnits( GridUnit unit );
 %Docstring
@@ -314,7 +327,7 @@ are controlled through the setUnits method
     double intervalX() const;
 %Docstring
 Returns the interval between grid lines in the x-direction. The units
-are retrieved through the units() method.
+are retrieved through the :py:func:`~QgsLayoutItemMapGrid.units` method.
 
 .. seealso:: :py:func:`setIntervalX`
 
@@ -334,7 +347,7 @@ are controlled through the setUnits method
     double intervalY() const;
 %Docstring
 Returns the interval between grid lines in the y-direction. The units
-are retrieved through the units() method.
+are retrieved through the :py:func:`~QgsLayoutItemMapGrid.units` method.
 
 .. seealso:: :py:func:`setIntervalY`
 
@@ -354,7 +367,7 @@ are controlled through the setUnits method.
     double offsetX() const;
 %Docstring
 Returns the offset for grid lines in the x-direction. The units
-are retrieved through the units() method.
+are retrieved through the :py:func:`~QgsLayoutItemMapGrid.units` method.
 
 .. seealso:: :py:func:`setOffsetX`
 
@@ -374,11 +387,71 @@ are controlled through the setUnits method.
     double offsetY() const;
 %Docstring
 Returns the offset for grid lines in the y-direction. The units
-are retrieved through the units() method.
+are retrieved through the :py:func:`~QgsLayoutItemMapGrid.units` method.
 
 .. seealso:: :py:func:`setOffsetY`
 
 .. seealso:: :py:func:`offsetX`
+%End
+
+    double minimumIntervalWidth() const;
+%Docstring
+Returns the minimum width (in millimeters) for grid segments. This
+property is only effective if the :py:func:`~QgsLayoutItemMapGrid.units` is set
+to DynamicPageSizeBased.
+
+.. seealso:: :py:func:`units`
+
+.. seealso:: :py:func:`setMinimumIntervalWidth`
+
+.. seealso:: :py:func:`maximumIntervalWidth`
+
+.. versionadded:: 3.10
+%End
+
+    void setMinimumIntervalWidth( double width );
+%Docstring
+Sets the minimum ``width`` (in millimeters) for grid segments. This
+property is only effective if the :py:func:`~QgsLayoutItemMapGrid.units` is set
+to DynamicPageSizeBased.
+
+.. seealso:: :py:func:`minimumIntervalWidth`
+
+.. seealso:: :py:func:`setMaximumIntervalWidth`
+
+.. seealso:: :py:func:`setUnits`
+
+.. versionadded:: 3.10
+%End
+
+    double maximumIntervalWidth() const;
+%Docstring
+Returns the maximum width (in millimeters) for grid segments. This
+property is only effective if the :py:func:`~QgsLayoutItemMapGrid.units` is set
+to DynamicPageSizeBased.
+
+.. seealso:: :py:func:`units`
+
+.. seealso:: :py:func:`setMaximumIntervalWidth`
+
+.. seealso:: :py:func:`minimumIntervalWidth`
+
+.. versionadded:: 3.10
+%End
+
+    void setMaximumIntervalWidth( double width );
+%Docstring
+Sets the maximum ``width`` (in millimeters) for grid segments. This
+property is only effective if the :py:func:`~QgsLayoutItemMapGrid.units` is set
+to DynamicPageSizeBased.
+
+.. seealso:: :py:func:`maximumIntervalWidth`
+
+.. seealso:: :py:func:`setMinimumIntervalWidth`
+
+.. seealso:: :py:func:`setUnits`
+
+.. versionadded:: 3.10
 %End
 
 
@@ -501,32 +574,66 @@ Returns whether annotations are shown for the grid.
 .. seealso:: :py:func:`setAnnotationEnabled`
 %End
 
-    void setAnnotationFont( const QFont &font );
+    void setAnnotationTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` to use when rendering grid annotations.
+
+.. seealso:: :py:func:`annotationTextFormat`
+
+.. versionadded:: 3.16
+%End
+
+    QgsTextFormat annotationTextFormat() const;
+%Docstring
+Returns the text format used when rendering grid annotations.
+
+.. seealso:: :py:func:`setAnnotationTextFormat`
+
+.. versionadded:: 3.16
+%End
+
+ void setAnnotationFont( const QFont &font ) /Deprecated/;
 %Docstring
 Sets the ``font`` used for drawing grid annotations.
+Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.setFont().
 
 .. seealso:: :py:func:`annotationFont`
+
+.. deprecated::
+   use setAnnotationTextFormat() instead
 %End
 
-    QFont annotationFont() const;
+ QFont annotationFont() const /Deprecated/;
 %Docstring
 Returns the font used for drawing grid annotations.
+Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.font().
 
 .. seealso:: :py:func:`setAnnotationFont`
+
+.. deprecated::
+   use annotationTextFormat() instead
 %End
 
-    void setAnnotationFontColor( const QColor &color );
+ void setAnnotationFontColor( const QColor &color ) /Deprecated/;
 %Docstring
 Sets the font ``color`` used for drawing grid annotations.
+Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.setColor() and :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.setOpacity().
 
 .. seealso:: :py:func:`annotationFontColor`
+
+.. deprecated::
+   use setAnnotationTextFormat() instead
 %End
 
-    QColor annotationFontColor() const;
+ QColor annotationFontColor() const /Deprecated/;
 %Docstring
 Returns the font color used for drawing grid annotations.
+Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.color() and :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.opacity().
 
 .. seealso:: :py:func:`setAnnotationFontColor`
+
+.. deprecated::
+   use annotationTextFormat() instead
 %End
 
     void setAnnotationPrecision( const int precision );
@@ -637,7 +744,7 @@ Returns the format for drawing grid annotations.
 
     void setAnnotationExpression( const QString &expression );
 %Docstring
-Sets the ``expression`` used for drawing grid annotations. This is only used when annotationFormat()
+Sets the ``expression`` used for drawing grid annotations. This is only used when :py:func:`~QgsLayoutItemMapGrid.annotationFormat`
 is QgsLayoutItemMapGrid.CustomFormat.
 
 .. seealso:: :py:func:`annotationExpression`
@@ -645,7 +752,7 @@ is QgsLayoutItemMapGrid.CustomFormat.
 
     QString annotationExpression() const;
 %Docstring
-Returns the expression used for drawing grid annotations. This is only used when annotationFormat()
+Returns the expression used for drawing grid annotations. This is only used when :py:func:`~QgsLayoutItemMapGrid.annotationFormat`
 is QgsLayoutItemMapGrid.CustomFormat.
 
 .. seealso:: :py:func:`setAnnotationExpression`
@@ -750,6 +857,90 @@ The size of the line outlines drawn in the frame can be retrieved via the
 framePenSize method.
 
 .. seealso:: :py:func:`setFrameWidth`
+%End
+
+    void setRotatedTicksEnabled( const bool state );
+%Docstring
+Enable/disable ticks rotation for rotated or reprojected grids.
+
+.. seealso:: :py:func:`rotatedTicksEnabled`
+%End
+
+    double rotatedTicksEnabled() const;
+%Docstring
+Gets whether ticks rotation for rotated or reprojected grids is enabled.
+
+.. seealso:: :py:func:`setRotatedTicksEnabled`
+%End
+
+    void setRotatedTicksLengthMode( const TickLengthMode mode );
+%Docstring
+Sets the tick length calculation mode.
+
+.. seealso:: :py:func:`rotatedTicksLengthMode`
+%End
+
+    TickLengthMode rotatedTicksLengthMode() const;
+%Docstring
+Returns the grid frame style.
+
+.. seealso:: :py:func:`setRotatedTicksLengthMode`
+%End
+
+    void setRotatedTicksMinimumAngle( const double angle );
+%Docstring
+Sets the ``minimum`` angle (in degrees) below which ticks are not drawn.
+
+.. seealso:: :py:func:`rotatedTicksMinimumAngle`
+%End
+
+    double rotatedTicksMinimumAngle() const;
+%Docstring
+Gets the ``minimum`` angle (in degrees) below which ticks are not drawn.
+
+.. seealso:: :py:func:`setRotatedTicksMinimumAngle`
+%End
+
+    void setRotatedAnnotationsEnabled( const bool state );
+%Docstring
+Enable/disable annotations rotation for rotated or reprojected grids.
+
+.. seealso:: :py:func:`rotatedAnnotationsEnabled`
+%End
+
+    double rotatedAnnotationsEnabled() const;
+%Docstring
+Gets whether annotations rotation for rotated or reprojected grids is enabled.
+
+.. seealso:: :py:func:`setRotatedAnnotationsEnabled`
+%End
+
+    void setRotatedAnnotationsLengthMode( const TickLengthMode mode );
+%Docstring
+Sets the annotation length calculation mode.
+
+.. seealso:: :py:func:`rotatedAnnotationsLengthMode`
+%End
+
+    TickLengthMode rotatedAnnotationsLengthMode() const;
+%Docstring
+Returns the grid frame style.
+
+.. seealso:: :py:func:`setRotatedAnnotationsLengthMode`
+%End
+
+    void setRotatedAnnotationsMinimumAngle( const double angle );
+%Docstring
+Sets the ``minimum`` angle (in degrees) below which annotated are not drawn.
+
+.. seealso:: :py:func:`rotatedAnnotationsMinimumAngle`
+%End
+
+    double rotatedAnnotationsMinimumAngle() const;
+%Docstring
+Gets the ``minimum`` angle (in degrees) below which annotated are not drawn.
+
+.. seealso:: :py:func:`setRotatedAnnotationsMinimumAngle`
 %End
 
     void setFrameMargin( const double margin );
@@ -862,8 +1053,11 @@ Retrieves the second fill color for the grid frame.
 
     virtual QgsExpressionContext createExpressionContext() const;
 
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
-      public:
+    virtual void refresh();
+
+
 };
 
 QFlags<QgsLayoutItemMapGrid::FrameSideFlag> operator|(QgsLayoutItemMapGrid::FrameSideFlag f1, QFlags<QgsLayoutItemMapGrid::FrameSideFlag> f2);

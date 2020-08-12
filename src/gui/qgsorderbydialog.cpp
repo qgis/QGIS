@@ -124,8 +124,8 @@ void QgsOrderByDialog::setRow( int row, const QgsFeatureRequest::OrderByClause &
   ascComboBox->setCurrentIndex( orderByClause.ascending() ? 0 : 1 );
 
   QComboBox *nullsFirstComboBox = new QComboBox();
-  nullsFirstComboBox->addItem( tr( "NULLs last" ) );
-  nullsFirstComboBox->addItem( tr( "NULLs first" ) );
+  nullsFirstComboBox->addItem( tr( "NULLs Last" ) );
+  nullsFirstComboBox->addItem( tr( "NULLs First" ) );
   nullsFirstComboBox->setCurrentIndex( orderByClause.nullsFirst() ? 1 : 0 );
 
   mOrderByTableWidget->setCellWidget( row, 0, fieldExpression );

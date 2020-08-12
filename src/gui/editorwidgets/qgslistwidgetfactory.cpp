@@ -35,9 +35,9 @@ QgsEditorWidgetWrapper *QgsListWidgetFactory::create( QgsVectorLayer *vl, int fi
 
 QgsEditorConfigWidget *QgsListWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
-  Q_UNUSED( vl );
-  Q_UNUSED( fieldIdx );
-  Q_UNUSED( parent );
+  Q_UNUSED( vl )
+  Q_UNUSED( fieldIdx )
+  Q_UNUSED( parent )
   return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "List field" ) );
 }
 

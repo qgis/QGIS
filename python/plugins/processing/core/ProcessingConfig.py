@@ -21,20 +21,19 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
+import tempfile
 
 from qgis.PyQt.QtCore import QCoreApplication, QObject, pyqtSignal
 from qgis.core import (NULL,
                        QgsApplication,
                        QgsSettings,
                        QgsVectorFileWriter,
-                       QgsRasterFileWriter)
+                       QgsRasterFileWriter,
+                       QgsProcessingUtils)
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
+from multiprocessing import cpu_count
 
 
 class SettingsWatcher(QObject):
@@ -45,14 +44,13 @@ settingsWatcher = SettingsWatcher()
 
 
 class ProcessingConfig:
-
     OUTPUT_FOLDER = 'OUTPUTS_FOLDER'
     RASTER_STYLE = 'RASTER_STYLE'
     VECTOR_POINT_STYLE = 'VECTOR_POINT_STYLE'
     VECTOR_LINE_STYLE = 'VECTOR_LINE_STYLE'
     VECTOR_POLYGON_STYLE = 'VECTOR_POLYGON_STYLE'
     FILTER_INVALID_GEOMETRIES = 'FILTER_INVALID_GEOMETRIES'
-    USE_FILENAME_AS_LAYER_NAME = 'USE_FILENAME_AS_LAYER_NAME'
+    PREFER_FILENAME_AS_LAYER_NAME = 'PREFER_FILENAME_AS_LAYER_NAME'
     KEEP_DIALOG_OPEN = 'KEEP_DIALOG_OPEN'
     PRE_EXECUTION_SCRIPT = 'PRE_EXECUTION_SCRIPT'
     POST_EXECUTION_SCRIPT = 'POST_EXECUTION_SCRIPT'
@@ -60,6 +58,11 @@ class ProcessingConfig:
     WARN_UNMATCHING_CRS = 'WARN_UNMATCHING_CRS'
     SHOW_PROVIDERS_TOOLTIP = 'SHOW_PROVIDERS_TOOLTIP'
     SHOW_ALGORITHMS_KNOWN_ISSUES = 'SHOW_ALGORITHMS_KNOWN_ISSUES'
+    MAX_THREADS = 'MAX_THREADS'
+    DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DefaultOutputRasterLayerExt'
+    DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DefaultOutputVectorLayerExt'
+    TEMP_PATH = 'TEMP_PATH2'
+    RESULTS_GROUP_NAME = 'RESULTS_GROUP_NAME'
 
     settings = {}
     settingIcons = {}
@@ -74,8 +77,8 @@ class ProcessingConfig:
             ProcessingConfig.tr('Keep dialog open after running an algorithm'), True))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
-            ProcessingConfig.USE_FILENAME_AS_LAYER_NAME,
-            ProcessingConfig.tr('Use filename as layer name'), False))
+            ProcessingConfig.PREFER_FILENAME_AS_LAYER_NAME,
+            ProcessingConfig.tr('Prefer output filename for layer names'), True))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.SHOW_PROVIDERS_TOOLTIP,
@@ -138,6 +141,48 @@ class ProcessingConfig:
             invalidFeaturesOptions[2],
             valuetype=Setting.SELECTION,
             options=invalidFeaturesOptions))
+
+        threads = QgsApplication.maxThreads()  # if user specified limit for rendering, lets keep that as default here, otherwise max
+        threads = cpu_count() if threads == -1 else threads  # if unset, maxThreads() returns -1
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.MAX_THREADS,
+            ProcessingConfig.tr('Max Threads'), threads,
+            valuetype=Setting.INT))
+
+        extensions = QgsVectorFileWriter.supportedFormatExtensions()
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,
+            ProcessingConfig.tr('Default output vector layer extension'),
+            QgsVectorFileWriter.supportedFormatExtensions()[0],
+            valuetype=Setting.SELECTION,
+            options=extensions))
+
+        extensions = QgsRasterFileWriter.supportedFormatExtensions()
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT,
+            ProcessingConfig.tr('Default output raster layer extension'),
+            'tif',
+            valuetype=Setting.SELECTION,
+            options=extensions))
+
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.TEMP_PATH,
+            ProcessingConfig.tr('Override temporary output folder path'), None,
+            valuetype=Setting.FOLDER,
+            placeholder=ProcessingConfig.tr('Leave blank for default')))
+
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.RESULTS_GROUP_NAME,
+            ProcessingConfig.tr("Results group name"),
+            "",
+            valuetype=Setting.STRING,
+            placeholder=ProcessingConfig.tr("Leave blank to avoid loading results in a predetermined group")
+        ))
 
     @staticmethod
     def setGroupIcon(group, icon):
@@ -213,7 +258,6 @@ class ProcessingConfig:
 
 
 class Setting:
-
     """A simple config parameter that will appear on the config dialog.
     """
     STRING = 0
@@ -225,7 +269,7 @@ class Setting:
     MULTIPLE_FOLDERS = 6
 
     def __init__(self, group, name, description, default, hidden=False, valuetype=None,
-                 validator=None, options=None):
+                 validator=None, options=None, placeholder=""):
         self.group = group
         self.name = name
         self.qname = "Processing/Configuration/" + self.name
@@ -234,6 +278,7 @@ class Setting:
         self.hidden = hidden
         self.valuetype = valuetype
         self.options = options
+        self.placeholder = placeholder
 
         if self.valuetype is None:
             if isinstance(default, int):
@@ -248,6 +293,7 @@ class Setting:
                         float(v)
                     except ValueError:
                         raise ValueError(self.tr('Wrong parameter value:\n{0}').format(v))
+
                 validator = checkFloat
             elif self.valuetype == self.INT:
                 def checkInt(v):
@@ -255,11 +301,13 @@ class Setting:
                         int(v)
                     except ValueError:
                         raise ValueError(self.tr('Wrong parameter value:\n{0}').format(v))
+
                 validator = checkInt
             elif self.valuetype in [self.FILE, self.FOLDER]:
                 def checkFileOrFolder(v):
                     if v and not os.path.exists(v):
                         raise ValueError(self.tr('Specified path does not exist:\n{0}').format(v))
+
                 validator = checkFileOrFolder
             elif self.valuetype == self.MULTIPLE_FOLDERS:
                 def checkMultipleFolders(v):
@@ -267,6 +315,7 @@ class Setting:
                     for f in folders:
                         if f and not os.path.exists(f):
                             raise ValueError(self.tr('Specified path does not exist:\n{0}').format(f))
+
                 validator = checkMultipleFolders
             else:
                 def validator(x):

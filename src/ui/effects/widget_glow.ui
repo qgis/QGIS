@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -84,6 +84,9 @@
           <property name="maximum">
            <double>9999999.000000000000000</double>
           </property>
+          <property name="singleStep">
+           <double>0.200000000000000</double>
+          </property>
           <property name="showClearButton" stdset="0">
            <bool>false</bool>
           </property>
@@ -102,13 +105,35 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1" colspan="2">
-         <widget class="QgsSpinBox" name="mBlurRadiusSpnBx">
+        <item row="1" column="1">
+         <widget class="QgsDoubleSpinBox" name="mBlurRadiusSpnBx">
+          <property name="decimals">
+           <number>4</number>
+          </property>
+          <property name="minimum">
+           <double>0.000000000000000</double>
+          </property>
           <property name="maximum">
-           <number>16</number>
+           <double>9999999.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.200000000000000</double>
           </property>
           <property name="showClearButton" stdset="0">
            <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QgsUnitSelectionWidget" name="mBlurUnitWidget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
           </property>
          </widget>
         </item>

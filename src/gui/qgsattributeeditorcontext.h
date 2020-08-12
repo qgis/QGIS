@@ -27,6 +27,8 @@
 #include "qgsproject.h"
 
 class QgsMapCanvas;
+class QgsAdvancedDigitizingDockWidget;
+class QgsMessageBar;
 
 /**
  * \ingroup gui
@@ -47,6 +49,7 @@ class GUI_EXPORT QgsAttributeEditorContext
       SingleEditMode, //!< Single edit mode, for editing a single feature
       AddFeatureMode, /*!< Add feature mode, for setting attributes for a new feature. In this mode the dialog will be editable even with an invalid feature and
       will add a new feature when the form is accepted. */
+      FixAttributeMode, //!< Fix feature mode, for modifying the feature attributes without saving. The updated feature is available via `feature()` after `save()`
       MultiEditMode, //!< Multi edit mode, for editing fields of multiple features at once
       SearchMode, //!< Form values are used for searching/filtering the layer
       AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode \since QGIS 3.0
@@ -78,6 +81,8 @@ class GUI_EXPORT QgsAttributeEditorContext
       : mParentContext( &parentContext )
       , mVectorLayerTools( parentContext.mVectorLayerTools )
       , mMapCanvas( parentContext.mMapCanvas )
+      , mMainMessageBar( parentContext.mMainMessageBar )
+      , mCadDockWidget( parentContext.mCadDockWidget )
       , mDistanceArea( parentContext.mDistanceArea )
       , mFormFeature( parentContext.mFormFeature )
       , mFormMode( formMode )
@@ -89,6 +94,8 @@ class GUI_EXPORT QgsAttributeEditorContext
       : mParentContext( &parentContext )
       , mVectorLayerTools( parentContext.mVectorLayerTools )
       , mMapCanvas( parentContext.mMapCanvas )
+      , mMainMessageBar( parentContext.mMainMessageBar )
+      , mCadDockWidget( parentContext.mCadDockWidget )
       , mDistanceArea( parentContext.mDistanceArea )
       , mRelation( relation )
       , mRelationMode( relationMode )
@@ -131,6 +138,22 @@ class GUI_EXPORT QgsAttributeEditorContext
      * \since QGIS 3.2
      */
     inline QgsMapCanvas *mapCanvas() const { return mMapCanvas; }
+
+    /**
+     * Sets the associated CAD dock widget, \a cadDockWidget, (e.g. to be used in map tools).
+     * \note Unstable API. This method is unstable API and may be modified or removed at any time.
+     * \see cadDockWidget()
+     * \since QGIS 3.10
+     */
+    void setCadDockWidget( QgsAdvancedDigitizingDockWidget *cadDockWidget );
+
+    /**
+     * Returns the associated CAD dock widget (e.g. to be used in map tools).
+     * \note Unstable API. This method is unstable API and may be modified or removed at any time.
+     * \see setCadDockWidget()
+     * \since QGIS 3.10
+     */
+    QgsAdvancedDigitizingDockWidget *cadDockWidget() const { return mCadDockWidget; }
 
     /**
      * Sets the associated vector layer tools.
@@ -221,6 +244,20 @@ class GUI_EXPORT QgsAttributeEditorContext
     void setFormFeature( const QgsFeature &feature ) { mFormFeature = feature ; }
 
     /**
+     * Returns the feature of the currently edited parent form in its actual state
+     * \see setParentFormFeature()
+     * \since QGIS 3.14
+     */
+    QgsFeature parentFormFeature() const { return mParentFormFeature; }
+
+    /**
+     * Sets the \a feature of the currently edited parent form
+     * \see parentFormFeature()
+     * \since QGIS 3.14
+     */
+    void setParentFormFeature( const QgsFeature &feature ) { mParentFormFeature = feature ; }
+
+    /**
      * Returns current attributeFormMode
      * \since QGIS 3.4
      */
@@ -242,20 +279,35 @@ class GUI_EXPORT QgsAttributeEditorContext
       return metaEnum.valueToKey( static_cast<int>( mAttributeFormMode ) );
     }
 
+    /**
+     * Set current \a messageBar as the main message bar
+     * \since QGIS 3.12
+     */
+    void setMainMessageBar( QgsMessageBar *messageBar ) { mMainMessageBar = messageBar; }
+
+    /**
+     * Returns the main message bar
+     * \since QGIS 3.12
+     */
+    QgsMessageBar *mainMessageBar() { return mMainMessageBar; }
+
   private:
     const QgsAttributeEditorContext *mParentContext = nullptr;
     QgsVectorLayer *mLayer = nullptr;
     QgsVectorLayerTools *mVectorLayerTools = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
+    QgsMessageBar *mMainMessageBar = nullptr;
+    QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;
     QgsDistanceArea mDistanceArea;
     QgsRelation mRelation;
     RelationMode mRelationMode = Undefined;
     //! Store the values of the currently edited form or table row
     QgsFeature mFormFeature;
+    //! Store the values of the currently edited parent form or table row
+    QgsFeature mParentFormFeature;
     FormMode mFormMode = Embed;
     bool mAllowCustomUi = true;
     Mode mAttributeFormMode = SingleEditMode;
 };
 
 #endif // QGSATTRIBUTEEDITORCONTEXT_H
-

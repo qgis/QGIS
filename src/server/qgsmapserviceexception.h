@@ -18,6 +18,8 @@
 #ifndef QGSMAPSERVICEEXCEPTION
 #define QGSMAPSERVICEEXCEPTION
 
+#define SIP_NO_FILE
+
 #include <QString>
 
 #include "qgsserverexception.h"
@@ -30,13 +32,14 @@
  *
  *
  * The most important codes are:
- *  * "InvalidFormat"
- *  * "Invalid CRS"
- *  * "LayerNotDefined" / "StyleNotDefined"
- *  * "OperationNotSupported"
+ *
+ * - "InvalidFormat"
+ * - "Invalid CRS"
+ * - "LayerNotDefined" / "StyleNotDefined"
+ * - "OperationNotSupported"
+ *
  * \deprecated Use QsgServerException
  */
-
 class SERVER_EXPORT QgsMapServiceException : public QgsOgcServiceException
 {
   public:

@@ -10,7 +10,8 @@
 
 
 
-class QgsBilinearRasterResampler: QgsRasterResampler
+
+class QgsBilinearRasterResampler: QgsRasterResamplerV2
 {
 %Docstring
 Bilinear Raster Resampler
@@ -25,11 +26,16 @@ Bilinear Raster Resampler
 %Docstring
 Constructor for QgsBilinearRasterResampler.
 %End
+ virtual void resample( const QImage &srcImage, QImage &dstImage ) /Deprecated/;
 
-    virtual void resample( const QImage &srcImage, QImage &dstImage );
+
+    virtual QImage resampleV2( const QImage &source, const QSize &size );
 
     virtual QString type() const;
+
     virtual QgsBilinearRasterResampler *clone() const /Factory/;
+
+    virtual int tileBufferPixels() const;
 
 };
 

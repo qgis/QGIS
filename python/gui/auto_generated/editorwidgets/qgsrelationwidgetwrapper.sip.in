@@ -26,7 +26,7 @@ Constructor for QgsRelationWidgetWrapper
     bool showLabel() const;
 %Docstring
 Defines if a title label should be shown for this widget.
-Only has an effect after widget() has been called at least once.
+Only has an effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been called at least once.
 
 .. versionadded:: 2.18
 %End
@@ -34,37 +34,83 @@ Only has an effect after widget() has been called at least once.
     void setShowLabel( bool showLabel );
 %Docstring
 Defines if a title label should be shown for this widget.
-Only has an effect after widget() has been called at least once.
+Only has an effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been called at least once.
 
 .. versionadded:: 2.18
 %End
 
-    bool showLinkButton() const;
+ bool showLinkButton() const /Deprecated/;
 %Docstring
 Determines if the "link feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
 %End
 
-    void setShowLinkButton( bool showLinkButton );
+ void setShowLinkButton( bool showLinkButton ) /Deprecated/;
 %Docstring
 Determines if the "link feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
 %End
 
-    bool showUnlinkButton() const;
+ bool showUnlinkButton() const /Deprecated/;
 %Docstring
 Determines if the "unlink feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
 %End
 
-    void setShowUnlinkButton( bool showUnlinkButton );
+ void setShowUnlinkButton( bool showUnlinkButton ) /Deprecated/;
 %Docstring
 Determines if the "unlink feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
+%End
+
+ void setShowSaveChildEditsButton( bool showChildEdits ) /Deprecated/;
+%Docstring
+Determines if the "Save child layer edits" button should be shown
+
+.. versionadded:: 3.14
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
+%End
+
+ bool showSaveChildEditsButton() const /Deprecated/;
+%Docstring
+Determines if the "Save child layer edits" button should be shown
+
+.. versionadded:: 3.14
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
+%End
+
+    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+%Docstring
+Defines the buttons which are shown
+
+.. versionadded:: 3.16
+%End
+
+    QgsAttributeEditorRelation::Buttons visibleButtons() const;
+%Docstring
+Returns the buttons which are shown
+
+.. versionadded:: 3.16
 %End
 
     QgsRelation relation() const;
@@ -73,6 +119,21 @@ The relation for which this wrapper is created.
 
 .. versionadded:: 3.0
 %End
+
+    void widgetValueChanged( const QString &attribute, const QVariant &newValue, bool attributeChanged );
+%Docstring
+Will be called when a value in the current edited form or table row
+changes
+
+Forward the signal to the embedded form
+
+:param attribute: The name of the attribute that changed.
+:param newValue: The new value of the attribute.
+:param attributeChanged: If ``True``, it corresponds to an actual change of the feature attribute
+
+.. versionadded:: 3.14
+%End
+
 
   protected:
     virtual QWidget *createWidget( QWidget *parent );

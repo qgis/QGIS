@@ -9,7 +9,6 @@
 
 
 
-
 class QgsSQLStatement
 {
 %Docstring
@@ -33,7 +32,7 @@ Creates a new statement based on the provided string.
 Create a copy of this statement.
 %End
 
-    ~QgsSQLStatement();
+    virtual ~QgsSQLStatement();
 
     bool hasParserError() const;
 %Docstring
@@ -62,7 +61,7 @@ The root node is ``None`` if parsing has failed.
 %Docstring
 Returns the original, unmodified statement string.
 If there was none supplied because it was constructed by sole
-API calls, dump() will be used to create one instead.
+API calls, :py:func:`~QgsSQLStatement.dump` will be used to create one instead.
 %End
 
     QString dump() const;
@@ -70,7 +69,7 @@ API calls, dump() will be used to create one instead.
 Returns the statement string, constructed from the internal
 abstract syntax tree. This does not contain any nice whitespace
 formatting or comments. In general it is preferable to use
-statement() instead.
+:py:func:`~QgsSQLStatement.statement` instead.
 %End
 
     static QString quotedIdentifier( QString name );
@@ -91,6 +90,13 @@ otherwise the original string.
     static QString stripQuotedIdentifier( QString text );
 %Docstring
 Remove double quotes from an identifier.
+
+.. seealso:: :py:func:`quotedIdentifier`
+%End
+
+    static QString stripMsQuotedIdentifier( QString text );
+%Docstring
+Remove double quotes from an Microsoft style identifier.
 
 .. seealso:: :py:func:`quotedIdentifier`
 %End
@@ -757,7 +763,7 @@ Table definition
 
         QgsSQLStatement::Node *onExpr() const;
 %Docstring
-On expression. Will be ``None`` if usingColumns() is not empty
+On expression. Will be ``None`` if :py:func:`~NodeJoin.usingColumns` is not empty
 %End
 
         QList<QString> usingColumns() const;
@@ -1000,6 +1006,37 @@ Entry function for the visitor pattern
 %End
 
   protected:
+
+    QgsSQLStatement( const QString &statement, bool allowFragments );
+%Docstring
+Constructor for QgsSQLStatement, with the specified ``statement``.
+
+If ``allowFragments`` is ``True`` then the parser will allow SQL fragments,
+such as a expression or filter where clause alone.
+
+.. versionadded:: 3.16
+%End
+};
+
+
+class QgsSQLStatementFragment : QgsSQLStatement
+{
+%Docstring
+Class for parsing fragments of SQL statements, such as an expression or where clause.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgssqlstatement.h"
+%End
+  public:
+
+    QgsSQLStatementFragment( const QString &fragment );
+%Docstring
+Constructor for QgsSQLStatementFragment of the specified ``fragment``.
+%End
+
 };
 
 

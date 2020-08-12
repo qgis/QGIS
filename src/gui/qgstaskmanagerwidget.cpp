@@ -46,9 +46,19 @@ QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *pa
   mTreeView->setHeaderHidden( true );
   mTreeView->setRootIsDecorated( false );
   mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   int progressColWidth = static_cast< int >( fontMetrics().width( 'X' ) * 10 * Qgis::UI_SCALE_FACTOR );
+#else
+  int progressColWidth = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 10 * Qgis::UI_SCALE_FACTOR );
+#endif
   mTreeView->setColumnWidth( QgsTaskManagerModel::Progress, progressColWidth );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   int statusColWidth = static_cast< int >( fontMetrics().width( 'X' ) * 2 * Qgis::UI_SCALE_FACTOR );
+#else
+  int statusColWidth = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 2 * Qgis::UI_SCALE_FACTOR );
+#endif
   mTreeView->setColumnWidth( QgsTaskManagerModel::Status, statusColWidth );
   mTreeView->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   mTreeView->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
@@ -154,7 +164,7 @@ QModelIndex QgsTaskManagerModel::index( int row, int column, const QModelIndex &
 
 QModelIndex QgsTaskManagerModel::parent( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   //all items are top level
   return QModelIndex();
@@ -175,7 +185,7 @@ int QgsTaskManagerModel::rowCount( const QModelIndex &parent ) const
 
 int QgsTaskManagerModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 3;
 }
 
@@ -249,7 +259,7 @@ Qt::ItemFlags QgsTaskManagerModel::flags( const QModelIndex &index ) const
 
 bool QgsTaskManagerModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  Q_UNUSED( role );
+  Q_UNUSED( role )
 
   if ( !index.isValid() )
     return false;
@@ -296,7 +306,7 @@ void QgsTaskManagerModel::taskDeleted( long id )
 
 void QgsTaskManagerModel::progressChanged( long id, double progress )
 {
-  Q_UNUSED( progress );
+  Q_UNUSED( progress )
 
   QModelIndex index = idToIndex( id, Progress );
   if ( !index.isValid() )
@@ -547,7 +557,7 @@ void QgsTaskStatusWidget::leaveEvent( QEvent * )
 /*
 bool QgsTaskStatusWidget::editorEvent( QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index )
 {
-  Q_UNUSED( option );
+  Q_UNUSED( option )
   if ( event->type() == QEvent::MouseButtonPress )
   {
     QMouseEvent *e = static_cast<QMouseEvent*>( event );
@@ -571,12 +581,17 @@ QgsTaskManagerFloatingWidget::QgsTaskManagerFloatingWidget( QgsTaskManager *mana
 {
   setLayout( new QVBoxLayout() );
   QgsTaskManagerWidget *w = new QgsTaskManagerWidget( manager );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   int minWidth = static_cast< int >( fontMetrics().width( 'X' ) * 60 * Qgis::UI_SCALE_FACTOR );
+#else
+  int minWidth = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 60 * Qgis::UI_SCALE_FACTOR );
+#endif
   int minHeight = static_cast< int >( fontMetrics().height() * 15 * Qgis::UI_SCALE_FACTOR );
   setMinimumSize( minWidth, minHeight );
   layout()->addWidget( w );
   setStyleSheet( ".QgsTaskManagerFloatingWidget { border-top-left-radius: 8px;"
-                 "border-top-right-radius: 8px; background-color: rgb(0, 0, 0, 70%); }" );
+                 "border-top-right-radius: 8px; background-color: rgba(0, 0, 0, 70%); }" );
 }
 
 
@@ -606,11 +621,19 @@ QgsTaskManagerStatusBarWidget::QgsTaskManagerStatusBarWidget( QgsTaskManager *ma
   connect( manager, &QgsTaskManager::allTasksFinished, this, &QgsTaskManagerStatusBarWidget::allFinished );
   connect( manager, &QgsTaskManager::finalTaskProgressChanged, this, &QgsTaskManagerStatusBarWidget::overallProgressChanged );
   connect( manager, &QgsTaskManager::countActiveTasksChanged, this, &QgsTaskManagerStatusBarWidget::countActiveTasksChanged );
+
+  if ( manager->countActiveTasks() )
+    showButton();
 }
 
 QSize QgsTaskManagerStatusBarWidget::sizeHint() const
 {
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   int width = static_cast< int >( fontMetrics().width( 'X' ) * 20 * Qgis::UI_SCALE_FACTOR );
+#else
+  int width = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 20 * Qgis::UI_SCALE_FACTOR );
+#endif
   int height = QToolButton::sizeHint().height();
   return QSize( width, height );
 }

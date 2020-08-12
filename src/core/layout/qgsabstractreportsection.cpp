@@ -20,6 +20,7 @@
 #include "qgsreportsectionfieldgroup.h"
 #include "qgsreportsectionlayout.h"
 #include "qgsvectorlayer.h"
+#include "qgsstyleentityvisitor.h"
 
 ///@cond NOT_STABLE
 
@@ -170,6 +171,50 @@ void QgsAbstractReportSection::reloadSettings()
     mFooter->reloadSettings();
 }
 
+bool QgsAbstractReportSection::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  // NOTE: if visitEnter returns false it means "don't visit the report section", not "abort all further visitations"
+  if ( mParent && !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportSection, QStringLiteral( "reportsection" ), QObject::tr( "Report Section" ) ) ) )
+    return true;
+
+  if ( mHeader )
+  {
+    // NOTE: if visitEnter returns false it means "don't visit the header", not "abort all further visitations"
+    if ( visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportHeader, QStringLiteral( "reportheader" ), QObject::tr( "Report Header" ) ) ) )
+    {
+      if ( !mHeader->accept( visitor ) )
+        return false;
+
+      if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportHeader, QStringLiteral( "reportheader" ), QObject::tr( "Report Header" ) ) ) )
+        return false;
+    }
+  }
+
+  for ( const QgsAbstractReportSection *child : mChildren )
+  {
+    if ( !child->accept( visitor ) )
+      return false;
+  }
+
+  if ( mFooter )
+  {
+    // NOTE: if visitEnter returns false it means "don't visit the footer", not "abort all further visitations"
+    if ( visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportFooter, QStringLiteral( "reportfooter" ), QObject::tr( "Report Footer" ) ) ) )
+    {
+      if ( !mFooter->accept( visitor ) )
+        return false;
+
+      if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportFooter, QStringLiteral( "reportfooter" ), QObject::tr( "Report Footer" ) ) ) )
+        return false;
+    }
+  }
+
+  if ( mParent && !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportSection, QStringLiteral( "reportsection" ), QObject::tr( "Report Section" ) ) ) )
+    return false;
+
+  return true;
+}
+
 QString QgsAbstractReportSection::filePath( const QString &baseFilePath, const QString &extension )
 {
   QString base = QStringLiteral( "%1_%2" ).arg( baseFilePath ).arg( mSectionNumber, 4, 10, QChar( '0' ) );
@@ -203,112 +248,101 @@ bool QgsAbstractReportSection::next()
 {
   mSectionNumber++;
 
-  switch ( mNextSection )
+  if ( mNextSection == Header )
   {
-    case Header:
-    {
-      // regardless of whether we have a header or not, the next section will be the body
-      mNextSection = Body;
+    // regardless of whether we have a header or not, the next section will be the body
+    mNextSection = Body;
 
-      // if we have a header, then the current section will be the header
-      if ( mHeaderEnabled && mHeader )
+    // if we have a header, then the current section will be the header
+    if ( mHeaderEnabled && mHeader )
+    {
+      if ( prepareHeader() )
       {
-        if ( prepareHeader() )
+        mCurrentLayout = mHeader.get();
+        return true;
+      }
+    }
+
+    // but if not, then the current section is a body
+    mNextSection = Body;
+  }
+
+  if ( mNextSection == Body )
+  {
+    mNextSection = Children;
+
+    bool ok = false;
+    // if we have a next body available, use it
+    QgsLayout *body = nextBody( ok );
+    if ( body )
+    {
+      mNextChild = 0;
+      mCurrentLayout = body;
+      return true;
+    }
+  }
+
+  if ( mNextSection == Children )
+  {
+    bool bodiesAvailable = false;
+    do
+    {
+      // we iterate through all the section's children...
+      while ( mNextChild < mChildren.count() )
+      {
+        // ... staying on the current child only while it still has content for us
+        if ( mChildren.at( mNextChild )->next() )
         {
-          mCurrentLayout = mHeader.get();
+          mCurrentLayout = mChildren.at( mNextChild )->layout();
           return true;
+        }
+        else
+        {
+          // no more content for this child, so move to next child
+          mNextChild++;
         }
       }
 
-      // but if not, then the current section is a body
-      mNextSection = Body;
-      FALLTHROUGH
-    }
-
-    case Body:
-    {
-      mNextSection = Children;
-
-      bool ok = false;
+      // used up all the children
       // if we have a next body available, use it
-      QgsLayout *body = nextBody( ok );
-      if ( body )
+      QgsLayout *body = nextBody( bodiesAvailable );
+      if ( bodiesAvailable )
       {
         mNextChild = 0;
+
+        for ( QgsAbstractReportSection *section : qgis::as_const( mChildren ) )
+        {
+          section->reset();
+        }
+      }
+      if ( body )
+      {
         mCurrentLayout = body;
         return true;
       }
-
-      FALLTHROUGH
     }
+    while ( bodiesAvailable );
 
-    case Children:
+    // all children and bodies have spent their content, so move to the footer
+    mNextSection = Footer;
+  }
+
+  if ( mNextSection == Footer )
+  {
+    // regardless of whether we have a footer or not, this is the last section
+    mNextSection = End;
+
+    // if we have a footer, then the current section will be the footer
+    if ( mFooterEnabled && mFooter )
     {
-      bool bodiesAvailable = false;
-      do
+      if ( prepareFooter() )
       {
-        // we iterate through all the section's children...
-        while ( mNextChild < mChildren.count() )
-        {
-          // ... staying on the current child only while it still has content for us
-          if ( mChildren.at( mNextChild )->next() )
-          {
-            mCurrentLayout = mChildren.at( mNextChild )->layout();
-            return true;
-          }
-          else
-          {
-            // no more content for this child, so move to next child
-            mNextChild++;
-          }
-        }
-
-        // used up all the children
-        // if we have a next body available, use it
-        QgsLayout *body = nextBody( bodiesAvailable );
-        if ( bodiesAvailable )
-        {
-          mNextChild = 0;
-
-          for ( QgsAbstractReportSection *section : qgis::as_const( mChildren ) )
-          {
-            section->reset();
-          }
-        }
-        if ( body )
-        {
-          mCurrentLayout = body;
-          return true;
-        }
+        mCurrentLayout = mFooter.get();
+        return true;
       }
-      while ( bodiesAvailable );
-
-      // all children and bodies have spent their content, so move to the footer
-      mNextSection = Footer;
-      FALLTHROUGH
     }
 
-    case Footer:
-    {
-      // regardless of whether we have a footer or not, this is the last section
-      mNextSection = End;
-
-      // if we have a footer, then the current section will be the footer
-      if ( mFooterEnabled && mFooter )
-      {
-        if ( prepareFooter() )
-        {
-          mCurrentLayout = mFooter.get();
-          return true;
-        }
-      }
-
-      // if not, then we're all done
-      FALLTHROUGH
-    }
-
-    case End:
-      break;
+    // if not, then we're all done
   }
 
   mCurrentLayout = nullptr;

@@ -64,6 +64,7 @@ namespace QgsWmts
     }
 #else
     doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+    capabilitiesDocument = &doc;
 #endif
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( capabilitiesDocument->toByteArray() );
@@ -73,7 +74,7 @@ namespace QgsWmts
   QDomDocument createGetCapabilitiesDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
       const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QDomDocument doc;
 
@@ -281,6 +282,15 @@ namespace QgsWmts
     //ows:Get
     QDomElement getElement = doc.createElement( QStringLiteral( "ows:Get" )/*ows:Get*/ );
     getElement.setAttribute( QStringLiteral( "xlink:href" ), hrefString );
+    QDomElement constraintElement = doc.createElement( QStringLiteral( "ows:Constraint" )/*ows:Constraint*/ );
+    constraintElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "GetEncoding" ) );
+    QDomElement allowedValuesElement = doc.createElement( QStringLiteral( "ows:AllowedValues" )/*ows:AllowedValues*/ );
+    QDomElement valueElement = doc.createElement( QStringLiteral( "ows:Value" )/*ows:Value*/ );
+    QDomText valueText = doc.createTextNode( QStringLiteral( "KVP" ) );
+    valueElement.appendChild( valueText );
+    allowedValuesElement.appendChild( valueElement );
+    constraintElement.appendChild( allowedValuesElement );
+    getElement.appendChild( constraintElement );
     httpElement.appendChild( getElement );
 
     //ows:Operation element with name GetTile
@@ -326,7 +336,7 @@ namespace QgsWmts
                               QList< layerDef > wmtsLayers, QList< tileMatrixSetDef > tmsList,
                               const QgsProject *project )
     {
-      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
       // Define InfoFormat helper
       std::function < void ( QDomElement &, const QString & ) > appendInfoFormat = [&doc]( QDomElement & elem, const QString & format )
       {
@@ -366,13 +376,14 @@ namespace QgsWmts
         }
 
         // WGS84 bounding box
+        int wgs84precision = 6;
         QDomElement wgs84BBoxElement = doc.createElement( QStringLiteral( "ows:WGS84BoundingBox" ) );
-        QDomElement wgs84LowerCornerElement = doc.createElement( QStringLiteral( "LowerCorner" ) );
-        QDomText wgs84LowerCornerText = doc.createTextNode( qgsDoubleToString( wmtsLayer.wgs84BoundingRect.xMinimum(), 6 ) + ' ' + qgsDoubleToString( wmtsLayer.wgs84BoundingRect.yMinimum(), 6 ) );
+        QDomElement wgs84LowerCornerElement = doc.createElement( QStringLiteral( "ows:LowerCorner" ) );
+        QDomText wgs84LowerCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wmtsLayer.wgs84BoundingRect.xMinimum(), wgs84precision ), wgs84precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wmtsLayer.wgs84BoundingRect.yMinimum(), wgs84precision ), wgs84precision ) );
         wgs84LowerCornerElement.appendChild( wgs84LowerCornerText );
         wgs84BBoxElement.appendChild( wgs84LowerCornerElement );
-        QDomElement wgs84UpperCornerElement = doc.createElement( QStringLiteral( "UpperCorner" ) );
-        QDomText wgs84UpperCornerText = doc.createTextNode( qgsDoubleToString( wmtsLayer.wgs84BoundingRect.xMaximum(), 6 ) + ' ' + qgsDoubleToString( wmtsLayer.wgs84BoundingRect.yMaximum(), 6 ) );
+        QDomElement wgs84UpperCornerElement = doc.createElement( QStringLiteral( "ows:UpperCorner" ) );
+        QDomText wgs84UpperCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wmtsLayer.wgs84BoundingRect.xMaximum(), wgs84precision ), wgs84precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wmtsLayer.wgs84BoundingRect.yMaximum(), wgs84precision ), wgs84precision ) );
         wgs84UpperCornerElement.appendChild( wgs84UpperCornerText );
         wgs84BBoxElement.appendChild( wgs84UpperCornerElement );
         layerElem.appendChild( wgs84BBoxElement );
@@ -395,14 +406,20 @@ namespace QgsWmts
             continue;
           }
 
+          int precision = 3;
+          if ( crs.isGeographic() )
+          {
+            precision = 6;
+          }
+
           QDomElement bboxElement = doc.createElement( QStringLiteral( "ows:BoundingBox" ) );
           bboxElement.setAttribute( QStringLiteral( "crs" ), tms.ref );
-          QDomElement lowerCornerElement = doc.createElement( QStringLiteral( "LowerCorner" ) );
-          QDomText lowerCornerText = doc.createTextNode( qgsDoubleToString( rect.xMinimum(), 6 ) + ' ' + qgsDoubleToString( rect.yMinimum(), 6 ) );
+          QDomElement lowerCornerElement = doc.createElement( QStringLiteral( "ows:LowerCorner" ) );
+          QDomText lowerCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( rect.xMinimum(), precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( rect.yMinimum(), precision ), precision ) );
           lowerCornerElement.appendChild( lowerCornerText );
           bboxElement.appendChild( lowerCornerElement );
-          QDomElement upperCornerElement = doc.createElement( QStringLiteral( "UpperCorner" ) );
-          QDomText upperCornerText = doc.createTextNode( qgsDoubleToString( rect.xMaximum(), 6 ) + ' ' + qgsDoubleToString( rect.yMaximum(), 6 ) );
+          QDomElement upperCornerElement = doc.createElement( QStringLiteral( "ows:UpperCorner" ) );
+          QDomText upperCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( rect.xMaximum(), precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( rect.yMaximum(), precision ), precision ) );
           upperCornerElement.appendChild( upperCornerText );
           bboxElement.appendChild( upperCornerElement );
           layerElem.appendChild( bboxElement );
@@ -516,6 +533,13 @@ namespace QgsWmts
         crsElem.appendChild( crsText );
         tmsElement.appendChild( crsElem );
 
+        QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( tms.ref );
+        int precision = 3;
+        if ( crs.isGeographic() )
+        {
+          precision = 6;
+        }
+
         //wmts:TileMatrix
         int tmIdx = 0;
         for ( const tileMatrixDef &tm : tms.tileMatrixList )
@@ -535,12 +559,12 @@ namespace QgsWmts
           QDomElement tmTopLeftCornerElem = doc.createElement( QStringLiteral( "TopLeftCorner" ) );
           if ( tms.hasAxisInverted )
           {
-            QDomText tmTopLeftCornerText = doc.createTextNode( qgsDoubleToString( tm.top, 6 ) + ' ' + qgsDoubleToString( tm.left, 6 ) );
+            QDomText tmTopLeftCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( tm.top, precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( tm.left, precision ), precision ) );
             tmTopLeftCornerElem.appendChild( tmTopLeftCornerText );
           }
           else
           {
-            QDomText tmTopLeftCornerText = doc.createTextNode( qgsDoubleToString( tm.left, 6 ) + ' ' + qgsDoubleToString( tm.top, 6 ) );
+            QDomText tmTopLeftCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( tm.left, precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( tm.top, precision ), precision ) );
             tmTopLeftCornerElem.appendChild( tmTopLeftCornerText );
           }
           tmElement.appendChild( tmTopLeftCornerElem );

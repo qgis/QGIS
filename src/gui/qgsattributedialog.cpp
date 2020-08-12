@@ -21,6 +21,7 @@
 #include "qgshighlight.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsmessagebar.h"
 
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
   : QDialog( parent )
@@ -65,8 +66,18 @@ void QgsAttributeDialog::setHighlight( QgsHighlight *h )
 
 void QgsAttributeDialog::accept()
 {
-  mAttributeForm->save();
-  QDialog::accept();
+  bool didSave = mAttributeForm->save();
+  if ( didSave )
+  {
+    QDialog::accept();
+  }
+  else
+  {
+    mMessageBar->pushMessage( QString(),
+                              tr( "Your JSON value is invalid and has not been saved" ),
+                              Qgis::MessageLevel::Critical,
+                              5 );
+  }
 }
 
 void QgsAttributeDialog::show()
@@ -91,6 +102,12 @@ void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const
   setWindowTitle( tr( "%1 - Feature Attributes" ).arg( layer->name() ) );
   setLayout( new QGridLayout() );
   layout()->setMargin( 0 );
+  mMessageBar = new QgsMessageBar( this );
+  mMessageBar->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+  layout()->addWidget( mMessageBar );
+
+  setLayout( layout() );
+
   mTrackedVectorLayerTools.setVectorLayerTools( trackedContext.vectorLayerTools() );
   trackedContext.setVectorLayerTools( &mTrackedVectorLayerTools );
   if ( showDialogButtons )
@@ -105,7 +122,7 @@ void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const
   connect( layer, &QObject::destroyed, this, &QWidget::close );
 
   mMenu = new QgsActionMenu( layer, mAttributeForm->feature(), QStringLiteral( "Feature" ), this );
-  if ( !mMenu->actions().isEmpty() )
+  if ( !mMenu->menuActions().isEmpty() )
   {
     QMenuBar *menuBar = new QMenuBar( this );
     menuBar->addMenu( mMenu );
@@ -130,4 +147,9 @@ bool QgsAttributeDialog::event( QEvent *e )
     mHighlight->hide();
 
   return QDialog::event( e );
+}
+
+void QgsAttributeDialog::setExtraContextScope( QgsExpressionContextScope *extraScope )
+{
+  mAttributeForm->setExtraContextScope( extraScope );
 }

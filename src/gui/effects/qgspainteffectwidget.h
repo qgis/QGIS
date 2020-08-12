@@ -120,7 +120,8 @@ class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::Widget
   private slots:
 
     void mBlurTypeCombo_currentIndexChanged( int index );
-    void mBlurStrengthSpnBx_valueChanged( int value );
+    void mBlurStrengthSpnBx_valueChanged( double value );
+    void mBlurUnitWidget_changed();
     void opacityChanged( double value );
     void mDrawModeComboBox_currentIndexChanged( int index );
     void mBlendCmbBx_currentIndexChanged( int index );
@@ -161,7 +162,8 @@ class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui
     void mShadowColorBtn_colorChanged( const QColor &color );
     void mDrawModeComboBox_currentIndexChanged( int index );
     void mShadowBlendCmbBx_currentIndexChanged( int index );
-    void mShadowRadiuSpnBx_valueChanged( int value );
+    void mShadowRadiuSpnBx_valueChanged( double value );
+    void mBlurUnitWidget_changed();
 };
 
 
@@ -196,7 +198,8 @@ class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::Widget
     void mColorBtn_colorChanged( const QColor &color );
     void mBlendCmbBx_currentIndexChanged( int index );
     void mDrawModeComboBox_currentIndexChanged( int index );
-    void mBlurRadiusSpnBx_valueChanged( int value );
+    void mBlurRadiusSpnBx_valueChanged( double value );
+    void mBlurUnitWidget_changed();
     void applyColorRamp();
 
 };

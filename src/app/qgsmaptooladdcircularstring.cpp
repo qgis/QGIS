@@ -31,6 +31,7 @@ QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture *par
   , mShowCenterPointRubberBand( false )
   , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
 {
+  mToolName = tr( "Add circular string" );
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddCircularString::stopCapturing );
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddCircularString::stopCapturing );
 }
@@ -55,16 +56,38 @@ void QgsMapToolAddCircularString::keyPressEvent( QKeyEvent *e )
     createCenterPointRubberBand();
   }
 
-  if ( e && e->key() == Qt::Key_Escape )
+  if ( ( e && e->key() == Qt::Key_Escape ) || ( ( e && e->key() == Qt::Key_Backspace ) && ( mPoints.size() == 1 ) ) )
   {
-    mPoints.clear();
-    delete mRubberBand;
-    mRubberBand = nullptr;
-    delete mTempRubberBand;
-    mTempRubberBand = nullptr;
-    removeCenterPointRubberBand();
+    clean();
     if ( mParentTool )
       mParentTool->keyPressEvent( e );
+  }
+  if ( ( e && e->key() == Qt::Key_Backspace ) && ( mPoints.size() > 1 ) )
+  {
+    mPoints.removeLast();
+    std::unique_ptr<QgsCircularString> geomRubberBand( new QgsCircularString() );
+    std::unique_ptr<QgsLineString> geomTempRubberBand( new QgsLineString() );
+    const int lastPositionCompleteCircularString = mPoints.size() - 1 - ( mPoints.size() + 1 ) % 2 ;
+
+    geomTempRubberBand->setPoints( mPoints.mid( lastPositionCompleteCircularString ) );
+    mTempRubberBand->setGeometry( geomTempRubberBand.release() );
+
+    if ( mRubberBand )
+    {
+      geomRubberBand->setPoints( mPoints.mid( 0, lastPositionCompleteCircularString + 1 ) );
+      mRubberBand->setGeometry( geomRubberBand.release() );
+    }
+
+    QgsVertexId idx( 0, 0, ( mPoints.size() + 1 ) % 2 );
+    if ( mTempRubberBand )
+    {
+      mTempRubberBand->moveVertex( idx, mPoints.last() );
+      updateCenterPointRubberBand( mPoints.last() );
+    }
+
+    if ( mParentTool )
+      mParentTool->keyPressEvent( e );
+
   }
 }
 
@@ -97,12 +120,7 @@ void QgsMapToolAddCircularString::deactivate()
   QgsCircularString *c = new QgsCircularString();
   c->setPoints( mPoints );
   mParentTool->addCurve( c );
-  mPoints.clear();
-  delete mRubberBand;
-  mRubberBand = nullptr;
-  delete mTempRubberBand;
-  mTempRubberBand = nullptr;
-  removeCenterPointRubberBand();
+  clean();
   QgsMapToolCapture::deactivate();
 }
 
@@ -214,4 +232,24 @@ void QgsMapToolAddCircularString::removeCenterPointRubberBand()
 {
   delete mCenterPointRubberBand;
   mCenterPointRubberBand = nullptr;
+}
+
+void QgsMapToolAddCircularString::release( QgsMapMouseEvent *e )
+{
+  deactivate();
+  if ( mParentTool )
+  {
+    mParentTool->canvasReleaseEvent( e );
+  }
+  activate();
+}
+
+void QgsMapToolAddCircularString::clean()
+{
+  mPoints.clear();
+  delete mRubberBand;
+  mRubberBand = nullptr;
+  delete mTempRubberBand;
+  mTempRubberBand = nullptr;
+  removeCenterPointRubberBand();
 }

@@ -19,7 +19,6 @@
 
 #include <QString>
 #include <QFont>
-#include <QLabel>
 
 QgsCodeEditorExpression::QgsCodeEditorExpression( QWidget *parent )
   : QgsCodeEditor( parent )
@@ -67,8 +66,8 @@ void QgsCodeEditorExpression::setExpressionContext( const QgsExpressionContext &
       signature += '(';
 
       QStringList paramNames;
-      const auto &parameters = func->parameters();
-      for ( const auto &param : parameters )
+      const QgsExpressionFunction::ParameterList parameters = func->parameters();
+      for ( const QgsExpressionFunction::Parameter &param : parameters )
       {
         paramNames << param.name();
       }
@@ -113,10 +112,6 @@ void QgsCodeEditorExpression::initializeLexer()
   }
 
   QFont font = getMonospaceFont();
-#ifdef Q_OS_MAC
-  // The font size gotten from getMonospaceFont() is too small on Mac
-  font.setPointSize( QLabel().font().pointSize() );
-#endif
   QColor defaultColor = colors.value( QStringLiteral( "sql/defaultFontColor" ), Qt::black );
 
   mSqlLexer = new QgsLexerExpression( this );

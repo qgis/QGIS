@@ -6,18 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>538</width>
-    <height>547</height>
+    <width>382</width>
+    <height>264</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="margin">
+    <number>0</number>
+   </property>
    <item>
     <layout class="QFormLayout" name="formLayout">
      <item row="1" column="0">
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="labelHeight">
        <property name="text">
         <string>Height</string>
        </property>
@@ -34,7 +37,7 @@
       </widget>
      </item>
      <item row="2" column="0">
-      <widget class="QLabel" name="label_2">
+      <widget class="QLabel" name="labelExtrusion">
        <property name="text">
         <string>Extrusion</string>
        </property>
@@ -48,7 +51,7 @@
       </widget>
      </item>
      <item row="3" column="0">
-      <widget class="QLabel" name="label_3">
+      <widget class="QLabel" name="labelClamping">
        <property name="text">
         <string>Altitude clamping</string>
        </property>
@@ -74,7 +77,7 @@
       </widget>
      </item>
      <item row="4" column="0">
-      <widget class="QLabel" name="label_4">
+      <widget class="QLabel" name="labelBinding">
        <property name="text">
         <string>Altitude binding</string>
        </property>
@@ -95,7 +98,7 @@
       </widget>
      </item>
      <item row="0" column="0">
-      <widget class="QLabel" name="label_5">
+      <widget class="QLabel" name="labelWidth">
        <property name="text">
         <string>Width</string>
        </property>
@@ -118,28 +121,46 @@
     </widget>
    </item>
    <item>
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+    <widget class="QgsCollapsibleGroupBox" name="groupShading">
+     <property name="title">
+      <string>Shading</string>
      </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item row="3" column="0" colspan="2">
+       <widget class="QgsMaterialWidget" name="widgetMaterial" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>10</width>
+          <height>10</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
-   </item>
-   <item>
-    <widget class="QgsPhongMaterialWidget" name="widgetMaterial" native="true"/>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsPhongMaterialWidget</class>
+   <class>QgsMaterialWidget</class>
    <extends>QWidget</extends>
-   <header>qgsphongmaterialwidget.h</header>
+   <header>qgsmaterialwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

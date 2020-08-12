@@ -64,6 +64,8 @@ QgsPropertyTransformer &QgsPropertyTransformer::operator=( const QgsPropertyTran
   return *this;
 }
 
+QgsPropertyTransformer::~QgsPropertyTransformer() = default;
+
 bool QgsPropertyTransformer::loadVariant( const QVariant &transformer )
 {
   QVariantMap transformerMap = transformer.toMap();
@@ -175,6 +177,9 @@ bool QgsGenericNumericTransformer::loadVariant( const QVariant &transformer )
 
 double QgsGenericNumericTransformer::value( double input ) const
 {
+  if ( qgsDoubleNear( mMaxValue, mMinValue ) )
+    return qBound( mMinOutput, input, mMaxOutput );
+
   input = transformNumeric( input );
   if ( qgsDoubleNear( mExponent, 1.0 ) )
     return mMinOutput + ( qBound( mMinValue, input, mMaxValue ) - mMinValue ) * ( mMaxOutput - mMinOutput ) / ( mMaxValue - mMinValue );
@@ -184,7 +189,7 @@ double QgsGenericNumericTransformer::value( double input ) const
 
 QVariant QgsGenericNumericTransformer::transform( const QgsExpressionContext &context, const QVariant &v ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 
   if ( v.isNull() )
     return mNullOutput;
@@ -388,7 +393,7 @@ void QgsSizeScaleTransformer::setType( QgsSizeScaleTransformer::ScaleType type )
 
 QVariant QgsSizeScaleTransformer::transform( const QgsExpressionContext &context, const QVariant &value ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 
   if ( value.isNull() )
     return mNullSize;
@@ -591,7 +596,7 @@ bool QgsColorRampTransformer::loadVariant( const QVariant &definition )
 
 QVariant QgsColorRampTransformer::transform( const QgsExpressionContext &context, const QVariant &value ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 
   if ( value.isNull() )
     return mNullColor;
@@ -684,12 +689,15 @@ QgsCurveTransform::QgsCurveTransform( const QgsCurveTransform &other )
 
 QgsCurveTransform &QgsCurveTransform::operator=( const QgsCurveTransform &other )
 {
-  mControlPoints = other.mControlPoints;
-  if ( other.mSecondDerivativeArray )
+  if ( this != &other )
   {
-    delete [] mSecondDerivativeArray;
-    mSecondDerivativeArray = new double[ mControlPoints.count()];
-    memcpy( mSecondDerivativeArray, other.mSecondDerivativeArray, sizeof( double ) * mControlPoints.count() );
+    mControlPoints = other.mControlPoints;
+    if ( other.mSecondDerivativeArray )
+    {
+      delete [] mSecondDerivativeArray;
+      mSecondDerivativeArray = new double[ mControlPoints.count()];
+      memcpy( mSecondDerivativeArray, other.mSecondDerivativeArray, sizeof( double ) * mControlPoints.count() );
+    }
   }
   return *this;
 }

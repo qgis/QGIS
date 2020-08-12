@@ -42,15 +42,13 @@ Compound curve geometry type
     virtual bool fromWkt( const QString &wkt );
 
 
-    virtual QByteArray asWkb() const;
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 
     virtual QString asWkt( int precision = 17 ) const;
 
     virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
-
-    virtual QString asJson( int precision = 17 ) const;
 
 
     virtual double length() const;

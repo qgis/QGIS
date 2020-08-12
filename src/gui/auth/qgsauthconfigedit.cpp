@@ -53,7 +53,7 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, c
     mAuthNotify = new QLabel( msg, this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
 
-    mAuthCfg.clear(); // otherwise will contiue to try authenticate (and fail) after save
+    mAuthCfg.clear(); // otherwise will continue to try authenticate (and fail) after save
     buttonBox->button( QDialogButtonBox::Save )->setEnabled( false );
   }
   else
@@ -367,7 +367,7 @@ void QgsAuthConfigEdit::validateAuth()
 
 void QgsAuthConfigEdit::leName_textChanged( const QString &txt )
 {
-  Q_UNUSED( txt );
+  Q_UNUSED( txt )
   validateAuth();
 }
 

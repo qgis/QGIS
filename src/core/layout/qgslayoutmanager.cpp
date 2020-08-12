@@ -22,6 +22,8 @@
 #include "qgsreport.h"
 #include "qgscompositionconverter.h"
 #include "qgsreadwritecontext.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgsruntimeprofiler.h"
 #include <QMessageBox>
 
 QgsLayoutManager::QgsLayoutManager( QgsProject *project )
@@ -147,6 +149,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
   //restore each composer
   bool result = true;
   QDomNodeList composerNodes = element.elementsByTagName( QStringLiteral( "Composer" ) );
+  QgsScopedRuntimeProfile profile( tr( "Loading QGIS 2.x compositions" ), QStringLiteral( "projectload" ) );
   for ( int i = 0; i < composerNodes.size(); ++i )
   {
     // This legacy title is the Composer "title" (that can be overridden by the Composition "name")
@@ -194,12 +197,17 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
   QgsReadWriteContext context;
   context.setPathResolver( mProject->pathResolver() );
 
+  profile.switchTask( tr( "Creating layouts" ) );
+
   // restore layouts
   const QDomNodeList layoutNodes = layoutsElem.childNodes();
   for ( int i = 0; i < layoutNodes.size(); ++i )
   {
     if ( layoutNodes.at( i ).nodeName() != QStringLiteral( "Layout" ) )
       continue;
+
+    const QString layoutName = layoutNodes.at( i ).toElement().attribute( QStringLiteral( "name" ) );
+    QgsScopedRuntimeProfile profile( layoutName, QStringLiteral( "projectload" ) );
 
     std::unique_ptr< QgsPrintLayout > l = qgis::make_unique< QgsPrintLayout >( mProject );
     l->undoStack()->blockCommands( true );
@@ -209,30 +217,26 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
       continue;
     }
     l->undoStack()->blockCommands( false );
-    if ( addLayout( l.get() ) )
-    {
-      ( void )l.release(); // ownership was transferred successfully
-    }
-    else
+    if ( !addLayout( l.release() ) )
     {
       result = false;
     }
   }
   //reports
+  profile.switchTask( tr( "Creating reports" ) );
   const QDomNodeList reportNodes = element.elementsByTagName( QStringLiteral( "Report" ) );
   for ( int i = 0; i < reportNodes.size(); ++i )
   {
+    const QString layoutName = reportNodes.at( i ).toElement().attribute( QStringLiteral( "name" ) );
+    QgsScopedRuntimeProfile profile( layoutName, QStringLiteral( "projectload" ) );
+
     std::unique_ptr< QgsReport > r = qgis::make_unique< QgsReport >( mProject );
     if ( !r->readLayoutXml( reportNodes.at( i ).toElement(), doc, context ) )
     {
       result = false;
       continue;
     }
-    if ( addLayout( r.get() ) )
-    {
-      ( void )r.release(); // ownership was transferred successfully
-    }
-    else
+    if ( !addLayout( r.release() ) )
     {
       result = false;
     }
@@ -303,6 +307,27 @@ QString QgsLayoutManager::generateUniqueTitle( QgsMasterLayoutInterface::Type ty
   return name;
 }
 
+bool QgsLayoutManager::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( mLayouts.empty() )
+    return true;
+
+  // NOTE: if visitEnter returns false it means "don't visit the layouts", not "abort all further visitations"
+  if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Layouts, QStringLiteral( "layouts" ), tr( "Layouts" ) ) ) )
+    return true;
+
+  for ( QgsMasterLayoutInterface *l : mLayouts )
+  {
+    if ( !l->layoutAccept( visitor ) )
+      return false;
+  }
+
+  if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Layouts, QStringLiteral( "layouts" ), tr( "Layouts" ) ) ) )
+    return false;
+
+  return true;
+}
+
 
 
 //
@@ -322,7 +347,7 @@ QgsLayoutManagerModel::QgsLayoutManagerModel( QgsLayoutManager *manager, QObject
 
 int QgsLayoutManagerModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return ( mLayoutManager ? mLayoutManager->layouts().count() : 0 ) + ( mAllowEmpty ? 1 : 0 );
 }
 
@@ -540,6 +565,12 @@ bool QgsLayoutManagerProxyModel::filterAcceptsRow( int sourceRow, const QModelIn
   if ( !layout )
     return model->allowEmptyLayout();
 
+  if ( !mFilterString.trimmed().isEmpty() )
+  {
+    if ( !layout->name().contains( mFilterString, Qt::CaseInsensitive ) )
+      return false;
+  }
+
   switch ( layout->layoutType() )
   {
     case QgsMasterLayoutInterface::PrintLayout:
@@ -558,5 +589,11 @@ QgsLayoutManagerProxyModel::Filters QgsLayoutManagerProxyModel::filters() const
 void QgsLayoutManagerProxyModel::setFilters( Filters filters )
 {
   mFilters = filters;
+  invalidateFilter();
+}
+
+void QgsLayoutManagerProxyModel::setFilterString( const QString &filter )
+{
+  mFilterString = filter;
   invalidateFilter();
 }

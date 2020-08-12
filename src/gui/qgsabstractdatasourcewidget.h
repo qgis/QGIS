@@ -22,12 +22,14 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 
+#include "qgsproviderguimetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgsguiutils.h"
 #include <QDialog>
 #include <QDialogButtonBox>
 
 class QgsMapCanvas;
+
 
 /**
  * \ingroup gui
@@ -63,8 +65,18 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      * Concrete classes should implement the right behavior depending on the layer
      * being added.
      */
-    virtual void addButtonClicked() { }
+    virtual void addButtonClicked();
 
+    /**
+     * Called when this source select widget is being shown in a "new and clean" dialog.
+     *
+     * The data source manager recycles existing source select widgets but will call
+     * this method on every reopening.
+     * This should clear any selection that has previously been done.
+     *
+     * \since QGIS 3.10
+     */
+    virtual void reset();
 
   signals:
 
@@ -95,6 +107,12 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     void addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey );
 
     /**
+     * Emitted when a vector tile layer has been selected for addition.
+     * \since QGIS 3.14
+     */
+    void addVectorTileLayer( const QString &url, const QString &baseName );
+
+    /**
      * Emitted when one or more OGR supported layers are selected for addition
      * \param layerList list of layers protocol URIs
      * \param encoding encoding
@@ -123,6 +141,12 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
 
     //! Emitted when the ok/add buttons should be enabled/disabled
     void enableButtons( bool enable );
+
+    /**
+     * Emitted when a \a message with \a title and \a level must be shown to the user using the parent visible message bar
+     * \since QGIS 3.14
+     */
+    void pushMessage( const QString &title, const QString &message, const Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 
 
   protected:

@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    SpatialIndex.py
+    DefineProjection.py
     ---------------------
     Date                 : January 2016
     Copyright            : (C) 2016 by Alexander Bruy
@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import re
 
@@ -32,7 +28,9 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterCrs,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingOutputVectorLayer,
+                       QgsCoordinateReferenceSystem,
+                       QgsProjUtils)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -40,7 +38,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class DefineProjection(QgisAlgorithm):
-
     INPUT = 'INPUT'
     CRS = 'CRS'
 
@@ -55,7 +52,7 @@ class DefineProjection(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
-                                                            self.tr('Input Layer'), types=[QgsProcessing.TypeVectorAnyGeometry]))
+                                                            self.tr('Input Shapefile'), types=[QgsProcessing.TypeVectorAnyGeometry]))
         self.addParameter(QgsProcessingParameterCrs(self.CRS, 'CRS'))
         self.addOutput(QgsProcessingOutputVectorLayer(self.INPUT,
                                                       self.tr('Layer with projection')))
@@ -64,7 +61,13 @@ class DefineProjection(QgisAlgorithm):
         return 'definecurrentprojection'
 
     def displayName(self):
-        return self.tr('Define layer projection')
+        return self.tr('Define Shapefile projection')
+
+    def tags(self):
+        return self.tr('layer,shp,prj,qpj,change,alter').split(',')
+
+    def shortDescription(self):
+        return self.tr('Changes a Shapefile\'s projection to a new CRS without reprojecting features')
 
     def flags(self):
         return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
@@ -81,16 +84,19 @@ class DefineProjection(QgisAlgorithm):
         if dsPath.lower().endswith('.shp'):
             dsPath = dsPath[:-4]
 
-            wkt = crs.toWkt()
+            wkt = crs.toWkt(QgsCoordinateReferenceSystem.WKT1_ESRI)
             with open(dsPath + '.prj', 'w') as f:
                 f.write(wkt)
 
             qpjFile = dsPath + '.qpj'
             if os.path.exists(qpjFile):
-                with open(qpjFile, 'w') as f:
-                    f.write(wkt)
+                if QgsProjUtils.projVersionMajor() < 6:
+                    with open(qpjFile, 'w') as f:
+                        f.write(wkt)
+                else:
+                    os.remove(qpjFile)
         else:
-            feedback.pushConsoleInfo(self.tr("Data source isn't a shapefile, skipping .prj/.qpj creation"))
+            feedback.pushConsoleInfo(self.tr("Data source isn't a Shapefile, skipping .prj/.qpj creation"))
 
         layer.setCrs(crs)
         layer.triggerRepaint()

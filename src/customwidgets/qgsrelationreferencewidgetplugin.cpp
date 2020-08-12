@@ -62,7 +62,7 @@ bool QgsRelationReferenceWidgetPlugin::isInitialized() const
 
 void QgsRelationReferenceWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
 {
-  Q_UNUSED( core );
+  Q_UNUSED( core )
   if ( mInitialized )
     return;
   mInitialized = true;

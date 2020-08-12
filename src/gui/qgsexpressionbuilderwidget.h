@@ -17,112 +17,21 @@
 #define QGSEXPRESSIONBUILDER_H
 
 #include <QWidget>
-#include "qgis_sip.h"
+#include <QStandardItemModel>
+#include <QSortFilterProxyModel>
+
 #include "ui_qgsexpressionbuilder.h"
-#include "qgsdistancearea.h"
+
+#include "qgis_sip.h"
+#include "qgis_gui.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpression.h"
+#include "qgsexpressiontreeview.h"
 
-#include "QStandardItemModel"
-#include "QStandardItem"
-#include "QSortFilterProxyModel"
-#include "QStringListModel"
-#include "qgis_gui.h"
 
 class QgsFields;
 class QgsExpressionHighlighter;
 class QgsRelation;
-
-/**
- * \ingroup gui
- * An expression item that can be used in the QgsExpressionBuilderWidget tree.
-  */
-class GUI_EXPORT QgsExpressionItem : public QStandardItem
-{
-  public:
-    enum ItemType
-    {
-      Header,
-      Field,
-      ExpressionNode
-    };
-
-    QgsExpressionItem( const QString &label,
-                       const QString &expressionText,
-                       const QString &helpText,
-                       QgsExpressionItem::ItemType itemType = ExpressionNode )
-      : QStandardItem( label )
-    {
-      mExpressionText = expressionText;
-      mHelpText = helpText;
-      mType = itemType;
-      setData( itemType, ITEM_TYPE_ROLE );
-    }
-
-    QgsExpressionItem( const QString &label,
-                       const QString &expressionText,
-                       QgsExpressionItem::ItemType itemType = ExpressionNode )
-      : QStandardItem( label )
-    {
-      mExpressionText = expressionText;
-      mType = itemType;
-      setData( itemType, ITEM_TYPE_ROLE );
-    }
-
-    QString getExpressionText() const { return mExpressionText; }
-
-    /**
-     * Gets the help text that is associated with this expression item.
-      *
-      * \returns The help text.
-      */
-    QString getHelpText() const { return mHelpText; }
-
-    /**
-     * Set the help text for the current item
-      *
-      * \note The help text can be set as a html string.
-      */
-    void setHelpText( const QString &helpText ) { mHelpText = helpText; }
-
-    /**
-     * Gets the type of expression item, e.g., header, field, ExpressionNode.
-      *
-      * \returns The QgsExpressionItem::ItemType
-      */
-    QgsExpressionItem::ItemType getItemType() const { return mType; }
-
-    //! Custom sort order role
-    static const int CUSTOM_SORT_ROLE = Qt::UserRole + 1;
-    //! Item type role
-    static const int ITEM_TYPE_ROLE = Qt::UserRole + 2;
-
-  private:
-    QString mExpressionText;
-    QString mHelpText;
-    QgsExpressionItem::ItemType mType;
-
-};
-
-/**
- * \ingroup gui
- * Search proxy used to filter the QgsExpressionBuilderWidget tree.
-  * The default search for a tree model only searches top level this will handle one
-  * level down
-  */
-class GUI_EXPORT QgsExpressionItemSearchProxy : public QSortFilterProxyModel
-{
-    Q_OBJECT
-
-  public:
-    QgsExpressionItemSearchProxy();
-
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
-
-  protected:
-
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
-};
 
 
 /**
@@ -136,31 +45,67 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
   public:
 
     /**
+     * Flag to determine what should be loaded
+     * \since QGIS 3.14
+     */
+    enum Flag
+    {
+      LoadNothing = 0, //!< Do not load anything
+      LoadRecent = 1 << 1, //!< Load recent expressions given the collection key
+      LoadUserExpressions = 1 << 2, //!< Load user expressions
+      LoadAll = LoadRecent | LoadUserExpressions, //!< Load everything
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+    Q_FLAG( Flag )
+
+
+    /**
      * Create a new expression builder widget with an optional parent.
      */
     QgsExpressionBuilderWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsExpressionBuilderWidget() override;
 
     /**
+     * Initialize without any layer
+     * \since QGIS 3.14
+     */
+    void init( const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), const Flags &flags = LoadAll );
+
+    /**
+     * Initialize with a layer
+     * \since QGIS 3.14
+     */
+    void initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), const Flags &flags = LoadAll );
+
+    /**
+     * Initialize with given fields without any layer
+     * \since QGIS 3.14
+     */
+    void initWithFields( const QgsFields &fields, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), const Flags &flags = LoadAll );
+
+    /**
      * Sets layer in order to get the fields and values
-      * \note this needs to be called before calling loadFieldNames().
-      */
+     * \note this needs to be called before calling loadFieldNames().
+     */
     void setLayer( QgsVectorLayer *layer );
 
     /**
-     * Loads all the field names from the layer.
-      * @remarks Should this really be public couldn't we just do this for the user?
-      */
-    void loadFieldNames();
+     * Returns the current layer or a nullptr.
+     */
+    QgsVectorLayer *layer() const;
 
-    void loadFieldNames( const QgsFields &fields );
+    //! \deprecated since QGIS 3.14 this is now done automatically
+    Q_DECL_DEPRECATED void loadFieldNames() {} SIP_DEPRECATED
+
+    //! \deprecated since QGIS 3.14 use expressionTree()->loadFieldNames() instead
+    Q_DECL_DEPRECATED void loadFieldNames( const QgsFields &fields ) {mExpressionTreeView->loadFieldNames( fields );} SIP_DEPRECATED
 
     /**
      * Loads field names and values from the specified map.
-     *  \note The field values must be quoted appropriately if they are strings.
      *  \since QGIS 2.12
+     * \deprecated since QGIS 3.14 this will not do anything, use setLayer() instead
      */
-    void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues );
+    Q_DECL_DEPRECATED void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues ) SIP_DEPRECATED;
 
     //! Sets geometry calculator used in distance/area calculations.
     void setGeomCalculator( const QgsDistanceArea &da );
@@ -198,66 +143,79 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     /**
      * Sets the expression context for the widget. The context is used for the expression
-     * preview result and for populating the list of available functions and variables.
+     * preview result and to populate the list of available functions and variables.
      * \param context expression context
      * \see expressionContext
      * \since QGIS 2.12
      */
     void setExpressionContext( const QgsExpressionContext &context );
 
-    /**
-     * Registers a node item for the expression builder.
-      * \param group The group the item will be show in the tree view.  If the group doesn't exsit it will be created.
-      * \param label The label that is show to the user for the item in the tree.
-      * \param expressionText The text that is inserted into the expression area when the user double clicks on the item.
-      * \param helpText The help text that the user will see when item is selected.
-      * \param type The type of the expression item.
-      * \param highlightedItem set to TRUE to make the item highlighted, which inserts a bold copy of the item at the top level
-      * \param sortOrder sort ranking for item
-      * \param icon custom icon to show for item
-      */
-    void registerItem( const QString &group, const QString &label, const QString &expressionText,
-                       const QString &helpText = QString(),
-                       QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
-                       bool highlightedItem = false, int sortOrder = 1,
-                       QIcon icon = QIcon() );
-
+    //! Returns if the expression is valid
     bool isExpressionValid();
 
     /**
-     * Adds the current expression to the given collection.
+     * Adds the current expression to the given \a collection.
      * By default it is saved to the collection "generic".
+     * \deprecated since QGIS 3.14 use expressionTree()->saveRecent() instead
      */
-    void saveToRecent( const QString &collection = "generic" );
+    Q_DECL_DEPRECATED void saveToRecent( const QString &collection = "generic" ) SIP_DEPRECATED;
 
     /**
-     * Loads the recent expressions from the given collection.
+     * Loads the recent expressions from the given \a collection.
      * By default it is loaded from the collection "generic".
+     * \deprecated since QGIS 3.14 use expressionTree()->loadRecent() instead
      */
-    void loadRecent( const QString &collection = "generic" );
+    Q_DECL_DEPRECATED void loadRecent( const QString &collection = QStringLiteral( "generic" ) )SIP_DEPRECATED ;
 
     /**
-     * Create a new file in the function editor
+     * Returns the expression tree
+     * \since QGIS 3.14
+     */
+    QgsExpressionTreeView *expressionTree() const;
+
+    /**
+     * Loads the user expressions.
+     * \deprecated since QGIS 3.14 use expressionTree()->loadUserExpressions() instead
+     * \since QGIS 3.12
+     */
+    Q_DECL_DEPRECATED void loadUserExpressions() SIP_DEPRECATED;
+
+    /**
+     * Stores the user \a expression with given \a label and \a helpText.
+     * \deprecated since QGIS 3.14 use expressionTree()->saveToUserExpressions() instead
+     * \since QGIS 3.12
+     */
+    Q_DECL_DEPRECATED void saveToUserExpressions( const QString &label, const QString expression, const QString &helpText ) SIP_DEPRECATED;
+
+    /**
+     * Removes the expression \a label from the user stored expressions.
+     * \deprecated since QGIS 3.14 use expressionTree()->removeFromUserExpressions() instead
+     * \since QGIS 3.12
+     */
+    Q_DECL_DEPRECATED void removeFromUserExpressions( const QString &label ) SIP_DEPRECATED;
+
+    /**
+     * Creates a new file in the function editor
      */
     void newFunctionFile( const QString &fileName = "scratch" );
 
     /**
-     * Save the current function editor text to the given file.
+     * Saves the current function editor text to the given file.
      */
     void saveFunctionFile( QString fileName );
 
     /**
-     * Load code from the given file into the function editor
+     * Loads code from the given file into the function editor
      */
     void loadCodeFromFile( QString path );
 
     /**
-     * Load code into the function editor
+     * Loads code into the function editor
      */
     void loadFunctionCode( const QString &code );
 
     /**
-     * Update the list of function files found at the given path
+     * Updates the list of function files found at the given path
      */
     void updateFunctionFileList( const QString &path );
 
@@ -265,8 +223,9 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * Returns a pointer to the dialog's function item model.
      * This method is exposed for testing purposes only - it should not be used to modify the model.
      * \since QGIS 3.0
+     * \deprecated since QGIS 3.14
      */
-    QStandardItemModel *model();
+    Q_DECL_DEPRECATED QStandardItemModel *model() SIP_DEPRECATED;
 
     /**
      * Returns the project currently associated with the widget.
@@ -302,14 +261,36 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
   public slots:
 
     /**
-     * Load sample values into the sample value area
+     * Load sample values into the sample value area.
+     * Including available values, in case the formatter can
+     * provide them (eg. RelationReference).
      */
     void loadSampleValues();
 
     /**
-     * Load all unique values from the set layer into the sample area
+     * Load all unique values from the set layer into the sample area.
+     * Including all available values, in case the formatter can
+     * provide them (eg. RelationReference).
      */
     void loadAllValues();
+
+    /**
+     * Load used sample values into the sample value area.
+     * Only the used ones. Without available values, even if the
+     * formatter can provide them (eg. RelationReference).
+     *
+     * \since QGIS 3.12
+     */
+    void loadSampleUsedValues();
+
+    /**
+     * Load all unique values from the set layer into the sample area.
+     * Only the used ones. Without available values, even if the
+     * formatter can provide them (eg. RelationReference).
+     *
+     * \since QGIS 3.12
+     */
+    void loadAllUsedValues();
 
     /**
      * Auto save the current Python function code.
@@ -323,20 +304,60 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     void setAutoSave( bool enabled ) { mAutoSave = enabled; }
 
+    /**
+     * Adds the current expressions to the stored user expressions.
+     * \since QGIS 3.12
+     */
+    void storeCurrentUserExpression( );
+
+    /**
+     * Removes the selected expression from the stored user expressions,
+     * the selected expression must be a user stored expression.
+     * \since QGIS 3.12
+     */
+    void removeSelectedUserExpression( );
+
+    /**
+     * Edits the selected expression from the stored user expressions,
+     * the selected expression must be a user stored expression.
+     * \since QGIS 3.14
+     */
+    void editSelectedUserExpression();
+
+    /**
+     * Returns the list of expression items matching a \a label.
+     * \since QGIS 3.12
+     * \deprecated since QGIS 3.14 use expressionTree()->findExpressions instead
+     */
+    const QList<QgsExpressionItem *> findExpressions( const QString &label );
+
+
   private slots:
     void indicatorClicked( int line, int index, Qt::KeyboardModifiers state );
-    void showContextMenu( QPoint );
-    void setExpressionState( bool state );
-    void currentChanged( const QModelIndex &index, const QModelIndex & );
+    void onExpressionParsed( bool state );
+    void expressionTreeItemChanged( QgsExpressionItem *item );
     void operatorButtonClicked();
     void btnRun_pressed();
     void btnNewFile_pressed();
+    void btnRemoveFile_pressed();
+
+    /**
+     * Display a file dialog to choose where to store the exported expressions JSON file
+     * and saves them to the selected destination.
+     * \since QGIS 3.14
+     */
+    void exportUserExpressions_pressed();
+
+    /**
+     * Display a file dialog to choose where to load the expression JSON file from
+     * and adds them to user expressions group.
+     * \since QGIS 3.14
+     */
+    void importUserExpressions_pressed();
     void cmbFileNames_currentItemChanged( QListWidgetItem *item, QListWidgetItem *lastitem );
-    void expressionTree_doubleClicked( const QModelIndex &index );
+    void insertExpressionText( const QString &text );
     void txtExpressionString_textChanged();
-    void txtSearchEdit_textChanged();
     void txtSearchEditValues_textChanged();
-    void lblPreview_linkActivated( const QString &link );
     void mValuesListView_doubleClicked( const QModelIndex &index );
     void txtPython_textChanged();
 
@@ -370,84 +391,49 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void showEvent( QShowEvent *e ) override;
 
   private:
+    class ExpressionTreeMenuProvider : public QgsExpressionTreeView::MenuProvider
+    {
+      public:
+        ExpressionTreeMenuProvider( QgsExpressionBuilderWidget *expressionBuilderWidget )
+          : QgsExpressionTreeView::MenuProvider()
+          , mExpressionBuilderWidget( expressionBuilderWidget ) {}
+
+        QMenu *createContextMenu( QgsExpressionItem *item ) override;
+
+      private:
+        QgsExpressionBuilderWidget *mExpressionBuilderWidget;
+    };
+
     int FUNCTION_MARKER_ID = 25;
+
     void createErrorMarkers( QList<QgsExpression::ParserError> errors );
     void createMarkers( const QgsExpressionNode *node );
     void clearFunctionMarkers();
     void clearErrors();
     void runPythonCode( const QString &code );
-    void updateFunctionTree();
-    void fillFieldValues( const QString &fieldName, int countLimit );
+    void fillFieldValues( const QString &fieldName, int countLimit, bool forceUsedValues = false );
     QString getFunctionHelp( QgsExpressionFunction *function );
     QString loadFunctionHelp( QgsExpressionItem *functionName );
     QString helpStylesheet() const;
 
-    void loadExpressionContext();
+    // Will hold items with
+    // * a display string that matches the represented field values
+    // * custom data in Qt::UserRole + 1 that contains a ready to use expression literal ('quoted string' or NULL or a plain number )
+    std::unique_ptr<QStandardItemModel> mValuesModel;
+    std::unique_ptr<QSortFilterProxyModel> mProxyValues;
 
-    //! Loads current project relations names/id into the expression help tree
-    void loadRelations();
-
-    //! Loads current project layer names/ids into the expression help tree
-    void loadLayers();
-
-    /**
-     * Registers a node item for the expression builder, adding multiple items when the function exists in multiple groups
-      * \param groups The groups the item will be show in the tree view.  If a group doesn't exist it will be created.
-      * \param label The label that is show to the user for the item in the tree.
-      * \param expressionText The text that is inserted into the expression area when the user double clicks on the item.
-      * \param helpText The help text that the user will see when item is selected.
-      * \param type The type of the expression item.
-      * \param highlightedItem set to TRUE to make the item highlighted, which inserts a bold copy of the item at the top level
-      * \param sortOrder sort ranking for item
-      */
-    void registerItemForAllGroups( const QStringList &groups, const QString &label, const QString &expressionText,
-                                   const QString &helpText = QString(),
-                                   QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
-                                   bool highlightedItem = false, int sortOrder = 1 );
-
-    /**
-     * Returns a HTML formatted string for use as a \a relation item help.
-     */
-    QString formatRelationHelp( const QgsRelation &relation ) const;
-
-    /**
-     * Returns a HTML formatted string for use as a \a layer item help.
-     */
-    QString formatLayerHelp( const QgsMapLayer *layer ) const;
-
-    /**
-     * Will be set to TRUE if the current expression text reported an eval error
-     * with the context.
-     *
-     * \since QGIS 3.0
-     */
-    void setEvalError( bool evalError );
-
-    /**
-     * Will be set to TRUE if the current expression text reports a parser error
-     * with the context.
-     *
-     * \since QGIS 3.0
-     */
-    void setParserError( bool parserError );
+    ExpressionTreeMenuProvider *mExpressionTreeMenuProvider = nullptr;
 
     bool mAutoSave = true;
     QString mFunctionsPath;
     QgsVectorLayer *mLayer = nullptr;
-    QStandardItemModel *mModel = nullptr;
-    QStringListModel *mValuesModel = nullptr;
-    QSortFilterProxyModel *mProxyValues = nullptr;
-    QgsExpressionItemSearchProxy *mProxyModel = nullptr;
-    QMap<QString, QgsExpressionItem *> mExpressionGroups;
     QgsExpressionHighlighter *highlighter = nullptr;
     bool mExpressionValid = false;
-    QgsDistanceArea mDa;
-    QString mRecentKey;
-    QMap<QString, QStringList> mFieldValues;
     QgsExpressionContext mExpressionContext;
     QPointer< QgsProject > mProject;
-    bool mEvalError = true;
-    bool mParserError = true;
+
+    // Translated name of the user expressions group
+    QString mUserExpressionsGroupName;
 };
 
 // clazy:excludeall=qstring-allocations

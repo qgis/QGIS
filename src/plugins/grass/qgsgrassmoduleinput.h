@@ -87,6 +87,8 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     QStringList locationDirNames();
     QFileSystemWatcher *mWatcher = nullptr;
 
+    QgsGrassModuleInputModel( const QgsGrassModuleInputModel & ) = delete;
+    QgsGrassModuleInputModel &operator = ( const QgsGrassModuleInputModel & ) = delete;
 };
 
 // Filter maps by type
@@ -131,7 +133,7 @@ class QgsGrassModuleInputCompleterProxy : public QAbstractProxyModel
   public:
     explicit QgsGrassModuleInputCompleterProxy( QObject *parent = nullptr );
 
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override { Q_UNUSED( parent ); return 1; }
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override { Q_UNUSED( parent ) return 1; }
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex parent( const QModelIndex &index ) const override;
@@ -350,6 +352,9 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
 
     //! Required field
     bool mRequired;
+
+    QgsGrassModuleInput( const QgsGrassModuleInput & ) = delete;
+    QgsGrassModuleInput &operator = ( const QgsGrassModuleInput & ) = delete;
 };
 
 

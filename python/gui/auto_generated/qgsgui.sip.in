@@ -10,7 +10,7 @@
 
 
 
-class QgsGui
+class QgsGui : QObject
 {
 %Docstring
 QgsGui is a singleton class containing various registry and other global members
@@ -23,6 +23,12 @@ related to GUI classes.
 #include "qgsgui.h"
 %End
   public:
+
+    enum ProjectCrsBehavior
+    {
+      UseCrsOfFirstLayerAdded,
+      UsePresetCrs,
+    };
 
 
 
@@ -69,6 +75,13 @@ Returns the global processing gui registry, used for registering the GUI behavio
 .. versionadded:: 3.2
 %End
 
+    static QgsNumericFormatGuiRegistry *numericFormatGuiRegistry() /KeepReference/;
+%Docstring
+Returns the global numeric format gui registry, used for registering the GUI widgets associated with :py:class:`QgsNumericFormats`.
+
+.. versionadded:: 3.12
+%End
+
     static QgsProcessingRecentAlgorithmLog *processingRecentAlgorithmLog();
 %Docstring
 Returns the global processing recent algorithm log, used for tracking recently used processing algorithms.
@@ -84,10 +97,24 @@ GUI.
 .. versionadded:: 3.6
 %End
 
+    static QgsProjectStorageGuiRegistry *projectStorageGuiRegistry() /KeepReference/;
+%Docstring
+Returns the global GUI-related project storage registry
+
+.. versionadded:: 3.10
+%End
+
+    static QgsProviderGuiRegistry *providerGuiRegistry() /KeepReference/;
+%Docstring
+Returns the registry of GUI-related components of data providers
+
+.. versionadded:: 3.10
+%End
+
     static void enableAutoGeometryRestore( QWidget *widget, const QString &key = QString() );
 %Docstring
 Register the widget to allow its position to be automatically saved and restored when open and closed.
-Use this to avoid needing to call saveGeometry() and restoreGeometry() on your widget.
+Use this to avoid needing to call :py:func:`~QgsGui.saveGeometry` and :py:func:`~QgsGui.restoreGeometry` on your widget.
 %End
 
     static QgsWindowManagerInterface *windowManager();
@@ -124,6 +151,21 @@ Returns the platform's HIG flags.
 %End
 
     ~QgsGui();
+
+    static QColor sampleColor( QPoint point );
+%Docstring
+Samples the color on screen at the specified global ``point`` (pixel).
+
+.. versionadded:: 3.10
+%End
+
+    static QScreen *findScreenAt( QPoint point );
+%Docstring
+Returns the screen at the given global ``point`` (pixel).
+
+.. versionadded:: 3.10
+%End
+
 
   private:
     QgsGui( const QgsGui &other );

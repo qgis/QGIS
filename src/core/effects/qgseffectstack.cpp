@@ -31,6 +31,12 @@ QgsEffectStack::QgsEffectStack( const QgsEffectStack &other )
   }
 }
 
+QgsEffectStack::QgsEffectStack( QgsEffectStack &&other )
+  : QgsPaintEffect( other )
+{
+  std::swap( mEffectList, other.mEffectList );
+}
+
 QgsEffectStack::QgsEffectStack( const QgsPaintEffect &effect )
 {
   appendEffect( effect.clone() );
@@ -53,6 +59,13 @@ QgsEffectStack &QgsEffectStack::operator=( const QgsEffectStack &rhs )
     appendEffect( rhs.effect( i )->clone() );
   }
   mEnabled = rhs.enabled();
+  return *this;
+}
+
+QgsEffectStack &QgsEffectStack::operator=( QgsEffectStack &&other )
+{
+  std::swap( mEffectList, other.mEffectList );
+  mEnabled = other.enabled();
   return *this;
 }
 
@@ -123,11 +136,9 @@ void QgsEffectStack::draw( QgsRenderContext &context )
     QPicture *pic = results.takeLast();
     if ( mEffectList.at( i )->drawMode() != QgsPaintEffect::Modifier )
     {
-      context.painter()->save();
+      QgsScopedQPainterState painterState( context.painter() );
       fixQPictureDpi( context.painter() );
       context.painter()->drawPicture( 0, 0, *pic );
-      context.painter()->restore();
-
     }
     delete pic;
   }
@@ -192,7 +203,7 @@ QgsStringMap QgsEffectStack::properties() const
 
 void QgsEffectStack::readProperties( const QgsStringMap &props )
 {
-  Q_UNUSED( props );
+  Q_UNUSED( props )
 }
 
 void QgsEffectStack::clearStack()

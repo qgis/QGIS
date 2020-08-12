@@ -35,9 +35,24 @@ class QgsAttributes;
 /**
  * \ingroup core
  * Base class for all diagram types*/
-class CORE_EXPORT QgsDiagram
+class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->diagramName() == QStringLiteral( "Pie" ) )
+      sipType = sipType_QgsPieDiagram;
+    else if ( sipCpp->diagramName() == QStringLiteral( "Histogram" ) )
+      sipType = sipType_QgsHistogramDiagram;
+    else if ( sipCpp->diagramName() == QStringLiteral( "Text" ) )
+      sipType = sipType_QgsTextDiagram;
+    else if ( sipCpp->diagramName() == QStringLiteral( "Stacked" ) )
+      sipType = sipType_QgsStackedBarDiagram;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
 
     virtual ~QgsDiagram() { clearCache(); }
 
@@ -133,6 +148,7 @@ class CORE_EXPORT QgsDiagram
 
   private:
     QMap<QString, QgsExpression *> mExpressions;
+    QgsDiagram &operator= ( const QgsDiagram & ) = delete;
 };
 
 #endif // QGSDIAGRAM_H

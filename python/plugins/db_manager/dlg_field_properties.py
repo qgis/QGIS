@@ -21,8 +21,6 @@ from builtins import str
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'April 2012'
 __copyright__ = '(C) 2012, Giuseppe Sucameli'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
@@ -64,7 +62,7 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
         tab = self.table.name
         field = fld.name
         res = self.db.connector.getComment(tab, field)
-        self.editCom.setText(res) # Set comment value
+        self.editCom.setText(res)  # Set comment value
 
     def getField(self, newCopy=False):
         fld = TableField(self.table) if not self.fld or newCopy else self.fld
@@ -73,15 +71,13 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
         fld.notNull = not self.chkNull.isChecked()
         fld.default = self.editDefault.text()
         fld.hasDefault = fld.default != ""
-        # Get the comment from the LineEdit
         fld.comment = self.editCom.text()
-        try:
-            modifier = int(self.editLength.text())
-        except ValueError:
-            ok = False
+        # length field also used for geometry definition, so we should
+        # not cast its value to int
+        if self.editLength.text() != "":
+            fld.modifier = self.editLength.text()
         else:
-            ok = True
-        fld.modifier = modifier if ok else None
+            fld.modifier = None
         return fld
 
     def onOK(self):

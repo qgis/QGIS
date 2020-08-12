@@ -212,7 +212,7 @@ class CORE_EXPORT QgsPropertyTransformer
     QgsPropertyTransformer( const QgsPropertyTransformer &other );
     QgsPropertyTransformer &operator=( const QgsPropertyTransformer &other );
 
-    virtual ~QgsPropertyTransformer() = default;
+    virtual ~QgsPropertyTransformer();
 
     /**
      * Returns the transformer type.

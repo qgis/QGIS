@@ -47,7 +47,7 @@ QgsUnitTypes::DistanceUnit QgsScaleCalculator::mapUnits() const
   return mMapUnits;
 }
 
-double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, double canvasWidth )
+double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, double canvasWidth )  const
 {
   double conversionFactor = 0;
   double delta = 0;
@@ -88,7 +88,7 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, double canv
 }
 
 
-double QgsScaleCalculator::calculateGeographicDistance( const QgsRectangle &mapExtent )
+double QgsScaleCalculator::calculateGeographicDistance( const QgsRectangle &mapExtent ) const
 {
   // need to calculate the x distance in meters
   // We'll use the middle latitude for the calculation

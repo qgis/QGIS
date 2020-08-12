@@ -1,6 +1,7 @@
 {
   "name": "atan2",
   "type": "function",
+  "groups": ["Math"],
   "description": "Returns the inverse tangent of dy/dx by using the signs of the two arguments to determine the quadrant of the result.",
   "arguments": [ {"arg":"dy","description":"y coordinate difference"},
                  {"arg":"dx","description":"x coordinate difference"}],

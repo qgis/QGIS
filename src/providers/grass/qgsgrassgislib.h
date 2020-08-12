@@ -31,7 +31,6 @@ extern "C"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterprojector.h"
 
-#include <QLibrary>
 #include <QProcess>
 #include <QString>
 #include <QMap>
@@ -43,8 +42,8 @@ class QgsRectangle;
 class GRASS_LIB_EXPORT QgsGrassGisLib
 {
   public:
-    // Region term is used in modules (g.region), internaly it is hold in structure
-    // Cell_head, but variables keeping that struture are usually called window
+    // Region term is used in modules (g.region), internally it is hold in structure
+    // Cell_head, but variables keeping that structure are usually called window
 #if 0
     class Region
     {
@@ -140,9 +139,6 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     //! Pointer to canonical Singleton object
     static QgsGrassGisLib *_instance;
 
-    //! Original GRASS library handle
-    QLibrary mLibrary;
-
     //! Raster maps, key is fake file descriptor
     QMap<int, Raster> mRasters;
 
@@ -152,18 +148,19 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     //! Current region extent
     QgsRectangle mExtent;
     //! Current region rows
-    int mRows;
+    int mRows = 0;
     //! Current region columns
-    int mColumns;
+    int mColumns = 0;
     //! X resolution
-    double mXRes;
+    double mXRes = 0;
     //! Y resolution
-    double mYRes;
+    double mYRes = 0;
     //! Current coordinate reference system
     QgsCoordinateReferenceSystem mCrs;
     QgsDistanceArea mDistanceArea;
     //! Lat1, lat2 used for geodesic distance calculation
-    double mLat1, mLat2;
+    double mLat1 = 0;
+    double mLat2 = 0;
 };
 
 #endif // QGSGRASSGISLIB_H

@@ -28,6 +28,7 @@ constructor
     ~QgsMapToolZoom();
 
     virtual Flags flags() const;
+
     virtual void canvasMoveEvent( QgsMapMouseEvent *e );
 
     virtual void canvasPressEvent( QgsMapMouseEvent *e );

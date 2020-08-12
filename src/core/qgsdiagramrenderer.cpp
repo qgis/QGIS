@@ -19,10 +19,14 @@
 #include "diagram/qgstextdiagram.h"
 #include "diagram/qgspiediagram.h"
 #include "diagram/qgshistogramdiagram.h"
+#include "diagram/qgsstackedbardiagram.h"
 #include "qgsrendercontext.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgsfontutils.h"
 #include "qgssymbollayerutils.h"
+#include "qgspainteffectregistry.h"
+#include "qgspainteffect.h"
+#include "qgsapplication.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -167,7 +171,7 @@ QSet<QString> QgsDiagramLayerSettings::referencedFields( const QgsExpressionCont
   return referenced;
 }
 
-void QgsDiagramSettings::readXml( const QDomElement &elem )
+void QgsDiagramSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   enabled = ( elem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
   if ( !QgsFontUtils::setFromXmlChildNode( font, elem, QStringLiteral( "fontProperties" ) ) )
@@ -191,6 +195,8 @@ void QgsDiagramSettings::readXml( const QDomElement &elem )
   int penAlpha = elem.attribute( QStringLiteral( "penAlpha" ), QStringLiteral( "255" ) ).toInt();
   penColor.setAlpha( penAlpha );
   penWidth = elem.attribute( QStringLiteral( "penWidth" ) ).toDouble();
+
+  mDirection = static_cast< Direction >( elem.attribute( QStringLiteral( "direction" ), QStringLiteral( "1" ) ).toInt() );
 
   maximumScale = elem.attribute( QStringLiteral( "minScaleDenominator" ), QStringLiteral( "-1" ) ).toDouble();
   minimumScale = elem.attribute( QStringLiteral( "maxScaleDenominator" ), QStringLiteral( "-1" ) ).toDouble();
@@ -218,6 +224,10 @@ void QgsDiagramSettings::readXml( const QDomElement &elem )
   //line width unit type and scale
   lineSizeUnit = QgsUnitTypes::decodeRenderUnit( elem.attribute( QStringLiteral( "lineSizeType" ) ) );
   lineSizeScale = QgsSymbolLayerUtils::decodeMapUnitScale( elem.attribute( QStringLiteral( "lineSizeScale" ) ) );
+
+  mSpacing = elem.attribute( QStringLiteral( "spacing" ) ).toDouble();
+  mSpacingUnit = QgsUnitTypes::decodeRenderUnit( elem.attribute( QStringLiteral( "spacingUnit" ) ) );
+  mSpacingMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( elem.attribute( QStringLiteral( "spacingUnitScale" ) ) );
 
   //label placement method
   if ( elem.attribute( QStringLiteral( "labelPlacementMethod" ) ) == QLatin1String( "Height" ) )
@@ -266,9 +276,23 @@ void QgsDiagramSettings::readXml( const QDomElement &elem )
 
   minimumSize = elem.attribute( QStringLiteral( "minimumSize" ) ).toDouble();
 
+  QDomNodeList axisSymbolNodes = elem.elementsByTagName( QStringLiteral( "axisSymbol" ) );
+  if ( axisSymbolNodes.count() > 0 )
+  {
+    QDomElement axisSymbolElem = axisSymbolNodes.at( 0 ).toElement().firstChildElement();
+    mAxisLineSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( axisSymbolElem, context ) );
+  }
+  else
+  {
+    mAxisLineSymbol = qgis::make_unique< QgsLineSymbol >();
+  }
+
+  mShowAxis = elem.attribute( QStringLiteral( "showAxis" ), QStringLiteral( "0" ) ).toInt();
+
   //colors
   categoryColors.clear();
   QDomNodeList attributes = elem.elementsByTagName( QStringLiteral( "attribute" ) );
+
 
   if ( attributes.length() > 0 )
   {
@@ -280,7 +304,7 @@ void QgsDiagramSettings::readXml( const QDomElement &elem )
       categoryColors.append( newColor );
       categoryAttributes.append( attrElem.attribute( QStringLiteral( "field" ) ) );
       categoryLabels.append( attrElem.attribute( QStringLiteral( "label" ) ) );
-      if ( categoryLabels.back().isEmpty() )
+      if ( categoryLabels.constLast().isEmpty() )
       {
         categoryLabels.back() = categoryAttributes.back();
       }
@@ -309,9 +333,15 @@ void QgsDiagramSettings::readXml( const QDomElement &elem )
       categoryLabels.append( *catIt );
     }
   }
+
+  QDomElement effectElem = elem.firstChildElement( QStringLiteral( "effect" ) );
+  if ( !effectElem.isNull() )
+    setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+  else
+    setPaintEffect( QgsApplication::paintEffectRegistry()->defaultStack() );
 }
 
-void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc ) const
+void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement categoryElem = doc.createElement( QStringLiteral( "DiagramCategory" ) );
   categoryElem.setAttribute( QStringLiteral( "enabled" ), enabled );
@@ -327,6 +357,10 @@ void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc 
   categoryElem.setAttribute( QStringLiteral( "minScaleDenominator" ), QString::number( maximumScale ) );
   categoryElem.setAttribute( QStringLiteral( "maxScaleDenominator" ), QString::number( minimumScale ) );
   categoryElem.setAttribute( QStringLiteral( "opacity" ), QString::number( opacity ) );
+  categoryElem.setAttribute( QStringLiteral( "spacing" ), QString::number( mSpacing ) );
+  categoryElem.setAttribute( QStringLiteral( "spacingUnit" ), QgsUnitTypes::encodeUnit( mSpacingUnit ) );
+  categoryElem.setAttribute( QStringLiteral( "spacingUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mSpacingMapUnitScale ) );
+  categoryElem.setAttribute( QStringLiteral( "direction" ), QString::number( mDirection ) );
 
   //diagram size unit type and scale
   categoryElem.setAttribute( QStringLiteral( "sizeType" ), QgsUnitTypes::encodeUnit( sizeType ) );
@@ -373,10 +407,6 @@ void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc 
     case Up:
       categoryElem.setAttribute( QStringLiteral( "diagramOrientation" ), QStringLiteral( "Up" ) );
       break;
-
-    default:
-      categoryElem.setAttribute( QStringLiteral( "diagramOrientation" ), QStringLiteral( "Up" ) );
-      break;
   }
 
   categoryElem.setAttribute( QStringLiteral( "barWidth" ), QString::number( barWidth ) );
@@ -393,6 +423,15 @@ void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc 
     attributeElem.setAttribute( QStringLiteral( "label" ), categoryLabels.at( i ) );
     categoryElem.appendChild( attributeElem );
   }
+
+  categoryElem.setAttribute( QStringLiteral( "showAxis" ), mShowAxis ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  QDomElement axisSymbolElem = doc.createElement( QStringLiteral( "axisSymbol" ) );
+  QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QString(), mAxisLineSymbol.get(), doc, context );
+  axisSymbolElem.appendChild( symbolElem );
+  categoryElem.appendChild( axisSymbolElem );
+
+  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect.get() ) )
+    mPaintEffect->saveProperties( doc, categoryElem );
 
   rendererElem.appendChild( categoryElem );
 }
@@ -441,6 +480,13 @@ void QgsDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRenderCont
     s.penWidth = properties.valueAsDouble( QgsDiagramLayerSettings::StrokeWidth, c.expressionContext(), s.penWidth );
     c.expressionContext().setOriginalValueVariable( s.rotationOffset );
     s.rotationOffset = properties.valueAsDouble( QgsDiagramLayerSettings::StartAngle, c.expressionContext(), s.rotationOffset );
+  }
+
+  QgsPaintEffect *effect = s.paintEffect();
+  std::unique_ptr< QgsEffectPainter > effectPainter;
+  if ( effect && effect->enabled() )
+  {
+    effectPainter = qgis::make_unique< QgsEffectPainter >( c, effect );
   }
 
   mDiagram->renderDiagram( feature, c, s, pos );
@@ -511,7 +557,7 @@ int QgsDiagramRenderer::dpiPaintDevice( const QPainter *painter )
 
 void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   mDiagram.reset();
   QString diagramType = elem.attribute( QStringLiteral( "diagramType" ) );
   if ( diagramType == QLatin1String( "Pie" ) )
@@ -526,13 +572,22 @@ void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteCo
   {
     mDiagram.reset( new QgsHistogramDiagram() );
   }
+  else if ( diagramType == QLatin1String( "Stacked" ) )
+  {
+    mDiagram.reset( new QgsStackedBarDiagram() );
+  }
+  else
+  {
+    // unknown diagram type -- default to histograms
+    mDiagram.reset( new QgsHistogramDiagram() );
+  }
   mShowAttributeLegend = ( elem.attribute( QStringLiteral( "attributeLegend" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
 }
 
 void QgsDiagramRenderer::_writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( doc );
-  Q_UNUSED( context );
+  Q_UNUSED( doc )
+  Q_UNUSED( context )
 
   if ( mDiagram )
   {
@@ -548,7 +603,7 @@ QgsSingleCategoryDiagramRenderer *QgsSingleCategoryDiagramRenderer::clone() cons
 
 bool QgsSingleCategoryDiagramRenderer::diagramSettings( const QgsFeature &, const QgsRenderContext &c, QgsDiagramSettings &s ) const
 {
-  Q_UNUSED( c );
+  Q_UNUSED( c )
   s = mSettings;
   return true;
 }
@@ -573,14 +628,14 @@ void QgsSingleCategoryDiagramRenderer::readXml( const QDomElement &elem, const Q
     return;
   }
 
-  mSettings.readXml( categoryElem );
+  mSettings.readXml( categoryElem, context );
   _readXml( elem, context );
 }
 
 void QgsSingleCategoryDiagramRenderer::writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement rendererElem = doc.createElement( QStringLiteral( "SingleCategoryDiagramRenderer" ) );
-  mSettings.writeXml( rendererElem, doc );
+  mSettings.writeXml( rendererElem, doc, context );
   _writeXml( rendererElem, doc, context );
   layerElem.appendChild( rendererElem );
 }
@@ -744,6 +799,125 @@ QList< QgsLayerTreeModelLegendNode * > QgsDiagramSettings::legendItems( QgsLayer
     list << new QgsSimpleLegendNode( nodeLayer, categoryLabels[i], QIcon( pix ), nullptr, QStringLiteral( "diagram_%1" ).arg( QString::number( i ) ) );
   }
   return list;
+}
+
+QgsLineSymbol *QgsDiagramSettings::axisLineSymbol() const
+{
+  return mAxisLineSymbol.get();
+}
+
+void QgsDiagramSettings::setAxisLineSymbol( QgsLineSymbol *axisLineSymbol )
+{
+  if ( axisLineSymbol != mAxisLineSymbol.get() )
+    mAxisLineSymbol.reset( axisLineSymbol );
+}
+
+bool QgsDiagramSettings::showAxis() const
+{
+  return mShowAxis;
+}
+
+void QgsDiagramSettings::setShowAxis( bool showAxis )
+{
+  mShowAxis = showAxis;
+}
+
+QgsPaintEffect *QgsDiagramSettings::paintEffect() const
+{
+  return mPaintEffect.get();
+}
+
+void QgsDiagramSettings::setPaintEffect( QgsPaintEffect *effect )
+{
+  if ( effect != mPaintEffect.get() )
+    mPaintEffect.reset( effect );
+}
+
+QgsDiagramSettings::QgsDiagramSettings()
+  : mAxisLineSymbol( qgis::make_unique< QgsLineSymbol >() )
+{
+}
+
+QgsDiagramSettings::~QgsDiagramSettings() = default;
+
+QgsDiagramSettings::QgsDiagramSettings( const QgsDiagramSettings &other )
+  : enabled( other.enabled )
+  , font( other.font )
+  , categoryColors( other.categoryColors )
+  , categoryAttributes( other.categoryAttributes )
+  , categoryLabels( other.categoryLabels )
+  , size( other.size )
+  , sizeType( other.sizeType )
+  , sizeScale( other.sizeScale )
+  , lineSizeUnit( other.lineSizeUnit )
+  , lineSizeScale( other.lineSizeScale )
+  , backgroundColor( other.backgroundColor )
+  , penColor( other.penColor )
+  , penWidth( other.penWidth )
+  , labelPlacementMethod( other.labelPlacementMethod )
+  , diagramOrientation( other.diagramOrientation )
+  , barWidth( other.barWidth )
+  , opacity( other.opacity )
+  , scaleByArea( other.scaleByArea )
+  , rotationOffset( other.rotationOffset )
+  , scaleBasedVisibility( other.scaleBasedVisibility )
+  , maximumScale( other.maximumScale )
+  , minimumScale( other.minimumScale )
+  , minimumSize( other.minimumSize )
+  , mSpacing( other.mSpacing )
+  , mSpacingUnit( other.mSpacingUnit )
+  , mSpacingMapUnitScale( other.mSpacingMapUnitScale )
+  , mDirection( other.mDirection )
+  , mShowAxis( other.mShowAxis )
+  , mAxisLineSymbol( other.mAxisLineSymbol ? other.mAxisLineSymbol->clone() : nullptr )
+  , mPaintEffect( other.mPaintEffect ? other.mPaintEffect->clone() : nullptr )
+{
+
+}
+
+QgsDiagramSettings &QgsDiagramSettings::operator=( const QgsDiagramSettings &other )
+{
+  enabled = other.enabled;
+  font = other.font;
+  categoryColors = other.categoryColors;
+  categoryAttributes = other.categoryAttributes;
+  categoryLabels = other.categoryLabels;
+  size = other.size;
+  sizeType = other.sizeType;
+  sizeScale = other.sizeScale;
+  lineSizeUnit = other.lineSizeUnit;
+  lineSizeScale = other.lineSizeScale;
+  backgroundColor = other.backgroundColor;
+  penColor = other.penColor;
+  penWidth = other.penWidth;
+  labelPlacementMethod = other.labelPlacementMethod;
+  diagramOrientation = other.diagramOrientation;
+  barWidth = other.barWidth;
+  opacity = other.opacity;
+  scaleByArea = other.scaleByArea;
+  rotationOffset = other.rotationOffset;
+  scaleBasedVisibility = other.scaleBasedVisibility;
+  maximumScale = other.maximumScale;
+  minimumScale = other.minimumScale;
+  minimumSize = other.minimumSize;
+  mSpacing = other.mSpacing;
+  mSpacingUnit = other.mSpacingUnit;
+  mSpacingMapUnitScale = other.mSpacingMapUnitScale;
+  mDirection = other.mDirection;
+  mAxisLineSymbol.reset( other.mAxisLineSymbol ? other.mAxisLineSymbol->clone() : nullptr );
+  mShowAxis = other.mShowAxis;
+  mPaintEffect.reset( other.mPaintEffect ? other.mPaintEffect->clone() : nullptr );
+  return *this;
+}
+
+QgsDiagramSettings::Direction QgsDiagramSettings::direction() const
+{
+  return mDirection;
+}
+
+void QgsDiagramSettings::setDirection( Direction direction )
+{
+  mDirection = direction;
 }
 
 QList< QgsLayerTreeModelLegendNode * > QgsDiagramRenderer::legendItems( QgsLayerTreeLayer * ) const

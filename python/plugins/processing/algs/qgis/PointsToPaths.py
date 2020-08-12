@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from datetime import datetime
 
@@ -51,7 +47,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class PointsToPaths(QgisAlgorithm):
-
     INPUT = 'INPUT'
     GROUP_FIELD = 'GROUP_FIELD'
     ORDER_FIELD = 'ORDER_FIELD'
@@ -161,7 +156,7 @@ class PointsToPaths(QgisAlgorithm):
 
         da = QgsDistanceArea()
         da.setSourceCrs(source.sourceCrs(), context.transformContext())
-        da.setEllipsoid(context.project().ellipsoid())
+        da.setEllipsoid(context.ellipsoid())
 
         current = 0
         total = 100.0 / len(points) if points else 1

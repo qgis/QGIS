@@ -61,7 +61,10 @@ Returns a pointer to the server interface
     void initPython();
 %Docstring
 Initialize Python
-Note: not in Python bindings
+
+.. note::
+
+   not available in Python bindings
 %End
 
   private:

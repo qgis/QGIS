@@ -8,4 +8,4 @@ QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNum
 QgsProcessingParameterEnum|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
 QgsProcessingParameterRasterLayer|TARGET_TEMPLATE|Target system|None|True
 QgsProcessingParameterRasterDestination|TARGET_CATEGORIES|Categories
-QgsProcessingParameterRasterDestination|TARGET_PROPABILITY|Propability
+QgsProcessingParameterRasterDestination|TARGET_PROPABILITY|Probability

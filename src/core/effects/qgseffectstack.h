@@ -41,7 +41,7 @@
  * \since QGIS 2.9
  */
 
-class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
+class CORE_EXPORT QgsEffectStack : public QgsPaintEffect SIP_NODEFAULTCTORS
 {
 
   public:
@@ -60,6 +60,11 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
     QgsEffectStack() = default;
 
     QgsEffectStack( const QgsEffectStack &other );
+
+    /**
+     * Move constructor.
+     */
+    QgsEffectStack( QgsEffectStack &&other ) SIP_SKIP;
 
     /**
      * Creates a new QgsEffectStack effect from a single initial effect.
@@ -138,6 +143,9 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
     QgsPaintEffect *effect( int index ) const;
 
     QgsEffectStack &operator=( const QgsEffectStack &rhs );
+
+    QgsEffectStack &operator=( QgsEffectStack &&other ) SIP_SKIP;
+
 
   protected:
 

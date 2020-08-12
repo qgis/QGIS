@@ -17,12 +17,13 @@ class QgsDataItemProvider
 %Docstring
 This is the interface for those who want to add custom data items to the browser tree.
 
-The method createDataItem() is ever called only if capabilities() return non-zero value.
-There are two occasions when createDataItem() is called:
-1. to create root items (passed path is empty, parent item is ``None``).
-2. to create items in directory structure. For this capabilities have to return at least
-of the following: QgsDataProvider.Dir or QgsDataProvider.File. Passed path is the file
-or directory being inspected, parent item is a valid QgsDirectoryItem
+The method :py:func:`~createDataItem` is ever called only if :py:func:`~capabilities` return non-zero value.
+There are two occasions when :py:func:`~createDataItem` is called:
+
+# to create root items (passed path is empty, parent item is ``None``).
+# to create items in directory structure. For this capabilities have to return at least
+  of the following: QgsDataProvider.Dir or QgsDataProvider.File. Passed path is the file
+  or directory being inspected, parent item is a valid QgsDirectoryItem
 
 .. versionadded:: 2.10
 %End
@@ -38,7 +39,14 @@ or directory being inspected, parent item is a valid QgsDirectoryItem
 Human-readable name of the provider name
 %End
 
-    virtual int capabilities() = 0;
+    virtual QString dataProviderKey() const;
+%Docstring
+Returns the data provider key (if the data item provider is associated with a data provider),
+the default implementation returns an empty string.
+
+.. versionadded:: 3.14
+%End
+    virtual int capabilities() const = 0;
 %Docstring
 Returns combination of flags from QgsDataProvider.DataCapabilities
 %End

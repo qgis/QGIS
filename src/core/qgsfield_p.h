@@ -119,6 +119,9 @@ class QgsFieldPrivate : public QSharedData
     QgsFieldConstraints constraints;
 
     QgsEditorWidgetSetup editorWidgetSetup;
+
+  private:
+    QgsFieldPrivate &operator=( const QgsFieldPrivate & ) = delete;
 };
 
 /// @endcond

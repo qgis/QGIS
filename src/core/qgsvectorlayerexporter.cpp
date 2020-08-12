@@ -15,12 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsgeometrycollection.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgsproviderregistry.h"
@@ -28,6 +30,7 @@
 #include "qgsexception.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsabstractgeometry.h"
 
 #include <QProgressDialog>
 
@@ -59,27 +62,11 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 {
   mProvider = nullptr;
 
-  QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
-
-  std::unique_ptr< QLibrary > myLib( pReg->createProviderLibrary( providerKey ) );
-  if ( !myLib )
-  {
-    mError = ErrInvalidProvider;
-    mErrorMessage = QObject::tr( "Unable to load %1 provider" ).arg( providerKey );
-    return;
-  }
-
-  createEmptyLayer_t *pCreateEmpty = reinterpret_cast< createEmptyLayer_t * >( cast_to_fptr( myLib->resolve( "createEmptyLayer" ) ) );
-  if ( !pCreateEmpty )
-  {
-    mError = ErrProviderUnsupportedFeature;
-    mErrorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( providerKey, QStringLiteral( "createEmptyLayer" ) );
-    return;
-  }
-
   // create an empty layer
   QString errMsg;
-  mError = pCreateEmpty( uri, fields, geometryType, crs, overwrite, &mOldToNewAttrIdx, &errMsg, !options.isEmpty() ? &options : nullptr );
+  QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
+  mError = pReg->createEmptyLayer( providerKey, uri, fields, geometryType, crs, overwrite, mOldToNewAttrIdx,
+                                   errMsg, !options.isEmpty() ? &options : nullptr );
   if ( errorCode() )
   {
     mErrorMessage = errMsg;
@@ -95,7 +82,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 
   mAttributeCount++;
 
-  QgsDebugMsg( QStringLiteral( "Created empty layer" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Created empty layer" ), 2 );
 
   QString uriUpdated( uri );
   // HACK sorry...
@@ -112,7 +99,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
   }
 
   QgsDataProvider::ProviderOptions providerOptions;
-  QgsVectorDataProvider *vectorProvider = dynamic_cast< QgsVectorDataProvider * >( pReg->createProvider( providerKey, uriUpdated, providerOptions ) );
+  QgsVectorDataProvider *vectorProvider = qobject_cast< QgsVectorDataProvider * >( pReg->createProvider( providerKey, uriUpdated, providerOptions ) );
   if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) == 0 )
   {
     mError = ErrInvalidLayer;
@@ -131,7 +118,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
   if ( sinkFlags.testFlag( QgsFeatureSink::SinkFlag::RegeneratePrimaryKey ) && path.endsWith( QLatin1String( ".gpkg" ), Qt::CaseInsensitive ) )
   {
     QString fidName = options.value( QStringLiteral( "FID" ), QStringLiteral( "FID" ) ).toString();
-    int fidIdx = vectorProvider->fields().lookupField( fidName );
+    int fidIdx = fields.lookupField( fidName );
     if ( fidIdx != -1 )
     {
       mOldToNewAttrIdx.remove( fidIdx );
@@ -199,6 +186,11 @@ bool QgsVectorLayerExporter::addFeature( QgsFeature &feat, Flags )
   }
 
   return true;
+}
+
+QString QgsVectorLayerExporter::lastError() const
+{
+  return mErrorMessage;
 }
 
 bool QgsVectorLayerExporter::flushBuffer()
@@ -280,6 +272,7 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
   }
 
   QgsFields fields = layer->fields();
+
   QgsWkbTypes::Type wkbType = layer->wkbType();
 
   // Special handling for Shapefiles
@@ -288,36 +281,15 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
     // convert field names to lowercase
     for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
-      fields[fldIdx].setName( fields.at( fldIdx ).name().toLower() );
+      fields.rename( fldIdx, fields.at( fldIdx ).name().toLower() );
     }
+  }
 
-    if ( !forceSinglePartGeom )
-    {
-      // convert wkbtype to multipart (see #5547)
-      switch ( wkbType )
-      {
-        case QgsWkbTypes::Point:
-          wkbType = QgsWkbTypes::MultiPoint;
-          break;
-        case QgsWkbTypes::LineString:
-          wkbType = QgsWkbTypes::MultiLineString;
-          break;
-        case QgsWkbTypes::Polygon:
-          wkbType = QgsWkbTypes::MultiPolygon;
-          break;
-        case QgsWkbTypes::Point25D:
-          wkbType = QgsWkbTypes::MultiPoint25D;
-          break;
-        case QgsWkbTypes::LineString25D:
-          wkbType = QgsWkbTypes::MultiLineString25D;
-          break;
-        case QgsWkbTypes::Polygon25D:
-          wkbType = QgsWkbTypes::MultiPolygon25D;
-          break;
-        default:
-          break;
-      }
-    }
+  bool convertGeometryToSinglePart = false;
+  if ( forceSinglePartGeom && QgsWkbTypes::isMultiType( wkbType ) )
+  {
+    wkbType = QgsWkbTypes::singleType( wkbType );
+    convertGeometryToSinglePart = true;
   }
 
   QgsVectorLayerExporter *writer =
@@ -414,6 +386,27 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
         return ErrProjection;
       }
     }
+
+    // Handles conversion to single-part
+    if ( convertGeometryToSinglePart && fet.geometry().isMultipart() )
+    {
+      QgsGeometry singlePartGeometry { fet.geometry() };
+      // We want a failure if the geometry cannot be converted to single-part without data loss!
+      // check if there are more than one part
+      const QgsGeometryCollection *c = qgsgeometry_cast<const QgsGeometryCollection *>( singlePartGeometry.constGet() );
+      if ( ( c && c->partCount() > 1 ) || ! singlePartGeometry.convertToSingleType() )
+      {
+        delete writer;
+        QString msg = QObject::tr( "Failed to transform a feature with ID '%1' to single part. Writing stopped." )
+                      .arg( fet.id() );
+        QgsMessageLog::logMessage( msg, QObject::tr( "Vector import" ) );
+        if ( errorMessage )
+          *errorMessage += '\n' + msg;
+        return ErrFeatureWriteFailed;
+      }
+      fet.setGeometry( singlePartGeometry );
+    }
+
     if ( !writer->addFeature( fet ) )
     {
       if ( writer->errorCode() && errorMessage )

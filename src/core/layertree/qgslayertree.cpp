@@ -138,7 +138,7 @@ void QgsLayerTree::writeXml( QDomElement &parentElement, const QgsReadWriteConte
 
   for ( QgsMapLayer *layer : qgis::as_const( mCustomLayerOrder ) )
   {
-    // Safety belt, see https://issues.qgis.org/issues/19145
+    // Safety belt, see https://github.com/qgis/QGIS/issues/26975
     // Crash when deleting an item from the layout legend
     if ( ! layer )
       continue;
@@ -210,7 +210,18 @@ void QgsLayerTree::nodeRemovedChildren()
       ++layer;
   }
 
+  // we need to ensure that the customLayerOrderChanged signal is ALWAYS raised
+  // here, since that order HAS changed due to removal of the child!
+  // setCustomLayerOrder will only emit this signal when the layers list
+  // at this stage is different to the stored customer layer order. If this
+  // isn't the case (i.e. the lists ARE the same) then manually emit the
+  // signal
+  const bool emitSignal = _qgis_listRawToQPointer( layers ) == mCustomLayerOrder;
+
   setCustomLayerOrder( layers );
+  if ( emitSignal )
+    emit customLayerOrderChanged();
+
   emit layerOrderChanged();
 }
 

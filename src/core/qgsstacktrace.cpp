@@ -148,7 +148,7 @@ void QgsStackTrace::setSymbolPath( QString symbolPaths )
 #ifdef Q_OS_LINUX
 QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( unsigned int maxFrames )
 {
-  Q_UNUSED( maxFrames );
+  Q_UNUSED( maxFrames )
   QgsStackLines stack;
 #ifndef QGISDEBUG
   return stack;

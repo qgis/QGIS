@@ -34,6 +34,7 @@
 #if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
 #include "qgsprojutils.h"
+#include "qgsreadwritelocker.h"
 #else
 #include <ogr_srs_api.h>
 #endif
@@ -66,19 +67,20 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       , mSRID( other.mSRID )
       , mAuthId( other.mAuthId )
       , mIsValid( other.mIsValid )
-#if PROJ_VERSION_MAJOR<6
+#if PROJ_VERSION_MAJOR >= 6
+      , mPj()
+#else
       , mCRS( nullptr )
 #endif
-      , mValidationHint( other.mValidationHint )
-      , mWkt( other.mWkt )
       , mProj4( other.mProj4 )
+      , mWktPreferred( other.mWktPreferred )
       , mAxisInvertedDirty( other.mAxisInvertedDirty )
       , mAxisInverted( other.mAxisInverted )
+#if PROJ_VERSION_MAJOR >= 6
+      , mProjObjects()
+#endif
     {
-#if PROJ_VERSION_MAJOR>=6
-      if ( mIsValid && mPj.get() )
-        mPj.reset( proj_clone( QgsProjContext::get(), mPj.get() ) );
-#else
+#if PROJ_VERSION_MAJOR<6
       if ( mIsValid )
       {
         mCRS = OSRClone( other.mCRS );
@@ -92,7 +94,10 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
     ~QgsCoordinateReferenceSystemPrivate()
     {
-#if PROJ_VERSION_MAJOR<6
+#if PROJ_VERSION_MAJOR>=6
+      QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
+      cleanPjObjects();
+#else
       OSRDestroySpatialReference( mCRS );
 #endif
     }
@@ -125,20 +130,121 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     bool mIsValid = false;
 
 #if PROJ_VERSION_MAJOR>=6
+
+    // this is the "master" proj object, to be used as a template for new proj objects created on different threads ONLY.
+    // Always use threadLocalProjObject() instead of this.
+
+  private:
     QgsProjUtils::proj_pj_unique_ptr mPj;
+    PJ_CONTEXT *mPjParentContext = nullptr;
+
+    void cleanPjObjects()
+    {
+
+      // During destruction of PJ* objects, the errno is set in the underlying
+      // context. Consequently the context attached to the PJ* must still exist !
+      // Which is not necessarily the case currently unfortunately. So
+      // create a temporary dummy context, and attach it to the PJ* before destroying
+      // it
+      PJ_CONTEXT *tmpContext = proj_context_create();
+      for ( auto it = mProjObjects.begin(); it != mProjObjects.end(); ++it )
+      {
+        proj_assign_context( it.value(), tmpContext );
+        proj_destroy( it.value() );
+      }
+      mProjObjects.clear();
+      if ( mPj )
+      {
+        proj_assign_context( mPj.get(), tmpContext );
+        mPj.reset();
+      }
+      proj_context_destroy( tmpContext );
+    }
+
+  public:
+
+    void setPj( QgsProjUtils::proj_pj_unique_ptr obj )
+    {
+      QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
+      cleanPjObjects();
+
+      mPj = std::move( obj );
+      mPjParentContext = QgsProjContext::get();
+    }
+
+    bool hasPj() const
+    {
+      QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
+      return static_cast< bool >( mPj );
+    }
+
 #else
-    OGRSpatialReferenceH mCRS;
+    OGRSpatialReferenceH mCRS = nullptr;
 #endif
 
-    QString mValidationHint;
-    mutable QString mWkt;
     mutable QString mProj4;
+
+    mutable QString mWktPreferred;
 
     //! True if presence of an inverted axis needs to be recalculated
     mutable bool mAxisInvertedDirty = false;
 
     //! Whether this is a coordinate system has inverted axis
     mutable bool mAxisInverted = false;
+
+#if PROJ_VERSION_MAJOR>=6
+  private:
+    mutable QReadWriteLock mProjLock{};
+    mutable QMap < PJ_CONTEXT *, PJ * > mProjObjects{};
+
+  public:
+
+    PJ *threadLocalProjObject() const
+    {
+      QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
+      if ( !mPj )
+        return nullptr;
+
+      PJ_CONTEXT *context = QgsProjContext::get();
+      QMap < PJ_CONTEXT *, PJ * >::const_iterator it = mProjObjects.constFind( context );
+
+      if ( it != mProjObjects.constEnd() )
+      {
+        return it.value();
+      }
+
+      // proj object doesn't exist yet, so we need to create
+      locker.changeMode( QgsReadWriteLocker::Write );
+
+      PJ *res = proj_clone( context, mPj.get() );
+      mProjObjects.insert( context, res );
+      return res;
+    }
+
+    // Only meant to be called by QgsCoordinateReferenceSystem::removeFromCacheObjectsBelongingToCurrentThread()
+    bool removeObjectsBelongingToCurrentThread( PJ_CONTEXT *pj_context )
+    {
+      QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
+
+      QMap < PJ_CONTEXT *, PJ * >::iterator it = mProjObjects.find( pj_context );
+      if ( it != mProjObjects.end() )
+      {
+        proj_destroy( it.value() );
+        mProjObjects.erase( it );
+      }
+
+      if ( mPjParentContext == pj_context )
+      {
+        mPj.reset();
+        mPjParentContext = nullptr;
+      }
+
+      return mProjObjects.isEmpty();
+    }
+#endif
+
+  private:
+    QgsCoordinateReferenceSystemPrivate &operator= ( const QgsCoordinateReferenceSystemPrivate & ) = delete;
 
 };
 

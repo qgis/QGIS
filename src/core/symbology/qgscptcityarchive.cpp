@@ -38,10 +38,17 @@
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"
 
-QString QgsCptCityArchive::sDefaultArchiveName;
-QMap< QString, QgsCptCityArchive * > QgsCptCityArchive::sArchiveRegistry;
-QMap< QString, QgsCptCityArchive * > QgsCptCityArchive::archiveRegistry() { return sArchiveRegistry; }
-QMap< QString, QMap< QString, QString > > QgsCptCityArchive::sCopyingInfoMap;
+typedef QMap< QString, QgsCptCityArchive * > ArchiveRegistry;
+typedef QMap< QString, QMap< QString, QString > > CopyingInfoMap;
+
+Q_GLOBAL_STATIC( QString, sDefaultArchiveName )
+Q_GLOBAL_STATIC( ArchiveRegistry, sArchiveRegistry )
+Q_GLOBAL_STATIC( CopyingInfoMap, sCopyingInfoMap )
+
+QMap< QString, QgsCptCityArchive * > QgsCptCityArchive::archiveRegistry()
+{
+  return *sArchiveRegistry();
+}
 
 QgsCptCityArchive::QgsCptCityArchive( const QString &archiveName, const QString &baseDir )
   : mArchiveName( archiveName )
@@ -118,7 +125,7 @@ QString QgsCptCityArchive::baseDir( QString archiveName )
   // search for matching archive in the registry
   if ( archiveName.isNull() )
     archiveName = DEFAULT_CPTCITY_ARCHIVE;
-  if ( QgsCptCityArchive *archive = sArchiveRegistry.value( archiveName, nullptr ) )
+  if ( QgsCptCityArchive *archive = sArchiveRegistry()->value( archiveName, nullptr ) )
     return archive->baseDir();
   else
     return defaultBaseDir();
@@ -179,10 +186,10 @@ QgsStringMap QgsCptCityArchive::copyingInfo( const QString &fileName )
   if ( fileName.isNull() )
     return copyingMap;
 
-  if ( QgsCptCityArchive::sCopyingInfoMap.contains( fileName ) )
+  if ( sCopyingInfoMap()->contains( fileName ) )
   {
     QgsDebugMsg( "found copying info in copyingInfoMap, file = " + fileName );
-    return QgsCptCityArchive::sCopyingInfoMap.value( fileName );
+    return sCopyingInfoMap()->value( fileName );
   }
 
   QgsDebugMsg( "fileName = " + fileName );
@@ -269,7 +276,7 @@ QgsStringMap QgsCptCityArchive::copyingInfo( const QString &fileName )
   }
 
   // save copyingMap for further access
-  QgsCptCityArchive::sCopyingInfoMap[ fileName ] = copyingMap;
+  ( *sCopyingInfoMap() )[ fileName ] = copyingMap;
   return copyingMap;
 }
 
@@ -419,9 +426,9 @@ bool QgsCptCityArchive::isEmpty()
 QgsCptCityArchive *QgsCptCityArchive::defaultArchive()
 {
   QgsSettings settings;
-  sDefaultArchiveName = settings.value( QStringLiteral( "CptCity/archiveName" ), DEFAULT_CPTCITY_ARCHIVE ).toString();
-  if ( QgsCptCityArchive::sArchiveRegistry.contains( sDefaultArchiveName ) )
-    return QgsCptCityArchive::sArchiveRegistry.value( sDefaultArchiveName );
+  *sDefaultArchiveName() = settings.value( QStringLiteral( "CptCity/archiveName" ), DEFAULT_CPTCITY_ARCHIVE ).toString();
+  if ( sArchiveRegistry()->contains( *sDefaultArchiveName() ) )
+    return sArchiveRegistry()->value( *sDefaultArchiveName() );
   else
     return nullptr;
 }
@@ -430,9 +437,9 @@ void QgsCptCityArchive::initArchive( const QString &archiveName, const QString &
 {
   QgsDebugMsg( "archiveName = " + archiveName + " archiveBaseDir = " + archiveBaseDir );
   QgsCptCityArchive *archive = new QgsCptCityArchive( archiveName, archiveBaseDir );
-  if ( sArchiveRegistry.contains( archiveName ) )
-    delete sArchiveRegistry[ archiveName ];
-  sArchiveRegistry[ archiveName ] = archive;
+  if ( sArchiveRegistry()->contains( archiveName ) )
+    delete ( *sArchiveRegistry() )[ archiveName ];
+  ( *sArchiveRegistry() )[ archiveName ] = archive;
 }
 
 void QgsCptCityArchive::initDefaultArchive()
@@ -444,7 +451,7 @@ void QgsCptCityArchive::initDefaultArchive()
   // sub-dir defaults to
   QString defArchiveName = settings.value( QStringLiteral( "CptCity/archiveName" ), DEFAULT_CPTCITY_ARCHIVE ).toString();
 
-  if ( ! sArchiveRegistry.contains( defArchiveName ) )
+  if ( ! sArchiveRegistry()->contains( defArchiveName ) )
     initArchive( defArchiveName, baseDir + '/' + defArchiveName );
 }
 
@@ -486,13 +493,13 @@ void QgsCptCityArchive::initArchives( bool loadAll )
       QgsDebugMsg( QStringLiteral( "not loading archive [%1] because dir %2 does not exist " ).arg( it.key(), it.value() ) );
     }
   }
-  sDefaultArchiveName = defArchiveName;
+  *sDefaultArchiveName() = defArchiveName;
 }
 
 void QgsCptCityArchive::clearArchives()
 {
-  qDeleteAll( sArchiveRegistry );
-  sArchiveRegistry.clear();
+  qDeleteAll( *sArchiveRegistry() );
+  sArchiveRegistry()->clear();
 }
 
 
@@ -775,7 +782,7 @@ bool QgsCptCityColorRampItem::equal( const QgsCptCityDataItem *other )
     return false;
   }
   //const QgsCptCityColorRampItem *o = qobject_cast<const QgsCptCityColorRampItem *> ( other );
-  const QgsCptCityColorRampItem *o = dynamic_cast<const QgsCptCityColorRampItem *>( other );
+  const QgsCptCityColorRampItem *o = qobject_cast<const QgsCptCityColorRampItem *>( other );
   return o &&
          mPath == o->mPath &&
          mName == o->mName &&
@@ -840,8 +847,8 @@ QVector< QgsCptCityDataItem * > QgsCptCityCollectionItem::childrenRamps( bool re
   const auto constChildren = children();
   for ( QgsCptCityDataItem *childItem : constChildren )
   {
-    QgsCptCityCollectionItem *collectionItem = dynamic_cast<QgsCptCityCollectionItem *>( childItem );
-    QgsCptCityColorRampItem *rampItem = dynamic_cast<QgsCptCityColorRampItem *>( childItem );
+    QgsCptCityCollectionItem *collectionItem = qobject_cast<QgsCptCityCollectionItem *>( childItem );
+    QgsCptCityColorRampItem *rampItem = qobject_cast<QgsCptCityColorRampItem *>( childItem );
     QgsDebugMsgLevel( QStringLiteral( "child path= %1 coll= %2 ramp = %3" ).arg( childItem->path() ).arg( nullptr != collectionItem ).arg( nullptr != rampItem ), 2 );
     if ( collectionItem && recursive )
     {
@@ -1288,7 +1295,7 @@ QVector<QgsCptCityDataItem *> QgsCptCityAllRampsItem::createChildren()
   const auto constMItems = mItems;
   for ( QgsCptCityDataItem *item : constMItems )
   {
-    QgsCptCityCollectionItem *colItem = dynamic_cast< QgsCptCityCollectionItem * >( item );
+    QgsCptCityCollectionItem *colItem = qobject_cast< QgsCptCityCollectionItem * >( item );
     if ( colItem )
       children += colItem->childrenRamps( true );
   }
@@ -1384,7 +1391,7 @@ QVariant QgsCptCityBrowserModel::data( const QModelIndex &index, int role ) cons
     return item->icon( mIconSize );
   }
   else if ( role == Qt::FontRole &&
-            dynamic_cast< QgsCptCityCollectionItem * >( item ) )
+            qobject_cast< QgsCptCityCollectionItem * >( item ) )
   {
     // collectionitems are larger and bold
     QFont font;
@@ -1402,7 +1409,7 @@ QVariant QgsCptCityBrowserModel::data( const QModelIndex &index, int role ) cons
 
 QVariant QgsCptCityBrowserModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-  Q_UNUSED( section );
+  Q_UNUSED( section )
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
   {
     if ( section == 0 )
@@ -1442,7 +1449,7 @@ bool QgsCptCityBrowserModel::hasChildren( const QModelIndex &parent ) const
 
 int QgsCptCityBrowserModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 2;
 }
 
@@ -1703,8 +1710,8 @@ QMimeData *QgsCptCityBrowserModel::mimeData( const QModelIndexList &indexes ) co
 
 bool QgsCptCityBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( row );
-  Q_UNUSED( column );
+  Q_UNUSED( row )
+  Q_UNUSED( column )
 
   QgsCptCityDataItem *destItem = dataItem( parent );
   if ( !destItem )

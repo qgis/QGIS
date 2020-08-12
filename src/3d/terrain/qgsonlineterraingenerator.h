@@ -24,9 +24,14 @@
 
 class QgsDemHeightMapGenerator;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup 3d
  * Implementation of terrain generator that uses online resources to download heightmaps.
+ *
+ * \note Not available in Python bindings
+ *
  * \since QGIS 3.8
  */
 class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsTerrainGenerator

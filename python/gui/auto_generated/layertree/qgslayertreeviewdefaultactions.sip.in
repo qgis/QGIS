@@ -62,7 +62,8 @@ Action to zoom to selected features of a vector layer
  QAction *actionMakeTopLevel( QObject *parent = 0 ) /Factory/;
 %Docstring
 
-.. deprecated:: since QGIS 3.2, use actionMoveOutOfGroup()
+.. deprecated:: QGIS 3.2
+  use actionMoveOutOfGroup()
 %End
 
     QAction *actionMoveOutOfGroup( QObject *parent = 0 ) /Factory/;
@@ -79,6 +80,14 @@ Action to zoom to selected features of a vector layer
 .. seealso:: :py:func:`moveToTop`
 
 .. versionadded:: 3.2
+%End
+
+    QAction *actionMoveToBottom( QObject *parent = 0 ) /Factory/;
+%Docstring
+
+.. seealso:: :py:func:`moveToBottom`
+
+.. versionadded:: 3.14
 %End
     QAction *actionGroupSelected( QObject *parent = 0 ) /Factory/;
 
@@ -121,7 +130,8 @@ Slot to zoom to selected features of a vector layer
  void makeTopLevel();
 %Docstring
 
-.. deprecated:: since QGIS 3.2, use moveOutOfGroup()
+.. deprecated:: QGIS 3.2
+  use moveOutOfGroup()
 %End
 
     void moveOutOfGroup();
@@ -137,6 +147,14 @@ Moves selected layer(s) and/or group(s) to the top of the layer panel
 or the top of the group if the layer/group is placed within a group.
 
 .. versionadded:: 3.2
+%End
+
+    void moveToBottom();
+%Docstring
+Moves selected layer(s) and/or group(s) to the bottom of the layer panel
+or the bottom of the group if the layer/group is placed within a group.
+
+.. versionadded:: 3.14
 %End
     void groupSelected();
 

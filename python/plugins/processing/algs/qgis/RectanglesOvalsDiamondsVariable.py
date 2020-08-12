@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive323
-
-__revision__ = '$Format:%H$'
-
 import math
 
 from qgis.PyQt.QtCore import QCoreApplication
@@ -36,6 +32,7 @@ from qgis.core import (NULL,
                        QgsPointXY,
                        QgsProcessing,
                        QgsProcessingException,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
@@ -46,7 +43,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
-
     INPUT = 'INPUT'
     SHAPE = 'SHAPE'
     WIDTH = 'WIDTH'
@@ -63,6 +59,9 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagDeprecated
 
     def initAlgorithm(self, config=None):
         self.shapes = [self.tr('Rectangles'), self.tr('Diamonds'), self.tr('Ovals')]

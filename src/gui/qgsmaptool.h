@@ -39,6 +39,7 @@ class QPoint;
 class QAction;
 class QAbstractButton;
 class QgsMapMouseEvent;
+class QMenu;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -92,6 +93,7 @@ class GUI_EXPORT QgsMapTool : public QObject
                                tool automatically restored. */
       EditTool = 1 << 2, //!< Map tool is an edit tool, which can only be used when layer is editable
       AllowZoomRect = 1 << 3, //!< Allow zooming by rectangle (by holding shift and dragging) while the tool is active
+      ShowContextMenu = 1 << 4, //!< Show a context menu when right-clicking with the tool (since QGIS 3.14). See populateContextMenu().
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -164,7 +166,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     virtual void clean();
 
     //! returns pointer to the tool's map canvas
-    QgsMapCanvas *canvas();
+    QgsMapCanvas *canvas() const;
 
     /**
      * Emit map tool changed with the old tool
@@ -190,6 +192,22 @@ class GUI_EXPORT QgsMapTool : public QObject
      *  The values is calculated from searchRadiusMM().
      *  \since QGIS 2.3 */
     static double searchRadiusMU( QgsMapCanvas *canvas );
+
+    /**
+     * Allows the tool to populate and customize the given \a menu,
+     * prior to showing it in response to a right-mouse button click.
+     *
+     * \a menu will be initially populated with a set of default, generic actions.
+     * Any new actions added to the menu should be correctly parented to \a menu.
+     *
+     * The default implementation does nothing.
+     *
+     * \note The context menu is only shown when the ShowContextMenu flag
+     * is present in flags().
+     *
+     * \since QGIS 3.14
+     */
+    virtual void populateContextMenu( QMenu *menu );
 
   signals:
     //! emit a message
@@ -235,7 +253,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     QgsRectangle toLayerCoordinates( const QgsMapLayer *layer, const QgsRectangle &rect );
 
     //! transformation from map coordinates to screen coordinates
-    QPoint toCanvasCoordinates( const QgsPointXY &point );
+    QPoint toCanvasCoordinates( const QgsPointXY &point ) const;
 
     //! pointer to map canvas
     QgsMapCanvas *mCanvas = nullptr;

@@ -37,6 +37,9 @@ class QgsVectorLayer;
 class QgsProcessingModelAlgorithm;
 class QgsMapCanvas;
 class QgsProcessingAlgorithm;
+class QgsProcessingAbstractParameterDefinitionWidget;
+class QgsMessageBar;
+class QgsBrowserGuiModel;
 
 /**
  * \class QgsProcessingContextGenerator
@@ -61,6 +64,28 @@ class GUI_EXPORT QgsProcessingContextGenerator
 
     virtual ~QgsProcessingContextGenerator() = default;
 };
+
+/**
+ * \class QgsProcessingParametersGenerator
+ *
+ * An interface for objects which can create sets of parameter values for processing algorithms.
+ *
+ * \ingroup gui
+ * \since QGIS 3.14
+ */
+class GUI_EXPORT QgsProcessingParametersGenerator
+{
+  public:
+
+    /**
+     * This method needs to be reimplemented in all classes which implement this interface
+     * and return a algorithm parameters.
+     */
+    virtual QVariantMap createProcessingParameters() = 0;
+
+    virtual ~QgsProcessingParametersGenerator() = default;
+};
+
 
 /**
  * \ingroup gui
@@ -92,6 +117,36 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
      * \see setMapCanvas()
      */
     QgsMapCanvas *mapCanvas() const;
+
+    /**
+     * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages
+     * to the user.
+     * \see messageBar()
+     * \since QGIS 3.12
+     */
+    void setMessageBar( QgsMessageBar *bar );
+
+    /**
+     * Returns the message bar associated with the widget. This allows the widget to push feedback messages
+     * to the user.
+     * \see setMessageBar()
+     * \since QGIS 3.12
+     */
+    QgsMessageBar *messageBar() const;
+
+    /**
+     * Sets the browser \a model associated with the widget. This will usually be the shared app instance of the browser model
+     * \see browserModel()
+     * \since QGIS 3.14
+     */
+    void setBrowserModel( QgsBrowserGuiModel *model );
+
+    /**
+     * Returns the browser model associated with the widget.
+     * \see setBrowserModel()
+     * \since QGIS 3.12
+     */
+    QgsBrowserGuiModel *browserModel() const;
 
     /**
      * Sets the \a project associated with the widget. This allows the widget to retrieve the map layers
@@ -139,6 +194,22 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
      */
     void setModelChildAlgorithmId( const QString &id );
 
+    /**
+     * Returns the current active layer.
+     *
+     * \see setActiveLayer()
+     * \since QGIS 3.14
+     */
+    QgsMapLayer *activeLayer() const;
+
+    /**
+     * Sets the current active \a layer.
+     *
+     * \see activeLayer()
+     * \since QGIS 3.14
+     */
+    void setActiveLayer( QgsMapLayer *layer );
+
   private:
 
     QgsProcessingModelAlgorithm *mModel = nullptr;
@@ -147,7 +218,13 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
 
     QgsMapCanvas *mMapCanvas = nullptr;
 
+    QgsMessageBar *mMessageBar = nullptr;
+
     QgsProject *mProject = nullptr;
+
+    QgsBrowserGuiModel *mBrowserModel = nullptr;
+
+    QgsMapLayer *mActiveLayer = nullptr;
 
 };
 
@@ -290,16 +367,39 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
     QVariant parameterValue() const;
 
     /**
+     * Returns any custom properties set by the wrapper.
+     */
+    virtual QVariantMap customProperties() const;
+
+    /**
      * Registers a Processing context \a generator class that will be used to retrieve
      * a Processing context for the wrapper when required.
      */
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 
     /**
+     * Registers a Processing parameters \a generator class that will be used to retrieve
+     * algorithm parameters for the wrapper when required (e.g. when a wrapper needs access
+     * to other parameter's values).
+     *
+     * \since QGIS 3.14
+     */
+    void registerProcessingParametersGenerator( QgsProcessingParametersGenerator *generator );
+
+    /**
      * Called after all wrappers have been created within a particular dialog or context,
      * allowing the wrapper to connect to the wrappers of other, related parameters.
      */
     virtual void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers );
+
+    /**
+     * Returns the Qt layout "stretch" factor to use when adding this widget to a layout.
+     *
+     * The default implementation returns 0.
+     *
+     * \since QGIS 3.14
+     */
+    virtual int stretch() const;
 
     QgsExpressionContext createExpressionContext() const override;
 
@@ -374,6 +474,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
   protected:
 
     QgsProcessingContextGenerator *mProcessingContextGenerator = nullptr;
+    QgsProcessingParametersGenerator *mParametersGenerator = nullptr;
     QgsProcessingParameterWidgetContext mWidgetContext;
 
   private slots:
@@ -452,6 +553,36 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
         const QgsProcessingParameterDefinition *parameter,
         QgsProcessingContext &context );
 
+    /**
+     * Creates a new parameter definition widget allowing for configuration of an instance of
+     * the parameter type handled by this factory.
+     *
+     * The \a context argument must specify a Processing context, which will be used
+     * by the widget to evaluate existing \a definition properties such as default values. Similarly,
+     * the \a widgetContext argument specifies the wider GUI context in which the widget
+     * will be used.
+     *
+     * The optional \a definition argument may specify a parameter definition which
+     * should be reflected in the initial state of the returned widget. Subclasses must
+     * ensure that they correctly handle both the case when a initial \a definition is
+     * passed, or when \a definition is NULLPTR (in which case sensible defaults should
+     * be shown in the returned widget).
+     *
+     * Additionally, the optional \a algorithm parameter may be used to specify the algorithm or model
+     * associated with the parameter.
+     *
+     * If a factory subclass returns NULLPTR for this method (i.e. as the base class implementation does),
+     * it indicates that the parameter type cannot be configured via GUI. In this case the parameter
+     * type will not be configurable when users add it as an input to their graphical models.
+     *
+     * \since QGIS 3.10
+     */
+    virtual QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr ) SIP_FACTORY;
+
   protected:
 
     /**
@@ -488,7 +619,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
 
     /**
      * Returns a list of compatible Processing data types for inputs
-     * for this parameter.
+     * for this widget for the specified \a parameter.
      *
      * In order to determine the available sources for the parameter in a model
      * the types returned by this method are checked. The returned list corresponds
@@ -500,7 +631,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      * \see compatibleParameterTypes()
      * \see compatibleOutputTypes()
      */
-    virtual QList< int > compatibleDataTypes() const = 0;
+    virtual QList< int > compatibleDataTypes( const QgsProcessingParameterDefinition *parameter ) const;
 
     /**
      * Returns the expected expression format string for expression results for the parameter
@@ -512,6 +643,51 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      * This is purely a text format and no expression validation is made against it.
      */
     virtual QString modelerExpressionFormatString() const;
+
+};
+
+/**
+ * \class QgsProcessingHiddenWidgetWrapper
+ *
+ * An widget wrapper for hidden widgets.
+ *
+ * The hidden widget wrapper allows for creation of a widget wrapper which does not provide
+ * a graphical widget, yet still implements the QgsAbstractProcessingParameterWidgetWrapper
+ * interface.
+ *
+ * \ingroup gui
+ * \since QGIS 3.14
+ */
+class GUI_EXPORT QgsProcessingHiddenWidgetWrapper: public QgsAbstractProcessingParameterWidgetWrapper
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingHiddenWidgetWrapper, for the specified
+     * \a parameter definition and dialog \a type.
+     */
+    QgsProcessingHiddenWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+                                      QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard,
+                                      QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+    const QgsVectorLayer *linkedVectorLayer() const override;
+
+    /**
+     * Sets the vector layer linked to the wrapper.
+     */
+    void setLinkedVectorLayer( const QgsVectorLayer *layer );
+
+  protected:
+    QWidget *createWidget() override;
+    QLabel *createLabel() override;
+
+  private:
+
+    QVariant mValue;
+    QPointer < const QgsVectorLayer > mLayer;
 
 };
 

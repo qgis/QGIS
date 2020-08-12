@@ -33,6 +33,7 @@ class QgsExpressionContext;
 class QgsOptionsPageWidget;
 class QgsLocatorOptionsWidget;
 class QgsAuthConfigSelect;
+class QgsBearingNumericFormat;
 
 /**
  * \class QgsOptions
@@ -42,6 +43,20 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 {
     Q_OBJECT
   public:
+
+    /**
+     * Behavior to use when encountering a layer with an unknown CRS
+     * \since QGIS 3.10
+     */
+    enum UnknownLayerCrsBehavior
+    {
+      NoAction = 0, //!< Take no action and leave as unknown CRS
+      PromptUserForCrs = 1, //!< User is prompted for a CRS choice
+      UseProjectCrs = 2, //!< Copy the current project's CRS
+      UseDefaultCrs = 3, //!< Use the default layer CRS set via QGIS options
+    };
+    Q_ENUM( UnknownLayerCrsBehavior )
+
 
     /**
      * Constructor
@@ -69,8 +84,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void resetProjectDefault();
     void browseTemplateFolder();
     void resetTemplateFolder();
-    //! Slot called when user chooses to change the project wide projection.
-    void leProjectGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs );
     //! Slot called when user chooses to change the default 'on the fly' projection.
     void leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs );
     void lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column );
@@ -117,11 +130,11 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void mProxyTypeComboBox_currentIndexChanged( int idx );
 
-    //! Add a new URL to exclude from Proxy
-    void addExcludedUrl();
+    //! Add a new URL to no proxy URL list
+    void addNoProxyUrl();
 
-    //! Remove an URL to exclude from Proxy
-    void removeExcludedUrl();
+    //! Remove current URL from no proxy URL list
+    void removeNoProxyUrl();
 
     //! Slot to flag restoring/delete window state settings upon restart
     void restoreDefaultWindowState();
@@ -228,16 +241,22 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void addColor();
 
+  private slots:
+    void removeLocalizedDataPath();
+    void addLocalizedDataPath();
+    void moveLocalizedDataPathUp();
+    void moveLocalizedDataPathDown();
+
   private:
     QgsSettings *mSettings = nullptr;
     QStringList i18nList();
+
     void initContrastEnhancement( QComboBox *cbox, const QString &name, const QString &defaultVal );
     void saveContrastEnhancement( QComboBox *cbox, const QString &name );
     void initMinMaxLimits( QComboBox *cbox, const QString &name, const QString &defaultVal );
     void saveMinMaxLimits( QComboBox *cbox, const QString &name );
     void setZoomFactorValue();
     double zoomFactorValue();
-    QgsCoordinateReferenceSystem mDefaultCrs;
     QgsCoordinateReferenceSystem mLayerDefaultCrs;
     bool mLoadedGdalDriverList;
 
@@ -253,6 +272,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void updateSampleLocaleText();
 
+    void customizeBearingFormat();
+
   protected:
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
     QMap<QString, QVariant> mStyleSheetNewOpts;
@@ -265,6 +286,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     QList< QgsOptionsPageWidget * > mAdditionalOptionWidgets;
     QgsLocatorOptionsWidget *mLocatorOptionsWidget = nullptr;
+
+    std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
 
     void updateActionsForCurrentColorScheme( QgsColorScheme *scheme );
 

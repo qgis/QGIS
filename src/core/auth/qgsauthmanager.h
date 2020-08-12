@@ -644,15 +644,15 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Password helper enabled getter
-     * \note not available in Python bindings
+     * \note Available in Python bindings since QGIS 3.8.0
      */
-    bool passwordHelperEnabled() const SIP_SKIP;
+    bool passwordHelperEnabled() const;
 
     /**
      * Password helper enabled setter
-     * \note not available in Python bindings
+     * \note Available in Python bindings since QGIS 3.8.0
      */
-    void setPasswordHelperEnabled( bool enabled ) SIP_SKIP;
+    void setPasswordHelperEnabled( bool enabled );
 
     /**
      * Password helper logging enabled getter
@@ -668,9 +668,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Store the password manager into the wallet
-     * \note not available in Python bindings
+     * \note Available in Python bindings since QGIS 3.8.0
      */
-    bool passwordHelperSync() SIP_SKIP;
+    bool passwordHelperSync();
 
     //! The display name of the password helper (platform dependent)
     static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME;
@@ -862,7 +862,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
     int mScheduledDbEraseRequestWait = 3 ; // in seconds
     bool mScheduledDbEraseRequestEmitted = false;
     int mScheduledDbEraseRequestCount = 0;
-    QMutex *mMutex = nullptr;
+
+    std::unique_ptr<QMutex> mMutex;
+    std::unique_ptr<QMutex> mMasterPasswordMutex;
 
 #ifndef QT_NO_SSL
     // mapping of sha1 digest and cert source and cert
@@ -874,6 +876,10 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QList<QSslCertificate> mTrustedCaCertsCache;
     // cache of SSL errors to be ignored in network connections, per sha-hostport
     QHash<QString, QSet<QSslError::SslError> > mIgnoredSslErrorsCache;
+
+    bool mHasCustomConfigByHost = false;
+    bool mHasCheckedIfCustomConfigByHostExists = false;
+    QMap< QString, QgsAuthConfigSslServer > mCustomConfigByHostCache;
 #endif
 
     //////////////////////////////////////////////////////////////////////////////

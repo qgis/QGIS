@@ -9,8 +9,8 @@
 #
 
 
-FIND_PATH(EXIV2_INCLUDE_DIR exiv2/exiv2.hpp /usr/local/include /usr/include)
-FIND_LIBRARY(EXIV2_LIBRARY NAMES exiv2 PATHS /usr/local/lib /usr/lib)
+FIND_PATH(EXIV2_INCLUDE_DIR exiv2/exiv2.hpp $ENV{LIB_DIR}/include /usr/local/include /usr/include)
+FIND_LIBRARY(EXIV2_LIBRARY NAMES exiv2 PATHS $ENV{LIB_DIR}/lib /usr/local/lib /usr/lib)
 
 IF (EXIV2_INCLUDE_DIR AND EXIV2_LIBRARY)
     SET(EXIV2_FOUND TRUE)

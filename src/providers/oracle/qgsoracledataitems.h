@@ -24,6 +24,7 @@
 #include "qgsoraclesourceselect.h"
 #include "qgsmimedatautils.h"
 #include "qgsvectorlayerexporter.h"
+#include "qgsdataitemprovider.h"
 
 class QSqlDatabase;
 
@@ -33,7 +34,7 @@ class QgsOracleOwnerItem;
 class QgsOracleLayerItem;
 class QgsProxyProgressTask;
 
-class QgsOracleRootItem : public QgsDataCollectionItem
+class QgsOracleRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:
@@ -100,8 +101,13 @@ class QgsOracleOwnerItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
 
     void addLayer( const QgsOracleLayerProperty &layerProperty );
+
+    // QgsDataItem interface
+  public:
+    bool layerCollection() const override;
 };
 
+Q_NOWARN_DEPRECATED_PUSH // deleteLayer deprecated
 class QgsOracleLayerItem : public QgsLayerItem
 {
     Q_OBJECT
@@ -114,10 +120,23 @@ class QgsOracleLayerItem : public QgsLayerItem
     QList<QAction *> actions( QWidget *parent ) override;
 
   public slots:
-    bool deleteLayer();
+    bool deleteLayer() override;
 
   private:
     QgsOracleLayerProperty mLayerProperty;
+};
+Q_NOWARN_DEPRECATED_POP
+
+//! Provider for ORACLE root data item
+class QgsOracleDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override;
+    QString dataProviderKey() const override;
+
+    int capabilities() const override;
+
+    QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
 
 #endif // QGSORACLEDATAITEMS_H

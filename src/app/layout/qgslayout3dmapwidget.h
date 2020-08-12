@@ -16,6 +16,7 @@
 #ifndef QGSLAYOUT3DMAPWIDGET_H
 #define QGSLAYOUT3DMAPWIDGET_H
 
+#include "qgis_gui.h"
 #include "qgslayoutitemwidget.h"
 #include "ui_qgslayout3dmapwidgetbase.h"
 #include "qgslayoutitem3dmap.h"
@@ -27,6 +28,8 @@ class QgsLayout3DMapWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayo
     Q_OBJECT
   public:
     explicit QgsLayout3DMapWidget( QgsLayoutItem3DMap *map3D );
+
+    void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
   protected:
     bool setNewItem( QgsLayoutItem *item ) override;

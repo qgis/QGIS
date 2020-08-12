@@ -16,7 +16,7 @@ class QgsWindowManagerInterface
 Interface for window manager.
 
 An implementation of the window manager interface is usually retrieved from
-the QgsGui instance, via :py:func:`QgsGui.windowManager()`
+the QgsGui instance, via :py:func:`QgsGui.windowManager()`.
 
 .. note::
 

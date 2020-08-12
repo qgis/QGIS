@@ -36,7 +36,7 @@ and ``penStyle``.
 %Docstring
 Creates a new QgsSimpleLineSymbolLayer, using the settings
 serialized in the ``properties`` map (corresponding to the output from
-QgsSimpleLineSymbolLayer.properties() ).
+:py:func:`QgsSimpleLineSymbolLayer.properties()` ).
 %End
 
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
@@ -52,7 +52,7 @@ Creates a new QgsSimpleLineSymbolLayer from an SLD XML DOM ``element``.
 
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
 
-    virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     virtual QgsStringMap properties() const;
 
@@ -180,9 +180,9 @@ Sets the map unit ``scale`` for lengths used in the custom dash pattern.
 Returns the custom dash vector, which is the pattern of alternating drawn/skipped lengths
 used while rendering a custom dash pattern.
 
-Units for the vector are specified by customDashPatternUnit()
+Units for the vector are specified by :py:func:`~QgsSimpleLineSymbolLayer.customDashPatternUnit`
 
-This setting is only used when useCustomDashPattern() returns ``True``.
+This setting is only used when :py:func:`~QgsSimpleLineSymbolLayer.useCustomDashPattern` returns ``True``.
 
 .. seealso:: :py:func:`setCustomDashVector`
 
@@ -196,15 +196,99 @@ This setting is only used when useCustomDashPattern() returns ``True``.
 Sets the custom dash ``vector``, which is the pattern of alternating drawn/skipped lengths
 used while rendering a custom dash pattern.
 
-Units for the vector are specified by customDashPatternUnit()
+Units for the vector are specified by :py:func:`~QgsSimpleLineSymbolLayer.customDashPatternUnit`
 
-This setting is only used when useCustomDashPattern() returns ``True``.
+This setting is only used when :py:func:`~QgsSimpleLineSymbolLayer.useCustomDashPattern` returns ``True``.
 
 .. seealso:: :py:func:`customDashVector`
 
 .. seealso:: :py:func:`setCustomDashPatternUnit`
 
 .. seealso:: :py:func:`setUseCustomDashPattern`
+%End
+
+    double dashPatternOffset() const;
+%Docstring
+Returns the dash pattern offset, which dictates how far along the dash pattern
+the pattern should start rendering at.
+
+Offset units can be retrieved by calling :py:func:`~QgsSimpleLineSymbolLayer.dashPatternOffsetUnit`.
+
+.. seealso:: :py:func:`setDashPatternOffset`
+
+.. seealso:: :py:func:`dashPatternOffsetUnit`
+
+.. seealso:: :py:func:`dashPatternOffsetMapUnitScale`
+
+.. versionadded:: 3.16
+%End
+
+    void setDashPatternOffset( double offset );
+%Docstring
+Sets the dash pattern ``offset``, which dictates how far along the dash pattern
+the pattern should start rendering at.
+
+Offset units are set via :py:func:`~QgsSimpleLineSymbolLayer.setDashPatternOffsetUnit`.
+
+.. seealso:: :py:func:`dashPatternOffset`
+
+.. seealso:: :py:func:`setDashPatternOffsetUnit`
+
+.. seealso:: :py:func:`setDashPatternOffsetMapUnitScale`
+
+.. versionadded:: 3.16
+%End
+
+    void setDashPatternOffsetUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the dash pattern offset.
+
+.. seealso:: :py:func:`dashPatternOffsetUnit`
+
+.. seealso:: :py:func:`setDashPatternOffset`
+
+.. seealso:: :py:func:`setDashPatternOffsetMapUnitScale`
+
+.. versionadded:: 3.16
+%End
+
+    QgsUnitTypes::RenderUnit dashPatternOffsetUnit() const;
+%Docstring
+Returns the units for the dash pattern offset.
+
+.. seealso:: :py:func:`setDashPatternOffsetUnit`
+
+.. seealso:: :py:func:`dashPatternOffset`
+
+.. seealso:: :py:func:`dashPatternOffsetMapUnitScale`
+
+.. versionadded:: 3.16
+%End
+
+    const QgsMapUnitScale &dashPatternOffsetMapUnitScale() const;
+%Docstring
+Returns the map unit scale the dash pattern offset value.
+
+.. seealso:: :py:func:`setDashPatternOffsetMapUnitScale`
+
+.. seealso:: :py:func:`dashPatternOffsetUnit`
+
+.. seealso:: :py:func:`dashPatternOffset`
+
+.. versionadded:: 3.16
+%End
+
+    void setDashPatternOffsetMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the dash pattern offset.
+
+.. seealso:: :py:func:`dashPatternOffsetMapUnitScale`
+
+.. seealso:: :py:func:`setDashPatternOffset`
+
+.. seealso:: :py:func:`setDashPatternOffsetUnit`
+
+.. versionadded:: 3.16
 %End
 
     bool drawInsidePolygon() const;
@@ -227,6 +311,64 @@ This setting only has an effect when the line symbol is being
 used to render polygon rings.
 
 .. seealso:: :py:func:`drawInsidePolygon`
+%End
+
+    bool alignDashPattern() const;
+%Docstring
+Returns ``True`` if dash patterns should be aligned to the start and end of lines, by
+applying subtle tweaks to the pattern sizing in order to ensure that the end of
+a line is represented by a complete dash element.
+
+.. seealso:: :py:func:`setAlignDashPattern`
+
+.. seealso:: :py:func:`tweakDashPatternOnCorners`
+
+.. versionadded:: 3.16
+%End
+
+    void setAlignDashPattern( bool enabled );
+%Docstring
+Sets whether dash patterns should be aligned to the start and end of lines, by
+applying subtle tweaks to the pattern sizing in order to ensure that the end of
+a line is represented by a complete dash element.
+
+.. seealso:: :py:func:`alignDashPattern`
+
+.. seealso:: :py:func:`setTweakDashPatternOnCorners`
+
+.. versionadded:: 3.16
+%End
+
+    bool tweakDashPatternOnCorners() const;
+%Docstring
+Returns ``True`` if dash patterns tweaks should be applied on sharp corners, to ensure
+that a double-length dash is drawn running into and out of the corner.
+
+.. note::
+
+   This setting is only applied if :py:func:`~QgsSimpleLineSymbolLayer.alignDashPattern` is ``True``.
+
+.. seealso:: :py:func:`setTweakDashPatternOnCorners`
+
+.. seealso:: :py:func:`alignDashPattern`
+
+.. versionadded:: 3.16
+%End
+
+    void setTweakDashPatternOnCorners( bool enabled );
+%Docstring
+Sets whether dash patterns tweaks should be applied on sharp corners, to ensure
+that a double-length dash is drawn running into and out of the corner.
+
+.. note::
+
+   This setting is only applied if :py:func:`~QgsSimpleLineSymbolLayer.alignDashPattern` is ``True``.
+
+.. seealso:: :py:func:`tweakDashPatternOnCorners`
+
+.. seealso:: :py:func:`setAlignDashPattern`
+
+.. versionadded:: 3.16
 %End
 
 };
@@ -256,6 +398,7 @@ lines at intervals along the line feature.
       FirstVertex,
       CentralPoint,
       CurvePoint,
+      SegmentCenter,
     };
 
     QgsTemplatedLineSymbolLayerBase( bool rotateSymbol = true,
@@ -284,7 +427,7 @@ Sets whether the repeating symbols should be rotated to match their line segment
 
     double interval() const;
 %Docstring
-Returns the interval between individual symbols. Units are specified through intervalUnits().
+Returns the interval between individual symbols. Units are specified through :py:func:`~QgsTemplatedLineSymbolLayerBase.intervalUnits`.
 
 .. seealso:: :py:func:`setInterval`
 
@@ -295,7 +438,7 @@ Returns the interval between individual symbols. Units are specified through int
 %Docstring
 Sets the interval between individual symbols.
 
-:param interval: interval size. Units are specified through setIntervalUnit()
+:param interval: interval size. Units are specified through :py:func:`~QgsTemplatedLineSymbolLayerBase.setIntervalUnit`
 
 .. seealso:: :py:func:`interval`
 
@@ -432,7 +575,7 @@ Sets the map unit ``scale`` used for calculating the offset in map units along l
 Returns the length of line over which the line's direction is averaged when
 calculating individual symbol angles. Longer lengths smooth out angles from jagged lines to a greater extent.
 
-Units are retrieved through averageAngleUnit()
+Units are retrieved through :py:func:`~QgsTemplatedLineSymbolLayerBase.averageAngleUnit`
 
 .. seealso:: :py:func:`setAverageAngleLength`
 
@@ -446,7 +589,7 @@ Units are retrieved through averageAngleUnit()
 Sets the ``length`` of line over which the line's direction is averaged when
 calculating individual symbol angles. Longer lengths smooth out angles from jagged lines to a greater extent.
 
-Units are set through setAverageAngleUnit()
+Units are set through :py:func:`~QgsTemplatedLineSymbolLayerBase.setAverageAngleUnit`
 
 .. seealso:: :py:func:`averageAngleLength`
 
@@ -505,7 +648,7 @@ calculating individual symbol angles.
 
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) ${SIP_FINAL};
 
-    virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) ${SIP_FINAL};
+    virtual void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) ${SIP_FINAL};
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const ${SIP_FINAL};
 
@@ -590,7 +733,7 @@ should be rotated to match the line segment alignment.
 %Docstring
 Creates a new QgsMarkerLineSymbolLayer, using the settings
 serialized in the ``properties`` map (corresponding to the output from
-QgsMarkerLineSymbolLayer.properties() ).
+:py:func:`QgsMarkerLineSymbolLayer.properties()` ).
 %End
 
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
@@ -640,14 +783,16 @@ Shall the marker be rotated.
 
 :return: ``True`` if the marker should be rotated.
 
-.. deprecated:: Use rotateSymbols() instead.
+.. deprecated::
+   Use rotateSymbols() instead.
 %End
 
  void setRotateMarker( bool rotate ) /Deprecated/;
 %Docstring
 Shall the marker be rotated.
 
-.. deprecated:: Use setRotateSymbols() instead.
+.. deprecated::
+   Use setRotateSymbols() instead.
 %End
 
   protected:
@@ -695,7 +840,7 @@ should be rotated to match the line segment alignment.
 %Docstring
 Creates a new QgsHashedLineSymbolLayer, using the settings
 serialized in the ``properties`` map (corresponding to the output from
-QgsHashedLineSymbolLayer.properties() ).
+:py:func:`QgsHashedLineSymbolLayer.properties()` ).
 %End
 
     virtual QString layerType() const;
@@ -749,7 +894,7 @@ Sets the ``angle`` to use when drawing the hashed lines sections, in degrees clo
 
     double hashLength() const;
 %Docstring
-Returns the length of hash symbols. Units are specified through hashLengthUnits().
+Returns the length of hash symbols. Units are specified through :py:func:`~QgsHashedLineSymbolLayer.hashLengthUnits`.
 
 .. seealso:: :py:func:`setHashLength`
 
@@ -758,7 +903,7 @@ Returns the length of hash symbols. Units are specified through hashLengthUnits(
 
     void setHashLength( double length );
 %Docstring
-Sets the ``length`` of hash symbols. Units are specified through setHashLengthUnit()
+Sets the ``length`` of hash symbols. Units are specified through :py:func:`~QgsHashedLineSymbolLayer.setHashLengthUnit`
 
 .. seealso:: :py:func:`hashLength`
 

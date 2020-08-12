@@ -34,20 +34,11 @@ void QgsCrashReport::setFlags( QgsCrashReport::Flags flags )
   mFlags = flags;
 }
 
-const QString QgsCrashReport::toMarkdown()
-{
-  QString markdown = toHtml();
-  markdown.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
-  markdown.replace( QLatin1String( "<b>" ), QLatin1String( "*" ) );
-  markdown.replace( QLatin1String( "</b>" ), QLatin1String( "*" ) );
-  markdown.replace( QLatin1String( "QGIS code revision: " ), QLatin1String( "QGIS code revision: commit:" ) );
-  return markdown;
-}
-
 const QString QgsCrashReport::toHtml() const
 {
   QStringList reportData;
-  reportData.append( "<b>Crash ID</b>: " + crashID() );
+  QString thisCrashID = crashID();
+  reportData.append( QStringLiteral( "<b>Crash ID</b>: <a href='https://github.com/qgis/QGIS/search?q=%1&type=Issues'>%1</a>" ).arg( thisCrashID ) );
 
   if ( flags().testFlag( QgsCrashReport::Stack ) )
   {
@@ -56,6 +47,10 @@ const QString QgsCrashReport::toHtml() const
     if ( mStackTrace->lines.isEmpty() )
     {
       reportData.append( QStringLiteral( "Stack trace could not be generated." ) );
+    }
+    else if ( !mStackTrace->symbolsLoaded )
+    {
+      reportData.append( QStringLiteral( "Stack trace could not be generated due to missing symbols." ) );
     }
     else
     {
@@ -132,7 +127,7 @@ const QString QgsCrashReport::crashID() const
   if ( data.isNull() )
     return QStringLiteral( "ID not generated due to missing information" );
 
-  QString hash = QString( QCryptographicHash::hash( data.toAscii(), QCryptographicHash::Sha1 ).toHex() );
+  QString hash = QString( QCryptographicHash::hash( data.toLatin1(), QCryptographicHash::Sha1 ).toHex() );
   return hash;
 }
 
@@ -162,7 +157,7 @@ void QgsCrashReport::exportToCrashFolder()
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
     QTextStream stream( &file );
-    stream << toMarkdown() << endl;
+    stream << htmlToMarkdown( toHtml() ) << endl;
   }
   file.close();
 }
@@ -172,4 +167,27 @@ QString QgsCrashReport::crashReportFolder()
   return QStandardPaths::standardLocations( QStandardPaths::AppLocalDataLocation ).value( 0 ) +
          "/crashes/" +
          QUuid::createUuid().toString().replace( "{", "" ).replace( "}", "" );
+}
+
+QString QgsCrashReport::htmlToMarkdown( const QString &html )
+{
+  // Any changes in this function must be copied to qgsstringutils.cpp too
+  QString converted = html;
+  converted.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
+  converted.replace( QLatin1String( "<b>" ), QLatin1String( "**" ) );
+  converted.replace( QLatin1String( "</b>" ), QLatin1String( "**" ) );
+
+  static QRegExp hrefRegEx( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" );
+  int offset = 0;
+  while ( hrefRegEx.indexIn( converted, offset ) != -1 )
+  {
+    QString url = hrefRegEx.cap( 1 ).replace( QStringLiteral( "\"" ), QString() );
+    url.replace( '\'', QString() );
+    QString name = hrefRegEx.cap( 2 );
+    QString anchor = QStringLiteral( "[%1](%2)" ).arg( name, url );
+    converted.replace( hrefRegEx, anchor );
+    offset = hrefRegEx.pos( 1 ) + anchor.length();
+  }
+
+  return converted;
 }

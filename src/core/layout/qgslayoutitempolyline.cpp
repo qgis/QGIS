@@ -23,6 +23,7 @@
 #include "qgslayoututils.h"
 #include "qgsreadwritecontext.h"
 #include "qgssvgcache.h"
+#include "qgsstyleentityvisitor.h"
 #include <QSvgRenderer>
 #include <limits>
 #include <QGraphicsPathItem>
@@ -257,12 +258,11 @@ void QgsLayoutItemPolyline::drawSvgMarker( QPainter *p, QPointF point, double an
                                  1.0 );
   r.load( svgContent );
 
-  p->save();
+  QgsScopedQPainterState painterState( p );
   p->translate( point.x(), point.y() );
   p->rotate( angle );
   p->translate( -mArrowHeadWidth / 2.0, -height / 2.0 );
   r.render( p, QRectF( 0, 0, mArrowHeadWidth, height ) );
-  p->restore();
 }
 
 QString QgsLayoutItemPolyline::displayName() const
@@ -275,7 +275,7 @@ QString QgsLayoutItemPolyline::displayName() const
 
 void QgsLayoutItemPolyline::_draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem * )
 {
-  context.renderContext().painter()->save();
+  QgsScopedQPainterState painterState( context.renderContext().painter() );
   //setup painter scaling to dots so that raster symbology is drawn to scale
   double scale = context.renderContext().convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
   QTransform t = QTransform::fromScale( scale, scale );
@@ -289,7 +289,6 @@ void QgsLayoutItemPolyline::_draw( QgsLayoutItemRenderContext &context, const QS
 
   drawStartMarker( context.renderContext().painter() );
   drawEndMarker( context.renderContext().painter() );
-  context.renderContext().painter()->restore();
 }
 
 void QgsLayoutItemPolyline::_readXmlStyle( const QDomElement &elmt, const QgsReadWriteContext &context )
@@ -386,6 +385,18 @@ void QgsLayoutItemPolyline::setArrowHeadStrokeWidth( double width )
   mArrowHeadStrokeWidth = width;
   updateBoundingRect();
   update();
+}
+
+bool QgsLayoutItemPolyline::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( mPolylineStyleSymbol )
+  {
+    QgsStyleSymbolEntity entity( mPolylineStyleSymbol.get() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, uuid(), displayName() ) ) )
+      return false;
+  }
+
+  return true;
 }
 
 void QgsLayoutItemPolyline::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt, const QgsReadWriteContext &context ) const

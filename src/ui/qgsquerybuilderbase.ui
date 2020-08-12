@@ -307,7 +307,7 @@ p, li { white-space: pre-wrap; }
           </sizepolicy>
          </property>
          <property name="title">
-          <string>Provider specific filter expression</string>
+          <string>Provider Specific Filter Expression</string>
          </property>
          <layout class="QGridLayout">
           <property name="leftMargin">

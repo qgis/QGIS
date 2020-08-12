@@ -76,6 +76,8 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
     int mMarginHorizontal = 0;
     int mMarginVertical = 0;
 
+    double mapWidth( const QgsMapSettings &settings ) const;
+
     friend class QgsDecorationScaleBarDialog;
 };
 

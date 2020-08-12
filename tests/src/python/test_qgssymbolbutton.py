@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '23/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -76,8 +74,8 @@ class TestQgsSymbolButton(unittest.TestCase):
         fill_symbol = QgsFillSymbol.createSimple({})
         fill_symbol.setColor(QColor(0, 0, 255))
         button2.setSymbol(fill_symbol)
-        button.copySymbol() # copied a marker symbol
-        button2.pasteSymbol() # should have no effect
+        button.copySymbol()  # copied a marker symbol
+        button2.pasteSymbol()  # should have no effect
         self.assertEqual(button2.symbol(), fill_symbol)
 
     def testSetGetSymbol(self):

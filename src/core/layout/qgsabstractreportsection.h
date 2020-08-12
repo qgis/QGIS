@@ -121,7 +121,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     QgsProject *project();
 
     // TODO - how to handle this?
-    int count() override { return -1; }
+    int count() const override { return -1; }
 
     QString filePath( const QString &baseFilePath, const QString &extension ) override;
     QgsLayout *layout() override;
@@ -311,6 +311,17 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      * Refreshes the section when global layout related options change.
      */
     virtual void reloadSettings();
+
+    /**
+     * Accepts the specified style entity \a visitor, causing it to visit all style entities associated
+     * with the report.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
   protected:
 

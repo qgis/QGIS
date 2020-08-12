@@ -24,6 +24,7 @@
 SIP_NO_FILE
 
 class QgsDateTimeEdit;
+class TestQgsDateTimeEdit;
 
 /**
  * \ingroup gui
@@ -73,8 +74,13 @@ class GUI_EXPORT QgsDateTimeEditWrapper : public QgsEditorWidgetWrapper
     void showIndeterminateState() override;
 
   public slots:
-    void setValue( const QVariant &value ) override;
     void setEnabled( bool enabled ) override;
+
+  private:
+    void updateValues( const QVariant &value, const QVariantList  & = QVariantList() ) override;
+
+
+    friend class TestQgsDateTimeEdit;
 };
 
 #endif // QGSDATETIMEEDITWRAPPER_H

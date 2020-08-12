@@ -107,6 +107,9 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      */
     void setAutoSnapEnabled( bool enabled ) { mAutoSnapEnabled = enabled; }
 
+
+    QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;
+
   public:
 
     /**
@@ -172,7 +175,6 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     void onCurrentLayerChanged();
 
   private:
-    QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;
 
     //! Whether to allow use of advanced digitizing dock at this point
     bool mAdvancedDigitizingAllowed = true;

@@ -22,22 +22,50 @@ email                : brush.tyler@gmail.com
 from builtins import str
 from builtins import range
 
-from qgis.PyQt.QtCore import Qt, QObject, pyqtSignal
-from qgis.PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMessageBox
-from qgis.PyQt.QtGui import QKeySequence, QIcon
+from qgis.PyQt.QtCore import Qt, QObject, pyqtSignal, QByteArray
 
-from qgis.gui import QgsMessageBar
+from qgis.PyQt.QtWidgets import (
+    QFormLayout,
+    QComboBox,
+    QCheckBox,
+    QDialogButtonBox,
+    QPushButton,
+    QLabel,
+    QApplication,
+    QAction,
+    QMenu,
+    QInputDialog,
+    QMessageBox,
+    QDialog,
+    QWidget
+)
+
+from qgis.PyQt.QtGui import QKeySequence
+
 from qgis.core import (
     Qgis,
     QgsApplication,
     QgsSettings,
-    QgsMapLayerType
+    QgsMapLayerType,
+    QgsWkbTypes,
+    QgsProviderConnectionException,
+    QgsProviderRegistry,
+    QgsVectorLayer,
+    QgsRasterLayer,
+    QgsProject,
+    QgsMessageLog,
+    QgsCoordinateReferenceSystem
 )
+
+from qgis.gui import (
+    QgsMessageBarItem,
+    QgsProjectionSelectionWidget
+)
+
 from ..db_plugins import createDbPlugin
 
 
 class BaseError(Exception):
-
     """Base class for exceptions in the plugin."""
 
     def __init__(self, e):
@@ -125,9 +153,16 @@ class DBPlugin(QObject):
         return self.connect(self.parent())
 
     def remove(self):
-        settings = QgsSettings()
-        settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), self.connectionName()))
-        settings.remove("")
+
+        # Try the new API first, fallback to legacy
+        try:
+            md = QgsProviderRegistry.instance().providerMetadata(self.providerName())
+            md.deleteConnection(self.connectionName())
+        except (AttributeError, QgsProviderConnectionException):
+            settings = QgsSettings()
+            settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), self.connectionName()))
+            settings.remove("")
+
         self.deleted.emit()
         return True
 
@@ -162,12 +197,21 @@ class DBPlugin(QObject):
     @classmethod
     def connections(self):
         # get the list of connections
+
         conn_list = []
-        settings = QgsSettings()
-        settings.beginGroup(self.connectionSettingsKey())
-        for name in settings.childGroups():
-            conn_list.append(createDbPlugin(self.typeName(), name))
-        settings.endGroup()
+
+        # First try with the new core API, if that fails, proceed with legacy code
+        try:
+            md = QgsProviderRegistry.instance().providerMetadata(self.providerName())
+            for name in md.dbConnections(False).keys():
+                conn_list.append(createDbPlugin(self.typeName(), name))
+        except (AttributeError, QgsProviderConnectionException):
+            settings = QgsSettings()
+            settings.beginGroup(self.connectionSettingsKey())
+            for name in settings.childGroups():
+                conn_list.append(createDbPlugin(self.typeName(), name))
+            settings.endGroup()
+
         return conn_list
 
     def databasesFactory(self, connection, uri):
@@ -198,7 +242,7 @@ class DbItemObject(QObject):
     deleted = pyqtSignal()
 
     def __init__(self, parent=None):
-        QObject.__init__(self, parent)
+        super().__init__(parent)
 
     def database(self):
         return None
@@ -219,7 +263,7 @@ class DbItemObject(QObject):
 class Database(DbItemObject):
 
     def __init__(self, dbplugin, uri):
-        DbItemObject.__init__(self, dbplugin)
+        super().__init__(dbplugin)
         self.connector = self.connectorsFactory(uri)
 
     def connectorsFactory(self, uri):
@@ -278,8 +322,6 @@ class Database(DbItemObject):
         return "row_number() over ()"
 
     def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False, filter=""):
-        from qgis.core import QgsVectorLayer, QgsRasterLayer
-
         if uniqueCol is None:
             if hasattr(self, 'uniqueIdFunction'):
                 uniqueFct = self.uniqueIdFunction()
@@ -438,6 +480,12 @@ class Database(DbItemObject):
                 parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select a table to edit."),
                                            Qgis.Info, parent.iface.messageTimeout())
                 return
+
+            if isinstance(item, RasterTable):
+                parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Editing of raster tables is not supported."),
+                                           Qgis.Info, parent.iface.messageTimeout())
+                return
+
             from ..dlg_table_properties import DlgTableProperties
 
             DlgTableProperties(item, parent).exec_()
@@ -483,6 +531,7 @@ class Database(DbItemObject):
 
     def prepareMenuMoveTableToSchemaActionSlot(self, item, menu, mainWindow):
         """ populate menu with schemas """
+
         def slot(x):
             return lambda: mainWindow.invokeCallback(self.moveTableToSchemaActionSlot, x)
 
@@ -522,8 +571,12 @@ class Database(DbItemObject):
     def tables(self, schema=None, sys_tables=False):
         tables = self.connector.getTables(schema.name if schema else None, sys_tables)
         if tables is not None:
-            tables = [self.tablesFactory(x, self, schema) for x in tables]
-        return tables
+            ret = []
+            for t in tables:
+                table = self.tablesFactory(t, self, schema)
+                ret.append(table)
+
+        return ret
 
     def createTable(self, table, fields, schema=None):
         field_defs = [x.definition() for x in fields]
@@ -694,22 +747,32 @@ class Table(DbItemObject):
         uri.setDataSource(schema, self.name, geomCol if geomCol else None, None, uniqueCol.name if uniqueCol else "")
         return uri
 
+    def crs(self):
+        """Returns the CRS of this table or an invalid CRS if this is not a spatial table
+        This should be overwritten by any additional db plugins"""
+        return QgsCoordinateReferenceSystem()
+
     def mimeUri(self):
         layerType = "raster" if self.type == Table.RasterType else "vector"
         return u"%s:%s:%s:%s" % (layerType, self.database().dbplugin().providerName(), self.name, self.uri().uri(False))
 
-    def toMapLayer(self):
-        from qgis.core import QgsVectorLayer, QgsRasterLayer
-
+    def toMapLayer(self, geometryType=None, crs=None):
         provider = self.database().dbplugin().providerName()
-        uri = self.uri().uri(False)
+        dataSourceUri = self.uri()
+        if geometryType:
+            dataSourceUri.setWkbType(QgsWkbTypes.parseType(geometryType))
+
+        if crs:
+            dataSourceUri.setSrid(str(crs.postgisSrid()))
+
+        uri = dataSourceUri.uri(False)
         if self.type == Table.RasterType:
             return QgsRasterLayer(uri, self.name, provider)
         return QgsVectorLayer(uri, self.name, provider)
 
     def getValidQgisUniqueFields(self, onlyOne=False):
-        """ list of fields valid to load the table as layer in Qgis canvas.
-                Qgis automatically search for a valid unique field, so it's
+        """ list of fields valid to load the table as layer in QGIS canvas.
+                QGIS automatically search for a valid unique field, so it's
                 needed only for queries and views """
 
         ret = []
@@ -947,6 +1010,10 @@ class Table(DbItemObject):
 
         return False
 
+    def addExtraContextMenuEntries(self, menu):
+        """Called whenever a context menu is shown for this table. Can be used to add additional actions to the menu."""
+        pass
+
 
 class VectorTable(Table):
 
@@ -961,6 +1028,15 @@ class VectorTable(Table):
         from .info_model import VectorTableInfo
 
         return VectorTableInfo(self)
+
+    def uri(self):
+        uri = super().uri()
+        for f in self.fields():
+            if f.primaryKey:
+                uri.setKeyColumn(f.name)
+                break
+        uri.setWkbType(QgsWkbTypes.parseType(self.geomType))
+        return uri
 
     def hasSpatialIndex(self, geom_column=None):
         geom_column = geom_column if geom_column is not None else self.geomColumn
@@ -1046,6 +1122,72 @@ class VectorTable(Table):
 
         return Table.runAction(self, action)
 
+    def addLayer(self, geometryType=None, crs=None):
+        layer = self.toMapLayer(geometryType, crs)
+        layers = QgsProject.instance().addMapLayers([layer])
+        if len(layers) != 1:
+            QgsMessageLog.logMessage(self.tr("{layer} is an invalid layer - not loaded").format(layer=layer.publicSource()))
+            msgLabel = QLabel(self.tr("{layer} is an invalid layer and cannot be loaded. Please check the <a href=\"#messageLog\">message log</a> for further info.").format(layer=layer.publicSource()), self.mainWindow.infoBar)
+            msgLabel.setWordWrap(True)
+            msgLabel.linkActivated.connect(self.mainWindow.iface.mainWindow().findChild(QWidget, "MessageLog").show)
+            msgLabel.linkActivated.connect(self.mainWindow.iface.mainWindow().raise_)
+            self.mainWindow.infoBar.pushItem(QgsMessageBarItem(msgLabel, Qgis.Warning))
+
+    def showAdvancedVectorDialog(self):
+        dlg = QDialog()
+        dlg.setObjectName('dbManagerAdvancedVectorDialog')
+        settings = QgsSettings()
+        dlg.restoreGeometry(settings.value("/DB_Manager/advancedAddDialog/geometry", QByteArray(), type=QByteArray))
+        layout = QFormLayout()
+        dlg.setLayout(layout)
+        dlg.setWindowTitle(self.tr('Add Layer {}').format(self.name))
+        geometryTypeComboBox = QComboBox()
+        geometryTypeComboBox.addItem(self.tr('Point'), 'POINT')
+        geometryTypeComboBox.addItem(self.tr('Line'), 'LINESTRING')
+        geometryTypeComboBox.addItem(self.tr('Polygon'), 'POLYGON')
+        layout.addRow(self.tr('Geometry Type'), geometryTypeComboBox)
+        zCheckBox = QCheckBox(self.tr('With Z'))
+        mCheckBox = QCheckBox(self.tr('With M'))
+        layout.addRow(zCheckBox)
+        layout.addRow(mCheckBox)
+        crsSelector = QgsProjectionSelectionWidget()
+        crsSelector.setCrs(self.crs())
+        layout.addRow(self.tr('CRS'), crsSelector)
+
+        def selectedGeometryType():
+            geomType = geometryTypeComboBox.currentData()
+            if zCheckBox.isChecked():
+                geomType += 'Z'
+            if mCheckBox.isChecked():
+                geomType += 'M'
+
+            return geomType
+
+        def selectedCrs():
+            return crsSelector.crs()
+
+        addButton = QPushButton(self.tr('Load Layer'))
+        addButton.clicked.connect(lambda: self.addLayer(selectedGeometryType(), selectedCrs()))
+        btns = QDialogButtonBox(QDialogButtonBox.Cancel)
+        btns.addButton(addButton, QDialogButtonBox.ActionRole)
+
+        layout.addRow(btns)
+
+        addButton.clicked.connect(dlg.accept)
+        btns.accepted.connect(dlg.accept)
+        btns.rejected.connect(dlg.reject)
+
+        dlg.exec_()
+
+        settings = QgsSettings()
+        settings.setValue("/DB_Manager/advancedAddDialog/geometry", dlg.saveGeometry())
+
+    def addExtraContextMenuEntries(self, menu):
+        """Called whenever a context menu is shown for this table. Can be used to add additional actions to the menu."""
+
+        if self.geomType == 'GEOMETRY':
+            menu.addAction(QApplication.translate("DBManagerPlugin", "Add Layer (Advanced)…"), self.showAdvancedVectorDialog)
+
 
 class RasterTable(Table):
 
@@ -1125,7 +1267,6 @@ class TableField(TableSubItemObject):
         if self.default2String() == new_default_str:
             new_default_str = None
         if self.comment == new_comment:
-            # Update also a new_comment
             new_comment = None
         ret = self.table().database().connector.updateTableColumn((self.table().schemaName(), self.table().name),
                                                                   self.name, new_name, new_type_str,
@@ -1136,7 +1277,6 @@ class TableField(TableSubItemObject):
 
 
 class TableConstraint(TableSubItemObject):
-
     """ class that represents a constraint of a table (relation) """
 
     TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique, TypeExclusion, TypeUnknown = list(range(6))
@@ -1205,7 +1345,6 @@ class TableIndex(TableSubItemObject):
 
 
 class TableTrigger(TableSubItemObject):
-
     """ class that represents a trigger """
 
     # Bits within tgtype (pg_trigger.h)

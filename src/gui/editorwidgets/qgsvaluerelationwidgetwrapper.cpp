@@ -25,6 +25,8 @@
 #include "qgsvaluerelationfieldformatter.h"
 #include "qgsattributeform.h"
 #include "qgsattributes.h"
+#include "qgsjsonutils.h"
+#include "qgspostgresstringutils.h"
 
 #include <QHeaderView>
 #include <QComboBox>
@@ -32,6 +34,10 @@
 #include <QTableWidget>
 #include <QStringListModel>
 #include <QCompleter>
+
+#include <nlohmann/json.hpp>
+using namespace nlohmann;
+
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
@@ -70,20 +76,35 @@ QVariant QgsValueRelationWidgetWrapper::value() const
       }
     }
 
-    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map )
+    QVariantList vl;
+    //store as QVariantList because the field type supports data structure
+    for ( const QString &s : qgis::as_const( selection ) )
     {
-      QVariantList vl;
-      //store as QVariantList because it's json
-      for ( const QString &s : qgis::as_const( selection ) )
+      // Convert to proper type
+      const QVariant::Type type { fkType() };
+      switch ( type )
       {
-        vl << s;
+        case QVariant::Type::Int:
+          vl.push_back( s.toInt() );
+          break;
+        case QVariant::Type::LongLong:
+          vl.push_back( s.toLongLong() );
+          break;
+        default:
+          vl.push_back( s );
+          break;
       }
+    }
+
+    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map ||
+         layer()->fields().at( fieldIdx() ).type() == QVariant::List )
+    {
       v = vl;
     }
     else
     {
-      //store as hstore string
-      v = selection.join( ',' ).prepend( '{' ).append( '}' );
+      //make string
+      v = QgsPostgresStringUtils::buildArray( vl );
     }
   }
 
@@ -140,9 +161,9 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
   }
   else if ( mTableWidget )
   {
-    mTableWidget->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
+    mTableWidget->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
     mTableWidget->horizontalHeader()->setVisible( false );
-    mTableWidget->verticalHeader()->setResizeMode( QHeaderView::Stretch );
+    mTableWidget->verticalHeader()->setSectionResizeMode( QHeaderView::Stretch );
     mTableWidget->verticalHeader()->setVisible( false );
     mTableWidget->setShowGrid( false );
     mTableWidget->setEditTriggers( QAbstractItemView::NoEditTriggers );
@@ -151,7 +172,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
   }
   else if ( mLineEdit )
   {
-    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valueChanged( value ); }, Qt::UniqueConnection );
+    connect( mLineEdit, &QLineEdit::textChanged, this, &QgsValueRelationWidgetWrapper::emitValueChangedInternal, Qt::UniqueConnection );
   }
 }
 
@@ -160,15 +181,15 @@ bool QgsValueRelationWidgetWrapper::valid() const
   return mTableWidget || mLineEdit || mComboBox;
 }
 
-void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
+void QgsValueRelationWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   if ( mTableWidget )
   {
     QStringList checkList;
 
-    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map )
+    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map ||
+         layer()->fields().at( fieldIdx() ).type() == QVariant::List )
     {
-      //because of json it's stored as QVariantList
       checkList = value.toStringList();
     }
     else
@@ -207,7 +228,7 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
   else if ( mComboBox )
   {
     // findData fails to tell a 0 from a NULL
-    // See: "Value relation, value 0 = NULL" - https://issues.qgis.org/issues/19981
+    // See: "Value relation, value 0 = NULL" - https://github.com/qgis/QGIS/issues/27803
     int idx = -1; // default to not found
     for ( int i = 0; i < mComboBox->count(); i++ )
     {
@@ -247,7 +268,7 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
     {
       populate();
       // Restore value
-      setValue( value( ) );
+      updateValues( value( ) );
       // If the value has changed as a result of another widget's value change,
       // we need to emit the signal to make sure other dependent widgets are
       // updated.
@@ -255,7 +276,7 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
       {
         QString attributeName( formFeature().fields().names().at( fieldIdx() ) );
         setFormFeatureAttribute( attributeName, value( ) );
-        emitValueChanged( );
+        emitValueChanged();
       }
     }
   }
@@ -267,19 +288,27 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
   setFormFeature( feature );
   whileBlocking( this )->populate();
   whileBlocking( this )->setValue( feature.attribute( fieldIdx() ) );
+
+  // As we block any signals, possible depending widgets will not being updated
+  // so we force emit signal once and for all
+  emitValueChanged();
+
   // A bit of logic to set the default value if AllowNull is false and this is a new feature
   // Note that this needs to be here after the cache has been created/updated by populate()
   // and signals unblocked (we want this to propagate to the feature itself)
   if ( formFeature().isValid()
        && ! formFeature().attribute( fieldIdx() ).isValid()
-       && ! mCache.empty()
+       && ! mCache.isEmpty()
        && ! config( QStringLiteral( "AllowNull" ) ).toBool( ) )
   {
     // This is deferred because at the time the feature is set in one widget it is not
     // set in the next, which is typically the "down" in a drill-down
     QTimer::singleShot( 0, this, [ this ]
     {
-      setValue( mCache.at( 0 ).key );
+      if ( ! mCache.isEmpty() )
+      {
+        updateValues( mCache.at( 0 ).key );
+      }
     } );
   }
 }
@@ -289,16 +318,40 @@ int QgsValueRelationWidgetWrapper::columnCount() const
   return std::max( 1, config( QStringLiteral( "NofColumns" ) ).toInt() );
 }
 
+
+QVariant::Type QgsValueRelationWidgetWrapper::fkType() const
+{
+  const QgsVectorLayer *layer = QgsValueRelationFieldFormatter::resolveLayer( config(), QgsProject::instance() );
+  if ( layer )
+  {
+    QgsFields fields = layer->fields();
+    int idx { fields.lookupField( config().value( QStringLiteral( "Key" ) ).toString() )  };
+    if ( idx >= 0 )
+    {
+      return fields.at( idx ).type();
+    }
+  }
+  return QVariant::Type::Invalid;
+}
+
 void QgsValueRelationWidgetWrapper::populate( )
 {
   // Initialize, note that signals are blocked, to avoid double signals on new features
-  if ( QgsValueRelationFieldFormatter::expressionRequiresFormScope( mExpression ) )
+  if ( QgsValueRelationFieldFormatter::expressionRequiresFormScope( mExpression ) ||
+       QgsValueRelationFieldFormatter::expressionRequiresParentFormScope( mExpression ) )
   {
-    mCache = QgsValueRelationFieldFormatter::createCache( config( ), formFeature() );
+    if ( context().parentFormFeature().isValid() )
+    {
+      mCache = QgsValueRelationFieldFormatter::createCache( config(), formFeature(), context().parentFormFeature() );
+    }
+    else
+    {
+      mCache = QgsValueRelationFieldFormatter::createCache( config(), formFeature() );
+    }
   }
   else if ( mCache.empty() )
   {
-    mCache = QgsValueRelationFieldFormatter::createCache( config( ) );
+    mCache = QgsValueRelationFieldFormatter::createCache( config() );
   }
 
   if ( mComboBox )
@@ -312,7 +365,10 @@ void QgsValueRelationWidgetWrapper::populate( )
     for ( const QgsValueRelationFieldFormatter::ValueRelationItem &element : qgis::as_const( mCache ) )
     {
       whileBlocking( mComboBox )->addItem( element.value, element.key );
+      if ( !element.description.isEmpty() )
+        mComboBox->setItemData( mComboBox->count() - 1, element.description, Qt::ToolTipRole );
     }
+
   }
   else if ( mTableWidget )
   {
@@ -342,6 +398,7 @@ void QgsValueRelationWidgetWrapper::populate( )
       whileBlocking( mTableWidget )->setItem( row, column, item );
       column++;
     }
+
   }
   else if ( mLineEdit )
   {
@@ -408,4 +465,34 @@ void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
   }
   else
     QgsEditorWidgetWrapper::setEnabled( enabled );
+}
+
+void QgsValueRelationWidgetWrapper::parentFormValueChanged( const QString &attribute, const QVariant &value )
+{
+
+  // Update the parent feature in the context ( which means to replace the whole context :/ )
+  QgsAttributeEditorContext ctx { context() };
+  QgsFeature feature { context().parentFormFeature() };
+  feature.setAttribute( attribute, value );
+  ctx.setParentFormFeature( feature );
+  setContext( ctx );
+
+  // Check if the change might affect the filter expression and the cache needs updates
+  if ( QgsValueRelationFieldFormatter::expressionRequiresParentFormScope( mExpression )
+       && ( config( QStringLiteral( "Value" ) ).toString() == attribute ||
+            config( QStringLiteral( "Key" ) ).toString() == attribute ||
+            ! QgsValueRelationFieldFormatter::expressionParentFormVariables( mExpression ).isEmpty() ||
+            QgsValueRelationFieldFormatter::expressionParentFormAttributes( mExpression ).contains( attribute ) ) )
+  {
+    populate();
+  }
+
+}
+
+void QgsValueRelationWidgetWrapper::emitValueChangedInternal( const QString &value )
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  emit valueChanged( value );
+  Q_NOWARN_DEPRECATED_POP
+  emit valuesChanged( value );
 }

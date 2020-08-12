@@ -1,0 +1,31 @@
+r.sun
+r.sun.incidout - Solar irradiance and irradiation model ( for the set local time).
+Raster (r.*)
+QgsProcessingParameterRasterLayer|elevation|Elevation layer [meters]|None|False
+QgsProcessingParameterRasterLayer|aspect|Aspect layer [decimal degrees]|None|False
+QgsProcessingParameterNumber|aspect_value|A single value of the orientation (aspect), 270 is south|QgsProcessingParameterNumber.Double|270.0|True|0.0|360.0
+QgsProcessingParameterRasterLayer|slope|Name of the input slope raster map (terrain slope or solar panel inclination) [decimal degrees]|None|False
+QgsProcessingParameterNumber|slope_value|A single value of inclination (slope)|QgsProcessingParameterNumber.Double|0.0|True|0.0|360.0
+QgsProcessingParameterRasterLayer|linke|Name of the Linke atmospheric turbidity coefficient input raster map|None|True
+QgsProcessingParameterRasterLayer|albedo|Name of the ground albedo coefficient input raster map|None|True
+QgsProcessingParameterNumber|albedo_value|A single value of the ground albedo coefficient|QgsProcessingParameterNumber.Double|0.2|True|0.0|360.0
+QgsProcessingParameterRasterLayer|lat|Name of input raster map containing latitudes [decimal degrees]|None|True
+QgsProcessingParameterRasterLayer|long|Name of input raster map containing longitudes [decimal degrees]|None|True
+QgsProcessingParameterRasterLayer|coeff_bh|Name of real-sky beam radiation coefficient input raster map|None|True
+QgsProcessingParameterRasterLayer|coeff_dh|Name of real-sky diffuse radiation coefficient input raster map|None|True
+QgsProcessingParameterRasterLayer|horizon_basemap|The horizon information input map basename|None|True
+QgsProcessingParameterNumber|horizon_step|Angle step size for multidirectional horizon [degrees]|QgsProcessingParameterNumber.Double|None|True|0.0|360.0
+QgsProcessingParameterNumber|day|No. of day of the year (1-365)|QgsProcessingParameterNumber.Integer|1|False|1|365
+*QgsProcessingParameterNumber|step|Time step when computing all-day radiation sums [decimal hours]|QgsProcessingParameterNumber.Double|0.5|True|0
+*QgsProcessingParameterNumber|declination|Declination value (overriding the internally computed value) [radians]|QgsProcessingParameterNumber.Double|None|True|None|None
+*QgsProcessingParameterNumber|distance_step|Sampling distance step coefficient (0.5-1.5)|QgsProcessingParameterNumber.Double|1.0|True|0.5|1.5
+*QgsProcessingParameterNumber|npartitions|Read the input files in this number of chunks|QgsProcessingParameterNumber.Integer|1|True|1|None
+*QgsProcessingParameterNumber|civil_time|Civil time zone value, if none, the time will be local solar time|QgsProcessingParameterNumber.Double|None|True|0.0|None
+QgsProcessingParameterNumber|time|Local (solar) time (decimal hours)|QgsProcessingParameterNumber.Double|None|False|0.0|24.0
+QgsProcessingParameterBoolean|-p|Do not incorporate the shadowing effect of terrain|False
+*QgsProcessingParameterBoolean|-m|Use the low-memory version of the program|False
+QgsProcessingParameterRasterDestination|incidout|incidence angle raster map|None|True
+QgsProcessingParameterRasterDestination|beam_rad|Beam irradiance [W.m-2]|None|True
+QgsProcessingParameterRasterDestination|diff_rad|Diffuse irradiance [W.m-2]|None|True
+QgsProcessingParameterRasterDestination|refl_rad|Ground reflected irradiance [W.m-2]|None|True
+QgsProcessingParameterRasterDestination|glob_rad|Global (total) irradiance/irradiation [W.m-2]|None|True

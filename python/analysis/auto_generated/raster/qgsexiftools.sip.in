@@ -8,6 +8,7 @@
 
 
 
+
 class QgsExifTools
 {
 %Docstring
@@ -19,6 +20,9 @@ Contains utilities for working with EXIF tags in images.
 %TypeHeaderCode
 #include "qgsexiftools.h"
 %End
+  public:
+    static const QMetaObject staticMetaObject;
+
   public:
 
 
@@ -32,6 +36,13 @@ If the image contains an elevation tag then the returned point will contain
 the elevation as a z value.
 
 .. seealso:: :py:func:`geoTagImage`
+%End
+
+    static bool hasGeoTag( const QString &imagePath );
+%Docstring
+Returns ``True`` if the image at ``imagePath`` contains a valid geotag.
+
+.. seealso:: :py:func:`getGeoTag`
 %End
 
     class GeoTagDetails

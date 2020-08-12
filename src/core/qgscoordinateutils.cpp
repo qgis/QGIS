@@ -81,7 +81,7 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
     if ( destCrs.isValid() && !destCrs.isGeographic() )
     {
       // need to transform to geographic coordinates
-      QgsCoordinateTransform ct( destCrs, QgsCoordinateReferenceSystem( GEOSRID ), project );
+      QgsCoordinateTransform ct( destCrs, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), project );
       try
       {
         geo = ct.transform( point );
@@ -104,6 +104,62 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
     // coordinates in map units
     return QgsCoordinateFormatter::asPair( point.x(), point.y(), precision );
   }
+}
+
+double QgsCoordinateUtils::dmsToDecimal( const QString &string, bool *ok )
+{
+  const QString negative( QStringLiteral( "swSW-" ) );
+  double value = 0.0;
+  bool okValue = false;
+
+  if ( ok )
+  {
+    *ok = false;
+  }
+  else
+  {
+    ok = &okValue;
+  }
+
+  QRegularExpression dms( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.]*?([-+nsew])?\\s*$", QRegularExpression::CaseInsensitiveOption );
+  QRegularExpressionMatch match = dms.match( string.trimmed() );
+  if ( match.hasMatch() )
+  {
+    QString dms1 = match.captured( 2 );
+    QString dms2 = match.captured( 3 );
+    QString dms3 = match.captured( 4 );
+
+    double v = dms3.toDouble( ok );
+    if ( *ok == false )
+      return value;
+    // Allow for Degrees/minutes format as well as DMS
+    if ( !dms2.isEmpty() )
+    {
+      v = dms2.toInt( ok ) + v / 60.0;
+      if ( *ok == false )
+        return value;
+    }
+    v = dms1.toInt( ok ) + v / 60.0;
+    if ( *ok == false )
+      return value;
+
+    QString sign1 = match.captured( 1 );
+    QString sign2 = match.captured( 5 );
+
+    if ( sign1.isEmpty() )
+    {
+      value = !sign2.isEmpty() && negative.contains( sign2 ) ? -v : v;
+    }
+    else if ( sign2.isEmpty() )
+    {
+      value = !sign1.isEmpty() && negative.contains( sign1 ) ? -v : v;
+    }
+    else
+    {
+      *ok = false;
+    }
+  }
+  return value;
 }
 
 ///@endcond

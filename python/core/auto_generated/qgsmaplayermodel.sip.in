@@ -10,7 +10,6 @@
 
 
 
-
 class QgsMapLayerModel : QAbstractItemModel
 {
 %Docstring
@@ -36,19 +35,43 @@ The QgsMapLayerModel class is a model to display layers in widgets.
       AdditionalRole,
     };
 
-    explicit QgsMapLayerModel( QObject *parent /TransferThis/ = 0 );
+    explicit QgsMapLayerModel( QObject *parent /TransferThis/ = 0, QgsProject *project = 0 );
 %Docstring
 QgsMapLayerModel creates a model to display layers in widgets.
+
+If a specific ``project`` is not specified then the :py:func:`QgsProject.instance()` project will be used to
+populate the model.
 %End
 
-    explicit QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent = 0 );
+    explicit QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent = 0, QgsProject *project = 0 );
 %Docstring
 QgsMapLayerModel creates a model to display a specific list of layers in a widget.
+
+If a specific ``project`` is not specified then the :py:func:`QgsProject.instance()` project will be used to
+populate the model.
 %End
 
     void setItemsCheckable( bool checkable );
 %Docstring
 setItemsCheckable defines if layers should be selectable in the widget
+%End
+
+    void setItemsCanBeReordered( bool allow );
+%Docstring
+Sets whether items in the model can be reordered via drag and drop.
+
+.. seealso:: :py:func:`itemsCanBeReordered`
+
+.. versionadded:: 3.14
+%End
+
+    bool itemsCanBeReordered() const;
+%Docstring
+Returns ``True`` if items in the model can be reordered via drag and drop.
+
+.. seealso:: :py:func:`setItemsCanBeReordered`
+
+.. versionadded:: 3.14
 %End
 
     void checkAll( Qt::CheckState checkState );
@@ -96,6 +119,12 @@ Returns ``True`` if the model includes layer's CRS in the display role.
 %Docstring
 layersChecked returns the list of layers which are checked (or unchecked)
 %End
+
+    void setLayersChecked( const QList< QgsMapLayer * > &layers );
+%Docstring
+Sets which layers are checked in the model.
+%End
+
     bool itemsCheckable() const;
 %Docstring
 returns if the items can be checked or not
@@ -147,11 +176,24 @@ Returns the list of additional (non map layer) items included at the end of the 
 
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
 
-
-
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+    virtual bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+
+    virtual bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+
+    virtual QStringList mimeTypes() const;
+
+    virtual bool canDropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) const;
+
+    virtual QMimeData *mimeData( const QModelIndexList &indexes ) const;
+
+    virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
+
+    virtual Qt::DropActions supportedDropActions() const;
+
 
 
     static QIcon iconForLayer( QgsMapLayer *layer );
@@ -166,6 +208,7 @@ Returns the icon corresponding to a specified map ``layer``.
     void addLayers( const QList<QgsMapLayer *> &layers );
 
   protected:
+
 
 };
 

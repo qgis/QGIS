@@ -18,7 +18,7 @@
 #include "qgstininterpolator.h"
 #include "qgsfeatureiterator.h"
 #include "CloughTocherInterpolator.h"
-#include "DualEdgeTriangulation.h"
+#include "qgsdualedgetriangulation.h"
 #include "NormVecDecorator.h"
 #include "LinTriangleInterpolator.h"
 #include "qgspoint.h"
@@ -69,7 +69,7 @@ int QgsTinInterpolator::interpolatePoint( double x, double y, double &result, Qg
 
 QgsFields QgsTinInterpolator::triangulationFields()
 {
-  return Triangulation::triangulationFields();
+  return QgsTriangulation::triangulationFields();
 }
 
 void QgsTinInterpolator::setTriangulationSink( QgsFeatureSink *sink )
@@ -79,7 +79,7 @@ void QgsTinInterpolator::setTriangulationSink( QgsFeatureSink *sink )
 
 void QgsTinInterpolator::initialize()
 {
-  DualEdgeTriangulation *dualEdgeTriangulation = new DualEdgeTriangulation( 100000, nullptr );
+  QgsDualEdgeTriangulation *dualEdgeTriangulation = new QgsDualEdgeTriangulation( 100000 );
   if ( mInterpolation == CloughTocher )
   {
     NormVecDecorator *dec = new NormVecDecorator();
@@ -105,6 +105,8 @@ void QgsTinInterpolator::initialize()
     }
   }
 
+  const QgsCoordinateReferenceSystem crs = !mLayerData.empty() ? mLayerData.at( 0 ).source->sourceCrs() : QgsCoordinateReferenceSystem();
+
   QgsFeature f;
   for ( const LayerData &layer : qgis::as_const( mLayerData ) )
   {
@@ -122,7 +124,7 @@ void QgsTinInterpolator::initialize()
           break;
       }
 
-      QgsFeatureIterator fit = layer.source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
+      QgsFeatureIterator fit = layer.source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ).setDestinationCrs( crs, layer.transformContext ) );
 
       while ( fit.nextFeature( f ) )
       {

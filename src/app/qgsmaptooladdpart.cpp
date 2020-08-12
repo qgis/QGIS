@@ -35,6 +35,11 @@ QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas *canvas )
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddPart::stopCapturing );
 }
 
+QgsMapToolCapture::Capabilities QgsMapToolAddPart::capabilities() const
+{
+  return QgsMapToolCapture::SupportsCurves;
+}
+
 void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( checkSelection() )
@@ -159,7 +164,23 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         QgsCurvePolygon *cp = new QgsCurvePolygon();
         cp->setExteriorRing( curveToAdd );
         QgsGeometry *geom = new QgsGeometry( cp );
-        geom->avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
+
+        QList<QgsVectorLayer *>  avoidIntersectionsLayers;
+        switch ( QgsProject::instance()->avoidIntersectionsMode() )
+        {
+          case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+            avoidIntersectionsLayers.append( vlayer );
+            break;
+          case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+            avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
+            break;
+          case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+            break;
+        }
+        if ( avoidIntersectionsLayers.size() > 0 )
+        {
+          geom->avoidIntersections( avoidIntersectionsLayers );
+        }
 
         const QgsCurvePolygon *cpGeom = qgsgeometry_cast<const QgsCurvePolygon *>( geom->constGet() );
         if ( !cpGeom )
@@ -198,7 +219,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       bool topologicalEditing = QgsProject::instance()->topologicalEditing();
       if ( topologicalEditing )
       {
-        addTopologicalPoints( points() );
+        addTopologicalPoints( pointsZM() );
       }
 
       vlayer->endEditCommand();

@@ -210,11 +210,12 @@ Sets the string to use for the "no color" option in the button's drop-down menu.
    dialog
 %End
 
-    void setShowNull( bool showNull );
+    void setShowNull( bool showNull, const QString &nullString = QString() );
 %Docstring
 Sets whether a set to null (clear) option is shown in the button's drop-down menu.
 
 :param showNull: set to ``True`` to show a null option
+:param nullString: translated string to use for the null option. If not set, a default "Clear Color" string will be used.
 
 .. seealso:: :py:func:`showNull`
 
@@ -357,7 +358,7 @@ to the previous color.
 %Docstring
 Sets the background pixmap for the button based upon color and transparency.
 Call directly to update background after adding/removing QColorDialog.ShowAlphaChannel option
-but the color has not changed, i.e. setColor() wouldn't update button and
+but the color has not changed, i.e. :py:func:`~QgsColorButton.setColor` wouldn't update button and
 you want the button to retain the set color's alpha component regardless
 
 :param color: Color for button background. If no color is specified, the button's current
@@ -415,6 +416,8 @@ Sets color to null.
 
 .. seealso:: :py:func:`setToNoColor`
 
+.. seealso:: :py:func:`cleared`
+
 .. versionadded:: 2.16
 %End
 
@@ -448,6 +451,15 @@ Emitted when the button is clicked, if the button's behavior is set to SignalOnl
 .. seealso:: :py:func:`setBehavior`
 
 .. seealso:: :py:func:`behavior`
+%End
+
+    void cleared();
+%Docstring
+Emitted when the color is cleared (set to null).
+
+.. seealso:: :py:func:`setToNull`
+
+.. versionadded:: 3.12
 %End
 
     void unlinked();

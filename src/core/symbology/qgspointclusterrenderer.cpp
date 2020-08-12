@@ -22,6 +22,7 @@
 #include "qgspainteffect.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgsproperty.h"
+#include "qgsstyleentityvisitor.h"
 #include <cmath>
 
 QgsPointClusterRenderer::QgsPointClusterRenderer()
@@ -161,6 +162,21 @@ QSet<QString> QgsPointClusterRenderer::usedAttributes( const QgsRenderContext &c
   if ( mClusterSymbol )
     attr.unite( mClusterSymbol->usedAttributes( context ) );
   return attr;
+}
+
+bool QgsPointClusterRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( !QgsPointDistanceRenderer::accept( visitor ) )
+    return false;
+
+  if ( mClusterSymbol )
+  {
+    QgsStyleSymbolEntity entity( mClusterSymbol.get() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "cluster" ), QObject::tr( "Cluster Symbol" ) ) ) )
+      return false;
+  }
+
+  return true;
 }
 
 void QgsPointClusterRenderer::setClusterSymbol( QgsMarkerSymbol *symbol )

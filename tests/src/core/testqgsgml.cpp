@@ -57,6 +57,7 @@ class TestQgsGML : public QObject
     void testMultiPolygonGML2();
     void testPointGML3();
     void testPointGML3_EPSG_4326();
+    void testPointGML3_uri_EPSG_4326();
     void testPointGML3_urn_EPSG_4326();
     void testPointGML3_EPSG_4326_honour_EPSG();
     void testPointGML3_EPSG_4326_honour_EPSG_invert();
@@ -113,7 +114,7 @@ void TestQgsGML::testFromURL()
   QgsWkbTypes::Type wkbType;
   QTemporaryFile tmpFile;
   tmpFile.open();
-  tmpFile.write( data1.toAscii() );
+  tmpFile.write( data1.toLatin1() );
   tmpFile.flush();
   QCOMPARE( gmlParser.getFeatures( QUrl::fromLocalFile( tmpFile.fileName() ).toString(), &wkbType ), 0 );
   QCOMPARE( wkbType, QgsWkbTypes::Point );
@@ -133,7 +134,7 @@ void TestQgsGML::testFromByteArray()
   fields.append( QgsField( QStringLiteral( "nillablefield" ), QVariant::Int, QStringLiteral( "nillablefield" ) ) );
   QgsGml gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QgsWkbTypes::Type wkbType;
-  QCOMPARE( gmlParser.getFeatures( data1.toAscii(), &wkbType ), 0 );
+  QCOMPARE( gmlParser.getFeatures( data1.toLatin1(), &wkbType ), 0 );
   QMap<QgsFeatureId, QgsFeature * > featureMaps = gmlParser.featuresMap();
   QCOMPARE( featureMaps.size(), 1 );
   QVERIFY( featureMaps.constFind( 0 ) != featureMaps.constEnd() );
@@ -156,9 +157,9 @@ void TestQgsGML::testStreamingParser()
   fields.append( QgsField( QStringLiteral( "strfield" ), QVariant::String, QStringLiteral( "string" ) ) );
   fields.append( QgsField( QStringLiteral( "datetimefield" ), QVariant::DateTime, QStringLiteral( "datetime" ) ) );
   QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
-  QCOMPARE( gmlParser.processData( data1.mid( 0, data1.size() / 2 ).toAscii(), false ), true );
+  QCOMPARE( gmlParser.processData( data1.mid( 0, data1.size() / 2 ).toLatin1(), false ), true );
   QCOMPARE( gmlParser.getAndStealReadyFeatures().size(), 0 );
-  QCOMPARE( gmlParser.processData( data1.mid( data1.size() / 2 ).toAscii(), true ), true );
+  QCOMPARE( gmlParser.processData( data1.mid( data1.size() / 2 ).toLatin1(), true ), true );
   QCOMPARE( gmlParser.isException(), false );
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
   QCOMPARE( features.size(), 1 );
@@ -435,6 +436,34 @@ void TestQgsGML::testPointGML3_EPSG_4326()
                                    "<myns:mygeom>"
                                    "<gml:Point srsName='EPSG:4326'>"
                                    "<gml:pos>2 49</gml:pos>"
+                                   "</gml:Point>"
+                                   "</myns:mygeom>"
+                                   "</myns:mytypename>"
+                                   "</gml:featureMember>"
+                                   "</myns:FeatureCollection>" ), true ), true );
+  QCOMPARE( gmlParser.wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( gmlParser.getEPSGCode(), 4326 );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 1 );
+  QVERIFY( features[0].first->hasGeometry() );
+  QCOMPARE( features[0].second, QString( "mytypename.1" ) );
+  QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( features[0].first->geometry().asPoint(), QgsPointXY( 2, 49 ) );
+  delete features[0].first;
+}
+
+void TestQgsGML::testPointGML3_uri_EPSG_4326()
+{
+  QgsFields fields;
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
+  QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
+                                   "xmlns:myns='http://myns' "
+                                   "xmlns:gml='http://www.opengis.net/gml'>"
+                                   "<gml:featureMember>"
+                                   "<myns:mytypename gml:id='mytypename.1'>"
+                                   "<myns:mygeom>"
+                                   "<gml:Point srsName='http://www.opengis.net/def/crs/EPSG/0/4326'>"
+                                   "<gml:pos>49 2</gml:pos>"
                                    "</gml:Point>"
                                    "</myns:mygeom>"
                                    "</myns:mytypename>"

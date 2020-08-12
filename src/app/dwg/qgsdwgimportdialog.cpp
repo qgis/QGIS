@@ -48,13 +48,16 @@
 #include "qgsguiutils.h"
 #include "qgsfilewidget.h"
 #include "qgsmessagebar.h"
+#include "qgsgui.h"
 
 
 QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
   mDatabaseFileWidget->setStorageMode( QgsFileWidget::SaveFile );
+  mDatabaseFileWidget->setConfirmOverwrite( false );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDwgImportDialog::buttonBox_accepted );
   connect( mDatabaseFileWidget, &QgsFileWidget::fileChanged, this, &QgsDwgImportDialog::mDatabaseFileWidget_textChanged );
@@ -78,7 +81,8 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
 
   int crsid = s.value( QStringLiteral( "/DwgImport/lastCrs" ), QString::number( QgsProject::instance()->crs().srsid() ) ).toInt();
 
-  QgsCoordinateReferenceSystem crs( crsid, QgsCoordinateReferenceSystem::InternalCrsId );
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromSrsId( crsid );
   mCrsSelector->setCrs( crs );
   mCrsSelector->setLayerCrs( crs );
   mCrsSelector->setMessage( tr( "Select the coordinate reference system for the dxf file. "
@@ -86,8 +90,6 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
 
   pbLoadDatabase_clicked();
   updateUI();
-
-  restoreGeometry( s.value( QStringLiteral( "/Windows/DwgImport/geometry" ) ).toByteArray() );
 }
 
 QgsDwgImportDialog::~QgsDwgImportDialog()
@@ -96,7 +98,6 @@ QgsDwgImportDialog::~QgsDwgImportDialog()
   s.setValue( QStringLiteral( "/DwgImport/lastExpandInserts" ), cbExpandInserts->isChecked() );
   s.setValue( QStringLiteral( "/DwgImport/lastMergeLayers" ), cbMergeLayers->isChecked() );
   s.setValue( QStringLiteral( "/DwgImport/lastUseCurves" ), cbUseCurves->isChecked() );
-  s.setValue( QStringLiteral( "/Windows/DwgImport/geometry" ), saveGeometry() );
 }
 
 void QgsDwgImportDialog::updateUI()
@@ -135,7 +136,7 @@ void QgsDwgImportDialog::mDatabaseFileWidget_textChanged( const QString &filenam
 
 void QgsDwgImportDialog::leLayerGroup_textChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   updateUI();
 }
 
@@ -162,7 +163,8 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
     {
       leDrawing->setText( f.attribute( idxPath ).toString() );
 
-      QgsCoordinateReferenceSystem crs( f.attribute( idxCrs ).toInt(), QgsCoordinateReferenceSystem::InternalCrsId );
+      QgsCoordinateReferenceSystem crs;
+      crs.createFromSrsId( f.attribute( idxCrs ).toInt() );
       mCrsSelector->setCrs( crs );
       mCrsSelector->setLayerCrs( crs );
 
@@ -447,7 +449,15 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &n
   }
 
   if ( !cbExpandInserts->isChecked() )
-    layer( layerGroup, layerFilter, QStringLiteral( "inserts" ) );
+  {
+    l = layer( layerGroup, layerFilter, QStringLiteral( "inserts" ) );
+    if ( l && l->renderer() )
+    {
+      QgsSingleSymbolRenderer *ssr = dynamic_cast<QgsSingleSymbolRenderer *>( l->renderer() );
+      if ( ssr && ssr->symbol() && ssr->symbol()->symbolLayer( 0 ) )
+        ssr->symbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, QgsProperty::fromExpression( QStringLiteral( "180-angle*180.0/pi()" ) ) );
+    }
+  }
 
   if ( !layerGroup->children().isEmpty() )
   {

@@ -18,6 +18,7 @@
 #include "qgsannotation.h"
 #include "qgsannotationregistry.h"
 #include "qgsapplication.h"
+#include "qgsstyleentityvisitor.h"
 
 QgsAnnotationManager::QgsAnnotationManager( QgsProject *project )
   : QObject( project )
@@ -141,6 +142,27 @@ QDomElement QgsAnnotationManager::writeXml( QDomDocument &doc, const QgsReadWrit
     annotation->writeXml( annotationsElem, doc, context );
   }
   return annotationsElem;
+}
+
+bool QgsAnnotationManager::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( mAnnotations.empty() )
+    return true;
+
+  // NOTE: if visitEnter returns false it means "don't visit any annotations", not "abort all further visitations"
+  if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Annotations, QStringLiteral( "annotations" ), tr( "Annotations" ) ) ) )
+    return true;
+
+  for ( QgsAnnotation *a : mAnnotations )
+  {
+    if ( !a->accept( visitor ) )
+      return false;
+  }
+
+  if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Annotations, QStringLiteral( "annotations" ), tr( "Annotations" ) ) ) )
+    return false;
+
+  return true;
 }
 
 void QgsAnnotationManager::createAnnotationFromXml( const QDomElement &element, const QgsReadWriteContext &context )

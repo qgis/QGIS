@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '13/03/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 import math
@@ -51,7 +49,7 @@ class TestQgsScaleWidget(unittest.TestCase):
 
         w.setScale(50)
         self.assertFalse(w.allowNull())
-        w.setNull() # no effect
+        w.setNull()  # no effect
         self.assertEqual(w.scale(), 50.0)
         self.assertFalse(w.isNull())
 

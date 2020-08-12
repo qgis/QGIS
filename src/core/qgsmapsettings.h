@@ -32,12 +32,15 @@
 #include "qgsexpressioncontext.h"
 #include "qgsmaplayer.h"
 #include "qgsgeometry.h"
+#include "qgstemporalrangeobject.h"
+#include "qgsmapclippingregion.h"
 
 class QPainter;
 
 class QgsCoordinateTransform;
 class QgsScaleCalculator;
 class QgsMapRendererJob;
+class QgsRenderedFeatureHandlerInterface;
 
 /**
  * \class QgsLabelBlockingRegion
@@ -81,7 +84,7 @@ class CORE_EXPORT QgsLabelBlockingRegion
  *
  * \since QGIS 2.4
  */
-class CORE_EXPORT QgsMapSettings
+class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 {
   public:
     QgsMapSettings();
@@ -101,6 +104,22 @@ class CORE_EXPORT QgsMapSettings
      * of output size. Use visibleExtent() to get the resulting extent.
      */
     void setExtent( const QgsRectangle &rect, bool magnified = true );
+
+    /**
+     * Returns the buffer in map units to use around the visible extent for rendering
+     * symbols whose corresponding geometries are outside the visible extent.
+     * \see setExtentBuffer()
+     * \since QGIS 3.10
+     */
+    double extentBuffer() const;
+
+    /**
+     * Sets the buffer in map units to use around the visible extent for rendering
+     * symbols whose corresponding geometries are outside the visible extent. This
+     * is useful when using tiles to avoid cut symbols at tile boundaries.
+     * \since QGIS 3.10
+     */
+    void setExtentBuffer( double buffer );
 
     //! Returns the size of the resulting map image
     QSize outputSize() const;
@@ -154,10 +173,11 @@ class CORE_EXPORT QgsMapSettings
     /**
      * Set the magnification factor.
      * \param factor the factor of magnification
+     * \param center optional point to re-center the map
      * \see magnificationFactor()
      * \since QGIS 2.16
      */
-    void setMagnificationFactor( double factor );
+    void setMagnificationFactor( double factor, const QgsPointXY *center = nullptr );
 
     /**
      * Returns the magnification factor.
@@ -200,19 +220,46 @@ class CORE_EXPORT QgsMapSettings
 
     /**
      * Gets custom rendering flags. Layers might honour these to alter their rendering.
-     *  \returns custom flags strings, separated by ';'
+     * \returns custom flags strings, separated by ';'
      * \see setCustomRenderFlags()
      * \since QGIS 2.16
+     * \deprecated use \see customRenderingFlags().
      */
-    QString customRenderFlags() const { return mCustomRenderFlags; }
+    Q_DECL_DEPRECATED QString customRenderFlags() const { return mCustomRenderFlags; }
 
     /**
      * Sets the custom rendering flags. Layers might honour these to alter their rendering.
      * \param customRenderFlags custom flags strings, separated by ';'
      * \see customRenderFlags()
      * \since QGIS 2.16
+     * \deprecated use \see setCustomRenderingFlag() instead.
      */
-    void setCustomRenderFlags( const QString &customRenderFlags ) { mCustomRenderFlags = customRenderFlags; }
+    Q_DECL_DEPRECATED void setCustomRenderFlags( const QString &customRenderFlags ) { mCustomRenderFlags = customRenderFlags; }
+
+    /**
+     * Gets custom rendering flags. Layers might honour these to alter their rendering.
+     * \returns a map of custom flags
+     * \see setCustomRenderingFlag()
+     * \since QGIS 3.12
+     */
+    QVariantMap customRenderingFlags() const { return mCustomRenderingFlags; }
+
+    /**
+     * Sets a custom rendering flag. Layers might honour these to alter their rendering.
+     * \param flag the flag name
+     * \param value the flag value
+     * \see customRenderingFlags()
+     * \since QGIS 3.12
+     */
+    void setCustomRenderingFlag( const QString &flag, const QVariant &value ) { mCustomRenderingFlags[flag] = value; }
+
+    /**
+     * Clears the specified custom rendering flag.
+     * \param flag the flag name
+     * \see setCustomRenderingFlag()
+     * \since QGIS 3.12
+     */
+    void clearCustomRenderingFlag( const QString &flag ) { mCustomRenderingFlags.remove( flag ); }
 
     //! sets destination coordinate reference system
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
@@ -264,6 +311,9 @@ class CORE_EXPORT QgsMapSettings
       RenderMapTile            = 0x100, //!< Draw map such that there are no problems between adjacent tiles
       RenderPartialOutput      = 0x200, //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
       RenderPreviewJob         = 0x400, //!< Render is a 'canvas preview' render, and shortcuts should be taken to ensure fast rendering
+      RenderBlocking           = 0x800, //!< Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server.
+      LosslessImageRendering   = 0x1000, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
+      Render3DMap              = 0x2000, //!< Render is for a 3D map
       // TODO: ignore scale-based visibility (overview)
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -414,6 +464,13 @@ class CORE_EXPORT QgsMapSettings
     QgsPointXY layerToMapCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
 
     /**
+     * \brief transform point coordinates from layer's CRS to output CRS
+     * \returns the transformed point
+     * \since QGIS 3.16
+     */
+    QgsPoint layerToMapCoordinates( const QgsMapLayer *layer, QgsPoint point ) const;
+
+    /**
      * \brief transform rectangle from layer's CRS to output CRS
      * \see layerExtentToOutputExtent() if you want to transform a bounding box
      * \returns the transformed rectangle
@@ -425,6 +482,13 @@ class CORE_EXPORT QgsMapSettings
      * \returns the transformed point
      */
     QgsPointXY mapToLayerCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
+
+    /**
+     * \brief transform point coordinates from output CRS to layer's CRS
+     * \returns the transformed point
+     * \since QGIS 3.16
+     */
+    QgsPoint mapToLayerCoordinates( const QgsMapLayer *layer, QgsPoint point ) const;
 
     /**
      * \brief transform rectangle from output CRS to layer's CRS
@@ -531,6 +595,85 @@ class CORE_EXPORT QgsMapSettings
      */
     QList< QgsLabelBlockingRegion > labelBlockingRegions() const { return mLabelBlockingRegions; }
 
+    /**
+     * Adds a new clipping \a region to the map settings.
+     *
+     * \see clippingRegions()
+     * \see setClippingRegions()
+     *
+     * \since QGIS 3.16
+     */
+    void addClippingRegion( const QgsMapClippingRegion &region );
+
+    /**
+     * Sets the list of clipping \a regions to apply to the map.
+     *
+     * \see addClippingRegion()
+     * \see clippingRegions()
+     *
+     * \since QGIS 3.16
+     */
+    void setClippingRegions( const QList< QgsMapClippingRegion > &regions );
+
+    /**
+     * Returns the list of clipping regions to apply to the map.
+     *
+     * \see addClippingRegion()
+     * \see setClippingRegions()
+     *
+     * \since QGIS 3.16
+     */
+    QList< QgsMapClippingRegion > clippingRegions() const;
+
+    /**
+     * Sets the simplification setting to use when rendering vector layers.
+     *
+     * If the simplify \a method is enabled, it will override all other layer-specific simplification
+     * settings and will apply to all vector layers rendered for the map.
+     *
+     * This can be used to specify global simplification methods to apply during map exports,
+     * e.g. to allow vector layers to be simplified to an appropriate maximum level of detail
+     * during PDF exports.
+     *
+     * The default is to use no global simplification, and fallback to individual layer's settings instead.
+     *
+     * \see simplifyMethod()
+     *
+     * \since QGIS 3.10
+     */
+    void setSimplifyMethod( const QgsVectorSimplifyMethod &method ) { mSimplifyMethod = method; }
+
+    /**
+     * Returns the simplification settings to use when rendering vector layers.
+     *
+     * If enabled, it will override all other layer-specific simplification
+     * settings and will apply to all vector layers rendered for the map.
+     *
+     * The default is to use no global simplification, and fallback to individual layer's settings instead.
+     *
+     * \see setSimplifyMethod()
+     * \since QGIS 3.10
+     */
+    const QgsVectorSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
+
+    /**
+     * Adds a rendered feature \a handler to use while rendering the map settings.
+     *
+     * Ownership of \a handler is NOT transferred, and it is the caller's responsibility to ensure
+     * that the handler exists for the lifetime of the map render job.
+     *
+     * \see renderedFeatureHandlers()
+     * \since QGIS 3.10
+     */
+    void addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler );
+
+    /**
+     * Returns the list of rendered feature handlers to use while rendering the map settings.
+     * \see addRenderedFeatureHandler()
+     * \since QGIS 3.10
+     */
+    QList< QgsRenderedFeatureHandlerInterface * > renderedFeatureHandlers() const;
+
   protected:
 
     double mDpi;
@@ -539,6 +682,7 @@ class CORE_EXPORT QgsMapSettings
     float mDevicePixelRatio = 1.0;
 
     QgsRectangle mExtent;
+    double mExtentBuffer = 0.0;
 
     double mRotation = 0.0;
     double mMagnificationFactor = 1.0;
@@ -547,6 +691,7 @@ class CORE_EXPORT QgsMapSettings
     QgsWeakMapLayerPointerList mLayers;
     QMap<QString, QString> mLayerStyleOverrides;
     QString mCustomRenderFlags;
+    QVariantMap mCustomRenderingFlags;
     QgsExpressionContext mExpressionContext;
 
     QgsCoordinateReferenceSystem mDestCRS;
@@ -583,6 +728,8 @@ class CORE_EXPORT QgsMapSettings
 
     QgsGeometry mLabelBoundaryGeometry;
 
+    QgsVectorSimplifyMethod mSimplifyMethod;
+
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;
 #endif
@@ -592,6 +739,8 @@ class CORE_EXPORT QgsMapSettings
   private:
 
     QList< QgsLabelBlockingRegion > mLabelBlockingRegions;
+    QList< QgsMapClippingRegion > mClippingRegions;
+    QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapSettings::Flags )

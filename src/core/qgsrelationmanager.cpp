@@ -25,12 +25,20 @@ QgsRelationManager::QgsRelationManager( QgsProject *project )
   : QObject( project )
   , mProject( project )
 {
-  if ( mProject )
+  if ( project )
   {
+    // TODO: QGIS 4 remove: relations are now stored with the layer style
     connect( project, &QgsProject::readProjectWithContext, this, &QgsRelationManager::readProject );
+    // TODO: QGIS 4 remove: relations are now stored with the layer style
     connect( project, &QgsProject::writeProject, this, &QgsRelationManager::writeProject );
+
     connect( project, &QgsProject::layersRemoved, this, &QgsRelationManager::layersRemoved );
   }
+}
+
+QgsRelationContext QgsRelationManager::context() const
+{
+  return QgsRelationContext( mProject );
 }
 
 void QgsRelationManager::setRelations( const QList<QgsRelation> &relations )
@@ -56,9 +64,10 @@ void QgsRelationManager::addRelation( const QgsRelation &relation )
     return;
 
   mRelations.insert( relation.id(), relation );
-
   if ( mProject )
+  {
     mProject->setDirty( true );
+  }
   emit changed();
 }
 
@@ -148,7 +157,7 @@ QList<QgsRelation> QgsRelationManager::referencingRelations( const QgsVectorLaye
   return relations;
 }
 
-QList<QgsRelation> QgsRelationManager::referencedRelations( QgsVectorLayer *layer ) const
+QList<QgsRelation> QgsRelationManager::referencedRelations( const QgsVectorLayer *layer ) const
 {
   if ( !layer )
   {
@@ -176,12 +185,14 @@ void QgsRelationManager::readProject( const QDomDocument &doc, QgsReadWriteConte
   QDomNodeList nodes = doc.elementsByTagName( QStringLiteral( "relations" ) );
   if ( nodes.count() )
   {
+    QgsRelationContext relcontext( mProject );
+
     QDomNode node = nodes.item( 0 );
     QDomNodeList relationNodes = node.childNodes();
     int relCount = relationNodes.count();
     for ( int i = 0; i < relCount; ++i )
     {
-      addRelation( QgsRelation::createFromXml( relationNodes.at( i ), context ) );
+      addRelation( QgsRelation::createFromXml( relationNodes.at( i ), context, relcontext ) );
     }
   }
   else

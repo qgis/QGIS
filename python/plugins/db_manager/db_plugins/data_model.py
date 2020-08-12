@@ -149,7 +149,6 @@ class TableDataModel(BaseTableModel):
 
 
 class SqlResultModelAsync(QObject):
-
     done = pyqtSignal()
 
     def __init__(self):

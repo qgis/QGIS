@@ -63,12 +63,10 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     //! Constructor
     QgsOWSSourceSelect( const QString &service, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    ~QgsOWSSourceSelect() override;
-
-  public slots:
-
     //! Triggered when the provider's connections need to be refreshed
     void refresh() override;
+
+    void reset() override;
 
   protected slots:
     //! show whatever error is exposed.
@@ -158,9 +156,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
 
     QMap<QString, QString> mCrsNames;
 
-    void addWmsListRow( const QDomElement &item, int row );
-    void addWmsListItem( const QDomElement &el, int row, int column );
-
     virtual void enableLayersForCrs( QTreeWidgetItem *item );
 
     //! Returns currently selected format
@@ -206,8 +201,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
      */
     void mConnectButton_clicked();
 
-    void searchFinished();
-
     //! Opens the Spatial Reference System dialog.
     void mChangeCRSButton_clicked();
 
@@ -235,8 +228,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     QMap<QString, QString> mMimeLabelMap;
 
   private slots:
-    void mSearchButton_clicked();
-    void mSearchTableWidget_itemSelectionChanged();
     void mTilesetsTableWidget_itemClicked( QTableWidgetItem *item );
     void mLayerUpButton_clicked();
     void mLayerDownButton_clicked();

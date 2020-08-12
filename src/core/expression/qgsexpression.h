@@ -50,25 +50,19 @@ Class for parsing and evaluation of expressions (formerly called "search strings
 The expressions try to follow both syntax and semantics of SQL expressions.
 
 Usage:
-\code{.cpp}
-  QgsExpression exp("gid*2 > 10 and type not in ('D','F')");
-  if (exp.hasParserError())
-  {
-    // show error message with parserErrorString() and exit
-  }
-  QVariant result = exp.evaluate(feature, fields);
-  if (exp.hasEvalError())
-  {
-    // show error message with evalErrorString()
-  }
-  else
-  {
-    // examine the result
-  }
+\code{.py}
+  exp = QgsExpression("gid*2 > 10 and type not in ('D','F')")
+  if exp.hasParserError():
+      # show error message with parserErrorString() and exit
+
+  result = exp.evaluate(feature, fields)
+  if exp.hasEvalError():
+      # show error message with evalErrorString()
+  else:
+      # examine the result
 \endcode
 
-Three Value Logic
-=================
+\section value_logic Three Value Logic
 
 Similarly to SQL, this class supports three-value logic: true/false/unknown.
 Unknown value may be a result of operations with missing data (NULL). Please note
@@ -78,14 +72,12 @@ that NULL is different value than zero or an empty string. For example
 There is no special (three-value) 'boolean' type: true/false is represented as
 1/0 integer, unknown value is represented the same way as NULL values: NULL QVariant.
 
-Performance
-===========
+\section performance Performance
 
 For better performance with many evaluations you may first call prepare(fields) function
 to find out indices of columns and then repeatedly call evaluate(feature).
 
-Type conversion
-===============
+\section type_conversion Type conversion
 
 Operators and functions that expect arguments to be of a particular
 type automatically convert the arguments to that type, e.g. sin('2.1') will convert
@@ -95,8 +87,7 @@ If implicit or explicit conversion is invalid, the evaluation returns an error.
 Comparison operators do numeric comparison in case both operators are numeric (int/double)
 or they can be converted to numeric types.
 
-Implicit sharing
-================
+\section implicit_sharing Implicit sharing
 
 This class is implicitly shared, copying has a very low overhead.
 It is normally preferable to call `QgsExpression( otherExpression )` instead of
@@ -484,12 +475,8 @@ class CORE_EXPORT QgsExpression
       soWithin,
     };
 
-    //! \note not available in Python bindings
-    static QList<QgsExpressionFunction *> sFunctions SIP_SKIP;
     static const QList<QgsExpressionFunction *> &Functions();
 
-    //! \note not available in Python bindings
-    static QStringList sBuiltinFunctions SIP_SKIP;
     static const QStringList &BuiltinFunctions();
 
     /**
@@ -507,12 +494,6 @@ class CORE_EXPORT QgsExpression
      * \see registerFunction
      */
     static bool unregisterFunction( const QString &name );
-
-    /**
-     * List of functions owned by the expression engine
-     * \note not available in Python bindings
-     */
-    static QList<QgsExpressionFunction *> sOwnedFunctions SIP_SKIP;
 
     /**
      * Deletes all registered functions whose ownership have been transferred to the expression engine.
@@ -578,6 +559,13 @@ class CORE_EXPORT QgsExpression
     static QString helpText( QString name );
 
     /**
+     * Returns a string list of search tags for a specified function.
+     * \param name function name
+     * \since QGIS 3.12
+     */
+    static QStringList tags( const QString &name );
+
+    /**
      * Returns the help text for a specified variable.
      * \param variableName name of variable
      * \see helpText()
@@ -633,80 +621,6 @@ class CORE_EXPORT QgsExpression
   private:
     void initGeomCalculator( const QgsExpressionContext *context );
 
-    struct HelpArg SIP_SKIP
-    {
-      HelpArg( const QString &arg, const QString &desc, bool descOnly = false, bool syntaxOnly = false,
-               bool optional = false, const QString &defaultVal = QString() )
-        : mArg( arg )
-        , mDescription( desc )
-        , mDescOnly( descOnly )
-        , mSyntaxOnly( syntaxOnly )
-        , mOptional( optional )
-        , mDefaultVal( defaultVal )
-      {}
-
-      QString mArg;
-      QString mDescription;
-      bool mDescOnly;
-      bool mSyntaxOnly;
-      bool mOptional;
-      QString mDefaultVal;
-    };
-
-    struct HelpExample SIP_SKIP
-    {
-      HelpExample( const QString &expression, const QString &returns, const QString &note = QString() )
-        : mExpression( expression )
-        , mReturns( returns )
-        , mNote( note )
-      {}
-
-      QString mExpression;
-      QString mReturns;
-      QString mNote;
-    };
-
-    struct HelpVariant SIP_SKIP
-    {
-      HelpVariant( const QString &name, const QString &description,
-                   const QList<QgsExpression::HelpArg> &arguments = QList<QgsExpression::HelpArg>(),
-                   bool variableLenArguments = false,
-                   const QList<QgsExpression::HelpExample> &examples = QList<QgsExpression::HelpExample>(),
-                   const QString &notes = QString() )
-        : mName( name )
-        , mDescription( description )
-        , mArguments( arguments )
-        , mVariableLenArguments( variableLenArguments )
-        , mExamples( examples )
-        , mNotes( notes )
-      {}
-
-      QString mName;
-      QString mDescription;
-      QList<QgsExpression::HelpArg> mArguments;
-      bool mVariableLenArguments;
-      QList<QgsExpression::HelpExample> mExamples;
-      QString mNotes;
-    };
-
-    struct Help SIP_SKIP
-    {
-      //! Constructor for expression help
-      Help() = default;
-
-      Help( const QString &name, const QString &type, const QString &description, const QList<QgsExpression::HelpVariant> &variants )
-        : mName( name )
-        , mType( type )
-        , mDescription( description )
-        , mVariants( variants )
-      {}
-
-      QString mName;
-      QString mType;
-      QString mDescription;
-      QList<QgsExpression::HelpVariant> mVariants;
-    };
-
     /**
      * Helper for implicit sharing. When called will create
      * a new deep copy of this expression.
@@ -716,10 +630,6 @@ class CORE_EXPORT QgsExpression
     void detach() SIP_SKIP;
 
     QgsExpressionPrivate *d = nullptr;
-
-    static QHash<QString, Help> sFunctionHelpTexts;
-    static QHash<QString, QString> sVariableHelpTexts;
-    static QHash<QString, QString> sGroups;
 
     //! \note not available in Python bindings
     static void initFunctionHelp() SIP_SKIP;

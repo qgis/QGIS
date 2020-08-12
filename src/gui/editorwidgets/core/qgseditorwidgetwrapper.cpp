@@ -69,12 +69,37 @@ void QgsEditorWidgetWrapper::setEnabled( bool enabled )
 void QgsEditorWidgetWrapper::setFeature( const QgsFeature &feature )
 {
   setFormFeature( feature );
-  setValue( feature.attribute( mFieldIdx ) );
+  QVariantList newAdditionalFieldValues;
+  const QStringList constAdditionalFields = additionalFields();
+  for ( const QString &fieldName : constAdditionalFields )
+    newAdditionalFieldValues << feature.attribute( fieldName );
+  setValues( feature.attribute( mFieldIdx ), newAdditionalFieldValues );
+}
+
+void QgsEditorWidgetWrapper::setValue( const QVariant &value )
+{
+  isRunningDeprecatedSetValue = true;
+  updateValues( value, QVariantList() );
+  isRunningDeprecatedSetValue = false;
+}
+
+void QgsEditorWidgetWrapper::setValues( const QVariant &value, const QVariantList &additionalValues )
+{
+  updateValues( value, additionalValues );
 }
 
 void QgsEditorWidgetWrapper::emitValueChanged()
 {
+  Q_NOWARN_DEPRECATED_PUSH
   emit valueChanged( value() );
+  Q_NOWARN_DEPRECATED_POP
+  emit valuesChanged( value(), additionalFieldValues() );
+}
+
+void QgsEditorWidgetWrapper::parentFormValueChanged( const QString &attribute, const QVariant &value )
+{
+  Q_UNUSED( attribute )
+  Q_UNUSED( value )
 }
 
 void QgsEditorWidgetWrapper::updateConstraintWidgetStatus()
@@ -105,6 +130,17 @@ void QgsEditorWidgetWrapper::updateConstraintWidgetStatus()
 bool QgsEditorWidgetWrapper::setFormFeatureAttribute( const QString &attributeName, const QVariant &attributeValue )
 {
   return mFormFeature.setAttribute( attributeName, attributeValue );
+}
+
+void QgsEditorWidgetWrapper::updateValues( const QVariant &value, const QVariantList &additionalValues )
+{
+  // this method should be made pure virtual in QGIS 4
+  Q_UNUSED( additionalValues );
+  Q_NOWARN_DEPRECATED_PUSH
+  // avoid infinite recursive loop
+  if ( !isRunningDeprecatedSetValue )
+    setValue( value );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QgsEditorWidgetWrapper::ConstraintResult QgsEditorWidgetWrapper::constraintResult() const
@@ -236,6 +272,7 @@ bool QgsEditorWidgetWrapper::isBlockingCommit() const
 {
   return mIsBlockingCommit;
 }
+
 
 QString QgsEditorWidgetWrapper::constraintFailureReason() const
 {

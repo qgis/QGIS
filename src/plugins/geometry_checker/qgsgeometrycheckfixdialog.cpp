@@ -104,14 +104,14 @@ void QgsGeometryCheckerFixDialog::setupNextError()
   mResolutionsBox->setLayout( new QVBoxLayout() );
   mResolutionsBox->layout()->setContentsMargins( 0, 0, 0, 4 );
 
-  int id = 0;
   int checkedid = QgsSettings().value( QgsGeometryCheckerResultTab::sSettingsGroup + error->check()->id(), QVariant::fromValue<int>( 0 ) ).toInt();
-  for ( const QString &method : error->check()->resolutionMethods() )
+  const QList<QgsGeometryCheckResolutionMethod> resolutionMethods = error->check()->availableResolutionMethods();
+  for ( const QgsGeometryCheckResolutionMethod &method : resolutionMethods )
   {
-    QRadioButton *radio = new QRadioButton( method );
-    radio->setChecked( checkedid == id );
+    QRadioButton *radio = new QRadioButton( method.name() );
+    radio->setChecked( checkedid == method.id() );
     mResolutionsBox->layout()->addWidget( radio );
-    mRadioGroup->addButton( radio, id++ );
+    mRadioGroup->addButton( radio, method.id() );
   }
   adjustSize();
 }

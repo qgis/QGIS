@@ -798,8 +798,8 @@ void QgsAuthOAuth2Edit::exportOAuthConfig()
     QgsDebugMsg( QStringLiteral( "FAILED to export OAuth2 config file" ) );
   }
   // clear temp changes
-  mOAuthConfigCustom->setId( QString::null );
-  mOAuthConfigCustom->setName( QString::null );
+  mOAuthConfigCustom->setId( QString() );
+  mOAuthConfigCustom->setName( QString() );
 }
 
 
@@ -990,10 +990,10 @@ void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
   if ( jsonData.contains( QStringLiteral( "grant_types" ) ) && jsonData.contains( QStringLiteral( "redirect_uris" ) ) )
   {
     const QStringList grantTypes( jsonData[QStringLiteral( "grant_types" ) ].toStringList() );
-    if ( grantTypes.count( ) )
+    if ( !grantTypes.isEmpty( ) )
     {
       QString grantType = grantTypes[0];
-      if ( grantType == QLatin1Literal( "authorization_code" ) )
+      if ( grantType == QLatin1String( "authorization_code" ) )
       {
         updateGrantFlow( static_cast<int>( QgsAuthOAuth2Config::AuthCode ) );
       }
@@ -1004,7 +1004,7 @@ void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
     }
     //Set redirect_uri
     const QStringList  redirectUris( jsonData[QStringLiteral( "redirect_uris" ) ].toStringList() );
-    if ( redirectUris.count( ) )
+    if ( !redirectUris.isEmpty( ) )
     {
       QString redirectUri = redirectUris[0];
       leRedirectUrl->setText( redirectUri );
@@ -1120,10 +1120,10 @@ void QgsAuthOAuth2Edit::registerSoftStatement( const QString &registrationUrl )
   QByteArray json = QJsonWrapper::toJson( QVariant( mSoftwareStatement ), &res, &errStr );
   QNetworkRequest registerRequest( regUrl );
   QgsSetRequestInitiatorClass( registerRequest, QStringLiteral( "QgsAuthOAuth2Edit" ) );
-  registerRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1Literal( "application/json" ) );
+  registerRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/json" ) );
   QNetworkReply *registerReply;
   // For testability: use GET if protocol is file://
-  if ( regUrl.scheme() == QLatin1Literal( "file" ) )
+  if ( regUrl.scheme() == QLatin1String( "file" ) )
     registerReply = QgsNetworkAccessManager::instance()->get( registerRequest );
   else
     registerReply = QgsNetworkAccessManager::instance()->post( registerRequest, json );

@@ -21,7 +21,7 @@
 #include "qgis_app.h"
 
 class QgsMarkerSymbol;
-class QgsPointMarkerItem;
+class QgsMapCanvasMarkerSymbolItem;
 
 /**
  * \ingroup app
@@ -59,7 +59,7 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
     bool mOffsetting;
 
     //! Item that previews the offset during mouse move
-    QgsPointMarkerItem *mOffsetItem = nullptr;
+    QgsMapCanvasMarkerSymbolItem *mOffsetItem = nullptr;
 
     //! Clone of first found marker symbol for feature with offset attribute set
     std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;

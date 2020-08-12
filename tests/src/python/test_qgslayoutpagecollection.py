@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '18/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 from qgis.PyQt import sip
@@ -175,8 +173,10 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(collection.pageCount(), 2)
         self.assertEqual(len(page_about_to_be_removed_spy), 0)
 
+        self.assertEqual(l.layoutBounds(ignorePages=False), QRectF(0.0, 0.0, 210.0, 517.0))
         collection.deletePage(page)
         self.assertEqual(collection.pageCount(), 1)
+        self.assertEqual(l.layoutBounds(ignorePages=False), QRectF(0.0, 0.0, 148.0, 210.0))
         self.assertFalse(page in collection.pages())
         QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
         self.assertTrue(sip.isdeleted(page))
@@ -186,6 +186,7 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         collection.deletePage(page2)
         self.assertEqual(collection.pageCount(), 0)
         self.assertFalse(collection.pages())
+        self.assertEqual(l.layoutBounds(ignorePages=False), QRectF())
         QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
         self.assertTrue(sip.isdeleted(page2))
         self.assertEqual(len(page_about_to_be_removed_spy), 2)
@@ -670,28 +671,34 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         page.setPageSize('A4')
         collection.addPage(page)
 
-        #invalid pages
+        # invalid pages
         self.assertEqual(collection.pagePositionToLayoutPosition(-1, QgsLayoutPoint(1, 1)), QPointF(1, 1))
         self.assertEqual(collection.pagePositionToLayoutPosition(1, QgsLayoutPoint(1, 1)), QPointF(1, 1))
-        #valid page
+        # valid page
         self.assertEqual(collection.pagePositionToLayoutPosition(0, QgsLayoutPoint(1, 1)), QPointF(1, 1))
         self.assertEqual(collection.pagePositionToLayoutPosition(0, QgsLayoutPoint(5, 6)), QPointF(5, 6))
-        self.assertEqual(collection.pagePositionToLayoutPosition(0, QgsLayoutPoint(5, 6, QgsUnitTypes.LayoutCentimeters)), QPointF(50, 60))
+        self.assertEqual(
+            collection.pagePositionToLayoutPosition(0, QgsLayoutPoint(5, 6, QgsUnitTypes.LayoutCentimeters)),
+            QPointF(50, 60))
 
         page2 = QgsLayoutItemPage(l)
         page2.setPageSize('A5')
         collection.addPage(page2)
 
-        #invalid pages
+        # invalid pages
         self.assertEqual(collection.pagePositionToLayoutPosition(-1, QgsLayoutPoint(1, 1)), QPointF(1, 1))
         self.assertEqual(collection.pagePositionToLayoutPosition(3, QgsLayoutPoint(1, 1)), QPointF(1, 1))
-        #valid pages
+        # valid pages
         self.assertEqual(collection.pagePositionToLayoutPosition(0, QgsLayoutPoint(1, 1)), QPointF(1, 1))
         self.assertEqual(collection.pagePositionToLayoutPosition(0, QgsLayoutPoint(5, 6)), QPointF(5, 6))
-        self.assertEqual(collection.pagePositionToLayoutPosition(0, QgsLayoutPoint(5, 6, QgsUnitTypes.LayoutCentimeters)), QPointF(50, 60))
+        self.assertEqual(
+            collection.pagePositionToLayoutPosition(0, QgsLayoutPoint(5, 6, QgsUnitTypes.LayoutCentimeters)),
+            QPointF(50, 60))
         self.assertEqual(collection.pagePositionToLayoutPosition(1, QgsLayoutPoint(1, 1)), QPointF(1, 308.0))
         self.assertEqual(collection.pagePositionToLayoutPosition(1, QgsLayoutPoint(5, 6)), QPointF(5, 313.0))
-        self.assertEqual(collection.pagePositionToLayoutPosition(1, QgsLayoutPoint(0.5, 0.6, QgsUnitTypes.LayoutCentimeters)), QPointF(5, 313.0))
+        self.assertEqual(
+            collection.pagePositionToLayoutPosition(1, QgsLayoutPoint(0.5, 0.6, QgsUnitTypes.LayoutCentimeters)),
+            QPointF(5, 313.0))
 
     def testPagePositionToAbsolute(self):
         """
@@ -711,28 +718,31 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         page.setPageSize('A4')
         collection.addPage(page)
 
-        #invalid pages
+        # invalid pages
         self.assertEqual(collection.pagePositionToAbsolute(-1, QgsLayoutPoint(1, 1)), QgsLayoutPoint(1, 1))
         self.assertEqual(collection.pagePositionToAbsolute(1, QgsLayoutPoint(1, 1)), QgsLayoutPoint(1, 1))
-        #valid page
+        # valid page
         self.assertEqual(collection.pagePositionToAbsolute(0, QgsLayoutPoint(1, 1)), QgsLayoutPoint(1, 1))
         self.assertEqual(collection.pagePositionToAbsolute(0, QgsLayoutPoint(5, 6)), QgsLayoutPoint(5, 6))
-        self.assertEqual(collection.pagePositionToAbsolute(0, QgsLayoutPoint(5, 6, QgsUnitTypes.LayoutCentimeters)), QgsLayoutPoint(5, 6, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(collection.pagePositionToAbsolute(0, QgsLayoutPoint(5, 6, QgsUnitTypes.LayoutCentimeters)),
+                         QgsLayoutPoint(5, 6, QgsUnitTypes.LayoutCentimeters))
 
         page2 = QgsLayoutItemPage(l)
         page2.setPageSize('A5')
         collection.addPage(page2)
 
-        #invalid pages
+        # invalid pages
         self.assertEqual(collection.pagePositionToAbsolute(-1, QgsLayoutPoint(1, 1)), QgsLayoutPoint(1, 1))
         self.assertEqual(collection.pagePositionToAbsolute(3, QgsLayoutPoint(1, 1)), QgsLayoutPoint(1, 1))
-        #valid pages
+        # valid pages
         self.assertEqual(collection.pagePositionToAbsolute(0, QgsLayoutPoint(1, 1)), QgsLayoutPoint(1, 1))
         self.assertEqual(collection.pagePositionToAbsolute(0, QgsLayoutPoint(5, 6)), QgsLayoutPoint(5, 6))
-        self.assertEqual(collection.pagePositionToAbsolute(0, QgsLayoutPoint(5, 6, QgsUnitTypes.LayoutCentimeters)), QgsLayoutPoint(5, 6, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(collection.pagePositionToAbsolute(0, QgsLayoutPoint(5, 6, QgsUnitTypes.LayoutCentimeters)),
+                         QgsLayoutPoint(5, 6, QgsUnitTypes.LayoutCentimeters))
         self.assertEqual(collection.pagePositionToAbsolute(1, QgsLayoutPoint(1, 1)), QgsLayoutPoint(1, 308.0))
         self.assertEqual(collection.pagePositionToAbsolute(1, QgsLayoutPoint(5, 6)), QgsLayoutPoint(5, 313.0))
-        self.assertEqual(collection.pagePositionToAbsolute(1, QgsLayoutPoint(0.5, 0.6, QgsUnitTypes.LayoutCentimeters)), QgsLayoutPoint(0.5, 31.3, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(collection.pagePositionToAbsolute(1, QgsLayoutPoint(0.5, 0.6, QgsUnitTypes.LayoutCentimeters)),
+                         QgsLayoutPoint(0.5, 31.3, QgsUnitTypes.LayoutCentimeters))
 
     def testVisiblePages(self):
         p = QgsProject()
@@ -900,6 +910,19 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         p = QgsProject()
         l = QgsLayout(p)
 
+        # no items -- no crash!
+        l.pageCollection().resizeToContents(QgsMargins(1, 2, 3, 4), QgsUnitTypes.LayoutCentimeters)
+        page = QgsLayoutItemPage(l)
+        page.setPageSize("A5", QgsLayoutItemPage.Landscape)
+        l.pageCollection().addPage(page)
+        # no items, no change
+        l.pageCollection().resizeToContents(QgsMargins(1, 2, 3, 4), QgsUnitTypes.LayoutCentimeters)
+        self.assertEqual(l.pageCollection().pageCount(), 1)
+        self.assertAlmostEqual(l.pageCollection().page(0).sizeWithUnits().width(), 210.0, 2)
+        self.assertAlmostEqual(l.pageCollection().page(0).sizeWithUnits().height(), 148.0, 2)
+
+        p = QgsProject()
+        l = QgsLayout(p)
         shape1 = QgsLayoutItemShape(l)
         shape1.attemptResize(QgsLayoutSize(90, 50))
         shape1.attemptMove(QgsLayoutPoint(90, 50))
@@ -942,9 +965,11 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         l.pageCollection().addPage(page2)
 
         # add some guides
-        g1 = QgsLayoutGuide(Qt.Horizontal, QgsLayoutMeasurement(2.5, QgsUnitTypes.LayoutCentimeters), l.pageCollection().page(0))
+        g1 = QgsLayoutGuide(Qt.Horizontal, QgsLayoutMeasurement(2.5, QgsUnitTypes.LayoutCentimeters),
+                            l.pageCollection().page(0))
         l.guides().addGuide(g1)
-        g2 = QgsLayoutGuide(Qt.Vertical, QgsLayoutMeasurement(4.5, QgsUnitTypes.LayoutCentimeters), l.pageCollection().page(0))
+        g2 = QgsLayoutGuide(Qt.Vertical, QgsLayoutMeasurement(4.5, QgsUnitTypes.LayoutCentimeters),
+                            l.pageCollection().page(0))
         l.guides().addGuide(g2)
 
         # second page should be removed

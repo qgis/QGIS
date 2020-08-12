@@ -1,7 +1,7 @@
 /***************************************************************************
-                         qgstriangularmesh.h
+                         qgsmeshvectorrenderer.h
                          -------------------
-    begin                : April 2018
+    begin                : May 2018
     copyright            : (C) 2018 by Peter Petrik
     email                : zilolv at gmail dot com
  ***************************************************************************/
@@ -31,8 +31,36 @@
 #include "qgspointxy.h"
 
 class QgsRenderContext;
-
+class QgsInterpolatedLineColor;
 ///@cond PRIVATE
+
+
+class QgsMeshVectorRenderer
+{
+  public:
+    //! Constructor
+    QgsMeshVectorRenderer() = default;
+
+    /**
+     * Draws vector arrows in the context's painter based on settings
+     */
+    virtual ~QgsMeshVectorRenderer();
+
+    virtual void draw() = 0;
+
+    //! Vector renderer factory. The returned renderer type depend on the settings
+    static QgsMeshVectorRenderer *makeVectorRenderer( const QgsTriangularMesh &m,
+        const QgsMeshDataBlock &datasetVectorValues,
+        const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+        const QVector<double> &datasetValuesMag,
+        double datasetMagMaximumValue,
+        double datasetMagMinimumValue,
+        QgsMeshDatasetGroupMetadata::DataType dataType,
+        const QgsMeshRendererVectorSettings &settings,
+        QgsRenderContext &context,
+        const QgsRectangle &layerExtent,
+        QSize size );
+};
 
 /**
  * \ingroup core
@@ -42,34 +70,38 @@ class QgsRenderContext;
  * \note not available in Python bindings
  * \since QGIS 3.2
  */
-class QgsMeshVectorRenderer
+class QgsMeshVectorArrowRenderer : public QgsMeshVectorRenderer
 {
   public:
     //! Ctor
-    QgsMeshVectorRenderer( const QgsTriangularMesh &m,
-                           const QgsMeshDataBlock &datasetValues,
-                           const QVector<double> &datasetValuesMag,
-                           double datasetMagMaximumValue,
-                           double datasetMagMinimumValue,
-                           bool dataIsOnVertices,
-                           const QgsMeshRendererVectorSettings &settings,
-                           QgsRenderContext &context,
-                           QSize size );
+    QgsMeshVectorArrowRenderer( const QgsTriangularMesh &m,
+                                const QgsMeshDataBlock &datasetValues,
+                                const QVector<double> &datasetValuesMag,
+                                double datasetMagMaximumValue,
+                                double datasetMagMinimumValue,
+                                QgsMeshDatasetGroupMetadata::DataType dataType,
+                                const QgsMeshRendererVectorSettings &settings,
+                                QgsRenderContext &context,
+                                QSize size );
     //! Dtor
-    ~QgsMeshVectorRenderer();
+    ~QgsMeshVectorArrowRenderer() override;
 
     /**
      * Draws vector arrows in the context's painter based on settings
      */
-    void draw();
+    void draw() override;
 
   private:
     //! Draws for data defined on vertices
-    void drawVectorDataOnVertices( const QList<int> &trianglesInExtent );
+    void drawVectorDataOnVertices( );
     //! Draws for data defined on face centers
-    void drawVectorDataOnFaces( const QList<int> &trianglesInExtent );
+    void drawVectorDataOnFaces( );
+    //! Draws for data defined on edge centers
+    void drawVectorDataOnEdges( );
+    //! Draws for data defined on edge centers or face centers
+    void drawVectorDataOnPoints( const QSet<int> indexesToRender, const QVector<QgsMeshVertex> &points );
     //! Draws data on user-defined grid
-    void drawVectorDataOnGrid( const QList<int> &trianglesInExtent );
+    void drawVectorDataOnGrid( );
     //! Draws arrow from start point and vector data
     void drawVectorArrow( const QgsPointXY &lineStart, double xVal, double yVal, double magnitude );
     //! Calculates the end point of the arrow based on start point and vector data
@@ -97,11 +129,17 @@ class QgsMeshVectorRenderer
     double mMinMag = 0.0;
     double mMaxMag = 0.0;
     QgsRenderContext &mContext;
-    const QgsMeshRendererVectorSettings &mCfg;
-    bool mDataOnVertices = true;
+    const QgsMeshRendererVectorSettings mCfg;
+    QgsMeshDatasetGroupMetadata::DataType mDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
     QSize mOutputSize;
     QgsRectangle mBufferedExtent;
+    QPen mPen;
+
+    QgsInterpolatedLineColor mVectorColoring;
+
 };
+
+
 
 ///@endcond
 

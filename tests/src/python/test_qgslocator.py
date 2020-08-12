@@ -9,8 +9,7 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '6/05/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
+
 import qgis  # NOQA
 
 import os
@@ -27,6 +26,7 @@ from qgis.PyQt.QtCore import QVariant, pyqtSignal, QCoreApplication
 from time import sleep
 from qgis.testing import start_app, unittest
 from qgis.PyQt import sip
+
 start_app()
 
 
@@ -59,9 +59,9 @@ class test_filter(QgsLocatorFilter):
             result = QgsLocatorResult()
             result.displayString = self.identifier + str(i)
             if self.groupResult:
-                if i < 6:
+                if i in (0, 1, 3, 5, 6):
                     result.group = 'first group'
-                elif i < 8:
+                elif i in (4, 8):
                     result.group = 'second group'
             self.resultFetched.emit(result)
 
@@ -228,6 +228,11 @@ class TestQgsLocator(unittest.TestCase):
             QCoreApplication.processEvents()
         self.assertEqual(got_hit._results_, [])
         got_hit._results_ = []
+        l.fetchResults('AaA a', context)
+        for i in range(100):
+            sleep(0.002)
+            QCoreApplication.processEvents()
+        self.assertEqual(set(got_hit._results_), {'a0', 'a1', 'a2'})
 
         # test with two filters
         filter_b = test_filter('b', 'bbb')
@@ -276,6 +281,13 @@ class TestQgsLocator(unittest.TestCase):
         self.assertEqual(filter_c.activePrefix(), 'xyz')
         got_hit._results_ = []
         l.fetchResults('b', context)
+        for i in range(100):
+            sleep(0.002)
+            QCoreApplication.processEvents()
+        self.assertEqual(set(got_hit._results_), {'custom0', 'custom1', 'custom2'})
+        filter_c.setUseWithoutPrefix(False)
+        got_hit._results_ = []
+        l.fetchResults('XyZ b', context)
         for i in range(100):
             sleep(0.002)
             QCoreApplication.processEvents()
@@ -346,7 +358,7 @@ class TestQgsLocator(unittest.TestCase):
         for i in range(200):
             sleep(0.002)
             QCoreApplication.processEvents()
-        self.assertEqual(p.rowCount(), 16) # 1 title a + 3 results + 1 title b + 2 groups + 9 results
+        self.assertEqual(p.rowCount(), 16)  # 1 title a + 3 results + 1 title b + 2 groups + 9 results
         self.assertEqual(p.data(p.index(0, 0)), 'test_a')
         self.assertEqual(p.data(p.index(0, 0), QgsLocatorModel.ResultTypeRole), 0)
         self.assertEqual(p.data(p.index(1, 0)), 'a0')
@@ -364,21 +376,21 @@ class TestQgsLocator(unittest.TestCase):
         self.assertEqual(p.data(p.index(6, 0), QgsLocatorModel.ResultTypeRole), 1)
         self.assertEqual(p.data(p.index(7, 0)), 'b1')
         self.assertEqual(p.data(p.index(7, 0), QgsLocatorModel.ResultTypeRole), 1)
-        self.assertEqual(p.data(p.index(8, 0)), 'b2')
+        self.assertEqual(p.data(p.index(8, 0)), 'b3')
         self.assertEqual(p.data(p.index(8, 0), QgsLocatorModel.ResultTypeRole), 1)
-        self.assertEqual(p.data(p.index(9, 0)), 'b3')
+        self.assertEqual(p.data(p.index(9, 0)), 'b5')
         self.assertEqual(p.data(p.index(9, 0), QgsLocatorModel.ResultTypeRole), 1)
-        self.assertEqual(p.data(p.index(10, 0)), 'b4')
+        self.assertEqual(p.data(p.index(10, 0)), 'b6')
         self.assertEqual(p.data(p.index(10, 0), QgsLocatorModel.ResultTypeRole), 1)
-        self.assertEqual(p.data(p.index(11, 0)), 'b5')
-        self.assertEqual(p.data(p.index(11, 0), QgsLocatorModel.ResultTypeRole), 1)
-        self.assertEqual(p.data(p.index(12, 0)).strip(), 'second group')
+        self.assertEqual(p.data(p.index(11, 0)).strip(), 'second group')
+        self.assertEqual(p.data(p.index(11, 0), QgsLocatorModel.ResultTypeRole), 2)
+        self.assertEqual(p.data(p.index(12, 0)), 'b4')
         self.assertEqual(p.data(p.index(12, 0), QgsLocatorModel.ResultTypeRole), 2)
-        self.assertEqual(p.data(p.index(13, 0)), 'b6')
+        self.assertEqual(p.data(p.index(13, 0)), 'b8')
         self.assertEqual(p.data(p.index(13, 0), QgsLocatorModel.ResultTypeRole), 2)
-        self.assertEqual(p.data(p.index(14, 0)), 'b7')
-        self.assertEqual(p.data(p.index(14, 0), QgsLocatorModel.ResultTypeRole), 2)
-        self.assertEqual(p.data(p.index(15, 0)), 'b8')
+        self.assertEqual(p.data(p.index(14, 0)), 'b2')
+        self.assertEqual(p.data(p.index(14, 0), QgsLocatorModel.ResultTypeRole), QgsLocatorModel.NoGroup)
+        self.assertEqual(p.data(p.index(15, 0)), 'b7')
         self.assertEqual(p.data(p.index(15, 0), QgsLocatorModel.ResultTypeRole), QgsLocatorModel.NoGroup)
 
     def testAutoModel(self):

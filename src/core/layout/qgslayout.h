@@ -646,6 +646,17 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      */
     QList<QgsLayoutItem *> ungroupItems( QgsLayoutItemGroup *group );
 
+    /**
+     * Accepts the specified style entity \a visitor, causing it to visit all style entities associated
+     * with the layout.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
   public slots:
 
     /**
@@ -689,6 +700,16 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      */
     void refreshed();
 
+    /**
+     * Emitted whenever the \a total number of background tasks running in items from the layout changes.
+     *
+     * \since QGIS 3.10
+     */
+    void backgroundTaskCountChanged( int total );
+
+  private slots:
+    void itemBackgroundTaskCountChanged( int count );
+
   private:
 
     QgsProject *mProject = nullptr;
@@ -711,6 +732,8 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     //! Item ID for layout map to use for the world file generation
     QString mWorldFileMapId;
 
+    QHash< QgsLayoutItem *, int > mBackgroundTaskCount;
+
     //! Writes only the layout settings (not member settings like grid settings, etc) to XML
     void writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
     //! Reads only the layout settings (not member settings like grid settings, etc) from XML
@@ -730,6 +753,9 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     //! Calculates the item minimum position from an XML element
     QPointF minPointFromXml( const QDomElement &elem ) const;
+
+    QgsLayout( const QgsLayout & ) = delete;
+    QgsLayout &operator=( const QgsLayout & ) = delete;
 
     friend class QgsLayoutItemAddItemCommand;
     friend class QgsLayoutItemDeleteUndoCommand;

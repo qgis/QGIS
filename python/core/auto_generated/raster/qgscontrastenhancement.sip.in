@@ -38,13 +38,12 @@ ContrastEnhancementAlgorithm.
     ~QgsContrastEnhancement();
 
 
-
-    static double maximumValuePossible( Qgis::DataType );
+    static double maximumValuePossible( Qgis::DataType dataType );
 %Docstring
 Helper function that returns the maximum possible value for a GDAL data type.
 %End
 
-    static double minimumValuePossible( Qgis::DataType );
+    static double minimumValuePossible( Qgis::DataType dataType );
 %Docstring
 Helper function that returns the minimum possible value for a GDAL data type.
 %End
@@ -70,7 +69,6 @@ Returns the minimum value for the contrast enhancement range.
 %End
 
     ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const;
-
 
     int enhanceContrast( double value );
 %Docstring

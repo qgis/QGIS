@@ -44,6 +44,7 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     //! \brief Default standard deviation factor
     static constexpr double DEFAULT_STDDEV_FACTOR = 2.0;
 
+#ifdef SIP_RUN
     //! \brief This enumerator describes the limits used to compute min/max values
     enum Limits
     {
@@ -52,6 +53,16 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
       StdDev, //!< Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]
       CumulativeCut //!< Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]
     };
+#else
+    //! \brief This enumerator describes the limits used to compute min/max values
+    enum Limits
+    {
+      None, //!< User defined.
+      MinMax, //!< Real min-max values
+      StdDev, //!< Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]
+      CumulativeCut //!< Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]
+    };
+#endif
 
     //! \brief This enumerator describes the extent used to compute min/max values
     enum Extent

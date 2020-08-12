@@ -23,6 +23,8 @@
 #include "ui_qgslimitedrandomcolorrampwidgetbase.h"
 #include "qgis_gui.h"
 
+class QDialogButtonBox;
+
 /**
  * \ingroup gui
  * \class QgsLimitedRandomColorRampWidget
@@ -120,6 +122,12 @@ class GUI_EXPORT QgsLimitedRandomColorRampDialog : public QDialog
      */
     void setRamp( const QgsLimitedRandomColorRamp &ramp ) { mWidget->setRamp( ramp ); }
 
+    /**
+     * Returns a reference to the dialog's button box.
+     * \since QGIS 3.10
+     */
+    QDialogButtonBox *buttonBox() const;
+
   signals:
 
     //! Emitted when the dialog settings change
@@ -128,6 +136,7 @@ class GUI_EXPORT QgsLimitedRandomColorRampDialog : public QDialog
   private:
 
     QgsLimitedRandomColorRampWidget *mWidget = nullptr;
+    QDialogButtonBox *mButtonBox = nullptr;
 
   private slots:
 

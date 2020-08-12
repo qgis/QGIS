@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'November 2016'
 __copyright__ = '(C) 2016, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import math
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -47,7 +43,6 @@ from qgis.analysis import QgsRasterCalculator, QgsRasterCalculatorEntry
 
 
 class RasterCalculator(QgisAlgorithm):
-
     LAYERS = 'LAYERS'
     EXTENT = 'EXTENT'
     CELLSIZE = 'CELLSIZE'
@@ -123,7 +118,7 @@ class RasterCalculator(QgisAlgorithm):
         if not bbox.isNull():
             bboxCrs = self.parameterAsExtentCrs(parameters, self.EXTENT, context)
             if bboxCrs != crs:
-                transform = QgsCoordinateTransform(bboxCrs, crs, context.project())
+                transform = QgsCoordinateTransform(bboxCrs, crs, context.transformContext())
                 bbox = transform.transformBoundingBox(bbox)
 
         if bbox.isNull() and layers:
@@ -136,20 +131,22 @@ class RasterCalculator(QgisAlgorithm):
         def _cellsize(layer):
             ext = layer.extent()
             if layer.crs() != crs:
-                transform = QgsCoordinateTransform(layer.crs(), crs, context.project())
+                transform = QgsCoordinateTransform(layer.crs(), crs, context.transformContext())
                 ext = transform.transformBoundingBox(ext)
             return (ext.xMaximum() - ext.xMinimum()) / layer.width()
+
         if cellsize == 0:
             cellsize = min([_cellsize(lyr) for lyr in layersDict.values()])
 
         # check for layers available in the model
-        layersDictCopy = layersDict.copy() # need a shallow copy because next calls invalidate iterator
+        layersDictCopy = layersDict.copy()  # need a shallow copy because next calls invalidate iterator
         for lyr in layersDictCopy.values():
             expression = self.mappedNameToLayer(lyr, expression, layersDict, context)
 
         # check for layers available in the project
-        for lyr in QgsProcessingUtils.compatibleRasterLayers(context.project()):
-            expression = self.mappedNameToLayer(lyr, expression, layersDict, context)
+        if context.project():
+            for lyr in QgsProcessingUtils.compatibleRasterLayers(context.project()):
+                expression = self.mappedNameToLayer(lyr, expression, layersDict, context)
 
         # create the list of layers to be passed as inputs to RasterCalculaltor
         # at this phase expression has been modified to match available layers
@@ -190,29 +187,10 @@ class RasterCalculator(QgisAlgorithm):
         res = calc.processCalculation(feedback)
         if res == QgsRasterCalculator.ParserError:
             raise QgsProcessingException(self.tr("Error parsing formula"))
+        elif res == QgsRasterCalculator.CalculationError:
+            raise QgsProcessingException(self.tr("An error occurred while performing the calculation"))
 
         return {self.OUTPUT: output}
-
-    def processBeforeAddingToModeler(self, algorithm, model):
-        values = []
-        expression = algorithm.params[self.EXPRESSION]
-        for i in list(model.inputs.values()):
-            param = i.param
-            if isinstance(param, QgsProcessingParameterRasterLayer) and "{}@".format(param.name) in expression:
-                values.append(ValueFromInput(param.name()))
-
-        if algorithm.name:
-            dependent = model.getDependentAlgorithms(algorithm.name)
-        else:
-            dependent = []
-        for alg in list(model.algs.values()):
-            if alg.modeler_name not in dependent:
-                for out in alg.algorithm.outputs:
-                    if (isinstance(out, QgsProcessingOutputRasterLayer) and
-                            "{}:{}@".format(alg.modeler_name, out.name) in expression):
-                        values.append(ValueFromOutput(alg.modeler_name, out.name))
-
-        algorithm.params[self.LAYERS] = values
 
     def mappedNameToLayer(self, lyr, expression, layersDict, context):
         '''Try to identify if a real layer is mapped in the expression with a symbolic name.'''
@@ -267,7 +245,7 @@ class RasterCalculator(QgisAlgorithm):
                 # HAVE to use the same translated string as in
                 # https://github.com/qgis/QGIS/blob/master/src/core/processing/models/qgsprocessingmodelalgorithm.cpp#L516
                 translatedDesc = self.tr("Output '%1' from algorithm '%2'")
-                elementZero = translatedDesc.split(" ")[0] # For english the string result should be "Output"
+                elementZero = translatedDesc.split(" ")[0]  # For english the string result should be "Output"
 
                 elements = varDescription.split(" ")
                 if len(elements) > 1 and elements[0] == elementZero:

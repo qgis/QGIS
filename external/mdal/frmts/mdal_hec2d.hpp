@@ -26,6 +26,14 @@ namespace MDAL
    * There is a small change in the format in HEC-RAS 5.0.5+, where
    *    - Header File Type is different (HEC-RAS Results vs HEC-RAS Geometry)
    *    - Names or areas are stored in different place (names array vs attributes array)
+   *
+   * Time data unit should be present in Time dataset and Time or Variable attribute for given dataset root,
+   * Since MDAL API is reporting times in float hours, the original values need to be corrected
+   * based on value found in the Time attribute.
+   *
+   * All reference times can be found in Time Data Stamp dataset.
+   * First value in the dataset is reported by MDAL as reference time
+   *
    */
   class DriverHec2D: public Driver
   {
@@ -34,12 +42,15 @@ namespace MDAL
       ~DriverHec2D( ) override = default;
       DriverHec2D *create() override;
 
-      bool canRead( const std::string &uri ) override;
-      std::unique_ptr< Mesh > load( const std::string &resultsFile, MDAL_Status *status ) override;
+      bool canReadMesh( const std::string &uri ) override;
+      std::unique_ptr< Mesh > load( const std::string &resultsFile, const std::string &meshName = "" ) override;
 
     private:
       std::unique_ptr< MDAL::MemoryMesh > mMesh;
       std::string mFileName;
+
+      std::vector<MDAL::RelativeTimestamp> mTimes ;
+      DateTime mReferenceTime;
 
       // Pre 5.0.5 format
       bool canReadOldFormat( const std::string &fileType ) const;
@@ -56,22 +67,24 @@ namespace MDAL
                            const std::vector<std::string> &flowAreaNames,
                            const std::string rawDatasetName,
                            const std::string datasetName,
-                           const std::vector<float> &times );
+                           const std::vector<MDAL::RelativeTimestamp> &times,
+                           const DateTime &referenceTime );
 
       void readFaceResults( const HdfFile &hdfFile,
                             const std::vector<size_t> &areaElemStartIndex,
                             const std::vector<std::string> &flowAreaNames );
 
-      std::shared_ptr<MDAL::MemoryDataset> readElemOutput(
+      std::shared_ptr<MDAL::MemoryDataset2D> readElemOutput(
         const HdfGroup &rootGroup,
         const std::vector<size_t> &areaElemStartIndex,
         const std::vector<std::string> &flowAreaNames,
         const std::string rawDatasetName,
         const std::string datasetName,
-        const std::vector<float> &times,
-        std::shared_ptr<MDAL::MemoryDataset> bed_elevation );
+        const std::vector<MDAL::RelativeTimestamp> &times,
+        std::shared_ptr<MDAL::MemoryDataset2D> bed_elevation,
+        const DateTime &referenceTime );
 
-      std::shared_ptr<MDAL::MemoryDataset> readBedElevation(
+      std::shared_ptr<MDAL::MemoryDataset2D> readBedElevation(
         const HdfGroup &gGeom2DFlowAreas,
         const std::vector<size_t> &areaElemStartIndex,
         const std::vector<std::string> &flowAreaNames );
@@ -84,7 +97,7 @@ namespace MDAL
 
       void readElemResults(
         const HdfFile &hdfFile,
-        std::shared_ptr<MDAL::MemoryDataset> bed_elevation,
+        std::shared_ptr<MDAL::MemoryDataset2D> bed_elevation,
         const std::vector<size_t> &areaElemStartIndex,
         const std::vector<std::string> &flowAreaNames );
   };

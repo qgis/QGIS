@@ -27,9 +27,27 @@
 QgsSnapIndicator::QgsSnapIndicator( QgsMapCanvas *canvas )
   : mCanvas( canvas )
 {
+  // We need to make sure that the internal pointers are invalidated if the canvas is deleted before this
+  // indicator.
+  // The canvas is specified again as the "receiver", just to silence clazy (official clazy recommendation
+  // for false positives).
+  mCanvasDestroyedConnection = QObject::connect( canvas, &QgsMapCanvas::destroyed, canvas, [ = ]()
+  {
+    mCanvas = nullptr;
+    mSnappingMarker = nullptr;
+  } );
 }
 
-QgsSnapIndicator::~QgsSnapIndicator() = default;
+QgsSnapIndicator::~QgsSnapIndicator()
+{
+  if ( mSnappingMarker && mCanvas )
+  {
+    mCanvas->scene()->removeItem( mSnappingMarker );
+    delete mSnappingMarker;
+  }
+
+  QObject::disconnect( mCanvasDestroyedConnection );
+};
 
 void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
 {
@@ -37,14 +55,19 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
 
   if ( !mMatch.isValid() )
   {
-    mSnappingMarker.reset();
+    if ( mSnappingMarker )
+    {
+      mCanvas->scene()->removeItem( mSnappingMarker );
+      delete mSnappingMarker; // need to delete since QGraphicsSene::removeItem transfers back ownership
+    }
+    mSnappingMarker = nullptr;
     QToolTip::hideText();
   }
   else
   {
     if ( !mSnappingMarker )
     {
-      mSnappingMarker.reset( new QgsVertexMarker( mCanvas ) );
+      mSnappingMarker = new QgsVertexMarker( mCanvas ); // ownership of the marker is transferred to QGraphicsScene
       mSnappingMarker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
       mSnappingMarker->setPenWidth( QgsGuiUtils::scaleIconSize( 3 ) );
     }
@@ -61,6 +84,18 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
         iconType = QgsVertexMarker::ICON_BOX;  // vertex snap
       else
         iconType = QgsVertexMarker::ICON_X;  // intersection snap
+    }
+    else if ( match.hasMiddleSegment() )
+    {
+      iconType = QgsVertexMarker::ICON_TRIANGLE; // middle snap
+    }
+    else if ( match.hasCentroid() )
+    {
+      iconType = QgsVertexMarker::ICON_CIRCLE; // centroid snap
+    }
+    else if ( match.hasArea() )
+    {
+      iconType = QgsVertexMarker::ICON_RHOMBUS; // area snap
     }
     else  // must be segment snap
     {

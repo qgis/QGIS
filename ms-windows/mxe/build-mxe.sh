@@ -24,6 +24,7 @@ set -e
 #        The artifact will be saved as a zip package in the directory
 #        from which this script is launched.
 
+
 COMMAND=$1
 
 # Location of current script
@@ -37,15 +38,24 @@ PYDEPLOY=${DIR}/deploy.py
 MXE=${MXE:-/mxe/}
 
 # Directory for build
-BUILD_DIR=$(pwd)/build-mxe
+BUILD_DIR=${PWD}/build-mxe
 # Directory where the artifact will be saved
-RELEASE_DIR=$(pwd)/qgis-mxe-release
+RELEASE_DIR=${PWD}/qgis-mxe-release
 
 # End configuration
 
-# Original target (does not support posix threads)
-# TARGET=${TARGET}
-TARGET=i686-w64-mingw32.shared.posix
+# Windows 64 bit with posix threads
+TARGET=x86_64-w64-mingw32.shared.posix
+
+# Set base path for all tools
+export PATH=${PATH}:/mxe/usr/bin
+
+# Fix CCACHE directory
+export CCACHE_DIR=${PWD}/.ccache
+
+if [ ! -e ${CCACHE_DIR} ]; then
+  mkdir -p ${CCACHE_DIR}
+fi
 
 if [[ "$COMMAND" != *"package"* ]]; then
   [ -d ${BUILD_DIR} ]  && rm -rf ${BUILD_DIR}
@@ -55,13 +65,6 @@ if [[ "$COMMAND" != *"package"* ]]; then
   [ -d ${RELEASE_DIR} ] || mkdir ${RELEASE_DIR}
 fi
 
-# Patch for 5.11
-echo '#include "qwebframe.h"' > ${MXE}/usr/${TARGET}/qt5/include/QtWebKitWidgets/QWebFrame
-echo '#include "qwebview.h"' > ${MXE}/usr/${TARGET}/qt5/include/QtWebKitWidgets/QWebView
-echo '#include "qwebpage.h"' > ${MXE}/usr/${TARGET}/qt5/include/QtWebKitWidgets/QWebPage
-echo '#include "qwebelement.h"' > ${MXE}/usr/${TARGET}/qt5/include/QtWebKitWidgets/QWebElement
-cp ${MXE}/usr/${TARGET}/include/windows.h ${MXE}/usr/${TARGET}/include/Windows.h
-cp ${MXE}/usr/${TARGET}/include/shlobj.h ${MXE}/usr/${TARGET}/include/ShlObj.h
 pushd .
 
 cd ${BUILD_DIR}
@@ -80,7 +83,9 @@ if [[ "$COMMAND" != *"package"* ]]; then
         -DWITH_ASTYLE=OFF \
         -DWITH_SERVER=OFF \
         -DWITH_BINDINGS=FALSE \
+        -DWITH_QGIS_PROCESS=FALSE \
         -DQT_LRELEASE_EXECUTABLE=${MXE}/usr/${TARGET}/qt5/bin/lrelease \
+        -DMXE=ON \
         $ARGS
 
     make -j16 install
@@ -101,15 +106,21 @@ cat <<__TXT__ > ${RELEASE_DIR}/qt.conf
 Plugins = qt5plugins
 __TXT__
 
+# First cleanup
+rm -rf ${BUILD_DIR}
+rm -rf ${CCACHE_DIR}
+
 # Make the zip
 
 cd ${RELEASE_DIR}/..
 ZIP_NAME=qgis-mxe-release-$(date +%Y-%m-%d-%H-%I-%S).zip
-zip -r ${ZIP_NAME} $(basename ${RELEASE_DIR})
+zip -r -m ${ZIP_NAME} $(basename ${RELEASE_DIR})
 
-# Cleanup
+# Second cleanup
 rm -rf ${RELEASE_DIR}
 
 popd
 
 echo "Release in $ZIP_NAME ready."
+
+# vim: et ts=4 :

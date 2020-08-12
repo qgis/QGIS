@@ -29,11 +29,11 @@ QString QgsXyzConnection::encodedUri() const
   if ( zMax != -1 )
     uri.setParam( QStringLiteral( "zmax" ), QString::number( zMax ) );
   if ( ! authCfg.isEmpty() )
-    uri.setParam( QStringLiteral( "authcfg" ), authCfg );
+    uri.setAuthConfigId( authCfg );
   if ( ! username.isEmpty() )
-    uri.setParam( QStringLiteral( "username" ), username );
+    uri.setUsername( username );
   if ( ! password.isEmpty() )
-    uri.setParam( QStringLiteral( "password" ), password );
+    uri.setPassword( password );
   if ( ! referer.isEmpty() )
     uri.setParam( QStringLiteral( "referer" ), referer );
   if ( tilePixelRatio != 0 )
@@ -64,6 +64,18 @@ QStringList QgsXyzConnectionUtils::connectionList()
   }
 
   return connList;
+}
+
+QString QgsXyzConnectionUtils::selectedConnection()
+{
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "qgis/connections-xyz/selected" ) ).toString();
+}
+
+void QgsXyzConnectionUtils::setSelectedConnection( const QString &name )
+{
+  QgsSettings settings;
+  return settings.setValue( QStringLiteral( "qgis/connections-xyz/selected" ), name );
 }
 
 QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
@@ -128,5 +140,4 @@ void QgsXyzConnectionUtils::addConnection( const QgsXyzConnection &conn )
   {
     settings.setValue( QStringLiteral( "hidden" ), false );
   }
-
 }

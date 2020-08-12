@@ -66,7 +66,13 @@ void QgsRasterFileWriterTask::finished( bool result )
   if ( result )
     emit writeComplete( mWriter.outputUrl() );
   else
+  {
     emit errorOccurred( mError );
+    QString errorMsg;
+    if ( !mFeedback->errors().isEmpty() )
+      errorMsg = mFeedback->errors().front();
+    emit errorOccurred( mError, errorMsg );
+  }
 }
 
 

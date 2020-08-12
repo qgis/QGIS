@@ -27,7 +27,7 @@
 #define CL_TARGET_OPENCL_VERSION 120
 #else
 #define CL_USE_DEPRECATED_OPENCL_1_1_APIS
-#define CL_HPP_TARGET_OPENCL_VERSION 220
+#define CL_HPP_TARGET_OPENCL_VERSION 200
 #define CL_TARGET_OPENCL_VERSION 200
 #endif
 
@@ -42,6 +42,7 @@
  * \ingroup core
  * \class QgsOpenClUtils
  * \brief The QgsOpenClUtils class is responsible for common OpenCL operations such as
+ *
  * - enable/disable opencl
  * - store and retrieve preferences for the default device
  * - check opencl device availability and automatically choose the first GPU device
@@ -312,7 +313,6 @@ class CORE_EXPORT QgsOpenClUtils
     static bool sAvailable;
     static QLatin1String SETTINGS_GLOBAL_ENABLED_KEY;
     static QLatin1String SETTINGS_DEFAULT_DEVICE_KEY;
-    static QString sSourcePath;
 };
 
 

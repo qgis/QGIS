@@ -21,13 +21,7 @@ __author__ = 'Victor Olaya'
 __date__ = 'January 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-import plotly as plt
-import plotly.graph_objs as go
-
+import warnings
 
 from qgis.core import (QgsFeatureRequest,
                        QgsProcessingParameterFeatureSource,
@@ -37,19 +31,20 @@ from qgis.core import (QgsFeatureRequest,
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 class BarPlot(QgisAlgorithm):
-
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NAME_FIELD = 'NAME_FIELD'
     VALUE_FIELD = 'VALUE_FIELD'
 
     def group(self):
-        return self.tr('Graphics')
+        return self.tr('Plots')
 
     def groupId(self):
-        return 'graphics'
+        return 'plots'
 
     def __init__(self):
         super().__init__()
@@ -73,6 +68,16 @@ class BarPlot(QgisAlgorithm):
         return self.tr('Bar plot')
 
     def processAlgorithm(self, parameters, context, feedback):
+        try:
+            # importing plotly throws Python warnings from within the library - filter these out
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=ResourceWarning)
+                warnings.filterwarnings("ignore", category=ImportWarning)
+                import plotly as plt
+                import plotly.graph_objs as go
+        except ImportError:
+            raise QgsProcessingException(QCoreApplication.translate('BarPlot', 'This algorithm requires the Python “plotly” library. Please install this library and try again.'))
+
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))

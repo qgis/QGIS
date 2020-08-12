@@ -45,9 +45,9 @@ class TestQgsLayoutContext: public QObject
     void renderContextFlags();
     void textFormat();
     void boundingBoxes();
-    void exportLayer();
     void geometry();
     void scales();
+    void simplifyMethod();
 
   private:
     QString mReport;
@@ -212,15 +212,6 @@ void TestQgsLayoutContext::boundingBoxes()
   QVERIFY( context.boundingBoxesVisible() );
 }
 
-void TestQgsLayoutContext::exportLayer()
-{
-  QgsLayoutRenderContext context( nullptr );
-  // must default to -1
-  QCOMPARE( context.currentExportLayer(), -1 );
-  context.setCurrentExportLayer( 1 );
-  QCOMPARE( context.currentExportLayer(), 1 );
-}
-
 void TestQgsLayoutContext::geometry()
 {
   QgsProject p;
@@ -266,11 +257,29 @@ void TestQgsLayoutContext::scales()
   QVector< qreal > scales;
   scales << 1 << 15 << 5 << 10;
 
-  QgsLayoutReportContext context( nullptr );
+  QgsLayoutRenderContext context( nullptr );
+  QSignalSpy spyScalesChanged( &context, &QgsLayoutRenderContext::predefinedScalesChanged );
   context.setPredefinedScales( scales );
+
+  QCOMPARE( spyScalesChanged.count(), 1 );
 
   // should be sorted
   QCOMPARE( context.predefinedScales(), QVector< qreal >() << 1 << 5 << 10 << 15 );
+
+  context.setPredefinedScales( context.predefinedScales() );
+  QCOMPARE( spyScalesChanged.count(), 1 );
+}
+
+void TestQgsLayoutContext::simplifyMethod()
+{
+  QgsLayout l( QgsProject::instance() );
+  QgsLayoutRenderContext context( &l );
+  // must default to no simplification
+  QCOMPARE( context.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::NoSimplification );
+  QgsVectorSimplifyMethod simplify;
+  simplify.setSimplifyHints( QgsVectorSimplifyMethod::GeometrySimplification );
+  context.setSimplifyMethod( simplify );
+  QCOMPARE( context.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::GeometrySimplification );
 }
 
 QGSTEST_MAIN( TestQgsLayoutContext )

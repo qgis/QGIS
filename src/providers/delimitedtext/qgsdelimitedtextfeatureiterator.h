@@ -22,7 +22,7 @@
 
 #include "qgsdelimitedtextprovider.h"
 
-class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
+class QgsDelimitedTextFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider *p );
@@ -43,6 +43,8 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
     int mFieldCount;  // Note: this includes field count for wkt field
     int mXFieldIndex;
     int mYFieldIndex;
+    int mZFieldIndex;
+    int mMFieldIndex;
     int mWktFieldIndex;
     bool mWktHasPrefix;
     QgsWkbTypes::GeometryType mGeometryType;
@@ -55,7 +57,7 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
 };
 
 
-class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>
+class QgsDelimitedTextFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>
 {
     enum IteratorMode
     {

@@ -43,7 +43,7 @@ Eval a Python statement
 
     static void setInstance( QgsPythonRunner *runner /Transfer/ );
 %Docstring
-Assign an instance of Python runner so that run() can be used.
+Assign an instance of Python runner so that :py:func:`~QgsPythonRunner.run` can be used.
 This method should be called during app initialization.
 Takes ownership of the object, deletes previous instance. *
 %End

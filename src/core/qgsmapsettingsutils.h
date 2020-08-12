@@ -34,10 +34,34 @@ class CORE_EXPORT QgsMapSettingsUtils
   public:
 
     /**
-     * Checks whether any of the layers attached to a map settings object contain advanced effects
-     * \param mapSettings map settings
+     * Flags for controlling the behavior of containsAdvancedEffects()
+     * \since QGIS 3.14
      */
-    static const QStringList containsAdvancedEffects( const QgsMapSettings &mapSettings );
+    enum class EffectsCheckFlag
+    {
+      IgnoreGeoPdfSupportedEffects = 1 << 0, //!< Ignore advanced effects which are supported in GeoPDF exports
+    };
+    Q_DECLARE_FLAGS( EffectsCheckFlags, EffectsCheckFlag )
+
+    /**
+     * Checks whether any of the layers attached to a map settings object contain advanced effects.
+     *
+     * The optional \a flags argument can be used to fine-tune the check behavior.
+     */
+    static QStringList containsAdvancedEffects( const QgsMapSettings &mapSettings, EffectsCheckFlags flags = QgsMapSettingsUtils::EffectsCheckFlags() );
+
+    /**
+     * Computes the six parameters of a world file.
+     * \param mapSettings map settings
+     * \param a the a parameter
+     * \param b the b parameter
+     * \param c the c parameter
+     * \param d the d parameter
+     * \param e the e parameter
+     * \param f the f parameter
+     * \since QGIS 3.10
+     */
+    static void worldFileParameters( const QgsMapSettings &mapSettings, double &a SIP_OUT, double &b SIP_OUT, double &c SIP_OUT, double &d SIP_OUT, double &e SIP_OUT, double &f SIP_OUT );
 
     /**
      * Creates the content of a world file.
@@ -47,5 +71,7 @@ class CORE_EXPORT QgsMapSettingsUtils
     static QString worldFileContent( const QgsMapSettings &mapSettings );
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapSettingsUtils::EffectsCheckFlags )
 
 #endif

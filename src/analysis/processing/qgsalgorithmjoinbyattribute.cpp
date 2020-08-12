@@ -154,7 +154,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   {
     for ( int i = 0; i < outFields2.count(); ++i )
     {
-      outFields2[ i ].setName( prefix + outFields2[ i ].name() );
+      outFields2.rename( i, prefix + outFields2[ i ].name() );
     }
   }
 

@@ -25,10 +25,6 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'December 2015'
 __copyright__ = '(C) 2015, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from qgis.core import QgsProcessingException
 from processing.tools.system import getTempFilename

@@ -164,6 +164,16 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       MapLayers, //!< Map layer set
       MapStylePreset, //!< Layer and style map theme
       MapLabelMargin, //!< Map label margin
+      MapGridEnabled, //!< Map grid enabled
+      MapGridIntervalX, //!< Map grid interval X
+      MapGridIntervalY, //!< Map grid interval Y
+      MapGridOffsetX, //!< Map grid offset X
+      MapGridOffsetY, //!< Map grid offset Y
+      MapGridFrameSize, //!< Map grid frame size
+      MapGridFrameMargin, //!< Map grid frame margin
+      MapGridLabelDistance, //!< Map grid label distance
+      MapGridCrossSize, //!< Map grid cross size
+      MapGridFrameLineThickness, //!< Map grid frame line thickness
       //composer picture
       PictureSource, //!< Picture source url
       PictureSvgBackgroundColor, //!< SVG background color
@@ -175,12 +185,15 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       LegendTitle, //!< Legend title
       LegendColumnCount, //!< Legend column count
       //scalebar item
-      ScalebarFillColor, //!< Scalebar fill color
-      ScalebarFillColor2, //!< Scalebar secondary fill color
-      ScalebarLineColor, //!< Scalebar line color
-      ScalebarLineWidth, //!< Scalebar line width,
+      ScalebarFillColor, //!< Scalebar fill color (deprecated, use data defined properties on scalebar fill symbol 1 instead)
+      ScalebarFillColor2, //!< Scalebar secondary fill color (deprecated, use data defined properties on scalebar fill symbol 2 instead)
+      ScalebarLineColor, //!< Scalebar line color (deprecated, use data defined properties on scalebar line symbol instead)
+      ScalebarLineWidth, //!< Scalebar line width (deprecated, use data defined properties on scalebar line symbol instead)
       //table item
       AttributeTableSourceLayer, //!< Attribute table source layer
+      MapCrs, //!< Map CRS
+      StartDateTime, //!< Temporal range's start DateTime
+      EndDateTime, //!< Temporal range's end DateTime
     };
 
     /**

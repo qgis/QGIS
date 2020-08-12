@@ -23,6 +23,7 @@
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QAbstractListModel>
 #include <QCheckBox>
@@ -238,7 +239,7 @@ QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent, const QString
 
 int QgsSvgSelectorListModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return mSvgFiles.count();
 }
 
@@ -277,14 +278,17 @@ QVariant QgsSvgSelectorListModel::data( const QModelIndex &index, int role ) con
 
   if ( role == Qt::DecorationRole ) // icon
   {
-    QPixmap pixmap;
-    if ( !QPixmapCache::find( entry, pixmap ) )
+    QPixmap *pixmap = nullptr;
+    if ( !QPixmapCache::find( entry, pixmap ) || !pixmap )
     {
-      pixmap = createPreview( entry );
-      QPixmapCache::insert( entry, pixmap );
+      QPixmap newPixmap = createPreview( entry );
+      QPixmapCache::insert( entry, newPixmap );
+      return newPixmap;
     }
-
-    return pixmap;
+    else
+    {
+      return *pixmap;
+    }
   }
   else if ( role == Qt::UserRole || role == Qt::ToolTipRole )
   {
@@ -381,7 +385,11 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
 
   connect( mSvgSourceLineEdit, &QgsAbstractFileContentSourceLineEdit::sourceChanged, this, &QgsSvgSelectorWidget::svgSourceChanged );
 
-  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXX" ) ) ) ) );
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 3 ) ) );
+#else
+  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 3 ) ) );
+#endif
   mImagesListView->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
 
   mGroupsTreeView->setHeaderHidden( true );
@@ -481,7 +489,7 @@ QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
   : QDialog( parent, fl )
 {
   // TODO: pass 'orientation' to QgsSvgSelectorWidget for customizing its layout, once implemented
-  Q_UNUSED( orientation );
+  Q_UNUSED( orientation )
 
   // create buttonbox
   mButtonBox = new QDialogButtonBox( buttons, orientation, this );
@@ -497,14 +505,5 @@ QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
 
   mLayout->addWidget( mButtonBox );
   setLayout( mLayout );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/SvgSelectorDialog/geometry" ) ).toByteArray() );
-}
-
-QgsSvgSelectorDialog::~QgsSvgSelectorDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/SvgSelectorDialog/geometry" ), saveGeometry() );
 }
 

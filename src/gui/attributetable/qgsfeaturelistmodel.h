@@ -80,6 +80,7 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     /**
      * \brief If TRUE is specified, a NULL value will be injected
      * \param injectNull state of null value injection
+     * \note If set to TRUE, the sort by display expression cannot be used
      * \since QGIS 2.9
      */
     void setInjectNull( bool injectNull );
@@ -153,7 +154,7 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
      *
      * \since QGIS 3.2
      */
-    void setSortByDisplayExpression( bool sortByDisplayExpression );
+    void setSortByDisplayExpression( bool sortByDisplayExpression, Qt::SortOrder order = Qt::AscendingOrder );
 
   public slots:
 
@@ -185,6 +186,10 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
      */
     Q_DECL_DEPRECATED void onEndInsertRows( const QModelIndex &parent, int first, int last );
 
+  private slots:
+
+    void conditionalStylesChanged();
+
   private:
     mutable QgsExpression mDisplayExpression;
     QgsAttributeTableFilterModel *mFilterModel = nullptr;
@@ -193,6 +198,7 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     mutable QgsExpressionContext mExpressionContext;
     mutable QMap< QgsFeatureId, QList<QgsConditionalStyle> > mRowStylesMap;
     bool mSortByDisplayExpression = false;
+    QPointer< QgsVectorLayer > mSourceLayer;
 };
 
 Q_DECLARE_METATYPE( QgsFeatureListModel::FeatureInfo )

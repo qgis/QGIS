@@ -92,6 +92,28 @@ value.
 .. seealso:: :py:func:`compatibleVectorLayers`
 %End
 
+    static QString encodeProviderKeyAndUri( const QString &providerKey, const QString &uri );
+%Docstring
+Encodes a provider key and layer ``uri`` to a single string, for use with
+:py:func:`~QgsProcessingUtils.decodeProviderKeyAndUri`
+
+.. versionadded:: 3.14
+%End
+
+    static bool decodeProviderKeyAndUri( const QString &string, QString &providerKey /Out/, QString &uri /Out/ );
+%Docstring
+Decodes a provider key and layer ``uri`` from an encoded string, for use with
+:py:func:`~QgsProcessingUtils.encodeProviderKeyAndUri`
+
+:param string: encoded string, as returned by :py:func:`~QgsProcessingUtils.encodeProviderKeyAndUri`
+:param uri: decoded layer uri
+
+:return: - ``True`` if ``string`` was successfully decoded
+         - providerKey: ID key for corresponding data provider
+
+.. versionadded:: 3.14
+%End
+
     enum class LayerHint
     {
       UnknownType,
@@ -125,6 +147,16 @@ The optional ``fallbackValue`` can be used to specify a "default" value which is
 if ``value`` cannot be successfully converted to a source.
 
 This function creates a new object and the caller takes responsibility for deleting the returned object.
+%End
+
+    static QgsCoordinateReferenceSystem variantToCrs( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue = QVariant() );
+%Docstring
+Converts a variant ``value`` to a coordinate reference system.
+
+The optional ``fallbackValue`` can be used to specify a "default" value which is used
+if ``value`` cannot be successfully converted to a CRS.
+
+.. versionadded:: 3.12
 %End
 
     static QString normalizeLayerSource( const QString &source );
@@ -168,12 +200,12 @@ temporary layer store.
 
 .. note::
 
-   this version of the createFeatureSink() function has an API designed around use from the
-   SIP bindings. c++ code should call the other createFeatureSink() version.
+   this version of the :py:func:`~QgsProcessingUtils.createFeatureSink` function has an API designed around use from the
+   SIP bindings. c++ code should call the other :py:func:`~QgsProcessingUtils.createFeatureSink` version.
 
 .. note::
 
-   available in Python bindings as createFeatureSink()
+   available in Python bindings as :py:func:`~QgsProcessingUtils.createFeatureSink`
 %End
 
 
@@ -191,7 +223,8 @@ using the specified ``context``.
 Combines the extent of several map ``layers``. If specified, the target ``crs``
 will be used to transform the layer's extent to the desired output reference system.
 
-.. deprecated:: Use version with QgsProcessingContext argument instead
+.. deprecated::
+   Use version with QgsProcessingContext argument instead
 %End
 
     static QVariant generateIteratingDestination( const QVariant &input, const QVariant &id, QgsProcessingContext &context );
@@ -230,9 +263,9 @@ a specified ``algorithm``.
         const QStringList &compatibleFormats,
         const QString &preferredFormat,
         QgsProcessingContext &context,
-        QgsProcessingFeedback *feedback );
+        QgsProcessingFeedback *feedback, long long featureLimit = -1 );
 %Docstring
-Converts a source vector ``layer`` to a file path to a vector layer of compatible format.
+Converts a source vector ``layer`` to a file path of a vector layer of compatible format.
 
 If the specified ``layer`` is not of the format listed in the
 ``compatibleFormats`` argument, then the layer will first be exported to a compatible format
@@ -242,9 +275,60 @@ in a temporary location using ``baseName``. The function will then return the pa
 
 The ``preferredFormat`` argument is used to specify to desired file extension to use when a temporary
 layer export is required. This defaults to shapefiles.
+
+The ``featureLimit`` argument can be used to specify a limit on the number of features read from the layer.
+
+When an algorithm is capable of handling multi-layer input files (such as Geopackage), it is preferable
+to use :py:func:`~QgsProcessingUtils.convertToCompatibleFormatAndLayerName` which may avoid conversion in more situations.
+
+.. seealso:: :py:func:`convertToCompatibleFormatAndLayerName`
 %End
 
-    static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB );
+    static QString convertToCompatibleFormatAndLayerName( const QgsVectorLayer *layer,
+        bool selectedFeaturesOnly,
+        const QString &baseName,
+        const QStringList &compatibleFormats,
+        const QString &preferredFormat,
+        QgsProcessingContext &context,
+        QgsProcessingFeedback *feedback,
+        QString &layerName /Out/, long long featureLimit = -1 );
+%Docstring
+Converts a source vector ``layer`` to a file path and layer name of a vector layer of compatible format.
+
+If the specified ``layer`` is not of the format listed in the
+``compatibleFormats`` argument, then the layer will first be exported to a compatible format
+in a temporary location using ``baseName``. The function will then return the path to that temporary file.
+
+``compatibleFormats`` should consist entirely of lowercase file extensions, e.g. 'shp'.
+
+The ``featureLimit`` argument can be used to specify a limit on the number of features read from the layer.
+
+The ``preferredFormat`` argument is used to specify to desired file extension to use when a temporary
+layer export is required. This defaults to shapefiles.
+
+This method should be preferred over :py:func:`~QgsProcessingUtils.convertToCompatibleFormat` when an algorithm is able
+to correctly handle files with multiple layers. Unlike :py:func:`~QgsProcessingUtils.convertToCompatibleFormat`, it will not force
+a conversion in this case and will return the target layer name in the ``layerName`` argument.
+
+:param layer: source layer to convert (if required)
+:param selectedFeaturesOnly: ``True`` if only selected features from the layer should be used
+:param baseName: base file name for converted layer, if required
+:param compatibleFormats: a list of lowercase file extensions compatible with the algorithm
+:param preferredFormat: preferred format extension to use if conversion if required
+:param context: processing context
+:param feedback: feedback object
+:param featureLimit: can be used to place a limit on the maximum number of features read from the layer
+
+:return: - path to source layer, or nearly converted compatible layer
+         - layerName: will be set to the target layer name for multi-layer sources (e.g. Geopackage)
+
+
+.. seealso:: :py:func:`convertToCompatibleFormat`
+
+.. versionadded:: 3.10
+%End
+
+    static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB, const QString &fieldsBPrefix = QString() );
 %Docstring
 Combines two field lists, avoiding duplicate field names (in a case-insensitive manner).
 
@@ -273,6 +357,32 @@ Returns a subset of fields based on the indices of desired fields.
 .. versionadded:: 3.2
 %End
 
+    static QString defaultVectorExtension();
+%Docstring
+Returns the default vector extension to use, in the absence of all other constraints (e.g.
+provider based support for extensions).
+
+This method returns the user-set default extension from the processing settings, or
+a fallback value of "gpkg".
+
+.. seealso:: :py:func:`defaultRasterExtension`
+
+.. versionadded:: 3.10
+%End
+
+    static QString defaultRasterExtension();
+%Docstring
+Returns the default raster extension to use, in the absence of all other constraints (e.g.
+provider based support for extensions).
+
+This method returns the user-set default extension from the processing settings, or
+a fallback value of "tif".
+
+.. seealso:: :py:func:`defaultVectorExtension`
+
+.. versionadded:: 3.10
+%End
+
 };
 
 class QgsProcessingFeatureSource : QgsFeatureSource
@@ -296,13 +406,17 @@ results according to the settings in a :py:class:`QgsProcessingContext`.
     typedef QFlags<QgsProcessingFeatureSource::Flag> Flags;
 
 
-    QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false );
+    QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false,
+                                long long featureLimit = -1 );
 %Docstring
 Constructor for QgsProcessingFeatureSource, accepting an original feature source ``originalSource``
 and processing ``context``.
 Ownership of ``originalSource`` is dictated by ``ownsOriginalSource``. If ``ownsOriginalSource`` is ``False``,
 ownership is not transferred, and callers must ensure that ``originalSource`` exists for the lifetime of this object.
 If ``ownsOriginalSource`` is ``True``, then this object will take ownership of ``originalSource``.
+
+If ``featureLimit`` is set to a value > 0, then a limit is placed on the maximum number of features which will be
+read from the source.
 %End
 
     ~QgsProcessingFeatureSource();
@@ -339,10 +453,19 @@ iterator, eg by restricting the returned attributes or geometry.
 
     virtual QgsFeatureIds allFeatureIds() const;
 
+    virtual SpatialIndexPresence hasSpatialIndex() const;
+
 
     QgsExpressionContextScope *createExpressionContextScope() const /Factory/;
 %Docstring
 Returns an expression context scope suitable for this source.
+%End
+
+    void setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck method );
+%Docstring
+Overrides the default geometry check method for the source.
+
+.. versionadded:: 3.14
 %End
 
 };

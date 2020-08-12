@@ -36,7 +36,7 @@ int QgsClipToMinMaxEnhancement::enhance( double value )
   }
   else
   {
-    return static_cast<int>( ( ( ( value - QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType ) ) / ( QgsContrastEnhancement::maximumValuePossible( mQgsRasterDataType ) - QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType ) ) ) * 255.0 ) );
+    return static_cast<int>( ( ( ( value - mMinimumValuePossible ) / ( mMaximumValuePossible - mMinimumValuePossible ) ) * 255.0 ) );
   }
 }
 

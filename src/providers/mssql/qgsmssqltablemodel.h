@@ -34,6 +34,7 @@ struct QgsMssqlLayerProperty
   QString     srid;
   bool        isGeography;
   QString     sql;
+  bool        isView;
 };
 
 

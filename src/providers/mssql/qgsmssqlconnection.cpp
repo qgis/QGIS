@@ -191,6 +191,33 @@ void QgsMssqlConnection::setInvalidGeometryHandlingDisabled( const QString &name
   settings.setValue( "/MSSQL/connections/" + name + "/disableInvalidGeometryHandling", disabled );
 }
 
+bool QgsMssqlConnection::dropView( const QString &uri, QString *errorMessage )
+{
+  QgsDataSourceUri dsUri( uri );
+
+  // connect to database
+  QSqlDatabase db = getDatabase( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  const QString schema = dsUri.schema();
+  const QString table = dsUri.table();
+
+  if ( !openDatabase( db ) )
+  {
+    if ( errorMessage )
+      *errorMessage = db.lastError().text();
+    return false;
+  }
+
+  QSqlQuery q = QSqlQuery( db );
+  if ( !q.exec( QString( "DROP VIEW [%1].[%2]" ).arg( schema, table ) ) )
+  {
+    if ( errorMessage )
+      *errorMessage = q.lastError().text();
+    return false;
+  }
+
+  return true;
+}
+
 bool QgsMssqlConnection::dropTable( const QString &uri, QString *errorMessage )
 {
   QgsDataSourceUri dsUri( uri );
@@ -332,6 +359,98 @@ bool QgsMssqlConnection::isSystemSchema( const QString &schema )
   };
 
   return sSystemSchemas.contains( schema );
+}
+
+QgsDataSourceUri QgsMssqlConnection::connUri( const QString &connName )
+{
+
+  QgsSettings settings;
+
+  const QString key = "/MSSQL/connections/" + connName;
+
+  const QString service = settings.value( key + "/service" ).toString();
+  const QString host = settings.value( key + "/host" ).toString();
+  const QString database = settings.value( key + "/database" ).toString();
+  const QString username = settings.value( key + "/username" ).toString();
+  const QString password = settings.value( key + "/password" ).toString();
+
+  const bool useGeometryColumns { QgsMssqlConnection::geometryColumnsOnly( connName ) };
+  const bool useEstimatedMetadata { QgsMssqlConnection::useEstimatedMetadata( connName ) };
+  const bool allowGeometrylessTables { QgsMssqlConnection::allowGeometrylessTables( connName ) };
+  const bool disableGeometryHandling { QgsMssqlConnection::isInvalidGeometryHandlingDisabled( connName ) };
+
+  QgsDataSourceUri uri;
+  if ( !service.isEmpty() )
+  {
+    uri.setConnection( service, database, username, password );
+  }
+  else
+  {
+    uri.setConnection( host, QString(), database, username, password );
+  }
+
+  uri.setParam( QStringLiteral( "geometryColumnsOnly" ), useGeometryColumns ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  uri.setUseEstimatedMetadata( useEstimatedMetadata );
+  uri.setParam( QStringLiteral( "allowGeometrylessTables" ), allowGeometrylessTables ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  uri.setParam( QStringLiteral( "disableInvalidGeometryHandling" ), disableGeometryHandling ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+
+  if ( settings.value( QStringLiteral( "saveUsername" ) ).isValid() )
+  {
+    const bool saveUsername { settings.value( QStringLiteral( "saveUsername" ) ).toBool() };
+    uri.setParam( QStringLiteral( "saveUsername" ), saveUsername ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+    if ( ! saveUsername )
+    {
+      uri.setUsername( QString() );
+    }
+  }
+  if ( settings.value( QStringLiteral( "savePassword" ) ).isValid() )
+  {
+    const bool savePassword { settings.value( QStringLiteral( "savePassword" ) ).toBool() };
+    uri.setParam( QStringLiteral( "savePassword" ), savePassword ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+    if ( ! savePassword )
+    {
+      uri.setPassword( QString() );
+    }
+  }
+
+  return uri;
+}
+
+QStringList QgsMssqlConnection::connectionList()
+{
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "MSSQL/connections" ) );
+  return settings.childGroups();
+}
+
+QList<QgsVectorDataProvider::NativeType> QgsMssqlConnection::nativeTypes()
+{
+  return QList<QgsVectorDataProvider::NativeType>()
+         // integer types
+         << QgsVectorDataProvider::NativeType( QObject::tr( "8 Bytes integer" ), QStringLiteral( "bigint" ), QVariant::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "4 Bytes integer" ), QStringLiteral( "int" ), QVariant::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "2 Bytes integer" ), QStringLiteral( "smallint" ), QVariant::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "1 Bytes integer" ), QStringLiteral( "tinyint" ), QVariant::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal number (numeric)" ), QStringLiteral( "numeric" ), QVariant::Double, 1, 20, 0, 20 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal number (decimal)" ), QStringLiteral( "decimal" ), QVariant::Double, 1, 20, 0, 20 )
+
+         // floating point
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal number (real)" ), QStringLiteral( "real" ), QVariant::Double )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal number (double)" ), QStringLiteral( "float" ), QVariant::Double )
+
+         // date/time types
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Time" ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Date & Time" ), QStringLiteral( "datetime" ), QVariant::DateTime, -1, -1, -1, -1 )
+
+         // string types
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, fixed length (char)" ), QStringLiteral( "char" ), QVariant::String, 1, 255 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, limited variable length (varchar)" ), QStringLiteral( "varchar" ), QVariant::String, 1, 255 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, fixed length unicode (nchar)" ), QStringLiteral( "nchar" ), QVariant::String, 1, 255 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, limited variable length unicode (nvarchar)" ), QStringLiteral( "nvarchar" ), QVariant::String, 1, 255 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, unlimited length unicode (ntext)" ), QStringLiteral( "text" ), QVariant::String )
+         ;
 }
 
 QString QgsMssqlConnection::dbConnectionName( const QString &name )

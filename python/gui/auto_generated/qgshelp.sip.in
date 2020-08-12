@@ -20,6 +20,7 @@ Multiple locations are supported, they will be used in order of
 preference, from top to bottom.
 
 URI construction takes in account following information:
+
 - QGIS version
 - language of the QGIS UI
 

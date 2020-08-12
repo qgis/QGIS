@@ -15,7 +15,7 @@ class QgsAggregateCalculator
 {
 %Docstring
 Utility class for calculating aggregates for a field (or expression) over the features
-from a vector layer. It is recommended that QgsVectorLayer.aggregate() is used rather then
+from a vector layer. It is recommended that :py:func:`QgsVectorLayer.aggregate()` is used rather then
 directly using this class, as the QgsVectorLayer method can handle delegating aggregate calculation
 to a data provider for remote calculation.
 
@@ -66,6 +66,8 @@ to a data provider for remote calculation.
       QString filter;
 
       QString delimiter;
+
+      QgsFeatureRequest::OrderBy orderBy;
     };
 
     QgsAggregateCalculator( const QgsVectorLayer *layer );
@@ -92,6 +94,16 @@ Sets all aggregate parameters from a parameter bundle.
 Sets a filter to limit the features used during the aggregate calculation.
 
 :param filterExpression: expression for filtering features, or empty string to remove filter
+
+.. seealso:: :py:func:`filter`
+%End
+
+    void setFidsFilter( const QgsFeatureIds &fids );
+%Docstring
+Sets a filter to limit the features used during the aggregate calculation.
+If an expression filter is set, it will override this filter.
+
+:param fids: feature ids for feature filtering, and empty list will return no features.
 
 .. seealso:: :py:func:`filter`
 %End
@@ -151,7 +163,6 @@ Structured information for available aggregates.
 %End
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

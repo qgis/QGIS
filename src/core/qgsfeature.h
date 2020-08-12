@@ -96,7 +96,7 @@ class CORE_EXPORT QgsFeature
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsFeature
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsFeature
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -176,9 +176,9 @@ class CORE_EXPORT QgsFeature
      * \param id feature id
      */
 #ifndef SIP_RUN
-    QgsFeature( QgsFeatureId id = QgsFeatureId() );
+    QgsFeature( QgsFeatureId id = FID_NULL );
 #else
-    QgsFeature( qint64 id = 0 );
+    QgsFeature( qint64 id = FID_NULL );
 #endif
 
     /**
@@ -187,9 +187,9 @@ class CORE_EXPORT QgsFeature
      * \param id feature id
      */
 #ifndef SIP_RUN
-    QgsFeature( const QgsFields &fields, QgsFeatureId id = QgsFeatureId() );
+    QgsFeature( const QgsFields &fields, QgsFeatureId id = FID_NULL );
 #else
-    QgsFeature( const QgsFields &fields, qint64 id = 0 );
+    QgsFeature( const QgsFields &fields, qint64 id = FID_NULL );
 #endif
 
     /**
@@ -355,7 +355,8 @@ class CORE_EXPORT QgsFeature
      *   feature.setGeometry( QgsGeometry( geometry ) )
      * \endcode
      *
-     * * Example:
+     * ### Example
+     *
      * \code{.py}
      *   # Sets a feature's geometry to a point geometry
      *   feature.setGeometry( QgsPoint( 210, 41 ) )
@@ -425,7 +426,7 @@ class CORE_EXPORT QgsFeature
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -457,7 +458,7 @@ class CORE_EXPORT QgsFeature
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
       sipRes = false;
     }
@@ -486,7 +487,7 @@ class CORE_EXPORT QgsFeature
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else

@@ -14,198 +14,80 @@
  ***************************************************************************/
 
 #include "qgsextentgroupbox.h"
-
-#include "qgslogger.h"
-#include "qgscoordinatetransform.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayermodel.h"
-#include "qgsexception.h"
-#include "qgsproject.h"
-
-#include <QMenu>
-#include <QAction>
-#include <QDoubleValidator>
+#include "qgsextentwidget.h"
 
 QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
   , mTitleBase( tr( "Extent" ) )
 {
-  setupUi( this );
-  connect( mXMinLineEdit, &QLineEdit::textEdited, this, &QgsExtentGroupBox::setOutputExtentFromLineEdit );
-  connect( mXMaxLineEdit, &QLineEdit::textEdited, this, &QgsExtentGroupBox::setOutputExtentFromLineEdit );
-  connect( mYMinLineEdit, &QLineEdit::textEdited, this, &QgsExtentGroupBox::setOutputExtentFromLineEdit );
-  connect( mYMaxLineEdit, &QLineEdit::textEdited, this, &QgsExtentGroupBox::setOutputExtentFromLineEdit );
+  mWidget = new QgsExtentWidget( nullptr, QgsExtentWidget::ExpandedStyle );
+  QVBoxLayout *layout = new QVBoxLayout();
+  layout->addWidget( mWidget );
+  setLayout( layout );
 
-  mLayerMenu = new QMenu( this );
-  mButtonCalcFromLayer->setMenu( mLayerMenu );
-  connect( mLayerMenu, &QMenu::aboutToShow, this, &QgsExtentGroupBox::layerMenuAboutToShow );
-  mMapLayerModel = new QgsMapLayerModel( this );
+  connect( this, &QGroupBox::toggled, this, &QgsExtentGroupBox::groupBoxClicked );
+  connect( mWidget, &QgsExtentWidget::extentChanged, this, &QgsExtentGroupBox::widgetExtentChanged );
+  connect( mWidget, &QgsExtentWidget::validationChanged, this, &QgsExtentGroupBox::validationChanged );
 
-  mXMinLineEdit->setValidator( new QDoubleValidator( this ) );
-  mXMaxLineEdit->setValidator( new QDoubleValidator( this ) );
-  mYMinLineEdit->setValidator( new QDoubleValidator( this ) );
-  mYMaxLineEdit->setValidator( new QDoubleValidator( this ) );
-
-  mOriginalExtentButton->setVisible( false );
-  mButtonDrawOnCanvas->setVisible( false );
-  mCurrentExtentButton->setVisible( false );
-
-  connect( mCurrentExtentButton, &QAbstractButton::clicked, this, &QgsExtentGroupBox::setOutputExtentFromCurrent );
-  connect( mOriginalExtentButton, &QAbstractButton::clicked, this, &QgsExtentGroupBox::setOutputExtentFromOriginal );
-  connect( mButtonDrawOnCanvas, &QAbstractButton::clicked, this, &QgsExtentGroupBox::setOutputExtentFromDrawOnCanvas );
-
-  connect( this, &QGroupBox::clicked, this, &QgsExtentGroupBox::groupBoxClicked );
+  connect( mWidget, &QgsExtentWidget::toggleDialogVisibility, this, [ = ]( bool visible )
+  {
+    window()->setVisible( visible );
+  } );
 }
 
 void QgsExtentGroupBox::setOriginalExtent( const QgsRectangle &originalExtent, const QgsCoordinateReferenceSystem &originalCrs )
 {
-  mOriginalExtent = originalExtent;
-  mOriginalCrs = originalCrs;
-
-  mOriginalExtentButton->setVisible( true );
+  mWidget->setOriginalExtent( originalExtent, originalCrs );
 }
 
+QgsRectangle QgsExtentGroupBox::originalExtent() const
+{
+  return mWidget->originalExtent();
+}
+
+QgsCoordinateReferenceSystem QgsExtentGroupBox::originalCrs() const
+{
+  return mWidget->originalCrs();
+}
 
 void QgsExtentGroupBox::setCurrentExtent( const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &currentCrs )
 {
-  mCurrentExtent = currentExtent;
-  mCurrentCrs = currentCrs;
+  mWidget->setCurrentExtent( currentExtent, currentCrs );
+}
 
-  mCurrentExtentButton->setVisible( true );
+QgsRectangle QgsExtentGroupBox::currentExtent() const
+{
+  return mWidget->currentExtent();
+}
+
+QgsCoordinateReferenceSystem QgsExtentGroupBox::currentCrs() const
+{
+  return mWidget->currentCrs();
 }
 
 void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs )
 {
-  if ( mOutputCrs != outputCrs )
-  {
-    bool prevExtentEnabled = isChecked();
-    switch ( mExtentState )
-    {
-      case CurrentExtent:
-        mOutputCrs = outputCrs;
-        setOutputExtentFromCurrent();
-        break;
-
-      case OriginalExtent:
-        mOutputCrs = outputCrs;
-        setOutputExtentFromOriginal();
-        break;
-
-      case ProjectLayerExtent:
-        mOutputCrs = outputCrs;
-        setOutputExtentFromLayer( mExtentLayer.data() );
-        break;
-
-      case DrawOnCanvas:
-        mOutputCrs = outputCrs;
-        extentDrawn( outputExtent() );
-        break;
-
-      case UserExtent:
-        try
-        {
-          QgsCoordinateTransform ct( mOutputCrs, outputCrs, QgsProject::instance() );
-          QgsRectangle extent = ct.transformBoundingBox( outputExtent() );
-          mOutputCrs = outputCrs;
-          setOutputExtentFromUser( extent, outputCrs );
-        }
-        catch ( QgsCsException & )
-        {
-          // can't reproject
-          mOutputCrs = outputCrs;
-        }
-        break;
-    }
-
-    if ( !prevExtentEnabled )
-      setChecked( false );
-  }
-
+  mWidget->setOutputCrs( outputCrs );
 }
-
-void QgsExtentGroupBox::setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, ExtentState state )
-{
-  QgsRectangle extent;
-  if ( mOutputCrs == srcCrs )
-  {
-    extent = r;
-  }
-  else
-  {
-    try
-    {
-      QgsCoordinateTransform ct( srcCrs, mOutputCrs, QgsProject::instance() );
-      extent = ct.transformBoundingBox( r );
-    }
-    catch ( QgsCsException & )
-    {
-      // can't reproject
-      extent = r;
-    }
-  }
-
-  int decimals = 4;
-  switch ( mOutputCrs.mapUnits() )
-  {
-    case QgsUnitTypes::DistanceDegrees:
-    case QgsUnitTypes::DistanceUnknownUnit:
-      decimals = 9;
-      break;
-    case QgsUnitTypes::DistanceMeters:
-    case QgsUnitTypes::DistanceKilometers:
-    case QgsUnitTypes::DistanceFeet:
-    case QgsUnitTypes::DistanceNauticalMiles:
-    case QgsUnitTypes::DistanceYards:
-    case QgsUnitTypes::DistanceMiles:
-    case QgsUnitTypes::DistanceCentimeters:
-    case QgsUnitTypes::DistanceMillimeters:
-      decimals = 4;
-      break;
-  }
-  mXMinLineEdit->setText( QString::number( extent.xMinimum(), 'f', decimals ) );
-  mXMaxLineEdit->setText( QString::number( extent.xMaximum(), 'f', decimals ) );
-  mYMinLineEdit->setText( QString::number( extent.yMinimum(), 'f', decimals ) );
-  mYMaxLineEdit->setText( QString::number( extent.yMaximum(), 'f', decimals ) );
-
-  mExtentState = state;
-
-  if ( isCheckable() && !isChecked() )
-    setChecked( true );
-
-  updateTitle();
-
-  emit extentChanged( extent );
-}
-
-
-void QgsExtentGroupBox::setOutputExtentFromLineEdit()
-{
-  mExtentState = UserExtent;
-
-  updateTitle();
-
-  emit extentChanged( outputExtent() );
-}
-
 
 void QgsExtentGroupBox::updateTitle()
 {
   QString msg;
-  switch ( mExtentState )
+  switch ( mWidget->extentState() )
   {
-    case OriginalExtent:
+    case QgsExtentWidget::OriginalExtent:
       msg = tr( "layer" );
       break;
-    case CurrentExtent:
+    case QgsExtentWidget::CurrentExtent:
       msg = tr( "map view" );
       break;
-    case UserExtent:
+    case QgsExtentWidget::UserExtent:
       msg = tr( "user defined" );
       break;
-    case ProjectLayerExtent:
-      msg = mExtentLayerName;
+    case QgsExtentWidget::ProjectLayerExtent:
+      msg = mWidget->extentLayerName();
       break;
-    case DrawOnCanvas:
+    case QgsExtentWidget::DrawOnCanvas:
       msg = tr( "drawn on canvas" );
       break;
   }
@@ -216,106 +98,34 @@ void QgsExtentGroupBox::updateTitle()
   setTitle( msg );
 }
 
-void QgsExtentGroupBox::layerMenuAboutToShow()
-{
-  qDeleteAll( mMenuActions );
-  mMenuActions.clear();
-  mLayerMenu->clear();
-  for ( int i = 0; i < mMapLayerModel->rowCount(); ++i )
-  {
-    QModelIndex index = mMapLayerModel->index( i, 0 );
-    QIcon icon = qvariant_cast<QIcon>( mMapLayerModel->data( index, Qt::DecorationRole ) );
-    QString text = mMapLayerModel->data( index, Qt::DisplayRole ).toString();
-    QAction *act = new QAction( icon, text, mLayerMenu );
-    act->setToolTip( mMapLayerModel->data( index, Qt::ToolTipRole ).toString() );
-    QString layerId = mMapLayerModel->data( index, QgsMapLayerModel::LayerIdRole ).toString();
-    if ( mExtentState == ProjectLayerExtent && mExtentLayer && mExtentLayer->id() == layerId )
-    {
-      act->setCheckable( true );
-      act->setChecked( true );
-    }
-    connect( act, &QAction::triggered, this, [this, layerId]
-    {
-      setExtentToLayerExtent( layerId );
-    } );
-    mLayerMenu->addAction( act );
-    mMenuActions << act;
-  }
-}
-
-void QgsExtentGroupBox::setExtentToLayerExtent( const QString &layerId )
-{
-  QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
-  if ( !layer )
-    return;
-
-  setOutputExtentFromLayer( layer );
-}
-
 void QgsExtentGroupBox::setOutputExtentFromCurrent()
 {
-  if ( mCanvas )
-  {
-    // Use unrotated visible extent to insure output size and scale matches canvas
-    QgsMapSettings ms = mCanvas->mapSettings();
-    ms.setRotation( 0 );
-    setOutputExtent( ms.visibleExtent(), ms.destinationCrs(), CurrentExtent );
-  }
-  else
-  {
-    setOutputExtent( mCurrentExtent, mCurrentCrs, CurrentExtent );
-  }
+  mWidget->setOutputExtentFromCurrent();
 }
-
 
 void QgsExtentGroupBox::setOutputExtentFromOriginal()
 {
-  setOutputExtent( mOriginalExtent, mOriginalCrs, OriginalExtent );
+  mWidget->setOutputExtentFromOriginal();
 }
 
 void QgsExtentGroupBox::setOutputExtentFromUser( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs )
 {
-  setOutputExtent( extent, crs, UserExtent );
+  mWidget->setOutputExtentFromUser( extent, crs );
 }
 
 void QgsExtentGroupBox::setOutputExtentFromLayer( const QgsMapLayer *layer )
 {
-  if ( !layer )
-    return;
-
-  mExtentLayer = layer;
-  mExtentLayerName = layer->name();
-
-  setOutputExtent( layer->extent(), layer->crs(), ProjectLayerExtent );
+  mWidget->setOutputExtentFromLayer( layer );
 }
 
 void QgsExtentGroupBox::setOutputExtentFromDrawOnCanvas()
 {
-  if ( mCanvas )
-  {
-    mMapToolPrevious = mCanvas->mapTool();
-    if ( !mMapToolExtent )
-    {
-      mMapToolExtent.reset( new QgsMapToolExtent( mCanvas ) );
-      connect( mMapToolExtent.get(), &QgsMapToolExtent::extentChanged, this, &QgsExtentGroupBox::extentDrawn );
-      connect( mMapToolExtent.get(), &QgsMapTool::deactivated, this, [ = ]
-      {
-        window()->setVisible( true );
-        mMapToolPrevious = nullptr;
-      } );
-    }
-    mMapToolExtent->setRatio( mRatio );
-    mCanvas->setMapTool( mMapToolExtent.get() );
-    window()->setVisible( false );
-  }
+  mWidget->setOutputExtentFromDrawOnCanvas();
 }
 
-void QgsExtentGroupBox::extentDrawn( const QgsRectangle &extent )
+void QgsExtentGroupBox::setRatio( QSize ratio )
 {
-  setOutputExtent( extent, mCanvas->mapSettings().destinationCrs(), DrawOnCanvas );
-  mCanvas->setMapTool( mMapToolPrevious );
-  window()->setVisible( true );
-  mMapToolPrevious = nullptr;
+  mWidget->setRatio( ratio );
 }
 
 void QgsExtentGroupBox::groupBoxClicked()
@@ -329,14 +139,40 @@ void QgsExtentGroupBox::groupBoxClicked()
   emit extentChanged( outputExtent() );
 }
 
+void QgsExtentGroupBox::widgetExtentChanged()
+{
+  updateTitle();
+
+  emit extentChanged( outputExtent() );
+}
+
+void QgsExtentGroupBox::validationChanged( bool valid )
+{
+  if ( valid )
+  {
+    if ( isCheckable() && !isChecked() )
+      setChecked( true );
+  }
+  else if ( isCheckable() && isChecked() )
+    setChecked( false );
+}
 
 QgsRectangle QgsExtentGroupBox::outputExtent() const
 {
   if ( isCheckable() && !isChecked() )
     return QgsRectangle();
 
-  return QgsRectangle( mXMinLineEdit->text().toDouble(), mYMinLineEdit->text().toDouble(),
-                       mXMaxLineEdit->text().toDouble(), mYMaxLineEdit->text().toDouble() );
+  return mWidget->outputExtent();
+}
+
+QgsCoordinateReferenceSystem QgsExtentGroupBox::outputCrs() const
+{
+  return mWidget->outputCrs();
+}
+
+QgsExtentGroupBox::ExtentState QgsExtentGroupBox::extentState() const
+{
+  return static_cast< QgsExtentGroupBox::ExtentState >( mWidget->extentState() );
 }
 
 void QgsExtentGroupBox::setTitleBase( const QString &title )
@@ -352,15 +188,10 @@ QString QgsExtentGroupBox::titleBase() const
 
 void QgsExtentGroupBox::setMapCanvas( QgsMapCanvas *canvas )
 {
-  if ( canvas )
-  {
-    mCanvas = canvas;
-    mButtonDrawOnCanvas->setVisible( true );
-    mCurrentExtentButton->setVisible( true );
-  }
-  else
-  {
-    mButtonDrawOnCanvas->setVisible( false );
-    mCurrentExtentButton->setVisible( false );
-  }
+  mWidget->setMapCanvas( canvas );
+}
+
+QSize QgsExtentGroupBox::ratio() const
+{
+  return mWidget->ratio();
 }

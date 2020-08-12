@@ -22,11 +22,15 @@
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgsrenderer.h"
+#include "qgsapplication.h"
+#include "qgsvectorlayerfeatureiterator.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgslinestring.h"
+#include "qgspointlocatorinittask.h"
 #include <spatialindex/SpatialIndex.h>
 
 #include <QLinkedListIterator>
+#include <QtConcurrent>
 
 using namespace SpatialIndex;
 
@@ -99,8 +103,8 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
       , mFilter( filter )
     {}
 
-    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
     void visitData( const IData &d ) override
     {
@@ -130,6 +134,117 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
 };
 
 
+
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for centroid - builds a list of matches.
+ * \note not available in Python bindings
+ * \since QGIS 3.12
+*/
+class QgsPointLocator_VisitorNearestCentroid : public IVisitor
+{
+  public:
+
+    /**
+     * \ingroup core
+     * Helper class used when traversing the index looking for centroid - builds a list of matches.
+     * \note not available in Python bindings
+     * \since QGIS 3.12
+    */
+    QgsPointLocator_VisitorNearestCentroid( QgsPointLocator *pl, QgsPointLocator::Match &m, const QgsPointXY &srcPoint, QgsPointLocator::MatchFilter *filter = nullptr )
+      : mLocator( pl )
+      , mBest( m )
+      , mSrcPoint( srcPoint )
+      , mFilter( filter )
+    {}
+
+    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+
+    void visitData( const IData &d ) override
+    {
+      QgsFeatureId id = d.getIdentifier();
+      QgsGeometry *geom = mLocator->mGeoms.value( id );
+
+      QgsPointXY pt = geom->centroid().asPoint();
+
+      QgsPointLocator::Match m( QgsPointLocator::Centroid, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( pt ) ), pt, -1 );
+      // in range queries the filter may reject some matches
+      if ( mFilter && !mFilter->acceptMatch( m ) )
+        return;
+
+      if ( !mBest.isValid() || m.distance() < mBest.distance() )
+        mBest = m;
+
+    }
+
+  private:
+    QgsPointLocator *mLocator = nullptr;
+    QgsPointLocator::Match &mBest;
+    QgsPointXY mSrcPoint;
+    QgsPointLocator::MatchFilter *mFilter = nullptr;
+};
+
+////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for middle segment - builds a list of matches.
+ * \note not available in Python bindings
+ * \since QGIS 3.12
+*/
+class QgsPointLocator_VisitorNearestMiddleOfSegment: public IVisitor
+{
+  public:
+
+    /**
+     * \ingroup core
+     * Helper class used when traversing the index looking for middle segment - builds a list of matches.
+     * \note not available in Python bindings
+     * \since QGIS 3.12
+    */
+    QgsPointLocator_VisitorNearestMiddleOfSegment( QgsPointLocator *pl, QgsPointLocator::Match &m, const QgsPointXY &srcPoint, QgsPointLocator::MatchFilter *filter = nullptr )
+      : mLocator( pl )
+      , mBest( m )
+      , mSrcPoint( srcPoint )
+      , mFilter( filter )
+    {}
+
+    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+
+    void visitData( const IData &d ) override
+    {
+      QgsFeatureId id = d.getIdentifier();
+      QgsGeometry *geom = mLocator->mGeoms.value( id );
+      QgsPointXY pt;
+      int afterVertex;
+      double sqrDist = geom->closestSegmentWithContext( mSrcPoint, pt, afterVertex, nullptr, POINT_LOC_EPSILON );
+      if ( sqrDist < 0 )
+        return;
+
+      QgsPointXY edgePoints[2];
+      edgePoints[0] = geom->vertexAt( afterVertex - 1 );
+      edgePoints[1] = geom->vertexAt( afterVertex );
+      pt = QgsPointXY( ( edgePoints[0].x() + edgePoints[1].x() ) / 2.0, ( edgePoints[0].y() + edgePoints[1].y() ) / 2.0 );
+
+      QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( pt ) ), pt, -1 );
+      // in range queries the filter may reject some matches
+      if ( mFilter && !mFilter->acceptMatch( m ) )
+        return;
+
+      if ( !mBest.isValid() || m.distance() < mBest.distance() )
+        mBest = m;
+
+    }
+
+  private:
+    QgsPointLocator *mLocator = nullptr;
+    QgsPointLocator::Match &mBest;
+    QgsPointXY mSrcPoint;
+    QgsPointLocator::MatchFilter *mFilter = nullptr;
+};
+
 ////////////////////////////////////////////////////////////////////////////
 
 
@@ -148,8 +263,8 @@ class QgsPointLocator_VisitorNearestEdge : public IVisitor
       , mFilter( filter )
     {}
 
-    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
     void visitData( const IData &d ) override
     {
@@ -198,8 +313,8 @@ class QgsPointLocator_VisitorArea : public IVisitor
       , mGeomPt( QgsGeometry::fromPointXY( origPt ) )
     {}
 
-    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
     void visitData( const IData &d ) override
     {
@@ -392,8 +507,8 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
       , mFilter( filter )
     {}
 
-    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
     void visitData( const IData &d ) override
     {
@@ -437,8 +552,8 @@ class QgsPointLocator_VisitorVerticesInRect : public IVisitor
       , mFilter( filter )
     {}
 
-    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
     void visitData( const IData &d ) override
     {
@@ -467,6 +582,101 @@ class QgsPointLocator_VisitorVerticesInRect : public IVisitor
     QgsPointLocator::MatchFilter *mFilter = nullptr;
 };
 
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for centroid - builds a list of matches.
+ * \note not available in Python bindings
+ * \since QGIS 3.10
+*/
+class QgsPointLocator_VisitorCentroidsInRect : public IVisitor
+{
+  public:
+    //! Constructs the visitor
+    QgsPointLocator_VisitorCentroidsInRect( QgsPointLocator *pl, QgsPointLocator::MatchList &lst, const QgsRectangle &srcRect, QgsPointLocator::MatchFilter *filter = nullptr )
+      : mLocator( pl )
+      , mList( lst )
+      , mSrcRect( srcRect )
+      , mFilter( filter )
+    {}
+
+    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+
+    void visitData( const IData &d ) override
+    {
+      QgsFeatureId id = d.getIdentifier();
+      const QgsGeometry *geom = mLocator->mGeoms.value( id );
+      const QgsPointXY centroid = geom->centroid().asPoint();
+      if ( mSrcRect.contains( centroid ) )
+      {
+        QgsPointLocator::Match m( QgsPointLocator::Centroid, mLocator->mLayer, id, 0, centroid, -1 );
+
+        // in range queries the filter may reject some matches
+        if ( !( mFilter && !mFilter->acceptMatch( m ) ) )
+          mList << m;
+      }
+    }
+
+  private:
+    QgsPointLocator *mLocator = nullptr;
+    QgsPointLocator::MatchList &mList;
+    QgsRectangle mSrcRect;
+    QgsPointLocator::MatchFilter *mFilter = nullptr;
+};
+
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for middle segment - builds a list of matches.
+ * \note not available in Python bindings
+ * \since QGIS 3.10
+*/
+class QgsPointLocator_VisitorMiddlesInRect : public IVisitor
+{
+  public:
+    //! Constructs the visitor
+    QgsPointLocator_VisitorMiddlesInRect( QgsPointLocator *pl, QgsPointLocator::MatchList &lst, const QgsRectangle &srcRect, QgsPointLocator::MatchFilter *filter = nullptr )
+      : mLocator( pl )
+      , mList( lst )
+      , mSrcRect( srcRect )
+      , mFilter( filter )
+    {}
+
+    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+
+    void visitData( const IData &d ) override
+    {
+      QgsFeatureId id = d.getIdentifier();
+      const QgsGeometry *geom = mLocator->mGeoms.value( id );
+
+      for ( QgsAbstractGeometry::const_part_iterator itPart = geom->const_parts_begin() ; itPart != geom->const_parts_end() ; ++itPart )
+      {
+        QgsAbstractGeometry::vertex_iterator it = ( *itPart )->vertices_begin();
+        QgsAbstractGeometry::vertex_iterator itPrevious = ( *itPart )->vertices_begin();
+        it++;
+        for ( ; it != geom->vertices_end(); ++it, ++itPrevious )
+        {
+          QgsPointXY pt( ( ( *itPrevious ).x() + ( *it ).x() ) / 2.0, ( ( *itPrevious ).y() + ( *it ).y() ) / 2.0 );
+          if ( mSrcRect.contains( pt ) )
+          {
+            QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, 0, pt, -1 );
+
+            // in range queries the filter may reject some matches
+            if ( mFilter && !mFilter->acceptMatch( m ) )
+              continue;
+
+            mList << m;
+          }
+        }
+      }
+    }
+
+  private:
+    QgsPointLocator *mLocator = nullptr;
+    QgsPointLocator::MatchList &mList;
+    QgsRectangle mSrcRect;
+    QgsPointLocator::MatchFilter *mFilter = nullptr;
+};
 
 ////////////////////////////////////////////////////////////////////////////
 #include <QStack>
@@ -544,6 +754,11 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateRefe
 
 QgsPointLocator::~QgsPointLocator()
 {
+  // don't delete a locator if there is an indexing task running on it
+  mIsDestroying = true;
+  if ( mIsIndexing )
+    waitForIndexingFinished();
+
   destroyIndex();
 }
 
@@ -554,6 +769,10 @@ QgsCoordinateReferenceSystem QgsPointLocator::destinationCrs() const
 
 void QgsPointLocator::setExtent( const QgsRectangle *extent )
 {
+  if ( mIsIndexing )
+    // already indexing, return!
+    return;
+
   mExtent.reset( extent ? new QgsRectangle( *extent ) : nullptr );
 
   destroyIndex();
@@ -561,6 +780,10 @@ void QgsPointLocator::setExtent( const QgsRectangle *extent )
 
 void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
 {
+  if ( mIsIndexing )
+    // already indexing, return!
+    return;
+
   disconnect( mLayer, &QgsVectorLayer::styleChanged, this, &QgsPointLocator::destroyIndex );
 
   destroyIndex();
@@ -574,27 +797,115 @@ void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
 
 }
 
-bool QgsPointLocator::init( int maxFeaturesToIndex )
+void QgsPointLocator::onInitTaskFinished()
 {
-  return hasIndex() ? true : rebuildIndex( maxFeaturesToIndex );
+  // Check that we don't call this method twice, when calling waitForFinished
+  // for instance (because of taskCompleted signal)
+  if ( !mIsIndexing )
+    return;
+
+  if ( mIsDestroying )
+    return;
+
+  mIsIndexing = false;
+  mRenderer.reset();
+  mSource.reset();
+
+  // treat added and deleted feature while indexing
+  for ( QgsFeatureId fid : mAddedFeatures )
+    onFeatureAdded( fid );
+  mAddedFeatures.clear();
+
+  for ( QgsFeatureId fid : mDeletedFeatures )
+    onFeatureDeleted( fid );
+  mDeletedFeatures.clear();
+
+  emit initFinished( mInitTask->isBuildOK() );
 }
 
+bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
+{
+  const QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
+  if ( geomType == QgsWkbTypes::NullGeometry // nothing to index
+       || hasIndex()
+       || mIsIndexing ) // already indexing, return!
+    return true;
+
+  if ( !mLayer->dataProvider()
+       || !mLayer->dataProvider()->isValid() )
+    return false;
+
+  mRenderer.reset( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
+  mSource.reset( new QgsVectorLayerFeatureSource( mLayer ) );
+
+  if ( mContext )
+  {
+    mContext->expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
+  }
+
+  mIsIndexing = true;
+
+  if ( relaxed )
+  {
+    mInitTask = new QgsPointLocatorInitTask( this );
+    connect( mInitTask, &QgsPointLocatorInitTask::taskTerminated, this, &QgsPointLocator::onInitTaskFinished );
+    connect( mInitTask, &QgsPointLocatorInitTask::taskCompleted, this, &QgsPointLocator::onInitTaskFinished );
+    QgsApplication::taskManager()->addTask( mInitTask );
+    return true;
+  }
+  else
+  {
+    const bool ok = rebuildIndex( maxFeaturesToIndex );
+    mIsIndexing = false;
+    emit initFinished( ok );
+    return ok;
+  }
+}
+
+void QgsPointLocator::waitForIndexingFinished()
+{
+  mInitTask->waitForFinished();
+
+  if ( !mIsDestroying )
+    onInitTaskFinished();
+}
 
 bool QgsPointLocator::hasIndex() const
 {
-  return mRTree || mIsEmptyLayer;
+  return mIsIndexing || mRTree || mIsEmptyLayer;
 }
 
+bool QgsPointLocator::prepare( bool relaxed )
+{
+  if ( mIsIndexing )
+  {
+    if ( relaxed )
+      return false;
+    else
+      waitForIndexingFinished();
+  }
+
+  if ( !mRTree )
+  {
+    init( -1, relaxed );
+    if ( ( relaxed && mIsIndexing ) || !mRTree ) // relaxed mode and currently indexing or still invalid?
+      return false;
+  }
+
+  return true;
+}
 
 bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 {
+  QElapsedTimer t;
+  t.start();
+
+  QgsDebugMsgLevel( QStringLiteral( "RebuildIndex start : %1" ).arg( mSource->id() ), 2 );
+
   destroyIndex();
 
   QLinkedList<RTree::Data *> dataList;
   QgsFeature f;
-  QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
-  if ( geomType == QgsWkbTypes::NullGeometry )
-    return true; // nothing to index
 
   QgsFeatureRequest request;
   request.setNoAttributes();
@@ -610,8 +921,8 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       }
       catch ( const QgsException &e )
       {
-        Q_UNUSED( e );
-        // See https://issues.qgis.org/issues/12634
+        Q_UNUSED( e )
+        // See https://github.com/qgis/QGIS/issues/20749
         QgsDebugMsg( QStringLiteral( "could not transform bounding box to map, skipping the snap filter (%1)" ).arg( e.what() ) );
       }
     }
@@ -619,22 +930,20 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   }
 
   bool filter = false;
-  std::unique_ptr< QgsFeatureRenderer > renderer( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
   QgsRenderContext *ctx = nullptr;
   if ( mContext )
   {
-    mContext->expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
     ctx = mContext.get();
-    if ( renderer )
+    if ( mRenderer )
     {
       // setup scale for scale dependent visibility (rule based)
-      renderer->startRender( *ctx, mLayer->fields() );
-      filter = renderer->capabilities() & QgsFeatureRenderer::Filter;
-      request.setSubsetOfAttributes( renderer->usedAttributes( *ctx ), mLayer->fields() );
+      mRenderer->startRender( *ctx, mSource->fields() );
+      filter = mRenderer->capabilities() & QgsFeatureRenderer::Filter;
+      request.setSubsetOfAttributes( mRenderer->usedAttributes( *ctx ), mSource->fields() );
     }
   }
 
-  QgsFeatureIterator fi = mLayer->getFeatures( request );
+  QgsFeatureIterator fi = mSource->getFeatures( request );
   int indexedCount = 0;
 
   while ( fi.nextFeature( f ) )
@@ -642,10 +951,10 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
     if ( !f.hasGeometry() )
       continue;
 
-    if ( filter && ctx && renderer )
+    if ( filter && ctx && mRenderer )
     {
       ctx->expressionContext().setFeature( f );
-      if ( !renderer->willRenderFeature( f, *ctx ) )
+      if ( !mRenderer->willRenderFeature( f, *ctx ) )
       {
         continue;
       }
@@ -661,20 +970,24 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       }
       catch ( const QgsException &e )
       {
-        Q_UNUSED( e );
-        // See https://issues.qgis.org/issues/12634
+        Q_UNUSED( e )
+        // See https://github.com/qgis/QGIS/issues/20749
         QgsDebugMsg( QStringLiteral( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
         continue;
       }
     }
 
-    SpatialIndex::Region r( rect2region( f.geometry().boundingBox() ) );
-    dataList << new RTree::Data( 0, nullptr, r, f.id() );
+    const QgsRectangle bbox = f.geometry().boundingBox();
+    if ( bbox.isFinite() )
+    {
+      SpatialIndex::Region r( rect2region( bbox ) );
+      dataList << new RTree::Data( 0, nullptr, r, f.id() );
 
-    if ( mGeoms.contains( f.id() ) )
-      delete mGeoms.take( f.id() );
-    mGeoms[f.id()] = new QgsGeometry( f.geometry() );
-    ++indexedCount;
+      if ( mGeoms.contains( f.id() ) )
+        delete mGeoms.take( f.id() );
+      mGeoms[f.id()] = new QgsGeometry( f.geometry() );
+      ++indexedCount;
+    }
 
     if ( maxFeaturesToIndex != -1 && indexedCount > maxFeaturesToIndex )
     {
@@ -702,10 +1015,13 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   mRTree.reset( RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, stream, *mStorage, fillFactor, indexCapacity,
                 leafCapacity, dimension, variant, indexId ) );
 
-  if ( ctx && renderer )
+  if ( ctx && mRenderer )
   {
-    renderer->stopRender( *ctx );
+    mRenderer->stopRender( *ctx );
   }
+
+  QgsDebugMsgLevel( QStringLiteral( "RebuildIndex end : %1 ms (%2)" ).arg( t.elapsed() ).arg( mSource->id() ), 2 );
+
   return true;
 }
 
@@ -723,10 +1039,21 @@ void QgsPointLocator::destroyIndex()
 
 void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
 {
+  if ( mIsIndexing )
+  {
+    // will modify index once current indexing is finished
+    mAddedFeatures << fid;
+    return;
+  }
+
   if ( !mRTree )
   {
     if ( mIsEmptyLayer )
-      rebuildIndex(); // first feature - let's built the index
+    {
+      // layer is not empty any more, let's build the index
+      mIsEmptyLayer = false;
+      init();
+    }
     return; // nothing to do if we are not initialized yet
   }
 
@@ -770,15 +1097,15 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
       }
       catch ( const QgsException &e )
       {
-        Q_UNUSED( e );
-        // See https://issues.qgis.org/issues/12634
+        Q_UNUSED( e )
+        // See https://github.com/qgis/QGIS/issues/20749
         QgsDebugMsg( QStringLiteral( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
         return;
       }
     }
 
-    QgsRectangle bbox = f.geometry().boundingBox();
-    if ( !bbox.isNull() )
+    const QgsRectangle bbox = f.geometry().boundingBox();
+    if ( bbox.isFinite() )
     {
       SpatialIndex::Region r( rect2region( bbox ) );
       mRTree->insertData( 0, nullptr, r, f.id() );
@@ -792,6 +1119,20 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
 
 void QgsPointLocator::onFeatureDeleted( QgsFeatureId fid )
 {
+  if ( mIsIndexing )
+  {
+    if ( mAddedFeatures.contains( fid ) )
+    {
+      mAddedFeatures.remove( fid );
+    }
+    else
+    {
+      // will modify index once current indexing is finished
+      mDeletedFeatures << fid;
+    }
+    return;
+  }
+
   if ( !mRTree )
     return; // nothing to do if we are not initialized yet
 
@@ -805,15 +1146,15 @@ void QgsPointLocator::onFeatureDeleted( QgsFeatureId fid )
 
 void QgsPointLocator::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
-  Q_UNUSED( geom );
+  Q_UNUSED( geom )
   onFeatureDeleted( fid );
   onFeatureAdded( fid );
 }
 
 void QgsPointLocator::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
-  Q_UNUSED( idx );
-  Q_UNUSED( value );
+  Q_UNUSED( idx )
+  Q_UNUSED( value )
   if ( mContext )
   {
     onFeatureDeleted( fid );
@@ -822,14 +1163,10 @@ void QgsPointLocator::onAttributeValueChanged( QgsFeatureId fid, int idx, const 
 }
 
 
-QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPointXY &point, double tolerance, MatchFilter *filter )
+QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPointXY &point, double tolerance, MatchFilter *filter, bool relaxed )
 {
-  if ( !mRTree )
-  {
-    init();
-    if ( !mRTree ) // still invalid?
-      return Match();
-  }
+  if ( !prepare( relaxed ) )
+    return Match();
 
   Match m;
   QgsPointLocator_VisitorNearestVertex visitor( this, m, point, filter );
@@ -840,14 +1177,40 @@ QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPointXY &point, 
   return m;
 }
 
-QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPointXY &point, double tolerance, MatchFilter *filter )
+QgsPointLocator::Match QgsPointLocator::nearestCentroid( const QgsPointXY &point, double tolerance, MatchFilter *filter, bool relaxed )
 {
-  if ( !mRTree )
-  {
-    init();
-    if ( !mRTree ) // still invalid?
-      return Match();
-  }
+  if ( !prepare( relaxed ) )
+    return Match();
+
+  Match m;
+  QgsPointLocator_VisitorNearestCentroid visitor( this, m, point, filter );
+
+  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
+  if ( m.isValid() && m.distance() > tolerance )
+    return Match(); // make sure that only match strictly within the tolerance is returned
+  return m;
+}
+
+QgsPointLocator::Match QgsPointLocator::nearestMiddleOfSegment( const QgsPointXY &point, double tolerance, MatchFilter *filter, bool relaxed )
+{
+  if ( !prepare( relaxed ) )
+    return Match();
+
+  Match m;
+  QgsPointLocator_VisitorNearestMiddleOfSegment visitor( this, m, point, filter );
+
+  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
+  if ( m.isValid() && m.distance() > tolerance )
+    return Match(); // make sure that only match strictly within the tolerance is returned
+  return m;
+}
+
+QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPointXY &point, double tolerance, MatchFilter *filter, bool relaxed )
+{
+  if ( !prepare( relaxed ) )
+    return Match();
 
   QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
   if ( geomType == QgsWkbTypes::PointGeometry )
@@ -862,17 +1225,13 @@ QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPointXY &point, do
   return m;
 }
 
-QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, double tolerance, MatchFilter *filter )
+QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, double tolerance, MatchFilter *filter, bool relaxed )
 {
-  if ( !mRTree )
-  {
-    init();
-    if ( !mRTree ) // still invalid?
-      return Match();
-  }
+  if ( !prepare( relaxed ) )
+    return Match();
 
   MatchList mlist = pointInPolygon( point );
-  if ( mlist.count() && mlist.at( 0 ).isValid() )
+  if ( !mlist.isEmpty() && mlist.at( 0 ).isValid() )
   {
     return mlist.at( 0 );
   }
@@ -896,14 +1255,10 @@ QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, do
 }
 
 
-QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter )
+QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter, bool relaxed )
 {
-  if ( !mRTree )
-  {
-    init();
-    if ( !mRTree ) // still invalid?
-      return MatchList();
-  }
+  if ( !prepare( relaxed ) )
+    return MatchList();
 
   QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
   if ( geomType == QgsWkbTypes::PointGeometry )
@@ -916,20 +1271,16 @@ QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle &rec
   return lst;
 }
 
-QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter )
+QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter, bool relaxed )
 {
   QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
-  return edgesInRect( rect, filter );
+  return edgesInRect( rect, filter, relaxed );
 }
 
-QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter )
+QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter, bool relaxed )
 {
-  if ( !mRTree )
-  {
-    init();
-    if ( !mRTree ) // still invalid?
-      return MatchList();
-  }
+  if ( !prepare( relaxed ) )
+    return MatchList();
 
   MatchList lst;
   QgsPointLocator_VisitorVerticesInRect visitor( this, lst, rect, filter );
@@ -938,21 +1289,16 @@ QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle &
   return lst;
 }
 
-QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter )
+QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter, bool relaxed )
 {
   QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
-  return verticesInRect( rect, filter );
+  return verticesInRect( rect, filter, relaxed );
 }
 
-
-QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &point )
+QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &point, bool relaxed )
 {
-  if ( !mRTree )
-  {
-    init();
-    if ( !mRTree ) // still invalid?
-      return MatchList();
-  }
+  if ( !prepare( relaxed ) )
+    return MatchList();
 
   QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
   if ( geomType == QgsWkbTypes::PointGeometry || geomType == QgsWkbTypes::LineGeometry )

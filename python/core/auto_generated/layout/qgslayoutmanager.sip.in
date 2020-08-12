@@ -17,7 +17,7 @@ Manages storage of a set of layouts.
 
 QgsLayoutManager handles the storage, serializing and deserializing
 of print layouts and reports. Usually this class is not constructed directly, but
-rather accessed through a QgsProject via :py:func:`QgsProject.layoutManager()`
+rather accessed through a QgsProject via :py:func:`QgsProject.layoutManager()`.
 
 QgsLayoutManager retains ownership of all the layouts contained
 in the manager.
@@ -106,13 +106,24 @@ Returns a DOM element representing the state of the manager.
 %Docstring
 Duplicates an existing ``layout`` from the manager. The new
 layout will automatically be stored in the manager.
-Returns new the layout if duplication was successful.
+Returns the new layout if duplication was successful.
 %End
 
     QString generateUniqueTitle( QgsMasterLayoutInterface::Type type = QgsMasterLayoutInterface::PrintLayout ) const;
 %Docstring
 Generates a unique title for a new layout of the specified ``type``, which does not
 clash with any already contained by the manager.
+%End
+
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
+within the contained layouts.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
 %End
 
   signals:
@@ -253,6 +264,27 @@ Returns the current filters used for filtering available layouts.
 Sets the current ``filters`` used for filtering available layouts.
 
 .. seealso:: :py:func:`filters`
+%End
+
+    QString filterString() const;
+%Docstring
+Returns the current filter string, if set.
+
+.. seealso:: :py:func:`setFilterString`
+
+.. versionadded:: 3.12
+%End
+
+  public slots:
+
+    void setFilterString( const QString &filter );
+%Docstring
+Sets a ``filter`` string, such that only layouts with names containing the
+specified string will be shown.
+
+.. seealso:: :py:func:`filterString`
+
+.. versionadded:: 3.12
 %End
 
 };

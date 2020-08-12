@@ -18,13 +18,13 @@ class QgsAnnotation : QObject
 Abstract base class for annotation items which are drawn over a map.
 
 QgsAnnotation is an abstract base class for map annotation items. These annotations can be
-drawn within a map, and have either a fixed map position (retrieved using mapPosition())
-or are placed relative to the map's frame (retrieved using relativePosition()).
+drawn within a map, and have either a fixed map position (retrieved using :py:func:`~mapPosition`)
+or are placed relative to the map's frame (retrieved using :py:func:`~relativePosition`).
 Annotations with a fixed map position also have a corresponding
-QgsCoordinateReferenceSystem, which can be determined by calling mapPositionCrs().
+QgsCoordinateReferenceSystem, which can be determined by calling :py:func:`~mapPositionCrs`.
 
 Derived classes should implement their custom painting routines within
-a renderAnnotation() override.
+a :py:func:`~renderAnnotation` override.
 
 .. versionadded:: 3.0
 %End
@@ -143,34 +143,84 @@ the relative percentage for the position compared to the map width and height.
 .. seealso:: :py:func:`relativePosition`
 %End
 
-    void setFrameOffsetFromReferencePoint( QPointF offset );
+ void setFrameOffsetFromReferencePoint( QPointF offset ) /Deprecated/;
 %Docstring
-Sets the annotation's frame's offset from the mapPosition() reference point.
+Sets the annotation's frame's offset (in pixels) from the :py:func:`~QgsAnnotation.mapPosition` reference point.
 
 .. seealso:: :py:func:`frameOffsetFromReferencePoint`
+
+.. deprecated::
+   use setFrameOffsetFromReferencePointMm() instead
 %End
 
-    QPointF frameOffsetFromReferencePoint() const;
+ QPointF frameOffsetFromReferencePoint() const /Deprecated/;
 %Docstring
-Returns the annotation's frame's offset from the mapPosition() reference point.
+Returns the annotation's frame's offset (in pixels) from the :py:func:`~QgsAnnotation.mapPosition` reference point.
 
 .. seealso:: :py:func:`setFrameOffsetFromReferencePoint`
+
+.. deprecated::
+   use frameOffsetFromReferencePointMm() instead
 %End
 
-    void setFrameSize( QSizeF size );
+    void setFrameOffsetFromReferencePointMm( QPointF offset );
 %Docstring
-Sets the size of the annotation's frame (the main area in which
+Sets the annotation's frame's offset (in millimeters) from the :py:func:`~QgsAnnotation.mapPosition` reference point.
+
+.. seealso:: :py:func:`frameOffsetFromReferencePointMm`
+
+.. versionadded:: 3.4.8
+%End
+
+    QPointF frameOffsetFromReferencePointMm() const;
+%Docstring
+Returns the annotation's frame's offset (in millimeters) from the :py:func:`~QgsAnnotation.mapPosition` reference point.
+
+.. seealso:: :py:func:`setFrameOffsetFromReferencePointMm`
+
+.. versionadded:: 3.4.8
+%End
+
+ void setFrameSize( QSizeF size ) /Deprecated/;
+%Docstring
+Sets the size (in pixels) of the annotation's frame (the main area in which
 the annotation's content is drawn).
 
 .. seealso:: :py:func:`frameSize`
+
+.. deprecated::
+   use setFrameSizeMm() instead
 %End
 
-    QSizeF frameSize() const;
+ QSizeF frameSize() const /Deprecated/;
 %Docstring
-Returns the size of the annotation's frame (the main area in which
+Returns the size (in pixels) of the annotation's frame (the main area in which
 the annotation's content is drawn).
 
 .. seealso:: :py:func:`setFrameSize`
+
+.. deprecated::
+   use frameSizeMm() instead
+%End
+
+    void setFrameSizeMm( QSizeF size );
+%Docstring
+Sets the size (in millimeters) of the annotation's frame (the main area in which
+the annotation's content is drawn).
+
+.. seealso:: :py:func:`frameSizeMm`
+
+.. versionadded:: 3.4.8
+%End
+
+    QSizeF frameSizeMm() const;
+%Docstring
+Returns the size (in millimeters) of the annotation's frame (the main area in which
+the annotation's content is drawn).
+
+.. seealso:: :py:func:`setFrameSizeMm`
+
+.. versionadded:: 3.4.8
 %End
 
     void setContentsMargin( const QgsMargins &margins );
@@ -277,6 +327,17 @@ Sets the feature associated with the annotation.
 .. seealso:: :py:func:`associatedFeature`
 %End
 
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
+within the annotation.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
+%End
+
   signals:
 
     void appearanceChanged();
@@ -333,7 +394,7 @@ This method should be called from subclasses in their readXml method.
 %Docstring
 Copies common annotation properties to the ``targe``
 annotation.
-Can be used within QgsAnnotation.clone() implementations
+Can be used within :py:func:`QgsAnnotation.clone()` implementations
 to assist with creating copies.
 %End
 

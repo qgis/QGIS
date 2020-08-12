@@ -1,6 +1,7 @@
 {
   "name": "substr",
   "type": "function",
+  "groups": ["String"],
   "description": "Returns a part of a string.",
   "arguments": [ {"arg":"string","description":"the full input string"},
   {"arg":"start","description":"integer representing start position to extract beginning with 1; if start is negative, the return string will begin at the end of the string minus the start value"},

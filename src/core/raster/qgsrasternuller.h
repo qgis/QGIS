@@ -56,9 +56,9 @@ class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
     void setOutputNoDataValue( int bandNo, double noData );
 
   private:
-    // no data indext from 0
+    // no data indexed from 0
     QVector< QgsRasterRangeList > mNoData;
-    // no data to be set in output, indexed form 0
+    // no data to be set in output, indexed from 0
     QVector<double> mOutputNoData;
     QVector<bool> mHasOutputNoData;
 };

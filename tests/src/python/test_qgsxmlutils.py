@@ -9,16 +9,26 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Matthias Kuhn'
 __date__ = '18/11/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA switch sip api
-
 from qgis.core import (QgsXmlUtils,
                        QgsProperty,
-                       QgsCoordinateReferenceSystem)
+                       QgsGeometry,
+                       QgsFeatureRequest,
+                       QgsCoordinateReferenceSystem,
+                       QgsProcessingOutputLayerDefinition,
+                       QgsProcessingFeatureSourceDefinition,
+                       QgsRemappingSinkDefinition,
+                       QgsWkbTypes,
+                       QgsCoordinateTransform,
+                       QgsFields,
+                       QgsField,
+                       QgsProject,
+                       NULL)
 
+from qgis.PyQt.QtCore import QDateTime, QDate, QTime, QVariant
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtGui import QColor
 
 from qgis.testing import start_app, unittest
 
@@ -50,9 +60,22 @@ class TestQgsXmlUtils(unittest.TestCase):
         prop2 = QgsXmlUtils.readVariant(elem)
         self.assertEqual(my_properties, prop2)
 
-    def test_string(self):
+    def test_long(self):
         """
         Test that maps are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        # not sure if this actually does map to a long?
+        my_properties = {'a': 9223372036854775808}
+        elem = QgsXmlUtils.writeVariant(my_properties, doc)
+
+        prop2 = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(my_properties, prop2)
+
+    def test_string(self):
+        """
+        Test that strings are correctly loaded and written
         """
         doc = QDomDocument("properties")
 
@@ -159,6 +182,133 @@ class TestQgsXmlUtils(unittest.TestCase):
 
         crs2 = QgsXmlUtils.readVariant(elem)
         self.assertFalse(crs2.isValid())
+
+    def test_geom(self):
+        """
+        Test that QgsGeometry values are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        g = QgsGeometry.fromWkt('Point(3 4)')
+        elem = QgsXmlUtils.writeVariant(g, doc)
+
+        g2 = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(g2.asWkt(), 'Point (3 4)')
+
+    def test_color(self):
+        """
+        Test that QColor values are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        elem = QgsXmlUtils.writeVariant(QColor(100, 200, 210), doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c, QColor(100, 200, 210))
+        elem = QgsXmlUtils.writeVariant(QColor(100, 200, 210, 50), doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c, QColor(100, 200, 210, 50))
+        elem = QgsXmlUtils.writeVariant(QColor(), doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertFalse(c.isValid())
+
+    def test_datetime(self):
+        """
+        Test that QDateTime values are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        elem = QgsXmlUtils.writeVariant(QDateTime(QDate(2019, 5, 7), QTime(12, 11, 10)), doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c, QDateTime(QDate(2019, 5, 7), QTime(12, 11, 10)))
+        elem = QgsXmlUtils.writeVariant(QDateTime(), doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c, NULL)
+
+    def test_date(self):
+        """
+        Test that QDate values are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        elem = QgsXmlUtils.writeVariant(QDate(2019, 5, 7), doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c, QDate(2019, 5, 7))
+        elem = QgsXmlUtils.writeVariant(QDate(), doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c, NULL)
+
+    def test_time(self):
+        """
+        Test that QTime values are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        elem = QgsXmlUtils.writeVariant(QTime(12, 11, 10), doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c, QTime(12, 11, 10))
+        elem = QgsXmlUtils.writeVariant(QTime(), doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c, NULL)
+
+    def test_feature_source_definition(self):
+        """
+        Test that QgsProcessingFeatureSourceDefinition values are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        definition = QgsProcessingFeatureSourceDefinition(QgsProperty.fromValue('my source'))
+        definition.selectedFeaturesOnly = True
+        definition.featureLimit = 27
+        definition.flags = QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature
+        definition.geometryCheck = QgsFeatureRequest.GeometrySkipInvalid
+
+        elem = QgsXmlUtils.writeVariant(definition, doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c.source.staticValue(), 'my source')
+        self.assertTrue(c.selectedFeaturesOnly)
+        self.assertEqual(c.featureLimit, 27)
+        self.assertEqual(c.flags, QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature)
+        self.assertEqual(c.geometryCheck, QgsFeatureRequest.GeometrySkipInvalid)
+
+    def test_output_layer_definition(self):
+        """
+        Test that QgsProcessingOutputLayerDefinition values are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        definition = QgsProcessingOutputLayerDefinition(QgsProperty.fromValue('my sink'))
+        definition.createOptions = {'opt': 1, 'opt2': 2}
+
+        elem = QgsXmlUtils.writeVariant(definition, doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c.sink.staticValue(), 'my sink')
+        self.assertEqual(c.createOptions, {'opt': 1, 'opt2': 2})
+
+    def testRemappingDefinition(self):
+        fields = QgsFields()
+        fields.append(QgsField('fldtxt', QVariant.String))
+        fields.append(QgsField('fldint', QVariant.Int))
+        fields.append(QgsField('fldtxt2', QVariant.String))
+
+        mapping_def = QgsRemappingSinkDefinition()
+        mapping_def.setDestinationWkbType(QgsWkbTypes.Point)
+        mapping_def.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        mapping_def.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        mapping_def.setDestinationFields(fields)
+        mapping_def.addMappedField('fldtxt2', QgsProperty.fromField('fld1'))
+        mapping_def.addMappedField('fldint', QgsProperty.fromExpression('@myval * fldint'))
+
+        doc = QDomDocument("properties")
+        elem = QgsXmlUtils.writeVariant(mapping_def, doc)
+        c = QgsXmlUtils.readVariant(elem)
+
+        self.assertEqual(c.destinationWkbType(), QgsWkbTypes.Point)
+        self.assertEqual(c.sourceCrs().authid(), 'EPSG:4326')
+        self.assertEqual(c.destinationCrs().authid(), 'EPSG:3857')
+        self.assertEqual(c.destinationFields()[0].name(), 'fldtxt')
+        self.assertEqual(c.destinationFields()[1].name(), 'fldint')
+        self.assertEqual(c.fieldMap()['fldtxt2'].field(), 'fld1')
+        self.assertEqual(c.fieldMap()['fldint'].expressionString(), '@myval * fldint')
 
 
 if __name__ == '__main__':

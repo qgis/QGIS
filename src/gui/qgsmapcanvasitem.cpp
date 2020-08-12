@@ -43,8 +43,8 @@ void QgsMapCanvasItem::paint( QPainter *painter,
                               const QStyleOptionGraphicsItem *option,
                               QWidget *widget )
 {
-  Q_UNUSED( option );
-  Q_UNUSED( widget );
+  Q_UNUSED( option )
+  Q_UNUSED( widget )
   if ( mMapCanvas->antiAliasingEnabled() )
   {
     painter->setRenderHint( QPainter::Antialiasing );

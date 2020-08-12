@@ -45,7 +45,7 @@ void QgsRasterShaderFunction::setMinimumValue( double value )
 
 bool QgsRasterShaderFunction::shade( double value, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlphaValue ) const
 {
-  Q_UNUSED( value );
+  Q_UNUSED( value )
 
   *returnRedValue = 0;
   *returnGreenValue = 0;
@@ -57,10 +57,10 @@ bool QgsRasterShaderFunction::shade( double value, int *returnRedValue, int *ret
 
 bool QgsRasterShaderFunction::shade( double redValue, double greenValue, double blueValue, double alphaValue, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlphaValue ) const
 {
-  Q_UNUSED( redValue );
-  Q_UNUSED( greenValue );
-  Q_UNUSED( blueValue );
-  Q_UNUSED( alphaValue );
+  Q_UNUSED( redValue )
+  Q_UNUSED( greenValue )
+  Q_UNUSED( blueValue )
+  Q_UNUSED( alphaValue )
 
   *returnRedValue = 0;
   *returnGreenValue = 0;

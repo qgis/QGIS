@@ -404,7 +404,7 @@ void TestQgsWcsPublicServers::test()
 
         Q_FOREACH ( const QString &provider, providers )
         {
-          QTime time;
+          QElapsedTimer time;
           time.start();
           QString uri;
           if ( provider == QLatin1String( "wcs" ) )

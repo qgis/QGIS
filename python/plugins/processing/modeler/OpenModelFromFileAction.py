@@ -21,16 +21,12 @@ __author__ = 'Nyall Dawson'
 __date__ = 'February 2018'
 __copyright__ = '(C) 2018, Nyall Dawson'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from qgis.PyQt.QtWidgets import QFileDialog
 from qgis.PyQt.QtCore import QFileInfo, QCoreApplication
 
 from qgis.core import QgsApplication, QgsSettings
-
+from qgis.utils import iface
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerDialog import ModelerDialog
 
@@ -56,6 +52,6 @@ class OpenModelFromFileAction(ToolboxAction):
             settings.setValue('Processing/lastModelsDir',
                               QFileInfo(filename).absoluteDir().absolutePath())
 
-            dlg = ModelerDialog()
+            dlg = ModelerDialog.create()
             dlg.loadModel(filename)
             dlg.show()

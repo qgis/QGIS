@@ -37,6 +37,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QButtonGroup>
 #include <QFileDialog>
@@ -59,6 +60,7 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
 
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
   connect( mNewButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mNewButton_clicked );
   connect( mEditButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mEditButton_clicked );
   connect( mDeleteButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mDeleteButton_clicked );
@@ -69,8 +71,6 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
   connect( mLayersTreeWidget, &QTreeWidget::itemSelectionChanged, this, &QgsOWSSourceSelect::mLayersTreeWidget_itemSelectionChanged );
   connect( mConnectionsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsOWSSourceSelect::mConnectionsComboBox_activated );
   connect( mAddDefaultButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mAddDefaultButton_clicked );
-  connect( mSearchButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mSearchButton_clicked );
-  connect( mSearchTableWidget, &QTableWidget::itemSelectionChanged, this, &QgsOWSSourceSelect::mSearchTableWidget_itemSelectionChanged );
   connect( mTilesetsTableWidget, &QTableWidget::itemClicked, this, &QgsOWSSourceSelect::mTilesetsTableWidget_itemClicked );
   connect( mLayerUpButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mLayerUpButton_clicked );
   connect( mLayerDownButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mLayerDownButton_clicked );
@@ -85,10 +85,10 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
   mTileHeightLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
   mFeatureCountLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
 
-  mCacheComboBox->addItem( tr( "Always cache" ), QNetworkRequest::AlwaysCache );
-  mCacheComboBox->addItem( tr( "Prefer cache" ), QNetworkRequest::PreferCache );
-  mCacheComboBox->addItem( tr( "Prefer network" ), QNetworkRequest::PreferNetwork );
-  mCacheComboBox->addItem( tr( "Always network" ), QNetworkRequest::AlwaysNetwork );
+  mCacheComboBox->addItem( tr( "Always Cache" ), QNetworkRequest::AlwaysCache );
+  mCacheComboBox->addItem( tr( "Prefer Cache" ), QNetworkRequest::PreferCache );
+  mCacheComboBox->addItem( tr( "Prefer Network" ), QNetworkRequest::PreferNetwork );
+  mCacheComboBox->addItem( tr( "Always Network" ), QNetworkRequest::AlwaysNetwork );
 
   // 'Prefer network' is the default noted in the combobox's tool tip
   mCacheComboBox->setCurrentIndex( mCacheComboBox->findData( QNetworkRequest::PreferNetwork ) );
@@ -115,22 +115,16 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
 
   // set up the WMS connections we already know about
   populateConnectionList();
-
-  QgsSettings settings;
-  QgsDebugMsg( QStringLiteral( "restoring geometry" ) );
-  restoreGeometry( settings.value( QStringLiteral( "Windows/WMSSourceSelect/geometry" ) ).toByteArray() );
-}
-
-QgsOWSSourceSelect::~QgsOWSSourceSelect()
-{
-  QgsSettings settings;
-  QgsDebugMsg( QStringLiteral( "saving geometry" ) );
-  settings.setValue( QStringLiteral( "Windows/WMSSourceSelect/geometry" ), saveGeometry() );
 }
 
 void QgsOWSSourceSelect::refresh()
 {
   populateConnectionList();
+}
+
+void QgsOWSSourceSelect::reset()
+{
+  mLayersTreeWidget->clearSelection();
 }
 
 void QgsOWSSourceSelect::clearFormats()
@@ -427,7 +421,7 @@ void QgsOWSSourceSelect::mLayersTreeWidget_itemSelectionChanged()
 void QgsOWSSourceSelect::populateCrs()
 {
   clearCrs();
-  mSelectedLayersCRSs = selectedLayersCrses().toSet();
+  mSelectedLayersCRSs = qgis::listToSet( selectedLayersCrses() );
   mCRSLabel->setText( tr( "Coordinate Reference System (%n available)", "crs count", mSelectedLayersCRSs.count() ) + ':' );
 
   mChangeCRSButton->setDisabled( mSelectedLayersCRSs.isEmpty() );
@@ -448,7 +442,7 @@ void QgsOWSSourceSelect::populateCrs()
         defaultCRS = *it;
 
       // prefer value of DEFAULT_GEO_EPSG_CRS_ID if available
-      if ( *it == GEO_EPSG_CRS_AUTHID )
+      if ( *it == geoEpsgCrsAuthId() )
         defaultCRS = *it;
     }
 
@@ -473,7 +467,7 @@ void QgsOWSSourceSelect::clearCrs()
 
 void QgsOWSSourceSelect::mTilesetsTableWidget_itemClicked( QTableWidgetItem *item )
 {
-  Q_UNUSED( item );
+  Q_UNUSED( item )
 
   QTableWidgetItem *rowItem = mTilesetsTableWidget->item( mTilesetsTableWidget->currentRow(), 0 );
   bool wasSelected = mCurrentTileset == rowItem;
@@ -604,8 +598,8 @@ QString QgsOWSSourceSelect::descriptionForAuthId( const QString &authId )
     return mCrsNames[ authId ];
 
   QgsCoordinateReferenceSystem qgisSrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authId );
-  mCrsNames.insert( authId, qgisSrs.description() );
-  return qgisSrs.description();
+  mCrsNames.insert( authId, qgisSrs.userFriendlyIdentifier() );
+  return qgisSrs.userFriendlyIdentifier();
 }
 
 void QgsOWSSourceSelect::addDefaultServers()
@@ -636,97 +630,6 @@ void QgsOWSSourceSelect::addDefaultServers()
                             "been added to the server list. Note that if "
                             "you access the Internet via a web proxy, you will "
                             "need to set the proxy settings in the QGIS options dialog." ) + "</p>" );
-}
-
-void QgsOWSSourceSelect::addWmsListRow( const QDomElement &item, int row )
-{
-  QDomElement title = item.firstChildElement( QStringLiteral( "title" ) );
-  addWmsListItem( title, row, 0 );
-  QDomElement description = item.firstChildElement( QStringLiteral( "description" ) );
-  addWmsListItem( description, row, 1 );
-  QDomElement link = item.firstChildElement( QStringLiteral( "link" ) );
-  addWmsListItem( link, row, 2 );
-}
-
-void QgsOWSSourceSelect::addWmsListItem( const QDomElement &el, int row, int column )
-{
-  if ( !el.isNull() )
-  {
-    QTableWidgetItem *tableItem = new QTableWidgetItem( el.text() );
-    // TODO: add linebreaks to long tooltips?
-    tableItem->setToolTip( el.text() );
-    mSearchTableWidget->setItem( row, column, tableItem );
-  }
-}
-
-void QgsOWSSourceSelect::mSearchButton_clicked()
-{
-  // clear results
-  mSearchTableWidget->clearContents();
-  mSearchTableWidget->setRowCount( 0 );
-
-  // disable Add WMS button
-  mSearchAddButton->setEnabled( false );
-
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-
-  QgsSettings settings;
-  // geopole.org (geopole.ch) 25.4.2012 : 503 Service Unavailable, archive: Recently added 20 Jul 2011
-  QString mySearchUrl = settings.value( QStringLiteral( "qgis/WMSSearchUrl" ), "http://geopole.org/wms/search?search=%1&type=rss" ).toString();
-  QUrl url( mySearchUrl.arg( mSearchTermLineEdit->text() ) );
-  QgsDebugMsg( url.toString() );
-
-  QNetworkReply *r = QgsNetworkAccessManager::instance()->get( QNetworkRequest( url ) );
-  connect( r, &QNetworkReply::finished, this, &QgsOWSSourceSelect::searchFinished );
-}
-
-void QgsOWSSourceSelect::searchFinished()
-{
-  QApplication::restoreOverrideCursor();
-
-  QNetworkReply *r = qobject_cast<QNetworkReply *>( sender() );
-  if ( !r )
-    return;
-
-  if ( r->error() == QNetworkReply::NoError )
-  {
-    // parse results
-    QDomDocument doc( QStringLiteral( "RSS" ) );
-    QByteArray res = r->readAll();
-    QString error;
-    int line, column;
-    if ( doc.setContent( res, &error, &line, &column ) )
-    {
-      QDomNodeList list = doc.elementsByTagName( QStringLiteral( "item" ) );
-      mSearchTableWidget->setRowCount( list.size() );
-      for ( int i = 0; i < list.size(); i++ )
-      {
-        if ( list.item( i ).isElement() )
-        {
-          QDomElement item = list.item( i ).toElement();
-          addWmsListRow( item, i );
-        }
-      }
-
-      mSearchTableWidget->resizeColumnsToContents();
-    }
-    else
-    {
-      QgsDebugMsg( QStringLiteral( "setContent failed" ) );
-      showStatusMessage( tr( "parse error at row %1, column %2: %3" ).arg( line ).arg( column ).arg( error ) );
-    }
-  }
-  else
-  {
-    showStatusMessage( tr( "network error: %1" ).arg( r->error() ) );
-  }
-
-  r->deleteLater();
-}
-
-void QgsOWSSourceSelect::mSearchTableWidget_itemSelectionChanged()
-{
-  mSearchAddButton->setEnabled( mSearchTableWidget->currentRow() != -1 );
 }
 
 void QgsOWSSourceSelect::mLayerUpButton_clicked()

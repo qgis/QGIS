@@ -94,7 +94,7 @@ class OracleDBPlugin(DBPlugin):
         host, port, database, username, password = [
             settings.value(x, "", type=str) for x in settingsList]
 
-        # get all of the connexion options
+        # get all of the connection options
 
         useEstimatedMetadata = settings.value(
             "estimatedMetadata", False, type=bool)
@@ -203,8 +203,12 @@ class ORDatabase(Database):
         uri = self.uri()
         con = self.database().connector
 
+        if uniqueCol is not None:
+            uniqueCol = uniqueCol.strip('"').replace('""', '"')
+
         uri.setDataSource(u"", u"({}\n)".format(
-            sql), geomCol, filter, uniqueCol.strip(u'"'))
+            sql), geomCol, filter, uniqueCol)
+
         if avoidSelectById:
             uri.disableSelectAtId(True)
         provider = self.dbplugin().providerName()
@@ -390,8 +394,8 @@ class ORTable(Table):
         return ORTableDataModel(self, parent)
 
     def getValidQgisUniqueFields(self, onlyOne=False):
-        """ list of fields valid to load the table as layer in Qgis canvas.
-        Qgis automatically search for a valid unique field, so it's
+        """ list of fields valid to load the table as layer in QGIS canvas.
+        QGIS automatically search for a valid unique field, so it's
         needed only for queries and views.
         """
 

@@ -1,0 +1,17 @@
+
+Content-Type: text/xml; charset=utf-8
+
+<schema xmlns:ogc="http://www.opengis.net/ogc" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" xmlns:qgs="http://www.qgis.org/gml" xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.qgis.org/gml" version="1.0">
+ <import schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd" namespace="http://www.opengis.net/gml"/>
+ <element substitutionGroup="gml:_Feature" type="qgs:geometrylessType" name="geometryless"/>
+ <complexType name="geometrylessType">
+  <complexContent>
+   <extension base="gml:AbstractFeatureType">
+    <sequence>
+     <element nillable="true" type="int" name="fid"/>
+     <element nillable="true" type="string" name="name"/>
+    </sequence>
+   </extension>
+  </complexContent>
+ </complexType>
+</schema>

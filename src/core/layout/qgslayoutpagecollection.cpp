@@ -50,9 +50,14 @@ void QgsLayoutPageCollection::setPageStyleSymbol( QgsFillSymbol *symbol )
 
   for ( QgsLayoutItemPage *page : qgis::as_const( mPages ) )
   {
+    page->setPageStyleSymbol( symbol->clone() );
     page->update();
   }
+}
 
+const QgsFillSymbol *QgsLayoutPageCollection::pageStyleSymbol() const
+{
+  return mPageStyleSymbol.get();
 }
 
 void QgsLayoutPageCollection::beginPageSizeChange()
@@ -277,11 +282,13 @@ double QgsLayoutPageCollection::pageShadowWidth() const
 
 void QgsLayoutPageCollection::resizeToContents( const QgsMargins &margins, QgsUnitTypes::LayoutUnit marginUnits )
 {
-  if ( !mBlockUndoCommands )
-    mLayout->undoStack()->beginCommand( this, tr( "Resize to Contents" ) );
-
   //calculate current bounds
   QRectF bounds = mLayout->layoutBounds( true, 0.0 );
+  if ( bounds.isEmpty() )
+    return;
+
+  if ( !mBlockUndoCommands )
+    mLayout->undoStack()->beginCommand( this, tr( "Resize to Contents" ) );
 
   for ( int page = mPages.count() - 1; page > 0; page-- )
   {
@@ -400,6 +407,8 @@ bool QgsLayoutPageCollection::readXml( const QDomElement &e, const QDomDocument 
   {
     QDomElement pageElement = pageList.at( i ).toElement();
     std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( mLayout ) );
+    if ( mPageStyleSymbol )
+      page->setPageStyleSymbol( mPageStyleSymbol->clone() );
     page->readXml( pageElement, document, context );
     page->finalizeRestoreFromXml();
     mPages.append( page.get() );
@@ -662,6 +671,9 @@ void QgsLayoutPageCollection::deletePage( QgsLayoutItemPage *page )
   beginPageSizeChange();
   mPages.removeAll( page );
   page->deleteLater();
+  // remove immediately from scene -- otherwise immediately calculation of layout bounds (such as is done
+  // in reflow) will still consider the page, at least until it's actually deleted at the next event loop
+  mLayout->removeItem( page );
   reflow();
 
   // bump stored page numbers to account
@@ -716,5 +728,4 @@ void QgsLayoutPageCollection::createDefaultPageStyleSymbol()
   properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
   mPageStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
 }
-
 

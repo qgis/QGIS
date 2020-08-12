@@ -1,0 +1,81 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgscurrencynumericformat.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsCurrencyNumericFormat : QgsBasicNumericFormat
+{
+%Docstring
+A numeric formatter which returns a text representation of a currency value.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgscurrencynumericformat.h"
+%End
+  public:
+
+    QgsCurrencyNumericFormat();
+%Docstring
+Default constructor
+%End
+
+    virtual QString id() const;
+
+    virtual QString visibleName() const;
+
+    virtual int sortKey();
+
+    virtual double suggestSampleValue() const;
+
+    virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const;
+
+    virtual QgsNumericFormat *clone() const /Factory/;
+
+    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const /Factory/;
+
+    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const;
+
+
+    QString prefix() const;
+%Docstring
+Returns the currency prefix, e.g. "$".
+
+.. seealso:: :py:func:`setPrefix`
+%End
+
+    void setPrefix( const QString &prefix );
+%Docstring
+Sets the currency ``prefix``, e.g. "$".
+
+.. seealso:: :py:func:`prefix`
+%End
+
+    QString suffix() const;
+%Docstring
+Returns the currency suffix, e.g. "AUD".
+
+.. seealso:: :py:func:`setSuffix`
+%End
+
+    void setSuffix( const QString &suffix );
+%Docstring
+Sets the currency ``suffix``, e.g. "AUD".
+
+.. seealso:: :py:func:`suffix`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgscurrencynumericformat.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

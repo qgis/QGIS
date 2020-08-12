@@ -34,7 +34,7 @@ class QgsRenderContext;
  * \ingroup core
  * \class QgsTextDiagram
  */
-class CORE_EXPORT QgsTextDiagram: public QgsDiagram
+class CORE_EXPORT QgsTextDiagram: public QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
     enum Shape

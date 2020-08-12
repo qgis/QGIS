@@ -1825,7 +1825,7 @@ void TerminalDisplay::mousePressEvent( QMouseEvent *ev )
   }
   else if ( ev->button() == Qt::MidButton )
   {
-    if ( _mouseMarks || ( !_mouseMarks && ( ev->modifiers() & Qt::ShiftModifier ) ) )
+    if ( _mouseMarks || ( ev->modifiers() & Qt::ShiftModifier ) )
       emitSelection( true, ev->modifiers() & Qt::ControlModifier );
     else
       emit mouseSignal( 1, charColumn + 1, charLine + 1 + _scrollBar->value() - _scrollBar->maximum(), 0 );
@@ -3106,7 +3106,7 @@ void AutoScrollHandler::timerEvent( QTimerEvent *event )
 bool AutoScrollHandler::eventFilter( QObject *watched, QEvent *event )
 {
   Q_ASSERT( watched == parent() );
-  Q_UNUSED( watched );
+  Q_UNUSED( watched )
 
   QMouseEvent *mouseEvent = ( QMouseEvent * )event;
   switch ( event->type() )

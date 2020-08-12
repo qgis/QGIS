@@ -21,10 +21,6 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'May 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = ':%H$'
-
 import AlgorithmsTestBase
 
 import nose2

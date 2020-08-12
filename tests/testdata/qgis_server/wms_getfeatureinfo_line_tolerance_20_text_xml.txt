@@ -5,6 +5,7 @@ Content-Type: text/xml; charset=utf-8
  <Layer name="ls2d">
   <Feature id="1">
    <Attribute value="1" name="id"/>
+   <BoundingBox maxy="111325.1429" maxx="111319.4908" miny="-0" CRS="EPSG:3857" minx="0"/>
   </Feature>
  </Layer>
 </GetFeatureInfoResponse>

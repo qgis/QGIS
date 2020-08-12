@@ -21,6 +21,7 @@
 #include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgsvectorfieldsymbollayer.h"
+#include "qgsmasksymbollayer.h"
 #include "qgsgeometrygeneratorsymbollayer.h"
 
 QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
@@ -48,6 +49,8 @@ QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
                       QgsEllipseSymbolLayer::create, QgsEllipseSymbolLayer::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "VectorField" ), QObject::tr( "Vector field marker" ), QgsSymbol::Marker,
                       QgsVectorFieldSymbolLayer::create ) );
+  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "MaskMarker" ), QObject::tr( "Mask" ), QgsSymbol::Marker,
+                      QgsMaskMarkerSymbolLayer::create ) );
 
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "SimpleFill" ), QObject::tr( "Simple fill" ), QgsSymbol::Fill,
                       QgsSimpleFillSymbolLayer::create, QgsSimpleFillSymbolLayer::createFromSld ) );
@@ -61,6 +64,8 @@ QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
                       QgsSVGFillSymbolLayer::create, QgsSVGFillSymbolLayer::createFromSld, QgsSVGFillSymbolLayer::resolvePaths ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "CentroidFill" ), QObject::tr( "Centroid fill" ), QgsSymbol::Fill,
                       QgsCentroidFillSymbolLayer::create, QgsCentroidFillSymbolLayer::createFromSld ) );
+  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "RandomMarkerFill" ), QObject::tr( "Random marker fill" ), QgsSymbol::Fill,
+                      QgsRandomMarkerFillSymbolLayer::create ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "LinePatternFill" ), QObject::tr( "Line pattern fill" ), QgsSymbol::Fill,
                       QgsLinePatternFillSymbolLayer::create, QgsLinePatternFillSymbolLayer::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "PointPatternFill" ), QObject::tr( "Point pattern fill" ), QgsSymbol::Fill,

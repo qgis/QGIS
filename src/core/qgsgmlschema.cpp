@@ -31,7 +31,7 @@
 #include <limits>
 
 const char NS_SEPARATOR = '?';
-const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );
+#define GML_NAMESPACE QStringLiteral( "http://www.opengis.net/gml" )
 
 
 QgsGmlFeatureClass::QgsGmlFeatureClass( const QString &name, const QString &path )
@@ -88,7 +88,7 @@ bool QgsGmlSchema::parseXSD( const QByteArray &xml )
 
   QList<QDomElement> elementElements = domElements( docElem, QStringLiteral( "element" ) );
 
-  //QgsDebugMsg( QStringLiteral( "%1 elemets read" ).arg( elementElements.size() ) );
+  //QgsDebugMsg( QStringLiteral( "%1 elements read" ).arg( elementElements.size() ) );
 
   const auto constElementElements = elementElements;
   for ( const QDomElement &elementElement : constElementElements )
@@ -344,7 +344,7 @@ bool QgsGmlSchema::guessSchema( const QByteArray &data )
 
 void QgsGmlSchema::startElement( const XML_Char *el, const XML_Char **attr )
 {
-  Q_UNUSED( attr );
+  Q_UNUSED( attr )
   mLevel++;
 
   QString elementName = QString::fromUtf8( el );
@@ -514,7 +514,7 @@ void QgsGmlSchema::addAttribute( const QString &name, const QString &value )
 {
   // It is not geometry attribute -> analyze value
   bool ok;
-  value.toInt( &ok );
+  ( void ) value.toInt( &ok );
   QVariant::Type type = QVariant::String;
   if ( ok )
   {
@@ -522,7 +522,7 @@ void QgsGmlSchema::addAttribute( const QString &name, const QString &value )
   }
   else
   {
-    value.toDouble( &ok );
+    ( void ) value.toDouble( &ok );
     if ( ok )
     {
       type = QVariant::Double;

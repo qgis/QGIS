@@ -29,8 +29,23 @@ from hashlib import md5
 import os
 
 from qgis.PyQt.QtCore import Qt, pyqtSignal, QDir
-from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputDialog, QStyledItemDelegate, QTableWidgetItem, QFileDialog
-from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
+from qgis.PyQt.QtWidgets import (QDialog,
+                                 QWidget,
+                                 QAction,
+                                 QApplication,
+                                 QInputDialog,
+                                 QStyledItemDelegate,
+                                 QTableWidgetItem,
+                                 QFileDialog,
+                                 QMessageBox
+                                 )
+from qgis.PyQt.QtGui import (QKeySequence,
+                             QCursor,
+                             QClipboard,
+                             QIcon,
+                             QStandardItemModel,
+                             QStandardItem
+                             )
 from qgis.PyQt.Qsci import QsciAPIs
 
 from qgis.core import (
@@ -60,9 +75,41 @@ from .ui.ui_DlgSqlWindow import Ui_DbManagerDlgSqlWindow as Ui_Dialog
 import re
 
 
+def check_comments_in_sql(raw_sql_input):
+    lines = []
+    for line in raw_sql_input.splitlines():
+        if not line.strip().startswith('--'):
+            if '--' in line:
+                comment_positions = []
+                comments = re.finditer(r'--', line)
+                for match in comments:
+                    comment_positions.append(match.start())
+                quote_positions = []
+                identifiers = re.finditer(r'"(?:[^"]|"")*"', line)
+                quotes = re.finditer(r"'(?:[^']|'')*'", line)
+                for match in identifiers:
+                    quote_positions.append((match.start(), match.end()))
+                for match in quotes:
+                    quote_positions.append((match.start(), match.end()))
+                unquoted_comments = comment_positions.copy()
+                for comment in comment_positions:
+                    for quote_position in quote_positions:
+                        if comment >= quote_position[0] and comment < quote_position[1]:
+                            unquoted_comments.remove(comment)
+                if len(unquoted_comments) > 0:
+                    lines.append(line[:unquoted_comments[0]])
+                else:
+                    lines.append(line)
+            else:
+                lines.append(line)
+    sql = ' '.join(lines)
+    return sql.strip()
+
+
 class DlgSqlWindow(QWidget, Ui_Dialog):
     nameChanged = pyqtSignal(str)
     QUERY_HISTORY_LIMIT = 20
+    hasChanged = False
 
     def __init__(self, iface, db, parent=None):
         QWidget.__init__(self, parent)
@@ -73,8 +120,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.connectionName = db.connection().connectionName()
         self.filter = ""
         self.modelAsync = None
-        self.allowMultiColumnPk = isinstance(db, PGDatabase)  # at the moment only PostgreSQL allows a primary key to span multiple columns, SpatiaLite doesn't
-        self.aliasSubQuery = isinstance(db, PGDatabase)       # only PostgreSQL requires subqueries to be aliases
+        self.allowMultiColumnPk = isinstance(db,
+                                             PGDatabase)  # at the moment only PostgreSQL allows a primary key to span multiple columns, SpatiaLite doesn't
+        self.aliasSubQuery = isinstance(db, PGDatabase)  # only PostgreSQL requires subqueries to be aliases
         self.setupUi(self)
         self.setWindowTitle(
             self.tr(u"{0} - {1} [{2}]").format(self.windowTitle(), self.connectionName, self.dbType))
@@ -90,6 +138,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.editSql.setMarginVisible(True)
         self.initCompleter()
+        self.editSql.textChanged.connect(lambda: self.setHasChanged(True))
 
         settings = QgsSettings()
         self.history = settings.value('DB_Manager/queryHistory/' + self.dbType, {self.connectionName: []})
@@ -140,8 +189,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.uniqueCombo.setModel(self.uniqueModel)
         if self.allowMultiColumnPk:
             self.uniqueCombo.setItemDelegate(QStyledItemDelegate())
-            self.uniqueModel.itemChanged.connect(self.uniqueChanged)                 # react to the (un)checking of an item
-            self.uniqueCombo.lineEdit().textChanged.connect(self.uniqueTextChanged)  # there are other events that change the displayed text and some of them can not be caught directly
+            self.uniqueModel.itemChanged.connect(self.uniqueChanged)  # react to the (un)checking of an item
+            self.uniqueCombo.lineEdit().textChanged.connect(
+                self.uniqueTextChanged)  # there are other events that change the displayed text and some of them can not be caught directly
 
         # hide the load query as layer if feature is not supported
         self._loadAsLayerAvailable = self.db.connector.hasCustomQuerySupport()
@@ -237,7 +287,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         settings = QgsSettings()
         lastDir = settings.value('DB_Manager/lastDirSQLFIle', "")
 
-        query = self._getSqlQuery()
+        query = self.editSql.text()
         if query == "":
             return
 
@@ -245,7 +295,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self,
             self.tr('Save SQL Query'),
             lastDir,
-            self.tr("SQL File (*.sql, *.SQL)"))
+            self.tr("SQL File (*.sql *.SQL)"))
 
         if filename:
             if not filename.lower().endswith('.sql'):
@@ -264,7 +314,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self,
             self.tr("Load SQL Query"),
             lastDir,
-            self.tr("SQL File (*.sql, *.SQL)"))
+            self.tr("SQL File (*.sql *.SQL);;All Files (*)"))
 
         if filename:
             with open(filename, 'r') as f:
@@ -294,6 +344,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.editSql.clear()
         self.editSql.setFocus()
         self.filter = ""
+        self.setHasChanged(True)
 
     def updateUiWhileSqlExecution(self, status):
         if status:
@@ -356,7 +407,6 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                 self.geomCombo.clear()
 
     def executeSql(self):
-
         sql = self._getExecutableSqlQuery()
         if sql == "":
             return
@@ -603,15 +653,11 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         return sql
 
     def _getExecutableSqlQuery(self):
-        sql = self._getSqlQuery()
+        sql = self._getSqlQuery().strip()
 
-        # Clean it up!
-        lines = []
-        for line in sql.split('\n'):
-            if not line.strip().startswith('--'):
-                lines.append(line)
-        sql = ' '.join(lines)
-        return sql.strip()
+        uncommented_sql = check_comments_in_sql(sql)
+        uncommented_sql = uncommented_sql.rstrip(';')
+        return uncommented_sql
 
     def uniqueChanged(self):
         # when an item is (un)checked, simply trigger an update of the combobox text
@@ -638,3 +684,23 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if dlg.exec_():
             self.filter = dlg.sql()
         layer.deleteLater()
+
+    def setHasChanged(self, hasChanged):
+        self.hasChanged = hasChanged
+
+    def close(self):
+        if self.hasChanged:
+            ret = QMessageBox.question(
+                self, self.tr('Unsaved Changes?'),
+                self.tr('There are unsaved changes. Do you want to keep them?'),
+                QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Cancel)
+
+            if ret == QMessageBox.Save:
+                self.saveAsFilePreset()
+                return True
+            elif ret == QMessageBox.Discard:
+                return True
+            else:
+                return False
+        else:
+            return True

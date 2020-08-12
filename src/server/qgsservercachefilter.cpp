@@ -1,7 +1,7 @@
 /***************************************************************************
                           qgsservercachefilter.cpp
                           ------------------------
- Cache interface for Qgis Server plugins
+ Cache interface for QGIS Server plugins
 
   begin                : 2018-07-05
   copyright            : (C) 2018 by René-Luc D'Hont
@@ -23,67 +23,67 @@
 
 QgsServerCacheFilter::QgsServerCacheFilter( const QgsServerInterface *serverInterface )
 {
-  Q_UNUSED( serverInterface );
+  Q_UNUSED( serverInterface )
 }
 
 QByteArray QgsServerCacheFilter::getCachedDocument( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const
 {
-  Q_UNUSED( project );
-  Q_UNUSED( request );
-  Q_UNUSED( key );
+  Q_UNUSED( project )
+  Q_UNUSED( request )
+  Q_UNUSED( key )
   return QByteArray();
 }
 
 bool QgsServerCacheFilter::setCachedDocument( const QDomDocument *doc, const QgsProject *project, const QgsServerRequest &request, const QString &key ) const
 {
-  Q_UNUSED( doc );
-  Q_UNUSED( project );
-  Q_UNUSED( request );
-  Q_UNUSED( key );
+  Q_UNUSED( doc )
+  Q_UNUSED( project )
+  Q_UNUSED( request )
+  Q_UNUSED( key )
   return false;
 }
 
 bool QgsServerCacheFilter::deleteCachedDocument( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const
 {
-  Q_UNUSED( project );
-  Q_UNUSED( request );
-  Q_UNUSED( key );
+  Q_UNUSED( project )
+  Q_UNUSED( request )
+  Q_UNUSED( key )
   return false;
 }
 
 bool QgsServerCacheFilter::deleteCachedDocuments( const QgsProject *project ) const
 {
-  Q_UNUSED( project );
+  Q_UNUSED( project )
   return false;
 }
 
 QByteArray QgsServerCacheFilter::getCachedImage( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const
 {
-  Q_UNUSED( project );
-  Q_UNUSED( request );
-  Q_UNUSED( key );
+  Q_UNUSED( project )
+  Q_UNUSED( request )
+  Q_UNUSED( key )
   return QByteArray();
 }
 
 bool QgsServerCacheFilter::setCachedImage( const QByteArray *img, const QgsProject *project, const QgsServerRequest &request, const QString &key ) const
 {
-  Q_UNUSED( img );
-  Q_UNUSED( project );
-  Q_UNUSED( request );
-  Q_UNUSED( key );
+  Q_UNUSED( img )
+  Q_UNUSED( project )
+  Q_UNUSED( request )
+  Q_UNUSED( key )
   return false;
 }
 
 bool QgsServerCacheFilter::deleteCachedImage( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const
 {
-  Q_UNUSED( project );
-  Q_UNUSED( request );
-  Q_UNUSED( key );
+  Q_UNUSED( project )
+  Q_UNUSED( request )
+  Q_UNUSED( key )
   return false;
 }
 
 bool QgsServerCacheFilter::deleteCachedImages( const QgsProject *project ) const
 {
-  Q_UNUSED( project );
+  Q_UNUSED( project )
   return false;
 }

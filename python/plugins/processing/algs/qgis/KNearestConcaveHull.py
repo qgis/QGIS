@@ -23,10 +23,6 @@ __author__ = 'Detlev Neumann'
 __date__ = 'November 2014'
 __copyright__ = '(C) 2014, Detlev Neumann'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os.path
 import math
 
@@ -117,7 +113,7 @@ class KNearestConcaveHull(QgisAlgorithm):
         if use_field:
             field_index = source.fields().lookupField(field_name)
             if field_index >= 0:
-                fields.append(source.fields()[field_index]) # Add a field with the name of the grouping field
+                fields.append(source.fields()[field_index])  # Add a field with the name of the grouping field
 
                 # Initialize writer
                 (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
@@ -177,7 +173,7 @@ class KNearestConcaveHull(QgisAlgorithm):
             points = []
             request = QgsFeatureRequest()
             request.setSubsetOfAttributes([])
-            features = source.getFeatures(request) # Get all features
+            features = source.getFeatures(request)  # Get all features
             total = 100.0 / source.featureCount() if source.featureCount() else 0
             for in_feature in features:
                 if feedback.isCanceled():
@@ -244,9 +240,9 @@ def remove_point(vector, element):
     return vector
 
 
-def euclidian_distance(point1, point2):
+def euclidean_distance(point1, point2):
     """
-    Returns the euclidian distance of the 2 given points.
+    Returns the euclidean distance of the 2 given points.
 
     :param point1: tuple (x, y)
     :param point2: tuple (x, y)
@@ -270,7 +266,7 @@ def nearest_points(list_of_points, point, k):
     # their respective index of list *list_of_distances*
     list_of_distances = []
     for index in range(len(list_of_points)):
-        list_of_distances.append((euclidian_distance(list_of_points[index], point), index))
+        list_of_distances.append((euclidean_distance(list_of_points[index], point), index))
 
     # sort distances in ascending order
     list_of_distances.sort()
@@ -426,6 +422,7 @@ def sort_by_angle(list_of_points, last_point, last_angle):
     in a clockwise direction. Thus, the rightmost of the neighboring points is always selected. The first point of
     this list will be the next point of the envelope.
     """
+
     def getkey(item):
         return angle_difference(last_angle, angle(last_point, item))
 

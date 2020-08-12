@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -333,6 +331,24 @@ class TestQgsMapCanvas(unittest.TestCase):
         # should be different - we should now render project layers
         self.assertFalse(self.canvasImageCheck('theme4', 'theme4', canvas))
 
+        # set canvas to theme1
+        canvas.setTheme('theme1')
+        canvas.refresh()
+        canvas.waitWhileRendering()
+        self.assertEqual(canvas.theme(), 'theme1')
+        themeLayers = theme1.layerRecords()
+        # rename the active theme
+        QgsProject.instance().mapThemeCollection().renameMapTheme('theme1', 'theme5')
+        # canvas theme should now be set to theme5
+        canvas.refresh()
+        canvas.waitWhileRendering()
+        self.assertEqual(canvas.theme(), 'theme5')
+        # theme5 should render as theme1
+        theme5 = QgsProject.instance().mapThemeCollection().mapThemeState('theme5')
+        theme5Layers = theme5.layerRecords()
+        self.assertEqual(themeLayers, theme5Layers, 'themes are different')
+        # self.assertTrue(self.canvasImageCheck('theme5', 'theme5', canvas))
+
     def canvasImageCheck(self, name, reference_image, canvas):
         self.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'
@@ -348,6 +364,33 @@ class TestQgsMapCanvas(unittest.TestCase):
         self.report += checker.report()
         print((self.report))
         return result
+
+    def testSaveCanvasVariablesToProject(self):
+        """
+        Ensure that temporary canvas atlas variables are not written to project
+        """
+        c1 = QgsMapCanvas()
+        c1.setObjectName('c1')
+        c1.expressionContextScope().setVariable('atlas_featurenumber', 1111)
+        c1.expressionContextScope().setVariable('atlas_pagename', 'bb')
+        c1.expressionContextScope().setVariable('atlas_feature', QgsFeature(1))
+        c1.expressionContextScope().setVariable('atlas_featureid', 22)
+        c1.expressionContextScope().setVariable('atlas_geometry', QgsGeometry.fromWkt('Point( 1 2 )'))
+        c1.expressionContextScope().setVariable('vara', 1111)
+        c1.expressionContextScope().setVariable('varb', 'bb')
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("qgis")
+        doc.appendChild(elem)
+        c1.writeProject(doc)
+
+        c2 = QgsMapCanvas()
+        c2.setObjectName('c1')
+        c2.readProject(doc)
+
+        self.assertCountEqual(c2.expressionContextScope().variableNames(), ['vara', 'varb'])
+        self.assertEqual(c2.expressionContextScope().variable('vara'), 1111)
+        self.assertEqual(c2.expressionContextScope().variable('varb'), 'bb')
 
     def testSaveMultipleCanvasesToProject(self):
         # test saving/restoring canvas state to project with multiple canvases

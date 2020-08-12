@@ -220,9 +220,13 @@ QString QgsMessageBarItem::title() const
 
 QgsMessageBarItem *QgsMessageBarItem::setLevel( Qgis::MessageLevel level )
 {
-  mLevel = level;
-  writeContent();
-  emit styleChanged( mStyleSheet );
+  if ( level != mLevel )
+  {
+    mLevel = level;
+    writeContent();
+    emit styleChanged( mStyleSheet );
+  }
+
   return this;
 }
 

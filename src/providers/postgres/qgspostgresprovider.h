@@ -23,6 +23,7 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgspostgresconn.h"
 #include "qgsfields.h"
+#include "qgsprovidermetadata.h"
 #include <memory>
 
 class QgsFeature;
@@ -44,11 +45,15 @@ class QgsPostgresListener;
   interface defined in the QgsDataProvider class to provide access to spatial
   data residing in a PostgreSQL/PostGIS enabled database.
   */
-class QgsPostgresProvider : public QgsVectorDataProvider
+class QgsPostgresProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
   public:
+
+    static const QString POSTGRES_KEY;
+    static const QString POSTGRES_DESCRIPTION;
+
     enum Relkind
     {
       Unknown,
@@ -79,7 +84,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *coordinateTransformContext = nullptr
+      const QMap<QString, QVariant> *options = nullptr
     );
 
     /**
@@ -167,7 +172,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString defaultValueClause( int fieldId ) const override;
     QVariant defaultValue( int fieldId ) const override;
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
-    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool truncate() override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
@@ -187,6 +192,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     bool supportsSubsetString() const override { return true; }
     QgsVectorDataProvider::Capabilities capabilities() const override;
+    SpatialIndexPresence hasSpatialIndex() const override;
 
     /**
      * The Postgres provider does its own transforms so we return
@@ -201,6 +207,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString name() const override;
     QString description() const override;
     QgsTransaction *transaction() const override;
+    static QString providerKey();
 
     /**
      * Convert the postgres string representation into the given QVariant type.
@@ -319,6 +326,14 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     static QList<QgsVectorLayer *> searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &schema, const QString &tableName );
 
+    /**
+     * Effect a reload including resetting the feature count
+     * and setting the layer extent to minimal
+     *
+     * \since QGIS 3.12
+    */
+    void reloadProviderData() override;
+
     //! Old-style mapping of index to name for QgsPalLabeling fix
     QgsAttrPalIndexNameHash mAttrPalIndexName;
 
@@ -376,6 +391,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString mPrimaryKeyDefault;
 
     QString mGeometryColumn;          //!< Name of the geometry column
+    QString mBoundingBoxColumn;       //!< Name of the bounding box column
     mutable QgsRectangle mLayerExtent;        //!< Rectangle that contains the extent (bounding box) of the layer
 
     QgsWkbTypes::Type mDetectedGeomType = QgsWkbTypes::Unknown ;  //!< Geometry type detected in the database
@@ -445,6 +461,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     static QString quotedIdentifier( const QString &ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
     static QString quotedValue( const QVariant &value ) { return QgsPostgresConn::quotedValue( value ); }
+    static QString quotedJsonValue( const QVariant &value ) { return QgsPostgresConn::quotedJsonValue( value ); }
+    static QString quotedByteaValue( const QVariant &value );
 
     friend class QgsPostgresFeatureSource;
 
@@ -453,6 +471,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void setTransaction( QgsTransaction *transaction ) override;
 
     QHash<int, QString> mDefaultValues;
+
+    // for handling generated columns, available in PostgreSQL 12+
+    // See https://www.postgresql.org/docs/12/ddl-generated-columns.html
+    QHash<int, QString> mGeneratedValues;
 
     bool mCheckPrimaryKeyUnicity = true;
 
@@ -466,6 +488,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 class QgsPostgresUtils
 {
   public:
+    static bool deleteLayer( const QString &uri, QString &errCause );
+    static bool deleteSchema( const QString &schema, const QgsDataSourceUri &uri, QString &errCause, bool cascade = false );
+
     static QString whereClause( QgsFeatureId featureId,
                                 const QgsFields &fields,
                                 QgsPostgresConn *conn,
@@ -482,11 +507,11 @@ class QgsPostgresUtils
 
     static QString andWhereClauses( const QString &c1, const QString &c2 );
 
-    static const qint64 INT32PK_OFFSET = 4294967296;
+    static const qint64 INT32PK_OFFSET = 4294967296; // 2^32
 
     // We shift negative 32bit integers to above the max 32bit
     // positive integer to support the whole range of int32 values
-    // See https://issues.qgis.org/issues/14262
+    // See https://github.com/qgis/QGIS/issues/22258
     static qint64 int32pk_to_fid( qint32 x )
     {
       return x >= 0 ? x : x + INT32PK_OFFSET;
@@ -496,6 +521,12 @@ class QgsPostgresUtils
     {
       return x <= ( ( INT32PK_OFFSET ) / 2.0 ) ? x : -( INT32PK_OFFSET - x );
     }
+
+    //! Replaces invalid XML chars with UTF-8[<char_code>]
+    static void replaceInvalidXmlChars( QString &xml );
+
+    //! Replaces UTF-8[<char_code>] with the actual unicode char
+    static void restoreInvalidXmlChars( QString &xml );
 };
 
 /**
@@ -533,6 +564,36 @@ class QgsPostgresSharedData
     QMap<QVariantList, QgsFeatureId> mKeyToFid;      // map key values to feature id
     QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature id back to key values
     QMap<int, bool> mFieldSupportsEnumValues;        // map field index to bool flag supports enum values
+};
+
+class QgsPostgresProviderMetadata final: public QgsProviderMetadata
+{
+  public:
+    QgsPostgresProviderMetadata();
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QList< QgsDataItemProvider * > dataItemProviders() const override;
+    QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri, const QgsFields &fields, QgsWkbTypes::Type wkbType,
+        const QgsCoordinateReferenceSystem &srs,
+        bool overwrite,
+        QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
+        const QMap<QString, QVariant> *options ) override;
+    bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName,
+                    const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
+    QString loadStyle( const QString &uri, QString &errCause ) override;
+    int listStyles( const QString &uri, QStringList &ids,
+                    QStringList &names, QStringList &descriptions, QString &errCause ) override;
+    bool deleteStyleById( const QString &uri, QString styleId, QString &errCause ) override;
+    QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
+    QgsTransaction *createTransaction( const QString &connString ) override;
+    QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &name ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) override;
+    void deleteConnection( const QString &name ) override;
+    void saveConnection( const QgsAbstractProviderConnection *createConnection, const QString &name ) override;
+    void initProvider() override;
+    void cleanupProvider() override;
+    QVariantMap decodeUri( const QString &uri ) override;
+    QString encodeUri( const QVariantMap &parts ) override;
 };
 
 // clazy:excludeall=qstring-allocations

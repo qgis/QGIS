@@ -85,7 +85,7 @@ void QgsLayoutAligner::alignItems( QgsLayout *layout, const QList<QgsLayoutItem 
 
     // need to keep item units
     QgsLayoutPoint newPos = layout->convertFromLayoutUnits( shifted, item->positionWithUnits().units() );
-    item->attemptMove( newPos );
+    item->attemptMove( newPos, false );
 
     layout->undoStack()->endCommand();
   }
@@ -175,7 +175,7 @@ void QgsLayoutAligner::distributeItems( QgsLayout *layout, const QList<QgsLayout
 
     // need to keep item units
     QgsLayoutPoint newPos = layout->convertFromLayoutUnits( shifted, item->positionWithUnits().units() );
-    item->attemptMove( newPos );
+    item->attemptMove( newPos, false );
   };
 
 
@@ -414,7 +414,7 @@ void QgsLayoutAligner::distributeEquispacedItems( QgsLayout *layout, const QList
     }
 
     QgsLayoutPoint newPos = layout->convertFromLayoutUnits( shifted, item->positionWithUnits().units() );
-    item->attemptMove( newPos );
+    item->attemptMove( newPos, false );
 
     layout->undoStack()->endCommand();
 

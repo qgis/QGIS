@@ -62,6 +62,7 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
 
     //Overridden to return shape type
     QString displayName() const override;
+    QgsLayoutItem::Flags itemFlags() const override;
 
     /**
      * Returns the type of shape (e.g. rectangle, ellipse, etc).
@@ -92,7 +93,7 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
      * Sets the corner \a radius for rounded rectangle corners.
      * \see cornerRadius()
      */
-    void setCornerRadius( QgsLayoutMeasurement radius ) { mCornerRadius = radius; }
+    void setCornerRadius( QgsLayoutMeasurement radius );
 
     /**
      * Returns the corner radius for rounded rectangle corners.
@@ -100,12 +101,16 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
      */
     QgsLayoutMeasurement cornerRadius() const { return mCornerRadius; }
 
+    QgsGeometry clipPath() const override;
+
     // Depending on the symbol style, the bounding rectangle can be larger than the shape
     QRectF boundingRect() const override;
 
     // Reimplement estimatedFrameBleed, since frames on shapes are drawn using symbology
     // rather than the item's pen
     double estimatedFrameBleed() const override;
+
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
   protected:
 
@@ -136,6 +141,8 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
     QRectF mCurrentRectangle;
 
     QgsLayoutMeasurement mCornerRadius;
+
+    QPolygonF calculatePolygon( double scale ) const;
 };
 
 

@@ -37,7 +37,7 @@ QgsCodeEditorCSS::QgsCodeEditorCSS( QWidget *parent )
 void QgsCodeEditorCSS::setSciLexerCSS()
 {
   QsciLexerCSS *lexer = new QsciLexerCSS( this );
-  lexer->setDefaultFont( QFont( QStringLiteral( "Sans" ), 10 ) );
+  lexer->setDefaultFont( getMonospaceFont() );
 
   setLexer( lexer );
 }

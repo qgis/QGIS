@@ -29,6 +29,8 @@ QgsMapToolAddCircle::QgsMapToolAddCircle( QgsMapToolCapture *parentTool, QgsMapC
   , mParentTool( parentTool )
   , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
 {
+  mToolName = tr( "Add circle" );
+
   clean();
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddCircle::stopCapturing );
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddCircle::stopCapturing );
@@ -49,6 +51,28 @@ void QgsMapToolAddCircle::keyPressEvent( QKeyEvent *e )
   if ( e && e->key() == Qt::Key_Escape )
   {
     clean();
+    if ( mParentTool )
+      mParentTool->keyPressEvent( e );
+  }
+
+  if ( e && e->key() == Qt::Key_Backspace )
+  {
+    if ( mPoints.size() == 1 )
+    {
+
+      if ( mTempRubberBand )
+      {
+        delete mTempRubberBand;
+        mTempRubberBand = nullptr;
+      }
+
+      mPoints.clear();
+    }
+    else if ( mPoints.size() > 1 )
+    {
+      mPoints.removeLast();
+
+    }
     if ( mParentTool )
       mParentTool->keyPressEvent( e );
   }
@@ -73,7 +97,7 @@ void QgsMapToolAddCircle::deactivate()
 
   // keep z value from the first snapped point
   std::unique_ptr<QgsCircularString> lineString( mCircle.toCircularString() );
-  for ( const QgsPoint point : qgis::as_const( mPoints ) )
+  for ( const QgsPoint &point : qgis::as_const( mPoints ) )
   {
     if ( QgsWkbTypes::hasZ( point.wkbType() ) &&
          point.z() != defaultZValue() )
@@ -116,4 +140,14 @@ void QgsMapToolAddCircle::clean()
   QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
   if ( vLayer )
     mLayerType = vLayer->geometryType();
+}
+
+void QgsMapToolAddCircle::release( QgsMapMouseEvent *e )
+{
+  deactivate();
+  if ( mParentTool )
+  {
+    mParentTool->canvasReleaseEvent( e );
+  }
+  activate();
 }

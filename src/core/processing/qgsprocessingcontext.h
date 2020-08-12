@@ -54,15 +54,7 @@ class CORE_EXPORT QgsProcessingContext
     /**
      * Constructor for QgsProcessingContext.
      */
-    QgsProcessingContext()
-    {
-      auto callback = [ = ]( const QgsFeature & feature )
-      {
-        if ( mFeedback )
-          mFeedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( feature.id() ) );
-      };
-      mTransformErrorCallback = callback;
-    }
+    QgsProcessingContext();
 
     //! QgsProcessingContext cannot be copied
     QgsProcessingContext( const QgsProcessingContext &other ) = delete;
@@ -86,6 +78,11 @@ class CORE_EXPORT QgsProcessingContext
       mTransformErrorCallback = other.mTransformErrorCallback;
       mDefaultEncoding = other.mDefaultEncoding;
       mFeedback = other.mFeedback;
+      mPreferredVectorFormat = other.mPreferredVectorFormat;
+      mPreferredRasterFormat = other.mPreferredRasterFormat;
+      mEllipsoid = other.mEllipsoid;
+      mDistanceUnit = other.mDistanceUnit;
+      mAreaUnit = other.mAreaUnit;
     }
 
     /**
@@ -109,8 +106,8 @@ class CORE_EXPORT QgsProcessingContext
     /**
      * Sets the \a project in which the algorithm will be executed.
      *
-     * This also automatically sets the transformContext() to match
-     * the project's transform context.
+     * This also automatically sets the transformContext(), ellipsoid(), distanceUnit() and
+     * areaUnit() to match the project's settings.
      *
      * \see project()
      */
@@ -118,7 +115,15 @@ class CORE_EXPORT QgsProcessingContext
     {
       mProject = project;
       if ( mProject )
+      {
         mTransformContext = mProject->transformContext();
+        if ( mEllipsoid.isEmpty() )
+          mEllipsoid = mProject->ellipsoid();
+        if ( mDistanceUnit == QgsUnitTypes::DistanceUnknownUnit )
+          mDistanceUnit = mProject->distanceUnits();
+        if ( mAreaUnit == QgsUnitTypes::AreaUnknownUnit )
+          mAreaUnit = mProject->areaUnits();
+      }
     }
 
     /**
@@ -153,6 +158,64 @@ class CORE_EXPORT QgsProcessingContext
     void setTransformContext( const QgsCoordinateTransformContext &context ) { mTransformContext = context; }
 
     /**
+     * Returns the ellipsoid to use for distance and area calculations.
+     *
+     * \see setEllipsoid()
+     * \since QGIS 3.16
+     */
+    QString ellipsoid() const;
+
+    /**
+     * Sets a specified \a ellipsoid to use for distance and area calculations.
+     *
+     * If not explicitly set, the ellipsoid will default to the project()'s ellipsoid setting.
+     *
+     * \see ellipsoid()
+     * \since QGIS 3.16
+     */
+    void setEllipsoid( const QString &ellipsoid );
+
+    /**
+     * Returns the distance unit to use for distance calculations.
+     *
+     * \see setDistanceUnit()
+     * \see areaUnit()
+     * \since QGIS 3.16
+     */
+    QgsUnitTypes::DistanceUnit distanceUnit() const;
+
+    /**
+     * Sets the \a unit to use for distance calculations.
+     *
+     * If not explicitly set, the unit will default to the project()'s distance unit setting.
+     *
+     * \see distanceUnit()
+     * \see setAreaUnit()
+     * \since QGIS 3.16
+     */
+    void setDistanceUnit( QgsUnitTypes::DistanceUnit unit );
+
+    /**
+     * Returns the area unit to use for area calculations.
+     *
+     * \see setAreaUnit()
+     * \see distanceUnit()
+     * \since QGIS 3.16
+     */
+    QgsUnitTypes::AreaUnit areaUnit() const;
+
+    /**
+     * Sets the \a unit to use for area calculations.
+     *
+     * If not explicitly set, the unit will default to the project()'s area unit setting.
+     *
+     * \see areaUnit()
+     * \see setDistanceUnit()
+     * \since QGIS 3.16
+     */
+    void setAreaUnit( QgsUnitTypes::AreaUnit areaUnit );
+
+    /**
      * Returns a reference to the layer store used for storing temporary layers during
      * algorithm execution.
      */
@@ -180,10 +243,24 @@ class CORE_EXPORT QgsProcessingContext
         //! Default constructor
         LayerDetails() = default;
 
-        //! Friendly name for layer, to use when loading layer into project.
+        /**
+         * Friendly name for layer, possibly for use when loading layer into project.
+         *
+         * \warning Instead of directly using this value, prefer to call setOutputLayerName() to
+         * generate a layer name which respects the user's local Processing settings.
+         */
         QString name;
 
-        //! Associated output name from algorithm which generated the layer.
+        /**
+         * Set to TRUE if LayerDetails::name should always be used as the loaded layer name, regardless
+         * of the user's local Processing settings.
+         * \since QGIS 3.16
+         */
+        bool forceName = false;
+
+        /**
+         * Associated output name from algorithm which generated the layer.
+         */
         QString outputName;
 
         /**
@@ -209,6 +286,13 @@ class CORE_EXPORT QgsProcessingContext
          * \since QGIS 3.2
          */
         void setPostProcessor( QgsProcessingLayerPostProcessorInterface *processor SIP_TRANSFER );
+
+        /**
+         * Sets a \a layer name to match this output, respecting any local user settings which affect this name.
+         *
+         * \since QGIS 3.10.1
+         */
+        void setOutputLayerName( QgsMapLayer *layer ) const;
 
         //! Destination project
         QgsProject *project = nullptr;
@@ -332,6 +416,13 @@ class CORE_EXPORT QgsProcessingContext
     SIP_SKIP std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; }
 
     /**
+     * Returns the default callback function to use for a particular invalid geometry \a check
+     * \note not available in Python bindings
+     * \since QGIS 3.14
+     */
+    SIP_SKIP std::function< void( const QgsFeature & ) > defaultInvalidGeometryCallbackForCheck( QgsFeatureRequest::InvalidGeometryCheck check ) const;
+
+    /**
      * Sets a callback function to use when encountering a transform error when iterating
      * features. This function will be
      * called using the feature which encountered the transform error as a parameter.
@@ -407,6 +498,7 @@ class CORE_EXPORT QgsProcessingContext
      */
     void pushToThread( QThread *thread )
     {
+      // cppcheck-suppress assertWithSideEffect
       Q_ASSERT_X( QThread::currentThread() == QgsProcessingContext::thread(), "QgsProcessingContext::pushToThread", "Cannot push context to another thread unless the current thread matches the existing context thread affinity" );
       tempLayerStore.moveToThread( thread );
     }
@@ -442,11 +534,90 @@ class CORE_EXPORT QgsProcessingContext
      */
     QgsMapLayer *takeResultLayer( const QString &id ) SIP_TRANSFERBACK;
 
+    /**
+     * Returns the preferred vector format to use for vector outputs.
+     *
+     * This method returns a file extension to use when creating vector outputs (e.g. "shp"). Generally,
+     * it is preferable to use the extension associated with a particular parameter, which can be retrieved through
+     * QgsProcessingDestinationParameter::defaultFileExtension(). However, in some cases, a specific parameter
+     * may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
+     * and which creates multiple output layers in that folder). In this case, the format returned by this
+     * function should be used when creating these outputs.
+     *
+     * It is the algorithm's responsibility to check whether the returned format is acceptable for the algorithm,
+     * and to provide an appropriate fallback when the returned format is not usable.
+     *
+     * \see setPreferredVectorFormat()
+     * \see preferredRasterFormat()
+     *
+     * \since QGIS 3.10
+     */
+    QString preferredVectorFormat() const { return mPreferredVectorFormat; }
+
+    /**
+     * Sets the preferred vector \a format to use for vector outputs.
+     *
+     * This method sets a file extension to use when creating vector outputs (e.g. "shp"). Generally,
+     * it is preferable to use the extension associated with a particular parameter, which can be retrieved through
+     * QgsProcessingDestinationParameter::defaultFileExtension(). However, in some cases, a specific parameter
+     * may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
+     * and which creates multiple output layers in that folder). In this case, the format set by this
+     * function will be used when creating these outputs.
+     *
+     * \see preferredVectorFormat()
+     * \see setPreferredRasterFormat()
+     *
+     * \since QGIS 3.10
+     */
+    void setPreferredVectorFormat( const QString &format ) { mPreferredVectorFormat = format; }
+
+    /**
+     * Returns the preferred raster format to use for vector outputs.
+     *
+     * This method returns a file extension to use when creating raster outputs (e.g. "tif"). Generally,
+     * it is preferable to use the extension associated with a particular parameter, which can be retrieved through
+     * QgsProcessingDestinationParameter::defaultFileExtension(). However, in some cases, a specific parameter
+     * may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
+     * and which creates multiple output layers in that folder). In this case, the format returned by this
+     * function should be used when creating these outputs.
+     *
+     * It is the algorithm's responsibility to check whether the returned format is acceptable for the algorithm,
+     * and to provide an appropriate fallback when the returned format is not usable.
+     *
+     * \see setPreferredRasterFormat()
+     * \see preferredVectorFormat()
+     *
+     * \since QGIS 3.10
+     */
+    QString preferredRasterFormat() const { return mPreferredRasterFormat; }
+
+    /**
+     * Sets the preferred raster \a format to use for vector outputs.
+     *
+     * This method sets a file extension to use when creating raster outputs (e.g. "tif"). Generally,
+     * it is preferable to use the extension associated with a particular parameter, which can be retrieved through
+     * QgsProcessingDestinationParameter::defaultFileExtension(). However, in some cases, a specific parameter
+     * may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
+     * and which creates multiple output layers in that folder). In this case, the format set by this
+     * function will be used when creating these outputs.
+     *
+     * \see preferredRasterFormat()
+     * \see setPreferredVectorFormat()
+     *
+     * \since QGIS 3.10
+     */
+    void setPreferredRasterFormat( const QString &format ) { mPreferredRasterFormat = format; }
+
   private:
 
-    QgsProcessingContext::Flags mFlags = nullptr;
+    QgsProcessingContext::Flags mFlags = QgsProcessingContext::Flags();
     QPointer< QgsProject > mProject;
     QgsCoordinateTransformContext mTransformContext;
+
+    QString mEllipsoid;
+    QgsUnitTypes::DistanceUnit mDistanceUnit = QgsUnitTypes::DistanceUnknownUnit;
+    QgsUnitTypes::AreaUnit mAreaUnit = QgsUnitTypes::AreaUnknownUnit;
+
     //! Temporary project owned by the context, used for storing temporarily loaded map layers
     QgsMapLayerStore tempLayerStore;
     QgsExpressionContext mExpressionContext;
@@ -457,6 +628,9 @@ class CORE_EXPORT QgsProcessingContext
     QMap< QString, LayerDetails > mLayersToLoadOnCompletion;
 
     QPointer< QgsProcessingFeedback > mFeedback;
+
+    QString mPreferredVectorFormat;
+    QString mPreferredRasterFormat;
 
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );

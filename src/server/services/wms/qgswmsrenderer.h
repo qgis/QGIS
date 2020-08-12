@@ -94,6 +94,15 @@ namespace QgsWms
        */
       QImage *getLegendGraphics( QgsLayerTreeModelLegendNode &nodeModel );
 
+      /**
+       * Returns the map legend as a JSON object. The caller takes the ownership
+       * of the JSON object.
+       * \param model The layer tree model to use for building the legend
+       * \returns the legend as a JSON object
+       * \since QGIS 3.12
+       */
+      QJsonObject getLegendGraphicsAsJson( QgsLayerTreeModel &model );
+
       typedef QSet<QString> SymbolSet;
       typedef QHash<QgsVectorLayer *, SymbolSet> HitTest;
 
@@ -115,7 +124,7 @@ namespace QgsWms
        * \returns the map as DXF data
        * \since QGIS 3.0
       */
-      QgsDxfExport getDxf();
+      std::unique_ptr<QgsDxfExport> getDxf();
 
       /**
        * Returns printed page as binary
@@ -128,7 +137,13 @@ namespace QgsWms
        */
       QByteArray getFeatureInfo( const QString &version = "1.3.0" );
 
+      /**
+       * Configures \a layers for rendering optionally considering the map \a settings
+       */
+      void configureLayers( QList<QgsMapLayer *> &layers, QgsMapSettings *settings = nullptr );
+
     private:
+      QgsLegendSettings legendSettings() const;
 
       // Build and returns highlight layers
       QList<QgsMapLayer *> highlightLayers( QList<QgsWmsParametersHighlightLayer> params );
@@ -145,8 +160,10 @@ namespace QgsWms
       // Set layer opacity
       void setLayerOpacity( QgsMapLayer *layer, int opacity ) const;
 
-      // Set layer filter
+      // Set layer filter and dimension
       void setLayerFilter( QgsMapLayer *layer, const QList<QgsWmsParametersFilter> &filters );
+
+      QStringList dimensionFilter( QgsVectorLayer *layer ) const;
 
       // Set layer python filter
       void setLayerAccessControlFilter( QgsMapLayer *layer ) const;
@@ -161,14 +178,12 @@ namespace QgsWms
       QImage *scaleImage( const QImage *image ) const;
 
       /**
-       * Creates a QImage from the HEIGHT and WIDTH parameters
-       * \param width image width (or -1 if width should be taken from WIDTH wms parameter)
-       * \param height image height (or -1 if height should be taken from HEIGHT wms parameter)
-       * \param useBbox flag to indicate if the BBOX has to be used to adapt aspect ratio
+       * Creates a QImage.
+       * \param size image size
        * \returns a non null pointer
        * may throw an exception
        */
-      QImage *createImage( int width = -1, int height = -1, bool useBbox = true ) const;
+      QImage *createImage( const QSize &size ) const;
 
       /**
        * Configures map settings according to WMS parameters.
@@ -228,11 +243,6 @@ namespace QgsWms
       //! Helper function for filter safety test. Groups stringlist to merge entries starting/ending with quotes
       static void groupStringList( QStringList &list, const QString &groupString );
 
-      /**
-       * Checks WIDTH/HEIGHT values against MaxWidth and MaxHeight
-        \returns true if width/height values are okay*/
-      void checkMaximumWidthHeight() const;
-
       //! Converts a feature info xml document to SIA2045 norm
       void convertFeatureInfoToSia2045( QDomDocument &doc ) const;
 
@@ -246,7 +256,7 @@ namespace QgsWms
       QByteArray convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc ) const;
 
       QDomElement createFeatureGML(
-        QgsFeature *feat,
+        const QgsFeature *feat,
         QgsVectorLayer *layer,
         QDomDocument &doc,
         QgsCoordinateReferenceSystem &crs,
@@ -261,34 +271,18 @@ namespace QgsWms
       //! Gets layer search rectangle (depending on request parameter, layer type, map and layer crs)
       QgsRectangle featureInfoSearchRect( QgsVectorLayer *ml, const QgsMapSettings &ms, const QgsRenderContext &rct, const QgsPointXY &infoPoint ) const;
 
-      /*
+      /**
        * Configures the print layout for the GetPrint request
        *\param c the print layout
        *\param mapSettings the map settings
        *\param atlasPrint true if atlas is used for printing
        *\returns true in case of success
-       * */
+       */
       bool configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings, bool atlasPrint = false );
 
       void removeTemporaryLayers();
 
       void handlePrintErrors( const QgsLayout *layout ) const;
-
-      /**
-       * Returns QgsWmsParameter SRCWIDTH if it's a GetLegendGraphics request and otherwise HEIGHT parameter
-       * \returns height parameter
-       * \since QGIS 3.4.7
-       */
-      int height() const;
-
-      /**
-       * Returns QgsWmsParameter SRCWIDTH parameter if it's a GetLegendGraphics request and otherwise WIDTH parameter
-       * \returns width parameter
-       * \since QGIS 3.4.7
-       */
-      int width() const;
-
-      void configureLayers( QList<QgsMapLayer *> &layers, QgsMapSettings *settings = nullptr );
 
       void setLayerStyle( QgsMapLayer *layer, const QString &style ) const;
 

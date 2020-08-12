@@ -114,13 +114,15 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     QgsCoordinateReferenceSystem mDestCRS;
 
     //! Source datum transformation id (or -1 if none)
-    int mSrcDatumTransform = -1;
+    Q_DECL_DEPRECATED int mSrcDatumTransform = -1;
 
     //! Destination datum transformation id (or -1 if none)
-    int mDestDatumTransform = -1;
+    Q_DECL_DEPRECATED int mDestDatumTransform = -1;
 
     //! Requested precision
     Precision mPrecision = Approximate;
+
+    QgsCoordinateTransformContext mTransformContext;
 
 };
 
@@ -137,7 +139,7 @@ class ProjectorData
 {
   public:
     //! Initialize reprojector and calculate matrix
-    ProjectorData( const QgsRectangle &extent, int width, int height, QgsRasterInterface *input, const QgsCoordinateTransform &inverseCt, QgsRasterProjector::Precision precision );
+    ProjectorData( const QgsRectangle &extent, int width, int height, QgsRasterInterface *input, const QgsCoordinateTransform &inverseCt, QgsRasterProjector::Precision precision, QgsRasterBlockFeedback *feedback = nullptr );
     ~ProjectorData();
 
     ProjectorData( const ProjectorData &other ) = delete;

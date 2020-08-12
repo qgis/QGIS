@@ -32,6 +32,7 @@
 #include "qgis_app.h"
 
 class QgsLabelingWidget;
+class QgsMaskingWidget;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRendererPropertiesDialog;
@@ -43,6 +44,8 @@ class QgsMapLayerStyleManagerWidget;
 class QgsVectorLayer3DRendererWidget;
 class QgsMeshLayer3DRendererWidget;
 class QgsMessageBar;
+class QgsVectorTileBasicRendererWidget;
+class QgsVectorTileBasicLabelingWidget;
 
 class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWidgetFactory
 {
@@ -141,12 +144,15 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     QgsUndoWidget *mUndoWidget = nullptr;
     QgsMapLayer *mCurrentLayer = nullptr;
     QgsLabelingWidget *mLabelingWidget = nullptr;
+    QgsMaskingWidget *mMaskingWidget = nullptr;
 #ifdef HAVE_3D
     QgsVectorLayer3DRendererWidget *mVector3DWidget = nullptr;
     QgsMeshLayer3DRendererWidget *mMesh3DWidget = nullptr;
 #endif
     QgsRendererRasterPropertiesWidget *mRasterStyleWidget = nullptr;
     QgsRendererMeshPropertiesWidget *mMeshStyleWidget = nullptr;
+    QgsVectorTileBasicRendererWidget *mVectorTileStyleWidget = nullptr;
+    QgsVectorTileBasicLabelingWidget *mVectorTileLabelingWidget = nullptr;
     QList<QgsMapLayerConfigWidgetFactory *> mPageFactories;
     QMap<int, QgsMapLayerConfigWidgetFactory *> mUserPages;
     QgsLayerStyleManagerWidgetFactory *mStyleManagerFactory = nullptr;

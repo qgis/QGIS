@@ -54,6 +54,8 @@
       <addaction name="mPerpendicularAction"/>
       <addaction name="separator"/>
       <addaction name="mSettingsAction"/>
+      <addaction name="separator"/>
+      <addaction name="mToggleFloaterAction"/>
      </widget>
     </item>
     <item>
@@ -466,6 +468,18 @@
     </property>
    </action>
   </widget>
+  <action name="mToggleFloaterAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/cadtools/floater.svg</normaloff>:/images/themes/default/cadtools/floater.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Toggle Floater</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

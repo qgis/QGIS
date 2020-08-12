@@ -6,9 +6,13 @@ SET (util_SRCS)
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/tests/core #for render checker class
   ${CMAKE_SOURCE_DIR}/src/3d
   ${CMAKE_SOURCE_DIR}/src/3d/chunks
+  ${CMAKE_SOURCE_DIR}/src/3d/materials
+  ${CMAKE_SOURCE_DIR}/src/3d/mesh
   ${CMAKE_SOURCE_DIR}/src/3d/symbols
   ${CMAKE_SOURCE_DIR}/src/3d/terrain
   ${CMAKE_SOURCE_DIR}/src/core
@@ -16,11 +20,13 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_SOURCE_DIR}/src/native
@@ -50,7 +56,6 @@ MACRO (ADD_QGIS_TEST testname testsrc)
   SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
   SET(qgis_${testname}_MOC_CPPS ${testsrc})
   ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
-  SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
   SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTORCC TRUE)
   TARGET_LINK_LIBRARIES(qgis_${testname}
     ${Qt5Xml_LIBRARIES}
@@ -74,4 +79,6 @@ ENDMACRO (ADD_QGIS_TEST)
 ADD_QGIS_TEST(3dutilstest testqgs3dutils.cpp)
 ADD_QGIS_TEST(3drenderingtest testqgs3drendering.cpp)
 ADD_QGIS_TEST(layout3dmaptest testqgslayout3dmap.cpp)
+ADD_QGIS_TEST(materialregistrytest testqgsmaterialregistry.cpp)
 ADD_QGIS_TEST(tessellatortest testqgstessellator.cpp)
+ADD_QGIS_TEST(3dsymbolregistrytest testqgs3dsymbolregistry.cpp)

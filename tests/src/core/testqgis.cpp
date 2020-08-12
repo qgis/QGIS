@@ -22,6 +22,7 @@
 //qgis includes...
 #include "qgis.h"
 #include "qgsmaplayermodel.h"
+#include "qgsattributeeditorelement.h"
 
 /**
  * \ingroup UnitTests
@@ -49,6 +50,9 @@ class TestQgis : public QObject
     void testQgsVariantEqual();
     void testQgsEnumValueToKey();
     void testQgsEnumKeyToValue();
+    void testQgsFlagValueToKeys();
+    void testQgsFlagKeysToValue();
+    void testQMapQVariantList();
 
   private:
     QString mReport;
@@ -352,7 +356,7 @@ void TestQgis::testQgsRound()
   QGSCOMPARENEAR( qgsRound( 98765432198, 13 ), 98765432198, 1.0 );
   QGSCOMPARENEAR( qgsRound( 98765432198, 14 ), 98765432198, 1.0 );
   QGSCOMPARENEAR( qgsRound( 98765432198765, 14 ), 98765432198765, 1.0 );
-  QGSCOMPARENEAR( qgsRound( 98765432198765432, 20 ), 98765432198765432, 1.0 );
+  QGSCOMPARENEAR( qgsRound( 98765432198765432., 20 ), 98765432198765432., 1.0 );
   QGSCOMPARENEAR( qgsRound( 9.8765432198765, 2 ), 9.88, 0.001 );
   QGSCOMPARENEAR( qgsRound( 9.8765432198765, 3 ), 9.877, 0.0001 );
   QGSCOMPARENEAR( qgsRound( 9.8765432198765, 4 ), 9.8765, 0.00001 );
@@ -393,6 +397,11 @@ void TestQgis::testQgsVariantEqual()
   // NULL identities
   QVERIFY( qgsVariantEqual( QVariant( QVariant::Int ), QVariant( QVariant::Int ) ) );
   QVERIFY( qgsVariantEqual( QVariant( QVariant::Double ), QVariant( QVariant::Double ) ) );
+  QVERIFY( qgsVariantEqual( QVariant( QVariant::Int ), QVariant( QVariant::Double ) ) );
+  QVERIFY( qgsVariantEqual( QVariant( QVariant::Int ), QVariant( QVariant::String ) ) );
+
+  // NULL should not be equal to invalid
+  QVERIFY( !qgsVariantEqual( QVariant(), QVariant( QVariant::Int ) ) );
 }
 
 void TestQgis::testQgsEnumValueToKey()
@@ -405,6 +414,35 @@ void TestQgis::testQgsEnumKeyToValue()
   QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QStringLiteral( "UnknownKey" ), QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::LayerIdRole );
 }
 
+void TestQgis::testQgsFlagValueToKeys()
+{
+  QgsAttributeEditorRelation::Buttons buttons = QgsAttributeEditorRelation::Button::Link | QgsAttributeEditorRelation::Button::AddChildFeature;
+  QCOMPARE( qgsFlagValueToKeys( buttons ), QStringLiteral( "Link|AddChildFeature" ) );
+}
+void TestQgis::testQgsFlagKeysToValue()
+{
+  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "Link|AddChildFeature" ), QgsAttributeEditorRelation::Buttons( QgsAttributeEditorRelation::Button::AllButtons ) ), QgsAttributeEditorRelation::Button::Link | QgsAttributeEditorRelation::Button::AddChildFeature );
+  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "UnknownKey" ), QgsAttributeEditorRelation::Buttons( QgsAttributeEditorRelation::Button::AllButtons ) ), QgsAttributeEditorRelation::Buttons( QgsAttributeEditorRelation::Button::AllButtons ) );
+}
+
+void TestQgis::testQMapQVariantList()
+{
+  QMap<QVariantList, long> ids;
+  ids.insert( QVariantList() << "B" << "c", 5 );
+  ids.insert( QVariantList() << "b" << "C", 7 );
+
+  QVariantList v = QVariantList() << "b" << "C";
+  QMap<QVariantList, long>::const_iterator it = ids.constFind( v );
+
+  QVERIFY( it != ids.constEnd() );
+  QCOMPARE( it.value(), 7L );
+
+  v = QVariantList() << "B" << "c";
+  it = ids.constFind( v );
+
+  QVERIFY( it != ids.constEnd() );
+  QCOMPARE( it.value(), 5L );
+}
 
 
 QGSTEST_MAIN( TestQgis )

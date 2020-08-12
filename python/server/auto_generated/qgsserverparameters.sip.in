@@ -169,7 +169,8 @@ Loads the data associated to the parameter converted into an url.
 Raises an exception in case of an invalid parameters.
 
 :param msg: The message describing the exception
-            \throws QgsBadRequestException Invalid parameter exception
+
+:raises QgsBadRequestException: Invalid parameter exception
 %End
 
     QVariant::Type mType;
@@ -216,7 +217,8 @@ Constructor for QgsServerParameter.
     void raiseError() const;
 %Docstring
 Raises an error in case of an invalid conversion.
-\throws QgsBadRequestException Invalid parameter exception
+
+:raises QgsBadRequestException: Invalid parameter exception
 %End
 
     static QString name( const QgsServerParameter::Name name );

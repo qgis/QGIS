@@ -221,7 +221,7 @@ class SLVectorTable(SLTable, VectorTable):
         SLTable.__init__(self, row[:-5], db, schema)
         VectorTable.__init__(self, db, schema)
         # SpatiaLite does case-insensitive checks for table names, but the
-        # SL provider didn't do the same in Qgis < 1.9, so self.geomTableName
+        # SL provider didn't do the same in QGIS < 1.9, so self.geomTableName
         # stores the table name like stored in the geometry_columns table
         self.geomTableName, self.geomColumn, self.geomType, self.geomDim, self.srid = row[-5:]
 
@@ -266,8 +266,8 @@ class SLRasterTable(SLTable, RasterTable):
         self.geomType = 'RASTER'
 
         # def info(self):
-        #from .info_model import SLRasterTableInfo
-        #return SLRasterTableInfo(self)
+        # from .info_model import SLRasterTableInfo
+        # return SLRasterTableInfo(self)
 
     def rasterliteGdalUri(self):
         gdalUri = u'RASTERLITE:%s,table=%s' % (self.uri().database(), self.prefixName)

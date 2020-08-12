@@ -46,12 +46,10 @@ void QgsProjectionSelectionDialog::setMessage( const QString &message )
   if ( m.isEmpty() )
   {
     // Set up text edit pane
-    QString format( QStringLiteral( "<h1>%1</h1>%2 %3" ) );
-    QString header = tr( "Define this layer's coordinate reference system:" );
     QString sentence1 = tr( "This layer appears to have no projection specification." );
     QString sentence2 = tr( "By default, this layer will now have its projection set to that of the project, "
                             "but you may override this by selecting a different projection below." );
-    m = format.arg( header, sentence1, sentence2 );
+    m = QStringLiteral( "%1 %2" ).arg( sentence1, sentence2 );
   }
 
   QString myStyle = QgsApplication::reportStyleSheet();

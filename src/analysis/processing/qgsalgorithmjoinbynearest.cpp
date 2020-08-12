@@ -89,7 +89,9 @@ QString QgsJoinByNearestAlgorithm::shortHelpString() const
                       "input one, with additional attributes in its attribute table.\n\n"
                       "The additional attributes and their values are taken from a second vector layer, where features are joined "
                       "by finding the closest features from each layer. By default only the single nearest feature is joined,"
-                      "but optionally the join can use the n-nearest neighboring features instead.\n\n"
+                      "but optionally the join can use the n-nearest neighboring features instead. If multiple features are found "
+                      "with identical distances these will all be returned (even if the total number of features exceeds the specified "
+                      "maximum feature count).\n\n"
                       "If a maximum distance is specified, then only features which are closer than this distance "
                       "will be matched.\n\n"
                       "The output features will contain the selected attributes from the nearest feature, "
@@ -158,7 +160,7 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
   {
     for ( int i = 0; i < outFields2.count(); ++i )
     {
-      outFields2[ i ].setName( prefix + outFields2[ i ].name() );
+      outFields2.rename( i, prefix + outFields2[ i ].name() );
     }
   }
 
@@ -186,23 +188,20 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
 
   // make spatial index
   QgsFeatureIterator f2 = input2->getFeatures( QgsFeatureRequest().setDestinationCrs( input->sourceCrs(), context.transformContext() ).setSubsetOfAttributes( fields2Fetch ) );
-  QgsSpatialIndex index( QgsSpatialIndex::FlagStoreFeatureGeometries );
   QHash< QgsFeatureId, QgsAttributes > input2AttributeCache;
-  QgsFeature f;
   double step = input2->featureCount() > 0 ? 50.0 / input2->featureCount() : 1;
   int i = 0;
-  while ( f2.nextFeature( f ) )
+  QgsSpatialIndex index( f2, [&]( const QgsFeature & f )->bool
   {
     i++;
     if ( feedback->isCanceled() )
-      break;
+      return false;
 
     feedback->setProgress( i * step );
 
     if ( !f.hasGeometry() )
-      continue;
+      return true;
 
-    index.addFeature( f );
     // only keep selected attributes
     QgsAttributes attributes;
     for ( int j = 0; j < f.attributes().count(); ++j )
@@ -212,10 +211,15 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
       attributes << f.attribute( j );
     }
     input2AttributeCache.insert( f.id(), attributes );
-  }
+
+    return true;
+  }, QgsSpatialIndex::FlagStoreFeatureGeometries );
+
+  QgsFeature f;
 
   // create extra null attributes for non-matched records (the +2 is for the "n" and "distance", and start/end x/y fields)
   QgsAttributes nullMatch;
+  nullMatch.reserve( fields2Indices.size() + 6 );
   for ( int i = 0; i < fields2Indices.count() + 6; ++i )
     nullMatch << QVariant();
 
@@ -255,6 +259,11 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
     {
       // note - if using same source as target, we have to get one extra neighbor, since the first match will be the input feature
       const QList< QgsFeatureId > nearest = index.nearestNeighbor( f.geometry(), neighbors + ( sameSourceAndTarget ? 1 : 0 ), std::isnan( maxDistance ) ? 0 : maxDistance );
+
+      if ( nearest.count() > neighbors + ( sameSourceAndTarget ? 1 : 0 ) )
+      {
+        feedback->pushInfo( QObject::tr( "Multiple matching features found at same distance from search feature, found %1 features instead of %2" ).arg( nearest.count() - ( sameSourceAndTarget ? 1 : 0 ) ).arg( neighbors ) );
+      }
       QgsFeature out;
       out.setGeometry( f.geometry() );
       int j = 0;

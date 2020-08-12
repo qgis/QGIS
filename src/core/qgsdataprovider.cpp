@@ -15,13 +15,30 @@
 
 #include <QMutexLocker>
 #include "qgsdataprovider.h"
+#include "qgsdataprovidertemporalcapabilities.h"
 
-QString QgsDataProvider::SUBLAYER_SEPARATOR = QString( "!!::!!" );
+#define SUBLAYER_SEPARATOR QStringLiteral( "!!::!!" )
 
 QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions )
   : mDataSourceURI( uri ),
     mOptions( providerOptions )
 {
+}
+
+QgsDataProviderTemporalCapabilities *QgsDataProvider::temporalCapabilities()
+{
+  return nullptr;
+}
+
+const QgsDataProviderTemporalCapabilities *QgsDataProvider::temporalCapabilities() const
+{
+  return nullptr;
+}
+
+void QgsDataProvider::reloadData()
+{
+  reloadProviderData();
+  emit dataChanged();
 }
 
 void QgsDataProvider::setProviderProperty( QgsDataProvider::ProviderProperty property, const QVariant &value )
@@ -46,7 +63,7 @@ QVariant QgsDataProvider::providerProperty( int property, const QVariant &defaul
 
 void QgsDataProvider::setListening( bool isListening )
 {
-  Q_UNUSED( isListening );
+  Q_UNUSED( isListening )
 }
 
 bool QgsDataProvider::renderInPreview( const PreviewContext &context )
@@ -64,4 +81,9 @@ void QgsDataProvider::setTransformContext( const QgsCoordinateTransformContext &
 {
   QMutexLocker locker( &mOptionsMutex );
   mOptions.transformContext = value;
+}
+
+QString QgsDataProvider::sublayerSeparator()
+{
+  return SUBLAYER_SEPARATOR;
 }

@@ -25,6 +25,8 @@
 
 #include "qgsdataitem.h"
 
+class QgsDataItemProvider;
+
 /**
  * \ingroup core
  * \class QgsBrowserWatcher
@@ -61,6 +63,12 @@ class CORE_EXPORT QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem
  * QgsBrowserModel models are not initially populated and use a deferred initialization
  * approach. After constructing a QgsBrowserModel, a call must be made
  * to initialize() in order to populate the model.
+ *
+ * \note Since QGIS 3.10 it is recommended to use QgsBrowserGuiModel from GUI library.
+ * Implementation of data items used from QgsBrowserModel should not trigger any GUI
+ * operations such as opening of widgets/dialogs or showing message boxes. Such actions
+ * should be implemented in a new QgsDataItemGuiProvider subclass which is used
+ * by QgsBrowserGuiModel (but not by QgsBrowserModel).
  */
 class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 {
@@ -84,6 +92,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
       PathRole = Qt::UserRole, //!< Item path used to access path in the tree, see QgsDataItem::mPath
       CommentRole = Qt::UserRole + 1, //!< Item comment
       SortRole, //!< Custom sort role, see QgsDataItem::sortKey()
+      ProviderKeyRole, //!< Data item provider key that created the item, see QgsDataItem::providerKey() \since QGIS 3.12
     };
     // implemented methods from QAbstractItemModel for read-only access
 
@@ -169,16 +178,17 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      * \since QGIS 3.6
      */
     QMap<QString, QgsDirectoryItem *> driveItems() const;
-
   signals:
+
     //! Emitted when item children fetch was finished
     void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
 
     /**
-     * Connections changed in the browser, forwarded to the widget and used to
-     * notify the provider dialogs of a changed connection
+     * Emitted when connections for the specified \a providerKey have changed in the browser.
+     *
+     * Forwarded to the widget and used to notify the provider dialogs of a changed connection.
      */
-    void connectionsChanged();
+    void connectionsChanged( const QString &providerKey );
 
   public slots:
     //! Reload the whole model
@@ -245,6 +255,11 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     QgsFavoritesItem *mFavorites = nullptr;
     QgsDirectoryItem *mProjectHome = nullptr;
 
+  private slots:
+    void dataItemProviderAdded( QgsDataItemProvider *provider );
+    void dataItemProviderWillBeRemoved( QgsDataItemProvider *provider );
+    void onConnectionsChanged( const QString &providerKey );
+
   private:
     bool mInitialized = false;
     QMap< QString, QgsDirectoryItem * > mDriveItems;
@@ -252,6 +267,8 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void setupItemConnections( QgsDataItem *item );
 
     void removeRootItem( QgsDataItem *item );
+
+    QgsDataItem *addProviderRootItem( QgsDataItemProvider *provider );
 
     friend class TestQgsBrowserModel;
     friend class TestQgsBrowserProxyModel;

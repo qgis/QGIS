@@ -11,7 +11,6 @@
 
 
 
-
 class QgsSymbolsListWidget : QWidget
 {
 
@@ -63,20 +62,11 @@ Returns the vector layer associated with the widget.
 
   public slots:
 
-    void setSymbolFromStyle( const QModelIndex &index );
     void setSymbolColor( const QColor &color );
     void setMarkerAngle( double angle );
     void setMarkerSize( double size );
     void setLineWidth( double width );
-    void addSymbolToStyle();
-    void saveSymbol();
 
-    void populateGroups();
-%Docstring
-Pupulates the groups combo box with available tags and smartgroups
-%End
-
-    void openStyleManager();
     void clipFeaturesToggled( bool checked );
 
     void updateDataDefinedMarkerSize();

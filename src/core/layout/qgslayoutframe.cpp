@@ -134,6 +134,10 @@ QgsExpressionContext QgsLayoutFrame::createExpressionContext() const
   return context;
 }
 
+QgsLayoutItem::ExportLayerBehavior QgsLayoutFrame::exportLayerBehavior() const
+{
+  return CanGroupWithItemsOfSameType;
+}
 
 QString QgsLayoutFrame::displayName() const
 {

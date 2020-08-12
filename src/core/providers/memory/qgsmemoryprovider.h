@@ -26,7 +26,7 @@ class QgsSpatialIndex;
 
 class QgsMemoryFeatureIterator;
 
-class QgsMemoryProvider : public QgsVectorDataProvider
+class QgsMemoryProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
@@ -56,7 +56,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     QgsWkbTypes::Type wkbType() const override;
     long featureCount() const override;
     QgsFields fields() const override;
-    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
     bool renameAttributes( const QgsFieldNameMap &renamedAttributes ) override;
@@ -67,6 +67,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     bool supportsSubsetString() const override { return true; }
     bool createSpatialIndex() override;
+    QgsFeatureSource::SpatialIndexPresence hasSpatialIndex() const override;
     QgsVectorDataProvider::Capabilities capabilities() const override;
     bool truncate() override;
 
@@ -78,6 +79,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     void updateExtents() override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
+    void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
 
   private:
     // Coordinate reference system

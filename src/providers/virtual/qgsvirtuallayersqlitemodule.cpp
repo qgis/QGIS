@@ -195,9 +195,6 @@ struct VTable
       mFields = mLayer ? mLayer->fields() : mProvider->fields();
       QStringList sqlFields;
 
-      // add a hidden field for rtree filtering
-      sqlFields << QStringLiteral( "_search_frame_ HIDDEN BLOB" );
-
       const auto constMFields = mFields;
       for ( const QgsField &field : constMFields )
       {
@@ -229,12 +226,15 @@ struct VTable
         // we are using them to set the geometry type and srid
         // these will be reused by the provider when it will introspect the query to detect types
         sqlFields << QStringLiteral( "geometry geometry(%1,%2)" ).arg( provider->wkbType() ).arg( provider->crs().postgisSrid() );
+
+        // add a hidden field for rtree filtering
+        sqlFields << QStringLiteral( "_search_frame_ HIDDEN BLOB" );
       }
 
       QgsAttributeList pkAttributeIndexes = provider->pkAttributeIndexes();
       if ( pkAttributeIndexes.size() == 1 )
       {
-        mPkColumn = pkAttributeIndexes.at( 0 ) + 1;
+        mPkColumn = pkAttributeIndexes.at( 0 );
       }
 
       mCreationStr = "CREATE TABLE vtable (" + sqlFields.join( QStringLiteral( "," ) ) + ")";
@@ -326,8 +326,8 @@ void getGeometryType( const QgsVectorDataProvider *provider, QString &geometryTy
 
 int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *argv, sqlite3_vtab **outVtab, char **outErr, bool isCreated )
 {
-  Q_UNUSED( aux );
-  Q_UNUSED( isCreated );
+  Q_UNUSED( aux )
+  Q_UNUSED( isCreated )
 
 #define RETURN_CSTR_ERROR(err) if (outErr) {size_t s = strlen(err); *outErr=reinterpret_cast<char*>(sqlite3_malloc( static_cast<int>( s ) +1)); strncpy(*outErr, err, s);}
 #define RETURN_CPPSTR_ERROR(err) if (outErr) {*outErr=reinterpret_cast<char*>(sqlite3_malloc( static_cast<int>( err.toUtf8().size() )+1)); strncpy(*outErr, err.toUtf8().constData(), err.toUtf8().size());}
@@ -464,8 +464,8 @@ int vtableDisconnect( sqlite3_vtab *vtab )
 
 int vtableRename( sqlite3_vtab *vtab, const char *newName )
 {
-  Q_UNUSED( vtab );
-  Q_UNUSED( newName );
+  Q_UNUSED( vtab )
+  Q_UNUSED( newName )
 
   return SQLITE_OK;
 }
@@ -491,8 +491,8 @@ int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info *indexInfo )
 
     // request for filter with a comparison operator
     if ( ( indexInfo->aConstraint[i].usable ) &&
-         ( indexInfo->aConstraint[i].iColumn > 0 ) &&
-         ( indexInfo->aConstraint[i].iColumn <= vtab->fields().count() ) &&
+         ( indexInfo->aConstraint[i].iColumn >= 0 ) &&
+         ( indexInfo->aConstraint[i].iColumn < vtab->fields().count() ) &&
          ( ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) || // if no PK
            ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_GT ) ||
            ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_LE ) ||
@@ -508,7 +508,7 @@ int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info *indexInfo )
       indexInfo->idxNum = 3; // expression filter
       indexInfo->estimatedCost = 2.0; // probably better than no index
 
-      QString expr = QgsExpression::quotedColumnRef( vtab->fields().at( indexInfo->aConstraint[i].iColumn - 1 ).name() );
+      QString expr = QgsExpression::quotedColumnRef( vtab->fields().at( indexInfo->aConstraint[i].iColumn ).name() );
       switch ( indexInfo->aConstraint[i].op )
       {
         case SQLITE_INDEX_CONSTRAINT_EQ:
@@ -546,7 +546,8 @@ int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info *indexInfo )
 
     // request for rtree filtering
     if ( ( indexInfo->aConstraint[i].usable ) &&
-         ( 0 == indexInfo->aConstraint[i].iColumn ) &&
+         // request on _search_frame_ column
+         ( vtab->fields().count() + 1 == indexInfo->aConstraint[i].iColumn ) &&
          ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) )
     {
       indexInfo->aConstraintUsage[i].argvIndex = 1;
@@ -584,7 +585,7 @@ int vtableClose( sqlite3_vtab_cursor *cursor )
 
 int vtableFilter( sqlite3_vtab_cursor *cursor, int idxNum, const char *idxStr, int argc, sqlite3_value **argv )
 {
-  Q_UNUSED( argc );
+  Q_UNUSED( argc )
 
   QgsFeatureRequest request;
   if ( idxNum == 1 )
@@ -596,9 +597,12 @@ int vtableFilter( sqlite3_vtab_cursor *cursor, int idxNum, const char *idxStr, i
   {
     // rtree filter
     const char *blob = reinterpret_cast< const char * >( sqlite3_value_blob( argv[0] ) );
-    int bytes = sqlite3_value_bytes( argv[0] );
-    QgsRectangle r( spatialiteBlobBbox( blob, bytes ) );
-    request.setFilterRect( r );
+    if ( blob )
+    {
+      int bytes = sqlite3_value_bytes( argv[0] );
+      QgsRectangle r( spatialiteBlobBbox( blob, bytes ) );
+      request.setFilterRect( r );
+    }
   }
   else if ( idxNum == 3 )
   {
@@ -658,13 +662,9 @@ int vtableRowId( sqlite3_vtab_cursor *cursor, sqlite3_int64 *outRowid )
 int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context *ctxt, int idx )
 {
   VTableCursor *c = reinterpret_cast<VTableCursor *>( cursor );
-  if ( idx == 0 )
-  {
-    // _search_frame_, return null
-    sqlite3_result_null( ctxt );
-    return SQLITE_OK;
-  }
-  if ( idx == c->nColumns() + 1 )
+
+  // geometry column
+  if ( idx == c->nColumns() )
   {
     QPair<char *, int> g = c->currentGeometry();
     if ( !g.first )
@@ -673,7 +673,15 @@ int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context *ctxt, int idx )
       sqlite3_result_blob( ctxt, g.first, g.second, deleteGeometryBlob );
     return SQLITE_OK;
   }
-  QVariant v = c->currentAttribute( idx - 1 );
+
+  // _search_frame_, return null
+  if ( idx == c->nColumns() + 1 )
+  {
+    sqlite3_result_null( ctxt );
+    return SQLITE_OK;
+  }
+
+  QVariant v = c->currentAttribute( idx );
   if ( v.isNull() )
   {
     sqlite3_result_null( ctxt );
@@ -773,6 +781,11 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
     };
   }
 
+  // add default value for any omitted optional parameters
+  QList< QgsExpressionFunction::Parameter > params = foo->parameters();
+  for ( int i = variants.count(); i < params.count(); i++ )
+    variants << QVariant( params[i - 1].defaultValue() );
+
   QgsExpression parentExpr = QgsExpression( QString() );
   QVariant ret = foo->func( variants, &qgisFunctionExpressionContext, &parentExpr, nullptr );
   if ( parentExpr.hasEvalError() )
@@ -858,6 +871,13 @@ void registerQgisFunctions( sqlite3 *db )
     names << foo->name();
     names << foo->aliases();
 
+    int params = foo->params();
+    if ( foo->minParams() != params )
+    {
+      // the function has a number of optional parameters, don't set a fixed number of parameters
+      params = -1;
+    }
+
     Q_FOREACH ( QString name, names ) // for each alias
     {
       if ( reservedFunctions.contains( name ) ) // reserved keyword
@@ -866,13 +886,13 @@ void registerQgisFunctions( sqlite3 *db )
         continue;
 
       // register the function and pass the pointer to the Function* as user data
-      int r = sqlite3_create_function( db, name.toUtf8().constData(), foo->params(), SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
+      int r = sqlite3_create_function( db, name.toUtf8().constData(), params, SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
       if ( r != SQLITE_OK )
       {
         // is it because a function of the same name already exist (in SpatiaLite for instance ?)
         // we then try to recreate it with a prefix
         name = "qgis_" + name;
-        sqlite3_create_function( db, name.toUtf8().constData(), foo->params(), SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
+        sqlite3_create_function( db, name.toUtf8().constData(), params, SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
       }
     }
   }
@@ -884,8 +904,8 @@ void registerQgisFunctions( sqlite3 *db )
 
 int qgsvlayerModuleInit( sqlite3 *db, char **pzErrMsg, void *unused /*const sqlite3_api_routines *pApi*/ )
 {
-  Q_UNUSED( pzErrMsg );
-  Q_UNUSED( unused );
+  Q_UNUSED( pzErrMsg )
+  Q_UNUSED( unused )
 
   int rc = SQLITE_OK;
 
