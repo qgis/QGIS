@@ -95,7 +95,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
      * nogeometry                              is a flag to force the layer to be a non-geometry layer
      * query=sql                               represents the SQL query. Must be URL-encoded
      * field=column_name:[int|real|text]       represents a field with its name and its type
-     * subset=where_condition                  represents the subset
+     * subsetstring=subset_string              represents the subsetstring
      */
     static QgsVirtualLayerDefinition fromUrl( const QUrl &url );
 

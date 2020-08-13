@@ -162,7 +162,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
     {
       def.setLazy( true );
     }
-    else if ( key == QLatin1String( "subset" ) )
+    else if ( key == QLatin1String( "subsetstring" ) )
     {
       def.setSubsetString( QUrl::fromPercentEncoding( value.toUtf8() ) );
     }
@@ -308,7 +308,7 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
 
   if ( ! subsetString().isEmpty() )
   {
-    urlQuery.addQueryItem( QStringLiteral( "subset" ), QUrl::toPercentEncoding( subsetString() ) );
+    urlQuery.addQueryItem( QStringLiteral( "subsetstring" ), QUrl::toPercentEncoding( subsetString() ) );
   }
 
   url.setQuery( urlQuery );
