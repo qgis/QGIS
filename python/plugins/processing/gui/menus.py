@@ -42,7 +42,7 @@ algorithmsToolbar = None
 menusSettingsGroup = 'Menus'
 
 defaultMenuEntries = {}
-vectorMenu = QApplication.translate('MainWindow', 'Vect&or')
+vectorMenu = iface.vectorMenu().title()
 analysisToolsMenu = vectorMenu + "/" + Processing.tr('&Analysis Tools')
 defaultMenuEntries.update({'qgis:distancematrix': analysisToolsMenu,
                            'native:sumlinelengths': analysisToolsMenu,
@@ -64,7 +64,6 @@ defaultMenuEntries.update({'native:creategrid': researchToolsMenu,
                            'qgis:regularpoints': researchToolsMenu,
                            'native:selectbylocation': researchToolsMenu,
                            'native:polygonfromlayerextent': researchToolsMenu})
-
 geoprocessingToolsMenu = vectorMenu + "/" + Processing.tr('&Geoprocessing Tools')
 defaultMenuEntries.update({'native:buffer': geoprocessingToolsMenu,
                            'native:convexhull': geoprocessingToolsMenu,
@@ -95,7 +94,7 @@ defaultMenuEntries.update({'native:reprojectlayer': managementToolsMenu,
                            'native:mergevectorlayers': managementToolsMenu,
                            'native:createspatialindex': managementToolsMenu})
 
-rasterMenu = QApplication.translate('MainWindow', '&Raster')
+rasterMenu = iface.rasterMenu().title()
 projectionsMenu = rasterMenu + "/" + Processing.tr('Projections')
 defaultMenuEntries.update({'gdal:warpreproject': projectionsMenu,
                            'gdal:extractprojection': projectionsMenu,
