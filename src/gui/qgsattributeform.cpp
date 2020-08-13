@@ -1254,6 +1254,8 @@ QList<QgsEditorWidgetWrapper *> QgsAttributeForm::constraintDependencies( QgsEdi
 QgsRelationWidgetWrapper *QgsAttributeForm::setupRelationWidgetWrapper( const QgsRelation &rel, const QgsAttributeEditorContext &context )
 {
   QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, rel, nullptr, this );
+  const QVariantMap config = mLayer->editFormConfig().widgetConfig( rel.id() );
+  rww->setConfig( config );
   rww->setContext( context );
 
   return rww;

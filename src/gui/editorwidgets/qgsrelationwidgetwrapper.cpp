@@ -155,7 +155,8 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
 
   QgsAttributeEditorContext myContext( QgsAttributeEditorContext( context(), mRelation, QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed ) );
 
-  // read the legacy config of force-suppress-popup to support settings made by the API
+  // read the legacy config of force-suppress-popup to support settings made by the API and autoconfigurated forms
+  // it will be overwritten on specific widget configuration
   if ( config( QStringLiteral( "force-suppress-popup" ), false ).toBool() )
   {
     const_cast<QgsVectorLayerTools *>( myContext.vectorLayerTools() )->setForceSuppressFormPopup( true );
@@ -168,7 +169,8 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
   }
   */
 
-  // read the legacy config of nm-rel to support settings made by the API
+  // read the legacy config of nm-rel to support settings made by the API  and autoconfigurated forms
+  // it will be overwritten on specific widget configuration
   mNmRelation = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "nm-rel" ) ).toString() );
 
   // If this widget is already embedded by the same relation, reduce functionality
@@ -231,10 +233,7 @@ void QgsRelationWidgetWrapper::setForceSuppressFormPopup( bool forceSuppressForm
   if ( mWidget )
   {
     mWidget->setForceSuppressFormPopup( forceSuppressFormPopup );
-    if ( forceSuppressFormPopup )
-    {
-      const_cast<QgsVectorLayerTools *>( mWidget->editorContext().vectorLayerTools() )->setForceSuppressFormPopup( true );
-    }
+    const_cast<QgsVectorLayerTools *>( mWidget->editorContext().vectorLayerTools() )->setForceSuppressFormPopup( forceSuppressFormPopup );
   }
 }
 
