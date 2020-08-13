@@ -549,6 +549,8 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
         {
           loadInfoWidget( tr( "This configuration is available with double click" ) );
         }
+        receiver->clearSelection();
+        break;
       }
       case DnDTreeItemData::WidgetType:
       {
