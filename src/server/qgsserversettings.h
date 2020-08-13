@@ -68,8 +68,8 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_WMS_MAX_WIDTH, //!< Maximum width for a WMS request. The most conservative between this and the project one is used (since QGIS 3.6.2)
       QGIS_SERVER_API_RESOURCES_DIRECTORY, //!< Base directory where HTML templates and static assets (e.g. images, js and css files) are searched for (since QGIS 3.10).
       QGIS_SERVER_API_WFS3_MAX_LIMIT, //!< Maximum value for "limit" in a features request, defaults to 10000 (since QGIS 3.10).
-      QGIS_SERVER_TRUST_LAYER_METADATA, //!< Trust layer metadata (since QGIS 3.16).
-      QGIS_SERVER_DONT_LOAD_LAYOUTS //!< Don't load layouts, this deactivated GetPrint capabilities (since QGIS 3.16).
+      QGIS_SERVER_TRUST_LAYER_METADATA, //!< Trust layer metadata. Improves project read time. (since QGIS 3.16).
+      QGIS_SERVER_DISABLE_GETPRINT //!< Disabled WMS GetPrint request and don't load layouts. Improves project read time. (since QGIS 3.16).
     };
     Q_ENUM( EnvVar )
 };
@@ -247,14 +247,15 @@ class SERVER_EXPORT QgsServerSettings
     bool trustLayerMetadata() const;
 
     /**
-     * Returns TRUE if the reading flag don't load layouts is activated.
+     * Returns TRUE if WMS GetPrint request is disabled and the project's
+     * reading flag DONT_LOAD_LAYOUTS is activated.
      *
      * The default value is FALSE, this value can be changed by setting the environment
-     * variable QGIS_SERVER_DONT_LOAD_LAYOUTS.
+     * variable QGIS_SERVER_DISABLE_GETPRINT.
      *
      * \since QGIS 3.16
      */
-    bool dontLoadLayouts() const;
+    bool getPrintDisabled() const;
 
   private:
     void initSettings();

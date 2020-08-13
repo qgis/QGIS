@@ -175,7 +175,7 @@ void QgsServerSettings::initSettings()
   mSettings[ sTrustLayerMetadata.envVar ] = sTrustLayerMetadata;
 
   // don't load layouts
-  const Setting sDontLoadLayouts = { QgsServerSettingsEnv::QGIS_SERVER_DONT_LOAD_LAYOUTS,
+  const Setting sDontLoadLayouts = { QgsServerSettingsEnv::QGIS_SERVER_DISABLE_GETPRINT,
                                      QgsServerSettingsEnv::DEFAULT_VALUE,
                                      QStringLiteral( "Don't load layouts" ),
                                      QString(),
@@ -462,7 +462,7 @@ bool QgsServerSettings::trustLayerMetadata() const
   return value( QgsServerSettingsEnv::QGIS_SERVER_TRUST_LAYER_METADATA ).toBool();
 }
 
-bool QgsServerSettings::dontLoadLayouts() const
+bool QgsServerSettings::getPrintDisabled() const
 {
-  return value( QgsServerSettingsEnv::QGIS_SERVER_DONT_LOAD_LAYOUTS ).toBool();
+  return value( QgsServerSettingsEnv::QGIS_SERVER_DISABLE_GETPRINT ).toBool();
 }

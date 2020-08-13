@@ -57,7 +57,7 @@ const QgsProject *QgsConfigCache::project( const QString &path, QgsServerSetting
         readFlags |= QgsProject::ReadFlag::FlagTrustLayerMetadata;
       }
       // Activate don't load layouts flag
-      else if ( settings->dontLoadLayouts() )
+      if ( settings->getPrintDisabled() )
       {
         readFlags |= QgsProject::ReadFlag::FlagDontLoadLayouts;
       }

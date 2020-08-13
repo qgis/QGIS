@@ -147,18 +147,18 @@ class TestQgsServerSettings(unittest.TestCase):
         os.environ.pop(env)
 
     def test_env_dont_load_layouts(self):
-        env = "QGIS_SERVER_DONT_LOAD_LAYOUTS"
+        env = "QGIS_SERVER_DISABLE_GETPRINT"
 
-        self.assertFalse(self.settings.dontLoadLayouts())
+        self.assertFalse(self.settings.getPrintDisabled())
 
         os.environ[env] = "1"
         self.settings.load()
-        self.assertTrue(self.settings.dontLoadLayouts())
+        self.assertTrue(self.settings.getPrintDisabled())
         os.environ.pop(env)
 
         os.environ[env] = "0"
         self.settings.load()
-        self.assertFalse(self.settings.dontLoadLayouts())
+        self.assertFalse(self.settings.getPrintDisabled())
         os.environ.pop(env)
 
     def test_priority(self):
