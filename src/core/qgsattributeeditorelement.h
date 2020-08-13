@@ -500,7 +500,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     QString mRelationId;
     QgsRelation mRelation;
     Buttons mButtons = Buttons( Button::AllButtons );
-    bool mForceSuppressFormPopup;
+    bool mForceSuppressFormPopup = false;
     QVariant mNmRelationId;
 };
 

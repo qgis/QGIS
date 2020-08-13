@@ -320,7 +320,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     bool mShowLabel = true;
     bool mVisible = false;
 
-    bool mForceSuppressFormPopup;
+    bool mForceSuppressFormPopup = false;
     QVariant mNmRelationId;
 
     /**
