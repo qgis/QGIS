@@ -222,28 +222,31 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QgsAttributeEditorRelation::Buttons visibleButtons() const;
 
     /**
-     * Returns the force suppress form popup status.
-     * \since QGIS 3.16
-     */
+       * Determines the force suppress form popup status.
+       * \since QGIS 3.16
+       */
     bool forceSuppressFormPopup() const;
 
     /**
-     * Defines the force suppress form popup status
+     * Sets force suppress form popup status to \a forceSuppressFormPopup.
+     * This flag will override the layer and general settings regarding the automatic
+     * opening of the attribute form dialog when digitizing is completed.
      * \since QGIS 3.16
      */
     void setForceSuppressFormPopup( bool forceSuppressFormPopup );
 
     /**
-     * Defines the cardinality
-     * \since QGIS 3.16
-     */
-    void setCardinality( const QVariant &cardinality = QVariant() );
+    * Determines the nmRelationId used for the many-to-many cardinality.
+    * \since QGIS 3.16
+    */
+    QVariant nmRelationId() const;
 
     /**
-     * Returns the cardinality
+     * Sets \a nmRelationId in a many-to-many cardinality.
+     * If it's empty, then it's considered as a one-to-many relationship
      * \since QGIS 3.16
      */
-    QVariant cardinality() const;
+    void setNmRelationId( const QVariant &nmRelationId = QVariant() );
 
     /**
      * Returns the widget's current feature
@@ -318,7 +321,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     bool mVisible = false;
 
     bool mForceSuppressFormPopup;
-    QVariant mCardinality;
+    QVariant mNmRelationId;
 
     /**
      * Deletes the features

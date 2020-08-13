@@ -995,14 +995,14 @@ bool QgsRelationEditorWidget::forceSuppressFormPopup() const
   return mForceSuppressFormPopup;
 }
 
-void QgsRelationEditorWidget::setCardinality( const QVariant &cardinality )
+void QgsRelationEditorWidget::setNmRelationId( const QVariant &nmRelationId )
 {
-  mCardinality = cardinality;
+  mNmRelationId = nmRelationId;
 }
 
-QVariant QgsRelationEditorWidget::cardinality() const
+QVariant QgsRelationEditorWidget::nmRelationId() const
 {
-  return mCardinality;
+  return mNmRelationId;
 }
 
 void QgsRelationEditorWidget::setShowUnlinkButton( bool showUnlinkButton )

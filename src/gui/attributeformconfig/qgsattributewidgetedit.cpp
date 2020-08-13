@@ -116,7 +116,8 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
   }
 
   mRelationCardinalityCombo->setToolTip( tr( "For a many to many (N:M) relation, the direct link has to be selected. The in-between table will be hidden." ) );
-  setCardinality( config.cardinality );
+  setNmRelationId( config.nmRelationId );
+
   mRelationForceSuppressFormPopupCheckBox->setChecked( config.forceSuppressFormPopup );
 }
 
@@ -132,7 +133,7 @@ QgsAttributesFormProperties::RelationEditorConfiguration QgsAttributeWidgetRelat
   buttons.setFlag( QgsAttributeEditorRelation::Button::DeleteChildFeature, mRelationDeleteChildFeatureCheckBox->isChecked() );
   buttons.setFlag( QgsAttributeEditorRelation::Button::SaveChildEdits, mRelationShowSaveChildEditsCheckBox->isChecked() );
   relEdCfg.buttons = buttons;
-  relEdCfg.cardinality = mRelationCardinalityCombo->currentData();
+  relEdCfg.nmRelationId = mRelationCardinalityCombo->currentData();
   relEdCfg.forceSuppressFormPopup = mRelationForceSuppressFormPopupCheckBox->isChecked();
   return relEdCfg;
 }
@@ -142,7 +143,7 @@ void QgsAttributeWidgetRelationEditWidget::setCardinalityCombo( const QString &c
   mRelationCardinalityCombo->addItem( cardinalityComboItem, auserData );
 }
 
-void QgsAttributeWidgetRelationEditWidget::setCardinality( const QVariant &auserData )
+void QgsAttributeWidgetRelationEditWidget::setNmRelationId( const QVariant &auserData )
 {
   int idx = mRelationCardinalityCombo->findData( auserData );
 

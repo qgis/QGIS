@@ -68,7 +68,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     struct RelationEditorConfiguration
     {
       QgsAttributeEditorRelation::Buttons buttons = QgsAttributeEditorRelation::Button::AllButtons;
-      QVariant cardinality;
+      QVariant nmRelationId;
       bool forceSuppressFormPopup;
     };
 

@@ -441,16 +441,17 @@ opening of the attribute form dialog when digitizing is completed.
 .. versionadded:: 3.16
 %End
 
-    void setCardinality( const QVariant &cardinality = QVariant() );
+    QVariant nmRelationId() const;
 %Docstring
-Sets combo cardinality to ``cardinality``
+Determines the nmRelationId used for the many-to-many cardinality.
 
 .. versionadded:: 3.16
 %End
 
-    QVariant cardinality() const;
+    void setNmRelationId( const QVariant &nmRelationId = QVariant() );
 %Docstring
-Determines combo cardinality
+Sets ``nmRelationId`` in a many-to-many cardinality.
+If it's empty, then it's considered as a one-to-many relationship.
 
 .. versionadded:: 3.16
 %End

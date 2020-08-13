@@ -245,13 +245,13 @@ bool QgsRelationWidgetWrapper::forceSuppressFormPopup() const
   return false;
 }
 
-void QgsRelationWidgetWrapper::setCardinality( const QVariant &cardinality )
+void QgsRelationWidgetWrapper::setNmRelationId( const QVariant &nmRelationId )
 {
   if ( mWidget )
   {
-    mWidget->setCardinality( cardinality );
+    mWidget->setNmRelationId( nmRelationId );
 
-    mNmRelation = QgsProject::instance()->relationManager()->relation( cardinality.toString() );
+    mNmRelation = QgsProject::instance()->relationManager()->relation( nmRelationId.toString() );
 
     // If this widget is already embedded by the same relation, reduce functionality
     const QgsAttributeEditorContext *ctx = &context();
@@ -271,9 +271,9 @@ void QgsRelationWidgetWrapper::setCardinality( const QVariant &cardinality )
   }
 }
 
-QVariant QgsRelationWidgetWrapper::cardinality() const
+QVariant QgsRelationWidgetWrapper::nmRelationId() const
 {
   if ( mWidget )
-    return mWidget->cardinality();
+    return mWidget->nmRelationId();
   return QVariant();
 }

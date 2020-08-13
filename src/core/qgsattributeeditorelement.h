@@ -482,16 +482,17 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     void setForceSuppressFormPopup( bool forceSuppressFormPopup );
 
     /**
-     * Sets combo cardinality to \a cardinality
+     * Determines the nmRelationId used for the many-to-many cardinality.
      * \since QGIS 3.16
      */
-    void setCardinality( const QVariant &cardinality = QVariant() );
+    QVariant nmRelationId() const;
 
     /**
-     * Determines combo cardinality
+     * Sets \a nmRelationId in a many-to-many cardinality.
+     * If it's empty, then it's considered as a one-to-many relationship.
      * \since QGIS 3.16
      */
-    QVariant cardinality() const;
+    void setNmRelationId( const QVariant &nmRelationId = QVariant() );
 
   private:
     void saveConfiguration( QDomElement &elem ) const override;
@@ -500,7 +501,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     QgsRelation mRelation;
     Buttons mButtons = Buttons( Button::AllButtons );
     bool mForceSuppressFormPopup;
-    QVariant mCardinality;
+    QVariant mNmRelationId;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAttributeEditorRelation::Buttons )

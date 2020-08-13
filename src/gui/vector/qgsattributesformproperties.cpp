@@ -411,7 +411,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       itemData.setShowLabel( widgetDef->showLabel() );
       RelationEditorConfiguration relEdConfig;
       relEdConfig.buttons = relationEditor->visibleButtons();
-      relEdConfig.cardinality = relationEditor->cardinality();
+      relEdConfig.nmRelationId = relationEditor->nmRelationId();
       relEdConfig.forceSuppressFormPopup = relationEditor->forceSuppressFormPopup();
       itemData.setRelationEditorConfiguration( relEdConfig );
       newWidget = tree->addItem( parent, itemData );
@@ -655,7 +655,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
       QgsRelation relation = QgsProject::instance()->relationManager()->relation( itemData.name() );
       QgsAttributeEditorRelation *relDef = new QgsAttributeEditorRelation( relation, parent );
       relDef->setVisibleButtons( itemData.relationEditorConfiguration().buttons );
-      relDef->setCardinality( itemData.relationEditorConfiguration().cardinality );
+      relDef->setNmRelationId( itemData.relationEditorConfiguration().nmRelationId );
       relDef->setForceSuppressFormPopup( itemData.relationEditorConfiguration().forceSuppressFormPopup );
       widgetDef = relDef;
       break;
@@ -872,7 +872,7 @@ void QgsAttributesFormProperties::apply()
       {
         QVariantMap cfg;
 
-        cfg[QStringLiteral( "nm-rel" )] = tabItemData.relationEditorConfiguration().cardinality;
+        cfg[QStringLiteral( "nm-rel" )] = tabItemData.relationEditorConfiguration().nmRelationId;
         cfg[QStringLiteral( "force-suppress-popup" )] = tabItemData.relationEditorConfiguration().forceSuppressFormPopup;
 
         editFormConfig.setWidgetConfig( tabItemData.name(), cfg );

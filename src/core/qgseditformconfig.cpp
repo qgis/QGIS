@@ -639,14 +639,14 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
       relElement->setForceSuppressFormPopup( widgetConfig( elem.attribute( QStringLiteral( "relation" ) ) ).value( QStringLiteral( "force-suppress-popup" ), false ).toBool() );
     }
 
-    if ( elem.hasAttribute( QStringLiteral( "cardinality" ) ) )
+    if ( elem.hasAttribute( QStringLiteral( "nmRelationId" ) ) )
     {
-      relElement->setCardinality( elem.attribute( QStringLiteral( "cardinality" ) ) );
+      relElement->setNmRelationId( elem.attribute( QStringLiteral( "nmRelationId" ) ) );
     }
     else
     {
       // pre QGIS 3.16 compatibility - the widgets section is read before
-      relElement->setCardinality( widgetConfig( elem.attribute( QStringLiteral( "relation" ) ) ).value( QStringLiteral( "nm-rel" ) ) );
+      relElement->setNmRelationId( widgetConfig( elem.attribute( QStringLiteral( "relation" ) ) ).value( QStringLiteral( "nm-rel" ) ) );
     }
     newElement = relElement;
   }
