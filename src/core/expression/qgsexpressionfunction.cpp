@@ -6114,26 +6114,26 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "flip_coordinates" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnFlipCoordinates, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "relate" ), -1, fcnRelate, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "intersects_bbox" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnBbox, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "bbox" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "disjoint" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry a" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry b" ) ),
+        << new QgsStaticExpressionFunction( QStringLiteral( "disjoint" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) ),
                                             fcnDisjoint, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "intersects" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry a" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry b" ) ),
+        << new QgsStaticExpressionFunction( QStringLiteral( "intersects" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) ),
                                             fcnIntersects, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "touches" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry a" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry b" ) ),
+        << new QgsStaticExpressionFunction( QStringLiteral( "touches" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) ),
                                             fcnTouches, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "crosses" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry a" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry b" ) ),
+        << new QgsStaticExpressionFunction( QStringLiteral( "crosses" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) ),
                                             fcnCrosses, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "contains" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry a" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry b" ) ),
+        << new QgsStaticExpressionFunction( QStringLiteral( "contains" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) ),
                                             fcnContains, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "overlaps" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry a" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry b" ) ),
+        << new QgsStaticExpressionFunction( QStringLiteral( "overlaps" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) ),
                                             fcnOverlaps, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "within" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry a" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry b" ) ),
+        << new QgsStaticExpressionFunction( QStringLiteral( "within" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) ),
                                             fcnWithin, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "translate" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "dx" ) )
@@ -6217,17 +6217,17 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 36 ),
                                             fcnMinimalCircle, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "difference" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry_a" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry_b" ) ),
+        << new QgsStaticExpressionFunction( QStringLiteral( "difference" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) ),
                                             fcnDifference, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "distance" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry a" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry b" ) ),
+        << new QgsStaticExpressionFunction( QStringLiteral( "distance" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) ),
                                             fcnDistance, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "hausdorff_distance" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "densify_fraction" ), true ),
                                             fcnHausdorffDistance, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "intersection" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry_a" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry_b" ) ),
+        << new QgsStaticExpressionFunction( QStringLiteral( "intersection" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) ),
                                             fcnIntersection, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "sym_difference" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) ),
