@@ -91,6 +91,10 @@ QString QgsExpressionNode::NodeList::cleanNamedNodeName( const QString &name )
     cleaned = QStringLiteral( "geometry" );
   else if ( cleaned == QLatin1String( "val" ) )
     cleaned = QStringLiteral( "value" );
+  else if ( cleaned == QLatin1String( "geometry a" ) or cleaned == QLatin1String( "geometry_a" )
+    cleaned = QStringLiteral( "geometry1" );
+  else if ( cleaned == QLatin1String( "geometry b" ) or cleaned == QLatin1String( "geometry_b" )
+    cleaned = QStringLiteral( "geometry2" );
 
   return cleaned;
 }
