@@ -3,7 +3,6 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Creates an elliptical polygon.",
-  "variableLenArguments": true,
   "arguments": [
     {"arg":"center", "description": "center point of the ellipse"},
     {"arg":"semi_major_axis", "description": "semi-major axis of the ellipse"},

@@ -3,7 +3,6 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Creates a circular polygon.",
-  "variableLenArguments": true,
   "arguments": [
     {"arg":"center", "description": "center point of the circle"},
     {"arg":"radius", "description": "radius of the circle"},
