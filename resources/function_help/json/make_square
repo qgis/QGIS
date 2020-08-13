@@ -4,7 +4,7 @@
   "groups": ["GeometryGroup"],
   "description": "Creates a square from a diagonal.",
   "arguments": [
-    {"arg":"point1", "description": "First point of the diagonal},
+    {"arg":"point1", "description": "First point of the diagonal"},
     {"arg":"point2", "description": "Last point of the diagonal"}
   ],
   "examples": [
