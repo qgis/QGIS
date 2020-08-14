@@ -248,9 +248,9 @@ void QgsTextFormatWidget::initWidget()
 
   // setup direction symbol(s) button group
   mDirectSymbBtnGrp = new QButtonGroup( this );
-  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnLR, static_cast<int>( QgsPalLayerSettings::SymbolLeftRight ) );
-  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnAbove, static_cast<int>( QgsPalLayerSettings::SymbolAbove ) );
-  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnBelow, static_cast<int>( QgsPalLayerSettings::SymbolBelow ) );
+  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnLR, static_cast<int>( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight ) );
+  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnAbove, static_cast<int>( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove ) );
+  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnBelow, static_cast<int>( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow ) );
   mDirectSymbBtnGrp->setExclusive( true );
 
   // upside-down labels button group
