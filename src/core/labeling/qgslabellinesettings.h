@@ -96,7 +96,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * \see setAddDirectionSymbol()
      * \see leftDirectionSymbol()
      * \see rightDirectionSymbol()
-     * \see placeDirectionSymbol()
+     * \see directionSymbolPlacement()
      * \see reverseDirectionSymbol()
      */
     bool addDirectionSymbol() const { return mAddDirectionSymbol; }
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * \see addDirectionSymbol()
      * \see setLeftDirectionSymbol()
      * \see setRightDirectionSymbol()
-     * \see setPlaceDirectionSymbol()
+     * \see setDirectionSymbolPlacement()
      * \see setReverseDirectionSymbol()
      */
     void setAddDirectionSymbol( bool enabled ) { mAddDirectionSymbol = enabled; }
