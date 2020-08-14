@@ -309,7 +309,6 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
 
   // placement
   placement = s.placement;
-  placementFlags = s.placementFlags;
   mPolygonPlacementFlags = s.mPolygonPlacementFlags;
   centroidWhole = s.centroidWhole;
   centroidInside = s.centroidInside;
@@ -355,6 +354,7 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
 
   mCallout.reset( s.mCallout ? s.mCallout->clone() : nullptr );
 
+  mLineSettings = s.mLineSettings;
   mObstacleSettings = s.mObstacleSettings;
   mThinningSettings = s.mThinningSettings;
 
@@ -727,7 +727,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
 
   // placement
   placement = static_cast< Placement >( layer->customProperty( QStringLiteral( "labeling/placement" ) ).toInt() );
-  placementFlags = layer->customProperty( QStringLiteral( "labeling/placementFlags" ) ).toUInt();
+  mLineSettings.setPlacementFlags( static_cast< QgsLabeling::LinePlacementFlags >( layer->customProperty( QStringLiteral( "labeling/placementFlags" ) ).toUInt() ) );
   centroidWhole = layer->customProperty( QStringLiteral( "labeling/centroidWhole" ), QVariant( false ) ).toBool();
   centroidInside = layer->customProperty( QStringLiteral( "labeling/centroidInside" ), QVariant( false ) ).toBool();
   predefinedPositionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( layer->customProperty( QStringLiteral( "labeling/predefinedPositionOrder" ) ).toString() );
@@ -939,7 +939,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   // placement
   QDomElement placementElem = elem.firstChildElement( QStringLiteral( "placement" ) );
   placement = static_cast< Placement >( placementElem.attribute( QStringLiteral( "placement" ) ).toInt() );
-  placementFlags = placementElem.attribute( QStringLiteral( "placementFlags" ) ).toUInt();
+  mLineSettings.setPlacementFlags( static_cast< QgsLabeling::LinePlacementFlags >( placementElem.attribute( QStringLiteral( "placementFlags" ) ).toUInt() ) );
   mPolygonPlacementFlags = static_cast< QgsLabeling::PolygonPlacementFlags >( placementElem.attribute( QStringLiteral( "polygonPlacementFlags" ), QString::number( static_cast< int >( QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon ) ) ).toInt() );
 
   centroidWhole = placementElem.attribute( QStringLiteral( "centroidWhole" ), QStringLiteral( "0" ) ).toInt();
@@ -1176,7 +1176,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   QDomElement placementElem = doc.createElement( QStringLiteral( "placement" ) );
   placementElem.setAttribute( QStringLiteral( "placement" ), placement );
   placementElem.setAttribute( QStringLiteral( "polygonPlacementFlags" ), static_cast< int >( mPolygonPlacementFlags ) );
-  placementElem.setAttribute( QStringLiteral( "placementFlags" ), static_cast< unsigned int >( placementFlags ) );
+  placementElem.setAttribute( QStringLiteral( "placementFlags" ), static_cast< unsigned int >( mLineSettings.placementFlags() ) );
   placementElem.setAttribute( QStringLiteral( "centroidWhole" ), centroidWhole );
   placementElem.setAttribute( QStringLiteral( "centroidInside" ), centroidInside );
   placementElem.setAttribute( QStringLiteral( "predefinedPositionOrder" ), QgsLabelingUtils::encodePredefinedPositionOrder( predefinedPositionOrder ) );
@@ -2561,17 +2561,9 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
     ( *labelFeature )->setHasFixedQuadrant( true );
   }
 
-  QgsLabeling::LinePlacementFlags featureArrangementFlags = static_cast< QgsLabeling::LinePlacementFlags >( placementFlags );
-  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::LinePlacementOptions ) )
-  {
-    context.expressionContext().setOriginalValueVariable( QgsLabelingUtils::encodeLinePlacementFlags( featureArrangementFlags ) );
-    const QString dataDefinedLineArrangement = mDataDefinedProperties.valueAsString( QgsPalLayerSettings::LinePlacementOptions, context.expressionContext() );
-    if ( !dataDefinedLineArrangement.isEmpty() )
-    {
-      featureArrangementFlags = QgsLabelingUtils::decodeLinePlacementFlags( dataDefinedLineArrangement );
-    }
-  }
-  ( *labelFeature )->setArrangementFlags( featureArrangementFlags );
+  QgsLabelLineSettings lineSettings = mLineSettings;
+  lineSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
+  ( *labelFeature )->setArrangementFlags( lineSettings.placementFlags() );
 
   ( *labelFeature )->setPolygonPlacementFlags( polygonPlacement );
 

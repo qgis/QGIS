@@ -44,6 +44,7 @@
 #include "qgspropertycollection.h"
 #include "qgslabelobstaclesettings.h"
 #include "qgslabelthinningsettings.h"
+#include "qgslabellinesettings.h"
 #include "qgslabeling.h"
 
 class QgsTextDocument;
@@ -264,8 +265,10 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /**
      * Line placement flags, which control how candidates are generated for a linear feature.
+     *
+     * \deprecated Use QgsLabeling::LinePlacementFlags instead
      */
-    enum LinePlacementFlags
+    enum Q_DECL_DEPRECATED LinePlacementFlags
     {
       OnLine    = 1,      //!< Labels can be placed directly over a line feature.
       AboveLine = 2,      /**< Labels can be placed above a line feature. Unless MapOrientation is also specified this mode
@@ -277,7 +280,7 @@ class CORE_EXPORT QgsPalLayerSettings
       MapOrientation = 8, /**< Signifies that the AboveLine and BelowLine flags should respect the map's orientation rather
                                than the feature's orientation. For example, AboveLine will always result in label's being placed
                                above a line, regardless of the line's direction. */
-    };
+    } SIP_DEPRECATED;
 
     enum QuadrantPosition
     {
@@ -645,12 +648,6 @@ class CORE_EXPORT QgsPalLayerSettings
 
     Placement placement = AroundPoint;
 
-#ifndef SIP_RUN
-    unsigned int placementFlags = AboveLine | MapOrientation;
-#else
-    unsigned int placementFlags;
-#endif
-
     /**
      * Returns the polygon placement flags, which dictate how polygon labels can be placed.
      *
@@ -904,6 +901,7 @@ class CORE_EXPORT QgsPalLayerSettings
     SIP_PROPERTY( name = obstacle, get = _getIsObstacle, set = _setIsObstacle )
     SIP_PROPERTY( name = obstacleFactor, get = _getObstacleFactor, set = _setObstacleFactor )
     SIP_PROPERTY( name = obstacleType, get = _getObstacleType, set = _setObstacleType )
+    SIP_PROPERTY( name = placementFlags, get = _getLinePlacementFlags, set = _setLinePlacementFlags )
 #endif
 
     ///@cond PRIVATE
@@ -919,7 +917,8 @@ class CORE_EXPORT QgsPalLayerSettings
     void _setObstacleFactor( double factor ) { mObstacleSettings.setFactor( factor ); }
     ObstacleType _getObstacleType() const { return static_cast< ObstacleType>( mObstacleSettings.type() ); }
     void _setObstacleType( ObstacleType type ) { mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType>( type ) ); }
-
+    unsigned int _getLinePlacementFlags() const { return static_cast< unsigned int >( mLineSettings.placementFlags() ); }
+    void _setLinePlacementFlags( unsigned int flags ) { mLineSettings.setPlacementFlags( static_cast< QgsLabeling::LinePlacementFlags >( flags ) ); }
     ///@endcond
 
     //! Z-Index of label, where labels with a higher z-index are rendered on top of labels with a lower z-index
@@ -1042,6 +1041,34 @@ class CORE_EXPORT QgsPalLayerSettings
      * \since QGIS 3.10
      */
     void setCallout( QgsCallout *callout SIP_TRANSFER );
+
+    /**
+     * Returns the label line settings, which contain settings related to how the label
+     * engine places and formats labels for line features (or polygon features which are labeled in
+     * a "perimeter" style mode).
+     * \see setLineSettings()
+     * \note Not available in Python bindings
+     * \since QGIS 3.16
+     */
+    const QgsLabelLineSettings &lineSettings() const { return mLineSettings; } SIP_SKIP
+
+    /**
+     * Returns the label line settings, which contain settings related to how the label
+     * engine places and formats labels for line features (or polygon features which are labeled in
+     * a "perimeter" style mode).
+     * \see setLineSettings()
+     * \since QGIS 3.16
+     */
+    QgsLabelLineSettings &lineSettings() { return mLineSettings; }
+
+    /**
+     * Sets the label line \a settings, which contain settings related to how the label
+     * engine places and formats labels for line features (or polygon features which are labeled in
+     * a "perimeter" style mode).
+     * \see lineSettings()
+     * \since QGIS 3.16
+     */
+    void setLineSettings( const QgsLabelLineSettings &settings ) { mLineSettings = settings; }
 
     /**
      * Returns the label obstacle settings.
@@ -1190,6 +1217,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     std::unique_ptr< QgsCallout > mCallout;
 
+    QgsLabelLineSettings mLineSettings;
     QgsLabelObstacleSettings mObstacleSettings;
     QgsLabelThinningSettings mThinningSettings;
 

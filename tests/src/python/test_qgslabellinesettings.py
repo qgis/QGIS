@@ -1,0 +1,63 @@
+# -*- coding: utf-8 -*-
+"""QGIS Unit tests for QgsLabelLineSettings
+
+.. note:: This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+"""
+__author__ = 'Nyall Dawson'
+__date__ = '2019-12-07'
+__copyright__ = 'Copyright 2019, The QGIS Project'
+
+import qgis  # NOQA
+
+from qgis.core import (QgsProperty,
+                       QgsPropertyCollection,
+                       QgsPalLayerSettings,
+                       QgsLabelLineSettings,
+                       QgsExpressionContext,
+                       QgsExpressionContextScope,
+                       QgsGeometry,
+                       QgsLabeling)
+
+from qgis.testing import unittest, start_app
+
+start_app()
+
+
+class TestQgsLabelLineSettings(unittest.TestCase):
+
+    def test_line_settings(self):
+        """
+        Test line settings
+        """
+        settings = QgsLabelLineSettings()
+        settings.setPlacementFlags(QgsLabeling.LinePlacementFlag.OnLine)
+        self.assertEqual(settings.placementFlags(), QgsLabeling.LinePlacementFlag.OnLine)
+        settings.setPlacementFlags(QgsLabeling.LinePlacementFlag.OnLine | QgsLabeling.LinePlacementFlag.MapOrientation)
+        self.assertEqual(settings.placementFlags(), QgsLabeling.LinePlacementFlag.OnLine | QgsLabeling.LinePlacementFlag.MapOrientation)
+
+        # check that compatibility code works
+        pal_settings = QgsPalLayerSettings()
+        pal_settings.placementFlags = QgsPalLayerSettings.OnLine | QgsPalLayerSettings.MapOrientation
+        self.assertEqual(pal_settings.placementFlags, 9)
+        self.assertTrue(pal_settings.lineSettings().placementFlags(), QgsLabeling.LinePlacementFlag.OnLine | QgsLabeling.LinePlacementFlag.MapOrientation)
+
+    def testUpdateDataDefinedProps(self):
+        settings = QgsLabelLineSettings()
+        settings.setPlacementFlags(QgsLabeling.LinePlacementFlag.OnLine)
+        self.assertEqual(settings.placementFlags(), QgsLabeling.LinePlacementFlag.OnLine)
+
+        props = QgsPropertyCollection()
+        props.setProperty(QgsPalLayerSettings.LinePlacementOptions, QgsProperty.fromExpression('@placement'))
+        context = QgsExpressionContext()
+        scope = QgsExpressionContextScope()
+        scope.setVariable('placement', 'AL,LO')
+        context.appendScope(scope)
+        settings.updateDataDefinedProperties(props, context)
+        self.assertEqual(settings.placementFlags(), QgsLabeling.LinePlacementFlag.AboveLine)
+
+
+if __name__ == '__main__':
+    unittest.main()

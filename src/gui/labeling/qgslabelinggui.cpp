@@ -297,10 +297,10 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mPointOffsetUnitWidget->setUnit( mSettings.offsetUnits );
   mPointOffsetUnitWidget->setMapUnitScale( mSettings.labelOffsetMapUnitScale );
   mPointAngleSpinBox->setValue( mSettings.angleOffset );
-  chkLineAbove->setChecked( mSettings.placementFlags & QgsPalLayerSettings::AboveLine );
-  chkLineBelow->setChecked( mSettings.placementFlags & QgsPalLayerSettings::BelowLine );
-  chkLineOn->setChecked( mSettings.placementFlags & QgsPalLayerSettings::OnLine );
-  chkLineOrientationDependent->setChecked( !( mSettings.placementFlags & QgsPalLayerSettings::MapOrientation ) );
+  chkLineAbove->setChecked( mSettings.lineSettings().placementFlags() & QgsLabeling::LinePlacementFlag::AboveLine );
+  chkLineBelow->setChecked( mSettings.lineSettings().placementFlags() & QgsLabeling::LinePlacementFlag::BelowLine );
+  chkLineOn->setChecked( mSettings.lineSettings().placementFlags() & QgsLabeling::LinePlacementFlag::OnLine );
+  chkLineOrientationDependent->setChecked( !( mSettings.lineSettings().placementFlags() & QgsLabeling::LinePlacementFlag::MapOrientation ) );
 
   mCheckAllowLabelsOutsidePolygons->setChecked( mSettings.polygonPlacementFlags() & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon );
 
@@ -473,7 +473,6 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.isExpression = isExpression;
 
   lyr.dist = 0;
-  lyr.placementFlags = 0;
 
   QgsLabeling::PolygonPlacementFlags polygonPlacementFlags = QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon;
   if ( mCheckAllowLabelsOutsidePolygons->isChecked() )
@@ -497,14 +496,18 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.offsetUnits = mPointOffsetUnitWidget->unit();
   lyr.labelOffsetMapUnitScale = mPointOffsetUnitWidget->getMapUnitScale();
   lyr.angleOffset = mPointAngleSpinBox->value();
+
+  QgsLabeling::LinePlacementFlags linePlacementFlags = 0;
   if ( chkLineAbove->isChecked() )
-    lyr.placementFlags |= QgsPalLayerSettings::AboveLine;
+    linePlacementFlags |= QgsLabeling::LinePlacementFlag::AboveLine;
   if ( chkLineBelow->isChecked() )
-    lyr.placementFlags |= QgsPalLayerSettings::BelowLine;
+    linePlacementFlags |= QgsLabeling::LinePlacementFlag::BelowLine;
   if ( chkLineOn->isChecked() )
-    lyr.placementFlags |= QgsPalLayerSettings::OnLine;
+    linePlacementFlags |= QgsLabeling::LinePlacementFlag::OnLine;
   if ( ! chkLineOrientationDependent->isChecked() )
-    lyr.placementFlags |= QgsPalLayerSettings::MapOrientation;
+    linePlacementFlags |= QgsLabeling::LinePlacementFlag::MapOrientation;
+  lyr.lineSettings().setPlacementFlags( linePlacementFlags );
+
   if ( ( curPlacementWdgt == pagePoint && radAroundPoint->isChecked() )
        || ( curPlacementWdgt == pagePolygon && radAroundCentroid->isChecked() ) )
   {

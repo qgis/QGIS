@@ -1216,7 +1216,7 @@ void TestQgsLabelingEngine::testCurvedLabelCorrectLinePlacement()
   settings.fieldName = QStringLiteral( "'XXXXXXXXXXXXXXXXXXXXXXXXXX'" );
   settings.isExpression = true;
   settings.placement = QgsPalLayerSettings::Curved;
-  settings.placementFlags = QgsPalLayerSettings::AboveLine | QgsPalLayerSettings::MapOrientation;
+  settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation );
   settings.maxCurvedCharAngleIn = 99;
   settings.maxCurvedCharAngleOut = 99;
 
@@ -1258,7 +1258,7 @@ void TestQgsLabelingEngine::testCurvedLabelCorrectLinePlacement()
   QVERIFY( imageCheck( QStringLiteral( "label_curved_label_above_1" ), img, 20 ) );
 
   // and below...
-  settings.placementFlags = QgsPalLayerSettings::BelowLine | QgsPalLayerSettings::MapOrientation;
+  settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::BelowLine | QgsLabeling::LinePlacementFlag::MapOrientation );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsMapRendererSequentialJob job2( mapSettings );
@@ -1444,7 +1444,7 @@ void TestQgsLabelingEngine::testParallelPlacementPreferAbove()
   settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
   settings.isExpression = true;
   settings.placement = QgsPalLayerSettings::Line;
-  settings.placementFlags = QgsPalLayerSettings::AboveLine | QgsPalLayerSettings::BelowLine | QgsPalLayerSettings::MapOrientation;
+  settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::BelowLine | QgsLabeling::LinePlacementFlag::MapOrientation );
   settings.labelPerPart = false;
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
@@ -2546,7 +2546,7 @@ void TestQgsLabelingEngine::testRotationBasedOrientationLine()
   settings.isExpression = true;
   setDefaultLabelParams( settings );
   settings.placement = QgsPalLayerSettings::Line;
-  settings.placementFlags = QgsPalLayerSettings::AboveLine;
+  settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
   QgsTextFormat format = settings.format();
   format.setOrientation( QgsTextFormat::RotationBasedOrientation );
   settings.setFormat( format );

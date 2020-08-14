@@ -133,9 +133,9 @@ class QgsPalLayerSettings
       AboveLine,
       BelowLine,
       MapOrientation,
-    };
+    } /Deprecated/;
 
-    enum QuadrantPosition
+    enum
     {
       QuadrantAboveLeft,
       QuadrantAbove,
@@ -403,8 +403,6 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
 
     Placement placement;
 
-    unsigned int placementFlags;
-
     QgsLabeling::PolygonPlacementFlags polygonPlacementFlags() const;
 %Docstring
 Returns the polygon placement flags, which dictate how polygon labels can be placed.
@@ -498,6 +496,7 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 %Property( name = obstacle, get = _getIsObstacle, set = _setIsObstacle )
 %Property( name = obstacleFactor, get = _getObstacleFactor, set = _setObstacleFactor )
 %Property( name = obstacleType, get = _getObstacleType, set = _setObstacleType )
+%Property( name = placementFlags, get = _getLinePlacementFlags, set = _setLinePlacementFlags )
 
     bool _limitNumLabels() const;
     void _setLimitNumLabels( bool limit );
@@ -511,7 +510,8 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
     void _setObstacleFactor( double factor );
     ObstacleType _getObstacleType() const;
     void _setObstacleType( ObstacleType type );
-
+    unsigned int _getLinePlacementFlags() const;
+    void _setLinePlacementFlags( unsigned int flags );
 
     double zIndex;
 
@@ -621,6 +621,29 @@ Ownership of ``callout`` is transferred to the settings.
 .. seealso:: :py:func:`callout`
 
 .. versionadded:: 3.10
+%End
+
+
+    QgsLabelLineSettings &lineSettings();
+%Docstring
+Returns the label line settings, which contain settings related to how the label
+engine places and formats labels for line features (or polygon features which are labeled in
+a "perimeter" style mode).
+
+.. seealso:: :py:func:`setLineSettings`
+
+.. versionadded:: 3.16
+%End
+
+    void setLineSettings( const QgsLabelLineSettings &settings );
+%Docstring
+Sets the label line ``settings``, which contain settings related to how the label
+engine places and formats labels for line features (or polygon features which are labeled in
+a "perimeter" style mode).
+
+.. seealso:: :py:func:`lineSettings`
+
+.. versionadded:: 3.16
 %End
 
 
