@@ -82,7 +82,7 @@ direction of the line or polygon ring.
 
 .. seealso:: :py:func:`rightDirectionSymbol`
 
-.. seealso:: :py:func:`placeDirectionSymbol`
+.. seealso:: :py:func:`directionSymbolPlacement`
 
 .. seealso:: :py:func:`reverseDirectionSymbol`
 %End
@@ -99,7 +99,7 @@ direction of the line or polygon ring.
 
 .. seealso:: :py:func:`setRightDirectionSymbol`
 
-.. seealso:: :py:func:`setPlaceDirectionSymbol`
+.. seealso:: :py:func:`setDirectionSymbolPlacement`
 
 .. seealso:: :py:func:`setReverseDirectionSymbol`
 %End
