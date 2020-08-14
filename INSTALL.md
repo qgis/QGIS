@@ -444,9 +444,7 @@ build QGIS.
 
 ### 4.1.1. Visual Studio 2015 Community Edition
 
-The free (as in free beer) Community installer is available under:
-
-https://download.microsoft.com/download/D/2/3/D23F4D0F-BA2D-4600-8725-6CCECEA05196/vs_community_ENU.exe
+Download the [free (as in free beer) Community installer](https://download.microsoft.com/download/D/2/3/D23F4D0F-BA2D-4600-8725-6CCECEA05196/vs_community_ENU.exe)
 
 Select "Custom" install and add the following packages:
 
@@ -457,12 +455,10 @@ Select "Custom" install and add the following packages:
 
 Download and install following packages:
 
-| Tool |Website|
-|---------------|---------------|
-|CMake |https://cmake.org/files/v3.12/cmake-3.12.3-win64-x64.msi|
-|GNU flex, GNU bison and GIT |https://cygwin.com/setup-x86.exe (32bit) or https://cygwin.com/setup-x86_64.exe (64bit)|
-|OSGeo4W |https://download.osgeo.org/osgeo4w/osgeo4w-setup-x86.exe (32bit) or https://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe (64bit)|
-|ninja |https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-win.zip|
+* [CMake](https://cmake.org/files/v3.12/cmake-3.12.3-win64-x64.msi)
+* GNU flex, GNU bison and GIT with cygwin [32bit](https://cygwin.com/setup-x86.exe) or [64bit](https://cygwin.com/setup-x86_64.exe)
+* OSGeo4W [32bit](https://download.osgeo.org/osgeo4w/osgeo4w-setup-x86.exe) or [64bit](https://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe)
+* [ninja](https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-win.zip)
 
 For the QGIS build you need to install following packages from cygwin:
 
@@ -569,10 +565,10 @@ Running QGIS from within MSVC:
   Create a 'build' directory somewhere. This will be where all the build output
   will be generated.
 
-  Now run `cmake-gui` (still from `cmd`) and in the*Where is the source code:*
+  Now run `cmake-gui` (still from `cmd`) and in the *Where is the source code:*
   box, browse to the top level QGIS directory.
 
-  In the*Where to build the binaries:* box, browse to the 'build' directory you
+  In the *Where to build the binaries:* box, browse to the 'build' directory you
   created.
 
   If the path to bison and flex contains blanks, you need to use the short name
@@ -622,7 +618,7 @@ https://nsis.sourceforge.io/Main_Page
 And Perl for Windows (including other requirements like 'wget', 'unzip', 'tar'
 and 'bzip2') is available at:
 
-http://cygwin.com
+https://cygwin.com
 
 ### 4.1.7. Packaging your own build of QGIS
 
@@ -841,7 +837,6 @@ When configuration is done, click 'OK' to exit the setup utility.
 ### 4.2.10. Compilation and installation
 
 ```cmd
-     make
      make install
 ```
 
