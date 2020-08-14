@@ -13,7 +13,7 @@ by running the prepare commit script **before** issuing `git commit`.
 
 This can be automated by setting up the pre-commit hook properly.
 
-    ln -s ../../scripts/prepare_commit.sh .git/hooks/pre-commit
+    ln -s $PWD/scripts/prepare_commit.sh ./.git/hooks/pre-commit
 
 Getting your pull request merged
 --------------------------------
