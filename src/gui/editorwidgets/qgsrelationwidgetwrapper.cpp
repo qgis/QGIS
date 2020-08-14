@@ -233,7 +233,11 @@ void QgsRelationWidgetWrapper::setForceSuppressFormPopup( bool forceSuppressForm
   if ( mWidget )
   {
     mWidget->setForceSuppressFormPopup( forceSuppressFormPopup );
-    const_cast<QgsVectorLayerTools *>( mWidget->editorContext().vectorLayerTools() )->setForceSuppressFormPopup( forceSuppressFormPopup );
+    //it's set to true if one widget is configured like this but the setting is done generally (influencing all widgets).
+    if ( forceSuppressFormPopup )
+    {
+      const_cast<QgsVectorLayerTools *>( mWidget->editorContext().vectorLayerTools() )->setForceSuppressFormPopup( true );
+    }
   }
 }
 

@@ -222,15 +222,14 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QgsAttributeEditorRelation::Buttons visibleButtons() const;
 
     /**
-       * Determines the force suppress form popup status.
+       * Determines the force suppress form popup status that is configured for this widget
        * \since QGIS 3.16
        */
     bool forceSuppressFormPopup() const;
 
     /**
-     * Sets force suppress form popup status to \a forceSuppressFormPopup.
-     * This flag will override the layer and general settings regarding the automatic
-     * opening of the attribute form dialog when digitizing is completed.
+     * Sets force suppress form popup status with \a forceSuppressFormPopup
+     * configured for this widget
      * \since QGIS 3.16
      */
     void setForceSuppressFormPopup( bool forceSuppressFormPopup );

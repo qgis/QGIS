@@ -475,7 +475,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 
     /**
      * Sets force suppress form popup status to \a forceSuppressFormPopup.
-     * This flag will override the layer and general settings regarding the automatic
+     * This flag is to override the layer and general settings regarding the automatic
      * opening of the attribute form dialog when digitizing is completed.
      * \since QGIS 3.16
      */
