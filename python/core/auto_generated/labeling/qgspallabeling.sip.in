@@ -433,12 +433,6 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 
     QgsMapUnitScale repeatDistanceMapUnitScale;
 
-    double overrunDistance;
-
-    QgsUnitTypes::RenderUnit overrunDistanceUnit;
-
-    QgsMapUnitScale overrunDistanceMapUnitScale;
-
     QuadrantPosition quadOffset;
 
     double xOffset;
@@ -487,12 +481,15 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 %Property( name = obstacleType, get = _getObstacleType, set = _setObstacleType )
 %Property( name = placementFlags, get = _getLinePlacementFlags, set = _setLinePlacementFlags )
 %Property( name = mergeLines, get = _getMergeLines, set = _setMergeLines )
-
 %Property( name = addDirectionSymbol, get = _getAddDirectionSymbol, set = _setAddDirectionSymbol )
 %Property( name = leftDirectionSymbol, get = _getLeftDirectionSymbol, set = _setLeftDirectionSymbol )
 %Property( name = rightDirectionSymbol, get = _getRightDirectionSymbol, set = _setRightDirectionSymbol )
 %Property( name = reverseDirectionSymbol, get = _getReverseDirectionSymbol, set = _setReverseDirectionSymbol )
 %Property( name = placeDirectionSymbol, get = _getPlaceDirectionSymbol, set = _setPlaceDirectionSymbol )
+
+%Property( name = overrunDistance, get = _getOverrunDistance, set = _setOverrunDistance )
+%Property( name = overrunDistanceUnit, get = _getOverrunDistanceUnit, set = _setOverrunDistanceUnit )
+%Property( name = overrunDistanceMapUnitScale, get = _getOverrunDistanceMapUnitScale, set = _setOverrunDistanceMapUnitScale )
 
     bool _limitNumLabels() const;
     void _setLimitNumLabels( bool limit );
@@ -520,6 +517,12 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
     void _setReverseDirectionSymbol( bool reverse );
     DirectionSymbols _getPlaceDirectionSymbol() const;
     void _setPlaceDirectionSymbol( DirectionSymbols placement );
+    double _getOverrunDistance() const;
+    void _setOverrunDistance( double distance );
+    QgsUnitTypes::RenderUnit _getOverrunDistanceUnit() const;
+    void _setOverrunDistanceUnit( QgsUnitTypes::RenderUnit unit );
+    QgsMapUnitScale _getOverrunDistanceMapUnitScale() const;
+    void _setOverrunDistanceMapUnitScale( const QgsMapUnitScale &scale );
 
     double zIndex;
 

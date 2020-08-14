@@ -18,7 +18,8 @@ from qgis.core import (QgsProperty,
                        QgsLabelLineSettings,
                        QgsExpressionContext,
                        QgsExpressionContextScope,
-                       QgsGeometry,
+                       QgsUnitTypes,
+                       QgsMapUnitScale,
                        QgsLabeling)
 
 from qgis.testing import unittest, start_app
@@ -61,6 +62,15 @@ class TestQgsLabelLineSettings(unittest.TestCase):
         settings.setDirectionSymbolPlacement(QgsLabelLineSettings.DirectionSymbolPlacement.SymbolAbove)
         self.assertEqual(settings.directionSymbolPlacement(), QgsLabelLineSettings.DirectionSymbolPlacement.SymbolAbove)
 
+        settings.setOverrunDistance(5.6)
+        self.assertEqual(settings.overrunDistance(), 5.6)
+        settings.setOverrunDistanceUnit(QgsUnitTypes.RenderInches)
+        self.assertEqual(settings.overrunDistanceUnit(), QgsUnitTypes.RenderInches)
+        scale = QgsMapUnitScale(1, 2)
+        settings.setOverrunDistanceMapUnitScale(scale)
+        self.assertEqual(settings.overrunDistanceMapUnitScale().minScale, 1)
+        self.assertEqual(settings.overrunDistanceMapUnitScale().maxScale, 2)
+
         # check that compatibility code works
         pal_settings = QgsPalLayerSettings()
         pal_settings.placementFlags = QgsPalLayerSettings.OnLine | QgsPalLayerSettings.MapOrientation
@@ -99,19 +109,37 @@ class TestQgsLabelLineSettings(unittest.TestCase):
         self.assertEqual(pal_settings.placeDirectionSymbol, 1)
         self.assertTrue(pal_settings.lineSettings().directionSymbolPlacement(), QgsLabelLineSettings.DirectionSymbolPlacement.SymbolAbove)
 
+        pal_settings.overrunDistance = 4.2
+        self.assertEqual(pal_settings.overrunDistance, 4.2)
+        self.assertTrue(pal_settings.lineSettings().overrunDistance(), 4.2)
+
+        pal_settings.overrunDistanceUnit = QgsUnitTypes.RenderInches
+        self.assertEqual(pal_settings.overrunDistanceUnit, QgsUnitTypes.RenderInches)
+        self.assertTrue(pal_settings.lineSettings().overrunDistanceUnit(), QgsUnitTypes.RenderInches)
+        pal_settings.overrunDistanceMapUnitScale = scale
+        self.assertEqual(pal_settings.overrunDistanceMapUnitScale.minScale, 1)
+        self.assertEqual(pal_settings.overrunDistanceMapUnitScale.maxScale, 2)
+        self.assertTrue(pal_settings.lineSettings().overrunDistanceMapUnitScale().minScale, 1)
+        self.assertTrue(pal_settings.lineSettings().overrunDistanceMapUnitScale().maxScale, 2)
+
     def testUpdateDataDefinedProps(self):
         settings = QgsLabelLineSettings()
         settings.setPlacementFlags(QgsLabeling.LinePlacementFlag.OnLine)
+        settings.setOverrunDistance(5.6)
         self.assertEqual(settings.placementFlags(), QgsLabeling.LinePlacementFlag.OnLine)
+        self.assertEqual(settings.overrunDistance(), 5.6)
 
         props = QgsPropertyCollection()
         props.setProperty(QgsPalLayerSettings.LinePlacementOptions, QgsProperty.fromExpression('@placement'))
+        props.setProperty(QgsPalLayerSettings.OverrunDistance, QgsProperty.fromExpression('@dist'))
         context = QgsExpressionContext()
         scope = QgsExpressionContextScope()
         scope.setVariable('placement', 'AL,LO')
+        scope.setVariable('dist', '11.2')
         context.appendScope(scope)
         settings.updateDataDefinedProperties(props, context)
         self.assertEqual(settings.placementFlags(), QgsLabeling.LinePlacementFlag.AboveLine)
+        self.assertEqual(settings.overrunDistance(), 11.2)
 
 
 if __name__ == '__main__':

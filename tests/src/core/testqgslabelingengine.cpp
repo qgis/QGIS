@@ -2182,7 +2182,7 @@ void TestQgsLabelingEngine::curvedOverrun()
   settings.isExpression = true;
   settings.placement = QgsPalLayerSettings::Curved;
   settings.labelPerPart = false;
-  settings.overrunDistance = 0;
+  settings.lineSettings().setOverrunDistance( 0 );
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
@@ -2218,7 +2218,7 @@ void TestQgsLabelingEngine::curvedOverrun()
   QImage img = job.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "label_curved_no_overrun" ), img, 20 ) );
 
-  settings.overrunDistance = 11;
+  settings.lineSettings().setOverrunDistance( 11 );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
   QgsMapRendererSequentialJob job2( mapSettings );
@@ -2229,7 +2229,7 @@ void TestQgsLabelingEngine::curvedOverrun()
   QVERIFY( imageCheck( QStringLiteral( "label_curved_overrun" ), img, 20 ) );
 
   // too short for what's required...
-  settings.overrunDistance = 3;
+  settings.lineSettings().setOverrunDistance( 3 );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
   QgsMapRendererSequentialJob job3( mapSettings );
@@ -2255,7 +2255,7 @@ void TestQgsLabelingEngine::parallelOverrun()
   settings.isExpression = true;
   settings.placement = QgsPalLayerSettings::Line;
   settings.labelPerPart = false;
-  settings.overrunDistance = 0;
+  settings.lineSettings().setOverrunDistance( 0 );
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
@@ -2292,7 +2292,7 @@ void TestQgsLabelingEngine::parallelOverrun()
   QImage img = job.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "label_curved_no_overrun" ), img, 20 ) );
 
-  settings.overrunDistance = 10;
+  settings.lineSettings().setOverrunDistance( 10 );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
   QgsMapRendererSequentialJob job2( mapSettings );
@@ -2303,7 +2303,7 @@ void TestQgsLabelingEngine::parallelOverrun()
   QVERIFY( imageCheck( QStringLiteral( "label_parallel_overrun" ), img, 20 ) );
 
   // too short for what's required...
-  settings.overrunDistance = 3;
+  settings.lineSettings().setOverrunDistance( 3 );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
   QgsMapRendererSequentialJob job3( mapSettings );

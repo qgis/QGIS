@@ -19,6 +19,8 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslabeling.h"
+#include "qgsunittypes.h"
+#include "qgsmapunitscale.h"
 #include <QString>
 
 class QgsPropertyCollection;
@@ -182,6 +184,54 @@ class CORE_EXPORT QgsLabelLineSettings
      */
     void setDirectionSymbolPlacement( DirectionSymbolPlacement placement ) { mPlaceDirectionSymbol = placement; }
 
+    /**
+     * Returns the distance which labels are allowed to overrun past the start or end of line features.
+     * \see setOverrunDistance()
+     * \see overrunDistanceUnit()
+     * \see overrunDistanceMapUnitScale()
+     */
+    double overrunDistance() const { return mOverrunDistance; }
+
+    /**
+     * Sets the \a distance which labels are allowed to overrun past the start or end of line features.
+     * \see overrunDistance()
+     * \see overrunDistanceUnit()
+     * \see overrunDistanceMapUnitScale()
+     */
+    void setOverrunDistance( double distance ) {  mOverrunDistance = distance; }
+
+    /**
+     * Returns the units for label overrun distance.
+     * \see setOverrunDistanceUnit()
+     * \see overrunDistance()
+     * \see overrunDistanceMapUnitScale()
+     */
+    QgsUnitTypes::RenderUnit overrunDistanceUnit() const {return mOverrunDistanceUnit; }
+
+    /**
+     * Sets the \a unit for label overrun distance.
+     * \see overrunDistanceUnit()
+     * \see overrunDistance()
+     * \see overrunDistanceMapUnitScale()
+     */
+    void setOverrunDistanceUnit( const QgsUnitTypes::RenderUnit &unit ) { mOverrunDistanceUnit = unit;}
+
+    /**
+     * Returns the map unit scale for label overrun distance.
+     * \see setOverrunDistanceMapUnitScale()
+     * \see overrunDistance()
+     * \see overrunDistanceUnit()
+     */
+    QgsMapUnitScale overrunDistanceMapUnitScale() const { return mOverrunDistanceMapUnitScale; }
+
+    /**
+     * Sets the map unit \a scale for label overrun distance.
+     * \see overrunDistanceMapUnitScale()
+     * \see overrunDistance()
+     * \see overrunDistanceUnit()
+     */
+    void setOverrunDistanceMapUnitScale( const QgsMapUnitScale &scale ) { mOverrunDistanceMapUnitScale = scale; }
+
   private:
     QgsLabeling::LinePlacementFlags mPlacementFlags = QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation;
     bool mMergeLines = false;
@@ -190,6 +240,9 @@ class CORE_EXPORT QgsLabelLineSettings
     QString mRightDirectionSymbol = QString( '>' );
     bool mReverseDirectionSymbol = false;
     DirectionSymbolPlacement mPlaceDirectionSymbol = DirectionSymbolPlacement::SymbolLeftRight;
+    double mOverrunDistance = 0;
+    QgsUnitTypes::RenderUnit mOverrunDistanceUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mOverrunDistanceMapUnitScale;
 };
 
 #endif // QGSLABELLINESETTINGS_H
