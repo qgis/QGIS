@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     PointsToPaths.py
@@ -16,11 +15,9 @@
 *                                                                         *
 ***************************************************************************
 """
-
 __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
-
 import os
 from datetime import datetime
 
@@ -35,6 +32,7 @@ from qgis.core import (QgsFeature,
                        QgsWkbTypes,
                        QgsFeatureRequest,
                        QgsProcessingException,
+                       QgsProcessingParameterBoolean,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterString,
@@ -48,18 +46,17 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 class PointsToPaths(QgisAlgorithm):
     INPUT = 'INPUT'
+    CLOSE_LINE = 'CLOSE_LINE'
     GROUP_FIELD = 'GROUP_FIELD'
     ORDER_FIELD = 'ORDER_FIELD'
     DATE_FORMAT = 'DATE_FORMAT'
     OUTPUT = 'OUTPUT'
     OUTPUT_TEXT_DIR = 'OUTPUT_TEXT_DIR'
-
     def group(self):
         return self.tr('Vector creation')
 
     def groupId(self):
         return 'vectorcreation'
-
     def __init__(self):
         super().__init__()
 
@@ -69,6 +66,8 @@ class PointsToPaths(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input point layer'), [QgsProcessing.TypeVectorPoint]))
+        self.addParameter(QgsProcessingParameterBoolean(self.CLOSE_LINE,
+                                                        self.tr('Close line'), defaultValue=False))
         self.addParameter(QgsProcessingParameterField(self.ORDER_FIELD,
                                                       self.tr('Order field'), parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterField(self.GROUP_FIELD,
@@ -83,7 +82,6 @@ class PointsToPaths(QgisAlgorithm):
 
     def name(self):
         return 'pointstopath'
-
     def displayName(self):
         return self.tr('Points to path')
 
@@ -92,6 +90,7 @@ class PointsToPaths(QgisAlgorithm):
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
+        close_line = self.parameterAsBool(parameters, self.CLOSE_LINE, context)
         group_field_name = self.parameterAsString(parameters, self.GROUP_FIELD, context)
         order_field_name = self.parameterAsString(parameters, self.ORDER_FIELD, context)
         date_format = self.parameterAsString(parameters, self.DATE_FORMAT, context)
@@ -133,10 +132,8 @@ class PointsToPaths(QgisAlgorithm):
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
-
             if not f.hasGeometry():
                 continue
-
             point = f.geometry().constGet().clone()
             if group_field_index >= 0:
                 group = f[group_field_index]
@@ -163,7 +160,6 @@ class PointsToPaths(QgisAlgorithm):
         for group, vertices in points.items():
             if feedback.isCanceled():
                 break
-
             vertices.sort(key=lambda x: (x[0] is None, x[0]))
             f = QgsFeature()
             attributes = []
@@ -172,6 +168,10 @@ class PointsToPaths(QgisAlgorithm):
             attributes.extend([vertices[0][0], vertices[-1][0]])
             f.setAttributes(attributes)
             line = [node[1] for node in vertices]
+
+            if close_line is True:
+                if line[0] != line[-1]:
+                    line.append(line[0])
 
             if text_dir:
                 fileName = os.path.join(text_dir, '%s.txt' % group)
