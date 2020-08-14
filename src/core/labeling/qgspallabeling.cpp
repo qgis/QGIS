@@ -326,9 +326,6 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   repeatDistance = s.repeatDistance;
   repeatDistanceUnit = s.repeatDistanceUnit;
   repeatDistanceMapUnitScale = s.repeatDistanceMapUnitScale;
-  overrunDistance = s.overrunDistance;
-  overrunDistanceUnit = s.overrunDistanceUnit;
-  overrunDistanceMapUnitScale = s.overrunDistanceMapUnitScale;
 
   // rendering
   scaleVisibility = s.scaleVisibility;
@@ -1042,9 +1039,9 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
     repeatDistanceMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "repeatDistanceMapUnitScale" ) ) );
   }
 
-  overrunDistance = placementElem.attribute( QStringLiteral( "overrunDistance" ), QStringLiteral( "0" ) ).toDouble();
-  overrunDistanceUnit = QgsUnitTypes::decodeRenderUnit( placementElem.attribute( QStringLiteral( "overrunDistanceUnit" ) ) );
-  overrunDistanceMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "overrunDistanceMapUnitScale" ) ) );
+  mLineSettings.setOverrunDistance( placementElem.attribute( QStringLiteral( "overrunDistance" ), QStringLiteral( "0" ) ).toDouble() );
+  mLineSettings.setOverrunDistanceUnit( QgsUnitTypes::decodeRenderUnit( placementElem.attribute( QStringLiteral( "overrunDistanceUnit" ) ) ) );
+  mLineSettings.setOverrunDistanceMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "overrunDistanceMapUnitScale" ) ) ) );
 
   geometryGenerator = placementElem.attribute( QStringLiteral( "geometryGenerator" ) );
   geometryGeneratorEnabled = placementElem.attribute( QStringLiteral( "geometryGeneratorEnabled" ) ).toInt();
@@ -1192,9 +1189,9 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   placementElem.setAttribute( QStringLiteral( "repeatDistance" ), repeatDistance );
   placementElem.setAttribute( QStringLiteral( "repeatDistanceUnits" ), QgsUnitTypes::encodeUnit( repeatDistanceUnit ) );
   placementElem.setAttribute( QStringLiteral( "repeatDistanceMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( repeatDistanceMapUnitScale ) );
-  placementElem.setAttribute( QStringLiteral( "overrunDistance" ), overrunDistance );
-  placementElem.setAttribute( QStringLiteral( "overrunDistanceUnit" ), QgsUnitTypes::encodeUnit( overrunDistanceUnit ) );
-  placementElem.setAttribute( QStringLiteral( "overrunDistanceMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( overrunDistanceMapUnitScale ) );
+  placementElem.setAttribute( QStringLiteral( "overrunDistance" ), mLineSettings.overrunDistance() );
+  placementElem.setAttribute( QStringLiteral( "overrunDistanceUnit" ), QgsUnitTypes::encodeUnit( mLineSettings.overrunDistanceUnit() ) );
+  placementElem.setAttribute( QStringLiteral( "overrunDistanceMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mLineSettings.overrunDistanceMapUnitScale() ) );
 
   placementElem.setAttribute( QStringLiteral( "geometryGenerator" ), geometryGenerator );
   placementElem.setAttribute( QStringLiteral( "geometryGeneratorEnabled" ), geometryGeneratorEnabled );
@@ -2423,16 +2420,11 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
     }
   }
 
-  // data defined overrun distance
-  double overrunDistanceEval = overrunDistance;
-  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::OverrunDistance ) )
-  {
-    context.expressionContext().setOriginalValueVariable( overrunDistanceEval );
-    overrunDistanceEval = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::OverrunDistance, context.expressionContext(), overrunDistanceEval );
-  }
+  //  overrun distance
+  double overrunDistanceEval = lineSettings.overrunDistance();
   if ( !qgsDoubleNear( overrunDistanceEval, 0.0 ) )
   {
-    overrunDistanceEval = context.convertToMapUnits( overrunDistanceEval, overrunDistanceUnit, overrunDistanceMapUnitScale );
+    overrunDistanceEval = context.convertToMapUnits( overrunDistanceEval, lineSettings.overrunDistanceUnit(), lineSettings.overrunDistanceMapUnitScale() );
   }
 
   // we smooth out the overrun label extensions by 1 mm, to avoid little jaggies right at the start or end of the lines

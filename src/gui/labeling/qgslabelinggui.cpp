@@ -345,9 +345,9 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mRepeatDistanceUnitWidget->setUnit( mSettings.repeatDistanceUnit );
   mRepeatDistanceUnitWidget->setMapUnitScale( mSettings.repeatDistanceMapUnitScale );
 
-  mOverrunDistanceSpinBox->setValue( mSettings.overrunDistance );
-  mOverrunDistanceUnitWidget->setUnit( mSettings.overrunDistanceUnit );
-  mOverrunDistanceUnitWidget->setMapUnitScale( mSettings.overrunDistanceMapUnitScale );
+  mOverrunDistanceSpinBox->setValue( mSettings.lineSettings().overrunDistance() );
+  mOverrunDistanceUnitWidget->setUnit( mSettings.lineSettings().overrunDistanceUnit() );
+  mOverrunDistanceUnitWidget->setMapUnitScale( mSettings.lineSettings().overrunDistanceMapUnitScale() );
 
   mPrioritySlider->setValue( mSettings.priority );
   mChkNoObstacle->setChecked( mSettings.obstacleSettings().isObstacle() );
@@ -557,9 +557,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.repeatDistanceUnit = mRepeatDistanceUnitWidget->unit();
   lyr.repeatDistanceMapUnitScale = mRepeatDistanceUnitWidget->getMapUnitScale();
 
-  lyr.overrunDistance = mOverrunDistanceSpinBox->value();
-  lyr.overrunDistanceUnit = mOverrunDistanceUnitWidget->unit();
-  lyr.overrunDistanceMapUnitScale = mOverrunDistanceUnitWidget->getMapUnitScale();
+  lyr.lineSettings().setOverrunDistance( mOverrunDistanceSpinBox->value() );
+  lyr.lineSettings().setOverrunDistanceUnit( mOverrunDistanceUnitWidget->unit() );
+  lyr.lineSettings().setOverrunDistanceMapUnitScale( mOverrunDistanceUnitWidget->getMapUnitScale() );
 
   lyr.priority = mPrioritySlider->value();
 

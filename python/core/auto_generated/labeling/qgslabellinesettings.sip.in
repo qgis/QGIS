@@ -184,6 +184,72 @@ This setting controls whether to place direction symbols to the left/right, abov
 .. seealso:: :py:func:`addDirectionSymbol`
 %End
 
+    double overrunDistance() const;
+%Docstring
+Returns the distance which labels are allowed to overrun past the start or end of line features.
+
+.. seealso:: :py:func:`setOverrunDistance`
+
+.. seealso:: :py:func:`overrunDistanceUnit`
+
+.. seealso:: :py:func:`overrunDistanceMapUnitScale`
+%End
+
+    void setOverrunDistance( double distance );
+%Docstring
+Sets the ``distance`` which labels are allowed to overrun past the start or end of line features.
+
+.. seealso:: :py:func:`overrunDistance`
+
+.. seealso:: :py:func:`overrunDistanceUnit`
+
+.. seealso:: :py:func:`overrunDistanceMapUnitScale`
+%End
+
+    QgsUnitTypes::RenderUnit overrunDistanceUnit() const;
+%Docstring
+Returns the units for label overrun distance.
+
+.. seealso:: :py:func:`setOverrunDistanceUnit`
+
+.. seealso:: :py:func:`overrunDistance`
+
+.. seealso:: :py:func:`overrunDistanceMapUnitScale`
+%End
+
+    void setOverrunDistanceUnit( const QgsUnitTypes::RenderUnit &unit );
+%Docstring
+Sets the ``unit`` for label overrun distance.
+
+.. seealso:: :py:func:`overrunDistanceUnit`
+
+.. seealso:: :py:func:`overrunDistance`
+
+.. seealso:: :py:func:`overrunDistanceMapUnitScale`
+%End
+
+    QgsMapUnitScale overrunDistanceMapUnitScale() const;
+%Docstring
+Returns the map unit scale for label overrun distance.
+
+.. seealso:: :py:func:`setOverrunDistanceMapUnitScale`
+
+.. seealso:: :py:func:`overrunDistance`
+
+.. seealso:: :py:func:`overrunDistanceUnit`
+%End
+
+    void setOverrunDistanceMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for label overrun distance.
+
+.. seealso:: :py:func:`overrunDistanceMapUnitScale`
+
+.. seealso:: :py:func:`overrunDistance`
+
+.. seealso:: :py:func:`overrunDistanceUnit`
+%End
+
 };
 
 /************************************************************************

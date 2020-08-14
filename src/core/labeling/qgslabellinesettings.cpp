@@ -31,8 +31,10 @@ void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollect
       mPlacementFlags = QgsLabelingUtils::decodeLinePlacementFlags( dataDefinedLineArrangement );
     }
   }
+
+  if ( properties.isActive( QgsPalLayerSettings::OverrunDistance ) )
+  {
+    context.setOriginalValueVariable( mOverrunDistance );
+    mOverrunDistance = properties.valueAsDouble( QgsPalLayerSettings::OverrunDistance, context, mOverrunDistance );
+  }
 }
-
-
-
-

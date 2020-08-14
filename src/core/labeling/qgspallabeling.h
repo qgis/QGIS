@@ -704,30 +704,6 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsMapUnitScale repeatDistanceMapUnitScale;
 
     /**
-     * Distance which labels are allowed to overrun past the start or end of line features.
-     * \see overrunDistanceUnit
-     * \see repeatDistanceMapUnitScale
-     * \since QGIS 3.10
-     */
-    double overrunDistance = 0;
-
-    /**
-     * Units for label overrun distance.
-     * \see overrunDistance
-     * \see overrunDistanceMapUnitScale
-     * \since QGIS 3.10
-     */
-    QgsUnitTypes::RenderUnit overrunDistanceUnit = QgsUnitTypes::RenderMillimeters;
-
-    /**
-     * Map unit scale for label overrun distance.
-     * \see overrunDistance
-     * \see overrunDistanceUnit
-     * \since QGIS 3.10
-     */
-    QgsMapUnitScale overrunDistanceMapUnitScale;
-
-    /**
      * Sets the quadrant in which to offset labels from feature.
      */
     QuadrantPosition quadOffset = QuadrantOver;
@@ -865,12 +841,15 @@ class CORE_EXPORT QgsPalLayerSettings
     SIP_PROPERTY( name = obstacleType, get = _getObstacleType, set = _setObstacleType )
     SIP_PROPERTY( name = placementFlags, get = _getLinePlacementFlags, set = _setLinePlacementFlags )
     SIP_PROPERTY( name = mergeLines, get = _getMergeLines, set = _setMergeLines )
-
     SIP_PROPERTY( name = addDirectionSymbol, get = _getAddDirectionSymbol, set = _setAddDirectionSymbol )
     SIP_PROPERTY( name = leftDirectionSymbol, get = _getLeftDirectionSymbol, set = _setLeftDirectionSymbol )
     SIP_PROPERTY( name = rightDirectionSymbol, get = _getRightDirectionSymbol, set = _setRightDirectionSymbol )
     SIP_PROPERTY( name = reverseDirectionSymbol, get = _getReverseDirectionSymbol, set = _setReverseDirectionSymbol )
     SIP_PROPERTY( name = placeDirectionSymbol, get = _getPlaceDirectionSymbol, set = _setPlaceDirectionSymbol )
+
+    SIP_PROPERTY( name = overrunDistance, get = _getOverrunDistance, set = _setOverrunDistance )
+    SIP_PROPERTY( name = overrunDistanceUnit, get = _getOverrunDistanceUnit, set = _setOverrunDistanceUnit )
+    SIP_PROPERTY( name = overrunDistanceMapUnitScale, get = _getOverrunDistanceMapUnitScale, set = _setOverrunDistanceMapUnitScale )
 #endif
 
     ///@cond PRIVATE
@@ -902,6 +881,12 @@ class CORE_EXPORT QgsPalLayerSettings
     DirectionSymbols _getPlaceDirectionSymbol() const { return static_cast< DirectionSymbols>( mLineSettings.directionSymbolPlacement() ); }
     void _setPlaceDirectionSymbol( DirectionSymbols placement ) { mLineSettings.setDirectionSymbolPlacement( static_cast< QgsLabelLineSettings::DirectionSymbolPlacement>( placement ) ); }
     Q_NOWARN_DEPRECATED_POP
+    double _getOverrunDistance() const { return mLineSettings.overrunDistance(); }
+    void _setOverrunDistance( double distance ) { mLineSettings.setOverrunDistance( distance ); }
+    QgsUnitTypes::RenderUnit _getOverrunDistanceUnit() const { return mLineSettings.overrunDistanceUnit(); }
+    void _setOverrunDistanceUnit( QgsUnitTypes::RenderUnit unit ) { mLineSettings.setOverrunDistanceUnit( unit ); }
+    QgsMapUnitScale _getOverrunDistanceMapUnitScale() const { return mLineSettings.overrunDistanceMapUnitScale(); }
+    void _setOverrunDistanceMapUnitScale( const QgsMapUnitScale &scale ) { mLineSettings.setOverrunDistanceMapUnitScale( scale ); }
     ///@endcond
 
     //! Z-Index of label, where labels with a higher z-index are rendered on top of labels with a lower z-index
