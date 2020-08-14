@@ -133,9 +133,9 @@ class QgsPalLayerSettings
       AboveLine,
       BelowLine,
       MapOrientation,
-    } /Deprecated/;
+    };
 
-    enum
+    enum QuadrantPosition
     {
       QuadrantAboveLeft,
       QuadrantAbove,
@@ -487,8 +487,6 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 
     bool labelPerPart;
 
-    bool mergeLines;
-
 
 %Property( name = limitNumLabels, get = _limitNumLabels, set = _setLimitNumLabels )
 %Property( name = maxNumLabels, get = _maxNumLabels, set = _setMaxNumLabels )
@@ -497,6 +495,7 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 %Property( name = obstacleFactor, get = _getObstacleFactor, set = _setObstacleFactor )
 %Property( name = obstacleType, get = _getObstacleType, set = _setObstacleType )
 %Property( name = placementFlags, get = _getLinePlacementFlags, set = _setLinePlacementFlags )
+%Property( name = mergeLines, get = _getMergeLines, set = _setMergeLines )
 
     bool _limitNumLabels() const;
     void _setLimitNumLabels( bool limit );
@@ -512,6 +511,8 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
     void _setObstacleType( ObstacleType type );
     unsigned int _getLinePlacementFlags() const;
     void _setLinePlacementFlags( unsigned int flags );
+    bool _getMergeLines() const;
+    void _setMergeLines( bool merge );
 
     double zIndex;
 

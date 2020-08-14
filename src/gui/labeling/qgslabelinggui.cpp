@@ -356,7 +356,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   chkLabelPerFeaturePart->setChecked( mSettings.labelPerPart );
   mPalShowAllLabelsForLayerChkBx->setChecked( mSettings.displayAll );
-  chkMergeLines->setChecked( mSettings.mergeLines );
+  chkMergeLines->setChecked( mSettings.lineSettings().mergeLines() );
   mMinSizeSpinBox->setValue( mSettings.thinningSettings().minimumFeatureSize() );
   mLimitLabelChkBox->setChecked( mSettings.thinningSettings().limitNumberOfLabelsEnabled() );
   mLimitLabelSpinBox->setValue( mSettings.thinningSettings().maximumNumberLabels() );
@@ -568,7 +568,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
   lyr.displayAll = mPalShowAllLabelsForLayerChkBx->isChecked();
-  lyr.mergeLines = chkMergeLines->isChecked();
+  lyr.lineSettings().setMergeLines( chkMergeLines->isChecked() );
 
   lyr.scaleVisibility = mScaleBasedVisibilityChkBx->isChecked();
   lyr.minimumScale = mMinScaleWidget->scale();

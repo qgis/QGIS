@@ -4888,11 +4888,11 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
       }
       else if ( it.key() == QLatin1String( "group" ) && it.value() == QLatin1String( "yes" ) )
       {
-        settings.mergeLines = true;
+        settings.lineSettings().setMergeLines( true );
       }
       else if ( it.key() == QLatin1String( "labelAllGroup" ) && it.value() == QLatin1String( "true" ) )
       {
-        settings.mergeLines = true;
+        settings.lineSettings().setMergeLines( true );
       }
     }
   }

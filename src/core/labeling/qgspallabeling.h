@@ -280,7 +280,7 @@ class CORE_EXPORT QgsPalLayerSettings
       MapOrientation = 8, /**< Signifies that the AboveLine and BelowLine flags should respect the map's orientation rather
                                than the feature's orientation. For example, AboveLine will always result in label's being placed
                                above a line, regardless of the line's direction. */
-    } SIP_DEPRECATED;
+    };
 
     enum QuadrantPosition
     {
@@ -886,12 +886,6 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     bool labelPerPart = false;
 
-    /**
-     * TRUE if connected line features with identical label text should be merged
-     * prior to generating label positions.
-     */
-    bool mergeLines = false;
-
     // TODO QGIS 4.0 - remove this junk
 
 #ifdef SIP_RUN
@@ -902,6 +896,7 @@ class CORE_EXPORT QgsPalLayerSettings
     SIP_PROPERTY( name = obstacleFactor, get = _getObstacleFactor, set = _setObstacleFactor )
     SIP_PROPERTY( name = obstacleType, get = _getObstacleType, set = _setObstacleType )
     SIP_PROPERTY( name = placementFlags, get = _getLinePlacementFlags, set = _setLinePlacementFlags )
+    SIP_PROPERTY( name = mergeLines, get = _getMergeLines, set = _setMergeLines )
 #endif
 
     ///@cond PRIVATE
@@ -919,6 +914,8 @@ class CORE_EXPORT QgsPalLayerSettings
     void _setObstacleType( ObstacleType type ) { mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType>( type ) ); }
     unsigned int _getLinePlacementFlags() const { return static_cast< unsigned int >( mLineSettings.placementFlags() ); }
     void _setLinePlacementFlags( unsigned int flags ) { mLineSettings.setPlacementFlags( static_cast< QgsLabeling::LinePlacementFlags >( flags ) ); }
+    bool _getMergeLines() const { return mLineSettings.mergeLines(); }
+    void _setMergeLines( bool merge ) { mLineSettings.setMergeLines( merge ); }
     ///@endcond
 
     //! Z-Index of label, where labels with a higher z-index are rendered on top of labels with a lower z-index

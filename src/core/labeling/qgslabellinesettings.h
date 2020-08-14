@@ -54,6 +54,22 @@ class CORE_EXPORT QgsLabelLineSettings
     void setPlacementFlags( QgsLabeling::LinePlacementFlags flags ) { mPlacementFlags = flags; }
 
     /**
+     * Returns TRUE if connected line features with identical label text should be merged
+     * prior to generating label positions.
+     *
+     * \see setMergeLines()
+     */
+    bool mergeLines() const { return mMergeLines; }
+
+    /**
+     * Sets whether connected line features with identical label text should be merged
+     * prior to generating label positions.
+     *
+     * \see mergeLines()
+     */
+    void setMergeLines( bool merge ) { mMergeLines = merge; }
+
+    /**
      * Updates the thinning settings to respect any data defined properties
      * set within the specified \a properties collection.
      */
@@ -61,7 +77,7 @@ class CORE_EXPORT QgsLabelLineSettings
 
   private:
     QgsLabeling::LinePlacementFlags mPlacementFlags = QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation;
-
+    bool mMergeLines = false;
 };
 
 #endif // QGSLABELLINESETTINGS_H

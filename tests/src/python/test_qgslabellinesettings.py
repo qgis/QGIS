@@ -38,11 +38,23 @@ class TestQgsLabelLineSettings(unittest.TestCase):
         settings.setPlacementFlags(QgsLabeling.LinePlacementFlag.OnLine | QgsLabeling.LinePlacementFlag.MapOrientation)
         self.assertEqual(settings.placementFlags(), QgsLabeling.LinePlacementFlag.OnLine | QgsLabeling.LinePlacementFlag.MapOrientation)
 
+        settings.setMergeLines(True)
+        self.assertTrue(settings.mergeLines())
+        settings.setMergeLines(False)
+        self.assertFalse(settings.mergeLines())
+
         # check that compatibility code works
         pal_settings = QgsPalLayerSettings()
         pal_settings.placementFlags = QgsPalLayerSettings.OnLine | QgsPalLayerSettings.MapOrientation
         self.assertEqual(pal_settings.placementFlags, 9)
         self.assertTrue(pal_settings.lineSettings().placementFlags(), QgsLabeling.LinePlacementFlag.OnLine | QgsLabeling.LinePlacementFlag.MapOrientation)
+
+        pal_settings.mergeLines = True
+        self.assertTrue(pal_settings.mergeLines)
+        self.assertTrue(pal_settings.lineSettings().mergeLines())
+        pal_settings.mergeLines = False
+        self.assertFalse(pal_settings.mergeLines)
+        self.assertFalse(pal_settings.lineSettings().mergeLines())
 
     def testUpdateDataDefinedProps(self):
         settings = QgsLabelLineSettings()
