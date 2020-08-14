@@ -56,6 +56,11 @@ class TestQgsLabelLineSettings(unittest.TestCase):
         settings.setReverseDirectionSymbol(False)
         self.assertFalse(settings.reverseDirectionSymbol())
 
+        settings.setDirectionSymbolPlacement(QgsLabelLineSettings.DirectionSymbolPlacement.SymbolBelow)
+        self.assertEqual(settings.directionSymbolPlacement(), QgsLabelLineSettings.DirectionSymbolPlacement.SymbolBelow)
+        settings.setDirectionSymbolPlacement(QgsLabelLineSettings.DirectionSymbolPlacement.SymbolAbove)
+        self.assertEqual(settings.directionSymbolPlacement(), QgsLabelLineSettings.DirectionSymbolPlacement.SymbolAbove)
+
         # check that compatibility code works
         pal_settings = QgsPalLayerSettings()
         pal_settings.placementFlags = QgsPalLayerSettings.OnLine | QgsPalLayerSettings.MapOrientation
@@ -89,6 +94,10 @@ class TestQgsLabelLineSettings(unittest.TestCase):
         pal_settings.reverseDirectionSymbol = False
         self.assertFalse(pal_settings.reverseDirectionSymbol)
         self.assertFalse(pal_settings.lineSettings().reverseDirectionSymbol())
+
+        pal_settings.placeDirectionSymbol = QgsPalLayerSettings.SymbolAbove
+        self.assertEqual(pal_settings.placeDirectionSymbol, 1)
+        self.assertTrue(pal_settings.lineSettings().directionSymbolPlacement(), QgsLabelLineSettings.DirectionSymbolPlacement.SymbolAbove)
 
     def testUpdateDataDefinedProps(self):
         settings = QgsLabelLineSettings()

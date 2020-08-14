@@ -25,6 +25,13 @@ a "perimeter" style mode).
 %End
   public:
 
+    enum class DirectionSymbolPlacement
+    {
+      SymbolLeftRight,
+      SymbolAbove,
+      SymbolBelow
+    };
+
     QgsLabeling::LinePlacementFlags placementFlags() const;
 %Docstring
 Returns the line placement flags, which dictate how line labels can be placed
@@ -153,6 +160,28 @@ Returns ``True`` if direction symbols should be reversed.
 Sets whether the direction symbols should be ``reversed``.
 
 .. seealso:: :py:func:`reverseDirectionSymbol`
+%End
+
+    DirectionSymbolPlacement directionSymbolPlacement() const;
+%Docstring
+Returns the placement for direction symbols.
+
+This setting controls whether to place direction symbols to the left/right, above or below label.
+
+.. seealso:: :py:func:`setDirectionSymbolPlacement`
+
+.. seealso:: :py:func:`addDirectionSymbol`
+%End
+
+    void setDirectionSymbolPlacement( DirectionSymbolPlacement placement );
+%Docstring
+Sets the ``placement`` for direction symbols.
+
+This setting controls whether to place direction symbols to the left/right, above or below label.
+
+.. seealso:: :py:func:`directionSymbolPlacement`
+
+.. seealso:: :py:func:`addDirectionSymbol`
 %End
 
 };

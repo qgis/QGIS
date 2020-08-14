@@ -155,6 +155,7 @@ class QgsPalLayerSettings
       ShowAll
     };
 
+
     enum DirectionSymbols
     {
       SymbolLeftRight,
@@ -384,8 +385,6 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
 
     MultiLineAlign multilineAlign;
 
-    DirectionSymbols placeDirectionSymbol;
-
     bool formatNumbers;
 
     int decimals;
@@ -493,6 +492,7 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 %Property( name = leftDirectionSymbol, get = _getLeftDirectionSymbol, set = _setLeftDirectionSymbol )
 %Property( name = rightDirectionSymbol, get = _getRightDirectionSymbol, set = _setRightDirectionSymbol )
 %Property( name = reverseDirectionSymbol, get = _getReverseDirectionSymbol, set = _setReverseDirectionSymbol )
+%Property( name = placeDirectionSymbol, get = _getPlaceDirectionSymbol, set = _setPlaceDirectionSymbol )
 
     bool _limitNumLabels() const;
     void _setLimitNumLabels( bool limit );
@@ -518,6 +518,8 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
     void _setRightDirectionSymbol( const QString &symbol );
     bool _getReverseDirectionSymbol() const;
     void _setReverseDirectionSymbol( bool reverse );
+    DirectionSymbols _getPlaceDirectionSymbol() const;
+    void _setPlaceDirectionSymbol( DirectionSymbols placement );
 
     double zIndex;
 

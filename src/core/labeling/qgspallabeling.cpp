@@ -298,7 +298,6 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   autoWrapLength = s.autoWrapLength;
   useMaxLineLengthForAutoWrap = s.useMaxLineLengthForAutoWrap;
   multilineAlign = s.multilineAlign;
-  placeDirectionSymbol = s.placeDirectionSymbol;
   formatNumbers = s.formatNumbers;
   decimals = s.decimals;
   plusSign = s.plusSign;
@@ -715,7 +714,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   mLineSettings.setLeftDirectionSymbol( layer->customProperty( QStringLiteral( "labeling/leftDirectionSymbol" ), QVariant( "<" ) ).toString() );
   mLineSettings.setRightDirectionSymbol( layer->customProperty( QStringLiteral( "labeling/rightDirectionSymbol" ), QVariant( ">" ) ).toString() );
   mLineSettings.setReverseDirectionSymbol( layer->customProperty( QStringLiteral( "labeling/reverseDirectionSymbol" ) ).toBool() );
-  placeDirectionSymbol = static_cast< DirectionSymbols >( layer->customProperty( QStringLiteral( "labeling/placeDirectionSymbol" ), QVariant( SymbolLeftRight ) ).toUInt() );
+  mLineSettings.setDirectionSymbolPlacement( static_cast< QgsLabelLineSettings::DirectionSymbolPlacement >( layer->customProperty( QStringLiteral( "labeling/placeDirectionSymbol" ), QVariant( static_cast< int >( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight ) ) ).toUInt() ) );
   formatNumbers = layer->customProperty( QStringLiteral( "labeling/formatNumbers" ) ).toBool();
   decimals = layer->customProperty( QStringLiteral( "labeling/decimals" ) ).toInt();
   plusSign = layer->customProperty( QStringLiteral( "labeling/plussign" ) ).toBool();
@@ -926,7 +925,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   mLineSettings.setLeftDirectionSymbol( textFormatElem.attribute( QStringLiteral( "leftDirectionSymbol" ), QStringLiteral( "<" ) ) );
   mLineSettings.setRightDirectionSymbol( textFormatElem.attribute( QStringLiteral( "rightDirectionSymbol" ), QStringLiteral( ">" ) ) );
   mLineSettings.setReverseDirectionSymbol( textFormatElem.attribute( QStringLiteral( "reverseDirectionSymbol" ) ).toInt() );
-  placeDirectionSymbol = static_cast< DirectionSymbols >( textFormatElem.attribute( QStringLiteral( "placeDirectionSymbol" ), QString::number( SymbolLeftRight ) ).toUInt() );
+  mLineSettings.setDirectionSymbolPlacement( static_cast< QgsLabelLineSettings::DirectionSymbolPlacement >( textFormatElem.attribute( QStringLiteral( "placeDirectionSymbol" ), QString::number( static_cast< int >( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight ) ) ).toUInt() ) );
   formatNumbers = textFormatElem.attribute( QStringLiteral( "formatNumbers" ) ).toInt();
   decimals = textFormatElem.attribute( QStringLiteral( "decimals" ) ).toInt();
   plusSign = textFormatElem.attribute( QStringLiteral( "plussign" ) ).toInt();
@@ -1162,7 +1161,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   textFormatElem.setAttribute( QStringLiteral( "leftDirectionSymbol" ), mLineSettings.leftDirectionSymbol() );
   textFormatElem.setAttribute( QStringLiteral( "rightDirectionSymbol" ), mLineSettings.rightDirectionSymbol() );
   textFormatElem.setAttribute( QStringLiteral( "reverseDirectionSymbol" ), mLineSettings.reverseDirectionSymbol() );
-  textFormatElem.setAttribute( QStringLiteral( "placeDirectionSymbol" ), static_cast< unsigned int >( placeDirectionSymbol ) );
+  textFormatElem.setAttribute( QStringLiteral( "placeDirectionSymbol" ), static_cast< unsigned int >( mLineSettings.directionSymbolPlacement() ) );
   textFormatElem.setAttribute( QStringLiteral( "formatNumbers" ), formatNumbers );
   textFormatElem.setAttribute( QStringLiteral( "decimals" ), decimals );
   textFormatElem.setAttribute( QStringLiteral( "plussign" ), plusSign );
@@ -1402,7 +1401,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   bool addDirSymb = mLineSettings.addDirectionSymbol();
   QString leftDirSymb = mLineSettings.leftDirectionSymbol();
   QString rightDirSymb = mLineSettings.rightDirectionSymbol();
-  QgsPalLayerSettings::DirectionSymbols placeDirSymb = placeDirectionSymbol;
+  QgsLabelLineSettings::DirectionSymbolPlacement placeDirSymb = mLineSettings.directionSymbolPlacement();
 
   if ( f == mCurFeat ) // called internally, use any stored data defined values
   {
@@ -1445,7 +1444,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
 
       if ( dataDefinedValues.contains( QgsPalLayerSettings::DirSymbPlacement ) )
       {
-        placeDirSymb = static_cast< QgsPalLayerSettings::DirectionSymbols >( dataDefinedValues.value( QgsPalLayerSettings::DirSymbPlacement ).toInt() );
+        placeDirSymb = static_cast< QgsLabelLineSettings::DirectionSymbolPlacement >( dataDefinedValues.value( QgsPalLayerSettings::DirSymbPlacement ).toInt() );
       }
 
     }
@@ -1501,7 +1500,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
       if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::DirSymbPlacement ) )
       {
         rc->expressionContext().setOriginalValueVariable( static_cast< int >( placeDirSymb ) );
-        placeDirSymb = static_cast< QgsPalLayerSettings::DirectionSymbols >( mDataDefinedProperties.valueAsInt( QgsPalLayerSettings::DirSymbPlacement, rc->expressionContext(), placeDirSymb ) );
+        placeDirSymb = static_cast< QgsLabelLineSettings::DirectionSymbolPlacement >( mDataDefinedProperties.valueAsInt( QgsPalLayerSettings::DirSymbPlacement, rc->expressionContext(), static_cast< int >( placeDirSymb ) ) );
       }
     }
   }
@@ -1520,13 +1519,16 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
     if ( fm->width( rightDirSymb ) > fm->width( dirSym ) )
       dirSym = rightDirSymb;
 
-    if ( placeDirSymb == QgsPalLayerSettings::SymbolLeftRight )
+    switch ( placeDirSymb )
     {
-      textCopy.append( dirSym );
-    }
-    else
-    {
-      textCopy.prepend( dirSym + QStringLiteral( "\n" ) ); // SymbolAbove or SymbolBelow
+      case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight:
+        textCopy.append( dirSym );
+        break;
+
+      case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove:
+      case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow:
+        textCopy.prepend( dirSym + QStringLiteral( "\n" ) );
+        break;
     }
   }
 
@@ -3225,15 +3227,15 @@ void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
       if ( !str.isEmpty() )
       {
         // "LeftRight"
-        QgsPalLayerSettings::DirectionSymbols placetype = QgsPalLayerSettings::SymbolLeftRight;
+        QgsLabelLineSettings::DirectionSymbolPlacement placetype = QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight;
 
         if ( str.compare( QLatin1String( "Above" ), Qt::CaseInsensitive ) == 0 )
         {
-          placetype = QgsPalLayerSettings::SymbolAbove;
+          placetype = QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove;
         }
         else if ( str.compare( QLatin1String( "Below" ), Qt::CaseInsensitive ) == 0 )
         {
-          placetype = QgsPalLayerSettings::SymbolBelow;
+          placetype = QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow;
         }
         dataDefinedValues.insert( QgsPalLayerSettings::DirSymbPlacement, QVariant( static_cast< int >( placetype ) ) );
       }
@@ -3837,7 +3839,7 @@ void QgsPalLabeling::dataDefinedTextFormatting( QgsPalLayerSettings &tmpLyr,
 
     if ( ddValues.contains( QgsPalLayerSettings::DirSymbPlacement ) )
     {
-      tmpLyr.placeDirectionSymbol = static_cast< QgsPalLayerSettings::DirectionSymbols >( ddValues.value( QgsPalLayerSettings::DirSymbPlacement ).toInt() );
+      tmpLyr.lineSettings().setDirectionSymbolPlacement( static_cast< QgsLabelLineSettings::DirectionSymbolPlacement >( ddValues.value( QgsPalLayerSettings::DirSymbPlacement ).toInt() ) );
     }
 
     if ( ddValues.contains( QgsPalLayerSettings::DirSymbReverse ) )

@@ -302,7 +302,10 @@ class CORE_EXPORT QgsPalLayerSettings
       ShowAll //!< Show upside down for all labels, including dynamic ones
     };
 
-    enum DirectionSymbols
+    //TODO QGIS 4.0 - Remove -- moved to QgsLabelEngineObstacleSettings
+
+    //! \deprecated use QgsLabelLineSettings::DirectionSymbolPlacement instead
+    enum Q_DECL_DEPRECATED DirectionSymbols
     {
       SymbolLeftRight, //!< Place direction symbols on left/right of label
       SymbolAbove, //!< Place direction symbols on above label
@@ -588,12 +591,6 @@ class CORE_EXPORT QgsPalLayerSettings
     MultiLineAlign multilineAlign = MultiFollowPlacement;
 
     /**
-     * Placement option for direction symbols. Controls whether to place symbols to the left/right, above or below label.
-     * \see addDirectionSymbol
-     */
-    DirectionSymbols placeDirectionSymbol = SymbolLeftRight;
-
-    /**
      * Set to TRUE to format numeric label text as numbers (e.g. inserting thousand separators
      * and fixed number of decimal places).
      * \see decimals
@@ -873,6 +870,7 @@ class CORE_EXPORT QgsPalLayerSettings
     SIP_PROPERTY( name = leftDirectionSymbol, get = _getLeftDirectionSymbol, set = _setLeftDirectionSymbol )
     SIP_PROPERTY( name = rightDirectionSymbol, get = _getRightDirectionSymbol, set = _setRightDirectionSymbol )
     SIP_PROPERTY( name = reverseDirectionSymbol, get = _getReverseDirectionSymbol, set = _setReverseDirectionSymbol )
+    SIP_PROPERTY( name = placeDirectionSymbol, get = _getPlaceDirectionSymbol, set = _setPlaceDirectionSymbol )
 #endif
 
     ///@cond PRIVATE
@@ -900,6 +898,10 @@ class CORE_EXPORT QgsPalLayerSettings
     void _setRightDirectionSymbol( const QString &symbol ) { mLineSettings.setRightDirectionSymbol( symbol ); }
     bool _getReverseDirectionSymbol() const { return mLineSettings.reverseDirectionSymbol(); }
     void _setReverseDirectionSymbol( bool reverse ) { mLineSettings.setReverseDirectionSymbol( reverse ); }
+    Q_NOWARN_DEPRECATED_PUSH
+    DirectionSymbols _getPlaceDirectionSymbol() const { return static_cast< DirectionSymbols>( mLineSettings.directionSymbolPlacement() ); }
+    void _setPlaceDirectionSymbol( DirectionSymbols placement ) { mLineSettings.setDirectionSymbolPlacement( static_cast< QgsLabelLineSettings::DirectionSymbolPlacement>( placement ) ); }
+    Q_NOWARN_DEPRECATED_POP
     ///@endcond
 
     //! Z-Index of label, where labels with a higher z-index are rendered on top of labels with a lower z-index
