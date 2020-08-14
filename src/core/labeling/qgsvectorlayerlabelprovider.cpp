@@ -82,7 +82,7 @@ void QgsVectorLayerLabelProvider::init()
     mFlags |= DrawLabels;
   if ( mSettings.displayAll )
     mFlags |= DrawAllLabels;
-  if ( mSettings.mergeLines && !mSettings.addDirectionSymbol )
+  if ( mSettings.lineSettings().mergeLines() && !mSettings.addDirectionSymbol )
     mFlags |= MergeConnectedLines;
   if ( mSettings.centroidInside )
     mFlags |= CentroidMustBeInside;

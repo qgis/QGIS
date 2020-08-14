@@ -41,6 +41,22 @@ above or below the lines.
 .. seealso:: :py:func:`placementFlags`
 %End
 
+    bool mergeLines() const;
+%Docstring
+Returns ``True`` if connected line features with identical label text should be merged
+prior to generating label positions.
+
+.. seealso:: :py:func:`setMergeLines`
+%End
+
+    void setMergeLines( bool merge );
+%Docstring
+Sets whether connected line features with identical label text should be merged
+prior to generating label positions.
+
+.. seealso:: :py:func:`mergeLines`
+%End
+
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 %Docstring
 Updates the thinning settings to respect any data defined properties

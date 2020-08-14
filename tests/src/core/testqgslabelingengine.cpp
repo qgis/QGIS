@@ -1040,7 +1040,7 @@ void TestQgsLabelingEngine::testTouchingParts()
   settings.isExpression = true;
   settings.placement = QgsPalLayerSettings::Curved;
   settings.labelPerPart = false;
-  settings.mergeLines = true;
+  settings.lineSettings().setMergeLines( true );
 
   // if treated individually, none of these parts are long enough for the label to fit -- but the label should be rendered if the mergeLines setting is true,
   // because the parts should be merged into a single linestring
@@ -1096,7 +1096,7 @@ void TestQgsLabelingEngine::testMergingLinesWithForks()
   settings.isExpression = true;
   settings.placement = QgsPalLayerSettings::Curved;
   settings.labelPerPart = false;
-  settings.mergeLines = true;
+  settings.lineSettings().setMergeLines( true );
 
   // if treated individually, none of these parts are long enough for the label to fit -- but the label should be rendered if the mergeLines setting is true
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );

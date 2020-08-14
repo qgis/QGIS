@@ -346,7 +346,6 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   upsidedownLabels = s.upsidedownLabels;
 
   labelPerPart = s.labelPerPart;
-  mergeLines = s.mergeLines && !s.addDirectionSymbol;
   zIndex = s.zIndex;
 
   mFormat = s.mFormat;
@@ -846,7 +845,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   upsidedownLabels = static_cast< UpsideDownLabels >( layer->customProperty( QStringLiteral( "labeling/upsidedownLabels" ), QVariant( Upright ) ).toUInt() );
 
   labelPerPart = layer->customProperty( QStringLiteral( "labeling/labelPerPart" ) ).toBool();
-  mergeLines = layer->customProperty( QStringLiteral( "labeling/mergeLines" ) ).toBool();
+  mLineSettings.setMergeLines( layer->customProperty( QStringLiteral( "labeling/mergeLines" ) ).toBool() );
   mThinningSettings.setMinimumFeatureSize( layer->customProperty( QStringLiteral( "labeling/minFeatureSize" ) ).toDouble() );
   mThinningSettings.setLimitNumberLabelsEnabled( layer->customProperty( QStringLiteral( "labeling/limitNumLabels" ), QVariant( false ) ).toBool() );
   mThinningSettings.setMaximumNumberLabels( layer->customProperty( QStringLiteral( "labeling/maxNumLabels" ), QVariant( 2000 ) ).toInt() );
@@ -1074,7 +1073,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   upsidedownLabels = static_cast< UpsideDownLabels >( renderingElem.attribute( QStringLiteral( "upsidedownLabels" ), QString::number( Upright ) ).toUInt() );
 
   labelPerPart = renderingElem.attribute( QStringLiteral( "labelPerPart" ) ).toInt();
-  mergeLines = renderingElem.attribute( QStringLiteral( "mergeLines" ) ).toInt();
+  mLineSettings.setMergeLines( renderingElem.attribute( QStringLiteral( "mergeLines" ) ).toInt() );
   mThinningSettings.setMinimumFeatureSize( renderingElem.attribute( QStringLiteral( "minFeatureSize" ) ).toDouble() );
   mThinningSettings.setLimitNumberLabelsEnabled( renderingElem.attribute( QStringLiteral( "limitNumLabels" ), QStringLiteral( "0" ) ).toInt() );
   mThinningSettings.setMaximumNumberLabels( renderingElem.attribute( QStringLiteral( "maxNumLabels" ), QStringLiteral( "2000" ) ).toInt() );
@@ -1222,7 +1221,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   renderingElem.setAttribute( QStringLiteral( "upsidedownLabels" ), static_cast< unsigned int >( upsidedownLabels ) );
 
   renderingElem.setAttribute( QStringLiteral( "labelPerPart" ), labelPerPart );
-  renderingElem.setAttribute( QStringLiteral( "mergeLines" ), mergeLines );
+  renderingElem.setAttribute( QStringLiteral( "mergeLines" ), mLineSettings.mergeLines() );
   renderingElem.setAttribute( QStringLiteral( "minFeatureSize" ), mThinningSettings.minimumFeatureSize() );
   renderingElem.setAttribute( QStringLiteral( "limitNumLabels" ), mThinningSettings.limitNumberOfLabelsEnabled() );
   renderingElem.setAttribute( QStringLiteral( "maxNumLabels" ), mThinningSettings.maximumNumberLabels() );
@@ -2043,6 +2042,9 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
     }
   }
 
+  QgsLabelLineSettings lineSettings = mLineSettings;
+  lineSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
+
   // if using fitInPolygonOnly option, generate the permissible zone (must happen before geometry is modified - e.g.,
   // as a result of using perimeter based labeling and the geometry is converted to a boundary)
   // note that we also force this if we are permitting labels to be placed outside of polygons too!
@@ -2050,9 +2052,9 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   if ( geom.type() == QgsWkbTypes::PolygonGeometry && ( fitInPolygonOnly || polygonPlacement & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon ) )
   {
     permissibleZone = geom;
-    if ( QgsPalLabeling::geometryRequiresPreparation( permissibleZone, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) )
+    if ( QgsPalLabeling::geometryRequiresPreparation( permissibleZone, context, ct, doClip ? extentGeom : QgsGeometry(), lineSettings.mergeLines() ) )
     {
-      permissibleZone = QgsPalLabeling::prepareGeometry( permissibleZone, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines );
+      permissibleZone = QgsPalLabeling::prepareGeometry( permissibleZone, context, ct, doClip ? extentGeom : QgsGeometry(), lineSettings.mergeLines() );
     }
   }
 
@@ -2065,9 +2067,9 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   }
 
   geos::unique_ptr geos_geom_clone;
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : QgsGeometry(), lineSettings.mergeLines() ) )
   {
-    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines );
+    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : QgsGeometry(), lineSettings.mergeLines() );
 
     if ( geom.isEmpty() )
       return;
@@ -2076,9 +2078,9 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
 
   if ( isObstacle || ( geom.type() == QgsWkbTypes::PointGeometry && offsetType == FromSymbolBounds ) )
   {
-    if ( !obstacleGeometry.isNull() && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) )
+    if ( !obstacleGeometry.isNull() && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), lineSettings.mergeLines() ) )
     {
-      obstacleGeometry = QgsGeometry( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) );
+      obstacleGeometry = QgsGeometry( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), lineSettings.mergeLines() ) );
     }
   }
 
@@ -2561,8 +2563,6 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
     ( *labelFeature )->setHasFixedQuadrant( true );
   }
 
-  QgsLabelLineSettings lineSettings = mLineSettings;
-  lineSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
   ( *labelFeature )->setArrangementFlags( lineSettings.placementFlags() );
 
   ( *labelFeature )->setPolygonPlacementFlags( polygonPlacement );
@@ -2652,9 +2652,9 @@ void QgsPalLayerSettings::registerObstacleFeature( const QgsFeature &f, QgsRende
   geos::unique_ptr geos_geom_clone;
   std::unique_ptr<QgsGeometry> scopedPreparedGeom;
 
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, extentGeom, mergeLines ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, extentGeom, mLineSettings.mergeLines() ) )
   {
-    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, extentGeom, mergeLines );
+    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, extentGeom, mLineSettings.mergeLines() );
   }
   geos_geom_clone = QgsGeos::asGeos( geom );
 

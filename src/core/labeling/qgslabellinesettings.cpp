@@ -32,3 +32,4 @@ void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollect
     }
   }
 }
+
