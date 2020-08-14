@@ -214,10 +214,10 @@ Now we create a build directory and run ccmake:
 When you run ccmake (note the .. is required!), a menu will appear where
 you can configure various aspects of the build:
 
-* If you want QGIS to have debugging capabilities then set CMAKE_BUILD_TYPE to Debug.
+* If you want QGIS to have debugging capabilities then set `CMAKE_BUILD_TYPE` to `Debug`.
 * If you do not have root access or do not want to overwrite existing QGIS
-  installs (by your package manager for example), set the CMAKE_INSTALL_PREFIX
-  to somewhere you have write access to (I usually use ${HOME}/apps).
+  installs (by your package manager for example), set the `CMAKE_INSTALL_PREFIX`
+  to somewhere you have write access to (For example `${HOME}/apps`).
 
 Now press 'c' to configure, 'e' to dismiss any error messages that may appear.
 and 'g' to generate the make files. Note that sometimes 'c' needs to
