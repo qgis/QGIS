@@ -82,7 +82,7 @@ void QgsVectorLayerLabelProvider::init()
     mFlags |= DrawLabels;
   if ( mSettings.displayAll )
     mFlags |= DrawAllLabels;
-  if ( mSettings.lineSettings().mergeLines() && !mSettings.addDirectionSymbol )
+  if ( mSettings.lineSettings().mergeLines() && !mSettings.lineSettings().addDirectionSymbol() )
     mFlags |= MergeConnectedLines;
   if ( mSettings.centroidInside )
     mFlags |= CentroidMustBeInside;
@@ -566,28 +566,28 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
     //add the direction symbol if needed
     if ( !txt.isEmpty() && tmpLyr.placement == QgsPalLayerSettings::Line &&
-         tmpLyr.addDirectionSymbol )
+         tmpLyr.lineSettings().addDirectionSymbol() )
     {
       bool prependSymb = false;
-      QString symb = tmpLyr.rightDirectionSymbol;
+      QString symb = tmpLyr.lineSettings().rightDirectionSymbol();
 
       if ( label->getReversed() )
       {
         prependSymb = true;
-        symb = tmpLyr.leftDirectionSymbol;
+        symb = tmpLyr.lineSettings().leftDirectionSymbol();
       }
 
-      if ( tmpLyr.reverseDirectionSymbol )
+      if ( tmpLyr.lineSettings().reverseDirectionSymbol() )
       {
-        if ( symb == tmpLyr.rightDirectionSymbol )
+        if ( symb == tmpLyr.lineSettings().rightDirectionSymbol() )
         {
           prependSymb = true;
-          symb = tmpLyr.leftDirectionSymbol;
+          symb = tmpLyr.lineSettings().leftDirectionSymbol();
         }
         else
         {
           prependSymb = false;
-          symb = tmpLyr.rightDirectionSymbol;
+          symb = tmpLyr.lineSettings().rightDirectionSymbol();
         }
       }
 

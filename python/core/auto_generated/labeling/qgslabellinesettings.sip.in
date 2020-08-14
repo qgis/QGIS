@@ -63,6 +63,98 @@ Updates the thinning settings to respect any data defined properties
 set within the specified ``properties`` collection.
 %End
 
+    bool addDirectionSymbol() const;
+%Docstring
+Returns ``True`` if '<' or '>' (or custom strings set via leftDirectionSymbol and rightDirectionSymbol)
+will be automatically added to the label text, pointing in the
+direction of the line or polygon ring.
+
+.. seealso:: :py:func:`setAddDirectionSymbol`
+
+.. seealso:: :py:func:`leftDirectionSymbol`
+
+.. seealso:: :py:func:`rightDirectionSymbol`
+
+.. seealso:: :py:func:`placeDirectionSymbol`
+
+.. seealso:: :py:func:`reverseDirectionSymbol`
+%End
+
+    void setAddDirectionSymbol( bool enabled );
+%Docstring
+Sets whether '<' or '>' (or custom strings set via leftDirectionSymbol and rightDirectionSymbol)
+will be automatically added to the label text, pointing in the
+direction of the line or polygon ring.
+
+.. seealso:: :py:func:`addDirectionSymbol`
+
+.. seealso:: :py:func:`setLeftDirectionSymbol`
+
+.. seealso:: :py:func:`setRightDirectionSymbol`
+
+.. seealso:: :py:func:`setPlaceDirectionSymbol`
+
+.. seealso:: :py:func:`setReverseDirectionSymbol`
+%End
+
+    QString leftDirectionSymbol() const;
+%Docstring
+Returns the string to use for left direction arrows.
+
+.. seealso:: :py:func:`setLeftDirectionSymbol`
+
+.. seealso:: :py:func:`addDirectionSymbol`
+
+.. seealso:: :py:func:`rightDirectionSymbol`
+%End
+
+    void setLeftDirectionSymbol( const QString &symbol );
+%Docstring
+Sets the string to use for left direction arrows.
+
+.. seealso:: :py:func:`leftDirectionSymbol`
+
+.. seealso:: :py:func:`addDirectionSymbol`
+
+.. seealso:: :py:func:`rightDirectionSymbol`
+%End
+
+    QString rightDirectionSymbol() const;
+%Docstring
+Returns the string to use for right direction arrows.
+
+.. seealso:: :py:func:`setRightDirectionSymbol`
+
+.. seealso:: :py:func:`addDirectionSymbol`
+
+.. seealso:: :py:func:`leftDirectionSymbol`
+%End
+
+    void setRightDirectionSymbol( const QString &symbol );
+%Docstring
+Sets the string to use for right direction arrows.
+
+.. seealso:: :py:func:`setLeftDirectionSymbol`
+
+.. seealso:: :py:func:`addDirectionSymbol`
+
+.. seealso:: :py:func:`rightDirectionSymbol`
+%End
+
+    bool reverseDirectionSymbol() const;
+%Docstring
+Returns ``True`` if direction symbols should be reversed.
+
+.. seealso:: :py:func:`setReverseDirectionSymbol`
+%End
+
+    void setReverseDirectionSymbol( bool reversed );
+%Docstring
+Sets whether the direction symbols should be ``reversed``.
+
+.. seealso:: :py:func:`reverseDirectionSymbol`
+%End
+
 };
 
 /************************************************************************

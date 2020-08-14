@@ -298,10 +298,6 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   autoWrapLength = s.autoWrapLength;
   useMaxLineLengthForAutoWrap = s.useMaxLineLengthForAutoWrap;
   multilineAlign = s.multilineAlign;
-  addDirectionSymbol = s.addDirectionSymbol;
-  leftDirectionSymbol = s.leftDirectionSymbol;
-  rightDirectionSymbol = s.rightDirectionSymbol;
-  reverseDirectionSymbol = s.reverseDirectionSymbol;
   placeDirectionSymbol = s.placeDirectionSymbol;
   formatNumbers = s.formatNumbers;
   decimals = s.decimals;
@@ -715,10 +711,10 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   useMaxLineLengthForAutoWrap = layer->customProperty( QStringLiteral( "labeling/useMaxLineLengthForAutoWrap" ), QStringLiteral( "1" ) ).toBool();
 
   multilineAlign = static_cast< MultiLineAlign >( layer->customProperty( QStringLiteral( "labeling/multilineAlign" ), QVariant( MultiFollowPlacement ) ).toUInt() );
-  addDirectionSymbol = layer->customProperty( QStringLiteral( "labeling/addDirectionSymbol" ) ).toBool();
-  leftDirectionSymbol = layer->customProperty( QStringLiteral( "labeling/leftDirectionSymbol" ), QVariant( "<" ) ).toString();
-  rightDirectionSymbol = layer->customProperty( QStringLiteral( "labeling/rightDirectionSymbol" ), QVariant( ">" ) ).toString();
-  reverseDirectionSymbol = layer->customProperty( QStringLiteral( "labeling/reverseDirectionSymbol" ) ).toBool();
+  mLineSettings.setAddDirectionSymbol( layer->customProperty( QStringLiteral( "labeling/addDirectionSymbol" ) ).toBool() );
+  mLineSettings.setLeftDirectionSymbol( layer->customProperty( QStringLiteral( "labeling/leftDirectionSymbol" ), QVariant( "<" ) ).toString() );
+  mLineSettings.setRightDirectionSymbol( layer->customProperty( QStringLiteral( "labeling/rightDirectionSymbol" ), QVariant( ">" ) ).toString() );
+  mLineSettings.setReverseDirectionSymbol( layer->customProperty( QStringLiteral( "labeling/reverseDirectionSymbol" ) ).toBool() );
   placeDirectionSymbol = static_cast< DirectionSymbols >( layer->customProperty( QStringLiteral( "labeling/placeDirectionSymbol" ), QVariant( SymbolLeftRight ) ).toUInt() );
   formatNumbers = layer->customProperty( QStringLiteral( "labeling/formatNumbers" ) ).toBool();
   decimals = layer->customProperty( QStringLiteral( "labeling/decimals" ) ).toInt();
@@ -926,10 +922,10 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   autoWrapLength = textFormatElem.attribute( QStringLiteral( "autoWrapLength" ), QStringLiteral( "0" ) ).toInt();
   useMaxLineLengthForAutoWrap = textFormatElem.attribute( QStringLiteral( "useMaxLineLengthForAutoWrap" ), QStringLiteral( "1" ) ).toInt();
   multilineAlign = static_cast< MultiLineAlign >( textFormatElem.attribute( QStringLiteral( "multilineAlign" ), QString::number( MultiFollowPlacement ) ).toUInt() );
-  addDirectionSymbol = textFormatElem.attribute( QStringLiteral( "addDirectionSymbol" ) ).toInt();
-  leftDirectionSymbol = textFormatElem.attribute( QStringLiteral( "leftDirectionSymbol" ), QStringLiteral( "<" ) );
-  rightDirectionSymbol = textFormatElem.attribute( QStringLiteral( "rightDirectionSymbol" ), QStringLiteral( ">" ) );
-  reverseDirectionSymbol = textFormatElem.attribute( QStringLiteral( "reverseDirectionSymbol" ) ).toInt();
+  mLineSettings.setAddDirectionSymbol( textFormatElem.attribute( QStringLiteral( "addDirectionSymbol" ) ).toInt() );
+  mLineSettings.setLeftDirectionSymbol( textFormatElem.attribute( QStringLiteral( "leftDirectionSymbol" ), QStringLiteral( "<" ) ) );
+  mLineSettings.setRightDirectionSymbol( textFormatElem.attribute( QStringLiteral( "rightDirectionSymbol" ), QStringLiteral( ">" ) ) );
+  mLineSettings.setReverseDirectionSymbol( textFormatElem.attribute( QStringLiteral( "reverseDirectionSymbol" ) ).toInt() );
   placeDirectionSymbol = static_cast< DirectionSymbols >( textFormatElem.attribute( QStringLiteral( "placeDirectionSymbol" ), QString::number( SymbolLeftRight ) ).toUInt() );
   formatNumbers = textFormatElem.attribute( QStringLiteral( "formatNumbers" ) ).toInt();
   decimals = textFormatElem.attribute( QStringLiteral( "decimals" ) ).toInt();
@@ -1162,10 +1158,10 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   textFormatElem.setAttribute( QStringLiteral( "autoWrapLength" ), autoWrapLength );
   textFormatElem.setAttribute( QStringLiteral( "useMaxLineLengthForAutoWrap" ), useMaxLineLengthForAutoWrap );
   textFormatElem.setAttribute( QStringLiteral( "multilineAlign" ), static_cast< unsigned int >( multilineAlign ) );
-  textFormatElem.setAttribute( QStringLiteral( "addDirectionSymbol" ), addDirectionSymbol );
-  textFormatElem.setAttribute( QStringLiteral( "leftDirectionSymbol" ), leftDirectionSymbol );
-  textFormatElem.setAttribute( QStringLiteral( "rightDirectionSymbol" ), rightDirectionSymbol );
-  textFormatElem.setAttribute( QStringLiteral( "reverseDirectionSymbol" ), reverseDirectionSymbol );
+  textFormatElem.setAttribute( QStringLiteral( "addDirectionSymbol" ), mLineSettings.addDirectionSymbol() );
+  textFormatElem.setAttribute( QStringLiteral( "leftDirectionSymbol" ), mLineSettings.leftDirectionSymbol() );
+  textFormatElem.setAttribute( QStringLiteral( "rightDirectionSymbol" ), mLineSettings.rightDirectionSymbol() );
+  textFormatElem.setAttribute( QStringLiteral( "reverseDirectionSymbol" ), mLineSettings.reverseDirectionSymbol() );
   textFormatElem.setAttribute( QStringLiteral( "placeDirectionSymbol" ), static_cast< unsigned int >( placeDirectionSymbol ) );
   textFormatElem.setAttribute( QStringLiteral( "formatNumbers" ), formatNumbers );
   textFormatElem.setAttribute( QStringLiteral( "decimals" ), decimals );
@@ -1403,9 +1399,9 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   double multilineH = mFormat.lineHeight();
   QgsTextFormat::TextOrientation orientation = mFormat.orientation();
 
-  bool addDirSymb = addDirectionSymbol;
-  QString leftDirSymb = leftDirectionSymbol;
-  QString rightDirSymb = rightDirectionSymbol;
+  bool addDirSymb = mLineSettings.addDirectionSymbol();
+  QString leftDirSymb = mLineSettings.leftDirectionSymbol();
+  QString rightDirSymb = mLineSettings.rightDirectionSymbol();
   QgsPalLayerSettings::DirectionSymbols placeDirSymb = placeDirectionSymbol;
 
   if ( f == mCurFeat ) // called internally, use any stored data defined values
@@ -3205,8 +3201,8 @@ void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
   }
 
   // data defined direction symbol?
-  bool drawDirSymb = addDirectionSymbol;
-  if ( dataDefinedValEval( DDBool, QgsPalLayerSettings::DirSymbDraw, exprVal, context.expressionContext(), addDirectionSymbol ) )
+  bool drawDirSymb = mLineSettings.addDirectionSymbol();
+  if ( dataDefinedValEval( DDBool, QgsPalLayerSettings::DirSymbDraw, exprVal, context.expressionContext(), drawDirSymb ) )
   {
     drawDirSymb = exprVal.toBool();
   }
@@ -3214,10 +3210,10 @@ void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
   if ( drawDirSymb )
   {
     // data defined direction left symbol?
-    dataDefinedValEval( DDString, QgsPalLayerSettings::DirSymbLeft, exprVal, context.expressionContext(), leftDirectionSymbol );
+    dataDefinedValEval( DDString, QgsPalLayerSettings::DirSymbLeft, exprVal, context.expressionContext(), mLineSettings.leftDirectionSymbol() );
 
     // data defined direction right symbol?
-    dataDefinedValEval( DDString, QgsPalLayerSettings::DirSymbRight, exprVal, context.expressionContext(), rightDirectionSymbol );
+    dataDefinedValEval( DDString, QgsPalLayerSettings::DirSymbRight, exprVal, context.expressionContext(), mLineSettings.rightDirectionSymbol() );
 
     // data defined direction symbol placement?
     exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::DirSymbPlacement, context.expressionContext() );
@@ -3244,7 +3240,7 @@ void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
     }
 
     // data defined direction symbol reversed?
-    dataDefinedValEval( DDBool, QgsPalLayerSettings::DirSymbReverse, exprVal, context.expressionContext(), reverseDirectionSymbol );
+    dataDefinedValEval( DDBool, QgsPalLayerSettings::DirSymbReverse, exprVal, context.expressionContext(), mLineSettings.reverseDirectionSymbol() );
   }
 
   // formatting for numbers is inline with generation of base label text and not passed to label painting
@@ -3824,19 +3820,19 @@ void QgsPalLabeling::dataDefinedTextFormatting( QgsPalLayerSettings &tmpLyr,
 
   if ( ddValues.contains( QgsPalLayerSettings::DirSymbDraw ) )
   {
-    tmpLyr.addDirectionSymbol = ddValues.value( QgsPalLayerSettings::DirSymbDraw ).toBool();
+    tmpLyr.lineSettings().setAddDirectionSymbol( ddValues.value( QgsPalLayerSettings::DirSymbDraw ).toBool() );
   }
 
-  if ( tmpLyr.addDirectionSymbol )
+  if ( tmpLyr.lineSettings().addDirectionSymbol() )
   {
 
     if ( ddValues.contains( QgsPalLayerSettings::DirSymbLeft ) )
     {
-      tmpLyr.leftDirectionSymbol = ddValues.value( QgsPalLayerSettings::DirSymbLeft ).toString();
+      tmpLyr.lineSettings().setLeftDirectionSymbol( ddValues.value( QgsPalLayerSettings::DirSymbLeft ).toString() );
     }
     if ( ddValues.contains( QgsPalLayerSettings::DirSymbRight ) )
     {
-      tmpLyr.rightDirectionSymbol = ddValues.value( QgsPalLayerSettings::DirSymbRight ).toString();
+      tmpLyr.lineSettings().setRightDirectionSymbol( ddValues.value( QgsPalLayerSettings::DirSymbRight ).toString() );
     }
 
     if ( ddValues.contains( QgsPalLayerSettings::DirSymbPlacement ) )
@@ -3846,7 +3842,7 @@ void QgsPalLabeling::dataDefinedTextFormatting( QgsPalLayerSettings &tmpLyr,
 
     if ( ddValues.contains( QgsPalLayerSettings::DirSymbReverse ) )
     {
-      tmpLyr.reverseDirectionSymbol = ddValues.value( QgsPalLayerSettings::DirSymbReverse ).toBool();
+      tmpLyr.lineSettings().setReverseDirectionSymbol( ddValues.value( QgsPalLayerSettings::DirSymbReverse ).toBool() );
     }
 
   }

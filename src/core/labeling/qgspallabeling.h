@@ -588,39 +588,10 @@ class CORE_EXPORT QgsPalLayerSettings
     MultiLineAlign multilineAlign = MultiFollowPlacement;
 
     /**
-     * If TRUE, '<' or '>' (or custom strings set via leftDirectionSymbol and rightDirectionSymbol)
-     * will be automatically added to the label text, pointing in the
-     * direction of the line or polygon ring.
-     * This setting only affects line or perimeter based labels.
-     * \see leftDirectionSymbol
-     * \see rightDirectionSymbol
-     * \see placeDirectionSymbol
-     * \see reverseDirectionSymbol
-     */
-    bool addDirectionSymbol = false;
-
-    /**
-     * String to use for left direction arrows.
-     * \see addDirectionSymbol
-     * \see rightDirectionSymbol
-     */
-    QString leftDirectionSymbol = QString( '<' );
-
-    /**
-     * String to use for right direction arrows.
-     * \see addDirectionSymbol
-     * \see leftDirectionSymbol
-     */
-    QString rightDirectionSymbol = QString( '>' );
-
-    /**
      * Placement option for direction symbols. Controls whether to place symbols to the left/right, above or below label.
      * \see addDirectionSymbol
      */
     DirectionSymbols placeDirectionSymbol = SymbolLeftRight;
-
-    //! True if direction symbols should be reversed
-    bool reverseDirectionSymbol = false;
 
     /**
      * Set to TRUE to format numeric label text as numbers (e.g. inserting thousand separators
@@ -897,6 +868,11 @@ class CORE_EXPORT QgsPalLayerSettings
     SIP_PROPERTY( name = obstacleType, get = _getObstacleType, set = _setObstacleType )
     SIP_PROPERTY( name = placementFlags, get = _getLinePlacementFlags, set = _setLinePlacementFlags )
     SIP_PROPERTY( name = mergeLines, get = _getMergeLines, set = _setMergeLines )
+
+    SIP_PROPERTY( name = addDirectionSymbol, get = _getAddDirectionSymbol, set = _setAddDirectionSymbol )
+    SIP_PROPERTY( name = leftDirectionSymbol, get = _getLeftDirectionSymbol, set = _setLeftDirectionSymbol )
+    SIP_PROPERTY( name = rightDirectionSymbol, get = _getRightDirectionSymbol, set = _setRightDirectionSymbol )
+    SIP_PROPERTY( name = reverseDirectionSymbol, get = _getReverseDirectionSymbol, set = _setReverseDirectionSymbol )
 #endif
 
     ///@cond PRIVATE
@@ -916,6 +892,14 @@ class CORE_EXPORT QgsPalLayerSettings
     void _setLinePlacementFlags( unsigned int flags ) { mLineSettings.setPlacementFlags( static_cast< QgsLabeling::LinePlacementFlags >( flags ) ); }
     bool _getMergeLines() const { return mLineSettings.mergeLines(); }
     void _setMergeLines( bool merge ) { mLineSettings.setMergeLines( merge ); }
+    bool _getAddDirectionSymbol() const { return mLineSettings.addDirectionSymbol(); }
+    void _setAddDirectionSymbol( bool add ) { mLineSettings.setAddDirectionSymbol( add ); }
+    QString _getLeftDirectionSymbol() const { return mLineSettings.leftDirectionSymbol(); }
+    void _setLeftDirectionSymbol( const QString &symbol ) { mLineSettings.setLeftDirectionSymbol( symbol ); }
+    QString _getRightDirectionSymbol() const { return mLineSettings.rightDirectionSymbol(); }
+    void _setRightDirectionSymbol( const QString &symbol ) { mLineSettings.setRightDirectionSymbol( symbol ); }
+    bool _getReverseDirectionSymbol() const { return mLineSettings.reverseDirectionSymbol(); }
+    void _setReverseDirectionSymbol( bool reverse ) { mLineSettings.setReverseDirectionSymbol( reverse ); }
     ///@endcond
 
     //! Z-Index of label, where labels with a higher z-index are rendered on top of labels with a lower z-index

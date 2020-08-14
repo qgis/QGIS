@@ -384,15 +384,7 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
 
     MultiLineAlign multilineAlign;
 
-    bool addDirectionSymbol;
-
-    QString leftDirectionSymbol;
-
-    QString rightDirectionSymbol;
-
     DirectionSymbols placeDirectionSymbol;
-
-    bool reverseDirectionSymbol;
 
     bool formatNumbers;
 
@@ -497,6 +489,11 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 %Property( name = placementFlags, get = _getLinePlacementFlags, set = _setLinePlacementFlags )
 %Property( name = mergeLines, get = _getMergeLines, set = _setMergeLines )
 
+%Property( name = addDirectionSymbol, get = _getAddDirectionSymbol, set = _setAddDirectionSymbol )
+%Property( name = leftDirectionSymbol, get = _getLeftDirectionSymbol, set = _setLeftDirectionSymbol )
+%Property( name = rightDirectionSymbol, get = _getRightDirectionSymbol, set = _setRightDirectionSymbol )
+%Property( name = reverseDirectionSymbol, get = _getReverseDirectionSymbol, set = _setReverseDirectionSymbol )
+
     bool _limitNumLabels() const;
     void _setLimitNumLabels( bool limit );
     int _maxNumLabels() const;
@@ -513,6 +510,14 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
     void _setLinePlacementFlags( unsigned int flags );
     bool _getMergeLines() const;
     void _setMergeLines( bool merge );
+    bool _getAddDirectionSymbol() const;
+    void _setAddDirectionSymbol( bool add );
+    QString _getLeftDirectionSymbol() const;
+    void _setLeftDirectionSymbol( const QString &symbol );
+    QString _getRightDirectionSymbol() const;
+    void _setRightDirectionSymbol( const QString &symbol );
+    bool _getReverseDirectionSymbol() const;
+    void _setReverseDirectionSymbol( bool reverse );
 
     double zIndex;
 

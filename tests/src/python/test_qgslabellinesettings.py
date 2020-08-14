@@ -43,6 +43,19 @@ class TestQgsLabelLineSettings(unittest.TestCase):
         settings.setMergeLines(False)
         self.assertFalse(settings.mergeLines())
 
+        settings.setAddDirectionSymbol(True)
+        self.assertTrue(settings.addDirectionSymbol())
+        settings.setAddDirectionSymbol(False)
+        self.assertFalse(settings.addDirectionSymbol())
+        settings.setLeftDirectionSymbol('left')
+        self.assertEqual(settings.leftDirectionSymbol(), 'left')
+        settings.setRightDirectionSymbol('right')
+        self.assertEqual(settings.rightDirectionSymbol(), 'right')
+        settings.setReverseDirectionSymbol(True)
+        self.assertTrue(settings.reverseDirectionSymbol())
+        settings.setReverseDirectionSymbol(False)
+        self.assertFalse(settings.reverseDirectionSymbol())
+
         # check that compatibility code works
         pal_settings = QgsPalLayerSettings()
         pal_settings.placementFlags = QgsPalLayerSettings.OnLine | QgsPalLayerSettings.MapOrientation
@@ -55,6 +68,27 @@ class TestQgsLabelLineSettings(unittest.TestCase):
         pal_settings.mergeLines = False
         self.assertFalse(pal_settings.mergeLines)
         self.assertFalse(pal_settings.lineSettings().mergeLines())
+
+        pal_settings.addDirectionSymbol = True
+        self.assertTrue(pal_settings.addDirectionSymbol)
+        self.assertTrue(pal_settings.lineSettings().addDirectionSymbol())
+        pal_settings.addDirectionSymbol = False
+        self.assertFalse(pal_settings.addDirectionSymbol)
+        self.assertFalse(pal_settings.lineSettings().addDirectionSymbol())
+
+        pal_settings.leftDirectionSymbol = 'l'
+        self.assertEqual(pal_settings.leftDirectionSymbol, 'l')
+        self.assertEqual(pal_settings.lineSettings().leftDirectionSymbol(), 'l')
+        pal_settings.rightDirectionSymbol = 'r'
+        self.assertEqual(pal_settings.rightDirectionSymbol, 'r')
+        self.assertEqual(pal_settings.lineSettings().rightDirectionSymbol(), 'r')
+
+        pal_settings.reverseDirectionSymbol = True
+        self.assertTrue(pal_settings.reverseDirectionSymbol)
+        self.assertTrue(pal_settings.lineSettings().reverseDirectionSymbol())
+        pal_settings.reverseDirectionSymbol = False
+        self.assertFalse(pal_settings.reverseDirectionSymbol)
+        self.assertFalse(pal_settings.lineSettings().reverseDirectionSymbol())
 
     def testUpdateDataDefinedProps(self):
         settings = QgsLabelLineSettings()
