@@ -362,10 +362,10 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mLimitLabelSpinBox->setValue( mSettings.thinningSettings().maximumNumberLabels() );
 
   // direction symbol(s)
-  mDirectSymbChkBx->setChecked( mSettings.addDirectionSymbol );
-  mDirectSymbLeftLineEdit->setText( mSettings.leftDirectionSymbol );
-  mDirectSymbRightLineEdit->setText( mSettings.rightDirectionSymbol );
-  mDirectSymbRevChkBx->setChecked( mSettings.reverseDirectionSymbol );
+  mDirectSymbChkBx->setChecked( mSettings.lineSettings().addDirectionSymbol() );
+  mDirectSymbLeftLineEdit->setText( mSettings.lineSettings().leftDirectionSymbol() );
+  mDirectSymbRightLineEdit->setText( mSettings.lineSettings().rightDirectionSymbol() );
+  mDirectSymbRevChkBx->setChecked( mSettings.lineSettings().reverseDirectionSymbol() );
 
   mDirectSymbBtnGrp->button( static_cast<int>( mSettings.placeDirectionSymbol ) )->setChecked( true );
   mUpsidedownBtnGrp->button( static_cast<int>( mSettings.upsidedownLabels ) )->setChecked( true );
@@ -584,10 +584,10 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.plusSign = mFormatNumPlusSignChkBx->isChecked();
 
   // direction symbol(s)
-  lyr.addDirectionSymbol = mDirectSymbChkBx->isChecked();
-  lyr.leftDirectionSymbol = mDirectSymbLeftLineEdit->text();
-  lyr.rightDirectionSymbol = mDirectSymbRightLineEdit->text();
-  lyr.reverseDirectionSymbol = mDirectSymbRevChkBx->isChecked();
+  lyr.lineSettings().setAddDirectionSymbol( mDirectSymbChkBx->isChecked() );
+  lyr.lineSettings().setLeftDirectionSymbol( mDirectSymbLeftLineEdit->text() );
+  lyr.lineSettings().setRightDirectionSymbol( mDirectSymbRightLineEdit->text() );
+  lyr.lineSettings().setReverseDirectionSymbol( mDirectSymbRevChkBx->isChecked() );
   if ( mDirectSymbBtnGrp )
   {
     lyr.placeDirectionSymbol = ( QgsPalLayerSettings::DirectionSymbols )mDirectSymbBtnGrp->checkedId();

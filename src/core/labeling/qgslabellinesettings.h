@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslabeling.h"
+#include <QString>
 
 class QgsPropertyCollection;
 class QgsExpressionContext;
@@ -75,9 +76,89 @@ class CORE_EXPORT QgsLabelLineSettings
      */
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 
+    /**
+     * Returns TRUE if '<' or '>' (or custom strings set via leftDirectionSymbol and rightDirectionSymbol)
+     * will be automatically added to the label text, pointing in the
+     * direction of the line or polygon ring.
+     *
+     * \see setAddDirectionSymbol()
+     * \see leftDirectionSymbol()
+     * \see rightDirectionSymbol()
+     * \see placeDirectionSymbol()
+     * \see reverseDirectionSymbol()
+     */
+    bool addDirectionSymbol() const { return mAddDirectionSymbol; }
+
+    /**
+     * Sets whether '<' or '>' (or custom strings set via leftDirectionSymbol and rightDirectionSymbol)
+     * will be automatically added to the label text, pointing in the
+     * direction of the line or polygon ring.
+     *
+     * \see addDirectionSymbol()
+     * \see setLeftDirectionSymbol()
+     * \see setRightDirectionSymbol()
+     * \see setPlaceDirectionSymbol()
+     * \see setReverseDirectionSymbol()
+     */
+    void setAddDirectionSymbol( bool enabled ) { mAddDirectionSymbol = enabled; }
+
+    /**
+     * Returns the string to use for left direction arrows.
+     *
+     * \see setLeftDirectionSymbol()
+     * \see addDirectionSymbol()
+     * \see rightDirectionSymbol()
+     */
+    QString leftDirectionSymbol() const { return mLeftDirectionSymbol; }
+
+    /**
+     * Sets the string to use for left direction arrows.
+     *
+     * \see leftDirectionSymbol()
+     * \see addDirectionSymbol()
+     * \see rightDirectionSymbol()
+     */
+    void setLeftDirectionSymbol( const QString &symbol ) { mLeftDirectionSymbol = symbol; }
+
+    /**
+     * Returns the string to use for right direction arrows.
+     *
+     * \see setRightDirectionSymbol()
+     * \see addDirectionSymbol()
+     * \see leftDirectionSymbol()
+     */
+    QString rightDirectionSymbol() const { return mRightDirectionSymbol; }
+
+    /**
+     * Sets the string to use for right direction arrows.
+     *
+     * \see setLeftDirectionSymbol()
+     * \see addDirectionSymbol()
+     * \see rightDirectionSymbol()
+     */
+    void setRightDirectionSymbol( const QString &symbol ) { mRightDirectionSymbol = symbol; }
+
+    /**
+     * Returns TRUE if direction symbols should be reversed.
+     *
+     * \see setReverseDirectionSymbol()
+     */
+    bool reverseDirectionSymbol() const { return mReverseDirectionSymbol; }
+
+    /**
+     * Sets whether the direction symbols should be \a reversed.
+     *
+     * \see reverseDirectionSymbol()
+     */
+    void setReverseDirectionSymbol( bool reversed ) { mReverseDirectionSymbol = reversed; }
+
   private:
     QgsLabeling::LinePlacementFlags mPlacementFlags = QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation;
     bool mMergeLines = false;
+    bool mAddDirectionSymbol = false;
+    QString mLeftDirectionSymbol = QString( '<' );
+    QString mRightDirectionSymbol = QString( '>' );
+    bool mReverseDirectionSymbol = false;
 };
 
 #endif // QGSLABELLINESETTINGS_H
