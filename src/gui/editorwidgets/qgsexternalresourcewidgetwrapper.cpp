@@ -77,7 +77,7 @@ bool QgsExternalResourceWidgetWrapper::valid() const
   return mLineEdit || mLabel || mQgsWidget;
 }
 
-void QgsExternalResourceWidgetWrapper::setFeature( const QgsFeature &feature )
+void QgsExternalResourceWidgetWrapper::updateProperties( const QgsFeature &feature )
 {
   if ( mQgsWidget && mPropertyCollection.hasActiveProperties() )
   {
@@ -112,15 +112,25 @@ void QgsExternalResourceWidgetWrapper::setFeature( const QgsFeature &feature )
           dvc = QgsExternalResourceWidget::NoContent;
         }
         mQgsWidget->setDocumentViewerContent( dvc );
+        mQgsWidget->reloadDocument();
       }
     }
   }
+}
 
+void QgsExternalResourceWidgetWrapper::setFeature( const QgsFeature &feature )
+{
+  updateProperties( feature );
   QgsEditorWidgetWrapper::setFeature( feature );
 }
 
 QWidget *QgsExternalResourceWidgetWrapper::createWidget( QWidget *parent )
 {
+  mForm = qobject_cast<QgsAttributeForm *>( parent );
+
+  if ( mForm )
+    connect( mForm, &QgsAttributeForm::widgetValueChanged, this, &QgsExternalResourceWidgetWrapper::widgetValueChanged );
+
   return new QgsExternalResourceWidget( parent );
 }
 
@@ -250,6 +260,23 @@ void QgsExternalResourceWidgetWrapper::setEnabled( bool enabled )
 
   if ( mQgsWidget )
     mQgsWidget->setReadOnly( !enabled );
+}
+
+void QgsExternalResourceWidgetWrapper::widgetValueChanged( const QString &attribute, const QVariant &newValue, bool attributeChanged )
+{
+  Q_UNUSED( newValue );
+  if ( attributeChanged )
+  {
+    QgsExpression documentViewerContentExp = QgsExpression( mPropertyCollection.property( QgsEditorWidgetWrapper::DocumentViewerContent ).expressionString() );
+    QgsExpression rootPathExp = QgsExpression( mPropertyCollection.property( QgsEditorWidgetWrapper::RootPath ).expressionString() );
+
+    if ( documentViewerContentExp.referencedColumns().contains( attribute ) ||
+         rootPathExp.referencedColumns().contains( attribute ) )
+    {
+      QgsFeature feature = mForm->currentFormFeature();
+      updateProperties( feature );
+    }
+  }
 }
 
 void QgsExternalResourceWidgetWrapper::updateConstraintWidgetStatus()

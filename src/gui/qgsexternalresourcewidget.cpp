@@ -194,6 +194,11 @@ void QgsExternalResourceWidget::setDefaultRoot( const QString &defaultRoot )
   mDefaultRoot = defaultRoot;
 }
 
+void QgsExternalResourceWidget::reloadDocument()
+{
+  loadDocument( mFileWidget->filePath() );
+}
+
 QgsFileWidget::RelativeStorage QgsExternalResourceWidget::relativeStorage() const
 {
   return mRelativeStorage;

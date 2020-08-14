@@ -143,6 +143,11 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      */
     void setDefaultRoot( const QString &defaultRoot );
 
+    /**
+     * Reloads the document from the path of the filewidget
+     */
+    void reloadDocument();
+
   signals:
     //! emitteed as soon as the current document changes
     void valueChanged( const QString & );
