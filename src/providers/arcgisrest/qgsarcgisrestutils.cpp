@@ -849,21 +849,21 @@ QgsAbstractVectorLayerLabeling *QgsArcGisRestUtils::parseEsriLabeling( const QVa
               placement == QLatin1String( "esriServerLinePlacementAboveAlong" ) )
     {
       settings->placement = QgsPalLayerSettings::Line;
-      settings->placementFlags = QgsPalLayerSettings::AboveLine | QgsPalLayerSettings::MapOrientation;
+      settings->lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation );
     }
     else if ( placement == QLatin1String( "esriServerLinePlacementBelowAfter" ) ||
               placement == QLatin1String( "esriServerLinePlacementBelowStart" ) ||
               placement == QLatin1String( "esriServerLinePlacementBelowAlong" ) )
     {
       settings->placement = QgsPalLayerSettings::Line;
-      settings->placementFlags = QgsPalLayerSettings::BelowLine | QgsPalLayerSettings::MapOrientation;
+      settings->lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::BelowLine | QgsLabeling::LinePlacementFlag::MapOrientation );
     }
     else if ( placement == QLatin1String( "esriServerLinePlacementCenterAfter" ) ||
               placement == QLatin1String( "esriServerLinePlacementCenterStart" ) ||
               placement == QLatin1String( "esriServerLinePlacementCenterAlong" ) )
     {
       settings->placement = QgsPalLayerSettings::Line;
-      settings->placementFlags = QgsPalLayerSettings::OnLine | QgsPalLayerSettings::MapOrientation;
+      settings->lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::OnLine | QgsLabeling::LinePlacementFlag::MapOrientation );
     }
     else if ( placement == QLatin1String( "esriServerPolygonPlacementAlwaysHorizontal" ) )
     {

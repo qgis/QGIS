@@ -2581,7 +2581,7 @@ namespace QgsWms
           {
             placement = QgsPalLayerSettings::AroundPoint;
             palSettings.dist = 2; // in mm
-            palSettings.placementFlags = 0;
+            palSettings.lineSettings().setPlacementFlags( 0 );
             break;
           }
           case QgsWkbTypes::PolygonGeometry:
@@ -2611,7 +2611,7 @@ namespace QgsWms
           {
             placement = QgsPalLayerSettings::Line;
             palSettings.dist = 2;
-            palSettings.placementFlags = 10;
+            palSettings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation );
             break;
           }
         }

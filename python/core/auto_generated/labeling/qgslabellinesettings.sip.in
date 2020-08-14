@@ -1,0 +1,58 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabellinesettings.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsLabelLineSettings
+{
+%Docstring
+
+Contains settings related to how the label engine places and formats
+labels for line features (or polygon features which are labeled in
+a "perimeter" style mode).
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgslabellinesettings.h"
+%End
+  public:
+
+    QgsLabeling::LinePlacementFlags placementFlags() const;
+%Docstring
+Returns the line placement flags, which dictate how line labels can be placed
+above or below the lines.
+
+.. seealso:: :py:func:`setPlacementFlags`
+%End
+
+    void setPlacementFlags( QgsLabeling::LinePlacementFlags flags );
+%Docstring
+Returns the line placement ``flags``, which dictate how line labels can be placed
+above or below the lines.
+
+.. seealso:: :py:func:`placementFlags`
+%End
+
+    void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
+%Docstring
+Updates the thinning settings to respect any data defined properties
+set within the specified ``properties`` collection.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabellinesettings.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
