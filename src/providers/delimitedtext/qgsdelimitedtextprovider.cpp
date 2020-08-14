@@ -61,15 +61,6 @@ QRegExp QgsDelimitedTextProvider::sCrdDmsRegexp( "^\\s*(?:([-+nsew])\\s*)?(\\d{1
 QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const ProviderOptions &options )
   : QgsVectorDataProvider( uri, options )
 {
-  // uri should be in the form of "file:///path/to/file.csv?query=params", if not, enforce it in that format
-  // first read the already encoded url to get the query string
-  QUrl url = QUrl::fromEncoded( uri.toLatin1() );
-  // temporarily store the query string
-  const QString tmpUrlQuery = url.query();
-  // make sure that the url is actually prefixed with "file://". However, this breaks the query part ("?" char gets encoded), so discard the query string
-  url = QUrl::fromLocalFile( url.path() );
-  // finally restore the query part
-  url.setQuery( tmpUrlQuery );
 
   // Add supported types to enable creating expression fields in field calculator
   setNativeTypes( QList< NativeType >()
@@ -86,6 +77,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
 
   QgsDebugMsgLevel( "Delimited text file uri is " + uri, 2 );
 
+  const QUrl url = QUrl::fromEncoded( uri.toLatin1() );
   mFile = qgis::make_unique< QgsDelimitedTextFile >();
   mFile->setFromUrl( url );
 
