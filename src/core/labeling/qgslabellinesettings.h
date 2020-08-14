@@ -39,6 +39,16 @@ class CORE_EXPORT QgsLabelLineSettings
   public:
 
     /**
+     * Placement options for direction symbols.
+     */
+    enum class DirectionSymbolPlacement : int
+    {
+      SymbolLeftRight, //!< Place direction symbols on left/right of label
+      SymbolAbove, //!< Place direction symbols on above label
+      SymbolBelow //!< Place direction symbols on below label
+    };
+
+    /**
      * Returns the line placement flags, which dictate how line labels can be placed
      * above or below the lines.
      *
@@ -152,6 +162,26 @@ class CORE_EXPORT QgsLabelLineSettings
      */
     void setReverseDirectionSymbol( bool reversed ) { mReverseDirectionSymbol = reversed; }
 
+    /**
+     * Returns the placement for direction symbols.
+     *
+     * This setting controls whether to place direction symbols to the left/right, above or below label.
+     *
+     * \see setDirectionSymbolPlacement()
+     * \see addDirectionSymbol()
+     */
+    DirectionSymbolPlacement directionSymbolPlacement() const { return mPlaceDirectionSymbol; }
+
+    /**
+     * Sets the \a placement for direction symbols.
+     *
+     * This setting controls whether to place direction symbols to the left/right, above or below label.
+     *
+     * \see directionSymbolPlacement()
+     * \see addDirectionSymbol()
+     */
+    void setDirectionSymbolPlacement( DirectionSymbolPlacement placement ) { mPlaceDirectionSymbol = placement; }
+
   private:
     QgsLabeling::LinePlacementFlags mPlacementFlags = QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation;
     bool mMergeLines = false;
@@ -159,6 +189,7 @@ class CORE_EXPORT QgsLabelLineSettings
     QString mLeftDirectionSymbol = QString( '<' );
     QString mRightDirectionSymbol = QString( '>' );
     bool mReverseDirectionSymbol = false;
+    DirectionSymbolPlacement mPlaceDirectionSymbol = DirectionSymbolPlacement::SymbolLeftRight;
 };
 
 #endif // QGSLABELLINESETTINGS_H

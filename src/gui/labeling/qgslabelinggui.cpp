@@ -367,7 +367,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mDirectSymbRightLineEdit->setText( mSettings.lineSettings().rightDirectionSymbol() );
   mDirectSymbRevChkBx->setChecked( mSettings.lineSettings().reverseDirectionSymbol() );
 
-  mDirectSymbBtnGrp->button( static_cast<int>( mSettings.placeDirectionSymbol ) )->setChecked( true );
+  mDirectSymbBtnGrp->button( static_cast<int>( mSettings.lineSettings().directionSymbolPlacement() ) )->setChecked( true );
   mUpsidedownBtnGrp->button( static_cast<int>( mSettings.upsidedownLabels ) )->setChecked( true );
 
   // curved label max character angles
@@ -590,7 +590,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.lineSettings().setReverseDirectionSymbol( mDirectSymbRevChkBx->isChecked() );
   if ( mDirectSymbBtnGrp )
   {
-    lyr.placeDirectionSymbol = ( QgsPalLayerSettings::DirectionSymbols )mDirectSymbBtnGrp->checkedId();
+    lyr.lineSettings().setDirectionSymbolPlacement( static_cast< QgsLabelLineSettings::DirectionSymbolPlacement >( mDirectSymbBtnGrp->checkedId() ) );
   }
   if ( mUpsidedownBtnGrp )
   {

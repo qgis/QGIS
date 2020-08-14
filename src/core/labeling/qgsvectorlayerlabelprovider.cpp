@@ -591,15 +591,20 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
         }
       }
 
-      if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolAbove )
+      switch ( tmpLyr.lineSettings().directionSymbolPlacement() )
       {
-        prependSymb = true;
-        symb = symb + QStringLiteral( "\n" );
-      }
-      else if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolBelow )
-      {
-        prependSymb = false;
-        symb = QStringLiteral( "\n" ) + symb;
+        case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove:
+          prependSymb = true;
+          symb = symb + QStringLiteral( "\n" );
+          break;
+
+        case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow:
+          prependSymb = false;
+          symb = QStringLiteral( "\n" ) + symb;
+          break;
+
+        case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight:
+          break;
       }
 
       if ( prependSymb )

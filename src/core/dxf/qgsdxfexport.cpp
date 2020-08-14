@@ -2296,15 +2296,20 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
       }
     }
 
-    if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolAbove )
+    switch ( tmpLyr.lineSettings().directionSymbolPlacement() )
     {
-      prependSymb = true;
-      symb = symb + wrapchr;
-    }
-    else if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolBelow )
-    {
-      prependSymb = false;
-      symb = wrapchr + symb;
+      case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove:
+        prependSymb = true;
+        symb = symb + wrapchr;
+        break;
+
+      case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow:
+        prependSymb = false;
+        symb = wrapchr + symb;
+        break;
+
+      case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight:
+        break;
     }
 
     if ( prependSymb )
