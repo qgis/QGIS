@@ -11,6 +11,7 @@ __date__ = '2019-12-07'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
+import os
 
 from qgis.core import (QgsProperty,
                        QgsPropertyCollection,
@@ -29,6 +30,8 @@ start_app()
 
 class TestQgsLabelLineSettings(unittest.TestCase):
 
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+                     'Python version too old for enum classes to work')
     def test_line_settings(self):
         """
         Test line settings
@@ -122,6 +125,8 @@ class TestQgsLabelLineSettings(unittest.TestCase):
         self.assertTrue(pal_settings.lineSettings().overrunDistanceMapUnitScale().minScale, 1)
         self.assertTrue(pal_settings.lineSettings().overrunDistanceMapUnitScale().maxScale, 2)
 
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+                     'Python version too old for enum classes to work')
     def testUpdateDataDefinedProps(self):
         settings = QgsLabelLineSettings()
         settings.setPlacementFlags(QgsLabeling.LinePlacementFlag.OnLine)
