@@ -543,7 +543,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry &geom )
     {
       returnVal = 2;
     }
-    it++;
+    ++it;
   }
 
   return returnVal;
@@ -647,7 +647,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointSequence &ps )
     {
       pointsAdded = true;
     }
-    it++;
+    ++it;
   }
 
   return pointsAdded ? 0 : 2;
