@@ -540,6 +540,7 @@
    <addaction name="mActionZoomLast"/>
    <addaction name="mActionZoomNext"/>
    <addaction name="mActionNewMapCanvas"/>
+   <addaction name="mActionNew3DMapCanvas"/>
    <addaction name="mActionNewBookmark"/>
    <addaction name="mActionShowBookmarks"/>
    <addaction name="mActionTemporalController"/>
