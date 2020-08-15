@@ -48,7 +48,7 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 class PointsToPaths(QgisAlgorithm):
     INPUT = 'INPUT'
-    CLOSE_LINE = 'CLOSE_LINE'
+    CLOSE_PATH = 'CLOSE_PATH'
     GROUP_FIELD = 'GROUP_FIELD'
     ORDER_FIELD = 'ORDER_FIELD'
     DATE_FORMAT = 'DATE_FORMAT'
@@ -70,8 +70,8 @@ class PointsToPaths(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input point layer'), [QgsProcessing.TypeVectorPoint]))
-        self.addParameter(QgsProcessingParameterBoolean(self.CLOSE_LINE,
-                                                        self.tr('Close line'), defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(self.CLOSE_PATH,
+                                                        self.tr('Close path'), defaultValue=False))
         self.addParameter(QgsProcessingParameterField(self.ORDER_FIELD,
                                                       self.tr('Order field'), parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterField(self.GROUP_FIELD,
@@ -95,7 +95,7 @@ class PointsToPaths(QgisAlgorithm):
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
-        close_line = self.parameterAsBool(parameters, self.CLOSE_LINE, context)
+        close_path = self.parameterAsBool(parameters, self.CLOSE_PATH, context)
         group_field_name = self.parameterAsString(parameters, self.GROUP_FIELD, context)
         order_field_name = self.parameterAsString(parameters, self.ORDER_FIELD, context)
         date_format = self.parameterAsString(parameters, self.DATE_FORMAT, context)
@@ -177,7 +177,7 @@ class PointsToPaths(QgisAlgorithm):
             f.setAttributes(attributes)
             line = [node[1] for node in vertices]
 
-            if close_line is True:
+            if close_path is True:
                 if line[0] != line[-1]:
                     line.append(line[0])
 
