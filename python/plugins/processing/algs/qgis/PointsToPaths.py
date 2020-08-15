@@ -85,7 +85,7 @@ class PointsToPaths(QgisAlgorithm):
 
     def name(self):
         return 'pointstopath'
-    
+
     def displayName(self):
         return self.tr('Points to path')
 
@@ -139,7 +139,7 @@ class PointsToPaths(QgisAlgorithm):
                 
             if not f.hasGeometry():
                 continue
-                
+
             point = f.geometry().constGet().clone()
             if group_field_index >= 0:
                 group = f[group_field_index]
@@ -166,7 +166,7 @@ class PointsToPaths(QgisAlgorithm):
         for group, vertices in points.items():
             if feedback.isCanceled():
                 break
-                
+
             vertices.sort(key=lambda x: (x[0] is None, x[0]))
             f = QgsFeature()
             attributes = []
