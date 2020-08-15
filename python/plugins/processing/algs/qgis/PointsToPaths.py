@@ -59,7 +59,6 @@ class PointsToPaths(QgisAlgorithm):
 
     def groupId(self):
         return 'vectorcreation'
-    
     def __init__(self):
         super().__init__()
 
