@@ -15,9 +15,11 @@
 *                                                                         *
 ***************************************************************************
 """
+
 __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
+
 import os
 from datetime import datetime
 
@@ -52,11 +54,13 @@ class PointsToPaths(QgisAlgorithm):
     DATE_FORMAT = 'DATE_FORMAT'
     OUTPUT = 'OUTPUT'
     OUTPUT_TEXT_DIR = 'OUTPUT_TEXT_DIR'
+    
     def group(self):
         return self.tr('Vector creation')
 
     def groupId(self):
         return 'vectorcreation'
+    
     def __init__(self):
         super().__init__()
 
@@ -82,6 +86,7 @@ class PointsToPaths(QgisAlgorithm):
 
     def name(self):
         return 'pointstopath'
+    
     def displayName(self):
         return self.tr('Points to path')
 
@@ -132,8 +137,10 @@ class PointsToPaths(QgisAlgorithm):
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
+                
             if not f.hasGeometry():
                 continue
+                
             point = f.geometry().constGet().clone()
             if group_field_index >= 0:
                 group = f[group_field_index]
@@ -160,6 +167,7 @@ class PointsToPaths(QgisAlgorithm):
         for group, vertices in points.items():
             if feedback.isCanceled():
                 break
+                
             vertices.sort(key=lambda x: (x[0] is None, x[0]))
             f = QgsFeature()
             attributes = []
