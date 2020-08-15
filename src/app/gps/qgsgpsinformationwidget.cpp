@@ -939,7 +939,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     if ( std::isfinite( info.hacc ) )
     {
       mTxtHacc->setEnabled( true );
-      mTxtHacc->setText( tr( "%1 m" ), QLocale().toString( info.hacc, 'f', 2 ) ) );
+      mTxtHacc->setText( tr( "%1 m" ).arg( QLocale().toString( info.hacc, 'f', 2 ) ) );
     }
     else
     {
