@@ -150,7 +150,7 @@ void TestQgsMapToolSplitFeatures::testNoFeaturesSplit()
   mapTool->cadCanvasReleaseEvent( event.get() );
 
 
-  QCOMPARE( mMultiLineStringLayer->featureCount(), 2 );
+  QVERIFY( mMultiLineStringLayer->featureCount() == 2 );
 //  This is not working as expected: count is always 1, see https://github.com/qgis/QGIS/issues/38287
 //  QCOMPARE( mMultiLineStringLayer->undoStack()->count(), 0 );
   mMultiLineStringLayer->undoStack()->undo();
@@ -186,18 +186,18 @@ void TestQgsMapToolSplitFeatures::testSplitPolygon()
                ) );
   mapTool->cadCanvasReleaseEvent( event.get() );
 
-  QCOMPARE( mPolygonLayer->undoStack()->index(), 3 );
-  QCOMPARE( mPolygonLayer->featureCount(), 3 );
+  QVERIFY( mPolygonLayer->undoStack()->index() == 3 );
+  QVERIFY( mPolygonLayer->featureCount() == 3 );
   QCOMPARE( mPolygonLayer->getFeature( polygonF1.id() ).geometry().asWkt(), QStringLiteral( "Polygon ((4 10, 4 5, 0 5, 0 10, 4 10))" ) );
   QCOMPARE( mPolygonLayer->getFeature( polygonF2.id() ).geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 0 5, 10 5, 10 0, 0 0))" ) );
 
   // no change to other layers
-  QCOMPARE( mMultiLineStringLayer->undoStack()->index(), 2 );
-  QCOMPARE( mMultiPolygonLayer->undoStack()->index(), 1 );
+  QVERIFY( mMultiLineStringLayer->undoStack()->index() == 2 );
+  QVERIFY( mMultiPolygonLayer->undoStack()->index() == 1 );
 
   // undo changes
   mPolygonLayer->undoStack()->undo();
-  QCOMPARE( mPolygonLayer->undoStack()->index(), 2 );
+  QVERIFY( mPolygonLayer->undoStack()->index() == 2 );
 }
 
 void TestQgsMapToolSplitFeatures::testSplitPolygonTopologicalEditing()
@@ -230,23 +230,23 @@ void TestQgsMapToolSplitFeatures::testSplitPolygonTopologicalEditing()
                ) );
   mapTool->cadCanvasReleaseEvent( event.get() );
 
-  QCOMPARE( mPolygonLayer->undoStack()->index(), 3 );
-  QCOMPARE( mPolygonLayer->featureCount(), 3 );
+  QVERIFY( mPolygonLayer->undoStack()->index() == 3 );
+  QVERIFY( mPolygonLayer->featureCount() == 3 );
   QCOMPARE( mPolygonLayer->getFeature( polygonF1.id() ).geometry().asWkt(), QStringLiteral( "Polygon ((4 10, 4 5, 0 5, 0 10, 4 10))" ) );
   QCOMPARE( mPolygonLayer->getFeature( polygonF2.id() ).geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 0 5, 4 5, 10 5, 10 0, 0 0))" ) );
 
-  QCOMPARE( mMultiLineStringLayer->undoStack()->index(), 3 );
+  QVERIFY( mMultiLineStringLayer->undoStack()->index() == 3 );
   QCOMPARE( mMultiLineStringLayer->getFeature( lineF2.id() ).geometry().asWkt(), QStringLiteral( "MultiLineString ((0 5, 4 5, 10 5),(10 5, 15 5))" ) );
-  QCOMPARE( mMultiPolygonLayer->undoStack()->index(), 2 );
+  QVERIFY( mMultiPolygonLayer->undoStack()->index() == 2 );
   QCOMPARE( mMultiPolygonLayer->getFeature( multipolygonF1.id() ).geometry().asWkt(), QStringLiteral( "MultiPolygon (((0 5, 0 10, 4 10, 10 10, 10 5, 4 5, 0 5)),((0 0, 0 4, 10 4, 10 0, 0 0)))" ) );
 
   // undo changes
   mPolygonLayer->undoStack()->undo();
-  QCOMPARE( mPolygonLayer->undoStack()->index(), 2 );
+  QVERIFY( mPolygonLayer->undoStack()->index() == 2 );
   mMultiLineStringLayer->undoStack()->undo();
-  QCOMPARE( mMultiLineStringLayer->undoStack()->index(), 2 );
+  QVERIFY( mMultiLineStringLayer->undoStack()->index() == 2 );
   mMultiPolygonLayer->undoStack()->undo();
-  QCOMPARE( mMultiPolygonLayer->undoStack()->index(), 1 );
+  QVERIFY( mMultiPolygonLayer->undoStack()->index() == 1 );
 }
 
 QGSTEST_MAIN( TestQgsMapToolSplitFeatures )
