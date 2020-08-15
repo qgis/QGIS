@@ -131,6 +131,8 @@ defaultMenuEntries.update({'gdal:buildvirtualraster': miscMenu,
                            'gdal:overviews': miscMenu,
                            'gdal:tileindex': miscMenu})
 
+toolBarButtons = {'native:selectbylocation': iface.selectionToolBar()}
+
 
 def initializeMenus():
     for m in defaultMenuEntries.keys():
@@ -281,6 +283,47 @@ def getMenu(name, parent):
 
 def findAction(actions, alg):
     for action in actions:
-        if action.data() == alg.id():
+        if (isinstance(alg, str) and action.data() == alg) or (isinstance(alg, QgsProcessingAlgorithm) and action.data() == alg.id()):
             return action
     return None
+
+
+def addToolBarButton(algId, toolbar, icon=None, tooltip=None):
+    alg = QgsApplication.processingRegistry().algorithmById(algId)
+    if alg is None or alg.id() != algId:
+        QgsMessageLog.logMessage(Processing.tr('Invalid algorithm ID for button: {}').format(algId), Processing.tr('Processing'))
+        return
+
+    if tooltip is None:
+        if (QgsGui.higFlags() & QgsGui.HigMenuTextIsTitleCase) and not (alg.flags() & QgsProcessingAlgorithm.FlagDisplayNameIsLiteral):
+            tooltip = QgsStringUtils.capitalize(alg.displayName(), QgsStringUtils.TitleCase)
+        else:
+            tooltip = alg.displayName()
+
+    action = QAction(icon or alg.icon(), tooltip, iface.mainWindow())
+    algId = alg.id()
+    action.setData(algId)
+    action.triggered.connect(lambda: _executeAlgorithm(algId))
+    action.setObjectName("mProcessingAlg_%s" % algId)
+
+    if toolbar:
+        toolbar.addAction(action)
+    else:
+        QgsMessageLog.logMessage(Processing.tr('Toolbar "{}" not found').format(toolbar.windowTitle), Processing.tr('Processing'))
+
+
+def removeToolBarButton(algId, toolbar):
+    if toolbar:
+        action = findAction(toolbar.actions(), algId)
+        if action is not None:
+            toolbar.removeAction(action)
+
+
+def createButtons():
+    for algId, toolbar in toolBarButtons.items():
+        addToolBarButton(algId, toolbar)
+
+
+def removeButtons():
+    for algId, toolbar in toolBarButtons.items():
+        removeToolBarButton(algId, toolbar)
