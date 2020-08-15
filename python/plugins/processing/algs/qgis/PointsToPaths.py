@@ -54,11 +54,13 @@ class PointsToPaths(QgisAlgorithm):
     DATE_FORMAT = 'DATE_FORMAT'
     OUTPUT = 'OUTPUT'
     OUTPUT_TEXT_DIR = 'OUTPUT_TEXT_DIR'
+
     def group(self):
         return self.tr('Vector creation')
 
     def groupId(self):
         return 'vectorcreation'
+
     def __init__(self):
         super().__init__()
 
@@ -135,6 +137,7 @@ class PointsToPaths(QgisAlgorithm):
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
+
             if not f.hasGeometry():
                 continue
 
