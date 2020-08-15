@@ -136,7 +136,6 @@ class PointsToPaths(QgisAlgorithm):
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
-                
             if not f.hasGeometry():
                 continue
 
