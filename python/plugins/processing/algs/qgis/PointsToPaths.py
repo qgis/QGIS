@@ -54,7 +54,6 @@ class PointsToPaths(QgisAlgorithm):
     DATE_FORMAT = 'DATE_FORMAT'
     OUTPUT = 'OUTPUT'
     OUTPUT_TEXT_DIR = 'OUTPUT_TEXT_DIR'
-    
     def group(self):
         return self.tr('Vector creation')
 
