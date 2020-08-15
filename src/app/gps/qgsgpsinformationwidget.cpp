@@ -949,7 +949,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     if ( std::isfinite( info.vacc ) )
     {
       mTxtVacc->setEnabled( true );
-      mTxtVacc->setText( tr( "%1 m" ), QLocale().toString( info.vacc, 'f', 2 ) ) );
+      mTxtVacc->setText( tr( "%1 m" ).arg( QLocale().toString( info.vacc, 'f', 2 ) ) );
     }
     else
     {
