@@ -319,8 +319,8 @@ void MDAL::DatasetGroup::setIsScalar( bool isScalar )
 MDAL::Mesh::Mesh( const std::string &driverName,
                   size_t faceVerticesMaximumCount,
                   const std::string &uri )
-  : mDriverName( driverName )
-  , mFaceVerticesMaximumCount( faceVerticesMaximumCount )
+  : mFaceVerticesMaximumCount( faceVerticesMaximumCount )
+  , mDriverName( driverName )
   , mUri( uri )
 {
 }
