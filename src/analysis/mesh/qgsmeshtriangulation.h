@@ -96,6 +96,7 @@ class ANALYSIS_EXPORT QgsMeshTriangulation : public QObject
 class QgsMeshZValueDataset: public QgsMeshDataset
 {
   public:
+
     //! Constructor with the mesh
     QgsMeshZValueDataset( const QgsMesh &mesh );
 
@@ -125,6 +126,7 @@ class QgsMeshZValueDataset: public QgsMeshDataset
 class ANALYSIS_EXPORT QgsMeshZValueDatasetGroup: public QgsMeshDatasetGroup
 {
   public:
+
     /**
      * Constructor
      *

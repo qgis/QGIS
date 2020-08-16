@@ -23,7 +23,6 @@ __copyright__ = '(C) 2020, Vincent Cloarec'
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
 from qgis.utils import iface
 
 from qgis.core import (QgsProcessingUtils,
@@ -122,7 +121,7 @@ class TinMeshCreation(QgisAlgorithm):
         mesh = meshTriangulation.triangulatedMesh()
         self.providerMetaData.createMeshData(mesh, fileName, self.FORMATS[driverIndex], crs)
 
-        #SELAFIN format doesn't support saving Z value on mesh vertices, so create a specific dataset group
+        # SELAFIN format doesn't support saving Z value on mesh vertices, so create a specific dataset group
         if self.FORMATS[driverIndex] == "SELAFIN":
             self.addZValueDataset(fileName, mesh)
 
