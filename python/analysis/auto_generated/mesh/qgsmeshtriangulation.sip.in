@@ -81,6 +81,7 @@ Convenient class that can be used to obtain a datasetgroup on vertices that repr
 #include "qgsmeshtriangulation.h"
 %End
   public:
+
     QgsMeshZValueDatasetGroup( const QString &datasetGroupName, const QgsMesh &mesh );
 %Docstring
 Constructor

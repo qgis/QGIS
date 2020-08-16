@@ -117,7 +117,7 @@ class QgsMeshZValueDataset: public QgsMeshDataset
 
 /**
  * \ingroup analysis
- * \class QgsMeshZValueDataset
+ * \class QgsMeshZValueDatasetGroup
  *
  * Convenient class that can be used to obtain a datasetgroup on vertices that represents the Z value of the mesh vertices
  *
