@@ -43,7 +43,7 @@ class QgsTransaction;
 
 class QgsRasterDataProvider;
 class QgsMeshDataProvider;
-class QgsMesh;
+struct QgsMesh;
 
 /**
  * \ingroup core
