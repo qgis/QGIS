@@ -37,4 +37,10 @@ void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollect
     context.setOriginalValueVariable( mOverrunDistance );
     mOverrunDistance = properties.valueAsDouble( QgsPalLayerSettings::OverrunDistance, context, mOverrunDistance );
   }
+
+  if ( properties.isActive( QgsPalLayerSettings::LineAnchorPercent ) )
+  {
+    context.setOriginalValueVariable( mLineAnchorPercent );
+    mLineAnchorPercent = properties.valueAsDouble( QgsPalLayerSettings::LineAnchorPercent, context, mLineAnchorPercent );
+  }
 }
