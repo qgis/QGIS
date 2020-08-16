@@ -250,6 +250,30 @@ Sets the map unit ``scale`` for label overrun distance.
 .. seealso:: :py:func:`overrunDistanceUnit`
 %End
 
+    double lineAnchorPercent() const;
+%Docstring
+Returns the percent along the line at which labels should be placed.
+
+By default, this is 0.5 which indicates that labels should be placed as close to the
+center of the line as possible. A value of 0.0 indicates that the labels should be placed
+as close to the start of the line as possible, while a value of 1.0 pushes labels towards
+the end of the line.
+
+.. seealso:: :py:func:`setLineAnchorPercent`
+%End
+
+    void setLineAnchorPercent( double percent );
+%Docstring
+Sets the ``percent`` along the line at which labels should be placed.
+
+By default, this is 0.5 which indicates that labels should be placed as close to the
+center of the line as possible. A value of 0.0 indicates that the labels should be placed
+as close to the start of the line as possible, while a value of 1.0 pushes labels towards
+the end of the line.
+
+.. seealso:: :py:func:`lineAnchorPercent`
+%End
+
 };
 
 /************************************************************************

@@ -232,6 +232,30 @@ class CORE_EXPORT QgsLabelLineSettings
      */
     void setOverrunDistanceMapUnitScale( const QgsMapUnitScale &scale ) { mOverrunDistanceMapUnitScale = scale; }
 
+    /**
+     * Returns the percent along the line at which labels should be placed.
+     *
+     * By default, this is 0.5 which indicates that labels should be placed as close to the
+     * center of the line as possible. A value of 0.0 indicates that the labels should be placed
+     * as close to the start of the line as possible, while a value of 1.0 pushes labels towards
+     * the end of the line.
+     *
+     * \see setLineAnchorPercent()
+     */
+    double lineAnchorPercent() const { return mLineAnchorPercent; }
+
+    /**
+     * Sets the \a percent along the line at which labels should be placed.
+     *
+     * By default, this is 0.5 which indicates that labels should be placed as close to the
+     * center of the line as possible. A value of 0.0 indicates that the labels should be placed
+     * as close to the start of the line as possible, while a value of 1.0 pushes labels towards
+     * the end of the line.
+     *
+     * \see lineAnchorPercent()
+     */
+    void setLineAnchorPercent( double percent ) { mLineAnchorPercent = percent; }
+
   private:
     QgsLabeling::LinePlacementFlags mPlacementFlags = QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation;
     bool mMergeLines = false;
@@ -243,6 +267,8 @@ class CORE_EXPORT QgsLabelLineSettings
     double mOverrunDistance = 0;
     QgsUnitTypes::RenderUnit mOverrunDistanceUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mOverrunDistanceMapUnitScale;
+
+    double mLineAnchorPercent = 0.5;
 };
 
 #endif // QGSLABELLINESETTINGS_H

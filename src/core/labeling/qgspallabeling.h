@@ -453,6 +453,7 @@ class CORE_EXPORT QgsPalLayerSettings
       OverrunDistance = 102, //!< Distance which labels can extend past either end of linear features
       LabelAllParts = 103, //!< Whether all parts of multi-part features should be labeled
       PolygonLabelOutside = 109, //!< Whether labels outside a polygon feature are permitted, or should be forced (since QGIS 3.14)
+      LineAnchorPercent = 111, //!< Portion along line at which labels should be anchored (since QGIS 3.16)
 
       // rendering
       ScaleVisibility = 23,

@@ -74,6 +74,9 @@ class TestQgsLabelLineSettings(unittest.TestCase):
         self.assertEqual(settings.overrunDistanceMapUnitScale().minScale, 1)
         self.assertEqual(settings.overrunDistanceMapUnitScale().maxScale, 2)
 
+        settings.setLineAnchorPercent(0.3)
+        self.assertEqual(settings.lineAnchorPercent(), 0.3)
+
         # check that compatibility code works
         pal_settings = QgsPalLayerSettings()
         pal_settings.placementFlags = QgsPalLayerSettings.OnLine | QgsPalLayerSettings.MapOrientation
@@ -131,20 +134,25 @@ class TestQgsLabelLineSettings(unittest.TestCase):
         settings = QgsLabelLineSettings()
         settings.setPlacementFlags(QgsLabeling.LinePlacementFlag.OnLine)
         settings.setOverrunDistance(5.6)
+        settings.setLineAnchorPercent(0.3)
         self.assertEqual(settings.placementFlags(), QgsLabeling.LinePlacementFlag.OnLine)
         self.assertEqual(settings.overrunDistance(), 5.6)
+        self.assertEqual(settings.lineAnchorPercent(), 0.3)
 
         props = QgsPropertyCollection()
         props.setProperty(QgsPalLayerSettings.LinePlacementOptions, QgsProperty.fromExpression('@placement'))
         props.setProperty(QgsPalLayerSettings.OverrunDistance, QgsProperty.fromExpression('@dist'))
+        props.setProperty(QgsPalLayerSettings.LineAnchorPercent, QgsProperty.fromExpression('@line_anchor'))
         context = QgsExpressionContext()
         scope = QgsExpressionContextScope()
         scope.setVariable('placement', 'AL,LO')
         scope.setVariable('dist', '11.2')
+        scope.setVariable('line_anchor', '0.6')
         context.appendScope(scope)
         settings.updateDataDefinedProperties(props, context)
         self.assertEqual(settings.placementFlags(), QgsLabeling.LinePlacementFlag.AboveLine)
         self.assertEqual(settings.overrunDistance(), 11.2)
+        self.assertEqual(settings.lineAnchorPercent(), 0.6)
 
 
 if __name__ == '__main__':
