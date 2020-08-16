@@ -1,0 +1,28 @@
+#ifndef QGSPOSTPROCESSINGENTITY_H
+#define QGSPOSTPROCESSINGENTITY_H
+
+#include <Qt3DCore/QEntity>
+#include <Qt3DRender/QTexture>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QCamera>
+
+class QgsShadowRenderingFrameGraph;
+
+class QgsPostprocessingEntity : public Qt3DCore::QEntity
+{
+  public:
+    QgsPostprocessingEntity(QgsShadowRenderingFrameGraph* frameGraph, const QString &vertexShaderPath, const QString &fragmentShaderPath, QNode *parent = nullptr);
+  private:
+    Qt3DRender::QMaterial *mMaterial = nullptr;
+    Qt3DRender::QEffect *mEffect = nullptr;
+    Qt3DRender::QParameter *mColorTextureParameter = nullptr;
+    Qt3DRender::QParameter *mDepthTextureParameter = nullptr;
+    Qt3DRender::QCamera *mMainCamera = nullptr;
+    Qt3DRender::QParameter *mFarPlaneParameter = nullptr;
+    Qt3DRender::QParameter *mNearPlaneParameter = nullptr;
+    Qt3DRender::QParameter *mMainCameraViewMatrixParameter = nullptr;
+    Qt3DRender::QParameter *mMainCameraProjMatrixParameter = nullptr;
+};
+
+#endif // QGSPOSTPROCESSINGENTITY_H

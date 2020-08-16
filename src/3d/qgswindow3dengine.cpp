@@ -18,16 +18,31 @@
 #include <Qt3DRender/QRenderCapture>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DExtras/QForwardRenderer>
-
+#include <Qt3DRender/QRenderSettings>
 
 QgsWindow3DEngine::QgsWindow3DEngine( QObject *parent )
   : QgsAbstract3DEngine( parent )
 {
   mWindow3D = new Qt3DExtras::Qt3DWindow;
 
+  mShadowRenderingFrameGraph = new QgsShadowRenderingFrameGraph(mWindow3D, mWindow3D->camera());
+
+//  mCapture = new Qt3DRender::QRenderCapture;
+//  mWindow3D->activeFrameGraph()->setParent( mCapture );
+//  mWindow3D->setActiveFrameGraph( mCapture );
+
   mCapture = new Qt3DRender::QRenderCapture;
-  mWindow3D->activeFrameGraph()->setParent( mCapture );
+  mShadowRenderingFrameGraph->getFrameGraphRoot()->setParent(mCapture);
   mWindow3D->setActiveFrameGraph( mCapture );
+
+  mRoot = new Qt3DCore::QEntity;
+//  mRoot->addComponent(mShadowRenderingFrameGraph->postprocessingPassLayer());
+
+  QString vertexShaderPath = QStringLiteral( "qrc:/shaders/postprocess.vert" );
+  QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/postprocess.frag" );
+  mPostprocessingEntity = new QgsPostprocessingEntity(mShadowRenderingFrameGraph, vertexShaderPath, fragmentShaderPath, mRoot);
+
+  mWindow3D->setRootEntity(mRoot);
 }
 
 QWindow *QgsWindow3DEngine::window()
@@ -48,17 +63,19 @@ void QgsWindow3DEngine::requestCaptureImage()
 
 void QgsWindow3DEngine::setClearColor( const QColor &color )
 {
-  mWindow3D->defaultFrameGraph()->setClearColor( color );
+//  mWindow3D->defaultFrameGraph()->setClearColor( color );
 }
 
 void QgsWindow3DEngine::setFrustumCullingEnabled( bool enabled )
 {
-  mWindow3D->defaultFrameGraph()->setFrustumCullingEnabled( enabled );
+//  mWindow3D->defaultFrameGraph()->setFrustumCullingEnabled( enabled );
 }
 
 void QgsWindow3DEngine::setRootEntity( Qt3DCore::QEntity *root )
 {
-  mWindow3D->setRootEntity( root );
+//  mWindow3D->setRootEntity( root );
+  mSceneRoot = root;
+  mSceneRoot->setParent(mRoot);
 }
 
 Qt3DRender::QRenderSettings *QgsWindow3DEngine::renderSettings()

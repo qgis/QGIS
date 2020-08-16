@@ -17,7 +17,8 @@
 #define QGSWINDOW3DENGINE_H
 
 #include "qgsabstract3dengine.h"
-
+#include "qgsshadowrenderingframegraph.h"
+#include "qgspostprocessingentity.h"
 
 namespace Qt3DRender
 {
@@ -56,6 +57,8 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     //! Returns the internal 3D window where all the rendered output is displayed
     QWindow *window();
 
+    QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph() { return mShadowRenderingFrameGraph; }
+
     void requestCaptureImage() override;
 
     void setClearColor( const QColor &color ) override;
@@ -72,6 +75,10 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     Qt3DExtras::Qt3DWindow *mWindow3D = nullptr;
     //! Frame graph node for render capture
     Qt3DRender::QRenderCapture *mCapture = nullptr;
+    QgsShadowRenderingFrameGraph *mShadowRenderingFrameGraph = nullptr;
+    QgsPostprocessingEntity *mPostprocessingEntity = nullptr;
+    Qt3DCore::QEntity* mRoot = nullptr;
+    Qt3DCore::QEntity* mSceneRoot = nullptr;
 };
 
 

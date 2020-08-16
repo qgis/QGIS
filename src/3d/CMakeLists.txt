@@ -32,6 +32,8 @@ SET(QGIS_3D_SRCS
   qgswindow3dengine.cpp
   qgsskyboxentity.cpp
   qgsskyboxsettings.cpp
+  qgsshadowrenderingframegraph.cpp
+  qgspostprocessingentity.cpp
 
   chunks/qgschunkboundsentity_p.cpp
   chunks/qgschunkedentity_p.cpp
@@ -107,6 +109,8 @@ SET(QGIS_3D_HDRS
   qgswindow3dengine.h
   qgsskyboxentity.h
   qgsskyboxsettings.h
+  qgsshadowrenderingframegraph.h
+  qgspostprocessingentity.h
 
   materials/qgsabstractmaterialsettings.h
   materials/qgsgoochmaterialsettings.h
