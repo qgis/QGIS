@@ -153,6 +153,15 @@ QgsRasterDataProvider *QgsProviderMetadata::createRasterDataProvider(
   return nullptr;
 }
 
+bool QgsProviderMetadata::createMeshData(
+  const QgsMesh &,
+  const QString,
+  const QString &,
+  const QgsCoordinateReferenceSystem & ) const
+{
+  return false;
+}
+
 QList<QPair<QString, QString> > QgsProviderMetadata::pyramidResamplingMethods()
 {
   return QList<QPair<QString, QString> >();

@@ -83,6 +83,7 @@ from .StatisticsByCategories import StatisticsByCategories
 from .TextToFloat import TextToFloat
 from .TilesXYZ import TilesXYZAlgorithmDirectory, TilesXYZAlgorithmMBTiles
 from .TinInterpolation import TinInterpolation
+from .TinMeshCreation import TinMeshCreation
 from .TopoColors import TopoColor
 from .UniqueValues import UniqueValues
 from .VariableDistanceBuffer import VariableDistanceBuffer
@@ -155,6 +156,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 TilesXYZAlgorithmDirectory(),
                 TilesXYZAlgorithmMBTiles(),
                 TinInterpolation(),
+                TinMeshCreation(),
                 TopoColor(),
                 UniqueValues(),
                 VariableDistanceBuffer(),

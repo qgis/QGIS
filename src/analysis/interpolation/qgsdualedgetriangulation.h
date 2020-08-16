@@ -95,7 +95,7 @@ class ANALYSIS_EXPORT QgsDualEdgeTriangulation: public QgsTriangulation
 
     bool saveTriangulation( QgsFeatureSink *sink, QgsFeedback *feedback = nullptr ) const override;
 
-    virtual QgsMesh triangulationToMesh() const override;
+    virtual QgsMesh triangulationToMesh( QgsFeedback *feedBack = nullptr ) const override;
 
   private:
     //! X-coordinate of the upper right corner of the bounding box

@@ -139,6 +139,10 @@ class QgsMdalProviderMetadata: public QgsProviderMetadata
     QList<QgsMeshDriverMetadata> meshDriversMetadata() override;
     QgsMdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
+    bool createMeshData( const QgsMesh &mesh,
+                         const QString uri,
+                         const QString &driverName,
+                         const QgsCoordinateReferenceSystem &crs ) const override;
 };
 
 #endif //QGSMDALPROVIDER_H

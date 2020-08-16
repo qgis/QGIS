@@ -42,6 +42,8 @@ class QgsDataItemProvider;
 class QgsTransaction;
 
 class QgsRasterDataProvider;
+class QgsMeshDataProvider;
+class QgsMesh;
 
 /**
  * \ingroup core
@@ -63,6 +65,7 @@ class CORE_EXPORT QgsMeshDriverMetadata
       CanWriteFaceDatasets = 1 << 0, //!< If the driver can persist datasets defined on faces
       CanWriteVertexDatasets = 1 << 1, //!< If the driver can persist datasets defined on vertices
       CanWriteEdgeDatasets = 1 << 2, //!< If the driver can persist datasets defined on edges \since QGIS 3.14
+      CanWriteMeshData = 1 << 3, //!< If the driver can write mesh data on file \since QGIS 3.16
     };
 
     Q_ENUM( MeshDriverCapability )
@@ -287,6 +290,16 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
       double *geoTransform,
       const QgsCoordinateReferenceSystem &crs,
       const QStringList &createOptions = QStringList() ) SIP_FACTORY;
+
+    /**
+     * Creates mesh data source (depending of the provider)
+     * \since QGIS 3.16
+     */
+    virtual bool createMeshData(
+      const QgsMesh &mesh,
+      const QString uri,
+      const QString &driverName,
+      const QgsCoordinateReferenceSystem &crs ) const;
 
     /**
      * Returns pyramid resampling methods available for provider

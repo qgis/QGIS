@@ -34,6 +34,7 @@ Holds metadata about mesh driver
       CanWriteFaceDatasets,
       CanWriteVertexDatasets,
       CanWriteEdgeDatasets,
+      CanWriteMeshData,
     };
 
     typedef QFlags<QgsMeshDriverMetadata::MeshDriverCapability> MeshDriverCapabilities;
@@ -219,6 +220,17 @@ eg. "yes" value will be returned as true, 0 will be returned as false
 Creates a new instance of the raster data provider.
 
 .. versionadded:: 3.10
+%End
+
+    virtual bool createMeshData(
+      const QgsMesh &mesh,
+      const QString uri,
+      const QString &driverName,
+      const QgsCoordinateReferenceSystem &crs ) const;
+%Docstring
+Creates mesh data source (depending of the provider)
+
+.. versionadded:: 3.16
 %End
 
     virtual QList<QPair<QString, QString> > pyramidResamplingMethods();

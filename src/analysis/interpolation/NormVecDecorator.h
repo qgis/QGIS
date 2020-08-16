@@ -69,7 +69,7 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
 
     bool saveTriangulation( QgsFeatureSink *sink, QgsFeedback *feedback = nullptr ) const override;
 
-    QgsMesh triangulationToMesh() const override;
+    QgsMesh triangulationToMesh( QgsFeedback *feedback = nullptr ) const override;
 
   protected:
     //! Is TRUE, if the normals already have been estimated

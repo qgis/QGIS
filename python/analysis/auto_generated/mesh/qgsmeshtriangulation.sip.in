@@ -1,0 +1,114 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/mesh/qgsmeshtriangulation.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMeshTriangulation : QObject
+{
+%Docstring
+
+Class that handles mesh creation with Delaunay constrained triangulation
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsmeshtriangulation.h"
+%End
+  public:
+
+    QgsMeshTriangulation();
+%Docstring
+Contructor
+%End
+
+    ~QgsMeshTriangulation();
+
+    bool addVertices( QgsVectorLayer *vectorLayer, int valueAttribute, const QgsCoordinateTransformContext &transformContext, QgsFeedback *feedback = 0 );
+%Docstring
+Adds vertices to the triangulation from a vector layer, return true if success.
+
+:param vectorLayer: the vector layer with vertices to insert
+:param valueAttribute: the index of the attribute that represents the value of vertices, if -1 uses Z coordinate of vertices
+:param transformContext: the transform context used to transform coordinates
+%End
+
+    bool addBreakLines( QgsVectorLayer *linesSource, int valueAttribute, const QgsCoordinateTransformContext &transformContext, QgsFeedback *feedback = 0 );
+%Docstring
+Adds break lines from a vector layer, return true if success
+
+:param vectorLayer: the vector layer with break lines to insert
+:param valueAttribute: the index of the attribute that represents the value of vertices, if -1 uses Z coordinate of vertices
+:param transformContext: the transform context used to transform coordinates
+
+.. note::
+
+   if the vector layer contain point, only vertices will be added without breaklines
+%End
+
+    QgsMesh triangulatedMesh() const;
+%Docstring
+Returns the triangulated mesh
+%End
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the coordinate reference system used for the triangulation
+%End
+
+  private:
+    QgsMeshTriangulation( const QgsMeshTriangulation &rhs );
+};
+
+
+class QgsMeshZValueDatasetGroup: QgsMeshDatasetGroup
+{
+%Docstring
+
+Convenient class that can be used to obtain a datasetgroup on vertices that represents the Z value of the mesh vertices
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsmeshtriangulation.h"
+%End
+  public:
+    QgsMeshZValueDatasetGroup( const QString &datasetGroupName, const QgsMesh &mesh );
+%Docstring
+Constructor
+
+:param datasetGroupName: the name of the dataset group
+:param mesh: the mesh used to create the Z value dataset
+%End
+
+    virtual void initialize();
+
+    virtual QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const;
+
+    virtual int datasetCount() const;
+
+    virtual QgsMeshDataset *dataset( int index ) const;
+
+    virtual QgsMeshDatasetGroup::Type type() const;
+    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+
+  private:
+    QgsMeshZValueDatasetGroup( const QgsMeshZValueDatasetGroup &rhs );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/mesh/qgsmeshtriangulation.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
