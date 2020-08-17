@@ -85,7 +85,6 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
 
   private:
 
-    QgsWkbTypes::GeometryType mGeomType = QgsWkbTypes::UnknownGeometry;
     QgsPalLayerSettings mSettings;
     LabelMode mMode;
     QgsFeature mPreviewFeature;

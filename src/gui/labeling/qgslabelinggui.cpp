@@ -223,11 +223,11 @@ void QgsLabelingGui::showLineAnchorSettings()
 
 QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &layerSettings, QWidget *parent, QgsWkbTypes::GeometryType geomType )
   : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling, layer )
-  , mGeomType( geomType )
   , mSettings( layerSettings )
   , mMode( NoLabels )
   , mCanvas( mapCanvas )
 {
+  mGeomType = geomType;
   static std::once_flag initialized;
   std::call_once( initialized, [ = ]( )
   {
@@ -350,41 +350,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   mCheckAllowLabelsOutsidePolygons->setChecked( mSettings.polygonPlacementFlags() & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon );
 
-  switch ( mSettings.placement )
-  {
-    case QgsPalLayerSettings::AroundPoint:
-      radAroundPoint->setChecked( true );
-      radAroundCentroid->setChecked( true );
-      //spinAngle->setValue( lyr.angle ); // TODO: uncomment when supported
-      break;
-    case QgsPalLayerSettings::OverPoint:
-      radOverPoint->setChecked( true );
-      radOverCentroid->setChecked( true );
-      break;
-    case QgsPalLayerSettings::OrderedPositionsAroundPoint:
-      radPredefinedOrder->setChecked( true );
-      break;
-    case QgsPalLayerSettings::Line:
-      radLineParallel->setChecked( true );
-      radPolygonPerimeter->setChecked( true );
-      break;
-    case QgsPalLayerSettings::Curved:
-      radLineCurved->setChecked( true );
-      break;
-    case QgsPalLayerSettings::Horizontal:
-      radPolygonHorizontal->setChecked( true );
-      radLineHorizontal->setChecked( true );
-      break;
-    case QgsPalLayerSettings::Free:
-      radPolygonFree->setChecked( true );
-      break;
-    case QgsPalLayerSettings::PerimeterCurved:
-      radPolygonPerimeterCurved->setChecked( true );
-      break;
-    case QgsPalLayerSettings::OutsidePolygons:
-      radPolygonOutside->setChecked( true );
-      break;
-  }
+  mPlacementModeComboBox->setCurrentIndex( mPlacementModeComboBox->findData( mSettings.placement ) );
 
   // Label repeat distance
   mRepeatDistanceSpinBox->setValue( mSettings.repeatDistance );
@@ -497,9 +463,7 @@ void QgsLabelingGui::blockInitSignals( bool block )
 {
   chkLineAbove->blockSignals( block );
   chkLineBelow->blockSignals( block );
-  mPlacePointBtnGrp->blockSignals( block );
-  mPlaceLineBtnGrp->blockSignals( block );
-  mPlacePolygonBtnGrp->blockSignals( block );
+  mPlacementModeComboBox->blockSignals( block );
 }
 
 void QgsLabelingGui::setLabelMode( LabelMode mode )
@@ -526,7 +490,6 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     polygonPlacementFlags |= QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon;
   lyr.setPolygonPlacementFlags( polygonPlacementFlags );
 
-  QWidget *curPlacementWdgt = stackedPlacement->currentWidget();
   lyr.centroidWhole = mCentroidRadioWhole->isChecked();
   lyr.centroidInside = mCentroidInsideCheckBox->isChecked();
   lyr.fitInPolygonOnly = mFitInsidePolygonCheckBox->isChecked();
@@ -555,50 +518,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     linePlacementFlags |= QgsLabeling::LinePlacementFlag::MapOrientation;
   lyr.lineSettings().setPlacementFlags( linePlacementFlags );
 
-  if ( ( curPlacementWdgt == pagePoint && radAroundPoint->isChecked() )
-       || ( curPlacementWdgt == pagePolygon && radAroundCentroid->isChecked() ) )
-  {
-    lyr.placement = QgsPalLayerSettings::AroundPoint;
-  }
-  else if ( ( curPlacementWdgt == pagePoint && radOverPoint->isChecked() )
-            || ( curPlacementWdgt == pagePolygon && radOverCentroid->isChecked() ) )
-  {
-    lyr.placement = QgsPalLayerSettings::OverPoint;
-  }
-  else if ( curPlacementWdgt == pagePoint && radPredefinedOrder->isChecked() )
-  {
-    lyr.placement = QgsPalLayerSettings::OrderedPositionsAroundPoint;
-  }
-  else if ( ( curPlacementWdgt == pageLine && radLineParallel->isChecked() )
-            || ( curPlacementWdgt == pagePolygon && radPolygonPerimeter->isChecked() ) )
-  {
-    lyr.placement = QgsPalLayerSettings::Line;
-  }
-  else if ( curPlacementWdgt == pageLine && radLineCurved->isChecked() )
-  {
-    lyr.placement = QgsPalLayerSettings::Curved;
-  }
-  else if ( curPlacementWdgt == pagePolygon && radPolygonPerimeterCurved->isChecked() )
-  {
-    lyr.placement = QgsPalLayerSettings::PerimeterCurved;
-  }
-  else if ( ( curPlacementWdgt == pageLine && radLineHorizontal->isChecked() )
-            || ( curPlacementWdgt == pagePolygon && radPolygonHorizontal->isChecked() ) )
-  {
-    lyr.placement = QgsPalLayerSettings::Horizontal;
-  }
-  else if ( radPolygonFree->isChecked() )
-  {
-    lyr.placement = QgsPalLayerSettings::Free;
-  }
-  else if ( radPolygonOutside->isChecked() )
-  {
-    lyr.placement = QgsPalLayerSettings::OutsidePolygons;
-  }
-  else
-  {
-    qFatal( "Invalid settings" );
-  }
+  lyr.placement = static_cast< QgsPalLayerSettings::Placement >( mPlacementModeComboBox->currentData().toInt() );
 
   lyr.repeatDistance = mRepeatDistanceSpinBox->value();
   lyr.repeatDistanceUnit = mRepeatDistanceUnitWidget->unit();
@@ -855,22 +775,42 @@ void QgsLabelingGui::updateGeometryTypeBasedWidgets()
   mPolygonFeatureOptionsFrame->setVisible( geometryType == QgsWkbTypes::PolygonGeometry );
 
 
-  // set placement methods page based on geometry type
+  const QgsPalLayerSettings::Placement prevPlacement = static_cast< QgsPalLayerSettings::Placement >( mPlacementModeComboBox->currentData().toInt() );
+  mPlacementModeComboBox->clear();
+
   switch ( geometryType )
   {
     case QgsWkbTypes::PointGeometry:
-      stackedPlacement->setCurrentWidget( pagePoint );
+      mPlacementModeComboBox->addItem( tr( "Cartographic" ), QgsPalLayerSettings::OrderedPositionsAroundPoint );
+      mPlacementModeComboBox->addItem( tr( "Around Point" ), QgsPalLayerSettings::AroundPoint );
+      mPlacementModeComboBox->addItem( tr( "Offset from Point" ), QgsPalLayerSettings::OverPoint );
       break;
+
     case QgsWkbTypes::LineGeometry:
-      stackedPlacement->setCurrentWidget( pageLine );
+      mPlacementModeComboBox->addItem( tr( "Parallel" ), QgsPalLayerSettings::Line );
+      mPlacementModeComboBox->addItem( tr( "Curved" ), QgsPalLayerSettings::Curved );
+      mPlacementModeComboBox->addItem( tr( "Horizontal" ), QgsPalLayerSettings::Horizontal );
       break;
+
     case QgsWkbTypes::PolygonGeometry:
-      stackedPlacement->setCurrentWidget( pagePolygon );
+      mPlacementModeComboBox->addItem( tr( "Offset from Centroid" ), QgsPalLayerSettings::OverPoint );
+      mPlacementModeComboBox->addItem( tr( "Around Centroid" ), QgsPalLayerSettings::AroundPoint );
+      mPlacementModeComboBox->addItem( tr( "Horizontal" ), QgsPalLayerSettings::Horizontal );
+      mPlacementModeComboBox->addItem( tr( "Free (Angled)" ), QgsPalLayerSettings::Free );
+      mPlacementModeComboBox->addItem( tr( "Using Perimeter" ), QgsPalLayerSettings::Line );
+      mPlacementModeComboBox->addItem( tr( "Using Perimeter (Curved)" ), QgsPalLayerSettings::PerimeterCurved );
+      mPlacementModeComboBox->addItem( tr( "Outside Polygons" ), QgsPalLayerSettings::OutsidePolygons );
       break;
+
     case QgsWkbTypes::NullGeometry:
       break;
     case QgsWkbTypes::UnknownGeometry:
       qFatal( "unknown geometry type unexpected" );
+  }
+
+  if ( mPlacementModeComboBox->findData( prevPlacement ) != -1 )
+  {
+    mPlacementModeComboBox->setCurrentIndex( mPlacementModeComboBox->findData( prevPlacement ) );
   }
 
   if ( geometryType == QgsWkbTypes::PointGeometry || geometryType == QgsWkbTypes::PolygonGeometry )
