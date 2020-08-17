@@ -17,6 +17,7 @@
 #include <QMessageBox>
 #include <QGridLayout>
 #include <QDialogButtonBox>
+#include <QMenu>
 
 #include "qgsattributetabledialog.h"
 #include "qgsattributetablemodel.h"
@@ -115,8 +116,20 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mActionDeleteSelected, &QAction::triggered, this, &QgsAttributeTableDialog::mActionDeleteSelected_triggered );
   connect( mMainView, &QgsDualView::currentChanged, this, &QgsAttributeTableDialog::mMainView_currentChanged );
   connect( mActionAddFeature, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddFeature_triggered );
+  connect( mActionAddFeatureViaAttributeTable, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddFeatureViaAttributeTable_triggered );
+  connect( mActionAddFeatureViaAttributeForm, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered );
   connect( mActionExpressionSelect, &QAction::triggered, this, &QgsAttributeTableDialog::mActionExpressionSelect_triggered );
   connect( mMainView, &QgsDualView::showContextMenuExternally, this, &QgsAttributeTableDialog::showContextMenu );
+
+  QgsSettings settings;
+
+  mActionAddFeature->setMenu( new QMenu( mActionAddFeature->parentWidget() ) );
+  mActionAddFeature->menu()->addAction( mActionAddFeatureViaAttributeTable );
+  mActionAddFeature->menu()->addAction( mActionAddFeatureViaAttributeForm );
+  mActionAddFeature->setIcon(
+    settings.value( QStringLiteral( "/qgis/attributeTableLastAddFeatureMethod" ) ) == QStringLiteral( "attributeForm" )
+    ? mActionAddFeatureViaAttributeForm->icon()
+    : mActionAddFeatureViaAttributeTable->icon() );
 
   const QgsFields fields = mLayer->fields();
   for ( const QgsField &field : fields )
@@ -132,8 +145,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   layout()->setMargin( 0 );
   layout()->setContentsMargins( 0, 0, 0, 0 );
   static_cast< QGridLayout * >( layout() )->setVerticalSpacing( 0 );
-
-  QgsSettings settings;
 
   int size = settings.value( QStringLiteral( "/qgis/iconSize" ), 16 ).toInt();
   if ( size > 32 )
@@ -823,8 +834,22 @@ void QgsAttributeTableDialog::mActionReload_triggered()
 
 void QgsAttributeTableDialog::mActionAddFeature_triggered()
 {
+  QgsSettings s;
+
+  if ( s.value( QStringLiteral( "/qgis/attributeTableLastAddFeatureMethod" ) ) == QStringLiteral( "attributeForm" ) )
+    mActionAddFeatureViaAttributeForm_triggered();
+  else
+    mActionAddFeatureViaAttributeTable_triggered();
+}
+
+void QgsAttributeTableDialog::mActionAddFeatureViaAttributeTable_triggered()
+{
   if ( !mLayer->isEditable() )
     return;
+
+  QgsSettings s;
+  s.setValue( QStringLiteral( "/qgis/attributeTableLastAddFeatureMethod" ), QStringLiteral( "attributeTable" ) );
+  mActionAddFeature->setIcon( mActionAddFeatureViaAttributeTable->icon() );
 
   QgsAttributeTableModel *masterModel = mMainView->masterModel();
 
@@ -836,6 +861,27 @@ void QgsAttributeTableDialog::mActionAddFeature_triggered()
     masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
   }
 }
+
+void QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered()
+{
+  if ( !mLayer->isEditable() )
+    return;
+
+  QgsSettings s;
+  s.setValue( QStringLiteral( "/qgis/attributeTableLastAddFeatureMethod" ), QStringLiteral( "attributeForm" ) );
+  mActionAddFeature->setIcon( mActionAddFeatureViaAttributeForm->icon() );
+
+  QgsFeature f;
+
+  QgsFeatureAction action( tr( "Feature Added" ), f, mLayer, QString(), -1, this );
+  QgsAttributeTableModel *masterModel = mMainView->masterModel();
+
+  if ( action.addFeature() )
+  {
+    masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+  }
+}
+
 
 void QgsAttributeTableDialog::mActionExpressionSelect_triggered()
 {
