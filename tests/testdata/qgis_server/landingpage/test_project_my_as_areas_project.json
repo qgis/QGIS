@@ -70,6 +70,12 @@ Content-Type: application/json
       52.454136178135975
     ],
     "id": "e152c153073a7e6d3ad669448f85e552",
+    "initial_extent": [
+      10.681022115616315,
+      52.41473800787212,
+      10.751349081354135,
+      52.45509659444044
+    ],
     "metadata": {
       "abstract": "",
       "author": "Alessandro Pasotti",

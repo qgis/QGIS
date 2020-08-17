@@ -90,6 +90,12 @@ Content-Type: application/json
       52.49310455554394
     ],
     "id": "9124ec69db7f0687f760504aa10e3362",
+    "initial_extent": [
+      10.727170893991817,
+      52.37605728414485,
+      10.87181360592575,
+      52.467415956752426
+    ],
     "metadata": {
       "abstract": "",
       "author": "Burghardt Scholle",

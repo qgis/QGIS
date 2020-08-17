@@ -58,19 +58,18 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
         cls.temp_dir = QtCore.QTemporaryDir()
 
         temp_dir = cls.temp_dir.path()
+        cls.directories = [os.path.join(temp_dir, 'landingpage', 'projects'), os.path.join(temp_dir, 'landingpage', 'projects2')]
         shutil.copytree(os.path.join(unitTestDataPath('qgis_server'), 'landingpage'), os.path.join(temp_dir, 'landingpage'))
 
-        directories = [os.path.join(temp_dir, 'landingpage', 'projects'), os.path.join(temp_dir, 'landingpage', 'projects2')]
-        os.environ['QGIS_SERVER_PROJECTS_DIRECTORIES'] = '||'.join(directories)
-
-        if not os.environ.get('TRAVIS', False):
-            os.environ['QGIS_SERVER_PROJECTS_PG_CONNECTIONS'] = "postgresql://localhost:5432?sslmode=disable&dbname=landing_page_test&schema=public"
-
     def setUp(self):
-        """Clean env"""
+        """Setup env"""
 
         super().setUp()
         os.environ["QGIS_SERVER_DISABLED_APIS"] = ''
+        os.environ['QGIS_SERVER_PROJECTS_DIRECTORIES'] = '||'.join(self.directories)
+
+        if not os.environ.get('TRAVIS', False):
+            os.environ['QGIS_SERVER_PROJECTS_PG_CONNECTIONS'] = "postgresql://localhost:5432?sslmode=disable&dbname=landing_page_test&schema=public"
 
     def test_landing_page_redirects(self):
         """Test landing page redirects"""
