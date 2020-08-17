@@ -27,6 +27,7 @@
 #include <mutex>
 #include <QCryptographicHash>
 #include <QFileSystemWatcher>
+#include <QDomDocument>
 
 const QRegularExpression QgsLandingPageUtils::PROJECT_HASH_RE { QStringLiteral( "/(?<projectHash>[a-f0-9]{32})" ) };
 QMap<QString, QString> QgsLandingPageUtils::AVAILABLE_PROJECTS;
@@ -222,6 +223,31 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri )
   json info = json::object();
   info[ "id" ] = QCryptographicHash::hash( projectUri.toUtf8(), QCryptographicHash::Md5 ).toHex();
   QgsProject p;
+
+  // Read initial extent from map canvas
+  QObject::connect( &p, &QgsProject::readProject, qApp, [ & ]( const QDomDocument & projectDoc )
+  {
+    const QDomNodeList canvasElements { projectDoc.elementsByTagName( QStringLiteral( "mapcanvas" ) ) };
+    if ( ! canvasElements.isEmpty() )
+    {
+      const QDomNode canvasElement { canvasElements.item( 0 ).firstChildElement( QStringLiteral( "extent" ) ) };
+      QgsRectangle extent
+      {
+        canvasElement.firstChildElement( QStringLiteral( "xmin" ) ).text().toDouble(),
+        canvasElement.firstChildElement( QStringLiteral( "ymin" ) ).text().toDouble(),
+        canvasElement.firstChildElement( QStringLiteral( "xmax" ) ).text().toDouble(),
+        canvasElement.firstChildElement( QStringLiteral( "ymax" ) ).text().toDouble(),
+      };
+      // Need conversion?
+      if ( p.crs().authid() != 4326 )
+      {
+        QgsCoordinateTransform ct { p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p.transformContext() };
+        extent = ct.transform( extent );
+      }
+      info[ "initial_extent" ] = json::array( { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() } );
+    }
+  } );
+
   if ( p.read( projectUri ) )
   {
     // Title
@@ -299,6 +325,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri )
       geographicExtent = ct.transform( geographicExtent );
     }
     info["geographic_extent"] = json::array( { geographicExtent.xMinimum(), geographicExtent.yMinimum(), geographicExtent.xMaximum(), geographicExtent.yMaximum() } );
+
     // Metadata
     json metadata;
     const QgsProjectMetadata &md { p.metadata() };
