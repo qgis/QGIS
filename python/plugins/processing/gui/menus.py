@@ -291,8 +291,7 @@ def findAction(actions, alg):
 def addToolBarButton(algId, toolbar, icon=None, tooltip=None):
     alg = QgsApplication.processingRegistry().algorithmById(algId)
     if alg is None or alg.id() != algId:
-        QgsMessageLog.logMessage(Processing.tr('Invalid algorithm ID for button: {}').format(algId), Processing.tr('Processing'))
-        return
+        assert False, algId
 
     if tooltip is None:
         if (QgsGui.higFlags() & QgsGui.HigMenuTextIsTitleCase) and not (alg.flags() & QgsProcessingAlgorithm.FlagDisplayNameIsLiteral):
