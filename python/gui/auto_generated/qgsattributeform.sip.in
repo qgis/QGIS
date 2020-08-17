@@ -44,7 +44,7 @@ class QgsAttributeForm : QWidget
 
     const QgsFeature &feature();
 
-    const QgsFeature &currentFormFeature();
+    QgsFeature currentFormFeature() const;
 %Docstring
 Returns the feature that is currently displayed in the form with all
 the changes received on editing the values in the widgets.

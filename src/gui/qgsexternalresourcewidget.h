@@ -145,6 +145,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 
     /**
      * Reloads the document from the path of the filewidget
+     * /since QGIS 3.16
      */
     void reloadDocument();
 

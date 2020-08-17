@@ -138,6 +138,7 @@ is set to QgsFileWidget.RelativeDefaultPath.
     void reloadDocument();
 %Docstring
 Reloads the document from the path of the filewidget
+/since QGIS 3.16
 %End
 
   signals:

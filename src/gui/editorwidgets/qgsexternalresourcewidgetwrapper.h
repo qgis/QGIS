@@ -59,7 +59,6 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
   public:
     QVariant value() const override;
     void showIndeterminateState() override;
-    void updateProperties( const QgsFeature &feature );
 
   protected:
     QWidget *createWidget( QWidget *parent ) override;
@@ -85,6 +84,7 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
   private:
     void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
     void updateConstraintWidgetStatus() override;
+    void updateProperties( const QgsFeature &feature );
 
     QLineEdit *mLineEdit = nullptr;
     QLabel *mLabel = nullptr;

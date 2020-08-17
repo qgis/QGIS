@@ -81,7 +81,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      *
      * \since QGIS 3.16
      */
-    const QgsFeature &currentFormFeature() { return mCurrentFormFeature; }
+    QgsFeature currentFormFeature() const { return mCurrentFormFeature; }
 
     /**
      * Displays a warning message in the form message bar
