@@ -231,20 +231,28 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri )
     if ( ! canvasElements.isEmpty() )
     {
       const QDomNode canvasElement { canvasElements.item( 0 ).firstChildElement( QStringLiteral( "extent" ) ) };
-      QgsRectangle extent
+      if ( !canvasElement.isNull() &&
+           !canvasElement.firstChildElement( QStringLiteral( "xmin" ) ).isNull() &&
+           !canvasElement.firstChildElement( QStringLiteral( "ymin" ) ).isNull() &&
+           !canvasElement.firstChildElement( QStringLiteral( "xmax" ) ).isNull() &&
+           !canvasElement.firstChildElement( QStringLiteral( "ymax" ) ).isNull()
+         )
       {
-        canvasElement.firstChildElement( QStringLiteral( "xmin" ) ).text().toDouble(),
-        canvasElement.firstChildElement( QStringLiteral( "ymin" ) ).text().toDouble(),
-        canvasElement.firstChildElement( QStringLiteral( "xmax" ) ).text().toDouble(),
-        canvasElement.firstChildElement( QStringLiteral( "ymax" ) ).text().toDouble(),
-      };
-      // Need conversion?
-      if ( p.crs().authid() != 4326 )
-      {
-        QgsCoordinateTransform ct { p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p.transformContext() };
-        extent = ct.transform( extent );
+        QgsRectangle extent
+        {
+          canvasElement.firstChildElement( QStringLiteral( "xmin" ) ).text().toDouble(),
+          canvasElement.firstChildElement( QStringLiteral( "ymin" ) ).text().toDouble(),
+          canvasElement.firstChildElement( QStringLiteral( "xmax" ) ).text().toDouble(),
+          canvasElement.firstChildElement( QStringLiteral( "ymax" ) ).text().toDouble(),
+        };
+        // Need conversion?
+        if ( p.crs().authid() != 4326 )
+        {
+          QgsCoordinateTransform ct { p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p.transformContext() };
+          extent = ct.transform( extent );
+        }
+        info[ "initial_extent" ] = json::array( { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() } );
       }
-      info[ "initial_extent" ] = json::array( { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() } );
     }
   } );
 
