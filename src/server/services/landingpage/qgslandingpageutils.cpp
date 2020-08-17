@@ -30,13 +30,14 @@
 
 const QRegularExpression QgsLandingPageUtils::PROJECT_HASH_RE { QStringLiteral( "/(?<projectHash>[a-f0-9]{32})" ) };
 QMap<QString, QString> QgsLandingPageUtils::AVAILABLE_PROJECTS;
-QString QgsLandingPageUtils::QGIS_SERVER_PROJECTS_DIRECTORIES;
-QString QgsLandingPageUtils::QGIS_SERVER_PROJECTS_PG_CONNECTIONS;
 
 std::once_flag initDirWatcher;
 
 QMap<QString, QString> QgsLandingPageUtils::projects( )
 {
+
+  static QString QGIS_SERVER_PROJECTS_DIRECTORIES;
+  static QString QGIS_SERVER_PROJECTS_PG_CONNECTIONS;
 
   // Init directory watcher
   static QFileSystemWatcher dirWatcher;
@@ -53,9 +54,9 @@ QMap<QString, QString> QgsLandingPageUtils::projects( )
   const QString projectDir { QString( qgetenv( "QGIS_SERVER_PROJECTS_DIRECTORIES" ) ) };
 
   // Clear cache if QGIS_SERVER_PROJECTS_DIRECTORIES has changed
-  if ( projectDir != QgsLandingPageUtils::QGIS_SERVER_PROJECTS_DIRECTORIES )
+  if ( projectDir != QGIS_SERVER_PROJECTS_DIRECTORIES )
   {
-    QgsLandingPageUtils::QGIS_SERVER_PROJECTS_DIRECTORIES = projectDir;
+    QGIS_SERVER_PROJECTS_DIRECTORIES = projectDir;
     AVAILABLE_PROJECTS.clear();
     const QStringList cWatchedDirs { dirWatcher.directories() };
     dirWatcher.removePaths( cWatchedDirs );
@@ -64,16 +65,17 @@ QMap<QString, QString> QgsLandingPageUtils::projects( )
   const QString pgConnections { QString( qgetenv( "QGIS_SERVER_PROJECTS_PG_CONNECTIONS" ) ) };
 
   // Clear cache if QGIS_SERVER_PROJECTS_PG_CONNECTIONS has changed
-  if ( pgConnections != QgsLandingPageUtils::QGIS_SERVER_PROJECTS_PG_CONNECTIONS )
+  if ( pgConnections != QGIS_SERVER_PROJECTS_PG_CONNECTIONS )
   {
-    QgsLandingPageUtils::QGIS_SERVER_PROJECTS_PG_CONNECTIONS = pgConnections;
+    QGIS_SERVER_PROJECTS_PG_CONNECTIONS = pgConnections;
     AVAILABLE_PROJECTS.clear();
   }
 
   // Scan QGIS_SERVER_PROJECTS_DIRECTORIES
   if ( AVAILABLE_PROJECTS.isEmpty() )
   {
-    for ( const auto &path : projectDir.split( QStringLiteral( "||" ) ) )
+    const auto cProjectDirs { projectDir.split( QStringLiteral( "||" ) ) };
+    for ( const auto &path : cProjectDirs )
     {
       if ( ! path.isEmpty() )
       {
@@ -109,7 +111,8 @@ QMap<QString, QString> QgsLandingPageUtils::projects( )
   // PG projects (there is no watcher for PG: scan every time)
   const auto storage { QgsApplication::instance()->projectStorageRegistry()->projectStorageFromType( QStringLiteral( "postgresql" ) ) };
   Q_ASSERT( storage );
-  for ( const auto &connectionString : QString( qgetenv( "QGIS_SERVER_PROJECTS_PG_CONNECTIONS" ) ).split( QStringLiteral( "||" ) ) )
+  const auto cPgConnections { pgConnections.split( QStringLiteral( "||" ) ) };
+  for ( const auto &connectionString : cPgConnections )
   {
     if ( ! connectionString.isEmpty() )
     {

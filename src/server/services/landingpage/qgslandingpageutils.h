@@ -78,16 +78,6 @@ struct QgsLandingPageUtils
    */
   static QString projectUriFromUrl( const QString &url );
 
-  /**
-   * Store env configuration parameter, used to invalidate the cache if the value changes
-   */
-  static QString QGIS_SERVER_PROJECTS_DIRECTORIES;
-
-  /**
-   * Store env configuration parameter, used to invalidate the cache if the value changes
-   */
-  static QString QGIS_SERVER_PROJECTS_PG_CONNECTIONS;
-
 };
 
 #endif // QGSLANDINGPAGEUTILS_H
