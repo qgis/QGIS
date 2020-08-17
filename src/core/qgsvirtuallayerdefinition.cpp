@@ -161,6 +161,10 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
     {
       def.setLazy( true );
     }
+    else if ( key == QLatin1String( "subsetstring" ) )
+    {
+      def.setSubsetString( QUrl::fromPercentEncoding( value.toUtf8() ) );
+    }
   }
   def.setFields( fields );
 
@@ -220,6 +224,16 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
     url.addQueryItem( QStringLiteral( "lazy" ), QString() );
   }
 
+<<<<<<< HEAD
+=======
+  if ( ! subsetString().isEmpty() )
+  {
+    urlQuery.addQueryItem( QStringLiteral( "subsetstring" ), QUrl::toPercentEncoding( subsetString() ) );
+  }
+
+  url.setQuery( urlQuery );
+
+>>>>>>> a5461a6420... Merge pull request #38257 from elpaso/bugfix-gh26189-virtual-layers-subset-string
   return url;
 }
 
@@ -262,4 +276,14 @@ bool QgsVirtualLayerDefinition::hasReferencedLayers() const
     }
   }
   return false;
+}
+
+QString QgsVirtualLayerDefinition::subsetString() const
+{
+  return mSubsetString;
+}
+
+void QgsVirtualLayerDefinition::setSubsetString( const QString &subsetString )
+{
+  mSubsetString = subsetString;
 }
