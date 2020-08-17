@@ -1393,6 +1393,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   mPlacementRepeatDistanceFrame->setVisible( curWdgt == pageLine || ( curWdgt == pagePolygon &&
       ( radPolygonPerimeter->isChecked() || radPolygonPerimeterCurved->isChecked() ) ) );
   mPlacementOverrunDistanceFrame->setVisible( curWdgt == pageLine );
+  mLineAnchorGroupBox->setVisible( curWdgt == pageLine );
   mPlacementMaxCharAngleFrame->setVisible( showMaxCharAngleFrame );
 
   mMultiLinesFrame->setEnabled( enableMultiLinesFrame );

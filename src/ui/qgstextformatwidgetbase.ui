@@ -688,7 +688,7 @@
               <item>
                <widget class="QStackedWidget" name="mLabelStackedWidget">
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>7</number>
                 </property>
                 <widget class="QWidget" name="mLabelPage_Text">
                  <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -1279,7 +1279,7 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-240</y>
+                       <y>0</y>
                        <width>471</width>
                        <height>708</height>
                       </rect>
@@ -2164,8 +2164,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>299</width>
-                       <height>308</height>
+                       <width>485</width>
+                       <height>429</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2510,8 +2510,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>294</width>
-                       <height>291</height>
+                       <width>485</width>
+                       <height>429</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_121">
@@ -2788,7 +2788,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>440</width>
+                       <width>471</width>
                        <height>786</height>
                       </rect>
                      </property>
@@ -3549,7 +3549,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>324</width>
+                       <width>471</width>
                        <height>457</height>
                       </rect>
                      </property>
@@ -3977,8 +3977,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>159</width>
-                       <height>211</height>
+                       <width>485</width>
+                       <height>429</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_46">
@@ -4126,9 +4126,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
-                       <width>556</width>
-                       <height>1300</height>
+                       <y>-664</y>
+                       <width>471</width>
+                       <height>1459</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -5461,6 +5461,32 @@ font-style: italic;</string>
                        </widget>
                       </item>
                       <item>
+                       <widget class="QgsCollapsibleGroupBox" name="mLineAnchorGroupBox">
+                        <property name="title">
+                         <string>Label Anchoring</string>
+                        </property>
+                        <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,0">
+                         <item>
+                          <widget class="QLabel" name="mLblNoObstacle_2">
+                           <property name="text">
+                            <string>Controls the placement of labels along line features</string>
+                           </property>
+                           <property name="wordWrap">
+                            <bool>true</bool>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QPushButton" name="mLineAnchorSettingsButton">
+                           <property name="text">
+                            <string>Settings…</string>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
                        <widget class="QFrame" name="mPlacementMaxCharAngleFrame">
                         <layout class="QGridLayout" name="gridLayout_22">
                          <property name="leftMargin">
@@ -5914,17 +5940,17 @@ font-style: italic;</string>
                         </property>
                         <layout class="QVBoxLayout" name="verticalLayout_17">
                          <item>
-                           <widget class="QLabel" name="mLblNoObstacle">
-                           <property name="wordWrap">
-                            <bool>true</bool>
-                           </property>
+                          <widget class="QLabel" name="mLblNoObstacle">
                            <property name="text">
                             <string>When activated, features acting as obstacles discourage labels and diagrams from covering them.</string>
+                           </property>
+                           <property name="wordWrap">
+                            <bool>true</bool>
                            </property>
                           </widget>
                          </item>
                          <item>
-                          <layout class="QHBoxLayout" name="horizontalLayout_16" stretch="0,0,0,0">
+                          <layout class="QHBoxLayout" name="horizontalLayout_16" stretch="0,2,0,1,0">
                            <item>
                             <widget class="QCheckBox" name="mChkNoObstacle">
                              <property name="enabled">
@@ -5934,11 +5960,11 @@ font-style: italic;</string>
                            </item>
                            <item>
                             <widget class="QLabel" name="mLblNoObstacle1">
-                             <property name="wordWrap">
-                              <bool>true</bool>
-                             </property>
                              <property name="text">
                               <string>Features act as obstacles</string>
+                             </property>
+                             <property name="wordWrap">
+                              <bool>true</bool>
                              </property>
                             </widget>
                            </item>
@@ -6027,7 +6053,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>430</width>
+                       <width>471</width>
                        <height>708</height>
                       </rect>
                      </property>
@@ -6778,6 +6804,11 @@ font-style: italic;</string>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
@@ -6798,11 +6829,6 @@ font-style: italic;</string>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsSymbolButton</class>
