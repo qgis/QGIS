@@ -303,14 +303,14 @@ void QgsRelationReferenceWidget::setForeignKeys( const QVariantList &values )
   {
     mComboBox->setIdentifierValues( values );
 
+    if ( mEmbedForm || mChainFilters )
+    {
+      QgsFeatureRequest request = mComboBox->currentFeatureRequest();
+      mReferencedLayer->getFeatures( request ).nextFeature( mFeature );
+    }
     if ( mChainFilters )
     {
       QVariant nullValue = QgsApplication::nullRepresentation();
-
-      QgsFeatureRequest request = mComboBox->currentFeatureRequest();
-
-      mReferencedLayer->getFeatures( request ).nextFeature( mFeature );
-
       const int count = std::min( mFilterComboBoxes.size(), mFilterFields.size() );
       for ( int i = 0; i < count; i++ )
       {
