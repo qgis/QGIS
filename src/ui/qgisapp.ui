@@ -345,6 +345,15 @@
      <addaction name="mActionRegularPolygonCenterCorner"/>
      <addaction name="mActionRegularPolygon2Points"/>
     </widget>
+    <widget class="QMenu" name="mMenuAnnotation">
+     <property name="title">
+      <string>Add Annotation</string>
+     </property>
+     <addaction name="mActionTextAnnotation"/>
+     <addaction name="mActionFormAnnotation"/>
+     <addaction name="mActionHtmlAnnotation"/>
+     <addaction name="mActionSvgAnnotation"/>
+    </widget>
     <addaction name="mActionUndo"/>
     <addaction name="mActionRedo"/>
     <addaction name="separator"/>
@@ -361,6 +370,7 @@
     <addaction name="mMenuRectangle"/>
     <addaction name="mMenuRegularPolygon"/>
     <addaction name="mMenuEllipse"/>
+    <addaction name="mMenuAnnotation"/>
     <addaction name="mActionMoveFeature"/>
     <addaction name="mActionMoveFeatureCopy"/>
     <addaction name="mActionDeleteSelected"/>
@@ -530,6 +540,7 @@
    <addaction name="mActionZoomLast"/>
    <addaction name="mActionZoomNext"/>
    <addaction name="mActionNewMapCanvas"/>
+   <addaction name="mActionNew3DMapCanvas"/>
    <addaction name="mActionNewBookmark"/>
    <addaction name="mActionShowBookmarks"/>
    <addaction name="mActionTemporalController"/>
