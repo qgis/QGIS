@@ -54,8 +54,13 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        directories = [os.path.join(unitTestDataPath('qgis_server'), 'landingpage', 'projects')]
-        directories.append(os.path.join(unitTestDataPath('qgis_server'), 'landingpage', 'projects2'))
+
+        cls.temp_dir = QtCore.QTemporaryDir()
+
+        temp_dir = cls.temp_dir.path()
+        shutil.copytree(os.path.join(unitTestDataPath('qgis_server'), 'landingpage'), os.path.join(temp_dir, 'landingpage'))
+
+        directories = [os.path.join(temp_dir, 'landingpage', 'projects'), os.path.join(temp_dir, 'landingpage', 'projects2')]
         os.environ['QGIS_SERVER_PROJECTS_DIRECTORIES'] = '||'.join(directories)
 
         if not os.environ.get('TRAVIS', False):
@@ -148,6 +153,15 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
             request.setHeader('Accept', 'application/json')
             self.compareApi(
                 request, None, 'test_project_{}.json'.format(name.replace('.', '_')), subdir='landingpage')
+
+    def test_landing_page_json_empty(self):
+        """Test landing page in JSON format with no projects"""
+
+        os.environ['QGIS_SERVER_PROJECTS_DIRECTORIES'] = ''
+        os.environ['QGIS_SERVER_PROJECTS_PG_CONNECTIONS'] = ''
+        request = QgsBufferServerRequest('http://server.qgis.org/index.json')
+        self.compareApi(
+            request, None, 'test_landing_page_empty_index.json', subdir='landingpage')
 
 
 if __name__ == '__main__':

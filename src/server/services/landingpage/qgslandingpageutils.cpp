@@ -24,23 +24,65 @@
 #include "qgsvectorlayer.h"
 #include "nlohmann/json.hpp"
 
+#include <mutex>
 #include <QCryptographicHash>
+#include <QFileSystemWatcher>
 
 const QRegularExpression QgsLandingPageUtils::PROJECT_HASH_RE { QStringLiteral( "/(?<projectHash>[a-f0-9]{32})" ) };
 QMap<QString, QString> QgsLandingPageUtils::AVAILABLE_PROJECTS;
 
+std::once_flag initDirWatcher;
+
 QMap<QString, QString> QgsLandingPageUtils::projects( )
 {
-  // TODO: use a dir-watcher to invalidate
+
+  static QString QGIS_SERVER_PROJECTS_DIRECTORIES;
+  static QString QGIS_SERVER_PROJECTS_PG_CONNECTIONS;
+
+  // Init directory watcher
+  static QFileSystemWatcher dirWatcher;
+  std::call_once( initDirWatcher, [ = ]
+  {
+    QObject::connect( &dirWatcher, &QFileSystemWatcher::directoryChanged, qApp, [ = ]( const QString & path )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Directory '%1' has changed: project information cache cleared." ).arg( path ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Info );
+      AVAILABLE_PROJECTS.clear();
+    } );
+  } );
+
+
+  const QString projectDir { QString( qgetenv( "QGIS_SERVER_PROJECTS_DIRECTORIES" ) ) };
+
+  // Clear cache if QGIS_SERVER_PROJECTS_DIRECTORIES has changed
+  if ( projectDir != QGIS_SERVER_PROJECTS_DIRECTORIES )
+  {
+    QGIS_SERVER_PROJECTS_DIRECTORIES = projectDir;
+    AVAILABLE_PROJECTS.clear();
+    const QStringList cWatchedDirs { dirWatcher.directories() };
+    dirWatcher.removePaths( cWatchedDirs );
+  }
+
+  const QString pgConnections { QString( qgetenv( "QGIS_SERVER_PROJECTS_PG_CONNECTIONS" ) ) };
+
+  // Clear cache if QGIS_SERVER_PROJECTS_PG_CONNECTIONS has changed
+  if ( pgConnections != QGIS_SERVER_PROJECTS_PG_CONNECTIONS )
+  {
+    QGIS_SERVER_PROJECTS_PG_CONNECTIONS = pgConnections;
+    AVAILABLE_PROJECTS.clear();
+  }
+
+  // Scan QGIS_SERVER_PROJECTS_DIRECTORIES
   if ( AVAILABLE_PROJECTS.isEmpty() )
   {
-    for ( const auto &path : QString( qgetenv( "QGIS_SERVER_PROJECTS_DIRECTORIES" ) ).split( QStringLiteral( "||" ) ) )
+    const auto cProjectDirs { projectDir.split( QStringLiteral( "||" ) ) };
+    for ( const auto &path : cProjectDirs )
     {
       if ( ! path.isEmpty() )
       {
         const QDir dir { path };
         if ( dir.exists() )
         {
+          dirWatcher.addPath( dir.path() );
           const auto constFiles { dir.entryList( ) };
           for ( const auto &f : constFiles )
           {
@@ -64,34 +106,35 @@ QMap<QString, QString> QgsLandingPageUtils::projects( )
         QgsMessageLog::logMessage( QStringLiteral( "QGIS_SERVER_PROJECTS_DIRECTORIES empty path: skipping." ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
       }
     }
+  }
 
-    // PG projects
-    const auto storage { QgsApplication::instance()->projectStorageRegistry()->projectStorageFromType( QStringLiteral( "postgresql" ) ) };
-    Q_ASSERT( storage );
-    for ( const auto &connectionString : QString( qgetenv( "QGIS_SERVER_PROJECTS_PG_CONNECTIONS" ) ).split( QStringLiteral( "||" ) ) )
+  // PG projects (there is no watcher for PG: scan every time)
+  const auto storage { QgsApplication::instance()->projectStorageRegistry()->projectStorageFromType( QStringLiteral( "postgresql" ) ) };
+  Q_ASSERT( storage );
+  const auto cPgConnections { pgConnections.split( QStringLiteral( "||" ) ) };
+  for ( const auto &connectionString : cPgConnections )
+  {
+    if ( ! connectionString.isEmpty() )
     {
-      if ( ! connectionString.isEmpty() )
+      const auto constProjects { storage->listProjects( connectionString ) };
+      if ( ! constProjects.isEmpty() )
       {
-        const auto constProjects { storage->listProjects( connectionString ) };
-        if ( ! constProjects.isEmpty() )
+        for ( const auto &projectName : constProjects )
         {
-          for ( const auto &projectName : constProjects )
-          {
-            const QString projectFullPath { connectionString + QStringLiteral( "&project=%1" ).arg( projectName ) };
-            const auto projectHash { QCryptographicHash::hash( projectFullPath.toUtf8(), QCryptographicHash::Md5 ).toHex() };
-            AVAILABLE_PROJECTS[ projectHash ] = projectFullPath;
-            QgsMessageLog::logMessage( QStringLiteral( "Adding postgres project '%1' with id '%2'" ).arg( projectName, QString::fromUtf8( projectHash ) ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
-          }
-        }
-        else
-        {
-          QgsMessageLog::logMessage( QStringLiteral( "QGIS_SERVER_PROJECTS_PG_CONNECTIONS entry '%1' was not found or has not projects: skipping." ).arg( connectionString ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+          const QString projectFullPath { connectionString + QStringLiteral( "&project=%1" ).arg( projectName ) };
+          const auto projectHash { QCryptographicHash::hash( projectFullPath.toUtf8(), QCryptographicHash::Md5 ).toHex() };
+          AVAILABLE_PROJECTS[ projectHash ] = projectFullPath;
+          QgsMessageLog::logMessage( QStringLiteral( "Adding postgres project '%1' with id '%2'" ).arg( projectName, QString::fromUtf8( projectHash ) ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
         }
       }
       else
       {
-        QgsMessageLog::logMessage( QStringLiteral( "QGIS_SERVER_PROJECTS_PG_CONNECTIONS empty connection: skipping." ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+        QgsMessageLog::logMessage( QStringLiteral( "QGIS_SERVER_PROJECTS_PG_CONNECTIONS entry '%1' was not found or has not projects: skipping." ).arg( connectionString ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
       }
+    }
+    else
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "QGIS_SERVER_PROJECTS_PG_CONNECTIONS empty connection: skipping." ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
     }
   }
 
@@ -176,8 +219,8 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri )
     return jLinks;
   };
 
-  json info;
-  info[ "id" ] =  QCryptographicHash::hash( projectUri.toUtf8(), QCryptographicHash::Md5 ).toHex();
+  json info = json::object();
+  info[ "id" ] = QCryptographicHash::hash( projectUri.toUtf8(), QCryptographicHash::Md5 ).toHex();
   QgsProject p;
   if ( p.read( projectUri ) )
   {

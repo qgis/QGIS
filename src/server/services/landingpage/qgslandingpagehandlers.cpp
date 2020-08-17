@@ -69,9 +69,7 @@ json QgsLandingPageHandler::projectsData() const
   const auto constProjectKeys { availableProjects.keys() };
   for ( const auto &p : constProjectKeys )
   {
-    auto info { QgsLandingPageUtils::projectInfo( availableProjects[ p ] ) };
-    info[ "id" ] = p.toStdString();
-    j.push_back( info );
+    j.push_back( QgsLandingPageUtils::projectInfo( availableProjects[ p ] ) );
   }
   return j;
 }
