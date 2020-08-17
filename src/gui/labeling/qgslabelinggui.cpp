@@ -31,6 +31,7 @@
 #include "qgscalloutsregistry.h"
 #include "callouts/qgscalloutwidget.h"
 #include "qgslabelobstaclesettingswidget.h"
+#include "qgslabellineanchorwidget.h"
 #include <mutex>
 
 #include <QButtonGroup>
@@ -176,6 +177,50 @@ void QgsLabelingGui::showObstacleSettings()
   }
 }
 
+void QgsLabelingGui::showLineAnchorSettings()
+{
+  QgsExpressionContext context = createExpressionContext();
+
+  QgsSymbolWidgetContext symbolContext;
+  symbolContext.setExpressionContext( &context );
+  symbolContext.setMapCanvas( mMapCanvas );
+
+  QgsLabelLineAnchorWidget *widget = new QgsLabelLineAnchorWidget( nullptr, mLayer );
+  widget->setDataDefinedProperties( mDataDefinedProperties );
+  widget->setSettings( mLineSettings );
+  widget->setGeometryType( mLayer ? mLayer->geometryType() : QgsWkbTypes::UnknownGeometry );
+  widget->setContext( symbolContext );
+
+  auto applySettings = [ = ]
+  {
+    const QgsLabelLineSettings widgetSettings = widget->settings();
+    mLineSettings.setLineAnchorPercent( widgetSettings.lineAnchorPercent() );
+    const QgsPropertyCollection obstacleDataDefinedProperties = widget->dataDefinedProperties();
+    widget->updateDataDefinedProperties( mDataDefinedProperties );
+    emit widgetChanged();
+  };
+
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    connect( widget, &QgsLabelSettingsWidgetBase::changed, this, [ = ]
+    {
+      applySettings();
+    } );
+    panel->openPanel( widget );
+  }
+  else
+  {
+    QgsLabelSettingsWidgetDialog dialog( widget, this );
+    if ( dialog.exec() )
+    {
+      applySettings();
+    }
+    // reactivate button's window
+    activateWindow();
+  }
+}
+
 QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &layerSettings, QWidget *parent, QgsWkbTypes::GeometryType geomType )
   : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling, layer )
   , mGeomType( geomType )
@@ -211,6 +256,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   connect( mGeometryGenerator, &QgsCodeEditorExpression::textChanged, this, &QgsLabelingGui::validateGeometryGeneratorExpression );
   connect( mGeometryGeneratorType, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::validateGeometryGeneratorExpression );
   connect( mObstacleSettingsButton, &QAbstractButton::clicked, this, &QgsLabelingGui::showObstacleSettings );
+  connect( mLineAnchorSettingsButton, &QAbstractButton::clicked, this, &QgsLabelingGui::showLineAnchorSettings );
 
   mFieldExpressionWidget->registerExpressionContextGenerator( this );
 
@@ -353,6 +399,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mChkNoObstacle->setChecked( mSettings.obstacleSettings().isObstacle() );
 
   mObstacleSettings = mSettings.obstacleSettings();
+  mLineSettings = mSettings.lineSettings();
 
   chkLabelPerFeaturePart->setChecked( mSettings.labelPerPart );
   mPalShowAllLabelsForLayerChkBx->setChecked( mSettings.displayAll );
@@ -565,6 +612,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   mObstacleSettings.setIsObstacle( mChkNoObstacle->isChecked() || mMode == ObstaclesOnly );
   lyr.setObstacleSettings( mObstacleSettings );
+
+  lyr.lineSettings().setLineAnchorPercent( mLineSettings.lineAnchorPercent() );
 
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
   lyr.displayAll = mPalShowAllLabelsForLayerChkBx->isChecked();
