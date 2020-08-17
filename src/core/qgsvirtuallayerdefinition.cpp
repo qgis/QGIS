@@ -224,8 +224,6 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
     url.addQueryItem( QStringLiteral( "lazy" ), QString() );
   }
 
-<<<<<<< HEAD
-=======
   if ( ! subsetString().isEmpty() )
   {
     urlQuery.addQueryItem( QStringLiteral( "subsetstring" ), QUrl::toPercentEncoding( subsetString() ) );
@@ -233,7 +231,6 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
 
   url.setQuery( urlQuery );
 
->>>>>>> a5461a6420... Merge pull request #38257 from elpaso/bugfix-gh26189-virtual-layers-subset-string
   return url;
 }
 
