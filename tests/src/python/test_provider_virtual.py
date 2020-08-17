@@ -1088,6 +1088,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(features), 16)
 
         QgsProject.instance().removeMapLayer(pl)
+
     def test_subset_string(self):
         """Test that subset strings are stored and restored correctly from the project
         See: GH #26189
@@ -1177,14 +1178,14 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(virtual.featureCount(), 2)
         self.assertTrue(virtual.setSubsetString('"join_value" = \'twenty\''))
         self.assertEqual(virtual.featureCount(), 1)
-        self.assertEqual([f.attributes() for f in virtual.getFeatures()], [[1, 20, 2, 'twenty']])
+        self.assertEqual([f.attributes() for f in virtual.getFeatures()], [[1, 1, 20, 2, 'twenty']])
 
         # Store and reload the project
         self.assertTrue(project.write(project_path))
         self.assertTrue(project.read(project_path))
         gpkg_virtual_layer = project.mapLayersByName('virtual_data')[0]
-        self.assertEqual(gpkg_virtual_layer.featureCount(), 1)
         self.assertEqual(gpkg_virtual_layer.subsetString(), '"join_value" = \'twenty\'')
+        self.assertEqual(gpkg_virtual_layer.featureCount(), 1)
 
 
 if __name__ == '__main__':
