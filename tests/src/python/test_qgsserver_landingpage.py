@@ -54,8 +54,13 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        directories = [os.path.join(unitTestDataPath('qgis_server'), 'landingpage', 'projects')]
-        directories.append(os.path.join(unitTestDataPath('qgis_server'), 'landingpage', 'projects2'))
+
+        cls.temp_dir = QtCore.QTemporaryDir()
+
+        temp_dir = cls.temp_dir.path()
+        shutil.copytree(os.path.join(unitTestDataPath('qgis_server'), 'landingpage'), os.path.join(temp_dir, 'landingpage'))
+
+        directories = [os.path.join(temp_dir, 'landingpage', 'projects'), os.path.join(temp_dir, 'landingpage', 'projects2')]
         os.environ['QGIS_SERVER_PROJECTS_DIRECTORIES'] = '||'.join(directories)
 
         if not os.environ.get('TRAVIS', False):
