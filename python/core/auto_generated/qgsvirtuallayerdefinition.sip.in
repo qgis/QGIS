@@ -94,6 +94,7 @@ uid=column_name                         is the name of a column with unique inte
 nogeometry                              is a flag to force the layer to be a non-geometry layer
 query=sql                               represents the SQL query. Must be URL-encoded
 field=column_name:[int|real|text]       represents a field with its name and its type
+subsetstring=subset_string              represents the subsetstring
 %End
 
     QUrl toUrl() const;
@@ -226,6 +227,20 @@ Convenience method to test whether the definition has referenced (live) layers
     bool hasDefinedGeometry() const;
 %Docstring
 Convenient method to test if the geometry is defined (not NoGeometry and not Unknown)
+%End
+
+    QString subsetString() const;
+%Docstring
+Returns the subset string.
+
+.. versionadded:: 3.16
+%End
+
+    void setSubsetString( const QString &subsetString );
+%Docstring
+Sets the ``subsetString``
+
+.. versionadded:: 3.16
 %End
 
 };
