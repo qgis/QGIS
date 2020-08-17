@@ -16,6 +16,7 @@
 
 #include "qgslabellineanchorwidget.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsapplication.h"
 
 QgsLabelLineAnchorWidget::QgsLabelLineAnchorWidget( QWidget *parent, QgsVectorLayer *vl )
   : QgsLabelSettingsWidgetBase( parent, vl )
@@ -24,10 +25,10 @@ QgsLabelLineAnchorWidget::QgsLabelLineAnchorWidget( QWidget *parent, QgsVectorLa
 
   setPanelTitle( tr( "Line Anchor Settings" ) );
 
-  mPercentPlacementComboBox->addItem( tr( "Center of Line" ), 0.5 );
-  mPercentPlacementComboBox->addItem( tr( "Start of Line" ), 0.0 );
-  mPercentPlacementComboBox->addItem( tr( "End of Line" ), 1.0 );
-  mPercentPlacementComboBox->addItem( tr( "Custom" ), -1.0 );
+  mPercentPlacementComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabelAnchorCenter.svg" ) ), tr( "Center of Line" ), 0.5 );
+  mPercentPlacementComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabelAnchorStart.svg" ) ), tr( "Start of Line" ), 0.0 );
+  mPercentPlacementComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabelAnchorEnd.svg" ) ), tr( "End of Line" ), 1.0 );
+  mPercentPlacementComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabelAnchorCustom.svg" ) ), tr( "Custom…" ), -1.0 );
 
   connect( mPercentPlacementComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
