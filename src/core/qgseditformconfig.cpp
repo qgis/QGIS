@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsxmlutils.h"
 #include "qgsapplication.h"
+#include "qgsmessagelog.h"
 
 QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
 {
@@ -88,17 +89,15 @@ void QgsEditFormConfig::onRelationsLoaded()
   }
 }
 
-bool QgsEditFormConfig::updateRelationWidgetInTabs( QgsAttributeEditorContainer *container,  const QString &widgetName, const QVariantMap &config )
+bool QgsEditFormConfig::legacyUpdateRelationWidgetInTabs( QgsAttributeEditorContainer *container,  const QString &widgetName, const QVariantMap &config )
 {
-  QList<QgsAttributeEditorElement *> children = container->children();
+  const QList<QgsAttributeEditorElement *> children = container->children();
   for ( QgsAttributeEditorElement *child : children )
   {
-    qDebug() << QString( "it's item named %1 and type %2" ).arg( child->name() ).arg( child->type() );
-
     if ( child->type() ==  QgsAttributeEditorElement::AeTypeContainer )
     {
       QgsAttributeEditorContainer *container = dynamic_cast<QgsAttributeEditorContainer *>( child );
-      if ( updateRelationWidgetInTabs( container, widgetName, config ) )
+      if ( legacyUpdateRelationWidgetInTabs( container, widgetName, config ) )
       {
         //return when a relation has been set in a child or child child...
         return true;
@@ -135,10 +134,11 @@ bool QgsEditFormConfig::setWidgetConfig( const QString &widgetName, const QVaria
     return false;
   }
 
+  //for legacy use it writes the relation editor configuration into the first instance of the widget
   if ( config.contains( QStringLiteral( "force-suppress-popup" ) ) || config.contains( QStringLiteral( "nm-rel" ) ) )
   {
-    //set it in the tab for the first relation editor widget
-    updateRelationWidgetInTabs( d->mInvisibleRootContainer, widgetName, config );
+    QgsMessageLog::logMessage( QStringLiteral( "Relation settings should be done for the specific widget instance like attributeEditorRelation->setNmRelationId() instead." ) );
+    legacyUpdateRelationWidgetInTabs( d->mInvisibleRootContainer, widgetName, config );
   }
 
   d.detach();
