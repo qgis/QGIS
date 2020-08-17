@@ -88,12 +88,57 @@ void QgsEditFormConfig::onRelationsLoaded()
   }
 }
 
+bool QgsEditFormConfig::updateRelationWidgetInTabs( QgsAttributeEditorContainer *container,  const QString &widgetName, const QVariantMap &config )
+{
+  QList<QgsAttributeEditorElement *> children = container->children();
+  for ( QgsAttributeEditorElement *child : children )
+  {
+    qDebug() << QString( "it's item named %1 and type %2" ).arg( child->name() ).arg( child->type() );
+
+    if ( child->type() ==  QgsAttributeEditorElement::AeTypeContainer )
+    {
+      QgsAttributeEditorContainer *container = dynamic_cast<QgsAttributeEditorContainer *>( child );
+      if ( updateRelationWidgetInTabs( container, widgetName, config ) )
+      {
+        //return when a relation has been set in a child or child child...
+        return true;
+      }
+    }
+    else if ( child->type() ==  QgsAttributeEditorElement::AeTypeRelation )
+    {
+      QgsAttributeEditorRelation *relation = dynamic_cast< QgsAttributeEditorRelation * >( child );
+      if ( relation )
+      {
+        if ( relation->relation().id() == widgetName )
+        {
+          if ( config.contains( QStringLiteral( "nm-rel" ) ) )
+          {
+            relation->setNmRelationId( config[QStringLiteral( "nm-rel" )] );
+          }
+          if ( config.contains( QStringLiteral( "force-suppress-popup" ) ) )
+          {
+            relation->setForceSuppressFormPopup( config[QStringLiteral( "force-suppress-popup" )].toBool() );
+          }
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
 bool QgsEditFormConfig::setWidgetConfig( const QString &widgetName, const QVariantMap &config )
 {
   if ( d->mFields.indexOf( widgetName ) != -1 )
   {
     QgsDebugMsg( QStringLiteral( "Trying to set a widget config for a field on QgsEditFormConfig. Use layer->setEditorWidgetSetup() instead." ) );
     return false;
+  }
+
+  if ( config.contains( QStringLiteral( "force-suppress-popup" ) ) || config.contains( QStringLiteral( "nm-rel" ) ) )
+  {
+    //set it in the tab for the first relation editor widget
+    updateRelationWidgetInTabs( d->mInvisibleRootContainer, widgetName, config );
   }
 
   d.detach();

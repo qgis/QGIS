@@ -348,6 +348,12 @@ class CORE_EXPORT QgsEditFormConfig
      */
     void onRelationsLoaded();
 
+    /**
+     * Used internally for the backwards compatibility of the api, on setting nmrel or force-suppress-popup for relations
+     * Returns true when a relation (the first one found) has been updated
+     */
+    bool updateRelationWidgetInTabs( QgsAttributeEditorContainer *container,  const QString &widgetName, const QVariantMap &config );
+
   private:
     QExplicitlySharedDataPointer<QgsEditFormConfigPrivate> d;
 
