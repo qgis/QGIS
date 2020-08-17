@@ -76,6 +76,8 @@ QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri, const QgsD
   {
     mDefinition = QgsVirtualLayerDefinition::fromUrl( url );
 
+    mSubset = mDefinition.subsetString();
+
     if ( !mDefinition.isLazy() )
     {
       reloadData();
@@ -204,6 +206,8 @@ bool QgsVirtualLayerProvider::openIt()
   {
     mTableName = VIRTUAL_LAYER_QUERY_VIEW;
   }
+
+  mSubset = mDefinition.subsetString();
 
   return true;
 }
@@ -522,6 +526,10 @@ bool QgsVirtualLayerProvider::setSubsetString( const QString &subset, bool updat
   clearMinMaxCache();
   if ( updateFeatureCount )
     updateStatistics();
+
+  mDefinition.setSubsetString( subset );
+
+  setDataSourceUri( mDefinition.toString() );
 
   emit dataChanged();
 
