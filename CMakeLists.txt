@@ -1,6 +1,6 @@
 #############################################################
 # CMake settings
-CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.10.0)
 SET(CMAKE_COLOR_MAKEFILE ON)
 SET(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
